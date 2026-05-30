@@ -57,8 +57,8 @@ A criterion's tag is a contract with the linter: if you find yourself eyeballing
 - **D24 [M]** `metadata`, if present, is a string→string map. (SPEC)
 - **D25 [M]** `allowed-tools` / `disallowed-tools`, if present, are valid tool specs. `allowed-tools` is **experimental** in the open spec. (SPEC, CC)
 - **D26 [M]** `license`, if present, is a short license name or bundled-file reference. (SPEC)
-- **D27 [J]** Claude-Code-only fields (`disable-model-invocation`, `user-invocable`, `context`, `agent`, `paths`, `model`, `effort`, `when_to_use`, `argument-hint`, `arguments`, `hooks`) are CC extensions, not in the open spec — flag them when cross-platform portability matters. (CC — see ※3)
-- **D28 [J]** Side-effecting / manually-timed workflows (deploy, commit, send) set `disable-model-invocation: true` so they can't auto-fire. (CC)
+- **D27 [J]** Claude-Code-only fields (`disable-model-invocation`, `user-invocable`, `context`, `agent`, `paths`, `model`, `effort`, `when_to_use`, `argument-hint`, `arguments`, `hooks`, `shell`) are CC extensions, not in the open spec — flag them when cross-platform portability matters. `shell` sets the interpreter (`bash` or `powershell`) for CC's dynamic context injection (`` !`cmd` `` blocks). (CC — see ※3)
+- **D28 [J]** Side-effecting / manually-timed workflows (deploy, commit, send) set `disable-model-invocation: true` so they can't auto-fire. Note: this also removes the skill's description from Claude's context listing entirely (the description is never injected), unlike the default where description is always in context. Contrast `user-invocable: false`, which hides the skill from the `/` menu while keeping the description in context for Claude. (CC)
 
 ## E. Body — size & conciseness
 
@@ -89,7 +89,7 @@ A criterion's tag is a contract with the linter: if you find yourself eyeballing
 
 - **H45 [J]** Scripts solve problems rather than punt to Claude — handle expected errors (missing file, permissions) explicitly. (BP)
 - **H46 [J]** No unexplained magic numbers — every config value is justified in a comment. (BP)
-- **H47 [J]** Required packages are listed and verified for the target runtime; don't assume tools are installed (the Claude API has no network/runtime install). (BP)
+- **H47 [J]** Required packages are listed and verified for the target runtime; don't assume tools are installed (the Claude API has no network/runtime install). When the skill invokes MCP tools, use fully-qualified `ServerName:tool_name` names — without the server prefix, Claude may fail to locate the tool when multiple MCP servers are loaded. (BP)
 - **H48 [J]** Deterministic, frequently-reused logic is pre-written as a script, not regenerated each run. (BP)
 - **H49 [J]** Validation scripts are verbose — error messages name the problem and the valid options. (BP)
 - **H50 [J]** Plan-validate-execute for batch/destructive ops: produce a verifiable intermediate artifact, validate it, then act. (BP, COMMUNITY)
@@ -116,23 +116,24 @@ A criterion's tag is a contract with the linter: if you find yourself eyeballing
 
 - **※1 `name` required vs optional.** Open spec: required, must match the directory. Claude Code: optional (defaults to directory name). For portable skills, always state it and match the directory.
 - **※2 Description length.** Authoring cap is **1024 chars** (spec, BP). Claude Code's _runtime_ listing truncates `description` + `when_to_use` at **1,536 chars** (configurable; budget scales ~1% of context). Author to 1024; the larger number is a display limit, not an authoring target.
-- **※3 CC-only frontmatter.** Many Claude Code fields aren't in the open spec; valid in CC, may not port to Cowork/other platforms.
+- **※3 CC-only frontmatter.** Many Claude Code fields aren't in the open spec; valid in CC, may not port to Cowork/other platforms. CC also adds non-frontmatter extensions: dynamic context injection (`` !`cmd` `` or ` ```! ` fenced blocks — run shell commands whose output is inlined before Claude sees the skill) and string substitutions (`$ARGUMENTS`, `$ARGUMENTS[N]`, `$N`, `$name`, `${CLAUDE_SESSION_ID}`, `${CLAUDE_EFFORT}`, `${CLAUDE_SKILL_DIR}`). These are CC runtime features, not part of the open spec. (CC)
 - **※4 Commands → skills.** In Claude Code, `.claude/commands/*.md` and `.claude/skills/<name>/SKILL.md` both yield `/<name>`; skills are the recommended form. Suggest migrating old command files.
 - **※5 Budgets are soft.** "< 500 lines" and "< 5,000 tokens" are performance recommendations, not enforced — the linter reports them as WARN, never FAIL. The reference validator (`skills-ref validate`) checks frontmatter/naming only.
 
 ## Exact numbers
 
-| Item                              | Value           | Hard/Soft | Source     |
-| --------------------------------- | --------------- | --------- | ---------- |
-| `name` max length                 | 64 chars        | hard      | SPEC, BP   |
-| `description` max length          | 1024 chars      | hard      | SPEC, BP   |
-| `compatibility` length            | 1–500 chars     | hard      | SPEC       |
-| `SKILL.md` body                   | < 500 lines     | soft      | SPEC,BP,CC |
-| `SKILL.md` instructions           | < 5,000 tokens  | soft      | SPEC       |
-| Metadata (name+desc) load cost    | ≈ 100 tokens    | info      | SPEC       |
-| Reference-file ToC threshold      | > 100 lines     | soft      | BP         |
-| Evaluations before sharing        | ≥ 3             | rec.      | BP         |
-| CC listing truncation (desc+when) | 1,536 chars †   | runtime   | CC         |
-| CC post-compaction per-skill keep | first 5,000 tok | runtime   | CC         |
+| Item                               | Value               | Hard/Soft | Source     |
+| ---------------------------------- | ------------------- | --------- | ---------- |
+| `name` max length                  | 64 chars            | hard      | SPEC, BP   |
+| `description` max length           | 1024 chars          | hard      | SPEC, BP   |
+| `compatibility` length             | 1–500 chars         | hard      | SPEC       |
+| `SKILL.md` body                    | < 500 lines         | soft      | SPEC,BP,CC |
+| `SKILL.md` instructions            | < 5,000 tokens      | soft      | SPEC       |
+| Metadata (name+desc) load cost     | ≈ 100 tokens        | info      | SPEC       |
+| Reference-file ToC threshold       | > 100 lines         | soft      | BP         |
+| Evaluations before sharing         | ≥ 3                 | rec.      | BP         |
+| CC listing truncation (desc+when)  | 1,536 chars †       | runtime   | CC         |
+| CC post-compaction per-skill keep  | first 5,000 tok     | runtime   | CC         |
+| CC combined post-compaction budget | 25,000 tok combined | runtime   | CC         |
 
 † Claude-Code-specific runtime limit, configurable; distinct from the portable 1024-char authoring cap.
