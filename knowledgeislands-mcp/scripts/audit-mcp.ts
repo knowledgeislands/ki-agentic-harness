@@ -9,7 +9,7 @@
  * shared utils helpers, and known drift (a `bun test` script, a dangling cli
  * chmod). It deliberately does NOT judge tool-naming quality, layer purity, or the
  * security invariants — those need a human/agent read of the code (see
- * references/Audit Checklist.md). Output is grouped pass/warn/fail; exit code is
+ * references/audit-checklist.md). Output is grouped pass/warn/fail; exit code is
  * non-zero if any FAIL.
  *
  * No dependencies — Node/Bun builtins only.
@@ -79,7 +79,12 @@ String(pkg.packageManager ?? '').startsWith('bun@')
   ? add('PASS', 'package', `packageManager = ${pkg.packageManager}`)
   : add('FAIL', 'package', `packageManager should be bun@…, got ${JSON.stringify(pkg.packageManager)}`)
 const nodeEngine = String((pkg.engines as Record<string, string> | undefined)?.node ?? '')
-const nodeOk = />=\s*2[2-9]/.test(nodeEngine)
+// parse the floor major version from a range like ">=22" / ">= 22.0.0" and require ≥ 22
+// (a literal 2[2-9] pattern would silently reject node 30+, so read the number instead)
+const nodeOk = (() => {
+  const m = nodeEngine.match(/>=\s*(\d+)/)
+  return m ? Number(m[1]) >= 22 : false
+})()
 add(nodeOk ? 'PASS' : 'FAIL', 'package', nodeOk ? `engines.node = ${nodeEngine}` : `engines.node should be >=22, got ${JSON.stringify(nodeEngine)}`)
 Array.isArray(pkg.files) && (pkg.files as string[]).includes('dist') ? add('PASS', 'package', 'files includes "dist"') : add('FAIL', 'package', 'files should include "dist"')
 
@@ -199,5 +204,5 @@ for (const lvl of order) {
 const fails = findings.filter((f) => f.level === 'FAIL').length
 const warns = findings.filter((f) => f.level === 'WARN').length
 console.log(`\n${'─'.repeat(60)}\n${fails} fail · ${warns} warn · ${findings.length - fails - warns} pass`)
-console.log('Mechanical layer only — now run the semantic pass in references/Audit Checklist.md.\n')
+console.log('Mechanical layer only — now run the semantic pass in references/audit-checklist.md.\n')
 process.exit(fails ? 1 : 0)

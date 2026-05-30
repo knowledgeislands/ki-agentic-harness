@@ -1,8 +1,10 @@
 # Audit Checklist
 
-Line-by-line pass/fail items for auditing a workspace MCP against the [Workspace MCP Standard](<Workspace MCP Standard.md>). Run [`../scripts/audit-mcp.ts`](../scripts/audit-mcp.ts) for the mechanical items (marked 🔧), then judge the rest by reading the code.
+Line-by-line pass/fail items for auditing a workspace MCP against the [Workspace MCP Standard](workspace-mcp-standard.md). Run
+[`../scripts/audit-mcp.ts`](../scripts/audit-mcp.ts) for the mechanical items (marked 🔧), then judge the rest by reading the code.
 
-Severity: **B** blocker (security invariant breach or gate bypass — ship-stopper), **S** standard (layout / naming / tooling divergence), **P** polish (docs / consistency).
+Severity: **B** blocker (security invariant breach or gate bypass — ship-stopper), **S** standard (layout / naming / tooling divergence), **P** polish (docs /
+consistency).
 
 ## Layout & layers
 
@@ -16,7 +18,8 @@ Severity: **B** blocker (security invariant breach or gate bypass — ship-stopp
 
 ## Config injection
 
-- [ ] B — `loadConfig(env?)` is the only reader of env; **no module-level config singleton**; no top-level `process.env` access outside `config/index.ts`. (`grep -rn "process.env" src --include=*.ts | grep -v config/`)
+- [ ] B — `loadConfig(env?)` is the only reader of env; **no module-level config singleton**; no top-level `process.env` access outside `config/index.ts`.
+      (`grep -rn "process.env" src --include=*.ts | grep -v config/`)
 - [ ] B — every `main/`/`utils/` entry point takes config (or its slice) as the **first argument**; nothing reaches for ambient state.
 - [ ] 🔧 S — `config/index.ts` exports `AccessLevel`, `ACCESS_LEVELS`, `ACCESS_LEVEL_RANK`, `AuditLogMode`, `loadConfig`.
 - [ ] S — `Config` has `accessLevel`, `auditLogMode`, `auditLogPath`, `auditLogMaxBytes`, `auditLogKeep` + domain fields.
@@ -89,4 +92,5 @@ Severity: **B** blocker (security invariant breach or gate bypass — ship-stopp
 
 ## Reporting
 
-Produce a findings table grouped by severity, each row: `severity · file:line · what · fix`. Close with: (a) any intentional, documented divergences you chose **not** to flag, and (b) a one-line verdict (compliant / minor drift / blockers).
+Produce a findings table grouped by severity, each row: `severity · file:line · what · fix`. Close with: (a) any intentional, documented divergences you chose
+**not** to flag, and (b) a one-line verdict (compliant / minor drift / blockers).
