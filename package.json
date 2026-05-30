@@ -1,0 +1,59 @@
+{
+  "name": "@knowledgeislands/arcadia-skills",
+  "description": "Reusable Agent Skills for the Arcadia / Knowledge Islands work, installed into a Claude skills directory by symlink.",
+  "version": "1.0.0",
+  "author": "kris@kris.me.uk",
+  "bugs": {
+    "url": "https://github.com/knowledgeislands/arcadia-skills/issues"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.15",
+    "@types/node": "^25.8.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.4",
+    "markdownlint-cli2": "^0.22.1",
+    "prettier": "^3.8.3",
+    "syncpack": "^15.1.2",
+    "typescript": "^6.0.3"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "homepage": "https://github.com/knowledgeislands/arcadia-skills#readme",
+  "keywords": [
+    "agent-skills",
+    "anthropic",
+    "claude",
+    "claude-code",
+    "knowledge-islands",
+    "skills"
+  ],
+  "license": "MIT",
+  "lint-staged": {
+    "*.{ts,js,mjs,json,jsonc}": "bunx @biomejs/biome check --write --no-errors-on-unmatched",
+    "*.md": [
+      "bunx prettier --write",
+      "bunx markdownlint-cli2"
+    ]
+  },
+  "packageManager": "bun@1.3.14",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/knowledgeislands/arcadia-skills.git"
+  },
+  "scripts": {
+    "clean": "rm -rf node_modules",
+    "lint:check": "bunx @biomejs/biome check",
+    "lint:fix": "bunx @biomejs/biome check --write --unsafe",
+    "lint:format": "bunx @biomejs/biome format --write",
+    "lint:md": "bunx prettier --write \"**/*.md\" --ignore-path .gitignore && bunx markdownlint-cli2",
+    "lint:package": "bunx syncpack format",
+    "lint:types": "tsc --noEmit",
+    "prepare": "husky",
+    "skills:link": "bun scripts/sync-skills.ts link",
+    "skills:status": "bun scripts/sync-skills.ts status",
+    "skills:unlink": "bun scripts/sync-skills.ts unlink"
+  },
+  "type": "module"
+}

@@ -1,19 +1,13 @@
 # Knowledge Islands KB Reference
 
-Long-form detail for the [Knowledge Islands KB](<../SKILL.md>) skill. Loaded on demand (progressive disclosure) so the `SKILL.md` body stays
-lean.
+Long-form detail for the [Knowledge Islands KB](../SKILL.md) skill. Loaded on demand (progressive disclosure) so the `SKILL.md` body stays lean.
 
 ## The Knowledge Islands model
 
-A Knowledge Islands base is a single markdown store organised into fixed zones - `+/` (inbound), `Calendar/`, `Pillars/`, `Resources/`,
-`Streams/`, `-/` (outbound), and `Admin/`. The zone set is part of the standard, so the skill does not ask a base to define it; it only needs
-a few store-level bindings.
+A Knowledge Islands base is a single markdown store organised into fixed zones - `+/` (inbound), `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, `-/` (outbound), and `Admin/`. The zone set is part of the standard, so the skill does not ask a base to define it; it only needs a few store-level bindings.
 
-- **Island vs Pillar.** Each whole knowledge base is an "island" (a legal base, a personal base, a research base). Within a base, a **Pillar**
-  is a major strand of subject matter - a case, a client, a domain, a theme. `Pillars/` replaces what some bases historically called
-  `Matters/`.
-- **Settling.** `Streams/` holds work in motion; once settled it migrates into `Pillars/` (internal) or `Resources/` (external). The
-  discriminating question for internal vs external: *would this knowledge exist without this base?* If yes, it is a resource.
+- **Island vs Pillar.** Each whole knowledge base is an "island" (a legal base, a personal base, a research base). Within a base, a **Pillar** is a major strand of subject matter - a case, a client, a domain, a theme. `Pillars/` replaces what some bases historically called `Matters/`.
+- **Settling.** `Streams/` holds work in motion; once settled it migrates into `Pillars/` (internal) or `Resources/` (external). The discriminating question for internal vs external: _would this knowledge exist without this base?_ If yes, it is a resource.
 
 ## Onboarding a base to this skill
 
@@ -29,8 +23,7 @@ A base that follows the structure and defines the notes store needs nothing more
 
 ## Session digest structure
 
-Destination `-/_DIGESTS/<UTC timestamp> <Short Topic>.md` (timestamp `YYYY-MM-DDTHHMMSSZ`; topic in Title Case). Frontmatter
-`type: session-digest` and `retain_until: YYYY-MM-DD` (default 30 days from the write date). Body sections:
+Destination `-/_DIGESTS/<UTC timestamp> <Short Topic>.md` (timestamp `YYYY-MM-DDTHHMMSSZ`; topic in Title Case). Frontmatter `type: session-digest` and `retain_until: YYYY-MM-DD` (default 30 days from the write date). Body sections:
 
 - **Context** - what the session was about.
 - **Decisions** - choices made and their rationale.
@@ -40,12 +33,10 @@ Destination `-/_DIGESTS/<UTC timestamp> <Short Topic>.md` (timestamp `YYYY-MM-DD
 
 ## Extension-skill pattern
 
-A base that needs base-specific pre-flight (declaring an active scope, loading domain context) ships a thin extension skill named for the
-base (e.g. `<base>-kb`). The extension:
+A base that needs base-specific pre-flight (declaring an active scope, loading domain context) ships a thin extension skill named for the base (e.g. `<base>-kb`). The extension:
 
 - Carries its own `name` and trigger phrases.
 - Adds only the base-specific Step 1 / pre-flight (scope declaration, profile reads, domain pre-flight) and the project bindings.
-- Delegates the five operating modes (SAVE / UPDATE / QUERY / EXTRACT / DIGEST) back to the `knowledgeislands-kb` skill **by name** rather
-  than restating them. Both skills load into the session, so the reference is by `name`, not a file path.
+- Delegates the five operating modes (SAVE / UPDATE / QUERY / EXTRACT / DIGEST) back to the `knowledgeislands-kb` skill **by name** rather than restating them. Both skills load into the session, so the reference is by `name`, not a file path.
 
 This keeps the mode logic in one place and the base specifics in the extension.
