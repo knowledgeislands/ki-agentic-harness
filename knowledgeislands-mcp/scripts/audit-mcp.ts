@@ -184,11 +184,36 @@ if (isDir('src', 'tools')) {
   tw(at('src', 'tools'))
 }
 if (toolNames.length) {
-  const bad = toolNames.filter((n) => !/^[a-z0-9]+(_[a-z0-9]+){2,}$/.test(n))
+  // <app>_<resource>_<action> is 3 segments; metadata/lifecycle tools may drop the
+  // resource segment (m365_about, *_auth_start) → 2 segments is also valid. Require
+  // ≥2 segments so those documented names don't false-WARN; flag only 1-segment names.
+  const bad = toolNames.filter((n) => !/^[a-z0-9]+(_[a-z0-9]+){1,}$/.test(n))
   add('PASS', 'tools', `registered tools (${toolNames.length}): ${toolNames.sort().join(', ')}`)
-  bad.length ? add('WARN', 'tools', `names not matching <app>_<resource>_<action>: ${bad.join(', ')}`) : add('PASS', 'tools', 'all tool names look like <app>_<resource>_<action>')
+  bad.length
+    ? add('WARN', 'tools', `names not matching <app>_<resource>_<action> (or _<action> for metadata): ${bad.join(', ')}`)
+    : add('PASS', 'tools', 'all tool names look like <app>_<resource>_<action>')
 } else {
   add('WARN', 'tools', 'no registerTool(...) calls found — verify tool registration')
+}
+
+// ── structured output: structuredContent should be paired with a declared outputSchema ──
+if (isDir('src', 'tools')) {
+  let usesStructured = false
+  let declaresOutputSchema = false
+  const sw = (dir: string) => {
+    for (const e of readdirSync(dir, { withFileTypes: true })) {
+      const full = join(dir, e.name)
+      if (e.isDirectory()) sw(full)
+      else if (e.name.endsWith('.ts') && !e.name.endsWith('.test.ts')) {
+        const src = readFileSync(full, 'utf8')
+        if (/\bstructuredContent\b/.test(src)) usesStructured = true
+        if (/\boutputSchema\b/.test(src)) declaresOutputSchema = true
+      }
+    }
+  }
+  sw(at('src', 'tools'))
+  if (usesStructured && !declaresOutputSchema) add('WARN', 'tools', 'tools return structuredContent but no outputSchema is declared — pair them (spec 2025-06-18) so clients can validate')
+  else if (usesStructured) add('PASS', 'tools', 'structuredContent paired with a declared outputSchema')
 }
 
 // ── report ────────────────────────────────────────────────────────────────────

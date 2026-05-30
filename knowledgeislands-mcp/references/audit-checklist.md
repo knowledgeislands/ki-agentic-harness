@@ -56,6 +56,26 @@ consistency).
 - [ ] B — risky multi-state options are enums, not booleans.
 - [ ] S — all zod schemas `.strict()` with bounded numerics / length caps.
 - [ ] S — batch tools aggregate per-item failures into `errors[]` (no crash).
+- [ ] S — tools sanitize untrusted output before returning it (spec: "Servers MUST sanitize tool outputs"); e.g. m365's `html-sanitizer.ts`. Rate-limiting is a
+      spec MUST but low-priority for local stdio servers — note, don't block.
+
+## Spec conformance — tool results & metadata (standard §12)
+
+- [ ] B — tool boundary returns errors as `isError: true` envelopes via `errorResult`, never `throw` (spec 2025-11-25: validation/API/logic errors are Tool
+      Execution Errors, not protocol errors; a throw also bypasses the audit wrapper). Same item as audit-logging below — verify once.
+- [ ] P — any tool returning `structuredContent` also declares a matching `outputSchema` at registration (paired, ideally from one zod schema). A `jsonResult`
+      emitting `structuredContent` with no declared schema is a polish finding; plain text-only results need neither.
+- [ ] P — optional spec metadata (`icons`, `title`, `execution.taskSupport`) is per-repo opt-in, not required — do **not** flag its absence.
+
+## OAuth security — auth-server repos only: mcp-gmail, mcp-m365 (standard §13)
+
+Skip this whole section for the filesystem/subprocess repos.
+
+- [ ] B — no token passthrough: server never accepts/forwards a caller-supplied token; it uses tokens issued to itself for the downstream API.
+- [ ] B — auth-code flow uses PKCE and a cryptographically random, server-stored, single-use `state` validated by exact match at the callback.
+- [ ] B — `redirect_uri` validated by exact string match (loopback), not prefix/wildcard.
+- [ ] B — tokens stored with restrictive perms outside any served root; never logged; redacted from audit log + errors.
+- [ ] S — least-privilege scopes (only what shipped tools need); SSRF discipline on fetched URLs (HTTPS, host-pinned, no redirect to internal/loopback IPs).
 
 ## Bun vs Node
 

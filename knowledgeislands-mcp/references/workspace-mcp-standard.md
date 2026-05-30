@@ -17,6 +17,12 @@ Where repos disagree, the majority shape is the standard; documented per-repo ex
 9. [tsconfig / vitest / biome](#9-tsconfig--vitest--biome)
 10. [.env.example & env vars](#10-envexample--env-vars)
 11. [Docs](#11-docs)
+12. [Spec conformance: tool results, errors & metadata](#12-spec-conformance-tool-results-errors--metadata)
+13. [OAuth security (auth-server repos)](#13-oauth-security-auth-server-repos)
+
+> **Spec vs house style.** Sections 1–11 are the in-house **workspace convention**; §12–13 trace directly to the official MCP specification (latest released:
+> **2025-11-25**) tracked in [the source list](sources.md). When citing a rule, know which layer it comes from — never present a workspace preference as a
+> protocol "MUST". Mode REFRESH in the [SKILL](../SKILL.md) re-anchors §12–13 (and the annotation semantics in §4) to the current spec.
 
 ## 1. Project layout
 
@@ -85,6 +91,10 @@ exists, and per-domain extras (`auth-server` in gmail/m365; `types.ts`).
 - Metadata/lifecycle tools may drop the resource segment (`m365_about`, `gmail_auth_start`).
 - The CLI verb surface mirrors the tool names.
 
+The house scheme is a deliberate **subset** of what the spec permits: per [TOOLS](sources.md), names SHOULD be 1–128 chars from `[A-Za-z0-9_.-]`. Snake*case
+`<app>*<resource>\_<action>` stays well inside that, so a conformant house name is always a conformant spec name — the constraint to enforce is the house
+scheme, not the looser spec one.
+
 ## 4. Access-level gate (annotation-driven)
 
 `utils/access-level.ts` exports `makeAccessGatedRegister(server, accessLevel, audit)`. At registration it derives a level from each tool's `annotations` and
@@ -94,6 +104,12 @@ registers the tool only if that level ≤ `config.accessLevel`:
 - `destructiveHint: true` → **destructive**
 - explicit `readOnlyHint: false` AND `destructiveHint: false` → **write**
 - anything else → **destructive** (fail-safe)
+
+These four hints (`readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`) and their semantics are defined by the spec ([TOOLS](sources.md)) and
+have been stable since revision 2025-03-26 (confirmed current through 2025-11-25): `destructiveHint`/`idempotentHint` are only meaningful when `readOnlyHint` is
+false. The gate reads them as a risk vocabulary, exactly as the spec intends — the presets in `utils/annotations.ts` set `idempotentHint` (the `_IDEMPOTENT`
+variants) and `openWorldHint` (the `_REMOTE` variants) too, even though the gate keys only on read/destructive. The spec also warns clients to treat a server's
+annotations as **untrusted** — which is why the gate is the operator-controlled `MCP_<APP>_ACCESS_LEVEL`, not anything self-asserted at call time.
 
 Levels nest `read ⊂ write ⊂ destructive`; env `MCP_<APP>_ACCESS_LEVEL` (default `read`). Every tool sets `annotations` to a preset from `utils/annotations.ts`:
 `READ_ONLY`, `WRITE`, `WRITE_IDEMPOTENT`, `WRITE_IDEMPOTENT_REMOTE`, `DESTRUCTIVE`, `DESTRUCTIVE_REMOTE`, `DESTRUCTIVE_ONESHOT`, plus `_REMOTE`/read variants
@@ -196,3 +212,39 @@ returns errors via `errorResult` (not `throw`) so the audit wrapper sees the `is
 - **`CLAUDE.md`** — architecture invariants, security requirements, and what an agent needs beyond the README. Must stay in sync with the code: a `CLAUDE.md`
   describing a layer that has since been renamed/moved (e.g. an `orchestrator/` section after the move to `cli/` + `main/`) is a finding.
 - **`ROADMAP.md`** — planned features / deprecations (most repos).
+
+## 12. Spec conformance: tool results, errors & metadata
+
+These trace to the MCP spec ([TOOLS](sources.md) + [CHANGELOG](sources.md), 2025-11-25). They are how the thin `tools/` layer must shape what it returns.
+
+- **Errors are Tool Execution Errors, not protocol errors.** The spec (clarified 2025-11-25) requires input-validation failures, API failures, and
+  business-logic errors to be returned in the result envelope with `isError: true` so the model can self-correct — only malformed requests / unknown tools are
+  JSON-RPC protocol errors. This is exactly why the house rule is **`errorResult` (return), never `throw`** at the tool boundary: a thrown zod/validation error
+  would surface as a protocol error and also bypass the `withAuditLog` wrapper, which keys on the `isError` envelope. Confirm `errorResult` produces
+  `{ content, isError: true }`.
+- **Structured output is `outputSchema` + `structuredContent`, paired** (spec 2025-06-18). A tool that returns machine-shaped data SHOULD declare an
+  `outputSchema` on registration and return the matching object in `structuredContent`, **and** (for backwards-compat) the same JSON serialized in a text
+  content block. Today `jsonResult` returns only the text block; m365 already returns `structuredContent` but **no repo declares `outputSchema`**.
+  Recommended-where-applicable, not mandatory: if a tool emits `structuredContent`, it should also declare the `outputSchema` so clients can validate; the
+  cleanest path is to derive both from the same zod result schema (e.g. via `zod-to-json-schema`) so they cannot drift. A `jsonResult` that emits
+  `structuredContent` without a declared schema is a (polish) finding.
+- **`inputSchema` dialect.** The spec defaults schemas to JSON Schema 2020-12. zod-to-json-schema output is accepted by Claude; no action needed unless a client
+  rejects the emitted dialect — then set an explicit `$schema`.
+- **Optional metadata** (`icons`, `title`, `execution.taskSupport`) is available as of 2025-11-25 but not part of the house standard; adopt per-repo only if a
+  client surfaces it. Async **Tasks** (`execution.taskSupport`) are experimental and irrelevant to these short-lived stdio tools — do not flag their absence.
+
+## 13. OAuth security (auth-server repos)
+
+Only the OAuth repos — **mcp-gmail** and **mcp-m365** — have an `auth-server/` and a token store; these items do not apply to the filesystem/subprocess repos.
+They trace to the spec's [SEC](sources.md) and [AUTH](sources.md) pages. The §6 invariants still apply on top of these.
+
+1. **No token passthrough.** The server uses tokens it obtained for _itself_ against the downstream API (Google / Microsoft Graph); it must never accept a
+   caller- supplied token and forward it. (Spec: "MCP servers MUST NOT accept any tokens that were not explicitly issued for the MCP server.")
+2. **Authorization-code flow with PKCE and a single-use `state`.** The loopback OAuth flow generates a cryptographically random `state`, stores it server-side
+   until the callback, validates an **exact** match, and expires/deletes it after one use. Reject a callback with missing or mismatched `state`.
+3. **Exact `redirect_uri` match** — loopback redirect compared by exact string, not prefix/wildcard.
+4. **Least-privilege scopes.** Request only the scopes the shipped tools need; do not pre-request a broad catalog. Scope creep is a finding.
+5. **SSRF discipline on any fetched URL.** Discovery/token/Graph endpoints are HTTPS and host-pinned to the known provider; never fetch an
+   attacker-influenceable URL, and never follow redirects to internal/loopback/link-local addresses (`169.254.169.254`, `10/172.16/192.168`, `::1`).
+6. **Secure token storage & redaction.** Refresh/access tokens are stored with restrictive file permissions outside any served root, never logged, and redacted
+   from the audit log and from error messages (already required by §6.11). A 401 hints at the `*_auth_start` remedy without echoing the token.

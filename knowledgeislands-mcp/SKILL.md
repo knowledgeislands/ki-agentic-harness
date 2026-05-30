@@ -1,14 +1,15 @@
 ---
 name: knowledgeislands-mcp
 description: >
-  Codify and audit Knowledge Islands / HNR MCP servers against the canonical "workspace MCP" standard. Use when scaffolding a new MCP server, bringing an
-  existing one up to standard, or reviewing one for compliance: project layout (config / main / tools / cli / mcp-server / utils), config injection (no
-  module-level singleton), the `<app>_<resource>_<action>` tool-naming scheme, the annotation-driven access-level gate, audit logging, the security invariants,
-  the Bun-install / Node-run split, and the package.json / tsconfig / vitest / biome tooling. Triggers: "audit this MCP", "does this MCP follow our standards",
-  "scaffold a new MCP", "bring this MCP up to standard", "review the MCP layout / tool surface / package.json". Operates on the sibling repos under
-  `knowledgeislands/` (mcp-git-audit, mcp-kb-fs, mcp-gmail, mcp-m365, mcp-claude-housekeeping, mcp-voicenotes-edit, mcp-kb-notion-mirror). Do NOT use to audit a
-  SKILL.md itself — that is the `knowledgeislands-skills` skill.
-argument-hint: 'audit <repo> | codify <repo>'
+  Codify and audit Knowledge Islands MCP servers against the canonical "workspace MCP" standard. Use when scaffolding a new MCP server, bringing an existing one
+  up to standard, or reviewing one for compliance: project layout (config / main / tools / cli / mcp-server / utils), config injection (no module-level
+  singleton), the `<app>_<resource>_<action>` tool-naming scheme, the annotation-driven access-level gate, audit logging, the security invariants, the
+  Bun-install / Node-run split, and the package.json / tsconfig / vitest / biome tooling. Also refreshes the standard itself against the latest published MCP
+  specification. Triggers: "audit this MCP", "does this MCP follow our standards", "scaffold a new MCP", "bring this MCP up to standard", "review the MCP layout
+  / tool surface / package.json", "refresh the MCP standard", "check the MCP standard against the latest spec", "is our MCP standard up to date". Operates on
+  the sibling repos under `knowledgeislands/` (mcp-git-audit, mcp-kb-fs, mcp-gmail, mcp-m365, mcp-claude-housekeeping, mcp-voicenotes-edit,
+  mcp-kb-notion-mirror). Do NOT use to audit a SKILL.md itself — that is the `knowledgeislands-skills` skill.
+argument-hint: 'audit <repo> | codify <repo> | refresh'
 ---
 
 # Knowledge Islands MCP standards
@@ -107,6 +108,27 @@ Infer the mode from the request; ask if unclear.
    `mcp-server/`. Add tools with explicit `annotations` presets.
 4. Re-run the checker + tests; `bun run test` (NOT `bun test`), `bun run lint:check`, `bun run lint:types` must pass with 100% coverage.
 
+### Mode REFRESH — re-anchor the standard to the latest MCP spec
+
+The MCP specification is versioned by date and moves; the in-house standard is built **on top of** it. This mode keeps the standard honest — it pulls the
+current gold standard and diffs it against what this skill codifies, so the audit never green-lights a repo against a spec that has moved on. Run it
+periodically, or when someone asks "is our MCP standard up to date".
+
+1. **Read [the source list](references/sources.md)** — the tracked authoritative (official MCP spec) + community + in-house sources, each with a `last reviewed`
+   date and what it governs. The Authoritative table names the **latest released** spec version; everything else is house style layered on top.
+2. **Confirm the current spec version**, then re-fetch each source (WebFetch/WebSearch) and **diff against the
+   [standard](references/workspace-mcp-standard.md) + [checklist](references/audit-checklist.md) + [`scripts/audit-mcp.ts`](scripts/audit-mcp.ts)**. Look for:
+   new/changed tool fields (`outputSchema`, `structuredContent`, `icons`, `execution.taskSupport`), changed annotation semantics or defaults, the `isError` vs
+   protocol-error rules, tool-name charset/length bounds, and new security mitigations (esp. the OAuth page — it bears on the gmail / m365 auth-servers).
+3. **Separate spec-driven from house style.** A change is only a new _requirement_ if it traces to the Authoritative table; otherwise it is opinion and must be
+   labelled as such so a protocol "MUST" is never confused with a workspace preference. Where the spec adds something optional (e.g. structured output), codify
+   it as recommended-where-applicable, not mandatory.
+4. **Scan our own repos** for emergent patterns the standard hasn't captured yet (e.g. m365 already returning `structuredContent`) — promote the good ones; flag
+   any that contradict the standard.
+5. **Propose a diff** to the standard, checklist, and (where a check became mechanical) `audit-mcp.ts`. Confirm before writing.
+6. **Update [the source list](references/sources.md)** — bump each `last reviewed` date, record what changed in the changelog, add any new source, retire dead
+   ones. This step is mandatory: the source list is the skill's memory of where the standard comes from.
+
 ## Bun vs Node (the standing trap)
 
 Install/dev use **Bun (≥1.3)**; the compiled `dist/` runs under **Node (≥22)** — that is what the MCP client launches. Two consequences the audit always checks:
@@ -121,4 +143,7 @@ Install/dev use **Bun (≥1.3)**; the compiled `dist/` runs under **Node (≥22)
 - This skill targets the standard documented in the sibling repos' own `CLAUDE.md` files; when they disagree, the **majority shape** is the standard and the
   outlier is a finding (unless the outlier is a deliberate, documented exception). When unsure whether a divergence is intentional, ask rather than "fix" it.
 - Keep the shared `utils/` helpers (`access-level.ts`, `annotations.ts`, `audit-log.ts`) in sync across repos — a fix to one usually applies to all.
-- Full detail: [Workspace MCP Standard](references/workspace-mcp-standard.md) and [Audit Checklist](references/audit-checklist.md).
+- The standard sits on top of a moving spec. When citing a requirement, know whether it is **spec-driven** (traces to the official MCP spec in
+  [the source list](references/sources.md)) or **house style** — never present a workspace preference as a protocol "MUST". Run Mode REFRESH when in doubt.
+- Full detail: [Workspace MCP Standard](references/workspace-mcp-standard.md), [Audit Checklist](references/audit-checklist.md), and the tracked
+  [source list](references/sources.md).
