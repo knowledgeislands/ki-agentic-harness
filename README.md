@@ -1,1 +1,116 @@
 # arcadia-skills
+
+A collection of reusable [Agent Skills](https://agentskills.io/specification). This repository is the canonical home for skills authored
+across the Arcadia / Knowledge Islands work - kept in one place so they can be versioned, reviewed, and installed together rather than
+scattered across the bases and projects that use them.
+
+Skills here fall into a few kinds, and the set will grow:
+
+- **Knowledge Islands skills** - operate over the standard Knowledge Islands knowledge-base structure (see below). They carry reusable mode
+  logic and resolve only a few store-level bindings from the host base. `knowledgeislands-kb` is the first of these.
+- **Process skills** - encode a workflow or procedure that is not tied to any particular base (a review process, a release checklist, a
+  research harness).
+- **Scoped skills** - target a specific area: a subset of folders, a single project, or one recurring task.
+
+A skill does not have to be wedded to Knowledge Islands. The repository layout, the install steps, and the linking conventions below apply to
+every kind equally.
+
+## What a skill is
+
+A skill is a directory containing a `SKILL.md` with YAML frontmatter and a markdown body, per the Agent Skills open standard (originated by
+Anthropic for Claude Code, consumed by Cowork and other agent platforms). Longer detail goes in `references/`, executables in `scripts/`,
+templates in `assets/` - all loaded on demand (progressive disclosure). Keep `SKILL.md` under ~500 lines / ~5,000 tokens.
+
+```text
+<skill-name>/
+├── SKILL.md            # required - frontmatter (name, description) + body
+├── references/         # optional - long-form detail
+├── scripts/            # optional - executable helpers
+└── assets/             # optional - templates and resources
+```
+
+The directory name **is** the skill's `name`: lowercase, hyphenated, and matching the `name:` frontmatter field exactly. Agents discover a
+skill by its `name`, so the two must stay in sync.
+
+## Skills in this repository
+
+| Skill | Kind | Purpose |
+| --- | --- | --- |
+| [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md) | Knowledge Islands | KB modes - SAVE / UPDATE / QUERY / EXTRACT / DIGEST - over the standard zone model; only store-level bindings come from the host base. |
+
+## Installing skills
+
+Claude Code (and compatible agents) discover skills in two places:
+
+- **User-global** - `~/.claude/skills/<name>/`, available in every session on this machine.
+- **Per-project** - `<project>/.claude/skills/<name>/`, available only when working in that project (and shareable via the project's repo).
+
+The recommended way to install from this repository is a **symlink**, so edits in the repo are live everywhere the skill is installed and a
+`git pull` updates every consumer at once. The bundled sync script ([`scripts/sync-skills.mjs`](scripts/sync-skills.mjs), no dependencies)
+wraps this safely; it treats every top-level directory containing a `SKILL.md` as a skill.
+
+### With the sync script (recommended)
+
+```bash
+npm run status      # show each skill and whether it is linked in ~/.claude/skills
+npm run link        # symlink every skill into ~/.claude/skills (re-runnable)
+npm run unlink      # remove only the symlinks that point back into this repo
+```
+
+`link` is idempotent: it refreshes existing links, skips a target where a *real* file or directory is in the way (rather than clobbering it),
+and creates `~/.claude/skills` if needed. Pass flags through `npm` with `--`:
+
+```bash
+npm run link -- --dry-run                                  # preview without touching anything
+npm run link -- --target /path/to/project/.claude/skills   # install into one project instead
+```
+
+### Without the script (plain shell)
+
+A single skill, user-global:
+
+```bash
+cd /Users/krisbrown/kis/knowledgeislands/arcadia-skills
+ln -sfn "$PWD/knowledgeislands-kb" ~/.claude/skills/knowledgeislands-kb
+```
+
+`ln -sfn` forces replacement of an existing link and never dereferences into a directory, so re-running it updates the link in place instead
+of nesting a second link inside it. The link name must match the skill directory name (and the `name:` frontmatter).
+
+### Verify and remove
+
+```bash
+ls -l ~/.claude/skills          # symlinks show their -> target; confirm they resolve
+rm ~/.claude/skills/<name>      # uninstall: removes the link only, never the repo
+```
+
+Removing a symlink only unlinks it - the skill source in this repository is untouched. Start a new session after adding or removing a skill
+so the agent re-scans the skills directory.
+
+## Linking inside skills
+
+Skills use **standard relative markdown links**, not Obsidian wikilinks, so they stay valid when relocated, symlinked, or shared. Link a
+co-located file by relative path (`[ref](<references/Detail.md>)`); use the CommonMark angle-bracket form for paths containing spaces. Refer
+to *another* skill by its `name` (e.g. "the `knowledgeislands-kb` skill"), never by a file path - the other skill loads into the session
+under that name and its location on disk is not stable.
+
+## The Knowledge Islands structure
+
+The Knowledge Islands skills assume a fixed knowledge-base shape, so a base does not redefine it - it supplies only a few store-level
+bindings. A Knowledge Islands base is one markdown store with a fixed set of zones: `+/` (inbound), `Calendar/`, `Pillars/`, `Resources/`,
+`Streams/`, `-/` (outbound), and `Admin/`. Each whole base is an "island"; within it, a **Pillar** is a major strand of subject matter (a
+case, a client, a domain, a theme). The full zone model and routing rules live in [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md).
+
+### Standard skills and base-coupled extensions
+
+A **standard** Knowledge Islands skill carries reusable mode logic over the structure and resolves the few base-level bindings (store
+aliases, scope usage, writing standards) at runtime from the host base's own `CLAUDE.md` and memory index. It hard-codes no single base.
+
+A **base-coupled extension** lives in its own base (e.g. a `<base>-kb` skill), supplies only the base-specific pre-flight and bindings, and
+delegates the shared modes to the standard skill **by name** - both skills load into the session, so the extension refers to the standard
+skill by its `name`, not by a file path.
+
+## Roadmap
+
+Until a plugin/marketplace wrapper exists, installation is the symlink step above. The intended end state is a Cowork plugin built from this
+repository, so installing or updating the whole set is one action across every machine and base.
