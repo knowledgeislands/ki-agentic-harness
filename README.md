@@ -29,6 +29,8 @@ The directory name **is** the skill's `name`: lowercase, hyphenated, and matchin
 | Skill | Kind | Purpose |
 | --- | --- | --- |
 | [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md) | Knowledge Islands | KB modes - SAVE / UPDATE / QUERY / EXTRACT / DIGEST - over the standard zone model; only store-level bindings come from the host base. |
+| [`knowledgeislands-mcp`](knowledgeislands-mcp/SKILL.md) | Process | Codify and audit the workspace MCP standard (layout, config injection, tool naming, access-level gate, security invariants, Bun/Node, tooling) across the `mcp-*` repos; ships a mechanical checker. |
+| [`knowledgeislands-skills`](knowledgeislands-skills/SKILL.md) | Process | Audit and author Agent Skills against a checkable rubric - AUDIT / AUTHOR / REFRESH modes, a bundled linter (`skills:lint`) for the mechanical checks, and a tracked source list it revisits. |
 
 ## Installing skills
 
@@ -99,7 +101,10 @@ bun run lint:fix   # Biome, auto-fixing
 bun run lint:md    # Prettier + markdownlint over all markdown
 bun run lint:types # tsc --noEmit
 bun run lint:package # syncpack: keep package.json sorted
+bun run skills:lint  # audit every skill's mechanical criteria (knowledgeislands-skills rubric)
 ```
+
+`skills:lint` runs the mechanical half of the [`knowledgeislands-skills`](knowledgeislands-skills/SKILL.md) rubric over every skill (frontmatter, naming, length caps, link resolution); the judgment half is applied by that skill when you ask it to audit one.
 
 ## Roadmap
 

@@ -23,6 +23,6 @@
     "noImplicitOverride": true,
     "skipLibCheck": true
   },
-  "include": ["scripts/**/*.ts", "*.ts"],
+  "include": ["**/scripts/**/*.ts", "*.ts"],
   "exclude": ["node_modules", "dist"]
 }
