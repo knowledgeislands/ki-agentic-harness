@@ -8,6 +8,7 @@ description: >
   "scaffold a new MCP", "bring this MCP up to standard", "review the MCP layout / tool surface / package.json". Operates on the sibling repos under
   `knowledgeislands/` (mcp-git-audit, mcp-kb-fs, mcp-gmail, mcp-m365, mcp-claude-housekeeping, mcp-voicenotes-edit, mcp-kb-notion-mirror). Do NOT use to audit a
   SKILL.md itself — that is the `knowledgeislands-skills` skill.
+argument-hint: 'audit <repo> | codify <repo>'
 ---
 
 # Knowledge Islands MCP standards
