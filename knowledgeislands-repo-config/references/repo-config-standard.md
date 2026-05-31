@@ -83,10 +83,13 @@ exceptions = []         # acknowledged check-ids
 A repo records an **acknowledged divergence** by listing the failing check-id in its `.ki-config.toml` `exceptions = [...]`; the auditor then reports it as
 `ack` rather than a failure, so it never reads as drift.
 
-- The private `arcadia-*` repos can't take classic branch protection or secret scanning (plan-limited / GHAS), so each declares
-  `exceptions = ["branch-protection", "secret-scanning"]`. Revisit via repository **rulesets** (broader plan support) and GHAS if the org upgrades.
+Topics, branch protection, and secret scanning are **public-only** checks — private repos can't take them on the current plan, so the private `arcadia-*` repos
+are simply out of scope for those (no exception needed; their `exceptions = []`). If the org upgrades, bring private-repo protection in via repository
+**rulesets** + GHAS and revisit that scoping. Exceptions are for divergences from a check that _does_ apply — e.g. a public repo that intentionally keeps Wiki
+on (`exceptions = ["wiki"]`), or one whose CI doesn't yet define the `build` job (`exceptions = ["branch-protection"]`).
+
 - The required status check is **`build`** — the single job in each public repo's `.github/workflows/ci.yml` (workflow "CI"). A repo without that job can't
-  require it; add the CI job first.
+  require it; add the CI job first (or acknowledge it via `exceptions`).
 
 ## Applying it
 
