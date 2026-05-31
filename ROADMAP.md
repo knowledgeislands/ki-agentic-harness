@@ -40,10 +40,13 @@ These hold for every skill in the repo, current and future:
   them after any structural change so the set never drifts from its own standard.
 - **Finish the repo rollout.** The [`knowledgeislands-repo`](knowledgeislands-repo/SKILL.md) skill is built and the standard is applied across all 10 repos
   (local files, core GitHub settings, and deeper security — Dependabot, secret scanning). `main` is open by default; branch protection is an opt-in per-repo
-  override (off by default). Open follow-ups: add the missing `.editorconfig` to `mcp-kb-notion-mirror` and `mcp-voicenotes-edit` (a direct commit to `main`
-  each); give each repo a `.ki-config.toml` declaring its `visibility`; bring **private-repo** branch protection (for a repo that opts in) in via **rulesets**,
-  since the classic protection API is plan-limited on private repos; and move the description-matches-purpose / synced-with-`package.json` check from a judgment
-  item toward something mechanical.
+  override (off by default). Open follow-ups: regenerate the 9 open `chore: add .ki-config.toml` PRs from `--init` — they predate the rename (old
+  `[knowledgeislands-repo-config]` table + `exceptions` key) and need the `[knowledgeislands-repo]` table with a `[…checks]` sub-table instead, adding the
+  missing `.editorconfig` to `mcp-kb-notion-mirror` and `mcp-voicenotes-edit` in the same PR; reconcile **branch-protection drift** on the 7 public repos (live
+  protection predates the open-by-default baseline — either remove it or declare `branch-protection = true` per repo, consistently); then run
+  `bun run repo:audit --org knowledgeislands` and confirm 0 fails; bring **private-repo** branch protection (for a repo that opts in) in via **rulesets**, since
+  the classic protection API is plan-limited on private repos; and move the description-matches-purpose / synced-with-`package.json` check from a judgment item
+  toward something mechanical.
 - **Give `knowledgeislands-kb` a mechanical checker.** kb is a governance skill (AUDIT / CONFORM / REFRESH) but its AUDIT is judgment-only; a bundled checker
   for zone-model / note-frontmatter conformance would bring it to parity with the other four and complete the governance-skill shape.
 
