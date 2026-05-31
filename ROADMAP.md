@@ -35,17 +35,17 @@ These hold for every skill in the repo, current and future:
 
 - **Keep the audits self-applied.** `knowledgeislands-skills` audits itself and its siblings; `knowledgeislands-mcp` audits the workspace `mcp-*` repos. Run
   them after any structural change so the set never drifts from its own standard.
-- **Finish the repo rollout.** The [`knowledgeislands-repo`](knowledgeislands-repo/SKILL.md) skill is built and the standard is applied across all 10 repos
-  (local files, core GitHub settings, and deeper security — Dependabot, secret scanning). `main` is open by default; branch protection is an opt-in per-repo
-  override (off by default). Open follow-ups: regenerate the 9 open `chore: add .ki-config.toml` PRs from `--init` — they predate the rename (old
-  `[knowledgeislands-repo-config]` table + `exceptions` key) and need the `[knowledgeislands-repo]` table with a `[…checks]` sub-table instead, adding the
-  missing `.editorconfig` to `mcp-kb-notion-mirror` and `mcp-voicenotes-edit` in the same PR; reconcile **branch-protection drift** on the 7 public repos (live
-  protection predates the open-by-default baseline — either remove it or declare `branch-protection = true` per repo, consistently); then run
-  `bun run repo:audit --org knowledgeislands` and confirm 0 fails; bring **private-repo** branch protection (for a repo that opts in) in via **rulesets**, since
-  the classic protection API is plan-limited on private repos; and move the description-matches-purpose / synced-with-`package.json` check from a judgment item
-  toward something mechanical.
+- **Repo standard — remaining hardening.** The [`knowledgeislands-repo`](knowledgeislands-repo/SKILL.md) standard is applied across all 10 repos and they pass
+  `repo:audit` (0 fail); every `.ki-config.toml` carries the `[knowledgeislands-repo]` table and `main` is open everywhere. Two follow-ups remain: move the
+  description-matches-purpose / synced-with-`package.json` check from a judgment item toward something mechanical (the auditor fetching `package.json` and
+  comparing); and, if the org ever wants a protected `main` on a **private** repo, bring it in via **rulesets**, since the classic protection API is
+  plan-limited on private repos.
 - **Give `knowledgeislands-kb` a mechanical checker.** kb is a governance skill (AUDIT / CONFORM / REFRESH) but its AUDIT is judgment-only; a bundled checker
   for zone-model / note-frontmatter conformance would bring it to parity with the other four and complete the governance-skill shape.
+- **Build the skills out evaluation-first.** Rubric **PROC-1/2** — at least three evaluation scenarios against a no-skill baseline, and a pass across the models
+  each skill runs on (Haiku / Sonnet / Opus) — isn't satisfied: the set was authored rubric-first, not eval-first. Stand up a small eval harness (representative
+  prompts per skill, scored with and without the skill loaded) so new and changed skills are validated by behaviour, not just linted. Advisory (a WARN, not a
+  gate), but it is the last open item from the skills audit.
 
 ## Later
 
