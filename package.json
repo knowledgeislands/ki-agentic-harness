@@ -51,6 +51,7 @@
     "lint:package": "bunx syncpack format",
     "lint:types": "tsc --noEmit",
     "prepare": "husky",
+    "repo:audit": "bun knowledgeislands-repo-config/scripts/audit-repo-config.ts",
     "skills:link": "bun scripts/sync-skills.ts link",
     "skills:lint": "bun knowledgeislands-skills/scripts/lint-skills.ts .",
     "skills:status": "bun scripts/sync-skills.ts status",

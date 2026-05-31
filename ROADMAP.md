@@ -35,14 +35,11 @@ These hold for every skill in the repo, current and future:
 
 - **Keep the audits self-applied.** `knowledgeislands-skills` audits itself and its siblings; `knowledgeislands-mcp` audits the workspace `mcp-*` repos. Run
   them after any structural change so the set never drifts from its own standard.
-- **Codify a GitHub repo-configuration standard.** The workspace repos should be consistent in how they present and behave on GitHub, and that consistency
-  should be _checkable_, not folklore. **First step: audit the current state across all `knowledgeislands/` repos** — scoped/consistent names, a description
-  that's present and matches the repo's actual purpose (and is kept in sync with the in-repo README/`package.json`), merge hygiene (squash/merge policy,
-  **auto-delete head branches after merge**, linear history), enabled/disabled features (Issues, Projects, Wiki, Discussions), default branch and branch
-  protection, topics, visibility, and license. From that survey, **derive the canonical standard** (recording intentional per-repo exceptions), then bring the
-  outliers into line. Mechanics are read/written via the `gh` CLI / GitHub API. _(candidate)_ Once the standard settles, codify it as its own skill in the same
-  codify / audit / REFRESH shape as `knowledgeislands-mcp` — a repo-config auditor with a `sources.md` tracking the GitHub features and settings it depends on
-  (those move, so it needs the same refresh discipline as everything else here).
+- **Finish the repo-config rollout.** The [`knowledgeislands-repo-config`](knowledgeislands-repo-config/SKILL.md) skill is built and the standard is applied
+  across all 10 repos (local files, core GitHub settings, and deeper security — Dependabot, secret scanning, branch protection). Open follow-ups: add the
+  missing `.editorconfig` to `mcp-kb-notion-mirror` and `mcp-voicenotes-edit` (a PR each, since `main` is protected); bring **private-repo** branch protection
+  in via **rulesets** (the classic API is plan-limited, so the standard currently exempts them); and move the description-matches-purpose /
+  synced-with-`package.json` check from a judgment item toward something mechanical.
 
 ## Later
 
