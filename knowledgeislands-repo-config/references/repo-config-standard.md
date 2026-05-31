@@ -11,8 +11,7 @@ keep this doc and the script's constants in sync.
 - [Layer 2 — core GitHub settings](#layer-2--core-github-settings)
 - [Layer 3 — deeper GitHub](#layer-3--deeper-github)
 - [Visibility](#visibility)
-- [Optional checks](#optional-checks)
-- [Intentional exceptions](#intentional-exceptions)
+- [Per-repo overrides](#per-repo-overrides)
 - [Applying it](#applying-it)
 - [Verifying it](#verifying-it)
 - [Conformance](#conformance)
@@ -22,13 +21,13 @@ keep this doc and the script's constants in sync.
 Every repo carries these at the root. Presence is checked **on the default branch via the GitHub API** (the git-tree endpoint), not from a working checkout — so
 what's actually committed is what's audited, and `--org` mode covers uncloned repos.
 
-| File              | Why                                                                                                                     |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `README.md`       | The repo's entry point.                                                                                                 |
-| `LICENSE`         | MIT text (matches the GitHub license — layer 2).                                                                        |
-| `.gitignore`      | Keeps build/dep noise out of history.                                                                                   |
-| `.editorconfig`   | Shared editor defaults across the workspace toolchain.                                                                  |
-| `.ki-config.toml` | Declares this repo's expected config under `[knowledgeislands-repo-config]` — `visibility` and acknowledged exceptions. |
+| File              | Why                                                                                                                          |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `README.md`       | The repo's entry point.                                                                                                      |
+| `LICENSE`         | MIT text (matches the GitHub license — layer 2).                                                                             |
+| `.gitignore`      | Keeps build/dep noise out of history.                                                                                        |
+| `.editorconfig`   | Shared editor defaults across the workspace toolchain.                                                                       |
+| `.ki-config.toml` | Declares this repo's expected config under `[knowledgeislands-repo-config]` — `visibility` and any per-repo check overrides. |
 
 ## Layer 2 — core GitHub settings
 
@@ -53,9 +52,9 @@ Public repos (`mcp-*`) additionally:
 | Topics  | `mcp`, `model-context-protocol`, `claude`, `typescript`, `bun` |
 
 **`main` is open by default** — no branch protection, so direct pushes are allowed and no PR, status check, or linear-history rule gates it. Squash-only merge
-(above) keeps history tidy for PRs that do happen, but nothing forces work through a PR. A repo that _wants_ a protected `main` opts in (see
-[Optional checks](#optional-checks)) — protection is then `main`: require a PR (0 approvals), the `build` status check, linear history, no force-push, no
-deletion, admins **not** enforced.
+(above) keeps history tidy for PRs that do happen, but nothing forces work through a PR. A repo that _wants_ a protected `main` overrides the
+`branch-protection` check on (see [Per-repo overrides](#per-repo-overrides)) — protection is then `main`: require a PR (0 approvals), the `build` status check,
+linear history, no force-push, no deletion, admins **not** enforced.
 
 ## Layer 3 — deeper GitHub
 
@@ -63,7 +62,7 @@ deletion, admins **not** enforced.
 | ------------------------------- | ----- | ------------------------------------------------------- |
 | Dependabot alerts               | On    | All repos                                               |
 | Dependabot security updates     | On    | All repos (each ships a `dependabot-auto-merge.yml`)    |
-| Secret scanning                 | On    | Public repos (GHAS-gated on private — see exceptions)   |
+| Secret scanning                 | On    | Public repos (plan-limited on private — out of scope)   |
 | Secret-scanning push protection | On    | Public repos                                            |
 | Actions `allowed_actions`       | `all` | All repos (CI pulls marketplace actions like setup-bun) |
 
@@ -80,33 +79,39 @@ owns `[knowledgeislands-repo-config]`. Scaffold the default keys with `bun scrip
 # .ki-config.toml — one [table] per skill that needs per-repo options
 [knowledgeislands-repo-config]
 visibility = "public"   # "public" | "private"
-exceptions = []         # baseline checks this repo opts OUT of
-enforce = []            # optional (default-off) checks this repo opts IN to, e.g. ["branch-protection"]
+
+# Optional. One boolean per overridable check; omit any to take the org default.
+# A repo that fully conforms needs nothing here.
+[knowledgeislands-repo-config.checks]
+branch-protection = true   # default off — protect `main` on this repo
 ```
 
-## Optional checks
+## Per-repo overrides
 
-Most checks are **baseline**: they apply to every in-scope repo and a repo opts _out_ via `exceptions` (below). A few are **optional** — off by default, and a
-repo opts _in_ by listing the check-id in its `.ki-config.toml` `enforce = [...]`. This is how the standard carries a default while letting a specific repo
-override it, without that override reading as drift.
+The rubric carries the **org default** for every check. Most are bedrock — file presence, default branch, license, description, merge policy,
+auto-delete-branch, visibility, Dependabot — and aren't negotiable. The rest are **overridable**: a repo flips one for itself with a single boolean in its
+`[knowledgeislands-repo-config.checks]` table, where `true` = enforce this check and `false` = don't. A check you omit takes the org default, so **a
+fully-conforming repo writes no overrides at all**. The auditor reports every active override as a `note` (never a failure), so a deliberate departure stays
+visible without reading as drift.
 
-| Optional check      | Default | Opt in with                       | When enforced, requires                                                                                           |
-| ------------------- | ------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `branch-protection` | off     | `enforce = ["branch-protection"]` | `main`: a PR (0 approvals), the `build` status check, linear history; no force-push/deletion; admins not enforced |
+| Check               | Org default | When enforced, the auditor requires…                                                                              |
+| ------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------- |
+| `branch-protection` | **off**     | `main`: a PR (0 approvals), the `build` status check, linear history; no force-push/deletion; admins not enforced |
+| `wiki`              | on          | Wiki disabled.                                                                                                    |
+| `projects`          | on          | Projects disabled.                                                                                                |
+| `issues`            | on          | Issues enabled.                                                                                                   |
+| `topics`            | on          | _(public)_ carries the standard topic set.                                                                        |
+| `secret-scanning`   | on          | _(public)_ secret scanning enabled.                                                                               |
+| `push-protection`   | on          | _(public)_ secret-scanning push protection enabled.                                                               |
 
-- The required status check is **`build`** — the single job in each repo's `.github/workflows/ci.yml` (workflow "CI"). A repo that opts in but lacks that job
-  can't satisfy the check; add the CI job first.
-- An `enforce` entry that doesn't name a known optional check WARNs (it would otherwise silently do nothing). The auditor's known set is the source of truth.
-
-## Intentional exceptions
-
-A repo records an **acknowledged divergence** from a _baseline_ check by listing its check-id in `.ki-config.toml` `exceptions = [...]`; the auditor then
-reports it as `ack` rather than a failure, so it never reads as drift. (`exceptions` opts out of a baseline check; [`enforce`](#optional-checks) opts in to an
-optional one — the two are complementary, and together give per-repo on/off control over the rubric.)
-
-Topics and secret scanning are **public-only** checks — private repos can't take secret scanning on the current plan, so the private `arcadia-*` repos are
-simply out of scope for it (no exception needed; their `exceptions = []`). Exceptions are for divergences from a check that _does_ apply — e.g. a public repo
-that intentionally keeps Wiki on (`exceptions = ["wiki"]`).
+- "Org default **on**" means the check fails unless satisfied — the standard's normal behaviour — and a repo sets the key `false` to step out of it (e.g.
+  `wiki = false` to keep a Wiki). `branch-protection` is the one check that's **off** by default; a repo sets it `true` to protect `main`.
+- The required status check for `branch-protection` is **`build`** — the single job in each repo's `.github/workflows/ci.yml` (workflow "CI"). A repo that turns
+  it on but lacks that job can't satisfy the check; add the CI job first.
+- `topics` / `secret-scanning` / `push-protection` are **public-only** — they don't apply to a private repo regardless of the override, so the private
+  `arcadia-*` repos need say nothing about them.
+- A key under `[…checks]` that names no overridable check (a typo, or a bedrock check) **WARNs** — it would otherwise silently do nothing. The auditor's
+  `CHECK_DEFAULTS` registry is the source of truth for what's overridable.
 
 ## Applying it
 
@@ -135,9 +140,9 @@ for r in $public; do
   gh repo edit "knowledgeislands/$r" --add-topic mcp --add-topic model-context-protocol --add-topic claude --add-topic typescript --add-topic bun
 done
 
-# Layer 2 — branch protection is OPTIONAL. Default: `main` open — strip any leftover protection:
+# Layer 2 — branch protection is overridable, default OFF. Default: `main` open — strip any leftover protection:
 for r in $all; do gh api -X DELETE "repos/knowledgeislands/$r/branches/main/protection" 2>/dev/null || true; done
-# Only for a repo that opts in (enforce = ["branch-protection"] in its .ki-config.toml):
+# Only for a repo that overrides it on (branch-protection = true under [..checks] in its .ki-config.toml):
 read -r -d '' body <<'JSON'
 { "required_status_checks": {"strict": true, "contexts": ["build"]}, "enforce_admins": false,
   "required_pull_request_reviews": {"required_approving_review_count": 0}, "restrictions": null,
@@ -167,4 +172,4 @@ Both check every layer against GitHub; the path / `--org` only decides which rep
 ## Conformance
 
 As of **2026-05-31**, all 10 `knowledgeislands` repos conform on layers 2–3. Outstanding layer-1 work: every repo still needs a `.ki-config.toml` (declaring its
-visibility + any exceptions), and `mcp-kb-notion-mirror` / `mcp-voicenotes-edit` need `.editorconfig` — each a direct commit to `main`.
+visibility + any check overrides), and `mcp-kb-notion-mirror` / `mcp-voicenotes-edit` need `.editorconfig` — each a direct commit to `main`.

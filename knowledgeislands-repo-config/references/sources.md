@@ -24,8 +24,9 @@ Record each REFRESH run: date, what was re-fetched, what changed in the standard
 - **2026-05-31** — Standard derived from an audit of all 10 `knowledgeislands` repos and applied. Established the three layers (local files; core GitHub
   settings; deeper security & Actions), the visibility-by-prefix rule, and the private-repo exceptions (plan-limited branch protection + secret scanning,
   rulesets/GHAS as the upgrade path). Source list created alongside the auditor script.
-- **2026-05-31** — Made `main` **open by default** and reframed `branch-protection` as an **optional, opt-in check**. Introduced the `.ki-config.toml`
-  `enforce = [...]` list (optional default-off checks a repo opts _in_ to — the mirror of `exceptions`, which opts _out_ of baseline checks);
-  `branch-protection` is its first member. The auditor checks protection only for a repo that lists it in `enforce`, and WARNs on an `enforce` id it doesn't
-  recognise. Standard gained an "Optional checks" section; APPLY defaults to stripping protection (open `main`) and applies the protection PUT only to opted-in
-  repos.
+- **2026-05-31** — Made `main` **open by default** and replaced the two-list override mechanism with a single **per-repo override table**. Each overridable
+  check is now one boolean under `[knowledgeislands-repo-config.checks]` (`true` = enforce, `false` = don't); a check omitted takes the org default in the
+  script's `CHECK_DEFAULTS`, so a fully-conforming repo writes no overrides. `branch-protection` defaults off; `wiki`/`projects`/`issues`/`topics`/
+  `secret-scanning`/`push-protection` default on. (This superseded the short-lived `exceptions`/`enforce` lists from earlier the same day.) The auditor applies
+  overrides inline — a not-enforced check no longer fails, an active override prints as a `note`, and a `[…checks]` key naming no overridable check WARNs.
+  Standard's "Optional checks" + "Intentional exceptions" sections merged into one "Per-repo overrides" section.
