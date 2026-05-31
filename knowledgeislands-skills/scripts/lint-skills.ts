@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // Lint Agent Skills against the MECHANICAL criteria of the knowledgeislands-skills rubric.
 //
-// This is the deterministic half of the rubric (see ../references/rubric.md). The
+// This is the deterministic half of the rubric (see ../references/audit-rubric.md). The
 // JUDGMENT half — description quality, altitude, progressive-disclosure sensibility,
 // standard-vs-extension shape — needs a model and is NOT checked here. Run this first,
 // then apply the judgment criteria by reading.
@@ -26,7 +26,7 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 type Severity = 'fail' | 'warn'
 type Finding = { severity: Severity; criterion: string; message: string }
 
-// --- limits (from references/rubric.md — keep in sync) ----------------------
+// --- limits (from references/agent-skills-standard.md §16 — keep in sync) ----------------------
 const NAME_MAX = 64
 const DESC_MAX = 1024
 const COMPAT_MIN = 1
@@ -283,7 +283,7 @@ if (skillDirs.length === 0) {
   process.exit(1)
 }
 
-// One-line key for the area codes printed below (full catalogue: references/rubric.md).
+// One-line key for the area codes printed below (full catalogue: references/audit-rubric.md).
 const LEGEND =
   'area codes — LAY layout · NAME name · DESC description · OPT optional-fm · SIZE size · REF references · BODY content · SCRIPT scripts · LINK linking · SHAPE KI-shape · PROC process · COLL collision · LONG longevity'
 console.log(paint(C.dim, LEGEND))
@@ -314,5 +314,5 @@ if (collisions.length > 0) {
 }
 
 console.log(`\n${paint(C.cyan, 'summary')}: ${skillDirs.length} skill(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}`)
-console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria from references/rubric.md by reading.'))
+console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria from references/audit-rubric.md by reading.'))
 process.exit(totalFails > 0 ? 1 : 0)

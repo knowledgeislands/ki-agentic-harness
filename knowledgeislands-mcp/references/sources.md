@@ -1,8 +1,8 @@
 # Sources — where the standard comes from
 
-The authoritative and community sources behind the [Workspace MCP Standard](workspace-mcp-standard.md) and [Audit Checklist](audit-checklist.md). Mode REFRESH
-reads this file, re-fetches each source, diffs it against the standard + checklist + [`scripts/audit-mcp.ts`](../scripts/audit-mcp.ts), then **bumps the
-`last reviewed` dates and records what changed** in the changelog below. This is the skill's memory of where the standard comes from — keep it current.
+The authoritative and community sources behind the [Workspace MCP Standard](workspace-mcp-standard.md) and [Audit Rubric](audit-rubric.md). Mode REFRESH reads
+this file, re-fetches each source, diffs it against the standard + rubric + [`scripts/audit-mcp.ts`](../scripts/audit-mcp.ts), then **bumps the `last reviewed`
+dates and records what changed** in the changelog below. This is the skill's memory of where the standard comes from — keep it current.
 
 Two layers feed the standard: the **official MCP specification** (what every conformant server must do) and the **in-house workspace convention** (the
 opinionated shape the seven sibling repos share on top of the spec). A finding is only "spec-driven" if it traces to the Authoritative table; everything else is

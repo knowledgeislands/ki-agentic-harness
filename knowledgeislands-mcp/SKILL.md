@@ -21,8 +21,8 @@ This skill audits the **server code** — `src/` layout, config injection, tool 
 `SKILL.md` (even this one's): that is the `knowledgeislands-skills` skill. The two are complementary, not alternatives.
 
 The full, quotable standard lives in [Workspace MCP Standard](references/workspace-mcp-standard.md); the line-by-line pass/fail items live in
-[Audit Checklist](references/audit-checklist.md). A mechanical structural checker is [`scripts/audit-mcp.ts`](scripts/audit-mcp.ts). Read those when you need
-detail; this file is the operating procedure.
+[Audit Rubric](references/audit-rubric.md). A mechanical structural checker is [`scripts/audit-mcp.ts`](scripts/audit-mcp.ts). Read those when you need detail;
+this file is the operating procedure.
 
 ## The canonical shape at a glance
 
@@ -89,7 +89,7 @@ Infer the mode from the request; ask if unclear.
 2. **Run the mechanical checker** for the structural/tooling layer: `bun <skill>/scripts/audit-mcp.ts <repo-path>` (or `node` after build). It reports
    presence/shape of `src/` layers, `package.json` fields and scripts (incl. the `bun test` vs `vitest run` trap), tsconfig/vitest/biome, `.env.example`, the
    shared `utils/` helpers, and drift like a `build` script that chmods a `dist/cli/cli.js` with no `src/cli/`.
-3. **Do the semantic pass the script can't** — walk [Audit Checklist](references/audit-checklist.md) and judge:
+3. **Do the semantic pass the script can't** — walk [Audit Rubric](references/audit-rubric.md) and judge:
    - **Config injection**: grep for top-level `process.env` reads outside `config/index.ts`; confirm `main/`/`utils/` take config as the first arg.
    - **Layer purity**: logic that lives only in a `tools/*` handler or in `cli.ts` (should be in `main/`); `console.*` in `main/` (CLI/stderr only).
    - **Tool naming**: `grep -rn registerTool src/tools` — every name matches `<app>_<resource>_<action>` with correct plurality.
@@ -123,7 +123,7 @@ periodically, or when someone asks "is our MCP standard up to date".
 1. **Read [the source list](references/sources.md)** — the tracked authoritative (official MCP spec) + community + in-house sources, each with a `last reviewed`
    date and what it governs. The Authoritative table names the **latest released** spec version; everything else is house style layered on top.
 2. **Confirm the current spec version**, then re-fetch each source (WebFetch/WebSearch) and **diff against the
-   [standard](references/workspace-mcp-standard.md) + [checklist](references/audit-checklist.md) + [`scripts/audit-mcp.ts`](scripts/audit-mcp.ts)**. Look for:
+   [standard](references/workspace-mcp-standard.md) + [rubric](references/audit-rubric.md) + [`scripts/audit-mcp.ts`](scripts/audit-mcp.ts)**. Look for:
    new/changed tool fields (`outputSchema`, `structuredContent`, `icons`, `execution.taskSupport`), changed annotation semantics or defaults, the `isError` vs
    protocol-error rules, tool-name charset/length bounds, and new security mitigations (esp. the OAuth page — it bears on the gmail / m365 auth-servers).
 3. **Separate spec-driven from house style.** A change is only a new _requirement_ if it traces to the Authoritative table; otherwise it is opinion and must be
@@ -151,5 +151,5 @@ Install/dev use **Bun (≥1.3)**; the compiled `dist/` runs under **Node (≥22)
 - Keep the shared `utils/` helpers (`access-level.ts`, `annotations.ts`, `audit-log.ts`) in sync across repos — a fix to one usually applies to all.
 - The standard sits on top of a moving spec. When citing a requirement, know whether it is **spec-driven** (traces to the official MCP spec in
   [the source list](references/sources.md)) or **house style** — never present a workspace preference as a protocol "MUST". Run Mode REFRESH when in doubt.
-- Full detail: [Workspace MCP Standard](references/workspace-mcp-standard.md), [Audit Checklist](references/audit-checklist.md), and the tracked
+- Full detail: [Workspace MCP Standard](references/workspace-mcp-standard.md), [Audit Rubric](references/audit-rubric.md), and the tracked
   [source list](references/sources.md).

@@ -1,10 +1,10 @@
-# Sources — where the rubric comes from
+# Sources — where the standard comes from
 
-The authoritative and community sources behind [the rubric](rubric.md). Mode REFRESH reads this file, re-fetches each source, diffs it against the rubric, then
-**bumps the `last reviewed` dates and records what changed** in the changelog below. This is the skill's memory of where best practice comes from — keep it
-current.
+The authoritative and community sources behind [the standard](agent-skills-standard.md) and its [rubric](audit-rubric.md). Mode REFRESH reads this file,
+re-fetches each source, diffs it against the standard + rubric, then **bumps the `last reviewed` dates and records what changed** in the changelog below. This
+is the skill's memory of where best practice comes from — keep it current.
 
-Abbreviations match the `(SOURCE)` tags in [the rubric](rubric.md).
+Abbreviations match the `(SOURCE)` tags in [the standard](agent-skills-standard.md) and [rubric](audit-rubric.md).
 
 ## Authoritative
 
@@ -35,9 +35,13 @@ Abbreviations match the `(SOURCE)` tags in [the rubric](rubric.md).
 
 ## Review changelog
 
-Record each REFRESH run: date, what was re-fetched, what changed in the rubric/linter (or "no change").
+Record each REFRESH run: date, what was re-fetched, what changed in the standard / rubric / linter (or "no change").
 
 - **2026-05-30** — Initial rubric assembled from all sources above. Established the mechanical/judgment split and the exact-numbers table.
+- **2026-05-31 (restructure)** — Split the single `rubric.md` into a normative [standard](agent-skills-standard.md) (conventions + rationale + the
+  "Disagreements" notes ※1–5 + exact-numbers table) and a slimmed [audit-rubric.md](audit-rubric.md) (checkable criteria citing the standard), to match the
+  audit-family pattern used by `knowledgeislands-mcp` (standard + audit-rubric + sources + linter). No criteria added or removed; codes, `[M]`/`[J]` tags, and
+  sources unchanged.
 - **2026-05-30 (REFRESH)** — Monthly refresh. Re-fetched all sources. SPEC (agentskills.io/specification), agentskills.io home, ENG (Anthropic Engineering
   blog), and COMMUNITY (generativeprogrammer.com) returned HTTP 403 — content unverifiable; last-reviewed dates held, no rubric changes attributable to those
   sources. BP (Anthropic platform best-practices) and CC (Claude Code skills docs) confirmed current and accessible. obra/superpowers GitHub confirmed as BP

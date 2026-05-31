@@ -1,4 +1,4 @@
-# Audit Checklist
+# Audit Rubric
 
 Line-by-line pass/fail items for auditing a workspace MCP against the [Workspace MCP Standard](workspace-mcp-standard.md). Run
 [`../scripts/audit-mcp.ts`](../scripts/audit-mcp.ts) for the mechanical items (marked 🔧), then judge the rest by reading the code.

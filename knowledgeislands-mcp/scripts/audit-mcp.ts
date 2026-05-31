@@ -9,7 +9,7 @@
  * shared utils helpers, and known drift (a `bun test` script, a dangling cli
  * chmod). It deliberately does NOT judge tool-naming quality, layer purity, or the
  * security invariants — those need a human/agent read of the code (see
- * references/audit-checklist.md). Output is grouped pass/warn/fail; exit code is
+ * references/audit-rubric.md). Output is grouped pass/warn/fail; exit code is
  * non-zero if any FAIL.
  *
  * No dependencies — Node/Bun builtins only.
@@ -263,5 +263,5 @@ for (const lvl of order) {
 const fails = findings.filter((f) => f.level === 'FAIL').length
 const warns = findings.filter((f) => f.level === 'WARN').length
 console.log(`\n${'─'.repeat(60)}\n${fails} fail · ${warns} warn · ${findings.length - fails - warns} pass`)
-console.log('Mechanical layer only — now run the semantic pass in references/audit-checklist.md.\n')
+console.log('Mechanical layer only — now run the semantic pass in references/audit-rubric.md.\n')
 process.exit(fails ? 1 : 0)
