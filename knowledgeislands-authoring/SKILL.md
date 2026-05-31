@@ -1,5 +1,5 @@
 ---
-name: knowledgeislands-base
+name: knowledgeislands-authoring
 description: >
   The foundational authoring and formatting conventions shared across every Knowledge Islands skill, repo, and base — the common style layer the other skills
   build on rather than restate. Currently covers Markdown authoring (wide tables → footnotes, link style) and TOML config files (the shared `.ki-config.toml`
@@ -10,16 +10,16 @@ description: >
   SKILL.md itself use the `knowledgeislands-skills` skill.
 ---
 
-# Knowledge Islands base conventions
+# Knowledge Islands authoring conventions
 
-You are applying the **Knowledge Islands base conventions** — the foundational authoring and formatting rules every other skill, repo, and base in this work
-builds on rather than restates. Conventions are a common theme across the skill set; this skill is the one place they live, so the rest can assume them. It is
-the **single source of truth**: a repo's or base's `CLAUDE.md` carries a one-line pointer here instead of restating the rules, keeping the always-on layer small
-and the detail in one versioned place.
+You are applying the **Knowledge Islands authoring conventions** — the foundational authoring and formatting rules every other skill, repo, and base in this
+work builds on rather than restates. Conventions are a common theme across the skill set; this skill is the one place they live, so the rest can assume them. It
+is the **single source of truth**: a repo's or base's `CLAUDE.md` carries a one-line pointer here instead of restating the rules, keeping the always-on layer
+small and the detail in one versioned place.
 
-This is a **standard, base-agnostic Process skill** — it hard-codes no single base and assumes no knowledge-base structure. (Here "base" means _baseline_, the
-common layer — not a knowledge-base island.) Install it anywhere the conventions should apply. How it sits alongside the other skills in this repository, and
-where it must not overlap them, is documented once in the arcadia-skills `README.md`, not repeated here.
+This is a **standard, base-agnostic Process skill** — it hard-codes no single base and assumes no knowledge-base structure. Install it anywhere the conventions
+should apply. How it sits alongside the other skills in this repository, and where it must not overlap them, is documented once in the arcadia-skills
+`README.md`, not repeated here.
 
 ## The two layers
 
