@@ -47,3 +47,8 @@ These hold for every skill in the repo, current and future:
   updating the whole set is one action across every machine and base — replacing the manual symlink step.
 - **Grow the set deliberately.** _(candidate)_ New skills (process, scoped, or further Knowledge Islands skills) are added as recurring needs emerge, each
   scaffolded through `knowledgeislands-skills` Mode AUTHOR and audited against the existing set before shipping.
+- **`.ki-config.toml` as a per-repo override layer.** _(candidate)_ `knowledgeislands-repo-config` introduced a shared, skill-sectioned `.ki-config.toml` (its
+  `[knowledgeislands-repo-config]` table holds `visibility` + acknowledged `exceptions`). The same file could let **any** KI skill take per-repo overrides under
+  its own `[<skill>]` table — tuning a rubric criterion, opting a check up or down, or extending a default (e.g. extra topics) for one repo — making it the
+  single place a repo declares how the house standards apply to it. Needs a convention for what's overridable vs fixed, and each consuming skill emitting its
+  default keys (the repo-config `--init` pattern) so the options are authored, not implicit.

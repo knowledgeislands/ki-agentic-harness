@@ -22,15 +22,18 @@ complement and where they must not overlap) is documented once in the arcadia-sk
 
 ## The standard at a glance
 
-1. **Local** — files every repo carries: `README.md`, `LICENSE`, `.gitignore`, `.editorconfig`.
+1. **Files** — every repo carries `README.md`, `LICENSE`, `.gitignore`, `.editorconfig`, and `.ki-config.toml` (its declared config). Presence is checked on the
+   default branch **via the GitHub API**, not a checkout.
 2. **GitHub** (repos on github.com): default branch `main`, MIT, **squash-only merge + linear history**, auto-delete branch on merge, Issues **on**, Wiki &
    Projects **off**, a non-empty description synced with `package.json` where one exists; public repos also carry the standard topic set and branch protection
    on `main` (require PR, the `build` check, linear history).
 3. **Deeper GitHub**: Dependabot alerts + security updates **on** everywhere; secret scanning + push protection **on** for public repos; Actions
    `allowed-actions = all`.
 
-**Visibility** is set by name prefix and is intentional, not drift: `arcadia-*` private, `mcp-*` public. Intentional exceptions (e.g. private repos can't take
-secret scanning / classic branch protection on the current plan) are recorded in [the standard](references/repo-config-standard.md) — don't re-flag them.
+**Visibility** is **declared** per repo in `.ki-config.toml` under `[knowledgeislands-repo-config]` (`visibility = "public" | "private"`) and checked against
+live GitHub — not inferred from the name. `.ki-config.toml` is a shared file: each skill reads its own `[table]`, and `--init` scaffolds this skill's default
+keys. Intentional divergences are declared in the same file's `exceptions = [...]` (check-ids), which the auditor reports as `ack` rather than failing — that's
+how a private repo records that it can't take branch protection / secret scanning on the current plan. See [the standard](references/repo-config-standard.md).
 
 ## Operating modes
 
@@ -41,8 +44,9 @@ Infer the mode from the request; ask if unclear. (Modes are named and alphabetic
 Outward-facing: it changes live GitHub settings and may open PRs. Show the diff and confirm before mutating.
 
 1. Run **AUDIT** first, so you change against a known gap list.
-2. **Local files** — add any missing `README.md` / `LICENSE` / `.gitignore` / `.editorconfig`. On public repos `main` is protected, so this lands via a branch +
-   PR, not a direct push; copy the file from the closest healthy sibling.
+2. **Files** — add any missing `README.md` / `LICENSE` / `.gitignore` / `.editorconfig`, and a `.ki-config.toml` (scaffold its `[knowledgeislands-repo-config]`
+   defaults with `bun scripts/audit-repo-config.ts --init >> .ki-config.toml`, then set `visibility` and any `exceptions`). On public repos `main` is protected,
+   so this lands via a branch + PR, not a direct push.
 3. **GitHub settings** — apply with the `gh` commands in [the standard](references/repo-config-standard.md) (merge methods, auto-delete-branch, features,
    description, topics, branch protection).
 4. **Deeper** — Dependabot alerts/updates, secret scanning + push protection (public), Actions permissions.

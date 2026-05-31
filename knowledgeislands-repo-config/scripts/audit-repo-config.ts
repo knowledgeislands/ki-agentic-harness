@@ -2,32 +2,33 @@
 /**
  * Mechanical auditor for the Knowledge Islands repo-configuration standard.
  *
- *   bun scripts/audit-repo-config.ts [tree-path]   # default: cwd — scan a tree of repos
- *   bun scripts/audit-repo-config.ts --org <org>   # scan every repo in a GitHub org
+ *   bun scripts/audit-repo-config.ts [tree-path]   # default: cwd — enumerate repos from a tree
+ *   bun scripts/audit-repo-config.ts --org <org>   # enumerate every repo in a GitHub org
  *
- * Three layers (see references/repo-config-standard.md):
- *   1. LOCAL  — files every repo should carry: README, LICENSE, .gitignore,
- *               .editorconfig. Checked from disk; runs for every local repo.
- *   2. GITHUB — settings on repos hosted on github.com: default branch, license,
- *               squash-only + linear, auto-delete-branch, Issues on / Wiki+Projects
- *               off, non-empty description, visibility by name prefix, and (public)
- *               topics + branch protection on `main`.
- *   3. DEEPER — security & analysis (secret scanning + push protection on public;
- *               Dependabot alerts + security updates everywhere) and Actions
- *               permissions (allowed-actions = all).
+ * Everything is checked **against GitHub** (no working checkout needed): file
+ * presence via the git-tree API, settings via `gh repo view`, security/Actions via
+ * `gh api`. The tree path / `--org` only decide *which* repos to look at — local-tree
+ * mode reads each dir's `origin` and audits the github.com ones under their real
+ * GitHub identity; `--org` lists the org (and so catches repos not cloned locally).
  *
- * LOCAL-TREE mode (default): walk the path for git repos; each gets layer 1, and
- * those whose `origin` is on github.com also get layers 2–3 (owner/name come from
- * the remote, so a repo is checked under its real GitHub identity). A repo not on
- * github.com gets layer 1 only.
+ * The standard has three layers (see references/repo-config-standard.md):
+ *   1. FILES   — README, LICENSE, .gitignore, .editorconfig, and .ki-config.toml
+ *                (the repo's declared config), all present on the default branch.
+ *   2. GITHUB  — default branch, license, squash-only + linear, auto-delete-branch,
+ *                Issues on / Wiki+Projects off, non-empty description, visibility
+ *                (matches the value DECLARED in .ki-config.toml — not the name),
+ *                and (public) topics + branch protection on `main`.
+ *   3. DEEPER  — Dependabot alerts + security updates; secret scanning + push
+ *                protection (public); Actions allowed-actions = all.
  *
- * ORG mode (--org): list the org's repos via `gh` and run layers 2–3 (no local
- * checkout, so layer 1 is skipped) — catches repos that aren't cloned locally.
+ * Each repo's `.ki-config.toml` declares its `visibility` and an `exceptions` list
+ * of check-ids that are acknowledged and therefore reported (not failed) — that is
+ * how a repo records an intentional divergence (e.g. a private repo that cannot take
+ * branch protection on the current plan).
  *
- * READ-ONLY: never mutates a repo. Bringing outliers into line is the skill's
- * APPLY mode (documented `gh` commands / file additions). Judgment items the script
- * can't make (description matches purpose / synced with package.json, intentional
- * exceptions) are left to the skill's AUDIT mode.
+ * READ-ONLY: never mutates a repo. Bringing outliers into line is the skill's APPLY
+ * mode. Judgment items the script can't make (does the description match the repo's
+ * purpose / sync with package.json) are left to the skill's AUDIT mode.
  *
  * Requires `gh` authenticated against the org. No npm dependencies — Bun/Node only.
  * Exit code is non-zero if any repo has a FAIL.
@@ -42,17 +43,15 @@ const LICENSE_KEY = 'mit'
 const TOPICS = ['mcp', 'model-context-protocol', 'claude', 'typescript', 'bun']
 const REQUIRED_CHECK = 'build'
 const ALLOWED_ACTIONS = 'all'
-const LOCAL_FILES: [label: string, names: string[]][] = [
+const KI_CONFIG = '.ki-config.toml'
+// Required root files. Each entry is one or more acceptable paths (first found wins).
+const REQUIRED_FILES: [check: string, paths: string[]][] = [
   ['readme', ['README.md']],
   ['license-file', ['LICENSE', 'LICENSE.md']],
   ['gitignore', ['.gitignore']],
-  ['editorconfig', ['.editorconfig']]
+  ['editorconfig', ['.editorconfig']],
+  ['ki-config', [KI_CONFIG]]
 ]
-// Visibility is set by name prefix: arcadia-* private (bases/internal), mcp-* public (open-source servers).
-const expectedVisibility = (name: string): 'PUBLIC' | 'PRIVATE' | null => (name.startsWith('mcp-') ? 'PUBLIC' : name.startsWith('arcadia-') ? 'PRIVATE' : null)
-
-const REPO_FIELDS =
-  'nameWithOwner,name,visibility,isArchived,defaultBranchRef,mergeCommitAllowed,squashMergeAllowed,rebaseMergeAllowed,deleteBranchOnMerge,hasIssuesEnabled,hasProjectsEnabled,hasWikiEnabled,repositoryTopics,licenseInfo,description'
 
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
@@ -80,12 +79,70 @@ const ghOk = (apiPath: string): boolean => {
   }
 }
 const ghJSON = (apiPath: string): unknown => JSON.parse(gh(['api', apiPath]))
+// File content as raw text, or null on 404.
+const ghRaw = (nwo: string, path: string): string | null => {
+  try {
+    return gh(['api', `repos/${nwo}/contents/${path}`, '-H', 'Accept: application/vnd.github.raw'])
+  } catch {
+    return null
+  }
+}
+// Set of the repo's root-level paths (one call), for presence checks.
+function rootPaths(nwo: string, branch: string): Set<string> {
+  try {
+    const t = ghJSON(`repos/${nwo}/git/trees/${branch}`) as { tree?: { path: string }[] }
+    return new Set((t.tree ?? []).map((e) => e.path))
+  } catch {
+    return new Set()
+  }
+}
 
 const topicNames = (t: unknown): string[] => (Array.isArray(t) ? t.map((x) => (typeof x === 'string' ? x : (x?.name ?? x?.topic?.name))).filter(Boolean) : [])
 
+// `.ki-config.toml` is a shared per-repo file; each skill reads its own [table].
+// This skill owns the [knowledgeislands-repo-config] table. The default block
+// (written by `--init`) is the authoritative key list — authoring a repo emits it.
+const KI_SECTION = 'knowledgeislands-repo-config'
+const KI_DEFAULT = `[${KI_SECTION}]
+visibility = "private"   # "public" | "private" — must match the repo's actual GitHub visibility
+exceptions = []          # acknowledged check-ids, e.g. ["branch-protection", "secret-scanning"]
+`
+
+// Minimal parser for the constrained schema: `[table]` headers, flat `key = "string"`
+// and `key = ["a", "b"]` on a single line, `#` comments. NOT a full TOML parser.
+// Returns this skill's table, or null if the file has no [knowledgeislands-repo-config].
+type KiConfig = { visibility?: string; exceptions: string[] }
+function parseKiConfig(text: string): KiConfig | null {
+  let section = ''
+  let seen = false
+  const out: KiConfig = { exceptions: [] }
+  for (const raw of text.split(/\r?\n/)) {
+    const line = raw.replace(/#.*$/, '').trim()
+    if (!line) continue
+    const header = line.match(/^\[(.+)\]$/)
+    if (header) {
+      section = (header[1] as string).trim()
+      if (section === KI_SECTION) seen = true
+      continue
+    }
+    if (section !== KI_SECTION) continue
+    const eq = line.indexOf('=')
+    if (eq === -1) continue
+    const key = line.slice(0, eq).trim()
+    const val = line.slice(eq + 1).trim()
+    if (key === 'visibility') out.visibility = val.replace(/^["']|["']$/g, '')
+    else if (key === 'exceptions')
+      out.exceptions = val
+        .replace(/^\[|\]$/g, '')
+        .split(',')
+        .map((s) => s.trim().replace(/^["']|["']$/g, ''))
+        .filter(Boolean)
+  }
+  return seen ? out : null
+}
+
 type Repo = {
   nameWithOwner: string
-  name: string
   visibility: 'PUBLIC' | 'PRIVATE'
   isArchived: boolean
   defaultBranchRef: { name: string } | null
@@ -100,19 +157,22 @@ type Repo = {
   licenseInfo: { key: string } | null
   description: string
 }
+const REPO_FIELDS =
+  'nameWithOwner,visibility,isArchived,defaultBranchRef,mergeCommitAllowed,squashMergeAllowed,rebaseMergeAllowed,deleteBranchOnMerge,hasIssuesEnabled,hasProjectsEnabled,hasWikiEnabled,repositoryTopics,licenseInfo,description'
 
-// ── layer 1: local files ─────────────────────────────────────────────────────
-function localChecks(dir: string): Finding[] {
-  const { f, fail } = mk()
-  for (const [label, names] of LOCAL_FILES) {
-    if (!names.some((n) => existsSync(join(dir, n)))) fail(label, `no ${names.join(' / ')}`)
-  }
-  return f
-}
-
-// ── layer 2: core GitHub settings ─────────────────────────────────────────────
-function coreChecks(r: Repo): Finding[] {
+function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null): Finding[] {
   const { f, fail, warn } = mk()
+  if (r.isArchived) {
+    warn('archived', 'repo is archived — skipping remaining checks')
+    return f
+  }
+
+  // ── layer 1: files (presence on the default branch) ──
+  for (const [check, paths] of REQUIRED_FILES) {
+    if (!paths.some((p) => files.has(p))) fail(check, `no ${paths.join(' / ')}`)
+  }
+
+  // ── layer 2: core GitHub ──
   if (r.defaultBranchRef?.name !== DEFAULT_BRANCH) fail('default-branch', `default branch is "${r.defaultBranchRef?.name ?? '?'}" (want ${DEFAULT_BRANCH})`)
   if (r.licenseInfo?.key !== LICENSE_KEY) fail('license', `license is "${r.licenseInfo?.key ?? 'none'}" (want ${LICENSE_KEY})`)
   if (!r.description?.trim()) fail('description', 'description is empty')
@@ -122,9 +182,13 @@ function coreChecks(r: Repo): Finding[] {
   if (!r.hasIssuesEnabled) fail('issues', 'Issues are disabled')
   if (r.hasWikiEnabled) fail('wiki', 'Wiki is enabled (want off)')
   if (r.hasProjectsEnabled) fail('projects', 'Projects are enabled (want off)')
-  const expVis = expectedVisibility(r.name)
-  if (expVis && r.visibility !== expVis) fail('visibility', `visibility is ${r.visibility} (name prefix implies ${expVis})`)
-  else if (!expVis) warn('visibility', `name has no known prefix (arcadia-* / mcp-*) — visibility ${r.visibility} unchecked`)
+
+  // visibility: declared in .ki-config.toml, checked against live GitHub
+  const declared = ki?.visibility?.toUpperCase()
+  if (!ki) fail('visibility', `cannot verify visibility — ${KI_CONFIG} has no [${KI_SECTION}] table (run --init)`)
+  else if (declared !== 'PUBLIC' && declared !== 'PRIVATE') fail('visibility', `${KI_CONFIG} does not declare a valid \`visibility\` (got ${JSON.stringify(ki.visibility)})`)
+  else if (declared !== r.visibility) fail('visibility', `visibility is ${r.visibility} but ${KI_CONFIG} declares ${declared}`)
+
   if (r.visibility === 'PUBLIC') {
     const missing = TOPICS.filter((t) => !new Set(topicNames(r.repositoryTopics)).has(t))
     if (missing.length) fail('topics', `missing topics: ${missing.join(', ')}`)
@@ -134,19 +198,15 @@ function coreChecks(r: Repo): Finding[] {
     } catch {
       bp = null
     }
-    if (!bp) fail('protection', `no branch protection on ${DEFAULT_BRANCH}`)
+    if (!bp) fail('branch-protection', `no branch protection on ${DEFAULT_BRANCH}`)
     else {
-      if (bp.required_pull_request_reviews == null) fail('protection', 'does not require a pull request')
-      if (!(bp.required_status_checks?.contexts ?? []).includes(REQUIRED_CHECK)) fail('protection', `required checks omit "${REQUIRED_CHECK}"`)
-      if (bp.required_linear_history?.enabled !== true) fail('protection', 'does not require linear history')
+      if (bp.required_pull_request_reviews == null) fail('branch-protection', 'does not require a pull request')
+      if (!(bp.required_status_checks?.contexts ?? []).includes(REQUIRED_CHECK)) fail('branch-protection', `required checks omit "${REQUIRED_CHECK}"`)
+      if (bp.required_linear_history?.enabled !== true) fail('branch-protection', 'does not require linear history')
     }
   }
-  return f
-}
 
-// ── layer 3: deeper GitHub (security & analysis, Actions) ─────────────────────
-function deeperChecks(r: Repo): Finding[] {
-  const { f, fail, warn } = mk()
+  // ── layer 3: deeper GitHub ──
   if (!ghOk(`repos/${r.nameWithOwner}/vulnerability-alerts`)) fail('dependabot-alerts', 'Dependabot alerts are off')
   try {
     if ((ghJSON(`repos/${r.nameWithOwner}/automated-security-fixes`) as { enabled?: boolean }).enabled !== true) fail('dependabot-updates', 'Dependabot security updates are off')
@@ -162,20 +222,19 @@ function deeperChecks(r: Repo): Finding[] {
     } catch {
       warn('secret-scanning', 'could not read security_and_analysis')
     }
-  } // private repos: secret scanning is plan-limited (GHAS) — intentionally not checked
+  }
   try {
     const al = (ghJSON(`repos/${r.nameWithOwner}/actions/permissions`) as { allowed_actions?: string }).allowed_actions
     if (al && al !== ALLOWED_ACTIONS) warn('actions', `allowed_actions is "${al}" (standard: ${ALLOWED_ACTIONS})`)
   } catch {
-    /* actions perms not always readable; ignore */
+    /* not always readable */
   }
   return f
 }
 
 // ── discovery ────────────────────────────────────────────────────────────────
-type Target = { label: string; dir?: string; nameWithOwner: string | null; note?: string }
+type Target = { label: string; nameWithOwner: string | null; note?: string }
 const GH_REMOTE = /github\.com[:/]([^/]+)\/(.+?)(?:\.git)?$/
-
 const gitOrigin = (dir: string): string | null => {
   try {
     return execFileSync('git', ['-C', dir, 'remote', 'get-url', 'origin'], { encoding: 'utf8' }).trim()
@@ -183,7 +242,6 @@ const gitOrigin = (dir: string): string | null => {
     return null
   }
 }
-
 function repoDirsUnder(path: string): string[] {
   if (existsSync(join(path, '.git'))) return [path]
   return readdirSync(path, { withFileTypes: true })
@@ -192,7 +250,6 @@ function repoDirsUnder(path: string): string[] {
     .filter((d) => existsSync(join(d, '.git')))
     .sort()
 }
-
 function localTargets(path: string): Target[] {
   const abs = resolve(path)
   const dirs = repoDirsUnder(abs)
@@ -202,13 +259,10 @@ function localTargets(path: string): Target[] {
   }
   return dirs.map((dir) => {
     const label = dir.split('/').pop() ?? dir
-    const origin = gitOrigin(dir)
-    const m = origin?.match(GH_REMOTE)
-    if (!m) return { label, dir, nameWithOwner: null, note: origin ? `origin not on github.com (${origin})` : 'no origin remote' }
-    return { label, dir, nameWithOwner: `${m[1]}/${m[2]}` }
+    const m = gitOrigin(dir)?.match(GH_REMOTE)
+    return m ? { label, nameWithOwner: `${m[1]}/${m[2]}` } : { label, nameWithOwner: null, note: 'origin not on github.com' }
   })
 }
-
 function orgTargets(org: string): Target[] {
   const repos: { nameWithOwner: string }[] = JSON.parse(gh(['repo', 'list', org, '--limit', '200', '--json', 'nameWithOwner']))
   return repos.map((r) => ({ label: r.nameWithOwner, nameWithOwner: r.nameWithOwner })).sort((a, b) => a.label.localeCompare(b.label))
@@ -216,6 +270,12 @@ function orgTargets(org: string): Target[] {
 
 // ── run ────────────────────────────────────────────────────────────────────
 const argv = process.argv.slice(2)
+// `--init` prints the default [knowledgeislands-repo-config] block for a new repo's
+// .ki-config.toml (authoring creates the keys; the author edits the values).
+if (argv.includes('--init')) {
+  process.stdout.write(KI_DEFAULT)
+  process.exit(0)
+}
 const orgIdx = argv.indexOf('--org')
 let targets: Target[]
 let scope: string
@@ -226,7 +286,7 @@ try {
       console.error('usage: audit-repo-config.ts --org <org>')
       process.exit(2)
     }
-    scope = `org ${org} (GitHub layers only — no local checkout)`
+    scope = `org ${org}`
     targets = orgTargets(org)
   } else {
     const path = argv.find((a) => !a.startsWith('-')) ?? '.'
@@ -243,7 +303,7 @@ console.log(paint(C.dim, `scope: ${scope}`))
 console.log(
   paint(
     C.dim,
-    'standard: local(README,LICENSE,.gitignore,.editorconfig) · github(main,mit,squash-only,del-branch,issues,no-wiki/projects,desc) · public+(topics,protection) · deeper(dependabot;secret-scanning public;actions=all)'
+    `standard: files(README,LICENSE,.gitignore,.editorconfig,${KI_CONFIG}) · github(main,mit,squash-only,del-branch,issues,no-wiki/projects,desc,visibility) · public+(topics,protection) · deeper(dependabot;secret-scanning;actions=all)`
   )
 )
 
@@ -251,31 +311,40 @@ let totalFails = 0
 let totalWarns = 0
 let ghSkipped = 0
 for (const t of targets) {
-  const findings: Finding[] = []
-  if (t.dir) findings.push(...localChecks(t.dir))
-  if (t.nameWithOwner) {
-    try {
-      const cfg = JSON.parse(gh(['repo', 'view', t.nameWithOwner, '--json', REPO_FIELDS])) as Repo
-      findings.push(...coreChecks(cfg), ...deeperChecks(cfg))
-    } catch {
-      findings.push({ level: 'fail', check: 'access', msg: `could not read ${t.nameWithOwner} via gh (missing repo or insufficient scope)` })
-    }
-  } else if (t.dir) {
+  if (!t.nameWithOwner) {
     ghSkipped++
-    findings.push({ level: 'warn', check: 'github', msg: `${t.note} — GitHub layers skipped` })
+    console.log(`\n${paint(C.dim, 'SKIP')}  ${paint(C.cyan, t.label)} ${paint(C.dim, `— ${t.note}`)}`)
+    continue
+  }
+  let findings: Finding[]
+  let acknowledged: Finding[] = []
+  try {
+    const r = JSON.parse(gh(['repo', 'view', t.nameWithOwner, '--json', REPO_FIELDS])) as Repo
+    const branch = r.defaultBranchRef?.name ?? DEFAULT_BRANCH
+    const files = rootPaths(t.nameWithOwner, branch)
+    const kiText = files.has(KI_CONFIG) ? ghRaw(t.nameWithOwner, KI_CONFIG) : null
+    const ki = kiText != null ? parseKiConfig(kiText) : null
+    const all = auditRepo(r, files, ki)
+    // a fail whose check-id is acknowledged in .ki-config.toml `exceptions` is reported, not failed
+    const ex = new Set(ki?.exceptions ?? [])
+    findings = all.filter((x) => !(x.level === 'fail' && ex.has(x.check)))
+    acknowledged = all.filter((x) => x.level === 'fail' && ex.has(x.check))
+  } catch {
+    findings = [{ level: 'fail', check: 'access', msg: `could not read ${t.nameWithOwner} via gh (missing repo or insufficient scope)` }]
   }
   const fails = findings.filter((x) => x.level === 'fail')
   const warns = findings.filter((x) => x.level === 'warn')
   totalFails += fails.length
   totalWarns += warns.length
   const stamp = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
-  console.log(`\n${stamp}  ${paint(C.cyan, t.nameWithOwner ?? t.label)}`)
+  console.log(`\n${stamp}  ${paint(C.cyan, t.nameWithOwner)}`)
   for (const x of findings) console.log(`  ${x.level === 'fail' ? paint(C.red, 'fail') : paint(C.yellow, 'warn')} ${paint(C.dim, `[${x.check}]`)} ${x.msg}`)
+  for (const x of acknowledged) console.log(`  ${paint(C.dim, `ack  [${x.check}] ${x.msg} (declared exception)`)}`)
   if (findings.length === 0) console.log(paint(C.dim, '  conforms'))
 }
 
 console.log(
   `\n${paint(C.cyan, 'summary')}: ${targets.length} repo(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}${ghSkipped ? paint(C.dim, `, ${ghSkipped} not on github.com`) : ''}`
 )
-console.log(paint(C.dim, 'mechanical checks only — judgment items (description matches purpose & synced with package.json, intentional exceptions) are the skill’s AUDIT mode.'))
+console.log(paint(C.dim, 'mechanical checks only — judgment items (description matches purpose & synced with package.json) are the skill’s AUDIT mode.'))
 process.exit(totalFails > 0 ? 1 : 0)

@@ -7,7 +7,7 @@ keep this doc and the script's constants in sync.
 
 ## Contents
 
-- [Layer 1 — local files](#layer-1--local-files)
+- [Layer 1 — repo files](#layer-1--repo-files)
 - [Layer 2 — core GitHub settings](#layer-2--core-github-settings)
 - [Layer 3 — deeper GitHub](#layer-3--deeper-github)
 - [Visibility](#visibility)
@@ -16,16 +16,18 @@ keep this doc and the script's constants in sync.
 - [Verifying it](#verifying-it)
 - [Conformance](#conformance)
 
-## Layer 1 — local files
+## Layer 1 — repo files
 
-Every repo carries these on disk (checked from a local checkout, regardless of host):
+Every repo carries these at the root. Presence is checked **on the default branch via the GitHub API** (the git-tree endpoint), not from a working checkout — so
+what's actually committed is what's audited, and `--org` mode covers uncloned repos.
 
-| File            | Why                                                    |
-| --------------- | ------------------------------------------------------ |
-| `README.md`     | The repo's entry point.                                |
-| `LICENSE`       | MIT text (matches the GitHub license — layer 2).       |
-| `.gitignore`    | Keeps build/dep noise out of history.                  |
-| `.editorconfig` | Shared editor defaults across the workspace toolchain. |
+| File              | Why                                                                                                                     |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `README.md`       | The repo's entry point.                                                                                                 |
+| `LICENSE`         | MIT text (matches the GitHub license — layer 2).                                                                        |
+| `.gitignore`      | Keeps build/dep noise out of history.                                                                                   |
+| `.editorconfig`   | Shared editor defaults across the workspace toolchain.                                                                  |
+| `.ki-config.toml` | Declares this repo's expected config under `[knowledgeislands-repo-config]` — `visibility` and acknowledged exceptions. |
 
 ## Layer 2 — core GitHub settings
 
@@ -62,12 +64,27 @@ Public repos (`mcp-*`) additionally:
 
 ## Visibility
 
-Set by name prefix; intentional, not drift: `arcadia-*` **private** (bases / internal skills), `mcp-*` **public** (open-source servers).
+Each repo **declares** its expected visibility in `.ki-config.toml` (`visibility = "public"` or `"private"`); the auditor checks that declaration against the
+live GitHub visibility. It is a deliberate per-repo choice, **not inferred from the name**. (In practice the `arcadia-*` repos are private bases / internal
+skills and the `mcp-*` repos are public servers — a pattern, not the rule.)
+
+`.ki-config.toml` is a shared per-repo file; each skill reads its own `[table]`, and a skill with only implicit/default behaviour needs no table. This skill
+owns `[knowledgeislands-repo-config]`. Scaffold the default keys with `bun scripts/audit-repo-config.ts --init >> .ki-config.toml`, then edit the values:
+
+```toml
+# .ki-config.toml — one [table] per skill that needs per-repo options
+[knowledgeislands-repo-config]
+visibility = "public"   # "public" | "private"
+exceptions = []         # acknowledged check-ids
+```
 
 ## Intentional exceptions
 
-- **Private `arcadia-*` repos carry no topics, no classic branch protection, and no secret scanning** — protected branches and secret scanning require a paid
-  plan / GHAS for private repos on the current org plan. Revisit via repository **rulesets** (broader plan support) and GHAS if the org upgrades.
+A repo records an **acknowledged divergence** by listing the failing check-id in its `.ki-config.toml` `exceptions = [...]`; the auditor then reports it as
+`ack` rather than a failure, so it never reads as drift.
+
+- The private `arcadia-*` repos can't take classic branch protection or secret scanning (plan-limited / GHAS), so each declares
+  `exceptions = ["branch-protection", "secret-scanning"]`. Revisit via repository **rulesets** (broader plan support) and GHAS if the org upgrades.
 - The required status check is **`build`** — the single job in each public repo's `.github/workflows/ci.yml` (workflow "CI"). A repo without that job can't
   require it; add the CI job first.
 
@@ -78,6 +95,12 @@ Set by name prefix; intentional, not drift: `arcadia-*` **private** (bases / int
 ```zsh
 all=(arcadia-principal arcadia-skills arcadia-website mcp-claude-housekeeping mcp-git-audit mcp-gmail mcp-kb-fs mcp-kb-notion-mirror mcp-m365 mcp-voicenotes-edit)
 public=(mcp-claude-housekeeping mcp-git-audit mcp-gmail mcp-kb-fs mcp-kb-notion-mirror mcp-m365 mcp-voicenotes-edit)
+
+# Layer 1 — each repo declares its config in .ki-config.toml (committed via PR like any file).
+#   Scaffold the [knowledgeislands-repo-config] defaults, then edit:
+#     bun scripts/audit-repo-config.ts --init >> .ki-config.toml
+# Visibility is verified (declared vs live), not set here; change actual visibility deliberately:
+#   gh repo edit knowledgeislands/<name> --visibility public|private --accept-visibility-change-consequences
 
 # Layer 2 — every repo: squash-only + auto-delete branch + Wiki/Projects off
 for r in $all; do
@@ -113,11 +136,13 @@ Layer 1 files are added with a normal commit — via a **PR** on public repos, s
 ## Verifying it
 
 ```zsh
-bun ../scripts/audit-repo-config.ts ~/kis/knowledgeislands      # local tree, github.com-gated
-bun ../scripts/audit-repo-config.ts --org knowledgeislands      # whole org (GitHub layers only)
+bun ../scripts/audit-repo-config.ts ~/kis/knowledgeislands      # enumerate from a local tree (origins)
+bun ../scripts/audit-repo-config.ts --org knowledgeislands      # enumerate the whole org
 ```
+
+Both check every layer against GitHub; the path / `--org` only decides which repos.
 
 ## Conformance
 
-As of **2026-05-31**, all 10 `knowledgeislands` repos conform on layers 2–3. Layer-1 gap: `mcp-kb-notion-mirror` and `mcp-voicenotes-edit` lack `.editorconfig`
-(pending a PR to each, since `main` is protected).
+As of **2026-05-31**, all 10 `knowledgeislands` repos conform on layers 2–3. Outstanding layer-1 work: every repo still needs a `.ki-config.toml` (declaring its
+visibility + any exceptions), and `mcp-kb-notion-mirror` / `mcp-voicenotes-edit` need `.editorconfig` — each a PR, since `main` is protected.
