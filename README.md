@@ -33,14 +33,31 @@ so the two must stay in sync.
 
 ## Skills in this repository
 
-| Skill                                                         | Kind              | Purpose                                                                                                                                                                                              |
-| ------------------------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md)         | Knowledge Islands | KB modes - DIGEST / EXTRACT / QUERY / REFRESH / SAVE / UPDATE - over the standard zone model; only store-level bindings come from the host base.                                                     |
-| [`knowledgeislands-mcp`](knowledgeislands-mcp/SKILL.md)       | Process           | Codify and audit the workspace MCP standard (layout, config injection, tool naming, access-level gate, security invariants, Bun/Node, tooling) across the `mcp-*` repos; ships a mechanical checker. |
-| [`knowledgeislands-skills`](knowledgeislands-skills/SKILL.md) | Process           | Audit and author Agent Skills against a checkable rubric - AUDIT / AUTHOR / REFRESH modes, a bundled linter (`skills:lint`) for the mechanical checks, and a tracked source list it revisits.        |
+| Skill                                                                   | Kind              | Purpose                                                                                                                                                                                                                                   |
+| ----------------------------------------------------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md)                   | Knowledge Islands | KB modes - DIGEST / EXTRACT / QUERY / REFRESH / SAVE / UPDATE - over the standard zone model; only store-level bindings come from the host base.                                                                                          |
+| [`knowledgeislands-mcp`](knowledgeislands-mcp/SKILL.md)                 | Process           | Codify and audit the workspace MCP standard (layout, config injection, tool naming, access-level gate, security invariants, Bun/Node, tooling) across the `mcp-*` repos; ships a mechanical checker.                                      |
+| [`knowledgeislands-skills`](knowledgeislands-skills/SKILL.md)           | Process           | Audit and author Agent Skills against a checkable rubric - AUDIT / AUTHOR / REFRESH modes, a bundled linter (`skills:lint`) for the mechanical checks, and a tracked source list it revisits.                                             |
+| [`knowledgeislands-repo-config`](knowledgeislands-repo-config/SKILL.md) | Process           | Codify, audit, and apply the repo-configuration standard across the `knowledgeislands` org - local files, GitHub settings, and security; ships a mechanical auditor (`repo:audit`) that discovers repos from a local tree or a whole org. |
 
-All three currently pass their own audit, and each ships a REFRESH mode backed by a tracked `references/sources.md` so it can be kept current as specs and
+All four currently pass their own audit, and each ships a REFRESH mode backed by a tracked `references/sources.md` so it can be kept current as specs and
 conventions move. Where the set is going next is in [ROADMAP.md](ROADMAP.md).
+
+### The audit-family shape
+
+Three of these skills — `knowledgeislands-mcp`, `knowledgeislands-skills`, and `knowledgeislands-repo-config` — do the same kind of job: they hold a house
+**standard** and audit artifacts against it. They share one layout, so a reader (or a new such skill) can move between them:
+
+- **`<domain>-standard.md`** — the normative, quotable reference: what good looks like, and why.
+- **`audit-rubric.md`** — the line-by-line checkable criteria, each tagged **mechanical** (a bundled checker enforces it) or **judgment** (a reader assesses
+  it), each citing the standard section it verifies.
+- **`references/sources.md`** — the tracked sources behind the standard, with `last reviewed` dates and a REFRESH changelog.
+- **a mechanical checker** in `scripts/` (`audit-mcp.ts`, `lint-skills.ts`, `audit-repo-config.ts`) — the deterministic half; the judgment half is applied by
+  reading.
+
+…and the same modes: **AUDIT** (run the checker, then apply the judgment criteria), **CODIFY / AUTHOR** (build to the standard), and **REFRESH** (re-anchor the
+standard to its sources on a stated cadence). All three follow this in full — each has a `<domain>-standard.md`, an `audit-rubric.md`, a
+`references/sources.md`, and a mechanical checker in `scripts/`.
 
 ### Where the skills do not overlap
 
@@ -52,6 +69,9 @@ Each skill's `description` carries its own boundaries so the agent selects the r
   auditing the server's code is the former's. Each description names the other as the off-ramp, so neither claims the other's request.
 - **`knowledgeislands-kb` vs a base-coupled extension** - where a base ships its own `<base>-kb` skill, that extension wins and delegates the shared modes back
   to `knowledgeislands-kb` by name; the standard skill steps aside rather than competing for the same triggers.
+- **`knowledgeislands-repo-config` vs `knowledgeislands-mcp`** - both look at the `mcp-*` repos, but at different layers. `knowledgeislands-repo-config` governs
+  GitHub-side settings and universal local files (merge policy, branch protection, topics, security, README/LICENSE/.gitignore/.editorconfig);
+  `knowledgeislands-mcp` governs the server's **code** (`src/` layout, config injection, tool surface). Configuration vs source.
 
 ## Installing skills
 
