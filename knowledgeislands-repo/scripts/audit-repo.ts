@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
 /**
- * Mechanical auditor for the Knowledge Islands repo-configuration standard.
+ * Mechanical auditor for the Knowledge Islands repo standard.
  *
- *   bun scripts/audit-repo-config.ts [tree-path]   # default: cwd — enumerate repos from a tree
- *   bun scripts/audit-repo-config.ts --org <org>   # enumerate every repo in a GitHub org
+ *   bun scripts/audit-repo.ts [tree-path]   # default: cwd — enumerate repos from a tree
+ *   bun scripts/audit-repo.ts --org <org>   # enumerate every repo in a GitHub org
  *
  * Everything is checked **against GitHub** (no working checkout needed): file
  * presence via the git-tree API, settings via `gh repo view`, security/Actions via
@@ -11,7 +11,7 @@
  * mode reads each dir's `origin` and audits the github.com ones under their real
  * GitHub identity; `--org` lists the org (and so catches repos not cloned locally).
  *
- * The standard has three layers (see references/repo-config-standard.md):
+ * The standard has three layers (see references/repo-standard.md):
  *   1. FILES   — README, LICENSE, .gitignore, .editorconfig, and .ki-config.toml
  *                (the repo's declared config), all present on the default branch.
  *   2. GITHUB  — default branch, license, squash-only + linear, auto-delete-branch,
@@ -23,7 +23,7 @@
  *                protection (public); Actions allowed-actions = all.
  *
  * Each repo's `.ki-config.toml` declares its `visibility` and, in a
- * `[knowledgeislands-repo-config.checks]` sub-table, per-repo overrides — one
+ * `[knowledgeislands-repo.checks]` sub-table, per-repo overrides — one
  * boolean per overridable check (`true` = enforce, `false` = don't). A check it
  * omits takes the org default (CHECK_DEFAULTS), so a fully-conforming repo writes
  * no overrides; `branch-protection` defaults off, so `main` is open unless opted in.
@@ -39,14 +39,14 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readdirSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
-// ── the standard (keep in sync with references/repo-config-standard.md) ──────
+// ── the standard (keep in sync with references/repo-standard.md) ──────
 const DEFAULT_BRANCH = 'main'
 const LICENSE_KEY = 'mit'
 const TOPICS = ['mcp', 'model-context-protocol', 'claude', 'typescript', 'bun']
 const REQUIRED_CHECK = 'build'
 const ALLOWED_ACTIONS = 'all'
 // Overridable checks and the org default for each — `true` = enforced by default.
-// A repo overrides any of these per-repo in [knowledgeislands-repo-config.checks];
+// A repo overrides any of these per-repo in [knowledgeislands-repo.checks];
 // a check it omits takes the default here, so a fully-conforming repo writes none.
 // (The other checks — file presence, default branch, license, description, merge,
 // delete-branch, visibility, Dependabot — are bedrock: always enforced, no override.)
@@ -119,9 +119,9 @@ function rootPaths(nwo: string, branch: string): Set<string> {
 const topicNames = (t: unknown): string[] => (Array.isArray(t) ? t.map((x) => (typeof x === 'string' ? x : (x?.name ?? x?.topic?.name))).filter(Boolean) : [])
 
 // `.ki-config.toml` is a shared per-repo file; each skill reads its own [table].
-// This skill owns the [knowledgeislands-repo-config] table. The default block
+// This skill owns the [knowledgeislands-repo] table. The default block
 // (written by `--init`) is the authoritative key list — authoring a repo emits it.
-const KI_SECTION = 'knowledgeislands-repo-config'
+const KI_SECTION = 'knowledgeislands-repo'
 const KI_DEFAULT = `[${KI_SECTION}]
 visibility = "private"   # "public" | "private" — must match the repo's actual GitHub visibility
 
@@ -135,7 +135,7 @@ visibility = "private"   # "public" | "private" — must match the repo's actual
 // Minimal parser for the constrained schema: `[table]` headers (incl. the dotted
 // `[...checks]` sub-table), flat `key = "string"` and `key = true|false` on a single
 // line, `#` comments. NOT a full TOML parser. Returns this skill's config, or null
-// if the file has no [knowledgeislands-repo-config] table at all.
+// if the file has no [knowledgeislands-repo] table at all.
 type KiConfig = { visibility?: string; checks: Record<string, boolean> }
 const CHECKS_SECTION = `${KI_SECTION}.checks`
 function parseKiConfig(text: string): KiConfig | null {
@@ -207,12 +207,13 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null): Finding[] 
   else if (declared !== r.visibility) fail('visibility', `visibility is ${r.visibility} but ${KI_CONFIG} declares ${declared}`)
 
   // per-repo overrides: a check's effective state is its [..checks] value, else the
-  // org default. Surface every active override as a note, and WARN a key that names
-  // no overridable check (it would otherwise silently do nothing).
+  // org default. Surface every active override as a note; advise dropping one that
+  // merely restates the default; and WARN a key that names no overridable check.
   const enforced = (id: string): boolean => ki?.checks[id] ?? CHECK_DEFAULTS[id] ?? true
   for (const [id, v] of Object.entries(ki?.checks ?? {})) {
     if (!(id in CHECK_DEFAULTS)) warn('checks', `"${id}" is not an overridable check (overridable: ${Object.keys(CHECK_DEFAULTS).join(', ')})`)
     else if (v !== CHECK_DEFAULTS[id]) note(id, `override: ${v ? 'enforced' : 'not enforced'} for this repo (org default: ${CHECK_DEFAULTS[id] ? 'on' : 'off'})`)
+    else note(id, `redundant: matches the org default (${v ? 'on' : 'off'}) — can be dropped from [${CHECKS_SECTION}]`)
   }
 
   if (enforced('issues') && !r.hasIssuesEnabled) fail('issues', 'Issues are disabled')
@@ -304,7 +305,7 @@ function orgTargets(org: string): Target[] {
 
 // ── run ────────────────────────────────────────────────────────────────────
 const argv = process.argv.slice(2)
-// `--init` prints the default [knowledgeislands-repo-config] block for a new repo's
+// `--init` prints the default [knowledgeislands-repo] block for a new repo's
 // .ki-config.toml (authoring creates the keys; the author edits the values).
 if (argv.includes('--init')) {
   process.stdout.write(KI_DEFAULT)
@@ -317,7 +318,7 @@ try {
   if (orgIdx !== -1) {
     const org = argv[orgIdx + 1]
     if (!org) {
-      console.error('usage: audit-repo-config.ts --org <org>')
+      console.error('usage: audit-repo.ts --org <org>')
       process.exit(2)
     }
     scope = `org ${org}`

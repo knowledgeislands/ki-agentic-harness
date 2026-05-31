@@ -72,7 +72,7 @@ Two carry behavioural nuance worth stating:
 - **`disable-model-invocation: true`** is for side-effecting / manually-timed workflows (deploy, commit, send) so they can't auto-fire. It also removes the
   skill's description from Claude's context listing entirely — contrast `user-invocable: false`, which only hides the skill from the `/` menu while keeping the
   description in context.
-- **`argument-hint`** is set by a skill with **discrete operating modes** (e.g. AUDIT / AUTHOR / REFRESH) so the modes surface in the `/` menu and a user can
+- **`argument-hint`** is set by a skill with **discrete operating modes** (e.g. AUDIT / CONFORM / REFRESH) so the modes surface in the `/` menu and a user can
   route as `/<name> <mode>` without reading the body. Prefer this over splitting one cohesive skill into a slash command per mode (each resident description
   costs ~100 tokens and fragments the trigger surface). **Name the modes, don't letter them** (named modes keep cross-references stable and read consistently
   across the skill set — a shared `REFRESH` means the same everywhere), and **order them alphabetically** in both body and `argument-hint` so a new mode has one
@@ -123,6 +123,17 @@ A **standard** Knowledge Islands skill carries reusable mode logic and resolves 
 the host base's `CLAUDE.md` and memory index — it hard-codes **no single base**. A **base-coupled extension** supplies only base-specific pre-flight/bindings
 and delegates the shared modes to a standard skill **by name** (both load into the session). Either way, the skill declares its **kind** (Knowledge Islands /
 process / scoped) clearly enough that a reader can place it. (arcadia-skills README, `knowledgeislands-kb`)
+
+A skill that reads declared repo config does so through the shared **`.ki-config.toml`** — the file whose presence marks a Knowledge Islands–compliant repo,
+whose contract is defined by `knowledgeislands-repo` — and only through **its own `[<skill-name>]` table**. It **validates that table**: it warns on a key it
+doesn't recognise (a typo or stale option should surface, not silently do nothing) and advises dropping one that merely restates a default, while leaving every
+other skill's table untouched, even keys it can't interpret. Validate down, ignore across. (`knowledgeislands-repo` is the reference implementation.)
+
+A **governance skill** — one that holds a house standard — exposes a common mode set so a reader moves between skills without relearning: **AUDIT** (check an
+artifact against the standard), **REFRESH** (re-anchor the standard to its sources), and **CONFORM** (bring an existing artifact into line). Modes beyond that
+triad are skill-specific: **INIT** scaffolds a new conformant artifact where that makes sense (a new repo, MCP server, or skill), and operational modes serve a
+skill's own domain (the `knowledgeislands-kb` note-ops — DIGEST / EXTRACT / QUERY / SAVE / UPDATE). The five `knowledgeislands-*` skills are all governance
+skills on this model. (arcadia-skills README)
 
 ## 12. Process / evaluation
 

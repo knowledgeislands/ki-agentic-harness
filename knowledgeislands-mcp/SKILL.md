@@ -8,14 +8,14 @@ description: >
   our standards", "scaffold a new MCP", "bring this MCP up to standard", "review the MCP layout / tool surface / package.json", "refresh the MCP standard", "is
   our MCP standard up to date". Operates on the sibling `mcp-*` repos under `knowledgeislands/`. Audits MCP **server code** — not a repo's GitHub configuration,
   nor a skill's prose.
-argument-hint: 'audit <repo> | codify <repo> | refresh'
+argument-hint: 'audit <repo> | conform <repo> | init <repo> | refresh'
 ---
 
 # Knowledge Islands MCP standards
 
-You are helping codify or audit a **workspace MCP server** — one of the stdio MCP servers in the `knowledgeislands/` workspace (`mcp-git-audit`, `mcp-kb-fs`,
-`mcp-gmail`, `mcp-m365`, `mcp-claude-housekeeping`, `mcp-voicenotes-edit`, `mcp-kb-notion-mirror`). They all share one canonical shape, so a new one should be
-scaffolded to it and an existing one should be auditable against it. This skill carries that standard and the audit procedure.
+You are helping audit, conform, or scaffold a **workspace MCP server** — one of the stdio MCP servers in the `knowledgeislands/` workspace (`mcp-git-audit`,
+`mcp-kb-fs`, `mcp-gmail`, `mcp-m365`, `mcp-claude-housekeeping`, `mcp-voicenotes-edit`, `mcp-kb-notion-mirror`). They all share one canonical shape, so a new
+one should be scaffolded to it and an existing one should be auditable against it. This skill carries that standard and the audit procedure.
 
 This skill audits the **server code** — `src/` layout, config injection, tool surface, security invariants, tooling. A repo's GitHub configuration and standard
 files, and a `SKILL.md`'s prose, are out of scope (other skills own those). How the skills divide the work is documented once in the arcadia-skills `README.md`.
@@ -49,11 +49,12 @@ Three rules define the layer boundaries — most audit findings are a violation 
 
 Decide _where code lives_ by who needs to call it, not by what it does:
 
-| Layer    | Exists to…                                    | May contain                                            | Must NOT                                  |
-| -------- | --------------------------------------------- | ------------------------------------------------------ | ----------------------------------------- |
-| `main/`  | be the implementation, callable from anywhere | all real logic; FS / network / git; returns plain data | print to stdout/stderr; read env directly |
-| `tools/` | expose `main/` over MCP                       | zod schema, arg validation, `jsonResult`/`errorResult` | hold logic; be the only caller of `main/` |
-| `cli/`   | expose `main/` to a human at a terminal       | arg parsing, ALL human-readable printing               | hold logic; be the only caller of `main/` |
+- **`main/`** — the implementation, callable from anywhere. _May contain:_ all real logic, FS / network / git, returns plain data. _Must not:_ print to
+  stdout/stderr or read env directly.
+- **`tools/`** — exposes `main/` over MCP. _May contain:_ zod schema, arg validation, `jsonResult` / `errorResult`. _Must not:_ hold logic or be the only caller
+  of `main/`.
+- **`cli/`** — exposes `main/` to a human at a terminal. _May contain:_ arg parsing and ALL human-readable printing. _Must not:_ hold logic or be the only
+  caller of `main/`.
 
 `main/` is the single source of truth; `tools/` and `cli/` are two thin shells over the **same** functions. If logic exists only inside a tool handler or only
 inside the CLI, that is a finding — push it down into `main/`. Group `main/` by **concern**, mirroring the tool groups (`main/repo-audit/`, `main/notes/`, …),
@@ -81,7 +82,8 @@ register proxy. The default `read` gate hides every mutation until the operator 
 
 ## Operating modes
 
-Infer the mode from the request; ask if unclear.
+Every governance skill carries **AUDIT · CONFORM · REFRESH**; this one adds **INIT** (scaffold a new server). Infer the mode from the request; ask if unclear.
+(Modes are named and alphabetical.)
 
 ### Mode AUDIT — check a repo against the standard
 
@@ -105,14 +107,21 @@ Infer the mode from the request; ask if unclear.
    **polish** (docs/consistency). Cite `file:line`. Give the fix for each, and call out _intentional_ per-repo divergences (e.g. `voicenotes-edit` defaulting to
    `write`) so they are not re-flagged.
 
-### Mode CODIFY — scaffold or bring a repo up to standard
+### Mode CONFORM — bring an existing MCP repo up to standard
 
-1. Run AUDIT first so you change against a known gap list.
-2. Prefer **copying from the closest healthy sibling** over inventing: take the shared `utils/` helpers, `tsconfig*.json`, `vitest.config.ts`, `biome.json`, and
-   the package.json script block verbatim, then adapt the `<app>` prefix, env-var prefix (`MCP_<APP>_*`), `SERVER_NAME`, and `exports` map.
-3. Keep the layer boundaries from day one: schema+envelope in `tools/`, logic in `main/` (config slice first), printing only in `cli/`, wiring only in
+1. Run **AUDIT** first, so you change against a known gap list.
+2. Fix the gaps in place: restore the `src/` layer boundaries (schema+envelope in `tools/`, logic in `main/` config-first, printing in `cli/`, wiring in
+   `mcp-server/`), the shared `utils/` helpers, and the `tsconfig*`/`vitest`/`biome`/package.json script block — **copy from the closest healthy sibling**
+   rather than invent.
+3. Re-run the checker + tests; `bun run test` (NOT `bun test`), `bun run lint:check`, `bun run lint:types` must pass with 100% coverage.
+
+### Mode INIT — scaffold a new MCP server
+
+1. **Copy from the closest healthy sibling** over inventing: take the shared `utils/` helpers, `tsconfig*.json`, `vitest.config.ts`, `biome.json`, and the
+   package.json script block verbatim, then adapt the `<app>` prefix, env-var prefix (`MCP_<APP>_*`), `SERVER_NAME`, and `exports` map.
+2. Keep the layer boundaries from day one: schema+envelope in `tools/`, logic in `main/` (config slice first), printing only in `cli/`, wiring only in
    `mcp-server/`. Add tools with explicit `annotations` presets.
-4. Re-run the checker + tests; `bun run test` (NOT `bun test`), `bun run lint:check`, `bun run lint:types` must pass with 100% coverage.
+3. Run the checker + tests; `bun run test` (NOT `bun test`), `bun run lint:check`, `bun run lint:types` must pass with 100% coverage.
 
 ### Mode REFRESH — re-anchor the standard to the latest MCP spec
 

@@ -8,30 +8,32 @@ Abbreviations match the `(SOURCE)` tags in [the standard](agent-skills-standard.
 
 ## Authoritative
 
-| Tag  | Source                                                                                                                              | Governs                                                                 | Last reviewed |
-| ---- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------------- |
-| SPEC | [Agent Skills specification](https://agentskills.io/specification)                                                                  | Frontmatter fields, layout, hard caps, progressive-disclosure budget    | 2026-05-30    |
-| —    | [Agent Skills home](https://agentskills.io/)                                                                                        | The standard's overview, examples, ecosystem                            | 2026-05-30    |
-| BP   | [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)                  | Description writing, conciseness, scripts, anti-patterns, the checklist | 2026-05-30    |
-| CC   | [Claude Code — skills](https://code.claude.com/docs/en/skills)                                                                      | CC frontmatter, runtime listing/compaction budgets, commands→skills     | 2026-05-30    |
-| ENG  | [Equipping agents with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills) † | Rationale, progressive disclosure, evaluation-first, under-triggering   | 2026-05-30    |
-| —    | [`skills-ref validate`](https://github.com/agentskills/agentskills/tree/main/skills-ref)                                            | Mechanical baseline for frontmatter + naming (criteria B, C, D)         | 2026-05-30    |
+| Tag  | Source                                      | Governs                                                                 | Last reviewed |
+| ---- | ------------------------------------------- | ----------------------------------------------------------------------- | ------------- |
+| SPEC | [Agent Skills specification][spec]          | Frontmatter fields, layout, hard caps, progressive-disclosure budget    | 2026-05-30    |
+| —    | [Agent Skills home][home]                   | The standard's overview, examples, ecosystem                            | 2026-05-30    |
+| BP   | [Skill authoring best practices][bp]        | Description writing, conciseness, scripts, anti-patterns, the checklist | 2026-05-30    |
+| CC   | [Claude Code — skills][cc]                  | CC frontmatter, runtime listing/compaction budgets, commands→skills     | 2026-05-30    |
+| ENG  | [Equipping agents with Agent Skills][eng] ※ | Rationale, progressive disclosure, evaluation-first, under-triggering   | 2026-05-30    |
+| —    | [`skills-ref validate`][skills-ref]         | Mechanical baseline for frontmatter + naming (criteria B, C, D)         | 2026-05-30    |
 
-† Anthropic Engineering, 2025-12-18.
+※ Anthropic Engineering, 2025-12-18.
 
 ## Community
 
-| Tag       | Source                                                                                                                             | Governs                                                                 | Last reviewed |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------------- |
-| COMMUNITY | [Skill Authoring Patterns](https://generativeprogrammer.com/p/skill-authoring-patterns-from-anthropics)                            | Distilled patterns: terminology, feedback loops, gotchas sections       | 2026-05-30    |
-| COMMUNITY | [obra/superpowers writing-skills](https://github.com/obra/superpowers/blob/main/skills/writing-skills/anthropic-best-practices.md) | Community restatement of the best-practices doc; convergent conventions | 2026-05-30    |
+| Tag       | Source                                         | Governs                                                                 | Last reviewed |
+| --------- | ---------------------------------------------- | ----------------------------------------------------------------------- | ------------- |
+| COMMUNITY | [Skill Authoring Patterns][patterns]           | Distilled patterns: terminology, feedback loops, gotchas sections       | 2026-05-30    |
+| COMMUNITY | [obra/superpowers writing-skills][superpowers] | Community restatement of the best-practices doc; convergent conventions | 2026-05-30    |
 
 ## In-house
 
-| Tag                   | Source                       | Governs                                                                                                                 | Last reviewed |
-| --------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------- |
-| arcadia-skills README | The repo's own `README.md`   | Linking convention (no wikilinks), standard vs base-coupled-extension, the house toolchain, Knowledge Islands structure | 2026-05-30    |
-| `knowledgeislands-kb` | The reference standard skill | Worked example of a trigger-rich description and the standard-skill shape                                               | 2026-05-30    |
+| Tag                   | Source                       | Governs                                                                   | Last reviewed |
+| --------------------- | ---------------------------- | ------------------------------------------------------------------------- | ------------- |
+| arcadia-skills README | The repo's own `README.md`   | †                                                                         | 2026-05-30    |
+| `knowledgeislands-kb` | The reference standard skill | Worked example of a trigger-rich description and the standard-skill shape | 2026-05-30    |
+
+† Linking convention (no wikilinks), standard vs base-coupled-extension, the house toolchain, Knowledge Islands structure.
 
 ## Review changelog
 
@@ -55,3 +57,12 @@ Record each REFRESH run: date, what was re-fetched, what changed in the standard
 - **2026-05-31** — Catalogue maintenance (not a source refresh): added the cross-skill collision (COLL) and longevity (LONG) areas, the mode naming +
   alphabetical ordering rule (OPT-7), then migrated every code from letter + global numbering (`A1`, `B7`, `C14`, …) to **area-scoped codes** (`LAY-1`,
   `NAME-1`, `DESC-1`, …) so each area numbers independently and an insertion only renumbers its own area. Linter updated to print the new codes.
+
+[spec]: https://agentskills.io/specification
+[home]: https://agentskills.io/
+[bp]: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices
+[cc]: https://code.claude.com/docs/en/skills
+[eng]: https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills
+[skills-ref]: https://github.com/agentskills/agentskills/tree/main/skills-ref
+[patterns]: https://generativeprogrammer.com/p/skill-authoring-patterns-from-anthropics
+[superpowers]: https://github.com/obra/superpowers/blob/main/skills/writing-skills/anthropic-best-practices.md

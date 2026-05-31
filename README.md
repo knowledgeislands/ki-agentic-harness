@@ -33,33 +33,53 @@ so the two must stay in sync.
 
 ## Skills in this repository
 
-| Skill                                                                   | Kind              | Purpose                                                                                                                                                                                                                                                                                                         |
-| ----------------------------------------------------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md)                   | Knowledge Islands | KB modes - DIGEST / EXTRACT / QUERY / REFRESH / SAVE / UPDATE - over the standard zone model; only store-level bindings come from the host base.                                                                                                                                                                |
-| [`knowledgeislands-mcp`](knowledgeislands-mcp/SKILL.md)                 | Process           | Codify and audit the workspace MCP standard (layout, config injection, tool naming, access-level gate, security invariants, Bun/Node, tooling) across the `mcp-*` repos; ships a mechanical checker.                                                                                                            |
-| [`knowledgeislands-skills`](knowledgeislands-skills/SKILL.md)           | Process           | Audit and author Agent Skills against a checkable rubric - AUDIT / AUTHOR / REFRESH modes, a bundled linter (`skills:lint`) for the mechanical checks, and a tracked source list it revisits.                                                                                                                   |
-| [`knowledgeislands-repo-config`](knowledgeislands-repo-config/SKILL.md) | Process           | Codify, audit, and apply the repo-configuration standard across the `knowledgeislands` org - local files, GitHub settings, and security; ships a mechanical auditor (`repo:audit`) that discovers repos from a local tree or a whole org.                                                                       |
-| [`knowledgeislands-authoring`](knowledgeislands-authoring/SKILL.md)     | Process           | The house authoring conventions the other skills build on - Markdown (wide tables → footnotes, link style) and the shared `.ki-config.toml` file shape; the single source of truth a repo's or base's `CLAUDE.md` points to. Splits the mechanical layer (`lint:md`, Biome) from the judgment layer it carries. |
+Five skills, each a **governance skill**: it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones),
+backed by a tracked `references/sources.md`.
 
-All five currently pass their own audit. The four standard-holding skills each ship a REFRESH mode backed by a tracked `references/sources.md`, so they track
-moving external specs and conventions; `knowledgeislands-authoring` carries our own internally-owned conventions, which don't drift externally, so it needs no
-such refresh. Where the set is going next is in [ROADMAP.md](ROADMAP.md).
+### [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md) — Knowledge Islands
 
-### The audit-family shape
+Interacts with a Knowledge Islands knowledge base over the standard zone model: the note-ops **DIGEST / EXTRACT / QUERY / SAVE / UPDATE**, plus **AUDIT /
+CONFORM / INIT** to check a base against the structure model, bring it into line, or scaffold a new one. Only store-level bindings come from the host base; its
+mechanical checker is forthcoming.
 
-Three of these skills — `knowledgeislands-mcp`, `knowledgeislands-skills`, and `knowledgeislands-repo-config` — do the same kind of job: they hold a house
-**standard** and audit artifacts against it. They share one layout, so a reader (or a new such skill) can move between them:
+### [`knowledgeislands-mcp`](knowledgeislands-mcp/SKILL.md) — Process
 
-- **`<domain>-standard.md`** — the normative, quotable reference: what good looks like, and why.
-- **`audit-rubric.md`** — the line-by-line checkable criteria, each tagged **mechanical** (a bundled checker enforces it) or **judgment** (a reader assesses
-  it), each citing the standard section it verifies.
+Audits, conforms, and scaffolds workspace MCP servers against the "workspace MCP" standard (layout, config injection, `<app>_<resource>_<action>` tool naming,
+access-level gate, security invariants, Bun/Node, tooling) across the `mcp-*` repos. Ships a mechanical checker (`audit-mcp.ts`).
+
+### [`knowledgeislands-skills`](knowledgeislands-skills/SKILL.md) — Process
+
+Audits, writes, and conforms Agent Skills against a checkable rubric — a bundled linter (`skills:lint`) for the mechanical checks, the judgment ones applied by
+reading, and a tracked source list it revisits.
+
+### [`knowledgeislands-repo`](knowledgeislands-repo/SKILL.md) — Process
+
+Audits, conforms, and onboards any **Knowledge Islands–compliant** git repo (one carrying a `.ki-config.toml`) against the repo standard — local files, GitHub
+settings, and security. Owns the cross-cutting **`.ki-config.toml` contract**. Ships a mechanical auditor (`repo:audit`) that discovers repos from a local tree
+or a whole org.
+
+### [`knowledgeislands-authoring`](knowledgeislands-authoring/SKILL.md) — Process
+
+The house authoring conventions the other skills build on — Markdown (wide tables → footnotes, link style) and TOML formatting style — and the single source of
+truth a repo's or base's `CLAUDE.md` points to. Its mechanical half is `bun run lint:md` (Prettier + markdownlint), not a bundled script; it carries the
+judgment half.
+
+Where the set is going next is in [ROADMAP.md](ROADMAP.md).
+
+### The governance-skill shape
+
+All five share one layout, so a reader (or a new such skill) can move between them:
+
+- **`<domain>-standard.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like, and why.
+- **`audit-rubric.md`** — the line-by-line checkable criteria, each tagged **mechanical** (a checker enforces it) or **judgment** (a reader assesses it), each
+  citing the standard section it verifies.
 - **`references/sources.md`** — the tracked sources behind the standard, with `last reviewed` dates and a REFRESH changelog.
-- **a mechanical checker** in `scripts/` (`audit-mcp.ts`, `lint-skills.ts`, `audit-repo-config.ts`) — the deterministic half; the judgment half is applied by
-  reading.
+- **a mechanical checker** — `audit-mcp.ts`, `lint-skills.ts`, `audit-repo.ts` for mcp / skills / repo; `bun run lint:md` (Prettier + markdownlint) for
+  authoring; kb's is forthcoming. The judgment half is always applied by reading.
 
-…and the same modes: **AUDIT** (run the checker, then apply the judgment criteria), **CODIFY / AUTHOR** (build to the standard), and **REFRESH** (re-anchor the
-standard to its sources on a stated cadence). All three follow this in full — each has a `<domain>-standard.md`, an `audit-rubric.md`, a
-`references/sources.md`, and a mechanical checker in `scripts/`.
+…and the same modes: **AUDIT** (run the checker, then apply the judgment criteria), **CONFORM** (bring an existing artifact into line), and **REFRESH**
+(re-anchor the standard to its sources on a stated cadence), plus skill-specific modes where they fit — **INIT** to scaffold a new artifact, and kb's note-ops.
+The mode model is codified in `knowledgeislands-skills` (rubric **SHAPE-5**).
 
 ### Where the skills do not overlap
 
@@ -71,13 +91,14 @@ Each skill's `description` carries its own boundaries so the agent selects the r
   auditing the server's code is the former's. Each description names the other as the off-ramp, so neither claims the other's request.
 - **`knowledgeislands-kb` vs a base-coupled extension** - where a base ships its own `<base>-kb` skill, that extension wins and delegates the shared modes back
   to `knowledgeislands-kb` by name; the standard skill steps aside rather than competing for the same triggers.
-- **`knowledgeislands-repo-config` vs `knowledgeislands-mcp`** - both look at the `mcp-*` repos, but at different layers. `knowledgeislands-repo-config` governs
-  GitHub-side settings and universal local files (merge policy, branch protection, topics, security, README/LICENSE/.gitignore/.editorconfig);
-  `knowledgeislands-mcp` governs the server's **code** (`src/` layout, config injection, tool surface). Configuration vs source.
-- **`knowledgeislands-authoring` vs the rest** - it owns _how we write_: Markdown style and the shared `.ki-config.toml` file shape, the cross-cutting layer the
-  others assume rather than restate. The lines around it - note _content_ and KB structure belong to `knowledgeislands-kb`; a repo's _configuration_ and its
-  `.ki-config.toml` _keys_ to `knowledgeislands-repo-config`; a `SKILL.md`'s prose and frontmatter to `knowledgeislands-skills`. `knowledgeislands-authoring`
-  names each of those as an off-ramp and each names it back for general style, so the boundary is reciprocal and documented on both sides for humans too.
+- **`knowledgeislands-repo` vs `knowledgeislands-mcp`** - both look at the `mcp-*` repos, but at different layers. `knowledgeislands-repo` governs the repo's
+  configuration and Knowledge Islands compliance (the `.ki-config.toml` contract, GitHub-side settings, and the universal local files —
+  README/LICENSE/.gitignore/.editorconfig); `knowledgeislands-mcp` governs the server's **code** (`src/` layout, config injection, tool surface). Configuration
+  vs source.
+- **`knowledgeislands-authoring` vs the rest** - it owns _how we write_: Markdown style and TOML _formatting_ style, the cross-cutting layer the others assume
+  rather than restate. The lines around it - note _content_ and KB structure belong to `knowledgeislands-kb`; a repo's _configuration_ and the `.ki-config.toml`
+  _contract_ to `knowledgeislands-repo`; a `SKILL.md`'s prose and frontmatter to `knowledgeislands-skills`. `knowledgeislands-authoring` names each of those as
+  an off-ramp and each names it back for general style, so the boundary is reciprocal and documented on both sides for humans too.
 
 ## Installing skills
 
@@ -139,8 +160,9 @@ Once a skill is installed, there is nothing to import or configure - the agent l
   `/knowledgeislands-mcp audit ~/kis/knowledgeislands/mcp-gmail`. Use this when you want to be certain which skill runs, or to pass a specific mode.
 
 A skill that takes modes or arguments advertises them in its `argument-hint` frontmatter, shown as you type the slash command. For example
-`knowledgeislands-mcp` lists `audit <repo> | codify <repo> | refresh` - the words before each `<...>` are the modes, and the rest is what to pass. The arguments
-are a hint, not a parser: anything you type after the name reaches the skill as free text, so a plain-language phrasing of the same request works equally well.
+`knowledgeislands-mcp` lists `audit <repo> | conform <repo> | init <repo> | refresh` - the words before each `<...>` are the modes, and the rest is what to
+pass. The arguments are a hint, not a parser: anything you type after the name reaches the skill as free text, so a plain-language phrasing of the same request
+works equally well.
 
 This is why per-skill usage is **not** repeated in each `SKILL.md` body: the `description` documents when a skill fires and the `argument-hint` documents its
 modes, both machine-read at selection time. How to invoke _any_ skill - the slash-vs-trigger mechanics above - is a property of Claude Code and lives here,

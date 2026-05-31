@@ -1,13 +1,13 @@
 ---
 name: knowledgeislands-authoring
 description: >
-  The foundational authoring and formatting conventions shared across every Knowledge Islands skill, repo, and base — the common style layer the other skills
-  build on rather than restate. Currently covers Markdown authoring (wide tables → footnotes, link style) and TOML config files (the shared `.ki-config.toml`
-  shape, one table per skill). Use when writing or editing Markdown or TOML in a Knowledge Islands repo or base, formatting a document, README, table, or config
-  to house style, or asking what the house convention is for something. Triggers: "format this to our style", "fix this markdown", "tidy this README", "how
-  should this .ki-config.toml look", "what's our convention for tables / links / footnotes", "house style". For KB note-writing conventions use the
-  `knowledgeislands-kb` skill; for the rest of a repo's configuration and commit / PR conventions use the `knowledgeislands-repo-config` skill; to judge a
-  SKILL.md itself use the `knowledgeislands-skills` skill.
+  The foundational authoring and formatting conventions shared across every Knowledge Islands skill, repo, and base — the common style layer the others build on
+  rather than restate. Currently covers Markdown authoring (wide tables → footnotes, link style) and TOML formatting style (for the shared `.ki-config.toml`).
+  Use when writing or editing Markdown or TOML, bringing a document, README, table, or config to house style (conform), checking one against the conventions
+  (audit), or refreshing them against their sources. Triggers: "format this to our style", "fix this markdown", "tidy this README", "audit this doc's
+  formatting", "does this follow house style", "what's our convention for tables / links / footnotes". For KB note-writing use the `knowledgeislands-kb` skill;
+  for a repo's configuration and the `.ki-config.toml` contract use `knowledgeislands-repo`; to judge a SKILL.md use `knowledgeislands-skills`.
+argument-hint: 'audit <path> | conform <path> | refresh'
 ---
 
 # Knowledge Islands authoring conventions
@@ -28,26 +28,55 @@ A convention is one of two kinds, and the distinction decides where it lives —
 - **Mechanical** — deterministically enforced by the house toolchain, so you never hand-apply it. **Prettier + markdownlint-cli2** own Markdown (line width,
   prose wrap, bullet/quote characters, heading hierarchy, single H1, spacing); run `bun run lint:md`. **Biome** owns TS/JSON. Nothing in the toolchain formats
   **TOML**, so its conventions are entirely the judgment layer below.
-- **Judgment** — needs a person or model deciding: when a wide table should spill into footnotes, whether link text is descriptive, how a `.ki-config.toml` is
-  structured. The toolchain cannot assess these. **This is what this skill carries.**
+- **Judgment** — needs a person or model deciding: when a wide table should spill into footnotes, whether link text is descriptive, how a `.ki-config.toml`
+  reads. The toolchain cannot assess these. **This is what this skill carries.**
 
 So the workflow when authoring or tidying Markdown is: write to the judgment conventions, then run `bun run lint:md` to settle everything mechanical. TOML has
 no such mechanical pass — the convention is all there is.
+
+## Operating modes
+
+Like every governance skill it carries **AUDIT · CONFORM · REFRESH** — no INIT, since it conforms existing documents rather than scaffolding new artifacts.
+Infer the mode from the request; ask if unclear. (Modes are named and alphabetical.) The conventions each mode acts on are the **Convention sets** below; the
+checkable criteria are in [the rubric](references/audit-rubric.md).
+
+### Mode AUDIT — check a document against house style
+
+1. Run `bun run lint:md` for the **mechanical** layer (Prettier + markdownlint) and capture its output — never hand-judge what it enforces.
+2. Apply the **judgment** (`[J]`) criteria from [the rubric](references/audit-rubric.md): wide tables that should spill into footnotes, non-descriptive link
+   text, a `.ki-config.toml` that reads poorly. TOML has no mechanical pass — the rubric is all of it.
+3. **Report** by location → criterion → fix; lead with anything that breaks the build (`lint:md` failures), then the judgment findings.
+
+### Mode CONFORM — bring a document into house style
+
+1. Apply the judgment transforms in place — wide tables → footnotes (the marker series), descriptive link text, tidy TOML — per the Convention sets.
+2. Run `bun run lint:md` to settle the mechanical layer (table alignment, prose wrap, and transient `MD052`/`MD060` until references and alignment land).
+3. Re-run until `lint:md` is clean and the judgment criteria pass.
+
+### Mode REFRESH — re-anchor the conventions to their sources
+
+The house conventions sit on top of external tools and specs (CommonMark, Prettier, markdownlint, the TOML spec), which move. Run periodically, or when asked
+"are the authoring conventions current".
+
+1. **Read [the source list](references/sources.md)** — each tracked source with its `last reviewed` date.
+2. **Re-fetch each** and diff against the convention references: a changed Prettier/markdownlint default that shifts what's mechanical, a CommonMark/TOML
+   change, a rule worth adopting.
+3. **Propose a diff** to the convention references (and this skill); confirm before writing.
+4. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and record what changed in the changelog.
 
 ## Convention sets
 
 Each set is a self-contained reference, loaded on demand. Read the one relevant to what you are writing.
 
-| Set                | Covers                                                                                      | Reference                                                 |
-| ------------------ | ------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| Markdown authoring | Wide tables → footnotes (with the marker series), link style, what to leave to the linter   | [markdown-authoring.md](references/markdown-authoring.md) |
-| TOML config        | The shared `.ki-config.toml` shape — one `[<skill-name>]` table per skill, keys, exceptions | [toml-config.md](references/toml-config.md)               |
+- **[Markdown authoring](references/markdown-authoring.md)** — wide tables → footnotes (with the marker series), link style, and what to leave to the linter.
+- **[TOML formatting](references/toml-config.md)** — key case, quoting, and comments for the shared `.ki-config.toml` (its _contract_ is
+  `knowledgeislands-repo`'s).
 
 Out of scope by design, with their natural homes:
 
 - **KB note-writing conventions** (zones, frontmatter, routing) → the `knowledgeislands-kb` skill.
-- **Commit and PR conventions, and the rest of a repo's configuration** → the `knowledgeislands-repo-config` skill. (That skill owns its own `.ki-config.toml`
-  table's _keys_; this skill owns the _file-level shape_ every such table follows.)
+- **Commit and PR conventions, a repo's configuration, and the `.ki-config.toml` _contract_** (the compliance marker + one-table-per-skill model) → the
+  `knowledgeislands-repo` skill. This skill owns only the TOML _formatting_ style every such table is written in.
 - **SKILL.md authoring** (frontmatter, description, body altitude) → the `knowledgeislands-skills` skill.
 
 ## Adding a convention set

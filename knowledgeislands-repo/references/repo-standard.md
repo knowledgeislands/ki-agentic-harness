@@ -1,9 +1,10 @@
-# Knowledge Islands repo-configuration standard
+# Knowledge Islands repo standard
 
-The canonical configuration every repo in the [`knowledgeislands`](https://github.com/knowledgeislands) org should carry, so the repos present and behave
-consistently and that consistency is _checkable_ rather than folklore. Three layers — local files, core GitHub settings, deeper GitHub (security & Actions).
-Derived and applied 2026-05-31 from an audit of all 10 repos. The mechanical checker is [`../scripts/audit-repo-config.ts`](../scripts/audit-repo-config.ts);
-keep this doc and the script's constants in sync.
+The canonical configuration a Knowledge Islands repo should carry, so repos present and behave consistently and that consistency is _checkable_ rather than
+folklore. A Knowledge Islands repo is a git repo that carries a `.ki-config.toml` (its presence is the compliance marker); the standard applies to any such repo
+— the [`knowledgeislands`](https://github.com/knowledgeislands) org is the reference set it was derived from, not its boundary. Three layers — local files, core
+GitHub settings, deeper GitHub (security & Actions). Derived and applied 2026-05-31 from an audit of all 10 `knowledgeislands` repos. The mechanical checker is
+[`../scripts/audit-repo.ts`](../scripts/audit-repo.ts); keep this doc and the script's constants in sync.
 
 ## Contents
 
@@ -21,13 +22,13 @@ keep this doc and the script's constants in sync.
 Every repo carries these at the root. Presence is checked **on the default branch via the GitHub API** (the git-tree endpoint), not from a working checkout — so
 what's actually committed is what's audited, and `--org` mode covers uncloned repos.
 
-| File              | Why                                                                                                                          |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `README.md`       | The repo's entry point.                                                                                                      |
-| `LICENSE`         | MIT text (matches the GitHub license — layer 2).                                                                             |
-| `.gitignore`      | Keeps build/dep noise out of history.                                                                                        |
-| `.editorconfig`   | Shared editor defaults across the workspace toolchain.                                                                       |
-| `.ki-config.toml` | Declares this repo's expected config under `[knowledgeislands-repo-config]` — `visibility` and any per-repo check overrides. |
+| File              | Why                                                                                                                   |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `README.md`       | The repo's entry point.                                                                                               |
+| `LICENSE`         | MIT text (matches the GitHub license — layer 2).                                                                      |
+| `.gitignore`      | Keeps build/dep noise out of history.                                                                                 |
+| `.editorconfig`   | Shared editor defaults across the workspace toolchain.                                                                |
+| `.ki-config.toml` | Declares this repo's expected config under `[knowledgeislands-repo]` — `visibility` and any per-repo check overrides. |
 
 ## Layer 2 — core GitHub settings
 
@@ -72,17 +73,19 @@ Each repo **declares** its expected visibility in `.ki-config.toml` (`visibility
 live GitHub visibility. It is a deliberate per-repo choice, **not inferred from the name**. (In practice the `arcadia-*` repos are private bases / internal
 skills and the `mcp-*` repos are public servers — a pattern, not the rule.)
 
-`.ki-config.toml` is a shared per-repo file; each skill reads its own `[table]`, and a skill with only implicit/default behaviour needs no table. This skill
-owns `[knowledgeislands-repo-config]`. Scaffold the default keys with `bun scripts/audit-repo-config.ts --init >> .ki-config.toml`, then edit the values:
+`.ki-config.toml` is a shared per-repo file; each skill reads its own `[table]`, and a skill with only implicit/default behaviour needs no table. The full
+cross-skill contract — its presence as the compliance marker, the table-per-skill model, and the validate-your-own-table protocol — is in
+[the `.ki-config.toml` contract](ki-config-standard.md). This skill owns `[knowledgeislands-repo]`. Scaffold the default keys with
+`bun scripts/audit-repo.ts --init >> .ki-config.toml`, then edit the values:
 
 ```toml
 # .ki-config.toml — one [table] per skill that needs per-repo options
-[knowledgeislands-repo-config]
+[knowledgeislands-repo]
 visibility = "public"   # "public" | "private"
 
 # Optional. One boolean per overridable check; omit any to take the org default.
 # A repo that fully conforms needs nothing here.
-[knowledgeislands-repo-config.checks]
+[knowledgeislands-repo.checks]
 branch-protection = true   # default off — protect `main` on this repo
 ```
 
@@ -90,9 +93,9 @@ branch-protection = true   # default off — protect `main` on this repo
 
 The rubric carries the **org default** for every check. Most are bedrock — file presence, default branch, license, description, merge policy,
 auto-delete-branch, visibility, Dependabot — and aren't negotiable. The rest are **overridable**: a repo flips one for itself with a single boolean in its
-`[knowledgeislands-repo-config.checks]` table, where `true` = enforce this check and `false` = don't. A check you omit takes the org default, so **a
-fully-conforming repo writes no overrides at all**. The auditor reports every active override as a `note` (never a failure), so a deliberate departure stays
-visible without reading as drift.
+`[knowledgeislands-repo.checks]` table, where `true` = enforce this check and `false` = don't. A check you omit takes the org default, so **a fully-conforming
+repo writes no overrides at all**. The auditor reports every active override as a `note` (never a failure), so a deliberate departure stays visible without
+reading as drift.
 
 | Check               | Org default | When enforced, the auditor requires…                                                                              |
 | ------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------- |
@@ -112,6 +115,8 @@ visible without reading as drift.
   `arcadia-*` repos need say nothing about them.
 - A key under `[…checks]` that names no overridable check (a typo, or a bedrock check) **WARNs** — it would otherwise silently do nothing. The auditor's
   `CHECK_DEFAULTS` registry is the source of truth for what's overridable.
+- A **redundant** override — one whose value just restates the org default (e.g. `wiki = true`) — does nothing, so the auditor flags it with a `note` advising
+  it be dropped. The aim is that a `.ki-config.toml` carries only genuine divergences, and a conforming repo's `[…checks]` is empty or absent.
 
 ## Applying it
 
@@ -122,8 +127,8 @@ all=(arcadia-principal arcadia-skills arcadia-website mcp-claude-housekeeping mc
 public=(mcp-claude-housekeeping mcp-git-audit mcp-gmail mcp-kb-fs mcp-kb-notion-mirror mcp-m365 mcp-voicenotes-edit)
 
 # Layer 1 — each repo declares its config in .ki-config.toml (committed via PR like any file).
-#   Scaffold the [knowledgeislands-repo-config] defaults, then edit:
-#     bun scripts/audit-repo-config.ts --init >> .ki-config.toml
+#   Scaffold the [knowledgeislands-repo] defaults, then edit:
+#     bun scripts/audit-repo.ts --init >> .ki-config.toml
 # Visibility is verified (declared vs live), not set here; change actual visibility deliberately:
 #   gh repo edit knowledgeislands/<name> --visibility public|private --accept-visibility-change-consequences
 
@@ -163,8 +168,8 @@ Layer 1 files are added with a normal commit, pushed straight to `main` (it is u
 ## Verifying it
 
 ```zsh
-bun ../scripts/audit-repo-config.ts ~/kis/knowledgeislands      # enumerate from a local tree (origins)
-bun ../scripts/audit-repo-config.ts --org knowledgeislands      # enumerate the whole org
+bun ../scripts/audit-repo.ts ~/kis/knowledgeislands      # enumerate from a local tree (origins)
+bun ../scripts/audit-repo.ts --org knowledgeislands      # enumerate the whole org
 ```
 
 Both check every layer against GitHub; the path / `--org` only decides which repos.

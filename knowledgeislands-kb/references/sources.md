@@ -9,10 +9,12 @@ re-anchors against the canonical definition and against how the bases actually u
 
 ## Canonical (the structure definition)
 
-| Source                                                                | Governs                                                                         | Last reviewed |
-| --------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------------- |
-| arcadia-skills `README.md` - "The Knowledge Islands structure"        | The authoritative zone model (`+` Calendar Pillars Resources Streams `-` Admin) | 2026-05-31    |
-| [Knowledge Islands KB Reference](<Knowledge Islands KB Reference.md>) | This skill's own long-form detail on the modes and conventions                  | 2026-05-31    |
+| Source                                                         | Governs                                                        | Last reviewed |
+| -------------------------------------------------------------- | -------------------------------------------------------------- | ------------- |
+| arcadia-skills `README.md` - "The Knowledge Islands structure" | †                                                              | 2026-05-31    |
+| [Knowledge Islands KB Reference][kb-reference]                 | This skill's own long-form detail on the modes and conventions | 2026-05-31    |
+
+† The authoritative zone model (`+` Calendar Pillars Resources Streams `-` Admin).
 
 ## Living (how the model is actually used)
 
@@ -29,3 +31,5 @@ Record each REFRESH run: date, what was re-anchored, what changed in the structu
 
 - **2026-05-31** - Source list created alongside the new Mode REFRESH. Established that this skill tracks a canonical in-house structure, not a moving external
   spec; refresh re-anchors against the README definition and the live bases.
+
+[kb-reference]: <Knowledge Islands KB Reference.md>

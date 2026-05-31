@@ -1,8 +1,8 @@
 # Repo-config audit rubric
 
-The line-by-line checkable criteria behind [the standard](repo-config-standard.md). Each is tagged **[M] mechanical** (the bundled
-[`../scripts/audit-repo-config.ts`](../scripts/audit-repo-config.ts) enforces it and prints the **id** in brackets) or **[J] judgment** (a reader assesses it).
-Codes are the check ids the script emits. Each cites the standard layer it verifies.
+The line-by-line checkable criteria behind [the standard](repo-standard.md). Each is tagged **[M] mechanical** (the bundled
+[`../scripts/audit-repo.ts`](../scripts/audit-repo.ts) enforces it and prints the **id** in brackets) or **[J] judgment** (a reader assesses it). Codes are the
+check ids the script emits. Each cites the standard layer it verifies.
 
 A criterion's tag is a contract with the script: if you find yourself eyeballing an **[M]** check, run the auditor instead; a **[J]** check that becomes
 deterministic should move into the script and flip to **[M]**.
@@ -40,15 +40,15 @@ deterministic should move into the script and flip to **[M]**.
 - **actions [M, WARN]** `allowed_actions` is `all`; anything else WARNs rather than fails (tightening is a deliberate per-repo choice). (Layer 3)
 
 **override↓** marks an **overridable** check: its org default (`on`/`off`) lives in the script's `CHECK_DEFAULTS`, and a repo flips it for itself with a boolean
-under `[knowledgeislands-repo-config.checks]` (`true` = enforce, `false` = don't). Every other check is bedrock — not overridable. An active override prints as
-a `note`, never a failure; a `[…checks]` key that names no overridable check **WARNs** (`checks` id). (standard: Per-repo overrides)
+under `[knowledgeislands-repo.checks]` (`true` = enforce, `false` = don't). Every other check is bedrock — not overridable. An active override prints as a
+`note`, never a failure; a redundant override (one that just restates the org default) prints a `note` advising it be dropped; a `[…checks]` key that names no
+overridable check **WARNs** (`checks` id). (standard: Per-repo overrides)
 
 ## Judgment (not deterministic — apply by reading)
 
 - **description-fit [J]** the description actually _describes the repo's purpose_, and stays in sync with its `package.json` `description` where one exists. The
   script only checks non-emptiness. (Layer 2)
-- **overrides** each boolean under `[knowledgeislands-repo-config.checks]` flips an overridable check for that repo (the script prints it as a `note`). **[J]**
-  part: confirm each override is a genuine, warranted per-repo decision (e.g. a public repo that deliberately keeps a Wiki, or one that protects `main`), not a
-  way to wave off real drift. (standard: Per-repo overrides)
-- **sync [J]** this rubric, [the standard](repo-config-standard.md), and the script's constants agree. When the standard moves, all three move together
-  (REFRESH).
+- **overrides** each boolean under `[knowledgeislands-repo.checks]` flips an overridable check for that repo (the script prints it as a `note`). **[J]** part:
+  confirm each override is a genuine, warranted per-repo decision (e.g. a public repo that deliberately keeps a Wiki, or one that protects `main`), not a way to
+  wave off real drift. (standard: Per-repo overrides)
+- **sync [J]** this rubric, [the standard](repo-standard.md), and the script's constants agree. When the standard moves, all three move together (REFRESH).

@@ -133,6 +133,12 @@ A criterion's tag is a contract with the linter: if you find yourself eyeballing
 - **SHAPE-1 [J]** A **standard** KI skill resolves base bindings at runtime and hard-codes **no single base**. (arcadia-skills README, `knowledgeislands-kb`)
 - **SHAPE-2 [J]** A **base-coupled extension** supplies only base bindings and delegates shared modes to a standard skill **by name**. (arcadia-skills README)
 - **SHAPE-3 [J]** The skill declares its **kind** (Knowledge Islands / process / scoped) clearly. (arcadia-skills README)
+- **SHAPE-4 [J]** A skill that reads the shared `.ki-config.toml` consumes and **validates only its own `[<skill>]` table** — warns on a key it doesn't
+  recognise, advises dropping one that merely restates a default — and never inspects another skill's table. Validate down, ignore across. (contract defined by
+  `knowledgeislands-repo`)
+- **SHAPE-5 [J]** A **governance skill** (one that holds a standard) exposes the universal modes **AUDIT** + **REFRESH** + **CONFORM**; any further modes
+  (`INIT` to scaffold a new artifact, and operational modes like kb's note-ops) are skill-specific. Modes are named, not lettered, and ordered alphabetically in
+  the body and `argument-hint`. (arcadia-skills README)
 
 ## PROC — Process / meta
 

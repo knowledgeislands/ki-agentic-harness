@@ -2,12 +2,13 @@
 name: knowledgeislands-kb
 description: >
   Interact with a Knowledge Islands knowledge base: save AI outputs as notes, update existing notes, query the base, distil a conversation into notes, or write
-  a session digest. Targets the Knowledge Islands structure (Calendar / Pillars / Resources / Streams, plus inbound `+` and outbound `-`), so it assumes the
-  zone model rather than asking for it; only a few store-level bindings come from the host project. Triggers: "save to my notes", "save to the knowledge base",
-  "add to the KB", "what do my notes say about", "search my notes", "update the note on", "capture this", "write a session digest". Where a knowledge base ships
-  its own named extension skill, prefer that skill; it extends this one. For general Markdown or TOML house style (not note content), use the
-  `knowledgeislands-authoring` skill.
-argument-hint: 'digest | extract | query <question> | refresh | save | update <note>'
+  a session digest — and audit a base against the structure model, bring it into line, or scaffold a new one. Targets the Knowledge Islands structure (Calendar
+  / Pillars / Resources / Streams, plus inbound `+` and outbound `-`), so it assumes the zone model rather than asking for it; only a few store-level bindings
+  come from the host project. Triggers: "save to my notes", "save to the knowledge base", "add to the KB", "what do my notes say about", "search my notes",
+  "update the note on", "capture this", "write a session digest", "audit my knowledge base", "is my base structured right", "set up a new knowledge base". Where
+  a knowledge base ships its own named extension skill, prefer that skill; it extends this one. For general Markdown or TOML house style (not note content), use
+  the `knowledgeislands-authoring` skill.
+argument-hint: 'audit | conform | digest | extract | init | query <question> | refresh | save | update <note>'
 ---
 
 # Knowledge Islands KB
@@ -53,13 +54,12 @@ any per-Pillar profile index) before substantive work. Treat other Pillars as of
 Almost everything is fixed by the structure above. Only these come from the host project - take them from the auto-loaded `CLAUDE.md`, then the root memory
 index, then the project's extension skill if it ships one:
 
-| Binding           | What the project supplies                                                                    | Default if absent                                 |
-| ----------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| Notes store       | Canonical alias and location of the notes store                                              | The connected base; refer to it as "the base"     |
-| Sources store     | Whether a paired sources store exists, and how note extracts mirror its paths                | None                                              |
-| Scope usage       | Whether the base is Pillar-scoped (declare an active Pillar) or single-Pillar / flat         | Pillar-scoped                                     |
-| Writing standards | Language variant, citation format, structural norms                                          | British English; cite source paths; concise prose |
-| Domain pre-flight | Any extra reads before drafting (profiles, domain context) - usually via the extension skill | None beyond the memory cascade                    |
+- **Notes store** — canonical alias and location of the notes store. _Default:_ the connected base; refer to it as "the base".
+- **Sources store** — whether a paired sources store exists, and how note extracts mirror its paths. _Default:_ none.
+- **Scope usage** — whether the base is Pillar-scoped (declare an active Pillar) or single-Pillar / flat. _Default:_ Pillar-scoped.
+- **Writing standards** — language variant, citation format, structural norms. _Default:_ British English; cite source paths; concise prose.
+- **Domain pre-flight** — any extra reads before drafting (profiles, domain context), usually via the extension skill. _Default:_ none beyond the memory
+  cascade.
 
 ## Step 1 - Load context
 
@@ -71,7 +71,22 @@ index, then the project's extension skill if it ships one:
 
 ## Step 2 - Determine mode
 
-Infer the mode from the request, or ask if unclear.
+Infer the mode from the request, or ask if unclear. Like every governance skill it carries **AUDIT · CONFORM · REFRESH**; its base-specific modes are **INIT**
+(scaffold a base) and the note-ops **DIGEST · EXTRACT · QUERY · SAVE · UPDATE**. Modes are named and alphabetical.
+
+### Mode AUDIT - check the base against the structure model
+
+1. Read the base's actual layout: the root `Admin/MEMORY.md` and the top-level zone folders.
+2. Compare against the zone model, the routing test, and the note conventions (frontmatter, naming, placement).
+3. **Report** drift: notes filed in the wrong zone, missing or extra zones, notes lacking required frontmatter, stale memory-index entries. Cite paths and give
+   the fix.
+
+### Mode CONFORM - bring the base into line
+
+1. Run **AUDIT** first for the gap list.
+2. Apply the fixes: refile misrouted notes (per the routing test), create any missing zone, repair note frontmatter and naming, reconcile the memory index.
+   Confirm before moving or rewriting notes.
+3. Re-run **AUDIT** until it is clean.
 
 ### Mode DIGEST - session digest
 
@@ -84,6 +99,12 @@ Infer the mode from the request, or ask if unclear.
 1. Identify distinct reusable pieces of knowledge.
 2. For each, propose a title, destination zone (per the routing test), and draft.
 3. Confirm, then write the approved notes.
+
+### Mode INIT - scaffold a new base's structure
+
+1. Create the zone skeleton — Calendar / Pillars / Resources / Streams, plus the inbound `+` and outbound `-` zones — and the root `Admin/MEMORY.md`.
+2. Seed each zone's note conventions (frontmatter, naming) from the structure model.
+3. Hand ongoing capture to the SAVE / EXTRACT / DIGEST modes.
 
 ### Mode QUERY - answer from the base
 

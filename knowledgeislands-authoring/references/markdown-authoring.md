@@ -54,14 +54,31 @@ If a visually distinct **second series** is needed — e.g. to separate "caveats
 | alpha | ✅     | †     |
 | beta  | ⚠️     | ‡     |
 
-† Migration ran cleanly; post-deploy smoke check still pending review. ‡ Failing on the new schema validator — tracked in LIN-1423, owner @kris.
+† Migration ran cleanly; post-deploy smoke check still pending review.
+
+‡ Failing on the new schema validator — tracked in LIN-1423, owner @kris.
 ```
+
+### Gotchas
+
+Learned applying this; bake them in:
+
+1. **Separate every footnote with a blank line.** Under `proseWrap: always` Prettier reflows adjacent footnote lines into one paragraph — a blank line between
+   each keeps them distinct.
+2. **Footnoting a column often isn't enough to reach `printWidth`.** A long `Source` URL still blows the row out; convert such URLs to **reference-style links**
+   (`[text][ref]` in the cell, `[ref]: https://…` definitions collected at the file bottom).
+3. **When the long cell is content, not a URL,** reference links don't help — shorten the cell to a short label with a marker and move the full content to a
+   **second-series (`※`) footnote**.
+4. **Watch for a pre-existing footnote series.** If a table already uses `†` for something (e.g. a date caveat), give the dominant content series the primary
+   daggers and move the lone caveat to the `※` series so markers don't collide.
+5. **Author loosely, then `bun run lint:md`.** Prettier re-aligns table padding (`MD060`) and markdownlint flags `MD052` (undefined reference) until the
+   `[ref]:` defs land — both transient; the pass should end at 0 errors.
 
 ## Links
 
 - **Use standard relative markdown links, never Obsidian wikilinks** (`[[…]]`). Wikilinks break the moment a file is relocated, symlinked, or read outside the
   base; relative markdown links survive it. For a path containing spaces, use the CommonMark angle-bracket form: `[ref](<references/My Detail.md>)`.
-- **Write descriptive link text** — the words you'd skim for, not "click here" or a bare URL. `[the repo-config standard](…)`, not `[here](…)`.
+- **Write descriptive link text** — the words you'd skim for, not "click here" or a bare URL. `[the repo standard](…)`, not `[here](…)`.
 - **Refer to another skill by its `name`**, never by a file path — "the `knowledgeislands-kb` skill" — because a skill's location on disk is not stable, but its
   name is how it loads into the session.
 - **In editor / IDE contexts** where the harness asks for clickable references, link files and lines with relative markdown links
