@@ -135,6 +135,12 @@ triad are skill-specific: **INIT** scaffolds a new conformant artifact where tha
 skill's own domain (the `knowledgeislands-kb` note-ops — DIGEST / EXTRACT / QUERY / SAVE / UPDATE). The five `knowledgeislands-*` skills are all governance
 skills on this model. (arcadia-skills README)
 
+Within a **Knowledge Islands repo** (one carrying a `.ki-config.toml`), a governance skill also takes a shared **file shape** so a reader — or a new such skill
+— moves between them without relearning: a normative `<domain>-standard.md` (or the contract / conventions reference it holds), an `audit-rubric.md` of
+pass/fail criteria each tagged mechanical/judgment and citing its standard section, a tracked `references/sources.md` with `last reviewed` dates, and a
+mechanical checker (the judgment half applied by reading). This is a convention of the `knowledgeislands-*` set rather than a requirement on every Agent Skill,
+so a governance skill outside such a repo is exempt for now (rubric **SHAPE-6**). (arcadia-skills README)
+
 ## 12. Process / evaluation
 
 These are not checkable from the files alone. A good skill is built **evaluation-first** — at least three evaluation scenarios against a no-skill baseline

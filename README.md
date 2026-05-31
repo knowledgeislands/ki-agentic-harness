@@ -1,8 +1,7 @@
 # arcadia-skills
 
-A collection of reusable [Agent Skills](https://agentskills.io/specification). This repository is the canonical home for skills authored across the Arcadia /
-Knowledge Islands work - kept in one place so they can be versioned, reviewed, and installed together rather than scattered across the bases and projects that
-use them.
+A collection of reusable [Agent Skills](https://agentskills.io/specification). This repository is the canonical home for skills authored across Knowledge
+Islands - kept in one place so they can be versioned, reviewed, and installed together rather than scattered across the bases and projects that use them.
 
 Skills here fall into a few kinds, and the set will grow:
 
@@ -91,14 +90,35 @@ Each skill's `description` carries its own boundaries so the agent selects the r
   auditing the server's code is the former's. Each description names the other as the off-ramp, so neither claims the other's request.
 - **`knowledgeislands-kb` vs a base-coupled extension** - where a base ships its own `<base>-kb` skill, that extension wins and delegates the shared modes back
   to `knowledgeislands-kb` by name; the standard skill steps aside rather than competing for the same triggers.
-- **`knowledgeislands-repo` vs `knowledgeislands-mcp`** - both look at the `mcp-*` repos, but at different layers. `knowledgeislands-repo` governs the repo's
-  configuration and Knowledge Islands compliance (the `.ki-config.toml` contract, GitHub-side settings, and the universal local files —
-  README/LICENSE/.gitignore/.editorconfig); `knowledgeislands-mcp` governs the server's **code** (`src/` layout, config injection, tool surface). Configuration
-  vs source.
+- **`knowledgeislands-repo` vs `knowledgeislands-mcp`** - the `mcp-*` repos are where the two overlap, but `knowledgeislands-repo`'s reach is wider: it governs
+  **any** Knowledge Islands–compliant repo (anything carrying a `.ki-config.toml`), not just MCP ones. Where they do meet, they sit at different layers.
+  `knowledgeislands-repo` governs the repo's configuration and Knowledge Islands compliance (the `.ki-config.toml` contract, GitHub-side settings, and the
+  universal local files — README/LICENSE/.gitignore/.editorconfig); `knowledgeislands-mcp` governs the server's **code** (`src/` layout, config injection, tool
+  surface). Configuration vs source.
 - **`knowledgeislands-authoring` vs the rest** - it owns _how we write_: Markdown style and TOML _formatting_ style, the cross-cutting layer the others assume
   rather than restate. The lines around it - note _content_ and KB structure belong to `knowledgeislands-kb`; a repo's _configuration_ and the `.ki-config.toml`
   _contract_ to `knowledgeislands-repo`; a `SKILL.md`'s prose and frontmatter to `knowledgeislands-skills`. `knowledgeislands-authoring` names each of those as
   an off-ramp and each names it back for general style, so the boundary is reciprocal and documented on both sides for humans too.
+
+### Principles across the set
+
+Four invariants hold for every skill here, current and future — each tied to a named rubric criterion rather than just asserted, so a new skill inherits them by
+being audited:
+
+- **Every skill carries a refresh path — and a cadence.** A skill that tracks a moving target (an external spec, a community best-practice, a base's live
+  structure) ships a REFRESH mode and a dated `references/sources.md`, and states how often it should run; one that hard-codes no volatile external fact may
+  instead resolve it at runtime. The point is durability: a skill installed into a shared or cloud catalogue is long-lived and far from its author, and must not
+  rot silently. Enforced as `knowledgeislands-skills` rubric **LONG-1** (a refresh path exists) and **LONG-2** (it has a cadence, ideally a scheduled run), and
+  mirrored into the `knowledgeislands-mcp` audit checklist. The monthly `knowledgeislands-skills-refresh` routine realises it — running all five skills' REFRESH
+  against their tracked sources and opening a PR for review rather than committing.
+- **No silent collisions.** Where two skills could fire on the same request, each description names the other as the off-ramp, and new skills are audited
+  against the existing set before they ship (rubric **COLL-1/COLL-2**; the linter's cross-skill pass flags shared triggers). The current boundaries are the
+  subject of _Where the skills do not overlap_, just above.
+- **Standard vs base-coupled extension.** Knowledge Islands skills stay base-agnostic and resolve bindings at runtime; anything base-specific lives in a
+  `<base>-kb`-style extension that delegates the shared modes back by name — spelled out in _Standard skills and base-coupled extensions_, below.
+- **One governance-mode model.** Every skill exposes the universal **AUDIT / CONFORM / REFRESH** modes plus skill-specific ones (**INIT** to scaffold,
+  operational modes such as kb's note-ops), codified as rubric **SHAPE-5** so a new skill inherits the shape. The layout this produces is _The governance-skill
+  shape_, above.
 
 ## Installing skills
 

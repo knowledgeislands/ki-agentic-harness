@@ -139,6 +139,11 @@ A criterion's tag is a contract with the linter: if you find yourself eyeballing
 - **SHAPE-5 [J]** A **governance skill** (one that holds a standard) exposes the universal modes **AUDIT** + **REFRESH** + **CONFORM**; any further modes
   (`INIT` to scaffold a new artifact, and operational modes like kb's note-ops) are skill-specific. Modes are named, not lettered, and ordered alphabetically in
   the body and `argument-hint`. (arcadia-skills README)
+- **SHAPE-6 [J]** _Governance-skill file shape — Knowledge Islands repos only, for now._ A governance skill **shipped in a Knowledge Islands repo** (one
+  carrying a `.ki-config.toml`) materialises its standard as the shared four-file shape, so a reader or a new such skill moves between them: a normative
+  **`<domain>-standard.md`** (or the contract / conventions reference it holds), an **`audit-rubric.md`** of pass/fail criteria each tagged **[M]**/**[J]** and
+  citing its standard section, a tracked **`references/sources.md`** with `last reviewed` dates (see **LONG-1**), and a **mechanical checker** (the judgment
+  half applied by reading). A governance skill outside a Knowledge Islands repo is exempt until the convention is generalised. (arcadia-skills README)
 
 ## PROC — Process / meta
 
