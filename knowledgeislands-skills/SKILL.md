@@ -31,25 +31,30 @@ Every criterion is one of two kinds — never conflate them:
 The full criteria catalogue — every check, why it matters, and its source — lives in [the rubric reference](references/rubric.md). Load it before an AUDIT or
 AUTHOR; this body is the routing overview.
 
-## Mode A — AUDIT an existing skill
+## Mode AUDIT — review an existing skill
 
 Review a skill (or every skill in a repo) against the rubric and report.
 
 1. **Run the linter.** `bun scripts/lint-skills.ts <path-to-skill-or-repo>` from this skill's directory (or `bun run skills:lint` at the arcadia-skills repo
    root). It reports the mechanical criteria as PASS / WARN / FAIL and exits non-zero on any FAIL. Capture its output verbatim — do not re-derive what it found.
-2. **Read the `SKILL.md`** (and any `references/`, `scripts/`, `assets/`) and apply the **judgment** criteria from [the rubric](references/rubric.md) §§ C, E–I.
-   Focus on:
+   Point it at the **repo**, not a lone skill, so the cross-skill collision pass (COLL-1) has the siblings to compare.
+2. **Read the `SKILL.md`** (and any `references/`, `scripts/`, `assets/`) and apply the **judgment** ([J]-tagged) criteria from
+   [the rubric](references/rubric.md) — the linter owns the [M] ones. Focus on:
    - **Description** — does it state both _what it does_ and _when to use it_, in the third person, with concrete trigger phrases a user would actually say?
      This is the only signal at selection time.
    - **Altitude & conciseness** — is anything in the body something a competent Claude already knows? Is detail that's read rarely pushed into `references/`
      rather than inlined?
    - **Progressive disclosure** — is every bundled file referenced from `SKILL.md` with a note on when to load it? Any orphan files?
    - **Knowledge Islands fit** — is it correctly a _standard_ skill (resolves base bindings at runtime, hard-codes no base) or a _base-coupled extension_
-     (delegates shared modes to a standard skill by `name`)? See [the rubric](references/rubric.md) § J.
+     (delegates shared modes to a standard skill by `name`)? See [the rubric](references/rubric.md) area SHAPE.
+   - **Collision & longevity** — for any trigger the linter flags as shared (or that you judge semantically overlapping), does **each** description name the
+     other as an off-ramp, or is the guard one-directional? And does the skill hard-code volatile facts (model IDs, API / tool names, URLs, dated specs) without
+     resolving them at runtime or carrying a refresh path — the staleness that bites hardest once a skill ships to a cloud catalogue it can't be eyeballed in?
+     See [the rubric](references/rubric.md) areas COLL and LONG.
 3. **Report** as a table: criterion → verdict (✅ pass / ⚠️ warn / ❌ fail) → the specific fix. Lead with FAILs, then WARNs, then a one-line overall verdict.
    Cite the rubric criterion number. Offer to apply the fixes.
 
-## Mode B — AUTHOR a new skill
+## Mode AUTHOR — write a new skill
 
 1. **Clarify scope first**: what should fire the skill (the triggers), what kind it is (Knowledge Islands / process / scoped — see arcadia-skills `README.md`),
    and whether it's a standard skill or a base-coupled extension.
@@ -58,9 +63,9 @@ Review a skill (or every skill in a repo) against the rubric and report.
 3. **Write to the rubric, not from memory** — open [the rubric](references/rubric.md) and satisfy each criterion as you draft. In particular: trigger-rich
    third-person `description`; body under 500 lines / ~5,000 tokens; one default approach with an escape hatch, not a menu; detail in `references/`; relative
    markdown links (angle-bracket form for paths with spaces), never wikilinks; refer to other skills by `name`, never path.
-4. **Self-audit before finishing** — run Mode A on the new skill. Author and audit share one rubric on purpose.
+4. **Self-audit before finishing** — run Mode AUDIT on the new skill. Author and audit share one rubric on purpose.
 
-## Mode C — REFRESH best practice
+## Mode REFRESH — re-anchor best practice
 
 Keep the rubric current — the standard and the community move, and this is why the skill tracks its own sources.
 
@@ -80,4 +85,4 @@ Keep the rubric current — the standard and the community move, and this is why
   or hand-waving a judgment call the linter can't make, are both misses.
 - A WARN is not a FAIL. Line/token budgets and the third-person description heuristic are _recommendations_ — report them, but a skill can ship over a soft cap
   with a reason.
-- This skill audits skills, including itself. When you change the rubric, re-run Mode A on `knowledgeislands-skills`.
+- This skill audits skills, including itself. When you change the rubric, re-run Mode AUDIT on `knowledgeislands-skills`.

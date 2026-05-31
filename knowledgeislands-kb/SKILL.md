@@ -6,7 +6,7 @@ description: >
   zone model rather than asking for it; only a few store-level bindings come from the host project. Triggers: "save to my notes", "save to the knowledge base",
   "add to the KB", "what do my notes say about", "search my notes", "update the note on", "capture this", "write a session digest". Where a knowledge base ships
   its own named extension skill, prefer that skill; it extends this one.
-argument-hint: 'save | update <note> | query <question> | extract | digest'
+argument-hint: 'digest | extract | query <question> | refresh | save | update <note>'
 ---
 
 # Knowledge Islands KB
@@ -72,7 +72,43 @@ index, then the project's extension skill if it ships one:
 
 Infer the mode from the request, or ask if unclear.
 
-### Mode A: SAVE - write a new note
+### Mode DIGEST - session digest
+
+1. Write the digest to `-/_DIGESTS/<UTC timestamp> <Short Topic>.md` (timestamp `YYYY-MM-DDTHHMMSSZ`; topic in Title Case).
+2. Carry `type: session-digest` and `retain_until: YYYY-MM-DD` (default 30 days out).
+3. Structure: Context, Decisions, Facts Learned, Related Work, Keywords.
+
+### Mode EXTRACT - distil a conversation
+
+1. Identify distinct reusable pieces of knowledge.
+2. For each, propose a title, destination zone (per the routing test), and draft.
+3. Confirm, then write the approved notes.
+
+### Mode QUERY - answer from the base
+
+1. Search and read the relevant notes (memory index, profile notes, the topical zones).
+2. Answer, citing the path to the source note or paired source document.
+3. If the base cannot answer it, capture the researched answer as a new note (fall through to Mode SAVE).
+
+### Mode REFRESH - keep the structure model current
+
+This skill carries the zone model, routing test, and project-bindings table as fixed knowledge; it must not drift from how the bases that use it are really
+organised - especially once installed into a shared/cloud catalogue, where it is long-lived and far from its author. Run this periodically, or when someone asks
+"is the KB skill still current".
+
+1. **Read [the source list](references/sources.md)** - the canonical structure definition (the arcadia-skills `README.md`), the bases actively using this skill,
+   and any base-coupled `<base>-kb` extensions, each with a `last reviewed` date.
+2. **Re-anchor against reality.** Re-read the README's structure section, and sample how the live bases are actually laid out (their root `Admin/MEMORY.md` and
+   top-level folders). Diff against this skill's zone table, routing test, and bindings table. Look for: a zone or convention the bases now use that the model
+   omits; a binding real bases supply that the bindings table doesn't name; a default that no longer matches practice; a tool surface the host MCP server has
+   changed under the skill (it resolves tools at runtime - confirm that assumption still holds).
+3. **Separate canonical from local.** A change is only a model change if it traces to the canonical structure or to a pattern shared across bases; a single
+   base's quirk belongs in that base's extension skill, not here.
+4. **Propose a diff** to the zone table / routing test / bindings, and confirm before writing.
+5. **Update [the source list](references/sources.md)** - bump each `last reviewed` date and record what changed (or "no change") in the changelog. This step is
+   mandatory: the source list is the skill's memory of where its structure model comes from.
+
+### Mode SAVE - write a new note
 
 1. Run pre-flight.
 2. Determine the destination zone using the routing test.
@@ -82,31 +118,13 @@ Infer the mode from the request, or ask if unclear.
    analysis.
 5. Confirm, then write.
 
-### Mode B: UPDATE - enrich an existing note
+### Mode UPDATE - enrich an existing note
 
 1. Run pre-flight.
 2. Find and read the existing note.
 3. Draft a merged version - enrich, do not replace. Preserve structure.
 4. For profile / person notes: auto-append unambiguous factual updates from authoritative sources; propose a diff first for tactical or evaluative content.
 5. Cite the source of every update; confirm, then write.
-
-### Mode C: QUERY - answer from the base
-
-1. Search and read the relevant notes (memory index, profile notes, the topical zones).
-2. Answer, citing the path to the source note or paired source document.
-3. If the base cannot answer it, capture the researched answer as a new note (fall through to Mode A).
-
-### Mode D: EXTRACT - distil a conversation
-
-1. Identify distinct reusable pieces of knowledge.
-2. For each, propose a title, destination zone (per the routing test), and draft.
-3. Confirm, then write the approved notes.
-
-### Mode E: DIGEST - session digest
-
-1. Write the digest to `-/_DIGESTS/<UTC timestamp> <Short Topic>.md` (timestamp `YYYY-MM-DDTHHMMSSZ`; topic in Title Case).
-2. Carry `type: session-digest` and `retain_until: YYYY-MM-DD` (default 30 days out).
-3. Structure: Context, Decisions, Facts Learned, Related Work, Keywords.
 
 ## Notes
 

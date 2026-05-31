@@ -13,6 +13,9 @@
 // A path containing SKILL.md is treated as one skill; otherwise its immediate
 // subdirectories that contain a SKILL.md are each linted. Defaults to the current dir.
 // Exits non-zero if any FAIL is reported (WARN never fails the run).
+//
+// With >= 2 skills in scope it also runs a cross-skill collision pass (COLL-1):
+// two descriptions declaring the same quoted trigger phrase are WARNed.
 
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, dirname, join, resolve } from 'node:path'
@@ -153,7 +156,7 @@ function lintSkill(skillDir: string): Finding[] {
 
   const skillMd = join(skillDir, 'SKILL.md')
   if (!existsSync(skillMd)) {
-    fail('A1', 'SKILL.md is missing')
+    fail('LAY-1', 'SKILL.md is missing')
     return f
   }
   const content = readFileSync(skillMd, 'utf8')
@@ -162,60 +165,97 @@ function lintSkill(skillDir: string): Finding[] {
   // --- frontmatter ---
   const fm = parseFrontmatter(content)
   if (fm.raw === null) {
-    fail('A1/B7', 'No YAML frontmatter block (--- ... ---) at the top of SKILL.md')
+    fail('LAY-1/NAME-1', 'No YAML frontmatter block (--- ... ---) at the top of SKILL.md')
     return f
   }
   const name = fm.keys.get('name')
   const desc = fm.keys.get('description')
 
-  // name (B7–B13 mechanical)
-  if (!name) fail('B7', '`name` is missing from frontmatter')
+  // name (NAME-1–NAME-7 mechanical)
+  if (!name) fail('NAME-1', '`name` is missing from frontmatter')
   else {
-    if (name.length > NAME_MAX) fail('B8', `\`name\` is ${name.length} chars (max ${NAME_MAX})`)
-    if (!/^[a-z0-9-]+$/.test(name)) fail('B9', `\`name\` "${name}" must be lowercase letters, digits, and hyphens only`)
-    if (name.startsWith('-') || name.endsWith('-') || name.includes('--')) fail('B10', `\`name\` "${name}" must not start/end with a hyphen or contain "--"`)
-    if (name !== dirName) fail('B11', `\`name\` "${name}" does not match the directory name "${dirName}"`)
-    if (hasXmlTag(name)) fail('B12', '`name` contains an XML tag')
-    for (const r of RESERVED) if (name.includes(r)) fail('B12', `\`name\` contains the reserved word "${r}"`)
+    if (name.length > NAME_MAX) fail('NAME-2', `\`name\` is ${name.length} chars (max ${NAME_MAX})`)
+    if (!/^[a-z0-9-]+$/.test(name)) fail('NAME-3', `\`name\` "${name}" must be lowercase letters, digits, and hyphens only`)
+    if (name.startsWith('-') || name.endsWith('-') || name.includes('--')) fail('NAME-4', `\`name\` "${name}" must not start/end with a hyphen or contain "--"`)
+    if (name !== dirName) fail('NAME-5', `\`name\` "${name}" does not match the directory name "${dirName}"`)
+    if (hasXmlTag(name)) fail('NAME-6', '`name` contains an XML tag')
+    for (const r of RESERVED) if (name.includes(r)) fail('NAME-6', `\`name\` contains the reserved word "${r}"`)
   }
 
-  // description (C14–C16 mechanical)
-  if (!desc || desc.trim() === '') fail('C14', '`description` is missing or empty')
+  // description (DESC-1–DESC-3 mechanical)
+  if (!desc || desc.trim() === '') fail('DESC-1', '`description` is missing or empty')
   else {
-    if (desc.length > DESC_MAX) fail('C15', `\`description\` is ${desc.length} chars (max ${DESC_MAX})`)
-    if (hasXmlTag(stripCode(desc))) fail('C16', '`description` contains an XML tag')
+    if (desc.length > DESC_MAX) fail('DESC-2', `\`description\` is ${desc.length} chars (max ${DESC_MAX})`)
+    if (hasXmlTag(stripCode(desc))) fail('DESC-3', '`description` contains an XML tag')
   }
 
-  // compatibility (D23 mechanical)
+  // compatibility (OPT-1 mechanical)
   const compat = fm.keys.get('compatibility')
-  if (compat !== undefined && (compat.length < COMPAT_MIN || compat.length > COMPAT_MAX)) fail('D23', `\`compatibility\` is ${compat.length} chars (must be ${COMPAT_MIN}–${COMPAT_MAX})`)
+  if (compat !== undefined && (compat.length < COMPAT_MIN || compat.length > COMPAT_MAX)) fail('OPT-1', `\`compatibility\` is ${compat.length} chars (must be ${COMPAT_MIN}–${COMPAT_MAX})`)
 
-  // --- body size (E29/E30 soft → WARN) ---
+  // --- body size (SIZE-1/SIZE-2 soft → WARN) ---
   const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
   const bodyLines = body.split(/\r?\n/).length
-  if (bodyLines > BODY_MAX_LINES) warn('E29', `SKILL.md body is ${bodyLines} lines (recommended < ${BODY_MAX_LINES}) — split into references/`)
+  if (bodyLines > BODY_MAX_LINES) warn('SIZE-1', `SKILL.md body is ${bodyLines} lines (recommended < ${BODY_MAX_LINES}) — split into references/`)
   const estTokens = Math.round(body.length / 4)
-  if (estTokens > BODY_MAX_TOKENS) warn('E30', `SKILL.md body is ~${estTokens} tokens (recommended < ${BODY_MAX_TOKENS})`)
+  if (estTokens > BODY_MAX_TOKENS) warn('SIZE-2', `SKILL.md body is ~${estTokens} tokens (recommended < ${BODY_MAX_TOKENS})`)
 
-  // --- links & wikilinks across all markdown (A4, I51, I52, F35) ---
+  // --- links & wikilinks across all markdown (LAY-4, LINK-1, LINK-2, REF-3) ---
   for (const file of listMarkdownFiles(skillDir)) {
     const md = readFileSync(file, 'utf8')
     const text = stripCode(md) // exclude code blocks/spans from text-pattern checks
     const rel = file.slice(skillDir.length + 1)
-    if (hasWikilink(text)) fail('I51', `${rel}: uses Obsidian wikilinks ([[...]]) — use relative markdown links`)
-    if (hasBackslashLink(text)) fail('A4', `${rel}: a link target uses backslashes — use forward slashes`)
+    if (hasWikilink(text)) fail('LINK-1', `${rel}: uses Obsidian wikilinks ([[...]]) — use relative markdown links`)
+    if (hasBackslashLink(text)) fail('LAY-4', `${rel}: a link target uses backslashes — use forward slashes`)
     for (const target of relativeLinkTargets(text)) {
       const resolved = resolve(dirname(file), target)
-      if (!existsSync(resolved)) fail('I52', `${rel}: broken relative link → "${target}"`)
+      if (!existsSync(resolved)) fail('LINK-2', `${rel}: broken relative link → "${target}"`)
     }
     // ToC on long reference files (not SKILL.md itself)
     if (basename(file) !== 'SKILL.md') {
       const lineCount = md.split(/\r?\n/).length
-      if (lineCount > TOC_LINE_THRESHOLD && !hasTableOfContents(md)) warn('F35', `${rel}: ${lineCount} lines but no table of contents near the top`)
+      if (lineCount > TOC_LINE_THRESHOLD && !hasTableOfContents(md)) warn('REF-3', `${rel}: ${lineCount} lines but no table of contents near the top`)
     }
   }
 
   return f
+}
+
+// --- cross-skill collision (COLL-1 mechanical) -----------------------------
+// A description's "triggers" are its quoted phrases. Two skills declaring the
+// SAME trigger compete at selection time — WARN (an off-ramp in the prose, which
+// the model judges per COLL-2, can make it acceptable, so never FAIL). Only runs
+// when >= 2 skills are in scope; point the linter at the repo to get the set.
+function triggerPhrases(desc: string): string[] {
+  const out = new Set<string>()
+  const re = /"([^"]{2,})"/g
+  let m: RegExpExecArray | null
+  // biome-ignore lint/suspicious/noAssignInExpressions: standard regex-exec loop
+  while ((m = re.exec(desc)) !== null) {
+    const t = (m[1] as string).toLowerCase().replace(/\s+/g, ' ').trim()
+    if (t) out.add(t)
+  }
+  return [...out]
+}
+
+function collisionFindings(dirs: string[]): Finding[] {
+  if (dirs.length < 2) return []
+  const byPhrase = new Map<string, Set<string>>()
+  for (const dir of dirs) {
+    const skillMd = join(dir, 'SKILL.md')
+    if (!existsSync(skillMd)) continue
+    const desc = parseFrontmatter(readFileSync(skillMd, 'utf8')).keys.get('description') ?? ''
+    for (const phrase of triggerPhrases(desc)) {
+      if (!byPhrase.has(phrase)) byPhrase.set(phrase, new Set())
+      byPhrase.get(phrase)?.add(basename(dir))
+    }
+  }
+  const out: Finding[] = []
+  for (const [phrase, skills] of byPhrase) {
+    if (skills.size > 1)
+      out.push({ severity: 'warn', criterion: 'COLL-1', message: `trigger "${phrase}" is shared by ${[...skills].sort().join(', ')} — confirm each names the other as an off-ramp (COLL-2)` })
+  }
+  return out.sort((a, b) => a.message.localeCompare(b.message))
 }
 
 // --- discovery -------------------------------------------------------------
@@ -243,6 +283,11 @@ if (skillDirs.length === 0) {
   process.exit(1)
 }
 
+// One-line key for the area codes printed below (full catalogue: references/rubric.md).
+const LEGEND =
+  'area codes — LAY layout · NAME name · DESC description · OPT optional-fm · SIZE size · REF references · BODY content · SCRIPT scripts · LINK linking · SHAPE KI-shape · PROC process · COLL collision · LONG longevity'
+console.log(paint(C.dim, LEGEND))
+
 let totalFails = 0
 let totalWarns = 0
 for (const dir of skillDirs) {
@@ -258,6 +303,14 @@ for (const dir of skillDirs) {
     console.log(`  ${tag} ${paint(C.dim, `[${x.criterion}]`)} ${x.message}`)
   }
   if (findings.length === 0) console.log(paint(C.dim, '  all mechanical checks passed'))
+}
+
+// cross-skill pass: collision between sibling descriptions (COLL-1)
+const collisions = collisionFindings(skillDirs)
+if (collisions.length > 0) {
+  totalWarns += collisions.length
+  console.log(`\n${paint(C.yellow, 'WARN')}  ${paint(C.cyan, 'collision (cross-skill)')}`)
+  for (const x of collisions) console.log(`  ${paint(C.yellow, 'warn')} ${paint(C.dim, `[${x.criterion}]`)} ${x.message}`)
 }
 
 console.log(`\n${paint(C.cyan, 'summary')}: ${skillDirs.length} skill(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}`)

@@ -2,12 +2,12 @@
 name: knowledgeislands-mcp
 description: >
   Codify and audit Knowledge Islands MCP servers against the canonical "workspace MCP" standard. Use when scaffolding a new MCP server, bringing an existing one
-  up to standard, or reviewing one for compliance: project layout (config / main / tools / cli / mcp-server / utils), config injection (no module-level
-  singleton), the `<app>_<resource>_<action>` tool-naming scheme, the annotation-driven access-level gate, audit logging, the security invariants, the
-  Bun-install / Node-run split, and the package.json / tsconfig / vitest / biome tooling. Also refreshes the standard itself against the latest published MCP
-  specification. Triggers: "audit this MCP", "does this MCP follow our standards", "scaffold a new MCP", "bring this MCP up to standard", "review the MCP layout
-  / tool surface / package.json", "refresh the MCP standard", "is our MCP standard up to date". Operates on the sibling `mcp-*` repos under `knowledgeislands/`.
-  Do NOT use to audit a SKILL.md itself, or to review the quality of any skill's prose — that is the `knowledgeislands-skills` skill.
+  up to standard, or reviewing one for compliance: project layout, config injection (no module-level singleton), the `<app>_<resource>_<action>` tool-naming
+  scheme, the annotation-driven access-level gate, audit logging, the security invariants, the Bun-install / Node-run split, and the package.json / tsconfig /
+  vitest / biome tooling. Also refreshes the standard itself against the latest published MCP specification. Triggers: "audit this MCP", "does this MCP follow
+  our standards", "scaffold a new MCP", "bring this MCP up to standard", "review the MCP layout / tool surface / package.json", "refresh the MCP standard", "is
+  our MCP standard up to date". Operates on the sibling `mcp-*` repos under `knowledgeislands/`. Do NOT use to audit a SKILL.md itself, or to review the quality
+  of any skill's prose — that is the `knowledgeislands-skills` skill.
 argument-hint: 'audit <repo> | codify <repo> | refresh'
 ---
 
@@ -98,6 +98,9 @@ Infer the mode from the request; ask if unclear.
      tightened identifier regexes (not bare `z.string()`), `.strict()` zod with bounded numerics, no secrets in audit logs / error messages.
    - **Docs**: `CLAUDE.md` + `README.md` present and _not drifted_ from the code (notion-mirror's `CLAUDE.md` describing `orchestrator/` after the move to
      `cli/` + `main/` is the cautionary example).
+   - **Longevity**: volatile external facts (targeted spec version/date, upstream API versions, third-party URLs, model IDs) aren't scattered hard-coded
+     literals — each resolves at runtime or is pinned in one refreshable place, so the server can't rot silently once installed. Mirrors the skills rubric's
+     longevity check; see the checklist's _Longevity & staleness_ section.
 4. **Report.** Group findings by severity (see checklist): **blocker** (security invariant or gate bypass), **standard** (layout/naming/tooling divergence),
    **polish** (docs/consistency). Cite `file:line`. Give the fix for each, and call out _intentional_ per-repo divergences (e.g. `voicenotes-edit` defaulting to
    `write`) so they are not re-flagged.

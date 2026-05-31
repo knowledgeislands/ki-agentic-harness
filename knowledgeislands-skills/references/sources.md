@@ -1,28 +1,30 @@
 # Sources — where the rubric comes from
 
-The authoritative and community sources behind [the rubric](rubric.md). Mode C (REFRESH) reads this file, re-fetches each source, diffs it against the rubric, then **bumps the `last reviewed` dates and records what changed** in the changelog below. This is the skill's memory of where best practice comes from — keep it current.
+The authoritative and community sources behind [the rubric](rubric.md). Mode REFRESH reads this file, re-fetches each source, diffs it against the rubric, then
+**bumps the `last reviewed` dates and records what changed** in the changelog below. This is the skill's memory of where best practice comes from — keep it
+current.
 
 Abbreviations match the `(SOURCE)` tags in [the rubric](rubric.md).
 
 ## Authoritative
 
-| Tag | Source | Governs | Last reviewed |
-| --- | --- | --- | --- |
-| SPEC | [Agent Skills specification](https://agentskills.io/specification) | Frontmatter fields, layout, hard caps, progressive-disclosure budget | 2026-05-30 |
-| — | [Agent Skills home](https://agentskills.io/) | The standard's overview, examples, ecosystem | 2026-05-30 |
-| BP | [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices) | Description writing, conciseness, scripts, anti-patterns, the checklist | 2026-05-30 |
-| CC | [Claude Code — skills](https://code.claude.com/docs/en/skills) | CC frontmatter, runtime listing/compaction budgets, commands→skills | 2026-05-30 |
-| ENG | [Equipping agents with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills) † | Rationale, progressive disclosure, evaluation-first, under-triggering | 2026-05-30 |
-| — | [`skills-ref validate`](https://github.com/agentskills/agentskills/tree/main/skills-ref) | Mechanical baseline for frontmatter + naming (criteria B, C, D) | 2026-05-30 |
+| Tag  | Source                                                                                                                              | Governs                                                                 | Last reviewed |
+| ---- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------------- |
+| SPEC | [Agent Skills specification](https://agentskills.io/specification)                                                                  | Frontmatter fields, layout, hard caps, progressive-disclosure budget    | 2026-05-30    |
+| —    | [Agent Skills home](https://agentskills.io/)                                                                                        | The standard's overview, examples, ecosystem                            | 2026-05-30    |
+| BP   | [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)                  | Description writing, conciseness, scripts, anti-patterns, the checklist | 2026-05-30    |
+| CC   | [Claude Code — skills](https://code.claude.com/docs/en/skills)                                                                      | CC frontmatter, runtime listing/compaction budgets, commands→skills     | 2026-05-30    |
+| ENG  | [Equipping agents with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills) † | Rationale, progressive disclosure, evaluation-first, under-triggering   | 2026-05-30    |
+| —    | [`skills-ref validate`](https://github.com/agentskills/agentskills/tree/main/skills-ref)                                            | Mechanical baseline for frontmatter + naming (criteria B, C, D)         | 2026-05-30    |
 
 † Anthropic Engineering, 2025-12-18.
 
 ## Community
 
-| Tag | Source | Governs | Last reviewed |
-| --- | --- | --- | --- |
-| COMMUNITY | [Skill Authoring Patterns](https://generativeprogrammer.com/p/skill-authoring-patterns-from-anthropics) | Distilled patterns: terminology, feedback loops, gotchas sections | 2026-05-30 |
-| COMMUNITY | [obra/superpowers writing-skills](https://github.com/obra/superpowers/blob/main/skills/writing-skills/anthropic-best-practices.md) | Community restatement of the best-practices doc; convergent conventions | 2026-05-30 |
+| Tag       | Source                                                                                                                             | Governs                                                                 | Last reviewed |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------------- |
+| COMMUNITY | [Skill Authoring Patterns](https://generativeprogrammer.com/p/skill-authoring-patterns-from-anthropics)                            | Distilled patterns: terminology, feedback loops, gotchas sections       | 2026-05-30    |
+| COMMUNITY | [obra/superpowers writing-skills](https://github.com/obra/superpowers/blob/main/skills/writing-skills/anthropic-best-practices.md) | Community restatement of the best-practices doc; convergent conventions | 2026-05-30    |
 
 ## In-house
 
@@ -36,4 +38,16 @@ Abbreviations match the `(SOURCE)` tags in [the rubric](rubric.md).
 Record each REFRESH run: date, what was re-fetched, what changed in the rubric/linter (or "no change").
 
 - **2026-05-30** — Initial rubric assembled from all sources above. Established the mechanical/judgment split and the exact-numbers table.
-- **2026-05-30 (REFRESH)** — Monthly refresh. Re-fetched all sources. SPEC (agentskills.io/specification), agentskills.io home, ENG (Anthropic Engineering blog), and COMMUNITY (generativeprogrammer.com) returned HTTP 403 — content unverifiable; last-reviewed dates held, no rubric changes attributable to those sources. BP (Anthropic platform best-practices) and CC (Claude Code skills docs) confirmed current and accessible. obra/superpowers GitHub confirmed as BP restatement with no new guidance. arcadia-skills in-house scan: knowledgeislands-kb PASS, knowledgeislands-mcp WARN [F35] pre-existing, knowledgeislands-skills PASS. Rubric changes applied: (1) D27 — added `shell` to the CC extension fields list; extended to note CC dynamic context injection and string substitutions. (2) ※3 — expanded to document CC runtime extensions (`!cmd` injection, string substitutions including `${CLAUDE_SKILL_DIR}`, `${CLAUDE_EFFORT}`, `${CLAUDE_SESSION_ID}`). (3) D28 — clarified that `disable-model-invocation: true` removes the skill description from context entirely; added contrast with `user-invocable: false`. (4) H47 — added MCP fully-qualified tool naming guidance (`ServerName:tool_name`) as a new BP pattern. (5) Exact-numbers table — added CC combined post-compaction budget row (25,000 tok combined).
+- **2026-05-30 (REFRESH)** — Monthly refresh. Re-fetched all sources. SPEC (agentskills.io/specification), agentskills.io home, ENG (Anthropic Engineering
+  blog), and COMMUNITY (generativeprogrammer.com) returned HTTP 403 — content unverifiable; last-reviewed dates held, no rubric changes attributable to those
+  sources. BP (Anthropic platform best-practices) and CC (Claude Code skills docs) confirmed current and accessible. obra/superpowers GitHub confirmed as BP
+  restatement with no new guidance. arcadia-skills in-house scan: knowledgeislands-kb PASS, knowledgeislands-mcp WARN [F35, now REF-3] pre-existing,
+  knowledgeislands-skills PASS. Rubric changes applied (codes as they then stood; the catalogue has since moved to area-scoped codes — these map to OPT-5, ※3,
+  OPT-6, SCRIPT-3): (1) D27 → OPT-5 — added `shell` to the CC extension fields list; extended to note CC dynamic context injection and string substitutions. (2)
+  ※3 — expanded to document CC runtime extensions (`!cmd` injection, string substitutions including `${CLAUDE_SKILL_DIR}`, `${CLAUDE_EFFORT}`,
+  `${CLAUDE_SESSION_ID}`). (3) D28 → OPT-6 — clarified that `disable-model-invocation: true` removes the skill description from context entirely; added contrast
+  with `user-invocable: false`. (4) H47 → SCRIPT-3 — added MCP fully-qualified tool naming guidance (`ServerName:tool_name`) as a new BP pattern. (5)
+  Exact-numbers table — added CC combined post-compaction budget row (25,000 tok combined).
+- **2026-05-31** — Catalogue maintenance (not a source refresh): added the cross-skill collision (COLL) and longevity (LONG) areas, the mode naming +
+  alphabetical ordering rule (OPT-7), then migrated every code from letter + global numbering (`A1`, `B7`, `C14`, …) to **area-scoped codes** (`LAY-1`,
+  `NAME-1`, `DESC-1`, …) so each area numbers independently and an insertion only renumbers its own area. Linter updated to print the new codes.

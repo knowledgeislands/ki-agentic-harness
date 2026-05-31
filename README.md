@@ -35,9 +35,12 @@ so the two must stay in sync.
 
 | Skill                                                         | Kind              | Purpose                                                                                                                                                                                              |
 | ------------------------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md)         | Knowledge Islands | KB modes - SAVE / UPDATE / QUERY / EXTRACT / DIGEST - over the standard zone model; only store-level bindings come from the host base.                                                               |
+| [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md)         | Knowledge Islands | KB modes - DIGEST / EXTRACT / QUERY / REFRESH / SAVE / UPDATE - over the standard zone model; only store-level bindings come from the host base.                                                     |
 | [`knowledgeislands-mcp`](knowledgeislands-mcp/SKILL.md)       | Process           | Codify and audit the workspace MCP standard (layout, config injection, tool naming, access-level gate, security invariants, Bun/Node, tooling) across the `mcp-*` repos; ships a mechanical checker. |
 | [`knowledgeislands-skills`](knowledgeislands-skills/SKILL.md) | Process           | Audit and author Agent Skills against a checkable rubric - AUDIT / AUTHOR / REFRESH modes, a bundled linter (`skills:lint`) for the mechanical checks, and a tracked source list it revisits.        |
+
+All three currently pass their own audit, and each ships a REFRESH mode backed by a tracked `references/sources.md` so it can be kept current as specs and
+conventions move. Where the set is going next is in [ROADMAP.md](ROADMAP.md).
 
 ### Where the skills do not overlap
 
@@ -158,5 +161,6 @@ caps, link resolution); the judgment half is applied by that skill when you ask 
 
 ## Roadmap
 
-Until a plugin/marketplace wrapper exists, installation is the symlink step above. The intended end state is a Cowork plugin built from this repository, so
-installing or updating the whole set is one action across every machine and base.
+The forward view — what's next and why — lives in [ROADMAP.md](ROADMAP.md). In short: bind `knowledgeislands-kb` to the `arcadia-principal` base, settle a
+REFRESH cadence across the skills, and (longer term) replace the manual symlink install with a Cowork plugin built from this repository, so the whole set
+installs or updates in one action across every machine and base.

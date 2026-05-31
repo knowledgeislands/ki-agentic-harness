@@ -6,6 +6,24 @@ Line-by-line pass/fail items for auditing a workspace MCP against the [Workspace
 Severity: **B** blocker (security invariant breach or gate bypass — ship-stopper), **S** standard (layout / naming / tooling divergence), **P** polish (docs /
 consistency).
 
+## Contents
+
+- [Layout & layers](#layout--layers)
+- [Config injection](#config-injection)
+- [Tool naming & surface](#tool-naming--surface)
+- [Access-level gate](#access-level-gate)
+- [Audit logging](#audit-logging)
+- [Security invariants](#security-invariants)
+- [Spec conformance — tool results & metadata](#spec-conformance--tool-results--metadata-standard-12)
+- [OAuth security — auth-server repos only](#oauth-security--auth-server-repos-only-mcp-gmail-mcp-m365-standard-13)
+- [Bun vs Node](#bun-vs-node)
+- [package.json](#packagejson)
+- [tsconfig / vitest / biome](#tsconfig--vitest--biome)
+- [.env.example & env](#envexample--env)
+- [Docs](#docs)
+- [Longevity & staleness](#longevity--staleness-mirrors-knowledgeislands-skills-rubric-long-1)
+- [Reporting](#reporting)
+
 ## Layout & layers
 
 - [ ] 🔧 S — `src/` has `config/`, `mcp-server/`, `tools/`, `main/`, `utils/`.
@@ -109,6 +127,17 @@ Skip this whole section for the filesystem/subprocess repos.
 - [ ] P — `README.md`, `CLAUDE.md` (and usually `ROADMAP.md`) present.
 - [ ] S — `CLAUDE.md` is **not drifted**: every layer/path/concept it names still exists in the code (catch renamed/moved layers).
 - [ ] P — README install/config/client-setup steps are current.
+
+## Longevity & staleness (mirrors `knowledgeislands-skills` rubric LONG-1)
+
+A server installed and left running drifts from the world around it; the audit checks it can't rot silently.
+
+- [ ] S — volatile external facts the code depends on (the MCP spec version/date it targets, upstream API/SDK versions, third-party URLs, model IDs) are not
+      scattered hard-coded literals: each is either resolved at runtime or pinned in **one** refreshable place (`config/`, `CLAUDE.md`, or `package.json`) so a
+      bump is a single known edit, not a hunt.
+- [ ] P — the repo's `CLAUDE.md`/`README.md` names the spec version it conforms to, so a reviewer can tell at a glance whether it predates a spec move.
+- [ ] P — this audit itself is run against a **current** standard: if a finding cites a spec MUST, the skill's Mode REFRESH + [`sources.md`](sources.md) confirm
+      the spec hasn't moved since the standard's `last reviewed` date. Don't green-light a repo against a stale spec.
 
 ## Reporting
 
