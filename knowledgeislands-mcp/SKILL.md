@@ -6,8 +6,8 @@ description: >
   scheme, the annotation-driven access-level gate, audit logging, the security invariants, the Bun-install / Node-run split, and the package.json / tsconfig /
   vitest / biome tooling. Also refreshes the standard itself against the latest published MCP specification. Triggers: "audit this MCP", "does this MCP follow
   our standards", "scaffold a new MCP", "bring this MCP up to standard", "review the MCP layout / tool surface / package.json", "refresh the MCP standard", "is
-  our MCP standard up to date". Operates on the sibling `mcp-*` repos under `knowledgeislands/`. Do NOT use to audit a SKILL.md itself, or to review the quality
-  of any skill's prose — that is the `knowledgeislands-skills` skill.
+  our MCP standard up to date". Operates on the sibling `mcp-*` repos under `knowledgeislands/`. Audits MCP **server code** — not a repo's GitHub configuration,
+  nor a skill's prose.
 argument-hint: 'audit <repo> | codify <repo> | refresh'
 ---
 
@@ -17,8 +17,8 @@ You are helping codify or audit a **workspace MCP server** — one of the stdio 
 `mcp-gmail`, `mcp-m365`, `mcp-claude-housekeeping`, `mcp-voicenotes-edit`, `mcp-kb-notion-mirror`). They all share one canonical shape, so a new one should be
 scaffolded to it and an existing one should be auditable against it. This skill carries that standard and the audit procedure.
 
-This skill audits the **server code** — `src/` layout, config injection, tool surface, security invariants, tooling. It does **not** judge the prose of a
-`SKILL.md` (even this one's): that is the `knowledgeislands-skills` skill. The two are complementary, not alternatives.
+This skill audits the **server code** — `src/` layout, config injection, tool surface, security invariants, tooling. A repo's GitHub configuration and standard
+files, and a `SKILL.md`'s prose, are out of scope (other skills own those). How the skills divide the work is documented once in the arcadia-skills `README.md`.
 
 The full, quotable standard lives in [Workspace MCP Standard](references/workspace-mcp-standard.md); the line-by-line pass/fail items live in
 [Audit Rubric](references/audit-rubric.md). A mechanical structural checker is [`scripts/audit-mcp.ts`](scripts/audit-mcp.ts). Read those when you need detail;

@@ -124,7 +124,8 @@ Skip this whole section for the filesystem/subprocess repos.
 
 ## Docs
 
-- [ ] P — `README.md`, `CLAUDE.md` (and usually `ROADMAP.md`) present.
+- [ ] P — `CLAUDE.md` (and usually `ROADMAP.md`) present. (Universal repo files — `README`, `LICENSE`, `.gitignore`, `.editorconfig`, `.ki-config.toml` — are
+      `knowledgeislands-repo-config`'s layer 1, not re-checked here.)
 - [ ] S — `CLAUDE.md` is **not drifted**: every layer/path/concept it names still exists in the code (catch renamed/moved layers).
 - [ ] P — README install/config/client-setup steps are current.
 
