@@ -1,13 +1,13 @@
 ---
 name: knowledgeislands-skills
 description: >
-  Audit, review, and author Agent Skills against current best practice. Use when creating a new skill, reviewing or critiquing an existing SKILL.md, checking a
+  Audit, review, and write Agent Skills against current best practice. Use when creating a new skill, reviewing or critiquing an existing SKILL.md, checking a
   skill before it ships, asking "is this skill any good / well-written / discoverable", or refreshing the house rubric against new community guidance. Carries a
   checkable rubric (split into mechanical checks a bundled linter runs, and judgment checks you apply), the Knowledge Islands skill conventions, and a tracked
   source list it revisits. Triggers: "audit this skill", "review my skill", "is this SKILL.md good", "write a new skill", "scaffold a skill", "lint the skills",
   "check skills against best practice", "refresh the skills rubric", "what do we expect from a skill". Judges a `SKILL.md` itself (frontmatter + body prose) —
   not a repo's code or configuration. For general Markdown / TOML house style, use the `knowledgeislands-authoring` skill.
-argument-hint: 'audit <skill-or-repo> | author <description> | refresh'
+argument-hint: 'audit <skill-or-repo> | conform <skill> | init <description> | refresh'
 ---
 
 # Knowledge Islands Skills
@@ -30,7 +30,8 @@ Every criterion is one of two kinds — never conflate them:
 
 The conventions a good skill follows — what each is and why — live in [the Agent Skills standard](references/agent-skills-standard.md); the line-by-line
 checkable criteria (with `[M]`/`[J]` tags and codes) live in [the rubric](references/audit-rubric.md), each citing its standard section. Load both before an
-AUDIT or AUTHOR; this body is the routing overview.
+AUDIT, CONFORM, or INIT; this body is the routing overview. (Like every governance skill it carries **AUDIT · CONFORM · REFRESH**; INIT — writing a new skill —
+is its skill-specific mode. Modes are named and alphabetical.)
 
 ## Mode AUDIT — review an existing skill
 
@@ -55,7 +56,14 @@ Review a skill (or every skill in a repo) against the rubric and report.
 3. **Report** as a table: criterion → verdict (✅ pass / ⚠️ warn / ❌ fail) → the specific fix. Lead with FAILs, then WARNs, then a one-line overall verdict.
    Cite the rubric criterion number. Offer to apply the fixes.
 
-## Mode AUTHOR — write a new skill
+## Mode CONFORM — bring an existing skill into line
+
+1. Run **AUDIT** first to get the fix list.
+2. **Apply the fixes in place** — `description`, body altitude, progressive disclosure, links, frontmatter — per [the rubric](references/audit-rubric.md),
+   touching only what a criterion calls for and leaving the skill's voice intact.
+3. **Re-run AUDIT** (and the linter) until it is clean.
+
+## Mode INIT — write a new skill
 
 1. **Clarify scope first**: what should fire the skill (the triggers), what kind it is (Knowledge Islands / process / scoped — see arcadia-skills `README.md`),
    and whether it's a standard skill or a base-coupled extension.
@@ -64,7 +72,7 @@ Review a skill (or every skill in a repo) against the rubric and report.
 3. **Write to the rubric, not from memory** — open [the rubric](references/audit-rubric.md) and satisfy each criterion as you draft. In particular: trigger-rich
    third-person `description`; body under 500 lines / ~5,000 tokens; one default approach with an escape hatch, not a menu; detail in `references/`; relative
    markdown links (angle-bracket form for paths with spaces), never wikilinks; refer to other skills by `name`, never path.
-4. **Self-audit before finishing** — run Mode AUDIT on the new skill. Author and audit share one rubric on purpose.
+4. **Self-audit before finishing** — run Mode AUDIT on the new skill. INIT and AUDIT share one rubric on purpose.
 
 ## Mode REFRESH — re-anchor best practice
 

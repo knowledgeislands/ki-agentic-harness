@@ -12,30 +12,47 @@ house style and should be labelled as such so it is not mistaken for a protocol 
 
 The spec is versioned by date. Track the **latest released** version and note the current one here.
 
-| Tag       | Source                                                                                                            | Governs                                                                                                                                                              | Last reviewed |
-| --------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| SPEC      | [MCP spec — versioning / latest](https://modelcontextprotocol.io/specification)                                   | Which dated revision is current (latest released: **2025-11-25**)                                                                                                    | 2026-05-30    |
-| CHANGELOG | [2025-11-25 changelog](https://modelcontextprotocol.io/specification/2025-11-25/changelog)                        | What changed since 2025-06-18 (tasks, tool-calling in sampling, OIDC discovery, icons, validation-error clarification)                                               | 2026-05-30    |
-| TOOLS     | [Server → Tools](https://modelcontextprotocol.io/specification/2025-11-25/server/tools)                           | Tool shape, `inputSchema`/`outputSchema`, `structuredContent`, annotations, `isError` vs protocol errors, tool-name charset/length, `icons`, `execution.taskSupport` | 2026-05-30    |
-| SEC       | [Security Best Practices](https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices) | Confused deputy, token passthrough, SSRF, session hijacking, scope minimization, local-server compromise                                                             | 2026-05-30    |
-| AUTH      | [Authorization](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization)                     | OAuth 2.1 framework, token audience, PKCE, dynamic client registration — relevant to the gmail / m365 auth-servers                                                   | 2026-05-30    |
+| Tag       | Source                                 | Governs                                                           | Last reviewed |
+| --------- | -------------------------------------- | ----------------------------------------------------------------- | ------------- |
+| SPEC      | [MCP spec — versioning / latest][spec] | Which dated revision is current (latest released: **2025-11-25**) | 2026-05-30    |
+| CHANGELOG | [2025-11-25 changelog][changelog]      | †                                                                 | 2026-05-30    |
+| TOOLS     | [Server → Tools][tools]                | ‡                                                                 | 2026-05-30    |
+| SEC       | [Security Best Practices][sec]         | §                                                                 | 2026-05-30    |
+| AUTH      | [Authorization][auth]                  | ¶                                                                 | 2026-05-30    |
+
+† What changed since 2025-06-18 (tasks, tool-calling in sampling, OIDC discovery, icons, validation-error clarification).
+
+‡ Tool shape, `inputSchema`/`outputSchema`, `structuredContent`, annotations, `isError` vs protocol errors, tool-name charset/length, `icons`,
+`execution.taskSupport`.
+
+§ Confused deputy, token passthrough, SSRF, session hijacking, scope minimization, local-server compromise.
+
+¶ OAuth 2.1 framework, token audience, PKCE, dynamic client registration — relevant to the gmail / m365 auth-servers.
 
 ## Community
 
-| Tag       | Source                                                                                                                    | Governs                                                                             | Last reviewed |
-| --------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------- |
-| COMMUNITY | [Tool Annotations as Risk Vocabulary (MCP blog)](https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/) | What the `*Hint` annotations can and can't do — anchors the annotation-driven gate  | 2026-05-30    |
-| COMMUNITY | [NSA/CISA — MCP security CSI](https://www.nsa.gov/Portals/75/documents/Cybersecurity/CSI_MCP_SECURITY.pdf)                | External restatement of MCP server hardening (least privilege, allowlists, logging) | 2026-05-30    |
+| Tag       | Source                                                        | Governs | Last reviewed |
+| --------- | ------------------------------------------------------------- | ------- | ------------- |
+| COMMUNITY | [Tool Annotations as Risk Vocabulary (MCP blog)][annotations] | †       | 2026-05-30    |
+| COMMUNITY | [NSA/CISA — MCP security CSI][csi]                            | ‡       | 2026-05-30    |
+
+† What the `*Hint` annotations can and can't do — anchors the annotation-driven gate.
+
+‡ External restatement of MCP server hardening (least privilege, allowlists, logging).
 
 ## In-house (the workspace convention)
 
 The standard is defined as the **majority shape** across the seven sibling repos under `knowledgeislands/`. These are the living source of truth for house
 style; when they diverge from each other, the majority wins and the outlier is a finding unless documented.
 
-| Tag    | Source                                                                                                                          | Governs                                                                                                         | Last reviewed |
-| ------ | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------- |
-| REPOS  | `mcp-git-audit`, `mcp-kb-fs`, `mcp-gmail`, `mcp-m365`, `mcp-claude-housekeeping`, `mcp-voicenotes-edit`, `mcp-kb-notion-mirror` | Layout, config injection, tool naming, the shared `utils/` helpers, the package/tsconfig/vitest/biome toolchain | 2026-05-30    |
-| CLAUDE | Each repo's own `CLAUDE.md`                                                                                                     | The per-repo statement of its own invariants — the standard tracks these and flags drift                        | 2026-05-30    |
+| Tag    | Source                      | Governs                                                                                  | Last reviewed |
+| ------ | --------------------------- | ---------------------------------------------------------------------------------------- | ------------- |
+| REPOS  | The seven sibling repos †   | Layout, config, tool naming, shared `utils/`, the toolchain ‡                            | 2026-05-30    |
+| CLAUDE | Each repo's own `CLAUDE.md` | The per-repo statement of its own invariants — the standard tracks these and flags drift | 2026-05-30    |
+
+† `mcp-git-audit`, `mcp-kb-fs`, `mcp-gmail`, `mcp-m365`, `mcp-claude-housekeeping`, `mcp-voicenotes-edit`, `mcp-kb-notion-mirror`.
+
+‡ Layout, config injection, tool naming, the shared `utils/` helpers, the package/tsconfig/vitest/biome toolchain.
 
 ## Review changelog
 
@@ -52,3 +69,11 @@ Record each REFRESH run: date, what was re-fetched, what changed in the standard
   **Output sanitization** (spec "Servers MUST sanitize tool outputs") promoted to a checklist item (m365's `html-sanitizer.ts` is the worked example);
   rate-limiting noted as a spec MUST that is lower-priority for local stdio servers. `audit-mcp.ts`: relaxed the tool-name regex so documented 2-segment
   metadata tools (`m365_about`) no longer false-WARN.
+
+[spec]: https://modelcontextprotocol.io/specification
+[changelog]: https://modelcontextprotocol.io/specification/2025-11-25/changelog
+[tools]: https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+[sec]: https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices
+[auth]: https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization
+[annotations]: https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/
+[csi]: https://www.nsa.gov/Portals/75/documents/Cybersecurity/CSI_MCP_SECURITY.pdf
