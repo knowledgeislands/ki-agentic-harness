@@ -151,8 +151,16 @@ const walk = (dir: string) => {
       if (e.name === 'node_modules' || e.name === 'dist' || e.name === 'config') continue
       walk(full)
     } else if (e.name.endsWith('.ts') && !e.name.endsWith('.test.ts')) {
-      // Match a real `process.env` read, not one inside a comment — doc comments that
-      // merely *mention* process.env (e.g. "nothing reads process.env here") are not reads.
+      const rel = full.replace(`${repo}/`, '')
+      // Entry points bootstrap config from env by design (loadConfig / .env loading):
+      // mcp-server is the stdio entry, and cli.ts loads its own .env for Node parity.
+      // Both are documented env entry points — skip them like config/.
+      if (rel.endsWith('mcp-server/index.ts') || rel.endsWith('cli/cli.ts')) continue
+      // Flag a real per-key ambient read, but NOT: a comment that merely mentions
+      // process.env; capturing the whole object as an injectable default param
+      // (`env = process.env`); or spreading it into a child-process env
+      // (`...process.env`). A tool/main fn that reads `process.env.KEY` or passes
+      // `process.env` into a call still trips this (that caught the notion-mirror bug).
       const hit = readFileSync(full, 'utf8')
         .split('\n')
         .some((ln) => {
@@ -160,9 +168,11 @@ const walk = (dir: string) => {
           if (i === -1) return false
           const trimmed = ln.trimStart()
           if (trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*')) return false
-          return !ln.slice(0, i).includes('//') // an inline `// … process.env` comment
+          if (ln.slice(0, i).includes('//')) return false // an inline `// … process.env` comment
+          if (/(?:=\s*|\.\.\.)process\.env(?![\w.[])/.test(ln)) return false // whole-object capture / spread
+          return true
         })
-      if (hit) offenders.push(full.replace(`${repo}/`, ''))
+      if (hit) offenders.push(rel)
     }
   }
 }
@@ -174,8 +184,15 @@ if (vitestFile) {
   const vc = read(vitestFile)
   const covOk = /lines:\s*100/.test(vc) && /branches:\s*100/.test(vc) && /functions:\s*100/.test(vc) && /statements:\s*100/.test(vc)
   add(covOk ? 'PASS' : 'WARN', 'vitest', covOk ? 'coverage thresholds 100% on all four metrics' : 'coverage thresholds are not visibly 100/100/100/100')
-  for (const ex of ['mcp-server/index.ts', 'tools/**/index.ts', 'utils/annotations.ts']) {
-    vc.includes(ex) ? add('PASS', 'vitest', `coverage excludes ${ex}`) : add('WARN', 'vitest', `coverage should exclude ${ex}`)
+  // The thin tool layer must be excluded; accept any glob that covers it
+  // (`tools/**/index.ts`, the broader `tools/**`, or the older `tools/*/index.ts`).
+  const coverageExcludes: [string, RegExp][] = [
+    ['mcp-server/index.ts', /mcp-server\/index\.ts/],
+    ['tools/**/index.ts', /tools\/\*\*(?:\/index\.ts)?|tools\/\*\/index\.ts/],
+    ['utils/annotations.ts', /utils\/annotations\.ts/]
+  ]
+  for (const [label, re] of coverageExcludes) {
+    re.test(vc) ? add('PASS', 'vitest', `coverage excludes ${label}`) : add('WARN', 'vitest', `coverage should exclude ${label}`)
   }
 }
 
