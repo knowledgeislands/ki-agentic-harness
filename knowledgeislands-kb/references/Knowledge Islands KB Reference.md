@@ -41,9 +41,10 @@ A base that follows the structure and defines the notes store needs nothing more
 
 ## Zone aliases and the `[knowledgeislands-kb]` config table
 
-The zone set is fixed, but a base **mid-migration** may not yet have renamed a folder to its canonical name - the live exemplar is `kit-legal`, which holds its
-Pillars zone under the legacy `Matters/` while it renames toward `Pillars/`. So that the skill works against the real layout without hard-coding any one base's
-quirk, the local folder name is a declared, reviewable override rather than a model change.
+The zone set is fixed, but a base **mid-migration** may not yet have renamed a folder to its canonical name - for example, a base still holding its Pillars zone
+under a legacy `Matters/` folder while it renames toward `Pillars/`. So that the skill works against the real layout without hard-coding any one base's quirk,
+the local folder name is a declared, reviewable override rather than a model change. (The live base behind this case is named in [the source list](sources.md),
+where the bases this skill tracks are recorded for REFRESH.)
 
 It lives in the base's `.ki-config.toml` under the skill's own table (the shared-file contract is owned by `knowledgeislands-repo`; this skill owns the keys
 inside its table):
