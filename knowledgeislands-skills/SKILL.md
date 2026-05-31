@@ -5,7 +5,8 @@ description: >
   skill before it ships, asking "is this skill any good / well-written / discoverable", or refreshing the house rubric against new community guidance. Carries a
   checkable rubric (split into mechanical checks a bundled linter runs, and judgment checks you apply), the Knowledge Islands skill conventions, and a tracked
   source list it revisits. Triggers: "audit this skill", "review my skill", "is this SKILL.md good", "write a new skill", "scaffold a skill", "lint the skills",
-  "check skills against best practice", "refresh the skills rubric", "what do we expect from a skill".
+  "check skills against best practice", "refresh the skills rubric", "what do we expect from a skill". This skill judges the SKILL.md (frontmatter + body
+  prose); to audit an MCP server's code, layout, or tool surface, use the `knowledgeislands-mcp` skill instead.
 argument-hint: 'audit <skill-or-repo> | author <description> | refresh'
 ---
 

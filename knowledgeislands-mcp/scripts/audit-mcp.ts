@@ -151,7 +151,18 @@ const walk = (dir: string) => {
       if (e.name === 'node_modules' || e.name === 'dist' || e.name === 'config') continue
       walk(full)
     } else if (e.name.endsWith('.ts') && !e.name.endsWith('.test.ts')) {
-      if (/process\.env/.test(readFileSync(full, 'utf8'))) offenders.push(full.replace(`${repo}/`, ''))
+      // Match a real `process.env` read, not one inside a comment — doc comments that
+      // merely *mention* process.env (e.g. "nothing reads process.env here") are not reads.
+      const hit = readFileSync(full, 'utf8')
+        .split('\n')
+        .some((ln) => {
+          const i = ln.indexOf('process.env')
+          if (i === -1) return false
+          const trimmed = ln.trimStart()
+          if (trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*')) return false
+          return !ln.slice(0, i).includes('//') // an inline `// … process.env` comment
+        })
+      if (hit) offenders.push(full.replace(`${repo}/`, ''))
     }
   }
 }
@@ -177,7 +188,13 @@ if (isDir('src', 'tools')) {
       if (e.isDirectory()) tw(full)
       else if (e.name.endsWith('.ts')) {
         const src = readFileSync(full, 'utf8')
-        for (const m of src.matchAll(/registerTool\(\s*['"]([a-zA-Z0-9_]+)['"]/g)) toolNames.push(m[1])
+        // Tools register via `server.registerTool('name', …)` OR via a local alias
+        // (`const register = server.registerTool` then `register('name', …)`). Learn the
+        // file's alias idents, then match calls of registerTool or any of them.
+        const callers = new Set(['registerTool'])
+        for (const m of src.matchAll(/(?:const|let)\s+(\w+)\s*=\s*(?:[\w.]+\.)?registerTool\b/g)) callers.add(m[1])
+        const callRe = new RegExp(`\\b(?:${[...callers].join('|')})\\(\\s*['"]([a-z0-9_]+)['"]`, 'g')
+        for (const m of src.matchAll(callRe)) toolNames.push(m[1])
       }
     }
   }

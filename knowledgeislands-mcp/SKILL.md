@@ -6,16 +6,19 @@ description: >
   singleton), the `<app>_<resource>_<action>` tool-naming scheme, the annotation-driven access-level gate, audit logging, the security invariants, the
   Bun-install / Node-run split, and the package.json / tsconfig / vitest / biome tooling. Also refreshes the standard itself against the latest published MCP
   specification. Triggers: "audit this MCP", "does this MCP follow our standards", "scaffold a new MCP", "bring this MCP up to standard", "review the MCP layout
-  / tool surface / package.json", "refresh the MCP standard", "check the MCP standard against the latest spec", "is our MCP standard up to date". Operates on
-  the sibling repos under `knowledgeislands/` (mcp-git-audit, mcp-kb-fs, mcp-gmail, mcp-m365, mcp-claude-housekeeping, mcp-voicenotes-edit,
-  mcp-kb-notion-mirror). Do NOT use to audit a SKILL.md itself — that is the `knowledgeislands-skills` skill.
+  / tool surface / package.json", "refresh the MCP standard", "is our MCP standard up to date". Operates on the sibling `mcp-*` repos under `knowledgeislands/`.
+  Do NOT use to audit a SKILL.md itself, or to review the quality of any skill's prose — that is the `knowledgeislands-skills` skill.
 argument-hint: 'audit <repo> | codify <repo> | refresh'
 ---
 
 # Knowledge Islands MCP standards
 
-You are helping codify or audit a **workspace MCP server** — one of the stdio MCP servers in the `knowledgeislands/` workspace. They all share one canonical
-shape, so a new one should be scaffolded to it and an existing one should be auditable against it. This skill carries that standard and the audit procedure.
+You are helping codify or audit a **workspace MCP server** — one of the stdio MCP servers in the `knowledgeislands/` workspace (`mcp-git-audit`, `mcp-kb-fs`,
+`mcp-gmail`, `mcp-m365`, `mcp-claude-housekeeping`, `mcp-voicenotes-edit`, `mcp-kb-notion-mirror`). They all share one canonical shape, so a new one should be
+scaffolded to it and an existing one should be auditable against it. This skill carries that standard and the audit procedure.
+
+This skill audits the **server code** — `src/` layout, config injection, tool surface, security invariants, tooling. It does **not** judge the prose of a
+`SKILL.md` (even this one's): that is the `knowledgeislands-skills` skill. The two are complementary, not alternatives.
 
 The full, quotable standard lives in [Workspace MCP Standard](references/workspace-mcp-standard.md); the line-by-line pass/fail items live in
 [Audit Checklist](references/audit-checklist.md). A mechanical structural checker is [`scripts/audit-mcp.ts`](scripts/audit-mcp.ts). Read those when you need

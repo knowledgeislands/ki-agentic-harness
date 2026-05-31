@@ -39,6 +39,17 @@ so the two must stay in sync.
 | [`knowledgeislands-mcp`](knowledgeislands-mcp/SKILL.md)       | Process           | Codify and audit the workspace MCP standard (layout, config injection, tool naming, access-level gate, security invariants, Bun/Node, tooling) across the `mcp-*` repos; ships a mechanical checker. |
 | [`knowledgeislands-skills`](knowledgeislands-skills/SKILL.md) | Process           | Audit and author Agent Skills against a checkable rubric - AUDIT / AUTHOR / REFRESH modes, a bundled linter (`skills:lint`) for the mechanical checks, and a tracked source list it revisits.        |
 
+### Where the skills do not overlap
+
+Each skill's `description` carries its own boundaries so the agent selects the right one, but the distinctions worth stating once:
+
+- **`knowledgeislands-mcp` vs `knowledgeislands-skills`** - both "audit against a standard", which is the one pair that could be confused.
+  `knowledgeislands-mcp` audits an MCP **server repo** (its `src/` layout, config injection, tool surface, security invariants, tooling);
+  `knowledgeislands-skills` audits a **`SKILL.md`** (its frontmatter and body prose). Auditing the `SKILL.md` of an MCP-related skill is the latter's job;
+  auditing the server's code is the former's. Each description names the other as the off-ramp, so neither claims the other's request.
+- **`knowledgeislands-kb` vs a base-coupled extension** - where a base ships its own `<base>-kb` skill, that extension wins and delegates the shared modes back
+  to `knowledgeislands-kb` by name; the standard skill steps aside rather than competing for the same triggers.
+
 ## Installing skills
 
 Claude Code (and compatible agents) discover skills in two places:
