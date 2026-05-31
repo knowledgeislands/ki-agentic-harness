@@ -21,8 +21,9 @@ line-by-line checkable items (each tagged mechanical/judgment) live in [the rubr
 [`scripts/audit-repo.ts`](scripts/audit-repo.ts). The cross-cutting **`.ki-config.toml` contract** — what its presence means and how every skill reads its own
 table — lives in [the contract](references/ki-config-standard.md).
 
-This skill governs a repo's **configuration and Knowledge Islands compliance** — how a repo is set up, not its source code. How it sits alongside the other
-skills in this repo (where they complement and where they must not overlap) is documented once in the arcadia-skills `README.md`, not repeated here.
+This skill governs a repo's **configuration and Knowledge Islands compliance** — how a repo is set up, not its source code. It is a **standard, base-agnostic
+Process skill**: it hard-codes no single repo or org and discovers its targets at runtime (a local tree, or a whole org via `gh`). How it sits alongside the
+other skills in this repo (where they complement and where they must not overlap) is documented once in the arcadia-skills `README.md`, not repeated here.
 
 ## The standard at a glance
 
