@@ -12,10 +12,11 @@ to serve them (the monthly refresh routine, the eval harness).
 
 ## Next
 
-- **Bind `knowledgeislands-kb` to `arcadia-principal`.** `arcadia-principal` is the first real Knowledge Islands base this skill will track (it already exposes
-  its own `kb-fs` MCP server). The skill stays a _standard_ skill — `arcadia-principal` supplies its store bindings and scope through its own `CLAUDE.md` and
-  memory index, and any conventions unique to it go in a base-coupled extension, not into this skill. kb's Mode REFRESH then samples `arcadia-principal` as a
-  live source to keep the structure model honest.
+- **Scaffold and validate kb's `[knowledgeislands-kb]` config table.** Binding kb to its first bases gave it a `.ki-config.toml` table — a
+  `[knowledgeislands-kb.zones]` zone-alias for a base mid-rename (the live case: `kit-legal` holding its Pillars zone under the legacy `Matters/`). The skill
+  documents the keys but has no scaffolding or validation yet. Give it the repo `--init` pattern (emit its default keys) and the validate-down check (warn on an
+  unrecognised key under its own table, never read another skill's), per the `.ki-config.toml` contract. This is the first cross-skill use of that override
+  layer (see _Later_).
 
 ## Soon
 
@@ -40,7 +41,9 @@ to serve them (the monthly refresh routine, the eval harness).
 - **Grow the set deliberately.** _(candidate)_ New skills (process, scoped, or further Knowledge Islands skills) are added as recurring needs emerge, each
   scaffolded through `knowledgeislands-skills` Mode INIT and audited against the existing set before shipping.
 - **`.ki-config.toml` as a per-repo override layer.** _(candidate)_ `knowledgeislands-repo` introduced a shared, skill-sectioned `.ki-config.toml` (its
-  `[knowledgeislands-repo]` table holds `visibility` + a `[…checks]` sub-table of per-repo check overrides). The same file could let **any** KI skill take
-  per-repo overrides under its own `[<skill>]` table — tuning a rubric criterion, opting a check up or down, or extending a default (e.g. extra topics) for one
-  repo — making it the single place a repo declares how the house standards apply to it. Needs a convention for what's overridable vs fixed, and each consuming
-  skill emitting its default keys (the repo `--init` pattern) so the options are authored, not implicit.
+  `[knowledgeislands-repo]` table holds `visibility` + a `[…checks]` sub-table of per-repo check overrides). `knowledgeislands-kb` is now the **first consumer
+  beyond `-repo`**: its `[knowledgeislands-kb.zones]` zone-alias lets a base mid-rename declare a local folder name (`Pillars = "Matters"`) as a reviewable
+  override rather than a model fork. The same file could let **any** KI skill take per-repo overrides under its own `[<skill>]` table — tuning a rubric
+  criterion, opting a check up or down, or extending a default (e.g. extra topics) for one repo — making it the single place a repo declares how the house
+  standards apply to it. Needs a convention for what's overridable vs fixed, and each consuming skill emitting its default keys (the repo `--init` pattern) so
+  the options are authored, not implicit — the near-term step is in _Next_.

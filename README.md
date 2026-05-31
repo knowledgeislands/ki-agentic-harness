@@ -197,9 +197,10 @@ relative path (`[ref](<references/Detail.md>)`); use the CommonMark angle-bracke
 ## The Knowledge Islands structure
 
 The Knowledge Islands skills assume a fixed knowledge-base shape, so a base does not redefine it - it supplies only a few store-level bindings. A Knowledge
-Islands base is one markdown store with a fixed set of zones: `+/` (inbound), `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, `-/` (outbound), and `Admin/`.
-Each whole base is an "island"; within it, a **Pillar** is a major strand of subject matter (a case, a client, a domain, a theme). The full zone model and
-routing rules live in [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md).
+Islands base is one markdown store with a fixed set of five zones - `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, and `Admin/` - flanked by an inbound
+(`+/`) and an outbound (`-/`) staging area (staging, not zones: material lands or leaves through them but is not canonical there). Each whole base is an
+"island"; within it, a **Pillar** is a major strand of subject matter (a case, a client, a domain, a theme). The full zone model, the note-content wikilink
+convention, and routing rules live in [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md).
 
 ### Standard skills and base-coupled extensions
 
@@ -229,6 +230,6 @@ caps, link resolution); the judgment half is applied by that skill when you ask 
 
 ## Roadmap
 
-The forward view — what's next and why — lives in [ROADMAP.md](ROADMAP.md). In short: bind `knowledgeislands-kb` to the `arcadia-principal` base, settle a
-REFRESH cadence across the skills, and (longer term) replace the manual symlink install with a Cowork plugin built from this repository, so the whole set
-installs or updates in one action across every machine and base.
+The forward view — what's next and why — lives in [ROADMAP.md](ROADMAP.md). In short: scaffold and validate `knowledgeislands-kb`'s new `.ki-config.toml` table,
+keep the audits self-applied and stand up an eval harness, and (longer term) replace the manual symlink install with a Cowork plugin built from this repository,
+so the whole set installs or updates in one action across every machine and base.

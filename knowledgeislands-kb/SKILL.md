@@ -19,20 +19,33 @@ not ask the project to redefine it.
 
 ## The Knowledge Islands structure
 
-A Knowledge Islands base is one markdown store with a fixed set of zones. Each top-level folder carries an index note of the same name.
+A Knowledge Islands base is one markdown store with a fixed set of five zones, flanked by an inbound and an outbound staging area. The five zones — `Calendar/`,
+`Pillars/`, `Resources/`, `Streams/`, `Admin/` — each carry an index note of the same name; `+/` (inbound) and `-/` (outbound) are staging areas, not zones, and
+carry no such index.
 
-| Zone         | Holds                                                                                           |
+| Folder       | Holds                                                                                           |
 | ------------ | ----------------------------------------------------------------------------------------------- |
-| `+/`         | Inbound - unfiled captures awaiting routing. Exempt from most conventions.                      |
+| `+/`         | Inbound staging - unfiled captures awaiting routing. Exempt from most conventions. Not a zone.  |
 | `Calendar/`  | Time-stamped records: daily, meeting, session, weekly, monthly notes.                           |
-| `Pillars/`   | Internal canonical knowledge - the base's primary subject matter. One folder per pillar.        |
+| `Pillars/`   | Internal canonical knowledge - the base's primary subject matter. One folder per pillar.†       |
 | `Resources/` | External reference material that exists independently of this base.                             |
 | `Streams/`   | Work in motion - active workstreams and evolving projects; migrates to `Pillars/` once settled. |
-| `-/`         | Outbound - produced artefacts (session digests, compiled outputs).                              |
+| `-/`         | Outbound staging - produced artefacts (session digests, compiled outputs). Not a zone.          |
 | `Admin/`     | Base-agnostic governance and operations.                                                        |
+
+† A base mid-migration may still hold this zone under a legacy folder name (e.g. `Matters/` for `Pillars/`). That is declared as a **zone alias** in the base's
+config, not treated as a different zone - see [Project bindings](#project-bindings).
 
 **Pillars** are the second-level unit of organisation: each whole knowledge base is an "island"; within it, a Pillar is a major strand of its subject matter (a
 case, a client, a domain, a theme). A base may use one Pillar or many.
+
+### Linking within a base
+
+Notes inside a base link to one another and to their zone index notes with Obsidian `[[wikilinks]]`, not relative markdown paths — the five index-carrying zones
+are `[[Calendar]]`, `[[Pillars]]`, `[[Resources]]`, `[[Streams]]`, and `[[Admin]]`. Body links use the shortest unique path (bare filename if unique, the
+minimum disambiguating prefix otherwise); a `## Contents` list uses the full path with an alias (`[[Full/Path/Note|Note Name]]`). This governs **note content
+inside a base** — it is independent of, and does not conflict with, the relative-markdown-link convention these skill files themselves use (see the
+arcadia-skills `README.md`, "Linking inside skills").
 
 ### Routing test
 
@@ -52,11 +65,16 @@ any per-Pillar profile index) before substantive work. Treat other Pillars as of
 ## Project bindings
 
 Almost everything is fixed by the structure above. Only these come from the host project - take them from the auto-loaded `CLAUDE.md`, then the root memory
-index, then the project's extension skill if it ships one:
+index, then the project's extension skill if it ships one. **Declarative overrides** (the zone alias below) are read from the base's `.ki-config.toml`
+`[knowledgeislands-kb]` table instead — see the `knowledgeislands-repo` skill for the shared-file contract; validate your own table (warn on an unrecognised
+key) and never read another skill's.
 
 - **Notes store** — canonical alias and location of the notes store. _Default:_ the connected base; refer to it as "the base".
 - **Sources store** — whether a paired sources store exists, and how note extracts mirror its paths. _Default:_ none.
 - **Scope usage** — whether the base is Pillar-scoped (declare an active Pillar) or single-Pillar / flat. _Default:_ Pillar-scoped.
+- **Zone names** — the canonical folder per zone, overridable for a base mid-migration. A `[knowledgeislands-kb.zones]` sub-table maps a canonical zone to this
+  base's local folder (`Pillars = "Matters"`); resolve every zone reference through it, and drop the entry once the folder is renamed. _Default:_ the canonical
+  names (`Calendar` / `Pillars` / `Resources` / `Streams` / `Admin`).
 - **Writing standards** — language variant, citation format, structural norms. _Default:_ British English; cite source paths; concise prose.
 - **Domain pre-flight** — any extra reads before drafting (profiles, domain context), usually via the extension skill. _Default:_ none beyond the memory
   cascade.
