@@ -2,12 +2,12 @@
 name: knowledgeislands-repo-config
 description: >
   Codify, audit, and apply the Knowledge Islands repo-configuration standard across the `knowledgeislands` org — the local files a repo should carry (README,
-  LICENSE, .gitignore, .editorconfig), its GitHub settings (merge policy, branch, features, topics, visibility, description, branch protection), and security
-  (secret scanning, Dependabot, Actions permissions). Use when checking whether repos match the standard, bringing one into line, onboarding a new repo, or
-  refreshing the standard against GitHub's surface. Triggers: "audit the repos", "do our repos follow the config standard", "check repo settings", "apply the
-  repo standard", "set up branch protection", "enable secret scanning / Dependabot", "refresh the repo-config standard". Discovers repos from a local tree
-  (github.com-gated) or a whole org via `gh`. Governs how a repo is configured (its settings and standard files), not its source code. For Markdown / TOML
-  authoring style, use the `knowledgeislands-authoring` skill.
+  LICENSE, .gitignore, .editorconfig), its GitHub settings (merge policy, branch, features, topics, visibility, description), and security (secret scanning,
+  Dependabot, Actions permissions). Use when checking whether repos match the standard, bringing one into line, onboarding a new repo, or refreshing the
+  standard against GitHub's surface. Triggers: "audit the repos", "do our repos follow the config standard", "check repo settings", "apply the repo standard",
+  "set up branch protection", "enable secret scanning / Dependabot", "refresh the repo-config standard". Discovers repos from a local tree (github.com-gated) or
+  a whole org via `gh`. Governs how a repo is configured (its settings and standard files), not its source code. For Markdown / TOML authoring style, use the
+  `knowledgeislands-authoring` skill.
 argument-hint: 'apply <repo> | audit | refresh'
 ---
 
@@ -26,15 +26,16 @@ complement and where they must not overlap) is documented once in the arcadia-sk
 1. **Files** — every repo carries `README.md`, `LICENSE`, `.gitignore`, `.editorconfig`, and `.ki-config.toml` (its declared config). Presence is checked on the
    default branch **via the GitHub API**, not a checkout.
 2. **GitHub** (repos on github.com): default branch `main`, MIT, **squash-only merge + linear history**, auto-delete branch on merge, Issues **on**, Wiki &
-   Projects **off**, a non-empty description synced with `package.json` where one exists; public repos also carry the standard topic set and branch protection
-   on `main` (require PR, the `build` check, linear history).
+   Projects **off**, a non-empty description synced with `package.json` where one exists; public repos also carry the standard topic set. **`main` is open by
+   default** — branch protection is an _optional_ check a repo opts into (below).
 3. **Deeper GitHub**: Dependabot alerts + security updates **on** everywhere; secret scanning + push protection **on** for public repos; Actions
    `allowed-actions = all`.
 
 **Visibility** is **declared** per repo in `.ki-config.toml` under `[knowledgeislands-repo-config]` (`visibility = "public" | "private"`) and checked against
 live GitHub — not inferred from the name. `.ki-config.toml` is a shared file: each skill reads its own `[table]`, and `--init` scaffolds this skill's default
-keys. Intentional divergences are declared in the same file's `exceptions = [...]` (check-ids), which the auditor reports as `ack` rather than failing — that's
-how a private repo records that it can't take branch protection / secret scanning on the current plan. See [the standard](references/repo-config-standard.md).
+keys. The same table carries two complementary per-repo overrides: `exceptions = [...]` opts **out** of a baseline check (auditor reports `ack`, not a fail —
+e.g. keeping Wiki on), and `enforce = [...]` opts **in** to an optional default-off check (e.g. `branch-protection`). See
+[the standard](references/repo-config-standard.md).
 
 ## Operating modes
 
@@ -46,10 +47,10 @@ Outward-facing: it changes live GitHub settings and may open PRs. Show the diff 
 
 1. Run **AUDIT** first, so you change against a known gap list.
 2. **Files** — add any missing `README.md` / `LICENSE` / `.gitignore` / `.editorconfig`, and a `.ki-config.toml` (scaffold its `[knowledgeislands-repo-config]`
-   defaults with `bun scripts/audit-repo-config.ts --init >> .ki-config.toml`, then set `visibility` and any `exceptions`). On public repos `main` is protected,
-   so this lands via a branch + PR, not a direct push.
+   defaults with `bun scripts/audit-repo-config.ts --init >> .ki-config.toml`, then set `visibility` and any `exceptions`). `main` is unprotected, so this can
+   be a direct push (or a PR if you prefer).
 3. **GitHub settings** — apply with the `gh` commands in [the standard](references/repo-config-standard.md) (merge methods, auto-delete-branch, features,
-   description, topics, branch protection).
+   description, topics).
 4. **Deeper** — Dependabot alerts/updates, secret scanning + push protection (public), Actions permissions.
 5. **Re-audit** to confirm convergence.
 
@@ -78,8 +79,9 @@ standard current".
 
 ## Notes
 
-- Requires the `gh` CLI authenticated with **repo-admin** scope to apply settings or branch protection.
-- `main` on public repos is protected — local-file fixes (APPLY step 2) land via PR, never a direct push.
-- **Private repos**: classic branch protection and secret scanning are plan-limited; the standard exempts them. Revisit via **rulesets** / GHAS if the org
-  upgrades — a REFRESH follow-up.
+- Requires the `gh` CLI authenticated with **repo-admin** scope to apply settings.
+- `main` is **open by default** — direct pushes are allowed, so local-file fixes (APPLY step 2) can land as a direct commit. Branch protection is opt-in per
+  repo (`.ki-config.toml` `enforce = ["branch-protection"]`); only then does APPLY protect that repo's `main`.
+- **Private repos**: secret scanning is plan-limited; the standard exempts it (public-only check). Revisit via **GHAS** if the org upgrades — a REFRESH
+  follow-up.
 - The auditor is **read-only**; only APPLY mutates, and only against confirmed gaps.

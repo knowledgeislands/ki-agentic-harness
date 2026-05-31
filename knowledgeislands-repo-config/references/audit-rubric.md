@@ -28,7 +28,12 @@ deterministic should move into the script and flip to **[M]**.
 - **visibility [M]** live GitHub visibility matches the value **declared** in `.ki-config.toml` (`visibility = "public" | "private"`); missing/invalid
   declaration → fail. (standard: Visibility)
 - **topics [M]** _(public)_ carries the standard topic set. (Layer 2)
-- **branch-protection [M]** _(public)_ `main` requires a PR, the `build` check, and linear history. (Layer 2)
+
+### Optional (default off — run only when the repo opts in via `.ki-config.toml` `enforce = [...]`)
+
+- **branch-protection [M, opt-in]** when enforced, `main` requires a PR, the `build` check, and linear history; otherwise not checked (`main` is open by
+  default). (standard: Optional checks)
+- **enforce [M, WARN]** an `enforce` entry that names no known optional check WARNs (it would otherwise do nothing). (standard: Optional checks)
 
 ## Layer 3 — deeper GitHub
 
@@ -42,8 +47,8 @@ deterministic should move into the script and flip to **[M]**.
 
 - **description-fit [J]** the description actually _describes the repo's purpose_, and stays in sync with its `package.json` `description` where one exists. The
   script only checks non-emptiness. (Layer 2)
-- **exceptions** a repo acknowledges a divergence by listing the check-id in its `.ki-config.toml` `exceptions = [...]`; the script then reports it as `ack`,
-  not a fail. **[J]** part: confirm each acknowledged exception is genuinely warranted (e.g. a private repo that can't take `branch-protection`), not a way to
-  silence real drift. (standard: Intentional exceptions)
+- **exceptions / enforce** `.ki-config.toml` `exceptions = [...]` opts a repo _out_ of a baseline check (reported `ack`, not failed); `enforce = [...]` opts it
+  _in_ to an optional, default-off check. **[J]** part: confirm each `exceptions` entry is genuinely warranted (e.g. a public repo that intentionally keeps Wiki
+  on), not a way to silence real drift; and that each `enforce` entry is a deliberate per-repo tightening. (standard: Optional checks / Intentional exceptions)
 - **sync [J]** this rubric, [the standard](repo-config-standard.md), and the script's constants agree. When the standard moves, all three move together
   (REFRESH).

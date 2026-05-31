@@ -17,14 +17,15 @@
  *   2. GITHUB  — default branch, license, squash-only + linear, auto-delete-branch,
  *                Issues on / Wiki+Projects off, non-empty description, visibility
  *                (matches the value DECLARED in .ki-config.toml — not the name),
- *                and (public) topics + branch protection on `main`.
+ *                and (public) the standard topic set. `main` is open by default;
+ *                branch protection is an opt-in check (.ki-config.toml `enforce`).
  *   3. DEEPER  — Dependabot alerts + security updates; secret scanning + push
  *                protection (public); Actions allowed-actions = all.
  *
- * Each repo's `.ki-config.toml` declares its `visibility` and an `exceptions` list
- * of check-ids that are acknowledged and therefore reported (not failed) — that is
- * how a repo records an intentional divergence (e.g. a private repo that cannot take
- * branch protection on the current plan).
+ * Each repo's `.ki-config.toml` declares its `visibility` and two check-id lists:
+ * `exceptions` (baseline checks it opts OUT of — reported as `ack`, not failed —
+ * e.g. a public repo that cannot take secret scanning on the current plan) and
+ * `enforce` (optional, default-off checks it opts IN to, e.g. `branch-protection`).
  *
  * READ-ONLY: never mutates a repo. Bringing outliers into line is the skill's APPLY
  * mode. Judgment items the script can't make (does the description match the repo's
@@ -43,6 +44,11 @@ const LICENSE_KEY = 'mit'
 const TOPICS = ['mcp', 'model-context-protocol', 'claude', 'typescript', 'bun']
 const REQUIRED_CHECK = 'build'
 const ALLOWED_ACTIONS = 'all'
+// Optional checks: OFF by default, run only for a repo that opts in via its
+// .ki-config.toml `enforce = [...]`. (Baseline checks are the inverse: ON for
+// every in-scope repo, opted OUT of via `exceptions`.) `main` is open by default;
+// a repo that wants a protected `main` lists 'branch-protection' in `enforce`.
+const OPTIONAL_CHECKS = ['branch-protection'] as const
 const KI_CONFIG = '.ki-config.toml'
 // Required root files. Each entry is one or more acceptable paths (first found wins).
 const REQUIRED_FILES: [check: string, paths: string[]][] = [
@@ -105,17 +111,24 @@ const topicNames = (t: unknown): string[] => (Array.isArray(t) ? t.map((x) => (t
 const KI_SECTION = 'knowledgeislands-repo-config'
 const KI_DEFAULT = `[${KI_SECTION}]
 visibility = "private"   # "public" | "private" — must match the repo's actual GitHub visibility
-exceptions = []          # acknowledged check-ids, e.g. ["branch-protection", "secret-scanning"]
+exceptions = []          # baseline checks this repo opts OUT of, e.g. ["wiki", "secret-scanning"]
+enforce = []             # optional (default-off) checks this repo opts IN to, e.g. ["branch-protection"]
 `
 
 // Minimal parser for the constrained schema: `[table]` headers, flat `key = "string"`
 // and `key = ["a", "b"]` on a single line, `#` comments. NOT a full TOML parser.
 // Returns this skill's table, or null if the file has no [knowledgeislands-repo-config].
-type KiConfig = { visibility?: string; exceptions: string[] }
+type KiConfig = { visibility?: string; exceptions: string[]; enforce: string[] }
+const parseList = (val: string): string[] =>
+  val
+    .replace(/^\[|\]$/g, '')
+    .split(',')
+    .map((s) => s.trim().replace(/^["']|["']$/g, ''))
+    .filter(Boolean)
 function parseKiConfig(text: string): KiConfig | null {
   let section = ''
   let seen = false
-  const out: KiConfig = { exceptions: [] }
+  const out: KiConfig = { exceptions: [], enforce: [] }
   for (const raw of text.split(/\r?\n/)) {
     const line = raw.replace(/#.*$/, '').trim()
     if (!line) continue
@@ -131,12 +144,8 @@ function parseKiConfig(text: string): KiConfig | null {
     const key = line.slice(0, eq).trim()
     const val = line.slice(eq + 1).trim()
     if (key === 'visibility') out.visibility = val.replace(/^["']|["']$/g, '')
-    else if (key === 'exceptions')
-      out.exceptions = val
-        .replace(/^\[|\]$/g, '')
-        .split(',')
-        .map((s) => s.trim().replace(/^["']|["']$/g, ''))
-        .filter(Boolean)
+    else if (key === 'exceptions') out.exceptions = parseList(val)
+    else if (key === 'enforce') out.enforce = parseList(val)
   }
   return seen ? out : null
 }
@@ -189,16 +198,24 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null): Finding[] 
   else if (declared !== 'PUBLIC' && declared !== 'PRIVATE') fail('visibility', `${KI_CONFIG} does not declare a valid \`visibility\` (got ${JSON.stringify(ki.visibility)})`)
   else if (declared !== r.visibility) fail('visibility', `visibility is ${r.visibility} but ${KI_CONFIG} declares ${declared}`)
 
+  // an `enforce` entry must name a known optional check, else it silently does nothing
+  for (const id of ki?.enforce ?? []) if (!(OPTIONAL_CHECKS as readonly string[]).includes(id)) warn('enforce', `unknown optional check "${id}" in enforce (known: ${OPTIONAL_CHECKS.join(', ')})`)
+
   if (r.visibility === 'PUBLIC') {
     const missing = TOPICS.filter((t) => !new Set(topicNames(r.repositoryTopics)).has(t))
     if (missing.length) fail('topics', `missing topics: ${missing.join(', ')}`)
+  }
+
+  // branch-protection: OPTIONAL — `main` is open by default. Checked only for a repo
+  // that opts in with `enforce = ["branch-protection"]` in its .ki-config.toml.
+  if (ki?.enforce.includes('branch-protection')) {
     let bp: { required_pull_request_reviews?: unknown; required_status_checks?: { contexts?: string[] }; required_linear_history?: { enabled?: boolean } } | null
     try {
       bp = ghJSON(`repos/${r.nameWithOwner}/branches/${DEFAULT_BRANCH}/protection`) as typeof bp
     } catch {
       bp = null
     }
-    if (!bp) fail('branch-protection', `no branch protection on ${DEFAULT_BRANCH}`)
+    if (!bp) fail('branch-protection', `no branch protection on ${DEFAULT_BRANCH} (repo opts in via enforce)`)
     else {
       if (bp.required_pull_request_reviews == null) fail('branch-protection', 'does not require a pull request')
       if (!(bp.required_status_checks?.contexts ?? []).includes(REQUIRED_CHECK)) fail('branch-protection', `required checks omit "${REQUIRED_CHECK}"`)
@@ -303,7 +320,7 @@ console.log(paint(C.dim, `scope: ${scope}`))
 console.log(
   paint(
     C.dim,
-    `standard: files(README,LICENSE,.gitignore,.editorconfig,${KI_CONFIG}) · github(main,mit,squash-only,del-branch,issues,no-wiki/projects,desc,visibility) · public+(topics,protection) · deeper(dependabot;secret-scanning;actions=all)`
+    `standard: files(README,LICENSE,.gitignore,.editorconfig,${KI_CONFIG}) · github(main,mit,squash-only,del-branch,issues,no-wiki/projects,desc,visibility) · public+(topics) · opt-in(branch-protection) · deeper(dependabot;secret-scanning;actions=all)`
   )
 )
 
