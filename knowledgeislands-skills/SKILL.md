@@ -6,7 +6,7 @@ description: >
   checkable rubric (split into mechanical checks a bundled linter runs, and judgment checks you apply), the Knowledge Islands skill conventions, and a tracked
   source list it revisits. Triggers: "audit this skill", "review my skill", "is this SKILL.md good", "write a new skill", "scaffold a skill", "lint the skills",
   "check skills against best practice", "refresh the skills rubric", "what do we expect from a skill". Judges a `SKILL.md` itself (frontmatter + body prose) —
-  not a repo's code or configuration.
+  not a repo's code or configuration. For general Markdown / TOML house style, use the `knowledgeislands-authoring` skill.
 argument-hint: 'audit <skill-or-repo> | author <description> | refresh'
 ---
 

@@ -6,7 +6,8 @@ description: >
   (secret scanning, Dependabot, Actions permissions). Use when checking whether repos match the standard, bringing one into line, onboarding a new repo, or
   refreshing the standard against GitHub's surface. Triggers: "audit the repos", "do our repos follow the config standard", "check repo settings", "apply the
   repo standard", "set up branch protection", "enable secret scanning / Dependabot", "refresh the repo-config standard". Discovers repos from a local tree
-  (github.com-gated) or a whole org via `gh`. Governs how a repo is configured (its settings and standard files), not its source code.
+  (github.com-gated) or a whole org via `gh`. Governs how a repo is configured (its settings and standard files), not its source code. For Markdown / TOML
+  authoring style, use the `knowledgeislands-authoring` skill.
 argument-hint: 'apply <repo> | audit | refresh'
 ---
 

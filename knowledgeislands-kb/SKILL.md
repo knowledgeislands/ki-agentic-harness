@@ -5,7 +5,8 @@ description: >
   a session digest. Targets the Knowledge Islands structure (Calendar / Pillars / Resources / Streams, plus inbound `+` and outbound `-`), so it assumes the
   zone model rather than asking for it; only a few store-level bindings come from the host project. Triggers: "save to my notes", "save to the knowledge base",
   "add to the KB", "what do my notes say about", "search my notes", "update the note on", "capture this", "write a session digest". Where a knowledge base ships
-  its own named extension skill, prefer that skill; it extends this one.
+  its own named extension skill, prefer that skill; it extends this one. For general Markdown or TOML house style (not note content), use the
+  `knowledgeislands-authoring` skill.
 argument-hint: 'digest | extract | query <question> | refresh | save | update <note>'
 ---
 
