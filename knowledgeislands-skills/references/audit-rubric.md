@@ -153,11 +153,12 @@ A criterion's tag is a contract with the linter: if you find yourself eyeballing
 
 - **COLL-1 [M]** _Shared triggers._ Within a set of ≥ 2 skills, no two `description`s declare the **same quoted trigger phrase** (WARN — a shared trigger
   signals scopes that overlap and need separating). (COMMUNITY, arcadia-skills README)
-- **COLL-2 [J]** _Non-overlapping scope by design._ The guard against collision is **design**, not cross-references: skills are scoped so they don't compete for
-  the same request. Each `description` stays **self-scoped** — it says what the skill does (and, briefly, what it doesn't), without naming or deferring to
-  sibling skills. Where two skills are genuinely adjacent, the boundary is documented **once in the arcadia-skills README** ("where the skills do not overlap"),
-  not in either description. A COLL-1 hit means the scopes overlap and the design needs fixing — not that a description needs an off-ramp. (arcadia-skills
-  README)
+- **COLL-2 [J]** _Non-overlapping scope by design, with a reciprocal off-ramp where adjacency remains._ The first guard is **design**: skills are scoped so they
+  don't compete for the same request, and each `description` is primarily **self-scoped** (what it does, and briefly what it doesn't). Where two skills are
+  nonetheless genuinely adjacent, **each** description names the other as the off-ramp — the reciprocal pattern (`knowledgeislands-mcp` ↔
+  `knowledgeislands-skills`); a one-directional guard is a half-fix — and the full boundary is documented once in the arcadia-skills README ("where the skills
+  do not overlap"). A COLL-1 hit means the scopes overlap and the **design** needs fixing first, before any off-ramp papers over it. (standard §13,
+  arcadia-skills README)
 
 ## LONG — Longevity
 
