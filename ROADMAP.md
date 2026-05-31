@@ -14,7 +14,8 @@ These hold for every skill in the repo, current and future:
   structure) ships a REFRESH mode and a dated `references/sources.md`, and states how often it should run; a skill that hard-codes no volatile external fact may
   instead resolve it at runtime. Enforced as review criteria — `knowledgeislands-skills` rubric **LONG-1** (a refresh path exists) and **LONG-2** (it has a
   cadence, ideally a scheduled run) — and mirrored into the `knowledgeislands-mcp` audit checklist. The point is durability: a skill installed into a shared or
-  cloud catalogue is long-lived and far from its author, and must not rot silently.
+  cloud catalogue is long-lived and far from its author, and must not rot silently. A monthly `knowledgeislands-skills-refresh` routine realises this: it runs
+  all five skills' REFRESH against their tracked sources and opens a PR for review rather than committing.
 - **No silent collisions.** Where two skills could fire on the same request, each description names the other as the off-ramp (rubric **COLL-1/COLL-2**; the
   linter's cross-skill pass flags shared triggers). New skills are audited against the existing set before they ship.
 - **Standard vs base-coupled extension.** Knowledge Islands skills stay base-agnostic and resolve bindings at runtime; anything base-specific lives in a
@@ -29,10 +30,6 @@ These hold for every skill in the repo, current and future:
   its own `kb-fs` MCP server). The skill stays a _standard_ skill — `arcadia-principal` supplies its store bindings and scope through its own `CLAUDE.md` and
   memory index, and any conventions unique to it go in a base-coupled extension, not into this skill. kb's Mode REFRESH then samples `arcadia-principal` as a
   live source to keep the structure model honest.
-- **Establish a REFRESH cadence.** The REFRESH modes exist; they need a rhythm so they actually run — a capability nobody invokes rots as surely as none
-  (codified as `knowledgeislands-skills` rubric **LONG-2**). Give each skill a stated cadence and, where the host supports it, a scheduled run — in Claude Code
-  a `/schedule` routine that invokes the skill's REFRESH mode — rather than relying on someone remembering. Each run bumps the `last reviewed` dates and records
-  the diff in the skill's `sources.md` changelog.
 
 ## Soon
 
