@@ -19,8 +19,9 @@
  *                (matches the value DECLARED in .ki-config.toml — not the name),
  *                and (public) the standard topic set. `main` is open by default;
  *                branch protection is an overridable check (.ki-config.toml checks).
- *   3. DEEPER  — Dependabot alerts + security updates; secret scanning + push
- *                protection (public); Actions allowed-actions = all.
+ *   3. DEEPER  — Dependabot alerts + security updates; "always suggest updating PR
+ *                branches" (allow_update_branch); secret scanning + push protection
+ *                (public); Actions allowed-actions = all.
  *
  * Each repo's `.ki-config.toml` declares its `visibility` and, in a
  * `[knowledgeislands-repo.checks]` sub-table, per-repo overrides — one
@@ -270,6 +271,15 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, pkgDesc: st
   } catch {
     warn('dependabot-updates', 'could not read automated-security-fixes')
   }
+  // "Always suggest updating pull request branches" — keeps PRs (Dependabot's included)
+  // current with the base before merge, so a green PR is green against today's main.
+  // REST-only: not exposed in the GraphQL `gh repo view` fields.
+  try {
+    if ((ghJSON(`repos/${r.nameWithOwner}`) as { allow_update_branch?: boolean }).allow_update_branch !== true)
+      fail('update-branch', 'allow_update_branch is off ("Always suggest updating pull request branches")')
+  } catch {
+    warn('update-branch', 'could not read allow_update_branch')
+  }
   if (r.visibility === 'PUBLIC' && (enforced('secret-scanning') || enforced('push-protection'))) {
     try {
       const sa = (ghJSON(`repos/${r.nameWithOwner}`) as { security_and_analysis?: { secret_scanning?: { status?: string }; secret_scanning_push_protection?: { status?: string } } })
@@ -360,7 +370,7 @@ console.log(paint(C.dim, `scope: ${scope}`))
 console.log(
   paint(
     C.dim,
-    `standard: files(README,LICENSE,.gitignore,.editorconfig,${KI_CONFIG}) · github(main,mit,squash-only,del-branch,issues,no-wiki/projects,desc,visibility) · public+(topics) · deeper(dependabot;secret-scanning;actions=all) · overridable via [..checks]: ${Object.keys(CHECK_DEFAULTS).join(',')}`
+    `standard: files(README,LICENSE,.gitignore,.editorconfig,${KI_CONFIG}) · github(main,mit,squash-only,del-branch,update-branch,issues,no-wiki/projects,desc,visibility) · public+(topics) · deeper(dependabot;secret-scanning;actions=all) · overridable via [..checks]: ${Object.keys(CHECK_DEFAULTS).join(',')}`
   )
 )
 

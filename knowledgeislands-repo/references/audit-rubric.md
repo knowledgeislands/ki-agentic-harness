@@ -37,6 +37,8 @@ deterministic should move into the script and flip to **[M]**.
 
 - **dependabot-alerts [M]** Dependabot alerts on. (Layer 3)
 - **dependabot-updates [M]** Dependabot security updates on. (Layer 3)
+- **update-branch [M]** `allow_update_branch` on ("Always suggest updating pull request branches") — keeps a PR, Dependabot's included, current with the base
+  before merge. (Layer 3)
 - **secret-scanning [M, override↓ on]** _(public)_ secret scanning on. (Layer 3; private out of scope — plan-limited)
 - **push-protection [M, override↓ on]** _(public)_ secret-scanning push protection on. (Layer 3)
 - **actions [M, WARN]** `allowed_actions` is `all`; anything else WARNs rather than fails (tightening is a deliberate per-repo choice). (Layer 3)
