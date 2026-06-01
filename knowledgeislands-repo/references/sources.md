@@ -9,18 +9,21 @@ from — keep it current.
 
 | Source                                                           | Governs                                                              | Last reviewed |
 | ---------------------------------------------------------------- | -------------------------------------------------------------------- | ------------- |
-| [REST: repository settings][repo-settings]                       | merge methods, auto-delete-branch, features, description, visibility | 2026-05-31    |
-| [REST: branch protection][branch-protection]                     | the optional `branch-protection` body (PR, `build` check, linear)    | 2026-05-31    |
-| [Repository rulesets][rulesets]                                  | the modern alternative to classic protection (private-repo path)     | 2026-05-31    |
-| [REST: Dependabot alerts / automated security fixes][dependabot] | `vulnerability-alerts`, `automated-security-fixes` endpoints         | 2026-05-31    |
-| [Secret scanning & push protection][secret-scanning]             | `security_and_analysis` toggles and their plan/GHAS gating           | 2026-05-31    |
-| [REST: Actions permissions for a repository][actions]            | `allowed_actions` policy                                             | 2026-05-31    |
-| [`gh` CLI manual][gh-cli]                                        | `gh repo list/view/edit`, `gh api` — how the script reads/writes     | 2026-05-31    |
+| [REST: repository settings][repo-settings]                       | merge methods, auto-delete-branch, features, description, visibility | 2026-06-01    |
+| [REST: branch protection][branch-protection]                     | the optional `branch-protection` body (PR, `build` check, linear)    | 2026-06-01    |
+| [Repository rulesets][rulesets]                                  | the modern alternative to classic protection (private-repo path)     | 2026-06-01    |
+| [REST: Dependabot alerts / automated security fixes][dependabot] | `vulnerability-alerts`, `automated-security-fixes` endpoints         | 2026-06-01    |
+| [Secret scanning & push protection][secret-scanning]             | `security_and_analysis` toggles and their plan/GHAS gating           | 2026-06-01    |
+| [REST: Actions permissions for a repository][actions]            | `allowed_actions` policy                                             | 2026-06-01    |
+| [`gh` CLI manual][gh-cli]                                        | `gh repo list/view/edit`, `gh api` — how the script reads/writes     | 2026-06-01    |
 
 ## Review changelog
 
 Record each REFRESH run: date, what was re-fetched, what changed in the standard / script (or "no change").
 
+- **2026-06-01 (REFRESH)** — Monthly refresh. GitHub REST API docs returned HTTP 403 (unverifiable). Search-confirmed: secret scanning and push protection for
+  public repositories remain free; as of early 2026, 39 token types have push protection enabled by default — the standard's public-only requirement is still
+  correct. Private-repo guidance unchanged (plan-limited). Rulesets API surface unchanged. No changes to standard or `audit-repo.ts`.
 - **2026-05-31** — Standard derived from an audit of all 10 `knowledgeislands` repos and applied. Three layers (local files; core GitHub settings; deeper
   security & Actions); visibility declared per repo in `.ki-config.toml`; `main` open by default, with branch protection and the other overridable checks set
   per repo under `[knowledgeislands-repo.checks]` (`true` = enforce, `false` = don't; omitted = the org default in the script's `CHECK_DEFAULTS`). Source list

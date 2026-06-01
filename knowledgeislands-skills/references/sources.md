@@ -10,12 +10,12 @@ Abbreviations match the `(SOURCE)` tags in [the standard](agent-skills-standard.
 
 | Tag  | Source                                      | Governs                                                                 | Last reviewed |
 | ---- | ------------------------------------------- | ----------------------------------------------------------------------- | ------------- |
-| SPEC | [Agent Skills specification][spec]          | Frontmatter fields, layout, hard caps, progressive-disclosure budget    | 2026-05-30    |
-| —    | [Agent Skills home][home]                   | The standard's overview, examples, ecosystem                            | 2026-05-30    |
-| BP   | [Skill authoring best practices][bp]        | Description writing, conciseness, scripts, anti-patterns, the checklist | 2026-05-30    |
-| CC   | [Claude Code — skills][cc]                  | CC frontmatter, runtime listing/compaction budgets, commands→skills     | 2026-05-30    |
-| ENG  | [Equipping agents with Agent Skills][eng] ※ | Rationale, progressive disclosure, evaluation-first, under-triggering   | 2026-05-30    |
-| —    | [`skills-ref validate`][skills-ref]         | Mechanical baseline for frontmatter + naming (criteria B, C, D)         | 2026-05-30    |
+| SPEC | [Agent Skills specification][spec]          | Frontmatter fields, layout, hard caps, progressive-disclosure budget    | 2026-06-01    |
+| —    | [Agent Skills home][home]                   | The standard's overview, examples, ecosystem                            | 2026-06-01    |
+| BP   | [Skill authoring best practices][bp]        | Description writing, conciseness, scripts, anti-patterns, the checklist | 2026-06-01    |
+| CC   | [Claude Code — skills][cc]                  | CC frontmatter, runtime listing/compaction budgets, commands→skills     | 2026-06-01    |
+| ENG  | [Equipping agents with Agent Skills][eng] ※ | Rationale, progressive disclosure, evaluation-first, under-triggering   | 2026-06-01    |
+| —    | [`skills-ref validate`][skills-ref]         | Mechanical baseline for frontmatter + naming (criteria B, C, D)         | 2026-06-01    |
 
 ※ Anthropic Engineering, 2025-12-18.
 
@@ -23,15 +23,15 @@ Abbreviations match the `(SOURCE)` tags in [the standard](agent-skills-standard.
 
 | Tag       | Source                                         | Governs                                                                 | Last reviewed |
 | --------- | ---------------------------------------------- | ----------------------------------------------------------------------- | ------------- |
-| COMMUNITY | [Skill Authoring Patterns][patterns]           | Distilled patterns: terminology, feedback loops, gotchas sections       | 2026-05-30    |
-| COMMUNITY | [obra/superpowers writing-skills][superpowers] | Community restatement of the best-practices doc; convergent conventions | 2026-05-30    |
+| COMMUNITY | [Skill Authoring Patterns][patterns]           | Distilled patterns: terminology, feedback loops, gotchas sections       | 2026-06-01    |
+| COMMUNITY | [obra/superpowers writing-skills][superpowers] | Community restatement of the best-practices doc; convergent conventions | 2026-06-01    |
 
 ## In-house
 
 | Tag                   | Source                       | Governs                                                                   | Last reviewed |
 | --------------------- | ---------------------------- | ------------------------------------------------------------------------- | ------------- |
-| arcadia-skills README | The repo's own `README.md`   | †                                                                         | 2026-05-30    |
-| `knowledgeislands-kb` | The reference standard skill | Worked example of a trigger-rich description and the standard-skill shape | 2026-05-30    |
+| arcadia-skills README | The repo's own `README.md`   | †                                                                         | 2026-06-01    |
+| `knowledgeislands-kb` | The reference standard skill | Worked example of a trigger-rich description and the standard-skill shape | 2026-06-01    |
 
 † Linking convention (no wikilinks), standard vs base-coupled-extension, the house toolchain, Knowledge Islands structure.
 
@@ -54,6 +54,13 @@ Record each REFRESH run: date, what was re-fetched, what changed in the standard
   `${CLAUDE_SESSION_ID}`). (3) D28 → OPT-6 — clarified that `disable-model-invocation: true` removes the skill description from context entirely; added contrast
   with `user-invocable: false`. (4) H47 → SCRIPT-3 — added MCP fully-qualified tool naming guidance (`ServerName:tool_name`) as a new BP pattern. (5)
   Exact-numbers table — added CC combined post-compaction budget row (25,000 tok combined).
+- **2026-06-01 (REFRESH)** — Monthly refresh. SPEC (agentskills.io), home, ENG (Anthropic Engineering), COMMUNITY (generativeprogrammer.com), and skills-ref
+  returned HTTP 403 — unverifiable; last-reviewed dates bumped, no rubric changes attributable to those sources. BP (platform.claude.com best-practices) and CC
+  (code.claude.com/docs/en/skills) confirmed accessible and current. obra/superpowers confirmed as BP restatement with no new guidance. In-house scan: all five
+  `knowledgeislands-*` skills PASS the mechanical linter. One standard change applied (source: CC): **`disallowed-tools` behavioural note** — CC docs document
+  this field's turn-scoped restriction semantics (restriction clears on next user message; suited to autonomous/background-loop skills that must never call
+  certain tools such as `AskUserQuestion`). Added as a third "behavioural nuance" item in standard §5 alongside the existing `disable-model-invocation` and
+  `argument-hint` notes. Rubric OPT-3 already validates the field and requires no update.
 - **2026-05-31** — Catalogue maintenance (not a source refresh): added the cross-skill collision (COLL) and longevity (LONG) areas, the mode naming +
   alphabetical ordering rule (OPT-7), then migrated every code from letter + global numbering (`A1`, `B7`, `C14`, …) to **area-scoped codes** (`LAY-1`,
   `NAME-1`, `DESC-1`, …) so each area numbers independently and an insertion only renumbers its own area. Linter updated to print the new codes.

@@ -8,10 +8,10 @@ owned, but it sits on top of these external tools and specs, which move — so t
 
 | Source                   | Governs                                                            | Last reviewed |
 | ------------------------ | ------------------------------------------------------------------ | ------------- |
-| [CommonMark spec][cm]    | the Markdown syntax baseline                                       | 2026-05-31    |
-| [Prettier options][pr]   | what the formatter normalises — `proseWrap`, `printWidth` (160)    | 2026-05-31    |
-| [markdownlint rules][ml] | the `MDxxx` rules enforced (`MD013` off, `MD060`, `MD051`/`MD052`) | 2026-05-31    |
-| [TOML spec][toml]        | TOML syntax for the shared `.ki-config.toml`                       | 2026-05-31    |
+| [CommonMark spec][cm]    | the Markdown syntax baseline                                       | 2026-06-01    |
+| [Prettier options][pr]   | what the formatter normalises — `proseWrap`, `printWidth` (160)    | 2026-06-01    |
+| [markdownlint rules][ml] | the `MDxxx` rules enforced (`MD013` off, `MD060`, `MD051`/`MD052`) | 2026-06-01    |
+| [TOML spec][toml]        | TOML syntax for the shared `.ki-config.toml`                       | 2026-06-01    |
 
 [cm]: https://spec.commonmark.org/
 [pr]: https://prettier.io/docs/options
@@ -24,3 +24,6 @@ Record each REFRESH run: date, what was re-fetched, what changed in the conventi
 
 - **2026-05-31** — Conventions and source list established: CommonMark + Prettier + markdownlint for Markdown (wide-table → footnote transforms, link style),
   the TOML spec for `.ki-config.toml` formatting.
+- **2026-06-01 (REFRESH)** — Monthly refresh. CommonMark, Prettier, and TOML spec returned HTTP 403 (unverifiable). markdownlint rules page accessed: confirmed
+  60 rules including MD013 off, MD051/MD052 reference-link validation, and MD060 table-column-style enforcement — no new rules or behaviour changes detected. No
+  changes to conventions.

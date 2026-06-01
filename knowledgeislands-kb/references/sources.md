@@ -11,8 +11,8 @@ re-anchors against the canonical definition and against how the bases actually u
 
 | Source                                                         | Governs                                                        | Last reviewed |
 | -------------------------------------------------------------- | -------------------------------------------------------------- | ------------- |
-| arcadia-skills `README.md` - "The Knowledge Islands structure" | †                                                              | 2026-05-31    |
-| [Knowledge Islands KB Reference][kb-reference]                 | This skill's own long-form detail on the modes and conventions | 2026-05-31    |
+| arcadia-skills `README.md` - "The Knowledge Islands structure" | †                                                              | 2026-06-01    |
+| [Knowledge Islands KB Reference][kb-reference]                 | This skill's own long-form detail on the modes and conventions | 2026-06-01    |
 
 † The authoritative structure: five zones (Calendar / Pillars / Resources / Streams / Admin) flanked by the inbound `+` and outbound `-` staging areas.
 
@@ -24,10 +24,10 @@ _within_ it (`Matters/` → `Pillars/`) - between them they exercise both direct
 
 | Source                                | Governs                                                                                      | Last reviewed |
 | ------------------------------------- | -------------------------------------------------------------------------------------------- | ------------- |
-| `arcadia-principal` base[^ap]         | Whether the zone model, routing test, and bindings still match a real layout and practice    | 2026-05-31    |
-| `kit-legal` base[^kl]                 | The same, from a base further along the structure but using the legacy `Matters/` zone name  | 2026-05-31    |
-| Other bases actively using this skill | The same, as further bases adopt the skill                                                   | 2026-05-31    |
-| Base-coupled `<base>-kb` extensions   | Which base-specific conventions belong in an extension vs. promoted into this standard skill | 2026-05-31    |
+| `arcadia-principal` base[^ap]         | Whether the zone model, routing test, and bindings still match a real layout and practice    | 2026-06-01    |
+| `kit-legal` base[^kl]                 | The same, from a base further along the structure but using the legacy `Matters/` zone name  | 2026-06-01    |
+| Other bases actively using this skill | The same, as further bases adopt the skill                                                   | 2026-06-01    |
+| Base-coupled `<base>-kb` extensions   | Which base-specific conventions belong in an extension vs. promoted into this standard skill | 2026-06-01    |
 
 [^ap]:
     The first real Knowledge Islands base this skill tracks. Sampled through its own `kb-fs` MCP server (`arcadia-principal-mcp-kb-fs`) and its `CLAUDE.md` /
@@ -58,5 +58,7 @@ Record each REFRESH run: date, what was re-anchored, what changed in the structu
   - **Zone-alias binding added.** `kit-legal` holds its Pillars zone under the legacy `Matters/` while renaming toward `Pillars/`. Rather than fork the model,
     added a **Zone names** binding resolved from the base's `.ki-config.toml` `[knowledgeislands-kb.zones]` table (`Pillars = "Matters"`), validated down per
     the `.ki-config.toml` contract. The Knowledge-Capital-to-`Admin/` migration and the `Matters/`→`Pillars/` rename both remain base-local pending work.
+- **2026-06-01 (REFRESH)** — Monthly refresh. Canonical sources (README, KB Reference) re-read; structure model unchanged. Live bases (`arcadia-principal`,
+  `kit-legal`) not sampled — their MCP servers are outside this session's scope. No changes to zone model, routing test, or project-bindings table.
 
 [kb-reference]: <Knowledge Islands KB Reference.md>
