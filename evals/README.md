@@ -76,8 +76,9 @@ All **five skills** have **three scenarios** each (`scenarios/*.ts`); the harnes
 judge 0 → 5 on all three models; the set's core value is model-independent. Cost scales ~3.5× from Haiku to Opus, so **Sonnet is the routine regression arm**
 and Opus is reserved for periodic confirmation.
 
-Re-run anytime: `bun run eval --runs 3` (Sonnet) or `--model opus` / `--model haiku`. The matrix surfaced three specification artefacts, all since handled:
-`link-style` was tuned (its prompt now scopes to a doc file, removing a base-content ambiguity); `footnote-marker-series` exposed a real progressive-disclosure
-limit (the marker series was reference-gated and unreachable one-shot) and was fixed at the source — the series is now stated inline in the
-`knowledgeislands-authoring` `SKILL.md` body. `skills-description` remains a low-signal general-knowledge probe, a candidate to replace if the suite is
-tightened.
+Re-run anytime: `bun run eval --runs 3` (Sonnet) or `--model opus` / `--model haiku`. **The suite has changed since the [matrix snapshot](results/MATRIX.md)** —
+everything it surfaced is handled, so the next full run will look cleaner: `link-style` was tuned (its prompt now scopes to a doc file);
+`footnote-marker-series` exposed a real progressive-disclosure limit and was fixed at the source (the marker series is now inline in the
+`knowledgeislands-authoring` `SKILL.md` body); and the two low-signal general-knowledge probes were **replaced with house-arbitrary ones** —
+`skills-description` → `skills-shape` (standard vs base-coupled extension) and `mcp-bun-test-trap` → `mcp-tool-naming` (the `<app>_<resource>_<action>`
+convention), each validated at baseline 0 → treatment full on Sonnet.

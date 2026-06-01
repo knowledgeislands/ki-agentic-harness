@@ -75,6 +75,9 @@ key) and never read another skill's.
 - **Zone names** — the canonical folder per zone, overridable for a base mid-migration. A `[knowledgeislands-kb.zones]` sub-table maps a canonical zone to this
   base's local folder (`Pillars = "Matters"`); resolve every zone reference through it, and drop the entry once the folder is renamed. _Default:_ the canonical
   names (`Calendar` / `Pillars` / `Resources` / `Streams` / `Admin`).
+- **Required frontmatter** — the keys every note carrying frontmatter must include. Declare them with `required_frontmatter = ["tags", "status", "author"]`
+  under `[knowledgeislands-kb]` to have the checker enforce their presence mechanically (extra keys stay free; keys are always `snake_case`). _Default:_ none
+  declared — required frontmatter stays a judgment call resolved from the host `CLAUDE.md` / extension.
 - **Writing standards** — language variant, citation format, structural norms. _Default:_ British English; cite source paths; concise prose.
 - **Domain pre-flight** — any extra reads before drafting (profiles, domain context), usually via the extension skill. _Default:_ none beyond the memory
   cascade.
@@ -96,10 +99,11 @@ Infer the mode from the request, or ask if unclear. Like every governance skill 
 
 1. **Run the mechanical checker** - `bun scripts/audit-kb.ts <base-path>` (from this skill's directory). It reports the deterministic layer as PASS / WARN /
    FAIL and exits non-zero on a FAIL: the five zones present (resolved through any `[knowledgeislands-kb.zones]` alias), a same-name index note per zone, the
-   root `Admin/MEMORY.md`, and the base's own `[knowledgeislands-kb]` table validated _down_. Capture its output; do not re-derive what it checks.
+   root `Admin/MEMORY.md`, the base's own `[knowledgeislands-kb]` table validated _down_, and note frontmatter (well-formed `---` fences, snake_case keys, and
+   any keys declared in `required_frontmatter`). Capture its output; do not re-derive what it checks.
 2. **Apply the judgment layer by reading** - the **[J]** criteria in [the rubric](references/audit-rubric.md) that the script cannot judge: notes filed in the
-   wrong zone (per the routing test), note frontmatter and naming quality, whether the memory index's active-Pillar list is actually accurate, and
-   fact-vs-analysis labelling where the base distinguishes them.
+   wrong zone (per the routing test), _whether a note should carry frontmatter at all_ and its naming quality, whether the memory index's active-Pillar list is
+   actually accurate, and fact-vs-analysis labelling where the base distinguishes them.
 3. **Report** drift, leading with FAILs then WARNs: misrouted or mis-zoned notes, missing zones, notes lacking required frontmatter, stale memory-index entries.
    Cite paths and give the fix.
 

@@ -3,6 +3,10 @@
 PROC-2 run. 15 scenarios (5 skills × 3) × `--runs 3` per arm, judge: sonnet. The per-model raw logs are alongside this file (`matrix-<model>.log`). This run is
 a snapshot — re-run with `bun run eval --runs 3 --model <m>` to refresh.
 
+> **Superseded by scenario changes.** Since this run, every artefact it surfaced has been fixed: `footnote-marker-series` was repaired at the source (series now
+> inline in the authoring `SKILL.md`), `link-style` was tuned, and the two low-signal probes were replaced (`skills-description` → `skills-shape`,
+> `mcp-bun-test-trap` → `mcp-tool-naming`). The numbers below are the historical record of the run that drove those fixes; re-run for current figures.
+
 ## Headline
 
 | Model  | Helped | Regressed | No diff | Cost    |
@@ -47,5 +51,5 @@ goes **baseline 0/3 → treatment 3/3, judge 0 → 5** on all three models. That
 
 - **PROC-2 satisfied.** The harness runs clean across all three models; the core conventions show a large, consistent skill effect.
 - **Cost scales steeply with model** (~3.5× Haiku → Opus). For routine regression use, Sonnet is the sweet spot; reserve the Opus arm for periodic confirmation.
-- **Two scenarios probe general knowledge** (`skills-description`, and partly the `bun test` trap) — they measure little and can flip on noise. Candidates to
-  replace with more house-arbitrary probes if the suite is tightened.
+- **Two scenarios probed general knowledge** (`skills-description`, and partly the `bun test` trap) — they measured little and could flip on noise. **Since
+  replaced** with house-arbitrary probes (`skills-shape`, `mcp-tool-naming`).

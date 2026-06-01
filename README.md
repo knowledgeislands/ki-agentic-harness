@@ -230,6 +230,6 @@ caps, link resolution); the judgment half is applied by that skill when you ask 
 
 ## Roadmap
 
-The forward view — what's next and why — lives in [ROADMAP.md](ROADMAP.md). In short: scaffold and validate `knowledgeislands-kb`'s new `.ki-config.toml` table,
-keep the audits self-applied and stand up an eval harness, and (longer term) replace the manual symlink install with a Cowork plugin built from this repository,
-so the whole set installs or updates in one action across every machine and base.
+The forward view — what's next and why — lives in [ROADMAP.md](ROADMAP.md). It is nearly clear: the standard, the mechanical checkers, and the advisory eval
+harness are all in place, and keeping them applied is a continuous practice (above), not roadmap work. One forward _(candidate)_ remains — generalising the
+shared `.ki-config.toml` into a per-repo/per-base override layer any skill can read, now that `knowledgeislands-repo` and `knowledgeislands-kb` both consume it.

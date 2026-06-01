@@ -24,7 +24,8 @@ its standard is the zone model itself, not a separate `*-standard.md`.
 
 → [SKILL: Project bindings](../SKILL.md) · contract owned by `knowledgeislands-repo` (validate down, ignore across)
 
-- **CONFIG-1 [M]** A key the table does not define warns — there are no scalar keys; the only keys are zone aliases under `[knowledgeislands-kb.zones]`.
+- **CONFIG-1 [M]** A key the table does not recognise warns. The only recognised keys are `required_frontmatter` (an array, see **NOTE-1**) directly under
+  `[knowledgeislands-kb]` and the zone aliases under `[knowledgeislands-kb.zones]`; any other scalar key warns.
 - **CONFIG-2 [M]** A zone alias mapping a zone to its **own canonical name** (`Pillars = "Pillars"`) is redundant — advise dropping it.
 - **CONFIG-3 [M]** A key under `[knowledgeislands-kb.zones]` that is **not a canonical zone name** (a typo, a stale entry) warns.
 - **CONFIG-4 [M]** Only this skill's own table is read; another skill's `[table]` is never inspected. (A declared alias whose folder is absent surfaces via
@@ -41,7 +42,11 @@ its standard is the zone model itself, not a separate `*-standard.md`.
 
 → [SKILL: Mode SAVE / UPDATE](../SKILL.md)
 
-- **NOTE-1 [J]** Notes carry the base's required frontmatter (base-specific — resolved from the host `CLAUDE.md` / extension, not fixed here).
+- **NOTE-1 [M, base-declared]** Where the base declares `required_frontmatter = [...]` in its `[knowledgeislands-kb]` table, every note that **has** a
+  frontmatter block carries those keys (extra keys are free). Undeclared, this is **[J]** — required keys are base-specific (resolved from the host `CLAUDE.md`
+  / extension), and _whether a given note should carry frontmatter at all_ stays judgment regardless.
+- **NOTE-1a [M]** A note's `---` frontmatter fence is **well-formed** — an opening fence has a closing `---`. (base-agnostic)
+- **NOTE-1b [M]** Frontmatter **keys are snake_case** (the house convention); a non-conforming key warns. (base-agnostic)
 - **NOTE-2 [J]** Naming follows the base's convention: dated for `Calendar/`, descriptive title elsewhere, mirroring the paired sources-store path for source
   extracts.
 - **NOTE-3 [J]** Facts are cited to a source path or reference; analysis is labelled where the base distinguishes fact from analysis.
