@@ -10,17 +10,15 @@ The standing principles every skill upholds — a refresh path and cadence, no s
 model — are present-tense invariants, not roadmap items, so they live in the [README](README.md) under _Principles across the set_. Several entries below exist
 to serve them (the monthly refresh routine, the eval harness).
 
-## Next
-
-- **Run the eval matrix across the three models.** The harness is **built and validated** (`evals/`, `bun run eval`; see [evals/README](evals/README.md)): all
-  five skills have three scenarios each (**PROC-1** satisfied), hybrid scoring (deterministic regex assertions + an LLM judge), `--runs N` averaging, and a
-  correct skill-free baseline (it blocks the `Skill` tool — `--disable-slash-commands` alone let the skill auto-load and silently contaminate the baseline; a
-  bug found and fixed via the harness itself). On Sonnet it cleanly shows "skill helped" where a skill teaches house-internal facts and an honest "no
-  difference" where the fact is general knowledge. Remaining for **PROC-2**: run the **Haiku / Sonnet / Opus** matrix at `--runs 3+` and tune any weak
-  (general-knowledge) scenarios it surfaces. That run is a deliberate token spend, so it is triggered rather than automatic. Advisory (a WARN, not a gate) — the
-  last open item from the skills audit.
-
 ## Soon
+
+- **Keep the eval suite honest as skills change.** The harness is built and the **PROC-1/2** matrix has been run across **Haiku / Sonnet / Opus** at `--runs 3`
+  (curated in [evals/results/MATRIX.md](evals/results/MATRIX.md)): every house-arbitrary scenario shows a large, model-independent skill effect (baseline 0/3 →
+  treatment 3/3). It is advisory (a WARN, not a gate). Two follow-ups remain. (a) **Tighten the two low-signal scenarios** — `skills-description` overlaps
+  generic knowledge a baseline already has, and the `bun test` trap is partly general; replace them with more house-arbitrary probes when the suite is next
+  touched. (b) **Decide the `footnote-marker-series` skill-design question** the matrix surfaced: the marker series is reference-gated and so unreachable to a
+  headless one-shot agent (scores ~0/5 even with `--add-dir`) — either promote the series into `knowledgeislands-authoring`'s `SKILL.md` body, or accept it as a
+  known progressive-disclosure limit. Re-run with `bun run eval --runs 3` (Sonnet is the routine arm; Opus costs ~3.5× for periodic confirmation).
 
 - **Keep the audits self-applied.** `knowledgeislands-skills` audits itself and its siblings; `knowledgeislands-mcp` audits the workspace `mcp-*` repos. Run
   them after any structural change so the set never drifts from its own standard.
@@ -46,4 +44,4 @@ to serve them (the monthly refresh routine, the eval harness).
   override rather than a model fork. The same file could let **any** KI skill take per-repo overrides under its own `[<skill>]` table — tuning a rubric
   criterion, opting a check up or down, or extending a default (e.g. extra topics) for one repo — making it the single place a repo declares how the house
   standards apply to it. Needs a convention for what's overridable vs fixed, and each consuming skill emitting its default keys (the repo `--init` pattern) so
-  the options are authored, not implicit — the near-term step is in _Next_.
+  the options are authored, not implicit.

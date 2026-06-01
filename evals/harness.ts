@@ -7,8 +7,8 @@
  *   bun evals/harness.ts --scenario toml-style   # one scenario by id
  *
  * For each scenario it runs the same prompt TWICE through the local `claude` CLI:
- *   • baseline  — `claude -p <prompt> --disable-slash-commands`  (skills off)
- *   • treatment — `claude -p "/<skill> <prompt>"`                (skill loaded)
+ *   • baseline  — `claude -p <prompt> --disallowed-tools Skill`  (skills off — see runClaude)
+ *   • treatment — `claude -p "/<skill> <prompt>" --add-dir ~/.claude/skills`  (skill loaded)
  * then scores both, HYBRID:
  *   • deterministic — regex assertions over the answer (the skill's checkable house rules)
  *   • judge         — an LLM scores each answer 0-5 against the scenario's rubric

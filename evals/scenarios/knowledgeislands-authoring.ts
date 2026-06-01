@@ -15,6 +15,13 @@ import type { Scenario } from '../harness.ts'
 
 export const scenarios: Scenario[] = [
   {
+    // FINDING (3-model matrix, --runs 3): treatment scores ~0/5 on every model —
+    // the marker SERIES lives in references/markdown-authoring.md, and a headless
+    // one-shot agent does not open it even with --add-dir. This is a real
+    // progressive-disclosure limit (a reference-gated convention isn't reachable
+    // one-shot), not a flaky scenario. Kept as-is: the right fix is a skill-design
+    // call (promote the series into SKILL.md vs. accept the headless limit), not a
+    // scenario tweak. See evals/README.md.
     skill: 'knowledgeislands-authoring',
     id: 'footnote-marker-series',
     prompt:
@@ -33,7 +40,7 @@ export const scenarios: Scenario[] = [
     skill: 'knowledgeislands-authoring',
     id: 'link-style',
     prompt:
-      'In our Knowledge Islands markdown (skills, READMEs), should I use Obsidian [[wikilinks]] or relative markdown links? And how do I link to a file whose path contains spaces?',
+      'Inside a SKILL.md or README.md file (a documentation file, NOT note content inside a base), should I use Obsidian [[wikilinks]] or relative markdown links to point at another file? And how do I link to a file whose path contains spaces?',
     assertions: [
       { name: 'recommends relative links', re: /relative (markdown )?link/i },
       { name: 'rejects wikilinks', re: /(never|avoid|not|don.?t|rather than|instead of|over)\b[^.\n]{0,40}wikilink/i },
