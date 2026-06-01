@@ -12,10 +12,11 @@ to serve them (the monthly refresh routine, the eval harness).
 
 ## Next
 
-- **Build the skills out evaluation-first.** Rubric **PROC-1/2** — at least three evaluation scenarios against a no-skill baseline, and a pass across the models
-  each skill runs on (Haiku / Sonnet / Opus) — isn't satisfied: the set was authored rubric-first, not eval-first. Stand up a small eval harness (representative
-  prompts per skill, scored with and without the skill loaded) so new and changed skills are validated by behaviour, not just linted. Advisory (a WARN, not a
-  gate), but it is the last open item from the skills audit.
+- **Expand the eval harness across the set.** The harness is **built and proven on a vertical slice** — `knowledgeislands-authoring`, three scenarios, scored
+  baseline-vs-skill with hybrid (deterministic regex assertions + an LLM judge) via the local `claude` CLI (`evals/`, `bun run eval`; see
+  [evals/README](evals/README.md)). It runs, and shows the skill's marginal value plus the expected non-determinism. To satisfy **PROC-1/2** fully: author ≥ 3
+  scenarios for each of the other four skills, run the **Haiku / Sonnet / Opus** matrix (the harness already takes `--model`), and add `--runs N` averaging to
+  damp the run-to-run variance into a stabler signal. Advisory (a WARN, not a gate) — the last open item from the skills audit.
 
 ## Soon
 
