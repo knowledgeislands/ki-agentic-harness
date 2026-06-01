@@ -29,8 +29,9 @@
  * no overrides; `branch-protection` defaults off, so `main` is open unless opted in.
  *
  * READ-ONLY: never mutates a repo. Bringing outliers into line is the skill's APPLY
- * mode. Judgment items the script can't make (does the description match the repo's
- * purpose / sync with package.json) are left to the skill's AUDIT mode.
+ * mode. The one remaining judgment item the script can't make — does the description
+ * actually match the repo's purpose — is left to the skill's AUDIT mode; that it is
+ * SYNCED with package.json is now checked mechanically (description-sync).
  *
  * Requires `gh` authenticated against the org. No npm dependencies — Bun/Node only.
  * Exit code is non-zero if any repo has a FAIL.
@@ -118,6 +119,21 @@ function rootPaths(nwo: string, branch: string): Set<string> {
 
 const topicNames = (t: unknown): string[] => (Array.isArray(t) ? t.map((x) => (typeof x === 'string' ? x : (x?.name ?? x?.topic?.name))).filter(Boolean) : [])
 
+// The repo's package.json `description`, or null if there is no package.json, it
+// doesn't parse, or it declares no string description. Used to check the GitHub
+// description is SYNCED with it (the source of truth a maintainer edits in-repo).
+function pkgDescription(nwo: string, files: Set<string>): string | null {
+  if (!files.has('package.json')) return null
+  const text = ghRaw(nwo, 'package.json')
+  if (text == null) return null
+  try {
+    const d = (JSON.parse(text) as { description?: unknown }).description
+    return typeof d === 'string' && d.trim() ? d.trim() : null
+  } catch {
+    return null
+  }
+}
+
 // `.ki-config.toml` is a shared per-repo file; each skill reads its own [table].
 // This skill owns the [knowledgeislands-repo] table. The default block
 // (written by `--init`) is the authoritative key list — authoring a repo emits it.
@@ -180,7 +196,7 @@ type Repo = {
 const REPO_FIELDS =
   'nameWithOwner,visibility,isArchived,defaultBranchRef,mergeCommitAllowed,squashMergeAllowed,rebaseMergeAllowed,deleteBranchOnMerge,hasIssuesEnabled,hasProjectsEnabled,hasWikiEnabled,repositoryTopics,licenseInfo,description'
 
-function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null): Finding[] {
+function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, pkgDesc: string | null): Finding[] {
   const { f, fail, warn, note } = mk()
   if (r.isArchived) {
     warn('archived', 'repo is archived — skipping remaining checks')
@@ -196,6 +212,12 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null): Finding[] 
   if (r.defaultBranchRef?.name !== DEFAULT_BRANCH) fail('default-branch', `default branch is "${r.defaultBranchRef?.name ?? '?'}" (want ${DEFAULT_BRANCH})`)
   if (r.licenseInfo?.key !== LICENSE_KEY) fail('license', `license is "${r.licenseInfo?.key ?? 'none'}" (want ${LICENSE_KEY})`)
   if (!r.description?.trim()) fail('description', 'description is empty')
+  // description-sync: the GitHub description must equal the repo's package.json
+  // description (the in-repo source of truth). Only checked when both exist — a
+  // repo with no package.json description is exempt. (Whether the text matches the
+  // repo's PURPOSE is still judgment — the skill's AUDIT mode.)
+  else if (pkgDesc != null && pkgDesc !== r.description.trim())
+    fail('description-sync', `GitHub description ≠ package.json description\n      github: ${JSON.stringify(r.description.trim())}\n      package.json: ${JSON.stringify(pkgDesc)}`)
   if (r.mergeCommitAllowed || r.rebaseMergeAllowed || !r.squashMergeAllowed)
     fail('merge', `merge methods M/S/R = ${r.mergeCommitAllowed ? 'M' : '-'}/${r.squashMergeAllowed ? 'S' : '-'}/${r.rebaseMergeAllowed ? 'R' : '-'} (want -/S/-)`)
   if (!r.deleteBranchOnMerge) fail('delete-branch', 'auto-delete head branch on merge is off')
@@ -358,9 +380,10 @@ for (const t of targets) {
     const files = rootPaths(t.nameWithOwner, branch)
     const kiText = files.has(KI_CONFIG) ? ghRaw(t.nameWithOwner, KI_CONFIG) : null
     const ki = kiText != null ? parseKiConfig(kiText) : null
+    const pkgDesc = pkgDescription(t.nameWithOwner, files)
     // overrides are applied inside auditRepo: a not-enforced check simply does not fail
     // and is reported as a `note`. No post-filtering here.
-    findings = auditRepo(r, files, ki)
+    findings = auditRepo(r, files, ki, pkgDesc)
   } catch {
     findings = [{ level: 'fail', check: 'access', msg: `could not read ${t.nameWithOwner} via gh (missing repo or insufficient scope)` }]
   }
@@ -380,5 +403,5 @@ for (const t of targets) {
 console.log(
   `\n${paint(C.cyan, 'summary')}: ${targets.length} repo(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}${ghSkipped ? paint(C.dim, `, ${ghSkipped} not on github.com`) : ''}`
 )
-console.log(paint(C.dim, 'mechanical checks only — judgment items (description matches purpose & synced with package.json) are the skill’s AUDIT mode.'))
+console.log(paint(C.dim, 'mechanical checks only — the one remaining judgment item (does the description match the repo’s purpose) is the skill’s AUDIT mode.'))
 process.exit(totalFails > 0 ? 1 : 0)

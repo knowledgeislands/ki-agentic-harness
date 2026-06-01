@@ -20,6 +20,8 @@ deterministic should move into the script and flip to **[M]**.
 - **default-branch [M]** default branch is `main`. (Layer 2)
 - **license [M]** license is MIT. (Layer 2)
 - **description [M]** description is non-empty. (Layer 2)
+- **description-sync [M]** the GitHub description equals the repo's `package.json` `description` (its in-repo source of truth), where a package.json description
+  exists. (Layer 2)
 - **merge [M]** squash only — merge-commit off, rebase off. (Layer 2)
 - **delete-branch [M]** auto-delete head branch on merge is on. (Layer 2)
 - **issues [M, override↓ on]** Issues enabled. (Layer 2)
@@ -46,8 +48,8 @@ overridable check **WARNs** (`checks` id). (standard: Per-repo overrides)
 
 ## Judgment (not deterministic — apply by reading)
 
-- **description-fit [J]** the description actually _describes the repo's purpose_, and stays in sync with its `package.json` `description` where one exists. The
-  script only checks non-emptiness. (Layer 2)
+- **description-fit [J]** the description actually _describes the repo's purpose_ — readable, accurate, one sentence. The script checks non-emptiness
+  (`description`) and that it is synced with `package.json` (`description-sync`); whether it _fits the purpose_ is the irreducible judgment left here. (Layer 2)
 - **overrides** each boolean under `[knowledgeislands-repo.checks]` flips an overridable check for that repo (the script prints it as a `note`). **[J]** part:
   confirm each override is a genuine, warranted per-repo decision (e.g. a public repo that deliberately keeps a Wiki, or one that protects `main`), not a way to
   wave off real drift. (standard: Per-repo overrides)

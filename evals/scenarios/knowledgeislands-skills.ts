@@ -1,22 +1,28 @@
 /**
  * Eval scenarios for the `knowledgeislands-skills` skill — the Agent Skills rubric.
- * Each probes a house/standard rule (description contents, the size cap, the
- * relative-not-wikilinks rule) the skill encodes.
+ * Each probes a house/standard rule (the standard-vs-base-coupled-extension shape,
+ * the size cap, the relative-not-wikilinks rule) the skill encodes — house-arbitrary
+ * conventions a skill-less baseline can't derive.
  */
 import type { Scenario } from '../harness.ts'
 
 export const scenarios: Scenario[] = [
   {
+    // Replaces the former `skills-description` scenario — that probed generic
+    // "what goes in a description" advice a skill-less baseline already knows
+    // (matrix: baseline ~2.7-3.0/3, no real lift). This targets a house-ARBITRARY
+    // distinction the skill owns (rubric area SHAPE) that a baseline can't derive.
     skill: 'knowledgeislands-skills',
-    id: 'skills-description',
-    prompt: "What must a good Agent Skill's `description` field contain, and in which grammatical person should it be written?",
+    id: 'skills-shape',
+    prompt:
+      "In this skill collection we distinguish a 'standard' skill from a 'base-coupled extension'. What is each, and how does an extension reuse a standard skill's shared modes?",
     assertions: [
-      { name: 'both what it does AND when to use', re: /when to use|when to|both[^.\n]{0,40}what/i },
-      { name: 'third person', re: /third[- ]person/i },
-      { name: 'concrete trigger phrases', re: /trigger/i }
+      { name: 'standard resolves base bindings at runtime / no hard-coded base', re: /(resolv|bind)[^.\n]{0,40}runtime|hard.?codes? no|no (single )?(hard.?coded )?base/i },
+      { name: 'extension supplies base bindings / delegates shared modes', re: /(supplies|provides|carries|holds)[^.\n]{0,30}base|delegat/i },
+      { name: 'reuses the standard skill by name', re: /by (its )?`?name`?|reference[^.\n]{0,20}name/i }
     ],
     rubric:
-      'House rubric (DESC): a description must state BOTH what the skill does AND when to use it, in the THIRD person (never first/second), with concrete trigger keywords/phrases a user would say, and it should lean toward firing. A correct answer names what+when, third person, and trigger phrases.'
+      'House rubric (SHAPE-1/2): a STANDARD KI skill resolves its base bindings at runtime and hard-codes no single base, so it installs anywhere; a BASE-COUPLED EXTENSION supplies only the base-specific bindings and delegates the shared governance modes (AUDIT/CONFORM/REFRESH) to a standard skill, referencing it BY NAME (not a file path, since on-disk location is not stable). A correct answer draws this standard-vs-extension distinction and says the extension reuses the standard skill by name.'
   },
   {
     skill: 'knowledgeislands-skills',

@@ -5,8 +5,8 @@
  * tool names, config injection, fail-safe gating) — testing those shows "no
  * difference" because the baseline knows them too. So these scenarios target
  * house-ARBITRARY specifics a model cannot derive: the exact annotation-preset
- * names, the access-level env var + default, and the `bun test` trap. Those are
- * what the skill genuinely owns.
+ * names, the access-level env var + default, and the `<app>_<resource>_<action>`
+ * tool-naming convention. Those are what the skill genuinely owns.
  */
 import type { Scenario } from '../harness.ts'
 
@@ -37,14 +37,21 @@ export const scenarios: Scenario[] = [
       'House rule: access level comes from env `MCP_<APP>_ACCESS_LEVEL` (e.g. MCP_GIT_ACCESS_LEVEL), default `read`; levels nest read ⊂ write ⊂ destructive, and a tool registers only when its annotation-derived level ≤ the configured level. A correct answer gives the MCP_<APP>_ACCESS_LEVEL var, the read default, and the nesting.'
   },
   {
+    // Replaces the former `mcp-bun-test-trap` scenario — that leaned on general
+    // Bun knowledge (Bun has its own test runner) a baseline partly shares. This
+    // targets the house-ARBITRARY tool-naming convention the skill owns, which a
+    // baseline cannot derive (the specific `<app>_<resource>_<action>` shape, the
+    // per-repo fixed `<app>`, and the CLI-mirrors-tools rule).
     skill: 'knowledgeislands-mcp',
-    id: 'mcp-bun-test-trap',
-    prompt: 'In our MCP repos there is a known trap with `bun test` vs `bun run test`. What is it, and what must the package.json `test` script be?',
+    id: 'mcp-tool-naming',
+    prompt: 'What is the tool-naming convention for our workspace MCP servers? Give the exact name shape, what the leading segment is, and how the CLI relates to the tool names.',
     assertions: [
-      { name: 'bun test invokes Bun’s own runner', re: /bun test[^.\n]{0,60}(bun.?s own|built-?in|native|its own) (test )?runner|Bun.?s (own )?runner/i },
-      { name: 'test script must be vitest run', re: /vitest run/ }
+      { name: '<app>_<resource>_<action> snake_case shape', re: /<?app>?_<?resource>?_<?action>?|app[^.\n]{0,18}resource[^.\n]{0,18}action/i },
+      { name: 'snake_case', re: /snake[_ ]?case/i },
+      { name: '<app> fixed per repo', re: /(fixed|one|same)[^.\n]{0,25}per (repo|server)|per (repo|server)[^.\n]{0,15}(app|prefix)/i },
+      { name: 'CLI verb surface mirrors the tool names', re: /CLI[^.\n]{0,40}mirror|mirror[^.\n]{0,40}(tool|MCP|name)/i }
     ],
     rubric:
-      "House trap: `bun run test` runs vitest (correct), but bare `bun test` silently invokes Bun's OWN test runner — so the package.json `test` script must be `vitest run`, and nothing should call `bun test`. A correct answer explains the bun-test-runner trap and that the script must be `vitest run`."
+      'House convention: workspace MCP tools are named `<app>_<resource>_<action>` in snake_case; `<app>` is FIXED per repo (git, kb, gmail, m365, claude_code/claude_desktop/vscode, voicenotes); metadata/lifecycle tools may drop the resource segment (e.g. gmail_auth_start, m365_about); and the CLI verb surface MIRRORS the tool names (same resource/action structure). A correct answer gives the `<app>_<resource>_<action>` snake_case shape, the per-repo-fixed `<app>`, and the CLI-mirrors-tools relationship.'
   }
 ]
