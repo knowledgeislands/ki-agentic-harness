@@ -15,13 +15,15 @@ import type { Scenario } from '../harness.ts'
 
 export const scenarios: Scenario[] = [
   {
-    // FINDING (3-model matrix, --runs 3): treatment scores ~0/5 on every model —
-    // the marker SERIES lives in references/markdown-authoring.md, and a headless
-    // one-shot agent does not open it even with --add-dir. This is a real
-    // progressive-disclosure limit (a reference-gated convention isn't reachable
-    // one-shot), not a flaky scenario. Kept as-is: the right fix is a skill-design
-    // call (promote the series into SKILL.md vs. accept the headless limit), not a
-    // scenario tweak. See evals/README.md.
+    // FINDING (3-model matrix, --runs 3) → RESOLVED: treatment originally scored
+    // ~0/5 on every model — the marker SERIES lived only in
+    // references/markdown-authoring.md, which a headless one-shot agent doesn't
+    // open even with --add-dir (a real progressive-disclosure limit). The
+    // skill-design call was made: the series is now stated inline in the
+    // knowledgeislands-authoring SKILL.md body (a judgment convention, which the
+    // skill is meant to carry), so it is reachable one-shot. The worked example,
+    // gotchas, and rationale stay in the reference. This scenario now measures
+    // that the inlined series surfaces. See evals/README.md.
     skill: 'knowledgeislands-authoring',
     id: 'footnote-marker-series',
     prompt:

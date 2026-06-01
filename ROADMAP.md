@@ -14,11 +14,11 @@ to serve them (the monthly refresh routine, the eval harness).
 
 - **Keep the eval suite honest as skills change.** The harness is built and the **PROC-1/2** matrix has been run across **Haiku / Sonnet / Opus** at `--runs 3`
   (curated in [evals/results/MATRIX.md](evals/results/MATRIX.md)): every house-arbitrary scenario shows a large, model-independent skill effect (baseline 0/3 →
-  treatment 3/3). It is advisory (a WARN, not a gate). Two follow-ups remain. (a) **Tighten the two low-signal scenarios** — `skills-description` overlaps
-  generic knowledge a baseline already has, and the `bun test` trap is partly general; replace them with more house-arbitrary probes when the suite is next
-  touched. (b) **Decide the `footnote-marker-series` skill-design question** the matrix surfaced: the marker series is reference-gated and so unreachable to a
-  headless one-shot agent (scores ~0/5 even with `--add-dir`) — either promote the series into `knowledgeislands-authoring`'s `SKILL.md` body, or accept it as a
-  known progressive-disclosure limit. Re-run with `bun run eval --runs 3` (Sonnet is the routine arm; Opus costs ~3.5× for periodic confirmation).
+  treatment 3/3). It is advisory (a WARN, not a gate). One follow-up remains: **tighten the two low-signal scenarios** — `skills-description` overlaps generic
+  knowledge a baseline already has, and the `bun test` trap is partly general; replace them with more house-arbitrary probes when the suite is next touched.
+  (The `footnote-marker-series` progressive-disclosure gap the matrix surfaced is resolved — the marker series, a judgment convention, is now stated inline in
+  `knowledgeislands-authoring`'s `SKILL.md` body, so it is reachable one-shot.) Re-run with `bun run eval --runs 3` (Sonnet is the routine arm; Opus costs ~3.5×
+  for periodic confirmation).
 
 - **Keep the audits self-applied.** `knowledgeislands-skills` audits itself and its siblings; `knowledgeislands-mcp` audits the workspace `mcp-*` repos. Run
   them after any structural change so the set never drifts from its own standard.

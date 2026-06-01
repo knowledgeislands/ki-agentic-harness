@@ -27,9 +27,10 @@ goes **baseline 0/3 → treatment 3/3, judge 0 → 5** on all three models. That
 | `skills-size-cap`        | helped      | helped | no diff[^err] | Strong elsewhere; one Opus call errored, damping the mean.         |
 
 [^fn]:
-    The marker series (†, ‡, §, ¶, ※) lives in `references/markdown-authoring.md`. A one-shot `claude -p` agent doesn't open it even with `--add-dir`, so
-    treatment scores ~0/5 on every model. A real progressive-disclosure limit, not flakiness — the fix is a skill-design call (promote the series into
-    `SKILL.md` vs. accept the headless limit), so the scenario is kept as-is to keep measuring it.
+    _At the time of this run_ the marker series (†, ‡, §, ¶, ※) lived only in `references/markdown-authoring.md`, which a one-shot `claude -p` agent doesn't
+    open even with `--add-dir` — so treatment scored ~0/5 on every model. A real progressive-disclosure limit, not flakiness. **Since resolved:** the series (a
+    judgment convention the skill is meant to carry) is now stated inline in the `knowledgeislands-authoring` `SKILL.md` body, so it is reachable one-shot; the
+    worked example and rationale stay in the reference. Re-run to confirm the scenario now shows "helped".
 
 [^ln]:
     The original prompt ("in our KI markdown") let skill-loaded Opus give the _correct_ nuanced answer — relative links in docs, wikilinks for note content in a
