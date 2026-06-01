@@ -12,11 +12,13 @@ to serve them (the monthly refresh routine, the eval harness).
 
 ## Next
 
-- **Expand the eval harness across the set.** The harness is **built and proven on a vertical slice** — `knowledgeislands-authoring`, three scenarios, scored
-  baseline-vs-skill with hybrid (deterministic regex assertions + an LLM judge) via the local `claude` CLI (`evals/`, `bun run eval`; see
-  [evals/README](evals/README.md)). It runs, and shows the skill's marginal value plus the expected non-determinism. To satisfy **PROC-1/2** fully: author ≥ 3
-  scenarios for each of the other four skills, run the **Haiku / Sonnet / Opus** matrix (the harness already takes `--model`), and add `--runs N` averaging to
-  damp the run-to-run variance into a stabler signal. Advisory (a WARN, not a gate) — the last open item from the skills audit.
+- **Run the eval matrix across the three models.** The harness is **built and validated** (`evals/`, `bun run eval`; see [evals/README](evals/README.md)): all
+  five skills have three scenarios each (**PROC-1** satisfied), hybrid scoring (deterministic regex assertions + an LLM judge), `--runs N` averaging, and a
+  correct skill-free baseline (it blocks the `Skill` tool — `--disable-slash-commands` alone let the skill auto-load and silently contaminate the baseline; a
+  bug found and fixed via the harness itself). On Sonnet it cleanly shows "skill helped" where a skill teaches house-internal facts and an honest "no
+  difference" where the fact is general knowledge. Remaining for **PROC-2**: run the **Haiku / Sonnet / Opus** matrix at `--runs 3+` and tune any weak
+  (general-knowledge) scenarios it surfaces. That run is a deliberate token spend, so it is triggered rather than automatic. Advisory (a WARN, not a gate) — the
+  last open item from the skills audit.
 
 ## Soon
 
