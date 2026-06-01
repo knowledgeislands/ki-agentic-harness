@@ -94,10 +94,14 @@ Infer the mode from the request, or ask if unclear. Like every governance skill 
 
 ### Mode AUDIT - check the base against the structure model
 
-1. Read the base's actual layout: the root `Admin/MEMORY.md` and the top-level zone folders.
-2. Compare against the zone model, the routing test, and the note conventions (frontmatter, naming, placement).
-3. **Report** drift: notes filed in the wrong zone, missing or extra zones, notes lacking required frontmatter, stale memory-index entries. Cite paths and give
-   the fix.
+1. **Run the mechanical checker** - `bun scripts/audit-kb.ts <base-path>` (from this skill's directory). It reports the deterministic layer as PASS / WARN /
+   FAIL and exits non-zero on a FAIL: the five zones present (resolved through any `[knowledgeislands-kb.zones]` alias), a same-name index note per zone, the
+   root `Admin/MEMORY.md`, and the base's own `[knowledgeislands-kb]` table validated _down_. Capture its output; do not re-derive what it checks.
+2. **Apply the judgment layer by reading** - the **[J]** criteria in [the rubric](references/audit-rubric.md) that the script cannot judge: notes filed in the
+   wrong zone (per the routing test), note frontmatter and naming quality, whether the memory index's active-Pillar list is actually accurate, and
+   fact-vs-analysis labelling where the base distinguishes them.
+3. **Report** drift, leading with FAILs then WARNs: misrouted or mis-zoned notes, missing zones, notes lacking required frontmatter, stale memory-index entries.
+   Cite paths and give the fix.
 
 ### Mode CONFORM - bring the base into line
 
@@ -173,4 +177,5 @@ organised - especially once installed into a shared/cloud catalogue, where it is
 - Where a base ships a named extension skill (one named for the base, e.g. `<base>-kb`), that skill takes precedence and supplies the base-specific pre-flight
   and scope rules; it delegates these five modes back here.
 
-Reference detail: [Knowledge Islands KB Reference](<references/Knowledge Islands KB Reference.md>).
+Reference detail: [Knowledge Islands KB Reference](<references/Knowledge Islands KB Reference.md>). Checkable criteria:
+[the audit rubric](references/audit-rubric.md), enforced mechanically by [`scripts/audit-kb.ts`](scripts/audit-kb.ts).

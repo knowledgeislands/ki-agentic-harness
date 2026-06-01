@@ -12,11 +12,10 @@ to serve them (the monthly refresh routine, the eval harness).
 
 ## Next
 
-- **Scaffold and validate kb's `[knowledgeislands-kb]` config table.** Binding kb to its first bases gave it a `.ki-config.toml` table — a
-  `[knowledgeislands-kb.zones]` zone-alias for a base mid-rename (the live case: `kit-legal` holding its Pillars zone under the legacy `Matters/`). The skill
-  documents the keys but has no scaffolding or validation yet. Give it the repo `--init` pattern (emit its default keys) and the validate-down check (warn on an
-  unrecognised key under its own table, never read another skill's), per the `.ki-config.toml` contract. This is the first cross-skill use of that override
-  layer (see _Later_).
+- **Build the skills out evaluation-first.** Rubric **PROC-1/2** — at least three evaluation scenarios against a no-skill baseline, and a pass across the models
+  each skill runs on (Haiku / Sonnet / Opus) — isn't satisfied: the set was authored rubric-first, not eval-first. Stand up a small eval harness (representative
+  prompts per skill, scored with and without the skill loaded) so new and changed skills are validated by behaviour, not just linted. Advisory (a WARN, not a
+  gate), but it is the last open item from the skills audit.
 
 ## Soon
 
@@ -27,12 +26,10 @@ to serve them (the monthly refresh routine, the eval harness).
   description-matches-purpose / synced-with-`package.json` check from a judgment item toward something mechanical (the auditor fetching `package.json` and
   comparing); and, if the org ever wants a protected `main` on a **private** repo, bring it in via **rulesets**, since the classic protection API is
   plan-limited on private repos.
-- **Give `knowledgeislands-kb` a mechanical checker.** kb is a governance skill (AUDIT / CONFORM / REFRESH) but its AUDIT is judgment-only; a bundled checker
-  for zone-model / note-frontmatter conformance would bring it to parity with the other four and complete the governance-skill shape.
-- **Build the skills out evaluation-first.** Rubric **PROC-1/2** — at least three evaluation scenarios against a no-skill baseline, and a pass across the models
-  each skill runs on (Haiku / Sonnet / Opus) — isn't satisfied: the set was authored rubric-first, not eval-first. Stand up a small eval harness (representative
-  prompts per skill, scored with and without the skill loaded) so new and changed skills are validated by behaviour, not just linted. Advisory (a WARN, not a
-  gate), but it is the last open item from the skills audit.
+- **Extend `knowledgeislands-kb`'s checker to note-frontmatter conformance.** The bundled `audit-kb.ts` now covers the base-agnostic mechanical layer (zone
+  layout, same-name index notes, root memory index, and validate-down of the `[knowledgeislands-kb]` table), completing the governance-skill shape. Per-note
+  frontmatter checks are deferred: required frontmatter is partly base-specific, so it stays a judgment item (or a base-coupled extension's job) until a
+  base-agnostic core is clear.
 
 ## Later
 

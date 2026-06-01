@@ -44,6 +44,7 @@
   },
   "scripts": {
     "clean": "rm -rf node_modules",
+    "kb:audit": "bun knowledgeislands-kb/scripts/audit-kb.ts",
     "lint:check": "bunx @biomejs/biome check",
     "lint:fix": "bunx @biomejs/biome check --write --unsafe",
     "lint:format": "bunx @biomejs/biome format --write",

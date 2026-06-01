@@ -38,8 +38,8 @@ backed by a tracked `references/sources.md`.
 ### [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md) — Knowledge Islands
 
 Interacts with a Knowledge Islands knowledge base over the standard zone model: the note-ops **DIGEST / EXTRACT / QUERY / SAVE / UPDATE**, plus **AUDIT /
-CONFORM / INIT** to check a base against the structure model, bring it into line, or scaffold a new one. Only store-level bindings come from the host base; its
-mechanical checker is forthcoming.
+CONFORM / INIT** to check a base against the structure model, bring it into line, or scaffold a new one. Only store-level bindings come from the host base.
+Ships a mechanical checker (`audit-kb.ts`): zone-layout conformance plus validate-down of its `[knowledgeislands-kb]` config table.
 
 ### [`knowledgeislands-mcp`](knowledgeislands-mcp/SKILL.md) — Process
 
@@ -73,8 +73,8 @@ All five share one layout, so a reader (or a new such skill) can move between th
 - **`audit-rubric.md`** — the line-by-line checkable criteria, each tagged **mechanical** (a checker enforces it) or **judgment** (a reader assesses it), each
   citing the standard section it verifies.
 - **`references/sources.md`** — the tracked sources behind the standard, with `last reviewed` dates and a REFRESH changelog.
-- **a mechanical checker** — `audit-mcp.ts`, `lint-skills.ts`, `audit-repo.ts` for mcp / skills / repo; `bun run lint:md` (Prettier + markdownlint) for
-  authoring; kb's is forthcoming. The judgment half is always applied by reading.
+- **a mechanical checker** — `audit-mcp.ts`, `lint-skills.ts`, `audit-repo.ts`, `audit-kb.ts` for mcp / skills / repo / kb; `bun run lint:md` (Prettier +
+  markdownlint) for authoring. The judgment half is always applied by reading.
 
 …and the same modes: **AUDIT** (run the checker, then apply the judgment criteria), **CONFORM** (bring an existing artifact into line), and **REFRESH**
 (re-anchor the standard to its sources on a stated cadence), plus skill-specific modes where they fit — **INIT** to scaffold a new artifact, and kb's note-ops.
