@@ -53,16 +53,25 @@ export const scenarios: Scenario[] = [
   },
   {
     skill: 'knowledgeislands-authoring',
+    // Tightened after the 3-model matrix flagged it as the noisiest scenario. Two
+    // changes: (1) the prompt asks for a clean TOML-only reply (less prose to regex
+    // over) without stating the rules (no answer-leak to the no-skill arm); (2) the
+    // assertions are whitespace-tolerant and combined (e.g. lowercase key AND double
+    // quote in one), so the no-skill baseline now reliably scores 0 and a false
+    // "regression" can't arise from a high baseline. NOTE: a key-RENAME check
+    // (`ExtraTopics` → `extra_topics`) was tried and dropped — it scored 0 on BOTH
+    // arms because models avoid renaming a key (it changes an identifier's meaning)
+    // even with the skill, so it carried no signal. We test reformatting moves the
+    // model will actually make: table recase, value quoting, and array form.
     id: 'toml-style',
     prompt:
-      "Bring this `.ki-config.toml` snippet to our house TOML style:\n\n[KnowledgeIslands-Repo]\nVisibility = 'private'\nExtraTopics = 'mcp','bun'\n",
+      "Rewrite this `.ki-config.toml` snippet in our house TOML style. Reply with only the corrected TOML, no explanation:\n\n[KnowledgeIslands-Repo]\nVisibility = 'private'\nExtraTopics = 'mcp','bun'\n",
     assertions: [
-      { name: 'skill-named lowercase table', re: /\[knowledgeislands-repo\]/ },
-      { name: 'lowercase key', re: /\bvisibility\s*=/ },
-      { name: 'double-quoted string', re: /"private"/ },
+      { name: 'skill-named lowercase table', re: /\[\s*knowledgeislands-repo\s*\]/ },
+      { name: 'lowercase key + double-quoted value', re: /\bvisibility\s*=\s*"private"/ },
       { name: 'inline double-quoted array', re: /\[\s*"mcp"\s*,\s*"bun"\s*\]/ }
     ],
     rubric:
-      'House TOML style: keys are lowercase snake_case; strings are double-quoted; short arrays use the inline ["a", "b"] form; there is one table per skill, named for the skill in lowercase ([knowledgeislands-repo]); non-obvious keys get a # comment above them. A correct conform of the snippet uses [knowledgeislands-repo], a lowercase `visibility` key, "private" double-quoted, and an inline double-quoted array.'
+      'House TOML style: keys are lowercase (multi-word in snake_case); strings are double-quoted; short arrays use the inline ["a", "b"] form; one table per skill, named for the skill in lowercase ([knowledgeislands-repo]). A correct rewrite uses [knowledgeislands-repo], `visibility = "private"`, and an inline double-quoted array `["mcp", "bun"]`. Score on those house-specific reformatting moves, not on whether prose was added.'
   }
 ]

@@ -54,5 +54,7 @@ Aim for **3+ per skill**, and test your **house-specific** names, paths, and rul
 All five skills have 3+ scenarios, and the harness has been run across Haiku, Sonnet, and Opus. The result, in one line: **on house-specific facts, loading a
 skill reliably takes the model from "I don't know" to the right answer — on every model.** That's the whole point, confirmed.
 
-For everyday use, **Sonnet is the sweet spot** — Opus costs roughly 3.5× for the same signal. Run results aren't checked in (they're regeneratable); just re-run
-`bun run eval`.
+**For routine runs, use Sonnet — it's the most cost-effective arm.** A full matrix (15 scenarios × 3 runs) costs roughly **$6 on Haiku, $14 on Sonnet, $22 on
+Opus**. Opus gives no cleaner signal than Sonnet for ~60% more, so keep it for occasional confirmation; Sonnet is a representative, trustworthy model at a
+sensible price. (Haiku is cheapest and did well here, but a stronger model is the safer regression proxy.) Run results aren't checked in — they're
+regeneratable, so just re-run `bun run eval`.
