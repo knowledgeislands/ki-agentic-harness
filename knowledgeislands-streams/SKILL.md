@@ -88,9 +88,10 @@ Almost everything is fixed above. Only these come from the host base — take de
 table (the shared-file contract is owned by `knowledgeislands-repo`; validate your own table, warn on an unrecognised key, never read another skill's),
 otherwise from the auto-loaded `CLAUDE.md`.
 
-- **Process note** — the base's canonical change-process note that streams link to. _Default:_ `Enactment Process`. A base may host a local instance under its
-  own name/location (e.g. `kit-legal` → `Repository Change Process` at `Admin/Operations/Processes/`); declare it as
-  `process_note = "Admin/Operations/Processes/Repository Change Process"`. Resolve every reference and the required `Governance` link through it.
+- **Process note** — the base's local change-process note that streams' `Governance` footers link to: a thin pointer to **this skill** (the canonical
+  definition) plus the base's local specifics. _Default:_ `Enactment Process`. A base may host it under a non-default name or location (e.g. `kit-legal` keeps
+  it under `Admin/Operations/Processes/`); declare it as `process_note = "Admin/Operations/Processes/Enactment Process"`. Resolve every `Governance` link
+  through it.
 - **Frontmatter scheme** — the note-type convention for zone / focus / proposal notes. The canonical scheme is the machine-readable **`type:`** key
   (`type: stream-zone` / `stream-focus` / `stream-proposal`) — `type` is the fundamental note-type marker, and the checker keys on it. A base still carrying the
   legacy `card/*` tag scheme declares `note_type_scheme = "tags"` as a transitional accommodation (like a zone alias), to be retired as it migrates to `type`.
@@ -99,8 +100,8 @@ otherwise from the auto-loaded `CLAUDE.md`.
 
 ## Step 1 — Load context
 
-1. Resolve the bindings: read the base's `.ki-config.toml` `[knowledgeislands-streams]` table and `CLAUDE.md`. Load the bound **process note** before any
-   substantive enactment work — it is the base's authoritative copy of this process; this skill is its portable summary.
+1. Resolve the bindings: read the base's `.ki-config.toml` `[knowledgeislands-streams]` table and `CLAUDE.md`. **This skill is the canonical definition** of the
+   Enactment Process; load the base's bound **process note** if it has one, for its local specifics (it points back here).
 2. For any stream work, load the relevant Focus index and the proposal document **fresh** (never act on a cached version), plus the `Streams/` proposals index.
 
 ## Operating modes
@@ -174,13 +175,14 @@ settled marker remains, pointing to where the knowledge now lives). Test before 
 
 ### Mode REFRESH — keep the model current
 
-This skill carries the structure and process as fixed knowledge; it must not drift from the canonical in-base Model or from how live bases run it.
+This skill is the **canonical definition** of the Streams structure and the Enactment Process; REFRESH keeps that definition coherent and current against how
+the live bases actually run it (the bases defer to the skill, so there is no separate canonical Model to re-anchor against).
 
-1. **Read [the source list](references/sources.md)** — the canonical Model note and the live bases, each with a `last reviewed` date.
-2. **Re-anchor**: re-read the canonical Enactment Process / Structure notes and sample how the live bases run their Streams; diff against this skill's structure
-   tables, lifecycle, anatomy, and bindings.
-3. **Separate canonical from local** — a change is a model change only if it traces to the canonical Model or a pattern shared across bases; a single base's
-   quirk stays a binding or its own extension.
+1. **Read [the source list](references/sources.md)** — the live bases that run the process, each with a `last reviewed` date.
+2. **Re-anchor against practice**: sample how the live bases run their Streams; look for a genuinely shared pattern the skill does not yet carry, a convention
+   that has moved on, or a binding real bases supply that the bindings table doesn't name.
+3. **Separate shared from local** — promote a cross-base pattern into the skill (the canonical definition); a single base's quirk stays a binding or its own
+   local note, not a model change.
 4. **Propose a diff** and confirm before writing.
 5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and record what changed (or "no change"). Mandatory.
 

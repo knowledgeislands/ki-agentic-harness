@@ -1,8 +1,8 @@
 # Enactment Process Reference
 
 Long-form detail on the **Enactment Process** — Knowledge Islands' canonical change process — for the [Knowledge Islands Streams](../SKILL.md) skill. The
-structure it runs over is in [the Streams structure reference](<Streams Structure Reference.md>). This is a faithful working summary; a base's own bound process
-note (default `Enactment Process`; see the skill's bindings) is its authoritative copy.
+structure it runs over is in [the Streams structure reference](<Streams Structure Reference.md>). **This skill is the canonical definition of the Enactment
+Process**; a base's own process note defers here and carries only its local specifics (see the skill's bindings).
 
 ## Contents
 

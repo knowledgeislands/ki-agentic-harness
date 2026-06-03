@@ -1,54 +1,57 @@
 # Sources — where the model comes from
 
-The canonical and living sources behind this skill's Streams structure, the Enactment Process lifecycle, and the bindings table. Mode REFRESH reads this file,
-re-anchors the model against each source, then **bumps the `last reviewed` dates and records what changed** in the changelog below. This is the skill's memory
-of where its model comes from — keep it current.
+**This skill is the canonical definition** of the Streams structure and the Enactment Process — the single source of truth. The Knowledge Islands bases that run
+the process **defer to it**: each carries a thin local process note that points here and adds only its local specifics. There is no separate in-base "canonical
+Model" to re-anchor against; the skill _is_ the model.
 
-Like `knowledgeislands-kb`, this skill follows **no moving external spec**: the Enactment Process is canonical and in-house. REFRESH re-anchors against the
-canonical in-base Model and against how the live bases actually run their Streams, not against a published standard.
+Mode REFRESH therefore keeps this definition coherent and current **against practice** — how the live bases actually run their Streams — promoting genuinely
+shared patterns into the skill and leaving single-base quirks as bindings or local notes. It then **bumps the `last reviewed` dates and records what changed**
+in the changelog below. This skill follows no moving external spec: the Enactment Process is in-house.
 
-## Canonical (the model definition)
+## Canonical
 
-| Source                                                                              | Governs                                                           | Last reviewed |
-| ----------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------- |
-| `arcadia-principal` · `Pillars/Knowledge Islands/Model/Processes/Enactment Process` | The canonical Enactment Process — lifecycle, proposals, the cycle | 2026-06-02    |
-| `arcadia-principal` · `Pillars/Knowledge Islands/Model/Conventions/Structure`       | The canonical Streams structure — Focus, Category, index notes    | 2026-06-02    |
+The canonical definition lives in this skill itself:
 
-## Living (how the model is actually used)
+- [the SKILL body](../SKILL.md) — the framing, lifecycle, anatomy, modes, bindings, and working rules.
+- [the Streams structure reference](<Streams Structure Reference.md>) — Focus, Category, the `Proposal` suffix, leaf/parent/multi layout, note types.
+- [the Enactment Process reference](<Enactment Process Reference.md>) — the model, proposal documents, the cycle, rollout, review, rejection.
+- [the rubric](audit-rubric.md) + [`scripts/audit-streams.ts`](../scripts/audit-streams.ts) — the checkable criteria.
 
-Sampled at REFRESH time through each base's own `kb-fs` MCP and `CLAUDE.md`. The two named bases are the current exemplars and read in tandem:
-`arcadia-principal` holds the canonical Model, while `kit-legal` carries the most refined _implementation_ — between them they show both the definition and best
-practice, which the skill reconciles.
+## Living (how the model is used in practice)
 
-| Source                          | Governs                                                                                        | Last reviewed |
-| ------------------------------- | ---------------------------------------------------------------------------------------------- | ------------- |
-| `arcadia-principal` base[^ap]   | Whether the structure, lifecycle, and bindings still match the canonical Model and practice    | 2026-06-02    |
-| `kit-legal` base[^kl]           | The refined reference implementation; the source of leaf/parent, the suffix, the gate, rollout | 2026-06-02    |
-| Other bases running the process | The same, as further bases adopt the skill                                                     | 2026-06-02    |
+Sampled at REFRESH time through each base's own `kb-fs` MCP and `CLAUDE.md`. These are **consumers** of the canonical skill, read to keep it honest against real
+use — not sources of the definition.
+
+| Source                          | Governs                                                                                         | Last reviewed |
+| ------------------------------- | ----------------------------------------------------------------------------------------------- | ------------- |
+| `arcadia-principal` base[^ap]   | Whether the canonical skill still matches how the principal island runs its Streams in practice | 2026-06-04    |
+| `kit-legal` base[^kl]           | The same, from a second base running the process under a local name                             | 2026-06-04    |
+| Other bases running the process | The same, as further bases adopt the skill                                                      | 2026-06-04    |
 
 [^ap]:
-    The principal island, holding the canonical Knowledge Islands Model. Sampled through `arcadia-principal-mcp-kb-fs`. Its own `Streams/` notes currently lag
-    the Model on the `Proposal` suffix, machine-readable proposal frontmatter, and the required `Governance` section — conforming it is part of aligning the
-    bases.
+    The principal island. Sampled through `arcadia-principal-mcp-kb-fs`. Its `Pillars/Knowledge Islands/Model/Processes/Enactment Process` note now **defers to
+    this skill** for the operational definition, keeping the island's governance philosophy (the council, the geography) and its local specifics; its
+    `Model/Conventions/Structure` Streams section likewise points here. Conformed to the canonical model on 2026-06-04 (the `Proposal` suffix, `type:` scheme,
+    machine-readable proposal frontmatter, `Governance` footers).
 
 [^kl]:
-    A second real base, sampled via `kit-legal-mcp-kb-fs`. It runs the process under the local name **Repository Change Process** at
-    `Admin/Operations/Processes/Repository Change Process.md` (declared to this skill as the `process_note` binding), and is the most refined implementation —
-    leaf/parent layout, the `Proposal` suffix with reasoning, the name-confirmation gate, convention-rollout consolidation, the out-of-scope list, and git
-    discipline. It holds its internal store under the legacy `Matters/` (the `knowledgeislands-kb` `Pillars` → `Matters` zone alias).
+    A second real base, sampled via `kit-legal-mcp-kb-fs`. Runs the canonical **Enactment Process**; its slim local note lives at a non-default location,
+    `Admin/Operations/Processes/Enactment Process.md` (declared via the `process_note` binding), and points here. It adopted the canonical name on 2026-06-04,
+    renamed from its former local `Repository Change Process`. Holds its internal store under the legacy `Matters/` (the `knowledgeislands-kb` `Pillars` →
+    `Matters` zone alias).
 
 ## Review changelog
 
 Record each REFRESH run: date, what was re-anchored, what changed in the model (or "no change").
 
-- **2026-06-02** — Skill created. The `Streams` zone's structure and the Enactment Process were extracted from `knowledgeislands-kb` (which had compressed
-  `Streams` to one zone-table row) into this dedicated skill, with `knowledgeislands-kb` delegating the zone here. Established the canonical sources (the
-  in-base Model notes) and the two living exemplars; codified the Focus lifecycle, Category patterns, leaf/parent/multi layout, the `Proposal` suffix, the
-  status/priority vocabularies, the proposal anatomy, and the bindings (`process_note`, `note_type_scheme`). Drawn from `arcadia-principal`'s Model and
-  `kit-legal`'s refined `Repository Change Process`.
-- **2026-06-03** — **Superset pass.** Folded the full Streams conventions into the skill so it is the self-contained, canonical home (a base needs no separate
-  Streams-conventions note). Added from `kit-legal`'s `Streams Conventions`: the `type:` note-type table (`stream-zone` / `-focus` / `-index` / `-proposal` /
-  `-note`), the leaf ↔ parent transition rule, frontmatter-applies-by-type (only `stream-proposal` / `stream-note` carry `status`/`priority`/`dependencies`),
-  the suffix's collision-safety rationale, the `Pass N/` iterative-cycle pattern, and the "Settled = point-in-time, not maintained, deletable" policy; plus the
-  lightweight-stream gate carve-out and the approver framing (council / single-person user). Next: roll this superset out across the bases — `kit-legal` (adopt
-  the canonical `Enactment Process` name) and `arcadia-principal` (conform up + promote the superset into its canonical Model).
+- **2026-06-02** — Skill created. The `Streams` zone's structure and the Enactment Process were extracted from `knowledgeislands-kb` into this dedicated skill,
+  with `knowledgeislands-kb` delegating the zone here. Codified the Focus lifecycle, Category patterns, leaf/parent/multi layout, the `Proposal` suffix, the
+  status/priority vocabularies, the proposal anatomy, and the bindings (`process_note`, `note_type_scheme`).
+- **2026-06-03** — **Superset pass.** Folded the full Streams conventions into the skill (note-type table, leaf ↔ parent transition,
+  frontmatter-applies-by-type, the suffix's collision-safety rationale, the `Pass N/` cycle pattern, the Settled point-in-time policy, the lightweight-stream
+  carve-out, approver framing).
+- **2026-06-04** — **Flipped to skill-as-canonical.** Previously the in-base Model notes were named canonical and this skill was their summary. That is
+  inverted: **the skill is now the single canonical definition**, and the bases defer to it via thin local process notes. `kit-legal` already pointed here;
+  `arcadia-principal`'s `Model/Processes/Enactment Process` and the Streams section of `Model/Conventions/Structure` were slimmed to pointers + island-voice
+  framing + local specifics. REFRESH re-anchors against practice (the live bases), not against a canonical Model. Also: the checker now recognises a notes-only
+  **parent** stream (a folder containing a `* Proposal.md`), not just suffixed leaves.
