@@ -23,15 +23,15 @@ A Knowledge Islands base is one markdown store with a fixed set of five zones, f
 `Pillars/`, `Resources/`, `Streams/`, `Admin/` — each carry an index note of the same name; `+/` (inbound) and `-/` (outbound) are staging areas, not zones, and
 carry no such index.
 
-| Folder       | Holds                                                                                           |
-| ------------ | ----------------------------------------------------------------------------------------------- |
-| `+/`         | Inbound staging - unfiled captures awaiting routing. Exempt from most conventions. Not a zone.  |
-| `Calendar/`  | Time-stamped records: daily, meeting, session, weekly, monthly notes.                           |
-| `Pillars/`   | Internal canonical knowledge - the base's primary subject matter. One folder per pillar.†       |
-| `Resources/` | External reference material that exists independently of this base.                             |
-| `Streams/`   | Work in motion - active workstreams and evolving projects; migrates to `Pillars/` once settled. |
-| `-/`         | Outbound staging - produced artefacts (session digests, compiled outputs). Not a zone.          |
-| `Admin/`     | Base-agnostic governance and operations.                                                        |
+| Folder       | Holds                                                                                                                                                                            |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `+/`         | Inbound staging - unfiled captures awaiting routing. Exempt from most conventions. Not a zone.                                                                                   |
+| `Calendar/`  | Time-stamped records: daily, meeting, session, weekly, monthly notes.                                                                                                            |
+| `Pillars/`   | Internal canonical knowledge - the base's primary subject matter. One folder per pillar.†                                                                                        |
+| `Resources/` | External reference material that exists independently of this base.                                                                                                              |
+| `Streams/`   | Work in motion - active workstreams run as proposals; migrates to `Pillars/` once settled. Its internal structure and process are owned by the `knowledgeislands-streams` skill. |
+| `-/`         | Outbound staging - produced artefacts (session digests, compiled outputs). Not a zone.                                                                                           |
+| `Admin/`     | Base-agnostic governance and operations.                                                                                                                                         |
 
 † A base mid-migration may still hold this zone under a legacy folder name (e.g. `Matters/` for `Pillars/`). That is declared as a **zone alias** in the base's
 config, not treated as a different zone - see [Project bindings](#project-bindings).
@@ -52,7 +52,7 @@ arcadia-skills `README.md`, "Linking inside skills").
 Most-specific match wins:
 
 1. Time-bound record -> `Calendar/`.
-2. Active, in-progress work -> `Streams/`.
+2. Active, in-progress work -> `Streams/` (the `knowledgeislands-streams` skill owns sub-routing within the zone — Focus, the proposal layout, the lifecycle).
 3. Settled internal knowledge -> `Pillars/<Pillar>/`.
 4. External reference (would exist without this base) -> `Resources/`.
 5. Unsure -> `+/<Title>.md` at the most specific applicable level.

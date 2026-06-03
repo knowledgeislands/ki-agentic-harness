@@ -59,4 +59,9 @@ Record each REFRESH run: date, what was re-anchored, what changed in the structu
     added a **Zone names** binding resolved from the base's `.ki-config.toml` `[knowledgeislands-kb.zones]` table (`Pillars = "Matters"`), validated down per
     the `.ki-config.toml` contract. The Knowledge-Capital-to-`Admin/` migration and the `Matters/`→`Pillars/` rename both remain base-local pending work.
 
+- **2026-06-02** - **`Streams` zone internals delegated out.** The zone's internal structure (the Focus lifecycle, Category, the `Proposal` suffix, leaf/parent
+  layout, index notes) and the Enactment Process that governs it moved to the new `knowledgeislands-streams` skill; this skill now keeps only the zone-level
+  facts (`Streams/` is one of the five zones, carries a same-name index, and receives top-level routing) and points to that skill for the inside. The `STREAM-*`
+  structural checks live in that skill's checker, not `audit-kb.ts`. No change to the five-zone model otherwise.
+
 [kb-reference]: <Knowledge Islands KB Reference.md>

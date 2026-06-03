@@ -12,7 +12,9 @@ canonical there. The zone set is part of the standard, so the skill does not ask
   of subject matter - a case, a client, a domain, a theme. `Pillars/` replaces what some bases historically called `Matters/`; a base still mid-rename keeps the
   old folder and declares it as a [zone alias](#zone-aliases-and-the-knowledgeislands-kb-config-table) rather than counting as a different zone.
 - **Settling.** `Streams/` holds work in motion; once settled it migrates into `Pillars/` (internal) or `Resources/` (external). The discriminating question for
-  internal vs external: _would this knowledge exist without this base?_ If yes, it is a resource.
+  internal vs external: _would this knowledge exist without this base?_ If yes, it is a resource. The **internal structure and process of the `Streams/` zone**
+  — its Focus lifecycle, the proposal layout, and the Enactment Process that governs it — are owned by the `knowledgeislands-streams` skill; this skill knows
+  only that `Streams/` is a zone with a same-name index and routes top-level work into it.
 
 ## Linking within a base
 

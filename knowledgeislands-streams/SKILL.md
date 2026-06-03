@@ -1,0 +1,205 @@
+---
+name: knowledgeislands-streams
+description: >
+  Operate and govern the Streams zone of a Knowledge Islands base — the working copy of work in motion, run as the Enactment Process (the canonical change
+  process: a proposal goes draft → ready → ratify → roll out → review → settle, and nothing reaches stable knowledge except through that gate). Use to start a
+  stream, iterate a proposal, mark one ready, roll out an approved change, run a post-change review, and settle or reject a stream — and to audit a base's
+  Streams structure (Focus lifecycle, the `Proposal` suffix, leaf/parent layout, proposal frontmatter) or conform it. Triggers: "start a stream", "create a
+  proposal", "mark this ready", "roll out this proposal", "settle this stream", "reject this proposal", "what's the enactment process", "plan mode for my
+  knowledge base", "audit my streams". For the five-zone model and note CRUD / routing use the `knowledgeislands-kb` skill, which delegates the Streams zone
+  here; for Markdown / TOML house style use `knowledgeislands-authoring`.
+argument-hint: 'audit | conform | iterate | propose | ready | refresh | reject | review | rollout | settle'
+---
+
+# Knowledge Islands Streams
+
+You are operating the **`Streams` zone** of a Knowledge Islands base. `Streams/` is the base's _working copy_ — the home of work in motion, and what the user
+thinks of as "plan mode." It is governed by the **Enactment Process**: every stream is a **proposal** that iterates in place, is submitted for approval, rolled
+out, and retired. **Nothing reaches stable knowledge (`Pillars/`, or its alias `Matters/`, and `Resources/`) except through this gate** — authority to edit a
+stream is granted by its presence in the workspace; authority to edit a canonical store is granted only by approval of a `ready` proposal that specifies the
+change.
+
+The companion `knowledgeislands-kb` skill owns the five-zone model and note CRUD / routing, and **delegates the inside of `Streams/` here**; load it for
+anything outside this zone. This skill carries the structure and process as fixed knowledge; only a couple of store-level **bindings** come from the host base.
+
+The full detail lives in the references (progressive disclosure): the structure in
+[the Streams structure reference](<references/Streams Structure Reference.md>), the process in
+[the Enactment Process reference](<references/Enactment Process Reference.md>). The line-by-line checkable items live in
+[the rubric](references/audit-rubric.md); the mechanical checker is [`scripts/audit-streams.ts`](scripts/audit-streams.ts).
+
+## The Streams zone at a glance
+
+A stream lives at `Streams/$Focus/$Category?/$Name…`. **Focus** is mandatory — the level of attention the stream is receiving; moving a stream between Focus
+folders is an explicit act. **Category** is optional grouping within a Focus (pick one pattern per Focus: none / destination-path / status sub-grouping).
+
+| Focus        | Meaning                             |
+| ------------ | ----------------------------------- |
+| `Active`     | Receiving focused attention now     |
+| `Background` | Being progressed in the background  |
+| `Dormant`    | Paused with intention to return     |
+| `Future`     | Planned or ideated; not yet started |
+| `Settled`    | Concluded                           |
+
+Each Focus folder carries a **same-name index note** whose `## Streams` table lists each stream by Topic / Status / Priority, ordered by status then priority
+(grouped by category where used). The base also keeps a cross-Focus **proposals index** in the `Streams/` zone index note.
+
+**The `Proposal` suffix is required**: a proposal note always carries a trailing `Proposal` on its filename, `# H1`, and `title:`. Folder layout:
+
+```text
+Leaf:    Streams/<Focus>/<Category?>/<Name> Proposal/<Name> Proposal.md
+Parent:  Streams/<Focus>/<Category?>/<Name>/<Name> Proposal.md          (+ slim <Name>.md index + children)
+Multi:   Streams/<Focus>/<Category?>/<Name>/<ProposalName>/<ProposalName> Proposal.md
+```
+
+Full structure — Category patterns, leaf/parent/multi, index ordering — in [the structure reference](<references/Streams Structure Reference.md>).
+
+## Status lifecycle and priority
+
+A proposal's `status` is its position in the Enactment Process (distinct from its Focus, which is _attention_):
+
+| Status        | Meaning                                                                                   |
+| ------------- | ----------------------------------------------------------------------------------------- |
+| `draft`       | Work in progress; iterating in the proposal document                                      |
+| `ready`       | Stable; no open questions; prerequisites satisfied; submitted for approval                |
+| `rejected`    | Rejected; reasons recorded; terminal (may reopen as a new `draft`)                        |
+| `in-progress` | Approved; rollout underway                                                                |
+| `rolled-out`  | Checklist executed; stream moves to `Settled/`; post-change review pending                |
+| `reviewed`    | Post-change review complete                                                               |
+| `completed`   | Proven in practice; the proposal document is deleted (its knowledge now lives in a store) |
+
+Order: `draft` → `ready` → (`in-progress` | `rejected`) → `rolled-out` → `reviewed` → `completed`. **Priority** is one of `urgent` · `high` · `medium` · `low`,
+set at creation and raised as context shifts.
+
+## Proposal document anatomy
+
+The stream note _is_ the proposal document — a working tracker, not a knowledge store. It carries frontmatter `status`, `priority`, and `dependencies` (an array
+of prerequisite proposal filenames — the machine-readable form of the `Prerequisite` rows in Inputs), plus the base's descriptive keys. Sections:
+
+- **Inputs** — what the change draws on: `Document` / `Decision` / `Prerequisite` rows.
+- **Outputs** — what it produces: `Decision` / `Artefact` rows. Complete before `ready`.
+- **Checklist** — the concrete create/edit/move/delete operations rollout will perform; doubles as rollout status.
+- **Open Questions** — unresolved decisions; each closed with a resolution note before `ready`.
+- **Design Sections** — the substance: analysis, drafts, tables. May be extensive.
+- **Governance** — a short footer declaring adherence to the process and linking back to it. **Required on every stream note.**
+
+## Project bindings
+
+Almost everything is fixed above. Only these come from the host base — take declarative overrides from the base's `.ki-config.toml` `[knowledgeislands-streams]`
+table (the shared-file contract is owned by `knowledgeislands-repo`; validate your own table, warn on an unrecognised key, never read another skill's),
+otherwise from the auto-loaded `CLAUDE.md`.
+
+- **Process note** — the base's canonical change-process note that streams link to. _Default:_ `Enactment Process`. A base may host a local instance under its
+  own name/location (e.g. `kit-legal` → `Repository Change Process` at `Admin/Operations/Processes/`); declare it as
+  `process_note = "Admin/Operations/Processes/Repository Change Process"`. Resolve every reference and the required `Governance` link through it.
+- **Frontmatter scheme** — the note-type convention for zone / focus / proposal notes. The canonical scheme is the machine-readable **`type:`** key
+  (`type: stream-zone` / `stream-focus` / `stream-proposal`) — `type` is the fundamental note-type marker, and the checker keys on it. A base still carrying the
+  legacy `card/*` tag scheme declares `note_type_scheme = "tags"` as a transitional accommodation (like a zone alias), to be retired as it migrates to `type`.
+- **Stores** — the canonical internal store a settled stream migrates into. _Default:_ `Pillars/` (a base mid-rename may resolve it to `Matters/` via the
+  `knowledgeislands-kb` zone alias); external knowledge → `Resources/`.
+
+## Step 1 — Load context
+
+1. Resolve the bindings: read the base's `.ki-config.toml` `[knowledgeislands-streams]` table and `CLAUDE.md`. Load the bound **process note** before any
+   substantive enactment work — it is the base's authoritative copy of this process; this skill is its portable summary.
+2. For any stream work, load the relevant Focus index and the proposal document **fresh** (never act on a cached version), plus the `Streams/` proposals index.
+
+## Operating modes
+
+Like every governance skill this carries **AUDIT · CONFORM · REFRESH**; its Streams-specific modes are the enactment lifecycle **ITERATE · PROPOSE · READY ·
+REJECT · REVIEW · ROLLOUT · SETTLE**. Infer the mode from the request; ask if unclear. (Modes are named and alphabetical.)
+
+### Mode AUDIT — check a base's Streams against the model
+
+1. **Run the mechanical checker** — `bun scripts/audit-streams.ts <base-path>`. It reports PASS / WARN / FAIL on the `[M]` criteria: Focus folders under
+   `Streams/`, a same-name index per Focus, the `Proposal` suffix (filename + leaf folder), and proposal frontmatter (`status` / `priority` / `dependencies`
+   present; `status` and `priority` within their vocabularies). It resolves the `Streams` zone through any `knowledgeislands-kb` zone alias. Capture its output.
+2. **Apply the `[J]` criteria by reading** ([the rubric](references/audit-rubric.md)): focus-index tables present and correctly ordered; the proposals index
+   matches the streams present and their statuses (no lag); each stream carries a `Governance` section linking the bound process note; `completed` proposals'
+   documents have been deleted and their knowledge migrated.
+3. **Report** drift, FAILs first, citing paths and the fix.
+
+### Mode CONFORM — bring a base's Streams into line
+
+1. Run **AUDIT** first for the gap list.
+2. Apply the fixes: add missing `Proposal` suffixes and Focus/stream index notes; normalise proposal frontmatter and statuses; add missing `Governance`
+   sections; reconcile the proposals index; record the process-note binding. **Confirm before moving or renaming notes** (the name-confirmation gate below);
+   where the base mandates it, run the conforming itself as a proposal.
+3. Re-run **AUDIT** until clean.
+
+### Mode ITERATE — develop a proposal
+
+Work the proposal in place: advance the Design Sections, close Open Questions with resolution notes, keep Inputs / Outputs / Checklist and `dependencies`
+current, update the Focus index and proposals index on any status or priority change. Extract any durable subject-matter content to a store and link back — a
+stream note accumulating deep content is a signal that knowledge needs to move.
+
+### Mode PROPOSE — open a stream
+
+1. Choose Focus (and Category if the base uses one) and propose the `<Name> Proposal` name and resulting path. **Wait for user confirmation before creating it**
+   (offer an alternative where one is plausible).
+2. Create the proposal document (leaf or parent layout) with the frontmatter and section skeleton above, `status: draft`, a priority, and the `Governance`
+   footer.
+3. Add a row to the Focus index and the proposals index.
+
+### Mode READY — submit for approval
+
+Verify there are no open questions remaining and **every prerequisite in `dependencies` has reached `rolled-out`**; complete Outputs; then set `status: ready`
+and submit to the user. `ready` is a necessary condition for rollout, not authorisation to begin it.
+
+### Mode REJECT — record a rejection
+
+A first-class outcome, not a failure. Record the reasons in the proposal, set `status: rejected`, and settle the stream. It may reopen later as a new `draft`;
+the prior rejection stays on record.
+
+### Mode REVIEW — post-change review
+
+After rollout, prepare an initial review summary (what went well, issues, lessons) and run it **interactively** — the summary is input, not output. Record the
+final review under a `## Post-Change Review` section (or in the process note if the lesson is structural), then set `status: reviewed`. Lessons may spawn new
+proposals.
+
+### Mode ROLLOUT — execute an approved proposal
+
+**Do not begin without explicit user authorisation** — exploratory language ("let's look at this") is iteration, not approval. Then:
+
+1. **Re-verify each Checklist item against the live file** — plans drift between drafting and execution; the live file at the moment of execution is
+   authoritative.
+2. For complex or destructive steps, stage the output as a **working-area preview** first (a review checkpoint and a concrete artefact for the review).
+3. Execute every create / edit / move / delete; create index notes for any new folders; update references to moved or renamed content. Use file tools, **not
+   state-changing git** — leave `git add` / `commit` to the user unless instructed per-command.
+4. Set `status: rolled-out` and move the stream to `Settled/` (source Focus index drops the row; `Settled` gains it). Hand off to **REVIEW**.
+
+### Mode SETTLE — retire a stream
+
+Confirm the stream's durable knowledge is already extracted to `Pillars/` (`Matters/`) or `Resources/`; mark `completed`; **delete the proposal document** (the
+settled marker remains, pointing to where the knowledge now lives). Test before deleting: would any knowledge be lost? If not, delete.
+
+### Mode REFRESH — keep the model current
+
+This skill carries the structure and process as fixed knowledge; it must not drift from the canonical in-base Model or from how live bases run it.
+
+1. **Read [the source list](references/sources.md)** — the canonical Model note and the live bases, each with a `last reviewed` date.
+2. **Re-anchor**: re-read the canonical Enactment Process / Structure notes and sample how the live bases run their Streams; diff against this skill's structure
+   tables, lifecycle, anatomy, and bindings.
+3. **Separate canonical from local** — a change is a model change only if it traces to the canonical Model or a pattern shared across bases; a single base's
+   quirk stays a binding or its own extension.
+4. **Propose a diff** and confirm before writing.
+5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and record what changed (or "no change"). Mandatory.
+
+## Working rules
+
+These apply to every change (the discipline that keeps the workspace trustworthy):
+
+- **Name-confirmation gate.** Before creating a stream/sub-proposal or renaming one, propose the name and resulting path and **wait for confirmation** — renames
+  ripple through links.
+- **Keep the proposal and indexes current.** Update immediately on a decision, status change, or priority change; the canonical state must never lag.
+- **Load before editing.** Reload the proposal and indexes before resuming work.
+- **No `ready` while a prerequisite is below `rolled-out`.** No rollout without explicit authorisation.
+- **Re-verify each rollout item against the live file** before making the edit.
+- **Delete the proposal on completion** — once its content is in a store it has no residual value.
+- **Out of scope** (no proposal needed): trivial typo / formatting fixes, time-bound `Calendar/` entries, person-file auto-appends, inbound `+/` triage — though
+  when in doubt, prefer a proposal: the cost of a lightweight one is low, the cost of an unauthorised change to canonical content is high.
+
+## Notes
+
+- This skill governs the **inside of the `Streams/` zone**. For the five-zone model, routing into the zones, note CRUD, and session digests, use the
+  `knowledgeislands-kb` skill — it knows `Streams` is a zone and delegates its internals here.
+- If a base does not follow this structure, or a binding cannot be resolved and no default fits, ask rather than guess.

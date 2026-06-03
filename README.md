@@ -32,14 +32,22 @@ so the two must stay in sync.
 
 ## Skills in this repository
 
-Five skills, each a **governance skill**: it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones),
+Six skills, each a **governance skill**: it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones),
 backed by a tracked `references/sources.md`.
 
 ### [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md) — Knowledge Islands
 
 Interacts with a Knowledge Islands knowledge base over the standard zone model: the note-ops **DIGEST / EXTRACT / QUERY / SAVE / UPDATE**, plus **AUDIT /
 CONFORM / INIT** to check a base against the structure model, bring it into line, or scaffold a new one. Only store-level bindings come from the host base.
-Ships a mechanical checker (`audit-kb.ts`): zone-layout conformance plus validate-down of its `[knowledgeislands-kb]` config table.
+Ships a mechanical checker (`audit-kb.ts`): zone-layout conformance plus validate-down of its `[knowledgeislands-kb]` config table. Delegates the **`Streams`
+zone** to `knowledgeislands-streams`.
+
+### [`knowledgeislands-streams`](knowledgeislands-streams/SKILL.md) — Knowledge Islands
+
+Owns the **`Streams` zone** — the base's working copy ("plan mode") — and the **Enactment Process** that governs it: the lifecycle modes **PROPOSE / ITERATE /
+READY / ROLLOUT / REVIEW / SETTLE / REJECT**, plus **AUDIT / CONFORM** of a base's Streams structure (Focus lifecycle, the `Proposal` suffix, leaf/parent
+layout, proposal frontmatter). `knowledgeislands-kb` delegates the zone here, so the heavier process loads only when working in `Streams`. Ships a mechanical
+checker (`audit-streams.ts`).
 
 ### [`knowledgeislands-mcp`](knowledgeislands-mcp/SKILL.md) — Process
 
@@ -67,14 +75,14 @@ Where the set is going next is in [ROADMAP.md](ROADMAP.md).
 
 ### The governance-skill shape
 
-All five share one layout, so a reader (or a new such skill) can move between them:
+All six share one layout, so a reader (or a new such skill) can move between them:
 
 - **`<domain>-standard.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like, and why.
 - **`audit-rubric.md`** — the line-by-line checkable criteria, each tagged **mechanical** (a checker enforces it) or **judgment** (a reader assesses it), each
   citing the standard section it verifies.
 - **`references/sources.md`** — the tracked sources behind the standard, with `last reviewed` dates and a REFRESH changelog.
-- **a mechanical checker** — `audit-mcp.ts`, `lint-skills.ts`, `audit-repo.ts`, `audit-kb.ts` for mcp / skills / repo / kb; `bun run lint:md` (Prettier +
-  markdownlint) for authoring. The judgment half is always applied by reading.
+- **a mechanical checker** — `audit-mcp.ts`, `lint-skills.ts`, `audit-repo.ts`, `audit-kb.ts`, `audit-streams.ts` for mcp / skills / repo / kb / streams;
+  `bun run lint:md` (Prettier + markdownlint) for authoring. The judgment half is always applied by reading.
 
 …and the same modes: **AUDIT** (run the checker, then apply the judgment criteria), **CONFORM** (bring an existing artifact into line), and **REFRESH**
 (re-anchor the standard to its sources on a stated cadence), plus skill-specific modes where they fit — **INIT** to scaffold a new artifact, and kb's note-ops.
@@ -88,6 +96,9 @@ Each skill's `description` carries its own boundaries so the agent selects the r
   `knowledgeislands-mcp` audits an MCP **server repo** (its `src/` layout, config injection, tool surface, security invariants, tooling);
   `knowledgeislands-skills` audits a **`SKILL.md`** (its frontmatter and body prose). Auditing the `SKILL.md` of an MCP-related skill is the latter's job;
   auditing the server's code is the former's. Each description names the other as the off-ramp, so neither claims the other's request.
+- **`knowledgeislands-kb` vs `knowledgeislands-streams`** - both operate over a base, but at different scopes. `knowledgeislands-kb` owns the five-zone model,
+  routing into the zones, and note CRUD; it knows `Streams/` is a zone and **delegates the zone's internals** — the Focus lifecycle, the proposal layout, and
+  the Enactment Process — to `knowledgeislands-streams`, which loads only when working in `Streams`. Anything outside that zone is kb's.
 - **`knowledgeislands-kb` vs a base-coupled extension** - where a base ships its own `<base>-kb` skill, that extension wins and delegates the shared modes back
   to `knowledgeislands-kb` by name; the standard skill steps aside rather than competing for the same triggers.
 - **`knowledgeislands-repo` vs `knowledgeislands-mcp`** - the `mcp-*` repos are where the two overlap, but `knowledgeislands-repo`'s reach is wider: it governs
@@ -200,7 +211,8 @@ The Knowledge Islands skills assume a fixed knowledge-base shape, so a base does
 Islands base is one markdown store with a fixed set of five zones - `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, and `Admin/` - flanked by an inbound
 (`+/`) and an outbound (`-/`) staging area (staging, not zones: material lands or leaves through them but is not canonical there). Each whole base is an
 "island"; within it, a **Pillar** is a major strand of subject matter (a case, a client, a domain, a theme). The full zone model, the note-content wikilink
-convention, and routing rules live in [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md).
+convention, and routing rules live in [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md); the **`Streams` zone** — its internal structure and the Enactment
+Process that governs work in motion — is owned by [`knowledgeislands-streams`](knowledgeislands-streams/SKILL.md), which `knowledgeislands-kb` delegates to.
 
 ### Standard skills and base-coupled extensions
 

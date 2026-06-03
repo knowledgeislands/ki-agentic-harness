@@ -1,0 +1,138 @@
+# Enactment Process Reference
+
+Long-form detail on the **Enactment Process** — Knowledge Islands' canonical change process — for the [Knowledge Islands Streams](../SKILL.md) skill. The
+structure it runs over is in [the Streams structure reference](<Streams Structure Reference.md>). This is a faithful working summary; a base's own bound process
+note (default `Enactment Process`; see the skill's bindings) is its authoritative copy.
+
+## Contents
+
+- [The model](#the-model)
+- [Proposal documents](#proposal-documents)
+- [The cycle](#the-cycle)
+- [Rollout](#rollout)
+- [Post-change review](#post-change-review)
+- [Rejection](#rejection)
+- [Discipline](#discipline)
+
+## The model
+
+The Enactment Process is the base's governance _in action_ — not a tool a reviewer uses but _how review operates_. Work moves back and forth between the
+workspace and the stores until the change is approved or rejected:
+
+```text
+Stream  ←→  Enactment Process (approval)
+            ↓ approve
+       Pillars / Matters / Resources
+```
+
+- **Streams** are the home of ongoing work; ideas develop, questions resolve, the proposal document iterates. Authority to work here is granted by presence.
+- **Stores** (`Pillars/` / `Matters/`, `Resources/`) are the home of stable, ratified knowledge. Nothing lands there except through approval of a proposal that
+  specifies the change.
+
+The process is a **portable pattern**: any island copies it as its governance baseline, localising only as needed — a different store name, an informal approver
+for a single-person island, an adjusted status vocabulary, a local process-note name and location (declared to this skill as a binding).
+
+## Proposal documents
+
+The proposal document (the stream note) is the physical carrier of a change. Frontmatter:
+
+```yaml
+status: draft # see the status lifecycle
+priority: medium # urgent | high | medium | low
+dependencies: [] # filenames of prerequisite proposals
+```
+
+`dependencies` is the machine-readable form of the `Prerequisite` rows in Inputs and must stay in sync with them; it is the gate checked before a change moves
+to `ready`. Sections:
+
+- **Inputs** — what the change draws on, each row tagged `Document` (a source file, brief, or reference), `Decision` (a prior agreement that shapes this
+  change), or `Prerequisite` (another proposal that must reach `rolled-out` first). Fill in what is known at opening; update as more are identified.
+- **Outputs** — what the change produces: `Decision` (a conclusion reached) or `Artefact` (a note or asset created/modified). Complete and accurate before
+  `ready`.
+- **Checklist** — the concrete operations rollout will perform (creates, edits, moves, deletes). Doubles as rollout status — items are ticked as executed.
+- **Open Questions** — unresolved decisions; close each with a resolution note before `ready`.
+- **Design Sections** — the substance: analysis, diagrams, draft content, comparative tables. May be extensive — that is expected and correct.
+- **Governance** — a short footer declaring adherence to the process and linking back to the bound process note. **Required on every stream note**; it makes the
+  governing model discoverable from the stream and confirms the stream is a participant in the formal cycle.
+
+### Status lifecycle
+
+| Status        | Meaning                                                                    |
+| ------------- | -------------------------------------------------------------------------- |
+| `draft`       | Work in progress; iterating in the proposal document                       |
+| `ready`       | Stable; no open questions; prerequisites satisfied; submitted for approval |
+| `rejected`    | Rejected; reasons recorded; terminal (may reopen as a new `draft`)         |
+| `in-progress` | Approved; rollout underway                                                 |
+| `rolled-out`  | Checklist executed; stream moves to `Settled/`; post-change review pending |
+| `reviewed`    | Post-change review complete                                                |
+| `completed`   | Proven in practice; the proposal document is deleted                       |
+
+Order: `draft` → `ready` → (`in-progress` | `rejected`) → `rolled-out` → `reviewed` → `completed`. A `rejected` proposal may reopen as a new `draft`; the prior
+rejection stays on record. **Priority** (`urgent` / `high` / `medium` / `low`) is set at creation and may rise as context shifts — update the proposal
+frontmatter and the focus index when it does.
+
+## The cycle
+
+1. **Emerge** — a change is conceived; create the stream folder and proposal note under the appropriate Focus (and Category), add a row to the focus index and
+   the proposals index. (Propose the name and path and wait for confirmation first.)
+2. **Mature** — iterate the proposal in place: develop the Design Sections, resolve Open Questions with resolution notes, track prerequisites, keep Inputs /
+   Outputs / Checklist current.
+3. **Submit** — when stable (no open questions) and every prerequisite is at `rolled-out` or beyond, set `status: ready` and submit. Approve → `in-progress`;
+   return to draft → continue; reject → `rejected`, reasons documented, the stream settles.
+4. **Roll out** — execute the Checklist; outputs land in the stores. Set `status: rolled-out`; move the stream to `Settled/`.
+5. **Review** — run the post-change review → `reviewed`.
+6. **Complete** — once proven in practice → `completed`; delete the proposal document. The settled marker remains, pointing to where the knowledge now lives.
+
+## Rollout
+
+Rollout means executing the operations from the Checklist. **Do not begin without explicit user authorisation** — `ready` is a necessary condition, not a
+sufficient one; exploratory language ("let's look at this", "let's work through it") is iteration, not approval. It is not complete until:
+
+- every create / update / delete in the proposal has been executed;
+- index notes for any new folders have been created;
+- existing notes that reference moved or renamed content have been updated;
+- the proposal document itself has been deleted (on completion).
+
+### Working-area previews
+
+The proposal document lives in the version-controlled text store, in `Streams/`. The agent's working area is for **previews only** — temporary staging files,
+never committed; each base's configuration says where it is. For complex or destructive rollout steps (large reorganisations, mass renames, multi-file
+extractions), stage the intended output as a preview file in the working area before applying changes. This creates a review checkpoint — the user can inspect
+the output before it lands — and a concrete artefact for the post-change review: intended vs. executed.
+
+### Git interaction
+
+Perform no state-changing git commands without explicit per-command instruction: use file tools (write, edit, delete), not `git mv` / `git rm`. After rollout,
+`git add` / `commit` is left to the user.
+
+### Re-verification
+
+Plans drift between drafting and execution. **Re-verify each Checklist item against the live file** at the moment of execution — the live file is authoritative.
+
+## Post-change review
+
+Run after rollout, before `reviewed`:
+
+1. The agent prepares an initial review summary — what went well, issues encountered, lessons observed — as a _starting point_.
+2. The review is an interactive conversation; the summary is input, not output — the user challenges, corrects, and adds to it.
+3. Outputs may include revisions to the summary, immediate edits to the proposal, and new proposals or process improvements triggered by lessons learned.
+
+Record the final review under a `## Post-Change Review` section in the proposal, or in the process note if the lesson is structural.
+
+## Rejection
+
+A rejection is a **first-class outcome, not a failure**. The reasons are documented in the proposal; the stream settles with `status: rejected`. A rejected
+proposal may reopen as a new `draft` if circumstances change; the prior rejection and its reasons remain on record.
+
+## Discipline
+
+The rules that keep the workspace trustworthy:
+
+- **Streams move.** A stream in `Active/` without progress belongs in `Background/` or `Dormant/`; be honest about attention.
+- **Knowledge migrates out.** Substantive subject-matter content in a stream is leaking knowledge that should live in a store — extract it early and link back.
+- **Settled means settled.** A settled stream is a record, not a workspace; if work resumes, move it back to `Active/`.
+- **Keep the proposal and indexes current.** Update immediately on a decision, status, or priority change; reload before resuming.
+- **No `ready` while a prerequisite is below `rolled-out`; no rollout without explicit authorisation.**
+- **Re-verify each rollout item against the live file.**
+- **Delete the proposal on completion.** The test: would deleting it today lose knowledge? If not, delete it — the settled marker remains.
+- **When in doubt, prefer a proposal.** The cost of a lightweight proposal is low; the cost of an unauthorised change to canonical content is high.
