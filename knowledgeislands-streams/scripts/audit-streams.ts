@@ -130,9 +130,14 @@ function walkMarkdown(dir: string, acc: string[] = []): string[] {
   return acc
 }
 
-// Leaf stream folders under a Focus: a folder (below the Focus) holding a same-name
-// index note and NO subfolders. Categories (which have subfolders) and parent/multi
-// streams are excluded — their suffix is a [J] call.
+// Does a folder directly hold a `<X> Proposal.md` note? True for a conforming leaf
+// (the suffixed same-name note) and a conforming parent (the proposal alongside a
+// slim index + children).
+const hasProposalNote = (dir: string): boolean => isDir(dir) && readdirSync(dir).some((n) => n.endsWith(`${PROPOSAL_SUFFIX}.md`))
+
+// Stream folders under a Focus: a folder (below the Focus) holding a same-name index
+// note and NO subfolders — i.e. a leaf or a notes-only parent (Island MCP-style).
+// Folders WITH subfolders are categories or multi-proposal parents — recurse into them.
 function leafStreamFolders(focusDir: string, acc: string[] = []): string[] {
   for (const name of subdirs(focusDir)) {
     const dir = join(focusDir, name)
@@ -177,10 +182,10 @@ function auditStreams(base: string, ki: Ki): Finding[] {
     const focusDir = join(streamsRoot, focus)
     if (!isFile(join(focusDir, `${focus}.md`))) warn('STREAM-2', `${ki.streamsZone}/${focus}/ has no same-name index note (${focus}/${focus}.md)`)
     for (const leaf of leafStreamFolders(focusDir)) {
-      if (!basename(leaf).endsWith(PROPOSAL_SUFFIX)) missingSuffix.push(leaf.slice(base.length + 1))
+      if (!hasProposalNote(leaf)) missingSuffix.push(leaf.slice(base.length + 1))
     }
   }
-  if (missingSuffix.length) warn('STREAM-3', `leaf stream folder(s) without the \` Proposal\` suffix in ${missingSuffix.length}: ${sampleList(missingSuffix)}`)
+  if (missingSuffix.length) warn('STREAM-3', `stream folder(s) with no \`* Proposal.md\` note (not a conforming leaf or parent) in ${missingSuffix.length}: ${sampleList(missingSuffix)}`)
 
   // ── ENACT-1 / ENACT-2: proposal-document frontmatter ──
   const proposals = walkMarkdown(streamsRoot).filter((p) => basename(p, '.md').endsWith(PROPOSAL_SUFFIX))
