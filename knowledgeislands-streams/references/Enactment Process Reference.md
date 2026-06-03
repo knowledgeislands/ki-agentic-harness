@@ -27,7 +27,7 @@ Stream  ←→  Enactment Process (approval)
 
 - **Streams** are the home of ongoing work; ideas develop, questions resolve, the proposal document iterates. Authority to work here is granted by presence.
 - **Stores** (`Pillars/` / `Matters/`, `Resources/`) are the home of stable, ratified knowledge. Nothing lands there except through approval of a proposal that
-  specifies the change.
+  specifies the change. The approver is the base's governance authority — a council on a multi-agent island, or simply the user on a single-person base.
 
 The process is a **portable pattern**: any island copies it as its governance baseline, localising only as needed — a different store name, an informal approver
 for a single-person island, an adjusted status vocabulary, a local process-note name and location (declared to this skill as a binding).
@@ -136,3 +136,5 @@ The rules that keep the workspace trustworthy:
 - **Re-verify each rollout item against the live file.**
 - **Delete the proposal on completion.** The test: would deleting it today lose knowledge? If not, delete it — the settled marker remains.
 - **When in doubt, prefer a proposal.** The cost of a lightweight proposal is low; the cost of an unauthorised change to canonical content is high.
+- **Lightweight streams.** A low-effort request ("add this to the list") is handled as a lightweight stream and bypasses the full name-confirmation gate;
+  reserve the gate for substantive new streams, sub-proposal splits, and renames.

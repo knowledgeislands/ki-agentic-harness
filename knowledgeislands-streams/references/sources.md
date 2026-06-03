@@ -46,3 +46,9 @@ Record each REFRESH run: date, what was re-anchored, what changed in the model (
   in-base Model notes) and the two living exemplars; codified the Focus lifecycle, Category patterns, leaf/parent/multi layout, the `Proposal` suffix, the
   status/priority vocabularies, the proposal anatomy, and the bindings (`process_note`, `note_type_scheme`). Drawn from `arcadia-principal`'s Model and
   `kit-legal`'s refined `Repository Change Process`.
+- **2026-06-03** — **Superset pass.** Folded the full Streams conventions into the skill so it is the self-contained, canonical home (a base needs no separate
+  Streams-conventions note). Added from `kit-legal`'s `Streams Conventions`: the `type:` note-type table (`stream-zone` / `-focus` / `-index` / `-proposal` /
+  `-note`), the leaf ↔ parent transition rule, frontmatter-applies-by-type (only `stream-proposal` / `stream-note` carry `status`/`priority`/`dependencies`),
+  the suffix's collision-safety rationale, the `Pass N/` iterative-cycle pattern, and the "Settled = point-in-time, not maintained, deletable" policy; plus the
+  lightweight-stream gate carve-out and the approver framing (council / single-person user). Next: roll this superset out across the bases — `kit-legal` (adopt
+  the canonical `Enactment Process` name) and `arcadia-principal` (conform up + promote the superset into its canonical Model).

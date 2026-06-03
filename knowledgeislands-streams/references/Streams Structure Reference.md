@@ -8,9 +8,11 @@ lean. The process that runs over this structure is in [the Enactment Process ref
 - [The zone](#the-zone)
 - [Path: Focus and Category](#path-focus-and-category)
 - [Leaf, parent, and multi-proposal layout](#leaf-parent-and-multi-proposal-layout)
-- [The `Proposal` suffix](#the-proposal-suffix)
+- [The Proposal suffix](#the-proposal-suffix)
+- [Note types and frontmatter](#note-types-and-frontmatter)
 - [Index notes](#index-notes)
 - [What lives in a stream note](#what-lives-in-a-stream-note)
+- [Settled streams](#settled-streams)
 
 ## The zone
 
@@ -54,37 +56,63 @@ The guiding principle is easy navigation: too much depth is as unhelpful as too 
 
 ## Leaf, parent, and multi-proposal layout
 
-A stream's layout depends on whether it is a **leaf** (a single proposal) or a **parent** (it has child notes or sub-proposals):
+A stream is either a **leaf** (the proposal is its only note) or a **parent** (it has child notes or sub-folders). The two take different folder layouts so the
+repo-wide folder-index rule (every folder has a same-name index note) is satisfied without a redundant index:
 
 ```text
-Leaf:    Streams/<Focus>/<Category?>/<Name> Proposal/<Name> Proposal.md
-Parent:  Streams/<Focus>/<Category?>/<Name>/<Name> Proposal.md          (+ slim <Name>.md index + children)
+Leaf:    Streams/<Focus>/<Category?>/<Name> Proposal/<Name> Proposal.md   # the note is both folder index and proposal
+Parent:  Streams/<Focus>/<Category?>/<Name>/<Name> Proposal.md            # + slim <Name>.md index + child notes/sub-folders
 Multi:   Streams/<Focus>/<Category?>/<Name>/<ProposalName>/<ProposalName> Proposal.md
 ```
 
-- In a **leaf** stream the folder carries the `Proposal` suffix too, and the proposal note doubles as the folder index.
-- In a **parent** stream the folder is the bare topic; a slim same-named index note (note-type `stream-index`) sits alongside the proposal, and children live
-  beneath.
+- In a **leaf** stream the folder carries the `Proposal` suffix and holds a single same-named note; there is no separate index — a leaf has nothing to index but
+  itself.
+- In a **parent** stream the folder is the bare topic; a slim same-named index note (`stream-index`) resolves the folder link, and the proposal is one child
+  among the rest.
 - Use the **multi-proposal** layout only when a single stream genuinely encompasses several proposals each with its own approval cycle; the parent note then
   becomes a coordinating index over its child proposals. Most streams do not need this.
 
-A **convention rollout** (sweeping the base to apply a newly-introduced rule) is best bundled into a single consolidated stream so inventory, sweep, and
-verification run in one coordinated pass; each rollout is an independently approvable workstream inside it, lifted into its own `Proposal` sub-folder only when
-its checklist diverges enough to justify a separate approval document.
+**Leaf ↔ parent transition.** When a leaf gains its first child, demote it: rename the folder `<Name> Proposal/` → `<Name>/`, keep the proposal note as
+`<Name> Proposal.md` (now a child), and add a slim `<Name>.md` index. When a parent loses all its children, promote it back to the leaf form. The proposal
+note's filename and link (`<Name> Proposal`) are **stable across the transition** — only the folder name and the presence of the slim index change.
 
-## The `Proposal` suffix
+A **convention rollout** (sweeping the base to apply a newly-introduced rule) is best bundled into a single consolidated stream so inventory, sweep, and
+verification run in one coordinated pass; each rollout is an independently approvable workstream inside it, lifted into its own `<Name> Proposal` sub-folder
+only when its checklist diverges enough to justify a separate approval document. A stream that runs as **repeating cycles** accumulates per-cycle artefacts
+under `Pass N/` sub-folders (each with a slim `Pass N.md` index), and the proposal records each cycle's closure inline under a `## Pass N closure` heading so it
+stays the single navigable record of the stream's history.
+
+## The Proposal suffix
 
 The proposal note's name **always** ends with a space and the word `Proposal` — e.g. `Form E Proposal` — on its filename, its `# H1`, and its `title:`
-frontmatter. The name itself (the part before the `Proposal` suffix) follows the base's naming conventions: Title Case, a scope-tight noun phrase, no dates, no
-case codes, no attention-level baked in (the Focus folder already carries attention).
+frontmatter (and, in a leaf stream, on the folder too). The name itself (the part before the `Proposal` suffix) follows the base's naming conventions: Title
+Case, a scope-tight noun phrase, no dates, no case codes, no attention-level baked in (the Focus folder already carries attention).
 
-Why the suffix: it marks every stream as a proposal under the Enactment Process at a glance, keeps the folder index and the proposal document identifiable as
-one artefact, and makes the proposal documents mechanically findable (the checker keys on it). Before creating or renaming a proposal, **propose the name and
-resulting path and wait for user confirmation** — renames ripple through links.
+Why the suffix: it marks every stream as a proposal under the Enactment Process at a glance, lets the proposal double as the leaf folder's index, and
+**preemptively disambiguates** the note from same-named artefacts elsewhere in the base (a policy, a settled record, a store note on the same topic) — so the
+link to it is collision-safe regardless of what the stream eventually produces. The checker keys on the suffix to find proposals. Before creating or renaming a
+proposal, **propose the name and resulting path and wait for user confirmation** — renames ripple through links.
+
+## Note types and frontmatter
+
+The zone uses the machine-readable `type:` key (the canonical scheme; see the skill's bindings) to mark each note's role:
+
+| `type`            | Where                                                          | Purpose                                                              |
+| ----------------- | -------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `stream-zone`     | `Streams/Streams.md`                                           | Zone root index; carries the cross-Focus proposals index             |
+| `stream-focus`    | `Streams/<Focus>/<Focus>.md`                                   | Focus dashboard; carries prose + the status/priority table           |
+| `stream-index`    | `Streams/<Focus>/<Name>/<Name>.md` (and `Pass N/` sub-folders) | Slim index for a **parent** stream folder; not used for leaf streams |
+| `stream-proposal` | The `<Name> Proposal.md` note (leaf or parent)                 | The proposal and status tracker; in a leaf, also the folder index    |
+| `stream-note`     | `Streams/<Focus>/<Name>/<Sub>/<Sub>.md`                        | A sub-proposal or working note within a stream                       |
+
+**Frontmatter applies by type.** Only `stream-proposal` and `stream-note` notes carry the lifecycle fields `status`, `priority`, and `dependencies` (plus the
+base's descriptive keys such as `title`/`description`, and any local scoping keys). `stream-zone` and `stream-focus` index notes carry `type` and the common
+keys only — **not** `status`/`priority`/`dependencies`. The checker enforces the lifecycle fields on `<Name> Proposal.md` notes, so it does not wrongly demand
+them of index notes.
 
 ## Index notes
 
-Every Focus folder carries an **index note same-named as the folder** (e.g. `Active/Active.md`, note-type `stream-focus`). Its `## Streams` section is a table:
+Every Focus folder carries an **index note same-named as the folder** (`Active/Active.md`, …, `type: stream-focus`). Its `## Streams` section is a table:
 
 | Column   | Content                                                                       |
 | -------- | ----------------------------------------------------------------------------- |
@@ -95,8 +123,8 @@ Every Focus folder carries an **index note same-named as the folder** (e.g. `Act
 **Ordering.** In `Active/`, `Background/`, `Dormant/`, `Future/`: `in-progress` → `ready` → `draft`, then by priority within each group. In `Settled/`:
 `rolled-out` → `reviewed` → `completed` → `rejected`. Group by category before sorting where categories are in use.
 
-The `Streams/` zone index note (note-type `stream-zone`) also carries a cross-Focus **proposals index** — a live triage view of every proposal by Topic / Focus
-/ Status / Priority. It has no value if it lags: update it on creation, status change, and priority change. (Note-content links inside a base use Obsidian
+The `Streams/` zone index note (`type: stream-zone`) also carries a cross-Focus **proposals index** — a live triage view of every proposal by Topic / Focus /
+Status / Priority. It has no value if it lags: update it on creation, status change, and priority change. (Note-content links inside a base use Obsidian
 `[[wikilinks]]` per the `knowledgeislands-kb` convention; this skill's own files use relative markdown links.)
 
 ## What lives in a stream note
@@ -104,5 +132,15 @@ The `Streams/` zone index note (note-type `stream-zone`) also carries a cross-Fo
 A stream note is a proposal document and status tracker. Inside the [proposal anatomy](<Enactment Process Reference.md>) frame it holds: current status,
 progress updates, decisions made within the stream, next steps, blockers, and links out to the stores. What does **not** belong: durable analysis, drafting work
 product, reusable methodology (→ `Pillars/` / `Matters/`); external reference material (→ `Resources/`); time-bound records (→ `Calendar/`). When a stream
-produces lasting insight, extract it to the store and link back; a settled stream should have its durable knowledge already in a store, the settled note a
-marker pointing to where it now lives.
+produces lasting insight, extract it to the store and link back.
+
+## Settled streams
+
+A `Settled` stream is the **record of a decision at the point of settlement**, not a living document. Once its durable content has migrated to a store, its
+substantive value lives there; the settled note is a marker pointing to where the knowledge now lives.
+
+- **Settled streams are not maintained.** Links inside a settled proposal may go stale as the store files they reference are renamed or absorbed — that is
+  expected and acceptable. Audits and cascade-fix sweeps leave settled-stream links alone.
+- **They may be deleted once they have outlived their reference value** — when the decision is uncontentious in the resulting structure, its findings are fully
+  absorbed into canonical notes, and no active work reaches back to it. Git history retains the full record. There is no `retain_until` clock on a settled
+  stream; it expires when reference value drops.
