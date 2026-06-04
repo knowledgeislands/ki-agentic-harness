@@ -57,6 +57,9 @@ its standard is the zone model itself, not a separate `*-standard.md`.
 
 - **MEM-1 [J]** `Admin/MEMORY.md`'s active-Pillar list matches the Pillars actually present — no stale or missing entries. (Presence is **ZONE-3**; accuracy is
   judgment.)
+- **MEM-2 [M]** The memory cascade is **anchored in always-loaded context**: the base's root `CLAUDE.md` (or `AGENTS.md`) names the `MEMORY` index / the
+  scope-before-work rule (or the `knowledgeislands-kb` skill). Because skills load on demand, an unanchored cascade is silently skipped on a plain request. A
+  missing anchor warns. (The Streams equivalent is `knowledgeislands-streams`' **GATE-1**; the general principle is **SHAPE-7** in `knowledgeislands-skills`.)
 
 ## LINK — linking within a base
 

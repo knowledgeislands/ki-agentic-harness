@@ -117,7 +117,8 @@ REJECT · REVIEW · ROLLOUT · SETTLE**. Infer the mode from the request; ask if
 2. **Apply the `[J]` criteria by reading** ([the rubric](references/audit-rubric.md)): focus-index tables present and correctly ordered; the proposals index
    matches the streams present and their statuses (no lag); each stream carries a `Governance` section linking the bound process note; `completed` proposals'
    documents have been deleted and their knowledge migrated.
-3. **Report** drift, FAILs first, citing paths and the fix.
+3. **Report** drift, FAILs first, citing paths and the fix. This audit is one part of a base audit — `knowledgeislands-kb`'s AUDIT composes it alongside the
+   zone-model checks; run them together so "clean" means every applicable skill's audit passes, not just this one.
 
 ### Mode CONFORM — bring a base's Streams into line
 

@@ -113,7 +113,7 @@ Each skill's `description` carries its own boundaries so the agent selects the r
 
 ### Principles across the set
 
-Four invariants hold for every skill here, current and future — each tied to a named rubric criterion rather than just asserted, so a new skill inherits them by
+Six invariants hold for every skill here, current and future — each tied to a named rubric criterion rather than just asserted, so a new skill inherits them by
 being audited:
 
 - **Every skill carries a refresh path — and a cadence.** A skill that tracks a moving target (an external spec, a community best-practice, a base's live
@@ -130,6 +130,15 @@ being audited:
 - **One governance-mode model.** Every skill exposes the universal **AUDIT / CONFORM / REFRESH** modes plus skill-specific ones (**INIT** to scaffold,
   operational modes such as kb's note-ops), codified as rubric **SHAPE-5** so a new skill inherits the shape. The layout this produces is _The governance-skill
   shape_, above.
+- **A behaviour-changing skill anchors its gate — and checks the anchor.** A skill that changes a default (installs a gate, a standing "do X before Y" rule)
+  cannot rely on its own `description` to fire — skills load on demand, and the triggering request often won't name the skill (e.g. "edit this note" never says
+  "proposal"). So it anchors the behaviour in always-loaded context (the base/repo `CLAUDE.md` / `AGENTS.md`) and its **checker verifies the anchor** is
+  present. Enforced as rubric **SHAPE-7**; realised as `knowledgeislands-streams`' **GATE-1** (the Enactment gate) and `knowledgeislands-kb`'s **MEM-2** (the
+  memory cascade).
+- **Audits compose.** Auditing a target runs every _applicable_ skill's audit, not just one: a base audit is `knowledgeislands-kb` +
+  `knowledgeislands-streams` + any `<base>-kb` extension + `knowledgeislands-authoring` over its markdown; a repo audit is `knowledgeislands-repo` +
+  `knowledgeislands-mcp` (for an MCP repo) + the skills linter (for any skills it ships). A target is "clean" only when each applicable skill's audit passes;
+  each skill's AUDIT mode names the siblings it composes.
 
 ## Installing skills
 

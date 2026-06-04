@@ -196,6 +196,15 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
   const adminFolder = zoneOf('Admin')
   if (isDir(join(base, adminFolder)) && !isFile(join(base, adminFolder, MEMORY_INDEX))) fail('memory', `root memory index ${adminFolder}/${MEMORY_INDEX} is missing (lists the active Pillars)`)
 
+  // ── MEM-2: the memory cascade is anchored in always-loaded context ──
+  // The cascade (scope to a Pillar + load MEMORY before substantive work) only runs
+  // if the base's CLAUDE.md / AGENTS.md points to it — skills load on demand, so an
+  // unanchored cascade is silently skipped on a plain request.
+  const anchorName = ['CLAUDE.md', 'AGENTS.md'].find((n) => isFile(join(base, n)))
+  if (!anchorName) warn('MEM-2', 'no CLAUDE.md / AGENTS.md at the base root — the memory cascade (scope + load MEMORY before work) has no always-on anchor')
+  else if (/memory|knowledgeislands-kb/i.test(readFileSync(join(base, anchorName), 'utf8'))) note('MEM-2', `memory cascade anchored in ${anchorName}`)
+  else warn('MEM-2', `${anchorName} doesn't anchor the memory cascade — name the root MEMORY index / the scope-before-work rule so it runs on a plain request`)
+
   // ── note frontmatter ──
   // Base-agnostic [M]: a note with frontmatter must close its `---` fence and use
   // snake_case keys (the house convention). Base-declared [M]: when the base lists
