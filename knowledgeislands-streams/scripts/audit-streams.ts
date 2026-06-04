@@ -13,10 +13,11 @@
  *
  *   STREAM-1  folders directly under Streams/ are the Focus set.
  *   STREAM-2  each present Focus folder carries a same-name index note.
- *   STREAM-3  each leaf stream folder carries the ` Proposal` suffix.
+ *   STREAM-3  each stream folder holds a `* Proposal.md` note (leaf, or notes-only parent).
  *   ENACT-1   every `* Proposal.md` carries status/priority/dependencies frontmatter.
  *   ENACT-2   status ∈ the lifecycle vocabulary and priority ∈ {urgent…low}, as bare tokens.
  *   CONFIG    the base's [knowledgeislands-streams] table, validated DOWN.
+ *   GATE-1    the base's CLAUDE.md / AGENTS.md anchors the Enactment gate.
  *
  * That `Streams/` exists at all and carries a same-name zone index is the
  * `knowledgeislands-kb` checker's ZONE-* job, not repeated here. Parent / multi
@@ -214,6 +215,25 @@ function auditStreams(base: string, ki: Ki): Finding[] {
   if (badPriority.length) warn('ENACT-2', `priority outside {${PRIORITY.join(', ')}} in ${badPriority.length}: ${sampleList(badPriority)}`)
   note('ENACT-1', `${proposals.length} proposal document(s) found (\`* Proposal.md\`)`)
 
+  // ── GATE-1: the Enactment gate is anchored in always-loaded context ──
+  // Skills load on demand, so the gate only fires on a plain edit if the base's
+  // CLAUDE.md / AGENTS.md carries a standing directive that routes canonical
+  // changes through a proposal. Without it, the skill silently never loads.
+  const anchorFile = ['CLAUDE.md', 'AGENTS.md'].map((n) => join(base, n)).find(isFile)
+  if (!anchorFile) {
+    warn('GATE-1', "no CLAUDE.md / AGENTS.md at the base root — the Enactment gate has no always-on anchor, so the skill won't fire on a plain edit")
+  } else {
+    const txt = readFileSync(anchorFile, 'utf8')
+    const namesProcess = /Enactment Process|knowledgeislands-streams/i.test(txt)
+    const namesGate = /proposal|canonical/i.test(txt)
+    if (namesProcess && namesGate) note('GATE-1', `Enactment gate anchored in ${basename(anchorFile)}`)
+    else
+      warn(
+        'GATE-1',
+        `${basename(anchorFile)} does not anchor the Enactment gate — add a standing directive (route canonical changes through a proposal; load knowledgeislands-streams) so the gate fires on a plain edit`
+      )
+  }
+
   return f
 }
 
@@ -235,7 +255,10 @@ const ki = isFile(kiPath) ? parseKi(readFileSync(kiPath, 'utf8')) : { keys: {}, 
 
 console.log(paint(C.dim, `base: ${base}`))
 console.log(
-  paint(C.dim, `standard: Streams/(${FOCI.join(',')}) · same-name Focus index · \` Proposal\` suffix · proposal frontmatter(${PROPOSAL_FM.join(',')}; status∈vocab, priority∈{${PRIORITY.join(',')}})`)
+  paint(
+    C.dim,
+    `standard: Streams/(${FOCI.join(',')}) · same-name Focus index · \` Proposal\` suffix · proposal frontmatter(${PROPOSAL_FM.join(',')}; status∈vocab, priority∈{${PRIORITY.join(',')}}) · CLAUDE.md gate anchor`
+  )
 )
 
 const findings = auditStreams(base, ki)

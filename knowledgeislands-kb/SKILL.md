@@ -158,6 +158,10 @@ organised - especially once installed into a shared/cloud catalogue, where it is
 
 ### Mode SAVE - write a new note
 
+_Gate: if the destination is a canonical store (`Pillars` / `Matters` / `Resources`) and the base runs the Enactment Process (its `CLAUDE.md` says so), this is
+a canonical change — hand to the `knowledgeislands-streams` skill to open a proposal rather than writing directly. `Calendar/`, `+/`, and trivial fixes are
+exempt._
+
 1. Run pre-flight.
 2. Determine the destination zone using the routing test.
 3. Propose a filename per the base's naming convention (dated for `Calendar/`; descriptive title elsewhere; mirror the paired sources-store path for source
@@ -167,6 +171,9 @@ organised - especially once installed into a shared/cloud catalogue, where it is
 5. Confirm, then write.
 
 ### Mode UPDATE - enrich an existing note
+
+_Gate: if the note lives in a canonical store and the base runs the Enactment Process, route the change through a proposal (`knowledgeislands-streams`) rather
+than a direct write — unless it is a trivial fix or an unambiguous profile auto-append._
 
 1. Run pre-flight.
 2. Find and read the existing note.

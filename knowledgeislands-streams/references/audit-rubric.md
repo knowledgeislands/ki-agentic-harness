@@ -37,6 +37,16 @@ same-name index) is the `knowledgeislands-kb` rubric's `ZONE-*`, not repeated he
 - **ENACT-5 [J]** A `completed` proposal's document has been **deleted** and its durable knowledge migrated to a store (`Pillars/` / `Matters/` or
   `Resources/`); a settled stream's knowledge is already in a store, the settled note a marker pointing to it.
 
+## GATE — the gate's always-on anchor
+
+→ [SKILL: Installing the gate](../SKILL.md)
+
+- **GATE-1 [M]** The base anchors the Enactment gate in always-loaded context: its root **`CLAUDE.md`** (or `AGENTS.md`) names the Enactment Process /
+  `knowledgeislands-streams` **and** the gate (route canonical changes through a proposal). Because skills load on demand, without this anchor the skill never
+  fires on a plain "edit the X note" request and the gate is silently bypassed. A missing anchor, or one that names neither, warns.
+- **GATE-2 [J]** The directive is genuinely _imperative_ — an instruction to route canonical changes through a proposal and load the skill, not a passing
+  mention — and it states the exemptions (trivial fixes, `Calendar/`, `+/` triage).
+
 ## CONFIG — the `[knowledgeislands-streams]` config table
 
 → [SKILL: Project bindings](../SKILL.md) · contract owned by `knowledgeislands-repo` (validate down, ignore across)

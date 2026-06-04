@@ -144,6 +144,12 @@ A criterion's tag is a contract with the linter: if you find yourself eyeballing
   **`<domain>-standard.md`** (or the contract / conventions reference it holds), an **`audit-rubric.md`** of pass/fail criteria each tagged **[M]**/**[J]** and
   citing its standard section, a tracked **`references/sources.md`** with `last reviewed` dates (see **LONG-1**), and a **mechanical checker** (the judgment
   half applied by reading). A governance skill outside a Knowledge Islands repo is exempt until the convention is generalised. (arcadia-skills README)
+- **SHAPE-7 [J]** _Behaviour-changing skills need an always-on anchor._ A skill that changes a **default behaviour** — installs a gate, a standing "always do X
+  before Y" rule, or a routing intercept — cannot rely on its own `description` to fire it, because skills load **on demand** and the triggering request often
+  won't mention the skill (e.g. "edit this note" never says "proposal"). Such a skill must **anchor the behaviour in always-loaded context** (the base/repo
+  `CLAUDE.md` / `AGENTS.md`, or a companion skill that _does_ reliably load handing off to it), and its checker should **verify the anchor is present** so it
+  can't be silently lost. (Pattern from `knowledgeislands-streams`' Enactment gate: the gate is defined in the skill, anchored in each base's `CLAUDE.md`, and
+  `GATE-1` checks the anchor.)
 
 ## PROC — Process / meta
 

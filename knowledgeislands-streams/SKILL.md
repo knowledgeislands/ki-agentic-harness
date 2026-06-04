@@ -5,9 +5,9 @@ description: >
   process: a proposal goes draft → ready → ratify → roll out → review → settle, and nothing reaches stable knowledge except through that gate). Use to start a
   stream, iterate a proposal, mark one ready, roll out an approved change, run a post-change review, and settle or reject a stream — and to audit a base's
   Streams structure (Focus lifecycle, the `Proposal` suffix, leaf/parent layout, proposal frontmatter) or conform it. Triggers: "start a stream", "create a
-  proposal", "mark this ready", "roll out this proposal", "settle this stream", "reject this proposal", "what's the enactment process", "plan mode for my
-  knowledge base", "audit my streams". For the five-zone model and note CRUD / routing use the `knowledgeislands-kb` skill, which delegates the Streams zone
-  here; for Markdown / TOML house style use `knowledgeislands-authoring`.
+  proposal", "mark this ready", "roll out this proposal", "settle this stream", "what's the enactment process", "plan mode for my knowledge base", "does this
+  change need a proposal", "audit my streams". For the five-zone model and note CRUD / routing use the `knowledgeislands-kb` skill, which delegates the Streams
+  zone here; for Markdown / TOML house style use `knowledgeislands-authoring`.
 argument-hint: 'audit | conform | iterate | propose | ready | refresh | reject | review | rollout | settle'
 ---
 
@@ -199,6 +199,17 @@ These apply to every change (the discipline that keeps the workspace trustworthy
 - **Delete the proposal on completion** — once its content is in a store it has no residual value.
 - **Out of scope** (no proposal needed): trivial typo / formatting fixes, time-bound `Calendar/` entries, person-file auto-appends, inbound `+/` triage — though
   when in doubt, prefer a proposal: the cost of a lightweight one is low, the cost of an unauthorised change to canonical content is high.
+
+## Installing the gate
+
+The Enactment gate ("nothing reaches a canonical store except through a `ready` proposal") only bites if it is _consulted_ — and skills load **on demand**, so
+this one will not fire on a plain "edit the X note" request that never mentions a proposal. The gate must therefore be **anchored in always-loaded context**:
+
+- A base that runs the Enactment Process carries a standing directive in its **`CLAUDE.md` / `AGENTS.md`**: _substantive changes to canonical stores (`Pillars`
+  / `Matters` / `Resources`) go through a proposal — load `knowledgeislands-streams`; do not edit canonical stores directly_ (trivial fixes, `Calendar/`
+  entries, and `+/` triage exempt).
+- `knowledgeislands-kb`'s UPDATE / SAVE modes defer here when the target is a canonical store and the base runs the gate, rather than writing directly.
+- The checker's **GATE-1** verifies the `CLAUDE.md` directive is present — so a base can't quietly lose the gate.
 
 ## Notes
 
