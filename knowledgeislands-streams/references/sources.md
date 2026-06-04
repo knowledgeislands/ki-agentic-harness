@@ -55,3 +55,9 @@ Record each REFRESH run: date, what was re-anchored, what changed in the model (
   `arcadia-principal`'s `Model/Processes/Enactment Process` and the Streams section of `Model/Conventions/Structure` were slimmed to pointers + island-voice
   framing + local specifics. REFRESH re-anchors against practice (the live bases), not against a canonical Model. Also: the checker now recognises a notes-only
   **parent** stream (a folder containing a `* Proposal.md`), not just suffixed leaves.
+- **2026-06-04** — **Two stream weights, per stream.** A sweep across the local bases found several (`kit-pkb`, `kit-hnr`, `kit-principal`) use `Streams/` as a
+  lightweight tracker, not the proposal model. Rather than a per-base opt-out, the Enactment Process now defines **two weights chosen per stream** — a **full
+  proposal** (the apparatus + gate) and a **lightweight stream** (a plain tracker; graduates to a proposal when it becomes a governed canonical change). The
+  checker reflects this: `STREAM-3` flags only a stream whose index declares a proposal (`type: stream-proposal` / lifecycle `status`) yet lacks the suffix, and
+  `GATE-1` demands the anchor only once the base actually runs proposals. Also added cross-skill plumbing this date: `knowledgeislands-kb` `MEM-2`
+  (memory-cascade anchor) + composed audits, and `knowledgeislands-skills` `SHAPE-7` (behaviour-changing skills anchor + check their gate).

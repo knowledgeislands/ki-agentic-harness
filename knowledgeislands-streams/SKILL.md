@@ -14,10 +14,11 @@ argument-hint: 'audit | conform | iterate | propose | ready | refresh | reject |
 # Knowledge Islands Streams
 
 You are operating the **`Streams` zone** of a Knowledge Islands base. `Streams/` is the base's _working copy_ — the home of work in motion, and what the user
-thinks of as "plan mode." It is governed by the **Enactment Process**: every stream is a **proposal** that iterates in place, is submitted for approval, rolled
-out, and retired. **Nothing reaches stable knowledge (`Pillars/`, or its alias `Matters/`, and `Resources/`) except through this gate** — authority to edit a
-stream is granted by its presence in the workspace; authority to edit a canonical store is granted only by approval of a `ready` proposal that specifies the
-change.
+thinks of as "plan mode." It is governed by the **Enactment Process**. A stream is one of two weights (chosen per stream): a **full proposal** — a governed
+change that iterates in place, is submitted for approval, rolled out, and retired — or a **lightweight stream**, a tracker for work that isn't (yet) a formal
+change to canonical content. **Nothing reaches stable knowledge (`Pillars/`, or its alias `Matters/`, and `Resources/`) except through an approved proposal** —
+authority to work in a stream is granted by its presence in the workspace; authority to edit a canonical store is granted only by approval of a `ready` proposal
+that specifies the change.
 
 The companion `knowledgeislands-kb` skill owns the five-zone model and note CRUD / routing, and **delegates the inside of `Streams/` here**; load it for
 anything outside this zone. This skill carries the structure and process as fixed knowledge; only a couple of store-level **bindings** come from the host base.
@@ -43,7 +44,8 @@ folders is an explicit act. **Category** is optional grouping within a Focus (pi
 Each Focus folder carries a **same-name index note** whose `## Streams` table lists each stream by Topic / Status / Priority, ordered by status then priority
 (grouped by category where used). The base also keeps a cross-Focus **proposals index** in the `Streams/` zone index note.
 
-**The `Proposal` suffix is required**: a proposal note always carries a trailing `Proposal` on its filename, `# H1`, and `title:`. Folder layout:
+**A full proposal carries the `Proposal` suffix** (filename, `# H1`, `title:`); a **lightweight stream** is a plain tracker note under a Focus folder and
+carries none (see the Enactment Process reference for the two weights). Folder layout for a full proposal:
 
 ```text
 Leaf:    Streams/<Focus>/<Category?>/<Name> Proposal/<Name> Proposal.md
@@ -126,7 +128,11 @@ REJECT · REVIEW · ROLLOUT · SETTLE**. Infer the mode from the request; ask if
 2. Apply the fixes: add missing `Proposal` suffixes and Focus/stream index notes; normalise proposal frontmatter and statuses; add missing `Governance`
    sections; reconcile the proposals index; record the process-note binding. **Confirm before moving or renaming notes** (the name-confirmation gate below);
    where the base mandates it, run the conforming itself as a proposal.
-3. Re-run **AUDIT** until clean.
+3. **Install the gate anchor if `GATE-1` flagged it missing**: add the standing directive to the base's `CLAUDE.md` / `AGENTS.md` (route canonical changes
+   through a proposal; load this skill) — otherwise the gate won't fire on a plain edit, so a structurally-conformed base still leaks. But first confirm the
+   base _should_ run the Enactment Process at all: a base that uses `Streams/` as a lightweight tracker, not a proposal workflow, should not be force-fitted —
+   flag it for a decision rather than conforming it (a lightweight-Streams opt-out is a tracked ROADMAP candidate).
+4. Re-run **AUDIT** until clean.
 
 ### Mode ITERATE — develop a proposal
 

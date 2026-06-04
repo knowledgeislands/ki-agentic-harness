@@ -17,8 +17,11 @@ disciplines tied to the invariants in the README's _Principles across the set_ �
   mid-rename declares a local folder name) and a `required_frontmatter` array (the base declares the frontmatter keys its notes must carry, which the checker
   then enforces mechanically). That establishes the pattern — a skill takes per-repo/per-base declarations under its own `[<skill>]` table, validating down and
   ignoring across. The remaining work is to **generalise it**: a stated convention for what's overridable vs fixed, and each consuming skill emitting its
-  default keys (the `--init` pattern both `-repo` and `-kb` already follow) so the options are authored, not implicit. Gated on a genuine third consumer —
-  extend when a skill actually needs it, rather than designing the framework speculatively.
+  default keys (the `--init` pattern `-repo`, `-kb`, and `-streams` all follow) so the options are authored, not implicit. **The third consumer has now
+  arrived:** `knowledgeislands-streams` reads its own `[knowledgeislands-streams]` table (`process_note`, `note_type_scheme`) and the
+  `[knowledgeislands-kb.zones]` alias — so the pattern has three consumers (repo, kb, streams) and the generalisation is now warranted rather than speculative.
+  Next step: write the shared contract up (overridable-vs-fixed, the `--init` self-documentation rule) in the `knowledgeislands-repo` `.ki-config.toml`
+  reference.
 
 - **Dependabot — two open follow-ups.** _(candidate)_ The Layer-3 baseline is in place (alerts + security updates + `allow_update_branch`, all governed). Two
   threads remain. (a) **Bun ecosystem rollout.** Our repos are Bun projects (`bun.lock`), but their `dependabot.yml` declares `package-ecosystem: npm`, which

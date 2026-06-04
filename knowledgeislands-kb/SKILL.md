@@ -115,7 +115,10 @@ Infer the mode from the request, or ask if unclear. Like every governance skill 
 1. Run **AUDIT** first for the gap list.
 2. Apply the fixes: refile misrouted notes (per the routing test), create any missing zone, repair note frontmatter and naming, reconcile the memory index.
    Confirm before moving or rewriting notes.
-3. Re-run **AUDIT** until it is clean.
+3. **Install the memory-cascade anchor if `MEM-2` flagged it missing**: add a standing line to the base's `CLAUDE.md` / `AGENTS.md` naming the root `MEMORY`
+   index and the scope-before-work rule — otherwise the cascade is skipped on a plain request. Likewise apply any sibling skill's CONFORM (e.g.
+   `knowledgeislands-streams` for the gate anchor), since a base audit composes them.
+4. Re-run **AUDIT** until it is clean.
 
 ### Mode DIGEST - session digest
 

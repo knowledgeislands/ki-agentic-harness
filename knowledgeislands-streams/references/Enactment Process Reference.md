@@ -7,6 +7,7 @@ Process**; a base's own process note defers here and carries only its local spec
 ## Contents
 
 - [The model](#the-model)
+- [Stream weights: full proposals and lightweight streams](#stream-weights-full-proposals-and-lightweight-streams)
 - [Proposal documents](#proposal-documents)
 - [The cycle](#the-cycle)
 - [Rollout](#rollout)
@@ -31,6 +32,23 @@ Stream  ←→  Enactment Process (approval)
 
 The process is a **portable pattern**: any island copies it as its governance baseline, localising only as needed — a different store name, an informal approver
 for a single-person island, an adjusted status vocabulary, a local process-note name and location (declared to this skill as a binding).
+
+## Stream weights: full proposals and lightweight streams
+
+Not every stream carries the full proposal apparatus. The Enactment Process recognises **two weights**, chosen **per stream** (not per base):
+
+- **Full proposal** — a governed change destined for a canonical store. It carries the proposal document (the `Proposal` suffix, `status` / `priority` /
+  `dependencies`, Inputs / Outputs / Checklist / Open Questions / Design / Governance) and passes the approval gate. Use it whenever the work will change
+  `Pillars` / `Matters` / `Resources`.
+- **Lightweight stream** — a tracker for work in motion that is _not (yet) a governed canonical change_: a plain note under a Focus folder, with just enough
+  status to know where it stands. No proposal document, no `Proposal` suffix, no gate. A low-effort "add this to the list" lands here, as does ongoing personal
+  or operational tracking that never touches a canonical store.
+
+The discipline that matters is **the gate on canonical stores, not paperwork on every tracker**. A lightweight stream **graduates** to a full proposal the
+moment it becomes a change to canonical content — at which point it takes the suffix, the proposal document, and the gate. So a base is never "opted out" of the
+process wholesale; rather, each stream is as heavy as the change it carries. (The checker reflects this: it asks for the suffix and the proposal frontmatter
+only of streams that declare themselves proposals — `type: stream-proposal` or a lifecycle `status` — and requires the `CLAUDE.md` gate anchor only once the
+base actually runs proposals.)
 
 ## Proposal documents
 

@@ -17,8 +17,10 @@ same-name index) is the `knowledgeislands-kb` rubric's `ZONE-*`, not repeated he
   that level warns (a stream filed directly under `Streams/` without a Focus, or a stray folder).
 - **STREAM-2 [M]** Each **present** Focus folder carries a **same-name index note** (`Active/Active.md`, …). A missing one warns. (An absent Focus folder is
   fine — not every base uses all five.)
-- **STREAM-3 [M]** Every proposal carries the **`Proposal` suffix** on its filename; in a leaf stream the containing folder carries it too. A stream note (a
-  folder index note that is not itself a Focus index) lacking the suffix warns.
+- **STREAM-3 [M]** A **full proposal** carries the **`Proposal` suffix** on its filename (and, in a leaf stream, the containing folder); a **lightweight
+  stream** (a plain tracker note — not a governed change) carries none. The checker flags only a stream whose index note **declares itself a proposal**
+  (`type: stream-proposal` or a lifecycle `status`) yet lacks the suffix; a lightweight tracker is not flagged. The two weights are defined in the Enactment
+  Process (per stream, not per base).
 - **STREAM-4 [J]** Each Focus index note has a `## Streams` table, correctly ordered (status then priority; grouped by category where used), and Category usage
   follows one pattern per Focus.
 - **STREAM-5 [J]** Streams sit in the Focus matching their real attention level (a long-idle stream in `Active/` is drift), and proposal names follow the base's
@@ -41,9 +43,10 @@ same-name index) is the `knowledgeislands-kb` rubric's `ZONE-*`, not repeated he
 
 → [SKILL: Installing the gate](../SKILL.md)
 
-- **GATE-1 [M]** The base anchors the Enactment gate in always-loaded context: its root **`CLAUDE.md`** (or `AGENTS.md`) names the Enactment Process /
-  `knowledgeislands-streams` **and** the gate (route canonical changes through a proposal). Because skills load on demand, without this anchor the skill never
-  fires on a plain "edit the X note" request and the gate is silently bypassed. A missing anchor, or one that names neither, warns.
+- **GATE-1 [M]** **Once the base runs proposals** (≥ 1 `* Proposal.md` exists), it anchors the Enactment gate in always-loaded context: its root **`CLAUDE.md`**
+  (or `AGENTS.md`) names the Enactment Process / `knowledgeislands-streams` **and** the gate (route canonical changes through a proposal). Because skills load
+  on demand, without this anchor the skill never fires on a plain "edit the X note" request and the gate is silently bypassed. A missing anchor, or one that
+  names neither, warns. A base with only lightweight streams (no proposals) hasn't opted into the gated model, so the anchor isn't demanded.
 - **GATE-2 [J]** The directive is genuinely _imperative_ — an instruction to route canonical changes through a proposal and load the skill, not a passing
   mention — and it states the exemptions (trivial fixes, `Calendar/`, `+/` triage).
 

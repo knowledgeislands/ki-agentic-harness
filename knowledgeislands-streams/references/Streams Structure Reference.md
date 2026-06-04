@@ -110,6 +110,10 @@ base's descriptive keys such as `title`/`description`, and any local scoping key
 keys only — **not** `status`/`priority`/`dependencies`. The checker enforces the lifecycle fields on `<Name> Proposal.md` notes, so it does not wrongly demand
 them of index notes.
 
+**Full proposals vs lightweight streams.** A stream comes in [two weights](<Enactment Process Reference.md>): a **full proposal** (a `stream-proposal` with the
+`Proposal` suffix and the apparatus) or a **lightweight stream** (a plain tracker note — no suffix, no proposal frontmatter — for work that isn't a governed
+canonical change). The suffix and `STREAM-3` apply only to full proposals; a lightweight stream is just a note under a Focus folder.
+
 ## Index notes
 
 Every Focus folder carries an **index note same-named as the folder** (`Active/Active.md`, …, `type: stream-focus`). Its `## Streams` section is a table:

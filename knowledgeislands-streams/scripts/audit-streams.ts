@@ -13,11 +13,12 @@
  *
  *   STREAM-1  folders directly under Streams/ are the Focus set.
  *   STREAM-2  each present Focus folder carries a same-name index note.
- *   STREAM-3  each stream folder holds a `* Proposal.md` note (leaf, or notes-only parent).
+ *   STREAM-3  a full proposal holds a `* Proposal.md` (leaf/parent) with the suffix;
+ *             a lightweight tracker stream needs none (flagged only if it declares a proposal).
  *   ENACT-1   every `* Proposal.md` carries status/priority/dependencies frontmatter.
  *   ENACT-2   status ∈ the lifecycle vocabulary and priority ∈ {urgent…low}, as bare tokens.
  *   CONFIG    the base's [knowledgeislands-streams] table, validated DOWN.
- *   GATE-1    the base's CLAUDE.md / AGENTS.md anchors the Enactment gate.
+ *   GATE-1    once the base runs proposals, its CLAUDE.md / AGENTS.md anchors the gate.
  *
  * That `Streams/` exists at all and carries a same-name zone index is the
  * `knowledgeislands-kb` checker's ZONE-* job, not repeated here. Parent / multi
@@ -178,15 +179,25 @@ function auditStreams(base: string, ki: Ki): Finding[] {
   note('STREAM-1', `Focus folders present: ${foci.join(', ') || '(none)'}`)
 
   // ── STREAM-2 / STREAM-3: per Focus ──
+  // A stream is either a FULL PROPOSAL (a governed change — carries the proposal
+  // apparatus and the ` Proposal` suffix) or a LIGHTWEIGHT stream (a tracker note,
+  // no apparatus). The two weights are part of the Enactment Process. Only a
+  // proposal-in-intent that lacks the suffix is drift; a lightweight tracker needs
+  // none — so we flag a folder only when its index DECLARES a proposal
+  // (`type: stream-proposal` or a lifecycle `status`) yet has no `* Proposal.md`.
   const missingSuffix: string[] = []
   for (const focus of foci) {
     const focusDir = join(streamsRoot, focus)
     if (!isFile(join(focusDir, `${focus}.md`))) warn('STREAM-2', `${ki.streamsZone}/${focus}/ has no same-name index note (${focus}/${focus}.md)`)
     for (const leaf of leafStreamFolders(focusDir)) {
-      if (!hasProposalNote(leaf)) missingSuffix.push(leaf.slice(base.length + 1))
+      if (hasProposalNote(leaf)) continue // conforming leaf or parent
+      const idx = join(leaf, `${basename(leaf)}.md`)
+      const fm = isFile(idx) ? frontmatter(readFileSync(idx, 'utf8')) : null
+      const declaresProposal = !!fm && (fm.map.type === 'stream-proposal' || STATUS.includes(fm.map.status ?? ''))
+      if (declaresProposal) missingSuffix.push(leaf.slice(base.length + 1))
     }
   }
-  if (missingSuffix.length) warn('STREAM-3', `stream folder(s) with no \`* Proposal.md\` note (not a conforming leaf or parent) in ${missingSuffix.length}: ${sampleList(missingSuffix)}`)
+  if (missingSuffix.length) warn('STREAM-3', `proposal stream(s) missing the \` Proposal\` suffix (a lightweight tracker stream needs none) in ${missingSuffix.length}: ${sampleList(missingSuffix)}`)
 
   // ── ENACT-1 / ENACT-2: proposal-document frontmatter ──
   const proposals = walkMarkdown(streamsRoot).filter((p) => basename(p, '.md').endsWith(PROPOSAL_SUFFIX))
@@ -217,21 +228,26 @@ function auditStreams(base: string, ki: Ki): Finding[] {
 
   // ── GATE-1: the Enactment gate is anchored in always-loaded context ──
   // Skills load on demand, so the gate only fires on a plain edit if the base's
-  // CLAUDE.md / AGENTS.md carries a standing directive that routes canonical
-  // changes through a proposal. Without it, the skill silently never loads.
-  const anchorFile = ['CLAUDE.md', 'AGENTS.md'].map((n) => join(base, n)).find(isFile)
-  if (!anchorFile) {
-    warn('GATE-1', "no CLAUDE.md / AGENTS.md at the base root — the Enactment gate has no always-on anchor, so the skill won't fire on a plain edit")
+  // CLAUDE.md / AGENTS.md routes canonical changes through a proposal. Required
+  // once the base actually runs proposals; a base with only lightweight streams
+  // (no proposals) hasn't opted into the gated model, so the anchor isn't demanded.
+  if (proposals.length === 0) {
+    note('GATE-1', 'no proposals yet — the gate applies once the base runs the proposal model (lightweight streams alone need no anchor)')
   } else {
-    const txt = readFileSync(anchorFile, 'utf8')
-    const namesProcess = /Enactment Process|knowledgeislands-streams/i.test(txt)
-    const namesGate = /proposal|canonical/i.test(txt)
-    if (namesProcess && namesGate) note('GATE-1', `Enactment gate anchored in ${basename(anchorFile)}`)
-    else
-      warn(
-        'GATE-1',
-        `${basename(anchorFile)} does not anchor the Enactment gate — add a standing directive (route canonical changes through a proposal; load knowledgeislands-streams) so the gate fires on a plain edit`
-      )
+    const anchorFile = ['CLAUDE.md', 'AGENTS.md'].map((n) => join(base, n)).find(isFile)
+    if (!anchorFile) {
+      warn('GATE-1', "no CLAUDE.md / AGENTS.md at the base root — the Enactment gate has no always-on anchor, so the skill won't fire on a plain edit")
+    } else {
+      const txt = readFileSync(anchorFile, 'utf8')
+      const namesProcess = /Enactment Process|knowledgeislands-streams/i.test(txt)
+      const namesGate = /proposal|canonical/i.test(txt)
+      if (namesProcess && namesGate) note('GATE-1', `Enactment gate anchored in ${basename(anchorFile)}`)
+      else
+        warn(
+          'GATE-1',
+          `${basename(anchorFile)} does not anchor the Enactment gate — add a standing directive (route canonical changes through a proposal; load knowledgeislands-streams) so the gate fires on a plain edit`
+        )
+    }
   }
 
   return f
