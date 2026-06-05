@@ -68,5 +68,11 @@ Record each REFRESH run: date, what was re-anchored, what changed in the structu
   canonical zone or staging area mappable to a local folder name, and may be transitional **or** standing. Every legacy zone-folder name was removed from the
   skill prose: a base that names a zone differently relies on the `[knowledgeislands-kb.zones]` alias, not a named special case. The checker was widened to
   accept (and resolve) an alias on a staging area, not just a canonical zone.
+- **2026-06-06** - **`IMPROVE` mode added (Continuous Improvement codified).** Both reference bases ran a near-identical session-level continuous-improvement
+  loop (kit-legal's `Continuous Improvement Policy`; arcadia-principal's `CLAUDE.md` § Continuous Improvement) that no skill carried. Promoted it as a new
+  `IMPROVE` mode: scan the session for un-codified knowledge → classify and **route** each candidate (local-and-non-canonical → write directly; a canonical-zone
+  change → the **Enactment Process** gate; a cross-base pattern → the owning skill's **REFRESH**) → formalise → recheck until clean. IMPROVE is the base-side
+  mirror of REFRESH and only discovers and routes — it does not restate the two governance loops. Folded in the "living notes carry current state only"
+  sub-rule. `[J]` process, so no checker/rubric change. Slimming the bases' CI notes to pointers is a later (gated) increment.
 
 [kb-reference]: <Knowledge Islands KB Reference.md>
