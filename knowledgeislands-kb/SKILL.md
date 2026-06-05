@@ -8,7 +8,7 @@ description: >
   "update the note on", "capture this", "write a session digest", "audit my knowledge base", "is my base structured right", "set up a new knowledge base". Where
   a knowledge base ships its own named extension skill, prefer that skill; it extends this one. For general Markdown or TOML house style (not note content), use
   the `knowledgeislands-authoring` skill.
-argument-hint: 'audit | conform | digest | extract | init | query <question> | refresh | save | update <note>'
+argument-hint: 'audit | conform | digest | extract | improve | init | query <question> | refresh | save | update <note>'
 ---
 
 # Knowledge Islands KB
@@ -94,7 +94,8 @@ key) and never read another skill's.
 ## Step 2 - Determine mode
 
 Infer the mode from the request, or ask if unclear. Like every governance skill it carries **AUDIT · CONFORM · REFRESH**; its base-specific modes are **INIT**
-(scaffold a base) and the note-ops **DIGEST · EXTRACT · QUERY · SAVE · UPDATE**. Modes are named and alphabetical.
+(scaffold a base), the session-level **IMPROVE** (continuous improvement), and the note-ops **DIGEST · EXTRACT · QUERY · SAVE · UPDATE**. Modes are named and
+alphabetical.
 
 ### Mode AUDIT - check the base against the structure model
 
@@ -132,6 +133,32 @@ Infer the mode from the request, or ask if unclear. Like every governance skill 
 1. Identify distinct reusable pieces of knowledge.
 2. For each, propose a title, destination zone (per the routing test), and draft.
 3. Confirm, then write the approved notes.
+
+### Mode IMPROVE - continuous improvement
+
+A session-level discipline (not a scheduled task): close the gap between what was applied in practice this session and what the base has codified. IMPROVE
+**discovers and routes** candidates — it does not make the change itself, it hands each to its governed home. Flag candidates as they arise, or sweep at session
+end.
+
+1. **Scan** the session for candidates: a correction or clarification the user gave; an in-session decision that should now apply generally; a rule applied
+   consistently but written down nowhere; an auto-memory feedback entry that really encodes a base convention.
+2. **Classify and route** each candidate to exactly one home:
+   - **local and non-canonical** (a working note, a `Calendar/` habit, a `+/` triage rule) → just write it;
+   - **a change to a canonical zone** (`Admin` / `Pillars` / `Resources`) → hand to `knowledgeislands-streams`: open a proposal through the **Enactment
+     Process** gate; do not edit the zone directly;
+   - **a pattern recurring across bases** → hand to the owning skill's **REFRESH** to promote it into the canonical skill (this skill,
+     `knowledgeislands-streams`, …).
+   - An auto-memory entry that belongs to the base migrates to its convention home and is **removed** from memory.
+3. **Formalise** through the routed home, then **recheck** — re-scan; a fresh candidate starts another iteration.
+4. **Terminate when clean:** every correction and pattern is either codified or recorded as a deliberate one-off (an inline note or a `+/<context>` capture
+   explaining the departure — a one-off needs no formalisation).
+
+IMPROVE is the base-side mirror of **REFRESH**: it looks _down_ (this base's practice → formalise), where REFRESH looks _across_ (many bases → one skill); a
+cross-base candidate is exactly the handoff between them.
+
+**Living notes carry current state only.** When formalising, the target note (convention, policy, proposal, profile, index) records purpose, current state, and
+trigger conditions — not historic pass-by-pass narrative or back-references to the sessions or cycles that produced it. History lives in git; the durable record
+is the current note.
 
 ### Mode INIT - scaffold a new base's structure
 
