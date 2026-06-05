@@ -18,33 +18,39 @@ Process**; a base's own process note defers here and carries only its local spec
 ## The model
 
 The Enactment Process is the base's governance _in action_ — not a tool a reviewer uses but _how review operates_. Work moves back and forth between the
-workspace and the stores until the change is approved or rejected:
+workspace and the canonical zones until the change is approved or rejected:
 
 ```text
 Stream  ←→  Enactment Process (approval)
             ↓ approve
-       Pillars / Matters / Resources
+        Admin / Pillars / Resources
 ```
 
-- **Streams** are the home of ongoing work; ideas develop, questions resolve, the proposal document iterates. Authority to work here is granted by presence.
-- **Stores** (`Pillars/` / `Matters/`, `Resources/`) are the home of stable, ratified knowledge. Nothing lands there except through approval of a proposal that
-  specifies the change. The approver is the base's governance authority — a council on a multi-agent island, or simply the user on a single-person base.
+- **Streams** is the working zone — the home of ongoing work, where ideas develop, questions resolve, and the proposal document iterates. Authority to work here
+  is granted by presence.
+- **The canonical zones** hold stable, ratified content and are reached only through the gate: **`Admin/`** — the base's own operating model (its processes,
+  conventions, and configuration) — and the knowledge **stores** `Pillars/` and `Resources/`. Nothing lands in a canonical zone except through approval of a
+  proposal that specifies the change — _including a change to the operating model itself_, so the governance passes through its own gate. The approver is the
+  base's governance authority — a council on a multi-agent island, or simply the user on a single-person base.
 
-The process is a **portable pattern**: any island copies it as its governance baseline, localising only as needed — a different store name, an informal approver
+(`Calendar/` and the inbound `+/` / outbound `-/` staging areas are neither working nor canonical — they hold time-bound or transient material and sit outside
+the gate; high-churn operational entries belong there or in a lightweight stream, never loose in `Admin/`.)
+
+The process is a **portable pattern**: any island copies it as its governance baseline, localising only as needed — a different zone name, an informal approver
 for a single-person island, an adjusted status vocabulary, a local process-note name and location (declared to this skill as a binding).
 
 ## Stream weights: full proposals and lightweight streams
 
 Not every stream carries the full proposal apparatus. The Enactment Process recognises **two weights**, chosen **per stream** (not per base):
 
-- **Full proposal** — a governed change destined for a canonical store. It carries the proposal document (the `Proposal` suffix, `status` / `priority` /
-  `dependencies`, Inputs / Outputs / Checklist / Open Questions / Design / Governance) and passes the approval gate. Use it whenever the work will change
-  `Pillars` / `Matters` / `Resources`.
+- **Full proposal** — a governed change destined for a canonical zone. It carries the proposal document (the `Proposal` suffix, `status` / `priority` /
+  `dependencies`, Inputs / Outputs / Checklist / Open Questions / Design / Governance) and passes the approval gate. Use it whenever the work will change a
+  canonical zone — `Admin`, `Pillars`, or `Resources`.
 - **Lightweight stream** — a tracker for work in motion that is _not (yet) a governed canonical change_: a plain note under a Focus folder, with just enough
   status to know where it stands. No proposal document, no `Proposal` suffix, no gate. A low-effort "add this to the list" lands here, as does ongoing personal
-  or operational tracking that never touches a canonical store.
+  or operational tracking that never touches a canonical zone.
 
-The discipline that matters is **the gate on canonical stores, not paperwork on every tracker**. A lightweight stream **graduates** to a full proposal the
+The discipline that matters is **the gate on the canonical zones, not paperwork on every tracker**. A lightweight stream **graduates** to a full proposal the
 moment it becomes a change to canonical content — at which point it takes the suffix, the proposal document, and the gate. So a base is never "opted out" of the
 process wholesale; rather, each stream is as heavy as the change it carries. (The checker reflects this: it asks for the suffix and the proposal frontmatter
 only of streams that declare themselves proposals — `type: stream-proposal` or a lifecycle `status` — and requires the `CLAUDE.md` gate anchor only once the

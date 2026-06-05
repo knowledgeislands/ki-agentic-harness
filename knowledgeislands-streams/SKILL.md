@@ -16,9 +16,9 @@ argument-hint: 'audit | conform | iterate | propose | ready | refresh | reject |
 You are operating the **`Streams` zone** of a Knowledge Islands base. `Streams/` is the base's _working copy_ — the home of work in motion, and what the user
 thinks of as "plan mode." It is governed by the **Enactment Process**. A stream is one of two weights (chosen per stream): a **full proposal** — a governed
 change that iterates in place, is submitted for approval, rolled out, and retired — or a **lightweight stream**, a tracker for work that isn't (yet) a formal
-change to canonical content. **Nothing reaches stable knowledge (`Pillars/`, or its alias `Matters/`, and `Resources/`) except through an approved proposal** —
-authority to work in a stream is granted by its presence in the workspace; authority to edit a canonical store is granted only by approval of a `ready` proposal
-that specifies the change.
+change to canonical content. **Nothing reaches a canonical zone (`Admin/` — the base's own operating model — `Pillars/`, and `Resources/`) except through an
+approved proposal** — authority to work in a stream is granted by its presence in the workspace; authority to edit a canonical zone is granted only by approval
+of a `ready` proposal that specifies the change.
 
 The companion `knowledgeislands-kb` skill owns the five-zone model and note CRUD / routing, and **delegates the inside of `Streams/` here**; load it for
 anything outside this zone. This skill carries the structure and process as fixed knowledge; only a couple of store-level **bindings** come from the host base.
@@ -97,8 +97,10 @@ otherwise from the auto-loaded `CLAUDE.md`.
 - **Frontmatter scheme** — the note-type convention for zone / focus / proposal notes. The canonical scheme is the machine-readable **`type:`** key
   (`type: stream-zone` / `stream-focus` / `stream-proposal`) — `type` is the fundamental note-type marker, and the checker keys on it. A base still carrying the
   legacy `card/*` tag scheme declares `note_type_scheme = "tags"` as a transitional accommodation (like a zone alias), to be retired as it migrates to `type`.
-- **Stores** — the canonical internal store a settled stream migrates into. _Default:_ `Pillars/` (a base mid-rename may resolve it to `Matters/` via the
-  `knowledgeislands-kb` zone alias); external knowledge → `Resources/`.
+- **Canonical zones** — the zones the gate protects, where a proposal's output lands. The knowledge **stores** a settled stream migrates into are `Pillars/`
+  (internal; a base that holds it under a legacy folder name resolves it via the `knowledgeislands-kb` zone alias) and `Resources/` (external knowledge).
+  `Admin/` — the base's operating model (its processes, conventions, configuration) — is equally canonical and equally gated, but receives operating-model
+  changes rather than migrated subject-knowledge.
 
 ## Step 1 — Load context
 
@@ -177,8 +179,9 @@ proposals.
 
 ### Mode SETTLE — retire a stream
 
-Confirm the stream's durable knowledge is already extracted to `Pillars/` (`Matters/`) or `Resources/`; mark `completed`; **delete the proposal document** (the
-settled marker remains, pointing to where the knowledge now lives). Test before deleting: would any knowledge be lost? If not, delete.
+Confirm the stream's output already lives in its canonical zone — durable knowledge migrated to a store (`Pillars/` or `Resources/`), an operating-model change
+landed in `Admin/`; mark `completed`; **delete the proposal document** (the settled marker remains, pointing to where the knowledge now lives). Test before
+deleting: would any knowledge be lost? If not, delete.
 
 ### Mode REFRESH — keep the model current
 
@@ -209,13 +212,13 @@ These apply to every change (the discipline that keeps the workspace trustworthy
 
 ## Installing the gate
 
-The Enactment gate ("nothing reaches a canonical store except through a `ready` proposal") only bites if it is _consulted_ — and skills load **on demand**, so
+The Enactment gate ("nothing reaches a canonical zone except through a `ready` proposal") only bites if it is _consulted_ — and skills load **on demand**, so
 this one will not fire on a plain "edit the X note" request that never mentions a proposal. The gate must therefore be **anchored in always-loaded context**:
 
-- A base that runs the Enactment Process carries a standing directive in its **`CLAUDE.md` / `AGENTS.md`**: _substantive changes to canonical stores (`Pillars`
-  / `Matters` / `Resources`) go through a proposal — load `knowledgeislands-streams`; do not edit canonical stores directly_ (trivial fixes, `Calendar/`
-  entries, and `+/` triage exempt).
-- `knowledgeislands-kb`'s UPDATE / SAVE modes defer here when the target is a canonical store and the base runs the gate, rather than writing directly.
+- A base that runs the Enactment Process carries a standing directive in its **`CLAUDE.md` / `AGENTS.md`**: _substantive changes to a canonical zone (`Admin`,
+  `Pillars`, `Resources`) go through a proposal — load `knowledgeislands-streams`; do not edit a canonical zone directly_ (trivial fixes, `Calendar/` entries,
+  and `+/` triage exempt).
+- `knowledgeislands-kb`'s UPDATE / SAVE modes defer here when the target is a canonical zone and the base runs the gate, rather than writing directly.
 - The checker's **GATE-1** verifies the `CLAUDE.md` directive is present — so a base can't quietly lose the gate.
 
 ## Notes

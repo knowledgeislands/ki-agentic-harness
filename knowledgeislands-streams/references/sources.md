@@ -37,8 +37,8 @@ use — not sources of the definition.
 [^kl]:
     A second real base, sampled via `kit-legal-mcp-kb-fs`. Runs the canonical **Enactment Process**; its slim local note lives at a non-default location,
     `Admin/Operations/Processes/Enactment Process.md` (declared via the `process_note` binding), and points here. It adopted the canonical name on 2026-06-04,
-    renamed from its former local `Repository Change Process`. Holds its internal store under the legacy `Matters/` (the `knowledgeislands-kb` `Pillars` →
-    `Matters` zone alias).
+    renamed from its former local `Repository Change Process`. Holds its `Pillars` zone under a local folder name, resolved transparently through a
+    `[knowledgeislands-kb.zones]` alias.
 
 ## Review changelog
 
@@ -61,3 +61,11 @@ Record each REFRESH run: date, what was re-anchored, what changed in the model (
   checker reflects this: `STREAM-3` flags only a stream whose index declares a proposal (`type: stream-proposal` / lifecycle `status`) yet lacks the suffix, and
   `GATE-1` demands the anchor only once the base actually runs proposals. Also added cross-skill plumbing this date: `knowledgeislands-kb` `MEM-2`
   (memory-cascade anchor) + composed audits, and `knowledgeislands-skills` `SHAPE-7` (behaviour-changing skills anchor + check their gate).
+- **2026-06-04** — **`Admin/` is a canonical zone; "store" → "canonical zone."** The gate previously named only the knowledge stores (`Pillars`, `Resources`);
+  `Admin/` — the base's own operating model (processes, conventions, configuration) — was ungated, which left the gate's own home zone unprotected. `Admin/` is
+  now a **canonical zone** reached only through a proposal, so a change to the operating model passes through its own gate. Vocabulary tightened: the **gate's
+  scope** is the **canonical zones** (`Admin`, `Pillars`, `Resources`); **"store"** is retained only for the knowledge repositories a settled stream _migrates
+  into_ (`Pillars`, `Resources`) — `Admin/` receives operating-model changes, not migrated subject-knowledge. High-churn operational entries belong in the `+/`
+  `-/` staging areas or a lightweight stream, never loose in `Admin/`. No checker change (the gate anchor is store-agnostic — `GATE-1` keys on "proposal" /
+  "canonical", not a zone list). Also dropped every legacy zone-folder name from the skill prose: a base that holds a zone under a different folder name now
+  relies on the generalised `[knowledgeislands-kb.zones]` alias (any canonical zone or staging area may be aliased), not a named special case.

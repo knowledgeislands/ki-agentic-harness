@@ -33,8 +33,8 @@ carry no such index.
 | `-/`         | Outbound staging - produced artefacts (session digests, compiled outputs). Not a zone.                                                                                           |
 | `Admin/`     | Base-agnostic governance and operations.                                                                                                                                         |
 
-† A base mid-migration may still hold this zone under a legacy folder name (e.g. `Matters/` for `Pillars/`). That is declared as a **zone alias** in the base's
-config, not treated as a different zone - see [Project bindings](#project-bindings).
+† Any zone may be held under a different local folder name — a base mid-migration, or one that simply names a zone differently. That is declared as a **zone
+alias** in the base's config, not treated as a different zone - see [Project bindings](#project-bindings).
 
 **Pillars** are the second-level unit of organisation: each whole knowledge base is an "island"; within it, a Pillar is a major strand of its subject matter (a
 case, a client, a domain, a theme). A base may use one Pillar or many.
@@ -72,9 +72,10 @@ key) and never read another skill's.
 - **Notes store** — canonical alias and location of the notes store. _Default:_ the connected base; refer to it as "the base".
 - **Sources store** — whether a paired sources store exists, and how note extracts mirror its paths. _Default:_ none.
 - **Scope usage** — whether the base is Pillar-scoped (declare an active Pillar) or single-Pillar / flat. _Default:_ Pillar-scoped.
-- **Zone names** — the canonical folder per zone, overridable for a base mid-migration. A `[knowledgeislands-kb.zones]` sub-table maps a canonical zone to this
-  base's local folder (`Pillars = "Matters"`); resolve every zone reference through it, and drop the entry once the folder is renamed. _Default:_ the canonical
-  names (`Calendar` / `Pillars` / `Resources` / `Streams` / `Admin`).
+- **Zone names** — the canonical folder per zone, overridable per base. A `[knowledgeislands-kb.zones]` sub-table maps any canonical zone or staging area to
+  this base's local folder name (e.g. `Pillars = "<local folder>"`); resolve every zone reference through it. Useful for a base mid-migration (drop the entry
+  once the folder is renamed) or one that simply names a zone differently. _Default:_ the canonical names (`Calendar` / `Pillars` / `Resources` / `Streams` /
+  `Admin`, plus the `+` / `-` staging areas).
 - **Required frontmatter** — the keys every note carrying frontmatter must include. Declare them with `required_frontmatter = ["tags", "status", "author"]`
   under `[knowledgeislands-kb]` to have the checker enforce their presence mechanically (extra keys stay free; keys are always `snake_case`). _Default:_ none
   declared — required frontmatter stays a judgment call resolved from the host `CLAUDE.md` / extension.
@@ -164,8 +165,8 @@ organised - especially once installed into a shared/cloud catalogue, where it is
 
 ### Mode SAVE - write a new note
 
-_Gate: if the destination is a canonical store (`Pillars` / `Matters` / `Resources`) and the base runs the Enactment Process (its `CLAUDE.md` says so), this is
-a canonical change — hand to the `knowledgeislands-streams` skill to open a proposal rather than writing directly. `Calendar/`, `+/`, and trivial fixes are
+_Gate: if the destination is a canonical zone (`Admin`, `Pillars`, `Resources`) and the base runs the Enactment Process (its `CLAUDE.md` says so), this is a
+canonical change — hand to the `knowledgeislands-streams` skill to open a proposal rather than writing directly. `Calendar/`, `+/`, and trivial fixes are
 exempt._
 
 1. Run pre-flight.
@@ -178,7 +179,7 @@ exempt._
 
 ### Mode UPDATE - enrich an existing note
 
-_Gate: if the note lives in a canonical store and the base runs the Enactment Process, route the change through a proposal (`knowledgeislands-streams`) rather
+_Gate: if the note lives in a canonical zone and the base runs the Enactment Process, route the change through a proposal (`knowledgeislands-streams`) rather
 than a direct write — unless it is a trivial fix or an unambiguous profile auto-append._
 
 1. Run pre-flight.

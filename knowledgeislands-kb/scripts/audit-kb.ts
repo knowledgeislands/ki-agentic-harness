@@ -21,9 +21,9 @@
  *      contract owned by `knowledgeislands-repo`: warn on a key it does not
  *      recognise, advise dropping a zone mapped to its own canonical name, and
  *      never read another skill's table. The only keys are the
- *      `[knowledgeislands-kb.zones]` aliases (`Pillars = "Matters"`), a
- *      transitional override for a base part-way through renaming a zone folder,
- *      and an optional `required_frontmatter` array (see point 3).
+ *      `[knowledgeislands-kb.zones]` aliases (any canonical zone or staging area
+ *      mapped to a local folder name), and an optional `required_frontmatter`
+ *      array (see point 3).
  *
  *   3. NOTE FRONTMATTER — for every note that HAS a `---` frontmatter block:
  *      the fence must close (well-formed) and its top-level keys must be
@@ -65,9 +65,10 @@ const KI_DEFAULT = `# ${KI_SECTION} reads this table for two optional, per-base 
 # required_frontmatter = ["tags", "status", "author"]
 
 # [${ZONES_SECTION}]
-# canonical zone = this base's local folder. Resolve every zone reference
-# through it; drop the line once the folder is renamed to the canonical name.
-# Pillars = "Matters"
+# canonical zone or staging area = this base's local folder. Resolve every zone
+# reference through it; for a rename in progress, drop the line once the folder
+# reaches its canonical name.
+# Pillars = "<local folder name>"
 `
 
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
@@ -127,7 +128,7 @@ function parseKiKb(text: string): KiKb | null {
       // other scalar key is unrecognised and warns (CONFIG-1).
       if (key === 'required_frontmatter') out.requiredFrontmatter = parseInlineArray(rawVal)
       else out.keys[key] = unquote(rawVal)
-    } else if (section === ZONES_SECTION) out.zones[key] = unquote(rawVal)
+    } else if (section === ZONES_SECTION) out.zones[unquote(key)] = unquote(rawVal)
   }
   return seen ? out : null
 }
@@ -170,10 +171,11 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
     for (const key of Object.keys(ki.keys)) {
       warn('config', `[${KI_SECTION}] has no scalar key "${key}" — the only keys are zone aliases under [${ZONES_SECTION}]`)
     }
+    const aliasable = [...ZONES, ...STAGING]
     for (const [zone, folder] of Object.entries(ki.zones)) {
-      if (!(ZONES as readonly string[]).includes(zone)) warn('config', `[${ZONES_SECTION}] "${zone}" is not a canonical zone (one of: ${ZONES.join(', ')})`)
+      if (!aliasable.includes(zone)) warn('config', `[${ZONES_SECTION}] "${zone}" is not a zone or staging area (one of: ${aliasable.join(', ')})`)
       else if (folder === zone) note('config', `[${ZONES_SECTION}] ${zone} = "${folder}" restates the canonical name — drop it`)
-      else note('config', `alias in effect: ${zone} zone resolves to ${folder}/`)
+      else note('config', `alias in effect: ${zone} resolves to ${folder}/`)
     }
   }
 
@@ -236,7 +238,10 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
   note('frontmatter', `scanned ${scanned} note(s), ${withFm} with frontmatter${required.length ? ` · required keys: ${required.join(', ')}` : ' · no required_frontmatter declared'}`)
 
   // ── staging (informational only) ──
-  for (const s of STAGING) note('staging', `${s}/ ${isDir(join(base, s)) ? 'present' : 'absent'} (staging, not a zone)`)
+  for (const s of STAGING) {
+    const folder = zoneOf(s)
+    note('staging', `${folder}/ ${isDir(join(base, folder)) ? 'present' : 'absent'} (staging, not a zone)`)
+  }
 
   return f
 }

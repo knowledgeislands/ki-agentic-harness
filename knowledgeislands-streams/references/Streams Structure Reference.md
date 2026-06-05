@@ -17,9 +17,9 @@ lean. The process that runs over this structure is in [the Enactment Process ref
 ## The zone
 
 `Streams/` carries knowledge **in motion**: active projects, evolving ideas, ongoing work. Its content is _not_ canonical — durable knowledge lives in
-`Pillars/` (internal; a base mid-rename may resolve this to `Matters/` via the `knowledgeislands-kb` zone alias) or `Resources/` (external). The lifecycle of a
-stream is: emerge → mature through work → stabilise into a store → the stream is retired. A stream is a **status tracker and proposal document**, never a
-knowledge store; a stream note that accumulates deep subject-matter content is a signal that the content needs to move out.
+`Pillars/` (internal; a base that holds it under a legacy folder name resolves it via the `knowledgeislands-kb` zone alias) or `Resources/` (external). The
+lifecycle of a stream is: emerge → mature through work → stabilise into a store → the stream is retired. A stream is a **status tracker and proposal document**,
+never a knowledge store; a stream note that accumulates deep subject-matter content is a signal that the content needs to move out.
 
 The defining contrast across the in-motion vs. settled zones:
 
@@ -134,9 +134,10 @@ Status / Priority. It has no value if it lags: update it on creation, status cha
 ## What lives in a stream note
 
 A stream note is a proposal document and status tracker. Inside the [proposal anatomy](<Enactment Process Reference.md>) frame it holds: current status,
-progress updates, decisions made within the stream, next steps, blockers, and links out to the stores. What does **not** belong: durable analysis, drafting work
-product, reusable methodology (→ `Pillars/` / `Matters/`); external reference material (→ `Resources/`); time-bound records (→ `Calendar/`). When a stream
-produces lasting insight, extract it to the store and link back.
+progress updates, decisions made within the stream, next steps, blockers, and links out to the canonical zones. What does **not** belong: durable analysis,
+drafting work product, reusable methodology (→ `Pillars/`); external reference material (→ `Resources/`); a settled change to the base's operating model — a
+process, convention, or configuration (→ `Admin/`); time-bound records (→ `Calendar/`). When a stream produces lasting insight, extract it to its canonical zone
+and link back.
 
 ## Settled streams
 

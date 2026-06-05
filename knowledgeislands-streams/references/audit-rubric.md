@@ -36,8 +36,9 @@ same-name index) is the `knowledgeislands-kb` rubric's `ZONE-*`, not repeated he
   value outside the vocabulary warns.
 - **ENACT-3 [J]** Every stream note carries a `## Governance` section declaring adherence to, and linking, the bound process note (default `Enactment Process`).
 - **ENACT-4 [J]** The proposals index and each Focus index match the streams actually present and their current statuses — no stale, missing, or lagging rows.
-- **ENACT-5 [J]** A `completed` proposal's document has been **deleted** and its durable knowledge migrated to a store (`Pillars/` / `Matters/` or
-  `Resources/`); a settled stream's knowledge is already in a store, the settled note a marker pointing to it.
+- **ENACT-5 [J]** A `completed` proposal's document has been **deleted** and its output already lives in its canonical zone — durable knowledge migrated to a
+  store (`Pillars/` or `Resources/`), or an operating-model change landed in `Admin/`; a settled stream's output is already in place, the settled note a marker
+  pointing to it.
 
 ## GATE — the gate's always-on anchor
 

@@ -19,13 +19,13 @@ re-anchors against the canonical definition and against how the bases actually u
 ## Living (how the model is actually used)
 
 These have no URL; they are sampled at REFRESH time through each base's own `kb-fs` MCP and `CLAUDE.md`. The two named bases are the current exemplars and read
-in tandem: `arcadia-principal` is conforming _up_ to the zone model (adding `Admin/` and `-/`), while `kit-legal` already has the fuller set but is renaming
-_within_ it (`Matters/` → `Pillars/`) - between them they exercise both directions of drift the model must absorb.
+in tandem: `arcadia-principal` is conforming _up_ to the zone model (adding `Admin/` and `-/`), while `kit-legal` already has the fuller set but holds a zone
+under a local folder name resolved by an alias - between them they exercise both directions of drift the model must absorb.
 
 | Source                                | Governs                                                                                      | Last reviewed |
 | ------------------------------------- | -------------------------------------------------------------------------------------------- | ------------- |
 | `arcadia-principal` base[^ap]         | Whether the zone model, routing test, and bindings still match a real layout and practice    | 2026-05-31    |
-| `kit-legal` base[^kl]                 | The same, from a base further along the structure but using the legacy `Matters/` zone name  | 2026-05-31    |
+| `kit-legal` base[^kl]                 | The same, from a base further along the structure but holding a zone under an aliased folder | 2026-05-31    |
 | Other bases actively using this skill | The same, as further bases adopt the skill                                                   | 2026-05-31    |
 | Base-coupled `<base>-kb` extensions   | Which base-specific conventions belong in an extension vs. promoted into this standard skill | 2026-05-31    |
 
@@ -36,9 +36,8 @@ _within_ it (`Matters/` → `Pillars/`) - between them they exercise both direct
 
 [^kl]:
     A second real base (`github.com/krisb/kit-legal`), sampled via its `kb-fs` MCP (`kit-legal-mcp-kb-fs`). It carries the fuller structure — `+`, `-`, `Admin/`
-    (with `Admin/MEMORY.md`), `Calendar/`, `Resources/`, `Streams/` — but holds its Pillars zone under the legacy `Matters/` while it renames toward `Pillars/`.
-    That rename is declared as a `[knowledgeislands-kb.zones]` alias (`Pillars = "Matters"`) rather than treated as a different zone — the live case behind the
-    skill's zone-alias binding.
+    (with `Admin/MEMORY.md`), `Calendar/`, `Resources/`, `Streams/` — but holds its Pillars zone under a local folder name. That is declared as a
+    `[knowledgeislands-kb.zones]` alias rather than treated as a different zone — the live case behind the skill's zone-alias binding.
 
 ## Review changelog
 
@@ -55,13 +54,19 @@ Record each REFRESH run: date, what was re-anchored, what changed in the structu
     convention.
   - **`+` and `-` reframed as staging, not zones.** The structure is five zones flanked by an inbound and an outbound staging area; the zone table, reference,
     and canonical footnote were corrected to say so.
-  - **Zone-alias binding added.** `kit-legal` holds its Pillars zone under the legacy `Matters/` while renaming toward `Pillars/`. Rather than fork the model,
-    added a **Zone names** binding resolved from the base's `.ki-config.toml` `[knowledgeislands-kb.zones]` table (`Pillars = "Matters"`), validated down per
-    the `.ki-config.toml` contract. The Knowledge-Capital-to-`Admin/` migration and the `Matters/`→`Pillars/` rename both remain base-local pending work.
+  - **Zone-alias binding added.** `kit-legal` holds its Pillars zone under a local folder name. Rather than fork the model, added a **Zone names** binding
+    resolved from the base's `.ki-config.toml` `[knowledgeislands-kb.zones]` table, validated down per the `.ki-config.toml` contract. The
+    Knowledge-Capital-to-`Admin/` migration and that folder rename both remain base-local pending work.
 
 - **2026-06-02** - **`Streams` zone internals delegated out.** The zone's internal structure (the Focus lifecycle, Category, the `Proposal` suffix, leaf/parent
   layout, index notes) and the Enactment Process that governs it moved to the new `knowledgeislands-streams` skill; this skill now keeps only the zone-level
   facts (`Streams/` is one of the five zones, carries a same-name index, and receives top-level routing) and points to that skill for the inside. The `STREAM-*`
   structural checks live in that skill's checker, not `audit-kb.ts`. No change to the five-zone model otherwise.
+- **2026-06-04** - **`Admin/` named a canonical zone in the gate; zone aliasing generalised; legacy folder names scrubbed.** The SAVE / UPDATE gate notes now
+  route changes to `Admin/` (the operating model) through a proposal alongside `Pillars` / `Resources` — `Admin/` is a canonical zone, gated like the stores
+  (the `Admin` gating itself is defined by `knowledgeislands-streams`). The **Zone names** binding was generalised from the single Pillars-rename case to any
+  canonical zone or staging area mappable to a local folder name, and may be transitional **or** standing. Every legacy zone-folder name was removed from the
+  skill prose: a base that names a zone differently relies on the `[knowledgeislands-kb.zones]` alias, not a named special case. The checker was widened to
+  accept (and resolve) an alias on a staging area, not just a canonical zone.
 
 [kb-reference]: <Knowledge Islands KB Reference.md>
