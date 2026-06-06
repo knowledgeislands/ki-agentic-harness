@@ -5,8 +5,8 @@ the process **defer to it**: each carries a thin local process note that points 
 Model" to re-anchor against; the skill _is_ the model.
 
 Mode REFRESH therefore keeps this definition coherent and current **against practice** — how the live bases actually run their Streams — promoting genuinely
-shared patterns into the skill and leaving single-base quirks as bindings or local notes. It then **bumps the `last reviewed` dates and records what changed**
-in the changelog below. This skill follows no moving external spec: the Enactment Process is in-house.
+shared patterns into the skill and leaving single-base quirks as bindings or local notes. It then **bumps the `last reviewed` dates** (what changed is recorded
+in the commit, not a changelog — history lives in git). This skill follows no moving external spec: the Enactment Process is in-house.
 
 ## Canonical
 
@@ -39,33 +39,3 @@ use — not sources of the definition.
     `Admin/Operations/Processes/Enactment Process.md` (declared via the `process_note` binding), and points here. It adopted the canonical name on 2026-06-04,
     renamed from its former local `Repository Change Process`. Holds its `Pillars` zone under a local folder name, resolved transparently through a
     `[knowledgeislands-kb.zones]` alias.
-
-## Review changelog
-
-Record each REFRESH run: date, what was re-anchored, what changed in the model (or "no change").
-
-- **2026-06-02** — Skill created. The `Streams` zone's structure and the Enactment Process were extracted from `knowledgeislands-kb` into this dedicated skill,
-  with `knowledgeislands-kb` delegating the zone here. Codified the Focus lifecycle, Category patterns, leaf/parent/multi layout, the `Proposal` suffix, the
-  status/priority vocabularies, the proposal anatomy, and the bindings (`process_note`, `note_type_scheme`).
-- **2026-06-03** — **Superset pass.** Folded the full Streams conventions into the skill (note-type table, leaf ↔ parent transition,
-  frontmatter-applies-by-type, the suffix's collision-safety rationale, the `Pass N/` cycle pattern, the Settled point-in-time policy, the lightweight-stream
-  carve-out, approver framing).
-- **2026-06-04** — **Flipped to skill-as-canonical.** Previously the in-base Model notes were named canonical and this skill was their summary. That is
-  inverted: **the skill is now the single canonical definition**, and the bases defer to it via thin local process notes. `kit-legal` already pointed here;
-  `arcadia-principal`'s `Model/Processes/Enactment Process` and the Streams section of `Model/Conventions/Structure` were slimmed to pointers + island-voice
-  framing + local specifics. REFRESH re-anchors against practice (the live bases), not against a canonical Model. Also: the checker now recognises a notes-only
-  **parent** stream (a folder containing a `* Proposal.md`), not just suffixed leaves.
-- **2026-06-04** — **Two stream weights, per stream.** A sweep across the local bases found several (`kit-pkb`, `kit-hnr`, `kit-principal`) use `Streams/` as a
-  lightweight tracker, not the proposal model. Rather than a per-base opt-out, the Enactment Process now defines **two weights chosen per stream** — a **full
-  proposal** (the apparatus + gate) and a **lightweight stream** (a plain tracker; graduates to a proposal when it becomes a governed canonical change). The
-  checker reflects this: `STREAM-3` flags only a stream whose index declares a proposal (`type: stream-proposal` / lifecycle `status`) yet lacks the suffix, and
-  `GATE-1` demands the anchor only once the base actually runs proposals. Also added cross-skill plumbing this date: `knowledgeislands-kb` `MEM-2`
-  (memory-cascade anchor) + composed audits, and `knowledgeislands-skills` `SHAPE-7` (behaviour-changing skills anchor + check their gate).
-- **2026-06-04** — **`Admin/` is a canonical zone; "store" → "canonical zone."** The gate previously named only the knowledge stores (`Pillars`, `Resources`);
-  `Admin/` — the base's own operating model (processes, conventions, configuration) — was ungated, which left the gate's own home zone unprotected. `Admin/` is
-  now a **canonical zone** reached only through a proposal, so a change to the operating model passes through its own gate. Vocabulary tightened: the **gate's
-  scope** is the **canonical zones** (`Admin`, `Pillars`, `Resources`); **"store"** is retained only for the knowledge repositories a settled stream _migrates
-  into_ (`Pillars`, `Resources`) — `Admin/` receives operating-model changes, not migrated subject-knowledge. High-churn operational entries belong in the `+/`
-  `-/` staging areas or a lightweight stream, never loose in `Admin/`. No checker change (the gate anchor is store-agnostic — `GATE-1` keys on "proposal" /
-  "canonical", not a zone list). Also dropped every legacy zone-folder name from the skill prose: a base that holds a zone under a different folder name now
-  relies on the generalised `[knowledgeislands-kb.zones]` alias (any canonical zone or staging area may be aliased), not a named special case.

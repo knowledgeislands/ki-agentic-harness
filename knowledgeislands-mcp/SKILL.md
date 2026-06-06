@@ -141,8 +141,9 @@ periodically, or when someone asks "is our MCP standard up to date".
 4. **Scan our own repos** for emergent patterns the standard hasn't captured yet (e.g. m365 already returning `structuredContent`) — promote the good ones; flag
    any that contradict the standard.
 5. **Propose a diff** to the standard, checklist, and (where a check became mechanical) `audit-mcp.ts`. Confirm before writing.
-6. **Update [the source list](references/sources.md)** — bump each `last reviewed` date, record what changed in the changelog, add any new source, retire dead
-   ones. This step is mandatory: the source list is the skill's memory of where the standard comes from.
+6. **Update [the source list](references/sources.md)** — bump each `last reviewed` date, add any new source, retire dead ones, and refresh the `## Last review`
+   block (pinned revision, confirmations, open watch-items). What changed goes in the commit, not a changelog. This step is mandatory: the source list is the
+   skill's memory of where the standard comes from.
 
 ## Bun vs Node (the standing trap)
 

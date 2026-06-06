@@ -90,8 +90,8 @@ current".
    settings, changed defaults, protection moving to rulesets, new security toggles.
 3. **Scan the org** for emergent patterns the standard hasn't captured.
 4. **Propose a diff** to the standard, the script, and this file; confirm before writing.
-5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and record what changed in the changelog. Mandatory: the source list is
-   the skill's memory of where the standard comes from.
+5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and refresh the `## Last review` block (what's confirmed, open
+   watch-items). What changed goes in the commit, not a changelog. Mandatory: the source list is the skill's memory of where the standard comes from.
 
 ## Notes
 

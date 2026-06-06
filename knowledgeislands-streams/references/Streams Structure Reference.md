@@ -13,6 +13,7 @@ lean. The process that runs over this structure is in [the Enactment Process ref
 - [Index notes](#index-notes)
 - [What lives in a stream note](#what-lives-in-a-stream-note)
 - [Settled streams](#settled-streams)
+- [Provenance and inbound links](#provenance-and-inbound-links)
 
 ## The zone
 
@@ -149,3 +150,17 @@ substantive value lives there; the settled note is a marker pointing to where th
 - **They may be deleted once they have outlived their reference value** — when the decision is uncontentious in the resulting structure, its findings are fully
   absorbed into canonical notes, and no active work reaches back to it. Git history retains the full record. There is no `retain_until` clock on a settled
   stream; it expires when reference value drops.
+
+## Provenance and inbound links
+
+Streams are **ephemeral**: a stream is deleted once its durable output has migrated, so nothing durable may depend on a link _into_ one.
+
+- **Durable notes never cite a stream as provenance.** A note in a canonical zone (`Pillars` / `Resources` / `Admin`) — including the conventions, templates,
+  and policies within them — must not link to a stream to record where something came from: the link breaks the moment the stream retires. Record provenance as
+  plain prose (a date and short description, e.g. "the pilot reorganisation (2026-05)") or link to the **durable artefact** the stream produced (a store note, a
+  convention, a template) — never to the stream itself.
+- **Stream-to-stream links only between live streams.** They are fine while both are active; when a stream retires, fixing or dropping the inbound links from
+  other streams is part of its retirement.
+
+This is the inbound complement to [Settled streams](#settled-streams): that section covers a settled stream's _own_ links going stale; this keeps durable notes
+from ever depending on a stream in the first place.

@@ -187,8 +187,9 @@ organised - especially once installed into a shared/cloud catalogue, where it is
 3. **Separate canonical from local.** A change is only a model change if it traces to the canonical structure or to a pattern shared across bases; a single
    base's quirk belongs in that base's extension skill, not here.
 4. **Propose a diff** to the zone table / routing test / bindings, and confirm before writing.
-5. **Update [the source list](references/sources.md)** - bump each `last reviewed` date and record what changed (or "no change") in the changelog. This step is
-   mandatory: the source list is the skill's memory of where its structure model comes from.
+5. **Update [the source list](references/sources.md)** - bump each `last reviewed` date, add any new source, retire any dead one. The record of what changed is
+   the commit itself - history lives in git, not a changelog. This step is mandatory: the source list is the skill's memory of where its structure model comes
+   from.
 
 ### Mode SAVE - write a new note
 

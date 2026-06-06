@@ -86,8 +86,9 @@ Keep the rubric current — the standard and the community move, and this is why
    rubric; flag drift that contradicts them.
 4. **Propose a diff** to [the standard](references/agent-skills-standard.md) and [rubric](references/audit-rubric.md) and, where relevant,
    [the linter](scripts/lint-skills.ts) (a newly-mechanical check should move from judgment into the script). Confirm before writing.
-5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date, add any new source, retire any dead one. This step is mandatory: the
-   source list is the skill's memory of where best practice comes from.
+5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date, add any new source, retire any dead one, and refresh the
+   `## Last review` block (what's confirmed, open watch-items). The record of _what changed_ is the commit itself — history lives in git, not a changelog. This
+   step is mandatory: the source list is the skill's memory of where best practice comes from.
 
 ## Notes
 

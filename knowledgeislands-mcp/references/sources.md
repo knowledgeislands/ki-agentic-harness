@@ -2,7 +2,8 @@
 
 The authoritative and community sources behind the [Workspace MCP Standard](workspace-mcp-standard.md) and [Audit Rubric](audit-rubric.md). Mode REFRESH reads
 this file, re-fetches each source, diffs it against the standard + rubric + [`scripts/audit-mcp.ts`](../scripts/audit-mcp.ts), then **bumps the `last reviewed`
-dates and records what changed** in the changelog below. This is the skill's memory of where the standard comes from — keep it current.
+dates** and refreshes the `## Last review` block below (what changed is recorded in the commit, not a changelog). This is the skill's memory of where the
+standard comes from — keep it current.
 
 Two layers feed the standard: the **official MCP specification** (what every conformant server must do) and the **in-house workspace convention** (the
 opinionated shape the seven sibling repos share on top of the spec). A finding is only "spec-driven" if it traces to the Authoritative table; everything else is
@@ -54,21 +55,18 @@ style; when they diverge from each other, the majority wins and the outlier is a
 
 ‡ Layout, config injection, tool naming, the shared `utils/` helpers, the package/tsconfig/vitest/biome toolchain.
 
-## Review changelog
+## Last review
 
-Record each REFRESH run: date, what was re-fetched, what changed in the standard / checklist / `audit-mcp.ts` (or "no change").
+REFRESH last run **2026-05-30** against MCP spec revision **2025-11-25** (the pinned target).
 
-- **2026-05-30 (REFRESH)** — Initial source list assembled; standard audited against MCP spec **2025-11-25**. Confirmed the annotation-driven access gate
-  (`readOnlyHint`/`destructiveHint`/`idempotentHint`/`openWorldHint`) still matches the spec verbatim, and that the house "errors via `errorResult`, never
-  `throw`" rule already matches the 2025-11-25 clarification that input-validation failures be returned as Tool Execution Errors (`isError: true`), not protocol
-  errors. Gaps found and codified into the standard + checklist: (1) **Structured output** — `outputSchema` + `structuredContent` (added in spec 2025-06-18)
-  were undocumented; m365 already returns `structuredContent` but no repo declares `outputSchema`. Added as a recommended-where-applicable item, paired. (2)
-  **OAuth security invariants** for the gmail / m365 auth-servers (token audience / no passthrough, PKCE + single-use `state`, exact `redirect_uri` match, scope
-  minimization, SSRF on discovery/token URLs, secure local token storage) — the prior security list was FS/subprocess-only. Added a dedicated subsection. (3)
-  **Tool-name charset/length** spec bounds (1–128 chars, `[A-Za-z0-9_.-]`) noted; the house `<app>_<resource>_<action>` snake_case is a conformant subset. (4)
-  **Output sanitization** (spec "Servers MUST sanitize tool outputs") promoted to a checklist item (m365's `html-sanitizer.ts` is the worked example);
-  rate-limiting noted as a spec MUST that is lower-priority for local stdio servers. `audit-mcp.ts`: relaxed the tool-name regex so documented 2-segment
-  metadata tools (`m365_about`) no longer false-WARN.
+- **Conformant, no change:** the annotation-driven access gate (`readOnlyHint` / `destructiveHint` / `idempotentHint` / `openWorldHint`) matches the spec
+  verbatim; "errors via `errorResult`, never `throw`" matches the 2025-11-25 input-validation clarification (failures returned as Tool Execution Errors, not
+  protocol errors).
+- **Open watch-items:** rate-limiting is a spec MUST kept lower-priority for local stdio servers (revisit if a server goes remote); no repo yet declares
+  `outputSchema` for structured output (pair it with `structuredContent` where applicable).
+
+(What past reviews changed in the standard / checklist / `audit-mcp.ts` — structured output, the OAuth security invariants, tool-name charset bounds, output
+sanitization, the relaxed tool-name regex — is in git.)
 
 [spec]: https://modelcontextprotocol.io/specification
 [changelog]: https://modelcontextprotocol.io/specification/2025-11-25/changelog

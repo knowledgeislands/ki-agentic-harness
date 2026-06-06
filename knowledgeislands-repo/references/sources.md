@@ -1,9 +1,9 @@
 # Sources — where the repo standard comes from
 
 The authoritative sources behind [the standard](repo-standard.md), [the rubric](audit-rubric.md), and [`../scripts/audit-repo.ts`](../scripts/audit-repo.ts).
-Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + script, then **bumps the `last reviewed` dates and records what changed**
-in the changelog below. GitHub's settings surface moves (rulesets, security toggles, Actions policy), so this is the skill's memory of where the standard comes
-from — keep it current.
+Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + script, then **bumps the `last reviewed` dates** and refreshes the
+`## Last review` block below (what changed is recorded in the commit, not a changelog). GitHub's settings surface moves (rulesets, security toggles, Actions
+policy), so this is the skill's memory of where the standard comes from — keep it current.
 
 ## Authoritative (GitHub)
 
@@ -17,14 +17,13 @@ from — keep it current.
 | [REST: Actions permissions for a repository][actions]            | `allowed_actions` policy                                             | 2026-05-31    |
 | [`gh` CLI manual][gh-cli]                                        | `gh repo list/view/edit`, `gh api` — how the script reads/writes     | 2026-05-31    |
 
-## Review changelog
+## Last review
 
-Record each REFRESH run: date, what was re-fetched, what changed in the standard / script (or "no change").
+REFRESH last run **2026-05-31** against the GitHub REST API, `gh` CLI, rulesets, and security-feature docs (the sources above).
 
-- **2026-05-31** — Standard derived from an audit of all 10 `knowledgeislands` repos and applied. Three layers (local files; core GitHub settings; deeper
-  security & Actions); visibility declared per repo in `.ki-config.toml`; `main` open by default, with branch protection and the other overridable checks set
-  per repo under `[knowledgeislands-repo.checks]` (`true` = enforce, `false` = don't; omitted = the org default in the script's `CHECK_DEFAULTS`). Source list
-  created alongside the auditor.
+- **State:** the standard was derived from an audit of all 10 `knowledgeislands` repos; the three layers (local files; core GitHub settings; security & Actions)
+  match the current API surface. No spec drift found since.
+- **Open watch-items:** GitHub's rulesets vs branch-protection surfaces move — re-verify the mapping next refresh.
 
 [repo-settings]: https://docs.github.com/en/rest/repos/repos#update-a-repository
 [branch-protection]: https://docs.github.com/en/rest/branches/branch-protection

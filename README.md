@@ -80,7 +80,9 @@ All six share one layout, so a reader (or a new such skill) can move between the
 - **`<domain>-standard.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like, and why.
 - **`audit-rubric.md`** — the line-by-line checkable criteria, each tagged **mechanical** (a checker enforces it) or **judgment** (a reader assesses it), each
   citing the standard section it verifies.
-- **`references/sources.md`** — the tracked sources behind the standard, with `last reviewed` dates and a REFRESH changelog.
+- **`references/sources.md`** — the tracked sources behind the standard, with `last reviewed` dates. Provenance only: the record of _what changed_ lives in git
+  (the REFRESH commit), not a changelog in the file. A skill tracking a moving external spec also keeps a current-state **`## Last review`** block — pinned
+  revision, what's confirmed, open watch-items — overwritten each REFRESH.
 - **a mechanical checker** — `audit-mcp.ts`, `lint-skills.ts`, `audit-repo.ts`, `audit-kb.ts`, `audit-streams.ts` for mcp / skills / repo / kb / streams;
   `bun run lint:md` (Prettier + markdownlint) for authoring. The judgment half is always applied by reading.
 
@@ -110,6 +112,28 @@ Each skill's `description` carries its own boundaries so the agent selects the r
   rather than restate. The lines around it - note _content_ and KB structure belong to `knowledgeislands-kb`; a repo's _configuration_ and the `.ki-config.toml`
   _contract_ to `knowledgeislands-repo`; a `SKILL.md`'s prose and frontmatter to `knowledgeislands-skills`. `knowledgeislands-authoring` names each of those as
   an off-ramp and each names it back for general style, so the boundary is reciprocal and documented on both sides for humans too.
+
+### How knowledge moves and improves — the three loops
+
+The skills share one mental model. Knowledge lives in **zones** (the canonical `Admin` / `Pillars` / `Resources`, the working `Streams`, and the ephemeral
+`Calendar` plus `+` / `-` staging), and each skill is a **canonical definition** that **bases** defer to through bindings. Over that sit three loops — how
+knowledge _enters_, _changes_, and _stays current_ — each owned by one skill and each handing off to the next rather than overlapping:
+
+- **Continuous Improvement** (`knowledgeislands-kb`, mode **IMPROVE**) — the base-side discovery loop. Each session, scan for knowledge applied ad-hoc but not
+  yet formalised, then **route** each candidate to its home.
+- **Enactment Process** (`knowledgeislands-streams`) — the gate. A candidate that changes a canonical zone becomes a proposal that passes approval before it
+  lands.
+- **REFRESH** (every skill) — the promotion loop. A candidate that recurs across bases is promoted from practice into the canonical skill.
+
+```text
+                           ┌─ local & non-canonical ──→ write it directly (no governance)
+IMPROVE (notice) ─routes─→ ├─ changes a canonical zone ─→ ENACTMENT (proposal through the gate)
+                           └─ recurs across bases ─────→ REFRESH (promote into the skill)
+```
+
+**IMPROVE and REFRESH are mirror images** across the skill/base line: IMPROVE looks _down_ (this base's practice → formalise), REFRESH looks _across_ (many
+bases → one skill); a cross-base candidate is the handoff between them. **Enactment** is orthogonal — the gate any canonical change passes through, whoever
+raised it. The discipline that keeps the three distinct: _IMPROVE discovers and routes, Enactment governs, REFRESH promotes_ — none restates another.
 
 ### Principles across the set
 

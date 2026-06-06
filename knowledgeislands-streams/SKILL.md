@@ -194,7 +194,8 @@ the live bases actually run it (the bases defer to the skill, so there is no sep
 3. **Separate shared from local** — promote a cross-base pattern into the skill (the canonical definition); a single base's quirk stays a binding or its own
    local note, not a model change.
 4. **Propose a diff** and confirm before writing.
-5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and record what changed (or "no change"). Mandatory.
+5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date. The record of what changed is the commit itself — history lives in git,
+   not a changelog. Mandatory.
 
 ## Working rules
 
