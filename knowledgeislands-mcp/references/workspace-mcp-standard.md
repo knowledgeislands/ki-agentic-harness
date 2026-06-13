@@ -239,6 +239,12 @@ These trace to the MCP spec ([TOOLS](sources.md) + [CHANGELOG](sources.md), 2025
 Only the OAuth repos — **mcp-gmail** and **mcp-m365** — have an `auth-server/` and a token store; these items do not apply to the filesystem/subprocess repos.
 They trace to the spec's [SEC](sources.md) and [AUTH](sources.md) pages. The §6 invariants still apply on top of these.
 
+**Two roles, only one of them ours — items 1–6 apply, 7–8 don't (yet).** Items 1–6 govern these repos' actual role: an OAuth **client** of a third-party IdP
+(Google / Microsoft) running the loopback consent flow and holding the resulting downstream tokens. Items 7–8 come from the **MCP authorization framework**,
+which governs a server that is itself a **remote HTTP OAuth resource server** (and the authorization server fronting it). **No current workspace server occupies
+that role** — all are stdio servers that obtain their own tokens — so 7–8 are **N/A today**; they go live only if a server is deployed remotely. When citing
+7–8, say which role you mean.
+
 1. **No token passthrough.** The server uses tokens it obtained for _itself_ against the downstream API (Google / Microsoft Graph); it must never accept a
    caller- supplied token and forward it. (Spec: "MCP servers MUST NOT accept any tokens that were not explicitly issued for the MCP server.")
 2. **Authorization-code flow with PKCE and a single-use `state`.** The loopback OAuth flow generates a cryptographically random `state`, stores it server-side
@@ -249,12 +255,15 @@ They trace to the spec's [SEC](sources.md) and [AUTH](sources.md) pages. The §6
    attacker-influenceable URL, and never follow redirects to internal/loopback/link-local addresses (`169.254.169.254`, `10/172.16/192.168`, `::1`).
 6. **Secure token storage & redaction.** Refresh/access tokens are stored with restrictive file permissions outside any served root, never logged, and redacted
    from the audit log and from error messages (already required by §6.11). A 401 hints at the `*_auth_start` remedy without echoing the token.
-7. **RFC 8707 `resource` parameter.** Per the 2025-11-25 spec (AUTH): MCP clients MUST include a `resource` parameter in authorization and token requests
-   identifying the MCP server's canonical URI. The auth server SHOULD accept and propagate this value into the issued token's `aud` claim; the MCP server
-   (acting as the resource server) MUST validate `aud` before accepting tokens — rejecting any token whose audience does not include its own canonical URI.
-   Tokens without a bound audience are a token-passthrough risk (§6 invariant #1 applies).
-8. **Client ID Metadata Documents (SHOULD).** Per the 2025-11-25 spec (AUTH): auth servers SHOULD declare `client_id_metadata_document_supported: true` in their
-   OAuth Authorization Server Metadata and accept URL-formatted `client_id` values. When a URL-formatted `client_id` is received: fetch the JSON document at
-   that URL over HTTPS, validate that the document's `client_id` field matches the URL exactly, and validate the authorization-request `redirect_uri` against
-   the document's `redirect_uris`. Apply SSRF mitigations when fetching the metadata URL (invariant #5 applies). This is now the preferred client-registration
-   path, superseding Dynamic Client Registration as the primary mechanism.
+7. **RFC 8707 `resource` parameter + audience validation — _remote resource-server role only; N/A to current repos_.** Per the 2025-11-25 spec (AUTH): when an
+   MCP **client** obtains a token to call a **remote** MCP server, it MUST include a `resource` parameter naming that server's canonical URI; the authorization
+   server SHOULD bind it into the token's `aud`; and the server, **acting as an OAuth resource server**, MUST validate `aud` before accepting the token —
+   rejecting any whose audience isn't itself (a token-passthrough defense, item #1). This governs the MCP authorization framework, not a third-party
+   OAuth-client flow: the current stdio servers are not resource servers, and their IdPs (Google / Microsoft v2) scope tokens by **scope**, not RFC 8707
+   `resource` — so there is nothing to implement here today. The live protection for our servers is item #1 (no token passthrough).
+8. **Client ID Metadata Documents (SHOULD) — _authorization-server role only; N/A to current repos_.** Per the 2025-11-25 spec (AUTH): an **authorization
+   server** SHOULD declare `client_id_metadata_document_supported: true` and accept URL-formatted `client_id` values — fetch the JSON document at that URL over
+   HTTPS, validate its `client_id` matches the URL exactly, validate the request's `redirect_uri` against its `redirect_uris`, with SSRF mitigations on the
+   fetch (item #5). It is the preferred client-registration path, superseding Dynamic Client Registration. Our servers are OAuth **clients**, not authorization
+   servers — the AS is Google / Microsoft — so they cannot declare CIMD and this does not apply; it goes live only for a workspace component that itself acts as
+   an MCP authorization server.
