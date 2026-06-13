@@ -94,11 +94,12 @@ Skip this whole section for the filesystem/subprocess repos.
 - [ ] B — `redirect_uri` validated by exact string match (loopback), not prefix/wildcard.
 - [ ] B — tokens stored with restrictive perms outside any served root; never logged; redacted from audit log + errors.
 - [ ] S — least-privilege scopes (only what shipped tools need); SSRF discipline on fetched URLs (HTTPS, host-pinned, no redirect to internal/loopback IPs).
-- [ ] S — RFC 8707 `resource` parameter: auth server accepts and propagates it to issued tokens' `aud` claim; MCP server (resource-server role) validates `aud`
-      against its canonical URI before accepting tokens. (AUTH 2025-11-25)
-- [ ] S — Client ID Metadata Documents: auth server SHOULD declare `client_id_metadata_document_supported: true` and handle URL-formatted `client_id` values —
-      fetch the metadata JSON over HTTPS, validate `client_id` matches the URL exactly, validate `redirect_uris`; apply SSRF mitigations on the fetch. (AUTH
-      2025-11-25, SHOULD)
+- [ ] S — _Remote resource-server role only — N/A to today's stdio repos; skip unless a server is deployed as a remote HTTP resource server._ RFC 8707
+      `resource` parameter bound into the token `aud`, and `aud` validated against the server's canonical URI before a token is accepted. (AUTH 2025-11-25;
+      standard §13 item 7)
+- [ ] S — _Authorization-server role only — N/A to today's stdio repos; skip unless a workspace component acts as an MCP authorization server._ Client ID
+      Metadata Documents — AS declares `client_id_metadata_document_supported: true` and handles URL-formatted `client_id` (HTTPS fetch, exact `client_id`
+      match, `redirect_uris` validation, SSRF mitigations). (AUTH 2025-11-25, SHOULD; standard §13 item 8)
 
 ## Bun vs Node
 
