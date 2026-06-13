@@ -10,12 +10,12 @@ Abbreviations match the `(SOURCE)` tags in [the standard](agent-skills-standard.
 
 | Tag  | Source                                      | Governs                                                                 | Last reviewed |
 | ---- | ------------------------------------------- | ----------------------------------------------------------------------- | ------------- |
-| SPEC | [Agent Skills specification][spec]          | Frontmatter fields, layout, hard caps, progressive-disclosure budget    | 2026-05-30    |
-| —    | [Agent Skills home][home]                   | The standard's overview, examples, ecosystem                            | 2026-05-30    |
-| BP   | [Skill authoring best practices][bp]        | Description writing, conciseness, scripts, anti-patterns, the checklist | 2026-05-30    |
-| CC   | [Claude Code — skills][cc]                  | CC frontmatter, runtime listing/compaction budgets, commands→skills     | 2026-05-30    |
-| ENG  | [Equipping agents with Agent Skills][eng] ※ | Rationale, progressive disclosure, evaluation-first, under-triggering   | 2026-05-30    |
-| —    | [`skills-ref validate`][skills-ref]         | Mechanical baseline for frontmatter + naming (criteria B, C, D)         | 2026-05-30    |
+| SPEC | [Agent Skills specification][spec]          | Frontmatter fields, layout, hard caps, progressive-disclosure budget    | 2026-06-01    |
+| —    | [Agent Skills home][home]                   | The standard's overview, examples, ecosystem                            | 2026-06-01    |
+| BP   | [Skill authoring best practices][bp]        | Description writing, conciseness, scripts, anti-patterns, the checklist | 2026-06-01    |
+| CC   | [Claude Code — skills][cc]                  | CC frontmatter, runtime listing/compaction budgets, commands→skills     | 2026-06-01    |
+| ENG  | [Equipping agents with Agent Skills][eng] ※ | Rationale, progressive disclosure, evaluation-first, under-triggering   | 2026-06-01    |
+| —    | [`skills-ref validate`][skills-ref]         | Mechanical baseline for frontmatter + naming (criteria B, C, D)         | 2026-06-01    |
 
 ※ Anthropic Engineering, 2025-12-18.
 
@@ -23,30 +23,30 @@ Abbreviations match the `(SOURCE)` tags in [the standard](agent-skills-standard.
 
 | Tag       | Source                                         | Governs                                                                 | Last reviewed |
 | --------- | ---------------------------------------------- | ----------------------------------------------------------------------- | ------------- |
-| COMMUNITY | [Skill Authoring Patterns][patterns]           | Distilled patterns: terminology, feedback loops, gotchas sections       | 2026-05-30    |
-| COMMUNITY | [obra/superpowers writing-skills][superpowers] | Community restatement of the best-practices doc; convergent conventions | 2026-05-30    |
+| COMMUNITY | [Skill Authoring Patterns][patterns]           | Distilled patterns: terminology, feedback loops, gotchas sections       | 2026-06-01    |
+| COMMUNITY | [obra/superpowers writing-skills][superpowers] | Community restatement of the best-practices doc; convergent conventions | 2026-06-01    |
 
 ## In-house
 
 | Tag                   | Source                       | Governs                                                                   | Last reviewed |
 | --------------------- | ---------------------------- | ------------------------------------------------------------------------- | ------------- |
-| arcadia-skills README | The repo's own `README.md`   | †                                                                         | 2026-05-30    |
-| `knowledgeislands-kb` | The reference standard skill | Worked example of a trigger-rich description and the standard-skill shape | 2026-05-30    |
+| arcadia-skills README | The repo's own `README.md`   | †                                                                         | 2026-06-01    |
+| `knowledgeislands-kb` | The reference standard skill | Worked example of a trigger-rich description and the standard-skill shape | 2026-06-01    |
 
 † Linking convention (no wikilinks), standard vs base-coupled-extension, the house toolchain, Knowledge Islands structure.
 
 ## Last review
 
-REFRESH last run **2026-05-30** (monthly) against the tracked sources above.
+REFRESH last run **2026-06-01** (monthly) against the tracked sources above.
 
 - **Verified current:** BP (Anthropic platform best-practices) and CC (Claude Code skills docs); obra/superpowers confirmed as a BP restatement with no new
-  guidance.
-- **Could not verify:** SPEC (agentskills.io/specification), the agentskills.io home, ENG (Anthropic Engineering blog), and COMMUNITY (generativeprogrammer.com)
-  returned HTTP 403 — `last reviewed` dates held, no rubric change attributed to them.
-- **Open watch-items:** re-attempt the four 403 sources next refresh.
+  guidance. In-house scan: all five `knowledgeislands-*` skills PASS the mechanical linter.
+- **Could not verify:** SPEC (agentskills.io/specification), the agentskills.io home, ENG (Anthropic Engineering blog), COMMUNITY (generativeprogrammer.com),
+  and `skills-ref` returned HTTP 403 — `last reviewed` dates held, no rubric change attributed to them.
+- **Open watch-items:** re-attempt the 403 sources next refresh.
 
-(What past reviews changed in the standard / rubric / linter — the CC runtime-extension fields, MCP fully-qualified tool naming, the CC post-compaction budget
-row, the migration to area-scoped codes — is in git.)
+(What past reviews changed in the standard / rubric / linter — the `disallowed-tools` behavioural note in §5, the CC runtime-extension fields, MCP
+fully-qualified tool naming, the CC post-compaction budget row, the migration to area-scoped codes — is in git.)
 
 [spec]: https://agentskills.io/specification
 [home]: https://agentskills.io/

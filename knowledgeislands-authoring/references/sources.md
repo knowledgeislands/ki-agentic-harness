@@ -9,10 +9,10 @@ memory of what it rests on.
 
 | Source                   | Governs                                                            | Last reviewed |
 | ------------------------ | ------------------------------------------------------------------ | ------------- |
-| [CommonMark spec][cm]    | the Markdown syntax baseline                                       | 2026-05-31    |
-| [Prettier options][pr]   | what the formatter normalises — `proseWrap`, `printWidth` (160)    | 2026-05-31    |
-| [markdownlint rules][ml] | the `MDxxx` rules enforced (`MD013` off, `MD060`, `MD051`/`MD052`) | 2026-05-31    |
-| [TOML spec][toml]        | TOML syntax for the shared `.ki-config.toml`                       | 2026-05-31    |
+| [CommonMark spec][cm]    | the Markdown syntax baseline                                       | 2026-06-01    |
+| [Prettier options][pr]   | what the formatter normalises — `proseWrap`, `printWidth` (160)    | 2026-06-01    |
+| [markdownlint rules][ml] | the `MDxxx` rules enforced (`MD013` off, `MD060`, `MD051`/`MD052`) | 2026-06-01    |
+| [TOML spec][toml]        | TOML syntax for the shared `.ki-config.toml`                       | 2026-06-01    |
 
 [cm]: https://spec.commonmark.org/
 [pr]: https://prettier.io/docs/options
@@ -21,8 +21,10 @@ memory of what it rests on.
 
 ## Last review
 
-REFRESH last run **2026-05-31** against CommonMark, Prettier, markdownlint, and the TOML v1.0.0 spec (the sources above).
+REFRESH last run **2026-06-01** against CommonMark, Prettier, markdownlint, and the TOML v1.0.0 spec (the sources above).
 
 - **State:** conventions established (wide-table → footnote transforms and link style for Markdown; `.ki-config.toml` formatting from the TOML spec). No drift
   found since.
-- **Open watch-items:** none recorded.
+- **Could not verify:** CommonMark, Prettier, and the TOML spec returned HTTP 403 this run; markdownlint's rules page was reachable and still lists 60 rules
+  (MD013 off, MD051/MD052 reference-link validation, MD060 table-column-style) — no new rules or behaviour changes.
+- **Open watch-items:** re-attempt the three 403 sources next refresh.

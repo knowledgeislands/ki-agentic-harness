@@ -67,11 +67,14 @@ Open-spec optional fields are validated when present: `compatibility` (1–500 c
 `allowed-tools` / `disallowed-tools` (valid tool specs; `allowed-tools` is **experimental** in the open spec), and `license` (short name or bundled-file
 reference). A larger set of fields is **Claude-Code-only** (`disable-model-invocation`, `user-invocable`, `context`, `agent`, `paths`, `model`, `effort`,
 `when_to_use`, `argument-hint`, `arguments`, `hooks`, `shell`) — CC extensions, not in the open spec, to flag when cross-platform portability matters (see ※3).
-Two carry behavioural nuance worth stating:
+Three carry behavioural nuance worth stating:
 
 - **`disable-model-invocation: true`** is for side-effecting / manually-timed workflows (deploy, commit, send) so they can't auto-fire. It also removes the
   skill's description from Claude's context listing entirely — contrast `user-invocable: false`, which only hides the skill from the `/` menu while keeping the
   description in context.
+- **`disallowed-tools`** removes tools from Claude's available pool for the current turn — the restriction clears on the next user message. Use it for
+  autonomous or background-loop skills that must never call certain tools (e.g. blocking `AskUserQuestion` in a skill meant to run without human intervention).
+  Contrast with per-session permission settings, which persist across turns. (CC)
 - **`argument-hint`** is set by a skill with **discrete operating modes** (e.g. AUDIT / CONFORM / REFRESH) so the modes surface in the `/` menu and a user can
   route as `/<name> <mode>` without reading the body. Prefer this over splitting one cohesive skill into a slash command per mode (each resident description
   costs ~100 tokens and fragments the trigger surface). **Name the modes, don't letter them** (named modes keep cross-references stable and read consistently

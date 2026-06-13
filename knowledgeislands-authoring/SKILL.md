@@ -59,8 +59,8 @@ The house conventions sit on top of external tools and specs (CommonMark, Pretti
 "are the authoring conventions current".
 
 1. **Read [the source list](references/sources.md)** — each tracked source with its `last reviewed` date.
-2. **Re-fetch each** and diff against the convention references: a changed Prettier/markdownlint default that shifts what's mechanical, a CommonMark/TOML
-   change, a rule worth adopting.
+2. **Re-fetch each** (WebFetch; fall back to WebSearch if a host is blocked or returns non-200) and diff against the convention references: a changed
+   Prettier/markdownlint default that shifts what's mechanical, a CommonMark/TOML change, a rule worth adopting.
 3. **Propose a diff** to the convention references (and this skill); confirm before writing.
 4. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and refresh the `## Last review` block (what's confirmed, open
    watch-items). What changed goes in the commit, not a changelog.

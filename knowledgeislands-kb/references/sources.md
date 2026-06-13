@@ -11,8 +11,8 @@ re-anchors against the canonical definition and against how the bases actually u
 
 | Source                                                         | Governs                                                        | Last reviewed |
 | -------------------------------------------------------------- | -------------------------------------------------------------- | ------------- |
-| arcadia-skills `README.md` - "The Knowledge Islands structure" | †                                                              | 2026-05-31    |
-| [Knowledge Islands KB Reference][kb-reference]                 | This skill's own long-form detail on the modes and conventions | 2026-05-31    |
+| arcadia-skills `README.md` - "The Knowledge Islands structure" | †                                                              | 2026-06-01    |
+| [Knowledge Islands KB Reference][kb-reference]                 | This skill's own long-form detail on the modes and conventions | 2026-06-01    |
 
 † The authoritative structure: five zones (Calendar / Pillars / Resources / Streams / Admin) flanked by the inbound `+` and outbound `-` staging areas.
 
@@ -24,10 +24,10 @@ under a local folder name resolved by an alias - between them they exercise both
 
 | Source                                | Governs                                                                                      | Last reviewed |
 | ------------------------------------- | -------------------------------------------------------------------------------------------- | ------------- |
-| `arcadia-principal` base[^ap]         | Whether the zone model, routing test, and bindings still match a real layout and practice    | 2026-05-31    |
-| `kit-legal` base[^kl]                 | The same, from a base further along the structure but holding a zone under an aliased folder | 2026-05-31    |
-| Other bases actively using this skill | The same, as further bases adopt the skill                                                   | 2026-05-31    |
-| Base-coupled `<base>-kb` extensions   | Which base-specific conventions belong in an extension vs. promoted into this standard skill | 2026-05-31    |
+| `arcadia-principal` base[^ap]         | Whether the zone model, routing test, and bindings still match a real layout and practice    | 2026-06-01    |
+| `kit-legal` base[^kl]                 | The same, from a base further along the structure but holding a zone under an aliased folder | 2026-06-01    |
+| Other bases actively using this skill | The same, as further bases adopt the skill                                                   | 2026-06-01    |
+| Base-coupled `<base>-kb` extensions   | Which base-specific conventions belong in an extension vs. promoted into this standard skill | 2026-06-01    |
 
 [^ap]:
     The first real Knowledge Islands base this skill tracks. Sampled through its own `kb-fs` MCP server (`arcadia-principal-mcp-kb-fs`) and its `CLAUDE.md` /
