@@ -86,8 +86,8 @@ current".
 
 1. **Read [the source list](references/sources.md)** — the tracked GitHub REST API / `gh` / rulesets / security-features sources, each with a `last reviewed`
    date.
-2. **Re-fetch each** and **diff** against [the standard](references/repo-standard.md) and [`scripts/audit-repo.ts`](scripts/audit-repo.ts): new or renamed
-   settings, changed defaults, protection moving to rulesets, new security toggles.
+2. **Re-fetch each** (WebFetch; fall back to WebSearch if a host is blocked or returns non-200) and **diff** against [the standard](references/repo-standard.md)
+   and [`scripts/audit-repo.ts`](scripts/audit-repo.ts): new or renamed settings, changed defaults, protection moving to rulesets, new security toggles.
 3. **Scan the org** for emergent patterns the standard hasn't captured.
 4. **Propose a diff** to the standard, the script, and this file; confirm before writing.
 5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and refresh the `## Last review` block (what's confirmed, open
