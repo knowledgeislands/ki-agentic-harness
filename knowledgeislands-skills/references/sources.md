@@ -10,10 +10,10 @@ Abbreviations match the `(SOURCE)` tags in [the standard](agent-skills-standard.
 
 | Tag  | Source                                      | Governs                                                                 | Last reviewed |
 | ---- | ------------------------------------------- | ----------------------------------------------------------------------- | ------------- |
-| SPEC | [Agent Skills specification][spec]          | Frontmatter fields, layout, hard caps, progressive-disclosure budget    | 2026-06-01    |
-| —    | [Agent Skills home][home]                   | The standard's overview, examples, ecosystem                            | 2026-06-01    |
-| BP   | [Skill authoring best practices][bp]        | Description writing, conciseness, scripts, anti-patterns, the checklist | 2026-06-01    |
-| CC   | [Claude Code — skills][cc]                  | CC frontmatter, runtime listing/compaction budgets, commands→skills     | 2026-06-01    |
+| SPEC | [Agent Skills specification][spec]          | Frontmatter fields, layout, hard caps, progressive-disclosure budget    | 2026-06-13    |
+| —    | [Agent Skills home][home]                   | The standard's overview, examples, ecosystem                            | 2026-06-13    |
+| BP   | [Skill authoring best practices][bp]        | Description writing, conciseness, scripts, anti-patterns, the checklist | 2026-06-13    |
+| CC   | [Claude Code — skills][cc]                  | CC frontmatter, runtime listing/compaction budgets, commands→skills     | 2026-06-13    |
 | ENG  | [Equipping agents with Agent Skills][eng] ※ | Rationale, progressive disclosure, evaluation-first, under-triggering   | 2026-06-01    |
 | —    | [`skills-ref validate`][skills-ref]         | Mechanical baseline for frontmatter + naming (criteria B, C, D)         | 2026-06-01    |
 
@@ -30,20 +30,28 @@ Abbreviations match the `(SOURCE)` tags in [the standard](agent-skills-standard.
 
 | Tag                   | Source                       | Governs                                                                   | Last reviewed |
 | --------------------- | ---------------------------- | ------------------------------------------------------------------------- | ------------- |
-| arcadia-skills README | The repo's own `README.md`   | †                                                                         | 2026-06-01    |
-| `knowledgeislands-kb` | The reference standard skill | Worked example of a trigger-rich description and the standard-skill shape | 2026-06-01    |
+| arcadia-skills README | The repo's own `README.md`   | †                                                                         | 2026-06-13    |
+| `knowledgeislands-kb` | The reference standard skill | Worked example of a trigger-rich description and the standard-skill shape | 2026-06-13    |
 
 † Linking convention (no wikilinks), standard vs base-coupled-extension, the house toolchain, Knowledge Islands structure.
 
 ## Last review
 
-REFRESH last run **2026-06-01** (monthly) against the tracked sources above.
+REFRESH last run **2026-06-13** against the tracked sources above.
 
-- **Verified current:** BP (Anthropic platform best-practices) and CC (Claude Code skills docs); obra/superpowers confirmed as a BP restatement with no new
-  guidance. In-house scan: all five `knowledgeislands-*` skills PASS the mechanical linter.
-- **Could not verify:** SPEC (agentskills.io/specification), the agentskills.io home, ENG (Anthropic Engineering blog), COMMUNITY (generativeprogrammer.com),
-  and `skills-ref` returned HTTP 403 — `last reviewed` dates held, no rubric change attributed to them.
-- **Open watch-items:** re-attempt the 403 sources next refresh.
+- **SPEC (agentskills.io/specification):** accessible this run. Fields and constraints unchanged: `name` (required, ≤64 chars, lowercase letters/digits/hyphens,
+  no leading/trailing/consecutive hyphens, matches directory), `description` (required, ≤1024 chars), `license`, `compatibility` (≤500 chars), `metadata`
+  (string→string map), `allowed-tools` (experimental). No new fields. The standard and rubric remain current.
+- **Agent Skills home:** accessible; confirms broad adoption across many agent platforms (Cursor, GitHub Copilot, Gemini CLI, OpenCode, etc.) — no spec changes.
+- **BP (Anthropic platform best-practices):** accessible; full page fetched. No new guidance beyond what the standard already covers. Confirms: third-person
+  description, 500-line body limit, progressive disclosure, evaluation-first, feedback loops, avoid Windows-style paths, prefer one default with an escape
+  hatch. All captured in the current standard and rubric.
+- **CC (Claude Code skills docs):** accessible. Confirms custom commands merged into skills (already in standard note ※4). CC extensions (invocation control,
+  subagent execution, dynamic context injection) unchanged. No new frontmatter fields.
+- **ENG (Anthropic Engineering blog), COMMUNITY (generativeprogrammer.com), `skills-ref`:** not re-fetched this run — prior findings stand.
+- **In-house scan:** `bun run skills:lint` — all six `knowledgeislands-*` skills PASS, 0 fail, 0 warn.
+- **No standard or rubric change this run.**
+- **Open watch-items:** re-attempt ENG, COMMUNITY (generativeprogrammer.com), and `skills-ref` sources next refresh.
 
 (What past reviews changed in the standard / rubric / linter — the `disallowed-tools` behavioural note in §5, the CC runtime-extension fields, MCP
 fully-qualified tool naming, the CC post-compaction budget row, the migration to area-scoped codes — is in git.)
