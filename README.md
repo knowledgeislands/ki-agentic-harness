@@ -144,7 +144,7 @@ being audited:
   structure) ships a REFRESH mode and a dated `references/sources.md`, and states how often it should run; one that hard-codes no volatile external fact may
   instead resolve it at runtime. The point is durability: a skill installed into a shared or cloud catalogue is long-lived and far from its author, and must not
   rot silently. Enforced as `knowledgeislands-skills` rubric **LONG-1** (a refresh path exists) and **LONG-2** (it has a cadence, ideally a scheduled run), and
-  mirrored into the `knowledgeislands-mcp` audit checklist. The monthly `knowledgeislands-skills-refresh` routine realises it — running all five skills' REFRESH
+  mirrored into the `knowledgeislands-mcp` audit checklist. The monthly `knowledgeislands-skills-refresh` routine realises it — running all six skills' REFRESH
   against their tracked sources and opening a PR for review rather than committing.
 - **No silent collisions.** Where two skills could fire on the same request, each description names the other as the off-ramp, and new skills are audited
   against the existing set before they ship (rubric **COLL-1/COLL-2**; the linter's cross-skill pass flags shared triggers). The current boundaries are the
