@@ -1,7 +1,7 @@
 /**
  * Eval scenarios for the `knowledgeislands-streams` skill — the Streams zone and the
  * Enactment Process. Each probes a house-specific rule (the Focus lifecycle, the
- * proposal path + suffix, the rollout gate) a skill-less baseline wouldn't know.
+ * proposal path + suffix, the rollout gate, the canonical-zone gate) a skill-less baseline wouldn't know.
  */
 import type { Scenario } from '../harness.ts'
 
@@ -30,5 +30,18 @@ export const scenarios: Scenario[] = [
     ],
     rubric:
       'House process (Enactment Process): `ready` is a necessary but NOT sufficient condition for rollout — rollout requires explicit user authorisation; exploratory talk is not approval. The status sequence is draft → ready → (in-progress | rejected) → rolled-out → reviewed → completed. A correct answer declines to roll out on `ready` alone (needs authorisation) and gives the lifecycle order.'
+  },
+  {
+    skill: 'knowledgeislands-streams',
+    id: 'streams-canonical-zone-gate',
+    prompt:
+      'In my Knowledge Islands base I want to (a) substantively revise a note in `Pillars/` and (b) fix a typo in a `Calendar/` daily note. Which can I edit directly, and which has to go through the Streams / Enactment Process? Which zones does that gate protect?',
+    assertions: [
+      { name: 'names the three gated canonical zones', re: /Admin[\s\S]*Pillars[\s\S]*Resources/i },
+      { name: 'the Pillars change routes through a proposal', re: /pillars[\s\S]*proposal/i },
+      { name: 'the trivial / Calendar fix is exempt (direct edit)', re: /(typo|trivial|calendar)[\s\S]*(exempt|directly|without a proposal|no proposal)/i }
+    ],
+    rubric:
+      'House process (the Enactment gate): nothing reaches a canonical zone — `Admin`, `Pillars`, `Resources` — except through an approved `ready` proposal, so a substantive `Pillars/` change must be routed through a Streams proposal rather than edited directly. Trivial fixes (typos / formatting), `Calendar/` entries, and `+/` triage are explicitly exempt and may be edited directly. A correct answer gates the Pillars edit behind a proposal, names the three canonical zones the gate protects, and lets the Calendar typo be a direct edit.'
   }
 ]
