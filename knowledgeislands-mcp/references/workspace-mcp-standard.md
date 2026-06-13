@@ -21,8 +21,9 @@ Where repos disagree, the majority shape is the standard; documented per-repo ex
 13. [OAuth security (auth-server repos)](#13-oauth-security-auth-server-repos)
 
 > **Spec vs house style.** Sections 1–11 are the in-house **workspace convention**; §12–13 trace directly to the official MCP specification (latest released:
-> **2025-11-25**) tracked in [the source list](sources.md). When citing a rule, know which layer it comes from — never present a workspace preference as a
-> protocol "MUST". Mode REFRESH in the [SKILL](../SKILL.md) re-anchors §12–13 (and the annotation semantics in §4) to the current spec.
+> **2025-11-25**; draft targeting 2026-07-28 in validation) tracked in [the source list](sources.md). When citing a rule, know which layer it comes from — never
+> present a workspace preference as a protocol "MUST". Mode REFRESH in the [SKILL](../SKILL.md) re-anchors §12–13 (and the annotation semantics in §4) to the
+> current spec.
 
 ## 1. Project layout
 
@@ -248,3 +249,12 @@ They trace to the spec's [SEC](sources.md) and [AUTH](sources.md) pages. The §6
    attacker-influenceable URL, and never follow redirects to internal/loopback/link-local addresses (`169.254.169.254`, `10/172.16/192.168`, `::1`).
 6. **Secure token storage & redaction.** Refresh/access tokens are stored with restrictive file permissions outside any served root, never logged, and redacted
    from the audit log and from error messages (already required by §6.11). A 401 hints at the `*_auth_start` remedy without echoing the token.
+7. **RFC 8707 `resource` parameter.** Per the 2025-11-25 spec (AUTH): MCP clients MUST include a `resource` parameter in authorization and token requests
+   identifying the MCP server's canonical URI. The auth server SHOULD accept and propagate this value into the issued token's `aud` claim; the MCP server
+   (acting as the resource server) MUST validate `aud` before accepting tokens — rejecting any token whose audience does not include its own canonical URI.
+   Tokens without a bound audience are a token-passthrough risk (§6 invariant #1 applies).
+8. **Client ID Metadata Documents (SHOULD).** Per the 2025-11-25 spec (AUTH): auth servers SHOULD declare `client_id_metadata_document_supported: true` in their
+   OAuth Authorization Server Metadata and accept URL-formatted `client_id` values. When a URL-formatted `client_id` is received: fetch the JSON document at
+   that URL over HTTPS, validate that the document's `client_id` field matches the URL exactly, and validate the authorization-request `redirect_uri` against
+   the document's `redirect_uris`. Apply SSRF mitigations when fetching the metadata URL (invariant #5 applies). This is now the preferred client-registration
+   path, superseding Dynamic Client Registration as the primary mechanism.
