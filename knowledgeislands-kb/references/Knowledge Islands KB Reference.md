@@ -9,10 +9,12 @@ by an inbound staging area (`+/`) and an outbound one (`-/`). The `+/` and `-/` 
 canonical there. The zone set is part of the standard, so the skill does not ask a base to define it; it only needs a few store-level bindings.
 
 - **Island vs Pillar.** Each whole knowledge base is an "island" (a legal base, a personal base, a research base). Within a base, a **Pillar** is a major strand
-  of subject matter - a case, a client, a domain, a theme. `Pillars/` replaces what some bases historically called `Matters/`; a base still mid-rename keeps the
-  old folder and declares it as a [zone alias](#zone-aliases-and-the-knowledgeislands-kb-config-table) rather than counting as a different zone.
+  of subject matter - a case, a client, a domain, a theme. A base that holds a zone under a different local folder name keeps that folder and declares it as a
+  [zone alias](#zone-aliases-and-the-knowledgeislands-kb-config-table) rather than counting as a different zone.
 - **Settling.** `Streams/` holds work in motion; once settled it migrates into `Pillars/` (internal) or `Resources/` (external). The discriminating question for
-  internal vs external: _would this knowledge exist without this base?_ If yes, it is a resource.
+  internal vs external: _would this knowledge exist without this base?_ If yes, it is a resource. The **internal structure and process of the `Streams/` zone**
+  — its Focus lifecycle, the proposal layout, and the Enactment Process that governs it — are owned by the `knowledgeislands-streams` skill; this skill knows
+  only that `Streams/` is a zone with a same-name index and routes top-level work into it.
 
 ## Linking within a base
 
@@ -41,29 +43,29 @@ A base that follows the structure and defines the notes store needs nothing more
 
 ## Zone aliases and the `[knowledgeislands-kb]` config table
 
-The zone set is fixed, but a base **mid-migration** may not yet have renamed a folder to its canonical name - for example, a base still holding its Pillars zone
-under a legacy `Matters/` folder while it renames toward `Pillars/`. So that the skill works against the real layout without hard-coding any one base's quirk,
-the local folder name is a declared, reviewable override rather than a model change. (The live base behind this case is named in [the source list](sources.md),
-where the bases this skill tracks are recorded for REFRESH.)
+The zone set is fixed, but a base may hold a zone under a different local folder name — whether **mid-migration** (renaming toward the canonical name) or as a
+**standing local naming choice**. Any canonical zone (`Calendar` / `Pillars` / `Resources` / `Streams` / `Admin`) or staging area (`+` / `-`) may be aliased. So
+that the skill works against the real layout without hard-coding any one base's folders, the local folder name is a declared, reviewable override rather than a
+model change. (Bases that use an alias are recorded in [the source list](sources.md) for REFRESH.)
 
 It lives in the base's `.ki-config.toml` under the skill's own table (the shared-file contract is owned by `knowledgeislands-repo`; this skill owns the keys
 inside its table):
 
 ```toml
 [knowledgeislands-kb.zones]
-# Canonical zone = this base's local folder. Drop the line once the folder is
-# renamed to the canonical name; omit the table entirely when none diverge.
-Pillars = "Matters"
+# Canonical zone = this base's local folder. For a rename in progress, drop the
+# line once the folder reaches its canonical name; omit the table when none diverge.
+Pillars = "<local folder name>"
 ```
 
 Rules, following the `.ki-config.toml` contract:
 
-- **Resolve every zone reference through the alias.** When the table maps `Pillars = "Matters"`, read, route, and write the Pillars zone at `Matters/`; the
+- **Resolve every zone reference through the alias.** When the table maps a zone to a local folder, read, route, and write that zone at the mapped folder; the
   routing test, memory cascade, and digest paths all use the resolved folder.
 - **Validate down, ignore across.** Warn on an unrecognised key under `[knowledgeislands-kb]` (a typo or stale option should surface) and advise dropping one
   that merely restates a default (a zone mapped to its own canonical name). Never read or validate another skill's table.
-- **It is transitional.** A zone alias records an in-progress rename, not a permanent fork. Once the base renames the folder, the entry is removed and the base
-  is back on the canonical names.
+- **Transitional or standing.** A zone alias may record an in-progress rename — removed once the base reaches the canonical folder name — or a permanent local
+  naming choice the base keeps. Either way it is a folder-name mapping, never a change to the zone model itself.
 
 ## Session digest structure
 

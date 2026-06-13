@@ -62,13 +62,17 @@ The house conventions sit on top of external tools and specs (CommonMark, Pretti
 2. **Re-fetch each** and diff against the convention references: a changed Prettier/markdownlint default that shifts what's mechanical, a CommonMark/TOML
    change, a rule worth adopting.
 3. **Propose a diff** to the convention references (and this skill); confirm before writing.
-4. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and record what changed in the changelog.
+4. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and refresh the `## Last review` block (what's confirmed, open
+   watch-items). What changed goes in the commit, not a changelog.
 
 ## Convention sets
 
 Each set is a self-contained reference, loaded on demand. Read the one relevant to what you are writing.
 
 - **[Markdown authoring](references/markdown-authoring.md)** — wide tables → footnotes (with the marker series), link style, and what to leave to the linter.
+  The footnote-marker series, in order, is `†` `‡` `§` `¶` `‖` (then doubled: `††` `‡‡` `§§` `¶¶` `‖‖`), reset per table — omitting `*`, which collides with
+  markdown emphasis; where one table needs two footnote categories, a visually distinct second series `※` `❡` `¤` `¥` separates them. (Stated here so it is
+  reachable without opening the reference; the worked example, gotchas, and rationale stay in the reference.)
 - **[TOML formatting](references/toml-config.md)** — key case, quoting, and comments for the shared `.ki-config.toml` (its _contract_ is
   `knowledgeislands-repo`'s).
 

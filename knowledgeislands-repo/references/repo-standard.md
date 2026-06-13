@@ -59,13 +59,14 @@ linear history, no force-push, no deletion, admins **not** enforced.
 
 ## Layer 3 — deeper GitHub
 
-| Setting                         | Value | Scope                                                   |
-| ------------------------------- | ----- | ------------------------------------------------------- |
-| Dependabot alerts               | On    | All repos                                               |
-| Dependabot security updates     | On    | All repos (each ships a `dependabot-auto-merge.yml`)    |
-| Secret scanning                 | On    | Public repos (plan-limited on private — out of scope)   |
-| Secret-scanning push protection | On    | Public repos                                            |
-| Actions `allowed_actions`       | `all` | All repos (CI pulls marketplace actions like setup-bun) |
+| Setting                             | Value | Scope                                                          |
+| ----------------------------------- | ----- | -------------------------------------------------------------- |
+| Dependabot alerts                   | On    | All repos                                                      |
+| Dependabot security updates         | On    | All repos (each ships a `dependabot-auto-merge.yml`)           |
+| Always suggest updating PR branches | On    | All repos (`allow_update_branch`; keeps PRs current with base) |
+| Secret scanning                     | On    | Public repos (plan-limited on private — out of scope)          |
+| Secret-scanning push protection     | On    | Public repos                                                   |
+| Actions `allowed_actions`           | `all` | All repos (CI pulls marketplace actions like setup-bun)        |
 
 ## Visibility
 
@@ -155,8 +156,9 @@ read -r -d '' body <<'JSON'
 JSON
 printf '%s' "$body" | gh api -X PUT "repos/knowledgeislands/<opted-in-repo>/branches/main/protection" --input -
 
-# Layer 3 — Dependabot (all) + secret scanning (public)
+# Layer 3 — Dependabot (all) + always-suggest-updating-PR-branches (all) + secret scanning (public)
 for r in $all; do gh api -X PUT "repos/knowledgeislands/$r/vulnerability-alerts"; gh api -X PUT "repos/knowledgeislands/$r/automated-security-fixes"; done
+for r in $all; do gh api -X PATCH "repos/knowledgeislands/$r" -F allow_update_branch=true >/dev/null; done
 for r in $public; do
   printf '%s' '{"security_and_analysis":{"secret_scanning":{"status":"enabled"},"secret_scanning_push_protection":{"status":"enabled"}}}' \
     | gh api -X PATCH "repos/knowledgeislands/$r" --input -

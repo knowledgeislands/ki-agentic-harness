@@ -8,7 +8,7 @@ description: >
   "update the note on", "capture this", "write a session digest", "audit my knowledge base", "is my base structured right", "set up a new knowledge base". Where
   a knowledge base ships its own named extension skill, prefer that skill; it extends this one. For general Markdown or TOML house style (not note content), use
   the `knowledgeislands-authoring` skill.
-argument-hint: 'audit | conform | digest | extract | init | query <question> | refresh | save | update <note>'
+argument-hint: 'audit | conform | digest | extract | improve | init | query <question> | refresh | save | update <note>'
 ---
 
 # Knowledge Islands KB
@@ -23,18 +23,18 @@ A Knowledge Islands base is one markdown store with a fixed set of five zones, f
 `Pillars/`, `Resources/`, `Streams/`, `Admin/` — each carry an index note of the same name; `+/` (inbound) and `-/` (outbound) are staging areas, not zones, and
 carry no such index.
 
-| Folder       | Holds                                                                                           |
-| ------------ | ----------------------------------------------------------------------------------------------- |
-| `+/`         | Inbound staging - unfiled captures awaiting routing. Exempt from most conventions. Not a zone.  |
-| `Calendar/`  | Time-stamped records: daily, meeting, session, weekly, monthly notes.                           |
-| `Pillars/`   | Internal canonical knowledge - the base's primary subject matter. One folder per pillar.†       |
-| `Resources/` | External reference material that exists independently of this base.                             |
-| `Streams/`   | Work in motion - active workstreams and evolving projects; migrates to `Pillars/` once settled. |
-| `-/`         | Outbound staging - produced artefacts (session digests, compiled outputs). Not a zone.          |
-| `Admin/`     | Base-agnostic governance and operations.                                                        |
+| Folder       | Holds                                                                                                                                                                            |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `+/`         | Inbound staging - unfiled captures awaiting routing. Exempt from most conventions. Not a zone.                                                                                   |
+| `Calendar/`  | Time-stamped records: daily, meeting, session, weekly, monthly notes.                                                                                                            |
+| `Pillars/`   | Internal canonical knowledge - the base's primary subject matter. One folder per pillar.†                                                                                        |
+| `Resources/` | External reference material that exists independently of this base.                                                                                                              |
+| `Streams/`   | Work in motion - active workstreams run as proposals; migrates to `Pillars/` once settled. Its internal structure and process are owned by the `knowledgeislands-streams` skill. |
+| `-/`         | Outbound staging - produced artefacts (session digests, compiled outputs). Not a zone.                                                                                           |
+| `Admin/`     | Base-agnostic governance and operations.                                                                                                                                         |
 
-† A base mid-migration may still hold this zone under a legacy folder name (e.g. `Matters/` for `Pillars/`). That is declared as a **zone alias** in the base's
-config, not treated as a different zone - see [Project bindings](#project-bindings).
+† Any zone may be held under a different local folder name — a base mid-migration, or one that simply names a zone differently. That is declared as a **zone
+alias** in the base's config, not treated as a different zone - see [Project bindings](#project-bindings).
 
 **Pillars** are the second-level unit of organisation: each whole knowledge base is an "island"; within it, a Pillar is a major strand of its subject matter (a
 case, a client, a domain, a theme). A base may use one Pillar or many.
@@ -52,7 +52,7 @@ arcadia-skills `README.md`, "Linking inside skills").
 Most-specific match wins:
 
 1. Time-bound record -> `Calendar/`.
-2. Active, in-progress work -> `Streams/`.
+2. Active, in-progress work -> `Streams/` (the `knowledgeislands-streams` skill owns sub-routing within the zone — Focus, the proposal layout, the lifecycle).
 3. Settled internal knowledge -> `Pillars/<Pillar>/`.
 4. External reference (would exist without this base) -> `Resources/`.
 5. Unsure -> `+/<Title>.md` at the most specific applicable level.
@@ -72,9 +72,13 @@ key) and never read another skill's.
 - **Notes store** — canonical alias and location of the notes store. _Default:_ the connected base; refer to it as "the base".
 - **Sources store** — whether a paired sources store exists, and how note extracts mirror its paths. _Default:_ none.
 - **Scope usage** — whether the base is Pillar-scoped (declare an active Pillar) or single-Pillar / flat. _Default:_ Pillar-scoped.
-- **Zone names** — the canonical folder per zone, overridable for a base mid-migration. A `[knowledgeislands-kb.zones]` sub-table maps a canonical zone to this
-  base's local folder (`Pillars = "Matters"`); resolve every zone reference through it, and drop the entry once the folder is renamed. _Default:_ the canonical
-  names (`Calendar` / `Pillars` / `Resources` / `Streams` / `Admin`).
+- **Zone names** — the canonical folder per zone, overridable per base. A `[knowledgeislands-kb.zones]` sub-table maps any canonical zone or staging area to
+  this base's local folder name (e.g. `Pillars = "<local folder>"`); resolve every zone reference through it. Useful for a base mid-migration (drop the entry
+  once the folder is renamed) or one that simply names a zone differently. _Default:_ the canonical names (`Calendar` / `Pillars` / `Resources` / `Streams` /
+  `Admin`, plus the `+` / `-` staging areas).
+- **Required frontmatter** — the keys every note carrying frontmatter must include. Declare them with `required_frontmatter = ["tags", "status", "author"]`
+  under `[knowledgeislands-kb]` to have the checker enforce their presence mechanically (extra keys stay free; keys are always `snake_case`). _Default:_ none
+  declared — required frontmatter stays a judgment call resolved from the host `CLAUDE.md` / extension.
 - **Writing standards** — language variant, citation format, structural norms. _Default:_ British English; cite source paths; concise prose.
 - **Domain pre-flight** — any extra reads before drafting (profiles, domain context), usually via the extension skill. _Default:_ none beyond the memory
   cascade.
@@ -90,17 +94,22 @@ key) and never read another skill's.
 ## Step 2 - Determine mode
 
 Infer the mode from the request, or ask if unclear. Like every governance skill it carries **AUDIT · CONFORM · REFRESH**; its base-specific modes are **INIT**
-(scaffold a base) and the note-ops **DIGEST · EXTRACT · QUERY · SAVE · UPDATE**. Modes are named and alphabetical.
+(scaffold a base), the session-level **IMPROVE** (continuous improvement), and the note-ops **DIGEST · EXTRACT · QUERY · SAVE · UPDATE**. Modes are named and
+alphabetical.
 
 ### Mode AUDIT - check the base against the structure model
 
 1. **Run the mechanical checker** - `bun scripts/audit-kb.ts <base-path>` (from this skill's directory). It reports the deterministic layer as PASS / WARN /
    FAIL and exits non-zero on a FAIL: the five zones present (resolved through any `[knowledgeislands-kb.zones]` alias), a same-name index note per zone, the
-   root `Admin/MEMORY.md`, and the base's own `[knowledgeislands-kb]` table validated _down_. Capture its output; do not re-derive what it checks.
+   root `Admin/MEMORY.md`, the base's own `[knowledgeislands-kb]` table validated _down_, and note frontmatter (well-formed `---` fences, snake_case keys, and
+   any keys declared in `required_frontmatter`). Capture its output; do not re-derive what it checks.
 2. **Apply the judgment layer by reading** - the **[J]** criteria in [the rubric](references/audit-rubric.md) that the script cannot judge: notes filed in the
-   wrong zone (per the routing test), note frontmatter and naming quality, whether the memory index's active-Pillar list is actually accurate, and
-   fact-vs-analysis labelling where the base distinguishes them.
-3. **Report** drift, leading with FAILs then WARNs: misrouted or mis-zoned notes, missing zones, notes lacking required frontmatter, stale memory-index entries.
+   wrong zone (per the routing test), _whether a note should carry frontmatter at all_ and its naming quality, whether the memory index's active-Pillar list is
+   actually accurate, and fact-vs-analysis labelling where the base distinguishes them.
+3. **Compose sibling audits.** A base audit is not just kb's: also run the audit of every other skill that governs this base and is in play — notably
+   `knowledgeislands-streams` (`streams:audit`, the Streams zone + the Enactment gate), the base's `<base>-kb` extension if it ships one, and
+   `knowledgeislands-authoring` over its markdown. Report them together; a base is "clean" only when each applicable skill's audit is.
+4. **Report** drift, leading with FAILs then WARNs: misrouted or mis-zoned notes, missing zones, notes lacking required frontmatter, stale memory-index entries.
    Cite paths and give the fix.
 
 ### Mode CONFORM - bring the base into line
@@ -108,7 +117,10 @@ Infer the mode from the request, or ask if unclear. Like every governance skill 
 1. Run **AUDIT** first for the gap list.
 2. Apply the fixes: refile misrouted notes (per the routing test), create any missing zone, repair note frontmatter and naming, reconcile the memory index.
    Confirm before moving or rewriting notes.
-3. Re-run **AUDIT** until it is clean.
+3. **Install the memory-cascade anchor if `MEM-2` flagged it missing**: add a standing line to the base's `CLAUDE.md` / `AGENTS.md` naming the root `MEMORY`
+   index and the scope-before-work rule — otherwise the cascade is skipped on a plain request. Likewise apply any sibling skill's CONFORM (e.g.
+   `knowledgeislands-streams` for the gate anchor), since a base audit composes them.
+4. Re-run **AUDIT** until it is clean.
 
 ### Mode DIGEST - session digest
 
@@ -121,6 +133,32 @@ Infer the mode from the request, or ask if unclear. Like every governance skill 
 1. Identify distinct reusable pieces of knowledge.
 2. For each, propose a title, destination zone (per the routing test), and draft.
 3. Confirm, then write the approved notes.
+
+### Mode IMPROVE - continuous improvement
+
+A session-level discipline (not a scheduled task): close the gap between what was applied in practice this session and what the base has codified. IMPROVE
+**discovers and routes** candidates — it does not make the change itself, it hands each to its governed home. Flag candidates as they arise, or sweep at session
+end.
+
+1. **Scan** the session for candidates: a correction or clarification the user gave; an in-session decision that should now apply generally; a rule applied
+   consistently but written down nowhere; an auto-memory feedback entry that really encodes a base convention.
+2. **Classify and route** each candidate to exactly one home:
+   - **local and non-canonical** (a working note, a `Calendar/` habit, a `+/` triage rule) → just write it;
+   - **a change to a canonical zone** (`Admin` / `Pillars` / `Resources`) → hand to `knowledgeislands-streams`: open a proposal through the **Enactment
+     Process** gate; do not edit the zone directly;
+   - **a pattern recurring across bases** → hand to the owning skill's **REFRESH** to promote it into the canonical skill (this skill,
+     `knowledgeislands-streams`, …).
+   - An auto-memory entry that belongs to the base migrates to its convention home and is **removed** from memory.
+3. **Formalise** through the routed home, then **recheck** — re-scan; a fresh candidate starts another iteration.
+4. **Terminate when clean:** every correction and pattern is either codified or recorded as a deliberate one-off (an inline note or a `+/<context>` capture
+   explaining the departure — a one-off needs no formalisation).
+
+IMPROVE is the base-side mirror of **REFRESH**: it looks _down_ (this base's practice → formalise), where REFRESH looks _across_ (many bases → one skill); a
+cross-base candidate is exactly the handoff between them.
+
+**Living notes carry current state only.** When formalising, the target note (convention, policy, proposal, profile, index) records purpose, current state, and
+trigger conditions — not historic pass-by-pass narrative or back-references to the sessions or cycles that produced it. History lives in git; the durable record
+is the current note.
 
 ### Mode INIT - scaffold a new base's structure
 
@@ -149,10 +187,15 @@ organised - especially once installed into a shared/cloud catalogue, where it is
 3. **Separate canonical from local.** A change is only a model change if it traces to the canonical structure or to a pattern shared across bases; a single
    base's quirk belongs in that base's extension skill, not here.
 4. **Propose a diff** to the zone table / routing test / bindings, and confirm before writing.
-5. **Update [the source list](references/sources.md)** - bump each `last reviewed` date and record what changed (or "no change") in the changelog. This step is
-   mandatory: the source list is the skill's memory of where its structure model comes from.
+5. **Update [the source list](references/sources.md)** - bump each `last reviewed` date, add any new source, retire any dead one. The record of what changed is
+   the commit itself - history lives in git, not a changelog. This step is mandatory: the source list is the skill's memory of where its structure model comes
+   from.
 
 ### Mode SAVE - write a new note
+
+_Gate: if the destination is a canonical zone (`Admin`, `Pillars`, `Resources`) and the base runs the Enactment Process (its `CLAUDE.md` says so), this is a
+canonical change — hand to the `knowledgeislands-streams` skill to open a proposal rather than writing directly. `Calendar/`, `+/`, and trivial fixes are
+exempt._
 
 1. Run pre-flight.
 2. Determine the destination zone using the routing test.
@@ -163,6 +206,9 @@ organised - especially once installed into a shared/cloud catalogue, where it is
 5. Confirm, then write.
 
 ### Mode UPDATE - enrich an existing note
+
+_Gate: if the note lives in a canonical zone and the base runs the Enactment Process, route the change through a proposal (`knowledgeislands-streams`) rather
+than a direct write — unless it is a trivial fix or an unambiguous profile auto-append._
 
 1. Run pre-flight.
 2. Find and read the existing note.

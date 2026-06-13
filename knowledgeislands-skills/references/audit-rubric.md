@@ -142,8 +142,18 @@ A criterion's tag is a contract with the linter: if you find yourself eyeballing
 - **SHAPE-6 [J]** _Governance-skill file shape — Knowledge Islands repos only, for now._ A governance skill **shipped in a Knowledge Islands repo** (one
   carrying a `.ki-config.toml`) materialises its standard as the shared four-file shape, so a reader or a new such skill moves between them: a normative
   **`<domain>-standard.md`** (or the contract / conventions reference it holds), an **`audit-rubric.md`** of pass/fail criteria each tagged **[M]**/**[J]** and
-  citing its standard section, a tracked **`references/sources.md`** with `last reviewed` dates (see **LONG-1**), and a **mechanical checker** (the judgment
-  half applied by reading). A governance skill outside a Knowledge Islands repo is exempt until the convention is generalised. (arcadia-skills README)
+  citing its standard section, a tracked **`references/sources.md`** with `last reviewed` dates (see **LONG-1**) — provenance only, its change history kept in
+  git rather than an in-file changelog; a skill tracking a moving external spec also keeps a current-state **`## Last review`** block (pinned revision,
+  confirmations, open watch-items), overwritten each refresh — and a **mechanical checker** (the judgment half applied by reading). A governance skill outside a
+  Knowledge Islands repo is exempt until the convention is generalised. (arcadia-skills README)
+- **SHAPE-7 [M-heuristic + J]** _A behaviour-changing skill defines its gate — and checks the anchor._ A skill that changes a **default behaviour** — installs a
+  gate, a standing "always do X before Y" rule, or a routing intercept — cannot rely on its own `description` to fire it, because skills load **on demand** and
+  the triggering request often won't mention the skill (e.g. "edit this note" never says "proposal"). Such a skill must **anchor the behaviour in always-loaded
+  context** (the base/repo `CLAUDE.md` / `AGENTS.md`, or a companion skill that _does_ reliably load handing off to it), **and its checker must verify the
+  anchor is present** so it can't be silently lost. The linter surfaces candidates mechanically (strong gate phrasing in the body without an anchor its checker
+  reads); the **[J]** call is whether the skill genuinely changes a default and so _needs_ a gate. Realised as `knowledgeislands-streams`' **GATE-1** (the
+  Enactment gate) and `knowledgeislands-kb`'s **MEM-2** (the memory cascade); `knowledgeislands-repo`'s `.ki-config.toml` marker is the same pattern (anchor +
+  checked).
 
 ## PROC — Process / meta
 

@@ -1,66 +1,60 @@
 # Skill evals
 
-Behavioural validation for the skills — the complement to the linters. Where `skills:lint` checks a `SKILL.md`'s _form_, this harness checks whether loading a
-skill actually _changes a model's output_ for the better. It realises rubric **PROC-1/2** from the `knowledgeislands-skills` skill: evaluation scenarios scored
-**with and without the skill loaded**.
+A quick way to check that a skill **actually changes what the model does** — not just that its `SKILL.md` is well-formed (that part is what `skills:lint`
+checks). This is the behavioural half of what the `knowledgeislands-skills` rubric asks of a skill.
 
-It is **advisory** — non-deterministic, a WARN-grade signal, never a build gate.
+The idea is simple: take a question the skill is meant to help with, ask the model **twice** — once with the skill off, once with it on — and compare. If the
+skill is pulling its weight, the "on" answer should be clearly better.
+
+It's a **rough signal, not a gate.** The model's output varies from run to run, so treat it as a sanity check (a WARN), never a build blocker.
 
 ## Run it
 
 ```bash
-bun run eval                      # every scenario on sonnet (judge: sonnet)
-bun run eval --model opus         # another model (sonnet | opus | haiku | full id)
-bun run eval --scenario toml-style   # one scenario by id
-bun run eval --judge-model opus   # score with a different judge
+bun run eval                        # all scenarios, on Sonnet
+bun run eval --model opus           # pick a model: sonnet | opus | haiku
+bun run eval --scenario toml-style  # just one scenario
+bun run eval --runs 3               # repeat 3× and average — steadier signal
 ```
 
-Uses the local **`claude` CLI** (no API key — your existing Claude Code auth). Each run spends tokens on your quota; the summary prints the approximate cost.
+It drives your local `claude` CLI (no API key needed), so each run spends a little of your normal quota. The summary prints the rough cost.
 
 ## How it works
 
-For each scenario the harness runs the same prompt twice through `claude -p`, in an isolated temp cwd:
+For each scenario it asks the same question twice, in a throwaway directory:
 
-- **baseline** — `claude -p <prompt> --disable-slash-commands` — skills off.
-- **treatment** — `claude -p "/<skill> <prompt>" --add-dir ~/.claude/skills` — the skill loaded, and allowed to read its own reference files.
+- **without the skill** — the `Skill` tool is blocked, so no skill can load. This is the "before".
+- **with the skill** — the skill is loaded and allowed to read its own `references/` files. This is the "after".
 
-Then it scores both, **hybrid**:
+Then it scores both answers two ways:
 
-- **deterministic** — regex assertions over the answer (the skill's checkable house rules). The primary signal.
-- **judge** — an LLM scores each answer 0–5 against the scenario's `rubric`. The qualitative signal.
+- **assertions** — plain regex checks for the specific facts the skill should produce (e.g. the exact zone names). The hard signal.
+- **judge** — a second model rates each answer 0–5 against the scenario's rubric. The soft signal.
 
-A scenario reports **skill helped / regressed / no measurable difference** from the deltas, and the run prints a summary.
+Each scenario ends with a verdict — **skill helped / regressed / no difference** — and the run prints a summary.
 
-## Reading the results — three honest caveats
+## Reading a result — three things to keep in mind
 
-1. **Non-deterministic.** Output varies run to run; a single run is indicative, not conclusive. Re-run (or, later, average N runs) before trusting a signal. In
-   validation runs the TOML scenario flipped between "helped" and "regressed" across two runs — that variance is the point of the WARN-grade framing.
-2. **In-situ, marginal baseline.** `claude -p` still loads the user's ambient `~/.claude/CLAUDE.md` in **both** arms (auth here is OAuth, so `--bare`, which
-   would suppress it, is unavailable). So the score is the skill's **marginal** value _over whatever the ambient context already supplies_ — a conservative bar.
-   A skill installed on a clean machine (no such `CLAUDE.md`) would tend to show **more** value than the number here. Scenarios are chosen to probe rules the
-   ambient context does not already give away.
-3. **Skill value depends on the model reading references.** A skill's deepest conventions often live in `references/`, which a one-shot agent reads only if it
-   decides to. The `--add-dir` lets it; whether it does is part of what's being measured. (The footnote-marker scenario scores ~0 without `--add-dir` and ~4/5
-   with it — a real finding about progressive disclosure in headless use.)
+1. **It wobbles.** One run is a hint, not proof. Use `--runs 3` (or more) to average out the noise before trusting a result.
+2. **"No difference" is sometimes the honest answer.** Both runs still load your normal `~/.claude/CLAUDE.md`, so the score measures the skill's value _on top
+   of_ what the model already knows. If a fact is just common knowledge, the skill can't improve on it — "no difference" is correct, not a fault. So aim
+   scenarios at things the model _couldn't_ already know (see below).
+3. **Deep detail in `references/` only helps if the model opens it.** A one-shot run reads a reference file only if it decides to. A scenario can score low
+   purely because the model never opened the reference — which is itself worth knowing: it usually means that detail should move into the main `SKILL.md`.
 
-## Layout & adding scenarios
+## Adding scenarios
 
-```text
-evals/
-├── harness.ts                 # runner + hybrid scorer + reporter
-└── scenarios/
-    └── knowledgeislands-authoring.ts   # Scenario[] for one skill
-```
+One file per skill in `scenarios/` (e.g. `scenarios/knowledgeislands-kb.ts`), each exporting a list of scenarios. A scenario is just three things: a **prompt**,
+some regex **assertions**, and a judge **rubric**. Copy an existing file for the shape, then add it to the `ALL` list in [`harness.ts`](harness.ts).
 
-To add a skill's scenarios: create `scenarios/<skill>.ts` exporting a `Scenario[]` (see the authoring file for the shape — `prompt`, regex `assertions`, and a
-judge `rubric`), then spread it into `ALL` in [`harness.ts`](harness.ts). Aim for ≥ 3 scenarios per skill (PROC-1), targeting house-specific rules a skill-less
-baseline wouldn't already know.
+Aim for **3+ per skill**, and test your **house-specific** names, paths, and rules — not general best practice, which the model knows with or without the skill.
 
-## Status & next steps
+## Where it stands
 
-This is the **first vertical slice**: one skill (`knowledgeislands-authoring`), three scenarios, on one model — enough to prove the pipeline. Still open
-(tracked on the [ROADMAP](../ROADMAP.md)):
+All five skills have 3+ scenarios, and the harness has been run across Haiku, Sonnet, and Opus. The result, in one line: **on house-specific facts, loading a
+skill reliably takes the model from "I don't know" to the right answer — on every model.** That's the whole point, confirmed.
 
-- Scenarios for the other four skills.
-- A pass across **Haiku / Sonnet / Opus** (PROC-2) — the harness already takes `--model`; the matrix just needs running.
-- `--runs N` averaging to damp the non-determinism into a stabler score.
+**For routine runs, use Sonnet — it's the most cost-effective arm.** A full matrix (15 scenarios × 3 runs) costs roughly **$6 on Haiku, $14 on Sonnet, $22 on
+Opus**. Opus gives no cleaner signal than Sonnet for ~60% more, so keep it for occasional confirmation; Sonnet is a representative, trustworthy model at a
+sensible price. (Haiku is cheapest and did well here, but a stronger model is the safer regression proxy.) Run results aren't checked in — they're
+regeneratable, so just re-run `bun run eval`.

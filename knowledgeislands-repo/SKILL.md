@@ -53,7 +53,8 @@ are named and alphabetical.)
 2. **Run the mechanical checker**: `bun scripts/audit-repo.ts <tree-path>` (local repos, github.com-gated) or `--org <org>` (the whole org, including repos not
    cloned locally). Capture its PASS / WARN / FAIL output verbatim.
 3. **Do the judgment pass the script can't** — the `[J]` items in [the rubric](references/audit-rubric.md): does each description actually _match the repo's
-   purpose_ and stay in sync with its `package.json`; is each per-repo override (a `note` in the output) a warranted decision rather than waved-off drift.
+   purpose_ (the script now checks non-emptiness and `package.json` sync mechanically — `description` / `description-sync` — but not fit); is each per-repo
+   override (a `note` in the output) a warranted decision rather than waved-off drift.
 4. **Report** by `repo · check · fix`, lead with FAILs, and call out the overrides (`note`s) you judged warranted.
 
 ### Mode CONFORM — bring a repo (or the org) into line
@@ -89,8 +90,8 @@ current".
    settings, changed defaults, protection moving to rulesets, new security toggles.
 3. **Scan the org** for emergent patterns the standard hasn't captured.
 4. **Propose a diff** to the standard, the script, and this file; confirm before writing.
-5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and record what changed in the changelog. Mandatory: the source list is
-   the skill's memory of where the standard comes from.
+5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and refresh the `## Last review` block (what's confirmed, open
+   watch-items). What changed goes in the commit, not a changelog. Mandatory: the source list is the skill's memory of where the standard comes from.
 
 ## Notes
 

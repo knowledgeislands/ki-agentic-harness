@@ -57,7 +57,8 @@
     "skills:link": "bun scripts/sync-skills.ts link",
     "skills:lint": "bun knowledgeislands-skills/scripts/lint-skills.ts .",
     "skills:status": "bun scripts/sync-skills.ts status",
-    "skills:unlink": "bun scripts/sync-skills.ts unlink"
+    "skills:unlink": "bun scripts/sync-skills.ts unlink",
+    "streams:audit": "bun knowledgeislands-streams/scripts/audit-streams.ts"
   },
   "type": "module"
 }

@@ -1,8 +1,9 @@
 # Sources — where the authoring conventions come from
 
 The sources behind [markdown-authoring.md](markdown-authoring.md) and [toml-config.md](toml-config.md). Mode REFRESH reads this file, re-fetches each source,
-diffs it against the conventions, then **bumps the `last reviewed` dates and records what changed** in the changelog below. The house style is mostly internally
-owned, but it sits on top of these external tools and specs, which move — so this is the skill's memory of what it rests on.
+diffs it against the conventions, then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below (what changed is recorded in the
+commit, not a changelog). The house style is mostly internally owned, but it sits on top of these external tools and specs, which move — so this is the skill's
+memory of what it rests on.
 
 ## Authoritative
 
@@ -18,12 +19,12 @@ owned, but it sits on top of these external tools and specs, which move — so t
 [ml]: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
 [toml]: https://toml.io/en/v1.0.0
 
-## Review changelog
+## Last review
 
-Record each REFRESH run: date, what was re-fetched, what changed in the conventions (or "no change").
+REFRESH last run **2026-06-01** against CommonMark, Prettier, markdownlint, and the TOML v1.0.0 spec (the sources above).
 
-- **2026-05-31** — Conventions and source list established: CommonMark + Prettier + markdownlint for Markdown (wide-table → footnote transforms, link style),
-  the TOML spec for `.ki-config.toml` formatting.
-- **2026-06-01 (REFRESH)** — Monthly refresh. CommonMark, Prettier, and TOML spec returned HTTP 403 (unverifiable). markdownlint rules page accessed: confirmed
-  60 rules including MD013 off, MD051/MD052 reference-link validation, and MD060 table-column-style enforcement — no new rules or behaviour changes detected. No
-  changes to conventions.
+- **State:** conventions established (wide-table → footnote transforms and link style for Markdown; `.ki-config.toml` formatting from the TOML spec). No drift
+  found since.
+- **Could not verify:** CommonMark, Prettier, and the TOML spec returned HTTP 403 this run; markdownlint's rules page was reachable and still lists 60 rules
+  (MD013 off, MD051/MD052 reference-link validation, MD060 table-column-style) — no new rules or behaviour changes.
+- **Open watch-items:** re-attempt the three 403 sources next refresh.
