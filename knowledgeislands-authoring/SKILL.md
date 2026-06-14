@@ -6,7 +6,8 @@ description: >
   Use when writing or editing Markdown or TOML, bringing a document, README, table, or config to house style (conform), checking one against the conventions
   (audit), or refreshing them against their sources. Triggers: "format this to our style", "fix this markdown", "tidy this README", "audit this doc's
   formatting", "does this follow house style", "what's our convention for tables / links / footnotes". For KB note-writing use the `knowledgeislands-kb` skill;
-  for a repo's configuration and the `.ki-config.toml` contract use `knowledgeislands-repo`; to judge a SKILL.md use `knowledgeislands-skills`.
+  for a repo's configuration and the `.ki-config.toml` contract use `knowledgeislands-repo`; to judge a SKILL.md use `knowledgeislands-skills`; for the
+  build/lint/test toolchain use `knowledgeislands-engineering`.
 argument-hint: 'audit <path> | conform <path> | refresh'
 ---
 

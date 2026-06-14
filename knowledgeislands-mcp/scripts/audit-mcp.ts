@@ -4,13 +4,14 @@
  *
  *   bun scripts/audit-mcp.ts <repo-path>        # or: node after a build
  *
- * Checks the STRUCTURAL / TOOLING layer of the standard the `knowledgeislands-mcp`
- * skill codifies — layout, package.json, tsconfig/vitest/biome, .env.example, the
- * shared utils helpers, and known drift (a `bun test` script, a dangling cli
- * chmod). It deliberately does NOT judge tool-naming quality, layer purity, or the
- * security invariants — those need a human/agent read of the code (see
- * references/audit-rubric.md). Output is grouped pass/warn/fail; exit code is
- * non-zero if any FAIL.
+ * Checks the MCP DELTA of the standard the `knowledgeislands-mcp` skill codifies —
+ * the `src/` layout, `main`/`bin`/`exports`, the shared utils helpers, config-injection
+ * surface, tool naming, and the MCP coverage-excludes. The COMMON toolchain (package.json
+ * families, tsconfig/biome/vitest with 100% coverage, the `bun test` trap, .env, the
+ * cli-chmod rule) is the `knowledgeislands-engineering` layer — run audit-engineering.ts
+ * first; it is not re-checked here. This script also does NOT judge tool-naming quality,
+ * layer purity, or the security invariants — those need a human/agent read of the code
+ * (see references/audit-rubric.md). Output is grouped pass/warn/fail; exit non-zero if any FAIL.
  *
  * No dependencies — Node/Bun builtins only.
  */
@@ -48,17 +49,15 @@ if (hasCli) {
   }
 }
 
-// top-level config files
-for (const f of ['tsconfig.json', 'tsconfig.build.json', 'biome.json', 'README.md', 'CLAUDE.md']) {
+// MCP docs (the toolchain configs — tsconfig*/biome/vitest/.env.example — are the common
+// engineering layer, checked by audit-engineering.ts; not re-checked here).
+for (const f of ['README.md', 'CLAUDE.md']) {
   has(f) ? add('PASS', 'files', `${f} present`) : add('FAIL', 'files', `${f} missing`)
 }
 has('ROADMAP.md') ? add('PASS', 'files', 'ROADMAP.md present') : add('WARN', 'files', 'ROADMAP.md missing (most repos have one)')
-const envExample = ['.env.example', '.env.development.example'].find((f) => has(f))
-envExample ? add('PASS', 'files', `${envExample} present`) : add('FAIL', 'files', '.env(.development).example missing')
 
-// vitest config (ts or js)
+// vitest config presence — located only so the MCP coverage-exclude check below can read it.
 const vitestFile = ['vitest.config.ts', 'vitest.config.js', 'vitest.config.mts'].find((f) => has(f))
-vitestFile ? add('PASS', 'files', `${vitestFile} present`) : add('FAIL', 'files', 'vitest.config.* missing')
 
 // ── package.json ──────────────────────────────────────────────────────────────
 let pkg: Record<string, unknown> = {}
@@ -73,20 +72,8 @@ const name = String(pkg.name ?? basename(repo))
 const eq = (area: string, key: string, actual: unknown, want: unknown) =>
   actual === want ? add('PASS', area, `${key} = ${JSON.stringify(want)}`) : add('FAIL', area, `${key} should be ${JSON.stringify(want)}, got ${JSON.stringify(actual)}`)
 
-eq('package', 'type', pkg.type, 'module')
+// MCP delta only — `type`/`packageManager`/`engines`/`files` are the common engineering layer.
 eq('package', 'main', pkg.main, 'dist/mcp-server/index.js')
-String(pkg.packageManager ?? '').startsWith('bun@')
-  ? add('PASS', 'package', `packageManager = ${pkg.packageManager}`)
-  : add('FAIL', 'package', `packageManager should be bun@…, got ${JSON.stringify(pkg.packageManager)}`)
-const nodeEngine = String((pkg.engines as Record<string, string> | undefined)?.node ?? '')
-// parse the floor major version from a range like ">=22" / ">= 22.0.0" and require ≥ 22
-// (a literal 2[2-9] pattern would silently reject node 30+, so read the number instead)
-const nodeOk = (() => {
-  const m = nodeEngine.match(/>=\s*(\d+)/)
-  return m ? Number(m[1]) >= 22 : false
-})()
-add(nodeOk ? 'PASS' : 'FAIL', 'package', nodeOk ? `engines.node = ${nodeEngine}` : `engines.node should be >=22, got ${JSON.stringify(nodeEngine)}`)
-Array.isArray(pkg.files) && (pkg.files as string[]).includes('dist') ? add('PASS', 'package', 'files includes "dist"') : add('FAIL', 'package', 'files should include "dist"')
 
 const bin = (pkg.bin ?? {}) as Record<string, string>
 Object.values(bin).includes('dist/mcp-server/index.js') ? add('PASS', 'package', 'bin → dist/mcp-server/index.js') : add('FAIL', 'package', 'bin must map to dist/mcp-server/index.js')
@@ -96,34 +83,12 @@ for (const k of ['.', './config', './package.json']) {
   exp[k] !== undefined ? add('PASS', 'package', `exports has "${k}"`) : add('FAIL', 'package', `exports missing "${k}"`)
 }
 
-// scripts
-const wantScripts: Record<string, string> = {
-  test: 'vitest run',
-  build: 'tsc -p tsconfig.build.json',
-  'lint:types': 'tsc --noEmit'
+// MCP scripts: only the server:mcp:* surface is MCP-specific. The lint:*/deps:*/build/clean/
+// test* families, the `bun test` trap, NODE_ENV-in-dev, and the cli-chmod rule are the common
+// engineering layer (audit-engineering.ts).
+for (const k of ['server:mcp:dev', 'server:mcp:inspect', 'server:mcp:start']) {
+  scripts[k] ? add('PASS', 'scripts', `${k} present`) : add('WARN', 'scripts', `MCP script "${k}" missing`)
 }
-for (const [k, v] of Object.entries(wantScripts)) {
-  if (!scripts[k]) add('FAIL', 'scripts', `script "${k}" missing`)
-  else if (k === 'build' ? scripts[k].startsWith(v) : scripts[k] === v) add('PASS', 'scripts', `${k} = ${JSON.stringify(scripts[k])}`)
-  else add('FAIL', 'scripts', `${k} should be ${JSON.stringify(v)}, got ${JSON.stringify(scripts[k])}`)
-}
-for (const k of ['test:coverage', 'test:watch', 'lint:check', 'server:mcp:dev', 'server:mcp:inspect', 'server:mcp:start', 'clean']) {
-  scripts[k] ? add('PASS', 'scripts', `${k} present`) : add('WARN', 'scripts', `standard script "${k}" missing`)
-}
-// the `bun test` trap
-const bunTest = Object.entries(scripts).filter(([, v]) => /\bbun test\b/.test(v))
-bunTest.length
-  ? add('FAIL', 'scripts', `uses "bun test" (Bun's runner, not vitest) in: ${bunTest.map(([k]) => k).join(', ')}`)
-  : add('PASS', 'scripts', 'no "bun test" (vitest invoked via "bun run test")')
-// dev scripts must set NODE_ENV=development
-for (const k of ['server:mcp:dev', 'server:mcp:inspect']) {
-  if (scripts[k] && !scripts[k].includes('NODE_ENV=development')) add('WARN', 'scripts', `${k} should set NODE_ENV=development`)
-}
-// dangling / missing cli chmod
-const buildScript = scripts.build ?? ''
-const buildChmodsCli = /chmod \+x[^&]*dist\/cli\/cli\.js/.test(buildScript)
-if (buildChmodsCli && !hasCli) add('FAIL', 'scripts', 'build chmods dist/cli/cli.js but src/cli/ does not exist (drift)')
-if (hasCli && !buildChmodsCli) add('WARN', 'scripts', 'src/cli/ exists but build does not chmod +x dist/cli/cli.js')
 
 // ── shared utils helpers ──────────────────────────────────────────────────────
 for (const f of ['access-level.ts', 'annotations.ts', 'audit-log.ts']) {
@@ -179,11 +144,11 @@ const walk = (dir: string) => {
 if (isDir('src')) walk(at('src'))
 offenders.length ? add('WARN', 'config', `process.env read outside config/ (verify each is intentional): ${offenders.join(', ')}`) : add('PASS', 'config', 'no process.env reads outside config/')
 
-// ── vitest coverage thresholds ────────────────────────────────────────────────
+// ── MCP vitest coverage EXCLUDES ──────────────────────────────────────────────
+// The 100% thresholds themselves are the common engineering layer (audit-engineering.ts);
+// WHICH wiring layers an MCP excludes is the MCP delta, checked here.
 if (vitestFile) {
   const vc = read(vitestFile)
-  const covOk = /lines:\s*100/.test(vc) && /branches:\s*100/.test(vc) && /functions:\s*100/.test(vc) && /statements:\s*100/.test(vc)
-  add(covOk ? 'PASS' : 'WARN', 'vitest', covOk ? 'coverage thresholds 100% on all four metrics' : 'coverage thresholds are not visibly 100/100/100/100')
   // The thin tool layer must be excluded; accept any glob that covers it
   // (`tools/**/index.ts`, the broader `tools/**`, or the older `tools/*/index.ts`).
   const coverageExcludes: [string, RegExp][] = [
@@ -263,5 +228,5 @@ for (const lvl of order) {
 const fails = findings.filter((f) => f.level === 'FAIL').length
 const warns = findings.filter((f) => f.level === 'WARN').length
 console.log(`\n${'─'.repeat(60)}\n${fails} fail · ${warns} warn · ${findings.length - fails - warns} pass`)
-console.log('Mechanical layer only — now run the semantic pass in references/audit-rubric.md.\n')
+console.log('MCP delta only — also run audit-engineering.ts (common toolchain) + the semantic pass in references/audit-rubric.md.\n')
 process.exit(fails ? 1 : 0)

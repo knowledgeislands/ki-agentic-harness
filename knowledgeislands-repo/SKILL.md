@@ -5,9 +5,9 @@ description: >
   `knowledgeislands` org, which is its reference set. Covers the local files (README, LICENSE, .gitignore, .editorconfig), GitHub settings (merge policy,
   branch, features, topics, visibility, description), and security (secret scanning, Dependabot, Actions). Use when checking whether repos match the standard,
   bringing one into line, onboarding a new repo, or refreshing the standard against GitHub's surface. Triggers: "audit the repos", "do our repos follow the
-  standard", "check repo settings", "apply the repo standard", "set up branch protection", "enable secret scanning / Dependabot", "refresh the repo standard".
-  Discovers repos from a local tree (github.com-gated) or a whole org via `gh`. Governs how a repo is configured, not its source code. For Markdown / TOML
-  authoring style, use the `knowledgeislands-authoring` skill.
+  standard", "apply the repo standard", "enable secret scanning / Dependabot", "refresh the repo standard". Discovers repos from a local tree (github.com-gated)
+  or a whole org via `gh`. Governs how a repo is configured, not its source code. For Markdown / TOML authoring style use `knowledgeislands-authoring`; for its
+  build/lint/test toolchain use `knowledgeislands-engineering`.
 argument-hint: 'audit | conform <repo> | init <repo> | refresh'
 ---
 

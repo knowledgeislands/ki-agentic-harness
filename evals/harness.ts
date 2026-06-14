@@ -31,6 +31,7 @@ import { mkdtempSync } from 'node:fs'
 import { homedir, tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { scenarios as authoringScenarios } from './scenarios/knowledgeislands-authoring.ts'
+import { scenarios as engineeringScenarios } from './scenarios/knowledgeislands-engineering.ts'
 import { scenarios as kbScenarios } from './scenarios/knowledgeislands-kb.ts'
 import { scenarios as mcpScenarios } from './scenarios/knowledgeislands-mcp.ts'
 import { scenarios as repoScenarios } from './scenarios/knowledgeislands-repo.ts'
@@ -41,7 +42,7 @@ export type Assertion = { name: string; re: RegExp }
 export type Scenario = { skill: string; id: string; prompt: string; assertions: Assertion[]; rubric: string }
 
 // Scenario registry — add a `./scenarios/<skill>.ts` file and spread it in here.
-const ALL: Scenario[] = [...authoringScenarios, ...kbScenarios, ...mcpScenarios, ...repoScenarios, ...skillsScenarios, ...streamsScenarios]
+const ALL: Scenario[] = [...authoringScenarios, ...engineeringScenarios, ...kbScenarios, ...mcpScenarios, ...repoScenarios, ...skillsScenarios, ...streamsScenarios]
 
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m', bold: '\x1b[1m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`

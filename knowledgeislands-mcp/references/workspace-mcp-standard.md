@@ -149,60 +149,35 @@ returns errors via `errorResult` (not `throw`) so the audit wrapper sees the `is
 
 ## 7. Bun vs Node
 
-- Install + dev: **Bun ≥ 1.3** (`packageManager: "bun@…"`, `engines.node >= 22`). Compiled `dist/` runs under **Node ≥ 22** — what the MCP client launches.
-- `bun run test` → vitest. **`bun test`** invokes Bun's own runner instead — the `test` script must be `vitest run`, and nothing should call `bun test`.
-- Bun auto-loads `.env.${NODE_ENV}`; Node needs the explicit `process.loadEnvFile()` (try/catch) in `loadConfig()`. `NODE_ENV=development` is set only by
-  `server:mcp:dev` / `server:mcp:inspect`, so production ignores `.env.*` — config must come from the client's `env` block.
+The Bun-install / Node-run split, the **`bun test` trap**, the `process.loadEnvFile()` parity call, and `NODE_ENV`-only-in-dev are the **common engineering
+standard**, owned by `knowledgeislands-engineering` (its [engineering-standard.md](../../knowledgeislands-engineering/references/engineering-standard.md) §3).
+Run `engineering:audit` for this layer — it is not re-checked here. The MCP-specific consequence: `server:mcp:dev` / `:inspect` set `NODE_ENV=development`, so
+production ignores `.env.*` and config must come from the client's `env` block.
 
 ## 8. package.json
 
-- `"type": "module"`, `"packageManager": "bun@1.3.x"`, `"engines": { "node": ">=22.0.0" }`, `"main": "dist/mcp-server/index.js"`, `"files": ["dist"]`.
-- `"bin"`: `{ "mcp-<name>": "dist/mcp-server/index.js" }`, plus a second entry for a CLI (`"mcp-<name>-<verb>": "dist/cli/cli.js"`) or auth server
-  (`"mcp-<name>-auth"`) where present.
-- `"exports"`: always `"."` (→ `dist/mcp-server`), `"./config"`, and `"./package.json"`; plus one entry per reusable `main/<concern>`.
-- Standard scripts (copy verbatim, adapt only paths):
+`type` / `packageManager` / `engines` / `files`, the `lint:*` / `deps:*` / `build` / `clean` / `test*` / `prepare` script families, and the `build`/cli-chmod
+rule are the **common engineering standard** (`knowledgeislands-engineering`) — copy them from a healthy sibling and let `engineering:audit` check them; not
+re-checked here. This section is the **MCP delta** on top:
 
-  ```jsonc
-  "build":              "tsc -p tsconfig.build.json",   // append `&& chmod +x dist/cli/cli.js` only if a CLI exists
-  "clean":              "rm -rf {dist,node_modules}",
-  "lint:check":         "bunx @biomejs/biome check",
-  "lint:fix":           "bunx @biomejs/biome check --write --unsafe",
-  "lint:format":        "bunx @biomejs/biome format --write",
-  "lint:md":            "bunx prettier --write \"**/*.md\" --ignore-path .gitignore && bunx markdownlint-cli2",
-  "lint:package":       "bunx syncpack format",
-  "lint:types":         "tsc --noEmit",
-  "prepare":            "husky",
-  "server:mcp:dev":     "NODE_ENV=development bun --watch src/mcp-server/index.ts",
-  "server:mcp:inspect": "NODE_ENV=development bunx @modelcontextprotocol/inspector bun src/mcp-server/index.ts",
-  "server:mcp:start":   "bun run build && node dist/mcp-server/index.js",
-  "test":               "vitest run",
-  "test:coverage":      "vitest run --coverage",
-  "test:watch":         "vitest"
-  ```
-
-  Optional: `test:smoke` (`bun run build && bun scripts/smoke.ts`), `deps:*`, and `server:auth:*` for the OAuth repos.
-
-- **Drift to catch:** a `build` that `chmod +x dist/cli/cli.js` while `src/cli/` does not exist — either add the CLI or drop the chmod. (mcp-kb-notion-mirror is
-  the repo that legitimately ships a CLI and chmods it.)
+- **`main` / `bin`** — `"main": "dist/mcp-server/index.js"`; `"bin": { "mcp-<name>": "dist/mcp-server/index.js" }`, plus a second entry for a CLI
+  (`"mcp-<name>-<verb>": "dist/cli/cli.js"`) or auth server (`"mcp-<name>-auth"`) where present.
+- **`exports`** — always `"."` (→ `dist/mcp-server`), `"./config"`, and `"./package.json"`; plus one entry per reusable `main/<concern>`.
+- **`server:mcp:*` scripts** — `server:mcp:dev` / `server:mcp:inspect` (both `NODE_ENV=development bun …`) / `server:mcp:start`
+  (`bun run build && node dist/mcp-server/index.js`); OAuth repos add `server:auth:*`, and a repo with a CLI/smoke harness adds `test:smoke`.
 
 ## 9. tsconfig / vitest / biome
 
-- **`tsconfig.json`** (identical across repos): `target`/`lib` `es2024`, `module` & `moduleResolution` `nodenext`, `moduleDetection: force`,
-  `types: ["node", "vitest/globals"]`, `allowImportingTsExtensions`, `verbatimModuleSyntax`, `isolatedModules`, full `strict` +
-  `noUnusedLocals`/`noUnusedParameters`/ `noImplicitReturns`/`noImplicitOverride`/`noFallthroughCasesInSwitch`, `skipLibCheck`, `noEmit`.
-  `include: ["**/*.ts"]`.
-- **`tsconfig.build.json`** extends it: `noEmit:false`, `declaration` + `declarationMap`, `outDir: ./dist`, `rootDir: ./src`,
-  `allowImportingTsExtensions:false`, `noUncheckedIndexedAccess:true`, `exclude: [..., "**/*.test.ts"]`.
-- **`vitest.config.ts`**: `globals:true`, `environment:'node'`, `include:['src/**/*.test.ts']`, `fileParallelism:false`, v8 coverage with **100% thresholds**
-  (lines/functions/branches/statements) and `exclude`: `src/**/*.test.ts`, `src/mcp-server/index.ts`, `src/tools/**/index.ts`, `src/utils/annotations.ts`, plus
-  any pure-data/printing module (`src/cli/cli.ts`, `src/utils/notion-args.ts`). Tests are co-located.
-- **`biome.json`**: git VCS + ignore file, formatter (2-space, lineWidth 200), JS formatter (single quotes, semicolons as-needed, no trailing commas),
-  recommended lint with `suspicious.noExplicitAny: off`, organize-imports assist.
+`tsconfig.json` (the shared compiled-TS base), `tsconfig.build.json`, `biome.json`, and `vitest.config.ts` with **100% coverage on all four metrics** are the
+**common engineering standard** (`knowledgeislands-engineering` §4–§7); not re-checked here. The **MCP delta** is only the vitest coverage `exclude` list —
+beyond the common `src/**/*.test.ts`, an MCP excludes its pure-wiring layers: `src/mcp-server/index.ts`, `src/tools/**/index.ts`, `src/utils/annotations.ts`,
+plus `src/auth-server/**`, `src/cli/cli.ts`, and pure-data modules (`src/utils/notion-args.ts`) where present.
 
 ## 10. .env.example & env vars
 
-- Committed `.env.example` template (real `.env.*` gitignored). Header explains: copy to `.env.development` for `bun run server:mcp:dev`, or set in the client's
-  `env` block.
+The committed `.env*.example` template (real `.env.*` gitignored) and the `process.loadEnvFile` parity call are the **common engineering standard**
+(`knowledgeislands-engineering` §8). The **MCP delta** is the variable prefix + shared block:
+
 - Prefix `MCP_<SCREAMING_SNAKE_APPNAME>_*`. Shared block across all repos: `MCP_<APP>_ACCESS_LEVEL` (default `read`), `MCP_<APP>_AUDIT_LOG` (default `writes`),
   `MCP_<APP>_AUDIT_LOG_PATH` (default `~/.local/state/mcp-<name>/audit.jsonl`), `MCP_<APP>_AUDIT_LOG_MAX_BYTES` (10485760), `MCP_<APP>_AUDIT_LOG_KEEP` (5), plus
   domain vars (`*_SAFE_ROOTS`, `*_ROOT`, OAuth client id/secret, PAT, …).

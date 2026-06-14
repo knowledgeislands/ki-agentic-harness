@@ -101,32 +101,35 @@ Skip this whole section for the filesystem/subprocess repos.
       Metadata Documents — AS declares `client_id_metadata_document_supported: true` and handles URL-formatted `client_id` (HTTPS fetch, exact `client_id`
       match, `redirect_uris` validation, SSRF mitigations). (AUTH 2025-11-25, SHOULD; standard §13 item 8)
 
+> **Common toolchain → `knowledgeislands-engineering`.** The four sections below cover only the **MCP delta**. The generic toolchain — the `lint:*`/`deps:*`
+> families, the `bun test` trap, `tsconfig`/`biome`/`vitest` shape with 100% coverage, the `.env*.example` template, the build/cli-chmod rule — is the common
+> engineering layer; **run `engineering:audit` first** for it. A repo is fully clean only when both audits pass.
+
 ## Bun vs Node
 
-- [ ] 🔧 B — `test` script is `vitest run`; **no `bun test`** anywhere.
-- [ ] B — `loadConfig()` calls `process.loadEnvFile()` in a try/catch.
-- [ ] 🔧 S — `NODE_ENV=development` only in `server:mcp:dev`/`:inspect`.
+- [ ] — the `bun test` trap, `process.loadEnvFile()` parity, and `NODE_ENV`-only-in-dev are the **common engineering layer** (run `engineering:audit`); not
+      re-checked here. MCP consequence: production ignores `.env.*`, so config comes from the client's `env` block.
 
 ## package.json
 
-- [ ] 🔧 S — `type:module`, `packageManager:bun@…`, `engines.node>=22`, `main:dist/mcp-server/index.js`, `files:["dist"]`.
-- [ ] 🔧 S — `bin.mcp-<name>` → `dist/mcp-server/index.js`; CLI/auth bin where applicable.
+- [ ] 🔧 S — `main:dist/mcp-server/index.js`; `bin.mcp-<name>` → `dist/mcp-server/index.js` (+ CLI/auth bin where applicable).
 - [ ] 🔧 S — `exports` has `.`, `./config`, `./package.json` + one per reusable `main/<concern>`.
-- [ ] 🔧 S — standard `lint:*`, `server:mcp:*`, `build`, `clean`, `test*` scripts.
-- [ ] 🔧 S — `build` chmods `dist/cli/cli.js` **iff** `src/cli/` exists (no dangling chmod; no missing chmod).
+- [ ] 🔧 S — `server:mcp:dev` / `server:mcp:inspect` / `server:mcp:start` present (OAuth repos add `server:auth:*`).
+- [ ] — `type`/`packageManager`/`engines`/`files`, the `lint:*`/`deps:*`/`build`/`clean`/`test*`/`prepare` families, and the build/cli-chmod rule are the
+      **common engineering layer** (`engineering:audit`); not re-checked here.
 
 ## tsconfig / vitest / biome
 
-- [ ] 🔧 S — `tsconfig.json` + `tsconfig.build.json` present and match the standard compiler options.
-- [ ] 🔧 B — `vitest.config.ts` coverage thresholds 100% on all four metrics.
-- [ ] 🔧 S — coverage `exclude` covers `mcp-server/index.ts`, `tools/**/index.ts`, `utils/annotations.ts`, and any printing/pure-data module (`cli/cli.ts`).
-- [ ] 🔧 S — `biome.json` present, matching shared config.
-- [ ] S — tests are co-located (`src/**/*.test.ts`) and pass at 100% coverage.
+- [ ] 🔧 S — vitest coverage `exclude` covers the MCP wiring layers: `mcp-server/index.ts`, `tools/**/index.ts`, `utils/annotations.ts`, and any
+      printing/pure-data module (`cli/cli.ts`, `auth-server/**`).
+- [ ] — `tsconfig.json` / `tsconfig.build.json` / `biome.json` shape and the vitest 100% thresholds are the **common engineering layer** (`engineering:audit`);
+      not re-checked here.
 
 ## .env.example & env
 
-- [ ] 🔧 S — committed `.env.example` with `MCP_<APP>_*` prefix and the shared access-level + audit-log block.
-- [ ] S — `.env.*` (non-`.example`) is gitignored.
+- [ ] 🔧 S — `.env.example` uses the `MCP_<APP>_*` prefix and carries the shared access-level + audit-log block.
+- [ ] — the committed `.env*.example` template, gitignored real `.env.*`, and the `process.loadEnvFile` parity call are the **common engineering layer**
+      (`engineering:audit`).
 
 ## Docs
 

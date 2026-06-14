@@ -3,11 +3,11 @@ name: knowledgeislands-mcp
 description: >
   Codify and audit Knowledge Islands MCP servers against the canonical "workspace MCP" standard. Use when scaffolding a new MCP server, bringing an existing one
   up to standard, or reviewing one for compliance: project layout, config injection (no module-level singleton), the `<app>_<resource>_<action>` tool-naming
-  scheme, the annotation-driven access-level gate, audit logging, the security invariants, the Bun-install / Node-run split, and the package.json / tsconfig /
-  vitest / biome tooling. Also refreshes the standard itself against the latest published MCP specification. Triggers: "audit this MCP", "does this MCP follow
-  our standards", "scaffold a new MCP", "bring this MCP up to standard", "review the MCP layout / tool surface / package.json", "refresh the MCP standard", "is
-  our MCP standard up to date". Operates on the sibling `mcp-*` repos under `knowledgeislands/`. Audits MCP **server code** — not a repo's GitHub configuration,
-  nor a skill's prose.
+  scheme, the annotation-driven access-level gate, audit logging, the security invariants, the common build/lint/test toolchain (now
+  `knowledgeislands-engineering`'s, which this builds on). Also refreshes the standard itself against the latest published MCP specification. Triggers: "audit
+  this MCP", "does this MCP follow our standards", "scaffold a new MCP", "bring this MCP up to standard", "review the MCP layout / tool surface / package.json",
+  "refresh the MCP standard", "is our MCP standard up to date". Operates on the sibling `mcp-*` repos under `knowledgeislands/`. Audits MCP **server code** —
+  not a repo's GitHub configuration, nor a skill's prose.
 argument-hint: 'audit <repo> | conform <repo> | init <repo> | refresh'
 ---
 
@@ -88,9 +88,10 @@ Every governance skill carries **AUDIT · CONFORM · REFRESH**; this one adds **
 ### Mode AUDIT — check a repo against the standard
 
 1. **Identify the target.** Confirm the repo path (default: the cwd repo). Note its `<app>` prefix and which tool groups it ships.
-2. **Run the mechanical checker** for the structural/tooling layer: `bun <skill>/scripts/audit-mcp.ts <repo-path>` (or `node` after build). It reports
-   presence/shape of `src/` layers, `package.json` fields and scripts (incl. the `bun test` vs `vitest run` trap), tsconfig/vitest/biome, `.env.example`, the
-   shared `utils/` helpers, and drift like a `build` script that chmods a `dist/cli/cli.js` with no `src/cli/`.
+2. **Run both mechanical checkers — the common layer first.** `bun knowledgeislands-engineering/scripts/audit-engineering.ts <repo-path>` covers the shared
+   toolchain (package.json metadata + the `lint:*`/`deps:*` families, the `bun test` trap, tsconfig/biome/vitest with 100% coverage, `.env`, the build/cli-chmod
+   rule). Then `bun <skill>/scripts/audit-mcp.ts <repo-path>` (or `node` after build) covers the **MCP delta**: presence/shape of `src/` layers, `main`/`bin`/
+   `exports`, the shared `utils/` helpers, tool names, and the MCP coverage-excludes. Capture both — the repo is clean only when both pass.
 3. **Do the semantic pass the script can't** — walk [Audit Rubric](references/audit-rubric.md) and judge:
    - **Config injection**: grep for top-level `process.env` reads outside `config/index.ts`; confirm `main/`/`utils/` take config as the first arg.
    - **Layer purity**: logic that lives only in a `tools/*` handler or in `cli.ts` (should be in `main/`); `console.*` in `main/` (CLI/stderr only).
@@ -111,9 +112,10 @@ Every governance skill carries **AUDIT · CONFORM · REFRESH**; this one adds **
 
 1. Run **AUDIT** first, so you change against a known gap list.
 2. Fix the gaps in place: restore the `src/` layer boundaries (schema+envelope in `tools/`, logic in `main/` config-first, printing in `cli/`, wiring in
-   `mcp-server/`), the shared `utils/` helpers, and the `tsconfig*`/`vitest`/`biome`/package.json script block — **copy from the closest healthy sibling**
-   rather than invent.
-3. Re-run the checker + tests; `bun run test` (NOT `bun test`), `bun run lint:check`, `bun run lint:types` must pass with 100% coverage.
+   `mcp-server/`), the shared `utils/` helpers, and the MCP `package.json` delta (`main` / `bin` / `exports` / `server:mcp:*`) — **copy from the closest healthy
+   sibling** rather than invent. For the common toolchain block (`tsconfig*` / `vitest` / `biome` / the script families), run `knowledgeislands-engineering`'s
+   CONFORM.
+3. Re-run both checkers + tests; `bun run test` (NOT `bun test`), `bun run lint:check`, `bun run lint:types` must pass with 100% coverage.
 
 ### Mode INIT — scaffold a new MCP server
 
@@ -145,14 +147,11 @@ periodically, or when someone asks "is our MCP standard up to date".
    block (pinned revision, confirmations, open watch-items). What changed goes in the commit, not a changelog. This step is mandatory: the source list is the
    skill's memory of where the standard comes from.
 
-## Bun vs Node (the standing trap)
+## Bun vs Node — the common layer
 
-Install/dev use **Bun (≥1.3)**; the compiled `dist/` runs under **Node (≥22)** — that is what the MCP client launches. Two consequences the audit always checks:
-
-- `bun run test` runs vitest; **`bun test`** silently invokes Bun's own runner — the `test` script must be `vitest run`, and nothing should call `bun test`.
-- Bun auto-loads `.env.${NODE_ENV}`; Node needs the explicit `process.loadEnvFile()` in `loadConfig()`, wrapped in try/catch (Bun has no such API and throws
-  `TypeError`). `NODE_ENV=development` is set only by the dev/inspect scripts, so in production `.env.*` is ignored — config must come from the MCP client's
-  `env` block.
+The Bun-install / Node-run split, the **`bun test` trap**, and the `process.loadEnvFile()` parity call are the **common engineering standard** —
+`knowledgeislands-engineering` owns and checks them (run `engineering:audit`). The one MCP-relevant consequence to keep in mind: `NODE_ENV=development` is set
+only by the `server:mcp:dev` / `:inspect` scripts, so in production `.env.*` is ignored and config must come from the MCP client's `env` block.
 
 ## Notes
 

@@ -32,7 +32,7 @@ so the two must stay in sync.
 
 ## Skills in this repository
 
-Six skills, each a **governance skill**: it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones),
+Seven skills, each a **governance skill**: it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones),
 backed by a tracked `references/sources.md`.
 
 ### [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md) — Knowledge Islands
@@ -71,11 +71,19 @@ The house authoring conventions the other skills build on — Markdown (wide tab
 truth a repo's or base's `CLAUDE.md` points to. Its mechanical half is `bun run lint:md` (Prettier + markdownlint), not a bundled script; it carries the
 judgment half.
 
+### [`knowledgeislands-engineering`](knowledgeislands-engineering/SKILL.md) — Process
+
+The shared **engineering toolchain** every TS/Bun repo builds on — package.json script families, `tsconfig`/`biome`/`vitest`, the Bun-install / Node-run split,
+100% coverage, the build/cli-chmod rule — plus the **enforcement framework** (the mode shape, mechanical-checker contract, rubric tagging, `sources.md` cadence,
+`.ki-config.toml` contract) the other governance skills conform to. The toolchain twin of `knowledgeislands-authoring`. Ships a mechanical checker
+(`audit-engineering.ts`); artifact skills (e.g. `knowledgeislands-mcp`) **compose** their delta on top of its common layer.
+
 Where the set is going next is in [ROADMAP.md](ROADMAP.md).
 
 ### The governance-skill shape
 
-All six share one layout, so a reader (or a new such skill) can move between them:
+All seven share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in
+`knowledgeislands-engineering`'s [enforcement framework](knowledgeislands-engineering/references/enforcement-framework.md):
 
 - **`<domain>-standard.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like, and why.
 - **`audit-rubric.md`** — the line-by-line checkable criteria, each tagged **mechanical** (a checker enforces it) or **judgment** (a reader assesses it), each
@@ -83,8 +91,8 @@ All six share one layout, so a reader (or a new such skill) can move between the
 - **`references/sources.md`** — the tracked sources behind the standard, with `last reviewed` dates. Provenance only: the record of _what changed_ lives in git
   (the REFRESH commit), not a changelog in the file. A skill tracking a moving external spec also keeps a current-state **`## Last review`** block — pinned
   revision, what's confirmed, open watch-items — overwritten each REFRESH.
-- **a mechanical checker** — `audit-mcp.ts`, `lint-skills.ts`, `audit-repo.ts`, `audit-kb.ts`, `audit-streams.ts` for mcp / skills / repo / kb / streams;
-  `bun run lint:md` (Prettier + markdownlint) for authoring. The judgment half is always applied by reading.
+- **a mechanical checker** — `audit-engineering.ts`, `audit-mcp.ts`, `lint-skills.ts`, `audit-repo.ts`, `audit-kb.ts`, `audit-streams.ts` for engineering / mcp
+  / skills / repo / kb / streams; `bun run lint:md` (Prettier + markdownlint) for authoring. The judgment half is always applied by reading.
 
 …and the same modes: **AUDIT** (run the checker, then apply the judgment criteria), **CONFORM** (bring an existing artifact into line), and **REFRESH**
 (re-anchor the standard to its sources on a stated cadence), plus skill-specific modes where they fit — **INIT** to scaffold a new artifact, and kb's note-ops.
@@ -112,6 +120,12 @@ Each skill's `description` carries its own boundaries so the agent selects the r
   rather than restate. The lines around it - note _content_ and KB structure belong to `knowledgeislands-kb`; a repo's _configuration_ and the `.ki-config.toml`
   _contract_ to `knowledgeislands-repo`; a `SKILL.md`'s prose and frontmatter to `knowledgeislands-skills`. `knowledgeislands-authoring` names each of those as
   an off-ramp and each names it back for general style, so the boundary is reciprocal and documented on both sides for humans too.
+- **`knowledgeislands-engineering` vs the rest** - the build/test twin of `knowledgeislands-authoring`: it owns the cross-cutting _engineering toolchain_
+  (package.json script families, `tsconfig`/`biome`/`vitest`, the Bun/Node split, the build/cli-chmod rule) and the _enforcement framework_ every governance
+  skill follows. The lines around it - a repo's GitHub settings, security, and the `.ki-config.toml` _contract_ are `knowledgeislands-repo`'s (engineering only
+  reads its own table within it); Markdown/TOML _formatting_ is `knowledgeislands-authoring`'s; an artifact's own code and delta (an MCP's `src/` layout, tool
+  surface, coverage-excludes) belong to that artifact skill (`knowledgeislands-mcp`), which **composes** its checker on top of engineering's common layer. The
+  boundary is reciprocal: each names the other back.
 
 ### How knowledge moves and improves — the three loops
 
@@ -161,8 +175,8 @@ being audited:
   memory cascade).
 - **Audits compose.** Auditing a target runs every _applicable_ skill's audit, not just one: a base audit is `knowledgeislands-kb` +
   `knowledgeislands-streams` + any `<base>-kb` extension + `knowledgeislands-authoring` over its markdown; a repo audit is `knowledgeislands-repo` +
-  `knowledgeislands-mcp` (for an MCP repo) + the skills linter (for any skills it ships). A target is "clean" only when each applicable skill's audit passes;
-  each skill's AUDIT mode names the siblings it composes.
+  `knowledgeislands-engineering` (the common toolchain) + `knowledgeislands-mcp` (the MCP delta, for an MCP repo) + the skills linter (for any skills it ships).
+  A target is "clean" only when each applicable skill's audit passes; each skill's AUDIT mode names the siblings it composes.
 
 ## Installing skills
 
