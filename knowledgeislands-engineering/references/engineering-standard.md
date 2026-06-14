@@ -11,7 +11,7 @@ This file is the **normative, quotable** standard. The checkable items live in [
 ## Contents
 
 - [Scope, layers, and composition](#scope-layers-and-composition)
-- [1. package.json — metadata (core)](#1-packagejson--metadata-core)
+- [1. package.json & toolchain pinning (core)](#1-packagejson--toolchain-pinning-core)
 - [2. The script families (core)](#2-the-script-families-core)
 - [3. Bun vs Node (core)](#3-bun-vs-node-core)
 - [4. tsconfig.json (core + profiled)](#4-tsconfigjson-core--profiled)
@@ -45,7 +45,9 @@ The capability markers, and what each unlocks:
 | Env config     | `.env*.example` present, or `process.loadEnvFile` used          | §8 — `.env` discipline + `NODE_ENV`-in-dev |
 | CLI binary     | `src/cli/` present                                              | §7 — `build` chmods `dist/cli/cli.js`      |
 
-## 1. package.json — metadata (core)
+## 1. package.json & toolchain pinning (core)
+
+In package.json:
 
 - `"type": "module"`.
 - `"packageManager": "bun@1.3.x"` (pinned patch; bump in one place on the house Bun upgrade).
@@ -53,6 +55,18 @@ The capability markers, and what each unlocks:
 
 Repos that publish a compiled library/server add `"main"`, `"files": ["dist"]`, `"bin"`, and `"exports"` — but the _shape_ of those is artifact-specific (§7
 covers only the build mechanics).
+
+**Toolchain pin (`mise.toml`).** Every repo carries a root `mise.toml` with a `[tools]` table pinning both the **node** and **bun** versions — the actual
+runtimes [mise](https://mise.jdx.dev/) puts on `PATH` when you `cd` in, and that CI installs via `jdx/mise-action`, so the dev shell and CI resolve
+byte-identically. Two rules:
+
+- The pinned **`bun` MUST equal the `packageManager` Bun version** above. Bun is named in both files, so they are the standing drift pair — the checker compares
+  them. (`node` is pinned _exactly_ here even though `engines.node` only states a `>= 22` floor.)
+- `mise.toml` is the **single** toolchain pin. No legacy single-tool file — `.node-version`, `.nvmrc`, `.bun-version` — may linger beside it; each is redundant
+  and can silently diverge, so the checker warns on any it finds.
+
+Where the repo has CI (`.github/workflows/ci.yml`), the workflow installs the toolchain through `jdx/mise-action` and pins **no** version itself (no
+`bun-version:` / `node-version:`) — a hardcoded version there bypasses `mise.toml` and is drift.
 
 ## 2. The script families (core)
 

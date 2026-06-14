@@ -6,9 +6,10 @@
  *   bun scripts/audit-engineering.ts <repo-path>      # or: node after a build
  *
  * Checks the shared toolchain the `knowledgeislands-engineering` skill codifies —
- * package.json metadata + the lint:* / deps:* script families, the `bun test`
- * trap, tsconfig.json + biome.json, and the capability conditionals (tests,
- * compiled build + the cli-chmod rule, env) that fire only when the repo opts in.
+ * package.json metadata, the mise.toml toolchain pin (node + bun, bun matched to
+ * packageManager, CI via mise-action) + the lint:* / deps:* script families, the
+ * `bun test` trap, tsconfig.json + biome.json, and the capability conditionals
+ * (tests, compiled build + the cli-chmod rule, env) that fire only when the repo opts in.
  * It is deliberately PERMISSIVE about additive repo-specific scripts, and it does
  * NOT judge anything artifact-specific (an MCP's coverage-excludes, bin, tool
  * surface) — that is the artifact skill's checker (e.g. audit-mcp.ts), run after
@@ -60,6 +61,41 @@ const nodeOk = (() => {
   return m ? Number(m[1]) >= 22 : false
 })()
 add(nodeOk ? 'PASS' : 'FAIL', 'package', nodeOk ? `engines.node = ${nodeEngine}` : `engines.node should be >=22, got ${JSON.stringify(nodeEngine)}`)
+
+// ── core: mise.toml toolchain pin ─────────────────────────────────────────────
+// Root mise.toml pins the actual node + bun (mise puts them on PATH on `cd`; CI
+// installs them via jdx/mise-action). The pinned bun MUST equal packageManager's
+// bun — the standing drift pair. node is pinned exactly here (engines is a floor).
+const mise = read('mise.toml')
+if (!mise) add('FAIL', 'mise', 'mise.toml missing (root toolchain pin: [tools] node + bun)')
+else {
+  const miseNode = mise.match(/^\s*node\s*=\s*["']([^"']+)["']/m)?.[1]
+  const miseBun = mise.match(/^\s*bun\s*=\s*["']([^"']+)["']/m)?.[1]
+  miseNode ? add('PASS', 'mise', `mise.toml pins node = ${miseNode}`) : add('FAIL', 'mise', 'mise.toml must pin node under [tools]')
+  if (!miseBun) add('FAIL', 'mise', 'mise.toml must pin bun under [tools]')
+  else {
+    const pmBun = String(pkg.packageManager ?? '').match(/^bun@(.+)$/)?.[1]
+    pmBun && pmBun !== miseBun
+      ? add('FAIL', 'mise', `mise.toml bun (${miseBun}) must match packageManager bun (${pmBun})`)
+      : add('PASS', 'mise', `mise.toml pins bun = ${miseBun}${pmBun ? ' (matches packageManager)' : ''}`)
+  }
+}
+// legacy single-tool pin files shadow mise.toml — warn (redundant, can diverge)
+const strayPins = ['.node-version', '.nvmrc', '.bun-version'].filter((f) => has(f))
+strayPins.length
+  ? add('WARN', 'mise', `legacy pin file(s) beside mise.toml: ${strayPins.join(', ')} — remove; mise.toml is the single toolchain pin`)
+  : add('PASS', 'mise', 'no legacy pin files (.node-version / .nvmrc / .bun-version)')
+
+// ── core (when the repo has CI): CI installs the toolchain from mise.toml ──────
+if (has('.github', 'workflows', 'ci.yml')) {
+  const ci = read('.github', 'workflows', 'ci.yml')
+  const usesMise = /mise-action/.test(ci)
+  usesMise ? add('PASS', 'ci', 'ci.yml installs the toolchain via jdx/mise-action') : add('FAIL', 'ci', 'ci.yml must install the toolchain via jdx/mise-action (reads mise.toml)')
+  const hard = ci.match(/\b(bun|node)-version\s*:/)
+  if (hard) add('FAIL', 'ci', `ci.yml hardcodes ${hard[1]}-version — remove it; the version comes from mise.toml`)
+} else {
+  add('PASS', 'ci', 'no .github/workflows/ci.yml — N/A')
+}
 
 // ── core: the required script families (exact-match) ──────────────────────────
 const CANON: Record<string, string> = {

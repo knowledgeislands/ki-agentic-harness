@@ -2,11 +2,12 @@
 name: knowledgeislands-engineering
 description: >
   The shared engineering toolchain every Knowledge Islands TypeScript/Bun repo conforms to — the common build/lint/test layer the artifact-type skills build on
-  rather than restate, the twin of `knowledgeislands-authoring`. Covers package.json metadata, the `lint:*`/`deps:*` script families, the Bun-install/Node-run
-  split and the `bun test` trap, `tsconfig`/`biome`/`vitest` shape and 100% coverage, `.env` discipline, and the build/cli-chmod rule — plus the enforcement
-  framework (mode shape, rubric tagging, checker contract, `.ki-config.toml` contract) the governance skills follow. Use to audit, conform, or scaffold a repo's
-  toolchain, or check script-family / tsconfig / biome consistency. Triggers: "audit our engineering standards", "do the repos' scripts match", "why are
-  lint:/deps: scripts inconsistent". For GitHub settings, security, and the `.ki-config.toml` contract use `knowledgeislands-repo`; for Markdown/TOML style use
+  rather than restate, the twin of `knowledgeislands-authoring`. Covers package.json metadata, the `mise.toml` toolchain pin (node + bun, matched to
+  `packageManager`, installed in CI via `mise-action`), the `lint:*`/`deps:*` script families, the Bun-install/Node-run split and the `bun test` trap,
+  `tsconfig`/`biome`/`vitest` shape and 100% coverage, `.env` discipline, and the build/cli-chmod rule — plus the enforcement framework (mode shape, rubric
+  tagging, checker contract, `.ki-config.toml` contract) the governance skills follow. Use to audit, conform, or scaffold a repo's toolchain, or check
+  script-family / tsconfig / biome consistency. Triggers: "audit our engineering standards", "do the repos' scripts match", "why are lint:/deps: scripts
+  inconsistent". For GitHub settings, security, and the `.ki-config.toml` contract use `knowledgeislands-repo`; for Markdown/TOML style use
   `knowledgeislands-authoring`; for MCP server code use `knowledgeislands-mcp`.
 argument-hint: 'audit <repo> | conform <repo> | init <repo> | refresh'
 ---

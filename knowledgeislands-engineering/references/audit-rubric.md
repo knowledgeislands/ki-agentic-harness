@@ -7,11 +7,15 @@ Run the checker first, then apply the judgment items. Severity: **B** blocker ·
 Capability conditionals only apply when the repo has the marker (tests / compiled build / env / CLI); a repo without the capability is not graded on it, and the
 checker reports it as N/A, not a failure.
 
-## Core — package.json metadata (§1)
+## Core — package.json & toolchain pinning (§1)
 
 - [ ] 🔧 S — `"type": "module"`.
 - [ ] 🔧 S — `"packageManager"` starts with `bun@` (pinned patch).
 - [ ] 🔧 S — `"engines.node"` floor is `>= 22`.
+- [ ] 🔧 S — a root `mise.toml` pins both `node` and `bun` under `[tools]`.
+- [ ] 🔧 S — the `mise.toml` `bun` version **equals** the `packageManager` Bun version (the drift pair).
+- [ ] 🔧 P — no legacy single-tool pin file (`.node-version`, `.nvmrc`, `.bun-version`) lingers beside `mise.toml` (warn).
+- [ ] 🔧 S — where the repo has `.github/workflows/ci.yml`, it installs the toolchain via `jdx/mise-action` and hardcodes no `bun-version:` / `node-version:`.
 
 ## Core — script families (§2)
 
