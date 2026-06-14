@@ -7,12 +7,12 @@
     "url": "https://github.com/knowledgeislands/arcadia-skills/issues"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.16",
-    "@types/node": "^25.9.1",
+    "@biomejs/biome": "2.5.0",
+    "@types/node": "^25.9.3",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.7",
     "markdownlint-cli2": "^0.22.1",
-    "prettier": "^3.8.3",
+    "prettier": "^3.8.4",
     "syncpack": "^15.3.1",
     "typescript": "^6.0.3"
   },
@@ -44,6 +44,9 @@
   },
   "scripts": {
     "clean": "rm -rf node_modules",
+    "deps:missing": "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.missing | keys | .[]' | xargs bun add -D",
+    "deps:unused": "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.devDependencies[]' | xargs bun remove",
+    "deps:update": "bun update --latest",
     "eval": "bun evals/harness.ts",
     "kb:audit": "bun knowledgeislands-kb/scripts/audit-kb.ts",
     "lint:check": "bunx @biomejs/biome check",
