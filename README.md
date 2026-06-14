@@ -35,6 +35,29 @@ so the two must stay in sync.
 Seven skills, each a **governance skill**: it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones),
 backed by a tracked `references/sources.md`.
 
+### The map — how the seven fit together
+
+The seven sit in **two layers**: two cross-cutting **foundations** that every other skill builds on, and the **domain** skills that each govern one kind of
+artifact. The arrows are the structural ties (who _delegates to_, _composes on_, or _feeds_ whom) spelled out in the sections that follow.
+
+```text
+FOUNDATIONS — cross-cutting "how" (every domain skill builds on both)
+  authoring     how we WRITE  ·  Markdown + TOML formatting style
+  engineering   how we BUILD  ·  the shared toolchain + the enforcement framework
+                                       ▲
+                                       │ build on
+───────────────────────────────────────┼──────────────────────────────────────
+                                       │
+DOMAIN — what each skill governs
+  knowledge bases   kb ──delegates the Streams zone──▶ streams
+  repos & code      repo ──owns the .ki-config.toml contract──▶ (kb · mcp · engineering consume it)
+                    mcp  ──composes its checker on──▶ engineering
+  skills            skills ── a SKILL.md's frontmatter + body prose
+```
+
+Read the per-skill entries next for what each does; _Where the skills do not overlap_ draws the boundaries between the pairs that could be confused, and _How
+knowledge moves_ shows the process loops that run across them.
+
 ### [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md) — Knowledge Islands
 
 Interacts with a Knowledge Islands knowledge base over the standard zone model: the note-ops **DIGEST / EXTRACT / QUERY / SAVE / UPDATE**, plus **AUDIT /
@@ -100,32 +123,42 @@ The mode model is codified in `knowledgeislands-skills` (rubric **SHAPE-5**).
 
 ### Where the skills do not overlap
 
-Each skill's `description` carries its own boundaries so the agent selects the right one, but the distinctions worth stating once:
+Each skill's `description` carries its own boundaries so the agent selects the right one, and where two could fire on the same request each names the other as
+the **off-ramp** — reciprocally, so the line holds from both sides (for humans as well as the agent). The pairs worth stating once, with the nuance in the
+footnotes below:
 
-- **`knowledgeislands-mcp` vs `knowledgeislands-skills`** - both "audit against a standard", which is the one pair that could be confused.
-  `knowledgeislands-mcp` audits an MCP **server repo** (its `src/` layout, config injection, tool surface, security invariants, tooling);
-  `knowledgeislands-skills` audits a **`SKILL.md`** (its frontmatter and body prose). Auditing the `SKILL.md` of an MCP-related skill is the latter's job;
-  auditing the server's code is the former's. Each description names the other as the off-ramp, so neither claims the other's request.
-- **`knowledgeislands-kb` vs `knowledgeislands-streams`** - both operate over a base, but at different scopes. `knowledgeislands-kb` owns the five-zone model,
-  routing into the zones, and note CRUD; it knows `Streams/` is a zone and **delegates the zone's internals** — the Focus lifecycle, the proposal layout, and
-  the Enactment Process — to `knowledgeislands-streams`, which loads only when working in `Streams`. Anything outside that zone is kb's.
-- **`knowledgeislands-kb` vs a base-coupled extension** - where a base ships its own `<base>-kb` skill, that extension wins and delegates the shared modes back
-  to `knowledgeislands-kb` by name; the standard skill steps aside rather than competing for the same triggers.
-- **`knowledgeislands-repo` vs `knowledgeislands-mcp`** - the `mcp-*` repos are where the two overlap, but `knowledgeislands-repo`'s reach is wider: it governs
-  **any** Knowledge Islands–compliant repo (anything carrying a `.ki-config.toml`), not just MCP ones. Where they do meet, they sit at different layers.
-  `knowledgeislands-repo` governs the repo's configuration and Knowledge Islands compliance (the `.ki-config.toml` contract, GitHub-side settings, and the
-  universal local files — README/LICENSE/.gitignore/.editorconfig); `knowledgeislands-mcp` governs the server's **code** (`src/` layout, config injection, tool
-  surface). Configuration vs source.
-- **`knowledgeislands-authoring` vs the rest** - it owns _how we write_: Markdown style and TOML _formatting_ style, the cross-cutting layer the others assume
-  rather than restate. The lines around it - note _content_ and KB structure belong to `knowledgeislands-kb`; a repo's _configuration_ and the `.ki-config.toml`
-  _contract_ to `knowledgeislands-repo`; a `SKILL.md`'s prose and frontmatter to `knowledgeislands-skills`. `knowledgeislands-authoring` names each of those as
-  an off-ramp and each names it back for general style, so the boundary is reciprocal and documented on both sides for humans too.
-- **`knowledgeislands-engineering` vs the rest** - the build/test twin of `knowledgeislands-authoring`: it owns the cross-cutting _engineering toolchain_
-  (package.json script families, `tsconfig`/`biome`/`vitest`, the Bun/Node split, the build/cli-chmod rule) and the _enforcement framework_ every governance
-  skill follows. The lines around it - a repo's GitHub settings, security, and the `.ki-config.toml` _contract_ are `knowledgeislands-repo`'s (engineering only
-  reads its own table within it); Markdown/TOML _formatting_ is `knowledgeislands-authoring`'s; an artifact's own code and delta (an MCP's `src/` layout, tool
-  surface, coverage-excludes) belong to that artifact skill (`knowledgeislands-mcp`), which **composes** its checker on top of engineering's common layer. The
-  boundary is reciprocal: each names the other back.
+| Pair that could be confused                         | The line between them                                                             |
+| --------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `knowledgeislands-mcp` vs `knowledgeislands-skills` | MCP **server code** vs a **`SKILL.md`** (frontmatter + body prose). †             |
+| `knowledgeislands-kb` vs `knowledgeislands-streams` | The five-zone model + note CRUD vs the **`Streams` zone internals**, delegated. ‡ |
+| `knowledgeislands-kb` vs a `<base>-kb` extension    | The base-agnostic **standard** vs a **base-coupled extension** that wins. §       |
+| `knowledgeislands-repo` vs `knowledgeislands-mcp`   | A repo's **configuration** vs an MCP server's **source**. ¶                       |
+| `knowledgeislands-authoring` vs the rest            | **How we write** vs _what_ we write. ‖                                            |
+| `knowledgeislands-engineering` vs the rest          | **How we build** vs everything that isn't the toolchain. ††                       |
+
+† Auditing the `SKILL.md` of an MCP-related skill is `knowledgeislands-skills`' job; auditing the server's `src/` layout, config injection, and tool surface is
+`knowledgeislands-mcp`'s. This is the one pair that could be confused — both "audit against a standard" — so each names the other as the off-ramp.
+
+‡ Both operate over a base, at different scopes. `knowledgeislands-kb` owns the five-zone model, routing, and note CRUD; it knows `Streams/` is a zone but
+delegates the zone's internals — the Focus lifecycle, the proposal layout, the Enactment Process — to `knowledgeislands-streams`, which loads only when working
+in `Streams`. Anything outside that zone is kb's.
+
+§ Where a base ships its own `<base>-kb` skill, that extension wins and delegates the shared modes back to `knowledgeislands-kb` by name; the standard skill
+steps aside rather than competing for the same triggers.
+
+¶ `knowledgeislands-repo` governs **any** Knowledge Islands–compliant repo (anything carrying a `.ki-config.toml`) — its configuration, GitHub-side settings,
+and the universal local files (README/LICENSE/.gitignore/.editorconfig). `knowledgeislands-mcp` governs the server's **code** (`src/` layout, config injection,
+tool surface). Configuration vs source.
+
+‖ `knowledgeislands-authoring` owns _how we write_ — Markdown style and TOML _formatting_ — the cross-cutting layer the others assume rather than restate. The
+content itself routes elsewhere: note _content_ and KB structure → `knowledgeislands-kb`; a repo's _configuration_ and the `.ki-config.toml` _contract_ →
+`knowledgeislands-repo`; a `SKILL.md`'s prose and frontmatter → `knowledgeislands-skills`.
+
+†† `knowledgeislands-engineering` is the build/test twin of `knowledgeislands-authoring`: it owns the _engineering toolchain_ (package.json script families,
+`tsconfig`/`biome`/`vitest`, the Bun/Node split, the build/cli-chmod rule) and the _enforcement framework_ every governance skill follows. The rest routes out:
+GitHub settings, security, and the `.ki-config.toml` _contract_ → `knowledgeislands-repo` (engineering only reads its own table within it); Markdown/TOML
+_formatting_ → `knowledgeislands-authoring`; an artifact's own code and delta (an MCP's `src/` layout, tool surface, coverage-excludes) → that artifact skill,
+which **composes** its checker on top of engineering's common layer.
 
 ### How knowledge moves and improves — the three loops
 
