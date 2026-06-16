@@ -161,6 +161,21 @@ else {
   for (const [label, re] of fields) re.test(biome) ? add('PASS', 'biome', label) : add('WARN', 'biome', `biome.json: expected ${label}`)
 }
 
+// ── core: .prettierrc.json (backs lint:md — Markdown only) ────────────────────
+const prettier = read('.prettierrc.json')
+if (!prettier) add('FAIL', 'prettier', '.prettierrc.json missing (Prettier backs lint:md)')
+else {
+  const pfields: [string, RegExp][] = [
+    ['proseWrap always', /"proseWrap"\s*:\s*"always"/],
+    ['printWidth 140', /"printWidth"\s*:\s*140/],
+    ['semi false', /"semi"\s*:\s*false/],
+    ['singleQuote true', /"singleQuote"\s*:\s*true/],
+    ['trailingComma none', /"trailingComma"\s*:\s*"none"/],
+    ['*.md markdown override', /"parser"\s*:\s*"markdown"/]
+  ]
+  for (const [label, re] of pfields) re.test(prettier) ? add('PASS', 'prettier', label) : add('WARN', 'prettier', `.prettierrc.json: expected ${label}`)
+}
+
 // ── capability detection ──────────────────────────────────────────────────────
 const vitestFile = ['vitest.config.ts', 'vitest.config.js', 'vitest.config.mts'].find((f) => has(f))
 const hasTests = Boolean(vitestFile) || Boolean(scripts.test)

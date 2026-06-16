@@ -1,11 +1,12 @@
 # Audit rubric — the common engineering layer
 
-Line-by-line criteria for auditing a Knowledge Islands TS/Bun repo against [the engineering standard](engineering-standard.md). Each is tagged **🔧 mechanical**
-(enforced by [`../scripts/audit-engineering.ts`](../scripts/audit-engineering.ts) — capture its output, don't re-derive) or **judgment** (assess by reading).
-Run the checker first, then apply the judgment items. Severity: **B** blocker · **S** standard · **P** polish — see [the framework](enforcement-framework.md).
+Line-by-line criteria for auditing a Knowledge Islands TS/Bun repo against [the engineering standard](engineering-standard.md). Each is
+tagged **🔧 mechanical** (enforced by [`../scripts/audit-engineering.ts`](../scripts/audit-engineering.ts) — capture its output, don't
+re-derive) or **judgment** (assess by reading). Run the checker first, then apply the judgment items. Severity: **B** blocker · **S**
+standard · **P** polish — see [the framework](enforcement-framework.md).
 
-Capability conditionals only apply when the repo has the marker (tests / compiled build / env / CLI); a repo without the capability is not graded on it, and the
-checker reports it as N/A, not a failure.
+Capability conditionals only apply when the repo has the marker (tests / compiled build / env / CLI); a repo without the capability is not
+graded on it, and the checker reports it as N/A, not a failure.
 
 ## Core — package.json & toolchain pinning (§1)
 
@@ -15,16 +16,17 @@ checker reports it as N/A, not a failure.
 - [ ] 🔧 S — a root `mise.toml` pins both `node` and `bun` under `[tools]`.
 - [ ] 🔧 S — the `mise.toml` `bun` version **equals** the `packageManager` Bun version (the drift pair).
 - [ ] 🔧 P — no legacy single-tool pin file (`.node-version`, `.nvmrc`, `.bun-version`) lingers beside `mise.toml` (warn).
-- [ ] 🔧 S — where the repo has `.github/workflows/ci.yml`, it installs the toolchain via `jdx/mise-action` and hardcodes no `bun-version:` / `node-version:`.
+- [ ] 🔧 S — where the repo has `.github/workflows/ci.yml`, it installs the toolchain via `jdx/mise-action` and hardcodes no `bun-version:`
+      / `node-version:`.
 
 ## Core — script families (§2)
 
-- [ ] 🔧 S — the full `lint:*` family is present and **exact-matches** the canonical values: `lint:check`, `lint:fix`, `lint:format`, `lint:md`, `lint:package`,
-      `lint:types`.
+- [ ] 🔧 S — the full `lint:*` family is present and **exact-matches** the canonical values: `lint:check`, `lint:fix`, `lint:format`,
+      `lint:md`, `lint:package`, `lint:types`.
 - [ ] 🔧 S — the full `deps:*` family is present and exact-matches: `deps:missing`, `deps:unused`, `deps:update`.
 - [ ] 🔧 S — `clean` and `prepare` are present (`prepare` = `husky`; `clean` removes `node_modules`, and `dist` where the repo builds).
-- [ ] judgment P — repo-specific scripts beyond the families are fine; the checker must not flag them. Just confirm none shadow a family name with a divergent
-      definition.
+- [ ] judgment P — repo-specific scripts beyond the families are fine; the checker must not flag them. Just confirm none shadow a family
+      name with a divergent definition.
 
 ## Core — Bun vs Node (§3)
 
@@ -38,18 +40,21 @@ checker reports it as N/A, not a failure.
       `noUnused*`/`noImplicit*`/`noFallthrough*` family, `verbatimModuleSyntax`, `isolatedModules`, `skipLibCheck`, `noEmit`).
 - [ ] judgment S — no per-repo loosening of `strict` or the `noUnused*`/`noImplicit*` flags.
 
-## Core — biome.json (§5)
+## Core — biome.json & prettier config (§5)
 
 - [ ] 🔧 S — `biome.json` present.
-- [ ] 🔧 S — matches the shared config (formatter 2-space / lineWidth 200; JS single quotes, `semicolons: asNeeded`, no trailing commas; `preset: recommended`
-      with `noExplicitAny: off`; `organizeImports: on`; git VCS + `useIgnoreFile`).
+- [ ] 🔧 S — matches the shared config (formatter 2-space / lineWidth 200; JS single quotes, `semicolons: asNeeded`, no trailing commas;
+      `preset: recommended` with `noExplicitAny: off`; `organizeImports: on`; git VCS + `useIgnoreFile`).
+- [ ] 🔧 S — `.prettierrc.json` present (Prettier backs `lint:md`).
+- [ ] 🔧 S — it matches the shared shape: `proseWrap: always`, `printWidth: 140`, `semi: false`, `singleQuote: true`, `trailingComma: none`,
+      and the `*.md` markdown override.
 
 ## Capability: tests (§6) — marker: `vitest.config.*` or a `test` script
 
 - [ ] 🔧 S — `test` = `vitest run`; `test:coverage` = `vitest run --coverage`; `test:watch` = `vitest`.
 - [ ] 🔧 B — vitest coverage thresholds are **100%** on all four metrics (lines/functions/branches/ statements).
-- [ ] 🔧 S — coverage `include` is `src/**/*.ts` and `exclude` drops `src/**/*.test.ts`. (The _additional_ excludes are artifact-specific — not graded here; the
-      artifact skill grades them.)
+- [ ] 🔧 S — coverage `include` is `src/**/*.ts` and `exclude` drops `src/**/*.test.ts`. (The _additional_ excludes are artifact-specific —
+      not graded here; the artifact skill grades them.)
 - [ ] judgment S — tests are co-located (`src/**/*.test.ts`) and actually reach the 100% bar.
 
 ## Capability: compiled build & CLI (§7) — marker: `tsconfig.build.json` or a `tsc` build
@@ -57,8 +62,8 @@ checker reports it as N/A, not a failure.
 - [ ] 🔧 S — `build` = `tsc -p tsconfig.build.json` (optionally `&& chmod …`); `files` includes `dist`.
 - [ ] 🔧 S — `tsconfig.build.json` extends the base and sets `noEmit:false`, `declaration` + `declarationMap`, `outDir`/`rootDir`,
       `allowImportingTsExtensions:false`, `noUncheckedIndexedAccess:true`, excludes `**/*.test.ts`.
-- [ ] 🔧 S — **CLI chmod rule**: `build` chmods `dist/cli/cli.js` **iff** `src/cli/` exists; it chmods **no other path** (in particular not a server/mcp-server
-      bin). No dangling chmod, no missing chmod.
+- [ ] 🔧 S — **CLI chmod rule**: `build` chmods `dist/cli/cli.js` **iff** `src/cli/` exists; it chmods **no other path** (in particular not
+      a server/mcp-server bin). No dangling chmod, no missing chmod.
 
 ## Capability: env config (§8) — marker: `.env*.example` or `process.loadEnvFile`
 
@@ -73,6 +78,6 @@ checker reports it as N/A, not a failure.
 
 ## Reporting
 
-Produce findings grouped by severity, each row `severity · file:line-or-field · what · fix`. Lead with any **B** (a `bun test`, a sub-100% coverage threshold).
-Close with a one-line verdict (compliant / minor drift / blockers) and name the **artifact-skill audit that must also run** for the repo to be fully clean (e.g.
-"+ `audit-mcp.ts` for the MCP delta").
+Produce findings grouped by severity, each row `severity · file:line-or-field · what · fix`. Lead with any **B** (a `bun test`, a sub-100%
+coverage threshold). Close with a one-line verdict (compliant / minor drift / blockers) and name the **artifact-skill audit that must also
+run** for the repo to be fully clean (e.g. "+ `audit-mcp.ts` for the MCP delta").
