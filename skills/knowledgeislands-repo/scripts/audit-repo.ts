@@ -121,18 +121,35 @@ function rootPaths(nwo: string, branch: string): Set<string> {
 
 const topicNames = (t: unknown): string[] => (Array.isArray(t) ? t.map((x) => (typeof x === 'string' ? x : (x?.name ?? x?.topic?.name))).filter(Boolean) : [])
 
-// The repo's package.json `description`, or null if there is no package.json, it
-// doesn't parse, or it declares no string description. Used to check the GitHub
-// description is SYNCED with it (the source of truth a maintainer edits in-repo).
-function pkgDescription(nwo: string, files: Set<string>): string | null {
+// The repo's parsed package.json (or null if absent / unparseable), fetched once
+// and reused for the description-sync check and the MCP-dependency coverage signal.
+type Pkg = { description?: unknown; dependencies?: Record<string, string>; devDependencies?: Record<string, string> }
+function readPkg(nwo: string, files: Set<string>): Pkg | null {
   if (!files.has('package.json')) return null
   const text = ghRaw(nwo, 'package.json')
   if (text == null) return null
   try {
-    const d = (JSON.parse(text) as { description?: unknown }).description
-    return typeof d === 'string' && d.trim() ? d.trim() : null
+    return JSON.parse(text) as Pkg
   } catch {
     return null
+  }
+}
+// package.json `description` (the in-repo source of truth the GitHub description must
+// be SYNCED with), or null when there is none / it isn't a non-empty string.
+const pkgDescription = (pkg: Pkg | null): string | null => (typeof pkg?.description === 'string' && pkg.description.trim() ? pkg.description.trim() : null)
+// Does package.json declare `name` among its dependencies or devDependencies?
+const pkgHasDep = (pkg: Pkg | null, name: string): boolean => Boolean(pkg?.dependencies?.[name] ?? pkg?.devDependencies?.[name])
+
+// The repo's full tree (recursive) as a set of paths, for the coverage signals that
+// look below the root (`site/wrangler.jsonc`, `skills/*/SKILL.md`, `agents/**/*.md`).
+// One API call; empty set on error or truncation. `rootPaths` stays the top-level
+// view the file-presence checks use.
+function treePaths(nwo: string, branch: string): Set<string> {
+  try {
+    const t = ghJSON(`repos/${nwo}/git/trees/${branch}?recursive=1`) as { tree?: { path: string }[] }
+    return new Set((t.tree ?? []).map((e) => e.path))
+  } catch {
+    return new Set()
   }
 }
 
