@@ -4,8 +4,8 @@ A collection of reusable [Agent Skills](https://agentskills.io/specification). T
 across Knowledge Islands - kept in one place so they can be versioned, reviewed, and installed together rather than scattered across the
 bases and projects that use them.
 
-It is structured as an **agentic harness** (the sibling of `hnr-agentic-harness`): skills live under `skills/`, with `agents/` and `mcp/`
-shelves alongside for Knowledge Islands agents and MCP servers as they land. Skills are the bulk of it today.
+It is structured as an **agentic harness**: skills live under `skills/`, with `agents/` and `mcp/` shelves alongside for Knowledge Islands
+agents and MCP servers as they land. Skills are the bulk of it today.
 
 Skills here fall into a few kinds, and the set will grow:
 
