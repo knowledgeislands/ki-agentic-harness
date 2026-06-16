@@ -1,4 +1,4 @@
-# arcadia-skills roadmap
+# arcadia-agentic-harness roadmap
 
 Where this skill collection is going. The [README](README.md) covers what exists today and how to install it; this file is the forward view.
 Items are grouped by confidence; speculative ones are marked _(candidate)_ until committed.

@@ -1,4 +1,4 @@
-# CLAUDE.md — arcadia-skills
+# CLAUDE.md — arcadia-agentic-harness
 
 Always-loaded orientation for an agent working in this repo. The full picture is in [README.md](README.md) (what each skill is, the map, the
 boundaries); the forward view is in [ROADMAP.md](ROADMAP.md). This file is the short anchor.

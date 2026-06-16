@@ -1,8 +1,11 @@
-# arcadia-skills
+# arcadia-agentic-harness
 
 A collection of reusable [Agent Skills](https://agentskills.io/specification). This repository is the canonical home for skills authored
 across Knowledge Islands - kept in one place so they can be versioned, reviewed, and installed together rather than scattered across the
 bases and projects that use them.
+
+It is structured as an **agentic harness** (the sibling of `hnr-agentic-harness`): skills live under `skills/`, with `agents/` and `mcp/`
+shelves alongside for Knowledge Islands agents and MCP servers as they land. Skills are the bulk of it today.
 
 Skills here fall into a few kinds, and the set will grow:
 
@@ -62,58 +65,58 @@ DOMAIN — what each skill governs
 Read the per-skill entries next for what each does; _Where the skills do not overlap_ draws the boundaries between the pairs that could be
 confused, and _How knowledge moves_ shows the process loops that run across them.
 
-### [`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md) — Knowledge Islands
+### [`knowledgeislands-kb`](skills/knowledgeislands-kb/SKILL.md) — Knowledge Islands
 
 Interacts with a Knowledge Islands knowledge base over the standard zone model: the note-ops **DIGEST / EXTRACT / QUERY / SAVE / UPDATE**,
 plus **AUDIT / CONFORM / INIT** to check a base against the structure model, bring it into line, or scaffold a new one. Only store-level
 bindings come from the host base. Ships a mechanical checker (`audit-kb.ts`): zone-layout conformance plus validate-down of its
 `[knowledgeislands-kb]` config table. Delegates the **`Streams` zone** to `knowledgeislands-streams`.
 
-### [`knowledgeislands-streams`](knowledgeislands-streams/SKILL.md) — Knowledge Islands
+### [`knowledgeislands-streams`](skills/knowledgeislands-streams/SKILL.md) — Knowledge Islands
 
 Owns the **`Streams` zone** — the base's working copy ("plan mode") — and the **Enactment Process** that governs it: the lifecycle modes
 **PROPOSE / ITERATE / READY / ROLLOUT / REVIEW / SETTLE / REJECT**, plus **AUDIT / CONFORM** of a base's Streams structure (Focus lifecycle,
 the `Proposal` suffix, leaf/parent layout, proposal frontmatter). `knowledgeislands-kb` delegates the zone here, so the heavier process
 loads only when working in `Streams`. Ships a mechanical checker (`audit-streams.ts`).
 
-### [`knowledgeislands-mcp`](knowledgeislands-mcp/SKILL.md) — Process
+### [`knowledgeislands-mcp`](skills/knowledgeislands-mcp/SKILL.md) — Process
 
 Audits, conforms, and scaffolds workspace MCP servers against the "workspace MCP" standard (layout, config injection,
 `<app>_<resource>_<action>` tool naming, access-level gate, security invariants, Bun/Node, tooling) across the `mcp-*` repos. Ships a
 mechanical checker (`audit-mcp.ts`).
 
-### [`knowledgeislands-11ty-websites`](knowledgeislands-11ty-websites/SKILL.md) — Process
+### [`knowledgeislands-11ty-websites`](skills/knowledgeislands-11ty-websites/SKILL.md) — Process
 
 Audits, conforms, and scaffolds static websites against the house build standard — **Eleventy 3 + Nunjucks + Markdown, TypeScript run
 natively on Bun, Tailwind 4 config-less with design tokens** — that compile to a portable `dist/`. Owns the **site-build delta** and
 **composes on** `knowledgeislands-engineering` (toolchain) and `knowledgeislands-authoring` (Markdown), handing the built `dist/` to
 `knowledgeislands-cloudflare-hosting`. Ships a mechanical checker (`audit-websites.ts`).
 
-### [`knowledgeislands-cloudflare-hosting`](knowledgeislands-cloudflare-hosting/SKILL.md) — Process
+### [`knowledgeislands-cloudflare-hosting`](skills/knowledgeislands-cloudflare-hosting/SKILL.md) — Process
 
 Audits, conforms, and scaffolds the house convention for serving a built site on **Cloudflare Workers + Static Assets** (not Pages): one
 `wrangler.jsonc` pointing `assets.directory` at the site's `dist/`, custom-domain routes, observability, and the `site:deploy` script
 family. Owns the **hosting delta** for the site Worker; the `dist/` is the seam from `knowledgeislands-11ty-websites`. Companion Workers
 (bots, ingress) route to the generic `cloudflare` / `wrangler` skills. Ships a mechanical checker (`audit-cloudflare-hosting.ts`).
 
-### [`knowledgeislands-skills`](knowledgeislands-skills/SKILL.md) — Process
+### [`knowledgeislands-skills`](skills/knowledgeislands-skills/SKILL.md) — Process
 
 Audits, writes, and conforms Agent Skills against a checkable rubric — a bundled linter (`skills:lint`) for the mechanical checks, the
 judgment ones applied by reading, and a tracked source list it revisits.
 
-### [`knowledgeislands-repo`](knowledgeislands-repo/SKILL.md) — Process
+### [`knowledgeislands-repo`](skills/knowledgeislands-repo/SKILL.md) — Process
 
 Audits, conforms, and onboards any **Knowledge Islands–compliant** git repo (one carrying a `.ki-config.toml`) against the repo standard —
 local files, GitHub settings, and security. Owns the cross-cutting **`.ki-config.toml` contract**. Ships a mechanical auditor (`repo:audit`)
 that discovers repos from a local tree or a whole org.
 
-### [`knowledgeislands-authoring`](knowledgeislands-authoring/SKILL.md) — Process
+### [`knowledgeislands-authoring`](skills/knowledgeislands-authoring/SKILL.md) — Process
 
 The house authoring conventions the other skills build on — Markdown (wide tables → footnotes, link style) and TOML formatting style — and
 the single source of truth a repo's or base's `CLAUDE.md` points to. Its mechanical half is `bun run lint:md` (Prettier + markdownlint), not
 a bundled script; it carries the judgment half.
 
-### [`knowledgeislands-engineering`](knowledgeislands-engineering/SKILL.md) — Process
+### [`knowledgeislands-engineering`](skills/knowledgeislands-engineering/SKILL.md) — Process
 
 The shared **engineering toolchain** every TS/Bun repo builds on — package.json script families, `tsconfig`/`biome`/`vitest`, the
 Bun-install / Node-run split, 100% coverage, the build/cli-chmod rule — plus the **enforcement framework** (the mode shape,
@@ -126,7 +129,7 @@ Where the set is going next is in [ROADMAP.md](ROADMAP.md).
 ### The governance-skill shape
 
 All nine share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in
-`knowledgeislands-engineering`'s [enforcement framework](knowledgeislands-engineering/references/enforcement-framework.md):
+`knowledgeislands-engineering`'s [enforcement framework](skills/knowledgeislands-engineering/references/enforcement-framework.md):
 
 - **`<domain>-standard.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like,
   and why.
@@ -258,7 +261,7 @@ Claude Code (and compatible agents) discover skills in two places:
 
 The recommended way to install from this repository is a **symlink**, so edits in the repo are live everywhere the skill is installed and a
 `git pull` updates every consumer at once. The bundled sync script ([`scripts/sync-skills.ts`](scripts/sync-skills.ts)) wraps this safely;
-it treats every top-level directory containing a `SKILL.md` as a skill. Install dependencies once with `bun install`.
+it treats every directory under `skills/` containing a `SKILL.md` as a skill. Install dependencies once with `bun install`.
 
 ### With the sync script (recommended)
 
@@ -282,8 +285,8 @@ bun scripts/sync-skills.ts link --target /path/to/project/.claude/skills # insta
 A single skill, user-global:
 
 ```bash
-cd /Users/krisbrown/kis/knowledgeislands/arcadia-skills
-ln -sfn "$PWD/knowledgeislands-kb" ~/.claude/skills/knowledgeislands-kb
+cd /Users/krisbrown/kis/knowledgeislands/arcadia-agentic-harness
+ln -sfn "$PWD/skills/knowledgeislands-kb" ~/.claude/skills/knowledgeislands-kb
 ```
 
 `ln -sfn` forces replacement of an existing link and never dereferences into a directory, so re-running it updates the link in place instead
@@ -333,9 +336,9 @@ bindings. A Knowledge Islands base is one markdown store with a fixed set of fiv
 and `Admin/` - flanked by an inbound (`+/`) and an outbound (`-/`) staging area (staging, not zones: material lands or leaves through them
 but is not canonical there). Each whole base is an "island"; within it, a **Pillar** is a major strand of subject matter (a case, a client,
 a domain, a theme). The full zone model, the note-content wikilink convention, and routing rules live in
-[`knowledgeislands-kb`](knowledgeislands-kb/SKILL.md); the **`Streams` zone** — its internal structure and the Enactment Process that
-governs work in motion — is owned by [`knowledgeislands-streams`](knowledgeislands-streams/SKILL.md), which `knowledgeislands-kb` delegates
-to.
+[`knowledgeislands-kb`](skills/knowledgeislands-kb/SKILL.md); the **`Streams` zone** — its internal structure and the Enactment Process that
+governs work in motion — is owned by [`knowledgeislands-streams`](skills/knowledgeislands-streams/SKILL.md), which `knowledgeislands-kb`
+delegates to.
 
 ### Standard skills and per-base config
 
@@ -365,7 +368,7 @@ bun run lint:package # syncpack: keep package.json sorted
 bun run skills:lint  # audit every skill's mechanical criteria (knowledgeislands-skills rubric)
 ```
 
-`skills:lint` runs the mechanical half of the [`knowledgeislands-skills`](knowledgeislands-skills/SKILL.md) rubric over every skill
+`skills:lint` runs the mechanical half of the [`knowledgeislands-skills`](skills/knowledgeislands-skills/SKILL.md) rubric over every skill
 (frontmatter, naming, length caps, link resolution); the judgment half is applied by that skill when you ask it to audit one.
 
 ## Roadmap

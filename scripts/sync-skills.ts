@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // Sync this repo's skills into a Claude skills directory by symlink.
 //
-// A "skill" is any top-level directory in the repo that contains a SKILL.md.
+// A "skill" is any directory under skills/ that contains a SKILL.md.
 // Symlinking (rather than copying) keeps installed skills live: editing here,
 // or `git pull`, updates every consumer at once.
 //
@@ -23,6 +23,7 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
+const skillsRoot = join(repoRoot, 'skills')
 
 // --- arg parsing -----------------------------------------------------------
 const argv = process.argv.slice(2)
@@ -39,9 +40,10 @@ type LinkState = { kind: 'absent' } | { kind: 'occupied' } | { kind: 'linked'; d
 
 // --- discovery -------------------------------------------------------------
 function discoverSkills(): string[] {
-  return readdirSync(repoRoot, { withFileTypes: true })
-    .filter((e) => e.isDirectory() && !e.name.startsWith('.') && e.name !== 'scripts' && e.name !== 'node_modules')
-    .filter((e) => existsSync(join(repoRoot, e.name, 'SKILL.md')))
+  if (!existsSync(skillsRoot)) return []
+  return readdirSync(skillsRoot, { withFileTypes: true })
+    .filter((e) => e.isDirectory() && !e.name.startsWith('.'))
+    .filter((e) => existsSync(join(skillsRoot, e.name, 'SKILL.md')))
     .map((e) => e.name)
     .sort()
 }
@@ -60,7 +62,7 @@ function linkState(linkPath: string, expectedSource: string): LinkState {
   if (!isSymlink(linkPath)) return { kind: 'occupied' } // a real file/dir is in the way
   const dest = resolve(dirname(linkPath), readlinkSync(linkPath))
   if (dest === expectedSource) return { kind: 'linked', dest }
-  if (dest.startsWith(`${repoRoot}/`)) return { kind: 'linked-other-here', dest }
+  if (dest.startsWith(`${skillsRoot}/`)) return { kind: 'linked-other-here', dest }
   return { kind: 'linked-elsewhere', dest }
 }
 
@@ -71,7 +73,7 @@ function cmdLink(skills: string[]): void {
     if (!dryRun) mkdirSync(target, { recursive: true })
   }
   for (const name of skills) {
-    const source = join(repoRoot, name)
+    const source = join(skillsRoot, name)
     const linkPath = join(target, name)
     const state = linkState(linkPath, source)
 
@@ -94,7 +96,7 @@ function cmdLink(skills: string[]): void {
 
 function cmdUnlink(skills: string[]): void {
   for (const name of skills) {
-    const source = join(repoRoot, name)
+    const source = join(skillsRoot, name)
     const linkPath = join(target, name)
     const state = linkState(linkPath, source)
     if (state.kind === 'linked' || state.kind === 'linked-other-here') {
@@ -112,7 +114,7 @@ function cmdUnlink(skills: string[]): void {
 function cmdStatus(skills: string[]): void {
   console.log(paint(C.cyan, `target: ${target}\n`))
   for (const name of skills) {
-    const source = join(repoRoot, name)
+    const source = join(skillsRoot, name)
     const state = linkState(join(target, name), source)
     const dest = 'dest' in state ? state.dest : ''
     const label = {
@@ -129,7 +131,7 @@ function cmdStatus(skills: string[]): void {
 // --- main ------------------------------------------------------------------
 const skills = discoverSkills()
 if (skills.length === 0) {
-  console.error(paint(C.red, 'No skills found (no top-level directory contains a SKILL.md).'))
+  console.error(paint(C.red, 'No skills found (no directory under skills/ contains a SKILL.md).'))
   process.exit(1)
 }
 
