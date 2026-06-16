@@ -126,6 +126,9 @@ Skip this whole section for the filesystem/subprocess repos.
 - [ ] 🔧 S — `main:dist/mcp-server/index.js`; `bin.mcp-<name>` → `dist/mcp-server/index.js` (+ CLI/auth bin where applicable).
 - [ ] 🔧 S — `exports` has `.`, `./config`, `./package.json` + one per reusable `main/<concern>`.
 - [ ] 🔧 S — `server:mcp:dev` / `server:mcp:inspect` / `server:mcp:start` present (OAuth repos add `server:auth:*`).
+- [ ] 🔧 S — where the repo has a `test:smoke` harness, `.github/workflows/ci.yml` runs `bun run test:smoke` after the common gate. The
+      common CI shape (mise-action + `lint:check` / `lint:types` / `lint:md:check` / `test:coverage`) is `knowledgeislands-engineering`'s
+      (`engineering:audit`); the smoke step is the MCP delta.
 - [ ] — `type`/`packageManager`/`engines`/`files`, the `lint:*`/`deps:*`/`build`/`clean`/`test*`/`prepare` families, and the build/cli-chmod
       rule are the **common engineering layer** (`engineering:audit`); not re-checked here.
 
@@ -144,8 +147,9 @@ Skip this whole section for the filesystem/subprocess repos.
 
 ## Docs
 
-- [ ] P — `CLAUDE.md` (and usually `ROADMAP.md`) present. (Universal repo files — `README`, `LICENSE`, `.gitignore`, `.editorconfig`,
-      `.ki-config.toml` — are `knowledgeislands-repo`'s layer 1, not re-checked here.)
+- [ ] 🔧 S — `CONTRIBUTING.md` and `SECURITY.md` present; `CHANGELOG.md` present **and non-empty** (an empty stub is a finding) — the
+      MCP-family root docs. `README`, `LICENSE`, `.gitignore`, `.editorconfig`, `.ki-config.toml`, and now `CLAUDE.md` (FAIL) + `ROADMAP.md`
+      (warn) are `knowledgeislands-repo`'s layers, not re-checked here.
 - [ ] S — `CLAUDE.md` is **not drifted**: every layer/path/concept it names still exists in the code (catch renamed/moved layers).
 - [ ] P — README install/config/client-setup steps are current.
 

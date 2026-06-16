@@ -130,10 +130,20 @@ stable. The house toolchain passes: Biome (TS/JSON), Prettier + markdownlint-cli
 ## 11. Knowledge Islands skill shape
 
 A **standard** Knowledge Islands skill carries reusable mode logic and resolves base-level bindings (store aliases, scope, writing
-standards) at runtime from the host base's `CLAUDE.md` and memory index — it hard-codes **no single base**. A **base-coupled extension**
-supplies only base-specific pre-flight/bindings and delegates the shared modes to a standard skill **by name** (both load into the session).
-Either way, the skill declares its **kind** (Knowledge Islands / process / scoped) clearly enough that a reader can place it.
-(arcadia-skills README, `knowledgeislands-kb`)
+standards) at runtime — base-specific **data** from the host repo's `.ki-config.toml` table, base-specific **prose** from its `CLAUDE.md`
+and memory index — so it hard-codes **no single base**. The skill declares its **kind** (Knowledge Islands / process / scoped) clearly
+enough that a reader can place it. (arcadia-skills README, `knowledgeislands-kb`)
+
+**Inter-skill relationships are composition, only.** A skill builds on another by **running that skill's checker/mode in sequence and adding
+its own delta** — never by importing it, so each stays valid installed standalone (`knowledgeislands-mcp` runs
+`knowledgeislands-engineering`'s toolchain audit, then audits the MCP delta). The composing skill **declares the edge**: it names the
+sibling and the run order in its AUDIT mode, and the relationship is drawn once in the arcadia-skills README map. **Delegation between two
+standards** — `knowledgeislands-kb` handing the `Streams` zone to `knowledgeislands-streams` — is the same mechanism at sub-scope, not a
+separate kind. There is **no base-coupled extension skill**: a base never ships a `<base>-kb`-style skill that takes the shared modes by
+name. What a base needs differently is **declared, not forked** — data in its own `.ki-config.toml` table (read validate-down by the
+standard), prose guidance in its `CLAUDE.md` — so base-specificity stays auditable rather than hidden in a drift-prone coupled skill. A
+genuinely base-specific _behaviour_ that no declaration can express is a signal to **generalise it into the standard** (a REFRESH
+candidate), not to fork a skill. (arcadia-skills README, `knowledgeislands-kb`)
 
 A skill that reads declared repo config does so through the shared **`.ki-config.toml`** — the file whose presence marks a Knowledge
 Islands–compliant repo, whose contract is defined by `knowledgeislands-repo` — and only through **its own `[<skill-name>]` table**. It
@@ -145,7 +155,7 @@ A **governance skill** — one that holds a house standard — exposes a common 
 **AUDIT** (check an artifact against the standard), **REFRESH** (re-anchor the standard to its sources), and **CONFORM** (bring an existing
 artifact into line). Modes beyond that triad are skill-specific: **INIT** scaffolds a new conformant artifact where that makes sense (a new
 repo, MCP server, or skill), and operational modes serve a skill's own domain (the `knowledgeislands-kb` note-ops — DIGEST / EXTRACT / QUERY
-/ SAVE / UPDATE). The five `knowledgeislands-*` skills are all governance skills on this model. (arcadia-skills README)
+/ SAVE / UPDATE). All `knowledgeislands-*` skills are governance skills on this model. (arcadia-skills README)
 
 Within a **Knowledge Islands repo** (one carrying a `.ki-config.toml`), a governance skill also takes a shared **file shape** so a reader —
 or a new such skill — moves between them without relearning: a normative `<domain>-standard.md` (or the contract / conventions reference it

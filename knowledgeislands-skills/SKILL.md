@@ -50,9 +50,9 @@ Review a skill (or every skill in a repo) against the rubric and report.
    - **Altitude & conciseness** — is anything in the body something a competent Claude already knows? Is detail that's read rarely pushed
      into `references/` rather than inlined?
    - **Progressive disclosure** — is every bundled file referenced from `SKILL.md` with a note on when to load it? Any orphan files?
-   - **Knowledge Islands fit** — is it correctly a _standard_ skill (resolves base bindings at runtime, hard-codes no base) or a
-     _base-coupled extension_ (delegates shared modes to a standard skill by `name`)? See [the rubric](references/audit-rubric.md) area
-     SHAPE.
+   - **Knowledge Islands fit** — is it correctly a _standard_ skill (resolves base bindings at runtime, hard-codes no base), and are its
+     inter-skill relationships **composition** (running a sibling's checker/mode in sequence and adding a delta, the edge declared) rather
+     than a retired base-coupled extension? See [the rubric](references/audit-rubric.md) area SHAPE.
    - **Collision & longevity** — for any trigger the linter flags as shared (or that you judge semantically overlapping), does **each**
      description name the other as an off-ramp, or is the guard one-directional? And does the skill hard-code volatile facts (model IDs, API
      / tool names, URLs, dated specs) without resolving them at runtime or carrying a refresh path — the staleness that bites hardest once a
@@ -70,7 +70,8 @@ Review a skill (or every skill in a repo) against the rubric and report.
 ## Mode INIT — write a new skill
 
 1. **Clarify scope first**: what should fire the skill (the triggers), what kind it is (Knowledge Islands / process / scoped — see
-   arcadia-skills `README.md`), and whether it's a standard skill or a base-coupled extension.
+   arcadia-skills `README.md`), and how it relates to sibling skills — always **composition** (run a sibling's checker/mode in sequence and
+   add a delta; declare the edge), never a base-coupled extension that takes another skill's modes.
 2. **Scaffold** `<name>/SKILL.md` with `references/`, `scripts/`, `assets/` only as needed. The directory name **is** the `name:`
    frontmatter (lowercase, hyphenated, in sync).
 3. **Write to the rubric, not from memory** — open [the rubric](references/audit-rubric.md) and satisfy each criterion as you draft. In

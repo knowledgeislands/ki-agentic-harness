@@ -133,8 +133,14 @@ ever starts enforcing a **[J]** check, move its tag here.
 
 - **SHAPE-1 [J]** A **standard** KI skill resolves base bindings at runtime and hard-codes **no single base**. (arcadia-skills README,
   `knowledgeislands-kb`)
-- **SHAPE-2 [J]** A **base-coupled extension** supplies only base bindings and delegates shared modes to a standard skill **by name**.
-  (arcadia-skills README)
+- **SHAPE-2 [M-heuristic + J]** **Composition is the only inter-skill relationship — the base-coupled extension pattern is retired.** A
+  skill builds on another by running the sibling's checker/mode **in sequence** and adding its delta (never importing it), and **declares
+  the edge** — naming the sibling and the run order in its AUDIT mode. What a base needs differently is **declared, not forked**: data in
+  the repo's own `.ki-config` table (read validate-down), prose in its `CLAUDE.md` — never a `<base>-kb`-style skill that takes the shared
+  modes by name. _Delegation between two standards (kb → streams) is composition at sub-scope._ The linter flags **endorsement of the
+  retired pattern** (telling a base to ship/"prefer" an extension skill, or that a skill "delegates the modes back" / "extends this one") as
+  a mechanical heuristic; the **[J]** gate is that no skill in the set models a relationship as a base-coupled extension. (arcadia-skills
+  README, `knowledgeislands-engineering`)
 - **SHAPE-3 [J]** The skill declares its **kind** (Knowledge Islands / process / scoped) clearly. (arcadia-skills README)
 - **SHAPE-4 [J]** A skill that reads the shared `.ki-config.toml` consumes and **validates only its own `[<skill>]` table** — warns on a key
   it doesn't recognise, advises dropping one that merely restates a default — and never inspects another skill's table. Validate down,

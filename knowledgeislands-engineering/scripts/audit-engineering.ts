@@ -86,13 +86,22 @@ strayPins.length
   ? add('WARN', 'mise', `legacy pin file(s) beside mise.toml: ${strayPins.join(', ')} — remove; mise.toml is the single toolchain pin`)
   : add('PASS', 'mise', 'no legacy pin files (.node-version / .nvmrc / .bun-version)')
 
-// ── core (when the repo has CI): CI installs the toolchain from mise.toml ──────
+// ── core (when the repo has CI): the common CI shape ──────────────────────────
+// CI installs the toolchain from mise.toml and runs the common gate steps on every
+// push/PR. The Markdown gate (lint:md:check) is load-bearing: without it, prose-wrap
+// drift lands on main undetected (lint:md self-heals with --write locally). The
+// test:smoke step is the MCP delta — asserted by audit-mcp.ts, not here.
 if (has('.github', 'workflows', 'ci.yml')) {
   const ci = read('.github', 'workflows', 'ci.yml')
   const usesMise = /mise-action/.test(ci)
   usesMise ? add('PASS', 'ci', 'ci.yml installs the toolchain via jdx/mise-action') : add('FAIL', 'ci', 'ci.yml must install the toolchain via jdx/mise-action (reads mise.toml)')
   const hard = ci.match(/\b(bun|node)-version\s*:/)
   if (hard) add('FAIL', 'ci', `ci.yml hardcodes ${hard[1]}-version — remove it; the version comes from mise.toml`)
+  const runsStep = (s: string) => ci.includes(`bun run ${s}`)
+  for (const step of ['lint:check', 'lint:types', 'lint:md:check']) {
+    runsStep(step) ? add('PASS', 'ci', `ci.yml runs ${step}`) : add('FAIL', 'ci', `ci.yml must run "bun run ${step}" — the common CI shape (lint:md:check is the Markdown gate)`)
+  }
+  if (scripts['test:coverage']) runsStep('test:coverage') ? add('PASS', 'ci', 'ci.yml runs test:coverage') : add('WARN', 'ci', 'ci.yml should run "bun run test:coverage" (tests capability)')
 } else {
   add('PASS', 'ci', 'no .github/workflows/ci.yml — N/A')
 }
@@ -103,6 +112,7 @@ const CANON: Record<string, string> = {
   'lint:fix': 'bunx @biomejs/biome check --write --unsafe',
   'lint:format': 'bunx @biomejs/biome format --write',
   'lint:md': 'bunx prettier --write "**/*.md" --ignore-path .gitignore && bunx markdownlint-cli2',
+  'lint:md:check': 'bunx prettier --check "**/*.md" --ignore-path .gitignore && bunx markdownlint-cli2',
   'lint:package': 'bunx syncpack format',
   'lint:types': 'tsc --noEmit',
   'deps:missing': "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.missing | keys | .[]' | xargs bun add -D",

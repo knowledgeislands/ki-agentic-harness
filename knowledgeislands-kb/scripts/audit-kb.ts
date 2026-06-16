@@ -20,10 +20,11 @@
  *      table, validated DOWN (this skill's own keys only) per the shared-file
  *      contract owned by `knowledgeislands-repo`: warn on a key it does not
  *      recognise, advise dropping a zone mapped to its own canonical name, and
- *      never read another skill's table. The only keys are the
+ *      never read another skill's table. The keys are the
  *      `[knowledgeislands-kb.zones]` aliases (any canonical zone or staging area
- *      mapped to a local folder name), and an optional `required_frontmatter`
- *      array (see point 3).
+ *      mapped to a local folder name), an optional `required_frontmatter` array
+ *      (see point 3), and an optional `preflight` array (note paths/globs to read
+ *      before drafting).
  *
  *   3. NOTE FRONTMATTER — for every note that HAS a `---` frontmatter block:
  *      the fence must close (well-formed) and its top-level keys must be
@@ -55,14 +56,18 @@ const ZONES_SECTION = `${KI_SECTION}.zones`
 // The default block `--init` emits. Nothing here is mandatory: a base on the
 // canonical zone names needs no [knowledgeislands-kb] table at all, so the whole
 // block is a commented template the author uncomments only to declare an alias.
-const KI_DEFAULT = `# ${KI_SECTION} reads this table for two optional, per-base declarations. A base on
+const KI_DEFAULT = `# ${KI_SECTION} reads this table for its optional, per-base declarations. A base on
 # the canonical zone names (${ZONES.join(' / ')}) with no
-# frontmatter contract needs no table here at all.
+# frontmatter contract and no extra pre-flight needs no table here at all.
 
 # [${KI_SECTION}]
 # Frontmatter keys every note that HAS frontmatter must carry (extra keys are free).
 # Omit to leave required frontmatter as a judgment call. Keys must be snake_case.
 # required_frontmatter = ["tags", "status", "author"]
+#
+# Notes (paths or globs, relative to the base) to read before drafting — the
+# base-specific pre-flight. Omit for none beyond the memory cascade.
+# preflight = ["Pillars/<Pillar>/Profiles", "Admin/Conventions.md"]
 
 # [${ZONES_SECTION}]
 # canonical zone or staging area = this base's local folder. Resolve every zone
@@ -95,7 +100,7 @@ const isFile = (p: string): boolean => existsSync(p) && statSync(p).isFile()
 // on one line, `#` comments. NOT a full TOML parser, and it reads ONLY this skill's
 // tables — another skill's `[table]` is ignored entirely (validate down, ignore
 // across). Returns null if the file has no `[knowledgeislands-kb…]` table at all.
-type KiKb = { keys: Record<string, string>; zones: Record<string, string>; requiredFrontmatter: string[] | null }
+type KiKb = { keys: Record<string, string>; zones: Record<string, string>; requiredFrontmatter: string[] | null; preflight: string[] | null }
 const unquote = (s: string): string => s.replace(/^["']|["']$/g, '')
 // `key = ["a", "b"]` → ['a','b']; tolerant of single/double quotes and spacing.
 const parseInlineArray = (val: string): string[] => {
@@ -109,7 +114,7 @@ const parseInlineArray = (val: string): string[] => {
 function parseKiKb(text: string): KiKb | null {
   let section = ''
   let seen = false
-  const out: KiKb = { keys: {}, zones: {}, requiredFrontmatter: null }
+  const out: KiKb = { keys: {}, zones: {}, requiredFrontmatter: null, preflight: null }
   for (const raw of text.split(/\r?\n/)) {
     const line = raw.replace(/#.*$/, '').trim()
     if (!line) continue
@@ -124,9 +129,10 @@ function parseKiKb(text: string): KiKb | null {
     const key = line.slice(0, eq).trim()
     const rawVal = line.slice(eq + 1).trim()
     if (section === KI_SECTION) {
-      // `required_frontmatter` is the one recognised scalar key (an array); any
+      // `required_frontmatter` and `preflight` are the recognised array keys; any
       // other scalar key is unrecognised and warns (CONFIG-1).
       if (key === 'required_frontmatter') out.requiredFrontmatter = parseInlineArray(rawVal)
+      else if (key === 'preflight') out.preflight = parseInlineArray(rawVal)
       else out.keys[key] = unquote(rawVal)
     } else if (section === ZONES_SECTION) out.zones[unquote(key)] = unquote(rawVal)
   }
@@ -177,6 +183,15 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
       else if (folder === zone) note('config', `[${ZONES_SECTION}] ${zone} = "${folder}" restates the canonical name — drop it`)
       else note('config', `alias in effect: ${zone} resolves to ${folder}/`)
     }
+  }
+
+  // ── preflight (declared reads before drafting), validate-down ──
+  // Recognised as this skill's key so it doesn't warn as unknown; literal
+  // (non-glob) entries should resolve under the base, globs are left to runtime.
+  if (ki?.preflight) {
+    const missing = ki.preflight.filter((p) => !/[*?[\]]/.test(p) && !existsSync(join(base, p)))
+    if (missing.length) warn('preflight', `declared preflight path(s) not found under the base: ${sampleList(missing)}`)
+    note('preflight', `preflight: ${ki.preflight.length} entr${ki.preflight.length === 1 ? 'y' : 'ies'} declared`)
   }
 
   // ── zone layout (resolved through any alias) ──

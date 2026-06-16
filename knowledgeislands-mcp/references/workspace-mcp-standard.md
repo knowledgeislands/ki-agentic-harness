@@ -179,6 +179,9 @@ The Bun-install / Node-run split, the **`bun test` trap**, the `process.loadEnvF
 - **`server:mcp:*` scripts** — `server:mcp:dev` / `server:mcp:inspect` (both `NODE_ENV=development bun …`) / `server:mcp:start`
   (`bun run build && node dist/mcp-server/index.js`); OAuth repos add `server:auth:*`, and a repo with a CLI/smoke harness adds
   `test:smoke`.
+- **CI — the smoke delta.** The common CI shape (`jdx/mise-action` + `bun run lint:check` / `lint:types` / `lint:md:check` /
+  `test:coverage`) is `knowledgeislands-engineering`'s, asserted by `audit-engineering.ts`. An MCP repo with a smoke harness **appends
+  `bun run test:smoke`** to `.github/workflows/ci.yml` after those steps — the MCP delta on the CI shape, asserted here by `audit-mcp.ts`.
 
 ## 9. tsconfig / vitest / biome
 
@@ -199,11 +202,18 @@ standard** (`knowledgeislands-engineering` §8). The **MCP delta** is the variab
 
 ## 11. Docs
 
+**Presence** of `README.md`, `CLAUDE.md`, and `ROADMAP.md` is `knowledgeislands-repo`'s layer (the first two universal/FAIL, `ROADMAP.md` a
+warn); this section owns their **MCP content contract**, plus the three MCP-family root docs whose presence is the **MCP delta**:
+
 - **`README.md`** — user-facing: tool catalog (purpose + I/O shape per tool), install/config, client setup, dev commands.
 - **`CLAUDE.md`** — architecture invariants, security requirements, and what an agent needs beyond the README. Must stay in sync with the
   code: a `CLAUDE.md` describing a layer that has since been renamed/moved (e.g. an `orchestrator/` section after the move to `cli/` +
   `main/`) is a finding.
-- **`ROADMAP.md`** — planned features / deprecations (most repos).
+- **`ROADMAP.md`** — planned features / deprecations.
+- **`CONTRIBUTING.md`** — setup, dev loop, conventions (code / commits / testing), pre-PR checklist. _(MCP delta: presence required.)_
+- **`SECURITY.md`** — vulnerability reporting, scope (in / out), supported versions (OAuth repos add a token-storage note). _(MCP delta:
+  presence required.)_
+- **`CHANGELOG.md`** — release notes; present **and non-empty** (an empty stub at 1.0.0 is a finding). _(MCP delta.)_
 
 ## 12. Spec conformance: tool results, errors & metadata
 

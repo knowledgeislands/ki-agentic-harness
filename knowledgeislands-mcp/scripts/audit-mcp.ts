@@ -49,12 +49,16 @@ if (hasCli) {
   }
 }
 
-// MCP docs (the toolchain configs — tsconfig*/biome/vitest/.env.example — are the common
-// engineering layer, checked by audit-engineering.ts; not re-checked here).
-for (const f of ['README.md', 'CLAUDE.md']) {
+// MCP-family root docs (the MCP delta). README/CLAUDE/ROADMAP presence + LICENSE/.gitignore/
+// .editorconfig/.ki-config are knowledgeislands-repo's layers (CLAUDE.md + ROADMAP.md are now
+// universal there); the toolchain configs are audit-engineering.ts's. The CLAUDE.md content
+// contract (no drift) stays a judgment item. Here: CONTRIBUTING + SECURITY present, CHANGELOG
+// present AND non-empty.
+for (const f of ['CONTRIBUTING.md', 'SECURITY.md']) {
   has(f) ? add('PASS', 'files', `${f} present`) : add('FAIL', 'files', `${f} missing`)
 }
-has('ROADMAP.md') ? add('PASS', 'files', 'ROADMAP.md present') : add('WARN', 'files', 'ROADMAP.md missing (most repos have one)')
+if (!has('CHANGELOG.md')) add('FAIL', 'files', 'CHANGELOG.md missing')
+else read('CHANGELOG.md').trim() ? add('PASS', 'files', 'CHANGELOG.md present and non-empty') : add('FAIL', 'files', 'CHANGELOG.md is an empty stub — add a release entry (e.g. 1.0.0) or remove it')
 
 // vitest config presence — located only so the MCP coverage-exclude check below can read it.
 const vitestFile = ['vitest.config.ts', 'vitest.config.js', 'vitest.config.mts'].find((f) => has(f))
@@ -68,6 +72,15 @@ try {
 }
 const scripts = (pkg.scripts ?? {}) as Record<string, string>
 const name = String(pkg.name ?? basename(repo))
+
+// ── CI delta: the smoke step. The common CI shape (mise-action + lint:check / lint:types /
+// lint:md:check + test:coverage) is engineering's, asserted by audit-engineering.ts; the MCP
+// delta is the test:smoke step appended after it.
+if (scripts['test:smoke'] && has('.github', 'workflows', 'ci.yml')) {
+  read('.github', 'workflows', 'ci.yml').includes('bun run test:smoke')
+    ? add('PASS', 'ci', 'ci.yml runs test:smoke (MCP delta, after the common gate)')
+    : add('FAIL', 'ci', 'ci.yml must run "bun run test:smoke" — the MCP delta, after the common engineering gate steps')
+}
 
 const eq = (area: string, key: string, actual: unknown, want: unknown) =>
   actual === want ? add('PASS', area, `${key} = ${JSON.stringify(want)}`) : add('FAIL', area, `${key} should be ${JSON.stringify(want)}, got ${JSON.stringify(actual)}`)

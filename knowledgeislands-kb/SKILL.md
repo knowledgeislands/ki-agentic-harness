@@ -6,9 +6,8 @@ description: >
   the Knowledge Islands structure (Calendar / Pillars / Resources / Streams, plus inbound `+` and outbound `-`), so it assumes the zone
   model rather than asking for it; only a few store-level bindings come from the host project. Triggers: "save to my notes", "save to the
   knowledge base", "add to the KB", "what do my notes say about", "search my notes", "update the note on", "capture this", "write a session
-  digest", "audit my knowledge base", "is my base structured right", "set up a new knowledge base". Where a knowledge base ships its own
-  named extension skill, prefer that skill; it extends this one. For general Markdown or TOML house style (not note content), use the
-  `knowledgeislands-authoring` skill.
+  digest", "audit my knowledge base", "is my base structured right", "set up a new knowledge base". For general Markdown or TOML house style
+  (not note content), use the `knowledgeislands-authoring` skill.
 argument-hint: 'audit | conform | digest | extract | improve | init | query <question> | refresh | save | update <note>'
 ---
 
@@ -67,10 +66,11 @@ switches.
 
 ## Project bindings
 
-Almost everything is fixed by the structure above. Only these come from the host project - take them from the auto-loaded `CLAUDE.md`, then
-the root memory index, then the project's extension skill if it ships one. **Declarative overrides** (the zone alias below) are read from
-the base's `.ki-config.toml` `[knowledgeislands-kb]` table instead — see the `knowledgeislands-repo` skill for the shared-file contract;
-validate your own table (warn on an unrecognised key) and never read another skill's.
+Almost everything is fixed by the structure above. Only these come from the host project - take the narrative bindings from the auto-loaded
+`CLAUDE.md`, then the root memory index. **Declarative overrides** (the zone alias and the lists below) are read from the base's
+`.ki-config.toml` `[knowledgeislands-kb]` table instead — see the `knowledgeislands-repo` skill for the shared-file contract; validate your
+own table (warn on an unrecognised key) and never read another skill's. A base never ships a `<base>-kb` skill: what it needs differently is
+declared here (data) or in its `CLAUDE.md` (prose), never forked into a coupled skill.
 
 - **Notes store** — canonical alias and location of the notes store. _Default:_ the connected base; refer to it as "the base".
 - **Sources store** — whether a paired sources store exists, and how note extracts mirror its paths. _Default:_ none.
@@ -82,9 +82,10 @@ validate your own table (warn on an unrecognised key) and never read another ski
 - **Required frontmatter** — the keys every note carrying frontmatter must include. Declare them with
   `required_frontmatter = ["tags", "status", "author"]` under `[knowledgeislands-kb]` to have the checker enforce their presence
   mechanically (extra keys stay free; keys are always `snake_case`). _Default:_ none declared — required frontmatter stays a judgment call
-  resolved from the host `CLAUDE.md` / extension.
+  resolved from the host `CLAUDE.md`.
 - **Writing standards** — language variant, citation format, structural norms. _Default:_ British English; cite source paths; concise prose.
-- **Domain pre-flight** — any extra reads before drafting (profiles, domain context), usually via the extension skill. _Default:_ none
+- **Domain pre-flight** — any extra reads before drafting (profiles, domain context). Declare them as `preflight = ["<path-or-glob>", …]`
+  under `[knowledgeislands-kb]` — a list of note paths/globs to read before drafting, which the checker validates _down_. _Default:_ none
   beyond the memory cascade.
 
 ## Step 1 - Load context
@@ -93,7 +94,7 @@ validate your own table (warn on an unrecognised key) and never read another ski
 2. If the base is Pillar-scoped, declare or confirm the active Pillar, then load `Pillars/<Pillar>/MEMORY.md` and any profile index.
    Confirm: "Session scoped to [Pillar]." If the user switches Pillar mid-session, re-scope before proceeding.
 3. Pre-flight before writing anything substantive: scope cascade loaded; if the work engages a named person/entity with a profile note, read
-   it first; run any domain pre-flight the host `CLAUDE.md` or extension mandates.
+   it first; run any domain pre-flight declared in `.ki-config` (`preflight`) or the host `CLAUDE.md`.
 
 ## Step 2 - Determine mode
 
@@ -112,9 +113,8 @@ SAVE · UPDATE**. Modes are named and alphabetical.
    notes filed in the wrong zone (per the routing test), _whether a note should carry frontmatter at all_ and its naming quality, whether
    the memory index's active-Pillar list is actually accurate, and fact-vs-analysis labelling where the base distinguishes them.
 3. **Compose sibling audits.** A base audit is not just kb's: also run the audit of every other skill that governs this base and is in play
-   — notably `knowledgeislands-streams` (`streams:audit`, the Streams zone + the Enactment gate), the base's `<base>-kb` extension if it
-   ships one, and `knowledgeislands-authoring` over its markdown. Report them together; a base is "clean" only when each applicable skill's
-   audit is.
+   — notably `knowledgeislands-streams` (`streams:audit`, the Streams zone + the Enactment gate) and `knowledgeislands-authoring` over its
+   markdown. Report them together; a base is "clean" only when each applicable skill's audit is.
 4. **Report** drift, leading with FAILs then WARNs: misrouted or mis-zoned notes, missing zones, notes lacking required frontmatter, stale
    memory-index entries. Cite paths and give the fix.
 
@@ -185,15 +185,15 @@ This skill carries the zone model, routing test, and project-bindings table as f
 use it are really organised - especially once installed into a shared/cloud catalogue, where it is long-lived and far from its author. Run
 this periodically, or when someone asks "is the KB skill still current".
 
-1. **Read [the source list](references/sources.md)** - the canonical structure definition (the arcadia-skills `README.md`), the bases
-   actively using this skill, and any base-coupled `<base>-kb` extensions, each with a `last reviewed` date.
+1. **Read [the source list](references/sources.md)** - the canonical structure definition (the arcadia-skills `README.md`) and the bases
+   actively using this skill, each with a `last reviewed` date.
 2. **Re-anchor against reality.** Re-read the README's structure section, and sample how the live bases are actually laid out (their root
    `Admin/MEMORY.md` and top-level folders). Diff against this skill's zone table, routing test, and bindings table. Look for: a zone or
    convention the bases now use that the model omits; a binding real bases supply that the bindings table doesn't name; a default that no
    longer matches practice; a tool surface the host MCP server has changed under the skill (it resolves tools at runtime - confirm that
    assumption still holds).
 3. **Separate canonical from local.** A change is only a model change if it traces to the canonical structure or to a pattern shared across
-   bases; a single base's quirk belongs in that base's extension skill, not here.
+   bases; a single base's quirk is declared in that base's `.ki-config` / `CLAUDE.md`, not promoted here.
 4. **Propose a diff** to the zone table / routing test / bindings, and confirm before writing.
 5. **Update [the source list](references/sources.md)** - bump each `last reviewed` date, add any new source, retire any dead one. The record
    of what changed is the commit itself - history lives in git, not a changelog. This step is mandatory: the source list is the skill's
@@ -229,8 +229,10 @@ _Gate: if the note lives in a canonical zone and the base runs the Enactment Pro
 
 - This skill assumes the Knowledge Islands structure. If a base does not follow it, or a binding cannot be resolved and no default fits, ask
   the user rather than guess.
-- Where a base ships a named extension skill (one named for the base, e.g. `<base>-kb`), that skill takes precedence and supplies the
-  base-specific pre-flight and scope rules; it delegates these five modes back here.
+- A base supplies its specifics by **declaration**, not a coupled skill: structured data (zone aliases, required frontmatter, pre-flight
+  reads) in its `.ki-config.toml` `[knowledgeislands-kb]` table, narrative bindings (store alias, scope, writing standards) in its
+  `CLAUDE.md`. There is no `<base>-kb` extension skill; relationships to sibling skills are composition (e.g. the `Streams` zone delegates
+  to `knowledgeislands-streams`).
 
 Reference detail: [Knowledge Islands KB Reference](<references/Knowledge Islands KB Reference.md>). Checkable criteria:
 [the audit rubric](references/audit-rubric.md), enforced mechanically by [`scripts/audit-kb.ts`](scripts/audit-kb.ts).

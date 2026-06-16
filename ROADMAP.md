@@ -13,17 +13,20 @@ run continuously, so they live there, not here.
 
 ## Later
 
-- **`.ki-config.toml` as a per-repo override layer.** _(candidate)_ The shared, skill-sectioned `.ki-config.toml` (contract owned by
-  `knowledgeislands-repo`) now has **two consumers beyond `-repo`'s own `visibility` + `[…checks]`**: `knowledgeislands-kb` reads both a
-  `[knowledgeislands-kb.zones]` alias (a base mid-rename declares a local folder name) and a `required_frontmatter` array (the base declares
-  the frontmatter keys its notes must carry, which the checker then enforces mechanically). That establishes the pattern — a skill takes
-  per-repo/per-base declarations under its own `[<skill>]` table, validating down and ignoring across. The remaining work is to **generalise
-  it**: a stated convention for what's overridable vs fixed, and each consuming skill emitting its default keys (the `--init` pattern
-  `-repo`, `-kb`, and `-streams` all follow) so the options are authored, not implicit. **The third consumer has now arrived:**
-  `knowledgeislands-streams` reads its own `[knowledgeislands-streams]` table (`process_note`, `note_type_scheme`) and the
-  `[knowledgeislands-kb.zones]` alias — so the pattern has three consumers (repo, kb, streams) and the generalisation is now warranted
-  rather than speculative. Next step: write the shared contract up (overridable-vs-fixed, the `--init` self-documentation rule) in the
-  `knowledgeislands-repo` `.ki-config.toml` reference.
+- **Conform the website repos to the new standards.** The `knowledgeislands-11ty-websites` and `knowledgeislands-cloudflare-hosting` skills
+  now exist (extracted from `kit-midnight.ninja` + `vallearmonia-website`, the `dist/` folder the seam between them), but their target repos
+  are not yet brought into line. Open work, by repo: add the `[knowledgeislands-11ty-websites]` / `[knowledgeislands-cloudflare-hosting]`
+  opt-in tables to each site's `.ki-config.toml`; **CONFORM `arcadia-website`** (very old — a skeletal `src/` with no `tokens.css`,
+  `_includes/{layouts,partials}/`, or `seo-meta` partial) up to the build standard; add `kit-midnight.ninja`'s **missing
+  `site/wrangler.jsonc`** so `site:deploy` works. Dogfooding the skills against their own corpus; seed `evals/` scenarios for both while
+  conforming. (Adding the opt-in tables is the one new `.ki-config.toml` consumer pair beyond those listed below.)
+
+- **`.ki-config.toml` override layer — finish the rollout.** The cross-cutting contract now states the **overridable-vs-fixed** convention
+  and the `--init` self-documentation rule (in the `knowledgeislands-repo` `.ki-config.toml` reference), and the pattern has its consumers:
+  `-repo` (`visibility` + `[…checks]`), `-kb` (`[…zones]` alias, `required_frontmatter`, and the new `preflight` list — the worked third
+  declarable key), and `-streams` (`process_note`, `note_type_scheme`). It is also the seam that retired the base-coupled extension pattern:
+  a base now declares its differences here rather than forking a `<base>-kb` skill. Residual: confirm every consuming skill's `--init` emits
+  its declarable keys, and add the website skills' opt-in tables as they conform.
 
 - **Dependabot — two open follow-ups.** _(candidate)_ The Layer-3 baseline is in place (alerts + security updates + `allow_update_branch`,
   all governed). Two threads remain. (a) **Bun ecosystem rollout.** Our repos are Bun projects (`bun.lock`), but their `dependabot.yml`

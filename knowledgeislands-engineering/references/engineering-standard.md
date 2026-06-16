@@ -66,8 +66,15 @@ shell and CI resolve byte-identically. Two rules:
 - `mise.toml` is the **single** toolchain pin. No legacy single-tool file — `.node-version`, `.nvmrc`, `.bun-version` — may linger beside
   it; each is redundant and can silently diverge, so the checker warns on any it finds.
 
-Where the repo has CI (`.github/workflows/ci.yml`), the workflow installs the toolchain through `jdx/mise-action` and pins **no** version
-itself (no `bun-version:` / `node-version:`) — a hardcoded version there bypasses `mise.toml` and is drift.
+### CI workflow
+
+Where the repo has CI (`.github/workflows/ci.yml`), it is a single `build` job on `push` to `main` and `pull_request`, running the common
+gate **in order**: `jdx/mise-action` (installs the toolchain from `mise.toml`, pinning **no** version itself — no `bun-version:` /
+`node-version:`, which would bypass `mise.toml` and is drift) → `bun install --frozen-lockfile` → `bun run lint:check` →
+`bun run lint:types` → **`bun run lint:md:check`** → `bun run test:coverage` (where the repo has tests). The Markdown gate is load-bearing:
+`lint:md` self-heals locally with `--write`, so only its `--check` twin in CI stops prose-wrap drift reaching `main`. A `test:smoke` step
+that follows in an MCP repo is that artifact's **delta**, owned by `knowledgeislands-mcp` and asserted by `audit-mcp.ts` — not part of this
+common shape.
 
 ## 2. The script families (core)
 
@@ -79,6 +86,7 @@ them. Copy, never paraphrase:
 "lint:fix":     "bunx @biomejs/biome check --write --unsafe",
 "lint:format":  "bunx @biomejs/biome format --write",
 "lint:md":      "bunx prettier --write \"**/*.md\" --ignore-path .gitignore && bunx markdownlint-cli2",
+"lint:md:check": "bunx prettier --check \"**/*.md\" --ignore-path .gitignore && bunx markdownlint-cli2",
 "lint:package": "bunx syncpack format",
 "lint:types":   "tsc --noEmit",
 "deps:missing": "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.missing | keys | .[]' | xargs bun add -D",
@@ -88,8 +96,9 @@ them. Copy, never paraphrase:
 "prepare":      "husky"
 ```
 
-- `lint:*` — the full six. `lint:check`/`lint:fix`/`lint:format` are Biome; `lint:md` is Prettier + markdownlint-cli2; `lint:package` is
-  syncpack; `lint:types` is `tsc --noEmit`.
+- `lint:*` — the full family. `lint:check`/`lint:fix`/`lint:format` are Biome; `lint:md` (Prettier `--write` + markdownlint-cli2) reflows
+  locally, while its check-mode twin `lint:md:check` (`--check`) is what CI runs so committed Markdown can't drift from
+  `proseWrap`/`printWidth` (see _CI workflow_ in §1); `lint:package` is syncpack; `lint:types` is `tsc --noEmit`.
 - `deps:*` — the full three. They were "optional" in the older MCP standard; promoted to **required** here because they are universal across
   the repo set and the point is consistency.
 - A repo MAY add any number of **repo-specific scripts** (`eval`, `skills:*`, `repo:audit`, `server:auth:*`, `dev:css`, …). Extra scripts

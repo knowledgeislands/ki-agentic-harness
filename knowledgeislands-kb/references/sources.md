@@ -25,12 +25,12 @@ exemplars and read in tandem: `arcadia-principal` is conforming _up_ to the zone
 has the fuller set but holds a zone under a local folder name resolved by an alias - between them they exercise both directions of drift the
 model must absorb.
 
-| Source                                | Governs                                                                                      | Last reviewed |
-| ------------------------------------- | -------------------------------------------------------------------------------------------- | ------------- |
-| `arcadia-principal` base[^ap]         | Whether the zone model, routing test, and bindings still match a real layout and practice    | 2026-06-13    |
-| `kit-legal` base[^kl]                 | The same, from a base further along the structure but holding a zone under an aliased folder | 2026-06-13    |
-| Other bases actively using this skill | The same, as further bases adopt the skill                                                   | 2026-06-13    |
-| Base-coupled `<base>-kb` extensions   | Which base-specific conventions belong in an extension vs. promoted into this standard skill | 2026-06-13    |
+| Source                                | Governs                                                                                             | Last reviewed |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------- | ------------- |
+| `arcadia-principal` base[^ap]         | Whether the zone model, routing test, and bindings still match a real layout and practice           | 2026-06-13    |
+| `kit-legal` base[^kl]                 | The same, from a base further along the structure but holding a zone under an aliased folder        | 2026-06-13    |
+| Other bases actively using this skill | The same, as further bases adopt the skill                                                          | 2026-06-13    |
+| Per-base `.ki-config` declarations    | Which base-specific declarations recur across bases and should be promoted into this standard skill | 2026-06-13    |
 
 [^ap]:
     The first real Knowledge Islands base this skill tracks. Sampled through its own `kb-fs` MCP server (`arcadia-principal-mcp-kb-fs`) and

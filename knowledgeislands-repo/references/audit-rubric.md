@@ -13,7 +13,11 @@ that becomes deterministic should move into the script and flip to **[M]**.
 - **license-file [M]** `LICENSE` (or `LICENSE.md`) present. (Layer 1)
 - **gitignore [M]** `.gitignore` present. (Layer 1)
 - **editorconfig [M]** `.editorconfig` present. (Layer 1)
+- **claude-md [M]** `CLAUDE.md` present — the always-loaded anchor for any repo-specific gate or convention (skills rubric SHAPE-7).
+  (Layer 1)
 - **ki-config [M]** `.ki-config.toml` present (and read for `visibility` + the `[…checks]` override table). (Layer 1)
+- **roadmap-md [M, warn]** `ROADMAP.md` present — warn, not fail: most repos carry one, but a KB base may keep its forward view in
+  `Streams/Future`. (Layer 1)
 
 ## Layer 2 — core GitHub settings (repos on github.com)
 

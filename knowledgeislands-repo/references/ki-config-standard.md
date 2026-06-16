@@ -13,6 +13,7 @@ cross-skill protocol.)
 - [Table per skill](#table-per-skill)
 - [Validate your own table](#validate-your-own-table)
 - [Declared divergences](#declared-divergences)
+- [Overridable vs fixed](#overridable-vs-fixed)
 - [Scaffolding & ownership](#scaffolding--ownership)
 
 ## The shared file & the compliance marker
@@ -64,6 +65,20 @@ wiki = false   # this repo keeps a Wiki — deliberate, not drift
 The owning skill's auditor then reports the divergence as an acknowledged note rather than a failure. Adopt the same principle for any skill
 that needs declared, reviewable per-repo overrides: the divergence lives under that skill's table, is commented with its _why_, and is
 validated by that skill (an unrecognised key warns).
+
+## Overridable vs fixed
+
+A skill's standard fixes its model; a base or repo may declare **only** the keys that skill documents as overridable, and nothing else is a
+config knob. Two kinds of declaration are overridable: **data** the standard reads to fit a target (e.g. `knowledgeislands-kb`'s zone
+aliases, `required_frontmatter`, and `preflight`), and **divergences** from a default (the `[…checks]` booleans above). Everything not so
+documented is **fixed** by the standard — a target does not redefine it in config. This split is what keeps target-specificity
+declared-and-auditable rather than forked into a coupled skill: where a target differs, it differs through a documented key, not a bespoke
+`<target>-*` extension skill.
+
+So the option set is **authored, not implicit**: each skill emits its own overridable keys — commented, with defaults — via an `--init` the
+skill owns (`knowledgeislands-repo`, `-kb`, and `-streams` already do), so an author sees exactly what may be set, and an undocumented key
+warns (validate-down). A target-specific need that no documented key can express is a signal to **generalise it into the standard** (a
+REFRESH candidate), not to invent an ad-hoc key or fork a skill.
 
 ## Scaffolding & ownership
 

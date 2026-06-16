@@ -69,6 +69,7 @@ const REQUIRED_FILES: [check: string, paths: string[]][] = [
   ['license-file', ['LICENSE', 'LICENSE.md']],
   ['gitignore', ['.gitignore']],
   ['editorconfig', ['.editorconfig']],
+  ['claude-md', ['CLAUDE.md']],
   ['ki-config', [KI_CONFIG]]
 ]
 
@@ -208,6 +209,9 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, pkgDesc: st
   for (const [check, paths] of REQUIRED_FILES) {
     if (!paths.some((p) => files.has(p))) fail(check, `no ${paths.join(' / ')}`)
   }
+  // ROADMAP.md is expected but not required (warn): most repos carry one, but a KB
+  // base may keep its forward view in Streams/Future instead.
+  if (!files.has('ROADMAP.md')) warn('roadmap-md', 'no ROADMAP.md (most repos have one; a KB base may keep its roadmap in Streams/Future)')
 
   // ── layer 2: core GitHub ──
   if (r.defaultBranchRef?.name !== DEFAULT_BRANCH) fail('default-branch', `default branch is "${r.defaultBranchRef?.name ?? '?'}" (want ${DEFAULT_BRANCH})`)

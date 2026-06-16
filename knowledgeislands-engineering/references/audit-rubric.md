@@ -18,11 +18,14 @@ graded on it, and the checker reports it as N/A, not a failure.
 - [ ] 🔧 P — no legacy single-tool pin file (`.node-version`, `.nvmrc`, `.bun-version`) lingers beside `mise.toml` (warn).
 - [ ] 🔧 S — where the repo has `.github/workflows/ci.yml`, it installs the toolchain via `jdx/mise-action` and hardcodes no `bun-version:`
       / `node-version:`.
+- [ ] 🔧 S — that `ci.yml` runs the common gate steps `bun run lint:check`, `bun run lint:types`, and `bun run lint:md:check` (plus
+      `bun run test:coverage` where the repo has tests). `lint:md:check` is the Markdown gate; a following `test:smoke` step is the MCP
+      delta (asserted by `audit-mcp.ts`, not here).
 
 ## Core — script families (§2)
 
 - [ ] 🔧 S — the full `lint:*` family is present and **exact-matches** the canonical values: `lint:check`, `lint:fix`, `lint:format`,
-      `lint:md`, `lint:package`, `lint:types`.
+      `lint:md`, `lint:md:check`, `lint:package`, `lint:types`.
 - [ ] 🔧 S — the full `deps:*` family is present and exact-matches: `deps:missing`, `deps:unused`, `deps:update`.
 - [ ] 🔧 S — `clean` and `prepare` are present (`prepare` = `husky`; `clean` removes `node_modules`, and `dist` where the repo builds).
 - [ ] judgment P — repo-specific scripts beyond the families are fine; the checker must not flag them. Just confirm none shadow a family

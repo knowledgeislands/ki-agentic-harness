@@ -29,7 +29,11 @@ working checkout — so what's actually committed is what's audited, and `--org`
 | `LICENSE`         | MIT text (matches the GitHub license — layer 2).                                                                      |
 | `.gitignore`      | Keeps build/dep noise out of history.                                                                                 |
 | `.editorconfig`   | Shared editor defaults across the workspace toolchain.                                                                |
+| `CLAUDE.md`       | Agent instructions — the always-loaded anchor for any repo-specific gate or convention (skills rubric SHAPE-7).       |
 | `.ki-config.toml` | Declares this repo's expected config under `[knowledgeislands-repo]` — `visibility` and any per-repo check overrides. |
+
+`ROADMAP.md` is **expected but not required** — a warn, not a fail: most repos carry one, but a base that keeps its forward view elsewhere
+(a KB base's `Streams/Future`) may omit it.
 
 ## Layer 2 — core GitHub settings
 

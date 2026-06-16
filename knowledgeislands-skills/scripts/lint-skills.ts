@@ -218,6 +218,20 @@ function lintSkill(skillDir: string): Finding[] {
     }
   }
 
+  // --- composition-only: flag endorsement of the retired extension pattern (SHAPE-2 heuristic) ---
+  // Composition is the sole sanctioned inter-skill relationship; the base-coupled
+  // extension pattern is retired (a base declares differences in .ki-config / CLAUDE.md,
+  // it does not ship a <base>-kb skill that takes the shared modes). Keyed on ENDORSEMENT
+  // phrasing, not the bare word "extension" — the meta-skills must be free to name the
+  // retired pattern in order to forbid it. Scans the SKILL.md body only (not reference
+  // files, which legitimately define the rule). WARN for the [J] reviewer to confirm.
+  const endorsesExtension = [/\bprefer that (extension )?skill\b/i, /delegat\w*[^.\n]*\bmodes?\b[^.\n]*\bback\b/i, /\bextends this one\b/i].some((re) => re.test(stripCode(body)))
+  if (endorsesExtension)
+    warn(
+      'SHAPE-2',
+      'endorses the retired base-coupled extension pattern (ship/"prefer" an extension skill, "delegates the modes back", "extends this one") — relationships are composition only; declare base differences in .ki-config / CLAUDE.md, per SHAPE-2'
+    )
+
   // --- behaviour-changing skills must anchor their gate (SHAPE-7 heuristic) ---
   // A skill that installs a gate / standing rule can't rely on its own description
   // to fire (skills load on demand). Strong gate phrasing in the body, without an

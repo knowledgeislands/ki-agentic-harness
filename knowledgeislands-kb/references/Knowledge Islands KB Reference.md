@@ -3,6 +3,14 @@
 Long-form detail for the [Knowledge Islands KB](../SKILL.md) skill. Loaded on demand (progressive disclosure) so the `SKILL.md` body stays
 lean.
 
+## Contents
+
+- [The Knowledge Islands model](#the-knowledge-islands-model)
+- [Onboarding a base to this skill](#onboarding-a-base-to-this-skill)
+- [Zone aliases and the `[knowledgeislands-kb]` config table](#zone-aliases-and-the-knowledgeislands-kb-config-table)
+- [Session digest structure](#session-digest-structure)
+- [Per-base config, not an extension skill](#per-base-config-not-an-extension-skill)
+
 ## The Knowledge Islands model
 
 A Knowledge Islands base is a single markdown store organised into five fixed zones - `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, and
@@ -41,7 +49,8 @@ Because the zone model is fixed, onboarding is small - resolve only the **projec
 3. **Scope usage** - whether the base is Pillar-scoped (declare an active Pillar each session) or single-Pillar / flat.
 4. **Writing standards** - language variant, citation format, structural norms (defaults: British English, cite source paths, concise
    prose).
-5. **Domain pre-flight** - any extra reads before drafting, usually supplied by the base's extension skill.
+5. **Domain pre-flight** - any extra reads before drafting; declared as a `preflight` list in the base's `.ki-config.toml`
+   `[knowledgeislands-kb]` table, not in `CLAUDE.md`.
 6. **Zone names** - only if a folder diverges from its canonical name during a migration; declared in `.ki-config.toml`, not `CLAUDE.md`
    (see [Zone aliases](#zone-aliases-and-the-knowledgeislands-kb-config-table)).
 
@@ -86,14 +95,17 @@ Destination `-/_DIGESTS/<UTC timestamp> <Short Topic>.md` (timestamp `YYYY-MM-DD
 - **Related Work** - links to the notes, Pillars, or streams touched.
 - **Keywords** - retrieval terms.
 
-## Extension-skill pattern
+## Per-base config, not an extension skill
 
-A base that needs base-specific pre-flight (declaring an active scope, loading domain context) ships a thin extension skill named for the
-base (e.g. `<base>-kb`). The extension:
+A base never ships a `<base>-kb` extension skill. What it needs differently is **declared**, so the mode logic stays in one place and the
+base specifics stay auditable:
 
-- Carries its own `name` and trigger phrases.
-- Adds only the base-specific Step 1 / pre-flight (scope declaration, profile reads, domain pre-flight) and the project bindings.
-- Delegates the five operating modes (SAVE / UPDATE / QUERY / EXTRACT / DIGEST) back to the `knowledgeislands-kb` skill **by name** rather
-  than restating them. Both skills load into the session, so the reference is by `name`, not a file path.
+- **Structured data** → the base's `.ki-config.toml` `[knowledgeislands-kb]` table, read **validate-down** by this skill: the
+  `[knowledgeislands-kb.zones]` aliases, the `required_frontmatter` array, and the `preflight` array (note paths/globs to read before
+  drafting — the base-specific pre-flight that scope declaration and domain context once justified an extension for).
+- **Narrative bindings** (store alias, scope usage, writing standards) → the base's auto-loaded `CLAUDE.md`.
 
-This keeps the mode logic in one place and the base specifics in the extension.
+Relationships to sibling skills are **composition**, never extension: this skill runs alongside `knowledgeislands-streams` (to which it
+delegates the `Streams` zone) and `knowledgeislands-authoring` (over a base's markdown), each invoked in sequence, never importing the
+other. A genuinely base-specific _behaviour_ that no declaration can express is a signal to generalise it into this standard skill (a
+REFRESH candidate), not to fork a coupled one.

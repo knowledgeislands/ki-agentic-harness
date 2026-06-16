@@ -3,13 +3,12 @@ name: knowledgeislands-engineering
 description: >
   The shared engineering toolchain every Knowledge Islands TypeScript/Bun repo conforms to — the common build/lint/test layer the
   artifact-type skills build on rather than restate, the twin of `knowledgeislands-authoring`. Covers package.json metadata, the `mise.toml`
-  toolchain pin (node + bun, matched to `packageManager`, installed in CI via `mise-action`), the `lint:*`/`deps:*` script families, the
-  Bun-install/Node-run split and the `bun test` trap, `tsconfig`/`biome`/`prettier`/`vitest` shape and 100% coverage, `.env` discipline, and
-  the build/cli-chmod rule — plus the enforcement framework (mode shape, rubric tagging, checker contract, `.ki-config.toml` contract) the
-  governance skills follow. Use to audit, conform, or scaffold a repo's toolchain, or check script-family / tsconfig / biome consistency.
-  Triggers: "audit our engineering standards", "do the repos' scripts match", "why are lint:/deps: scripts inconsistent". For GitHub
-  settings, security, and the `.ki-config.toml` contract use `knowledgeislands-repo`; for Markdown/TOML style use
-  `knowledgeislands-authoring`; for MCP server code use `knowledgeislands-mcp`.
+  toolchain pin, the `lint:*`/`deps:*` script families, the Bun-install/Node-run split, `tsconfig`/`biome`/`vitest` shape with 100%
+  coverage, the CI-workflow shape, and the build/cli-chmod rule — plus the enforcement framework the governance skills follow. Use to audit,
+  conform, or scaffold a repo's toolchain, or check script-family / tsconfig / biome consistency. Triggers: "audit our engineering
+  standards", "do the repos' scripts match", "why are lint:/deps: scripts inconsistent". For GitHub settings, security, and the
+  `.ki-config.toml` contract use `knowledgeislands-repo`; for Markdown/TOML style use `knowledgeislands-authoring`; for MCP server code use
+  `knowledgeislands-mcp`.
 argument-hint: 'audit <repo> | conform <repo> | init <repo> | refresh'
 ---
 
@@ -40,7 +39,7 @@ artifact skill's — see below.
 
 ## The common standard at a glance
 
-- **package.json** — `type:module`, `packageManager:bun@1.3.x`, `engines.node>=22`; the full `lint:*` family (six, exact) + `deps:*` family
+- **package.json** — `type:module`, `packageManager:bun@1.3.x`, `engines.node>=22`; the full `lint:*` family (exact) + `deps:*` family
   (three) + `clean` + `prepare`. Extra repo-specific scripts are fine — the standard is strict about the families, permissive about
   additions.
 - **Bun vs Node** — install/dev under Bun, `dist/` runs under Node ≥ 22. **No `bun test` anywhere** (it runs Bun's runner, not vitest).

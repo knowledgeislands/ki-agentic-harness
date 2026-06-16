@@ -44,7 +44,7 @@ model and is applied by reading in Mode AUDIT step 2. This is the kb half of the
 
 - **NOTE-1 [M, base-declared]** Where the base declares `required_frontmatter = [...]` in its `[knowledgeislands-kb]` table, every note that
   **has** a frontmatter block carries those keys (extra keys are free). Undeclared, this is **[J]** — required keys are base-specific
-  (resolved from the host `CLAUDE.md` / extension), and _whether a given note should carry frontmatter at all_ stays judgment regardless.
+  (resolved from the host `CLAUDE.md`), and _whether a given note should carry frontmatter at all_ stays judgment regardless.
 - **NOTE-1a [M]** A note's `---` frontmatter fence is **well-formed** — an opening fence has a closing `---`. (base-agnostic)
 - **NOTE-1b [M]** Frontmatter **keys are snake_case** (the house convention); a non-conforming key warns. (base-agnostic)
 - **NOTE-2 [J]** Naming follows the base's convention: dated for `Calendar/`, descriptive title elsewhere, mirroring the paired

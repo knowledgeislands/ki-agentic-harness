@@ -34,12 +34,12 @@ skill by its `name`, so the two must stay in sync.
 
 ## Skills in this repository
 
-Seven skills, each a **governance skill**: it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus
+Nine skills, each a **governance skill**: it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus
 skill-specific ones), backed by a tracked `references/sources.md`.
 
-### The map — how the seven fit together
+### The map — how the nine fit together
 
-The seven sit in **two layers**: two cross-cutting **foundations** that every other skill builds on, and the **domain** skills that each
+The nine sit in **two layers**: two cross-cutting **foundations** that every other skill builds on, and the **domain** skills that each
 govern one kind of artifact. The arrows are the structural ties (who _delegates to_, _composes on_, or _feeds_ whom) spelled out in the
 sections that follow.
 
@@ -56,6 +56,7 @@ DOMAIN — what each skill governs
   repos & code      repo ──owns the .ki-config.toml contract──▶ (kb · mcp · engineering consume it)
                     mcp  ──composes its checker on──▶ engineering
   skills            skills ── a SKILL.md's frontmatter + body prose
+  websites          11ty-websites ──emits dist/──▶ cloudflare-hosting   (both compose on engineering)
 ```
 
 Read the per-skill entries next for what each does; _Where the skills do not overlap_ draws the boundaries between the pairs that could be
@@ -80,6 +81,20 @@ loads only when working in `Streams`. Ships a mechanical checker (`audit-streams
 Audits, conforms, and scaffolds workspace MCP servers against the "workspace MCP" standard (layout, config injection,
 `<app>_<resource>_<action>` tool naming, access-level gate, security invariants, Bun/Node, tooling) across the `mcp-*` repos. Ships a
 mechanical checker (`audit-mcp.ts`).
+
+### [`knowledgeislands-11ty-websites`](knowledgeislands-11ty-websites/SKILL.md) — Process
+
+Audits, conforms, and scaffolds static websites against the house build standard — **Eleventy 3 + Nunjucks + Markdown, TypeScript run
+natively on Bun, Tailwind 4 config-less with design tokens** — that compile to a portable `dist/`. Owns the **site-build delta** and
+**composes on** `knowledgeislands-engineering` (toolchain) and `knowledgeislands-authoring` (Markdown), handing the built `dist/` to
+`knowledgeislands-cloudflare-hosting`. Ships a mechanical checker (`audit-websites.ts`).
+
+### [`knowledgeislands-cloudflare-hosting`](knowledgeislands-cloudflare-hosting/SKILL.md) — Process
+
+Audits, conforms, and scaffolds the house convention for serving a built site on **Cloudflare Workers + Static Assets** (not Pages): one
+`wrangler.jsonc` pointing `assets.directory` at the site's `dist/`, custom-domain routes, observability, and the `site:deploy` script
+family. Owns the **hosting delta** for the site Worker; the `dist/` is the seam from `knowledgeislands-11ty-websites`. Companion Workers
+(bots, ingress) route to the generic `cloudflare` / `wrangler` skills. Ships a mechanical checker (`audit-cloudflare-hosting.ts`).
 
 ### [`knowledgeislands-skills`](knowledgeislands-skills/SKILL.md) — Process
 
@@ -110,7 +125,7 @@ Where the set is going next is in [ROADMAP.md](ROADMAP.md).
 
 ### The governance-skill shape
 
-All seven share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in
+All nine share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in
 `knowledgeislands-engineering`'s [enforcement framework](knowledgeislands-engineering/references/enforcement-framework.md):
 
 - **`<domain>-standard.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like,
@@ -120,9 +135,9 @@ All seven share one layout, so a reader (or a new such skill) can move between t
 - **`references/sources.md`** — the tracked sources behind the standard, with `last reviewed` dates. Provenance only: the record of _what
   changed_ lives in git (the REFRESH commit), not a changelog in the file. A skill tracking a moving external spec also keeps a
   current-state **`## Last review`** block — pinned revision, what's confirmed, open watch-items — overwritten each REFRESH.
-- **a mechanical checker** — `audit-engineering.ts`, `audit-mcp.ts`, `lint-skills.ts`, `audit-repo.ts`, `audit-kb.ts`, `audit-streams.ts`
-  for engineering / mcp / skills / repo / kb / streams; `bun run lint:md` (Prettier + markdownlint) for authoring. The judgment half is
-  always applied by reading.
+- **a mechanical checker** — `audit-engineering.ts`, `audit-mcp.ts`, `audit-websites.ts`, `audit-cloudflare-hosting.ts`, `lint-skills.ts`,
+  `audit-repo.ts`, `audit-kb.ts`, `audit-streams.ts` for engineering / mcp / 11ty-websites / cloudflare-hosting / skills / repo / kb /
+  streams; `bun run lint:md` (Prettier + markdownlint) for authoring. The judgment half is always applied by reading.
 
 …and the same modes: **AUDIT** (run the checker, then apply the judgment criteria), **CONFORM** (bring an existing artifact into line), and
 **REFRESH** (re-anchor the standard to its sources on a stated cadence), plus skill-specific modes where they fit — **INIT** to scaffold a
@@ -134,14 +149,15 @@ Each skill's `description` carries its own boundaries so the agent selects the r
 names the other as the **off-ramp** — reciprocally, so the line holds from both sides (for humans as well as the agent). The pairs worth
 stating once, with the nuance in the footnotes below:
 
-| Pair that could be confused                         | The line between them                                                             |
-| --------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `knowledgeislands-mcp` vs `knowledgeislands-skills` | MCP **server code** vs a **`SKILL.md`** (frontmatter + body prose). †             |
-| `knowledgeislands-kb` vs `knowledgeislands-streams` | The five-zone model + note CRUD vs the **`Streams` zone internals**, delegated. ‡ |
-| `knowledgeislands-kb` vs a `<base>-kb` extension    | The base-agnostic **standard** vs a **base-coupled extension** that wins. §       |
-| `knowledgeislands-repo` vs `knowledgeislands-mcp`   | A repo's **configuration** vs an MCP server's **source**. ¶                       |
-| `knowledgeislands-authoring` vs the rest            | **How we write** vs _what_ we write. ‖                                            |
-| `knowledgeislands-engineering` vs the rest          | **How we build** vs everything that isn't the toolchain. ††                       |
+| Pair that could be confused                                            | The line between them                                                             |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `knowledgeislands-mcp` vs `knowledgeislands-skills`                    | MCP **server code** vs a **`SKILL.md`** (frontmatter + body prose). †             |
+| `knowledgeislands-kb` vs `knowledgeislands-streams`                    | The five-zone model + note CRUD vs the **`Streams` zone internals**, delegated. ‡ |
+| `knowledgeislands-repo` vs `knowledgeislands-mcp`                      | A repo's **configuration** vs an MCP server's **source**. §                       |
+| `knowledgeislands-authoring` vs the rest                               | **How we write** vs _what_ we write. ¶                                            |
+| `knowledgeislands-engineering` vs the rest                             | **How we build** vs everything that isn't the toolchain. ‖                        |
+| `knowledgeislands-11ty-websites` vs `…-cloudflare-hosting`             | **Building** the portable `dist/` vs **serving** it — the `dist/` is the seam. †† |
+| `…-cloudflare-hosting` vs the generic `cloudflare` / `wrangler` skills | The **one site Worker** serving `dist/` vs all other Workers + platform usage. ‡‡ |
 
 † Auditing the `SKILL.md` of an MCP-related skill is `knowledgeislands-skills`' job; auditing the server's `src/` layout, config injection,
 and tool surface is `knowledgeislands-mcp`'s. This is the one pair that could be confused — both "audit against a standard" — so each names
@@ -151,22 +167,29 @@ the other as the off-ramp.
 is a zone but delegates the zone's internals — the Focus lifecycle, the proposal layout, the Enactment Process — to
 `knowledgeislands-streams`, which loads only when working in `Streams`. Anything outside that zone is kb's.
 
-§ Where a base ships its own `<base>-kb` skill, that extension wins and delegates the shared modes back to `knowledgeislands-kb` by name;
-the standard skill steps aside rather than competing for the same triggers.
-
-¶ `knowledgeislands-repo` governs **any** Knowledge Islands–compliant repo (anything carrying a `.ki-config.toml`) — its configuration,
+§ `knowledgeislands-repo` governs **any** Knowledge Islands–compliant repo (anything carrying a `.ki-config.toml`) — its configuration,
 GitHub-side settings, and the universal local files (README/LICENSE/.gitignore/.editorconfig). `knowledgeislands-mcp` governs the server's
 **code** (`src/` layout, config injection, tool surface). Configuration vs source.
 
-‖ `knowledgeislands-authoring` owns _how we write_ — Markdown style and TOML _formatting_ — the cross-cutting layer the others assume rather
+¶ `knowledgeislands-authoring` owns _how we write_ — Markdown style and TOML _formatting_ — the cross-cutting layer the others assume rather
 than restate. The content itself routes elsewhere: note _content_ and KB structure → `knowledgeislands-kb`; a repo's _configuration_ and the
 `.ki-config.toml` _contract_ → `knowledgeislands-repo`; a `SKILL.md`'s prose and frontmatter → `knowledgeislands-skills`.
 
-†† `knowledgeislands-engineering` is the build/test twin of `knowledgeislands-authoring`: it owns the _engineering toolchain_ (package.json
+‖ `knowledgeislands-engineering` is the build/test twin of `knowledgeislands-authoring`: it owns the _engineering toolchain_ (package.json
 script families, `tsconfig`/`biome`/`vitest`, the Bun/Node split, the build/cli-chmod rule) and the _enforcement framework_ every governance
 skill follows. The rest routes out: GitHub settings, security, and the `.ki-config.toml` _contract_ → `knowledgeislands-repo` (engineering
 only reads its own table within it); Markdown/TOML _formatting_ → `knowledgeislands-authoring`; an artifact's own code and delta (an MCP's
 `src/` layout, tool surface, coverage-excludes) → that artifact skill, which **composes** its checker on top of engineering's common layer.
+The two website skills are such artifact skills, composing on engineering exactly as `knowledgeislands-mcp` does.
+
+†† `knowledgeislands-11ty-websites` owns the _build_ — Eleventy/Nunjucks/Tailwind and the absolute→relative URL transform that emits a
+portable `dist/`; `knowledgeislands-cloudflare-hosting` owns _serving_ that `dist/` — the `wrangler.jsonc`, Workers + Static Assets, and
+custom domains. They meet only at the `dist/` path, so each names the other as the off-ramp, and both compose on
+`knowledgeislands-engineering`.
+
+‡‡ `knowledgeislands-cloudflare-hosting` governs only the **site** Worker — the one with an `assets` block serving `dist/`. Every other
+Worker — a bot, an ingress receiver, an API, anything with a `main` entry, bindings, or crons — and all general `wrangler`/Workers usage is
+the generic `cloudflare` / `wrangler` skills' domain; the hosting skill notes such a Worker and leaves it alone.
 
 ### How knowledge moves and improves — the three loops
 
@@ -202,14 +225,15 @@ skill inherits them by being audited:
   no volatile external fact may instead resolve it at runtime. The point is durability: a skill installed into a shared or cloud catalogue
   is long-lived and far from its author, and must not rot silently. Enforced as `knowledgeislands-skills` rubric **LONG-1** (a refresh path
   exists) and **LONG-2** (it has a cadence, ideally a scheduled run), and mirrored into the `knowledgeislands-mcp` audit checklist. The
-  monthly `knowledgeislands-skills-refresh` routine realises it — running all six skills' REFRESH against their tracked sources and opening
-  a PR for review rather than committing.
+  monthly `knowledgeislands-skills-refresh` routine realises it — running every governance skill's REFRESH against its tracked sources and
+  opening a PR for review rather than committing.
 - **No silent collisions.** Where two skills could fire on the same request, each description names the other as the off-ramp, and new
   skills are audited against the existing set before they ship (rubric **COLL-1/COLL-2**; the linter's cross-skill pass flags shared
   triggers). The current boundaries are the subject of _Where the skills do not overlap_, just above.
-- **Standard vs base-coupled extension.** Knowledge Islands skills stay base-agnostic and resolve bindings at runtime; anything
-  base-specific lives in a `<base>-kb`-style extension that delegates the shared modes back by name — spelled out in _Standard skills and
-  base-coupled extensions_, below.
+- **Composition only — no base-coupled extension.** Knowledge Islands skills stay base-agnostic and resolve bindings at runtime; what a base
+  needs differently is **declared, not forked** — data in its `.ki-config.toml` table (read validate-down), prose in its `CLAUDE.md` — never
+  a `<base>-kb`-style extension skill that takes the shared modes by name. Skills relate only by **composition** (run a sibling's
+  checker/mode in sequence, add a delta), spelled out in _Standard skills and per-base config_, below.
 - **One governance-mode model.** Every skill exposes the universal **AUDIT / CONFORM / REFRESH** modes plus skill-specific ones (**INIT** to
   scaffold, operational modes such as kb's note-ops), codified as rubric **SHAPE-5** so a new skill inherits the shape. The layout this
   produces is _The governance-skill shape_, above.
@@ -219,10 +243,11 @@ skill inherits them by being audited:
   `AGENTS.md`) and its **checker verifies the anchor** is present. Enforced as rubric **SHAPE-7**; realised as `knowledgeislands-streams`'
   **GATE-1** (the Enactment gate) and `knowledgeislands-kb`'s **MEM-2** (the memory cascade).
 - **Audits compose.** Auditing a target runs every _applicable_ skill's audit, not just one: a base audit is `knowledgeislands-kb` +
-  `knowledgeislands-streams` + any `<base>-kb` extension + `knowledgeislands-authoring` over its markdown; a repo audit is
-  `knowledgeislands-repo` + `knowledgeislands-engineering` (the common toolchain) + `knowledgeislands-mcp` (the MCP delta, for an MCP
-  repo) + the skills linter (for any skills it ships). A target is "clean" only when each applicable skill's audit passes; each skill's
-  AUDIT mode names the siblings it composes.
+  `knowledgeislands-streams` + `knowledgeislands-authoring` over its markdown; a repo audit is `knowledgeislands-repo` +
+  `knowledgeislands-engineering` (the common toolchain) + `knowledgeislands-mcp` (the MCP delta, for an MCP repo) — or, for a website repo,
+  `+ knowledgeislands-11ty-websites` (the site-build delta) `+ knowledgeislands-cloudflare-hosting` (the hosting delta, if deployed) — + the
+  skills linter (for any skills it ships). A target is "clean" only when each applicable skill's audit passes; each skill's AUDIT mode names
+  the siblings it composes.
 
 ## Installing skills
 
@@ -312,14 +337,17 @@ a domain, a theme). The full zone model, the note-content wikilink convention, a
 governs work in motion — is owned by [`knowledgeislands-streams`](knowledgeislands-streams/SKILL.md), which `knowledgeislands-kb` delegates
 to.
 
-### Standard skills and base-coupled extensions
+### Standard skills and per-base config
 
 A **standard** Knowledge Islands skill carries reusable mode logic over the structure and resolves the few base-level bindings (store
 aliases, scope usage, writing standards) at runtime from the host base's own `CLAUDE.md` and memory index. It hard-codes no single base.
 
-A **base-coupled extension** lives in its own base (e.g. a `<base>-kb` skill), supplies only the base-specific pre-flight and bindings, and
-delegates the shared modes to the standard skill **by name** - both skills load into the session, so the extension refers to the standard
-skill by its `name`, not by a file path.
+What a base needs **differently** is declared, never forked into a base-coupled skill. Structured **data** — zone aliases, required
+frontmatter, pre-flight reads — goes in the base's `.ki-config.toml` `[knowledgeislands-kb]` table, which the standard skill reads
+**validate-down** (it warns on a key it doesn't recognise and never reads another skill's table). Narrative bindings — store alias, scope
+usage, writing standards — live in the base's `CLAUDE.md`. A base ships **no** `<base>-kb` skill. This keeps base-specificity auditable in
+one place rather than hidden in a coupled skill that drifts from the standard; a genuinely base-specific _behaviour_ that no declaration can
+express is a signal to generalise it into the standard (a REFRESH candidate), not to fork.
 
 ## Development
 
