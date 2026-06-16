@@ -1,0 +1,81 @@
+# Audit Rubric
+
+Line-by-line pass/fail items for auditing a site's hosting against the [Cloudflare hosting standard](cloudflare-hosting-standard.md). Run
+[`../scripts/audit-cloudflare-hosting.ts`](../scripts/audit-cloudflare-hosting.ts) for the mechanical items (marked 🔧), then judge the rest
+by reading. Each item cites the standard section it verifies.
+
+Severity: **B** blocker (the site can't deploy, or deploys the wrong way), **S** standard (config / script divergence), **P** polish
+(domains / CI / consistency).
+
+> **Compose with the siblings.** This rubric is the **hosting delta** only. The toolchain is `knowledgeislands-engineering`
+> (`engineering:audit`); building the `dist/` this serves is `knowledgeislands-11ty-websites` (`audit-websites.ts`). Run both first. Any
+> Worker that is not the static-site server is out of scope — it routes to the generic `cloudflare`/`wrangler` skills. The repo is fully
+> clean only when every applicable audit passes.
+
+## Contents
+
+- [Model](#model-1)
+- [The dist/ seam](#the-dist-seam-2)
+- [wrangler.jsonc shape](#wranglerjsonc-shape-3)
+- [Scripts](#scripts-4)
+- [CI/CD](#cicd-5)
+- [Boundaries](#boundaries-6)
+- [Longevity & staleness](#longevity--staleness)
+- [Reporting](#reporting)
+
+## Model (§1)
+
+- [ ] 🔧 B — a **site** `wrangler.jsonc` exists at the site root (the config carrying an `assets` block). Its absence is the classic finding
+      — `site:deploy` has nothing to deploy. (§1)
+- [ ] 🔧 B — deploy is **Workers + Static Assets** (`wrangler deploy`), **never** `wrangler pages deploy` anywhere in scripts. (§1)
+- [ ] S — exactly one site Worker (one config with `assets`); the site root matches the build layout (repo root flat, `site/` subfolder).
+      (§1)
+
+## The dist/ seam (§2)
+
+- [ ] 🔧 B — `assets.directory` is set and points at the build's `dist/` (`./dist` flat, `../dist` from `site/`). (§2)
+- [ ] S — the path resolves to the directory `knowledgeislands-11ty-websites` builds to (cross-check `audit-websites.ts`). (§2)
+- [ ] 🔧 S — `dist/` and `.wrangler/` are gitignored. (§2, §4)
+- [ ] P — a `site:preview` chains build → `wrangler dev` for a local check against the Worker runtime. (§2, §4)
+
+## wrangler.jsonc shape (§3)
+
+- [ ] 🔧 S — `name` and `compatibility_date` (a pinned `YYYY-MM-DD`) are present. (§3)
+- [ ] 🔧 S — `observability.enabled` is `true`. (§3)
+- [ ] P — `routes` carry `custom_domain: true` for the apex (and usually `www` → apex). A site on `*.workers.dev` may omit them. (§3)
+- [ ] P — JSONC comments explain each block in the house voice. (§3)
+- [ ] P — optional `assets` keys (`html_handling`, `not_found_handling`, `run_worker_first`) are per-site; do **not** flag their absence.
+      (§3)
+
+## Scripts (§4)
+
+- [ ] 🔧 S — a deploy script runs `wrangler deploy` from the site root (`site:deploy`, or `deploy` when flat). (§4)
+- [ ] S — `site:clean` removes `dist/` + `.wrangler/`; `site:preview` (build → `wrangler dev`) present where used. (§4)
+- [ ] — `site:build` / `site:dev` are **not** checked here — they belong to `knowledgeislands-11ty-websites`. (§4)
+
+## CI/CD (§5)
+
+- [ ] P — deploy is via Cloudflare Workers Builds (git integration) on merge to `main`; no bespoke deploy workflow is required. (§5)
+- [ ] P — any GitHub Action present is **content tooling** (apply/optimise then commit), not a re-implementation of deploy. (§5)
+- [ ] P — commit-SHA injection (`WORKERS_CI_COMMIT_SHA` → page meta), if present, is an optional nicety. (§5)
+
+## Boundaries (§6)
+
+- [ ] — a Worker with a `main` entry and **no** `assets` block is a **companion** (bot / ingress / API); it is **noted, not flagged**, and
+      routes to the generic `cloudflare`/`wrangler` skills. Do not audit its bindings/crons/secrets here. (§6)
+
+## Longevity & staleness
+
+Mirrors the `knowledgeislands-skills` rubric's **LONG-1**.
+
+- [ ] S — volatile facts (the wrangler version, the Static-Assets config keys, the Pages-deprecation status) are pinned in `package.json` /
+      the standard, not assumed — a bump is one known edit.
+- [ ] P — this audit runs against a **current** standard: a cited requirement is confirmed by Mode REFRESH + [`sources.md`](sources.md) not
+      having gone stale since its `last reviewed` date (esp. the Pages-vs-Workers guidance, which has moved before).
+
+## Reporting
+
+Produce a findings table grouped by severity, each row: `severity · file:line · what · fix`. Close with: (a) any intentional, documented
+divergences you chose **not** to flag (e.g. a site deliberately on `*.workers.dev` with no custom domain yet, or a companion Worker you
+correctly left alone), and (b) a one-line verdict (compliant / minor drift / blockers). Name the sibling audits that must also pass —
+`engineering:audit` and `audit-websites.ts` — for the repo to be fully clean.
