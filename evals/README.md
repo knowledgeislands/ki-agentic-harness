@@ -1,12 +1,13 @@
 # Skill evals
 
-A quick way to check that a skill **actually changes what the model does** — not just that its `SKILL.md` is well-formed (that part is what `skills:lint`
-checks). This is the behavioural half of what the `knowledgeislands-skills` rubric asks of a skill.
+A quick way to check that a skill **actually changes what the model does** — not just that its `SKILL.md` is well-formed (that part is what
+`skills:lint` checks). This is the behavioural half of what the `knowledgeislands-skills` rubric asks of a skill.
 
-The idea is simple: take a question the skill is meant to help with, ask the model **twice** — once with the skill off, once with it on — and compare. If the
-skill is pulling its weight, the "on" answer should be clearly better.
+The idea is simple: take a question the skill is meant to help with, ask the model **twice** — once with the skill off, once with it on —
+and compare. If the skill is pulling its weight, the "on" answer should be clearly better.
 
-It's a **rough signal, not a gate.** The model's output varies from run to run, so treat it as a sanity check (a WARN), never a build blocker.
+It's a **rough signal, not a gate.** The model's output varies from run to run, so treat it as a sanity check (a WARN), never a build
+blocker.
 
 ## Run it
 
@@ -36,25 +37,29 @@ Each scenario ends with a verdict — **skill helped / regressed / no difference
 ## Reading a result — three things to keep in mind
 
 1. **It wobbles.** One run is a hint, not proof. Use `--runs 3` (or more) to average out the noise before trusting a result.
-2. **"No difference" is sometimes the honest answer.** Both runs still load your normal `~/.claude/CLAUDE.md`, so the score measures the skill's value _on top
-   of_ what the model already knows. If a fact is just common knowledge, the skill can't improve on it — "no difference" is correct, not a fault. So aim
-   scenarios at things the model _couldn't_ already know (see below).
-3. **Deep detail in `references/` only helps if the model opens it.** A one-shot run reads a reference file only if it decides to. A scenario can score low
-   purely because the model never opened the reference — which is itself worth knowing: it usually means that detail should move into the main `SKILL.md`.
+2. **"No difference" is sometimes the honest answer.** Both runs still load your normal `~/.claude/CLAUDE.md`, so the score measures the
+   skill's value _on top of_ what the model already knows. If a fact is just common knowledge, the skill can't improve on it — "no
+   difference" is correct, not a fault. So aim scenarios at things the model _couldn't_ already know (see below).
+3. **Deep detail in `references/` only helps if the model opens it.** A one-shot run reads a reference file only if it decides to. A
+   scenario can score low purely because the model never opened the reference — which is itself worth knowing: it usually means that detail
+   should move into the main `SKILL.md`.
 
 ## Adding scenarios
 
-One file per skill in `scenarios/` (e.g. `scenarios/knowledgeislands-kb.ts`), each exporting a list of scenarios. A scenario is just three things: a **prompt**,
-some regex **assertions**, and a judge **rubric**. Copy an existing file for the shape, then add it to the `ALL` list in [`harness.ts`](harness.ts).
+One file per skill in `scenarios/` (e.g. `scenarios/knowledgeislands-kb.ts`), each exporting a list of scenarios. A scenario is just three
+things: a **prompt**, some regex **assertions**, and a judge **rubric**. Copy an existing file for the shape, then add it to the `ALL` list
+in [`harness.ts`](harness.ts).
 
-Aim for **3+ per skill**, and test your **house-specific** names, paths, and rules — not general best practice, which the model knows with or without the skill.
+Aim for **3+ per skill**, and test your **house-specific** names, paths, and rules — not general best practice, which the model knows with
+or without the skill.
 
 ## Where it stands
 
-All six skills have 3+ scenarios, and the harness has been run across Haiku, Sonnet, and Opus. The result, in one line: **on house-specific facts, loading a
-skill reliably takes the model from "I don't know" to the right answer — on every model.** That's the whole point, confirmed.
+All six skills have 3+ scenarios, and the harness has been run across Haiku, Sonnet, and Opus. The result, in one line: **on house-specific
+facts, loading a skill reliably takes the model from "I don't know" to the right answer — on every model.** That's the whole point,
+confirmed.
 
-**For routine runs, use Sonnet — it's the most cost-effective arm.** A full matrix (18 scenarios × 3 runs) costs roughly **$7 on Haiku, $17 on Sonnet, $26 on
-Opus**. Opus gives no cleaner signal than Sonnet for about 50% more, so keep it for occasional confirmation; Sonnet is a representative, trustworthy model at a
-sensible price. (Haiku is cheapest and did well here, but a stronger model is the safer regression proxy.) Run results aren't checked in — they're
-regeneratable, so just re-run `bun run eval`.
+**For routine runs, use Sonnet — it's the most cost-effective arm.** A full matrix (18 scenarios × 3 runs) costs roughly **$7 on Haiku, $17
+on Sonnet, $26 on Opus**. Opus gives no cleaner signal than Sonnet for about 50% more, so keep it for occasional confirmation; Sonnet is a
+representative, trustworthy model at a sensible price. (Haiku is cheapest and did well here, but a stronger model is the safer regression
+proxy.) Run results aren't checked in — they're regeneratable, so just re-run `bun run eval`.

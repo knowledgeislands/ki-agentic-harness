@@ -1,17 +1,18 @@
 # Sources — where the engineering standard comes from
 
-The toolchain pins and conventions behind [the engineering standard](engineering-standard.md) and [the enforcement framework](enforcement-framework.md). Mode
-REFRESH reads this file, re-fetches each source, diffs it against the standard + rubric + [`../scripts/audit-engineering.ts`](../scripts/audit-engineering.ts),
-then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below. Provenance only — what changed goes in the REFRESH commit, not a
-changelog here.
+The toolchain pins and conventions behind [the engineering standard](engineering-standard.md) and
+[the enforcement framework](enforcement-framework.md). Mode REFRESH reads this file, re-fetches each source, diffs it against the standard +
+rubric + [`../scripts/audit-engineering.ts`](../scripts/audit-engineering.ts), then **bumps the `last reviewed` dates** and refreshes the
+`## Last review` block below. Provenance only — what changed goes in the REFRESH commit, not a changelog here.
 
-Two layers feed the standard: the **upstream tools** (what they require / their current versions) and the **in-house convention** (the opinionated shape the
-sibling repos share on top). A pin is only "upstream-driven" if it traces to a tool's release; everything else is house style.
+Two layers feed the standard: the **upstream tools** (what they require / their current versions) and the **in-house convention** (the
+opinionated shape the sibling repos share on top). A pin is only "upstream-driven" if it traces to a tool's release; everything else is
+house style.
 
 ## Upstream tools (the pins the standard hard-codes)
 
-The standard pins versions in `packageManager`, `engines`, `biome.json`'s `$schema`, and the devDependency ranges. Track the current line of each so a REFRESH
-knows when a pin has aged.
+The standard pins versions in `packageManager`, `engines`, `biome.json`'s `$schema`, and the devDependency ranges. Track the current line of
+each so a REFRESH knows when a pin has aged.
 
 | Tag      | Source                                             | Governs                                                       | Pinned at               | Last reviewed |
 | -------- | -------------------------------------------------- | ------------------------------------------------------------- | ----------------------- | ------------- |
@@ -26,8 +27,8 @@ knows when a pin has aged.
 
 ## In-house (the workspace convention)
 
-The standard is the **majority shape** across the TS/Bun repos under `knowledgeislands/`. They are the living source of truth for house style; when they
-diverge, the majority wins and the outlier is a finding unless documented.
+The standard is the **majority shape** across the TS/Bun repos under `knowledgeislands/`. They are the living source of truth for house
+style; when they diverge, the majority wins and the outlier is a finding unless documented.
 
 | Tag       | Source                                                                            | Governs                                                                              | Last reviewed |
 | --------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------- |
@@ -38,15 +39,17 @@ diverge, the majority wins and the outlier is a finding unless documented.
 
 ## Last review
 
-REFRESH last run **2026-06-14** (skill created). Cadence: monthly, alongside the other governance skills (the `knowledgeislands-skills-refresh` routine).
+REFRESH last run **2026-06-14** (skill created). Cadence: monthly, alongside the other governance skills (the
+`knowledgeislands-skills-refresh` routine).
 
-- **Pins confirmed current:** `bun@1.3.14`, `engines.node >=22.0.0`, Biome `2.5.0`, TypeScript `^6.0`, syncpack `^15`, markdownlint-cli2 `^0.22`, prettier `^3`.
-- **Standard extracted from `knowledgeislands-mcp`:** the generic toolchain (package.json families, bun-vs-node, tsconfig/vitest/biome, .env discipline, the
-  build/chmod rule) was lifted out of that skill's §7–10 and rubric so it lives once, cross-cutting; `knowledgeislands-mcp` now references this standard and
-  keeps only its MCP delta.
-- **Open watch-items:** TypeScript `^6.0.3` and `@types/node ^25` are recent majors — confirm no `tsconfig` option deprecations on the next refresh. Bun and
-  Biome both move fast; re-pin on the house upgrade. The `deps:*` family was promoted from "optional" to required — revisit if a new TS repo type legitimately
-  can't carry it.
+- **Pins confirmed current:** `bun@1.3.14`, `engines.node >=22.0.0`, Biome `2.5.0`, TypeScript `^6.0`, syncpack `^15`, markdownlint-cli2
+  `^0.22`, prettier `^3`.
+- **Standard extracted from `knowledgeislands-mcp`:** the generic toolchain (package.json families, bun-vs-node, tsconfig/vitest/biome, .env
+  discipline, the build/chmod rule) was lifted out of that skill's §7–10 and rubric so it lives once, cross-cutting; `knowledgeislands-mcp`
+  now references this standard and keeps only its MCP delta.
+- **Open watch-items:** TypeScript `^6.0.3` and `@types/node ^25` are recent majors — confirm no `tsconfig` option deprecations on the next
+  refresh. Bun and Biome both move fast; re-pin on the house upgrade. The `deps:*` family was promoted from "optional" to required — revisit
+  if a new TS repo type legitimately can't carry it.
 
 [bun]: https://bun.sh/blog
 [node]: https://nodejs.org/en/about/previous-releases

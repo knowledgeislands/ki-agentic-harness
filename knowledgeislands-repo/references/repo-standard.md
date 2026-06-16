@@ -1,9 +1,10 @@
 # Knowledge Islands repo standard
 
-The canonical configuration a Knowledge Islands repo should carry, so repos present and behave consistently and that consistency is _checkable_ rather than
-folklore. A Knowledge Islands repo is a git repo that carries a `.ki-config.toml` (its presence is the compliance marker); the standard applies to any such repo
-— the [`knowledgeislands`](https://github.com/knowledgeislands) org is the reference set it was derived from, not its boundary. Three layers — local files, core
-GitHub settings, deeper GitHub (security & Actions). Derived and applied 2026-05-31 from an audit of all 10 `knowledgeislands` repos. The mechanical checker is
+The canonical configuration a Knowledge Islands repo should carry, so repos present and behave consistently and that consistency is
+_checkable_ rather than folklore. A Knowledge Islands repo is a git repo that carries a `.ki-config.toml` (its presence is the compliance
+marker); the standard applies to any such repo — the [`knowledgeislands`](https://github.com/knowledgeislands) org is the reference set it
+was derived from, not its boundary. Three layers — local files, core GitHub settings, deeper GitHub (security & Actions). Derived and
+applied 2026-05-31 from an audit of all 10 `knowledgeislands` repos. The mechanical checker is
 [`../scripts/audit-repo.ts`](../scripts/audit-repo.ts); keep this doc and the script's constants in sync.
 
 ## Contents
@@ -19,8 +20,8 @@ GitHub settings, deeper GitHub (security & Actions). Derived and applied 2026-05
 
 ## Layer 1 — repo files
 
-Every repo carries these at the root. Presence is checked **on the default branch via the GitHub API** (the git-tree endpoint), not from a working checkout — so
-what's actually committed is what's audited, and `--org` mode covers uncloned repos.
+Every repo carries these at the root. Presence is checked **on the default branch via the GitHub API** (the git-tree endpoint), not from a
+working checkout — so what's actually committed is what's audited, and `--org` mode covers uncloned repos.
 
 | File              | Why                                                                                                                   |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------- |
@@ -52,10 +53,10 @@ Public repos (`mcp-*`) additionally:
 | ------- | -------------------------------------------------------------- |
 | Topics  | `mcp`, `model-context-protocol`, `claude`, `typescript`, `bun` |
 
-**`main` is open by default** — no branch protection, so direct pushes are allowed and no PR, status check, or linear-history rule gates it. Squash-only merge
-(above) keeps history tidy for PRs that do happen, but nothing forces work through a PR. A repo that _wants_ a protected `main` overrides the
-`branch-protection` check on (see [Per-repo overrides](#per-repo-overrides)) — protection is then `main`: require a PR (0 approvals), the `build` status check,
-linear history, no force-push, no deletion, admins **not** enforced.
+**`main` is open by default** — no branch protection, so direct pushes are allowed and no PR, status check, or linear-history rule gates it.
+Squash-only merge (above) keeps history tidy for PRs that do happen, but nothing forces work through a PR. A repo that _wants_ a protected
+`main` overrides the `branch-protection` check on (see [Per-repo overrides](#per-repo-overrides)) — protection is then `main`: require a PR
+(0 approvals), the `build` status check, linear history, no force-push, no deletion, admins **not** enforced.
 
 ## Layer 3 — deeper GitHub
 
@@ -70,14 +71,14 @@ linear history, no force-push, no deletion, admins **not** enforced.
 
 ## Visibility
 
-Each repo **declares** its expected visibility in `.ki-config.toml` (`visibility = "public"` or `"private"`); the auditor checks that declaration against the
-live GitHub visibility. It is a deliberate per-repo choice, **not inferred from the name**. (In practice the `arcadia-*` repos are private bases / internal
-skills and the `mcp-*` repos are public servers — a pattern, not the rule.)
+Each repo **declares** its expected visibility in `.ki-config.toml` (`visibility = "public"` or `"private"`); the auditor checks that
+declaration against the live GitHub visibility. It is a deliberate per-repo choice, **not inferred from the name**. (In practice the
+`arcadia-*` repos are private bases / internal skills and the `mcp-*` repos are public servers — a pattern, not the rule.)
 
-`.ki-config.toml` is a shared per-repo file; each skill reads its own `[table]`, and a skill with only implicit/default behaviour needs no table. The full
-cross-skill contract — its presence as the compliance marker, the table-per-skill model, and the validate-your-own-table protocol — is in
-[the `.ki-config.toml` contract](ki-config-standard.md). This skill owns `[knowledgeislands-repo]`. Scaffold the default keys with
-`bun scripts/audit-repo.ts --init >> .ki-config.toml`, then edit the values:
+`.ki-config.toml` is a shared per-repo file; each skill reads its own `[table]`, and a skill with only implicit/default behaviour needs no
+table. The full cross-skill contract — its presence as the compliance marker, the table-per-skill model, and the validate-your-own-table
+protocol — is in [the `.ki-config.toml` contract](ki-config-standard.md). This skill owns `[knowledgeislands-repo]`. Scaffold the default
+keys with `bun scripts/audit-repo.ts --init >> .ki-config.toml`, then edit the values:
 
 ```toml
 # .ki-config.toml — one [table] per skill that needs per-repo options
@@ -92,11 +93,11 @@ branch-protection = true   # default off — protect `main` on this repo
 
 ## Per-repo overrides
 
-The rubric carries the **org default** for every check. Most are bedrock — file presence, default branch, license, description, merge policy,
-auto-delete-branch, visibility, Dependabot — and aren't negotiable. The rest are **overridable**: a repo flips one for itself with a single boolean in its
-`[knowledgeislands-repo.checks]` table, where `true` = enforce this check and `false` = don't. A check you omit takes the org default, so **a fully-conforming
-repo writes no overrides at all**. The auditor reports every active override as a `note` (never a failure), so a deliberate departure stays visible without
-reading as drift.
+The rubric carries the **org default** for every check. Most are bedrock — file presence, default branch, license, description, merge
+policy, auto-delete-branch, visibility, Dependabot — and aren't negotiable. The rest are **overridable**: a repo flips one for itself with a
+single boolean in its `[knowledgeislands-repo.checks]` table, where `true` = enforce this check and `false` = don't. A check you omit takes
+the org default, so **a fully-conforming repo writes no overrides at all**. The auditor reports every active override as a `note` (never a
+failure), so a deliberate departure stays visible without reading as drift.
 
 | Check               | Org default | When enforced, the auditor requires…                                                                              |
 | ------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------- |
@@ -108,16 +109,18 @@ reading as drift.
 | `secret-scanning`   | on          | _(public)_ secret scanning enabled.                                                                               |
 | `push-protection`   | on          | _(public)_ secret-scanning push protection enabled.                                                               |
 
-- "Org default **on**" means the check fails unless satisfied — the standard's normal behaviour — and a repo sets the key `false` to step out of it (e.g.
-  `wiki = false` to keep a Wiki). `branch-protection` is the one check that's **off** by default; a repo sets it `true` to protect `main`.
-- The required status check for `branch-protection` is **`build`** — the single job in each repo's `.github/workflows/ci.yml` (workflow "CI"). A repo that turns
-  it on but lacks that job can't satisfy the check; add the CI job first.
-- `topics` / `secret-scanning` / `push-protection` are **public-only** — they don't apply to a private repo regardless of the override, so the private
-  `arcadia-*` repos need say nothing about them.
-- A key under `[…checks]` that names no overridable check (a typo, or a bedrock check) **WARNs** — it would otherwise silently do nothing. The auditor's
-  `CHECK_DEFAULTS` registry is the source of truth for what's overridable.
-- A **redundant** override — one whose value just restates the org default (e.g. `wiki = true`) — does nothing, so the auditor flags it with a `note` advising
-  it be dropped. The aim is that a `.ki-config.toml` carries only genuine divergences, and a conforming repo's `[…checks]` is empty or absent.
+- "Org default **on**" means the check fails unless satisfied — the standard's normal behaviour — and a repo sets the key `false` to step
+  out of it (e.g. `wiki = false` to keep a Wiki). `branch-protection` is the one check that's **off** by default; a repo sets it `true` to
+  protect `main`.
+- The required status check for `branch-protection` is **`build`** — the single job in each repo's `.github/workflows/ci.yml` (workflow
+  "CI"). A repo that turns it on but lacks that job can't satisfy the check; add the CI job first.
+- `topics` / `secret-scanning` / `push-protection` are **public-only** — they don't apply to a private repo regardless of the override, so
+  the private `arcadia-*` repos need say nothing about them.
+- A key under `[…checks]` that names no overridable check (a typo, or a bedrock check) **WARNs** — it would otherwise silently do nothing.
+  The auditor's `CHECK_DEFAULTS` registry is the source of truth for what's overridable.
+- A **redundant** override — one whose value just restates the org default (e.g. `wiki = true`) — does nothing, so the auditor flags it with
+  a `note` advising it be dropped. The aim is that a `.ki-config.toml` carries only genuine divergences, and a conforming repo's `[…checks]`
+  is empty or absent.
 
 ## Applying it
 
@@ -178,5 +181,6 @@ Both check every layer against GitHub; the path / `--org` only decides which rep
 
 ## Conformance
 
-As of **2026-05-31**, all 10 `knowledgeislands` repos conform on layers 2–3. Outstanding layer-1 work: every repo still needs a `.ki-config.toml` (declaring its
-visibility + any check overrides), and `mcp-kb-notion-mirror` / `mcp-voicenotes-edit` need `.editorconfig` — each a direct commit to `main`.
+As of **2026-05-31**, all 10 `knowledgeislands` repos conform on layers 2–3. Outstanding layer-1 work: every repo still needs a
+`.ki-config.toml` (declaring its visibility + any check overrides), and `mcp-kb-notion-mirror` / `mcp-voicenotes-edit` need `.editorconfig`
+— each a direct commit to `main`.

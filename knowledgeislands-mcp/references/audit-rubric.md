@@ -3,8 +3,8 @@
 Line-by-line pass/fail items for auditing a workspace MCP against the [Workspace MCP Standard](workspace-mcp-standard.md). Run
 [`../scripts/audit-mcp.ts`](../scripts/audit-mcp.ts) for the mechanical items (marked 🔧), then judge the rest by reading the code.
 
-Severity: **B** blocker (security invariant breach or gate bypass — ship-stopper), **S** standard (layout / naming / tooling divergence), **P** polish (docs /
-consistency).
+Severity: **B** blocker (security invariant breach or gate bypass — ship-stopper), **S** standard (layout / naming / tooling divergence),
+**P** polish (docs / consistency).
 
 ## Contents
 
@@ -30,14 +30,15 @@ consistency).
 - [ ] 🔧 S — `cli/` present ⇒ has both `cli.ts` and `index.ts`.
 - [ ] S — `tools/<group>/index.ts` is thin: zod-validate → call `main/` → envelope. No FS/network/git/logic in a tool handler.
 - [ ] S — all real logic lives in `main/`, grouped by concern, each with `index.ts`.
-- [ ] B — `main/`/`utils/` have **no `console.*`** (return data; printing is CLI/stderr only). `api`-style layers assert no `console.log` in tests.
+- [ ] B — `main/`/`utils/` have **no `console.*`** (return data; printing is CLI/stderr only). `api`-style layers assert no `console.log` in
+      tests.
 - [ ] S — `cli.ts` holds only arg-parsing + printing; the library it calls (`main/`) is the single source of truth, shared with `tools/`.
 - [ ] S — no logic that exists _only_ in a tool handler or _only_ in `cli.ts`.
 
 ## Config injection
 
-- [ ] B — `loadConfig(env?)` is the only reader of env; **no module-level config singleton**; no top-level `process.env` access outside `config/index.ts`.
-      (`grep -rn "process.env" src --include=*.ts | grep -v config/`)
+- [ ] B — `loadConfig(env?)` is the only reader of env; **no module-level config singleton**; no top-level `process.env` access outside
+      `config/index.ts`. (`grep -rn "process.env" src --include=*.ts | grep -v config/`)
 - [ ] B — every `main/`/`utils/` entry point takes config (or its slice) as the **first argument**; nothing reaches for ambient state.
 - [ ] 🔧 S — `config/index.ts` exports `AccessLevel`, `ACCESS_LEVELS`, `ACCESS_LEVEL_RANK`, `AuditLogMode`, `loadConfig`.
 - [ ] S — `Config` has `accessLevel`, `auditLogMode`, `auditLogPath`, `auditLogMaxBytes`, `auditLogKeep` + domain fields.
@@ -65,76 +66,86 @@ consistency).
 
 ## Security invariants
 
-- [ ] B — every user path runs through the two-layer guard (lexical + realpath) before any `fs.*`/`execFile`/URL call, against the **full** root set.
+- [ ] B — every user path runs through the two-layer guard (lexical + realpath) before any `fs.*`/`execFile`/URL call, against the **full**
+      root set.
 - [ ] B — cached/prior-result paths are re-validated against live config.
 - [ ] B — subprocess via `execFile`(argv), never a shell string; git carries `--no-optional-locks`.
 - [ ] B — subprocess calls are timeout- and `maxBuffer`-bounded; network git sets `GIT_TERMINAL_PROMPT=0`. No unbounded spawn.
 - [ ] B — directory walks are depth-limited and prune hidden dirs/`node_modules`.
-- [ ] B — identifier inputs (names, urls, ids, path segments) use tightened regex schemas rejecting leading `-`, `..`, separators — not bare `z.string()`.
+- [ ] B — identifier inputs (names, urls, ids, path segments) use tightened regex schemas rejecting leading `-`, `..`, separators — not bare
+      `z.string()`.
 - [ ] B — risky multi-state options are enums, not booleans.
 - [ ] S — all zod schemas `.strict()` with bounded numerics / length caps.
 - [ ] S — batch tools aggregate per-item failures into `errors[]` (no crash).
-- [ ] S — tools sanitize untrusted output before returning it (spec: "Servers MUST sanitize tool outputs"); e.g. m365's `html-sanitizer.ts`. Rate-limiting is a
-      spec MUST but low-priority for local stdio servers — note, don't block.
+- [ ] S — tools sanitize untrusted output before returning it (spec: "Servers MUST sanitize tool outputs"); e.g. m365's `html-sanitizer.ts`.
+      Rate-limiting is a spec MUST but low-priority for local stdio servers — note, don't block.
 
 ## Spec conformance — tool results & metadata (standard §12)
 
-- [ ] B — tool boundary returns errors as `isError: true` envelopes via `errorResult`, never `throw` (spec 2025-11-25: validation/API/logic errors are Tool
-      Execution Errors, not protocol errors; a throw also bypasses the audit wrapper). Same item as audit-logging below — verify once.
-- [ ] P — any tool returning `structuredContent` also declares a matching `outputSchema` at registration (paired, ideally from one zod schema). A `jsonResult`
-      emitting `structuredContent` with no declared schema is a polish finding; plain text-only results need neither.
+- [ ] B — tool boundary returns errors as `isError: true` envelopes via `errorResult`, never `throw` (spec 2025-11-25: validation/API/logic
+      errors are Tool Execution Errors, not protocol errors; a throw also bypasses the audit wrapper). Same item as audit-logging below —
+      verify once.
+- [ ] P — any tool returning `structuredContent` also declares a matching `outputSchema` at registration (paired, ideally from one zod
+      schema). A `jsonResult` emitting `structuredContent` with no declared schema is a polish finding; plain text-only results need
+      neither.
 - [ ] P — optional spec metadata (`icons`, `title`, `execution.taskSupport`) is per-repo opt-in, not required — do **not** flag its absence.
 
 ## OAuth security — auth-server repos only: mcp-gmail, mcp-m365 (standard §13)
 
 Skip this whole section for the filesystem/subprocess repos.
 
-- [ ] B — no token passthrough: server never accepts/forwards a caller-supplied token; it uses tokens issued to itself for the downstream API.
-- [ ] B — auth-code flow uses PKCE and a cryptographically random, server-stored, single-use `state` validated by exact match at the callback.
+- [ ] B — no token passthrough: server never accepts/forwards a caller-supplied token; it uses tokens issued to itself for the downstream
+      API.
+- [ ] B — auth-code flow uses PKCE and a cryptographically random, server-stored, single-use `state` validated by exact match at the
+      callback.
 - [ ] B — `redirect_uri` validated by exact string match (loopback), not prefix/wildcard.
 - [ ] B — tokens stored with restrictive perms outside any served root; never logged; redacted from audit log + errors.
-- [ ] S — least-privilege scopes (only what shipped tools need); SSRF discipline on fetched URLs (HTTPS, host-pinned, no redirect to internal/loopback IPs).
-- [ ] S — _Remote resource-server role only — N/A to today's stdio repos; skip unless a server is deployed as a remote HTTP resource server._ RFC 8707
-      `resource` parameter bound into the token `aud`, and `aud` validated against the server's canonical URI before a token is accepted. (AUTH 2025-11-25;
-      standard §13 item 7)
-- [ ] S — _Authorization-server role only — N/A to today's stdio repos; skip unless a workspace component acts as an MCP authorization server._ Client ID
-      Metadata Documents — AS declares `client_id_metadata_document_supported: true` and handles URL-formatted `client_id` (HTTPS fetch, exact `client_id`
-      match, `redirect_uris` validation, SSRF mitigations). (AUTH 2025-11-25, SHOULD; standard §13 item 8)
+- [ ] S — least-privilege scopes (only what shipped tools need); SSRF discipline on fetched URLs (HTTPS, host-pinned, no redirect to
+      internal/loopback IPs).
+- [ ] S — _Remote resource-server role only — N/A to today's stdio repos; skip unless a server is deployed as a remote HTTP resource
+      server._ RFC 8707 `resource` parameter bound into the token `aud`, and `aud` validated against the server's canonical URI before a
+      token is accepted. (AUTH 2025-11-25; standard §13 item 7)
+- [ ] S — _Authorization-server role only — N/A to today's stdio repos; skip unless a workspace component acts as an MCP authorization
+      server._ Client ID Metadata Documents — AS declares `client_id_metadata_document_supported: true` and handles URL-formatted
+      `client_id` (HTTPS fetch, exact `client_id` match, `redirect_uris` validation, SSRF mitigations). (AUTH 2025-11-25, SHOULD; standard
+      §13 item 8)
 
-> **Common toolchain → `knowledgeislands-engineering`.** The four sections below cover only the **MCP delta**. The generic toolchain — the `lint:*`/`deps:*`
-> families, the `bun test` trap, `tsconfig`/`biome`/`vitest` shape with 100% coverage, the `.env*.example` template, the build/cli-chmod rule — is the common
-> engineering layer; **run `engineering:audit` first** for it. A repo is fully clean only when both audits pass.
+> **Common toolchain → `knowledgeislands-engineering`.** The four sections below cover only the **MCP delta**. The generic toolchain — the
+> `lint:*`/`deps:*` families, the `bun test` trap, `tsconfig`/`biome`/`vitest` shape with 100% coverage, the `.env*.example` template, the
+> build/cli-chmod rule — is the common engineering layer; **run `engineering:audit` first** for it. A repo is fully clean only when both
+> audits pass.
 
 ## Bun vs Node
 
-- [ ] — the `bun test` trap, `process.loadEnvFile()` parity, and `NODE_ENV`-only-in-dev are the **common engineering layer** (run `engineering:audit`); not
-      re-checked here. MCP consequence: production ignores `.env.*`, so config comes from the client's `env` block.
+- [ ] — the `bun test` trap, `process.loadEnvFile()` parity, and `NODE_ENV`-only-in-dev are the **common engineering layer** (run
+      `engineering:audit`); not re-checked here. MCP consequence: production ignores `.env.*`, so config comes from the client's `env`
+      block.
 
 ## package.json
 
 - [ ] 🔧 S — `main:dist/mcp-server/index.js`; `bin.mcp-<name>` → `dist/mcp-server/index.js` (+ CLI/auth bin where applicable).
 - [ ] 🔧 S — `exports` has `.`, `./config`, `./package.json` + one per reusable `main/<concern>`.
 - [ ] 🔧 S — `server:mcp:dev` / `server:mcp:inspect` / `server:mcp:start` present (OAuth repos add `server:auth:*`).
-- [ ] — `type`/`packageManager`/`engines`/`files`, the `lint:*`/`deps:*`/`build`/`clean`/`test*`/`prepare` families, and the build/cli-chmod rule are the
-      **common engineering layer** (`engineering:audit`); not re-checked here.
+- [ ] — `type`/`packageManager`/`engines`/`files`, the `lint:*`/`deps:*`/`build`/`clean`/`test*`/`prepare` families, and the build/cli-chmod
+      rule are the **common engineering layer** (`engineering:audit`); not re-checked here.
 
 ## tsconfig / vitest / biome
 
-- [ ] 🔧 S — vitest coverage `exclude` covers the MCP wiring layers: `mcp-server/index.ts`, `tools/**/index.ts`, `utils/annotations.ts`, and any
-      printing/pure-data module (`cli/cli.ts`, `auth-server/**`).
-- [ ] — `tsconfig.json` / `tsconfig.build.json` / `biome.json` shape and the vitest 100% thresholds are the **common engineering layer** (`engineering:audit`);
-      not re-checked here.
+- [ ] 🔧 S — vitest coverage `exclude` covers the MCP wiring layers: `mcp-server/index.ts`, `tools/**/index.ts`, `utils/annotations.ts`, and
+      any printing/pure-data module (`cli/cli.ts`, `auth-server/**`).
+- [ ] — `tsconfig.json` / `tsconfig.build.json` / `biome.json` shape and the vitest 100% thresholds are the **common engineering layer**
+      (`engineering:audit`); not re-checked here.
 
 ## .env.example & env
 
 - [ ] 🔧 S — `.env.example` uses the `MCP_<APP>_*` prefix and carries the shared access-level + audit-log block.
-- [ ] — the committed `.env*.example` template, gitignored real `.env.*`, and the `process.loadEnvFile` parity call are the **common engineering layer**
-      (`engineering:audit`).
+- [ ] — the committed `.env*.example` template, gitignored real `.env.*`, and the `process.loadEnvFile` parity call are the **common
+      engineering layer** (`engineering:audit`).
 
 ## Docs
 
-- [ ] P — `CLAUDE.md` (and usually `ROADMAP.md`) present. (Universal repo files — `README`, `LICENSE`, `.gitignore`, `.editorconfig`, `.ki-config.toml` — are
-      `knowledgeislands-repo`'s layer 1, not re-checked here.)
+- [ ] P — `CLAUDE.md` (and usually `ROADMAP.md`) present. (Universal repo files — `README`, `LICENSE`, `.gitignore`, `.editorconfig`,
+      `.ki-config.toml` — are `knowledgeislands-repo`'s layer 1, not re-checked here.)
 - [ ] S — `CLAUDE.md` is **not drifted**: every layer/path/concept it names still exists in the code (catch renamed/moved layers).
 - [ ] P — README install/config/client-setup steps are current.
 
@@ -142,14 +153,16 @@ Skip this whole section for the filesystem/subprocess repos.
 
 A server installed and left running drifts from the world around it; the audit checks it can't rot silently.
 
-- [ ] S — volatile external facts the code depends on (the MCP spec version/date it targets, upstream API/SDK versions, third-party URLs, model IDs) are not
-      scattered hard-coded literals: each is either resolved at runtime or pinned in **one** refreshable place (`config/`, `CLAUDE.md`, or `package.json`) so a
-      bump is a single known edit, not a hunt.
-- [ ] P — the repo's `CLAUDE.md`/`README.md` names the spec version it conforms to, so a reviewer can tell at a glance whether it predates a spec move.
-- [ ] P — this audit itself is run against a **current** standard: if a finding cites a spec MUST, the skill's Mode REFRESH + [`sources.md`](sources.md) confirm
-      the spec hasn't moved since the standard's `last reviewed` date. Don't green-light a repo against a stale spec.
+- [ ] S — volatile external facts the code depends on (the MCP spec version/date it targets, upstream API/SDK versions, third-party URLs,
+      model IDs) are not scattered hard-coded literals: each is either resolved at runtime or pinned in **one** refreshable place
+      (`config/`, `CLAUDE.md`, or `package.json`) so a bump is a single known edit, not a hunt.
+- [ ] P — the repo's `CLAUDE.md`/`README.md` names the spec version it conforms to, so a reviewer can tell at a glance whether it predates a
+      spec move.
+- [ ] P — this audit itself is run against a **current** standard: if a finding cites a spec MUST, the skill's Mode REFRESH +
+      [`sources.md`](sources.md) confirm the spec hasn't moved since the standard's `last reviewed` date. Don't green-light a repo against a
+      stale spec.
 
 ## Reporting
 
-Produce a findings table grouped by severity, each row: `severity · file:line · what · fix`. Close with: (a) any intentional, documented divergences you chose
-**not** to flag, and (b) a one-line verdict (compliant / minor drift / blockers).
+Produce a findings table grouped by severity, each row: `severity · file:line · what · fix`. Close with: (a) any intentional, documented
+divergences you chose **not** to flag, and (b) a one-line verdict (compliant / minor drift / blockers).

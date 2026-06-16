@@ -1,9 +1,10 @@
 # Sources — where the repo standard comes from
 
-The authoritative sources behind [the standard](repo-standard.md), [the rubric](audit-rubric.md), and [`../scripts/audit-repo.ts`](../scripts/audit-repo.ts).
-Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + script, then **bumps the `last reviewed` dates** and refreshes the
-`## Last review` block below (what changed is recorded in the commit, not a changelog). GitHub's settings surface moves (rulesets, security toggles, Actions
-policy), so this is the skill's memory of where the standard comes from — keep it current.
+The authoritative sources behind [the standard](repo-standard.md), [the rubric](audit-rubric.md), and
+[`../scripts/audit-repo.ts`](../scripts/audit-repo.ts). Mode REFRESH reads this file, re-fetches each source, diffs it against the
+standard + script, then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below (what changed is recorded in the
+commit, not a changelog). GitHub's settings surface moves (rulesets, security toggles, Actions policy), so this is the skill's memory of
+where the standard comes from — keep it current.
 
 ## Authoritative (GitHub)
 
@@ -21,14 +22,15 @@ policy), so this is the skill's memory of where the standard comes from — keep
 
 REFRESH last run **2026-06-13** against the GitHub REST API and security-feature docs (partial; see dates above).
 
-- **REST repository settings** (fetched this run): all settings confirmed — merge methods, auto-delete-branch, features, description remain as documented. No
-  new or renamed settings found.
-- **Secret scanning** (fetched this run): confirmed still free for public repos; push protection confirmed active. No new toggles affecting the standard.
-- **Branch protection, rulesets, Dependabot, Actions, `gh` CLI** (not re-fetched this run — prior findings stand from 2026-06-01). Previous run confirmed API
-  surface stable.
+- **REST repository settings** (fetched this run): all settings confirmed — merge methods, auto-delete-branch, features, description remain
+  as documented. No new or renamed settings found.
+- **Secret scanning** (fetched this run): confirmed still free for public repos; push protection confirmed active. No new toggles affecting
+  the standard.
+- **Branch protection, rulesets, Dependabot, Actions, `gh` CLI** (not re-fetched this run — prior findings stand from 2026-06-01). Previous
+  run confirmed API surface stable.
 - **No standard change this run.**
-- **Open watch-items:** GitHub's rulesets vs branch-protection surfaces move — re-verify the mapping next refresh; re-fetch branch-protection, rulesets,
-  Dependabot, Actions, and `gh` CLI sources next run.
+- **Open watch-items:** GitHub's rulesets vs branch-protection surfaces move — re-verify the mapping next refresh; re-fetch
+  branch-protection, rulesets, Dependabot, Actions, and `gh` CLI sources next run.
 
 [repo-settings]: https://docs.github.com/en/rest/repos/repos#update-a-repository
 [branch-protection]: https://docs.github.com/en/rest/branches/branch-protection

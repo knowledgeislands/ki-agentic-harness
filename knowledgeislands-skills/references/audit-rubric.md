@@ -1,14 +1,14 @@
 # Audit Rubric — the checkable criteria
 
-Line-by-line pass/fail criteria for auditing an Agent Skill against the [Agent Skills Standard](agent-skills-standard.md). Each is tagged **[M] mechanical**
-(the bundled [linter](../scripts/lint-skills.ts) checks it) or **[J] judgment** (you assess it by reading). The **code** in bold (`NAME-1`, `DESC-2`, …) is the
-area's short code plus its number _within that area_ — it's what the linter prints and what an audit should cite. Numbering restarts at 1 per area, so inserting
-a criterion only renumbers its own area. Source abbreviations resolve in [the source list](sources.md); the **full rationale, the "Disagreements & moving
-targets" notes (`※1`–`※5`), and the exact-numbers table live in the [standard](agent-skills-standard.md)** — each area below maps to the like-named standard
-section.
+Line-by-line pass/fail criteria for auditing an Agent Skill against the [Agent Skills Standard](agent-skills-standard.md). Each is tagged
+**[M] mechanical** (the bundled [linter](../scripts/lint-skills.ts) checks it) or **[J] judgment** (you assess it by reading). The **code**
+in bold (`NAME-1`, `DESC-2`, …) is the area's short code plus its number _within that area_ — it's what the linter prints and what an audit
+should cite. Numbering restarts at 1 per area, so inserting a criterion only renumbers its own area. Source abbreviations resolve in
+[the source list](sources.md); the **full rationale, the "Disagreements & moving targets" notes (`※1`–`※5`), and the exact-numbers table
+live in the [standard](agent-skills-standard.md)** — each area below maps to the like-named standard section.
 
-A criterion's tag is a contract with the linter: if you find yourself eyeballing an **[M]** check, run the linter instead; if the linter ever starts enforcing a
-**[J]** check, move its tag here.
+A criterion's tag is a contract with the linter: if you find yourself eyeballing an **[M]** check, run the linter instead; if the linter
+ever starts enforcing a **[J]** check, move its tag here.
 
 ## Contents
 
@@ -73,7 +73,8 @@ A criterion's tag is a contract with the linter: if you find yourself eyeballing
 - **OPT-4 [M]** `license`, if present, is a short license name or bundled-file reference. (SPEC)
 - **OPT-5 [J]** CC-only fields are flagged when cross-platform portability matters (see ※3). (CC)
 - **OPT-6 [J]** Side-effecting / manually-timed workflows set `disable-model-invocation: true` (contrast `user-invocable: false`). (CC)
-- **OPT-7 [J]** A skill with discrete modes sets `argument-hint`; modes are **named** (not lettered) and **alphabetically ordered**. (CC, COMMUNITY)
+- **OPT-7 [J]** A skill with discrete modes sets `argument-hint`; modes are **named** (not lettered) and **alphabetically ordered**. (CC,
+  COMMUNITY)
 
 ## SIZE — Body: size & conciseness
 
@@ -130,30 +131,34 @@ A criterion's tag is a contract with the linter: if you find yourself eyeballing
 
 → [standard §11](agent-skills-standard.md#11-knowledge-islands-skill-shape)
 
-- **SHAPE-1 [J]** A **standard** KI skill resolves base bindings at runtime and hard-codes **no single base**. (arcadia-skills README, `knowledgeislands-kb`)
-- **SHAPE-2 [J]** A **base-coupled extension** supplies only base bindings and delegates shared modes to a standard skill **by name**. (arcadia-skills README)
+- **SHAPE-1 [J]** A **standard** KI skill resolves base bindings at runtime and hard-codes **no single base**. (arcadia-skills README,
+  `knowledgeislands-kb`)
+- **SHAPE-2 [J]** A **base-coupled extension** supplies only base bindings and delegates shared modes to a standard skill **by name**.
+  (arcadia-skills README)
 - **SHAPE-3 [J]** The skill declares its **kind** (Knowledge Islands / process / scoped) clearly. (arcadia-skills README)
-- **SHAPE-4 [J]** A skill that reads the shared `.ki-config.toml` consumes and **validates only its own `[<skill>]` table** — warns on a key it doesn't
-  recognise, advises dropping one that merely restates a default — and never inspects another skill's table. Validate down, ignore across. (contract defined by
-  `knowledgeislands-repo`)
-- **SHAPE-5 [J]** A **governance skill** (one that holds a standard) exposes the universal modes **AUDIT** + **REFRESH** + **CONFORM**; any further modes
-  (`INIT` to scaffold a new artifact, and operational modes like kb's note-ops) are skill-specific. Modes are named, not lettered, and ordered alphabetically in
-  the body and `argument-hint`. (arcadia-skills README)
-- **SHAPE-6 [J]** _Governance-skill file shape — Knowledge Islands repos only, for now._ A governance skill **shipped in a Knowledge Islands repo** (one
-  carrying a `.ki-config.toml`) materialises its standard as the shared four-file shape, so a reader or a new such skill moves between them: a normative
-  **`<domain>-standard.md`** (or the contract / conventions reference it holds), an **`audit-rubric.md`** of pass/fail criteria each tagged **[M]**/**[J]** and
-  citing its standard section, a tracked **`references/sources.md`** with `last reviewed` dates (see **LONG-1**) — provenance only, its change history kept in
-  git rather than an in-file changelog; a skill tracking a moving external spec also keeps a current-state **`## Last review`** block (pinned revision,
-  confirmations, open watch-items), overwritten each refresh — and a **mechanical checker** (the judgment half applied by reading). A governance skill outside a
-  Knowledge Islands repo is exempt until the convention is generalised. (arcadia-skills README)
-- **SHAPE-7 [M-heuristic + J]** _A behaviour-changing skill defines its gate — and checks the anchor._ A skill that changes a **default behaviour** — installs a
-  gate, a standing "always do X before Y" rule, or a routing intercept — cannot rely on its own `description` to fire it, because skills load **on demand** and
-  the triggering request often won't mention the skill (e.g. "edit this note" never says "proposal"). Such a skill must **anchor the behaviour in always-loaded
-  context** (the base/repo `CLAUDE.md` / `AGENTS.md`, or a companion skill that _does_ reliably load handing off to it), **and its checker must verify the
-  anchor is present** so it can't be silently lost. The linter surfaces candidates mechanically (strong gate phrasing in the body without an anchor its checker
-  reads); the **[J]** call is whether the skill genuinely changes a default and so _needs_ a gate. Realised as `knowledgeislands-streams`' **GATE-1** (the
-  Enactment gate) and `knowledgeislands-kb`'s **MEM-2** (the memory cascade); `knowledgeislands-repo`'s `.ki-config.toml` marker is the same pattern (anchor +
-  checked).
+- **SHAPE-4 [J]** A skill that reads the shared `.ki-config.toml` consumes and **validates only its own `[<skill>]` table** — warns on a key
+  it doesn't recognise, advises dropping one that merely restates a default — and never inspects another skill's table. Validate down,
+  ignore across. (contract defined by `knowledgeislands-repo`)
+- **SHAPE-5 [J]** A **governance skill** (one that holds a standard) exposes the universal modes **AUDIT** + **REFRESH** + **CONFORM**; any
+  further modes (`INIT` to scaffold a new artifact, and operational modes like kb's note-ops) are skill-specific. Modes are named, not
+  lettered, and ordered alphabetically in the body and `argument-hint`. (arcadia-skills README)
+- **SHAPE-6 [J]** _Governance-skill file shape — Knowledge Islands repos only, for now._ A governance skill **shipped in a Knowledge Islands
+  repo** (one carrying a `.ki-config.toml`) materialises its standard as the shared four-file shape, so a reader or a new such skill moves
+  between them: a normative **`<domain>-standard.md`** (or the contract / conventions reference it holds), an **`audit-rubric.md`** of
+  pass/fail criteria each tagged **[M]**/**[J]** and citing its standard section, a tracked **`references/sources.md`** with `last reviewed`
+  dates (see **LONG-1**) — provenance only, its change history kept in git rather than an in-file changelog; a skill tracking a moving
+  external spec also keeps a current-state **`## Last review`** block (pinned revision, confirmations, open watch-items), overwritten each
+  refresh — and a **mechanical checker** (the judgment half applied by reading). A governance skill outside a Knowledge Islands repo is
+  exempt until the convention is generalised. (arcadia-skills README)
+- **SHAPE-7 [M-heuristic + J]** _A behaviour-changing skill defines its gate — and checks the anchor._ A skill that changes a **default
+  behaviour** — installs a gate, a standing "always do X before Y" rule, or a routing intercept — cannot rely on its own `description` to
+  fire it, because skills load **on demand** and the triggering request often won't mention the skill (e.g. "edit this note" never says
+  "proposal"). Such a skill must **anchor the behaviour in always-loaded context** (the base/repo `CLAUDE.md` / `AGENTS.md`, or a companion
+  skill that _does_ reliably load handing off to it), **and its checker must verify the anchor is present** so it can't be silently lost.
+  The linter surfaces candidates mechanically (strong gate phrasing in the body without an anchor its checker reads); the **[J]** call is
+  whether the skill genuinely changes a default and so _needs_ a gate. Realised as `knowledgeislands-streams`' **GATE-1** (the Enactment
+  gate) and `knowledgeislands-kb`'s **MEM-2** (the memory cascade); `knowledgeislands-repo`'s `.ki-config.toml` marker is the same pattern
+  (anchor + checked).
 
 ## PROC — Process / meta
 
@@ -166,21 +171,21 @@ A criterion's tag is a contract with the linter: if you find yourself eyeballing
 
 → [standard §13](agent-skills-standard.md#13-cross-skill-collision) · run the linter over the **whole set**, not one skill
 
-- **COLL-1 [M]** _Shared triggers._ Within a set of ≥ 2 skills, no two `description`s declare the **same quoted trigger phrase** (WARN — a shared trigger
-  signals scopes that overlap and need separating). (COMMUNITY, arcadia-skills README)
-- **COLL-2 [J]** _Non-overlapping scope by design, with a reciprocal off-ramp where adjacency remains._ The first guard is **design**: skills are scoped so they
-  don't compete for the same request, and each `description` is primarily **self-scoped** (what it does, and briefly what it doesn't). Where two skills are
-  nonetheless genuinely adjacent, **each** description names the other as the off-ramp — the reciprocal pattern (`knowledgeislands-mcp` ↔
-  `knowledgeislands-skills`); a one-directional guard is a half-fix — and the full boundary is documented once in the arcadia-skills README ("where the skills
-  do not overlap"). A COLL-1 hit means the scopes overlap and the **design** needs fixing first, before any off-ramp papers over it. (standard §13,
-  arcadia-skills README)
+- **COLL-1 [M]** _Shared triggers._ Within a set of ≥ 2 skills, no two `description`s declare the **same quoted trigger phrase** (WARN — a
+  shared trigger signals scopes that overlap and need separating). (COMMUNITY, arcadia-skills README)
+- **COLL-2 [J]** _Non-overlapping scope by design, with a reciprocal off-ramp where adjacency remains._ The first guard is **design**:
+  skills are scoped so they don't compete for the same request, and each `description` is primarily **self-scoped** (what it does, and
+  briefly what it doesn't). Where two skills are nonetheless genuinely adjacent, **each** description names the other as the off-ramp — the
+  reciprocal pattern (`knowledgeislands-mcp` ↔ `knowledgeislands-skills`); a one-directional guard is a half-fix — and the full boundary is
+  documented once in the arcadia-skills README ("where the skills do not overlap"). A COLL-1 hit means the scopes overlap and the **design**
+  needs fixing first, before any off-ramp papers over it. (standard §13, arcadia-skills README)
 
 ## LONG — Longevity
 
 → [standard §14](agent-skills-standard.md#14-longevity) · matters most once a skill ships to a shared/cloud catalogue
 
-- **LONG-1 [J]** _Volatile facts & a refresh path._ A skill hard-coding facts that drift (model IDs, versions, tool names, dated spec numbers, URLs) must either
-  resolve them at runtime **or** carry a tracked source list with `last reviewed` dates **and** a REFRESH mode that re-anchors them and names what to re-fetch.
-  (BP, COMMUNITY)
-- **LONG-2 [J]** _A cadence, not just a capability._ A skill that ships a refresh path also states a **cadence** (periodic or "run when X") and, where
-  supported, registers a scheduled run; a refresh capability with no stated cadence is a half-measure. (COMMUNITY)
+- **LONG-1 [J]** _Volatile facts & a refresh path._ A skill hard-coding facts that drift (model IDs, versions, tool names, dated spec
+  numbers, URLs) must either resolve them at runtime **or** carry a tracked source list with `last reviewed` dates **and** a REFRESH mode
+  that re-anchors them and names what to re-fetch. (BP, COMMUNITY)
+- **LONG-2 [J]** _A cadence, not just a capability._ A skill that ships a refresh path also states a **cadence** (periodic or "run when X")
+  and, where supported, registers a scheduled run; a refresh capability with no stated cadence is a half-measure. (COMMUNITY)
