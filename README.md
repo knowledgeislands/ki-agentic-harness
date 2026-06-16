@@ -1,16 +1,24 @@
 # arcadia-agentic-harness
 
-A collection of reusable [Agent Skills](https://agentskills.io/specification). This repository is the canonical home for skills authored
-across Knowledge Islands - kept in one place so they can be versioned, reviewed, and installed together rather than scattered across the
-bases and projects that use them.
+The **agentic harness** for Knowledge Islands work — the canonical home for what an agent is given to work with here, kept in one place so
+the whole set can be versioned, reviewed, and installed together rather than scattered across the bases and projects that use it. The layout
+mirrors `hnr-agentic-harness`; it holds four things:
 
-It is structured as an **agentic harness**: skills live under `skills/`, with `agents/` and `mcp/` shelves alongside for Knowledge Islands
-agents and MCP servers as they land. Skills are the bulk of it today.
+- **Skills** ([`skills/`](skills/)) — reusable [Agent Skills](https://agentskills.io/specification), the bulk of the harness today (**ten**
+  of them, all governance skills — see below). Installed elsewhere by symlink.
+- **Agents** ([`agents/`](agents/)) — Knowledge Islands [Claude Code subagents](https://code.claude.com/docs/en/sub-agents), one per file.
+  An empty **shelf** today, governed by the `knowledgeislands-agents` skill.
+- **MCP servers** ([`mcp/`](mcp/)) — where KI's MCP servers would consolidate as workspace packages. An empty **shelf** today; they
+  currently live as separate `mcp-*` repos, governed by the `knowledgeislands-mcp` skill.
+- **Evals** ([`evals/`](evals/)) — a behavioural test suite that checks a skill actually _changes what the model does_, not just that its
+  `SKILL.md` is well-formed.
+
+Skills are the bulk of it today, so most of what follows is about them; the two shelves and the eval suite each get their own section after.
 
 Skills here fall into a few kinds, and the set will grow:
 
 - **Knowledge Islands skills** - operate over the standard Knowledge Islands knowledge-base structure (see below). They carry reusable mode
-  logic and resolve only a few store-level bindings from the host base. `knowledgeislands-kb` is the first of these.
+  logic and resolve only a few store-level bindings from the host base. The `kb` and `streams` skills are these.
 - **Process skills** - encode a workflow or procedure that is not tied to any particular base (a review process, a release checklist, a
   research harness).
 - **Scoped skills** - target a specific area: a subset of folders, a single project, or one recurring task.
@@ -37,12 +45,12 @@ skill by its `name`, so the two must stay in sync.
 
 ## Skills in this repository
 
-Nine skills, each a **governance skill**: it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus
+Ten skills, each a **governance skill**: it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus
 skill-specific ones), backed by a tracked `references/sources.md`.
 
-### The map — how the nine fit together
+### The map — how the ten fit together
 
-The nine sit in **two layers**: two cross-cutting **foundations** that every other skill builds on, and the **domain** skills that each
+The ten sit in **two layers**: two cross-cutting **foundations** that every other skill builds on, and the **domain** skills that each
 govern one kind of artifact. The arrows are the structural ties (who _delegates to_, _composes on_, or _feeds_ whom) spelled out in the
 sections that follow.
 
@@ -58,7 +66,7 @@ DOMAIN — what each skill governs
   knowledge bases   kb ──delegates the Streams zone──▶ streams
   repos & code      repo ──owns the .ki-config.toml contract──▶ (kb · mcp · engineering consume it)
                     mcp  ──composes its checker on──▶ engineering
-  skills            skills ── a SKILL.md's frontmatter + body prose
+  skills & agents   skills ── a SKILL.md (frontmatter + body)   ·   agents ── a subagent definition (the twin)
   websites          11ty-websites ──emits dist/──▶ cloudflare-hosting   (both compose on engineering)
 ```
 
@@ -104,6 +112,13 @@ family. Owns the **hosting delta** for the site Worker; the `dist/` is the seam 
 Audits, writes, and conforms Agent Skills against a checkable rubric — a bundled linter (`skills:lint`) for the mechanical checks, the
 judgment ones applied by reading, and a tracked source list it revisits.
 
+### [`knowledgeislands-agents`](skills/knowledgeislands-agents/SKILL.md) — Process
+
+Audits, writes, and conforms **Claude Code subagent definitions** against a checkable rubric — a bundled linter (`lint-agents.ts`) for the
+mechanical checks (frontmatter, `name` uniqueness across the set, link resolution), the judgment ones applied by reading (the `description`
+as delegation signal, the system-prompt role/lane, own-vs-defer, least-privilege tools). The **agents twin of `knowledgeislands-skills`**:
+that one governs a `SKILL.md`, this one a subagent definition. Governs the agents that land under [`agents/`](agents/).
+
 ### [`knowledgeislands-repo`](skills/knowledgeislands-repo/SKILL.md) — Process
 
 Audits, conforms, and onboards any **Knowledge Islands–compliant** git repo (one carrying a `.ki-config.toml`) against the repo standard —
@@ -128,7 +143,7 @@ Where the set is going next is in [ROADMAP.md](ROADMAP.md).
 
 ### The governance-skill shape
 
-All nine share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in
+All ten share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in
 `knowledgeislands-engineering`'s [enforcement framework](skills/knowledgeislands-engineering/references/enforcement-framework.md):
 
 - **`<domain>-standard.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like,
@@ -139,8 +154,8 @@ All nine share one layout, so a reader (or a new such skill) can move between th
   changed_ lives in git (the REFRESH commit), not a changelog in the file. A skill tracking a moving external spec also keeps a
   current-state **`## Last review`** block — pinned revision, what's confirmed, open watch-items — overwritten each REFRESH.
 - **a mechanical checker** — `audit-engineering.ts`, `audit-mcp.ts`, `audit-websites.ts`, `audit-cloudflare-hosting.ts`, `lint-skills.ts`,
-  `audit-repo.ts`, `audit-kb.ts`, `audit-streams.ts` for engineering / mcp / 11ty-websites / cloudflare-hosting / skills / repo / kb /
-  streams; `bun run lint:md` (Prettier + markdownlint) for authoring. The judgment half is always applied by reading.
+  `lint-agents.ts`, `audit-repo.ts`, `audit-kb.ts`, `audit-streams.ts` for engineering / mcp / 11ty-websites / cloudflare-hosting / skills /
+  agents / repo / kb / streams; `bun run lint:md` (Prettier + markdownlint) for authoring. The judgment half is always applied by reading.
 
 …and the same modes: **AUDIT** (run the checker, then apply the judgment criteria), **CONFORM** (bring an existing artifact into line), and
 **REFRESH** (re-anchor the standard to its sources on a stated cadence), plus skill-specific modes where they fit — **INIT** to scaffold a
@@ -155,6 +170,7 @@ stating once, with the nuance in the footnotes below:
 | Pair that could be confused                                            | The line between them                                                             |
 | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | `knowledgeislands-mcp` vs `knowledgeislands-skills`                    | MCP **server code** vs a **`SKILL.md`** (frontmatter + body prose). †             |
+| `knowledgeislands-agents` vs `knowledgeislands-skills`                 | A **subagent definition** vs a **`SKILL.md`** — twins over different artifacts.   |
 | `knowledgeislands-kb` vs `knowledgeislands-streams`                    | The five-zone model + note CRUD vs the **`Streams` zone internals**, delegated. ‡ |
 | `knowledgeislands-repo` vs `knowledgeislands-mcp`                      | A repo's **configuration** vs an MCP server's **source**. §                       |
 | `knowledgeislands-authoring` vs the rest                               | **How we write** vs _what_ we write. ¶                                            |
@@ -249,8 +265,44 @@ skill inherits them by being audited:
   `knowledgeislands-streams` + `knowledgeislands-authoring` over its markdown; a repo audit is `knowledgeislands-repo` +
   `knowledgeislands-engineering` (the common toolchain) + `knowledgeislands-mcp` (the MCP delta, for an MCP repo) — or, for a website repo,
   `+ knowledgeislands-11ty-websites` (the site-build delta) `+ knowledgeislands-cloudflare-hosting` (the hosting delta, if deployed) — + the
-  skills linter (for any skills it ships). A target is "clean" only when each applicable skill's audit passes; each skill's AUDIT mode names
-  the siblings it composes.
+  skills linter (for any skills it ships) and the agents linter (for any subagents it ships). A target is "clean" only when each applicable
+  skill's audit passes; each skill's AUDIT mode names the siblings it composes.
+
+## Agents
+
+The [`agents/`](agents/) shelf is where Knowledge Islands **Claude Code subagents** live — one Markdown file each (YAML frontmatter + system
+prompt, per [the subagents standard](https://code.claude.com/docs/en/sub-agents)), grouped into domain subdirectories. **Empty for now**:
+the shelf is in place, mirroring `hnr-agentic-harness/agents/`, ready for agents as they land. Identity comes from each agent's `name`
+field, unique across the tree, not its path. Every definition conforms to the `knowledgeislands-agents` standard — run its AUDIT before
+shipping an agent, the same way a `SKILL.md` runs `knowledgeislands-skills`. See [`agents/README.md`](agents/README.md) for the convention
+and how to add one.
+
+## MCP servers
+
+The [`mcp/`](mcp/) shelf is where Knowledge Islands **MCP servers** would consolidate as Bun workspace packages (`mcp/<name>/`). **Empty for
+now**: today KI's servers live as separate `mcp-*` repos, each conforming to the workspace-MCP standard that the `knowledgeislands-mcp`
+skill defines and audits. This directory mirrors `hnr-agentic-harness/mcp/` and is where those repos would land if the harness takes them
+in. See [`mcp/README.md`](mcp/README.md).
+
+## Evals
+
+The [`evals/`](evals/) suite is the **behavioural** half of what we ask of a skill: `skills:lint` checks that a `SKILL.md` is well-formed,
+but an eval checks the skill _actually changes what the model does_. Each scenario asks the model the same question twice — once with the
+skill off, once with it on — and scores both with regex **assertions** (the hard signal) and an LLM **judge** (the soft signal). It drives
+the local `claude` CLI (no API key), so it spends a little normal quota; it is a **rough signal, not a gate** (a WARN), since output wobbles
+run to run.
+
+```bash
+bun run eval                        # all scenarios, on Sonnet
+bun run eval --model opus           # pick a model: sonnet | opus | haiku
+bun run eval --scenario toml-style  # just one scenario
+bun run eval --runs 3               # repeat 3× and average — steadier signal
+```
+
+Scenarios live under [`evals/scenarios/`](evals/scenarios/), one file per skill (aim for 3+ each), targeting **house-specific** facts — the
+model already knows general best practice with or without the skill. Most skills have a scenario file; the website pair and
+`knowledgeislands-agents` are still to be seeded (see [ROADMAP.md](ROADMAP.md)). For routine runs use Sonnet — the most cost-effective arm.
+Full detail, including how to add scenarios, is in [`evals/README.md`](evals/README.md).
 
 ## Installing skills
 
@@ -354,9 +406,10 @@ express is a signal to generalise it into the standard (a REFRESH candidate), no
 
 ## Development
 
-This repository follows the Knowledge Islands house toolchain: [Bun](https://bun.sh) as the package manager, [Biome](https://biomejs.dev)
-for the TypeScript helper script, and Prettier + markdownlint-cli2 for the markdown that makes up the skills. A husky pre-commit hook runs
-`lint-staged` over changed files.
+This repository follows the Knowledge Islands house toolchain — itself codified in the `knowledgeislands-engineering` skill, which this repo
+conforms to (`bun run engineering:audit .`): [Bun](https://bun.sh) as the package manager, [Biome](https://biomejs.dev) for the TypeScript
+(the sync script, the per-skill checkers, the eval harness), and Prettier + markdownlint-cli2 for the markdown that makes up the skills. A
+husky pre-commit hook runs `lint-staged` over changed files.
 
 ```bash
 bun install        # install dev dependencies and wire the git hook
@@ -366,14 +419,17 @@ bun run lint:md    # Prettier + markdownlint over all markdown
 bun run lint:types # tsc --noEmit
 bun run lint:package # syncpack: keep package.json sorted
 bun run skills:lint  # audit every skill's mechanical criteria (knowledgeislands-skills rubric)
+bun run eval         # advisory behavioural eval suite (see evals/)
 ```
 
 `skills:lint` runs the mechanical half of the [`knowledgeislands-skills`](skills/knowledgeislands-skills/SKILL.md) rubric over every skill
-(frontmatter, naming, length caps, link resolution); the judgment half is applied by that skill when you ask it to audit one.
+(frontmatter, naming, length caps, link resolution); the judgment half is applied by that skill when you ask it to audit one. Several skills
+also expose a repo-level audit script — `engineering:audit`, `repo:audit`, `kb:audit`, `streams:audit` — that runs their mechanical checker
+over a target.
 
 ## Roadmap
 
-The forward view — what's next and why — lives in [ROADMAP.md](ROADMAP.md). It is nearly clear: the standard, the mechanical checkers, and
-the advisory eval harness are all in place, and keeping them applied is a continuous practice (above), not roadmap work. One forward
-_(candidate)_ remains — generalising the shared `.ki-config.toml` into a per-repo/per-base override layer any skill can read, now that
-`knowledgeislands-repo` and `knowledgeislands-kb` both consume it.
+The forward view — what's next and why — lives in [ROADMAP.md](ROADMAP.md). The standards, the mechanical checkers, and the advisory eval
+harness are all in place, and keeping them applied is a continuous practice (above), not roadmap work. What remains is mostly _dogfooding_:
+conforming the website repos to the new `11ty-websites` / `cloudflare-hosting` standards, finishing the `.ki-config.toml` override-layer
+rollout across its consuming skills, and two Dependabot follow-ups for the `mcp-*` repos.
