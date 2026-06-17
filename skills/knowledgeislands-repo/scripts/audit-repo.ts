@@ -14,6 +14,12 @@
  * The standard has three layers (see references/repo-standard.md):
  *   1. FILES   — README, LICENSE, .gitignore, .editorconfig, and .ki-config.toml
  *                (the repo's declared config), all present on the default branch.
+ *                .ki-config.toml is also the GATE of the coverage cascade: once a
+ *                repo is confirmed a ki-repo by carrying it, each other governance
+ *                skill whose applicability is detectable in the repo (a Streams/
+ *                zone, an eleventy.config, an MCP SDK dep, …) must DECLARE its
+ *                `[knowledgeislands-<skill>]` opt-in table — detected-but-undeclared
+ *                WARNs. A non-ki-repo is never coverage-checked (no false positives).
  *   2. GITHUB  — default branch, license, squash-only + linear, auto-delete-branch,
  *                Issues on / Wiki+Projects off, non-empty description, visibility
  *                (matches the value DECLARED in .ki-config.toml — not the name),
@@ -215,8 +221,40 @@ type Repo = {
 const REPO_FIELDS =
   'nameWithOwner,visibility,isArchived,defaultBranchRef,mergeCommitAllowed,squashMergeAllowed,rebaseMergeAllowed,deleteBranchOnMerge,hasIssuesEnabled,hasProjectsEnabled,hasWikiEnabled,repositoryTopics,licenseInfo,description'
 
-function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, pkgDesc: string | null): Finding[] {
+// ── coverage cascade ──────────────────────────────────────────────────────────
+// Once the gate confirms a repo is a ki-repo (it carries .ki-config.toml), each
+// other governance skill whose APPLICABILITY is detectable from the repo must be
+// DECLARED — its `[knowledgeislands-<skill>]` opt-in table present. This is the
+// single registry of {skill → detection signal → opt-in table}. `repo` reads only
+// table PRESENCE here (validate-down still owns table CONTENTS); a detected-but-
+// undeclared signal WARNs, a declared-but-undetected table WARNs as possibly stale.
+// `authoring` is universal (every markdown repo) so it has no opt-in table.
+const WRANGLER = ['wrangler.jsonc', 'wrangler.json', 'wrangler.toml']
+const ELEVENTY = ['eleventy.config.ts', 'eleventy.config.js', 'eleventy.config.cjs', 'eleventy.config.mjs']
+type Signals = { root: Set<string>; tree: Set<string>; pkg: Pkg | null }
+const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Signals) => boolean }[] = [
+  { skill: 'engineering', table: 'knowledgeislands-engineering', artifact: 'package.json', detect: (s) => s.root.has('package.json') },
+  { skill: 'kb', table: 'knowledgeislands-kb', artifact: 'KB zones (Pillars/ + Resources/)', detect: (s) => s.root.has('Pillars') && s.root.has('Resources') },
+  { skill: 'streams', table: 'knowledgeislands-streams', artifact: 'Streams/ zone', detect: (s) => s.root.has('Streams') },
+  { skill: '11ty-websites', table: 'knowledgeislands-11ty-websites', artifact: 'eleventy.config.*', detect: (s) => ELEVENTY.some((f) => s.root.has(f)) },
+  {
+    skill: 'cloudflare-hosting',
+    table: 'knowledgeislands-cloudflare-hosting',
+    artifact: 'wrangler config',
+    detect: (s) => WRANGLER.some((f) => s.root.has(f)) || [...s.tree].some((p) => WRANGLER.some((f) => p.endsWith(`/${f}`)))
+  },
+  { skill: 'mcp', table: 'knowledgeislands-mcp', artifact: '@modelcontextprotocol/sdk dependency', detect: (s) => pkgHasDep(s.pkg, '@modelcontextprotocol/sdk') },
+  { skill: 'skills', table: 'knowledgeislands-skills', artifact: 'skills/*/SKILL.md', detect: (s) => [...s.tree].some((p) => /^skills\/[^/]+\/SKILL\.md$/.test(p)) },
+  { skill: 'agents', table: 'knowledgeislands-agents', artifact: 'agents/**/*.md', detect: (s) => [...s.tree].some((p) => /^agents\/.+\.md$/.test(p) && !/(^|\/)README\.md$/i.test(p)) }
+]
+const COVERAGE_SKILLS = new Set(COVERAGE.map((c) => c.skill))
+// A `[knowledgeislands-<skill>]` (or sub-table `[…​.x]`) header on its own line —
+// anchored so a commented-out `# [..]` template line does not count as declared.
+const declaresTable = (kiText: string, table: string): boolean => new RegExp(`^\\[${table}(\\]|\\.)`, 'm').test(kiText)
+
+function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: string | null, signals: Signals): Finding[] {
   const { f, fail, warn, note } = mk()
+  const pkgDesc = pkgDescription(signals.pkg)
   if (r.isArchived) {
     warn('archived', 'repo is archived — skipping remaining checks')
     return f
@@ -253,11 +291,34 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, pkgDesc: st
   // per-repo overrides: a check's effective state is its [..checks] value, else the
   // org default. Surface every active override as a note; advise dropping one that
   // merely restates the default; and WARN a key that names no overridable check.
+  // A check's effective state is its [..checks] value, else the org default;
+  // a `coverage-<skill>` key (default on) opts a repo out of one coverage signal.
   const enforced = (id: string): boolean => ki?.checks[id] ?? CHECK_DEFAULTS[id] ?? true
   for (const [id, v] of Object.entries(ki?.checks ?? {})) {
-    if (!(id in CHECK_DEFAULTS)) warn('checks', `"${id}" is not an overridable check (overridable: ${Object.keys(CHECK_DEFAULTS).join(', ')})`)
+    if (id.startsWith('coverage-')) {
+      const sk = id.slice('coverage-'.length)
+      if (!COVERAGE_SKILLS.has(sk)) warn('checks', `"${id}" names no coverage skill (one of: ${[...COVERAGE_SKILLS].join(', ')})`)
+      else if (!v) note(id, `override: knowledgeislands-${sk} coverage not enforced for this repo`)
+      else note(id, `redundant: coverage-${sk} is enforced by default — can be dropped from [${CHECKS_SECTION}]`)
+    } else if (!(id in CHECK_DEFAULTS)) warn('checks', `"${id}" is not an overridable check (overridable: ${Object.keys(CHECK_DEFAULTS).join(', ')}, or coverage-<skill>)`)
     else if (v !== CHECK_DEFAULTS[id]) note(id, `override: ${v ? 'enforced' : 'not enforced'} for this repo (org default: ${CHECK_DEFAULTS[id] ? 'on' : 'off'})`)
     else note(id, `redundant: matches the org default (${v ? 'on' : 'off'}) — can be dropped from [${CHECKS_SECTION}]`)
+  }
+
+  // ── coverage cascade (gated on the ki-repo marker) ──
+  // Only a confirmed ki-repo (.ki-config.toml present) is checked for declaring the
+  // other governance skills that apply to it. A repo without the marker already
+  // FAILed `ki-config` above and is NOT a ki-repo, so it is never told to opt in —
+  // that would be a false positive on a plain git repo that merely looks similar.
+  if (files.has(KI_CONFIG)) {
+    const text = kiText ?? ''
+    for (const c of COVERAGE) {
+      if (!enforced(`coverage-${c.skill}`)) continue
+      const declared = declaresTable(text, c.table)
+      const detected = c.detect(signals)
+      if (detected && !declared) warn('coverage', `looks governed by knowledgeislands-${c.skill} (${c.artifact}) but declares no [${c.table}] — opt in, or set coverage-${c.skill} = false`)
+      else if (declared && !detected) warn('coverage', `declares [${c.table}] but no ${c.artifact} found — stale opt-in?`)
+    }
   }
 
   if (enforced('issues') && !r.hasIssuesEnabled) fail('issues', 'Issues are disabled')
@@ -391,7 +452,7 @@ console.log(paint(C.dim, `scope: ${scope}`))
 console.log(
   paint(
     C.dim,
-    `standard: files(README,LICENSE,.gitignore,.editorconfig,${KI_CONFIG}) · github(main,mit,squash-only,del-branch,update-branch,issues,no-wiki/projects,desc,visibility) · public+(topics) · deeper(dependabot;secret-scanning;actions=all) · overridable via [..checks]: ${Object.keys(CHECK_DEFAULTS).join(',')}`
+    `standard: files(README,LICENSE,.gitignore,.editorconfig,${KI_CONFIG}) · github(main,mit,squash-only,del-branch,update-branch,issues,no-wiki/projects,desc,visibility) · public+(topics) · deeper(dependabot;secret-scanning;actions=all) · coverage[ki-repo→](${COVERAGE.map((c) => c.skill).join(',')}) · overridable via [..checks]: ${Object.keys(CHECK_DEFAULTS).join(',')},coverage-<skill>`
   )
 )
 
@@ -411,10 +472,10 @@ for (const t of targets) {
     const files = rootPaths(t.nameWithOwner, branch)
     const kiText = files.has(KI_CONFIG) ? ghRaw(t.nameWithOwner, KI_CONFIG) : null
     const ki = kiText != null ? parseKiConfig(kiText) : null
-    const pkgDesc = pkgDescription(t.nameWithOwner, files)
+    const signals: Signals = { root: files, tree: treePaths(t.nameWithOwner, branch), pkg: readPkg(t.nameWithOwner, files) }
     // overrides are applied inside auditRepo: a not-enforced check simply does not fail
     // and is reported as a `note`. No post-filtering here.
-    findings = auditRepo(r, files, ki, pkgDesc)
+    findings = auditRepo(r, files, ki, kiText, signals)
   } catch {
     findings = [{ level: 'fail', check: 'access', msg: `could not read ${t.nameWithOwner} via gh (missing repo or insufficient scope)` }]
   }

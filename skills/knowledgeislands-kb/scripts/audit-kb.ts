@@ -53,14 +53,15 @@ const KI_CONFIG = '.ki-config.toml'
 const KI_SECTION = 'knowledgeislands-kb'
 const ZONES_SECTION = `${KI_SECTION}.zones`
 
-// The default block `--init` emits. Nothing here is mandatory: a base on the
-// canonical zone names needs no [knowledgeislands-kb] table at all, so the whole
-// block is a commented template the author uncomments only to declare an alias.
-const KI_DEFAULT = `# ${KI_SECTION} reads this table for its optional, per-base declarations. A base on
-# the canonical zone names (${ZONES.join(' / ')}) with no
-# frontmatter contract and no extra pre-flight needs no table here at all.
-
-# [${KI_SECTION}]
+// The default block `--init` emits. The bare [knowledgeislands-kb] header is the
+// OPT-IN MARKER: its presence declares this base governed by the kb standard
+// (knowledgeislands-repo's coverage cascade warns a base that has the zone layout but
+// no table). The keys below are all optional — a base on the canonical zone names with
+// no frontmatter contract and no extra pre-flight declares just the bare table.
+const KI_DEFAULT = `# ${KI_SECTION} — opt-in marker: declaring this table opts the base into the kb standard.
+# The keys below are optional; a base on the canonical zone names (${ZONES.join(' / ')})
+# with no frontmatter contract and no extra pre-flight declares just the bare table header.
+[${KI_SECTION}]
 # Frontmatter keys every note that HAS frontmatter must carry (extra keys are free).
 # Omit to leave required frontmatter as a judgment call. Keys must be snake_case.
 # required_frontmatter = ["tags", "status", "author"]

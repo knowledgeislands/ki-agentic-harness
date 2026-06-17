@@ -14,6 +14,7 @@ applied 2026-05-31 from an audit of all 10 `knowledgeislands` repos. The mechani
 - [Layer 3 — deeper GitHub](#layer-3--deeper-github)
 - [Visibility](#visibility)
 - [Per-repo overrides](#per-repo-overrides)
+- [Coverage cascade](#coverage-cascade)
 - [Applying it](#applying-it)
 - [Verifying it](#verifying-it)
 - [Conformance](#conformance)
@@ -125,6 +126,23 @@ failure), so a deliberate departure stays visible without reading as drift.
 - A **redundant** override — one whose value just restates the org default (e.g. `wiki = true`) — does nothing, so the auditor flags it with
   a `note` advising it be dropped. The aim is that a `.ki-config.toml` carries only genuine divergences, and a conforming repo's `[…checks]`
   is empty or absent.
+- `coverage-<skill>` (e.g. `coverage-11ty-websites = false`) is also accepted here — it opts the repo out of **one** coverage signal of the
+  cascade below (the default is enforced: a detected artifact with no opt-in table WARNs). A `coverage-<skill>` naming no coverage skill
+  WARNs, like any unknown check.
+
+## Coverage cascade
+
+`.ki-config.toml`'s presence is the **gate** (Layer 1): once it confirms the repo is a ki-repo, the auditor checks the repo **declares an
+opt-in `[knowledgeislands-<skill>]` table for every governance skill whose applicability it can detect** — a `Streams/` zone ⇒
+`[knowledgeislands-streams]`, an `eleventy.config` ⇒ `[knowledgeislands-11ty-websites]`, an `@modelcontextprotocol/sdk` dependency ⇒
+`[knowledgeislands-mcp]`, `skills/*/SKILL.md` ⇒ `[knowledgeislands-skills]`, and so on. Detected-but-undeclared WARNs; a declared table with
+no matching artifact WARNs as possibly stale.
+
+A repo that is **not** a ki-repo (no `.ki-config.toml`) is never coverage-checked — it just takes the `ki-config` FAIL, so a lookalike repo
+(an `eleventy.config` but no marker) is not falsely told to opt in. This is `knowledgeislands-repo`'s single cross-table read, and it reads
+only table **presence**, never another skill's keys. The full signal list and the marker-vs-config model live in
+[the `.ki-config.toml` contract](ki-config-standard.md#coverage-enforcement). Silence one signal with `coverage-<skill> = false` under
+`[knowledgeislands-repo.checks]`.
 
 ## Applying it
 

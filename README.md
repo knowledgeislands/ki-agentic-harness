@@ -267,6 +267,13 @@ skill inherits them by being audited:
   `+ knowledgeislands-11ty-websites` (the site-build delta) `+ knowledgeislands-cloudflare-hosting` (the hosting delta, if deployed) — + the
   skills linter (for any skills it ships) and the agents linter (for any subagents it ships). A target is "clean" only when each applicable
   skill's audit passes; each skill's AUDIT mode names the siblings it composes.
+- **Applicability is declared, then enforced — the coverage cascade.** Which standards govern a repo isn't left to inference: a repo **opts
+  in** by carrying a `[knowledgeislands-<skill>]` table, and `.ki-config.toml`'s presence is the **gate** — once it marks the repo a
+  ki-repo, `knowledgeislands-repo`'s audit checks that every skill whose artifacts it detects (a `Streams/` zone, an `eleventy.config`, an
+  MCP-SDK dependency, `skills/*/SKILL.md`, …) is declared, and WARNs on a detected-but-undeclared standard. A non-ki-repo (no
+  `.ki-config.toml`) is never coverage-checked, so a lookalike isn't falsely flagged. This is the one place a skill (`repo`) reads across
+  tables — **presence only** — and it's an _audit-time_ enforcement; the model lives in
+  [the `.ki-config.toml` contract](skills/knowledgeislands-repo/references/ki-config-standard.md).
 
 ## Agents
 

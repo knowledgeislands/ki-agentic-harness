@@ -51,7 +51,18 @@ that becomes deterministic should move into the script and flip to **[M]**.
 **override↓** marks an **overridable** check: its org default (`on`/`off`) lives in the script's `CHECK_DEFAULTS`, and a repo flips it for
 itself with a boolean under `[knowledgeislands-repo.checks]` (`true` = enforce, `false` = don't). Every other check is bedrock — not
 overridable. An active override prints as a `note`, never a failure; a redundant override (one that just restates the org default) prints a
-`note` advising it be dropped; a `[…checks]` key that names no overridable check **WARNs** (`checks` id). (standard: Per-repo overrides)
+`note` advising it be dropped; a `[…checks]` key that names no overridable check (nor a `coverage-<skill>`, below) **WARNs** (`checks` id).
+(standard: Per-repo overrides)
+
+## Coverage cascade (gated on the `.ki-config.toml` marker)
+
+- **coverage [M, gated]** Once `.ki-config.toml` confirms the repo is a ki-repo, every governance skill whose applicability is **detected**
+  in the repo must declare its opt-in `[knowledgeislands-<skill>]` table; a detected artifact with no table WARNs, and a declared table with
+  no matching artifact WARNs as possibly stale. Signals → tables: `package.json` → engineering, `Pillars/`+`Resources/` → kb, `Streams/` →
+  streams, `eleventy.config.*` → 11ty-websites, `wrangler.*` → cloudflare-hosting, `@modelcontextprotocol/sdk` dep → mcp,
+  `skills/*/SKILL.md` → skills, `agents/**/*.md` → agents. **Gated**: a repo with no `.ki-config.toml` is never coverage-checked (it takes
+  the `ki-config` FAIL), so a lookalike is not falsely flagged. This is `repo`'s one cross-table read — **presence only**, never another
+  skill's keys. Silence one signal with `coverage-<skill> = false` under `[knowledgeislands-repo.checks]`. (standard: Coverage cascade)
 
 ## Judgment (not deterministic — apply by reading)
 

@@ -9,3 +9,8 @@ visibility = "private"   # "public" | "private"
 [knowledgeislands-engineering]
 # This repo fully conforms, so it declares no check overrides. To diverge, add a
 # [knowledgeislands-engineering.checks] table with one boolean per check (true = enforce).
+
+# This repo ships skills under skills/, so it declares governance by the knowledgeislands-skills
+# standard. (Read by knowledgeislands-repo's coverage check; the skills linter lints the SKILL.md
+# files themselves.)
+[knowledgeislands-skills]

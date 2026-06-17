@@ -50,8 +50,10 @@ if (hasCli) {
 }
 
 // MCP-family root docs (the MCP delta). README/CLAUDE/ROADMAP presence + LICENSE/.gitignore/
-// .editorconfig/.ki-config are knowledgeislands-repo's layers (CLAUDE.md + ROADMAP.md are now
-// universal there); the toolchain configs are audit-engineering.ts's. The CLAUDE.md content
+// .editorconfig are knowledgeislands-repo's layers (CLAUDE.md + ROADMAP.md are now universal
+// there); the toolchain configs are audit-engineering.ts's. .ki-config.toml is repo's shared
+// contract, but this skill reads its OWN [knowledgeislands-mcp] opt-in table (checked near the
+// end). The CLAUDE.md content
 // contract (no drift) stays a judgment item. Here: CONTRIBUTING + SECURITY present, CHANGELOG
 // present AND non-empty.
 for (const f of ['CONTRIBUTING.md', 'SECURITY.md']) {
@@ -226,6 +228,23 @@ if (isDir('src', 'tools')) {
   sw(at('src', 'tools'))
   if (usesStructured && !declaresOutputSchema) add('WARN', 'tools', 'tools return structuredContent but no outputSchema is declared — pair them (spec 2025-06-18) so clients can validate')
   else if (usesStructured) add('PASS', 'tools', 'structuredContent paired with a declared outputSchema')
+}
+
+// ── .ki-config.toml [knowledgeislands-mcp] opt-in marker ──────────────────────
+// The shared file is knowledgeislands-repo's contract, but this skill reads its OWN
+// table: an MCP repo opts into the MCP standard by declaring [knowledgeislands-mcp]
+// (knowledgeislands-repo's coverage cascade enforces the same presence across the org,
+// from the MCP-SDK dependency signal). Validate-down — no per-repo keys defined yet.
+const kiMcp = read('.ki-config.toml')
+if (!kiMcp) add('WARN', 'ki-config', '.ki-config.toml missing (knowledgeislands-repo owns the contract)')
+else if (!/^\[knowledgeislands-mcp\]/m.test(kiMcp)) add('WARN', 'ki-config', 'no [knowledgeislands-mcp] table — add it to mark this repo as governed by the MCP standard')
+else {
+  add('PASS', 'ki-config', '[knowledgeislands-mcp] table present')
+  const body = kiMcp.split(/^\[knowledgeislands-mcp\]/m)[1]?.split(/^\[/m)[0] ?? ''
+  const KNOWN = new Set<string>([]) // no top-level options yet
+  for (const m of body.matchAll(/^\s*([A-Za-z0-9_-]+)\s*=/gm)) {
+    KNOWN.has(m[1] as string) ? add('PASS', 'ki-config', `known key ${m[1]}`) : add('WARN', 'ki-config', `unknown key under [knowledgeislands-mcp]: ${m[1]} (validate-down)`)
+  }
 }
 
 // ── report ────────────────────────────────────────────────────────────────────

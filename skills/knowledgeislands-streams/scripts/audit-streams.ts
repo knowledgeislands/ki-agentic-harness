@@ -42,13 +42,15 @@ const KI_SECTION = 'knowledgeislands-streams'
 const KB_ZONES = 'knowledgeislands-kb.zones'
 const SCHEMES = ['type', 'tags']
 
-// The default block `--init` emits — a commented template; a base on the
-// defaults (process note `Enactment Process`, the `type:` scheme) needs no table.
-const KI_DEFAULT = `# ${KI_SECTION} reads this table for a few optional, per-base declarations. A base on
-# the defaults (process note "Enactment Process", the machine-readable type: scheme)
-# needs no table here at all.
-
-# [${KI_SECTION}]
+// The default block `--init` emits. The bare [knowledgeislands-streams] header is the
+// OPT-IN MARKER: its presence declares this base's Streams zone governed by the
+// Enactment Process (knowledgeislands-repo's coverage cascade warns a base that has a
+// Streams/ zone but no table). The keys below are optional — a base on the defaults
+// (process note "Enactment Process", the type: scheme) declares just the bare table.
+const KI_DEFAULT = `# ${KI_SECTION} — opt-in marker: declaring this table opts the base's Streams zone into
+# the Enactment Process. The keys below are optional; a base on the defaults declares
+# just the bare table header.
+[${KI_SECTION}]
 # The base's canonical change-process note that streams link to (default "Enactment Process").
 # process_note = "Admin/Operations/Processes/Repository Change Process"
 # Note-type convention for zone/focus/proposal notes: "type" (canonical/default, machine-readable) or "tags" (legacy).
