@@ -10,7 +10,7 @@ external tools and specs, which move — so this is the skill's memory of what i
 | Source                   | Governs                                                            | Last reviewed |
 | ------------------------ | ------------------------------------------------------------------ | ------------- |
 | [CommonMark spec][cm]    | the Markdown syntax baseline                                       | 2026-06-13    |
-| [Prettier options][pr]   | what the formatter normalises — `proseWrap`, `printWidth` (160)    | 2026-06-13    |
+| [Prettier options][pr]   | what the formatter normalises — `proseWrap`, `printWidth` (140)    | 2026-06-13    |
 | [markdownlint rules][ml] | the `MDxxx` rules enforced (`MD013` off, `MD060`, `MD051`/`MD052`) | 2026-06-13    |
 | [TOML spec][toml]        | TOML syntax for the shared `.ki-config.toml`                       | 2026-06-13    |
 

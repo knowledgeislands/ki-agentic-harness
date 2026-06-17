@@ -9,7 +9,7 @@ hand-judge what a tool checks better) or **[J] judgment** (a reader assesses it)
 - **MD-mech [M]** `bun run lint:md` passes: line width / prose wrap, bullet & quote characters, heading hierarchy, single H1, spacing, table
   alignment (`MD060`), resolved link fragments (`MD051`) and references (`MD052`). Prettier + markdownlint own these.
   (markdown-authoring.md)
-- **MD-table [J]** A table that would exceed `printWidth` (160, from `.prettierrc.json`) is reshaped: a descriptive matrix → subheadings or
+- **MD-table [J]** A table that would exceed `printWidth` (140, from `.prettierrc.json`) is reshaped: a descriptive matrix → subheadings or
   a bulleted definition list; genuinely tabular data with one long column → keep the table and move that column to footnotes below it (a
   one-char marker in the cell). (markdown-authoring.md)
 - **MD-footnote [J]** Footnotes use the marker series `† ‡ § ¶ ‖` (then doubled), reset per table; a distinct second series `※ ❡ ¤ ¥` where
