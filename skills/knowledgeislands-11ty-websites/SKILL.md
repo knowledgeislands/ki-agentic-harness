@@ -19,8 +19,8 @@ new site is scaffolded to it; an existing one is audited and conformed against i
 
 This is a **standard, base-agnostic Process skill**. It hard-codes no single repo; it applies to any repo carrying a
 `[knowledgeislands-11ty-websites]` table in its `.ki-config.toml` (today: `kit-midnight.ninja` and `vallearmonia-website` as the canonical
-pair, with `arcadia-website` a conform target). How it sits beside the other skills, and where it must not overlap them, is documented once
-in the arcadia-agentic-harness `README.md`.
+pair, plus `arcadia-website`). How it sits beside the other skills, and where it must not overlap them, is documented once in the
+arcadia-agentic-harness `README.md`.
 
 This skill owns the **site-build delta** only. The generic toolchain (Bun mandate, `lint:*`/`deps:*` families,
 `tsconfig`/`biome`/`tsc --noEmit`) is `knowledgeislands-engineering`'s; Markdown/TOML style is `knowledgeislands-authoring`'s; **serving the
@@ -104,8 +104,8 @@ Carries the universal **AUDIT · CONFORM · REFRESH**, plus **INIT** (scaffold a
 
 1. Run **AUDIT** first, so you change against a known gap list.
 2. Fix the gaps in place — **copy from the canonical pair**: `kit-midnight.ninja` for the lean shape, `vallearmonia-website` for the fuller
-   patterns (tokens, layouts, gallery, SEO). `arcadia-website` and `5g-emerge` are conform _targets_, never copied from. Add the
-   `[knowledgeislands-11ty-websites]` table if missing.
+   patterns (tokens, layouts, gallery, SEO), never from the thinner sites (`5g-emerge`; `arcadia-website`, now conformed but still a
+   placeholder). Add the `[knowledgeislands-11ty-websites]` table if missing.
 3. Re-run the checker; settle the repo's own `bun run lint:*` / `lint:types` (and `lint:md` for any Markdown). For the toolchain block, run
    `knowledgeislands-engineering`'s CONFORM; for the deploy block, `knowledgeislands-cloudflare-hosting`'s.
 

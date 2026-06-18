@@ -45,6 +45,16 @@ overridable check (`true` = enforce, `false` = don't); omit any to take the org 
 `branch-protection` defaults **off** (set `true` to protect `main`); the GitHub-feature and security checks default **on** (set `false` to
 step out). The auditor prints each active override as a `note`, never a failure. See [the standard](references/repo-standard.md).
 
+**Coverage** is enforced on top of that marker — a gated cascade. Once `.ki-config.toml` confirms the repo _is_ a Knowledge Islands repo,
+the auditor checks that every governance standard whose applicability is _detectable_ in the repo declares its opt-in table: an
+`eleventy.config` expects `[knowledgeislands-11ty-websites]`, a `Streams/` zone expects `[knowledgeislands-streams]`, the MCP SDK expects
+`[knowledgeislands-mcp]`, and so on across `engineering`, `kb`, `cloudflare-hosting`, `skills`, and `agents`. A detected-but-undeclared
+standard is a **WARN** (never a FAIL); a declared table with no matching artifact is a softer "stale?" WARN. The **gate** is what stops a
+false positive — a plain git repo with an 11ty config but no `.ki-config.toml` is not a Knowledge Islands repo, so coverage is skipped
+entirely and it simply takes the `ki-config` FAIL. Silence a deliberate non-coverage with `[knowledgeislands-repo.checks]`
+`coverage-<skill> = false`. The cascade reads only table _presence_ across the set (presence is a compliance fact `repo` is entitled to
+check); it never interprets another skill's keys. See [the contract](references/ki-config-standard.md).
+
 ## Operating modes
 
 Every governance skill carries **AUDIT · CONFORM · REFRESH**; this one adds **INIT** (onboard a repo). Infer the mode from the request; ask
@@ -58,7 +68,8 @@ if unclear. (Modes are named and alphabetical.)
 3. **Do the judgment pass the script can't** — the `[J]` items in [the rubric](references/audit-rubric.md): does each description actually
    _match the repo's purpose_ (the script now checks non-emptiness and `package.json` sync mechanically — `description` / `description-sync`
    — but not fit); is each per-repo override (a `note` in the output) a warranted decision rather than waved-off drift.
-4. **Report** by `repo · check · fix`, lead with FAILs, and call out the overrides (`note`s) you judged warranted.
+4. **Report** by `repo · check · fix`, lead with FAILs, surface any **coverage** WARNs (a detected standard with no opt-in table), and call
+   out the overrides (`note`s) you judged warranted.
 
 ### Mode CONFORM — bring a repo (or the org) into line
 
