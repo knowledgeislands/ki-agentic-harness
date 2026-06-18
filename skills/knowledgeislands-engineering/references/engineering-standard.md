@@ -110,9 +110,12 @@ Install and dev use **Bun (≥ 1.3)**; the compiled `dist/` runs under **Node (�
 
 - **No `bun test`, anywhere.** `bun run test` runs vitest; bare `bun test` silently invokes Bun's own runner. No script value may contain
   `bun test`; the test script (where present, §6) is `vitest run`.
-- **`.env` parity.** Bun auto-loads `.env.${NODE_ENV}`; Node does not, so a repo that loads `.env` files calls `process.loadEnvFile()`
-  (wrapped in try/catch — Bun has no such API and throws `TypeError`). `NODE_ENV=development` is set **only** by dev/inspect scripts, so
-  production ignores `.env.*` and config must come from the launcher's environment (§8).
+- **`.env` parity.** Bun auto-loads `.env*`; Node does not, so a repo that loads `.env` files calls `process.loadEnvFile()` (wrapped in
+  try/catch — Bun has no such API and throws `TypeError`). Resolve the path from the module's own location (`import.meta.url`), **not**
+  `process.cwd()` — the compiled server is launched as `node /abs/path/dist/…` from an arbitrary cwd, so a `./`-relative path silently
+  misses. Load `.env.local`, then `.env.${NODE_ENV}` (when set), then `.env`; `loadEnvFile` never overwrites an already-set var, so the
+  launcher's environment wins. `NODE_ENV=development` is set **only** by dev/inspect scripts, so production ignores `.env.*` and config must
+  come from the launcher's environment (§8).
 
 ## 4. tsconfig.json (core + profiled)
 

@@ -63,8 +63,12 @@ human-runnable command exists, and per-domain extras (`auth-server` in gmail/m36
 
 ## 2. Config injection
 
-- `loadConfig(env = process.env): Config` hydrates `.env.${NODE_ENV}` via `process.loadEnvFile()` inside a try/catch (Bun has no such API
-  and throws `TypeError`, which the catch swallows — same code runs under Bun and Node), then parses env into a plain, immutable `Config`.
+- `loadConfig(env = process.env): Config` hydrates `process.env` from the package's `.env*` files via `process.loadEnvFile()` inside a
+  try/catch (Bun has no such API and throws `TypeError`, which the catch swallows; Bun auto-loads `.env*` itself), then parses env into a
+  plain, immutable `Config`. Resolve each file from the module's own location (`import.meta.url`), **not** `process.cwd()` — the compiled
+  server is launched as `node /abs/path/dist/…` from an arbitrary cwd, so a `./`-relative path silently misses. Load highest precedence
+  first — `.env.local`, then `.env.${NODE_ENV}` (when `NODE_ENV` is set), then `.env`; `loadEnvFile` never overwrites an already-set var, so
+  the launcher's environment always wins over a file.
 - **No module-level singleton.** Nothing reads `process.env` at import time outside `config/index.ts`. `main/` and `utils/` receive config
   as their first argument; tests build a literal `Config` and pass it (never mutate env, never call `loadConfig()` in a test — critical for
   repos that walk real user dirs).

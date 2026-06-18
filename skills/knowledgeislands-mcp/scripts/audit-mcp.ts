@@ -117,6 +117,8 @@ if (cfg) {
     ? add('PASS', 'config', 'config exports loadConfig')
     : add('FAIL', 'config', 'config/index.ts does not export loadConfig')
   cfg.includes('process.loadEnvFile') ? add('PASS', 'config', 'loadConfig uses process.loadEnvFile (Node .env parity)') : add('WARN', 'config', 'config/index.ts has no process.loadEnvFile call')
+  if (/loadEnvFile\(\s*[`'"]\.\.?\//.test(cfg))
+    add('WARN', 'config', 'loadEnvFile uses a cwd-relative path (./…) — resolve from import.meta.url; the launched `node dist/…` runs from an arbitrary cwd, not the package root')
   for (const sym of ['ACCESS_LEVELS', 'ACCESS_LEVEL_RANK', 'AuditLogMode']) {
     cfg.includes(sym) ? add('PASS', 'config', `config references ${sym}`) : add('WARN', 'config', `config missing ${sym}`)
   }
