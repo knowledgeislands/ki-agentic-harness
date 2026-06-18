@@ -13,6 +13,13 @@ run continuously, so they live there, not here.
 
 ## Later
 
+- **Adopt `knowledgeislands-tokenomics` across environments.** The skill now exists — it audits the standing context surface composed across
+  the user-wide `~/.claude` and project-local layers (plus any base) and the runtime levers, and checks a compression layer (Headroom) is
+  set up well. Open work: opt key projects/bases in with a `[knowledgeislands-tokenomics]` table and tune the budgets; run its AUDIT over
+  this harness itself — the first smoke run already flags **19 user-scoped MCP servers against a budget of 5** — and decide which to scope
+  or disable; seed an `evals/` scenario; and add the skill to the monthly `knowledgeislands-skills-refresh` routine (the REFRESH-cadence
+  follow-up an audit can't self-verify, per `knowledgeislands-skills` INIT step 5).
+
 - **Conform the website repos to the new standards.** The `knowledgeislands-11ty-websites` and `knowledgeislands-cloudflare-hosting` skills
   now exist (extracted from `kit-midnight.ninja` + `vallearmonia-website`, the `dist/` folder the seam between them), but their target repos
   are not yet brought into line. Open work, by repo: add the `[knowledgeislands-11ty-websites]` / `[knowledgeislands-cloudflare-hosting]`

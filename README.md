@@ -4,8 +4,8 @@ The **agentic harness** for Knowledge Islands work — the canonical home for wh
 the whole set can be versioned, reviewed, and installed together rather than scattered across the bases and projects that use it. The layout
 mirrors `hnr-agentic-harness`; it holds four things:
 
-- **Skills** ([`skills/`](skills/)) — reusable [Agent Skills](https://agentskills.io/specification), the bulk of the harness today (**ten**
-  of them, all governance skills — see below). Installed elsewhere by symlink.
+- **Skills** ([`skills/`](skills/)) — reusable [Agent Skills](https://agentskills.io/specification), the bulk of the harness today
+  (**eleven** of them, all governance skills — see below). Installed elsewhere by symlink.
 - **Agents** ([`agents/`](agents/)) — Knowledge Islands [Claude Code subagents](https://code.claude.com/docs/en/sub-agents), one per file.
   An empty **shelf** today, governed by the `knowledgeislands-agents` skill.
 - **MCP servers** ([`mcp/`](mcp/)) — where KI's MCP servers would consolidate as workspace packages. An empty **shelf** today; they
@@ -45,12 +45,12 @@ skill by its `name`, so the two must stay in sync.
 
 ## Skills in this repository
 
-Ten skills, each a **governance skill**: it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus
+Eleven skills, each a **governance skill**: it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus
 skill-specific ones), backed by a tracked `references/sources.md`.
 
-### The map — how the ten fit together
+### The map — how the eleven fit together
 
-The ten sit in **two layers**: two cross-cutting **foundations** that every other skill builds on, and the **domain** skills that each
+The eleven sit in **two layers**: two cross-cutting **foundations** that every other skill builds on, and the **domain** skills that each
 govern one kind of artifact. The arrows are the structural ties (who _delegates to_, _composes on_, or _feeds_ whom) spelled out in the
 sections that follow.
 
@@ -68,6 +68,7 @@ DOMAIN — what each skill governs
                     mcp  ──composes its checker on──▶ engineering
   skills & agents   skills ── a SKILL.md (frontmatter + body)   ·   agents ── a subagent definition (the twin)
   websites          11ty-websites ──emits dist/──▶ cloudflare-hosting   (both compose on engineering)
+  context budget    tokenomics ──audits the standing surface composed across──▶ (kb · mcp · skills · settings)
 ```
 
 Read the per-skill entries next for what each does; _Where the skills do not overlap_ draws the boundaries between the pairs that could be
@@ -139,6 +140,16 @@ mechanical-checker contract, rubric tagging, `sources.md` cadence, `.ki-config.t
 toolchain twin of `knowledgeislands-authoring`. Ships a mechanical checker (`audit-engineering.ts`); artifact skills (e.g.
 `knowledgeislands-mcp`) **compose** their delta on top of its common layer.
 
+### [`knowledgeislands-tokenomics`](skills/knowledgeislands-tokenomics/SKILL.md) — Process
+
+Audits, conforms, and tunes the **tokenomics** of a Claude Code environment — the standing context surface paid on every turn, as
+**composed** across the user-wide `~/.claude` and project-local layers and any base, plus the runtime levers (caching, model tier,
+compaction, sub-agent fan-out, tool-result verbosity). Attributes cost per layer, holds it to overridable budgets (a
+`[knowledgeislands-tokenomics]` table, read validate-down), and checks context-compression tooling — **Headroom**, an extensible registry —
+is set up optimally. **Composes** on the artifact skills whose surfaces it measures (`knowledgeislands-mcp` for the tool surface,
+`knowledgeislands-skills` for the description surface, `knowledgeislands-kb` for a base's loaded surface) and defers the volatile reference
+numbers to the `claude-api` skill. Ships a mechanical checker (`audit-tokenomics.ts`) that reads both config layers by design.
+
 Where the set is going next is in [ROADMAP.md](ROADMAP.md).
 
 ### The governance-skill shape
@@ -177,6 +188,9 @@ stating once, with the nuance in the footnotes below:
 | `knowledgeislands-engineering` vs the rest                             | **How we build** vs everything that isn't the toolchain. ‖                        |
 | `knowledgeislands-11ty-websites` vs `…-cloudflare-hosting`             | **Building** the portable `dist/` vs **serving** it — the `dist/` is the seam. †† |
 | `…-cloudflare-hosting` vs the generic `cloudflare` / `wrangler` skills | The **one site Worker** serving `dist/` vs all other Workers + platform usage. ‡‡ |
+| `knowledgeislands-tokenomics` vs `knowledgeislands-mcp`                | The **token cost** of the MCP tool surface vs an MCP server's **code**. §§        |
+| `knowledgeislands-tokenomics` vs `knowledgeislands-skills`             | The installed set's **description cost** vs one `SKILL.md`'s **quality**. §§      |
+| `knowledgeislands-tokenomics` vs the `claude-api` skill                | The **shape** of the context budget vs the volatile **numbers** it cites. §§      |
 
 † Auditing the `SKILL.md` of an MCP-related skill is `knowledgeislands-skills`' job; auditing the server's `src/` layout, config injection,
 and tool surface is `knowledgeislands-mcp`'s. This is the one pair that could be confused — both "audit against a standard" — so each names
@@ -209,6 +223,13 @@ custom domains. They meet only at the `dist/` path, so each names the other as t
 ‡‡ `knowledgeislands-cloudflare-hosting` governs only the **site** Worker — the one with an `assets` block serving `dist/`. Every other
 Worker — a bot, an ingress receiver, an API, anything with a `main` entry, bindings, or crons — and all general `wrangler`/Workers usage is
 the generic `cloudflare` / `wrangler` skills' domain; the hosting skill notes such a Worker and leaves it alone.
+
+§§ `knowledgeislands-tokenomics` measures and tunes the **cost** of the context surface; it does not own the artifacts that produce that
+cost. It composes on the artifact skills rather than competing with them — it reads the MCP tool surface but routes a server's own design to
+`knowledgeislands-mcp`, reads the installed skills' descriptions but routes a single `SKILL.md`'s quality to `knowledgeislands-skills`, and
+reads a base's loaded surface but routes structure to `knowledgeislands-kb`. The volatile reference **numbers** (model ids, prices, cache
+TTLs, context-window sizes) it deliberately holds none of — those are the `claude-api` skill's, resolved at runtime — so it owns the
+budget's _shape_, that skill the figures.
 
 ### How knowledge moves and improves — the three loops
 
