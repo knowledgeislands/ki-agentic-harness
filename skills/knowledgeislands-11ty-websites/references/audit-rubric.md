@@ -30,7 +30,7 @@ polish (SEO / consistency).
 - [ ] 🔧 B — `@11ty/eleventy` `^3.x` is a dependency. (§1)
 - [ ] 🔧 S — **not** an `astro` / `next` / SPA project (those deps absent). (§1)
 - [ ] S — Nunjucks is the template engine (`htmlTemplateEngine`/`markdownTemplateEngine` = `'njk'`); content is `.md`, logic is `.njk`. (§1)
-- [ ] S — TypeScript runs natively (Bun, or `node --experimental-strip-types`); **no `tsx`**. (§1, §10)
+- [ ] S — TypeScript runs natively (Bun, or plain `node` on Node ≥ 24 — type stripping stable/unflagged); **no `tsx`**. (§1, §10)
 - [ ] P — Lucide is the icon source (passthrough from `node_modules`, initialised client-side). (§1)
 
 ## Layout (§2)

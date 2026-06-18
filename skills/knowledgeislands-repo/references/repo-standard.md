@@ -175,7 +175,7 @@ done
 for r in $all; do gh api -X DELETE "repos/knowledgeislands/$r/branches/main/protection" 2>/dev/null || true; done
 # Only for a repo that overrides it on (branch-protection = true under [..checks] in its .ki-config.toml):
 read -r -d '' body <<'JSON'
-{ "required_status_checks": {"strict": true, "contexts": ["build"]}, "enforce_admins": false,
+{ "required_status_checks": {"strict": true, "checks": [{"context": "build"}]}, "enforce_admins": false,
   "required_pull_request_reviews": {"required_approving_review_count": 0}, "restrictions": null,
   "required_linear_history": true, "allow_force_pushes": false, "allow_deletions": false }
 JSON

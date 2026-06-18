@@ -9,29 +9,31 @@ external tools and specs, which move — so this is the skill's memory of what i
 
 | Source                   | Governs                                                            | Last reviewed |
 | ------------------------ | ------------------------------------------------------------------ | ------------- |
-| [CommonMark spec][cm]    | the Markdown syntax baseline                                       | 2026-06-13    |
-| [Prettier options][pr]   | what the formatter normalises — `proseWrap`, `printWidth` (140)    | 2026-06-13    |
-| [markdownlint rules][ml] | the `MDxxx` rules enforced (`MD013` off, `MD060`, `MD051`/`MD052`) | 2026-06-13    |
-| [TOML spec][toml]        | TOML syntax for the shared `.ki-config.toml`                       | 2026-06-13    |
+| [CommonMark spec][cm]    | the Markdown syntax baseline                                       | 2026-06-18    |
+| [Prettier options][pr]   | what the formatter normalises — `proseWrap`, `printWidth` (140)    | 2026-06-18    |
+| [markdownlint rules][ml] | the `MDxxx` rules enforced (`MD013` off, `MD060`, `MD051`/`MD052`) | 2026-06-18    |
+| [TOML spec][toml]        | TOML syntax for the shared `.ki-config.toml`                       | 2026-06-18    |
 
 [cm]: https://spec.commonmark.org/
 [pr]: https://prettier.io/docs/options
 [ml]: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
-[toml]: https://toml.io/en/v1.0.0
+[toml]: https://toml.io/en/v1.1.0
 
 ## Last review
 
-REFRESH last run **2026-06-13** against CommonMark, Prettier, markdownlint, and the TOML spec (sources above).
+REFRESH last run **2026-06-18** against CommonMark, Prettier, markdownlint, and the TOML spec (sources above).
 
-- **CommonMark:** accessible this run (previously 403). Version 0.31.2 (released 2024-01-28) confirmed current; no newer version.
-- **Prettier:** accessible this run (previously 403). House install is 3.8.3. New options since last confirmed review: `objectWrap` (v3.5.0,
-  default `"preserve"`) for JS object literal formatting, `checkIgnorePragma` (v3.6.0, default `false`) for file-level opt-out markers.
-  Neither affects the judgment conventions (Markdown prose wrap, link style, TOML) — no convention change.
-- **markdownlint:** confirmed unchanged. Rules page accessible; still lists MD013 (off in house config), MD051/MD052 (reference-link
-  validation), MD060 (table-column-style). No new or deprecated rules.
-- **TOML:** `toml.io/en/v1.1.0` is now reachable (previously 403). The site shows v1.1.0 as current alongside v1.0.0. No diff was obtainable
-  from the rendered page alone; the tracked URL still points to v1.0.0.
+- **CommonMark:** accessible. Version 0.31.2 (released 2024-01-28) confirmed current; no newer version.
+- **Prettier:** accessible. `proseWrap` (default `"preserve"`, house `always`), `printWidth` (default `80`, house `140`) unchanged. No new
+  options affecting the judgment conventions; `objectWrap` (v3.5.0) and `checkIgnorePragma` (v3.6.0) remain irrelevant, as do the
+  experimental `experimentalOperatorPosition` / `experimentalTernaries`. No convention change.
+- **markdownlint:** confirmed unchanged. Still lists MD013 (off in house config), MD051/MD052 (reference-link validation), MD060
+  (table-column-style); MD060 remains the highest-numbered rule. No new or deprecated rules. Local `lint:md:check` clean on
+  markdownlint-cli2 v0.22.1 / markdownlint v0.40.0.
+- **TOML:** v1.1.0 went **final on 2025-12-18** (the long-standing draft shipped; `github.com/toml-lang/toml` release `1.1.0` is marked
+  Latest). Its additions — multi-line / trailing-comma inline tables, `\e` and `\xHH` string escapes, optional seconds in datetimes — are
+  additive and do not touch `.ki-config.toml` formatting (lowercase `snake_case` keys, double-quoted strings, inline arrays,
+  one-table-per-skill, `#` comments all unchanged). Tracked URL moved from v1.0.0 to **v1.1.0** to follow the released current spec.
 - **No convention change this run.** The judgment-layer rules (wide-table → footnote, link style, `.ki-config.toml` formatting) remain
   correct.
-- **Open watch-items:** assess TOML v1.1.0 vs v1.0.0 for any syntax additions that affect `.ki-config.toml` formatting convention; update
-  tracked URL to v1.1.0 once diff is confirmed (check `github.com/toml-lang/toml` release notes).
+- **Open watch-items:** none. (Prior TOML v1.1.0 watch-item closed — released and assessed.)

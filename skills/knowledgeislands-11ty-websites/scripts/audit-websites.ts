@@ -78,9 +78,9 @@ deps['@11ty/eleventy'] ? add('PASS', 'stack', `@11ty/eleventy ${deps['@11ty/elev
 for (const f of ['astro', 'next']) {
   if (deps[f]) add('WARN', 'stack', `${f} present — this skill governs Eleventy sites, not ${f}`)
 }
-// tsx is the legacy TS runner (5g-emerge); native Bun / node --experimental-strip-types is the standard.
+// tsx is the legacy TS runner (5g-emerge); native Bun / Node (type stripping stable/unflagged) is the standard.
 const usesTsx = deps.tsx !== undefined || Object.values(scripts).some((s) => /tsx\/esm|--import\s+tsx/.test(s))
-usesTsx ? add('WARN', 'stack', 'tsx detected (legacy TS runner) — run TS natively on Bun / node --experimental-strip-types') : add('PASS', 'stack', 'no tsx (TS runs natively)')
+usesTsx ? add('WARN', 'stack', 'tsx detected (legacy TS runner) — run TS natively on Bun / Node') : add('PASS', 'stack', 'no tsx (TS runs natively)')
 
 // ── Tailwind: config-less ─────────────────────────────────────────────────────
 const TW_CONFIGS = ['tailwind.config.js', 'tailwind.config.ts', 'tailwind.config.cjs', 'tailwind.config.mjs']

@@ -15,11 +15,11 @@ The spec is versioned by date. Track the **latest released** version and note th
 
 | Tag       | Source                                 | Governs                                                           | Last reviewed |
 | --------- | -------------------------------------- | ----------------------------------------------------------------- | ------------- |
-| SPEC      | [MCP spec — versioning / latest][spec] | Which dated revision is current (latest released: **2025-11-25**) | 2026-06-13    |
-| CHANGELOG | [2025-11-25 changelog][changelog]      | †                                                                 | 2026-06-13    |
-| TOOLS     | [Server → Tools][tools]                | ‡                                                                 | 2026-06-13    |
-| SEC       | [Security Best Practices][sec]         | §                                                                 | 2026-06-13    |
-| AUTH      | [Authorization][auth]                  | ¶                                                                 | 2026-06-13    |
+| SPEC      | [MCP spec — versioning / latest][spec] | Which dated revision is current (latest released: **2025-11-25**) | 2026-06-18    |
+| CHANGELOG | [2025-11-25 changelog][changelog]      | †                                                                 | 2026-06-18    |
+| TOOLS     | [Server → Tools][tools]                | ‡                                                                 | 2026-06-18    |
+| SEC       | [Security Best Practices][sec]         | §                                                                 | 2026-06-18    |
+| AUTH      | [Authorization][auth]                  | ¶                                                                 | 2026-06-18    |
 
 † What changed since 2025-06-18 (tasks, tool-calling in sampling, OIDC discovery, icons, validation-error clarification).
 
@@ -34,8 +34,8 @@ The spec is versioned by date. Track the **latest released** version and note th
 
 | Tag       | Source                                                        | Governs | Last reviewed |
 | --------- | ------------------------------------------------------------- | ------- | ------------- |
-| COMMUNITY | [Tool Annotations as Risk Vocabulary (MCP blog)][annotations] | †       | 2026-06-13    |
-| COMMUNITY | [NSA/CISA — MCP security CSI][csi]                            | ‡       | 2026-06-13    |
+| COMMUNITY | [Tool Annotations as Risk Vocabulary (MCP blog)][annotations] | †       | 2026-06-18    |
+| COMMUNITY | [NSA/CISA — MCP security CSI][csi]                            | ‡       | 2026-06-18    |
 
 † What the `*Hint` annotations can and can't do — anchors the annotation-driven gate.
 
@@ -48,8 +48,8 @@ truth for house style; when they diverge from each other, the majority wins and 
 
 | Tag    | Source                      | Governs                                                                                  | Last reviewed |
 | ------ | --------------------------- | ---------------------------------------------------------------------------------------- | ------------- |
-| REPOS  | The seven sibling repos †   | Layout, config, tool naming, shared `utils/`, the toolchain ‡                            | 2026-06-13    |
-| CLAUDE | Each repo's own `CLAUDE.md` | The per-repo statement of its own invariants — the standard tracks these and flags drift | 2026-06-13    |
+| REPOS  | The seven sibling repos †   | Layout, config, tool naming, shared `utils/`, the toolchain ‡                            | 2026-06-18    |
+| CLAUDE | Each repo's own `CLAUDE.md` | The per-repo statement of its own invariants — the standard tracks these and flags drift | 2026-06-18    |
 
 † `mcp-git-audit`, `mcp-kb-fs`, `mcp-gmail`, `mcp-m365`, `mcp-claude-housekeeping`, `mcp-voicenotes-edit`, `mcp-kb-notion-mirror`.
 
@@ -57,30 +57,31 @@ truth for house style; when they diverge from each other, the majority wins and 
 
 ## Last review
 
-REFRESH last run **2026-06-13** against MCP spec revision **2025-11-25** (the pinned stable target).
+REFRESH last run **2026-06-18** against MCP spec revision **2025-11-25** (the pinned stable target).
 
-- **All sources accessible this run** (previously HTTP 403 for spec, changelog, tools, auth, and community pages). 2025-11-25 confirmed as
-  current stable via the versioning page.
-- **Conformant, no change to standard §1–12:** annotation-driven access gate (`readOnlyHint` / `destructiveHint` / `idempotentHint` /
-  `openWorldHint`) confirmed verbatim in the TOOLS page; isError semantics (validation/API/logic errors → Tool Execution Errors, not
-  protocol errors) confirmed; tool naming 1–128 chars `[A-Za-z0-9_.-]` confirmed (house scheme is a conformant subset); `outputSchema` +
-  `structuredContent` pairing confirmed; `taskSupport` values `"forbidden"` (default) / `"optional"` / `"required"` confirmed; `icons` /
-  `title` remain optional metadata.
-- **Standard §13 updated (new, from AUTH page 2025-11-25):** two requirements that were not verified in the 2026-06-01 refresh (HTTP 403)
-  are now added to the standard: RFC 8707 `resource` parameter (clients MUST include in auth/token requests; auth servers should accept,
-  propagate to token `aud`, and the resource-server role validates `aud`) and Client ID Metadata Documents (auth servers SHOULD support
-  URL-formatted client IDs as the preferred registration path). See workspace-mcp-standard.md §13 items 7–8.
-- **MCP draft (target date 2026-07-28) confirmed accessible** at `/specification/draft`. Changelog verified — changes beyond the prior
-  watch-item description: `server/discover` RPC (servers MUST implement); `subscriptions/listen` replaces HTTP GET + `resources/subscribe`;
-  `ping` removed; MRTR pattern replaces sampling/roots/elicitation server-initiated requests; `CacheableResult` interface (`ttlMs`,
-  `cacheScope`) on list/read results; tools/list SHOULD return deterministic order; RFC 9207 `iss` parameter validation added to auth;
-  `application_type` required in Dynamic Client Registration; `inputSchema` / `outputSchema` loosened to full JSON Schema 2020-12 keywords.
-  Dynamic Client Registration (RFC7591) deprecated in the draft in favour of Client ID Metadata Documents.
-- **Open watch-items:** rate-limiting is a spec MUST kept lower-priority for local stdio servers (revisit if a server goes remote); no repo
-  yet declares `outputSchema` for structured output. **Re-anchor the standard once the draft stabilises (target 2026-07-28):** stateless
-  protocol core (drops the `initialize`/`initialized` handshake and `Mcp-Session-Id`), `server/discover` required, Roots / Sampling /
-  Logging deprecated (12-month removal window), Tasks as an official extension, MRTR pattern, `CacheableResult` interface; for auth-server
-  repos, RFC 9207 `iss` validation and `application_type` in DCR.
+- **All sources accessible this run** except the NSA/CISA CSI PDF (HTTP 403 on WebFetch — recovered via search; content unchanged). The CSI
+  is now a dated artifact: **May 2026 Ver. 1.0 (U/OO/6030316-26)** — least privilege per server, allowlisting / data-classification zones,
+  egress filtering (proxy/DLP), input-and-context validation, continuous monitoring. Still supports §6 + audit logging.
+- **2025-11-25 confirmed still the current released revision** via the versioning/spec page. No newer dated release exists.
+- **Conformant, no change to standard §1–13, the rubric, or audit-mcp.ts.** Re-verified verbatim against the live 2025-11-25 pages:
+  annotation-driven gate (`readOnlyHint` / `destructiveHint` / `idempotentHint` / `openWorldHint`; annotations are untrusted) (TOOLS);
+  isError semantics — validation/API/logic errors are Tool Execution Errors, not protocol errors (TOOLS); tool naming SHOULD be 1–128 chars
+  `[A-Za-z0-9_.-]` (TOOLS, house scheme is a conformant subset); `outputSchema` + `structuredContent` pairing, with the serialized-JSON
+  TextContent backwards-compat block (TOOLS); `taskSupport` values `"forbidden"` (default) / `"optional"` / `"required"`, `icons` / `title`
+  optional metadata (TOOLS); JSON Schema 2020-12 default dialect (TOOLS/CHANGELOG); §13 — RFC 8707 `resource` parameter + audience
+  validation and Client ID Metadata Documents (AUTH), correctly scoped to the remote-resource-server / authorization-server roles that no
+  current stdio repo occupies.
+- **Draft has progressed to a Release Candidate, not yet released.** The **2026-07-28** revision is now an RC (locked **2026-05-21**, final
+  publication **2026-07-28**) — the largest revision since launch. Re-confirmed in the draft this run: stateless core ("Stateless,
+  self-contained requests" / "Per-request capability negotiation" — drops the `initialize`/`initialized` handshake and `Mcp-Session-Id`);
+  Roots / Sampling / Logging deprecated (draft client features list shows Elicitation only); Tasks is now an official opt-in **extension**
+  (alongside MCP Apps and Skills-over-MCP). Carried forward from the prior run, RC-stage and unchanged: `server/discover` required, MRTR
+  pattern, `CacheableResult`, RFC 9207 `iss` validation, `application_type` in DCR, input/output schemas loosened to full JSON Schema
+  2020-12. DCR is deprecated in favour of Client ID Metadata Documents.
+- **Open watch-items:** rate-limiting remains a spec MUST kept lower-priority for local stdio servers (revisit if a server goes remote); no
+  repo yet declares `outputSchema` for structured output. **Re-anchor §12–13 + §4 once the 2026-07-28 revision is RELEASED (final
+  publication 2026-07-28):** stateless protocol core, `server/discover` required, Roots / Sampling / Logging deprecation window, Tasks as an
+  official extension, MRTR pattern, `CacheableResult`; for auth-server repos, RFC 9207 `iss` validation and `application_type` in DCR.
 
 (What past reviews changed in the standard / checklist / `audit-mcp.ts` — structured output, the OAuth security invariants, tool-name
 charset bounds, output sanitization, the relaxed tool-name regex — is in git.)

@@ -57,19 +57,30 @@ it is the highest-leverage field. It is present and non-empty, free of XML tags,
 to scope the role, short enough to scan). It must state **both what the agent owns and when to delegate to it** (capability + trigger, never
 one alone); be written in the **third person** ("Owns architecture and ADRs…", never "I/You…"); include concrete cues a request would carry
 (the role's nouns and verbs); and avoid vague phrasing ("helps with engineering"). Where a sibling agent is adjacent, it may end by naming
-the boundary ("…not what to build — that is the product-manager's"). (CC, BP)
+the boundary ("…not what to build — that is the product-manager's"). To encourage Claude to **auto-delegate proactively**, the description
+may use the CC-blessed idiom "use proactively" / "use immediately after…" as a when-to-delegate cue — permitted, not required. (CC, BP)
 
 ## 5. Frontmatter: optional fields
 
-Validated when present, per the Claude Code subagents spec:
+Validated when present, per the Claude Code subagents spec. Only `name` and `description` are required; everything below is optional:
 
-- **`model`** — `inherit` (use the main thread's model — a sensible default), an alias (`sonnet`, `opus`, `haiku`), or a pinned model id.
-  Pin only with a reason (a cheap model for a mechanical role, a stronger one for hard reasoning); otherwise prefer `inherit`.
+- **`model`** — `inherit` (use the main thread's model — a sensible default), an alias (`sonnet`, `opus`, `haiku`, `fable`), or a pinned
+  model id. Defaults to `inherit` when omitted. Pin only with a reason (a cheap model for a mechanical role, a stronger one for hard
+  reasoning); otherwise prefer `inherit` — a pinned full model id is a longevity risk (it rots), so prefer the alias or `inherit`.
 - **`tools`** — an allow-list of tool names. **Omitting it inherits all tools**; specifying it restricts the agent to exactly those. Grant
   **least privilege**: a read/advise agent does not need write or execution tools.
+- **`disallowedTools`** — a deny-list: tools removed from the inherited (or `tools`-specified) set. Applied **first**, then `tools` is
+  resolved against what remains; a tool named in both is removed. Either field can express least privilege — an allow-list when the role
+  needs a few tools, a deny-list when it needs all-but-a-few.
 - **`color`** — a display hint only; cosmetic.
 
-Treat any field not in the current subagents spec as a portability risk and flag it. (CC)
+Beyond these, the current subagents spec defines a wider field set — `permissionMode` (`default` / `acceptEdits` / `auto` / `dontAsk` /
+`bypassPermissions` / `plan`; use `bypassPermissions` only with a stated reason, as it skips permission prompts), plus `skills` (preload
+skill content), `mcpServers`, `hooks`, `memory` (`user` / `project` / `local` cross-session learning), `maxTurns`, `background`, `effort`,
+`isolation` (`worktree`), and `initialPrompt`. The house uses only a subset, but **all of these are valid** — so a field is a portability
+risk and flagged **only when it is not in this spec set** (`name`, `description`, `tools`, `disallowedTools`, `model`, `permissionMode`,
+`maxTurns`, `skills`, `mcpServers`, `hooks`, `memory`, `background`, `effort`, `isolation`, `color`, `initialPrompt`). Note that `hooks` /
+`mcpServers` / `permissionMode` are ignored for plugin-distributed subagents. (CC)
 
 ## 6. System prompt: size & focus
 
@@ -94,12 +105,19 @@ Use **consistent terminology** (one term per concept). (BP, HOUSE)
 
 ## 8. Tools & model
 
-Two levers shape an agent's cost and blast radius:
+Three levers shape an agent's cost and blast radius:
 
 - **Tools** — restrict to least privilege. An advisory agent (reads, recommends) should not carry write/exec tools; an authoring agent needs
-  write but rarely shell. Omitting `tools` inherits everything, which is the wrong default for a narrow role.
+  write but rarely shell. Omitting `tools` inherits everything, which is the wrong default for a narrow role. Express the restriction with
+  **either** `tools` (an allow-list) **or** `disallowedTools` (a deny-list applied first) — whichever is shorter for the role. Both accept
+  MCP server-level patterns (`mcp__<server>`, `mcp__<server>__*`, and `mcp__*` to remove all MCP tools), and `tools` accepts the
+  `Agent(type)` spawn-allow-list that restricts which subagents this agent may itself spawn.
 - **Model** — `inherit` unless the role justifies a pin: a high-volume mechanical role can use a cheaper model; a deep-reasoning role a
-  stronger one. State the reason where it is not obvious. (CC, BP)
+  stronger one. Pin via an alias (`sonnet`, `opus`, `haiku`, `fable`) rather than a full model id, which rots. State the reason where it is
+  not obvious.
+- **Permission mode** — `permissionMode` is the third lever: it sets how the agent handles permission prompts (`default` / `acceptEdits` /
+  `auto` / `dontAsk` / `bypassPermissions` / `plan`). Leave it unset (inherit) unless the role needs a specific posture; `bypassPermissions`
+  widens blast radius and needs a stated reason. (CC, BP)
 
 ## 9. Lane & delegation
 

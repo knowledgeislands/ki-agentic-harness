@@ -27,9 +27,9 @@ This skill owns the **site-build delta**. The toolchain it sits on (Bun mandate,
   a SPA. The output is HTML + CSS + a little progressive-enhancement JS.
 - **Nunjucks** (`.njk`) is the template engine for both HTML templates and Markdown (`htmlTemplateEngine: 'njk'`,
   `markdownTemplateEngine: 'njk'`). **Markdown** (`.md`) carries prose content; `.njk` carries logic/layout.
-- **TypeScript runs natively on Bun — no transpile step.** `eleventy.config.ts` and `_data/*.ts` are executed directly (Bun, or
-  `node --experimental-strip-types` on Node ≥ 22). `tsc` is used only for `--noEmit` type-checking, which is the
-  `knowledgeislands-engineering` layer. **`tsx` is legacy** (see §10).
+- **TypeScript runs natively on Bun — no transpile step.** `eleventy.config.ts` and `_data/*.ts` are executed directly (Bun, or plain `node`
+  on Node ≥ 24 — type stripping is stable and unflagged since v24.3 / v22.18; the older `--experimental-strip-types` flag is now a no-op).
+  `tsc` is used only for `--noEmit` type-checking, which is the `knowledgeislands-engineering` layer. **`tsx` is legacy** (see §10).
 - **Bun is mandated** as the package manager and runtime. The Bun-install / Node-run split, the `packageManager: bun@…` pin, `engines`, and
   the `lint:*`/`deps:*` families are `knowledgeislands-engineering`'s — this standard assumes them.
 - **Lucide** provides icons, copied from `node_modules` as a passthrough and initialised client-side (no build-time icon framework).
@@ -153,8 +153,8 @@ Where `dist/` sits — `./dist` (flat) or `../dist` (from `site/`) — is the pa
 
 Older sites predate the standard; CONFORM moves them toward it. The known legacy patterns and their fixes:
 
-- **npm + `tsx`** (`node --import tsx/esm …`) → Bun running `.ts` natively (or `node --experimental-strip-types`). `tsx` and the npm
-  lockfile go. (`5g-emerge`.)
+- **npm + `tsx`** (`node --import tsx/esm …`) → Bun running `.ts` natively (or plain `node` on Node ≥ 24, type stripping now stable and
+  unflagged). `tsx` and the npm lockfile go. (`5g-emerge`.)
 - **No portable-`dist/` transform** → add the `addTransform` from §4.
 - **Skeletal `src/`** — no `tokens.css`, no `_includes/{layouts,partials}/`, no `seo-meta` partial → add them, copying the shape from the
   canonical pair. (`arcadia-website`: a modern `eleventy.config.ts` but a skeletal `src/`.)

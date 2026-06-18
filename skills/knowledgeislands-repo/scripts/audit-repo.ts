@@ -332,7 +332,7 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
 
   // branch-protection: default OFF — `main` is open unless this repo sets it true.
   if (enforced('branch-protection')) {
-    let bp: { required_pull_request_reviews?: unknown; required_status_checks?: { contexts?: string[] }; required_linear_history?: { enabled?: boolean } } | null
+    let bp: { required_pull_request_reviews?: unknown; required_status_checks?: { contexts?: string[]; checks?: { context: string }[] }; required_linear_history?: { enabled?: boolean } } | null
     try {
       bp = ghJSON(`repos/${r.nameWithOwner}/branches/${DEFAULT_BRANCH}/protection`) as typeof bp
     } catch {
@@ -341,7 +341,8 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
     if (!bp) fail('branch-protection', `no branch protection on ${DEFAULT_BRANCH}`)
     else {
       if (bp.required_pull_request_reviews == null) fail('branch-protection', 'does not require a pull request')
-      if (!(bp.required_status_checks?.contexts ?? []).includes(REQUIRED_CHECK)) fail('branch-protection', `required checks omit "${REQUIRED_CHECK}"`)
+      const presentChecks = bp.required_status_checks?.checks?.map((c) => c.context) ?? bp.required_status_checks?.contexts ?? []
+      if (!presentChecks.includes(REQUIRED_CHECK)) fail('branch-protection', `required checks omit "${REQUIRED_CHECK}"`)
       if (bp.required_linear_history?.enabled !== true) fail('branch-protection', 'does not require linear history')
     }
   }

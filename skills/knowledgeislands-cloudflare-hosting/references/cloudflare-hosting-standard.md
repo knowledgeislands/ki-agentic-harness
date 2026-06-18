@@ -23,9 +23,9 @@ The site is **one Cloudflare Worker that serves static assets**. The Worker has 
 `wrangler deploy` uploads them and wires the Worker. There is no server-side code for a pure static site — the assets are served directly at
 the edge.
 
-- **Workers + Static Assets**, deployed with `wrangler deploy`. **Never `wrangler pages deploy`** — Cloudflare Pages is deprecated as the
-  target for new sites, and the canonical pair were explicitly **migrated off Pages to Workers + Static Assets**. A `pages deploy` in any
-  script is a finding.
+- **Workers + Static Assets**, deployed with `wrangler deploy`. **Never `wrangler pages deploy`** — Cloudflare steers new static sites to
+  Workers + Static Assets (new features and optimizations focus on Workers; `wrangler pages` now nudges to `wrangler deploy`), and the
+  canonical pair were explicitly **migrated off Pages to Workers + Static Assets**. A `pages deploy` in any script is a finding.
 - **One `wrangler.jsonc` per deployable.** The **site** Worker's config carries an `assets` block (and no `main`). This is the only config
   this standard governs.
 - The site root — and thus where its `wrangler.jsonc` lives — follows `knowledgeislands-11ty-websites`'s layout: the **repo root** (flat) or

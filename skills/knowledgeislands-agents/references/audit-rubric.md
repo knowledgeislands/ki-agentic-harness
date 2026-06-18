@@ -57,10 +57,15 @@ enforcing a **[J]** check, move its tag here.
 
 → [standard §5](agent-definitions-standard.md#5-frontmatter-optional-fields) · [§8](agent-definitions-standard.md#8-tools--model)
 
-- **FM-1 [J]** `tools`, if set, is **least-privilege** — only what the role needs (omitting inherits all, the wrong default for a narrow
-  role). An advisory agent carries no write/exec tools. (CC, BP)
-- **FM-2 [J]** `model` is deliberate: `inherit` by default, a pin only with a stated reason. (CC, BP)
-- **FM-3 [J]** Any frontmatter field not in the current subagents spec is flagged as a portability risk. (CC)
+- **FM-1 [J]** `tools` / `disallowedTools`, if set, is **least-privilege** — only what the role needs (omitting inherits all, the wrong
+  default for a narrow role). An advisory agent carries no write/exec tools. (CC, BP)
+- **FM-2 [J]** `model` is deliberate: `inherit` by default, a pin (alias `sonnet` / `opus` / `haiku` / `fable`, not a rot-prone full id)
+  only with a stated reason. (CC, BP)
+- **FM-3 [J]** Every frontmatter field is in the current subagents spec set — `name`, `description`, `tools`, `disallowedTools`, `model`,
+  `permissionMode`, `maxTurns`, `skills`, `mcpServers`, `hooks`, `memory`, `background`, `effort`, `isolation`, `color`, `initialPrompt`. A
+  field outside this set is flagged as a portability risk. (CC)
+- **FM-4 [J]** `permissionMode`, if set, is deliberate, and `bypassPermissions` (which skips permission prompts) carries a stated reason.
+  (CC)
 
 ## PROMPT — System-prompt quality
 

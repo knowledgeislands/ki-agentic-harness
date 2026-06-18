@@ -26,6 +26,9 @@ type Severity = 'fail' | 'warn'
 type Finding = { severity: Severity; criterion: string; message: string }
 
 // --- limits (from references/agent-definitions-standard.md — keep in sync) ---------------------
+// NAME_MAX and RESERVED derive from the skills `name` spec (BP), not the CC subagents page — that
+// page states only "lowercase letters and hyphens, unique" for a subagent name. We carry the caps
+// for consistency with skills; do not "correct" them against the CC subagents docs.
 const NAME_MAX = 64
 const DESC_MAX = 1024 // soft cap → WARN
 const RESERVED = ['anthropic', 'claude']
