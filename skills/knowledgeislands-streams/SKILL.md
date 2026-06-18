@@ -125,10 +125,12 @@ PROPOSE · READY · REJECT · REVIEW · ROLLOUT · SETTLE**. Infer the mode from
 
 ### Mode AUDIT — check a base's Streams against the model
 
-1. **Run the mechanical checker** — `bun scripts/audit-streams.ts <base-path>`. It reports PASS / WARN / FAIL on the `[M]` criteria: Focus
-   folders under `Streams/`, a same-name index per Focus, the `Proposal` suffix (filename + leaf folder), and proposal frontmatter (`status`
-   / `priority` / `dependencies` present; `status` and `priority` within their vocabularies). It resolves the `Streams` zone through any
-   `knowledgeislands-kb` zone alias. Capture its output.
+1. **Run the mechanical checker** — `bun scripts/audit-streams.ts <base-path>`. It grades the `[M]` criteria on the unified severity ladder
+   (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — see `knowledgeislands-engineering`'s enforcement-framework §2) and exits non-zero
+   on any FAIL: Focus folders under `Streams/`, a same-name index per Focus, the `Proposal` suffix (filename + leaf folder), and proposal
+   frontmatter (`status` / `priority` / `dependencies` present; `status` and `priority` within their vocabularies). It resolves the
+   `Streams` zone through any `knowledgeislands-kb` zone alias. With `--json` / `--report` it emits machine-readable findings and writes the
+   latest report to the base's `.ki-meta/audits/streams.{md,json}`. Capture its output.
 2. **Apply the `[J]` criteria by reading** ([the rubric](references/audit-rubric.md)): focus-index tables present and correctly ordered; the
    proposals index matches the streams present and their statuses (no lag); each stream carries a `Governance` section linking the bound
    process note; `completed` proposals' documents have been deleted and their knowledge migrated.

@@ -165,6 +165,11 @@ ever starts enforcing a **[J]** check, move its tag here.
   whether the skill genuinely changes a default and so _needs_ a gate. Realised as `knowledgeislands-streams`' **GATE-1** (the Enactment
   gate) and `knowledgeislands-kb`'s **MEM-2** (the memory cascade); `knowledgeislands-repo`'s `.ki-config.toml` marker is the same pattern
   (anchor + checked).
+- **SHAPE-8 [J]** _Governance-skill checker contract._ A governance skill's mechanical checker exposes `--json` (emit a JSON findings array
+  to stdout) and `--report` (write the latest report as both `.ki-meta/audits/<concern>.md` and `.ki-meta/audits/<concern>.json` in the
+  target, overwriting on each run). Exit code is non-zero iff any FAIL; WARN / POLISH / ADVISORY / INFO / SKIP / PASS all exit 0. Findings
+  use the unified severity ladder defined in `knowledgeislands-engineering`'s `enforcement-framework.md` §2. Verify by reading the checker's
+  `emit()` / output path logic. (enforcement-framework.md §2/§5)
 
 ## PROC — Process / meta
 

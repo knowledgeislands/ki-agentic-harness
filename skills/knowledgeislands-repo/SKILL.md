@@ -64,7 +64,9 @@ if unclear. (Modes are named and alphabetical.)
 
 1. Confirm `gh` is authenticated against the org (`gh auth status`).
 2. **Run the mechanical checker**: `bun scripts/audit-repo.ts <tree-path>` (local repos, github.com-gated) or `--org <org>` (the whole org,
-   including repos not cloned locally). Capture its PASS / WARN / FAIL output verbatim.
+   including repos not cloned locally). It grades findings on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP /
+   PASS — see `knowledgeislands-engineering`'s enforcement-framework §2) and exits non-zero on any FAIL; with `--json` / `--report` it emits
+   machine-readable findings and writes the latest report to the repo's `.ki-meta/audits/repo.{md,json}`. Capture its output verbatim.
 3. **Do the judgment pass the script can't** — the `[J]` items in [the rubric](references/audit-rubric.md): does each description actually
    _match the repo's purpose_ (the script now checks non-emptiness and `package.json` sync mechanically — `description` / `description-sync`
    — but not fit); is each per-repo override (a `note` in the output) a warranted decision rather than waved-off drift.

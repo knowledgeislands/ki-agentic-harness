@@ -94,11 +94,14 @@ Carries the universal **AUDIT · CONFORM · REFRESH**, plus **INIT** (scaffold a
 2. **Run the mechanical checker.** `bun <skill>/scripts/audit-websites.ts <repo>`. It locates the site root (flat or `site/`), then reports:
    the `@11ty/eleventy` dep, **no `tailwind.config.*`**, `eleventy.config.ts` present, the relative-URL transform, the `.ts` + `.json5` data
    extensions, the Tailwind `eleventy.before` hook, `main.css` importing `tailwindcss`, the `src/` layout dirs, the build/dev script family,
-   the `seo-meta` partial, and `dist/` gitignored. Capture its output verbatim.
+   the `seo-meta` partial, and `dist/` gitignored. It grades findings on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO
+   / SKIP / PASS — see `knowledgeislands-engineering`'s enforcement-framework §2) and exits non-zero on any FAIL; with `--json` / `--report`
+   it emits machine-readable findings and writes the latest report to the site's `.ki-meta/audits/websites.{md,json}`. Capture its output
+   verbatim.
 3. **Apply the judgment items** in [the rubric](references/audit-rubric.md): `tokens.css` actually drives the palette (not hard-coded hexes
    in templates), `_data` is the single source of structure, content is Markdown with cascade data files, SEO meta is wired into `base.njk`,
    and a public site ships a sitemap/robots. Name the hosting audit that must also run if the site is deployed.
-4. **Report** by location → criterion → fix, grouped by severity (blocker / standard / polish). Cite `file:line`.
+4. **Report** by location → criterion → fix, grouped by severity (FAIL / WARN / POLISH). Cite `file:line`.
 
 ### Mode CONFORM — bring a site up to standard
 

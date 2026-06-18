@@ -36,6 +36,22 @@ working checkout — so what's actually committed is what's audited, and `--org`
 `ROADMAP.md` is **expected but not required** — a warn, not a fail: most repos carry one, but a base that keeps its forward view elsewhere
 (a KB base's `Streams/Future`) may omit it.
 
+### `.ki-meta/` — the working-artifacts area
+
+`.ki-meta/` is the working area for Knowledge Islands governance tooling — the artifacts-_out_ counterpart to `.ki-config.toml`'s
+config-_in_. It is an **extensible namespace**: subdirs are added as tooling grows, each declaring whether it is **derived** (regenerated,
+gitignored) or **durable** (kept, tracked). Defined subdirs today:
+
+- `.ki-meta/audits/<concern>.{md,json}` — the latest audit report per concern (`engineering`, `skills`, `repo`, …), written by a checker run
+  with `--report` and overwritten each run (latest-only, no history). The `.json` is the machine-readable substrate a composed audit merges;
+  the `.md` is the human report.
+- `.ki-meta/conform/<concern>.md` — the latest record of what a CONFORM changed.
+
+Presence is **not required** — the directory appears the first time a checker is run with `--report`. What the audit checks (the `ki-meta`
+criterion) is that the derived subdirs are **gitignored, not committed**: `.gitignore` carries `.ki-meta/audits/` and `.ki-meta/conform/`,
+while the `.ki-meta/` namespace itself is left un-ignored so a future _durable_ subdir can be tracked. The convention is owned here; the
+`enforcement-framework` (engineering) references it and writes `.ki-meta/audits/` as the AUDIT consumer.
+
 ## Layer 2 — core GitHub settings
 
 For every repo on github.com:

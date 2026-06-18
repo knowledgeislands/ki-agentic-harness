@@ -41,9 +41,11 @@ CONFORM · REFRESH**; INIT — writing a new skill — is its skill-specific mod
 Review a skill (or every skill in a repo) against the rubric and report.
 
 1. **Run the linter.** `bun scripts/lint-skills.ts <path-to-skill-or-repo>` from this skill's directory (or `bun run skills:lint` at the
-   arcadia-agentic-harness repo root). It reports the mechanical criteria as PASS / WARN / FAIL and exits non-zero on any FAIL. Capture its
-   output verbatim — do not re-derive what it found. Point it at the **repo**, not a lone skill, so the cross-skill collision pass (COLL-1)
-   has the siblings to compare.
+   arcadia-agentic-harness repo root). It reports the mechanical criteria on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY /
+   INFO / SKIP / PASS — see `knowledgeislands-engineering`'s enforcement-framework §2) and exits non-zero on any FAIL; with `--json` /
+   `--report` it emits machine-readable findings and writes the latest report to the target's `.ki-meta/audits/skills.{md,json}`. Capture
+   its output verbatim — do not re-derive what it found. Point it at the **repo**, not a lone skill, so the cross-skill collision pass
+   (COLL-1) has the siblings to compare.
 2. **Read the `SKILL.md`** (and any `references/`, `scripts/`, `assets/`) and apply the **judgment** ([J]-tagged) criteria from
    [the rubric](references/audit-rubric.md) — the linter owns the [M] ones. Focus on:
    - **Description** — does it state both _what it does_ and _when to use it_, in the third person, with concrete trigger phrases a user

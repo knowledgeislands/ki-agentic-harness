@@ -72,11 +72,14 @@ ask if unclear. (Modes are named and alphabetical.) The mode shape itself is def
 
 1. **Run the mechanical checker**: `bun <skill>/scripts/audit-engineering.ts <repo>` (or `node` after a build). It reports the package.json
    metadata + script families, the `bun test` trap, `tsconfig`/`biome`, and the capability conditionals (tests / compiled build + cli-chmod
-   / env), and validates-down the `[knowledgeislands-engineering]` table. Capture its output; don't re-derive the mechanical items.
+   / env), and validates-down the `[knowledgeislands-engineering]` table. It grades findings on the unified severity ladder (FAIL / WARN /
+   POLISH / ADVISORY / INFO / SKIP / PASS — see references/enforcement-framework.md §2) and exits non-zero on any FAIL; with `--report` it
+   writes its latest report to the target's `.ki-meta/audits/engineering.{md,json}`. Capture its output; don't re-derive the mechanical
+   items.
 2. **Apply the judgment items** in [the rubric](references/audit-rubric.md): no per-repo loosening of `strict`/the `noImplicit*` family, the
    Node `.env` parity call where env is loaded, tests actually reaching the 100% bar, repo-specific scripts not shadowing a family.
 3. **Name the artifact-skill audit that must also run** for the repo to be fully clean (e.g. `audit-mcp.ts` for an MCP repo), and **report**
-   by location → criterion → fix, grouped by severity.
+   by location → criterion → fix, grouped by severity-ladder level (FAIL first).
 
 ### Mode CONFORM — bring a repo's toolchain into line
 

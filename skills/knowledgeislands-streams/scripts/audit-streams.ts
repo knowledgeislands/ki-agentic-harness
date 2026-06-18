@@ -27,7 +27,7 @@
  * READ-ONLY: never mutates the base. `--init` prints the default block to stdout.
  * No npm dependencies — Bun/Node built-ins only. Exit code is non-zero on any FAIL.
  */
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
 
 // ── the structure model (keep in sync with ../SKILL.md + the references) ─────
@@ -60,16 +60,18 @@ const KI_DEFAULT = `# ${KI_SECTION} — opt-in marker: declaring this table opts
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
-type Level = 'fail' | 'warn' | 'note'
-type Finding = { level: Level; check: string; msg: string }
+// Unified severity ladder — shared by every KI checker (enforcement-framework §2).
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
+type Finding = { level: Level; area: string; msg: string }
+const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'PASS']
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
 const mk = () => {
   const f: Finding[] = []
-  return {
-    f,
-    fail: (check: string, msg: string) => void f.push({ level: 'fail', check, msg }),
-    warn: (check: string, msg: string) => void f.push({ level: 'warn', check, msg }),
-    note: (check: string, msg: string) => void f.push({ level: 'note', check, msg })
-  }
+  const push =
+    (level: Level) =>
+    (area: string, msg: string): void =>
+      void f.push({ level, area, msg })
+  return { f, fail: push('FAIL'), warn: push('WARN'), note: push('INFO'), skip: push('SKIP'), advisory: push('ADVISORY'), polish: push('POLISH') }
 }
 
 const isDir = (p: string): boolean => existsSync(p) && statSync(p).isDirectory()
@@ -271,25 +273,55 @@ if (!isDir(base)) {
 const kiPath = join(base, KI_CONFIG)
 const ki = isFile(kiPath) ? parseKi(readFileSync(kiPath, 'utf8')) : { keys: {}, streamsZone: 'Streams' }
 
-console.log(paint(C.dim, `base: ${base}`))
-console.log(
-  paint(
-    C.dim,
-    `standard: Streams/(${FOCI.join(',')}) · same-name Focus index · \` Proposal\` suffix · proposal frontmatter(${PROPOSAL_FM.join(',')}; status∈vocab, priority∈{${PRIORITY.join(',')}}) · CLAUDE.md gate anchor`
-  )
+const findings = auditStreams(base, ki)
+emit(
+  findings,
+  base,
+  'streams',
+  `Streams audit — ${base}`,
+  'mechanical checks only — apply the judgment criteria (index ordering, Governance sections, proposals-index accuracy, completed-proposal deletion) by reading.'
 )
 
-const findings = auditStreams(base, ki)
-const fails = findings.filter((x) => x.level === 'fail')
-const warns = findings.filter((x) => x.level === 'warn')
-const notes = findings.filter((x) => x.level === 'note')
-const stamp = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
-console.log(`\n${stamp}  ${paint(C.cyan, base.split('/').pop() ?? base)}`)
-for (const x of fails) console.log(`  ${paint(C.red, 'fail')} ${paint(C.dim, `[${x.check}]`)} ${x.msg}`)
-for (const x of warns) console.log(`  ${paint(C.yellow, 'warn')} ${paint(C.dim, `[${x.check}]`)} ${x.msg}`)
-for (const x of notes) console.log(`  ${paint(C.dim, `note [${x.check}] ${x.msg}`)}`)
-if (fails.length + warns.length === 0) console.log(paint(C.dim, '  conforms'))
+// ── report ────────────────────────────────────────────────────────────────────
+// Shared emit harness — copy verbatim across KI checkers (enforcement-framework §2/§5).
+// Renders the painted table by default, JSON on `--json`, and writes the latest
+// report under <target>/.ki-meta/audits/<concern>.{md,json} on `--report [dir]`.
+function emit(items: Finding[], target: string, concern: string, title: string, footer: string): never {
+  const argv = process.argv.slice(2)
+  const json = argv.includes('--json')
+  const ri = argv.indexOf('--report')
+  const report = ri !== -1
+  const reportDir = report && argv[ri + 1] && !argv[ri + 1].startsWith('-') ? argv[ri + 1] : join(target, '.ki-meta', 'audits')
 
-console.log(`\n${paint(C.cyan, 'summary')}: ${paint(C.red, `${fails.length} fail`)}, ${paint(C.yellow, `${warns.length} warn`)}`)
-console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria (index ordering, Governance sections, proposals-index accuracy, completed-proposal deletion) by reading.'))
-process.exit(fails.length > 0 ? 1 : 0)
+  const n = (l: Level): number => items.filter((f) => f.level === l).length
+  const summary = { fail: n('FAIL'), warn: n('WARN'), polish: n('POLISH'), advisory: n('ADVISORY'), info: n('INFO'), skip: n('SKIP'), pass: n('PASS') }
+  const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.skip} skip`
+  const stamp = new Date().toISOString()
+
+  if (report) {
+    mkdirSync(reportDir, { recursive: true })
+    const body = ORDER.flatMap((l) => {
+      const rows = items.filter((f) => f.level === l)
+      return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+    })
+    writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
+    writeFileSync(join(reportDir, `${concern}.json`), `${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
+  }
+
+  if (json) {
+    process.stdout.write(`${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
+  } else {
+    console.log(`\n${title}\n${'─'.repeat(60)}`)
+    for (const l of ORDER) {
+      const rows = items.filter((f) => f.level === l)
+      if (!rows.length) continue
+      console.log(`\n${ICON[l]} ${l} (${rows.length})`)
+      for (const r of rows) console.log(`   [${r.area}] ${r.msg}`)
+    }
+    console.log(`\n${'─'.repeat(60)}\n${tally}`)
+    if (footer) console.log(footer)
+    if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
+    console.log('')
+  }
+  process.exit(summary.fail ? 1 : 0)
+}

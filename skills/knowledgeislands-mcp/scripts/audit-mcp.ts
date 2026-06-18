@@ -15,11 +15,15 @@
  *
  * No dependencies — Node/Bun builtins only.
  */
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { basename, join } from 'node:path'
 
-type Level = 'PASS' | 'WARN' | 'FAIL'
-const findings: { level: Level; area: string; msg: string }[] = []
+// Unified severity ladder — shared by every KI checker (enforcement-framework §2).
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
+type Finding = { level: Level; area: string; msg: string }
+const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'PASS']
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
+const findings: Finding[] = []
 const add = (level: Level, area: string, msg: string) => findings.push({ level, area, msg })
 
 const repo = process.argv[2]
@@ -212,9 +216,10 @@ if (toolNames.length) {
   add('WARN', 'tools', 'no registerTool(...) calls found — verify tool registration')
 }
 
-// ── structured output: structuredContent should be paired with a declared outputSchema ──
+// ── structured output: outputSchema + structuredContent pairing (SHOULD, spec 2025-11-25) ──
 if (isDir('src', 'tools')) {
   let usesStructured = false
+  let usesJsonResult = false
   let declaresOutputSchema = false
   const sw = (dir: string) => {
     for (const e of readdirSync(dir, { withFileTypes: true })) {
@@ -223,13 +228,50 @@ if (isDir('src', 'tools')) {
       else if (e.name.endsWith('.ts') && !e.name.endsWith('.test.ts')) {
         const src = readFileSync(full, 'utf8')
         if (/\bstructuredContent\b/.test(src)) usesStructured = true
+        if (/\bjsonResult\b/.test(src)) usesJsonResult = true
         if (/\boutputSchema\b/.test(src)) declaresOutputSchema = true
       }
     }
   }
   sw(at('src', 'tools'))
-  if (usesStructured && !declaresOutputSchema) add('WARN', 'tools', 'tools return structuredContent but no outputSchema is declared — pair them (spec 2025-06-18) so clients can validate')
-  else if (usesStructured) add('PASS', 'tools', 'structuredContent paired with a declared outputSchema')
+  if (usesStructured && !declaresOutputSchema)
+    add('WARN', 'tools', 'tools return structuredContent but no outputSchema is declared — pair them (spec 2025-11-25) so clients can validate')
+  else if (usesStructured)
+    add('PASS', 'tools', 'structuredContent paired with a declared outputSchema')
+  // Tools using jsonResult return structured JSON; they should also adopt outputSchema + structuredContent
+  if (usesJsonResult && !declaresOutputSchema)
+    add('WARN', 'tools', 'tools use jsonResult (returning JSON) but declare no outputSchema — add outputSchema + structuredContent (spec 2025-11-25 SHOULD)')
+}
+
+// ── deterministic tool registration order ──
+// Check that registerTool calls within each tool-group index.ts appear in consistent (non-random)
+// order. We approximate: flag if any group file has registerTool calls where names are NOT sorted
+// (alphabetical) AND not in any other recognisable stable pattern. We just check that the names are
+// consistent across at least two successive calls — a heuristic flag for obvious shuffles.
+if (isDir('src', 'tools')) {
+  const groupFiles: string[] = []
+  for (const e of readdirSync(at('src', 'tools'), { withFileTypes: true })) {
+    if (e.isDirectory()) {
+      const idxPath = at('src', 'tools', e.name, 'index.ts')
+      if (existsSync(idxPath)) groupFiles.push(idxPath)
+    }
+  }
+  const registerRe = /server\.registerTool\(\s*['"]([^'"]+)['"]/g
+  for (const gf of groupFiles) {
+    const src = readFileSync(gf, 'utf8')
+    const names: string[] = []
+    for (const m of src.matchAll(registerRe)) names.push(m[1])
+    if (names.length >= 2) {
+      const sorted = [...names].sort()
+      const reverseSorted = [...names].sort().reverse()
+      if (JSON.stringify(names) !== JSON.stringify(sorted) && JSON.stringify(names) !== JSON.stringify(reverseSorted)) {
+        // Not alphabetical either way — flag as potentially non-deterministic
+        add('ADVISORY', 'tools', `${gf.replace(at(''), '')}: registerTool order (${names.join(', ')}) is not alphabetical — verify it is intentionally stable`)
+      } else {
+        add('PASS', 'tools', `${gf.replace(at(''), '')}: tool registration order is deterministic (${names.join(', ')})`)
+      }
+    }
+  }
 }
 
 // ── .ki-config.toml [knowledgeislands-mcp] opt-in marker ──────────────────────
@@ -250,17 +292,46 @@ else {
 }
 
 // ── report ────────────────────────────────────────────────────────────────────
-const icon = { PASS: '✅', WARN: '⚠️ ', FAIL: '❌' } as const
-const order: Level[] = ['FAIL', 'WARN', 'PASS']
-console.log(`\nMCP standards audit — ${name}  (${repo})\n${'─'.repeat(60)}`)
-for (const lvl of order) {
-  const rows = findings.filter((f) => f.level === lvl)
-  if (!rows.length) continue
-  console.log(`\n${icon[lvl]} ${lvl} (${rows.length})`)
-  for (const r of rows) console.log(`   [${r.area}] ${r.msg}`)
+function emit(items: Finding[], target: string, concern: string, title: string, footer: string): never {
+  const argv = process.argv.slice(2)
+  const json = argv.includes('--json')
+  const ri = argv.indexOf('--report')
+  const report = ri !== -1
+  const reportDir = report && argv[ri + 1] && !argv[ri + 1].startsWith('-') ? argv[ri + 1] : join(target, '.ki-meta', 'audits')
+
+  const n = (l: Level): number => items.filter((f) => f.level === l).length
+  const summary = { fail: n('FAIL'), warn: n('WARN'), polish: n('POLISH'), advisory: n('ADVISORY'), info: n('INFO'), skip: n('SKIP'), pass: n('PASS') }
+  const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.skip} skip`
+  const stamp = new Date().toISOString()
+
+  if (report) {
+    mkdirSync(reportDir, { recursive: true })
+    const body = ORDER.flatMap((l) => {
+      const rows = items.filter((f) => f.level === l)
+      return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+    })
+    writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
+    writeFileSync(join(reportDir, `${concern}.json`), `${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
+  }
+
+  if (json) {
+    process.stdout.write(`${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
+  } else {
+    console.log(`\n${title}\n${'─'.repeat(60)}`)
+    for (const l of ORDER) {
+      const rows = items.filter((f) => f.level === l)
+      if (!rows.length) continue
+      console.log(`\n${ICON[l]} ${l} (${rows.length})`)
+      for (const r of rows) console.log(`   [${r.area}] ${r.msg}`)
+    }
+    console.log(`\n${'─'.repeat(60)}\n${tally}`)
+    if (footer) console.log(footer)
+    if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
+    console.log('')
+  }
+  process.exit(summary.fail ? 1 : 0)
 }
-const fails = findings.filter((f) => f.level === 'FAIL').length
-const warns = findings.filter((f) => f.level === 'WARN').length
-console.log(`\n${'─'.repeat(60)}\n${fails} fail · ${warns} warn · ${findings.length - fails - warns} pass`)
-console.log('MCP delta only — also run audit-engineering.ts (common toolchain) + the semantic pass in references/audit-rubric.md.\n')
-process.exit(fails ? 1 : 0)
+
+add('INFO', 'scope', 'MCP server delta only — compose with audit-engineering.ts (common toolchain) for full coverage')
+add('ADVISORY', 'judgment', 'mechanical layer only — apply the [J] criteria in references/audit-rubric.md by reading')
+emit(findings, repo, 'mcp', `MCP standards audit — ${name}  (${repo})`, 'MCP delta only — also run audit-engineering.ts (common toolchain) + the semantic pass in references/audit-rubric.md.')

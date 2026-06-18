@@ -14,11 +14,15 @@
  *
  * Output is grouped pass/warn/fail; exit non-zero if any FAIL. No dependencies — Node/Bun builtins only.
  */
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, join } from 'node:path'
 
-type Level = 'PASS' | 'WARN' | 'FAIL'
-const findings: { level: Level; area: string; msg: string }[] = []
+// Unified severity ladder — shared by every KI checker (enforcement-framework §2).
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
+type Finding = { level: Level; area: string; msg: string }
+const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'PASS']
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
+const findings: Finding[] = []
 const add = (level: Level, area: string, msg: string) => findings.push({ level, area, msg })
 
 const repo = process.argv[2]
@@ -144,18 +148,53 @@ report()
 
 // ── report ────────────────────────────────────────────────────────────────────
 function report(): never {
-  const icon = { PASS: '✅', WARN: '⚠️ ', FAIL: '❌' } as const
-  const order: Level[] = ['FAIL', 'WARN', 'PASS']
-  console.log(`\nCloudflare hosting audit — ${name}  (${repo})\n${'─'.repeat(60)}`)
-  for (const lvl of order) {
-    const rows = findings.filter((f) => f.level === lvl)
-    if (!rows.length) continue
-    console.log(`\n${icon[lvl]} ${lvl} (${rows.length})`)
-    for (const r of rows) console.log(`   [${r.area}] ${r.msg}`)
+  add('INFO', 'scope', 'hosting delta only — compose with audit-engineering.ts (toolchain) + audit-websites.ts (the dist/ build) for full coverage')
+  add('ADVISORY', 'judgment', 'mechanical layer only — apply the [J] criteria in references/audit-rubric.md by reading')
+  emit(
+    findings,
+    repo,
+    'cloudflare-hosting',
+    `Cloudflare hosting audit — ${name}  (${repo})`,
+    'Hosting delta only — also run audit-engineering.ts (toolchain) + audit-websites.ts (the dist/ build) + the rubric judgment pass.'
+  )
+}
+
+function emit(items: Finding[], target: string, concern: string, title: string, footer: string): never {
+  const argv = process.argv.slice(2)
+  const json = argv.includes('--json')
+  const ri = argv.indexOf('--report')
+  const report = ri !== -1
+  const reportDir = report && argv[ri + 1] && !argv[ri + 1].startsWith('-') ? argv[ri + 1] : join(target, '.ki-meta', 'audits')
+
+  const n = (l: Level): number => items.filter((f) => f.level === l).length
+  const summary = { fail: n('FAIL'), warn: n('WARN'), polish: n('POLISH'), advisory: n('ADVISORY'), info: n('INFO'), skip: n('SKIP'), pass: n('PASS') }
+  const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.skip} skip`
+  const stamp = new Date().toISOString()
+
+  if (report) {
+    mkdirSync(reportDir, { recursive: true })
+    const body = ORDER.flatMap((l) => {
+      const rows = items.filter((f) => f.level === l)
+      return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+    })
+    writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
+    writeFileSync(join(reportDir, `${concern}.json`), `${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
   }
-  const fails = findings.filter((f) => f.level === 'FAIL').length
-  const warns = findings.filter((f) => f.level === 'WARN').length
-  console.log(`\n${'─'.repeat(60)}\n${fails} fail · ${warns} warn · ${findings.length - fails - warns} pass`)
-  console.log('Hosting delta only — also run audit-engineering.ts (toolchain) + audit-websites.ts (the dist/ build) + the rubric judgment pass.\n')
-  process.exit(fails ? 1 : 0)
+
+  if (json) {
+    process.stdout.write(`${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
+  } else {
+    console.log(`\n${title}\n${'─'.repeat(60)}`)
+    for (const l of ORDER) {
+      const rows = items.filter((f) => f.level === l)
+      if (!rows.length) continue
+      console.log(`\n${ICON[l]} ${l} (${rows.length})`)
+      for (const r of rows) console.log(`   [${r.area}] ${r.msg}`)
+    }
+    console.log(`\n${'─'.repeat(60)}\n${tally}`)
+    if (footer) console.log(footer)
+    if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
+    console.log('')
+  }
+  process.exit(summary.fail ? 1 : 0)
 }

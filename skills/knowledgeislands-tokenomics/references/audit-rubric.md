@@ -68,6 +68,7 @@ A criterion's tag is a contract with the checker: if you find yourself eyeballin
 - **RUN-1 [J]** Prompt caching: the stable prefix is cacheable and being **hit** — not invalidated each turn by volatile content placed high
   in the prompt.
 - **RUN-2 [J]** Model tier matches the work's value — a cheap tier for mechanical / bulk steps, the top tier reserved for the hard ones.
+  Whether `preferred_model` is declared is checked mechanically (CFG-4 [M]); its _appropriateness_ for the work is this judgment item.
 - **RUN-3 [J]** Long conversations are compacted before history bloats the window, and sub-agent fan-out is proportionate (each sub-agent
   re-pays the whole standing surface).
 - **RUN-4 [J]** Tool-result verbosity is controlled — raw logs / JSON not re-read every turn — which is the standing case for compression
@@ -96,3 +97,5 @@ A criterion's tag is a contract with the checker: if you find yourself eyeballin
 - **CFG-2 [M]** `--init` emits the table's default keys (the authoritative key list a target scaffolds from).
 - **CFG-3 [J]** The declared budgets and `headroom` expectation are **warranted** for this environment, not copied boilerplate that merely
   restates the defaults.
+- **CFG-4 [M]** `preferred_model` is **declared** in the `[knowledgeislands-tokenomics]` table — its tier value is checked mechanically;
+  whether the chosen tier is appropriate for the work stays judgment (RUN-2).

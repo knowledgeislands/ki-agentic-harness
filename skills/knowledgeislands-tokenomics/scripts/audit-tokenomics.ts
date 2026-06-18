@@ -27,7 +27,7 @@
 //
 // No npm dependencies — Bun/Node builtins only. Exit code is non-zero if any FAIL.
 
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path'
 
@@ -52,6 +52,7 @@ const BUDGET_DEFAULTS: Record<BudgetKey, number> = {
 }
 const HEADROOM_VALUES = ['required', 'recommended', 'off'] as const
 type HeadroomExpectation = (typeof HEADROOM_VALUES)[number]
+const MODEL_TIER_VALUES = ['opus', 'sonnet', 'haiku'] as const
 
 const KI_SECTION = 'knowledgeislands-tokenomics'
 const KI_DEFAULT = `[${KI_SECTION}]
@@ -59,6 +60,7 @@ const KI_DEFAULT = `[${KI_SECTION}]
 headroom = "recommended"          # "required" | "recommended" | "off"
 # Optional — the real context window, so the total budget reads as a headroom %.
 # context_window_tokens = 200000
+# preferred_model = "sonnet"        # "opus" | "sonnet" | "haiku" — default tier for this environment
 
 # Per-component token budgets (estimates, chars/4). Omit any to take the default.
 # [${KI_SECTION}.budgets]
@@ -70,14 +72,17 @@ headroom = "recommended"          # "required" | "recommended" | "off"
 `
 
 // ── findings ────────────────────────────────────────────────────────────────
-type Level = 'fail' | 'warn' | 'note'
+// Unified severity ladder — shared by every KI checker (enforcement-framework §2).
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
+const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'PASS']
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
 type Area = 'COMP' | 'SURF' | 'MCP' | 'BUDG' | 'RUN' | 'TOOL' | 'CFG'
 const AREA_ORDER: Area[] = ['COMP', 'SURF', 'MCP', 'BUDG', 'RUN', 'TOOL', 'CFG']
 type Finding = { level: Level; area: Area; msg: string }
 const findings: Finding[] = []
-const fail = (area: Area, msg: string): void => void findings.push({ level: 'fail', area, msg })
-const warn = (area: Area, msg: string): void => void findings.push({ level: 'warn', area, msg })
-const note = (area: Area, msg: string): void => void findings.push({ level: 'note', area, msg })
+const fail = (area: Area, msg: string): void => void findings.push({ level: 'FAIL', area, msg })
+const warn = (area: Area, msg: string): void => void findings.push({ level: 'WARN', area, msg })
+const note = (area: Area, msg: string): void => void findings.push({ level: 'INFO', area, msg })
 
 // ── small IO helpers ─────────────────────────────────────────────────────────
 const readText = (p: string): string | null => {
@@ -194,6 +199,8 @@ type KiConfig = {
   present: boolean
   headroom?: string
   headroomBad?: string
+  modelTier?: string
+  modelTierBad?: string
   contextWindow?: number
   budgets: Partial<Record<BudgetKey, number>>
   unknownKeys: string[]
@@ -225,6 +232,9 @@ function parseKiConfig(text: string): KiConfig {
       if (key === 'headroom') {
         if ((HEADROOM_VALUES as readonly string[]).includes(val)) cfg.headroom = val
         else cfg.headroomBad = val
+      } else if (key === 'preferred_model') {
+        if ((MODEL_TIER_VALUES as readonly string[]).includes(val)) cfg.modelTier = val
+        else cfg.modelTierBad = val
       } else if (key === 'context_window_tokens') {
         const n = Number(val)
         if (Number.isFinite(n) && n > 0) cfg.contextWindow = n
@@ -252,9 +262,11 @@ const userIdx = argv.indexOf('--user')
 const userDir = userIdx !== -1 ? resolve(argv[userIdx + 1] ?? '') : join(homedir(), '.claude')
 const target = resolve(argv.find((a, i) => !a.startsWith('-') && argv[i - 1] !== '--user') ?? '.')
 
-console.log(paint(C.dim, `target: ${target}`))
-console.log(paint(C.dim, `user layer: ${noUser ? '(skipped)' : userDir}`))
-console.log(paint(C.dim, 'standard: standing surface (CLAUDE.md+@imports · memory · skills · MCP tool surface · settings) + runtime levers; budgets WARN-only; figures ~chars/4 estimates'))
+if (!argv.includes('--json')) {
+  console.log(paint(C.dim, `target: ${target}`))
+  console.log(paint(C.dim, `user layer: ${noUser ? '(skipped)' : userDir}`))
+  console.log(paint(C.dim, 'standard: standing surface (CLAUDE.md+@imports · memory · skills · MCP tool surface · settings) + runtime levers; budgets WARN-only; figures ~chars/4 estimates'))
+}
 
 // COMP — which layers were read
 if (noUser) note('COMP', 'user-wide layer skipped (--no-user) — auditing the project layer alone')
@@ -388,25 +400,54 @@ if (!ki?.present) note('CFG', `no [${KI_SECTION}] table in .ki-config.toml — u
 else {
   note('CFG', `[${KI_SECTION}] present (headroom = "${expectation}"${ki.contextWindow ? `, window ${ki.contextWindow}` : ''})`)
   if (ki.headroomBad) warn('CFG', `headroom = "${ki.headroomBad}" is not one of ${HEADROOM_VALUES.join(' / ')} — defaulting to "recommended"`)
+  if (ki.modelTier) note('CFG', `preferred_model = "${ki.modelTier}" — confirm the tier is appropriate for this environment (RUN-2)`)
+  else if (ki.modelTierBad) warn('CFG', `preferred_model = "${ki.modelTierBad}" is not one of ${MODEL_TIER_VALUES.join(' / ')} — value unrecognised`)
+  else warn('CFG', `preferred_model not declared in [${KI_SECTION}] — add it to codify the default tier for this environment (CFG-4)`)
   for (const k of ki.unknownKeys) warn('CFG', `unrecognised key "${k}" in [${KI_SECTION}] — validate-down (known budgets: ${[...BUDGET_KEYS].join(', ')})`)
   for (const k of ki.badBudgets) fail('CFG', `"${k}" has a non-numeric/invalid value in [${KI_SECTION}]`)
 }
 
 // ── report ───────────────────────────────────────────────────────────────────
-const fails = findings.filter((x) => x.level === 'fail')
-const warns = findings.filter((x) => x.level === 'warn')
-const stamp = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
-console.log(`\n${stamp}  ${paint(C.cyan, basename(target))}`)
-for (const area of AREA_ORDER) {
-  const inArea = findings.filter((x) => x.area === area)
-  if (!inArea.length) continue
-  console.log(paint(C.dim, `  ── ${area} ──`))
-  for (const x of inArea) {
-    if (x.level === 'fail') console.log(`  ${paint(C.red, 'fail')} ${x.msg}`)
-    else if (x.level === 'warn') console.log(`  ${paint(C.yellow, 'warn')} ${x.msg}`)
-    else console.log(`  ${paint(C.dim, `note ${x.msg}`)}`)
-  }
+// Unified-ladder output; keeps the by-area console grouping, adds --json / --report (enforcement-framework §2/§5).
+const jsonOut = argv.includes('--json')
+const ri = argv.indexOf('--report')
+const reportOut = ri !== -1
+const reportDir = reportOut && argv[ri + 1] && !argv[ri + 1].startsWith('-') ? argv[ri + 1] : join(target, '.ki-meta', 'audits')
+
+const fails = findings.filter((x) => x.level === 'FAIL')
+const warns = findings.filter((x) => x.level === 'WARN')
+const n = (l: Level): number => findings.filter((x) => x.level === l).length
+const summary = { fail: fails.length, warn: warns.length, polish: n('POLISH'), advisory: n('ADVISORY'), info: n('INFO'), skip: n('SKIP'), pass: n('PASS') }
+const isoStamp = new Date().toISOString()
+
+if (reportOut) {
+  mkdirSync(reportDir, { recursive: true })
+  const body = LADDER.flatMap((l) => {
+    const rows = findings.filter((f) => f.level === l)
+    return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+  })
+  const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.skip} skip · standing surface ${tok(total)}`
+  writeFileSync(join(reportDir, 'tokenomics.md'), [`# tokenomics audit — ${target}`, '', `_${isoStamp}_`, '', tally, ...body, ''].join('\n'))
+  writeFileSync(join(reportDir, 'tokenomics.json'), `${JSON.stringify({ concern: 'tokenomics', target, generatedAt: isoStamp, summary, findings }, null, 2)}\n`)
 }
-console.log(`\n${paint(C.cyan, 'summary')}: ${paint(C.red, `${fails.length} fail`)}, ${paint(C.yellow, `${warns.length} warn`)} · standing surface ${tok(total)}`)
-console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria (altitude, MCP usefulness, runtime levers, Headroom optimality) from references/audit-rubric.md by reading.'))
+
+if (jsonOut) {
+  process.stdout.write(`${JSON.stringify({ concern: 'tokenomics', target, generatedAt: isoStamp, summary, findings }, null, 2)}\n`)
+} else {
+  const head = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
+  console.log(`\n${head}  ${paint(C.cyan, basename(target))}`)
+  for (const area of AREA_ORDER) {
+    const inArea = findings.filter((x) => x.area === area)
+    if (!inArea.length) continue
+    console.log(paint(C.dim, `  ── ${area} ──`))
+    for (const x of inArea) {
+      if (x.level === 'FAIL') console.log(`  ${paint(C.red, 'fail')} ${x.msg}`)
+      else if (x.level === 'WARN') console.log(`  ${paint(C.yellow, 'warn')} ${x.msg}`)
+      else console.log(`  ${paint(C.dim, `${x.level.toLowerCase()} ${x.msg}`)}`)
+    }
+  }
+  console.log(`\n${paint(C.cyan, 'summary')}: ${paint(C.red, `${fails.length} fail`)}, ${paint(C.yellow, `${warns.length} warn`)} · standing surface ${tok(total)}`)
+  if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'tokenomics.{md,json}')}`))
+  console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria (altitude, MCP usefulness, runtime levers, Headroom optimality) from references/audit-rubric.md by reading.'))
+}
 process.exit(fails.length > 0 ? 1 : 0)

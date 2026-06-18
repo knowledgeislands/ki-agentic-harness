@@ -87,12 +87,15 @@ unclear. (Modes are named and alphabetical.) The mode shape itself is defined in
 2. **Run the mechanical checker.** `bun <skill>/scripts/audit-cloudflare-hosting.ts <repo>`. It finds the **site** `wrangler.jsonc` (the one
    with an `assets` block), then reports: present at the site root, `assets.directory` set and pointing at `dist/`, `name` +
    `compatibility_date`, `observability.enabled`, a `wrangler deploy` script, **not** `wrangler pages deploy`, and `dist/` + `.wrangler/`
-   gitignored. It notes (does not flag) any companion Worker. Capture its output verbatim.
+   gitignored. It notes (does not flag) any companion Worker. It grades findings on the unified severity ladder (FAIL / WARN / POLISH /
+   ADVISORY / INFO / SKIP / PASS — see `knowledgeislands-engineering`'s enforcement-framework §2) and exits non-zero on any FAIL; with
+   `--json` / `--report` it emits machine-readable findings and writes the latest report to the site's
+   `.ki-meta/audits/cloudflare-hosting.{md,json}`. Capture its output verbatim.
 3. **Apply the judgment items** in [the rubric](references/audit-rubric.md): the custom-domain routes are correct (apex + www), the build
    runs before deploy, and CI (Cloudflare Workers Builds or an Action) is wired. Confirm the `dist/` path matches what `audit-websites.ts`
    reported.
-4. **Report** by location → criterion → fix, grouped by severity. The classic finding: a site Worker with **no** `wrangler.jsonc` (so
-   `site:deploy` fails) — `kit-midnight.ninja` today.
+4. **Report** by location → criterion → fix, grouped by severity (FAIL / WARN / POLISH). The classic finding: a site Worker with **no**
+   `wrangler.jsonc` (so `site:deploy` fails) — `kit-midnight.ninja` today.
 
 ### Mode CONFORM — bring a site's hosting up to standard
 

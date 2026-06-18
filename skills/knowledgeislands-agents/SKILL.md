@@ -42,9 +42,11 @@ knowledge-base notes — that is how an agent grounded in a KB cites its sources
 Review an agent (or every agent in a directory) against the rubric and report.
 
 1. **Run the linter.** `bun scripts/lint-agents.ts <path-to-agent-or-dir>` from this skill's directory. It reports the mechanical criteria
-   as PASS / WARN / FAIL and exits non-zero on any FAIL. Capture its output verbatim — do not re-derive what it found. Point it at the
-   **agents directory** (e.g. a repo's `agents/`), not a lone file, so the cross-agent collision pass (COLL-1) and the `name`-uniqueness
-   check have the siblings to compare.
+   on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — see `knowledgeislands-engineering`'s
+   enforcement-framework §2) and exits non-zero on any FAIL; with `--json` / `--report` it emits machine-readable findings and writes the
+   latest report to the target's `.ki-meta/audits/agents.{md,json}`. Capture its output verbatim — do not re-derive what it found. Point it
+   at the **agents directory** (e.g. a repo's `agents/`), not a lone file, so the cross-agent collision pass (COLL-1) and the
+   `name`-uniqueness check have the siblings to compare.
 2. **Read the agent definition** and apply the **judgment** ([J]-tagged) criteria from [the rubric](references/audit-rubric.md) — the linter
    owns the [M] ones. Focus on:
    - **Description (the delegation signal)** — does it state both _what the agent owns_ and _when to delegate to it_, in the third person,

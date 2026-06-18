@@ -17,7 +17,7 @@
 // With >= 2 skills in scope it also runs a cross-skill collision pass (COLL-1):
 // two descriptions declaring the same quoted trigger phrase are WARNed.
 
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, dirname, join, resolve } from 'node:path'
 
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
@@ -318,7 +318,20 @@ if (skillDirs.length === 0) {
 // One-line key for the area codes printed below (full catalogue: references/audit-rubric.md).
 const LEGEND =
   'area codes — LAY layout · NAME name · DESC description · OPT optional-fm · SIZE size · REF references · BODY content · SCRIPT scripts · LINK linking · SHAPE KI-shape · PROC process · COLL collision · LONG longevity'
-console.log(paint(C.dim, LEGEND))
+
+// Output flags + unified-ladder aggregation across every audited skill (enforcement-framework §2/§5).
+const rawArgv = process.argv.slice(2)
+const jsonOut = rawArgv.includes('--json')
+const ri = rawArgv.indexOf('--report')
+const reportOut = ri !== -1
+const reportTarget = resolve('.')
+const reportDir = reportOut && rawArgv[ri + 1] && !rawArgv[ri + 1].startsWith('-') ? rawArgv[ri + 1] : join(reportTarget, '.ki-meta', 'audits')
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
+const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'PASS']
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
+const all: { level: Level; area: string; msg: string }[] = []
+
+if (!jsonOut) console.log(paint(C.dim, LEGEND))
 
 let totalFails = 0
 let totalWarns = 0
@@ -328,23 +341,48 @@ for (const dir of skillDirs) {
   const warns = findings.filter((x) => x.severity === 'warn')
   totalFails += fails.length
   totalWarns += warns.length
-  const stamp = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
-  console.log(`\n${stamp}  ${paint(C.cyan, basename(dir))}`)
-  for (const x of findings) {
-    const tag = x.severity === 'fail' ? paint(C.red, 'fail') : paint(C.yellow, 'warn')
-    console.log(`  ${tag} ${paint(C.dim, `[${x.criterion}]`)} ${x.message}`)
+  for (const x of findings) all.push({ level: x.severity === 'fail' ? 'FAIL' : 'WARN', area: `${basename(dir)}:${x.criterion}`, msg: x.message })
+  if (!jsonOut) {
+    const stamp = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
+    console.log(`\n${stamp}  ${paint(C.cyan, basename(dir))}`)
+    for (const x of findings) {
+      const tag = x.severity === 'fail' ? paint(C.red, 'fail') : paint(C.yellow, 'warn')
+      console.log(`  ${tag} ${paint(C.dim, `[${x.criterion}]`)} ${x.message}`)
+    }
+    if (findings.length === 0) console.log(paint(C.dim, '  all mechanical checks passed'))
   }
-  if (findings.length === 0) console.log(paint(C.dim, '  all mechanical checks passed'))
 }
 
 // cross-skill pass: collision between sibling descriptions (COLL-1)
 const collisions = collisionFindings(skillDirs)
 if (collisions.length > 0) {
   totalWarns += collisions.length
-  console.log(`\n${paint(C.yellow, 'WARN')}  ${paint(C.cyan, 'collision (cross-skill)')}`)
-  for (const x of collisions) console.log(`  ${paint(C.yellow, 'warn')} ${paint(C.dim, `[${x.criterion}]`)} ${x.message}`)
+  for (const x of collisions) all.push({ level: 'WARN', area: `collision:${x.criterion}`, msg: x.message })
+  if (!jsonOut) {
+    console.log(`\n${paint(C.yellow, 'WARN')}  ${paint(C.cyan, 'collision (cross-skill)')}`)
+    for (const x of collisions) console.log(`  ${paint(C.yellow, 'warn')} ${paint(C.dim, `[${x.criterion}]`)} ${x.message}`)
+  }
 }
 
-console.log(`\n${paint(C.cyan, 'summary')}: ${skillDirs.length} skill(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}`)
-console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria from references/audit-rubric.md by reading.'))
+const summary = { fail: totalFails, warn: totalWarns, polish: 0, advisory: 0, info: 0, skip: 0, pass: 0 }
+const stampIso = new Date().toISOString()
+
+if (reportOut) {
+  mkdirSync(reportDir, { recursive: true })
+  const body = LADDER.flatMap((l) => {
+    const rows = all.filter((f) => f.level === l)
+    return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+  })
+  const tally = `${skillDirs.length} skill(s) · ${summary.fail} fail · ${summary.warn} warn`
+  writeFileSync(join(reportDir, 'skills.md'), [`# skills audit — ${reportTarget}`, '', `_${stampIso}_`, '', tally, ...body, ''].join('\n'))
+  writeFileSync(join(reportDir, 'skills.json'), `${JSON.stringify({ concern: 'skills', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`)
+}
+
+if (jsonOut) {
+  process.stdout.write(`${JSON.stringify({ concern: 'skills', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`)
+} else {
+  console.log(`\n${paint(C.cyan, 'summary')}: ${skillDirs.length} skill(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}`)
+  if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'skills.{md,json}')}`))
+  console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria from references/audit-rubric.md by reading.'))
+}
 process.exit(totalFails > 0 ? 1 : 0)

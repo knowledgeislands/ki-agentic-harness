@@ -18,11 +18,15 @@
  * Output is grouped pass/warn/fail; exit code is non-zero iff any FAIL.
  * No dependencies — Node/Bun builtins only; no cross-skill imports.
  */
-import { existsSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { basename, join } from 'node:path'
 
-type Level = 'PASS' | 'WARN' | 'FAIL'
-const findings: { level: Level; area: string; msg: string }[] = []
+// Unified severity ladder — shared by every KI checker (enforcement-framework §2).
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
+type Finding = { level: Level; area: string; msg: string }
+const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'PASS']
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
+const findings: Finding[] = []
 const add = (level: Level, area: string, msg: string) => findings.push({ level, area, msg })
 
 const repo = process.argv[2]
@@ -103,7 +107,7 @@ if (has('.github', 'workflows', 'ci.yml')) {
   }
   if (scripts['test:coverage']) runsStep('test:coverage') ? add('PASS', 'ci', 'ci.yml runs test:coverage') : add('WARN', 'ci', 'ci.yml should run "bun run test:coverage" (tests capability)')
 } else {
-  add('PASS', 'ci', 'no .github/workflows/ci.yml — N/A')
+  add('SKIP', 'ci', 'no .github/workflows/ci.yml — not applicable')
 }
 
 // ── core: the required script families (exact-match) ──────────────────────────
@@ -216,7 +220,7 @@ if (hasTests) {
     add('WARN', 'tests', 'a test script is present but no vitest.config.* — confirm the runner is vitest')
   }
 } else {
-  add('PASS', 'tests', 'no test capability (no vitest.config / test script) — N/A')
+  add('SKIP', 'tests', 'no test capability (no vitest.config / test script) — not applicable')
 }
 
 // ── capability: compiled build + the cli-chmod rule ───────────────────────────
@@ -255,7 +259,7 @@ if (hasBuild) {
   if (missing.length) add('WARN', 'build', `src/cli/ exists but build does not chmod +x ${missing.join(', ')}`)
   if (!unexpected.length && !missing.length) add('PASS', 'build', hasCli ? 'build chmods exactly dist/cli/cli.js' : 'build chmods nothing (no src/cli/) — correct')
 } else {
-  add('PASS', 'build', 'no compiled-tsc build capability — N/A')
+  add('SKIP', 'build', 'no compiled-tsc build capability — not applicable')
 }
 
 // ── capability: env config ────────────────────────────────────────────────────
@@ -266,7 +270,7 @@ if (hasEnv) {
   const leaks = Object.entries(scripts).filter(([k, v]) => v.includes('NODE_ENV=development') && !devKeys(k))
   leaks.length ? add('FAIL', 'env', `NODE_ENV=development outside a dev/inspect script: ${leaks.map(([k]) => k).join(', ')}`) : add('PASS', 'env', 'NODE_ENV=development only in dev/inspect scripts')
 } else {
-  add('PASS', 'env', 'no env capability — N/A')
+  add('SKIP', 'env', 'no env capability — not applicable')
 }
 
 // ── core: .ki-config.toml [knowledgeislands-engineering] table ────────────────
@@ -286,17 +290,50 @@ else if (!/^\[knowledgeislands-engineering\]/m.test(ki)) {
 }
 
 // ── report ────────────────────────────────────────────────────────────────────
-const icon = { PASS: '✅', WARN: '⚠️ ', FAIL: '❌' } as const
-const order: Level[] = ['FAIL', 'WARN', 'PASS']
-console.log(`\nEngineering standard audit — ${name}  (${repo})\n${'─'.repeat(60)}`)
-for (const lvl of order) {
-  const rows = findings.filter((f) => f.level === lvl)
-  if (!rows.length) continue
-  console.log(`\n${icon[lvl]} ${lvl} (${rows.length})`)
-  for (const r of rows) console.log(`   [${r.area}] ${r.msg}`)
+// Shared emit harness — copy verbatim across KI checkers (enforcement-framework §2/§5).
+// Renders the painted table by default, JSON on `--json`, and writes the latest
+// report under <target>/.ki-meta/audits/<concern>.{md,json} on `--report [dir]`.
+function emit(items: Finding[], target: string, concern: string, title: string, footer: string): never {
+  const argv = process.argv.slice(2)
+  const json = argv.includes('--json')
+  const ri = argv.indexOf('--report')
+  const report = ri !== -1
+  const reportDir = report && argv[ri + 1] && !argv[ri + 1].startsWith('-') ? argv[ri + 1] : join(target, '.ki-meta', 'audits')
+
+  const n = (l: Level): number => items.filter((f) => f.level === l).length
+  const summary = { fail: n('FAIL'), warn: n('WARN'), polish: n('POLISH'), advisory: n('ADVISORY'), info: n('INFO'), skip: n('SKIP'), pass: n('PASS') }
+  const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.skip} skip`
+  const stamp = new Date().toISOString()
+
+  if (report) {
+    mkdirSync(reportDir, { recursive: true })
+    const body = ORDER.flatMap((l) => {
+      const rows = items.filter((f) => f.level === l)
+      return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+    })
+    writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
+    writeFileSync(join(reportDir, `${concern}.json`), `${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
+  }
+
+  if (json) {
+    process.stdout.write(`${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
+  } else {
+    console.log(`\n${title}\n${'─'.repeat(60)}`)
+    for (const l of ORDER) {
+      const rows = items.filter((f) => f.level === l)
+      if (!rows.length) continue
+      console.log(`\n${ICON[l]} ${l} (${rows.length})`)
+      for (const r of rows) console.log(`   [${r.area}] ${r.msg}`)
+    }
+    console.log(`\n${'─'.repeat(60)}\n${tally}`)
+    if (footer) console.log(footer)
+    if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
+    console.log('')
+  }
+  process.exit(summary.fail ? 1 : 0)
 }
-const fails = findings.filter((f) => f.level === 'FAIL').length
-const warns = findings.filter((f) => f.level === 'WARN').length
-console.log(`\n${'─'.repeat(60)}\n${fails} fail · ${warns} warn · ${findings.length - fails - warns} pass`)
-console.log('Common layer only — run the artifact skill audit too (e.g. audit-mcp.ts for an MCP repo).\n')
-process.exit(fails ? 1 : 0)
+
+add('INFO', 'scope', 'engineering common layer — compose with the artifact-skill audit for full coverage')
+add('ADVISORY', 'judgment', 'mechanical layer only — apply the [J] criteria in references/audit-rubric.md by reading')
+
+emit(findings, repo, 'engineering', `Engineering standard audit — ${name}  (${repo})`, 'Common layer only — run the artifact skill audit too (e.g. audit-mcp.ts for an MCP repo).')

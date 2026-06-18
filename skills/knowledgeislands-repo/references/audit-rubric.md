@@ -18,6 +18,9 @@ that becomes deterministic should move into the script and flip to **[M]**.
 - **ki-config [M]** `.ki-config.toml` present (and read for `visibility` + the `[…checks]` override table). (Layer 1)
 - **roadmap-md [M, warn]** `ROADMAP.md` present — warn, not fail: most repos carry one, but a KB base may keep its forward view in
   `Streams/Future`. (Layer 1)
+- **ki-meta [M, warn]** the derived `.ki-meta/` subdirs are **gitignored, not committed** — warn if any `.ki-meta/audits/` or
+  `.ki-meta/conform/` path appears in the tree. Presence of `.ki-meta/` is not required; the namespace itself is left un-ignored. (standard:
+  Layer 1 — `.ki-meta/`)
 
 ## Layer 2 — core GitHub settings (repos on github.com)
 

@@ -36,13 +36,35 @@ Each governance skill is a directory of this shape (loaded on demand — keep `S
 A checker is the deterministic half of a standard. It MUST:
 
 - take a target path as its argument and read only that target (`bun scripts/audit-<concern>.ts <path>`);
-- emit grouped **PASS / WARN / FAIL** findings, each tagged with an area, and a one-line summary;
-- exit **non-zero iff any FAIL** (WARN does not fail the build);
+- emit grouped findings on the **severity ladder** below, each tagged with an area, and a one-line summary tally;
+- exit **non-zero iff any FAIL** (every other level exits 0);
+- support **`--json`** (emit findings as JSON to stdout instead of the painted table) and **`--report [dir]`** (write the report under the
+  target's `.ki-meta/audits/`, see §5) — both are read-only with respect to the audited content;
 - depend on **Node/Bun builtins only** — no npm dependencies;
 - be **self-contained**: no imports from another skill's files. Skills are symlinked individually into a skills directory, so a cross-skill
   import would break once deployed. Checkers **compose by being run in sequence**, never by importing one another (§5).
 
-The checker owns the mechanical criteria; everything it cannot decide deterministically is left to the judgment half, applied by reading.
+### The severity ladder
+
+One ladder, used by **both** the checker's output and the rubric's findings table. A checker emits the subset of levels its domain warrants
+— not every concern uses every level.
+
+| Level        | Group     | Blocks? | Meaning                                                                   |
+| ------------ | --------- | ------- | ------------------------------------------------------------------------- |
+| **FAIL**     | violation | yes     | A required criterion is violated — a ship-stopper.                        |
+| **WARN**     | violation | no      | A recommended criterion is violated — should fix, can ship with a reason. |
+| **POLISH**   | violation | no      | A minor or cosmetic divergence.                                           |
+| **ADVISORY** | deferred  | no      | A judgment criterion the checker cannot decide — handed to the reader.    |
+| **INFO**     | context   | no      | Neutral context, not a verdict against a criterion.                       |
+| **SKIP**     | context   | no      | A criterion checked but not applicable to this target.                    |
+| **PASS**     | met       | no      | A criterion is met.                                                       |
+
+FAIL / WARN / POLISH replace the rubrics' old `blocker / standard / polish` grades; INFO replaces the ad-hoc `note` level. **ADVISORY vs
+WARN** is the line to hold: WARN means the checker _decided_ a soft criterion is violated; ADVISORY means it _cannot_ decide and is pointing
+the reader at a judgment criterion. The summary tallies FAIL / WARN / POLISH / PASS, then ADVISORY / SKIP; INFO is printed but not tallied.
+
+The checker owns the mechanical criteria; everything it cannot decide deterministically is left to the judgment half, applied by reading —
+surfaced inline as ADVISORY where the checker can point at the specific criterion.
 
 ## 3. The rubric format
 
@@ -51,8 +73,10 @@ The checker owns the mechanical criteria; everything it cannot decide determinis
 - **🔧 mechanical** — a checker enforces it; in AUDIT you capture the checker's output verbatim and never re-derive it by hand.
 - **judgment** — a reader/agent assesses it; the checker cannot decide it deterministically.
 
-Each criterion cites the standard section it verifies, and carries a severity where the standard grades findings. A criterion that becomes
-deterministic should **move into the checker and flip to 🔧** — the rubric and checker stay in lockstep.
+Each criterion cites the standard section it verifies, and carries a **severity from the §2 ladder** (FAIL / WARN / POLISH) where the
+standard grades findings — the same vocabulary the checker emits, so the rubric and the output read alike. A criterion that becomes
+deterministic should **move into the checker and flip to 🔧** — the rubric and checker stay in lockstep. A judgment criterion the checker
+can usefully point at surfaces in its output as **ADVISORY**.
 
 ## 4. The source list (`sources.md`)
 
@@ -68,9 +92,12 @@ Every governance skill exposes the universal three, plus skill-specific ones whe
 - **AUDIT** — run the checker, capture its output, then apply the judgment criteria; report by location → criterion → fix. **Audits
   compose**: auditing a target runs every _applicable_ skill's audit and names the siblings it composes with (e.g. an MCP repo =
   `engineering:audit` for the common layer + `audit-mcp.ts` for the MCP delta + the repo and skills audits where they apply). A target is
-  "clean" only when each applicable audit passes.
+  "clean" only when each applicable audit passes. Run each checker with **`--report`** so its latest report lands under the target's
+  **`.ki-meta/audits/<concern>.{md,json}`** — the working-artifacts convention `knowledgeislands-repo` owns; the `.json` is the
+  machine-readable substrate a composed audit merges, the `.md` the human report. Reports are **latest-only** (overwritten, no history).
 - **CONFORM** — bring an existing artifact into line in place; re-run the checker (and any judgment pass) until clean. Copy from the closest
-  healthy sibling rather than invent.
+  healthy sibling rather than invent. Record what changed under the target's **`.ki-meta/conform/<concern>.md`** (latest-only) — so
+  conformance leaves a durable trace now that not every change is a git-committed write.
 - **REFRESH** — re-anchor the standard to its sources on a stated cadence: read `sources.md`, re-fetch each source, diff against the
   standard + rubric + checker, propose a diff (confirm before writing), then bump the `last reviewed` dates and the `## Last review` block.
 - **INIT** (optional) — scaffold a new artifact to the standard.

@@ -229,12 +229,15 @@ what it returns.
   malformed requests / unknown tools are JSON-RPC protocol errors. This is exactly why the house rule is **`errorResult` (return), never
   `throw`** at the tool boundary: a thrown zod/validation error would surface as a protocol error and also bypass the `withAuditLog`
   wrapper, which keys on the `isError` envelope. Confirm `errorResult` produces `{ content, isError: true }`.
-- **Structured output is `outputSchema` + `structuredContent`, paired** (spec 2025-06-18). A tool that returns machine-shaped data SHOULD
-  declare an `outputSchema` on registration and return the matching object in `structuredContent`, **and** (for backwards-compat) the same
-  JSON serialized in a text content block. Today `jsonResult` returns only the text block; m365 already returns `structuredContent` but **no
-  repo declares `outputSchema`**. Recommended-where-applicable, not mandatory: if a tool emits `structuredContent`, it should also declare
-  the `outputSchema` so clients can validate; the cleanest path is to derive both from the same zod result schema (e.g. via
-  `zod-to-json-schema`) so they cannot drift. A `jsonResult` that emits `structuredContent` without a declared schema is a (polish) finding.
+- **Structured output is `outputSchema` + `structuredContent`, paired** (spec 2025-11-25). A tool that returns machine-shaped data **SHOULD**
+  declare an `outputSchema` (JSON Schema 2020-12) on registration and return the matching object in `structuredContent`, **and** (for
+  backwards-compat with older clients) the same JSON serialized in a text content block. The cleanest path is to derive both from the same
+  zod result schema via `zod-to-json-schema` so schema and output cannot drift. A tool that returns `structuredContent` without a declared
+  `outputSchema`, or that uses `jsonResult` (returning JSON) without having adopted `structuredContent` at all, is a **WARN** finding. Plain
+  text-only results need neither.
+- **Deterministic `tools/list` ordering.** Tools **SHOULD** be registered in a stable, predictable order within each tool-group file (e.g.
+  alphabetical by tool name, or by natural CRUD order). Deterministic ordering improves prompt-cache hit rates for clients that hash the
+  tool list. Randomised or nondeterministic registration order is a **WARN** finding.
 - **`inputSchema` dialect.** The spec defaults schemas to JSON Schema 2020-12. zod-to-json-schema output is accepted by Claude; no action
   needed unless a client rejects the emitted dialect — then set an explicit `$schema`.
 - **Optional metadata** (`icons`, `title`, `execution.taskSupport`) is available as of 2025-11-25 but not part of the house standard; adopt

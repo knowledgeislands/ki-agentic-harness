@@ -105,9 +105,11 @@ SAVE · UPDATE**. Modes are named and alphabetical.
 ### Mode AUDIT - check the base against the structure model
 
 1. **Run the mechanical checker** - `bun scripts/audit-kb.ts <base-path>` (from this skill's directory). It reports the deterministic layer
-   as PASS / WARN / FAIL and exits non-zero on a FAIL: the five zones present (resolved through any `[knowledgeislands-kb.zones]` alias), a
-   same-name index note per zone, the root `Admin/MEMORY.md`, the base's own `[knowledgeislands-kb]` table validated _down_, and note
-   frontmatter (well-formed `---` fences, snake_case keys, and any keys declared in `required_frontmatter`). Capture its output; do not
+   on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — see `knowledgeislands-engineering`'s
+   enforcement-framework §2) and exits non-zero on any FAIL: the five zones present (resolved through any `[knowledgeislands-kb.zones]`
+   alias), a same-name index note per zone, the root `Admin/MEMORY.md`, the base's own `[knowledgeislands-kb]` table validated _down_, and
+   note frontmatter (well-formed `---` fences, snake_case keys, and any keys declared in `required_frontmatter`). With `--json` / `--report`
+   it emits machine-readable findings and writes the latest report to the base's `.ki-meta/audits/kb.{md,json}`. Capture its output; do not
    re-derive what it checks.
 2. **Apply the judgment layer by reading** - the **[J]** criteria in [the rubric](references/audit-rubric.md) that the script cannot judge:
    notes filed in the wrong zone (per the routing test), _whether a note should carry frontmatter at all_ and its naming quality, whether

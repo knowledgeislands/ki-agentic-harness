@@ -44,7 +44,7 @@
  * Exit code is non-zero if any repo has a FAIL.
  */
 import { execFileSync } from 'node:child_process'
-import { existsSync, readdirSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
 // ── the standard (keep in sync with references/repo-standard.md) ──────
@@ -83,16 +83,18 @@ const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[3
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 // `note` is informational (a per-repo override in effect) — printed, never counted.
-type Level = 'fail' | 'warn' | 'note'
+// Unified severity ladder — shared by every KI checker (enforcement-framework §2).
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
+const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'PASS']
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
 type Finding = { level: Level; check: string; msg: string }
 const mk = () => {
   const f: Finding[] = []
-  return {
-    f,
-    fail: (check: string, msg: string) => void f.push({ level: 'fail', check, msg }),
-    warn: (check: string, msg: string) => void f.push({ level: 'warn', check, msg }),
-    note: (check: string, msg: string) => void f.push({ level: 'note', check, msg })
-  }
+  const push =
+    (level: Level) =>
+    (check: string, msg: string): void =>
+      void f.push({ level, check, msg })
+  return { f, fail: push('FAIL'), warn: push('WARN'), note: push('INFO'), skip: push('SKIP'), advisory: push('ADVISORY'), polish: push('POLISH') }
 }
 
 function gh(args: string[]): string {
@@ -267,6 +269,13 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
   // ROADMAP.md is expected but not required (warn): most repos carry one, but a KB
   // base may keep its forward view in Streams/Future instead.
   if (!files.has('ROADMAP.md')) warn('roadmap-md', 'no ROADMAP.md (most repos have one; a KB base may keep its roadmap in Streams/Future)')
+
+  // ── layer 1: .ki-meta working area — derived audit/conform artifacts must be gitignored, not committed ──
+  // The .ki-meta/ namespace itself may hold tracked artifacts, but its derived subdirs (audits/, conform/)
+  // are regenerated each run; finding them in the committed tree means .gitignore is missing the entry.
+  const metaCommitted = [...files].filter((p) => p.startsWith('.ki-meta/audits/') || p.startsWith('.ki-meta/conform/'))
+  if (metaCommitted.length)
+    warn('ki-meta', `${metaCommitted.length} derived .ki-meta artifact(s) committed (e.g. ${metaCommitted[0]}) — add \`.ki-meta/audits/\` and \`.ki-meta/conform/\` to .gitignore`)
 
   // ── layer 2: core GitHub ──
   if (r.defaultBranchRef?.name !== DEFAULT_BRANCH) fail('default-branch', `default branch is "${r.defaultBranchRef?.name ?? '?'}" (want ${DEFAULT_BRANCH})`)
@@ -449,13 +458,22 @@ try {
   process.exit(2)
 }
 
-console.log(paint(C.dim, `scope: ${scope}`))
-console.log(
-  paint(
-    C.dim,
-    `standard: files(README,LICENSE,.gitignore,.editorconfig,${KI_CONFIG}) · github(main,mit,squash-only,del-branch,update-branch,issues,no-wiki/projects,desc,visibility) · public+(topics) · deeper(dependabot;secret-scanning;actions=all) · coverage[ki-repo→](${COVERAGE.map((c) => c.skill).join(',')}) · overridable via [..checks]: ${Object.keys(CHECK_DEFAULTS).join(',')},coverage-<skill>`
+// Output flags + unified-ladder aggregation across every audited repo (enforcement-framework §2/§5).
+const jsonOut = process.argv.slice(2).includes('--json')
+const reportOut = process.argv.slice(2).includes('--report')
+const reportTarget = resolve('.')
+const reportDir = join(reportTarget, '.ki-meta', 'audits')
+const all: { level: Level; area: string; msg: string }[] = []
+
+if (!jsonOut) {
+  console.log(paint(C.dim, `scope: ${scope}`))
+  console.log(
+    paint(
+      C.dim,
+      `standard: files(README,LICENSE,.gitignore,.editorconfig,${KI_CONFIG}) · github(main,mit,squash-only,del-branch,update-branch,issues,no-wiki/projects,desc,visibility) · public+(topics) · deeper(dependabot;secret-scanning;actions=all) · coverage[ki-repo→](${COVERAGE.map((c) => c.skill).join(',')}) · overridable via [..checks]: ${Object.keys(CHECK_DEFAULTS).join(',')},coverage-<skill>`
+    )
   )
-)
+}
 
 let totalFails = 0
 let totalWarns = 0
@@ -463,7 +481,8 @@ let ghSkipped = 0
 for (const t of targets) {
   if (!t.nameWithOwner) {
     ghSkipped++
-    console.log(`\n${paint(C.dim, 'SKIP')}  ${paint(C.cyan, t.label)} ${paint(C.dim, `— ${t.note}`)}`)
+    all.push({ level: 'SKIP', area: t.label, msg: t.note ?? '' })
+    if (!jsonOut) console.log(`\n${paint(C.dim, 'SKIP')}  ${paint(C.cyan, t.label)} ${paint(C.dim, `— ${t.note}`)}`)
     continue
   }
   let findings: Finding[]
@@ -475,26 +494,56 @@ for (const t of targets) {
     const ki = kiText != null ? parseKiConfig(kiText) : null
     const signals: Signals = { root: files, tree: treePaths(t.nameWithOwner, branch), pkg: readPkg(t.nameWithOwner, files) }
     // overrides are applied inside auditRepo: a not-enforced check simply does not fail
-    // and is reported as a `note`. No post-filtering here.
+    // and is reported as INFO. No post-filtering here.
     findings = auditRepo(r, files, ki, kiText, signals)
   } catch {
-    findings = [{ level: 'fail', check: 'access', msg: `could not read ${t.nameWithOwner} via gh (missing repo or insufficient scope)` }]
+    findings = [{ level: 'FAIL', check: 'access', msg: `could not read ${t.nameWithOwner} via gh (missing repo or insufficient scope)` }]
   }
-  const fails = findings.filter((x) => x.level === 'fail')
-  const warns = findings.filter((x) => x.level === 'warn')
-  const notes = findings.filter((x) => x.level === 'note')
+  const fails = findings.filter((x) => x.level === 'FAIL')
+  const warns = findings.filter((x) => x.level === 'WARN')
+  const notes = findings.filter((x) => x.level === 'INFO')
   totalFails += fails.length
   totalWarns += warns.length
-  const stamp = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
-  console.log(`\n${stamp}  ${paint(C.cyan, t.nameWithOwner)}`)
-  for (const x of fails) console.log(`  ${paint(C.red, 'fail')} ${paint(C.dim, `[${x.check}]`)} ${x.msg}`)
-  for (const x of warns) console.log(`  ${paint(C.yellow, 'warn')} ${paint(C.dim, `[${x.check}]`)} ${x.msg}`)
-  for (const x of notes) console.log(`  ${paint(C.dim, `note [${x.check}] ${x.msg}`)}`)
-  if (fails.length + warns.length === 0) console.log(paint(C.dim, '  conforms'))
+  for (const x of findings) all.push({ level: x.level, area: `${t.nameWithOwner}:${x.check}`, msg: x.msg })
+  if (!jsonOut) {
+    const stamp = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
+    console.log(`\n${stamp}  ${paint(C.cyan, t.nameWithOwner)}`)
+    for (const x of fails) console.log(`  ${paint(C.red, 'fail')} ${paint(C.dim, `[${x.check}]`)} ${x.msg}`)
+    for (const x of warns) console.log(`  ${paint(C.yellow, 'warn')} ${paint(C.dim, `[${x.check}]`)} ${x.msg}`)
+    for (const x of notes) console.log(`  ${paint(C.dim, `info [${x.check}] ${x.msg}`)}`)
+    if (fails.length + warns.length === 0) console.log(paint(C.dim, '  conforms'))
+  }
 }
 
-console.log(
-  `\n${paint(C.cyan, 'summary')}: ${targets.length} repo(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}${ghSkipped ? paint(C.dim, `, ${ghSkipped} not on github.com`) : ''}`
-)
-console.log(paint(C.dim, 'mechanical checks only — the one remaining judgment item (does the description match the repo’s purpose) is the skill’s AUDIT mode.'))
+const summary = {
+  fail: totalFails,
+  warn: totalWarns,
+  polish: all.filter((f) => f.level === 'POLISH').length,
+  advisory: all.filter((f) => f.level === 'ADVISORY').length,
+  info: all.filter((f) => f.level === 'INFO').length,
+  skip: all.filter((f) => f.level === 'SKIP').length,
+  pass: all.filter((f) => f.level === 'PASS').length
+}
+const stampIso = new Date().toISOString()
+
+if (reportOut) {
+  mkdirSync(reportDir, { recursive: true })
+  const body = LADDER.flatMap((l) => {
+    const rows = all.filter((f) => f.level === l)
+    return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+  })
+  const tally = `${targets.length} repo(s) · ${summary.fail} fail · ${summary.warn} warn · ${summary.info} info · ${summary.skip} skip`
+  writeFileSync(join(reportDir, 'repo.md'), [`# repo audit — ${reportTarget}`, '', `_${stampIso}_`, '', tally, ...body, ''].join('\n'))
+  writeFileSync(join(reportDir, 'repo.json'), `${JSON.stringify({ concern: 'repo', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`)
+}
+
+if (jsonOut) {
+  process.stdout.write(`${JSON.stringify({ concern: 'repo', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`)
+} else {
+  console.log(
+    `\n${paint(C.cyan, 'summary')}: ${targets.length} repo(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}${ghSkipped ? paint(C.dim, `, ${ghSkipped} not on github.com`) : ''}`
+  )
+  if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'repo.{md,json}')}`))
+  console.log(paint(C.dim, 'mechanical checks only — the one remaining judgment item (does the description match the repo’s purpose) is the skill’s AUDIT mode.'))
+}
 process.exit(totalFails > 0 ? 1 : 0)

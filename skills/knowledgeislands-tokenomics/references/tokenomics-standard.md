@@ -16,6 +16,7 @@ not the figures of the day.
 - [5. Context-compression tooling (Headroom) and the registry](#5-context-compression-tooling-headroom-and-the-registry)
 - [6. Best practice — context as a finite resource](#6-best-practice--context-as-a-finite-resource)
 - [7. The boundary with claude-api](#7-the-boundary-with-claude-api)
+- [8. Multi-model flows — mixing tiers within a single session or workflow](#8-multi-model-flows--mixing-tiers-within-a-single-session-or-workflow)
 
 ## 1. The composition model — why standing context dominates
 
@@ -81,6 +82,7 @@ checker validates only its own table, WARNs on a key it does not recognise, and 
 [knowledgeislands-tokenomics]
 headroom = "recommended"          # "required" | "recommended" | "off"
 context_window_tokens = 200000    # optional — turns the total budget into a headroom %
+preferred_model = "sonnet"        # "opus" | "sonnet" | "haiku" — the default tier for this environment
 
 [knowledgeislands-tokenomics.budgets]
 # one key per overridable budget; omit any to take the default above
@@ -100,11 +102,25 @@ only the config-level signals it can see, e.g. a pinned default model):
   invalidating it by placing volatile content (timestamps, per-turn ids) high in the prompt. Caching turns the re-paid standing surface from
   full price into cache-read price; it is the single highest-leverage runtime move.
 - **Model tier.** Match the model to the work's value — a cheap tier for mechanical or bulk steps, the top tier reserved for the hard ones.
+  The preferred tier can be codified per environment (§3 `preferred_model`) and is checked mechanically; the _appropriateness_ judgment
+  remains human-driven. See §8 for multi-model flow guidance.
 - **Compaction.** A long conversation should be compacted before history bloats the window; know where the compaction boundary is.
 - **Sub-agent fan-out.** Each sub-agent re-pays the whole standing surface, so fan-out multiplies the §2 cost — worth it for genuine
   parallel/independent work, wasteful for what one context could hold.
 - **Tool-result verbosity.** Raw logs, JSON dumps, and file reads are re-read on every subsequent turn. Keeping them lean (or compressing
   them — §5) is what stops a single noisy tool call from taxing the rest of the session.
+
+**Recommended mode → tier assignments.** These are defaults; override where the work demands it. Tier names are semantic (`opus`, `sonnet`,
+`haiku`); exact model IDs resolve at runtime via the `claude-api` skill.
+
+| Mode / task type                             | Recommended tier | Reasoning                                                                 |
+| -------------------------------------------- | ---------------- | ------------------------------------------------------------------------- |
+| INIT — scaffolding a new config from scratch | opus             | One-off creative/architectural step; investment is bounded                |
+| AUDIT — reading and classifying findings     | sonnet           | Analytical but bounded; context is the bottleneck, not reasoning depth    |
+| CONFORM — applying a known fix list          | sonnet           | Mostly mechanical edits; a haiku may suffice for very small targets       |
+| REFRESH — re-anchoring to updated sources    | sonnet           | Web-research + diff; rarely needs top-tier reasoning                      |
+| Mechanical sub-agent (bulk, uniform steps)   | haiku            | Low reasoning depth; primary lever is fan-out count, not per-step quality |
+| Hard synthesise / adversarial verify / judge | opus             | Pay the premium only for the irreducible reasoning step                   |
 
 ## 5. Context-compression tooling (Headroom) and the registry
 
@@ -151,3 +167,24 @@ context-window sizes change on Anthropic's cadence, not this skill's; they live 
 an audit needs a real number — to convert an estimate to a cost, or a token total to a headroom percentage against the true window — it
 draws it from `claude-api`. Keeping the figures out of this standard is what lets the _shape_ of the budget stay stable while the numbers
 move.
+
+## 8. Multi-model flows — mixing tiers within a single session or workflow
+
+A single session or workflow is not bound to one model. Tiers can be mixed at four points:
+
+- **`/model <id>` mid-session** — switches the interactive model for the rest of the session; useful after a cheap bulk pass where the next
+  step needs more reasoning depth.
+- **`model:` on the `Agent` tool** — each spawned sub-agent gets its own tier; the parent stays on the ambient default (`preferred_model` or
+  the session default).
+- **`opts.model` in a Workflow `agent()` call** — sets the tier per step inside a `pipeline()` or `parallel()` block, so mechanical steps
+  run on haiku while the synthesise/judge step runs on opus in the same script.
+- **Pinned model on a remote trigger** — a `RemoteTrigger` or scheduled run can specify a model at creation time, locking the tier for that
+  automated flow.
+
+**The principle: match the tier to the step, not the session.** Pay for top-tier reasoning only at the irreducible step — adversarial
+verify, hard synthesis, judge panel — and run mechanical bulk steps (bulk read, classify, scaffold, conform) on a cheaper tier. The mode →
+tier table in §4 gives starting defaults.
+
+**`preferred_model` is the ambient default.** Declaring it in the config table (§3) sets what `/model` and the `Agent` tool use when no
+override is supplied. It is not a lock — explicit `model:` params always win. A mid-flow override that outlasts its step is a finding
+(RUN-2).

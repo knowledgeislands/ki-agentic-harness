@@ -72,8 +72,10 @@ Every governance skill carries **AUDIT · CONFORM · REFRESH**; this one adds **
 ### Mode AUDIT — measure the environment against the budget
 
 1. **Run the checker**: `bun scripts/audit-tokenomics.ts <target>` (a project or base; defaults to the cwd). It also reads the user-wide
-   `~/.claude` layer **by design** — tokenomics _is_ the composition of both — unless `--no-user`. It reports PASS / WARN / FAIL per area
-   and exits non-zero on a FAIL; capture its output verbatim, do not re-derive what it measures.
+   `~/.claude` layer **by design** — tokenomics _is_ the composition of both — unless `--no-user`. It grades each area on the unified
+   severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — see `knowledgeislands-engineering`'s enforcement-framework §2)
+   and exits non-zero on any FAIL; with `--json` / `--report` it emits machine-readable findings and writes the latest report to the
+   target's `.ki-meta/audits/tokenomics.{md,json}`. Capture its output verbatim, do not re-derive what it measures.
 2. **Apply the judgment layer by reading** — the **[J]** criteria in [the rubric](references/audit-rubric.md) the script cannot decide: is a
    big `CLAUDE.md` _earning_ its tokens or restating what the model already knows; are the configured MCP servers actually used by this kind
    of work, or is the tool surface dead weight; are the model tier and sub-agent fan-out proportionate; is Headroom's reversible / cache

@@ -16,7 +16,7 @@
 // With >= 2 agents in scope it also runs cross-agent checks: duplicate `name` (NAME-5, FAIL) and
 // shared quoted trigger phrases between descriptions (COLL-1, WARN).
 
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { basename, dirname, join, resolve } from 'node:path'
 
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
@@ -247,7 +247,18 @@ if (files.length === 0) {
 }
 
 const LEGEND = 'area codes — LAY layout · NAME name · DESC description · FM tools/model · PROMPT system-prompt · LANE lane · LINK linking · PROC process · LONG longevity · COLL collision'
-console.log(paint(C.dim, LEGEND))
+
+// Output flags + unified-ladder aggregation across every audited agent (enforcement-framework §2/§5).
+const jsonOut = process.argv.slice(2).includes('--json')
+const reportOut = process.argv.slice(2).includes('--report')
+const reportTarget = resolve('.')
+const reportDir = join(reportTarget, '.ki-meta', 'audits')
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
+const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'PASS']
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
+const all: { level: Level; area: string; msg: string }[] = []
+
+if (!jsonOut) console.log(paint(C.dim, LEGEND))
 
 let totalFails = 0
 let totalWarns = 0
@@ -259,27 +270,54 @@ for (const file of files) {
   const warns = findings.filter((x) => x.severity === 'warn')
   totalFails += fails.length
   totalWarns += warns.length
-  const stamp = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
   const label = agent.name ?? basename(file)
-  console.log(`\n${stamp}  ${paint(C.cyan, label)} ${paint(C.dim, file)}`)
-  for (const x of findings) {
-    const tag = x.severity === 'fail' ? paint(C.red, 'fail') : paint(C.yellow, 'warn')
-    console.log(`  ${tag} ${paint(C.dim, `[${x.criterion}]`)} ${x.message}`)
+  for (const x of findings) all.push({ level: x.severity === 'fail' ? 'FAIL' : 'WARN', area: `${label}:${x.criterion}`, msg: x.message })
+  if (!jsonOut) {
+    const stamp = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
+    console.log(`\n${stamp}  ${paint(C.cyan, label)} ${paint(C.dim, file)}`)
+    for (const x of findings) {
+      const tag = x.severity === 'fail' ? paint(C.red, 'fail') : paint(C.yellow, 'warn')
+      console.log(`  ${tag} ${paint(C.dim, `[${x.criterion}]`)} ${x.message}`)
+    }
+    if (findings.length === 0) console.log(paint(C.dim, '  all mechanical checks passed'))
   }
-  if (findings.length === 0) console.log(paint(C.dim, '  all mechanical checks passed'))
 }
 
 const cross = crossAgentFindings(agents)
 if (cross.length > 0) {
-  console.log(`\n${paint(C.yellow, 'CROSS')}  ${paint(C.cyan, 'cross-agent')}`)
   for (const x of cross) {
     if (x.severity === 'fail') totalFails++
     else totalWarns++
-    const tag = x.severity === 'fail' ? paint(C.red, 'fail') : paint(C.yellow, 'warn')
-    console.log(`  ${tag} ${paint(C.dim, `[${x.criterion}]`)} ${x.message}`)
+    all.push({ level: x.severity === 'fail' ? 'FAIL' : 'WARN', area: `cross-agent:${x.criterion}`, msg: x.message })
+  }
+  if (!jsonOut) {
+    console.log(`\n${paint(C.yellow, 'CROSS')}  ${paint(C.cyan, 'cross-agent')}`)
+    for (const x of cross) {
+      const tag = x.severity === 'fail' ? paint(C.red, 'fail') : paint(C.yellow, 'warn')
+      console.log(`  ${tag} ${paint(C.dim, `[${x.criterion}]`)} ${x.message}`)
+    }
   }
 }
 
-console.log(`\n${paint(C.cyan, 'summary')}: ${files.length} agent(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}`)
-console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria from references/audit-rubric.md by reading.'))
+const summary = { fail: totalFails, warn: totalWarns, polish: 0, advisory: 0, info: 0, skip: 0, pass: 0 }
+const stampIso = new Date().toISOString()
+
+if (reportOut) {
+  mkdirSync(reportDir, { recursive: true })
+  const body = LADDER.flatMap((l) => {
+    const rows = all.filter((f) => f.level === l)
+    return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+  })
+  const tally = `${files.length} agent(s) · ${summary.fail} fail · ${summary.warn} warn`
+  writeFileSync(join(reportDir, 'agents.md'), [`# agents audit — ${reportTarget}`, '', `_${stampIso}_`, '', tally, ...body, ''].join('\n'))
+  writeFileSync(join(reportDir, 'agents.json'), `${JSON.stringify({ concern: 'agents', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`)
+}
+
+if (jsonOut) {
+  process.stdout.write(`${JSON.stringify({ concern: 'agents', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`)
+} else {
+  console.log(`\n${paint(C.cyan, 'summary')}: ${files.length} agent(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}`)
+  if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'agents.{md,json}')}`))
+  console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria from references/audit-rubric.md by reading.'))
+}
 process.exit(totalFails > 0 ? 1 : 0)

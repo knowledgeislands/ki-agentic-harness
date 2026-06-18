@@ -99,7 +99,10 @@ request; ask if unclear. (Modes are named and alphabetical.)
    covers the shared toolchain (package.json metadata + the `lint:*`/`deps:*` families, the `bun test` trap, tsconfig/biome/vitest with 100%
    coverage, `.env`, the build/cli-chmod rule). Then `bun <skill>/scripts/audit-mcp.ts <repo-path>` (or `node` after build) covers the **MCP
    delta**: presence/shape of `src/` layers, `main`/`bin`/ `exports`, the shared `utils/` helpers, tool names, and the MCP
-   coverage-excludes. Capture both — the repo is clean only when both pass.
+   coverage-excludes. Both grade findings on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — see
+   `knowledgeislands-engineering`'s enforcement-framework §2), exit non-zero on any FAIL, and with `--json` / `--report` emit
+   machine-readable findings and write the latest report under the target's `.ki-meta/audits/<concern>.{md,json}` (`audit-mcp.ts` → `mcp`).
+   Capture both — the repo is clean only when both pass.
 3. **Do the semantic pass the script can't** — walk [Audit Rubric](references/audit-rubric.md) and judge:
    - **Config injection**: grep for top-level `process.env` reads outside `config/index.ts`; confirm `main/`/`utils/` take config as the
      first arg.
@@ -116,9 +119,9 @@ request; ask if unclear. (Modes are named and alphabetical.)
    - **Longevity**: volatile external facts (targeted spec version/date, upstream API versions, third-party URLs, model IDs) aren't
      scattered hard-coded literals — each resolves at runtime or is pinned in one refreshable place, so the server can't rot silently once
      installed. Mirrors the skills rubric's longevity check; see the checklist's _Longevity & staleness_ section.
-4. **Report.** Group findings by severity (see checklist): **blocker** (security invariant or gate bypass), **standard**
-   (layout/naming/tooling divergence), **polish** (docs/consistency). Cite `file:line`. Give the fix for each, and call out _intentional_
-   per-repo divergences (e.g. `voicenotes-edit` defaulting to `write`) so they are not re-flagged.
+4. **Report.** Group findings on the unified severity ladder: a security invariant or gate bypass is a **FAIL**, layout/naming/tooling
+   divergence a **WARN**, docs/consistency a **POLISH**. Cite `file:line`. Give the fix for each, and call out _intentional_ per-repo
+   divergences (e.g. `voicenotes-edit` defaulting to `write`) so they are not re-flagged.
 
 ### Mode CONFORM — bring an existing MCP repo up to standard
 
