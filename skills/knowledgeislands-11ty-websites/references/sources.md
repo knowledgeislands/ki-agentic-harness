@@ -7,7 +7,7 @@ block below (what changed is recorded in the commit, not a changelog). This is t
 current.
 
 Two layers feed the standard: the **upstream tools** (Eleventy, Tailwind, Lucide — what they support and how they're configured) and the
-**in-house convention** (the shape the canonical pair share on top of those tools). A finding is only "upstream-driven" if it traces to the
+**in-house convention** (the shape the standard defines on top of those tools). A finding is only "upstream-driven" if it traces to the
 Authoritative table; everything else is house style and should be labelled as such.
 
 ## Authoritative (upstream tools)
@@ -20,15 +20,12 @@ Authoritative table; everything else is house style and should be labelled as su
 
 ## In-house (the website convention)
 
-The standard is the **majority shape** across the canonical pair. They are the living source of truth for house style; when they diverge,
-the majority wins and the outlier is a finding unless documented. The other two repos are conform targets, not sources.
+The standard is self-contained; it is the source of truth for house style. Any conformant site repo that carries a
+`[knowledgeislands-11ty-websites]` table is an example, not a source.
 
-| Tag       | Source                                          | Governs                                                                    | Last reviewed |
-| --------- | ----------------------------------------------- | -------------------------------------------------------------------------- | ------------- |
-| CANONICAL | `kit-midnight.ninja` (lean)                     | The minimal shape — `eleventy.config.ts`, `main.css`/`tokens.css`, scripts | 2026-06-18    |
-| CANONICAL | `vallearmonia-website` (full)                   | The fuller patterns — layouts, gallery, SEO, sitemap/robots, `site/` split | 2026-06-18    |
-| TARGET    | `arcadia-website` · `5g-emerge-testbed-website` | Conform _targets_ — what the standard moves a legacy site toward           | 2026-06-18    |
-| ENG       | `knowledgeislands-engineering`                  | The toolchain layer this composes on (referenced, not restated)            | 2026-06-18    |
+| Tag | Source                         | Governs                                                         | Last reviewed |
+| --- | ------------------------------ | --------------------------------------------------------------- | ------------- |
+| ENG | `knowledgeislands-engineering` | The toolchain layer this composes on (referenced, not restated) | 2026-06-18    |
 
 ## Last review
 

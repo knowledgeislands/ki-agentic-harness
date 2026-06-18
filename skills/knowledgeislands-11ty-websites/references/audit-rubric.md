@@ -45,7 +45,7 @@ Severity: **FAIL** (ship-stopper — the site won't build or `dist/` isn't porta
 ## eleventy.config.ts (§4)
 
 - [ ] 🔧 FAIL — a transform rewrites absolute internal URLs to relative (the portable-`dist/` transform; `toRelativeOutputUrl` /
-      `explicit-index-links` in the canonical pair). (§4, §9)
+      `explicit-index-links` per the standard). (§4, §9)
 - [ ] 🔧 WARN — `addDataExtension('ts', …)` registered, calling a function default export. (§4)
 - [ ] 🔧 WARN — `addDataExtension('json5', …)` registered. (§4)
 - [ ] 🔧 WARN — `eleventyConfig.on('eleventy.before', …)` compiles Tailwind in build mode (CLI invoked), guarded off `serve`/`watch`. (§4)

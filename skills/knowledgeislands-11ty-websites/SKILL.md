@@ -18,8 +18,7 @@ Nunjucks and Markdown; TypeScript run natively on Bun; Tailwind 4 config-less wi
 new site is scaffolded to it; an existing one is audited and conformed against it. This skill carries that standard and the procedure.
 
 This is a **standard, base-agnostic Process skill**. It hard-codes no single repo; it applies to any repo carrying a
-`[knowledgeislands-11ty-websites]` table in its `.ki-config.toml` (today: `kit-midnight.ninja` and `vallearmonia-website` as the canonical
-pair, plus `arcadia-website`). How it sits beside the other skills, and where it must not overlap them, is documented once in the
+`[knowledgeislands-11ty-websites]` table in its `.ki-config.toml`. How it sits beside the other skills, and where it must not overlap them, is documented once in the
 arcadia-agentic-harness `README.md`.
 
 This skill owns the **site-build delta** only. The generic toolchain (Bun mandate, `lint:*`/`deps:*` families,
@@ -106,18 +105,17 @@ Carries the universal **AUDIT · CONFORM · REFRESH**, plus **INIT** (scaffold a
 ### Mode CONFORM — bring a site up to standard
 
 1. Run **AUDIT** first, so you change against a known gap list.
-2. Fix the gaps in place — **copy from the canonical pair**: `kit-midnight.ninja` for the lean shape, `vallearmonia-website` for the fuller
-   patterns (tokens, layouts, gallery, SEO), never from the thinner sites (`5g-emerge`; `arcadia-website`, now conformed but still a
-   placeholder). Add the `[knowledgeislands-11ty-websites]` table if missing.
+2. Fix the gaps in place — use the canonical shape from [the standard](references/eleventy-site-standard.md): the lean layout (§2–§5) and the
+   fuller patterns (tokens, layouts, SEO — §5–§7) as needed. Add the `[knowledgeislands-11ty-websites]` table if missing.
 3. Re-run the checker; settle the repo's own `bun run lint:*` / `lint:types` (and `lint:md` for any Markdown). For the toolchain block, run
    `knowledgeislands-engineering`'s CONFORM; for the deploy block, `knowledgeislands-cloudflare-hosting`'s.
 
 ### Mode INIT — scaffold a new site
 
-**Copy from `kit-midnight.ninja`** (the leanest healthy reference) over inventing: the `eleventy.config.ts`, the `main.css`/`tokens.css`
-pair, the `_includes/{layouts,partials}/` shells, and the build/dev script family. Adapt names, palette, and content; keep the four
-invariants from day one. Add the `[knowledgeislands-11ty-websites]` table. Then run the checker. For the toolchain scaffold defer to
-`knowledgeislands-engineering` INIT; for hosting, `knowledgeislands-cloudflare-hosting` INIT.
+Use the canonical shape from **[the standard](references/eleventy-site-standard.md)** over inventing: the `eleventy.config.ts` patterns
+(§4), the `main.css`/`tokens.css` pair (§5), the `_includes/{layouts,partials}/` shells (§3), and the build/dev script family (§8). Adapt
+names, palette, and content; keep the four invariants from day one. Add the `[knowledgeislands-11ty-websites]` table. Then run the checker.
+For the toolchain scaffold defer to `knowledgeislands-engineering` INIT; for hosting, `knowledgeislands-cloudflare-hosting` INIT.
 
 ### Mode REFRESH — re-anchor the standard to its sources
 
@@ -128,7 +126,7 @@ skills), or when asked "is the website standard current".
 2. **Re-fetch each** (WebFetch / WebSearch) and diff against the standard + rubric +
    [`scripts/audit-websites.ts`](scripts/audit-websites.ts): an Eleventy 3.x API change, a Tailwind-4 `@theme`/`@import` change, a
    data-extension or transform-API shift.
-3. **Scan the canonical pair** for emergent patterns not yet codified; promote the good ones, flag drift.
+3. **Scan conformant site repos** for emergent patterns not yet codified; promote the good ones, flag drift.
 4. **Propose a diff**; confirm before writing. Then **update [the source list](references/sources.md)** — bump each `last reviewed` date and
    the `## Last review` block. What changed goes in the commit.
 

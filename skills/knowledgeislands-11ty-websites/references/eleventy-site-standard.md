@@ -1,9 +1,8 @@
 # The Eleventy site standard
 
 The normative, quotable reference for the Knowledge Islands 11ty website standard — what a good site looks like, and why. The audit rubric
-([audit-rubric.md](audit-rubric.md)) turns each section into checkable items; the procedure is in the [SKILL.md](../SKILL.md). The standard
-is the **majority shape** of the canonical pair — `kit-midnight.ninja` (lean) and `vallearmonia-website` (full); `arcadia-website` and
-`5g-emerge-testbed-website` are conform targets, not sources (see [the source list](sources.md)).
+([audit-rubric.md](audit-rubric.md)) turns each section into checkable items; the procedure is in the [SKILL.md](../SKILL.md). See
+[the source list](sources.md) for provenance.
 
 This skill owns the **site-build delta**. The toolchain it sits on (Bun mandate, `lint:*`/`deps:*` families, `tsconfig`/`biome`, the
 `tsc --noEmit` type-check) is `knowledgeislands-engineering`'s and is referenced here, not restated.
@@ -39,10 +38,10 @@ This skill owns the **site-build delta**. The toolchain it sits on (Bun mandate,
 Two conformant layouts; the trigger is whether the repo holds **other deployables**.
 
 - **Flat** — the site is the whole repo. `eleventy.config.ts` and `src/` sit at the repo root; the build emits `./dist`. Scripts are
-  unprefixed: `build`, `dev`, `dev:css`, `dev:serve`, `clean`. (`arcadia-website`, `5g-emerge`.)
+  unprefixed: `build`, `dev`, `dev:css`, `dev:serve`, `clean`.
 - **`site/` subfolder** — the repo also holds unrelated deployables (a bot, an ingress Worker — **out of this skill's scope**, see
   [SKILL.md](../SKILL.md) boundaries). The site lives under `site/` (`site/eleventy.config.ts`, `site/src/`), the build emits `../dist` at
-  the repo root, and the scripts take a `site:` prefix (`site:build`, `site:dev`, …). (`kit-midnight.ninja`, `vallearmonia-website`.)
+  the repo root, and the scripts take a `site:` prefix (`site:build`, `site:dev`, …).
 
 Either way **`dist/` lives at the repo root** and is the single build output. The site root is "the directory that contains
 `eleventy.config.ts`".
@@ -81,7 +80,7 @@ src/
 The config is `export default function (eleventyConfig) { … return { dir, … } }`. These patterns are expected:
 
 - **Portable-`dist/` transform.** An `addTransform` rewrites absolute internal `href`/`src` URLs to paths relative to the current output
-  file (skipping `http(s):`/`mailto:`/`tel:`/`data:`/`#`), so `dist/` serves from any root. In the canonical pair this is a
+  file (skipping `http(s):`/`mailto:`/`tel:`/`data:`/`#`), so `dist/` serves from any root. The canonical shape is a
   `toRelativeOutputUrl` helper inside a transform named `explicit-index-links`. **This is invariant 2** — the seam to hosting (§9).
 - **`.ts` data extension.** `addDataExtension('ts', { read: false, parser })` dynamically imports the file and, mirroring Eleventy's JS
   handling, **calls the default export if it is a function** (sync or async), else uses it directly.
@@ -156,6 +155,6 @@ Older sites predate the standard; CONFORM moves them toward it. The known legacy
 - **npm + `tsx`** (`node --import tsx/esm …`) → Bun running `.ts` natively (or plain `node` on Node ≥ 24, type stripping now stable and
   unflagged). `tsx` and the npm lockfile go. (`5g-emerge`.)
 - **No portable-`dist/` transform** → add the `addTransform` from §4.
-- **Skeletal `src/`** — no `tokens.css`, no `_includes/{layouts,partials}/`, no `seo-meta` partial → add them, copying the shape from the
-  canonical pair. (`arcadia-website`: a modern `eleventy.config.ts` but a skeletal `src/`.)
+- **Skeletal `src/`** — no `tokens.css`, no `_includes/{layouts,partials}/`, no `seo-meta` partial → add them using the shape from the
+  standard (§3, §5, §7).
 - **Minimal SEO** (a bare `<title>` only) → the `seo-meta.njk` partial wired into `base.njk`, plus sitemap/robots for a public site.

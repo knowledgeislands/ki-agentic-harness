@@ -48,7 +48,7 @@ The full, quotable standard is [the Cloudflare hosting standard](references/clou
 Deploy: `cd <site root> && bunx wrangler deploy`. Three rules define the standard — most findings are a breach of one:
 
 1. **Workers + Static Assets, not Pages.** The site is a Worker with an `assets` block; `wrangler deploy` ships it. **Never
-   `wrangler pages deploy`** — Cloudflare steers new sites to Workers + Static Assets and the canonical pair migrated off Pages.
+   `wrangler pages deploy`** — Cloudflare steers new sites to Workers + Static Assets and the house sites were explicitly migrated off Pages.
 2. **`assets.directory` is the seam.** It points at the `dist/` that `knowledgeislands-11ty-websites` emits (`./dist` flat, `../dist` from a
    `site/` subfolder). The build runs before deploy; `dist/` is gitignored.
 3. **The site Worker is the only thing in scope.** It carries `assets` (and no `main`). A Worker with a `main` entry and no `assets` is a
