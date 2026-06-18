@@ -1,9 +1,8 @@
 # The Cloudflare hosting standard
 
 The normative, quotable reference for serving a built static site on Cloudflare — what good hosting looks like, and why. The audit rubric
-([audit-rubric.md](audit-rubric.md)) turns each section into checkable items; the procedure is in the [SKILL.md](../SKILL.md). The standard
-is the shape of the canonical **deployed** site `vallearmonia-website` (with `kit-midnight.ninja` a conform target — it has the build but no
-site `wrangler.jsonc` yet); see [the source list](sources.md).
+([audit-rubric.md](audit-rubric.md)) turns each section into checkable items; the procedure is in the [SKILL.md](../SKILL.md). See
+[the source list](sources.md) for provenance.
 
 This skill owns the **deploy/serve delta for the site Worker**. The `dist/` it serves is `knowledgeislands-11ty-websites`'s output (the
 seam); the toolchain is `knowledgeislands-engineering`'s. Both are referenced here, not restated. **Companion Workers are out of scope.**

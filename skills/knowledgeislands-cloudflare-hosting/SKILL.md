@@ -19,9 +19,8 @@ You are applying the **Knowledge Islands Cloudflare hosting standard** — the h
 observability on, and a `site:deploy` script family. A new site's hosting is scaffolded to it; an existing one is audited and conformed.
 
 This is a **standard, base-agnostic Process skill**. It hard-codes no single repo; it applies to any repo carrying a
-`[knowledgeislands-cloudflare-hosting]` table in its `.ki-config.toml` (today: `vallearmonia-website`, and `kit-midnight.ninja` once its
-site config is added). How it sits beside the other skills, and where it must not overlap them, is documented once in the
-arcadia-agentic-harness `README.md`.
+`[knowledgeislands-cloudflare-hosting]` table in its `.ki-config.toml`. How it sits beside the other skills, and where it must not overlap
+them, is documented once in the arcadia-agentic-harness `README.md`.
 
 This skill owns the **deploy/serve delta for the site Worker** only — the one Worker that serves `dist/`. It **builds on** two siblings and
 restates neither: `knowledgeislands-11ty-websites` produces the `dist/` (the seam, below); `knowledgeislands-engineering` owns the
@@ -95,22 +94,26 @@ unclear. (Modes are named and alphabetical.) The mode shape itself is defined in
    runs before deploy, and CI (Cloudflare Workers Builds or an Action) is wired. Confirm the `dist/` path matches what `audit-websites.ts`
    reported.
 4. **Report** by location → criterion → fix, grouped by severity (FAIL / WARN / POLISH). The classic finding: a site Worker with **no**
-   `wrangler.jsonc` (so `site:deploy` fails) — `kit-midnight.ninja` today.
+   `wrangler.jsonc` (so `site:deploy` fails).
 
 ### Mode CONFORM — bring a site's hosting up to standard
 
 1. Run **AUDIT** first, so you change against a known gap list.
-2. Fix the gaps in place — **copy from `vallearmonia-website`** (the canonical deployed site): the `wrangler.jsonc` shape
-   (`assets.directory`, `routes`, `observability`) and the `site:{deploy,preview,clean}` scripts. Adapt name, domains, and the `dist/`
+2. Fix the gaps in place — use the canonical shape from [the standard](references/cloudflare-hosting-standard.md): the `wrangler.jsonc`
+   shape (`assets.directory`, `routes`, `observability`) and the `site:{deploy,preview,clean}` scripts. Adapt name, domains, and the `dist/`
    relative path to the layout. Add the `[knowledgeislands-cloudflare-hosting]` table if missing. If a `wrangler pages deploy` is found,
    migrate it to Workers + Static Assets.
 3. Re-run the checker; `bunx wrangler deploy --dry-run` from the site root should read the assets directory cleanly.
 
 ### Mode INIT — scaffold a site's hosting
 
-**Copy `vallearmonia-website`'s site `wrangler.jsonc`** and its `site:deploy`/`site:preview` scripts over inventing; adapt `name`,
-`compatibility_date`, the `assets.directory` relative path (`./dist` flat, `../dist` from `site/`), and the custom-domain routes. Add the
-`[knowledgeislands-cloudflare-hosting]` table. Then run the checker and a `wrangler deploy --dry-run`.
+Follow **[the setup guide](references/setup-guide.md)** — it is the step-by-step walkthrough of every action below. Summary:
+
+**Use the `wrangler.jsonc` shape from [the standard](references/cloudflare-hosting-standard.md)** and the `site:deploy`/`site:preview`
+scripts; adapt `name`, `compatibility_date`, the `assets.directory` relative path (`./dist` flat, `../dist` from `site/`), and the
+custom-domain routes. Add the `[knowledgeislands-cloudflare-hosting]` table to `.ki-config.toml`. Update `.gitignore` (`dist/`,
+`.wrangler/`). Then run the checker and `bunx wrangler deploy --dry-run` from the site root to confirm the assets directory resolves. Wire
+the custom domain and `www` redirect rule in the dashboard, then set up Cloudflare Workers Builds for CI/CD (see the guide's §7–§9).
 
 ### Mode REFRESH — re-anchor the standard to its sources
 

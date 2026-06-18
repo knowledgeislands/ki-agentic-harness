@@ -20,14 +20,12 @@ Authoritative table; everything else is house style and should be labelled as su
 
 ## In-house (the hosting convention)
 
-The standard is the shape of the canonical **deployed** site. It is the living source of truth for house style; the other repo is a conform
-target, not a source.
+The standard is self-contained; it is the source of truth for house style. Any conformant site repo that carries a
+`[knowledgeislands-cloudflare-hosting]` table is an example, not a source.
 
-| Tag       | Source                                         | Governs                                                             | Last reviewed |
-| --------- | ---------------------------------------------- | ------------------------------------------------------------------- | ------------- |
-| CANONICAL | `vallearmonia-website` (`site/wrangler.jsonc`) | The site `wrangler.jsonc` shape, the `site:*` deploy scripts, CI    | 2026-06-18    |
-| TARGET    | `kit-midnight.ninja`                           | Conform target — has the build but **no** site `wrangler.jsonc` yet | 2026-06-18    |
-| BUILD     | `knowledgeislands-11ty-websites`               | The `dist/` seam this serves (referenced, not restated)             | 2026-06-18    |
+| Tag   | Source                           | Governs                                                 | Last reviewed |
+| ----- | -------------------------------- | ------------------------------------------------------- | ------------- |
+| BUILD | `knowledgeislands-11ty-websites` | The `dist/` seam this serves (referenced, not restated) | 2026-06-18    |
 
 ## Last review
 
