@@ -83,7 +83,8 @@ Review a skill (or every skill in a repo) against the rubric and report.
 
 ## Mode REFRESH — re-anchor best practice
 
-Keep the rubric current — the standard and the community move, and this is why the skill tracks its own sources.
+Keep the rubric current — the standard and the community move, and this is why the skill tracks its own sources. Run periodically (monthly,
+with the other skills), or when asked "is the skills rubric current".
 
 1. **Read [the source list](references/sources.md)** — the tracked authoritative + community sources, each with a `last reviewed` date and
    what it governs.

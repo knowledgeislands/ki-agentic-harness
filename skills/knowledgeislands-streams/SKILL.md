@@ -201,8 +201,7 @@ the knowledge now lives). Test before deleting: would any knowledge be lost? If 
 
 This skill is the **canonical definition** of the Streams structure and the Enactment Process; REFRESH keeps that definition coherent and
 current against how the live bases actually run it (the bases defer to the skill, so there is no separate canonical Model to re-anchor
-against). Run it on the monthly `knowledgeislands-skills-refresh` routine's cadence (which covers every governance skill), or when someone
-asks "is the Streams model still current".
+against). Run it periodically (monthly, with the other skills), or when someone asks "is the Streams model still current".
 
 1. **Read [the source list](references/sources.md)** — the live bases that run the process, each with a `last reviewed` date.
 2. **Re-anchor against practice**: sample how the live bases run their Streams; look for a genuinely shared pattern the skill does not yet

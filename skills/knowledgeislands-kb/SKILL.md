@@ -183,7 +183,7 @@ History lives in git; the durable record is the current note.
 
 This skill carries the zone model, routing test, and project-bindings table as fixed knowledge; it must not drift from how the bases that
 use it are really organised - especially once installed into a shared/cloud catalogue, where it is long-lived and far from its author. Run
-this periodically, or when someone asks "is the KB skill still current".
+this periodically (monthly, with the other skills), or when someone asks "is the KB skill still current".
 
 1. **Read [the source list](references/sources.md)** - the canonical structure definition (the arcadia-agentic-harness `README.md`) and the
    bases actively using this skill, each with a `last reviewed` date.
