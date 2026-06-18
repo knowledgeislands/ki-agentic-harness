@@ -80,6 +80,9 @@ Review a skill (or every skill in a repo) against the rubric and report.
    a menu; detail in `references/`; relative markdown links (angle-bracket form for paths with spaces), never wikilinks; refer to other
    skills by `name`, never path.
 4. **Self-audit before finishing** — run Mode AUDIT on the new skill. INIT and AUDIT share one rubric on purpose.
+5. **Add it to the set's scheduled refresh** — if the host registers a scheduled run that sweeps the set's REFRESH (LONG-2), add the new
+   skill to that routine so it doesn't silently fall out of the sweep. The routine is host infra, not a repo file, so this is a manual
+   follow-up the audit can't verify.
 
 ## Mode REFRESH — re-anchor best practice
 
