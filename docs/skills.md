@@ -1,16 +1,16 @@
 # The skills
 
-The skills are the bulk of the harness today: **eleven** of them, each a **governance skill** — it holds a house standard and ships the
+The skills are the bulk of the harness today: **twelve** of them, each a **governance skill** — it holds a house standard and ships the
 universal **AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones), backed by a tracked `references/sources.md`.
 
 This file is the catalogue: what each skill does, and the shared shape they all follow. For how they fit together — the boundaries between
 the ones that could be confused, the loops that run across them, and the invariants they all hold — see [design.md](design.md). The overview
 map lives in the [README](../README.md).
 
-## The eleven
+## The twelve
 
-The eleven sit in **two layers**: two cross-cutting **foundations** that every other skill builds on, and the **domain** skills that each
-govern one kind of artifact.
+The twelve sit in **two layers** plus a bridge: two cross-cutting **foundations** that every other skill builds on, the **domain** skills
+that each govern one kind of artifact, and `knowledgeislands-harness` — the **container** skill that governs the bundle holding them all.
 
 ### [`knowledgeislands-kb`](../skills/knowledgeislands-kb/SKILL.md) — Knowledge Islands
 
@@ -88,11 +88,20 @@ is set up optimally. **Composes** on the artifact skills whose surfaces it measu
 `knowledgeislands-skills` for the description surface, `knowledgeislands-kb` for a base's loaded surface) and defers the volatile reference
 numbers to the `claude-api` skill. Ships a mechanical checker (`audit-tokenomics.ts`) that reads both config layers by design.
 
+### [`knowledgeislands-harness`](../skills/knowledgeislands-harness/SKILL.md) — Process
+
+Audits, conforms, and scaffolds the **agentic harness itself** — the container that bundles the other parts: the four-part `skills/` /
+`agents/` / `mcp/` / `evals/` layout, the root `CLAUDE.md` / `ROADMAP.md` / `package.json` script families / `.ki-config.toml` table, and
+the `skills:link` install convention. Governs the **container, not the contents**: the bridge into the sibling skills rather than a
+replacement — it **composes** their checkers (`knowledgeislands-skills`, `knowledgeislands-agents`, `knowledgeislands-mcp`,
+`knowledgeislands-engineering`, `knowledgeislands-repo`) and adds only the bundle-structure delta. Ships a mechanical checker
+(`audit-harness.ts`). Empty shelves are valid — a shelf is not a gap.
+
 Where the set is going next is in [ROADMAP.md](../ROADMAP.md).
 
 ## The governance-skill shape
 
-All ten share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in
+All twelve share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in
 `knowledgeislands-engineering`'s [enforcement framework](../skills/knowledgeislands-engineering/references/enforcement-framework.md):
 
 - **`<domain>-standard.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like,
@@ -103,8 +112,9 @@ All ten share one layout, so a reader (or a new such skill) can move between the
   changed_ lives in git (the REFRESH commit), not a changelog in the file. A skill tracking a moving external spec also keeps a
   current-state **`## Last review`** block — pinned revision, what's confirmed, open watch-items — overwritten each REFRESH.
 - **a mechanical checker** — `audit-engineering.ts`, `audit-mcp.ts`, `audit-websites.ts`, `audit-cloudflare-hosting.ts`, `lint-skills.ts`,
-  `lint-agents.ts`, `audit-repo.ts`, `audit-kb.ts`, `audit-streams.ts` for engineering / mcp / 11ty-websites / cloudflare-hosting / skills /
-  agents / repo / kb / streams; `bun run lint:md` (Prettier + markdownlint) for authoring. The judgment half is always applied by reading.
+  `lint-agents.ts`, `audit-repo.ts`, `audit-kb.ts`, `audit-streams.ts`, `audit-tokenomics.ts`, `audit-harness.ts` for engineering / mcp /
+  11ty-websites / cloudflare-hosting / skills / agents / repo / kb / streams / tokenomics / harness; `bun run lint:md` (Prettier +
+  markdownlint) for authoring. The judgment half is always applied by reading.
 
 …and the same modes: **AUDIT** (run the checker, then apply the judgment criteria), **CONFORM** (bring an existing artifact into line), and
 **REFRESH** (re-anchor the standard to its sources on a stated cadence), plus skill-specific modes where they fit — **INIT** to scaffold a

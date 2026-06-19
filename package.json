@@ -49,6 +49,7 @@
     "deps:update": "bun update --latest",
     "engineering:audit": "bun skills/knowledgeislands-engineering/scripts/audit-engineering.ts",
     "eval": "bun evals/harness.ts",
+    "harness:audit": "bun skills/knowledgeislands-harness/scripts/audit-harness.ts",
     "kb:audit": "bun skills/knowledgeislands-kb/scripts/audit-kb.ts",
     "lint:check": "bunx @biomejs/biome check",
     "lint:fix": "bunx @biomejs/biome check --write --unsafe",

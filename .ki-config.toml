@@ -10,6 +10,11 @@ visibility = "private"   # "public" | "private"
 # This repo fully conforms, so it declares no check overrides. To diverge, add a
 # [knowledgeislands-engineering.checks] table with one boolean per check (true = enforce).
 
+# This repo IS a Knowledge Islands agentic harness (the four-part skills/ agents/ mcp/ evals/
+# layout), so it declares governance by the knowledgeislands-harness standard. Presence of this
+# table is the compliance marker; no per-harness keys are defined yet.
+[knowledgeislands-harness]
+
 # This repo ships skills under skills/, so it declares governance by the knowledgeislands-skills
 # standard. (Read by knowledgeislands-repo's coverage check; the skills linter lints the SKILL.md
 # files themselves.)
