@@ -45,7 +45,8 @@ Notes inside a base link to one another and to their zone index notes with Obsid
 index-carrying zones are `[[Calendar]]`, `[[Pillars]]`, `[[Resources]]`, `[[Streams]]`, and `[[Admin]]`. Body links use the shortest unique
 path (bare filename if unique, the minimum disambiguating prefix otherwise); a `## Contents` list uses the full path with an alias
 (`[[Full/Path/Note|Note Name]]`). This governs **note content inside a base** — it is independent of, and does not conflict with, the
-relative-markdown-link convention these skill files themselves use (see the arcadia-agentic-harness `README.md`, "Linking inside skills").
+relative-markdown-link convention these skill files themselves use (see arcadia-agentic-harness `docs/installation.md`, "Linking inside
+skills").
 
 ### Routing test
 
@@ -187,9 +188,9 @@ This skill carries the zone model, routing test, and project-bindings table as f
 use it are really organised - especially once installed into a shared/cloud catalogue, where it is long-lived and far from its author. Run
 this periodically (monthly, with the other skills), or when someone asks "is the KB skill still current".
 
-1. **Read [the source list](references/sources.md)** - the canonical structure definition (the arcadia-agentic-harness `README.md`) and the
-   bases actively using this skill, each with a `last reviewed` date.
-2. **Re-anchor against reality.** Re-read the README's structure section, and sample how the live bases are actually laid out (their root
+1. **Read [the source list](references/sources.md)** - the canonical structure definition (arcadia-agentic-harness
+   `docs/knowledge-islands.md`) and the bases actively using this skill, each with a `last reviewed` date.
+2. **Re-anchor against reality.** Re-read that structure definition, and sample how the live bases are actually laid out (their root
    `Admin/MEMORY.md` and top-level folders). Diff against this skill's zone table, routing test, and bindings table. Look for: a zone or
    convention the bases now use that the model omits; a binding real bases supply that the bindings table doesn't name; a default that no
    longer matches practice; a tool surface the host MCP server has changed under the skill (it resolves tools at runtime - confirm that

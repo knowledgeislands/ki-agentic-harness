@@ -10,10 +10,10 @@ standard.
 
 ## Canonical (the structure definition)
 
-| Source                                                                  | Governs                                                        | Last reviewed |
-| ----------------------------------------------------------------------- | -------------------------------------------------------------- | ------------- |
-| arcadia-agentic-harness `README.md` - "The Knowledge Islands structure" | †                                                              | 2026-06-18    |
-| [Knowledge Islands KB Reference][kb-reference]                          | This skill's own long-form detail on the modes and conventions | 2026-06-18    |
+| Source                                                                                  | Governs                                                        | Last reviewed |
+| --------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------- |
+| arcadia-agentic-harness `docs/knowledge-islands.md` - "The Knowledge Islands structure" | †                                                              | 2026-06-18    |
+| [Knowledge Islands KB Reference][kb-reference]                                          | This skill's own long-form detail on the modes and conventions | 2026-06-18    |
 
 † The authoritative structure: five zones (Calendar / Pillars / Resources / Streams / Admin) flanked by the inbound `+` and outbound `-`
 staging areas.

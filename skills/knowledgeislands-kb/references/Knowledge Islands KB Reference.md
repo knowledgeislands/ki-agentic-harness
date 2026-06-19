@@ -37,8 +37,8 @@ the minimum disambiguating prefix when it is not — and check for filename coll
 uses the full path with an alias (`[[Full/Path/Note|Note Name]]`).
 
 This is the convention for **note content inside a base**. It is deliberately distinct from how the skill files in this repository link to
-one another (relative markdown links, per the arcadia-agentic-harness `README.md` under "Linking inside skills") — the two never meet, so a
-base using wikilinks does not break the skills that use markdown links.
+one another (relative markdown links, per arcadia-agentic-harness `docs/installation.md` under "Linking inside skills") — the two never
+meet, so a base using wikilinks does not break the skills that use markdown links.
 
 ## Onboarding a base to this skill
 

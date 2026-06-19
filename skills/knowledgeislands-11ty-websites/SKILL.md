@@ -18,8 +18,8 @@ Nunjucks and Markdown; TypeScript run natively on Bun; Tailwind 4 config-less wi
 new site is scaffolded to it; an existing one is audited and conformed against it. This skill carries that standard and the procedure.
 
 This is a **standard, base-agnostic Process skill**. It hard-codes no single repo; it applies to any repo carrying a
-`[knowledgeislands-11ty-websites]` table in its `.ki-config.toml`. How it sits beside the other skills, and where it must not overlap them, is documented once in the
-arcadia-agentic-harness `README.md`.
+`[knowledgeislands-11ty-websites]` table in its `.ki-config.toml`. How it sits beside the other skills, and where it must not overlap them,
+is documented once in the arcadia-agentic-harness `README.md`.
 
 This skill owns the **site-build delta** only. The generic toolchain (Bun mandate, `lint:*`/`deps:*` families,
 `tsconfig`/`biome`/`tsc --noEmit`) is `knowledgeislands-engineering`'s; Markdown/TOML style is `knowledgeislands-authoring`'s; **serving the
@@ -105,8 +105,8 @@ Carries the universal **AUDIT · CONFORM · REFRESH**, plus **INIT** (scaffold a
 ### Mode CONFORM — bring a site up to standard
 
 1. Run **AUDIT** first, so you change against a known gap list.
-2. Fix the gaps in place — use the canonical shape from [the standard](references/eleventy-site-standard.md): the lean layout (§2–§5) and the
-   fuller patterns (tokens, layouts, SEO — §5–§7) as needed. Add the `[knowledgeislands-11ty-websites]` table if missing.
+2. Fix the gaps in place — use the canonical shape from [the standard](references/eleventy-site-standard.md): the lean layout (§2–§5) and
+   the fuller patterns (tokens, layouts, SEO — §5–§7) as needed. Add the `[knowledgeislands-11ty-websites]` table if missing.
 3. Re-run the checker; settle the repo's own `bun run lint:*` / `lint:types` (and `lint:md` for any Markdown). For the toolchain block, run
    `knowledgeislands-engineering`'s CONFORM; for the deploy block, `knowledgeislands-cloudflare-hosting`'s.
 

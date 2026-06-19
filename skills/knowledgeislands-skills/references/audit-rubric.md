@@ -193,8 +193,8 @@ ever starts enforcing a **[J]** check, move its tag here.
   skills are scoped so they don't compete for the same request, and each `description` is primarily **self-scoped** (what it does, and
   briefly what it doesn't). Where two skills are nonetheless genuinely adjacent, **each** description names the other as the off-ramp — the
   reciprocal pattern (`knowledgeislands-mcp` ↔ `knowledgeislands-skills`); a one-directional guard is a half-fix — and the full boundary is
-  documented once in the arcadia-agentic-harness README ("where the skills do not overlap"). A COLL-1 hit means the scopes overlap and the
-  **design** needs fixing first, before any off-ramp papers over it. (standard §13, arcadia-agentic-harness README)
+  documented once in arcadia-agentic-harness `docs/design.md` ("where the skills do not overlap"). A COLL-1 hit means the scopes overlap and
+  the **design** needs fixing first, before any off-ramp papers over it. (standard §13, arcadia-agentic-harness README)
 
 ## LONG — Longevity
 

@@ -80,8 +80,8 @@ src/
 The config is `export default function (eleventyConfig) { … return { dir, … } }`. These patterns are expected:
 
 - **Portable-`dist/` transform.** An `addTransform` rewrites absolute internal `href`/`src` URLs to paths relative to the current output
-  file (skipping `http(s):`/`mailto:`/`tel:`/`data:`/`#`), so `dist/` serves from any root. The canonical shape is a
-  `toRelativeOutputUrl` helper inside a transform named `explicit-index-links`. **This is invariant 2** — the seam to hosting (§9).
+  file (skipping `http(s):`/`mailto:`/`tel:`/`data:`/`#`), so `dist/` serves from any root. The canonical shape is a `toRelativeOutputUrl`
+  helper inside a transform named `explicit-index-links`. **This is invariant 2** — the seam to hosting (§9).
 - **`.ts` data extension.** `addDataExtension('ts', { read: false, parser })` dynamically imports the file and, mirroring Eleventy's JS
   handling, **calls the default export if it is a function** (sync or async), else uses it directly.
 - **`.json5` data extension.** `addDataExtension('json5', { read: false, parser: JSON5.parse(readFileSync(...)) })` — JSON5 for human-edited

@@ -30,10 +30,10 @@ each so a REFRESH knows when a pin has aged.
 The standard is the **majority shape** across the TS/Bun repos under `knowledgeislands/`. They are the living source of truth for house
 style; when they diverge, the majority wins and the outlier is a finding unless documented.
 
-| Tag       | Source                                                                                     | Governs                                                                              | Last reviewed |
-| --------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------- |
-| REPOS     | the 10 TS/Bun sibling repos †                                                              | the script families, tsconfig/biome/vitest shape, the build/chmod rule               | 2026-06-18    |
-| FRAMEWORK | `arcadia-agentic-harness/README.md` "governance-skill shape" + "Principles across the set" | the enforcement framework (modes, checker contract, rubric tagging, sources cadence) | 2026-06-18    |
+| Tag       | Source                                                                                                           | Governs                                                                              | Last reviewed |
+| --------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------- |
+| REPOS     | the 10 TS/Bun sibling repos †                                                                                    | the script families, tsconfig/biome/vitest shape, the build/chmod rule               | 2026-06-18    |
+| FRAMEWORK | `arcadia-agentic-harness/docs/skills.md` "governance-skill shape" + `docs/design.md` "Principles across the set" | the enforcement framework (modes, checker contract, rubric tagging, sources cadence) | 2026-06-18    |
 
 † the 7 `mcp-*` servers + `arcadia-agentic-harness`, `arcadia-principal`, `arcadia-website`.
 

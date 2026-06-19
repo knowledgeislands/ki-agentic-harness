@@ -1,7 +1,7 @@
 # CLAUDE.md — arcadia-agentic-harness
 
-Always-loaded orientation for an agent working in this repo. The full picture is in [README.md](README.md) (what each skill is, the map, the
-boundaries); the forward view is in [ROADMAP.md](ROADMAP.md). This file is the short anchor.
+Always-loaded orientation for an agent working in this repo. The README is the entry point; the full picture is in the [docs/](docs/) it
+indexes — what each skill is, the map, the boundaries. The forward view is in [ROADMAP.md](ROADMAP.md). This file is the short anchor.
 
 ## What this repo is
 
@@ -15,8 +15,8 @@ ships the universal **AUDIT / CONFORM / REFRESH** modes plus a mechanical checke
 Skills relate to one another by **composition**, never a base-coupled extension: a skill runs a sibling's checker/mode **in sequence** and
 adds its own delta (it never imports another, so each stays valid installed standalone), and **declares the edge** in its AUDIT mode. What a
 base or repo needs differently is **declared, not forked** — data in its `.ki-config.toml` table (read validate-down), prose in its
-`CLAUDE.md` — never a `<base>-*` skill that takes the shared modes. See the README's _Composition only_ principle and the
-`knowledgeislands-skills` rubric (SHAPE-2).
+`CLAUDE.md` — never a `<base>-*` skill that takes the shared modes. See the _Composition only_ principle in [docs/design.md](docs/design.md)
+and the `knowledgeislands-skills` rubric (SHAPE-2).
 
 ## Working here
 

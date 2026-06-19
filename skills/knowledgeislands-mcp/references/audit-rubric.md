@@ -89,8 +89,8 @@ Severity: **FAIL** (security invariant breach or gate bypass — ship-stopper), 
       audit-logging below — verify once.
 - [ ] 🔧 WARN — any tool returning `structuredContent` also declares a matching `outputSchema` at registration (paired, ideally derived from
       one zod schema via `zod-to-json-schema`). A `jsonResult` emitting `structuredContent` with no declared schema is a WARN finding.
-- [ ] 🔧 WARN — any repo whose tools return structured JSON (via `jsonResult` or otherwise) but has zero `outputSchema` declarations anywhere
-      in `src/tools/` is a WARN finding — structured-output adoption is a house SHOULD (spec 2025-11-25), not optional.
+- [ ] 🔧 WARN — any repo whose tools return structured JSON (via `jsonResult` or otherwise) but has zero `outputSchema` declarations
+      anywhere in `src/tools/` is a WARN finding — structured-output adoption is a house SHOULD (spec 2025-11-25), not optional.
 - [ ] WARN — tool registration order within each `tools/<group>/index.ts` is stable and deterministic (e.g. alphabetical by tool name or
       consistent CRUD order). Nondeterministic ordering hurts prompt-cache hit rates.
 - [ ] POLISH — optional spec metadata (`icons`, `title`, `execution.taskSupport`) is per-repo opt-in, not required — do **not** flag its
