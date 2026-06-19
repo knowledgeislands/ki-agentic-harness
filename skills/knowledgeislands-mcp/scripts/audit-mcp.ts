@@ -234,13 +234,10 @@ if (isDir('src', 'tools')) {
     }
   }
   sw(at('src', 'tools'))
-  if (usesStructured && !declaresOutputSchema)
-    add('WARN', 'tools', 'tools return structuredContent but no outputSchema is declared — pair them (spec 2025-11-25) so clients can validate')
-  else if (usesStructured)
-    add('PASS', 'tools', 'structuredContent paired with a declared outputSchema')
+  if (usesStructured && !declaresOutputSchema) add('WARN', 'tools', 'tools return structuredContent but no outputSchema is declared — pair them (spec 2025-11-25) so clients can validate')
+  else if (usesStructured) add('PASS', 'tools', 'structuredContent paired with a declared outputSchema')
   // Tools using jsonResult return structured JSON; they should also adopt outputSchema + structuredContent
-  if (usesJsonResult && !declaresOutputSchema)
-    add('WARN', 'tools', 'tools use jsonResult (returning JSON) but declare no outputSchema — add outputSchema + structuredContent (spec 2025-11-25 SHOULD)')
+  if (usesJsonResult && !declaresOutputSchema) add('WARN', 'tools', 'tools use jsonResult (returning JSON) but declare no outputSchema — add outputSchema + structuredContent (spec 2025-11-25 SHOULD)')
 }
 
 // ── deterministic tool registration order ──
