@@ -107,6 +107,9 @@ Every governance skill exposes the universal three, plus skill-specific ones whe
 - **REFRESH** — re-anchor the standard to its sources on a stated cadence: read `sources.md`, re-fetch each source, diff against the
   standard + rubric + checker, propose a diff (confirm before writing), then bump the `last reviewed` dates and the `## Last review` block.
 - **INIT** (optional) — scaffold a new artifact to the standard.
+- **OPTIMISE** (optional) — once an artifact is clean, push it from the rubric floor toward excellent (value-per-token and discoverability)
+  without touching the caps. Distinct from CONFORM (which moves a non-compliant artifact onto the floor); runs only on one that already
+  passes. Realised as `knowledgeislands-skills`' OPTIMISE over a compliant `SKILL.md`.
 - **operational** (optional) — domain actions that are not audit/conform (e.g. kb's note-ops, streams' enactment lifecycle).
 
 ## 6. The principles every governance skill inherits

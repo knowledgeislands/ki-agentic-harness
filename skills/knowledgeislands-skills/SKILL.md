@@ -9,7 +9,7 @@ description: >
   skills rubric", "what do we expect from a skill". Judges a `SKILL.md` itself (frontmatter + body prose), not a repo's code or config; for
   a Claude Code subagent definition use `knowledgeislands-agents`, for MCP server code `knowledgeislands-mcp`, for Markdown / TOML house
   style `knowledgeislands-authoring`.
-argument-hint: 'audit <skill-or-repo> | conform <skill> | init <description> | refresh'
+argument-hint: 'audit <skill-or-repo> | conform <skill> | init <description> | optimise <skill> | refresh'
 ---
 
 # Knowledge Islands Skills
@@ -34,7 +34,8 @@ Every criterion is one of two kinds — never conflate them:
 The conventions a good skill follows — what each is and why — live in [the Agent Skills standard](references/agent-skills-standard.md); the
 line-by-line checkable criteria (with `[M]`/`[J]` tags and codes) live in [the rubric](references/audit-rubric.md), each citing its standard
 section. Load both before an AUDIT, CONFORM, or INIT; this body is the routing overview. (Like every governance skill it carries **AUDIT ·
-CONFORM · REFRESH**; INIT — writing a new skill — is its skill-specific mode. Modes are named and alphabetical.)
+CONFORM · REFRESH**; **INIT** — writing a new skill — and **OPTIMISE** — pushing a compliant skill from the floor toward excellent — are its
+skill-specific modes. Modes are named and alphabetical.)
 
 ## Mode AUDIT — review an existing skill
 
@@ -92,6 +93,32 @@ releasing one skill at a time keeps peak context at one skill, not eleven — wh
 5. **Add it to the set's scheduled refresh** — if the host registers a scheduled run that sweeps the set's REFRESH (LONG-2), add the new
    skill to that routine so it doesn't silently fall out of the sweep. The routine is host infra, not a repo file, so this is a manual
    follow-up the audit can't verify.
+
+## Mode OPTIMISE — push a compliant skill toward excellent
+
+**Precondition: the skill is already clean.** OPTIMISE assumes AUDIT (and CONFORM where needed) pass with zero FAIL — it improves a skill
+that has no violations, it does not fix one that does. If AUDIT is not clean, run CONFORM first. This mode works _above_ the caps, not at
+them; the target is **discoverability-per-token**, not the shortest possible skill — rich enough to fire, lean enough not to tax every turn.
+Optimising one lever blindly hurts the other; holding both is the work.
+
+1. **Measure the footprint.** Run `bun scripts/lint-skills.ts <skill> --footprint`. It reports, as INFO (never a verdict — **SIZE-5**), the
+   estimated tokens of each component: the `description` (standing cost — paid every turn in the selection surface), the `SKILL.md` body
+   (loaded when the skill fires), and each `references/` file (loaded on demand). This is the per-skill, artifact-level view. The
+   **environment-level** aggregate — every installed skill's description summed against a per-layer budget — belongs to
+   `knowledgeislands-tokenomics` (`skills_surface`); go there for "is the whole skills surface too heavy", come here for "is _this_ skill
+   earning its tokens".
+2. **Lever one — token-efficiency (operationalises SIZE-3 / SIZE-4).** Cut what a competent Claude already knows, restated context, and
+   ceremony (SIZE-3). Lift rarely-read detail out of `SKILL.md` into a `references/` file so the body stays an overview that routes (SIZE-4)
+   — this _moves_ tokens off the every-fire path, it does not delete function. Re-run `--footprint` to confirm the body shrank without the
+   total ballooning.
+3. **Lever two — discoverability (operationalises DESC-7 / DESC-9 / COLL-2).** Tune the `description` to win its own trigger phrases:
+   front-load the single most important trigger (DESC-7); where a sibling is genuinely adjacent, add explicit non-triggers / reciprocal
+   off-ramps (DESC-9, COLL-2). Use the linter's whole-repo **COLL-1** pass as evidence of which phrases collide — run it over the repo, not
+   one skill.
+4. **Hold the tension.** A cut that costs a trigger, or an off-ramp that bloats the `description` past where it earns its standing cost, is
+   a regression even when each looks like a local win. The tie-breaker is value-per-token of the **standing** surface — the `description`,
+   paid every turn — over the on-demand body and references.
+5. **Re-audit.** Run Mode AUDIT (and the linter). OPTIMISE must leave the skill clean: nothing here may introduce a FAIL or WARN.
 
 ## Mode REFRESH — re-anchor best practice
 

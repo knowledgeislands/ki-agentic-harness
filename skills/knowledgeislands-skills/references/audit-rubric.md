@@ -84,6 +84,10 @@ ever starts enforcing a **[J]** check, move its tag here.
 - **SIZE-2 [M]** Body instructions stay under **~5,000 tokens**. (SPEC)
 - **SIZE-3 [J]** No token spent on what a competent Claude already knows. (BP)
 - **SIZE-4 [J]** `SKILL.md` reads as an **overview that routes to detail**, not all detail inlined. (BP, SPEC, CC)
+- **SIZE-5 [M]** _(INFO, advisory — not a cap.)_ The linter, under `--footprint`, emits a per-skill token estimate of each component the
+  skill adds to context — the `description` (standing cost), the `SKILL.md` body, and each `references/` file — plus a total. Neutral
+  measurement for **Mode OPTIMISE**, never a verdict; the body/references soft limits remain SIZE-1/SIZE-2 and the environment-wide
+  aggregate of all descriptions is `knowledgeislands-tokenomics`' `skills_surface`. (BP)
 
 ## REF — Progressive disclosure & references
 
@@ -146,8 +150,9 @@ ever starts enforcing a **[J]** check, move its tag here.
   it doesn't recognise, advises dropping one that merely restates a default — and never inspects another skill's table. Validate down,
   ignore across. (contract defined by `knowledgeislands-repo`)
 - **SHAPE-5 [J]** A **governance skill** (one that holds a standard) exposes the universal modes **AUDIT** + **REFRESH** + **CONFORM**; any
-  further modes (`INIT` to scaffold a new artifact, and operational modes like kb's note-ops) are skill-specific. Modes are named, not
-  lettered, and ordered alphabetically in the body and `argument-hint`. (arcadia-agentic-harness README)
+  further modes (`INIT` to scaffold a new artifact, `OPTIMISE` to push a compliant artifact from the floor toward excellent, and operational
+  modes like kb's note-ops) are skill-specific. Modes are named, not lettered, and ordered alphabetically in the body and `argument-hint`.
+  (arcadia-agentic-harness README)
 - **SHAPE-6 [J]** _Governance-skill file shape — Knowledge Islands repos only, for now._ A governance skill **shipped in a Knowledge Islands
   repo** (one carrying a `.ki-config.toml`) materialises its standard as the shared four-file shape, so a reader or a new such skill moves
   between them: a normative **`<domain>-standard.md`** (or the contract / conventions reference it holds), an **`audit-rubric.md`** of

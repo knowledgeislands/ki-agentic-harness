@@ -7,8 +7,9 @@
 // then apply the judgment criteria by reading.
 //
 // Usage:
-//   bun scripts/lint-skills.ts [path ...]   # a skill dir, or a dir containing skills
-//   bun run skills:lint                      # (from the arcadia-agentic-harness repo root)
+//   bun scripts/lint-skills.ts [path ...]            # a skill dir, or a dir containing skills
+//   bun scripts/lint-skills.ts <skill> --footprint   # + per-skill token footprint (SIZE-5, INFO) for Mode OPTIMISE
+//   bun run skills:lint                               # (from the arcadia-agentic-harness repo root)
 //
 // A path containing SKILL.md is treated as one skill; otherwise its immediate
 // subdirectories that contain a SKILL.md are each linted. Defaults to the current dir.
@@ -34,6 +35,7 @@ const COMPAT_MAX = 500
 const BODY_MAX_LINES = 500
 const BODY_MAX_TOKENS = 5000 // estimated as chars/4
 const TOC_LINE_THRESHOLD = 100
+const FOOTPRINT_REF_NOTE_TOKENS = 1500 // a single reference this large is a candidate to split — INFO hint only, never a cap
 const RESERVED = ['anthropic', 'claude']
 
 // --- minimal frontmatter parser --------------------------------------------
@@ -163,6 +165,29 @@ function hasTableOfContents(md: string): boolean {
   if (/^#{1,3}\s+(table of )?contents\b/m.test(head)) return true
   const linkListItems = (head.match(/^\s*[-*]\s+\[[^\]]+\]\(/gm) || []).length
   return linkListItems >= 3
+}
+
+// --- footprint (SIZE-5, INFO under --footprint) -----------------------------
+// Per-skill token estimate of everything the skill adds to context: the description
+// (standing cost — paid every turn in the selection surface), the SKILL.md body
+// (loaded when the skill fires), and each references/ file (loaded on demand). Same
+// chars/4 method as SIZE-2; never a cap — measurement for Mode OPTIMISE. The
+// environment-level aggregate of all descriptions is knowledgeislands-tokenomics'.
+const estTok = (s: string): number => Math.round(s.length / 4)
+type FootprintRow = { kind: 'description' | 'body' | 'reference'; path: string; tokens: number }
+function footprint(skillDir: string): { rows: FootprintRow[]; total: number } {
+  const content = readFileSync(join(skillDir, 'SKILL.md'), 'utf8')
+  const desc = parseFrontmatter(content).keys.get('description') ?? ''
+  const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
+  const rows: FootprintRow[] = [
+    { kind: 'description', path: 'SKILL.md:description', tokens: estTok(desc) },
+    { kind: 'body', path: 'SKILL.md:body', tokens: estTok(body) }
+  ]
+  for (const file of listMarkdownFiles(skillDir)) {
+    if (basename(file) === 'SKILL.md') continue
+    rows.push({ kind: 'reference', path: file.slice(skillDir.length + 1), tokens: estTok(readFileSync(file, 'utf8')) })
+  }
+  return { rows, total: rows.reduce((n, r) => n + r.tokens, 0) }
 }
 
 // --- the lint --------------------------------------------------------------
@@ -333,6 +358,7 @@ const LEGEND =
 // Output flags + unified-ladder aggregation across every audited skill (enforcement-framework §2/§5).
 const rawArgv = process.argv.slice(2)
 const jsonOut = rawArgv.includes('--json')
+const footprintOut = rawArgv.includes('--footprint') // SIZE-5: per-skill token footprint as INFO (Mode OPTIMISE)
 const ri = rawArgv.indexOf('--report')
 const reportOut = ri !== -1
 const reportTarget = resolve('.')
@@ -375,7 +401,28 @@ if (collisions.length > 0) {
   }
 }
 
-const summary = { fail: totalFails, warn: totalWarns, polish: 0, advisory: 0, info: 0, skip: 0, pass: 0 }
+// per-skill footprint (SIZE-5) — opt-in, INFO only, never affects the fail/warn tally or exit code
+if (footprintOut) {
+  for (const dir of skillDirs) {
+    const fp = footprint(dir)
+    const sk = basename(dir)
+    const refs = fp.rows.filter((r) => r.kind === 'reference').length
+    all.push({ level: 'INFO', area: `${sk}:SIZE-5`, msg: `footprint ~${fp.total} tokens (description + body + ${refs} reference file(s))` })
+    for (const r of fp.rows) {
+      const big = r.kind === 'reference' && r.tokens > FOOTPRINT_REF_NOTE_TOKENS
+      all.push({ level: 'INFO', area: `${sk}:SIZE-5`, msg: `  ${r.kind} ${r.path}: ~${r.tokens} tokens${big ? ' — large, candidate to split or trim' : ''}` })
+    }
+    if (!jsonOut) {
+      console.log(`\n${paint(C.cyan, sk)} ${paint(C.dim, 'footprint')}  ${ICON.INFO}~${fp.total} tokens`)
+      for (const r of fp.rows) {
+        const big = r.kind === 'reference' && r.tokens > FOOTPRINT_REF_NOTE_TOKENS
+        console.log(paint(C.dim, `    ${r.kind} ${r.path}: ~${r.tokens} tokens`) + (big ? paint(C.yellow, ' — large, candidate to split') : ''))
+      }
+    }
+  }
+}
+
+const summary = { fail: totalFails, warn: totalWarns, polish: 0, advisory: 0, info: all.filter((x) => x.level === 'INFO').length, skip: 0, pass: 0 }
 const stampIso = new Date().toISOString()
 
 if (reportOut) {
