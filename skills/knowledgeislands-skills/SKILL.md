@@ -40,6 +40,14 @@ CONFORM · REFRESH**; INIT — writing a new skill — is its skill-specific mod
 
 Review a skill (or every skill in a repo) against the rubric and report.
 
+**Auditing a whole repo? Split it into a cheap set-level pass and a per-skill walk, so peak context stays at one skill — not the whole set,
+which is what triggers a compaction cycle mid-audit.** The genuinely cross-skill checks need only the cheap surface: the linter's one
+whole-repo pass (COLL-1, all mechanical) plus the skills' frontmatter `description`s read together for COLL-2 reciprocity. Then audit the
+skills **one at a time, in dependency order** — foundations and contract-owners first, so a composing skill's base is already judged when
+you reach it (today:
+`authoring → engineering → repo → kb → streams → mcp → 11ty-websites → cloudflare-hosting → agents → skills → tokenomics`). Load each
+skill's `SKILL.md` (and its `references/` only on demand), emit that skill's findings, and move on before loading the next.
+
 1. **Run the linter.** `bun scripts/lint-skills.ts <path-to-skill-or-repo>` from this skill's directory (or `bun run skills:lint` at the
    arcadia-agentic-harness repo root). It reports the mechanical criteria on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY /
    INFO / SKIP / PASS — see `knowledgeislands-engineering`'s enforcement-framework §2) and exits non-zero on any FAIL; with `--json` /
