@@ -270,16 +270,22 @@ function lintSkill(skillDir: string): Finding[] {
 
   // --- behaviour-changing skills must anchor their gate (SHAPE-7 heuristic) ---
   // A skill that installs a gate / standing rule can't rely on its own description
-  // to fire (skills load on demand). Strong gate phrasing in the body, without an
-  // always-on anchor (CLAUDE.md/AGENTS.md) AND a checker that verifies it, is a
-  // candidate gap — WARN for the [J] reviewer to confirm. Conservative by design:
-  // keyed on strong phrasing, not the bare word "gate".
-  const strongGate = /do not edit[^.\n]*directly|go through (a )?proposal|standing directive|installing the gate/i.test(stripCode(body))
+  // to fire (skills load on demand). Strong gate phrasing — in the body OR a mode /
+  // reference file, since mode-routing (REF-5) lifts procedures out of the body —
+  // without an always-on anchor (CLAUDE.md/AGENTS.md) AND a checker that verifies it,
+  // is a candidate gap. Evaluated over body + references as ONE unit: the gate phrasing
+  // and its anchor may legitimately live in different files. WARN for the [J] reviewer.
+  const refsText = listMarkdownFiles(skillDir)
+    .filter((file) => basename(file) !== 'SKILL.md')
+    .map((file) => readFileSync(file, 'utf8'))
+    .join('\n')
+  const skillText = `${body}\n${refsText}`
+  const strongGate = /do not edit[^.\n]*directly|go through (a )?proposal|standing directive|installing the gate/i.test(stripCode(skillText))
   if (strongGate) {
-    const bodyAnchors = /CLAUDE\.md|AGENTS\.md|always-loaded|installing the gate|\banchor/i.test(body)
+    const anchored = /CLAUDE\.md|AGENTS\.md|always-loaded|installing the gate|\banchor/i.test(skillText)
     const scriptsDir = join(skillDir, 'scripts')
     const checkerAnchors = existsSync(scriptsDir) && readdirSync(scriptsDir).some((n) => n.endsWith('.ts') && /CLAUDE\.md|AGENTS\.md/.test(readFileSync(join(scriptsDir, n), 'utf8')))
-    if (!(bodyAnchors && checkerAnchors))
+    if (!(anchored && checkerAnchors))
       warn(
         'SHAPE-7',
         'reads as behaviour-changing (a gate / standing rule) but does not evidence an always-on anchor verified by its checker — anchor it in CLAUDE.md/AGENTS.md and check the anchor, per SHAPE-7'

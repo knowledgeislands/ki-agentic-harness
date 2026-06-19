@@ -170,7 +170,8 @@ ever starts enforcing a **[J]** check, move its tag here.
   fire it, because skills load **on demand** and the triggering request often won't mention the skill (e.g. "edit this note" never says
   "proposal"). Such a skill must **anchor the behaviour in always-loaded context** (the base/repo `CLAUDE.md` / `AGENTS.md`, or a companion
   skill that _does_ reliably load handing off to it), **and its checker must verify the anchor is present** so it can't be silently lost.
-  The linter surfaces candidates mechanically (strong gate phrasing in the body without an anchor its checker reads); the **[J]** call is
+  The linter surfaces candidates mechanically (strong gate phrasing in the body or a reference file — body + references scanned as one unit,
+  since mode-routing lifts procedures out of the body — without an anchor its checker reads); the **[J]** call is
   whether the skill genuinely changes a default and so _needs_ a gate. Realised as `knowledgeislands-streams`' **GATE-1** (the Enactment
   gate) and `knowledgeislands-kb`'s **MEM-2** (the memory cascade); `knowledgeislands-repo`'s `.ki-config.toml` marker is the same pattern
   (anchor + checked).
