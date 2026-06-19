@@ -105,6 +105,23 @@ const hasXmlTag = (s: string): boolean => /<\/?[a-zA-Z][^>]*>/.test(s)
 // placeholder, or a rubric that quotes `[[wikilink]]` syntax to forbid it).
 const stripCode = (md: string): string => md.replace(/```[\s\S]*?```/g, '').replace(/`[^`\n]*`/g, '')
 
+// --- SHAPE-2 endorsement detection (composition-only) -----------------------
+// Composition is the sole sanctioned inter-skill relationship; the base-coupled
+// extension pattern is retired (a base declares differences in .ki-config / CLAUDE.md,
+// it does not ship a <base>-kb skill that takes the shared modes). Keyed on ENDORSEMENT
+// phrasing, not the bare word "extension" — the meta-skills must name the retired
+// pattern in order to forbid it. Runs over the SKILL.md body AND each reference file.
+// Citation ≠ assertion: the rubric/standard QUOTE the forbidden phrases to forbid them,
+// so before testing we strip code + double-quoted spans and skip any line that disavows
+// (retired / never / forbid / flag / heuristic / anti-pattern). What remains and still
+// matches is a bare assertion of the pattern. WARN for the [J] reviewer to confirm.
+const ENDORSE_EXTENSION_RES = [/\bprefer that (extension )?skill\b/i, /delegat\w*[^.\n]*\bmodes?\b[^.\n]*\bback\b/i, /\bextends this one\b/i]
+const DISAVOWAL_CUE = /retir|never|forbid|\bflag|heurist|anti-pattern|disavow|must not|do not/i
+function endorsesRetiredExtension(md: string): boolean {
+  const stripped = stripCode(md).replace(/"[^"\n]*"/g, '')
+  return stripped.split(/\r?\n/).some((line) => !DISAVOWAL_CUE.test(line) && ENDORSE_EXTENSION_RES.some((re) => re.test(line)))
+}
+
 // --- markdown link extraction ----------------------------------------------
 // Returns relative link targets (skips http/https/mailto/# anchors). Strips the
 // CommonMark angle-bracket form and any #anchor suffix.
@@ -200,11 +217,12 @@ function lintSkill(skillDir: string): Finding[] {
   const estTokens = Math.round(body.length / 4)
   if (estTokens > BODY_MAX_TOKENS) warn('SIZE-2', `SKILL.md body is ~${estTokens} tokens (recommended < ${BODY_MAX_TOKENS})`)
 
-  // --- links & wikilinks across all markdown (LAY-4, LINK-1, LINK-2, REF-3) ---
+  // --- per-file checks across all markdown (LAY-4, LINK-1, LINK-2, REF-3, SHAPE-2) ---
   for (const file of listMarkdownFiles(skillDir)) {
     const md = readFileSync(file, 'utf8')
     const text = stripCode(md) // exclude code blocks/spans from text-pattern checks
     const rel = file.slice(skillDir.length + 1)
+    const isSkillMd = basename(file) === 'SKILL.md'
     if (hasWikilink(text)) fail('LINK-1', `${rel}: uses Obsidian wikilinks ([[...]]) — use relative markdown links`)
     if (hasBackslashLink(text)) fail('LAY-4', `${rel}: a link target uses backslashes — use forward slashes`)
     for (const target of relativeLinkTargets(text)) {
@@ -212,25 +230,18 @@ function lintSkill(skillDir: string): Finding[] {
       if (!existsSync(resolved)) fail('LINK-2', `${rel}: broken relative link → "${target}"`)
     }
     // ToC on long reference files (not SKILL.md itself)
-    if (basename(file) !== 'SKILL.md') {
+    if (!isSkillMd) {
       const lineCount = md.split(/\r?\n/).length
       if (lineCount > TOC_LINE_THRESHOLD && !hasTableOfContents(md)) warn('REF-3', `${rel}: ${lineCount} lines but no table of contents near the top`)
     }
+    // SHAPE-2: endorsement of the retired extension pattern, in the SKILL.md body OR any
+    // reference file (a standard's prose can drift even when the SKILL.md body is clean).
+    if (endorsesRetiredExtension(isSkillMd ? body : md))
+      warn(
+        'SHAPE-2',
+        `${isSkillMd ? '' : `${rel}: `}endorses the retired base-coupled extension pattern (ship/"prefer" an extension skill, "delegates the modes back", "extends this one") — relationships are composition only; declare base differences in .ki-config / CLAUDE.md, per SHAPE-2`
+      )
   }
-
-  // --- composition-only: flag endorsement of the retired extension pattern (SHAPE-2 heuristic) ---
-  // Composition is the sole sanctioned inter-skill relationship; the base-coupled
-  // extension pattern is retired (a base declares differences in .ki-config / CLAUDE.md,
-  // it does not ship a <base>-kb skill that takes the shared modes). Keyed on ENDORSEMENT
-  // phrasing, not the bare word "extension" — the meta-skills must be free to name the
-  // retired pattern in order to forbid it. Scans the SKILL.md body only (not reference
-  // files, which legitimately define the rule). WARN for the [J] reviewer to confirm.
-  const endorsesExtension = [/\bprefer that (extension )?skill\b/i, /delegat\w*[^.\n]*\bmodes?\b[^.\n]*\bback\b/i, /\bextends this one\b/i].some((re) => re.test(stripCode(body)))
-  if (endorsesExtension)
-    warn(
-      'SHAPE-2',
-      'endorses the retired base-coupled extension pattern (ship/"prefer" an extension skill, "delegates the modes back", "extends this one") — relationships are composition only; declare base differences in .ki-config / CLAUDE.md, per SHAPE-2'
-    )
 
   // --- behaviour-changing skills must anchor their gate (SHAPE-7 heuristic) ---
   // A skill that installs a gate / standing rule can't rely on its own description
