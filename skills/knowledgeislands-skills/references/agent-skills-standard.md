@@ -101,6 +101,15 @@ holds and when to load it — no orphan files. Reference files longer than 100 l
 shows full scope. Execution intent is explicit per script: "Run `x.ts`" (execute) vs "see `x.ts` for the algorithm" (read). (BP, ENG, SPEC,
 COMMUNITY)
 
+**The mode-router shape.** When a skill's body is dominated by many _independently-invoked_ modes — a governance skill with a dozen modes,
+where any one fire uses one mode — treat the unused modes as the mutually-exclusive domains above: keep the **shared model and a dispatch
+table** in `SKILL.md`, and move each mode's _procedure_ to a flat `references/mode-<name>.md` that the table names with its when-to-load.
+Only the invoked mode loads, instead of every mode on every fire. **Co-locate tightly-coupled modes** in one file (e.g. AUDIT + CONFORM,
+where CONFORM runs AUDIT first) so a mode file never chains to another. **Keep in the body** anything every mode needs (the shared model)
+and any _behaviour anchor_ a checker verifies (a gate, a standing cascade) — never push an always-on rule onto an on-demand path. Use it
+when the body would otherwise carry many independent mode procedures and the footprint's body component dominates; **not** when modes are
+few, short, or call-chained, or the body already routes. (BP, ENG)
+
 ## 8. Body content quality
 
 Match **degrees of freedom to task fragility**: prose + judgment for open-ended work; parameterised scripts for preferred-but-flexible;

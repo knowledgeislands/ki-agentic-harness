@@ -110,7 +110,9 @@ Optimising one lever blindly hurts the other; holding both is the work.
 2. **Lever one — token-efficiency (operationalises SIZE-3 / SIZE-4).** Cut what a competent Claude already knows, restated context, and
    ceremony (SIZE-3). Lift rarely-read detail out of `SKILL.md` into a `references/` file so the body stays an overview that routes (SIZE-4)
    — this _moves_ tokens off the every-fire path, it does not delete function. Re-run `--footprint` to confirm the body shrank without the
-   total ballooning.
+   total ballooning. When the body is dominated by many independently-invoked modes, the heavy-skill move is **mode-routing** (REF-5 / §7):
+   keep the shared model + a dispatch table in the body and lift each mode's procedure to a flat `references/mode-<name>.md`, so only the
+   fired mode loads — footprint-gated, for a body the modes dominate, not one that already routes.
 3. **Lever two — discoverability (operationalises DESC-7 / DESC-9 / COLL-2).** Tune the `description` to win its own trigger phrases:
    front-load the single most important trigger (DESC-7); where a sibling is genuinely adjacent, add explicit non-triggers / reciprocal
    off-ramps (DESC-9, COLL-2). Use the linter's whole-repo **COLL-1** pass as evidence of which phrases collide — run it over the repo, not

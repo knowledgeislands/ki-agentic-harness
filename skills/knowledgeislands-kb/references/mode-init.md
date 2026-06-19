@@ -1,0 +1,9 @@
+# Mode INIT — scaffold a new base's structure
+
+_On-demand procedure for kb's INIT mode. The shared model — the five-zone structure, routing test, memory cascade, project bindings, and
+Step 1 (Load context) — lives in [`SKILL.md`](../SKILL.md) and is already loaded; this file is the procedure only._
+
+1. Create the zone skeleton — Calendar / Pillars / Resources / Streams, plus the inbound `+` and outbound `-` zones — and the root
+   `Admin/MEMORY.md`.
+2. Seed each zone's note conventions (frontmatter, naming) from the structure model.
+3. Hand ongoing capture to the SAVE / EXTRACT / DIGEST modes.

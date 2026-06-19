@@ -120,99 +120,27 @@ unrecognised key, never read another skill's), otherwise from the auto-loaded `C
 
 ## Operating modes
 
-Like every governance skill this carries **AUDIT · CONFORM · REFRESH**; its Streams-specific modes are the enactment lifecycle **ITERATE ·
-PROPOSE · READY · REJECT · REVIEW · ROLLOUT · SETTLE**. Infer the mode from the request; ask if unclear. (Modes are named and alphabetical.)
+Infer the mode from the request; ask if unclear. The shared model above — the zone-at-a-glance, the status lifecycle, the proposal anatomy,
+the bindings, Step 1, and the **Working rules** and **Enactment gate** below — is what every mode needs and stays loaded; each mode's
+_procedure_ lives in its own on-demand file, so read only the one the request selects. Like every governance skill this carries **AUDIT ·
+CONFORM · REFRESH**; its enactment-lifecycle modes are **ITERATE · PROPOSE · READY · REJECT · REVIEW · ROLLOUT · SETTLE**. Modes are named
+and alphabetical.
 
-### Mode AUDIT — check a base's Streams against the model
+| Mode    | Fires on                                                | Read before acting                                        |
+| ------- | ------------------------------------------------------- | --------------------------------------------------------- |
+| AUDIT   | "audit my streams"                                      | [mode-audit-conform.md](references/mode-audit-conform.md) |
+| CONFORM | "conform my streams / bring them into line"             | [mode-audit-conform.md](references/mode-audit-conform.md) |
+| ITERATE | "iterate / develop this proposal"                       | [mode-iterate.md](references/mode-iterate.md)             |
+| PROPOSE | "start a stream / create a proposal"                    | [mode-propose.md](references/mode-propose.md)             |
+| READY   | "mark this ready"                                       | [mode-ready.md](references/mode-ready.md)                 |
+| REFRESH | "is the Streams model still current" (monthly)          | [mode-refresh.md](references/mode-refresh.md)             |
+| REJECT  | "reject this stream"                                    | [mode-reject.md](references/mode-reject.md)               |
+| REVIEW  | "run the post-change review"                            | [mode-review.md](references/mode-review.md)               |
+| ROLLOUT | "roll out this proposal" (needs explicit authorisation) | [mode-rollout.md](references/mode-rollout.md)             |
+| SETTLE  | "settle this stream"                                    | [mode-settle.md](references/mode-settle.md)               |
 
-1. **Run the mechanical checker** — `bun scripts/audit-streams.ts <base-path>`. It grades the `[M]` criteria on the unified severity ladder
-   (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — see `knowledgeislands-engineering`'s enforcement-framework §2) and exits non-zero
-   on any FAIL: Focus folders under `Streams/`, a same-name index per Focus, the `Proposal` suffix (filename + leaf folder), and proposal
-   frontmatter (`status` / `priority` / `dependencies` present; `status` and `priority` within their vocabularies). It resolves the
-   `Streams` zone through any `knowledgeislands-kb` zone alias. With `--json` / `--report` it emits machine-readable findings and writes the
-   latest report to the base's `.ki-meta/audits/streams.{md,json}`. Capture its output.
-2. **Apply the `[J]` criteria by reading** ([the rubric](references/audit-rubric.md)): focus-index tables present and correctly ordered; the
-   proposals index matches the streams present and their statuses (no lag); each stream carries a `Governance` section linking the bound
-   process note; `completed` proposals' documents have been deleted and their knowledge migrated.
-3. **Report** drift, FAILs first, citing paths and the fix. This audit is one part of a base audit — `knowledgeislands-kb`'s AUDIT composes
-   it alongside the zone-model checks; run them together so "clean" means every applicable skill's audit passes, not just this one.
-
-### Mode CONFORM — bring a base's Streams into line
-
-1. Run **AUDIT** first for the gap list.
-2. Apply the fixes: add missing `Proposal` suffixes and Focus/stream index notes; normalise proposal frontmatter and statuses; add missing
-   `Governance` sections; reconcile the proposals index; record the process-note binding. **Confirm before moving or renaming notes** (the
-   name-confirmation gate below); where the base mandates it, run the conforming itself as a proposal.
-3. **Install the gate anchor if `GATE-1` flagged it missing**: add the standing directive to the base's `CLAUDE.md` / `AGENTS.md` (route
-   canonical changes through a proposal; load this skill) — otherwise the gate won't fire on a plain edit, so a structurally-conformed base
-   still leaks. But first confirm the base _should_ run the Enactment Process at all: a base that uses `Streams/` as a lightweight tracker,
-   not a proposal workflow, should not be force-fitted — flag it for a decision rather than conforming it (a lightweight-Streams opt-out is
-   a tracked ROADMAP candidate).
-4. Re-run **AUDIT** until clean.
-
-### Mode ITERATE — develop a proposal
-
-Work the proposal in place: advance the Design Sections, close Open Questions with resolution notes, keep Inputs / Outputs / Checklist and
-`dependencies` current, update the Focus index and proposals index on any status or priority change. Extract any durable subject-matter
-content to a store and link back — a stream note accumulating deep content is a signal that knowledge needs to move.
-
-### Mode PROPOSE — open a stream
-
-1. Choose Focus (and Category if the base uses one) and propose the `<Name> Proposal` name and resulting path. **Wait for user confirmation
-   before creating it** (offer an alternative where one is plausible).
-2. Create the proposal document (leaf or parent layout) with the frontmatter and section skeleton above, `status: draft`, a priority, and
-   the `Governance` footer.
-3. Add a row to the Focus index and the proposals index.
-
-### Mode READY — submit for approval
-
-Verify there are no open questions remaining and **every prerequisite in `dependencies` has reached `rolled-out`**; complete Outputs; then
-set `status: ready` and submit to the user. `ready` is a necessary condition for rollout, not authorisation to begin it.
-
-### Mode REJECT — record a rejection
-
-A first-class outcome, not a failure. Record the reasons in the proposal, set `status: rejected`, and settle the stream. It may reopen later
-as a new `draft`; the prior rejection stays on record.
-
-### Mode REVIEW — post-change review
-
-After rollout, prepare an initial review summary (what went well, issues, lessons) and run it **interactively** — the summary is input, not
-output. Record the final review under a `## Post-Change Review` section (or in the process note if the lesson is structural), then set
-`status: reviewed`. Lessons may spawn new proposals.
-
-### Mode ROLLOUT — execute an approved proposal
-
-**Do not begin without explicit user authorisation** — exploratory language ("let's look at this") is iteration, not approval. Then:
-
-1. **Re-verify each Checklist item against the live file** — plans drift between drafting and execution; the live file at the moment of
-   execution is authoritative.
-2. For complex or destructive steps, stage the output as a **working-area preview** first (a review checkpoint and a concrete artefact for
-   the review).
-3. Execute every create / edit / move / delete; create index notes for any new folders; update references to moved or renamed content. Use
-   file tools, **not state-changing git** — leave `git add` / `commit` to the user unless instructed per-command.
-4. Set `status: rolled-out` and move the stream to `Settled/` (source Focus index drops the row; `Settled` gains it). Hand off to
-   **REVIEW**.
-
-### Mode SETTLE — retire a stream
-
-Confirm the stream's output already lives in its canonical zone — durable knowledge migrated to a store (`Pillars/` or `Resources/`), an
-operating-model change landed in `Admin/`; mark `completed`; **delete the proposal document** (the settled marker remains, pointing to where
-the knowledge now lives). Test before deleting: would any knowledge be lost? If not, delete.
-
-### Mode REFRESH — keep the model current
-
-This skill is the **canonical definition** of the Streams structure and the Enactment Process; REFRESH keeps that definition coherent and
-current against how the live bases actually run it (the bases defer to the skill, so there is no separate canonical Model to re-anchor
-against). Run it periodically (monthly, with the other skills), or when someone asks "is the Streams model still current".
-
-1. **Read [the source list](references/sources.md)** — the live bases that run the process, each with a `last reviewed` date.
-2. **Re-anchor against practice**: sample how the live bases run their Streams; look for a genuinely shared pattern the skill does not yet
-   carry, a convention that has moved on, or a binding real bases supply that the bindings table doesn't name.
-3. **Separate shared from local** — promote a cross-base pattern into the skill (the canonical definition); a single base's quirk stays a
-   binding or its own local note, not a model change.
-4. **Propose a diff** and confirm before writing.
-5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date. The record of what changed is the commit itself —
-   history lives in git, not a changelog. Mandatory.
+The Enactment gate (`## Installing the gate` below) and the Working rules apply on every fire, before any mode procedure loads — ROLLOUT in
+particular must not begin without explicit user authorisation.
 
 ## Working rules
 

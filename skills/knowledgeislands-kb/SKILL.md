@@ -97,136 +97,29 @@ declared here (data) or in its `CLAUDE.md` (prose), never forked into a coupled 
 3. Pre-flight before writing anything substantive: scope cascade loaded; if the work engages a named person/entity with a profile note, read
    it first; run any domain pre-flight declared in `.ki-config` (`preflight`) or the host `CLAUDE.md`.
 
-## Step 2 - Determine mode
+## Step 2 - Determine mode and load its procedure
 
-Infer the mode from the request, or ask if unclear. Like every governance skill it carries **AUDIT · CONFORM · REFRESH**; its base-specific
-modes are **INIT** (scaffold a base), the session-level **IMPROVE** (continuous improvement), and the note-ops **DIGEST · EXTRACT · QUERY ·
-SAVE · UPDATE**. Modes are named and alphabetical.
+Infer the mode from the request, or ask if unclear. The shared model above — the five zones, the routing test, the **memory cascade**, the
+project bindings, and Step 1 — is what every mode needs and stays loaded; each mode's _procedure_ lives in its own on-demand file, so read
+only the one the request selects. Like every governance skill it carries **AUDIT · CONFORM · REFRESH**; its base-specific modes are **INIT**
+(scaffold a base), the session-level **IMPROVE** (continuous improvement), and the note-ops **DIGEST · EXTRACT · QUERY · SAVE · UPDATE**.
+Modes are named and alphabetical.
 
-### Mode AUDIT - check the base against the structure model
+| Mode    | Fires on                                           | Read before acting                                        |
+| ------- | -------------------------------------------------- | --------------------------------------------------------- |
+| AUDIT   | "audit my knowledge base / is it structured right" | [mode-audit-conform.md](references/mode-audit-conform.md) |
+| CONFORM | "bring my base into line / fix the structure"      | [mode-audit-conform.md](references/mode-audit-conform.md) |
+| DIGEST  | "write a session digest"                           | [mode-digest.md](references/mode-digest.md)               |
+| EXTRACT | "distil this conversation into notes"              | [mode-extract.md](references/mode-extract.md)             |
+| IMPROVE | continuous-improvement sweep (at session end)      | [mode-improve.md](references/mode-improve.md)             |
+| INIT    | "set up a new knowledge base"                      | [mode-init.md](references/mode-init.md)                   |
+| QUERY   | "what do my notes say / search my notes"           | [mode-query.md](references/mode-query.md)                 |
+| REFRESH | "is the KB skill still current" (monthly)          | [mode-refresh.md](references/mode-refresh.md)             |
+| SAVE    | "save to my notes / capture this"                  | [mode-save.md](references/mode-save.md)                   |
+| UPDATE  | "update the note on X"                             | [mode-update.md](references/mode-update.md)               |
 
-1. **Run the mechanical checker** - `bun scripts/audit-kb.ts <base-path>` (from this skill's directory). It reports the deterministic layer
-   on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — see `knowledgeislands-engineering`'s
-   enforcement-framework §2) and exits non-zero on any FAIL: the five zones present (resolved through any `[knowledgeislands-kb.zones]`
-   alias), a same-name index note per zone, the root `Admin/MEMORY.md`, the base's own `[knowledgeislands-kb]` table validated _down_, and
-   note frontmatter (well-formed `---` fences, snake_case keys, and any keys declared in `required_frontmatter`). With `--json` / `--report`
-   it emits machine-readable findings and writes the latest report to the base's `.ki-meta/audits/kb.{md,json}`. Capture its output; do not
-   re-derive what it checks.
-2. **Apply the judgment layer by reading** - the **[J]** criteria in [the rubric](references/audit-rubric.md) that the script cannot judge:
-   notes filed in the wrong zone (per the routing test), _whether a note should carry frontmatter at all_ and its naming quality, whether
-   the memory index's active-Pillar list is actually accurate, and fact-vs-analysis labelling where the base distinguishes them.
-3. **Compose sibling audits.** A base audit is not just kb's: also run the audit of every other skill that governs this base and is in play
-   — notably `knowledgeislands-streams` (`streams:audit`, the Streams zone + the Enactment gate) and `knowledgeislands-authoring` over its
-   markdown. Report them together; a base is "clean" only when each applicable skill's audit is.
-4. **Report** drift, leading with FAILs then WARNs: misrouted or mis-zoned notes, missing zones, notes lacking required frontmatter, stale
-   memory-index entries. Cite paths and give the fix.
-
-### Mode CONFORM - bring the base into line
-
-1. Run **AUDIT** first for the gap list.
-2. Apply the fixes: refile misrouted notes (per the routing test), create any missing zone, repair note frontmatter and naming, reconcile
-   the memory index. Confirm before moving or rewriting notes.
-3. **Install the memory-cascade anchor if `MEM-2` flagged it missing**: add a standing line to the base's `CLAUDE.md` / `AGENTS.md` naming
-   the root `MEMORY` index and the scope-before-work rule — otherwise the cascade is skipped on a plain request. Likewise apply any sibling
-   skill's CONFORM (e.g. `knowledgeislands-streams` for the gate anchor), since a base audit composes them.
-4. Re-run **AUDIT** until it is clean.
-
-### Mode DIGEST - session digest
-
-1. Write the digest to `-/_DIGESTS/<UTC timestamp> <Short Topic>.md` (timestamp `YYYY-MM-DDTHHMMSSZ`; topic in Title Case).
-2. Carry `type: session-digest` and `retain_until: YYYY-MM-DD` (default 30 days out).
-3. Structure: Context, Decisions, Facts Learned, Related Work, Keywords.
-
-### Mode EXTRACT - distil a conversation
-
-1. Identify distinct reusable pieces of knowledge.
-2. For each, propose a title, destination zone (per the routing test), and draft.
-3. Confirm, then write the approved notes.
-
-### Mode IMPROVE - continuous improvement
-
-A session-level discipline (not a scheduled task): close the gap between what was applied in practice this session and what the base has
-codified. IMPROVE **discovers and routes** candidates — it does not make the change itself, it hands each to its governed home. Flag
-candidates as they arise, or sweep at session end.
-
-1. **Scan** the session for candidates: a correction or clarification the user gave; an in-session decision that should now apply generally;
-   a rule applied consistently but written down nowhere; an auto-memory feedback entry that really encodes a base convention.
-2. **Classify and route** each candidate to exactly one home:
-   - **local and non-canonical** (a working note, a `Calendar/` habit, a `+/` triage rule) → just write it;
-   - **a change to a canonical zone** (`Admin` / `Pillars` / `Resources`) → hand to `knowledgeislands-streams`: open a proposal through the
-     **Enactment Process** gate; do not edit the zone directly;
-   - **a pattern recurring across bases** → hand to the owning skill's **REFRESH** to promote it into the canonical skill (this skill,
-     `knowledgeislands-streams`, …).
-   - An auto-memory entry that belongs to the base migrates to its convention home and is **removed** from memory.
-3. **Formalise** through the routed home, then **recheck** — re-scan; a fresh candidate starts another iteration.
-4. **Terminate when clean:** every correction and pattern is either codified or recorded as a deliberate one-off (an inline note or a
-   `+/<context>` capture explaining the departure — a one-off needs no formalisation).
-
-IMPROVE is the base-side mirror of **REFRESH**: it looks _down_ (this base's practice → formalise), where REFRESH looks _across_ (many bases
-→ one skill); a cross-base candidate is exactly the handoff between them.
-
-**Living notes carry current state only.** When formalising, the target note (convention, policy, proposal, profile, index) records purpose,
-current state, and trigger conditions — not historic pass-by-pass narrative or back-references to the sessions or cycles that produced it.
-History lives in git; the durable record is the current note.
-
-### Mode INIT - scaffold a new base's structure
-
-1. Create the zone skeleton — Calendar / Pillars / Resources / Streams, plus the inbound `+` and outbound `-` zones — and the root
-   `Admin/MEMORY.md`.
-2. Seed each zone's note conventions (frontmatter, naming) from the structure model.
-3. Hand ongoing capture to the SAVE / EXTRACT / DIGEST modes.
-
-### Mode QUERY - answer from the base
-
-1. Search and read the relevant notes (memory index, profile notes, the topical zones).
-2. Answer, citing the path to the source note or paired source document.
-3. If the base cannot answer it, capture the researched answer as a new note (fall through to Mode SAVE).
-
-### Mode REFRESH - keep the structure model current
-
-This skill carries the zone model, routing test, and project-bindings table as fixed knowledge; it must not drift from how the bases that
-use it are really organised - especially once installed into a shared/cloud catalogue, where it is long-lived and far from its author. Run
-this periodically (monthly, with the other skills), or when someone asks "is the KB skill still current".
-
-1. **Read [the source list](references/sources.md)** - the canonical structure definition (arcadia-agentic-harness
-   `docs/knowledge-islands.md`) and the bases actively using this skill, each with a `last reviewed` date.
-2. **Re-anchor against reality.** Re-read that structure definition, and sample how the live bases are actually laid out (their root
-   `Admin/MEMORY.md` and top-level folders). Diff against this skill's zone table, routing test, and bindings table. Look for: a zone or
-   convention the bases now use that the model omits; a binding real bases supply that the bindings table doesn't name; a default that no
-   longer matches practice; a tool surface the host MCP server has changed under the skill (it resolves tools at runtime - confirm that
-   assumption still holds).
-3. **Separate canonical from local.** A change is only a model change if it traces to the canonical structure or to a pattern shared across
-   bases; a single base's quirk is declared in that base's `.ki-config` / `CLAUDE.md`, not promoted here.
-4. **Propose a diff** to the zone table / routing test / bindings, and confirm before writing.
-5. **Update [the source list](references/sources.md)** - bump each `last reviewed` date, add any new source, retire any dead one. The record
-   of what changed is the commit itself - history lives in git, not a changelog. This step is mandatory: the source list is the skill's
-   memory of where its structure model comes from.
-
-### Mode SAVE - write a new note
-
-_Gate: if the destination is a canonical zone (`Admin`, `Pillars`, `Resources`) and the base runs the Enactment Process (its `CLAUDE.md`
-says so), this is a canonical change — hand to the `knowledgeislands-streams` skill to open a proposal rather than writing directly.
-`Calendar/`, `+/`, and trivial fixes are exempt._
-
-1. Run pre-flight.
-2. Determine the destination zone using the routing test.
-3. Propose a filename per the base's naming convention (dated for `Calendar/`; descriptive title elsewhere; mirror the paired sources-store
-   path for source extracts).
-4. Draft per the project's writing standards. Cite every fact to a source path or reference; label analysis explicitly where the base
-   distinguishes fact from analysis.
-5. Confirm, then write.
-
-### Mode UPDATE - enrich an existing note
-
-_Gate: if the note lives in a canonical zone and the base runs the Enactment Process, route the change through a proposal
-(`knowledgeislands-streams`) rather than a direct write — unless it is a trivial fix or an unambiguous profile auto-append._
-
-1. Run pre-flight.
-2. Find and read the existing note.
-3. Draft a merged version - enrich, do not replace. Preserve structure.
-4. For profile / person notes: auto-append unambiguous factual updates from authoritative sources; propose a diff first for tactical or
-   evaluative content.
-5. Cite the source of every update; confirm, then write.
+The memory cascade and the canonical-zone Enactment gate are part of the shared model above — they apply on every fire, before any mode
+procedure loads.
 
 ## Notes
 

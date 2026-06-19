@@ -97,6 +97,10 @@ ever starts enforcing a **[J]** check, move its tag here.
 - **REF-2 [J]** Every supporting file is referenced from `SKILL.md` with when-to-load — no orphans. (BP, CC, SPEC)
 - **REF-3 [M]** Reference files > 100 lines open with a table of contents. (BP, COMMUNITY)
 - **REF-4 [J]** Execution intent is explicit per script (run vs read). (BP, ENG)
+- **REF-5 [J]** _Mode-router for many-moded skills._ A skill whose body is dominated by **independently-invoked** modes keeps the shared
+  model + a dispatch table in `SKILL.md` and moves each mode's procedure to a flat `references/mode-<name>.md` (tightly-coupled modes
+  co-located, e.g. AUDIT+CONFORM); behaviour anchors and the shared model stay in the body. Not required when modes are few, short, or
+  call-chained. (BP, SPEC §7)
 
 ## BODY — Body content quality
 
