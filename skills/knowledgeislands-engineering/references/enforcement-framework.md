@@ -95,6 +95,12 @@ Every governance skill exposes the universal three, plus skill-specific ones whe
   "clean" only when each applicable audit passes. Run each checker with **`--report`** so its latest report lands under the target's
   **`.ki-meta/audits/<concern>.{md,json}`** — the working-artifacts convention `knowledgeislands-repo` owns; the `.json` is the
   machine-readable substrate a composed audit merges, the `.md` the human report. Reports are **latest-only** (overwritten, no history).
+  **Auditing a set** — many targets at once (a repo of skills, a directory of agents, a tree or org of repos, the `mcp-*` servers) —
+  **bounds its own context** so a large sweep doesn't force a mid-audit compaction: do the cross-cutting pass once over the whole set (the
+  checker's set-level run — collisions, name-uniqueness — plus any judgment needing only frontmatter / `description`s), then walk the
+  targets **one at a time**, loading each target's files and releasing them before the next, so peak context is one target, not the set.
+  Where the targets have a composition order, walk it in that order (foundations / contract-owners first) so a target's base is already
+  judged when you reach it; otherwise the order is free.
 - **CONFORM** — bring an existing artifact into line in place; re-run the checker (and any judgment pass) until clean. Copy from the closest
   healthy sibling rather than invent. Record what changed under the target's **`.ki-meta/conform/<concern>.md`** (latest-only) — so
   conformance leaves a durable trace now that not every change is a git-committed write.
@@ -117,8 +123,9 @@ These hold for every skill, current and future:
   `description` firing; it anchors the behaviour in always-loaded context (a repo/base `CLAUDE.md`/`AGENTS.md`) and its checker verifies the
   anchor.
 - **Audits compose.** No single skill's pass means a target is clean; the applicable skills compose (§5).
-- **Standard vs base-coupled extension.** A standard skill stays base-agnostic and resolves bindings at runtime; base-specific behaviour
-  lives in an extension that delegates the shared modes back by name.
+- **Standard, not base-coupled extension (SHAPE-2).** A standard skill stays base-agnostic and resolves bindings at runtime; what a base
+  needs differently is **declared, not forked** — data in its `.ki-config` table, prose in its `CLAUDE.md` — never a `<base>-*` skill that
+  takes the shared modes. Composition is the only inter-skill relationship (§5).
 
 (The criterion ids — LONG-1/2, COLL-1/2, SHAPE-5/7 — are owned and enforced by the `knowledgeislands-skills` rubric; named here so this
 framework and that rubric stay in lockstep.)

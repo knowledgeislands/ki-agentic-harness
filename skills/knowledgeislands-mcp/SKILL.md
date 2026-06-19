@@ -8,7 +8,7 @@ description: >
   the latest published MCP specification. Triggers: "audit this MCP", "does this MCP follow our standards", "scaffold a new MCP", "bring
   this MCP up to standard", "review the MCP layout / tool surface / package.json", "refresh the MCP standard", "is our MCP standard up to
   date". Operates on the sibling `mcp-*` repos under `knowledgeislands/`. Audits MCP **server code** — not a repo's GitHub configuration,
-  nor a skill's prose.
+  nor a `SKILL.md`'s prose (for that, use `knowledgeislands-skills`).
 argument-hint: 'audit <repo> | conform <repo> | init <repo> | refresh'
 ---
 
@@ -93,6 +93,10 @@ Every governance skill carries **AUDIT · CONFORM · REFRESH**; this one adds **
 request; ask if unclear. (Modes are named and alphabetical.)
 
 ### Mode AUDIT — check a repo against the standard
+
+Auditing all the `mcp-*` servers at once is a set audit — **bound the context** (the set-audit discipline in
+`knowledgeislands-engineering`'s enforcement-framework §5): walk the servers **one at a time**, running each server's full audit (the common
+`engineering` layer then the MCP delta below) and releasing it before the next; the servers are independent, so the order is free.
 
 1. **Identify the target.** Confirm the repo path (default: the cwd repo). Note its `<app>` prefix and which tool groups it ships.
 2. **Run both mechanical checkers — the common layer first.** `bun knowledgeislands-engineering/scripts/audit-engineering.ts <repo-path>`

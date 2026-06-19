@@ -62,6 +62,10 @@ if unclear. (Modes are named and alphabetical.)
 
 ### Mode AUDIT — check a repo against the standard
 
+Auditing a whole tree or org is a set audit — **bound the context** (the set-audit discipline in `knowledgeislands-engineering`'s
+enforcement-framework §5): take the checker's one set-level run over every repo, then do the per-repo judgment pass **one repo at a time**,
+fully (its composed `engineering` / artifact-skill audits included) before moving to the next; repos are independent, so the order is free.
+
 1. Confirm `gh` is authenticated against the org (`gh auth status`).
 2. **Run the mechanical checker**: `bun scripts/audit-repo.ts <tree-path>` (local repos, github.com-gated) or `--org <org>` (the whole org,
    including repos not cloned locally). It grades findings on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP /

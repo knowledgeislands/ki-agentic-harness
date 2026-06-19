@@ -41,6 +41,11 @@ knowledge-base notes — that is how an agent grounded in a KB cites its sources
 
 Review an agent (or every agent in a directory) against the rubric and report.
 
+**Auditing a whole directory? Bound the context** (the set-audit discipline in `knowledgeislands-engineering`'s enforcement-framework §5):
+run the linter's set-level pass once (COLL-1 lane collisions + `name` uniqueness over the directory), then review the agents **one at a
+time** — they are peers, so the order is free — loading and releasing each definition before the next rather than holding the whole set in
+context at once.
+
 1. **Run the linter.** `bun scripts/lint-agents.ts <path-to-agent-or-dir>` from this skill's directory. It reports the mechanical criteria
    on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — see `knowledgeislands-engineering`'s
    enforcement-framework §2) and exits non-zero on any FAIL; with `--json` / `--report` it emits machine-readable findings and writes the

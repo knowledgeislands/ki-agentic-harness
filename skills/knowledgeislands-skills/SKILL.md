@@ -6,9 +6,9 @@ description: >
   against new community guidance. Carries a checkable rubric (split into mechanical checks a bundled linter runs, and judgment checks you
   apply), the Knowledge Islands skill conventions, and a tracked source list it revisits. Triggers: "audit this skill", "review my skill",
   "is this SKILL.md good", "write a new skill", "scaffold a skill", "lint the skills", "check skills against best practice", "refresh the
-  skills rubric", "what do we expect from a skill". Judges a `SKILL.md` itself (frontmatter + body prose) — not a repo's code or
-  configuration; for a Claude Code subagent definition (not a SKILL.md), use the `knowledgeislands-agents` skill. For general Markdown /
-  TOML house style, use the `knowledgeislands-authoring` skill.
+  skills rubric", "what do we expect from a skill". Judges a `SKILL.md` itself (frontmatter + body prose), not a repo's code or config; for
+  a Claude Code subagent definition use `knowledgeislands-agents`, for MCP server code `knowledgeislands-mcp`, for Markdown / TOML house
+  style `knowledgeislands-authoring`.
 argument-hint: 'audit <skill-or-repo> | conform <skill> | init <description> | refresh'
 ---
 
@@ -40,13 +40,12 @@ CONFORM · REFRESH**; INIT — writing a new skill — is its skill-specific mod
 
 Review a skill (or every skill in a repo) against the rubric and report.
 
-**Auditing a whole repo? Split it into a cheap set-level pass and a per-skill walk, so peak context stays at one skill — not the whole set,
-which is what triggers a compaction cycle mid-audit.** The genuinely cross-skill checks need only the cheap surface: the linter's one
-whole-repo pass (COLL-1, all mechanical) plus the skills' frontmatter `description`s read together for COLL-2 reciprocity. Then audit the
-skills **one at a time, in dependency order** — foundations and contract-owners first, so a composing skill's base is already judged when
-you reach it (today:
-`authoring → engineering → repo → kb → streams → mcp → 11ty-websites → cloudflare-hosting → agents → skills → tokenomics`). Load each
-skill's `SKILL.md` (and its `references/` only on demand), emit that skill's findings, and move on before loading the next.
+**Auditing a whole repo? Bound the context** (the set-audit discipline in `knowledgeislands-engineering`'s enforcement-framework §5): run
+the cheap set-level pass once — the linter's whole-repo run (COLL-1) plus the skills' frontmatter `description`s read together for COLL-2
+reciprocity — then walk the skills **one at a time, in dependency order**, foundations and contract-owners first so a composing skill's base
+is judged before it (today:
+`authoring → engineering → repo → kb → streams → mcp → 11ty-websites → cloudflare-hosting → agents → skills → tokenomics`). Loading and
+releasing one skill at a time keeps peak context at one skill, not eleven — which is what otherwise triggers a mid-audit compaction.
 
 1. **Run the linter.** `bun scripts/lint-skills.ts <path-to-skill-or-repo>` from this skill's directory (or `bun run skills:lint` at the
    arcadia-agentic-harness repo root). It reports the mechanical criteria on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY /
