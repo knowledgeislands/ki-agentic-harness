@@ -10,7 +10,7 @@ Each agent is a single Markdown file — YAML frontmatter (only `name` + `descri
 [Claude Code's subagents docs](https://code.claude.com/docs/en/sub-agents). Identity comes from the `name` field, which must be unique
 across the whole tree, not the path.
 
-Agent definitions conform to the **`knowledgeislands-agents`** standard (under [skills/](skills/)) — the agents twin of
+Agent definitions conform to the **`knowledgeislands-agents`** standard (under [skills/](../skills/)) — the agents twin of
 `knowledgeislands-skills`. Run its AUDIT before shipping an agent, the same way skills run `knowledgeislands-skills`.
 
 ## Adding an agent

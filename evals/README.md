@@ -55,11 +55,13 @@ or without the skill.
 
 ## Where it stands
 
-All six skills have 3+ scenarios, and the harness has been run across Haiku, Sonnet, and Opus. The result, in one line: **on house-specific
-facts, loading a skill reliably takes the model from "I don't know" to the right answer — on every model.** That's the whole point,
-confirmed.
+Seven of the twelve skills have 3+ scenarios — `authoring`, `engineering`, `kb`, `mcp`, `repo`, `skills`, `streams` — and the harness has
+been run across Haiku, Sonnet, and Opus. The result, in one line: **on house-specific facts, loading a skill reliably takes the model from
+"I don't know" to the right answer — on every model.** That's the whole point, confirmed. The remaining five (`11ty-websites`,
+`cloudflare-hosting`, `tokenomics`, `agents`, `harness`) are not yet covered — the website and tokenomics scenarios are tracked in
+[ROADMAP.md](../ROADMAP.md).
 
-**For routine runs, use Sonnet — it's the most cost-effective arm.** A full matrix (18 scenarios × 3 runs) costs roughly **$7 on Haiku, $17
-on Sonnet, $26 on Opus**. Opus gives no cleaner signal than Sonnet for about 50% more, so keep it for occasional confirmation; Sonnet is a
+**For routine runs, use Sonnet — it's the most cost-effective arm.** A full matrix (21 scenarios × 3 runs) costs roughly **$8 on Haiku, $20
+on Sonnet, $30 on Opus**. Opus gives no cleaner signal than Sonnet for about 50% more, so keep it for occasional confirmation; Sonnet is a
 representative, trustworthy model at a sensible price. (Haiku is cheapest and did well here, but a stronger model is the safer regression
 proxy.) Run results aren't checked in — they're regeneratable, so just re-run `bun run eval`.

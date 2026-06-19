@@ -100,5 +100,5 @@ bun run eval         # advisory behavioural eval suite (see ../evals/)
 
 `skills:lint` runs the mechanical half of the [`knowledgeislands-skills`](../skills/knowledgeislands-skills/SKILL.md) rubric over every
 skill (frontmatter, naming, length caps, link resolution); the judgment half is applied by that skill when you ask it to audit one. Several
-skills also expose a repo-level audit script — `engineering:audit`, `repo:audit`, `kb:audit`, `streams:audit` — that runs their mechanical
-checker over a target.
+skills also expose a repo-level audit script — `engineering:audit`, `repo:audit`, `kb:audit`, `streams:audit`, `tokenomics:audit`,
+`harness:audit` — that runs their mechanical checker over a target.
