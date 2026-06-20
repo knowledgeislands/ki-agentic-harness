@@ -171,10 +171,10 @@ ever starts enforcing a **[J]** check, move its tag here.
   "proposal"). Such a skill must **anchor the behaviour in always-loaded context** (the base/repo `CLAUDE.md` / `AGENTS.md`, or a companion
   skill that _does_ reliably load handing off to it), **and its checker must verify the anchor is present** so it can't be silently lost.
   The linter surfaces candidates mechanically (strong gate phrasing in the body or a reference file — body + references scanned as one unit,
-  since mode-routing lifts procedures out of the body — without an anchor its checker reads); the **[J]** call is
-  whether the skill genuinely changes a default and so _needs_ a gate. Realised as `knowledgeislands-streams`' **GATE-1** (the Enactment
-  gate) and `knowledgeislands-kb`'s **MEM-2** (the memory cascade); `knowledgeislands-repo`'s `.ki-config.toml` marker is the same pattern
-  (anchor + checked).
+  since mode-routing lifts procedures out of the body — without an anchor its checker reads); the **[J]** call is whether the skill
+  genuinely changes a default and so _needs_ a gate. Realised as `knowledgeislands-streams`' **GATE-1** (the Enactment gate) and
+  `knowledgeislands-kb`'s **MEM-2** (the memory cascade); `knowledgeislands-repo`'s `.ki-config.toml` marker is the same pattern (anchor +
+  checked).
 - **SHAPE-8 [J]** _Governance-skill checker contract._ A governance skill's mechanical checker exposes `--json` (emit a JSON findings array
   to stdout) and `--report` (write the latest report as both `.ki-meta/audits/<concern>.md` and `.ki-meta/audits/<concern>.json` in the
   target, overwriting on each run). Exit code is non-zero iff any FAIL; WARN / POLISH / ADVISORY / INFO / SKIP / PASS all exit 0. Findings
@@ -210,3 +210,7 @@ ever starts enforcing a **[J]** check, move its tag here.
   that re-anchors them and names what to re-fetch. (BP, COMMUNITY)
 - **LONG-2 [J]** _A cadence, not just a capability._ A skill that ships a refresh path also states a **cadence** (periodic or "run when X")
   and, where supported, registers a scheduled run; a refresh capability with no stated cadence is a half-measure. (COMMUNITY)
+- **LONG-3 [M]** _The cadence is actually being met._ Where a skill carries `references/sources.md`, its most recent `Last reviewed` date
+  (read from that table column, so dates quoted in prose don't count) is within the monthly cadence plus grace; an overdue source list WARNs
+  so AUDIT and the monthly refresh routine surface it. Never a FAIL — staleness is elapsed time, not a defect in the change under review.
+  (COMMUNITY)

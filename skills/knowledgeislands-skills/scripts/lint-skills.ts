@@ -35,6 +35,7 @@ const COMPAT_MAX = 500
 const BODY_MAX_LINES = 500
 const BODY_MAX_TOKENS = 5000 // estimated as chars/4
 const TOC_LINE_THRESHOLD = 100
+const REFRESH_MAX_DAYS = 45 // monthly cadence (LONG-2) + ~2 weeks grace before a sources.md reads as stale
 const FOOTPRINT_REF_NOTE_TOKENS = 1500 // a single reference this large is a candidate to split — INFO hint only, never a cap
 const RESERVED = ['anthropic', 'claude']
 
@@ -191,6 +192,33 @@ function footprint(skillDir: string): { rows: FootprintRow[]; total: number } {
 }
 
 // --- the lint --------------------------------------------------------------
+// Latest date in the "Last reviewed" column of a sources.md, or null. Reads the
+// column by its header so forward-looking dates quoted in prose (e.g. a spec's
+// release date in the "## Last review" block) are never mistaken for a review date.
+function latestReviewDate(text: string): string | null {
+  let col = -1
+  let latest: string | null = null
+  for (const line of text.split(/\r?\n/)) {
+    if (!line.trimStart().startsWith('|')) {
+      col = -1
+      continue
+    }
+    const cells = line
+      .split('|')
+      .slice(1, -1)
+      .map((c) => c.trim())
+    const header = cells.findIndex((c) => /^last reviewed$/i.test(c))
+    if (header >= 0) {
+      col = header
+      continue
+    }
+    if (col < 0) continue
+    const m = (cells[col] ?? '').match(/\d{4}-\d{2}-\d{2}/)
+    if (m && (latest === null || m[0] > latest)) latest = m[0]
+  }
+  return latest
+}
+
 function lintSkill(skillDir: string): Finding[] {
   const f: Finding[] = []
   const fail = (criterion: string, message: string): void => void f.push({ severity: 'fail', criterion, message })
@@ -290,6 +318,19 @@ function lintSkill(skillDir: string): Finding[] {
         'SHAPE-7',
         'reads as behaviour-changing (a gate / standing rule) but does not evidence an always-on anchor verified by its checker — anchor it in CLAUDE.md/AGENTS.md and check the anchor, per SHAPE-7'
       )
+  }
+
+  // --- LONG-3: a tracked sources.md must be reviewed within the cadence ---
+  // Only fires when the skill actually carries a source list (LONG-1 leaves
+  // runtime-resolved skills without one); WARN, never fail — staleness is the
+  // passage of time, not a defect in the commit under review.
+  const sourcesPath = join(skillDir, 'references', 'sources.md')
+  if (existsSync(sourcesPath)) {
+    const latest = latestReviewDate(readFileSync(sourcesPath, 'utf8'))
+    if (latest) {
+      const ageDays = Math.floor((Date.now() - Date.parse(`${latest}T00:00:00Z`)) / 86_400_000)
+      if (ageDays > REFRESH_MAX_DAYS) warn('LONG-3', `references/sources.md last reviewed ${latest} (${ageDays} days ago), past the monthly REFRESH cadence (LONG-2) — run Mode REFRESH`)
+    }
   }
 
   return f
