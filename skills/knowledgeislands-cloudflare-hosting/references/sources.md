@@ -14,9 +14,9 @@ Authoritative table; everything else is house style and should be labelled as su
 
 | Tag      | Source                                      | Governs                                                                        | Last reviewed |
 | -------- | ------------------------------------------- | ------------------------------------------------------------------------------ | ------------- |
-| ASSETS   | [Workers · Static Assets][assets]           | The `assets` block, `directory`/`binding`/`html_handling`/`not_found_handling` | 2026-06-18    |
-| WRANGLER | [wrangler configuration][wrangler]          | `name`, `compatibility_date`, `routes`/`custom_domain`, `observability`        | 2026-06-18    |
-| PAGES    | [Pages → Workers migration / status][pages] | Whether Pages remains the recommended target for static sites (it does not)    | 2026-06-18    |
+| ASSETS   | [Workers · Static Assets][assets]           | The `assets` block, `directory`/`binding`/`html_handling`/`not_found_handling` | 2026-06-21    |
+| WRANGLER | [wrangler configuration][wrangler]          | `name`, `compatibility_date`, `routes`/`custom_domain`, `observability`        | 2026-06-21    |
+| PAGES    | [Pages → Workers migration / status][pages] | Whether Pages remains the recommended target for static sites (it does not)    | 2026-06-21    |
 
 ## In-house (the hosting convention)
 
@@ -25,26 +25,25 @@ The standard is self-contained; it is the source of truth for house style. Any c
 
 | Tag   | Source                           | Governs                                                 | Last reviewed |
 | ----- | -------------------------------- | ------------------------------------------------------- | ------------- |
-| BUILD | `knowledgeislands-11ty-websites` | The `dist/` seam this serves (referenced, not restated) | 2026-06-18    |
+| BUILD | `knowledgeislands-11ty-websites` | The `dist/` seam this serves (referenced, not restated) | 2026-06-21    |
 
 ## Last review
 
-REFRESH last run **2026-06-18**. Re-fetched the three Cloudflare sources; no structural drift — every config key the standard, rubric, and
-checker name is current and correctly named.
+REFRESH last run **2026-06-21**. Re-fetched the three Cloudflare sources; **no drift** — every config key and default the standard, rubric,
+and checker name is current and correctly named. Date bump + confirmed current.
 
 - **Pins:** `wrangler` `^4.x` (current major still **v4** — Workers Sites deprecated in v4, no schema-breaking v5). Deploy model: Workers +
   Static Assets via `wrangler deploy` (never `wrangler pages deploy`).
-- **Static-Assets config surface (now confirmed, no longer "young"):** `assets.directory` (the seam), `binding`, and the optional per-site
-  keys with their verbatim defaults — `html_handling` defaults to `"auto-trailing-slash"`, `not_found_handling` defaults to `"none"`,
-  `run_worker_first` defaults to `false`. `observability.enabled` "Defaults to true for all new Workers"; `custom_domain` "Defaults to
-  false". The standard correctly treats the three optional keys as per-site and does not require them.
-- **Pages vs Workers:** Cloudflare now explicitly steers **new** static sites to Workers + Static Assets (new features focus on Workers;
-  `wrangler pages` nudges to `wrangler deploy`; Pages + Workers being unified). Note: the docs do **not** call Pages "deprecated" — only the
-  older Workers Sites (`[site]`) is; the docs say "Cloudflare Pages and Workers Assets are preferred over [that] approach." The standard's
-  "deprecated" wording was **softened this run** to "Cloudflare steers new sites to Workers + Static Assets" (standard §1 + SKILL.md); the
-  operational rule (never `pages deploy`) is unchanged and better-supported than before.
+- **Static-Assets config surface (confirmed, mature):** `assets.directory` (the seam), `binding`, and the optional per-site keys with their
+  verbatim defaults — `html_handling` defaults to `"auto-trailing-slash"`, `not_found_handling` defaults to `"none"`, `run_worker_first`
+  defaults to `false` (all re-confirmed this run). `observability.enabled` "Defaults to true for all new Workers"; `custom_domain` "Defaults
+  to false". The standard correctly treats the three optional keys as per-site and does not require them.
+- **Pages vs Workers:** Cloudflare still steers **new** static sites to Workers + Static Assets (new features focus on Workers;
+  `wrangler pages` nudges to `wrangler deploy`). The migration page still does **not** call Pages "deprecated" — it frames migration as
+  optional and notes Workers has the "distinctly broader set of features." The standard's "Cloudflare steers new sites to Workers + Static
+  Assets" wording (standard §1 + SKILL.md) remains accurate; the operational rule (never `pages deploy`) is unchanged.
 - **Open watch-items:** watch for a `wrangler` major bump (v5) that changes the config schema. Re-confirm the Pages↔Workers guidance hasn't
-  reversed (it has only hardened toward Workers so far). The `assets` surface is now mature — re-confirm only on a major bump.
+  reversed (it has only hardened toward Workers so far). The `assets` surface is mature — re-confirm only on a major bump.
 
 [assets]: https://developers.cloudflare.com/workers/static-assets/
 [wrangler]: https://developers.cloudflare.com/workers/wrangler/configuration/
