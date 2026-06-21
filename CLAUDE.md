@@ -7,8 +7,9 @@ indexes — what each skill is, the map, the boundaries. The forward view is in 
 
 The canonical home for the Knowledge Islands **Agent Skills** (per the [Agent Skills standard](https://agentskills.io/)), installed
 elsewhere by symlink (`bun run skills:link`). The `knowledgeislands-*` skills are **governance skills**: each holds a house standard and
-ships the universal **AUDIT / CONFORM / REFRESH** modes plus a mechanical checker. They sit in two layers — foundations (`authoring`,
-`engineering`) and domain skills (`kb`, `streams`, `mcp`, `repo`, `skills`, and the website pair) — mapped in the README.
+ships the universal **AUDIT / CONFORM / REFRESH** modes plus a mechanical checker. They sit in two layers plus a container governor —
+foundations (`authoring`, `engineering`), domain skills (`kb`, `streams`, `mcp`, `repo`, `skills`, `agents`, `tokenomics`, and the website
+pair), and `harness`, which governs the four-part bundle itself — mapped in the README.
 
 ## How skills relate — composition only
 
