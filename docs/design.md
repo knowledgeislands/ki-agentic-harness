@@ -98,7 +98,7 @@ REFRESH promotes_ — none restates another.
 
 ## Principles across the set
 
-Seven invariants hold for every skill here, current and future — each tied to a named rubric criterion rather than just asserted, so a new
+Eight invariants hold for every skill here, current and future — each tied to a named rubric criterion rather than just asserted, so a new
 skill inherits them by being audited:
 
 - **Every skill carries a refresh path — and a cadence.** A skill that tracks a moving target (an external spec, a community best-practice,
@@ -141,3 +141,10 @@ skill inherits them by being audited:
   `.ki-config.toml`) is never coverage-checked, so a lookalike isn't falsely flagged. This is the one place a skill (`repo`) reads across
   tables — **presence only** — and it's an _audit-time_ enforcement; the model lives in
   [the `.ki-config.toml` contract](../skills/knowledgeislands-repo/references/ki-config-standard.md).
+- **Mechanical work belongs in the checker, not in tokens.** A criterion a script can decide deterministically — no judgment, no AI benefit
+  — is tagged **[M]** and lives in the skill's checker; the reader's context is spent only on the **[J]** criteria that genuinely need a
+  reader. Authoring a rubric you default a check _into_ the checker and earn each **[J]** by the judgment it needs, not by "no checker
+  written yet"; when a check becomes scriptable with no AI benefit it moves into the checker and flips to **[M]** (the rubric and checker
+  stay in lockstep — see the enforcement framework's _rubric format_). Enforced as rubric **SHAPE-9**: the linter flags a rubric carrying
+  **[M]** criteria but shipping no checker (nor a documented delegation, such as `authoring` → `lint:md`), and the **[J]** gate is whether
+  each remaining **[J]** truly needs a reader rather than a script.

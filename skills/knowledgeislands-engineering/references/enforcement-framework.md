@@ -5,8 +5,8 @@ same way no matter what it governs. This is the formal home of what arcadia-agen
 shape"; that doc points here for the detail rather than restating it.
 
 A **governance skill** holds a house standard and ships the universal modes over it, backed by a tracked source list.
-`knowledgeislands-engineering` owns this framework because it is the cross-cutting "how we engineer" layer; every other governance skill
-(`-mcp`, `-kb`, `-repo`, `-skills`, `-streams`, `-authoring`) conforms to it.
+`knowledgeislands-engineering` owns this framework because it is the cross-cutting "how we engineer" layer; every other governance skill in
+the set conforms to it.
 
 ## Contents
 
@@ -70,13 +70,19 @@ surfaced inline as ADVISORY where the checker can point at the specific criterio
 
 `audit-rubric.md` lists every criterion with a stable id, tagged by who enforces it:
 
-- **🔧 mechanical** — a checker enforces it; in AUDIT you capture the checker's output verbatim and never re-derive it by hand.
-- **judgment** — a reader/agent assesses it; the checker cannot decide it deterministically.
+- **[M] mechanical** — a checker enforces it; in AUDIT you capture the checker's output verbatim and never re-derive it by hand.
+- **[J] judgment** — a reader/agent assesses it; the checker cannot decide it deterministically.
 
 Each criterion cites the standard section it verifies, and carries a **severity from the §2 ladder** (FAIL / WARN / POLISH) where the
-standard grades findings — the same vocabulary the checker emits, so the rubric and the output read alike. A criterion that becomes
-deterministic should **move into the checker and flip to 🔧** — the rubric and checker stay in lockstep. A judgment criterion the checker
-can usefully point at surfaces in its output as **ADVISORY**.
+standard grades findings — the same vocabulary the checker emits, so the rubric and the output read alike.
+
+**Default a check into the checker — mechanical work belongs there, not in tokens.** A criterion a script can decide deterministically — no
+judgment, no AI benefit — is tagged **[M]** and implemented in the checker; the **[J]** tag is earned by the judgment a criterion genuinely
+needs, never by "no checker written yet". The reader's context is spent only on the **[J]** criteria; deterministic work the model would
+otherwise re-derive each run is the cost this avoids. So a mechanical criterion left to prose, or a **[J]** criterion that becomes
+scriptable with no AI benefit, **moves into the checker and flips to [M]** — the rubric and checker stay in lockstep. A judgment criterion
+the checker can usefully point at surfaces in its output as **ADVISORY**. (This is the SHAPE-9 principle in the `knowledgeislands-skills`
+rubric.)
 
 ## 4. The source list (`sources.md`)
 
@@ -144,6 +150,9 @@ These hold for every skill, current and future:
 - **Standard, not base-coupled extension (SHAPE-2).** A standard skill stays base-agnostic and resolves bindings at runtime; what a base
   needs differently is **declared, not forked** — data in its `.ki-config` table, prose in its `CLAUDE.md` — never a `<base>-*` skill that
   takes the shared modes. Composition is the only inter-skill relationship (§5).
+- **Mechanical work belongs in the checker, not in tokens (SHAPE-9).** A criterion a script can decide with no AI benefit is tagged **[M]**
+  and implemented in the checker; the reader's context is spent only on the **[J]** criteria that genuinely need judgment. A mechanical
+  criterion left to prose is a finding, and the checker flags a rubric carrying **[M]** criteria but shipping no checker (§3).
 
-(The criterion ids — LONG-1/2, COLL-1/2, SHAPE-5/7 — are owned and enforced by the `knowledgeislands-skills` rubric; named here so this
+(The criterion ids — LONG-1/2, COLL-1/2, SHAPE-2/5/7/9 — are owned and enforced by the `knowledgeislands-skills` rubric; named here so this
 framework and that rubric stay in lockstep.)
