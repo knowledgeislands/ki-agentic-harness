@@ -10,8 +10,8 @@ Abbreviations match the `(SOURCE)` tags in [the standard](agent-definitions-stan
 
 | Tag | Source                               | Governs                                                                                 | Last reviewed |
 | --- | ------------------------------------ | --------------------------------------------------------------------------------------- | ------------- |
-| CC  | [Claude Code — subagents][cc]        | Subagent file format, the frontmatter spec set,[^cc] invocation control                 | 2026-06-18    |
-| BP  | [Skill authoring best practices][bp] | Description writing, conciseness, least-privilege, evaluation-first (applied to agents) | 2026-06-18    |
+| CC  | [Claude Code — subagents][cc]        | Subagent file format, the frontmatter spec set,[^cc] invocation control                 | 2026-06-21    |
+| BP  | [Skill authoring best practices][bp] | Description writing, conciseness, least-privilege, evaluation-first (applied to agents) | 2026-06-21    |
 
 [^cc]:
     Full set: `name`, `description`, `tools`, `disallowedTools`, `model`, `permissionMode`, `maxTurns`, `skills`, `mcpServers`, `hooks`,
@@ -21,29 +21,33 @@ Abbreviations match the `(SOURCE)` tags in [the standard](agent-definitions-stan
 
 | Tag   | Source                                                 | Governs                                                                                 | Last reviewed |
 | ----- | ------------------------------------------------------ | --------------------------------------------------------------------------------------- | ------------- |
-| HOUSE | The harness `agents/README.md` + the role-prompt shape | Layout, the role/lane prompt pattern, grounding, lane disambiguation, KB-note wikilinks | 2026-06-18    |
+| HOUSE | The harness `agents/README.md` + the role-prompt shape | Layout, the role/lane prompt pattern, grounding, lane disambiguation, KB-note wikilinks | 2026-06-21    |
 
 ## Last review
 
-Full **REFRESH 2026-06-18** — the external sources (CC subagents docs, BP best-practices) were re-fetched and diffed against the standard +
-rubric; the prior open watch-item (pin the exact supported frontmatter field set) is **closed**.
+**REFRESH 2026-06-21 — no drift.** The external sources (CC subagents docs, BP best-practices) were re-fetched and diffed against the
+standard + rubric; the in-house sources re-read. Nothing in the standard, rubric, or linter needed a substantive change — a
+confirmed-current date bump. The prior watch-item (which of the pinned fields the house adopts vs tolerates) stands open but un-actioned:
+the shelf is still empty, so there is nothing yet to over-/under-tolerate.
 
-- **CC (Claude Code subagents docs):** re-fetched 2026-06-18. The **supported-frontmatter table** now pins **15 fields**, only `name` and
-  `description` required: `name`, `description`, `tools`, `disallowedTools`, `model`, `permissionMode`, `maxTurns`, `skills`, `mcpServers`,
-  `hooks`, `memory`, `background`, `effort`, `isolation`, `color`, plus `initialPrompt` (and `prompt` = the body on the `--agents` CLI
-  path). `model` aliases are `sonnet`/`opus`/`haiku`/`fable`, a full id, or `inherit` (the default when omitted). `tools` is an allowlist;
-  `disallowedTools` a denylist applied first; both accept `mcp__<server>` patterns and `tools` accepts `Agent(type)` spawn-allowlists. The
-  subagent `name` rule on this page is only "lowercase letters and hyphens, unique" — the length/XML/reserved-word caps in our rubric come
-  from the BP skills spec, carried for consistency. No deprecations. Our standard documented only 5 of these fields → expansion applied
-  (§5/§8, FM-2/FM-3/FM-4).
-- **BP:** re-fetched 2026-06-18. Unchanged in substance — third-person description, `name` ≤ 64 / charset / no reserved words,
-  concise-is-key, least-privilege, evaluation-first (≥ 3 evals; test on Haiku/Sonnet/Opus), no time-sensitive content. Adds the
-  proactive-delegation idiom ("use proactively") noted in §4.
-- **HOUSE:** re-read 2026-06-18 (no external fetch). The role/lane prompt shape and the KB-wikilink divergence stand. The repo-root
-  `agents/` shelf is still empty (only `README.md`); the linter reports a clean empty pass. The README's inline field list was expanded to
-  match §5.
-- **Open watch-items:** decide which of the nine newly-pinned fields the house actually adopts vs merely tolerates (FM-3 must not
-  false-positive on tolerated ones); keep `permissionMode` and `disallowedTools` in view as least-privilege levers as the agent set grows.
+- **CC (Claude Code subagents docs):** re-fetched 2026-06-21. The **supported-frontmatter table** still pins the **16-field set** our FM-3
+  enumerates verbatim — `name`, `description`, `tools`, `disallowedTools`, `model`, `permissionMode`, `maxTurns`, `skills`, `mcpServers`,
+  `hooks`, `memory`, `background`, `effort`, `isolation`, `color`, `initialPrompt` (plus `prompt` = the body on the `--agents` CLI path).
+  Only `name`/`description` required; `model` defaults to `inherit`. No new field, no deprecation. `tools`/`disallowedTools` semantics
+  (denylist-first, `mcp__<server>` patterns, `Agent(type)` spawn-allowlist), the `permissionMode` value set + `bypassPermissions` caveat,
+  and the "use proactively" / "use immediately after…" idiom all match §4/§5/§8 unchanged. New **surface** on the page — forked subagents
+  (`fork` / `CLAUDE_CODE_FORK_SUBAGENT`), nested subagents (fixed depth-5 limit), and `SendMessage` resume — concerns spawning/runtime, not
+  the definition file's frontmatter or prompt shape this skill governs, so it touches no criterion (see watch-items).
+- **BP:** re-fetched 2026-06-21. Unchanged in substance — third-person description, `name` ≤ 64 / charset / no reserved words,
+  concise-is-key, least-privilege, evaluation-first (≥ 3 evals; test on Haiku/Sonnet/Opus), no time-sensitive content. The
+  proactive-delegation idiom stays carried in §4.
+- **HOUSE:** re-read 2026-06-21 (no external fetch). The role/lane prompt shape and the KB-wikilink divergence stand. The repo-root
+  `agents/` shelf is still empty (only `README.md`, whose field list already matches §5); the linter reports a clean empty pass.
+- **Open watch-items:** (1) decide which pinned fields the house adopts vs merely tolerates once real agents land (FM-3 must not
+  false-positive on tolerated ones); keep `permissionMode` / `disallowedTools` in view as least-privilege levers as the set grows. (2) The
+  spawning/runtime surface (forks, nested subagents, `SendMessage` resume) is out of this skill's scope today, but if the house starts
+  shipping coordinator agents that spawn others, revisit whether `tools: Agent(type)` spawn-allowlists deserve a dedicated FM/LANE
+  criterion.
 
 [cc]: https://code.claude.com/docs/en/sub-agents
 [bp]: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices
