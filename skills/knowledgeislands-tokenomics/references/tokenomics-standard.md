@@ -50,10 +50,16 @@ attributes the cost; sizes are a `chars / 4` token **estimate** for budgeting, n
 
 † `@import` lines pull other files inline; the cost is the resolved total, and an unresolved `@import` is a defect (a broken include), not
 merely waste. ‡ Every installed skill's `name` + `description` sits in the selection surface so the model can choose it — the body loads
-only on demand, but the description is always paid; an over-long or duplicative description is a standing cost across the whole set. § MCP
-tool **definitions** (the full JSON schema of every tool of every configured server) load up front. Their exact token weight needs a live
-connection to measure, so the checker counts **servers** as the deterministic proxy and leaves per-tool weighing to judgment — but this is
-reliably the biggest lever, so it leads the report.
+only on demand, but the description is always paid; an over-long or duplicative description is a standing cost across the whole set. Claude
+Code caps each skill's loaded description at `maxSkillDescriptionChars` (a settings key) and bounds the whole listing via
+`skillListingBudgetFraction`, so the per-skill text the model sees is itself a tunable lever; a skill marked
+`disable-model-invocation: true` drops out of the listing entirely (invokable only by `/name`). § MCP tool **definitions** (the full JSON
+schema of every tool of every configured server) are the potentially-largest line item. How much actually loads up front depends on Claude
+Code's **tool-search** setting: with tool search on (the current default) only the tool _names_ sit in the startup surface and full schemas
+are loaded on demand when a task needs them; `ENABLE_TOOL_SEARCH=auto` loads schemas upfront when they fit within ~10% of the window, and
+`ENABLE_TOOL_SEARCH=false` loads every schema up front (the old all-in behaviour). Either way the exact weight needs a live connection to
+measure, so the checker counts **servers** as the deterministic proxy — more servers means more names, more deferred weight, and more
+dynamic-discovery churn — and leaves per-tool weighing to judgment. It remains the lever most worth checking first, so it leads the report.
 
 ## 3. Budgets and the config table
 
@@ -104,7 +110,10 @@ only the config-level signals it can see, e.g. a pinned default model):
 - **Model tier.** Match the model to the work's value — a cheap tier for mechanical or bulk steps, the top tier reserved for the hard ones.
   The preferred tier can be codified per environment (§3 `preferred_model`) and is checked mechanically; the _appropriateness_ judgment
   remains human-driven. See §8 for multi-model flow guidance.
-- **Compaction.** A long conversation should be compacted before history bloats the window; know where the compaction boundary is.
+- **Compaction.** A long conversation should be compacted before history bloats the window; know where the compaction boundary is. Claude
+  Code auto-compacts as the window nears its limit by default (`autoCompactEnabled`, toggled off via `DISABLE_AUTO_COMPACT`). Note what
+  survives a compaction differs by component: the project-root `CLAUDE.md` is re-read from disk, but the skill-description listing is
+  **not** re-injected — only skills already invoked are preserved — so a compaction can quietly change which skills the model can still see.
 - **Sub-agent fan-out.** Each sub-agent re-pays the whole standing surface, so fan-out multiplies the §2 cost — worth it for genuine
   parallel/independent work, wasteful for what one context could hold.
 - **Tool-result verbosity.** Raw logs, JSON dumps, and file reads are re-read on every subsequent turn. Keeping them lean (or compressing
@@ -128,12 +137,12 @@ Tool-result and log bloat (§4) is exactly what a **context-compression layer** 
 model can still retrieve the original on demand. The house default treats one such layer as a **recommended** best practice; the expectation
 is set per environment (`headroom = "required" | "recommended" | "off"`).
 
-The seeded registry entry is **Headroom** (chopratejas/headroom and the extraheadroom.com app) — a reversible context-compression proxy /
-MCP server. It is detected across both layers by any of:
+The seeded registry entry is **Headroom** (chopratejas/headroom, published as the `headroom-ai` package, and the extraheadroom.com app) — a
+reversible context-compression proxy / MCP server. It is detected across both layers by any of:
 
 - an `mcpServers` entry named `headroom` (or whose command is `headroom`) exposing `headroom_compress` / `headroom_retrieve` /
   `headroom_stats` (installed via `headroom mcp install`);
-- a `headroom proxy --port <n>` drop-in proxy the agent points at;
+- a `headroom proxy --port <n>` drop-in proxy the agent points at, or a `headroom wrap <agent>` agent wrapper;
 - `HEADROOM_*` environment keys in a settings `env` block (e.g. `HEADROOM_OUTPUT_SHAPER`, `HEADROOM_OUTPUT_HOLDOUT`).
 
 **Optimal setup** — once detected — means: the reversible store (Content-Compressed Retrieval) is on with a sane TTL so nothing is lost; the

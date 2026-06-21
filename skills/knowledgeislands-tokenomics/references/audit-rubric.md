@@ -35,7 +35,8 @@ A criterion's tag is a contract with the checker: if you find yourself eyeballin
 - **SURF-1 [M]** Every `CLAUDE.md` found (each layer) has its `@imports` resolved and its total size measured; an **unresolved `@import`
   FAILs** (a broken include).
 - **SURF-2 [M]** `MEMORY.md` indices and locatable memory files are measured.
-- **SURF-3 [M]** Installed-skill descriptions are counted and summed per layer (the selection surface).
+- **SURF-3 [M]** Installed-skill descriptions are counted and summed per layer (the selection surface). The per-skill text the model
+  actually sees is bounded by `maxSkillDescriptionChars` / `skillListingBudgetFraction`, so a large raw set may load lighter than its sum.
 - **SURF-4 [J]** A large `CLAUDE.md` / memory entry **earns** its tokens — not restating what a competent model already knows, not stale,
   not detail that belongs in an on-demand file. This is the altitude call the size check cannot make.
 
@@ -49,7 +50,9 @@ A criterion's tag is a contract with the checker: if you find yourself eyeballin
 - **MCP-2 [J]** Each configured server is actually **used** by the work done here; an unused or over-broad server is the first cut, because
   tool definitions are usually the largest standing line item.
 - **MCP-3 [J]** Where a server exposes many tools, the set is minimal / curated (the three-to-five-always-loaded heuristic; dynamic
-  discovery beyond ~10), rather than every tool loaded up front.
+  discovery beyond ~10), rather than every tool loaded up front. Claude Code now implements this natively via **tool search** (default on:
+  only tool names load up front, schemas on demand); `ENABLE_TOOL_SEARCH=false` reverts to loading every schema up front and is worth
+  flagging on a heavy server set.
 
 ## BUDG — Budgets
 
@@ -69,8 +72,9 @@ A criterion's tag is a contract with the checker: if you find yourself eyeballin
   in the prompt.
 - **RUN-2 [J]** Model tier matches the work's value — a cheap tier for mechanical / bulk steps, the top tier reserved for the hard ones.
   Whether `preferred_model` is declared is checked mechanically (CFG-4 [M]); its _appropriateness_ for the work is this judgment item.
-- **RUN-3 [J]** Long conversations are compacted before history bloats the window, and sub-agent fan-out is proportionate (each sub-agent
-  re-pays the whole standing surface).
+- **RUN-3 [J]** Long conversations are compacted before history bloats the window (`autoCompactEnabled` on, unless deliberately off), and
+  sub-agent fan-out is proportionate (each sub-agent re-pays the whole standing surface). Note that the skill-description listing is not
+  re-injected after a compaction — only invoked skills survive.
 - **RUN-4 [J]** Tool-result verbosity is controlled — raw logs / JSON not re-read every turn — which is the standing case for compression
   tooling (TOOL).
 - **RUN-5 [M]** A default model pinned in `settings.json` is reported where present, so the tier choice (RUN-2) is visible.
