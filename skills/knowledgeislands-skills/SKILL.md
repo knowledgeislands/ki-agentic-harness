@@ -125,8 +125,8 @@ Optimising one lever blindly hurts the other; holding both is the work.
 
 ## Mode REFRESH — re-anchor best practice
 
-Keep the rubric current — the standard and the community move, and this is why the skill tracks its own sources. Run periodically (monthly,
-with the other skills), or when asked "is the skills rubric current".
+Keep the rubric current — the standard and the community move, and this is why the skill tracks its own sources. Run on its declared cadence
+(see `references/sources.md`), or when asked "is the skills rubric current".
 
 1. **Read [the source list](references/sources.md)** — the tracked authoritative + community sources, each with a `last reviewed` date and
    what it governs.

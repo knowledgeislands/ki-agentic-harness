@@ -119,8 +119,8 @@ For the toolchain scaffold defer to `knowledgeislands-engineering` INIT; for hos
 
 ### Mode REFRESH — re-anchor the standard to its sources
 
-The standard pins volatile versions (Eleventy, Tailwind, Lucide) and Tailwind-4 idioms that move. Run periodically (monthly, with the other
-skills), or when asked "is the website standard current".
+The standard pins volatile versions (Eleventy, Tailwind, Lucide) and Tailwind-4 idioms that move. Run on its declared cadence (see
+`references/sources.md`), or when asked "is the website standard current".
 
 1. **Read [the source list](references/sources.md)** — each source with its `last reviewed` date.
 2. **Re-fetch each** (WebFetch / WebSearch) and diff against the standard + rubric +

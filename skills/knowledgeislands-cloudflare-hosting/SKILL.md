@@ -118,8 +118,8 @@ the custom domain and `www` redirect rule in the dashboard, then set up Cloudfla
 
 ### Mode REFRESH — re-anchor the standard to its sources
 
-The standard pins volatile facts (the wrangler version, Static-Assets config keys, the Pages-deprecation status). Run periodically (monthly,
-with the other skills), or when asked "is the hosting standard current".
+The standard pins volatile facts (the wrangler version, Static-Assets config keys, the Pages-deprecation status). Run on its declared
+cadence (see `references/sources.md`), or when asked "is the hosting standard current".
 
 1. **Read [the source list](references/sources.md)** — each source with its `last reviewed` date.
 2. **Re-fetch each** (WebFetch / WebSearch) and diff against the standard + rubric +

@@ -1,5 +1,7 @@
 # Sources — where the standard comes from
 
+**Refresh:** external-spec · monthly
+
 The authoritative and community sources behind the [Workspace MCP Standard](workspace-mcp-standard.md) and [Audit Rubric](audit-rubric.md).
 Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + rubric +
 [`scripts/audit-mcp.ts`](../scripts/audit-mcp.ts), then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below

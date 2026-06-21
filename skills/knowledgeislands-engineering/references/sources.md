@@ -1,5 +1,7 @@
 # Sources — where the engineering standard comes from
 
+**Refresh:** external-spec · monthly
+
 The toolchain pins and conventions behind [the engineering standard](engineering-standard.md) and
 [the enforcement framework](enforcement-framework.md). Mode REFRESH reads this file, re-fetches each source, diffs it against the standard +
 rubric + [`../scripts/audit-engineering.ts`](../scripts/audit-engineering.ts), then **bumps the `last reviewed` dates** and refreshes the

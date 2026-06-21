@@ -85,6 +85,14 @@ standard with a `last reviewed` date. A skill that tracks a **moving external** 
 also keeps a current-state **`## Last review`** block — pinned revision, what's confirmed, open watch-items — overwritten each REFRESH. A
 skill that hard-codes no volatile external fact may instead resolve it at runtime; the point is durability (LONG-1/LONG-2 below).
 
+Each `sources.md` declares its **refresh class and cadence** on a single machine-readable line directly under the H1, before the intro:
+`**Refresh:** <class> · <cadence>`. The two classes name the long-implicit distinction: an **`external-spec`** skill pins a moving outside
+source (a spec, an upstream tool, vendor docs) and refreshes on a **clock**; a **`canonical`** skill defines its model in-house (e.g. a zone
+model, a process) and refreshes **`on-change`**, not on a calendar. Cadence is `weekly` | `monthly` | `quarterly` | `on-change` | `<N>d`
+(window-days `7` / `30` / `90` / N; `on-change` = no clock). The class is **independent of `## Last review`-block presence** — a `canonical`
+skill may still keep a block as a hand-curated practice-review note. This marker is the single source of truth that the checker's cadence
+enforcement (the overdue WARN) and the REFRESH too-soon gate (§5) both read.
+
 ## 5. The modes
 
 Every governance skill exposes the universal three, plus skill-specific ones where they fit. Modes are named and alphabetical.
@@ -104,7 +112,11 @@ Every governance skill exposes the universal three, plus skill-specific ones whe
 - **CONFORM** — bring an existing artifact into line in place; re-run the checker (and any judgment pass) until clean. Copy from the closest
   healthy sibling rather than invent. Record what changed under the target's **`.ki-meta/conform/<concern>.md`** (latest-only) — so
   conformance leaves a durable trace now that not every change is a git-committed write.
-- **REFRESH** — re-anchor the standard to its sources on a stated cadence: read `sources.md`, re-fetch each source, diff against the
+- **REFRESH** — re-anchor the standard to its sources on its declared cadence (§4). **First read the skill's refresh status** (the checker's
+  `--refresh-status`, or parse the `**Refresh:**` marker against the latest `last reviewed` date). If the skill is still **within its
+  cadence window** (refreshed recently), the refresh is premature: **interactively, pause and confirm with the operator before forcing it;
+  on a non-interactive / scheduled / sub-agent run, skip it** — absent a human to confirm with, within-window means skip (don't force, don't
+  ask). For a `due` / `overdue` / `on-change` / unmarked skill, proceed: read `sources.md`, re-fetch each source, diff against the
   standard + rubric + checker, propose a diff (confirm before writing), then bump the `last reviewed` dates and the `## Last review` block.
 - **INIT** (optional) — scaffold a new artifact to the standard.
 - **OPTIMISE** (optional) — once an artifact is clean, push it from the rubric floor toward excellent (value-per-token and discoverability)
@@ -116,9 +128,12 @@ Every governance skill exposes the universal three, plus skill-specific ones whe
 
 These hold for every skill, current and future:
 
-- **A refresh path, and a cadence (LONG-1 / LONG-2).** A skill that tracks a moving target ships a REFRESH mode and a dated `sources.md` and
-  states how often it should run; one that hard-codes no volatile fact resolves it at runtime. A skill in a shared catalogue is long-lived
-  and far from its author and must not rot silently.
+- **A refresh path, and a cadence (LONG-1 / LONG-2 / LONG-3 / LONG-4).** A skill that tracks a moving target ships a REFRESH mode and a
+  dated `sources.md`, and **declares its refresh class and cadence** in a `**Refresh:**` marker (§4); one that hard-codes no volatile fact
+  resolves it at runtime. A skill in a shared catalogue is long-lived and far from its author and must not rot silently. The declared
+  cadence is enforced in **both directions** off that one marker: the checker WARNs when a skill is **overdue** (past its cadence + grace —
+  LONG-3, with `canonical · on-change` exempt), and the REFRESH mode (§5) **gates a too-soon** refresh — within-window it confirms before
+  forcing (interactive) or skips (scheduled). Marker presence and coherence are LONG-4.
 - **No silent collisions (COLL-1 / COLL-2).** Where two skills could fire on one request, each `description` names the other as the
   off-ramp; a new skill is audited against the existing set before it ships.
 - **One governance-mode model (SHAPE-5).** The universal AUDIT/CONFORM/REFRESH plus skill-specific modes, so a new skill inherits the shape.

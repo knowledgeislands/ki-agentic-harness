@@ -1,5 +1,7 @@
 # Sources - where the structure model comes from
 
+**Refresh:** canonical · on-change
+
 The canonical and living sources behind this skill's zone model, routing test, and project-bindings table. Mode REFRESH reads this file,
 re-anchors the model against each source, then **bumps the `last reviewed` dates** (what changed is recorded in the commit, not a changelog
 — history lives in git). This is the skill's memory of where its structure comes from - keep it current.

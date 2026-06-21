@@ -91,6 +91,10 @@ and checking the external sources it builds on (Agent Skills, Claude Code subage
 5. **Update [the source list](references/sources.md)** — bump `last reviewed` dates and refresh the `## Last review` block (what's
    confirmed, open watch-items). The record of _what changed_ is the commit, not a changelog here.
 
+Run REFRESH on this skill's declared cadence (the `**Refresh:**` marker in [`references/sources.md`](references/sources.md) —
+`external-spec · monthly`). If it's invoked while still within that window, confirm before forcing (interactive) or skip (scheduled), per
+the enforcement framework's REFRESH gate.
+
 ## Notes
 
 - Auditing a harness runs the harness _delta_ on top of the sibling skills' checks — AUDIT step 2 lists the composition order. Don't

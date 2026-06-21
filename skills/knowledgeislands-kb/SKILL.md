@@ -106,18 +106,18 @@ only the one the request selects. Like every governance skill it carries **AUDIT
 (scaffold a base), the session-level **IMPROVE** (continuous improvement), and the note-ops **DIGEST · EXTRACT · QUERY · SAVE · UPDATE**.
 Modes are named and alphabetical.
 
-| Mode    | Fires on                                           | Read before acting                                        |
-| ------- | -------------------------------------------------- | --------------------------------------------------------- |
-| AUDIT   | "audit my knowledge base / is it structured right" | [mode-audit-conform.md](references/mode-audit-conform.md) |
-| CONFORM | "bring my base into line / fix the structure"      | [mode-audit-conform.md](references/mode-audit-conform.md) |
-| DIGEST  | "write a session digest"                           | [mode-digest.md](references/mode-digest.md)               |
-| EXTRACT | "distil this conversation into notes"              | [mode-extract.md](references/mode-extract.md)             |
-| IMPROVE | continuous-improvement sweep (at session end)      | [mode-improve.md](references/mode-improve.md)             |
-| INIT    | "set up a new knowledge base"                      | [mode-init.md](references/mode-init.md)                   |
-| QUERY   | "what do my notes say / search my notes"           | [mode-query.md](references/mode-query.md)                 |
-| REFRESH | "is the KB skill still current" (monthly)          | [mode-refresh.md](references/mode-refresh.md)             |
-| SAVE    | "save to my notes / capture this"                  | [mode-save.md](references/mode-save.md)                   |
-| UPDATE  | "update the note on X"                             | [mode-update.md](references/mode-update.md)               |
+| Mode    | Fires on                                                  | Read before acting                                        |
+| ------- | --------------------------------------------------------- | --------------------------------------------------------- |
+| AUDIT   | "audit my knowledge base / is it structured right"        | [mode-audit-conform.md](references/mode-audit-conform.md) |
+| CONFORM | "bring my base into line / fix the structure"             | [mode-audit-conform.md](references/mode-audit-conform.md) |
+| DIGEST  | "write a session digest"                                  | [mode-digest.md](references/mode-digest.md)               |
+| EXTRACT | "distil this conversation into notes"                     | [mode-extract.md](references/mode-extract.md)             |
+| IMPROVE | continuous-improvement sweep (at session end)             | [mode-improve.md](references/mode-improve.md)             |
+| INIT    | "set up a new knowledge base"                             | [mode-init.md](references/mode-init.md)                   |
+| QUERY   | "what do my notes say / search my notes"                  | [mode-query.md](references/mode-query.md)                 |
+| REFRESH | "is the KB skill still current" (on its declared cadence) | [mode-refresh.md](references/mode-refresh.md)             |
+| SAVE    | "save to my notes / capture this"                         | [mode-save.md](references/mode-save.md)                   |
+| UPDATE  | "update the note on X"                                    | [mode-update.md](references/mode-update.md)               |
 
 The memory cascade and the canonical-zone Enactment gate are part of the shared model above — they apply on every fire, before any mode
 procedure loads.

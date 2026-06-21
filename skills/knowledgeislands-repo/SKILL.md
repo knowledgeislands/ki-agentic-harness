@@ -101,8 +101,8 @@ live settings to **CONFORM**.
 
 ### Mode REFRESH — re-anchor the standard to GitHub's surface
 
-GitHub's settings surface moves (rulesets vs classic protection, new security toggles, Actions policy). Run periodically (monthly, with the
-other skills), or when asked "is the repo standard current".
+GitHub's settings surface moves (rulesets vs classic protection, new security toggles, Actions policy). Run on its declared cadence (see
+`references/sources.md`), or when asked "is the repo standard current".
 
 1. **Read [the source list](references/sources.md)** — the tracked GitHub REST API / `gh` / rulesets / security-features sources, each with
    a `last reviewed` date.

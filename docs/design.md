@@ -102,12 +102,16 @@ Seven invariants hold for every skill here, current and future — each tied to 
 skill inherits them by being audited:
 
 - **Every skill carries a refresh path — and a cadence.** A skill that tracks a moving target (an external spec, a community best-practice,
-  a base's live structure) ships a REFRESH mode and a dated `references/sources.md`, and states how often it should run; one that hard-codes
-  no volatile external fact may instead resolve it at runtime. The point is durability: a skill installed into a shared or cloud catalogue
-  is long-lived and far from its author, and must not rot silently. Enforced as `knowledgeislands-skills` rubric **LONG-1** (a refresh path
-  exists) and **LONG-2** (it has a cadence, ideally a scheduled run), and mirrored into the `knowledgeislands-mcp` audit checklist. The
-  monthly `knowledgeislands-skills-refresh` routine realises it — running every governance skill's REFRESH against its tracked sources and
-  opening a PR for review rather than committing.
+  a base's live structure) ships a REFRESH mode and a dated `references/sources.md`, and **declares its refresh class and cadence** in a
+  `**Refresh:** <class> · <cadence>` marker — `external-spec` (a moving outside source; a clock cadence) or `canonical` (an in-house model;
+  `on-change`, no clock); one that hard-codes no volatile external fact may instead resolve it at runtime. The point is durability: a skill
+  installed into a shared or cloud catalogue is long-lived and far from its author, and must not rot silently. The declared cadence is
+  enforced **both ways** off that one marker: **LONG-3** WARNs when a skill is _overdue_ (past its own cadence + grace;
+  `canonical · on-change` exempt), and the REFRESH mode's _too-soon_ gate confirms-before-forcing (interactive) or skips (scheduled) a
+  refresh requested within the window. Backed by **LONG-1** (a refresh path exists), **LONG-2** (a declared cadence), **LONG-4** (the marker
+  is present and coherent), and mirrored into the `knowledgeislands-mcp` audit checklist. The `knowledgeislands-skills-refresh` routine
+  realises it — sweeping every governance skill's REFRESH on its declared cadence (skipping within-window skills) and opening a PR for
+  review rather than committing.
 - **No silent collisions.** Where two skills could fire on the same request, each description names the other as the off-ramp, and new
   skills are audited against the existing set before they ship (rubric **COLL-1/COLL-2**; the linter's cross-skill pass flags shared
   triggers). The current boundaries are the subject of _Where the skills do not overlap_, above.

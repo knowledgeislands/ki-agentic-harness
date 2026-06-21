@@ -126,18 +126,18 @@ _procedure_ lives in its own on-demand file, so read only the one the request se
 CONFORM · REFRESH**; its enactment-lifecycle modes are **ITERATE · PROPOSE · READY · REJECT · REVIEW · ROLLOUT · SETTLE**. Modes are named
 and alphabetical.
 
-| Mode    | Fires on                                                | Read before acting                                        |
-| ------- | ------------------------------------------------------- | --------------------------------------------------------- |
-| AUDIT   | "audit my streams"                                      | [mode-audit-conform.md](references/mode-audit-conform.md) |
-| CONFORM | "conform my streams / bring them into line"             | [mode-audit-conform.md](references/mode-audit-conform.md) |
-| ITERATE | "iterate / develop this proposal"                       | [mode-iterate.md](references/mode-iterate.md)             |
-| PROPOSE | "start a stream / create a proposal"                    | [mode-propose.md](references/mode-propose.md)             |
-| READY   | "mark this ready"                                       | [mode-ready.md](references/mode-ready.md)                 |
-| REFRESH | "is the Streams model still current" (monthly)          | [mode-refresh.md](references/mode-refresh.md)             |
-| REJECT  | "reject this stream"                                    | [mode-reject.md](references/mode-reject.md)               |
-| REVIEW  | "run the post-change review"                            | [mode-review.md](references/mode-review.md)               |
-| ROLLOUT | "roll out this proposal" (needs explicit authorisation) | [mode-rollout.md](references/mode-rollout.md)             |
-| SETTLE  | "settle this stream"                                    | [mode-settle.md](references/mode-settle.md)               |
+| Mode    | Fires on                                                       | Read before acting                                        |
+| ------- | -------------------------------------------------------------- | --------------------------------------------------------- |
+| AUDIT   | "audit my streams"                                             | [mode-audit-conform.md](references/mode-audit-conform.md) |
+| CONFORM | "conform my streams / bring them into line"                    | [mode-audit-conform.md](references/mode-audit-conform.md) |
+| ITERATE | "iterate / develop this proposal"                              | [mode-iterate.md](references/mode-iterate.md)             |
+| PROPOSE | "start a stream / create a proposal"                           | [mode-propose.md](references/mode-propose.md)             |
+| READY   | "mark this ready"                                              | [mode-ready.md](references/mode-ready.md)                 |
+| REFRESH | "is the Streams model still current" (on its declared cadence) | [mode-refresh.md](references/mode-refresh.md)             |
+| REJECT  | "reject this stream"                                           | [mode-reject.md](references/mode-reject.md)               |
+| REVIEW  | "run the post-change review"                                   | [mode-review.md](references/mode-review.md)               |
+| ROLLOUT | "roll out this proposal" (needs explicit authorisation)        | [mode-rollout.md](references/mode-rollout.md)             |
+| SETTLE  | "settle this stream"                                           | [mode-settle.md](references/mode-settle.md)               |
 
 The Enactment gate (`## Installing the gate` below) and the Working rules apply on every fire, before any mode procedure loads — ROLLOUT in
 particular must not begin without explicit user authorisation.

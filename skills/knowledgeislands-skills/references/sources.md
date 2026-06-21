@@ -1,5 +1,7 @@
 # Sources — where the standard comes from
 
+**Refresh:** external-spec · monthly
+
 The authoritative and community sources behind [the standard](agent-skills-standard.md) and its [rubric](audit-rubric.md). Mode REFRESH
 reads this file, re-fetches each source, diffs it against the standard + rubric, then **bumps the `last reviewed` dates** and refreshes the
 `## Last review` block below (what changed is recorded in the commit, not a changelog). This is the skill's memory of where best practice

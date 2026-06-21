@@ -1,5 +1,7 @@
 # Sources — where the tokenomics standard comes from
 
+**Refresh:** external-spec · weekly
+
 The authoritative and community sources behind [the standard](tokenomics-standard.md), [the rubric](audit-rubric.md), and
 [`../scripts/audit-tokenomics.ts`](../scripts/audit-tokenomics.ts). Mode REFRESH reads this file, re-fetches each source, diffs it against
 the standard + rubric + checker, then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below (what changed is

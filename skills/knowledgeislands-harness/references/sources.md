@@ -1,5 +1,7 @@
 # Sources — knowledgeislands-harness
 
+**Refresh:** external-spec · monthly
+
 The tracked sources behind the harness standard. Provenance only: the record of _what changed_ lives in git (the REFRESH commit), not a
 changelog here.
 

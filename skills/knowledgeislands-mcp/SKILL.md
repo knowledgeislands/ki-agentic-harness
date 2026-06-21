@@ -149,7 +149,7 @@ Auditing all the `mcp-*` servers at once is a set audit — **bound the context*
 
 The MCP specification is versioned by date and moves; the in-house standard is built **on top of** it. This mode keeps the standard honest —
 it pulls the current gold standard and diffs it against what this skill codifies, so the audit never green-lights a repo against a spec that
-has moved on. Run it periodically (monthly, with the other skills), or when someone asks "is our MCP standard up to date".
+has moved on. Run it on its declared cadence (see `references/sources.md`), or when someone asks "is our MCP standard up to date".
 
 1. **Read [the source list](references/sources.md)** — the tracked authoritative (official MCP spec) + community + in-house sources, each
    with a `last reviewed` date and what it governs. The Authoritative table names the **latest released** spec version; everything else is

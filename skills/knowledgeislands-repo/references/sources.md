@@ -1,5 +1,7 @@
 # Sources — where the repo standard comes from
 
+**Refresh:** external-spec · monthly
+
 The authoritative sources behind [the standard](repo-standard.md), [the rubric](audit-rubric.md), and
 [`../scripts/audit-repo.ts`](../scripts/audit-repo.ts). Mode REFRESH reads this file, re-fetches each source, diffs it against the
 standard + script, then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below (what changed is recorded in the

@@ -106,8 +106,8 @@ overrides, and optionally `context_window_tokens`. Local only; no live change.
 ### Mode REFRESH — re-anchor to current best practice
 
 The numbers and the tooling here move faster than anything else this set tracks — model windows and prices, cache TTLs, Headroom's config
-surface, Anthropic's context-engineering guidance. Run periodically (monthly, with the other skills), or when asked "is the tokenomics
-standard current".
+surface, Anthropic's context-engineering guidance. Run on its declared cadence (see `references/sources.md`), or when asked "is the
+tokenomics standard current".
 
 1. **Read [the source list](references/sources.md)** — the tracked sources, each dated.
 2. **Re-fetch each** (WebFetch / WebSearch) and **diff** against [the standard](references/tokenomics-standard.md),

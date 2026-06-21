@@ -86,8 +86,8 @@ context at once.
 
 ## Mode REFRESH — re-anchor best practice
 
-Keep the rubric current — the subagents spec and house practice move, and this is why the skill tracks its own sources. Run periodically
-(monthly, with the other skills), or when asked "is the agents rubric current".
+Keep the rubric current — the subagents spec and house practice move, and this is why the skill tracks its own sources. Run on its declared
+cadence (see `references/sources.md`), or when asked "is the agents rubric current".
 
 1. **Read [the source list](references/sources.md)** — the tracked sources (the Claude Code subagents docs and the house agent conventions),
    each with a `last reviewed` date.

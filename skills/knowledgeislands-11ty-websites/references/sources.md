@@ -1,5 +1,7 @@
 # Sources — where the standard comes from
 
+**Refresh:** external-spec · monthly
+
 The authoritative and in-house sources behind the [Eleventy site standard](eleventy-site-standard.md) and [Audit Rubric](audit-rubric.md).
 Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + rubric +
 [`scripts/audit-websites.ts`](../scripts/audit-websites.ts), then **bumps the `last reviewed` dates** and refreshes the `## Last review`

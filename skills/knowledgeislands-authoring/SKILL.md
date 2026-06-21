@@ -59,8 +59,8 @@ the **Convention sets** below; the checkable criteria are in [the rubric](refere
 
 ### Mode REFRESH — re-anchor the conventions to their sources
 
-The house conventions sit on top of external tools and specs (CommonMark, Prettier, markdownlint, the TOML spec), which move. Run
-periodically (monthly, with the other skills), or when asked "are the authoring conventions current".
+The house conventions sit on top of external tools and specs (CommonMark, Prettier, markdownlint, the TOML spec), which move. Run on its
+declared cadence (see `references/sources.md`), or when asked "are the authoring conventions current".
 
 1. **Read [the source list](references/sources.md)** — each tracked source with its `last reviewed` date.
 2. **Re-fetch each** (WebFetch; fall back to WebSearch if a host is blocked or returns non-200) and diff against the convention references:

@@ -208,9 +208,17 @@ ever starts enforcing a **[J]** check, move its tag here.
 - **LONG-1 [J]** _Volatile facts & a refresh path._ A skill hard-coding facts that drift (model IDs, versions, tool names, dated spec
   numbers, URLs) must either resolve them at runtime **or** carry a tracked source list with `last reviewed` dates **and** a REFRESH mode
   that re-anchors them and names what to re-fetch. (BP, COMMUNITY)
-- **LONG-2 [J]** _A cadence, not just a capability._ A skill that ships a refresh path also states a **cadence** (periodic or "run when X")
-  and, where supported, registers a scheduled run; a refresh capability with no stated cadence is a half-measure. (COMMUNITY)
+- **LONG-2 [J]** _A cadence, not just a capability._ A skill that ships a refresh path also **declares a cadence** in its `sources.md`
+  `**Refresh:**` marker (`<class> · <cadence>`) and, where supported, registers a scheduled run; a refresh capability with no declared
+  cadence is a half-measure. The cadence has runtime teeth in both directions: overdue → LONG-3 WARN; too-soon → the REFRESH mode's
+  confirm-before-force gate (enforcement framework §5). (COMMUNITY)
 - **LONG-3 [M]** _The cadence is actually being met._ Where a skill carries `references/sources.md`, its most recent `Last reviewed` date
-  (read from that table column, so dates quoted in prose don't count) is within the monthly cadence plus grace; an overdue source list WARNs
-  so AUDIT and the monthly refresh routine surface it. Never a FAIL — staleness is elapsed time, not a defect in the change under review.
+  (read from that table column, so dates quoted in prose don't count) is within the skill's **declared per-skill cadence** plus grace; an
+  overdue source list WARNs so AUDIT and the scheduled refresh routine surface it. A `canonical · on-change` skill carries no clock and is
+  exempt — it refreshes when the model changes, not on a calendar. Never a FAIL — staleness is elapsed time, not a defect in the change
+  under review. (COMMUNITY)
+- **LONG-4 [M]** _The refresh marker is present and coherent._ Each `sources.md` carries a parseable `**Refresh:** <class> · <cadence>` line
+  (§4 of the enforcement framework) — a missing or malformed marker WARNs (**4a**). An `external-spec` skill must declare a clock cadence,
+  not `on-change` (**4b**, soft WARN). Class is **not** mechanically tied to `## Last review`-block presence — a `canonical` skill may keep
+  a block as a hand-curated practice note (`knowledgeislands-streams` does), so block-presence stays a `[J]` read, not a checker rule.
   (COMMUNITY)

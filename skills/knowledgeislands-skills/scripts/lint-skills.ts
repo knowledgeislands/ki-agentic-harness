@@ -9,6 +9,7 @@
 // Usage:
 //   bun scripts/lint-skills.ts [path ...]            # a skill dir, or a dir containing skills
 //   bun scripts/lint-skills.ts <skill> --footprint   # + per-skill token footprint (SIZE-5, INFO) for Mode OPTIMISE
+//   bun scripts/lint-skills.ts skills --refresh-status # + per-skill refresh class/cadence/status (LONG-3/§5, INFO)
 //   bun run skills:lint                               # (from the arcadia-agentic-harness repo root)
 //
 // A path containing SKILL.md is treated as one skill; otherwise its immediate
@@ -35,7 +36,8 @@ const COMPAT_MAX = 500
 const BODY_MAX_LINES = 500
 const BODY_MAX_TOKENS = 5000 // estimated as chars/4
 const TOC_LINE_THRESHOLD = 100
-const REFRESH_MAX_DAYS = 45 // monthly cadence (LONG-2) + ~2 weeks grace before a sources.md reads as stale
+const REFRESH_GRACE_DAYS = 14 // grace added once past a skill's declared cadence window before LONG-3 WARNs
+const CADENCE_DAYS: Record<string, number> = { weekly: 7, monthly: 30, quarterly: 90 } // 'on-change' = no clock; '<N>d' parsed inline
 const FOOTPRINT_REF_NOTE_TOKENS = 1500 // a single reference this large is a candidate to split — INFO hint only, never a cap
 const RESERVED = ['anthropic', 'claude']
 
@@ -219,6 +221,52 @@ function latestReviewDate(text: string): string | null {
   return latest
 }
 
+// --- refresh cadence (enforcement framework §4/§5) ----------------------------
+// One `**Refresh:** <class> · <cadence>` marker per sources.md drives both LONG-3
+// (overdue WARN) and the REFRESH too-soon gate, via one status computation.
+type RefreshClass = 'external-spec' | 'canonical'
+type RefreshStatus = 'due' | 'within-window' | 'overdue' | 'no-clock' | 'unmarked'
+interface RefreshInfo {
+  cls: RefreshClass | null
+  cadence: string | null // raw token: weekly | monthly | quarterly | on-change | <N>d
+  windowDays: number | null // null = no clock (on-change)
+  lastReviewed: string | null
+  ageDays: number | null
+  status: RefreshStatus
+}
+
+// Parse the marker from the top of a sources.md. Returns null when absent/malformed
+// (including a non-positive `<N>d`). 'on-change' yields windowDays = null (no clock).
+function parseRefreshMarker(text: string): { cls: RefreshClass; cadence: string; windowDays: number | null } | null {
+  const m = text.match(/^\*\*Refresh:\*\*\s*(external-spec|canonical)\s*·\s*(weekly|monthly|quarterly|on-change|\d+d)\s*$/m)
+  if (!m) return null
+  const cls = m[1] as RefreshClass
+  const cadence = m[2] as string
+  let windowDays: number | null
+  if (cadence === 'on-change') windowDays = null
+  else if (/^\d+d$/.test(cadence)) {
+    const n = Number.parseInt(cadence, 10)
+    if (n <= 0) return null // 0d is malformed → treat as unmarked
+    windowDays = n
+  } else windowDays = CADENCE_DAYS[cadence] ?? null
+  return { cls, cadence, windowDays }
+}
+
+function computeRefreshStatus(sourcesText: string): RefreshInfo {
+  const marker = parseRefreshMarker(sourcesText)
+  const lastReviewed = latestReviewDate(sourcesText)
+  const ageDays = lastReviewed ? Math.floor((Date.now() - Date.parse(`${lastReviewed}T00:00:00Z`)) / 86_400_000) : null
+  if (!marker) return { cls: null, cadence: null, windowDays: null, lastReviewed, ageDays, status: 'unmarked' }
+  const { cls, cadence, windowDays } = marker
+  if (windowDays === null) return { cls, cadence, windowDays, lastReviewed, ageDays, status: 'no-clock' }
+  if (ageDays === null) return { cls, cadence, windowDays, lastReviewed, ageDays, status: 'overdue' } // clock declared, no date
+  let status: RefreshStatus
+  if (ageDays > windowDays + REFRESH_GRACE_DAYS) status = 'overdue'
+  else if (ageDays < windowDays) status = 'within-window'
+  else status = 'due'
+  return { cls, cadence, windowDays, lastReviewed, ageDays, status }
+}
+
 function lintSkill(skillDir: string): Finding[] {
   const f: Finding[] = []
   const fail = (criterion: string, message: string): void => void f.push({ severity: 'fail', criterion, message })
@@ -320,16 +368,27 @@ function lintSkill(skillDir: string): Finding[] {
       )
   }
 
-  // --- LONG-3: a tracked sources.md must be reviewed within the cadence ---
-  // Only fires when the skill actually carries a source list (LONG-1 leaves
-  // runtime-resolved skills without one); WARN, never fail — staleness is the
-  // passage of time, not a defect in the commit under review.
+  // --- LONG-3 / LONG-4: the declared refresh cadence ---
+  // One `**Refresh:**` marker drives both. LONG-4 checks the marker is present &
+  // coherent; LONG-3 WARNs when overdue against the skill's OWN cadence. WARN-only —
+  // staleness is elapsed time, not a defect in the commit; a canonical · on-change
+  // skill carries no clock and is exempt. Only fires where a source list exists
+  // (LONG-1 leaves runtime-resolved skills without one).
   const sourcesPath = join(skillDir, 'references', 'sources.md')
   if (existsSync(sourcesPath)) {
-    const latest = latestReviewDate(readFileSync(sourcesPath, 'utf8'))
-    if (latest) {
-      const ageDays = Math.floor((Date.now() - Date.parse(`${latest}T00:00:00Z`)) / 86_400_000)
-      if (ageDays > REFRESH_MAX_DAYS) warn('LONG-3', `references/sources.md last reviewed ${latest} (${ageDays} days ago), past the monthly REFRESH cadence (LONG-2) — run Mode REFRESH`)
+    const info = computeRefreshStatus(readFileSync(sourcesPath, 'utf8'))
+    if (info.status === 'unmarked') {
+      warn('LONG-4', 'references/sources.md has no parseable `**Refresh:** <class> · <cadence>` marker near the top (LONG-4a)')
+    } else {
+      if (info.cls === 'external-spec' && info.cadence === 'on-change')
+        warn('LONG-4', '`**Refresh:**` marks this external-spec but cadence is `on-change` — an external-spec tracker needs a clock cadence (LONG-4b)')
+      if (info.status === 'overdue')
+        warn(
+          'LONG-3',
+          info.lastReviewed
+            ? `references/sources.md last reviewed ${info.lastReviewed} (${info.ageDays} days ago), past its ${info.cadence} REFRESH cadence + ${REFRESH_GRACE_DAYS}d grace — run Mode REFRESH`
+            : `references/sources.md declares a ${info.cadence} cadence but has no \`Last reviewed\` date — run Mode REFRESH`
+        )
     }
   }
 
@@ -406,6 +465,7 @@ const LEGEND =
 const rawArgv = process.argv.slice(2)
 const jsonOut = rawArgv.includes('--json')
 const footprintOut = rawArgv.includes('--footprint') // SIZE-5: per-skill token footprint as INFO (Mode OPTIMISE)
+const refreshStatusOut = rawArgv.includes('--refresh-status') // per-skill refresh cadence status as INFO (LONG-3/§5; the REFRESH gate reads this)
 const ri = rawArgv.indexOf('--report')
 const reportOut = ri !== -1
 const reportTarget = resolve('.')
@@ -466,6 +526,23 @@ if (footprintOut) {
         console.log(paint(C.dim, `    ${r.kind} ${r.path}: ~${r.tokens} tokens`) + (big ? paint(C.yellow, ' — large, candidate to split') : ''))
       }
     }
+  }
+}
+
+// per-skill refresh status (LONG-3/§5) — opt-in, INFO only, never affects the fail/warn tally or exit code.
+// The REFRESH mode's too-soon gate reads this (within-window → confirm before forcing / skip on a scheduled run).
+if (refreshStatusOut) {
+  for (const dir of skillDirs) {
+    const sk = basename(dir)
+    const sp = join(dir, 'references', 'sources.md')
+    const line = existsSync(sp)
+      ? (() => {
+          const i = computeRefreshStatus(readFileSync(sp, 'utf8'))
+          return `${i.cls ?? 'unmarked'} · ${i.cadence ?? '—'} · last ${i.lastReviewed ?? '—'} · age ${i.ageDays ?? '—'}d · ${i.status.toUpperCase()}`
+        })()
+      : 'no sources.md'
+    all.push({ level: 'INFO', area: `${sk}:refresh`, msg: line })
+    if (!jsonOut) console.log(`\n${paint(C.cyan, sk)} ${paint(C.dim, 'refresh')}  ${ICON.INFO}${line}`)
   }
 }
 

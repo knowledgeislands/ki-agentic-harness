@@ -1,5 +1,7 @@
 # Sources — where the authoring conventions come from
 
+**Refresh:** external-spec · monthly
+
 The sources behind [markdown-authoring.md](markdown-authoring.md) and [toml-config.md](toml-config.md). Mode REFRESH reads this file,
 re-fetches each source, diffs it against the conventions, then **bumps the `last reviewed` dates** and refreshes the `## Last review` block
 below (what changed is recorded in the commit, not a changelog). The house style is mostly internally owned, but it sits on top of these

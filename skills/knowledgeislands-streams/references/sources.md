@@ -1,13 +1,16 @@
 # Sources — where the model comes from
 
+**Refresh:** canonical · on-change
+
 **This skill is the canonical definition** of the Streams structure and the Enactment Process — the single source of truth. The Knowledge
 Islands bases that run the process **defer to it**: each carries a thin local process note that points here and adds only its local
 specifics. There is no separate in-base "canonical Model" to re-anchor against; the skill _is_ the model.
 
 Mode REFRESH therefore keeps this definition coherent and current **against practice** — how the live bases actually run their Streams —
 promoting genuinely shared patterns into the skill and leaving single-base quirks as bindings or local notes. It then **bumps the
-`last reviewed` dates** (what changed is recorded in the commit, not a changelog — history lives in git). This skill follows no moving
-external spec: the Enactment Process is in-house.
+`last reviewed` dates** (what changed is recorded in the commit, not a changelog — history lives in git). Although this skill is
+`canonical · on-change` and carries no clock, it keeps a `## Last review` block as a **hand-kept practice-review note** — the record of the
+last re-anchor against live bases, not an external-spec pin. This skill follows no moving external spec: the Enactment Process is in-house.
 
 ## Canonical
 

@@ -95,8 +95,8 @@ and the `[knowledgeislands-engineering]` table from the closest healthy sibling;
 
 ### Mode REFRESH — re-anchor the toolchain pins to their sources
 
-The standard pins volatile versions (Bun, Node, Biome, TypeScript, vitest, syncpack, markdownlint). Run periodically (monthly, with the
-other skills), or when asked "are the engineering standards current".
+The standard pins volatile versions (Bun, Node, Biome, TypeScript, vitest, syncpack, markdownlint). Run on its declared cadence (see
+`references/sources.md`), or when asked "are the engineering standards current".
 
 1. **Read [the source list](references/sources.md)** — each pin with its `last reviewed` date.
 2. **Re-fetch each** (WebFetch / WebSearch) and diff against the standard + rubric +
