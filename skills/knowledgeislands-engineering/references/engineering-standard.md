@@ -165,6 +165,11 @@ When a repo has a `vitest.config.*` (or a `test` script):
   **100% thresholds on all four metrics** (lines / functions / branches / statements). Tests are co-located (`src/**/*.test.ts`).
 - The coverage `exclude` list always drops `src/**/*.test.ts`; **which other modules are excluded is artifact-specific** (e.g. an MCP
   excludes `mcp-server/index.ts`, `tools/**`, `utils/annotations.ts`) and is owned by that artifact's skill, not here.
+- **Executable helper scripts are operational tooling, not shipped `src/`, and are outside this capability.** A repo's `scripts/` (repo
+  tooling, eval harnesses) and a skill's bundled checkers (`scripts/audit-*.ts`, `scripts/lint-*.ts`) are run, not unit-tested — coverage is
+  scoped to `src/**`, which never matches them. So a repo whose only TypeScript is such scripts (no `src/`, no `vitest.config`) does **not**
+  trigger the tests capability, and its absence of tests is conformant by design — not a coverage gap. The harness repo is exactly this
+  case.
 
 ## 7. Compiled build & CLI (capability: the repo compiles to `dist/`)
 

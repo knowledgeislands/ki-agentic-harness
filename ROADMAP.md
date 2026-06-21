@@ -28,12 +28,13 @@ across the set_) — they run continuously, so they live there, not here.
   `site/wrangler.jsonc`** so `site:deploy` works. Dogfooding the skills against their own corpus; seed `evals/` scenarios for both while
   conforming. (Adding the opt-in tables is the one new `.ki-config.toml` consumer pair beyond those listed below.)
 
-- **Eval scenarios for the agent and container skills.** _(candidate)_ Seven of the twelve skills carry `evals/` scenarios; `tokenomics` and
-  the two website skills are covered by the adoption items above, leaving `knowledgeislands-agents` and `knowledgeislands-harness` with
-  none. Both resist the format: the no-skill-baseline eval rewards a recallable house _fact_, and these two assert _structure_ (a four-part
-  bundle layout, a subagent's `name`/lane/own-vs-defer) more than a fact the model couldn't already infer (see
-  [evals/README.md](evals/README.md), reading note 2). Open work: decide per skill whether a scenario can clear that bar, and seed the ones
-  that can — accepting that one or both may stay uncovered by design rather than by omission.
+- **Eval scenarios for `knowledgeislands-harness`.** _(candidate)_ Eight of the twelve skills carry `evals/` scenarios: `agents` is now
+  seeded with a planted-rule set (the house-contrarian LINK-2, the PROMPT shape, the FM defaults), and `tokenomics` and the two website
+  skills are covered by the adoption items above — leaving `knowledgeislands-harness` with none. It resists the format hardest: the
+  no-skill-baseline eval rewards a recallable house _fact_, but harness asserts pure _structure_ (the four-part bundle layout) that
+  `audit-harness.ts` already checks mechanically, so a behavioural eval adds little over the checker. Open work: decide whether a
+  planted-violation scenario clears the "model couldn't already know this" bar (see [evals/README.md](evals/README.md), reading note 2), or
+  record harness as uncovered by design.
 
 - **`.ki-config.toml` override layer — finish the rollout.** The cross-cutting contract now states the **overridable-vs-fixed** convention
   and the `--init` self-documentation rule (in the `knowledgeislands-repo` `.ki-config.toml` reference), and the pattern has its consumers:

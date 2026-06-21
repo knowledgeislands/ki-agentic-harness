@@ -56,6 +56,10 @@ graded on it, and the checker reports it as N/A, not a failure.
 
 ## Capability: tests (§6) — marker: `vitest.config.*` or a `test` script
 
+> Executable helper scripts (`scripts/`, eval harnesses, a skill's bundled `audit-*.ts` / `lint-*.ts` checkers) are tooling, not shipped
+> `src/` — coverage is scoped to `src/**` and never matches them. A repo whose only TypeScript is such scripts does not trigger this
+> capability; its lack of tests is conformant, not a gap. Do not flag it. (§6)
+
 - [ ] 🔧 WARN — `test` = `vitest run`; `test:coverage` = `vitest run --coverage`; `test:watch` = `vitest`.
 - [ ] 🔧 FAIL — vitest coverage thresholds are **100%** on all four metrics (lines/functions/branches/ statements).
 - [ ] 🔧 WARN — coverage `include` is `src/**/*.ts` and `exclude` drops `src/**/*.test.ts`. (The _additional_ excludes are artifact-specific

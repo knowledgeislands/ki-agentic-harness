@@ -55,13 +55,13 @@ or without the skill.
 
 ## Where it stands
 
-Seven of the twelve skills have 3+ scenarios — `authoring`, `engineering`, `kb`, `mcp`, `repo`, `skills`, `streams` — and the harness has
-been run across Haiku, Sonnet, and Opus. The result, in one line: **on house-specific facts, loading a skill reliably takes the model from
-"I don't know" to the right answer — on every model.** That's the whole point, confirmed. The remaining five (`11ty-websites`,
-`cloudflare-hosting`, `tokenomics`, `agents`, `harness`) are not yet covered — the website and tokenomics scenarios are tracked in
-[ROADMAP.md](../ROADMAP.md).
+Eight of the twelve skills have 3+ scenarios — `agents`, `authoring`, `engineering`, `kb`, `mcp`, `repo`, `skills`, `streams`. The matrix
+run across Haiku, Sonnet, and Opus covered the first seven, and the result in one line was: **on house-specific facts, loading a skill
+reliably takes the model from "I don't know" to the right answer — on every model.** That's the whole point, confirmed. The `agents` set is
+newly added and not yet in a matrix run. The remaining four (`11ty-websites`, `cloudflare-hosting`, `tokenomics`, `harness`) have no
+scenarios yet — the website and tokenomics ones are tracked in [ROADMAP.md](../ROADMAP.md).
 
-**For routine runs, use Sonnet — it's the most cost-effective arm.** A full matrix (21 scenarios × 3 runs) costs roughly **$8 on Haiku, $20
-on Sonnet, $30 on Opus**. Opus gives no cleaner signal than Sonnet for about 50% more, so keep it for occasional confirmation; Sonnet is a
+**For routine runs, use Sonnet — it's the most cost-effective arm.** A full matrix (24 scenarios × 3 runs) costs roughly **$9 on Haiku, $23
+on Sonnet, $34 on Opus**. Opus gives no cleaner signal than Sonnet for about 50% more, so keep it for occasional confirmation; Sonnet is a
 representative, trustworthy model at a sensible price. (Haiku is cheapest and did well here, but a stronger model is the safer regression
 proxy.) Run results aren't checked in — they're regeneratable, so just re-run `bun run eval`.
