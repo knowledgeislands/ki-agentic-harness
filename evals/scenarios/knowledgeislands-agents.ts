@@ -18,8 +18,8 @@ export const scenarios: Scenario[] = [
     prompt:
       'In a Knowledge Islands subagent definition (.md agent file), may I use Obsidian [[wikilinks]] to reference KB notes, or must I use relative markdown links the way a SKILL.md does?',
     assertions: [
-      { name: 'wikilinks are allowed in an agent', re: /\[\[|wikilinks?/i },
-      { name: 'allowed / not a defect (not forbidden)', re: /allow|permit|fine|acceptable|not a defect|ok\b/i },
+      { name: 'wikilinks explicitly OK in an agent (yes / allowed / may use)', re: /\b(yes|can use|may use|allow|permit|fine|acceptable|not a defect)\b/i },
+      { name: 'contrasts with the SKILL.md rule (unlike a SKILL.md)', re: /skill\.?md|unlike|differ|whereas|in contrast|by contrast/i },
       { name: 'because a grounded agent cites its KB notes', re: /(ground|cite|citing|cites)[^.\n]{0,40}(note|kb)|note[^.\n]{0,20}cit/i }
     ],
     rubric:
