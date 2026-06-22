@@ -7,8 +7,9 @@ A harness is **four parts** — the things an agent is given to work with:
 
 - **Skills** ([`skills/`](skills/)) — reusable [Agent Skills](https://agentskills.io/specification): the most-built-out part of the harness
   today (**thirteen**, all governance skills — including `knowledgeislands-harness`, which governs this four-part container itself, and
-  `knowledgeislands-bootstrap`, the install keystone). Installed elsewhere by symlink. The catalogue is in [docs/skills.md](docs/skills.md);
-  how they fit together — boundaries, the knowledge loops, the shared principles — in [docs/design.md](docs/design.md).
+  `knowledgeislands-bootstrap`, the install keystone). Installed per-repo: `bootstrap` (the one globally-installed skill) wires each repo's
+  project-local `.claude/skills/` from its `.ki-config.toml`. The catalogue is in [docs/skills.md](docs/skills.md); how they fit together —
+  boundaries, the knowledge loops, the shared principles — in [docs/design.md](docs/design.md).
 - **Agents** ([`agents/`](agents/)) — Knowledge Islands [Claude Code subagents](https://code.claude.com/docs/en/sub-agents), one per file.
   An empty **shelf** today, governed by the `knowledgeislands-agents` skill. See [`agents/README.md`](agents/README.md).
 - **MCP servers** ([`mcp/`](mcp/)) — where KI's MCP servers would consolidate as workspace packages. An empty **shelf** today; they

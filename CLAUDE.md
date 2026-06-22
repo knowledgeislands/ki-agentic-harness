@@ -5,11 +5,12 @@ indexes — what each skill is, the map, the boundaries. The forward view is in 
 
 ## What this repo is
 
-The canonical home for the Knowledge Islands **Agent Skills** (per the [Agent Skills standard](https://agentskills.io/)), installed
-elsewhere by symlink (`bun run skills:link`). The `knowledgeislands-*` skills are **governance skills**: each holds a house standard and
-ships the universal **AUDIT / CONFORM / REFRESH** modes plus a mechanical checker. They sit in two layers plus a container governor —
-foundations (`authoring`, `engineering`), domain skills (`kb`, `streams`, `mcp`, `repo`, `skills`, `agents`, `tokenomics`, and the website
-pair), and `harness`, which governs the four-part bundle itself — mapped in the README.
+The canonical home for the Knowledge Islands **Agent Skills** (per the [Agent Skills standard](https://agentskills.io/)). The
+`knowledgeislands-*` skills are **governance skills**: each holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH**
+modes plus a mechanical checker. They sit in two layers plus a container governor and an install keystone — foundations (`authoring`,
+`engineering`), domain skills (`kb`, `streams`, `mcp`, `repo`, `skills`, `agents`, `tokenomics`, and the website pair), `harness` (governs
+the four-part bundle), and `bootstrap` (the one globally-installed skill, which wires each repo's project-local `.claude/skills/` from its
+`.ki-config.toml`) — mapped in the README.
 
 ## How skills relate — composition only
 
@@ -39,6 +40,7 @@ bun run lint:check     # Biome (TypeScript + JSON)
 bun run lint:types     # tsc --noEmit
 bun run lint:md        # Prettier + markdownlint over Markdown (writes)
 bun run lint:md:check  # the check-mode twin (the CI Markdown gate)
-bun run skills:lint    # audit every skill's mechanical criteria
-bun run skills:link    # symlink the skills into ~/.claude/skills
+bun run skills:lint           # audit every skill's mechanical criteria
+bun run skills:link:global    # install the bootstrap keystone into ~/.claude/skills
+bun run skills:link:project   # wire this repo's project-local skills from .ki-config.toml (--all here)
 ```
