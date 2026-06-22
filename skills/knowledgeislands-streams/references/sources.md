@@ -64,7 +64,3 @@ duplicate `Enactment Process.md` has gone, but the deferral is now only an `## E
 `How Change Happens.md` that describes the process without explicitly deferring here, legacy `card/*` + `status: … - April 2026` index
 frontmatter persists, and a `completed` `Settled/` proposal has not been deleted (ENACT-5). All are `knowledgeislands-streams` Mode CONFORM
 follow-ups against that base, not changes to the canonical model.
-
-**2026-06-18** — Re-anchored against both living bases; model confirmed current (lifecycle, structure, frontmatter), checker passed both, no
-skill edits warranted. `kit-legal` clean; `arcadia-principal` partial (legacy `card/*` index frontmatter, a duplicate `Enactment Process.md`
-co-existing with `How Change Happens.md`, lagging proposals index) — flagged as base-side CONFORM follow-ups.
