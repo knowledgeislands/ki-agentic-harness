@@ -52,7 +52,7 @@ const BUDGET_DEFAULTS: Record<BudgetKey, number> = {
 }
 const HEADROOM_VALUES = ['required', 'recommended', 'off'] as const
 type HeadroomExpectation = (typeof HEADROOM_VALUES)[number]
-const MODEL_TIER_VALUES = ['opus', 'sonnet', 'haiku'] as const
+const MODEL_TIER_VALUES = ['opus', 'sonnet', 'haiku', 'fable'] as const
 
 const KI_SECTION = 'knowledgeislands-tokenomics'
 const KI_DEFAULT = `[${KI_SECTION}]
@@ -60,7 +60,7 @@ const KI_DEFAULT = `[${KI_SECTION}]
 headroom = "recommended"          # "required" | "recommended" | "off"
 # Optional — the real context window, so the total budget reads as a headroom %.
 # context_window_tokens = 200000
-# preferred_model = "sonnet"        # "opus" | "sonnet" | "haiku" — default tier for this environment
+# preferred_model = "sonnet"        # "opus" | "sonnet" | "haiku" | "fable" — default tier for this environment
 
 # Per-component token budgets (estimates, chars/4). Omit any to take the default.
 # [${KI_SECTION}.budgets]

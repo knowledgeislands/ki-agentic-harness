@@ -368,6 +368,26 @@ function lintSkill(skillDir: string): Finding[] {
       )
   }
 
+  // --- mechanical work belongs in the checker, not in tokens (SHAPE-9 heuristic) ---
+  // A rubric that tags criteria [M] (mechanical) must ship a scripts/ checker that
+  // implements them — or document a toolchain delegation (authoring → `bun run lint:md`).
+  // [M] criteria left to prose make the reader re-derive deterministic checks in tokens.
+  const rubricFile = join(skillDir, 'references', 'audit-rubric.md')
+  if (existsSync(rubricFile)) {
+    const rubric = readFileSync(rubricFile, 'utf8')
+    const mechanical = (rubric.match(/\[M\]/g) ?? []).length
+    if (mechanical > 0) {
+      const rubricScriptsDir = join(skillDir, 'scripts')
+      const hasChecker = existsSync(rubricScriptsDir) && readdirSync(rubricScriptsDir).some((n) => n.endsWith('.ts'))
+      const documentsDelegation = /lint:md|toolchain (?:already )?enforces/i.test(rubric)
+      if (!hasChecker && !documentsDelegation)
+        warn(
+          'SHAPE-9',
+          `rubric tags ${mechanical} criteria [M] but the skill ships no scripts/ checker (nor a documented toolchain delegation) — mechanical work belongs in the checker, not in tokens, per SHAPE-9`
+        )
+    }
+  }
+
   // --- LONG-3 / LONG-4: the declared refresh cadence ---
   // One `**Refresh:**` marker drives both. LONG-4 checks the marker is present &
   // coherent; LONG-3 WARNs when overdue against the skill's OWN cadence. WARN-only —

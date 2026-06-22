@@ -1,8 +1,8 @@
 # Audit Rubric
 
 Line-by-line pass/fail items for auditing a site's hosting against the [Cloudflare hosting standard](cloudflare-hosting-standard.md). Run
-[`../scripts/audit-cloudflare-hosting.ts`](../scripts/audit-cloudflare-hosting.ts) for the mechanical items (marked 🔧), then judge the rest
-by reading. Each item cites the standard section it verifies.
+[`../scripts/audit-cloudflare-hosting.ts`](../scripts/audit-cloudflare-hosting.ts) for the mechanical items (marked **[M]**), then judge the
+rest by reading. Each item cites the standard section it verifies.
 
 Severity: **FAIL** (ship-stopper — the site can't deploy, or deploys the wrong way), **WARN** (config / script divergence), **POLISH**
 (domains / CI / consistency) — the shared ladder, defined in `knowledgeislands-engineering`'s
@@ -26,39 +26,41 @@ Severity: **FAIL** (ship-stopper — the site can't deploy, or deploys the wrong
 
 ## Model (§1)
 
-- [ ] 🔧 FAIL — a **site** `wrangler.jsonc` exists at the site root (the config carrying an `assets` block). Its absence is the classic
+- [ ] [M] FAIL — a **site** `wrangler.jsonc` exists at the site root (the config carrying an `assets` block). Its absence is the classic
       finding — `site:deploy` has nothing to deploy. (§1)
-- [ ] 🔧 FAIL — deploy is **Workers + Static Assets** (`wrangler deploy`), **never** `wrangler pages deploy` anywhere in scripts. (§1)
-- [ ] WARN — exactly one site Worker (one config with `assets`); the site root matches the build layout (repo root flat, `site/` subfolder).
-      (§1)
+- [ ] [M] FAIL — deploy is **Workers + Static Assets** (`wrangler deploy`), **never** `wrangler pages deploy` anywhere in scripts. (§1)
+- [ ] [M] WARN — exactly one site Worker (one config with `assets`); the site root matches the build layout (repo root flat, `site/`
+      subfolder). (§1)
 
 ## The dist/ seam (§2)
 
-- [ ] 🔧 FAIL — `assets.directory` is set and points at the build's `dist/` (`./dist` flat, `../dist` from `site/`). (§2)
-- [ ] WARN — the path resolves to the directory `knowledgeislands-11ty-websites` builds to (cross-check `audit-websites.ts`). (§2)
-- [ ] 🔧 WARN — `dist/` and `.wrangler/` are gitignored. (§2, §4)
-- [ ] POLISH — a `site:preview` chains build → `wrangler dev` for a local check against the Worker runtime. (§2, §4)
+- [ ] [M] FAIL — `assets.directory` is set and points at the build's `dist/` (`./dist` flat, `../dist` from `site/`). (§2)
+- [ ] [J] WARN — the path resolves to the directory `knowledgeislands-11ty-websites` builds to (cross-check `audit-websites.ts`). (§2)
+- [ ] [M] WARN — `dist/` and `.wrangler/` are gitignored. (§2, §4)
+- [ ] [J] POLISH — a `site:preview` chains build → `wrangler dev` for a local check against the Worker runtime. (§2, §4)
 
 ## wrangler.jsonc shape (§3)
 
-- [ ] 🔧 WARN — `name` and `compatibility_date` (a pinned `YYYY-MM-DD`) are present. (§3)
-- [ ] 🔧 WARN — `observability.enabled` is `true`. (§3)
-- [ ] POLISH — `routes` carry `custom_domain: true` for the apex (and usually `www` → apex). A site on `*.workers.dev` may omit them. (§3)
-- [ ] POLISH — JSONC comments explain each block in the house voice. (§3)
-- [ ] POLISH — optional `assets` keys (`html_handling`, `not_found_handling`, `run_worker_first`) are per-site; do **not** flag their
+- [ ] [M] WARN — `name` and `compatibility_date` (a pinned `YYYY-MM-DD`) are present. (§3)
+- [ ] [M] WARN — `observability.enabled` is `true`. (§3)
+- [ ] [J] POLISH — `routes` carry `custom_domain: true` for the apex (and usually `www` → apex). A site on `*.workers.dev` may omit them.
+      (§3)
+- [ ] [J] POLISH — JSONC comments explain each block in the house voice. (§3)
+- [ ] [J] POLISH — optional `assets` keys (`html_handling`, `not_found_handling`, `run_worker_first`) are per-site; do **not** flag their
       absence. (§3)
 
 ## Scripts (§4)
 
-- [ ] 🔧 WARN — a deploy script runs `wrangler deploy` from the site root (`site:deploy`, or `deploy` when flat). (§4)
-- [ ] WARN — `site:clean` removes `dist/` + `.wrangler/`; `site:preview` (build → `wrangler dev`) present where used. (§4)
+- [ ] [M] WARN — a deploy script runs `wrangler deploy` from the site root (`site:deploy`, or `deploy` when flat). (§4)
+- [ ] [J] WARN — `site:clean` removes `dist/` + `.wrangler/`; `site:preview` (build → `wrangler dev`) present where used. (§4)
 - [ ] — `site:build` / `site:dev` are **not** checked here — they belong to `knowledgeislands-11ty-websites`. (§4)
 
 ## CI/CD (§5)
 
-- [ ] POLISH — deploy is via Cloudflare Workers Builds (git integration) on merge to `main`; no bespoke deploy workflow is required. (§5)
-- [ ] POLISH — any GitHub Action present is **content tooling** (apply/optimise then commit), not a re-implementation of deploy. (§5)
-- [ ] POLISH — commit-SHA injection (`WORKERS_CI_COMMIT_SHA` → page meta), if present, is an optional nicety. (§5)
+- [ ] [J] POLISH — deploy is via Cloudflare Workers Builds (git integration) on merge to `main`; no bespoke deploy workflow is required.
+      (§5)
+- [ ] [J] POLISH — any GitHub Action present is **content tooling** (apply/optimise then commit), not a re-implementation of deploy. (§5)
+- [ ] [J] POLISH — commit-SHA injection (`WORKERS_CI_COMMIT_SHA` → page meta), if present, is an optional nicety. (§5)
 
 ## Boundaries (§6)
 
@@ -69,10 +71,11 @@ Severity: **FAIL** (ship-stopper — the site can't deploy, or deploys the wrong
 
 Mirrors the `knowledgeislands-skills` rubric's **LONG-1**.
 
-- [ ] WARN — volatile facts (the wrangler version, the Static-Assets config keys, the Pages-deprecation status) are pinned in `package.json`
-      / the standard, not assumed — a bump is one known edit.
-- [ ] POLISH — this audit runs against a **current** standard: a cited requirement is confirmed by Mode REFRESH + [`sources.md`](sources.md)
-      not having gone stale since its `last reviewed` date (esp. the Pages-vs-Workers guidance, which has moved before).
+- [ ] [J] WARN — volatile facts (the wrangler version, the Static-Assets config keys, the Pages-deprecation status) are pinned in
+      `package.json` / the standard, not assumed — a bump is one known edit.
+- [ ] [J] POLISH — this audit runs against a **current** standard: a cited requirement is confirmed by Mode REFRESH +
+      [`sources.md`](sources.md) not having gone stale since its `last reviewed` date (esp. the Pages-vs-Workers guidance, which has moved
+      before).
 
 ## Reporting
 

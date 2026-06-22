@@ -180,6 +180,13 @@ ever starts enforcing a **[J]** check, move its tag here.
   target, overwriting on each run). Exit code is non-zero iff any FAIL; WARN / POLISH / ADVISORY / INFO / SKIP / PASS all exit 0. Findings
   use the unified severity ladder defined in `knowledgeislands-engineering`'s `enforcement-framework.md` §2. Verify by reading the checker's
   `emit()` / output path logic. (enforcement-framework.md §2/§5)
+- **SHAPE-9 [M-heuristic + J]** _Mechanical work belongs in the checker, not in tokens._ A criterion a script can decide deterministically —
+  no judgment, no AI benefit — is tagged **[M]** and **implemented in the checker**; a **[J]** tag is earned by the judgment a criterion
+  genuinely needs, never by "no checker written yet". The reader's context is spent only on the **[J]** items, so a mechanical criterion
+  left to prose, or a **[J]** the checker already decides, is drift — it **moves into the checker and flips to [M]**. The linter surfaces
+  the mechanical heuristic — a rubric carrying **[M]** criteria but shipping no `scripts/` checker (nor a documented toolchain delegation,
+  e.g. `knowledgeislands-authoring` → `bun run lint:md`) — as a WARN; the **[J]** gate is whether each remaining **[J]** genuinely needs a
+  reader rather than a script. (arcadia-agentic-harness `docs/design.md`, enforcement-framework.md §3/§6)
 
 ## PROC — Process / meta
 
