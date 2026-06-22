@@ -3,6 +3,7 @@
  * Mechanical auditor for a Knowledge Islands site's Cloudflare hosting.
  *
  *   bun scripts/audit-cloudflare-hosting.ts <repo-path>   # or: node --experimental-strip-types
+ *   bun scripts/audit-cloudflare-hosting.ts --init        # print the default [knowledgeislands-cloudflare-hosting] block
  *
  * Checks the HOSTING DELTA the `knowledgeislands-cloudflare-hosting` skill codifies — the SITE
  * Worker that serves the built dist/ via Workers + Static Assets. It does NOT build the dist/
@@ -15,7 +16,7 @@
  * Output is grouped pass/warn/fail; exit non-zero if any FAIL. No dependencies — Node/Bun builtins only.
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { basename, join } from 'node:path'
+import { basename, dirname, join } from 'node:path'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
@@ -24,6 +25,24 @@ const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'P
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
 const findings: Finding[] = []
 const add = (level: Level, area: string, msg: string) => findings.push({ level, area, msg })
+
+// `.ki-config.toml` is a shared per-repo file; this skill owns the
+// [knowledgeislands-cloudflare-hosting] table. The default block (written by `--init`)
+// is the authoritative key list — the table header is the opt-in marker; `site-root`
+// is the one declarable key (validate-down warns on anything else under the table).
+const KI_SECTION = 'knowledgeislands-cloudflare-hosting'
+const KI_DEFAULT = `# ${KI_SECTION} — opt-in marker: presence of this table opts the repo into the
+# Workers + Static Assets hosting standard (serving the built dist/).
+[${KI_SECTION}]
+# site-root is the path (relative to the repo root) where wrangler.jsonc lives:
+# "." for the flat layout, "site" for the subfolder layout. Optional — omit to let
+# the auditor discover it (it scans the repo root and one level of subdirs).
+# site-root = "."
+`
+if (process.argv.slice(2).includes('--init')) {
+  process.stdout.write(KI_DEFAULT)
+  process.exit(0)
+}
 
 const repo = process.argv[2]
 if (!repo || !existsSync(repo)) {
@@ -64,7 +83,7 @@ const name = (() => {
   }
 })()
 const ki = read('.ki-config.toml')
-const kiTable = ki.includes('[knowledgeislands-cloudflare-hosting]')
+const kiTable = new RegExp(`^\\[${KI_SECTION}\\]`, 'm').test(ki)
 const scripts = (() => {
   try {
     return ((JSON.parse(read('package.json')) as { scripts?: Record<string, string> }).scripts ?? {}) as Record<string, string>
@@ -137,12 +156,27 @@ add(distIgnored ? 'PASS' : 'WARN', 'seam', distIgnored ? 'dist/ is gitignored' :
 const wranglerIgnored = /\.wrangler/.test(gitignore)
 add(wranglerIgnored ? 'PASS' : 'WARN', 'seam', wranglerIgnored ? '.wrangler/ is gitignored' : '.wrangler/ not in .gitignore')
 
-// ── .ki-config.toml opt-in table ──────────────────────────────────────────────
-add(
-  kiTable ? 'PASS' : 'WARN',
-  'config',
-  kiTable ? '[knowledgeislands-cloudflare-hosting] table present in .ki-config.toml' : 'no [knowledgeislands-cloudflare-hosting] table in .ki-config.toml (add it to opt in)'
-)
+// ── .ki-config.toml opt-in table + site-root (validate-down) ──────────────────
+add(kiTable ? 'PASS' : 'WARN', 'config', kiTable ? `[${KI_SECTION}] table present in .ki-config.toml` : `no [${KI_SECTION}] table in .ki-config.toml (run --init to scaffold it)`)
+if (kiTable) {
+  // Read ONLY this skill's table; recognise `site-root`, warn on anything else
+  // (validate-down). `^\[` ends the slice at the next table header.
+  const body = ki.split(new RegExp(`^\\[${KI_SECTION}\\]`, 'm'))[1]?.split(/^\[/m)[0] ?? ''
+  let siteRoot: string | null = null
+  for (const m of body.matchAll(/^\s*([A-Za-z0-9_-]+)\s*=\s*(.+?)\s*$/gm)) {
+    if (m[1] === 'site-root') siteRoot = m[2].replace(/^["']|["']$/g, '')
+    else add('WARN', 'config', `unknown key under [${KI_SECTION}]: ${m[1]} (validate-down — only site-root is declarable)`)
+  }
+  // A declared site-root is a reviewable choice — check it actually holds a wrangler config.
+  if (siteRoot !== null) {
+    const dirs = new Set(configs.map((c) => dirname(c.rel)))
+    add(
+      dirs.has(siteRoot) ? 'PASS' : 'WARN',
+      'config',
+      dirs.has(siteRoot) ? `declared site-root "${siteRoot}" holds a wrangler config` : `declared site-root "${siteRoot}" has no wrangler config (stale declaration, or the config lives elsewhere)`
+    )
+  }
+}
 
 report()
 

@@ -99,10 +99,11 @@ documented is **fixed** by the standard — a target does not redefine it in con
 declared-and-auditable rather than forked into a coupled skill: where a target differs, it differs through a documented key, not a bespoke
 `<target>-*` extension skill.
 
-So the option set is **authored, not implicit**: each skill emits its own overridable keys — commented, with defaults — via an `--init` the
-skill owns (`knowledgeislands-repo`, `-kb`, and `-streams` already do), so an author sees exactly what may be set, and an undocumented key
-warns (validate-down). A target-specific need that no documented key can express is a signal to **generalise it into the standard** (a
-REFRESH candidate), not to invent an ad-hoc key or fork a skill.
+So the option set is **authored, not implicit**: each skill with declarable keys emits them — commented, with defaults — via an `--init` the
+skill owns (`knowledgeislands-repo`, `-kb`, `-streams`, `-tokenomics`, and `-cloudflare-hosting` do; `-11ty-websites`'s `--init` emits the
+bare marker, as it has no keys today), so an author sees exactly what may be set, and an undocumented key warns (validate-down). A
+target-specific need that no documented key can express is a signal to **generalise it into the standard** (a REFRESH candidate), not to
+invent an ad-hoc key or fork a skill.
 
 ## Coverage enforcement
 

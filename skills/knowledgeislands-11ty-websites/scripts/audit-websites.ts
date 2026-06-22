@@ -3,6 +3,7 @@
  * Mechanical auditor for a Knowledge Islands 11ty website repo.
  *
  *   bun scripts/audit-websites.ts <repo-path>        # or: node --experimental-strip-types
+ *   bun scripts/audit-websites.ts --init             # print the default [knowledgeislands-11ty-websites] block
  *
  * Checks the SITE-BUILD DELTA of the standard the `knowledgeislands-11ty-websites` skill
  * codifies — the Eleventy/Nunjucks/Tailwind site that compiles to a portable dist/. It does
@@ -25,6 +26,20 @@ const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'P
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
 const findings: Finding[] = []
 const add = (level: Level, area: string, msg: string) => findings.push({ level, area, msg })
+
+// `.ki-config.toml` is a shared per-repo file; this skill owns the
+// [knowledgeislands-11ty-websites] table. The table header is the opt-in marker and
+// the whole of it — there are no per-repo keys today, so `--init` emits a bare table
+// (validate-down warns on any key found under it).
+const KI_SECTION = 'knowledgeislands-11ty-websites'
+const KI_DEFAULT = `# ${KI_SECTION} — opt-in marker: presence of this table opts the repo into the
+# Eleventy + Tailwind site-build standard. It takes no per-repo keys today.
+[${KI_SECTION}]
+`
+if (process.argv.slice(2).includes('--init')) {
+  process.stdout.write(KI_DEFAULT)
+  process.exit(0)
+}
 
 const repo = process.argv[2]
 if (!repo || !existsSync(repo)) {
@@ -164,12 +179,16 @@ add(distIgnored ? 'PASS' : 'WARN', 'dist', distIgnored ? 'dist/ is gitignored' :
 
 // ── .ki-config.toml opt-in table ──────────────────────────────────────────────
 const ki = read('.ki-config.toml')
-const kiTable = ki.includes('[knowledgeislands-11ty-websites]')
-add(
-  kiTable ? 'PASS' : 'WARN',
-  'config',
-  kiTable ? '[knowledgeislands-11ty-websites] table present in .ki-config.toml' : 'no [knowledgeislands-11ty-websites] table in .ki-config.toml (add it to opt in)'
-)
+const kiTable = new RegExp(`^\\[${KI_SECTION}\\]`, 'm').test(ki)
+add(kiTable ? 'PASS' : 'WARN', 'config', kiTable ? `[${KI_SECTION}] table present in .ki-config.toml` : `no [${KI_SECTION}] table in .ki-config.toml (run --init to scaffold it)`)
+if (kiTable) {
+  // This table is a bare marker — validate-down: any key under it is a typo or a
+  // stale option, never a recognised setting. `^\[` ends the slice at the next header.
+  const body = ki.split(new RegExp(`^\\[${KI_SECTION}\\]`, 'm'))[1]?.split(/^\[/m)[0] ?? ''
+  for (const m of body.matchAll(/^\s*([A-Za-z0-9_-]+)\s*=/gm)) {
+    add('WARN', 'config', `unknown key under [${KI_SECTION}]: ${m[1]} (validate-down — this table takes no keys today)`)
+  }
+}
 
 // ── report ────────────────────────────────────────────────────────────────────
 function emit(items: Finding[], target: string, concern: string, title: string, footer: string): never {

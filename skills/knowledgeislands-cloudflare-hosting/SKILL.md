@@ -87,10 +87,12 @@ unclear. (Modes are named and alphabetical.) The mode shape itself is defined in
 2. **Run the mechanical checker.** `bun <skill>/scripts/audit-cloudflare-hosting.ts <repo>`. It finds the **site** `wrangler.jsonc` (the one
    with an `assets` block), then reports: present at the site root, `assets.directory` set and pointing at `dist/`, `name` +
    `compatibility_date`, `observability.enabled`, a `wrangler deploy` script, **not** `wrangler pages deploy`, and `dist/` + `.wrangler/`
-   gitignored. It notes (does not flag) any companion Worker. It grades findings on the unified severity ladder (FAIL / WARN / POLISH /
-   ADVISORY / INFO / SKIP / PASS — see `knowledgeislands-engineering`'s enforcement-framework §2) and exits non-zero on any FAIL; with
-   `--json` / `--report` it emits machine-readable findings and writes the latest report to the site's
-   `.ki-meta/audits/cloudflare-hosting.{md,json}`. Capture its output verbatim.
+   gitignored. It also reads this skill's `[knowledgeislands-cloudflare-hosting]` table: the opt-in marker, plus the one declarable key
+   `site-root` (validate-down warns on any other key, and on a `site-root` that holds no `wrangler.jsonc`). It notes (does not flag) any
+   companion Worker. It grades findings on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — see
+   `knowledgeislands-engineering`'s enforcement-framework §2) and exits non-zero on any FAIL; with `--json` / `--report` it emits
+   machine-readable findings and writes the latest report to the site's `.ki-meta/audits/cloudflare-hosting.{md,json}`. Capture its output
+   verbatim.
 3. **Apply the judgment items** in [the rubric](references/audit-rubric.md): the custom-domain routes are correct (apex + www), the build
    runs before deploy, and CI (Cloudflare Workers Builds or an Action) is wired. Confirm the `dist/` path matches what `audit-websites.ts`
    reported.
@@ -102,7 +104,8 @@ unclear. (Modes are named and alphabetical.) The mode shape itself is defined in
 1. Run **AUDIT** first, so you change against a known gap list.
 2. Fix the gaps in place — use the canonical shape from [the standard](references/cloudflare-hosting-standard.md): the `wrangler.jsonc`
    shape (`assets.directory`, `routes`, `observability`) and the `site:{deploy,preview,clean}` scripts. Adapt name, domains, and the `dist/`
-   relative path to the layout. Add the `[knowledgeislands-cloudflare-hosting]` table if missing. If a `wrangler pages deploy` is found,
+   relative path to the layout. Add the `[knowledgeislands-cloudflare-hosting]` table if missing
+   (`bun scripts/audit-cloudflare-hosting.ts --init >> .ki-config.toml`, then set `site-root`). If a `wrangler pages deploy` is found,
    migrate it to Workers + Static Assets.
 3. Re-run the checker; `bunx wrangler deploy --dry-run` from the site root should read the assets directory cleanly.
 
@@ -112,9 +115,10 @@ Follow **[the setup guide](references/setup-guide.md)** — it is the step-by-st
 
 **Use the `wrangler.jsonc` shape from [the standard](references/cloudflare-hosting-standard.md)** and the `site:deploy`/`site:preview`
 scripts; adapt `name`, `compatibility_date`, the `assets.directory` relative path (`./dist` flat, `../dist` from `site/`), and the
-custom-domain routes. Add the `[knowledgeislands-cloudflare-hosting]` table to `.ki-config.toml`. Update `.gitignore` (`dist/`,
-`.wrangler/`). Then run the checker and `bunx wrangler deploy --dry-run` from the site root to confirm the assets directory resolves. Wire
-the custom domain and `www` redirect rule in the dashboard, then set up Cloudflare Workers Builds for CI/CD (see the guide's §7–§9).
+custom-domain routes. Add the `[knowledgeislands-cloudflare-hosting]` table to `.ki-config.toml`
+(`bun scripts/audit-cloudflare-hosting.ts --init >> .ki-config.toml`, then set `site-root`). Update `.gitignore` (`dist/`, `.wrangler/`).
+Then run the checker and `bunx wrangler deploy --dry-run` from the site root to confirm the assets directory resolves. Wire the custom
+domain and `www` redirect rule in the dashboard, then set up Cloudflare Workers Builds for CI/CD (see the guide's §7–§9).
 
 ### Mode REFRESH — re-anchor the standard to its sources
 

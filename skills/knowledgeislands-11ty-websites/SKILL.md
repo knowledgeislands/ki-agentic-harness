@@ -106,7 +106,8 @@ Carries the universal **AUDIT · CONFORM · REFRESH**, plus **INIT** (scaffold a
 
 1. Run **AUDIT** first, so you change against a known gap list.
 2. Fix the gaps in place — use the canonical shape from [the standard](references/eleventy-site-standard.md): the lean layout (§2–§5) and
-   the fuller patterns (tokens, layouts, SEO — §5–§7) as needed. Add the `[knowledgeislands-11ty-websites]` table if missing.
+   the fuller patterns (tokens, layouts, SEO — §5–§7) as needed. Add the `[knowledgeislands-11ty-websites]` table if missing
+   (`bun scripts/audit-websites.ts --init >> .ki-config.toml`).
 3. Re-run the checker; settle the repo's own `bun run lint:*` / `lint:types` (and `lint:md` for any Markdown). For the toolchain block, run
    `knowledgeislands-engineering`'s CONFORM; for the deploy block, `knowledgeislands-cloudflare-hosting`'s.
 
@@ -114,8 +115,9 @@ Carries the universal **AUDIT · CONFORM · REFRESH**, plus **INIT** (scaffold a
 
 Use the canonical shape from **[the standard](references/eleventy-site-standard.md)** over inventing: the `eleventy.config.ts` patterns
 (§4), the `main.css`/`tokens.css` pair (§5), the `_includes/{layouts,partials}/` shells (§3), and the build/dev script family (§8). Adapt
-names, palette, and content; keep the four invariants from day one. Add the `[knowledgeislands-11ty-websites]` table. Then run the checker.
-For the toolchain scaffold defer to `knowledgeislands-engineering` INIT; for hosting, `knowledgeislands-cloudflare-hosting` INIT.
+names, palette, and content; keep the four invariants from day one. Add the `[knowledgeislands-11ty-websites]` table
+(`bun scripts/audit-websites.ts --init >> .ki-config.toml`). Then run the checker. For the toolchain scaffold defer to
+`knowledgeislands-engineering` INIT; for hosting, `knowledgeislands-cloudflare-hosting` INIT.
 
 ### Mode REFRESH — re-anchor the standard to its sources
 

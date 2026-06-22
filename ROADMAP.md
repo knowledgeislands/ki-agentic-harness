@@ -17,32 +17,16 @@ to the invariants in [docs/design.md](docs/design.md) (_Principles across the se
   the user-wide `~/.claude` and project-local layers (plus any base) and the runtime levers, and checks a compression layer (Headroom) is
   set up well. Open work: opt key projects/bases in with a `[knowledgeislands-tokenomics]` table and tune the budgets; run its AUDIT over
   this harness itself — the first smoke run already flags **19 user-scoped MCP servers against a budget of 5** — and decide which to scope
-  or disable; seed an `evals/` scenario; and confirm the skill's `**Refresh:**` marker is set so the scheduled
-  `knowledgeislands-skills-refresh` sweep picks it up on its cadence (the REFRESH-cadence follow-up an audit can't self-verify, per
-  `knowledgeislands-skills` INIT step 5).
+  or disable; and confirm the skill's `**Refresh:**` marker is set so the scheduled `knowledgeislands-skills-refresh` sweep picks it up on
+  its cadence (the REFRESH-cadence follow-up an audit can't self-verify, per `knowledgeislands-skills` INIT step 5).
 
 - **Conform the website repos to the new standards.** The `knowledgeislands-11ty-websites` and `knowledgeislands-cloudflare-hosting` skills
   now exist (extracted from `kit-midnight.ninja` + `vallearmonia-website`, the `dist/` folder the seam between them), but their target repos
   are not yet brought into line. Open work, by repo: add the `[knowledgeislands-11ty-websites]` / `[knowledgeislands-cloudflare-hosting]`
   opt-in tables to each site's `.ki-config.toml`; **CONFORM `arcadia-website`** (very old — a skeletal `src/` with no `tokens.css`,
   `_includes/{layouts,partials}/`, or `seo-meta` partial) up to the build standard; add `kit-midnight.ninja`'s **missing
-  `site/wrangler.jsonc`** so `site:deploy` works. Dogfooding the skills against their own corpus; seed `evals/` scenarios for both while
-  conforming. (Adding the opt-in tables is the one new `.ki-config.toml` consumer pair beyond those listed below.)
-
-- **Eval scenarios for `knowledgeislands-harness`.** _(candidate)_ Eight of the thirteen skills carry `evals/` scenarios: `agents` is now
-  seeded with a planted-rule set (the house-contrarian LINK-2, the PROMPT shape, the FM defaults), and `tokenomics` and the two website
-  skills are covered by the adoption items above — leaving `knowledgeislands-harness` (and the new `knowledgeislands-bootstrap`) with none.
-  It resists the format hardest: the no-skill-baseline eval rewards a recallable house _fact_, but harness asserts pure _structure_ (the
-  four-part bundle layout) that `audit-harness.ts` already checks mechanically, so a behavioural eval adds little over the checker. Open
-  work: decide whether a planted-violation scenario clears the "model couldn't already know this" bar (see
-  [evals/README.md](evals/README.md), reading note 2), or record harness as uncovered by design.
-
-- **`.ki-config.toml` override layer — finish the rollout.** The cross-cutting contract now states the **overridable-vs-fixed** convention
-  and the `--init` self-documentation rule (in the `knowledgeislands-repo` `.ki-config.toml` reference), and the pattern has its consumers:
-  `-repo` (`visibility` + `[…checks]`), `-kb` (`[…zones]` alias, `required_frontmatter`, and the new `preflight` list — the worked third
-  declarable key), and `-streams` (`process_note`, `note_type_scheme`). It is also the seam that retired the base-coupled extension pattern:
-  a base now declares its differences here rather than forking a `<base>-kb` skill. Residual: confirm every consuming skill's `--init` emits
-  its declarable keys, and add the website skills' opt-in tables as they conform.
+  `site/wrangler.jsonc`** so `site:deploy` works. Dogfooding the skills against their own corpus. (Adding the opt-in tables is the one new
+  `.ki-config.toml` consumer pair beyond those listed below.)
 
 - **Dependabot — two open follow-ups.** _(candidate)_ The Layer-3 baseline is in place (alerts + security updates + `allow_update_branch`,
   all governed). Two threads remain. (a) **Bun ecosystem rollout.** Our repos are Bun projects (`bun.lock`), but their `dependabot.yml`
