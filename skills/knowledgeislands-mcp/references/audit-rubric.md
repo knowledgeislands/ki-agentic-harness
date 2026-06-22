@@ -156,9 +156,10 @@ Skip this whole section for the filesystem/subprocess repos.
 
 ## Docs
 
+- [ ] [M] WARN — `ROADMAP.md` present. (roadmap-md)
 - [ ] [M] WARN — `CONTRIBUTING.md` and `SECURITY.md` present; `CHANGELOG.md` present **and non-empty** (an empty stub is a finding) — the
-      MCP-family root docs. `README`, `LICENSE`, `.gitignore`, `.editorconfig`, `.ki-config.toml`, and now `CLAUDE.md` (FAIL) + `ROADMAP.md`
-      (warn) are `knowledgeislands-repo`'s layers, not re-checked here.
+      MCP-family root docs. `README`, `LICENSE`, `.gitignore`, `.editorconfig`, `.ki-config.toml`, and now `CLAUDE.md` (FAIL) are
+      `knowledgeislands-repo`'s layers, not re-checked here.
 - [ ] [J] WARN — `CLAUDE.md` is **not drifted**: every layer/path/concept it names still exists in the code (catch renamed/moved layers).
 - [ ] [J] POLISH — README install/config/client-setup steps are current.
 

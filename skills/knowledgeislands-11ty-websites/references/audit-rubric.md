@@ -37,6 +37,7 @@ Severity: **FAIL** (ship-stopper — the site won't build or `dist/` isn't porta
 
 ## Layout (§2)
 
+- [ ] [M] WARN — `ROADMAP.md` present. (roadmap-md)
 - [ ] [M] FAIL — exactly one `eleventy.config.ts` at the site root — repo root (flat) or `site/` (subfolder). (§2)
 - [ ] [M] WARN — `src/` has `_data/`, `_includes/layouts/`, `_includes/partials/`, `assets/css/`. (§2, §3)
 - [ ] [J] WARN — the `site:` script prefix is present **iff** the `site/`-subfolder layout is used; otherwise scripts are unprefixed. (§2,

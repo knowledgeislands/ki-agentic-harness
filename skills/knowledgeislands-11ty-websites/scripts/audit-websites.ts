@@ -80,6 +80,7 @@ if (!cfgName) {
 } else {
   add('PASS', 'layout', `${siteRoot ? `${siteRoot}/` : ''}${cfgName} present (${layout} layout)`)
 }
+has('ROADMAP.md') ? add('PASS', 'layout', 'ROADMAP.md present') : add('WARN', 'layout', 'no ROADMAP.md')
 
 // ── package.json ──────────────────────────────────────────────────────────────
 let pkg: Record<string, unknown> = {}

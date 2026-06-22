@@ -53,13 +53,14 @@ if (hasCli) {
   }
 }
 
-// MCP-family root docs (the MCP delta). README/CLAUDE/ROADMAP presence + LICENSE/.gitignore/
-// .editorconfig are knowledgeislands-repo's layers (CLAUDE.md + ROADMAP.md are now universal
-// there); the toolchain configs are audit-engineering.ts's. .ki-config.toml is repo's shared
+// MCP-family root docs (the MCP delta). README/CLAUDE presence + LICENSE/.gitignore/
+// .editorconfig are knowledgeislands-repo's layers (CLAUDE.md is universal there);
+// toolchain configs are audit-engineering.ts's. .ki-config.toml is repo's shared
 // contract, but this skill reads its OWN [knowledgeislands-mcp] opt-in table (checked near the
 // end). The CLAUDE.md content
-// contract (no drift) stays a judgment item. Here: CONTRIBUTING + SECURITY present, CHANGELOG
-// present AND non-empty.
+// contract (no drift) stays a judgment item. Here: ROADMAP + CONTRIBUTING + SECURITY present,
+// CHANGELOG present AND non-empty.
+has('ROADMAP.md') ? add('PASS', 'files', 'ROADMAP.md present') : add('WARN', 'files', 'no ROADMAP.md')
 for (const f of ['CONTRIBUTING.md', 'SECURITY.md']) {
   has(f) ? add('PASS', 'files', `${f} present`) : add('FAIL', 'files', `${f} missing`)
 }
