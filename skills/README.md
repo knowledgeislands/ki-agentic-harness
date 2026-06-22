@@ -1,7 +1,8 @@
 # skills
 
-Knowledge Islands **Agent Skills** live here, one directory per skill. The **most-built-out part of the harness** today — **twelve** skills,
-each a governance skill that holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes plus a mechanical checker.
+Knowledge Islands **Agent Skills** live here, one directory per skill. The **most-built-out part of the harness** today — **thirteen**
+skills, each a governance skill that holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes plus a mechanical
+checker.
 
 ## Convention
 

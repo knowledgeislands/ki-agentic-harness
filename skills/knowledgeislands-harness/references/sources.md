@@ -33,10 +33,10 @@ _Reviewed: 2026-06-21_
 - The subagent format (frontmatter, system-prompt body) is fully specified by [CC]; re-fetched, unchanged.
 - The `.ki-config.toml` contract — including the `[knowledgeislands-harness]` table as the compliance marker — derives from
   `knowledgeislands-repo` [KR]; the harness skill does not extend the contract, it declares a new table.
-- In-house reference [AH] re-read: the harness now holds **twelve** skills, the `agents/` and `mcp/` shelves remain valid empty shelves, and
-  the eval suite covers eight of the twelve. The container the standard describes (four-part layout, the `harness:audit` and `agents:lint`
-  scripts now wired in `package.json`, the `[knowledgeislands-harness]` table) matches current reality — the standard is count-agnostic and
-  needs no edit for the 6→12 growth.
+- In-house reference [AH] re-read: the harness now holds **thirteen** skills, the `agents/` and `mcp/` shelves remain valid empty shelves,
+  and the eval suite covers twelve of the thirteen (harness alone is uncovered, by design — its structure is checked mechanically). The
+  container the standard describes (four-part layout, the `harness:audit` and `agents:lint` scripts now wired in `package.json`, the
+  `[knowledgeislands-harness]` table) matches current reality — the standard is count-agnostic and needs no edit for the 6→13 growth.
 
 **Open watch-items:**
 

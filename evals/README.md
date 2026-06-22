@@ -55,11 +55,16 @@ or without the skill.
 
 ## Where it stands
 
-Eight of the twelve skills have 3+ scenarios — `agents`, `authoring`, `engineering`, `kb`, `mcp`, `repo`, `skills`, `streams`. The matrix
-run across Haiku, Sonnet, and Opus covered the first seven, and the result in one line was: **on house-specific facts, loading a skill
-reliably takes the model from "I don't know" to the right answer — on every model.** That's the whole point, confirmed. The `agents` set is
-newly added and not yet in a matrix run. The remaining four (`11ty-websites`, `cloudflare-hosting`, `tokenomics`, `harness`) have no
-scenarios yet — the website and tokenomics ones are tracked in [ROADMAP.md](../ROADMAP.md).
+Twelve of the thirteen skills have scenarios — `agents`, `authoring`, `engineering`, `kb`, `mcp`, `repo`, `skills`, `streams`, plus
+`tokenomics`, `11ty-websites`, `cloudflare-hosting`, and `bootstrap`. The matrix run across Haiku, Sonnet, and Opus covered the original
+seven, and the result in one line was: **on house-specific facts, loading a skill reliably takes the model from "I don't know" to the right
+answer — on every model.** That's the whole point, confirmed. The five newer sets (`agents`, `tokenomics`, the two website skills, and
+`bootstrap`) are not yet in a matrix run.
+
+The one skill left uncovered is **`knowledgeislands-harness`, and that is by design.** Its assertions are pure bundle _structure_ (the
+four-part layout) that `audit-harness.ts` already checks mechanically — and the no-skill-baseline method here rewards a recallable house
+_fact_, so a behavioural eval would add little over the checker. (If a planted-violation scenario is ever shown to clear the "the model
+couldn't already know this" bar, this is the place to revisit — see reading note 2 above.)
 
 **For routine runs, use Sonnet — it's the most cost-effective arm.** A full matrix (24 scenarios × 3 runs) costs roughly **$9 on Haiku, $23
 on Sonnet, $34 on Opus**. Opus gives no cleaner signal than Sonnet for about 50% more, so keep it for occasional confirmation; Sonnet is a

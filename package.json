@@ -51,6 +51,7 @@
     "engineering:audit": "bun skills/knowledgeislands-engineering/scripts/audit-engineering.ts",
     "eval": "bun evals/harness.ts",
     "harness:audit": "bun skills/knowledgeislands-harness/scripts/audit-harness.ts",
+    "hosting:audit": "bun skills/knowledgeislands-cloudflare-hosting/scripts/audit-cloudflare-hosting.ts",
     "kb:audit": "bun skills/knowledgeislands-kb/scripts/audit-kb.ts",
     "lint:check": "bunx @biomejs/biome check",
     "lint:fix": "bunx @biomejs/biome check --write --unsafe",
@@ -59,6 +60,7 @@
     "lint:md:check": "bunx prettier --check \"**/*.md\" --ignore-path .gitignore && bunx markdownlint-cli2",
     "lint:package": "bunx syncpack format",
     "lint:types": "tsc --noEmit",
+    "mcp:audit": "bun skills/knowledgeislands-mcp/scripts/audit-mcp.ts",
     "prepare": "husky",
     "repo:audit": "bun skills/knowledgeislands-repo/scripts/audit-repo.ts",
     "skills:link:global": "bun scripts/sync-skills.ts link --only knowledgeislands-bootstrap",
@@ -68,7 +70,8 @@
     "skills:status": "bun scripts/sync-skills.ts status",
     "skills:unlink": "bun scripts/sync-skills.ts unlink",
     "streams:audit": "bun skills/knowledgeislands-streams/scripts/audit-streams.ts",
-    "tokenomics:audit": "bun skills/knowledgeislands-tokenomics/scripts/audit-tokenomics.ts"
+    "tokenomics:audit": "bun skills/knowledgeislands-tokenomics/scripts/audit-tokenomics.ts",
+    "websites:audit": "bun skills/knowledgeislands-11ty-websites/scripts/audit-websites.ts"
   },
   "type": "module"
 }
