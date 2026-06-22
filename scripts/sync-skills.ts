@@ -15,11 +15,16 @@
 //
 // Options:
 //   --target <dir>   Where to install (default: ~/.claude/skills)
+//   --relative       Emit relative symlinks (portable: survives a clone when the
+//                    target and this repo keep their relative layout). Default is
+//                    absolute, for a machine-local global install.
+//   --only <a,b,c>   Act on just these skills (comma-separated names) instead of all
+//                    — e.g. to scope a repo's .claude/skills to the skills it uses.
 //   --dry-run        Print what would change without touching the filesystem
 
 import { existsSync, lstatSync, mkdirSync, readdirSync, readlinkSync, rmSync, symlinkSync } from 'node:fs'
 import { homedir } from 'node:os'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -29,6 +34,15 @@ const skillsRoot = join(repoRoot, 'skills')
 const argv = process.argv.slice(2)
 const command = argv.find((a) => !a.startsWith('-'))
 const dryRun = argv.includes('--dry-run')
+const useRelative = argv.includes('--relative')
+const onlyFlag = argv.indexOf('--only')
+const onlyNames =
+  onlyFlag !== -1 && argv[onlyFlag + 1]
+    ? (argv[onlyFlag + 1] as string)
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : null
 const targetFlag = argv.indexOf('--target')
 const defaultTarget = join(homedir(), '.claude', 'skills')
 const target = targetFlag !== -1 && argv[targetFlag + 1] ? resolve(argv[targetFlag + 1] as string) : defaultTarget
@@ -87,9 +101,10 @@ function cmdLink(skills: string[]): void {
     }
     // absent, or a symlink pointing somewhere else: (re)create it.
     if (isSymlink(linkPath) && !dryRun) rmSync(linkPath)
-    if (!dryRun) symlinkSync(source, linkPath, 'dir')
+    const linkText = useRelative ? relative(dirname(linkPath), source) : source
+    if (!dryRun) symlinkSync(linkText, linkPath, 'dir')
     const verb = state.kind.startsWith('linked') ? 'relink' : 'link  '
-    console.log(`${paint(C.green, verb)} ${name} -> ${paint(C.dim, source)}`)
+    console.log(`${paint(C.green, verb)} ${name} -> ${paint(C.dim, linkText)}`)
   }
   if (dryRun) console.log(paint(C.yellow, '\n(dry run — nothing changed)'))
 }
@@ -129,11 +144,19 @@ function cmdStatus(skills: string[]): void {
 }
 
 // --- main ------------------------------------------------------------------
-const skills = discoverSkills()
-if (skills.length === 0) {
+const allSkills = discoverSkills()
+if (allSkills.length === 0) {
   console.error(paint(C.red, 'No skills found (no directory under skills/ contains a SKILL.md).'))
   process.exit(1)
 }
+if (onlyNames) {
+  const unknown = onlyNames.filter((n) => !allSkills.includes(n))
+  if (unknown.length) {
+    console.error(paint(C.red, `--only names not found under skills/: ${unknown.join(', ')}`))
+    process.exit(1)
+  }
+}
+const skills = onlyNames ? allSkills.filter((n) => onlyNames.includes(n)) : allSkills
 
 switch (command) {
   case 'link':

@@ -10,34 +10,50 @@ Claude Code (and compatible agents) discover skills in two places:
 - **User-global** — `~/.claude/skills/<name>/`, available in every session on this machine.
 - **Per-project** — `<project>/.claude/skills/<name>/`, available only when working in that project (and shareable via the project's repo).
 
-The recommended way to install from this repository is a **symlink**, so edits in the repo are live everywhere the skill is installed and a
-`git pull` updates every consumer at once. The bundled sync script ([`scripts/sync-skills.ts`](../scripts/sync-skills.ts)) wraps this
-safely; it treats every directory under `skills/` containing a `SKILL.md` as a skill. Install dependencies once with `bun install`.
+The install model is **keystone-plus-project-local**: only `knowledgeislands-bootstrap` is installed user-global; every other skill is wired
+into each repo's `.claude/skills/` on demand. The global skill is paid on every turn everywhere, so keeping one tiny keystone there —
+instead of all thirteen — keeps the standing description cost out of unrelated sessions, while each repo still loads exactly the skills it
+declares. Both ends use **symlinks**, so edits in this repo are live wherever a skill is installed and a `git pull` updates every consumer
+at once. Install dependencies once with `bun install`.
 
-### With the sync script (recommended)
-
-```bash
-bun run skills:status   # show each skill and whether it is linked in ~/.claude/skills
-bun run skills:link     # symlink every skill into ~/.claude/skills (re-runnable)
-bun run skills:unlink   # remove only the symlinks that point back into this repo
-```
-
-`skills:link` is idempotent: it refreshes existing links, skips a target where a _real_ file or directory is in the way (rather than
-clobbering it), and creates `~/.claude/skills` if needed. Pass flags straight through (no `--` separator needed with `bun run`), or call the
-script directly:
+### Install the keystone, once per machine
 
 ```bash
-bun scripts/sync-skills.ts link --dry-run                                # preview without touching anything
-bun scripts/sync-skills.ts link --target /path/to/project/.claude/skills # install into one project instead
+bun run skills:link:global    # symlink just knowledgeislands-bootstrap into ~/.claude/skills
 ```
+
+Under the hood this is `bun scripts/sync-skills.ts link --only knowledgeislands-bootstrap`. It is idempotent: it refreshes the existing
+link, skips a target where a _real_ file or directory is in the way (rather than clobbering it), and creates `~/.claude/skills` if needed.
+With the keystone in place, any Knowledge Islands repo can self-wire from inside it.
+
+### Wire a repo's project-local skills
+
+In the repo you want to work in, the keystone links its `.claude/skills/` from the repo's `.ki-config.toml` — exactly the skills it declares
+(`[knowledgeislands-*]` tables), plus the `knowledgeislands-repo` + `knowledgeislands-authoring` baseline:
+
+```bash
+bun run skills:link:project   # in the target repo: link .claude/skills/ from .ki-config.toml
+```
+
+These symlinks are **gitignored and regenerated** — the committed artifacts are the `skills:link:project` script and the `.gitignore` line,
+never the links themselves (which would dangle on a clone that does not have the harness checked out beside it). Re-run after editing the
+repo's coverage tables or pulling new skills. Preview with `--dry-run`; the harness itself authors every skill, so it links **all** of them
+rather than a coverage subset (`--all`).
 
 ### Without the script (plain shell)
 
-A single skill, user-global:
+The keystone, user-global:
 
 ```bash
 cd /path/to/arcadia-agentic-harness
-ln -sfn "$PWD/skills/knowledgeislands-kb" ~/.claude/skills/knowledgeislands-kb
+ln -sfn "$PWD/skills/knowledgeislands-bootstrap" ~/.claude/skills/knowledgeislands-bootstrap
+```
+
+A single skill into a project, by hand:
+
+```bash
+cd /path/to/target-repo && mkdir -p .claude/skills
+ln -sfn /path/to/arcadia-agentic-harness/skills/knowledgeislands-kb .claude/skills/knowledgeislands-kb
 ```
 
 `ln -sfn` forces replacement of an existing link and never dereferences into a directory, so re-running it updates the link in place instead
@@ -46,8 +62,9 @@ of nesting a second link inside it. The link name must match the skill directory
 ### Verify and remove
 
 ```bash
-ls -l ~/.claude/skills          # symlinks show their -> target; confirm they resolve
-rm ~/.claude/skills/<name>      # uninstall: removes the link only, never the repo
+ls -l ~/.claude/skills            # the keystone; confirm its -> target resolves
+ls -l <repo>/.claude/skills       # a repo's project-local links; confirm they resolve
+rm ~/.claude/skills/<name>        # uninstall: removes the link only, never the repo
 ```
 
 Removing a symlink only unlinks it — the skill source in this repository is untouched. Start a new session after adding or removing a skill

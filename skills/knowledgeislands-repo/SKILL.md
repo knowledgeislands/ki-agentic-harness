@@ -123,3 +123,6 @@ GitHub's settings surface moves (rulesets vs classic protection, new security to
 - **Private repos**: secret scanning is plan-limited; the standard exempts it (public-only check). Revisit via **GHAS** if the org upgrades
   — a REFRESH follow-up.
 - The auditor is **read-only**; only CONFORM mutates, and only against confirmed gaps.
+- This skill owns the `.ki-config.toml` **content** (the coverage cascade — which `[knowledgeislands-*]` tables a repo declares). Wiring
+  those declared skills into the repo's `.claude/skills/` (the project-local install) is `knowledgeislands-bootstrap`'s job — the off-ramp
+  for "set up this repo's skills". This skill decides _which_ skills apply; bootstrap _links_ them.

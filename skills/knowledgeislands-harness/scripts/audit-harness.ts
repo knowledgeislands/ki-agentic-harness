@@ -122,7 +122,7 @@ function auditHarness(root: string): Finding[] {
     findings.push({ severity: 'FAIL', criterion: 'PKG-2', message: 'package.json missing — cannot check scripts' })
     findings.push({ severity: 'WARN', criterion: 'PKG-3', message: 'package.json missing — cannot check scripts' })
   } else {
-    check(findings, 'FAIL', 'PKG-1', hasScript(pkg, 'skills:link'), "package.json must have a 'skills:link' script")
+    check(findings, 'FAIL', 'PKG-1', hasScript(pkg, 'skills:link:project'), "package.json must have a 'skills:link:project' script (the knowledgeislands-bootstrap delivery mechanism)")
     check(findings, 'FAIL', 'PKG-2', hasScript(pkg, 'skills:lint'), "package.json must have a 'skills:lint' script")
 
     for (const script of ['lint:check', 'lint:types', 'lint:md', 'lint:md:check']) {

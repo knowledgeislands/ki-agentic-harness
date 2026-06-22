@@ -6,9 +6,9 @@ whole set can be versioned, reviewed, and installed together rather than scatter
 A harness is **four parts** — the things an agent is given to work with:
 
 - **Skills** ([`skills/`](skills/)) — reusable [Agent Skills](https://agentskills.io/specification): the most-built-out part of the harness
-  today (**twelve**, all governance skills — including `knowledgeislands-harness`, which governs this four-part container itself). Installed
-  elsewhere by symlink. The catalogue is in [docs/skills.md](docs/skills.md); how they fit together — boundaries, the knowledge loops, the
-  shared principles — in [docs/design.md](docs/design.md).
+  today (**thirteen**, all governance skills — including `knowledgeislands-harness`, which governs this four-part container itself, and
+  `knowledgeislands-bootstrap`, the install keystone). Installed elsewhere by symlink. The catalogue is in [docs/skills.md](docs/skills.md);
+  how they fit together — boundaries, the knowledge loops, the shared principles — in [docs/design.md](docs/design.md).
 - **Agents** ([`agents/`](agents/)) — Knowledge Islands [Claude Code subagents](https://code.claude.com/docs/en/sub-agents), one per file.
   An empty **shelf** today, governed by the `knowledgeislands-agents` skill. See [`agents/README.md`](agents/README.md).
 - **MCP servers** ([`mcp/`](mcp/)) — where KI's MCP servers would consolidate as workspace packages. An empty **shelf** today; they
@@ -50,10 +50,10 @@ modes plus a mechanical checker.
 
 ## The map — the skills at a glance
 
-The twelve skills sit in **two layers** plus a container governor: two cross-cutting **foundations** that every other skill builds on, the
-**domain** skills that each govern one kind of artifact, and `harness` — which governs the four-part bundle holding them all. The arrows are
-the structural ties (who _delegates to_, _composes on_, or _feeds_ whom), spelled out in [docs/skills.md](docs/skills.md) and
-[docs/design.md](docs/design.md).
+The thirteen skills sit in **two layers** plus a container governor and an install keystone: two cross-cutting **foundations** that every
+other skill builds on, the **domain** skills that each govern one kind of artifact, `harness` — which governs the four-part bundle holding
+them all — and `bootstrap`, which wires a repo's project-local skills into place. The arrows are the structural ties (who _delegates to_,
+_composes on_, or _feeds_ whom), spelled out in [docs/skills.md](docs/skills.md) and [docs/design.md](docs/design.md).
 
 ```text
 FOUNDATIONS — cross-cutting "how" (every domain skill builds on both)
@@ -73,6 +73,9 @@ DOMAIN — what each skill governs
 
 CONTAINER — the bundle that holds all the above (this repo is one)
   harness       ──composes the checkers of──▶ (skills · agents · mcp · engineering · repo), adds the bundle-layout delta
+
+INSTALL KEYSTONE — the one skill kept installed globally; wires every other skill into a repo
+  bootstrap     ──reads a repo's .ki-config.toml coverage──▶ links its .claude/skills/  (composes on repo)
 ```
 
 The per-skill detail is in [docs/skills.md](docs/skills.md); [docs/design.md](docs/design.md) draws the boundaries between the pairs that
@@ -81,18 +84,20 @@ could be confused and shows the process loops that run across them.
 ## Quick start
 
 ```bash
-bun install          # install dev dependencies and wire the git hook
-bun run skills:link  # symlink every skill into ~/.claude/skills (re-runnable)
+bun install                  # install dev dependencies and wire the git hook
+bun run skills:link:global   # install just the keystone into ~/.claude/skills (re-runnable)
+bun run skills:link:project  # wire this repo's .claude/skills/ (the harness links --all)
 ```
 
-Full install options (per-project, plain-shell, verify/remove), how a skill fires once installed, the linking convention, and the
-development toolchain are in [docs/installation.md](docs/installation.md).
+Only `knowledgeislands-bootstrap` is installed globally; every other skill is project-local, wired into each repo's `.claude/skills/` from
+its `.ki-config.toml` by the keystone. Full install options (the global/project split, plain-shell, verify/remove), how a skill fires once
+installed, the linking convention, and the development toolchain are in [docs/installation.md](docs/installation.md).
 
 ## Documentation
 
 | Doc                                                    | What's in it                                                                                      |
 | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
-| [docs/skills.md](docs/skills.md)                       | The twelve skills one by one, and the shared governance-skill shape.                              |
+| [docs/skills.md](docs/skills.md)                       | The thirteen skills one by one, and the shared governance-skill shape.                            |
 | [docs/design.md](docs/design.md)                       | How they fit: where they don't overlap, the three knowledge loops, the principles across the set. |
 | [docs/knowledge-islands.md](docs/knowledge-islands.md) | The Knowledge Islands zone model the KI skills assume, and standard skills & per-base config.     |
 | [docs/installation.md](docs/installation.md)           | Installing · using · linking skills, and the development toolchain.                               |

@@ -68,8 +68,9 @@ line-by-line checkable criteria live in [the rubric](references/audit-rubric.md)
    what-the-harness-is paragraph, four-part directory table with current status, working conventions per part, key `bun run *` commands.
 4. **Add `ROADMAP.md`.** Start with the known open work; mark items open-only. Note: continuous practices are not roadmap items — they
    belong in `docs/design.md` or `CLAUDE.md`.
-5. **Scaffold `package.json`** with the required script families: `skills:link`, `skills:lint` minimum; add the common engineering families
-   (`lint:check`, `lint:types`, `lint:md`, `lint:md:check`) from `knowledgeislands-engineering`'s standard.
+5. **Scaffold `package.json`** with the required script families: `skills:link:project`, `skills:lint` minimum (plus `skills:link:global` to
+   install the `knowledgeislands-bootstrap` keystone); add the common engineering families (`lint:check`, `lint:types`, `lint:md`,
+   `lint:md:check`) from `knowledgeislands-engineering`'s standard.
 6. **Add `.ki-config.toml`** with at minimum `[knowledgeislands-repo]`, `[knowledgeislands-engineering]`, and `[knowledgeislands-harness]`.
    Add `[knowledgeislands-skills]` once `skills/` is populated.
 7. **Self-audit.** Run Mode AUDIT on the new harness before handing it off.
@@ -101,5 +102,5 @@ the enforcement framework's REFRESH gate.
   double-report what a sibling's checker already surfaces.
 - A harness that has empty shelves (`agents/`, `mcp/`, `evals/` with no real content) is a valid harness — the shelves exist to mark intent
   and reserve the structure. A shelf is not a gap.
-- The `skills:link` install convention is the harness's primary delivery mechanism — verifying it is wired in `package.json` is a FAIL
-  criterion, not advisory.
+- The `skills:link:project` install convention (the `knowledgeislands-bootstrap` keystone) is the harness's primary delivery mechanism —
+  verifying it is wired in `package.json` is a FAIL criterion, not advisory.

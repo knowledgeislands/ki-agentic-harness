@@ -26,8 +26,8 @@ _Reviewed: 2026-06-21_
 
 **Confirmed:**
 
-- Agent Skills specification does not define a "harness" — the four-part structure, `skills:link` install convention, and co-location intent
-  are entirely a KI architectural convention. [AS] re-fetched: still no bundle/harness/container concept.
+- Agent Skills specification does not define a "harness" — the four-part structure, the `skills:link:project` install convention, and
+  co-location intent are entirely a KI architectural convention. [AS] re-fetched: still no bundle/harness/container concept.
 - The `SKILL.md` frontmatter (`name:`, `description:`, `argument-hint:`) and directory layout (`references/`, `scripts/`, `assets/`) are
   fully specified by [AS]; this skill adds no new SKILL.md requirements beyond those. The directory-name = `name:` constraint is unchanged.
 - The subagent format (frontmatter, system-prompt body) is fully specified by [CC]; re-fetched, unchanged.
@@ -42,4 +42,4 @@ _Reviewed: 2026-06-21_
 
 - [AS] — Monitor for any Agent Skills spec update that adds bundle/harness-level concepts. If agentskills.io formalises a multi-skill
   container, reconcile with this standard.
-- [CC] — Monitor Claude Code release notes for any change to skill-install paths or the `skills:link` convention.
+- [CC] — Monitor Claude Code release notes for any change to skill-install paths or the project-local skill-install convention.

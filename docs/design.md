@@ -9,22 +9,24 @@ Each skill's `description` carries its own boundaries so the agent selects the r
 names the other as the **off-ramp** — reciprocally, so the line holds from both sides (for humans as well as the agent). The pairs worth
 stating once, with the nuance in the footnotes below:
 
-| Pair that could be confused                                            | The line between them                                                              |
-| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `knowledgeislands-mcp` vs `knowledgeislands-skills`                    | MCP **server code** vs a **`SKILL.md`** (frontmatter + body prose). †              |
-| `knowledgeislands-agents` vs `knowledgeislands-skills`                 | A **subagent definition** vs a **`SKILL.md`** — twins over different artifacts.    |
-| `knowledgeislands-kb` vs `knowledgeislands-streams`                    | The five-zone model + note CRUD vs the **`Streams` zone internals**, delegated. ‡  |
-| `knowledgeislands-repo` vs `knowledgeislands-mcp`                      | A repo's **configuration** vs an MCP server's **source**. §                        |
-| `knowledgeislands-authoring` vs the rest                               | **How we write** vs _what_ we write. ¶                                             |
-| `knowledgeislands-engineering` vs the rest                             | **How we build** vs everything that isn't the toolchain. ‖                         |
-| `knowledgeislands-11ty-websites` vs `…-cloudflare-hosting`             | **Building** the portable `dist/` vs **serving** it — the `dist/` is the seam. ††  |
-| `…-cloudflare-hosting` vs the generic `cloudflare` / `wrangler` skills | The **one site Worker** serving `dist/` vs all other Workers + platform usage. ‡‡  |
-| `knowledgeislands-tokenomics` vs `knowledgeislands-mcp`                | The **token cost** of the MCP tool surface vs an MCP server's **code**. §§         |
-| `knowledgeislands-tokenomics` vs `knowledgeislands-skills`             | The installed set's **description cost** vs one `SKILL.md`'s **quality**. §§       |
-| `knowledgeislands-tokenomics` vs the `claude-api` skill                | The **shape** of the context budget vs the volatile **numbers** it cites. §§       |
-| `knowledgeislands-harness` vs `knowledgeislands-skills`                | The **container** (four-part layout) vs a `SKILL.md`'s **quality** inside it. ¶¶   |
-| `knowledgeislands-harness` vs `knowledgeislands-repo`                  | A harness's **four-part layout** vs any ki-repo's **config & GitHub settings**. ¶¶ |
-| `knowledgeislands-harness` vs `knowledgeislands-agents`                | The **container** holding `agents/` vs a **subagent definition**'s quality. ¶¶     |
+| Pair that could be confused                                            | The line between them                                                               |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `knowledgeislands-mcp` vs `knowledgeislands-skills`                    | MCP **server code** vs a **`SKILL.md`** (frontmatter + body prose). †               |
+| `knowledgeislands-agents` vs `knowledgeislands-skills`                 | A **subagent definition** vs a **`SKILL.md`** — twins over different artifacts.     |
+| `knowledgeislands-kb` vs `knowledgeislands-streams`                    | The five-zone model + note CRUD vs the **`Streams` zone internals**, delegated. ‡   |
+| `knowledgeislands-repo` vs `knowledgeislands-mcp`                      | A repo's **configuration** vs an MCP server's **source**. §                         |
+| `knowledgeislands-authoring` vs the rest                               | **How we write** vs _what_ we write. ¶                                              |
+| `knowledgeislands-engineering` vs the rest                             | **How we build** vs everything that isn't the toolchain. ‖                          |
+| `knowledgeislands-11ty-websites` vs `…-cloudflare-hosting`             | **Building** the portable `dist/` vs **serving** it — the `dist/` is the seam. ††   |
+| `…-cloudflare-hosting` vs the generic `cloudflare` / `wrangler` skills | The **one site Worker** serving `dist/` vs all other Workers + platform usage. ‡‡   |
+| `knowledgeislands-tokenomics` vs `knowledgeislands-mcp`                | The **token cost** of the MCP tool surface vs an MCP server's **code**. §§          |
+| `knowledgeislands-tokenomics` vs `knowledgeislands-skills`             | The installed set's **description cost** vs one `SKILL.md`'s **quality**. §§        |
+| `knowledgeislands-tokenomics` vs the `claude-api` skill                | The **shape** of the context budget vs the volatile **numbers** it cites. §§        |
+| `knowledgeislands-harness` vs `knowledgeislands-skills`                | The **container** (four-part layout) vs a `SKILL.md`'s **quality** inside it. ¶¶    |
+| `knowledgeislands-harness` vs `knowledgeislands-repo`                  | A harness's **four-part layout** vs any ki-repo's **config & GitHub settings**. ¶¶  |
+| `knowledgeislands-harness` vs `knowledgeislands-agents`                | The **container** holding `agents/` vs a **subagent definition**'s quality. ¶¶      |
+| `knowledgeislands-bootstrap` vs `knowledgeislands-repo`                | The install **mechanism** (linking `.claude/skills/`) vs the config **content**. ‖‖ |
+| `knowledgeislands-bootstrap` vs `knowledgeislands-harness`             | The install **keystone** (one global skill) vs the **container** convention. ‖‖     |
 
 † Auditing the `SKILL.md` of an MCP-related skill is `knowledgeislands-skills`' job; auditing the server's `src/` layout, config injection,
 and tool surface is `knowledgeislands-mcp`'s. This is the one pair that could be confused — both "audit against a standard" — so each names
@@ -66,11 +68,19 @@ TTLs, context-window sizes) it deliberately holds none of — those are the `cla
 budget's _shape_, that skill the figures.
 
 ¶¶ `knowledgeislands-harness` governs the **container** — the four-part `skills/` `agents/` `mcp/` `evals/` layout, the root `CLAUDE.md` /
-`ROADMAP.md` / `package.json` / `.ki-config.toml`, and the `skills:link` install convention — not the **contents**. Each of the three
+`ROADMAP.md` / `package.json` / `.ki-config.toml`, and the `skills:link:*` install convention — not the **contents**. Each of the three
 adjacent skills owns a content it carries: `knowledgeislands-skills` owns a `SKILL.md`'s quality, `knowledgeislands-agents` a subagent
 definition's, and `knowledgeislands-repo` the cross-cutting `.ki-config.toml` contract and GitHub-side settings of _any_ ki-repo (the
 harness is one such repo). So the harness names all three as off-ramps and **composes** their checkers — its audit runs the harness delta on
 top of theirs, never replacing them; the boundary is structure-of-the-bundle vs quality-of-a-part.
+
+‖‖ `knowledgeislands-bootstrap` is the install **keystone** — the one `knowledgeislands-*` skill kept installed globally — and owns only the
+install _mechanism_: reading a repo's `.ki-config.toml` and linking its project-local `.claude/skills/` to match. It draws two lines.
+Against `knowledgeislands-repo`: bootstrap **composes** on repo and reads the coverage it declares, but never decides that coverage — which
+skills a repo _should_ opt into is repo's coverage cascade, and the `.ki-config.toml` contract plus GitHub settings are repo's; mechanism vs
+content. Against `knowledgeislands-harness`: the harness owns the `skills:link:*` convention as part of the **container** standard, while
+bootstrap is the project-local counterpart that _carries it out_ in each repo — keystone-that-wires vs container-that-defines. Each names
+the other two as off-ramps.
 
 ## How knowledge moves and improves — the three loops
 
