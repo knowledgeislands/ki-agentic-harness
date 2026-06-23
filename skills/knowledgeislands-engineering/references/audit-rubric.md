@@ -50,7 +50,7 @@ graded on it, and the checker reports it as N/A, not a failure.
 ## Core — biome.json & prettier config (§5)
 
 - [ ] [M] WARN — `biome.json` present.
-- [ ] [M] WARN — matches the shared config (formatter 2-space / lineWidth 200; JS single quotes, `semicolons: asNeeded`, no trailing commas;
+- [ ] [M] WARN — matches the shared config (formatter 2-space / lineWidth 140; JS single quotes, `semicolons: asNeeded`, no trailing commas;
       `preset: recommended` with `noExplicitAny: off`; `organizeImports: on`; git VCS + `useIgnoreFile`).
 - [ ] [M] WARN — `.prettierrc.json` present (Prettier backs `lint:md`).
 - [ ] [M] WARN — it matches the shared shape: `proseWrap: always`, `printWidth: 140`, `semi: false`, `singleQuote: true`,

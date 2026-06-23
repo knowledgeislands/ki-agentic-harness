@@ -219,7 +219,7 @@ const biome = read('biome.json')
 if (!biome) add('FAIL', 'biome', 'biome.json missing')
 else {
   const fields: [string, RegExp][] = [
-    ['formatter lineWidth 200', /"lineWidth"\s*:\s*200/],
+    ['formatter lineWidth 140', /"lineWidth"\s*:\s*140/],
     ['formatter indentWidth 2', /"indentWidth"\s*:\s*2/],
     ['js quoteStyle single', /"quoteStyle"\s*:\s*"single"/],
     ['js semicolons asNeeded', /"semicolons"\s*:\s*"asNeeded"/],
