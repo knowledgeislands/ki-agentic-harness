@@ -29,8 +29,8 @@ Severity: **FAIL** (ship-stopper — the site can't deploy, or deploys the wrong
 - [ ] [M] FAIL — a **site** `wrangler.jsonc` exists at the site root (the config carrying an `assets` block). Its absence is the classic
       finding — `site:deploy` has nothing to deploy. (§1)
 - [ ] [M] FAIL — deploy is **Workers + Static Assets** (`wrangler deploy`), **never** `wrangler pages deploy` anywhere in scripts. (§1)
-- [ ] [M] WARN — exactly one site Worker (one config with `assets`); the site root matches the build layout (repo root flat, `site/`
-      subfolder). (§1)
+- [ ] [M] WARN — exactly one site Worker (one config with `assets`), at `site/wrangler.jsonc` — the monorepo `site/` workspace (engineering
+      §0); the root `package.json` `workspaces` includes `site`. (A one-off flat consumer with a root config is valid generic hosting.) (§1)
 
 ## The dist/ seam (§2)
 

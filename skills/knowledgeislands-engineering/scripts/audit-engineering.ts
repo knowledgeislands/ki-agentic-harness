@@ -55,7 +55,9 @@ const scripts = (pkg.scripts ?? {}) as Record<string, string>
 const name = String(pkg.name ?? basename(repo))
 
 // ── core: package.json metadata ───────────────────────────────────────────────
-pkg.type === 'module' ? add('PASS', 'package', 'type = "module"') : add('FAIL', 'package', `type should be "module", got ${JSON.stringify(pkg.type)}`)
+pkg.type === 'module'
+  ? add('PASS', 'package', 'type = "module"')
+  : add('FAIL', 'package', `type should be "module", got ${JSON.stringify(pkg.type)}`)
 String(pkg.packageManager ?? '').startsWith('bun@')
   ? add('PASS', 'package', `packageManager = ${pkg.packageManager}`)
   : add('FAIL', 'package', `packageManager should be bun@…, got ${JSON.stringify(pkg.packageManager)}`)
@@ -64,7 +66,11 @@ const nodeOk = (() => {
   const m = nodeEngine.match(/>=\s*(\d+)/)
   return m ? Number(m[1]) >= 22 : false
 })()
-add(nodeOk ? 'PASS' : 'FAIL', 'package', nodeOk ? `engines.node = ${nodeEngine}` : `engines.node should be >=22, got ${JSON.stringify(nodeEngine)}`)
+add(
+  nodeOk ? 'PASS' : 'FAIL',
+  'package',
+  nodeOk ? `engines.node = ${nodeEngine}` : `engines.node should be >=22, got ${JSON.stringify(nodeEngine)}`
+)
 
 // ── core: mise.toml toolchain pin ─────────────────────────────────────────────
 // Root mise.toml pins the actual node + bun (mise puts them on PATH on `cd`; CI
@@ -98,17 +104,32 @@ strayPins.length
 if (has('.github', 'workflows', 'ci.yml')) {
   const ci = read('.github', 'workflows', 'ci.yml')
   const usesMise = /mise-action/.test(ci)
-  usesMise ? add('PASS', 'ci', 'ci.yml installs the toolchain via jdx/mise-action') : add('FAIL', 'ci', 'ci.yml must install the toolchain via jdx/mise-action (reads mise.toml)')
+  usesMise
+    ? add('PASS', 'ci', 'ci.yml installs the toolchain via jdx/mise-action')
+    : add('FAIL', 'ci', 'ci.yml must install the toolchain via jdx/mise-action (reads mise.toml)')
   const hard = ci.match(/\b(bun|node)-version\s*:/)
   if (hard) add('FAIL', 'ci', `ci.yml hardcodes ${hard[1]}-version — remove it; the version comes from mise.toml`)
   const runsStep = (s: string) => ci.includes(`bun run ${s}`)
   for (const step of ['lint:check', 'lint:types', 'lint:md:check']) {
-    runsStep(step) ? add('PASS', 'ci', `ci.yml runs ${step}`) : add('FAIL', 'ci', `ci.yml must run "bun run ${step}" — the common CI shape (lint:md:check is the Markdown gate)`)
+    runsStep(step)
+      ? add('PASS', 'ci', `ci.yml runs ${step}`)
+      : add('FAIL', 'ci', `ci.yml must run "bun run ${step}" — the common CI shape (lint:md:check is the Markdown gate)`)
   }
-  if (scripts['test:coverage']) runsStep('test:coverage') ? add('PASS', 'ci', 'ci.yml runs test:coverage') : add('WARN', 'ci', 'ci.yml should run "bun run test:coverage" (tests capability)')
+  if (scripts['test:coverage'])
+    runsStep('test:coverage')
+      ? add('PASS', 'ci', 'ci.yml runs test:coverage')
+      : add('WARN', 'ci', 'ci.yml should run "bun run test:coverage" (tests capability)')
 } else {
   add('SKIP', 'ci', 'no .github/workflows/ci.yml — not applicable')
 }
+
+// Repo shape — flat vs monorepo (§0). The canonical `lint:types = "tsc --noEmit"`
+// assumes one root TS project (the flat shape). A monorepo declares its packages in
+// the standard Bun `workspaces` array in package.json (e.g. ["site", "ingress"]);
+// their per-package tsconfigs can carry incompatible `types`/`lib`, so one root
+// `tsc --noEmit` cannot type-check them all. When `workspaces` is present, `lint:types`
+// is validated as a per-package aggregate against that list instead of the literal.
+const workspaces = Array.isArray(pkg.workspaces) ? (pkg.workspaces as string[]).filter((w) => typeof w === 'string') : []
 
 // ── core: the required script families (exact-match) ──────────────────────────
 const CANON: Record<string, string> = {
@@ -124,6 +145,18 @@ const CANON: Record<string, string> = {
   'deps:update': 'bun update --latest'
 }
 for (const [k, v] of Object.entries(CANON)) {
+  if (k === 'lint:types' && workspaces.length) {
+    // monorepo shape (workspaces in package.json): validate the per-package aggregate, not the single-root literal
+    const lt = scripts['lint:types'] ?? ''
+    const noTsconfig = workspaces.filter((p) => !read(`${p}/tsconfig.json`))
+    const uncovered = workspaces.filter((p) => !lt.includes(p))
+    if (!lt) add('FAIL', 'scripts', 'script "lint:types" missing (required lint:* family)')
+    else if (noTsconfig.length) add('FAIL', 'scripts', `workspaces names dir(s) without a tsconfig.json: ${noTsconfig.join(', ')}`)
+    else if (uncovered.length)
+      add('FAIL', 'scripts', `lint:types must cover every workspace; not referenced: ${uncovered.join(', ')}\n        got:  ${lt}`)
+    else add('PASS', 'scripts', `lint:types aggregates workspaces [${workspaces.join(', ')}]`)
+    continue
+  }
   if (!scripts[k]) add('FAIL', 'scripts', `script "${k}" missing (required ${k.split(':')[0]}:* family)`)
   else if (scripts[k] === v) add('PASS', 'scripts', `${k} matches canonical`)
   else add('FAIL', 'scripts', `${k} diverges from canonical\n        want: ${v}\n        got:  ${scripts[k]}`)
@@ -132,11 +165,15 @@ for (const [k, v] of Object.entries(CANON)) {
 scripts.clean?.includes('node_modules')
   ? add('PASS', 'scripts', `clean = ${JSON.stringify(scripts.clean)}`)
   : add('FAIL', 'scripts', 'clean must remove node_modules (e.g. "rm -rf {dist,node_modules}")')
-scripts.prepare === 'husky' ? add('PASS', 'scripts', 'prepare = "husky"') : add('WARN', 'scripts', `prepare should be "husky", got ${JSON.stringify(scripts.prepare)}`)
+scripts.prepare === 'husky'
+  ? add('PASS', 'scripts', 'prepare = "husky"')
+  : add('WARN', 'scripts', `prepare should be "husky", got ${JSON.stringify(scripts.prepare)}`)
 
 // ── core: the `bun test` trap ─────────────────────────────────────────────────
 const bunTest = Object.entries(scripts).filter(([, v]) => /\bbun test\b/.test(v))
-bunTest.length ? add('FAIL', 'scripts', `uses "bun test" (Bun's runner, not vitest) in: ${bunTest.map(([k]) => k).join(', ')}`) : add('PASS', 'scripts', 'no "bun test" anywhere')
+bunTest.length
+  ? add('FAIL', 'scripts', `uses "bun test" (Bun's runner, not vitest) in: ${bunTest.map(([k]) => k).join(', ')}`)
+  : add('PASS', 'scripts', 'no "bun test" anywhere')
 
 // ── core: tsconfig.json (universal invariants only; richer base is profiled) ──
 // tsconfig may carry // comments (the website's does), so check by regex on text,
@@ -155,7 +192,8 @@ else {
     ['esModuleInterop: true', /"esModuleInterop"\s*:\s*true/],
     ['skipLibCheck: true', /"skipLibCheck"\s*:\s*true/]
   ]
-  for (const [label, re] of tsCore) re.test(ts) ? add('PASS', 'tsconfig', label) : add('FAIL', 'tsconfig', `tsconfig.json missing universal invariant: ${label}`)
+  for (const [label, re] of tsCore)
+    re.test(ts) ? add('PASS', 'tsconfig', label) : add('FAIL', 'tsconfig', `tsconfig.json missing universal invariant: ${label}`)
 }
 
 // ── core: biome.json (shared FIELDS, not byte-identical — files globs vary) ───
@@ -187,7 +225,8 @@ else {
     ['trailingComma none', /"trailingComma"\s*:\s*"none"/],
     ['*.md markdown override', /"parser"\s*:\s*"markdown"/]
   ]
-  for (const [label, re] of pfields) re.test(prettier) ? add('PASS', 'prettier', label) : add('WARN', 'prettier', `.prettierrc.json: expected ${label}`)
+  for (const [label, re] of pfields)
+    re.test(prettier) ? add('PASS', 'prettier', label) : add('WARN', 'prettier', `.prettierrc.json: expected ${label}`)
 }
 
 // ── capability detection ──────────────────────────────────────────────────────
@@ -208,14 +247,29 @@ if (hasTests) {
   const wantTest: Record<string, string> = { test: 'vitest run', 'test:coverage': 'vitest run --coverage', 'test:watch': 'vitest' }
   for (const [k, v] of Object.entries(wantTest)) {
     if (!scripts[k]) add('WARN', 'tests', `test capability: script "${k}" missing (expected ${JSON.stringify(v)})`)
-    else scripts[k] === v ? add('PASS', 'tests', `${k} = ${JSON.stringify(v)}`) : add('FAIL', 'tests', `${k} should be ${JSON.stringify(v)}, got ${JSON.stringify(scripts[k])}`)
+    else
+      scripts[k] === v
+        ? add('PASS', 'tests', `${k} = ${JSON.stringify(v)}`)
+        : add('FAIL', 'tests', `${k} should be ${JSON.stringify(v)}, got ${JSON.stringify(scripts[k])}`)
   }
   if (vitestFile) {
     const vc = read(vitestFile)
     const covOk = /lines:\s*100/.test(vc) && /branches:\s*100/.test(vc) && /functions:\s*100/.test(vc) && /statements:\s*100/.test(vc)
-    add(covOk ? 'PASS' : 'FAIL', 'tests', covOk ? 'coverage thresholds 100% on all four metrics' : 'coverage thresholds must be 100/100/100/100 (lines/functions/branches/statements)')
+    add(
+      covOk ? 'PASS' : 'FAIL',
+      'tests',
+      covOk
+        ? 'coverage thresholds 100% on all four metrics'
+        : 'coverage thresholds must be 100/100/100/100 (lines/functions/branches/statements)'
+    )
     const excludesTest = /exclude\s*:/.test(vc) && /\*\*\/\*\.test\.ts/.test(vc)
-    add(excludesTest ? 'PASS' : 'WARN', 'tests', excludesTest ? 'coverage excludes src/**/*.test.ts' : 'coverage should exclude src/**/*.test.ts (other excludes are artifact-specific)')
+    add(
+      excludesTest ? 'PASS' : 'WARN',
+      'tests',
+      excludesTest
+        ? 'coverage excludes src/**/*.test.ts'
+        : 'coverage should exclude src/**/*.test.ts (other excludes are artifact-specific)'
+    )
   } else {
     add('WARN', 'tests', 'a test script is present but no vitest.config.* — confirm the runner is vitest')
   }
@@ -228,7 +282,9 @@ if (hasBuild) {
   buildScript.startsWith('tsc -p tsconfig.build.json')
     ? add('PASS', 'build', 'build = tsc -p tsconfig.build.json')
     : add('FAIL', 'build', `build should start with "tsc -p tsconfig.build.json", got ${JSON.stringify(buildScript)}`)
-  Array.isArray(pkg.files) && (pkg.files as string[]).includes('dist') ? add('PASS', 'build', 'files includes "dist"') : add('FAIL', 'build', 'files should include "dist"')
+  Array.isArray(pkg.files) && (pkg.files as string[]).includes('dist')
+    ? add('PASS', 'build', 'files includes "dist"')
+    : add('FAIL', 'build', 'files should include "dist"')
   // tsconfig.build.json shape
   const tb = read('tsconfig.build.json')
   if (!tb) add('FAIL', 'build', 'compiled build but tsconfig.build.json missing')
@@ -241,7 +297,8 @@ if (hasBuild) {
       ['noUncheckedIndexedAccess: true', /"noUncheckedIndexedAccess"\s*:\s*true/],
       ['excludes **/*.test.ts', /\*\*\/\*\.test\.ts/]
     ]
-    for (const [label, re] of tbChecks) re.test(tb) ? add('PASS', 'build', `tsconfig.build.json ${label}`) : add('WARN', 'build', `tsconfig.build.json: expected ${label}`)
+    for (const [label, re] of tbChecks)
+      re.test(tb) ? add('PASS', 'build', `tsconfig.build.json ${label}`) : add('WARN', 'build', `tsconfig.build.json: expected ${label}`)
   }
   // the richer shared base lives in the compiled-TS profile — WARN, not FAIL
   const tsBase: [string, RegExp][] = [
@@ -249,26 +306,39 @@ if (hasBuild) {
     ['verbatimModuleSyntax: true', /"verbatimModuleSyntax"\s*:\s*true/],
     ['noUnusedLocals: true', /"noUnusedLocals"\s*:\s*true/]
   ]
-  for (const [label, re] of tsBase) re.test(ts) ? add('PASS', 'build', `tsconfig.json (shared base) ${label}`) : add('WARN', 'build', `tsconfig.json (shared base) should set ${label}`)
+  for (const [label, re] of tsBase)
+    re.test(ts)
+      ? add('PASS', 'build', `tsconfig.json (shared base) ${label}`)
+      : add('WARN', 'build', `tsconfig.json (shared base) should set ${label}`)
   // CLI chmod rule: build chmods EXACTLY dist/cli/cli.js iff src/cli/, and nothing else.
   const chmodTargets = [...buildScript.matchAll(/chmod\s+\+x\s+([^&|;]+)/g)].flatMap((m) => m[1].trim().split(/\s+/)).filter(Boolean)
   const allowed = hasCli ? ['dist/cli/cli.js'] : []
   const unexpected = chmodTargets.filter((t) => !allowed.includes(t))
   const missing = allowed.filter((t) => !chmodTargets.includes(t))
-  if (unexpected.length) add('FAIL', 'build', `build chmods unexpected target(s): ${unexpected.join(', ')} — chmod only dist/cli/cli.js (iff src/cli/), never the server bin`)
+  if (unexpected.length)
+    add(
+      'FAIL',
+      'build',
+      `build chmods unexpected target(s): ${unexpected.join(', ')} — chmod only dist/cli/cli.js (iff src/cli/), never the server bin`
+    )
   if (missing.length) add('WARN', 'build', `src/cli/ exists but build does not chmod +x ${missing.join(', ')}`)
-  if (!unexpected.length && !missing.length) add('PASS', 'build', hasCli ? 'build chmods exactly dist/cli/cli.js' : 'build chmods nothing (no src/cli/) — correct')
+  if (!unexpected.length && !missing.length)
+    add('PASS', 'build', hasCli ? 'build chmods exactly dist/cli/cli.js' : 'build chmods nothing (no src/cli/) — correct')
 } else {
   add('SKIP', 'build', 'no compiled-tsc build capability — not applicable')
 }
 
 // ── capability: env config ────────────────────────────────────────────────────
 if (hasEnv) {
-  envExample ? add('PASS', 'env', `${envExample} present`) : add('WARN', 'env', 'loads env (process.loadEnvFile) but no .env*.example template committed')
+  envExample
+    ? add('PASS', 'env', `${envExample} present`)
+    : add('WARN', 'env', 'loads env (process.loadEnvFile) but no .env*.example template committed')
   // NODE_ENV=development must appear only in dev/inspect scripts
   const devKeys = (k: string) => /:(dev|inspect)\b/.test(k) || k.endsWith(':dev') || k.endsWith(':inspect')
   const leaks = Object.entries(scripts).filter(([k, v]) => v.includes('NODE_ENV=development') && !devKeys(k))
-  leaks.length ? add('FAIL', 'env', `NODE_ENV=development outside a dev/inspect script: ${leaks.map(([k]) => k).join(', ')}`) : add('PASS', 'env', 'NODE_ENV=development only in dev/inspect scripts')
+  leaks.length
+    ? add('FAIL', 'env', `NODE_ENV=development outside a dev/inspect script: ${leaks.map(([k]) => k).join(', ')}`)
+    : add('PASS', 'env', 'NODE_ENV=development only in dev/inspect scripts')
 } else {
   add('SKIP', 'env', 'no env capability — not applicable')
 }
@@ -280,12 +350,15 @@ else if (!/^\[knowledgeislands-engineering\]/m.test(ki)) {
   add('WARN', 'ki-config', 'no [knowledgeislands-engineering] table — add it to mark this repo as governed by the engineering standard')
 } else {
   add('PASS', 'ki-config', '[knowledgeislands-engineering] table present')
-  // validate-down: keys directly under the table must be known (none defined yet;
-  // the only allowed sub-structure is a [knowledgeislands-engineering.checks] table)
+  // validate-down: the table is a conformance marker only — it carries no keys. Repo
+  // shape (flat vs monorepo) is read from package.json `workspaces` (§0), a standard Bun
+  // convention, not a bespoke key here. Any key directly under the table is drift.
   const body = ki.split(/^\[knowledgeislands-engineering\]/m)[1]?.split(/^\[/m)[0] ?? ''
-  const KNOWN = new Set<string>([]) // no top-level options yet
+  const KNOWN = new Set<string>() // no keys defined; only a [knowledgeislands-engineering.checks] sub-table is allowed
   for (const m of body.matchAll(/^\s*([A-Za-z0-9_-]+)\s*=/gm)) {
-    KNOWN.has(m[1]) ? add('PASS', 'ki-config', `known key ${m[1]}`) : add('WARN', 'ki-config', `unknown key under [knowledgeislands-engineering]: ${m[1]} (validate-down)`)
+    KNOWN.has(m[1])
+      ? add('PASS', 'ki-config', `known key ${m[1]}`)
+      : add('WARN', 'ki-config', `unknown key under [knowledgeislands-engineering]: ${m[1]} (validate-down)`)
   }
 }
 
@@ -301,7 +374,15 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
   const reportDir = report && argv[ri + 1] && !argv[ri + 1].startsWith('-') ? argv[ri + 1] : join(target, '.ki-meta', 'audits')
 
   const n = (l: Level): number => items.filter((f) => f.level === l).length
-  const summary = { fail: n('FAIL'), warn: n('WARN'), polish: n('POLISH'), advisory: n('ADVISORY'), info: n('INFO'), skip: n('SKIP'), pass: n('PASS') }
+  const summary = {
+    fail: n('FAIL'),
+    warn: n('WARN'),
+    polish: n('POLISH'),
+    advisory: n('ADVISORY'),
+    info: n('INFO'),
+    skip: n('SKIP'),
+    pass: n('PASS')
+  }
   const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.skip} skip`
   const stamp = new Date().toISOString()
 
@@ -312,7 +393,10 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
       return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
     })
     writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
-    writeFileSync(join(reportDir, `${concern}.json`), `${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
+    writeFileSync(
+      join(reportDir, `${concern}.json`),
+      `${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`
+    )
   }
 
   if (json) {
@@ -336,4 +420,10 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
 add('INFO', 'scope', 'engineering common layer — compose with the artifact-skill audit for full coverage')
 add('ADVISORY', 'judgment', 'mechanical layer only — apply the [J] criteria in references/audit-rubric.md by reading')
 
-emit(findings, repo, 'engineering', `Engineering standard audit — ${name}  (${repo})`, 'Common layer only — run the artifact skill audit too (e.g. audit-mcp.ts for an MCP repo).')
+emit(
+  findings,
+  repo,
+  'engineering',
+  `Engineering standard audit — ${name}  (${repo})`,
+  'Common layer only — run the artifact skill audit too (e.g. audit-mcp.ts for an MCP repo).'
+)

@@ -27,8 +27,10 @@ the edge.
   house sites were explicitly **migrated off Pages to Workers + Static Assets**. A `pages deploy` in any script is a finding.
 - **One `wrangler.jsonc` per deployable.** The **site** Worker's config carries an `assets` block (and no `main`). This is the only config
   this standard governs.
-- The site root — and thus where its `wrangler.jsonc` lives — follows `knowledgeislands-11ty-websites`'s layout: the **repo root** (flat) or
-  the **`site/` subfolder** (when the repo also holds companion Workers). `dist/` always sits at the repo root.
+- The site root — and thus where its `wrangler.jsonc` lives — follows `knowledgeislands-11ty-websites`'s layout, which is a **monorepo**
+  (engineering §0): the site is the **`site/` workspace**, so `wrangler.jsonc` lives at `site/wrangler.jsonc` and `dist/` sits at the repo
+  root (so `assets.directory` is `../dist`, §3). This skill can serve any static `dist/`, so a one-off **flat** consumer (config at the repo
+  root, `assets.directory: "./dist"`) is still valid hosting — but every house 11ty site is a monorepo, never flat.
 
 ## 2. The `dist/` seam
 
@@ -81,7 +83,8 @@ Other `assets` keys (`html_handling`, `not_found_handling`, `binding`, `run_work
 
 ## 4. The script family
 
-The hosting scripts in `package.json`, namespaced with the layout's prefix (`site:` for the `site/`-subfolder layout, unprefixed when flat):
+The hosting scripts in `package.json`, namespaced with the `site:` prefix (the house monorepo layout, §1; a one-off flat consumer leaves
+them unprefixed):
 
 - **`site:deploy`** → `cd <site root> && bunx wrangler deploy`.
 - **`site:preview`** → `bun run site:build && cd <site root> && bunx wrangler dev` — build, then serve through the real Worker runtime

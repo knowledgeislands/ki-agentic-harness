@@ -38,10 +38,10 @@ Severity: **FAIL** (ship-stopper — the site won't build or `dist/` isn't porta
 ## Layout (§2)
 
 - [ ] [M] WARN — `ROADMAP.md` present. (roadmap-md)
-- [ ] [M] FAIL — exactly one `eleventy.config.ts` at the site root — repo root (flat) or `site/` (subfolder). (§2)
-- [ ] [M] WARN — `src/` has `_data/`, `_includes/layouts/`, `_includes/partials/`, `assets/css/`. (§2, §3)
-- [ ] [J] WARN — the `site:` script prefix is present **iff** the `site/`-subfolder layout is used; otherwise scripts are unprefixed. (§2,
-      §8)
+- [ ] [M] FAIL — exactly one `eleventy.config.ts`, under `site/` (the workspace package — every house site is a monorepo, never flat). (§2)
+- [ ] [M] WARN — the root `package.json` declares a `workspaces` array that includes `site` (the monorepo shape, engineering §0). (§2)
+- [ ] [M] WARN — `src/` (under `site/`) has `_data/`, `_includes/layouts/`, `_includes/partials/`, `assets/css/`. (§2, §3)
+- [ ] [J] WARN — every site script carries the `site:` prefix (driven by the monorepo shape, not by observing the folder). (§2, §8)
 - [ ] [J] WARN — structure (nav, ordering) lives in a typed `_data/*.ts` single source, not hard-coded across templates. (§3)
 
 ## eleventy.config.ts (§4)
@@ -79,8 +79,8 @@ Severity: **FAIL** (ship-stopper — the site won't build or `dist/` isn't porta
 ## Scripts (§8)
 
 - [ ] [M] WARN — a build script invokes Eleventy with `--config=eleventy.config.ts`; a dev script runs Tailwind `--watch` + Eleventy
-      `--serve --port 3000` via `concurrently`. (`(site:)build`, `(site:)dev`.) (§8)
-- [ ] [J] WARN — `clean`, `types` (`tsc --noEmit -p <site root>`), and `verify` (types + build) present, matching the layout's prefix. (§8)
+      `--serve --port 3000` via `concurrently`. (`site:build`, `site:dev`.) (§8)
+- [ ] [J] WARN — `site:clean`, `site:types` (`tsc --noEmit -p site`), and `site:verify` (types + build) present, all `site:`-prefixed. (§8)
 
 ## dist/ contract (§9)
 

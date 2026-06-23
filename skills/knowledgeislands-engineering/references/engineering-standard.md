@@ -11,6 +11,7 @@ enforced is [the enforcement framework](enforcement-framework.md).
 ## Contents
 
 - [Scope, layers, and composition](#scope-layers-and-composition)
+- [0. Repo shapes — flat vs monorepo (core)](#0-repo-shapes--flat-vs-monorepo-core)
 - [1. package.json & toolchain pinning (core)](#1-packagejson--toolchain-pinning-core)
 - [2. The script families (core)](#2-the-script-families-core)
 - [3. Bun vs Node (core)](#3-bun-vs-node-core)
@@ -45,6 +46,28 @@ The capability markers, and what each unlocks:
 | Compiled build | `tsconfig.build.json` present, or `build` is a `tsc` invocation | §7 — `build`/`files`/`tsconfig.build.json` |
 | Env config     | `.env*.example` present, or `process.loadEnvFile` used          | §8 — `.env` discipline + `NODE_ENV`-in-dev |
 | CLI binary     | `src/cli/` present                                              | §7 — `build` chmods `dist/cli/cli.js`      |
+
+## 0. Repo shapes — flat vs monorepo (core)
+
+Every KI TS/Bun repo is one of exactly **two shapes**, distinguished by the standard Bun `workspaces` array in the root `package.json`:
+
+| Shape        | Marker                                | Canonical examples                                     |
+| ------------ | ------------------------------------- | ------------------------------------------------------ |
+| **Flat**     | no `workspaces` key in `package.json` | the `mcp-*` repos (`mcp-kb-fs`, `mcp-gmail`, …)        |
+| **Monorepo** | `workspaces` array in `package.json`  | every 11ty/Cloudflare website (`vallearmonia-website`) |
+
+- **Flat** is the default: all source under one root TS project, one root `tsconfig.json`, scripts unprefixed. A single root `tsc --noEmit`
+  type-checks the whole repo (§2).
+- **Monorepo** declares its packages as workspace directories — `"workspaces": ["site", "ingress"]` (or just `["site"]`). Each workspace
+  carries its own `package.json` and `tsconfig.json`. Because two workspaces can carry mutually incompatible `types`/`lib` (e.g. `site/` on
+  Bun types vs `ingress/` on `@cloudflare/workers-types`), one root `tsc --noEmit` cannot span them — so `lint:types` aggregates a
+  per-workspace check (§2) and scripts take the workspace-name prefix (`site:build`, `ingress:types`).
+- **All house 11ty/Cloudflare website repos are monorepos**, even a single-concern site — it declares `"workspaces": ["site"]` from day one
+  so the shape is explicit and adding a companion workspace (an ingress Worker, an API) is a pure addition, not a migration. See
+  `knowledgeislands-11ty-websites` §2 and `knowledgeislands-cloudflare-hosting` §1/§3 for the site-specific layout this implies.
+
+The shape signal is `workspaces` in `package.json` — a standard tooling convention, read directly by the checker. It is **not** a
+`.ki-config.toml` key; `.ki-config.toml`'s `[knowledgeislands-engineering]` table is a conformance marker only (§9).
 
 ## 1. package.json & toolchain pinning (core)
 
@@ -103,6 +126,21 @@ them. Copy, never paraphrase:
   the repo set and the point is consistency.
 - A repo MAY add any number of **repo-specific scripts** (`eval`, `skills:*`, `repo:audit`, `server:auth:*`, `dev:css`, …). Extra scripts
   are never drift; the checker is permissive about them and strict only about the required families.
+
+**Monorepo `lint:types` (shape-driven).** The canonical `lint:types` above assumes a single root TS project — the **flat** shape (§0). A
+**monorepo** (§0) — e.g. a website with `site/` (Bun-typed Eleventy) plus `ingress/` (a Cloudflare Worker on `@cloudflare/workers-types`) —
+has per-workspace `tsconfig.json`s whose `types`/`lib` are mutually incompatible, so one root `tsc --noEmit` cannot type-check them all.
+Such a repo declares its packages in the standard Bun `workspaces` array in `package.json`:
+
+```jsonc
+{ "workspaces": ["site", "ingress"] }
+```
+
+and `lint:types` aggregates the per-workspace checks instead — e.g. `bun run site:types && bun run ingress:types`, each a
+`tsc --noEmit -p <pkg>`. When `workspaces` is present, the checker validates that every listed directory has a `tsconfig.json` and that
+`lint:types` references each, rather than exact-matching the single-root literal. This relaxation is **`lint:types`-only**: `lint:check`
+(Biome), `lint:md` (Prettier + markdownlint), and `lint:package` (syncpack) each run from one root config that already spans every package,
+so they stay canonical. The signal is `workspaces` in `package.json` (standard tooling), not a `.ki-config.toml` key (§9).
 
 ## 3. Bun vs Node (core)
 
@@ -211,5 +249,10 @@ explicitly:
 # (false = waive), and say why in a comment.
 ```
 
-The checker **validates down**: every key under `[knowledgeislands-engineering]` must be one it knows, so a typo or a stale override
-surfaces rather than silently doing nothing.
+The table carries **no top-level keys**. Repo shape (flat vs monorepo, §0) — which is what drives the `lint:types` aggregate — is read from
+the standard Bun `workspaces` array in `package.json`, not from here. Keeping the shape signal in `package.json` means standard tooling
+(Bun, syncpack) sees it too, rather than hiding it behind a bespoke `.ki-config.toml` extension.
+
+The checker **validates down**: any key under `[knowledgeislands-engineering]` is drift (the table is a conformance marker; the only allowed
+sub-structure is a `[knowledgeislands-engineering.checks]` table), so a typo or a stale override surfaces rather than silently doing
+nothing.

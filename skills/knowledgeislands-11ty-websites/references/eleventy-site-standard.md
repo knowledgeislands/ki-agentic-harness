@@ -10,7 +10,7 @@ This skill owns the **site-build delta**. The toolchain it sits on (Bun mandate,
 ## Contents
 
 - [1. Stack](#1-stack)
-- [2. Repo layout — flat vs `site/`](#2-repo-layout--flat-vs-site)
+- [2. Repo layout — the `site/` workspace](#2-repo-layout--the-site-workspace)
 - [3. The `src/` shape](#3-the-src-shape)
 - [4. `eleventy.config.ts` patterns](#4-eleventyconfigts-patterns)
 - [5. Tailwind 4, config-less](#5-tailwind-4-config-less)
@@ -33,18 +33,23 @@ This skill owns the **site-build delta**. The toolchain it sits on (Bun mandate,
   the `lint:*`/`deps:*` families are `knowledgeislands-engineering`'s — this standard assumes them.
 - **Lucide** provides icons, copied from `node_modules` as a passthrough and initialised client-side (no build-time icon framework).
 
-## 2. Repo layout — flat vs `site/`
+## 2. Repo layout — the `site/` workspace
 
-Two conformant layouts; the trigger is whether the repo holds **other deployables**.
+Every house 11ty/Cloudflare site repo is a **monorepo** in the `knowledgeislands-engineering` sense (§0 there): the root `package.json`
+declares a `workspaces` array, and the site is always its own workspace package under **`site/`** — even a single-concern repo, which
+declares `"workspaces": ["site"]` from day one. There is no flat 11ty-site layout: starting at `site/` means adding a companion deployable
+later (a bot, an ingress Worker — **out of this skill's scope**, see [SKILL.md](../SKILL.md) boundaries) is a pure addition
+(`["site", "ingress"]`), never a repo-wide migration.
 
-- **Flat** — the site is the whole repo. `eleventy.config.ts` and `src/` sit at the repo root; the build emits `./dist`. Scripts are
-  unprefixed: `build`, `dev`, `dev:css`, `dev:serve`, `clean`.
-- **`site/` subfolder** — the repo also holds unrelated deployables (a bot, an ingress Worker — **out of this skill's scope**, see
-  [SKILL.md](../SKILL.md) boundaries). The site lives under `site/` (`site/eleventy.config.ts`, `site/src/`), the build emits `../dist` at
-  the repo root, and the scripts take a `site:` prefix (`site:build`, `site:dev`, …).
+- The site lives under `site/` (`site/eleventy.config.ts`, `site/src/`), with its own `site/package.json` and `site/tsconfig.json` (the
+  workspace package).
+- The build emits **`../dist`** — i.e. **`dist/` lives at the repo root**, the single build output, shared with the hosting Worker
+  (`knowledgeislands-cloudflare-hosting` §2).
+- Scripts take the workspace-name `site:` prefix (`site:build`, `site:dev`, `site:dev:css`, `site:dev:serve`, `site:clean`), per the
+  monorepo shape.
 
-Either way **`dist/` lives at the repo root** and is the single build output. The site root is "the directory that contains
-`eleventy.config.ts`".
+The site root is "the directory that contains `eleventy.config.ts`" — always `site/`. The `workspaces` declaration (and thus the shape) is
+governed by `knowledgeislands-engineering`; this skill assumes it.
 
 ## 3. The `src/` shape
 
@@ -92,7 +97,8 @@ The config is `export default function (eleventyConfig) { … return { dir, … 
 - **Lucide passthrough** + an `external-link-icons` transform that appends an external-link glyph to `https?://` anchors.
 - **Filters**, where used: `jsonDump` (debug), `unique`, `groupBy`. **Collections** sorted by front-matter order keys where a content
   section needs ordering.
-- **`return { dir: { input: 'src', output: '<./dist|../dist>', includes: '_includes', data: '_data' }, htmlTemplateEngine: 'njk', markdownTemplateEngine: 'njk', templateFormats: ['njk','md','html'] }`.**
+- **`return { dir: { input: 'src', output: '../dist', includes: '_includes', data: '_data' }, htmlTemplateEngine: 'njk', markdownTemplateEngine: 'njk', templateFormats: ['njk','md','html'] }`**
+  — output resolves to `dist/` at the repo root (the site builds from `site/`, §2).
 
 ## 5. Tailwind 4, config-less
 
@@ -127,14 +133,14 @@ The config is `export default function (eleventyConfig) { … return { dir, … 
 
 The site-specific scripts (the rest of the script families are engineering's):
 
-- **`<site:>dev`** — `concurrently` runs the Tailwind `--watch` (`dev:css`) and the Eleventy `--serve --port 3000` (`dev:serve`) in
+- **`site:dev`** — `concurrently` runs the Tailwind `--watch` (`site:dev:css`) and the Eleventy `--serve --port 3000` (`site:dev:serve`) in
   parallel, named `css`,`11ty`.
-- **`<site:>build`** — `bun …/@11ty/eleventy/cmd.cjs --config=eleventy.config.ts` (the `eleventy.before` hook compiles Tailwind with
+- **`site:build`** — `bun …/@11ty/eleventy/cmd.cjs --config=eleventy.config.ts` (the `eleventy.before` hook compiles Tailwind with
   `--minify`).
-- **`<site:>clean`** — removes `dist/` (and `.wrangler/` where present). **`<site:>types`** — `tsc --noEmit -p <site root>`.
-  **`<site:>verify`** — types + build.
+- **`site:clean`** — removes `dist/` (and `.wrangler/` where present). **`site:types`** — `tsc --noEmit -p site`. **`site:verify`** —
+  types + build.
 
-The `site:` prefix is present iff the `site/`-subfolder layout is used (§2).
+All site scripts take the `site:` prefix — the site is always the `site/` workspace of a monorepo (§2).
 
 ## 9. The `dist/` contract
 
@@ -145,8 +151,8 @@ The build's output, and the **only** thing `knowledgeislands-cloudflare-hosting`
 - for a public site, `sitemap.xml` + `robots.txt`;
 - `dist/` is **gitignored** and fully regenerated by the build — never hand-edited.
 
-Where `dist/` sits — `./dist` (flat) or `../dist` (from `site/`) — is the path the hosting skill points `assets.directory` at. **Building
-`dist/` is this skill; serving it is `knowledgeislands-cloudflare-hosting`.**
+`dist/` sits at the repo root (the site builds from the `site/` workspace, §2), so the hosting skill points `assets.directory` at `../dist`
+from `site/wrangler.jsonc`. **Building `dist/` is this skill; serving it is `knowledgeislands-cloudflare-hosting`.**
 
 ## 10. Migrate-from (legacy)
 
@@ -158,3 +164,6 @@ Older sites predate the standard; CONFORM moves them toward it. The known legacy
 - **Skeletal `src/`** — no `tokens.css`, no `_includes/{layouts,partials}/`, no `seo-meta` partial → add them using the shape from the
   standard (§3, §5, §7).
 - **Minimal SEO** (a bare `<title>` only) → the `seo-meta.njk` partial wired into `base.njk`, plus sitemap/robots for a public site.
+- **Flat layout** (source + `eleventy.config.ts` + `wrangler.jsonc` at the repo root, unprefixed scripts, `assets.directory: "./dist"`) →
+  the monorepo `site/` workspace (§2): move the site into `site/`, add `site/package.json` + `"workspaces": ["site"]` to the root, prefix
+  the scripts with `site:`, and repoint `assets.directory` to `../dist`. The pre-standard `arcadia-website` was migrated this way.
