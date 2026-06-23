@@ -31,9 +31,9 @@ Two deployment modes are available:
 
 ### Not separately applicable — RTK (`rtk-ai.app`)
 
-RTK is headroom-ai's bundled shell-output compression sub-component, not an independent tool. When headroom-ai is installed and
-`headroom wrap claude` is run, RTK is included and its `PreToolUse` hook is wired automatically. Evaluate RTK only through the headroom-ai
-adoption above.
+RTK is headroom-ai's bundled shell-output compression sub-component, not an independent tool. When headroom-ai is running (either via proxy
+mode or wrap mode), RTK is included and its `PreToolUse` hook is wired automatically. Evaluate RTK only through the headroom-ai adoption
+above.
 
 ### Adopt (personal tool, no harness artifact) — house-mcp-manager
 
