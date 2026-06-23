@@ -125,6 +125,8 @@ ever starts enforcing a **[J]** check, move its tag here.
 - **SCRIPT-4 [J]** Deterministic, frequently-reused logic is pre-written, not regenerated each run. (BP)
 - **SCRIPT-5 [J]** Validation scripts are verbose — errors name the problem and the valid options. (BP)
 - **SCRIPT-6 [J]** Plan-validate-execute for batch/destructive ops. (BP, COMMUNITY)
+- **SCRIPT-7 [J]** Scripts installed into a target repo's `scripts/` directory are **copies**, not symlinks or out-of-repo references — the
+  target repo must be autonomous. (BP)
 
 ## LINK — Linking & portability
 
