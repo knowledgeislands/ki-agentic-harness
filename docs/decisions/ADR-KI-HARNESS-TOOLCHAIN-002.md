@@ -17,12 +17,17 @@ composition-only model (ADR-KI-HARNESS-001), and (d) whether adoption requires a
 
 ### Adopt — headroom-ai
 
-headroom-ai is a context compaction and session management tool that wraps the Claude CLI (`headroom wrap claude`). It injects a
-`PreCompact` hook to write the system prompt before compaction and includes RTK (Rust Token Killer) as a bundled sub-component for
-shell-output compression. headroom-ai is the primary context management layer for KI harness sessions.
+headroom-ai is a context compaction and session management tool. It injects a `PreCompact` hook to write the system prompt before compaction
+and includes RTK (Rust Token Killer) as a bundled sub-component for shell-output compression. headroom-ai is the primary context management
+layer for KI harness sessions.
 
-**Adoption action:** install globally via npm; run sessions as `headroom wrap claude` to activate context compaction and shell-output
-compression together.
+Two deployment modes are available:
+
+- **Proxy mode** (current) — `headroom proxy` starts a local optimisation server on port 8787; launch Claude Code as
+  `ANTHROPIC_BASE_URL=http://localhost:8787 claude`. All requests are intercepted and optimised transparently.
+- **Wrap mode** — `headroom wrap claude` wraps the Claude CLI directly without a separate proxy process.
+
+**Adoption action:** install globally via npm; start `headroom proxy` and set `ANTHROPIC_BASE_URL` before launching Claude Code.
 
 ### Not separately applicable — RTK (`rtk-ai.app`)
 
