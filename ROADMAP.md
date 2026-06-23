@@ -13,12 +13,11 @@ to the invariants in [docs/design.md](docs/design.md) (_Principles across the se
 
 ## Later
 
-- **Adopt `knowledgeislands-tokenomics` across environments.** The skill now exists — it audits the standing context surface composed across
-  the user-wide `~/.claude` and project-local layers (plus any base) and the runtime levers, and checks a compression layer (Headroom) is
-  set up well. Open work: opt key projects/bases in with a `[knowledgeislands-tokenomics]` table and tune the budgets; run its AUDIT over
-  this harness itself — the first smoke run already flags **19 user-scoped MCP servers against a budget of 5** — and decide which to scope
-  or disable; and confirm the skill's `**Refresh:**` marker is set so the scheduled `knowledgeislands-skills-refresh` sweep picks it up on
-  its cadence (the REFRESH-cadence follow-up an audit can't self-verify, per `knowledgeislands-skills` INIT step 5).
+- **Adopt `knowledgeislands-tokenomics` across environments.** All three environments opted in (harness, `arcadia-principal`,
+  `arcadia-website`); each AUDIT runs 0 FAIL. Remaining open work: (a) decide on MCP server scoping — 15 of the 19 user-scoped servers are
+  project-specific KB FS instances (`hnr-*`, `kit-hnr-*`, `kit-legal-*`, `kit-pkb-*`, `kit-principal-*`, `mcp-kb-*`, `mcp-m365-*`,
+  `vallearmonia-*`) that could move to project-local `.mcp.json` files, leaving only the 4 genuinely cross-context servers
+  (`kit-mcp-git-audit`, `kit-mcp-gmail`, `kit-mcp-claude-housekeeping`, `kit-mcp-voicenotes-edit`) plus the arcadia KB FS pair globally.
 
 - **Conform the website repos to the new standards.** The `knowledgeislands-11ty-websites` and `knowledgeislands-cloudflare-hosting` skills
   now exist (extracted from `kit-midnight.ninja` + `vallearmonia-website`, the `dist/` folder the seam between them), but their target repos

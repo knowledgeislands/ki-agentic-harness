@@ -94,7 +94,15 @@ const mk = () => {
     (level: Level) =>
     (check: string, msg: string): void =>
       void f.push({ level, check, msg })
-  return { f, fail: push('FAIL'), warn: push('WARN'), note: push('INFO'), skip: push('SKIP'), advisory: push('ADVISORY'), polish: push('POLISH') }
+  return {
+    f,
+    fail: push('FAIL'),
+    warn: push('WARN'),
+    note: push('INFO'),
+    skip: push('SKIP'),
+    advisory: push('ADVISORY'),
+    polish: push('POLISH')
+  }
 }
 
 function gh(args: string[]): string {
@@ -127,11 +135,12 @@ function rootPaths(nwo: string, branch: string): Set<string> {
   }
 }
 
-const topicNames = (t: unknown): string[] => (Array.isArray(t) ? t.map((x) => (typeof x === 'string' ? x : (x?.name ?? x?.topic?.name))).filter(Boolean) : [])
+const topicNames = (t: unknown): string[] =>
+  Array.isArray(t) ? t.map((x) => (typeof x === 'string' ? x : (x?.name ?? x?.topic?.name))).filter(Boolean) : []
 
 // The repo's parsed package.json (or null if absent / unparseable), fetched once
 // and reused for the description-sync check and the MCP-dependency coverage signal.
-type Pkg = { description?: unknown; dependencies?: Record<string, string>; devDependencies?: Record<string, string> }
+type Pkg = { description?: unknown; license?: unknown; dependencies?: Record<string, string>; devDependencies?: Record<string, string> }
 function readPkg(nwo: string, files: Set<string>): Pkg | null {
   if (!files.has('package.json')) return null
   const text = ghRaw(nwo, 'package.json')
@@ -144,7 +153,8 @@ function readPkg(nwo: string, files: Set<string>): Pkg | null {
 }
 // package.json `description` (the in-repo source of truth the GitHub description must
 // be SYNCED with), or null when there is none / it isn't a non-empty string.
-const pkgDescription = (pkg: Pkg | null): string | null => (typeof pkg?.description === 'string' && pkg.description.trim() ? pkg.description.trim() : null)
+const pkgDescription = (pkg: Pkg | null): string | null =>
+  typeof pkg?.description === 'string' && pkg.description.trim() ? pkg.description.trim() : null
 // Does package.json declare `name` among its dependencies or devDependencies?
 const pkgHasDep = (pkg: Pkg | null, name: string): boolean => Boolean(pkg?.dependencies?.[name] ?? pkg?.devDependencies?.[name])
 
@@ -236,18 +246,43 @@ const ELEVENTY = ['eleventy.config.ts', 'eleventy.config.js', 'eleventy.config.c
 type Signals = { root: Set<string>; tree: Set<string>; pkg: Pkg | null }
 const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Signals) => boolean }[] = [
   { skill: 'engineering', table: 'knowledgeislands-engineering', artifact: 'package.json', detect: (s) => s.root.has('package.json') },
-  { skill: 'kb', table: 'knowledgeislands-kb', artifact: 'KB zones (Pillars/ + Resources/)', detect: (s) => s.root.has('Pillars') && s.root.has('Resources') },
+  {
+    skill: 'kb',
+    table: 'knowledgeislands-kb',
+    artifact: 'KB zones (Pillars/ + Resources/)',
+    detect: (s) => s.root.has('Pillars') && s.root.has('Resources')
+  },
   { skill: 'streams', table: 'knowledgeislands-streams', artifact: 'Streams/ zone', detect: (s) => s.root.has('Streams') },
-  { skill: '11ty-websites', table: 'knowledgeislands-11ty-websites', artifact: 'eleventy.config.*', detect: (s) => ELEVENTY.some((f) => s.root.has(f)) },
+  {
+    skill: '11ty-websites',
+    table: 'knowledgeislands-11ty-websites',
+    artifact: 'eleventy.config.*',
+    detect: (s) => ELEVENTY.some((f) => s.root.has(f))
+  },
   {
     skill: 'cloudflare-hosting',
     table: 'knowledgeislands-cloudflare-hosting',
     artifact: 'wrangler config',
     detect: (s) => WRANGLER.some((f) => s.root.has(f)) || [...s.tree].some((p) => WRANGLER.some((f) => p.endsWith(`/${f}`)))
   },
-  { skill: 'mcp', table: 'knowledgeislands-mcp', artifact: '@modelcontextprotocol/sdk dependency', detect: (s) => pkgHasDep(s.pkg, '@modelcontextprotocol/sdk') },
-  { skill: 'skills', table: 'knowledgeislands-skills', artifact: 'skills/*/SKILL.md', detect: (s) => [...s.tree].some((p) => /^skills\/[^/]+\/SKILL\.md$/.test(p)) },
-  { skill: 'agents', table: 'knowledgeislands-agents', artifact: 'agents/**/*.md', detect: (s) => [...s.tree].some((p) => /^agents\/.+\.md$/.test(p) && !/(^|\/)README\.md$/i.test(p)) }
+  {
+    skill: 'mcp',
+    table: 'knowledgeislands-mcp',
+    artifact: '@modelcontextprotocol/sdk dependency',
+    detect: (s) => pkgHasDep(s.pkg, '@modelcontextprotocol/sdk')
+  },
+  {
+    skill: 'skills',
+    table: 'knowledgeislands-skills',
+    artifact: 'skills/*/SKILL.md',
+    detect: (s) => [...s.tree].some((p) => /^skills\/[^/]+\/SKILL\.md$/.test(p))
+  },
+  {
+    skill: 'agents',
+    table: 'knowledgeislands-agents',
+    artifact: 'agents/**/*.md',
+    detect: (s) => [...s.tree].some((p) => /^agents\/.+\.md$/.test(p) && !/(^|\/)README\.md$/i.test(p))
+  }
 ]
 const COVERAGE_SKILLS = new Set(COVERAGE.map((c) => c.skill))
 // A `[knowledgeislands-<skill>]` (or sub-table `[…​.x]`) header on its own line —
@@ -271,26 +306,38 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
   // are regenerated each run; finding them in the committed tree means .gitignore is missing the entry.
   const metaCommitted = [...files].filter((p) => p.startsWith('.ki-meta/audits/') || p.startsWith('.ki-meta/conform/'))
   if (metaCommitted.length)
-    warn('ki-meta', `${metaCommitted.length} derived .ki-meta artifact(s) committed (e.g. ${metaCommitted[0]}) — add \`.ki-meta/audits/\` and \`.ki-meta/conform/\` to .gitignore`)
+    warn(
+      'ki-meta',
+      `${metaCommitted.length} derived .ki-meta artifact(s) committed (e.g. ${metaCommitted[0]}) — add \`.ki-meta/audits/\` and \`.ki-meta/conform/\` to .gitignore`
+    )
 
   // ── layer 2: core GitHub ──
-  if (r.defaultBranchRef?.name !== DEFAULT_BRANCH) fail('default-branch', `default branch is "${r.defaultBranchRef?.name ?? '?'}" (want ${DEFAULT_BRANCH})`)
-  if (r.licenseInfo?.key !== LICENSE_KEY) fail('license', `license is "${r.licenseInfo?.key ?? 'none'}" (want ${LICENSE_KEY})`)
+  if (r.defaultBranchRef?.name !== DEFAULT_BRANCH)
+    fail('default-branch', `default branch is "${r.defaultBranchRef?.name ?? '?'}" (want ${DEFAULT_BRANCH})`)
+  if (r.visibility === 'PUBLIC' && r.licenseInfo?.key !== LICENSE_KEY)
+    fail('license', `license is "${r.licenseInfo?.key ?? 'none'}" (want ${LICENSE_KEY})`)
   if (!r.description?.trim()) fail('description', 'description is empty')
   // description-sync: the GitHub description must equal the repo's package.json
   // description (the in-repo source of truth). Only checked when both exist — a
   // repo with no package.json description is exempt. (Whether the text matches the
   // repo's PURPOSE is still judgment — the skill's AUDIT mode.)
   else if (pkgDesc != null && pkgDesc !== r.description.trim())
-    fail('description-sync', `GitHub description ≠ package.json description\n      github: ${JSON.stringify(r.description.trim())}\n      package.json: ${JSON.stringify(pkgDesc)}`)
+    fail(
+      'description-sync',
+      `GitHub description ≠ package.json description\n      github: ${JSON.stringify(r.description.trim())}\n      package.json: ${JSON.stringify(pkgDesc)}`
+    )
   if (r.mergeCommitAllowed || r.rebaseMergeAllowed || !r.squashMergeAllowed)
-    fail('merge', `merge methods M/S/R = ${r.mergeCommitAllowed ? 'M' : '-'}/${r.squashMergeAllowed ? 'S' : '-'}/${r.rebaseMergeAllowed ? 'R' : '-'} (want -/S/-)`)
+    fail(
+      'merge',
+      `merge methods M/S/R = ${r.mergeCommitAllowed ? 'M' : '-'}/${r.squashMergeAllowed ? 'S' : '-'}/${r.rebaseMergeAllowed ? 'R' : '-'} (want -/S/-)`
+    )
   if (!r.deleteBranchOnMerge) fail('delete-branch', 'auto-delete head branch on merge is off')
 
   // visibility: declared in .ki-config.toml, checked against live GitHub
   const declared = ki?.visibility?.toUpperCase()
   if (!ki) fail('visibility', `cannot verify visibility — ${KI_CONFIG} has no [${KI_SECTION}] table (run --init)`)
-  else if (declared !== 'PUBLIC' && declared !== 'PRIVATE') fail('visibility', `${KI_CONFIG} does not declare a valid \`visibility\` (got ${JSON.stringify(ki.visibility)})`)
+  else if (declared !== 'PUBLIC' && declared !== 'PRIVATE')
+    fail('visibility', `${KI_CONFIG} does not declare a valid \`visibility\` (got ${JSON.stringify(ki.visibility)})`)
   else if (declared !== r.visibility) fail('visibility', `visibility is ${r.visibility} but ${KI_CONFIG} declares ${declared}`)
 
   // per-repo overrides: a check's effective state is its [..checks] value, else the
@@ -305,8 +352,10 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
       if (!COVERAGE_SKILLS.has(sk)) warn('checks', `"${id}" names no coverage skill (one of: ${[...COVERAGE_SKILLS].join(', ')})`)
       else if (!v) note(id, `override: knowledgeislands-${sk} coverage not enforced for this repo`)
       else note(id, `redundant: coverage-${sk} is enforced by default — can be dropped from [${CHECKS_SECTION}]`)
-    } else if (!(id in CHECK_DEFAULTS)) warn('checks', `"${id}" is not an overridable check (overridable: ${Object.keys(CHECK_DEFAULTS).join(', ')}, or coverage-<skill>)`)
-    else if (v !== CHECK_DEFAULTS[id]) note(id, `override: ${v ? 'enforced' : 'not enforced'} for this repo (org default: ${CHECK_DEFAULTS[id] ? 'on' : 'off'})`)
+    } else if (!(id in CHECK_DEFAULTS))
+      warn('checks', `"${id}" is not an overridable check (overridable: ${Object.keys(CHECK_DEFAULTS).join(', ')}, or coverage-<skill>)`)
+    else if (v !== CHECK_DEFAULTS[id])
+      note(id, `override: ${v ? 'enforced' : 'not enforced'} for this repo (org default: ${CHECK_DEFAULTS[id] ? 'on' : 'off'})`)
     else note(id, `redundant: matches the org default (${v ? 'on' : 'off'}) — can be dropped from [${CHECKS_SECTION}]`)
   }
 
@@ -321,7 +370,11 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
       if (!enforced(`coverage-${c.skill}`)) continue
       const declared = declaresTable(text, c.table)
       const detected = c.detect(signals)
-      if (detected && !declared) warn('coverage', `looks governed by knowledgeislands-${c.skill} (${c.artifact}) but declares no [${c.table}] — opt in, or set coverage-${c.skill} = false`)
+      if (detected && !declared)
+        warn(
+          'coverage',
+          `looks governed by knowledgeislands-${c.skill} (${c.artifact}) but declares no [${c.table}] — opt in, or set coverage-${c.skill} = false`
+        )
       else if (declared && !detected) warn('coverage', `declares [${c.table}] but no ${c.artifact} found — stale opt-in?`)
     }
   }
@@ -337,7 +390,11 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
 
   // branch-protection: default OFF — `main` is open unless this repo sets it true.
   if (enforced('branch-protection')) {
-    let bp: { required_pull_request_reviews?: unknown; required_status_checks?: { contexts?: string[]; checks?: { context: string }[] }; required_linear_history?: { enabled?: boolean } } | null
+    let bp: {
+      required_pull_request_reviews?: unknown
+      required_status_checks?: { contexts?: string[]; checks?: { context: string }[] }
+      required_linear_history?: { enabled?: boolean }
+    } | null
     try {
       bp = ghJSON(`repos/${r.nameWithOwner}/branches/${DEFAULT_BRANCH}/protection`) as typeof bp
     } catch {
@@ -355,7 +412,8 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
   // ── layer 3: deeper GitHub ──
   if (!ghOk(`repos/${r.nameWithOwner}/vulnerability-alerts`)) fail('dependabot-alerts', 'Dependabot alerts are off')
   try {
-    if ((ghJSON(`repos/${r.nameWithOwner}/automated-security-fixes`) as { enabled?: boolean }).enabled !== true) fail('dependabot-updates', 'Dependabot security updates are off')
+    if ((ghJSON(`repos/${r.nameWithOwner}/automated-security-fixes`) as { enabled?: boolean }).enabled !== true)
+      fail('dependabot-updates', 'Dependabot security updates are off')
   } catch {
     warn('dependabot-updates', 'could not read automated-security-fixes')
   }
@@ -370,10 +428,14 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
   }
   if (r.visibility === 'PUBLIC' && (enforced('secret-scanning') || enforced('push-protection'))) {
     try {
-      const sa = (ghJSON(`repos/${r.nameWithOwner}`) as { security_and_analysis?: { secret_scanning?: { status?: string }; secret_scanning_push_protection?: { status?: string } } })
-        .security_and_analysis
+      const sa = (
+        ghJSON(`repos/${r.nameWithOwner}`) as {
+          security_and_analysis?: { secret_scanning?: { status?: string }; secret_scanning_push_protection?: { status?: string } }
+        }
+      ).security_and_analysis
       if (enforced('secret-scanning') && sa?.secret_scanning?.status !== 'enabled') fail('secret-scanning', 'secret scanning is off')
-      if (enforced('push-protection') && sa?.secret_scanning_push_protection?.status !== 'enabled') fail('push-protection', 'secret-scanning push protection is off')
+      if (enforced('push-protection') && sa?.secret_scanning_push_protection?.status !== 'enabled')
+        fail('push-protection', 'secret-scanning push protection is off')
     } catch {
       warn('secret-scanning', 'could not read security_and_analysis')
     }
@@ -530,16 +592,26 @@ if (reportOut) {
   })
   const tally = `${targets.length} repo(s) · ${summary.fail} fail · ${summary.warn} warn · ${summary.info} info · ${summary.skip} skip`
   writeFileSync(join(reportDir, 'repo.md'), [`# repo audit — ${reportTarget}`, '', `_${stampIso}_`, '', tally, ...body, ''].join('\n'))
-  writeFileSync(join(reportDir, 'repo.json'), `${JSON.stringify({ concern: 'repo', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`)
+  writeFileSync(
+    join(reportDir, 'repo.json'),
+    `${JSON.stringify({ concern: 'repo', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`
+  )
 }
 
 if (jsonOut) {
-  process.stdout.write(`${JSON.stringify({ concern: 'repo', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`)
+  process.stdout.write(
+    `${JSON.stringify({ concern: 'repo', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`
+  )
 } else {
   console.log(
     `\n${paint(C.cyan, 'summary')}: ${targets.length} repo(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}${ghSkipped ? paint(C.dim, `, ${ghSkipped} not on github.com`) : ''}`
   )
   if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'repo.{md,json}')}`))
-  console.log(paint(C.dim, 'mechanical checks only — the one remaining judgment item (does the description match the repo’s purpose) is the skill’s AUDIT mode.'))
+  console.log(
+    paint(
+      C.dim,
+      'mechanical checks only — the one remaining judgment item (does the description match the repo’s purpose) is the skill’s AUDIT mode.'
+    )
+  )
 }
 process.exit(totalFails > 0 ? 1 : 0)

@@ -19,3 +19,15 @@ visibility = "private"   # "public" | "private"
 # standard. (Read by knowledgeislands-repo's coverage check; the skills linter lints the SKILL.md
 # files themselves.)
 [knowledgeislands-skills]
+
+# Tokenomics governance — audits the standing context surface for this environment.
+# MCP server count is user-scoped (not harness-controlled); all 19 are intentional.
+# With Claude Code's default tool search (ENABLE_TOOL_SEARCH=auto), schemas are deferred,
+# so the real standing cost is lower than the raw count implies. The raised budget documents
+# the acknowledged state; the WARN is there to revisit when the global MCP set is pruned.
+[knowledgeislands-tokenomics]
+headroom = "recommended"
+preferred_model = "sonnet"
+
+[knowledgeislands-tokenomics.budgets]
+mcp_servers = 20   # 19 user-scoped at time of first audit (2026-06-22); revisit when scoped

@@ -139,23 +139,40 @@ function cmdCheck(target: string, set: string[]): number {
   const findings: Finding[] = []
   const claudeSkills = join(target, '.claude', 'skills')
 
-  const present = existsSync(claudeSkills) ? readdirSync(claudeSkills).filter((n) => n.startsWith('knowledgeislands-') && isSymlink(join(claudeSkills, n))) : []
+  const present = existsSync(claudeSkills)
+    ? readdirSync(claudeSkills).filter((n) => n.startsWith('knowledgeislands-') && isSymlink(join(claudeSkills, n)))
+    : []
   const missing = set.filter((s) => !present.includes(s))
   const extra = present.filter((p) => !set.includes(p))
   const broken = present.filter((p) => !existsSync(join(claudeSkills, p)))
   if (missing.length === 0 && extra.length === 0 && broken.length === 0) {
-    findings.push({ severity: 'PASS', criterion: 'BOOT-1', message: `.claude/skills matches declared coverage (${set.length} skill${set.length === 1 ? '' : 's'})` })
+    findings.push({
+      severity: 'PASS',
+      criterion: 'BOOT-1',
+      message: `.claude/skills matches declared coverage (${set.length} skill${set.length === 1 ? '' : 's'})`
+    })
   } else {
-    if (missing.length) findings.push({ severity: 'WARN', criterion: 'BOOT-1', message: `missing links: ${missing.join(', ')} — run \`skills:link:project\`` })
-    if (extra.length) findings.push({ severity: 'WARN', criterion: 'BOOT-1', message: `links not in declared coverage: ${extra.join(', ')}` })
-    if (broken.length) findings.push({ severity: 'WARN', criterion: 'BOOT-1', message: `dangling links (harness not reachable): ${broken.join(', ')}` })
+    if (missing.length)
+      findings.push({
+        severity: 'WARN',
+        criterion: 'BOOT-1',
+        message: `missing links: ${missing.join(', ')} — run \`skills:link:project\``
+      })
+    if (extra.length)
+      findings.push({ severity: 'WARN', criterion: 'BOOT-1', message: `links not in declared coverage: ${extra.join(', ')}` })
+    if (broken.length)
+      findings.push({ severity: 'WARN', criterion: 'BOOT-1', message: `dangling links (harness not reachable): ${broken.join(', ')}` })
   }
 
   const pkgText = readText(join(target, 'package.json'))
   findings.push(
     hasScript(pkgText, 'skills:link:project')
       ? { severity: 'PASS', criterion: 'BOOT-2', message: 'package.json has a skills:link:project script' }
-      : { severity: 'WARN', criterion: 'BOOT-2', message: 'no skills:link:project script in package.json — links are not reproducible on clone' }
+      : {
+          severity: 'WARN',
+          criterion: 'BOOT-2',
+          message: 'no skills:link:project script in package.json — links are not reproducible on clone'
+        }
   )
 
   findings.push(
@@ -184,14 +201,25 @@ const dryRun = argv.includes('--dry-run')
 const checkOnly = argv.includes('--check')
 const target = resolve(argv.find((a) => !a.startsWith('-')) ?? '.')
 
+// The harness is the authoring hub and intentionally links every skill via --all.
+// Detect it automatically so --check reports PASS rather than a false-positive BOOT-1 WARN.
+const HARNESS_ROOT = resolve(dirname(SKILLS_ROOT))
+const isHarness = resolve(target) === HARNESS_ROOT
+
 const available = discoverSkills()
 if (available.length === 0) {
-  console.error(`${RED}No skills found under ${SKILLS_ROOT}.${RESET} This script self-locates the harness via its own path; if it was copied (not symlinked), that resolution failed.`)
+  console.error(
+    `${RED}No skills found under ${SKILLS_ROOT}.${RESET} This script self-locates the harness via its own path; if it was copied (not symlinked), that resolution failed.`
+  )
   process.exit(1)
 }
 
-const set = expectedSet(all, available, readText(join(target, '.ki-config.toml')))
-console.log(`\n  ${DIM}target:${RESET} ${target}   ${DIM}skills source:${RESET} ${SKILLS_ROOT}   ${DIM}set:${RESET} ${all ? 'all' : 'declared ∪ {repo, authoring}'} (${set.length})\n`)
+const effectiveAll = all || isHarness
+const set = expectedSet(effectiveAll, available, readText(join(target, '.ki-config.toml')))
+const setLabel = effectiveAll ? (isHarness && !all ? 'all (harness — auto)' : 'all') : 'declared ∪ {repo, authoring}'
+console.log(
+  `\n  ${DIM}target:${RESET} ${target}   ${DIM}skills source:${RESET} ${SKILLS_ROOT}   ${DIM}set:${RESET} ${setLabel} (${set.length})\n`
+)
 
 if (checkOnly) {
   process.exit(cmdCheck(target, set))

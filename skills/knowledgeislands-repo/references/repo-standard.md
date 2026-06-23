@@ -27,7 +27,7 @@ working checkout — so what's actually committed is what's audited, and `--org`
 | File              | Why                                                                                                                   |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------- |
 | `README.md`       | The repo's entry point.                                                                                               |
-| `LICENSE`         | MIT text (matches the GitHub license — layer 2).                                                                      |
+| `LICENSE`         | MIT text _(public)_; proprietary text or absent is acceptable _(private)_.                                            |
 | `.gitignore`      | Keeps build/dep noise out of history.                                                                                 |
 | `.editorconfig`   | Shared editor defaults across the workspace toolchain.                                                                |
 | `CLAUDE.md`       | Agent instructions — the always-loaded anchor for any repo-specific gate or convention (skills rubric SHAPE-7).       |
@@ -59,7 +59,7 @@ For every repo on github.com:
 | Setting            | Value                                                              | Why                                      |
 | ------------------ | ------------------------------------------------------------------ | ---------------------------------------- |
 | Default branch     | `main`                                                             | Uniform; what tooling and docs assume.   |
-| License            | MIT                                                                | House default.                           |
+| License            | MIT _(public)_; any or absent _(private)_                          | House default for open-source repos.     |
 | Description        | Present, one sentence; synced with `package.json` where one exists | One-line identity on GitHub.             |
 | Merge methods      | **Squash only** — merge-commit off, rebase off                     | One commit per PR; clean, linear `main`. |
 | Auto-delete branch | On                                                                 | No stale merged branches.                |
@@ -114,11 +114,12 @@ branch-protection = true   # default off — protect `main` on this repo
 
 ## Per-repo overrides
 
-The rubric carries the **org default** for every check. Most are bedrock — file presence, default branch, license, description, merge
-policy, auto-delete-branch, visibility, Dependabot — and aren't negotiable. The rest are **overridable**: a repo flips one for itself with a
-single boolean in its `[knowledgeislands-repo.checks]` table, where `true` = enforce this check and `false` = don't. A check you omit takes
-the org default, so **a fully-conforming repo writes no overrides at all**. The auditor reports every active override as a `note` (never a
-failure), so a deliberate departure stays visible without reading as drift.
+The rubric carries the **org default** for every check. Most are bedrock — file presence, default branch, description, merge policy,
+auto-delete-branch, visibility, Dependabot — and aren't negotiable. License is bedrock but **visibility-scoped**: public repos must carry
+MIT (`license`) and a LICENSE file (`license-file`); private repos skip both (proprietary or absent is acceptable). The rest are
+**overridable**: a repo flips one for itself with a single boolean in its `[knowledgeislands-repo.checks]` table, where `true` = enforce
+this check and `false` = don't. A check you omit takes the org default, so **a fully-conforming repo writes no overrides at all**. The
+auditor reports every active override as a `note` (never a failure), so a deliberate departure stays visible without reading as drift.
 
 | Check               | Org default | When enforced, the auditor requires…                                                                              |
 | ------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------- |

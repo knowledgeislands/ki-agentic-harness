@@ -10,7 +10,8 @@ that becomes deterministic should move into the script and flip to **[M]**.
 ## Layer 1 — repo files (presence on the default branch, via the GitHub git-tree API)
 
 - **readme [M]** `README.md` present. (standard: Layer 1)
-- **license-file [M]** `LICENSE` (or `LICENSE.md`) present. (Layer 1)
+- **license-file [M]** `LICENSE` (or `LICENSE.md`) present. FAIL for public repos; WARN for private repos (proprietary or absent is
+  acceptable). (Layer 1)
 - **gitignore [M]** `.gitignore` present. (Layer 1)
 - **editorconfig [M]** `.editorconfig` present. (Layer 1)
 - **claude-md [M]** `CLAUDE.md` present — the always-loaded anchor for any repo-specific gate or convention (skills rubric SHAPE-7).
@@ -23,7 +24,7 @@ that becomes deterministic should move into the script and flip to **[M]**.
 ## Layer 2 — core GitHub settings (repos on github.com)
 
 - **default-branch [M]** default branch is `main`. (Layer 2)
-- **license [M]** license is MIT. (Layer 2)
+- **license [M]** _(public)_ license is MIT; private repos skip this check. (Layer 2)
 - **description [M]** description is non-empty. (Layer 2)
 - **description-sync [M]** the GitHub description equals the repo's `package.json` `description` (its in-repo source of truth), where a
   package.json description exists. (Layer 2)
