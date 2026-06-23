@@ -22,10 +22,16 @@ to the invariants in [docs/design.md](docs/design.md) (_Principles across the se
 ## Later
 
 - **Adopt `knowledgeislands-tokenomics` across environments.** All three environments opted in (harness, `arcadia-principal`,
-  `arcadia-website`); each AUDIT runs 0 FAIL. Remaining open work: (a) decide on MCP server scoping — 15 of the 19 user-scoped servers are
-  project-specific KB FS instances (`hnr-*`, `kit-hnr-*`, `kit-legal-*`, `kit-pkb-*`, `kit-principal-*`, `mcp-kb-*`, `mcp-m365-*`,
-  `vallearmonia-*`) that could move to project-local `.mcp.json` files, leaving only the 4 genuinely cross-context servers
-  (`kit-mcp-git-audit`, `kit-mcp-gmail`, `kit-mcp-claude-housekeeping`, `kit-mcp-voicenotes-edit`) plus the arcadia KB FS pair globally.
+  `arcadia-website`); each AUDIT runs 0 FAIL. Remaining open work: (a) decide on MCP server scoping — project-specific KB FS servers could
+  move to project-local `.mcp.json` files, leaving only genuinely cross-context servers globally. Once the scoping principle is settled, it
+  should be captured as a timeless rule in a new ADR (e.g. "project-specific MCP servers live in `.mcp.json`; cross-context servers are
+  declared globally in `~/.claude.json`"). _(surfaced: ki-multi-skill-audit WARNs MCP-2, MCP-3)_
+
+- **Integrate `mcporter` into the `mcp-*` repos.** _(candidate)_ TOOLCHAIN-002 adopts mcporter for typed client generation and record/replay
+  against the configured MCP surface. No harness script or mcp repo has integrated it yet.
+
+- **Populate `agents/` shelf.** _(candidate)_ TOOLCHAIN-002 adopts `house-agents` as the reference pattern for sub-agent definitions.
+  KI-authored equivalents should be modelled on that reference implementation and placed in the harness `agents/` shelf.
 
 - **Dependabot safe auto-merge.** _(candidate)_ The Layer-3 baseline is in place (alerts + security updates + `allow_update_branch`, all
   governed); all seven mcp repos now declare `bun` + `github-actions` ecosystems (bun-only, no npm — no duplicate PRs observed). The
