@@ -18,6 +18,7 @@
  * Output is grouped pass/warn/fail; exit code is non-zero iff any FAIL.
  * No dependencies — Node/Bun builtins only; no cross-skill imports.
  */
+import { execSync } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { basename, join } from 'node:path'
 
@@ -168,6 +169,23 @@ scripts.clean?.includes('node_modules')
 scripts.prepare === 'husky'
   ? add('PASS', 'scripts', 'prepare = "husky"')
   : add('WARN', 'scripts', `prepare should be "husky", got ${JSON.stringify(scripts.prepare)}`)
+
+// ── advisory: dependency freshness (bun outdated) ────────────────────────────
+try {
+  const out = execSync('bun outdated', { cwd: repo, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim()
+  const pkgRows = out.split('\n').filter((l) => l.includes('│') && !l.includes('Package') && !l.includes('Current'))
+  if (pkgRows.length === 0) {
+    add('PASS', 'deps', 'all packages up to date (bun outdated)')
+  } else {
+    add(
+      'ADVISORY',
+      'deps',
+      `${pkgRows.length} package${pkgRows.length === 1 ? '' : 's'} have updates available — run \`bun run deps:update\`:\n  ${out}`
+    )
+  }
+} catch {
+  add('SKIP', 'deps', 'bun outdated unavailable — upgrade Bun to check dependency freshness')
+}
 
 // ── core: the `bun test` trap ─────────────────────────────────────────────────
 const bunTest = Object.entries(scripts).filter(([, v]) => /\bbun test\b/.test(v))

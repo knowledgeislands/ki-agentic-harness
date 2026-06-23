@@ -33,6 +33,8 @@ Each governance skill is a directory of this shape (loaded on demand — keep `S
 
 ## 2. The mechanical-checker contract
 
+ADR: [ADR-KI-HARNESS-004](../../../docs/decisions/ADR-KI-HARNESS-004.md)
+
 A checker is the deterministic half of a standard. It MUST:
 
 - take a target path as its argument and read only that target (`bun scripts/audit-<concern>.ts <path>`);
@@ -100,6 +102,8 @@ skill may still keep a block as a hand-curated practice-review note. This marker
 enforcement (the overdue WARN) and the REFRESH too-soon gate (§5) both read.
 
 ## 5. The modes
+
+ADR: [ADR-KI-HARNESS-003](../../../docs/decisions/ADR-KI-HARNESS-003.md)
 
 Every governance skill exposes the universal three, plus skill-specific ones where they fit. Modes are named and alphabetical.
 

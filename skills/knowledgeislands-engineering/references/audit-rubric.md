@@ -30,6 +30,7 @@ graded on it, and the checker reports it as N/A, not a failure.
       shape, §0/§2), `lint:types` is instead validated as a per-workspace aggregate — each listed workspace dir must have a `tsconfig.json`
       and `lint:types` must reference each — not the single-root `tsc --noEmit` literal.
 - [ ] [M] WARN — the full `deps:*` family is present and exact-matches: `deps:missing`, `deps:unused`, `deps:update`.
+- [ ] [M] ADVISORY — `bun outdated` reports no available updates; if any, review and run `bun run deps:update`.
 - [ ] [M] WARN — `clean` and `prepare` are present (`prepare` = `husky`; `clean` removes `node_modules`, and `dist` where the repo builds).
 - [ ] [J] POLISH — repo-specific scripts beyond the families are fine; the checker must not flag them. Just confirm none shadow a family
       name with a divergent definition.

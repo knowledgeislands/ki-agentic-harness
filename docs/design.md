@@ -129,7 +129,8 @@ skill inherits them by being audited:
   needs differently is **declared, not forked** — data in its `.ki-config.toml` table (read validate-down), prose in its `CLAUDE.md` — never
   a `<base>-kb`-style extension skill that takes the shared modes by name. Skills relate only by **composition** (run a sibling's
   checker/mode in sequence, add a delta), spelled out in _Standard skills and per-base config_ in
-  [knowledge-islands.md](knowledge-islands.md).
+  [knowledge-islands.md](knowledge-islands.md). ADR: [ADR-KI-HARNESS-001](decisions/ADR-KI-HARNESS-001.md),
+  [ADR-KI-HARNESS-008](decisions/ADR-KI-HARNESS-008.md).
 - **One governance-mode model.** Every skill exposes the universal **AUDIT / CONFORM / REFRESH** modes plus skill-specific ones (**INIT** to
   scaffold, operational modes such as kb's note-ops), codified as rubric **SHAPE-5** so a new skill inherits the shape. The layout this
   produces is _The governance-skill shape_ in [skills.md](skills.md).

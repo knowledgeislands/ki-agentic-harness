@@ -36,12 +36,14 @@ line-by-line checkable criteria live in [the rubric](references/audit-rubric.md)
    `package.json` script families, `.ki-config.toml` `[knowledgeislands-harness]` table presence, and each `skills/<dir>` name matching its
    `SKILL.md` `name:` frontmatter. Reports on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — defined in
    `knowledgeislands-engineering`'s enforcement-framework §2).
-2. **Compose on sibling skills.** A harness audit is layered — run each applicable sibling's check and add only the harness delta:
-   - `knowledgeislands-repo` — GitHub settings and the `.ki-config.toml` contract (run first)
+2. **Compose on sibling skills via subagent isolation** ([ADR-KI-HARNESS-009](../../docs/decisions/ADR-KI-HARNESS-009.md)). A harness audit
+   is layered — fan out one `agent()` per concern in `parallel()` after the COLL checks:
+   - `knowledgeislands-repo` — GitHub settings and the `.ki-config.toml` contract
    - `knowledgeislands-engineering` — common toolchain (package.json script families, tsconfig, biome)
    - `knowledgeislands-skills` linter (`bun run skills:lint`) — if `skills/` is populated
    - `knowledgeislands-agents` linter — if `agents/` is populated
-   - `knowledgeislands-mcp` audit — if `mcp/` has server code
+   - `knowledgeislands-mcp` audit — if `mcp/` has server code The saved workflow `.claude/workflows/ki-multi-skill-audit.ts` implements this
+     fan-out. See [ADR-KI-HARNESS-002](../../docs/decisions/ADR-KI-HARNESS-002.md) for the four-part layout this step audits.
 3. **Judge the prose the script can't.** Walk the [J]-tagged criteria in [the rubric](references/audit-rubric.md):
    - **CLAUDE.md coverage** — does it open with a what-the-harness-is paragraph covering all four parts? Is the skill map present (if skills
      exist) and does it reflect current reality? Are working conventions documented for each part? Are the key `bun run *` commands listed?
