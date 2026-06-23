@@ -42,14 +42,15 @@ skill-specific modes. Modes are named and alphabetical.)
 
 Review a skill (or every skill in a repo) against the rubric and report.
 
-**Auditing a whole repo? Use subagent isolation** ([ADR-KI-HARNESS-009](../../docs/decisions/ADR-KI-HARNESS-009.md)): run the cheap
-set-level pass first in the main context — the linter's whole-repo run (COLL-1) plus the skills' frontmatter `description`s read together
-for COLL-2 reciprocity — then fan out one `agent()` per skill/concern in `parallel()`. Each subagent receives only its concern's files, runs
-its checker and applies judgment criteria, and returns structured findings. Synthesise results in the main agent, ranking by dependency
-order (foundations first:
+**Auditing a whole repo? Use subagent isolation** ([ADR-KI-HARNESS-AGENTS-001](../../docs/decisions/ADR-KI-HARNESS-AGENTS-001.md)): run the
+cheap set-level pass first in the main context — the linter's whole-repo run (COLL-1) plus the skills' frontmatter `description`s read
+together for COLL-2 reciprocity — then fan out one `agent()` per skill/concern in `parallel()`. Each subagent receives only its concern's
+files, runs its checker and applies judgment criteria, and returns structured findings. Synthesise results in the main agent, ranking by
+dependency order (foundations first:
 `authoring → engineering → repo → kb → streams → mcp → 11ty-websites → cloudflare-hosting → agents → skills → tokenomics → harness`). The
 dependency order is synthesis ranking, not execution order. The saved workflow `.claude/workflows/ki-multi-skill-audit.ts` implements this
-for harness-wide runs. See also [ADR-KI-HARNESS-007](../../docs/decisions/ADR-KI-HARNESS-007.md) (the superseded serial walk).
+for harness-wide runs. See also [ADR-KI-HARNESS-SKILLS-003](../../docs/decisions/ADR-KI-HARNESS-SKILLS-003.md) (the canonical dependency
+order).
 
 1. **Run the linter.** `bun scripts/lint-skills.ts <path-to-skill-or-repo>` from this skill's directory (or `bun run skills:lint` at the
    arcadia-agentic-harness repo root). It reports the mechanical criteria on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY /

@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-010: Complementary tooling evaluation — context management and developer utilities
+# ADR-KI-HARNESS-TOOLCHAIN-002: Complementary tooling evaluation — context management and developer utilities
 
 **Status:** Accepted
 
@@ -14,8 +14,8 @@ A second set of tools from the same author as house-mcp-manager (`houseworthe/ho
 evaluation after the initial pass.
 
 The evaluation criteria were: (a) complementarity with headroom-ai and the KI skills paradigm, (b) maturity, (c) absence of paradigm
-conflict with the composition-only model (ADR-KI-HARNESS-001), and (d) whether adoption requires a harness artifact or is satisfied by a
-personal/dev install.
+conflict with the composition-only model (ADR-KI-HARNESS-BASE-001), and (d) whether adoption requires a harness artifact or is satisfied by
+a personal/dev install.
 
 ## Decision
 
@@ -50,10 +50,10 @@ token-heavy operations into isolated Haiku 4.5 context windows, returning only c
 in production: 95–99% per agent call (e.g. 42,900 tokens in → ~500 returned for git diff analysis). Each agent is a plain `.md` file with
 YAML frontmatter — the same file-based pattern as KI agent definitions. Invocation is explicit, not automatic.
 
-The pattern maps directly to the harness's `agents/` shelf and validates the sub-agent isolation model in ADR-KI-HARNESS-009. With 19 MCP
-servers configured, `house-mcp` is immediately useful. The agents install to `~/.claude/agents/` (user-level) rather than `.claude/agents/`
-in the harness — they are not KI-governed agents, so they do not belong in the harness shelf. KI-authored equivalents following this pattern
-do belong there and should be modelled on this reference implementation.
+The pattern maps directly to the harness's `agents/` shelf and validates the sub-agent isolation model in ADR-KI-HARNESS-AGENTS-001. With 19
+MCP servers configured, `house-mcp` is immediately useful. The agents install to `~/.claude/agents/` (user-level) rather than
+`.claude/agents/` in the harness — they are not KI-governed agents, so they do not belong in the harness shelf. KI-authored equivalents
+following this pattern do belong there and should be modelled on this reference implementation.
 
 **Adoption action:** copy the four `.md` agent files to `~/.claude/agents/`. Reference the pattern when authoring agents for the harness
 `agents/` shelf.
@@ -71,8 +71,8 @@ present; house-code removes what is no longer relevant. Python package, `pip ins
 superpowers ships a structured SDLC methodology as composable skills (brainstorming, TDD, git worktree isolation, subagent dispatch). The
 philosophical overlap with the KI skills paradigm is high, but the execution model differs: superpowers skills trigger automatically and
 share a monolithic install at `~/.claude/skills/gstack`. This conflicts with the validate-down `.ki-config.toml` contract
-(ADR-KI-HARNESS-005) and the standalone-valid skill requirement (ADR-KI-HARNESS-008). The methodology value is real, but the model for _how_
-it is applied is the KI harness's own domain.
+(ADR-KI-HARNESS-CONFIG-001) and the standalone-valid skill requirement (ADR-KI-HARNESS-SKILLS-004). The methodology value is real, but the
+model for _how_ it is applied is the KI harness's own domain.
 
 ### Decline — gstack
 
@@ -96,9 +96,9 @@ Individual gstack ideas (e.g. OWASP/STRIDE threat modelling as a harness skill) 
 
 ## References
 
-- [ADR-KI-HARNESS-001](ADR-KI-HARNESS-001.md) — Composition over extension (paradigm the declines protect).
-- [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005.md) — Validate-down `.ki-config.toml` contract.
-- [ADR-KI-HARNESS-008](ADR-KI-HARNESS-008.md) — Skills must be valid standalone.
+- [ADR-KI-HARNESS-BASE-001](ADR-KI-HARNESS-BASE-001.md) — Composition over extension (paradigm the declines protect).
+- [ADR-KI-HARNESS-CONFIG-001](ADR-KI-HARNESS-CONFIG-001.md) — Validate-down `.ki-config.toml` contract.
+- [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004.md) — Skills must be valid standalone.
 - [RTK](https://www.rtk-ai.app/) — Rust Token Killer, shell output compression.
 - [house-mcp-manager](https://github.com/houseworthe/house-mcp-manager) — MCP server toggle and profile manager.
 - [mcporter](https://github.com/openclaw/mcporter) — MCP ergonomic API/CLI toolkit (deferred).

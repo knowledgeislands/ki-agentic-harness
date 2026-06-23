@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-004: Mechanical and judgment checker split
+# ADR-KI-HARNESS-SKILLS-002: Mechanical and judgment checker split
 
 **Status:** Accepted
 

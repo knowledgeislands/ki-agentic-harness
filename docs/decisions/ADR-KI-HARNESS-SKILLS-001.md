@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-003: AUDIT/CONFORM/REFRESH canonical modes
+# ADR-KI-HARNESS-SKILLS-001: AUDIT/CONFORM/REFRESH canonical modes
 
 **Status:** Accepted
 

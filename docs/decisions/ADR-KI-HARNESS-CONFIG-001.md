@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-005: Validate-down .ki-config.toml contract
+# ADR-KI-HARNESS-CONFIG-001: Validate-down .ki-config.toml contract
 
 **Status:** Accepted
 

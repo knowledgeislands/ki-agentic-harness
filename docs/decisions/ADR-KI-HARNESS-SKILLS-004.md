@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-008: Skills must be valid standalone
+# ADR-KI-HARNESS-SKILLS-004: Skills must be valid standalone
 
 **Status:** Accepted
 
@@ -24,7 +24,7 @@ Every skill must be **valid installed standalone**. Specifically:
 - Any skill is installable from a cloud catalogue or a subset install without dependency resolution.
 - The symlink-based install mechanism works for any skill without modification.
 - Cross-skill references in prose are by name, so they survive path changes.
-- The checker self-containment requirement is part of the mechanical-checker contract (ADR-KI-HARNESS-004).
+- The checker self-containment requirement is part of the mechanical-checker contract (ADR-KI-HARNESS-SKILLS-002).
 
 ## References
 

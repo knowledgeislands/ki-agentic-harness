@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-001: Composition over extension
+# ADR-KI-HARNESS-BASE-001: Composition over extension
 
 **Status:** Accepted
 

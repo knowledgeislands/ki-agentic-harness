@@ -33,7 +33,7 @@ Each governance skill is a directory of this shape (loaded on demand — keep `S
 
 ## 2. The mechanical-checker contract
 
-ADR: [ADR-KI-HARNESS-004](../../../docs/decisions/ADR-KI-HARNESS-004.md)
+ADR: [ADR-KI-HARNESS-SKILLS-002](../../../docs/decisions/ADR-KI-HARNESS-SKILLS-002.md)
 
 A checker is the deterministic half of a standard. It MUST:
 
@@ -103,7 +103,7 @@ enforcement (the overdue WARN) and the REFRESH too-soon gate (§5) both read.
 
 ## 5. The modes
 
-ADR: [ADR-KI-HARNESS-003](../../../docs/decisions/ADR-KI-HARNESS-003.md)
+ADR: [ADR-KI-HARNESS-SKILLS-001](../../../docs/decisions/ADR-KI-HARNESS-SKILLS-001.md)
 
 Every governance skill exposes the universal three, plus skill-specific ones where they fit. Modes are named and alphabetical.
 

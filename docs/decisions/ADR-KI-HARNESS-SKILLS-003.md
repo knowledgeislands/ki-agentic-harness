@@ -1,6 +1,6 @@
-# ADR-KI-HARNESS-007: Dependency order for multi-skill composition
+# ADR-KI-HARNESS-SKILLS-003: Dependency order for multi-skill composition
 
-**Status:** Superseded by ADR-KI-HARNESS-009
+**Status:** Accepted
 
 **Date:** 2024-01-01
 
@@ -25,16 +25,12 @@ to keep peak context at one skill, not the full set — this is what prevents a 
 ## Consequences
 
 - A composing skill's base is judged before the skill itself is reached.
-- Peak context stays bounded at one skill file plus the target's artifacts.
-- Serial execution means the set audit takes time proportional to the number of skills.
-
-**Note:** This serial walk was the initial standard. It has been superseded by ADR-KI-HARNESS-009 (subagent isolation), which preserves the
-dependency-order priority in the synthesis phase while parallelising execution. The dependency order itself remains canonical — it
-determines synthesis ranking, not execution order.
+- In a serial walk, execution time scales with the number of skills; in parallel invocations (ADR-KI-HARNESS-AGENTS-001), this order governs
+  synthesis ranking, not execution order.
 
 ## References
 
 - [skills/knowledgeislands-skills/SKILL.md](../../skills/knowledgeislands-skills/SKILL.md) — Mode AUDIT, set-audit discipline.
 - [skills/knowledgeislands-engineering/references/enforcement-framework.md](../../skills/knowledgeislands-engineering/references/enforcement-framework.md)
   §5 AUDIT — "Auditing a set … bounds its own context".
-- ADR-KI-HARNESS-009 — the superseding decision.
+- ADR-KI-HARNESS-AGENTS-001 — uses this dependency order as synthesis-ranking priority when parallelising multi-skill execution.

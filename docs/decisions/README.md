@@ -6,26 +6,43 @@ set it houses.
 ## Naming convention
 
 ```text
-ADR-KI-<SCOPE>-NNN
+ADR-<SCOPE>-NNN
 ```
 
-`ADR-KI` is the universal prefix for all Knowledge Islands ADRs. `<SCOPE>` is the domain: `HARNESS`, `ENGINEERING`, `KB`, `MCP`, etc. `NNN`
-is a zero-padded monotonically increasing integer. Every ADR lives at `docs/decisions/ADR-KI-<SCOPE>-NNN.md`.
+`<SCOPE>` is one or more alpha-leading uppercase segments separated by hyphens — e.g. `KI-HARNESS-BASE`, `KI-HARNESS-SKILLS`. `NNN` is a
+zero-padded integer (minimum three digits), monotonically increasing within the scope. Every ADR in this harness lives at
+`docs/decisions/ADR-KI-HARNESS-<SUB-SCOPE>-NNN.md`.
+
+Sub-scopes used in this harness:
+
+| Sub-scope   | Purpose                                                 |
+| ----------- | ------------------------------------------------------- |
+| `BASE`      | Foundational paradigms and repository-level decisions   |
+| `SKILLS`    | Governance skill structure and canonical modes          |
+| `CONFIG`    | `.ki-config.toml` contract and validate-down convention |
+| `TOOLCHAIN` | Standard toolchain choices (Bun, Biome, etc.)           |
+| `AGENTS`    | Multi-skill invocation and subagent orchestration       |
 
 ## Index
 
-| ID                 | Title                                                                                                  | Status   | Date       |
-| ------------------ | ------------------------------------------------------------------------------------------------------ | -------- | ---------- |
-| ADR-KI-HARNESS-001 | [Composition over extension](ADR-KI-HARNESS-001.md)                                                    | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-002 | [Four-part harness bundle layout](ADR-KI-HARNESS-002.md)                                               | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-003 | [AUDIT/CONFORM/REFRESH canonical modes](ADR-KI-HARNESS-003.md)                                         | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-004 | [Mechanical and judgment checker split](ADR-KI-HARNESS-004.md)                                         | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-005 | [Validate-down .ki-config.toml contract](ADR-KI-HARNESS-005.md)                                        | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-006 | [Bun and Biome standard toolchain](ADR-KI-HARNESS-006.md)                                              | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-007 | [Dependency order for multi-skill composition](ADR-KI-HARNESS-007.md)                                  | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-008 | [Skills must be valid standalone](ADR-KI-HARNESS-008.md)                                               | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-009 | [Subagent isolation for multi-skill invocation](ADR-KI-HARNESS-009.md)                                 | Accepted | 2026-06-23 |
-| ADR-KI-HARNESS-010 | [Complementary tooling evaluation — context management and developer utilities](ADR-KI-HARNESS-010.md) | Accepted | 2026-06-23 |
+| ID                           | Title                                                                         | Status   | Date       |
+| ---------------------------- | ----------------------------------------------------------------------------- | -------- | ---------- |
+| ADR-KI-HARNESS-BASE-001      | [Composition over extension](ADR-KI-HARNESS-BASE-001.md)                      | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-BASE-002      | [Four-part harness bundle layout](ADR-KI-HARNESS-BASE-002.md)                 | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-BASE-003      | [Adopting Architecture Decision Records](ADR-KI-HARNESS-BASE-003.md)          | Accepted | 2026-06-23 |
+| ADR-KI-HARNESS-BASE-004      | [Purpose and scope of this repository](ADR-KI-HARNESS-BASE-004.md)            | Accepted | 2026-06-23 |
+| ADR-KI-HARNESS-CONFIG-001    | [Validate-down .ki-config.toml contract](ADR-KI-HARNESS-CONFIG-001.md)        | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-SKILLS-001    | [AUDIT/CONFORM/REFRESH canonical modes](ADR-KI-HARNESS-SKILLS-001.md)         | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-SKILLS-002    | [Mechanical and judgment checker split](ADR-KI-HARNESS-SKILLS-002.md)         | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-SKILLS-003    | [Dependency order for multi-skill composition](ADR-KI-HARNESS-SKILLS-003.md)  | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-SKILLS-004    | [Skills must be valid standalone](ADR-KI-HARNESS-SKILLS-004.md)               | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-TOOLCHAIN-001 | [Bun and Biome standard toolchain](ADR-KI-HARNESS-TOOLCHAIN-001.md)           | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-TOOLCHAIN-002 | [Complementary tooling evaluation][t002]†                                     | Accepted | 2026-06-23 |
+| ADR-KI-HARNESS-AGENTS-001    | [Subagent isolation for multi-skill invocation](ADR-KI-HARNESS-AGENTS-001.md) | Accepted | 2026-06-23 |
+
+[t002]: ADR-KI-HARNESS-TOOLCHAIN-002.md
+
+† Full title: "Complementary tooling evaluation — context management and developer utilities"
 
 ## Template
 

@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-006: Bun and Biome standard toolchain
+# ADR-KI-HARNESS-TOOLCHAIN-001: Bun and Biome standard toolchain
 
 **Status:** Accepted
 

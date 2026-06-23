@@ -1,10 +1,10 @@
-// Knowledge Islands multi-skill harness audit — ADR-KI-HARNESS-009
+// Knowledge Islands multi-skill harness audit — ADR-KI-HARNESS-AGENTS-001
 // Runs COLL checks in the main context, then fans out one agent per concern in
 // parallel, synthesises findings ranked by dependency order (foundations first).
 
 export const meta = {
   name: "ki-multi-skill-audit",
-  description: "Audit a Knowledge Islands harness across all applicable governance skills using subagent isolation (ADR-KI-HARNESS-009)",
+  description: "Audit a Knowledge Islands harness across all applicable governance skills using subagent isolation (ADR-KI-HARNESS-AGENTS-001)",
   phases: [
     { title: "COLL checks", detail: "Name uniqueness (COLL-1) + description off-ramp reciprocity (COLL-2)" },
     { title: "Per-concern audit", detail: "One subagent per skill/concern running in parallel" },
@@ -49,7 +49,7 @@ log(`COLL checks done. Proceeding to per-concern parallel fan-out.`);
 // --- Phase 2: Per-concern parallel fan-out ---
 phase("Per-concern audit");
 
-// Dependency order (ADR-KI-HARNESS-007) — determines synthesis ranking, not execution order.
+// Dependency order (ADR-KI-HARNESS-SKILLS-003) — determines synthesis ranking, not execution order.
 // scopeGated=true means the concern only runs when [knowledgeislands-<name>] exists in the
 // target's .ki-config.toml. Universal concerns (authoring, engineering, repo, skills,
 // tokenomics, harness) always run.
