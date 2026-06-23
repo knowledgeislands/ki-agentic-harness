@@ -1,13 +1,13 @@
 ---
 name: knowledgeislands-11ty-websites
-description: >
-  Codify, audit, conform, and scaffold the Knowledge Islands house approach to building static websites — Eleventy 3 + Nunjucks + Markdown,
-  TypeScript run natively on Bun, Tailwind 4 config-less with semantic design tokens — that compile to a portable `dist/`. Use when building
-  a new site, bringing an existing site up to the house standard, scaffolding one, or checking its `eleventy.config.ts` / Tailwind tokens /
-  `src/` layout / SEO. Triggers: "audit this website", "does this site follow our standard", "scaffold a new 11ty site", "set up a website",
-  "build a static site", "add a page or layout", "conform this site", "why isn't Tailwind building". Builds on
-  `knowledgeislands-engineering` (the Bun/lint/type/test toolchain) and `knowledgeislands-authoring` (Markdown); to serve the built `dist/`
-  on Cloudflare use `knowledgeislands-cloudflare-hosting`. Not for Astro / Next / other frameworks.
+description: >-
+  Codifies, audits, and enforces the Knowledge Islands static-site standard: Eleventy 3 with Nunjucks and Markdown, TypeScript run natively
+  on Bun, Tailwind 4 in config-less mode with semantic design tokens, and a portable `dist/` output. Use when building a new KI static site,
+  auditing an existing site against the standard, conforming one to the standard, or scaffolding the initial `eleventy.config.ts`, Tailwind
+  token pair, `src/` layout, and SEO wiring. Triggers: "audit my 11ty site", "does this site follow our standard", "scaffold a new 11ty
+  site", "conform this site to KI standard", "build a static site with Eleventy", "my Tailwind build isn't generating any output", "add a
+  page layout". Builds on knowledgeislands-engineering (the Bun/lint/type/test toolchain) and knowledgeislands-authoring (Markdown style);
+  for deploying the built `dist/` to Cloudflare use knowledgeislands-cloudflare-hosting. Not for Astro, Next, or other frameworks.
 argument-hint: 'audit <repo> | conform <repo> | init <repo> | refresh'
 ---
 

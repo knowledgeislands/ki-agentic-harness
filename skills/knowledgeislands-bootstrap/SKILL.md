@@ -1,13 +1,12 @@
 ---
 name: knowledgeislands-bootstrap
 description: >
-  Wire a Knowledge Islands repo's project-local skills (`.claude/skills/`) from its `.ki-config.toml` — link exactly the skills it declares
-  plus the `repo` + `authoring` baseline, gitignored and regenerated via a committed `skills:link:project` script (never committed
-  symlinks). Use to set up or audit a repo's skill links, bootstrap a fresh clone so the right skills load, or add the `skills:link:project`
-  convention. Triggers: "set up this repo's skills", "bootstrap the skills", "add skills:link:project", "wire project-local skills", "why
-  aren't my skills loading in this repo". This is the install **keystone** — the one knowledgeislands skill kept installed globally, so any
-  repo can self-wire. For the `.ki-config.toml` contents and the coverage cascade (which skills a repo *should* declare) and GitHub settings
-  use `knowledgeislands-repo`; for the harness's four-part layout use `knowledgeislands-harness`.
+  Wires a Knowledge Islands repo's project-local skills (`.claude/skills/`) from its `.ki-config.toml`. Use when setting up or auditing a
+  repo's skill links, bootstrapping a fresh clone so the right skills load, or adding the `skills:link:project` convention to a repo for the
+  first time. Triggers: "set up this repo's skills", "bootstrap the skills", "add skills:link:project", "wire project-local skills", "why
+  aren't my skills loading in this repo". This is the install keystone — the one knowledgeislands skill kept installed globally, so any repo
+  can self-wire. For the `.ki-config.toml` contents and the coverage cascade (which skills a repo should declare) and GitHub settings use
+  `knowledgeislands-repo`; for the harness's four-part layout use `knowledgeislands-harness`.
 argument-hint: 'audit [path] | conform [path] | refresh'
 ---
 

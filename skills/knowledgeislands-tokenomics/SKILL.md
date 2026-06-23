@@ -7,8 +7,8 @@ description: >
   definitions, and settings against budgets, and checks context-compression tooling such as Headroom is set up optimally. Use when context
   feels heavy or token costs climb. Triggers: "audit my token usage", "why is my context so big", "reduce my token costs", "trim my
   context", "too many MCP tools", "is Headroom set up right". For the volatile numbers (model ids, prices, cache TTLs, window sizes) use
-  `claude-api`; for a base's structure/content use `knowledgeislands-kb`; one skill's quality, `knowledgeislands-skills`; an MCP server's
-  code, `knowledgeislands-mcp`.
+  `claude-api`; for a base's structure/content use `knowledgeislands-kb`; for one skill's quality use `knowledgeislands-skills`; for an MCP
+  server's code use `knowledgeislands-mcp`.
 argument-hint: 'audit | conform | init | refresh'
 ---
 

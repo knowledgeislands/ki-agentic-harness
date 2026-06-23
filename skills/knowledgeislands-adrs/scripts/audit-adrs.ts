@@ -2,7 +2,7 @@
 /**
  * Mechanical auditor for the Knowledge Islands ADR standard.
  *
- *   bun scripts/audit-adrs.ts [decisions-dir]
+ *   bun scripts/audit-adrs.ts [decisions-dir] [--json] [--report]
  *
  * Checks every ADR-*.md file in the given directory (default: docs/decisions) against:
  *   - Filename pattern: ADR-<SCOPE>-NNN.md
@@ -13,12 +13,17 @@
  *   - Serial uniqueness across the directory
  *   - Index (README.md / index.md): present, complete, status-synced, ordered
  *
+ * Flags:
+ *   --json    Emit a JSON findings array to stdout (suppresses human-readable output).
+ *   --report  Write .ki-meta/audits/adrs.md and .ki-meta/audits/adrs.json in the target
+ *             (the directory containing decisions-dir, or cwd if decisions-dir is the root).
+ *
  * Exit code: non-zero on any FAIL.
  * Standard: skills/knowledgeislands-adrs/references/adr-format.md
  */
 
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { dirname, join, resolve } from 'node:path'
 
 // ── severity ladder (knowledgeislands-engineering enforcement-framework §2) ──
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
@@ -215,9 +220,42 @@ function checkIndex(decisionsDir: string, adrs: AdrMeta[]) {
   }
 }
 
+function buildMarkdownReport(decisionsDir: string, adrs: AdrMeta[]): string {
+  const order: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'PASS']
+  const sorted = [...findings].sort((a, b) => order.indexOf(a.level) - order.indexOf(b.level))
+  const counts = findings.reduce(
+    (acc, f) => {
+      acc[f.level] = (acc[f.level] ?? 0) + 1
+      return acc
+    },
+    {} as Record<Level, number>
+  )
+  const summary = order
+    .filter((l) => counts[l])
+    .map((l) => `${counts[l]} ${l}`)
+    .join('  ')
+
+  const rows = sorted.map((f) => `| ${f.level} | ${f.check} | ${f.file} | ${f.msg} |`).join('\n')
+  return [
+    `# ADR Audit`,
+    ``,
+    `**Directory:** \`${decisionsDir}\`  `,
+    `**ADRs checked:** ${adrs.length}  `,
+    `**Summary:** ${summary || 'all pass'}`,
+    ``,
+    `| Level | Check | File | Message |`,
+    `| ----- | ----- | ---- | ------- |`,
+    rows || `| PASS | — | — | All checks passed |`,
+    ``
+  ].join('\n')
+}
+
 function main() {
-  const arg = process.argv[2]
-  const decisionsDir = resolve(arg ?? 'docs/decisions')
+  const args = process.argv.slice(2)
+  const emitJson = args.includes('--json')
+  const writeReport = args.includes('--report')
+  const positional = args.filter((a) => !a.startsWith('--'))
+  const decisionsDir = resolve(positional[0] ?? 'docs/decisions')
 
   if (!existsSync(decisionsDir)) {
     console.error(`${paint(C.red, 'ERROR')} decisions directory not found: ${decisionsDir}`)
@@ -233,7 +271,7 @@ function main() {
     emit('WARN', 'name-format', f, `${f} is a .md file in the decisions directory but does not match the ADR filename pattern`)
   }
 
-  if (adrFiles.length === 0) {
+  if (adrFiles.length === 0 && !emitJson) {
     console.log(paint(C.dim, `No ADR files found in ${decisionsDir}`))
     process.exit(0)
   }
@@ -251,13 +289,30 @@ function main() {
   const seen = new Set<string>()
   for (const s of stems) {
     if (seen.has(s)) {
-      emit('FAIL', 'serial-unique', s + '.md', `Duplicate ADR ID: ${s}`)
+      emit('FAIL', 'serial-unique', `${s}.md`, `Duplicate ADR ID: ${s}`)
     }
     seen.add(s)
   }
 
   // index checks
   checkIndex(decisionsDir, adrs)
+
+  // ── --json: emit findings array to stdout, suppress human output ─────────────
+  if (emitJson) {
+    console.log(JSON.stringify(findings, null, 2))
+    process.exit(hasFail ? 1 : 0)
+  }
+
+  // ── --report: write .ki-meta/audits/adrs.{md,json} in the target repo root ──
+  if (writeReport) {
+    // target root is the parent of decisionsDir (or cwd if decisionsDir is cwd)
+    const targetRoot = dirname(decisionsDir) === decisionsDir ? process.cwd() : dirname(decisionsDir)
+    const auditDir = join(targetRoot, '.ki-meta', 'audits')
+    mkdirSync(auditDir, { recursive: true })
+    writeFileSync(join(auditDir, 'adrs.json'), JSON.stringify(findings, null, 2) + '\n', 'utf-8')
+    writeFileSync(join(auditDir, 'adrs.md'), buildMarkdownReport(decisionsDir, adrs), 'utf-8')
+    console.log(paint(C.dim, `Report written to ${join(auditDir, 'adrs.md')} and ${join(auditDir, 'adrs.json')}`))
+  }
 
   // ── print report ────────────────────────────────────────────────────────────
   console.log(`\n${paint(C.cyan, 'ADR audit')} — ${paint(C.dim, decisionsDir)}`)
