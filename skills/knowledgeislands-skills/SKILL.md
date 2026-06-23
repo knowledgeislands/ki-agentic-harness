@@ -8,7 +8,8 @@ description: >
   "is this SKILL.md good", "write a new skill", "scaffold a skill", "lint the skills", "check skills against best practice", "refresh the
   skills rubric", "what do we expect from a skill". Judges a `SKILL.md` itself (frontmatter + body prose), not a repo's code or config; for
   a Claude Code subagent definition use `knowledgeislands-agents`, for MCP server code `knowledgeislands-mcp`, for Markdown / TOML house
-  style `knowledgeislands-authoring`.
+  style `knowledgeislands-authoring`, for harness-level structure (four-part bundle layout, `.ki-config.toml` compliance) use
+  `knowledgeislands-harness`.
 argument-hint: 'audit <skill-or-repo> | conform <skill> | init <description> | optimise <skill> | refresh'
 ---
 

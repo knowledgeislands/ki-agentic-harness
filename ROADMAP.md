@@ -11,6 +11,19 @@ lands here before it's built — and an item is **removed once done**, not ticke
 scheduled `knowledgeislands-skills-refresh` sweep (which honours each skill's declared `**Refresh:**` cadence) are ongoing disciplines tied
 to the invariants in [docs/design.md](docs/design.md) (_Principles across the set_) — they run continuously, so they live there, not here.
 
+## Audit WARNs to resolve
+
+- **`knowledgeislands-authoring` — add mechanical checker script.** The skill has no `scripts/` directory and no `audit-authoring.ts`; every
+  other governance skill ships a checker. The mechanical half of AUDIT cannot run automatically (the workflow currently falls through to
+  judgment-only). Fix: add `scripts/audit-authoring.ts` that wraps `bun run lint:md:check` and surfaces the judgment-layer criteria
+  programmatically, enabling automated CI auditing. _(surfaced: ki-multi-skill-audit WARN `CHECKER-MISSING`)_
+
+- **`knowledgeislands-tokenomics` — MCP server count and overlap.** 19 user-scoped servers exceed the three-to-five-always-loaded heuristic
+  (MCP-2/MCP-3). Several KB-FS servers serve overlapping purposes (`arcadia-principal-mcp-kb-fs` + `hnr-principal-mcp-kb-fs`,
+  `kit-hnr-mcp-kb-fs`, `vallearmonia-principal-mcp-kb-fs`, etc.) with no documented rationale for simultaneous loading. Resolves alongside
+  the "Adopt `knowledgeislands-tokenomics` across environments" item below: the MCP scoping decision (move project-specific KB servers to
+  `.mcp.json`) closes both. _(surfaced: ki-multi-skill-audit WARNs MCP-2, MCP-3)_
+
 ## Later
 
 - **Adopt `knowledgeislands-tokenomics` across environments.** All three environments opted in (harness, `arcadia-principal`,

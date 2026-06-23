@@ -7,7 +7,8 @@ description: >
   covering the name and description (the delegation signal), the system-prompt shape (role/lane, grounding, when-invoked, own-vs-defer),
   least-privilege tools and model choice, and cross-agent lane collisions. Triggers: "audit this agent", "review my subagent", "write a new
   agent", "is this agent definition good", "scaffold an agent", "refresh the agents rubric", "check the agents". Judges a subagent
-  definition (frontmatter + system prompt) — for authoring a SKILL.md use the `knowledgeislands-skills` skill instead.
+  definition (frontmatter + system prompt) — for authoring a SKILL.md use the `knowledgeislands-skills` skill instead; for harness-level
+  layout (four-part bundle, `.ki-config.toml` compliance) use `knowledgeislands-harness`.
 argument-hint: 'audit <agent-or-dir> | conform <agent> | init <description> | refresh'
 ---
 
