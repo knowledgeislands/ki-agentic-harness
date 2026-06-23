@@ -14,8 +14,8 @@ A second set of tools from the same author as house-mcp-manager (`houseworthe/ho
 evaluation after the initial pass.
 
 The evaluation criteria were: (a) complementarity with headroom-ai and the KI skills paradigm, (b) maturity, (c) absence of paradigm
-conflict with the composition-only model (ADR-KI-HARNESS-BASE-001), and (d) whether adoption requires a harness artifact or is satisfied by
-a personal/dev install.
+conflict with the composition-only model (ADR-KI-HARNESS-001), and (d) whether adoption requires a harness artifact or is satisfied by a
+personal/dev install.
 
 ## Decision
 
@@ -96,7 +96,7 @@ Individual gstack ideas (e.g. OWASP/STRIDE threat modelling as a harness skill) 
 
 ## References
 
-- [ADR-KI-HARNESS-BASE-001](ADR-KI-HARNESS-BASE-001.md) — Composition over extension (paradigm the declines protect).
+- [ADR-KI-HARNESS-001](ADR-KI-HARNESS-001.md) — Composition over extension (paradigm the declines protect).
 - [ADR-KI-HARNESS-CONFIG-001](ADR-KI-HARNESS-CONFIG-001.md) — Validate-down `.ki-config.toml` contract.
 - [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004.md) — Skills must be valid standalone.
 - [RTK](https://www.rtk-ai.app/) — Rust Token Killer, shell output compression.

@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-BASE-004: Purpose and scope of this repository
+# ADR-KI-HARNESS-004: Purpose and scope of this repository
 
 **Status:** Accepted
 
@@ -40,7 +40,7 @@ itself.
 ## References
 
 - [README.md](../../README.md) — entry point; maps the four-part bundle and the skill layers.
-- ADR-KI-HARNESS-BASE-001 — composition over extension: the paradigm the skills follow.
-- ADR-KI-HARNESS-BASE-002 — `.ki-config.toml` as the repo-to-skill binding mechanism.
+- ADR-KI-HARNESS-001 — composition over extension: the paradigm the skills follow.
+- ADR-KI-HARNESS-002 — `.ki-config.toml` as the repo-to-skill binding mechanism.
 - [skills/knowledgeislands-harness/SKILL.md](../../skills/knowledgeislands-harness/SKILL.md) — the skill that governs the harness bundle
   itself.

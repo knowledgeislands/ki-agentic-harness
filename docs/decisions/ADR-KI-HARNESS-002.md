@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-BASE-002: Four-part harness bundle layout
+# ADR-KI-HARNESS-002: Four-part harness bundle layout
 
 **Status:** Accepted
 

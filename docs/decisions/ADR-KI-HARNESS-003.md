@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-BASE-003: Adopting Architecture Decision Records
+# ADR-KI-HARNESS-003: Adopting Architecture Decision Records
 
 **Status:** Accepted
 

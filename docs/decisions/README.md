@@ -9,15 +9,15 @@ set it houses.
 ADR-<SCOPE>-NNN
 ```
 
-`<SCOPE>` is one or more alpha-leading uppercase segments separated by hyphens — e.g. `KI-HARNESS-BASE`, `KI-HARNESS-SKILLS`. `NNN` is a
-zero-padded integer (minimum three digits), monotonically increasing within the scope. Every ADR in this harness lives at
-`docs/decisions/ADR-KI-HARNESS-<SUB-SCOPE>-NNN.md`.
+`<SCOPE>` is one or more alpha-leading uppercase segments separated by hyphens — e.g. `KI-HARNESS`, `KI-HARNESS-SKILLS`. `NNN` is a
+zero-padded integer (minimum three digits), monotonically increasing within the scope. Foundational harness ADRs use the bare scope
+`ADR-KI-HARNESS-NNN`; domain-specific ADRs append a sub-scope: `ADR-KI-HARNESS-<SUB-SCOPE>-NNN`.
 
 Sub-scopes used in this harness:
 
 | Sub-scope   | Purpose                                                 |
 | ----------- | ------------------------------------------------------- |
-| `BASE`      | Foundational paradigms and repository-level decisions   |
+| _(none)_    | Foundational paradigms and repository-level decisions   |
 | `SKILLS`    | Governance skill structure and canonical modes          |
 | `CONFIG`    | `.ki-config.toml` contract and validate-down convention |
 | `TOOLCHAIN` | Standard toolchain choices (Bun, Biome, etc.)           |
@@ -27,10 +27,10 @@ Sub-scopes used in this harness:
 
 | ID                           | Title                                                                         | Status   | Date       |
 | ---------------------------- | ----------------------------------------------------------------------------- | -------- | ---------- |
-| ADR-KI-HARNESS-BASE-001      | [Composition over extension](ADR-KI-HARNESS-BASE-001.md)                      | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-BASE-002      | [Four-part harness bundle layout](ADR-KI-HARNESS-BASE-002.md)                 | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-BASE-003      | [Adopting Architecture Decision Records](ADR-KI-HARNESS-BASE-003.md)          | Accepted | 2026-06-23 |
-| ADR-KI-HARNESS-BASE-004      | [Purpose and scope of this repository](ADR-KI-HARNESS-BASE-004.md)            | Accepted | 2026-06-23 |
+| ADR-KI-HARNESS-001           | [Composition over extension](ADR-KI-HARNESS-001.md)                           | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-002           | [Four-part harness bundle layout](ADR-KI-HARNESS-002.md)                      | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-003           | [Adopting Architecture Decision Records](ADR-KI-HARNESS-003.md)               | Accepted | 2026-06-23 |
+| ADR-KI-HARNESS-004           | [Purpose and scope of this repository](ADR-KI-HARNESS-004.md)                 | Accepted | 2026-06-23 |
 | ADR-KI-HARNESS-CONFIG-001    | [Validate-down .ki-config.toml contract](ADR-KI-HARNESS-CONFIG-001.md)        | Accepted | 2024-01-01 |
 | ADR-KI-HARNESS-SKILLS-001    | [AUDIT/CONFORM/REFRESH canonical modes](ADR-KI-HARNESS-SKILLS-001.md)         | Accepted | 2024-01-01 |
 | ADR-KI-HARNESS-SKILLS-002    | [Mechanical and judgment checker split](ADR-KI-HARNESS-SKILLS-002.md)         | Accepted | 2024-01-01 |

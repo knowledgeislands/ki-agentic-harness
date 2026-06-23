@@ -6,10 +6,9 @@ description: >
   against new community guidance. Carries a checkable rubric (split into mechanical checks a bundled linter runs, and judgment checks you
   apply), the Knowledge Islands skill conventions, and a tracked source list it revisits. Triggers: "audit this skill", "review my skill",
   "is this SKILL.md good", "write a new skill", "scaffold a skill", "lint the skills", "check skills against best practice", "refresh the
-  skills rubric", "what do we expect from a skill". Judges a `SKILL.md` itself (frontmatter + body prose), not a repo's code or config; for
-  a Claude Code subagent definition use `knowledgeislands-agents`, for MCP server code `knowledgeislands-mcp`, for Markdown / TOML house
-  style `knowledgeislands-authoring`, for harness-level structure (four-part bundle layout, `.ki-config.toml` compliance) use
-  `knowledgeislands-harness`.
+  skills rubric", "what do we expect from a skill". Judges a `SKILL.md` itself (frontmatter + body prose), not a repo's code or config.
+  Off-ramps: `knowledgeislands-agents` (subagent defs), `knowledgeislands-mcp` (server code), `knowledgeislands-authoring` (Markdown/TOML
+  style), `knowledgeislands-harness` (bundle layout).
 argument-hint: 'audit <skill-or-repo> | conform <skill> | init <description> | optimise <skill> | refresh'
 ---
 

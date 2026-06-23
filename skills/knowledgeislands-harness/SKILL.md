@@ -43,7 +43,7 @@ line-by-line checkable criteria live in [the rubric](references/audit-rubric.md)
    - `knowledgeislands-skills` linter (`bun run skills:lint`) — if `skills/` is populated
    - `knowledgeislands-agents` linter — if `agents/` is populated
    - `knowledgeislands-mcp` audit — if `mcp/` has server code The saved workflow `.claude/workflows/ki-multi-skill-audit.ts` implements this
-     fan-out. See [ADR-KI-HARNESS-BASE-002](../../docs/decisions/ADR-KI-HARNESS-BASE-002.md) for the four-part layout this step audits.
+     fan-out. See [ADR-KI-HARNESS-002](../../docs/decisions/ADR-KI-HARNESS-002.md) for the four-part layout this step audits.
 3. **Judge the prose the script can't.** Walk the [J]-tagged criteria in [the rubric](references/audit-rubric.md):
    - **CLAUDE.md coverage** — does it open with a what-the-harness-is paragraph covering all four parts? Is the skill map present (if skills
      exist) and does it reflect current reality? Are working conventions documented for each part? Are the key `bun run *` commands listed?
