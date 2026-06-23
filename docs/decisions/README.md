@@ -14,17 +14,18 @@ is a zero-padded monotonically increasing integer. Every ADR lives at `docs/deci
 
 ## Index
 
-| ID                 | Title                                                                  | Status   | Date       |
-| ------------------ | ---------------------------------------------------------------------- | -------- | ---------- |
-| ADR-KI-HARNESS-001 | [Composition over extension](ADR-KI-HARNESS-001.md)                    | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-002 | [Four-part harness bundle layout](ADR-KI-HARNESS-002.md)               | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-003 | [AUDIT/CONFORM/REFRESH canonical modes](ADR-KI-HARNESS-003.md)         | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-004 | [Mechanical and judgment checker split](ADR-KI-HARNESS-004.md)         | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-005 | [Validate-down .ki-config.toml contract](ADR-KI-HARNESS-005.md)        | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-006 | [Bun and Biome standard toolchain](ADR-KI-HARNESS-006.md)              | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-007 | [Dependency order for multi-skill composition](ADR-KI-HARNESS-007.md)  | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-008 | [Skills must be valid standalone](ADR-KI-HARNESS-008.md)               | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-009 | [Subagent isolation for multi-skill invocation](ADR-KI-HARNESS-009.md) | Accepted | 2026-06-23 |
+| ID                 | Title                                                                                                  | Status   | Date       |
+| ------------------ | ------------------------------------------------------------------------------------------------------ | -------- | ---------- |
+| ADR-KI-HARNESS-001 | [Composition over extension](ADR-KI-HARNESS-001.md)                                                    | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-002 | [Four-part harness bundle layout](ADR-KI-HARNESS-002.md)                                               | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-003 | [AUDIT/CONFORM/REFRESH canonical modes](ADR-KI-HARNESS-003.md)                                         | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-004 | [Mechanical and judgment checker split](ADR-KI-HARNESS-004.md)                                         | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-005 | [Validate-down .ki-config.toml contract](ADR-KI-HARNESS-005.md)                                        | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-006 | [Bun and Biome standard toolchain](ADR-KI-HARNESS-006.md)                                              | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-007 | [Dependency order for multi-skill composition](ADR-KI-HARNESS-007.md)                                  | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-008 | [Skills must be valid standalone](ADR-KI-HARNESS-008.md)                                               | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-009 | [Subagent isolation for multi-skill invocation](ADR-KI-HARNESS-009.md)                                 | Accepted | 2026-06-23 |
+| ADR-KI-HARNESS-010 | [Complementary tooling evaluation — context management and developer utilities](ADR-KI-HARNESS-010.md) | Accepted | 2026-06-23 |
 
 ## Template
 
