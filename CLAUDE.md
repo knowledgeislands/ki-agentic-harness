@@ -12,6 +12,15 @@ modes plus a mechanical checker. They sit in two layers plus a container governo
 the four-part bundle), and `bootstrap` (the one globally-installed skill, which wires each repo's project-local `.claude/skills/` from its
 `.ki-config.toml`) — mapped in the README.
 
+## Four-part bundle status
+
+| Part        | Directory | Status                                           |
+| ----------- | --------- | ------------------------------------------------ |
+| Skills      | `skills/` | **Populated** — 13 `knowledgeislands-*` skills   |
+| Agents      | `agents/` | **Shelf** — scaffolded, no agent definitions yet |
+| MCP servers | `mcp/`    | **Shelf** — scaffolded, no servers yet           |
+| Evals       | `evals/`  | **Shelf** — scaffolded, no evals yet             |
+
 ## How skills relate — composition only
 
 Skills relate to one another by **composition**, never a base-coupled extension: a skill runs a sibling's checker/mode **in sequence** and

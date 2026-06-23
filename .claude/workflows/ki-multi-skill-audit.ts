@@ -50,23 +50,48 @@ log(`COLL checks done. Proceeding to per-concern parallel fan-out.`);
 phase("Per-concern audit");
 
 // Dependency order (ADR-KI-HARNESS-007) — determines synthesis ranking, not execution order.
+// scopeGated=true means the concern only runs when [knowledgeislands-<name>] exists in the
+// target's .ki-config.toml. Universal concerns (authoring, engineering, repo, skills,
+// tokenomics, harness) always run.
 const CONCERNS = [
-  { name: "authoring", checker: "bun skills/knowledgeislands-authoring/scripts/audit-authoring.ts" },
-  { name: "engineering", checker: "bun skills/knowledgeislands-engineering/scripts/audit-engineering.ts" },
-  { name: "repo", checker: "bun skills/knowledgeislands-repo/scripts/audit-repo.ts" },
-  { name: "kb", checker: "bun skills/knowledgeislands-kb/scripts/audit-kb.ts" },
-  { name: "streams", checker: "bun skills/knowledgeislands-streams/scripts/audit-streams.ts" },
-  { name: "mcp", checker: "bun skills/knowledgeislands-mcp/scripts/audit-mcp.ts" },
-  { name: "11ty-websites", checker: "bun skills/knowledgeislands-11ty-websites/scripts/audit-websites.ts" },
-  { name: "cloudflare-hosting", checker: "bun skills/knowledgeislands-cloudflare-hosting/scripts/audit-cloudflare-hosting.ts" },
-  { name: "agents", checker: "bun skills/knowledgeislands-agents/scripts/lint-agents.ts" },
-  { name: "skills", checker: "bun run skills:lint" },
-  { name: "tokenomics", checker: "bun skills/knowledgeislands-tokenomics/scripts/audit-tokenomics.ts" },
-  { name: "harness", checker: "bun skills/knowledgeislands-harness/scripts/audit-harness.ts" },
+  { name: "authoring", checker: "bun skills/knowledgeislands-authoring/scripts/audit-authoring.ts", scopeGated: false },
+  { name: "engineering", checker: "bun skills/knowledgeislands-engineering/scripts/audit-engineering.ts", scopeGated: false },
+  { name: "repo", checker: "bun skills/knowledgeislands-repo/scripts/audit-repo.ts", scopeGated: false },
+  { name: "kb", checker: "bun skills/knowledgeislands-kb/scripts/audit-kb.ts", scopeGated: true },
+  { name: "streams", checker: "bun skills/knowledgeislands-streams/scripts/audit-streams.ts", scopeGated: true },
+  { name: "mcp", checker: "bun skills/knowledgeislands-mcp/scripts/audit-mcp.ts", scopeGated: true },
+  { name: "11ty-websites", checker: "bun skills/knowledgeislands-11ty-websites/scripts/audit-websites.ts", scopeGated: true },
+  { name: "cloudflare-hosting", checker: "bun skills/knowledgeislands-cloudflare-hosting/scripts/audit-cloudflare-hosting.ts", scopeGated: true },
+  { name: "agents", checker: "bun skills/knowledgeislands-agents/scripts/lint-agents.ts", scopeGated: true },
+  { name: "skills", checker: "bun run skills:lint", scopeGated: false },
+  { name: "tokenomics", checker: "bun skills/knowledgeislands-tokenomics/scripts/audit-tokenomics.ts", scopeGated: false },
+  { name: "harness", checker: "bun skills/knowledgeislands-harness/scripts/audit-harness.ts", scopeGated: false },
 ];
 
+// Read target's .ki-config.toml once in main context to determine which scope-gated
+// concerns are declared by this repo. Universal concerns always run regardless.
+const scopeActive = await agent(
+  `Read the file \`${target}/.ki-config.toml\` and return a JSON array of concern names
+that appear as top-level TOML table headers matching the pattern [knowledgeislands-<name>].
+For example if the file contains [knowledgeislands-kb] return ["kb"].
+If the file does not exist or is empty return [].
+Return ONLY the JSON array, nothing else.`,
+  { label: "scope-guard:read-config", phase: "Per-concern audit" }
+);
+
+let activeConcerns;
+try {
+  const declared = JSON.parse(typeof scopeActive === "string" ? scopeActive : JSON.stringify(scopeActive));
+  activeConcerns = CONCERNS.filter((c) => !c.scopeGated || declared.includes(c.name));
+} catch {
+  // If parse fails, fall back to running all concerns
+  activeConcerns = CONCERNS;
+}
+
+log(`Scope guard resolved. Running ${activeConcerns.length}/${CONCERNS.length} concerns.`);
+
 const concernResults = await parallel(
-  CONCERNS.map((c) => () =>
+  activeConcerns.map((c) => () =>
     agent(
       `You are auditing one concern of a Knowledge Islands harness at path: ${target}
 
