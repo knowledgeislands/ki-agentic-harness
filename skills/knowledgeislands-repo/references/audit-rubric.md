@@ -10,8 +10,8 @@ that becomes deterministic should move into the script and flip to **[M]**.
 ## Layer 1 — repo files (presence on the default branch, via the GitHub git-tree API)
 
 - **readme [M]** `README.md` present. (standard: Layer 1)
-- **license-file [M]** `LICENSE` (or `LICENSE.md`) present. FAIL for public repos; WARN for private repos (proprietary or absent is
-  acceptable). (Layer 1)
+- **license-file [M]** `LICENSE` (or `LICENSE.md`) present. FAIL for all repos — public: MIT text; private: proprietary copyright text.
+  (Layer 1)
 - **gitignore [M]** `.gitignore` present. (Layer 1)
 - **editorconfig [M]** `.editorconfig` present. (Layer 1)
 - **claude-md [M]** `CLAUDE.md` present — the always-loaded anchor for any repo-specific gate or convention (skills rubric SHAPE-7).
@@ -24,7 +24,9 @@ that becomes deterministic should move into the script and flip to **[M]**.
 ## Layer 2 — core GitHub settings (repos on github.com)
 
 - **default-branch [M]** default branch is `main`. (Layer 2)
-- **license [M]** _(public)_ license is MIT; private repos skip this check. (Layer 2)
+- **license [M]** _(public)_ license is MIT; _(private)_ must not be MIT — FAIL if GitHub detects MIT. (Layer 2)
+- **package-license [M]** _(private, when package.json exists)_ `package.json` `"license"` is `"UNLICENSED"`. FAIL if set to any other value
+  or absent. (Layer 2)
 - **description [M]** description is non-empty. (Layer 2)
 - **description-sync [M]** the GitHub description equals the repo's `package.json` `description` (its in-repo source of truth), where a
   package.json description exists. (Layer 2)

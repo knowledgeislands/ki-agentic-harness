@@ -32,9 +32,10 @@ documented once in the arcadia-agentic-harness `README.md`, not repeated here.
 
 1. **Files** — every repo carries `README.md`, `LICENSE`, `.gitignore`, `.editorconfig`, and `.ki-config.toml` (its declared config).
    Presence is checked on the default branch **via the GitHub API**, not a checkout.
-2. **GitHub** (repos on github.com): default branch `main`, MIT _(public)_, **squash-only merge + linear history**, auto-delete branch on
-   merge, Issues **on**, Wiki & Projects **off**, a non-empty description synced with `package.json` where one exists; public repos also
-   carry the standard topic set. **`main` is open by default** — branch protection is an _optional_ check a repo opts into (below).
+2. **GitHub** (repos on github.com): default branch `main`, MIT _(public)_ / proprietary + `UNLICENSED` _(private)_, **squash-only merge +
+   linear history**, auto-delete branch on merge, Issues **on**, Wiki & Projects **off**, a non-empty description synced with `package.json`
+   where one exists; public repos also carry the standard topic set. **`main` is open by default** — branch protection is an _optional_
+   check a repo opts into (below).
 3. **Deeper GitHub**: Dependabot alerts + security updates **on** everywhere; secret scanning + push protection **on** for public repos;
    Actions `allowed-actions = all`.
 

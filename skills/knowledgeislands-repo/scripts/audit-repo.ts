@@ -316,6 +316,13 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
     fail('default-branch', `default branch is "${r.defaultBranchRef?.name ?? '?'}" (want ${DEFAULT_BRANCH})`)
   if (r.visibility === 'PUBLIC' && r.licenseInfo?.key !== LICENSE_KEY)
     fail('license', `license is "${r.licenseInfo?.key ?? 'none'}" (want ${LICENSE_KEY})`)
+  else if (r.visibility === 'PRIVATE' && r.licenseInfo?.key === LICENSE_KEY)
+    fail('license', `private repo must use a proprietary LICENSE, not MIT`)
+  if (r.visibility === 'PRIVATE' && signals.pkg != null) {
+    const pkgLicense = typeof signals.pkg.license === 'string' ? signals.pkg.license : null
+    if (pkgLicense !== 'UNLICENSED')
+      fail('package-license', `package.json "license" is ${JSON.stringify(pkgLicense)} (private repos must use "UNLICENSED")`)
+  }
   if (!r.description?.trim()) fail('description', 'description is empty')
   // description-sync: the GitHub description must equal the repo's package.json
   // description (the in-repo source of truth). Only checked when both exist — a

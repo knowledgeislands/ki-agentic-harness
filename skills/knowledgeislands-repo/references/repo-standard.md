@@ -27,7 +27,7 @@ working checkout — so what's actually committed is what's audited, and `--org`
 | File              | Why                                                                                                                   |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------- |
 | `README.md`       | The repo's entry point.                                                                                               |
-| `LICENSE`         | MIT text _(public)_; proprietary text or absent is acceptable _(private)_.                                            |
+| `LICENSE`         | MIT text _(public)_; proprietary copyright text _(private)_.                                                          |
 | `.gitignore`      | Keeps build/dep noise out of history.                                                                                 |
 | `.editorconfig`   | Shared editor defaults across the workspace toolchain.                                                                |
 | `CLAUDE.md`       | Agent instructions — the always-loaded anchor for any repo-specific gate or convention (skills rubric SHAPE-7).       |
@@ -59,7 +59,8 @@ For every repo on github.com:
 | Setting            | Value                                                              | Why                                      |
 | ------------------ | ------------------------------------------------------------------ | ---------------------------------------- |
 | Default branch     | `main`                                                             | Uniform; what tooling and docs assume.   |
-| License            | MIT _(public)_; any or absent _(private)_                          | House default for open-source repos.     |
+| License            | MIT _(public)_; proprietary (not MIT) _(private)_                  | House default for open-source repos.     |
+| Package license    | _(public)_ any; `"UNLICENSED"` _(private with package.json)_       | Matches the LICENSE file intent.         |
 | Description        | Present, one sentence; synced with `package.json` where one exists | One-line identity on GitHub.             |
 | Merge methods      | **Squash only** — merge-commit off, rebase off                     | One commit per PR; clean, linear `main`. |
 | Auto-delete branch | On                                                                 | No stale merged branches.                |
@@ -116,10 +117,11 @@ branch-protection = true   # default off — protect `main` on this repo
 
 The rubric carries the **org default** for every check. Most are bedrock — file presence, default branch, description, merge policy,
 auto-delete-branch, visibility, Dependabot — and aren't negotiable. License is bedrock but **visibility-scoped**: public repos must carry
-MIT (`license`) and a LICENSE file (`license-file`); private repos skip both (proprietary or absent is acceptable). The rest are
-**overridable**: a repo flips one for itself with a single boolean in its `[knowledgeislands-repo.checks]` table, where `true` = enforce
-this check and `false` = don't. A check you omit takes the org default, so **a fully-conforming repo writes no overrides at all**. The
-auditor reports every active override as a `note` (never a failure), so a deliberate departure stays visible without reading as drift.
+MIT (`license`) and a LICENSE file (`license-file`); private repos must carry a proprietary copyright LICENSE file (`license-file`) and
+`"UNLICENSED"` in `package.json` (`package-license`) — MIT is not permitted. The rest are **overridable**: a repo flips one for itself with
+a single boolean in its `[knowledgeislands-repo.checks]` table, where `true` = enforce this check and `false` = don't. A check you omit
+takes the org default, so **a fully-conforming repo writes no overrides at all**. The auditor reports every active override as a `note`
+(never a failure), so a deliberate departure stays visible without reading as drift.
 
 | Check               | Org default | When enforced, the auditor requires…                                                                              |
 | ------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------- |
