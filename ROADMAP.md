@@ -13,11 +13,6 @@ to the invariants in [docs/design.md](docs/design.md) (_Principles across the se
 
 ## Audit WARNs to resolve
 
-- **`knowledgeislands-authoring` — add mechanical checker script.** The skill has no `scripts/` directory and no `audit-authoring.ts`; every
-  other governance skill ships a checker. The mechanical half of AUDIT cannot run automatically (the workflow currently falls through to
-  judgment-only). Fix: add `scripts/audit-authoring.ts` that wraps `bun run lint:md:check` and surfaces the judgment-layer criteria
-  programmatically, enabling automated CI auditing. _(surfaced: ki-multi-skill-audit WARN `CHECKER-MISSING`)_
-
 - **`knowledgeislands-tokenomics` — MCP server count and overlap.** 19 user-scoped servers exceed the three-to-five-always-loaded heuristic
   (MCP-2/MCP-3). Several KB-FS servers serve overlapping purposes (`arcadia-principal-mcp-kb-fs` + `hnr-principal-mcp-kb-fs`,
   `kit-hnr-mcp-kb-fs`, `vallearmonia-principal-mcp-kb-fs`, etc.) with no documented rationale for simultaneous loading. Resolves alongside

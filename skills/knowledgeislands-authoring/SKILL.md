@@ -44,10 +44,13 @@ the **Convention sets** below; the checkable criteria are in [the rubric](refere
 
 ### Mode AUDIT — check a document against house style
 
-1. Run `bun run lint:md` for the **mechanical** layer (Prettier + markdownlint) and capture its output — never hand-judge what it enforces.
-2. Apply the **judgment** (`[J]`) criteria from [the rubric](references/audit-rubric.md): wide tables that should spill into footnotes,
-   non-descriptive link text, a `.ki-config.toml` that reads poorly. TOML has no mechanical pass — the rubric is all of it.
-3. **Report** by location → criterion → fix; lead with anything that breaks the build (`lint:md` failures), then the judgment findings.
+1. **Run the mechanical checker** — `bun scripts/audit-authoring.ts <repo-path>` (or `bun run authoring:audit <repo-path>` at the harness
+   root). It delegates to `bun run lint:md:check` (Prettier + markdownlint) and surfaces the judgment-layer `[J]` criteria as ADVISORY
+   findings so they are named and visible in CI even though they require a reviewer. Exit code is non-zero on any FAIL.
+2. Apply the **judgment** (`[J]`) criteria from [the rubric](references/audit-rubric.md) — the ADVISORY findings from step 1 name each one.
+   Wide tables that should spill to footnotes, non-descriptive link text, a `.ki-config.toml` that reads poorly. TOML has no mechanical pass
+   — the rubric is all of it.
+3. **Report** by location → criterion → fix; lead with FAIL findings, then judgment findings.
 
 ### Mode CONFORM — bring a document into house style
 

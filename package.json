@@ -44,6 +44,7 @@
   },
   "scripts": {
     "agents:lint": "bun skills/knowledgeislands-agents/scripts/lint-agents.ts agents",
+    "authoring:audit": "bun skills/knowledgeislands-authoring/scripts/audit-authoring.ts",
     "clean": "rm -rf node_modules",
     "deps:missing": "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.missing | keys | .[]' | xargs bun add -D",
     "deps:unused": "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.devDependencies[]' | xargs bun remove",
