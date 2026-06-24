@@ -189,6 +189,12 @@ ever starts enforcing a **[J]** check, move its tag here.
   the mechanical heuristic — a rubric carrying **[M]** criteria but shipping no `scripts/` checker (nor a documented toolchain delegation,
   e.g. `knowledgeislands-authoring` → `bun run lint:md`) — as a WARN; the **[J]** gate is whether each remaining **[J]** genuinely needs a
   reader rather than a script. (arcadia-agentic-harness `docs/design.md`, enforcement-framework.md §3/§6)
+- **SHAPE-10 [J]** _A skill must not assume personal `CLAUDE.md` content._ A Knowledge Islands skill is installed by any contributor, not
+  only its author. It must not assume the user has any particular content in their personal `~/.claude/CLAUDE.md` (or imported topic files)
+  — plan-mode gates, house style rules, footnote conventions, workflow preferences. Any behaviour a skill requires beyond what the open spec
+  guarantees must be **anchored in always-loaded repo context** (`CLAUDE.md`, `AGENTS.md`, or a SHAPE-7-style companion hook) — not in the
+  author's private config. Where a skill cross-checks a convention that _might_ live in personal config, it must degrade gracefully rather
+  than silently rely on that content being present. (agent-skills-standard.md §11)
 
 ## PROC — Process / meta
 

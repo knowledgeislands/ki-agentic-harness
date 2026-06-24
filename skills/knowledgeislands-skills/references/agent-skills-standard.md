@@ -160,6 +160,12 @@ Islands–compliant repo, whose contract is defined by `knowledgeislands-repo` �
 advises dropping one that merely restates a default, while leaving every other skill's table untouched, even keys it can't interpret.
 Validate down, ignore across. (`knowledgeislands-repo` is the reference implementation.)
 
+A Knowledge Islands skill is installed by any contributor, not only its author. It must not assume the user carries any particular personal
+`~/.claude/CLAUDE.md` conventions — plan-mode rules, house footnote style, workflow preferences — that the open spec does not guarantee. Any
+convention the skill relies on must be anchored in always-loaded repo context (a `CLAUDE.md` or `AGENTS.md` alongside the skill, or a
+SHAPE-7 companion) so it applies for every user. Degrading gracefully when personal config is absent is the minimum; anchoring the
+requirement explicitly is the standard. (rubric **SHAPE-10**)
+
 A **governance skill** — one that holds a house standard — exposes a common mode set so a reader moves between skills without relearning:
 **AUDIT** (check an artifact against the standard), **REFRESH** (re-anchor the standard to its sources), and **CONFORM** (bring an existing
 artifact into line). Modes beyond that triad are skill-specific: **INIT** scaffolds a new conformant artifact where that makes sense (a new
