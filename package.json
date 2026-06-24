@@ -1,6 +1,6 @@
 {
   "name": "@knowledgeislands/arcadia-agentic-harness",
-  "description": "Reusable Agent Skills for the Arcadia / Knowledge Islands work, installed into a Claude skills directory by symlink.",
+  "description": "Reusable Agent Skills for the Arcadia / Knowledge Islands work, installed into a Claude skills directory.",
   "version": "1.0.0",
   "author": "kris@kris.me.uk",
   "bugs": {
