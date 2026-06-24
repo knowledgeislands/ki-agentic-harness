@@ -110,6 +110,11 @@ The config is `export default function (eleventyConfig) { … return { dir, … 
   the site's brand/hero imagery**. `@font-face` for any self-hosted font sits here too (`font-display: swap`).
 - **`@theme inline { … }`** then exposes those vars to Tailwind utilities (`--color-background: var(--background)`, `--font-sans: …`, the
   `--radius-*` scale), so utilities and raw CSS share one palette. Templates use the tokens; they do **not** hard-code hex values.
+- **Declare `tailwindcss` directly, not just `@tailwindcss/cli`.** Tailwind 4 resolves `@import "tailwindcss"` from the CSS file's directory
+  upward, needing a top-level `node_modules/tailwindcss`. In the monorepo shape (§2), bun's workspace hoisting does **not** give a
+  _transitive_ dep (tailwindcss arrives via `@tailwindcss/cli`) a top-level symlink, so the import fails with `Can't resolve 'tailwindcss'`
+  on a clean install. Listing `tailwindcss` as its own dependency (matching the CLI's major) restores the entry. A flat repo happens to
+  hoist it top-level anyway, which is why this only bites after the monorepo migration.
 
 ## 6. Content model
 
