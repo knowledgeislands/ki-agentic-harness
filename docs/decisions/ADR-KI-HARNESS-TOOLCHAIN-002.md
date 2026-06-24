@@ -45,11 +45,22 @@ surface between sessions.
 ### Adopt — mcporter
 
 mcporter provides ergonomic TypeScript APIs and CLI wrappers for calling MCP servers, with auto-discovery from Claude/Cursor configs, typed
-client generation, and record/replay. mcporter's auto-discovery and typed client generation are immediately applicable for scripting against
-a configured MCP surface — particularly for cross-server workflows and for building test fixtures via record/replay.
+client generation, and record/replay. mcporter is adopted in two complementary roles.
 
-**Adoption action:** `npx mcporter list` to verify server discovery, then add as a dev dependency in any harness script or agent that needs
-to call MCP tools programmatically.
+**Primary role — MCP proxy daemon.** All 19 KI-owned stdio servers are consolidated behind mcporter's keep-alive daemon and exposed as a
+single `ki-mcporter` URL entry (`http://localhost:3333/mcp`) in `~/.claude.json`. Tools appear namespaced as `server__tool` (double
+underscore). Two LaunchAgents, managed via chezmoi, run the pair of mcporter processes: `sh.mcporter.daemon` runs
+`mcporter daemon start --foreground`; `sh.mcporter.http-bridge` runs `mcporter serve --http 3333`. mcporter's system config lives at
+`~/.mcporter/mcporter.json`, also managed by chezmoi; it embeds full server definitions with `"lifecycle": "keep-alive"` for all 19 servers
+(resolved from the shared `mcp-servers-json` chezmoi template). No `"imports"` directive is used — the config is self-contained and is not
+dependent on the state of `~/.claude.json` at daemon start time.
+
+**Secondary role — typed client and scripting.** mcporter's auto-discovery and typed client generation remain applicable for scripting
+against the configured MCP surface and for building test fixtures via record/replay. Integration into harness scripts and the `mcp-*` repos
+is tracked as an open ROADMAP item.
+
+**Adoption action:** install via Homebrew (`brew install steipete/tap/mcporter`). chezmoi deploys the config and the two LaunchAgents;
+`launchctl load` activates them.
 
 ### Adopt (user-level install) — house-agents
 
@@ -92,8 +103,9 @@ Individual gstack ideas (e.g. OWASP/STRIDE threat modelling as a harness skill) 
 
 - headroom-ai adopted as the primary context management layer; shell-output compression is included via the bundled RTK component.
 - house-mcp-manager gives an operator-level handle on MCP context cost between sessions; no CI or toolchain changes needed.
-- mcporter adopted — `npx mcporter list` provides ergonomic access and typed client generation for scripting and test fixture work against
-  the configured MCP surface.
+- mcporter adopted — daemon mode is the primary delivery: 19 KI stdio servers collapse to a single `ki-mcporter` URL entry via the HTTP
+  bridge on port 3333; tools appear as `server__tool`. Any saved prompts or skills that reference bare tool names will need updating. Typed
+  client generation for harness scripts and `mcp-*` repo integration remains an open ROADMAP item.
 - superpowers and gstack declined — the KI skills paradigm remains the single skill governance layer; no competing install conventions are
   introduced.
 - house-agents adopted at user-level; its four sub-agents are immediately usable and provide a reference pattern for the harness `agents/`

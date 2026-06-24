@@ -13,11 +13,11 @@ to the invariants in [docs/design.md](docs/design.md) (_Principles across the se
 
 ## Audit WARNs to resolve
 
-- **`knowledgeislands-tokenomics` — MCP server count and overlap.** 19 user-scoped servers exceed the three-to-five-always-loaded heuristic
-  (MCP-2/MCP-3). Several KB-FS servers serve overlapping purposes (`arcadia-principal-mcp-kb-fs` + `hnr-principal-mcp-kb-fs`,
-  `kit-hnr-mcp-kb-fs`, `vallearmonia-principal-mcp-kb-fs`, etc.) with no documented rationale for simultaneous loading. Resolves alongside
-  the "Adopt `knowledgeislands-tokenomics` across environments" item below: the MCP scoping decision (move project-specific KB servers to
-  `.mcp.json`) closes both. _(surfaced: ki-multi-skill-audit WARNs MCP-2, MCP-3)_
+- **`knowledgeislands-tokenomics` — MCP server count and overlap.** The 19 user-scoped servers no longer appear as 19 stdio entries; they
+  are proxied behind the `ki-mcporter` URL entry (resolved by TOOLCHAIN-002). The underlying overlap question — several KB-FS servers serve
+  overlapping purposes with no documented rationale — remains open. Resolves alongside the "Adopt `knowledgeislands-tokenomics` across
+  environments" item below: the MCP scoping decision (move project-specific KB servers to `.mcp.json`) closes both. _(surfaced:
+  ki-multi-skill-audit WARNs MCP-2, MCP-3)_
 
 ## Later
 
@@ -27,8 +27,9 @@ to the invariants in [docs/design.md](docs/design.md) (_Principles across the se
   should be captured as a timeless rule in a new ADR (e.g. "project-specific MCP servers live in `.mcp.json`; cross-context servers are
   declared globally in `~/.claude.json`"). _(surfaced: ki-multi-skill-audit WARNs MCP-2, MCP-3)_
 
-- **Integrate `mcporter` into the `mcp-*` repos.** _(candidate)_ TOOLCHAIN-002 adopts mcporter for typed client generation and record/replay
-  against the configured MCP surface. No harness script or mcp repo has integrated it yet.
+- **Integrate `mcporter` typed client into the `mcp-*` repos.** _(candidate)_ TOOLCHAIN-002 adopts mcporter; the daemon proxy role is
+  complete (19 stdio → `ki-mcporter` URL entry). The secondary role — typed client generation and record/replay for harness scripts and
+  per-`mcp-*` repo integration — has not been started.
 
 - **Populate `agents/` shelf.** _(candidate)_ TOOLCHAIN-002 adopts `house-agents` as the reference pattern for sub-agent definitions.
   KI-authored equivalents should be modelled on that reference implementation and placed in the harness `agents/` shelf.

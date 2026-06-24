@@ -3,6 +3,67 @@
 How to install a skill from this repository, how a skill fires once installed, the linking convention inside a skill, and the development
 toolchain for working in the repo.
 
+## System dependencies
+
+Two system-level components must be in place before the skills and MCP servers work correctly on a development machine. Both are installed
+via Homebrew and managed by chezmoi.
+
+### headroom-ai
+
+headroom-ai provides context compaction management (`PreCompact` hook) and shell-output compression via its bundled RTK component.
+
+```bash
+brew install headroom-ai
+```
+
+headroom-ai runs in one of two modes:
+
+- **Proxy mode** — `headroom proxy` starts a local proxy on port 8787; Claude Code is pointed at it via
+  `ANTHROPIC_BASE_URL=http://localhost:8787`.
+- **Wrap mode** — `headroom claude` wraps the Claude CLI directly without a separate proxy process.
+
+The harness CLAUDE.md notes which mode is active in the current machine's chezmoi config.
+
+### mcporter (MCP proxy daemon)
+
+mcporter consolidates all 19 KI-owned MCP servers behind a single keep-alive daemon and exposes them through a single HTTP MCP endpoint,
+reducing the `~/.claude.json` `mcpServers` block from 19 stdio entries to one URL entry.
+
+```bash
+brew install steipete/tap/mcporter
+```
+
+Two LaunchAgents are deployed and activated by chezmoi:
+
+| LaunchAgent label         | Command                              | Purpose                                          |
+| ------------------------- | ------------------------------------ | ------------------------------------------------ |
+| `sh.mcporter.daemon`      | `mcporter daemon start --foreground` | Keep-alive process manager for all 19 servers    |
+| `sh.mcporter.http-bridge` | `mcporter serve --http 3333`         | HTTP MCP endpoint at `http://localhost:3333/mcp` |
+
+mcporter's config lives at `~/.mcporter/mcporter.json` (chezmoi-managed). It embeds full server definitions with `"lifecycle": "keep-alive"`
+for each server, resolved from the same `mcp-servers-json` chezmoi template that generates the Claude Desktop config.
+
+After `chezmoi apply` loads the plists, activate them:
+
+```bash
+launchctl load ~/Library/LaunchAgents/sh.mcporter.daemon.plist
+launchctl load ~/Library/LaunchAgents/sh.mcporter.http-bridge.plist
+```
+
+Tools are exposed as `server__tool` (double underscore). `~/.claude.json` should contain only a single `ki-mcporter` URL entry under
+`mcpServers`:
+
+```json
+"ki-mcporter": { "type": "url", "url": "http://localhost:3333/mcp" }
+```
+
+Verify with:
+
+```bash
+mcporter daemon status          # all 19 servers idle/running
+curl http://localhost:3333/mcp  # should return a valid MCP JSON response
+```
+
 ## Installing skills
 
 Claude Code (and compatible agents) discover skills in two places:
