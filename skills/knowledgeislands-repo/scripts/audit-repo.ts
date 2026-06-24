@@ -257,7 +257,7 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
     skill: '11ty-websites',
     table: 'knowledgeislands-11ty-websites',
     artifact: 'eleventy.config.*',
-    detect: (s) => ELEVENTY.some((f) => s.root.has(f))
+    detect: (s) => ELEVENTY.some((f) => s.root.has(f)) || [...s.tree].some((p) => ELEVENTY.some((f) => p.endsWith(`/${f}`)))
   },
   {
     skill: 'cloudflare-hosting',
