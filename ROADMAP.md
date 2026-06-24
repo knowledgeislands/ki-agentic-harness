@@ -11,21 +11,7 @@ lands here before it's built — and an item is **removed once done**, not ticke
 scheduled `knowledgeislands-skills-refresh` sweep (which honours each skill's declared `**Refresh:**` cadence) are ongoing disciplines tied
 to the invariants in [docs/design.md](docs/design.md) (_Principles across the set_) — they run continuously, so they live there, not here.
 
-## Audit WARNs to resolve
-
-- **`knowledgeislands-tokenomics` — MCP server count and overlap.** The 19 user-scoped servers no longer appear as 19 stdio entries; they
-  are proxied behind the `ki-mcporter` URL entry (resolved by TOOLCHAIN-002). The underlying overlap question — several KB-FS servers serve
-  overlapping purposes with no documented rationale — remains open. Resolves alongside the "Adopt `knowledgeislands-tokenomics` across
-  environments" item below: the MCP scoping decision (move project-specific KB servers to `.mcp.json`) closes both. _(surfaced:
-  ki-multi-skill-audit WARNs MCP-2, MCP-3)_
-
 ## Later
-
-- **Adopt `knowledgeislands-tokenomics` across environments.** All three environments opted in (harness, `arcadia-principal`,
-  `arcadia-website`); each AUDIT runs 0 FAIL. Remaining open work: (a) decide on MCP server scoping — project-specific KB FS servers could
-  move to project-local `.mcp.json` files, leaving only genuinely cross-context servers globally. Once the scoping principle is settled, it
-  should be captured as a timeless rule in a new ADR (e.g. "project-specific MCP servers live in `.mcp.json`; cross-context servers are
-  declared globally in `~/.claude.json`"). _(surfaced: ki-multi-skill-audit WARNs MCP-2, MCP-3)_
 
 - **Integrate `mcporter` typed client into the `mcp-*` repos.** _(candidate)_ TOOLCHAIN-002 adopts mcporter; the daemon proxy role is
   complete (19 stdio → `ki-mcporter` URL entry). The secondary role — typed client generation and record/replay for harness scripts and
