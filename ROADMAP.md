@@ -13,17 +13,5 @@ to the invariants in [docs/design.md](docs/design.md) (_Principles across the se
 
 ## Later
 
-- **Integrate `mcporter` typed client into the `mcp-*` repos.** _(candidate)_ TOOLCHAIN-002 adopts mcporter; the daemon proxy role is
-  complete (19 stdio → `ki-mcporter` URL entry). The secondary role — typed client generation and record/replay for harness scripts and
-  per-`mcp-*` repo integration — has not been started.
-
 - **Populate `agents/` shelf.** _(candidate)_ TOOLCHAIN-002 adopts `house-agents` as the reference pattern for sub-agent definitions.
   KI-authored equivalents should be modelled on that reference implementation and placed in the harness `agents/` shelf.
-
-- **Dependabot safe auto-merge.** _(candidate)_ The Layer-3 baseline is in place (alerts + security updates + `allow_update_branch`, all
-  governed); all seven mcp repos now declare `bun` + `github-actions` ecosystems (bun-only, no npm — no duplicate PRs observed). The
-  `dependabot-auto-merge.yml` in every mcp repo is currently **inert** — `allow_auto_merge` is off and `main` is unprotected, so
-  `gh pr merge --auto` has no required check to gate on. Making it safe means protecting `main` with the required `build` check (the
-  `branch-protection` override, deliberately OFF today so `main` stays open) **and** enabling `allow_auto_merge` — a real shift in the push
-  workflow (maintainers via PRs too). Deferred pending that posture decision; the alternative is to drop the inert workflow or rework it
-  into a CI-gated merge that needs no branch protection.
