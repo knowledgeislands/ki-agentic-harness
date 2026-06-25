@@ -203,7 +203,9 @@ if (vitestFile) {
   const coverageExcludes: [string, RegExp][] = [
     ['mcp-server/index.ts', /mcp-server\/index\.ts/],
     ['tools/**/index.ts', /tools\/\*\*(?:\/index\.ts)?|tools\/\*\/index\.ts/],
-    ['utils/annotations.ts', /utils\/annotations\.ts/]
+    ['utils/annotations.ts', /utils\/annotations\.ts/],
+    // Generated typed client carries no test obligation.
+    ['src/generated/**', /generated\/\*\*/]
   ]
   for (const [label, re] of coverageExcludes) {
     re.test(vc) ? add('PASS', 'vitest', `coverage excludes ${label}`) : add('WARN', 'vitest', `coverage should exclude ${label}`)
