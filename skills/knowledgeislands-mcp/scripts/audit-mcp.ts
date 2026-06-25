@@ -15,6 +15,7 @@
  *
  * No dependencies — Node/Bun builtins only.
  */
+import { execSync } from 'node:child_process'
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { basename, join } from 'node:path'
 
@@ -33,6 +34,16 @@ if (!repo || !existsSync(repo)) {
 }
 const at = (...p: string[]) => join(repo, ...p)
 const has = (...p: string[]) => existsSync(at(...p))
+function runCheck(area: string, label: string, cmd: string) {
+  try {
+    execSync(cmd, { cwd: repo, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] })
+    add('PASS', area, `${label} exits 0`)
+  } catch (e: unknown) {
+    const err = e as { stderr?: string; stdout?: string }
+    const detail = (err.stderr ?? err.stdout ?? '').trim()
+    add('FAIL', area, detail ? `${label} failed:\n  ${detail.split('\n').join('\n  ')}` : `${label} failed`)
+  }
+}
 const read = (...p: string[]): string => {
   try {
     return readFileSync(at(...p), 'utf8')
@@ -65,7 +76,10 @@ for (const f of ['CONTRIBUTING.md', 'SECURITY.md']) {
   has(f) ? add('PASS', 'files', `${f} present`) : add('FAIL', 'files', `${f} missing`)
 }
 if (!has('CHANGELOG.md')) add('FAIL', 'files', 'CHANGELOG.md missing')
-else read('CHANGELOG.md').trim() ? add('PASS', 'files', 'CHANGELOG.md present and non-empty') : add('FAIL', 'files', 'CHANGELOG.md is an empty stub — add a release entry (e.g. 1.0.0) or remove it')
+else
+  read('CHANGELOG.md').trim()
+    ? add('PASS', 'files', 'CHANGELOG.md present and non-empty')
+    : add('FAIL', 'files', 'CHANGELOG.md is an empty stub — add a release entry (e.g. 1.0.0) or remove it')
 
 // vitest config presence — located only so the MCP coverage-exclude check below can read it.
 const vitestFile = ['vitest.config.ts', 'vitest.config.js', 'vitest.config.mts'].find((f) => has(f))
@@ -88,15 +102,20 @@ if (scripts['test:smoke'] && has('.github', 'workflows', 'ci.yml')) {
     ? add('PASS', 'ci', 'ci.yml runs test:smoke (MCP delta, after the common gate)')
     : add('FAIL', 'ci', 'ci.yml must run "bun run test:smoke" — the MCP delta, after the common engineering gate steps')
 }
+if (scripts['test:smoke']) runCheck('smoke', 'test:smoke', 'bun run test:smoke')
 
 const eq = (area: string, key: string, actual: unknown, want: unknown) =>
-  actual === want ? add('PASS', area, `${key} = ${JSON.stringify(want)}`) : add('FAIL', area, `${key} should be ${JSON.stringify(want)}, got ${JSON.stringify(actual)}`)
+  actual === want
+    ? add('PASS', area, `${key} = ${JSON.stringify(want)}`)
+    : add('FAIL', area, `${key} should be ${JSON.stringify(want)}, got ${JSON.stringify(actual)}`)
 
 // MCP delta only — `type`/`packageManager`/`engines`/`files` are the common engineering layer.
 eq('package', 'main', pkg.main, 'dist/mcp-server/index.js')
 
 const bin = (pkg.bin ?? {}) as Record<string, string>
-Object.values(bin).includes('dist/mcp-server/index.js') ? add('PASS', 'package', 'bin → dist/mcp-server/index.js') : add('FAIL', 'package', 'bin must map to dist/mcp-server/index.js')
+Object.values(bin).includes('dist/mcp-server/index.js')
+  ? add('PASS', 'package', 'bin → dist/mcp-server/index.js')
+  : add('FAIL', 'package', 'bin must map to dist/mcp-server/index.js')
 
 const exp = (pkg.exports ?? {}) as Record<string, unknown>
 for (const k of ['.', './config', './package.json']) {
@@ -121,9 +140,15 @@ if (cfg) {
   ;/export\s+(async\s+)?function\s+loadConfig|export\s+const\s+loadConfig/.test(cfg)
     ? add('PASS', 'config', 'config exports loadConfig')
     : add('FAIL', 'config', 'config/index.ts does not export loadConfig')
-  cfg.includes('process.loadEnvFile') ? add('PASS', 'config', 'loadConfig uses process.loadEnvFile (Node .env parity)') : add('WARN', 'config', 'config/index.ts has no process.loadEnvFile call')
+  cfg.includes('process.loadEnvFile')
+    ? add('PASS', 'config', 'loadConfig uses process.loadEnvFile (Node .env parity)')
+    : add('WARN', 'config', 'config/index.ts has no process.loadEnvFile call')
   if (/loadEnvFile\(\s*[`'"]\.\.?\//.test(cfg))
-    add('WARN', 'config', 'loadEnvFile uses a cwd-relative path (./…) — resolve from import.meta.url; the launched `node dist/…` runs from an arbitrary cwd, not the package root')
+    add(
+      'WARN',
+      'config',
+      'loadEnvFile uses a cwd-relative path (./…) — resolve from import.meta.url; the launched `node dist/…` runs from an arbitrary cwd, not the package root'
+    )
   for (const sym of ['ACCESS_LEVELS', 'ACCESS_LEVEL_RANK', 'AuditLogMode']) {
     cfg.includes(sym) ? add('PASS', 'config', `config references ${sym}`) : add('WARN', 'config', `config missing ${sym}`)
   }
@@ -164,7 +189,9 @@ const walk = (dir: string) => {
   }
 }
 if (isDir('src')) walk(at('src'))
-offenders.length ? add('WARN', 'config', `process.env read outside config/ (verify each is intentional): ${offenders.join(', ')}`) : add('PASS', 'config', 'no process.env reads outside config/')
+offenders.length
+  ? add('WARN', 'config', `process.env read outside config/ (verify each is intentional): ${offenders.join(', ')}`)
+  : add('PASS', 'config', 'no process.env reads outside config/')
 
 // ── MCP vitest coverage EXCLUDES ──────────────────────────────────────────────
 // The 100% thresholds themselves are the common engineering layer (audit-engineering.ts);
@@ -235,10 +262,20 @@ if (isDir('src', 'tools')) {
     }
   }
   sw(at('src', 'tools'))
-  if (usesStructured && !declaresOutputSchema) add('WARN', 'tools', 'tools return structuredContent but no outputSchema is declared — pair them (spec 2025-11-25) so clients can validate')
+  if (usesStructured && !declaresOutputSchema)
+    add(
+      'WARN',
+      'tools',
+      'tools return structuredContent but no outputSchema is declared — pair them (spec 2025-11-25) so clients can validate'
+    )
   else if (usesStructured) add('PASS', 'tools', 'structuredContent paired with a declared outputSchema')
   // Tools using jsonResult return structured JSON; they should also adopt outputSchema + structuredContent
-  if (usesJsonResult && !declaresOutputSchema) add('WARN', 'tools', 'tools use jsonResult (returning JSON) but declare no outputSchema — add outputSchema + structuredContent (spec 2025-11-25 SHOULD)')
+  if (usesJsonResult && !declaresOutputSchema)
+    add(
+      'WARN',
+      'tools',
+      'tools use jsonResult (returning JSON) but declare no outputSchema — add outputSchema + structuredContent (spec 2025-11-25 SHOULD)'
+    )
 }
 
 // ── deterministic tool registration order ──
@@ -264,7 +301,11 @@ if (isDir('src', 'tools')) {
       const reverseSorted = [...names].sort().reverse()
       if (JSON.stringify(names) !== JSON.stringify(sorted) && JSON.stringify(names) !== JSON.stringify(reverseSorted)) {
         // Not alphabetical either way — flag as potentially non-deterministic
-        add('ADVISORY', 'tools', `${gf.replace(at(''), '')}: registerTool order (${names.join(', ')}) is not alphabetical — verify it is intentionally stable`)
+        add(
+          'ADVISORY',
+          'tools',
+          `${gf.replace(at(''), '')}: registerTool order (${names.join(', ')}) is not alphabetical — verify it is intentionally stable`
+        )
       } else {
         add('PASS', 'tools', `${gf.replace(at(''), '')}: tool registration order is deterministic (${names.join(', ')})`)
       }
@@ -279,13 +320,16 @@ if (isDir('src', 'tools')) {
 // from the MCP-SDK dependency signal). Validate-down — no per-repo keys defined yet.
 const kiMcp = read('.ki-config.toml')
 if (!kiMcp) add('WARN', 'ki-config', '.ki-config.toml missing (knowledgeislands-repo owns the contract)')
-else if (!/^\[knowledgeislands-mcp\]/m.test(kiMcp)) add('WARN', 'ki-config', 'no [knowledgeislands-mcp] table — add it to mark this repo as governed by the MCP standard')
+else if (!/^\[knowledgeislands-mcp\]/m.test(kiMcp))
+  add('WARN', 'ki-config', 'no [knowledgeislands-mcp] table — add it to mark this repo as governed by the MCP standard')
 else {
   add('PASS', 'ki-config', '[knowledgeislands-mcp] table present')
   const body = kiMcp.split(/^\[knowledgeislands-mcp\]/m)[1]?.split(/^\[/m)[0] ?? ''
   const KNOWN = new Set<string>([]) // no top-level options yet
   for (const m of body.matchAll(/^\s*([A-Za-z0-9_-]+)\s*=/gm)) {
-    KNOWN.has(m[1] as string) ? add('PASS', 'ki-config', `known key ${m[1]}`) : add('WARN', 'ki-config', `unknown key under [knowledgeislands-mcp]: ${m[1]} (validate-down)`)
+    KNOWN.has(m[1] as string)
+      ? add('PASS', 'ki-config', `known key ${m[1]}`)
+      : add('WARN', 'ki-config', `unknown key under [knowledgeislands-mcp]: ${m[1]} (validate-down)`)
   }
 }
 
@@ -298,7 +342,15 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
   const reportDir = report && argv[ri + 1] && !argv[ri + 1].startsWith('-') ? argv[ri + 1] : join(target, '.ki-meta', 'audits')
 
   const n = (l: Level): number => items.filter((f) => f.level === l).length
-  const summary = { fail: n('FAIL'), warn: n('WARN'), polish: n('POLISH'), advisory: n('ADVISORY'), info: n('INFO'), skip: n('SKIP'), pass: n('PASS') }
+  const summary = {
+    fail: n('FAIL'),
+    warn: n('WARN'),
+    polish: n('POLISH'),
+    advisory: n('ADVISORY'),
+    info: n('INFO'),
+    skip: n('SKIP'),
+    pass: n('PASS')
+  }
   const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.skip} skip`
   const stamp = new Date().toISOString()
 
@@ -309,7 +361,10 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
       return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
     })
     writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
-    writeFileSync(join(reportDir, `${concern}.json`), `${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
+    writeFileSync(
+      join(reportDir, `${concern}.json`),
+      `${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`
+    )
   }
 
   if (json) {
@@ -332,4 +387,10 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
 
 add('INFO', 'scope', 'MCP server delta only — compose with audit-engineering.ts (common toolchain) for full coverage')
 add('ADVISORY', 'judgment', 'mechanical layer only — apply the [J] criteria in references/audit-rubric.md by reading')
-emit(findings, repo, 'mcp', `MCP standards audit — ${name}  (${repo})`, 'MCP delta only — also run audit-engineering.ts (common toolchain) + the semantic pass in references/audit-rubric.md.')
+emit(
+  findings,
+  repo,
+  'mcp',
+  `MCP standards audit — ${name}  (${repo})`,
+  'MCP delta only — also run audit-engineering.ts (common toolchain) + the semantic pass in references/audit-rubric.md.'
+)

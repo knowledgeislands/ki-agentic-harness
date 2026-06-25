@@ -36,6 +36,16 @@ if (!repo || !existsSync(repo)) {
   process.exit(2)
 }
 const at = (...p: string[]) => join(repo, ...p)
+function runCheck(area: string, label: string, cmd: string) {
+  try {
+    execSync(cmd, { cwd: repo, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] })
+    add('PASS', area, `${label} exits 0`)
+  } catch (e: unknown) {
+    const err = e as { stderr?: string; stdout?: string }
+    const detail = (err.stderr ?? err.stdout ?? '').trim()
+    add('FAIL', area, detail ? `${label} failed:\n  ${detail.split('\n').join('\n  ')}` : `${label} failed`)
+  }
+}
 const has = (...p: string[]) => existsSync(at(...p))
 const isDir = (...p: string[]) => has(...p) && statSync(at(...p)).isDirectory()
 const read = (...p: string[]): string => {
@@ -123,6 +133,11 @@ if (has('.github', 'workflows', 'ci.yml')) {
 } else {
   add('SKIP', 'ci', 'no .github/workflows/ci.yml — not applicable')
 }
+
+// Structural execution checks — verify the actual commands pass, not just that they are declared.
+// lint:md:check is excluded: it is formatter-state-sensitive and fails on uncommitted edits.
+if (scripts['lint:check']) runCheck('lint', 'lint:check', 'bun run lint:check')
+if (scripts['lint:types']) runCheck('lint', 'lint:types', 'bun run lint:types')
 
 // Repo shape — flat vs monorepo (§0). The canonical `lint:types = "tsc --noEmit"`
 // assumes one root TS project (the flat shape). A monorepo declares its packages in
@@ -291,6 +306,7 @@ if (hasTests) {
   } else {
     add('WARN', 'tests', 'a test script is present but no vitest.config.* — confirm the runner is vitest')
   }
+  if (scripts['test:coverage']) runCheck('tests', 'test:coverage', 'bun run test:coverage')
 } else {
   add('SKIP', 'tests', 'no test capability (no vitest.config / test script) — not applicable')
 }
