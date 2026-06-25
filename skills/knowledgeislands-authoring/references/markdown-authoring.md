@@ -10,6 +10,7 @@ person.
 - [What to leave to the linter](#what-to-leave-to-the-linter)
 - [Tables and footnotes](#tables-and-footnotes)
 - [Links](#links)
+- [Code blocks](#code-blocks)
 
 ## What to leave to the linter
 
@@ -80,8 +81,26 @@ Learned applying this; bake them in:
 - **Use standard relative markdown links, never Obsidian wikilinks** (`[[…]]`). Wikilinks break the moment a file is relocated, symlinked,
   or read outside the base; relative markdown links survive it. For a path containing spaces, use the CommonMark angle-bracket form:
   `[ref](<references/My Detail.md>)`.
+- **Never use wikilinks inside table cells.** The display-name form `[[target|Display text]]` contains a `|` that Markdown parsers treat as
+  a column separator, silently breaking the table layout. Use a standard relative markdown link (`[Display text](path/to/file.md)`) instead.
 - **Write descriptive link text** — the words you'd skim for, not "click here" or a bare URL. `[the repo standard](…)`, not `[here](…)`.
 - **Refer to another skill by its `name`**, never by a file path — "the `knowledgeislands-kb` skill" — because a skill's location on disk is
   not stable, but its name is how it loads into the session.
 - **In editor / IDE contexts** where the harness asks for clickable references, link files and lines with relative markdown links
   (`[file.ts:42](src/file.ts#L42)`) rather than bare backtick paths, so the reference is navigable.
+
+## Code blocks
+
+Every fenced code block must carry a **language specifier** — never bare triple backticks.
+
+```bash
+# good
+echo "hello"
+```
+
+Use the closest accurate tag. Common choices: `bash` or `sh` for shell commands; `ts`, `js`, `python`, `go`, etc. for source; `toml`,
+`yaml`, `json` for config; `text` for literal output that isn't a recognised language. When in doubt, `text` is correct and satisfies the
+rule — any specifier beats none.
+
+**Why:** language tags enable syntax highlighting in GitHub, rendered docs, and IDE previews; downstream renderers (including the Artifact
+tool) key off the tag. Bare blocks are the second-most-common authoring friction point after wide tables.
