@@ -133,3 +133,5 @@ procedure loads.
 
 Reference detail: [Knowledge Islands KB Reference](<references/Knowledge Islands KB Reference.md>). Checkable criteria:
 [the audit rubric](references/audit-rubric.md), enforced mechanically by [`scripts/audit-kb.ts`](scripts/audit-kb.ts).
+
+KI-wide frontmatter standard (universal fields and the `type` taxonomy): [frontmatter-standard.md](references/frontmatter-standard.md).

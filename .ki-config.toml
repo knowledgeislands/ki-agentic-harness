@@ -20,8 +20,8 @@ visibility = "private"   # "public" | "private"
 # files themselves.)
 [knowledgeislands-skills]
 
-# This repo ships the knowledgeislands-kdrs skill, so it declares governance by its own standard.
-[knowledgeislands-kdrs]
+# This repo ships the knowledgeislands-decision-records skill, so it declares governance by its own standard.
+[knowledgeislands-decision-records]
 
 # Tokenomics governance — audits the standing context surface for this environment.
 # MCP server count is user-scoped (not harness-controlled); all 19 are intentional.
