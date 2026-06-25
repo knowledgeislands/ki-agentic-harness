@@ -45,6 +45,8 @@ by the `knowledgeislands-adrs` skill.
 ## References
 
 - [docs/decisions/README.md](README.md) — the index of all ADRs in this harness.
+- `GDR-KI-ARCADIA-001` (arcadia-principal) — the KI-level decision that established DRs as the instrument; this ADR is its harness
+  realisation (`decision_depends_on: ["GDR-KI-ARCADIA-001"]`)
 - [skills/knowledgeislands-adrs/SKILL.md](../../skills/knowledgeislands-adrs/SKILL.md) — the governance skill that defines and enforces the
   ADR format used here.
 - [Michael Nygard, "Documenting Architecture Decisions"](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) — the

@@ -5,10 +5,13 @@ the checker first; do not eyeball what the script validates better.
 
 ## File and naming checks
 
-- **[M] FILENAME-1** — filename matches `^(SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z][A-Z0-9]*(-[A-Z][A-Z0-9]*)*-\d{3,}(-[a-z0-9-]+)?\.md$`
-- **[M] FILENAME-2** — NNN is unique within its `<SCOPE>` namespace (global across all prefixes); no two files share a scope+serial
-  combination
-- **[M] FILENAME-3** — NNN is monotonically increasing within its scope; no gaps introduced by deletion
+- **[M] FILENAME-1** — filename matches
+  `^(SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z][A-Z0-9]*(-[A-Z][A-Z0-9]*)*-(XXX|\d{3,})(-[a-z0-9-]+)?\.md$` (`XXX` is the reserved serial
+  for `Draft` DRs not yet assigned a real number)
+- **[M] FILENAME-2** — NNN is unique **per prefix within its `<SCOPE>` namespace**; two files may share the same integer if they carry
+  different prefixes (e.g. `GDR-KI-ARCADIA-001` and `SDR-KI-ARCADIA-001` are both valid); no two files share the same prefix+scope+serial
+  combination. `XXX` files are exempt from uniqueness.
+- **[M] FILENAME-3** — NNN is monotonically increasing per prefix within its scope; no gaps introduced by deletion. `XXX` files are exempt.
 
 ## Frontmatter checks (KB repos only)
 
@@ -23,7 +26,7 @@ the checker first; do not eyeball what the script validates better.
 ## Body structure checks
 
 - **[M] BODY-1** — heading matches `# <PREFIX>-<SCOPE>-NNN: <title>` (ID prefix present and matches filename)
-- **[M] BODY-2** — `**Status:**` line present with a valid value (Proposed / Accepted / Deprecated / Superseded by …)
+- **[M] BODY-2** — `**Status:**` line present with a valid value (Draft / Proposed / Accepted / Deprecated / Superseded by `<full DR code>`)
 - **[M] BODY-3** — `**Date:**` line present, format `YYYY-MM-DD`
 - **[M] BODY-4** — `## Context`, `## Decision`, `## Consequences` sections all present
 - **[J] BODY-5** — Context is value-neutral forces, not advocacy ("the island currently…" not "we need to…")
@@ -44,7 +47,7 @@ the checker first; do not eyeball what the script validates better.
 - **[M] INDEX-3** — no row in `Decisions.md` references a file that does not exist
 - **[M] INDEX-4** — row Status matches the DR's `**Status:**` field
 - **[M] INDEX-5** — row Date matches the DR's `**Date:**` field
-- **[M] INDEX-6** — rows are ordered by filename
+- **[M] INDEX-6** — rows are ordered by reveal order (dependency chain: roots first, then dependents; ties broken by filename)
 - **[J] INDEX-7** — row Title in the index matches the DR's heading title (excluding the ID prefix)
 
 ## Severity mapping

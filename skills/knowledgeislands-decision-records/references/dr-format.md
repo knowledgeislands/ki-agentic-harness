@@ -19,12 +19,16 @@ re-reads the sources and proposes diffs here.
 - **`<SCOPE>`** is one or more uppercase alpha-leading segments separated by `-`. KB island repos use the island's identifier as the first
   segment (e.g. `ARCADIA`). A scope segment matches `[A-Z][A-Z0-9]*`; a digit-only segment is invalid. Multi-level scopes are valid for
   sub-domain decisions (e.g. `ARCADIA-TOOLS`).
-- **`NNN`** is a zero-padded decimal serial (≥ 3 digits). Monotonically increasing **within the `<SCOPE>` namespace, global across all
-  prefixes** — no two DRs in the same scope share a serial, regardless of prefix.
-- **`<slug>`** (recommended) is a short lowercase hyphenated title summary. Makes the file self-describing when referenced by ID from other
-  records or tools.
+- **`NNN`** is a zero-padded decimal serial (≥ 3 digits). Monotonically increasing **per prefix within the `<SCOPE>` namespace** —
+  `GDR-KI-ARCADIA-001` and `SDR-KI-ARCADIA-001` may share the integer `001` because they carry different prefixes. The full DR code
+  (prefix + scope + serial) is the globally unique identifier. A `Draft` DR not yet assigned a real serial uses the literal string `XXX` in
+  place of `NNN` (e.g. `GDR-KI-ARCADIA-XXX-pending-decision.md`); it is renamed to the next available per-prefix serial when promoted to
+  `Proposed` or `Accepted`.
+- **`<slug>`** (optional, preferable) is a short lowercase hyphenated title summary. Makes the file self-describing when referenced by ID
+  from other records or tools.
 
-Examples: `GDR-ARCADIA-001-adopting-decision-records`, `ADR-ARCADIA-002-three-project-roles`, `ADR-MYREPO-TOOLS-003-use-postgres`.
+Examples: `GDR-KI-ARCADIA-001-adopting-decision-records`, `SDR-KI-ARCADIA-001-knowledge-islands-strategy`,
+`ADR-KI-HARNESS-003-adopting-adrs`.
 
 ## Prefix table
 
@@ -67,14 +71,18 @@ type: admin/governance/decision
 decision_type: governance
 status: draft - Month YYYY
 author: Written with Claude
+decision_depends_on: []
 ---
 ```
 
 - `type` must be exactly `admin/governance/decision` (per the KI-wide frontmatter standard in `knowledgeislands-kb`).
 - `decision_type` must be one of the nine values in the prefix table above.
 - The prefix in the filename must match the `decision_type` value.
-- `status` tracks the note's maintenance state (draft/current/outdated/archive); the **decision lifecycle** (Proposed/Accepted/etc.) lives
-  in the body.
+- `status` tracks the note's maintenance state (draft/current/outdated/archive); the **decision lifecycle** (Draft/Proposed/Accepted/etc.)
+  lives in the body.
+- `decision_depends_on` is an optional YAML list of full DR codes that this decision logically depends on (e.g. `["GDR-KI-ARCADIA-001"]`).
+  Cross-scope (cross-repo) references are permitted. Body prose cites only backward — no forward references to higher-numbered DRs of the
+  same type. Omit the field when there are no dependencies.
 
 No instrument tags are required. The `type` field identifies DRs sufficiently.
 
@@ -101,12 +109,16 @@ record from the heading alone.
 
 Freestanding bold-key lines, not a table or code block. `**Date:**` records when the Status last changed.
 
-| Value                | Meaning                                                          |
-| -------------------- | ---------------------------------------------------------------- |
-| `Proposed`           | Under discussion; not yet agreed                                 |
-| `Accepted`           | Agreed and in effect — do not modify the body; supersede instead |
-| `Deprecated`         | Being phased out but not replaced by a single successor          |
-| `Superseded by <ID>` | Replaced by the named DR; include the full ID of the successor   |
+| Value                | Meaning                                                             |
+| -------------------- | ------------------------------------------------------------------- |
+| `Draft`              | Being written; not yet ready for consideration. Serial is `XXX`.    |
+| `Proposed`           | Under discussion; not yet agreed                                    |
+| `Accepted`           | Agreed and in effect — do not modify the body; supersede instead    |
+| `Deprecated`         | Being phased out but not replaced by a single successor             |
+| `Superseded by <ID>` | Replaced by the named DR; include the full DR code of the successor |
+
+Lifecycle stages may be skipped where appropriate. Many governance DRs move directly `Proposed → Accepted`. A `Draft` receives a per-prefix
+serial when promoted out of that state.
 
 When a DR is superseded: (1) update its Status to `Superseded by <ID>`; (2) add a `Supersedes <ID>` line in the successor. Both records are
 retained — the history is the point.
@@ -196,7 +208,9 @@ author: Written with Claude
 
 ## Index
 
-`Decisions.md` in the decisions directory must carry a Markdown table with one row per DR, ordered by filename:
+`Decisions.md` in the decisions directory must carry a Markdown table with one row per DR, ordered by **reveal order** — the logical reading
+sequence derived from the `decision_depends_on` dependency graph (roots first, then dependents). Where dependencies are equal or absent,
+order by filename within that level. This surfaces the story the DRs collectively tell rather than an arbitrary filename sort:
 
 ```markdown
 | DR ID           | Title                                                                     | Type       | Status   | Date       |
