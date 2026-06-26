@@ -50,6 +50,18 @@ Each subdivision carries an index note of the same name (`Governance.md`, `Opera
 memory-cascade anchor and is not replaced by these. Absence of either subdivision is a WARN (not FAIL) — a base may legitimately omit one if
 that concern is not yet active; presence without an index note is also a WARN.
 
+### Charter and Conformance baseline
+
+When `Admin/Governance/` is present, two documents are expected there:
+
+| File                              | Holds                                                                                      |
+| --------------------------------- | ------------------------------------------------------------------------------------------ |
+| `Admin/Governance/Charter.md`     | Scope, purpose, and owner of the base. Created on INIT; kept current by the base's owner.  |
+| `Admin/Governance/Conformance.md` | The active skill set governing this base, with adoption dates. Updated when skills change. |
+
+Both are checked by the mechanical audit and created as stubs by INIT and CONFORM. Absence is a WARN (not FAIL) — a base that has no
+`Governance/` folder yet is not penalised for missing them.
+
 **Pillars** are the second-level unit of organisation: each whole knowledge base is an "island"; within it, a Pillar is a major strand of
 its subject matter (a case, a client, a domain, a theme). A base may use one Pillar or many.
 

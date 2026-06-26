@@ -241,6 +241,16 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
         warn('admin', `${adminFolder}/${sub}/ exists but has no index note (${sub}.md)`)
       }
     }
+
+    // ── Charter + Conformance baseline (live in Admin/Governance/) ──
+    // WARN if Governance/ is present but either required document is absent.
+    const govPath = join(base, adminFolder, 'Governance')
+    if (isDir(govPath)) {
+      if (!isFile(join(govPath, 'Charter.md')))
+        warn('charter', `${adminFolder}/Governance/Charter.md is absent — it should declare the base's scope, purpose, and owner`)
+      if (!isFile(join(govPath, 'Conformance.md')))
+        warn('conformance', `${adminFolder}/Governance/Conformance.md is absent — it should list the active skills and their adoption date`)
+    }
   }
 
   // ── MEM-2: the memory cascade is anchored in always-loaded context ──

@@ -18,12 +18,11 @@ to the invariants in [docs/design.md](docs/design.md) (_Principles across the se
 Both `kit-legal` and `arcadia-principal` implement these patterns independently. Extracting them as KI skills would let any new island get
 them for free. Candidates (from arcadia-principal plan, 2026-06-25):
 
-| Pattern                            | Candidate extraction †                              |
-| ---------------------------------- | --------------------------------------------------- |
-| Activity system §                  | New `knowledgeislands-activities` or extend kb      |
-| Charter + Conformance baseline     | Extend `knowledgeislands-kb` with bootstrap checker |
-| Live artifacts (.md + .html pairs) | New `knowledgeislands-live-artifacts`               |
-| Note templates system              | Extend `knowledgeislands-kb`                        |
+| Pattern                            | Candidate extraction †                         |
+| ---------------------------------- | ---------------------------------------------- |
+| Activity system §                  | New `knowledgeislands-activities` or extend kb |
+| Live artifacts (.md + .html pairs) | New `knowledgeislands-live-artifacts`          |
+| Note templates system              | Extend `knowledgeislands-kb`                   |
 
 † Both `kit-legal` and `arcadia-principal` implement these patterns independently; extracting them as KI skills lets any new island get them
 for free.  
