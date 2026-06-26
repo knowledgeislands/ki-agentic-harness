@@ -37,6 +37,19 @@ zones — `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, `Admin/` — each c
 † Any zone may be held under a different local folder name — a base mid-migration, or one that simply names a zone differently. That is
 declared as a **zone alias** in the base's config, not treated as a different zone - see [Project bindings](#project-bindings).
 
+### Admin/ subdivisions
+
+The `Admin/` zone carries two canonical subdivisions:
+
+| Folder              | Holds                                                                             |
+| ------------------- | --------------------------------------------------------------------------------- |
+| `Admin/Governance/` | Decisions, charters, conformance records, and structural agreements for the base. |
+| `Admin/Operations/` | Day-to-day operational artefacts: activities, runbooks, and operational logs.     |
+
+Each subdivision carries an index note of the same name (`Governance.md`, `Operations.md`). The root `Admin/MEMORY.md` remains the
+memory-cascade anchor and is not replaced by these. Absence of either subdivision is a WARN (not FAIL) — a base may legitimately omit one if
+that concern is not yet active; presence without an index note is also a WARN.
+
 **Pillars** are the second-level unit of organisation: each whole knowledge base is an "island"; within it, a Pillar is a major strand of
 its subject matter (a case, a client, a domain, a theme). A base may use one Pillar or many.
 

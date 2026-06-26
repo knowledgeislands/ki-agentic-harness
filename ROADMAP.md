@@ -20,7 +20,6 @@ them for free. Candidates (from arcadia-principal plan, 2026-06-25):
 
 | Pattern                            | Candidate extraction †                              |
 | ---------------------------------- | --------------------------------------------------- |
-| Admin zone structure ‡             | Extend `knowledgeislands-kb` or new `-admin` skill  |
 | Activity system §                  | New `knowledgeislands-activities` or extend kb      |
 | Charter + Conformance baseline     | Extend `knowledgeislands-kb` with bootstrap checker |
 | Live artifacts (.md + .html pairs) | New `knowledgeislands-live-artifacts`               |

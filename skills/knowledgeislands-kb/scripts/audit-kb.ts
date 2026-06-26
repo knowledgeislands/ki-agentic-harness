@@ -91,7 +91,15 @@ const mk = () => {
     (level: Level) =>
     (area: string, msg: string): void =>
       void f.push({ level, area, msg })
-  return { f, fail: push('FAIL'), warn: push('WARN'), note: push('INFO'), skip: push('SKIP'), advisory: push('ADVISORY'), polish: push('POLISH') }
+  return {
+    f,
+    fail: push('FAIL'),
+    warn: push('WARN'),
+    note: push('INFO'),
+    skip: push('SKIP'),
+    advisory: push('ADVISORY'),
+    polish: push('POLISH')
+  }
 }
 
 const isDir = (p: string): boolean => existsSync(p) && statSync(p).isDirectory()
@@ -102,7 +110,12 @@ const isFile = (p: string): boolean => existsSync(p) && statSync(p).isFile()
 // on one line, `#` comments. NOT a full TOML parser, and it reads ONLY this skill's
 // tables — another skill's `[table]` is ignored entirely (validate down, ignore
 // across). Returns null if the file has no `[knowledgeislands-kb…]` table at all.
-type KiKb = { keys: Record<string, string>; zones: Record<string, string>; requiredFrontmatter: string[] | null; preflight: string[] | null }
+type KiKb = {
+  keys: Record<string, string>
+  zones: Record<string, string>
+  requiredFrontmatter: string[] | null
+  preflight: string[] | null
+}
 const unquote = (s: string): string => s.replace(/^["']|["']$/g, '')
 // `key = ["a", "b"]` → ['a','b']; tolerant of single/double quotes and spacing.
 const parseInlineArray = (val: string): string[] => {
@@ -181,7 +194,8 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
     }
     const aliasable = [...ZONES, ...STAGING]
     for (const [zone, folder] of Object.entries(ki.zones)) {
-      if (!aliasable.includes(zone)) warn('config', `[${ZONES_SECTION}] "${zone}" is not a zone or staging area (one of: ${aliasable.join(', ')})`)
+      if (!aliasable.includes(zone))
+        warn('config', `[${ZONES_SECTION}] "${zone}" is not a zone or staging area (one of: ${aliasable.join(', ')})`)
       else if (folder === zone) note('config', `[${ZONES_SECTION}] ${zone} = "${folder}" restates the canonical name — drop it`)
       else note('config', `alias in effect: ${zone} resolves to ${folder}/`)
     }
@@ -213,16 +227,39 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
 
   // ── root memory index (in the Admin zone) ──
   const adminFolder = zoneOf('Admin')
-  if (isDir(join(base, adminFolder)) && !isFile(join(base, adminFolder, MEMORY_INDEX))) fail('memory', `root memory index ${adminFolder}/${MEMORY_INDEX} is missing (lists the active Pillars)`)
+  if (isDir(join(base, adminFolder)) && !isFile(join(base, adminFolder, MEMORY_INDEX)))
+    fail('memory', `root memory index ${adminFolder}/${MEMORY_INDEX} is missing (lists the active Pillars)`)
+
+  // ── Admin/ subdivisions (Governance/ and Operations/) ──
+  // Both are canonical but opt-in: WARN if absent, WARN if present but missing index note.
+  if (isDir(join(base, adminFolder))) {
+    for (const sub of ['Governance', 'Operations'] as const) {
+      const subPath = join(base, adminFolder, sub)
+      if (!isDir(subPath)) {
+        warn('admin', `${adminFolder}/${sub}/ is absent — consider creating it when that concern becomes active (index note: ${sub}.md)`)
+      } else if (!isFile(join(subPath, `${sub}.md`))) {
+        warn('admin', `${adminFolder}/${sub}/ exists but has no index note (${sub}.md)`)
+      }
+    }
+  }
 
   // ── MEM-2: the memory cascade is anchored in always-loaded context ──
   // The cascade (scope to a Pillar + load MEMORY before substantive work) only runs
   // if the base's CLAUDE.md / AGENTS.md points to it — skills load on demand, so an
   // unanchored cascade is silently skipped on a plain request.
   const anchorName = ['CLAUDE.md', 'AGENTS.md'].find((n) => isFile(join(base, n)))
-  if (!anchorName) warn('MEM-2', 'no CLAUDE.md / AGENTS.md at the base root — the memory cascade (scope + load MEMORY before work) has no always-on anchor')
-  else if (/memory|knowledgeislands-kb/i.test(readFileSync(join(base, anchorName), 'utf8'))) note('MEM-2', `memory cascade anchored in ${anchorName}`)
-  else warn('MEM-2', `${anchorName} doesn't anchor the memory cascade — name the root MEMORY index / the scope-before-work rule so it runs on a plain request`)
+  if (!anchorName)
+    warn(
+      'MEM-2',
+      'no CLAUDE.md / AGENTS.md at the base root — the memory cascade (scope + load MEMORY before work) has no always-on anchor'
+    )
+  else if (/memory|knowledgeislands-kb/i.test(readFileSync(join(base, anchorName), 'utf8')))
+    note('MEM-2', `memory cascade anchored in ${anchorName}`)
+  else
+    warn(
+      'MEM-2',
+      `${anchorName} doesn't anchor the memory cascade — name the root MEMORY index / the scope-before-work rule so it runs on a plain request`
+    )
 
   // ── note frontmatter ──
   // Base-agnostic [M]: a note with frontmatter must close its `---` fence and use
@@ -249,10 +286,15 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
     for (const k of fm.keys) if (!SNAKE.test(k)) badKeys.push(`${rel}: "${k}"`)
     for (const r of required) if (!fm.keys.includes(r)) missingReq.push(`${rel} (${r})`)
   }
-  if (unterminated.length) fail('frontmatter', `unterminated frontmatter (no closing \`---\`) in ${unterminated.length} note(s): ${sampleList(unterminated)}`)
-  if (missingReq.length) fail('frontmatter', `missing required key(s) [${required.join(', ')}] in ${missingReq.length} note(s): ${sampleList(missingReq)}`)
+  if (unterminated.length)
+    fail('frontmatter', `unterminated frontmatter (no closing \`---\`) in ${unterminated.length} note(s): ${sampleList(unterminated)}`)
+  if (missingReq.length)
+    fail('frontmatter', `missing required key(s) [${required.join(', ')}] in ${missingReq.length} note(s): ${sampleList(missingReq)}`)
   if (badKeys.length) warn('frontmatter', `non-snake_case frontmatter key(s) in ${badKeys.length} note(s): ${sampleList(badKeys)}`)
-  note('frontmatter', `scanned ${scanned} note(s), ${withFm} with frontmatter${required.length ? ` · required keys: ${required.join(', ')}` : ' · no required_frontmatter declared'}`)
+  note(
+    'frontmatter',
+    `scanned ${scanned} note(s), ${withFm} with frontmatter${required.length ? ` · required keys: ${required.join(', ')}` : ' · no required_frontmatter declared'}`
+  )
 
   // ── staging (informational only) ──
   for (const s of STAGING) {
@@ -280,7 +322,13 @@ const kiPath = join(base, KI_CONFIG)
 const ki = isFile(kiPath) ? parseKiKb(readFileSync(kiPath, 'utf8')) : null
 
 const findings = auditBase(base, ki)
-emit(findings, base, 'kb', `Knowledge base audit — ${base}`, 'mechanical checks only — apply the judgment criteria (note routing, whether a note needs frontmatter, memory-index accuracy) by reading.')
+emit(
+  findings,
+  base,
+  'kb',
+  `Knowledge base audit — ${base}`,
+  'mechanical checks only — apply the judgment criteria (note routing, whether a note needs frontmatter, memory-index accuracy) by reading.'
+)
 
 // ── report ────────────────────────────────────────────────────────────────────
 // Shared emit harness — copy verbatim across KI checkers (enforcement-framework §2/§5).
@@ -294,7 +342,15 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
   const reportDir = report && argv[ri + 1] && !argv[ri + 1].startsWith('-') ? argv[ri + 1] : join(target, '.ki-meta', 'audits')
 
   const n = (l: Level): number => items.filter((f) => f.level === l).length
-  const summary = { fail: n('FAIL'), warn: n('WARN'), polish: n('POLISH'), advisory: n('ADVISORY'), info: n('INFO'), skip: n('SKIP'), pass: n('PASS') }
+  const summary = {
+    fail: n('FAIL'),
+    warn: n('WARN'),
+    polish: n('POLISH'),
+    advisory: n('ADVISORY'),
+    info: n('INFO'),
+    skip: n('SKIP'),
+    pass: n('PASS')
+  }
   const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.skip} skip`
   const stamp = new Date().toISOString()
 
@@ -305,7 +361,10 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
       return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
     })
     writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
-    writeFileSync(join(reportDir, `${concern}.json`), `${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
+    writeFileSync(
+      join(reportDir, `${concern}.json`),
+      `${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`
+    )
   }
 
   if (json) {

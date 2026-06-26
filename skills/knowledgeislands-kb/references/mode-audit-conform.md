@@ -26,7 +26,9 @@ loaded; this file is the procedure only._
 
 1. Run **AUDIT** first for the gap list.
 2. Apply the fixes: refile misrouted notes (per the routing test), create any missing zone, repair note frontmatter and naming, reconcile
-   the memory index. Confirm before moving or rewriting notes.
+   the memory index. Confirm before moving or rewriting notes. For any `admin` WARN about missing subdivisions, create the missing
+   `Admin/Governance/` or `Admin/Operations/` folder and its stub index note only if the base has notes that belong there — do not create
+   empty structural folders.
 3. **Install the memory-cascade anchor if `MEM-2` flagged it missing**: add a standing line to the base's `CLAUDE.md` / `AGENTS.md` naming
    the root `MEMORY` index and the scope-before-work rule — otherwise the cascade is skipped on a plain request. Likewise apply any sibling
    skill's CONFORM (e.g. `knowledgeislands-streams` for the gate anchor), since a base audit composes them.

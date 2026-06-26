@@ -5,5 +5,8 @@ Step 1 (Load context) — lives in [`SKILL.md`](../SKILL.md) and is already load
 
 1. Create the zone skeleton — Calendar / Pillars / Resources / Streams, plus the inbound `+` and outbound `-` zones — and the root
    `Admin/MEMORY.md`.
-2. Seed each zone's note conventions (frontmatter, naming) from the structure model.
-3. Hand ongoing capture to the SAVE / EXTRACT / DIGEST modes.
+2. Create the two `Admin/` subdivisions with stub index notes:
+   - `Admin/Governance/Governance.md` — title, purpose, link to decisions folder.
+   - `Admin/Operations/Operations.md` — title, purpose, link to activities index.
+3. Seed each zone's note conventions (frontmatter, naming) from the structure model.
+4. Hand ongoing capture to the SAVE / EXTRACT / DIGEST modes.
