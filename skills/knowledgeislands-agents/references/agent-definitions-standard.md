@@ -137,7 +137,8 @@ links that resolve on disk. Refer to another agent or skill by its `name`, never
 ## 11. Process / evaluation
 
 Not checkable from the file alone. A good agent is **exercised on representative tasks** in its lane before it is relied on — does it stay
-in lane, ground itself, and defer correctly? — and tested across the models it will run under. (BP)
+in lane, ground itself, and defer correctly? — and tested across the models it will run under. For pattern references — what good
+descriptions, tool scoping, and system-prompt structure look like in practice — see [exemplars.md](exemplars.md). (BP, COM1)
 
 ## 12. Longevity
 
