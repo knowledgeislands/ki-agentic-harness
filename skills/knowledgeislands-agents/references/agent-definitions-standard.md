@@ -43,6 +43,11 @@ by domain or Pillar) for human organisation, but **identity is the `name` field,
 tree. The filename stem should match `name` (`product-manager.md` → `name: product-manager`) so a reader can find an agent by either. A
 `README.md` in an agents tree documents the convention and is not itself an agent. (CC, HOUSE)
 
+**Companion files and skills preloading.** The CC spec does not support companion file injection — there is no mechanism to co-load a
+sibling `.md` file alongside an agent at startup. The platform answer is the `skills` field (§5), which preloads a named skill's full
+content. Companion `.md` files without `name` frontmatter are permitted for human-readable documentation (design notes, README aids), but
+reference content an agent acts on belongs in a preloaded skill, not an inert sibling. (CC, HOUSE)
+
 ## 3. Frontmatter: name
 
 `name` is required and is the agent's **identity** — how it is invoked and referenced. It is lowercase letters, digits, and hyphens only (no
@@ -81,6 +86,27 @@ skill content), `mcpServers`, `hooks`, `memory` (`user` / `project` / `local` cr
 risk and flagged **only when it is not in this spec set** (`name`, `description`, `tools`, `disallowedTools`, `model`, `permissionMode`,
 `maxTurns`, `skills`, `mcpServers`, `hooks`, `memory`, `background`, `effort`, `isolation`, `color`, `initialPrompt`). Note that `hooks` /
 `mcpServers` / `permissionMode` are ignored for plugin-distributed subagents. (CC)
+
+When-to-use guidance for the fields the house has not yet codified in most agents:
+
+- **`skills`** — preloads a named skill's full content at startup. Use when the role must always have a specific standard before acting and
+  runtime KB discovery would be fragile or slow. For optional or situational context, prefer grounding-at-runtime (the agent reads the skill
+  file on demand); preloading is for mandatory, always-consulted standards. (CC)
+- **`memory`** — enables cross-session accumulation. Choose the scope deliberately: `user` for personal cross-project knowledge, `project`
+  for knowledge shared across all agents in this project, `local` for state private to this agent. Set only when the role genuinely needs to
+  accumulate across sessions; the system prompt should describe what to learn and how to apply it. (CC)
+- **`hooks`** — scoped to this subagent. Use for invariants local to this role: a `SubagentStop` hook that blocks returning a result if
+  tests fail, secrets are present, or an out-of-scope write was attempted. Prefer project-level `settings.json` hooks for workspace-wide
+  rules — scoped hooks are for rules that only apply when this specific agent runs. State the invariant each hook enforces alongside the
+  hook definition. (CC, COM2)
+- **`effort`** — overrides the session's reasoning effort for this agent. Pin `low` for mechanical or high-volume roles where full reasoning
+  is wasted cost; pin `high` or above for deep-analysis roles where the extra reasoning is load-bearing. Prefer inheriting (omit the field)
+  when the session effort is appropriate. (CC)
+- **`isolation: worktree`** — runs the agent in a fresh git worktree (~200–500 ms setup + disk). Use only when the role makes file edits
+  that would conflict with the caller's working tree (e.g., a parallel refactor or migration agent). Do not use for read-only or advisory
+  roles; the overhead is real and the worktree is auto-removed only if the agent makes no changes. (CC)
+- **`background: true`** — always runs the agent as a non-blocking background task. Use when the caller genuinely does not need to wait for
+  the result (a logging agent, an async notification). For roles where the caller synthesises the result, omit or keep false. (CC)
 
 ## 6. System prompt: size & focus
 
@@ -126,6 +152,15 @@ distinct **lane**, and its prompt's own-vs-defer boundary keeps it there. Where 
 product-owner, engineering-lead vs delivery-lead), **each** description and boundary names the other as the hand-off — the **reciprocal**
 off-ramp; a one-directional guard is a half-fix. Two agents competing for the same request is a design problem to fix at the lane, not to
 paper over. (HOUSE, BP)
+
+**Coordinator agents.** An agent that spawns subagents is a coordinator. Coordinators carry two additional responsibilities:
+
+- **Spawn-allowlist**: restrict which agents the coordinator may spawn by naming the allowed types in `tools` (e.g.,
+  `tools: Agent(worker, researcher)`). An unrestricted coordinator can delegate to any agent, widening blast radius unpredictably. The
+  allowlist is also a legibility signal — readers see which agents the coordinator orchestrates without reading its prompt. (CC)
+- **Spawn depth**: subagents may nest to a depth of ≤ 5. A coordinator's system prompt should declare the spawn depth it introduces so
+  callers can reason about the total depth of any chain that includes it. Prefer flat fan-out (the coordinator spawns leaf agents directly)
+  over deep nesting unless the task genuinely benefits from hierarchical decomposition. (CC)
 
 ## 10. Linking
 

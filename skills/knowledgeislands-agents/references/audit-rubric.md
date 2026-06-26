@@ -66,6 +66,21 @@ enforcing a **[J]** check, move its tag here.
   field outside this set is flagged as a portability risk. (CC)
 - **FM-4 [J]** `permissionMode`, if set, is deliberate, and `bypassPermissions` (which skips permission prompts) carries a stated reason.
   (CC)
+- **FM-5 [J]** `skills`, if set, preloads a named skill's full content at startup — use only when the role must always have that standard
+  before acting and runtime discovery would be fragile. For optional or situational context, prefer grounding-at-runtime (the agent reads
+  the skill on demand). (CC)
+- **FM-6 [J]** `memory`, if set (`user` / `project` / `local`), enables cross-session accumulation — set only when the role genuinely needs
+  state across sessions; the system prompt should describe what to learn and how to apply it. (CC)
+- **FM-7 [J]** `hooks`, if set, are scoped to this subagent — use for invariants local to this role (e.g., a `SubagentStop` hook blocking a
+  result if tests fail or secrets are present). Prefer project-level `settings.json` hooks for workspace-wide rules; state the invariant
+  each scoped hook enforces. (CC, COM2)
+- **FM-8 [J]** `effort`, if set, pins reasoning effort for this agent — `low` for mechanical/high-volume roles where full reasoning is
+  wasted; `high`+ for deep-analysis roles where the extra reasoning is load-bearing. Prefer inheriting (omit) when the session effort is
+  appropriate. (CC)
+- **FM-9 [J]** `isolation: worktree`, if set, runs the agent in a fresh git worktree — use only when the role makes file edits that could
+  conflict with the caller's working tree. The overhead is real; do not use for read-only or advisory roles. (CC)
+- **FM-10 [J]** `background: true`, if set, always runs the agent as a non-blocking background task — use when the caller does not need to
+  wait for the result. For roles where the caller needs the result, omit. (CC)
 
 ## PROMPT — System-prompt quality
 
@@ -86,6 +101,11 @@ enforcing a **[J]** check, move its tag here.
 
 - **LANE-1 [J]** The agent owns a **distinct lane**; its boundary keeps it from overlapping siblings. (HOUSE)
 - **LANE-2 [J]** Where a sibling is genuinely adjacent, **each** names the other as the hand-off — reciprocal, not one-directional. (HOUSE)
+- **LANE-3 [J]** A **coordinator** agent — one that spawns subagents — restricts which agents it may spawn via `Agent(type)` in `tools`
+  (e.g., `tools: Agent(worker, researcher)`). Its own-vs-defer boundary declares which agents it orchestrates and why; an unrestricted
+  coordinator is a blast-radius risk. (CC)
+- **LANE-4 [J]** Subagents may nest to a depth of ≤ 5. A coordinator's system prompt declares its spawn depth so callers can reason about
+  total depth. Avoid nesting unless hierarchical decomposition genuinely helps; flat fan-out is simpler and easier to audit. (CC)
 
 ## LINK — Linking
 
@@ -100,7 +120,7 @@ enforcing a **[J]** check, move its tag here.
 
 → [standard §11](agent-definitions-standard.md#11-process--evaluation) · not checkable from files alone
 
-- **PROC-1 [J]** Exercised on representative in-lane tasks — does it stay in lane, ground itself, defer correctly? (BP)
+- **PROC-1 [J]** Exercised on representative in-lane tasks — does it stay in lane, ground itself, defer correctly? (BP, COM1)
 - **PROC-2 [J]** Tested across the models it will run under. (BP)
 
 ## LONG — Longevity
