@@ -11,35 +11,6 @@ lands here before it's built — and an item is **removed once done**, not ticke
 scheduled `knowledgeislands-skills-refresh` sweep (which honours each skill's declared `**Refresh:**` cadence) are ongoing disciplines tied
 to the invariants in [docs/design.md](docs/design.md) (_Principles across the set_) — they run continuously, so they live there, not here.
 
-## Near-term
-
-### `knowledgeislands-agents` — CONFORM pass (rubric gaps)
-
-REFRESH 2026-06-26 diffed the CC spec and community sources against the rubric and found 8+ unaddressed gaps. None are blocking (existing
-agents pass the current linter), but the rubric underspecifies real field usage. Gaps to close in one CONFORM session:
-
-- **FM criteria for new fields:** `skills` (preload skill content; when to use vs runtime discovery), `memory` (scope choice; authoring
-  guidance), `hooks` (blast radius; scoped vs project-level `settings.json`), `effort` (when to pin vs inherit), `isolation: worktree` (when
-  to use), `background` (when to use)
-- **FM + LANE criteria for coordinator patterns:** `Agent(type)` spawn-allowlist; nested subagent coordinator own-vs-defer (depth ≤ 5,
-  v2.1.172+)
-- **Standard §2 update:** add companion-file guidance — CC spec doesn't support companion file injection; `skills` preloading is the
-  platform answer; companion `.md` files (no `name` frontmatter) are permitted for human organisation, but reference content belongs in a
-  preloaded skill
-- **Source tags:** propagate COM1/COM2 into standard + rubric where they support existing criteria
-
-Reference: `skills/knowledgeislands-agents/references/sources.md` — _Last review_ block.
-
-### `exemplars.md` — lint, review, and commit
-
-Four-batch exemplars.md rollout to all 13 skills (knowledgeislands-agents already done). Once all agents complete:
-
-1. Review each generated file for domain accuracy and KI pattern fit
-2. `bun run lint:md` over all 13 new files
-3. `bun run lint:md:check` to confirm clean
-4. `bun run skills:lint` to confirm no skill breakage
-5. Commit: `feat(skills): add exemplars.md to all 13 skills`
-
 ## Later _(candidates)_
 
 ### KI Skill Extraction Candidates
