@@ -1,20 +1,31 @@
 # agents
 
-Knowledge Islands **Claude Code subagents** live here, one per `.md` file, grouped into domain subdirectories. **Empty for now** — this is
-the shelf, mirroring `hnr-agentic-harness/agents/`.
+Knowledge Islands **Claude subagents** live here — one `.md` file per agent, grouped by domain.
 
 ## Convention
 
-Each agent is a single Markdown file — YAML frontmatter (only `name` + `description` required; optional
-`model`/`tools`/`disallowedTools`/`permissionMode`/`color` and the wider subagents-spec set) followed by a system prompt — per
-[Claude Code's subagents docs](https://code.claude.com/docs/en/sub-agents). Identity comes from the `name` field, which must be unique
-across the whole tree, not the path.
+Each agent is a Markdown file with YAML frontmatter (`name` and `description` required;
+`model`/`tools`/`disallowedTools`/`permissionMode`/`color` optional) followed by a system-prompt body, per the wider
+[subagents spec](https://code.claude.com/docs/en/sub-agents). The `name` field must be unique across the whole tree.
 
-Agent definitions conform to the **`knowledgeislands-agents`** standard (under [skills/](../skills/)) — the agents twin of
-`knowledgeislands-skills`. Run its AUDIT before shipping an agent, the same way skills run `knowledgeislands-skills`.
+The governing skill for what makes a good agent definition is **`knowledgeislands-agents`** (under [skills/](../skills/)) — the agents twin
+of `knowledgeislands-skills`. Run its AUDIT mode over any agent, or the whole set, before shipping.
+
+## governance/
+
+KI governance-domain agents. Each is grounded in the arcadia-principal KB and the harness skill set; each defers to its siblings for
+adjacent concerns.
+
+| Agent                 | Lane                                                     |
+| --------------------- | -------------------------------------------------------- |
+| `ki-skills-lead`      | SKILL.md authoring, auditing, and conformance            |
+| `ki-engineering-lead` | Toolchain compliance and repo structure                  |
+| `ki-kb-curator`       | KB zone health, note structure, and link integrity       |
+| `ki-decision-author`  | DR authoring (SDR / GDR / ADR) and the Decisions index   |
+| `ki-streams-curator`  | Enactment process, proposals pipeline, and streams state |
 
 ## Adding an agent
 
-1. Choose (or create) a domain subdirectory.
-2. Add `<role>.md` with `name` + `description` frontmatter and a focused system prompt.
-3. Audit it against `knowledgeislands-agents` and resolve the findings.
+1. Group it in a domain subdirectory.
+2. Add `<role>.md` with `name` and `description` frontmatter.
+3. Audit with `knowledgeislands-agents` and resolve findings.

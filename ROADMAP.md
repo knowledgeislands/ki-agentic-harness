@@ -10,8 +10,3 @@ lands here before it's built — and an item is **removed once done**, not ticke
 `knowledgeislands-mcp` audit over the `mcp-*` repos), re-running the advisory [eval suite](evals/README.md) as skills change, and the
 scheduled `knowledgeislands-skills-refresh` sweep (which honours each skill's declared `**Refresh:**` cadence) are ongoing disciplines tied
 to the invariants in [docs/design.md](docs/design.md) (_Principles across the set_) — they run continuously, so they live there, not here.
-
-## Later
-
-- **Populate `agents/` shelf.** _(candidate)_ TOOLCHAIN-002 adopts `house-agents` as the reference pattern for sub-agent definitions.
-  KI-authored equivalents should be modelled on that reference implementation and placed in the harness `agents/` shelf.
