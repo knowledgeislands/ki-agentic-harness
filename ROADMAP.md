@@ -18,10 +18,15 @@ to the invariants in [docs/design.md](docs/design.md) (_Principles across the se
 Both `kit-legal` and `arcadia-principal` implement these patterns independently. Extracting them as KI skills would let any new island get
 them for free. Candidates (from arcadia-principal plan, 2026-06-25):
 
-| Pattern                                                  | Current coverage                                                     | Candidate extraction                                              |
-| -------------------------------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| Admin zone structure (Governance/Operations arms)        | `knowledgeislands-kb` declares zones; no skill governs arm structure | Extend `knowledgeislands-kb` or new `knowledgeislands-admin`      |
-| Activity system (naming, structure, Activities.md index) | Type declared `admin/operations/activity`; no skill governs it       | New `knowledgeislands-activities` or extend `knowledgeislands-kb` |
-| Charter + Conformance baseline                           | No skill — only implied by SDR-003 and SDR-005                       | Extend `knowledgeislands-kb` with a bootstrap checker             |
-| Live artifacts (.md + .html pairs)                       | No skill — kit-legal pattern only                                    | New `knowledgeislands-live-artifacts`                             |
-| Note templates system                                    | Type declared; no skill                                              | Extend `knowledgeislands-kb`                                      |
+| Pattern                            | Candidate extraction †                              |
+| ---------------------------------- | --------------------------------------------------- |
+| Admin zone structure ‡             | Extend `knowledgeislands-kb` or new `-admin` skill  |
+| Activity system §                  | New `knowledgeislands-activities` or extend kb      |
+| Charter + Conformance baseline     | Extend `knowledgeislands-kb` with bootstrap checker |
+| Live artifacts (.md + .html pairs) | New `knowledgeislands-live-artifacts`               |
+| Note templates system              | Extend `knowledgeislands-kb`                        |
+
+† Both `kit-legal` and `arcadia-principal` implement these patterns independently; extracting them as KI skills lets any new island get them
+for free.  
+‡ `knowledgeislands-kb` already declares the zones; no skill currently governs the Governance/Operations arm structure.  
+§ Activity type declared as `admin/operations/activity`; no skill governs naming, structure, or the Activities.md index.
