@@ -21,7 +21,6 @@ them for free. Candidates (from arcadia-principal plan, 2026-06-25):
 | Pattern                            | Candidate extraction †                |
 | ---------------------------------- | ------------------------------------- |
 | Live artifacts (.md + .html pairs) | New `knowledgeislands-live-artifacts` |
-| Note templates system              | Extend `knowledgeislands-kb`          |
 
 † Both `kit-legal` and `arcadia-principal` implement these patterns independently; extracting them as KI skills lets any new island get them
 for free.  

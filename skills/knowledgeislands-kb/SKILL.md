@@ -91,6 +91,22 @@ Root index `Admin/MEMORY.md` lists the active Pillars. Where the base is Pillar-
 `Pillars/<Pillar>/MEMORY.md` (and any per-Pillar profile index) before substantive work. Treat other Pillars as off-limits unless the user
 switches.
 
+## Note templates
+
+The skill ships zone-scoped starter templates in `references/templates/<zone>/`. INIT copies the relevant stubs when scaffolding a new base.
+QUERY can list available templates when the user asks (`?templates`). A base may override or extend these by declaring a
+`[knowledgeislands-kb.templates]` table in its `.ki-config.toml` — keys are zone names, values are paths relative to the base.
+
+| Zone         | Template                        | Use for                                                |
+| ------------ | ------------------------------- | ------------------------------------------------------ |
+| `Admin/`     | `templates/admin/activity.md`   | New activity note (see `knowledgeislands-activities`). |
+| `Calendar/`  | `templates/calendar/session.md` | Session notes.                                         |
+| `Pillars/`   | `templates/pillars/note.md`     | Settled canonical knowledge notes.                     |
+| `Resources/` | `templates/resources/source.md` | External reference entries.                            |
+
+Templates are stubs — headings, frontmatter keys, and inline `<!-- prompts -->`. They do not carry content; the skill fills in what the user
+provides during SAVE / EXTRACT / INIT.
+
 ## Project bindings
 
 Almost everything is fixed by the structure above. Only these come from the host project - take the narrative bindings from the auto-loaded
