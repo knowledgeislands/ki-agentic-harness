@@ -1,6 +1,6 @@
 # Workspace MCP Standard
 
-The canonical shape shared by every stdio MCP server in the `knowledgeislands/` workspace: `mcp-git-audit`, `mcp-kb-fs`, `mcp-gmail`,
+The canonical shape shared by every stdio MCP server in the `knowledgeislands/` workspace: `mcp-git-audit`, `mcp-ki-kb-fs`, `mcp-gmail`,
 `mcp-m365`, `mcp-claude-housekeeping`, `mcp-voicenotes-edit`, `mcp-kb-notion-mirror`. This is the reference the `knowledgeislands-mcp` skill
 codifies and audits against. Where repos disagree, the majority shape is the standard; documented per-repo exceptions are noted inline.
 
@@ -90,7 +90,7 @@ human-runnable command exists, and per-domain extras (`auth-server` in gmail/m36
 | Repo                    | `<app>` prefix(es)                        |
 | ----------------------- | ----------------------------------------- |
 | mcp-git-audit           | `git`                                     |
-| mcp-kb-fs               | `kb`                                      |
+| mcp-ki-kb-fs            | `kb`                                      |
 | mcp-gmail               | `gmail`                                   |
 | mcp-m365                | `m365`                                    |
 | mcp-claude-housekeeping | `claude_code`, `claude_desktop`, `vscode` |
