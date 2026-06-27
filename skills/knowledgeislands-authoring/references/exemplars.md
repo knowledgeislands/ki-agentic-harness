@@ -1,5 +1,10 @@
 # Authoring Exemplars
 
+## Contents
+
+- [Collections](#collections)
+- [Selected patterns](#selected-patterns)
+
 Curated illustrations of the Knowledge Islands authoring conventions in practice. Use these when writing or conforming a document, checking
 whether a table should spill to footnotes, choosing between link styles, or formatting a `.ki-config.toml` entry. The exemplars show the
 judgment layer — the choices no formatter makes — annotated to make the reasoning visible. Mechanical rules (line width, prose wrap, heading

@@ -1,5 +1,10 @@
 # Repo Exemplars
 
+## Contents
+
+- [Collections](#collections)
+- [Selected patterns](#selected-patterns)
+
 Curated patterns from the KI repo set that show what a well-configured Knowledge Islands repo looks like. Use these as reference when
 onboarding a new repo, running CONFORM, or auditing against the standard. The `arcadia-agentic-harness` is the primary exemplar — it carries
 every required layer-1 file, a fully-populated `.ki-config.toml`, and a `CLAUDE.md` with correct topic imports. The `mcp-*` repos are the

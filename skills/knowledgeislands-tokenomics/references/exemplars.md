@@ -1,5 +1,10 @@
 # Tokenomics Exemplars
 
+## Contents
+
+- [Collections](#collections)
+- [Selected patterns](#selected-patterns)
+
 Concrete patterns showing what good context hygiene looks like in practice: how to declare the tokenomics config table, how to set up
 Headroom as the compression layer, what good compaction and PreCompact hook wiring looks like, and how the context budget shapes what is
 loaded vs deferred. The exemplars draw from the standard's normative guidance and from the `arcadia-principal` live config — the reference

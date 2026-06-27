@@ -1,5 +1,10 @@
 # Eleventy Site Exemplars
 
+## Contents
+
+- [Collections](#collections)
+- [Selected patterns](#selected-patterns)
+
 Curated patterns worth reading when authoring or auditing a Knowledge Islands Eleventy site. Use these as concrete references — what an
 `eleventy.config.ts` looks like with the required transforms wired, how the Tailwind entry point is structured, what the `package.json`
 script family looks like for a monorepo site, and how a `base.njk` layout composes its partials. Do not copy them wholesale; adapt to the

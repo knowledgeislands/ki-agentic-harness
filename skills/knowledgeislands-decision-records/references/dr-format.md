@@ -1,5 +1,16 @@
 # DR format standard
 
+## Contents
+
+- [Naming convention](#naming-convention)
+- [Prefix table](#prefix-table)
+- [Placement](#placement)
+- [Frontmatter](#frontmatter)
+- [Sections](#sections)
+- [Templates](#templates)
+- [Index](#index)
+- [Writing guidance](#writing-guidance)
+
 **Contents:** [Naming convention](#naming-convention) · [Prefix table](#prefix-table) · [Placement](#placement) ·
 [Frontmatter](#frontmatter) · [Sections](#sections) · [Templates](#templates) · [Index](#index) · [Writing guidance](#writing-guidance)
 

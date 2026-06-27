@@ -1,6 +1,6 @@
 # DR standard — sources
 
-**Refresh:** sources · annually
+**Refresh:** external-spec · 365d
 
 Tracked sources for Mode REFRESH. Re-fetch before proposing changes to the format standard or rubric. Update `last reviewed` dates and the
 `## Last review` block after each refresh run.

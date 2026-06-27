@@ -1,5 +1,10 @@
 # Harness Exemplars
 
+## Contents
+
+- [Collections](#collections)
+- [Selected patterns](#selected-patterns)
+
 Curated patterns from the KI agentic harness that show what a well-structured four-part bundle looks like. Use these as reference when
 standing up a new harness, auditing an existing one, or checking that a shelf is correctly declared. The `arcadia-agentic-harness` is the
 canonical reference implementation; it demonstrates every structural requirement: four directories each with a `README.md`, the required

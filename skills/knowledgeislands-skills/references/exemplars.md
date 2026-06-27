@@ -1,5 +1,10 @@
 # Skill Exemplars
 
+## Contents
+
+- [Collections](#collections)
+- [Selected patterns](#selected-patterns)
+
 Curated illustrations of well-formed `SKILL.md` files. Use these when writing a new skill, checking an existing one against the rubric, or
 explaining what a good skill looks like. The exemplars are drawn from the `knowledgeislands-*` governance skills in this repo — the
 reference implementation set for the Agent Skills standard — and annotated to surface the conventions rather than the subject matter. Each

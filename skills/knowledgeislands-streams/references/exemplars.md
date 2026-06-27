@@ -1,5 +1,10 @@
 # Streams Exemplars
 
+## Contents
+
+- [Collections](#collections)
+- [Selected patterns](#selected-patterns)
+
 Curated patterns showing what well-formed Streams zone notes, proposal documents, and Focus dashboards look like. Use these as concrete
 references when authoring proposals, running CONFORM, or deciding whether a stream is correctly structured. Drawn from `arcadia-principal` —
 the canonical live base for this skill — and from the normative definitions in the skill's own reference files.

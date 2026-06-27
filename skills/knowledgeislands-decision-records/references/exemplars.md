@@ -1,5 +1,10 @@
 # Decision Record Exemplars
 
+## Contents
+
+- [Collections](#collections)
+- [Selected patterns](#selected-patterns)
+
 Curated illustrations of well-formed Decision Records. Use these when authoring a new DR, checking a draft against the format standard, or
 explaining the format to a new contributor. Each pattern is drawn from real DRs in the `arcadia-principal` base — the primary reference
 implementation — and annotated to make the convention visible. The exemplars demonstrate shape, not topic: the subject matter of a DR is

@@ -1,5 +1,10 @@
 # Engineering Exemplars
 
+## Contents
+
+- [Collections](#collections)
+- [Selected patterns](#selected-patterns)
+
 Curated patterns from the KI sibling repos that illustrate what the engineering standard looks like in practice. Use these as pattern
 references when configuring a new repo or auditing an existing one — the goal is to show the standard not as abstract rules but as concrete
 file contents. The `mcp-*` repos are the primary exemplar set for the compiled-TS profile; `arcadia-agentic-harness` is the primary exemplar

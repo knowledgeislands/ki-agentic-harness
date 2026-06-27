@@ -1,5 +1,10 @@
 # Bootstrap Exemplars
 
+## Contents
+
+- [Collections](#collections)
+- [Selected patterns](#selected-patterns)
+
 Concrete patterns showing what a correctly bootstrapped Knowledge Islands repo looks like: the `.ki-config.toml` declaration, the
 `package.json` reproducibility contract, the `CLAUDE.md` import pattern, and the invocation that wires it all together. The bootstrap flow
 itself is the exemplar — the before/after of a repo acquiring its project-local skill set from a single command.

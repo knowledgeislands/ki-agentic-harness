@@ -1,5 +1,10 @@
 # KB Exemplars
 
+## Contents
+
+- [Collections](#collections)
+- [Selected patterns](#selected-patterns)
+
 Curated patterns showing what well-formed Knowledge Islands KB notes, folder structures, and zone layouts look like. Use these as concrete
 references when authoring notes, running CONFORM, or deciding whether a structural choice is correct. They are drawn from
 `arcadia-principal` — the canonical live KB — rather than invented examples, so they reflect real decisions made in a conforming base.
