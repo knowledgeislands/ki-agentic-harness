@@ -19,6 +19,8 @@ model and is applied by reading in Mode AUDIT step 2. This is the kb half of the
 - **ZONE-3 [M]** The root memory index `Admin/MEMORY.md` exists (the memory cascade reads it for the active Pillars). Missing is a FAIL.
 - **ZONE-4 [J]** `+/` (inbound) and `-/` (outbound) are **staging, not zones** — exempt from the same-name index rule; the checker reports
   their presence informationally only.
+- **ZONE-5 [M]** Any note carrying `type: session-digest` or `type: handoff` in frontmatter must reside under `-/`. A file with either type
+  found under `Calendar/`, `Streams/`, `Pillars/`, or `Resources/` is a FAIL (misrouted produced artefact).
 
 ## CONFIG — the `[knowledgeislands-kb]` config table
 

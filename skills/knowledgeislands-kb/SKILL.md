@@ -76,7 +76,10 @@ skills").
 
 ### Routing test
 
-Most-specific match wins:
+Produced outputs (session digests, compiled artefacts, handoffs) **bypass this test** — they always go to `-/` (see
+[Mode DIGEST](references/mode-digest.md)).
+
+For all other notes, most-specific match wins:
 
 1. Time-bound record -> `Calendar/`.
 2. Active, in-progress work -> `Streams/` (the `knowledgeislands-streams` skill owns sub-routing within the zone — Focus, the proposal

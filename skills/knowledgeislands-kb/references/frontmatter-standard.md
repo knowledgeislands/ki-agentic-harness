@@ -34,6 +34,15 @@ identify the structural role within that zone.
 | `admin/operations/activity`   | `Admin/Operations/Activities/**/*`                        | TBD                                 |
 | `admin/operations/skill`      | `Admin/Operations/Skills/**/*`                            | TBD                                 |
 
+### Outbound staging (`-/`)
+
+These types are only valid under `-/`. Files carrying them elsewhere are a ZONE-5 FAIL (see audit rubric).
+
+| Type             | Path context       | Lifecycle                                                                | Defined by            |
+| ---------------- | ------------------ | ------------------------------------------------------------------------ | --------------------- |
+| `session-digest` | `-/_DIGESTS/*.md`  | Ephemeral. Delete once content is extracted into Pillars/Streams/handoff | `knowledgeislands-kb` |
+| `handoff`        | `-/_HANDOFFS/*.md` | Ephemeral. Delete once recipient has routed it through their `+/`        | `knowledgeislands-kb` |
+
 ### Other zone branches (stubs)
 
 Defined as those zones are built out:
