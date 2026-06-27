@@ -18,7 +18,7 @@ const repos = [
   'mcp-voicenotes-edit',
   'mcp-m365',
   'mcp-kb-notion-mirror',
-  'mcp-kb-fs'
+  'mcp-ki-kb-fs'
 ] as const
 
 let ok = 0
