@@ -186,6 +186,13 @@ The Bun-install / Node-run split, the **`bun test` trap**, the `process.loadEnvF
 - **CI — the smoke delta.** The common CI shape (`jdx/mise-action` + `bun run lint:check` / `lint:types` / `lint:md:check` /
   `test:coverage`) is `knowledgeislands-engineering`'s, asserted by `audit-engineering.ts`. An MCP repo with a smoke harness **appends
   `bun run test:smoke`** to `.github/workflows/ci.yml` after those steps — the MCP delta on the CI shape, asserted here by `audit-mcp.ts`.
+- **Typed client — `generate:client` script.** Every repo ships a `generate:client` script that emits a typed TypeScript client via
+  `mcporter emit-ts <server-name> --mode client --out src/generated/client.ts --types-out src/generated/types.d.ts`. The emitted
+  `src/generated/client.ts` is committed (it is the deliverable, not build output); it is excluded from vitest coverage. **Re-run
+  `bun run generate:client` after any tool surface change** — adding, removing, or renaming a tool, or changing its input schema or return
+  shape — otherwise callers compile against a stale contract. The `<server-name>` must match a registered mcporter instance
+  (`mcporter list`). When adding a new server to the workspace, also register it in `arcadia-agentic-harness/scripts/generate-clients.ts` so
+  that `bun run codegen` from the harness root regenerates all repos at once.
 
 ## 9. tsconfig / vitest / biome
 

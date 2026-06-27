@@ -134,7 +134,9 @@ Auditing all the `mcp-*` servers at once is a set audit — **bound the context*
    `cli/`, wiring in `mcp-server/`), the shared `utils/` helpers, and the MCP `package.json` delta (`main` / `bin` / `exports` /
    `server:mcp:*`) — **copy from the closest healthy sibling** rather than invent. For the common toolchain block (`tsconfig*` / `vitest` /
    `biome` / the script families), run `knowledgeislands-engineering`'s CONFORM.
-3. Re-run both checkers + tests; `bun run test` (NOT `bun test`), `bun run lint:check`, `bun run lint:types` must pass with 100% coverage.
+3. **Re-generate the typed client** if the tool surface changed: `bun run generate:client` in the repo (or `bun run codegen` from the
+   harness root to do all repos). Verify the `<server-name>` in the script matches a registered mcporter instance (`mcporter list`).
+4. Re-run both checkers + tests; `bun run test` (NOT `bun test`), `bun run lint:check`, `bun run lint:types` must pass with 100% coverage.
 
 ### Mode INIT — scaffold a new MCP server
 
@@ -143,7 +145,10 @@ Auditing all the `mcp-*` servers at once is a set audit — **bound the context*
    and `exports` map.
 2. Keep the layer boundaries from day one: schema+envelope in `tools/`, logic in `main/` (config slice first), printing only in `cli/`,
    wiring only in `mcp-server/`. Add tools with explicit `annotations` presets.
-3. Run the checker + tests; `bun run test` (NOT `bun test`), `bun run lint:check`, `bun run lint:types` must pass with 100% coverage.
+3. **Wire the typed client.** Register the new repo in `arcadia-agentic-harness/scripts/generate-clients.ts`, set the `<server-name>` in the
+   repo's `generate:client` script to a registered mcporter instance (`mcporter list`), then run `bun run generate:client` to emit the
+   initial `src/generated/client.ts`. Commit the generated file.
+4. Run the checker + tests; `bun run test` (NOT `bun test`), `bun run lint:check`, `bun run lint:types` must pass with 100% coverage.
 
 ### Mode REFRESH — re-anchor the standard to the latest MCP spec
 

@@ -138,6 +138,10 @@ Skip this whole section for the filesystem/subprocess repos.
 - [ ] [M] WARN — where the repo has a `test:smoke` harness, `.github/workflows/ci.yml` runs `bun run test:smoke` after the common gate. The
       common CI shape (mise-action + `lint:check` / `lint:types` / `lint:md:check` / `test:coverage`) is `knowledgeislands-engineering`'s
       (`engineering:audit`); the smoke step is the MCP delta.
+- [ ] [J] WARN — `generate:client` script is present; `src/generated/client.ts` is committed and not stale. If tools were
+      added/removed/renamed, or their input schema or return shape changed, since the last commit of `src/generated/`, re-run
+      `bun run generate:client` (or `bun run codegen` from the harness root) before shipping. The `<server-name>` argument in the script
+      must match a registered mcporter instance — verify with `mcporter list`.
 - [ ] — `type`/`packageManager`/`engines`/`files`, the `lint:*`/`deps:*`/`build`/`clean`/`test*`/`prepare` families, and the build/cli-chmod
       rule are the **common engineering layer** (`engineering:audit`); not re-checked here.
 
