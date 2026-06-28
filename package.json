@@ -43,10 +43,11 @@
     "url": "git+https://github.com/knowledgeislands/arcadia-agentic-harness.git"
   },
   "scripts": {
+    "clean": "rm -rf node_modules",
     "ki:agents:lint": "bun skills/knowledgeislands-agents/scripts/lint-agents.ts agents",
     "ki:authoring:audit": "bun skills/knowledgeislands-authoring/scripts/audit-authoring.ts",
-    "clean": "rm -rf node_modules",
     "ki:codegen": "bun scripts/generate-clients.ts",
+    "ki:conform": "bun run ki:deps:update && bun run ki:lint:package && bun run ki:lint:format && bun run ki:lint:fix && bun run ki:lint:md",
     "ki:deps:missing": "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.missing | keys | .[]' | xargs bun add -D",
     "ki:deps:unused": "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.devDependencies[]' | xargs bun remove",
     "ki:deps:update": "bun update --latest",
@@ -63,7 +64,6 @@
     "ki:lint:package": "bunx syncpack format",
     "ki:lint:types": "tsc --noEmit",
     "ki:mcp:audit": "bun skills/knowledgeislands-mcp/scripts/audit-mcp.ts",
-    "prepare": "husky",
     "ki:repo:audit": "bun skills/knowledgeislands-repo/scripts/audit-repo.ts",
     "ki:skills:link:global": "bun scripts/sync-skills.ts link --only knowledgeislands-bootstrap",
     "ki:skills:link:project": "bun skills/knowledgeislands-bootstrap/scripts/link-skills.ts --all",
@@ -73,7 +73,9 @@
     "ki:skills:unlink": "bun scripts/sync-skills.ts unlink",
     "ki:streams:audit": "bun skills/knowledgeislands-streams/scripts/audit-streams.ts",
     "ki:tokenomics:audit": "bun skills/knowledgeislands-tokenomics/scripts/audit-tokenomics.ts",
-    "ki:websites:audit": "bun skills/knowledgeislands-11ty-websites/scripts/audit-websites.ts"
+    "ki:verify": "bun run ki:lint:check && bun run ki:lint:types && bun run ki:lint:md:check",
+    "ki:websites:audit": "bun skills/knowledgeislands-11ty-websites/scripts/audit-websites.ts",
+    "prepare": "husky"
   },
   "type": "module"
 }

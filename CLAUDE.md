@@ -45,6 +45,8 @@ and the `knowledgeislands-skills` rubric (SHAPE-2).
 [Bun](https://bun.sh) for install/dev; `bun install` wires the husky pre-commit hook.
 
 ```bash
+bun run ki:conform        # write pass: bring the repo into mechanical conformance (update → format → fix → md)
+bun run ki:verify         # read-only gate: the exact checks CI runs (lint:check + lint:types + lint:md:check)
 bun run ki:lint:check     # Biome (TypeScript + JSON)
 bun run ki:lint:types     # tsc --noEmit
 bun run ki:lint:md        # Prettier + markdownlint over Markdown (writes)
