@@ -38,6 +38,7 @@ Sub-scopes used in this harness:
 | ADR-KI-HARNESS-SKILLS-004    | [Skills must be valid standalone](ADR-KI-HARNESS-SKILLS-004.md)               | Accepted | 2024-01-01 |
 | ADR-KI-HARNESS-TOOLCHAIN-001 | [Bun and Biome standard toolchain](ADR-KI-HARNESS-TOOLCHAIN-001.md)           | Accepted | 2024-01-01 |
 | ADR-KI-HARNESS-TOOLCHAIN-002 | [Complementary tooling evaluation][t002]†                                     | Accepted | 2026-06-23 |
+| ADR-KI-HARNESS-TOOLCHAIN-004 | [knip for dependency + dead-code hygiene](ADR-KI-HARNESS-TOOLCHAIN-004.md)    | Accepted | 2026-06-28 |
 | ADR-KI-HARNESS-AGENTS-001    | [Subagent isolation for multi-skill invocation](ADR-KI-HARNESS-AGENTS-001.md) | Accepted | 2026-06-23 |
 
 [t002]: ADR-KI-HARNESS-TOOLCHAIN-002.md
