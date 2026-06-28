@@ -32,3 +32,13 @@ is accepted.
 > `@biomejs/biome` as unused (its auto-fix would have removed it), while knip got the config-referenced toolchain right and additionally
 > surfaced real dead code (e.g. 27 redundant `export default` handlers in `mcp-m365`). See the `knowledgeislands-engineering` standard
 > §2/§5.
+
+## Distant future _(parked)_
+
+Not on the near-term path; recorded so the thought isn't lost.
+
+- **Virtual-branch workflow ([GitButler](https://gitbutler.com)).** GitButler was trialled on `arcadia-agentic-harness` and has since been
+  removed (its refs + `.git/gitbutler` metadata dropped 2026-06-28); the repos are plain-git for now. Worth revisiting only if parallel
+  multi-branch work across the harness + sibling repos becomes common enough to justify a virtual-branch tool — and only if it composes
+  cleanly with the `ki:conform` / `ki:verify` gate and the per-repo `feat/*` → fast-forward-to-`main` flow we use today. A user-global
+  `gitbutler.aimodelprovider` key may still linger in `~/.gitconfig` (harmless).
