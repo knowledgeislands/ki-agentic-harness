@@ -71,7 +71,15 @@ const mk = () => {
     (level: Level) =>
     (area: string, msg: string): void =>
       void f.push({ level, area, msg })
-  return { f, fail: push('FAIL'), warn: push('WARN'), note: push('INFO'), skip: push('SKIP'), advisory: push('ADVISORY'), polish: push('POLISH') }
+  return {
+    f,
+    fail: push('FAIL'),
+    warn: push('WARN'),
+    note: push('INFO'),
+    skip: push('SKIP'),
+    advisory: push('ADVISORY'),
+    polish: push('POLISH')
+  }
 }
 
 const isDir = (p: string): boolean => existsSync(p) && statSync(p).isDirectory()
@@ -169,15 +177,21 @@ function auditStreams(base: string, ki: Ki): Finding[] {
 
   // ── config table: validate this skill's own table, DOWN ──
   for (const key of Object.keys(ki.keys)) {
-    if (key !== 'process_note' && key !== 'note_type_scheme') warn('config', `[${KI_SECTION}] has no key "${key}" — recognised: process_note, note_type_scheme`)
+    if (key !== 'process_note' && key !== 'note_type_scheme')
+      warn('config', `[${KI_SECTION}] has no key "${key}" — recognised: process_note, note_type_scheme`)
   }
   const scheme = ki.keys.note_type_scheme
-  if (scheme !== undefined && !SCHEMES.includes(scheme)) warn('config', `[${KI_SECTION}] note_type_scheme "${scheme}" is not one of: ${SCHEMES.join(', ')}`)
+  if (scheme !== undefined && !SCHEMES.includes(scheme))
+    warn('config', `[${KI_SECTION}] note_type_scheme "${scheme}" is not one of: ${SCHEMES.join(', ')}`)
 
   // ── STREAM-1: folders directly under Streams/ are the Focus set ──
   const present = subdirs(streamsRoot)
   for (const name of present) {
-    if (!(FOCI as readonly string[]).includes(name)) warn('STREAM-1', `${ki.streamsZone}/${name}/ is not a Focus (one of: ${FOCI.join(', ')}) — a stream filed without a Focus, or a stray folder`)
+    if (!(FOCI as readonly string[]).includes(name))
+      warn(
+        'STREAM-1',
+        `${ki.streamsZone}/${name}/ is not a Focus (one of: ${FOCI.join(', ')}) — a stream filed without a Focus, or a stray folder`
+      )
   }
   const foci = FOCI.filter((x) => present.includes(x))
   note('STREAM-1', `Focus folders present: ${foci.join(', ') || '(none)'}`)
@@ -192,7 +206,8 @@ function auditStreams(base: string, ki: Ki): Finding[] {
   const missingSuffix: string[] = []
   for (const focus of foci) {
     const focusDir = join(streamsRoot, focus)
-    if (!isFile(join(focusDir, `${focus}.md`))) warn('STREAM-2', `${ki.streamsZone}/${focus}/ has no same-name index note (${focus}/${focus}.md)`)
+    if (!isFile(join(focusDir, `${focus}.md`)))
+      warn('STREAM-2', `${ki.streamsZone}/${focus}/ has no same-name index note (${focus}/${focus}.md)`)
     for (const leaf of leafStreamFolders(focusDir)) {
       if (hasProposalNote(leaf)) continue // conforming leaf or parent
       const idx = join(leaf, `${basename(leaf)}.md`)
@@ -201,7 +216,11 @@ function auditStreams(base: string, ki: Ki): Finding[] {
       if (declaresProposal) missingSuffix.push(leaf.slice(base.length + 1))
     }
   }
-  if (missingSuffix.length) warn('STREAM-3', `proposal stream(s) missing the \` Proposal\` suffix (a lightweight tracker stream needs none) in ${missingSuffix.length}: ${sampleList(missingSuffix)}`)
+  if (missingSuffix.length)
+    warn(
+      'STREAM-3',
+      `proposal stream(s) missing the \` Proposal\` suffix (a lightweight tracker stream needs none) in ${missingSuffix.length}: ${sampleList(missingSuffix)}`
+    )
 
   // ── ENACT-1 / ENACT-2: proposal-document frontmatter ──
   const proposals = walkMarkdown(streamsRoot).filter((p) => basename(p, '.md').endsWith(PROPOSAL_SUFFIX))
@@ -224,9 +243,12 @@ function auditStreams(base: string, ki: Ki): Finding[] {
     if ('status' in fm.map && !STATUS.includes(fm.map.status as string)) badStatus.push(`${rel}: "${fm.map.status}"`)
     if ('priority' in fm.map && !PRIORITY.includes(fm.map.priority as string)) badPriority.push(`${rel}: "${fm.map.priority}"`)
   }
-  if (unterminated.length) fail('ENACT-1', `unterminated frontmatter (no closing \`---\`) in ${unterminated.length} proposal(s): ${sampleList(unterminated)}`)
-  if (missingKeys.length) warn('ENACT-1', `proposal(s) missing ${PROPOSAL_FM.join('/')} frontmatter in ${missingKeys.length}: ${sampleList(missingKeys)}`)
-  if (badStatus.length) warn('ENACT-2', `status outside the lifecycle vocabulary (bare token) in ${badStatus.length}: ${sampleList(badStatus)}`)
+  if (unterminated.length)
+    fail('ENACT-1', `unterminated frontmatter (no closing \`---\`) in ${unterminated.length} proposal(s): ${sampleList(unterminated)}`)
+  if (missingKeys.length)
+    warn('ENACT-1', `proposal(s) missing ${PROPOSAL_FM.join('/')} frontmatter in ${missingKeys.length}: ${sampleList(missingKeys)}`)
+  if (badStatus.length)
+    warn('ENACT-2', `status outside the lifecycle vocabulary (bare token) in ${badStatus.length}: ${sampleList(badStatus)}`)
   if (badPriority.length) warn('ENACT-2', `priority outside {${PRIORITY.join(', ')}} in ${badPriority.length}: ${sampleList(badPriority)}`)
   note('ENACT-1', `${proposals.length} proposal document(s) found (\`* Proposal.md\`)`)
 
@@ -240,7 +262,10 @@ function auditStreams(base: string, ki: Ki): Finding[] {
   } else {
     const anchorFile = ['CLAUDE.md', 'AGENTS.md'].map((n) => join(base, n)).find(isFile)
     if (!anchorFile) {
-      warn('GATE-1', "no CLAUDE.md / AGENTS.md at the base root — the Enactment gate has no always-on anchor, so the skill won't fire on a plain edit")
+      warn(
+        'GATE-1',
+        "no CLAUDE.md / AGENTS.md at the base root — the Enactment gate has no always-on anchor, so the skill won't fire on a plain edit"
+      )
     } else {
       const txt = readFileSync(anchorFile, 'utf8')
       const namesProcess = /Enactment Process|knowledgeislands-streams/i.test(txt)
@@ -294,7 +319,15 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
   const reportDir = report && argv[ri + 1] && !argv[ri + 1].startsWith('-') ? argv[ri + 1] : join(target, '.ki-meta', 'audits')
 
   const n = (l: Level): number => items.filter((f) => f.level === l).length
-  const summary = { fail: n('FAIL'), warn: n('WARN'), polish: n('POLISH'), advisory: n('ADVISORY'), info: n('INFO'), skip: n('SKIP'), pass: n('PASS') }
+  const summary = {
+    fail: n('FAIL'),
+    warn: n('WARN'),
+    polish: n('POLISH'),
+    advisory: n('ADVISORY'),
+    info: n('INFO'),
+    skip: n('SKIP'),
+    pass: n('PASS')
+  }
   const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.skip} skip`
   const stamp = new Date().toISOString()
 
@@ -305,7 +338,10 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
       return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
     })
     writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
-    writeFileSync(join(reportDir, `${concern}.json`), `${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
+    writeFileSync(
+      join(reportDir, `${concern}.json`),
+      `${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`
+    )
   }
 
   if (json) {

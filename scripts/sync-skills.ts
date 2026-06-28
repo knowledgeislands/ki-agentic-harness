@@ -50,7 +50,12 @@ const target = targetFlag !== -1 && argv[targetFlag + 1] ? resolve(argv[targetFl
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
-type LinkState = { kind: 'absent' } | { kind: 'occupied' } | { kind: 'linked'; dest: string } | { kind: 'linked-other-here'; dest: string } | { kind: 'linked-elsewhere'; dest: string }
+type LinkState =
+  | { kind: 'absent' }
+  | { kind: 'occupied' }
+  | { kind: 'linked'; dest: string }
+  | { kind: 'linked-other-here'; dest: string }
+  | { kind: 'linked-elsewhere'; dest: string }
 
 // --- discovery -------------------------------------------------------------
 function discoverSkills(): string[] {

@@ -158,10 +158,13 @@ function skillSelectionTokens(skillsDir: string): { count: number; tokens: numbe
 // ── MCP servers across both layers ─────────────────────────────────────────────
 type Layer = 'user' | 'project' | 'base'
 type McpServer = { name: string; layer: Layer; command: string }
-const mcpServersFrom = (obj: Record<string, unknown> | null): Record<string, { command?: unknown; args?: unknown }> => (obj?.mcpServers as Record<string, { command?: unknown; args?: unknown }>) ?? {}
+const mcpServersFrom = (obj: Record<string, unknown> | null): Record<string, { command?: unknown; args?: unknown }> =>
+  (obj?.mcpServers as Record<string, { command?: unknown; args?: unknown }>) ?? {}
 function collectMcp(obj: Record<string, unknown> | null, layer: Layer, out: McpServer[]): void {
   for (const [name, cfg] of Object.entries(mcpServersFrom(obj))) {
-    const command = [typeof cfg?.command === 'string' ? cfg.command : '', Array.isArray(cfg?.args) ? cfg.args.join(' ') : ''].join(' ').trim()
+    const command = [typeof cfg?.command === 'string' ? cfg.command : '', Array.isArray(cfg?.args) ? cfg.args.join(' ') : '']
+      .join(' ')
+      .trim()
     out.push({ name, layer, command })
   }
 }
@@ -265,7 +268,12 @@ const target = resolve(argv.find((a, i) => !a.startsWith('-') && argv[i - 1] !==
 if (!argv.includes('--json')) {
   console.log(paint(C.dim, `target: ${target}`))
   console.log(paint(C.dim, `user layer: ${noUser ? '(skipped)' : userDir}`))
-  console.log(paint(C.dim, 'standard: standing surface (CLAUDE.md+@imports · memory · skills · MCP tool surface · settings) + runtime levers; budgets WARN-only; figures ~chars/4 estimates'))
+  console.log(
+    paint(
+      C.dim,
+      'standard: standing surface (CLAUDE.md+@imports · memory · skills · MCP tool surface · settings) + runtime levers; budgets WARN-only; figures ~chars/4 estimates'
+    )
+  )
 }
 
 // COMP — which layers were read
@@ -296,7 +304,8 @@ for (const { layer } of layers) {
     const { tokens, broken } = claudeMdSize(file)
     standingTotal += tokens
     const label = `[${layer}] ${basename(file)}${broken.length ? ' (+@imports)' : ''}`
-    if (tokens > budget('claude_md')) warn('SURF', `${label} ${tok(tokens)} > budget ${tok(budget('claude_md'))} — lift rarely-read detail into on-demand files`)
+    if (tokens > budget('claude_md'))
+      warn('SURF', `${label} ${tok(tokens)} > budget ${tok(budget('claude_md'))} — lift rarely-read detail into on-demand files`)
     else note('SURF', `${label} ${tok(tokens)}`)
     for (const b of broken) fail('SURF', `[${layer}] ${basename(file)} has an unresolved @import → "${b}" (broken include)`)
   }
@@ -336,7 +345,11 @@ for (const { layer, dir } of layers) {
   if (count === 0) continue
   standingTotal += tokens
   const label = `[${layer}] ${count} skill description(s)`
-  if (tokens > budget('skills_surface')) warn('SURF', `${label} ${tok(tokens)} > budget ${tok(budget('skills_surface'))} — consolidate or tighten descriptions (knowledgeislands-skills)`)
+  if (tokens > budget('skills_surface'))
+    warn(
+      'SURF',
+      `${label} ${tok(tokens)} > budget ${tok(budget('skills_surface'))} — consolidate or tighten descriptions (knowledgeislands-skills)`
+    )
   else note('SURF', `${label} ${tok(tokens)}`)
 }
 
@@ -369,7 +382,10 @@ if (mcp.length) {
       .join(', ')})`
   )
   if (mcp.length > budget('mcp_servers'))
-    warn('MCP', `${mcp.length} MCP servers > budget ${budget('mcp_servers')} — tool definitions are the dominant standing cost; disable/scope servers this work does not use (knowledgeislands-mcp)`)
+    warn(
+      'MCP',
+      `${mcp.length} MCP servers > budget ${budget('mcp_servers')} — tool definitions are the dominant standing cost; disable/scope servers this work does not use (knowledgeislands-mcp)`
+    )
 } else note('MCP', 'no MCP servers configured')
 
 // RUN: the only config-level runtime signal the checker can see is a pinned model.
@@ -379,19 +395,27 @@ else note('RUN', 'no default model pinned in settings — tier is the session de
 // ── TOOL: compression tooling + declared expectation ──
 const detectCtx: DetectCtx = { mcp, envKeys }
 const present = REGISTRY.map((t) => ({ name: t.name, mode: t.detect(detectCtx) })).filter((d) => d.mode)
-for (const d of present) note('TOOL', `${d.name} detected — ${d.mode}; confirm reversible store + cache-aligner are optimal (TOOL-3, keys undocumented — judgment)`)
+for (const d of present)
+  note(
+    'TOOL',
+    `${d.name} detected — ${d.mode}; confirm reversible store + cache-aligner are optimal (TOOL-3, keys undocumented — judgment)`
+  )
 const expectation: HeadroomExpectation = (ki?.headroom as HeadroomExpectation) ?? 'recommended'
 const headroomPresent = present.some((d) => d.name === 'headroom')
 if (!headroomPresent) {
-  if (expectation === 'required') fail('TOOL', 'headroom = "required" but no Headroom configuration detected (mcpServers entry, proxy, or HEADROOM_* env)')
-  else if (expectation === 'recommended') warn('TOOL', 'no context-compression layer detected — Headroom is recommended for tool-heavy work (set headroom = "off" to silence)')
+  if (expectation === 'required')
+    fail('TOOL', 'headroom = "required" but no Headroom configuration detected (mcpServers entry, proxy, or HEADROOM_* env)')
+  else if (expectation === 'recommended')
+    warn('TOOL', 'no context-compression layer detected — Headroom is recommended for tool-heavy work (set headroom = "off" to silence)')
   else note('TOOL', 'compression layer off (headroom = "off")')
 }
 
 // ── BUDG: total standing surface ──
 const total = standingTotal
 const overTotal = total > budget('total')
-const headroomPct = ki?.contextWindow ? ` — ${Math.round((total / ki.contextWindow) * 100)}% of the declared ${ki.contextWindow.toLocaleString('en-US')}-token window` : ''
+const headroomPct = ki?.contextWindow
+  ? ` — ${Math.round((total / ki.contextWindow) * 100)}% of the declared ${ki.contextWindow.toLocaleString('en-US')}-token window`
+  : ''
 if (overTotal) warn('BUDG', `total standing surface ${tok(total)} > budget ${tok(budget('total'))}${headroomPct}`)
 else note('BUDG', `total standing surface ${tok(total)} (budget ${tok(budget('total'))})${headroomPct}`)
 
@@ -399,11 +423,14 @@ else note('BUDG', `total standing surface ${tok(total)} (budget ${tok(budget('to
 if (!ki?.present) note('CFG', `no [${KI_SECTION}] table in .ki-config.toml — using default budgets (run --init to opt in and tune)`)
 else {
   note('CFG', `[${KI_SECTION}] present (headroom = "${expectation}"${ki.contextWindow ? `, window ${ki.contextWindow}` : ''})`)
-  if (ki.headroomBad) warn('CFG', `headroom = "${ki.headroomBad}" is not one of ${HEADROOM_VALUES.join(' / ')} — defaulting to "recommended"`)
+  if (ki.headroomBad)
+    warn('CFG', `headroom = "${ki.headroomBad}" is not one of ${HEADROOM_VALUES.join(' / ')} — defaulting to "recommended"`)
   if (ki.modelTier) note('CFG', `preferred_model = "${ki.modelTier}" — confirm the tier is appropriate for this environment (RUN-2)`)
-  else if (ki.modelTierBad) warn('CFG', `preferred_model = "${ki.modelTierBad}" is not one of ${MODEL_TIER_VALUES.join(' / ')} — value unrecognised`)
+  else if (ki.modelTierBad)
+    warn('CFG', `preferred_model = "${ki.modelTierBad}" is not one of ${MODEL_TIER_VALUES.join(' / ')} — value unrecognised`)
   else warn('CFG', `preferred_model not declared in [${KI_SECTION}] — add it to codify the default tier for this environment (CFG-4)`)
-  for (const k of ki.unknownKeys) warn('CFG', `unrecognised key "${k}" in [${KI_SECTION}] — validate-down (known budgets: ${[...BUDGET_KEYS].join(', ')})`)
+  for (const k of ki.unknownKeys)
+    warn('CFG', `unrecognised key "${k}" in [${KI_SECTION}] — validate-down (known budgets: ${[...BUDGET_KEYS].join(', ')})`)
   for (const k of ki.badBudgets) fail('CFG', `"${k}" has a non-numeric/invalid value in [${KI_SECTION}]`)
 }
 
@@ -417,7 +444,15 @@ const reportDir = reportOut && argv[ri + 1] && !argv[ri + 1].startsWith('-') ? a
 const fails = findings.filter((x) => x.level === 'FAIL')
 const warns = findings.filter((x) => x.level === 'WARN')
 const n = (l: Level): number => findings.filter((x) => x.level === l).length
-const summary = { fail: fails.length, warn: warns.length, polish: n('POLISH'), advisory: n('ADVISORY'), info: n('INFO'), skip: n('SKIP'), pass: n('PASS') }
+const summary = {
+  fail: fails.length,
+  warn: warns.length,
+  polish: n('POLISH'),
+  advisory: n('ADVISORY'),
+  info: n('INFO'),
+  skip: n('SKIP'),
+  pass: n('PASS')
+}
 const isoStamp = new Date().toISOString()
 
 if (reportOut) {
@@ -427,8 +462,14 @@ if (reportOut) {
     return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
   })
   const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.skip} skip · standing surface ${tok(total)}`
-  writeFileSync(join(reportDir, 'tokenomics.md'), [`# tokenomics audit — ${target}`, '', `_${isoStamp}_`, '', tally, ...body, ''].join('\n'))
-  writeFileSync(join(reportDir, 'tokenomics.json'), `${JSON.stringify({ concern: 'tokenomics', target, generatedAt: isoStamp, summary, findings }, null, 2)}\n`)
+  writeFileSync(
+    join(reportDir, 'tokenomics.md'),
+    [`# tokenomics audit — ${target}`, '', `_${isoStamp}_`, '', tally, ...body, ''].join('\n')
+  )
+  writeFileSync(
+    join(reportDir, 'tokenomics.json'),
+    `${JSON.stringify({ concern: 'tokenomics', target, generatedAt: isoStamp, summary, findings }, null, 2)}\n`
+  )
 }
 
 if (jsonOut) {
@@ -446,8 +487,15 @@ if (jsonOut) {
       else console.log(`  ${paint(C.dim, `${x.level.toLowerCase()} ${x.msg}`)}`)
     }
   }
-  console.log(`\n${paint(C.cyan, 'summary')}: ${paint(C.red, `${fails.length} fail`)}, ${paint(C.yellow, `${warns.length} warn`)} · standing surface ${tok(total)}`)
+  console.log(
+    `\n${paint(C.cyan, 'summary')}: ${paint(C.red, `${fails.length} fail`)}, ${paint(C.yellow, `${warns.length} warn`)} · standing surface ${tok(total)}`
+  )
   if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'tokenomics.{md,json}')}`))
-  console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria (altitude, MCP usefulness, runtime levers, Headroom optimality) from references/audit-rubric.md by reading.'))
+  console.log(
+    paint(
+      C.dim,
+      'mechanical checks only — apply the judgment criteria (altitude, MCP usefulness, runtime levers, Headroom optimality) from references/audit-rubric.md by reading.'
+    )
+  )
 }
 process.exit(fails.length > 0 ? 1 : 0)

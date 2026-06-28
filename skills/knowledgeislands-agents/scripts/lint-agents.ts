@@ -147,7 +147,8 @@ function lintAgent(file: string): { findings: Finding[]; agent: Agent } {
   else {
     if (name.length > NAME_MAX) fail('NAME-2', `\`name\` is ${name.length} chars (max ${NAME_MAX})`)
     if (!/^[a-z0-9-]+$/.test(name)) fail('NAME-2', `\`name\` "${name}" must be lowercase letters, digits, and hyphens only`)
-    if (name.startsWith('-') || name.endsWith('-') || name.includes('--')) fail('NAME-3', `\`name\` "${name}" must not start/end with a hyphen or contain "--"`)
+    if (name.startsWith('-') || name.endsWith('-') || name.includes('--'))
+      fail('NAME-3', `\`name\` "${name}" must not start/end with a hyphen or contain "--"`)
     if (hasXmlTag(name)) fail('NAME-4', '`name` contains an XML tag')
     for (const r of RESERVED) if (name.includes(r)) fail('NAME-4', `\`name\` contains the reserved word "${r}"`)
     if (name !== stem) warn('LAY-3', `\`name\` "${name}" does not match the filename stem "${stem}" — rename one so they agree`)
@@ -186,7 +187,12 @@ function crossAgentFindings(agents: Agent[]): Finding[] {
     byName.get(a.name)?.push(basename(a.file))
   }
   for (const [name, files] of byName) {
-    if (files.length > 1) out.push({ severity: 'fail', criterion: 'NAME-5', message: `\`name\` "${name}" is used by ${files.sort().join(', ')} — names must be unique across the agent set` })
+    if (files.length > 1)
+      out.push({
+        severity: 'fail',
+        criterion: 'NAME-5',
+        message: `\`name\` "${name}" is used by ${files.sort().join(', ')} — names must be unique across the agent set`
+      })
   }
 
   // COLL-1 — shared quoted trigger phrases
@@ -199,7 +205,11 @@ function crossAgentFindings(agents: Agent[]): Finding[] {
   }
   for (const [phrase, who] of byPhrase) {
     if (who.size > 1)
-      out.push({ severity: 'warn', criterion: 'COLL-1', message: `trigger "${phrase}" is shared by ${[...who].sort().join(', ')} — confirm each names the other as an off-ramp (COLL-2)` })
+      out.push({
+        severity: 'warn',
+        criterion: 'COLL-1',
+        message: `trigger "${phrase}" is shared by ${[...who].sort().join(', ')} — confirm each names the other as an off-ramp (COLL-2)`
+      })
   }
 
   return out.sort((a, b) => a.criterion.localeCompare(b.criterion) || a.message.localeCompare(b.message))
@@ -246,7 +256,8 @@ if (files.length === 0) {
   process.exit(0)
 }
 
-const LEGEND = 'area codes — LAY layout · NAME name · DESC description · FM tools/model · PROMPT system-prompt · LANE lane · LINK linking · PROC process · LONG longevity · COLL collision'
+const LEGEND =
+  'area codes — LAY layout · NAME name · DESC description · FM tools/model · PROMPT system-prompt · LANE lane · LINK linking · PROC process · LONG longevity · COLL collision'
 
 // Output flags + unified-ladder aggregation across every audited agent (enforcement-framework §2/§5).
 const jsonOut = process.argv.slice(2).includes('--json')
@@ -310,13 +321,20 @@ if (reportOut) {
   })
   const tally = `${files.length} agent(s) · ${summary.fail} fail · ${summary.warn} warn`
   writeFileSync(join(reportDir, 'agents.md'), [`# agents audit — ${reportTarget}`, '', `_${stampIso}_`, '', tally, ...body, ''].join('\n'))
-  writeFileSync(join(reportDir, 'agents.json'), `${JSON.stringify({ concern: 'agents', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`)
+  writeFileSync(
+    join(reportDir, 'agents.json'),
+    `${JSON.stringify({ concern: 'agents', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`
+  )
 }
 
 if (jsonOut) {
-  process.stdout.write(`${JSON.stringify({ concern: 'agents', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`)
+  process.stdout.write(
+    `${JSON.stringify({ concern: 'agents', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`
+  )
 } else {
-  console.log(`\n${paint(C.cyan, 'summary')}: ${files.length} agent(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}`)
+  console.log(
+    `\n${paint(C.cyan, 'summary')}: ${files.length} agent(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}`
+  )
   if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'agents.{md,json}')}`))
   console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria from references/audit-rubric.md by reading.'))
 }

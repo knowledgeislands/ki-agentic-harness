@@ -122,7 +122,13 @@ function auditHarness(root: string): Finding[] {
     findings.push({ severity: 'FAIL', criterion: 'PKG-2', message: 'package.json missing — cannot check scripts' })
     findings.push({ severity: 'WARN', criterion: 'PKG-3', message: 'package.json missing — cannot check scripts' })
   } else {
-    check(findings, 'FAIL', 'PKG-1', hasScript(pkg, 'skills:link:project'), "package.json must have a 'skills:link:project' script (the knowledgeislands-bootstrap delivery mechanism)")
+    check(
+      findings,
+      'FAIL',
+      'PKG-1',
+      hasScript(pkg, 'skills:link:project'),
+      "package.json must have a 'skills:link:project' script (the knowledgeislands-bootstrap delivery mechanism)"
+    )
     check(findings, 'FAIL', 'PKG-2', hasScript(pkg, 'skills:lint'), "package.json must have a 'skills:lint' script")
 
     for (const script of ['lint:check', 'lint:types', 'lint:md', 'lint:md:check']) {
@@ -139,8 +145,20 @@ function auditHarness(root: string): Finding[] {
     skip(findings, 'CONFIG-1', '.ki-config.toml missing — skipping table checks (LAY-5 already FAILs)')
     skip(findings, 'CONFIG-2', '.ki-config.toml missing')
   } else {
-    check(findings, 'FAIL', 'CONFIG-1', hasTomlTable(toml, 'knowledgeislands-harness'), '.ki-config.toml must have [knowledgeislands-harness] table')
-    check(findings, 'WARN', 'CONFIG-2', hasTomlTable(toml, 'knowledgeislands-repo'), '.ki-config.toml should have [knowledgeislands-repo] table')
+    check(
+      findings,
+      'FAIL',
+      'CONFIG-1',
+      hasTomlTable(toml, 'knowledgeislands-harness'),
+      '.ki-config.toml must have [knowledgeislands-harness] table'
+    )
+    check(
+      findings,
+      'WARN',
+      'CONFIG-2',
+      hasTomlTable(toml, 'knowledgeislands-repo'),
+      '.ki-config.toml should have [knowledgeislands-repo] table'
+    )
   }
 
   // ── SKILLS — skills/ directory name vs SKILL.md name: matching ────────────

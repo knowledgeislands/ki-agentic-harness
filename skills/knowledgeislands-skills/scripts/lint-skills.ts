@@ -120,7 +120,11 @@ const stripCode = (md: string): string => md.replace(/```[\s\S]*?```/g, '').repl
 // so before testing we strip code + double-quoted spans and skip any line that disavows
 // (retired / never / forbid / flag / heuristic / anti-pattern). What remains and still
 // matches is a bare assertion of the pattern. WARN for the [J] reviewer to confirm.
-const ENDORSE_EXTENSION_RES = [/\bprefer that (extension )?skill\b/i, /delegat\w*[^.\n]*\bmodes?\b[^.\n]*\bback\b/i, /\bextends this one\b/i]
+const ENDORSE_EXTENSION_RES = [
+  /\bprefer that (extension )?skill\b/i,
+  /delegat\w*[^.\n]*\bmodes?\b[^.\n]*\bback\b/i,
+  /\bextends this one\b/i
+]
 const DISAVOWAL_CUE = /retir|never|forbid|\bflag|heurist|anti-pattern|disavow|must not|do not/i
 function endorsesRetiredExtension(md: string): boolean {
   const stripped = stripCode(md).replace(/"[^"\n]*"/g, '')
@@ -294,7 +298,8 @@ function lintSkill(skillDir: string): Finding[] {
   else {
     if (name.length > NAME_MAX) fail('NAME-2', `\`name\` is ${name.length} chars (max ${NAME_MAX})`)
     if (!/^[a-z0-9-]+$/.test(name)) fail('NAME-3', `\`name\` "${name}" must be lowercase letters, digits, and hyphens only`)
-    if (name.startsWith('-') || name.endsWith('-') || name.includes('--')) fail('NAME-4', `\`name\` "${name}" must not start/end with a hyphen or contain "--"`)
+    if (name.startsWith('-') || name.endsWith('-') || name.includes('--'))
+      fail('NAME-4', `\`name\` "${name}" must not start/end with a hyphen or contain "--"`)
     if (name !== dirName) fail('NAME-5', `\`name\` "${name}" does not match the directory name "${dirName}"`)
     if (hasXmlTag(name)) fail('NAME-6', '`name` contains an XML tag')
     for (const r of RESERVED) if (name.includes(r)) fail('NAME-6', `\`name\` contains the reserved word "${r}"`)
@@ -309,12 +314,14 @@ function lintSkill(skillDir: string): Finding[] {
 
   // compatibility (OPT-1 mechanical)
   const compat = fm.keys.get('compatibility')
-  if (compat !== undefined && (compat.length < COMPAT_MIN || compat.length > COMPAT_MAX)) fail('OPT-1', `\`compatibility\` is ${compat.length} chars (must be ${COMPAT_MIN}–${COMPAT_MAX})`)
+  if (compat !== undefined && (compat.length < COMPAT_MIN || compat.length > COMPAT_MAX))
+    fail('OPT-1', `\`compatibility\` is ${compat.length} chars (must be ${COMPAT_MIN}–${COMPAT_MAX})`)
 
   // --- body size (SIZE-1/SIZE-2 soft → WARN) ---
   const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
   const bodyLines = body.split(/\r?\n/).length
-  if (bodyLines > BODY_MAX_LINES) warn('SIZE-1', `SKILL.md body is ${bodyLines} lines (recommended < ${BODY_MAX_LINES}) — split into references/`)
+  if (bodyLines > BODY_MAX_LINES)
+    warn('SIZE-1', `SKILL.md body is ${bodyLines} lines (recommended < ${BODY_MAX_LINES}) — split into references/`)
   const estTokens = Math.round(body.length / 4)
   if (estTokens > BODY_MAX_TOKENS) warn('SIZE-2', `SKILL.md body is ~${estTokens} tokens (recommended < ${BODY_MAX_TOKENS})`)
 
@@ -333,7 +340,8 @@ function lintSkill(skillDir: string): Finding[] {
     // ToC on long reference files (not SKILL.md itself)
     if (!isSkillMd) {
       const lineCount = md.split(/\r?\n/).length
-      if (lineCount > TOC_LINE_THRESHOLD && !hasTableOfContents(md)) warn('REF-3', `${rel}: ${lineCount} lines but no table of contents near the top`)
+      if (lineCount > TOC_LINE_THRESHOLD && !hasTableOfContents(md))
+        warn('REF-3', `${rel}: ${lineCount} lines but no table of contents near the top`)
     }
     // SHAPE-2: endorsement of the retired extension pattern, in the SKILL.md body OR any
     // reference file (a standard's prose can drift even when the SKILL.md body is clean).
@@ -356,11 +364,15 @@ function lintSkill(skillDir: string): Finding[] {
     .map((file) => readFileSync(file, 'utf8'))
     .join('\n')
   const skillText = `${body}\n${refsText}`
-  const strongGate = /do not edit[^.\n]*directly|go through (a )?proposal|standing directive|installing the gate/i.test(stripCode(skillText))
+  const strongGate = /do not edit[^.\n]*directly|go through (a )?proposal|standing directive|installing the gate/i.test(
+    stripCode(skillText)
+  )
   if (strongGate) {
     const anchored = /CLAUDE\.md|AGENTS\.md|always-loaded|installing the gate|\banchor/i.test(skillText)
     const scriptsDir = join(skillDir, 'scripts')
-    const checkerAnchors = existsSync(scriptsDir) && readdirSync(scriptsDir).some((n) => n.endsWith('.ts') && /CLAUDE\.md|AGENTS\.md/.test(readFileSync(join(scriptsDir, n), 'utf8')))
+    const checkerAnchors =
+      existsSync(scriptsDir) &&
+      readdirSync(scriptsDir).some((n) => n.endsWith('.ts') && /CLAUDE\.md|AGENTS\.md/.test(readFileSync(join(scriptsDir, n), 'utf8')))
     if (!(anchored && checkerAnchors))
       warn(
         'SHAPE-7',
@@ -401,7 +413,10 @@ function lintSkill(skillDir: string): Finding[] {
       warn('LONG-4', 'references/sources.md has no parseable `**Refresh:** <class> · <cadence>` marker near the top (LONG-4a)')
     } else {
       if (info.cls === 'external-spec' && info.cadence === 'on-change')
-        warn('LONG-4', '`**Refresh:**` marks this external-spec but cadence is `on-change` — an external-spec tracker needs a clock cadence (LONG-4b)')
+        warn(
+          'LONG-4',
+          '`**Refresh:**` marks this external-spec but cadence is `on-change` — an external-spec tracker needs a clock cadence (LONG-4b)'
+        )
       if (info.status === 'overdue')
         warn(
           'LONG-3',
@@ -447,7 +462,11 @@ function collisionFindings(dirs: string[]): Finding[] {
   const out: Finding[] = []
   for (const [phrase, skills] of byPhrase) {
     if (skills.size > 1)
-      out.push({ severity: 'warn', criterion: 'COLL-1', message: `trigger "${phrase}" is shared by ${[...skills].sort().join(', ')} — confirm each names the other as an off-ramp (COLL-2)` })
+      out.push({
+        severity: 'warn',
+        criterion: 'COLL-1',
+        message: `trigger "${phrase}" is shared by ${[...skills].sort().join(', ')} — confirm each names the other as an off-ramp (COLL-2)`
+      })
   }
   return out.sort((a, b) => a.message.localeCompare(b.message))
 }
@@ -489,7 +508,8 @@ const refreshStatusOut = rawArgv.includes('--refresh-status') // per-skill refre
 const ri = rawArgv.indexOf('--report')
 const reportOut = ri !== -1
 const reportTarget = resolve('.')
-const reportDir = reportOut && rawArgv[ri + 1] && !rawArgv[ri + 1].startsWith('-') ? rawArgv[ri + 1] : join(reportTarget, '.ki-meta', 'audits')
+const reportDir =
+  reportOut && rawArgv[ri + 1] && !rawArgv[ri + 1].startsWith('-') ? rawArgv[ri + 1] : join(reportTarget, '.ki-meta', 'audits')
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
 const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'PASS']
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
@@ -505,7 +525,8 @@ for (const dir of skillDirs) {
   const warns = findings.filter((x) => x.severity === 'warn')
   totalFails += fails.length
   totalWarns += warns.length
-  for (const x of findings) all.push({ level: x.severity === 'fail' ? 'FAIL' : 'WARN', area: `${basename(dir)}:${x.criterion}`, msg: x.message })
+  for (const x of findings)
+    all.push({ level: x.severity === 'fail' ? 'FAIL' : 'WARN', area: `${basename(dir)}:${x.criterion}`, msg: x.message })
   if (!jsonOut) {
     const stamp = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
     console.log(`\n${stamp}  ${paint(C.cyan, basename(dir))}`)
@@ -537,13 +558,19 @@ if (footprintOut) {
     all.push({ level: 'INFO', area: `${sk}:SIZE-5`, msg: `footprint ~${fp.total} tokens (description + body + ${refs} reference file(s))` })
     for (const r of fp.rows) {
       const big = r.kind === 'reference' && r.tokens > FOOTPRINT_REF_NOTE_TOKENS
-      all.push({ level: 'INFO', area: `${sk}:SIZE-5`, msg: `  ${r.kind} ${r.path}: ~${r.tokens} tokens${big ? ' — large, candidate to split or trim' : ''}` })
+      all.push({
+        level: 'INFO',
+        area: `${sk}:SIZE-5`,
+        msg: `  ${r.kind} ${r.path}: ~${r.tokens} tokens${big ? ' — large, candidate to split or trim' : ''}`
+      })
     }
     if (!jsonOut) {
       console.log(`\n${paint(C.cyan, sk)} ${paint(C.dim, 'footprint')}  ${ICON.INFO}~${fp.total} tokens`)
       for (const r of fp.rows) {
         const big = r.kind === 'reference' && r.tokens > FOOTPRINT_REF_NOTE_TOKENS
-        console.log(paint(C.dim, `    ${r.kind} ${r.path}: ~${r.tokens} tokens`) + (big ? paint(C.yellow, ' — large, candidate to split') : ''))
+        console.log(
+          paint(C.dim, `    ${r.kind} ${r.path}: ~${r.tokens} tokens`) + (big ? paint(C.yellow, ' — large, candidate to split') : '')
+        )
       }
     }
   }
@@ -566,7 +593,15 @@ if (refreshStatusOut) {
   }
 }
 
-const summary = { fail: totalFails, warn: totalWarns, polish: 0, advisory: 0, info: all.filter((x) => x.level === 'INFO').length, skip: 0, pass: 0 }
+const summary = {
+  fail: totalFails,
+  warn: totalWarns,
+  polish: 0,
+  advisory: 0,
+  info: all.filter((x) => x.level === 'INFO').length,
+  skip: 0,
+  pass: 0
+}
 const stampIso = new Date().toISOString()
 
 if (reportOut) {
@@ -577,13 +612,20 @@ if (reportOut) {
   })
   const tally = `${skillDirs.length} skill(s) · ${summary.fail} fail · ${summary.warn} warn`
   writeFileSync(join(reportDir, 'skills.md'), [`# skills audit — ${reportTarget}`, '', `_${stampIso}_`, '', tally, ...body, ''].join('\n'))
-  writeFileSync(join(reportDir, 'skills.json'), `${JSON.stringify({ concern: 'skills', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`)
+  writeFileSync(
+    join(reportDir, 'skills.json'),
+    `${JSON.stringify({ concern: 'skills', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`
+  )
 }
 
 if (jsonOut) {
-  process.stdout.write(`${JSON.stringify({ concern: 'skills', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`)
+  process.stdout.write(
+    `${JSON.stringify({ concern: 'skills', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`
+  )
 } else {
-  console.log(`\n${paint(C.cyan, 'summary')}: ${skillDirs.length} skill(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}`)
+  console.log(
+    `\n${paint(C.cyan, 'summary')}: ${skillDirs.length} skill(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}`
+  )
   if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'skills.{md,json}')}`))
   console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria from references/audit-rubric.md by reading.'))
 }
