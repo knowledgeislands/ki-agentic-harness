@@ -30,8 +30,8 @@ graded on it, and the checker reports it as N/A, not a failure.
 - [ ] [M] FAIL — **coverage manifest (exhaustive)**: every top-level `package.json` key is in the manifest (§1) — `name`, `version`,
       `description`, `author`, `license`, `private`, `repository`, `homepage`, `bugs`, `keywords`, `type`, `packageManager`, `engines`,
       `scripts`, `devDependencies`, `dependencies`, `workspaces`, `lint-staged`, `main`, `bin`, `exports`, `files`. An unknown key is drift.
-- [ ] [M] FAIL — toolchain `devDependencies` present: `@biomejs/biome`, `prettier`, `husky`, `lint-staged`, `markdownlint-cli2`, `syncpack`,
-      `typescript` (the tools the families invoke — declared, not implied).
+- [ ] [M] FAIL — toolchain `devDependencies` present: `@biomejs/biome`, `knip`, `prettier`, `husky`, `lint-staged`, `markdownlint-cli2`,
+      `syncpack`, `typescript` (the tools the families invoke — declared, not implied). `depcheck` / `node-jq` are gone (replaced by knip).
 - [ ] [M] FAIL/WARN — `lint-staged` block present (FAIL if missing) and fans out to `@biomejs/biome` on code + `prettier` + `markdownlint`
       on Markdown (WARN otherwise).
 - [ ] [M] WARN — a root `mise.toml` pins both `node` and `bun` under `[tools]`.
@@ -53,7 +53,9 @@ graded on it, and the checker reports it as N/A, not a failure.
       `ki:lint:format`, `ki:lint:md`, `ki:lint:md:check`, `ki:lint:package`, `ki:lint:types`. **Exception:** when `package.json` declares a
       `workspaces` array (monorepo shape, §0/§2), `ki:lint:types` is instead validated as a per-workspace aggregate — each listed workspace
       dir must have a `tsconfig.json` and `ki:lint:types` must reference each — not the single-root `tsc --noEmit` literal.
-- [ ] [M] WARN — the full `ki:deps:*` family is present and exact-matches: `ki:deps:missing`, `ki:deps:unused`, `ki:deps:update`.
+- [ ] [M] WARN — the `ki:deps:*` family + `ki:knip` are present and exact-match their canonical knip-based values (standard §2):
+      `ki:deps:check` (knip, deps-scoped), `ki:deps:fix` (same `+ --fix`), `ki:deps:update` (`bun update --latest`), `ki:knip` (full knip).
+- [ ] [M] FAIL — `ki:verify` includes `bun run ki:knip` (the dependency + dead-code gate); `knip` exits clean on the repo.
 - [ ] [M] ADVISORY — `bun outdated` reports no available updates; if any, review and run `bun run ki:deps:update`.
 - [ ] [M] WARN — `clean` and `prepare` are present (`prepare` = `husky`; `clean` removes `node_modules`, and `dist` where the repo builds).
 - [ ] [J] POLISH — repo-specific scripts beyond the families are fine; the checker must not flag them. Just confirm none shadow a family
@@ -77,6 +79,7 @@ graded on it, and the checker reports it as N/A, not a failure.
 - [ ] [M] WARN — matches the shared config (formatter 2-space / lineWidth 140; JS single quotes, `semicolons: asNeeded`, no trailing commas;
       `preset: recommended` with `noExplicitAny: off`; `organizeImports: on`; git VCS + `useIgnoreFile`).
 - [ ] [M] WARN — `.prettierrc.json` present (Prettier backs `ki:lint:md`).
+- [ ] [M] FAIL — `knip.json` present (per-repo entry points + ignores; backs `ki:knip` / `ki:deps:*`). See §5.
 - [ ] [M] WARN — it matches the shared shape: `proseWrap: always`, `printWidth: 140`, `semi: false`, `singleQuote: true`,
       `trailingComma: none`, and the `*.md` markdown override.
 

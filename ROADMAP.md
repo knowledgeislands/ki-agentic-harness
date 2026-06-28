@@ -25,3 +25,16 @@ by ADR-KI-HARNESS-TOOLCHAIN-002 and warrant evaluation as a follow-on ADR:
 
 **Gate:** produce ADR-KI-HARNESS-TOOLCHAIN-003 covering adopt / decline / not-separately-applicable for each. Remove this item once the ADR
 is accepted.
+
+## Replace depcheck with knip in the `ki:deps:*` family _(candidate)_
+
+The `knowledgeislands-engineering` standard's `ki:deps:missing` / `ki:deps:unused` scripts use `depcheck`, which is static-only and noisy on
+the exact case the KI repos hit — toolchain deps referenced from config files (biome, prettier, husky, lint-staged, vitest, wrangler,
+eleventy) rather than imported — hence the brittle `depcheck --json | node-jq | xargs bun add -D/remove` plumbing that is unsafe to run
+unattended. [knip](https://knip.dev) is the modern replacement: plugin-aware (understands those config-referenced tools, killing the
+false-positive class), first-class Bun + workspaces support, finds both unused **and** unlisted deps, and offers `--fix` so the family
+collapses to a clean `bunx knip --dependencies --fix` form. As a bonus it also surfaces unused files/exports.
+
+**Gate:** trial knip in one repo (`mcp-gmail`) and diff its findings against `depcheck` first; if clean, land a coordinated standard change
+— swap the canonical `ki:deps:*` definitions, add `knip` to the required toolchain `devDependencies` + the §1 coverage manifest, update
+`audit-engineering.ts`'s `CANON`, and roll across the 10 repos. Remove this item once adopted (or declined with a recorded reason).

@@ -99,9 +99,11 @@ The manifest is the **engineering** standard's because engineering owns the clos
 owner — never just dropping it into a `package.json`.
 
 **`lint-staged` + toolchain `devDependencies`.** The `ki:lint:*` / `ki:deps:*` / `prepare` families invoke a fixed toolchain, so that
-toolchain is **declared**, not merely implied: every repo carries `@biomejs/biome`, `prettier`, `husky`, `lint-staged`, `markdownlint-cli2`,
-`syncpack`, and `typescript` in `devDependencies`. The `lint-staged` block (the husky pre-commit fan-out) is a governed key — present in
-every repo, running `@biomejs/biome` over staged code and `prettier` + `markdownlint-cli2` over staged Markdown.
+toolchain is **declared**, not merely implied: every repo carries `@biomejs/biome`, `knip`, `prettier`, `husky`, `lint-staged`,
+`markdownlint-cli2`, `syncpack`, and `typescript` in `devDependencies`. The `lint-staged` block (the husky pre-commit fan-out) is a governed
+key — present in every repo, running `@biomejs/biome` over staged code and `prettier` + `markdownlint-cli2` over staged Markdown. A root
+`knip.json` (§5) configures knip — entry points + intentional ignores. **knip replaced `depcheck`** (which false-flagged config-referenced
+toolchain deps — it would have `bun remove`d biome — and found no dead code); `depcheck` / `node-jq` are no longer dependencies.
 
 **Toolchain pin (`mise.toml`).** Every repo carries a root `mise.toml` with a `[tools]` table pinning both the **node** and **bun** versions
 — the actual runtimes [mise](https://mise.jdx.dev/) puts on `PATH` when you `cd` in, and that CI installs via `jdx/mise-action`, so the dev
@@ -146,9 +148,10 @@ them. Copy, never paraphrase:
 "ki:lint:md:check": "bunx prettier --check \"**/*.md\" --ignore-path .gitignore && bunx markdownlint-cli2",
 "ki:lint:package": "bunx syncpack format",
 "ki:lint:types":   "tsc --noEmit",
-"ki:deps:missing": "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.missing | keys | .[]' | xargs bun add -D",
-"ki:deps:unused":  "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.devDependencies[]' | xargs bun remove",
+"ki:deps:check":   "bunx knip --dependencies --no-config-hints",
+"ki:deps:fix":     "bunx knip --dependencies --fix --no-config-hints",
 "ki:deps:update":  "bun update --latest",
+"ki:knip":         "bunx knip --no-config-hints",
 "clean":           "rm -rf {dist,node_modules}",   // a repo with no dist may use "rm -rf node_modules"
 "prepare":         "husky"
 ```
@@ -156,8 +159,12 @@ them. Copy, never paraphrase:
 - `ki:lint:*` — the full family. `ki:lint:check`/`ki:lint:fix`/`ki:lint:format` are Biome; `ki:lint:md` (Prettier `--write` +
   markdownlint-cli2) reflows locally, while its check-mode twin `ki:lint:md:check` (`--check`) is what CI runs so committed Markdown can't
   drift from `proseWrap`/`printWidth` (see _CI workflow_ in §1); `ki:lint:package` is syncpack; `ki:lint:types` is `tsc --noEmit`.
-- `ki:deps:*` — the full three. They were "optional" in the older MCP standard; promoted to **required** here because they are universal
-  across the repo set and the point is consistency.
+- `ki:deps:*` + `ki:knip` — **dependency and dead-code hygiene, on [knip](https://knip.dev)** (one tool replacing depcheck + ts-prune).
+  `ki:deps:check` reports unused **and** unlisted dependencies (`--dependencies`-scoped); `ki:deps:fix` auto-removes the unused;
+  `ki:deps:update` is freshness (`bun update --latest`). `ki:knip` is the **full** run — dependencies _plus_ dead code (unused files,
+  exports, types, enum/class members) — and it **gates `ki:verify`** (below), so an unused export or phantom dependency fails CI. Every repo
+  carries a `knip.json` (§5) declaring its entry points (so the public surface isn't misread as dead code) and any intentional ignores;
+  `knip` is a required devDependency.
 - `clean` and `prepare` are idioms (left bare); the unified `ki:conform` / `ki:verify` entrypoints (below) compose the families above.
 - A repo MAY add any number of **repo-specific scripts** (`ki:eval`, `ki:skills:*`, `ki:repo:audit`, `ki:server:auth:*`, `ki:site:dev:css`,
   …) — all `ki:`-prefixed per the naming law. Extra `ki:*` scripts are never drift; the checker is strict about the required families and
@@ -173,14 +180,15 @@ Two composed entrypoints give every repo a single command for mechanical conform
 // repos with a compiled build append " && bun run build"; repos with tests append " && bun run test".
 
 // ki:verify — the read-only CHECK pass: the exact gate CI runs (no mutation).
-"ki:verify": "bun run ki:lint:check && bun run ki:lint:types && bun run ki:lint:md:check",
+"ki:verify": "bun run ki:lint:check && bun run ki:lint:types && bun run ki:lint:md:check && bun run ki:knip",
 // repos with a compiled build append " && bun run build"; repos with tests append " && bun run test:coverage".
 ```
 
 - **`ki:conform`** (write) updates dependencies, then runs the formatters/fixers in dependency order (syncpack → Biome format → Biome fix →
   Markdown), then builds and tests where those capabilities are present. It is the "make this repo conformant" button.
-- **`ki:verify`** (read-only) is the local mirror of the CI gate (§1 _CI workflow_): the same `ki:lint:check` / `ki:lint:types` /
-  `ki:lint:md:check` (+ `build` / `test:coverage`) steps, in order, mutating nothing. CI runs `bun run ki:verify` as its single gate step.
+- **`ki:verify`** (read-only) is the local mirror of the CI gate (§1 _CI workflow_): `ki:lint:check` / `ki:lint:types` / `ki:lint:md:check`
+  / **`ki:knip`** (the dependency + dead-code gate) (+ `build` / `test:coverage`), in order, mutating nothing. CI runs `bun run ki:verify`
+  as its single gate step.
 
 Both are **required in every repo** and assembled from the capability set the repo opts into (build/tests), so the checker validates their
 shape against the families plus whichever capability tails apply.
@@ -252,6 +260,13 @@ upgrade.
 
 `proseWrap: always` is the house choice — Prettier hard-wraps Markdown prose at `printWidth`. The Markdown _content_ conventions (tables →
 footnotes, link style) live in `knowledgeislands-authoring`; this section owns only the formatter config that enforces the wrap.
+
+**`knip.json`** present, backing knip (the `ki:knip` / `ki:deps:*` tool, §2). It is **per-repo** — its `entry` array names the repo's real
+entry points so the public surface isn't misread as dead code: the build's `bin`/`exports` source files, plus test/script/eval entries the
+relevant knip plugin doesn't auto-detect. House defaults: `ignoreExportsUsedInFile: true` (an export referenced within its own file is not
+dead); `ignore` any generated trees (e.g. `src/generated/**` — **never** hand-edited, regenerated by codegen); `ignoreDependencies` only for
+packages legitimately provided transitively by a meta-package (e.g. `googleapis` vending `google-auth-library`), with the reason recorded.
+Because `ki:knip` gates `ki:verify`, a stale `knip.json` (missing a new entry point) surfaces immediately as a CI failure, not silent rot.
 
 ## 6. Testing (capability: the repo ships tests)
 

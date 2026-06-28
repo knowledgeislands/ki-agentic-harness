@@ -129,7 +129,7 @@ unknownKeys.length
 // toolchain is actually declared, rather than left implied. lint-staged is the husky
 // pre-commit fan-out — a governed key in the manifest, so it must be present and wired.
 const devDeps = (pkg.devDependencies ?? {}) as Record<string, string>
-const REQUIRED_DEV = ['@biomejs/biome', 'prettier', 'husky', 'lint-staged', 'markdownlint-cli2', 'syncpack', 'typescript']
+const REQUIRED_DEV = ['@biomejs/biome', 'knip', 'prettier', 'husky', 'lint-staged', 'markdownlint-cli2', 'syncpack', 'typescript']
 const missingDev = REQUIRED_DEV.filter((d) => !(d in devDeps))
 missingDev.length
   ? add(
@@ -220,9 +220,10 @@ const CANON: Record<string, string> = {
   'ki:lint:md:check': 'bunx prettier --check "**/*.md" --ignore-path .gitignore && bunx markdownlint-cli2',
   'ki:lint:package': 'bunx syncpack format',
   'ki:lint:types': 'tsc --noEmit',
-  'ki:deps:missing': "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.missing | keys | .[]' | xargs bun add -D",
-  'ki:deps:unused': "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.devDependencies[]' | xargs bun remove",
-  'ki:deps:update': 'bun update --latest'
+  'ki:deps:check': 'bunx knip --dependencies --no-config-hints',
+  'ki:deps:fix': 'bunx knip --dependencies --fix --no-config-hints',
+  'ki:deps:update': 'bun update --latest',
+  'ki:knip': 'bunx knip --no-config-hints'
 }
 for (const [k, v] of Object.entries(CANON)) {
   if (k === 'ki:lint:types' && workspaces.length) {
@@ -341,6 +342,14 @@ else {
     re.test(prettier) ? add('PASS', 'prettier', label) : add('WARN', 'prettier', `.prettierrc.json: expected ${label}`)
 }
 
+// ── core: knip.json (backs ki:knip / ki:deps:* — dependency + dead-code hygiene) ──
+// knip is the single tool behind ki:deps:check/fix and ki:knip (which gates ki:verify);
+// every repo carries a knip.json declaring its entry points (so the public surface
+// isn't misread as dead code) and any intentional ignores.
+has('knip.json') || has('knip.jsonc') || has('knip.ts')
+  ? add('PASS', 'knip', 'knip.json present (entry points + ignores for ki:knip / ki:deps:*)')
+  : add('FAIL', 'knip', 'knip.json missing (config for knip — backs ki:knip and the ki:deps:* family)')
+
 // ── capability detection ──────────────────────────────────────────────────────
 const vitestFile = ['vitest.config.ts', 'vitest.config.js', 'vitest.config.mts'].find((f) => has(f))
 const hasTests = Boolean(vitestFile) || Boolean(scripts.test)
@@ -374,7 +383,7 @@ const hasEnv = Boolean(envExample) || usesLoadEnv
   }
   if (!verify) add('FAIL', 'scripts', 'script "ki:verify" missing (unified read-only gate entrypoint, §2)')
   else {
-    const wantVerify = ['ki:lint:check', 'ki:lint:types', 'ki:lint:md:check']
+    const wantVerify = ['ki:lint:check', 'ki:lint:types', 'ki:lint:md:check', 'ki:knip']
     const missing = wantVerify.filter((s) => !verify.includes(s))
     missing.length
       ? add('FAIL', 'scripts', `ki:verify must mirror the CI gate ${wantVerify.join(' → ')}; not referenced: ${missing.join(', ')}`)
