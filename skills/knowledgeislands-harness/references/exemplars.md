@@ -68,21 +68,21 @@ _No agent definitions yet — this is an empty shelf. Add a `.md` per agent when
 
 ### Required `package.json` scripts for a harness
 
-The two harness-specific scripts (`skills:link:project` and `skills:lint`) are the delivery and quality mechanisms the harness concept
-depends on — absence of either is a FAIL. `skills:link:global` installs the one globally-kept keystone (`knowledgeislands-bootstrap`);
-skills themselves are wired project-local, not global. The `lint:*` family is the common engineering toolchain. The `--all` flag on
-`skills:link:project` tells the bootstrap linker to wire every skill declared in `.ki-config.toml` rather than a named subset.
+The two harness-specific scripts (`ki:skills:link:project` and `ki:skills:lint`) are the delivery and quality mechanisms the harness concept
+depends on — absence of either is a FAIL. `ki:skills:link:global` installs the one globally-kept keystone (`knowledgeislands-bootstrap`);
+skills themselves are wired project-local, not global. The `ki:lint:*` family is the common engineering toolchain. The `--all` flag on
+`ki:skills:link:project` tells the bootstrap linker to wire every skill declared in `.ki-config.toml` rather than a named subset.
 
 ```jsonc
 {
   "scripts": {
-    "skills:link:project": "bun skills/knowledgeislands-bootstrap/scripts/link-skills.ts --all",
-    "skills:link:global": "bun scripts/sync-skills.ts link --only knowledgeislands-bootstrap",
-    "skills:lint": "bun skills/knowledgeislands-skills/scripts/lint-skills.ts skills",
-    "lint:check": "bunx @biomejs/biome check",
-    "lint:types": "tsc --noEmit",
-    "lint:md": "bunx prettier --write \"**/*.md\" --ignore-path .gitignore && bunx markdownlint-cli2",
-    "lint:md:check": "bunx prettier --check \"**/*.md\" --ignore-path .gitignore && bunx markdownlint-cli2"
+    "ki:skills:link:project": "bun skills/knowledgeislands-bootstrap/scripts/link-skills.ts --all",
+    "ki:skills:link:global": "bun scripts/sync-skills.ts link --only knowledgeislands-bootstrap",
+    "ki:skills:lint": "bun skills/knowledgeislands-skills/scripts/lint-skills.ts skills",
+    "ki:lint:check": "bunx @biomejs/biome check",
+    "ki:lint:types": "tsc --noEmit",
+    "ki:lint:md": "bunx prettier --write \"**/*.md\" --ignore-path .gitignore && bunx markdownlint-cli2",
+    "ki:lint:md:check": "bunx prettier --check \"**/*.md\" --ignore-path .gitignore && bunx markdownlint-cli2"
   }
 }
 ```

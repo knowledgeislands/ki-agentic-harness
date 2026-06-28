@@ -1,7 +1,7 @@
 # Skill evals
 
 A quick way to check that a skill **actually changes what the model does** — not just that its `SKILL.md` is well-formed (that part is what
-`skills:lint` checks). This is the behavioural half of what the `knowledgeislands-skills` rubric asks of a skill.
+`ki:skills:lint` checks). This is the behavioural half of what the `knowledgeislands-skills` rubric asks of a skill.
 
 The idea is simple: take a question the skill is meant to help with, ask the model **twice** — once with the skill off, once with it on —
 and compare. If the skill is pulling its weight, the "on" answer should be clearly better.
@@ -12,10 +12,10 @@ blocker.
 ## Run it
 
 ```bash
-bun run eval                        # all scenarios, on Sonnet
-bun run eval --model opus           # pick a model: sonnet | opus | haiku
-bun run eval --scenario toml-style  # just one scenario
-bun run eval --runs 3               # repeat 3× and average — steadier signal
+bun run ki:eval                        # all scenarios, on Sonnet
+bun run ki:eval --model opus           # pick a model: sonnet | opus | haiku
+bun run ki:eval --scenario toml-style  # just one scenario
+bun run ki:eval --runs 3               # repeat 3× and average — steadier signal
 ```
 
 It drives your local `claude` CLI (no API key needed), so each run spends a little of your normal quota. The summary prints the rough cost.
@@ -69,4 +69,4 @@ couldn't already know this" bar, this is the place to revisit — see reading no
 **For routine runs, use Sonnet — it's the most cost-effective arm.** A full matrix (24 scenarios × 3 runs) costs roughly **$9 on Haiku, $23
 on Sonnet, $34 on Opus**. Opus gives no cleaner signal than Sonnet for about 50% more, so keep it for occasional confirmation; Sonnet is a
 representative, trustworthy model at a sensible price. (Haiku is cheapest and did well here, but a stronger model is the safer regression
-proxy.) Run results aren't checked in — they're regeneratable, so just re-run `bun run eval`.
+proxy.) Run results aren't checked in — they're regeneratable, so just re-run `bun run ki:eval`.

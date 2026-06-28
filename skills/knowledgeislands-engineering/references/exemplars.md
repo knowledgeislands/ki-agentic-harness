@@ -90,24 +90,24 @@ all repos that ship a `dist/`. A `tsconfig.build.json` that extends this adds `n
 
 ### Required script families in `package.json`
 
-The two families (`lint:*` and `deps:*`) are byte-identical across all 10 repos — the checker exact-matches them. Extras (`skills:*`,
-`repo:audit`, `engineering:audit`, repo-specific dev scripts) are never drift. The critical trap: the test script is `vitest run`, never
-`bun test` — `bun test` silently invokes Bun's own runner. Note that `lint:md` is the local-fix variant (writes) and `lint:md:check` is what
-CI runs (`--check` exits non-zero on violations without writing).
+The two families (`ki:lint:*` and `ki:deps:*`) are byte-identical across all 10 repos — the checker exact-matches them. Extras
+(`ki:skills:*`, `ki:repo:audit`, `ki:engineering:audit`, repo-specific dev scripts) are never drift. The critical trap: the test script is
+`vitest run`, never `bun test` — `bun test` silently invokes Bun's own runner. Note that `ki:lint:md` is the local-fix variant (writes) and
+`ki:lint:md:check` is what CI runs (`--check` exits non-zero on violations without writing).
 
 ```jsonc
 {
   "scripts": {
-    "lint:check": "bunx @biomejs/biome check",
-    "lint:fix": "bunx @biomejs/biome check --write --unsafe",
-    "lint:format": "bunx @biomejs/biome format --write",
-    "lint:md": "bunx prettier --write \"**/*.md\" --ignore-path .gitignore && bunx markdownlint-cli2",
-    "lint:md:check": "bunx prettier --check \"**/*.md\" --ignore-path .gitignore && bunx markdownlint-cli2",
-    "lint:package": "bunx syncpack format",
-    "lint:types": "tsc --noEmit",
-    "deps:missing": "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.missing | keys | .[]' | xargs bun add -D",
-    "deps:unused": "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.devDependencies[]' | xargs bun remove",
-    "deps:update": "bun update --latest",
+    "ki:lint:check": "bunx @biomejs/biome check",
+    "ki:lint:fix": "bunx @biomejs/biome check --write --unsafe",
+    "ki:lint:format": "bunx @biomejs/biome format --write",
+    "ki:lint:md": "bunx prettier --write \"**/*.md\" --ignore-path .gitignore && bunx markdownlint-cli2",
+    "ki:lint:md:check": "bunx prettier --check \"**/*.md\" --ignore-path .gitignore && bunx markdownlint-cli2",
+    "ki:lint:package": "bunx syncpack format",
+    "ki:lint:types": "tsc --noEmit",
+    "ki:deps:missing": "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.missing | keys | .[]' | xargs bun add -D",
+    "ki:deps:unused": "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.devDependencies[]' | xargs bun remove",
+    "ki:deps:update": "bun update --latest",
     "clean": "rm -rf {dist,node_modules}",
     "prepare": "husky",
     "test": "vitest run",

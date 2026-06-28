@@ -8,7 +8,7 @@
 Curated illustrations of the Knowledge Islands authoring conventions in practice. Use these when writing or conforming a document, checking
 whether a table should spill to footnotes, choosing between link styles, or formatting a `.ki-config.toml` entry. The exemplars show the
 judgment layer — the choices no formatter makes — annotated to make the reasoning visible. Mechanical rules (line width, prose wrap, heading
-hierarchy) are owned by Prettier + markdownlint-cli2; run `bun run lint:md` for those.
+hierarchy) are owned by Prettier + markdownlint-cli2; run `bun run ki:lint:md` for those.
 
 ## Collections
 

@@ -51,7 +51,7 @@ dependency order is synthesis ranking, not execution order. The saved workflow `
 for harness-wide runs. See also [ADR-KI-HARNESS-SKILLS-003](../../docs/decisions/ADR-KI-HARNESS-SKILLS-003.md) (the canonical dependency
 order).
 
-1. **Run the linter.** `bun scripts/lint-skills.ts <path-to-skill-or-repo>` from this skill's directory (or `bun run skills:lint` at the
+1. **Run the linter.** `bun scripts/lint-skills.ts <path-to-skill-or-repo>` from this skill's directory (or `bun run ki:skills:lint` at the
    arcadia-agentic-harness repo root). It reports the mechanical criteria on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY /
    INFO / SKIP / PASS — see `knowledgeislands-engineering`'s enforcement-framework §2) and exits non-zero on any FAIL; with `--json` /
    `--report` it emits machine-readable findings and writes the latest report to the target's `.ki-meta/audits/skills.{md,json}`. Capture

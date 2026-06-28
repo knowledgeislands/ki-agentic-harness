@@ -32,16 +32,16 @@ For a Knowledge Islands repo, `.claude/skills/` contains exactly:
   `.claude/skills/knowledgeislands-mcp -> ../../../arcadia-agentic-harness/skills/knowledgeislands-mcp`), computed for wherever the harness
   actually sits.
 - **Gitignored and regenerated, never committed.** Committed cross-repo symlinks dangle on a clone that lacks the harness beside it. The
-  committed artifacts are a `skills:link:project` package.json script (which re-runs the keystone linker) and the `.gitignore` line. A fresh
-  clone runs `skills:link:project` once.
+  committed artifacts are a `ki:skills:link:project` package.json script (which re-runs the keystone linker) and the `.gitignore` line. A
+  fresh clone runs `ki:skills:link:project` once.
 - The keystone linker **self-locates** the harness through its own real path — no hard-coded harness location.
 
 ## Reproducibility contract
 
 Every Knowledge Islands repo carries:
 
-- a `package.json` `"skills:link:project"` script that invokes the global keystone linker (the harness uses `--all`); and
+- a `package.json` `"ki:skills:link:project"` script that invokes the global keystone linker (the harness uses `--all`); and
 - a `.gitignore` entry for `.claude/skills/`.
 
 Together these make the project-local skill set reproducible from `.ki-config.toml` alone, on any machine, after a single
-`skills:link:project`.
+`ki:skills:link:project`.

@@ -60,21 +60,21 @@ blocker.
 ### `package.json` — the hosting script family
 
 The hosting scripts in the root `package.json` of the monorepo. They take the `site:` prefix (matching the rest of the site script family
-from `knowledgeislands-11ty-websites`). `site:deploy` changes into the site workspace where `wrangler.jsonc` lives and runs
-`bunx wrangler deploy` — never `wrangler pages deploy`. `site:preview` chains a full build then `wrangler dev` so the site runs through the
-real Worker runtime locally before deploying. `.wrangler/` is added to `site:clean`.
+from `knowledgeislands-11ty-websites`). `ki:site:deploy` changes into the site workspace where `wrangler.jsonc` lives and runs
+`bunx wrangler deploy` — never `wrangler pages deploy`. `ki:site:preview` chains a full build then `wrangler dev` so the site runs through
+the real Worker runtime locally before deploying. `.wrangler/` is added to `ki:site:clean`.
 
 ```json
 {
   "scripts": {
-    "site:deploy": "cd site && bunx wrangler deploy",
-    "site:preview": "bun run site:build && cd site && bunx wrangler dev",
-    "site:clean": "rm -rf dist site/.wrangler"
+    "ki:site:deploy": "cd site && bunx wrangler deploy",
+    "ki:site:preview": "bun run ki:site:build && cd site && bunx wrangler dev",
+    "ki:site:clean": "rm -rf dist site/.wrangler"
   }
 }
 ```
 
-`site:build` and `site:dev` belong to `knowledgeislands-11ty-websites` — they build the `dist/` that these scripts serve. Both sets of
+`ki:site:build` and `ki:site:dev` belong to `knowledgeislands-11ty-websites` — they build the `dist/` that these scripts serve. Both sets of
 scripts live in the same root `package.json`; only the responsibility boundary differs.
 
 ### Cloudflare Workers Builds — the CI/CD path
@@ -87,7 +87,7 @@ that commits to `main` and lets Workers Builds deploy the result, but that Actio
 The minimal Cloudflare Workers Builds configuration (set in the dashboard, not in a workflow file):
 
 ```text
-Build command:   bun run site:build
+Build command:   bun run ki:site:build
 Output directory: dist
 Root directory:  (leave empty — build runs from the repo root)
 ```

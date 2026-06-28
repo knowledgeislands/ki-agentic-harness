@@ -11,16 +11,16 @@ defined in `knowledgeislands-engineering`'s
 - **BOOT-1 [M]** WARN — `.claude/skills/` mirrors the repo's declared coverage (`[knowledgeislands-*]` tables) ∪ the baseline
   (`knowledgeislands-repo` + `knowledgeislands-authoring`), with no missing links, no links outside that set, and no dangling links (harness
   not reachable). The harness itself is checked with `--all` (every skill).
-- **BOOT-2 [M]** WARN — `package.json` has a `skills:link:project` script invoking the keystone linker, so the links are reproducible on
+- **BOOT-2 [M]** WARN — `package.json` has a `ki:skills:link:project` script invoking the keystone linker, so the links are reproducible on
   clone.
 - **BOOT-3 [M]** WARN — `.claude/skills/` is gitignored (the links are generated, never committed).
 - **BOOT-4 [J]** — the repo's _declared_ coverage is itself correct — it opts into the skills it actually uses. This is
   `knowledgeislands-repo`'s coverage cascade (detected-artifact ⟺ declared-table), not this skill's; route a wrong declaration there rather
-  than papering over it by hand-linking. The keystone (`knowledgeislands-bootstrap`) must be installed globally for `skills:link:project` to
-  resolve — an environment precondition, not a repo property.
+  than papering over it by hand-linking. The keystone (`knowledgeislands-bootstrap`) must be installed globally for `ki:skills:link:project`
+  to resolve — an environment precondition, not a repo property.
 
 ## Reporting
 
 Produce findings on the severity ladder, each `severity · criterion · what · fix`. All BOOT criteria are WARN (conformable, never
-ship-blocking): a missing/dangling link or absent `skills:link:project`/gitignore is fixed by Mode CONFORM (re-run the linker; add the
+ship-blocking): a missing/dangling link or absent `ki:skills:link:project`/gitignore is fixed by Mode CONFORM (re-run the linker; add the
 script / gitignore line). Close by naming the composition: `knowledgeislands-repo` owns whether the declared coverage is right.

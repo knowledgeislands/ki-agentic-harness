@@ -126,12 +126,12 @@ function auditHarness(root: string): Finding[] {
       findings,
       'FAIL',
       'PKG-1',
-      hasScript(pkg, 'skills:link:project'),
-      "package.json must have a 'skills:link:project' script (the knowledgeislands-bootstrap delivery mechanism)"
+      hasScript(pkg, 'ki:skills:link:project'),
+      "package.json must have a 'ki:skills:link:project' script (the knowledgeislands-bootstrap delivery mechanism)"
     )
-    check(findings, 'FAIL', 'PKG-2', hasScript(pkg, 'skills:lint'), "package.json must have a 'skills:lint' script")
+    check(findings, 'FAIL', 'PKG-2', hasScript(pkg, 'ki:skills:lint'), "package.json must have a 'ki:skills:lint' script")
 
-    for (const script of ['lint:check', 'lint:types', 'lint:md', 'lint:md:check']) {
+    for (const script of ['ki:lint:check', 'ki:lint:types', 'ki:lint:md', 'ki:lint:md:check']) {
       check(findings, 'WARN', `PKG-3 (${script})`, hasScript(pkg, script), `package.json should have a '${script}' script`)
     }
   }

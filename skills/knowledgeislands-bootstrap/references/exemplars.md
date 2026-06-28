@@ -48,15 +48,15 @@ mcp_servers = 20   # acknowledged overage; documented here for auditability
 The keystone linker also always links the baseline (`knowledgeislands-repo` + `knowledgeislands-authoring`) regardless of whether those
 tables appear — they are cascade-exempt universals.
 
-### The `skills:link:project` invocation
+### The `ki:skills:link:project` invocation
 
-The reproducibility contract requires a `skills:link:project` script in `package.json`. Running it once after a fresh clone re-wires
+The reproducibility contract requires a `ki:skills:link:project` script in `package.json`. Running it once after a fresh clone re-wires
 `.claude/skills/` from `.ki-config.toml` without any hard-coded paths:
 
 ```json
 {
   "scripts": {
-    "skills:link:project": "bun $HOME/.claude/skills/knowledgeislands-bootstrap/scripts/link-skills.ts"
+    "ki:skills:link:project": "bun $HOME/.claude/skills/knowledgeislands-bootstrap/scripts/link-skills.ts"
   }
 }
 ```
@@ -64,7 +64,7 @@ The reproducibility contract requires a `skills:link:project` script in `package
 Running it:
 
 ```bash
-bun run skills:link:project
+bun run ki:skills:link:project
 ```
 
 The keystone linker self-locates the harness through its own real path — no harness location is hard-coded in the script. On the harness
@@ -73,7 +73,7 @@ itself, the invocation adds `--all`:
 ```json
 {
   "scripts": {
-    "skills:link:project": "bun $HOME/.claude/skills/knowledgeislands-bootstrap/scripts/link-skills.ts --all"
+    "ki:skills:link:project": "bun $HOME/.claude/skills/knowledgeislands-bootstrap/scripts/link-skills.ts --all"
   }
 }
 ```
@@ -87,7 +87,7 @@ itself, the invocation adds `--all`:
 └── (no skills/ directory)
 ```
 
-**After** `bun run skills:link:project` — `.claude/skills/` contains relative symlinks for every declared skill plus the baseline:
+**After** `bun run ki:skills:link:project` — `.claude/skills/` contains relative symlinks for every declared skill plus the baseline:
 
 ```text
 .claude/
@@ -99,7 +99,7 @@ itself, the invocation adds `--all`:
     └── knowledgeislands-tokenomics -> ../../../arcadia-agentic-harness/skills/knowledgeislands-tokenomics
 ```
 
-The `.claude/skills/` directory is gitignored — the committed artifact is the `skills:link:project` script and a `.gitignore` line. The
+The `.claude/skills/` directory is gitignored — the committed artifact is the `ki:skills:link:project` script and a `.gitignore` line. The
 symlinks are regenerated, never committed.
 
 ### CLAUDE.md import pattern for skills

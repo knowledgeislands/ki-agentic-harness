@@ -94,15 +94,15 @@ try {
 const scripts = (pkg.scripts ?? {}) as Record<string, string>
 const name = String(pkg.name ?? basename(repo))
 
-// ── CI delta: the smoke step. The common CI shape (mise-action + lint:check / lint:types /
-// lint:md:check + test:coverage) is engineering's, asserted by audit-engineering.ts; the MCP
-// delta is the test:smoke step appended after it.
-if (scripts['test:smoke'] && has('.github', 'workflows', 'ci.yml')) {
-  read('.github', 'workflows', 'ci.yml').includes('bun run test:smoke')
-    ? add('PASS', 'ci', 'ci.yml runs test:smoke (MCP delta, after the common gate)')
-    : add('FAIL', 'ci', 'ci.yml must run "bun run test:smoke" — the MCP delta, after the common engineering gate steps')
+// ── CI delta: the smoke step. The common CI shape (mise-action + ki:lint:check / ki:lint:types /
+// ki:lint:md:check + test:coverage) is engineering's, asserted by audit-engineering.ts; the MCP
+// delta is the ki:test:smoke step appended after it.
+if (scripts['ki:test:smoke'] && has('.github', 'workflows', 'ci.yml')) {
+  read('.github', 'workflows', 'ci.yml').includes('bun run ki:test:smoke')
+    ? add('PASS', 'ci', 'ci.yml runs ki:test:smoke (MCP delta, after the common gate)')
+    : add('FAIL', 'ci', 'ci.yml must run "bun run ki:test:smoke" — the MCP delta, after the common engineering gate steps')
 }
-if (scripts['test:smoke']) runCheck('smoke', 'test:smoke', 'bun run test:smoke')
+if (scripts['ki:test:smoke']) runCheck('smoke', 'ki:test:smoke', 'bun run ki:test:smoke')
 
 const eq = (area: string, key: string, actual: unknown, want: unknown) =>
   actual === want
@@ -122,10 +122,10 @@ for (const k of ['.', './config', './package.json']) {
   exp[k] !== undefined ? add('PASS', 'package', `exports has "${k}"`) : add('FAIL', 'package', `exports missing "${k}"`)
 }
 
-// MCP scripts: only the server:mcp:* surface is MCP-specific. The lint:*/deps:*/build/clean/
+// MCP scripts: only the ki:server:mcp:* surface is MCP-specific. The ki:lint:*/deps:*/build/clean/
 // test* families, the `bun test` trap, NODE_ENV-in-dev, and the cli-chmod rule are the common
 // engineering layer (audit-engineering.ts).
-for (const k of ['server:mcp:dev', 'server:mcp:inspect', 'server:mcp:start']) {
+for (const k of ['ki:server:mcp:dev', 'ki:server:mcp:inspect', 'ki:server:mcp:start']) {
   scripts[k] ? add('PASS', 'scripts', `${k} present`) : add('WARN', 'scripts', `MCP script "${k}" missing`)
 }
 

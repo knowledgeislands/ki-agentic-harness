@@ -16,12 +16,12 @@ inconsistent.
 All Knowledge Islands TypeScript repos use:
 
 - **Bun** for package management and script execution (`bun install`, `bun run <script>`, `bun scripts/…`)
-- **Biome** for linting and formatting TypeScript and JSON (`bun run lint:check` invokes Biome)
-- **tsc `--noEmit`** for type-checking (`bun run lint:types`)
-- **Prettier + markdownlint** for Markdown (`bun run lint:md` writes; `bun run lint:md:check` is the CI gate)
+- **Biome** for linting and formatting TypeScript and JSON (`bun run ki:lint:check` invokes Biome)
+- **tsc `--noEmit`** for type-checking (`bun run ki:lint:types`)
+- **Prettier + markdownlint** for Markdown (`bun run ki:lint:md` writes; `bun run ki:lint:md:check` is the CI gate)
 
-The script families (`lint:check`, `lint:types`, `lint:md`, `lint:md:check`) are required in every repo's `package.json`. Capability-gated
-families (test, build, CLI) are added when the repo opts into the capability.
+The script families (`ki:lint:check`, `ki:lint:types`, `ki:lint:md`, `ki:lint:md:check`) are required in every repo's `package.json`.
+Capability-gated families (test, build, CLI) are added when the repo opts into the capability.
 
 ## Consequences
 

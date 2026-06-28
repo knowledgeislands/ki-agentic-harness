@@ -80,7 +80,7 @@ at once. Install dependencies once with `bun install`.
 ### Install the keystone, once per machine
 
 ```bash
-bun run skills:link:global    # symlink just knowledgeislands-bootstrap into ~/.claude/skills
+bun run ki:skills:link:global    # symlink just knowledgeislands-bootstrap into ~/.claude/skills
 ```
 
 Under the hood this is `bun scripts/sync-skills.ts link --only knowledgeislands-bootstrap`. It is idempotent: it refreshes the existing
@@ -93,13 +93,13 @@ In the repo you want to work in, the keystone links its `.claude/skills/` from t
 (`[knowledgeislands-*]` tables), plus the `knowledgeislands-repo` + `knowledgeislands-authoring` baseline:
 
 ```bash
-bun run skills:link:project   # in the target repo: link .claude/skills/ from .ki-config.toml
+bun run ki:skills:link:project   # in the target repo: link .claude/skills/ from .ki-config.toml
 ```
 
-These symlinks are **gitignored and regenerated** — the committed artifacts are the `skills:link:project` script and the `.gitignore` line,
-never the links themselves (which would dangle on a clone that does not have the harness checked out beside it). Re-run after editing the
-repo's coverage tables or pulling new skills. Preview with `--dry-run`; the harness itself authors every skill, so it links **all** of them
-rather than a coverage subset (`--all`).
+These symlinks are **gitignored and regenerated** — the committed artifacts are the `ki:skills:link:project` script and the `.gitignore`
+line, never the links themselves (which would dangle on a clone that does not have the harness checked out beside it). Re-run after editing
+the repo's coverage tables or pulling new skills. Preview with `--dry-run`; the harness itself authors every skill, so it links **all** of
+them rather than a coverage subset (`--all`).
 
 ### Without the script (plain shell)
 
@@ -161,22 +161,22 @@ under that name and its location on disk is not stable.
 ## Development
 
 This repository follows the Knowledge Islands house toolchain — itself codified in the `knowledgeislands-engineering` skill, which this repo
-conforms to (`bun run engineering:audit .`): [Bun](https://bun.sh) as the package manager, [Biome](https://biomejs.dev) for the TypeScript
-(the sync script, the per-skill checkers, the eval harness), and Prettier with markdownlint-cli2 for the markdown that makes up the skills.
-A husky pre-commit hook runs `lint-staged` over changed files.
+conforms to (`bun run ki:engineering:audit .`): [Bun](https://bun.sh) as the package manager, [Biome](https://biomejs.dev) for the
+TypeScript (the sync script, the per-skill checkers, the eval harness), and Prettier with markdownlint-cli2 for the markdown that makes up
+the skills. A husky pre-commit hook runs `lint-staged` over changed files.
 
 ```bash
 bun install        # install dev dependencies and wire the git hook
-bun run lint:check # Biome lint/format check (TypeScript + JSON)
-bun run lint:fix   # Biome, auto-fixing
-bun run lint:md    # Prettier + markdownlint over all markdown
-bun run lint:types # tsc --noEmit
-bun run lint:package # syncpack: keep package.json sorted
-bun run skills:lint  # audit every skill's mechanical criteria (knowledgeislands-skills rubric)
-bun run eval         # advisory behavioural eval suite (see ../evals/)
+bun run ki:lint:check # Biome lint/format check (TypeScript + JSON)
+bun run ki:lint:fix   # Biome, auto-fixing
+bun run ki:lint:md    # Prettier + markdownlint over all markdown
+bun run ki:lint:types # tsc --noEmit
+bun run ki:lint:package # syncpack: keep package.json sorted
+bun run ki:skills:lint  # audit every skill's mechanical criteria (knowledgeislands-skills rubric)
+bun run ki:eval         # advisory behavioural eval suite (see ../evals/)
 ```
 
-`skills:lint` runs the mechanical half of the [`knowledgeislands-skills`](../skills/knowledgeislands-skills/SKILL.md) rubric over every
+`ki:skills:lint` runs the mechanical half of the [`knowledgeislands-skills`](../skills/knowledgeislands-skills/SKILL.md) rubric over every
 skill (frontmatter, naming, length caps, link resolution); the judgment half is applied by that skill when you ask it to audit one. Several
-skills also expose a repo-level audit script — `engineering:audit`, `repo:audit`, `kb:audit`, `streams:audit`, `tokenomics:audit`,
-`harness:audit` — that runs their mechanical checker over a target.
+skills also expose a repo-level audit script — `ki:engineering:audit`, `ki:repo:audit`, `ki:kb:audit`, `ki:streams:audit`,
+`ki:tokenomics:audit`, `ki:harness:audit` — that runs their mechanical checker over a target.

@@ -72,7 +72,7 @@ restates) carries its 2026-06-18 date. No drift: nothing in the standard, rubric
 - **`skills-ref` validator:** the `validate` CLI is documented but not the validator internals; the frontmatter + naming rules it enforces
   are fully specified on the SPEC page (which links skills-ref as the validator), so the mechanical baseline (NAME / DESC / OPT) is
   confirmed there.
-- **In-house scan:** `bun run skills:lint` — all **thirteen** `knowledgeislands-*` skills PASS for FAIL, 0 fail. One WARN (REF-3) on
+- **In-house scan:** `bun run ki:skills:lint` — all **thirteen** `knowledgeislands-*` skills PASS for FAIL, 0 fail. One WARN (REF-3) on
   `knowledgeislands-mcp`'s own `sources.md` — out of scope for this skill's refresh.
 - **No standard, rubric, or linter change this run.**
 - **Open watch-items:** none outstanding. Next refresh, re-fetch `superpowers` directly (carried forward this run) and confirm the

@@ -86,8 +86,8 @@ could be confused and shows the process loops that run across them.
 
 ```bash
 bun install                  # install dev dependencies and wire the git hook
-bun run skills:link:global   # install just the keystone into ~/.claude/skills (re-runnable)
-bun run skills:link:project  # wire this repo's .claude/skills/ (the harness links --all)
+bun run ki:skills:link:global   # install just the keystone into ~/.claude/skills (re-runnable)
+bun run ki:skills:link:project  # wire this repo's .claude/skills/ (the harness links --all)
 ```
 
 Only `knowledgeislands-bootstrap` is installed globally; every other skill is project-local, wired into each repo's `.claude/skills/` from

@@ -163,7 +163,7 @@ all documentation and CI.
 
 - Contributors need Bun installed; the README documents the install step.
 - `bun.lockb` is committed and binary-diffed in PRs.
-- The husky pre-commit hook wires through `bun run lint:check`.
+- The husky pre-commit hook wires through `bun run ki:lint:check`.
 
 ## References
 

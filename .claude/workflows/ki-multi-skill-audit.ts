@@ -37,7 +37,7 @@ const collResult = await agent(
 
 Run the two set-level collision checks and report only these — do not start per-skill work yet:
 
-1. COLL-1 (name uniqueness): Run \`bun run skills:lint\` from the harness root. Capture the output verbatim. Report any FAIL or WARN findings about duplicate names.
+1. COLL-1 (name uniqueness): Run \`bun run ki:skills:lint\` from the harness root. Capture the output verbatim. Report any FAIL or WARN findings about duplicate names.
 2. COLL-2 (description off-ramp reciprocity): Read the \`description:\` frontmatter field of every \`SKILL.md\` in \`skills/\`. For each pair of skills whose descriptions share trigger phrases, check that each names the other as an off-ramp. Report any one-directional guards.
 
 Return a plain summary: COLL-1 result (pass/fail + findings), COLL-2 result (pass/fail + findings).`,
@@ -63,7 +63,7 @@ const CONCERNS = [
   { name: "11ty-websites", checker: "bun skills/knowledgeislands-11ty-websites/scripts/audit-websites.ts", scopeGated: true },
   { name: "cloudflare-hosting", checker: "bun skills/knowledgeislands-cloudflare-hosting/scripts/audit-cloudflare-hosting.ts", scopeGated: true },
   { name: "agents", checker: "bun skills/knowledgeislands-agents/scripts/lint-agents.ts", scopeGated: true },
-  { name: "skills", checker: "bun run skills:lint", scopeGated: false },
+  { name: "skills", checker: "bun run ki:skills:lint", scopeGated: false },
   { name: "tokenomics", checker: "bun skills/knowledgeislands-tokenomics/scripts/audit-tokenomics.ts", scopeGated: false },
   { name: "harness", checker: "bun skills/knowledgeislands-harness/scripts/audit-harness.ts", scopeGated: false },
 ];

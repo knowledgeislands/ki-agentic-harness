@@ -144,24 +144,24 @@ values. Note: `tailwindcss` must be listed as its own dependency (not just trans
 
 ### `package.json` — the site script family
 
-Scripts for the `site/` workspace of a monorepo. All site scripts take the `site:` prefix. `site:dev` uses `concurrently` to run the
-Tailwind `--watch` process (`site:dev:css`) and the Eleventy dev server (`site:dev:serve`) in parallel, named `css`,`11ty`. `site:build`
-invokes the Eleventy CLI via `node --experimental-strip-types` (or plain `bun`) directly — the `eleventy.before` hook handles Tailwind
-minification inside the same process. `site:deploy` and `site:preview` are the hosting scripts (governed by
+Scripts for the `site/` workspace of a monorepo. All site scripts take the `site:` prefix. `ki:site:dev` uses `concurrently` to run the
+Tailwind `--watch` process (`ki:site:dev:css`) and the Eleventy dev server (`ki:site:dev:serve`) in parallel, named `css`,`11ty`.
+`ki:site:build` invokes the Eleventy CLI via `node --experimental-strip-types` (or plain `bun`) directly — the `eleventy.before` hook
+handles Tailwind minification inside the same process. `ki:site:deploy` and `ki:site:preview` are the hosting scripts (governed by
 `knowledgeislands-cloudflare-hosting`); they appear here because they live in the same root `package.json` in the monorepo shape.
 
 ```json
 {
   "scripts": {
-    "site:dev": "concurrently --names css,11ty --prefix-colors cyan,yellow \"bun run site:dev:css\" \"bun run site:dev:serve\"",
-    "site:dev:css": "cd site && bunx tailwindcss -i src/assets/css/main.css -o ../dist/assets/css/main.css --watch",
-    "site:dev:serve": "cd site && node --experimental-strip-types ../node_modules/@11ty/eleventy/cmd.cjs --config=eleventy.config.ts --serve --port 3000",
-    "site:build": "cd site && node --experimental-strip-types ../node_modules/@11ty/eleventy/cmd.cjs --config=eleventy.config.ts",
-    "site:clean": "rm -rf dist site/.wrangler",
-    "site:types": "bunx tsc --noEmit -p site",
-    "site:verify": "bun run site:types && bun run site:build",
-    "site:deploy": "cd site && bunx wrangler deploy",
-    "site:preview": "bun run site:build && cd site && bunx wrangler dev"
+    "ki:site:dev": "concurrently --names css,11ty --prefix-colors cyan,yellow \"bun run ki:site:dev:css\" \"bun run ki:site:dev:serve\"",
+    "ki:site:dev:css": "cd site && bunx tailwindcss -i src/assets/css/main.css -o ../dist/assets/css/main.css --watch",
+    "ki:site:dev:serve": "cd site && node --experimental-strip-types ../node_modules/@11ty/eleventy/cmd.cjs --config=eleventy.config.ts --serve --port 3000",
+    "ki:site:build": "cd site && node --experimental-strip-types ../node_modules/@11ty/eleventy/cmd.cjs --config=eleventy.config.ts",
+    "ki:site:clean": "rm -rf dist site/.wrangler",
+    "ki:site:types": "bunx tsc --noEmit -p site",
+    "ki:site:verify": "bun run ki:site:types && bun run ki:site:build",
+    "ki:site:deploy": "cd site && bunx wrangler deploy",
+    "ki:site:preview": "bun run ki:site:build && cd site && bunx wrangler dev"
   }
 }
 ```

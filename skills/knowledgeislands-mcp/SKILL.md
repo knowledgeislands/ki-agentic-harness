@@ -100,9 +100,9 @@ Auditing all the `mcp-*` servers at once is a set audit — **bound the context*
 
 1. **Identify the target.** Confirm the repo path (default: the cwd repo). Note its `<app>` prefix and which tool groups it ships.
 2. **Run both mechanical checkers — the common layer first.** `bun knowledgeislands-engineering/scripts/audit-engineering.ts <repo-path>`
-   covers the shared toolchain (package.json metadata + the `lint:*`/`deps:*` families, the `bun test` trap, tsconfig/biome/vitest with 100%
-   coverage, `.env`, the build/cli-chmod rule). Then `bun <skill>/scripts/audit-mcp.ts <repo-path>` (or `node` after build) covers the **MCP
-   delta**: presence/shape of `src/` layers, `main`/`bin`/ `exports`, the shared `utils/` helpers, tool names, and the MCP
+   covers the shared toolchain (package.json metadata + the `ki:lint:*`/`ki:deps:*` families, the `bun test` trap, tsconfig/biome/vitest
+   with 100% coverage, `.env`, the build/cli-chmod rule). Then `bun <skill>/scripts/audit-mcp.ts <repo-path>` (or `node` after build) covers
+   the **MCP delta**: presence/shape of `src/` layers, `main`/`bin`/ `exports`, the shared `utils/` helpers, tool names, and the MCP
    coverage-excludes. Both grade findings on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — see
    `knowledgeislands-engineering`'s enforcement-framework §2), exit non-zero on any FAIL, and with `--json` / `--report` emit
    machine-readable findings and write the latest report under the target's `.ki-meta/audits/<concern>.{md,json}` (`audit-mcp.ts` → `mcp`).
@@ -132,11 +132,12 @@ Auditing all the `mcp-*` servers at once is a set audit — **bound the context*
 1. Run **AUDIT** first, so you change against a known gap list.
 2. Fix the gaps in place: restore the `src/` layer boundaries (schema+envelope in `tools/`, logic in `main/` config-first, printing in
    `cli/`, wiring in `mcp-server/`), the shared `utils/` helpers, and the MCP `package.json` delta (`main` / `bin` / `exports` /
-   `server:mcp:*`) — **copy from the closest healthy sibling** rather than invent. For the common toolchain block (`tsconfig*` / `vitest` /
-   `biome` / the script families), run `knowledgeislands-engineering`'s CONFORM.
-3. **Re-generate the typed client** if the tool surface changed: `bun run generate:client` in the repo (or `bun run codegen` from the
+   `ki:server:mcp:*`) — **copy from the closest healthy sibling** rather than invent. For the common toolchain block (`tsconfig*` / `vitest`
+   / `biome` / the script families), run `knowledgeislands-engineering`'s CONFORM.
+3. **Re-generate the typed client** if the tool surface changed: `bun run ki:generate:client` in the repo (or `bun run ki:codegen` from the
    harness root to do all repos). Verify the `<server-name>` in the script matches a registered mcporter instance (`mcporter list`).
-4. Re-run both checkers + tests; `bun run test` (NOT `bun test`), `bun run lint:check`, `bun run lint:types` must pass with 100% coverage.
+4. Re-run both checkers + tests; `bun run test` (NOT `bun test`), `bun run ki:lint:check`, `bun run ki:lint:types` must pass with 100%
+   coverage.
 
 ### Mode INIT — scaffold a new MCP server
 
@@ -146,9 +147,9 @@ Auditing all the `mcp-*` servers at once is a set audit — **bound the context*
 2. Keep the layer boundaries from day one: schema+envelope in `tools/`, logic in `main/` (config slice first), printing only in `cli/`,
    wiring only in `mcp-server/`. Add tools with explicit `annotations` presets.
 3. **Wire the typed client.** Register the new repo in `arcadia-agentic-harness/scripts/generate-clients.ts`, set the `<server-name>` in the
-   repo's `generate:client` script to a registered mcporter instance (`mcporter list`), then run `bun run generate:client` to emit the
+   repo's `ki:generate:client` script to a registered mcporter instance (`mcporter list`), then run `bun run ki:generate:client` to emit the
    initial `src/generated/client.ts`. Commit the generated file.
-4. Run the checker + tests; `bun run test` (NOT `bun test`), `bun run lint:check`, `bun run lint:types` must pass with 100% coverage.
+4. Run the checker + tests; `bun run test` (NOT `bun test`), `bun run ki:lint:check`, `bun run ki:lint:types` must pass with 100% coverage.
 
 ### Mode REFRESH — re-anchor the standard to the latest MCP spec
 
@@ -177,9 +178,9 @@ has moved on. Run it on its declared cadence (see `references/sources.md`), or w
 ## Bun vs Node — the common layer
 
 The Bun-install / Node-run split, the **`bun test` trap**, and the `process.loadEnvFile()` parity call are the **common engineering
-standard** — `knowledgeislands-engineering` owns and checks them (run `engineering:audit`). The one MCP-relevant consequence to keep in
-mind: `NODE_ENV=development` is set only by the `server:mcp:dev` / `:inspect` scripts, so in production `.env.*` is ignored and config must
-come from the MCP client's `env` block.
+standard** — `knowledgeislands-engineering` owns and checks them (run `ki:engineering:audit`). The one MCP-relevant consequence to keep in
+mind: `NODE_ENV=development` is set only by the `ki:server:mcp:dev` / `:inspect` scripts, so in production `.env.*` is ignored and config
+must come from the MCP client's `env` block.
 
 ## Notes
 

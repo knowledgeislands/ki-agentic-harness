@@ -2,11 +2,11 @@
 name: knowledgeislands-bootstrap
 description: >
   Wires a Knowledge Islands repo's project-local skills (`.claude/skills/`) from its `.ki-config.toml`. Use when setting up or auditing a
-  repo's skill links, bootstrapping a fresh clone so the right skills load, or adding the `skills:link:project` convention to a repo for the
-  first time. Triggers: "set up this repo's skills", "bootstrap the skills", "add skills:link:project", "wire project-local skills", "why
-  aren't my skills loading in this repo". This is the install keystone — the one knowledgeislands skill kept installed globally, so any repo
-  can self-wire. For the `.ki-config.toml` contents and the coverage cascade (which skills a repo should declare) and GitHub settings use
-  `knowledgeislands-repo`; for the harness's four-part layout use `knowledgeislands-harness`.
+  repo's skill links, bootstrapping a fresh clone so the right skills load, or adding the `ki:skills:link:project` convention to a repo for
+  the first time. Triggers: "set up this repo's skills", "bootstrap the skills", "add ki:skills:link:project", "wire project-local skills",
+  "why aren't my skills loading in this repo". This is the install keystone — the one knowledgeislands skill kept installed globally, so any
+  repo can self-wire. For the `.ki-config.toml` contents and the coverage cascade (which skills a repo should declare) and GitHub settings
+  use `knowledgeislands-repo`; for the harness's four-part layout use `knowledgeislands-harness`.
 argument-hint: 'audit [path] | conform [path] | refresh'
 ---
 
@@ -26,8 +26,8 @@ applies.
   **plus a baseline of `knowledgeislands-repo` + `knowledgeislands-authoring`** (so a greenfield repo with no tables can still reach repo's
   INIT, and Markdown/TOML style is always governed). The keystone itself is never linked project-local — it is global.
 - Links are **relative symlinks** into the harness's `skills/`, **gitignored and regenerated** — the committed artifacts are a
-  `skills:link:project` package.json script and the `.gitignore` line, never the symlinks (which would dangle on a clone without the harness
-  beside it).
+  `ki:skills:link:project` package.json script and the `.gitignore` line, never the symlinks (which would dangle on a clone without the
+  harness beside it).
 - The **harness** (`arcadia-agentic-harness`) is the authoring hub: it links **all** skills (`--all`), not a coverage subset.
 
 The linker and checker is [`scripts/link-skills.ts`](scripts/link-skills.ts); it self-locates the harness through its own (symlinked) path.
@@ -38,19 +38,20 @@ reads — it never edits the config's coverage, only mirrors it.
 ## Mode AUDIT — check a repo's project-local skills
 
 1. **Run the checker.** `bun "$HOME/.claude/skills/knowledgeislands-bootstrap/scripts/link-skills.ts" [path] --check` (or
-   `bun run skills:link:project --check` if wired, or run it from this skill's directory). It reports on the unified severity ladder
+   `bun run ki:skills:link:project --check` if wired, or run it from this skill's directory). It reports on the unified severity ladder
    (`knowledgeislands-engineering` enforcement-framework §2): **BOOT-1** `.claude/skills/` matches declared coverage ∪ baseline (and no
-   dangling links), **BOOT-2** a `skills:link:project` script is present, **BOOT-3** `.claude/skills/` is gitignored.
+   dangling links), **BOOT-2** a `ki:skills:link:project` script is present, **BOOT-3** `.claude/skills/` is gitignored.
 2. **Judge the [J] criterion by reading** — is the repo's _declared_ coverage actually right (does it opt into the skills it uses)? That is
    `knowledgeislands-repo`'s coverage cascade, not this skill's; name it as the off-ramp rather than re-deciding it here.
-3. **Report** by criterion. A missing/dangling link or absent `skills:link:project`/gitignore is a WARN — all are conformable, none block.
+3. **Report** by criterion. A missing/dangling link or absent `ki:skills:link:project`/gitignore is a WARN — all are conformable, none
+   block.
 
 ## Mode CONFORM — wire a repo
 
 1. Run **AUDIT** first.
 2. **Link** the project-local set: `bun "$HOME/.claude/skills/knowledgeislands-bootstrap/scripts/link-skills.ts" [path]` (the harness uses
    `--all`). It creates/prunes relative symlinks under `.claude/skills/` to match declared coverage ∪ baseline. Preview with `--dry-run`.
-3. **Make it reproducible:** ensure `package.json` has `"skills:link:project"` invoking the keystone linker, and `.gitignore` carries
+3. **Make it reproducible:** ensure `package.json` has `"ki:skills:link:project"` invoking the keystone linker, and `.gitignore` carries
    `.claude/skills/`. (The keystone must be globally installed — `bun scripts/sync-skills.ts link --only knowledgeislands-bootstrap` from
    the harness.)
 4. **Re-run AUDIT** until clean.
@@ -58,7 +59,7 @@ reads — it never edits the config's coverage, only mirrors it.
 ## Mode REFRESH — re-anchor
 
 Canonical, on-change: this skill tracks no external spec. Re-anchor when the install model changes — the coverage-table contract
-(`knowledgeislands-repo`), the skill-discovery locations Claude Code reads, or the `skills:link:project` convention. Read
+(`knowledgeislands-repo`), the skill-discovery locations Claude Code reads, or the `ki:skills:link:project` convention. Read
 [the source list](references/sources.md), confirm the standard still matches the reference implementation, propose a diff, bump the dates.
 
 ## Notes

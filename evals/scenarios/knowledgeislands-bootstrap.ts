@@ -28,12 +28,12 @@ export const scenarios: Scenario[] = [
     prompt:
       'Our project-local skill symlinks under `.claude/skills/` are gitignored. So what actually gets committed to make skill-linking reproducible on a fresh clone, and why not the symlinks themselves?',
     assertions: [
-      { name: 'skills:link:project script committed', re: /skills:link:project/i },
+      { name: 'ki:skills:link:project script committed', re: /skills:link:project/i },
       { name: '.gitignore line committed', re: /\.gitignore/i },
       { name: 'symlinks would dangle / regenerated', re: /dangl|regenerat|gitignored/i }
     ],
     rubric:
-      "House rule: the links are **relative symlinks, gitignored and regenerated**. The **committed artifacts are the `skills:link:project` package.json script and the `.gitignore` line** — never the symlinks themselves, which would **dangle** on a clone that doesn't have the harness checked out beside it. A correct answer names the committed `skills:link:project` script and the gitignore entry, and explains the symlinks are regenerated (would otherwise dangle)."
+      "House rule: the links are **relative symlinks, gitignored and regenerated**. The **committed artifacts are the `ki:skills:link:project` package.json script and the `.gitignore` line** — never the symlinks themselves, which would **dangle** on a clone that doesn't have the harness checked out beside it. A correct answer names the committed `ki:skills:link:project` script and the gitignore entry, and explains the symlinks are regenerated (would otherwise dangle)."
   },
   {
     skill: 'knowledgeislands-bootstrap',

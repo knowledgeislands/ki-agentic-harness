@@ -120,43 +120,43 @@ Skip this whole section for the filesystem/subprocess repos.
       SHOULD; standard §13 item 8)
 
 > **Common toolchain → `knowledgeislands-engineering`.** The four sections below cover only the **MCP delta**. The generic toolchain — the
-> `lint:*`/`deps:*` families, the `bun test` trap, `tsconfig`/`biome`/`vitest` shape with 100% coverage, the `.env*.example` template, the
-> build/cli-chmod rule — is the common engineering layer; **run `engineering:audit` first** for it. A repo is fully clean only when both
-> audits pass.
+> `ki:lint:*`/`ki:deps:*` families, the `bun test` trap, `tsconfig`/`biome`/`vitest` shape with 100% coverage, the `.env*.example` template,
+> the build/cli-chmod rule — is the common engineering layer; **run `ki:engineering:audit` first** for it. A repo is fully clean only when
+> both audits pass.
 
 ## Bun vs Node
 
 - [ ] — the `bun test` trap, `process.loadEnvFile()` parity, and `NODE_ENV`-only-in-dev are the **common engineering layer** (run
-      `engineering:audit`); not re-checked here. MCP consequence: production ignores `.env.*`, so config comes from the client's `env`
+      `ki:engineering:audit`); not re-checked here. MCP consequence: production ignores `.env.*`, so config comes from the client's `env`
       block.
 
 ## package.json
 
 - [ ] [M] WARN — `main:dist/mcp-server/index.js`; `bin.mcp-<name>` → `dist/mcp-server/index.js` (+ CLI/auth bin where applicable).
 - [ ] [M] WARN — `exports` has `.`, `./config`, `./package.json` + one per reusable `main/<concern>`.
-- [ ] [M] WARN — `server:mcp:dev` / `server:mcp:inspect` / `server:mcp:start` present (OAuth repos add `server:auth:*`).
-- [ ] [M] WARN — where the repo has a `test:smoke` harness, `.github/workflows/ci.yml` runs `bun run test:smoke` after the common gate. The
-      common CI shape (mise-action + `lint:check` / `lint:types` / `lint:md:check` / `test:coverage`) is `knowledgeislands-engineering`'s
-      (`engineering:audit`); the smoke step is the MCP delta.
-- [ ] [J] WARN — `generate:client` script is present; `src/generated/client.ts` is committed and not stale. If tools were
+- [ ] [M] WARN — `ki:server:mcp:dev` / `ki:server:mcp:inspect` / `ki:server:mcp:start` present (OAuth repos add `ki:server:auth:*`).
+- [ ] [M] WARN — where the repo has a `ki:test:smoke` harness, `.github/workflows/ci.yml` runs `bun run ki:test:smoke` after the common
+      gate. The common CI shape (mise-action + `ki:lint:check` / `ki:lint:types` / `ki:lint:md:check` / `test:coverage`) is
+      `knowledgeislands-engineering`'s (`ki:engineering:audit`); the smoke step is the MCP delta.
+- [ ] [J] WARN — `ki:generate:client` script is present; `src/generated/client.ts` is committed and not stale. If tools were
       added/removed/renamed, or their input schema or return shape changed, since the last commit of `src/generated/`, re-run
-      `bun run generate:client` (or `bun run codegen` from the harness root) before shipping. The `<server-name>` argument in the script
-      must match a registered mcporter instance — verify with `mcporter list`.
-- [ ] — `type`/`packageManager`/`engines`/`files`, the `lint:*`/`deps:*`/`build`/`clean`/`test*`/`prepare` families, and the build/cli-chmod
-      rule are the **common engineering layer** (`engineering:audit`); not re-checked here.
+      `bun run ki:generate:client` (or `bun run ki:codegen` from the harness root) before shipping. The `<server-name>` argument in the
+      script must match a registered mcporter instance — verify with `mcporter list`.
+- [ ] — `type`/`packageManager`/`engines`/`files`, the `ki:lint:*`/`ki:deps:*`/`build`/`clean`/`test*`/`prepare` families, and the
+      build/cli-chmod rule are the **common engineering layer** (`ki:engineering:audit`); not re-checked here.
 
 ## tsconfig / vitest / biome
 
 - [ ] [M] WARN — vitest coverage `exclude` covers the MCP wiring layers: `mcp-server/index.ts`, `tools/**/index.ts`, `utils/annotations.ts`,
       and any printing/pure-data module (`cli/cli.ts`, `auth-server/**`).
 - [ ] — `tsconfig.json` / `tsconfig.build.json` / `biome.json` shape and the vitest 100% thresholds are the **common engineering layer**
-      (`engineering:audit`); not re-checked here.
+      (`ki:engineering:audit`); not re-checked here.
 
 ## .env.example & env
 
 - [ ] [M] WARN — `.env.example` uses the `MCP_<APP>_*` prefix and carries the shared access-level + audit-log block.
 - [ ] — the committed `.env*.example` template, gitignored real `.env.*`, and the `process.loadEnvFile` parity call are the **common
-      engineering layer** (`engineering:audit`).
+      engineering layer** (`ki:engineering:audit`).
 
 ## Docs
 

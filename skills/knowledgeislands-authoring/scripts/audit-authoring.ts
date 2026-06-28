@@ -4,7 +4,7 @@
  *
  *   bun scripts/audit-authoring.ts <repo-path>
  *
- * Mechanical half: delegates to `bun run lint:md:check` (Prettier + markdownlint-cli2)
+ * Mechanical half: delegates to `bun run ki:lint:md:check` (Prettier + markdownlint-cli2)
  * so every check the toolchain enforces is surfaced here without duplication.
  *
  * Judgment half: surfaces the [J] criteria from references/audit-rubric.md as
@@ -43,32 +43,32 @@ const read = (...p: string[]): string => {
   }
 }
 
-// ── mechanical: run lint:md:check via the repo's toolchain ────────────────────
-// We require the repo to have package.json with a lint:md:check script;
+// ── mechanical: run ki:lint:md:check via the repo's toolchain ────────────────────
+// We require the repo to have package.json with a ki:lint:md:check script;
 // if it does, we exec it and surface success or failure as a single finding.
 let pkg: Record<string, unknown> = {}
 try {
   pkg = JSON.parse(read('package.json'))
 } catch {
-  add('WARN', 'toolchain', 'package.json missing or unparseable — cannot run lint:md:check')
+  add('WARN', 'toolchain', 'package.json missing or unparseable — cannot run ki:lint:md:check')
 }
 const scripts = (pkg.scripts ?? {}) as Record<string, string>
 const name = String(pkg.name ?? basename(repo))
 
-if (!scripts['lint:md:check']) {
+if (!scripts['ki:lint:md:check']) {
   add(
     'WARN',
     'toolchain',
-    'no "lint:md:check" script in package.json — Markdown mechanical gate not wired (knowledgeislands-engineering owns the canonical form)'
+    'no "ki:lint:md:check" script in package.json — Markdown mechanical gate not wired (knowledgeislands-engineering owns the canonical form)'
   )
 } else {
   try {
-    execSync('bun run lint:md:check', { cwd: repo, stdio: ['pipe', 'pipe', 'pipe'], encoding: 'utf8' })
-    add('PASS', 'md-mech', 'lint:md:check passed — Prettier + markdownlint clean (MD-mech)')
+    execSync('bun run ki:lint:md:check', { cwd: repo, stdio: ['pipe', 'pipe', 'pipe'], encoding: 'utf8' })
+    add('PASS', 'md-mech', 'ki:lint:md:check passed — Prettier + markdownlint clean (MD-mech)')
   } catch (err) {
     const out = (err as { stdout?: string; stderr?: string }).stdout ?? ''
     const detail = out.trim().split('\n').slice(0, 8).join('\n    ')
-    add('FAIL', 'md-mech', `lint:md:check failed — run "bun run lint:md" to fix (MD-mech)\n    ${detail}`)
+    add('FAIL', 'md-mech', `ki:lint:md:check failed — run "bun run ki:lint:md" to fix (MD-mech)\n    ${detail}`)
   }
 }
 

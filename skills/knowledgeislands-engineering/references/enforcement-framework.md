@@ -29,7 +29,7 @@ Each governance skill is a directory of this shape (loaded on demand — keep `S
 - **`references/audit-rubric.md`** — the line-by-line checkable criteria (§3).
 - **`references/sources.md`** — the tracked provenance (§4).
 - **a mechanical checker** in `scripts/` (§2) — or, where the toolchain already enforces the mechanical half (authoring's
-  `bun run lint:md`), a pointer to it.
+  `bun run ki:lint:md`), a pointer to it.
 
 ## 2. The mechanical-checker contract
 
@@ -109,7 +109,7 @@ Every governance skill exposes the universal three, plus skill-specific ones whe
 
 - **AUDIT** — run the checker, capture its output, then apply the judgment criteria; report by location → criterion → fix. **Audits
   compose**: auditing a target runs every _applicable_ skill's audit and names the siblings it composes with (e.g. an MCP repo =
-  `engineering:audit` for the common layer + `audit-mcp.ts` for the MCP delta + the repo and skills audits where they apply). A target is
+  `ki:engineering:audit` for the common layer + `audit-mcp.ts` for the MCP delta + the repo and skills audits where they apply). A target is
   "clean" only when each applicable audit passes. Run each checker with **`--report`** so its latest report lands under the target's
   **`.ki-meta/audits/<concern>.{md,json}`** — the working-artifacts convention `knowledgeislands-repo` owns; the `.json` is the
   machine-readable substrate a composed audit merges, the `.md` the human report. Reports are **latest-only** (overwritten, no history).

@@ -51,8 +51,8 @@ shelf). Source: standard §CLAUDE.md §2. _Severity: WARN._
 May be brief with routes to `docs/` or the relevant skill. Source: standard §CLAUDE.md §3. _Severity: POLISH — missing conventions degrade
 developer UX but don't break correctness._
 
-**CLAUDE-4 [J]** `CLAUDE.md` lists the key `bun run *` toolchain commands (at minimum `skills:link:project` and `skills:lint`). Source:
-standard §CLAUDE.md §4. _Severity: POLISH._
+**CLAUDE-4 [J]** `CLAUDE.md` lists the key `bun run *` toolchain commands (at minimum `ki:skills:link:project` and `ki:skills:lint`).
+Source: standard §CLAUDE.md §4. _Severity: POLISH._
 
 **CLAUDE-5 [J]** `CLAUDE.md` reflects current state: skill counts, shelf statuses, and command names match the actual repo. Check against
 `package.json` and `skills/` directory listing. Source: standard §CLAUDE.md freshness rule. _Severity: WARN if counts or statuses are wrong;
@@ -62,15 +62,15 @@ POLISH for minor drift (a deprecated command listed but present)._
 
 ## PKG — package.json script families
 
-**PKG-1 [M]** `package.json` contains a `skills:link:project` script (the `knowledgeislands-bootstrap` delivery mechanism). Source: standard
-§package.json. _Severity: FAIL — the primary install mechanism is absent._
+**PKG-1 [M]** `package.json` contains a `ki:skills:link:project` script (the `knowledgeislands-bootstrap` delivery mechanism). Source:
+standard §package.json. _Severity: FAIL — the primary install mechanism is absent._
 
-**PKG-2 [M]** `package.json` contains a `skills:lint` script. Source: standard §package.json §skills:lint. _Severity: FAIL — the skill
+**PKG-2 [M]** `package.json` contains a `ki:skills:lint` script. Source: standard §package.json §ki:skills:lint. _Severity: FAIL — the skill
 quality gate is absent._
 
-**PKG-3 [M]** `package.json` contains the common engineering families: `lint:check`, `lint:types`, `lint:md`, `lint:md:check`. Source:
-standard §package.json, `knowledgeislands-engineering`'s toolchain standard. _Severity: WARN per missing script. (A harness with no
-TypeScript may omit `lint:check` / `lint:types` with a documented reason — check `.ki-config.toml` for an override before reporting.)_
+**PKG-3 [M]** `package.json` contains the common engineering families: `ki:lint:check`, `ki:lint:types`, `ki:lint:md`, `ki:lint:md:check`.
+Source: standard §package.json, `knowledgeislands-engineering`'s toolchain standard. _Severity: WARN per missing script. (A harness with no
+TypeScript may omit `ki:lint:check` / `ki:lint:types` with a documented reason — check `.ki-config.toml` for an override before reporting.)_
 
 ---
 
@@ -121,4 +121,4 @@ not the harness under audit — report separately._
 **COLL-1 [J]** The harness AUDIT mode names each sibling skill it composes on, and the harness `SKILL.md` description names the off-ramps
 for all four contents-governing skills (`knowledgeislands-skills`, `knowledgeislands-agents`, `knowledgeislands-mcp`,
 `knowledgeislands-engineering`, `knowledgeislands-repo`). Source: `knowledgeislands-skills` rubric COLL-2; `docs/design.md` _No silent
-collisions_. _Severity: WARN on the skill — check this when auditing the skill itself via `skills:lint`._
+collisions_. _Severity: WARN on the skill — check this when auditing the skill itself via `ki:skills:lint`._

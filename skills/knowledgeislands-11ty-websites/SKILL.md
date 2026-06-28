@@ -21,7 +21,7 @@ This is a **standard, base-agnostic Process skill**. It hard-codes no single rep
 `[knowledgeislands-11ty-websites]` table in its `.ki-config.toml`. How it sits beside the other skills, and where it must not overlap them,
 is documented once in the arcadia-agentic-harness `README.md`.
 
-This skill owns the **site-build delta** only. The generic toolchain (Bun mandate, `lint:*`/`deps:*` families,
+This skill owns the **site-build delta** only. The generic toolchain (Bun mandate, `ki:lint:*`/`ki:deps:*` families,
 `tsconfig`/`biome`/`tsc --noEmit`) is `knowledgeislands-engineering`'s; Markdown/TOML style is `knowledgeislands-authoring`'s; **serving the
 built `dist/`** on Cloudflare is `knowledgeislands-cloudflare-hosting`'s. It **composes** on top of those rather than restating them.
 
@@ -65,7 +65,7 @@ The checker is the **site-build layer**; the toolchain and hosting layers each a
 never by importing each other (each skill is symlinked standalone):
 
 ```text
-engineering:audit <repo>                          →  common toolchain (Bun, lint:*/deps:*, tsconfig/biome)
+ki:engineering:audit <repo>                          →  common toolchain (Bun, ki:lint:*/deps:*, tsconfig/biome)
   then audit-websites.ts <repo>                   →  site-build delta (THIS skill)
   then audit-cloudflare-hosting.ts <repo>         →  serving the dist/ (if the site is deployed to Cloudflare)
 ```
@@ -108,8 +108,8 @@ Carries the universal **AUDIT · CONFORM · REFRESH**, plus **INIT** (scaffold a
 2. Fix the gaps in place — use the canonical shape from [the standard](references/eleventy-site-standard.md): the lean layout (§2–§5) and
    the fuller patterns (tokens, layouts, SEO — §5–§7) as needed. Add the `[knowledgeislands-11ty-websites]` table if missing
    (`bun scripts/audit-websites.ts --init >> .ki-config.toml`).
-3. Re-run the checker; settle the repo's own `bun run lint:*` / `lint:types` (and `lint:md` for any Markdown). For the toolchain block, run
-   `knowledgeislands-engineering`'s CONFORM; for the deploy block, `knowledgeislands-cloudflare-hosting`'s.
+3. Re-run the checker; settle the repo's own `bun run ki:lint:*` / `ki:lint:types` (and `ki:lint:md` for any Markdown). For the toolchain
+   block, run `knowledgeislands-engineering`'s CONFORM; for the deploy block, `knowledgeislands-cloudflare-hosting`'s.
 
 ### Mode INIT — scaffold a new site
 
@@ -136,8 +136,8 @@ The standard pins volatile versions (Eleventy, Tailwind, Lucide) and Tailwind-4 
 
 Reciprocal off-ramps — each names this skill back for the site-build layer:
 
-- **The Bun mandate, `lint:*`/`deps:*` families, `tsconfig`/`biome`, type-check** → `knowledgeislands-engineering`. This skill owns the
-  _site-build_ delta on top of that common layer; it references it, never restates it.
+- **The Bun mandate, `ki:lint:*`/`ki:deps:*` families, `tsconfig`/`biome`, type-check** → `knowledgeislands-engineering`. This skill owns
+  the _site-build_ delta on top of that common layer; it references it, never restates it.
 - **Markdown / TOML formatting style** (including content prose) → `knowledgeislands-authoring`.
 - **Serving the built `dist/`** — the `wrangler.jsonc`, Workers + Static Assets, custom domains, deploy scripts →
   `knowledgeislands-cloudflare-hosting`. The `dist/` is the seam between the two.

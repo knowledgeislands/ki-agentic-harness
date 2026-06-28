@@ -1,13 +1,13 @@
 # Authoring audit rubric
 
 The checkable criteria behind the [Markdown authoring](markdown-authoring.md) and [TOML formatting](toml-config.md) conventions. Each is
-**[M] mechanical** (the house toolchain — Prettier + markdownlint-cli2 via `bun run lint:md`, Biome for TS/JSON — enforces it; never
+**[M] mechanical** (the house toolchain — Prettier + markdownlint-cli2 via `bun run ki:lint:md`, Biome for TS/JSON — enforces it; never
 hand-judge what a tool checks better) or **[J] judgment** (a reader assesses it). TOML has no formatter, so every TOML criterion is `[J]`.
 
 ## Markdown
 
-- **MD-mech [M]** `bun run lint:md` passes: line width / prose wrap, bullet & quote characters, heading hierarchy, single H1, spacing, table
-  alignment (`MD060`), resolved link fragments (`MD051`) and references (`MD052`), no bare URLs (`MD034`), and descriptive link text
+- **MD-mech [M]** `bun run ki:lint:md` passes: line width / prose wrap, bullet & quote characters, heading hierarchy, single H1, spacing,
+  table alignment (`MD060`), resolved link fragments (`MD051`) and references (`MD052`), no bare URLs (`MD034`), and descriptive link text
   (`MD059` — rejects "click here" / "here" / "link"). Prettier + markdownlint own these. (markdown-authoring.md)
 - **MD-table [J]** A table that would exceed `printWidth` (140, from `.prettierrc.json`) is reshaped: a descriptive matrix → subheadings or
   a bulleted definition list; genuinely tabular data with one long column → keep the table and move that column to footnotes below it (a

@@ -327,9 +327,9 @@ const usesLoadEnv = (() => {
 const hasEnv = Boolean(envExample) || usesLoadEnv
 
 // ── core: the unified conformance entrypoints (§2) ────────────────────────────
-// ki:conform (write) composes deps:update → lint:package → lint:format → lint:fix →
-// lint:md (+ build/test tails); ki:verify (read-only) mirrors the CI gate: lint:check
-// → lint:types → lint:md:check (+ build/test:coverage tails). Both required everywhere.
+// ki:conform (write) composes ki:deps:update → ki:lint:package → ki:lint:format → ki:lint:fix →
+// ki:lint:md (+ build/test tails); ki:verify (read-only) mirrors the CI gate: ki:lint:check
+// → ki:lint:types → ki:lint:md:check (+ build/test:coverage tails). Both required everywhere.
 {
   const conform = scripts['ki:conform'] ?? ''
   const verify = scripts['ki:verify'] ?? ''

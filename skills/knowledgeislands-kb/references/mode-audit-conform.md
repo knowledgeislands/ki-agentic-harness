@@ -17,8 +17,8 @@ loaded; this file is the procedure only._
    in the wrong zone (per the routing test), _whether a note should carry frontmatter at all_ and its naming quality, whether the memory
    index's active-Pillar list is actually accurate, and fact-vs-analysis labelling where the base distinguishes them.
 3. **Compose sibling audits.** A base audit is not just kb's: also run the audit of every other skill that governs this base and is in play
-   — notably `knowledgeislands-streams` (`streams:audit`, the Streams zone + the Enactment gate) and `knowledgeislands-authoring` over its
-   markdown. Report them together; a base is "clean" only when each applicable skill's audit is.
+   — notably `knowledgeislands-streams` (`ki:streams:audit`, the Streams zone + the Enactment gate) and `knowledgeislands-authoring` over
+   its markdown. Report them together; a base is "clean" only when each applicable skill's audit is.
 4. **Report** drift, leading with FAILs then WARNs: misrouted or mis-zoned notes, missing zones, notes lacking required frontmatter, stale
    memory-index entries. Cite paths and give the fix.
 

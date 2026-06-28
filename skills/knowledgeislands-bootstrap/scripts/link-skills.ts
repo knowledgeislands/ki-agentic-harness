@@ -16,7 +16,7 @@
  *   bun link-skills.ts [target-repo]   link declared∪baseline into <target>/.claude/skills (default cwd)
  *   --all        link every skill under the harness skills/ (for the harness itself, the authoring hub)
  *   --dry-run    print what would change, touch nothing
- *   --check      audit only (no mutation): links match expected, skills:link:project script present,
+ *   --check      audit only (no mutation): links match expected, ki:skills:link:project script present,
  *                .claude/skills gitignored; exits non-zero on FAIL
  */
 
@@ -156,7 +156,7 @@ function cmdCheck(target: string, set: string[]): number {
       findings.push({
         severity: 'WARN',
         criterion: 'BOOT-1',
-        message: `missing links: ${missing.join(', ')} — run \`skills:link:project\``
+        message: `missing links: ${missing.join(', ')} — run \`ki:skills:link:project\``
       })
     if (extra.length)
       findings.push({ severity: 'WARN', criterion: 'BOOT-1', message: `links not in declared coverage: ${extra.join(', ')}` })
@@ -166,12 +166,12 @@ function cmdCheck(target: string, set: string[]): number {
 
   const pkgText = readText(join(target, 'package.json'))
   findings.push(
-    hasScript(pkgText, 'skills:link:project')
-      ? { severity: 'PASS', criterion: 'BOOT-2', message: 'package.json has a skills:link:project script' }
+    hasScript(pkgText, 'ki:skills:link:project')
+      ? { severity: 'PASS', criterion: 'BOOT-2', message: 'package.json has a ki:skills:link:project script' }
       : {
           severity: 'WARN',
           criterion: 'BOOT-2',
-          message: 'no skills:link:project script in package.json — links are not reproducible on clone'
+          message: 'no ki:skills:link:project script in package.json — links are not reproducible on clone'
         }
   )
 

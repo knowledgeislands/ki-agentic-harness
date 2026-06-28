@@ -10,7 +10,7 @@
 //   bun scripts/lint-skills.ts [path ...]            # a skill dir, or a dir containing skills
 //   bun scripts/lint-skills.ts <skill> --footprint   # + per-skill token footprint (SIZE-5, INFO) for Mode OPTIMISE
 //   bun scripts/lint-skills.ts skills --refresh-status # + per-skill refresh class/cadence/status (LONG-3/§5, INFO)
-//   bun run skills:lint                               # (from the arcadia-agentic-harness repo root)
+//   bun run ki:skills:lint                               # (from the arcadia-agentic-harness repo root)
 //
 // A path containing SKILL.md is treated as one skill; otherwise its immediate
 // subdirectories that contain a SKILL.md are each linted. Defaults to the current dir.
@@ -382,7 +382,7 @@ function lintSkill(skillDir: string): Finding[] {
 
   // --- mechanical work belongs in the checker, not in tokens (SHAPE-9 heuristic) ---
   // A rubric that tags criteria [M] (mechanical) must ship a scripts/ checker that
-  // implements them — or document a toolchain delegation (authoring → `bun run lint:md`).
+  // implements them — or document a toolchain delegation (authoring → `bun run ki:lint:md`).
   // [M] criteria left to prose make the reader re-derive deterministic checks in tokens.
   const rubricFile = join(skillDir, 'references', 'audit-rubric.md')
   if (existsSync(rubricFile)) {

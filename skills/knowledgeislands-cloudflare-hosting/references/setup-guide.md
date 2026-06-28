@@ -21,12 +21,12 @@ subsequent changes are handled by CONFORM or AUDIT modes. The full standard is i
 
 ## 1. Before you start — prerequisites
 
-| What                                                         | Where                                    |
-| ------------------------------------------------------------ | ---------------------------------------- |
-| Cloudflare account with Workers access                       | dash.cloudflare.com                      |
-| Domain added to Cloudflare (nameservers pointing to CF)      | Cloudflare DNS dashboard for the zone    |
-| `wrangler` CLI in `devDependencies`                          | `bun add -D wrangler`                    |
-| A built `dist/` produced by `knowledgeislands-11ty-websites` | run `bun run site:build` once to confirm |
+| What                                                         | Where                                       |
+| ------------------------------------------------------------ | ------------------------------------------- |
+| Cloudflare account with Workers access                       | dash.cloudflare.com                         |
+| Domain added to Cloudflare (nameservers pointing to CF)      | Cloudflare DNS dashboard for the zone       |
+| `wrangler` CLI in `devDependencies`                          | `bun add -D wrangler`                       |
+| A built `dist/` produced by `knowledgeislands-11ty-websites` | run `bun run ki:site:build` once to confirm |
 
 Log in to wrangler before doing anything else:
 
@@ -80,9 +80,9 @@ Add these three scripts to the root `package.json`. Use the `site:` prefix for t
 ```jsonc
 {
   "scripts": {
-    "site:deploy": "cd site && bunx wrangler deploy",
-    "site:preview": "bun run site:build && cd site && bunx wrangler dev",
-    "site:clean": "rm -rf dist site/.wrangler"
+    "ki:site:deploy": "cd site && bunx wrangler deploy",
+    "ki:site:preview": "bun run ki:site:build && cd site && bunx wrangler dev",
+    "ki:site:clean": "rm -rf dist site/.wrangler"
   }
 }
 ```
@@ -92,14 +92,14 @@ For a **flat** layout (no `site/` subfolder, `wrangler.jsonc` at repo root):
 ```jsonc
 {
   "scripts": {
-    "site:deploy": "bunx wrangler deploy",
-    "site:preview": "bun run site:build && bunx wrangler dev",
-    "site:clean": "rm -rf dist .wrangler"
+    "ki:site:deploy": "bunx wrangler deploy",
+    "ki:site:preview": "bun run ki:site:build && bunx wrangler dev",
+    "ki:site:clean": "rm -rf dist .wrangler"
   }
 }
 ```
 
-`site:build` and `site:dev` are owned by `knowledgeislands-11ty-websites` — do not redefine them here.
+`ki:site:build` and `ki:site:dev` are owned by `knowledgeislands-11ty-websites` — do not redefine them here.
 
 ---
 
@@ -144,8 +144,8 @@ Build the site and deploy. On first deploy, Cloudflare creates the Worker and as
 domain needed yet.
 
 ```bash
-bun run site:build   # produce dist/
-bun run site:deploy  # upload to Cloudflare
+bun run ki:site:build   # produce dist/
+bun run ki:site:deploy  # upload to Cloudflare
 ```
 
 Expected output includes `Published <name> (Uploaded …)` and a `*.workers.dev` URL. Open it in a browser to confirm the site loads. If the
@@ -170,7 +170,7 @@ Cloudflare to serve the Worker at that domain, but Cloudflare only honours it if
    `custom_domain: true`.
 4. Repeat for `www.example.com`.
 
-After a redeploy (`bun run site:deploy`) the domain should resolve. DNS propagation may take a few minutes.
+After a redeploy (`bun run ki:site:deploy`) the domain should resolve. DNS propagation may take a few minutes.
 
 ---
 
@@ -190,12 +190,12 @@ Test with `curl -I https://www.example.com` — the response should be `301` wit
 
 ## 9. Set up Cloudflare Workers Builds (CI/CD)
 
-Cloudflare Workers Builds replaces manual `bun run site:deploy` calls: a push to `main` triggers Cloudflare to build and redeploy
+Cloudflare Workers Builds replaces manual `bun run ki:site:deploy` calls: a push to `main` triggers Cloudflare to build and redeploy
 automatically. No GitHub Actions workflow needed for the deploy itself.
 
 1. Go to **Workers & Pages → `<name>` → Settings → Build**.
 2. Connect the GitHub repository (authorize the Cloudflare GitHub App if prompted).
-3. Set the **build command** — typically `bun run site:build` (or whichever script produces `dist/`). Workers Builds runs in a fresh
+3. Set the **build command** — typically `bun run ki:site:build` (or whichever script produces `dist/`). Workers Builds runs in a fresh
    environment; ensure `bun` is available (Cloudflare Workers Builds supports Bun natively).
 4. Set the **deploy directory** to match `assets.directory` in `wrangler.jsonc` (`dist` for both flat and `site/`-subfolder layouts — the
    Cloudflare UI wants just the directory name, not the relative-path prefix).
@@ -222,6 +222,6 @@ All items should be `PASS`. The two most common first-run findings:
 
 Also confirm end-to-end manually:
 
-1. `bun run site:preview` — builds locally and serves through the real Worker runtime at `http://localhost:8787`. Check that the site loads
-   and internal links work.
-2. `bun run site:deploy` — deploys to production. Confirm the custom domain resolves and the `www` redirect returns 301.
+1. `bun run ki:site:preview` — builds locally and serves through the real Worker runtime at `http://localhost:8787`. Check that the site
+   loads and internal links work.
+2. `bun run ki:site:deploy` — deploys to production. Confirm the custom domain resolves and the `www` redirect returns 301.

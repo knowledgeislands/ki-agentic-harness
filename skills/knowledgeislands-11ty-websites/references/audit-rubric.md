@@ -9,8 +9,8 @@ Severity: **FAIL** (ship-stopper — the site won't build or `dist/` isn't porta
 [`enforcement-framework.md`](../../knowledgeislands-engineering/references/enforcement-framework.md) §2.
 
 > **Common toolchain → `knowledgeislands-engineering`.** This rubric is the **site-build delta** only. The Bun mandate, the
-> `lint:*`/`deps:*` families, `tsconfig`/`biome`, and the `tsc --noEmit` type-check are the common engineering layer — **run
-> `engineering:audit` first**. Serving the built `dist/` is **`knowledgeislands-cloudflare-hosting`** — run its audit too if the site is
+> `ki:lint:*`/`ki:deps:*` families, `tsconfig`/`biome`, and the `tsc --noEmit` type-check are the common engineering layer — **run
+> `ki:engineering:audit` first**. Serving the built `dist/` is **`knowledgeislands-cloudflare-hosting`** — run its audit too if the site is
 > deployed. The repo is fully clean only when every applicable audit passes.
 
 ## Contents
@@ -79,8 +79,9 @@ Severity: **FAIL** (ship-stopper — the site won't build or `dist/` isn't porta
 ## Scripts (§8)
 
 - [ ] [M] WARN — a build script invokes Eleventy with `--config=eleventy.config.ts`; a dev script runs Tailwind `--watch` + Eleventy
-      `--serve --port 3000` via `concurrently`. (`site:build`, `site:dev`.) (§8)
-- [ ] [J] WARN — `site:clean`, `site:types` (`tsc --noEmit -p site`), and `site:verify` (types + build) present, all `site:`-prefixed. (§8)
+      `--serve --port 3000` via `concurrently`. (`ki:site:build`, `ki:site:dev`.) (§8)
+- [ ] [J] WARN — `ki:site:clean`, `ki:site:types` (`tsc --noEmit -p site`), and `ki:site:verify` (types + build) present, all
+      `site:`-prefixed. (§8)
 
 ## dist/ contract (§9)
 
@@ -104,5 +105,5 @@ Mirrors the `knowledgeislands-skills` rubric's **LONG-1**.
 
 Produce a findings table grouped by severity, each row: `severity · file:line · what · fix`. Close with: (a) any intentional, documented
 divergences you chose **not** to flag (e.g. an internal site skipping sitemap/robots), and (b) a one-line verdict (compliant / minor drift /
-blockers). Name the sibling audits that must also pass — `engineering:audit` (toolchain) and, if deployed,
+blockers). Name the sibling audits that must also pass — `ki:engineering:audit` (toolchain) and, if deployed,
 `knowledgeislands-cloudflare-hosting` — for the repo to be fully clean.

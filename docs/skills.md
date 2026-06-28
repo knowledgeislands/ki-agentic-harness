@@ -43,13 +43,13 @@ natively on Bun, Tailwind 4 config-less with design tokens** — that compile to
 ### [`knowledgeislands-cloudflare-hosting`](../skills/knowledgeislands-cloudflare-hosting/SKILL.md) — Process
 
 Audits, conforms, and scaffolds the house convention for serving a built site on **Cloudflare Workers + Static Assets** (not Pages): one
-`wrangler.jsonc` pointing `assets.directory` at the site's `dist/`, custom-domain routes, observability, and the `site:deploy` script
+`wrangler.jsonc` pointing `assets.directory` at the site's `dist/`, custom-domain routes, observability, and the `ki:site:deploy` script
 family. Owns the **hosting delta** for the site Worker; the `dist/` is the seam from `knowledgeislands-11ty-websites`. Companion Workers
 (bots, ingress) route to the generic `cloudflare` / `wrangler` skills. Ships a mechanical checker (`audit-cloudflare-hosting.ts`).
 
 ### [`knowledgeislands-skills`](../skills/knowledgeislands-skills/SKILL.md) — Process
 
-Audits, writes, and conforms Agent Skills against a checkable rubric — a bundled linter (`skills:lint`) for the mechanical checks, the
+Audits, writes, and conforms Agent Skills against a checkable rubric — a bundled linter (`ki:skills:lint`) for the mechanical checks, the
 judgment ones applied by reading, and a tracked source list it revisits.
 
 ### [`knowledgeislands-agents`](../skills/knowledgeislands-agents/SKILL.md) — Process
@@ -62,14 +62,14 @@ that one governs a `SKILL.md`, this one a subagent definition. Governs the agent
 ### [`knowledgeislands-repo`](../skills/knowledgeislands-repo/SKILL.md) — Process
 
 Audits, conforms, and onboards any **Knowledge Islands–compliant** git repo (one carrying a `.ki-config.toml`) against the repo standard —
-local files, GitHub settings, and security. Owns the cross-cutting **`.ki-config.toml` contract**. Ships a mechanical auditor (`repo:audit`)
-that discovers repos from a local tree or a whole org.
+local files, GitHub settings, and security. Owns the cross-cutting **`.ki-config.toml` contract**. Ships a mechanical auditor
+(`ki:repo:audit`) that discovers repos from a local tree or a whole org.
 
 ### [`knowledgeislands-authoring`](../skills/knowledgeislands-authoring/SKILL.md) — Process
 
 The house authoring conventions the other skills build on — Markdown (wide tables → footnotes, link style) and TOML formatting style — and
-the single source of truth a repo's or base's `CLAUDE.md` points to. Its mechanical half is `bun run lint:md` (Prettier + markdownlint), not
-a bundled script; it carries the judgment half.
+the single source of truth a repo's or base's `CLAUDE.md` points to. Its mechanical half is `bun run ki:lint:md` (Prettier + markdownlint),
+not a bundled script; it carries the judgment half.
 
 ### [`knowledgeislands-engineering`](../skills/knowledgeislands-engineering/SKILL.md) — Process
 
@@ -102,7 +102,7 @@ bundle-structure delta. Ships a mechanical checker (`audit-harness.ts`). Empty s
 
 Wires a repo's **project-local skills** (`.claude/skills/`) from its `.ki-config.toml` — links exactly the skills it declares plus the
 `knowledgeislands-repo` + `knowledgeislands-authoring` baseline, as **gitignored, regenerated** relative symlinks (the committed artifacts
-are a `skills:link:project` script and the `.gitignore` line, never the links). This is the **install keystone** — the one
+are a `ki:skills:link:project` script and the `.gitignore` line, never the links). This is the **install keystone** — the one
 `knowledgeislands-*` skill kept installed globally in `~/.claude/skills`, so its `description` is deliberately tiny and any repo can
 self-wire. **Composes on** `knowledgeislands-repo` (which owns the `.ki-config.toml` contract and coverage cascade it reads); it is the
 project-local counterpart of `knowledgeislands-harness`'s install convention. Ships a mechanical checker (`link-skills.ts`).
@@ -124,7 +124,7 @@ All thirteen share one layout, so a reader (or a new such skill) can move betwee
 - **a mechanical checker** — `audit-engineering.ts`, `audit-mcp.ts`, `audit-websites.ts`, `audit-cloudflare-hosting.ts`, `lint-skills.ts`,
   `lint-agents.ts`, `audit-repo.ts`, `audit-kb.ts`, `audit-streams.ts`, `audit-tokenomics.ts`, `audit-harness.ts`, `link-skills.ts` for
   engineering / mcp / 11ty-websites / cloudflare-hosting / skills / agents / repo / kb / streams / tokenomics / harness / bootstrap;
-  `bun run lint:md` (Prettier + markdownlint) for authoring. The judgment half is always applied by reading.
+  `bun run ki:lint:md` (Prettier + markdownlint) for authoring. The judgment half is always applied by reading.
 
 …and the same modes: **AUDIT** (run the checker, then apply the judgment criteria), **CONFORM** (bring an existing artifact into line), and
 **REFRESH** (re-anchor the standard to its sources on a stated cadence), plus skill-specific modes where they fit — **INIT** to scaffold a

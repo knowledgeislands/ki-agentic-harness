@@ -40,8 +40,8 @@ The hosting layer and the build layer meet at exactly one place: the **`dist/` d
   site). This skill **serves** it by pointing `assets.directory` at it.
 - **`assets.directory` is relative to the `wrangler.jsonc` file**: `"./dist"` when the config is at the repo root (flat layout), `"../dist"`
   when the config is under `site/`. It must resolve to the build's actual output directory.
-- **The build runs before deploy.** `dist/` is gitignored and regenerated; deploy reads whatever the last build produced. A `site:preview`
-  script chains build → `wrangler dev` for a local check against the real Worker runtime.
+- **The build runs before deploy.** `dist/` is gitignored and regenerated; deploy reads whatever the last build produced. A
+  `ki:site:preview` script chains build → `wrangler dev` for a local check against the real Worker runtime.
 - Neither layer needs the other's internals — only the `dist/` path. That is what makes the split clean and the hosting skill reusable for
   any static `dist/`.
 
@@ -86,12 +86,13 @@ Other `assets` keys (`html_handling`, `not_found_handling`, `binding`, `run_work
 The hosting scripts in `package.json`, namespaced with the `site:` prefix (the house monorepo layout, §1; a one-off flat consumer leaves
 them unprefixed):
 
-- **`site:deploy`** → `cd <site root> && bunx wrangler deploy`.
-- **`site:preview`** → `bun run site:build && cd <site root> && bunx wrangler dev` — build, then serve through the real Worker runtime
+- **`ki:site:deploy`** → `cd <site root> && bunx wrangler deploy`.
+- **`ki:site:preview`** → `bun run ki:site:build && cd <site root> && bunx wrangler dev` — build, then serve through the real Worker runtime
   locally.
-- **`site:clean`** → removes `dist/` and `.wrangler/`.
+- **`ki:site:clean`** → removes `dist/` and `.wrangler/`.
 
-`site:build` / `site:dev` (the build + dev-server scripts) belong to `knowledgeislands-11ty-websites`, not here. `.wrangler/` is gitignored.
+`ki:site:build` / `ki:site:dev` (the build + dev-server scripts) belong to `knowledgeislands-11ty-websites`, not here. `.wrangler/` is
+gitignored.
 
 ## 5. CI/CD
 

@@ -4,7 +4,7 @@ The normative, quotable reference for the Knowledge Islands 11ty website standar
 ([audit-rubric.md](audit-rubric.md)) turns each section into checkable items; the procedure is in the [SKILL.md](../SKILL.md). See
 [the source list](sources.md) for provenance.
 
-This skill owns the **site-build delta**. The toolchain it sits on (Bun mandate, `lint:*`/`deps:*` families, `tsconfig`/`biome`, the
+This skill owns the **site-build delta**. The toolchain it sits on (Bun mandate, `ki:lint:*`/`ki:deps:*` families, `tsconfig`/`biome`, the
 `tsc --noEmit` type-check) is `knowledgeislands-engineering`'s and is referenced here, not restated.
 
 ## Contents
@@ -29,7 +29,7 @@ This skill owns the **site-build delta**. The toolchain it sits on (Bun mandate,
   on Node ≥ 24 — type stripping is stable and unflagged since v24.3 / v22.18; the older `--experimental-strip-types` flag is now a no-op).
   `tsc` is used only for `--noEmit` type-checking, which is the `knowledgeislands-engineering` layer.
 - **Bun is mandated** as the package manager and runtime. The Bun-install / Node-run split, the `packageManager: bun@…` pin, `engines`, and
-  the `lint:*`/`deps:*` families are `knowledgeislands-engineering`'s — this standard assumes them.
+  the `ki:lint:*`/`ki:deps:*` families are `knowledgeislands-engineering`'s — this standard assumes them.
 - **Lucide** provides icons, copied from `node_modules` as a passthrough and initialised client-side (no build-time icon framework).
 
 ## 2. Repo layout — the `site/` workspace
@@ -45,8 +45,8 @@ later (a bot, an ingress Worker — **out of this skill's scope**, see [SKILL.md
 - The build emits **`./dist`** — i.e. **`dist/` lives inside the `site/` workspace** (`site/dist/`). Each workspace owns its own output
   directory; no cross-workspace output coupling. The hosting Worker (`knowledgeislands-cloudflare-hosting` §2) points `assets.directory` at
   `./dist` from `site/wrangler.jsonc`.
-- Scripts take the workspace-name `site:` prefix (`site:build`, `site:dev`, `site:dev:css`, `site:dev:serve`, `site:clean`), per the
-  monorepo shape.
+- Scripts take the workspace-name `site:` prefix (`ki:site:build`, `ki:site:dev`, `ki:site:dev:css`, `ki:site:dev:serve`, `ki:site:clean`),
+  per the monorepo shape.
 
 The site root is "the directory that contains `eleventy.config.ts`" — always `site/`. The `workspaces` declaration (and thus the shape) is
 governed by `knowledgeislands-engineering`; this skill assumes it.
@@ -138,12 +138,12 @@ The config is `export default function (eleventyConfig) { … return { dir, … 
 
 The site-specific scripts (the rest of the script families are engineering's):
 
-- **`site:dev`** — `concurrently` runs the Tailwind `--watch` (`site:dev:css`) and the Eleventy `--serve --port 3000` (`site:dev:serve`) in
-  parallel, named `css`,`11ty`.
-- **`site:build`** — `bun …/@11ty/eleventy/cmd.cjs --config=eleventy.config.ts` (the `eleventy.before` hook compiles Tailwind with
+- **`ki:site:dev`** — `concurrently` runs the Tailwind `--watch` (`ki:site:dev:css`) and the Eleventy `--serve --port 3000`
+  (`ki:site:dev:serve`) in parallel, named `css`,`11ty`.
+- **`ki:site:build`** — `bun …/@11ty/eleventy/cmd.cjs --config=eleventy.config.ts` (the `eleventy.before` hook compiles Tailwind with
   `--minify`).
-- **`site:clean`** — removes `dist/` (and `.wrangler/` where present). **`site:types`** — `tsc --noEmit -p site`. **`site:verify`** —
-  types + build.
+- **`ki:site:clean`** — removes `dist/` (and `.wrangler/` where present). **`ki:site:types`** — `tsc --noEmit -p site`. **`ki:site:verify`**
+  — types + build.
 
 All site scripts take the `site:` prefix — the site is always the `site/` workspace of a monorepo (§2).
 

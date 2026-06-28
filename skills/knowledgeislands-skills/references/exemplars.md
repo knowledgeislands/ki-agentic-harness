@@ -109,7 +109,7 @@ in the calling skill's prose, not a shared base.
 
 1. **Run the engineering checker first.** Invoke the `knowledgeislands-engineering` skill in AUDIT mode against this repo — it checks the
    toolchain, `tsconfig`, and Biome config. Capture its findings; do not re-derive them here.
-2. **Run the skills linter.** `bun run skills:lint` from the harness root — it audits every SKILL.md in `skills/` against the mechanical
+2. **Run the skills linter.** `bun run ki:skills:lint` from the harness root — it audits every SKILL.md in `skills/` against the mechanical
    criteria. Capture its output verbatim.
 3. **Apply harness-specific judgment** — four-part bundle completeness, `.ki-config.toml` table presence for each populated part, and
    cross-skill consistency (no two skills claiming the same domain). The engineering and skills passes are the delta this skill adds over

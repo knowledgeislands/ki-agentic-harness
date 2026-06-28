@@ -3,7 +3,7 @@ name: knowledgeislands-engineering
 description: >
   Use to audit our engineering standards, conform or scaffold a repo's toolchain, or check script-family / tsconfig / biome consistency.
   Owns the shared build/lint/test layer every Knowledge Islands TypeScript/Bun repo conforms to — the twin of `knowledgeislands-authoring`.
-  Covers package.json metadata, the `mise.toml` toolchain pin, the `lint:*`/`deps:*` script families, the Bun-install/Node-run split,
+  Covers package.json metadata, the `mise.toml` toolchain pin, the `ki:lint:*`/`ki:deps:*` script families, the Bun-install/Node-run split,
   `tsconfig`/`biome`/`vitest` shape with 100% coverage, the CI-workflow shape, and the build/cli-chmod rule — plus the enforcement framework
   the governance skills follow. Triggers: "audit our engineering standards", "do the repos' scripts match", "why are lint:/deps: scripts
   inconsistent". For GitHub settings, security, and the `.ki-config.toml` contract use `knowledgeislands-repo`; for Markdown/TOML style use
@@ -32,13 +32,13 @@ not overlap them, is documented once in the arcadia-agentic-harness `README.md`.
    contract, the mechanical/judgment rubric tagging, the `sources.md` cadence, the `.ki-config.toml` validate-down contract). It lives in
    [the enforcement framework](references/enforcement-framework.md); the other governance skills conform to it.
 
-**Artifact-specific rules are not here.** Anything meaningful only for one artifact type (an MCP's `bin`, `server:mcp:*` scripts,
+**Artifact-specific rules are not here.** Anything meaningful only for one artifact type (an MCP's `bin`, `ki:server:mcp:*` scripts,
 coverage-exclude list, tool surface) lives in that artifact's skill. A repo is fully audited by **composing** this skill's checker with the
 artifact skill's — see below.
 
 ## The common standard at a glance
 
-- **package.json** — `type:module`, `packageManager:bun@1.3.x`, `engines.node>=22`; the full `lint:*` family (exact) + `deps:*` family
+- **package.json** — `type:module`, `packageManager:bun@1.3.x`, `engines.node>=22`; the full `ki:lint:*` family (exact) + `ki:deps:*` family
   (three) + `clean` + `prepare`. Extra repo-specific scripts are fine — the standard is strict about the families, permissive about
   additions.
 - **Bun vs Node** — install/dev under Bun, `dist/` runs under Node ≥ 22. **No `bun test` anywhere** (it runs Bun's runner, not vitest).
@@ -54,7 +54,7 @@ The checker is the **common layer**; each artifact skill audits its own delta. T
 each other (so each stays valid when symlinked standalone):
 
 ```text
-engineering:audit <repo>     →  common toolchain layer (this skill, all 10 TS repos)
+ki:engineering:audit <repo>     →  common toolchain layer (this skill, all 10 TS repos)
   then audit-mcp.ts <repo>   →  MCP delta (knowledgeislands-mcp, the 7 mcp-* repos)
 ```
 
@@ -83,9 +83,9 @@ ask if unclear. (Modes are named and alphabetical.) The mode shape itself is def
 ### Mode CONFORM — bring a repo's toolchain into line
 
 1. Run **AUDIT** first, so you change against a known gap list.
-2. Fix the gaps in place — restore the exact `lint:*`/`deps:*` families, the `tsconfig`/`biome`/`vitest` shape, the build/cli-chmod rule —
-   **copying from the closest healthy sibling** rather than inventing. Add the `[knowledgeislands-engineering]` table if missing.
-3. Re-run the checker; settle the repo's own `bun run lint:check` / `lint:types` (and `lint:md` for any docs).
+2. Fix the gaps in place — restore the exact `ki:lint:*`/`ki:deps:*` families, the `tsconfig`/`biome`/`vitest` shape, the build/cli-chmod
+   rule — **copying from the closest healthy sibling** rather than inventing. Add the `[knowledgeislands-engineering]` table if missing.
+3. Re-run the checker; settle the repo's own `bun run ki:lint:check` / `ki:lint:types` (and `ki:lint:md` for any docs).
 
 ### Mode INIT — scaffold a new TS/Bun repo's toolchain
 
@@ -112,7 +112,7 @@ Reciprocal off-ramps — each names this skill back for the engineering layer:
 - **A repo's GitHub settings, security, the universal local files (README/LICENSE/.gitignore/.editorconfig), and the `.ki-config.toml`
   _contract_** → `knowledgeislands-repo`. This skill owns the _engineering_ toolchain inside the repo; `knowledgeislands-repo` owns the
   repo's _configuration_ and its `.ki-config.toml` contract (this skill only reads its own table within it).
-- **Markdown / TOML _formatting_ style** (including what the `lint:md` pass produces) → `knowledgeislands-authoring`. This skill owns that
-  the toolchain which runs lint exists and is wired; authoring owns the prose/format conventions it enforces.
+- **Markdown / TOML _formatting_ style** (including what the `ki:lint:md` pass produces) → `knowledgeislands-authoring`. This skill owns
+  that the toolchain which runs lint exists and is wired; authoring owns the prose/format conventions it enforces.
 - **Artifact-specific code and deltas** — MCP `src/` layout, tool naming, the access gate, security invariants, the coverage-exclude list →
   `knowledgeislands-mcp` (and future artifact skills). They build on this common layer and add their own.

@@ -31,7 +31,7 @@ line-by-line checkable criteria live in [the rubric](references/audit-rubric.md)
 
 ## Mode AUDIT — check a harness against the standard
 
-1. **Run the mechanical checker.** `bun scripts/audit-harness.ts [path]` from this skill's directory (or `bun run harness:audit` at the
+1. **Run the mechanical checker.** `bun scripts/audit-harness.ts [path]` from this skill's directory (or `bun run ki:harness:audit` at the
    harness root, if wired). It checks: the four-part directory presence, each directory's `README.md`, root `CLAUDE.md` / `ROADMAP.md`,
    `package.json` script families, `.ki-config.toml` `[knowledgeislands-harness]` table presence, and each `skills/<dir>` name matching its
    `SKILL.md` `name:` frontmatter. Reports on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — defined in
@@ -40,7 +40,7 @@ line-by-line checkable criteria live in [the rubric](references/audit-rubric.md)
    harness audit is layered — fan out one `agent()` per concern in `parallel()` after the COLL checks:
    - `knowledgeislands-repo` — GitHub settings and the `.ki-config.toml` contract
    - `knowledgeislands-engineering` — common toolchain (package.json script families, tsconfig, biome)
-   - `knowledgeislands-skills` linter (`bun run skills:lint`) — if `skills/` is populated
+   - `knowledgeislands-skills` linter (`bun run ki:skills:lint`) — if `skills/` is populated
    - `knowledgeislands-agents` linter — if `agents/` is populated
    - `knowledgeislands-mcp` audit — if `mcp/` has server code The saved workflow `.claude/workflows/ki-multi-skill-audit.ts` implements this
      fan-out. See [ADR-KI-HARNESS-002](../../docs/decisions/ADR-KI-HARNESS-002.md) for the four-part layout this step audits.
@@ -70,9 +70,9 @@ line-by-line checkable criteria live in [the rubric](references/audit-rubric.md)
    what-the-harness-is paragraph, four-part directory table with current status, working conventions per part, key `bun run *` commands.
 4. **Add `ROADMAP.md`.** Start with the known open work; mark items open-only. Note: continuous practices are not roadmap items — they
    belong in `docs/design.md` or `CLAUDE.md`.
-5. **Scaffold `package.json`** with the required script families: `skills:link:project`, `skills:lint` minimum (plus `skills:link:global` to
-   install the `knowledgeislands-bootstrap` keystone); add the common engineering families (`lint:check`, `lint:types`, `lint:md`,
-   `lint:md:check`) from `knowledgeislands-engineering`'s standard.
+5. **Scaffold `package.json`** with the required script families: `ki:skills:link:project`, `ki:skills:lint` minimum (plus
+   `ki:skills:link:global` to install the `knowledgeislands-bootstrap` keystone); add the common engineering families (`ki:lint:check`,
+   `ki:lint:types`, `ki:lint:md`, `ki:lint:md:check`) from `knowledgeislands-engineering`'s standard.
 6. **Add `.ki-config.toml`** with at minimum `[knowledgeislands-repo]`, `[knowledgeislands-engineering]`, and `[knowledgeislands-harness]`.
    Add `[knowledgeislands-skills]` once `skills/` is populated.
 7. **Self-audit.** Run Mode AUDIT on the new harness before handing it off.
@@ -104,5 +104,5 @@ the enforcement framework's REFRESH gate.
   double-report what a sibling's checker already surfaces.
 - A harness that has empty shelves (`agents/`, `mcp/`, `evals/` with no real content) is a valid harness — the shelves exist to mark intent
   and reserve the structure. A shelf is not a gap.
-- The `skills:link:project` install convention (the `knowledgeislands-bootstrap` keystone) is the harness's primary delivery mechanism —
+- The `ki:skills:link:project` install convention (the `knowledgeislands-bootstrap` keystone) is the harness's primary delivery mechanism —
   verifying it is wired in `package.json` is a FAIL criterion, not advisory.

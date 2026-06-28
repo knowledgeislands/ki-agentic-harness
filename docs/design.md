@@ -157,5 +157,5 @@ skill inherits them by being audited:
   reader. Authoring a rubric you default a check _into_ the checker and earn each **[J]** by the judgment it needs, not by "no checker
   written yet"; when a check becomes scriptable with no AI benefit it moves into the checker and flips to **[M]** (the rubric and checker
   stay in lockstep — see the enforcement framework's _rubric format_). Enforced as rubric **SHAPE-9**: the linter flags a rubric carrying
-  **[M]** criteria but shipping no checker (nor a documented delegation, such as `authoring` → `lint:md`), and the **[J]** gate is whether
-  each remaining **[J]** truly needs a reader rather than a script.
+  **[M]** criteria but shipping no checker (nor a documented delegation, such as `authoring` → `ki:lint:md`), and the **[J]** gate is
+  whether each remaining **[J]** truly needs a reader rather than a script.

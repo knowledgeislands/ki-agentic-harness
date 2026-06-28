@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * Regenerates mcporter typed clients for all KI mcp-* repos.
- * Run from the harness root: bun run codegen
+ * Run from the harness root: bun run ki:codegen
  * Requires the mcporter daemon to be running (mcporter daemon status).
  */
 
@@ -26,7 +26,7 @@ let fail = 0
 
 for (const repo of repos) {
   const cwd = resolve(MCP_REPOS_ROOT, repo)
-  const result = spawnSync('bun', ['run', 'generate:client'], { cwd, encoding: 'utf8' })
+  const result = spawnSync('bun', ['run', 'ki:generate:client'], { cwd, encoding: 'utf8' })
   if (result.status === 0) {
     console.log(`✓ ${repo}`)
     ok++

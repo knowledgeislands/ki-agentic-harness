@@ -2,7 +2,7 @@
 
 The **judgment-layer** rules for the markdown we write across Knowledge Islands repos and bases — the choices a formatter can't make.
 Everything mechanical (line width, prose wrap, bullet and quote characters, heading hierarchy, single H1, list spacing) is owned by
-**Prettier + markdownlint-cli2**; run `bun run lint:md` at the repo root and let it settle those. This file only covers what's left to a
+**Prettier + markdownlint-cli2**; run `bun run ki:lint:md` at the repo root and let it settle those. This file only covers what's left to a
 person.
 
 ## Contents
@@ -73,7 +73,7 @@ Learned applying this; bake them in:
    full content to a **second-series (`※`) footnote**.
 4. **Watch for a pre-existing footnote series.** If a table already uses `†` for something (e.g. a date caveat), give the dominant content
    series the primary daggers and move the lone caveat to the `※` series so markers don't collide.
-5. **Author loosely, then `bun run lint:md`.** Prettier re-aligns table padding (`MD060`) and markdownlint flags `MD052` (undefined
+5. **Author loosely, then `bun run ki:lint:md`.** Prettier re-aligns table padding (`MD060`) and markdownlint flags `MD052` (undefined
    reference) until the `[ref]:` defs land — both transient; the pass should end at 0 errors.
 
 ## Links

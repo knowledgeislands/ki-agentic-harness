@@ -23,9 +23,9 @@ each so a REFRESH knows when a pin has aged.
 | BIOME    | [biomejs.dev][biome]                               | `biome.json` schema + the formatter/linter config             | 2.5.0                   | 2026-06-21    |
 | TS       | [typescript releases][ts]                          | the `tsconfig` / `tsconfig.build` compiler options            | ^6.0                    | 2026-06-21    |
 | VITEST   | [vitest.dev][vitest]                               | the test runner + 100% coverage config (`vitest run`, v8)     | current                 | 2026-06-21    |
-| SYNCPACK | [syncpack][syncpack]                               | `lint:package` (`syncpack format`)                            | ^15                     | 2026-06-21    |
-| MDLINT   | [markdownlint-cli2][mdlint] / [prettier][prettier] | `lint:md` (the Markdown mechanical pass)                      | mdl ^0.22 / prettier ^3 | 2026-06-21    |
-| DEPCHECK | [depcheck][depcheck]                               | `deps:missing` / `deps:unused`                                | current                 | 2026-06-21    |
+| SYNCPACK | [syncpack][syncpack]                               | `ki:lint:package` (`syncpack format`)                         | ^15                     | 2026-06-21    |
+| MDLINT   | [markdownlint-cli2][mdlint] / [prettier][prettier] | `ki:lint:md` (the Markdown mechanical pass)                   | mdl ^0.22 / prettier ^3 | 2026-06-21    |
+| DEPCHECK | [depcheck][depcheck]                               | `ki:deps:missing` / `ki:deps:unused`                          | current                 | 2026-06-21    |
 
 ## In-house (the workspace convention)
 

@@ -23,9 +23,9 @@ The engineering and repo standards live in the harness. Before acting, read the 
 
 - `skills/knowledgeislands-engineering/SKILL.md` — the engineering standard and its enforcement-framework
 - `skills/knowledgeislands-repo/SKILL.md` — the repo structure standard
-- `bun run lint:check` — Biome over TypeScript + JSON
-- `bun run lint:types` — tsc --noEmit
-- `bun run lint:md:check` — markdownlint CI gate
+- `bun run ki:lint:check` — Biome over TypeScript + JSON
+- `bun run ki:lint:types` — tsc --noEmit
+- `bun run ki:lint:md:check` — markdownlint CI gate
 - `bun skills/knowledgeislands-repo/scripts/audit-repo.ts <target>` — mechanical repo audit
 
 Run mechanical checks first; do not re-derive what a script finds.

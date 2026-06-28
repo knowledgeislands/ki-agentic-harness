@@ -167,32 +167,33 @@ sees the `isError` envelope.
 
 The Bun-install / Node-run split, the **`bun test` trap**, the `process.loadEnvFile()` parity call, and `NODE_ENV`-only-in-dev are the
 **common engineering standard**, owned by `knowledgeislands-engineering` (its
-[engineering-standard.md](../../knowledgeislands-engineering/references/engineering-standard.md) §3). Run `engineering:audit` for this layer
-— it is not re-checked here. The MCP-specific consequence: `server:mcp:dev` / `:inspect` set `NODE_ENV=development`, so production ignores
-`.env.*` and config must come from the client's `env` block.
+[engineering-standard.md](../../knowledgeislands-engineering/references/engineering-standard.md) §3). Run `ki:engineering:audit` for this
+layer — it is not re-checked here. The MCP-specific consequence: `ki:server:mcp:dev` / `:inspect` set `NODE_ENV=development`, so production
+ignores `.env.*` and config must come from the client's `env` block.
 
 ## 8. package.json
 
-`type` / `packageManager` / `engines` / `files`, the `lint:*` / `deps:*` / `build` / `clean` / `test*` / `prepare` script families, and the
-`build`/cli-chmod rule are the **common engineering standard** (`knowledgeislands-engineering`) — copy them from a healthy sibling and let
-`engineering:audit` check them; not re-checked here. This section is the **MCP delta** on top:
+`type` / `packageManager` / `engines` / `files`, the `ki:lint:*` / `ki:deps:*` / `build` / `clean` / `test*` / `prepare` script families,
+and the `build`/cli-chmod rule are the **common engineering standard** (`knowledgeislands-engineering`) — copy them from a healthy sibling
+and let `ki:engineering:audit` check them; not re-checked here. This section is the **MCP delta** on top:
 
 - **`main` / `bin`** — `"main": "dist/mcp-server/index.js"`; `"bin": { "mcp-<name>": "dist/mcp-server/index.js" }`, plus a second entry for
   a CLI (`"mcp-<name>-<verb>": "dist/cli/cli.js"`) or auth server (`"mcp-<name>-auth"`) where present.
 - **`exports`** — always `"."` (→ `dist/mcp-server`), `"./config"`, and `"./package.json"`; plus one entry per reusable `main/<concern>`.
-- **`server:mcp:*` scripts** — `server:mcp:dev` / `server:mcp:inspect` (both `NODE_ENV=development bun …`) / `server:mcp:start`
-  (`bun run build && node dist/mcp-server/index.js`); OAuth repos add `server:auth:*`, and a repo with a CLI/smoke harness adds
-  `test:smoke`.
-- **CI — the smoke delta.** The common CI shape (`jdx/mise-action` + `bun run lint:check` / `lint:types` / `lint:md:check` /
+- **`ki:server:mcp:*` scripts** — `ki:server:mcp:dev` / `ki:server:mcp:inspect` (both `NODE_ENV=development bun …`) / `ki:server:mcp:start`
+  (`bun run build && node dist/mcp-server/index.js`); OAuth repos add `ki:server:auth:*`, and a repo with a CLI/smoke harness adds
+  `ki:test:smoke`.
+- **CI — the smoke delta.** The common CI shape (`jdx/mise-action` + `bun run ki:lint:check` / `ki:lint:types` / `ki:lint:md:check` /
   `test:coverage`) is `knowledgeislands-engineering`'s, asserted by `audit-engineering.ts`. An MCP repo with a smoke harness **appends
-  `bun run test:smoke`** to `.github/workflows/ci.yml` after those steps — the MCP delta on the CI shape, asserted here by `audit-mcp.ts`.
-- **Typed client — `generate:client` script.** Every repo ships a `generate:client` script that emits a typed TypeScript client via
+  `bun run ki:test:smoke`** to `.github/workflows/ci.yml` after those steps — the MCP delta on the CI shape, asserted here by
+  `audit-mcp.ts`.
+- **Typed client — `ki:generate:client` script.** Every repo ships a `ki:generate:client` script that emits a typed TypeScript client via
   `mcporter emit-ts <server-name> --mode client --out src/generated/client.ts --types-out src/generated/types.d.ts`. The emitted
   `src/generated/client.ts` is committed (it is the deliverable, not build output); it is excluded from vitest coverage. **Re-run
-  `bun run generate:client` after any tool surface change** — adding, removing, or renaming a tool, or changing its input schema or return
-  shape — otherwise callers compile against a stale contract. The `<server-name>` must match a registered mcporter instance
+  `bun run ki:generate:client` after any tool surface change** — adding, removing, or renaming a tool, or changing its input schema or
+  return shape — otherwise callers compile against a stale contract. The `<server-name>` must match a registered mcporter instance
   (`mcporter list`). When adding a new server to the workspace, also register it in `arcadia-agentic-harness/scripts/generate-clients.ts` so
-  that `bun run codegen` from the harness root regenerates all repos at once.
+  that `bun run ki:codegen` from the harness root regenerates all repos at once.
 
 ## 9. tsconfig / vitest / biome
 

@@ -187,8 +187,8 @@ ever starts enforcing a **[J]** check, move its tag here.
   genuinely needs, never by "no checker written yet". The reader's context is spent only on the **[J]** items, so a mechanical criterion
   left to prose, or a **[J]** the checker already decides, is drift — it **moves into the checker and flips to [M]**. The linter surfaces
   the mechanical heuristic — a rubric carrying **[M]** criteria but shipping no `scripts/` checker (nor a documented toolchain delegation,
-  e.g. `knowledgeislands-authoring` → `bun run lint:md`) — as a WARN; the **[J]** gate is whether each remaining **[J]** genuinely needs a
-  reader rather than a script. (arcadia-agentic-harness `docs/design.md`, enforcement-framework.md §3/§6)
+  e.g. `knowledgeislands-authoring` → `bun run ki:lint:md`) — as a WARN; the **[J]** gate is whether each remaining **[J]** genuinely needs
+  a reader rather than a script. (arcadia-agentic-harness `docs/design.md`, enforcement-framework.md §3/§6)
 - **SHAPE-10 [J]** _A skill must not assume personal `CLAUDE.md` content._ A Knowledge Islands skill is installed by any contributor, not
   only its author. It must not assume the user has any particular content in their personal `~/.claude/CLAUDE.md` (or imported topic files)
   — plan-mode gates, house style rules, footnote conventions, workflow preferences. Any behaviour a skill requires beyond what the open spec

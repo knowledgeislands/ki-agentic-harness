@@ -17,12 +17,12 @@ export const scenarios: Scenario[] = [
     prompt:
       'In our Knowledge Islands TypeScript/Bun repos, which prefixed package.json script families must every repo carry, and how does the standard treat repo-specific scripts beyond them?',
     assertions: [
-      { name: 'lint:* family', re: /lint:(check|fix|format|md|package|types)/ },
-      { name: 'deps:* family', re: /deps:(missing|unused|update)/ },
+      { name: 'ki:lint:* family', re: /lint:(check|fix|format|md|package|types)/ },
+      { name: 'ki:deps:* family', re: /deps:(missing|unused|update)/ },
       { name: 'extras permitted', re: /(permissive|allowed|fine|not (drift|flagged)|additive)/i }
     ],
     rubric:
-      'House rule: every TS/Bun repo carries the full `lint:*` family (lint:check, lint:fix, lint:format, lint:md, lint:package, lint:types) and the `deps:*` family (deps:missing, deps:unused, deps:update), plus clean and prepare; these are exact-matched. Repo-specific extra scripts (server:*, skills:*, eval, repo:audit, …) are PERMITTED — the standard is strict about the families and permissive about additions. A correct answer names both families and states that extra scripts are fine, not drift.'
+      'House rule: every TS/Bun repo carries the full `ki:lint:*` family (ki:lint:check, ki:lint:fix, ki:lint:format, ki:lint:md, ki:lint:package, ki:lint:types) and the `ki:deps:*` family (ki:deps:missing, ki:deps:unused, ki:deps:update), plus clean and prepare; these are exact-matched. Repo-specific extra scripts (server:*, ki:skills:*, eval, ki:repo:audit, …) are PERMITTED — the standard is strict about the families and permissive about additions. A correct answer names both families and states that extra scripts are fine, not drift.'
   },
   {
     skill: 'knowledgeislands-engineering',
@@ -46,6 +46,6 @@ export const scenarios: Scenario[] = [
       { name: 'composed / both / in sequence', re: /(compose|both|sequence|in turn|then)/i }
     ],
     rubric:
-      "House architecture: `knowledgeislands-engineering` owns the common toolchain (package.json families, the `bun test` trap, tsconfig/biome/vitest with 100% coverage, .env, the cli-chmod rule); `knowledgeislands-mcp` owns only the MCP delta (src/ layout, bin/exports, tool naming, the coverage-exclude list). A repo is audited by COMPOSING the two — run `engineering:audit` (common) then `audit-mcp.ts` (delta), by running them in sequence, not by importing one another — and is clean only when both pass. A correct answer identifies the two layers/checkers and that they compose."
+      "House architecture: `knowledgeislands-engineering` owns the common toolchain (package.json families, the `bun test` trap, tsconfig/biome/vitest with 100% coverage, .env, the cli-chmod rule); `knowledgeislands-mcp` owns only the MCP delta (src/ layout, bin/exports, tool naming, the coverage-exclude list). A repo is audited by COMPOSING the two — run `ki:engineering:audit` (common) then `audit-mcp.ts` (delta), by running them in sequence, not by importing one another — and is clean only when both pass. A correct answer identifies the two layers/checkers and that they compose."
   }
 ]

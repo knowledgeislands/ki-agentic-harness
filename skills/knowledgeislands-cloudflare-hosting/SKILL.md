@@ -3,8 +3,8 @@ name: knowledgeislands-cloudflare-hosting
 description: >
   Codify, audit, conform, and scaffold the Knowledge Islands house convention for serving a built static site on Cloudflare — Workers +
   Static Assets (not Pages), one `wrangler.jsonc` pointing `assets.directory` at the site's `dist/`, custom-domain routes, observability,
-  and the `site:deploy` script family. Use when deploying a site to Cloudflare, wiring or auditing its `wrangler.jsonc`, bringing hosting up
-  to standard, or scaffolding it. Triggers: "deploy this site to Cloudflare", "audit the Cloudflare hosting", "set up wrangler for the
+  and the `ki:site:deploy` script family. Use when deploying a site to Cloudflare, wiring or auditing its `wrangler.jsonc`, bringing hosting
+  up to standard, or scaffolding it. Triggers: "deploy this site to Cloudflare", "audit the Cloudflare hosting", "set up wrangler for the
   site", "host the dist on Cloudflare", "configure Workers Static Assets", "why won't the site deploy", "conform the hosting". Builds on
   `knowledgeislands-11ty-websites` (which produces the `dist/` it serves — the seam) and `knowledgeislands-engineering` (the toolchain). For
   any Worker that is not the static-site server (bots, ingress receivers, APIs, Durable Objects) and general Cloudflare/Workers/wrangler
@@ -16,7 +16,7 @@ argument-hint: 'audit <repo> | conform <repo> | init <repo> | refresh'
 
 You are applying the **Knowledge Islands Cloudflare hosting standard** — the house convention for serving a built static site on
 **Cloudflare Workers + Static Assets**: one `wrangler.jsonc` whose `assets.directory` points at the site's `dist/`, custom-domain routes,
-observability on, and a `site:deploy` script family. A new site's hosting is scaffolded to it; an existing one is audited and conformed.
+observability on, and a `ki:site:deploy` script family. A new site's hosting is scaffolded to it; an existing one is audited and conformed.
 
 This is a **standard, base-agnostic Process skill**. It hard-codes no single repo; it applies to any repo carrying a
 `[knowledgeislands-cloudflare-hosting]` table in its `.ki-config.toml`. How it sits beside the other skills, and where it must not overlap
@@ -61,7 +61,7 @@ The checker is the **hosting layer**; the toolchain and site-build layers audit 
 by importing each other (each skill is symlinked standalone):
 
 ```text
-engineering:audit <repo>                          →  common toolchain (Bun, lint/deps families, tsconfig/biome)
+ki:engineering:audit <repo>                          →  common toolchain (Bun, lint/deps families, tsconfig/biome)
   then audit-websites.ts <repo>                   →  site-build delta (knowledgeislands-11ty-websites) → produces dist/
   then audit-cloudflare-hosting.ts <repo>         →  serving the dist/ (THIS skill)
 ```
@@ -82,7 +82,7 @@ unclear. (Modes are named and alphabetical.) The mode shape itself is defined in
 
 ### Mode AUDIT — check a site's hosting against the standard
 
-1. **Run the upstream layers first.** `engineering:audit` (toolchain) and `audit-websites.ts` (the site build that produces `dist/`). The
+1. **Run the upstream layers first.** `ki:engineering:audit` (toolchain) and `audit-websites.ts` (the site build that produces `dist/`). The
    hosting audit assumes a buildable site.
 2. **Run the mechanical checker.** `bun <skill>/scripts/audit-cloudflare-hosting.ts <repo>`. It finds the **site** `wrangler.jsonc` (the one
    with an `assets` block), then reports: present at the site root, `assets.directory` set and pointing at `dist/`, `name` +
@@ -97,7 +97,7 @@ unclear. (Modes are named and alphabetical.) The mode shape itself is defined in
    runs before deploy, and CI (Cloudflare Workers Builds or an Action) is wired. Confirm the `dist/` path matches what `audit-websites.ts`
    reported.
 4. **Report** by location → criterion → fix, grouped by severity (FAIL / WARN / POLISH). The classic finding: a site Worker with **no**
-   `wrangler.jsonc` (so `site:deploy` fails).
+   `wrangler.jsonc` (so `ki:site:deploy` fails).
 
 ### Mode CONFORM — bring a site's hosting up to standard
 
@@ -113,7 +113,7 @@ unclear. (Modes are named and alphabetical.) The mode shape itself is defined in
 
 Follow **[the setup guide](references/setup-guide.md)** — it is the step-by-step walkthrough of every action below. Summary:
 
-**Use the `wrangler.jsonc` shape from [the standard](references/cloudflare-hosting-standard.md)** and the `site:deploy`/`site:preview`
+**Use the `wrangler.jsonc` shape from [the standard](references/cloudflare-hosting-standard.md)** and the `ki:site:deploy`/`ki:site:preview`
 scripts; adapt `name`, `compatibility_date`, the `assets.directory` relative path (`./dist` flat, `../dist` from `site/`), and the
 custom-domain routes. Add the `[knowledgeislands-cloudflare-hosting]` table to `.ki-config.toml`
 (`bun scripts/audit-cloudflare-hosting.ts --init >> .ki-config.toml`, then set `site-root`). Update `.gitignore` (`dist/`, `.wrangler/`).

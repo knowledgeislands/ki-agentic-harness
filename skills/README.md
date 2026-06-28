@@ -11,14 +11,14 @@ the [Agent Skills open standard](https://agentskills.io/specification). Longer d
 templates in `assets/` — all loaded on demand. The **directory name is the skill's `name`**: lowercase, hyphenated, matching the `name:`
 frontmatter exactly, since agents discover a skill by `name`, not path.
 
-Skill quality conforms to the **`knowledgeislands-skills`** standard (a sibling here) — run its AUDIT (`bun run skills:lint`) before
+Skill quality conforms to the **`knowledgeislands-skills`** standard (a sibling here) — run its AUDIT (`bun run ki:skills:lint`) before
 shipping. The container these skills sit in — this four-part `skills/` / `agents/` / `mcp/` / `evals/` harness — conforms to
 **`knowledgeislands-harness`**.
 
 ## Adding a skill
 
 1. Scaffold `<name>/SKILL.md` (run `knowledgeislands-skills` Mode INIT), adding `references/` / `scripts/` / `assets/` only as needed.
-2. Write to the rubric, not from memory; self-audit with `bun run skills:lint <name>`.
+2. Write to the rubric, not from memory; self-audit with `bun run ki:skills:lint <name>`.
 3. Add it to the catalogue and the dependency-order sweep — see [docs/skills.md](../docs/skills.md).
 
 The catalogue (what each skill does) is in [docs/skills.md](../docs/skills.md); how they fit together — boundaries, the knowledge loops, the

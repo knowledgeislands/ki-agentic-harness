@@ -28,12 +28,12 @@ documented once in the arcadia-agentic-harness `README.md`, not repeated here.
 A convention is one of two kinds, and the distinction decides where it lives — never restate a mechanically-enforced rule here:
 
 - **Mechanical** — deterministically enforced by the house toolchain, so you never hand-apply it. **Prettier + markdownlint-cli2** own
-  Markdown (line width, prose wrap, bullet/quote characters, heading hierarchy, single H1, spacing); run `bun run lint:md`. **Biome** owns
-  TS/JSON. Nothing in the toolchain formats **TOML**, so its conventions are entirely the judgment layer below.
+  Markdown (line width, prose wrap, bullet/quote characters, heading hierarchy, single H1, spacing); run `bun run ki:lint:md`. **Biome**
+  owns TS/JSON. Nothing in the toolchain formats **TOML**, so its conventions are entirely the judgment layer below.
 - **Judgment** — needs a person or model deciding: when a wide table should spill into footnotes, whether link text is descriptive, how a
   `.ki-config.toml` reads. The toolchain cannot assess these. **This is what this skill carries.**
 
-So the workflow when authoring or tidying Markdown is: write to the judgment conventions, then run `bun run lint:md` to settle everything
+So the workflow when authoring or tidying Markdown is: write to the judgment conventions, then run `bun run ki:lint:md` to settle everything
 mechanical. TOML has no such mechanical pass — the convention is all there is.
 
 ## Operating modes
@@ -44,8 +44,8 @@ the **Convention sets** below; the checkable criteria are in [the rubric](refere
 
 ### Mode AUDIT — check a document against house style
 
-1. **Run the mechanical checker** — `bun scripts/audit-authoring.ts <repo-path>` (or `bun run authoring:audit <repo-path>` at the harness
-   root). It delegates to `bun run lint:md:check` (Prettier + markdownlint) and surfaces the judgment-layer `[J]` criteria as ADVISORY
+1. **Run the mechanical checker** — `bun scripts/audit-authoring.ts <repo-path>` (or `bun run ki:authoring:audit <repo-path>` at the harness
+   root). It delegates to `bun run ki:lint:md:check` (Prettier + markdownlint) and surfaces the judgment-layer `[J]` criteria as ADVISORY
    findings so they are named and visible in CI even though they require a reviewer. Exit code is non-zero on any FAIL.
 2. Apply the **judgment** (`[J]`) criteria from [the rubric](references/audit-rubric.md) — the ADVISORY findings from step 1 name each one.
    Wide tables that should spill to footnotes, non-descriptive link text, a `.ki-config.toml` that reads poorly. TOML has no mechanical pass
@@ -56,9 +56,9 @@ the **Convention sets** below; the checkable criteria are in [the rubric](refere
 
 1. Apply the judgment transforms in place — wide tables → footnotes (the marker series), descriptive link text, tidy TOML — per the
    Convention sets.
-2. Run `bun run lint:md` to settle the mechanical layer (table alignment, prose wrap, and transient `MD052`/`MD060` until references and
+2. Run `bun run ki:lint:md` to settle the mechanical layer (table alignment, prose wrap, and transient `MD052`/`MD060` until references and
    alignment land).
-3. Re-run until `lint:md` is clean and the judgment criteria pass.
+3. Re-run until `ki:lint:md` is clean and the judgment criteria pass.
 
 ### Mode REFRESH — re-anchor the conventions to their sources
 

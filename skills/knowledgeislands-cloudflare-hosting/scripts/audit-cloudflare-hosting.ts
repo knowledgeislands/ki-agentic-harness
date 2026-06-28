@@ -158,8 +158,8 @@ if (companions.length) {
 }
 
 // ── scripts: the SITE's wrangler deploy, never pages deploy ───────────────────
-// Target the site deploy (site:deploy | deploy), not a companion's (ingress:deploy, bot:deploy).
-const deployKey = scripts['site:deploy'] ? 'site:deploy' : scripts.deploy ? 'deploy' : ''
+// Target the site deploy (ki:site:deploy | deploy), not a companion's (ingress:deploy, bot:deploy).
+const deployKey = scripts['ki:site:deploy'] ? 'ki:site:deploy' : scripts.deploy ? 'deploy' : ''
 const deployOk = deployKey !== '' && /wrangler\s+deploy/.test(scripts[deployKey])
 add(
   deployOk ? 'PASS' : 'WARN',
