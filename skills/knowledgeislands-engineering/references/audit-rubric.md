@@ -9,6 +9,19 @@ re-derive) or **[J] judgment** (assess by reading). Run the checker first, then 
 Capability conditionals only apply when the repo has the marker (tests / compiled build / env / CLI); a repo without the capability is not
 graded on it, and the checker reports it as N/A, not a failure.
 
+## Contents
+
+- [Core — package.json & toolchain pinning (§1)](#core--packagejson--toolchain-pinning-1)
+- [Core — script families (§2)](#core--script-families-2)
+- [Core — Bun vs Node (§3)](#core--bun-vs-node-3)
+- [Core — tsconfig.json (§4)](#core--tsconfigjson-4)
+- [Core — biome.json & prettier config (§5)](#core--biomejson--prettier-config-5)
+- [Capability: tests (§6)](#capability-tests-6--marker-vitestconfig-or-a-test-script)
+- [Capability: compiled build & CLI (§7)](#capability-compiled-build--cli-7--marker-tsconfigbuildjson-or-a-tsc-build)
+- [Capability: env config (§8)](#capability-env-config-8--marker-envexample-or-processloadenvfile)
+- [Core — .ki-config.toml (§9)](#core--ki-configtoml-9)
+- [Reporting](#reporting)
+
 ## Core — package.json & toolchain pinning (§1)
 
 - [ ] [M] WARN — `"type": "module"`.
