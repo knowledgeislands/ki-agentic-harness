@@ -128,6 +128,26 @@ for (const k of ['.', './config', './package.json']) {
 for (const k of ['ki:server:mcp:dev', 'ki:server:mcp:inspect', 'ki:server:mcp:start']) {
   scripts[k] ? add('PASS', 'scripts', `${k} present`) : add('WARN', 'scripts', `MCP script "${k}" missing`)
 }
+// ki:generate:client — the mcporter typed-client codegen, required for every MCP.
+scripts['ki:generate:client']
+  ? add('PASS', 'scripts', 'ki:generate:client present (mcporter typed-client codegen)')
+  : add('FAIL', 'scripts', 'MCP script "ki:generate:client" missing — the mcporter typed-client codegen')
+// Auth-server delta (dual-server MCPs, e.g. gmail/m365): when src/auth-server/ exists,
+// the ki:server:auth:* pair drives it.
+if (isDir('src', 'auth-server')) {
+  for (const k of ['ki:server:auth:dev', 'ki:server:auth:start']) {
+    scripts[k]
+      ? add('PASS', 'scripts', `${k} present (auth-server delta)`)
+      : add('FAIL', 'scripts', `src/auth-server/ present but "${k}" missing (auth-server delta)`)
+  }
+}
+// Record/replay integration harness: ki:test:record / ki:test:replay travel as a pair.
+{
+  const rec = Boolean(scripts['ki:test:record'])
+  const rep = Boolean(scripts['ki:test:replay'])
+  if (rec !== rep) add('WARN', 'scripts', 'ki:test:record and ki:test:replay must be defined together (mcporter record/replay harness)')
+  else if (rec) add('PASS', 'scripts', 'ki:test:record + ki:test:replay present (integration harness)')
+}
 
 // ── shared utils helpers ──────────────────────────────────────────────────────
 for (const f of ['access-level.ts', 'annotations.ts', 'audit-log.ts']) {

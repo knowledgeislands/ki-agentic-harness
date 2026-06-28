@@ -98,6 +98,11 @@ The manifest is the **engineering** standard's because engineering owns the clos
 (repo's metadata checks, the artifact skill's `bin`/`exports` shape). Adding a genuinely new key means adding it here **and** assigning an
 owner — never just dropping it into a `package.json`.
 
+**`lint-staged` + toolchain `devDependencies`.** The `ki:lint:*` / `ki:deps:*` / `prepare` families invoke a fixed toolchain, so that
+toolchain is **declared**, not merely implied: every repo carries `@biomejs/biome`, `prettier`, `husky`, `lint-staged`, `markdownlint-cli2`,
+`syncpack`, and `typescript` in `devDependencies`. The `lint-staged` block (the husky pre-commit fan-out) is a governed key — present in
+every repo, running `@biomejs/biome` over staged code and `prettier` + `markdownlint-cli2` over staged Markdown.
+
 **Toolchain pin (`mise.toml`).** Every repo carries a root `mise.toml` with a `[tools]` table pinning both the **node** and **bun** versions
 — the actual runtimes [mise](https://mise.jdx.dev/) puts on `PATH` when you `cd` in, and that CI installs via `jdx/mise-action`, so the dev
 shell and CI resolve byte-identically. Two rules:

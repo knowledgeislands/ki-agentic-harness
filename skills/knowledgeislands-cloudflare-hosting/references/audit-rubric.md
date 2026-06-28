@@ -52,7 +52,8 @@ Severity: **FAIL** (ship-stopper — the site can't deploy, or deploys the wrong
 ## Scripts (§4)
 
 - [ ] [M] WARN — a deploy script runs `wrangler deploy` from the site root (`ki:site:deploy`, or `deploy` when flat). (§4)
-- [ ] [J] WARN — `ki:site:clean` removes `dist/` + `.wrangler/`; `ki:site:preview` (build → `wrangler dev`) present where used. (§4)
+- [ ] [M] WARN — a `ki:site:preview` script runs `wrangler dev` (local Workers preview of the built `dist/`). (§4)
+- [ ] [J] WARN — `ki:site:clean` removes `dist/` + `.wrangler/`. (§4)
 - [ ] — `ki:site:build` / `ki:site:dev` are **not** checked here — they belong to `knowledgeislands-11ty-websites`. (§4)
 
 ## CI/CD (§5)

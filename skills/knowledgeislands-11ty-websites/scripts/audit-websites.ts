@@ -199,17 +199,25 @@ if (cfg) {
   )
 }
 
-// ── scripts (accept site: prefix or unprefixed, per layout) ───────────────────
-const script = (base: string) => scripts[`site:${base}`] ?? scripts[base]
+// ── scripts (ki:site: prefix per the naming law; bare lifecycle idiom for build/clean) ──
+const script = (base: string) => scripts[`ki:site:${base}`] ?? scripts[`ki:${base}`] ?? scripts[base]
 const build = script('build')
 build && /eleventy/.test(build)
   ? add('PASS', 'scripts', 'build script invokes Eleventy')
-  : add('FAIL', 'scripts', 'no build script invoking Eleventy ((site:)build)')
+  : add('FAIL', 'scripts', 'no build script invoking Eleventy (ki:site:build)')
 const dev = script('dev')
 dev && /concurrently/.test(dev)
   ? add('PASS', 'scripts', 'dev script runs Tailwind watch + Eleventy serve (concurrently)')
-  : add('WARN', 'scripts', 'no concurrently dev script ((site:)dev)')
-script('clean') ? add('PASS', 'scripts', 'clean script present') : add('WARN', 'scripts', 'no (site:)clean script')
+  : add('WARN', 'scripts', 'no concurrently dev script (ki:site:dev)')
+script('clean') ? add('PASS', 'scripts', 'clean script present') : add('WARN', 'scripts', 'no ki:site:clean script')
+// the concurrently dev script fans out to a Tailwind watcher + an Eleventy server
+if (dev && /concurrently/.test(dev)) {
+  for (const sub of ['dev:css', 'dev:serve']) {
+    script(sub)
+      ? add('PASS', 'scripts', `ki:site:${sub} present (dev fan-out)`)
+      : add('WARN', 'scripts', `ki:site:${sub} missing — the concurrently dev script fans out to it`)
+  }
+}
 
 // ── dist/ gitignored ──────────────────────────────────────────────────────────
 const gitignore = read('.gitignore')

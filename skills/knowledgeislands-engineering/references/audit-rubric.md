@@ -17,6 +17,10 @@ graded on it, and the checker reports it as N/A, not a failure.
 - [ ] [M] FAIL — **coverage manifest (exhaustive)**: every top-level `package.json` key is in the manifest (§1) — `name`, `version`,
       `description`, `author`, `license`, `private`, `repository`, `homepage`, `bugs`, `keywords`, `type`, `packageManager`, `engines`,
       `scripts`, `devDependencies`, `dependencies`, `workspaces`, `lint-staged`, `main`, `bin`, `exports`, `files`. An unknown key is drift.
+- [ ] [M] FAIL — toolchain `devDependencies` present: `@biomejs/biome`, `prettier`, `husky`, `lint-staged`, `markdownlint-cli2`, `syncpack`,
+      `typescript` (the tools the families invoke — declared, not implied).
+- [ ] [M] FAIL/WARN — `lint-staged` block present (FAIL if missing) and fans out to `@biomejs/biome` on code + `prettier` + `markdownlint`
+      on Markdown (WARN otherwise).
 - [ ] [M] WARN — a root `mise.toml` pins both `node` and `bun` under `[tools]`.
 - [ ] [M] WARN — the `mise.toml` `bun` version **equals** the `packageManager` Bun version (the drift pair).
 - [ ] [M] POLISH — no legacy single-tool pin file (`.node-version`, `.nvmrc`, `.bun-version`) lingers beside `mise.toml` (warn).

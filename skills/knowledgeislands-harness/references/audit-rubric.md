@@ -72,6 +72,10 @@ quality gate is absent._
 Source: standard §package.json, `knowledgeislands-engineering`'s toolchain standard. _Severity: WARN per missing script. (A harness with no
 TypeScript may omit `ki:lint:check` / `ki:lint:types` with a documented reason — check `.ki-config.toml` for an override before reporting.)_
 
+**PKG-4 [M]** `package.json` carries the harness skill-management / codegen / eval surface: `ki:skills:link:global`, `ki:skills:status`,
+`ki:skills:unlink`, `ki:skills:refresh-status`, `ki:codegen`, `ki:eval`. Source: standard §package.json. _Severity: WARN per missing
+script._
+
 ---
 
 ## CONFIG — .ki-config.toml declarations

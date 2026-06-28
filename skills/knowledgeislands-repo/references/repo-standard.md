@@ -80,6 +80,24 @@ Squash-only merge (above) keeps history tidy for PRs that do happen, but nothing
 `main` overrides the `branch-protection` check on (see [Per-repo overrides](#per-repo-overrides)) — protection is then `main`: require a PR
 (0 approvals), the `build` status check, linear history, no force-push, no deletion, admins **not** enforced.
 
+### Package.json identity & metadata
+
+The engineering coverage manifest assigns the `package.json` **identity & metadata** keys to this skill (engineering owns the closed key
+set; this skill owns their content). Where the repo has a `package.json`, these are checked:
+
+| Field         | Rule                                                      | Severity  |
+| ------------- | --------------------------------------------------------- | --------- |
+| `name`        | present, non-empty                                        | FAIL      |
+| `version`     | semver (`x.y.z`)                                          | FAIL      |
+| `description` | present; **synced** with the GitHub description           | FAIL      |
+| `author`      | present (string or object)                                | FAIL      |
+| `license`     | `UNLICENSED` _(private)_ / MIT-or-any _(public)_ — above  | FAIL      |
+| `private`     | `true` iff the repo is private                            | FAIL      |
+| `repository`  | carries a `url`; should reference the repo's `owner/name` | FAIL/WARN |
+| `bugs`        | carries a `url`                                           | WARN      |
+| `homepage`    | present                                                   | WARN      |
+| `keywords`    | non-empty array                                           | WARN      |
+
 ## Layer 3 — deeper GitHub
 
 | Setting                             | Value | Scope                                                          |

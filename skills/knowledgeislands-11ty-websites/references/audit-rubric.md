@@ -80,6 +80,8 @@ Severity: **FAIL** (ship-stopper — the site won't build or `dist/` isn't porta
 
 - [ ] [M] WARN — a build script invokes Eleventy with `--config=eleventy.config.ts`; a dev script runs Tailwind `--watch` + Eleventy
       `--serve --port 3000` via `concurrently`. (`ki:site:build`, `ki:site:dev`.) (§8)
+- [ ] [M] WARN — the `concurrently` dev script fans out to `ki:site:dev:css` (the Tailwind watcher) and `ki:site:dev:serve` (the Eleventy
+      server). (§8)
 - [ ] [J] WARN — `ki:site:clean`, `ki:site:types` (`tsc --noEmit -p site`), and `ki:site:verify` (types + build) present, all
       `site:`-prefixed. (§8)
 

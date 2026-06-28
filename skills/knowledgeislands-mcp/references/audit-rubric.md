@@ -134,12 +134,15 @@ Skip this whole section for the filesystem/subprocess repos.
 
 - [ ] [M] WARN — `main:dist/mcp-server/index.js`; `bin.mcp-<name>` → `dist/mcp-server/index.js` (+ CLI/auth bin where applicable).
 - [ ] [M] WARN — `exports` has `.`, `./config`, `./package.json` + one per reusable `main/<concern>`.
-- [ ] [M] WARN — `ki:server:mcp:dev` / `ki:server:mcp:inspect` / `ki:server:mcp:start` present (OAuth repos add `ki:server:auth:*`).
+- [ ] [M] WARN — `ki:server:mcp:dev` / `ki:server:mcp:inspect` / `ki:server:mcp:start` present.
+- [ ] [M] FAIL — `ki:generate:client` script present (the mcporter typed-client codegen — required for every MCP).
+- [ ] [M] FAIL — where `src/auth-server/` exists, the `ki:server:auth:dev` / `ki:server:auth:start` pair is present (the OAuth delta).
+- [ ] [M] WARN — `ki:test:record` and `ki:test:replay` are defined together, or neither (the mcporter record/replay harness).
 - [ ] [M] WARN — where the repo has a `ki:test:smoke` harness, `.github/workflows/ci.yml` runs `bun run ki:test:smoke` after the common
       gate. The common CI shape (mise-action + `ki:lint:check` / `ki:lint:types` / `ki:lint:md:check` / `test:coverage`) is
       `knowledgeislands-engineering`'s (`ki:engineering:audit`); the smoke step is the MCP delta.
-- [ ] [J] WARN — `ki:generate:client` script is present; `src/generated/client.ts` is committed and not stale. If tools were
-      added/removed/renamed, or their input schema or return shape changed, since the last commit of `src/generated/`, re-run
+- [ ] [J] WARN — `src/generated/client.ts` is committed and not stale (the `ki:generate:client` presence itself is `[M]` above). If tools
+      were added/removed/renamed, or their input schema or return shape changed, since the last commit of `src/generated/`, re-run
       `bun run ki:generate:client` (or `bun run ki:codegen` from the harness root) before shipping. The `<server-name>` argument in the
       script must match a registered mcporter instance — verify with `mcporter list`.
 - [ ] — `type`/`packageManager`/`engines`/`files`, the `ki:lint:*`/`ki:deps:*`/`build`/`clean`/`test*`/`prepare` families, and the

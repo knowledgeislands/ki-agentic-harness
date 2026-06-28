@@ -174,6 +174,11 @@ add(
     ? `uses "wrangler pages deploy" (${pagesDeploy[0]}) — migrate to Workers + Static Assets`
     : 'no "wrangler pages deploy" (Workers + Static Assets)'
 )
+// ── scripts: the local preview (build, then wrangler dev against dist/) ────────
+const previewKey = scripts['ki:site:preview'] ? 'ki:site:preview' : scripts.preview ? 'preview' : ''
+previewKey && /wrangler\s+dev/.test(scripts[previewKey])
+  ? add('PASS', 'scripts', `site preview script: ${previewKey} → wrangler dev`)
+  : add('WARN', 'scripts', 'no ki:site:preview script running `wrangler dev` (local Workers preview of the built dist/)')
 
 // ── gitignore: dist/ + .wrangler/ ─────────────────────────────────────────────
 const gitignore = read('.gitignore')

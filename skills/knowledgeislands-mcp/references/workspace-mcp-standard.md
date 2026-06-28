@@ -181,8 +181,11 @@ and let `ki:engineering:audit` check them; not re-checked here. This section is 
   a CLI (`"mcp-<name>-<verb>": "dist/cli/cli.js"`) or auth server (`"mcp-<name>-auth"`) where present.
 - **`exports`** — always `"."` (→ `dist/mcp-server`), `"./config"`, and `"./package.json"`; plus one entry per reusable `main/<concern>`.
 - **`ki:server:mcp:*` scripts** — `ki:server:mcp:dev` / `ki:server:mcp:inspect` (both `NODE_ENV=development bun …`) / `ki:server:mcp:start`
-  (`bun run build && node dist/mcp-server/index.js`); OAuth repos add `ki:server:auth:*`, and a repo with a CLI/smoke harness adds
-  `ki:test:smoke`.
+  (`bun run build && node dist/mcp-server/index.js`); OAuth repos with an `src/auth-server/` add the `ki:server:auth:*` pair
+  (`ki:server:auth:dev` / `ki:server:auth:start`), and a repo with a CLI/smoke harness adds `ki:test:smoke`.
+- **`ki:test:record` / `ki:test:replay` (record/replay harness).** A repo with mcporter integration recordings ships the pair together —
+  `ki:test:record` captures a live run into `fixtures/recordings/`, `ki:test:replay` runs against the committed fixture. Defining one
+  without the other is drift (asserted by `audit-mcp.ts`).
 - **CI — the smoke delta.** The common CI shape (`jdx/mise-action` + `bun run ki:lint:check` / `ki:lint:types` / `ki:lint:md:check` /
   `test:coverage`) is `knowledgeislands-engineering`'s, asserted by `audit-engineering.ts`. An MCP repo with a smoke harness **appends
   `bun run ki:test:smoke`** to `.github/workflows/ci.yml` after those steps — the MCP delta on the CI shape, asserted here by

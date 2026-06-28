@@ -134,6 +134,25 @@ function auditHarness(root: string): Finding[] {
     for (const script of ['ki:lint:check', 'ki:lint:types', 'ki:lint:md', 'ki:lint:md:check']) {
       check(findings, 'WARN', `PKG-3 (${script})`, hasScript(pkg, script), `package.json should have a '${script}' script`)
     }
+
+    // PKG-4 — the harness skill-management + codegen/eval surface. These drive the
+    // skills/ and evals/ parts and the typed-client codegen; the harness owns them.
+    for (const script of [
+      'ki:skills:link:global',
+      'ki:skills:status',
+      'ki:skills:unlink',
+      'ki:skills:refresh-status',
+      'ki:codegen',
+      'ki:eval'
+    ]) {
+      check(
+        findings,
+        'WARN',
+        `PKG-4 (${script})`,
+        hasScript(pkg, script),
+        `package.json should have a '${script}' script (harness skill-management / codegen / eval surface)`
+      )
+    }
   }
 
   // ── CONFIG — .ki-config.toml declarations ─────────────────────────────────

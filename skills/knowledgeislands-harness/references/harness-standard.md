@@ -139,9 +139,12 @@ The `ki:lint:*` family is the common engineering toolchain (`knowledgeislands-en
 may omit `ki:lint:check` / `ki:lint:types` with a documented reason.
 
 The harness-specific scripts are `ki:skills:link:project` and `ki:skills:lint` — these are the delivery and quality mechanisms the harness
-concept depends on. Absence of either is a FAIL. The harness additionally carries `ki:skills:link:global`
-(`sync-skills.ts link --only knowledgeislands-bootstrap`) to install the one global keystone — skills are no longer installed wholesale into
-`~/.claude/skills/`; they are wired **project-local** per repo by `knowledgeislands-bootstrap`, with only the keystone kept global.
+concept depends on. Absence of either is a FAIL. The harness additionally carries the rest of its skill-management / codegen / eval surface
+(PKG-4, WARN): `ki:skills:link:global` (`sync-skills.ts link --only knowledgeislands-bootstrap`) to install the one global keystone,
+`ki:skills:status` / `ki:skills:unlink` (inspect / tear down the project-local links), `ki:skills:refresh-status` (refresh the skills status
+block), `ki:codegen` (regenerate every MCP's typed client from the harness root), and `ki:eval` (run the `evals/` suite). Skills are not
+installed wholesale into `~/.claude/skills/`; they are wired **project-local** per repo by `knowledgeislands-bootstrap`, only the keystone
+is kept global.
 
 ---
 

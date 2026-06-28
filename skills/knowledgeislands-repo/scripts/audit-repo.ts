@@ -140,7 +140,20 @@ const topicNames = (t: unknown): string[] =>
 
 // The repo's parsed package.json (or null if absent / unparseable), fetched once
 // and reused for the description-sync check and the MCP-dependency coverage signal.
-type Pkg = { description?: unknown; license?: unknown; dependencies?: Record<string, string>; devDependencies?: Record<string, string> }
+type Pkg = {
+  name?: unknown
+  version?: unknown
+  description?: unknown
+  author?: unknown
+  license?: unknown
+  private?: unknown
+  repository?: unknown
+  homepage?: unknown
+  bugs?: unknown
+  keywords?: unknown
+  dependencies?: Record<string, string>
+  devDependencies?: Record<string, string>
+}
 function readPkg(nwo: string, files: Set<string>): Pkg | null {
   if (!files.has('package.json')) return null
   const text = ghRaw(nwo, 'package.json')
@@ -322,6 +335,30 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
     const pkgLicense = typeof signals.pkg.license === 'string' ? signals.pkg.license : null
     if (pkgLicense !== 'UNLICENSED')
       fail('package-license', `package.json "license" is ${JSON.stringify(pkgLicense)} (private repos must use "UNLICENSED")`)
+  }
+  // ── layer 2: package.json identity & metadata (the repo skill's manifest keys) ──
+  // engineering's coverage manifest assigns the identity/metadata keys to this skill;
+  // here we check their presence/format. The keys: name, version, description, author,
+  // license (above), private, repository, homepage, bugs, keywords.
+  if (signals.pkg != null) {
+    const p = signals.pkg
+    const isStr = (v: unknown): v is string => typeof v === 'string' && v.trim().length > 0
+    const urlOf = (v: unknown): string | null =>
+      isStr(v) ? v : v && typeof v === 'object' ? ((v as { url?: unknown }).url as string) : null
+    if (!isStr(p.name)) fail('package-name', 'package.json "name" missing')
+    if (typeof p.version !== 'string' || !/^\d+\.\d+\.\d+/.test(p.version))
+      fail('package-version', `package.json "version" must be semver, got ${JSON.stringify(p.version)}`)
+    if (!isStr(p.author) && !(p.author != null && typeof p.author === 'object')) fail('package-author', 'package.json "author" missing')
+    const repoUrl = urlOf(p.repository)
+    if (!isStr(repoUrl)) fail('package-repository', 'package.json "repository" missing a url')
+    else if (!repoUrl.includes(r.nameWithOwner))
+      warn('package-repository', `package.json "repository" url should reference ${r.nameWithOwner}\n      got: ${repoUrl}`)
+    if (r.visibility === 'PRIVATE' && p.private !== true) fail('package-private', 'private repo: package.json must set "private": true')
+    if (r.visibility === 'PUBLIC' && p.private === true) fail('package-private', 'public repo: package.json must not set "private": true')
+    if (!isStr(urlOf(p.bugs))) warn('package-bugs', 'package.json "bugs" should carry a url')
+    if (!isStr(p.homepage)) warn('package-homepage', 'package.json "homepage" missing')
+    if (!Array.isArray(p.keywords) || p.keywords.length === 0)
+      warn('package-keywords', 'package.json "keywords" should be a non-empty array')
   }
   if (!r.description?.trim()) fail('description', 'description is empty')
   // description-sync: the GitHub description must equal the repo's package.json

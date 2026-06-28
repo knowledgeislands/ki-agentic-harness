@@ -124,6 +124,34 @@ unknownKeys.length
     )
   : add('PASS', 'package', 'all top-level keys are in the coverage manifest')
 
+// ── core: lint-staged block + toolchain devDependencies (§1/§5) ───────────────
+// The lint:* / deps:* / prepare families above invoke a fixed toolchain; assert that
+// toolchain is actually declared, rather than left implied. lint-staged is the husky
+// pre-commit fan-out — a governed key in the manifest, so it must be present and wired.
+const devDeps = (pkg.devDependencies ?? {}) as Record<string, string>
+const REQUIRED_DEV = ['@biomejs/biome', 'prettier', 'husky', 'lint-staged', 'markdownlint-cli2', 'syncpack', 'typescript']
+const missingDev = REQUIRED_DEV.filter((d) => !(d in devDeps))
+missingDev.length
+  ? add(
+      'FAIL',
+      'package',
+      `missing toolchain devDependencies: ${missingDev.join(', ')} (the lint:* / format / type toolchain the families invoke)`
+    )
+  : add(
+      'PASS',
+      'package',
+      'toolchain devDependencies present (biome, prettier, husky, lint-staged, markdownlint-cli2, syncpack, typescript)'
+    )
+const lintStaged = pkg['lint-staged']
+if (!lintStaged || typeof lintStaged !== 'object') {
+  add('FAIL', 'package', 'lint-staged block missing (the husky pre-commit fan-out)')
+} else {
+  const ls = JSON.stringify(lintStaged)
+  ls.includes('@biomejs/biome') && ls.includes('prettier') && ls.includes('markdownlint')
+    ? add('PASS', 'package', 'lint-staged fans out to biome (code) + prettier/markdownlint (Markdown)')
+    : add('WARN', 'package', 'lint-staged should run @biomejs/biome on code and prettier + markdownlint on *.md')
+}
+
 // ── core: mise.toml toolchain pin ─────────────────────────────────────────────
 // Root mise.toml pins the actual node + bun (mise puts them on PATH on `cd`; CI
 // installs them via jdx/mise-action). The pinned bun MUST equal packageManager's
