@@ -7,7 +7,7 @@
  *
  * Checks the shared toolchain the `knowledgeislands-engineering` skill codifies —
  * package.json metadata, the mise.toml toolchain pin (node + bun, bun matched to
- * packageManager, CI via mise-action) + the lint:* / deps:* script families, the
+ * packageManager, CI via mise-action) + the ki:lint:* / ki:deps:* script families, the
  * `bun test` trap, tsconfig.json + biome.json, and the capability conditionals
  * (tests, compiled build + the cli-chmod rule, env) that fire only when the repo opts in.
  * It is deliberately PERMISSIVE about additive repo-specific scripts, and it does
@@ -83,6 +83,47 @@ add(
   nodeOk ? `engines.node = ${nodeEngine}` : `engines.node should be >=22, got ${JSON.stringify(nodeEngine)}`
 )
 
+// ── core: the coverage manifest — package.json is a CLOSED top-level key set ───
+// Every top-level key must be in the manifest (engineering-standard §1), each mapped
+// to an owning skill. An unknown key is drift: it would be an element no rubric drives.
+// This is the exhaustiveness half that makes "every element is governed" hold by
+// construction — the per-key CONTENT rules live in the owning skill's checker.
+const ALLOWED_KEYS = new Set<string>([
+  // identity & metadata → knowledgeislands-repo
+  'name',
+  'version',
+  'description',
+  'author',
+  'license',
+  'private',
+  'repository',
+  'homepage',
+  'bugs',
+  'keywords',
+  // toolchain & structure → knowledgeislands-engineering
+  'type',
+  'packageManager',
+  'engines',
+  'scripts',
+  'devDependencies',
+  'dependencies',
+  'workspaces',
+  'lint-staged',
+  // published-artifact surface → the artifact skill (e.g. knowledgeislands-mcp)
+  'main',
+  'bin',
+  'exports',
+  'files'
+])
+const unknownKeys = Object.keys(pkg).filter((k) => !ALLOWED_KEYS.has(k))
+unknownKeys.length
+  ? add(
+      'FAIL',
+      'package',
+      `ungoverned package.json key(s): ${unknownKeys.join(', ')} — every top-level key must be in the coverage manifest (engineering-standard §1) and assigned an owner`
+    )
+  : add('PASS', 'package', 'all top-level keys are in the coverage manifest')
+
 // ── core: mise.toml toolchain pin ─────────────────────────────────────────────
 // Root mise.toml pins the actual node + bun (mise puts them on PATH on `cd`; CI
 // installs them via jdx/mise-action). The pinned bun MUST equal packageManager's
@@ -108,10 +149,12 @@ strayPins.length
   : add('PASS', 'mise', 'no legacy pin files (.node-version / .nvmrc / .bun-version)')
 
 // ── core (when the repo has CI): the common CI shape ──────────────────────────
-// CI installs the toolchain from mise.toml and runs the common gate steps on every
-// push/PR. The Markdown gate (lint:md:check) is load-bearing: without it, prose-wrap
-// drift lands on main undetected (lint:md self-heals with --write locally). The
-// test:smoke step is the MCP delta — asserted by audit-mcp.ts, not here.
+// CI installs the toolchain from mise.toml and runs a SINGLE gate step — `bun run
+// ki:verify` — which composes the read-only gate (ki:lint:check → ki:lint:types →
+// ki:lint:md:check, + build/test:coverage tails). The Markdown gate inside it is
+// load-bearing: ki:lint:md self-heals locally with --write, so only its --check twin
+// in ki:verify stops prose-wrap drift reaching main. A ki:test:smoke step that follows
+// in an MCP repo is the artifact delta — asserted by audit-mcp.ts, not here.
 if (has('.github', 'workflows', 'ci.yml')) {
   const ci = read('.github', 'workflows', 'ci.yml')
   const usesMise = /mise-action/.test(ci)
@@ -120,60 +163,53 @@ if (has('.github', 'workflows', 'ci.yml')) {
     : add('FAIL', 'ci', 'ci.yml must install the toolchain via jdx/mise-action (reads mise.toml)')
   const hard = ci.match(/\b(bun|node)-version\s*:/)
   if (hard) add('FAIL', 'ci', `ci.yml hardcodes ${hard[1]}-version — remove it; the version comes from mise.toml`)
-  const runsStep = (s: string) => ci.includes(`bun run ${s}`)
-  for (const step of ['lint:check', 'lint:types', 'lint:md:check']) {
-    runsStep(step)
-      ? add('PASS', 'ci', `ci.yml runs ${step}`)
-      : add('FAIL', 'ci', `ci.yml must run "bun run ${step}" — the common CI shape (lint:md:check is the Markdown gate)`)
-  }
-  if (scripts['test:coverage'])
-    runsStep('test:coverage')
-      ? add('PASS', 'ci', 'ci.yml runs test:coverage')
-      : add('WARN', 'ci', 'ci.yml should run "bun run test:coverage" (tests capability)')
+  ci.includes('bun run ki:verify')
+    ? add('PASS', 'ci', 'ci.yml runs the single gate step "bun run ki:verify"')
+    : add('FAIL', 'ci', 'ci.yml must run "bun run ki:verify" — the single composed gate step (§1, §2)')
 } else {
   add('SKIP', 'ci', 'no .github/workflows/ci.yml — not applicable')
 }
 
 // Structural execution checks — verify the actual commands pass, not just that they are declared.
-// lint:md:check is excluded: it is formatter-state-sensitive and fails on uncommitted edits.
-if (scripts['lint:check']) runCheck('lint', 'lint:check', 'bun run lint:check')
-if (scripts['lint:types']) runCheck('lint', 'lint:types', 'bun run lint:types')
+// ki:lint:md:check is excluded: it is formatter-state-sensitive and fails on uncommitted edits.
+if (scripts['ki:lint:check']) runCheck('lint', 'ki:lint:check', 'bun run ki:lint:check')
+if (scripts['ki:lint:types']) runCheck('lint', 'ki:lint:types', 'bun run ki:lint:types')
 
-// Repo shape — flat vs monorepo (§0). The canonical `lint:types = "tsc --noEmit"`
+// Repo shape — flat vs monorepo (§0). The canonical `ki:lint:types = "tsc --noEmit"`
 // assumes one root TS project (the flat shape). A monorepo declares its packages in
 // the standard Bun `workspaces` array in package.json (e.g. ["site", "ingress"]);
 // their per-package tsconfigs can carry incompatible `types`/`lib`, so one root
-// `tsc --noEmit` cannot type-check them all. When `workspaces` is present, `lint:types`
+// `tsc --noEmit` cannot type-check them all. When `workspaces` is present, `ki:lint:types`
 // is validated as a per-package aggregate against that list instead of the literal.
 const workspaces = Array.isArray(pkg.workspaces) ? (pkg.workspaces as string[]).filter((w) => typeof w === 'string') : []
 
 // ── core: the required script families (exact-match) ──────────────────────────
 const CANON: Record<string, string> = {
-  'lint:check': 'bunx @biomejs/biome check',
-  'lint:fix': 'bunx @biomejs/biome check --write --unsafe',
-  'lint:format': 'bunx @biomejs/biome format --write',
-  'lint:md': 'bunx prettier --write "**/*.md" --ignore-path .gitignore && bunx markdownlint-cli2',
-  'lint:md:check': 'bunx prettier --check "**/*.md" --ignore-path .gitignore && bunx markdownlint-cli2',
-  'lint:package': 'bunx syncpack format',
-  'lint:types': 'tsc --noEmit',
-  'deps:missing': "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.missing | keys | .[]' | xargs bun add -D",
-  'deps:unused': "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.devDependencies[]' | xargs bun remove",
-  'deps:update': 'bun update --latest'
+  'ki:lint:check': 'bunx @biomejs/biome check',
+  'ki:lint:fix': 'bunx @biomejs/biome check --write --unsafe',
+  'ki:lint:format': 'bunx @biomejs/biome format --write',
+  'ki:lint:md': 'bunx prettier --write "**/*.md" --ignore-path .gitignore && bunx markdownlint-cli2',
+  'ki:lint:md:check': 'bunx prettier --check "**/*.md" --ignore-path .gitignore && bunx markdownlint-cli2',
+  'ki:lint:package': 'bunx syncpack format',
+  'ki:lint:types': 'tsc --noEmit',
+  'ki:deps:missing': "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.missing | keys | .[]' | xargs bun add -D",
+  'ki:deps:unused': "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.devDependencies[]' | xargs bun remove",
+  'ki:deps:update': 'bun update --latest'
 }
 for (const [k, v] of Object.entries(CANON)) {
-  if (k === 'lint:types' && workspaces.length) {
+  if (k === 'ki:lint:types' && workspaces.length) {
     // monorepo shape (workspaces in package.json): validate the per-package aggregate, not the single-root literal
-    const lt = scripts['lint:types'] ?? ''
+    const lt = scripts['ki:lint:types'] ?? ''
     const noTsconfig = workspaces.filter((p) => !read(`${p}/tsconfig.json`))
     const uncovered = workspaces.filter((p) => !lt.includes(p))
-    if (!lt) add('FAIL', 'scripts', 'script "lint:types" missing (required lint:* family)')
+    if (!lt) add('FAIL', 'scripts', 'script "ki:lint:types" missing (required ki:lint:* family)')
     else if (noTsconfig.length) add('FAIL', 'scripts', `workspaces names dir(s) without a tsconfig.json: ${noTsconfig.join(', ')}`)
     else if (uncovered.length)
-      add('FAIL', 'scripts', `lint:types must cover every workspace; not referenced: ${uncovered.join(', ')}\n        got:  ${lt}`)
-    else add('PASS', 'scripts', `lint:types aggregates workspaces [${workspaces.join(', ')}]`)
+      add('FAIL', 'scripts', `ki:lint:types must cover every workspace; not referenced: ${uncovered.join(', ')}\n        got:  ${lt}`)
+    else add('PASS', 'scripts', `ki:lint:types aggregates workspaces [${workspaces.join(', ')}]`)
     continue
   }
-  if (!scripts[k]) add('FAIL', 'scripts', `script "${k}" missing (required ${k.split(':')[0]}:* family)`)
+  if (!scripts[k]) add('FAIL', 'scripts', `script "${k}" missing (required ${k.split(':').slice(0, 2).join(':')}:* family)`)
   else if (scripts[k] === v) add('PASS', 'scripts', `${k} matches canonical`)
   else add('FAIL', 'scripts', `${k} diverges from canonical\n        want: ${v}\n        got:  ${scripts[k]}`)
 }
@@ -185,6 +221,21 @@ scripts.prepare === 'husky'
   ? add('PASS', 'scripts', 'prepare = "husky"')
   : add('WARN', 'scripts', `prepare should be "husky", got ${JSON.stringify(scripts.prepare)}`)
 
+// ── core: the ki: naming law — every script is a bare idiom or ki:-prefixed ────
+// engineering-standard §2: a script is valid iff it is one of the six universal
+// lifecycle idioms OR carries the ki: prefix. A bare non-idiom name is drift — this
+// is what keeps the script surface fully governed (every ki:* script is asserted by
+// some KI skill; the artifact/governance skills own their ki:* deltas).
+const BARE_IDIOMS = new Set<string>(['build', 'prepare', 'test', 'test:coverage', 'test:watch', 'clean'])
+const offenders = Object.keys(scripts).filter((k) => !BARE_IDIOMS.has(k) && !k.startsWith('ki:'))
+offenders.length
+  ? add(
+      'FAIL',
+      'scripts',
+      `ungoverned script name(s): ${offenders.join(', ')} — every script must be a bare lifecycle idiom (${[...BARE_IDIOMS].join(', ')}) or carry the ki: prefix (engineering-standard §2)`
+    )
+  : add('PASS', 'scripts', 'all scripts are bare idioms or ki:-prefixed (naming law)')
+
 // ── advisory: dependency freshness (bun outdated) ────────────────────────────
 try {
   const out = execSync('bun outdated', { cwd: repo, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim()
@@ -195,7 +246,7 @@ try {
     add(
       'ADVISORY',
       'deps',
-      `${pkgRows.length} package${pkgRows.length === 1 ? '' : 's'} have updates available — run \`bun run deps:update\`:\n  ${out}`
+      `${pkgRows.length} package${pkgRows.length === 1 ? '' : 's'} have updates available — run \`bun run ki:deps:update\`:\n  ${out}`
     )
   }
 } catch {
@@ -246,9 +297,9 @@ else {
   for (const [label, re] of fields) re.test(biome) ? add('PASS', 'biome', label) : add('WARN', 'biome', `biome.json: expected ${label}`)
 }
 
-// ── core: .prettierrc.json (backs lint:md — Markdown only) ────────────────────
+// ── core: .prettierrc.json (backs ki:lint:md — Markdown only) ────────────────────
 const prettier = read('.prettierrc.json')
-if (!prettier) add('FAIL', 'prettier', '.prettierrc.json missing (Prettier backs lint:md)')
+if (!prettier) add('FAIL', 'prettier', '.prettierrc.json missing (Prettier backs ki:lint:md)')
 else {
   const pfields: [string, RegExp][] = [
     ['proseWrap always', /"proseWrap"\s*:\s*"always"/],
@@ -274,6 +325,38 @@ const usesLoadEnv = (() => {
   return cfg.includes('process.loadEnvFile')
 })()
 const hasEnv = Boolean(envExample) || usesLoadEnv
+
+// ── core: the unified conformance entrypoints (§2) ────────────────────────────
+// ki:conform (write) composes deps:update → lint:package → lint:format → lint:fix →
+// lint:md (+ build/test tails); ki:verify (read-only) mirrors the CI gate: lint:check
+// → lint:types → lint:md:check (+ build/test:coverage tails). Both required everywhere.
+{
+  const conform = scripts['ki:conform'] ?? ''
+  const verify = scripts['ki:verify'] ?? ''
+  if (!conform) add('FAIL', 'scripts', 'script "ki:conform" missing (unified write-pass entrypoint, §2)')
+  else {
+    const wantConform = ['ki:deps:update', 'ki:lint:package', 'ki:lint:format', 'ki:lint:fix', 'ki:lint:md']
+    const missing = wantConform.filter((s) => !conform.includes(s))
+    missing.length
+      ? add('WARN', 'scripts', `ki:conform should compose ${wantConform.join(' → ')}; not referenced: ${missing.join(', ')}`)
+      : add('PASS', 'scripts', 'ki:conform composes the write families')
+    if (hasBuild && !conform.includes('build'))
+      add('WARN', 'scripts', 'ki:conform should append " && bun run build" (compiled-build capability)')
+    if (hasTests && !/\btest\b/.test(conform)) add('WARN', 'scripts', 'ki:conform should append " && bun run test" (tests capability)')
+  }
+  if (!verify) add('FAIL', 'scripts', 'script "ki:verify" missing (unified read-only gate entrypoint, §2)')
+  else {
+    const wantVerify = ['ki:lint:check', 'ki:lint:types', 'ki:lint:md:check']
+    const missing = wantVerify.filter((s) => !verify.includes(s))
+    missing.length
+      ? add('FAIL', 'scripts', `ki:verify must mirror the CI gate ${wantVerify.join(' → ')}; not referenced: ${missing.join(', ')}`)
+      : add('PASS', 'scripts', 'ki:verify mirrors the CI gate')
+    if (hasBuild && !verify.includes('build'))
+      add('WARN', 'scripts', 'ki:verify should include "bun run build" (compiled-build capability)')
+    if (hasTests && !verify.includes('test:coverage'))
+      add('WARN', 'scripts', 'ki:verify should include "bun run test:coverage" (tests capability)')
+  }
+}
 
 // ── capability: tests ─────────────────────────────────────────────────────────
 if (hasTests) {

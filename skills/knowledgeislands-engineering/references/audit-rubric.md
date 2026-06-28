@@ -14,23 +14,30 @@ graded on it, and the checker reports it as N/A, not a failure.
 - [ ] [M] WARN — `"type": "module"`.
 - [ ] [M] WARN — `"packageManager"` starts with `bun@` (pinned patch).
 - [ ] [M] WARN — `"engines.node"` floor is `>= 22`.
+- [ ] [M] FAIL — **coverage manifest (exhaustive)**: every top-level `package.json` key is in the manifest (§1) — `name`, `version`,
+      `description`, `author`, `license`, `private`, `repository`, `homepage`, `bugs`, `keywords`, `type`, `packageManager`, `engines`,
+      `scripts`, `devDependencies`, `dependencies`, `workspaces`, `lint-staged`, `main`, `bin`, `exports`, `files`. An unknown key is drift.
 - [ ] [M] WARN — a root `mise.toml` pins both `node` and `bun` under `[tools]`.
 - [ ] [M] WARN — the `mise.toml` `bun` version **equals** the `packageManager` Bun version (the drift pair).
 - [ ] [M] POLISH — no legacy single-tool pin file (`.node-version`, `.nvmrc`, `.bun-version`) lingers beside `mise.toml` (warn).
 - [ ] [M] WARN — where the repo has `.github/workflows/ci.yml`, it installs the toolchain via `jdx/mise-action` and hardcodes no
       `bun-version:` / `node-version:`.
-- [ ] [M] WARN — that `ci.yml` runs the common gate steps `bun run lint:check`, `bun run lint:types`, and `bun run lint:md:check` (plus
-      `bun run test:coverage` where the repo has tests). `lint:md:check` is the Markdown gate; a following `test:smoke` step is the MCP
-      delta (asserted by `audit-mcp.ts`, not here).
+- [ ] [M] WARN — that `ci.yml` runs the common gate steps `bun run ki:lint:check`, `bun run ki:lint:types`, and `bun run ki:lint:md:check`
+      (plus `bun run test:coverage` where the repo has tests). `ki:lint:md:check` is the Markdown gate; a following `ki:test:smoke` step is
+      the MCP delta (asserted by `audit-mcp.ts`, not here).
 
 ## Core — script families (§2)
 
-- [ ] [M] WARN — the full `lint:*` family is present and **exact-matches** the canonical values: `lint:check`, `lint:fix`, `lint:format`,
-      `lint:md`, `lint:md:check`, `lint:package`, `lint:types`. **Exception:** when `package.json` declares a `workspaces` array (monorepo
-      shape, §0/§2), `lint:types` is instead validated as a per-workspace aggregate — each listed workspace dir must have a `tsconfig.json`
-      and `lint:types` must reference each — not the single-root `tsc --noEmit` literal.
-- [ ] [M] WARN — the full `deps:*` family is present and exact-matches: `deps:missing`, `deps:unused`, `deps:update`.
-- [ ] [M] ADVISORY — `bun outdated` reports no available updates; if any, review and run `bun run deps:update`.
+- [ ] [M] FAIL — **the `ki:` naming law (exhaustive)**: every `scripts` entry is one of the six bare lifecycle idioms (`build`, `prepare`,
+      `test`, `test:coverage`, `test:watch`, `clean`) **or** carries the `ki:` prefix. A bare non-idiom name is drift.
+- [ ] [M] WARN — both unified entrypoints are present: `ki:conform` (write pass) and `ki:verify` (read-only CI mirror), composed from the
+      families plus the build/test capability tails the repo opts into.
+- [ ] [M] WARN — the full `ki:lint:*` family is present and **exact-matches** the canonical values: `ki:lint:check`, `ki:lint:fix`,
+      `ki:lint:format`, `ki:lint:md`, `ki:lint:md:check`, `ki:lint:package`, `ki:lint:types`. **Exception:** when `package.json` declares a
+      `workspaces` array (monorepo shape, §0/§2), `ki:lint:types` is instead validated as a per-workspace aggregate — each listed workspace
+      dir must have a `tsconfig.json` and `ki:lint:types` must reference each — not the single-root `tsc --noEmit` literal.
+- [ ] [M] WARN — the full `ki:deps:*` family is present and exact-matches: `ki:deps:missing`, `ki:deps:unused`, `ki:deps:update`.
+- [ ] [M] ADVISORY — `bun outdated` reports no available updates; if any, review and run `bun run ki:deps:update`.
 - [ ] [M] WARN — `clean` and `prepare` are present (`prepare` = `husky`; `clean` removes `node_modules`, and `dist` where the repo builds).
 - [ ] [J] POLISH — repo-specific scripts beyond the families are fine; the checker must not flag them. Just confirm none shadow a family
       name with a divergent definition.
@@ -52,7 +59,7 @@ graded on it, and the checker reports it as N/A, not a failure.
 - [ ] [M] WARN — `biome.json` present.
 - [ ] [M] WARN — matches the shared config (formatter 2-space / lineWidth 140; JS single quotes, `semicolons: asNeeded`, no trailing commas;
       `preset: recommended` with `noExplicitAny: off`; `organizeImports: on`; git VCS + `useIgnoreFile`).
-- [ ] [M] WARN — `.prettierrc.json` present (Prettier backs `lint:md`).
+- [ ] [M] WARN — `.prettierrc.json` present (Prettier backs `ki:lint:md`).
 - [ ] [M] WARN — it matches the shared shape: `proseWrap: always`, `printWidth: 140`, `semi: false`, `singleQuote: true`,
       `trailingComma: none`, and the `*.md` markdown override.
 
