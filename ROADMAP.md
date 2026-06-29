@@ -11,21 +11,15 @@ lands here before it's built — and an item is **removed once done**, not ticke
 scheduled `knowledgeislands-skills-refresh` sweep (which honours each skill's declared `**Refresh:**` cadence) are ongoing disciplines tied
 to the invariants in [docs/design.md](docs/design.md) (_Principles across the set_) — they run continuously, so they live there, not here.
 
-## Toolchain evaluation — complementary cost-reduction tools _(candidate)_
-
-Four tools from the [extraheadroom.com/reduce-claude-code-costs](https://extraheadroom.com/reduce-claude-code-costs) survey were not covered
-by ADR-KI-HARNESS-TOOLCHAIN-002 and warrant evaluation as a follow-on ADR:
-
-| Tool                         | Concern               | Notes                                                                                                                                  |
-| ---------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **MarkItDown** _(Microsoft)_ | Input token reduction | Converts PDFs and Office docs before they enter context; complementary to headroom-ai compression                                      |
-| **Engram**                   | Cross-session memory  | Persistent memory layer; potential overlap with the harness `memory/` convention — evaluate conflict before adopting                   |
-| **Caveman**                  | Input compression     | ~50% reduction on high-noise inputs (build logs, JSON arrays, shell output); may duplicate RTK coverage already bundled in headroom-ai |
-| **Graphify**                 | Knowledge graph       | Claude knowledge-graph integration; least understood — evaluate fit with the KI KB paradigm                                            |
-
-**Gate:** produce ADR-KI-HARNESS-TOOLCHAIN-003 covering adopt / decline / not-separately-applicable for each. Remove this item once the ADR
-is accepted.
-
+> **Done — second-pass cost-reduction tooling evaluated (2026-06-29).**
+> [ADR-KI-HARNESS-TOOLCHAIN-005](docs/decisions/ADR-KI-HARNESS-TOOLCHAIN-005.md) assessed the four tools the
+> [extraheadroom.com/reduce-claude-code-costs](https://extraheadroom.com/reduce-claude-code-costs) survey left uncovered by TOOLCHAIN-002
+> and declined all four: **MarkItDown** (not separately applicable — reachable via the headroom add-on; the KB is Markdown-native),
+> **Engram** (overlaps the git-visible file-based `memory/` convention with an opaque store), **Caveman** (output-only compression,
+> monolithic skill outside KI governance, clashes with the authoring standard), and **Graphify** (code-graph win only at 500+ files; the KI
+> KB is already a human-authored knowledge graph — parked as a scale-gated revisit). Every tool from the survey now has a recorded
+> disposition.
+>
 > **Done — knip replaced depcheck (2026-06-28).** The `ki:deps:*` family now runs [knip](https://knip.dev): `ki:deps:check` / `ki:deps:fix`
 > (dependency-scoped) plus a new full-run `ki:knip` (dependencies + dead code) that gates `ki:verify`/CI. `knip` is a required devDependency
 > with a per-repo `knip.json`; `depcheck` / `node-jq` are gone. Rolled across all 10 repos. The deciding evidence: depcheck false-flagged
