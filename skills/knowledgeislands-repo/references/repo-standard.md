@@ -240,6 +240,6 @@ Both check every layer against GitHub; the path / `--org` only decides which rep
 
 ## Conformance
 
-As of **2026-05-31**, all 10 `knowledgeislands` repos conform on layers 2–3. Outstanding layer-1 work: every repo still needs a
+As of **2026-05-31**, all 9 `knowledgeislands` repos conform on layers 2–3. Outstanding layer-1 work: every repo still needs a
 `.ki-config.toml` (declaring its visibility + any check overrides), and `mcp-kb-notion-mirror` needs `.editorconfig` — each a direct commit
 to `main`.

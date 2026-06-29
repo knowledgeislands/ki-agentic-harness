@@ -50,7 +50,7 @@ truth for house style; when they diverge from each other, the majority wins and 
 
 | Tag    | Source                      | Governs                                                                                  | Last reviewed |
 | ------ | --------------------------- | ---------------------------------------------------------------------------------------- | ------------- |
-| REPOS  | The seven sibling repos †   | Layout, config, tool naming, shared `utils/`, the toolchain ‡                            | 2026-06-21    |
+| REPOS  | The six sibling repos †     | Layout, config, tool naming, shared `utils/`, the toolchain ‡                            | 2026-06-21    |
 | CLAUDE | Each repo's own `CLAUDE.md` | The per-repo statement of its own invariants — the standard tracks these and flags drift | 2026-06-21    |
 
 † `mcp-git-audit`, `mcp-kb-fs`, `mcp-gmail`, `mcp-m365`, `mcp-claude-housekeeping`, `mcp-kb-notion-mirror`.
