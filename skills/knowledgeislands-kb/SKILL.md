@@ -50,6 +50,10 @@ Each subdivision carries an index note of the same name (`Governance.md`, `Opera
 memory-cascade anchor and is not replaced by these. Absence of either subdivision is a WARN (not FAIL) — a base may legitimately omit one if
 that concern is not yet active; presence without an index note is also a WARN.
 
+The specific artefact types under these subdivisions are governed by sibling skills that compose on this one — decision records by
+`knowledgeislands-decision-records`, activity notes by `knowledgeislands-activities`, and live-artifact pairs by
+`knowledgeislands-live-artifacts` — each deferring here for the zone structure and the KI-wide frontmatter standard.
+
 ### Charter and Conformance baseline
 
 When `Admin/Governance/` is present, two documents are expected there:
