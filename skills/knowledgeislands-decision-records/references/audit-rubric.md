@@ -42,12 +42,13 @@ the checker first; do not eyeball what the script validates better.
 
 ## Index checks
 
-- **[M] INDEX-1** — `Decisions.md` exists in the decisions directory
-- **[M] INDEX-2** — every DR file has exactly one row in `Decisions.md`
-- **[M] INDEX-3** — no row in `Decisions.md` references a file that does not exist
-- **[M] INDEX-4** — row Status matches the DR's `**Status:**` field
-- **[M] INDEX-5** — row Date matches the DR's `**Date:**` field
-- **[M] INDEX-6** — rows are ordered by reveal order (dependency chain: roots first, then dependents; ties broken by filename)
+- **[M] INDEX-1** — the index file exists (`Decisions.md` in a KB, `README.md` in a code repo)
+- **[M] INDEX-2** — every DR file has exactly one row in the index (ID cell linked or bare)
+- **[M] INDEX-3** — no row in the index references a file that does not exist
+- **[M] INDEX-4** — row Status matches the DR's `**Status:**` field (Status column located by header label)
+- **[M] INDEX-5** — row Date matches the DR's `**Date:**` field (Date column located by header label)
+- **[J] INDEX-6** — rows are in a sensible reveal order (dependency chain: roots first, then dependents) — reader-assessed, not mechanically
+  enforced, since code-repo ADRs carry no `decision_depends_on` frontmatter to derive it
 - **[J] INDEX-7** — row Title in the index matches the DR's heading title (excluding the ID prefix)
 
 ## Severity mapping

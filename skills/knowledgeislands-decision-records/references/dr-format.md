@@ -62,13 +62,14 @@ a precise `knowledge` scope.
 
 ## Placement
 
-| Repo type          | Default decisions directory   | Frontmatter          |
-| ------------------ | ----------------------------- | -------------------- |
-| `repo_type = "kb"` | `Admin/Governance/Decisions/` | Required (see below) |
-| code / unset       | `docs/decisions/`             | Optional             |
+| Repo type          | Default decisions directory   | Index file     | Frontmatter          |
+| ------------------ | ----------------------------- | -------------- | -------------------- |
+| `repo_type = "kb"` | `Admin/Governance/Decisions/` | `Decisions.md` | Required (see below) |
+| code / unset       | `docs/decisions/`             | `README.md`    | Optional             |
 
 The repo type is declared in `.ki-config.toml` under `[knowledgeislands-decision-records]` (or inferred from `[knowledgeislands-kb]`
-presence). Pass the actual directory path to the checker.
+presence). The checker auto-detects the decisions directory (`docs/decisions/` then `Admin/Governance/Decisions/`) and picks the matching
+index file by mode; pass an explicit path to override.
 
 ## Frontmatter
 
@@ -219,9 +220,11 @@ author: Written with Claude
 
 ## Index
 
-`Decisions.md` in the decisions directory must carry a Markdown table with one row per DR, ordered by **reveal order** — the logical reading
-sequence derived from the `decision_depends_on` dependency graph (roots first, then dependents). Where dependencies are equal or absent,
-order by filename within that level. This surfaces the story the DRs collectively tell rather than an arbitrary filename sort:
+The index file — `Decisions.md` in a KB, `README.md` in a code repo (GitHub renders it as the folder landing) — must carry a Markdown table
+with one row per DR. The first column holds the DR ID, as a relative link or bare; the checker locates the **Status** and **Date** columns
+by their header labels, so an optional **Type** column is fine. Order rows by **reveal order** — the logical reading sequence derived from
+the `decision_depends_on` dependency graph (roots first, then dependents), filename within a level. This surfaces the story the DRs
+collectively tell rather than an arbitrary filename sort (a judgment item — the checker does not enforce a mechanical sort):
 
 ```markdown
 | DR ID           | Title                                                                     | Type       | Status   | Date       |

@@ -125,9 +125,11 @@ Each island is introduced independently when its time comes.
 
 ### Decisions index table
 
-`Decisions.md` in the decisions directory carries one row per DR ordered by **reveal order** — the logical reading sequence derived from the
-`decision_depends_on` dependency graph, roots first. The Title cell is a relative link. Status and Date must match the DR body exactly. Do
-not use wikilinks in table cells: the `|` in `[[target|Display text]]` breaks the column boundary.
+The index — `Decisions.md` in a KB, `README.md` in a code repo — carries one row per DR ordered by **reveal order** (the logical reading
+sequence derived from the `decision_depends_on` dependency graph, roots first). The KB style below links the ID cell; a code repo may
+instead keep a bare ID in column 0 and link the Title (as the harness `docs/decisions/README.md` does) — the checker accepts either and
+finds Status and Date by their header labels. Status and Date must match the DR body exactly. Do not use wikilinks in table cells: the `|`
+in `[[target|Display text]]` breaks the column boundary.
 
 ```markdown
 | DR ID                                                                  | Title                            | Status   | Date       |

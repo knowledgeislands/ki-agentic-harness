@@ -5,7 +5,8 @@
  * Audits Decision Records in the given directory against the knowledgeislands-decision-records standard.
  * Auto-detects KB vs code repo mode from .ki-config.toml. Exits non-zero on any FAIL-severity finding.
  *
- * decisions-dir defaults to Admin/Governance/Decisions (KB) or docs/decisions (code).
+ * decisions-dir: if omitted, auto-detects docs/decisions (code repo) or Admin/Governance/Decisions (KB).
+ * The index file is README.md in a code repo, Decisions.md in a KB; index ID cells may be linked or bare.
  */
 
 import { readdir, readFile, stat } from 'node:fs/promises'
@@ -81,9 +82,24 @@ async function detectKbMode(decisionsDir: string): Promise<boolean> {
   return false
 }
 
-const decisionsDir = process.argv[2] ?? 'Admin/Governance/Decisions'
+const CODE_DIR = 'docs/decisions'
+const KB_DIR = 'Admin/Governance/Decisions'
+
+async function resolveDecisionsDir(arg: string | undefined): Promise<string> {
+  if (arg) return arg
+  for (const candidate of [CODE_DIR, KB_DIR]) {
+    try {
+      await stat(resolve(candidate))
+      return candidate
+    } catch {
+      // not this one — try the next default
+    }
+  }
+  return KB_DIR // fall back; the not-found error below reports it
+}
 
 async function main() {
+  const decisionsDir = await resolveDecisionsDir(process.argv[2])
   const resolvedDir = resolve(decisionsDir)
 
   try {
@@ -96,7 +112,7 @@ async function main() {
   const kbMode = await detectKbMode(resolvedDir)
   const entries = await readdir(resolvedDir)
   const drFiles = entries.filter((f) => DR_FILENAME_RE.test(f)).sort()
-  const indexFile = 'Decisions.md'
+  const indexFile = kbMode ? 'Decisions.md' : 'README.md'
   const findings: Finding[] = []
 
   const add = (check: string, severity: Sev, file: string, message: string) => findings.push({ check, severity, file, message })
@@ -109,30 +125,46 @@ async function main() {
 
   const indexContent = hasIndex ? await readFile(join(resolvedDir, indexFile), 'utf8') : ''
 
-  // Parse index DR IDs for cross-checks
-  const indexedIds = new Set<string>()
-  for (const line of indexContent.split('\n')) {
-    const rowMatch = line.match(/^\|\s*([A-Z]+DR-[A-Z][A-Z0-9-]+-\d{3,})\s*\|/)
-    if (rowMatch) indexedIds.add(rowMatch[1])
-  }
-
-  // Parse index rows for status/date sync
+  // Parse the index table. The header row locates the Status/Date columns; each data
+  // row yields a DR ID from its first cell — linked (`[ID](file.md)`) or bare — plus
+  // its status/date cells. Works for both the KB (`Decisions.md`) and code (`README.md`)
+  // index conventions.
   interface IndexRow {
     status: string
     date: string
   }
+  const indexedIds = new Set<string>()
   const indexRows = new Map<string, IndexRow>()
-  for (const line of indexContent.split('\n')) {
-    const cols = line
+  const ID_IN_CELL = /([A-Z]+DR-[A-Z][A-Z0-9-]+-\d{3,})/
+  let statusCol = -1
+  let dateCol = -1
+
+  const splitRow = (line: string): string[] | null => {
+    if (!/^\s*\|/.test(line)) return null
+    return line
       .split('|')
+      .slice(1, -1)
       .map((c) => c.trim())
-      .filter(Boolean)
-    if (cols.length >= 4) {
-      const idMatch = cols[0].match(/^([A-Z]+DR-[A-Z][A-Z0-9-]+-\d{3,})$/)
-      if (idMatch) {
-        indexRows.set(idMatch[1], { status: cols[3] ?? '', date: cols[4] ?? '' })
-      }
+  }
+
+  for (const line of indexContent.split('\n')) {
+    const cells = splitRow(line)
+    if (!cells) continue
+    // Header row: locate the Status/Date columns by label, once.
+    if (statusCol === -1 && cells.some((c) => /^status$/i.test(c))) {
+      statusCol = cells.findIndex((c) => /^status$/i.test(c))
+      dateCol = cells.findIndex((c) => /^date$/i.test(c))
+      continue
     }
+    // Data row: the first cell must carry a DR ID.
+    const idMatch = cells[0]?.match(ID_IN_CELL)
+    if (!idMatch) continue
+    const id = idMatch[1]
+    indexedIds.add(id)
+    indexRows.set(id, {
+      status: statusCol >= 0 ? (cells[statusCol] ?? '') : '',
+      date: dateCol >= 0 ? (cells[dateCol] ?? '') : ''
+    })
   }
 
   const seenSerials = new Map<string, string>() // "SCOPE-NNN" → filename
@@ -148,12 +180,12 @@ async function main() {
     const drId = `${prefix}-${scopeKey}-${serial}`
     const expectedType = PREFIX_TO_TYPE[prefix]
 
-    // FILENAME-2: serial uniqueness within scope (global across prefixes)
-    const scopeSerial = `${scopeKey}-${serial}`
-    if (seenSerials.has(scopeSerial)) {
-      add('FILENAME-2', Sev.WARN, file, `serial ${scopeSerial} already used by ${seenSerials.get(scopeSerial)}`)
+    // FILENAME-2: DR ID uniqueness within (prefix, scope) — per-prefix serial sequences are valid
+    const serialKey = `${prefix}-${scopeKey}-${serial}`
+    if (seenSerials.has(serialKey)) {
+      add('FILENAME-2', Sev.WARN, file, `DR ID ${serialKey} already used by ${seenSerials.get(serialKey)}`)
     } else {
-      seenSerials.set(scopeSerial, file)
+      seenSerials.set(serialKey, file)
     }
 
     // FM-0: frontmatter required for KB repos
@@ -277,8 +309,8 @@ async function main() {
       add('INDEX-2', Sev.FAIL, file, `no row in ${indexFile} for ${drId}`)
     }
 
-    // INDEX-4/5: status/date sync with index
-    if (hasIndex && statusMatch && dateMatch) {
+    // INDEX-4/5: status/date sync with index (only when the columns were located)
+    if (hasIndex && statusCol >= 0 && dateCol >= 0 && statusMatch && dateMatch) {
       const row = indexRows.get(drId)
       if (row) {
         if (row.status !== statusMatch[1].trim()) {
@@ -296,18 +328,6 @@ async function main() {
     for (const indexedId of indexedIds) {
       if (!drFiles.some((f) => f.startsWith(indexedId))) {
         add('INDEX-3', Sev.FAIL, indexFile, `index row for '${indexedId}' has no matching DR file`)
-      }
-    }
-  }
-
-  // INDEX-6: rows in index are ordered by filename
-  if (hasIndex) {
-    const rowIds = [...indexedIds]
-    const sorted = [...rowIds].sort()
-    for (let i = 0; i < rowIds.length; i++) {
-      if (rowIds[i] !== sorted[i]) {
-        add('INDEX-6', Sev.WARN, indexFile, `rows are not in filename order (found ${rowIds[i]} before ${sorted[i]})`)
-        break
       }
     }
   }
