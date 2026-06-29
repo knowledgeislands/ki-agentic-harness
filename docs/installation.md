@@ -73,7 +73,7 @@ Claude Code (and compatible agents) discover skills in two places:
 
 The install model is **keystone-plus-project-local**: only `knowledgeislands-bootstrap` is installed user-global; every other skill is wired
 into each repo's `.claude/skills/` on demand. The global skill is paid on every turn everywhere, so keeping one tiny keystone there —
-instead of all thirteen — keeps the standing description cost out of unrelated sessions, while each repo still loads exactly the skills it
+instead of all sixteen — keeps the standing description cost out of unrelated sessions, while each repo still loads exactly the skills it
 declares. Both ends use **symlinks**, so edits in this repo are live wherever a skill is installed and a `git pull` updates every consumer
 at once. Install dependencies once with `bun install`.
 

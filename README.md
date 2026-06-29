@@ -6,7 +6,7 @@ whole set can be versioned, reviewed, and installed together rather than scatter
 A harness is **four parts** — the things an agent is given to work with:
 
 - **Skills** ([`skills/`](skills/)) — reusable [Agent Skills](https://agentskills.io/specification): the most-built-out part of the harness
-  today (**thirteen**, all governance skills — including `knowledgeislands-harness`, which governs this four-part container itself, and
+  today (**sixteen**, all governance skills — including `knowledgeislands-harness`, which governs this four-part container itself, and
   `knowledgeislands-bootstrap`, the install keystone). Installed per-repo: `bootstrap` (the one globally-installed skill) wires each repo's
   project-local `.claude/skills/` from its `.ki-config.toml`. The catalogue is in [docs/skills.md](docs/skills.md); how they fit together —
   boundaries, the knowledge loops, the shared principles — in [docs/design.md](docs/design.md).
@@ -51,7 +51,7 @@ modes plus a mechanical checker.
 
 ## The map — the skills at a glance
 
-The thirteen skills sit in **two layers** plus a container governor and an install keystone: two cross-cutting **foundations** that every
+The sixteen skills sit in **two layers** plus a container governor and an install keystone: two cross-cutting **foundations** that every
 other skill builds on, the **domain** skills that each govern one kind of artifact, `harness` — which governs the four-part bundle holding
 them all — and `bootstrap`, which wires a repo's project-local skills into place. The arrows are the structural ties (who _delegates to_,
 _composes on_, or _feeds_ whom), spelled out in [docs/skills.md](docs/skills.md) and [docs/design.md](docs/design.md).
@@ -66,6 +66,7 @@ FOUNDATIONS — cross-cutting "how" (every domain skill builds on both)
                                        │
 DOMAIN — what each skill governs
   knowledge bases   kb ──delegates the Streams zone──▶ streams
+                    kb ──hands its Admin/ subtrees to──▶ activities · live-artifacts · decision-records
   repos & code      repo ──owns the .ki-config.toml contract──▶ (kb · mcp · engineering consume it)
                     mcp  ──composes its checker on──▶ engineering
   skills & agents   skills ── a SKILL.md (frontmatter + body)   ·   agents ── a subagent definition (the twin)
@@ -98,7 +99,7 @@ installed, the linking convention, and the development toolchain are in [docs/in
 
 | Doc                                                    | What's in it                                                                                      |
 | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
-| [docs/skills.md](docs/skills.md)                       | The thirteen skills one by one, and the shared governance-skill shape.                            |
+| [docs/skills.md](docs/skills.md)                       | The sixteen skills one by one, and the shared governance-skill shape.                             |
 | [docs/design.md](docs/design.md)                       | How they fit: where they don't overlap, the three knowledge loops, the principles across the set. |
 | [docs/knowledge-islands.md](docs/knowledge-islands.md) | The Knowledge Islands zone model the KI skills assume, and standard skills & per-base config.     |
 | [docs/installation.md](docs/installation.md)           | Installing · using · linking skills, and the development toolchain.                               |

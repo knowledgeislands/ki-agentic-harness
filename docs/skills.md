@@ -1,15 +1,15 @@
 # The skills
 
-The skills are the bulk of the harness today: **thirteen** of them, each a **governance skill** — it holds a house standard and ships the
+The skills are the bulk of the harness today: **sixteen** of them, each a **governance skill** — it holds a house standard and ships the
 universal **AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones), backed by a tracked `references/sources.md`.
 
 This file is the catalogue: what each skill does, and the shared shape they all follow. For how they fit together — the boundaries between
 the ones that could be confused, the loops that run across them, and the invariants they all hold — see [design.md](design.md). The overview
 map lives in the [README](../README.md).
 
-## The thirteen
+## The sixteen
 
-The thirteen sit in **two layers** plus a bridge and a keystone: two cross-cutting **foundations** that every other skill builds on, the
+The sixteen sit in **two layers** plus a bridge and a keystone: two cross-cutting **foundations** that every other skill builds on, the
 **domain** skills that each govern one kind of artifact, `knowledgeislands-harness` — the **container** skill that governs the bundle
 holding them all — and `knowledgeislands-bootstrap`, the **install keystone** that wires a repo's project-local skills into place.
 
@@ -26,6 +26,26 @@ Owns the **`Streams` zone** — the base's working copy ("plan mode") — and th
 **PROPOSE / ITERATE / READY / ROLLOUT / REVIEW / SETTLE / REJECT**, plus **AUDIT / CONFORM** of a base's Streams structure (Focus lifecycle,
 the `Proposal` suffix, leaf/parent layout, proposal frontmatter). `knowledgeislands-kb` delegates the zone here, so the heavier process
 loads only when working in `Streams`. Ships a mechanical checker (`audit-streams.ts`).
+
+### [`knowledgeislands-decision-records`](../skills/knowledgeislands-decision-records/SKILL.md) — Process
+
+Governs **Decision Records** in any Knowledge Islands repo, code or KB — the typed ID prefixes (`GDR` / `ADR` / `KDR` / …), the five-section
+format, the status lifecycle, and placement (`docs/decisions/` in a code repo, `Admin/Governance/Decisions/` in a KB). Ships a mechanical
+checker (`audit-drs.ts`). Defers to `knowledgeislands-kb` for the island structure and the KI-wide frontmatter standard, and to
+`knowledgeislands-streams` for the Enactment Process by which a change is ratified.
+
+### [`knowledgeislands-activities`](../skills/knowledgeislands-activities/SKILL.md) — Process
+
+Governs **Activity notes** — the operational record of work adopted in a base, kept under `Admin/Operations/Activities/` (naming,
+frontmatter, realization type, and the index). Checks that an activity declared as a slash command has a backing skill, and that scheduled
+ones are flagged for the external scheduler. Ships a mechanical checker (`audit-activities.ts`). Composes on `knowledgeislands-kb` for the
+zone structure.
+
+### [`knowledgeislands-live-artifacts`](../skills/knowledgeislands-live-artifacts/SKILL.md) — Process
+
+Governs **Live Artifacts** — operational documents that track island state (dashboards, boards, queues, trackers) as a `.md` source paired
+with a rendered `.html`, kept under `Admin/Operations/Live Artifacts/` with an index, plus the sync rules between the two halves. Ships a
+mechanical checker (`audit-live-artifacts.ts`). Composes on `knowledgeislands-kb` for the zone structure.
 
 ### [`knowledgeislands-mcp`](../skills/knowledgeislands-mcp/SKILL.md) — Process
 
@@ -111,7 +131,7 @@ Where the set is going next is in [ROADMAP.md](../ROADMAP.md).
 
 ## The governance-skill shape
 
-All thirteen share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in
+All sixteen share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in
 `knowledgeislands-engineering`'s [enforcement framework](../skills/knowledgeislands-engineering/references/enforcement-framework.md):
 
 - **`<domain>-standard.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like,
@@ -122,9 +142,10 @@ All thirteen share one layout, so a reader (or a new such skill) can move betwee
   changed_ lives in git (the REFRESH commit), not a changelog in the file. A skill tracking a moving external spec also keeps a
   current-state **`## Last review`** block — pinned revision, what's confirmed, open watch-items — overwritten each REFRESH.
 - **a mechanical checker** — `audit-engineering.ts`, `audit-mcp.ts`, `audit-websites.ts`, `audit-cloudflare-hosting.ts`, `lint-skills.ts`,
-  `lint-agents.ts`, `audit-repo.ts`, `audit-kb.ts`, `audit-streams.ts`, `audit-tokenomics.ts`, `audit-harness.ts`, `link-skills.ts` for
-  engineering / mcp / 11ty-websites / cloudflare-hosting / skills / agents / repo / kb / streams / tokenomics / harness / bootstrap;
-  `bun run ki:lint:md` (Prettier + markdownlint) for authoring. The judgment half is always applied by reading.
+  `lint-agents.ts`, `audit-repo.ts`, `audit-kb.ts`, `audit-streams.ts`, `audit-drs.ts`, `audit-activities.ts`, `audit-live-artifacts.ts`,
+  `audit-tokenomics.ts`, `audit-harness.ts`, `link-skills.ts` for engineering / mcp / 11ty-websites / cloudflare-hosting / skills / agents /
+  repo / kb / streams / decision-records / activities / live-artifacts / tokenomics / harness / bootstrap; `bun run ki:lint:md` (Prettier +
+  markdownlint) for authoring. The judgment half is always applied by reading.
 
 …and the same modes: **AUDIT** (run the checker, then apply the judgment criteria), **CONFORM** (bring an existing artifact into line), and
 **REFRESH** (re-anchor the standard to its sources on a stated cadence), plus skill-specific modes where they fit — **INIT** to scaffold a
