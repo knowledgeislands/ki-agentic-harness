@@ -92,8 +92,9 @@ Edits local config; confirm before mutating, and remember that turning off an MC
 
 1. Run **AUDIT** first for the gap list.
 2. Trim the biggest line items: lift rarely-read detail out of `CLAUDE.md` into on-demand files (or exclude an irrelevant ancestor
-   `CLAUDE.md` via `claudeMdExcludes`); prune stale memory; switch off or scope the MCP servers the work does not use (the largest single
-   lever, and keep tool search on so unused servers' schemas stay deferred); consolidate redundant skills.
+   `CLAUDE.md` via `claudeMdExcludes`); add a `paths:` frontmatter filter to any `.claude/rules/` file that currently loads unconditionally
+   but only applies to specific file types; prune stale memory; switch off or scope the MCP servers the work does not use (the largest
+   single lever, and keep tool search on so unused servers' schemas stay deferred); consolidate redundant skills.
 3. Wire context-compression tooling where it is `recommended` / `required` and absent; turn on prompt caching and pick the right model tier
    where the runtime levers are idle.
 4. Add or correct the `[knowledgeislands-tokenomics]` table (or run **INIT**). Re-run **AUDIT** until clean.

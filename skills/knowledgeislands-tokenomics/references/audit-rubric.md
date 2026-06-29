@@ -39,6 +39,9 @@ A criterion's tag is a contract with the checker: if you find yourself eyeballin
   actually sees is bounded by `maxSkillDescriptionChars` / `skillListingBudgetFraction`, so a large raw set may load lighter than its sum.
 - **SURF-4 [J]** A large `CLAUDE.md` / memory entry **earns** its tokens — not restating what a competent model already knows, not stale,
   not detail that belongs in an on-demand file. This is the altitude call the size check cannot make.
+- **SURF-5 [J]** Unconditional `.claude/rules/` files load at launch and contribute to the standing surface; path-scoped rules accumulate on
+  demand. Are rules that only apply to specific file types gated with a `paths:` frontmatter filter, and are unconditional rules lean? The
+  mechanical checker does not yet measure `.claude/rules/`; promote to **[M]** once covered by `audit-tokenomics.ts`.
 
 ## MCP — MCP tool surface
 

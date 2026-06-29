@@ -40,24 +40,30 @@ MCP tool definitions — §2).
 Everything below is in context before the user's first word. The checker measures each it can locate, in both layers (and the base), and
 attributes the cost; sizes are a `chars / 4` token **estimate** for budgeting, never billing (§7), and every figure is marked `~`.
 
-| Component                    | Where it lives (per layer)                                   | Why it costs          |
-| ---------------------------- | ------------------------------------------------------------ | --------------------- |
-| `CLAUDE.md` (+ `@imports`)   | `~/.claude/CLAUDE.md`, project `CLAUDE.md`, base `CLAUDE.md` | re-sent every turn †  |
-| Memory                       | `MEMORY.md` index + loaded memory files                      | re-sent every turn    |
-| Installed-skill descriptions | `~/.claude/skills/*`, project `.claude/skills/*`             | selection surface ‡   |
-| MCP tool definitions         | `~/.claude.json`, project `.mcp.json`, `settings.json`       | usually the largest § |
-| Settings / output style      | user + project `settings.json`                               | injected per turn     |
+| Component                                      | Where it lives (per layer)                                                       | Why it costs                                           |
+| ---------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `CLAUDE.md` + `CLAUDE.local.md` (+ `@imports`) | `~/.claude/CLAUDE.md`, project `CLAUDE.md` + `CLAUDE.local.md`, base `CLAUDE.md` | re-sent every turn †                                   |
+| `.claude/rules/` files                         | project `.claude/rules/*.md`, user `~/.claude/rules/*.md`                        | at-launch (unconditional) or on-demand (path-scoped) ★ |
+| Memory                                         | `MEMORY.md` index + loaded memory files                                          | re-sent every turn                                     |
+| Installed-skill descriptions                   | `~/.claude/skills/*`, project `.claude/skills/*`                                 | selection surface ‡                                    |
+| MCP tool definitions                           | `~/.claude.json`, project `.mcp.json`, `settings.json`                           | usually the largest §                                  |
+| Settings / output style                        | user + project `settings.json`                                                   | injected per turn                                      |
 
 † `@import` lines pull other files inline; the cost is the resolved total, and an unresolved `@import` is a defect (a broken include), not
-merely waste. ‡ Every installed skill's `name` + `description` sits in the selection surface so the model can choose it — the body loads
-only on demand, but the description is always paid; an over-long or duplicative description is a standing cost across the whole set. Claude
-Code caps each skill's loaded description at `maxSkillDescriptionChars` (a settings key) and bounds the whole listing via
+merely waste. `CLAUDE.local.md` loads at the same time as `CLAUDE.md` at each layer (personal per-project preferences; typically
+gitignored). ★ Rules in `.claude/rules/` without a `paths:` frontmatter field load at launch alongside `CLAUDE.md`; rules with `paths:` load
+on demand when Claude reads a matching file (e.g. `src/api/**/*.ts`). Once loaded, all rules persist in the standing surface for the
+session. Making rules path-scoped is the primary lever: rules only needed for a subset of files should carry a `paths:` filter rather than
+loading unconditionally. ‡ Every installed skill's `name` + `description` sits in the selection surface so the model can choose it — the
+body loads only on demand, but the description is always paid; an over-long or duplicative description is a standing cost across the whole
+set. Claude Code caps each skill's loaded description at `maxSkillDescriptionChars` (a settings key) and bounds the whole listing via
 `skillListingBudgetFraction`, so the per-skill text the model sees is itself a tunable lever; a skill marked
 `disable-model-invocation: true` drops out of the listing entirely (invokable only by `/name`). § MCP tool **definitions** (the full JSON
 schema of every tool of every configured server) are the potentially-largest line item. How much actually loads up front depends on Claude
 Code's **tool-search** setting: with tool search on (the current default) only the tool _names_ sit in the startup surface and full schemas
 are loaded on demand when a task needs them; `ENABLE_TOOL_SEARCH=auto` loads schemas upfront when they fit within ~10% of the window, and
-`ENABLE_TOOL_SEARCH=false` loads every schema up front (the old all-in behaviour). Either way the exact weight needs a live connection to
+`ENABLE_TOOL_SEARCH=false` loads every schema up front (the old all-in behaviour). A per-server `alwaysLoad: true` field in the server's
+config forces full schema loading for that server even when tool search is on. Either way the exact weight needs a live connection to
 measure, so the checker counts **servers** as the deterministic proxy — more servers means more names, more deferred weight, and more
 dynamic-discovery churn — and leaves per-tool weighing to judgment. It remains the lever most worth checking first, so it leads the report.
 
