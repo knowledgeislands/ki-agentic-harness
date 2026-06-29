@@ -60,8 +60,7 @@ Severity: **FAIL** (security invariant breach or gate bypass — ship-stopper), 
 - [ ] [J] FAIL — `mcp-server` sets `server.registerTool = makeAccessGatedRegister(...)`; nothing registers a tool bypassing the proxy.
 - [ ] [J] FAIL — every tool sets `annotations` to a preset from `utils/annotations.ts` (no unannotated/partially-annotated tools).
 - [ ] [J] FAIL — destructive & non-idempotent tools default `dry_run: true`, mutate only when explicitly `false`.
-- [ ] [J] WARN — default `MCP_<APP>_ACCESS_LEVEL` is `read` (allowed exceptions: voicenotes-edit, kb-notion-mirror default `write` — do not
-      flag).
+- [ ] [J] WARN — default `MCP_<APP>_ACCESS_LEVEL` is `read` (allowed exception: `kb-notion-mirror` defaults to `write` — do not flag).
 
 ## Audit logging
 

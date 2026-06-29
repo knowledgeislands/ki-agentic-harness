@@ -15,9 +15,9 @@ argument-hint: 'audit <repo> | conform <repo> | init <repo> | refresh'
 # Knowledge Islands MCP standards
 
 You are helping audit, conform, or scaffold a **workspace MCP server** — one of the stdio MCP servers in the `knowledgeislands/` workspace
-(`mcp-git-audit`, `mcp-ki-kb-fs`, `mcp-gmail`, `mcp-m365`, `mcp-claude-housekeeping`, `mcp-voicenotes-edit`, `mcp-kb-notion-mirror`). They
-all share one canonical shape, so a new one should be scaffolded to it and an existing one should be auditable against it. This skill
-carries that standard and the audit procedure.
+(`mcp-git-audit`, `mcp-ki-kb-fs`, `mcp-gmail`, `mcp-m365`, `mcp-claude-housekeeping`, `mcp-kb-notion-mirror`). They all share one canonical
+shape, so a new one should be scaffolded to it and an existing one should be auditable against it. This skill carries that standard and the
+audit procedure.
 
 This skill audits the **server code** — `src/` layout, config injection, tool surface, security invariants, tooling. A repo's GitHub
 configuration and standard files, and a `SKILL.md`'s prose, are out of scope (other skills own those). How the skills divide the work is
@@ -125,7 +125,7 @@ Auditing all the `mcp-*` servers at once is a set audit — **bound the context*
      installed. Mirrors the skills rubric's longevity check; see the checklist's _Longevity & staleness_ section.
 4. **Report.** Group findings on the unified severity ladder: a security invariant or gate bypass is a **FAIL**, layout/naming/tooling
    divergence a **WARN**, docs/consistency a **POLISH**. Cite `file:line`. Give the fix for each, and call out _intentional_ per-repo
-   divergences (e.g. `voicenotes-edit` defaulting to `write`) so they are not re-flagged.
+   divergences (e.g. `kb-notion-mirror` defaulting to `write`) so they are not re-flagged.
 
 ### Mode CONFORM — bring an existing MCP repo up to standard
 

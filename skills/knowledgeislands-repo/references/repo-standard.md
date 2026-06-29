@@ -186,8 +186,8 @@ only table **presence**, never another skill's keys. The full signal list and th
 `gh` CLI, authenticated with repo-admin scope. (zsh: use an array, not a bare string — unquoted `$var` does not word-split.)
 
 ```zsh
-all=(arcadia-principal arcadia-agentic-harness arcadia-website mcp-claude-housekeeping mcp-git-audit mcp-gmail mcp-kb-fs mcp-kb-notion-mirror mcp-m365 mcp-voicenotes-edit)
-public=(mcp-claude-housekeeping mcp-git-audit mcp-gmail mcp-kb-fs mcp-kb-notion-mirror mcp-m365 mcp-voicenotes-edit)
+all=(arcadia-principal arcadia-agentic-harness arcadia-website mcp-claude-housekeeping mcp-git-audit mcp-gmail mcp-kb-fs mcp-kb-notion-mirror mcp-m365)
+public=(mcp-claude-housekeeping mcp-git-audit mcp-gmail mcp-kb-fs mcp-kb-notion-mirror mcp-m365)
 
 # Layer 1 — each repo declares its config in .ki-config.toml (committed via PR like any file).
 #   Scaffold the [knowledgeislands-repo] defaults, then edit:
@@ -241,5 +241,5 @@ Both check every layer against GitHub; the path / `--org` only decides which rep
 ## Conformance
 
 As of **2026-05-31**, all 10 `knowledgeislands` repos conform on layers 2–3. Outstanding layer-1 work: every repo still needs a
-`.ki-config.toml` (declaring its visibility + any check overrides), and `mcp-kb-notion-mirror` / `mcp-voicenotes-edit` need `.editorconfig`
-— each a direct commit to `main`.
+`.ki-config.toml` (declaring its visibility + any check overrides), and `mcp-kb-notion-mirror` needs `.editorconfig` — each a direct commit
+to `main`.

@@ -45,7 +45,7 @@ The spec is versioned by date. Track the **latest released** version and note th
 
 ## In-house (the workspace convention)
 
-The standard is defined as the **majority shape** across the seven sibling repos under `knowledgeislands/`. These are the living source of
+The standard is defined as the **majority shape** across the six sibling repos under `knowledgeislands/`. These are the living source of
 truth for house style; when they diverge from each other, the majority wins and the outlier is a finding unless documented.
 
 | Tag    | Source                      | Governs                                                                                  | Last reviewed |
@@ -53,7 +53,7 @@ truth for house style; when they diverge from each other, the majority wins and 
 | REPOS  | The seven sibling repos †   | Layout, config, tool naming, shared `utils/`, the toolchain ‡                            | 2026-06-21    |
 | CLAUDE | Each repo's own `CLAUDE.md` | The per-repo statement of its own invariants — the standard tracks these and flags drift | 2026-06-21    |
 
-† `mcp-git-audit`, `mcp-kb-fs`, `mcp-gmail`, `mcp-m365`, `mcp-claude-housekeeping`, `mcp-voicenotes-edit`, `mcp-kb-notion-mirror`.
+† `mcp-git-audit`, `mcp-kb-fs`, `mcp-gmail`, `mcp-m365`, `mcp-claude-housekeeping`, `mcp-kb-notion-mirror`.
 
 ‡ Layout, config injection, tool naming, the shared `utils/` helpers, the package/tsconfig/vitest/biome toolchain.
 

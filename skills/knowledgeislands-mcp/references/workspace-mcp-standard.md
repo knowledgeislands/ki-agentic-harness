@@ -1,8 +1,8 @@
 # Workspace MCP Standard
 
 The canonical shape shared by every stdio MCP server in the `knowledgeislands/` workspace: `mcp-git-audit`, `mcp-ki-kb-fs`, `mcp-gmail`,
-`mcp-m365`, `mcp-claude-housekeeping`, `mcp-voicenotes-edit`, `mcp-kb-notion-mirror`. This is the reference the `knowledgeislands-mcp` skill
-codifies and audits against. Where repos disagree, the majority shape is the standard; documented per-repo exceptions are noted inline.
+`mcp-m365`, `mcp-claude-housekeeping`, `mcp-kb-notion-mirror`. This is the reference the `knowledgeislands-mcp` skill codifies and audits
+against. Where repos disagree, the majority shape is the standard; documented per-repo exceptions are noted inline.
 
 ## Contents
 
@@ -37,7 +37,7 @@ src/
 └── utils/                  # cross-MCP helpers, kept in sync across siblings
 ```
 
-Top-level `src/` folders are identical across all seven repos: `config`, `main`, `mcp-server`, `tools`, `utils`, plus `cli` where a
+Top-level `src/` folders are identical across all six repos: `config`, `main`, `mcp-server`, `tools`, `utils`, plus `cli` where a
 human-runnable command exists, and per-domain extras (`auth-server` in gmail/m365; `types.ts`).
 
 ### Layer responsibilities
@@ -94,7 +94,6 @@ human-runnable command exists, and per-domain extras (`auth-server` in gmail/m36
 | mcp-gmail               | `gmail`                                   |
 | mcp-m365                | `m365`                                    |
 | mcp-claude-housekeeping | `claude_code`, `claude_desktop`, `vscode` |
-| mcp-voicenotes-edit     | `voicenotes`                              |
 | mcp-kb-notion-mirror    | `notion_mirror`                           |
 
 - **Plural** resource for collection ops (`git_repos_scan`, `gmail_messages_search`, `kb_notes_list`).
@@ -128,8 +127,8 @@ Levels nest `read ⊂ write ⊂ destructive`; env `MCP_<APP>_ACCESS_LEVEL` (defa
 `DESTRUCTIVE_ONESHOT`, plus `_REMOTE`/read variants per repo. `DESTRUCTIVE_ONESHOT` = effect depends on current FS/index state. Never bypass
 the register proxy; never derive the level from the tool name.
 
-**Divergence:** default access level is `read` everywhere except `mcp-voicenotes-edit` and `mcp-kb-notion-mirror`, which default to `write`
-(they ship no read-only tools) — intentional, do not flag.
+**Divergence:** default access level is `read` everywhere except `mcp-kb-notion-mirror`, which defaults to `write` (it ships no read-only
+tools) — intentional, do not flag.
 
 ## 5. Audit logging
 
