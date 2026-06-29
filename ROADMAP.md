@@ -22,6 +22,25 @@ assumption don't honour it — so the harness's ADRs go unaudited by their own g
 **Gate:** teach `audit-drs.ts` the code-repo layout — detect/accept `docs/decisions/` with a `README.md` index when not in a KB — or wire
 `ki:decision-records:audit` to pass the path; then `bun run ki:decision-records:audit` runs green here. Remove this item once it does.
 
+## Website pipeline: pull from arcadia-principal
+
+arcadia-website presently mirrors the harness `docs/` tree directly — site pages are maintained in this repo and copied in. The intended
+architecture is KB-first: arcadia-principal is the source of truth; the website publishes KB content outward rather than duplicating harness
+documentation alongside it.
+
+**Gate:** wire the arcadia-website 11ty build to source content from arcadia-principal notes (or a curated export of them) rather than the
+harness `docs/`. The harness docs mirror can then be retired. The KB tool ecosystem documentation created in this cycle (see
+`Streams/Active/Agentic Tool Documentation Proposal` in arcadia-principal) is the first body of content the pipeline should publish.
+
+## arcadia-principal conventions: make implicit explicit
+
+Several conventions in arcadia-principal are asserted without documented rationale. Digest routing (`-/_DIGESTS/`), the staging zone
+distinctions, and the frontmatter type taxonomy are all enforced in practice but their _why_ is nowhere written down — which makes them
+brittle to revisit and invisible to anyone new to the island. The `session-digest` type is not even in the type taxonomy.
+
+**Gate:** the named arcadia-principal stream runs to completion, producing rationale notes for each convention that currently lacks one. The
+stream proposal lives in arcadia-principal's Background streams. Remove this item once the stream is ratified.
+
 ## Distant future _(parked)_
 
 Not on the near-term path; recorded so the thought isn't lost.
