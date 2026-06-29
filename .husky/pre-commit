@@ -1,1 +1,7 @@
-bunx lint-staged
+bunx lint-staged || exit 1
+
+# Decision Records: nothing else runs the DR audit, so validate the index +
+# format whenever a docs/decisions/ file is staged (added/copied/modified/renamed).
+if git diff --cached --name-only --diff-filter=ACMR | grep -q '^docs/decisions/'; then
+  bun run ki:decision-records:audit || exit 1
+fi
