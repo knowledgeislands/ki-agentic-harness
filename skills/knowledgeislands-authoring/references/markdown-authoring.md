@@ -17,7 +17,7 @@ Don't hand-apply or document any of these — the toolchain owns them, and resta
 - **Bullet, emphasis, and quote characters; trailing commas; blank-line spacing** — Prettier normalises these.
 - **Heading hierarchy, single H1, duplicate-heading and list rules** — markdownlint-cli2 flags these.
 
-The one place column width _is_ your job is **tables** — Prettier aligns table columns but will not reflow a row's content, so an over-long row is on you. That's the first convention below.
+The one place column width _is_ your job is **tables** — Prettier aligns table columns but will not reflow a row's content. Crucially, Prettier only pads columns when the result fits within `printWidth`; if the widest row would exceed 140 chars, Prettier leaves the table in compact (unpadded) format. So an over-long row blocks column alignment too — that's the first convention below.
 
 ## Tables and footnotes
 
