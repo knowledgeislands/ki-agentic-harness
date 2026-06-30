@@ -5,27 +5,21 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated patterns showing what well-formed Knowledge Islands KB notes, folder structures, and zone layouts look like. Use these as concrete
-references when authoring notes, running CONFORM, or deciding whether a structural choice is correct. They are drawn from
-`arcadia-principal` — the canonical live KB — rather than invented examples, so they reflect real decisions made in a conforming base.
+Curated patterns showing what well-formed Knowledge Islands KB notes, folder structures, and zone layouts look like. Use these as concrete references when authoring notes, running CONFORM, or deciding whether a structural choice is correct. They are drawn from `arcadia-principal` — the canonical live KB — rather than invented examples, so they reflect real decisions made in a conforming base.
 
 ## Collections
 
-| Source            | URL                                                | What it covers                                                                     |
-| ----------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| arcadia-principal | No public URL — KI repos are the primary exemplars | Zone layout, folder-note structure, frontmatter, internal link style across a live |
-|                   |                                                    | KB conforming to the standard †                                                    |
+| Source | URL | What it covers |
+| --- | --- | --- |
+| arcadia-principal | No public URL — KI repos are the primary exemplars | Zone layout, folder-note structure, frontmatter, internal link style across a live KB conforming to the standard † |
 
-† `arcadia-principal` is at `/Users/krisbrown/kis/knowledgeislands/arcadia-principal/` on this machine. It is the reference base the skill
-tracks and re-anchors against; see `sources.md` for conformance status.
+† `arcadia-principal` is at `/Users/krisbrown/kis/knowledgeislands/arcadia-principal/` on this machine. It is the reference base the skill tracks and re-anchors against; see `sources.md` for conformance status.
 
 ## Selected patterns
 
 ### Correct note frontmatter
 
-Every KB note that is not a pure index carries `type`, `status`, `tags`, and `author`. The `type` field drives routing; `status` signals
-currency; `tags` carry the topic and zone-arm context; `author` records provenance for curation. The following is taken from
-`Admin/Admin.md` in `arcadia-principal` — a zone-root index note:
+Every KB note that is not a pure index carries `type`, `status`, `tags`, and `author`. The `type` field drives routing; `status` signals currency; `tags` carry the topic and zone-arm context; `author` records provenance for curation. The following is taken from `Admin/Admin.md` in `arcadia-principal` — a zone-root index note:
 
 ```yaml
 ---
@@ -37,14 +31,11 @@ author: Written with Claude
 ---
 ```
 
-Key points: `tags` is a YAML list, never an inline string; the `status` field uses a freeform date suffix so the age of a status assessment
-is visible without opening the note body; `author` distinguishes human-authored, AI-authored, and collaborative notes (`Written with Claude`
-/ `Manual` / `Mixed`).
+Key points: `tags` is a YAML list, never an inline string; the `status` field uses a freeform date suffix so the age of a status assessment is visible without opening the note body; `author` distinguishes human-authored, AI-authored, and collaborative notes (`Written with Claude` / `Manual` / `Mixed`).
 
 ### Folder-note structure (zone root)
 
-Each index-carrying zone has a same-name index note at its root. The note body lists sub-areas as relative markdown links. From
-`Admin/Admin.md`:
+Each index-carrying zone has a same-name index note at its root. The note body lists sub-areas as relative markdown links. From `Admin/Admin.md`:
 
 ```markdown
 # Admin
@@ -69,8 +60,7 @@ Each index-carrying zone has a same-name index note at its root. The note body l
 - [Decisions](Governance/Decisions/Decisions.md) — the island's Decision Records.
 ```
 
-The index note uses relative markdown links — never wikilinks — so it is valid outside Obsidian. Each sub-folder that has a named arm
-(`Governance/`, `Operations/`) gets its own same-name index note, creating a navigable tree one level at a time.
+The index note uses relative markdown links — never wikilinks — so it is valid outside Obsidian. Each sub-folder that has a named arm (`Governance/`, `Operations/`) gets its own same-name index note, creating a navigable tree one level at a time.
 
 ### Well-structured zone layout
 
@@ -99,19 +89,16 @@ arcadia-principal/
     └── Settled/
 ```
 
-The staging areas (`+/`, `-/`) have no zone index note; only the five canonical zones carry one. Pillar folders inside `Pillars/` match the
-island's topic arms — they are not fixed by the standard; what is fixed is that each carries a same-name index note at its root.
+The staging areas (`+/`, `-/`) have no zone index note; only the five canonical zones carry one. Pillar folders inside `Pillars/` match the island's topic arms — they are not fixed by the standard; what is fixed is that each carries a same-name index note at its root.
 
 ### Internal vs external link style
 
-Internal links (within the same KB) use relative markdown paths — shortest unique path to the target file. External links use inline
-markdown with descriptive anchor text; bare URLs are not written into note bodies.
+Internal links (within the same KB) use relative markdown paths — shortest unique path to the target file. External links use inline markdown with descriptive anchor text; bare URLs are not written into note bodies.
 
 ```markdown
 <!-- Internal — relative path, no wikilink syntax -->
 
-See [Charter](Governance/Charter.md) for the island identity. See [Knowledge Islands](../Philosophy/Knowledge Islands.md) for the portable
-model.
+See [Charter](Governance/Charter.md) for the island identity. See [Knowledge Islands](../Philosophy/Knowledge Islands.md) for the portable model.
 
 <!-- External — descriptive anchor text -->
 
@@ -122,5 +109,4 @@ See the [Agent Skills standard](https://agentskills.io/) for the published spec.
 See [[Charter]] for the island identity. See [[Knowledge Islands]] for the portable model.
 ```
 
-The `knowledgeislands-kb` skill works with relative markdown paths throughout; wikilinks in existing notes are read and understood, but
-never written by the skill.
+The `knowledgeislands-kb` skill works with relative markdown paths throughout; wikilinks in existing notes are read and understood, but never written by the skill.

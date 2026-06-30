@@ -5,10 +5,7 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated illustrations of the Knowledge Islands authoring conventions in practice. Use these when writing or conforming a document, checking
-whether a table should spill to footnotes, choosing between link styles, or formatting a `.ki-config.toml` entry. The exemplars show the
-judgment layer — the choices no formatter makes — annotated to make the reasoning visible. Mechanical rules (line width, prose wrap, heading
-hierarchy) are owned by Prettier + markdownlint-cli2; run `bun run ki:lint:md` for those.
+Curated illustrations of the Knowledge Islands authoring conventions in practice. Use these when writing or conforming a document, checking whether a table should spill to footnotes, choosing between link styles, or formatting a `.ki-config.toml` entry. The exemplars show the judgment layer — the choices no formatter makes — annotated to make the reasoning visible. Mechanical rules (line width, prose wrap, heading hierarchy) are owned by Prettier + markdownlint-cli2; run `bun run ki:lint:md` for those.
 
 ## Collections
 
@@ -28,13 +25,9 @@ hierarchy) are owned by Prettier + markdownlint-cli2; run `bun run ki:lint:md` f
 
 ### Footnote marker series and table spill
 
-When a table column's content would force rows past a comfortable reading width (≈ 100 characters in a terminal), move the long content into
-footnotes below the table. The correct marker series, in order, is `†` `‡` `§` `¶` `‖` (then doubled: `††` `‡‡` …). Never use `*` — it
-collides with Markdown emphasis. Markers reset per table. A separate second series (`※` `❡` `¤` `¥`) separates two distinct footnote
-categories in the same table (e.g. a "source" series and a "caveat" series) so they do not collide.
+When a table column's content would force rows past a comfortable reading width (≈ 100 characters in a terminal), move the long content into footnotes below the table. The correct marker series, in order, is `†` `‡` `§` `¶` `‖` (then doubled: `††` `‡‡` …). Never use `*` — it collides with Markdown emphasis. Markers reset per table. A separate second series (`※` `❡` `¤` `¥`) separates two distinct footnote categories in the same table (e.g. a "source" series and a "caveat" series) so they do not collide.
 
-Each footnote must be separated from its neighbours by a blank line — under `proseWrap: always` Prettier reflows adjacent footnote lines
-into one paragraph otherwise.
+Each footnote must be separated from its neighbours by a blank line — under `proseWrap: always` Prettier reflows adjacent footnote lines into one paragraph otherwise.
 
 ```markdown
 | Repo  | Branch | Notes |
@@ -64,10 +57,7 @@ When the long content is a URL rather than prose, convert it to a **reference-st
 
 ### Correct relative link style (no wikilinks in skill files)
 
-In `SKILL.md` files and all harness documents, use standard relative Markdown links. Obsidian wikilinks (`[[…]]`) break when a file is
-relocated, symlinked, or read outside the base, and the `[[target|display text]]` form contains a literal `|` that Markdown parsers treat as
-a column separator, silently corrupting table layout. Refer to another skill by its `name` in backticks, never by a file path — skill
-locations on disk are not stable.
+In `SKILL.md` files and all harness documents, use standard relative Markdown links. Obsidian wikilinks (`[[…]]`) break when a file is relocated, symlinked, or read outside the base, and the `[[target|display text]]` form contains a literal `|` that Markdown parsers treat as a column separator, silently corrupting table layout. Refer to another skill by its `name` in backticks, never by a file path — skill locations on disk are not stable.
 
 ```markdown
 <!-- Correct: relative Markdown link -->
@@ -93,10 +83,7 @@ See `skills/knowledgeislands-kb/SKILL.md` for KB conventions.
 
 ### Well-formed `.ki-config.toml` table
 
-Keys are lowercase `snake_case`. Strings are double-quoted. Arrays use the inline `["a", "b"]` form for short lists. One table per skill,
-named for the skill (`[knowledgeislands-repo]`), with sub-tables nested under it. Comment non-obvious keys with a `#` line above them — the
-_why_, not the _what_. The contract behind what each table means (the one-table-per-skill model, validate-your-own-table protocol) lives in
-`knowledgeislands-repo`'s `ki-config-standard.md`; this pattern covers formatting only.
+Keys are lowercase `snake_case`. Strings are double-quoted. Arrays use the inline `["a", "b"]` form for short lists. One table per skill, named for the skill (`[knowledgeislands-repo]`), with sub-tables nested under it. Comment non-obvious keys with a `#` line above them — the _why_, not the _what_. The contract behind what each table means (the one-table-per-skill model, validate-your-own-table protocol) lives in `knowledgeislands-repo`'s `ki-config-standard.md`; this pattern covers formatting only.
 
 ```toml
 [knowledgeislands-repo]
