@@ -92,17 +92,12 @@ function auditActivities(base: string, harnessPath: string | null) {
       continue
     }
 
-    // ACT-F-0: type
-    if (fm.type !== 'admin/operations/activity') {
-      warn('frontmatter', `${rel}: type must be 'admin/operations/activity' (found '${fm.type ?? '—'}')`)
-    }
-
     // ACT-F-1: status
     const status = fm.status
     if (!status) {
-      warn('frontmatter', `${rel}: missing required field 'status' (active | inactive)`)
-    } else if (!['active', 'inactive'].includes(status)) {
-      warn('frontmatter', `${rel}: status '${status}' is not one of active / inactive`)
+      warn('frontmatter', `${rel}: missing required field 'status' (active | paused | retired)`)
+    } else if (!['active', 'paused', 'retired'].includes(status)) {
+      warn('frontmatter', `${rel}: status '${status}' is not one of active / paused / retired`)
     }
 
     // ACT-F-2: realization

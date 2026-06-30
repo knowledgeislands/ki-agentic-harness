@@ -6,7 +6,6 @@
 
 ```yaml
 ---
-type: admin/operations/live-artifact
 status: active
 renders: html
 author: Written with Claude
@@ -32,15 +31,14 @@ The paired `Status Board.html` is generated from this source and lives in the sa
 | Status Board | active | Current open streams and inbox count. |
 ```
 
-## Inactive artifact
+## Archived artifact
 
 ```yaml
 ---
-type: admin/operations/live-artifact
-status: inactive
+status: archived
 renders: html
-inactive_since: 2026-06-01
-inactive_reason: Replaced by the consolidated Status Board.
+archived: 2026-06-01
+archive_reason: Replaced by the consolidated Status Board.
 author: Written with Claude
 ---
 ```

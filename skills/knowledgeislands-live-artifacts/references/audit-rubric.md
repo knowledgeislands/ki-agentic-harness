@@ -13,17 +13,16 @@
 
 ## Frontmatter
 
-| ID     | Check                                                      | Level | Type |
-| ------ | ---------------------------------------------------------- | ----- | ---- |
-| LA-F-0 | `type` present and equals `admin/operations/live-artifact` | WARN  | [M]  |
-| LA-F-1 | `status` present and one of `active`, `inactive`           | WARN  | [M]  |
-| LA-F-2 | `renders` present                                          | WARN  | [M]  |
+| ID     | Check                                            | Level | Type |
+| ------ | ------------------------------------------------ | ----- | ---- |
+| LA-F-1 | `status` present and one of `active`, `archived` | WARN  | [M]  |
+| LA-F-2 | `renders` present                                | WARN  | [M]  |
 
 ## Judgment
 
-| ID     | Check                                                                                                   | Type |
-| ------ | ------------------------------------------------------------------------------------------------------- | ---- |
-| LA-J-1 | Index note accurately lists all active artifacts with a useful one-line description                     | [J]  |
-| LA-J-2 | `.md` body is the authoritative source — no content exists only in the `.html`                          | [J]  |
-| LA-J-3 | Inactive artifacts are retained with a note of when and why they were deactivated, not silently deleted | [J]  |
-| LA-J-4 | Artifact names are descriptive and stable — renaming an artifact breaks its `.html` link if published   | [J]  |
+| ID     | Check                                                                                                 | Type |
+| ------ | ----------------------------------------------------------------------------------------------------- | ---- |
+| LA-J-1 | Index note accurately lists all active artifacts with a useful one-line description                   | [J]  |
+| LA-J-2 | `.md` body is the authoritative source — no content exists only in the `.html`                        | [J]  |
+| LA-J-3 | Archived artifacts are retained with a note of when and why they were archived, not silently deleted  | [J]  |
+| LA-J-4 | Artifact names are descriptive and stable — renaming an artifact breaks its `.html` link if published | [J]  |
