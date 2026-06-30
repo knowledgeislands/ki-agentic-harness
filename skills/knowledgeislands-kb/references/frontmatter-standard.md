@@ -31,8 +31,14 @@ identify the structural role within that zone.
 | `admin/governance/policy`     | `Admin/Governance/Policies/**/*`                          | TBD                                 |
 | `admin/governance/template`   | `Admin/Governance/Templates/**/*`                         | TBD                                 |
 | `admin/operations/process`    | `Admin/Operations/Processes/**/*`                         | TBD                                 |
-| `admin/operations/activity`   | `Admin/Operations/Activities/**/*`                        | TBD                                 |
+| `admin/operations/activity`   | `Admin/Operations/Activities/**/*`                        | `knowledgeislands-activities`       |
 | `admin/operations/skill`      | `Admin/Operations/Skills/**/*`                            | TBD                                 |
+
+`Admin/Operations/Activities/` is governed by `knowledgeislands-activities` and `Admin/Operations/Live Artifacts/` by
+`knowledgeislands-live-artifacts`. Both currently define their notes with skill-specific frontmatter — `status` + `realization` and
+`status` + `renders` respectively — rather than the `type:` node_type used elsewhere in this table, so Live Artifacts has no row above;
+bringing them onto a `type:` field (and adding an `admin/operations/live-artifact` row) is an open reconciliation. The remaining `TBD` rows
+have no governing skill yet.
 
 ### Outbound staging (`-/`)
 
