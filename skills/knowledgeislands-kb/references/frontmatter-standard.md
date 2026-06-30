@@ -63,14 +63,46 @@ These types are only valid under `-/`. Files carrying them elsewhere are a ZONE-
 | `session-digest` | `-/_DIGESTS/*.md`  | Ephemeral. Delete once content is extracted into Pillars/Streams/handoff | `knowledgeislands-kb` |
 | `handoff`        | `-/_HANDOFFS/*.md` | Ephemeral. Delete once recipient has routed it through their `+/`        | `knowledgeislands-kb` |
 
-### Other zone branches (stubs)
+### Calendar branch (`calendar/`)
 
-Defined as those zones are built out:
+Time-stamped records; the kind is the temporal grain. Governed by `knowledgeislands-kb`.
 
-- `calendar/...` — Calendar zone content
-- `pillars/...` — Pillars zone content
-- `resources/...` — Resources zone content
-- `streams/...` — Streams zone content
+| Type               | Path context                                          | Defined by            |
+| ------------------ | ----------------------------------------------------- | --------------------- |
+| `calendar/index`   | Year / month index notes (`Calendar/<YYYY>/…`)        | `knowledgeislands-kb` |
+| `calendar/daily`   | A day note (`Calendar/<YYYY>/<month>/<YYYY-MM-DD> …`) | `knowledgeislands-kb` |
+| `calendar/weekly`  | A weekly review                                       | `knowledgeislands-kb` |
+| `calendar/monthly` | A monthly summary                                     | `knowledgeislands-kb` |
+| `calendar/meeting` | A meeting note                                        | `knowledgeislands-kb` |
+| `calendar/session` | An AI-assisted work-session note                      | `knowledgeislands-kb` |
+
+### Resources branch (`resources/`)
+
+External reference material. The kinds below are the cross-base **core**; a base may declare finer entity kinds (`resources/book`,
+`resources/location`, …) under its own config. Governed by `knowledgeislands-kb`.
+
+| Type                | Path context                          | Defined by            |
+| ------------------- | ------------------------------------- | --------------------- |
+| `resources/index`   | Area index notes (`Resources/…/….md`) | `knowledgeislands-kb` |
+| `resources/note`    | A general reference note              | `knowledgeislands-kb` |
+| `resources/person`  | A person reference                    | `knowledgeislands-kb` |
+| `resources/org`     | An organisation reference             | `knowledgeislands-kb` |
+| `resources/concept` | A concept reference                   | `knowledgeislands-kb` |
+
+### Streams branch (`streams/`)
+
+The `Streams` zone's internal structure is owned by `knowledgeislands-streams`; these are its note kinds.
+
+| Type               | Path context                                     | Defined by                 |
+| ------------------ | ------------------------------------------------ | -------------------------- |
+| `streams/zone`     | `Streams/Streams.md` (zone root)                 | `knowledgeislands-streams` |
+| `streams/focus`    | A focus / lifecycle-folder summary (`Active`, …) | `knowledgeislands-streams` |
+| `streams/proposal` | A workstream proposal (the enactment unit)       | `knowledgeislands-streams` |
+| `streams/note`     | A working note within a stream                   | `knowledgeislands-streams` |
+
+### Pillars branch (`pillars/`) — stub
+
+Defined as the Pillars zone is built out.
 
 ## Dependent fields
 
@@ -79,3 +111,7 @@ Some `type` values require additional fields, defined by the skill that owns tha
 | `type`                      | Additional required field | Valid values                                                                                 | Defined by                          |
 | --------------------------- | ------------------------- | -------------------------------------------------------------------------------------------- | ----------------------------------- |
 | `admin/governance/decision` | `decision_type`           | strategy, product, architecture, data, security, operations, governance, research, knowledge | `knowledgeislands-decision-records` |
+| `calendar/daily`            | `day_type`                | work-day / weekend / bank-holiday / annual-leave (open enumeration)                          | `knowledgeislands-kb`               |
+| `streams/proposal`          | `status`                  | the Streams proposal lifecycle (values owned by `knowledgeislands-streams`)                  | `knowledgeislands-streams`          |
+| `streams/proposal`          | `priority`                | `urgent` / `high` / `medium` / `low`                                                         | `knowledgeislands-streams`          |
+| `streams/proposal`          | `dependencies`            | list of blocking stream names (`[]` when none)                                               | `knowledgeislands-streams`          |
