@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Install the toolchain from mise.toml (pins node + bun); no version is
+      # hardcoded here — mise.toml is the single source of truth.
+      - uses: jdx/mise-action@v2
+
+      - run: bun install --frozen-lockfile
+
+      # The engineering gate: lint + types + knip + markdown, as a single step.
+      - name: Verify
+        run: bun run ki:verify
+
+      # Governance audits applicable to this repo. The GitHub-gated repo audit is
+      # omitted (it needs gh auth); it is run manually / from a local tree.
+      - name: Governance audits
+        run: |
+          bun run ki:skills:lint
+          bun run ki:agents:lint
+          bun run ki:decision-records:audit
+          bun run ki:harness:audit
