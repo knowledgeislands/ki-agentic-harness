@@ -8,19 +8,28 @@ documented here only as dependent fields.
 
 ## Universal fields
 
-| Field    | Required (KB repos) | Description                                                                                                      |
-| -------- | ------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `type`   | Yes                 | The note's **kind** (sole classifier); derived from its location via path-pattern — see taxonomy below           |
-| `status` | Yes                 | Note lifecycle: `draft - Month YYYY` / `current - Month YYYY` / `outdated - Month YYYY` / `archive - Month YYYY` |
-| `tags`   | Optional            | Topical labels for filtering and discovery — **not** a classifier; a note's kind is its `type`                   |
-| `author` | Recommended         | `Written with Claude` / `Manual` / `Mixed`                                                                       |
+| Field      | Required (KB repos) | Description                                                                                                   |
+| ---------- | ------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `type`     | Yes                 | The note's **kind** (sole classifier); location-constrained — see taxonomy below                              |
+| `updated`  | Recommended         | Timestamp of the last substantive change, `YYYY-MM-DDTHH:MM:SSZ`                                              |
+| `reviewed` | Recommended         | Timestamp of the last human review; a note is **stale** when `reviewed` is absent or earlier than `updated`   |
+| `created`  | Optional            | Timestamp set once on creation; never changed                                                                 |
+| `status`   | Type-specific       | Not universal — set by the note's `type` where it has a lifecycle/state (e.g. activities `active`/`inactive`) |
+| `tags`     | Optional            | Topical labels for filtering and discovery — **not** a classifier; a note's kind is its `type`                |
+| `author`   | Recommended         | `Written with Claude` / `Manual` / `Mixed`                                                                    |
+
+**Freshness** is carried by the timestamps, not by `status`: a note is current while `reviewed` is at or after its last `updated`, and goes
+stale once `updated` moves ahead of `reviewed` (or `reviewed` is absent). `status` is reserved for a `type`'s own lifecycle where it has one
+— for example `knowledgeislands-activities` uses `active` / `inactive`.
 
 ## Type taxonomy
 
 `type` is a note's sole **kind** classifier — what it _is_, not what it is _about_ (topical labels are `tags`, which never classify). It is
-**derivable from the note's location**: a path-pattern registry maps a path to its type (first match wins), so `type` is auto-assignable and
-auditable rather than hand-chosen. The slug vocabulary below is the current taxonomy and may grow; the fixed contract is the **pattern** —
-`type` is declared and path-derived — not any particular slug or notation.
+**location-constrained**: a registry pairs path-patterns with the types valid at them, so a `type` can be checked against — and often
+inferred from — where the note lives. The relationship is not strictly one-to-one: a type may be valid at more than one location, and some
+locations admit more than one type, so the registry expresses _which types are valid where_ rather than a single forced mapping. The fixed
+contract is the **pattern** — `type` is declared and location-constrained — not any particular slug or notation; the slug vocabulary below
+is the current taxonomy and may grow.
 
 The slugs use slash-hierarchical notation: `<zone>/<arm>/<leaf>`. The zone prefix identifies the KI zone; subsequent segments identify the
 structural role within that zone.
