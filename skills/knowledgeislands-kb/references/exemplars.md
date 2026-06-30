@@ -9,11 +9,11 @@ Curated patterns showing what well-formed Knowledge Islands KB notes, folder str
 
 ## Collections
 
-| Source | URL | What it covers |
-| --- | --- | --- |
-| arcadia-principal | No public URL — KI repos are the primary exemplars | Zone layout, folder-note structure, frontmatter, internal link style across a live KB conforming to the standard † |
+| Source            | URL                                                | What it covers                                      |
+| ----------------- | -------------------------------------------------- | --------------------------------------------------- |
+| arcadia-principal | No public URL — KI repos are the primary exemplars | Zone layout, folder-note, frontmatter, link style † |
 
-† `arcadia-principal` is at `/Users/krisbrown/kis/knowledgeislands/arcadia-principal/` on this machine. It is the reference base the skill tracks and re-anchors against; see `sources.md` for conformance status.
+† Zone layout, folder-note structure, frontmatter, and internal link style across a live KB conforming to the standard. `arcadia-principal` is at `/Users/krisbrown/kis/knowledgeislands/arcadia-principal/` on this machine; it is the reference base the skill tracks — see `sources.md` for conformance status.
 
 ## Selected patterns
 
