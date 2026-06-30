@@ -6,6 +6,12 @@ The authoritative definition of frontmatter fields for all notes in a Knowledge 
 follows this standard. Instrument-specific fields (e.g. `decision_type` for DRs) are defined by the skills that introduce them and
 documented here only as dependent fields.
 
+## Contents
+
+- [Universal fields](#universal-fields)
+- [Type taxonomy](#type-taxonomy) — Admin · Outbound staging · Calendar · Resources · Streams · Pillars
+- [Dependent fields](#dependent-fields)
+
 ## Universal fields
 
 | Field      | Required (KB repos) | Description                                                                                                   |
