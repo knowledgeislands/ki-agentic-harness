@@ -9,9 +9,13 @@ Curated patterns showing what well-formed Streams zone notes, proposal documents
 
 ## Collections
 
-| Source | URL | What it covers |
-| --- | --- | --- |
-| arcadia-principal | No public URL — KI repos are the primary exemplars | Live Streams zone: Focus dashboards, proposal documents, parent stream layout † |
+| Source            | URL             | What it covers      |
+| ----------------- | --------------- | ------------------- |
+| arcadia-principal | No public URL ※ | Live Streams zone ‡ |
+
+※ KI repos are the primary exemplars.
+
+‡ Focus dashboards, proposal documents, parent stream layout. †
 
 † `arcadia-principal` is at `/Users/krisbrown/kis/knowledgeislands/arcadia-principal/` on this machine. Its Streams zone carries the canonical structure cleanly. See `sources.md` for the conformance notes (the proposal apparatus is clean; some index frontmatter still carries legacy keys as of the last review).
 

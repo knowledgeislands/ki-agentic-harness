@@ -11,9 +11,9 @@ Curated patterns from the KI agentic harness that show what a well-structured fo
 
 | Source | URL | What it covers |
 | --- | --- | --- |
-| arcadia-agentic-harness | <https://github.com/knowledgeislands/arcadia-agentic-harness> | The KI canonical reference; all four parts; populated skills shelf |
-| Agent Skills specification | <https://agentskills.io/specification> | The `SKILL.md` format and `references/`, `scripts/`, `assets/` layout |
-| Claude Code subagent docs | <https://code.claude.com/docs/en/sub-agents> | The subagent definition format the `agents/` part serves |
+| arcadia-agentic-harness | [canonical harness repo][harness-repo] | The KI canonical reference; all four parts; populated skills shelf |
+| Agent Skills specification | [Agent Skills spec][as-spec] | The `SKILL.md` format and `references/`, `scripts/`, `assets/` layout |
+| Claude Code subagent docs | [CC subagent docs][cc-subagents] | The subagent definition format the `agents/` part serves |
 
 ## Selected patterns
 
@@ -91,3 +91,7 @@ visibility = "private"
 [knowledgeislands-skills]
 # skills/ is populated; the skills linter runs over it.
 ```
+
+[harness-repo]: https://github.com/knowledgeislands/arcadia-agentic-harness
+[as-spec]: https://agentskills.io/specification
+[cc-subagents]: https://code.claude.com/docs/en/sub-agents

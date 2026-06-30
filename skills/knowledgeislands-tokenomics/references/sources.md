@@ -10,7 +10,7 @@ The volatile **numbers** themselves (model ids, prices, cache TTLs, context-wind
 
 | Source | Governs | Last reviewed |
 | --- | --- | --- |
-| [Effective context engineering for AI agents][ctx-eng] | finite-resource framing, minimal tool sets, context ordering (§1,§6) | 2026-06-21 |
+| [Effective context engineering for AI agents][ctx-eng] | context-engineering principles※ | 2026-06-21 |
 | [Claude context windows][ctx-win] | window mechanics; the volatile sizes (deferred to `claude-api`) | 2026-06-21 |
 | [Prompt caching][caching] | cache prefix / TTL mechanics behind the caching lever (§4) | 2026-06-21 |
 | [Claude Code memory & `CLAUDE.md`][cc-memory] | what auto-loads + `@import` resolution; auto memory (§2) | 2026-06-21 |
@@ -18,6 +18,8 @@ The volatile **numbers** themselves (model ids, prices, cache TTLs, context-wind
 | [Claude Code settings][cc-settings] | `settings.json` keys: model, compaction, skill-listing caps (§2,§4) | 2026-06-21 |
 | [Claude Code MCP][cc-mcp] | where MCP servers are configured; tool search defers schemas (§2) | 2026-06-21 |
 | [Agent Skills standard][skills-std] | skill `description` loads in the selection surface (§2) | 2026-06-21 |
+
+※ Governs the finite-resource framing, minimal tool sets, and context ordering (§1, §6).
 
 ## Community / tooling
 

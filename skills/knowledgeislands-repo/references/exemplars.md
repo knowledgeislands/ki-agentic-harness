@@ -11,11 +11,11 @@ Curated patterns from the KI repo set that show what a well-configured Knowledge
 
 | Source | URL | What it covers |
 | --- | --- | --- |
-| arcadia-agentic-harness | <https://github.com/knowledgeislands/arcadia-agentic-harness> | Private repo; all layer-1 files; full `.ki-config.toml`; rich `CLAUDE.md` |
-| mcp-gmail | <https://github.com/knowledgeislands/mcp-gmail> | Public repo; MIT license; standard topic set; Dependabot auto-merge |
-| mcp-kb-fs | <https://github.com/knowledgeislands/mcp-kb-fs> | Public repo; canonical layer-2/3 settings; `branch-protection` off |
-| GitHub REST API — repo settings | <https://docs.github.com/en/rest/repos/repos#update-a-repository> | Merge methods, auto-delete-branch, features |
-| GitHub branch protection | <https://docs.github.com/en/rest/branches/branch-protection> | Optional `branch-protection` body |
+| arcadia-agentic-harness | [github][harness] | Private repo; all layer-1 files; full `.ki-config.toml`; rich `CLAUDE.md` |
+| mcp-gmail | [github][mcp-gmail] | Public repo; MIT license; standard topic set; Dependabot auto-merge |
+| mcp-kb-fs | [github][mcp-kb-fs] | Public repo; canonical layer-2/3 settings; `branch-protection` off |
+| GitHub REST API — repo settings | [docs.github.com][repo-settings] | Merge methods, auto-delete-branch, features |
+| GitHub branch protection | [docs.github.com][branch-protection] | Optional `branch-protection` body |
 
 ## Selected patterns
 
@@ -87,3 +87,9 @@ visibility = "private"
 [knowledgeislands-decision-records]
 # This repo authors and maintains decision records.
 ```
+
+[harness]: https://github.com/knowledgeislands/arcadia-agentic-harness
+[mcp-gmail]: https://github.com/knowledgeislands/mcp-gmail
+[mcp-kb-fs]: https://github.com/knowledgeislands/mcp-kb-fs
+[repo-settings]: https://docs.github.com/en/rest/repos/repos#update-a-repository
+[branch-protection]: https://docs.github.com/en/rest/branches/branch-protection

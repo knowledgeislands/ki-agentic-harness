@@ -11,10 +11,14 @@ Curated patterns worth reading when authoring or auditing a Knowledge Islands Cl
 
 | Source | URL | What it covers |
 | --- | --- | --- |
-| Workers — Static Assets | <https://developers.cloudflare.com/workers/static-assets/> | `assets` block: `directory`, `binding`, `html_handling`, `not_found_handling` |
-| wrangler configuration | <https://developers.cloudflare.com/workers/wrangler/configuration/> | `name`, `compatibility_date`, `routes`/`custom_domain`, `observability` |
-| Pages → Workers migration | <https://developers.cloudflare.com/workers/static-assets/migration-guides/migrate-from-pages/> | Why new static sites use Workers + Static Assets, not `wrangler pages deploy` |
-| arcadia-website (in-house) | <https://github.com/knowledgeislands/arcadia-website> | Reference implementation: `wrangler.jsonc`, monorepo script family, Cloudflare Builds |
+| Workers — Static Assets | [Static Assets docs][assets] | `assets` block: `directory`, `binding`, `html_handling`, `not_found_handling` |
+| wrangler configuration | [wrangler config docs][wrangler] | `name`, `compatibility_date`, `routes`/`custom_domain`, `observability` |
+| Pages → Workers migration | [migrate-from-pages guide][pages] | Why new static sites use Workers + Static Assets † |
+| arcadia-website (in-house) | [arcadia-website repo][arcadia] | Reference implementation ‡ |
+
+† Not `wrangler pages deploy`.
+
+‡ `wrangler.jsonc`, monorepo script family, Cloudflare Builds.
 
 ## Selected patterns
 
@@ -106,3 +110,8 @@ A `_headers` file with security and cache headers appropriate for a static site:
 ```
 
 The `/assets/*` rule sets a long-lived immutable cache on built assets (CSS, JS, images). The `/*` rule applies security headers to every response. Both rules are additive — they do not override Cloudflare's default `Content-Type` or compression behaviour.
+
+[assets]: https://developers.cloudflare.com/workers/static-assets/
+[wrangler]: https://developers.cloudflare.com/workers/wrangler/configuration/
+[pages]: https://developers.cloudflare.com/workers/static-assets/migration-guides/migrate-from-pages/
+[arcadia]: https://github.com/knowledgeislands/arcadia-website

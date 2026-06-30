@@ -6,9 +6,11 @@ Each entry notes what the exemplar demonstrates well. For the full collection, s
 
 ## Collections
 
-| Source | URL | What it covers |
-| --- | --- | --- |
-| awesome-claude-code-subagents (VoltAgent) | <https://github.com/VoltAgent/awesome-claude-code-subagents> | 100+ community-authored agents across dev, ops, research, and data domains |
+| Source                                    | URL                         | What it covers                   |
+| ----------------------------------------- | --------------------------- | -------------------------------- |
+| awesome-claude-code-subagents (VoltAgent) | [VoltAgent repo][voltagent] | 100+ community-authored agents † |
+
+† Across dev, ops, research, and data domains.
 
 ## Selected patterns
 
@@ -68,3 +70,5 @@ model: inherit
 color: green
 ---
 ```
+
+[voltagent]: https://github.com/VoltAgent/awesome-claude-code-subagents

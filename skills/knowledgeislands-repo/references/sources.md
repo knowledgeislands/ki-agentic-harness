@@ -11,7 +11,7 @@ The authoritative sources behind [the standard](repo-standard.md), [the rubric](
 | [REST: repository settings][repo-settings] | merge methods, auto-delete-branch, features, description, visibility | 2026-06-21 |
 | [REST: branch protection][branch-protection] | the optional `branch-protection` body (PR, `build` check, linear) | 2026-06-21 |
 | [Repository rulesets][rulesets] | the modern alternative to classic protection (private-repo path) | 2026-06-21 |
-| [REST: Dependabot alerts / automated security fixes][dependabot] | `vulnerability-alerts`, `automated-security-fixes` endpoints | 2026-06-21 |
+| [REST: Dependabot alerts / fixes][dependabot] | `vulnerability-alerts`, `automated-security-fixes` endpoints | 2026-06-21 |
 | [Secret scanning & push protection][secret-scanning] | `security_and_analysis` toggles and their plan/GHAS gating | 2026-06-21 |
 | [REST: Actions permissions for a repository][actions] | `allowed_actions` policy | 2026-06-21 |
 | [`gh` CLI manual][gh-cli] | `gh repo list/view/edit`, `gh api` — how the script reads/writes | 2026-06-21 |

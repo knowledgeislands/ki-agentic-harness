@@ -79,9 +79,11 @@ Only `knowledgeislands-bootstrap` is installed globally; every other skill is pr
 | --- | --- |
 | [docs/skills.md](docs/skills.md) | The sixteen skills one by one, and the shared governance-skill shape. |
 | [docs/design.md](docs/design.md) | How they fit: where they don't overlap, the three knowledge loops, the principles across the set. |
-| [docs/knowledge-islands.md](docs/knowledge-islands.md) | The Knowledge Islands zone model the KI skills assume, and standard skills & per-base config. |
+| [docs/knowledge-islands.md][ki-doc] | The Knowledge Islands zone model the KI skills assume, and standard skills & per-base config. |
 | [docs/installation.md](docs/installation.md) | Installing · using · linking skills, and the development toolchain. |
 
 ## Roadmap
 
 The forward view — what's next and why — lives in [ROADMAP.md](ROADMAP.md). The standards, the mechanical checkers, and the advisory eval harness are all in place, and keeping them applied is a continuous practice (the invariants in [docs/design.md](docs/design.md#principles-across-the-set)), not roadmap work. What remains is mostly _dogfooding_: conforming the website repos to the new `11ty-websites` / `cloudflare-hosting` standards, finishing the `.ki-config.toml` override-layer rollout across its consuming skills, and two Dependabot follow-ups for the `mcp-*` repos.
+
+[ki-doc]: docs/knowledge-islands.md

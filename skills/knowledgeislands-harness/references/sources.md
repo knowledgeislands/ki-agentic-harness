@@ -6,18 +6,24 @@ The tracked sources behind the harness standard. Provenance only: the record of 
 
 ## Authoritative
 
-| Tag | Source | Governs | Last reviewed |
-| --- | --- | --- | --- |
-| [AS] | [Agent Skills specification](https://agentskills.io/specification) | The individual `SKILL.md` format the harness serves; the directory-name = `name:` constraint; `references/`, `scripts/`, `assets/` layout | 2026-06-21 |
-| [CC] | [Claude Code subagent docs](https://code.claude.com/docs/en/sub-agents) | The subagent definition format the `agents/` part serves | 2026-06-21 |
+| Tag  | Source                                    | Governs                                                  | Last reviewed |
+| ---- | ----------------------------------------- | -------------------------------------------------------- | ------------- |
+| [AS] | [Agent Skills specification][as-spec]     | The individual `SKILL.md` format the harness serves †    | 2026-06-21    |
+| [CC] | [Claude Code subagent docs][cc-subagents] | The subagent definition format the `agents/` part serves | 2026-06-21    |
+
+† Including the directory-name = `name:` constraint and the `references/`, `scripts/`, `assets/` layout.
 
 ## In-house
 
 | Tag | Source | Governs | Last reviewed |
 | --- | --- | --- | --- |
-| [AH] | [arcadia-agentic-harness README](../../README.md) | The KI canonical reference implementation; all structure inferred from this repo | 2026-06-21 |
+| [AH] | [arcadia-agentic-harness README][ah-readme] | The KI canonical reference implementation § | 2026-06-21 |
 | [KR] | `knowledgeislands-repo` skill | The `.ki-config.toml` contract, coverage cascade, and what makes a KI-governed repo | 2026-06-21 |
-| [KE] | `knowledgeislands-engineering` skill | The enforcement framework (severity ladder, mode shape, checker contract); the common toolchain script families | 2026-06-21 |
+| [KE] | `knowledgeislands-engineering` skill | The enforcement framework ‡ plus the common toolchain script families | 2026-06-21 |
+
+§ All structure inferred from this repo.
+
+‡ Severity ladder, mode shape, and checker contract.
 
 ## Last review
 
@@ -35,3 +41,7 @@ _Reviewed: 2026-06-21_
 
 - [AS] — Monitor for any Agent Skills spec update that adds bundle/harness-level concepts. If agentskills.io formalises a multi-skill container, reconcile with this standard.
 - [CC] — Monitor Claude Code release notes for any change to skill-install paths or the project-local skill-install convention.
+
+[as-spec]: https://agentskills.io/specification
+[cc-subagents]: https://code.claude.com/docs/en/sub-agents
+[ah-readme]: ../../README.md

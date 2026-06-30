@@ -6,12 +6,18 @@ Provenance only: the record of _what changed_ lives in git (the REFRESH commit),
 
 ## In-house
 
-| Tag | Source | Governs | Last reviewed |
-| --- | --- | --- | --- |
-| [KR] | `knowledgeislands-repo` skill | The `.ki-config.toml` contract and the coverage cascade (`[knowledgeislands-*]` tables) it reads | 2026-06-22 |
-| [KE] | `knowledgeislands-engineering` skill | The enforcement framework (severity ladder, mode shape, checker contract); `skills:*` scripts | 2026-06-22 |
-| [KH] | `knowledgeislands-harness` skill | The four-part container and the skill-install convention this is the project-local counterpart of | 2026-06-22 |
-| [AH] | [arcadia-agentic-harness README](../../README.md) | The reference implementation; the authoring hub linked with `--all` | 2026-06-22 |
+| Tag  | Source                               | Governs                                                             | Last reviewed |
+| ---- | ------------------------------------ | ------------------------------------------------------------------- | ------------- |
+| [KR] | `knowledgeislands-repo` skill        | The `.ki-config.toml` contract and the coverage cascade †           | 2026-06-22    |
+| [KE] | `knowledgeislands-engineering` skill | The enforcement framework ‡; `skills:*` scripts                     | 2026-06-22    |
+| [KH] | `knowledgeislands-harness` skill     | The four-part container and the skill-install convention §          | 2026-06-22    |
+| [AH] | [README](../../README.md)            | The reference implementation; the authoring hub linked with `--all` | 2026-06-22    |
+
+† The coverage cascade is the set of `[knowledgeislands-*]` tables the contract reads.
+
+‡ Severity ladder, mode shape, checker contract.
+
+§ This skill is the project-local counterpart of that convention.
 
 ## Watch-items
 

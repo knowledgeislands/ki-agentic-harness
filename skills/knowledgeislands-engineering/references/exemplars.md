@@ -11,13 +11,13 @@ For the full upstream pin list and in-house sources, see [sources.md](sources.md
 
 ## Collections
 
-| Source | URL | What it covers |
-| --- | --- | --- |
-| mcp-gmail | <https://github.com/knowledgeislands/mcp-gmail> | Canonical flat-repo compiled-TS profile with env config |
-| mcp-kb-fs | <https://github.com/knowledgeislands/mcp-kb-fs> | Canonical flat-repo compiled-TS profile, no CLI binary |
-| arcadia-agentic-harness | <https://github.com/knowledgeislands/arcadia-agentic-harness> | Scripts-only profile (no `src/`, no tests); the harness repo |
-| Biome configuration reference | <https://biomejs.dev/reference/configuration/> | The schema the `$schema` pin tracks |
-| TypeScript compiler options | <https://www.typescriptlang.org/tsconfig> | The invariants and the compiled-TS profile options |
+| Source                        | URL                               | What it covers                                               |
+| ----------------------------- | --------------------------------- | ------------------------------------------------------------ |
+| mcp-gmail                     | [github][mcp-gmail]               | Canonical flat-repo compiled-TS profile with env config      |
+| mcp-kb-fs                     | [github][mcp-kb-fs]               | Canonical flat-repo compiled-TS profile, no CLI binary       |
+| arcadia-agentic-harness       | [github][harness]                 | Scripts-only profile (no `src/`, no tests); the harness repo |
+| Biome configuration reference | [biomejs.dev][biome-config]       | The schema the `$schema` pin tracks                          |
+| TypeScript compiler options   | [typescriptlang.org][ts-tsconfig] | The invariants and the compiled-TS profile options           |
 
 ## Selected patterns
 
@@ -115,3 +115,9 @@ The table is a conformance marker — its presence declares "the engineering sta
 # [knowledgeislands-engineering.checks]
 # <check-id> = false  # reason: …
 ```
+
+[mcp-gmail]: https://github.com/knowledgeislands/mcp-gmail
+[mcp-kb-fs]: https://github.com/knowledgeislands/mcp-kb-fs
+[harness]: https://github.com/knowledgeislands/arcadia-agentic-harness
+[biome-config]: https://biomejs.dev/reference/configuration/
+[ts-tsconfig]: https://www.typescriptlang.org/tsconfig

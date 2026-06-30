@@ -10,13 +10,13 @@ Two layers feed the standard: the **official MCP specification** (what every con
 
 The spec is versioned by date. Track the **latest released** version and note the current one here.
 
-| Tag       | Source                                 | Governs                                                           | Last reviewed |
-| --------- | -------------------------------------- | ----------------------------------------------------------------- | ------------- |
-| SPEC      | [MCP spec — versioning / latest][spec] | Which dated revision is current (latest released: **2025-11-25**) | 2026-06-21    |
-| CHANGELOG | [2025-11-25 changelog][changelog]      | †                                                                 | 2026-06-21    |
-| TOOLS     | [Server → Tools][tools]                | ‡                                                                 | 2026-06-21    |
-| SEC       | [Security Best Practices][sec]         | §                                                                 | 2026-06-21    |
-| AUTH      | [Authorization][auth]                  | ¶                                                                 | 2026-06-21    |
+| Tag       | Source                                 | Governs | Last reviewed |
+| --------- | -------------------------------------- | ------- | ------------- |
+| SPEC      | [MCP spec — versioning / latest][spec] | ※       | 2026-06-21    |
+| CHANGELOG | [2025-11-25 changelog][changelog]      | †       | 2026-06-21    |
+| TOOLS     | [Server → Tools][tools]                | ‡       | 2026-06-21    |
+| SEC       | [Security Best Practices][sec]         | §       | 2026-06-21    |
+| AUTH      | [Authorization][auth]                  | ¶       | 2026-06-21    |
 
 † What changed since 2025-06-18 (tasks, tool-calling in sampling, OIDC discovery, icons, validation-error clarification).
 
@@ -25,6 +25,8 @@ The spec is versioned by date. Track the **latest released** version and note th
 § Confused deputy, token passthrough, SSRF, session hijacking, scope minimization, local-server compromise.
 
 ¶ OAuth 2.1 framework, token audience, PKCE, dynamic client registration — relevant to the gmail / m365 auth-servers.
+
+※ Which dated revision is current (latest released: **2025-11-25**).
 
 ## Community
 
@@ -41,14 +43,16 @@ The spec is versioned by date. Track the **latest released** version and note th
 
 The standard is defined as the **majority shape** across the six sibling repos under `knowledgeislands/`. These are the living source of truth for house style; when they diverge from each other, the majority wins and the outlier is a finding unless documented.
 
-| Tag | Source | Governs | Last reviewed |
-| --- | --- | --- | --- |
-| REPOS | The six sibling repos † | Layout, config, tool naming, shared `utils/`, the toolchain ‡ | 2026-06-21 |
-| CLAUDE | Each repo's own `CLAUDE.md` | The per-repo statement of its own invariants — the standard tracks these and flags drift | 2026-06-21 |
+| Tag    | Source                      | Governs                                                       | Last reviewed |
+| ------ | --------------------------- | ------------------------------------------------------------- | ------------- |
+| REPOS  | The six sibling repos †     | Layout, config, tool naming, shared `utils/`, the toolchain ‡ | 2026-06-21    |
+| CLAUDE | Each repo's own `CLAUDE.md` | Per-repo invariants ※                                         | 2026-06-21    |
 
 † `mcp-git-audit`, `mcp-kb-fs`, `mcp-gmail`, `mcp-m365`, `mcp-claude-housekeeping`, `mcp-kb-notion-mirror`.
 
 ‡ Layout, config injection, tool naming, the shared `utils/` helpers, the package/tsconfig/vitest/biome toolchain.
+
+※ The per-repo statement of its own invariants — the standard tracks these and flags drift.
 
 ## Last review
 

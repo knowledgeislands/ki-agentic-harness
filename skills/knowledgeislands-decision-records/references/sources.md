@@ -6,10 +6,10 @@ Tracked sources for Mode REFRESH. Re-fetch before proposing changes to the forma
 
 ## Sources
 
-| Source | URL | Last reviewed |
-| --- | --- | --- |
-| Nygard ADR format (original) | [cognitect.com/blog/2011/11/15/documenting-architecture-decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) | 2026-06-25 |
-| ADR GitHub community resources | [adr.github.io](https://adr.github.io) | 2026-06-25 |
+| Source                         | URL                                              | Last reviewed |
+| ------------------------------ | ------------------------------------------------ | ------------- |
+| Nygard ADR format (original)   | [Documenting architecture decisions][nygard-adr] | 2026-06-25    |
+| ADR GitHub community resources | [adr.github.io][adr-github]                      | 2026-06-25    |
 
 ## What to look for on refresh
 
@@ -22,3 +22,6 @@ Tracked sources for Mode REFRESH. Re-fetch before proposing changes to the forma
 **Date:** 2026-06-25
 
 The DR format is derived from Nygard's ADR format with house additions: type-specific prefixes, a `decision_type` frontmatter field, and `## References`. The Nygard source is stable. No changes warranted.
+
+[nygard-adr]: https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions
+[adr-github]: https://adr.github.io

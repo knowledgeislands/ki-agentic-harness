@@ -18,9 +18,11 @@ The authoritative definition of frontmatter fields for all notes in a Knowledge 
 | `updated` | Recommended | Timestamp of the last substantive change, `YYYY-MM-DDTHH:MM:SSZ` |
 | `reviewed` | Recommended | Timestamp of the last human review; a note is **stale** when `reviewed` is absent or earlier than `updated` |
 | `created` | Optional | Timestamp set once on creation; never changed |
-| `status` | Type-specific | Not universal — set by the note's `type` where it has a lifecycle/state (e.g. activities `active`/`inactive`) |
+| `status` | Type-specific | Set by the note's `type` where it has a lifecycle/state, not universal† |
 | `tags` | Optional | Topical / temporal / source labels (`topic/*`, `date/*`, `source/*`) — retained, but never the **kind** classifier |
 | `author` | Recommended | `Written with Claude` / `Manual` / `Mixed` |
+
+† For example, `knowledgeislands-activities` uses `active` / `inactive`.
 
 **Freshness** is carried by the timestamps, not by `status`: a note is current while `reviewed` is at or after its last `updated`, and goes stale once `updated` moves ahead of `reviewed` (or `reviewed` is absent). `status` is reserved for a `type`'s own lifecycle where it has one — for example `knowledgeislands-activities` uses `active` / `inactive`.
 
@@ -101,8 +103,10 @@ Some `type` values require additional fields, defined by the skill that owns tha
 
 | `type` | Additional required field | Valid values | Defined by |
 | --- | --- | --- | --- |
-| `admin/governance/decision` | `decision_type` | strategy, product, architecture, data, security, operations, governance, research, knowledge | `knowledgeislands-decision-records` |
+| `admin/governance/decision` | `decision_type` | nine decision domains‡ | `knowledgeislands-decision-records` |
 | `calendar/daily` | `day_type` | work-day / weekend / bank-holiday / annual-leave (open enumeration) | `knowledgeislands-kb` |
 | `streams/proposal` | `status` | the Streams proposal lifecycle (values owned by `knowledgeislands-streams`) | `knowledgeislands-streams` |
 | `streams/proposal` | `priority` | `urgent` / `high` / `medium` / `low` | `knowledgeislands-streams` |
 | `streams/proposal` | `dependencies` | list of blocking stream names (`[]` when none) | `knowledgeislands-streams` |
+
+‡ strategy, product, architecture, data, security, operations, governance, research, knowledge.

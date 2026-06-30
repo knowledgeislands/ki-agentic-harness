@@ -9,12 +9,14 @@ Concrete patterns showing what a correctly bootstrapped Knowledge Islands repo l
 
 ## Collections
 
-| Source | URL | What it covers |
-| --- | --- | --- |
-| arcadia-principal | No public URL — KI repos are the primary exemplars | Live `.ki-config.toml`, `package.json` script, and post-link `.claude/skills/` |
-| arcadia-agentic-harness | No public URL — KI repos are the primary exemplars | The `--all` variant used by the authoring hub † |
+| Source                  | URL             | What it covers                                                                 |
+| ----------------------- | --------------- | ------------------------------------------------------------------------------ |
+| arcadia-principal       | No public URL ※ | Live `.ki-config.toml`, `package.json` script, and post-link `.claude/skills/` |
+| arcadia-agentic-harness | No public URL ※ | The `--all` variant used by the authoring hub †                                |
 
 † The harness links all skills (`--all`) rather than a declared subset; it is the exception, not the template. A normal KB or repo declares only the skills it uses.
+
+※ KI repos are the primary exemplars; they have no public URL.
 
 ## Selected patterns
 

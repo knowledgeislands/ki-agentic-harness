@@ -19,11 +19,13 @@ The canonical definition lives in this skill itself:
 
 Sampled at REFRESH time through each base's own `kb-fs` MCP and `CLAUDE.md`. These are **consumers** of the canonical skill, read to keep it honest against real use — not sources of the definition.
 
-| Source | Governs | Last reviewed |
-| --- | --- | --- |
-| `arcadia-principal` base[^ap] | Whether the canonical skill still matches how the principal island runs its Streams in practice | 2026-06-21 |
-| `kit-legal` base[^kl] | The same, from a second base running the process under a local name | 2026-06-21 |
-| Other bases running the process | The same, as further bases adopt the skill | 2026-06-21 |
+| Source                          | Governs                                                             | Last reviewed |
+| ------------------------------- | ------------------------------------------------------------------- | ------------- |
+| `arcadia-principal` base[^ap]   | Whether the canonical skill still matches practice ※                | 2026-06-21    |
+| `kit-legal` base[^kl]           | The same, from a second base running the process under a local name | 2026-06-21    |
+| Other bases running the process | The same, as further bases adopt the skill                          | 2026-06-21    |
+
+※ How the principal island runs its Streams in practice.
 
 [^ap]: The principal island. Sampled through `arcadia-principal-mcp-kb-fs`. Its Streams zone carries the canonical structure cleanly — the Focus set, leaf streams with the `Proposal` suffix, and a textbook **parent** stream (`Streams/Future/Island MCP/` = bare-topic folder + slim `Island MCP.md` index + `Island MCP Proposal.md` + child note). **Conformance is partial / in-progress** (re-sampled 2026-06-21): the proposal documents carry the canonical apparatus (the `Proposal` suffix, `type:` scheme, machine-readable proposal frontmatter, `Governance` footers — the mechanical checker passes clean), but the Streams index notes still carry the legacy `card/*` tag scheme and `status: … - April 2026` keys (e.g. `Active/Active.md` has `status: current - April 2026`). The earlier duplicate `Enactment Process.md` is gone; the operational definition now lives only as an `## Enactment Process` section inside the legacy `Pillars/Knowledge Islands/Model/Processes/How Change Happens.md`, which **describes** the process but does not yet explicitly defer to this skill — so the deferral the model expects is not yet wired in. A `Settled/` proposal also sits at `status: completed` rather than being deleted (ENACT-5). These are `knowledgeislands-streams` Mode CONFORM follow-ups against the base, not gaps in the canonical model.
 

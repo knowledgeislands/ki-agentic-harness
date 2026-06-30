@@ -21,12 +21,16 @@ The rubric ([`audit-rubric.md`](audit-rubric.md)) is the line-by-line checkable 
 
 An **agentic harness** is a single versioned git repository that co-locates the four parts an agent is equipped with:
 
-| Directory | What it holds | Install path |
-| --- | --- | --- |
-| `skills/` | [Agent Skills](https://agentskills.io/specification) — one directory per skill | Wired into a repo's `.claude/skills/` via `bun run ki:skills:link:project` (`knowledgeislands-bootstrap`) |
-| `agents/` | Claude Code subagent definitions — one `.md` per agent | Symlinked or copied by the Claude Code agent runner |
-| `mcp/` | Workspace MCP server packages (or a shelf pointing to external `mcp-*` repos) | Referenced by `.claude/settings.json` / `mcp_settings.json` |
-| `evals/` | Behavioural eval scenarios — advisory signal, not a gate | Run on demand, not in CI |
+| Directory | What it holds                                            | Install path                                                |
+| --------- | -------------------------------------------------------- | ----------------------------------------------------------- |
+| `skills/` | [Agent Skills][as-spec] — one directory per skill        | Wired into a repo's `.claude/skills/` †                     |
+| `agents/` | Claude Code subagent definitions — one `.md` per agent   | Symlinked or copied by the Claude Code agent runner         |
+| `mcp/`    | Workspace MCP server packages ‡                          | Referenced by `.claude/settings.json` / `mcp_settings.json` |
+| `evals/`  | Behavioural eval scenarios — advisory signal, not a gate | Run on demand, not in CI                                    |
+
+† Via `bun run ki:skills:link:project` (`knowledgeislands-bootstrap`).
+
+‡ Or a shelf pointing to external `mcp-*` repos.
 
 The value of co-location: the four parts are versioned together, reviewed together, and installed together — rather than scattered across the bases and projects that consume them. A change to a skill and the agent that invokes it ships as one PR, not two.
 
@@ -105,14 +109,16 @@ The harness `ROADMAP.md` holds the **open forward work** only. Two rules:
 
 Every harness `package.json` MUST declare these script families:
 
-| Script | What it does | Why required |
-| --- | --- | --- |
-| `ki:skills:link:project` | Wires this repo's `.claude/skills/` from its `.ki-config.toml` (the `knowledgeislands-bootstrap` linker; the harness uses `--all`) | The primary delivery mechanism |
-| `ki:skills:lint` | Runs the `knowledgeislands-skills` mechanical checker over `skills/` | The gate for skill quality |
-| `ki:lint:check` | Biome — TypeScript + JSON lint (no write) | Common engineering gate |
-| `ki:lint:types` | `tsc --noEmit` | Type safety gate |
-| `ki:lint:md` | Prettier + markdownlint (writes) | Markdown formatting gate |
-| `ki:lint:md:check` | Prettier + markdownlint (check-only; CI twin of `ki:lint:md`) | CI Markdown gate |
+| Script                   | What it does                                                         | Why required                   |
+| ------------------------ | -------------------------------------------------------------------- | ------------------------------ |
+| `ki:skills:link:project` | Wires this repo's `.claude/skills/` from its `.ki-config.toml` §     | The primary delivery mechanism |
+| `ki:skills:lint`         | Runs the `knowledgeislands-skills` mechanical checker over `skills/` | The gate for skill quality     |
+| `ki:lint:check`          | Biome — TypeScript + JSON lint (no write)                            | Common engineering gate        |
+| `ki:lint:types`          | `tsc --noEmit`                                                       | Type safety gate               |
+| `ki:lint:md`             | Prettier + markdownlint (writes)                                     | Markdown formatting gate       |
+| `ki:lint:md:check`       | Prettier + markdownlint (check-only; CI twin of `ki:lint:md`)        | CI Markdown gate               |
+
+§ The `knowledgeislands-bootstrap` linker; the harness uses `--all`.
 
 The `ki:lint:*` family is the common engineering toolchain (`knowledgeislands-engineering`'s standard). A harness that ships no TypeScript may omit `ki:lint:check` / `ki:lint:types` with a documented reason.
 
@@ -151,3 +157,5 @@ This standard governs the container. The parts inside it each have a governing s
 | GitHub settings, `.ki-config.toml` contract | `knowledgeislands-repo`             |
 
 An audit of a harness runs the harness delta **on top of** the applicable sibling skills — it composes, it does not replace them.
+
+[as-spec]: https://agentskills.io/specification

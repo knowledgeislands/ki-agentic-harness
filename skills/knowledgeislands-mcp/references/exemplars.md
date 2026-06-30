@@ -9,13 +9,23 @@ Curated patterns worth reading when authoring or auditing a Knowledge Islands MC
 
 ## Collections
 
-| Source | URL | What it covers |
-| --- | --- | --- |
-| MCP spec — Tools (2025-11-25) | <https://modelcontextprotocol.io/specification/2025-11-25/server/tools> | Tool shape, `inputSchema`, `annotations`, `isError`, `structuredContent` |
-| MCP spec — Security | <https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices> | Confused deputy, SSRF, scope minimisation, tool annotation semantics |
-| Tool Annotations (MCP blog) | <https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/> | `*Hint` semantics and the four stable annotation keys |
-| mcp-git-audit (in-house) | <https://github.com/knowledgeislands/mcp-git-audit> | Reference implementation: layout, config, access-level gate, audit logging, testing |
-| mcp-gmail (in-house) | <https://github.com/knowledgeislands/mcp-gmail> | Auth-server variant: dual-bin, OAuth client, `auth-server/` alongside `mcp-server/` |
+| Source                        | URL                                         | What it covers             |
+| ----------------------------- | ------------------------------------------- | -------------------------- |
+| MCP spec — Tools (2025-11-25) | [Server → Tools][spec-tools]                | Tool shape ¤               |
+| MCP spec — Security           | [Security Best Practices][spec-sec]         | Security hardening ¥       |
+| Tool Annotations (MCP blog)   | [Tool Annotations post][annotations]        | Annotation keys ※※         |
+| mcp-git-audit (in-house)      | [knowledgeislands/mcp-git-audit][git-audit] | Reference implementation ※ |
+| mcp-gmail (in-house)          | [knowledgeislands/mcp-gmail][gmail]         | Auth-server variant ❡      |
+
+※ Layout, config, access-level gate, audit logging, testing.
+
+❡ Dual-bin, OAuth client, `auth-server/` alongside `mcp-server/`.
+
+¤ Tool shape, `inputSchema`, `annotations`, `isError`, `structuredContent`.
+
+¥ Confused deputy, SSRF, scope minimisation, tool annotation semantics.
+
+※※ `*Hint` semantics and the four stable annotation keys.
 
 ## Selected patterns
 
@@ -140,3 +150,9 @@ export default defineConfig({
   }
 })
 ```
+
+[spec-tools]: https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+[spec-sec]: https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices
+[annotations]: https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/
+[git-audit]: https://github.com/knowledgeislands/mcp-git-audit
+[gmail]: https://github.com/knowledgeislands/mcp-gmail

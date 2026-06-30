@@ -18,8 +18,10 @@ The standard pins versions in `packageManager`, `engines`, `biome.json`'s `$sche
 | TS | [typescript releases][ts] | the `tsconfig` / `tsconfig.build` compiler options | ^6.0 | 2026-06-21 |
 | VITEST | [vitest.dev][vitest] | the test runner + 100% coverage config (`vitest run`, v8) | current | 2026-06-21 |
 | SYNCPACK | [syncpack][syncpack] | `ki:lint:package` (`syncpack format`) | ^15 | 2026-06-21 |
-| MDLINT | [markdownlint-cli2][mdlint] / [prettier][prettier] | `ki:lint:md` (the Markdown mechanical pass) | mdl ^0.22 / prettier ^3 | 2026-06-21 |
+| MDLINT | [markdownlint-cli2][mdlint] / [prettier][prettier] | `ki:lint:md` ❡ | mdl ^0.22 / prettier ^3 | 2026-06-21 |
 | DEPCHECK | [depcheck][depcheck] | `ki:deps:missing` / `ki:deps:unused` | current | 2026-06-21 |
+
+❡ The Markdown mechanical pass.
 
 ## In-house (the workspace convention)
 
@@ -28,9 +30,11 @@ The standard is the **majority shape** across the TS/Bun repos under `knowledgei
 | Tag | Source | Governs | Last reviewed |
 | --- | --- | --- | --- |
 | REPOS | the 10 TS/Bun sibling repos † | the script families, tsconfig/biome/vitest shape, the build/chmod rule | 2026-06-21 |
-| FRAMEWORK | `arcadia-agentic-harness/docs/skills.md` "governance-skill shape" + `docs/design.md` "Principles across the set" | the enforcement framework (modes, checker contract, rubric tagging, sources cadence) | 2026-06-21 |
+| FRAMEWORK | harness docs ※ | the enforcement framework (modes, checker contract, rubric tagging, sources cadence) | 2026-06-21 |
 
 † the 7 `mcp-*` servers + `arcadia-agentic-harness`, `arcadia-principal`, `arcadia-website`.
+
+※ `arcadia-agentic-harness/docs/skills.md` "governance-skill shape" + `docs/design.md` "Principles across the set".
 
 ## Last review
 

@@ -80,9 +80,11 @@ The zone uses the machine-readable `type:` key (the canonical scheme; see the sk
 | --- | --- | --- |
 | `stream-zone` | `Streams/Streams.md` | Zone root index; carries the cross-Focus proposals index |
 | `stream-focus` | `Streams/<Focus>/<Focus>.md` | Focus dashboard; carries prose + the status/priority table |
-| `stream-index` | `Streams/<Focus>/<Name>/<Name>.md` (and `Pass N/` sub-folders) | Slim index for a **parent** stream folder; not used for leaf streams |
+| `stream-index` | `Streams/<Focus>/<Name>/<Name>.md` ※ | Slim index for a **parent** stream folder; not used for leaf streams |
 | `stream-proposal` | The `<Name> Proposal.md` note (leaf or parent) | The proposal and status tracker; in a leaf, also the folder index |
 | `stream-note` | `Streams/<Focus>/<Name>/<Sub>/<Sub>.md` | A sub-proposal or working note within a stream |
+
+※ And `Pass N/` sub-folders.
 
 **Frontmatter applies by type.** Only `stream-proposal` and `stream-note` notes carry the lifecycle fields `status`, `priority`, and `dependencies` (plus the base's descriptive keys such as `title`/`description`, and any local scoping keys). `stream-zone` and `stream-focus` index notes carry `type` and the common keys only — **not** `status`/`priority`/`dependencies`. The checker enforces the lifecycle fields on `<Name> Proposal.md` notes, so it does not wrongly demand them of index notes.
 

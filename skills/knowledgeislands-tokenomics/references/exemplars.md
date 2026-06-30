@@ -11,11 +11,13 @@ Concrete patterns showing what good context hygiene looks like in practice: how 
 
 | Source | URL | What it covers |
 | --- | --- | --- |
-| Effective context engineering for AI agents | <https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents> | The finite-resource framing and the "smallest set of high-signal tokens" principle |
-| Claude Code context window | <https://code.claude.com/docs/en/context-window> | Startup composition, what survives compaction, tool search |
-| Claude Code settings | <https://code.claude.com/docs/en/settings> | `autoCompactEnabled`, `DISABLE_AUTO_COMPACT`, compaction config |
-| Headroom (chopratejas/headroom) | <https://github.com/chopratejas/headroom> | MCP install, detection signals, `headroom wrap` agent mode |
-| Headroom app | <https://extraheadroom.com/> | Menu-bar proxy variant, detection |
+| Effective context engineering for AI agents | [anthropic.com][ctx-eng] | The finite-resource framing and high-signal-token principle† |
+| Claude Code context window | [code.claude.com][cc-ctxwin] | Startup composition, what survives compaction, tool search |
+| Claude Code settings | [code.claude.com][cc-settings] | `autoCompactEnabled`, `DISABLE_AUTO_COMPACT`, compaction config |
+| Headroom (chopratejas/headroom) | [github.com][hr] | MCP install, detection signals, `headroom wrap` agent mode |
+| Headroom app | [extraheadroom.com][hra] | Menu-bar proxy variant, detection |
+
+† The finite-resource framing and the "smallest set of high-signal tokens" principle.
 
 ## Selected patterns
 
@@ -118,3 +120,9 @@ Defer or prune aggressively:
 ```
 
 The key signal that hygiene has slipped: a session that starts slow because the standing surface has accreted — `CLAUDE.md` imports that were "just in case", MCP servers wired globally but rarely used in this repo, skill descriptions for skills the project never invokes. The tokenomics audit surfaces these by layer so each one is fixed where it actually lives.
+
+[ctx-eng]: https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents
+[cc-ctxwin]: https://code.claude.com/docs/en/context-window
+[cc-settings]: https://code.claude.com/docs/en/settings
+[hr]: https://github.com/chopratejas/headroom
+[hra]: https://extraheadroom.com/

@@ -24,16 +24,20 @@ Abbreviations match the `(SOURCE)` tags in [the standard](agent-skills-standard.
 | Tag | Source | Governs | Last reviewed |
 | --- | --- | --- | --- |
 | COMMUNITY | [Skill Authoring Patterns][patterns] | Distilled patterns: terminology, feedback loops, gotchas sections | 2026-06-21 |
-| COMMUNITY | [obra/superpowers writing-skills][superpowers] | Community restatement of the best-practices doc; convergent conventions | 2026-06-18 |
+| COMMUNITY | [obra/superpowers writing-skills][superpowers] | Community restatement ※ | 2026-06-18 |
+
+※ Community restatement of the best-practices doc; convergent conventions.
 
 ## In-house
 
-| Tag | Source | Governs | Last reviewed |
-| --- | --- | --- | --- |
-| arcadia-agentic-harness README | The repo's own `README.md` | † | 2026-06-21 |
-| `knowledgeislands-kb` | The reference standard skill | Worked example of a trigger-rich description and the standard-skill shape | 2026-06-21 |
+| Tag                            | Source                       | Governs          | Last reviewed |
+| ------------------------------ | ---------------------------- | ---------------- | ------------- |
+| arcadia-agentic-harness README | The repo's own `README.md`   | †                | 2026-06-21    |
+| `knowledgeislands-kb`          | The reference standard skill | Worked example ※ | 2026-06-21    |
 
 † Linking convention (no wikilinks), standard vs base-coupled-extension, the house toolchain, Knowledge Islands structure.
+
+※ Worked example of a trigger-rich description and the standard-skill shape.
 
 ## Last review
 

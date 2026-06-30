@@ -9,12 +9,12 @@ Curated patterns worth reading when authoring or auditing a Knowledge Islands El
 
 ## Collections
 
-| Source | URL | What it covers |
-| --- | --- | --- |
-| Eleventy docs | <https://www.11ty.dev/docs/> | Config API: `addTransform`, `addDataExtension`, `eleventy.before`, `dir` |
-| Tailwind CSS v4 docs | <https://tailwindcss.com/docs> | Config-less `@import "tailwindcss"`, `@theme inline`, the CLI |
-| Lucide docs | <https://lucide.dev/guide/> | UMD passthrough delivery, client-side `createIcons()` initialisation |
-| arcadia-website (in-house) | <https://github.com/knowledgeislands/arcadia-website> | Reference implementation: monorepo layout, config, Tailwind, wrangler |
+| Source                     | URL                              | What it covers                                                           |
+| -------------------------- | -------------------------------- | ------------------------------------------------------------------------ |
+| Eleventy docs              | [11ty.dev docs][eleventy]        | Config API: `addTransform`, `addDataExtension`, `eleventy.before`, `dir` |
+| Tailwind CSS v4 docs       | [tailwindcss.com docs][tailwind] | Config-less `@import "tailwindcss"`, `@theme inline`, the CLI            |
+| Lucide docs                | [lucide.dev guide][lucide]       | UMD passthrough delivery, client-side `createIcons()` initialisation     |
+| arcadia-website (in-house) | [arcadia-website repo][arcadia]  | Reference implementation: monorepo layout, config, Tailwind, wrangler    |
 
 ## Selected patterns
 
@@ -179,3 +179,8 @@ The `base.njk` layout is the `<html>` shell for every page. It includes `seo-met
 ```
 
 `seo-meta.njk` emits the canonical link plus OG and Twitter card tags from `site` global data and page front matter — included from `base.njk` so every page carries them automatically. Pages that should not be indexed set `noindex: true` in front matter; the partial emits `<meta name="robots" content="noindex, nofollow">` instead.
+
+[eleventy]: https://www.11ty.dev/docs/
+[tailwind]: https://tailwindcss.com/docs
+[lucide]: https://lucide.dev/guide/
+[arcadia]: https://github.com/knowledgeislands/arcadia-website

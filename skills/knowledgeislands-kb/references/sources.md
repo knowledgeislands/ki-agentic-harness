@@ -24,7 +24,9 @@ These have no URL; they are sampled at REFRESH time through each base's own `kb-
 | `arcadia-principal` base[^ap] | Whether the zone model, routing test, and bindings still match a real layout and practice | 2026-06-21 |
 | `kit-legal` base[^kl] | The same, from a base further along the structure, now on the canonical zone names (alias dropped) | 2026-06-21 |
 | Other bases actively using this skill | The same, as further bases adopt the skill | 2026-06-21 |
-| Per-base `.ki-config` declarations | Which base-specific declarations recur across bases and should be promoted into this standard skill | 2026-06-21 |
+| Per-base `.ki-config` declarations | Which base-specific declarations recur across bases※ | 2026-06-21 |
+
+※ Which base-specific declarations recur across bases and should be promoted into this standard skill.
 
 [^ap]: The first real Knowledge Islands base this skill tracks. Sampled through its own `kb-fs` MCP server (`arcadia-principal-mcp-kb-fs`) and its `CLAUDE.md` / memory index. It now carries the full canonical structure — `+`, `-`, `Admin/` (with `Admin/Admin.md` and `Admin/MEMORY.md`), `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, each canonical zone with its same-name index — on the canonical zone names, its `[knowledgeislands-kb]` table empty (no aliases). Its governance Pillar, `Pillars/Knowledge Capital/`, now sits within the canonical `Pillars/` zone, so the earlier mid-migration caveat no longer applies (confirmed 2026-06-21).
 

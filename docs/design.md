@@ -8,26 +8,26 @@ Each skill's `description` carries its own boundaries so the agent selects the r
 
 | Pair that could be confused | The line between them |
 | --- | --- |
-| `knowledgeislands-mcp` vs `knowledgeislands-skills` | MCP **server code** vs a **`SKILL.md`** (frontmatter + body prose). † |
-| `knowledgeislands-agents` vs `knowledgeislands-skills` | A **subagent definition** vs a **`SKILL.md`** — twins over different artifacts. |
-| `knowledgeislands-kb` vs `knowledgeislands-streams` | The five-zone model + note CRUD vs the **`Streams` zone internals**, delegated. ‡ |
-| `knowledgeislands-kb` vs `knowledgeislands-decision-records` | The zone model + KI-wide frontmatter standard vs the **Decision Record** artifact. ††† |
-| `knowledgeislands-kb` vs `knowledgeislands-activities` | The zone structure vs **Activity notes** under `Admin/Operations/`. ††† |
-| `knowledgeislands-kb` vs `knowledgeislands-live-artifacts` | The zone structure vs **Live Artifact pairs** (`.md` + rendered `.html`). ††† |
-| `knowledgeislands-decision-records` vs `knowledgeislands-streams` | The settled **decision record** vs the **Enactment Process** that ratifies a change. ‡‡‡ |
+| `knowledgeislands-mcp` vs `knowledgeislands-skills` | MCP **server code** vs a **`SKILL.md`** (frontmatter + prose). † |
+| `knowledgeislands-agents` vs `knowledgeislands-skills` | A subagent definition vs a `SKILL.md` — twins over different artifacts. |
+| `knowledgeislands-kb` vs `knowledgeislands-streams` | Five-zone model + CRUD vs the **`Streams` internals**, delegated. ‡ |
+| `knowledgeislands-kb` vs `knowledgeislands-decision-records` | The zone + frontmatter standard vs the **Decision Record**. ††† |
+| `knowledgeislands-kb` vs `knowledgeislands-activities` | The zone structure vs **Activity notes** (`Admin/Operations/`). ††† |
+| `knowledgeislands-kb` vs `knowledgeislands-live-artifacts` | The zone structure vs **Live Artifact pairs** (`.md`+`.html`). ††† |
+| `knowledgeislands-decision-records` vs `…-streams` | The settled **decision record** vs the **Enactment** gate. ‡‡‡ |
 | `knowledgeislands-repo` vs `knowledgeislands-mcp` | A repo's **configuration** vs an MCP server's **source**. § |
 | `knowledgeislands-authoring` vs the rest | **How we write** vs _what_ we write. ¶ |
 | `knowledgeislands-engineering` vs the rest | **How we build** vs everything that isn't the toolchain. ‖ |
-| `knowledgeislands-11ty-websites` vs `…-cloudflare-hosting` | **Building** the portable `dist/` vs **serving** it — the `dist/` is the seam. †† |
-| `…-cloudflare-hosting` vs the generic `cloudflare` / `wrangler` skills | The **one site Worker** serving `dist/` vs all other Workers + platform usage. ‡‡ |
-| `knowledgeislands-tokenomics` vs `knowledgeislands-mcp` | The **token cost** of the MCP tool surface vs an MCP server's **code**. §§ |
-| `knowledgeislands-tokenomics` vs `knowledgeislands-skills` | The installed set's **description cost** vs one `SKILL.md`'s **quality**. §§ |
-| `knowledgeislands-tokenomics` vs the `claude-api` skill | The **shape** of the context budget vs the volatile **numbers** it cites. §§ |
-| `knowledgeislands-harness` vs `knowledgeislands-skills` | The **container** (four-part layout) vs a `SKILL.md`'s **quality** inside it. ¶¶ |
-| `knowledgeislands-harness` vs `knowledgeislands-repo` | A harness's **four-part layout** vs any ki-repo's **config & GitHub settings**. ¶¶ |
-| `knowledgeislands-harness` vs `knowledgeislands-agents` | The **container** holding `agents/` vs a **subagent definition**'s quality. ¶¶ |
-| `knowledgeislands-bootstrap` vs `knowledgeislands-repo` | The install **mechanism** (linking `.claude/skills/`) vs the config **content**. ‖‖ |
-| `knowledgeislands-bootstrap` vs `knowledgeislands-harness` | The install **keystone** (one global skill) vs the **container** convention. ‖‖ |
+| `knowledgeislands-11ty-websites` vs `…-cloudflare-hosting` | **Building** the portable `dist/` vs **serving** it. †† |
+| `…-cloudflare-hosting` vs generic `cloudflare`/`wrangler` | The **one site Worker** vs all other Workers + platform usage. ‡‡ |
+| `knowledgeislands-tokenomics` vs `knowledgeislands-mcp` | The MCP tool surface's **token cost** vs an MCP server's **code**. §§ |
+| `knowledgeislands-tokenomics` vs `knowledgeislands-skills` | The installed set's **description cost** vs one `SKILL.md`'s quality. §§ |
+| `knowledgeislands-tokenomics` vs the `claude-api` skill | The context budget's **shape** vs the volatile **numbers** it cites. §§ |
+| `knowledgeislands-harness` vs `knowledgeislands-skills` | The **container** (four-part layout) vs a `SKILL.md`'s quality. ¶¶ |
+| `knowledgeislands-harness` vs `knowledgeislands-repo` | A harness's **four-part layout** vs any ki-repo's **config + settings**. ¶¶ |
+| `knowledgeislands-harness` vs `knowledgeislands-agents` | The **container** holding `agents/` vs a **subagent definition**. ¶¶ |
+| `knowledgeislands-bootstrap` vs `knowledgeislands-repo` | The install **mechanism** (linking skills) vs config **content**. ‖‖ |
+| `knowledgeislands-bootstrap` vs `knowledgeislands-harness` | The install **keystone** (one global skill) vs the **container**. ‖‖ |
 
 † Auditing the `SKILL.md` of an MCP-related skill is `knowledgeislands-skills`' job; auditing the server's `src/` layout, config injection, and tool surface is `knowledgeislands-mcp`'s. This is the one pair that could be confused — both "audit against a standard" — so each names the other as the off-ramp.
 

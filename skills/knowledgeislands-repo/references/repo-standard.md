@@ -18,14 +18,16 @@ The canonical configuration a Knowledge Islands repo should carry, so repos pres
 
 Every repo carries these at the root. Presence is checked **on the default branch via the GitHub API** (the git-tree endpoint), not from a working checkout — so what's actually committed is what's audited, and `--org` mode covers uncloned repos.
 
-| File | Why |
-| --- | --- |
-| `README.md` | The repo's entry point. |
-| `LICENSE` | MIT text _(public)_; proprietary copyright text _(private)_. |
-| `.gitignore` | Keeps build/dep noise out of history. |
-| `.editorconfig` | Shared editor defaults across the workspace toolchain. |
-| `CLAUDE.md` | Agent instructions — the always-loaded anchor for any repo-specific gate or convention (skills rubric SHAPE-7). |
-| `.ki-config.toml` | Declares this repo's expected config under `[knowledgeislands-repo]` — `visibility` and any per-repo check overrides. |
+| File              | Why                                                                                                             |
+| ----------------- | --------------------------------------------------------------------------------------------------------------- |
+| `README.md`       | The repo's entry point.                                                                                         |
+| `LICENSE`         | MIT text _(public)_; proprietary copyright text _(private)_.                                                    |
+| `.gitignore`      | Keeps build/dep noise out of history.                                                                           |
+| `.editorconfig`   | Shared editor defaults across the workspace toolchain.                                                          |
+| `CLAUDE.md`       | Agent instructions — the always-loaded anchor for any repo-specific gate or convention (skills rubric SHAPE-7). |
+| `.ki-config.toml` | Declares this repo's expected config under `[knowledgeislands-repo]`. †                                         |
+
+† The values it carries: `visibility` and any per-repo check overrides.
 
 `ROADMAP.md` is **expected but not required** — a warn, not a fail: most repos carry one, but a base that keeps its forward view elsewhere (a KB base's `Streams/Future`) may omit it.
 
@@ -112,15 +114,17 @@ branch-protection = true   # default off — protect `main` on this repo
 
 The rubric carries the **org default** for every check. Most are bedrock — file presence, default branch, description, merge policy, auto-delete-branch, visibility, Dependabot — and aren't negotiable. License is bedrock but **visibility-scoped**: public repos must carry MIT (`license`) and a LICENSE file (`license-file`); private repos must carry a proprietary copyright LICENSE file (`license-file`) and `"UNLICENSED"` in `package.json` (`package-license`) — MIT is not permitted. The rest are **overridable**: a repo flips one for itself with a single boolean in its `[knowledgeislands-repo.checks]` table, where `true` = enforce this check and `false` = don't. A check you omit takes the org default, so **a fully-conforming repo writes no overrides at all**. The auditor reports every active override as a `note` (never a failure), so a deliberate departure stays visible without reading as drift.
 
-| Check | Org default | When enforced, the auditor requires… |
-| --- | --- | --- |
-| `branch-protection` | **off** | `main`: a PR (0 approvals), the `build` status check, linear history; no force-push/deletion; admins not enforced |
-| `wiki` | on | Wiki disabled. |
-| `projects` | on | Projects disabled. |
-| `issues` | on | Issues enabled. |
-| `topics` | on | _(public)_ carries the standard topic set. |
-| `secret-scanning` | on | _(public)_ secret scanning enabled. |
-| `push-protection` | on | _(public)_ secret-scanning push protection enabled. |
+| Check               | Org default | When enforced, the auditor requires…                |
+| ------------------- | ----------- | --------------------------------------------------- |
+| `branch-protection` | **off**     | `main`: enforces the protection set ‡               |
+| `wiki`              | on          | Wiki disabled.                                      |
+| `projects`          | on          | Projects disabled.                                  |
+| `issues`            | on          | Issues enabled.                                     |
+| `topics`            | on          | _(public)_ carries the standard topic set.          |
+| `secret-scanning`   | on          | _(public)_ secret scanning enabled.                 |
+| `push-protection`   | on          | _(public)_ secret-scanning push protection enabled. |
+
+‡ When enforced, `branch-protection` requires: a PR (0 approvals), the `build` status check, linear history; no force-push/deletion; admins not enforced.
 
 - "Org default **on**" means the check fails unless satisfied — the standard's normal behaviour — and a repo sets the key `false` to step out of it (e.g. `wiki = false` to keep a Wiki). `branch-protection` is the one check that's **off** by default; a repo sets it `true` to protect `main`.
 - The required status check for `branch-protection` is **`build`** — the single job in each repo's `.github/workflows/ci.yml` (workflow "CI"). A repo that turns it on but lacks that job can't satisfy the check; add the CI job first.

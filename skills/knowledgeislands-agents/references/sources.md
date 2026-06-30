@@ -8,25 +8,33 @@ Abbreviations match the `(SOURCE)` tags in [the standard](agent-definitions-stan
 
 ## Authoritative
 
-| Tag | Source | Governs | Last reviewed |
-| --- | --- | --- | --- |
-| CC | [Claude Code — subagents][cc] | Subagent file format, the frontmatter spec set,[^cc] invocation control | 2026-06-26 |
-| BP | [Skill authoring best practices][bp] | Description writing, conciseness, least-privilege, evaluation-first (applied to agents) | 2026-06-21 |
+| Tag | Source                               | Governs                                                                 | Last reviewed |
+| --- | ------------------------------------ | ----------------------------------------------------------------------- | ------------- |
+| CC  | [Claude Code — subagents][cc]        | Subagent file format, the frontmatter spec set,[^cc] invocation control | 2026-06-26    |
+| BP  | [Skill authoring best practices][bp] | Description, conciseness, least-privilege, evaluation-first †           | 2026-06-21    |
 
 [^cc]: Full set: `name`, `description`, `tools`, `disallowedTools`, `model`, `permissionMode`, `maxTurns`, `skills`, `mcpServers`, `hooks`, `memory`, `background`, `effort`, `isolation`, `color`, `initialPrompt`.
 
+† Description writing, conciseness, least-privilege, and evaluation-first — all applied to agents.
+
 ## Community / practitioner
 
-| Tag | Source | Governs | Last reviewed |
-| --- | --- | --- | --- |
-| COM1 | [awesome-claude-code-subagents (VoltAgent)][c1] | Example agent definitions (100+); patterns for tool scoping, model routing, description quality | 2026-06-26 |
-| COM2 | [Sub-agent best practices (PubNub)][c2] | Production patterns: SubagentStop hooks, skills+hooks+subagents trinity, concurrent agent limits | 2026-06-26 |
+| Tag  | Source                                          | Governs                            | Last reviewed |
+| ---- | ----------------------------------------------- | ---------------------------------- | ------------- |
+| COM1 | [awesome-claude-code-subagents (VoltAgent)][c1] | Example agent definitions (100+) ‡ | 2026-06-26    |
+| COM2 | [Sub-agent best practices (PubNub)][c2]         | Production patterns §              | 2026-06-26    |
+
+‡ Patterns for tool scoping, model routing, and description quality.
+
+§ SubagentStop hooks, the skills+hooks+subagents trinity, and concurrent agent limits.
 
 ## In-house
 
-| Tag | Source | Governs | Last reviewed |
-| --- | --- | --- | --- |
-| HOUSE | The harness `agents/README.md` + the role-prompt shape | Layout, the role/lane prompt pattern, grounding, lane disambiguation, KB-note wikilinks | 2026-06-26 |
+| Tag   | Source                                                 | Governs                                   | Last reviewed |
+| ----- | ------------------------------------------------------ | ----------------------------------------- | ------------- |
+| HOUSE | The harness `agents/README.md` + the role-prompt shape | Layout and the role/lane prompt pattern ¶ | 2026-06-26    |
+
+¶ Grounding, lane disambiguation, and KB-note wikilinks.
 
 ## Last review
 

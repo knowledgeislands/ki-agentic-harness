@@ -10,9 +10,13 @@ Two layers feed the standard: **Cloudflare's platform** (what Workers + Static A
 
 | Tag | Source | Governs | Last reviewed |
 | --- | --- | --- | --- |
-| ASSETS | [Workers · Static Assets][assets] | The `assets` block, `directory`/`binding`/`html_handling`/`not_found_handling` | 2026-06-21 |
+| ASSETS | [Workers · Static Assets][assets] | The `assets` block and its keys † | 2026-06-21 |
 | WRANGLER | [wrangler configuration][wrangler] | `name`, `compatibility_date`, `routes`/`custom_domain`, `observability` | 2026-06-21 |
-| PAGES | [Pages → Workers migration / status][pages] | Whether Pages remains the recommended target for static sites (it does not) | 2026-06-21 |
+| PAGES | [Pages → Workers migration / status][pages] | Whether Pages remains the recommended target for static sites ‡ | 2026-06-21 |
+
+† `directory`, `binding`, `html_handling`, `not_found_handling`.
+
+‡ It does not.
 
 ## In-house (the hosting convention)
 
