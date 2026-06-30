@@ -40,7 +40,8 @@ when the `.html` is not older than the `.md` by more than the configured thresho
 
 | Key       | Value                                              |
 | --------- | -------------------------------------------------- |
-| `status`  | `active` \| `archived`                             |
+| `type`    | `admin/operations/live-artifact`                   |
+| `status`  | `active` \| `inactive`                             |
 | `renders` | `html` (or a comma-separated list of render types) |
 | `author`  | Who owns and maintains this artifact.              |
 

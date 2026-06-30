@@ -4,6 +4,7 @@
 
 ```yaml
 ---
+type: admin/operations/activity
 status: active
 realization: slash-command
 skill: knowledgeislands-kb
@@ -23,6 +24,7 @@ Adopted because the KB grows rapidly and manual structure reviews are error-pron
 
 ```yaml
 ---
+type: admin/operations/activity
 status: active
 realization: scheduled-task
 schedule_name: Morning Briefing
@@ -43,6 +45,7 @@ Verify registration in Claude Cowork — see [[Admin/Governance/Charter|Charter]
 
 ```yaml
 ---
+type: admin/operations/activity
 status: active
 realization: conversational
 author: Written with Claude

@@ -11,11 +11,12 @@
 
 ## Frontmatter
 
-| ID      | Check                                                     | Level    | Type |
-| ------- | --------------------------------------------------------- | -------- | ---- |
-| ACT-F-1 | `status` present and one of `active`, `paused`, `retired` | WARN     | [M]  |
-| ACT-F-2 | `realization` present                                     | WARN     | [M]  |
-| ACT-F-3 | Unrecognised `realization` value flagged as advisory      | ADVISORY | [M]  |
+| ID      | Check                                                 | Level    | Type |
+| ------- | ----------------------------------------------------- | -------- | ---- |
+| ACT-F-0 | `type` present and equals `admin/operations/activity` | WARN     | [M]  |
+| ACT-F-1 | `status` present and one of `active`, `inactive`      | WARN     | [M]  |
+| ACT-F-2 | `realization` present                                 | WARN     | [M]  |
+| ACT-F-3 | Unrecognised `realization` value flagged as advisory  | ADVISORY | [M]  |
 
 ## Realization-specific
 
@@ -32,6 +33,6 @@
 | ------- | ------------------------------------------------------------------------------------------- | ---- |
 | ACT-J-1 | Activity note body describes the activity clearly — what it does, when, and why adopted     | [J]  |
 | ACT-J-2 | `Activities.md` index is current — all active activities listed, no stale entries           | [J]  |
-| ACT-J-3 | Retired activities are documented with a retirement rationale, not silently deleted         | [J]  |
+| ACT-J-3 | Inactive activities are documented with a deactivation rationale, not silently deleted      | [J]  |
 | ACT-J-4 | `slash-command` activities link to the skill's documentation or trigger description         | [J]  |
 | ACT-J-5 | `scheduled-task` activities note the schedule cadence and expected outcome in the note body | [J]  |

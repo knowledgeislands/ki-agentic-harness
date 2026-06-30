@@ -101,13 +101,15 @@ function auditLiveArtifacts(base: string, thresholdHours: number) {
       warn('sync', `${rel}: .html is ${Math.round(diffHours)}h behind .md (threshold: ${thresholdHours}h) — regenerate the HTML`)
     }
 
-    // LA-F-1/2: frontmatter on the .md
+    // LA-F-0/1/2: frontmatter on the .md
     const text = readFileSync(mdPath, 'utf8')
     const fm = parseFrontmatter(text)
     if (fm) {
-      if (!fm.status) warn('frontmatter', `${rel}: missing required field 'status' (active | archived)`)
-      else if (!['active', 'archived'].includes(fm.status))
-        warn('frontmatter', `${rel}: status '${fm.status}' is not one of active / archived`)
+      if (fm.type !== 'admin/operations/live-artifact')
+        warn('frontmatter', `${rel}: type must be 'admin/operations/live-artifact' (found '${fm.type ?? '—'}')`)
+      if (!fm.status) warn('frontmatter', `${rel}: missing required field 'status' (active | inactive)`)
+      else if (!['active', 'inactive'].includes(fm.status))
+        warn('frontmatter', `${rel}: status '${fm.status}' is not one of active / inactive`)
       if (!fm.renders) warn('frontmatter', `${rel}: missing required field 'renders'`)
     }
   }

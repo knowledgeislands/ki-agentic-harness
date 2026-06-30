@@ -34,7 +34,8 @@ Every activity note that carries a frontmatter block must include:
 
 | Key           | Value                                  |
 | ------------- | -------------------------------------- |
-| `status`      | `active` \| `paused` \| `retired`      |
+| `type`        | `admin/operations/activity`            |
+| `status`      | `active` \| `inactive`                 |
 | `realization` | See realization types below.           |
 | `author`      | Who authored or adopted this activity. |
 
