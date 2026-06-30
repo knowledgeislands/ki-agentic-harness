@@ -27,9 +27,7 @@ documented once in the arcadia-agentic-harness `README.md`, not repeated here.
 
 A convention is one of two kinds, and the distinction decides where it lives — never restate a mechanically-enforced rule here:
 
-- **Mechanical** — deterministically enforced by the house toolchain, so you never hand-apply it. **Prettier + markdownlint-cli2** own
-  Markdown (line width, prose wrap, bullet/quote characters, heading hierarchy, single H1, spacing); run `bun run ki:lint:md`. **Biome**
-  owns TS/JSON. Nothing in the toolchain formats **TOML**, so its conventions are entirely the judgment layer below.
+- **Mechanical** — deterministically enforced by the house toolchain, so you never hand-apply it. **Prettier + markdownlint-cli2** own Markdown (bullet/quote characters, heading hierarchy, single H1, spacing); run `bun run ki:lint:md`. **Biome** owns TS/JSON. Nothing in the toolchain formats **TOML**, so its conventions are entirely the judgment layer below. **Note:** prose wrapping is _not_ mechanical — Prettier runs with `proseWrap: "preserve"` — so the wrap conventions are judgment (see `MD-wrap` in the rubric).
 - **Judgment** — needs a person or model deciding: when a wide table should spill into footnotes, whether link text is descriptive, how a
   `.ki-config.toml` reads. The toolchain cannot assess these. **This is what this skill carries.**
 
@@ -56,8 +54,7 @@ the **Convention sets** below; the checkable criteria are in [the rubric](refere
 
 1. Apply the judgment transforms in place — wide tables → footnotes (the marker series), descriptive link text, tidy TOML — per the
    Convention sets.
-2. Run `bun run ki:lint:md` to settle the mechanical layer (table alignment, prose wrap, and transient `MD052`/`MD060` until references and
-   alignment land).
+2. Run `bun run ki:lint:md` to settle the mechanical layer (table alignment and transient `MD052`/`MD060` until references and alignment land).
 3. Re-run until `ki:lint:md` is clean and the judgment criteria pass.
 
 ### Mode REFRESH — re-anchor the conventions to their sources

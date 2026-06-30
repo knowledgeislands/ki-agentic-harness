@@ -6,14 +6,10 @@ hand-judge what a tool checks better) or **[J] judgment** (a reader assesses it)
 
 ## Markdown
 
-- **MD-mech [M]** `bun run ki:lint:md` passes: line width / prose wrap, bullet & quote characters, heading hierarchy, single H1, spacing,
-  table alignment (`MD060`), resolved link fragments (`MD051`) and references (`MD052`), no bare URLs (`MD034`), and descriptive link text
-  (`MD059` — rejects "click here" / "here" / "link"). Prettier + markdownlint own these. (markdown-authoring.md)
-- **MD-table [J]** A table that would exceed `printWidth` (140, from `.prettierrc.json`) is reshaped: a descriptive matrix → subheadings or
-  a bulleted definition list; genuinely tabular data with one long column → keep the table and move that column to footnotes below it (a
-  one-char marker in the cell). (markdown-authoring.md)
-- **MD-footnote [J]** Footnotes use the marker series `† ‡ § ¶ ‖` (then doubled), reset per table; a distinct second series `※ ❡ ¤ ¥` where
-  one table needs two. Each footnote is separated by a blank line (Prettier reflows adjacent ones into a paragraph). (markdown-authoring.md)
+- **MD-mech [M]** `bun run ki:lint:md` passes: bullet & quote characters, heading hierarchy, single H1, spacing, table alignment (`MD060`), resolved link fragments (`MD051`) and references (`MD052`), no bare URLs (`MD034`), and descriptive link text (`MD059` — rejects "click here" / "here" / "link"). Prettier + markdownlint own these. (markdown-authoring.md)
+- **MD-wrap [J]** Prose is not hard-wrapped at a column width. One paragraph per line; blank line between paragraphs; headings, list items, and table rows each on their own line. No line break inserted mid-sentence. (`proseWrap: "preserve"` in `.prettierrc.json` — the linter will not fix this.) (markdown-authoring.md)
+- **MD-table [J]** A table with rows that are too wide to skim comfortably (≈ 100 chars) is reshaped: a descriptive matrix → subheadings or a bulleted definition list; genuinely tabular data with one long column → keep the table and move that column to footnotes below it (a one-char marker in the cell). (markdown-authoring.md)
+- **MD-footnote [J]** Footnotes use the marker series `† ‡ § ¶ ‖` (then doubled), reset per table; a distinct second series `※ ❡ ¤ ¥` where one table needs two. Each footnote is a separate paragraph (blank line between each). (markdown-authoring.md)
 - **MD-link [J]** Link text is genuinely descriptive — the words you'd skim for, beyond the non-descriptive blocklist `MD059` already
   rejects (MD-mech). Links are relative markdown, **never wikilinks** — but this is _scoped_: wikilinks are correct in KB note content and
   in agent system prompts (`knowledgeislands-kb`, `knowledgeislands-agents` LINK-2), forbidden only in house files (SKILL.md, repo docs), so

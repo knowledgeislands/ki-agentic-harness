@@ -16,12 +16,19 @@ person.
 
 Don't hand-apply or document any of these — the toolchain owns them, and restating them here only invites drift when a config changes:
 
-- **Line width and prose wrapping** — Prettier reflows prose to its `printWidth` with `proseWrap: always`. Write naturally; let it wrap.
 - **Bullet, emphasis, and quote characters; trailing commas; blank-line spacing** — Prettier normalises these.
 - **Heading hierarchy, single H1, duplicate-heading and list rules** — markdownlint-cli2 flags these.
 
-The one place width _is_ your job is **tables** — Prettier aligns table columns but will not reflow a row's content, so an over-long row is
-on you. That's the first convention below.
+## Line wrapping
+
+Prose wrapping is **your job, not the linter's** — Prettier runs with `proseWrap: "preserve"` and will not reflow what you write. Write with this discipline:
+
+- One paragraph per line. Hit return at the end of a paragraph, not mid-sentence.
+- Blank line between paragraphs.
+- Headings, list items, and table rows each on their own line.
+- Never insert a line break inside a sentence to hit a column width.
+
+The one place column width _is_ your job is **tables** — Prettier aligns table columns but will not reflow a row's content, so an over-long row is on you. That's the first convention below.
 
 ## Tables and footnotes
 
@@ -65,16 +72,14 @@ If a visually distinct **second series** is needed — e.g. to separate "caveats
 
 Learned applying this; bake them in:
 
-1. **Separate every footnote with a blank line.** Under `proseWrap: always` Prettier reflows adjacent footnote lines into one paragraph — a
-   blank line between each keeps them distinct.
+1. **Separate every footnote with a blank line.** Adjacent footnote lines without a blank line between them render as a single paragraph — keep each footnote on its own paragraph.
 2. **Footnoting a column often isn't enough to reach `printWidth`.** A long `Source` URL still blows the row out; convert such URLs to
    **reference-style links** (`[text][ref]` in the cell, `[ref]: https://…` definitions collected at the file bottom).
 3. **When the long cell is content, not a URL,** reference links don't help — shorten the cell to a short label with a marker and move the
    full content to a **second-series (`※`) footnote**.
 4. **Watch for a pre-existing footnote series.** If a table already uses `†` for something (e.g. a date caveat), give the dominant content
    series the primary daggers and move the lone caveat to the `※` series so markers don't collide.
-5. **Author loosely, then `bun run ki:lint:md`.** Prettier re-aligns table padding (`MD060`) and markdownlint flags `MD052` (undefined
-   reference) until the `[ref]:` defs land — both transient; the pass should end at 0 errors.
+5. **Author loosely, then `bun run ki:lint:md`.** Prettier re-aligns table padding (`MD060`) and markdownlint flags `MD052` (undefined reference) until the `[ref]:` defs land — both transient; the pass should end at 0 errors.
 
 ## Links
 
