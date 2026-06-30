@@ -5,31 +5,22 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated patterns worth reading when authoring or auditing a Knowledge Islands Cloudflare hosting configuration. Use these as concrete
-references — what a correct `wrangler.jsonc` looks like for a Workers + Static Assets deployment, what the script family looks like in the
-monorepo shape, and how the build and deploy steps chain in CI. Do not copy them wholesale; adapt to the specific site's `name`,
-`compatibility_date`, and domain. For the full standard, see [cloudflare-hosting-standard.md](cloudflare-hosting-standard.md); for source
-provenance, see [sources.md](sources.md).
+Curated patterns worth reading when authoring or auditing a Knowledge Islands Cloudflare hosting configuration. Use these as concrete references — what a correct `wrangler.jsonc` looks like for a Workers + Static Assets deployment, what the script family looks like in the monorepo shape, and how the build and deploy steps chain in CI. Do not copy them wholesale; adapt to the specific site's `name`, `compatibility_date`, and domain. For the full standard, see [cloudflare-hosting-standard.md](cloudflare-hosting-standard.md); for source provenance, see [sources.md](sources.md).
 
 ## Collections
 
-| Source                     | URL                                                                                            | What it covers                                                                        |
-| -------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| Workers — Static Assets    | <https://developers.cloudflare.com/workers/static-assets/>                                     | `assets` block: `directory`, `binding`, `html_handling`, `not_found_handling`         |
-| wrangler configuration     | <https://developers.cloudflare.com/workers/wrangler/configuration/>                            | `name`, `compatibility_date`, `routes`/`custom_domain`, `observability`               |
-| Pages → Workers migration  | <https://developers.cloudflare.com/workers/static-assets/migration-guides/migrate-from-pages/> | Why new static sites use Workers + Static Assets, not `wrangler pages deploy`         |
-| arcadia-website (in-house) | <https://github.com/knowledgeislands/arcadia-website>                                          | Reference implementation: `wrangler.jsonc`, monorepo script family, Cloudflare Builds |
+| Source | URL | What it covers |
+| --- | --- | --- |
+| Workers — Static Assets | <https://developers.cloudflare.com/workers/static-assets/> | `assets` block: `directory`, `binding`, `html_handling`, `not_found_handling` |
+| wrangler configuration | <https://developers.cloudflare.com/workers/wrangler/configuration/> | `name`, `compatibility_date`, `routes`/`custom_domain`, `observability` |
+| Pages → Workers migration | <https://developers.cloudflare.com/workers/static-assets/migration-guides/migrate-from-pages/> | Why new static sites use Workers + Static Assets, not `wrangler pages deploy` |
+| arcadia-website (in-house) | <https://github.com/knowledgeislands/arcadia-website> | Reference implementation: `wrangler.jsonc`, monorepo script family, Cloudflare Builds |
 
 ## Selected patterns
 
 ### `wrangler.jsonc` — the conformant site Worker config
 
-The site Worker config lives at `site/wrangler.jsonc` in the monorepo layout (the `site/` workspace of `knowledgeislands-11ty-websites`).
-Four fields are always present: `name` (kebab-case, matches the Worker name in the Cloudflare dashboard), `compatibility_date` (pinned
-`YYYY-MM-DD`), `assets.directory` pointing at the `dist/` seam, and `observability.enabled: true` so `console.*` / request logs are
-queryable in the dashboard. `routes` with `custom_domain: true` is expected for a site with a domain. The `assets.directory` value is
-**relative to the `wrangler.jsonc` file** — `"../dist"` from `site/wrangler.jsonc` because `dist/` lives at the repo root (one level up from
-`site/`).
+The site Worker config lives at `site/wrangler.jsonc` in the monorepo layout (the `site/` workspace of `knowledgeislands-11ty-websites`). Four fields are always present: `name` (kebab-case, matches the Worker name in the Cloudflare dashboard), `compatibility_date` (pinned `YYYY-MM-DD`), `assets.directory` pointing at the `dist/` seam, and `observability.enabled: true` so `console.*` / request logs are queryable in the dashboard. `routes` with `custom_domain: true` is expected for a site with a domain. The `assets.directory` value is **relative to the `wrangler.jsonc` file** — `"../dist"` from `site/wrangler.jsonc` because `dist/` lives at the repo root (one level up from `site/`).
 
 ```jsonc
 {
@@ -53,16 +44,11 @@ queryable in the dashboard. `routes` with `custom_domain: true` is expected for 
 }
 ```
 
-Optional per-site `assets` keys (`html_handling`, `not_found_handling`, `binding`, `run_worker_first`) are omitted when the defaults are
-acceptable. A site not yet on a custom domain may omit `routes` and deploy to the `*.workers.dev` subdomain — a judgment call, not a
-blocker.
+Optional per-site `assets` keys (`html_handling`, `not_found_handling`, `binding`, `run_worker_first`) are omitted when the defaults are acceptable. A site not yet on a custom domain may omit `routes` and deploy to the `*.workers.dev` subdomain — a judgment call, not a blocker.
 
 ### `package.json` — the hosting script family
 
-The hosting scripts in the root `package.json` of the monorepo. They take the `site:` prefix (matching the rest of the site script family
-from `knowledgeislands-11ty-websites`). `ki:site:deploy` changes into the site workspace where `wrangler.jsonc` lives and runs
-`bunx wrangler deploy` — never `wrangler pages deploy`. `ki:site:preview` chains a full build then `wrangler dev` so the site runs through
-the real Worker runtime locally before deploying. `.wrangler/` is added to `ki:site:clean`.
+The hosting scripts in the root `package.json` of the monorepo. They take the `site:` prefix (matching the rest of the site script family from `knowledgeislands-11ty-websites`). `ki:site:deploy` changes into the site workspace where `wrangler.jsonc` lives and runs `bunx wrangler deploy` — never `wrangler pages deploy`. `ki:site:preview` chains a full build then `wrangler dev` so the site runs through the real Worker runtime locally before deploying. `.wrangler/` is added to `ki:site:clean`.
 
 ```json
 {
@@ -74,15 +60,11 @@ the real Worker runtime locally before deploying. `.wrangler/` is added to `ki:s
 }
 ```
 
-`ki:site:build` and `ki:site:dev` belong to `knowledgeislands-11ty-websites` — they build the `dist/` that these scripts serve. Both sets of
-scripts live in the same root `package.json`; only the responsibility boundary differs.
+`ki:site:build` and `ki:site:dev` belong to `knowledgeislands-11ty-websites` — they build the `dist/` that these scripts serve. Both sets of scripts live in the same root `package.json`; only the responsibility boundary differs.
 
 ### Cloudflare Workers Builds — the CI/CD path
 
-The deploy path for house sites is **Cloudflare Workers Builds** (git integration in the Cloudflare dashboard), not a GitHub Actions deploy
-step. A push or merge to `main` triggers Cloudflare to build and deploy. The repo needs no separate deploy workflow for this — the
-`wrangler.jsonc` config is sufficient. A repo may run a GitHub Action for **pre-deploy content work** (applying content, optimising images)
-that commits to `main` and lets Workers Builds deploy the result, but that Action is content tooling, not the hosting standard.
+The deploy path for house sites is **Cloudflare Workers Builds** (git integration in the Cloudflare dashboard), not a GitHub Actions deploy step. A push or merge to `main` triggers Cloudflare to build and deploy. The repo needs no separate deploy workflow for this — the `wrangler.jsonc` config is sufficient. A repo may run a GitHub Action for **pre-deploy content work** (applying content, optimising images) that commits to `main` and lets Workers Builds deploy the result, but that Action is content tooling, not the hosting standard.
 
 The minimal Cloudflare Workers Builds configuration (set in the dashboard, not in a workflow file):
 
@@ -102,8 +84,7 @@ Commit-SHA injection (`WORKERS_CI_COMMIT_SHA` surfaced into the page as a `<meta
 
 ### `_redirects` and `_headers` — static asset rules
 
-Place `_redirects` and `_headers` in `site/src/` (or wherever Eleventy's passthrough copies them to `dist/`) when you need redirect rules or
-custom response headers. Cloudflare Workers Static Assets reads these files from the `assets.directory` root.
+Place `_redirects` and `_headers` in `site/src/` (or wherever Eleventy's passthrough copies them to `dist/`) when you need redirect rules or custom response headers. Cloudflare Workers Static Assets reads these files from the `assets.directory` root.
 
 A `_redirects` file for a common `www` → apex redirect (as a belt-and-suspenders fallback alongside the Cloudflare redirect rule):
 
@@ -124,5 +105,4 @@ A `_headers` file with security and cache headers appropriate for a static site:
   Cache-Control: public, max-age=31536000, immutable
 ```
 
-The `/assets/*` rule sets a long-lived immutable cache on built assets (CSS, JS, images). The `/*` rule applies security headers to every
-response. Both rules are additive — they do not override Cloudflare's default `Content-Type` or compression behaviour.
+The `/assets/*` rule sets a long-lived immutable cache on built assets (CSS, JS, images). The `/*` rule applies security headers to every response. Both rules are additive — they do not override Cloudflare's default `Content-Type` or compression behaviour.

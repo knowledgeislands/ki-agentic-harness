@@ -5,29 +5,23 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated patterns worth reading when authoring or auditing a Knowledge Islands MCP server. Use these as concrete references — what a
-well-formed `package.json` looks like, how the entry point wires up, how to register a server with a client, how to configure coverage. Do
-not copy them wholesale; adapt to the specific server's tool surface and env-var namespace. For the full standard, see
-[workspace-mcp-standard.md](workspace-mcp-standard.md); for source provenance, see [sources.md](sources.md).
+Curated patterns worth reading when authoring or auditing a Knowledge Islands MCP server. Use these as concrete references — what a well-formed `package.json` looks like, how the entry point wires up, how to register a server with a client, how to configure coverage. Do not copy them wholesale; adapt to the specific server's tool surface and env-var namespace. For the full standard, see [workspace-mcp-standard.md](workspace-mcp-standard.md); for source provenance, see [sources.md](sources.md).
 
 ## Collections
 
-| Source                        | URL                                                                                      | What it covers                                                                      |
-| ----------------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| MCP spec — Tools (2025-11-25) | <https://modelcontextprotocol.io/specification/2025-11-25/server/tools>                  | Tool shape, `inputSchema`, `annotations`, `isError`, `structuredContent`            |
-| MCP spec — Security           | <https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices> | Confused deputy, SSRF, scope minimisation, tool annotation semantics                |
-| Tool Annotations (MCP blog)   | <https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/>                | `*Hint` semantics and the four stable annotation keys                               |
-| mcp-git-audit (in-house)      | <https://github.com/knowledgeislands/mcp-git-audit>                                      | Reference implementation: layout, config, access-level gate, audit logging, testing |
-| mcp-gmail (in-house)          | <https://github.com/knowledgeislands/mcp-gmail>                                          | Auth-server variant: dual-bin, OAuth client, `auth-server/` alongside `mcp-server/` |
+| Source | URL | What it covers |
+| --- | --- | --- |
+| MCP spec — Tools (2025-11-25) | <https://modelcontextprotocol.io/specification/2025-11-25/server/tools> | Tool shape, `inputSchema`, `annotations`, `isError`, `structuredContent` |
+| MCP spec — Security | <https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices> | Confused deputy, SSRF, scope minimisation, tool annotation semantics |
+| Tool Annotations (MCP blog) | <https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/> | `*Hint` semantics and the four stable annotation keys |
+| mcp-git-audit (in-house) | <https://github.com/knowledgeislands/mcp-git-audit> | Reference implementation: layout, config, access-level gate, audit logging, testing |
+| mcp-gmail (in-house) | <https://github.com/knowledgeislands/mcp-gmail> | Auth-server variant: dual-bin, OAuth client, `auth-server/` alongside `mcp-server/` |
 
 ## Selected patterns
 
 ### `package.json` — the MCP delta
 
-The `name`, `bin`, `main`, `exports`, and `files` fields are the MCP-specific contract on top of the engineering baseline. `name` follows
-the scoped `@knowledgeislands/mcp-<name>` convention. `bin` exposes `mcp-<name>` pointing at the compiled stdio entry point. `exports`
-exposes the server entry, config, each `main/<concern>` surface, and `./package.json` — nothing from `tools/` (those are internal shells).
-`files` is `["dist"]` only; source is never published.
+The `name`, `bin`, `main`, `exports`, and `files` fields are the MCP-specific contract on top of the engineering baseline. `name` follows the scoped `@knowledgeislands/mcp-<name>` convention. `bin` exposes `mcp-<name>` pointing at the compiled stdio entry point. `exports` exposes the server entry, config, each `main/<concern>` surface, and `./package.json` — nothing from `tools/` (those are internal shells). `files` is `["dist"]` only; source is never published.
 
 ```json
 {
@@ -56,14 +50,11 @@ exposes the server entry, config, each `main/<concern>` surface, and `./package.
 }
 ```
 
-An auth-server repo (e.g. `mcp-gmail`) adds a second `bin` entry: `"mcp-gmail-auth": "dist/auth-server/index.js"` and an `./auth` export
-pointing at `dist/main/auth/`.
+An auth-server repo (e.g. `mcp-gmail`) adds a second `bin` entry: `"mcp-gmail-auth": "dist/auth-server/index.js"` and an `./auth` export pointing at `dist/main/auth/`.
 
 ### stdio entry point — `src/mcp-server/index.ts`
 
-The entry point has one job: load config, create the server, wire the access-gated register, register tool groups, connect over stdio. All
-startup diagnostics go to **stderr** (stdout is the MCP wire). No logic lives here — logic lives in `main/`. This file is
-**coverage-excluded** (the standard requires it; coverage tracks `main/` behaviour, not the wiring lines).
+The entry point has one job: load config, create the server, wire the access-gated register, register tool groups, connect over stdio. All startup diagnostics go to **stderr** (stdout is the MCP wire). No logic lives here — logic lives in `main/`. This file is **coverage-excluded** (the standard requires it; coverage tracks `main/` behaviour, not the wiring lines).
 
 ```typescript
 #!/usr/bin/env node
@@ -96,9 +87,7 @@ console.error(`mcp-git-audit ready`)
 
 ### Client registration — `.mcp.json` / `mcpServers` entry
 
-The canonical registration block for Claude Code (`.mcp.json` at the repo root) or Claude Desktop (`mcpServers` in the JSON config). Uses
-`node` to run the compiled `dist/mcp-server/index.js` — the Bun-install / Node-run split means the published binary runs under the Node that
-ships with the OS, not a local Bun install. Env vars are the only configuration surface; no flags or subcommands.
+The canonical registration block for Claude Code (`.mcp.json` at the repo root) or Claude Desktop (`mcpServers` in the JSON config). Uses `node` to run the compiled `dist/mcp-server/index.js` — the Bun-install / Node-run split means the published binary runs under the Node that ships with the OS, not a local Bun install. Env vars are the only configuration surface; no flags or subcommands.
 
 ```json
 {
@@ -119,9 +108,7 @@ The access level defaults to `read` when the env var is absent; set it explicitl
 
 ### Vitest coverage config — excluding the server wiring layer
 
-Coverage is 100 % line/function/branch/statement — but only over `main/` and `utils/` (excluding annotation constants). The entry point,
-tool-registration shells, and any generated code are explicitly excluded because they contain no testable logic: they are wiring, not
-behaviour. The environment block neutralises git global/system config so tests are isolated from the developer's real git config.
+Coverage is 100 % line/function/branch/statement — but only over `main/` and `utils/` (excluding annotation constants). The entry point, tool-registration shells, and any generated code are explicitly excluded because they contain no testable logic: they are wiring, not behaviour. The environment block neutralises git global/system config so tests are isolated from the developer's real git config.
 
 ```typescript
 import { defineConfig } from 'vitest/config'

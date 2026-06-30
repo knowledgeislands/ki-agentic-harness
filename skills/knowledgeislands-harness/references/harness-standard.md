@@ -1,10 +1,8 @@
 # Harness Standard
 
-The normative, quotable reference for a **Knowledge Islands agentic harness**. Every harness must conform to this. Rationale is inline so a
-reader knows not just what, but why — and can judge edge cases rather than apply rules blindly.
+The normative, quotable reference for a **Knowledge Islands agentic harness**. Every harness must conform to this. Rationale is inline so a reader knows not just what, but why — and can judge edge cases rather than apply rules blindly.
 
-The rubric ([`audit-rubric.md`](audit-rubric.md)) is the line-by-line checkable form of this document, with [M] / [J] tags and criterion
-codes. The sources behind these decisions are in [`sources.md`](sources.md).
+The rubric ([`audit-rubric.md`](audit-rubric.md)) is the line-by-line checkable form of this document, with [M] / [J] tags and criterion codes. The sources behind these decisions are in [`sources.md`](sources.md).
 
 ## Contents
 
@@ -23,19 +21,16 @@ codes. The sources behind these decisions are in [`sources.md`](sources.md).
 
 An **agentic harness** is a single versioned git repository that co-locates the four parts an agent is equipped with:
 
-| Directory | What it holds                                                                  | Install path                                                                                              |
-| --------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| Directory | What it holds | Install path |
+| --- | --- | --- |
 | `skills/` | [Agent Skills](https://agentskills.io/specification) — one directory per skill | Wired into a repo's `.claude/skills/` via `bun run ki:skills:link:project` (`knowledgeislands-bootstrap`) |
-| `agents/` | Claude Code subagent definitions — one `.md` per agent                         | Symlinked or copied by the Claude Code agent runner                                                       |
-| `mcp/`    | Workspace MCP server packages (or a shelf pointing to external `mcp-*` repos)  | Referenced by `.claude/settings.json` / `mcp_settings.json`                                               |
-| `evals/`  | Behavioural eval scenarios — advisory signal, not a gate                       | Run on demand, not in CI                                                                                  |
+| `agents/` | Claude Code subagent definitions — one `.md` per agent | Symlinked or copied by the Claude Code agent runner |
+| `mcp/` | Workspace MCP server packages (or a shelf pointing to external `mcp-*` repos) | Referenced by `.claude/settings.json` / `mcp_settings.json` |
+| `evals/` | Behavioural eval scenarios — advisory signal, not a gate | Run on demand, not in CI |
 
-The value of co-location: the four parts are versioned together, reviewed together, and installed together — rather than scattered across
-the bases and projects that consume them. A change to a skill and the agent that invokes it ships as one PR, not two.
+The value of co-location: the four parts are versioned together, reviewed together, and installed together — rather than scattered across the bases and projects that consume them. A change to a skill and the agent that invokes it ships as one PR, not two.
 
-A harness does **not** have to host every part actively. Empty shelves (`agents/`, `mcp/`, `evals/` populated only by a `README.md`) are a
-valid, encouraged starting state — the directory structure commits to the four-part intent even before all parts are built. A shelf is not a
-gap.
+A harness does **not** have to host every part actively. Empty shelves (`agents/`, `mcp/`, `evals/` populated only by a `README.md`) are a valid, encouraged starting state — the directory structure commits to the four-part intent even before all parts are built. A shelf is not a gap.
 
 ---
 
@@ -50,9 +45,7 @@ mcp/          README.md  (+ server packages, or shelf pointing to mcp-* repos)
 evals/        README.md  (+ scenario files, or rough advisory shelf)
 ```
 
-**Why:** discovery. Any tool or agent navigating the harness can reliably find each part without reading prose. The `README.md` in each
-directory distinguishes an intentional empty shelf from an accidental missing directory — and gives a human reader the context to understand
-it.
+**Why:** discovery. Any tool or agent navigating the harness can reliably find each part without reading prose. The `README.md` in each directory distinguishes an intentional empty shelf from an accidental missing directory — and gives a human reader the context to understand it.
 
 The root of the harness MUST also contain:
 
@@ -65,8 +58,7 @@ The root of the harness MUST also contain:
 
 ## §Skills directory — the naming convention
 
-Every directory under `skills/` MUST be a valid skill: it must contain a `SKILL.md` with YAML frontmatter, and the **directory name must
-exactly match the `name:` frontmatter field**.
+Every directory under `skills/` MUST be a valid skill: it must contain a `SKILL.md` with YAML frontmatter, and the **directory name must exactly match the `name:` frontmatter field**.
 
 ```text
 skills/
@@ -74,37 +66,27 @@ skills/
     SKILL.md                  ← name: knowledgeislands-kb  ← must match
 ```
 
-**Why:** agents and the Agent Skills runtime discover a skill by its `name` — not by path. If the directory name and the frontmatter drift,
-the skill loads under the wrong name or fails to load at all. The `ki:skills:link:project` script (see §package.json) creates symlinks named
-by the directory, so the symlink target name is the one the agent actually resolves.
+**Why:** agents and the Agent Skills runtime discover a skill by its `name` — not by path. If the directory name and the frontmatter drift, the skill loads under the wrong name or fails to load at all. The `ki:skills:link:project` script (see §package.json) creates symlinks named by the directory, so the symlink target name is the one the agent actually resolves.
 
-The quality of the skill's prose, description richness, and adherence to the Agent Skills rubric are governed by `knowledgeislands-skills`,
-not here.
+The quality of the skill's prose, description richness, and adherence to the Agent Skills rubric are governed by `knowledgeislands-skills`, not here.
 
 ---
 
 ## §CLAUDE.md required sections
 
-The harness `CLAUDE.md` is the **always-loaded orientation** — every agent session in the harness repo reads it. It must cover these
-sections (in order, though the exact headings are flexible):
+The harness `CLAUDE.md` is the **always-loaded orientation** — every agent session in the harness repo reads it. It must cover these sections (in order, though the exact headings are flexible):
 
-1. **What this harness is** — one paragraph: what the harness holds, who it's for, why it's a single repo rather than scattered files. Name
-   all four parts.
-2. **The four parts** — a directory table (or equivalent structured block) with each of the four directories, what it holds today, and its
-   current status (populated / empty shelf). Keep this current as shelves become populated.
-3. **Working conventions per part** — how to add, change, or audit each part: which command to run, which skill governs it, any install
-   step. Brief; route detail to `docs/` or the relevant skill.
-4. **Toolchain** — the key `bun run *` commands: at minimum `ki:skills:link:project`, `ki:skills:lint`, and the common `ki:lint:*` family.
-   Enough to orient a contributor on day one.
+1. **What this harness is** — one paragraph: what the harness holds, who it's for, why it's a single repo rather than scattered files. Name all four parts.
+2. **The four parts** — a directory table (or equivalent structured block) with each of the four directories, what it holds today, and its current status (populated / empty shelf). Keep this current as shelves become populated.
+3. **Working conventions per part** — how to add, change, or audit each part: which command to run, which skill governs it, any install step. Brief; route detail to `docs/` or the relevant skill.
+4. **Toolchain** — the key `bun run *` commands: at minimum `ki:skills:link:project`, `ki:skills:lint`, and the common `ki:lint:*` family. Enough to orient a contributor on day one.
 
 Optional but encouraged:
 
-- **The skill map** — a visual or tabular overview of how the skills in `skills/` relate (which compose on which, which delegate to which).
-  Keeps the map near the skills it describes.
+- **The skill map** — a visual or tabular overview of how the skills in `skills/` relate (which compose on which, which delegate to which). Keeps the map near the skills it describes.
 - **Docs table** — pointers to any `docs/` files that elaborate the design.
 
-**Freshness rule:** `CLAUDE.md` MUST reflect current state. A skill count that's off-by-one, a shelf marked as empty when it's now
-populated, or a command name that no longer exists in `package.json` are all WARN findings. Run Mode AUDIT regularly to catch drift.
+**Freshness rule:** `CLAUDE.md` MUST reflect current state. A skill count that's off-by-one, a shelf marked as empty when it's now populated, or a command name that no longer exists in `package.json` are all WARN findings. Run Mode AUDIT regularly to catch drift.
 
 ---
 
@@ -113,12 +95,9 @@ populated, or a command name that no longer exists in `package.json` are all WAR
 The harness `ROADMAP.md` holds the **open forward work** only. Two rules:
 
 1. **Open-only.** Items are removed when done, not ticked off. The file always shows what remains.
-2. **No continuous practices.** Ongoing disciplines (running `ki:skills:lint`, monthly REFRESH runs, re-auditing repos) are not roadmap
-   items — they are invariants. They live in `docs/design.md` or a similar always-present reference, not here. A roadmap item that would
-   never close (because it is a standing practice) is a sign it belongs elsewhere.
+2. **No continuous practices.** Ongoing disciplines (running `ki:skills:lint`, monthly REFRESH runs, re-auditing repos) are not roadmap items — they are invariants. They live in `docs/design.md` or a similar always-present reference, not here. A roadmap item that would never close (because it is a standing practice) is a sign it belongs elsewhere.
 
-**Why:** a roadmap that accumulates checked-off items loses the "what's left" signal. A roadmap that lists ongoing practices obscures the
-"what's new" signal. Keeping the two separate preserves both.
+**Why:** a roadmap that accumulates checked-off items loses the "what's left" signal. A roadmap that lists ongoing practices obscures the "what's new" signal. Keeping the two separate preserves both.
 
 ---
 
@@ -126,25 +105,18 @@ The harness `ROADMAP.md` holds the **open forward work** only. Two rules:
 
 Every harness `package.json` MUST declare these script families:
 
-| Script                   | What it does                                                                                                                       | Why required                   |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| Script | What it does | Why required |
+| --- | --- | --- |
 | `ki:skills:link:project` | Wires this repo's `.claude/skills/` from its `.ki-config.toml` (the `knowledgeislands-bootstrap` linker; the harness uses `--all`) | The primary delivery mechanism |
-| `ki:skills:lint`         | Runs the `knowledgeislands-skills` mechanical checker over `skills/`                                                               | The gate for skill quality     |
-| `ki:lint:check`          | Biome — TypeScript + JSON lint (no write)                                                                                          | Common engineering gate        |
-| `ki:lint:types`          | `tsc --noEmit`                                                                                                                     | Type safety gate               |
-| `ki:lint:md`             | Prettier + markdownlint (writes)                                                                                                   | Markdown formatting gate       |
-| `ki:lint:md:check`       | Prettier + markdownlint (check-only; CI twin of `ki:lint:md`)                                                                      | CI Markdown gate               |
+| `ki:skills:lint` | Runs the `knowledgeislands-skills` mechanical checker over `skills/` | The gate for skill quality |
+| `ki:lint:check` | Biome — TypeScript + JSON lint (no write) | Common engineering gate |
+| `ki:lint:types` | `tsc --noEmit` | Type safety gate |
+| `ki:lint:md` | Prettier + markdownlint (writes) | Markdown formatting gate |
+| `ki:lint:md:check` | Prettier + markdownlint (check-only; CI twin of `ki:lint:md`) | CI Markdown gate |
 
-The `ki:lint:*` family is the common engineering toolchain (`knowledgeislands-engineering`'s standard). A harness that ships no TypeScript
-may omit `ki:lint:check` / `ki:lint:types` with a documented reason.
+The `ki:lint:*` family is the common engineering toolchain (`knowledgeislands-engineering`'s standard). A harness that ships no TypeScript may omit `ki:lint:check` / `ki:lint:types` with a documented reason.
 
-The harness-specific scripts are `ki:skills:link:project` and `ki:skills:lint` — these are the delivery and quality mechanisms the harness
-concept depends on. Absence of either is a FAIL. The harness additionally carries the rest of its skill-management / codegen / eval surface
-(PKG-4, WARN): `ki:skills:link:global` (`sync-skills.ts link --only knowledgeislands-bootstrap`) to install the one global keystone,
-`ki:skills:status` / `ki:skills:unlink` (inspect / tear down the project-local links), `ki:skills:refresh-status` (refresh the skills status
-block), `ki:codegen` (regenerate every MCP's typed client from the harness root), and `ki:eval` (run the `evals/` suite). Skills are not
-installed wholesale into `~/.claude/skills/`; they are wired **project-local** per repo by `knowledgeislands-bootstrap`, only the keystone
-is kept global.
+The harness-specific scripts are `ki:skills:link:project` and `ki:skills:lint` — these are the delivery and quality mechanisms the harness concept depends on. Absence of either is a FAIL. The harness additionally carries the rest of its skill-management / codegen / eval surface (PKG-4, WARN): `ki:skills:link:global` (`sync-skills.ts link --only knowledgeislands-bootstrap`) to install the one global keystone, `ki:skills:status` / `ki:skills:unlink` (inspect / tear down the project-local links), `ki:skills:refresh-status` (refresh the skills status block), `ki:codegen` (regenerate every MCP's typed client from the harness root), and `ki:eval` (run the `evals/` suite). Skills are not installed wholesale into `~/.claude/skills/`; they are wired **project-local** per repo by `knowledgeislands-bootstrap`, only the keystone is kept global.
 
 ---
 
@@ -159,8 +131,7 @@ Every harness carrying a `.ki-config.toml` (which all KI-governed repos do) MUST
 [knowledgeislands-skills]      # once skills/ is populated
 ```
 
-The `[knowledgeislands-harness]` table is the **compliance marker** — `knowledgeislands-repo`'s coverage cascade detects the four-part
-harness layout and WARNs if this table is absent. Declaring it is the repo's opt-in to the harness standard.
+The `[knowledgeislands-harness]` table is the **compliance marker** — `knowledgeislands-repo`'s coverage cascade detects the four-part harness layout and WARNs if this table is absent. Declaring it is the repo's opt-in to the harness standard.
 
 Currently no per-harness config keys are defined under `[knowledgeislands-harness]` — the table presence alone is the declaration.
 

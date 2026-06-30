@@ -1,7 +1,6 @@
 # Architecture Decision Records — Knowledge Islands Harness
 
-This directory holds the Architecture Decision Records (ADRs) for the **arcadia-agentic-harness** and the Knowledge Islands governance skill
-set it houses.
+This directory holds the Architecture Decision Records (ADRs) for the **arcadia-agentic-harness** and the Knowledge Islands governance skill set it houses.
 
 ## Naming convention
 
@@ -9,9 +8,7 @@ set it houses.
 ADR-<SCOPE>-NNN
 ```
 
-`<SCOPE>` is one or more alpha-leading uppercase segments separated by hyphens — e.g. `KI-HARNESS`, `KI-HARNESS-SKILLS`. `NNN` is a
-zero-padded integer (minimum three digits), monotonically increasing within the scope. Foundational harness ADRs use the bare scope
-`ADR-KI-HARNESS-NNN`; domain-specific ADRs append a sub-scope: `ADR-KI-HARNESS-<SUB-SCOPE>-NNN`.
+`<SCOPE>` is one or more alpha-leading uppercase segments separated by hyphens — e.g. `KI-HARNESS`, `KI-HARNESS-SKILLS`. `NNN` is a zero-padded integer (minimum three digits), monotonically increasing within the scope. Foundational harness ADRs use the bare scope `ADR-KI-HARNESS-NNN`; domain-specific ADRs append a sub-scope: `ADR-KI-HARNESS-<SUB-SCOPE>-NNN`.
 
 Sub-scopes used in this harness:
 
@@ -61,8 +58,7 @@ Sub-scopes used in this harness:
 
 ## Context
 
-<What is the problem or constraint that forced a decision? Keep to one paragraph of essential background — the reader can follow links for
-depth.>
+<What is the problem or constraint that forced a decision? Keep to one paragraph of essential background — the reader can follow links for depth.>
 
 ## Decision
 

@@ -5,10 +5,7 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated illustrations of well-formed Decision Records. Use these when authoring a new DR, checking a draft against the format standard, or
-explaining the format to a new contributor. Each pattern is drawn from real DRs in the `arcadia-principal` base — the primary reference
-implementation — and annotated to make the convention visible. The exemplars demonstrate shape, not topic: the subject matter of a DR is
-incidental; the structure is the point.
+Curated illustrations of well-formed Decision Records. Use these when authoring a new DR, checking a draft against the format standard, or explaining the format to a new contributor. Each pattern is drawn from real DRs in the `arcadia-principal` base — the primary reference implementation — and annotated to make the convention visible. The exemplars demonstrate shape, not topic: the subject matter of a DR is incidental; the structure is the point.
 
 ## Collections
 
@@ -27,10 +24,7 @@ incidental; the structure is the point.
 
 ### Well-formed KB-repo GDR (Governance Decision Record)
 
-`GDR-KI-ARCADIA-001-adopting-decision-records.md` is the reference implementation of the KB-repo shape. Note: frontmatter `decision_type`
-matches the `GDR-` prefix; `status` tracks maintenance state, not the decision lifecycle (the lifecycle lives in the `**Status:**` body
-field); `decision_depends_on` is a YAML list of full DR codes; the five sections appear in canonical order; voice is active present tense;
-the References section uses relative Markdown links only.
+`GDR-KI-ARCADIA-001-adopting-decision-records.md` is the reference implementation of the KB-repo shape. Note: frontmatter `decision_type` matches the `GDR-` prefix; `status` tracks maintenance state, not the decision lifecycle (the lifecycle lives in the `**Status:**` body field); `decision_depends_on` is a YAML list of full DR codes; the five sections appear in canonical order; voice is active present tense; the References section uses relative Markdown links only.
 
 ```markdown
 ---
@@ -49,20 +43,13 @@ decision_depends_on: ['SDR-KI-ARCADIA-001']
 
 ## Context
 
-Knowledge Islands produces decisions — about structure, tooling, governance, and direction — but had no mechanism for recording them
-permanently. The Enactment Process produces `Decision` output rows in proposal documents, but proposals are deleted once settled. Decision
-rationale disappears with them, leaving only the artefact, not the reasoning.
+Knowledge Islands produces decisions — about structure, tooling, governance, and direction — but had no mechanism for recording them permanently. The Enactment Process produces `Decision` output rows in proposal documents, but proposals are deleted once settled. Decision rationale disappears with them, leaving only the artefact, not the reasoning.
 
-Two legacy skills existed to partially address this: `knowledgeislands-adrs`, governing Architecture Decision Records for code repos with
-the `ADR-` prefix at `docs/decisions/`, and `knowledgeislands-kdrs`, governing Knowledge Decision Records for KB repos with the `KDR-`
-prefix at `Admin/Decisions/`. Both used the same Nygard five-section format; the split served domain placement, not any meaningful
-difference in format or purpose. Maintaining two instruments for an identical format added friction without benefit.
+Two legacy skills existed to partially address this: `knowledgeislands-adrs`, governing Architecture Decision Records for code repos with the `ADR-` prefix at `docs/decisions/`, and `knowledgeislands-kdrs`, governing Knowledge Decision Records for KB repos with the `KDR-` prefix at `Admin/Decisions/`. Both used the same Nygard five-section format; the split served domain placement, not any meaningful difference in format or purpose. Maintaining two instruments for an identical format added friction without benefit.
 
 ## Decision
 
-Knowledge Islands adopts **Decision Records (DRs)** as the standard instrument for recording significant standalone decisions. The unified
-`knowledgeislands-decision-records` skill governs the format across all repo types. DRs use the Nygard five-section format with a
-`decision_type` field drawn from a nine-value taxonomy.
+Knowledge Islands adopts **Decision Records (DRs)** as the standard instrument for recording significant standalone decisions. The unified `knowledgeislands-decision-records` skill governs the format across all repo types. DRs use the Nygard five-section format with a `decision_type` field drawn from a nine-value taxonomy.
 
 ## Consequences
 
@@ -72,17 +59,12 @@ Knowledge Islands adopts **Decision Records (DRs)** as the standard instrument f
 
 ## References
 
-- [Enactment Process](../../../Pillars/Knowledge%20Islands/Model/Processes/Enactment%20Process/Enactment%20Process.md) -- the process that
-  generates Decision output rows this instrument records.
+- [Enactment Process](../../../Pillars/Knowledge%20Islands/Model/Processes/Enactment%20Process/Enactment%20Process.md) -- the process that generates Decision output rows this instrument records.
 ```
 
 ### Well-formed KB-repo SDR (Strategy Decision Record)
 
-`SDR-KI-ARCADIA-001-knowledge-islands-strategy.md` shows the `strategy` type. The frontmatter has no `decision_depends_on` (it is a root
-decision, so the field is omitted rather than set to `[]`). The Context section is value-neutral — it states structural forces, not
-advocacy. The Decision section uses active voice and includes a table where a compact tabular form aids comprehension; such tables are
-permitted within body sections and must follow the standard table conventions (relative links in cells, skimmable rows). The Consequences
-section seeds the context for successor DRs.
+`SDR-KI-ARCADIA-001-knowledge-islands-strategy.md` shows the `strategy` type. The frontmatter has no `decision_depends_on` (it is a root decision, so the field is omitted rather than set to `[]`). The Context section is value-neutral — it states structural forces, not advocacy. The Decision section uses active voice and includes a table where a compact tabular form aids comprehension; such tables are permitted within body sections and must follow the standard table conventions (relative links in cells, skimmable rows). The Consequences section seeds the context for successor DRs.
 
 ```markdown
 ---
@@ -100,14 +82,11 @@ author: Written with Claude
 
 ## Context
 
-Knowledge accumulates, but accumulation alone is not understanding. The prevailing approaches to personal and organisational knowledge
-management treat knowledge as a storage problem. They answer "where does this go?" but not "how does this relate to everything else?", "who
-holds authority over it?", or "how does it endure beyond any single person?". The result is isolated silos.
+Knowledge accumulates, but accumulation alone is not understanding. The prevailing approaches to personal and organisational knowledge management treat knowledge as a storage problem. They answer "where does this go?" but not "how does this relate to everything else?", "who holds authority over it?", or "how does it endure beyond any single person?". The result is isolated silos.
 
 ## Decision
 
-Knowledge Islands is adopted as the organising strategy. The strategic intent is an archipelago of Knowledge Islands, each owning a distinct
-domain of human concern:
+Knowledge Islands is adopted as the organising strategy. The strategic intent is an archipelago of Knowledge Islands, each owning a distinct domain of human concern:
 
 | Domain    | Island  | Concern                            |
 | --------- | ------- | ---------------------------------- |
@@ -125,11 +104,7 @@ Each island is introduced independently when its time comes.
 
 ### Decisions index table
 
-The index — `Decisions.md` in a KB, `README.md` in a code repo — carries one row per DR ordered by **reveal order** (the logical reading
-sequence derived from the `decision_depends_on` dependency graph, roots first). The KB style below links the ID cell; a code repo may
-instead keep a bare ID in column 0 and link the Title (as the harness `docs/decisions/README.md` does) — the checker accepts either and
-finds Status and Date by their header labels. Status and Date must match the DR body exactly. Do not use wikilinks in table cells: the `|`
-in `[[target|Display text]]` breaks the column boundary.
+The index — `Decisions.md` in a KB, `README.md` in a code repo — carries one row per DR ordered by **reveal order** (the logical reading sequence derived from the `decision_depends_on` dependency graph, roots first). The KB style below links the ID cell; a code repo may instead keep a bare ID in column 0 and link the Title (as the harness `docs/decisions/README.md` does) — the checker accepts either and finds Status and Date by their header labels. Status and Date must match the DR body exactly. Do not use wikilinks in table cells: the `|` in `[[target|Display text]]` breaks the column boundary.
 
 ```markdown
 | DR ID                                                                  | Title                            | Status   | Date       |
@@ -140,9 +115,7 @@ in `[[target|Display text]]` breaks the column boundary.
 
 ### Code-repo ADR (bare Markdown, no frontmatter)
 
-Code repos (non-KB) may omit YAML frontmatter entirely. The `ADR-` prefix aligns with the established Nygard / adr.github.io ecosystem. The
-five sections and the bold `**Status:**` / `**Date:**` fields are still required; the `## References` section is optional but encouraged
-when the decision codifies an existing standard.
+Code repos (non-KB) may omit YAML frontmatter entirely. The `ADR-` prefix aligns with the established Nygard / adr.github.io ecosystem. The five sections and the bold `**Status:**` / `**Date:**` fields are still required; the `## References` section is optional but encouraged when the decision codifies an existing standard.
 
 ```markdown
 # ADR-HARNESS-001: Adopting Bun as the Package Manager
@@ -153,13 +126,11 @@ when the decision codifies an existing standard.
 
 ## Context
 
-The harness requires a fast, reliable package manager for skill development. npm and yarn both work but carry legacy overhead that slows the
-install-run loop in a monorepo of small independent skills.
+The harness requires a fast, reliable package manager for skill development. npm and yarn both work but carry legacy overhead that slows the install-run loop in a monorepo of small independent skills.
 
 ## Decision
 
-We adopt Bun as the sole package manager and script runner for this repo. `bun install` and `bun run <script>` replace npm equivalents in
-all documentation and CI.
+We adopt Bun as the sole package manager and script runner for this repo. `bun install` and `bun run <script>` replace npm equivalents in all documentation and CI.
 
 ## Consequences
 

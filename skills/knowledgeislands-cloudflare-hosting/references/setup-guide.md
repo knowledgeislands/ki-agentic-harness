@@ -1,8 +1,6 @@
 # Cloudflare hosting setup guide
 
-Step-by-step procedure for wiring Cloudflare Workers + Static Assets hosting for a new Knowledge Islands site. Follow this once per site;
-subsequent changes are handled by CONFORM or AUDIT modes. The full standard is in
-[cloudflare-hosting-standard.md](cloudflare-hosting-standard.md); this guide is the opinionated walkthrough of it.
+Step-by-step procedure for wiring Cloudflare Workers + Static Assets hosting for a new Knowledge Islands site. Follow this once per site; subsequent changes are handled by CONFORM or AUDIT modes. The full standard is in [cloudflare-hosting-standard.md](cloudflare-hosting-standard.md); this guide is the opinionated walkthrough of it.
 
 ## Contents
 
@@ -34,15 +32,13 @@ Log in to wrangler before doing anything else:
 bunx wrangler login
 ```
 
-This opens a browser OAuth flow and writes credentials to `~/.wrangler/config/default.toml`. They persist across sessions; re-run only if
-they expire or you switch accounts.
+This opens a browser OAuth flow and writes credentials to `~/.wrangler/config/default.toml`. They persist across sessions; re-run only if they expire or you switch accounts.
 
 ---
 
 ## 2. Create the site `wrangler.jsonc`
 
-The config lives at the **site root** — the repo root for a flat layout, the `site/` subfolder when the repo also has companion Workers. Use
-the canonical shape from the standard and adapt three fields: `name`, `compatibility_date`, and the `assets.directory` path.
+The config lives at the **site root** — the repo root for a flat layout, the `site/` subfolder when the repo also has companion Workers. Use the canonical shape from the standard and adapt three fields: `name`, `compatibility_date`, and the `assets.directory` path.
 
 ```jsonc
 {
@@ -74,8 +70,7 @@ Set `compatibility_date` to today's date (`YYYY-MM-DD`). For a pure-assets Worke
 
 ## 3. Add the script family to `package.json`
 
-Add these three scripts to the root `package.json`. Use the `site:` prefix for the `site/`-subfolder layout; drop it for a flat layout
-(rare):
+Add these three scripts to the root `package.json`. Use the `site:` prefix for the `site/`-subfolder layout; drop it for a flat layout (rare):
 
 ```jsonc
 {
@@ -112,8 +107,7 @@ dist/
 .wrangler/
 ```
 
-`dist/` is regenerated on every build; committing it causes conflicts and bloats history. `.wrangler/` holds wrangler's local cache and
-upload state.
+`dist/` is regenerated on every build; committing it causes conflicts and bloats history. `.wrangler/` holds wrangler's local cache and upload state.
 
 If using the `site/`-subfolder layout, also add:
 
@@ -140,34 +134,28 @@ If `.ki-config.toml` does not yet exist, create it at the repo root. Other skill
 
 ## 6. First deploy — workers.dev subdomain
 
-Build the site and deploy. On first deploy, Cloudflare creates the Worker and assigns a `<name>.<account>.workers.dev` subdomain — no custom
-domain needed yet.
+Build the site and deploy. On first deploy, Cloudflare creates the Worker and assigns a `<name>.<account>.workers.dev` subdomain — no custom domain needed yet.
 
 ```bash
 bun run ki:site:build   # produce dist/
 bun run ki:site:deploy  # upload to Cloudflare
 ```
 
-Expected output includes `Published <name> (Uploaded …)` and a `*.workers.dev` URL. Open it in a browser to confirm the site loads. If the
-deploy fails:
+Expected output includes `Published <name> (Uploaded …)` and a `*.workers.dev` URL. Open it in a browser to confirm the site loads. If the deploy fails:
 
 - `No such file or directory: dist` → the build did not run, or `assets.directory` is wrong. Re-check the relative path.
 - `Authentication error` → run `bunx wrangler login` again.
-- `workers.dev is disabled` → Workers is disabled on the account subdomain; enable it at **Workers & Pages → Settings** in the dashboard, or
-  skip to §7 (custom-domain routes work independently of `workers.dev`).
+- `workers.dev is disabled` → Workers is disabled on the account subdomain; enable it at **Workers & Pages → Settings** in the dashboard, or skip to §7 (custom-domain routes work independently of `workers.dev`).
 
 ---
 
 ## 7. Wire the custom domain
 
-This happens in the **Cloudflare dashboard**, not via `wrangler`. The `routes` block in `wrangler.jsonc` with `custom_domain: true` tells
-Cloudflare to serve the Worker at that domain, but Cloudflare only honours it if the domain's DNS is already managed in the same account.
+This happens in the **Cloudflare dashboard**, not via `wrangler`. The `routes` block in `wrangler.jsonc` with `custom_domain: true` tells Cloudflare to serve the Worker at that domain, but Cloudflare only honours it if the domain's DNS is already managed in the same account.
 
 1. Go to **Workers & Pages → `<name>` → Settings → Domains & Routes**.
-2. Confirm the apex domain (`example.com`) is listed. If not, the `routes` block is missing or the domain is not in the account — add it to
-   `wrangler.jsonc` and redeploy.
-3. Cloudflare automatically creates a CNAME/A record pointing the apex at the Worker. No manual DNS entry needed when using
-   `custom_domain: true`.
+2. Confirm the apex domain (`example.com`) is listed. If not, the `routes` block is missing or the domain is not in the account — add it to `wrangler.jsonc` and redeploy.
+3. Cloudflare automatically creates a CNAME/A record pointing the apex at the Worker. No manual DNS entry needed when using `custom_domain: true`.
 4. Repeat for `www.example.com`.
 
 After a redeploy (`bun run ki:site:deploy`) the domain should resolve. DNS propagation may take a few minutes.
@@ -176,8 +164,7 @@ After a redeploy (`bun run ki:site:deploy`) the domain should resolve. DNS propa
 
 ## 8. Add the `www` redirect rule
 
-The `www` route is declared in `wrangler.jsonc` so Cloudflare serves the Worker at `www.example.com`, but `www` should redirect to the apex
-rather than serve a duplicate. Create this redirect rule in the dashboard, not in wrangler:
+The `www` route is declared in `wrangler.jsonc` so Cloudflare serves the Worker at `www.example.com`, but `www` should redirect to the apex rather than serve a duplicate. Create this redirect rule in the dashboard, not in wrangler:
 
 1. Go to the zone for `example.com` → **Rules → Redirect Rules → Create rule**.
 2. **Custom filter expression**: `(http.host eq "www.example.com")`.
@@ -190,20 +177,16 @@ Test with `curl -I https://www.example.com` — the response should be `301` wit
 
 ## 9. Set up Cloudflare Workers Builds (CI/CD)
 
-Cloudflare Workers Builds replaces manual `bun run ki:site:deploy` calls: a push to `main` triggers Cloudflare to build and redeploy
-automatically. No GitHub Actions workflow needed for the deploy itself.
+Cloudflare Workers Builds replaces manual `bun run ki:site:deploy` calls: a push to `main` triggers Cloudflare to build and redeploy automatically. No GitHub Actions workflow needed for the deploy itself.
 
 1. Go to **Workers & Pages → `<name>` → Settings → Build**.
 2. Connect the GitHub repository (authorize the Cloudflare GitHub App if prompted).
-3. Set the **build command** — typically `bun run ki:site:build` (or whichever script produces `dist/`). Workers Builds runs in a fresh
-   environment; ensure `bun` is available (Cloudflare Workers Builds supports Bun natively).
-4. Set the **deploy directory** to match `assets.directory` in `wrangler.jsonc` (`dist` for both flat and `site/`-subfolder layouts — the
-   Cloudflare UI wants just the directory name, not the relative-path prefix).
+3. Set the **build command** — typically `bun run ki:site:build` (or whichever script produces `dist/`). Workers Builds runs in a fresh environment; ensure `bun` is available (Cloudflare Workers Builds supports Bun natively).
+4. Set the **deploy directory** to match `assets.directory` in `wrangler.jsonc` (`dist` for both flat and `site/`-subfolder layouts — the Cloudflare UI wants just the directory name, not the relative-path prefix).
 5. Confirm the branch is `main`.
 6. Save. Push a small commit and watch **Workers & Pages → `<name>` → Deployments** to confirm the build runs and deploys.
 
-If the repo runs a GitHub Action that commits to `main` before deploy (e.g. a content-apply or image-optimization step), that Action commits
-to `main`, which triggers Workers Builds — the two work together without conflict.
+If the repo runs a GitHub Action that commits to `main` before deploy (e.g. a content-apply or image-optimization step), that Action commits to `main`, which triggers Workers Builds — the two work together without conflict.
 
 ---
 
@@ -222,6 +205,5 @@ All items should be `PASS`. The two most common first-run findings:
 
 Also confirm end-to-end manually:
 
-1. `bun run ki:site:preview` — builds locally and serves through the real Worker runtime at `http://localhost:8787`. Check that the site
-   loads and internal links work.
+1. `bun run ki:site:preview` — builds locally and serves through the real Worker runtime at `http://localhost:8787`. Check that the site loads and internal links work.
 2. `bun run ki:site:deploy` — deploys to production. Confirm the custom domain resolves and the `www` redirect returns 301.

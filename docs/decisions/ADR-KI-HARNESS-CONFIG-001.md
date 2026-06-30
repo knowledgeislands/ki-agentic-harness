@@ -6,17 +6,11 @@
 
 ## Context
 
-Each governance skill needed to know whether it applied to a given repo, and what repo-specific configuration it should use. Without a
-shared signal, skills would either apply to all repos (false positives) or require repo-specific skill customisation (coupling). A single
-config file per repo, with a table per skill, provides an explicit opt-in that each skill can read independently.
+Each governance skill needed to know whether it applied to a given repo, and what repo-specific configuration it should use. Without a shared signal, skills would either apply to all repos (false positives) or require repo-specific skill customisation (coupling). A single config file per repo, with a table per skill, provides an explicit opt-in that each skill can read independently.
 
 ## Decision
 
-`.ki-config.toml` is the compliance marker and the per-skill configuration carrier. Its presence signals that the repo is a Knowledge
-Islands repo and all applicable governance standards apply. Each governance skill reads its own `[knowledgeislands-<skill>]` table; the
-`knowledgeislands-repo` skill verifies that detected standards (Eleventy config → `[knowledgeislands-11ty-websites]`, Streams zone →
-`[knowledgeislands-streams]`, etc.) have a declared table. A detected-but-undeclared standard is a WARN; a missing `.ki-config.toml` is a
-FAIL. Per-repo overrides live in the skill's own sub-table, not in a forked skill.
+`.ki-config.toml` is the compliance marker and the per-skill configuration carrier. Its presence signals that the repo is a Knowledge Islands repo and all applicable governance standards apply. Each governance skill reads its own `[knowledgeislands-<skill>]` table; the `knowledgeislands-repo` skill verifies that detected standards (Eleventy config → `[knowledgeislands-11ty-websites]`, Streams zone → `[knowledgeislands-streams]`, etc.) have a declared table. A detected-but-undeclared standard is a WARN; a missing `.ki-config.toml` is a FAIL. Per-repo overrides live in the skill's own sub-table, not in a forked skill.
 
 ## Consequences
 
@@ -27,6 +21,5 @@ FAIL. Per-repo overrides live in the skill's own sub-table, not in a forked skil
 
 ## References
 
-- [skills/knowledgeislands-repo/references/ki-config-standard.md](../../skills/knowledgeislands-repo/references/ki-config-standard.md) — the
-  full `.ki-config.toml` contract.
+- [skills/knowledgeislands-repo/references/ki-config-standard.md](../../skills/knowledgeislands-repo/references/ki-config-standard.md) — the full `.ki-config.toml` contract.
 - [skills/knowledgeislands-repo/SKILL.md](../../skills/knowledgeislands-repo/SKILL.md) — the coverage-gate model.

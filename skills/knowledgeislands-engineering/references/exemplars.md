@@ -5,32 +5,25 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated patterns from the KI sibling repos that illustrate what the engineering standard looks like in practice. Use these as pattern
-references when configuring a new repo or auditing an existing one — the goal is to show the standard not as abstract rules but as concrete
-file contents. The `mcp-*` repos are the primary exemplar set for the compiled-TS profile; `arcadia-agentic-harness` is the primary exemplar
-for the scripts-only (no `src/`, no `vitest.config`) profile.
+Curated patterns from the KI sibling repos that illustrate what the engineering standard looks like in practice. Use these as pattern references when configuring a new repo or auditing an existing one — the goal is to show the standard not as abstract rules but as concrete file contents. The `mcp-*` repos are the primary exemplar set for the compiled-TS profile; `arcadia-agentic-harness` is the primary exemplar for the scripts-only (no `src/`, no `vitest.config`) profile.
 
 For the full upstream pin list and in-house sources, see [sources.md](sources.md).
 
 ## Collections
 
-| Source                        | URL                                                           | What it covers                                               |
-| ----------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------ |
-| mcp-gmail                     | <https://github.com/knowledgeislands/mcp-gmail>               | Canonical flat-repo compiled-TS profile with env config      |
-| mcp-kb-fs                     | <https://github.com/knowledgeislands/mcp-kb-fs>               | Canonical flat-repo compiled-TS profile, no CLI binary       |
-| arcadia-agentic-harness       | <https://github.com/knowledgeislands/arcadia-agentic-harness> | Scripts-only profile (no `src/`, no tests); the harness repo |
-| Biome configuration reference | <https://biomejs.dev/reference/configuration/>                | The schema the `$schema` pin tracks                          |
-| TypeScript compiler options   | <https://www.typescriptlang.org/tsconfig>                     | The invariants and the compiled-TS profile options           |
+| Source | URL | What it covers |
+| --- | --- | --- |
+| mcp-gmail | <https://github.com/knowledgeislands/mcp-gmail> | Canonical flat-repo compiled-TS profile with env config |
+| mcp-kb-fs | <https://github.com/knowledgeislands/mcp-kb-fs> | Canonical flat-repo compiled-TS profile, no CLI binary |
+| arcadia-agentic-harness | <https://github.com/knowledgeislands/arcadia-agentic-harness> | Scripts-only profile (no `src/`, no tests); the harness repo |
+| Biome configuration reference | <https://biomejs.dev/reference/configuration/> | The schema the `$schema` pin tracks |
+| TypeScript compiler options | <https://www.typescriptlang.org/tsconfig> | The invariants and the compiled-TS profile options |
 
 ## Selected patterns
 
 ### Canonical `biome.json`
 
-All 10 KI TS/Bun repos carry this config verbatim. The `$schema` pins the Biome version — when the house upgrades Biome, bump this value and
-the matching devDependency together. `vcs.useIgnoreFile: true` means `.gitignore` is the single ignore source; no separate Biome ignore file
-is needed. `lineWidth: 140` matches `.prettierrc.json` so Biome-formatted code and Prettier-formatted Markdown use the same column budget.
-`noExplicitAny: off` is the deliberate house divergence from the recommended preset — KI TypeScript uses `any` sparingly but does not ban
-it.
+All 10 KI TS/Bun repos carry this config verbatim. The `$schema` pins the Biome version — when the house upgrades Biome, bump this value and the matching devDependency together. `vcs.useIgnoreFile: true` means `.gitignore` is the single ignore source; no separate Biome ignore file is needed. `lineWidth: 140` matches `.prettierrc.json` so Biome-formatted code and Prettier-formatted Markdown use the same column budget. `noExplicitAny: off` is the deliberate house divergence from the recommended preset — KI TypeScript uses `any` sparingly but does not ban it.
 
 ```json
 {
@@ -51,11 +44,7 @@ it.
 
 ### `tsconfig.json` — compiled-TS profile (the `mcp-*` base)
 
-Used by every `mcp-*` repo. The universal invariants (`strict`, `nodenext`, `noEmit`, `isolatedModules`, `esModuleInterop`, `skipLibCheck`,
-`forceConsistentCasingInFileNames`) must hold in every KI repo, including those that do not compile. The additional fields (`target es2024`,
-`moduleDetection: force`, `types: ["node", "vitest/globals"]`, full `noUnused*` / `noImplicit*`) form the compiled-TS profile shared across
-all repos that ship a `dist/`. A `tsconfig.build.json` that extends this adds `noEmit: false`, `outDir: ./dist`, and `rootDir: ./src` — the
-`include`/`exclude` on the base already match.
+Used by every `mcp-*` repo. The universal invariants (`strict`, `nodenext`, `noEmit`, `isolatedModules`, `esModuleInterop`, `skipLibCheck`, `forceConsistentCasingInFileNames`) must hold in every KI repo, including those that do not compile. The additional fields (`target es2024`, `moduleDetection: force`, `types: ["node", "vitest/globals"]`, full `noUnused*` / `noImplicit*`) form the compiled-TS profile shared across all repos that ship a `dist/`. A `tsconfig.build.json` that extends this adds `noEmit: false`, `outDir: ./dist`, and `rootDir: ./src` — the `include`/`exclude` on the base already match.
 
 ```json
 {
@@ -90,10 +79,7 @@ all repos that ship a `dist/`. A `tsconfig.build.json` that extends this adds `n
 
 ### Required script families in `package.json`
 
-The two families (`ki:lint:*` and `ki:deps:*`) are byte-identical across all 10 repos — the checker exact-matches them. Extras
-(`ki:skills:*`, `ki:repo:audit`, `ki:engineering:audit`, repo-specific dev scripts) are never drift. The critical trap: the test script is
-`vitest run`, never `bun test` — `bun test` silently invokes Bun's own runner. Note that `ki:lint:md` is the local-fix variant (writes) and
-`ki:lint:md:check` is what CI runs (`--check` exits non-zero on violations without writing).
+The two families (`ki:lint:*` and `ki:deps:*`) are byte-identical across all 10 repos — the checker exact-matches them. Extras (`ki:skills:*`, `ki:repo:audit`, `ki:engineering:audit`, repo-specific dev scripts) are never drift. The critical trap: the test script is `vitest run`, never `bun test` — `bun test` silently invokes Bun's own runner. Note that `ki:lint:md` is the local-fix variant (writes) and `ki:lint:md:check` is what CI runs (`--check` exits non-zero on violations without writing).
 
 ```jsonc
 {
@@ -119,10 +105,7 @@ The two families (`ki:lint:*` and `ki:deps:*`) are byte-identical across all 10 
 
 ### Minimal `[knowledgeislands-engineering]` table in `.ki-config.toml`
 
-The table is a conformance marker — its presence declares "the engineering standard applies here". It carries no top-level keys because
-capabilities (tests, compiled build, env config) are auto-detected from repo markers (`vitest.config.*`, `tsconfig.build.json`,
-`.env*.example`). The only allowed sub-structure is a `[knowledgeislands-engineering.checks]` table for deliberate waivers. A repo that
-fully conforms writes the table header and nothing else.
+The table is a conformance marker — its presence declares "the engineering standard applies here". It carries no top-level keys because capabilities (tests, compiled build, env config) are auto-detected from repo markers (`vitest.config.*`, `tsconfig.build.json`, `.env*.example`). The only allowed sub-structure is a `[knowledgeislands-engineering.checks]` table for deliberate waivers. A repo that fully conforms writes the table header and nothing else.
 
 ```toml
 [knowledgeislands-engineering]

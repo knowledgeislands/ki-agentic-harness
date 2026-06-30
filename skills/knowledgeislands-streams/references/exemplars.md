@@ -5,26 +5,21 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated patterns showing what well-formed Streams zone notes, proposal documents, and Focus dashboards look like. Use these as concrete
-references when authoring proposals, running CONFORM, or deciding whether a stream is correctly structured. Drawn from `arcadia-principal` —
-the canonical live base for this skill — and from the normative definitions in the skill's own reference files.
+Curated patterns showing what well-formed Streams zone notes, proposal documents, and Focus dashboards look like. Use these as concrete references when authoring proposals, running CONFORM, or deciding whether a stream is correctly structured. Drawn from `arcadia-principal` — the canonical live base for this skill — and from the normative definitions in the skill's own reference files.
 
 ## Collections
 
-| Source            | URL                                                | What it covers                                                                  |
-| ----------------- | -------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Source | URL | What it covers |
+| --- | --- | --- |
 | arcadia-principal | No public URL — KI repos are the primary exemplars | Live Streams zone: Focus dashboards, proposal documents, parent stream layout † |
 
-† `arcadia-principal` is at `/Users/krisbrown/kis/knowledgeislands/arcadia-principal/` on this machine. Its Streams zone carries the
-canonical structure cleanly. See `sources.md` for the conformance notes (the proposal apparatus is clean; some index frontmatter still
-carries legacy keys as of the last review).
+† `arcadia-principal` is at `/Users/krisbrown/kis/knowledgeislands/arcadia-principal/` on this machine. Its Streams zone carries the canonical structure cleanly. See `sources.md` for the conformance notes (the proposal apparatus is clean; some index frontmatter still carries legacy keys as of the last review).
 
 ## Selected patterns
 
 ### Well-formed proposal frontmatter
 
-Every full-proposal stream note (a `<Name> Proposal.md` file) carries these lifecycle fields. The following is taken from
-`Streams/Future/Island MCP/Island MCP Proposal.md` in `arcadia-principal`:
+Every full-proposal stream note (a `<Name> Proposal.md` file) carries these lifecycle fields. The following is taken from `Streams/Future/Island MCP/Island MCP Proposal.md` in `arcadia-principal`:
 
 ```yaml
 ---
@@ -39,10 +34,7 @@ author: Mixed
 ---
 ```
 
-`type: stream-proposal` is the machine-readable marker the checker keys on. `status` is one of `draft` / `ready` / `in-progress` /
-`rolled-out` / `reviewed` / `rejected`. `dependencies` is a YAML list of prerequisite proposal filenames — empty here because none exist
-yet, but always present so the checker can validate it. `priority` is `urgent` / `high` / `medium` / `low`. Index notes (`stream-focus`,
-`stream-zone`, `stream-index`) do not carry `status`, `priority`, or `dependencies` — those fields are for proposals only.
+`type: stream-proposal` is the machine-readable marker the checker keys on. `status` is one of `draft` / `ready` / `in-progress` / `rolled-out` / `reviewed` / `rejected`. `dependencies` is a YAML list of prerequisite proposal filenames — empty here because none exist yet, but always present so the checker can validate it. `priority` is `urgent` / `high` / `medium` / `low`. Index notes (`stream-focus`, `stream-zone`, `stream-index`) do not carry `status`, `priority`, or `dependencies` — those fields are for proposals only.
 
 ### Proposal document structure
 
@@ -92,13 +84,11 @@ This stream follows the [Enactment Process](../../../Admin/Operations/Processes/
 _Analysis, diagrams, and draft content go here._
 ```
 
-The Governance footer links to the base's bound process note (not to the skill itself). Inputs rows use `Document` / `Decision` /
-`Prerequisite` tags; Outputs rows use `Decision` / `Artefact`. The Checklist doubles as rollout status — items are ticked as executed.
+The Governance footer links to the base's bound process note (not to the skill itself). Inputs rows use `Document` / `Decision` / `Prerequisite` tags; Outputs rows use `Decision` / `Artefact`. The Checklist doubles as rollout status — items are ticked as executed.
 
 ### Focus dashboard (stream-focus index)
 
-Each Focus folder carries a same-name index note. Its `## Streams` table is the live triage view for that Focus. From
-`Streams/Active/Active.md` in `arcadia-principal`:
+Each Focus folder carries a same-name index note. Its `## Streams` table is the live triage view for that Focus. From `Streams/Active/Active.md` in `arcadia-principal`:
 
 ```yaml
 ---
@@ -129,14 +119,11 @@ Streams currently receiving active attention — projects being worked on now.
 | [[Knowledge Capital Extraction Proposal]] | `draft`       | `medium` |
 ```
 
-The `## Streams` table is ordered `in-progress` → `ready` → `draft`, then by priority within each group. Topic cells use wikilinks (this is
-an Obsidian-rendered index; the skill reads and understands them but writes relative markdown paths when creating new notes). Update this
-table on every status or priority change — it has no value if it lags.
+The `## Streams` table is ordered `in-progress` → `ready` → `draft`, then by priority within each group. Topic cells use wikilinks (this is an Obsidian-rendered index; the skill reads and understands them but writes relative markdown paths when creating new notes). Update this table on every status or priority change — it has no value if it lags.
 
 ### Parent stream folder layout
 
-When a stream has child notes or sub-folders, it uses the parent layout: a bare-topic folder with a slim same-name index note plus the
-proposal as a child. From `Streams/Future/Island MCP/` in `arcadia-principal`:
+When a stream has child notes or sub-folders, it uses the parent layout: a bare-topic folder with a slim same-name index note plus the proposal as a child. From `Streams/Future/Island MCP/` in `arcadia-principal`:
 
 ```text
 Streams/Future/Island MCP/         ← bare topic folder (NOT "Island MCP Proposal/")
@@ -145,5 +132,4 @@ Streams/Future/Island MCP/         ← bare topic folder (NOT "Island MCP Propos
 └── Island MCP Design.md           ← child working note (type: stream-note)
 ```
 
-The proposal note's name is stable across leaf ↔ parent transitions — only the folder name and the presence of the slim index change. A leaf
-stream keeps the `Proposal` suffix on its folder; a parent stream drops it.
+The proposal note's name is stable across leaf ↔ parent transitions — only the folder name and the presence of the slim index change. A leaf stream keeps the `Proposal` suffix on its folder; a parent stream drops it.

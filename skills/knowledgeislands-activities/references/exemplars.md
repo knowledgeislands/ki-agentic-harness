@@ -52,6 +52,5 @@ author: Written with Claude
 ```markdown
 # Weekly Review
 
-A recurring conversation with the island custodian each Friday to review the week's captures, route outstanding notes, and update the active
-streams. No external artefact — invoked by the user.
+A recurring conversation with the island custodian each Friday to review the week's captures, route outstanding notes, and update the active streams. No external artefact — invoked by the user.
 ```

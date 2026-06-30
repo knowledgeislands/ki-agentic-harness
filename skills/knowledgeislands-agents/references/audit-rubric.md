@@ -1,13 +1,8 @@
 # Audit Rubric — the checkable criteria
 
-Line-by-line pass/fail criteria for auditing a Claude Code subagent against the [Agent Definitions Standard](agent-definitions-standard.md).
-Each is tagged **[M] mechanical** (the bundled [linter](../scripts/lint-agents.ts) checks it) or **[J] judgment** (you assess it by
-reading). The **code** in bold (`NAME-1`, `DESC-2`, …) is the area's short code plus its number within that area — what the linter prints
-and what an audit should cite. Source abbreviations resolve in [the source list](sources.md); each area maps to the like-named standard
-section.
+Line-by-line pass/fail criteria for auditing a Claude Code subagent against the [Agent Definitions Standard](agent-definitions-standard.md). Each is tagged **[M] mechanical** (the bundled [linter](../scripts/lint-agents.ts) checks it) or **[J] judgment** (you assess it by reading). The **code** in bold (`NAME-1`, `DESC-2`, …) is the area's short code plus its number within that area — what the linter prints and what an audit should cite. Source abbreviations resolve in [the source list](sources.md); each area maps to the like-named standard section.
 
-A criterion's tag is a contract with the linter: if you find yourself eyeballing an **[M]** check, run the linter; if the linter starts
-enforcing a **[J]** check, move its tag here.
+A criterion's tag is a contract with the linter: if you find yourself eyeballing an **[M]** check, run the linter; if the linter starts enforcing a **[J]** check, move its tag here.
 
 ## Contents
 
@@ -57,35 +52,20 @@ enforcing a **[J]** check, move its tag here.
 
 → [standard §5](agent-definitions-standard.md#5-frontmatter-optional-fields) · [§8](agent-definitions-standard.md#8-tools--model)
 
-- **FM-1 [J]** `tools` / `disallowedTools`, if set, is **least-privilege** — only what the role needs (omitting inherits all, the wrong
-  default for a narrow role). An advisory agent carries no write/exec tools. (CC, BP)
-- **FM-2 [J]** `model` is deliberate: `inherit` by default, a pin (alias `sonnet` / `opus` / `haiku` / `fable`, not a rot-prone full id)
-  only with a stated reason. (CC, BP)
-- **FM-3 [J]** Every frontmatter field is in the current subagents spec set — `name`, `description`, `tools`, `disallowedTools`, `model`,
-  `permissionMode`, `maxTurns`, `skills`, `mcpServers`, `hooks`, `memory`, `background`, `effort`, `isolation`, `color`, `initialPrompt`. A
-  field outside this set is flagged as a portability risk. (CC)
-- **FM-4 [J]** `permissionMode`, if set, is deliberate, and `bypassPermissions` (which skips permission prompts) carries a stated reason.
-  (CC)
-- **FM-5 [J]** `skills`, if set, preloads a named skill's full content at startup — use only when the role must always have that standard
-  before acting and runtime discovery would be fragile. For optional or situational context, prefer grounding-at-runtime (the agent reads
-  the skill on demand). (CC)
-- **FM-6 [J]** `memory`, if set (`user` / `project` / `local`), enables cross-session accumulation — set only when the role genuinely needs
-  state across sessions; the system prompt should describe what to learn and how to apply it. (CC)
-- **FM-7 [J]** `hooks`, if set, are scoped to this subagent — use for invariants local to this role (e.g., a `SubagentStop` hook blocking a
-  result if tests fail or secrets are present). Prefer project-level `settings.json` hooks for workspace-wide rules; state the invariant
-  each scoped hook enforces. (CC, COM2)
-- **FM-8 [J]** `effort`, if set, pins reasoning effort for this agent — `low` for mechanical/high-volume roles where full reasoning is
-  wasted; `high`+ for deep-analysis roles where the extra reasoning is load-bearing. Prefer inheriting (omit) when the session effort is
-  appropriate. (CC)
-- **FM-9 [J]** `isolation: worktree`, if set, runs the agent in a fresh git worktree — use only when the role makes file edits that could
-  conflict with the caller's working tree. The overhead is real; do not use for read-only or advisory roles. (CC)
-- **FM-10 [J]** `background: true`, if set, always runs the agent as a non-blocking background task — use when the caller does not need to
-  wait for the result. For roles where the caller needs the result, omit. (CC)
+- **FM-1 [J]** `tools` / `disallowedTools`, if set, is **least-privilege** — only what the role needs (omitting inherits all, the wrong default for a narrow role). An advisory agent carries no write/exec tools. (CC, BP)
+- **FM-2 [J]** `model` is deliberate: `inherit` by default, a pin (alias `sonnet` / `opus` / `haiku` / `fable`, not a rot-prone full id) only with a stated reason. (CC, BP)
+- **FM-3 [J]** Every frontmatter field is in the current subagents spec set — `name`, `description`, `tools`, `disallowedTools`, `model`, `permissionMode`, `maxTurns`, `skills`, `mcpServers`, `hooks`, `memory`, `background`, `effort`, `isolation`, `color`, `initialPrompt`. A field outside this set is flagged as a portability risk. (CC)
+- **FM-4 [J]** `permissionMode`, if set, is deliberate, and `bypassPermissions` (which skips permission prompts) carries a stated reason. (CC)
+- **FM-5 [J]** `skills`, if set, preloads a named skill's full content at startup — use only when the role must always have that standard before acting and runtime discovery would be fragile. For optional or situational context, prefer grounding-at-runtime (the agent reads the skill on demand). (CC)
+- **FM-6 [J]** `memory`, if set (`user` / `project` / `local`), enables cross-session accumulation — set only when the role genuinely needs state across sessions; the system prompt should describe what to learn and how to apply it. (CC)
+- **FM-7 [J]** `hooks`, if set, are scoped to this subagent — use for invariants local to this role (e.g., a `SubagentStop` hook blocking a result if tests fail or secrets are present). Prefer project-level `settings.json` hooks for workspace-wide rules; state the invariant each scoped hook enforces. (CC, COM2)
+- **FM-8 [J]** `effort`, if set, pins reasoning effort for this agent — `low` for mechanical/high-volume roles where full reasoning is wasted; `high`+ for deep-analysis roles where the extra reasoning is load-bearing. Prefer inheriting (omit) when the session effort is appropriate. (CC)
+- **FM-9 [J]** `isolation: worktree`, if set, runs the agent in a fresh git worktree — use only when the role makes file edits that could conflict with the caller's working tree. The overhead is real; do not use for read-only or advisory roles. (CC)
+- **FM-10 [J]** `background: true`, if set, always runs the agent as a non-blocking background task — use when the caller does not need to wait for the result. For roles where the caller needs the result, omit. (CC)
 
 ## PROMPT — System-prompt quality
 
-→ [standard §6](agent-definitions-standard.md#6-system-prompt-size--focus) ·
-[§7](agent-definitions-standard.md#7-system-prompt-structure--quality)
+→ [standard §6](agent-definitions-standard.md#6-system-prompt-size--focus) · [§7](agent-definitions-standard.md#7-system-prompt-structure--quality)
 
 - **PROMPT-1 [M]** A non-empty system-prompt body follows the frontmatter. (CC)
 - **PROMPT-2 [J]** Opens with **role & lane** — what it owns and, explicitly, what it does not. (HOUSE)
@@ -101,19 +81,15 @@ enforcing a **[J]** check, move its tag here.
 
 - **LANE-1 [J]** The agent owns a **distinct lane**; its boundary keeps it from overlapping siblings. (HOUSE)
 - **LANE-2 [J]** Where a sibling is genuinely adjacent, **each** names the other as the hand-off — reciprocal, not one-directional. (HOUSE)
-- **LANE-3 [J]** A **coordinator** agent — one that spawns subagents — restricts which agents it may spawn via `Agent(type)` in `tools`
-  (e.g., `tools: Agent(worker, researcher)`). Its own-vs-defer boundary declares which agents it orchestrates and why; an unrestricted
-  coordinator is a blast-radius risk. (CC)
-- **LANE-4 [J]** Subagents may nest to a depth of ≤ 5. A coordinator's system prompt declares its spawn depth so callers can reason about
-  total depth. Avoid nesting unless hierarchical decomposition genuinely helps; flat fan-out is simpler and easier to audit. (CC)
+- **LANE-3 [J]** A **coordinator** agent — one that spawns subagents — restricts which agents it may spawn via `Agent(type)` in `tools` (e.g., `tools: Agent(worker, researcher)`). Its own-vs-defer boundary declares which agents it orchestrates and why; an unrestricted coordinator is a blast-radius risk. (CC)
+- **LANE-4 [J]** Subagents may nest to a depth of ≤ 5. A coordinator's system prompt declares its spawn depth so callers can reason about total depth. Avoid nesting unless hierarchical decomposition genuinely helps; flat fan-out is simpler and easier to audit. (CC)
 
 ## LINK — Linking
 
 → [standard §10](agent-definitions-standard.md#10-linking)
 
 - **LINK-1 [M]** Relative markdown links to **bundled files** resolve on disk. (HOUSE)
-- **LINK-2 [J]** `[[wikilinks]]` to KB notes are **allowed** here (a grounded agent cites its notes) — they are not a defect, unlike in a
-  `SKILL.md`. (HOUSE)
+- **LINK-2 [J]** `[[wikilinks]]` to KB notes are **allowed** here (a grounded agent cites its notes) — they are not a defect, unlike in a `SKILL.md`. (HOUSE)
 - **LINK-3 [J]** Other agents/skills are referred to by `name`, never by file path. (HOUSE)
 
 ## PROC — Process / meta
@@ -127,14 +103,11 @@ enforcing a **[J]** check, move its tag here.
 
 → [standard §12](agent-definitions-standard.md#12-longevity)
 
-- **LONG-1 [J]** Volatile facts (model IDs, tool names, note paths, dated specifics) are resolved at runtime (read the live KB, prefer
-  `model: inherit`) or covered by a refresh path — prefer grounding-at-runtime over baked-in facts. (BP, HOUSE)
+- **LONG-1 [J]** Volatile facts (model IDs, tool names, note paths, dated specifics) are resolved at runtime (read the live KB, prefer `model: inherit`) or covered by a refresh path — prefer grounding-at-runtime over baked-in facts. (BP, HOUSE)
 
 ## COLL — Cross-agent collision
 
 → [standard §13](agent-definitions-standard.md#13-cross-agent-collision) · run the linter over the **whole set**, not one agent
 
-- **COLL-1 [M]** Within a set of ≥ 2 agents: no two share a `name` (FAIL), and no two `description`s declare the **same quoted trigger
-  phrase** (WARN). (HOUSE)
-- **COLL-2 [J]** Where two agents could take one request, **each** names the other as the off-ramp; a one-directional guard is a half-fix.
-  (HOUSE)
+- **COLL-1 [M]** Within a set of ≥ 2 agents: no two share a `name` (FAIL), and no two `description`s declare the **same quoted trigger phrase** (WARN). (HOUSE)
+- **COLL-2 [J]** Where two agents could take one request, **each** names the other as the off-ramp; a one-directional guard is a half-fix. (HOUSE)

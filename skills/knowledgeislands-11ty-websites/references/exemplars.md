@@ -5,30 +5,22 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated patterns worth reading when authoring or auditing a Knowledge Islands Eleventy site. Use these as concrete references — what an
-`eleventy.config.ts` looks like with the required transforms wired, how the Tailwind entry point is structured, what the `package.json`
-script family looks like for a monorepo site, and how a `base.njk` layout composes its partials. Do not copy them wholesale; adapt to the
-specific site's content model, tokens, and nav shape. For the full standard, see [eleventy-site-standard.md](eleventy-site-standard.md); for
-source provenance, see [sources.md](sources.md).
+Curated patterns worth reading when authoring or auditing a Knowledge Islands Eleventy site. Use these as concrete references — what an `eleventy.config.ts` looks like with the required transforms wired, how the Tailwind entry point is structured, what the `package.json` script family looks like for a monorepo site, and how a `base.njk` layout composes its partials. Do not copy them wholesale; adapt to the specific site's content model, tokens, and nav shape. For the full standard, see [eleventy-site-standard.md](eleventy-site-standard.md); for source provenance, see [sources.md](sources.md).
 
 ## Collections
 
-| Source                     | URL                                                   | What it covers                                                           |
-| -------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------ |
-| Eleventy docs              | <https://www.11ty.dev/docs/>                          | Config API: `addTransform`, `addDataExtension`, `eleventy.before`, `dir` |
-| Tailwind CSS v4 docs       | <https://tailwindcss.com/docs>                        | Config-less `@import "tailwindcss"`, `@theme inline`, the CLI            |
-| Lucide docs                | <https://lucide.dev/guide/>                           | UMD passthrough delivery, client-side `createIcons()` initialisation     |
-| arcadia-website (in-house) | <https://github.com/knowledgeislands/arcadia-website> | Reference implementation: monorepo layout, config, Tailwind, wrangler    |
+| Source | URL | What it covers |
+| --- | --- | --- |
+| Eleventy docs | <https://www.11ty.dev/docs/> | Config API: `addTransform`, `addDataExtension`, `eleventy.before`, `dir` |
+| Tailwind CSS v4 docs | <https://tailwindcss.com/docs> | Config-less `@import "tailwindcss"`, `@theme inline`, the CLI |
+| Lucide docs | <https://lucide.dev/guide/> | UMD passthrough delivery, client-side `createIcons()` initialisation |
+| arcadia-website (in-house) | <https://github.com/knowledgeislands/arcadia-website> | Reference implementation: monorepo layout, config, Tailwind, wrangler |
 
 ## Selected patterns
 
 ### `eleventy.config.ts` — the two required transforms and the Tailwind lifecycle hook
 
-The config exports a default function. Two transforms are always present: `explicit-index-links` rewrites absolute internal `href`/`src`
-attributes to relative paths (making `dist/` portable — this is standard invariant 2), and `external-link-icons` appends a Lucide icon to
-prose external links. The `eleventy.before` hook compiles Tailwind with `--minify` on a one-shot build; in serve/watch mode the CLI runs in
-parallel and `addWatchTarget` reloads the browser when it writes a new CSS file (standard invariant 4). The `dir` block always emits to
-`../dist` so output lands at the repo root, not inside `site/`.
+The config exports a default function. Two transforms are always present: `explicit-index-links` rewrites absolute internal `href`/`src` attributes to relative paths (making `dist/` portable — this is standard invariant 2), and `external-link-icons` appends a Lucide icon to prose external links. The `eleventy.before` hook compiles Tailwind with `--minify` on a one-shot build; in serve/watch mode the CLI runs in parallel and `addWatchTarget` reloads the browser when it writes a new CSS file (standard invariant 4). The `dir` block always emits to `../dist` so output lands at the repo root, not inside `site/`.
 
 ```typescript
 import { execSync } from 'node:child_process'
@@ -100,11 +92,7 @@ export default function (eleventyConfig: UserConfig) {
 
 ### Tailwind v4 entry — `src/assets/css/main.css`
 
-No `tailwind.config.*` file anywhere — Tailwind 4 is configured entirely in CSS (standard invariant 1). `main.css` is the entry point and an
-import chain: `@import "tailwindcss"` first, then `tokens.css`, then page/section partials. `tokens.css` defines the semantic design tokens
-as CSS custom properties; `@theme inline { … }` exposes them to Tailwind utilities so templates use token names, never hard-coded hex
-values. Note: `tailwindcss` must be listed as its own dependency (not just transitively via `@tailwindcss/cli`) so the
-`@import "tailwindcss"` resolves correctly from the monorepo workspace.
+No `tailwind.config.*` file anywhere — Tailwind 4 is configured entirely in CSS (standard invariant 1). `main.css` is the entry point and an import chain: `@import "tailwindcss"` first, then `tokens.css`, then page/section partials. `tokens.css` defines the semantic design tokens as CSS custom properties; `@theme inline { … }` exposes them to Tailwind utilities so templates use token names, never hard-coded hex values. Note: `tailwindcss` must be listed as its own dependency (not just transitively via `@tailwindcss/cli`) so the `@import "tailwindcss"` resolves correctly from the monorepo workspace.
 
 ```css
 /* main.css — Tailwind entry point.  No tailwind.config.* file. */
@@ -144,11 +132,7 @@ values. Note: `tailwindcss` must be listed as its own dependency (not just trans
 
 ### `package.json` — the site script family
 
-Scripts for the `site/` workspace of a monorepo. All site scripts take the `site:` prefix. `ki:site:dev` uses `concurrently` to run the
-Tailwind `--watch` process (`ki:site:dev:css`) and the Eleventy dev server (`ki:site:dev:serve`) in parallel, named `css`,`11ty`.
-`ki:site:build` invokes the Eleventy CLI via `node --experimental-strip-types` (or plain `bun`) directly — the `eleventy.before` hook
-handles Tailwind minification inside the same process. `ki:site:deploy` and `ki:site:preview` are the hosting scripts (governed by
-`knowledgeislands-cloudflare-hosting`); they appear here because they live in the same root `package.json` in the monorepo shape.
+Scripts for the `site/` workspace of a monorepo. All site scripts take the `site:` prefix. `ki:site:dev` uses `concurrently` to run the Tailwind `--watch` process (`ki:site:dev:css`) and the Eleventy dev server (`ki:site:dev:serve`) in parallel, named `css`,`11ty`. `ki:site:build` invokes the Eleventy CLI via `node --experimental-strip-types` (or plain `bun`) directly — the `eleventy.before` hook handles Tailwind minification inside the same process. `ki:site:deploy` and `ki:site:preview` are the hosting scripts (governed by `knowledgeislands-cloudflare-hosting`); they appear here because they live in the same root `package.json` in the monorepo shape.
 
 ```json
 {
@@ -168,10 +152,7 @@ handles Tailwind minification inside the same process. `ki:site:deploy` and `ki:
 
 ### Nunjucks base layout — `_includes/layouts/base.njk`
 
-The `base.njk` layout is the `<html>` shell for every page. It includes `seo-meta.njk` (canonical + OG + Twitter tags) from
-`_includes/partials/`, loads the compiled `main.css`, pulls in font `<link>` tags, and initialises Lucide client-side with a `<script>` at
-the end of `<body>`. Page-specific layouts extend `base.njk` via `{% extends %}` or wrap it; prose pages set `layout: layouts/base.njk` in
-their cascade data file, never in individual front matter. The `content | safe` filter is the injection point for the page body.
+The `base.njk` layout is the `<html>` shell for every page. It includes `seo-meta.njk` (canonical + OG + Twitter tags) from `_includes/partials/`, loads the compiled `main.css`, pulls in font `<link>` tags, and initialises Lucide client-side with a `<script>` at the end of `<body>`. Page-specific layouts extend `base.njk` via `{% extends %}` or wrap it; prose pages set `layout: layouts/base.njk` in their cascade data file, never in individual front matter. The `content | safe` filter is the injection point for the page body.
 
 ```nunjucks
 <!doctype html>
@@ -197,6 +178,4 @@ their cascade data file, never in individual front matter. The `content | safe` 
 </html>
 ```
 
-`seo-meta.njk` emits the canonical link plus OG and Twitter card tags from `site` global data and page front matter — included from
-`base.njk` so every page carries them automatically. Pages that should not be indexed set `noindex: true` in front matter; the partial emits
-`<meta name="robots" content="noindex, nofollow">` instead.
+`seo-meta.njk` emits the canonical link plus OG and Twitter card tags from `site` global data and page front matter — included from `base.njk` so every page carries them automatically. Pages that should not be indexed set `noindex: true` in front matter; the partial emits `<meta name="robots" content="noindex, nofollow">` instead.

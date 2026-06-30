@@ -2,8 +2,7 @@
 
 **Refresh:** canonical · on-change
 
-This skill's standard is canonical to the Knowledge Islands harness — the live artifact pattern has no external specification. Run REFRESH
-when the pairing convention, required frontmatter, or the artifacts directory changes across bases.
+This skill's standard is canonical to the Knowledge Islands harness — the live artifact pattern has no external specification. Run REFRESH when the pairing convention, required frontmatter, or the artifacts directory changes across bases.
 
 | Source                                               | What it governs                                       | Last reviewed |
 | ---------------------------------------------------- | ----------------------------------------------------- | ------------- |

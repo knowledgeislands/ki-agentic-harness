@@ -6,9 +6,7 @@
 
 ## Context
 
-A harness bundles the four components an agent is equipped with: skills, agents, MCP servers, and evals. Without a standard layout these
-four parts would be placed differently in each harness repo, making them hard to find, install, or audit consistently. The install keystone
-(`knowledgeislands-bootstrap`) and all tooling need to know where each part lives without repo-specific configuration.
+A harness bundles the four components an agent is equipped with: skills, agents, MCP servers, and evals. Without a standard layout these four parts would be placed differently in each harness repo, making them hard to find, install, or audit consistently. The install keystone (`knowledgeislands-bootstrap`) and all tooling need to know where each part lives without repo-specific configuration.
 
 ## Decision
 
@@ -19,9 +17,7 @@ Every Knowledge Islands agentic harness uses a four-part top-level directory lay
 - `mcp/` — MCP server source code
 - `evals/` — evaluation suites
 
-Each directory must carry a `README.md` describing what it holds. An unpopulated directory is an empty shelf with its `README.md` marking
-intent — a shelf is not a gap. The `knowledgeislands-harness` skill governs this container layout; the contents of each directory are
-governed by the relevant sibling skill (`knowledgeislands-skills`, `knowledgeislands-agents`, `knowledgeislands-mcp`).
+Each directory must carry a `README.md` describing what it holds. An unpopulated directory is an empty shelf with its `README.md` marking intent — a shelf is not a gap. The `knowledgeislands-harness` skill governs this container layout; the contents of each directory are governed by the relevant sibling skill (`knowledgeislands-skills`, `knowledgeislands-agents`, `knowledgeislands-mcp`).
 
 ## Consequences
 
@@ -33,5 +29,4 @@ governed by the relevant sibling skill (`knowledgeislands-skills`, `knowledgeisl
 ## References
 
 - [skills/knowledgeislands-harness/SKILL.md](../../skills/knowledgeislands-harness/SKILL.md) — Mode AUDIT step 1 and Mode INIT step 2.
-- [skills/knowledgeislands-harness/references/harness-standard.md](../../skills/knowledgeislands-harness/references/harness-standard.md) —
-  the normative layout specification.
+- [skills/knowledgeislands-harness/references/harness-standard.md](../../skills/knowledgeislands-harness/references/harness-standard.md) — the normative layout specification.

@@ -1,112 +1,64 @@
 # How the skills fit together
 
-The [catalogue](skills.md) says what each skill does. This file is the design behind the set: where the skills that could be confused draw
-their lines, the loops by which knowledge enters and improves, and the invariants every skill holds.
+The [catalogue](skills.md) says what each skill does. This file is the design behind the set: where the skills that could be confused draw their lines, the loops by which knowledge enters and improves, and the invariants every skill holds.
 
 ## Where the skills do not overlap
 
-Each skill's `description` carries its own boundaries so the agent selects the right one, and where two could fire on the same request each
-names the other as the **off-ramp** — reciprocally, so the line holds from both sides (for humans as well as the agent). The pairs worth
-stating once, with the nuance in the footnotes below:
+Each skill's `description` carries its own boundaries so the agent selects the right one, and where two could fire on the same request each names the other as the **off-ramp** — reciprocally, so the line holds from both sides (for humans as well as the agent). The pairs worth stating once, with the nuance in the footnotes below:
 
-| Pair that could be confused                                            | The line between them                                                                    |
-| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `knowledgeislands-mcp` vs `knowledgeislands-skills`                    | MCP **server code** vs a **`SKILL.md`** (frontmatter + body prose). †                    |
-| `knowledgeislands-agents` vs `knowledgeislands-skills`                 | A **subagent definition** vs a **`SKILL.md`** — twins over different artifacts.          |
-| `knowledgeislands-kb` vs `knowledgeislands-streams`                    | The five-zone model + note CRUD vs the **`Streams` zone internals**, delegated. ‡        |
-| `knowledgeislands-kb` vs `knowledgeislands-decision-records`           | The zone model + KI-wide frontmatter standard vs the **Decision Record** artifact. †††   |
-| `knowledgeislands-kb` vs `knowledgeislands-activities`                 | The zone structure vs **Activity notes** under `Admin/Operations/`. †††                  |
-| `knowledgeislands-kb` vs `knowledgeislands-live-artifacts`             | The zone structure vs **Live Artifact pairs** (`.md` + rendered `.html`). †††            |
-| `knowledgeislands-decision-records` vs `knowledgeislands-streams`      | The settled **decision record** vs the **Enactment Process** that ratifies a change. ‡‡‡ |
-| `knowledgeislands-repo` vs `knowledgeislands-mcp`                      | A repo's **configuration** vs an MCP server's **source**. §                              |
-| `knowledgeislands-authoring` vs the rest                               | **How we write** vs _what_ we write. ¶                                                   |
-| `knowledgeislands-engineering` vs the rest                             | **How we build** vs everything that isn't the toolchain. ‖                               |
-| `knowledgeislands-11ty-websites` vs `…-cloudflare-hosting`             | **Building** the portable `dist/` vs **serving** it — the `dist/` is the seam. ††        |
-| `…-cloudflare-hosting` vs the generic `cloudflare` / `wrangler` skills | The **one site Worker** serving `dist/` vs all other Workers + platform usage. ‡‡        |
-| `knowledgeislands-tokenomics` vs `knowledgeislands-mcp`                | The **token cost** of the MCP tool surface vs an MCP server's **code**. §§               |
-| `knowledgeislands-tokenomics` vs `knowledgeislands-skills`             | The installed set's **description cost** vs one `SKILL.md`'s **quality**. §§             |
-| `knowledgeislands-tokenomics` vs the `claude-api` skill                | The **shape** of the context budget vs the volatile **numbers** it cites. §§             |
-| `knowledgeislands-harness` vs `knowledgeislands-skills`                | The **container** (four-part layout) vs a `SKILL.md`'s **quality** inside it. ¶¶         |
-| `knowledgeislands-harness` vs `knowledgeislands-repo`                  | A harness's **four-part layout** vs any ki-repo's **config & GitHub settings**. ¶¶       |
-| `knowledgeislands-harness` vs `knowledgeislands-agents`                | The **container** holding `agents/` vs a **subagent definition**'s quality. ¶¶           |
-| `knowledgeislands-bootstrap` vs `knowledgeislands-repo`                | The install **mechanism** (linking `.claude/skills/`) vs the config **content**. ‖‖      |
-| `knowledgeislands-bootstrap` vs `knowledgeislands-harness`             | The install **keystone** (one global skill) vs the **container** convention. ‖‖          |
+| Pair that could be confused | The line between them |
+| --- | --- |
+| `knowledgeislands-mcp` vs `knowledgeislands-skills` | MCP **server code** vs a **`SKILL.md`** (frontmatter + body prose). † |
+| `knowledgeislands-agents` vs `knowledgeislands-skills` | A **subagent definition** vs a **`SKILL.md`** — twins over different artifacts. |
+| `knowledgeislands-kb` vs `knowledgeislands-streams` | The five-zone model + note CRUD vs the **`Streams` zone internals**, delegated. ‡ |
+| `knowledgeislands-kb` vs `knowledgeislands-decision-records` | The zone model + KI-wide frontmatter standard vs the **Decision Record** artifact. ††† |
+| `knowledgeislands-kb` vs `knowledgeislands-activities` | The zone structure vs **Activity notes** under `Admin/Operations/`. ††† |
+| `knowledgeislands-kb` vs `knowledgeislands-live-artifacts` | The zone structure vs **Live Artifact pairs** (`.md` + rendered `.html`). ††† |
+| `knowledgeislands-decision-records` vs `knowledgeislands-streams` | The settled **decision record** vs the **Enactment Process** that ratifies a change. ‡‡‡ |
+| `knowledgeislands-repo` vs `knowledgeislands-mcp` | A repo's **configuration** vs an MCP server's **source**. § |
+| `knowledgeislands-authoring` vs the rest | **How we write** vs _what_ we write. ¶ |
+| `knowledgeislands-engineering` vs the rest | **How we build** vs everything that isn't the toolchain. ‖ |
+| `knowledgeislands-11ty-websites` vs `…-cloudflare-hosting` | **Building** the portable `dist/` vs **serving** it — the `dist/` is the seam. †† |
+| `…-cloudflare-hosting` vs the generic `cloudflare` / `wrangler` skills | The **one site Worker** serving `dist/` vs all other Workers + platform usage. ‡‡ |
+| `knowledgeislands-tokenomics` vs `knowledgeislands-mcp` | The **token cost** of the MCP tool surface vs an MCP server's **code**. §§ |
+| `knowledgeislands-tokenomics` vs `knowledgeislands-skills` | The installed set's **description cost** vs one `SKILL.md`'s **quality**. §§ |
+| `knowledgeislands-tokenomics` vs the `claude-api` skill | The **shape** of the context budget vs the volatile **numbers** it cites. §§ |
+| `knowledgeislands-harness` vs `knowledgeislands-skills` | The **container** (four-part layout) vs a `SKILL.md`'s **quality** inside it. ¶¶ |
+| `knowledgeislands-harness` vs `knowledgeislands-repo` | A harness's **four-part layout** vs any ki-repo's **config & GitHub settings**. ¶¶ |
+| `knowledgeislands-harness` vs `knowledgeislands-agents` | The **container** holding `agents/` vs a **subagent definition**'s quality. ¶¶ |
+| `knowledgeislands-bootstrap` vs `knowledgeislands-repo` | The install **mechanism** (linking `.claude/skills/`) vs the config **content**. ‖‖ |
+| `knowledgeislands-bootstrap` vs `knowledgeislands-harness` | The install **keystone** (one global skill) vs the **container** convention. ‖‖ |
 
-† Auditing the `SKILL.md` of an MCP-related skill is `knowledgeislands-skills`' job; auditing the server's `src/` layout, config injection,
-and tool surface is `knowledgeislands-mcp`'s. This is the one pair that could be confused — both "audit against a standard" — so each names
-the other as the off-ramp.
+† Auditing the `SKILL.md` of an MCP-related skill is `knowledgeislands-skills`' job; auditing the server's `src/` layout, config injection, and tool surface is `knowledgeislands-mcp`'s. This is the one pair that could be confused — both "audit against a standard" — so each names the other as the off-ramp.
 
-‡ Both operate over a base, at different scopes. `knowledgeislands-kb` owns the five-zone model, routing, and note CRUD; it knows `Streams/`
-is a zone but delegates the zone's internals — the Focus lifecycle, the proposal layout, the Enactment Process — to
-`knowledgeislands-streams`, which loads only when working in `Streams`. Anything outside that zone is kb's.
+‡ Both operate over a base, at different scopes. `knowledgeislands-kb` owns the five-zone model, routing, and note CRUD; it knows `Streams/` is a zone but delegates the zone's internals — the Focus lifecycle, the proposal layout, the Enactment Process — to `knowledgeislands-streams`, which loads only when working in `Streams`. Anything outside that zone is kb's.
 
-§ `knowledgeislands-repo` governs **any** Knowledge Islands–compliant repo (anything carrying a `.ki-config.toml`) — its configuration,
-GitHub-side settings, and the universal local files (README/LICENSE/.gitignore/.editorconfig). `knowledgeislands-mcp` governs the server's
-**code** (`src/` layout, config injection, tool surface). Configuration vs source.
+§ `knowledgeislands-repo` governs **any** Knowledge Islands–compliant repo (anything carrying a `.ki-config.toml`) — its configuration, GitHub-side settings, and the universal local files (README/LICENSE/.gitignore/.editorconfig). `knowledgeislands-mcp` governs the server's **code** (`src/` layout, config injection, tool surface). Configuration vs source.
 
-¶ `knowledgeislands-authoring` owns _how we write_ — Markdown style and TOML _formatting_ — the cross-cutting layer the others assume rather
-than restate. The content itself routes elsewhere: note _content_ and KB structure → `knowledgeislands-kb`; a repo's _configuration_ and the
-`.ki-config.toml` _contract_ → `knowledgeislands-repo`; a `SKILL.md`'s prose and frontmatter → `knowledgeislands-skills`.
+¶ `knowledgeislands-authoring` owns _how we write_ — Markdown style and TOML _formatting_ — the cross-cutting layer the others assume rather than restate. The content itself routes elsewhere: note _content_ and KB structure → `knowledgeislands-kb`; a repo's _configuration_ and the `.ki-config.toml` _contract_ → `knowledgeislands-repo`; a `SKILL.md`'s prose and frontmatter → `knowledgeislands-skills`.
 
-‖ `knowledgeislands-engineering` is the build/test twin of `knowledgeislands-authoring`: it owns the _engineering toolchain_ (package.json
-script families, `tsconfig`/`biome`/`vitest`, the Bun/Node split, the build/cli-chmod rule) and the _enforcement framework_ every governance
-skill follows. The rest routes out: GitHub settings, security, and the `.ki-config.toml` _contract_ → `knowledgeislands-repo` (engineering
-only reads its own table within it); Markdown/TOML _formatting_ → `knowledgeislands-authoring`; an artifact's own code and delta (an MCP's
-`src/` layout, tool surface, coverage-excludes) → that artifact skill, which **composes** its checker on top of engineering's common layer.
-The two website skills are such artifact skills, composing on engineering exactly as `knowledgeislands-mcp` does.
+‖ `knowledgeislands-engineering` is the build/test twin of `knowledgeislands-authoring`: it owns the _engineering toolchain_ (package.json script families, `tsconfig`/`biome`/`vitest`, the Bun/Node split, the build/cli-chmod rule) and the _enforcement framework_ every governance skill follows. The rest routes out: GitHub settings, security, and the `.ki-config.toml` _contract_ → `knowledgeislands-repo` (engineering only reads its own table within it); Markdown/TOML _formatting_ → `knowledgeislands-authoring`; an artifact's own code and delta (an MCP's `src/` layout, tool surface, coverage-excludes) → that artifact skill, which **composes** its checker on top of engineering's common layer. The two website skills are such artifact skills, composing on engineering exactly as `knowledgeislands-mcp` does.
 
-†† `knowledgeislands-11ty-websites` owns the _build_ — Eleventy/Nunjucks/Tailwind and the absolute→relative URL transform that emits a
-portable `dist/`; `knowledgeislands-cloudflare-hosting` owns _serving_ that `dist/` — the `wrangler.jsonc`, Workers + Static Assets, and
-custom domains. They meet only at the `dist/` path, so each names the other as the off-ramp, and both compose on
-`knowledgeislands-engineering`.
+†† `knowledgeislands-11ty-websites` owns the _build_ — Eleventy/Nunjucks/Tailwind and the absolute→relative URL transform that emits a portable `dist/`; `knowledgeislands-cloudflare-hosting` owns _serving_ that `dist/` — the `wrangler.jsonc`, Workers + Static Assets, and custom domains. They meet only at the `dist/` path, so each names the other as the off-ramp, and both compose on `knowledgeislands-engineering`.
 
-‡‡ `knowledgeislands-cloudflare-hosting` governs only the **site** Worker — the one with an `assets` block serving `dist/`. Every other
-Worker — a bot, an ingress receiver, an API, anything with a `main` entry, bindings, or crons — and all general `wrangler`/Workers usage is
-the generic `cloudflare` / `wrangler` skills' domain; the hosting skill notes such a Worker and leaves it alone.
+‡‡ `knowledgeislands-cloudflare-hosting` governs only the **site** Worker — the one with an `assets` block serving `dist/`. Every other Worker — a bot, an ingress receiver, an API, anything with a `main` entry, bindings, or crons — and all general `wrangler`/Workers usage is the generic `cloudflare` / `wrangler` skills' domain; the hosting skill notes such a Worker and leaves it alone.
 
-§§ `knowledgeislands-tokenomics` measures and tunes the **cost** of the context surface; it does not own the artifacts that produce that
-cost. It composes on the artifact skills rather than competing with them — it reads the MCP tool surface but routes a server's own design to
-`knowledgeislands-mcp`, reads the installed skills' descriptions but routes a single `SKILL.md`'s quality to `knowledgeislands-skills`, and
-reads a base's loaded surface but routes structure to `knowledgeislands-kb`. The volatile reference **numbers** (model ids, prices, cache
-TTLs, context-window sizes) it deliberately holds none of — those are the `claude-api` skill's, resolved at runtime — so it owns the
-budget's _shape_, that skill the figures.
+§§ `knowledgeislands-tokenomics` measures and tunes the **cost** of the context surface; it does not own the artifacts that produce that cost. It composes on the artifact skills rather than competing with them — it reads the MCP tool surface but routes a server's own design to `knowledgeislands-mcp`, reads the installed skills' descriptions but routes a single `SKILL.md`'s quality to `knowledgeislands-skills`, and reads a base's loaded surface but routes structure to `knowledgeislands-kb`. The volatile reference **numbers** (model ids, prices, cache TTLs, context-window sizes) it deliberately holds none of — those are the `claude-api` skill's, resolved at runtime — so it owns the budget's _shape_, that skill the figures.
 
-¶¶ `knowledgeislands-harness` governs the **container** — the four-part `skills/` `agents/` `mcp/` `evals/` layout, the root `CLAUDE.md` /
-`ROADMAP.md` / `package.json` / `.ki-config.toml`, and the `skills:link:*` install convention — not the **contents**. Each of the three
-adjacent skills owns a content it carries: `knowledgeislands-skills` owns a `SKILL.md`'s quality, `knowledgeislands-agents` a subagent
-definition's, and `knowledgeislands-repo` the cross-cutting `.ki-config.toml` contract and GitHub-side settings of _any_ ki-repo (the
-harness is one such repo). So the harness names all three as off-ramps and **composes** their checkers — its audit runs the harness delta on
-top of theirs, never replacing them; the boundary is structure-of-the-bundle vs quality-of-a-part.
+¶¶ `knowledgeislands-harness` governs the **container** — the four-part `skills/` `agents/` `mcp/` `evals/` layout, the root `CLAUDE.md` / `ROADMAP.md` / `package.json` / `.ki-config.toml`, and the `skills:link:*` install convention — not the **contents**. Each of the three adjacent skills owns a content it carries: `knowledgeislands-skills` owns a `SKILL.md`'s quality, `knowledgeislands-agents` a subagent definition's, and `knowledgeislands-repo` the cross-cutting `.ki-config.toml` contract and GitHub-side settings of _any_ ki-repo (the harness is one such repo). So the harness names all three as off-ramps and **composes** their checkers — its audit runs the harness delta on top of theirs, never replacing them; the boundary is structure-of-the-bundle vs quality-of-a-part.
 
-‖‖ `knowledgeislands-bootstrap` is the install **keystone** — the one `knowledgeislands-*` skill kept installed globally — and owns only the
-install _mechanism_: reading a repo's `.ki-config.toml` and linking its project-local `.claude/skills/` to match. It draws two lines.
-Against `knowledgeislands-repo`: bootstrap **composes** on repo and reads the coverage it declares, but never decides that coverage — which
-skills a repo _should_ opt into is repo's coverage cascade, and the `.ki-config.toml` contract plus GitHub settings are repo's; mechanism vs
-content. Against `knowledgeislands-harness`: the harness owns the `skills:link:*` convention as part of the **container** standard, while
-bootstrap is the project-local counterpart that _carries it out_ in each repo — keystone-that-wires vs container-that-defines. Each names
-the other two as off-ramps.
+‖‖ `knowledgeislands-bootstrap` is the install **keystone** — the one `knowledgeislands-*` skill kept installed globally — and owns only the install _mechanism_: reading a repo's `.ki-config.toml` and linking its project-local `.claude/skills/` to match. It draws two lines. Against `knowledgeislands-repo`: bootstrap **composes** on repo and reads the coverage it declares, but never decides that coverage — which skills a repo _should_ opt into is repo's coverage cascade, and the `.ki-config.toml` contract plus GitHub settings are repo's; mechanism vs content. Against `knowledgeislands-harness`: the harness owns the `skills:link:*` convention as part of the **container** standard, while bootstrap is the project-local counterpart that _carries it out_ in each repo — keystone-that-wires vs container-that-defines. Each names the other two as off-ramps.
 
-††† Three sub-governors carve note types out of the `Admin/` zone: `knowledgeislands-decision-records` owns Decisions
-(`Admin/Governance/Decisions/`), `knowledgeislands-activities` owns Activity notes and `knowledgeislands-live-artifacts` owns Live Artifact
-pairs (both under `Admin/Operations/`). `knowledgeislands-kb` owns the five-zone model and the KI-wide frontmatter standard they all conform
-to; each **defers to kb** for structure and frontmatter, exactly as `knowledgeislands-streams` does for its zone. (`decision-records` also
-governs `docs/decisions/` in a code repo, where no base is present.)
+††† Three sub-governors carve note types out of the `Admin/` zone: `knowledgeislands-decision-records` owns Decisions (`Admin/Governance/Decisions/`), `knowledgeislands-activities` owns Activity notes and `knowledgeislands-live-artifacts` owns Live Artifact pairs (both under `Admin/Operations/`). `knowledgeislands-kb` owns the five-zone model and the KI-wide frontmatter standard they all conform to; each **defers to kb** for structure and frontmatter, exactly as `knowledgeislands-streams` does for its zone. (`decision-records` also governs `docs/decisions/` in a code repo, where no base is present.)
 
-‡‡‡ A proposal passing the Enactment gate (`knowledgeislands-streams`) may _produce_ a Decision Record on settle, but the durable **record**
-— its format, ID, and index, owned by `knowledgeislands-decision-records` — is distinct from the **process** that ratifies the change.
-Record vs gate.
+‡‡‡ A proposal passing the Enactment gate (`knowledgeislands-streams`) may _produce_ a Decision Record on settle, but the durable **record** — its format, ID, and index, owned by `knowledgeislands-decision-records` — is distinct from the **process** that ratifies the change. Record vs gate.
 
 ## How knowledge moves and improves — the three loops
 
-The skills share one mental model. Knowledge lives in **zones** (the canonical `Admin` / `Pillars` / `Resources`, the working `Streams`, and
-the ephemeral `Calendar` plus `+` / `-` staging — see [knowledge-islands.md](knowledge-islands.md)), and each skill is a **canonical
-definition** that **bases** defer to through bindings. Over that sit three loops — how knowledge _enters_, _changes_, and _stays current_ —
-each owned by one skill and each handing off to the next rather than overlapping:
+The skills share one mental model. Knowledge lives in **zones** (the canonical `Admin` / `Pillars` / `Resources`, the working `Streams`, and the ephemeral `Calendar` plus `+` / `-` staging — see [knowledge-islands.md](knowledge-islands.md)), and each skill is a **canonical definition** that **bases** defer to through bindings. Over that sit three loops — how knowledge _enters_, _changes_, and _stays current_ — each owned by one skill and each handing off to the next rather than overlapping:
 
-- **Continuous Improvement** (`knowledgeislands-kb`, mode **IMPROVE**) — the base-side discovery loop. Each session, scan for knowledge
-  applied ad-hoc but not yet formalised, then **route** each candidate to its home.
-- **Enactment Process** (`knowledgeislands-streams`) — the gate. A candidate that changes a canonical zone becomes a proposal that passes
-  approval before it lands.
+- **Continuous Improvement** (`knowledgeislands-kb`, mode **IMPROVE**) — the base-side discovery loop. Each session, scan for knowledge applied ad-hoc but not yet formalised, then **route** each candidate to its home.
+- **Enactment Process** (`knowledgeislands-streams`) — the gate. A candidate that changes a canonical zone becomes a proposal that passes approval before it lands.
 - **REFRESH** (every skill) — the promotion loop. A candidate that recurs across bases is promoted from practice into the canonical skill.
 
 ```text
@@ -115,61 +67,17 @@ IMPROVE (notice) ─routes─→ ├─ changes a canonical zone ─→ ENACTMEN
                            └─ recurs across bases ─────→ REFRESH (promote into the skill)
 ```
 
-**IMPROVE and REFRESH are mirror images** across the skill/base line: IMPROVE looks _down_ (this base's practice → formalise), REFRESH looks
-_across_ (many bases → one skill); a cross-base candidate is the handoff between them. **Enactment** is orthogonal — the gate any canonical
-change passes through, whoever raised it. The discipline that keeps the three distinct: _IMPROVE discovers and routes, Enactment governs,
-REFRESH promotes_ — none restates another.
+**IMPROVE and REFRESH are mirror images** across the skill/base line: IMPROVE looks _down_ (this base's practice → formalise), REFRESH looks _across_ (many bases → one skill); a cross-base candidate is the handoff between them. **Enactment** is orthogonal — the gate any canonical change passes through, whoever raised it. The discipline that keeps the three distinct: _IMPROVE discovers and routes, Enactment governs, REFRESH promotes_ — none restates another.
 
 ## Principles across the set
 
-Eight invariants hold for every skill here, current and future — each tied to a named rubric criterion rather than just asserted, so a new
-skill inherits them by being audited:
+Eight invariants hold for every skill here, current and future — each tied to a named rubric criterion rather than just asserted, so a new skill inherits them by being audited:
 
-- **Every skill carries a refresh path — and a cadence.** A skill that tracks a moving target (an external spec, a community best-practice,
-  a base's live structure) ships a REFRESH mode and a dated `references/sources.md`, and **declares its refresh class and cadence** in a
-  `**Refresh:** <class> · <cadence>` marker — `external-spec` (a moving outside source; a clock cadence) or `canonical` (an in-house model;
-  `on-change`, no clock); one that hard-codes no volatile external fact may instead resolve it at runtime. The point is durability: a skill
-  installed into a shared or cloud catalogue is long-lived and far from its author, and must not rot silently. The declared cadence is
-  enforced **both ways** off that one marker: **LONG-3** WARNs when a skill is _overdue_ (past its own cadence + grace;
-  `canonical · on-change` exempt), and the REFRESH mode's _too-soon_ gate confirms-before-forcing (interactive) or skips (scheduled) a
-  refresh requested within the window. Backed by **LONG-1** (a refresh path exists), **LONG-2** (a declared cadence), **LONG-4** (the marker
-  is present and coherent), and mirrored into the `knowledgeislands-mcp` audit checklist. The `knowledgeislands-skills-refresh` routine
-  realises it — sweeping every governance skill's REFRESH on its declared cadence (skipping within-window skills) and opening a PR for
-  review rather than committing.
-- **No silent collisions.** Where two skills could fire on the same request, each description names the other as the off-ramp, and new
-  skills are audited against the existing set before they ship (rubric **COLL-1/COLL-2**; the linter's cross-skill pass flags shared
-  triggers). The current boundaries are the subject of _Where the skills do not overlap_, above.
-- **Composition only — no base-coupled extension.** Knowledge Islands skills stay base-agnostic and resolve bindings at runtime; what a base
-  needs differently is **declared, not forked** — data in its `.ki-config.toml` table (read validate-down), prose in its `CLAUDE.md` — never
-  a `<base>-kb`-style extension skill that takes the shared modes by name. Skills relate only by **composition** (run a sibling's
-  checker/mode in sequence, add a delta), spelled out in _Standard skills and per-base config_ in
-  [knowledge-islands.md](knowledge-islands.md). ADR: [ADR-KI-HARNESS-001](decisions/ADR-KI-HARNESS-001.md),
-  [ADR-KI-HARNESS-SKILLS-004](decisions/ADR-KI-HARNESS-SKILLS-004.md).
-- **One governance-mode model.** Every skill exposes the universal **AUDIT / CONFORM / REFRESH** modes plus skill-specific ones (**INIT** to
-  scaffold, operational modes such as kb's note-ops), codified as rubric **SHAPE-5** so a new skill inherits the shape. The layout this
-  produces is _The governance-skill shape_ in [skills.md](skills.md).
-- **A behaviour-changing skill anchors its gate — and checks the anchor.** A skill that changes a default (installs a gate, a standing "do X
-  before Y" rule) cannot rely on its own `description` to fire — skills load on demand, and the triggering request often won't name the
-  skill (e.g. "edit this note" never says "proposal"). So it anchors the behaviour in always-loaded context (the base/repo `CLAUDE.md` /
-  `AGENTS.md`) and its **checker verifies the anchor** is present. Enforced as rubric **SHAPE-7**; realised as `knowledgeislands-streams`'
-  **GATE-1** (the Enactment gate) and `knowledgeislands-kb`'s **MEM-2** (the memory cascade).
-- **Audits compose.** Auditing a target runs every _applicable_ skill's audit, not just one: a base audit is `knowledgeislands-kb` +
-  `knowledgeislands-streams` + `knowledgeislands-authoring` over its markdown; a repo audit is `knowledgeislands-repo` +
-  `knowledgeislands-engineering` (the common toolchain) + `knowledgeislands-mcp` (the MCP delta, for an MCP repo) — or, for a website repo,
-  `+ knowledgeislands-11ty-websites` (the site-build delta) `+ knowledgeislands-cloudflare-hosting` (the hosting delta, if deployed) — + the
-  skills linter (for any skills it ships) and the agents linter (for any subagents it ships). A target is "clean" only when each applicable
-  skill's audit passes; each skill's AUDIT mode names the siblings it composes.
-- **Applicability is declared, then enforced — the coverage cascade.** Which standards govern a repo isn't left to inference: a repo **opts
-  in** by carrying a `[knowledgeislands-<skill>]` table, and `.ki-config.toml`'s presence is the **gate** — once it marks the repo a
-  ki-repo, `knowledgeislands-repo`'s audit checks that every skill whose artifacts it detects (a `Streams/` zone, an `eleventy.config`, an
-  MCP-SDK dependency, `skills/*/SKILL.md`, …) is declared, and WARNs on a detected-but-undeclared standard. A non-ki-repo (no
-  `.ki-config.toml`) is never coverage-checked, so a lookalike isn't falsely flagged. This is the one place a skill (`repo`) reads across
-  tables — **presence only** — and it's an _audit-time_ enforcement; the model lives in
-  [the `.ki-config.toml` contract](../skills/knowledgeislands-repo/references/ki-config-standard.md).
-- **Mechanical work belongs in the checker, not in tokens.** A criterion a script can decide deterministically — no judgment, no AI benefit
-  — is tagged **[M]** and lives in the skill's checker; the reader's context is spent only on the **[J]** criteria that genuinely need a
-  reader. Authoring a rubric you default a check _into_ the checker and earn each **[J]** by the judgment it needs, not by "no checker
-  written yet"; when a check becomes scriptable with no AI benefit it moves into the checker and flips to **[M]** (the rubric and checker
-  stay in lockstep — see the enforcement framework's _rubric format_). Enforced as rubric **SHAPE-9**: the linter flags a rubric carrying
-  **[M]** criteria but shipping no checker (nor a documented delegation, such as `authoring` → `ki:lint:md`), and the **[J]** gate is
-  whether each remaining **[J]** truly needs a reader rather than a script.
+- **Every skill carries a refresh path — and a cadence.** A skill that tracks a moving target (an external spec, a community best-practice, a base's live structure) ships a REFRESH mode and a dated `references/sources.md`, and **declares its refresh class and cadence** in a `**Refresh:** <class> · <cadence>` marker — `external-spec` (a moving outside source; a clock cadence) or `canonical` (an in-house model; `on-change`, no clock); one that hard-codes no volatile external fact may instead resolve it at runtime. The point is durability: a skill installed into a shared or cloud catalogue is long-lived and far from its author, and must not rot silently. The declared cadence is enforced **both ways** off that one marker: **LONG-3** WARNs when a skill is _overdue_ (past its own cadence + grace; `canonical · on-change` exempt), and the REFRESH mode's _too-soon_ gate confirms-before-forcing (interactive) or skips (scheduled) a refresh requested within the window. Backed by **LONG-1** (a refresh path exists), **LONG-2** (a declared cadence), **LONG-4** (the marker is present and coherent), and mirrored into the `knowledgeislands-mcp` audit checklist. The `knowledgeislands-skills-refresh` routine realises it — sweeping every governance skill's REFRESH on its declared cadence (skipping within-window skills) and opening a PR for review rather than committing.
+- **No silent collisions.** Where two skills could fire on the same request, each description names the other as the off-ramp, and new skills are audited against the existing set before they ship (rubric **COLL-1/COLL-2**; the linter's cross-skill pass flags shared triggers). The current boundaries are the subject of _Where the skills do not overlap_, above.
+- **Composition only — no base-coupled extension.** Knowledge Islands skills stay base-agnostic and resolve bindings at runtime; what a base needs differently is **declared, not forked** — data in its `.ki-config.toml` table (read validate-down), prose in its `CLAUDE.md` — never a `<base>-kb`-style extension skill that takes the shared modes by name. Skills relate only by **composition** (run a sibling's checker/mode in sequence, add a delta), spelled out in _Standard skills and per-base config_ in [knowledge-islands.md](knowledge-islands.md). ADR: [ADR-KI-HARNESS-001](decisions/ADR-KI-HARNESS-001.md), [ADR-KI-HARNESS-SKILLS-004](decisions/ADR-KI-HARNESS-SKILLS-004.md).
+- **One governance-mode model.** Every skill exposes the universal **AUDIT / CONFORM / REFRESH** modes plus skill-specific ones (**INIT** to scaffold, operational modes such as kb's note-ops), codified as rubric **SHAPE-5** so a new skill inherits the shape. The layout this produces is _The governance-skill shape_ in [skills.md](skills.md).
+- **A behaviour-changing skill anchors its gate — and checks the anchor.** A skill that changes a default (installs a gate, a standing "do X before Y" rule) cannot rely on its own `description` to fire — skills load on demand, and the triggering request often won't name the skill (e.g. "edit this note" never says "proposal"). So it anchors the behaviour in always-loaded context (the base/repo `CLAUDE.md` / `AGENTS.md`) and its **checker verifies the anchor** is present. Enforced as rubric **SHAPE-7**; realised as `knowledgeislands-streams`' **GATE-1** (the Enactment gate) and `knowledgeislands-kb`'s **MEM-2** (the memory cascade).
+- **Audits compose.** Auditing a target runs every _applicable_ skill's audit, not just one: a base audit is `knowledgeislands-kb` + `knowledgeislands-streams` + `knowledgeislands-authoring` over its markdown; a repo audit is `knowledgeislands-repo` + `knowledgeislands-engineering` (the common toolchain) + `knowledgeislands-mcp` (the MCP delta, for an MCP repo) — or, for a website repo, `+ knowledgeislands-11ty-websites` (the site-build delta) `+ knowledgeislands-cloudflare-hosting` (the hosting delta, if deployed) — + the skills linter (for any skills it ships) and the agents linter (for any subagents it ships). A target is "clean" only when each applicable skill's audit passes; each skill's AUDIT mode names the siblings it composes.
+- **Applicability is declared, then enforced — the coverage cascade.** Which standards govern a repo isn't left to inference: a repo **opts in** by carrying a `[knowledgeislands-<skill>]` table, and `.ki-config.toml`'s presence is the **gate** — once it marks the repo a ki-repo, `knowledgeislands-repo`'s audit checks that every skill whose artifacts it detects (a `Streams/` zone, an `eleventy.config`, an MCP-SDK dependency, `skills/*/SKILL.md`, …) is declared, and WARNs on a detected-but-undeclared standard. A non-ki-repo (no `.ki-config.toml`) is never coverage-checked, so a lookalike isn't falsely flagged. This is the one place a skill (`repo`) reads across tables — **presence only** — and it's an _audit-time_ enforcement; the model lives in [the `.ki-config.toml` contract](../skills/knowledgeislands-repo/references/ki-config-standard.md).
+- **Mechanical work belongs in the checker, not in tokens.** A criterion a script can decide deterministically — no judgment, no AI benefit — is tagged **[M]** and lives in the skill's checker; the reader's context is spent only on the **[J]** criteria that genuinely need a reader. Authoring a rubric you default a check _into_ the checker and earn each **[J]** by the judgment it needs, not by "no checker written yet"; when a check becomes scriptable with no AI benefit it moves into the checker and flips to **[M]** (the rubric and checker stay in lockstep — see the enforcement framework's _rubric format_). Enforced as rubric **SHAPE-9**: the linter flags a rubric carrying **[M]** criteria but shipping no checker (nor a documented delegation, such as `authoring` → `ki:lint:md`), and the **[J]** gate is whether each remaining **[J]** truly needs a reader rather than a script.

@@ -1,11 +1,6 @@
 # Knowledge Islands repo standard
 
-The canonical configuration a Knowledge Islands repo should carry, so repos present and behave consistently and that consistency is
-_checkable_ rather than folklore. A Knowledge Islands repo is a git repo that carries a `.ki-config.toml` (its presence is the compliance
-marker); the standard applies to any such repo — the [`knowledgeislands`](https://github.com/knowledgeislands) org is the reference set it
-was derived from, not its boundary. Three layers — local files, core GitHub settings, deeper GitHub (security & Actions). Derived and
-applied 2026-05-31 from an audit of all 10 `knowledgeislands` repos. The mechanical checker is
-[`../scripts/audit-repo.ts`](../scripts/audit-repo.ts); keep this doc and the script's constants in sync.
+The canonical configuration a Knowledge Islands repo should carry, so repos present and behave consistently and that consistency is _checkable_ rather than folklore. A Knowledge Islands repo is a git repo that carries a `.ki-config.toml` (its presence is the compliance marker); the standard applies to any such repo — the [`knowledgeislands`](https://github.com/knowledgeislands) org is the reference set it was derived from, not its boundary. Three layers — local files, core GitHub settings, deeper GitHub (security & Actions). Derived and applied 2026-05-31 from an audit of all 10 `knowledgeislands` repos. The mechanical checker is [`../scripts/audit-repo.ts`](../scripts/audit-repo.ts); keep this doc and the script's constants in sync.
 
 ## Contents
 
@@ -21,36 +16,27 @@ applied 2026-05-31 from an audit of all 10 `knowledgeislands` repos. The mechani
 
 ## Layer 1 — repo files
 
-Every repo carries these at the root. Presence is checked **on the default branch via the GitHub API** (the git-tree endpoint), not from a
-working checkout — so what's actually committed is what's audited, and `--org` mode covers uncloned repos.
+Every repo carries these at the root. Presence is checked **on the default branch via the GitHub API** (the git-tree endpoint), not from a working checkout — so what's actually committed is what's audited, and `--org` mode covers uncloned repos.
 
-| File              | Why                                                                                                                   |
-| ----------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `README.md`       | The repo's entry point.                                                                                               |
-| `LICENSE`         | MIT text _(public)_; proprietary copyright text _(private)_.                                                          |
-| `.gitignore`      | Keeps build/dep noise out of history.                                                                                 |
-| `.editorconfig`   | Shared editor defaults across the workspace toolchain.                                                                |
-| `CLAUDE.md`       | Agent instructions — the always-loaded anchor for any repo-specific gate or convention (skills rubric SHAPE-7).       |
+| File | Why |
+| --- | --- |
+| `README.md` | The repo's entry point. |
+| `LICENSE` | MIT text _(public)_; proprietary copyright text _(private)_. |
+| `.gitignore` | Keeps build/dep noise out of history. |
+| `.editorconfig` | Shared editor defaults across the workspace toolchain. |
+| `CLAUDE.md` | Agent instructions — the always-loaded anchor for any repo-specific gate or convention (skills rubric SHAPE-7). |
 | `.ki-config.toml` | Declares this repo's expected config under `[knowledgeislands-repo]` — `visibility` and any per-repo check overrides. |
 
-`ROADMAP.md` is **expected but not required** — a warn, not a fail: most repos carry one, but a base that keeps its forward view elsewhere
-(a KB base's `Streams/Future`) may omit it.
+`ROADMAP.md` is **expected but not required** — a warn, not a fail: most repos carry one, but a base that keeps its forward view elsewhere (a KB base's `Streams/Future`) may omit it.
 
 ### `.ki-meta/` — the working-artifacts area
 
-`.ki-meta/` is the working area for Knowledge Islands governance tooling — the artifacts-_out_ counterpart to `.ki-config.toml`'s
-config-_in_. It is an **extensible namespace**: subdirs are added as tooling grows, each declaring whether it is **derived** (regenerated,
-gitignored) or **durable** (kept, tracked). Defined subdirs today:
+`.ki-meta/` is the working area for Knowledge Islands governance tooling — the artifacts-_out_ counterpart to `.ki-config.toml`'s config-_in_. It is an **extensible namespace**: subdirs are added as tooling grows, each declaring whether it is **derived** (regenerated, gitignored) or **durable** (kept, tracked). Defined subdirs today:
 
-- `.ki-meta/audits/<concern>.{md,json}` — the latest audit report per concern (`engineering`, `skills`, `repo`, …), written by a checker run
-  with `--report` and overwritten each run (latest-only, no history). The `.json` is the machine-readable substrate a composed audit merges;
-  the `.md` is the human report.
+- `.ki-meta/audits/<concern>.{md,json}` — the latest audit report per concern (`engineering`, `skills`, `repo`, …), written by a checker run with `--report` and overwritten each run (latest-only, no history). The `.json` is the machine-readable substrate a composed audit merges; the `.md` is the human report.
 - `.ki-meta/conform/<concern>.md` — the latest record of what a CONFORM changed.
 
-Presence is **not required** — the directory appears the first time a checker is run with `--report`. What the audit checks (the `ki-meta`
-criterion) is that the derived subdirs are **gitignored, not committed**: `.gitignore` carries `.ki-meta/audits/` and `.ki-meta/conform/`,
-while the `.ki-meta/` namespace itself is left un-ignored so a future _durable_ subdir can be tracked. The convention is owned here; the
-`enforcement-framework` (engineering) references it and writes `.ki-meta/audits/` as the AUDIT consumer.
+Presence is **not required** — the directory appears the first time a checker is run with `--report`. What the audit checks (the `ki-meta` criterion) is that the derived subdirs are **gitignored, not committed**: `.gitignore` carries `.ki-meta/audits/` and `.ki-meta/conform/`, while the `.ki-meta/` namespace itself is left un-ignored so a future _durable_ subdir can be tracked. The convention is owned here; the `enforcement-framework` (engineering) references it and writes `.ki-meta/audits/` as the AUDIT consumer.
 
 ## Layer 2 — core GitHub settings
 
@@ -75,15 +61,11 @@ Public repos (`mcp-*`) additionally:
 | ------- | -------------------------------------------------------------- |
 | Topics  | `mcp`, `model-context-protocol`, `claude`, `typescript`, `bun` |
 
-**`main` is open by default** — no branch protection, so direct pushes are allowed and no PR, status check, or linear-history rule gates it.
-Squash-only merge (above) keeps history tidy for PRs that do happen, but nothing forces work through a PR. A repo that _wants_ a protected
-`main` overrides the `branch-protection` check on (see [Per-repo overrides](#per-repo-overrides)) — protection is then `main`: require a PR
-(0 approvals), the `build` status check, linear history, no force-push, no deletion, admins **not** enforced.
+**`main` is open by default** — no branch protection, so direct pushes are allowed and no PR, status check, or linear-history rule gates it. Squash-only merge (above) keeps history tidy for PRs that do happen, but nothing forces work through a PR. A repo that _wants_ a protected `main` overrides the `branch-protection` check on (see [Per-repo overrides](#per-repo-overrides)) — protection is then `main`: require a PR (0 approvals), the `build` status check, linear history, no force-push, no deletion, admins **not** enforced.
 
 ### Package.json identity & metadata
 
-The engineering coverage manifest assigns the `package.json` **identity & metadata** keys to this skill (engineering owns the closed key
-set; this skill owns their content). Where the repo has a `package.json`, these are checked:
+The engineering coverage manifest assigns the `package.json` **identity & metadata** keys to this skill (engineering owns the closed key set; this skill owns their content). Where the repo has a `package.json`, these are checked:
 
 | Field         | Rule                                                      | Severity  |
 | ------------- | --------------------------------------------------------- | --------- |
@@ -111,14 +93,9 @@ set; this skill owns their content). Where the repo has a `package.json`, these 
 
 ## Visibility
 
-Each repo **declares** its expected visibility in `.ki-config.toml` (`visibility = "public"` or `"private"`); the auditor checks that
-declaration against the live GitHub visibility. It is a deliberate per-repo choice, **not inferred from the name**. (In practice the
-`arcadia-*` repos are private bases / internal skills and the `mcp-*` repos are public servers — a pattern, not the rule.)
+Each repo **declares** its expected visibility in `.ki-config.toml` (`visibility = "public"` or `"private"`); the auditor checks that declaration against the live GitHub visibility. It is a deliberate per-repo choice, **not inferred from the name**. (In practice the `arcadia-*` repos are private bases / internal skills and the `mcp-*` repos are public servers — a pattern, not the rule.)
 
-`.ki-config.toml` is a shared per-repo file; each skill reads its own `[table]`, and a skill with only implicit/default behaviour needs no
-table. The full cross-skill contract — its presence as the compliance marker, the table-per-skill model, and the validate-your-own-table
-protocol — is in [the `.ki-config.toml` contract](ki-config-standard.md). This skill owns `[knowledgeislands-repo]`. Scaffold the default
-keys with `bun scripts/audit-repo.ts --init >> .ki-config.toml`, then edit the values:
+`.ki-config.toml` is a shared per-repo file; each skill reads its own `[table]`, and a skill with only implicit/default behaviour needs no table. The full cross-skill contract — its presence as the compliance marker, the table-per-skill model, and the validate-your-own-table protocol — is in [the `.ki-config.toml` contract](ki-config-standard.md). This skill owns `[knowledgeislands-repo]`. Scaffold the default keys with `bun scripts/audit-repo.ts --init >> .ki-config.toml`, then edit the values:
 
 ```toml
 # .ki-config.toml — one [table] per skill that needs per-repo options
@@ -133,53 +110,30 @@ branch-protection = true   # default off — protect `main` on this repo
 
 ## Per-repo overrides
 
-The rubric carries the **org default** for every check. Most are bedrock — file presence, default branch, description, merge policy,
-auto-delete-branch, visibility, Dependabot — and aren't negotiable. License is bedrock but **visibility-scoped**: public repos must carry
-MIT (`license`) and a LICENSE file (`license-file`); private repos must carry a proprietary copyright LICENSE file (`license-file`) and
-`"UNLICENSED"` in `package.json` (`package-license`) — MIT is not permitted. The rest are **overridable**: a repo flips one for itself with
-a single boolean in its `[knowledgeislands-repo.checks]` table, where `true` = enforce this check and `false` = don't. A check you omit
-takes the org default, so **a fully-conforming repo writes no overrides at all**. The auditor reports every active override as a `note`
-(never a failure), so a deliberate departure stays visible without reading as drift.
+The rubric carries the **org default** for every check. Most are bedrock — file presence, default branch, description, merge policy, auto-delete-branch, visibility, Dependabot — and aren't negotiable. License is bedrock but **visibility-scoped**: public repos must carry MIT (`license`) and a LICENSE file (`license-file`); private repos must carry a proprietary copyright LICENSE file (`license-file`) and `"UNLICENSED"` in `package.json` (`package-license`) — MIT is not permitted. The rest are **overridable**: a repo flips one for itself with a single boolean in its `[knowledgeislands-repo.checks]` table, where `true` = enforce this check and `false` = don't. A check you omit takes the org default, so **a fully-conforming repo writes no overrides at all**. The auditor reports every active override as a `note` (never a failure), so a deliberate departure stays visible without reading as drift.
 
-| Check               | Org default | When enforced, the auditor requires…                                                                              |
-| ------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------- |
-| `branch-protection` | **off**     | `main`: a PR (0 approvals), the `build` status check, linear history; no force-push/deletion; admins not enforced |
-| `wiki`              | on          | Wiki disabled.                                                                                                    |
-| `projects`          | on          | Projects disabled.                                                                                                |
-| `issues`            | on          | Issues enabled.                                                                                                   |
-| `topics`            | on          | _(public)_ carries the standard topic set.                                                                        |
-| `secret-scanning`   | on          | _(public)_ secret scanning enabled.                                                                               |
-| `push-protection`   | on          | _(public)_ secret-scanning push protection enabled.                                                               |
+| Check | Org default | When enforced, the auditor requires… |
+| --- | --- | --- |
+| `branch-protection` | **off** | `main`: a PR (0 approvals), the `build` status check, linear history; no force-push/deletion; admins not enforced |
+| `wiki` | on | Wiki disabled. |
+| `projects` | on | Projects disabled. |
+| `issues` | on | Issues enabled. |
+| `topics` | on | _(public)_ carries the standard topic set. |
+| `secret-scanning` | on | _(public)_ secret scanning enabled. |
+| `push-protection` | on | _(public)_ secret-scanning push protection enabled. |
 
-- "Org default **on**" means the check fails unless satisfied — the standard's normal behaviour — and a repo sets the key `false` to step
-  out of it (e.g. `wiki = false` to keep a Wiki). `branch-protection` is the one check that's **off** by default; a repo sets it `true` to
-  protect `main`.
-- The required status check for `branch-protection` is **`build`** — the single job in each repo's `.github/workflows/ci.yml` (workflow
-  "CI"). A repo that turns it on but lacks that job can't satisfy the check; add the CI job first.
-- `topics` / `secret-scanning` / `push-protection` are **public-only** — they don't apply to a private repo regardless of the override, so
-  the private `arcadia-*` repos need say nothing about them.
-- A key under `[…checks]` that names no overridable check (a typo, or a bedrock check) **WARNs** — it would otherwise silently do nothing.
-  The auditor's `CHECK_DEFAULTS` registry is the source of truth for what's overridable.
-- A **redundant** override — one whose value just restates the org default (e.g. `wiki = true`) — does nothing, so the auditor flags it with
-  a `note` advising it be dropped. The aim is that a `.ki-config.toml` carries only genuine divergences, and a conforming repo's `[…checks]`
-  is empty or absent.
-- `coverage-<skill>` (e.g. `coverage-11ty-websites = false`) is also accepted here — it opts the repo out of **one** coverage signal of the
-  cascade below (the default is enforced: a detected artifact with no opt-in table WARNs). A `coverage-<skill>` naming no coverage skill
-  WARNs, like any unknown check.
+- "Org default **on**" means the check fails unless satisfied — the standard's normal behaviour — and a repo sets the key `false` to step out of it (e.g. `wiki = false` to keep a Wiki). `branch-protection` is the one check that's **off** by default; a repo sets it `true` to protect `main`.
+- The required status check for `branch-protection` is **`build`** — the single job in each repo's `.github/workflows/ci.yml` (workflow "CI"). A repo that turns it on but lacks that job can't satisfy the check; add the CI job first.
+- `topics` / `secret-scanning` / `push-protection` are **public-only** — they don't apply to a private repo regardless of the override, so the private `arcadia-*` repos need say nothing about them.
+- A key under `[…checks]` that names no overridable check (a typo, or a bedrock check) **WARNs** — it would otherwise silently do nothing. The auditor's `CHECK_DEFAULTS` registry is the source of truth for what's overridable.
+- A **redundant** override — one whose value just restates the org default (e.g. `wiki = true`) — does nothing, so the auditor flags it with a `note` advising it be dropped. The aim is that a `.ki-config.toml` carries only genuine divergences, and a conforming repo's `[…checks]` is empty or absent.
+- `coverage-<skill>` (e.g. `coverage-11ty-websites = false`) is also accepted here — it opts the repo out of **one** coverage signal of the cascade below (the default is enforced: a detected artifact with no opt-in table WARNs). A `coverage-<skill>` naming no coverage skill WARNs, like any unknown check.
 
 ## Coverage cascade
 
-`.ki-config.toml`'s presence is the **gate** (Layer 1): once it confirms the repo is a ki-repo, the auditor checks the repo **declares an
-opt-in `[knowledgeislands-<skill>]` table for every governance skill whose applicability it can detect** — a `Streams/` zone ⇒
-`[knowledgeislands-streams]`, an `eleventy.config` ⇒ `[knowledgeislands-11ty-websites]`, an `@modelcontextprotocol/sdk` dependency ⇒
-`[knowledgeislands-mcp]`, `skills/*/SKILL.md` ⇒ `[knowledgeislands-skills]`, and so on. Detected-but-undeclared WARNs; a declared table with
-no matching artifact WARNs as possibly stale.
+`.ki-config.toml`'s presence is the **gate** (Layer 1): once it confirms the repo is a ki-repo, the auditor checks the repo **declares an opt-in `[knowledgeislands-<skill>]` table for every governance skill whose applicability it can detect** — a `Streams/` zone ⇒ `[knowledgeislands-streams]`, an `eleventy.config` ⇒ `[knowledgeislands-11ty-websites]`, an `@modelcontextprotocol/sdk` dependency ⇒ `[knowledgeislands-mcp]`, `skills/*/SKILL.md` ⇒ `[knowledgeislands-skills]`, and so on. Detected-but-undeclared WARNs; a declared table with no matching artifact WARNs as possibly stale.
 
-A repo that is **not** a ki-repo (no `.ki-config.toml`) is never coverage-checked — it just takes the `ki-config` FAIL, so a lookalike repo
-(an `eleventy.config` but no marker) is not falsely told to opt in. This is `knowledgeislands-repo`'s single cross-table read, and it reads
-only table **presence**, never another skill's keys. The full signal list and the marker-vs-config model live in
-[the `.ki-config.toml` contract](ki-config-standard.md#coverage-enforcement). Silence one signal with `coverage-<skill> = false` under
-`[knowledgeislands-repo.checks]`.
+A repo that is **not** a ki-repo (no `.ki-config.toml`) is never coverage-checked — it just takes the `ki-config` FAIL, so a lookalike repo (an `eleventy.config` but no marker) is not falsely told to opt in. This is `knowledgeislands-repo`'s single cross-table read, and it reads only table **presence**, never another skill's keys. The full signal list and the marker-vs-config model live in [the `.ki-config.toml` contract](ki-config-standard.md#coverage-enforcement). Silence one signal with `coverage-<skill> = false` under `[knowledgeislands-repo.checks]`.
 
 ## Applying it
 
@@ -240,6 +194,4 @@ Both check every layer against GitHub; the path / `--org` only decides which rep
 
 ## Conformance
 
-As of **2026-05-31**, all 9 `knowledgeislands` repos conform on layers 2–3. Outstanding layer-1 work: every repo still needs a
-`.ki-config.toml` (declaring its visibility + any check overrides), and `mcp-kb-notion-mirror` needs `.editorconfig` — each a direct commit
-to `main`.
+As of **2026-05-31**, all 9 `knowledgeislands` repos conform on layers 2–3. Outstanding layer-1 work: every repo still needs a `.ki-config.toml` (declaring its visibility + any check overrides), and `mcp-kb-notion-mirror` needs `.editorconfig` — each a direct commit to `main`.

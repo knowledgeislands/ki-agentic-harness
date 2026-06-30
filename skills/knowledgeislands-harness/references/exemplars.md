@@ -5,28 +5,21 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated patterns from the KI agentic harness that show what a well-structured four-part bundle looks like. Use these as reference when
-standing up a new harness, auditing an existing one, or checking that a shelf is correctly declared. The `arcadia-agentic-harness` is the
-canonical reference implementation; it demonstrates every structural requirement: four directories each with a `README.md`, the required
-`package.json` script families, and a `.ki-config.toml` that opts into all four governing skills. Empty shelves (`agents/`, `mcp/`,
-`evals/`) are shown as a valid starting state — the directory and its `README.md` commit the four-part intent before all parts are built.
-For the full source list and last-review dates, see [sources.md](sources.md).
+Curated patterns from the KI agentic harness that show what a well-structured four-part bundle looks like. Use these as reference when standing up a new harness, auditing an existing one, or checking that a shelf is correctly declared. The `arcadia-agentic-harness` is the canonical reference implementation; it demonstrates every structural requirement: four directories each with a `README.md`, the required `package.json` script families, and a `.ki-config.toml` that opts into all four governing skills. Empty shelves (`agents/`, `mcp/`, `evals/`) are shown as a valid starting state — the directory and its `README.md` commit the four-part intent before all parts are built. For the full source list and last-review dates, see [sources.md](sources.md).
 
 ## Collections
 
-| Source                     | URL                                                           | What it covers                                                        |
-| -------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------- |
-| arcadia-agentic-harness    | <https://github.com/knowledgeislands/arcadia-agentic-harness> | The KI canonical reference; all four parts; populated skills shelf    |
-| Agent Skills specification | <https://agentskills.io/specification>                        | The `SKILL.md` format and `references/`, `scripts/`, `assets/` layout |
-| Claude Code subagent docs  | <https://code.claude.com/docs/en/sub-agents>                  | The subagent definition format the `agents/` part serves              |
+| Source | URL | What it covers |
+| --- | --- | --- |
+| arcadia-agentic-harness | <https://github.com/knowledgeislands/arcadia-agentic-harness> | The KI canonical reference; all four parts; populated skills shelf |
+| Agent Skills specification | <https://agentskills.io/specification> | The `SKILL.md` format and `references/`, `scripts/`, `assets/` layout |
+| Claude Code subagent docs | <https://code.claude.com/docs/en/sub-agents> | The subagent definition format the `agents/` part serves |
 
 ## Selected patterns
 
 ### Four-part directory layout
 
-Every harness must have these four directories at the repo root, each containing a `README.md`. The `README.md` distinguishes an intentional
-empty shelf from an accidentally missing directory — a navigator (human or agent) can confirm at a glance that the harness is complete even
-before all shelves are populated. The harness root also carries `CLAUDE.md`, `ROADMAP.md`, `package.json`, and `.ki-config.toml`.
+Every harness must have these four directories at the repo root, each containing a `README.md`. The `README.md` distinguishes an intentional empty shelf from an accidentally missing directory — a navigator (human or agent) can confirm at a glance that the harness is complete even before all shelves are populated. The harness root also carries `CLAUDE.md`, `ROADMAP.md`, `package.json`, and `.ki-config.toml`.
 
 ```text
 skills/
@@ -50,28 +43,21 @@ evals/
 
 ### `agents/README.md` shelf convention
 
-An empty `agents/` shelf declares the intent, explains the format for future contributors, and routes to the governing skill. It does not
-apologise for being empty — a shelf is a valid, encouraged starting state. The pattern below is the `arcadia-agentic-harness` shelf: format
-pointer, one-line note on current state, and a forward pointer for when the shelf becomes populated.
+An empty `agents/` shelf declares the intent, explains the format for future contributors, and routes to the governing skill. It does not apologise for being empty — a shelf is a valid, encouraged starting state. The pattern below is the `arcadia-agentic-harness` shelf: format pointer, one-line note on current state, and a forward pointer for when the shelf becomes populated.
 
 ```markdown
 # Agents
 
 Claude Code subagent definitions — one `.md` file per agent.
 
-Each file is a subagent definition: YAML frontmatter (`name`, `description`, `tools`, `model`) followed by the system-prompt body. See the
-[Claude Code subagent docs](https://code.claude.com/docs/en/sub-agents) and the `knowledgeislands-agents` skill for KI conventions
-(grounding, own-vs-defer, KB wikilinks).
+Each file is a subagent definition: YAML frontmatter (`name`, `description`, `tools`, `model`) followed by the system-prompt body. See the [Claude Code subagent docs](https://code.claude.com/docs/en/sub-agents) and the `knowledgeislands-agents` skill for KI conventions (grounding, own-vs-defer, KB wikilinks).
 
 _No agent definitions yet — this is an empty shelf. Add a `.md` per agent when the first agent is ready._
 ```
 
 ### Required `package.json` scripts for a harness
 
-The two harness-specific scripts (`ki:skills:link:project` and `ki:skills:lint`) are the delivery and quality mechanisms the harness concept
-depends on — absence of either is a FAIL. `ki:skills:link:global` installs the one globally-kept keystone (`knowledgeislands-bootstrap`);
-skills themselves are wired project-local, not global. The `ki:lint:*` family is the common engineering toolchain. The `--all` flag on
-`ki:skills:link:project` tells the bootstrap linker to wire every skill declared in `.ki-config.toml` rather than a named subset.
+The two harness-specific scripts (`ki:skills:link:project` and `ki:skills:lint`) are the delivery and quality mechanisms the harness concept depends on — absence of either is a FAIL. `ki:skills:link:global` installs the one globally-kept keystone (`knowledgeislands-bootstrap`); skills themselves are wired project-local, not global. The `ki:lint:*` family is the common engineering toolchain. The `--all` flag on `ki:skills:link:project` tells the bootstrap linker to wire every skill declared in `.ki-config.toml` rather than a named subset.
 
 ```jsonc
 {
@@ -89,10 +75,7 @@ skills themselves are wired project-local, not global. The `ki:lint:*` family is
 
 ### `.ki-config.toml` bundle declaration
 
-A harness must declare `[knowledgeislands-harness]` — this is the compliance marker the `knowledgeislands-repo` coverage cascade uses to
-confirm the four-part layout is intentional. Without it, detecting `skills/*/SKILL.md` without a `[knowledgeislands-skills]` table, or
-detecting the harness layout without `[knowledgeislands-harness]`, would WARN as a detected-but-undeclared artifact. The canonical
-`arcadia-agentic-harness` pattern: all four tables present, no per-harness config keys (table presence alone is the declaration).
+A harness must declare `[knowledgeislands-harness]` — this is the compliance marker the `knowledgeislands-repo` coverage cascade uses to confirm the four-part layout is intentional. Without it, detecting `skills/*/SKILL.md` without a `[knowledgeislands-skills]` table, or detecting the harness layout without `[knowledgeislands-harness]`, would WARN as a detected-but-undeclared artifact. The canonical `arcadia-agentic-harness` pattern: all four tables present, no per-harness config keys (table presence alone is the declaration).
 
 ```toml
 [knowledgeislands-repo]

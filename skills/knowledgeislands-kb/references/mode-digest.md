@@ -1,20 +1,15 @@
 # Mode DIGEST — session digest and handoff
 
-_On-demand procedure for kb's DIGEST mode. The shared model — the five-zone structure, routing test, memory cascade, project bindings, and
-Step 1 (Load context) — lives in [`SKILL.md`](../SKILL.md) and is already loaded; this file is the procedure only._
+_On-demand procedure for kb's DIGEST mode. The shared model — the five-zone structure, routing test, memory cascade, project bindings, and Step 1 (Load context) — lives in [`SKILL.md`](../SKILL.md) and is already loaded; this file is the procedure only._
 
 ## Why `-/`, not Calendar or Streams
 
-A digest is a **produced artefact** that documents a session — it has left the active knowledge cycle. This places it in outbound staging
-(`-/`), not in the base's living structure:
+A digest is a **produced artefact** that documents a session — it has left the active knowledge cycle. This places it in outbound staging (`-/`), not in the base's living structure:
 
-- **Not Calendar** — Calendar notes are time-stamped records _you keep_. A digest is an output you hand off or discard once its content has
-  been extracted into Pillars, Streams, or a handoff note.
-- **Not Streams** — Streams notes are _work in motion_, driving further action inside the base. A digest captures work that is settled (at
-  least temporarily) and carries no pending action of its own.
+- **Not Calendar** — Calendar notes are time-stamped records _you keep_. A digest is an output you hand off or discard once its content has been extracted into Pillars, Streams, or a handoff note.
+- **Not Streams** — Streams notes are _work in motion_, driving further action inside the base. A digest captures work that is settled (at least temporarily) and carries no pending action of its own.
 
-Once the content it holds is extracted, a digest can be deleted. Test: if you deleted this note today, would knowledge be lost? If yes,
-extract first; if no, delete.
+Once the content it holds is extracted, a digest can be deleted. Test: if you deleted this note today, would knowledge be lost? If yes, extract first; if no, delete.
 
 ## Session digest
 

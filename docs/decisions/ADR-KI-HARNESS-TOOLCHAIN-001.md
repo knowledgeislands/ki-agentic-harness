@@ -6,10 +6,7 @@
 
 ## Context
 
-Knowledge Islands repos needed a consistent toolchain for installing, running scripts, linting, and type-checking TypeScript. Multiple
-viable options existed (npm/yarn/pnpm vs Bun; ESLint/Prettier vs Biome). Without a standard choice, each repo carried different
-configuration, different script names, and different lock files, making cross-repo tooling and the governance checkers themselves
-inconsistent.
+Knowledge Islands repos needed a consistent toolchain for installing, running scripts, linting, and type-checking TypeScript. Multiple viable options existed (npm/yarn/pnpm vs Bun; ESLint/Prettier vs Biome). Without a standard choice, each repo carried different configuration, different script names, and different lock files, making cross-repo tooling and the governance checkers themselves inconsistent.
 
 ## Decision
 
@@ -20,8 +17,7 @@ All Knowledge Islands TypeScript repos use:
 - **tsc `--noEmit`** for type-checking (`bun run ki:lint:types`)
 - **Prettier + markdownlint** for Markdown (`bun run ki:lint:md` writes; `bun run ki:lint:md:check` is the CI gate)
 
-The script families (`ki:lint:check`, `ki:lint:types`, `ki:lint:md`, `ki:lint:md:check`) are required in every repo's `package.json`.
-Capability-gated families (test, build, CLI) are added when the repo opts into the capability.
+The script families (`ki:lint:check`, `ki:lint:types`, `ki:lint:md`, `ki:lint:md:check`) are required in every repo's `package.json`. Capability-gated families (test, build, CLI) are added when the repo opts into the capability.
 
 ## Consequences
 
@@ -32,5 +28,4 @@ Capability-gated families (test, build, CLI) are added when the repo opts into t
 
 ## References
 
-- [skills/knowledgeislands-engineering/references/engineering-standard.md](../../skills/knowledgeislands-engineering/references/engineering-standard.md)
-  §1–§5 — package.json toolchain pinning, script families, Bun vs Node, tsconfig, Biome.
+- [skills/knowledgeislands-engineering/references/engineering-standard.md](../../skills/knowledgeislands-engineering/references/engineering-standard.md) §1–§5 — package.json toolchain pinning, script families, Bun vs Node, tsconfig, Biome.
