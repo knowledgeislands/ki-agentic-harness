@@ -21,7 +21,7 @@ The one place column width _is_ your job is **tables** — Prettier aligns table
 
 ## Tables and footnotes
 
-Keep every table **skimmable at a glance**. Prettier pads columns to align them but never breaks a cell across lines, so a cell with too much content forces a very wide row that's unreadable in a terminal or in print. Aim to keep each row within a comfortable reading width (≈ 100 characters is a good target for content meant to be read in a terminal or printed).
+Keep every table **skimmable at a glance**. Prettier pads columns to align them but never breaks a cell across lines, so a cell with too much content forces a very wide row that's unreadable in a terminal or in print. Aim to keep each row within `printWidth` (140 chars — the same limit the formatter enforces on prose).
 
 When a column's content would force the table to wrap awkwardly or demand cryptic abbreviations in the headers, **move the long content into footnotes below the table** and leave a footnote marker in the cell instead.
 
