@@ -10,15 +10,20 @@ documented here only as dependent fields.
 
 | Field    | Required (KB repos) | Description                                                                                                      |
 | -------- | ------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `type`   | Yes                 | Slash-hierarchical structural type — see taxonomy below                                                          |
+| `type`   | Yes                 | The note's **kind** (sole classifier); derived from its location via path-pattern — see taxonomy below           |
 | `status` | Yes                 | Note lifecycle: `draft - Month YYYY` / `current - Month YYYY` / `outdated - Month YYYY` / `archive - Month YYYY` |
-| `tags`   | Recommended         | Topic tags for classification and filtering                                                                      |
+| `tags`   | Optional            | Topical labels for filtering and discovery — **not** a classifier; a note's kind is its `type`                   |
 | `author` | Recommended         | `Written with Claude` / `Manual` / `Mixed`                                                                       |
 
 ## Type taxonomy
 
-The `type` field uses slash-hierarchical notation: `<zone>/<arm>/<leaf>`. The zone prefix identifies the KI zone; subsequent segments
-identify the structural role within that zone.
+`type` is a note's sole **kind** classifier — what it _is_, not what it is _about_ (topical labels are `tags`, which never classify). It is
+**derivable from the note's location**: a path-pattern registry maps a path to its type (first match wins), so `type` is auto-assignable and
+auditable rather than hand-chosen. The slug vocabulary below is the current taxonomy and may grow; the fixed contract is the **pattern** —
+`type` is declared and path-derived — not any particular slug or notation.
+
+The slugs use slash-hierarchical notation: `<zone>/<arm>/<leaf>`. The zone prefix identifies the KI zone; subsequent segments identify the
+structural role within that zone.
 
 ### Admin branch (`admin/`)
 
