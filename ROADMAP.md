@@ -17,9 +17,3 @@ arcadia-website presently mirrors the harness `docs/` tree directly — site pag
 Several conventions in arcadia-principal are asserted without documented rationale. Digest routing (`-/_DIGESTS/`), the staging zone distinctions, and the frontmatter type taxonomy are all enforced in practice but their _why_ is nowhere written down — which makes them brittle to revisit and invisible to anyone new to the island. The `session-digest` type is not even in the type taxonomy.
 
 **Gate:** the named arcadia-principal stream runs to completion, producing rationale notes for each convention that currently lacks one. The stream proposal lives in arcadia-principal's Background streams. Remove this item once the stream is ratified.
-
-## Distant future _(parked)_
-
-Not on the near-term path; recorded so the thought isn't lost.
-
-- **Virtual-branch workflow ([GitButler](https://gitbutler.com)).** GitButler was trialled on `arcadia-agentic-harness` and has since been removed (its refs + `.git/gitbutler` metadata dropped 2026-06-28); the repos are plain-git for now. Worth revisiting only if parallel multi-branch work across the harness + sibling repos becomes common enough to justify a virtual-branch tool — and only if it composes cleanly with the `ki:conform` / `ki:verify` gate and the per-repo `feat/*` → fast-forward-to-`main` flow we use today. A user-global `gitbutler.aimodelprovider` key may still linger in `~/.gitconfig` (harmless).
