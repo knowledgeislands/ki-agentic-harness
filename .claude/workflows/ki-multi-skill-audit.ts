@@ -50,30 +50,30 @@ log(`COLL checks done. Proceeding to per-concern parallel fan-out.`);
 phase("Per-concern audit");
 
 // Dependency order (ADR-KI-HARNESS-SKILLS-003) — determines synthesis ranking, not execution order.
-// scopeGated=true means the concern only runs when [knowledgeislands-<name>] exists in the
+// scopeGated=true means the concern only runs when [ki-<name>] exists in the
 // target's .ki-config.toml. Universal concerns (authoring, engineering, repo, skills,
 // tokenomics, harness) always run.
 const CONCERNS = [
-  { name: "authoring", checker: "bun skills/knowledgeislands-authoring/scripts/audit-authoring.ts", scopeGated: false },
-  { name: "engineering", checker: "bun skills/knowledgeislands-engineering/scripts/audit-engineering.ts", scopeGated: false },
-  { name: "repo", checker: "bun skills/knowledgeislands-repo/scripts/audit-repo.ts", scopeGated: false },
-  { name: "kb", checker: "bun skills/knowledgeislands-kb/scripts/audit-kb.ts", scopeGated: true },
-  { name: "streams", checker: "bun skills/knowledgeislands-streams/scripts/audit-streams.ts", scopeGated: true },
-  { name: "mcp", checker: "bun skills/knowledgeislands-mcp/scripts/audit-mcp.ts", scopeGated: true },
-  { name: "11ty-websites", checker: "bun skills/knowledgeislands-11ty-websites/scripts/audit-websites.ts", scopeGated: true },
-  { name: "cloudflare-hosting", checker: "bun skills/knowledgeislands-cloudflare-hosting/scripts/audit-cloudflare-hosting.ts", scopeGated: true },
-  { name: "agents", checker: "bun skills/knowledgeislands-agents/scripts/lint-agents.ts", scopeGated: true },
+  { name: "authoring", checker: "bun skills/ki-authoring/scripts/audit-authoring.ts", scopeGated: false },
+  { name: "engineering", checker: "bun skills/ki-engineering/scripts/audit-engineering.ts", scopeGated: false },
+  { name: "repo", checker: "bun skills/ki-repo/scripts/audit-repo.ts", scopeGated: false },
+  { name: "kb", checker: "bun skills/ki-kb/scripts/audit-kb.ts", scopeGated: true },
+  { name: "streams", checker: "bun skills/ki-streams/scripts/audit-streams.ts", scopeGated: true },
+  { name: "mcp", checker: "bun skills/ki-mcp/scripts/audit-mcp.ts", scopeGated: true },
+  { name: "11ty-websites", checker: "bun skills/ki-11ty-websites/scripts/audit-websites.ts", scopeGated: true },
+  { name: "cloudflare-hosting", checker: "bun skills/ki-cloudflare-hosting/scripts/audit-cloudflare-hosting.ts", scopeGated: true },
+  { name: "agents", checker: "bun skills/ki-agents/scripts/lint-agents.ts", scopeGated: true },
   { name: "skills", checker: "bun run ki:skills:lint", scopeGated: false },
-  { name: "tokenomics", checker: "bun skills/knowledgeislands-tokenomics/scripts/audit-tokenomics.ts", scopeGated: false },
-  { name: "harness", checker: "bun skills/knowledgeislands-harness/scripts/audit-harness.ts", scopeGated: false },
+  { name: "tokenomics", checker: "bun skills/ki-tokenomics/scripts/audit-tokenomics.ts", scopeGated: false },
+  { name: "harness", checker: "bun skills/ki-harness/scripts/audit-harness.ts", scopeGated: false },
 ];
 
 // Read target's .ki-config.toml once in main context to determine which scope-gated
 // concerns are declared by this repo. Universal concerns always run regardless.
 const scopeActive = await agent(
   `Read the file \`${target}/.ki-config.toml\` and return a JSON array of concern names
-that appear as top-level TOML table headers matching the pattern [knowledgeislands-<name>].
-For example if the file contains [knowledgeislands-kb] return ["kb"].
+that appear as top-level TOML table headers matching the pattern [ki-<name>].
+For example if the file contains [ki-kb] return ["kb"].
 If the file does not exist or is empty return [].
 Return ONLY the JSON array, nothing else.`,
   { label: "scope-guard:read-config", phase: "Per-concern audit" }
@@ -100,8 +100,8 @@ Concern: ${c.name}
 Steps:
 1. Run the mechanical checker: \`${c.checker} ${target} --json\` from the harness root. If the checker script does not exist or fails to start, note that and skip to judgment.
 2. Capture its output verbatim — do not re-derive what it found.
-3. Read \`skills/knowledgeislands-${c.name}/SKILL.md\` and its \`references/\` directory.
-4. Apply the judgment ([J]-tagged) criteria from \`skills/knowledgeislands-${c.name}/references/audit-rubric.md\`.
+3. Read \`skills/ki-${c.name}/SKILL.md\` and its \`references/\` directory.
+4. Apply the judgment ([J]-tagged) criteria from \`skills/ki-${c.name}/references/audit-rubric.md\`.
 5. Return structured findings only — no preamble.`,
       {
         label: `audit:${c.name}`,

@@ -6,7 +6,7 @@
 
 ## Context
 
-Skills are symlinked individually into a user's `.claude/skills/` directory by the `knowledgeislands-bootstrap` keystone. A skill that imports files from another skill, or that depends on another skill being present at a known relative path, will break when deployed this way. The symlink convention means no shared parent directory is guaranteed, and no two skills can be assumed to be co-located.
+Skills are symlinked individually into a user's `.claude/skills/` directory by the `ki-bootstrap` keystone. A skill that imports files from another skill, or that depends on another skill being present at a known relative path, will break when deployed this way. The symlink convention means no shared parent directory is guaranteed, and no two skills can be assumed to be co-located.
 
 ## Decision
 
@@ -27,4 +27,4 @@ Every skill must be **valid installed standalone**. Specifically:
 ## References
 
 - [docs/design.md](../design.md) §Principles — "Composition only" and standalone validity.
-- [skills/knowledgeislands-engineering/references/enforcement-framework.md](../../skills/knowledgeislands-engineering/references/enforcement-framework.md) §2 — "depend on Node/Bun builtins only — no npm dependencies; be self-contained: no imports from another skill's files".
+- [skills/ki-engineering/references/enforcement-framework.md](../../skills/ki-engineering/references/enforcement-framework.md) §2 — "depend on Node/Bun builtins only — no npm dependencies; be self-contained: no imports from another skill's files".

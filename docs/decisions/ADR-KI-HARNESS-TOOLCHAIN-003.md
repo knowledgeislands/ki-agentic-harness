@@ -8,7 +8,7 @@
 
 Claude Code imposes a practical ceiling on the number of simultaneously active MCP servers (around five) before context cost and tool-list noise become significant. The KI stack runs 19 KI-owned stdio servers plus additional third-party servers. Without a proxy layer, staying within the ceiling means either accepting a reduced server surface or manually toggling servers between sessions.
 
-The `knowledgeislands-tokenomics` audit surfaced two related WARNs (MCP-2, MCP-3) flagging that multiple KB-FS servers appeared to serve overlapping purposes with no documented rationale. Investigation confirmed those servers have distinct root folders and are not redundant — the WARN was a false positive arising from similar names rather than shared scope.
+The `ki-tokenomics` audit surfaced two related WARNs (MCP-2, MCP-3) flagging that multiple KB-FS servers appeared to serve overlapping purposes with no documented rationale. Investigation confirmed those servers have distinct root folders and are not redundant — the WARN was a false positive arising from similar names rather than shared scope.
 
 TOOLCHAIN-002 adopted mcporter as a proxy daemon. This ADR captures the governing principle that follows from that adoption.
 
@@ -26,7 +26,7 @@ Third-party servers (those not owned by KI) are declared directly in `~/.claude.
 
 ## Consequences
 
-- The MCP-2 and MCP-3 audit WARNs in `knowledgeislands-tokenomics` are closed: the count issue is resolved by the proxy and the KB-FS overlap concern was a false positive (distinct root folders).
+- The MCP-2 and MCP-3 audit WARNs in `ki-tokenomics` are closed: the count issue is resolved by the proxy and the KB-FS overlap concern was a false positive (distinct root folders).
 - Adding a new KI MCP server means updating `~/.mcporter/mcporter.json` (managed by chezmoi), not `~/.claude.json`.
 - The mcporter typed client integration for harness scripts and `mcp-*` repos remains an open ROADMAP item (secondary role, not yet started).
 - Any saved prompt or skill that references a bare tool name (`tool`) must use the namespaced form (`server__tool`) when the server is proxied through mcporter.

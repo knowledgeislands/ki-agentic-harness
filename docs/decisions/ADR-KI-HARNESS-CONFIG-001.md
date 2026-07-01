@@ -10,16 +10,16 @@ Each governance skill needed to know whether it applied to a given repo, and wha
 
 ## Decision
 
-`.ki-config.toml` is the compliance marker and the per-skill configuration carrier. Its presence signals that the repo is a Knowledge Islands repo and all applicable governance standards apply. Each governance skill reads its own `[knowledgeislands-<skill>]` table; the `knowledgeislands-repo` skill verifies that detected standards (Eleventy config → `[knowledgeislands-11ty-websites]`, Streams zone → `[knowledgeislands-streams]`, etc.) have a declared table. A detected-but-undeclared standard is a WARN; a missing `.ki-config.toml` is a FAIL. Per-repo overrides live in the skill's own sub-table, not in a forked skill.
+`.ki-config.toml` is the compliance marker and the per-skill configuration carrier. Its presence signals that the repo is a Knowledge Islands repo and all applicable governance standards apply. Each governance skill reads its own `[ki-<skill>]` table; the `ki-repo` skill verifies that detected standards (Eleventy config → `[ki-11ty-websites]`, Streams zone → `[ki-streams]`, etc.) have a declared table. A detected-but-undeclared standard is a WARN; a missing `.ki-config.toml` is a FAIL. Per-repo overrides live in the skill's own sub-table, not in a forked skill.
 
 ## Consequences
 
 - Skills discover their own applicability from a single file without asking the repo for anything else.
 - Adding a new governance standard to a repo is one table addition — no code change in any skill.
 - Forking a skill for a single repo's variation is prevented: the variation is data in `.ki-config.toml`, not code in a derived skill.
-- The coverage gate in `knowledgeislands-repo` AUDIT enforces that detected standards are declared.
+- The coverage gate in `ki-repo` AUDIT enforces that detected standards are declared.
 
 ## References
 
-- [skills/knowledgeislands-repo/references/ki-config-standard.md](../../skills/knowledgeislands-repo/references/ki-config-standard.md) — the full `.ki-config.toml` contract.
-- [skills/knowledgeislands-repo/SKILL.md](../../skills/knowledgeislands-repo/SKILL.md) — the coverage-gate model.
+- [skills/ki-repo/references/ki-config-standard.md](../../skills/ki-repo/references/ki-config-standard.md) — the full `.ki-config.toml` contract.
+- [skills/ki-repo/SKILL.md](../../skills/ki-repo/SKILL.md) — the coverage-gate model.

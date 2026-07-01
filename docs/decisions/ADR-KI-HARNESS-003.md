@@ -25,7 +25,7 @@ The harness adopts ADRs as its canonical record for significant decisions. The f
 
 Status values are `Proposed`, `Accepted`, `Deprecated`, and `Superseded by ADR-<SCOPE>-NNN`. An accepted ADR body is never modified; a subsequent decision supersedes it rather than editing it in place.
 
-ADR files live in `docs/decisions/` and are indexed in `docs/decisions/README.md`. The naming convention and mechanical rules are governed by the `knowledgeislands-adrs` skill.
+ADR files live in `docs/decisions/` and are indexed in `docs/decisions/README.md`. The naming convention and mechanical rules are governed by the `ki-adrs` skill.
 
 ## Consequences
 
@@ -38,5 +38,5 @@ ADR files live in `docs/decisions/` and are indexed in `docs/decisions/README.md
 
 - [docs/decisions/README.md](README.md) — the index of all ADRs in this harness.
 - `GDR-KI-ARCADIA-001` (arcadia-principal) — the KI-level decision that established DRs as the instrument; this ADR is its harness realisation (`decision_depends_on: ["GDR-KI-ARCADIA-001"]`)
-- [skills/knowledgeislands-adrs/SKILL.md](../../skills/knowledgeislands-adrs/SKILL.md) — the governance skill that defines and enforces the ADR format used here.
+- [skills/ki-adrs/SKILL.md](../../skills/ki-adrs/SKILL.md) — the governance skill that defines and enforces the ADR format used here.
 - [Michael Nygard, "Documenting Architecture Decisions"](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) — the original ADR proposal this format descends from.

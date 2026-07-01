@@ -1,39 +1,39 @@
-# Knowledge Islands repo config — read by the knowledgeislands-repo skill.
+# Knowledge Islands repo config — read by the ki-repo skill.
 # One [table] per skill that needs per-repo options.
-[knowledgeislands-repo]
+[ki-repo]
 visibility = "private"   # "public" | "private"
 # This repo fully conforms, so it declares no check overrides. To diverge, add a
-# [knowledgeislands-repo.checks] table with one boolean per check (true = enforce).
+# [ki-repo.checks] table with one boolean per check (true = enforce).
 
-# Read by the knowledgeislands-engineering skill (the common build/lint/test toolchain).
-[knowledgeislands-engineering]
+# Read by the ki-engineering skill (the common build/lint/test toolchain).
+[ki-engineering]
 # This repo fully conforms, so it declares no check overrides. To diverge, add a
-# [knowledgeislands-engineering.checks] table with one boolean per check (true = enforce).
+# [ki-engineering.checks] table with one boolean per check (true = enforce).
 
 # This repo IS a Knowledge Islands agentic harness (the four-part skills/ agents/ mcp/ evals/
-# layout), so it declares governance by the knowledgeislands-harness standard. Presence of this
+# layout), so it declares governance by the ki-harness standard. Presence of this
 # table is the compliance marker; no per-harness keys are defined yet.
-[knowledgeislands-harness]
+[ki-harness]
 
-# This repo ships skills under skills/, so it declares governance by the knowledgeislands-skills
-# standard. (Read by knowledgeislands-repo's coverage check; the skills linter lints the SKILL.md
+# This repo ships skills under skills/, so it declares governance by the ki-skills
+# standard. (Read by ki-repo's coverage check; the skills linter lints the SKILL.md
 # files themselves.)
-[knowledgeislands-skills]
+[ki-skills]
 
-# This repo ships the knowledgeislands-decision-records skill, so it declares governance by its own standard.
-[knowledgeislands-decision-records]
+# This repo ships the ki-decision-records skill, so it declares governance by its own standard.
+[ki-decision-records]
 
-# This repo ships the knowledgeislands-plans skill, so it declares governance by its own standard.
-[knowledgeislands-plans]
+# This repo ships the ki-plans skill, so it declares governance by its own standard.
+[ki-plans]
 
 # Tokenomics governance — audits the standing context surface for this environment.
 # MCP server count is user-scoped (not harness-controlled); all 19 are intentional.
 # With Claude Code's default tool search (ENABLE_TOOL_SEARCH=auto), schemas are deferred,
 # so the real standing cost is lower than the raw count implies. The raised budget documents
 # the acknowledged state; the WARN is there to revisit when the global MCP set is pruned.
-[knowledgeislands-tokenomics]
+[ki-tokenomics]
 headroom = "recommended"
 preferred_model = "sonnet"
 
-[knowledgeislands-tokenomics.budgets]
+[ki-tokenomics.budgets]
 mcp_servers = 20   # 19 user-scoped at time of first audit (2026-06-22); revisit when scoped

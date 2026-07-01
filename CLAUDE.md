@@ -4,26 +4,26 @@ Always-loaded orientation for an agent working in this repo. The README is the e
 
 ## What this repo is
 
-The canonical home for the Knowledge Islands **Agent Skills** (per the [Agent Skills standard](https://agentskills.io/)). The `knowledgeislands-*` skills are **governance skills**: each holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes plus a mechanical checker. They sit in two layers plus a container governor and an install keystone — foundations (`authoring`, `engineering`), domain skills (`kb`, `streams`, `mcp`, `repo`, `skills`, `agents`, `tokenomics`, `decision-records`, `activities`, `live-artifacts`, and the website pair), `harness` (governs the four-part bundle), and `bootstrap` (the one globally-installed skill, which wires each repo's project-local `.claude/skills/` from its `.ki-config.toml`) — mapped in the README.
+The canonical home for the Knowledge Islands **Agent Skills** (per the [Agent Skills standard](https://agentskills.io/)). The `ki-*` skills are **governance skills**: each holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes plus a mechanical checker. They sit in two layers plus a container governor and an install keystone — foundations (`authoring`, `engineering`), domain skills (`kb`, `streams`, `mcp`, `repo`, `skills`, `agents`, `tokenomics`, `decision-records`, `activities`, `live-artifacts`, and the website pair), `harness` (governs the four-part bundle), and `bootstrap` (the one globally-installed skill, which wires each repo's project-local `.claude/skills/` from its `.ki-config.toml`) — mapped in the README.
 
 ## Four-part bundle status
 
 | Part        | Directory | Status                                                              |
 | ----------- | --------- | ------------------------------------------------------------------- |
-| Skills      | `skills/` | **Populated** — 16 `knowledgeislands-*` skills                      |
+| Skills      | `skills/` | **Populated** — 16 `ki-*` skills                                    |
 | Agents      | `agents/` | **Populated** — 5 governance agents in `agents/governance/`         |
 | MCP servers | `mcp/`    | **Shelf** — scaffolded, no servers yet                              |
 | Evals       | `evals/`  | **Populated (partial)** — 3 scenarios + result matrices in `evals/` |
 
 ## How skills relate — composition only
 
-Skills relate to one another by **composition**, never a base-coupled extension: a skill runs a sibling's checker/mode **in sequence** and adds its own delta (it never imports another, so each stays valid installed standalone), and **declares the edge** in its AUDIT mode. What a base or repo needs differently is **declared, not forked** — data in its `.ki-config.toml` table (read validate-down), prose in its `CLAUDE.md` — never a `<base>-*` skill that takes the shared modes. See the _Composition only_ principle in [docs/design.md](docs/design.md) and the `knowledgeislands-skills` rubric (SHAPE-2).
+Skills relate to one another by **composition**, never a base-coupled extension: a skill runs a sibling's checker/mode **in sequence** and adds its own delta (it never imports another, so each stays valid installed standalone), and **declares the edge** in its AUDIT mode. What a base or repo needs differently is **declared, not forked** — data in its `.ki-config.toml` table (read validate-down), prose in its `CLAUDE.md` — never a `<base>-*` skill that takes the shared modes. See the _Composition only_ principle in [docs/design.md](docs/design.md) and the `ki-skills` rubric (SHAPE-2).
 
 ## Working here
 
-- **Writing or editing a `SKILL.md`** → follow the `knowledgeislands-skills` rubric: run `bun run ki:skills:lint` (the mechanical half) and apply the judgment half by reading. The directory name **is** the `name:` frontmatter.
-- **Markdown / TOML style** → the `knowledgeislands-authoring` conventions; `bun run ki:lint:md` is the mechanical gate. Wide tables → footnotes; relative markdown links, never wikilinks; refer to another skill by its `name`, never a file path.
-- **The toolchain** (package.json scripts, `tsconfig`, `biome`) → the `knowledgeislands-engineering` standard, which this repo itself conforms to (`bun run ki:engineering:audit .`).
+- **Writing or editing a `SKILL.md`** → follow the `ki-skills` rubric: run `bun run ki:skills:lint` (the mechanical half) and apply the judgment half by reading. The directory name **is** the `name:` frontmatter.
+- **Markdown / TOML style** → the `ki-authoring` conventions; `bun run ki:lint:md` is the mechanical gate. Wide tables → footnotes; relative markdown links, never wikilinks; refer to another skill by its `name`, never a file path.
+- **The toolchain** (package.json scripts, `tsconfig`, `biome`) → the `ki-engineering` standard, which this repo itself conforms to (`bun run ki:engineering:audit .`).
 - A change touching a standard another skill cites is **cross-skill** — keep the set internally consistent (the skills linter's cross-skill pass flags collisions).
 
 ## Toolchain
@@ -52,8 +52,8 @@ _Auto-generated by `headroom learn` on 2026-06-27 — do not edit manually_
 
 _~900 tokens/session saved_
 
-- `knowledgeislands-authoring` has **no `scripts/` directory** and no checker script — skip the mechanical checker entirely; proceed directly to judgment using `bun run ki:lint:md:check` and the references in `skills/knowledgeislands-authoring/references/`.
-- `lint-agents.ts` must target `agents/` not `.`: `bun skills/knowledgeislands-agents/scripts/lint-agents.ts agents/ --json`. Running with `.` scans all repo Markdown and returns 77 spurious FAILs from non-agent files.
+- `ki-authoring` has **no `scripts/` directory** and no checker script — skip the mechanical checker entirely; proceed directly to judgment using `bun run ki:lint:md:check` and the references in `skills/ki-authoring/references/`.
+- `lint-agents.ts` must target `agents/` not `.`: `bun skills/ki-agents/scripts/lint-agents.ts agents/ --json`. Running with `.` scans all repo Markdown and returns 77 spurious FAILs from non-agent files.
 
 ### arcadia-principal KB paths
 
@@ -83,16 +83,16 @@ _~200 tokens/session saved_
 
 _~8,000 tokens/session saved_
 
-- `skills/knowledgeislands-kb/SKILL.md` (~500 lines, ~20 KB) and `skills/knowledgeislands-streams/SKILL.md` (~500 lines, ~20 KB) are the two largest skill files. Read only when working directly on those skills.
+- `skills/ki-kb/SKILL.md` (~500 lines, ~20 KB) and `skills/ki-streams/SKILL.md` (~500 lines, ~20 KB) are the two largest skill files. Read only when working directly on those skills.
 - `README.md` at the harness root is ~30 KB. For structural surveys, prefer `ls` + `cat package.json` + `cat .ki-config.toml` instead.
 
 ### Audit script paths
 
 _~1,500 tokens/session saved_
 
-- Run audit scripts from the **harness root** only. Wrong: `bun scripts/audit-repo.ts .` (fails: "Module not found"). Correct: `bun skills/knowledgeislands-repo/scripts/audit-repo.ts .`
-- Cross-repo audits use relative sibling paths: `bun skills/knowledgeislands-mcp/scripts/audit-mcp.ts ../mcp-gmail`
-- When invoked from a target repo with an absolute harness path: `bun /Users/krisbrown/.claude/skills/knowledgeislands-mcp/scripts/audit-mcp.ts <target>`
+- Run audit scripts from the **harness root** only. Wrong: `bun scripts/audit-repo.ts .` (fails: "Module not found"). Correct: `bun skills/ki-repo/scripts/audit-repo.ts .`
+- Cross-repo audits use relative sibling paths: `bun skills/ki-mcp/scripts/audit-mcp.ts ../mcp-gmail`
+- When invoked from a target repo with an absolute harness path: `bun /Users/krisbrown/.claude/skills/ki-mcp/scripts/audit-mcp.ts <target>`
 
 ### KB MCP tool limitations
 
@@ -128,6 +128,6 @@ _~600 tokens/session saved_
 _~400 tokens/session saved_
 
 - `bun run ki:skills:lint` uses `skills/` as its default argument. Passing `.` fails with "No skills found (no directory with a SKILL.md)".
-- Explicit form from harness root: `bun skills/knowledgeislands-skills/scripts/lint-skills.ts skills`
+- Explicit form from harness root: `bun skills/ki-skills/scripts/lint-skills.ts skills`
 
 <!-- headroom:learn:end -->

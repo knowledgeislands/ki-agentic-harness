@@ -27,5 +27,5 @@ A criterion starts in the checker unless it genuinely requires judgment. A crite
 
 ## References
 
-- [skills/knowledgeislands-engineering/references/enforcement-framework.md](../../skills/knowledgeislands-engineering/references/enforcement-framework.md) §2 — the mechanical-checker contract, §3 — the rubric format.
+- [skills/ki-engineering/references/enforcement-framework.md](../../skills/ki-engineering/references/enforcement-framework.md) §2 — the mechanical-checker contract, §3 — the rubric format.
 - [docs/design.md](../design.md) §Principles — "Mechanical work belongs in the checker, not in tokens (SHAPE-9)".

@@ -14,7 +14,7 @@ The four-part bundle structure (`skills/`, `agents/`, `mcp/`, `evals/`) suggests
 
 The `arcadia-agentic-harness` is the canonical home for Knowledge Islands **agent skills**, structured as a four-part bundle:
 
-- **`skills/`** — `knowledgeislands-*` governance skills. Each skill holds a house standard and ships AUDIT / CONFORM / REFRESH modes plus a mechanical checker. This is the primary and active part of the bundle.
+- **`skills/`** — `ki-*` governance skills. Each skill holds a house standard and ships AUDIT / CONFORM / REFRESH modes plus a mechanical checker. This is the primary and active part of the bundle.
 - **`agents/`** — KI-governed agent definitions. These are `.md` files with YAML frontmatter following the Agent Skills standard, defining reusable agents for use in Claude Code sessions.
 - **`mcp/`** — KI-governed MCP server wrappers. These complement the externally-developed MCP servers used in KI repos; they are not replacements for the servers in sibling repositories.
 - **`evals/`** — evaluation fixtures and harness-level test scripts. These are used to verify that skills and agents behave as intended.
@@ -25,7 +25,7 @@ The harness is not a general-purpose monorepo. Artefacts that belong to a specif
 
 - The `skills/` directory remains the active part of the bundle; the other three are populated as KI needs arise.
 - A decision to add a new artefact to the harness should first confirm it fits one of the four parts. If it does not, it belongs elsewhere.
-- The harness is governed by its own skills: `knowledgeislands-harness` validates that the bundle is internally consistent.
+- The harness is governed by its own skills: `ki-harness` validates that the bundle is internally consistent.
 - Onboarding a new contributor (or agent session) starts with the README, which points to this ADR and the four-part structure.
 
 ## References
@@ -33,4 +33,4 @@ The harness is not a general-purpose monorepo. Artefacts that belong to a specif
 - [README.md](../../README.md) — entry point; maps the four-part bundle and the skill layers.
 - ADR-KI-HARNESS-001 — composition over extension: the paradigm the skills follow.
 - ADR-KI-HARNESS-002 — `.ki-config.toml` as the repo-to-skill binding mechanism.
-- [skills/knowledgeislands-harness/SKILL.md](../../skills/knowledgeislands-harness/SKILL.md) — the skill that governs the harness bundle itself.
+- [skills/ki-harness/SKILL.md](../../skills/ki-harness/SKILL.md) — the skill that governs the harness bundle itself.

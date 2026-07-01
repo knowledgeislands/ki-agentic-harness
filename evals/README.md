@@ -1,6 +1,6 @@
 # Skill evals
 
-A quick way to check that a skill **actually changes what the model does** — not just that its `SKILL.md` is well-formed (that part is what `ki:skills:lint` checks). This is the behavioural half of what the `knowledgeislands-skills` rubric asks of a skill.
+A quick way to check that a skill **actually changes what the model does** — not just that its `SKILL.md` is well-formed (that part is what `ki:skills:lint` checks). This is the behavioural half of what the `ki-skills` rubric asks of a skill.
 
 The idea is simple: take a question the skill is meant to help with, ask the model **twice** — once with the skill off, once with it on — and compare. If the skill is pulling its weight, the "on" answer should be clearly better.
 
@@ -39,7 +39,7 @@ Each scenario ends with a verdict — **skill helped / regressed / no difference
 
 ## Adding scenarios
 
-One file per skill in `scenarios/` (e.g. `scenarios/knowledgeislands-kb.ts`), each exporting a list of scenarios. A scenario is just three things: a **prompt**, some regex **assertions**, and a judge **rubric**. Copy an existing file for the shape, then add it to the `ALL` list in [`harness.ts`](harness.ts).
+One file per skill in `scenarios/` (e.g. `scenarios/ki-kb.ts`), each exporting a list of scenarios. A scenario is just three things: a **prompt**, some regex **assertions**, and a judge **rubric**. Copy an existing file for the shape, then add it to the `ALL` list in [`harness.ts`](harness.ts).
 
 Aim for **3+ per skill**, and test your **house-specific** names, paths, and rules — not general best practice, which the model knows with or without the skill.
 
@@ -47,6 +47,6 @@ Aim for **3+ per skill**, and test your **house-specific** names, paths, and rul
 
 Twelve of the thirteen skills have scenarios — `agents`, `authoring`, `engineering`, `kb`, `mcp`, `repo`, `skills`, `streams`, plus `tokenomics`, `11ty-websites`, `cloudflare-hosting`, and `bootstrap`. The matrix run across Haiku, Sonnet, and Opus covered the original seven, and the result in one line was: **on house-specific facts, loading a skill reliably takes the model from "I don't know" to the right answer — on every model.** That's the whole point, confirmed. The five newer sets (`agents`, `tokenomics`, the two website skills, and `bootstrap`) are not yet in a matrix run.
 
-The one skill left uncovered is **`knowledgeislands-harness`, and that is by design.** Its assertions are pure bundle _structure_ (the four-part layout) that `audit-harness.ts` already checks mechanically — and the no-skill-baseline method here rewards a recallable house _fact_, so a behavioural eval would add little over the checker. (If a planted-violation scenario is ever shown to clear the "the model couldn't already know this" bar, this is the place to revisit — see reading note 2 above.)
+The one skill left uncovered is **`ki-harness`, and that is by design.** Its assertions are pure bundle _structure_ (the four-part layout) that `audit-harness.ts` already checks mechanically — and the no-skill-baseline method here rewards a recallable house _fact_, so a behavioural eval would add little over the checker. (If a planted-violation scenario is ever shown to clear the "the model couldn't already know this" bar, this is the place to revisit — see reading note 2 above.)
 
 **For routine runs, use Sonnet — it's the most cost-effective arm.** A full matrix (24 scenarios × 3 runs) costs roughly **$9 on Haiku, $23 on Sonnet, $34 on Opus**. Opus gives no cleaner signal than Sonnet for about 50% more, so keep it for occasional confirmation; Sonnet is a representative, trustworthy model at a sensible price. (Haiku is cheapest and did well here, but a stronger model is the safer regression proxy.) Run results aren't checked in — they're regeneratable, so just re-run `bun run ki:eval`.

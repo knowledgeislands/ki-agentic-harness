@@ -28,4 +28,4 @@ The script families (`ki:lint:check`, `ki:lint:types`, `ki:lint:md`, `ki:lint:md
 
 ## References
 
-- [skills/knowledgeislands-engineering/references/engineering-standard.md](../../skills/knowledgeislands-engineering/references/engineering-standard.md) §1–§5 — package.json toolchain pinning, script families, Bun vs Node, tsconfig, Biome.
+- [skills/ki-engineering/references/engineering-standard.md](../../skills/ki-engineering/references/engineering-standard.md) §1–§5 — package.json toolchain pinning, script families, Bun vs Node, tsconfig, Biome.
