@@ -36,6 +36,11 @@ The linker and checker is [`scripts/link-skills.ts`](scripts/link-skills.ts); it
 
 Canonical, on-change: this skill tracks no external spec. Re-anchor when the install model changes — the coverage-table contract (`knowledgeislands-repo`), the skill-discovery locations Claude Code reads, or the `ki:skills:link:project` convention. Read [the source list](references/sources.md), confirm the standard still matches the reference implementation, propose a diff, bump the dates.
 
+## Composition
+
+- `knowledgeislands-repo` — owns the `.ki-config.toml` coverage-cascade contract and the GitHub settings. This skill reads that config but never edits it; for any question about _which_ skills a repo should declare, route to `knowledgeislands-repo`.
+- `knowledgeislands-tokenomics` — owns the standing-cost rationale for keeping skills project-local (not global). For token-budget questions, route there.
+
 ## Notes
 
 - **Why a keystone, not part of `knowledgeislands-repo`:** the global skill is paid every turn everywhere, so it must be minimal. `repo` is heavy (GitHub settings, security, files). Splitting the bootstrap out keeps the global footprint to one tiny description; `repo` stays project-local and loads only in repos that declare it (which is every ki repo — it's in the baseline).

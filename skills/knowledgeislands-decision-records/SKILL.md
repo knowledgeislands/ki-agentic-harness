@@ -37,37 +37,21 @@ You are applying the **Knowledge Islands Decision Records standard** — how Dec
 
 Carries the universal **AUDIT · CONFORM · REFRESH**, plus **NEW** (draft a new DR). Infer the mode from the request; ask if unclear.
 
-### Mode AUDIT — check DRs against the standard
+### Mode AUDIT
 
-1. **Run the mechanical checker**: `bun <skill>/scripts/audit-drs.ts <dir>` where `<dir>` is the decisions directory. It auto-detects KB vs code mode. Findings graded on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — defined in `knowledgeislands-engineering`'s enforcement-framework §2); exits non-zero on any FAIL. Capture its output verbatim.
-2. **Apply the judgment items** in [the rubric](references/audit-rubric.md): sections have real substance, Context is value-neutral forces, Decision is in active voice, each DR is one to two pages, prefix correctly reflects the decision.
-3. **Report** by `DR · check · fix`, lead with FAILs.
+→ Read [references/mode-audit-conform.md](references/mode-audit-conform.md)
 
-### Mode CONFORM — bring DRs into line
+### Mode CONFORM
 
-1. Run **AUDIT** first.
-2. **File renames** — if a filename or prefix does not match, confirm with the user before renaming (a rename changes the canonical ID).
-3. **Section repairs** — add missing section stubs; leave content for the author.
-4. **Index repair** — add missing rows, correct stale statuses, restore ordering.
-5. **Superseded links** — confirm bidirectional references.
-6. Re-run **AUDIT** to confirm convergence.
+→ Read [references/mode-audit-conform.md](references/mode-audit-conform.md)
 
-### Mode NEW — draft a new DR
+### Mode NEW
 
-1. Determine the `decision_type` (one of the nine values) and derive the prefix from the table above. Determine the `SCOPE` from `.ki-config.toml` (e.g. `ARCADIA`). Derive the next available `NNN` from existing files — serials are global within scope across all prefixes.
-2. Write the DR using [the template](references/dr-format.md#template) — full sections, KB frontmatter if a KB repo. Status starts as `Proposed`.
-3. Add a row to the index (`Decisions.md`) in filename order.
-4. If this DR supersedes an existing one, update the old DR's `**Status:**` to `Superseded by <ID>` and add a `Supersedes <ID>` line in the new DR.
-5. Run **AUDIT** to confirm the new file is well-formed.
+→ Read [references/mode-new.md](references/mode-new.md)
 
-### Mode REFRESH — re-anchor the standard to its sources
+### Mode REFRESH
 
-Run when asked "is the DR standard current" or when a source appears to have moved.
-
-1. **Read [sources.md](references/sources.md)** — tracked sources with `last reviewed` dates.
-2. **Re-fetch each** (WebFetch; fall back to WebSearch if blocked) and diff against the format standard and the rubric.
-3. **Propose a diff** to the standard, the rubric, and this file; confirm before writing.
-4. **Update [sources.md](references/sources.md)** — bump each `last reviewed` date and refresh the `## Last review` block.
+→ Read [references/mode-refresh.md](references/mode-refresh.md)
 
 ## Notes
 

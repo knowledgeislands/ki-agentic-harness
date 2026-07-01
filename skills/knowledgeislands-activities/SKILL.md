@@ -68,40 +68,19 @@ The checker cannot verify registration in an external system; it emits WARN if `
 
 ### AUDIT
 
-Run the mechanical checker (`scripts/audit-activities.ts`) against the base:
-
-1. Find all activity notes in `Admin/Operations/Activities/` (excluding `Activities.md`).
-2. For each note with frontmatter: check `status` and `realization` are present; check realization-specific fields match the type.
-3. For `slash-command` activities: verify the declared `skill` exists in `<harness>/skills/<skill>/SKILL.md`. FAIL if declared skill is absent.
-4. For `scheduled-task` activities: WARN if `schedule_name` is absent; ADVISORY that the task should be registered in the declared `schedule_env` (or Cowork if unspecified).
-5. Check `Activities.md` index exists.
-6. Compose on `knowledgeislands-kb` audit for the base-level zone checks — do not re-run them, note the dependency.
+→ Read [references/mode-audit-conform.md](references/mode-audit-conform.md)
 
 ### CONFORM
 
-Repair structural gaps:
-
-1. Create `Admin/Operations/Activities/Activities.md` stub if absent.
-2. For activity notes missing required frontmatter fields: prompt to fill them in (do not guess values).
-3. For a `slash-command` activity whose skill is absent: offer to scaffold the SKILL.md stub (invoke `knowledgeislands-skills` NEW mode).
-4. For a `scheduled-task` activity missing `schedule_name`: prompt the user to provide it and register it in the external system.
+→ Read [references/mode-audit-conform.md](references/mode-audit-conform.md)
 
 ### NEW
 
-Author a new activity note. Prompt for:
-
-- Name (becomes the filename and the `# Heading`)
-- Realization type (offer the known list; accept free text)
-- Realization-specific fields (skill name for slash-command; schedule name + env for scheduled-task)
-- Initial status (`active` unless otherwise stated)
-
-Write to `Admin/Operations/Activities/<Name>.md` and add an entry to `Activities.md`.
+→ Read [references/mode-new.md](references/mode-new.md)
 
 ### REFRESH
 
-**Refresh:** canonical · on-change
-
-The realization type list and required frontmatter are canonical to this skill; they have no external spec. Run REFRESH when the realization model changes (new environment type adopted, field added). Review the sources list and update the declared types if the harness or the adopted environments have changed.
+→ Read [references/mode-refresh.md](references/mode-refresh.md)
 
 ## Composition
 

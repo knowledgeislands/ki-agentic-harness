@@ -21,38 +21,13 @@ Each governance skill is a directory of this shape (loaded on demand — keep `S
 - **`references/<domain>-standard.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like, and why.
 - **`references/audit-rubric.md`** — the line-by-line checkable criteria (§3).
 - **`references/sources.md`** — the tracked provenance (§4).
-- **a mechanical checker** in `scripts/` (§2) — or, where the toolchain already enforces the mechanical half (authoring's `bun run ki:lint:md`), a pointer to it.
+- **a mechanical checker** in `scripts/` (→ `checker-contract.md`) — or, where the toolchain already enforces the mechanical half (authoring's `bun run ki:lint:md`), a pointer to it.
 
 ## 2. The mechanical-checker contract
 
-ADR: [ADR-KI-HARNESS-SKILLS-002](../../../docs/decisions/ADR-KI-HARNESS-SKILLS-002.md)
+→ Full protocol: [references/checker-contract.md](checker-contract.md) — the severity ladder, flag definitions (`--json`, `--report`), exit-code rule, self-containment and composition constraints, and the relationship between checker output levels and `[M]`/`[J]` rubric tags all live there.
 
-A checker is the deterministic half of a standard. It MUST:
-
-- take a target path as its argument and read only that target (`bun scripts/audit-<concern>.ts <path>`);
-- emit grouped findings on the **severity ladder** below, each tagged with an area, and a one-line summary tally;
-- exit **non-zero iff any FAIL** (every other level exits 0);
-- support **`--json`** (emit findings as JSON to stdout instead of the painted table) and **`--report [dir]`** (write the report under the target's `.ki-meta/audits/`, see §5) — both are read-only with respect to the audited content;
-- depend on **Node/Bun builtins only** — no npm dependencies;
-- be **self-contained**: no imports from another skill's files. Skills are symlinked individually into a skills directory, so a cross-skill import would break once deployed. Checkers **compose by being run in sequence**, never by importing one another (§5).
-
-### The severity ladder
-
-One ladder, used by **both** the checker's output and the rubric's findings table. A checker emits the subset of levels its domain warrants — not every concern uses every level.
-
-| Level        | Group     | Blocks? | Meaning                                                                   |
-| ------------ | --------- | ------- | ------------------------------------------------------------------------- |
-| **FAIL**     | violation | yes     | A required criterion is violated — a ship-stopper.                        |
-| **WARN**     | violation | no      | A recommended criterion is violated — should fix, can ship with a reason. |
-| **POLISH**   | violation | no      | A minor or cosmetic divergence.                                           |
-| **ADVISORY** | deferred  | no      | A judgment criterion the checker cannot decide — handed to the reader.    |
-| **INFO**     | context   | no      | Neutral context, not a verdict against a criterion.                       |
-| **SKIP**     | context   | no      | A criterion checked but not applicable to this target.                    |
-| **PASS**     | met       | no      | A criterion is met.                                                       |
-
-FAIL / WARN / POLISH replace the rubrics' old `blocker / standard / polish` grades; INFO replaces the ad-hoc `note` level. **ADVISORY vs WARN** is the line to hold: WARN means the checker _decided_ a soft criterion is violated; ADVISORY means it _cannot_ decide and is pointing the reader at a judgment criterion. The summary tallies FAIL / WARN / POLISH / PASS, then ADVISORY / SKIP; INFO is printed but not tallied.
-
-The checker owns the mechanical criteria; everything it cannot decide deterministically is left to the judgment half, applied by reading — surfaced inline as ADVISORY where the checker can point at the specific criterion.
+Summary of constraints for quick reference: a checker takes a target path, emits findings on the severity ladder, exits non-zero iff any FAIL, supports `--json` and `--report`, uses no npm dependencies, and is self-contained (no cross-skill imports). Checkers compose by being run in sequence (§5).
 
 ## 3. The rubric format
 
@@ -61,7 +36,7 @@ The checker owns the mechanical criteria; everything it cannot decide determinis
 - **[M] mechanical** — a checker enforces it; in AUDIT you capture the checker's output verbatim and never re-derive it by hand.
 - **[J] judgment** — a reader/agent assesses it; the checker cannot decide it deterministically.
 
-Each criterion cites the standard section it verifies, and carries a **severity from the §2 ladder** (FAIL / WARN / POLISH) where the standard grades findings — the same vocabulary the checker emits, so the rubric and the output read alike.
+Each criterion cites the standard section it verifies, and carries a **severity from the checker-contract ladder** (FAIL / WARN / POLISH; → `checker-contract.md`) where the standard grades findings — the same vocabulary the checker emits, so the rubric and the output read alike.
 
 **Default a check into the checker — mechanical work belongs there, not in tokens.** A criterion a script can decide deterministically — no judgment, no AI benefit — is tagged **[M]** and implemented in the checker; the **[J]** tag is earned by the judgment a criterion genuinely needs, never by "no checker written yet". The reader's context is spent only on the **[J]** criteria; deterministic work the model would otherwise re-derive each run is the cost this avoids. So a mechanical criterion left to prose, or a **[J]** criterion that becomes scriptable with no AI benefit, **moves into the checker and flips to [M]** — the rubric and checker stay in lockstep. A judgment criterion the checker can usefully point at surfaces in its output as **ADVISORY**. (This is the SHAPE-9 principle in the `knowledgeislands-skills` rubric.)
 

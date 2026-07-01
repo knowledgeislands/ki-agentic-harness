@@ -43,34 +43,27 @@ A target opts in (and tunes) via a `[knowledgeislands-tokenomics]` table in its 
 
 Every governance skill carries **AUDIT · CONFORM · REFRESH**; this one adds **INIT**. Infer the mode from the request; ask if unclear. (Modes are named and alphabetical.)
 
-### Mode AUDIT — measure the environment against the budget
+### Mode AUDIT
 
-1. **Run the checker**: `bun scripts/audit-tokenomics.ts <target>` (a project or base; defaults to the cwd). It also reads the user-wide `~/.claude` layer **by design** — tokenomics _is_ the composition of both — unless `--no-user`. It grades each area on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — see `knowledgeislands-engineering`'s enforcement-framework §2) and exits non-zero on any FAIL; with `--json` / `--report` it emits machine-readable findings and writes the latest report to the target's `.ki-meta/audits/tokenomics.{md,json}`. Capture its output verbatim, do not re-derive what it measures.
-2. **Apply the judgment layer by reading** — the **[J]** criteria in [the rubric](references/audit-rubric.md) the script cannot decide: is a big `CLAUDE.md` _earning_ its tokens or restating what the model already knows; are the configured MCP servers actually used by this kind of work, or is the tool surface dead weight; are the model tier and sub-agent fan-out proportionate; is Headroom's reversible / cache config genuinely optimal (its exact keys are undocumented — see the source list).
-3. **Compose sibling audits.** Cost is downstream of artifacts other skills own — name them rather than re-judge them: `knowledgeislands-mcp` for an over-broad server's own design, `knowledgeislands-skills` for a bloated skill `description`, `knowledgeislands-kb` for a base whose loaded surface is large because it is mis-structured.
-4. **Report** by layer → component → cost → fix, leading with FAILs then the biggest WARNs (usually the MCP tool surface). Attribute every figure to its layer so the user sees _where_ the budget went.
+→ Read [references/mode-audit-conform.md](references/mode-audit-conform.md)
 
-### Mode CONFORM — bring the environment into budget
+### Mode CONFORM
 
-Edits local config; confirm before mutating, and remember that turning off an MCP server changes what the agent can do — show the diff.
+→ Read [references/mode-audit-conform.md](references/mode-audit-conform.md)
 
-1. Run **AUDIT** first for the gap list.
-2. Trim the biggest line items: lift rarely-read detail out of `CLAUDE.md` into on-demand files (or exclude an irrelevant ancestor `CLAUDE.md` via `claudeMdExcludes`); prune stale memory; switch off or scope the MCP servers the work does not use (the largest single lever, and keep tool search on so unused servers' schemas stay deferred); consolidate redundant skills.
-3. Wire context-compression tooling where it is `recommended` / `required` and absent; turn on prompt caching and pick the right model tier where the runtime levers are idle.
-4. Add or correct the `[knowledgeislands-tokenomics]` table (or run **INIT**). Re-run **AUDIT** until clean.
+### Mode INIT
 
-### Mode INIT — opt a target in
+→ Read [references/mode-init.md](references/mode-init.md)
 
-Scaffold the marker: `bun scripts/audit-tokenomics.ts --init >> .ki-config.toml`, then set the `headroom` expectation, any `[…budgets]` overrides, and optionally `context_window_tokens`. Local only; no live change.
+### Mode REFRESH
 
-### Mode REFRESH — re-anchor to current best practice
+→ Read [references/mode-refresh.md](references/mode-refresh.md)
 
-The numbers and the tooling here move faster than anything else this set tracks — model windows and prices, cache TTLs, Headroom's config surface, Anthropic's context-engineering guidance. Run on its declared cadence (see `references/sources.md`), or when asked "is the tokenomics standard current".
+## Composition
 
-1. **Read [the source list](references/sources.md)** — the tracked sources, each dated.
-2. **Re-fetch each** (WebFetch / WebSearch) and **diff** against [the standard](references/tokenomics-standard.md), [the rubric](references/audit-rubric.md), and [the checker](scripts/audit-tokenomics.ts): changed budgets or defaults, a new standing-cost surface (a new auto-loaded file kind), new runtime levers, and especially **Headroom's now-documented config keys** (a pinned watch-item) plus any new compression project worth adding to the registry.
-3. **Propose a diff**; confirm before writing.
-4. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and refresh the `## Last review` block. The record of what changed is the commit, not a changelog.
+- `knowledgeislands-mcp` — owns the design of MCP servers (tool surface breadth, resource scope). When the audit reveals an over-broad server is the largest cost item, route the _fix_ there; this skill only measures and names the cost.
+- `knowledgeislands-skills` — owns the skill `description` field and its standing cost. When a bloated or unused skill description is flagged, route the trim there.
+- `knowledgeislands-kb` — owns a base's zone structure and loaded surface. When a base's large CLAUDE.md or memory is the cost driver, route the restructuring there.
 
 ## Notes
 

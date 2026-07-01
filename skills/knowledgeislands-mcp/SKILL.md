@@ -60,46 +60,21 @@ Every tool MUST set `annotations` to a preset from `utils/annotations.ts` (`READ
 
 Every governance skill carries **AUDIT · CONFORM · REFRESH**; this one adds **INIT** (scaffold a new server). Infer the mode from the request; ask if unclear. (Modes are named and alphabetical.)
 
-### Mode AUDIT — check a repo against the standard
+### Mode AUDIT
 
-Auditing all the `mcp-*` servers at once is a set audit — **bound the context** (the set-audit discipline in `knowledgeislands-engineering`'s enforcement-framework §5): walk the servers **one at a time**, running each server's full audit (the common `engineering` layer then the MCP delta below) and releasing it before the next; the servers are independent, so the order is free.
+→ Read [references/mode-audit-conform.md](references/mode-audit-conform.md)
 
-1. **Identify the target.** Confirm the repo path (default: the cwd repo). Note its `<app>` prefix and which tool groups it ships.
-2. **Run both mechanical checkers — the common layer first.** `bun knowledgeislands-engineering/scripts/audit-engineering.ts <repo-path>` covers the shared toolchain (package.json metadata + the `ki:lint:*`/`ki:deps:*` families, the `bun test` trap, tsconfig/biome/vitest with 100% coverage, `.env`, the build/cli-chmod rule). Then `bun <skill>/scripts/audit-mcp.ts <repo-path>` (or `node` after build) covers the **MCP delta**: presence/shape of `src/` layers, `main`/`bin`/ `exports`, the shared `utils/` helpers, tool names, and the MCP coverage-excludes. Both grade findings on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — see `knowledgeislands-engineering`'s enforcement-framework §2), exit non-zero on any FAIL, and with `--json` / `--report` emit machine-readable findings and write the latest report under the target's `.ki-meta/audits/<concern>.{md,json}` (`audit-mcp.ts` → `mcp`). Capture both — the repo is clean only when both pass.
-3. **Do the semantic pass the script can't** — walk [Audit Rubric](references/audit-rubric.md) and judge:
-   - **Config injection**: grep for top-level `process.env` reads outside `config/index.ts`; confirm `main/`/`utils/` take config as the first arg.
-   - **Layer purity**: logic that lives only in a `tools/*` handler or in `cli.ts` (should be in `main/`); `console.*` in `main/` (CLI/stderr only).
-   - **Tool naming**: `grep -rn registerTool src/tools` — every name matches `<app>_<resource>_<action>` with correct plurality.
-   - **Access gate**: every tool sets a real `annotations` preset; nothing bypasses `makeAccessGatedRegister`; destructive tools default `dry_run: true`.
-   - **Security invariants** (see the checklist): path containment, `execFile`/argv not shell strings, bounded + `--no-optional-locks` git, depth-limited walks, tightened identifier regexes (not bare `z.string()`), `.strict()` zod with bounded numerics, no secrets in audit logs / error messages.
-   - **Docs**: `CLAUDE.md` + `README.md` present and _not drifted_ from the code (notion-mirror's `CLAUDE.md` describing `orchestrator/` after the move to `cli/` + `main/` is the cautionary example).
-   - **Longevity**: volatile external facts (targeted spec version/date, upstream API versions, third-party URLs, model IDs) aren't scattered hard-coded literals — each resolves at runtime or is pinned in one refreshable place, so the server can't rot silently once installed. Mirrors the skills rubric's longevity check; see the checklist's _Longevity & staleness_ section.
-4. **Report.** Group findings on the unified severity ladder: a security invariant or gate bypass is a **FAIL**, layout/naming/tooling divergence a **WARN**, docs/consistency a **POLISH**. Cite `file:line`. Give the fix for each, and call out _intentional_ per-repo divergences (e.g. `kb-notion-mirror` defaulting to `write`) so they are not re-flagged.
+### Mode CONFORM
 
-### Mode CONFORM — bring an existing MCP repo up to standard
+→ Read [references/mode-audit-conform.md](references/mode-audit-conform.md)
 
-1. Run **AUDIT** first, so you change against a known gap list.
-2. Fix the gaps in place: restore the `src/` layer boundaries (schema+envelope in `tools/`, logic in `main/` config-first, printing in `cli/`, wiring in `mcp-server/`), the shared `utils/` helpers, and the MCP `package.json` delta (`main` / `bin` / `exports` / `ki:server:mcp:*`) — **copy from the closest healthy sibling** rather than invent. For the common toolchain block (`tsconfig*` / `vitest` / `biome` / the script families), run `knowledgeislands-engineering`'s CONFORM.
-3. **Re-generate the typed client** if the tool surface changed: `bun run ki:generate:client` in the repo (or `bun run ki:codegen` from the harness root to do all repos). Verify the `<server-name>` in the script matches a registered mcporter instance (`mcporter list`).
-4. Re-run both checkers + tests; `bun run test` (NOT `bun test`), `bun run ki:lint:check`, `bun run ki:lint:types` must pass with 100% coverage.
+### Mode INIT
 
-### Mode INIT — scaffold a new MCP server
+→ Read [references/mode-init.md](references/mode-init.md)
 
-1. **Copy from the closest healthy sibling** over inventing: take the shared `utils/` helpers, `tsconfig*.json`, `vitest.config.ts`, `biome.json`, and the package.json script block verbatim, then adapt the `<app>` prefix, env-var prefix (`MCP_<APP>_*`), `SERVER_NAME`, and `exports` map.
-2. Keep the layer boundaries from day one: schema+envelope in `tools/`, logic in `main/` (config slice first), printing only in `cli/`, wiring only in `mcp-server/`. Add tools with explicit `annotations` presets.
-3. **Wire the typed client.** Register the new repo in `arcadia-agentic-harness/scripts/generate-clients.ts`, set the `<server-name>` in the repo's `ki:generate:client` script to a registered mcporter instance (`mcporter list`), then run `bun run ki:generate:client` to emit the initial `src/generated/client.ts`. Commit the generated file.
-4. Run the checker + tests; `bun run test` (NOT `bun test`), `bun run ki:lint:check`, `bun run ki:lint:types` must pass with 100% coverage.
+### Mode REFRESH
 
-### Mode REFRESH — re-anchor the standard to the latest MCP spec
-
-The MCP specification is versioned by date and moves; the in-house standard is built **on top of** it. This mode keeps the standard honest — it pulls the current gold standard and diffs it against what this skill codifies, so the audit never green-lights a repo against a spec that has moved on. Run it on its declared cadence (see `references/sources.md`), or when someone asks "is our MCP standard up to date".
-
-1. **Read [the source list](references/sources.md)** — the tracked authoritative (official MCP spec) + community + in-house sources, each with a `last reviewed` date and what it governs. The Authoritative table names the **latest released** spec version; everything else is house style layered on top.
-2. **Confirm the current spec version**, then re-fetch each source (WebFetch/WebSearch) and **diff against the [standard](references/workspace-mcp-standard.md) + [rubric](references/audit-rubric.md) + [`scripts/audit-mcp.ts`](scripts/audit-mcp.ts)**. Look for: new/changed tool fields (`outputSchema`, `structuredContent`, `icons`, `execution.taskSupport`), changed annotation semantics or defaults, the `isError` vs protocol-error rules, tool-name charset/length bounds, and new security mitigations (esp. the OAuth page — it bears on the gmail / m365 auth-servers).
-3. **Separate spec-driven from house style.** A change is only a new _requirement_ if it traces to the Authoritative table; otherwise it is opinion and must be labelled as such so a protocol "MUST" is never confused with a workspace preference. Where the spec adds something optional (e.g. structured output), codify it as recommended-where-applicable, not mandatory.
-4. **Scan our own repos** for emergent patterns the standard hasn't captured yet (e.g. m365 already returning `structuredContent`) — promote the good ones; flag any that contradict the standard.
-5. **Propose a diff** to the standard, checklist, and (where a check became mechanical) `audit-mcp.ts`. Confirm before writing.
-6. **Update [the source list](references/sources.md)** — bump each `last reviewed` date, add any new source, retire dead ones, and refresh the `## Last review` block (pinned revision, confirmations, open watch-items). What changed goes in the commit, not a changelog. This step is mandatory: the source list is the skill's memory of where the standard comes from.
+→ Read [references/mode-refresh.md](references/mode-refresh.md)
 
 ## Bun vs Node — the common layer
 

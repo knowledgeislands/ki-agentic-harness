@@ -42,39 +42,19 @@ Both halves live under `Admin/Operations/Live Artifacts/` (or a configured path)
 
 ### AUDIT
 
-Run the mechanical checker (`scripts/audit-live-artifacts.ts`) against the base:
-
-1. Find all `.md` files in the artifacts directory (excluding the index note).
-2. For each `.md`: check a same-stem `.html` exists. WARN if absent (unpublished artifact).
-3. For each `.html` that has no matching `.md`: WARN (orphaned render).
-4. For paired artifacts: check the `.html` mtime is not older than the `.md` mtime by more than the sync threshold. WARN if stale.
-5. For `.md` files with frontmatter: check `status` and `renders` are present.
-6. Check the index note exists when any artifacts are found.
+→ Read [references/mode-audit-conform.md](references/mode-audit-conform.md)
 
 ### CONFORM
 
-Repair structural gaps:
-
-1. Create the index note stub if absent.
-2. For unpublished artifacts (`.md` with no `.html`): note that the HTML must be generated — this skill does not render Markdown to HTML; flag the artifact as needing a render step.
-3. For orphaned renders: prompt to either create the missing `.md` or delete the stale `.html` — confirm before deleting.
-4. For stale pairs: prompt the user to regenerate the HTML.
+→ Read [references/mode-audit-conform.md](references/mode-audit-conform.md)
 
 ### NEW
 
-Author a new live artifact. Prompt for:
-
-- Name (becomes the file stem and the `# Heading` in the `.md`)
-- Description (one line for the index)
-- Initial status (`active`)
-
-Write `<Name>.md` with the required frontmatter and a stub body. Note that the `.html` must be generated separately; add an entry to the index noting it is unpublished.
+→ Read [references/mode-new.md](references/mode-new.md)
 
 ### REFRESH
 
-**Refresh:** canonical · on-change
-
-The pairing convention and required frontmatter are canonical to this skill. Run REFRESH when the artifact model changes (new render type, new required field, or the artifacts directory moves). Review the sources list and update declarations accordingly.
+→ Read [references/mode-refresh.md](references/mode-refresh.md)
 
 ## Composition
 
