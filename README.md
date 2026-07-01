@@ -5,11 +5,11 @@ The **agentic harness** for Knowledge Islands work — the canonical home for wh
 A harness is **four parts** — the things an agent is given to work with:
 
 - **Skills** ([`skills/`](skills/)) — reusable [Agent Skills](https://agentskills.io/specification): the most-built-out part of the harness today (**sixteen**, all governance skills — including `knowledgeislands-harness`, which governs this four-part container itself, and `knowledgeislands-bootstrap`, the install keystone). Installed per-repo: `bootstrap` (the one globally-installed skill) wires each repo's project-local `.claude/skills/` from its `.ki-config.toml`. The catalogue is in [docs/skills.md](docs/skills.md); how they fit together — boundaries, the knowledge loops, the shared principles — in [docs/design.md](docs/design.md).
-- **Agents** ([`agents/`](agents/)) — Knowledge Islands [Claude Code subagents](https://code.claude.com/docs/en/sub-agents), one per file. An empty **shelf** today, governed by the `knowledgeislands-agents` skill. See [`agents/README.md`](agents/README.md).
+- **Agents** ([`agents/`](agents/)) — Knowledge Islands [Claude Code subagents](https://code.claude.com/docs/en/sub-agents), one per file. Five governance agents live under `agents/governance/` today, governed by the `knowledgeislands-agents` skill. See [`agents/README.md`](agents/README.md).
 - **MCP servers** ([`mcp/`](mcp/)) — where KI's MCP servers would consolidate as workspace packages. An empty **shelf** today; they currently live as separate `mcp-*` repos, governed by the `knowledgeislands-mcp` skill. See [`mcp/README.md`](mcp/README.md).
 - **Evals** ([`evals/`](evals/)) — a behavioural test suite that checks a skill actually _changes what the model does_, not just that its `SKILL.md` is well-formed. A rough signal, not a gate. See [`evals/README.md`](evals/README.md).
 
-The two shelves and the eval suite are first-class parts of the harness; skills are simply where the work has gone first. A skill does not have to be wedded to Knowledge Islands — the repository layout, the install steps, and the linking conventions apply to every kind equally.
+All four parts are first-class; skills are simply the most built-out, with agents and the eval suite now populated and `mcp/` still an empty shelf. A skill does not have to be wedded to Knowledge Islands — the repository layout, the install steps, and the linking conventions apply to every kind equally.
 
 ## What a skill is
 
@@ -84,6 +84,6 @@ Only `knowledgeislands-bootstrap` is installed globally; every other skill is pr
 
 ## Roadmap
 
-The forward view — what's next and why — lives in [ROADMAP.md](ROADMAP.md). The standards, the mechanical checkers, and the advisory eval harness are all in place, and keeping them applied is a continuous practice (the invariants in [docs/design.md](docs/design.md#principles-across-the-set)), not roadmap work. What remains is mostly _dogfooding_: conforming the website repos to the new `11ty-websites` / `cloudflare-hosting` standards, finishing the `.ki-config.toml` override-layer rollout across its consuming skills, and two Dependabot follow-ups for the `mcp-*` repos.
+The forward view — what's next and why — lives in [ROADMAP.md](ROADMAP.md). The standards, the mechanical checkers, and the advisory eval harness are all in place, and keeping them applied is a continuous practice (the invariants in [docs/design.md](docs/design.md#principles-across-the-set)), not roadmap work.
 
 [ki-doc]: docs/knowledge-islands.md

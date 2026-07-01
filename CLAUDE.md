@@ -8,12 +8,12 @@ The canonical home for the Knowledge Islands **Agent Skills** (per the [Agent Sk
 
 ## Four-part bundle status
 
-| Part        | Directory | Status                                                      |
-| ----------- | --------- | ----------------------------------------------------------- |
-| Skills      | `skills/` | **Populated** — 16 `knowledgeislands-*` skills              |
-| Agents      | `agents/` | **Populated** — 5 governance agents in `agents/governance/` |
-| MCP servers | `mcp/`    | **Shelf** — scaffolded, no servers yet                      |
-| Evals       | `evals/`  | **Shelf** — scaffolded, no evals yet                        |
+| Part        | Directory | Status                                                              |
+| ----------- | --------- | ------------------------------------------------------------------- |
+| Skills      | `skills/` | **Populated** — 16 `knowledgeislands-*` skills                      |
+| Agents      | `agents/` | **Populated** — 5 governance agents in `agents/governance/`         |
+| MCP servers | `mcp/`    | **Shelf** — scaffolded, no servers yet                              |
+| Evals       | `evals/`  | **Populated (partial)** — 3 scenarios + result matrices in `evals/` |
 
 ## How skills relate — composition only
 
