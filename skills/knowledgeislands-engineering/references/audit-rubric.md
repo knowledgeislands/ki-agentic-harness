@@ -67,12 +67,12 @@ Capability conditionals only apply when the repo has the marker (tests / compile
 
 - [ ] [M] WARN — `test` = `vitest run`; `test:coverage` = `vitest run --coverage`; `test:watch` = `vitest`.
 - [ ] [M] FAIL — vitest coverage thresholds are **100%** on all four metrics (lines/functions/branches/ statements).
-- [ ] [M] WARN — coverage `include` is `src/**/*.ts` and `exclude` drops `src/**/*.test.ts`. (The _additional_ excludes are artifact-specific — not graded here; the artifact skill grades them.)
-- [ ] [J] WARN — tests are co-located (`src/**/*.test.ts`) and actually reach the 100% bar.
+- [ ] [M] WARN — coverage `include` is `src/**/*.ts` and `exclude` drops `src/**/*.test.ts`. (The _additional_ excludes are artifact-specific — not graded here; the artifact skill grades them.) **Monorepo exception (§0):** when `package.json` declares a `workspaces` array, `include`/`exclude` and the vitest `reportsDirectory` are **workspace-scoped** (e.g. `include: ['site/scripts/**/*.test.ts']`, `reportsDirectory: 'site/coverage'`) rather than the flat `src/**` / root `coverage/` — the paths sit under the owning workspace, not the repo root.
+- [ ] [J] WARN — tests are co-located with the source they cover (`src/**/*.test.ts` in the flat shape; under the owning workspace, e.g. `site/scripts/**/*.test.ts`, in a monorepo) and actually reach the 100% bar.
 
 ## Capability: compiled build & CLI (§7) — marker: `tsconfig.build.json` or a `tsc` build
 
-- [ ] [M] WARN — `build` = `tsc -p tsconfig.build.json` (optionally `&& chmod …`); `files` includes `dist`.
+- [ ] [M] WARN — `build` = `tsc -p tsconfig.build.json` (optionally `&& chmod …`); `files` includes `dist`. **Monorepo exception (§0):** in a `workspaces` repo the compiled output and its `files`/`clean`/`.gitignore` references are workspace-scoped (`site/dist`), not a root `dist/`.
 - [ ] [M] WARN — `tsconfig.build.json` extends the base and sets `noEmit:false`, `declaration` + `declarationMap`, `outDir`/`rootDir`, `allowImportingTsExtensions:false`, `noUncheckedIndexedAccess:true`, excludes `**/*.test.ts`.
 - [ ] [M] WARN — **CLI chmod rule**: `build` chmods `dist/cli/cli.js` **iff** `src/cli/` exists; it chmods **no other path** (in particular not a server/mcp-server bin). No dangling chmod, no missing chmod.
 

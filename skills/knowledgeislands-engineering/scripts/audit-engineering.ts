@@ -423,6 +423,28 @@ if (hasTests) {
         ? 'coverage excludes src/**/*.test.ts'
         : 'coverage should exclude src/**/*.test.ts (other excludes are artifact-specific)'
     )
+    // monorepo shape (§0): per-workspace artifacts and test globs are scoped to the owning
+    // workspace dir, never the repo root. Check the vitest reportsDirectory and include globs
+    // sit under a declared workspace (mirrors the ki:lint:types per-workspace check above).
+    if (workspaces.length) {
+      const underWs = (p: string) => workspaces.some((w) => p === w || p.startsWith(`${w}/`))
+      const rd = vc.match(/reportsDirectory\s*:\s*['"]([^'"]+)['"]/)?.[1]
+      add(
+        rd && underWs(rd) ? 'PASS' : 'WARN',
+        'tests',
+        rd && underWs(rd)
+          ? `monorepo: coverage reportsDirectory "${rd}" is under a workspace`
+          : `monorepo (§0): set the vitest coverage reportsDirectory under the owning workspace (e.g. "site/coverage"), not the repo root — ${rd ? `got "${rd}"` : 'none set (defaults to root coverage/)'}`
+      )
+      const globs = [...vc.matchAll(/include\s*:\s*\[([^\]]*)\]/g)].flatMap((m) => [...m[1].matchAll(/['"]([^'"]+)['"]/g)].map((x) => x[1]))
+      const escaped = globs.filter((g) => !underWs(g))
+      if (escaped.length)
+        add(
+          'WARN',
+          'tests',
+          `monorepo (§0): vitest include glob(s) not under a workspace dir: ${escaped.join(', ')} — scope tests/coverage to the owning workspace (e.g. site/scripts/**/*.test.ts)`
+        )
+    }
   } else {
     add('WARN', 'tests', 'a test script is present but no vitest.config.* — confirm the runner is vitest')
   }

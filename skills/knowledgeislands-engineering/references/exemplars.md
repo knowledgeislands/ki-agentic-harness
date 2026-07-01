@@ -103,6 +103,28 @@ The two families (`ki:lint:*` and `ki:deps:*`) are byte-identical across all 10 
 }
 ```
 
+### Monorepo: workspace-scoped vitest coverage (§0, §6)
+
+In a `workspaces` repo (`"workspaces": ["site", "ingress"]`) the flat `src/**` globs and root `coverage/` become **workspace-relative** — artifacts sit under the workspace that owns them, never the repo root. The 100%-threshold rule is unchanged; only the paths move.
+
+```ts
+// vitest.config.ts (monorepo — tests + coverage scoped to the site/ workspace)
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'node',
+    include: ['site/scripts/**/*.test.ts'], // under the workspace, not src/**
+    coverage: {
+      provider: 'v8',
+      reportsDirectory: 'site/coverage', // gitignored as /site/coverage, not root /coverage
+      include: ['site/scripts/seed-model.ts', 'site/scripts/body-regen.ts'],
+      exclude: ['site/scripts/**/*.test.ts'],
+      thresholds: { statements: 100, branches: 100, functions: 100, lines: 100 }
+    }
+  }
+})
+```
+
 ### Minimal `[knowledgeislands-engineering]` table in `.ki-config.toml`
 
 The table is a conformance marker — its presence declares "the engineering standard applies here". It carries no top-level keys because capabilities (tests, compiled build, env config) are auto-detected from repo markers (`vitest.config.*`, `tsconfig.build.json`, `.env*.example`). The only allowed sub-structure is a `[knowledgeislands-engineering.checks]` table for deliberate waivers. A repo that fully conforms writes the table header and nothing else.
