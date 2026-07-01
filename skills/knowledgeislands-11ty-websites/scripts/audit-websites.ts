@@ -220,13 +220,44 @@ if (dev && /concurrently/.test(dev)) {
 }
 
 // ── dist/ gitignored ──────────────────────────────────────────────────────────
+// Standard (§9): dist/ lives at site/dist/ (inside the workspace), so the correct
+// gitignore entry from the repo root is `site/dist` or `/site/dist`.
+// A root-level `/dist` entry means the output was (incorrectly) at $root/dist/.
 const gitignore = read('.gitignore')
-const distIgnored = /^\s*\/?dist\/?\s*$/m.test(gitignore)
+const distCorrect = siteRoot
+  ? // site/ subfolder layout: must ignore site/dist, not root dist
+    /^\s*\/?site\/dist\/?\s*$/m.test(gitignore)
+  : // flat layout: dist at repo root is fine
+    /^\s*\/?dist\/?\s*$/m.test(gitignore)
+const distRootMisplaced = siteRoot && /^\s*\/dist\/?\s*$/m.test(gitignore)
 add(
-  distIgnored ? 'PASS' : 'WARN',
+  distCorrect ? 'PASS' : distRootMisplaced ? 'FAIL' : 'WARN',
   'dist',
-  distIgnored ? 'dist/ is gitignored' : 'dist/ does not appear in .gitignore (build output should not be committed)'
+  distCorrect
+    ? `${siteRoot ? 'site/dist/' : 'dist/'} is correctly gitignored`
+    : distRootMisplaced
+      ? 'gitignore has /dist (repo root) but site/ layout puts output at site/dist/ — update to /site/dist'
+      : `${siteRoot ? 'site/dist/' : 'dist/'} not found in .gitignore (build output should not be committed)`
 )
+
+// ── wrangler.jsonc: assets.directory must be dist, not ../dist ────────────────
+// In the site/ subfolder layout, wrangler.jsonc lives at site/wrangler.jsonc and
+// must point at `dist` (relative to site/). `../dist` means output is at $root/dist/.
+if (siteRoot) {
+  const wrangler = read(siteRoot, 'wrangler.jsonc') || read(siteRoot, 'wrangler.json')
+  if (wrangler) {
+    const assetsDir = /"directory"\s*:\s*"([^"]+)"/.exec(wrangler)?.[1]
+    if (assetsDir === undefined) {
+      add('WARN', 'dist', 'wrangler.jsonc present but no assets.directory found')
+    } else if (assetsDir === 'dist' || assetsDir === './dist') {
+      add('PASS', 'dist', `wrangler.jsonc assets.directory = "${assetsDir}" (correct — site/dist/)`)
+    } else if (assetsDir === '../dist') {
+      add('FAIL', 'dist', 'wrangler.jsonc assets.directory = "../dist" (points to $root/dist/ — change to "dist")')
+    } else {
+      add('WARN', 'dist', `wrangler.jsonc assets.directory = "${assetsDir}" (unexpected value)`)
+    }
+  }
+}
 
 // ── .ki-config.toml opt-in table ──────────────────────────────────────────────
 const ki = read('.ki-config.toml')
