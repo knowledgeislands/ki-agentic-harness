@@ -61,3 +61,4 @@ Carries the universal **AUDIT · CONFORM · REFRESH**, plus **NEW** (draft a new
 - **Not every proposal needs a DR** — routine content additions, typo fixes, and minor configuration changes do not warrant one. Reserve DRs for decisions with standalone standing.
 - **KB repos** use `Admin/Governance/Decisions/` and require frontmatter (`type`, `decision_type`, `status`, `author`). **Code repos** use `docs/decisions/` and frontmatter is optional.
 - The KI-wide frontmatter standard (universal fields and the `type` taxonomy) lives in `knowledgeislands-kb`'s [frontmatter-standard.md](../knowledgeislands-kb/references/frontmatter-standard.md).
+- Checker output conforms to the severity ladder, JSON shape, and exit-code contract in `knowledgeislands-engineering`'s [checker-contract.md](../knowledgeislands-engineering/references/checker-contract.md).

@@ -86,3 +86,4 @@ The Bun-install / Node-run split, the **`bun test` trap**, and the `process.load
 - Keep the shared `utils/` helpers (`access-level.ts`, `annotations.ts`, `audit-log.ts`) in sync across repos — a fix to one usually applies to all.
 - The standard sits on top of a moving spec. When citing a requirement, know whether it is **spec-driven** (traces to the official MCP spec in [the source list](references/sources.md)) or **house style** — never present a workspace preference as a protocol "MUST". Run Mode REFRESH when in doubt.
 - Full detail: [Workspace MCP Standard](references/workspace-mcp-standard.md), [Audit Rubric](references/audit-rubric.md), and the tracked [source list](references/sources.md).
+- Checker output conforms to the severity ladder, JSON shape, and exit-code contract in `knowledgeislands-engineering`'s [checker-contract.md](../knowledgeislands-engineering/references/checker-contract.md).

@@ -4,6 +4,8 @@ Line-by-line pass/fail criteria for auditing an Agent Skill against the [Agent S
 
 A criterion's tag is a contract with the linter: if you find yourself eyeballing an **[M]** check, run the linter instead; if the linter ever starts enforcing a **[J]** check, move its tag here.
 
+Checker output follows the severity ladder, JSON shape, and exit-code contract in `knowledgeislands-engineering`'s [checker-contract.md](../../knowledgeislands-engineering/references/checker-contract.md).
+
 ## Contents
 
 - [LAY — File existence & layout](#lay--file-existence--layout)
