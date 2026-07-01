@@ -23,6 +23,9 @@ visibility = "private"   # "public" | "private"
 # This repo ships the knowledgeislands-decision-records skill, so it declares governance by its own standard.
 [knowledgeislands-decision-records]
 
+# This repo ships the knowledgeislands-plans skill, so it declares governance by its own standard.
+[knowledgeislands-plans]
+
 # Tokenomics governance — audits the standing context surface for this environment.
 # MCP server count is user-scoped (not harness-controlled); all 19 are intentional.
 # With Claude Code's default tool search (ENABLE_TOOL_SEARCH=auto), schemas are deferred,
