@@ -38,7 +38,7 @@ A repo is "clean" only when **every applicable** skill's audit passes. The `.ki-
 
 ## Operating modes
 
-Carries the universal **AUDIT · CONFORM · REFRESH**, plus **INIT** (scaffold a new TS repo's toolchain). Infer the mode from the request; ask if unclear. (Modes are named and alphabetical.) The mode shape itself is defined in [the enforcement framework](references/enforcement-framework.md).
+Carries the universal **AUDIT · CONFORM · REFRESH**, plus **INIT** (scaffold a new TS repo's toolchain). If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too. The mode shape itself is defined in [the enforcement framework](references/enforcement-framework.md).
 
 ### Mode AUDIT — check a repo's common toolchain
 

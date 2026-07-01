@@ -41,7 +41,7 @@ A target opts in (and tunes) via a `[ki-tokenomics]` table in its `.ki-config.to
 
 ## Operating modes
 
-Every governance skill carries **AUDIT · CONFORM · REFRESH**; this one adds **INIT**. Infer the mode from the request; ask if unclear. (Modes are named and alphabetical.)
+Every governance skill carries **AUDIT · CONFORM · REFRESH**; this one adds **INIT**. If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too.
 
 ### Mode AUDIT
 

@@ -13,6 +13,8 @@ This skill governs the **container** — the harness's directory layout, its `CL
 
 The full canonical standard — what each part must contain and why — lives in [the harness standard](references/harness-standard.md). The line-by-line checkable criteria live in [the rubric](references/audit-rubric.md). A mechanical checker is [`scripts/audit-harness.ts`](scripts/audit-harness.ts). Load those when you need detail; this file is the operating procedure.
 
+Modes: **AUDIT · CONFORM · INIT · REFRESH** (named, alphabetical). If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too.
+
 ## Mode AUDIT — check a harness against the standard
 
 1. **Run the mechanical checker.** `bun scripts/audit-harness.ts [path]` from this skill's directory (or `bun run ki:harness:audit` at the harness root, if wired). It checks: the four-part directory presence, each directory's `README.md`, root `CLAUDE.md` / `ROADMAP.md`, `package.json` script families, `.ki-config.toml` `[ki-harness]` table presence, and each `skills/<dir>` name matching its `SKILL.md` `name:` frontmatter. Reports on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — defined in `ki-engineering`'s enforcement-framework §2).

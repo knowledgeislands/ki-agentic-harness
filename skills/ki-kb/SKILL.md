@@ -106,7 +106,7 @@ Almost everything is fixed by the structure above. Only these come from the host
 
 ## Step 2 - Determine mode and load its procedure
 
-Infer the mode from the request, or ask if unclear. The shared model above — the five zones, the routing test, the **memory cascade**, the project bindings, and Step 1 — is what every mode needs and stays loaded; each mode's _procedure_ lives in its own on-demand file, so read only the one the request selects. Like every governance skill it carries **AUDIT · CONFORM · REFRESH**; its base-specific modes are **INIT** (scaffold a base), the session-level **IMPROVE** (continuous improvement), and the note-ops **DIGEST · EXTRACT · QUERY · SAVE · UPDATE**. Modes are named and alphabetical.
+If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too. The shared model above — the five zones, the routing test, the **memory cascade**, the project bindings, and Step 1 — is what every mode needs and stays loaded; each mode's _procedure_ lives in its own on-demand file, so read only the one the request selects. Like every governance skill it carries **AUDIT · CONFORM · REFRESH**; its base-specific modes are **INIT** (scaffold a base), the session-level **IMPROVE** (continuous improvement), and the note-ops **DIGEST · EXTRACT · QUERY · SAVE · UPDATE**. Modes are named and alphabetical.
 
 | Mode    | Fires on                                                  | Read before acting                                        |
 | ------- | --------------------------------------------------------- | --------------------------------------------------------- |

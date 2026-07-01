@@ -40,6 +40,8 @@ Both halves live under `Admin/Operations/Live Artifacts/` (or a configured path)
 
 ## Operating modes
 
+Modes: **AUDIT · CONFORM · REFRESH** (named, alphabetical). If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description.
+
 ### AUDIT
 
 → Read [references/mode-audit-conform.md](references/mode-audit-conform.md)

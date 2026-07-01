@@ -58,7 +58,7 @@ Every tool MUST set `annotations` to a preset from `utils/annotations.ts` (`READ
 
 ## Operating modes
 
-Every governance skill carries **AUDIT · CONFORM · REFRESH**; this one adds **INIT** (scaffold a new server). Infer the mode from the request; ask if unclear. (Modes are named and alphabetical.)
+Every governance skill carries **AUDIT · CONFORM · REFRESH**; this one adds **INIT** (scaffold a new server). If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too.
 
 ### Mode AUDIT
 

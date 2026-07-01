@@ -66,6 +66,8 @@ The checker cannot verify registration in an external system; it emits WARN if `
 
 ## Operating modes
 
+Modes: **AUDIT · CONFORM · NEW · REFRESH** (named, alphabetical). If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too.
+
 ### AUDIT
 
 → Read [references/mode-audit-conform.md](references/mode-audit-conform.md)
