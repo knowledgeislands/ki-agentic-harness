@@ -2,13 +2,13 @@
 
 **Status:** Accepted
 
+**Mutability:** open
+
 **Date:** 2026-06-23
 
 ## Context
 
-Multi-skill operations (AUDIT, CONFORM, or any mode run across the full governance skill set) were previously executed serially in a single agent context — one skill at a time in dependency order (ADR-KI-HARNESS-SKILLS-003). This approach achieved its primary goal of bounding context (load one skill, release it before loading the next), but it serialised work that is largely independent, meaning a full harness audit took as long as the sum of all concern durations.
-
-The same context-bounding goal can be achieved — better — by running each concern in its own subagent. Each subagent loads only the files for its concern, runs its checker and judgment pass, and returns structured findings. The main agent synthesises the results. This parallelises execution while keeping each subagent's context as bounded as the old serial walk's single-concern window.
+A multi-skill operation (AUDIT, CONFORM, or any mode run across the governance skill set) has two goals in tension: bound each skill's context (so the run does not load every skill's files at once) and complete quickly. The concerns are largely independent — each governance skill checks its own surface — so they do not need to share a context or run in sequence. Running each concern in its own subagent satisfies both goals: the subagent loads only the files for its concern, so its context is as bounded as a single-skill window, and the concerns run in parallel rather than summing their durations.
 
 This applies to all Knowledge Islands multi-skill invocations, not only audits.
 
@@ -25,7 +25,7 @@ For the harness multi-concern audit specifically, the workflow is codified in `.
 ## Consequences
 
 - Multi-skill runs complete in time proportional to the slowest single concern, not the sum.
-- Each subagent's context is bounded to one concern — the same bound as the old serial walk.
+- Each subagent's context is bounded to a single concern.
 - The dependency order from ADR-KI-HARNESS-SKILLS-003 becomes synthesis ranking priority, not execution order.
 - A subagent failure (one concern) does not abort the others.
 - COLL checks remain in the main context because they are cross-skill and cannot be isolated per concern.
@@ -33,7 +33,11 @@ For the harness multi-concern audit specifically, the workflow is codified in `.
 
 ## References
 
-- ADR-KI-HARNESS-SKILLS-003 — the dependency order that governs synthesis ranking.
+- [ADR-KI-HARNESS-SKILLS-003](ADR-KI-HARNESS-SKILLS-003.md) — the dependency order that governs synthesis ranking.
 - [skills/ki-skills/SKILL.md](../../skills/ki-skills/SKILL.md) — Mode AUDIT, set-audit discipline (updated to reference this ADR).
 - [skills/ki-harness/SKILL.md](../../skills/ki-harness/SKILL.md) — Mode AUDIT step 2 (updated to reference the workflow).
 - [.claude/workflows/ki-multi-skill-audit.ts](../../.claude/workflows/ki-multi-skill-audit.ts) — the saved workflow.
+
+## Changelog
+
+- 2026-07-02 — realigned Context to present state (removed the "previously executed serially… but it serialised" narrative); made the SKILLS-003 reference a relative link.

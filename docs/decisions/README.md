@@ -33,26 +33,21 @@ Sub-scopes used in this harness:
 | ADR-KI-HARNESS-SKILLS-002    | [Mechanical and judgment checker split](ADR-KI-HARNESS-SKILLS-002.md)         | Accepted | 2024-01-01 |
 | ADR-KI-HARNESS-SKILLS-003    | [Dependency order for multi-skill composition](ADR-KI-HARNESS-SKILLS-003.md)  | Accepted | 2024-01-01 |
 | ADR-KI-HARNESS-SKILLS-004    | [Skills must be valid standalone](ADR-KI-HARNESS-SKILLS-004.md)               | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-TOOLCHAIN-001 | [Bun and Biome standard toolchain](ADR-KI-HARNESS-TOOLCHAIN-001.md)           | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-TOOLCHAIN-002 | [Complementary tooling evaluation][t002]†                                     | Accepted | 2026-06-23 |
+| ADR-KI-HARNESS-TOOLCHAIN-001 | [Bun, Biome, and knip standard toolchain](ADR-KI-HARNESS-TOOLCHAIN-001.md)    | Accepted | 2026-06-28 |
+| ADR-KI-HARNESS-TOOLCHAIN-002 | [Complementary tooling — current adoptions](ADR-KI-HARNESS-TOOLCHAIN-002.md)  | Accepted | 2026-06-29 |
 | ADR-KI-HARNESS-TOOLCHAIN-003 | [Proxy local MCP servers behind mcporter](ADR-KI-HARNESS-TOOLCHAIN-003.md)    | Accepted | 2026-06-24 |
-| ADR-KI-HARNESS-TOOLCHAIN-004 | [knip for dependency + dead-code hygiene](ADR-KI-HARNESS-TOOLCHAIN-004.md)    | Accepted | 2026-06-28 |
-| ADR-KI-HARNESS-TOOLCHAIN-005 | [Cost-reduction tooling — second pass][t005]‡                                 | Accepted | 2026-06-29 |
 | ADR-KI-HARNESS-AGENTS-001    | [Subagent isolation for multi-skill invocation](ADR-KI-HARNESS-AGENTS-001.md) | Accepted | 2026-06-23 |
 
-[t002]: ADR-KI-HARNESS-TOOLCHAIN-002.md
-[t005]: ADR-KI-HARNESS-TOOLCHAIN-005.md
-
-† Full title: "Complementary tooling evaluation — context management and developer utilities"
-
-‡ Full title: "Cost-reduction tooling evaluation — second pass (MarkItDown, Engram, Caveman, Graphify)"
-
 ## Template
+
+Each record carries two orthogonal header fields. `**Status:**` is the decision lifecycle. `**Mutability:**` is `open` (present-focused; edited in place for clarifications and realignments, each logged in `## Changelog`) or `locked` (frozen; changed only by a superseding record). The marker aligns to Status and is a free choice only in `Accepted`; a significant change of direction is flagged to a human, never applied silently. The full rules live in the `ki-decision-records` skill ([dr-format.md](../../skills/ki-decision-records/references/dr-format.md)).
 
 ```markdown
 # ADR-KI-<SCOPE>-NNN: <Title>
 
 **Status:** Proposed | Accepted | Deprecated | Superseded by ADR-KI-…
+
+**Mutability:** open | locked
 
 **Date:** YYYY-MM-DD
 
@@ -71,4 +66,8 @@ Sub-scopes used in this harness:
 ## References
 
 - [Source doc title](../path/to/doc.md) — the canonical standard this ADR codifies.
+
+## Changelog
+
+- YYYY-MM-DD — created.
 ```

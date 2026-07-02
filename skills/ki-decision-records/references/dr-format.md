@@ -91,27 +91,50 @@ Every DR has exactly these sections, in this order:
 
 The title is a short noun phrase — not a question, not a full sentence. The heading reproduces the full DR ID so a reader can identify the record from the heading alone.
 
-### 2. Status and Date (bold fields, immediately after the heading)
+### 2. Status, Mutability, and Date (bold fields, immediately after the heading)
 
 ```markdown
 **Status:** Proposed | Accepted | Deprecated | Superseded by <PREFIX>-<SCOPE>-NNN
+
+**Mutability:** open | locked
 
 **Date:** YYYY-MM-DD
 ```
 
 Freestanding bold-key lines, not a table or code block. `**Date:**` records when the Status last changed.
 
+`**Status:**` is the decision **lifecycle**:
+
 | Value                | Meaning                                                             |
 | -------------------- | ------------------------------------------------------------------- |
 | `Draft`              | Being written; not yet ready for consideration. Serial is `XXX`.    |
 | `Proposed`           | Under discussion; not yet agreed                                    |
-| `Accepted`           | Agreed and in effect — do not modify the body; supersede instead    |
+| `Accepted`           | Agreed and in effect                                                |
 | `Deprecated`         | Being phased out but not replaced by a single successor             |
 | `Superseded by <ID>` | Replaced by the named DR; include the full DR code of the successor |
 
 Lifecycle stages may be skipped where appropriate. Many governance DRs move directly `Proposed → Accepted`. A `Draft` receives a per-prefix serial when promoted out of that state.
 
-When a DR is superseded: (1) update its Status to `Superseded by <ID>`; (2) add a `Supersedes <ID>` line in the successor. Both records are retained — the history is the point.
+`**Mutability:**` is a **second, orthogonal axis** — whether the record's content may be edited in place, or is frozen and changed only by supersession:
+
+| Value    | Meaning                                                                                                                |
+| -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `open`   | Present-focused living record. Clarifications and realignments are edited **in place**, each logged in `## Changelog`. |
+| `locked` | Content frozen. Any change requires a **superseding** record.                                                          |
+
+The marker is **always present and aligned to `Status`**, and is a free choice only in `Accepted`:
+
+| Status                     | Mutability                   |
+| -------------------------- | ---------------------------- |
+| `Draft`, `Proposed`        | `open`                       |
+| `Accepted`                 | `open` (default) or `locked` |
+| `Deprecated`, `Superseded` | `locked`                     |
+
+The audit asserts this alignment for every non-`Accepted` status, and asserts presence for `Accepted`. `Mutability` is distinct from the frontmatter maintenance `status` (freshness: draft/current/outdated/archive, §Frontmatter) — the value `open` deliberately avoids the word `current` so the two axes never read as one.
+
+**Direction-change gate (human in the loop).** When a proposed edit is a _significant change of direction_ rather than a clarification or realignment, it is **never applied silently and never auto-superseded**. The agent flags the change to the human, who decides: edit the `open` record in place (logging it in `## Changelog`) or spawn a superseding record. A `## Changelog` that is accumulating direction-changing entries is itself the signal that a supersession is due.
+
+When a DR is superseded: (1) update its Status to `Superseded by <ID>` (and its Mutability to `locked`); (2) add a `Supersedes <ID>` line in the successor. Both records are retained — the history is the point.
 
 ### 3. `## Context`
 
@@ -135,6 +158,16 @@ The resulting context after the decision is applied — positive outcomes, trade
 
 Expected when the decision codifies an existing standard or cites a prior source. Relative Markdown links only. Omit entirely if there are genuinely no relevant references.
 
+### 7. `## Changelog` (open records only)
+
+```markdown
+## Changelog
+
+- YYYY-MM-DD — one-line description of the clarification or realignment.
+```
+
+Present on `open` records; the running log of in-place clarifications and realignments. Each entry is one dated line. A `locked` record has no live `## Changelog` (its history is carried by the supersession chain instead). Direction-changing entries do not belong here — they trigger the human-in-the-loop gate (§2) and, if taken, a supersession rather than a log line.
+
 ## Templates
 
 ### KB repo template
@@ -150,6 +183,8 @@ author: Written with Claude
 # GDR-<SCOPE>-NNN: <Title>
 
 **Status:** Proposed
+
+**Mutability:** open
 
 **Date:** YYYY-MM-DD
 
@@ -168,6 +203,10 @@ author: Written with Claude
 ## References
 
 - [Source title](../path/to/note.md) -- why cited.
+
+## Changelog
+
+- YYYY-MM-DD — created.
 ```
 
 ### Code repo template (bare Markdown, no frontmatter required)
@@ -176,6 +215,8 @@ author: Written with Claude
 # ADR-<SCOPE>-NNN: <Title>
 
 **Status:** Proposed
+
+**Mutability:** open
 
 **Date:** YYYY-MM-DD
 
@@ -190,6 +231,10 @@ author: Written with Claude
 ## Consequences
 
 <Outcomes and trade-offs.>
+
+## Changelog
+
+- YYYY-MM-DD — created.
 ```
 
 ## Index
@@ -209,7 +254,8 @@ The Title cell is a relative link. Status and Date must match the DR's own `**St
 - **Length**: one to two pages (roughly 200-500 words of body). A DR is a decision record, not a design document.
 - **Voice**: active, present tense. "This island adopts X" not "X was adopted".
 - **Scope**: one decision per DR. If a decision has multiple independently-reconsidered parts, split them.
-- **Immutability**: once `Accepted`, a record is never edited for content — only the Status line changes.
+- **Mutability**: an `Accepted` record's editability is governed by its `**Mutability:**` marker (§2), not by an absolute rule. An `open` record is edited in place for clarifications and realignments (logged in `## Changelog`); a `locked` record is frozen and changed only by supersession. A significant change of direction is escalated to the human-in-the-loop gate (§2), never applied silently.
+- **No roadmap or TODO inside a DR**: a record states the decision as it currently stands. Forward-looking, still-to-do, or "revisit later" work is lifted to the repo's ROADMAP (code repo) or a stream (KB) — never narrated in the record as an "open roadmap item", "parked", or "not yet started".
 - **Chaining**: the Consequences of one DR become the Context of the next. Write each as if handing off to a future author.
 - **Language**: follow the island's language convention (British English for KI islands).
 - **Prefix choice**: if you are uncertain which `decision_type` fits, prefer the broader category. A governance DR is about how the island is run; an architecture DR is about how it is structured.

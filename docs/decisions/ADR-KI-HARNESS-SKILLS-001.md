@@ -2,6 +2,8 @@
 
 **Status:** Accepted
 
+**Mutability:** open
+
 **Date:** 2024-01-01
 
 ## Context
@@ -29,3 +31,7 @@ The SHAPE-5 criterion in the skills rubric enforces that every governance skill 
 
 - [skills/ki-engineering/references/enforcement-framework.md](../../skills/ki-engineering/references/enforcement-framework.md) §5 — the modes in full.
 - [docs/design.md](../design.md) §Principles — "One governance-mode model (SHAPE-5)".
+
+## Changelog
+
+- 2026-07-02 — added the `**Mutability:**` marker (open).

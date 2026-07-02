@@ -2,6 +2,8 @@
 
 **Status:** Accepted
 
+**Mutability:** open
+
 **Date:** 2024-01-01
 
 ## Context
@@ -24,3 +26,7 @@ Skills relate to one another exclusively through **composition**: a skill runs a
 
 - [docs/design.md](../design.md) §Principles — the Composition-only principle (SHAPE-2).
 - [skills/ki-engineering/references/enforcement-framework.md](../../skills/ki-engineering/references/enforcement-framework.md) §6 — "Standard, not base-coupled extension (SHAPE-2)".
+
+## Changelog
+
+- 2026-07-02 — added the `**Mutability:**` marker (open).

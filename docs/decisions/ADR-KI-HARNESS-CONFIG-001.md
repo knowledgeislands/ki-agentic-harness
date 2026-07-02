@@ -2,6 +2,8 @@
 
 **Status:** Accepted
 
+**Mutability:** open
+
 **Date:** 2024-01-01
 
 ## Context
@@ -23,3 +25,7 @@ Each governance skill needed to know whether it applied to a given repo, and wha
 
 - [skills/ki-repo/references/ki-config-standard.md](../../skills/ki-repo/references/ki-config-standard.md) — the full `.ki-config.toml` contract.
 - [skills/ki-repo/SKILL.md](../../skills/ki-repo/SKILL.md) — the coverage-gate model.
+
+## Changelog
+
+- 2026-07-02 — added the `**Mutability:**` marker (open).

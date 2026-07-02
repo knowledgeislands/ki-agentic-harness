@@ -2,6 +2,8 @@
 
 **Status:** Accepted
 
+**Mutability:** open
+
 **Date:** 2024-01-01
 
 ## Context
@@ -27,4 +29,8 @@ authoring → engineering → repo → kb → streams → mcp → 11ty-websites 
 
 - [skills/ki-skills/SKILL.md](../../skills/ki-skills/SKILL.md) — Mode AUDIT, set-audit discipline.
 - [skills/ki-engineering/references/enforcement-framework.md](../../skills/ki-engineering/references/enforcement-framework.md) §5 AUDIT — "Auditing a set … bounds its own context".
-- ADR-KI-HARNESS-AGENTS-001 — uses this dependency order as synthesis-ranking priority when parallelising multi-skill execution.
+- [ADR-KI-HARNESS-AGENTS-001](ADR-KI-HARNESS-AGENTS-001.md) — uses this dependency order as synthesis-ranking priority when parallelising multi-skill execution.
+
+## Changelog
+
+- 2026-07-02 — added the `**Mutability:**` marker (open); made the AGENTS-001 reference a relative link.

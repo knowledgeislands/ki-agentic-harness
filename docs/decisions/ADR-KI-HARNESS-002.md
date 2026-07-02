@@ -2,6 +2,8 @@
 
 **Status:** Accepted
 
+**Mutability:** open
+
 **Date:** 2024-01-01
 
 ## Context
@@ -30,3 +32,7 @@ Each directory must carry a `README.md` describing what it holds. An unpopulated
 
 - [skills/ki-harness/SKILL.md](../../skills/ki-harness/SKILL.md) — Mode AUDIT step 1 and Mode INIT step 2.
 - [skills/ki-harness/references/harness-standard.md](../../skills/ki-harness/references/harness-standard.md) — the normative layout specification.
+
+## Changelog
+
+- 2026-07-02 — added the `**Mutability:**` marker (open).

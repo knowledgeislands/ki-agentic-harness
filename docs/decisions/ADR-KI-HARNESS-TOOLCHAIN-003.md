@@ -1,37 +1,36 @@
-# ADR-KI-HARNESS-TOOLCHAIN-003: Proxy all local MCP servers behind mcporter rather than capping count
+# ADR-KI-HARNESS-TOOLCHAIN-003: Proxy local MCP servers behind mcporter
 
 **Status:** Accepted
+
+**Mutability:** open
 
 **Date:** 2026-06-24
 
 ## Context
 
-Claude Code imposes a practical ceiling on the number of simultaneously active MCP servers (around five) before context cost and tool-list noise become significant. The KI stack runs 19 KI-owned stdio servers plus additional third-party servers. Without a proxy layer, staying within the ceiling means either accepting a reduced server surface or manually toggling servers between sessions.
-
-The `ki-tokenomics` audit surfaced two related WARNs (MCP-2, MCP-3) flagging that multiple KB-FS servers appeared to serve overlapping purposes with no documented rationale. Investigation confirmed those servers have distinct root folders and are not redundant — the WARN was a false positive arising from similar names rather than shared scope.
-
-TOOLCHAIN-002 adopted mcporter as a proxy daemon. This ADR captures the governing principle that follows from that adoption.
+Claude Code keeps only a small number of MCP servers simultaneously active (around five) before the tool-list cost becomes significant. Knowledge Islands owns 19 local stdio MCP servers, alongside third-party servers a session may use. Each server is a distinct, intentionally-separate capability — the `ki-tokenomics` MCP-2/MCP-3 checks confirm the KB-FS-adjacent servers are not redundant duplicates — so the answer is not to cut the server set but to stop each one consuming a Claude Code slot of its own. mcporter is adopted as the MCP proxy daemon ([ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002.md)); this record states the governing principle.
 
 ## Decision
 
-All KI-owned local stdio MCP servers are proxied behind mcporter. No KI server is declared as a raw stdio entry in `~/.claude.json`. The count ceiling is handled at the infrastructure layer, not by limiting which servers are available.
+KI-owned local stdio MCP servers are proxied behind mcporter and consume a single Claude Code slot:
 
-The proxy model has two concrete benefits:
-
-1. **No practical server cap.** All 19 servers appear to Claude as a single `ki-mcporter` URL entry. Adding a new server requires only a `mcporter.json` entry — it does not consume an additional MCP slot from Claude's perspective.
-
-2. **Script access to the full suite.** mcporter's typed client generation and record/replay target the same daemon, so harness scripts and `mcp-*` repo integration tests can call the full server surface without managing separate stdio processes.
-
-Third-party servers (those not owned by KI) are declared directly in `~/.claude.json` in the conventional way; this ADR covers KI-owned servers only.
+1. **No KI server is declared as a raw stdio entry in `~/.claude.json`.** All 19 sit behind the single `ki-mcporter` URL entry. A server is present to Claude Code only through the proxy.
+2. **Adding a KI server** means adding an entry to mcporter's `~/.mcporter/mcporter.json` (chezmoi-managed), not to `~/.claude.json`.
+3. **Third-party (non-KI) servers** are still declared directly in `~/.claude.json` in the conventional way.
+4. Any skill or prompt referencing a proxied tool uses the namespaced form `server__tool` (double underscore), not the bare tool name.
 
 ## Consequences
 
-- The MCP-2 and MCP-3 audit WARNs in `ki-tokenomics` are closed: the count issue is resolved by the proxy and the KB-FS overlap concern was a false positive (distinct root folders).
-- Adding a new KI MCP server means updating `~/.mcporter/mcporter.json` (managed by chezmoi), not `~/.claude.json`.
-- The mcporter typed client integration for harness scripts and `mcp-*` repos remains an open ROADMAP item (secondary role, not yet started).
-- Any saved prompt or skill that references a bare tool name (`tool`) must use the namespaced form (`server__tool`) when the server is proxied through mcporter.
+- The 19 KI servers occupy one Claude Code slot, leaving headroom for third-party servers within the active-server budget.
+- The server set lives in one chezmoi-managed source (`~/.mcporter/mcporter.json`), which also feeds the Claude Desktop config; `~/.claude.json` carries only the single proxy entry plus any third-party servers.
+- mcporter's typed clients for the harness scripts and `mcp-*` repos are generated via `ki:codegen` (`scripts/generate-clients.ts`).
+- The `ki-tokenomics` MCP-2/MCP-3 checks pass: the KB-FS-adjacent servers are distinct capabilities, not redundant.
 
 ## References
 
-- [ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002.md) — mcporter adoption and daemon configuration.
-- [mcporter](https://github.com/steipete/mcporter) — proxy daemon and typed client toolkit.
+- [ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002.md) — adopts mcporter as the MCP proxy daemon and typed-client generator.
+- [mcporter](https://github.com/steipete/mcporter) — MCP proxy daemon and typed-client toolkit.
+
+## Changelog
+
+- 2026-07-02 — realigned to present state: removed the "TOOLCHAIN-002 adopted… then" framing and the audit-WARN narrative; removed the "open ROADMAP item (not yet started)" line (typed-client generation is in place via `ki:codegen`).

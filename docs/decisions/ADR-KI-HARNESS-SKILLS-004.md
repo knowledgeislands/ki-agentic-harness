@@ -2,6 +2,8 @@
 
 **Status:** Accepted
 
+**Mutability:** open
+
 **Date:** 2024-01-01
 
 ## Context
@@ -28,3 +30,7 @@ Every skill must be **valid installed standalone**. Specifically:
 
 - [docs/design.md](../design.md) §Principles — "Composition only" and standalone validity.
 - [skills/ki-engineering/references/enforcement-framework.md](../../skills/ki-engineering/references/enforcement-framework.md) §2 — "depend on Node/Bun builtins only — no npm dependencies; be self-contained: no imports from another skill's files".
+
+## Changelog
+
+- 2026-07-02 — added the `**Mutability:**` marker (open).

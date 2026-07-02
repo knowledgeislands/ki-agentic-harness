@@ -21,6 +21,7 @@ Used by Mode AUDIT. Each criterion is tagged **[M]** (mechanical — the checker
 
 - **[M] BODY-1** — heading matches `# <PREFIX>-<SCOPE>-NNN: <title>` (ID prefix present and matches filename)
 - **[M] BODY-2** — `**Status:**` line present with a valid value (Draft / Proposed / Accepted / Deprecated / Superseded by `<full DR code>`)
+- **[M] BODY-2b** — `**Mutability:**` line present with a valid value (`open` / `locked`)
 - **[M] BODY-3** — `**Date:**` line present, format `YYYY-MM-DD`
 - **[M] BODY-4** — `## Context`, `## Decision`, `## Consequences` sections all present
 - **[J] BODY-5** — Context is value-neutral forces, not advocacy ("the island currently…" not "we need to…")
@@ -28,6 +29,12 @@ Used by Mode AUDIT. Each criterion is tagged **[M]** (mechanical — the checker
 - **[J] BODY-7** — each section has real, non-placeholder substance
 - **[J] BODY-8** — length is one to two pages (roughly 200–500 body words)
 - **[J] BODY-9** — Title is a short noun phrase, not a question or full sentence
+
+## Mutability checks
+
+- **[M] MUT-1** — `**Mutability:**` aligns with `**Status:**`: `Draft`/`Proposed` → `open`; `Deprecated`/`Superseded` → `locked`; `Accepted` → either (free choice). (`open`/`locked` is a distinct axis from the frontmatter maintenance `status` freshness field — do not conflate.)
+- **[J] MUT-2** — an `open` record carries a `## Changelog` (running log of in-place clarifications/realignments); a `locked` record relies on the supersession chain instead
+- **[J] MUT-3** — the record contains no roadmap / TODO / "revisit later" narration ("open roadmap item", "parked", "not yet started", "remains open") — such content belongs in the ROADMAP (code) or a stream (KB), not in a decision record
 
 ## Superseded checks
 

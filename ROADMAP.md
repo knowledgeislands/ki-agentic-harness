@@ -12,7 +12,19 @@ This roadmap is itself subject to the house discipline it describes: when a skil
 
 The four KB-zone skills — meaningful only inside a base — take a shared `ki-kb-*` prefix that encodes their containment: `ki-kb` → `ki-kb-base`, `ki-streams` → `ki-kb-streams`, `ki-activities` → `ki-kb-activities`, `ki-live-artifacts` → `ki-kb-live-artifacts`. Code-peer skills (`ki-plans`, `ki-mcp`, `ki-repo`, `ki-skills`, `ki-agents`) stay bare — the prefix marks "part of a KB base", not domain. A set-wide sweep: skill `name:` frontmatter and directory renames, `package.json` script families, `.ki-config.toml` coverage tables in every consuming base, `ki-bootstrap` wiring, and cross-references across the skill set. Tracked as plan [001](docs/plans/skills/001-ki-kb-family-rename.md).
 
+### Cross-surface MCP/skill enablement
+
+The workspace controls MCP servers and skills for Claude Code only: mcporter proxies the KI servers ([ADR-KI-HARNESS-TOOLCHAIN-003](docs/decisions/ADR-KI-HARNESS-TOOLCHAIN-003.md)) and `ki-bootstrap` links project-local skills — both write Claude-Code-only locations. There is no control for claude.ai web connectors (currently disabled wholesale to avoid an unmanageable surface) or for Claude Cowork, which offers no per-workspace MCP/skill enablement. This item is a house-mcp-manager successor spanning surfaces: a single source of truth (anchored on the chezmoi `mcp-servers-json` template already feeding Code and Desktop) fanning out to Claude Code, Desktop, claude.ai, and Cowork, plus a per-surface targeting table recording which servers each surface receives and how each surface is controlled. Because claude.ai/cloud enablement has no local config file, its controllability is the open question the plan spikes first. Tracked as plan [002](docs/plans/mcp/002-cross-surface-enablement.md).
+
 ## Future
+
+### Populate the `agents/` shelf with KI-authored agents _(candidate)_
+
+The harness `agents/` shelf has a validated reference pattern (house-agents, [ADR-KI-HARNESS-TOOLCHAIN-002](docs/decisions/ADR-KI-HARNESS-TOOLCHAIN-002.md)) but no KI-authored contents. When a governance concern warrants a dedicated subagent, author it here modelled on that pattern.
+
+### Graphify codebase knowledge-graph _(candidate)_
+
+Graphify ([ADR-KI-HARNESS-TOOLCHAIN-002](docs/decisions/ADR-KI-HARNESS-TOOLCHAIN-002.md)) builds a structural knowledge graph of a codebase; its benefit appears only on large repositories (500+ files). Revisit should a large code corpus emerge in the ecosystem.
 
 ### Retire the harness `docs/` mirror once the website is KB-first
 

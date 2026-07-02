@@ -266,6 +266,23 @@ async function main() {
       add('BODY-2', Sev.FAIL, file, '`**Status:**` line missing')
     }
 
+    // BODY-2b: **Mutability:** line present with a valid value
+    const mutabilityMatch = body.match(/^\*\*Mutability:\*\*\s+(open|locked)\s*$/m)
+    if (!mutabilityMatch) {
+      add('BODY-2b', Sev.FAIL, file, '`**Mutability:**` line missing or not `open` / `locked`')
+    } else if (statusMatch) {
+      // MUT-1: Mutability must align with Status (free choice only in Accepted)
+      const statusWord = statusMatch[1].trim().split(/\s+/)[0] ?? ''
+      const mutability = mutabilityMatch[1]
+      const requiredOpen = statusWord === 'Draft' || statusWord === 'Proposed'
+      const requiredLocked = statusWord === 'Deprecated' || statusWord === 'Superseded'
+      if (requiredOpen && mutability !== 'open') {
+        add('MUT-1', Sev.FAIL, file, `Status '${statusWord}' requires Mutability 'open', got '${mutability}'`)
+      } else if (requiredLocked && mutability !== 'locked') {
+        add('MUT-1', Sev.FAIL, file, `Status '${statusWord}' requires Mutability 'locked', got '${mutability}'`)
+      }
+    }
+
     // BODY-3: **Date:** line
     const dateMatch = body.match(/^\*\*Date:\*\*\s+(\d{4}-\d{2}-\d{2})$/m)
     if (!dateMatch) {
