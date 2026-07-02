@@ -69,6 +69,7 @@
     "ki:lint:types": "tsc --noEmit",
     "ki:live-artifacts:audit": "bun skills/ki-live-artifacts/scripts/audit-live-artifacts.ts",
     "ki:mcp:audit": "bun skills/ki-mcp/scripts/audit-mcp.ts",
+    "ki:plans:audit": "bun skills/ki-plans/scripts/audit-plans.ts",
     "ki:repo:audit": "bun skills/ki-repo/scripts/audit-repo.ts",
     "ki:skills:link:global": "bun scripts/sync-skills.ts link --only ki-bootstrap",
     "ki:skills:link:project": "bun skills/ki-bootstrap/scripts/link-skills.ts --all",
