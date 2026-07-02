@@ -1,12 +1,12 @@
 # The skills
 
-The skills are the bulk of the harness today: **sixteen** of them, each a **governance skill** — it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones), backed by a tracked `references/sources.md`.
+The skills are the bulk of the harness today: **eighteen** of them, each a **governance skill** — it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones), backed by a tracked `references/sources.md`.
 
 This file is the catalogue: what each skill does, and the shared shape they all follow. For how they fit together — the boundaries between the ones that could be confused, the loops that run across them, and the invariants they all hold — see [design.md](design.md). The overview map lives in the [README](../README.md).
 
-## The sixteen
+## The eighteen
 
-The sixteen sit in **two layers** plus a bridge and a keystone: two cross-cutting **foundations** that every other skill builds on, the **domain** skills that each govern one kind of artifact, `ki-harness` — the **container** skill that governs the bundle holding them all — and `ki-bootstrap`, the **install keystone** that wires a repo's project-local skills into place.
+The eighteen sit in **two layers** plus a bridge and a keystone: two cross-cutting **foundations** that every other skill builds on, the **domain** skills that each govern one kind of artifact, `ki-harness` — the **container** skill that governs the bundle holding them all — and `ki-bootstrap`, the **install keystone** that wires a repo's project-local skills into place.
 
 ### [`ki-kb`](../skills/ki-kb/SKILL.md) — Knowledge Islands
 
@@ -19,6 +19,14 @@ Owns the **`Streams` zone** — the base's working copy ("plan mode") — and th
 ### [`ki-decision-records`](../skills/ki-decision-records/SKILL.md) — Process
 
 Governs **Decision Records** in any Knowledge Islands repo, code or KB — the typed ID prefixes (`GDR` / `ADR` / `KDR` / …), the five-section format, the status lifecycle, and placement (`docs/decisions/` in a code repo, `Admin/Governance/Decisions/` in a KB). Ships a mechanical checker (`audit-drs.ts`). Defers to `ki-kb` for the island structure and the KI-wide frontmatter standard, and to `ki-streams` for the Enactment Process by which a change is ratified.
+
+### [`ki-plans`](../skills/ki-plans/SKILL.md) — Process
+
+Governs the **planning methodology** for code repos — when to write a plan, how it derives from the ROADMAP near-horizon, the `blocks` / `blocked-by` dependency graph, and the quality bar for Steps and Verify. Owns the methodology; the plan format lives in `references/plan-format.md` and the `/plan` command drives the lifecycle. In a KB there is no `docs/plans/` — planning is a `ki-streams` proposal Checklist. Ships a mechanical checker (`audit-plans.ts`).
+
+### [`ki-handoffs`](../skills/ki-handoffs/SKILL.md) — Process
+
+Governs the **handoff doctrine** — plan work once at the top reasoning tier, then write it as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning. Owns the reasoning-layer split, the handoff-spec quality bar (decisions-locked-vs-escalate, a per-unit recommended tier, a cold-model readiness test), and the opt-in marker contract (`handoff: true`). Rides on a host artifact — a `ki-plans` plan or a `ki-streams` proposal Checklist — and off-ramps tier cost/selection to `ki-tokenomics`. Ships a mechanical checker (`audit-handoffs.ts`).
 
 ### [`ki-activities`](../skills/ki-activities/SKILL.md) — Process
 
@@ -76,11 +84,11 @@ Where the set is going next is in [ROADMAP.md](../ROADMAP.md).
 
 ## The governance-skill shape
 
-All sixteen share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in `ki-engineering`'s [enforcement framework](../skills/ki-engineering/references/enforcement-framework.md):
+All eighteen share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in `ki-engineering`'s [enforcement framework](../skills/ki-engineering/references/enforcement-framework.md):
 
 - **`<domain>-standard.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like, and why.
 - **`audit-rubric.md`** — the line-by-line checkable criteria, each tagged **mechanical** (a checker enforces it) or **judgment** (a reader assesses it), each citing the standard section it verifies.
 - **`references/sources.md`** — the tracked sources behind the standard, with `last reviewed` dates. Provenance only: the record of _what changed_ lives in git (the REFRESH commit), not a changelog in the file. A skill tracking a moving external spec also keeps a current-state **`## Last review`** block — pinned revision, what's confirmed, open watch-items — overwritten each REFRESH.
-- **a mechanical checker** — `audit-engineering.ts`, `audit-mcp.ts`, `audit-websites.ts`, `audit-cloudflare-hosting.ts`, `lint-skills.ts`, `lint-agents.ts`, `audit-repo.ts`, `audit-kb.ts`, `audit-streams.ts`, `audit-drs.ts`, `audit-activities.ts`, `audit-live-artifacts.ts`, `audit-tokenomics.ts`, `audit-harness.ts`, `link-skills.ts` for engineering / mcp / 11ty-websites / cloudflare-hosting / skills / agents / repo / kb / streams / decision-records / activities / live-artifacts / tokenomics / harness / bootstrap; `bun run ki:lint:md` (Prettier + markdownlint) for authoring. The judgment half is always applied by reading.
+- **a mechanical checker** — `audit-engineering.ts`, `audit-mcp.ts`, `audit-websites.ts`, `audit-cloudflare-hosting.ts`, `lint-skills.ts`, `lint-agents.ts`, `audit-repo.ts`, `audit-kb.ts`, `audit-streams.ts`, `audit-drs.ts`, `audit-activities.ts`, `audit-live-artifacts.ts`, `audit-plans.ts`, `audit-handoffs.ts`, `audit-tokenomics.ts`, `audit-harness.ts`, `link-skills.ts` for engineering / mcp / 11ty-websites / cloudflare-hosting / skills / agents / repo / kb / streams / decision-records / activities / live-artifacts / plans / handoffs / tokenomics / harness / bootstrap; `bun run ki:lint:md` (Prettier + markdownlint) for authoring. The judgment half is always applied by reading.
 
 …and the same modes: **AUDIT** (run the checker, then apply the judgment criteria), **CONFORM** (bring an existing artifact into line), and **REFRESH** (re-anchor the standard to its sources on a stated cadence), plus skill-specific modes where they fit — **INIT** to scaffold a new artifact, and kb's note-ops. The mode model is codified in `ki-skills` (rubric **SHAPE-5**).

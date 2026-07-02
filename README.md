@@ -4,7 +4,7 @@ The **agentic harness** for Knowledge Islands work — the canonical home for wh
 
 A harness is **four parts** — the things an agent is given to work with:
 
-- **Skills** ([`skills/`](skills/)) — reusable [Agent Skills](https://agentskills.io/specification): the most-built-out part of the harness today (**sixteen**, all governance skills — including `ki-harness`, which governs this four-part container itself, and `ki-bootstrap`, the install keystone). Installed per-repo: `bootstrap` (the one globally-installed skill) wires each repo's project-local `.claude/skills/` from its `.ki-config.toml`. The catalogue is in [docs/skills.md](docs/skills.md); how they fit together — boundaries, the knowledge loops, the shared principles — in [docs/design.md](docs/design.md).
+- **Skills** ([`skills/`](skills/)) — reusable [Agent Skills](https://agentskills.io/specification): the most-built-out part of the harness today (**eighteen**, all governance skills — including `ki-harness`, which governs this four-part container itself, and `ki-bootstrap`, the install keystone). Installed per-repo: `bootstrap` (the one globally-installed skill) wires each repo's project-local `.claude/skills/` from its `.ki-config.toml`. The catalogue is in [docs/skills.md](docs/skills.md); how they fit together — boundaries, the knowledge loops, the shared principles — in [docs/design.md](docs/design.md).
 - **Agents** ([`agents/`](agents/)) — Knowledge Islands [Claude Code subagents](https://code.claude.com/docs/en/sub-agents), one per file. Five governance agents live under `agents/governance/` today, governed by the `ki-agents` skill. See [`agents/README.md`](agents/README.md).
 - **MCP servers** ([`mcp/`](mcp/)) — where KI's MCP servers would consolidate as workspace packages. An empty **shelf** today; they currently live as separate `mcp-*` repos, governed by the `ki-mcp` skill. See [`mcp/README.md`](mcp/README.md).
 - **Evals** ([`evals/`](evals/)) — a behavioural test suite that checks a skill actually _changes what the model does_, not just that its `SKILL.md` is well-formed. A rough signal, not a gate. See [`evals/README.md`](evals/README.md).
@@ -35,7 +35,7 @@ Every skill in the repo today is a **governance skill**: it holds a house standa
 
 ## The map — the skills at a glance
 
-The sixteen skills sit in **two layers** plus a container governor and an install keystone: two cross-cutting **foundations** that every other skill builds on, the **domain** skills that each govern one kind of artifact, `harness` — which governs the four-part bundle holding them all — and `bootstrap`, which wires a repo's project-local skills into place. The arrows are the structural ties (who _delegates to_, _composes on_, or _feeds_ whom), spelled out in [docs/skills.md](docs/skills.md) and [docs/design.md](docs/design.md).
+The eighteen skills sit in **two layers** plus a container governor and an install keystone: two cross-cutting **foundations** that every other skill builds on, the **domain** skills that each govern one kind of artifact, `harness` — which governs the four-part bundle holding them all — and `bootstrap`, which wires a repo's project-local skills into place. The arrows are the structural ties (who _delegates to_, _composes on_, or _feeds_ whom), spelled out in [docs/skills.md](docs/skills.md) and [docs/design.md](docs/design.md).
 
 ```text
 FOUNDATIONS — cross-cutting "how" (every domain skill builds on both)
@@ -77,7 +77,7 @@ Only `ki-bootstrap` is installed globally; every other skill is project-local, w
 
 | Doc | What's in it |
 | --- | --- |
-| [docs/skills.md](docs/skills.md) | The sixteen skills one by one, and the shared governance-skill shape. |
+| [docs/skills.md](docs/skills.md) | The eighteen skills one by one, and the shared governance-skill shape. |
 | [docs/design.md](docs/design.md) | How they fit: where they don't overlap, the three knowledge loops, the principles across the set. |
 | [docs/knowledge-islands.md][ki-doc] | The Knowledge Islands zone model the KI skills assume, and standard skills & per-base config. |
 | [docs/installation.md](docs/installation.md) | Installing · using · linking skills, and the development toolchain. |

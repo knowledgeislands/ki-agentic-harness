@@ -26,6 +26,11 @@ visibility = "private"   # "public" | "private"
 # This repo ships the ki-plans skill, so it declares governance by its own standard.
 [ki-plans]
 
+# This repo ships the ki-handoffs skill, so it declares governance by its own standard.
+# Presence of this table is the compliance marker; tier cost/selection defaults live in
+# [ki-tokenomics] (preferred_model), not here.
+[ki-handoffs]
+
 # Tokenomics governance — audits the standing context surface for this environment.
 # MCP server count is user-scoped (not harness-controlled); all 19 are intentional.
 # With Claude Code's default tool search (ENABLE_TOOL_SEARCH=auto), schemas are deferred,

@@ -47,6 +47,17 @@ Design acceptance only (no build to exercise):
 - The home decision (new tool vs extend housekeeping vs adopt) is recorded with its rationale against the KI-authored-only / composition-only principles.
 - The sequencing and the fallback for any uncontrollable surface are explicit.
 
+## Spike findings (2026-07-02, preliminary — build parked)
+
+Step 1 was run read-only against the live machine; the build is deferred.
+
+- **Claude Code MCP** — controllable, but all-or-nothing. The 18 KI servers are keep-alive behind a single `ki-mcporter` entry; the set lives in `~/.mcporter/mcporter.json` (chezmoi). No per-project on/off today.
+- **Claude Desktop** — controllable via the same chezmoi `mcp-servers-json` template.
+- **Cowork** — `cowork_settings.json` (under `local-agent-mode-sessions/<account>/<workspace>/`) carries `enabledPlugins` and `extraKnownMarketplaces` — a **plugin/marketplace** model (e.g. `cowork-plugin-management@knowledge-work-plugins`), not raw MCP entries. File-controllable in principle; that an external edit is honoured on next launch is **not yet verified**.
+- **claude.ai web** — no local config file found; connector/account state. A programmatic control surface is **unconfirmed** (treat as manual-only until proven otherwise).
+- **house-mcp-manager verdict** — poor fit: it toggles individual entries in `~/.claude.json` (Claude Code / Cursor / Cline only), but the KI servers sit behind mcporter as one proxy entry (so it sees only that, all-or-nothing) and it does not reach claude.ai or Cowork.
+- **Key insight** — Cowork's `enabledPlugins` is the same Claude **plugin-marketplace** mechanism Claude Code supports, and a Claude plugin can bundle MCP servers + skills + agents. A **KI plugin marketplace** is therefore the natural single-source artifact that enables both Claude Code (per-project) and Cowork (per-workspace); claude.ai remains a separate research question. This is the recommended shape when the build resumes.
+
 ## Dependencies / blocks
 
 Independent — blocks nothing, blocked by nothing. Reuses `mcp-claude-housekeeping`'s existing Cowork-workspace discovery for the spike. The claude.ai/cloud controllability finding may spawn a follow-on ROADMAP research item if that surface proves uncontrollable.

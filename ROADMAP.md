@@ -16,6 +16,10 @@ The four KB-zone skills — meaningful only inside a base — take a shared `ki-
 
 The workspace controls MCP servers and skills for Claude Code only: mcporter proxies the KI servers ([ADR-KI-HARNESS-TOOLCHAIN-003](docs/decisions/ADR-KI-HARNESS-TOOLCHAIN-003.md)) and `ki-bootstrap` links project-local skills — both write Claude-Code-only locations. There is no control for claude.ai web connectors (currently disabled wholesale to avoid an unmanageable surface) or for Claude Cowork, which offers no per-workspace MCP/skill enablement. This item is a house-mcp-manager successor spanning surfaces: a single source of truth (anchored on the chezmoi `mcp-servers-json` template already feeding Code and Desktop) fanning out to Claude Code, Desktop, claude.ai, and Cowork, plus a per-surface targeting table recording which servers each surface receives and how each surface is controlled. Because claude.ai/cloud enablement has no local config file, its controllability is the open question the plan spikes first. Tracked as plan [002](docs/plans/mcp/002-cross-surface-enablement.md).
 
+### Add the `ki-handoffs` governance skill
+
+A doctrine skill owning the reasoning-layer split: plan work once at the top tier, then write it as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning. It composes on `ki-plans` (the plan is the host artifact in a code repo) and `ki-streams` (the proposal Checklist in a KB), and off-ramps tier cost/selection to `ki-tokenomics` — owning only the delegation-readiness delta (decisions-locked-vs-escalate, a per-unit recommended tier, the cold-model readiness test). Tracked as plan [003](docs/plans/skills/003-ki-handoffs.md).
+
 ## Future
 
 ### Populate the `agents/` shelf with KI-authored agents _(candidate)_

@@ -33,6 +33,7 @@ Sub-scopes used in this harness:
 | ADR-KI-HARNESS-SKILLS-002    | [Mechanical and judgment checker split](ADR-KI-HARNESS-SKILLS-002.md)         | Accepted | 2024-01-01 |
 | ADR-KI-HARNESS-SKILLS-003    | [Dependency order for multi-skill composition](ADR-KI-HARNESS-SKILLS-003.md)  | Accepted | 2024-01-01 |
 | ADR-KI-HARNESS-SKILLS-004    | [Skills must be valid standalone](ADR-KI-HARNESS-SKILLS-004.md)               | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-SKILLS-005    | [The handoff doctrine is its own skill](ADR-KI-HARNESS-SKILLS-005.md)         | Accepted | 2026-07-02 |
 | ADR-KI-HARNESS-TOOLCHAIN-001 | [Bun, Biome, and knip standard toolchain](ADR-KI-HARNESS-TOOLCHAIN-001.md)    | Accepted | 2026-06-28 |
 | ADR-KI-HARNESS-TOOLCHAIN-002 | [Complementary tooling — current adoptions](ADR-KI-HARNESS-TOOLCHAIN-002.md)  | Accepted | 2026-06-29 |
 | ADR-KI-HARNESS-TOOLCHAIN-003 | [Proxy local MCP servers behind mcporter](ADR-KI-HARNESS-TOOLCHAIN-003.md)    | Accepted | 2026-06-24 |

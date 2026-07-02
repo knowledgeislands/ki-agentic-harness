@@ -56,6 +56,7 @@
     "ki:deps:update": "bun update --latest",
     "ki:engineering:audit": "bun skills/ki-engineering/scripts/audit-engineering.ts",
     "ki:eval": "bun evals/harness.ts",
+    "ki:handoffs:audit": "bun skills/ki-handoffs/scripts/audit-handoffs.ts",
     "ki:harness:audit": "bun skills/ki-harness/scripts/audit-harness.ts",
     "ki:hosting:audit": "bun skills/ki-cloudflare-hosting/scripts/audit-cloudflare-hosting.ts",
     "ki:kb:audit": "bun skills/ki-kb/scripts/audit-kb.ts",
