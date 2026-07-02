@@ -103,6 +103,8 @@ The harness `ROADMAP.md` holds the **open forward work** only. Two rules:
 
 **Why:** a roadmap that accumulates checked-off items loses the "what's left" signal. A roadmap that lists ongoing practices obscures the "what's new" signal. Keeping the two separate preserves both.
 
+**Recommended structure.** Group open items under `## Next` (nearest-term, highest-impact), `## Soon` (opportunistic, can overlap with Next), and `## Future` (larger, blocked, or calendar-gated). This `Next / Soon / Future` phasing is the house vocabulary, owned here — `ki-plans` references it: a code-repo plan is written when an item enters **Next** and removed when it lands. The structure is recommended, not required — a repo with a short forward view may keep a flat list, and a KB base keeps its forward view in `Streams` (the Focus lifecycle) rather than a `ROADMAP.md`. The two discipline rules above always apply; the phasing is the shape they hang on.
+
 ---
 
 ## §package.json required scripts

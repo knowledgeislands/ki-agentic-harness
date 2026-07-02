@@ -82,6 +82,8 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS
 
 **ROAD-2 [J]** `ROADMAP.md` does not list continuous practices (standing audits, monthly REFRESH runs, ongoing toolchain maintenance) as roadmap items. Source: standard §ROADMAP.md rule 2. _Severity: POLISH — continuous practices belong in `docs/design.md` or `CLAUDE.md`._
 
+**ROAD-3 [J]** `ROADMAP.md` groups open work under the recommended `Next` / `Soon` / `Future` phasing — or the repo's forward view is short enough that a flat list reads more clearly. Source: standard §ROADMAP.md recommended structure. _Severity: POLISH — the phasing is recommended, not required; `ki-plans` references this vocabulary._
+
 ---
 
 ## LONG — Longevity and refresh path
