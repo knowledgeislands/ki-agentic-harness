@@ -44,12 +44,40 @@ The strong levers are admin-side:
 
 ## 5. How claude.ai connectors surface in Claude Code
 
-This is the leg that matters most for the harness. Claude Code applies its own allow/deny over whatever claude.ai exposes, written to on-disk settings (so it outlives the session and cannot be overridden by user or project settings):
+This is the leg that matters most for the harness: Claude Code carries its own admin-controlled MCP governance, and claude.ai connectors fall under it. Everything here is written to on-disk managed settings, so it outlives any session and **cannot be overridden by user or project settings**.
 
-- `allowedMcpServers` / `deniedMcpServers` — the denylist always wins, matched by URL, command, or name. Use `serverUrl` to target a claude.ai connector (`serverName` is limited to letters, numbers, hyphens, underscores).
-- `allowManagedMcpServersOnly: true` — only the managed allowlist survives the merge.
-- **Suppression gotcha** — deploying `managed-mcp.json` _suppresses claude.ai connectors by default_, including ones an admin configured for the org. Restore them with `allowAllClaudeAiMcps: true` (Claude Code v2.1.149+); allow/deny still apply, so specific ones can still be blocked. Disable them entirely with `disableClaudeAiConnectors`.
-- `forceRemoteSettingsRefresh` makes enforcement fail-closed — Claude Code refuses to start if managed settings cannot be fetched.
+### Two distinct mechanisms — provide vs filter
+
+- **`managed-mcp.json` provides servers.** It is the admin's exclusive-control deployment: present ⇒ Claude Code loads _only_ the servers it lists, and every user-added server and claude.ai connector stops loading. `{"mcpServers": {}}` (empty map) is the "disable MCP entirely" switch. It is a standalone file at an OS path only an admin can write, delivered by MDM/Jamf/GPO/Intune:
+
+  | Platform    | Path                                                       |
+  | ----------- | ---------------------------------------------------------- |
+  | macOS       | `/Library/Application Support/ClaudeCode/managed-mcp.json` |
+  | Linux / WSL | `/etc/claude-code/managed-mcp.json`                        |
+  | Windows     | `C:\Program Files\ClaudeCode\managed-mcp.json`             |
+
+  Its shape is the same `mcpServers` map as a project `.mcp.json` (`http`/`sse` with `url`, or `stdio` with `command`/`args`/`env`). Any user on the machine can read it, so **never put credentials in `env`** — use `${VAR}` expansion, OAuth/per-user headers, or `headersHelper`.
+
+- **`allowedMcpServers` / `deniedMcpServers` filter** whatever was already configured (by a user, a plugin, or `managed-mcp.json`). They are **not a registry** — a server must already exist to be evaluated.
+
+### Evaluation order (per server, before it loads)
+
+Merge both lists from every settings source, then: (1) **denylist wins** — a match by `serverUrl`, `serverCommand`, or `serverName` is blocked and nothing overrides it; (2) **allowlist** — if `allowedMcpServers` is unset anywhere, the server loads; if it is set, the server must match.
+
+Three sharp edges:
+
+- **Unset ≠ empty array.** `allowedMcpServers` unset = all allowed; `[]` = _nothing_ allowed; populated = only matches. Easy footgun.
+- **`serverName` is not a security control** — it is the user-assigned label, so a user can name any server `github`. For enforcement use `serverUrl` (supports `*` wildcards; host match is case-insensitive, path case-sensitive) or `serverCommand` (every argument matched exactly, in order). In `allowedMcpServers`, `serverName` is limited to letters, numbers, hyphens, underscores; in `deniedMcpServers` (v2.1.182+) it accepts any string, so a claude.ai connector can be blocked by display name — e.g. `{ "serverName": "claude.ai Slack" }` — but a rename breaks it, so prefer `serverUrl`.
+- **`allowManagedMcpServersOnly: true`** makes only the managed allowlist authoritative (user/project allowlists ignored); the **denylist still merges from all sources**, so a user can always block a server for themselves.
+
+### The claude.ai-specific interaction
+
+- **Suppression by default** — deploying `managed-mcp.json` _suppresses claude.ai connectors_, including ones an admin configured for the org in the claude.ai console.
+- **`allowAllClaudeAiMcps: true`** (v2.1.149+, admin-controlled tiers only) reloads the claude.ai connectors alongside the managed set. Allow/deny still apply, so specific connectors can still be blocked; it affects _only_ claude.ai connectors — plugin-provided servers stay suppressed.
+- **`disableClaudeAiConnectors`** turns claude.ai connectors off entirely.
+- **`forceRemoteSettingsRefresh`** makes enforcement fail-closed — Claude Code refuses to start if managed settings cannot be fetched.
+
+This managed-settings surface is precisely what makes claude.ai connectors governable _from the Claude Code side_, independent of the account/org levers in §4.
 
 ## Picking a lever
 
