@@ -77,8 +77,11 @@ const siteAt = (...p: string[]) => (siteRoot ? join(siteRoot, ...p) : join(...p)
 
 if (!cfgName) {
   add('FAIL', 'layout', 'no eleventy.config.{ts,js,mjs,cjs} at repo root or site/ — not an Eleventy site')
+} else if (layout === 'flat') {
+  // Standard §2: every house site is a monorepo, never flat — the site is its own site/ workspace.
+  add('WARN', 'layout', `${cfgName} present at repo root (flat layout) — standard §2 requires the site/ workspace; move it under site/`)
 } else {
-  add('PASS', 'layout', `${siteRoot ? `${siteRoot}/` : ''}${cfgName} present (${layout} layout)`)
+  add('PASS', 'layout', `${siteRoot}/${cfgName} present (${layout} layout)`)
 }
 has('ROADMAP.md') ? add('PASS', 'layout', 'ROADMAP.md present') : add('WARN', 'layout', 'no ROADMAP.md')
 
