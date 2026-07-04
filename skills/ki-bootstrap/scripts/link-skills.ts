@@ -122,13 +122,16 @@ function cmdLink(target: string, set: string[], dryRun: boolean): void {
     console.log(`${GREEN}link  ${RESET}${skill} -> ${DIM}${rel}${RESET}`)
   }
 
-  // Prune ki-* symlinks no longer in the set (a dropped coverage table).
+  // Prune ki-* symlinks no longer in the set (a dropped coverage table), plus any
+  // dangling symlink regardless of name — covers legacy knowledgeislands-* leftovers.
   if (existsSync(claudeSkills)) {
     for (const name of readdirSync(claudeSkills)) {
-      if (!name.startsWith('ki-') || set.includes(name)) continue
       const p = join(claudeSkills, name)
       if (!isSymlink(p)) continue
-      console.log(`${YELLOW}prune ${RESET}${name} ${DIM}(no longer declared)${RESET}`)
+      const dangling = !existsSync(p)
+      if (!dangling && (!name.startsWith('ki-') || set.includes(name))) continue
+      const reason = dangling ? 'dangling target' : 'no longer declared'
+      console.log(`${YELLOW}prune ${RESET}${name} ${DIM}(${reason})${RESET}`)
       if (!dryRun) rmSync(p)
     }
   }

@@ -60,8 +60,8 @@ const CONCERNS = [
   { name: "kb", checker: "bun skills/ki-kb-base/scripts/audit-kb.ts", scopeGated: true },
   { name: "streams", checker: "bun skills/ki-kb-streams/scripts/audit-streams.ts", scopeGated: true },
   { name: "mcp", checker: "bun skills/ki-mcp/scripts/audit-mcp.ts", scopeGated: true },
-  { name: "11ty-websites", checker: "bun skills/ki-websites-11ty/scripts/audit-websites.ts", scopeGated: true },
-  { name: "cloudflare-hosting", checker: "bun skills/ki-hosting-cloudflare/scripts/audit-cloudflare-hosting.ts", scopeGated: true },
+  { name: "websites-11ty", checker: "bun skills/ki-websites-11ty/scripts/audit-websites.ts", scopeGated: true },
+  { name: "hosting-cloudflare", checker: "bun skills/ki-hosting-cloudflare/scripts/audit-cloudflare-hosting.ts", scopeGated: true },
   { name: "agents", checker: "bun skills/ki-agents/scripts/lint-agents.ts", scopeGated: true },
   { name: "skills", checker: "bun run ki:skills:lint", scopeGated: false },
   { name: "tokenomics", checker: "bun skills/ki-tokenomics/scripts/audit-tokenomics.ts", scopeGated: false },
@@ -128,7 +128,7 @@ ${JSON.stringify(validResults, null, 2)}
 Produce a structured report:
 1. Executive summary: overall pass/fail verdict, total FAIL/WARN/POLISH counts across all concerns.
 2. COLL check summary.
-3. Per-concern findings, ordered by dependency order (authoring → engineering → repo → kb → streams → mcp → 11ty-websites → cloudflare-hosting → agents → skills → tokenomics → harness). For each concern: FAIL items first, then WARN, then POLISH, then ADVISORY. Skip concerns with zero findings.
+3. Per-concern findings, ordered by dependency order (authoring → engineering → repo → kb → streams → mcp → websites-11ty → hosting-cloudflare → agents → skills → tokenomics → harness). For each concern: FAIL items first, then WARN, then POLISH, then ADVISORY. Skip concerns with zero findings.
 4. Concerns with no findings: list them as clean.
 
 Keep it scannable. Use the format: concern name as a heading, severity label on each finding line.`;

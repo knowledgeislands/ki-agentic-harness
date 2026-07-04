@@ -273,6 +273,7 @@ if (!jsonOut) console.log(paint(C.dim, LEGEND))
 
 let totalFails = 0
 let totalWarns = 0
+let totalPass = 0
 const agents: Agent[] = []
 for (const file of files) {
   const { findings, agent } = lintAgent(file)
@@ -281,6 +282,7 @@ for (const file of files) {
   const warns = findings.filter((x) => x.severity === 'warn')
   totalFails += fails.length
   totalWarns += warns.length
+  if (fails.length === 0 && warns.length === 0) totalPass++
   const label = agent.name ?? basename(file)
   for (const x of findings) all.push({ level: x.severity === 'fail' ? 'FAIL' : 'WARN', area: `${label}:${x.criterion}`, msg: x.message })
   if (!jsonOut) {
@@ -310,7 +312,7 @@ if (cross.length > 0) {
   }
 }
 
-const summary = { fail: totalFails, warn: totalWarns, polish: 0, advisory: 0, info: 0, skip: 0, pass: 0 }
+const summary = { fail: totalFails, warn: totalWarns, polish: 0, advisory: 0, info: 0, skip: 0, pass: totalPass }
 const stampIso = new Date().toISOString()
 
 if (reportOut) {

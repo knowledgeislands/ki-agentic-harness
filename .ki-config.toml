@@ -20,6 +20,10 @@ visibility = "private"   # "public" | "private"
 # files themselves.)
 [ki-skills]
 
+# This repo ships agents under agents/governance/, so it declares governance by the
+# ki-agents standard (opt-in). Presence of this table is the compliance marker.
+[ki-agents]
+
 # This repo ships the ki-decision-records skill, so it declares governance by its own standard.
 [ki-decision-records]
 

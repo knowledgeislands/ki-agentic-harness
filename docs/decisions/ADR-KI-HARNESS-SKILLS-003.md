@@ -15,10 +15,10 @@ When auditing a repo that multiple governance skills apply to, the skills must b
 When walking a set of skills serially in a single agent context, apply them in **dependency order**, foundations first:
 
 ```text
-authoring → engineering → repo → decision-records → kb → streams → activities → live-artifacts → mcp → 11ty-websites → cloudflare-hosting → plans → agents → skills → tokenomics → handoffs → harness → bootstrap
+authoring → engineering → repo → decision-records → memory → kb → streams → activities → live-artifacts → mcp → websites-11ty → hosting-cloudflare → plans → agents → skills → tokenomics → handoffs → harness → bootstrap
 ```
 
-`bootstrap` is last because it is the install keystone that wires every other skill into a repo, so it composes on `repo`, `engineering`, and `harness`; `harness` precedes it because it composes on the skills and agents linters and the engineering toolchain. The KB-zone skills cluster after `kb` (`streams` → `activities` → `live-artifacts`), `decision-records` sits after `repo` as the governance instrument that repos and bases both consume, and `handoffs` follows `tokenomics` (its model-tier basis). Load and release one skill at a time to keep peak context at one skill, not the full set — this is what prevents a mid-audit compaction.
+`bootstrap` is last because it is the install keystone that wires every other skill into a repo, so it composes on `repo`, `engineering`, and `harness`; `harness` precedes it because it composes on the skills and agents linters and the engineering toolchain. The KB-zone skills cluster after `kb` (`streams` → `activities` → `live-artifacts`), `decision-records` and `memory` sit after `repo` as the governance instruments over repo-external artifacts that repos and bases both consume, and `handoffs` follows `tokenomics` (its model-tier basis). Load and release one skill at a time to keep peak context at one skill, not the full set — this is what prevents a mid-audit compaction.
 
 ### Naming grammar
 

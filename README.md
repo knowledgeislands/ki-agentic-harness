@@ -51,9 +51,10 @@ DOMAIN — what each skill governs
   repos & code      repo ──owns the .ki-config.toml contract──▶ (kb · mcp · engineering consume it)
                     mcp  ──composes its checker on──▶ engineering
   skills & agents   skills ── a SKILL.md (frontmatter + body)   ·   agents ── a subagent definition (the twin)
-  websites          11ty-websites ──emits dist/──▶ cloudflare-hosting   (both compose on engineering)
+  websites          websites-11ty ──emits dist/──▶ hosting-cloudflare   (both compose on engineering)
   context budget    tokenomics ──audits the standing surface composed across──▶ (kb · mcp · skills · settings)
   session memory    memory ── Headroom's auto-memory files (MEMORY.md + memory/*.md), outside the repo tree   ·   off-ramps cost to tokenomics
+  handoff doctrine  handoffs ── plan → cheap-tier handoff-spec quality (definition-of-done, decisions-locked)   ·   composes on plans · tokenomics · agents
 
 CONTAINER — the bundle that holds all the above (this repo is one)
   harness       ──composes the checkers of──▶ (skills · agents · mcp · engineering · repo), adds the bundle-layout delta
