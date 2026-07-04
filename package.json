@@ -58,7 +58,7 @@
     "ki:eval": "bun evals/harness.ts",
     "ki:handoffs:audit": "bun skills/ki-handoffs/scripts/audit-handoffs.ts",
     "ki:harness:audit": "bun skills/ki-harness/scripts/audit-harness.ts",
-    "ki:hosting:audit": "bun skills/ki-cloudflare-hosting/scripts/audit-cloudflare-hosting.ts",
+    "ki:hosting:audit": "bun skills/ki-hosting-cloudflare/scripts/audit-cloudflare-hosting.ts",
     "ki:kb-activities:audit": "bun skills/ki-kb-activities/scripts/audit-activities.ts",
     "ki:kb-base:audit": "bun skills/ki-kb-base/scripts/audit-kb.ts",
     "ki:kb-live-artifacts:audit": "bun skills/ki-kb-live-artifacts/scripts/audit-live-artifacts.ts",
@@ -83,7 +83,7 @@
     "ki:skills:unlink": "bun scripts/sync-skills.ts unlink",
     "ki:tokenomics:audit": "bun skills/ki-tokenomics/scripts/audit-tokenomics.ts",
     "ki:verify": "bun run ki:lint:check && bun run ki:lint:types && bun run ki:lint:md:check && bun run ki:knip",
-    "ki:websites:audit": "bun skills/ki-11ty-websites/scripts/audit-websites.ts",
+    "ki:websites:audit": "bun skills/ki-websites-11ty/scripts/audit-websites.ts",
     "prepare": "husky"
   },
   "type": "module"

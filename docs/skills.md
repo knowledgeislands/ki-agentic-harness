@@ -44,13 +44,13 @@ Governs **Live Artifacts** — operational documents that track island state (da
 
 Audits, conforms, and scaffolds workspace MCP servers against the "workspace MCP" standard (layout, config injection, `<app>_<resource>_<action>` tool naming, access-level gate, security invariants, Bun/Node, tooling) across the `mcp-*` repos. Ships a mechanical checker (`audit-mcp.ts`).
 
-### [`ki-11ty-websites`](../skills/ki-11ty-websites/SKILL.md) — Process
+### [`ki-websites-11ty`](../skills/ki-websites-11ty/SKILL.md) — Process
 
-Audits, conforms, and scaffolds static websites against the house build standard — **Eleventy 3 + Nunjucks + Markdown, TypeScript run natively on Bun, Tailwind 4 config-less with design tokens** — that compile to a portable `dist/`. Owns the **site-build delta** and **composes on** `ki-engineering` (toolchain) and `ki-authoring` (Markdown), handing the built `dist/` to `ki-cloudflare-hosting`. Ships a mechanical checker (`audit-websites.ts`).
+Audits, conforms, and scaffolds static websites against the house build standard — **Eleventy 3 + Nunjucks + Markdown, TypeScript run natively on Bun, Tailwind 4 config-less with design tokens** — that compile to a portable `dist/`. Owns the **site-build delta** and **composes on** `ki-engineering` (toolchain) and `ki-authoring` (Markdown), handing the built `dist/` to `ki-hosting-cloudflare`. Ships a mechanical checker (`audit-websites.ts`).
 
-### [`ki-cloudflare-hosting`](../skills/ki-cloudflare-hosting/SKILL.md) — Process
+### [`ki-hosting-cloudflare`](../skills/ki-hosting-cloudflare/SKILL.md) — Process
 
-Audits, conforms, and scaffolds the house convention for serving a built site on **Cloudflare Workers + Static Assets** (not Pages): one `wrangler.jsonc` pointing `assets.directory` at the site's `dist/`, custom-domain routes, observability, and the `ki:site:deploy` script family. Owns the **hosting delta** for the site Worker; the `dist/` is the seam from `ki-11ty-websites`. Companion Workers (bots, ingress) route to the generic `cloudflare` / `wrangler` skills. Ships a mechanical checker (`audit-cloudflare-hosting.ts`).
+Audits, conforms, and scaffolds the house convention for serving a built site on **Cloudflare Workers + Static Assets** (not Pages): one `wrangler.jsonc` pointing `assets.directory` at the site's `dist/`, custom-domain routes, observability, and the `ki:site:deploy` script family. Owns the **hosting delta** for the site Worker; the `dist/` is the seam from `ki-websites-11ty`. Companion Workers (bots, ingress) route to the generic `cloudflare` / `wrangler` skills. Ships a mechanical checker (`audit-cloudflare-hosting.ts`).
 
 ### [`ki-skills`](../skills/ki-skills/SKILL.md) — Process
 

@@ -2,7 +2,7 @@
 
 The normative, quotable reference for serving a built static site on Cloudflare — what good hosting looks like, and why. The audit rubric ([audit-rubric.md](audit-rubric.md)) turns each section into checkable items; the procedure is in the [SKILL.md](../SKILL.md). See [the source list](sources.md) for provenance.
 
-This skill owns the **deploy/serve delta for the site Worker**. The `dist/` it serves is `ki-11ty-websites`'s output (the seam); the toolchain is `ki-engineering`'s. Both are referenced here, not restated. **Companion Workers are out of scope.**
+This skill owns the **deploy/serve delta for the site Worker**. The `dist/` it serves is `ki-websites-11ty`'s output (the seam); the toolchain is `ki-engineering`'s. Both are referenced here, not restated. **Companion Workers are out of scope.**
 
 ## Contents
 
@@ -19,13 +19,13 @@ The site is **one Cloudflare Worker that serves static assets**. The Worker has 
 
 - **Workers + Static Assets**, deployed with `wrangler deploy`. **Never `wrangler pages deploy`** — Cloudflare steers new static sites to Workers + Static Assets (new features and optimizations focus on Workers; `wrangler pages` now nudges to `wrangler deploy`), and the the house sites were explicitly **migrated off Pages to Workers + Static Assets**. A `pages deploy` in any script is a finding.
 - **One `wrangler.jsonc` per deployable.** The **site** Worker's config carries an `assets` block (and no `main`). This is the only config this standard governs.
-- The site root — and thus where its `wrangler.jsonc` lives — follows `ki-11ty-websites`'s layout, which is a **monorepo** (engineering §0): the site is the **`site/` workspace**, so `wrangler.jsonc` lives at `site/wrangler.jsonc` and `dist/` sits at the repo root (so `assets.directory` is `../dist`, §3). This skill can serve any static `dist/`, so a one-off **flat** consumer (config at the repo root, `assets.directory: "./dist"`) is still valid hosting — but every house 11ty site is a monorepo, never flat.
+- The site root — and thus where its `wrangler.jsonc` lives — follows `ki-websites-11ty`'s layout, which is a **monorepo** (engineering §0): the site is the **`site/` workspace**, so `wrangler.jsonc` lives at `site/wrangler.jsonc` and `dist/` sits at the repo root (so `assets.directory` is `../dist`, §3). This skill can serve any static `dist/`, so a one-off **flat** consumer (config at the repo root, `assets.directory: "./dist"`) is still valid hosting — but every house 11ty site is a monorepo, never flat.
 
 ## 2. The `dist/` seam
 
 The hosting layer and the build layer meet at exactly one place: the **`dist/` directory**.
 
-- `ki-11ty-websites` **emits** a portable `dist/` (relative internal links, `assets/css/main.css`, sitemap/robots for a public site). This skill **serves** it by pointing `assets.directory` at it.
+- `ki-websites-11ty` **emits** a portable `dist/` (relative internal links, `assets/css/main.css`, sitemap/robots for a public site). This skill **serves** it by pointing `assets.directory` at it.
 - **`assets.directory` is relative to the `wrangler.jsonc` file**: `"./dist"` when the config is at the repo root (flat layout), `"../dist"` when the config is under `site/`. It must resolve to the build's actual output directory.
 - **The build runs before deploy.** `dist/` is gitignored and regenerated; deploy reads whatever the last build produced. A `ki:site:preview` script chains build → `wrangler dev` for a local check against the real Worker runtime.
 - Neither layer needs the other's internals — only the `dist/` path. That is what makes the split clean and the hosting skill reusable for any static `dist/`.
@@ -73,7 +73,7 @@ The hosting scripts in `package.json`, namespaced with the `site:` prefix (the h
 - **`ki:site:preview`** → `bun run ki:site:build && cd <site root> && bunx wrangler dev` — build, then serve through the real Worker runtime locally.
 - **`ki:site:clean`** → removes `dist/` and `.wrangler/`.
 
-`ki:site:build` / `ki:site:dev` (the build + dev-server scripts) belong to `ki-11ty-websites`, not here. `.wrangler/` is gitignored.
+`ki:site:build` / `ki:site:dev` (the build + dev-server scripts) belong to `ki-websites-11ty`, not here. `.wrangler/` is gitignored.
 
 ## 5. CI/CD
 
@@ -87,5 +87,5 @@ This standard governs **only the site Worker** — the one that serves `dist/`. 
 
 - **Companion Workers** — a bot, an ingress/webhook receiver, an API, anything with a `main` entry and bindings (R2, Durable Objects + their `migrations`, KV, D1), `triggers.crons`, or `vars`/secrets. These are real Workers but **not** the static site; they route to the generic `cloudflare` / `wrangler` skills. The audit notes their presence and moves on.
 - **General Cloudflare/Workers/wrangler usage** — `wrangler dev` mechanics, binding configuration, secret management, deploy flags, runtime APIs → the `cloudflare` / `wrangler` skills.
-- **Building the `dist/`** → `ki-11ty-websites`.
+- **Building the `dist/`** → `ki-websites-11ty`.
 - **The toolchain** (Bun, lint/deps, tsconfig/biome) → `ki-engineering`.

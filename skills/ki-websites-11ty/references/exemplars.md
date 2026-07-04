@@ -132,7 +132,7 @@ No `tailwind.config.*` file anywhere — Tailwind 4 is configured entirely in CS
 
 ### `package.json` — the site script family
 
-Scripts for the `site/` workspace of a monorepo. All site scripts take the `site:` prefix. `ki:site:dev` uses `concurrently` to run the Tailwind `--watch` process (`ki:site:dev:css`) and the Eleventy dev server (`ki:site:dev:serve`) in parallel, named `css`,`11ty`. `ki:site:build` invokes the Eleventy CLI via `node --experimental-strip-types` (or plain `bun`) directly — the `eleventy.before` hook handles Tailwind minification inside the same process. `ki:site:deploy` and `ki:site:preview` are the hosting scripts (governed by `ki-cloudflare-hosting`); they appear here because they live in the same root `package.json` in the monorepo shape.
+Scripts for the `site/` workspace of a monorepo. All site scripts take the `site:` prefix. `ki:site:dev` uses `concurrently` to run the Tailwind `--watch` process (`ki:site:dev:css`) and the Eleventy dev server (`ki:site:dev:serve`) in parallel, named `css`,`11ty`. `ki:site:build` invokes the Eleventy CLI via `node --experimental-strip-types` (or plain `bun`) directly — the `eleventy.before` hook handles Tailwind minification inside the same process. `ki:site:deploy` and `ki:site:preview` are the hosting scripts (governed by `ki-hosting-cloudflare`); they appear here because they live in the same root `package.json` in the monorepo shape.
 
 ```json
 {

@@ -1,7 +1,7 @@
 ---
 id: '006'
 title: Concern-first skill renames (websites-11ty, hosting-cloudflare)
-status: open
+status: in-progress
 roadmap: Concern-first skill renames
 blocks: '004'
 blocked-by: —

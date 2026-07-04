@@ -3,11 +3,11 @@
  * Mechanical auditor for a Knowledge Islands site's Cloudflare hosting.
  *
  *   bun scripts/audit-cloudflare-hosting.ts <repo-path>   # or: node --experimental-strip-types
- *   bun scripts/audit-cloudflare-hosting.ts --init        # print the default [ki-cloudflare-hosting] block
+ *   bun scripts/audit-cloudflare-hosting.ts --init        # print the default [ki-hosting-cloudflare] block
  *
- * Checks the HOSTING DELTA the `ki-cloudflare-hosting` skill codifies — the SITE
+ * Checks the HOSTING DELTA the `ki-hosting-cloudflare` skill codifies — the SITE
  * Worker that serves the built dist/ via Workers + Static Assets. It does NOT build the dist/
- * (that is `ki-11ty-websites`; run audit-websites.ts first) nor check the common
+ * (that is `ki-websites-11ty`; run audit-websites.ts first) nor check the common
  * toolchain (`ki-engineering`). It scopes to the SITE Worker (the wrangler config
  * carrying an `assets` block); a companion Worker (a `main` entry, no `assets` — a bot, ingress,
  * API) is NOTED, not flagged, and routes to the generic cloudflare/wrangler skills. The judgment
@@ -27,10 +27,10 @@ const findings: Finding[] = []
 const add = (level: Level, area: string, msg: string) => findings.push({ level, area, msg })
 
 // `.ki-config.toml` is a shared per-repo file; this skill owns the
-// [ki-cloudflare-hosting] table. The default block (written by `--init`)
+// [ki-hosting-cloudflare] table. The default block (written by `--init`)
 // is the authoritative key list — the table header is the opt-in marker; `site-root`
 // is the one declarable key (validate-down warns on anything else under the table).
-const KI_SECTION = 'ki-cloudflare-hosting'
+const KI_SECTION = 'ki-hosting-cloudflare'
 const KI_DEFAULT = `# ${KI_SECTION} — opt-in marker: presence of this table opts the repo into the
 # Workers + Static Assets hosting standard (serving the built dist/).
 [${KI_SECTION}]
@@ -94,7 +94,7 @@ const scripts = (() => {
 
 // ── not-hosted short-circuit ──────────────────────────────────────────────────
 if (!configs.length && !kiTable) {
-  add('WARN', 'model', 'no wrangler config and no [ki-cloudflare-hosting] table — repo is not Cloudflare-hosted; skip this audit')
+  add('WARN', 'model', 'no wrangler config and no [ki-hosting-cloudflare] table — repo is not Cloudflare-hosted; skip this audit')
   report()
 }
 

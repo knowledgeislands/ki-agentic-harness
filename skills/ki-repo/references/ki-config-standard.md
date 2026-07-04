@@ -85,8 +85,8 @@ The detection signals `ki-repo` uses (one recursive tree read + `package.json`):
 | `ki-engineering`        | `package.json` present                      | `[ki-engineering]`        |
 | `ki-kb-base`            | canonical zones (`Pillars/` + `Resources/`) | `[ki-kb-base]`            |
 | `ki-kb-streams`         | `Streams/` zone                             | `[ki-kb-streams]`         |
-| `ki-11ty-websites`      | `eleventy.config.*`                         | `[ki-11ty-websites]`      |
-| `ki-cloudflare-hosting` | a `wrangler.*` config                       | `[ki-cloudflare-hosting]` |
+| `ki-websites-11ty`      | `eleventy.config.*`                         | `[ki-websites-11ty]`      |
+| `ki-hosting-cloudflare` | a `wrangler.*` config                       | `[ki-hosting-cloudflare]` |
 | `ki-mcp`                | `@modelcontextprotocol/sdk` dependency      | `[ki-mcp]`                |
 | `ki-skills`             | `skills/*/SKILL.md`                         | `[ki-skills]`             |
 | `ki-agents`             | `agents/**/*.md`                            | `[ki-agents]`             |

@@ -24,7 +24,7 @@ Curated patterns worth reading when authoring or auditing a Knowledge Islands Cl
 
 ### `wrangler.jsonc` — the conformant site Worker config
 
-The site Worker config lives at `site/wrangler.jsonc` in the monorepo layout (the `site/` workspace of `ki-11ty-websites`). Four fields are always present: `name` (kebab-case, matches the Worker name in the Cloudflare dashboard), `compatibility_date` (pinned `YYYY-MM-DD`), `assets.directory` pointing at the `dist/` seam, and `observability.enabled: true` so `console.*` / request logs are queryable in the dashboard. `routes` with `custom_domain: true` is expected for a site with a domain. The `assets.directory` value is **relative to the `wrangler.jsonc` file** — `"../dist"` from `site/wrangler.jsonc` because `dist/` lives at the repo root (one level up from `site/`).
+The site Worker config lives at `site/wrangler.jsonc` in the monorepo layout (the `site/` workspace of `ki-websites-11ty`). Four fields are always present: `name` (kebab-case, matches the Worker name in the Cloudflare dashboard), `compatibility_date` (pinned `YYYY-MM-DD`), `assets.directory` pointing at the `dist/` seam, and `observability.enabled: true` so `console.*` / request logs are queryable in the dashboard. `routes` with `custom_domain: true` is expected for a site with a domain. The `assets.directory` value is **relative to the `wrangler.jsonc` file** — `"../dist"` from `site/wrangler.jsonc` because `dist/` lives at the repo root (one level up from `site/`).
 
 ```jsonc
 {
@@ -52,7 +52,7 @@ Optional per-site `assets` keys (`html_handling`, `not_found_handling`, `binding
 
 ### `package.json` — the hosting script family
 
-The hosting scripts in the root `package.json` of the monorepo. They take the `site:` prefix (matching the rest of the site script family from `ki-11ty-websites`). `ki:site:deploy` changes into the site workspace where `wrangler.jsonc` lives and runs `bunx wrangler deploy` — never `wrangler pages deploy`. `ki:site:preview` chains a full build then `wrangler dev` so the site runs through the real Worker runtime locally before deploying. `.wrangler/` is added to `ki:site:clean`.
+The hosting scripts in the root `package.json` of the monorepo. They take the `site:` prefix (matching the rest of the site script family from `ki-websites-11ty`). `ki:site:deploy` changes into the site workspace where `wrangler.jsonc` lives and runs `bunx wrangler deploy` — never `wrangler pages deploy`. `ki:site:preview` chains a full build then `wrangler dev` so the site runs through the real Worker runtime locally before deploying. `.wrangler/` is added to `ki:site:clean`.
 
 ```json
 {
@@ -64,7 +64,7 @@ The hosting scripts in the root `package.json` of the monorepo. They take the `s
 }
 ```
 
-`ki:site:build` and `ki:site:dev` belong to `ki-11ty-websites` — they build the `dist/` that these scripts serve. Both sets of scripts live in the same root `package.json`; only the responsibility boundary differs.
+`ki:site:build` and `ki:site:dev` belong to `ki-websites-11ty` — they build the `dist/` that these scripts serve. Both sets of scripts live in the same root `package.json`; only the responsibility boundary differs.
 
 ### Cloudflare Workers Builds — the CI/CD path
 

@@ -268,13 +268,13 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
   { skill: 'streams', table: 'ki-kb-streams', artifact: 'Streams/ zone', detect: (s) => s.root.has('Streams') },
   {
     skill: '11ty-websites',
-    table: 'ki-11ty-websites',
+    table: 'ki-websites-11ty',
     artifact: 'eleventy.config.*',
     detect: (s) => ELEVENTY.some((f) => s.root.has(f)) || [...s.tree].some((p) => ELEVENTY.some((f) => p.endsWith(`/${f}`)))
   },
   {
     skill: 'cloudflare-hosting',
-    table: 'ki-cloudflare-hosting',
+    table: 'ki-hosting-cloudflare',
     artifact: 'wrangler config',
     detect: (s) => WRANGLER.some((f) => s.root.has(f)) || [...s.tree].some((p) => WRANGLER.some((f) => p.endsWith(`/${f}`)))
   },

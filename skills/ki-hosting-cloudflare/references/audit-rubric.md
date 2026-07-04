@@ -4,7 +4,7 @@ Line-by-line pass/fail items for auditing a site's hosting against the [Cloudfla
 
 Severity: **FAIL** (ship-stopper — the site can't deploy, or deploys the wrong way), **WARN** (config / script divergence), **POLISH** (domains / CI / consistency) — the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](../../ki-engineering/references/enforcement-framework.md) §2.
 
-> **Compose with the siblings.** This rubric is the **hosting delta** only. The toolchain is `ki-engineering` (`ki:engineering:audit`); building the `dist/` this serves is `ki-11ty-websites` (`audit-websites.ts`). Run both first. Any Worker that is not the static-site server is out of scope — it routes to the generic `cloudflare`/`wrangler` skills. The repo is fully clean only when every applicable audit passes.
+> **Compose with the siblings.** This rubric is the **hosting delta** only. The toolchain is `ki-engineering` (`ki:engineering:audit`); building the `dist/` this serves is `ki-websites-11ty` (`audit-websites.ts`). Run both first. Any Worker that is not the static-site server is out of scope — it routes to the generic `cloudflare`/`wrangler` skills. The repo is fully clean only when every applicable audit passes.
 
 ## Contents
 
@@ -26,7 +26,7 @@ Severity: **FAIL** (ship-stopper — the site can't deploy, or deploys the wrong
 ## The dist/ seam (§2)
 
 - [ ] [M] FAIL — `assets.directory` is set and points at the build's `dist/` (`./dist` flat, `../dist` from `site/`). (§2)
-- [ ] [J] WARN — the path resolves to the directory `ki-11ty-websites` builds to (cross-check `audit-websites.ts`). (§2)
+- [ ] [J] WARN — the path resolves to the directory `ki-websites-11ty` builds to (cross-check `audit-websites.ts`). (§2)
 - [ ] [M] WARN — `dist/` and `.wrangler/` are gitignored. (§2, §4)
 - [ ] [J] POLISH — a `ki:site:preview` chains build → `wrangler dev` for a local check against the Worker runtime. (§2, §4)
 
@@ -43,7 +43,7 @@ Severity: **FAIL** (ship-stopper — the site can't deploy, or deploys the wrong
 - [ ] [M] WARN — a deploy script runs `wrangler deploy` from the site root (`ki:site:deploy`, or `deploy` when flat). (§4)
 - [ ] [M] WARN — a `ki:site:preview` script runs `wrangler dev` (local Workers preview of the built `dist/`). (§4)
 - [ ] [J] WARN — `ki:site:clean` removes `dist/` + `.wrangler/`. (§4)
-- [ ] — `ki:site:build` / `ki:site:dev` are **not** checked here — they belong to `ki-11ty-websites`. (§4)
+- [ ] — `ki:site:build` / `ki:site:dev` are **not** checked here — they belong to `ki-websites-11ty`. (§4)
 
 ## CI/CD (§5)
 

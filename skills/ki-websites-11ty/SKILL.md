@@ -1,7 +1,7 @@
 ---
-name: ki-11ty-websites
+name: ki-websites-11ty
 description: >-
-  Codifies, audits, and enforces the Knowledge Islands static-site standard: Eleventy 3 with Nunjucks and Markdown, TypeScript run natively on Bun, Tailwind 4 in config-less mode with semantic design tokens, and a portable `dist/` output. Use when building a new KI static site, auditing an existing site against the standard, conforming one to the standard, or scaffolding the initial `eleventy.config.ts`, Tailwind token pair, `src/` layout, and SEO wiring. Triggers: "audit my 11ty site", "does this site follow our standard", "scaffold a new 11ty site", "conform this site to KI standard", "build a static site with Eleventy", "my Tailwind build isn't generating any output", "add a page layout". Builds on ki-engineering (the Bun/lint/type/test toolchain) and ki-authoring (Markdown style); for deploying the built `dist/` to Cloudflare use ki-cloudflare-hosting. Not for Astro, Next, or other frameworks.
+  Codifies, audits, and enforces the Knowledge Islands static-site standard: Eleventy 3 with Nunjucks and Markdown, TypeScript run natively on Bun, Tailwind 4 in config-less mode with semantic design tokens, and a portable `dist/` output. Use when building a new KI static site, auditing an existing site against the standard, conforming one to the standard, or scaffolding the initial `eleventy.config.ts`, Tailwind token pair, `src/` layout, and SEO wiring. Triggers: "audit my 11ty site", "does this site follow our standard", "scaffold a new 11ty site", "conform this site to KI standard", "build a static site with Eleventy", "my Tailwind build isn't generating any output", "add a page layout". Builds on ki-engineering (the Bun/lint/type/test toolchain) and ki-authoring (Markdown style); for deploying the built `dist/` to Cloudflare use ki-hosting-cloudflare. Not for Astro, Next, or other frameworks.
 argument-hint: 'audit <repo> | conform <repo> | init <repo> | refresh'
 ---
 
@@ -9,9 +9,9 @@ argument-hint: 'audit <repo> | conform <repo> | init <repo> | refresh'
 
 You are applying the **Knowledge Islands 11ty website standard** — the shared way every static website in this work is built: **Eleventy 3, Nunjucks and Markdown; TypeScript run natively on Bun; Tailwind 4 config-less with design tokens**, compiling to a **portable `dist/`**. A new site is scaffolded to it; an existing one is audited and conformed against it. This skill carries that standard and the procedure.
 
-This is a **standard, base-agnostic Process skill**. It hard-codes no single repo; it applies to any repo carrying a `[ki-11ty-websites]` table in its `.ki-config.toml`. How it sits beside the other skills, and where it must not overlap them, is documented once in the arcadia-agentic-harness `README.md`.
+This is a **standard, base-agnostic Process skill**. It hard-codes no single repo; it applies to any repo carrying a `[ki-websites-11ty]` table in its `.ki-config.toml`. How it sits beside the other skills, and where it must not overlap them, is documented once in the arcadia-agentic-harness `README.md`.
 
-This skill owns the **site-build delta** only. The generic toolchain (Bun mandate, `ki:lint:*`/`ki:deps:*` families, `tsconfig`/`biome`/`tsc --noEmit`) is `ki-engineering`'s; Markdown/TOML style is `ki-authoring`'s; **serving the built `dist/`** on Cloudflare is `ki-cloudflare-hosting`'s. It **composes** on top of those rather than restating them.
+This skill owns the **site-build delta** only. The generic toolchain (Bun mandate, `ki:lint:*`/`ki:deps:*` families, `tsconfig`/`biome`/`tsc --noEmit`) is `ki-engineering`'s; Markdown/TOML style is `ki-authoring`'s; **serving the built `dist/`** on Cloudflare is `ki-hosting-cloudflare`'s. It **composes** on top of those rather than restating them.
 
 The full, quotable standard is [the Eleventy site standard](references/eleventy-site-standard.md); the line-by-line pass/fail items are in [the audit rubric](references/audit-rubric.md); the tracked provenance is [the source list](references/sources.md). A mechanical checker is [`scripts/audit-websites.ts`](scripts/audit-websites.ts). Read those for detail; this file is the operating procedure.
 
@@ -38,7 +38,7 @@ A companion deployable (a bot, an ingress Worker — out of this skill's scope) 
 Four invariants define the standard — most findings are a breach of one:
 
 1. **Config-less Tailwind 4.** No `tailwind.config.*`; `main.css` is `@import "tailwindcss"` then `tokens.css`, whose semantic CSS vars are exposed to utilities via `@theme inline`.
-2. **The build emits a portable `dist/`.** An `addTransform` rewrites absolute internal URLs to relative ones, so `dist/` serves from any root. This is the contract `ki-cloudflare-hosting` consumes.
+2. **The build emits a portable `dist/`.** An `addTransform` rewrites absolute internal URLs to relative ones, so `dist/` serves from any root. This is the contract `ki-hosting-cloudflare` consumes.
 3. **TypeScript runs natively — no transpile.** `eleventy.config.ts` and `_data/*.ts` run under Bun; `.ts` + `.json5` data extensions are registered in the config. `tsc` is type-check only (engineering's layer).
 4. **Tailwind compiles inside the Eleventy lifecycle.** An `eleventy.before` hook runs the Tailwind CLI in build mode; dev runs a parallel `--watch` and an `addWatchTarget` on the compiled CSS.
 
@@ -52,11 +52,11 @@ ki:engineering:audit <repo>                          →  common toolchain (Bun,
   then audit-cloudflare-hosting.ts <repo>         →  serving the dist/ (if the site is deployed to Cloudflare)
 ```
 
-A repo is "clean" only when **every applicable** skill's audit passes. The `.ki-config.toml` tables are the selector: `[ki-engineering]` marks the common layer; `[ki-11ty-websites]` marks this one; `[ki-cloudflare-hosting]` marks the hosting layer.
+A repo is "clean" only when **every applicable** skill's audit passes. The `.ki-config.toml` tables are the selector: `[ki-engineering]` marks the common layer; `[ki-websites-11ty]` marks this one; `[ki-hosting-cloudflare]` marks the hosting layer.
 
 ## The `dist/` contract (the seam to hosting)
 
-This skill's output, and the only thing the hosting skill needs: a `dist/` of static files with **relative** internal links (the URL transform), Tailwind compiled to `dist/assets/css/main.css`, passthrough assets, and — for a public site — `sitemap.xml` + `robots.txt`. `dist/` is gitignored and regenerated by the build. `dist/` lives inside the `site/` workspace (`site/dist/`) — the path `ki-cloudflare-hosting` points `assets.directory` at.
+This skill's output, and the only thing the hosting skill needs: a `dist/` of static files with **relative** internal links (the URL transform), Tailwind compiled to `dist/assets/css/main.css`, passthrough assets, and — for a public site — `sitemap.xml` + `robots.txt`. `dist/` is gitignored and regenerated by the build. `dist/` lives inside the `site/` workspace (`site/dist/`) — the path `ki-hosting-cloudflare` points `assets.directory` at.
 
 ## Operating modes
 
@@ -72,12 +72,12 @@ Carries the universal **AUDIT · CONFORM · REFRESH**, plus **INIT** (scaffold a
 ### Mode CONFORM — bring a site up to standard
 
 1. Run **AUDIT** first, so you change against a known gap list.
-2. Fix the gaps in place — use the canonical shape from [the standard](references/eleventy-site-standard.md): the lean layout (§2–§5) and the fuller patterns (tokens, layouts, SEO — §5–§7) as needed. Add the `[ki-11ty-websites]` table if missing (`bun scripts/audit-websites.ts --init >> .ki-config.toml`).
-3. Re-run the checker; settle the repo's own `bun run ki:lint:*` / `ki:lint:types` (and `ki:lint:md` for any Markdown). For the toolchain block, run `ki-engineering`'s CONFORM; for the deploy block, `ki-cloudflare-hosting`'s.
+2. Fix the gaps in place — use the canonical shape from [the standard](references/eleventy-site-standard.md): the lean layout (§2–§5) and the fuller patterns (tokens, layouts, SEO — §5–§7) as needed. Add the `[ki-websites-11ty]` table if missing (`bun scripts/audit-websites.ts --init >> .ki-config.toml`).
+3. Re-run the checker; settle the repo's own `bun run ki:lint:*` / `ki:lint:types` (and `ki:lint:md` for any Markdown). For the toolchain block, run `ki-engineering`'s CONFORM; for the deploy block, `ki-hosting-cloudflare`'s.
 
 ### Mode INIT — scaffold a new site
 
-Use the canonical shape from **[the standard](references/eleventy-site-standard.md)** over inventing: the `eleventy.config.ts` patterns (§4), the `main.css`/`tokens.css` pair (§5), the `_includes/{layouts,partials}/` shells (§3), and the build/dev script family (§8). Adapt names, palette, and content; keep the four invariants from day one. Add the `[ki-11ty-websites]` table (`bun scripts/audit-websites.ts --init >> .ki-config.toml`). Then run the checker. For the toolchain scaffold defer to `ki-engineering` INIT; for hosting, `ki-cloudflare-hosting` INIT.
+Use the canonical shape from **[the standard](references/eleventy-site-standard.md)** over inventing: the `eleventy.config.ts` patterns (§4), the `main.css`/`tokens.css` pair (§5), the `_includes/{layouts,partials}/` shells (§3), and the build/dev script family (§8). Adapt names, palette, and content; keep the four invariants from day one. Add the `[ki-websites-11ty]` table (`bun scripts/audit-websites.ts --init >> .ki-config.toml`). Then run the checker. For the toolchain scaffold defer to `ki-engineering` INIT; for hosting, `ki-hosting-cloudflare` INIT.
 
 ### Mode REFRESH — re-anchor the standard to its sources
 
@@ -94,6 +94,6 @@ Reciprocal off-ramps — each names this skill back for the site-build layer:
 
 - **The Bun mandate, `ki:lint:*`/`ki:deps:*` families, `tsconfig`/`biome`, type-check** → `ki-engineering`. This skill owns the _site-build_ delta on top of that common layer; it references it, never restates it.
 - **Markdown / TOML formatting style** (including content prose) → `ki-authoring`.
-- **Serving the built `dist/`** — the `wrangler.jsonc`, Workers + Static Assets, custom domains, deploy scripts → `ki-cloudflare-hosting`. The `dist/` is the seam between the two.
+- **Serving the built `dist/`** — the `wrangler.jsonc`, Workers + Static Assets, custom domains, deploy scripts → `ki-hosting-cloudflare`. The `dist/` is the seam between the two.
 - **Any Worker that is not a static site** (bots, ingress receivers, APIs, Durable Objects), and general Cloudflare/Workers usage → the generic `cloudflare` / `wrangler` skills.
 - **A repo's GitHub settings, security, and the universal local files** → `ki-repo`.

@@ -1,5 +1,5 @@
 /**
- * Eval scenarios for the `ki-cloudflare-hosting` skill — the deploy/serve
+ * Eval scenarios for the `ki-hosting-cloudflare` skill — the deploy/serve
  * delta for the one site Worker.
  *
  * Design note: a capable model knows wrangler generically, so testing that shows "no
@@ -11,7 +11,7 @@ import type { Scenario } from '../harness.ts'
 
 export const scenarios: Scenario[] = [
   {
-    skill: 'ki-cloudflare-hosting',
+    skill: 'ki-hosting-cloudflare',
     id: 'host-not-pages',
     prompt:
       'How do we deploy a static site to Cloudflare under the Knowledge Islands house standard — which Cloudflare product, which deploy command, and which command must never be used?',
@@ -24,7 +24,7 @@ export const scenarios: Scenario[] = [
       'House decision: serve the site as a **Cloudflare Worker + Static Assets**, NOT Pages. Deploy with `wrangler deploy` (a Worker carrying an `assets` block). **Never `wrangler pages deploy`** — Cloudflare steers new sites to Workers + Static Assets and the house sites were explicitly migrated off Pages. A correct answer names Workers + Static Assets, says not Pages, and flags `wrangler pages deploy` as forbidden.'
   },
   {
-    skill: 'ki-cloudflare-hosting',
+    skill: 'ki-hosting-cloudflare',
     id: 'host-seam-and-companion',
     prompt:
       'In our site `wrangler.jsonc`, what does `assets.directory` point at, and how do we tell the in-scope site Worker apart from a companion Worker (a bot or ingress receiver) that lives in the same repo?',
@@ -34,10 +34,10 @@ export const scenarios: Scenario[] = [
       { name: 'companion routes to cloudflare/wrangler', re: /cloudflare[^.\n]{0,8}\/?[^.\n]{0,8}wrangler|generic (cloudflare|wrangler)/i }
     ],
     rubric:
-      "House model: `assets.directory` is the **seam** — it points at the `dist/` that `ki-11ty-websites` emits (`./dist` flat, `../dist` from a `site/` subfolder). The in-scope **site Worker carries `assets` and no `main`**; a Worker with a `main` entry and no `assets` is a **companion** (bot, ingress, API, …) that belongs to the generic `cloudflare` / `wrangler` skills, not this one. A correct answer states assets.directory → dist/, the assets-and-no-main test for the site Worker, and that a main/no-assets Worker routes to the generic cloudflare/wrangler skills."
+      "House model: `assets.directory` is the **seam** — it points at the `dist/` that `ki-websites-11ty` emits (`./dist` flat, `../dist` from a `site/` subfolder). The in-scope **site Worker carries `assets` and no `main`**; a Worker with a `main` entry and no `assets` is a **companion** (bot, ingress, API, …) that belongs to the generic `cloudflare` / `wrangler` skills, not this one. A correct answer states assets.directory → dist/, the assets-and-no-main test for the site Worker, and that a main/no-assets Worker routes to the generic cloudflare/wrangler skills."
   },
   {
-    skill: 'ki-cloudflare-hosting',
+    skill: 'ki-hosting-cloudflare',
     id: 'host-config-keys',
     prompt: 'Beyond the `assets` block, what must our site `wrangler.jsonc` carry, and what gets gitignored for hosting?',
     assertions: [
