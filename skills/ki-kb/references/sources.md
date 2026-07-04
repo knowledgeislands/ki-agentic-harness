@@ -10,8 +10,8 @@ Unlike `ki-mcp` and `ki-skills`, this skill follows **no moving external spec**:
 
 | Source | Governs | Last reviewed |
 | --- | --- | --- |
-| arcadia-agentic-harness `docs/knowledge-islands.md` - "The Knowledge Islands structure" | † | 2026-06-21 |
-| [Knowledge Islands KB Reference][kb-reference] | This skill's own long-form detail on the modes and conventions | 2026-06-21 |
+| arcadia-agentic-harness `docs/knowledge-islands.md` - "The Knowledge Islands structure" | † | 2026-07-04 |
+| [Knowledge Islands KB Reference][kb-reference] | This skill's own long-form detail on the modes and conventions | 2026-07-04 |
 
 † The authoritative structure: five zones (Calendar / Pillars / Resources / Streams / Admin) flanked by the inbound `+` and outbound `-` staging areas.
 
@@ -21,14 +21,32 @@ These have no URL; they are sampled at REFRESH time through each base's own `kb-
 
 | Source | Governs | Last reviewed |
 | --- | --- | --- |
-| `arcadia-principal` base[^ap] | Whether the zone model, routing test, and bindings still match a real layout and practice | 2026-06-21 |
-| `kit-legal` base[^kl] | The same, from a base further along the structure, now on the canonical zone names (alias dropped) | 2026-06-21 |
-| Other bases actively using this skill | The same, as further bases adopt the skill | 2026-06-21 |
-| Per-base `.ki-config` declarations | Which base-specific declarations recur across bases※ | 2026-06-21 |
+| `arcadia-principal` base[^ap] | Whether the zone model, routing test, and bindings still match a real layout and practice | 2026-07-04 |
+| `kit-legal` base[^kl] | The same, from a base further along the structure, now on the canonical zone names (alias dropped) | 2026-07-04 |
+| Other bases actively using this skill | The same, as further bases adopt the skill | 2026-07-04 |
+| Per-base `.ki-config` declarations | Which base-specific declarations recur across bases※ | 2026-07-04 |
 
 ※ Which base-specific declarations recur across bases and should be promoted into this standard skill.
 
-[^ap]: The first real Knowledge Islands base this skill tracks. Sampled through its own `kb-fs` MCP server (`arcadia-principal-mcp-kb-fs`) and its `CLAUDE.md` / memory index. It now carries the full canonical structure — `+`, `-`, `Admin/` (with `Admin/Admin.md` and `Admin/MEMORY.md`), `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, each canonical zone with its same-name index — on the canonical zone names, its `[ki-kb]` table empty (no aliases). Its governance Pillar, `Pillars/Knowledge Capital/`, now sits within the canonical `Pillars/` zone, so the earlier mid-migration caveat no longer applies (confirmed 2026-06-21).
+## Last review
+
+REFRESH last run **2026-07-04** (prior: 2026-06-21). Internal-model re-anchor — no external spec; re-verified against the canonical structure definition and the live layouts of both tracked exemplar bases via their `kb-fs` MCP / filesystem, plus a mechanical audit-kb.ts run against each.
+
+Per-source outcome:
+
+- **arcadia-agentic-harness `docs/knowledge-islands.md`** — confirmed. Five-zone model + `+`/`-` staging, Pillar unit, wikilink convention, and declared-not-forked rule all still match the SKILL zone table, routing test, and bindings.
+- **Knowledge Islands KB Reference** — confirmed. Long-form mode/convention detail unchanged.
+- **`arcadia-principal`** — confirmed. Full canonical structure, all zone indexes, `Admin/Governance/` (Charter.md + Governance.md) and `Admin/Operations/` (Operations.md) present; no zone aliases. audit-kb.ts: 0 fail · 1 warn (Conformance.md absent). Config still on the pre-rename `[knowledgeislands-*]` prefix.
+- **`kit-legal`** — confirmed. Full canonical structure on canonical zone names; no kb config table (no aliases); config now on the `[ki-*]` prefix. audit-kb.ts: 0 fail · 3 warn (Charter/Conformance absent, one non-snake_case key). Zone-alias binding still has no live exemplar.
+- **Per-base `.ki-config` declarations** — confirmed. No recurring base-specific declaration has emerged to promote into the standard this cycle.
+
+Open watch-items:
+
+1. **ki-\* rename split across bases.** kit-legal has migrated its `.ki-config.toml` tables to the `[ki-*]` prefix; arcadia-principal still declares `[knowledgeislands-*]`. Shared `.ki-config.toml` contract (owned by `ki-repo`; tracked by the roadmap rename plan) — not a ki-kb model change. Re-check both bases land on `[ki-kb]` once the rename completes.
+2. **No live `[ki-kb.zones]` exemplar.** Both tracked bases have dropped their aliases. The alias binding is kept as a reviewable override with no live exemplar — watch for a new base mid-migration to re-validate it against reality.
+3. **Charter/Conformance adoption.** The model expects `Admin/Governance/Charter.md` + `Conformance.md`; arcadia-principal lacks Conformance, kit-legal lacks both (all WARN). Watch whether exemplars adopt them or whether the expectation should soften.
+
+[^ap]: The first real Knowledge Islands base this skill tracks. Sampled through its own `kb-fs` MCP server (`arcadia-principal-mcp-kb-fs`) and its `CLAUDE.md` / memory index. It now carries the full canonical structure — `+`, `-`, `Admin/` (with `Admin/Admin.md` and `Admin/MEMORY.md`), `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, each canonical zone with its same-name index — on the canonical zone names, declaring no zone aliases (though its `.ki-config.toml` still uses the pre-rename `[knowledgeislands-kb]` table — the `ki-*` rename is pending for this base). Its governance Pillar, `Pillars/Knowledge Capital/`, now sits within the canonical `Pillars/` zone, so the earlier mid-migration caveat no longer applies (confirmed 2026-06-21).
 
 [^kl]: A second real base (`github.com/krisb/kit-legal`), sampled via its `kb-fs` MCP (`kit-legal-mcp-kb-fs`). It carries the fuller structure — `+`, `-`, `Admin/` (with `Admin/MEMORY.md`), `Calendar/`, `Pillars/` (with `Pillars/Pillars.md`), `Resources/`, `Streams/` — all on the canonical zone names. It earlier held its Pillars zone under a local folder name, declared as a `[ki-kb.zones]` alias; that rename has since completed and the alias has been dropped (its `.ki-config.toml` now carries no `[ki-kb.zones]` table, re-confirmed via its live MCP layout 2026-06-21 — `Pillars/Pillars.md` sits at the canonical folder). So it now documents the alias lifecycle's resolved end-state — transitional alias → dropped after the rename — rather than a live alias, and the zone-alias binding currently has no live exemplar among the tracked bases.
 

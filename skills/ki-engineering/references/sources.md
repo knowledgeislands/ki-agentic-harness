@@ -12,14 +12,14 @@ The standard pins versions in `packageManager`, `engines`, `biome.json`'s `$sche
 
 | Tag | Source | Governs | Pinned at | Last reviewed |
 | --- | --- | --- | --- | --- |
-| BUN | [bun.sh / releases][bun] | `packageManager: bun@1.3.x`; the Bun-install / Node-run split | bun@1.3.14 | 2026-06-21 |
-| NODE | [Node release schedule][node] | `engines.node >= 22` (the runtime `dist/` targets) | >=22.0.0 | 2026-06-21 |
-| BIOME | [biomejs.dev][biome] | `biome.json` schema + the formatter/linter config | 2.5.0 | 2026-06-21 |
-| TS | [typescript releases][ts] | the `tsconfig` / `tsconfig.build` compiler options | ^6.0 | 2026-06-21 |
-| VITEST | [vitest.dev][vitest] | the test runner + 100% coverage config (`vitest run`, v8) | current | 2026-06-21 |
-| SYNCPACK | [syncpack][syncpack] | `ki:lint:package` (`syncpack format`) | ^15 | 2026-06-21 |
-| MDLINT | [markdownlint-cli2][mdlint] / [prettier][prettier] | `ki:lint:md` ❡ | mdl ^0.22 / prettier ^3 | 2026-06-21 |
-| DEPCHECK | [depcheck][depcheck] | `ki:deps:missing` / `ki:deps:unused` | current | 2026-06-21 |
+| BUN | [bun.sh / releases][bun] | `packageManager: bun@1.3.x`; the Bun-install / Node-run split | bun@1.3.14 | 2026-07-04 |
+| NODE | [Node release schedule][node] | `engines.node >= 22` (the runtime `dist/` targets) | >=22.0.0 | 2026-07-04 |
+| BIOME | [biomejs.dev][biome] | `biome.json` schema + the formatter/linter config | 2.5.2 | 2026-07-04 |
+| TS | [typescript releases][ts] | the `tsconfig` / `tsconfig.build` compiler options | ^6.0 | 2026-07-04 |
+| VITEST | [vitest.dev][vitest] | the test runner + 100% coverage config (`vitest run`, v8) | current | 2026-07-04 |
+| SYNCPACK | [syncpack][syncpack] | `ki:lint:package` (`syncpack format`) | ^15 | 2026-07-04 |
+| MDLINT | [markdownlint-cli2][mdlint] / [prettier][prettier] | `ki:lint:md` ❡ | mdl ^0.23 / prettier ^3 | 2026-07-04 |
+| KNIP | [knip][knip] | ki:knip (dead-code + deps gate) / ki:deps:check\|fix | current | 2026-07-04 |
 
 ❡ The Markdown mechanical pass.
 
@@ -38,11 +38,17 @@ The standard is the **majority shape** across the TS/Bun repos under `knowledgei
 
 ## Last review
 
-REFRESH last run **2026-06-21**. Cadence: monthly, alongside the other governance skills (the `ki-skills-refresh` routine). No drift this cycle: every pin is unchanged since the 2026-06-18 review.
+REFRESH last run **2026-07-04**. Cadence: monthly, alongside the other governance skills (the `ki-skills-refresh` routine). **Drift folded in this cycle:** the living-source repos have upgraded three toolchain pins ahead of this file, and the deps tool was replaced.
 
-- **Pins confirmed current:** `bun@1.3.14` (still the latest stable line — 1.3.x shipped through .14 in May 2026, no newer release), `engines.node >=22.0.0` (22 now Maintenance LTS, 24 Active LTS, 26 Current — the `>=22` floor stays valid), Biome `2.5.0` (still latest), TypeScript `^6.0` (latest is `6.0.3`, exactly the repo pin — no newer 6.x; 7.0 Go port still mid-to-late 2026), syncpack `^15` (latest `15.3.2`, absorbed by the range), markdownlint-cli2 `^0.22` (`0.22.1`), prettier `^3` (`3.8.x`). vitest (`4.1.9`; 5.0 still in beta) and depcheck carry no hard-coded pin.
-- **Repo cross-check clean:** `arcadia-agentic-harness` package.json / mise.toml / biome.json all agree with the standard — `packageManager bun@1.3.14` == `mise.toml bun 1.3.14` (drift pair holds), `node = "24.15.0"` pinned above the `>=22` floor, biome `$schema` and devDep both `2.5.0`.
-- **Open watch-items:** Bun and Biome both move fast and were unchanged this cycle; re-pin on the house upgrade. TypeScript 7.0 (the Go-port rewrite) is expected mid-to-late 2026 — when it lands, decide whether the `^6.0` pin tracks it or stays on 6.x. Node announced a release-schedule change taking effect with v27 (one major/year, every release becomes LTS, odd/even distinction dropped); v26 is the last release under the current model — informational now, re-check the `>=22` floor and Node source wording at the first refresh after October 2026.
+- **Pins bumped to match the repos:** Biome `2.5.0 → 2.5.2` (repo `biome.json` `$schema=2.5.1`, devDep `@biomejs/biome=2.5.2`; `2.5.2` is upstream latest), markdownlint-cli2 `^0.22 → ^0.23` (`0.23.0` latest, published ~2026-07-02), prettier confirmed `^3.9.4`. syncpack `^15.3.2` absorbs latest 15.x.
+- **Deps tool replaced:** the `DEPCHECK` row is retired — `depcheck` is no longer a dependency. `ki:deps:*` and `ki:knip` are now **knip**-backed (`ki:deps:check` / `ki:deps:fix` / `ki:deps:update` + `ki:knip`), per `engineering-standard.md` §2/§5 and `audit-rubric.md`. Tracked as `KNIP` going forward.
+- **Pins confirmed current:** `bun@1.3.14` (latest stable, 2026-05-13; no newer 1.3.x), `engines.node >=22.0.0` (22 Maintenance LTS, 24 Active LTS, 26 Current — floor valid; repo node `24.15.0`), TypeScript `^6.0.3` (6.0 still latest **stable**), vitest `4.1.9` (5.0 still beta).
+- **Repo cross-check:** `arcadia-agentic-harness` self-audit = 0 fail. The prior proseWrap WARN is resolved this run — the standard, checker (`audit-engineering.ts`), and rubric now all specify `proseWrap: never`, matching the repo and `ki-authoring` house style.
+- **Open watch-items:**
+  - **TypeScript 7.0** (Go native port) reached **Release Candidate 2026-06-18**, GA estimated ~July 2026 (no longer "mid-to-late 2026"). Type-checking is structurally identical to 6.0. When 7.0 GAs, decide whether the `^6.0` pin tracks it or holds on 6.x — re-check next refresh.
+  - **Node v27** schedule change (one major/year, every release LTS, odd/even dropped) still lands with v27; v26 is the last under the current model. Re-check the `>=22` floor and Node source wording at the first refresh after October 2026.
+  - **Repo-set count:** the "10 TS/Bun repos / seven `mcp-*` servers" claim overcounts — 6 `mcp-*` on disk (9 total), and only 4 repos carry a `[ki-engineering]` table so far. Reconcile the count in SKILL.md, this footnote, README, and CLAUDE.md centrally.
+  - Bun and Biome both move fast; re-pin on the next house upgrade.
 
 [bun]: https://bun.sh/blog
 [node]: https://nodejs.org/en/about/previous-releases
@@ -52,4 +58,4 @@ REFRESH last run **2026-06-21**. Cadence: monthly, alongside the other governanc
 [syncpack]: https://github.com/JamieMason/syncpack
 [mdlint]: https://github.com/DavidAnson/markdownlint-cli2
 [prettier]: https://prettier.io/
-[depcheck]: https://github.com/depcheck/depcheck
+[knip]: https://github.com/webpro-nl/knip

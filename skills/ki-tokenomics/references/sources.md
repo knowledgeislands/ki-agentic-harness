@@ -15,9 +15,9 @@ The volatile **numbers** themselves (model ids, prices, cache TTLs, context-wind
 | [Prompt caching][caching] | cache prefix / TTL mechanics behind the caching lever (§4) | 2026-06-21 |
 | [Claude Code memory & `CLAUDE.md`][cc-memory] | what auto-loads + `@import` resolution; auto memory (§2) | 2026-06-21 |
 | [Claude Code context window][cc-ctxwin] | startup composition, tool search, what survives compaction (§2,§4) | 2026-06-21 |
-| [Claude Code settings][cc-settings] | `settings.json` keys: model, compaction, skill-listing caps (§2,§4) | 2026-06-21 |
+| [Claude Code settings][cc-settings] | `settings.json` keys: model, compaction, skill-listing caps (§2,§4) | 2026-07-04 |
 | [Claude Code MCP][cc-mcp] | where MCP servers are configured; tool search defers schemas (§2) | 2026-06-21 |
-| [Agent Skills standard][skills-std] | skill `description` loads in the selection surface (§2) | 2026-06-21 |
+| [Agent Skills standard][skills-std] | skill `description` loads in the selection surface (§2) | 2026-07-04 |
 
 ※ Governs the finite-resource framing, minimal tool sets, and context ordering (§1, §6).
 
@@ -25,28 +25,22 @@ The volatile **numbers** themselves (model ids, prices, cache TTLs, context-wind
 
 | Source                                  | Governs                                                             | Last reviewed |
 | --------------------------------------- | ------------------------------------------------------------------- | ------------- |
-| [Headroom — chopratejas/headroom][hr]   | the seeded compression-layer registry entry; detection + setup (§5) | 2026-06-21    |
+| [Headroom — chopratejas/headroom][hr]   | the seeded compression-layer registry entry; detection + setup (§5) | 2026-07-04    |
 | [Headroom app — extraheadroom.com][hra] | the menu-bar proxy variant of the same engine (§5)                  | 2026-06-21    |
 
 ## Last review
 
-REFRESH last run **2026-06-21**. Drift this run: the Claude Code context surface shifted materially (tool search now defers MCP schemas; new skill-listing and compaction settings keys), and Headroom shipped a published package. Folded into standard §2/§4/§5 and the rubric (MCP-3, RUN-3, SURF-3). The standard still holds only the _shape_ of the budget, deferring all volatile figures to `claude-api`.
+REFRESH last run **2026-07-04** (prior: 2026-06-21). Re-verified live this run: Headroom's GitHub repo, the Claude Code settings doc, and the Agent Skills specification. The standard, rubric, and checker still hold — no drift in any asserted behaviour; the only stale fact was Headroom's pinned version. All volatile figures remain deferred to `claude-api` (standard §7).
 
-- **Context engineering** (Anthropic, posted 2025-09-29, unchanged): confirmed the principles the standard leans on — context as a finite resource ("context rot" / an "attention budget" as it fills), keep tool sets minimal and non-overlapping, curate canonical examples over an exhaustive rule list, and "find the smallest set of high-signal tokens." Note: the article itself gives **no numeric** tool thresholds (the 3–5-always-loaded / dynamic-discovery-beyond-~10 figures are wider community heuristics — the standard attributes them as such, not to this post). It adds just-in-time / hybrid retrieval and progressive disclosure, and frames a sub-agent as returning a condensed ~1,000–2,000-token summary — consistent with the §4 fan-out lever; no standard change needed.
-- **Claude Code context surface** (memory + context-window + settings + MCP docs; host moved to `code.claude.com/docs/en/*`): several changes now reflected in the standard.
-  - **MCP tool search is default-on.** Only tool _names_ load at startup; full schemas are deferred and fetched on demand. `ENABLE_TOOL_SEARCH=auto` loads schemas upfront when they fit ~10% of the window; `ENABLE_TOOL_SEARCH=false` is the old load-everything behaviour. Qualified §2's "largest line item" claim and added the signal to rubric MCP-3 — the server-count proxy stands.
-  - **Skill-listing caps.** `maxSkillDescriptionChars` (default 1536) and `skillListingBudgetFraction` bound the per-skill description text the model sees; `disable-model-invocation: true` drops a skill from the listing. Folded into §2 ‡ and SURF-3.
-  - **Compaction is a settings lever.** `autoCompactEnabled` / `DISABLE_AUTO_COMPACT`; the skill-description listing is **not** re-injected after `/compact` (only invoked skills survive), while the project-root `CLAUDE.md` is re-read. Folded into §4 and RUN-3.
-  - **Auto memory** is now a documented first-class system at `~/.claude/projects/<project>/memory/MEMORY.md` (first 200 lines / 25KB loaded each session) — confirms the skill's `MEMORY.md` model and the `memory_index` budget; no change needed.
-  - **`claudeMdExcludes`** skips an irrelevant ancestor `CLAUDE.md` — added as a CONFORM lever in SKILL.md.
-  - `@import` recursion confirmed at **max depth four hops**; imported files load at launch (do not reduce context) — matches SURF-1.
-- **Headroom** (chopratejas/headroom + extraheadroom.com): now published as **`headroom-ai`** (pip / npm / Docker `ghcr.io`), at **v0.26.0** (Apache-2.0, Python 3.10+). Detection signals unchanged plus a `headroom wrap <agent>` mode (added to §5). Same three MCP tools and the `HEADROOM_OUTPUT_SHAPER` / `HEADROOM_OUTPUT_HOLDOUT` env keys; newer env keys seen (`HEADROOM_EMBEDDER_RUNTIME`, `HEADROOM_CONTEXT_TOOL`, `HEADROOM_UPDATE_CHECK`) are runtime/offload knobs, not detection or optimal-setup signals. Headline savings 60–95% (tool-heavy evals); budget against ~20–30% on mixed work.
+- **Headroom** (chopratejas/headroom + extraheadroom.com): now at **v0.30.0** (was v0.26.0), still `headroom-ai` on PyPI/npm and `ghcr.io/chopratejas/headroom` Docker, Apache-2.0, Python 3.10+. Same three MCP tools (`headroom_compress` / `headroom_retrieve` / `headroom_stats`), canonical install still `headroom mcp install`; `headroom proxy` / `headroom wrap` modes unchanged. Headline **60–95%** savings confirmed, with new per-workload figures (92% code search, 92% SRE incident debug, 73% GitHub issue triage, 47% codebase exploration); budget ~20–30% on mixed work. New env key `HEADROOM_TLS_STRICT` seen (TLS/runtime knob — **not** a detection or optimal-setup signal); `HEADROOM_OUTPUT_SHAPER` / `HEADROOM_OUTPUT_HOLDOUT` and the offload knobs unchanged. No §5 or checker change beyond the version stamp.
+- **Claude Code settings** (code.claude.com/docs/en/settings): `autoCompactEnabled` (default **true**, v2.1.119+) and `claudeMdExcludes` both confirmed live — matches §4/RUN-3 and the CONFORM lever. New model-restriction keys observed (`availableModels`, `enforceAvailableModels` v2.1.175+, `modelOverrides`, `fallbackModel`, `advisorModel`) bear only on RUN-2/CFG-4 `preferred_model` and need no standard change. The page truncated before the skill-listing / tool-search rows this fetch, so `maxSkillDescriptionChars` / `skillListingBudgetFraction` / `ENABLE_TOOL_SEARCH` were **not** re-confirmed — they stand from the 2026-06-21 verification; re-confirm next run.
+- **Agent Skills specification** (agentskills.io/specification): confirms `name` max 64 chars and `description` max **1024** chars (non-empty), description in the ~100-token selection surface via progressive disclosure. This spec cap is distinct from Claude Code's `maxSkillDescriptionChars` (1536) cited in §2‡ — different mechanisms, both intact. No change needed.
 - **Open watch-items:**
-  - **Pin Headroom's exact config surface.** The MCP `mcpServers` JSON entry shape, the CCR store path + TTL key, and the cache-aligner toggle are still **not documented** upstream (CLI/env-driven; a `claude_analysis_ttl.py` exists in the tree but is unexplained). TOOL-3 (optimal-setup) therefore stays judgment; promote it to a mechanical check the moment those keys are published. Re-fetch the repo next run.
-  - **Promote `ENABLE_TOOL_SEARCH` to a mechanical check?** It is now a concrete env signal bearing directly on the MCP-schema standing cost; consider teaching the checker to read it (and report tool-search state) so MCP-3's tool-search clause becomes [M].
-  - **The "Netflix Headroom" attribution** seen in some secondary coverage is uncorroborated by the repo — do not assert a Netflix origin.
-  - Watch for a **second registry entry** worth seeding (another compression / context-pruning project) so the registry is plural in fact.
-  - Re-confirm the Claude Code config surface each run — it shifts under the skill (this run: doc host moved, tool search, skill-listing caps), which is why the skill resolves it at runtime rather than hard-coding it.
+  - **Pin Headroom's exact config surface.** The `mcpServers` JSON entry shape, the CCR store path + TTL key (`claude_analysis_ttl.py` present but unexplained), and the cache-aligner toggle are still **not documented** upstream (CLI/env-driven). TOOL-3 (optimal-setup) stays judgment; promote to a mechanical check the moment those keys are published. Re-fetch the repo next run.
+  - **Promote `ENABLE_TOOL_SEARCH` to a mechanical check?** Still a concrete env signal bearing on the MCP-schema standing cost — consider teaching the checker to read it so MCP-3's tool-search clause becomes [M]. Re-confirm the key still exists (this run's settings fetch truncated before it).
+  - **Re-confirm the Claude Code config surface each run** — it shifts under the skill, which is why the skill resolves it at runtime. This run added new model-restriction keys (immaterial to tokenomics) and could not re-verify the skill-listing/tool-search rows.
+  - The **"Netflix Headroom" attribution** remains uncorroborated by the repo — do not assert a Netflix origin.
+  - Watch for a **second registry entry** worth seeding so the compression-tooling registry is plural in fact.
 
 [ctx-eng]: https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents
 [ctx-win]: https://platform.claude.com/docs/en/build-with-claude/context-windows
