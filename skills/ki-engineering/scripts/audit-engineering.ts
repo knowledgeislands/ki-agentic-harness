@@ -222,7 +222,7 @@ const CANON: Record<string, string> = {
   'ki:lint:types': 'tsc --noEmit',
   'ki:deps:check': 'bunx knip --dependencies --no-config-hints',
   'ki:deps:fix': 'bunx knip --dependencies --fix --no-config-hints',
-  'ki:deps:update': 'bun update --latest',
+  'ki:deps:update': 'bun update --force',
   'ki:knip': 'bunx knip --no-config-hints'
 }
 for (const [k, v] of Object.entries(CANON)) {

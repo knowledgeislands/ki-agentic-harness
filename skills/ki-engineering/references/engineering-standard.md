@@ -105,14 +105,14 @@ Two prefixed families are **required, verbatim, in every repo** — they are byt
 "ki:lint:types":   "tsc --noEmit",
 "ki:deps:check":   "bunx knip --dependencies --no-config-hints",
 "ki:deps:fix":     "bunx knip --dependencies --fix --no-config-hints",
-"ki:deps:update":  "bun update --latest",
+"ki:deps:update":  "bun update --force",
 "ki:knip":         "bunx knip --no-config-hints",
 "clean":           "rm -rf {dist,node_modules}",   // a repo with no dist may use "rm -rf node_modules"
 "prepare":         "husky"
 ```
 
 - `ki:lint:*` — the full family. `ki:lint:check`/`ki:lint:fix`/`ki:lint:format` are Biome; `ki:lint:md` (Prettier `--write` + markdownlint-cli2) reflows locally, while its check-mode twin `ki:lint:md:check` (`--check`) is what CI runs so committed Markdown can't drift from `proseWrap`/`printWidth` (see _CI workflow_ in §1); `ki:lint:package` is syncpack; `ki:lint:types` is `tsc --noEmit`.
-- `ki:deps:*` + `ki:knip` — **dependency and dead-code hygiene, on [knip](https://knip.dev)** (one tool replacing depcheck + ts-prune). `ki:deps:check` reports unused **and** unlisted dependencies (`--dependencies`-scoped); `ki:deps:fix` auto-removes the unused; `ki:deps:update` is freshness (`bun update --latest`). `ki:knip` is the **full** run — dependencies _plus_ dead code (unused files, exports, types, enum/class members) — and it **gates `ki:verify`** (below), so an unused export or phantom dependency fails CI. Every repo carries a `knip.json` (§5) declaring its entry points (so the public surface isn't misread as dead code) and any intentional ignores; `knip` is a required devDependency.
+- `ki:deps:*` + `ki:knip` — **dependency and dead-code hygiene, on [knip](https://knip.dev)** (one tool replacing depcheck + ts-prune). `ki:deps:check` reports unused **and** unlisted dependencies (`--dependencies`-scoped); `ki:deps:fix` auto-removes the unused; `ki:deps:update` is freshness within the declared ranges (`bun update --force` — refreshes to the newest versions allowed by `package.json` and forces a fresh registry resolve; unlike `--latest` it does **not** cross a semver range or write `latest` into `bun.lock`). `ki:knip` is the **full** run — dependencies _plus_ dead code (unused files, exports, types, enum/class members) — and it **gates `ki:verify`** (below), so an unused export or phantom dependency fails CI. Every repo carries a `knip.json` (§5) declaring its entry points (so the public surface isn't misread as dead code) and any intentional ignores; `knip` is a required devDependency.
 - `clean` and `prepare` are idioms (left bare); the unified `ki:conform` / `ki:verify` entrypoints (below) compose the families above.
 - A repo MAY add any number of **repo-specific scripts** (`ki:eval`, `ki:skills:*`, `ki:repo:audit`, `ki:server:auth:*`, `ki:site:dev:css`, …) — all `ki:`-prefixed per the naming law. Extra `ki:*` scripts are never drift; the checker is strict about the required families and the naming law, and permissive about additive `ki:*` scripts.
 

@@ -27,7 +27,7 @@ All 10 KI TS/Bun repos carry this config verbatim. The `$schema` pins the Biome 
 
 ```json
 {
-  "$schema": "https://biomejs.dev/schemas/2.5.1/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.2/schema.json",
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "files": { "includes": ["src/**", "*.ts", "*.json"], "ignoreUnknown": true },
   "formatter": { "enabled": true, "indentStyle": "space", "indentWidth": 2, "lineWidth": 140 },
@@ -93,7 +93,7 @@ The two families (`ki:lint:*` and `ki:deps:*`) are byte-identical across all 10 
     "ki:lint:types": "tsc --noEmit",
     "ki:deps:missing": "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.missing | keys | .[]' | xargs bun add -D",
     "ki:deps:unused": "bunx depcheck --json | bunx node-jq --sort-keys '.' | bunx node-jq '.devDependencies[]' | xargs bun remove",
-    "ki:deps:update": "bun update --latest",
+    "ki:deps:update": "bun update --force",
     "clean": "rm -rf {dist,node_modules}",
     "prepare": "husky",
     "test": "vitest run",
