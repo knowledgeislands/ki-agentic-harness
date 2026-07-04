@@ -31,7 +31,7 @@ As a session grows and the MCP surface expands, token cost per turn rises and th
 - **superpowers** — a structured SDLC methodology shipped as auto-triggering skills under a monolithic `~/.claude/skills` install; conflicts with the validate-down `.ki-config.toml` contract and the standalone-valid skill requirement ([ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004.md)). How a methodology is applied is the KI harness's own domain.
 - **gstack** — a competing monolithic slash-command skill collection outside the KI governance layer; adopting it would create two parallel skill systems with no shared standard. Individual ideas (e.g. OWASP/STRIDE threat modelling) are candidates for KI skills in their own right.
 - **Engram** — a cross-session persistent-memory MCP over SQLite/vector stores. It targets the slot the harness fills with its file-based `memory/` + `MEMORY.md` convention, which is deliberately plain-file, git-trackable, and reconciled into `CLAUDE.md` where it is visible in review; an opaque store would be a second, invisible memory system. The file-based convention is the single persistent-memory mechanism.
-- **Caveman** — a skill that forces telegraphic output to cut tokens. It compresses only generated output (a small fraction of session tokens), installs as a monolithic skill outside the governance layer, and conflicts with the house authoring standards. Output-side compression is already owned by headroom-ai at the proxy layer.
+- **[Caveman](https://caveman.so/)** — a token-efficiency toolkit spanning a proxy/gateway (input/prompt compression, not just output), a persistent memory layer ("Cavemem"), a terminal coding agent ("Caveman Code"), and a chat-interface browser extension. It duplicates ground the harness already owns through separate, deliberate mechanisms — headroom-ai at the proxy layer, the file-based `memory/` convention in place of Cavemem — as one monolithic third-party stack outside the KI governance layer.
 
 ### Scale-gated
 
@@ -66,7 +66,7 @@ house-mcp-manager is a CLI that toggles MCP servers and saves named profiles by 
 - [superpowers](https://github.com/obra/superpowers) — agentic SDLC methodology skill collection (declined).
 - [gstack](https://github.com/garrytan/gstack) — structured virtual-team skill collection (declined).
 - [Engram](https://www.engram.fyi/) — cross-session persistent-memory server (declined).
-- [Caveman](https://github.com/JuliusBrussee/caveman) — telegraphic output-compression skill (declined).
+- [Caveman](https://caveman.so/) — token-efficiency toolkit for AI coding agents (declined).
 - [Graphify](https://github.com/safishamsi/graphify) — codebase knowledge-graph skill (scale-gated).
 
 ## Changelog

@@ -69,6 +69,8 @@ IMPROVE (notice) ─routes─→ ├─ changes a canonical zone ─→ ENACTMEN
 
 **IMPROVE and REFRESH are mirror images** across the skill/base line: IMPROVE looks _down_ (this base's practice → formalise), REFRESH looks _across_ (many bases → one skill); a cross-base candidate is the handoff between them. **Enactment** is orthogonal — the gate any canonical change passes through, whoever raised it. The discipline that keeps the three distinct: _IMPROVE discovers and routes, Enactment governs, REFRESH promotes_ — none restates another.
 
+REFRESH runs one way: the most mature real-world bases (`kit-legal`, `kit-pkb`, `arcadia-principal`) are where a pattern is battle-tested first (e.g. the Calendar/Resources/Streams zone taxonomy), but promotion moves **from** a base **into** the canonical skill, never the reverse — a skill is never aligned to match a base's convention, and a base's docs are never copied in as the standard. When bases disagree, the harness reconciles rather than picking one to copy verbatim.
+
 ## Principles across the set
 
 Eight invariants hold for every skill here, current and future — each tied to a named rubric criterion rather than just asserted, so a new skill inherits them by being audited:

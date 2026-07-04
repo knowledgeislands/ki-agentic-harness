@@ -25,6 +25,7 @@ Skills relate to one another by **composition**, never a base-coupled extension:
 - **Markdown / TOML style** → the `ki-authoring` conventions; `bun run ki:lint:md` is the mechanical gate. Wide tables → footnotes; relative markdown links, never wikilinks; refer to another skill by its `name`, never a file path.
 - **The toolchain** (package.json scripts, `tsconfig`, `biome`) → the `ki-engineering` standard, which this repo itself conforms to (`bun run ki:engineering:audit .`).
 - A change touching a standard another skill cites is **cross-skill** — keep the set internally consistent (the skills linter's cross-skill pass flags collisions).
+- **Committing** — this is a solo repo pushed straight to `main` with no PR/review gate. For small or trivial changes (docs, polish, single-file fixes), commit directly on `main`; don't create a branch just to fast-forward-merge and delete it. Reserve branches for work that genuinely needs an isolated review boundary.
 
 ## Toolchain
 
