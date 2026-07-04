@@ -17,7 +17,7 @@ The reasoning-layer split — plan work once at the top tier, then bank it as an
 
 - `ki-plans`, `ki-kb-streams`, `ki-tokenomics`, `ki-agents` exist and are the composition/off-ramp neighbours.
 - No skill owns the delegation-readiness delta (decisions-locked-vs-escalate, per-unit recommended tier, cold-model readiness test).
-- `docs/skills.md` is drifted: it says "sixteen" and omits `ki-plans` though 17 skills are on disk. This plan corrects the count and the omission while adding `ki-handoffs` (→ 18).
+- Updated 2026-07-04: the skill, references, and checker are on disk; registrations verified (`package.json` `ki:handoffs:audit`, `docs/skills.md` entry with `ki-plans` present and count nineteen — `ki-memory` landed meanwhile, so the count passed eighteen — and the `.ki-config.toml` `[ki-handoffs]` table). `bun run ki:handoffs:audit .` exits green. Not yet done: `ki-tokenomics` carries no reciprocal off-ramp to `ki-handoffs` (`grep -rn 'handoff' skills/ki-tokenomics/` → 0 hits, a COLL-2 reciprocity gap), and the judgment self-audit and close-out have not run. The `README.md` skill-map entry is handled by plan 004, not here.
 
 ## Steps
 
@@ -26,9 +26,10 @@ The reasoning-layer split — plan work once at the top tier, then bank it as an
 3. ✓ Author `scripts/audit-handoffs.ts` — the light opt-in checker (scans `handoff: true` artifacts; wired to the checker-contract).
 4. ✓ ROADMAP "Next" line + this plan + its `docs/plans/README.md` row.
 5. ✓ `docs/decisions/ADR-KI-HARNESS-SKILLS-005.md` recording the doctrine and composition boundary.
-6. Register: `package.json` `ki:handoffs:audit`; `docs/skills.md` entry + restore `ki-plans` + bump count to eighteen; `README.md` count; `.ki-config.toml` `[ki-handoffs]` table.
-7. Verify (below); self-audit via `ki-skills` AUDIT; fix to clean.
-8. Close: set this plan `done`, remove the ROADMAP line; register in the host scheduled-refresh routine (manual, non-repo).
+6. ✓ Register: `package.json` `ki:handoffs:audit`; `docs/skills.md` entry + restore `ki-plans`; `.ki-config.toml` `[ki-handoffs]` table. (README skill-map entry → plan 004.)
+7. Add the reciprocal off-ramp: name `ki-handoffs` in `skills/ki-tokenomics/SKILL.md`'s description/off-ramps (tier cost/selection stays with tokenomics; delegation-readiness points here) — sonnet, one-sentence edit plus `ki:skills:lint` re-run for COLL-2.
+8. Verify (below); judgment self-audit via `ki-skills` AUDIT (opus — description quality and boundary calls); fix to clean.
+9. Close: set this plan `done`, remove the ROADMAP line; register in the host scheduled-refresh routine (manual, non-repo — escalate to Kris).
 
 ## Files touched
 

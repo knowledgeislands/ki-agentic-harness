@@ -14,13 +14,31 @@ The workspace controls MCP servers and skills for Claude Code only: mcporter pro
 
 ### Add the `ki-handoffs` governance skill
 
-A doctrine skill owning the reasoning-layer split: plan work once at the top tier, then write it as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning. It composes on `ki-plans` (the plan is the host artifact in a code repo) and `ki-kb-streams` (the proposal Checklist in a KB), and off-ramps tier cost/selection to `ki-tokenomics` — owning only the delegation-readiness delta (decisions-locked-vs-escalate, a per-unit recommended tier, the cold-model readiness test). Tracked as plan [003](docs/plans/skills/003-ki-handoffs.md).
+A doctrine skill owning the reasoning-layer split: plan work once at the top tier, then write it as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning. It composes on `ki-plans` (the plan is the host artifact in a code repo) and `ki-kb-streams` (the proposal Checklist in a KB), and off-ramps tier cost/selection to `ki-tokenomics` — owning only the delegation-readiness delta (decisions-locked-vs-escalate, a per-unit recommended tier, the cold-model readiness test). The skill, references, checker, and registrations are on disk and green; what remains is the reciprocal off-ramp in `ki-tokenomics`, the judgment self-audit, and close-out. Tracked as plan [003](docs/plans/skills/003-ki-handoffs.md).
+
+### Concern-first skill renames
+
+The naming-grammar amendment to [ADR-KI-HARNESS-SKILLS-003](docs/decisions/ADR-KI-HARNESS-SKILLS-003.md) fixes skill names as `ki-<concern>[-<technology>]` and ratifies the two renames it implies: `ki-11ty-websites` → `ki-websites-11ty` and `ki-cloudflare-hosting` → `ki-hosting-cloudflare`. The renames run **before** the registration reconciliation below so its surfaces are written once, to the final names. Tracked as plan [006](docs/plans/skills/006-concern-first-renames.md).
+
+### Reconcile the registration surfaces with the `ki-` rename and skill-set growth
+
+The `knowledgeislands-*` → `ki-*` rename and the arrival of `ki-plans`, `ki-decision-records`, `ki-handoffs`, and `ki-memory` outran the surfaces that register the set: the README skill map omits `ki-memory` and `ki-handoffs`, `CLAUDE.md`'s bundle table understates the eval suite, the canonical dependency order (`ki-skills` `SKILL.md` and [ADR-KI-HARNESS-SKILLS-003](docs/decisions/ADR-KI-HARNESS-SKILLS-003.md)) still lists twelve pre-rename names, the harness's own `.ki-config.toml` declares no `[ki-agents]` table despite carrying `agents/`, `ki-bootstrap`'s prune leaves dangling legacy `knowledgeislands-*` symlinks in consumers (arcadia-website currently loads no project-local skills at all), and `lint-agents.ts --json` emits an empty summary. One reconciliation pass closes them together. Tracked as plan [004](docs/plans/harness/004-registration-reconciliation.md).
+
+### A clear, human-first account of what the harness is and does
+
+The existing documentation is written for agents and contributors — the README is a ~30 KB working reference, and [docs/](docs/) carries design rationale and per-skill detail. What is missing is a short, plain-language overview a human reader can take in at one sitting: what the harness is, what the skills do for its owner, and how the pieces (skills, agents, MCP shelf, evals, bootstrap) fit. It lives **here**, in the harness, so the account and the thing it describes stay in one place; arcadia-principal references it rather than duplicating it. This also settles the direction of the docs-mirror question — the harness is canonical for its own story. Tracked as plan [005](docs/plans/docs/005-human-overview.md).
+
+## Soon
+
+### Complete behavioural-eval coverage of the skill set
+
+Twelve of the nineteen skills have an eval scenario; seven do not: `ki-decision-records`, `ki-handoffs`, `ki-harness`, `ki-kb-activities`, `ki-kb-live-artifacts`, `ki-memory`, `ki-plans`. Author scenarios for the uncovered skills to the pattern in [evals/README.md](evals/README.md) (assertions + judge rubric, mindful of the "no honest gap" caveat there), then refresh the result matrices — the current `evals/results/matrix-*.log` set predates the rename and no longer matches the scenario set. Re-running matrices thereafter is continuous practice; this item is only reaching full authorship.
+
+### KI plugin marketplace as the cross-surface enablement artifact _(candidate)_
+
+Plan [002](docs/plans/mcp/002-cross-surface-enablement.md)'s spike found that Cowork's `enabledPlugins` uses the same Claude plugin-marketplace mechanism Claude Code supports, and a plugin can bundle MCP servers, skills, and agents — making a KI plugin marketplace the natural single-source artifact for per-project/per-workspace enablement on the locally-controllable surfaces. Candidate until plan 002's home decision ratifies the shape; the build enters Next only then.
 
 ## Future
-
-### Populate the `agents/` shelf with KI-authored agents _(candidate)_
-
-The harness `agents/` shelf has a validated reference pattern (house-agents, [ADR-KI-HARNESS-TOOLCHAIN-002](docs/decisions/ADR-KI-HARNESS-TOOLCHAIN-002.md)) but no KI-authored contents. When a governance concern warrants a dedicated subagent, author it here modelled on that pattern.
 
 ### Graphify codebase knowledge-graph _(candidate)_
 
@@ -28,6 +46,6 @@ Graphify ([ADR-KI-HARNESS-TOOLCHAIN-002](docs/decisions/ADR-KI-HARNESS-TOOLCHAIN
 
 ### Retire the harness `docs/` mirror once the website is KB-first
 
-arcadia-website currently sources its pages from the harness `docs/` tree — the harness maintains the documentation and the site copies it in. Once arcadia-website sources its content from arcadia-principal instead (the KB-first pipeline, now tracked on arcadia-website's roadmap), the harness no longer needs to be that source, and the duplicated documentation can be retired so it lives in one place.
+arcadia-website currently sources its pages from the harness `docs/` tree — the harness maintains the documentation and the site copies it in. Once arcadia-website sources its content from arcadia-principal instead (the KB-first pipeline, now tracked on arcadia-website's roadmap), the harness no longer needs to be that source, and duplicated content can be retired. Scope narrowed 2026-07-04: the harness stays **canonical for its own story** — the human-first overview and the skill/design documentation live here and arcadia-principal references them (see the Next item above) — so what retires is only content the harness holds purely for the website's benefit, not the harness's self-documentation.
 
 **Gate:** the arcadia-website build sources content from arcadia-principal rather than the harness `docs/`; then retire the mirror. The pipeline work itself lives on arcadia-website's roadmap, and the content it first publishes is the `Agentic Tool Documentation` stream in arcadia-principal — this item is only the harness's own cleanup.
