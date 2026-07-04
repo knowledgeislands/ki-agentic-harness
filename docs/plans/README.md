@@ -6,14 +6,12 @@ Phasing (Next / Soon / Future) lives in [ROADMAP.md](../../ROADMAP.md), not here
 
 | Plan                                       | Theme  | Title                                | Status      | Blocks |
 | ------------------------------------------ | ------ | ------------------------------------ | ----------- | ------ |
-| [001](skills/001-ki-kb-family-rename.md)   | skills | Rename the ki-kb-\* family           | open        | —      |
 | [002](mcp/002-cross-surface-enablement.md) | mcp    | Cross-surface MCP/skill enablement   | open        | —      |
 | [003](skills/003-ki-handoffs.md)           | skills | Add the ki-handoffs governance skill | in-progress | —      |
 
 ## Dependency graph
 
 ```text
-001 (independent)
 002 (independent)
 003 (independent)
 ```
