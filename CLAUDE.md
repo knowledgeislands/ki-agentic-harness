@@ -10,7 +10,7 @@ The canonical home for the Knowledge Islands **Agent Skills** (per the [Agent Sk
 
 | Part        | Directory | Status                                                              |
 | ----------- | --------- | ------------------------------------------------------------------- |
-| Skills      | `skills/` | **Populated** — 16 `ki-*` skills                                    |
+| Skills      | `skills/` | **Populated** — 18 `ki-*` skills                                    |
 | Agents      | `agents/` | **Populated** — 5 governance agents in `agents/governance/`         |
 | MCP servers | `mcp/`    | **Shelf** — scaffolded, no servers yet                              |
 | Evals       | `evals/`  | **Populated (partial)** — 3 scenarios + result matrices in `evals/` |
