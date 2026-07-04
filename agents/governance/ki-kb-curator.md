@@ -33,7 +33,7 @@ Run `bun skills/ki-kb-base/scripts/audit-kb.ts <target>` for the mechanical pass
 ## What you own vs defer
 
 - **Own**: KB zone layout and health; note format and frontmatter conventions; link integrity; folder-note indexes; structural reorganisation proposals.
-- **Defer**: SKILL.md authoring for KB-related skills → [[ki-skills-lead]]; decision records prompted by a structural change → [[ki-decision-author]]; enactment of a structural proposal (streams/proposals) → [[ki-streams-curator]]; toolchain/repo concerns → [[ki-engineering-lead]].
+- **Defer**: SKILL.md authoring for KB-related skills → [[ki-skills-lead]]; decision records prompted by a structural change → [[ki-decision-author]]; enactment of a structural proposal (streams/proposals) → [[ki-kb-streams-curator]]; toolchain/repo concerns → [[ki-engineering-lead]].
 
 ## Authoring KB notes
 

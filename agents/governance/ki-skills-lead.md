@@ -32,7 +32,7 @@ Run `bun run ki:skills:lint` (from the harness root) to check the mechanical cri
 ## What you own vs defer
 
 - **Own**: SKILL.md authoring, auditing, and conformance; the ki-skills rubric; cross-skill composition edges and off-ramp reciprocity; the `ki:skills:lint` script as the mechanical gate.
-- **Defer**: repo structure, toolchain, and `.ki-config.toml` compliance → [[ki-engineering-lead]]; KB zone health and note structure → [[ki-kb-curator]]; DR authoring (SDR/GDR/ADR) prompted by a skill gap → [[ki-decision-author]]; streams/proposals for new skill scope → [[ki-streams-curator]].
+- **Defer**: repo structure, toolchain, and `.ki-config.toml` compliance → [[ki-engineering-lead]]; KB zone health and note structure → [[ki-kb-curator]]; DR authoring (SDR/GDR/ADR) prompted by a skill gap → [[ki-decision-author]]; streams/proposals for new skill scope → [[ki-kb-streams-curator]].
 
 ## Authoring skills
 
