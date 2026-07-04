@@ -8,15 +8,14 @@ Phasing (Next / Soon / Future) lives in [ROADMAP.md](../../ROADMAP.md), not here
 | --- | --- | --- | --- | --- |
 | [002](mcp/002-cross-surface-enablement.md) | mcp | Cross-surface MCP/skill enablement | in-progress | — |
 | [003](skills/003-ki-handoffs.md) | skills | Add the ki-handoffs governance skill | in-progress | — |
-| [004](harness/004-registration-reconciliation.md) | harness | Reconcile registration surfaces with the ki- rename and skill-set growth | open (needs 006) | — |
+| [004](harness/004-registration-reconciliation.md) | harness | Reconcile registration surfaces with the ki- rename and skill-set growth | open | — |
 | [005](docs/005-human-overview.md) | docs | A clear, human-first account of what the harness is and does | open | — |
-| [006](skills/006-concern-first-renames.md) | skills | Concern-first skill renames (websites-11ty, hosting-cloudflare) | open | 004 |
 
 ## Dependency graph
 
 ```text
 002 (independent)
 003 (independent)
-006 ──► 004
+004 (independent)
 005 (independent)
 ```
