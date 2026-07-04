@@ -79,6 +79,7 @@ Only `ki-bootstrap` is installed globally; every other skill is project-local, w
 
 | Doc | What's in it |
 | --- | --- |
+| [docs/overview.md](docs/overview.md) | A short, human-first account: what the harness is, what it does for its owner, how the parts fit. |
 | [docs/skills.md](docs/skills.md) | The nineteen skills one by one, and the shared governance-skill shape. |
 | [docs/design.md](docs/design.md) | How they fit: where they don't overlap, the three knowledge loops, the principles across the set. |
 | [docs/knowledge-islands.md][ki-doc] | The Knowledge Islands zone model the KI skills assume, and standard skills & per-base config. |

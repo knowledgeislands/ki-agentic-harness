@@ -1,6 +1,6 @@
 # CLAUDE.md — arcadia-agentic-harness
 
-Always-loaded orientation for an agent working in this repo. The README is the entry point; the full picture is in the [docs/](docs/) it indexes — what each skill is, the map, the boundaries. The forward view is in [ROADMAP.md](ROADMAP.md). This file is the short anchor.
+Always-loaded orientation for an agent working in this repo. The README is the entry point; for a short, human-first summary of what the harness is and does, [docs/overview.md](docs/overview.md) is the plainest starting point. The full picture is in the [docs/](docs/) the README indexes — what each skill is, the map, the boundaries. The forward view is in [ROADMAP.md](ROADMAP.md). This file is the short anchor.
 
 ## What this repo is
 

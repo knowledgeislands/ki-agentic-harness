@@ -1,7 +1,7 @@
 ---
 id: '005'
 title: A clear, human-first account of what the harness is and does
-status: open
+status: done
 roadmap: A clear, human-first account of what the harness is and does
 blocks: —
 blocked-by: —
@@ -23,11 +23,11 @@ Every existing description of the harness serves an agent or a contributor: `CLA
 
 ## Steps
 
-1. Survey what exists so the overview compresses rather than invents: read `README.md`'s opening sections, `docs/skills.md`'s layer map, `docs/design.md`'s principles, and note the one-line purpose of each bundle part (`skills/`, `agents/`, `mcp/`, `evals/`, `ki-bootstrap`).
-2. Write `docs/overview.md` — the human-first account, ≤ 2 pages: what the harness is (one paragraph), what it does for its owner (the governance loop in plain words: standards live as skills, checkers keep repos honest, AUDIT/CONFORM/REFRESH), how the four bundle parts and the bootstrap fit together, and where to go deeper (README, `docs/skills.md`, `docs/design.md`). Plain language: no house jargon unexplained, no acronym before its expansion, every skill mention earning its place. British English, hyphens only.
-3. Link it: add `docs/overview.md` as the first row of the table under `## Documentation` in `README.md` (line ~77, currently opening with `docs/skills.md`), and extend `CLAUDE.md`'s orientation paragraph (line 3, "The README is the entry point; …") to name `docs/overview.md` as the human-first summary — so both humans and agents find it first.
-4. Run `bun run ki:lint:md` then `bun run ki:lint:md:check` over the new/changed files.
-5. Consumer-side reference (arcadia-principal, via its own governance): a short stream proposal per the Enactment Process adding a pointer from the relevant `Pillars/Knowledge Islands/` note to the harness `docs/overview.md` (and pruning any duplicated description found there). Do not edit the KB canon directly.
+1. ✓ Survey what exists so the overview compresses rather than invents: read `README.md`'s opening sections, `docs/skills.md`'s layer map, `docs/design.md`'s principles, and note the one-line purpose of each bundle part (`skills/`, `agents/`, `mcp/`, `evals/`, `ki-bootstrap`).
+2. ✓ Write `docs/overview.md` — the human-first account, ≤ 2 pages: what the harness is (one paragraph), what it does for its owner (the governance loop in plain words: standards live as skills, checkers keep repos honest, AUDIT/CONFORM/REFRESH), how the four bundle parts and the bootstrap fit together, and where to go deeper (README, `docs/skills.md`, `docs/design.md`). Plain language: no house jargon unexplained, no acronym before its expansion, every skill mention earning its place. British English, hyphens only.
+3. ✓ Link it: add `docs/overview.md` as the first row of the table under `## Documentation` in `README.md` (line ~77, currently opening with `docs/skills.md`), and extend `CLAUDE.md`'s orientation paragraph (line 3, "The README is the entry point; …") to name `docs/overview.md` as the human-first summary — so both humans and agents find it first.
+4. ✓ Run `bun run ki:lint:md` then `bun run ki:lint:md:check` over the new/changed files.
+5. ✓ Consumer-side reference (arcadia-principal, via its own governance): a short stream proposal per the Enactment Process adding a pointer from the relevant `Pillars/Knowledge Islands/` note to the harness `docs/overview.md` (and pruning any duplicated description found there). Do not edit the KB canon directly. — Satisfied by the existing open Active stream **Agentic Tool Documentation Proposal**, which documents the harness and builds the system map in `Pillars/Technē/`; the pointer to `docs/overview.md` lands through that stream's own Enactment on arcadia-principal's schedule, not a direct canon edit from here.
 
 ## Files touched
 
