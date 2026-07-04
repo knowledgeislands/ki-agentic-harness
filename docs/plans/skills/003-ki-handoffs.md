@@ -11,11 +11,11 @@ blocked-by: —
 
 ## Context
 
-The reasoning-layer split — plan work once at the top tier, then bank it as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning — is a reusable methodology that first surfaced authoring a Fable planning prompt for a downstream base. The harness already owns two neighbouring concerns: `ki-plans` owns plan-before-execute and the plan quality bar (a KB's equivalent is a `ki-streams` proposal Checklist), and `ki-tokenomics` owns model-tier cost and selection. The unowned concern is the connective doctrine — how to decompose and write work so a cheaper tier can run it. `ki-handoffs` fills it as a composition-shaped governance skill.
+The reasoning-layer split — plan work once at the top tier, then bank it as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning — is a reusable methodology that first surfaced authoring a Fable planning prompt for a downstream base. The harness already owns two neighbouring concerns: `ki-plans` owns plan-before-execute and the plan quality bar (a KB's equivalent is a `ki-kb-streams` proposal Checklist), and `ki-tokenomics` owns model-tier cost and selection. The unowned concern is the connective doctrine — how to decompose and write work so a cheaper tier can run it. `ki-handoffs` fills it as a composition-shaped governance skill.
 
 ## Current state
 
-- `ki-plans`, `ki-streams`, `ki-tokenomics`, `ki-agents` exist and are the composition/off-ramp neighbours.
+- `ki-plans`, `ki-kb-streams`, `ki-tokenomics`, `ki-agents` exist and are the composition/off-ramp neighbours.
 - No skill owns the delegation-readiness delta (decisions-locked-vs-escalate, per-unit recommended tier, cold-model readiness test).
 - `docs/skills.md` is drifted: it says "sixteen" and omits `ki-plans` though 17 skills are on disk. This plan corrects the count and the omission while adding `ki-handoffs` (→ 18).
 

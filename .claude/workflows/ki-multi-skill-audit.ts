@@ -57,8 +57,8 @@ const CONCERNS = [
   { name: "authoring", checker: "bun skills/ki-authoring/scripts/audit-authoring.ts", scopeGated: false },
   { name: "engineering", checker: "bun skills/ki-engineering/scripts/audit-engineering.ts", scopeGated: false },
   { name: "repo", checker: "bun skills/ki-repo/scripts/audit-repo.ts", scopeGated: false },
-  { name: "kb", checker: "bun skills/ki-kb/scripts/audit-kb.ts", scopeGated: true },
-  { name: "streams", checker: "bun skills/ki-streams/scripts/audit-streams.ts", scopeGated: true },
+  { name: "kb", checker: "bun skills/ki-kb-base/scripts/audit-kb.ts", scopeGated: true },
+  { name: "streams", checker: "bun skills/ki-kb-streams/scripts/audit-streams.ts", scopeGated: true },
   { name: "mcp", checker: "bun skills/ki-mcp/scripts/audit-mcp.ts", scopeGated: true },
   { name: "11ty-websites", checker: "bun skills/ki-11ty-websites/scripts/audit-websites.ts", scopeGated: true },
   { name: "cloudflare-hosting", checker: "bun skills/ki-cloudflare-hosting/scripts/audit-cloudflare-hosting.ts", scopeGated: true },
@@ -73,7 +73,7 @@ const CONCERNS = [
 const scopeActive = await agent(
   `Read the file \`${target}/.ki-config.toml\` and return a JSON array of concern names
 that appear as top-level TOML table headers matching the pattern [ki-<name>].
-For example if the file contains [ki-kb] return ["kb"].
+For example if the file contains [ki-kb-base] return ["kb"].
 If the file does not exist or is empty return [].
 Return ONLY the JSON array, nothing else.`,
   { label: "scope-guard:read-config", phase: "Per-concern audit" }

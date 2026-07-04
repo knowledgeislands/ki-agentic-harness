@@ -2,7 +2,7 @@
 
 Line-by-line pass/fail criteria for auditing a Knowledge Islands base's **`Streams` zone** against the model carried in [the SKILL body](../SKILL.md), [the structure reference](<Streams Structure Reference.md>), and [the Enactment Process reference](<Enactment Process Reference.md>). Each is tagged **[M] mechanical** (the bundled [checker](../scripts/audit-streams.ts) enforces it) or **[J] judgment** (you assess it by reading). The **code** in bold (`STREAM-1`, `ENACT-2`, …) is the area's short code plus its number — it is what an audit should cite.
 
-A criterion's tag is a contract with the checker: an **[M]** check is run by `audit-streams.ts` (do not eyeball it); a **[J]** check needs a model and is applied by reading in Mode AUDIT step 2. This skill governs the inside of the `Streams/` zone; the five-zone layout itself (that `Streams/` exists and carries a same-name index) is the `ki-kb` rubric's `ZONE-*`, not repeated here. The `Streams` zone is resolved through any `ki-kb` zone alias.
+A criterion's tag is a contract with the checker: an **[M]** check is run by `audit-streams.ts` (do not eyeball it); a **[J]** check needs a model and is applied by reading in Mode AUDIT step 2. This skill governs the inside of the `Streams/` zone; the five-zone layout itself (that `Streams/` exists and carries a same-name index) is the `ki-kb-base` rubric's `ZONE-*`, not repeated here. The `Streams` zone is resolved through any `ki-kb-base` zone alias.
 
 ## STREAM — Streams structure
 
@@ -28,10 +28,10 @@ A criterion's tag is a contract with the checker: an **[M]** check is run by `au
 
 → [SKILL: Installing the gate](../SKILL.md)
 
-- **GATE-1 [M]** **Once the base runs proposals** (≥ 1 `* Proposal.md` exists), it anchors the Enactment gate in always-loaded context: its root **`CLAUDE.md`** (or `AGENTS.md`) names the Enactment Process / `ki-streams` **and** the gate (route canonical changes through a proposal). Because skills load on demand, without this anchor the skill never fires on a plain "edit the X note" request and the gate is silently bypassed. A missing anchor, or one that names neither, warns. A base with only lightweight streams (no proposals) hasn't opted into the gated model, so the anchor isn't demanded.
+- **GATE-1 [M]** **Once the base runs proposals** (≥ 1 `* Proposal.md` exists), it anchors the Enactment gate in always-loaded context: its root **`CLAUDE.md`** (or `AGENTS.md`) names the Enactment Process / `ki-kb-streams` **and** the gate (route canonical changes through a proposal). Because skills load on demand, without this anchor the skill never fires on a plain "edit the X note" request and the gate is silently bypassed. A missing anchor, or one that names neither, warns. A base with only lightweight streams (no proposals) hasn't opted into the gated model, so the anchor isn't demanded.
 - **GATE-2 [J]** The directive is genuinely _imperative_ — an instruction to route canonical changes through a proposal and load the skill, not a passing mention — and it states the exemptions (trivial fixes, `Calendar/`, `+/` triage).
 
-## CONFIG — the `[ki-streams]` config table
+## CONFIG — the `[ki-kb-streams]` config table
 
 → [SKILL: Project bindings](../SKILL.md) · contract owned by `ki-repo` (validate down, ignore across)
 

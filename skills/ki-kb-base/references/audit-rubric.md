@@ -8,19 +8,19 @@ A criterion's tag is a contract with the checker: an **[M]** check is run by `au
 
 → [SKILL: The Knowledge Islands structure](../SKILL.md)
 
-- **ZONE-1 [M]** The five zones — `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, `Admin/` — are present, each **resolved through any `[ki-kb.zones]` alias** (a base mid-rename is audited at its real folder). A missing zone is a FAIL.
+- **ZONE-1 [M]** The five zones — `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, `Admin/` — are present, each **resolved through any `[ki-kb-base.zones]` alias** (a base mid-rename is audited at its real folder). A missing zone is a FAIL.
 - **ZONE-2 [M]** Each zone carries a **same-name index note** (`Calendar/Calendar.md`, …). A missing one is a WARN.
 - **ZONE-3 [M]** The root memory index `Admin/MEMORY.md` exists (the memory cascade reads it for the active Pillars). Missing is a FAIL.
 - **ZONE-4 [J]** `+/` (inbound) and `-/` (outbound) are **staging, not zones** — exempt from the same-name index rule; the checker reports their presence informationally only.
 - **ZONE-5 [M]** Any note carrying `type: session-digest` or `type: handoff` in frontmatter must reside under `-/`. A file with either type found under `Calendar/`, `Streams/`, `Pillars/`, or `Resources/` is a FAIL (misrouted produced artefact).
 
-## CONFIG — the `[ki-kb]` config table
+## CONFIG — the `[ki-kb-base]` config table
 
 → [SKILL: Project bindings](../SKILL.md) · contract owned by `ki-repo` (validate down, ignore across)
 
-- **CONFIG-1 [M]** A key the table does not recognise warns. The only recognised keys are `required_frontmatter` (an array, see **NOTE-1**) directly under `[ki-kb]` and the zone aliases under `[ki-kb.zones]`; any other scalar key warns.
+- **CONFIG-1 [M]** A key the table does not recognise warns. The only recognised keys are `required_frontmatter` (an array, see **NOTE-1**) directly under `[ki-kb-base]` and the zone aliases under `[ki-kb-base.zones]`; any other scalar key warns.
 - **CONFIG-2 [M]** A zone alias mapping a zone to its **own canonical name** (`Pillars = "Pillars"`) is redundant — advise dropping it.
-- **CONFIG-3 [M]** A key under `[ki-kb.zones]` that is **not a canonical zone name** (a typo, a stale entry) warns.
+- **CONFIG-3 [M]** A key under `[ki-kb-base.zones]` that is **not a canonical zone name** (a typo, a stale entry) warns.
 - **CONFIG-4 [M]** Only this skill's own table is read; another skill's `[table]` is never inspected. (A declared alias whose folder is absent surfaces via **ZONE-1**, since zones resolve through the alias.)
 
 ## ROUTE — routing & placement
@@ -33,7 +33,7 @@ A criterion's tag is a contract with the checker: an **[M]** check is run by `au
 
 → [SKILL: Mode SAVE / UPDATE](../SKILL.md)
 
-- **NOTE-1 [M, base-declared]** Where the base declares `required_frontmatter = [...]` in its `[ki-kb]` table, every note that **has** a frontmatter block carries those keys (extra keys are free). Undeclared, this is **[J]** — required keys are base-specific (resolved from the host `CLAUDE.md`), and _whether a given note should carry frontmatter at all_ stays judgment regardless.
+- **NOTE-1 [M, base-declared]** Where the base declares `required_frontmatter = [...]` in its `[ki-kb-base]` table, every note that **has** a frontmatter block carries those keys (extra keys are free). Undeclared, this is **[J]** — required keys are base-specific (resolved from the host `CLAUDE.md`), and _whether a given note should carry frontmatter at all_ stays judgment regardless.
 - **NOTE-1a [M]** A note's `---` frontmatter fence is **well-formed** — an opening fence has a closing `---`. (base-agnostic)
 - **NOTE-1b [M]** Frontmatter **keys are snake_case** (the house convention); a non-conforming key warns. (base-agnostic)
 - **NOTE-2 [J]** Naming follows the base's convention: dated for `Calendar/`, descriptive title elsewhere, mirroring the paired sources-store path for source extracts.
@@ -44,7 +44,7 @@ A criterion's tag is a contract with the checker: an **[M]** check is run by `au
 → [SKILL: Memory cascade](../SKILL.md)
 
 - **MEM-1 [J]** `Admin/MEMORY.md`'s active-Pillar list matches the Pillars actually present — no stale or missing entries. (Presence is **ZONE-3**; accuracy is judgment.)
-- **MEM-2 [M]** The memory cascade is **anchored in always-loaded context**: the base's root `CLAUDE.md` (or `AGENTS.md`) names the `MEMORY` index / the scope-before-work rule (or the `ki-kb` skill). Because skills load on demand, an unanchored cascade is silently skipped on a plain request. A missing anchor warns. (The Streams equivalent is `ki-streams`' **GATE-1**; the general principle is **SHAPE-7** in `ki-skills`.)
+- **MEM-2 [M]** The memory cascade is **anchored in always-loaded context**: the base's root `CLAUDE.md` (or `AGENTS.md`) names the `MEMORY` index / the scope-before-work rule (or the `ki-kb-base` skill). Because skills load on demand, an unanchored cascade is silently skipped on a plain request. A missing anchor warns. (The Streams equivalent is `ki-kb-streams`' **GATE-1**; the general principle is **SHAPE-7** in `ki-skills`.)
 
 ## LINK — linking within a base
 

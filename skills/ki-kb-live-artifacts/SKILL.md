@@ -1,7 +1,7 @@
 ---
-name: ki-live-artifacts
+name: ki-kb-live-artifacts
 description: >
-  Author, audit, and manage Live Artifact pairs in a Knowledge Islands base — dynamic operational documents that reflect the current state of the island (dashboards, status boards, queues, trackers). Governs the pairing convention between a Markdown source (.md) and its rendered HTML output (.html), the Live Artifacts index in Admin/Operations/Live Artifacts/, and the sync rules between the two halves of each pair. Triggers: "add a live artifact", "audit live artifacts", "check artifact sync", "what live artifacts does this base have", "create a dashboard", "update the artifact index". For the KB zone structure use `ki-kb`; for Markdown or TOML style use `ki-authoring`.
+  Author, audit, and manage Live Artifact pairs in a Knowledge Islands base — dynamic operational documents that reflect the current state of the island (dashboards, status boards, queues, trackers). Governs the pairing convention between a Markdown source (.md) and its rendered HTML output (.html), the Live Artifacts index in Admin/Operations/Live Artifacts/, and the sync rules between the two halves of each pair. Triggers: "add a live artifact", "audit live artifacts", "check artifact sync", "what live artifacts does this base have", "create a dashboard", "update the artifact index". For the KB zone structure use `ki-kb-base`; for Markdown or TOML style use `ki-authoring`.
 argument-hint: 'audit | conform | new <name> | refresh'
 ---
 
@@ -60,15 +60,15 @@ Modes: **AUDIT · CONFORM · NEW · REFRESH** (named, alphabetical). If invoked 
 
 ## Composition
 
-- `ki-kb` — owns the Admin/Operations/ zone and the base-level zone audit. This skill composes on it for zone checks; run `ki-kb` AUDIT first when auditing a full base.
+- `ki-kb-base` — owns the Admin/Operations/ zone and the base-level zone audit. This skill composes on it for zone checks; run `ki-kb-base` AUDIT first when auditing a full base.
 - `ki-authoring` — Markdown style for the `.md` source files.
 
 ## Project bindings
 
-Declare in the base's `.ki-config.toml` `[ki-live-artifacts]` table:
+Declare in the base's `.ki-config.toml` `[ki-kb-live-artifacts]` table:
 
 ```toml
-[ki-live-artifacts]
+[ki-kb-live-artifacts]
 # Directory holding artifact pairs, relative to the base.
 # Default: Admin/Operations/Live Artifacts
 # artifacts_dir = "Admin/Operations/Live Artifacts"

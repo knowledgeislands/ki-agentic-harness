@@ -3,12 +3,12 @@
  * Mechanical checker for the `Streams` zone of a Knowledge Islands base.
  *
  *   bun scripts/audit-streams.ts [base-path]   # audit a base (default: cwd)
- *   bun scripts/audit-streams.ts --init        # print the default [ki-streams] block
+ *   bun scripts/audit-streams.ts --init        # print the default [ki-kb-streams] block
  *
  * This is the mechanical half of the skill's Mode AUDIT — the deterministic
  * layer the judgment pass (index ordering, Governance sections, proposals-index
  * accuracy, completed-proposal deletion) builds on. It checks, inside the
- * `Streams/` zone (resolved THROUGH any `[ki-kb.zones]` alias, so a
+ * `Streams/` zone (resolved THROUGH any `[ki-kb-base.zones]` alias, so a
  * base mid-rename is audited at its real folder):
  *
  *   STREAM-1  folders directly under Streams/ are the Focus set.
@@ -17,11 +17,11 @@
  *             a lightweight tracker stream needs none (flagged only if it declares a proposal).
  *   ENACT-1   every `* Proposal.md` carries status/priority/dependencies frontmatter.
  *   ENACT-2   status ∈ the lifecycle vocabulary and priority ∈ {urgent…low}, as bare tokens.
- *   CONFIG    the base's [ki-streams] table, validated DOWN.
+ *   CONFIG    the base's [ki-kb-streams] table, validated DOWN.
  *   GATE-1    once the base runs proposals, its CLAUDE.md / AGENTS.md anchors the gate.
  *
  * That `Streams/` exists at all and carries a same-name zone index is the
- * `ki-kb` checker's ZONE-* job, not repeated here. Parent / multi
+ * `ki-kb-base` checker's ZONE-* job, not repeated here. Parent / multi
  * proposal layout and the [J] criteria are applied by reading, per the rubric.
  *
  * READ-ONLY: never mutates the base. `--init` prints the default block to stdout.
@@ -38,11 +38,11 @@ const PROPOSAL_SUFFIX = ' Proposal'
 const PROPOSAL_FM = ['status', 'priority', 'dependencies']
 
 const KI_CONFIG = '.ki-config.toml'
-const KI_SECTION = 'ki-streams'
-const KB_ZONES = 'ki-kb.zones'
+const KI_SECTION = 'ki-kb-streams'
+const KB_ZONES = 'ki-kb-base.zones'
 const SCHEMES = ['type', 'tags']
 
-// The default block `--init` emits. The bare [ki-streams] header is the
+// The default block `--init` emits. The bare [ki-kb-streams] header is the
 // OPT-IN MARKER: its presence declares this base's Streams zone governed by the
 // Enactment Process (ki-repo's coverage cascade warns a base that has a
 // Streams/ zone but no table). The keys below are optional — a base on the defaults
@@ -91,8 +91,8 @@ const subdirs = (p: string): string[] =>
         .map((e) => e.name)
     : []
 
-// Minimal reader for the constrained schema: this skill's own `[ki-streams]`
-// scalars and the kb `[ki-kb.zones]` Streams alias. Validate down, ignore across.
+// Minimal reader for the constrained schema: this skill's own `[ki-kb-streams]`
+// scalars and the kb `[ki-kb-base.zones]` Streams alias. Validate down, ignore across.
 type Ki = { keys: Record<string, string>; streamsZone: string }
 const unquote = (s: string): string => s.replace(/^["']|["']$/g, '')
 function parseKi(text: string): Ki {
@@ -171,7 +171,7 @@ function auditStreams(base: string, ki: Ki): Finding[] {
   if (ki.streamsZone !== 'Streams') note('alias', `Streams zone resolves to ${ki.streamsZone}/ (per [${KB_ZONES}])`)
 
   if (!isDir(streamsRoot)) {
-    note('zone', `no ${ki.streamsZone}/ zone at ${base} — nothing to audit (its presence is a ki-kb ZONE check)`)
+    note('zone', `no ${ki.streamsZone}/ zone at ${base} — nothing to audit (its presence is a ki-kb-base ZONE check)`)
     return f
   }
 
@@ -268,13 +268,13 @@ function auditStreams(base: string, ki: Ki): Finding[] {
       )
     } else {
       const txt = readFileSync(anchorFile, 'utf8')
-      const namesProcess = /Enactment Process|ki-streams/i.test(txt)
+      const namesProcess = /Enactment Process|ki-kb-streams/i.test(txt)
       const namesGate = /proposal|canonical/i.test(txt)
       if (namesProcess && namesGate) note('GATE-1', `Enactment gate anchored in ${basename(anchorFile)}`)
       else
         warn(
           'GATE-1',
-          `${basename(anchorFile)} does not anchor the Enactment gate — add a standing directive (route canonical changes through a proposal; load ki-streams) so the gate fires on a plain edit`
+          `${basename(anchorFile)} does not anchor the Enactment gate — add a standing directive (route canonical changes through a proposal; load ki-kb-streams) so the gate fires on a plain edit`
         )
     }
   }

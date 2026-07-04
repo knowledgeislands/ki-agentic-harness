@@ -13,7 +13,7 @@ Split `$ARGUMENTS` on the first space to get **sub-command** and **rest**.
 ## Preflight (every sub-command)
 
 1. `git rev-parse --show-toplevel` → git root.
-2. If `.ki-config.toml` at the git root has `repo_type = "kb"`: **stop** and tell the user that in a KB, planning is a stream proposal's `## Checklist`, governed by `ki-streams` — this command is code-repo only.
+2. If `.ki-config.toml` at the git root has `repo_type = "kb"`: **stop** and tell the user that in a KB, planning is a stream proposal's `## Checklist`, governed by `ki-kb-streams` — this command is code-repo only.
 3. Plans directory: `<git-root>/docs/plans/` (or a `[plans] path` override in `.ki-config.toml`). Create it if absent; if `README.md` is missing, seed it from the index structure in [references/plan-format.md](../../skills/ki-plans/references/plan-format.md).
 
 ## Sub-commands

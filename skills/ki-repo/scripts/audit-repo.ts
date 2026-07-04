@@ -261,11 +261,11 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
   { skill: 'engineering', table: 'ki-engineering', artifact: 'package.json', detect: (s) => s.root.has('package.json') },
   {
     skill: 'kb',
-    table: 'ki-kb',
+    table: 'ki-kb-base',
     artifact: 'KB zones (Pillars/ + Resources/)',
     detect: (s) => s.root.has('Pillars') && s.root.has('Resources')
   },
-  { skill: 'streams', table: 'ki-streams', artifact: 'Streams/ zone', detect: (s) => s.root.has('Streams') },
+  { skill: 'streams', table: 'ki-kb-streams', artifact: 'Streams/ zone', detect: (s) => s.root.has('Streams') },
   {
     skill: '11ty-websites',
     table: 'ki-11ty-websites',

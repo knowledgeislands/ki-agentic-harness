@@ -5,7 +5,7 @@
  *   bun scripts/audit-plans.ts <plans-dir>      (default: docs/plans)
  *
  * Plans are a code-repo instrument. In a KB (`repo_type = "kb"` in .ki-config.toml)
- * there is no docs/plans/ — planning is a stream proposal's Checklist (ki-streams);
+ * there is no docs/plans/ — planning is a stream proposal's Checklist (ki-kb-streams);
  * the checker reports that and exits 0.
  *
  * Mechanical half: frontmatter conformance, theme-subdir placement, README index
@@ -52,7 +52,7 @@ if (kiConfig) {
     add(
       'INFO',
       'scope',
-      'KB repo (repo_type = "kb") — planning is a stream proposal Checklist, governed by ki-streams. No docs/plans/ audit.'
+      'KB repo (repo_type = "kb") — planning is a stream proposal Checklist, governed by ki-kb-streams. No docs/plans/ audit.'
     )
     emit(findings, target, 'plans', `Plans audit — ${rawTarget}`, '')
   }

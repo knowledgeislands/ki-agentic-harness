@@ -7,8 +7,8 @@ A session-level discipline (not a scheduled task): close the gap between what wa
 1. **Scan** the session for candidates: a correction or clarification the user gave; an in-session decision that should now apply generally; a rule applied consistently but written down nowhere; an auto-memory feedback entry that really encodes a base convention.
 2. **Classify and route** each candidate to exactly one home:
    - **local and non-canonical** (a working note, a `Calendar/` habit, a `+/` triage rule) → just write it;
-   - **a change to a canonical zone** (`Admin` / `Pillars` / `Resources`) → hand to `ki-streams`: open a proposal through the **Enactment Process** gate; do not edit the zone directly;
-   - **a pattern recurring across bases** → hand to the owning skill's **REFRESH** to promote it into the canonical skill (this skill, `ki-streams`, …).
+   - **a change to a canonical zone** (`Admin` / `Pillars` / `Resources`) → hand to `ki-kb-streams`: open a proposal through the **Enactment Process** gate; do not edit the zone directly;
+   - **a pattern recurring across bases** → hand to the owning skill's **REFRESH** to promote it into the canonical skill (this skill, `ki-kb-streams`, …).
    - An auto-memory entry that belongs to the base migrates to its convention home and is **removed** from memory.
 3. **Formalise** through the routed home, then **recheck** — re-scan; a fresh candidate starts another iteration.
 4. **Terminate when clean:** every correction and pattern is either codified or recorded as a deliberate one-off (an inline note or a `+/<context>` capture explaining the departure — a one-off needs no formalisation).

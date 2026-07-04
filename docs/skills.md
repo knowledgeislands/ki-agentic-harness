@@ -8,33 +8,33 @@ This file is the catalogue: what each skill does, and the shared shape they all 
 
 The eighteen sit in **two layers** plus a bridge and a keystone: two cross-cutting **foundations** that every other skill builds on, the **domain** skills that each govern one kind of artifact, `ki-harness` — the **container** skill that governs the bundle holding them all — and `ki-bootstrap`, the **install keystone** that wires a repo's project-local skills into place.
 
-### [`ki-kb`](../skills/ki-kb/SKILL.md) — Knowledge Islands
+### [`ki-kb-base`](../skills/ki-kb-base/SKILL.md) — Knowledge Islands
 
-Interacts with a Knowledge Islands knowledge base over the standard zone model: the note-ops **DIGEST / EXTRACT / QUERY / SAVE / UPDATE**, plus **AUDIT / CONFORM / INIT** to check a base against the structure model, bring it into line, or scaffold a new one. Only store-level bindings come from the host base. Ships a mechanical checker (`audit-kb.ts`): zone-layout conformance plus validate-down of its `[ki-kb]` config table. Delegates the **`Streams` zone** to `ki-streams`.
+Interacts with a Knowledge Islands knowledge base over the standard zone model: the note-ops **DIGEST / EXTRACT / QUERY / SAVE / UPDATE**, plus **AUDIT / CONFORM / INIT** to check a base against the structure model, bring it into line, or scaffold a new one. Only store-level bindings come from the host base. Ships a mechanical checker (`audit-kb.ts`): zone-layout conformance plus validate-down of its `[ki-kb-base]` config table. Delegates the **`Streams` zone** to `ki-kb-streams`.
 
-### [`ki-streams`](../skills/ki-streams/SKILL.md) — Knowledge Islands
+### [`ki-kb-streams`](../skills/ki-kb-streams/SKILL.md) — Knowledge Islands
 
-Owns the **`Streams` zone** — the base's working copy ("plan mode") — and the **Enactment Process** that governs it: the lifecycle modes **PROPOSE / ITERATE / READY / ROLLOUT / REVIEW / SETTLE / REJECT**, plus **AUDIT / CONFORM** of a base's Streams structure (Focus lifecycle, the `Proposal` suffix, leaf/parent layout, proposal frontmatter). `ki-kb` delegates the zone here, so the heavier process loads only when working in `Streams`. Ships a mechanical checker (`audit-streams.ts`).
+Owns the **`Streams` zone** — the base's working copy ("plan mode") — and the **Enactment Process** that governs it: the lifecycle modes **PROPOSE / ITERATE / READY / ROLLOUT / REVIEW / SETTLE / REJECT**, plus **AUDIT / CONFORM** of a base's Streams structure (Focus lifecycle, the `Proposal` suffix, leaf/parent layout, proposal frontmatter). `ki-kb-base` delegates the zone here, so the heavier process loads only when working in `Streams`. Ships a mechanical checker (`audit-streams.ts`).
 
 ### [`ki-decision-records`](../skills/ki-decision-records/SKILL.md) — Process
 
-Governs **Decision Records** in any Knowledge Islands repo, code or KB — the typed ID prefixes (`GDR` / `ADR` / `KDR` / …), the five-section format, the status lifecycle, and placement (`docs/decisions/` in a code repo, `Admin/Governance/Decisions/` in a KB). Ships a mechanical checker (`audit-drs.ts`). Defers to `ki-kb` for the island structure and the KI-wide frontmatter standard, and to `ki-streams` for the Enactment Process by which a change is ratified.
+Governs **Decision Records** in any Knowledge Islands repo, code or KB — the typed ID prefixes (`GDR` / `ADR` / `KDR` / …), the five-section format, the status lifecycle, and placement (`docs/decisions/` in a code repo, `Admin/Governance/Decisions/` in a KB). Ships a mechanical checker (`audit-drs.ts`). Defers to `ki-kb-base` for the island structure and the KI-wide frontmatter standard, and to `ki-kb-streams` for the Enactment Process by which a change is ratified.
 
 ### [`ki-plans`](../skills/ki-plans/SKILL.md) — Process
 
-Governs the **planning methodology** for code repos — when to write a plan, how it derives from the ROADMAP near-horizon, the `blocks` / `blocked-by` dependency graph, and the quality bar for Steps and Verify. Owns the methodology; the plan format lives in `references/plan-format.md` and the `/plan` command drives the lifecycle. In a KB there is no `docs/plans/` — planning is a `ki-streams` proposal Checklist. Ships a mechanical checker (`audit-plans.ts`).
+Governs the **planning methodology** for code repos — when to write a plan, how it derives from the ROADMAP near-horizon, the `blocks` / `blocked-by` dependency graph, and the quality bar for Steps and Verify. Owns the methodology; the plan format lives in `references/plan-format.md` and the `/plan` command drives the lifecycle. In a KB there is no `docs/plans/` — planning is a `ki-kb-streams` proposal Checklist. Ships a mechanical checker (`audit-plans.ts`).
 
 ### [`ki-handoffs`](../skills/ki-handoffs/SKILL.md) — Process
 
-Governs the **handoff doctrine** — plan work once at the top reasoning tier, then write it as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning. Owns the reasoning-layer split, the handoff-spec quality bar (decisions-locked-vs-escalate, a per-unit recommended tier, a cold-model readiness test), and the opt-in marker contract (`handoff: true`). Rides on a host artifact — a `ki-plans` plan or a `ki-streams` proposal Checklist — and off-ramps tier cost/selection to `ki-tokenomics`. Ships a mechanical checker (`audit-handoffs.ts`).
+Governs the **handoff doctrine** — plan work once at the top reasoning tier, then write it as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning. Owns the reasoning-layer split, the handoff-spec quality bar (decisions-locked-vs-escalate, a per-unit recommended tier, a cold-model readiness test), and the opt-in marker contract (`handoff: true`). Rides on a host artifact — a `ki-plans` plan or a `ki-kb-streams` proposal Checklist — and off-ramps tier cost/selection to `ki-tokenomics`. Ships a mechanical checker (`audit-handoffs.ts`).
 
-### [`ki-activities`](../skills/ki-activities/SKILL.md) — Process
+### [`ki-kb-activities`](../skills/ki-kb-activities/SKILL.md) — Process
 
-Governs **Activity notes** — the operational record of work adopted in a base, kept under `Admin/Operations/Activities/` (naming, frontmatter, realization type, and the index). Checks that an activity declared as a slash command has a backing skill, and that scheduled ones are flagged for the external scheduler. Ships a mechanical checker (`audit-activities.ts`). Composes on `ki-kb` for the zone structure.
+Governs **Activity notes** — the operational record of work adopted in a base, kept under `Admin/Operations/Activities/` (naming, frontmatter, realization type, and the index). Checks that an activity declared as a slash command has a backing skill, and that scheduled ones are flagged for the external scheduler. Ships a mechanical checker (`audit-activities.ts`). Composes on `ki-kb-base` for the zone structure.
 
-### [`ki-live-artifacts`](../skills/ki-live-artifacts/SKILL.md) — Process
+### [`ki-kb-live-artifacts`](../skills/ki-kb-live-artifacts/SKILL.md) — Process
 
-Governs **Live Artifacts** — operational documents that track island state (dashboards, boards, queues, trackers) as a `.md` source paired with a rendered `.html`, kept under `Admin/Operations/Live Artifacts/` with an index, plus the sync rules between the two halves. Ships a mechanical checker (`audit-live-artifacts.ts`). Composes on `ki-kb` for the zone structure.
+Governs **Live Artifacts** — operational documents that track island state (dashboards, boards, queues, trackers) as a `.md` source paired with a rendered `.html`, kept under `Admin/Operations/Live Artifacts/` with an index, plus the sync rules between the two halves. Ships a mechanical checker (`audit-live-artifacts.ts`). Composes on `ki-kb-base` for the zone structure.
 
 ### [`ki-mcp`](../skills/ki-mcp/SKILL.md) — Process
 
@@ -70,7 +70,7 @@ The shared **engineering toolchain** every TS/Bun repo builds on — package.jso
 
 ### [`ki-tokenomics`](../skills/ki-tokenomics/SKILL.md) — Process
 
-Audits, conforms, and tunes the **tokenomics** of a Claude Code environment — the standing context surface paid on every turn, as **composed** across the user-wide `~/.claude` and project-local layers and any base, plus the runtime levers (caching, model tier, compaction, sub-agent fan-out, tool-result verbosity). Attributes cost per layer, holds it to overridable budgets (a `[ki-tokenomics]` table, read validate-down), and checks context-compression tooling — **Headroom**, an extensible registry — is set up optimally. **Composes** on the artifact skills whose surfaces it measures (`ki-mcp` for the tool surface, `ki-skills` for the description surface, `ki-kb` for a base's loaded surface) and defers the volatile reference numbers to the `claude-api` skill. Ships a mechanical checker (`audit-tokenomics.ts`) that reads both config layers by design.
+Audits, conforms, and tunes the **tokenomics** of a Claude Code environment — the standing context surface paid on every turn, as **composed** across the user-wide `~/.claude` and project-local layers and any base, plus the runtime levers (caching, model tier, compaction, sub-agent fan-out, tool-result verbosity). Attributes cost per layer, holds it to overridable budgets (a `[ki-tokenomics]` table, read validate-down), and checks context-compression tooling — **Headroom**, an extensible registry — is set up optimally. **Composes** on the artifact skills whose surfaces it measures (`ki-mcp` for the tool surface, `ki-skills` for the description surface, `ki-kb-base` for a base's loaded surface) and defers the volatile reference numbers to the `claude-api` skill. Ships a mechanical checker (`audit-tokenomics.ts`) that reads both config layers by design.
 
 ### [`ki-harness`](../skills/ki-harness/SKILL.md) — Process
 

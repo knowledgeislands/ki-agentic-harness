@@ -3,7 +3,7 @@
  * Mechanical checker for a Knowledge Islands knowledge base.
  *
  *   bun scripts/audit-kb.ts [base-path]   # audit a base (default: cwd)
- *   bun scripts/audit-kb.ts --init        # print the default [ki-kb] block
+ *   bun scripts/audit-kb.ts --init        # print the default [ki-kb-base] block
  *
  * This is the mechanical half of the skill's Mode AUDIT — the deterministic
  * layer the judgment pass (note routing, memory-index accuracy) builds on. It
@@ -16,12 +16,12 @@
  *      informationally. Zone folders are resolved THROUGH the zone alias below,
  *      so a base mid-rename is audited at its real folder.
  *
- *   2. CONFIG TABLE — the base's `.ki-config.toml` `[ki-kb]`
+ *   2. CONFIG TABLE — the base's `.ki-config.toml` `[ki-kb-base]`
  *      table, validated DOWN (this skill's own keys only) per the shared-file
  *      contract owned by `ki-repo`: warn on a key it does not
  *      recognise, advise dropping a zone mapped to its own canonical name, and
  *      never read another skill's table. The keys are the
- *      `[ki-kb.zones]` aliases (any canonical zone or staging area
+ *      `[ki-kb-base.zones]` aliases (any canonical zone or staging area
  *      mapped to a local folder name), an optional `required_frontmatter` array
  *      (see point 3), and an optional `preflight` array (note paths/globs to read
  *      before drafting).
@@ -50,10 +50,10 @@ const STAGING = ['+', '-']
 const MEMORY_INDEX = 'MEMORY.md'
 
 const KI_CONFIG = '.ki-config.toml'
-const KI_SECTION = 'ki-kb'
+const KI_SECTION = 'ki-kb-base'
 const ZONES_SECTION = `${KI_SECTION}.zones`
 
-// The default block `--init` emits. The bare [ki-kb] header is the
+// The default block `--init` emits. The bare [ki-kb-base] header is the
 // OPT-IN MARKER: its presence declares this base governed by the kb standard
 // (ki-repo's coverage cascade warns a base that has the zone layout but
 // no table). The keys below are all optional — a base on the canonical zone names with
@@ -106,10 +106,10 @@ const isDir = (p: string): boolean => existsSync(p) && statSync(p).isDirectory()
 const isFile = (p: string): boolean => existsSync(p) && statSync(p).isFile()
 
 // Minimal parser for the constrained schema: `[table]` headers (incl. the dotted
-// `[ki-kb.zones]` sub-table), flat `key = "value"` / `key = true|false`
+// `[ki-kb-base.zones]` sub-table), flat `key = "value"` / `key = true|false`
 // on one line, `#` comments. NOT a full TOML parser, and it reads ONLY this skill's
 // tables — another skill's `[table]` is ignored entirely (validate down, ignore
-// across). Returns null if the file has no `[ki-kb…]` table at all.
+// across). Returns null if the file has no `[ki-kb-base…]` table at all.
 type KiKb = {
   keys: Record<string, string>
   zones: Record<string, string>
@@ -263,7 +263,8 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
       'MEM-2',
       'no CLAUDE.md / AGENTS.md at the base root — the memory cascade (scope + load MEMORY before work) has no always-on anchor'
     )
-  else if (/memory|ki-kb/i.test(readFileSync(join(base, anchorName), 'utf8'))) note('MEM-2', `memory cascade anchored in ${anchorName}`)
+  else if (/memory|ki-kb-base/i.test(readFileSync(join(base, anchorName), 'utf8')))
+    note('MEM-2', `memory cascade anchored in ${anchorName}`)
   else
     warn(
       'MEM-2',
@@ -273,7 +274,7 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
   // ── note frontmatter ──
   // Base-agnostic [M]: a note with frontmatter must close its `---` fence and use
   // snake_case keys (the house convention). Base-declared [M]: when the base lists
-  // `required_frontmatter` in its [ki-kb] table, every note that HAS
+  // `required_frontmatter` in its [ki-kb-base] table, every note that HAS
   // frontmatter must carry those keys (extra keys stay free). Whether a given note
   // SHOULD have frontmatter at all is base/type-specific — that stays judgment.
   const required = ki?.requiredFrontmatter ?? []

@@ -53,7 +53,7 @@ Each `decision_type` maps to a fixed prefix. The prefix and `decision_type` must
 | `repo_type = "kb"` | `Admin/Governance/Decisions/` | `Decisions.md` | Required (see below) |
 | code / unset       | `docs/decisions/`             | `README.md`    | Optional             |
 
-The repo type is declared in `.ki-config.toml` under `[ki-decision-records]` (or inferred from `[ki-kb]` presence). The checker auto-detects the decisions directory (`docs/decisions/` then `Admin/Governance/Decisions/`) and picks the matching index file by mode; pass an explicit path to override.
+The repo type is declared in `.ki-config.toml` under `[ki-decision-records]` (or inferred from `[ki-kb-base]` presence). The checker auto-detects the decisions directory (`docs/decisions/` then `Admin/Governance/Decisions/`) and picks the matching index file by mode; pass an explicit path to override.
 
 ## Frontmatter
 
@@ -71,7 +71,7 @@ decision_depends_on: []
 ---
 ```
 
-- `type` must be exactly `admin/governance/decision` (per the KI-wide frontmatter standard in `ki-kb`).
+- `type` must be exactly `admin/governance/decision` (per the KI-wide frontmatter standard in `ki-kb-base`).
 - `decision_type` must be one of the nine values in the prefix table above.
 - The prefix in the filename must match the `decision_type` value.
 - `status` tracks the note's maintenance state (draft/current/outdated/archive); the **decision lifecycle** (Draft/Proposed/Accepted/etc.) lives in the body.

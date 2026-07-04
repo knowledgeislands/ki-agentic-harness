@@ -1,7 +1,7 @@
 ---
-name: ki-activities
+name: ki-kb-activities
 description: >
-  Author, audit, and manage Activity notes in a Knowledge Islands base — the operational record of what automation, scheduling, and agentic work a base has adopted. Governs the naming convention, required frontmatter, realization types, and the Activities.md index in Admin/Operations/Activities/. Checks that activities declared as slash commands have a corresponding skill, and that those declared as scheduled tasks are flagged for registration in an external scheduling system. The harness supports any agentic environment; Claude Code (slash commands / skills) and Claude Cowork (scheduled tasks) are the primary realizations. Triggers: "add an activity", "audit activities", "what activities does this base have", "register this as a scheduled task", "create a skill for this activity", "list my activities", "check activity conformance". For the KB zone structure use `ki-kb`; for skill authoring use `ki-skills`; for the harness bundle layout use `ki-harness`.
+  Author, audit, and manage Activity notes in a Knowledge Islands base — the operational record of what automation, scheduling, and agentic work a base has adopted. Governs the naming convention, required frontmatter, realization types, and the Activities.md index in Admin/Operations/Activities/. Checks that activities declared as slash commands have a corresponding skill, and that those declared as scheduled tasks are flagged for registration in an external scheduling system. The harness supports any agentic environment; Claude Code (slash commands / skills) and Claude Cowork (scheduled tasks) are the primary realizations. Triggers: "add an activity", "audit activities", "what activities does this base have", "register this as a scheduled task", "create a skill for this activity", "list my activities", "check activity conformance". For the KB zone structure use `ki-kb-base`; for skill authoring use `ki-skills`; for the harness bundle layout use `ki-harness`.
 argument-hint: 'audit | conform | new <name> | refresh'
 ---
 
@@ -25,7 +25,7 @@ Every activity note that carries a frontmatter block must include:
 | `realization` | See realization types below.           |
 | `author`      | Who authored or adopted this activity. |
 
-The `tags` and `date` fields follow the base's general frontmatter standard (governed by `ki-kb`).
+The `tags` and `date` fields follow the base's general frontmatter standard (governed by `ki-kb-base`).
 
 ### Realization types
 
@@ -46,7 +46,7 @@ Additional realization types may be declared freely — the audit treats unrecog
 When `realization: slash-command`, declare:
 
 ```yaml
-skill: <skill-name> # e.g. ki-kb — must match a SKILL.md name: in the harness
+skill: <skill-name> # e.g. ki-kb-base — must match a SKILL.md name: in the harness
 ```
 
 The mechanical checker verifies the named skill exists in the connected harness's `skills/` directory.
@@ -86,16 +86,16 @@ Modes: **AUDIT · CONFORM · NEW · REFRESH** (named, alphabetical). If invoked 
 
 ## Composition
 
-- `ki-kb` — owns the Admin/Operations/ zone and the base-level zone audit. This skill composes on it for zone checks; run `ki-kb` AUDIT first when auditing a full base.
+- `ki-kb-base` — owns the Admin/Operations/ zone and the base-level zone audit. This skill composes on it for zone checks; run `ki-kb-base` AUDIT first when auditing a full base.
 - `ki-skills` — invoked by CONFORM when scaffolding a skill stub for a `slash-command` activity.
 - `ki-harness` — the harness bundle layout; the checker resolves `skills/<name>/SKILL.md` relative to the harness root declared in the base's `.ki-config.toml` or a `--harness` flag.
 
 ## Project bindings
 
-Declare in the base's `.ki-config.toml` `[ki-activities]` table:
+Declare in the base's `.ki-config.toml` `[ki-kb-activities]` table:
 
 ```toml
-[ki-activities]
+[ki-kb-activities]
 # Path to the harness root (absolute or relative to the base). Used to resolve skill names.
 # harness = "/Users/me/.claude/skills"
 #

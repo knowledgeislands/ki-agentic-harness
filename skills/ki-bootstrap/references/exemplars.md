@@ -22,16 +22,16 @@ Concrete patterns showing what a correctly bootstrapped Knowledge Islands repo l
 
 ### Correct `.ki-config.toml` bootstrap declaration
 
-A repo opts skills in by adding `[ki-<skill>]` tables. The keystone linker reads these tables and mirrors the matching skills from the harness into `.claude/skills/`. Tables with no keys (bare `[ki-kb]`) are valid — presence alone is the opt-in signal. From `arcadia-principal/.ki-config.toml`:
+A repo opts skills in by adding `[ki-<skill>]` tables. The keystone linker reads these tables and mirrors the matching skills from the harness into `.claude/skills/`. Tables with no keys (bare `[ki-kb-base]`) are valid — presence alone is the opt-in signal. From `arcadia-principal/.ki-config.toml`:
 
 ```toml
-# Read by the ki-kb skill.
+# Read by the ki-kb-base skill.
 # Presence opts this base into the kb standard; canonical zone names, no aliases.
-[ki-kb]
+[ki-kb-base]
 
-# Read by the ki-streams skill.
+# Read by the ki-kb-streams skill.
 # Presence opts the Streams zone into the Enactment Process; uses the defaults.
-[ki-streams]
+[ki-kb-streams]
 
 # Tokenomics governance — audits the standing context surface.
 [ki-tokenomics]
@@ -87,9 +87,9 @@ The keystone linker self-locates the harness through its own real path — no ha
 .claude/
 └── skills/
     ├── ki-authoring  -> ../../../arcadia-agentic-harness/skills/ki-authoring
-    ├── ki-kb         -> ../../../arcadia-agentic-harness/skills/ki-kb
+    ├── ki-kb-base         -> ../../../arcadia-agentic-harness/skills/ki-kb-base
     ├── ki-repo       -> ../../../arcadia-agentic-harness/skills/ki-repo
-    ├── ki-streams    -> ../../../arcadia-agentic-harness/skills/ki-streams
+    ├── ki-kb-streams    -> ../../../arcadia-agentic-harness/skills/ki-kb-streams
     └── ki-tokenomics -> ../../../arcadia-agentic-harness/skills/ki-tokenomics
 ```
 
@@ -108,5 +108,5 @@ The authoring conventions for Markdown and TOML live in the `ki-authoring` skill
 Skills are referenced by their `name` value (the directory name under `skills/`), never by file path. A project `CLAUDE.md` that needs to invoke a skill explicitly uses the slash-command form:
 
 ```markdown
-For KB operations in this session, use the `ki-kb` skill.
+For KB operations in this session, use the `ki-kb-base` skill.
 ```

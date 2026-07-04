@@ -36,11 +36,11 @@ import { scenarios as authoringScenarios } from './scenarios/ki-authoring.ts'
 import { scenarios as bootstrapScenarios } from './scenarios/ki-bootstrap.ts'
 import { scenarios as hostingScenarios } from './scenarios/ki-cloudflare-hosting.ts'
 import { scenarios as engineeringScenarios } from './scenarios/ki-engineering.ts'
-import { scenarios as kbScenarios } from './scenarios/ki-kb.ts'
+import { scenarios as kbScenarios } from './scenarios/ki-kb-base.ts'
 import { scenarios as mcpScenarios } from './scenarios/ki-mcp.ts'
 import { scenarios as repoScenarios } from './scenarios/ki-repo.ts'
 import { scenarios as skillsScenarios } from './scenarios/ki-skills.ts'
-import { scenarios as streamsScenarios } from './scenarios/ki-streams.ts'
+import { scenarios as streamsScenarios } from './scenarios/ki-kb-streams.ts'
 import { scenarios as tokenomicsScenarios } from './scenarios/ki-tokenomics.ts'
 
 export type Assertion = { name: string; re: RegExp }

@@ -98,7 +98,7 @@ A single skill into a project, by hand:
 
 ```bash
 cd /path/to/target-repo && mkdir -p .claude/skills
-ln -sfn /path/to/arcadia-agentic-harness/skills/ki-kb .claude/skills/ki-kb
+ln -sfn /path/to/arcadia-agentic-harness/skills/ki-kb-base .claude/skills/ki-kb-base
 ```
 
 `ln -sfn` forces replacement of an existing link and never dereferences into a directory, so re-running it updates the link in place instead of nesting a second link inside it. The link name must match the skill directory name (and the `name:` frontmatter).
@@ -126,7 +126,7 @@ This is why per-skill usage is **not** repeated in each `SKILL.md` body: the `de
 
 ## Linking inside skills
 
-Skills use **standard relative markdown links**, not Obsidian wikilinks, so they stay valid when relocated, symlinked, or shared. Link a co-located file by relative path (`[ref](<references/Detail.md>)`); use the CommonMark angle-bracket form for paths containing spaces. Refer to _another_ skill by its `name` (e.g. "the `ki-kb` skill"), never by a file path — the other skill loads into the session under that name and its location on disk is not stable.
+Skills use **standard relative markdown links**, not Obsidian wikilinks, so they stay valid when relocated, symlinked, or shared. Link a co-located file by relative path (`[ref](<references/Detail.md>)`); use the CommonMark angle-bracket form for paths containing spaces. Refer to _another_ skill by its `name` (e.g. "the `ki-kb-base` skill"), never by a file path — the other skill loads into the session under that name and its location on disk is not stable.
 
 ## Development
 
@@ -143,4 +143,4 @@ bun run ki:skills:lint  # audit every skill's mechanical criteria (ki-skills rub
 bun run ki:eval         # advisory behavioural eval suite (see ../evals/)
 ```
 
-`ki:skills:lint` runs the mechanical half of the [`ki-skills`](../skills/ki-skills/SKILL.md) rubric over every skill (frontmatter, naming, length caps, link resolution); the judgment half is applied by that skill when you ask it to audit one. Several skills also expose a repo-level audit script — `ki:engineering:audit`, `ki:repo:audit`, `ki:kb:audit`, `ki:streams:audit`, `ki:tokenomics:audit`, `ki:harness:audit` — that runs their mechanical checker over a target.
+`ki:skills:lint` runs the mechanical half of the [`ki-skills`](../skills/ki-skills/SKILL.md) rubric over every skill (frontmatter, naming, length caps, link resolution); the judgment half is applied by that skill when you ask it to audit one. Several skills also expose a repo-level audit script — `ki:engineering:audit`, `ki:repo:audit`, `ki:kb-base:audit`, `ki:kb-streams:audit`, `ki:tokenomics:audit`, `ki:harness:audit` — that runs their mechanical checker over a target.

@@ -2,7 +2,7 @@
 
 This is the single source of truth for the shape of a plan: its frontmatter, sections, filename, placement, and the `docs/plans/README.md` index. The `ki-plans` `SKILL.md` governs the _methodology_ (when to plan, quality, dependencies); the `/plan` slash command drives the _lifecycle_ (new / execute / done / status). Both defer here for the format — neither restates it.
 
-Plans are a **code-repo** instrument. In a Knowledge Islands KB the equivalent is a stream proposal's `## Checklist`, governed by `ki-streams` — see the `SKILL.md` off-ramp. Nothing in this file applies to a KB.
+Plans are a **code-repo** instrument. In a Knowledge Islands KB the equivalent is a stream proposal's `## Checklist`, governed by `ki-kb-streams` — see the `SKILL.md` off-ramp. Nothing in this file applies to a KB.
 
 **Contents:**
 

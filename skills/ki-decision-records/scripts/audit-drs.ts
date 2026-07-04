@@ -77,8 +77,8 @@ async function detectKbMode(decisionsDir: string): Promise<boolean> {
   const content = await readFile(configPath, 'utf8')
   // Check for explicit repo_type = "kb" anywhere in the file
   if (/^\s*repo_type\s*=\s*["']kb["']/m.test(content)) return true
-  // Presence of [ki-kb] table also implies KB mode
-  if (/^\[ki-kb\]/m.test(content)) return true
+  // Presence of [ki-kb-base] table also implies KB mode
+  if (/^\[ki-kb-base\]/m.test(content)) return true
   return false
 }
 

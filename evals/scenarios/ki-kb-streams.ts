@@ -1,5 +1,5 @@
 /**
- * Eval scenarios for the `ki-streams` skill — the Streams zone and the
+ * Eval scenarios for the `ki-kb-streams` skill — the Streams zone and the
  * Enactment Process. Each probes a house-specific rule (the Focus lifecycle, the
  * proposal path + suffix, the rollout gate, the canonical-zone gate) a skill-less baseline wouldn't know.
  */
@@ -7,7 +7,7 @@ import type { Scenario } from '../harness.ts'
 
 export const scenarios: Scenario[] = [
   {
-    skill: 'ki-streams',
+    skill: 'ki-kb-streams',
     id: 'streams-focus-and-path',
     prompt:
       'In a Knowledge Islands base, I am starting a new active project called "Tooling Rollout" as a stream. What are the Focus lifecycle states a stream can sit in, and what exact folder/file path should the proposal live at?',
@@ -20,7 +20,7 @@ export const scenarios: Scenario[] = [
       'House model: Streams sub-divides into five Focus folders — Active, Background, Dormant, Future, Settled. A new active stream lives at `Streams/Active/<Name> Proposal/<Name> Proposal.md` (leaf) — the proposal note carries a trailing " Proposal" suffix. A correct answer lists the five Focus states and gives a path under Streams/Active with the Proposal-suffixed note.'
   },
   {
-    skill: 'ki-streams',
+    skill: 'ki-kb-streams',
     id: 'streams-lifecycle-gate',
     prompt:
       'A proposal in my Knowledge Islands base is marked `ready`. Can I go ahead and roll out (apply) its changes to the canonical notes? What is the status sequence a proposal moves through?',
@@ -32,7 +32,7 @@ export const scenarios: Scenario[] = [
       'House process (Enactment Process): `ready` is a necessary but NOT sufficient condition for rollout — rollout requires explicit user authorisation; exploratory talk is not approval. The status sequence is draft → ready → (in-progress | rejected) → rolled-out → reviewed → completed. A correct answer declines to roll out on `ready` alone (needs authorisation) and gives the lifecycle order.'
   },
   {
-    skill: 'ki-streams',
+    skill: 'ki-kb-streams',
     id: 'streams-canonical-zone-gate',
     prompt:
       'In my Knowledge Islands base I want to (a) substantively revise a note in `Pillars/` and (b) fix a typo in a `Calendar/` daily note. Which can I edit directly, and which has to go through the Streams / Enactment Process? Which zones does that gate protect?',

@@ -41,7 +41,7 @@ A `[ki-<skill>]` table plays one or both of two roles:
 - **Marker (opt-in)** — its _presence_ declares "this skill governs this repo." The bare header is enough; it needs no keys.
 - **Config** — it carries per-repo declarations the skill reads (data the standard fits to, or `[…checks]` divergences).
 
-The two are separable: a base on the canonical zone names declares a bare `[ki-kb]` (marker only, no keys); a base that renames a zone adds a `[ki-kb.zones]` alias (config). The marker/opt-in skills are `ki-engineering`, `-kb`, `-streams`, `-11ty-websites`, `-cloudflare-hosting`, `-mcp`, `-skills`, and `-agents`. `ki-repo` is the **bedrock marker** — the file's very presence is what makes the repo a ki-repo — and `ki-authoring` is **universal** (it governs every markdown repo), so neither needs a separate opt-in.
+The two are separable: a base on the canonical zone names declares a bare `[ki-kb-base]` (marker only, no keys); a base that renames a zone adds a `[ki-kb-base.zones]` alias (config). The marker/opt-in skills are `ki-engineering`, `-kb`, `-streams`, `-11ty-websites`, `-cloudflare-hosting`, `-mcp`, `-skills`, and `-agents`. `ki-repo` is the **bedrock marker** — the file's very presence is what makes the repo a ki-repo — and `ki-authoring` is **universal** (it governs every markdown repo), so neither needs a separate opt-in.
 
 So **what an absent table means is per-skill**, and that is exactly what _Coverage enforcement_ (below) checks:
 
@@ -68,7 +68,7 @@ The owning skill's auditor then reports the divergence as an acknowledged note r
 
 ## Overridable vs fixed
 
-A skill's standard fixes its model; a base or repo may declare **only** the keys that skill documents as overridable, and nothing else is a config knob. Two kinds of declaration are overridable: **data** the standard reads to fit a target (e.g. `ki-kb`'s zone aliases, `required_frontmatter`, and `preflight`), and **divergences** from a default (the `[…checks]` booleans above). Everything not so documented is **fixed** by the standard — a target does not redefine it in config. This split is what keeps target-specificity declared-and-auditable rather than forked into a coupled skill: where a target differs, it differs through a documented key, not a bespoke `<target>-*` extension skill.
+A skill's standard fixes its model; a base or repo may declare **only** the keys that skill documents as overridable, and nothing else is a config knob. Two kinds of declaration are overridable: **data** the standard reads to fit a target (e.g. `ki-kb-base`'s zone aliases, `required_frontmatter`, and `preflight`), and **divergences** from a default (the `[…checks]` booleans above). Everything not so documented is **fixed** by the standard — a target does not redefine it in config. This split is what keeps target-specificity declared-and-auditable rather than forked into a coupled skill: where a target differs, it differs through a documented key, not a bespoke `<target>-*` extension skill.
 
 So the option set is **authored, not implicit**: each skill with declarable keys emits them — commented, with defaults — via an `--init` the skill owns (`ki-repo`, `-kb`, `-streams`, `-tokenomics`, and `-cloudflare-hosting` do; `-11ty-websites`'s `--init` emits the bare marker, as it has no keys today), so an author sees exactly what may be set, and an undocumented key warns (validate-down). A target-specific need that no documented key can express is a signal to **generalise it into the standard** (a REFRESH candidate), not to invent an ad-hoc key or fork a skill.
 
@@ -83,8 +83,8 @@ The detection signals `ki-repo` uses (one recursive tree read + `package.json`):
 | Skill                   | Detection signal                            | Opt-in table              |
 | ----------------------- | ------------------------------------------- | ------------------------- |
 | `ki-engineering`        | `package.json` present                      | `[ki-engineering]`        |
-| `ki-kb`                 | canonical zones (`Pillars/` + `Resources/`) | `[ki-kb]`                 |
-| `ki-streams`            | `Streams/` zone                             | `[ki-streams]`            |
+| `ki-kb-base`            | canonical zones (`Pillars/` + `Resources/`) | `[ki-kb-base]`            |
+| `ki-kb-streams`         | `Streams/` zone                             | `[ki-kb-streams]`         |
 | `ki-11ty-websites`      | `eleventy.config.*`                         | `[ki-11ty-websites]`      |
 | `ki-cloudflare-hosting` | a `wrangler.*` config                       | `[ki-cloudflare-hosting]` |
 | `ki-mcp`                | `@modelcontextprotocol/sdk` dependency      | `[ki-mcp]`                |

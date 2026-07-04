@@ -1,7 +1,7 @@
 ---
 name: ki-plans
 description: >
-  Govern the Knowledge Islands planning methodology for code repos: when to write a plan, how it derives from the ROADMAP, dependency discipline, and plan quality. Owns the mandate (plan before code for multi-file or multi-step changes), the near-horizon principle (plans exist only for ROADMAP "Next" items), the blocks/blocked-by dependency graph, and the quality bar for Steps and Verify. AUDIT checks docs/plans for frontmatter, README sync, and dependency integrity; CONFORM fixes mechanical issues; REFRESH revisits the methodology. Does not own the plan lifecycle (new/execute/done/status) — that is the /plan slash command. A code-repo instrument: in a KB, planning is a stream proposal's Checklist (ki-streams). Triggers: "audit plans", "are my plans in order", "should I write a plan for this", "plan methodology". Off-ramps: /plan (lifecycle), ki-streams (KB planning), ki-decision-records (decisions vs. plans), ki-harness (ROADMAP structure and phasing).
+  Govern the Knowledge Islands planning methodology for code repos: when to write a plan, how it derives from the ROADMAP, dependency discipline, and plan quality. Owns the mandate (plan before code for multi-file or multi-step changes), the near-horizon principle (plans exist only for ROADMAP "Next" items), the blocks/blocked-by dependency graph, and the quality bar for Steps and Verify. AUDIT checks docs/plans for frontmatter, README sync, and dependency integrity; CONFORM fixes mechanical issues; REFRESH revisits the methodology. Does not own the plan lifecycle (new/execute/done/status) — that is the /plan slash command. A code-repo instrument: in a KB, planning is a stream proposal's Checklist (ki-kb-streams). Triggers: "audit plans", "are my plans in order", "should I write a plan for this", "plan methodology". Off-ramps: /plan (lifecycle), ki-kb-streams (KB planning), ki-decision-records (decisions vs. plans), ki-harness (ROADMAP structure and phasing).
 argument-hint: 'audit [dir] | conform [dir] | refresh'
 ---
 
@@ -9,7 +9,7 @@ argument-hint: 'audit [dir] | conform [dir] | refresh'
 
 You are applying the **Knowledge Islands Plans standard** — when to plan, how a plan derives from the ROADMAP, how dependencies flow, and what a good plan looks like. This skill owns the _methodology_. The plan format (frontmatter, sections, filename, index) lives in [references/plan-format.md](references/plan-format.md) as its single source of truth; the `/plan` slash command drives the lifecycle. Neither restates the other.
 
-Plans are a **code-repo instrument.** In a Knowledge Islands KB the plan already exists and is already governed: a stream proposal's `## Checklist` is the ordered rollout plan, `## Open Questions` are the blockers, Focus `Active` is the near-horizon signal, and the Enactment Process is the lifecycle. That is entirely `ki-streams`. This skill owns no KB artifact — run in a KB, it points at `ki-streams` and stops.
+Plans are a **code-repo instrument.** In a Knowledge Islands KB the plan already exists and is already governed: a stream proposal's `## Checklist` is the ordered rollout plan, `## Open Questions` are the blockers, Focus `Active` is the near-horizon signal, and the Enactment Process is the lifecycle. That is entirely `ki-kb-streams`. This skill owns no KB artifact — run in a KB, it points at `ki-kb-streams` and stops.
 
 ## What this skill owns
 
@@ -40,7 +40,7 @@ Carries the universal **AUDIT · CONFORM · REFRESH**. If invoked without a mode
 
 ### Mode AUDIT
 
-Check that a code repo's plans are methodologically sound and mechanically consistent. In a KB (`repo_type = "kb"` in `.ki-config.toml`), there is no `docs/plans/` — report that KB planning is governed by `ki-streams` and stop.
+Check that a code repo's plans are methodologically sound and mechanically consistent. In a KB (`repo_type = "kb"` in `.ki-config.toml`), there is no `docs/plans/` — report that KB planning is governed by `ki-kb-streams` and stop.
 
 The mechanical half is [`scripts/audit-plans.ts`](scripts/audit-plans.ts) — run `bun run ki:plans:audit` (or `bun skills/ki-plans/scripts/audit-plans.ts docs/plans`). It checks:
 
@@ -77,6 +77,6 @@ Revisit the methodology against current practice:
 - **Not every change needs a plan.** Single-file fixes, typo corrections, and one-step config tweaks do not warrant a plan file. The mandate is for multi-file or multi-step changes.
 - **Plan before commit, not plan before thought.** Exploration and research need no plan. A plan is written when scope is clear and implementation is about to begin.
 - **Plans are not tickets.** A plan is a self-contained execution document, not a backlog row. It carries enough context to pick up cold after a context reset.
-- **KBs plan through `ki-streams`.** In a KB, the proposal's `## Checklist` is the plan and must meet this skill's quality bar — but the artifact and its lifecycle are `ki-streams`, not a `docs/plans/` file. There is no `Streams/<name>/plans/` directory.
+- **KBs plan through `ki-kb-streams`.** In a KB, the proposal's `## Checklist` is the plan and must meet this skill's quality bar — but the artifact and its lifecycle are `ki-kb-streams`, not a `docs/plans/` file. There is no `Streams/<name>/plans/` directory.
 - **The `/plan` command is the tool; this skill is the standard.** "How should I structure this plan?" or "audit my plans" → this skill. `/plan new` → the command doing the mechanical work against [references/plan-format.md](references/plan-format.md).
 - Checker output conforms to the severity ladder, JSON shape, and exit-code contract in `ki-engineering`'s [checker-contract.md](../ki-engineering/references/checker-contract.md).

@@ -4,13 +4,13 @@ Where this agentic harness is going. The [README](README.md) and the [docs/](doc
 
 This roadmap is itself subject to the house discipline it describes: when a skill's REFRESH run or an audit surfaces a structural gap, it lands here before it's built — and an item is **removed once done**, not ticked off, so the file always shows only open work.
 
-**Continuous practices are not roadmap items.** Keeping the skills audited (`ki:skills:lint`, `ki:repo:audit`, `ki:kb:audit`, the `ki-mcp` audit over the `mcp-*` repos), re-running the advisory [eval suite](evals/README.md) as skills change, and the scheduled `ki-skills-refresh` sweep (which honours each skill's declared `**Refresh:**` cadence) are ongoing disciplines tied to the invariants in [docs/design.md](docs/design.md) (_Principles across the set_) — they run continuously, so they live there, not here.
+**Continuous practices are not roadmap items.** Keeping the skills audited (`ki:skills:lint`, `ki:repo:audit`, `ki:kb-base:audit`, the `ki-mcp` audit over the `mcp-*` repos), re-running the advisory [eval suite](evals/README.md) as skills change, and the scheduled `ki-skills-refresh` sweep (which honours each skill's declared `**Refresh:**` cadence) are ongoing disciplines tied to the invariants in [docs/design.md](docs/design.md) (_Principles across the set_) — they run continuously, so they live there, not here.
 
 ## Next
 
 ### Rename the `ki-kb-*` family
 
-The four KB-zone skills — meaningful only inside a base — take a shared `ki-kb-*` prefix that encodes their containment: `ki-kb` → `ki-kb-base`, `ki-streams` → `ki-kb-streams`, `ki-activities` → `ki-kb-activities`, `ki-live-artifacts` → `ki-kb-live-artifacts`. Code-peer skills (`ki-plans`, `ki-mcp`, `ki-repo`, `ki-skills`, `ki-agents`) stay bare — the prefix marks "part of a KB base", not domain. A set-wide sweep: skill `name:` frontmatter and directory renames, `package.json` script families, `.ki-config.toml` coverage tables in every consuming base, `ki-bootstrap` wiring, and cross-references across the skill set. Tracked as plan [001](docs/plans/skills/001-ki-kb-family-rename.md).
+The four KB-zone skills — meaningful only inside a base — take a shared `ki-kb-*` prefix that encodes their containment: `ki-kb-base` → `ki-kb-base`, `ki-kb-streams` → `ki-kb-streams`, `ki-kb-activities` → `ki-kb-activities`, `ki-kb-live-artifacts` → `ki-kb-live-artifacts`. Code-peer skills (`ki-plans`, `ki-mcp`, `ki-repo`, `ki-skills`, `ki-agents`) stay bare — the prefix marks "part of a KB base", not domain. A set-wide sweep: skill `name:` frontmatter and directory renames, `package.json` script families, `.ki-config.toml` coverage tables in every consuming base, `ki-bootstrap` wiring, and cross-references across the skill set. Tracked as plan [001](docs/plans/skills/001-ki-kb-family-rename.md).
 
 ### Cross-surface MCP/skill enablement
 
@@ -18,7 +18,7 @@ The workspace controls MCP servers and skills for Claude Code only: mcporter pro
 
 ### Add the `ki-handoffs` governance skill
 
-A doctrine skill owning the reasoning-layer split: plan work once at the top tier, then write it as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning. It composes on `ki-plans` (the plan is the host artifact in a code repo) and `ki-streams` (the proposal Checklist in a KB), and off-ramps tier cost/selection to `ki-tokenomics` — owning only the delegation-readiness delta (decisions-locked-vs-escalate, a per-unit recommended tier, the cold-model readiness test). Tracked as plan [003](docs/plans/skills/003-ki-handoffs.md).
+A doctrine skill owning the reasoning-layer split: plan work once at the top tier, then write it as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning. It composes on `ki-plans` (the plan is the host artifact in a code repo) and `ki-kb-streams` (the proposal Checklist in a KB), and off-ramps tier cost/selection to `ki-tokenomics` — owning only the delegation-readiness delta (decisions-locked-vs-escalate, a per-unit recommended tier, the cold-model readiness test). Tracked as plan [003](docs/plans/skills/003-ki-handoffs.md).
 
 ## Future
 

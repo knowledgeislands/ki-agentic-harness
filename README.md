@@ -27,7 +27,7 @@ The directory name **is** the skill's `name`: lowercase, hyphenated, and matchin
 
 Skills here fall into a few kinds, and the set will grow:
 
-- **Knowledge Islands skills** — operate over the standard Knowledge Islands knowledge-base structure (see [docs/knowledge-islands.md](docs/knowledge-islands.md)). They carry reusable mode logic and resolve only a few store-level bindings from the host base. The `kb` and `streams` skills are these.
+- **Knowledge Islands skills** — operate over the standard Knowledge Islands knowledge-base structure (see [docs/knowledge-islands.md](docs/knowledge-islands.md)). They carry reusable mode logic and resolve only a few store-level bindings from the host base. The `ki-kb-*` family (`kb-base`, `kb-streams`, `kb-activities`, `kb-live-artifacts`) are these.
 - **Process skills** — encode a workflow or procedure not tied to any particular base (a review process, a release checklist, a research harness).
 - **Scoped skills** — target a specific area: a subset of folders, a single project, or one recurring task.
 

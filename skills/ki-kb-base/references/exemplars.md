@@ -81,7 +81,7 @@ arcadia-principal/
 │   ├── Philosophy/
 │   └── Technē/
 ├── Resources/           ← reference material with external origin
-└── Streams/             ← work in motion (see ki-streams)
+└── Streams/             ← work in motion (see ki-kb-streams)
     ├── Active/
     ├── Background/
     ├── Dormant/
@@ -109,4 +109,4 @@ See the [Agent Skills standard](https://agentskills.io/) for the published spec.
 See [[Charter]] for the island identity. See [[Knowledge Islands]] for the portable model.
 ```
 
-The `ki-kb` skill works with relative markdown paths throughout; wikilinks in existing notes are read and understood, but never written by the skill.
+The `ki-kb-base` skill works with relative markdown paths throughout; wikilinks in existing notes are read and understood, but never written by the skill.

@@ -1,5 +1,5 @@
 /**
- * Eval scenarios for the `ki-kb` skill — the Knowledge Islands zone
+ * Eval scenarios for the `ki-kb-base` skill — the Knowledge Islands zone
  * model. Each probes a house-specific rule (zone routing, the zone set, the digest
  * path) a skill-less baseline wouldn't know from general knowledge.
  */
@@ -7,7 +7,7 @@ import type { Scenario } from '../harness.ts'
 
 export const scenarios: Scenario[] = [
   {
-    skill: 'ki-kb',
+    skill: 'ki-kb-base',
     id: 'kb-routing',
     prompt:
       'In a Knowledge Islands base, where does each of these go: (a) an active, in-progress workstream, (b) settled internal knowledge about our methodology, (c) external reference material that would exist without this base? Name the top-level zone for each.',
@@ -20,7 +20,7 @@ export const scenarios: Scenario[] = [
       'House zone model: active/in-progress work → Streams/; settled internal knowledge → Pillars/ (migrates there from Streams once settled); external reference that would exist without this base → Resources/. A correct answer maps all three (Streams, Pillars, Resources) accordingly.'
   },
   {
-    skill: 'ki-kb',
+    skill: 'ki-kb-base',
     id: 'kb-zone-set',
     prompt: 'What are the top-level folders of a Knowledge Islands base, and which of them are zones vs. staging areas?',
     assertions: [
@@ -32,7 +32,7 @@ export const scenarios: Scenario[] = [
       'House structure: FIVE zones — Calendar, Pillars, Resources, Streams, Admin — each with a same-name index note; flanked by `+` (inbound) and `-` (outbound) STAGING areas, which are not zones and carry no same-name index. A correct answer lists the five zones and identifies + / - as staging rather than zones.'
   },
   {
-    skill: 'ki-kb',
+    skill: 'ki-kb-base',
     id: 'kb-digest-path',
     prompt: 'I want to save a session digest in a Knowledge Islands base. What is the exact destination path and required frontmatter?',
     assertions: [

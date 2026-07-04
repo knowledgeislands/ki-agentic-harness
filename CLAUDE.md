@@ -4,7 +4,7 @@ Always-loaded orientation for an agent working in this repo. The README is the e
 
 ## What this repo is
 
-The canonical home for the Knowledge Islands **Agent Skills** (per the [Agent Skills standard](https://agentskills.io/)). The `ki-*` skills are **governance skills**: each holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes plus a mechanical checker. They sit in two layers plus a container governor and an install keystone — foundations (`authoring`, `engineering`), domain skills (`kb`, `streams`, `mcp`, `repo`, `skills`, `agents`, `tokenomics`, `decision-records`, `activities`, `live-artifacts`, and the website pair), `harness` (governs the four-part bundle), and `bootstrap` (the one globally-installed skill, which wires each repo's project-local `.claude/skills/` from its `.ki-config.toml`) — mapped in the README.
+The canonical home for the Knowledge Islands **Agent Skills** (per the [Agent Skills standard](https://agentskills.io/)). The `ki-*` skills are **governance skills**: each holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes plus a mechanical checker. They sit in two layers plus a container governor and an install keystone — foundations (`authoring`, `engineering`), domain skills — the `ki-kb-*` base family (`kb-base`, `kb-streams`, `kb-activities`, `kb-live-artifacts`) plus `mcp`, `repo`, `skills`, `agents`, `tokenomics`, `decision-records`, and the website pair, `harness` (governs the four-part bundle), and `bootstrap` (the one globally-installed skill, which wires each repo's project-local `.claude/skills/` from its `.ki-config.toml`) — mapped in the README.
 
 ## Four-part bundle status
 
@@ -83,7 +83,7 @@ _~200 tokens/session saved_
 
 _~8,000 tokens/session saved_
 
-- `skills/ki-kb/SKILL.md` (~500 lines, ~20 KB) and `skills/ki-streams/SKILL.md` (~500 lines, ~20 KB) are the two largest skill files. Read only when working directly on those skills.
+- `skills/ki-kb-base/SKILL.md` (~500 lines, ~20 KB) and `skills/ki-kb-streams/SKILL.md` (~500 lines, ~20 KB) are the two largest skill files. Read only when working directly on those skills.
 - `README.md` at the harness root is ~30 KB. For structural surveys, prefer `ls` + `cat package.json` + `cat .ki-config.toml` instead.
 
 ### Audit script paths
