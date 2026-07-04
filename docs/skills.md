@@ -1,12 +1,12 @@
 # The skills
 
-The skills are the bulk of the harness today: **eighteen** of them, each a **governance skill** — it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones), backed by a tracked `references/sources.md`.
+The skills are the bulk of the harness today: **nineteen** of them, each a **governance skill** — it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones), backed by a tracked `references/sources.md`.
 
 This file is the catalogue: what each skill does, and the shared shape they all follow. For how they fit together — the boundaries between the ones that could be confused, the loops that run across them, and the invariants they all hold — see [design.md](design.md). The overview map lives in the [README](../README.md).
 
-## The eighteen
+## The nineteen
 
-The eighteen sit in **two layers** plus a bridge and a keystone: two cross-cutting **foundations** that every other skill builds on, the **domain** skills that each govern one kind of artifact, `ki-harness` — the **container** skill that governs the bundle holding them all — and `ki-bootstrap`, the **install keystone** that wires a repo's project-local skills into place.
+The nineteen sit in **two layers** plus a bridge and a keystone: two cross-cutting **foundations** that every other skill builds on, the **domain** skills that each govern one kind of artifact, `ki-harness` — the **container** skill that governs the bundle holding them all — and `ki-bootstrap`, the **install keystone** that wires a repo's project-local skills into place.
 
 ### [`ki-kb-base`](../skills/ki-kb-base/SKILL.md) — Knowledge Islands
 
@@ -19,6 +19,10 @@ Owns the **`Streams` zone** — the base's working copy ("plan mode") — and th
 ### [`ki-decision-records`](../skills/ki-decision-records/SKILL.md) — Process
 
 Governs **Decision Records** in any Knowledge Islands repo, code or KB — the typed ID prefixes (`GDR` / `ADR` / `KDR` / …), the five-section format, the status lifecycle, and placement (`docs/decisions/` in a code repo, `Admin/Governance/Decisions/` in a KB). Ships a mechanical checker (`audit-drs.ts`). Defers to `ki-kb-base` for the island structure and the KI-wide frontmatter standard, and to `ki-kb-streams` for the Enactment Process by which a change is ratified.
+
+### [`ki-memory`](../skills/ki-memory/SKILL.md) — Process
+
+Governs the Claude Code auto-memory system — the per-project `memory/*.md` files and `MEMORY.md` index that Headroom writes outside the repo tree at `~/.claude/projects/<slug>/memory/`. Owns the index/file-agreement contract, the frontmatter schema (`name` / `description` / `metadata.type` ∈ user, feedback, project, reference), and the promote-then-delete reconciliation doctrine. Ships a mechanical checker (`audit-memory.ts`) that resolves a repo's memory directory and checks it; a repo with none yet is a SKIP, not a FAIL. Distinct from `ki-kb-base`'s **MEM-2** memory cascade (a KB's own root `Admin/MEMORY.md`); off-ramps token-cost measurement to `ki-tokenomics`.
 
 ### [`ki-plans`](../skills/ki-plans/SKILL.md) — Process
 
@@ -84,7 +88,7 @@ Where the set is going next is in [ROADMAP.md](../ROADMAP.md).
 
 ## The governance-skill shape
 
-All eighteen share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in `ki-engineering`'s [enforcement framework](../skills/ki-engineering/references/enforcement-framework.md):
+All nineteen share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in `ki-engineering`'s [enforcement framework](../skills/ki-engineering/references/enforcement-framework.md):
 
 - **`<domain>-standard.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like, and why.
 - **`audit-rubric.md`** — the line-by-line checkable criteria, each tagged **mechanical** (a checker enforces it) or **judgment** (a reader assesses it), each citing the standard section it verifies.

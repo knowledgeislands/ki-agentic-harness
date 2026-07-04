@@ -4,13 +4,13 @@ Always-loaded orientation for an agent working in this repo. The README is the e
 
 ## What this repo is
 
-The canonical home for the Knowledge Islands **Agent Skills** (per the [Agent Skills standard](https://agentskills.io/)). The `ki-*` skills are **governance skills**: each holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes plus a mechanical checker. They sit in two layers plus a container governor and an install keystone — foundations (`authoring`, `engineering`), domain skills — the `ki-kb-*` base family (`kb-base`, `kb-streams`, `kb-activities`, `kb-live-artifacts`) plus `mcp`, `repo`, `skills`, `agents`, `tokenomics`, `decision-records`, and the website pair, `harness` (governs the four-part bundle), and `bootstrap` (the one globally-installed skill, which wires each repo's project-local `.claude/skills/` from its `.ki-config.toml`) — mapped in the README.
+The canonical home for the Knowledge Islands **Agent Skills** (per the [Agent Skills standard](https://agentskills.io/)). The `ki-*` skills are **governance skills**: each holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes plus a mechanical checker. They sit in two layers plus a container governor and an install keystone — foundations (`authoring`, `engineering`), domain skills — the `ki-kb-*` base family (`kb-base`, `kb-streams`, `kb-activities`, `kb-live-artifacts`) plus `mcp`, `repo`, `skills`, `agents`, `tokenomics`, `decision-records`, `memory`, and the website pair, `harness` (governs the four-part bundle), and `bootstrap` (the one globally-installed skill, which wires each repo's project-local `.claude/skills/` from its `.ki-config.toml`) — mapped in the README.
 
 ## Four-part bundle status
 
 | Part        | Directory | Status                                                              |
 | ----------- | --------- | ------------------------------------------------------------------- |
-| Skills      | `skills/` | **Populated** — 18 `ki-*` skills                                    |
+| Skills      | `skills/` | **Populated** — 19 `ki-*` skills                                    |
 | Agents      | `agents/` | **Populated** — 5 governance agents in `agents/governance/`         |
 | MCP servers | `mcp/`    | **Shelf** — scaffolded, no servers yet                              |
 | Evals       | `evals/`  | **Populated (partial)** — 3 scenarios + result matrices in `evals/` |
