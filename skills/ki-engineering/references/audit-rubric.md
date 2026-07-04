@@ -59,7 +59,7 @@ Capability conditionals only apply when the repo has the marker (tests / compile
 - [ ] [M] WARN — matches the shared config (formatter 2-space / lineWidth 140; JS single quotes, `semicolons: asNeeded`, no trailing commas; `preset: recommended` with `noExplicitAny: off`; `organizeImports: on`; git VCS + `useIgnoreFile`).
 - [ ] [M] WARN — `.prettierrc.json` present (Prettier backs `ki:lint:md`).
 - [ ] [M] FAIL — `knip.json` present (per-repo entry points + ignores; backs `ki:knip` / `ki:deps:*`). See §5.
-- [ ] [M] WARN — it matches the shared shape: `proseWrap: always`, `printWidth: 140`, `semi: false`, `singleQuote: true`, `trailingComma: none`, and the `*.md` markdown override.
+- [ ] [M] WARN — it matches the shared shape: `proseWrap: never`, `printWidth: 140`, `semi: false`, `singleQuote: true`, `trailingComma: none`, and the `*.md` markdown override.
 
 ## Capability: tests (§6) — marker: `vitest.config.*` or a `test` script
 

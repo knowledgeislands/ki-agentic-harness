@@ -27,7 +27,7 @@ Curated illustrations of the Knowledge Islands authoring conventions in practice
 
 When a table column's content would force rows past a comfortable reading width (≈ 100 characters in a terminal), move the long content into footnotes below the table. The correct marker series, in order, is `†` `‡` `§` `¶` `‖` (then doubled: `††` `‡‡` …). Never use `*` — it collides with Markdown emphasis. Markers reset per table. A separate second series (`※` `❡` `¤` `¥`) separates two distinct footnote categories in the same table (e.g. a "source" series and a "caveat" series) so they do not collide.
 
-Each footnote must be separated from its neighbours by a blank line — under `proseWrap: always` Prettier reflows adjacent footnote lines into one paragraph otherwise.
+Each footnote must be separated from its neighbours by a blank line — under `proseWrap: never` Prettier joins adjacent footnote lines into one paragraph otherwise.
 
 ```markdown
 | Repo  | Branch | Notes |

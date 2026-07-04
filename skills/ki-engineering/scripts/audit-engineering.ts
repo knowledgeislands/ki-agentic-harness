@@ -331,7 +331,7 @@ const prettier = read('.prettierrc.json')
 if (!prettier) add('FAIL', 'prettier', '.prettierrc.json missing (Prettier backs ki:lint:md)')
 else {
   const pfields: [string, RegExp][] = [
-    ['proseWrap always', /"proseWrap"\s*:\s*"always"/],
+    ['proseWrap never', /"proseWrap"\s*:\s*"never"/],
     ['printWidth 140', /"printWidth"\s*:\s*140/],
     ['semi false', /"semi"\s*:\s*false/],
     ['singleQuote true', /"singleQuote"\s*:\s*true/],
