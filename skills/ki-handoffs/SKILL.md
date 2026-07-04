@@ -15,7 +15,7 @@ Handoffs are a **cross-tier instrument** that rides on an existing artifact — 
 
 1. **The reasoning-layer split** — the doctrine that the top reasoning tier is spent **once** to think a body of work through, and its output is banked as specs a cheaper tier executes. The expensive act is the reasoning; buy it deliberately, then delegate the execution down.
 2. **The handoff-spec quality bar** — see [Handoff quality bar](#handoff-quality-bar). The delta over a plain plan: decisions-locked-vs-escalate, a per-unit recommended tier, and a recorded readiness test.
-3. **Tier assignment** — each unit of work names the **cheapest tier that its spec makes safe**, referred to semantically (cheap / mid / top). _Which_ tier costs what and how to select the ambient default is entirely `ki-tokenomics` (its standard §4 and §8, and `preferred_model`); this skill only requires that a tier be assigned and justified in one line, and never hard-codes model ids or prices.
+3. **Tier assignment** — each unit of work names the **cheapest tier that its spec makes safe**, referred to by the house classes (haiku / sonnet / opus, cheapest to most capable). _Which_ tier costs what and how to select the ambient default is entirely `ki-tokenomics` (its standard §4 and §8, and `preferred_model`); this skill only requires that a tier be assigned and justified in one line, and never hard-codes model ids or prices.
 4. **The readiness test** — a spec is ready when a cold agent at the assigned tier can execute the first phase from the spec alone, with no reasoning that lives only in the planner's head. The test is recorded on the artifact, not left implicit.
 5. **The opt-in marker contract** — an artifact opts into handoff-governance with `handoff: true` frontmatter; it then must carry the markers the checker enforces (`tier`, a decisions-locked-vs-escalate section, a readiness marker). Opt-in keeps the doctrine off artifacts that do not want it. Full contract in [references/handoffs-standard.md](references/handoffs-standard.md).
 
@@ -61,6 +61,6 @@ Revisit the doctrine against practice: does the reasoning-layer split still matc
 ## Notes
 
 - **Not every plan needs handoff-governance.** Opt in (`handoff: true`) only where work will actually be executed by a different, cheaper tier or a cold agent. Work the planner will execute itself needs only the host artifact's quality bar.
-- **Semantic tiers only.** The body and specs name tiers as cheap / mid / top (or the house `haiku` / `sonnet` / `opus` classes); concrete model ids and prices resolve at runtime through the `claude-api` skill and are never hard-coded here.
+- **Semantic tiers only.** The body and specs may narrate tiers as cheap / mid / top, but the `tier:` frontmatter field must itself be one of `haiku` / `sonnet` / `opus` per the opt-in marker contract — writing `tier: cheap` trips HAND-1. Concrete model ids and prices resolve at runtime through the `claude-api` skill and are never hard-coded here.
 - **The doctrine is the point, the markers are the teeth.** The markers exist so a checker can confirm a spec is delegable; the value is the reasoning-once-execute-cheap discipline they enforce.
 - Checker output conforms to the severity ladder, JSON shape, and exit-code contract in `ki-engineering`'s [checker-contract.md](../ki-engineering/references/checker-contract.md).

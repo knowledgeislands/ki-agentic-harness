@@ -119,4 +119,5 @@ The Enactment gate ("nothing reaches a canonical zone except through a `ready` p
 ## Notes
 
 - This skill governs the **inside of the `Streams/` zone**. For the five-zone model, routing into the zones, note CRUD, and session digests, use the `ki-kb` skill — it knows `Streams` is a zone and delegates its internals here.
+- When a proposal's `Decision` (an Inputs or Outputs row) warrants a durable, standalone Decision Record rather than an inline note, author it with the `ki-decision-records` skill and reference it from the row.
 - If a base does not follow this structure, or a binding cannot be resolved and no default fits, ask rather than guess.

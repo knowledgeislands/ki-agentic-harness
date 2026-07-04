@@ -18,20 +18,22 @@ The full, quotable standard is [the Eleventy site standard](references/eleventy-
 ## The stack at a glance
 
 ```text
-<repo>/                         # flat layout — one deployable
-├── eleventy.config.ts          # export default (eleventyConfig) ⇒ { dir, htmlTemplateEngine: 'njk', … }
-├── src/
-│   ├── _data/                  # global data: *.ts (default export, called if a function) + *.json5
-│   ├── _includes/
-│   │   ├── layouts/            # base.njk (the <html> shell) + page layouts
-│   │   └── partials/           # nav, footer, seo-meta — reusable fragments
-│   ├── assets/css/             # main.css → @import "tailwindcss" + tokens.css (@theme inline) + page partials
-│   ├── assets/{js,images,fonts}/
-│   └── <content>/              # Markdown pages + *.11tydata.json cascade (layout, section)
-└── dist/                       # BUILD OUTPUT — portable (relative URLs), gitignored. The seam to hosting.
+<repo>/                         # monorepo — root package.json workspaces: ["site"] from day one
+├── package.json                # workspaces: ["site"] — the site is always its own workspace package
+└── site/                       # the site workspace (never a flat repo-root layout)
+    ├── eleventy.config.ts      # export default (eleventyConfig) ⇒ { dir, htmlTemplateEngine: 'njk', … }
+    ├── src/
+    │   ├── _data/              # global data: *.ts (default export, called if a function) + *.json5
+    │   ├── _includes/
+    │   │   ├── layouts/        # base.njk (the <html> shell) + page layouts
+    │   │   └── partials/       # nav, footer, seo-meta — reusable fragments
+    │   ├── assets/css/         # main.css → @import "tailwindcss" + tokens.css (@theme inline) + page partials
+    │   ├── assets/{js,images,fonts}/
+    │   └── <content>/          # Markdown pages + *.11tydata.json cascade (layout, section)
+    └── dist/                   # BUILD OUTPUT — portable (relative URLs), gitignored. The seam to hosting.
 ```
 
-When the repo also holds **unrelated deployables** (a bot, an ingress Worker — out of this skill's scope), they are added as sibling workspaces (`["site", "ingress"]`). Each workspace owns its own `dist/`; `site/` always emits to `./dist` (`site/dist/`).
+A companion deployable (a bot, an ingress Worker — out of this skill's scope) is a pure **addition** to the workspaces list (`["site", "ingress"]`), not the reason workspaces appear. Each workspace owns its own `dist/`; `site/` always emits to `./dist` (`site/dist/`).
 
 Four invariants define the standard — most findings are a breach of one:
 
@@ -63,7 +65,7 @@ Carries the universal **AUDIT · CONFORM · REFRESH**, plus **INIT** (scaffold a
 ### Mode AUDIT — check a site against the standard
 
 1. **Run the common layer first.** `bun ki-engineering/scripts/audit-engineering.ts <repo>` covers the shared toolchain. Don't re-derive it here.
-2. **Run the mechanical checker.** `bun <skill>/scripts/audit-websites.ts <repo>`. It locates the site root (flat or `site/`), then reports: the `@11ty/eleventy` dep, **no `tailwind.config.*`**, `eleventy.config.ts` present, the relative-URL transform, the `.ts` + `.json5` data extensions, the Tailwind `eleventy.before` hook, `main.css` importing `tailwindcss`, the `src/` layout dirs, the build/dev script family, the `seo-meta` partial, and `dist/` gitignored. It grades findings on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — see `ki-engineering`'s [checker-contract.md](../ki-engineering/references/checker-contract.md)) and exits non-zero on any FAIL; with `--json` / `--report` it emits machine-readable findings and writes the latest report to the site's `.ki-meta/audits/websites.{md,json}`. Capture its output verbatim.
+2. **Run the mechanical checker.** `bun <skill>/scripts/audit-websites.ts <repo>`. It locates the site root (the `site/` workspace), then reports: the `@11ty/eleventy` dep, **no `tailwind.config.*`**, `eleventy.config.ts` present, the relative-URL transform, the `.ts` + `.json5` data extensions, the Tailwind `eleventy.before` hook, `main.css` importing `tailwindcss`, the `src/` layout dirs, the build/dev script family, the `seo-meta` partial, and `dist/` gitignored. It grades findings on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — see `ki-engineering`'s [checker-contract.md](../ki-engineering/references/checker-contract.md)) and exits non-zero on any FAIL; with `--json` / `--report` it emits machine-readable findings and writes the latest report to the site's `.ki-meta/audits/websites.{md,json}`. Capture its output verbatim.
 3. **Apply the judgment items** in [the rubric](references/audit-rubric.md): `tokens.css` actually drives the palette (not hard-coded hexes in templates), `_data` is the single source of structure, content is Markdown with cascade data files, SEO meta is wired into `base.njk`, and a public site ships a sitemap/robots. Name the hosting audit that must also run if the site is deployed.
 4. **Report** by location → criterion → fix, grouped by severity (FAIL / WARN / POLISH). Cite `file:line`.
 

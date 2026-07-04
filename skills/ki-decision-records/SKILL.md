@@ -1,7 +1,7 @@
 ---
 name: ki-decision-records
 description: >
-  Codify, audit, and maintain Decision Records in any Knowledge Islands repo — the unified instrument replacing ki-adrs and ki-kdrs. Each decision_type has its own prefix: GDR- (governance), ADR- (architecture), KDR- (knowledge), SDR- (strategy), PDR- (product), DDR- (data), XDR- (security), ODR- (operations), RDR- (research). Serials are global within scope. Governs the Nygard five-section format, status lifecycle, and placement: docs/decisions/ for code repos, Admin/Governance/Decisions/ for KB repos. In KB repos DRs carry type: admin/governance/decision plus decision_type, per the KI-wide frontmatter standard in ki-kb. Use when writing, auditing, or conforming decision records. Triggers: "write a DR", "create a decision record", "document this decision", "audit the DRs". Off-ramps: ki-kb (island structure and frontmatter standard), ki-streams (Enactment Process).
+  Codify, audit, and maintain Decision Records in any Knowledge Islands repo — the unified instrument replacing ki-adrs and ki-kdrs. Each decision_type has its own prefix: GDR- (governance), ADR- (architecture), KDR- (knowledge), SDR- (strategy), PDR- (product), DDR- (data), XDR- (security), ODR- (operations), RDR- (research). Serials are per-prefix within scope. Governs the Nygard five-section format, status lifecycle, and placement: docs/decisions/ for code repos, Admin/Governance/Decisions/ for KB repos. In KB repos DRs carry type: admin/governance/decision plus decision_type, per the KI-wide frontmatter standard in ki-kb. Use when writing, auditing, or conforming decision records. Triggers: "write a DR", "create a decision record", "document this decision", "audit the DRs". Off-ramps: ki-kb (island structure and frontmatter standard), ki-streams (Enactment Process).
 argument-hint: 'audit [dir] | conform [dir] | new <scope> "<title>" | refresh'
 ---
 
@@ -26,8 +26,8 @@ You are applying the **Knowledge Islands Decision Records standard** — how Dec
    | `RDR-` | `research`      |
    | `KDR-` | `knowledge`     |
 
-3. **The naming convention** — `<PREFIX>-<SCOPE>-NNN`: open scope (any uppercase alpha-leading token, multi-level), NNN is zero-padded (≥ 3 digits), monotonically increasing **within the scope** (global across all prefixes — no two DRs in the same scope share a serial).
-4. **The status lifecycle** — `Proposed → Accepted → Deprecated → Superseded by <ID>`; superseded records are retained with a bidirectional reference; accepted records are never modified, only superseded.
+3. **The naming convention** — `<PREFIX>-<SCOPE>-NNN`: open scope (any uppercase alpha-leading token, multi-level), NNN is zero-padded (≥ 3 digits), monotonically increasing **per prefix within the scope** (NNN is unique for a given `<PREFIX>`+`<SCOPE>` — two DRs may share a serial if their prefixes differ).
+4. **The status lifecycle** — `Draft → Proposed → Accepted → Deprecated → Superseded by <ID>`; superseded records are retained with a bidirectional reference. **The mutability axis** — every DR carries `**Mutability:** open|locked`, orthogonal to Status: an Accepted DR may be `locked` (frozen, changed only by supersession) or `open` (edited in place, each edit logged in `## Changelog`); `Deprecated`/`Superseded` are always `locked`. See the Mutability section of [dr-format.md](references/dr-format.md).
 5. **The index rule** — `Decisions.md` (code: `README.md` or `Decisions.md`) must contain a table with one row per DR, ordered by filename.
 6. **The placement rule** — `repo_type = "kb"` in `.ki-config.toml` → `Admin/Governance/Decisions/`; all others → `docs/decisions/`. Pass the actual path to the checker.
 7. **The Enactment Process integration** — a DR is the formal artifact for an Enactment Process proposal whose `Decision` output warrants a standalone record.
@@ -55,9 +55,9 @@ Carries the universal **AUDIT · CONFORM · REFRESH**, plus **NEW** (draft a new
 
 ## Notes
 
-- **Never modify an accepted DR** — only supersede it. An `Accepted` record is immutable history.
+- **Mutability governs edits, not Status** — a `locked` DR changes only by supersession; an `open` DR is edited in place, each edit logged in `## Changelog`. `Deprecated`/`Superseded` records are always `locked`.
 - **Scope convention** — use the island/repo identifier from `.ki-config.toml` as the primary scope segment (e.g. `ARCADIA`). Multi-level scopes are valid for sub-domain decisions (e.g. `ARCADIA-TOOLS`).
-- **Serials are global** — NNN is unique within a `<SCOPE>` namespace across all prefixes. There will never be both an `ADR-ARCADIA-003` and a `GDR-ARCADIA-003`.
+- **Serials are per-prefix within scope** — NNN is unique for a given `<PREFIX>`+`<SCOPE>`. `GDR-ARCADIA-001` and `SDR-ARCADIA-001` are both valid; two DRs never share the same prefix+scope+serial.
 - **Not every proposal needs a DR** — routine content additions, typo fixes, and minor configuration changes do not warrant one. Reserve DRs for decisions with standalone standing.
 - **KB repos** use `Admin/Governance/Decisions/` and require frontmatter (`type`, `decision_type`, `status`, `author`). **Code repos** use `docs/decisions/` and frontmatter is optional.
 - The KI-wide frontmatter standard (universal fields and the `type` taxonomy) lives in `ki-kb`'s [frontmatter-standard.md](../ki-kb/references/frontmatter-standard.md).

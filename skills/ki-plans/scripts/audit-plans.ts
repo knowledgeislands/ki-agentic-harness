@@ -202,7 +202,7 @@ if (plans.length) {
   add(
     'ADVISORY',
     'quality',
-    'quality-bar [J]: Steps concrete, Verify checkable, Current state honest, Files touched minimal (see references/audit-rubric.md).'
+    'quality-bar [J]: Steps concrete, Verify checkable, Current state honest, Files touched minimal (see the Plan quality bar in SKILL.md).'
   )
   const wip = plans.filter((p) => p.fm.status === 'in-progress')
   if (wip.length)

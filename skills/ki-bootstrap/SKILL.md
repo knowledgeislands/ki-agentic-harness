@@ -22,7 +22,7 @@ The linker and checker is [`scripts/link-skills.ts`](scripts/link-skills.ts); it
 ## Mode AUDIT — check a repo's project-local skills
 
 1. **Run the checker.** `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-skills.ts" [path] --check` (or `bun run ki:skills:link:project --check` if wired, or run it from this skill's directory). It reports on the unified severity ladder (`ki-engineering` enforcement-framework §2): **BOOT-1** `.claude/skills/` matches declared coverage ∪ baseline (and no dangling links), **BOOT-2** a `ki:skills:link:project` script is present, **BOOT-3** `.claude/skills/` is gitignored.
-2. **Judge the [J] criterion by reading** — is the repo's _declared_ coverage actually right (does it opt into the skills it uses)? That is `ki-repo`'s coverage cascade, not this skill's; name it as the off-ramp rather than re-deciding it here.
+2. **Judge the [J] criterion (BOOT-4) by reading** — is the repo's _declared_ coverage actually right (does it opt into the skills it uses)? That is `ki-repo`'s coverage cascade, not this skill's; name it as the off-ramp rather than re-deciding it here.
 3. **Report** by criterion. A missing/dangling link or absent `ki:skills:link:project`/gitignore is a WARN — all are conformable, none block.
 
 ## Mode CONFORM — wire a repo

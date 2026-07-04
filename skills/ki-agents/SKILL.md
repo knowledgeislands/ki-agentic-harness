@@ -7,7 +7,7 @@ argument-hint: 'audit <agent-or-dir> | conform <agent> | init <description> | re
 
 # Knowledge Islands Agents
 
-You are helping author or audit **Claude Code subagents** — single Markdown files with YAML frontmatter (`name`, `description`, optional `model` / `tools` / `color`) and a system-prompt body, per the [Claude Code subagents standard](https://code.claude.com/docs/en/sub-agents). This is the house rubric for what a _good_ agent definition looks like, plus the four modes you run over it. It is the agents twin of `ki-skills`, which governs `SKILL.md` files; this skill governs subagent definitions.
+You are helping author or audit **Claude Code subagents** — single Markdown files with YAML frontmatter (`name`, `description`, and optional fields — `model`, `tools`, `color`, and more, per the standard) and a system-prompt body, per the [Claude Code subagents standard](https://code.claude.com/docs/en/sub-agents). This is the house rubric for what a _good_ agent definition looks like, plus the four modes you run over it. It is the agents twin of `ki-skills`, which governs `SKILL.md` files; this skill governs subagent definitions.
 
 ## The two-layer model
 
