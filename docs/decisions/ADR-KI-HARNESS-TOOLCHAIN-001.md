@@ -38,4 +38,4 @@ The script families (`ki:lint:check`, `ki:lint:types`, `ki:lint:md`, `ki:lint:md
 ## Changelog
 
 - 2026-07-02 — realigned to present state; folded in knip for dependency + dead-code hygiene (previously recorded as ADR-KI-HARNESS-TOOLCHAIN-004).
-- 2026-07-04 — `ki:deps:update` changed from `bun update --latest` to `bun update --force`: refresh within the declared `package.json` ranges rather than bumping across them, which also stops `--latest` writing `latest` specifiers into `bun.lock`. Dependency freshness stays part of `ki:conform`.
+- 2026-07-04 — split dependency freshness into two idioms by intent. `ki:deps:refresh` (`bun update --force`) is the routine in-range refresh now composed into `ki:conform` — it never crosses a semver major or writes `latest` into `bun.lock`. `ki:deps:update` (`bun update --latest && bun install`) is the deliberate cross-major upgrade run on purpose; the trailing `bun install` re-pins `bun.lock` so `--latest`'s transient `latest` markers never reach a commit. (`ki:conform` previously composed `ki:deps:update` = `bun update --latest`, which bumped majors on every conform and polluted the lock.)

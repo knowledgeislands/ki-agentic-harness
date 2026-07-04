@@ -222,7 +222,8 @@ const CANON: Record<string, string> = {
   'ki:lint:types': 'tsc --noEmit',
   'ki:deps:check': 'bunx knip --dependencies --no-config-hints',
   'ki:deps:fix': 'bunx knip --dependencies --fix --no-config-hints',
-  'ki:deps:update': 'bun update --force',
+  'ki:deps:refresh': 'bun update --force',
+  'ki:deps:update': 'bun update --latest && bun install',
   'ki:knip': 'bunx knip --no-config-hints'
 }
 for (const [k, v] of Object.entries(CANON)) {
@@ -364,7 +365,7 @@ const usesLoadEnv = (() => {
 const hasEnv = Boolean(envExample) || usesLoadEnv
 
 // ── core: the unified conformance entrypoints (§2) ────────────────────────────
-// ki:conform (write) composes ki:deps:update → ki:lint:package → ki:lint:format → ki:lint:fix →
+// ki:conform (write) composes ki:deps:refresh → ki:lint:package → ki:lint:format → ki:lint:fix →
 // ki:lint:md (+ build/test tails); ki:verify (read-only) mirrors the CI gate: ki:lint:check
 // → ki:lint:types → ki:lint:md:check (+ build/test:coverage tails). Both required everywhere.
 {
@@ -372,7 +373,7 @@ const hasEnv = Boolean(envExample) || usesLoadEnv
   const verify = scripts['ki:verify'] ?? ''
   if (!conform) add('FAIL', 'scripts', 'script "ki:conform" missing (unified write-pass entrypoint, §2)')
   else {
-    const wantConform = ['ki:deps:update', 'ki:lint:package', 'ki:lint:format', 'ki:lint:fix', 'ki:lint:md']
+    const wantConform = ['ki:deps:refresh', 'ki:lint:package', 'ki:lint:format', 'ki:lint:fix', 'ki:lint:md']
     const missing = wantConform.filter((s) => !conform.includes(s))
     missing.length
       ? add('WARN', 'scripts', `ki:conform should compose ${wantConform.join(' → ')}; not referenced: ${missing.join(', ')}`)
