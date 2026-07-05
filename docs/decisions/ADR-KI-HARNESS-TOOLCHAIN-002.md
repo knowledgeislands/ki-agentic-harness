@@ -35,7 +35,7 @@ As a session grows and the MCP surface expands, token cost per turn rises and th
 
 ### Scale-gated
 
-**Graphify** — builds a self-updating knowledge graph of a _codebase_ (tree-sitter plus LLM extraction) to navigate by structure. Its benefit appears only on large repositories (500+ files); the harness and its siblings are small Markdown/skill/MCP repos, and the KI KB is itself a curated human-authored knowledge graph. Not adopted at current scale; recorded as a ROADMAP candidate should a large code corpus emerge.
+**Graphify** — builds a self-updating knowledge graph of a _codebase_ (tree-sitter plus LLM extraction) to navigate by structure. Its benefit appears only on large repositories (500+ files); the harness and its siblings are small Markdown/skill/MCP repos, and the KI KB is itself a curated human-authored knowledge graph. Not adopted at current scale. Dropped from the ROADMAP on 2026-07-05 as not needed; revisit from this ADR should a large code corpus ever emerge.
 
 ### Prior art — house-mcp-manager
 
