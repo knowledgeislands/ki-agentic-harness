@@ -32,3 +32,5 @@ Every Knowledge Islands repo carries:
 - a `.gitignore` entry for `.claude/skills/`.
 
 Together these make the project-local skill set reproducible from `.ki-config.toml` alone, on any machine, after a single `ki:skills:link:project`.
+
+The same linker call also scaffolds one `ki:<suffix>:<verb>` script per linked skill that carries a checker script (`ki-kb-base`'s `audit-kb.ts` → `ki:kb-base:audit`, `ki-agents`'s `lint-agents.ts` → `ki:agents:lint`, and so on) — so each skill's own AUDIT is reproducible too, not just the link step itself. The script filename isn't a fixed function of the skill name, so this is **discovered** per skill (scan `scripts/` for a single `(audit|lint)-*.ts` match) rather than templated; a skill with zero or ambiguous (multiple) checker scripts is skipped. An existing script entry for the same key is never overwritten — a repo may have deliberately customized the command.

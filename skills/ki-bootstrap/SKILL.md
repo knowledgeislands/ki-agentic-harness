@@ -21,7 +21,7 @@ The linker and checker is [`scripts/link-skills.ts`](scripts/link-skills.ts); it
 
 ## Mode AUDIT — check a repo's project-local skills
 
-1. **Run the checker.** `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-skills.ts" [path] --check` (or `bun run ki:skills:link:project --check` if wired, or run it from this skill's directory). It reports on the unified severity ladder (`ki-engineering` enforcement-framework §2): **BOOT-1** `.claude/skills/` matches declared coverage ∪ baseline (and no dangling links), **BOOT-2** a `ki:skills:link:project` script is present, **BOOT-3** `.claude/skills/` is gitignored.
+1. **Run the checker.** `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-skills.ts" [path] --check` (or `bun run ki:skills:link:project --check` if wired, or run it from this skill's directory). It reports on the unified severity ladder (`ki-engineering` enforcement-framework §2): **BOOT-1** `.claude/skills/` matches declared coverage ∪ baseline (and no dangling links), **BOOT-2** a `ki:skills:link:project` script is present, **BOOT-3** `.claude/skills/` is gitignored, **BOOT-5** every linked skill with a checker script has a matching `ki:<suffix>:<verb>` package.json script.
 2. **Judge the [J] criterion (BOOT-4) by reading** — is the repo's _declared_ coverage actually right (does it opt into the skills it uses)? That is `ki-repo`'s coverage cascade, not this skill's; name it as the off-ramp rather than re-deciding it here.
 3. **Report** by criterion. A missing/dangling link or absent `ki:skills:link:project`/gitignore is a WARN — all are conformable, none block.
 
@@ -29,7 +29,7 @@ The linker and checker is [`scripts/link-skills.ts`](scripts/link-skills.ts); it
 
 1. Run **AUDIT** first.
 2. **Link** the project-local set: `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-skills.ts" [path]` (the harness uses `--all`). It creates/prunes relative symlinks under `.claude/skills/` to match declared coverage ∪ baseline. Preview with `--dry-run`.
-3. **Make it reproducible:** ensure `package.json` has `"ki:skills:link:project"` invoking the keystone linker, and `.gitignore` carries `.claude/skills/`. (The keystone must be globally installed — `bun scripts/sync-skills.ts link --only ki-bootstrap` from the harness.)
+3. **Make it reproducible:** ensure `package.json` has `"ki:skills:link:project"` invoking the keystone linker, and `.gitignore` carries `.claude/skills/`. (The keystone must be globally installed — `bun scripts/sync-skills.ts link --only ki-bootstrap` from the harness.) The same **Link** step in the previous point also scaffolds a `ki:<suffix>:<verb>` script per linked skill that carries a discoverable checker script — e.g. `ki:kb-base:audit`, `ki:memory:audit` — so no separate action is needed for those.
 4. **Re-run AUDIT** until clean.
 
 ## Mode REFRESH — re-anchor
