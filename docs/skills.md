@@ -1,12 +1,12 @@
 # The skills
 
-The skills are the bulk of the harness today: **nineteen** of them, each a **governance skill** — it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones), backed by a tracked `references/sources.md`.
+The skills are the bulk of the harness today: **twenty** of them, each a **governance skill** — it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones), backed by a tracked `references/sources.md`.
 
 This file is the catalogue: what each skill does, and the shared shape they all follow. For how they fit together — the boundaries between the ones that could be confused, the loops that run across them, and the invariants they all hold — see [design.md](design.md). The overview map lives in the [README](../README.md).
 
-## The nineteen
+## The twenty
 
-The nineteen sit in **two layers** plus a bridge and a keystone: two cross-cutting **foundations** that every other skill builds on, the **domain** skills that each govern one kind of artifact, `ki-harness` — the **container** skill that governs the bundle holding them all — and `ki-bootstrap`, the **install keystone** that wires a repo's project-local skills into place.
+The twenty sit in **two layers** plus a bridge and a keystone: two cross-cutting **foundations** that every other skill builds on, the **domain** skills that each govern one kind of artifact, `ki-harness` — the **container** skill that governs the bundle holding them all — and `ki-bootstrap`, the **install keystone** that wires a repo's project-local skills into place.
 
 ### [`ki-kb-base`](../skills/ki-kb-base/SKILL.md) — Knowledge Islands
 
@@ -43,6 +43,10 @@ Governs **Live Artifacts** — operational documents that track island state (da
 ### [`ki-mcp`](../skills/ki-mcp/SKILL.md) — Process
 
 Audits, conforms, and scaffolds workspace MCP servers against the "workspace MCP" standard (layout, config injection, `<app>_<resource>_<action>` tool naming, access-level gate, security invariants, Bun/Node, tooling) across the `mcp-*` repos. Ships a mechanical checker (`audit-mcp.ts`).
+
+### [`ki-binding`](../skills/ki-binding/SKILL.md) — Process
+
+Governs the **cross-surface binding** — enabling the KI MCP servers, skills, and agents consistently across the surfaces that run them (Claude Code, Desktop, mcporter, Cowork; claude.ai by convention) from the single chezmoi `mcps.yaml` source, whose per-server `clients:` field is the targeting lever. Ships a mechanical checker (`audit-binding.ts`) that verifies each rendered surface agrees with the source and composes `ki-bootstrap` for the project-local skill half. The write path for the file-editable surfaces is chezmoi (never a hand-written per-surface config, which drifts); Cowork is gated on an external-edit verification before its `enabledPlugins` are wired. Implements the `ki-mcp` design record [cross-surface-enablement.md](../skills/ki-mcp/references/cross-surface-enablement.md).
 
 ### [`ki-websites-11ty`](../skills/ki-websites-11ty/SKILL.md) — Process
 
@@ -88,7 +92,7 @@ Where the set is going next is in [ROADMAP.md](../ROADMAP.md).
 
 ## The governance-skill shape
 
-All nineteen share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in `ki-engineering`'s [enforcement framework](../skills/ki-engineering/references/enforcement-framework.md):
+All twenty share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in `ki-engineering`'s [enforcement framework](../skills/ki-engineering/references/enforcement-framework.md):
 
 - **`<domain>-standard.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like, and why.
 - **`audit-rubric.md`** — the line-by-line checkable criteria, each tagged **mechanical** (a checker enforces it) or **judgment** (a reader assesses it), each citing the standard section it verifies.

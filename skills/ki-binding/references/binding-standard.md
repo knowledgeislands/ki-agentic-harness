@@ -31,6 +31,24 @@ Two shapes: a **command server** (`command` + `args` + `env`, as above) or a **u
 
 † `cowork` is **not yet a recognised token** in `mcps.yaml` — it is added when the Cowork gate (‡) passes. Until then the checker treats a `cowork` token as declared-but-unwired (WARN), never silently rendered. ‡ Whether an external edit to `cowork_settings.json` is honoured on next Cowork launch is the first build-time check (design record §); it must pass before the Cowork surface renders a plugin.
 
+## The Cowork enablement schema (characterized 2026-07-06)
+
+The real `cowork_settings.json` (path `local-agent-mode-sessions/<account>/<workspace>/cowork_settings.json`) is a small JSON file with two keys — so the Cowork **write target** is now concrete, independent of the still-open runtime gate:
+
+```jsonc
+{
+  "enabledPlugins": {
+    "<plugin>@<marketplace>": true, // one boolean per plugin, keyed "<plugin>@<marketplace>"
+    "operations@knowledge-work-plugins": false
+  },
+  "extraKnownMarketplaces": {
+    "<marketplace>": { "source": { "source": "github", "repo": "anthropics/knowledge-work-plugins" } }
+  }
+}
+```
+
+So a Cowork surface for KI is: **a KI plugin published in a GitHub marketplace repo**, registered under `extraKnownMarketplaces` (a `github` `repo` source), then toggled `true` under `enabledPlugins` as `<ki-plugin>@<ki-marketplace>`. This confirms the design record's home decision — the **marketplace is the packaging** (a github repo, like Anthropic's `knowledge-work-plugins`), and **this skill is the actor** that registers and toggles it. The KI plugin bundles the servers + skills + agents; building it is step 6, gated on ‡.
+
 ## The read model — how the skill computes "on for this surface"
 
 1. **Parse the source** (`Bun.YAML.parse`). Validate: `mcpServers` is a list; every entry has a `name`; every entry has a non-empty `clients` naming only recognised tokens.
@@ -43,6 +61,10 @@ Two shapes: a **command server** (`command` + `args` + `env`, as above) or a **u
 - **One source.** No surface config is authored by hand; each is rendered from `mcps.yaml` via chezmoi (the file-editable surfaces) or written by this skill from the same source (Cowork, once wired). A hand-edit that diverges from the source is drift, reported by BIND-1.
 - **`clients` is the only binding lever.** Turning a server on for a surface is a one-line `clients` edit, never a per-surface script.
 - **Cowork is gated, not skipped.** A `cowork` token with no verified path is surfaced (WARN), never dropped.
+
+## claude.ai web — documented convention, no build
+
+The web surface has no local config file, so there is nothing to render or audit: enablement is the account/org **connector allowlist** in the Admin Console, manual-only. The convention is to **keep account/org connectors minimal** and rely on the locally-reachable surfaces (Code / Desktop / Cowork) for per-project enablement. This skill does not automate web; governance of the connector allowlist and Claude Code's `managed-mcp.json` allow/deny layer lives in [claude-ai-connector-control.md](../../ki-mcp/references/claude-ai-connector-control.md).
 
 ## Known limits
 

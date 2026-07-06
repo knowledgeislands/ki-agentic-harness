@@ -4,7 +4,7 @@ A short, plain-language account for a human reader — what this repository is, 
 
 ## In one paragraph
 
-This repository is a **harness**: a single, versioned bundle of the reusable pieces an AI coding agent needs to do Knowledge Islands work well, kept together instead of scattered. Its centre of gravity is a set of nineteen **skills** — packets of standing know-how the agent loads on demand. Most of them are **governance skills**: each one holds a house standard (how we write Markdown, how a repository is laid out, how a knowledge base is structured) and ships the tools to keep work true to that standard.
+This repository is a **harness**: a single, versioned bundle of the reusable pieces an AI coding agent needs to do Knowledge Islands work well, kept together instead of scattered. Its centre of gravity is a set of twenty **skills** — packets of standing know-how the agent loads on demand. Most of them are **governance skills**: each one holds a house standard (how we write Markdown, how a repository is laid out, how a knowledge base is structured) and ships the tools to keep work true to that standard.
 
 ## What it does for its owner
 
@@ -20,7 +20,7 @@ Alongside the human-judgement half of each standard, a skill ships a **mechanica
 
 The bundle has four parts, plus one install keystone:
 
-- **Skills** (`skills/`) — the nineteen governance skills. This is the most built-out part and the reason the harness exists.
+- **Skills** (`skills/`) — the twenty governance skills. This is the most built-out part and the reason the harness exists.
 - **Agents** (`agents/`) — Knowledge Islands subagent definitions: focused roles an agent can delegate to.
 - **MCP servers** (`mcp/`) — a shelf for tool servers that consolidate the workspace's external integrations. Scaffolded, not yet populated.
 - **Evals** (`evals/`) — behavioural test scenarios that check the skills actually behave as intended.
@@ -31,7 +31,7 @@ The skills are not independent islands. They **compose**: one skill runs a sibli
 ## Where to go deeper
 
 - The **[README](../README.md)** is the full working reference, with the skill map and quick-start commands.
-- **[docs/skills.md](skills.md)** describes the nineteen skills one by one and the shape they all share.
+- **[docs/skills.md](skills.md)** describes the twenty skills one by one and the shape they all share.
 - **[docs/design.md](design.md)** explains how they fit — where they deliberately do not overlap, the loops by which the standards improve, and the principles common to the set.
 - **[docs/installation.md](installation.md)** covers installing, using, and linking the skills, and the development toolchain.
 - **[ROADMAP.md](../ROADMAP.md)** is the forward view — what is next and why.
