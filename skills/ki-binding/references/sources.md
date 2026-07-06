@@ -17,7 +17,7 @@ Provenance only: the record of _what changed_ lives in git (the REFRESH commit),
 
 ## Open gates & watch-items
 
-- **The Cowork external-edit gate** — `local-agent-mode-sessions/<account>/<workspace>/cowork_settings.json` (`enabledPlugins`, `extraKnownMarketplaces`). The first open verification: does Cowork honour an external edit on next launch? Record the outcome in [DR]; adopt `cowork` as a rendered token in [the standard](binding-standard.md) and the checker's `SURFACES` only once it passes.
+- **The Cowork external-edit gate — RESOLVED (PASSED) 2026-07-06.** `local-agent-mode-sessions/<account>/<workspace>/cowork_settings.json` (`enabledPlugins`, `extraKnownMarketplaces`). Verified: Cowork honours an external edit on next launch ([DR] Verification log). What remains for Cowork is the plugin/marketplace packaging (plan 007 step 6), not the enablement mechanism.
 - **Claude plugin-marketplace format** — the packaging the Cowork surface toggles. Re-anchor when the `enabledPlugins` schema or marketplace registration changes.
 - **New surfaces / `clients` tokens** — if chezmoi adds a rendered surface, extend `RECOGNISED` and `SURFACES` in [the checker](../scripts/audit-binding.ts) and the recognised-surfaces table in the standard.
 

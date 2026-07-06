@@ -29,7 +29,7 @@ Two shapes: a **command server** (`command` + `args` + `env`, as above) or a **u
 | Cowork | `cowork` † | `local-agent-mode-sessions/<account>/<workspace>/cowork_settings.json` (`enabledPlugins`) | gated — external-edit-honoured unverified ‡ |
 | claude.ai | _(none)_ | no local file — Admin Console allowlist | manual-only · documented convention |
 
-† `cowork` is **not yet a recognised token** in `mcps.yaml` — it is added when the Cowork gate (‡) passes. Until then the checker treats a `cowork` token as declared-but-unwired (WARN), never silently rendered. ‡ Whether an external edit to `cowork_settings.json` is honoured on next Cowork launch is the first build-time check (design record §); it must pass before the Cowork surface renders a plugin.
+† `cowork` becomes an active token once the KI plugin exists (step 6): a server declaring `cowork` is bundled into that plugin. Until the plugin is built, the checker treats a `cowork` token as declared-but-unwired (WARN), never silently rendered. ‡ Gate **PASSED 2026-07-06** (design record Verification log): an external edit to `cowork_settings.json` is honoured on next Cowork launch, so the skill may write `enabledPlugins` / `extraKnownMarketplaces`. What remains for Cowork is the plugin/marketplace packaging (step 6), not the enablement mechanism.
 
 ## The Cowork enablement schema (characterized 2026-07-06)
 
