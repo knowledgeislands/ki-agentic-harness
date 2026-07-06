@@ -42,6 +42,12 @@ import { scenarios as repoScenarios } from './scenarios/ki-repo.ts'
 import { scenarios as skillsScenarios } from './scenarios/ki-skills.ts'
 import { scenarios as streamsScenarios } from './scenarios/ki-kb-streams.ts'
 import { scenarios as tokenomicsScenarios } from './scenarios/ki-tokenomics.ts'
+import { scenarios as decisionRecordsScenarios } from './scenarios/ki-decision-records.ts'
+import { scenarios as handoffsScenarios } from './scenarios/ki-handoffs.ts'
+import { scenarios as plansScenarios } from './scenarios/ki-plans.ts'
+import { scenarios as activitiesScenarios } from './scenarios/ki-kb-activities.ts'
+import { scenarios as liveArtifactsScenarios } from './scenarios/ki-kb-live-artifacts.ts'
+import { scenarios as memoryScenarios } from './scenarios/ki-memory.ts'
 
 export type Assertion = { name: string; re: RegExp }
 export type Scenario = { skill: string; id: string; prompt: string; assertions: Assertion[]; rubric: string }
@@ -59,7 +65,13 @@ const ALL: Scenario[] = [
   ...repoScenarios,
   ...skillsScenarios,
   ...streamsScenarios,
-  ...tokenomicsScenarios
+  ...tokenomicsScenarios,
+  ...decisionRecordsScenarios,
+  ...handoffsScenarios,
+  ...plansScenarios,
+  ...activitiesScenarios,
+  ...liveArtifactsScenarios,
+  ...memoryScenarios
 ]
 
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m', bold: '\x1b[1m' }

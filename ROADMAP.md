@@ -8,10 +8,6 @@ This roadmap is itself subject to the house discipline it describes: when a skil
 
 ## Soon
 
-### Complete behavioural-eval coverage of the skill set
-
-Twelve of the nineteen skills have an eval scenario; seven do not: `ki-decision-records`, `ki-handoffs`, `ki-harness`, `ki-kb-activities`, `ki-kb-live-artifacts`, `ki-memory`, `ki-plans`. Author scenarios for the uncovered skills to the pattern in [evals/README.md](evals/README.md) (assertions + judge rubric, mindful of the "no honest gap" caveat there), then refresh the result matrices — the current `evals/results/matrix-*.log` set predates the rename and no longer matches the scenario set. Re-running matrices thereafter is continuous practice; this item is only reaching full authorship.
-
 ### Build the cross-surface binding skill
 
 A per-project skill that fans the KI MCP servers, skills, and agents out from the single chezmoi `mcp-servers-json` source across the controllable surfaces — extending the pattern `ki-bootstrap` already uses for Claude Code skill links. On Cowork it toggles a KI plugin (Claude's plugin-marketplace format, which bundles servers + skills + agents) in `enabledPlugins`; on Claude Code and Desktop it writes the local config; claude.ai stays documented-convention (account/org minimal). The shape was ratified 2026-07-05 by plan 002 (design-only, now landed); the full design — per-surface targeting table, home decision, and build sequencing — is the design record [cross-surface-enablement.md](skills/ki-mcp/references/cross-surface-enablement.md). Sequence the build by controllability: Claude Code → Desktop → Cowork (gated on verifying Cowork honours an external edit on next launch). Enters Next when a plan is written.
