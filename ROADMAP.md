@@ -6,11 +6,11 @@ This roadmap is itself subject to the house discipline it describes: when a skil
 
 **Continuous practices are not roadmap items.** Keeping the skills audited (`ki:skills:lint`, `ki:repo:audit`, `ki:kb-base:audit`, the `ki-mcp` audit over the `mcp-*` repos), re-running the advisory [eval suite](evals/README.md) as skills change, and the scheduled `ki-skills-refresh` sweep (which honours each skill's declared `**Refresh:**` cadence) are ongoing disciplines tied to the invariants in [docs/design.md](docs/design.md) (_Principles across the set_) — they run continuously, so they live there, not here.
 
-## Soon
+## Next
 
 ### Build the cross-surface binding skill
 
-A per-project skill that fans the KI MCP servers, skills, and agents out from the single chezmoi `mcp-servers-json` source across the controllable surfaces — extending the pattern `ki-bootstrap` already uses for Claude Code skill links. On Cowork it toggles a KI plugin (Claude's plugin-marketplace format, which bundles servers + skills + agents) in `enabledPlugins`; on Claude Code and Desktop it writes the local config; claude.ai stays documented-convention (account/org minimal). The shape was ratified 2026-07-05 by plan 002 (design-only, now landed); the full design — per-surface targeting table, home decision, and build sequencing — is the design record [cross-surface-enablement.md](skills/ki-mcp/references/cross-surface-enablement.md). Sequence the build by controllability: Claude Code → Desktop → Cowork (gated on verifying Cowork honours an external edit on next launch). Enters Next when a plan is written.
+A per-project skill that fans the KI MCP servers, skills, and agents out from the single chezmoi `mcp-servers-json` source across the controllable surfaces — extending the pattern `ki-bootstrap` already uses for Claude Code skill links. On Cowork it toggles a KI plugin (Claude's plugin-marketplace format, which bundles servers + skills + agents) in `enabledPlugins`; on Claude Code and Desktop it writes the local config; claude.ai stays documented-convention (account/org minimal). The shape was ratified 2026-07-05 by plan 002 (design-only, now landed); the full design — per-surface targeting table, home decision, and build sequencing — is the design record [cross-surface-enablement.md](skills/ki-mcp/references/cross-surface-enablement.md). Sequence the build by controllability: Claude Code → Desktop → Cowork (gated on verifying Cowork honours an external edit on next launch). Plan: [cross-surface/007-binding-skill.md](docs/plans/cross-surface/007-binding-skill.md).
 
 ## Future
 
