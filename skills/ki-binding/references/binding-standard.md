@@ -62,6 +62,24 @@ So a Cowork surface for KI is: **a KI plugin published in a GitHub marketplace r
 - **`clients` is the only binding lever.** Turning a server on for a surface is a one-line `clients` edit, never a per-surface script.
 - **Cowork is gated, not skipped.** A `cowork` token with no verified path is surfaced (WARN), never dropped.
 
+## The Cowork plugin & marketplace format (characterized 2026-07-06)
+
+A Cowork marketplace is a **GitHub repo** laid out as (from Anthropic's `knowledge-work-plugins`):
+
+```text
+<marketplace-repo>/
+  .claude-plugin/marketplace.json   # { name, owner: {name}, plugins: [{ name, source: "./<dir>", description }] }
+  <plugin>/                         # one directory per plugin
+    .claude-plugin/plugin.json      # { name, version, description, author: {name} }
+    .mcp.json                       # { mcpServers: { <name>: {type:"http", url} | {command, args, env} } }
+    skills/  commands/              # optional bundled skills / slash commands (agents likewise)
+    README.md  CONNECTORS.md        # optional
+```
+
+The skill's **CONFORM** for Cowork then: registers the marketplace under `extraKnownMarketplaces` (`{source: {source: "github", repo: "<org>/<repo>"}}`) and toggles `"<plugin>@<marketplace>": true` under `enabledPlugins` in `cowork_settings.json`.
+
+**Open question for the build (step 6):** the reference plugins reference MCP servers as remote **`http` URLs** (`https://…mcp.claude.com/mcp`), whereas the KI servers are **local stdio** (`command: node`, reading local KB paths). Cowork may run plugins in a sandboxed VM (`vm_bundles/claudevm.bundle`), so a local stdio server pointed at a local filesystem path may not resolve. The likely bridge is mcporter's **http-bridge** launchagent (`sh.mcporter.http-bridge`), exposing the local servers over http for a plugin `.mcp.json` to reference — to be verified before the KI plugin is authored.
+
 ## claude.ai web — documented convention, no build
 
 The web surface has no local config file, so there is nothing to render or audit: enablement is the account/org **connector allowlist** in the Admin Console, manual-only. The convention is to **keep account/org connectors minimal** and rely on the locally-reachable surfaces (Code / Desktop / Cowork) for per-project enablement. This skill does not automate web; governance of the connector allowlist and Claude Code's `managed-mcp.json` allow/deny layer lives in [claude-ai-connector-control.md](../../ki-mcp/references/claude-ai-connector-control.md).
