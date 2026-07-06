@@ -14,6 +14,14 @@ A per-project skill that fans the KI MCP servers, skills, and agents out from th
 
 ## Future
 
+### Rename `mcp-kb-notion-mirror` to `mcp-ki-kb-notion-mirror`
+
+Bring the repo's directory/package name in line with the `ki-` prefix convention. Mechanical rename across the repo (package.json `name`, README, CI badges, any cross-repo references such as `arcadia-agentic-harness/scripts/generate-clients.ts` and the `ki-mcp` standard doc's repo list) plus the GitHub repo rename itself.
+
+### Add `mcp-gcal`
+
+A new sibling MCP server for Google Calendar, scaffolded from `mcp-gmail`'s shape (shared Google OAuth patterns) rather than folding calendar tools into `mcp-gmail` itself — keeps one `<app>` tool prefix and one scope set per repo, consistent with the rest of the `mcp-*` workspace.
+
 ### The harness `docs/` is canonical authoring; the website vendors a copy
 
 Skill and design documentation is authored here and stays canonical — it is an **input** to two downstream consumers: arcadia-principal references it (via the `Agentic Tool Documentation` stream), and arcadia-website needs it for its pages. The harness stays **canonical for its own story** — the human-first overview ([docs/overview.md](docs/overview.md)) and the skill/design docs live here; the downstream repos reference rather than own them.
