@@ -78,7 +78,13 @@ A Cowork marketplace is a **GitHub repo** laid out as (from Anthropic's `knowled
 
 The skill's **CONFORM** for Cowork then: registers the marketplace under `extraKnownMarketplaces` (`{source: {source: "github", repo: "<org>/<repo>"}}`) and toggles `"<plugin>@<marketplace>": true` under `enabledPlugins` in `cowork_settings.json`.
 
-**Open question for the build (step 6):** the reference plugins reference MCP servers as remote **`http` URLs** (`https://…mcp.claude.com/mcp`), whereas the KI servers are **local stdio** (`command: node`, reading local KB paths). Cowork may run plugins in a sandboxed VM (`vm_bundles/claudevm.bundle`), so a local stdio server pointed at a local filesystem path may not resolve. The likely bridge is mcporter's **http-bridge** launchagent (`sh.mcporter.http-bridge`), exposing the local servers over http for a plugin `.mcp.json` to reference — to be verified before the KI plugin is authored.
+**Server-portability finding (verified 2026-07-06).** Cowork runs plugins in a **gVisor sandbox** (`vm_bundles/claudevm.bundle`, `gvisorMacAddress`) with its own network stack, and a plugin's stdio server runs **inside** that sandbox via `${CLAUDE_PLUGIN_ROOT}` (per Anthropic's `create-cowork-plugin` schema: `stdio` | `sse` | `http`). Consequences:
+
+- The host **mcporter http-bridge** (`127.0.0.1:3333`, confirmed serving) is **not** reachable from the sandbox — host localhost ≠ sandbox localhost.
+- The KI MCP servers are **host-local** — KB-filesystem servers read host paths (`~/kis/…`), secrets resolve via 1Password `op://`, node runs on the host. They **do not port into the sandbox** as-is, and KI publishes no remote (`http`/`sse`) endpoints the sandbox could reach.
+- **Skills and agents are portable** — plain files bundled into the plugin under `skills/` and `agents/`, no runtime dependency.
+
+**Therefore:** a KI Cowork plugin can ship the **skills + agents** immediately; the **MCP-server half needs sandbox-portability work first** (bundle a self-contained server via `${CLAUDE_PLUGIN_ROOT}`, mount the KB into the sandbox, or expose authenticated remote endpoints) — tracked as an open decision, not built blind.
 
 ## claude.ai web — documented convention, no build
 
