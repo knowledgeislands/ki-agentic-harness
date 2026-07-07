@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "@knowledgeislands/arcadia-agentic-harness",
+      "name": "@knowledgeislands/ki-agentic-harness",
       "devDependencies": {
         "@biomejs/biome": "2.5.2",
         "@types/node": "^26.1.0",

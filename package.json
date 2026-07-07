@@ -85,7 +85,9 @@
     "ki:tokenomics:audit": "bun skills/ki-tokenomics/scripts/audit-tokenomics.ts",
     "ki:verify": "bun run ki:lint:check && bun run ki:lint:types && bun run ki:lint:md:check && bun run ki:knip",
     "ki:websites:audit": "bun skills/ki-websites-11ty/scripts/audit-websites.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "ki:hosting-cloudflare:audit": "bun .claude/skills/ki-hosting-cloudflare/scripts/audit-cloudflare-hosting.ts .",
+    "ki:websites-11ty:audit": "bun .claude/skills/ki-websites-11ty/scripts/audit-websites.ts ."
   },
   "type": "module"
 }
