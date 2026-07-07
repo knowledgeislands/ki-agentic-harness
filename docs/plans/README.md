@@ -4,12 +4,4 @@ Active plans only — one file per ROADMAP "Next" item. Each plan is self-contai
 
 Phasing (Next / Soon / Future) lives in [ROADMAP.md](../../ROADMAP.md), not here — a plan is written when an item enters "Next" and removed when it lands. The format is defined in the `ki-plans` skill's [plan-format.md](../../skills/ki-plans/references/plan-format.md).
 
-| Plan                                      | Theme         | Title                       | Status | Blocks |
-| ----------------------------------------- | ------------- | --------------------------- | ------ | ------ |
-| [007](cross-surface/007-binding-skill.md) | cross-surface | Cross-surface binding skill | open   | —      |
-
-## Dependency graph
-
-```text
-007 (no dependencies)
-```
+_No active plans. New plans are written here when a ROADMAP item enters "Next"._

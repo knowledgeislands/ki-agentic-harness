@@ -48,6 +48,7 @@
     "ki:agents:lint": "bun skills/ki-agents/scripts/lint-agents.ts agents",
     "ki:authoring:audit": "bun skills/ki-authoring/scripts/audit-authoring.ts",
     "ki:binding:audit": "bun skills/ki-binding/scripts/audit-binding.ts",
+    "ki:binding:build-plugin": "bun skills/ki-binding/scripts/build-plugin.ts",
     "ki:codegen": "bun scripts/generate-clients.ts",
     "ki:conform": "bun run ki:deps:refresh && bun run ki:lint:package && bun run ki:lint:format && bun run ki:lint:fix && bun run ki:lint:md",
     "ki:decision-records:audit": "bun skills/ki-decision-records/scripts/audit-drs.ts",
