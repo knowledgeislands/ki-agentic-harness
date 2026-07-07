@@ -8,13 +8,13 @@
 
 ## Context
 
-The `arcadia-agentic-harness` repository accumulates several kinds of artefacts: governance skills, agent definitions, MCP server wrappers, evaluation fixtures, and workflow scripts. Without an explicit statement of what this repository is for — and what it is not for — its scope tends to drift, and contributors must infer purpose from content.
+The `ki-agentic-harness` repository accumulates several kinds of artefacts: governance skills, agent definitions, MCP server wrappers, evaluation fixtures, and workflow scripts. Without an explicit statement of what this repository is for — and what it is not for — its scope tends to drift, and contributors must infer purpose from content.
 
 The four-part bundle structure (`skills/`, `agents/`, `mcp/`, `evals/`) suggests scope, but structure alone does not distinguish "this is what the harness is for" from "this is what happens to live here." An ADR captures the intent explicitly and gives future decisions a stated boundary to reason against.
 
 ## Decision
 
-The `arcadia-agentic-harness` is the canonical home for Knowledge Islands **agent skills**, structured as a four-part bundle:
+The `ki-agentic-harness` is the canonical home for Knowledge Islands **agent skills**, structured as a four-part bundle:
 
 - **`skills/`** — `ki-*` governance skills. Each skill holds a house standard and ships AUDIT / CONFORM / REFRESH modes plus a mechanical checker. This is the primary and active part of the bundle.
 - **`agents/`** — KI-governed agent definitions. These are `.md` files with YAML frontmatter following the Agent Skills standard, defining reusable agents for use in Claude Code sessions.

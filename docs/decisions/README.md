@@ -1,6 +1,6 @@
 # Architecture Decision Records — Knowledge Islands Harness
 
-This directory holds the Architecture Decision Records (ADRs) for the **arcadia-agentic-harness** and the Knowledge Islands governance skill set it houses.
+This directory holds the Architecture Decision Records (ADRs) for the **ki-agentic-harness** and the Knowledge Islands governance skill set it houses.
 
 ## Naming convention
 
@@ -22,22 +22,23 @@ Sub-scopes used in this harness:
 
 ## Index
 
-| ID                           | Title                                                                         | Status   | Date       |
-| ---------------------------- | ----------------------------------------------------------------------------- | -------- | ---------- |
-| ADR-KI-HARNESS-001           | [Composition over extension](ADR-KI-HARNESS-001.md)                           | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-002           | [Four-part harness bundle layout](ADR-KI-HARNESS-002.md)                      | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-003           | [Adopting Architecture Decision Records](ADR-KI-HARNESS-003.md)               | Accepted | 2026-06-23 |
-| ADR-KI-HARNESS-004           | [Purpose and scope of this repository](ADR-KI-HARNESS-004.md)                 | Accepted | 2026-06-23 |
-| ADR-KI-HARNESS-CONFIG-001    | [Validate-down .ki-config.toml contract](ADR-KI-HARNESS-CONFIG-001.md)        | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-SKILLS-001    | [AUDIT/CONFORM/REFRESH canonical modes](ADR-KI-HARNESS-SKILLS-001.md)         | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-SKILLS-002    | [Mechanical and judgment checker split](ADR-KI-HARNESS-SKILLS-002.md)         | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-SKILLS-003    | [Dependency order for multi-skill composition](ADR-KI-HARNESS-SKILLS-003.md)  | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-SKILLS-004    | [Skills must be valid standalone](ADR-KI-HARNESS-SKILLS-004.md)               | Accepted | 2024-01-01 |
-| ADR-KI-HARNESS-SKILLS-005    | [The handoff doctrine is its own skill](ADR-KI-HARNESS-SKILLS-005.md)         | Accepted | 2026-07-02 |
-| ADR-KI-HARNESS-TOOLCHAIN-001 | [Bun, Biome, and knip standard toolchain](ADR-KI-HARNESS-TOOLCHAIN-001.md)    | Accepted | 2026-06-28 |
-| ADR-KI-HARNESS-TOOLCHAIN-002 | [Complementary tooling — current adoptions](ADR-KI-HARNESS-TOOLCHAIN-002.md)  | Accepted | 2026-06-29 |
-| ADR-KI-HARNESS-TOOLCHAIN-003 | [Proxy local MCP servers behind mcporter](ADR-KI-HARNESS-TOOLCHAIN-003.md)    | Accepted | 2026-06-24 |
-| ADR-KI-HARNESS-AGENTS-001    | [Subagent isolation for multi-skill invocation](ADR-KI-HARNESS-AGENTS-001.md) | Accepted | 2026-06-23 |
+| ID | Title | Status | Date |
+| --- | --- | --- | --- |
+| ADR-KI-HARNESS-001 | [Composition over extension](ADR-KI-HARNESS-001.md) | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-002 | [Four-part harness bundle layout](ADR-KI-HARNESS-002.md) | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-003 | [Adopting Architecture Decision Records](ADR-KI-HARNESS-003.md) | Accepted | 2026-06-23 |
+| ADR-KI-HARNESS-004 | [Purpose and scope of this repository](ADR-KI-HARNESS-004.md) | Accepted | 2026-06-23 |
+| ADR-KI-HARNESS-005 | [The ki- naming model and harness-as-source vs plugin-as-projection](ADR-KI-HARNESS-005-naming-model-and-harness-as-source.md) | Accepted | 2026-07-07 |
+| ADR-KI-HARNESS-CONFIG-001 | [Validate-down .ki-config.toml contract](ADR-KI-HARNESS-CONFIG-001.md) | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-SKILLS-001 | [AUDIT/CONFORM/REFRESH canonical modes](ADR-KI-HARNESS-SKILLS-001.md) | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-SKILLS-002 | [Mechanical and judgment checker split](ADR-KI-HARNESS-SKILLS-002.md) | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-SKILLS-003 | [Dependency order for multi-skill composition](ADR-KI-HARNESS-SKILLS-003.md) | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-SKILLS-004 | [Skills must be valid standalone](ADR-KI-HARNESS-SKILLS-004.md) | Accepted | 2024-01-01 |
+| ADR-KI-HARNESS-SKILLS-005 | [The handoff doctrine is its own skill](ADR-KI-HARNESS-SKILLS-005.md) | Accepted | 2026-07-02 |
+| ADR-KI-HARNESS-TOOLCHAIN-001 | [Bun, Biome, and knip standard toolchain](ADR-KI-HARNESS-TOOLCHAIN-001.md) | Accepted | 2026-06-28 |
+| ADR-KI-HARNESS-TOOLCHAIN-002 | [Complementary tooling — current adoptions](ADR-KI-HARNESS-TOOLCHAIN-002.md) | Accepted | 2026-06-29 |
+| ADR-KI-HARNESS-TOOLCHAIN-003 | [Proxy local MCP servers behind mcporter](ADR-KI-HARNESS-TOOLCHAIN-003.md) | Accepted | 2026-06-24 |
+| ADR-KI-HARNESS-AGENTS-001 | [Subagent isolation for multi-skill invocation](ADR-KI-HARNESS-AGENTS-001.md) | Accepted | 2026-06-23 |
 
 ## Template
 
