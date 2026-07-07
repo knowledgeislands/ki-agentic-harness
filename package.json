@@ -1,10 +1,10 @@
 {
-  "name": "@knowledgeislands/arcadia-agentic-harness",
+  "name": "@knowledgeislands/ki-agentic-harness",
   "description": "Knowledge Islands agentic harness — canonical home for Agent Skills, Agents, MCP servers, and Evals across the Knowledge Islands ecosystem.",
   "version": "1.0.0",
   "author": "kris@kris.me.uk",
   "bugs": {
-    "url": "https://github.com/knowledgeislands/arcadia-agentic-harness/issues"
+    "url": "https://github.com/knowledgeislands/ki-agentic-harness/issues"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.2",
@@ -20,7 +20,7 @@
   "engines": {
     "node": ">=22.0.0"
   },
-  "homepage": "https://github.com/knowledgeislands/arcadia-agentic-harness#readme",
+  "homepage": "https://github.com/knowledgeislands/ki-agentic-harness#readme",
   "keywords": [
     "agent-skills",
     "anthropic",
@@ -41,7 +41,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/knowledgeislands/arcadia-agentic-harness.git"
+    "url": "git+https://github.com/knowledgeislands/ki-agentic-harness.git"
   },
   "scripts": {
     "clean": "rm -rf node_modules",

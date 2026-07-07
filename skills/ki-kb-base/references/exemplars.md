@@ -5,21 +5,21 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated patterns showing what well-formed Knowledge Islands KB notes, folder structures, and zone layouts look like. Use these as concrete references when authoring notes, running CONFORM, or deciding whether a structural choice is correct. They are drawn from `arcadia-principal` — the canonical live KB — rather than invented examples, so they reflect real decisions made in a conforming base.
+Curated patterns showing what well-formed Knowledge Islands KB notes, folder structures, and zone layouts look like. Use these as concrete references when authoring notes, running CONFORM, or deciding whether a structural choice is correct. They are drawn from `ki-arcadia-principal` — the canonical live KB — rather than invented examples, so they reflect real decisions made in a conforming base.
 
 ## Collections
 
-| Source            | URL                                                | What it covers                                      |
-| ----------------- | -------------------------------------------------- | --------------------------------------------------- |
-| arcadia-principal | No public URL — KI repos are the primary exemplars | Zone layout, folder-note, frontmatter, link style † |
+| Source               | URL                                                | What it covers                                      |
+| -------------------- | -------------------------------------------------- | --------------------------------------------------- |
+| ki-arcadia-principal | No public URL — KI repos are the primary exemplars | Zone layout, folder-note, frontmatter, link style † |
 
-† Zone layout, folder-note structure, frontmatter, and internal link style across a live KB conforming to the standard. `arcadia-principal` is at `/Users/krisbrown/kis/knowledgeislands/arcadia-principal/` on this machine; it is the reference base the skill tracks — see `sources.md` for conformance status.
+† Zone layout, folder-note structure, frontmatter, and internal link style across a live KB conforming to the standard. `ki-arcadia-principal` is at `/Users/krisbrown/kis/knowledgeislands/ki-arcadia-principal/` on this machine; it is the reference base the skill tracks — see `sources.md` for conformance status.
 
 ## Selected patterns
 
 ### Correct note frontmatter
 
-Every KB note that is not a pure index carries `type`, `status`, `tags`, and `author`. The `type` field drives routing; `status` signals currency; `tags` carry the topic and zone-arm context; `author` records provenance for curation. The following is taken from `Admin/Admin.md` in `arcadia-principal` — a zone-root index note:
+Every KB note that is not a pure index carries `type`, `status`, `tags`, and `author`. The `type` field drives routing; `status` signals currency; `tags` carry the topic and zone-arm context; `author` records provenance for curation. The following is taken from `Admin/Admin.md` in `ki-arcadia-principal` — a zone-root index note:
 
 ```yaml
 ---
@@ -64,10 +64,10 @@ The index note uses relative markdown links — never wikilinks — so it is val
 
 ### Well-structured zone layout
 
-`arcadia-principal` demonstrates the five canonical zones plus the two staging areas:
+`ki-arcadia-principal` demonstrates the five canonical zones plus the two staging areas:
 
 ```text
-arcadia-principal/
+ki-arcadia-principal/
 ├── +/                   ← inbound staging (unsettled, not yet routed)
 ├── -/                   ← outbound staging (leaving the base)
 ├── Admin/               ← governance and operations (gated by Enactment Process)

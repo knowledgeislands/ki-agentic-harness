@@ -1,4 +1,4 @@
-# arcadia-agentic-harness
+# ki-agentic-harness
 
 The **agentic harness** for Knowledge Islands work — the canonical home for what an agent is equipped with here, kept in one place so the whole set can be versioned, reviewed, and installed together rather than scattered across the bases and projects that use it.
 

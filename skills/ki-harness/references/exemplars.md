@@ -5,13 +5,13 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated patterns from the KI agentic harness that show what a well-structured four-part bundle looks like. Use these as reference when standing up a new harness, auditing an existing one, or checking that a shelf is correctly declared. The `arcadia-agentic-harness` is the canonical reference implementation; it demonstrates every structural requirement: four directories each with a `README.md`, the required `package.json` script families, and a `.ki-config.toml` that opts into all four governing skills. Empty shelves (`agents/`, `mcp/`, `evals/`) are shown as a valid starting state — the directory and its `README.md` commit the four-part intent before all parts are built. For the full source list and last-review dates, see [sources.md](sources.md).
+Curated patterns from the KI agentic harness that show what a well-structured four-part bundle looks like. Use these as reference when standing up a new harness, auditing an existing one, or checking that a shelf is correctly declared. The `ki-agentic-harness` is the canonical reference implementation; it demonstrates every structural requirement: four directories each with a `README.md`, the required `package.json` script families, and a `.ki-config.toml` that opts into all four governing skills. Empty shelves (`agents/`, `mcp/`, `evals/`) are shown as a valid starting state — the directory and its `README.md` commit the four-part intent before all parts are built. For the full source list and last-review dates, see [sources.md](sources.md).
 
 ## Collections
 
 | Source | URL | What it covers |
 | --- | --- | --- |
-| arcadia-agentic-harness | [canonical harness repo][harness-repo] | The KI canonical reference; all four parts; populated skills shelf |
+| ki-agentic-harness | [canonical harness repo][harness-repo] | The KI canonical reference; all four parts; populated skills shelf |
 | Agent Skills specification | [Agent Skills spec][as-spec] | The `SKILL.md` format and `references/`, `scripts/`, `assets/` layout |
 | Claude Code subagent docs | [CC subagent docs][cc-subagents] | The subagent definition format the `agents/` part serves |
 
@@ -43,7 +43,7 @@ evals/
 
 ### `agents/README.md` shelf convention
 
-An empty `agents/` shelf declares the intent, explains the format for future contributors, and routes to the governing skill. It does not apologise for being empty — a shelf is a valid, encouraged starting state. The pattern below is the `arcadia-agentic-harness` shelf: format pointer, one-line note on current state, and a forward pointer for when the shelf becomes populated.
+An empty `agents/` shelf declares the intent, explains the format for future contributors, and routes to the governing skill. It does not apologise for being empty — a shelf is a valid, encouraged starting state. The pattern below is the `ki-agentic-harness` shelf: format pointer, one-line note on current state, and a forward pointer for when the shelf becomes populated.
 
 ```markdown
 # Agents
@@ -75,7 +75,7 @@ The two harness-specific scripts (`ki:skills:link:project` and `ki:skills:lint`)
 
 ### `.ki-config.toml` bundle declaration
 
-A harness must declare `[ki-harness]` — this is the compliance marker the `ki-repo` coverage cascade uses to confirm the four-part layout is intentional. Without it, detecting `skills/*/SKILL.md` without a `[ki-skills]` table, or detecting the harness layout without `[ki-harness]`, would WARN as a detected-but-undeclared artifact. The canonical `arcadia-agentic-harness` pattern: all four tables present, no per-harness config keys (table presence alone is the declaration).
+A harness must declare `[ki-harness]` — this is the compliance marker the `ki-repo` coverage cascade uses to confirm the four-part layout is intentional. Without it, detecting `skills/*/SKILL.md` without a `[ki-skills]` table, or detecting the harness layout without `[ki-harness]`, would WARN as a detected-but-undeclared artifact. The canonical `ki-agentic-harness` pattern: all four tables present, no per-harness config keys (table presence alone is the declaration).
 
 ```toml
 [ki-repo]
@@ -92,6 +92,6 @@ visibility = "private"
 # skills/ is populated; the skills linter runs over it.
 ```
 
-[harness-repo]: https://github.com/knowledgeislands/arcadia-agentic-harness
+[harness-repo]: https://github.com/knowledgeislands/ki-agentic-harness
 [as-spec]: https://agentskills.io/specification
 [cc-subagents]: https://code.claude.com/docs/en/sub-agents

@@ -9,10 +9,10 @@ Concrete patterns showing what a correctly bootstrapped Knowledge Islands repo l
 
 ## Collections
 
-| Source                  | URL             | What it covers                                                                 |
-| ----------------------- | --------------- | ------------------------------------------------------------------------------ |
-| arcadia-principal       | No public URL ※ | Live `.ki-config.toml`, `package.json` script, and post-link `.claude/skills/` |
-| arcadia-agentic-harness | No public URL ※ | The `--all` variant used by the authoring hub †                                |
+| Source               | URL             | What it covers                                                                 |
+| -------------------- | --------------- | ------------------------------------------------------------------------------ |
+| ki-arcadia-principal | No public URL ※ | Live `.ki-config.toml`, `package.json` script, and post-link `.claude/skills/` |
+| ki-agentic-harness   | No public URL ※ | The `--all` variant used by the authoring hub †                                |
 
 † The harness links all skills (`--all`) rather than a declared subset; it is the exception, not the template. A normal KB or repo declares only the skills it uses.
 
@@ -22,7 +22,7 @@ Concrete patterns showing what a correctly bootstrapped Knowledge Islands repo l
 
 ### Correct `.ki-config.toml` bootstrap declaration
 
-A repo opts skills in by adding `[ki-<skill>]` tables. The keystone linker reads these tables and mirrors the matching skills from the harness into `.claude/skills/`. Tables with no keys (bare `[ki-kb-base]`) are valid — presence alone is the opt-in signal. From `arcadia-principal/.ki-config.toml`:
+A repo opts skills in by adding `[ki-<skill>]` tables. The keystone linker reads these tables and mirrors the matching skills from the harness into `.claude/skills/`. Tables with no keys (bare `[ki-kb-base]`) are valid — presence alone is the opt-in signal. From `ki-arcadia-principal/.ki-config.toml`:
 
 ```toml
 # Read by the ki-kb-base skill.
@@ -86,11 +86,11 @@ The keystone linker self-locates the harness through its own real path — no ha
 ```text
 .claude/
 └── skills/
-    ├── ki-authoring  -> ../../../arcadia-agentic-harness/skills/ki-authoring
-    ├── ki-kb-base         -> ../../../arcadia-agentic-harness/skills/ki-kb-base
-    ├── ki-repo       -> ../../../arcadia-agentic-harness/skills/ki-repo
-    ├── ki-kb-streams    -> ../../../arcadia-agentic-harness/skills/ki-kb-streams
-    └── ki-tokenomics -> ../../../arcadia-agentic-harness/skills/ki-tokenomics
+    ├── ki-authoring  -> ../../../ki-agentic-harness/skills/ki-authoring
+    ├── ki-kb-base         -> ../../../ki-agentic-harness/skills/ki-kb-base
+    ├── ki-repo       -> ../../../ki-agentic-harness/skills/ki-repo
+    ├── ki-kb-streams    -> ../../../ki-agentic-harness/skills/ki-kb-streams
+    └── ki-tokenomics -> ../../../ki-agentic-harness/skills/ki-tokenomics
 ```
 
 The `.claude/skills/` directory is gitignored — the committed artifact is the `ki:skills:link:project` script and a `.gitignore` line. The symlinks are regenerated, never committed.

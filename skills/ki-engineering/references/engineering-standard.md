@@ -200,7 +200,7 @@ When a repo ships a compiled `dist/` (it has `tsconfig.build.json`, or `build` i
 - **CLI chmod rule.** `build` appends `&& chmod +x dist/cli/cli.js` **iff** `src/cli/` exists, and chmods **nothing else** — in particular **not** a server/`mcp-server` bin. (Package managers set `+x` on `bin` targets at install, and launchers invoke via `node`, so the entry bin needs no chmod; the executable CLI does.) A `build` that chmods a path with no matching `src/` dir, or omits the chmod while `src/cli/` exists, is drift.
 - **Monorepo variant (§0).** In a monorepo the compiled output lands under the owning workspace (`site/dist`, `ingress/dist`), and the workspace's `files`/`clean` entries and the root `.gitignore` reference that workspace-scoped path (`/site/dist`), not a root `dist/`. A website's `dist/` location specifically is owned by `ki-websites-11ty` (which builds it) and `ki-hosting-cloudflare` (which serves it); this section governs the `tsc`-compiled case.
 
-A non-`tsc` build (e.g. arcadia-website's 11ty `build`) is outside this section — the repo compiles by another toolchain; only the families in §2 and the core (§1–§5) apply.
+A non-`tsc` build (e.g. ki-website's 11ty `build`) is outside this section — the repo compiles by another toolchain; only the families in §2 and the core (§1–§5) apply.
 
 ## 8. .env discipline (capability: the repo reads env config)
 

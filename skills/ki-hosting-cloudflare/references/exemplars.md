@@ -14,7 +14,7 @@ Curated patterns worth reading when authoring or auditing a Knowledge Islands Cl
 | Workers — Static Assets | [Static Assets docs][assets] | `assets` block: `directory`, `binding`, `html_handling`, `not_found_handling` |
 | wrangler configuration | [wrangler config docs][wrangler] | `name`, `compatibility_date`, `routes`/`custom_domain`, `observability` |
 | Pages → Workers migration | [migrate-from-pages guide][pages] | Why new static sites use Workers + Static Assets † |
-| arcadia-website (in-house) | [arcadia-website repo][arcadia] | Reference implementation ‡ |
+| ki-website (in-house) | [ki-website repo][arcadia] | Reference implementation ‡ |
 
 † Not `wrangler pages deploy`.
 
@@ -28,9 +28,9 @@ The site Worker config lives at `site/wrangler.jsonc` in the monorepo layout (th
 
 ```jsonc
 {
-  // arcadia-website — Cloudflare Workers deployment.
+  // ki-website — Cloudflare Workers deployment.
   // Model: Workers + Static Assets (not Pages — migrated off Pages; never use `wrangler pages deploy`).
-  "name": "arcadia-website",
+  "name": "ki-website",
   "compatibility_date": "2026-06-19",
 
   // Eleventy builds dist/ at the repo root; path is relative to THIS file.
@@ -43,7 +43,7 @@ The site Worker config lives at `site/wrangler.jsonc` in the monorepo layout (th
     { "pattern": "www.knowledgeislands.info", "custom_domain": true }
   ],
 
-  // Persist Workers logs in the dashboard (Workers & Pages → arcadia-website → Logs).
+  // Persist Workers logs in the dashboard (Workers & Pages → ki-website → Logs).
   "observability": { "enabled": true }
 }
 ```
@@ -114,4 +114,4 @@ The `/assets/*` rule sets a long-lived immutable cache on built assets (CSS, JS,
 [assets]: https://developers.cloudflare.com/workers/static-assets/
 [wrangler]: https://developers.cloudflare.com/workers/wrangler/configuration/
 [pages]: https://developers.cloudflare.com/workers/static-assets/migration-guides/migrate-from-pages/
-[arcadia]: https://github.com/knowledgeislands/arcadia-website
+[arcadia]: https://github.com/knowledgeislands/ki-website

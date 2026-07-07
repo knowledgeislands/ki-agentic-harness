@@ -9,7 +9,7 @@ argument-hint: 'audit <skill-or-repo> | conform <skill> | init <description> | o
 
 You are helping author or audit **Agent Skills** — directories with a `SKILL.md` (frontmatter + body), per the [Agent Skills open standard](https://agentskills.io/). This skill is the house rubric for what a _good_ skill looks like, plus the three modes you run over it.
 
-The canonical home for these skills is the **arcadia-agentic-harness** repository; its `README.md` covers install, the symlink workflow, and the Knowledge Islands structure. This skill governs skill _quality_, not installation.
+The canonical home for these skills is the **ki-agentic-harness** repository; its `README.md` covers install, the symlink workflow, and the Knowledge Islands structure. This skill governs skill _quality_, not installation.
 
 ## The two-layer model
 
@@ -26,7 +26,7 @@ Review a skill (or every skill in a repo) against the rubric and report.
 
 **Auditing a whole repo? Use subagent isolation** ([ADR-KI-HARNESS-AGENTS-001](../../docs/decisions/ADR-KI-HARNESS-AGENTS-001.md)): run the cheap set-level pass first in the main context — the linter's whole-repo run (COLL-1) plus the skills' frontmatter `description`s read together for COLL-2 reciprocity — then fan out one `agent()` per skill/concern in `parallel()`. Each subagent receives only its concern's files, runs its checker and applies judgment criteria, and returns structured findings. Synthesise results in the main agent, ranking by dependency order (foundations first) per [ADR-KI-HARNESS-SKILLS-003](../../docs/decisions/ADR-KI-HARNESS-SKILLS-003.md) — the single source of truth for the order, so it isn't restated here. The dependency order is synthesis ranking, not execution order. The saved workflow `.claude/workflows/ki-multi-skill-audit.ts` implements this for harness-wide runs.
 
-1. **Run the linter.** `bun scripts/lint-skills.ts <path-to-skill-or-repo>` from this skill's directory (or `bun run ki:skills:lint` at the arcadia-agentic-harness repo root). It reports the mechanical criteria on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — see `ki-engineering`'s [checker-contract.md](../ki-engineering/references/checker-contract.md)) and exits non-zero on any FAIL; with `--json` / `--report` it emits machine-readable findings and writes the latest report to the target's `.ki-meta/audits/skills.{md,json}`. Capture its output verbatim — do not re-derive what it found. Point it at the **repo**, not a lone skill, so the cross-skill collision pass (COLL-1) has the siblings to compare.
+1. **Run the linter.** `bun scripts/lint-skills.ts <path-to-skill-or-repo>` from this skill's directory (or `bun run ki:skills:lint` at the ki-agentic-harness repo root). It reports the mechanical criteria on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS — see `ki-engineering`'s [checker-contract.md](../ki-engineering/references/checker-contract.md)) and exits non-zero on any FAIL; with `--json` / `--report` it emits machine-readable findings and writes the latest report to the target's `.ki-meta/audits/skills.{md,json}`. Capture its output verbatim — do not re-derive what it found. Point it at the **repo**, not a lone skill, so the cross-skill collision pass (COLL-1) has the siblings to compare.
 2. **Read the `SKILL.md`** (and any `references/`, `scripts/`, `assets/`) and apply the **judgment** ([J]-tagged) criteria from [the rubric](references/audit-rubric.md) — the linter owns the [M] ones. Focus on:
    - **Description** — does it state both _what it does_ and _when to use it_, in the third person, with concrete trigger phrases a user would actually say? This is the only signal at selection time.
    - **Altitude & conciseness** — is anything in the body something a competent Claude already knows? Is detail that's read rarely pushed into `references/` rather than inlined?
@@ -43,7 +43,7 @@ Review a skill (or every skill in a repo) against the rubric and report.
 
 ## Mode INIT — write a new skill
 
-1. **Clarify scope first**: what should fire the skill (the triggers), what kind it is (Knowledge Islands / process / scoped — see arcadia-agentic-harness `README.md`), and how it relates to sibling skills — always **composition** (run a sibling's checker/mode in sequence and add a delta; declare the edge), never a base-coupled extension that takes another skill's modes.
+1. **Clarify scope first**: what should fire the skill (the triggers), what kind it is (Knowledge Islands / process / scoped — see ki-agentic-harness `README.md`), and how it relates to sibling skills — always **composition** (run a sibling's checker/mode in sequence and add a delta; declare the edge), never a base-coupled extension that takes another skill's modes.
 2. **Scaffold** `<name>/SKILL.md` with `references/`, `scripts/`, `assets/` only as needed. The directory name **is** the `name:` frontmatter (lowercase, hyphenated, in sync).
 3. **Write to the rubric, not from memory** — open [the rubric](references/audit-rubric.md) and satisfy each criterion as you draft. In particular: trigger-rich third-person `description`; body under 500 lines / ~5,000 tokens; one default approach with an escape hatch, not a menu; detail in `references/`; relative markdown links (angle-bracket form for paths with spaces), never wikilinks; refer to other skills by `name`, never path.
 4. **Self-audit before finishing** — run Mode AUDIT on the new skill. INIT and AUDIT share one rubric on purpose.
@@ -65,7 +65,7 @@ Keep the rubric current — the standard and the community move, and this is why
 
 1. **Read [the source list](references/sources.md)** — the tracked authoritative + community sources, each with a `last reviewed` date and what it governs.
 2. **Re-fetch each source** (WebFetch/WebSearch) and **diff against the current [standard](references/agent-skills-standard.md) + [rubric](references/audit-rubric.md)**: new required/optional frontmatter fields, changed caps (length, line, token budgets), new anti-patterns, deprecations. Note where sources disagree.
-3. **Scan our own skills** in the arcadia-agentic-harness repo for emergent patterns that work but aren't yet codified — promote the good ones into the standard + rubric; flag drift that contradicts them.
+3. **Scan our own skills** in the ki-agentic-harness repo for emergent patterns that work but aren't yet codified — promote the good ones into the standard + rubric; flag drift that contradicts them.
 4. **Propose a diff** to [the standard](references/agent-skills-standard.md) and [rubric](references/audit-rubric.md) and, where relevant, [the linter](scripts/lint-skills.ts) (a newly-mechanical check should move from judgment into the script). Confirm before writing.
 5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date, add any new source, retire any dead one, and refresh the `## Last review` block (what's confirmed, open watch-items). The record of _what changed_ is the commit itself — history lives in git, not a changelog. This step is mandatory: the source list is the skill's memory of where best practice comes from.
 

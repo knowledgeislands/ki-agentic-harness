@@ -7,7 +7,7 @@ argument-hint: 'audit [path] | conform [path] | init <name> | refresh'
 
 # Knowledge Islands Harness
 
-You are helping audit, conform, or scaffold a **Knowledge Islands agentic harness** — a single versioned repository that co-locates the four parts an agent is equipped with: skills (`skills/`), agents (`agents/`), MCP servers (`mcp/`), and evals (`evals/`). The canonical reference implementation is [arcadia-agentic-harness](../../README.md).
+You are helping audit, conform, or scaffold a **Knowledge Islands agentic harness** — a single versioned repository that co-locates the four parts an agent is equipped with: skills (`skills/`), agents (`agents/`), MCP servers (`mcp/`), and evals (`evals/`). The canonical reference implementation is [ki-agentic-harness](../../README.md).
 
 This skill governs the **container** — the harness's directory layout, its `CLAUDE.md` orientation, its `package.json` script families, and its `.ki-config.toml` compliance table. It does not govern the _contents_: skill quality routes to `ki-skills`, agent definitions to `ki-agents`, MCP server code to `ki-mcp`, the engineering toolchain to `ki-engineering`, and GitHub-side settings to `ki-repo`. The harness is the bridge into those skills — it tells you _what the container must look like_ so the contents are findable, installable, and auditable; the sibling skills each tell you _what quality looks like_ inside their part.
 
@@ -48,11 +48,11 @@ Modes: **AUDIT · CONFORM · INIT · REFRESH** (named, alphabetical). If invoked
 
 ## Mode REFRESH — re-anchor the standard
 
-The harness standard is a KI architectural convention, not an external spec — it is grounded in the [arcadia-agentic-harness](../../README.md) as the reference implementation. REFRESH means verifying the standard reflects current practice, and checking the external sources it builds on (Agent Skills, Claude Code subagent docs) for changes that affect the harness contract.
+The harness standard is a KI architectural convention, not an external spec — it is grounded in the [ki-agentic-harness](../../README.md) as the reference implementation. REFRESH means verifying the standard reflects current practice, and checking the external sources it builds on (Agent Skills, Claude Code subagent docs) for changes that affect the harness contract.
 
 1. **Read [the source list](references/sources.md)** — tracked sources, each with a `last reviewed` date.
 2. **Re-fetch external sources** (Agent Skills specification, Claude Code subagent docs) and diff against [the standard](references/harness-standard.md): new required SKILL.md fields, changed skill-install conventions, new subagent format requirements.
-3. **Check the reference implementation** — read [arcadia-agentic-harness](../../README.md) and its `CLAUDE.md`; does the standard still match current practice? Promote uncodified patterns that work well; flag any drift between the standard and the reference.
+3. **Check the reference implementation** — read [ki-agentic-harness](../../README.md) and its `CLAUDE.md`; does the standard still match current practice? Promote uncodified patterns that work well; flag any drift between the standard and the reference.
 4. **Propose a diff** to [the standard](references/harness-standard.md) and [the rubric](references/audit-rubric.md). Confirm before writing.
 5. **Update [the source list](references/sources.md)** — bump `last reviewed` dates and refresh the `## Last review` block (what's confirmed, open watch-items). The record of _what changed_ is the commit, not a changelog here.
 

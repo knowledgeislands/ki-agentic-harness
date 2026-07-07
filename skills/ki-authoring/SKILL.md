@@ -9,7 +9,7 @@ argument-hint: 'audit <path> | conform <path> | refresh'
 
 You are applying the **Knowledge Islands authoring conventions** — the foundational authoring and formatting rules every other skill, repo, and base in this work builds on rather than restates. Conventions are a common theme across the skill set; this skill is the one place they live, so the rest can assume them. It is the **single source of truth**: a repo's or base's `CLAUDE.md` carries a one-line pointer here instead of restating the rules, keeping the always-on layer small and the detail in one versioned place.
 
-This is a **standard, base-agnostic Process skill** — it hard-codes no single base and assumes no knowledge-base structure. Install it anywhere the conventions should apply. How it sits alongside the other skills in this repository, and where it must not overlap them, is documented once in the arcadia-agentic-harness `README.md`, not repeated here.
+This is a **standard, base-agnostic Process skill** — it hard-codes no single base and assumes no knowledge-base structure. Install it anywhere the conventions should apply. How it sits alongside the other skills in this repository, and where it must not overlap them, is documented once in the ki-agentic-harness `README.md`, not repeated here.
 
 ## The two layers
 

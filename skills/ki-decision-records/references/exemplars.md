@@ -5,17 +5,17 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated illustrations of well-formed Decision Records. Use these when authoring a new DR, checking a draft against the format standard, or explaining the format to a new contributor. Each pattern is drawn from real DRs in the `arcadia-principal` base — the primary reference implementation — and annotated to make the convention visible. The exemplars demonstrate shape, not topic: the subject matter of a DR is incidental; the structure is the point.
+Curated illustrations of well-formed Decision Records. Use these when authoring a new DR, checking a draft against the format standard, or explaining the format to a new contributor. Each pattern is drawn from real DRs in the `ki-arcadia-principal` base — the primary reference implementation — and annotated to make the convention visible. The exemplars demonstrate shape, not topic: the subject matter of a DR is incidental; the structure is the point.
 
 ## Collections
 
-| Source                                              | Covers                                                          | Last reviewed |
-| --------------------------------------------------- | --------------------------------------------------------------- | ------------- |
-| [Nygard (original)][nygard]                         | The five-section format, status vocabulary, immutability stance | 2026-06-25    |
-| [ADR GitHub community resources][adr-gh]            | Community patterns: Options, Pros/Cons, multi-type variants     | 2026-06-25    |
-| `arcadia-principal` `Admin/Governance/Decisions/` † | The canonical KI KB-repo implementation of the DR format        | 2026-06-25    |
+| Source                                                 | Covers                                                          | Last reviewed |
+| ------------------------------------------------------ | --------------------------------------------------------------- | ------------- |
+| [Nygard (original)][nygard]                            | The five-section format, status vocabulary, immutability stance | 2026-06-25    |
+| [ADR GitHub community resources][adr-gh]               | Community patterns: Options, Pros/Cons, multi-type variants     | 2026-06-25    |
+| `ki-arcadia-principal` `Admin/Governance/Decisions/` † | The canonical KI KB-repo implementation of the DR format        | 2026-06-25    |
 
-† The `arcadia-principal` base is not publicly hosted; the DRs are the primary exemplars for the KB-repo shape.
+† The `ki-arcadia-principal` base is not publicly hosted; the DRs are the primary exemplars for the KB-repo shape.
 
 [nygard]: https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions
 [adr-gh]: https://adr.github.io

@@ -9,7 +9,7 @@ argument-hint: 'audit <repo> | conform <repo> | init <repo> | refresh'
 
 You are applying the **Knowledge Islands 11ty website standard** — the shared way every static website in this work is built: **Eleventy 3, Nunjucks and Markdown; TypeScript run natively on Bun; Tailwind 4 config-less with design tokens**, compiling to a **portable `dist/`**. A new site is scaffolded to it; an existing one is audited and conformed against it. This skill carries that standard and the procedure.
 
-This is a **standard, base-agnostic Process skill**. It hard-codes no single repo; it applies to any repo carrying a `[ki-websites-11ty]` table in its `.ki-config.toml`. How it sits beside the other skills, and where it must not overlap them, is documented once in the arcadia-agentic-harness `README.md`.
+This is a **standard, base-agnostic Process skill**. It hard-codes no single repo; it applies to any repo carrying a `[ki-websites-11ty]` table in its `.ki-config.toml`. How it sits beside the other skills, and where it must not overlap them, is documented once in the ki-agentic-harness `README.md`.
 
 This skill owns the **site-build delta** only. The generic toolchain (Bun mandate, `ki:lint:*`/`ki:deps:*` families, `tsconfig`/`biome`/`tsc --noEmit`) is `ki-engineering`'s; Markdown/TOML style is `ki-authoring`'s; **serving the built `dist/`** on Cloudflare is `ki-hosting-cloudflare`'s. It **composes** on top of those rather than restating them.
 

@@ -16,11 +16,11 @@ For a Knowledge Islands repo, `.claude/skills/` contains exactly:
 
 - **Declared coverage** is owned by `ki-repo`'s coverage cascade — this skill _reads_ the tables, never edits them. Whether the declared set is correct for the repo is a `ki-repo` question.
 - **The baseline** is always linked: `repo` so a greenfield repo can reach INIT to scaffold its config; `authoring` because Markdown/TOML style is universal (it is cascade-exempt — no per-repo table — so it is added explicitly).
-- **The harness** (`arcadia-agentic-harness`) is the exception: as the authoring hub it links **all** skills, not a subset (`--all`).
+- **The harness** (`ki-agentic-harness`) is the exception: as the authoring hub it links **all** skills, not a subset (`--all`).
 
 ## How the links are stored
 
-- **Relative symlinks** into the harness's `skills/` (e.g. `.claude/skills/ki-mcp -> ../../../arcadia-agentic-harness/skills/ki-mcp`), computed for wherever the harness actually sits.
+- **Relative symlinks** into the harness's `skills/` (e.g. `.claude/skills/ki-mcp -> ../../../ki-agentic-harness/skills/ki-mcp`), computed for wherever the harness actually sits.
 - **Gitignored and regenerated, never committed.** Committed cross-repo symlinks dangle on a clone that lacks the harness beside it. The committed artifacts are a `ki:skills:link:project` package.json script (which re-runs the keystone linker) and the `.gitignore` line. A fresh clone runs `ki:skills:link:project` once.
 - The keystone linker **self-locates** the harness through its own real path — no hard-coded harness location.
 

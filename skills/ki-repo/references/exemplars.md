@@ -5,13 +5,13 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated patterns from the KI repo set that show what a well-configured Knowledge Islands repo looks like. Use these as reference when onboarding a new repo, running CONFORM, or auditing against the standard. The `arcadia-agentic-harness` is the primary exemplar — it carries every required layer-1 file, a fully-populated `.ki-config.toml`, and a `CLAUDE.md` with correct topic imports. The `mcp-*` repos are the reference set for public repos (topics, secret scanning, MIT license). For the full source list and last-review dates, see [sources.md](sources.md).
+Curated patterns from the KI repo set that show what a well-configured Knowledge Islands repo looks like. Use these as reference when onboarding a new repo, running CONFORM, or auditing against the standard. The `ki-agentic-harness` is the primary exemplar — it carries every required layer-1 file, a fully-populated `.ki-config.toml`, and a `CLAUDE.md` with correct topic imports. The `mcp-*` repos are the reference set for public repos (topics, secret scanning, MIT license). For the full source list and last-review dates, see [sources.md](sources.md).
 
 ## Collections
 
 | Source | URL | What it covers |
 | --- | --- | --- |
-| arcadia-agentic-harness | [github][harness] | Private repo; all layer-1 files; full `.ki-config.toml`; rich `CLAUDE.md` |
+| ki-agentic-harness | [github][harness] | Private repo; all layer-1 files; full `.ki-config.toml`; rich `CLAUDE.md` |
 | mcp-gmail | [github][mcp-gmail] | Public repo; MIT license; standard topic set; Dependabot auto-merge |
 | mcp-kb-fs | [github][mcp-kb-fs] | Public repo; canonical layer-2/3 settings; `branch-protection` off |
 | GitHub REST API — repo settings | [docs.github.com][repo-settings] | Merge methods, auto-delete-branch, features |
@@ -68,7 +68,7 @@ One paragraph: what this repo is and who works in it.
 
 ### Four-part harness layout with coverage declarations
 
-When a repo carries a four-part agentic harness layout (`skills/`, `agents/`, `mcp/`, `evals/`), its `.ki-config.toml` must declare all four relevant tables so `ki-repo`'s coverage cascade does not warn on detected-but-undeclared artifacts. The harness repo (`arcadia-agentic-harness`) is the canonical example — it opts into every applicable governance skill and documents why each table is present.
+When a repo carries a four-part agentic harness layout (`skills/`, `agents/`, `mcp/`, `evals/`), its `.ki-config.toml` must declare all four relevant tables so `ki-repo`'s coverage cascade does not warn on detected-but-undeclared artifacts. The harness repo (`ki-agentic-harness`) is the canonical example — it opts into every applicable governance skill and documents why each table is present.
 
 ```toml
 [ki-repo]
@@ -88,7 +88,7 @@ visibility = "private"
 # This repo authors and maintains decision records.
 ```
 
-[harness]: https://github.com/knowledgeislands/arcadia-agentic-harness
+[harness]: https://github.com/knowledgeislands/ki-agentic-harness
 [mcp-gmail]: https://github.com/knowledgeislands/mcp-gmail
 [mcp-kb-fs]: https://github.com/knowledgeislands/mcp-kb-fs
 [repo-settings]: https://docs.github.com/en/rest/repos/repos#update-a-repository

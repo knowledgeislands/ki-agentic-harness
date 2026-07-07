@@ -55,7 +55,7 @@ Both are checked by the mechanical audit and created as stubs by INIT and CONFOR
 
 ### Linking within a base
 
-Notes inside a base link to one another and to their zone index notes with Obsidian `[[wikilinks]]`, not relative markdown paths — the five index-carrying zones are `[[Calendar]]`, `[[Pillars]]`, `[[Resources]]`, `[[Streams]]`, and `[[Admin]]`. Body links use the shortest unique path (bare filename if unique, the minimum disambiguating prefix otherwise); a `## Contents` list uses the full path with an alias (`[[Full/Path/Note|Note Name]]`). This governs **note content inside a base** — it is independent of, and does not conflict with, the relative-markdown-link convention these skill files themselves use (see arcadia-agentic-harness `docs/installation.md`, "Linking inside skills").
+Notes inside a base link to one another and to their zone index notes with Obsidian `[[wikilinks]]`, not relative markdown paths — the five index-carrying zones are `[[Calendar]]`, `[[Pillars]]`, `[[Resources]]`, `[[Streams]]`, and `[[Admin]]`. Body links use the shortest unique path (bare filename if unique, the minimum disambiguating prefix otherwise); a `## Contents` list uses the full path with an alias (`[[Full/Path/Note|Note Name]]`). This governs **note content inside a base** — it is independent of, and does not conflict with, the relative-markdown-link convention these skill files themselves use (see ki-agentic-harness `docs/installation.md`, "Linking inside skills").
 
 ### Routing test
 

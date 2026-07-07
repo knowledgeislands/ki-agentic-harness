@@ -9,7 +9,7 @@ argument-hint: 'audit <repo> | conform <repo> | init <repo> | refresh'
 
 You are applying the **Knowledge Islands Cloudflare hosting standard** — the house convention for serving a built static site on **Cloudflare Workers + Static Assets**: one `wrangler.jsonc` whose `assets.directory` points at the site's `dist/`, custom-domain routes, observability on, and a `ki:site:deploy` script family. A new site's hosting is scaffolded to it; an existing one is audited and conformed.
 
-This is a **standard, base-agnostic Process skill**. It hard-codes no single repo; it applies to any repo carrying a `[ki-hosting-cloudflare]` table in its `.ki-config.toml`. How it sits beside the other skills, and where it must not overlap them, is documented once in the arcadia-agentic-harness `README.md`.
+This is a **standard, base-agnostic Process skill**. It hard-codes no single repo; it applies to any repo carrying a `[ki-hosting-cloudflare]` table in its `.ki-config.toml`. How it sits beside the other skills, and where it must not overlap them, is documented once in the ki-agentic-harness `README.md`.
 
 This skill owns the **deploy/serve delta for the site Worker** only — the one Worker that serves `dist/`. It **builds on** two siblings and restates neither: `ki-websites-11ty` produces the `dist/` (the seam, below); `ki-engineering` owns the toolchain. **Any Worker that is not the static-site server** — bots, ingress receivers, APIs, Durable Objects, crons — is **out of scope** and routes to the generic `cloudflare` / `wrangler` skills.
 

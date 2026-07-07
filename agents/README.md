@@ -10,7 +10,7 @@ The governing skill for what makes a good agent definition is **`ki-agents`** (u
 
 ## governance/
 
-KI governance-domain agents. Each is grounded in the arcadia-principal KB and the harness skill set; each defers to its siblings for adjacent concerns.
+KI governance-domain agents. Each is grounded in the ki-arcadia-principal KB and the harness skill set; each defers to its siblings for adjacent concerns.
 
 | Agent                   | Lane                                                     |
 | ----------------------- | -------------------------------------------------------- |

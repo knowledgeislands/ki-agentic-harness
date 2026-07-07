@@ -1,4 +1,4 @@
-# CLAUDE.md — arcadia-agentic-harness
+# CLAUDE.md — ki-agentic-harness
 
 Always-loaded orientation for an agent working in this repo. The README is the entry point; for a short, human-first summary of what the harness is and does, [docs/overview.md](docs/overview.md) is the plainest starting point. The full picture is in the [docs/](docs/) the README indexes — what each skill is, the map, the boundaries. The forward view is in [ROADMAP.md](ROADMAP.md). This file is the short anchor.
 
@@ -56,11 +56,11 @@ _~900 tokens/session saved_
 - `ki-authoring` has **no `scripts/` directory** and no checker script — skip the mechanical checker entirely; proceed directly to judgment using `bun run ki:lint:md:check` and the references in `skills/ki-authoring/references/`.
 - `lint-agents.ts` must target `agents/` not `.`: `bun skills/ki-agents/scripts/lint-agents.ts agents/ --json`. Running with `.` scans all repo Markdown and returns 77 spurious FAILs from non-agent files.
 
-### arcadia-principal KB paths
+### ki-arcadia-principal KB paths
 
 _~600 tokens/session saved_
 
-- The Read tool fails silently (file_not_found) for paths containing spaces, which are common in `arcadia-principal` (e.g. `Territories and Archipelagos/Territories and Archipelagos.md`). Use `Bash cat "path with spaces"` instead — never the Read tool for space-containing KB paths.
+- The Read tool fails silently (file_not_found) for paths containing spaces, which are common in `ki-arcadia-principal` (e.g. `Territories and Archipelagos/Territories and Archipelagos.md`). Use `Bash cat "path with spaces"` instead — never the Read tool for space-containing KB paths.
 
 ### Subagent security constraints
 
@@ -121,7 +121,7 @@ _~600 tokens/session saved_
 
 _~600 tokens/session saved_
 
-- In `arcadia-principal`, the Enactment Process is nested: `Pillars/Knowledge Islands/Model/Processes/Enactment Process/Enactment Process.md` (subfolder, not flat).
+- In `ki-arcadia-principal`, the Enactment Process is nested: `Pillars/Knowledge Islands/Model/Processes/Enactment Process/Enactment Process.md` (subfolder, not flat).
 - Flat path `Pillars/Knowledge Islands/Model/Processes/Enactment Process.md` does not exist and always 404s.
 
 ### ki:skills:lint invocation

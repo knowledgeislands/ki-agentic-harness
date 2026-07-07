@@ -31,10 +31,10 @@ Abbreviations match the `(SOURCE)` tags in [the standard](agent-skills-standard.
 
 ## In-house
 
-| Tag                            | Source                       | Governs          | Last reviewed |
-| ------------------------------ | ---------------------------- | ---------------- | ------------- |
-| arcadia-agentic-harness README | The repo's own `README.md`   | †                | 2026-06-21    |
-| `ki-kb-base`                   | The reference standard skill | Worked example ※ | 2026-06-21    |
+| Tag                       | Source                       | Governs          | Last reviewed |
+| ------------------------- | ---------------------------- | ---------------- | ------------- |
+| ki-agentic-harness README | The repo's own `README.md`   | †                | 2026-06-21    |
+| `ki-kb-base`              | The reference standard skill | Worked example ※ | 2026-06-21    |
 
 † Linking convention (no wikilinks), standard vs base-coupled-extension, the house toolchain, Knowledge Islands structure.
 

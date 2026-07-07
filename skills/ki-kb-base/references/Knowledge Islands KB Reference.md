@@ -21,7 +21,7 @@ A Knowledge Islands base is a single markdown store organised into five fixed zo
 
 Within a base, notes link to one another and to their zone index notes with Obsidian `[[wikilinks]]`, not relative markdown paths. The five index-carrying zones resolve as `[[Calendar]]`, `[[Pillars]]`, `[[Resources]]`, `[[Streams]]`, and `[[Admin]]`; the inbound `+/` and outbound `-/` are staging, not zones, with no same-name index. Body links use the shortest unique path — a bare filename when it is unique, the minimum disambiguating prefix when it is not — and check for filename collisions before writing a bare link; a `## Contents` list always uses the full path with an alias (`[[Full/Path/Note|Note Name]]`).
 
-This is the convention for **note content inside a base**. It is deliberately distinct from how the skill files in this repository link to one another (relative markdown links, per arcadia-agentic-harness `docs/installation.md` under "Linking inside skills") — the two never meet, so a base using wikilinks does not break the skills that use markdown links.
+This is the convention for **note content inside a base**. It is deliberately distinct from how the skill files in this repository link to one another (relative markdown links, per ki-agentic-harness `docs/installation.md` under "Linking inside skills") — the two never meet, so a base using wikilinks does not break the skills that use markdown links.
 
 ## Onboarding a base to this skill
 

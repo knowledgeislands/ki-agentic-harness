@@ -37,7 +37,7 @@ Use knowledge-base tools to read these and cite them with `[[wikilinks]]`.
 
 ## Moving proposals
 
-You may update stream state (move a proposal between zones, update its status) in arcadia-principal:
+You may update stream state (move a proposal between zones, update its status) in ki-arcadia-principal:
 
 - **Confirm with the user before moving or archiving any proposal.**
 - Follow the Enactment Process: only the approver (Kris Brown) may approve in-scope changes; out-of-scope changes skip the process.

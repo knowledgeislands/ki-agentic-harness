@@ -5,7 +5,7 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Concrete patterns showing what good context hygiene looks like in practice: how to declare the tokenomics config table, how to set up Headroom as the compression layer, what good compaction and PreCompact hook wiring looks like, and how the context budget shapes what is loaded vs deferred. The exemplars draw from the standard's normative guidance and from the `arcadia-principal` live config — the reference environment this skill tracks and re-anchors against.
+Concrete patterns showing what good context hygiene looks like in practice: how to declare the tokenomics config table, how to set up Headroom as the compression layer, what good compaction and PreCompact hook wiring looks like, and how the context budget shapes what is loaded vs deferred. The exemplars draw from the standard's normative guidance and from the `ki-arcadia-principal` live config — the reference environment this skill tracks and re-anchors against.
 
 ## Collections
 
@@ -23,7 +23,7 @@ Concrete patterns showing what good context hygiene looks like in practice: how 
 
 ### The `[ki-tokenomics]` config table
 
-A repo opts into tokenomics governance with a `[ki-tokenomics]` table in its `.ki-config.toml`. All keys are optional; `headroom` and `preferred_model` are the most impactful defaults to set. From `arcadia-principal/.ki-config.toml`:
+A repo opts into tokenomics governance with a `[ki-tokenomics]` table in its `.ki-config.toml`. All keys are optional; `headroom` and `preferred_model` are the most impactful defaults to set. From `ki-arcadia-principal/.ki-config.toml`:
 
 ```toml
 [ki-tokenomics]

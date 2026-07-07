@@ -90,7 +90,7 @@ These symlinks are **gitignored and regenerated** — the committed artifacts ar
 The keystone, user-global:
 
 ```bash
-cd /path/to/arcadia-agentic-harness
+cd /path/to/ki-agentic-harness
 ln -sfn "$PWD/skills/ki-bootstrap" ~/.claude/skills/ki-bootstrap
 ```
 
@@ -98,7 +98,7 @@ A single skill into a project, by hand:
 
 ```bash
 cd /path/to/target-repo && mkdir -p .claude/skills
-ln -sfn /path/to/arcadia-agentic-harness/skills/ki-kb-base .claude/skills/ki-kb-base
+ln -sfn /path/to/ki-agentic-harness/skills/ki-kb-base .claude/skills/ki-kb-base
 ```
 
 `ln -sfn` forces replacement of an existing link and never dereferences into a directory, so re-running it updates the link in place instead of nesting a second link inside it. The link name must match the skill directory name (and the `name:` frontmatter).

@@ -15,7 +15,7 @@ This skill governs **one invariant** and is deliberately tiny, because it is the
 
 - A repo's `.claude/skills/` should mirror its **declared coverage** — the `[ki-<skill>]` tables in its `.ki-config.toml` — **plus a baseline of `ki-repo` + `ki-authoring`** (so a greenfield repo with no tables can still reach repo's INIT, and Markdown/TOML style is always governed). The keystone itself is never linked project-local — it is global.
 - Links are **relative symlinks** into the harness's `skills/`, **gitignored and regenerated** — the committed artifacts are a `ki:skills:link:project` package.json script and the `.gitignore` line, never the symlinks (which would dangle on a clone without the harness beside it).
-- The **harness** (`arcadia-agentic-harness`) is the authoring hub: it links **all** skills (`--all`), not a coverage subset.
+- The **harness** (`ki-agentic-harness`) is the authoring hub: it links **all** skills (`--all`), not a coverage subset.
 
 The linker and checker is [`scripts/link-skills.ts`](scripts/link-skills.ts); it self-locates the harness through its own (symlinked) path. The quotable invariant is [the standard](references/bootstrap-standard.md); the checkable criteria are [the rubric](references/audit-rubric.md). This skill **composes on** `ki-repo`, which owns the `.ki-config.toml` contract it reads — it never edits the config's coverage, only mirrors it.
 
