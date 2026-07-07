@@ -38,11 +38,12 @@ Auditing a whole tree or org is a set audit — **bound the context** (the set-a
 
 Outward-facing: it changes live GitHub settings and may open PRs. Show the diff and confirm before mutating.
 
+The audit-rubric's `[M]` findings are scripted: `bun scripts/conform-repo.ts [path]` (`--dry-run` to preview) applies every mechanical `gh` call in [the standard](references/repo-standard.md#applying-it) directly — merge methods, auto-delete-branch, Wiki/Projects/Issues, topics, branch protection (only when `[ki-repo.checks]` opts it in), Dependabot alerts/updates, `allow_update_branch`, secret scanning + push protection (public), Actions permissions — and scaffolds `.gitignore` / `.editorconfig` / a `.ki-config.toml` `[ki-repo]` block when absent. It prints the 3 `[J]` findings (README content, description text/visibility, whether a `[ki-repo.checks]` override is warranted) as manual TODOs rather than guessing — those still need a human read.
+
 1. Run **AUDIT** first, so you change against a known gap list.
-2. **Files** — add any missing `README.md` / `LICENSE` / `.gitignore` / `.editorconfig` (and a `.ki-config.toml` — or run **INIT** first). `main` is unprotected, so this can be a direct push (or a PR if you prefer).
-3. **GitHub settings** — apply with the `gh` commands in [the standard](references/repo-standard.md) (merge methods, auto-delete-branch, features, description, topics).
-4. **Deeper** — Dependabot alerts/updates, secret scanning + push protection (public), Actions permissions.
-5. **Re-audit** to confirm convergence.
+2. Run `conform-repo.ts` for the mechanical layer (or apply the `gh` commands in [the standard](references/repo-standard.md) by hand).
+3. Resolve the 3 printed `[J]` TODOs yourself — README content, description/visibility, per-repo check overrides.
+4. **Re-audit** to confirm convergence.
 
 ### Mode INIT — make a repo Knowledge Islands–compliant
 

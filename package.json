@@ -88,7 +88,10 @@
     "ki:websites:audit": "bun skills/ki-websites-11ty/scripts/audit-websites.ts",
     "prepare": "husky",
     "ki:hosting-cloudflare:audit": "bun .claude/skills/ki-hosting-cloudflare/scripts/audit-cloudflare-hosting.ts .",
-    "ki:websites-11ty:audit": "bun .claude/skills/ki-websites-11ty/scripts/audit-websites.ts ."
+    "ki:websites-11ty:audit": "bun .claude/skills/ki-websites-11ty/scripts/audit-websites.ts .",
+    "ki:agents:link:project": "bun .claude/skills/ki-bootstrap/scripts/link-agents.ts .",
+    "ki:binding:conform": "bun .claude/skills/ki-binding/scripts/conform-cowork.ts .",
+    "ki:repo:conform": "bun .claude/skills/ki-repo/scripts/conform-repo.ts ."
   },
   "type": "module"
 }

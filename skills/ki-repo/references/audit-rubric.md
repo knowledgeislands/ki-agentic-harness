@@ -4,6 +4,8 @@ The line-by-line checkable criteria behind [the standard](repo-standard.md). Eac
 
 A criterion's tag is a contract with the script: if you find yourself eyeballing an **[M]** check, run the auditor instead; a **[J]** check that becomes deterministic should move into the script and flip to **[M]**.
 
+Every **[M]** finding here is also auto-fixable: [`../scripts/conform-repo.ts`](../scripts/conform-repo.ts) applies the matching `gh` call or local scaffold directly (`--dry-run` to preview). The **[J]** findings (README content, description text/visibility, whether a `[ki-repo.checks]` override is warranted) are printed as manual TODOs, never guessed.
+
 ## Layer 1 — repo files (presence on the default branch, via the GitHub git-tree API)
 
 - **readme [M]** `README.md` present. (standard: Layer 1)
