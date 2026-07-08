@@ -1,5 +1,6 @@
 ---
 name: ki-bootstrap
+implies: [ki-repo]
 description: >
   Wires a Knowledge Islands repo's project-local skills (`.claude/skills/`) from its `.ki-config.toml`. Use when setting up or auditing a repo's skill links, bootstrapping a fresh clone so the right skills load, or adding the `ki:skills:link:project` convention to a repo for the first time. Triggers: "set up this repo's skills", "bootstrap the skills", "add ki:skills:link:project", "wire project-local skills", "why aren't my skills loading in this repo". This is the install keystone — the one knowledgeislands skill kept installed globally, so any repo can self-wire. For the `.ki-config.toml` contents and the coverage cascade (which skills a repo should declare) and GitHub settings use `ki-repo`; for the harness's four-part layout use `ki-harness`.
 argument-hint: 'audit [path] | conform [path] | refresh'

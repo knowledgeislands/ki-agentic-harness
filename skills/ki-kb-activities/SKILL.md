@@ -1,5 +1,6 @@
 ---
 name: ki-kb-activities
+implies: []
 description: >
   Author, audit, and manage Activity notes in a Knowledge Islands base — the operational record of what automation, scheduling, and agentic work a base has adopted. Governs the naming convention, required frontmatter, realization types, and the Activities.md index in Admin/Operations/Activities/. Checks that activities declared as slash commands have a corresponding skill, and that those declared as scheduled tasks are flagged for registration in an external scheduling system. The harness supports any agentic environment; Claude Code (slash commands / skills) and Claude Cowork (scheduled tasks) are the primary realizations. Triggers: "add an activity", "audit activities", "what activities does this base have", "register this as a scheduled task", "create a skill for this activity", "list my activities", "check activity conformance". For the KB zone structure use `ki-kb-base`; for skill authoring use `ki-skills`; for the harness bundle layout use `ki-harness`.
 argument-hint: 'audit | conform | new <name> | refresh'

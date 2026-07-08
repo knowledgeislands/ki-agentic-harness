@@ -1,5 +1,6 @@
 ---
 name: ki-memory
+implies: []
 description: >
   Governs the Claude Code auto-memory system — the per-project, file-based memory Headroom writes to `~/.claude/projects/<slug>/memory/` plus its `MEMORY.md` index: the four memory types (user/feedback/project/reference), the frontmatter schema, index-file agreement, and the promote-then-delete reconciliation doctrine. Triggers on "audit memory", "memory hygiene", "check MEMORY.md", "auto-memory", "memory frontmatter". Not for a Knowledge Islands base's own memory cascade (`ki-kb-base`'s MEM-2, the root `Admin/MEMORY.md` index of Pillars) — that's KB content read at session start, not the Claude Code session-memory mechanism this skill governs. Not for measuring the token cost of the memory surface — that's `ki-tokenomics`.
 argument-hint: 'audit [repo-path] | conform [repo-path] | refresh'
