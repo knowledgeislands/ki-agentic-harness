@@ -11,7 +11,7 @@ import { resolve } from 'node:path'
 const HARNESS_ROOT = new URL('..', import.meta.url).pathname
 const MCP_REPOS_ROOT = resolve(HARNESS_ROOT, '../')
 
-const repos = ['mcp-git-audit', 'mcp-gmail', 'mcp-claude-housekeeping', 'mcp-m365', 'mcp-kb-notion-mirror', 'mcp-ki-kb-fs'] as const
+const repos = ['mcp-git-audit', 'mcp-gsuite', 'mcp-claude-housekeeping', 'mcp-m365', 'mcp-kb-notion-mirror', 'mcp-ki-kb-fs'] as const
 
 let ok = 0
 let fail = 0
