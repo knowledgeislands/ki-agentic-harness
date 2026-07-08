@@ -11,7 +11,7 @@ You are applying the **Knowledge Islands Decision Records standard** — how Dec
 
 ## What this skill owns
 
-1. **The format standard** — the five Nygard sections (Title, Status/Date, Context, Decision, Consequences) plus the optional `## References` section, with exact writing guidance (active voice for Decision, value-neutral Context).
+1. **The format standard** — the Nygard body sections (Title, Context, Decision, Consequences) plus the optional `## References` section and an optional `**Date:**` line, with exact writing guidance (active voice for Decision, value-neutral Context). A DR is a **living present-state record** — no status lifecycle, mutability marker, supersession chain, or changelog.
 2. **The prefix table** — nine type-specific prefixes, one per `decision_type`:
 
    | Prefix | `decision_type` |
@@ -27,11 +27,11 @@ You are applying the **Knowledge Islands Decision Records standard** — how Dec
    | `KDR-` | `knowledge`     |
 
 3. **The naming convention** — `<PREFIX>-<SCOPE>-NNN`: open scope (any uppercase alpha-leading token, multi-level), NNN is zero-padded (≥ 3 digits), monotonically increasing **per prefix within the scope** (NNN is unique for a given `<PREFIX>`+`<SCOPE>` — two DRs may share a serial if their prefixes differ).
-4. **The status lifecycle** — `Draft → Proposed → Accepted → Deprecated → Superseded by <ID>`; superseded records are retained with a bidirectional reference. **The mutability axis** — every DR carries `**Mutability:** open|locked`, orthogonal to Status: an Accepted DR may be `locked` (frozen, changed only by supersession) or `open` (edited in place, each edit logged in `## Changelog`); `Deprecated`/`Superseded` are always `locked`. See the Mutability section of [dr-format.md](references/dr-format.md).
+4. **The living-record principle** — a DR states the decision as it stands **now** and is edited **in place**; there is no status lifecycle, no mutability marker, no supersession chain, and no changelog. A change of direction rewrites the live record rather than superseding it, so every record reads as if written today. See [dr-format.md](references/dr-format.md).
 5. **The index rule** — `Decisions.md` (code: `README.md` or `Decisions.md`) must contain a table with one row per DR, ordered by filename.
 6. **The placement rule** — `repo_type = "kb"` in `.ki-config.toml` → `Admin/Governance/Decisions/`; all others → `docs/decisions/`. Pass the actual path to the checker.
 7. **The Enactment Process integration** — a DR is the formal artifact for an Enactment Process proposal whose `Decision` output warrants a standalone record.
-8. **The mechanical checker** — [`scripts/audit-drs.ts`](scripts/audit-drs.ts) validates filenames, prefix–type agreement, required sections, Status/Date fields, `type`/`decision_type` fields (KB mode), superseded links, serial uniqueness, and index completeness/sync. Detects KB vs code mode automatically from `.ki-config.toml`.
+8. **The mechanical checker** — [`scripts/audit-drs.ts`](scripts/audit-drs.ts) validates filenames, prefix–type agreement, required sections, an optional `**Date:**` field, `type`/`decision_type` fields (KB mode), serial uniqueness, and index completeness/date-sync. Detects KB vs code mode automatically from `.ki-config.toml`.
 
 ## Operating modes
 
@@ -55,7 +55,7 @@ Carries the universal **AUDIT · CONFORM · REFRESH**, plus **NEW** (draft a new
 
 ## Notes
 
-- **Mutability governs edits, not Status** — a `locked` DR changes only by supersession; an `open` DR is edited in place, each edit logged in `## Changelog`. `Deprecated`/`Superseded` records are always `locked`.
+- **Records are edited in place** — a DR is kept true by editing it, not by superseding it; there is no `## Changelog` and no supersession chain. A change of direction rewrites the record so it always reads as current.
 - **Scope convention** — use the island/repo identifier from `.ki-config.toml` as the primary scope segment (e.g. `ARCADIA`). Multi-level scopes are valid for sub-domain decisions (e.g. `ARCADIA-TOOLS`).
 - **Serials are per-prefix within scope** — NNN is unique for a given `<PREFIX>`+`<SCOPE>`. `GDR-ARCADIA-001` and `SDR-ARCADIA-001` are both valid; two DRs never share the same prefix+scope+serial.
 - **Not every proposal needs a DR** — routine content additions, typo fixes, and minor configuration changes do not warrant one. Reserve DRs for decisions with standalone standing.
