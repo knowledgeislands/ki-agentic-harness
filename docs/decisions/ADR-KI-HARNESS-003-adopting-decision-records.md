@@ -15,26 +15,26 @@ The key question was whether to adopt a strict Nygard format, a Y-statements var
 The harness adopts ADRs as its canonical record for significant decisions. The format used is:
 
 - **Title** — H1 heading, `# ADR-<SCOPE>-NNN: <title>`.
-- **Status** and **Date** — bold key-value fields immediately under the title.
+- **Date** (optional) — a bold key-value field immediately under the title.
 - **Context** — why the decision was needed; the forces at play.
 - **Decision** — what was decided, stated plainly.
 - **Consequences** — what changes as a result, including trade-offs.
-- **References** — related ADRs and external sources.
+- **References** — related DRs and external sources.
 
-Status values are `Proposed`, `Accepted`, `Deprecated`, and `Superseded by ADR-<SCOPE>-NNN`. An accepted ADR body is never modified; a subsequent decision supersedes it rather than editing it in place.
+A Decision Record is a **living present-state record**: it states the decision as it stands now and is edited in place. There is no status lifecycle, no mutability marker, no supersession chain, and no changelog — a decision that changes edits the live record, and the reasoning history lives in git. Superseded/roadmap/forward-looking narration belongs in the ROADMAP (code) or a stream (KB), not in the record.
 
-ADR files live in `docs/decisions/` and are indexed in `docs/decisions/README.md`. The naming convention and mechanical rules are governed by the `ki-adrs` skill.
+DR files live in `docs/decisions/` and are indexed in `docs/decisions/README.md`. The naming convention and mechanical rules are governed by the `ki-decision-records` skill.
 
 ## Consequences
 
 - Significant decisions accumulate as a searchable, version-controlled record.
 - An agent beginning a session can read the `docs/decisions/` index to understand why the harness is shaped the way it is.
-- The accepted-ADR-body-is-immutable rule means the index grows but never silently changes meaning.
-- Minor decisions (implementation details, naming choices) remain in commit messages; ADRs are reserved for choices that would otherwise require excavation to understand.
+- Because records are living and edited in place, the index always reflects the current decision; the reasoning history is recovered from git, not from a status field or a supersession chain.
+- Minor decisions (implementation details, naming choices) remain in commit messages; DRs are reserved for choices that would otherwise require excavation to understand.
 
 ## References
 
-- [docs/decisions/README.md](README.md) — the index of all ADRs in this harness.
+- [docs/decisions/README.md](README.md) — the index of all DRs in this harness.
 - `GDR-KI-ARCADIA-001` (ki-arcadia-principal) — the KI-level decision that established DRs as the instrument; this ADR is its harness realisation (`decision_depends_on: ["GDR-KI-ARCADIA-001"]`)
-- [skills/ki-adrs/SKILL.md](../../skills/ki-adrs/SKILL.md) — the governance skill that defines and enforces the ADR format used here.
+- [skills/ki-decision-records/SKILL.md](../../skills/ki-decision-records/SKILL.md) — the governance skill that defines and enforces the DR format used here.
 - [Michael Nygard, "Documenting Architecture Decisions"](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) — the original ADR proposal this format descends from.

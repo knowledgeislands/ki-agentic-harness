@@ -29,12 +29,15 @@ Sub-scopes used in this harness:
 | ADR-KI-HARNESS-003 | [Adopting Architecture Decision Records](ADR-KI-HARNESS-003-adopting-decision-records.md) | 2026-06-23 |
 | ADR-KI-HARNESS-004 | [Purpose and scope of this repository](ADR-KI-HARNESS-004-purpose-and-scope.md) | 2026-06-23 |
 | ADR-KI-HARNESS-005 | [The ki- naming model and harness-as-source vs plugin-as-projection](ADR-KI-HARNESS-005-naming-model-and-harness-as-source.md) | 2026-07-07 |
+| ADR-KI-HARNESS-006 | [Mechanical-first, LLM-optional operation](ADR-KI-HARNESS-006-mechanical-first-llm-optional.md) | 2026-07-09 |
+| ADR-KI-HARNESS-007 | [The bootstrapping chain and the self-sufficiency contract](ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md) | 2026-07-09 |
 | ADR-KI-HARNESS-CONFIG-001 | [Validate-down .ki-config.toml contract](ADR-KI-HARNESS-CONFIG-001-validate-down-ki-config-contract.md) | 2024-01-01 |
 | ADR-KI-HARNESS-SKILLS-001 | [AUDIT/CONFORM/INIT/REFRESH canonical modes](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) | 2024-01-01 |
 | ADR-KI-HARNESS-SKILLS-002 | [Mechanical and judgment checker split](ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md) | 2024-01-01 |
 | ADR-KI-HARNESS-SKILLS-003 | [Dependency order for multi-skill composition](ADR-KI-HARNESS-SKILLS-003-dependency-order-composition.md) | 2024-01-01 |
 | ADR-KI-HARNESS-SKILLS-004 | [Skills must be valid standalone](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) | 2024-01-01 |
 | ADR-KI-HARNESS-SKILLS-005 | [The handoff doctrine is its own skill](ADR-KI-HARNESS-SKILLS-005-handoff-doctrine-own-skill.md) | 2026-07-02 |
+| ADR-KI-HARNESS-SKILLS-006 | [Six-cluster skill taxonomy and the implication graph](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md) | 2026-07-09 |
 | ADR-KI-HARNESS-TOOLCHAIN-001 | [Bun, Biome, and knip standard toolchain](ADR-KI-HARNESS-TOOLCHAIN-001-standard-toolchain.md) | 2026-06-28 |
 | ADR-KI-HARNESS-TOOLCHAIN-002 | [Complementary tooling — current adoptions](ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling.md) | 2026-06-29 |
 | ADR-KI-HARNESS-TOOLCHAIN-003 | [Proxy local MCP servers behind mcporter](ADR-KI-HARNESS-TOOLCHAIN-003-mcporter-mcp-proxy.md) | 2026-06-24 |
