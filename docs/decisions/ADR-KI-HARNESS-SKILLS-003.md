@@ -1,9 +1,5 @@
 # ADR-KI-HARNESS-SKILLS-003: Dependency order for multi-skill composition
 
-**Status:** Accepted
-
-**Mutability:** open
-
 **Date:** 2024-01-01
 
 ## Context
@@ -34,9 +30,3 @@ Skill names follow the grammar **`ki-<concern>[-<technology>]`**. The set has th
 - [skills/ki-skills/SKILL.md](../../skills/ki-skills/SKILL.md) — Mode AUDIT, set-audit discipline.
 - [skills/ki-engineering/references/enforcement-framework.md](../../skills/ki-engineering/references/enforcement-framework.md) §5 AUDIT — "Auditing a set … bounds its own context".
 - [ADR-KI-HARNESS-AGENTS-001](ADR-KI-HARNESS-AGENTS-001.md) — uses this dependency order as synthesis-ranking priority when parallelising multi-skill execution.
-
-## Changelog
-
-- 2026-07-02 — added the `**Mutability:**` marker (open); made the AGENTS-001 reference a relative link.
-- 2026-07-04 — extended the dependency order from 12 to all 18 skills (added `decision-records`, `activities`, `live-artifacts`, `plans`, `handoffs`, `bootstrap`) and documented their placement rationale.
-- 2026-07-04 — added the naming grammar (`ki-<concern>[-<technology>]`), ratifying the `ki-websites-11ty` / `ki-hosting-cloudflare` renames (plan [006](../plans/skills/006-concern-first-renames.md)); the order string gains `memory` and the post-rename names via plan 004.

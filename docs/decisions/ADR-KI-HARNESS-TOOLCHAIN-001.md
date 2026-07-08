@@ -1,9 +1,5 @@
 # ADR-KI-HARNESS-TOOLCHAIN-001: Bun, Biome, and knip standard toolchain
 
-**Status:** Accepted
-
-**Mutability:** open
-
 **Date:** 2026-06-28
 
 ## Context
@@ -34,8 +30,3 @@ The script families (`ki:lint:check`, `ki:lint:types`, `ki:lint:md`, `ki:lint:md
 
 - [skills/ki-engineering/references/engineering-standard.md](../../skills/ki-engineering/references/engineering-standard.md) §1–§5 — package.json toolchain pinning, script families, Bun vs Node, tsconfig, Biome, knip.
 - [knip.dev](https://knip.dev) — dependency and dead-code analysis.
-
-## Changelog
-
-- 2026-07-02 — realigned to present state; folded in knip for dependency + dead-code hygiene (previously recorded as ADR-KI-HARNESS-TOOLCHAIN-004).
-- 2026-07-04 — split dependency freshness into two idioms by intent. `ki:deps:refresh` (`bun update --force`) is the routine in-range refresh now composed into `ki:conform` — it never crosses a semver major or writes `latest` into `bun.lock`. `ki:deps:update` (`bun update --latest && bun install`) is the deliberate cross-major upgrade run on purpose; the trailing `bun install` re-pins `bun.lock` so `--latest`'s transient `latest` markers never reach a commit. (`ki:conform` previously composed `ki:deps:update` = `bun update --latest`, which bumped majors on every conform and polluted the lock.)

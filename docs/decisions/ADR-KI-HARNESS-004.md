@@ -1,9 +1,5 @@
 # ADR-KI-HARNESS-004: Purpose and scope of this repository
 
-**Status:** Accepted
-
-**Mutability:** open
-
 **Date:** 2026-06-23
 
 ## Context
@@ -37,7 +33,3 @@ The harness is not a general-purpose monorepo. Artefacts that belong to a specif
 - [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002.md) — the four-part bundle layout this repository realises.
 - [ADR-KI-HARNESS-CONFIG-001](ADR-KI-HARNESS-CONFIG-001.md) — `.ki-config.toml` as the repo-to-skill binding mechanism.
 - [skills/ki-harness/SKILL.md](../../skills/ki-harness/SKILL.md) — the skill that governs the harness bundle itself.
-
-## Changelog
-
-- 2026-07-02 — added the `**Mutability:**` marker (open); corrected the mislabeled cross-reference (the `.ki-config.toml` binding mechanism is CONFIG-001, not 002) and made references relative links.

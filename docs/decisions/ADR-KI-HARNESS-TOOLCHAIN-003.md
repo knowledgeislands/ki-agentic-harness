@@ -1,9 +1,5 @@
 # ADR-KI-HARNESS-TOOLCHAIN-003: Proxy local MCP servers behind mcporter
 
-**Status:** Accepted
-
-**Mutability:** open
-
 **Date:** 2026-06-24
 
 ## Context
@@ -30,7 +26,3 @@ KI-owned local stdio MCP servers are proxied behind mcporter and consume a singl
 
 - [ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002.md) — adopts mcporter as the MCP proxy daemon and typed-client generator.
 - [mcporter](https://github.com/steipete/mcporter) — MCP proxy daemon and typed-client toolkit.
-
-## Changelog
-
-- 2026-07-02 — realigned to present state: removed the "TOOLCHAIN-002 adopted… then" framing and the audit-WARN narrative; removed the "open ROADMAP item (not yet started)" line (typed-client generation is in place via `ki:codegen`).

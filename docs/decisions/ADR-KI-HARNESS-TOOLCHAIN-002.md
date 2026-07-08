@@ -1,9 +1,5 @@
 # ADR-KI-HARNESS-TOOLCHAIN-002: Complementary tooling — current adoptions
 
-**Status:** Accepted
-
-**Mutability:** open
-
 **Date:** 2026-06-29
 
 ## Context
@@ -68,7 +64,3 @@ house-mcp-manager is a CLI that toggles MCP servers and saves named profiles by 
 - [Engram](https://www.engram.fyi/) — cross-session persistent-memory server (declined).
 - [Caveman](https://caveman.so/) — token-efficiency toolkit for AI coding agents (declined).
 - [Graphify](https://github.com/safishamsi/graphify) — codebase knowledge-graph skill (scale-gated).
-
-## Changelog
-
-- 2026-07-02 — realigned to present state: merged the second-pass tooling evaluation (previously ADR-KI-HARNESS-TOOLCHAIN-005 — MarkItDown, Engram, Caveman, Graphify); reframed house-mcp-manager as prior art and moved the cross-surface enablement need to the ROADMAP; removed roadmap-forward language; corrected the mcporter URL to `steipete/mcporter` and noted typed-client generation is in place via `ki:codegen`.

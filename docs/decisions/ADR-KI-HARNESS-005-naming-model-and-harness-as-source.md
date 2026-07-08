@@ -1,9 +1,5 @@
 # ADR-KI-HARNESS-005: The ki- naming model and harness-as-source vs plugin-as-projection
 
-**Status:** Accepted
-
-**Mutability:** open
-
 **Date:** 2026-07-07
 
 ## Context
@@ -37,7 +33,3 @@ The second is packaging. This repository is an agentic harness: a dev-time sourc
 - [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002.md) — the four-part bundle layout that is the source this decision projects.
 - [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004.md) — the purpose and scope of this repository as the harness.
 - [skills/ki-bootstrap/SKILL.md](../../skills/ki-bootstrap/SKILL.md) — the keystone that links project-local skills, the Claude Code arm of the projection.
-
-## Changelog
-
-- 2026-07-07 — created.

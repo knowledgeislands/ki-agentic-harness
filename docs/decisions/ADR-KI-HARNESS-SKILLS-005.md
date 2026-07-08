@@ -1,9 +1,5 @@
 # ADR-KI-HARNESS-SKILLS-005: The handoff doctrine is its own skill
 
-**Status:** Accepted
-
-**Mutability:** open
-
 **Date:** 2026-07-02
 
 ## Context
@@ -26,7 +22,3 @@ The handoff doctrine is a **new, composition-shaped governance skill, `ki-handof
 - [skills/ki-handoffs/SKILL.md](../../skills/ki-handoffs/SKILL.md) and [references/handoffs-standard.md](../../skills/ki-handoffs/references/handoffs-standard.md).
 - [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004.md) — composition by run-in-sequence, standalone validity.
 - `ki-tokenomics` standard §4 (runtime levers — model tier) and §8 (multi-model flows) — the boundary this skill defers to.
-
-## Changelog
-
-- 2026-07-02 — initial record (Accepted).

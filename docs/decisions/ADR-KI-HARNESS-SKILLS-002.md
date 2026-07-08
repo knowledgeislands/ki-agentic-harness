@@ -1,9 +1,5 @@
 # ADR-KI-HARNESS-SKILLS-002: Mechanical and judgment checker split
 
-**Status:** Accepted
-
-**Mutability:** open
-
 **Date:** 2024-01-01
 
 ## Context
@@ -31,7 +27,3 @@ A criterion starts in the checker unless it genuinely requires judgment. A crite
 
 - [skills/ki-engineering/references/enforcement-framework.md](../../skills/ki-engineering/references/enforcement-framework.md) §2 — the mechanical-checker contract, §3 — the rubric format.
 - [docs/design.md](../design.md) §Principles — "Mechanical work belongs in the checker, not in tokens (SHAPE-9)".
-
-## Changelog
-
-- 2026-07-02 — added the `**Mutability:**` marker (open).

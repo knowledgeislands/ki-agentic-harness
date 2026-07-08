@@ -1,9 +1,5 @@
 # ADR-KI-HARNESS-AGENTS-001: Subagent isolation for multi-skill invocation
 
-**Status:** Accepted
-
-**Mutability:** open
-
 **Date:** 2026-06-23
 
 ## Context
@@ -37,7 +33,3 @@ For the harness multi-concern audit specifically, the workflow is codified in `.
 - [skills/ki-skills/SKILL.md](../../skills/ki-skills/SKILL.md) — Mode AUDIT, set-audit discipline (updated to reference this ADR).
 - [skills/ki-harness/SKILL.md](../../skills/ki-harness/SKILL.md) — Mode AUDIT step 2 (updated to reference the workflow).
 - [.claude/workflows/ki-multi-skill-audit.ts](../../.claude/workflows/ki-multi-skill-audit.ts) — the saved workflow.
-
-## Changelog
-
-- 2026-07-02 — realigned Context to present state (removed the "previously executed serially… but it serialised" narrative); made the SKILLS-003 reference a relative link.
