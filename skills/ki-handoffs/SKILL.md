@@ -34,7 +34,7 @@ A spec is ready to hand down a tier when it passes these checks (they extend, no
 
 ## Operating modes
 
-Carries the universal **AUDIT · CONFORM · REFRESH**. If invoked without a mode and with no clear context signal, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a `[dir]` target in the `argument-hint`, prompt for it too.
+Carries **AUDIT · CONFORM · REFRESH**. If invoked without a mode and with no clear context signal, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a `[dir]` target in the `argument-hint`, prompt for it too.
 
 ### Mode AUDIT
 

@@ -80,7 +80,7 @@ Almost everything is fixed above. Only these come from the host base — take de
 
 ## Operating modes
 
-If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too. The shared model above — the zone-at-a-glance, the status lifecycle, the proposal anatomy, the bindings, Step 1, and the **Working rules** and **Enactment gate** below — is what every mode needs and stays loaded; each mode's _procedure_ lives in its own on-demand file, so read only the one the request selects. Like every governance skill this carries **AUDIT · CONFORM · REFRESH**; its enactment-lifecycle modes are **ITERATE · PROPOSE · READY · REJECT · REVIEW · ROLLOUT · SETTLE**. Modes are named and alphabetical.
+If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too. The shared model above — the zone-at-a-glance, the status lifecycle, the proposal anatomy, the bindings, Step 1, and the **Working rules** and **Enactment gate** below — is what every mode needs and stays loaded; each mode's _procedure_ lives in its own on-demand file, so read only the one the request selects. This carries **AUDIT · CONFORM · REFRESH**; its enactment-lifecycle modes are **ITERATE · PROPOSE · READY · REJECT · REVIEW · ROLLOUT · SETTLE**. Modes are named and alphabetical.
 
 | Mode    | Fires on                                                       | Read before acting                                        |
 | ------- | -------------------------------------------------------------- | --------------------------------------------------------- |

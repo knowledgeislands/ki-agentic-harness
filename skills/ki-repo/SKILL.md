@@ -24,7 +24,7 @@ This skill governs a repo's **configuration and Knowledge Islands compliance** �
 
 ## Operating modes
 
-Every governance skill carries **AUDIT · CONFORM · REFRESH**; this one adds **INIT** (onboard a repo). If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too.
+Every governance skill carries the universal four **AUDIT · CONFORM · INIT · REFRESH**; INIT here onboards a repo. If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too.
 
 ### Mode AUDIT — check a repo against the standard
 

@@ -54,7 +54,7 @@ This skill consumes exactly what `ki-websites-11ty` emits: a portable `dist/` of
 
 ## Operating modes
 
-Carries the universal **AUDIT · CONFORM · REFRESH**, plus **INIT** (scaffold a site's hosting). If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too. The mode shape itself is defined in `ki-engineering`'s enforcement framework.
+Carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT scaffolds a site's hosting. If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too. The mode shape itself is defined in `ki-engineering`'s enforcement framework.
 
 ### Mode AUDIT — check a site's hosting against the standard
 

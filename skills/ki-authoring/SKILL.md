@@ -23,7 +23,7 @@ So the workflow when authoring or tidying Markdown is: write to the judgment con
 
 ## Operating modes
 
-Like every governance skill it carries **AUDIT · CONFORM · REFRESH** — no INIT, since it conforms existing documents rather than scaffolding new artifacts. If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too. The conventions each mode acts on are the **Convention sets** below; the checkable criteria are in [the rubric](references/audit-rubric.md).
+Like every governance skill it carries **AUDIT · CONFORM · REFRESH**; it scaffolds no artifact of its own. If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too. The conventions each mode acts on are the **Convention sets** below; the checkable criteria are in [the rubric](references/audit-rubric.md).
 
 ### Mode AUDIT — check a document against house style
 

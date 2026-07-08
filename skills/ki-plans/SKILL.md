@@ -37,7 +37,7 @@ A plan is ready to execute when it passes these four checks:
 
 ## Operating modes
 
-Carries the universal **AUDIT · CONFORM · REFRESH**. If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too.
+Carries **AUDIT · CONFORM · REFRESH**. If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too.
 
 ### Mode AUDIT
 

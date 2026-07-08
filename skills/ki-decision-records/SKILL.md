@@ -36,7 +36,7 @@ You are applying the **Knowledge Islands Decision Records standard** — how Dec
 
 ## Operating modes
 
-Carries the universal **AUDIT · CONFORM · REFRESH**, plus **NEW** (draft a new DR). If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too.
+Carries **AUDIT · CONFORM · REFRESH**, plus **NEW** (draft a new DR). If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too.
 
 ### Mode AUDIT
 

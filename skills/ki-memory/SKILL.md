@@ -19,7 +19,7 @@ argument-hint: 'audit [repo-path] | conform [repo-path] | refresh'
 
 ## Operating modes
 
-Carries the universal **AUDIT · CONFORM · REFRESH**. If invoked without a mode, use `AskUserQuestion` to list each with a one-line description.
+Carries **AUDIT · CONFORM · REFRESH**. If invoked without a mode, use `AskUserQuestion` to list each with a one-line description.
 
 - **AUDIT** — run the checker, then apply the judgment criteria in [audit-rubric.md](references/audit-rubric.md). Procedure in [mode-audit-conform.md](references/mode-audit-conform.md).
 - **CONFORM** — AUDIT, then fix each finding by the rubric, then re-AUDIT. Same procedure file as AUDIT.

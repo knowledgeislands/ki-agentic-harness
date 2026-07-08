@@ -61,7 +61,7 @@ This skill's output, and the only thing the hosting skill needs: a `dist/` of st
 
 ## Operating modes
 
-Carries the universal **AUDIT · CONFORM · REFRESH**, plus **INIT** (scaffold a new site). If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too. The mode shape itself is defined in `ki-engineering`'s enforcement framework.
+Carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT scaffolds a new site. If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too. The mode shape itself is defined in `ki-engineering`'s enforcement framework.
 
 ### Mode AUDIT — check a site against the standard
 
