@@ -38,7 +38,11 @@ Every skill in the repo today is a **governance skill**: it holds a house standa
 The twenty skills sit in **two layers** plus a container governor and an install keystone: two cross-cutting **foundations** that every other skill builds on, the **domain** skills that each govern one kind of artifact, `harness` — which governs the four-part bundle holding them all — and `bootstrap`, which wires a repo's project-local skills into place. The arrows are the structural ties (who _delegates to_, _composes on_, or _feeds_ whom), spelled out in [docs/skills.md](docs/skills.md) and [docs/design.md](docs/design.md).
 
 ```text
-FOUNDATIONS — cross-cutting "how" (every domain skill builds on both)
+INSTALL KEYSTONE — the one skill kept installed globally; wires every other skill into a repo
+  bootstrap     ──reads a repo's .ki-config.toml coverage──▶ links its .claude/skills/  (composes on repo)
+
+FOUNDATIONS
+  repo         repo ──owns the .ki-config.toml contract──▶ (kb · mcp · engineering consume it)
   authoring     how we WRITE  ·  Markdown + TOML formatting style
   engineering   how we BUILD  ·  the shared toolchain + the enforcement framework
                                        ▲
@@ -56,11 +60,13 @@ DOMAIN — what each skill governs
   session memory    memory ── Headroom's auto-memory files (MEMORY.md + memory/*.md), outside the repo tree   ·   off-ramps cost to tokenomics
   handoff doctrine  handoffs ── plan → cheap-tier handoff-spec quality (definition-of-done, decisions-locked)   ·   composes on plans · tokenomics · agents
 
+                                       ▲
+                                       │ defined in
+───────────────────────────────────────┼──────────────────────────────────────
+                                       │
+
 CONTAINER — the bundle that holds all the above (this repo is one)
   harness       ──composes the checkers of──▶ (skills · agents · mcp · engineering · repo), adds the bundle-layout delta
-
-INSTALL KEYSTONE — the one skill kept installed globally; wires every other skill into a repo
-  bootstrap     ──reads a repo's .ki-config.toml coverage──▶ links its .claude/skills/  (composes on repo)
 ```
 
 The per-skill detail is in [docs/skills.md](docs/skills.md); [docs/design.md](docs/design.md) draws the boundaries between the pairs that could be confused and shows the process loops that run across them.

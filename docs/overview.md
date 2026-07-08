@@ -4,7 +4,7 @@ A short, plain-language account for a human reader — what this repository is, 
 
 ## In one paragraph
 
-This repository is a **harness**: a single, versioned bundle of the reusable pieces an AI coding agent needs to do Knowledge Islands work well, kept together instead of scattered. Its centre of gravity is a set of twenty **skills** — packets of standing know-how the agent loads on demand. Most of them are **governance skills**: each one holds a house standard (how we write Markdown, how a repository is laid out, how a knowledge base is structured) and ships the tools to keep work true to that standard.
+This repository is a **harness**: a single, versioned bundle of the reusable pieces an AI coding agent needs to do Knowledge Islands work well, kept together instead of scattered. Its centre of gravity is a set of **skills** — packets of standing know-how the agent loads on demand. Most of them are **governance skills**: each one holds a house standard (how we write Markdown, how a repository is laid out, how a knowledge base is structured) and ships the tools to keep work true to that standard.
 
 ## What it does for its owner
 
