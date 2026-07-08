@@ -10,7 +10,7 @@
     "@biomejs/biome": "2.5.2",
     "@types/node": "^26.1.0",
     "husky": "^9.1.7",
-    "knip": "^6.24.0",
+    "knip": "^6.25.0",
     "lint-staged": "^17.0.8",
     "markdownlint-cli2": "^0.23.0",
     "prettier": "^3.9.4",
@@ -45,10 +45,12 @@
   },
   "scripts": {
     "clean": "rm -rf node_modules",
+    "ki:agents:link:project": "bun .claude/skills/ki-bootstrap/scripts/link-agents.ts .",
     "ki:agents:lint": "bun skills/ki-agents/scripts/lint-agents.ts agents",
     "ki:authoring:audit": "bun skills/ki-authoring/scripts/audit-authoring.ts",
     "ki:binding:audit": "bun skills/ki-binding/scripts/audit-binding.ts",
     "ki:binding:build-plugin": "bun skills/ki-binding/scripts/build-plugin.ts",
+    "ki:binding:conform": "bun .claude/skills/ki-binding/scripts/conform-cowork.ts .",
     "ki:codegen": "bun scripts/generate-clients.ts",
     "ki:conform": "bun run ki:deps:refresh && bun run ki:lint:package && bun run ki:lint:format && bun run ki:lint:fix && bun run ki:lint:md",
     "ki:decision-records:audit": "bun skills/ki-decision-records/scripts/audit-drs.ts",
@@ -60,6 +62,7 @@
     "ki:eval": "bun evals/harness.ts",
     "ki:handoffs:audit": "bun skills/ki-handoffs/scripts/audit-handoffs.ts",
     "ki:harness:audit": "bun skills/ki-harness/scripts/audit-harness.ts",
+    "ki:hosting-cloudflare:audit": "bun .claude/skills/ki-hosting-cloudflare/scripts/audit-cloudflare-hosting.ts .",
     "ki:hosting:audit": "bun skills/ki-hosting-cloudflare/scripts/audit-cloudflare-hosting.ts",
     "ki:kb-activities:audit": "bun skills/ki-kb-activities/scripts/audit-activities.ts",
     "ki:kb-base:audit": "bun skills/ki-kb-base/scripts/audit-kb.ts",
@@ -77,6 +80,7 @@
     "ki:memory:audit": "bun skills/ki-memory/scripts/audit-memory.ts",
     "ki:plans:audit": "bun skills/ki-plans/scripts/audit-plans.ts",
     "ki:repo:audit": "bun skills/ki-repo/scripts/audit-repo.ts",
+    "ki:repo:conform": "bun .claude/skills/ki-repo/scripts/conform-repo.ts .",
     "ki:skills:link:global": "bun scripts/sync-skills.ts link --only ki-bootstrap",
     "ki:skills:link:project": "bun skills/ki-bootstrap/scripts/link-skills.ts --all",
     "ki:skills:lint": "bun skills/ki-skills/scripts/lint-skills.ts skills",
@@ -85,13 +89,9 @@
     "ki:skills:unlink": "bun scripts/sync-skills.ts unlink",
     "ki:tokenomics:audit": "bun skills/ki-tokenomics/scripts/audit-tokenomics.ts",
     "ki:verify": "bun run ki:lint:check && bun run ki:lint:types && bun run ki:lint:md:check && bun run ki:knip",
-    "ki:websites:audit": "bun skills/ki-websites-11ty/scripts/audit-websites.ts",
-    "prepare": "husky",
-    "ki:hosting-cloudflare:audit": "bun .claude/skills/ki-hosting-cloudflare/scripts/audit-cloudflare-hosting.ts .",
     "ki:websites-11ty:audit": "bun .claude/skills/ki-websites-11ty/scripts/audit-websites.ts .",
-    "ki:agents:link:project": "bun .claude/skills/ki-bootstrap/scripts/link-agents.ts .",
-    "ki:binding:conform": "bun .claude/skills/ki-binding/scripts/conform-cowork.ts .",
-    "ki:repo:conform": "bun .claude/skills/ki-repo/scripts/conform-repo.ts ."
+    "ki:websites:audit": "bun skills/ki-websites-11ty/scripts/audit-websites.ts",
+    "prepare": "husky"
   },
   "type": "module"
 }
