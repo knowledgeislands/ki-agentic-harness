@@ -30,6 +30,6 @@ The second is packaging. This repository is an agentic harness: a dev-time sourc
 ## References
 
 - [Cross-surface enablement of KI MCP servers and skills](../../skills/ki-mcp/references/cross-surface-enablement.md) — the design record for the single-source-to-many-surfaces fan-out that `ki-binding` realises.
-- [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002.md) — the four-part bundle layout that is the source this decision projects.
-- [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004.md) — the purpose and scope of this repository as the harness.
+- [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-four-part-bundle-layout.md) — the four-part bundle layout that is the source this decision projects.
+- [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-purpose-and-scope.md) — the purpose and scope of this repository as the harness.
 - [skills/ki-bootstrap/SKILL.md](../../skills/ki-bootstrap/SKILL.md) — the keystone that links project-local skills, the Claude Code arm of the projection.

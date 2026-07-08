@@ -29,7 +29,7 @@ The harness is not a general-purpose monorepo. Artefacts that belong to a specif
 ## References
 
 - [README.md](../../README.md) — entry point; maps the four-part bundle and the skill layers.
-- [ADR-KI-HARNESS-001](ADR-KI-HARNESS-001.md) — composition over extension: the paradigm the skills follow.
-- [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002.md) — the four-part bundle layout this repository realises.
-- [ADR-KI-HARNESS-CONFIG-001](ADR-KI-HARNESS-CONFIG-001.md) — `.ki-config.toml` as the repo-to-skill binding mechanism.
+- [ADR-KI-HARNESS-001](ADR-KI-HARNESS-001-composition-over-extension.md) — composition over extension: the paradigm the skills follow.
+- [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-four-part-bundle-layout.md) — the four-part bundle layout this repository realises.
+- [ADR-KI-HARNESS-CONFIG-001](ADR-KI-HARNESS-CONFIG-001-validate-down-ki-config-contract.md) — `.ki-config.toml` as the repo-to-skill binding mechanism.
 - [skills/ki-harness/SKILL.md](../../skills/ki-harness/SKILL.md) — the skill that governs the harness bundle itself.

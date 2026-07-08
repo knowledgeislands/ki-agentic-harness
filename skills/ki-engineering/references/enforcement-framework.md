@@ -48,7 +48,7 @@ Each `sources.md` declares its **refresh class and cadence** on a single machine
 
 ## 5. The modes
 
-ADR: [ADR-KI-HARNESS-SKILLS-001](../../../docs/decisions/ADR-KI-HARNESS-SKILLS-001.md)
+ADR: [ADR-KI-HARNESS-SKILLS-001](../../../docs/decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md)
 
 Every governance skill exposes the universal three, plus skill-specific ones where they fit. Modes are named and alphabetical.
 

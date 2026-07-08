@@ -1,6 +1,6 @@
 # The Knowledge Islands engineering standard
 
-ADR: [ADR-KI-HARNESS-TOOLCHAIN-001](../../../docs/decisions/ADR-KI-HARNESS-TOOLCHAIN-001.md)
+ADR: [ADR-KI-HARNESS-TOOLCHAIN-001](../../../docs/decisions/ADR-KI-HARNESS-TOOLCHAIN-001-standard-toolchain.md)
 
 The shared **engineering toolchain** every Knowledge Islands TypeScript/Bun repo conforms to — the common layer the artifact-type skills (`ki-mcp`, and future ones) build on rather than restate. It is the build/test twin of `ki-authoring` (which owns _how we write_); this owns _how we build, lint, and test_.
 

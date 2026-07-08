@@ -4,7 +4,7 @@
 
 ## Context
 
-Claude Code keeps only a small number of MCP servers simultaneously active (around five) before the tool-list cost becomes significant. Knowledge Islands owns 19 local stdio MCP servers, alongside third-party servers a session may use. Each server is a distinct, intentionally-separate capability — the `ki-tokenomics` MCP-2/MCP-3 checks confirm the KB-FS-adjacent servers are not redundant duplicates — so the answer is not to cut the server set but to stop each one consuming a Claude Code slot of its own. mcporter is adopted as the MCP proxy daemon ([ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002.md)); this record states the governing principle.
+Claude Code keeps only a small number of MCP servers simultaneously active (around five) before the tool-list cost becomes significant. Knowledge Islands owns 19 local stdio MCP servers, alongside third-party servers a session may use. Each server is a distinct, intentionally-separate capability — the `ki-tokenomics` MCP-2/MCP-3 checks confirm the KB-FS-adjacent servers are not redundant duplicates — so the answer is not to cut the server set but to stop each one consuming a Claude Code slot of its own. mcporter is adopted as the MCP proxy daemon ([ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling.md)); this record states the governing principle.
 
 ## Decision
 
@@ -24,5 +24,5 @@ KI-owned local stdio MCP servers are proxied behind mcporter and consume a singl
 
 ## References
 
-- [ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002.md) — adopts mcporter as the MCP proxy daemon and typed-client generator.
+- [ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling.md) — adopts mcporter as the MCP proxy daemon and typed-client generator.
 - [mcporter](https://github.com/steipete/mcporter) — MCP proxy daemon and typed-client toolkit.
