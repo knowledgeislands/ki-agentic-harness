@@ -91,12 +91,13 @@ The detection signals `ki-repo` uses (one recursive tree read + `package.json`):
 | `ki-website`            | `eleventy.config.*`                         | `[ki-website]`            |
 | `ki-website-cloudflare` | a `wrangler.*` config                       | `[ki-website-cloudflare]` |
 | `ki-mcp`                | `@modelcontextprotocol/sdk` dependency      | `[ki-mcp]`                |
+| `ki-plugins`            | `.claude-plugin/marketplace.json`           | `[ki-plugins]`            |
 | `ki-skills`             | `skills/*/SKILL.md`                         | `[ki-skills]`             |
 | `ki-agents`             | `agents/**/*.md`                            | `[ki-agents]`             |
 
 This is the **one place** `ki-repo` reads across skill tables — and it reads only table **presence**, never another skill's keys (_validate down, ignore across_ still governs table _contents_). It is an **audit-time enforcement** run by `repo`'s auditor, not behaviour baked into the regular use of each skill. A repo opts out of a single signal it doesn't want enforced with a `coverage-<skill> = false` entry in its `[ki-repo.checks]` table (e.g. a repo that vendors an `eleventy.config` it does not own) — reported as an acknowledged note.
 
-No marker table is decorative — each is read by code. Most are read by their **owning** skill's auditor too (`-engineering`/`-kb`/`-streams`/`-website`/`-website-cloudflare`/`-mcp` each read their own table when run). `ki-skills` and `ki-agents` are the documented exception: their checkers lint an artifact set (`SKILL.md` files, agent definitions), not a repo's config, so their opt-in table is read only by `ki-repo`'s coverage check.
+No marker table is decorative — each is read by code. Most are read by their **owning** skill's auditor too (`-engineering`/`-kb`/`-streams`/`-website`/`-website-cloudflare`/`-mcp`/`-plugins` each read their own table when run). `ki-skills` and `ki-agents` are the documented exception: their checkers lint an artifact set (`SKILL.md` files, agent definitions), not a repo's config, so their opt-in table is read only by `ki-repo`'s coverage check.
 
 ## Scaffolding & ownership
 

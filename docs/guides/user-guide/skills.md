@@ -22,7 +22,7 @@ The Agent Skills standard is more general than this, though. A skill need not go
 
 ## The map
 
-The skills sit in a few clusters — a keystone (`ki-bootstrap`) that pulls `ki-repo`; cross-cutting **foundations** (`ki-authoring`, `ki-engineering`) every other skill builds on; **repo-structure** skills (`ki-harness`, `ki-kb`, `ki-website`, `ki-mcp`), exactly one per repo; **general governance** skills; **implied families** (the KB and website members their parent pulls in); and **environment** skills that govern the machine, not a repo ([ADR-KI-HARNESS-SKILLS-006](../../decisions/ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md)). The `implies:` frontmatter on each `SKILL.md` is the machine-readable graph; this tree is generated from it by `bun run ki:skills:graph --tree` (each root is a skill nothing implies; its children are what it `implies:`):
+The skills sit in a few clusters — a keystone (`ki-bootstrap`) that pulls `ki-repo`; cross-cutting **foundations** (`ki-authoring`, `ki-engineering`) every other skill builds on; **repo-structure** skills (`ki-harness`, `ki-kb`, `ki-website`, `ki-mcp`, `ki-plugins`), exactly one per repo; **general governance** skills; **implied families** (the KB and website members their parent pulls in); and **environment** skills that govern the machine, not a repo ([ADR-KI-HARNESS-SKILLS-006](../../decisions/ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md)). The `implies:` frontmatter on each `SKILL.md` is the machine-readable graph; this tree is generated from it by `bun run ki:skills:graph --tree` (each root is a skill nothing implies; its children are what it `implies:`):
 
 ```text
 ki-bootstrap
@@ -93,6 +93,10 @@ Governs **Live Artifacts** — operational documents that track island state (da
 ### [`ki-mcp`](../../../skills/ki-mcp/SKILL.md) — Process
 
 Audits, conforms, and scaffolds workspace MCP servers against the "workspace MCP" standard (layout, config injection, `<app>_<resource>_<action>` tool naming, access-level gate, security invariants, Bun/Node, tooling) across the `mcp-*` repos. Ships a mechanical checker (`audit-mcp.ts`).
+
+### [`ki-plugins`](../../../skills/ki-plugins/SKILL.md) — Process
+
+Audits, conforms, and scaffolds a Knowledge Islands **plugin-marketplace** repo — the generated Claude plugin marketplace that projects the harness's skills and agents onto the Cowork surface (`knowledgeislands/ki-plugins`, `ADR-KI-HARNESS-005`). The fifth repo-structure skill; it governs the on-disk projection (the `marketplace.json` / `plugin.json` manifests, the verbatim `skills/` copy and flattened `agents/`, the MCP-deferred rule, the generated-not-hand-edited invariant). Generation and cross-surface enablement stay with `ki-binding`. Ships a mechanical checker (`audit-plugins.ts`).
 
 ### [`ki-binding`](../../../skills/ki-binding/SKILL.md) — Process
 

@@ -10,7 +10,7 @@ The skill set grew to twenty without a stated organising model. The README descr
 
 The skills are organised into six clusters, and their relationships are declared in a machine-readable implication graph.
 
-- **Clusters.** (1) **Keystone** — `ki-bootstrap`, `ki-repo`. (2) **Structure-independent governance**, always linked — `ki-authoring`, `ki-engineering`. (3) **Repo-structure**, mutually exclusive, exactly one per repo — `ki-harness`, `ki-kb`, `ki-website`, `ki-mcp`. (4) **General governance** — `ki-agents`, `ki-skills`, `ki-decision-records`, `ki-feature-definitions`, `ki-handoffs`, `ki-plans`. (5) **Implied families** — the KB family under `ki-kb`, the website family under `ki-website`. (6) **Environment**, governing the user's machine rather than a repo — `ki-binding`, `ki-housekeeping`, `ki-tokenomics`.
+- **Clusters.** (1) **Keystone** — `ki-bootstrap`, `ki-repo`. (2) **Structure-independent governance**, always linked — `ki-authoring`, `ki-engineering`. (3) **Repo-structure**, mutually exclusive, exactly one per repo — `ki-harness`, `ki-kb`, `ki-website`, `ki-mcp`, `ki-plugins`. (4) **General governance** — `ki-agents`, `ki-skills`, `ki-decision-records`, `ki-feature-definitions`, `ki-handoffs`, `ki-plans`. (5) **Implied families** — the KB family under `ki-kb`, the website family under `ki-website`. (6) **Environment**, governing the user's machine rather than a repo — `ki-binding`, `ki-housekeeping`, `ki-tokenomics`.
 - **Implication graph.** Each SKILL.md declares an `implies:` frontmatter list — the single source from which `scripts/skill-graph.ts` generates both the bootstrap chain and the dependency tree (`ki:skills:graph`), validated in `ki:verify`.
 - **Mutual exclusion.** A repo carries exactly one repo-structure skill; `ki-repo`'s coverage cascade enforces it mechanically.
 - **Canonical names.** Each skill's directory name is its cluster name. `ki-housekeeping` broadens the former memory skill into machine-state hygiene generally, and `ki-feature-definitions` is the general-governance skill for feature specs.
@@ -20,6 +20,7 @@ The skills are organised into six clusters, and their relationships are declared
 - A new skill is placed by choosing its cluster; its edges are declared in one greppable place.
 - The bootstrap chain and the user-guide tree cannot drift — both derive from `implies:`, and a broken edge fails CI.
 - Cluster 6 gives the machine/environment skills a home the earlier repo-only taxonomy lacked.
+- The generated plugin-marketplace repo (`knowledgeislands/ki-plugins`, `ADR-KI-HARNESS-005`) is a fifth repo shape; `ki-plugins` governs its on-disk projection so it is no longer a repo carrying zero repo-structure skills. Its **generation and cross-surface enablement** stay with the environment skill `ki-binding` (they govern the machine, not the repo) — the split keeps each cluster's defining property intact.
 
 ## References
 

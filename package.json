@@ -78,6 +78,7 @@
     "ki:lint:types": "tsc --noEmit",
     "ki:mcp:audit": "bun skills/ki-mcp/scripts/audit-mcp.ts",
     "ki:plans:audit": "bun skills/ki-plans/scripts/audit-plans.ts",
+    "ki:plugins:audit": "bun skills/ki-plugins/scripts/audit-plugins.ts",
     "ki:repo:audit": "bun skills/ki-repo/scripts/audit-repo.ts",
     "ki:repo:conform": "bun .claude/skills/ki-repo/scripts/conform-repo.ts .",
     "ki:skills:graph": "bun scripts/skill-graph.ts --tree",

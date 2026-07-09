@@ -127,6 +127,7 @@ const CLUSTER_ORDER = [
   'ki-kb',
   'ki-website',
   'ki-mcp',
+  'ki-plugins',
   'ki-handoffs',
   'ki-plans',
   'ki-feature-definitions',
