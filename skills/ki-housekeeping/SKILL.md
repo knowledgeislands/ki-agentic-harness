@@ -2,32 +2,34 @@
 name: ki-housekeeping
 implies: []
 description: >
-  Governs the Claude Code auto-memory system — the per-project, file-based memory Headroom writes to `~/.claude/projects/<slug>/memory/` plus its `MEMORY.md` index: the four memory types (user/feedback/project/reference), the frontmatter schema, index-file agreement, and the promote-then-delete reconciliation doctrine. Triggers on "audit memory", "memory hygiene", "check MEMORY.md", "auto-memory", "memory frontmatter". Not for a Knowledge Islands base's own memory cascade (`ki-kb`'s MEM-2, the root `Admin/MEMORY.md` index of Pillars) — that's KB content read at session start, not the Claude Code session-memory mechanism this skill governs. Not for measuring the token cost of the memory surface — that's `ki-tokenomics`.
+  Governs the hygiene of accumulated Claude state on a machine — the files Claude Desktop / Cowork sessions, Claude Code (`~/.claude/`), and VSCode chat sessions leave behind: stored sessions, artifacts and outputs, backups, plugins, project cache, and per-project auto-memory. Owns the standard and the judgment; the paired `mcp-claude-housekeeping` MCP server is its mechanical arm (codified per-area filesystem audits + access-gated cleanup tools). The memory area also carries a local checker (`audit-memory.ts`): the `memory/*.md` + `MEMORY.md` format, the four types (user/feedback/project/reference), index agreement, and promote-then-delete reconciliation. Triggers: "audit memory", "memory hygiene", "clean up Claude storage", "obsolete Cowork sessions", "housekeeping audit", "check ~/.claude". Not a Knowledge Islands base's own memory cascade (`ki-kb`'s MEM-2, the root `Admin/MEMORY.md`) — that is KB content, not machine state. Not the token cost of the context surface — that is `ki-tokenomics`.
 argument-hint: 'audit [repo-path] | conform [repo-path] | refresh'
 ---
 
 # ki-housekeeping
 
-**Standard:** the Claude Code auto-memory convention this harness has standardized on for persistent, cross-session recall — documented in [memory-format.md](references/memory-format.md); line-by-line criteria in [audit-rubric.md](references/audit-rubric.md); tracked sources in [sources.md](references/sources.md).
+**Standard:** the hygiene of accumulated Claude state across the surfaces where it collects — the areas and the skill↔server pairing in [housekeeping-standard.md](references/housekeeping-standard.md); the memory area's file format in [memory-format.md](references/memory-format.md); line-by-line criteria in [audit-rubric.md](references/audit-rubric.md); tracked sources in [sources.md](references/sources.md).
 
 ## What this skill owns
 
-1. **The index/file contract.** Every `memory/*.md` file is listed in `MEMORY.md`, and every `MEMORY.md` entry resolves to a file that exists — the index is a pointer table, not a memory itself.
-2. **The frontmatter schema.** `name` (matches the filename slug), `description`, and `metadata.type` ∈ `user` / `feedback` / `project` / `reference`, per [memory-format.md](references/memory-format.md).
-3. **The four-type doctrine and reconciliation.** Feedback and project memories carry their **Why** / **How to apply** structure; project memories use absolute dates; content that belongs in a `CLAUDE.md` gets promoted there and the memory deleted, not left to duplicate it.
-4. **A mechanical checker** [`scripts/audit-memory.ts`](scripts/audit-memory.ts): resolves a repo's memory directory, checks index/file completeness, frontmatter validity, and duplicate `name:` slugs. Deliberately does **not** flag dangling `[[wikilink]]` cross-references — the auto-memory doctrine treats those as intentional forward references, not errors.
+The **standard and judgment** over the state Claude accumulates on a machine, across three surfaces — Claude Desktop / Cowork sessions, Claude Code (`~/.claude/`), and VSCode chat sessions — spanning the areas: **sessions**, **artifacts / outputs**, **backups**, **plugins**, **project cache**, and **auto-memory**. Full model in [housekeeping-standard.md](references/housekeeping-standard.md).
+
+The **mechanical arm** is split by area:
+
+1. **Memory** — governed locally, in full. The index/file contract (every `memory/*.md` listed in `MEMORY.md`, every entry resolving to a file), the frontmatter schema (`name` / `description` / `metadata.type` ∈ `user` / `feedback` / `project` / `reference`), the four-type doctrine and promote-then-delete reconciliation, checked by [`scripts/audit-memory.ts`](scripts/audit-memory.ts). Detail in [memory-format.md](references/memory-format.md).
+2. **Every other area** — the mechanical arm is the paired **`mcp-claude-housekeeping`** MCP server (`@knowledgeislands/mcp-claude-housekeeping`): its codified per-surface audits (e.g. the Cowork filesystem audit) and its access-gated read/destructive tools. The skill states what healthy looks like and applies judgment over the server's findings; the server holds the macOS-filesystem tools that gather them. This skill never re-implements those tools — the pairing is skill-as-standard, server-as-tools.
 
 ## Operating modes
 
 Carries **AUDIT · CONFORM · REFRESH**. If invoked without a mode, use `AskUserQuestion` to list each with a one-line description.
 
-- **AUDIT** — run the checker, then apply the judgment criteria in [audit-rubric.md](references/audit-rubric.md). Procedure in [mode-audit-conform.md](references/mode-audit-conform.md).
-- **CONFORM** — AUDIT, then fix each finding by the rubric, then re-AUDIT. Same procedure file as AUDIT.
-- **REFRESH** — re-check [memory-format.md](references/memory-format.md) against Headroom's current memory-feature behavior (an external, versioned spec), per [mode-refresh.md](references/mode-refresh.md).
+- **AUDIT** — for the memory area run `audit-memory.ts`; for the other areas run the `mcp-claude-housekeeping` server's codified audits (its audit tools / reports); then apply the judgment criteria in [audit-rubric.md](references/audit-rubric.md). Procedure in [mode-audit-conform.md](references/mode-audit-conform.md).
+- **CONFORM** — AUDIT, then fix each finding: memory in place per the rubric; other areas via the server's access-gated cleanup tools (destructive tools require the server's access level). Re-AUDIT until clean. Same procedure file as AUDIT.
+- **REFRESH** — re-check the standard against its sources: Headroom's memory-feature behavior for the memory format, and the `mcp-claude-housekeeping` server's tool surface for the other areas, per [mode-refresh.md](references/mode-refresh.md).
 
 ## Notes
 
-- The memory directory lives **outside the repo tree** (`~/.claude/projects/<repo-absolute-path with "/" → "-">/memory/`), so a repo opts in explicitly via a `[ki-housekeeping]` table in its own `.ki-config.toml` — the usual repo-external-artifact pattern, same as how a KB base is a separate tree from the code repo that governs it.
+- The state this skill governs lives **outside the repo tree** — under `~/.claude/`, `~/Library/Application Support/Claude/`, and VSCode's `workspaceStorage/`. A repo opts a machine into the memory-area check via a `[ki-housekeeping]` table in its `.ki-config.toml`; the session / artifact / storage areas are machine-level and audited directly through the server, not per-repo.
 - A repo with no `memory/` directory yet (never used auto-memory) is a **SKIP**, not a FAIL.
-- Composes on `ki-authoring` for the Markdown formatting delta (line wrap, footnote markers) of the memory files themselves; the mechanical-checker contract and severity ladder are `ki-engineering`'s [checker-contract.md](../ki-engineering/references/checker-contract.md).
-- Does not assume any particular personal `~/.claude/CLAUDE.md` content — the type taxonomy and reconciliation doctrine this skill checks against are the auto-memory system's own universal instructions, not one user's private elaboration of them.
+- Composes on `ki-authoring` for the Markdown formatting delta of the memory files; the mechanical-checker contract and severity ladder are `ki-engineering`'s [checker-contract.md](../ki-engineering/references/checker-contract.md).
+- Does not assume any particular personal `~/.claude/CLAUDE.md` content — the doctrines checked are the systems' own universal instructions, not one user's private elaboration of them.

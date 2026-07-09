@@ -1,6 +1,8 @@
-# Memory audit rubric
+# Housekeeping audit rubric — the memory area
 
-Used by Mode AUDIT. **[M]** = mechanical, checker-enforced (see [`scripts/audit-memory.ts`](../scripts/audit-memory.ts)). **[J]** = judgment, applied by reading; the checker may surface these as ADVISORY but never FAILs or WARNs on them.
+Used by Mode AUDIT. These are the criteria for the **memory area**, the one area governed locally in full (see [housekeeping-standard.md](housekeeping-standard.md) §2). The **other areas** (sessions, artifacts / outputs, backups, plugins, project cache) are audited through the paired `mcp-claude-housekeeping` server's codified per-surface audits, not by these criteria; the skill applies judgment over the server's findings.
+
+**[M]** = mechanical, checker-enforced (see [`scripts/audit-memory.ts`](../scripts/audit-memory.ts)). **[J]** = judgment, applied by reading; the checker may surface these as ADVISORY but never FAILs or WARNs on them.
 
 ## Index/file agreement
 

@@ -38,6 +38,7 @@ Sub-scopes used in this harness:
 | ADR-KI-HARNESS-SKILLS-004 | [Skills must be valid standalone](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) | 2024-01-01 |
 | ADR-KI-HARNESS-SKILLS-005 | [The handoff doctrine is its own skill](ADR-KI-HARNESS-SKILLS-005-handoff-doctrine-own-skill.md) | 2026-07-02 |
 | ADR-KI-HARNESS-SKILLS-006 | [Six-cluster skill taxonomy and the implication graph](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md) | 2026-07-09 |
+| ADR-KI-HARNESS-SKILLS-007 | [ki-housekeeping scope and the server pairing](ADR-KI-HARNESS-SKILLS-007-housekeeping-scope-and-server-pairing.md) | 2026-07-09 |
 | ADR-KI-HARNESS-TOOLCHAIN-001 | [Bun, Biome, and knip standard toolchain](ADR-KI-HARNESS-TOOLCHAIN-001-standard-toolchain.md) | 2026-06-28 |
 | ADR-KI-HARNESS-TOOLCHAIN-002 | [Complementary tooling — current adoptions](ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling.md) | 2026-06-29 |
 | ADR-KI-HARNESS-TOOLCHAIN-003 | [Proxy local MCP servers behind mcporter](ADR-KI-HARNESS-TOOLCHAIN-003-mcporter-mcp-proxy.md) | 2026-06-24 |
