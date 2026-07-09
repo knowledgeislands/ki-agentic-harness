@@ -84,7 +84,7 @@ _~200 tokens/session saved_
 
 _~8,000 tokens/session saved_
 
-- `skills/ki-kb-base/SKILL.md` (~500 lines, ~20 KB) and `skills/ki-kb-streams/SKILL.md` (~500 lines, ~20 KB) are the two largest skill files. Read only when working directly on those skills.
+- `skills/ki-kb/SKILL.md` (~500 lines, ~20 KB) and `skills/ki-kb-streams/SKILL.md` (~500 lines, ~20 KB) are the two largest skill files. Read only when working directly on those skills.
 - `README.md` at the harness root is ~30 KB. For structural surveys, prefer `ls` + `cat package.json` + `cat .ki-config.toml` instead.
 
 ### Audit script paths
@@ -92,7 +92,7 @@ _~8,000 tokens/session saved_
 _~1,500 tokens/session saved_
 
 - Run audit scripts from the **harness root** only. Wrong: `bun scripts/audit-repo.ts .` (fails: "Module not found"). Correct: `bun skills/ki-repo/scripts/audit-repo.ts .`
-- Cross-repo audits use relative sibling paths: `bun skills/ki-mcp/scripts/audit-mcp.ts ../mcp-gmail`
+- Cross-repo audits use relative sibling paths: `bun skills/ki-mcp/scripts/audit-mcp.ts ../mcp-gsuite`
 - When invoked from a target repo with an absolute harness path: `bun /Users/krisbrown/.claude/skills/ki-mcp/scripts/audit-mcp.ts <target>`
 
 ### KB MCP tool limitations

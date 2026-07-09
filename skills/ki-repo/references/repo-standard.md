@@ -135,7 +135,7 @@ The rubric carries the **org default** for every check. Most are bedrock — fil
 
 ## Coverage cascade
 
-`.ki-config.toml`'s presence is the **gate** (Layer 1): once it confirms the repo is a ki-repo, the auditor checks the repo **declares an opt-in `[ki-<skill>]` table for every governance skill whose applicability it can detect** — a `Streams/` zone ⇒ `[ki-kb-streams]`, an `eleventy.config` ⇒ `[ki-websites-11ty]`, an `@modelcontextprotocol/sdk` dependency ⇒ `[ki-mcp]`, `skills/*/SKILL.md` ⇒ `[ki-skills]`, and so on. Detected-but-undeclared WARNs; a declared table with no matching artifact WARNs as possibly stale.
+`.ki-config.toml`'s presence is the **gate** (Layer 1): once it confirms the repo is a ki-repo, the auditor checks the repo **declares an opt-in `[ki-<skill>]` table for every governance skill whose applicability it can detect** — a `Streams/` zone ⇒ `[ki-kb-streams]`, an `eleventy.config` ⇒ `[ki-website]`, an `@modelcontextprotocol/sdk` dependency ⇒ `[ki-mcp]`, `skills/*/SKILL.md` ⇒ `[ki-skills]`, and so on. Detected-but-undeclared WARNs; a declared table with no matching artifact WARNs as possibly stale.
 
 A repo that is **not** a ki-repo (no `.ki-config.toml`) is never coverage-checked — it just takes the `ki-config` FAIL, so a lookalike repo (an `eleventy.config` but no marker) is not falsely told to opt in. This is `ki-repo`'s single cross-table read, and it reads only table **presence**, never another skill's keys. The full signal list and the marker-vs-config model live in [the `.ki-config.toml` contract](ki-config-standard.md#coverage-enforcement). Silence one signal with `coverage-<skill> = false` under `[ki-repo.checks]`.
 
@@ -144,8 +144,8 @@ A repo that is **not** a ki-repo (no `.ki-config.toml`) is never coverage-checke
 `gh` CLI, authenticated with repo-admin scope. (zsh: use an array, not a bare string — unquoted `$var` does not word-split.)
 
 ```zsh
-all=(ki-arcadia-principal ki-agentic-harness ki-website mcp-claude-housekeeping mcp-git-audit mcp-gmail mcp-kb-fs mcp-kb-notion-mirror mcp-m365)
-public=(mcp-claude-housekeeping mcp-git-audit mcp-gmail mcp-kb-fs mcp-kb-notion-mirror mcp-m365)
+all=(ki-arcadia-principal ki-agentic-harness ki-website mcp-claude-housekeeping mcp-git-audit mcp-gsuite mcp-kb-fs mcp-kb-notion-mirror mcp-m365)
+public=(mcp-claude-housekeeping mcp-git-audit mcp-gsuite mcp-kb-fs mcp-kb-notion-mirror mcp-m365)
 
 # Layer 1 — each repo declares its config in .ki-config.toml (committed via PR like any file).
 #   Scaffold the [ki-repo] defaults, then edit:
