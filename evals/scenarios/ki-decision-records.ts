@@ -5,8 +5,9 @@
  * Design note: a baseline knows generic ADR advice, so it would answer "call it
  * an ADR, number it sequentially, put it in docs/". These scenarios target
  * house-ARBITRARY specifics: the decision_type→prefix table and per-prefix serial
- * scoping, the Mutability axis orthogonal to Status, and the KB placement +
- * required frontmatter that differ from a code repo.
+ * scoping, the living present-state record (edited in place — no Status lifecycle,
+ * Changelog, or supersession), and the KB placement + required frontmatter that
+ * differ from a code repo.
  */
 import type { Scenario } from '../harness.ts'
 
@@ -27,17 +28,17 @@ export const scenarios: Scenario[] = [
   },
   {
     skill: 'ki-decision-records',
-    id: 'dr-mutability',
+    id: 'dr-living-record',
     prompt:
-      'We have an accepted architecture decision record. We now want to be able to tweak its wording in place as things get clarified, rather than replacing the whole record every time. Does our decision-record format allow that, and where do the tweaks get recorded?',
+      'We have an accepted architecture decision record. As things get clarified we want to keep tweaking its wording, and later we may reverse the decision entirely. In our decision-record format, do we track that with a status field, a changelog section, or a superseded-by chain — and how should the record read over time?',
     assertions: [
-      { name: 'Mutability marker', re: /mutability/i },
-      { name: 'open value', re: /\bopen\b/i },
-      { name: 'edits logged in Changelog', re: /changelog/i },
-      { name: 'contrast with locked/supersede', re: /locked|supersed/i }
+      { name: 'edited in place', re: /in place|living|present.?state/i },
+      { name: 'no status lifecycle', re: /no\s+status|without\s+a?\s*status|not?\s+a\s+status/i },
+      { name: 'no changelog', re: /no\s+.*changelog|without\s+a?\s*changelog/i },
+      { name: 'no supersession chain', re: /no\s+.*supersed|rewrite|reads? as (if )?(written )?(today|current)/i }
     ],
     rubric:
-      'House fact: every DR carries a **`Mutability: open | locked`** marker that is orthogonal to Status. An `open` record is edited in place with each edit logged in a `## Changelog` section; a `locked` record changes only by supersession. A correct answer surfaces the Mutability axis (distinct from Status), names `open`, and knows in-place edits go in a `## Changelog`.'
+      'House fact: a DR is a **living present-state record**. It is edited **in place** and always reads as if written today — there is **no** `Status` lifecycle, **no** `Mutability` marker, **no** `## Changelog`, and **no** superseded-by chain. Continued clarification just edits the record; a reversal **rewrites** it to state the new decision, and the history lives in git, not in the record. A correct answer says to edit in place with none of those lifecycle mechanisms, and that a change of direction rewrites the live record.'
   },
   {
     skill: 'ki-decision-records',

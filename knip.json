@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "entry": ["skills/*/scripts/*.ts", "scripts/*.ts", "evals/harness.ts", ".claude/workflows/*.ts"],
+  "entry": ["skills/*/scripts/*.ts", "scripts/*.ts", "evals/harness.ts", "evals/guide-suite.ts", ".claude/workflows/*.ts"],
   "project": ["skills/*/scripts/**/*.ts", "scripts/**/*.ts", "evals/**/*.ts", ".claude/workflows/**/*.ts"],
   "ignoreBinaries": ["claude", "gh"],
   "ignoreExportsUsedInFile": true

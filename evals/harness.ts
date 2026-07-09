@@ -47,8 +47,9 @@ import { scenarios as handoffsScenarios } from './scenarios/ki-handoffs.ts'
 import { scenarios as plansScenarios } from './scenarios/ki-plans.ts'
 import { scenarios as activitiesScenarios } from './scenarios/ki-kb-activities.ts'
 import { scenarios as liveArtifactsScenarios } from './scenarios/ki-kb-live-artifacts.ts'
-import { scenarios as memoryScenarios } from './scenarios/ki-housekeeping.ts'
+import { scenarios as housekeepingScenarios } from './scenarios/ki-housekeeping.ts'
 import { scenarios as bindingScenarios } from './scenarios/ki-binding.ts'
+import { scenarios as featureDefinitionsScenarios } from './scenarios/ki-feature-definitions.ts'
 
 export type Assertion = { name: string; re: RegExp }
 export type Scenario = { skill: string; id: string; prompt: string; assertions: Assertion[]; rubric: string }
@@ -68,11 +69,12 @@ const ALL: Scenario[] = [
   ...streamsScenarios,
   ...tokenomicsScenarios,
   ...decisionRecordsScenarios,
+  ...featureDefinitionsScenarios,
   ...handoffsScenarios,
   ...plansScenarios,
   ...activitiesScenarios,
   ...liveArtifactsScenarios,
-  ...memoryScenarios,
+  ...housekeepingScenarios,
   ...bindingScenarios
 ]
 
