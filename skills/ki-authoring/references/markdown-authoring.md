@@ -21,6 +21,20 @@ The one place column width _is_ your job is **tables** — Prettier aligns table
 
 ## Tables and footnotes
 
+### Table or list?
+
+Decide this **before** reaching for `|` pipes. A table earns its cost only when the content is a genuine grid: **three or more columns** of parallel attributes a reader scans _across_ as well as _down_, where aligning the columns is what makes it readable — a comparison matrix, a Sources table of source / tag / governs / reviewed.
+
+A **two-column table is almost always a list in disguise** — a term and its explanation. Write those as a bulleted list with a **bold lead-in term**:
+
+- it wraps naturally within `printWidth`, so long explanations never trip the width rule or force footnote gymnastics;
+- it reads cleanly in a terminal and in print, with no column padding to blow out;
+- it diffs one line per entry, so edits and reviews stay legible.
+
+Rule of thumb: **table for parallel data across several dimensions; list for term → description pairs**, and for anything whose cells would be full sentences. If a table has exactly two columns, or any cell runs to a sentence or more, it wants to be a list.
+
+### Keeping tables skimmable
+
 Keep every table **skimmable at a glance**. Prettier pads columns to align them but never breaks a cell across lines, so a cell with too much content forces a very wide row that's unreadable in a terminal or in print. Aim to keep each row within `printWidth` (140 chars — the same limit the formatter enforces on prose).
 
 When a column's content would force the table to wrap awkwardly or demand cryptic abbreviations in the headers, **move the long content into footnotes below the table** and leave a footnote marker in the cell instead.
