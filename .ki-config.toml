@@ -1,13 +1,10 @@
 # Knowledge Islands repo config — read by the ki-repo skill.
 # One [table] per skill that needs per-repo options.
 [ki-repo]
-visibility = "private"   # "public" | "private"
+visibility = "public"    # "public" | "private" — public + MIT (ADR-KI-HARNESS-008)
 license = "MIT"          # SPDX id; the LICENSE, package.json, and GitHub must match (default MIT).
-# Migration note: the harness is moving to public + MIT (ADR-KI-HARNESS-005 / the
-# license mechanism). The declared license is MIT; reconciling the live LICENSE,
-# package.json "license", and GitHub visibility is part of the deferred rollout, so a
-# live `ki:repo:audit` will report those until then. To diverge, add a [ki-repo.checks]
-# table with one boolean per check (true = enforce).
+# This repo fully conforms, so it declares no check overrides. To diverge, add a
+# [ki-repo.checks] table with one boolean per check (true = enforce).
 
 # Read by the ki-engineering skill (the common build/lint/test toolchain).
 [ki-engineering]

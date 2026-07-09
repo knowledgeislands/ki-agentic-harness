@@ -7,15 +7,15 @@
     "url": "https://github.com/knowledgeislands/ki-agentic-harness/issues"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.2",
-    "@types/node": "^26.1.0",
+    "@biomejs/biome": "2.5.3",
+    "@types/node": "^26.1.1",
     "husky": "^9.1.7",
     "knip": "^6.25.0",
     "lint-staged": "^17.0.8",
     "markdownlint-cli2": "^0.23.0",
     "prettier": "^3.9.4",
     "syncpack": "^15.3.2",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "engines": {
     "node": ">=22.0.0"
@@ -29,7 +29,7 @@
     "knowledge-islands",
     "skills"
   ],
-  "license": "UNLICENSED",
+  "license": "MIT",
   "lint-staged": {
     "*.{ts,js,mjs,json,jsonc}": "bunx @biomejs/biome check --write --no-errors-on-unmatched",
     "*.md": [
@@ -38,7 +38,6 @@
     ]
   },
   "packageManager": "bun@1.3.14",
-  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/knowledgeislands/ki-agentic-harness.git"
