@@ -27,6 +27,8 @@ This is the map of `docs/` and the guiding principles that govern everything in 
 
 [`guides/user-guide/`](guides/user-guide) is the standalone user guide: [Overview](guides/user-guide/overview.md) (what the harness is and how the parts fit), [Skills](guides/user-guide/skills.md) (the set and its clusters), [Skill catalogue](guides/user-guide/skill-catalogue.md) (each skill, one by one), [Onboarding](guides/user-guide/onboarding.md) (bootstrap and the governance flows), [Skill design](guides/user-guide/skill-design.md) (how the set fits together), and [Installation](guides/user-guide/installation.md) (linking skills and the toolchain).
 
+[`guides/prompting/`](guides/prompting) is a second guide area: how to prompt the models we run — one guide per model ([Fable 5](guides/prompting/fable-5.md), [Opus 4.8](guides/prompting/opus-4-8.md), [Sonnet 5](guides/prompting/sonnet-5.md)), each distilled from Anthropic's prompting docs. Unlike the standalone user guide, these are an externally-sourced reference area, so each deliberately carries a **Sources** section of outbound Anthropic URLs for refresh — the same spirit as the DR carve-out for records whose subject is an external artefact.
+
 ### Plans — the _when_
 
 [`plans/`](plans) holds implementation plans for open forward work, written when an item enters the roadmap's **Next** phase and removed when it lands. Governed by the `ki-plans` skill. The always-open forward view itself is the root [`ROADMAP.md`](../ROADMAP.md).

@@ -32,6 +32,7 @@ Only `ki-bootstrap` is installed globally; every other skill is project-local, w
 | [Onboarding](docs/guides/user-guide/onboarding.md) | Onboarding a repo: the bootstrap chain, the four modes, and the greenfield / legacy / remote-run flows. |
 | [Skill design](docs/guides/user-guide/skill-design.md) | How they fit: where they don't overlap, the three knowledge loops, the principles across the set. |
 | [Installation](docs/guides/user-guide/installation.md) | Installing · using · linking skills, and the development toolchain. |
+| [Prompting guides](docs/guides/prompting/README.md) | How to prompt the models we run — one guide per model (Fable 5, Opus 4.8, Sonnet 5), each with a Sources section for refresh. |
 
 The user guide is self-contained. For how it relates to the decisions, feature definitions, plans, and skill code underneath it — and to the Knowledge Islands concept — see [docs/docs.md](docs/docs.md).
 
