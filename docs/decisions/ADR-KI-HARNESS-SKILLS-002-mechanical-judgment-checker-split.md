@@ -1,6 +1,6 @@
 # ADR-KI-HARNESS-SKILLS-002: Mechanical and judgment checker split
 
-**Date:** 2024-01-01
+**Date:** 2026-06-23
 
 ## Context
 

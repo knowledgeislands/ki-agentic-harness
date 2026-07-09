@@ -1,6 +1,6 @@
 # ADR-KI-HARNESS-003: Composition over extension
 
-**Date:** 2024-01-01
+**Date:** 2026-06-23
 
 ## Context
 

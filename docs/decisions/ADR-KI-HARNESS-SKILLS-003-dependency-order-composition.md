@@ -1,6 +1,6 @@
 # ADR-KI-HARNESS-SKILLS-003: Dependency order for multi-skill composition
 
-**Date:** 2024-01-01
+**Date:** 2026-06-23
 
 ## Context
 

@@ -63,17 +63,17 @@ The records are living, compact, and independent. They are grouped here by scope
 | --- | --- | --- |
 | ADR-KI-HARNESS-001 | [Adopting Architecture Decision Records](ADR-KI-HARNESS-001-adopting-decision-records.md) | 2026-06-23 |
 | ADR-KI-HARNESS-002 | [Purpose and scope of this repository](ADR-KI-HARNESS-002-purpose-and-scope.md) | 2026-06-23 |
-| ADR-KI-HARNESS-003 | [Composition over extension](ADR-KI-HARNESS-003-composition-over-extension.md) | 2024-01-01 |
-| ADR-KI-HARNESS-004 | [Five-part harness bundle layout](ADR-KI-HARNESS-004-five-part-bundle-layout.md) | 2024-01-01 |
+| ADR-KI-HARNESS-003 | [Composition over extension](ADR-KI-HARNESS-003-composition-over-extension.md) | 2026-06-23 |
+| ADR-KI-HARNESS-004 | [Five-part harness bundle layout](ADR-KI-HARNESS-004-five-part-bundle-layout.md) | 2026-06-23 |
 | ADR-KI-HARNESS-005 | [The ki- naming model and harness-as-source vs plugin-as-projection](ADR-KI-HARNESS-005-naming-model-and-harness-as-source.md) | 2026-07-07 |
 | ADR-KI-HARNESS-006 | [Mechanical-first, LLM-optional operation](ADR-KI-HARNESS-006-mechanical-first-llm-optional.md) | 2026-07-09 |
-| ADR-KI-HARNESS-007 | [Validate-down .ki-config.toml contract](ADR-KI-HARNESS-007-validate-down-ki-config-contract.md) | 2024-01-01 |
+| ADR-KI-HARNESS-007 | [Validate-down .ki-config.toml contract](ADR-KI-HARNESS-007-validate-down-ki-config-contract.md) | 2026-06-23 |
 | ADR-KI-HARNESS-008 | [The bootstrapping chain and the self-sufficiency contract](ADR-KI-HARNESS-008-bootstrapping-and-self-sufficiency.md) | 2026-07-09 |
 | ADR-KI-HARNESS-009 | [Public repos and a declared license, decoupled from visibility](ADR-KI-HARNESS-009-public-and-declared-license.md) | 2026-07-09 |
-| ADR-KI-HARNESS-SKILLS-001 | [AUDIT/CONFORM/INIT/REFRESH canonical modes](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) | 2024-01-01 |
-| ADR-KI-HARNESS-SKILLS-002 | [Mechanical and judgment checker split](ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md) | 2024-01-01 |
-| ADR-KI-HARNESS-SKILLS-003 | [Dependency order for multi-skill composition](ADR-KI-HARNESS-SKILLS-003-dependency-order-composition.md) | 2024-01-01 |
-| ADR-KI-HARNESS-SKILLS-004 | [Skills must be valid standalone](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) | 2024-01-01 |
+| ADR-KI-HARNESS-SKILLS-001 | [AUDIT/CONFORM/INIT/REFRESH canonical modes](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) | 2026-06-23 |
+| ADR-KI-HARNESS-SKILLS-002 | [Mechanical and judgment checker split](ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md) | 2026-06-23 |
+| ADR-KI-HARNESS-SKILLS-003 | [Dependency order for multi-skill composition](ADR-KI-HARNESS-SKILLS-003-dependency-order-composition.md) | 2026-06-23 |
+| ADR-KI-HARNESS-SKILLS-004 | [Skills must be valid standalone](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) | 2026-06-23 |
 | ADR-KI-HARNESS-SKILLS-005 | [The handoff doctrine is its own skill](ADR-KI-HARNESS-SKILLS-005-handoff-doctrine-own-skill.md) | 2026-07-02 |
 | ADR-KI-HARNESS-SKILLS-006 | [Six-cluster skill taxonomy and the implication graph](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md) | 2026-07-09 |
 | ADR-KI-HARNESS-SKILLS-007 | [ki-housekeeping scope and the server pairing](ADR-KI-HARNESS-SKILLS-007-housekeeping-scope-and-server-pairing.md) | 2026-07-09 |

@@ -1,6 +1,6 @@
 # ADR-KI-HARNESS-SKILLS-001: AUDIT/CONFORM/INIT/REFRESH canonical modes
 
-**Date:** 2024-01-01
+**Date:** 2026-06-23
 
 ## Context
 
