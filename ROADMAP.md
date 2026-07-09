@@ -8,6 +8,10 @@ This roadmap is itself subject to the house discipline it describes: when a skil
 
 ## Future
 
+### Evaluate memtrace as structural-memory layer for the harness _(candidate)_
+
+[syncable-dev/memtrace-public](https://github.com/syncable-dev/memtrace-public) is a code-intelligence tool that parses a codebase into a live knowledge graph — symbols as nodes, relationships (`CALLS`, `IMPLEMENTS`, `IMPORTS`) as edges, built with Rust + Tree-sitter — that agents query in milliseconds. It claims deterministic indexing (no LLM calls, no API cost), bi-temporal version history with scoring modes for "what changed / what might break" queries, cross-service HTTP call-graph topology, and ships 25+ MCP tools and 17 agent skills across 20+ languages. Currently private beta under a proprietary EULA (benchmark suite MIT). Assess whether it complements the harness — as a structural-memory MCP server the KI skills could lean on, or as prior art for the skills/agents/MCP bundle shape — and whether its licensing and host-local posture fit our surfaces.
+
 ### Port the KI MCP servers into Cowork's sandbox
 
 The `ki-binding` cross-surface skill is built, and the Cowork leg ships the `knowledgeislands/ki-plugins` marketplace plugin — but **skills + agents only**. The KI MCP servers are host-local (they read host filesystem paths and resolve secrets via 1Password) and Cowork runs plugins in a gVisor sandbox that cannot reach the host, so the servers do not port as-is (verified 2026-07-06, [cross-surface-enablement.md](skills/ki-mcp/references/cross-surface-enablement.md) Verification log). Making them reachable needs one of: a self-contained server bundled via `${CLAUDE_PLUGIN_ROOT}`, mounting the KB into the sandbox, or authenticated remote (`http`/`sse`) endpoints. Then `build-plugin.ts` emits a `.mcp.json` and the `cowork` `clients` token becomes live. Related open question: `ki-plugins` keeps the harness's proprietary LICENSE while public, which conflicts with `ki-repo`'s public-repo-MIT check — resolve the licensing/visibility stance.
