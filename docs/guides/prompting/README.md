@@ -1,30 +1,51 @@
 # Prompting guides
 
-The **how** of prompting the models we actually run. One guide per model, each distilled from Anthropic's model-specific prompting page and carrying a **Sources** section so it can be refreshed when that page changes or when our own experience diverges. This page holds the principles that hold _across_ the current model line; each per-model guide carries only its deltas.
+How to prompt the leading models — one guide per model, distilled from that vendor's own model-specific prompting page and refreshed when the guidance changes. The harness itself runs Claude; the non-Claude guides are cross-model reference for when you build on, target, self-host, or evaluate another model. Each guide carries only the deltas that are distinctive to its model — the cross-cutting principles are below, stated once.
 
-Filenames carry the model version (`fable-5`, `opus-4-8`, `sonnet-5`) because the guidance turns over per model generation — a new generation adds a new file rather than rewriting an old one in place.
+Filenames carry the model version (`opus-4-8`, `gpt-5-5`, `glm-5-2`) so a new generation adds a file rather than rewriting an old one in place.
 
 ## The guides
+
+### Anthropic — the tiers the harness runs
 
 | Model | Guide | When to reach for it |
 | --- | --- | --- |
 | Claude Fable 5 / Mythos 5 | [fable-5.md](fable-5.md) | The hardest long-horizon, ambiguous, autonomous work — multi-hour runs, subagent orchestrations, unsolved problems |
-| Claude Opus 4.8 | [opus-4-8.md](opus-4-8.md) | The default heavy-lifting tier: complex reasoning, coding, and agentic work where Fable 5 would be overkill |
-| Claude Sonnet 5 | [sonnet-5.md](sonnet-5.md) | The fast, cost-efficient tier: well-scoped coding and agentic tasks, high-volume or latency-sensitive workloads |
+| Claude Opus 4.8 | [opus-4-8.md](opus-4-8.md) | The heavy-lifting tier: reasoning, coding, agentic work where Fable 5 is overkill |
+| Claude Sonnet 5 | [sonnet-5.md](sonnet-5.md) | Fast, cost-efficient tier: well-scoped coding and agentic tasks, high-volume or latency-sensitive workloads |
 
-Which tier to pick — the cost and capability trade — is governed by the `ki-tokenomics` skill, and the plan-at-the-top-tier / execute-at-a-cheaper-tier split by `ki-handoffs`. This area governs how to _prompt_ whichever tier you land on, not which one to choose.
+The tier pick — how to trade cost against capability — is governed by the `ki-tokenomics` skill, and plan-at-the-top-tier / execute-at-a-cheaper-tier by `ki-handoffs`.
 
-## Principles across the current line
+### Other frontier and open-weight models — cross-model reference
 
-These hold for all three models; the per-model guides note where a model differs.
+| Model | Guide | When to reach for it |
+| --- | --- | --- |
+| OpenAI GPT-5.5 | [gpt-5-5.md](gpt-5-5.md) | Building on or comparing against the OpenAI stack: coding, agentic, knowledge work |
+| Google Gemini 3 | [gemini-3.md](gemini-3.md) | The Gemini stack: long-context, multimodal, agentic work |
+| GLM-5.2 (Z.ai) | [glm-5-2.md](glm-5-2.md) | Leading open-weight model for agentic/coding; self-hostable under MIT |
+| DeepSeek V3.2 | [deepseek-v3-2.md](deepseek-v3-2.md) | Open reasoning/maths baseline; low-cost self-hosting |
+| Llama 4 (Meta) | [llama-4.md](llama-4.md) | The most-deployed open-weight family; broad tooling and long context |
+| Gemma 4 31B | [gemma-4.md](gemma-4.md) | Local/on-device, single-GPU; Google's open, runnable option |
+| Qwen3 (small / coder) | [qwen3.md](qwen3.md) | Local all-rounder and local coding on consumer hardware |
+| Ministral 3 (Mistral edge) | [ministral-3.md](ministral-3.md) | Local/edge on a laptop or single GPU; instruct + reasoning variants |
 
-- **Be literal and specific.** The current models interpret prompts literally and do not silently generalise an instruction from one item to another or infer requests you did not make. If an instruction should apply broadly, say so ("apply this to every section, not just the first"). Vague prompts get scoped, not generalised.
-- **Effort is the primary lever, set on the request not the prompt.** The [`effort`](https://platform.claude.com/docs/en/build-with-claude/effort) parameter trades intelligence against latency and cost. If you see shallow reasoning on a complex task, raise effort rather than prompting around it. The models respect effort strictly at the low end — `low`/`medium` scope the work to exactly what was asked.
-- **`budget_tokens` is gone; thinking is adaptive.** Manual extended thinking (`thinking: {type: "enabled", budget_tokens: N}`) returns a 400 error on the current models. Use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking) plus `effort` instead. Whether adaptive thinking is on by default differs by model (see each guide).
-- **Communication is concise by default.** The models lead with the outcome and may skip a verbal summary after tool calls, jumping to the next action. If you need interim status or a post-tool summary, ask for it explicitly — and try _removing_ scaffolding written for older models that forced periodic status messages.
-- **Do not ask the model to echo its reasoning.** Read structured `thinking` blocks if you need visibility; instructing the model to reproduce or explain its internal reasoning in the response is both unnecessary and, on Fable 5, can trip a safety classifier.
-- **Leave output headroom.** `max_tokens` caps thinking plus response together. At high effort, adaptive thinking can consume a large share of the budget; a tight limit yields a truncated answer with `stop_reason: "max_tokens"`. Size it generously on long agentic runs.
+## Principles
 
-## Refreshing a guide
+These hold across current reasoning models regardless of vendor; each guide notes where its model differs.
 
-Each guide's **Sources** table lists the Anthropic pages it was distilled from, tagged and dated. To refresh: re-read the listed pages, diff against the guide, update the steers and the "last reviewed" date. The cross-cutting source for the principles above is Anthropic's [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices).
+- **Models take prompts literally.** They do what is asked and won't generalise an instruction across items or infer unrequested work — to apply something broadly, say so, and state scope up front ("do X for every file", not "do X … first").
+- **Reasoning effort is the primary lever.** A per-request effort / thinking-level setting (names vary: `effort`, `reasoning_effort`, `thinking_level`) trades intelligence against latency and cost more than prompt wording does. Set it deliberately; re-measure cost when a model or its effort scale changes.
+- **Communication is concise by default.** Modern models lead with the outcome and may skip an interim status or a post-tool summary. If you need one, ask explicitly — and remove old scaffolding ("summarise every N tool calls") that assumed a chattier model.
+- **Don't force the model to echo its reasoning.** Read structured `thinking`/reasoning blocks for visibility; instructing the model to reproduce or explain its internal reasoning in the response is unnecessary and can trip a safety classifier on some models.
+- **Give `max_tokens` headroom.** Where the response cap also covers thinking, a tight limit truncates output (`stop_reason: "max_tokens"`). Size it generously on long agentic runs.
+
+### Anthropic-specific notes
+
+These apply to the Claude guides only:
+
+- **`budget_tokens` is gone; thinking is adaptive.** Manual extended thinking (`thinking: {type: "enabled", budget_tokens: N}`) now 400s on Claude 5-class models. Set [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking) via `effort`; whether adaptive thinking is on by default differs by model (off on Opus 4.8, on on Sonnet 5).
+- **Refusal / fallback.** Fable 5 runs safety classifiers and can return a `refusal` stop reason; configure a fallback to Opus 4.8. See the per-model guides.
+
+## Refreshing
+
+Each guide is distilled from the vendor pages its **Sources** table lists — tagged and dated. To update a guide, re-read those pages and re-date the "Last reviewed" column. The cross-cutting Anthropic reference is [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices).
