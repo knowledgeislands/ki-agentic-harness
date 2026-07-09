@@ -17,7 +17,7 @@ This is the map of `docs/` and the guiding principles that govern everything in 
 
 ### Decisions — the _why_
 
-[`decisions/`](decisions) holds the Decision Records: `ADR-`, `GDR-`, and the other typed records, each a living present-state record in the Nygard five-section shape. The bare `ADR-KI-HARNESS-NNN` series is the **foundations**; sub-scoped series (`SKILLS`, `CONFIG`, `TOOLCHAIN`, `AGENTS`) carry decisions about a narrower area. See [`decisions/README.md`](decisions/README.md) for the reading order (grouped by scope, numeric within each) and the by-ID index.
+[`decisions/`](decisions) holds the Decision Records: `ADR-`, `GDR-`, and the other typed records, each a living present-state record in the Nygard five-section shape. The bare `ADR-KI-HARNESS-NNN` series is the **foundations**; sub-scoped series (`TOOLCHAIN`, `SKILLS`, `AGENTS`) carry decisions about a narrower area. See [`decisions/README.md`](decisions/README.md) for the reading order (grouped by scope, numeric within each) and the by-ID index.
 
 ### Feature definitions — the _what_
 
