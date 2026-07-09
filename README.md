@@ -14,7 +14,7 @@ All four parts are first-class; skills are simply the most built-out, with agent
 ## Quick start
 
 ```bash
-bun install                  # install dev dependencies and wire the git hook
+bun install                     # install dev dependencies and wire the git hook
 bun run ki:skills:link:global   # install just the keystone into ~/.claude/skills (re-runnable)
 bun run ki:skills:link:project  # wire this repo's .claude/skills/ (the harness links --all)
 ```
@@ -25,12 +25,12 @@ Only `ki-bootstrap` is installed globally; every other skill is project-local, w
 
 | Doc | What's in it |
 | --- | --- |
-| [docs/overview.md](docs/guides/user-guide/overview.md) | A short, human-first account: what the harness is, what it does for its owner, how the parts fit. |
-| [docs/skills.md](docs/guides/user-guide/skills.md) | What a skill is, the map of the set, the skills one by one, and the shared governance-skill shape. |
-| [docs/guides/user-guide/onboarding.md](docs/guides/user-guide/onboarding.md) | Onboarding a repo: the bootstrap chain, the four modes, and the greenfield / legacy / remote-run flows. |
-| [docs/design.md](docs/guides/user-guide/design.md) | How they fit: where they don't overlap, the three knowledge loops, the principles across the set. |
-| [docs/knowledge-islands.md][ki-doc] | The Knowledge Islands zone model the KI skills assume, and standard skills & per-base config. |
-| [docs/installation.md](docs/guides/user-guide/installation.md) | Installing · using · linking skills, and the development toolchain. |
+| [Overview](docs/guides/user-guide/overview.md) | A short account: what the harness is, what it does for its owner, how the parts fit. |
+| [Skills](docs/guides/user-guide/skills.md) | What a skill is, the map of the set, the skills one by one, and the shared governance-skill shape. |
+| [Onboarding](docs/guides/user-guide/onboarding.md) | Onboarding a repo: the bootstrap chain, the four modes, and the greenfield / legacy / remote-run flows. |
+| [Design](docs/guides/user-guide/design.md) | How they fit: where they don't overlap, the three knowledge loops, the principles across the set. |
+| [Knowledge Islands][ki-doc] | The Knowledge Islands zone model the KI skills assume, and standard skills & per-base config. |
+| [Installation](docs/guides/user-guide/installation.md) | Installing · using · linking skills, and the development toolchain. |
 
 ## Roadmap
 

@@ -1,6 +1,6 @@
 # What the harness is
 
-A short, plain-language account for a human reader — what this repository is, what it does for its owner, and where to go for detail. The README is the full working reference; this is the one-sitting summary.
+A short, plain-language guide to what this repository is, what it does for its owner, and where to go for detail. The README is the full working reference; this is the one-sitting summary.
 
 ## In one paragraph
 
