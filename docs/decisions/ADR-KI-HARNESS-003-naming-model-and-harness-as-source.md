@@ -12,24 +12,25 @@ The second is packaging. This repository is an agentic harness: a dev-time sourc
 
 ## Decision
 
-**Naming.** The `knowledgeislands` org's repositories use the `ki-` namespace, and repository names align to their governance scope:
+**Naming.** The `ki-` namespace runs through the whole family. It names not only the `knowledgeislands` org's repositories but the artefacts inside the harness — skills, agents, and hooks are each named `ki-<concern>` (with a `-<technology>` suffix where the concern is stack-specific), so a name signals what it governs regardless of which part of the bundle it lives in. Repository names align to their governance scope:
 
 - **`ki-arcadia-principal`** is the canonical Knowledge Island — the exemplar base, the source of the KI model. The `-principal` role marker is retained, as used archipelago-wide (kit-principal, hnr-principal, and so on).
 - **`ki-agentic-harness`** is the framework's general tooling — the skills, agents, MCP wrappers, evals, and hooks any island adopts. It is framework-level (scope `KI-HARNESS`), not Arcadia-territory-scoped.
 - **`ki-website`** is the framework's own public site (knowledgeislands.info). It too is framework-level, not Arcadia-territory-scoped.
+
+The per-artefact grammar (the `ki-<concern>[-<technology>]` form and how names relate) is fixed in its own decision; here the point is that the single `ki-` namespace spans repositories and the artefacts alike.
 
 **Harness vs plugin.** An **agentic harness** is a dev-time source bundle co-locating those parts, each installed by its own native mechanism. A Claude **plugin/marketplace** — a GitHub repo carrying `.claude-plugin/marketplace.json`, per-plugin `.claude-plugin/plugin.json`, `.mcp.json`, and bundled `skills/`/`agents/` — is a **distributable, lossy, per-surface projection** of that source: skills and agents port into it as files; host-local MCP servers do not, because Cowork's gVisor sandbox cannot reach them. The harness is the source; a plugin is one surface's packaging of it — produced by projecting that single source onto each surface, never something the harness "becomes".
 
 ## Consequences
 
 - Repository names are self-describing: a `ki-` repo is framework-level unless its name marks a territory (`ki-arcadia-principal`), and the framework/base split is legible from the org listing alone.
-- The bundle stays the single source of truth. Distribution to any surface is a projection performed by `ki-binding`, not a fork or a rewrite; nothing "becomes" a plugin.
+- The bundle stays the single source of truth. Distribution to any surface is a projection performed by binding, not a fork or a rewrite; nothing "becomes" a plugin.
 - The projection is understood to be lossy per surface: skills and agents travel as files; host-local MCP servers need separate sandbox-portability work before they reach Cowork. A surface receiving fewer parts is expected, not a defect.
-- Decisions about a given surface's enablement have one reasoning home — `ki-binding` and the cross-surface design record — rather than being scattered across per-surface scripts.
+- Decisions about a given surface's enablement have one reasoning home — binding and the cross-surface design record — rather than being scattered across per-surface scripts.
 
 ## References
 
-- The `ki-mcp` cross-surface-enablement design record — the design record for the single-source-to-many-surfaces fan-out that `ki-binding` realises.
-- [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-purpose-scope-structure.md) — the bundle layout that is the source this decision projects.
-- [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-purpose-scope-structure.md) — the purpose and scope of this repository as the harness.
-- The `ki-bootstrap` skill — the keystone that links project-local skills, the Claude Code arm of the projection.
+- [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-purpose-scope-structure.md) — the purpose, scope, and bundle layout that is the source this decision projects.
+- The cross-surface-enablement design record — the design for the single-source-to-many-surfaces fan-out that binding realises.
+- Bootstrapping — the keystone that links project-local skills, the Claude Code arm of the projection.
