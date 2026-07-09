@@ -8,7 +8,7 @@ Two structural facts about this harness need a stated home so that later decisio
 
 The first is naming. The `knowledgeislands` GitHub organisation holds several repositories, and their names carry meaning: they signal what governs what. **Knowledge Islands** is the portable model — the framework: the organisation itself, the family of `ki-*` skills, and the `KI-` decision-record scope. **Arcadia** is the first and canonical Knowledge Island, the exemplar base that proves the model in practice. A repository name that does not align to this distinction leaves a reader guessing whether a repo is framework-level infrastructure or territory-scoped island content.
 
-The second is packaging. This repository is an agentic harness: a dev-time source bundle that co-locates five parts — `skills/`, `agents/`, `mcp/`, `evals/`, `hooks/` (ADR-KI-HARNESS-004) — each installed by its own native mechanism. Separately, the Claude plugin/marketplace format (the Cowork packaging format) is a way to distribute skills, agents, and MCP servers to a host. These are two different things at two different points in the lifecycle, and conflating them — treating the plugin as something the harness "becomes", or as a competitor to it — misstates how the source reaches each surface.
+The second is packaging. This repository is an agentic harness: a dev-time source bundle that co-locates five parts — `skills/`, `agents/`, `mcp/`, `evals/`, `hooks/` (ADR-KI-HARNESS-002) — each installed by its own native mechanism. Separately, the Claude plugin/marketplace format (the Cowork packaging format) is a way to distribute skills, agents, and MCP servers to a host. These are two different things at two different points in the lifecycle, and conflating them — treating the plugin as something the harness "becomes", or as a competitor to it — misstates how the source reaches each surface.
 
 ## Decision
 
@@ -30,6 +30,6 @@ The second is packaging. This repository is an agentic harness: a dev-time sourc
 ## References
 
 - The `ki-mcp` cross-surface-enablement design record — the design record for the single-source-to-many-surfaces fan-out that `ki-binding` realises.
-- [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-five-part-bundle-layout.md) — the five-part bundle layout that is the source this decision projects.
+- [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-purpose-and-scope.md) — the bundle layout that is the source this decision projects.
 - [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-purpose-and-scope.md) — the purpose and scope of this repository as the harness.
 - The `ki-bootstrap` skill — the keystone that links project-local skills, the Claude Code arm of the projection.
