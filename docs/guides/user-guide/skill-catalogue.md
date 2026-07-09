@@ -42,7 +42,7 @@ Audits, conforms, and scaffolds workspace MCP servers against the "workspace MCP
 
 ### `ki-plugins`
 
-Audits, conforms, and scaffolds a Knowledge Islands **plugin-marketplace** repo — the generated Claude plugin marketplace that projects the harness's skills and agents onto the Cowork surface (`knowledgeislands/ki-plugins`, `ADR-KI-HARNESS-005`). The fifth repo-structure skill; it governs the on-disk projection (the `marketplace.json` / `plugin.json` manifests, the verbatim `skills/` copy and flattened `agents/`, the MCP-deferred rule, the generated-not-hand-edited invariant). Generation and cross-surface enablement stay with `ki-binding`. Ships a mechanical checker (`audit-plugins.ts`).
+Audits, conforms, and scaffolds a Knowledge Islands **plugin-marketplace** repo — the generated Claude plugin marketplace that projects the harness's skills and agents onto the Cowork surface (`knowledgeislands/ki-plugins`, `ADR-KI-HARNESS-003`). The fifth repo-structure skill; it governs the on-disk projection (the `marketplace.json` / `plugin.json` manifests, the verbatim `skills/` copy and flattened `agents/`, the MCP-deferred rule, the generated-not-hand-edited invariant). Generation and cross-surface enablement stay with `ki-binding`. Ships a mechanical checker (`audit-plugins.ts`).
 
 ### `ki-tools`
 

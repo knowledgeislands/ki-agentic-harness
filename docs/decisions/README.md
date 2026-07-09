@@ -27,12 +27,12 @@ The records are living, compact, and independent. They are grouped here by scope
 
 1. [ADR-KI-HARNESS-001](ADR-KI-HARNESS-001-adopting-decision-records.md) — adopting Decision Records (the format these records themselves follow).
 2. [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-purpose-scope-structure.md) — the purpose, scope, and structure of the repository (its bundle layout).
-3. [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-composition-over-extension.md) — composition over extension, the principle no skill may break.
-4. [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-naming-model-and-harness-as-source.md) — the `ki-` naming model and harness-as-source vs plugin-as-projection.
-5. [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-mechanical-first-llm-optional.md) — mechanical-first, LLM-optional operation.
-6. [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-validate-down-ki-config-contract.md) — the validate-down `.ki-config.toml` contract, the repo-to-skill binding every skill reads.
-7. [ADR-KI-HARNESS-008](ADR-KI-HARNESS-008-bootstrapping-and-self-sufficiency.md) — the bootstrapping chain and the self-sufficiency contract.
-8. [ADR-KI-HARNESS-009](ADR-KI-HARNESS-009-public-and-declared-license.md) — public repos and a declared license, decoupled from visibility.
+3. [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-naming-model-and-harness-as-source.md) — the `ki-` naming model and harness-as-source vs plugin-as-projection.
+4. [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-mechanical-first-llm-optional.md) — mechanical-first, LLM-optional operation.
+5. [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-composition-over-extension.md) — composition over extension, the principle no skill may break.
+6. [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-validate-down-ki-config-contract.md) — the validate-down `.ki-config.toml` contract, the repo-to-skill binding every skill reads.
+7. [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md) — the bootstrapping chain and the self-sufficiency contract.
+8. [ADR-KI-HARNESS-008](ADR-KI-HARNESS-008-public-and-declared-license.md) — public repos and a declared license, decoupled from visibility.
 
 **2 · Toolchain (`TOOLCHAIN`) — the mechanical substrate the skills are built with.**
 
@@ -62,12 +62,12 @@ The records are living, compact, and independent. They are grouped here by scope
 | --- | --- | --- |
 | ADR-KI-HARNESS-001 | [Adopting Architecture Decision Records](ADR-KI-HARNESS-001-adopting-decision-records.md) | 2026-06-23 |
 | ADR-KI-HARNESS-002 | [Purpose, scope, and structure of this repository](ADR-KI-HARNESS-002-purpose-scope-structure.md) | 2026-06-23 |
-| ADR-KI-HARNESS-003 | [Composition over extension](ADR-KI-HARNESS-003-composition-over-extension.md) | 2026-06-23 |
-| ADR-KI-HARNESS-005 | [The ki- naming model and harness-as-source vs plugin-as-projection](ADR-KI-HARNESS-005-naming-model-and-harness-as-source.md) | 2026-07-07 |
-| ADR-KI-HARNESS-006 | [Mechanical-first, LLM-optional operation](ADR-KI-HARNESS-006-mechanical-first-llm-optional.md) | 2026-07-09 |
-| ADR-KI-HARNESS-007 | [Validate-down .ki-config.toml contract](ADR-KI-HARNESS-007-validate-down-ki-config-contract.md) | 2026-06-23 |
-| ADR-KI-HARNESS-008 | [The bootstrapping chain and the self-sufficiency contract](ADR-KI-HARNESS-008-bootstrapping-and-self-sufficiency.md) | 2026-07-09 |
-| ADR-KI-HARNESS-009 | [Public repos and a declared license, decoupled from visibility](ADR-KI-HARNESS-009-public-and-declared-license.md) | 2026-07-09 |
+| ADR-KI-HARNESS-003 | [The ki- naming model and harness-as-source vs plugin-as-projection](ADR-KI-HARNESS-003-naming-model-and-harness-as-source.md) | 2026-07-07 |
+| ADR-KI-HARNESS-004 | [Mechanical-first, LLM-optional operation](ADR-KI-HARNESS-004-mechanical-first-llm-optional.md) | 2026-07-09 |
+| ADR-KI-HARNESS-005 | [Composition over extension](ADR-KI-HARNESS-005-composition-over-extension.md) | 2026-06-23 |
+| ADR-KI-HARNESS-006 | [Validate-down .ki-config.toml contract](ADR-KI-HARNESS-006-validate-down-ki-config-contract.md) | 2026-06-23 |
+| ADR-KI-HARNESS-007 | [The bootstrapping chain and the self-sufficiency contract](ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md) | 2026-07-09 |
+| ADR-KI-HARNESS-008 | [Public repos and a declared license, decoupled from visibility](ADR-KI-HARNESS-008-public-and-declared-license.md) | 2026-07-09 |
 | ADR-KI-HARNESS-SKILLS-001 | [AUDIT/CONFORM/INIT/REFRESH canonical modes](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) | 2026-06-23 |
 | ADR-KI-HARNESS-SKILLS-002 | [Mechanical and judgment checker split](ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md) | 2026-06-23 |
 | ADR-KI-HARNESS-SKILLS-003 | [Dependency order for multi-skill composition](ADR-KI-HARNESS-SKILLS-003-dependency-order-composition.md) | 2026-06-23 |

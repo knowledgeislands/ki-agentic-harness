@@ -3,7 +3,7 @@
  * ki-binding — generate the KI Cowork plugin marketplace repo from this harness.
  *
  * The harness (skills/ + agents/) is the single source; a Claude plugin/marketplace is a
- * lossy per-surface projection of it (ADR-KI-HARNESS-005). This generator mirrors the
+ * lossy per-surface projection of it (ADR-KI-HARNESS-003). This generator mirrors the
  * harness's skills + governance agents into a marketplace-repo tree so the plugin content
  * is never hand-maintained — re-running reproduces it byte-for-byte.
  *

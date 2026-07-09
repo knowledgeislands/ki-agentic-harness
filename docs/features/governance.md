@@ -14,7 +14,7 @@ _Verify:_ `ki-engineering`'s enforcement-framework §5 lists the four modes, and
 
 ### GOV-002 — Mechanical-first, LLM-optional
 
-Each skill's mechanical criteria MUST be executable as a CLI checker with no LLM, exiting non-zero on any FAIL, per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-mechanical-first-llm-optional.md).
+Each skill's mechanical criteria MUST be executable as a CLI checker with no LLM, exiting non-zero on any FAIL, per [ADR-KI-HARNESS-004](../decisions/ADR-KI-HARNESS-004-mechanical-first-llm-optional.md).
 
 _Verify:_ every artifact skill ships a `scripts/audit-*.ts` (or `lint-*.ts`) that runs standalone under `bun` and returns a non-zero exit on FAIL-severity findings.
 
@@ -28,7 +28,7 @@ _Verify:_ each checker imports the same `Sev` enum shape from `ki-engineering`'s
 
 ### GOV-004 — Composition, not extension
 
-A skill MUST NOT import another skill; it composes by running a sibling's checker or mode in sequence and declaring the edge, per [ADR-KI-HARNESS-003](../decisions/ADR-KI-HARNESS-003-composition-over-extension.md).
+A skill MUST NOT import another skill; it composes by running a sibling's checker or mode in sequence and declaring the edge, per [ADR-KI-HARNESS-005](../decisions/ADR-KI-HARNESS-005-composition-over-extension.md).
 
 _Verify:_ no `skills/*/scripts/*.ts` imports from another skill's directory; cross-skill composition is by subprocess (`execFileSync`) only.
 

@@ -8,13 +8,13 @@ The behaviour of the bootstrap chain: how the harness brings a target repo under
 
 ### BOOT-001 — Self-governing after INIT
 
-After the INIT chain runs against a target repo, that repo MUST govern itself with `bun run ki:audit` and **zero** Knowledge Islands skills installed, per [ADR-KI-HARNESS-008](../decisions/ADR-KI-HARNESS-008-bootstrapping-and-self-sufficiency.md).
+After the INIT chain runs against a target repo, that repo MUST govern itself with `bun run ki:audit` and **zero** Knowledge Islands skills installed, per [ADR-KI-HARNESS-007](../decisions/ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md).
 
 _Verify:_ bootstrap a bare fixture (`package.json` + `.ki-config.toml`, no `.claude/skills/`) with `skills/ki-bootstrap/scripts/bootstrap.ts <fixture>`, then run `bun run ki:audit` in it — the vendored checkers execute and report.
 
 ### BOOT-002 — Vendored copies, not symlinks
 
-INIT MUST vendor each resolved skill's checker (and any `conform-*.ts`) into the target's `scripts/ki/<skill>/` as file **copies**, never symlinks, so they run with no harness beside the repo (SCRIPT-7 / [ADR-KI-HARNESS-008](../decisions/ADR-KI-HARNESS-008-bootstrapping-and-self-sufficiency.md)).
+INIT MUST vendor each resolved skill's checker (and any `conform-*.ts`) into the target's `scripts/ki/<skill>/` as file **copies**, never symlinks, so they run with no harness beside the repo (SCRIPT-7 / [ADR-KI-HARNESS-007](../decisions/ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md)).
 
 _Verify:_ after bootstrap, `scripts/ki/ki-repo/audit-repo.ts` in the target is a regular file whose contents equal the harness source, and `git check-ignore` does not ignore it.
 

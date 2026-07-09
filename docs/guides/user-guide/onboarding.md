@@ -1,6 +1,6 @@
 # Onboarding a repo to Knowledge Islands governance
 
-How to bring a repository under Knowledge Islands governance so it **governs itself** — running `bun run ki:audit` with **zero skills installed** — and how to migrate a legacy repo off old formats. This guide is the operating manual for the bootstrap chain (ADR-KI-HARNESS-008); its fenced command blocks are executable and are exercised by the harness's own test suite, so they cannot drift from what actually works.
+How to bring a repository under Knowledge Islands governance so it **governs itself** — running `bun run ki:audit` with **zero skills installed** — and how to migrate a legacy repo off old formats. This guide is the operating manual for the bootstrap chain (ADR-KI-HARNESS-007); its fenced command blocks are executable and are exercised by the harness's own test suite, so they cannot drift from what actually works.
 
 ## The four modes
 

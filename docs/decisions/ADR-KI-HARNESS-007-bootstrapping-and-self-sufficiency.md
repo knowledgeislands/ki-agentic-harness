@@ -1,10 +1,10 @@
-# ADR-KI-HARNESS-008: The bootstrapping chain and the self-sufficiency contract
+# ADR-KI-HARNESS-007: The bootstrapping chain and the self-sufficiency contract
 
 **Date:** 2026-07-09
 
 ## Context
 
-A repo is brought under Knowledge Islands governance in two situations the earlier "install the skills, then run them" model served poorly: a greenfield repo with nothing installed, and a legacy ki-repo carrying old formats that must be migrated. Requiring the full skill set to be installed first makes onboarding heavy and couples every repo to a global install. The mechanical-first stance ([ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-mechanical-first-llm-optional.md)) already lets the scripts run without an LLM; the remaining step is to let them run without the skill installed at all.
+A repo is brought under Knowledge Islands governance in two situations the earlier "install the skills, then run them" model served poorly: a greenfield repo with nothing installed, and a legacy ki-repo carrying old formats that must be migrated. Requiring the full skill set to be installed first makes onboarding heavy and couples every repo to a global install. The mechanical-first stance ([ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-mechanical-first-llm-optional.md)) already lets the scripts run without an LLM; the remaining step is to let them run without the skill installed at all.
 
 ## Decision
 
@@ -24,7 +24,7 @@ Governance bootstraps through a single chain, runnable from the remote source wi
 
 ## References
 
-- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-mechanical-first-llm-optional.md) — the mechanical-first stance this depends on.
+- [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-mechanical-first-llm-optional.md) — the mechanical-first stance this depends on.
 - INIT — the universal mode whose mechanical half is `scripts/bootstrap.ts` — is defined later in the reading order by ADR-KI-HARNESS-SKILLS-001; the role it plays in bootstrapping is set out above.
 - The `ki-bootstrap` skill — the chain-starter keystone.
 - The `ki-engineering` enforcement-framework reference, §5 — INIT and the self-sufficiency contract.

@@ -1,10 +1,10 @@
-# ADR-KI-HARNESS-009: Public repos and a declared license, decoupled from visibility
+# ADR-KI-HARNESS-008: Public repos and a declared license, decoupled from visibility
 
 **Date:** 2026-07-09
 
 ## Context
 
-The repo standard coupled license to visibility: a public repo had to carry MIT, a private repo a proprietary LICENSE and `"UNLICENSED"` in `package.json`. That coupling baked a policy into the checker — "public means MIT" — and left no way for a repo to be public under a different license, or to state its license as an explicit fact. Separately, the earlier direction kept `ki-plugins` private; but the harness is the source and the plugin set is its projection ([ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-naming-model-and-harness-as-source.md)), and a governance skill set is only useful if it can be installed from source — which wants public repos.
+The repo standard coupled license to visibility: a public repo had to carry MIT, a private repo a proprietary LICENSE and `"UNLICENSED"` in `package.json`. That coupling baked a policy into the checker — "public means MIT" — and left no way for a repo to be public under a different license, or to state its license as an explicit fact. Separately, the earlier direction kept `ki-plugins` private; but the harness is the source and the plugin set is its projection ([ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-naming-model-and-harness-as-source.md)), and a governance skill set is only useful if it can be installed from source — which wants public repos.
 
 ## Decision
 
@@ -23,6 +23,6 @@ Knowledge Islands repos are **public by default** (installable from source), and
 
 ## References
 
-- [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-naming-model-and-harness-as-source.md) — harness-as-source vs plugin-as-projection, which this makes installable.
+- [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-naming-model-and-harness-as-source.md) — harness-as-source vs plugin-as-projection, which this makes installable.
 - The `ki-repo` repo standard — the license and visibility checks in full.
-- [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-validate-down-ki-config-contract.md) — the `.ki-config.toml` contract the `license` field extends.
+- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-validate-down-ki-config-contract.md) — the `.ki-config.toml` contract the `license` field extends.

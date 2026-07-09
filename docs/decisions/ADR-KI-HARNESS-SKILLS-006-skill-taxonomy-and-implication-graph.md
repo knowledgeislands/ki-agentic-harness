@@ -20,10 +20,10 @@ The skills are organised into six clusters, and their relationships are declared
 - A new skill is placed by choosing its cluster; its edges are declared in one greppable place.
 - The bootstrap chain and the user-guide tree cannot drift — both derive from `implies:`, and a broken edge fails CI.
 - Cluster 6 gives the machine/environment skills a home the earlier repo-only taxonomy lacked.
-- The generated plugin-marketplace repo (`knowledgeislands/ki-plugins`, `ADR-KI-HARNESS-005`) is a fifth repo shape; `ki-plugins` governs its on-disk projection so it is no longer a repo carrying zero repo-structure skills. Its **generation and cross-surface enablement** stay with the environment skill `ki-binding` (they govern the machine, not the repo) — the split keeps each cluster's defining property intact.
+- The generated plugin-marketplace repo (`knowledgeislands/ki-plugins`, `ADR-KI-HARNESS-003`) is a further repo shape; `ki-plugins` governs its on-disk projection so it is no longer a repo carrying zero repo-structure skills. Its **generation and cross-surface enablement** stay with the environment skill `ki-binding` (they govern the machine, not the repo) — the split keeps each cluster's defining property intact.
 
 ## References
 
 - The `ki-engineering` enforcement-framework reference — the governance-skill shape each cluster follows.
-- [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-composition-over-extension.md) — composition over extension, how skills relate within the graph.
+- [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-composition-over-extension.md) — composition over extension, how skills relate within the graph.
 - The user-guide skills map and skill catalogue — the clusters, the interdependency graph, and the catalogue the clusters organise.

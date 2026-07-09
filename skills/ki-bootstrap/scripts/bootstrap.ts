@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * ki-bootstrap chain engine — the mechanical half of INIT, and the start of the
- * bootstrap chain (ADR-KI-HARNESS-008). Brings a target repo under Knowledge
+ * bootstrap chain (ADR-KI-HARNESS-007). Brings a target repo under Knowledge
  * Islands governance so it governs itself with `bun run ki:audit` and **zero
  * skills installed**: for every skill in the resolved set it vendors *copies*
  * of the skill's checker scripts (SCRIPT-7 — copies, not symlinks) into the
@@ -9,7 +9,7 @@
  * conform}` package.json keys pointing at the copies, and installs/refreshes the
  * repo-wide `ki:audit` / `ki:conform` / `ki:init` aggregates.
  *
- * Remote transport (ADR-KI-HARNESS-008): run straight from GitHub with no local
+ * Remote transport (ADR-KI-HARNESS-007): run straight from GitHub with no local
  * install —
  *   bun run https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/<ref>/skills/ki-bootstrap/scripts/bootstrap.ts <target>
  * When run from a raw URL the skill sources are fetched from the same ref; when
