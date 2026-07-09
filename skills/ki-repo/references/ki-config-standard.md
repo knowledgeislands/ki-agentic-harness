@@ -26,10 +26,13 @@ Each skill that needs declared config owns **exactly one** TOML table, named for
 ```toml
 [ki-repo]
 visibility = "public"
+license = "MIT"          # SPDX id; default MIT when unset. "UNLICENSED" for proprietary.
 
 [ki-repo.checks]
 branch-protection = true
 ```
+
+`[ki-repo]` carries two declared facts the auditor checks against the live repo: `visibility` (`"public"` | `"private"`, matched against GitHub) and `license` (an SPDX id — default MIT when unset — matched against the live GitHub license, the `LICENSE` file, and `package.json` `"license"`). The two are **independent**: a private repo may be MIT, a public repo proprietary. Pick a license at [choosealicense.com](https://choosealicense.com/); use `"UNLICENSED"` for all-rights-reserved proprietary.
 
 - The table name **matches the skill's `name`** exactly, so the owner is unambiguous and the file reads as a map of skill → its settings.
 - A skill reads **only its own table** and never reaches into another skill's — the table boundary is the ownership boundary. If two skills need the same fact, it still lives under whichever skill owns it, and the other resolves it from there.

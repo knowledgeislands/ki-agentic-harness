@@ -44,6 +44,7 @@ The records are living, compact, and independent, but they were designed to be _
 
 1. [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md) — the bootstrapping chain and the self-sufficiency contract.
 2. [ADR-KI-HARNESS-CONFIG-001](ADR-KI-HARNESS-CONFIG-001-validate-down-ki-config-contract.md) — the validate-down `.ki-config.toml` contract.
+3. [ADR-KI-HARNESS-008](ADR-KI-HARNESS-008-public-and-declared-license.md) — public repos and a declared license, decoupled from visibility.
 
 **4 · The instruments — decisions about specific skills.**
 
@@ -70,6 +71,7 @@ The records are living, compact, and independent, but they were designed to be _
 | ADR-KI-HARNESS-005 | [The ki- naming model and harness-as-source vs plugin-as-projection](ADR-KI-HARNESS-005-naming-model-and-harness-as-source.md) | 2026-07-07 |
 | ADR-KI-HARNESS-006 | [Mechanical-first, LLM-optional operation](ADR-KI-HARNESS-006-mechanical-first-llm-optional.md) | 2026-07-09 |
 | ADR-KI-HARNESS-007 | [The bootstrapping chain and the self-sufficiency contract](ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md) | 2026-07-09 |
+| ADR-KI-HARNESS-008 | [Public repos and a declared license, decoupled from visibility](ADR-KI-HARNESS-008-public-and-declared-license.md) | 2026-07-09 |
 | ADR-KI-HARNESS-CONFIG-001 | [Validate-down .ki-config.toml contract](ADR-KI-HARNESS-CONFIG-001-validate-down-ki-config-contract.md) | 2024-01-01 |
 | ADR-KI-HARNESS-SKILLS-001 | [AUDIT/CONFORM/INIT/REFRESH canonical modes](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) | 2024-01-01 |
 | ADR-KI-HARNESS-SKILLS-002 | [Mechanical and judgment checker split](ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md) | 2024-01-01 |
