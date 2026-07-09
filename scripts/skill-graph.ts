@@ -129,6 +129,7 @@ const CLUSTER_ORDER = [
   'ki-mcp',
   'ki-handoffs',
   'ki-plans',
+  'ki-feature-definitions',
   'ki-binding',
   'ki-housekeeping',
   'ki-tokenomics'

@@ -27,6 +27,10 @@ visibility = "private"   # "public" | "private"
 # This repo ships the ki-decision-records skill, so it declares governance by its own standard.
 [ki-decision-records]
 
+# This repo ships the ki-feature-definitions skill, so it declares governance by its own standard
+# over its own docs/features/ Feature Definitions corpus.
+[ki-feature-definitions]
+
 # This repo ships the ki-housekeeping skill, so it declares governance by its own standard over the
 # Claude Code auto-memory directory (~/.claude/projects/<slug>/memory/), which lives outside
 # this repo's tree — same repo-external-artifact pattern as a KB base.

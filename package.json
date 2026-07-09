@@ -54,6 +54,7 @@
     "ki:codegen": "bun scripts/generate-clients.ts",
     "ki:conform": "bun run ki:deps:refresh && bun run ki:lint:package && bun run ki:lint:format && bun run ki:lint:fix && bun run ki:lint:md",
     "ki:decision-records:audit": "bun skills/ki-decision-records/scripts/audit-drs.ts",
+    "ki:feature-definitions:audit": "bun skills/ki-feature-definitions/scripts/audit-features.ts",
     "ki:deps:check": "bunx knip --dependencies --no-config-hints",
     "ki:deps:fix": "bunx knip --dependencies --fix --no-config-hints",
     "ki:deps:refresh": "bun update --force",
