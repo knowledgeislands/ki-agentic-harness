@@ -90,13 +90,14 @@ function impliesOf(skill: string): string[] {
     : []
 }
 
-// Transitive closure of BASELINE + declared skills over the `implies:` graph.
-function resolveSet(target: string, all: boolean): string[] {
+// Transitive closure of BASELINE + declared skills (+ explicit --seed skills) over
+// the `implies:` graph. A per-skill `scripts/bootstrap.ts` delegator seeds itself.
+function resolveSet(target: string, all: boolean, seeds: string[]): string[] {
   const seed = all
     ? readdirSync(SKILLS_ROOT, { withFileTypes: true })
         .filter((e) => e.isDirectory() && isSkill(e.name))
         .map((e) => e.name)
-    : [...BASELINE, ...declaredSkills(readText(join(target, '.ki-config.toml')))]
+    : [...BASELINE, ...declaredSkills(readText(join(target, '.ki-config.toml'))), ...seeds]
   const seen = new Set<string>()
   const stack = [...seed]
   while (stack.length) {
@@ -182,18 +183,29 @@ function vendorSkill(target: string, skill: string, dryRun: boolean): Array<[str
 
 function main(): void {
   const argv = process.argv.slice(2)
-  const positional = argv.filter((a) => !a.startsWith('--'))
+  // Pull `--seed <skill>` (repeatable) out first so its value is not mistaken for
+  // the positional target. A per-skill delegator passes `--seed <self>`.
+  const seeds: string[] = []
+  const rest: string[] = []
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === '--seed' && argv[i + 1]) {
+      seeds.push(argv[++i])
+    } else {
+      rest.push(argv[i])
+    }
+  }
+  const positional = rest.filter((a) => !a.startsWith('--'))
   const target = resolve(positional[0] ?? '.')
-  const dryRun = argv.includes('--dry-run')
-  const all = argv.includes('--all')
-  const mode = parseMode(argv)
+  const dryRun = rest.includes('--dry-run')
+  const all = rest.includes('--all')
+  const mode = parseMode(rest)
 
   if (!existsSync(join(target, 'package.json'))) {
     console.error(`${YELLOW}bootstrap${RESET} target has no package.json: ${target}`)
     process.exit(1)
   }
 
-  const set = resolveSet(target, all)
+  const set = resolveSet(target, all, seeds)
   console.log(`${DIM}bootstrap ${target} — skills: ${set.join(', ')}${RESET}`)
 
   const keys: Array<[string, string]> = []

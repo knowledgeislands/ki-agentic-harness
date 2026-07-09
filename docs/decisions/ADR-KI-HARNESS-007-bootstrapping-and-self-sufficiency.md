@@ -20,6 +20,7 @@ Governance bootstraps through a single chain, runnable from the remote source wi
 - A greenfield repo and a legacy ki-repo migrate by the same remote-run flow; the only difference is the aggressiveness flag.
 - Vendored script copies are re-synced whenever INIT or CONFORM re-runs, so a REFRESH that changes a checker propagates on the next run.
 - The remote-run transport is a documented `bun run <raw-github-url>` one-liner against the harness on GitHub — no publish step, pinned to a ref (branch or tag). A skill's INIT is reached as `bun run https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/<ref>/skills/<skill>/scripts/bootstrap.ts <target>`; `ki-bootstrap` starts the chain the same way.
+- The self-sufficiency mechanics live **once**, in `ki-bootstrap`'s chain engine (`scripts/bootstrap.ts`): it discovers each skill's checker/conform scripts by naming convention, resolves the `implies:` closure, vendors the copies, and wires the keys and aggregates. Each other skill's `scripts/bootstrap.ts` is a **thin delegator** that execs that engine with itself as an explicit `--seed`. Delegating by subprocess is composition — running a sibling in sequence — not a cross-skill import, so every skill keeps its INIT mechanical half without duplicating the engine and stays valid standalone ([ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md)).
 
 ## References
 
