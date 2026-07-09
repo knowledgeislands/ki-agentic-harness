@@ -41,7 +41,7 @@ A `[ki-<skill>]` table plays one or both of two roles:
 - **Marker (opt-in)** — its _presence_ declares "this skill governs this repo." The bare header is enough; it needs no keys.
 - **Config** — it carries per-repo declarations the skill reads (data the standard fits to, or `[…checks]` divergences).
 
-The two are separable: a base on the canonical zone names declares a bare `[ki-kb]` (marker only, no keys); a base that renames a zone adds a `[ki-kb.zones]` alias (config). The marker/opt-in skills are `ki-engineering`, `-kb`, `-streams`, `-11ty-websites`, `-cloudflare-hosting`, `-mcp`, `-skills`, and `-agents`. `ki-repo` is the **bedrock marker** — the file's very presence is what makes the repo a ki-repo — and `ki-authoring` is **universal** (it governs every markdown repo), so neither needs a separate opt-in.
+The two are separable: a base on the canonical zone names declares a bare `[ki-kb]` (marker only, no keys); a base that renames a zone adds a `[ki-kb.zones]` alias (config). The marker/opt-in skills are `ki-engineering`, `-kb`, `-streams`, `-website`, `-website-cloudflare`, `-mcp`, `-skills`, and `-agents`. `ki-repo` is the **bedrock marker** — the file's very presence is what makes the repo a ki-repo — and `ki-authoring` is **universal** (it governs every markdown repo), so neither needs a separate opt-in.
 
 So **what an absent table means is per-skill**, and that is exactly what _Coverage enforcement_ (below) checks:
 
@@ -70,7 +70,7 @@ The owning skill's auditor then reports the divergence as an acknowledged note r
 
 A skill's standard fixes its model; a base or repo may declare **only** the keys that skill documents as overridable, and nothing else is a config knob. Two kinds of declaration are overridable: **data** the standard reads to fit a target (e.g. `ki-kb`'s zone aliases, `required_frontmatter`, and `preflight`), and **divergences** from a default (the `[…checks]` booleans above). Everything not so documented is **fixed** by the standard — a target does not redefine it in config. This split is what keeps target-specificity declared-and-auditable rather than forked into a coupled skill: where a target differs, it differs through a documented key, not a bespoke `<target>-*` extension skill.
 
-So the option set is **authored, not implicit**: each skill with declarable keys emits them — commented, with defaults — via an `--init` the skill owns (`ki-repo`, `-kb`, `-streams`, `-tokenomics`, and `-cloudflare-hosting` do; `-11ty-websites`'s `--init` emits the bare marker, as it has no keys today), so an author sees exactly what may be set, and an undocumented key warns (validate-down). A target-specific need that no documented key can express is a signal to **generalise it into the standard** (a REFRESH candidate), not to invent an ad-hoc key or fork a skill.
+So the option set is **authored, not implicit**: each skill with declarable keys emits them — commented, with defaults — via an `--init` the skill owns (`ki-repo`, `-kb`, `-streams`, `-tokenomics`, and `-website-cloudflare` do; `-website`'s `--init` emits the bare marker, as it has no keys today), so an author sees exactly what may be set, and an undocumented key warns (validate-down). A target-specific need that no documented key can express is a signal to **generalise it into the standard** (a REFRESH candidate), not to invent an ad-hoc key or fork a skill.
 
 ## Coverage enforcement
 
@@ -93,7 +93,7 @@ The detection signals `ki-repo` uses (one recursive tree read + `package.json`):
 
 This is the **one place** `ki-repo` reads across skill tables — and it reads only table **presence**, never another skill's keys (_validate down, ignore across_ still governs table _contents_). It is an **audit-time enforcement** run by `repo`'s auditor, not behaviour baked into the regular use of each skill. A repo opts out of a single signal it doesn't want enforced with a `coverage-<skill> = false` entry in its `[ki-repo.checks]` table (e.g. a repo that vendors an `eleventy.config` it does not own) — reported as an acknowledged note.
 
-No marker table is decorative — each is read by code. Most are read by their **owning** skill's auditor too (`-engineering`/`-kb`/`-streams`/`-11ty-websites`/`-cloudflare-hosting`/`-mcp` each read their own table when run). `ki-skills` and `ki-agents` are the documented exception: their checkers lint an artifact set (`SKILL.md` files, agent definitions), not a repo's config, so their opt-in table is read only by `ki-repo`'s coverage check.
+No marker table is decorative — each is read by code. Most are read by their **owning** skill's auditor too (`-engineering`/`-kb`/`-streams`/`-website`/`-website-cloudflare`/`-mcp` each read their own table when run). `ki-skills` and `ki-agents` are the documented exception: their checkers lint an artifact set (`SKILL.md` files, agent definitions), not a repo's config, so their opt-in table is read only by `ki-repo`'s coverage check.
 
 ## Scaffolding & ownership
 

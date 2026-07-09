@@ -18,8 +18,8 @@ Each skill's `description` carries its own boundaries so the agent selects the r
 | `ki-repo` vs `ki-mcp`                                     | A repo's **configuration** vs an MCP server's **source**. §                 |
 | `ki-authoring` vs the rest                                | **How we write** vs _what_ we write. ¶                                      |
 | `ki-engineering` vs the rest                              | **How we build** vs everything that isn't the toolchain. ‖                  |
-| `ki-website` vs `…-cloudflare-hosting`                    | **Building** the portable `dist/` vs **serving** it. ††                     |
-| `…-cloudflare-hosting` vs generic `cloudflare`/`wrangler` | The **one site Worker** vs all other Workers + platform usage. ‡‡           |
+| `ki-website` vs `…-website-cloudflare`                    | **Building** the portable `dist/` vs **serving** it. ††                     |
+| `…-website-cloudflare` vs generic `cloudflare`/`wrangler` | The **one site Worker** vs all other Workers + platform usage. ‡‡           |
 | `ki-tokenomics` vs `ki-mcp`                               | The MCP tool surface's **token cost** vs an MCP server's **code**. §§       |
 | `ki-tokenomics` vs `ki-skills`                            | The installed set's **description cost** vs one `SKILL.md`'s quality. §§    |
 | `ki-tokenomics` vs the `claude-api` skill                 | The context budget's **shape** vs the volatile **numbers** it cites. §§     |
