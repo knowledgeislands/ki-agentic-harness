@@ -143,4 +143,4 @@ bun run ki:skills:lint  # audit every skill's mechanical criteria (ki-skills rub
 bun run ki:eval         # advisory behavioural eval suite (see ../evals/)
 ```
 
-`ki:skills:lint` runs the mechanical half of the [`ki-skills`](../../../skills/ki-skills/SKILL.md) rubric over every skill (frontmatter, naming, length caps, link resolution); the judgment half is applied by that skill when you ask it to audit one. Several skills also expose a repo-level audit script — `ki:engineering:audit`, `ki:repo:audit`, `ki:kb:audit`, `ki:kb-streams:audit`, `ki:tokenomics:audit`, `ki:harness:audit` — that runs their mechanical checker over a target.
+`ki:skills:lint` runs the mechanical half of the `ki-skills` rubric over every skill (frontmatter, naming, length caps, link resolution); the judgment half is applied by that skill when you ask it to audit one. Several skills also expose a repo-level audit script — `ki:engineering:audit`, `ki:repo:audit`, `ki:kb:audit`, `ki:kb-streams:audit`, `ki:tokenomics:audit`, `ki:harness:audit` — that runs their mechanical checker over a target.

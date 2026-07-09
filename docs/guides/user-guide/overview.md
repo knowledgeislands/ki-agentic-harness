@@ -36,10 +36,13 @@ When a repository genuinely needs something different from the shared standard, 
 
 One skill sits apart from the four parts: **`ki-bootstrap`**, the one skill kept installed globally. Every other skill is installed per-repository. Bootstrap reads a repository's own configuration file (`.ki-config.toml`) and wires in exactly the skills that repository has opted into — so each repository self-equips with the right subset, and the harness stays the single source those subsets are drawn from.
 
+## What "Knowledge Islands" means
+
+Several of the skills are built for **Knowledge Islands** work and take its shape as given. A Knowledge Islands base is a single Markdown store organised into five fixed zones — `Calendar`, `Pillars`, `Resources`, `Streams`, and `Admin` — flanked by an inbound (`+`) and an outbound (`-`) staging area. The whole base is an "island"; within it a **Pillar** is a major strand of subject matter — a case, a client, a domain, a theme. The skills assume this structure rather than redefining it, so a base supplies only a few local bindings. For the idea in full, see [knowledgeislands.info](https://knowledgeislands.info).
+
 ## Where to go deeper
 
-- **[Skills](skills.md)** describes the skills one by one and the shape they all share.
-- **[Onboarding](onboarding.md)** walks through bringing a repository under governance: the bootstrap chain, the four modes, and the greenfield / legacy / remote-run flows.
-- **[Design](design.md)** explains how they fit — where they deliberately do not overlap, the loops by which the standards improve, and the principles common to the set.
-- **[Knowledge Islands](knowledge-islands.md)** sets out the zone model the KI skills assume, and the standard skills and per-base configuration.
 - **[Installation](installation.md)** covers installing, using, and linking the skills, and the development toolchain.
+- **[Onboarding](onboarding.md)** walks through bringing a repository under governance: the bootstrap chain, the four modes, and the greenfield / legacy / remote-run flows.
+- **[Skills](skills.md)** describes the skills one by one and the shape they all share.
+- **[Design](design.md)** explains how they fit — where they deliberately do not overlap, the loops by which the standards improve, and the principles common to the set.

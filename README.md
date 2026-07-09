@@ -29,11 +29,10 @@ Only `ki-bootstrap` is installed globally; every other skill is project-local, w
 | [Skills](docs/guides/user-guide/skills.md) | What a skill is, the map of the set, the skills one by one, and the shared governance-skill shape. |
 | [Onboarding](docs/guides/user-guide/onboarding.md) | Onboarding a repo: the bootstrap chain, the four modes, and the greenfield / legacy / remote-run flows. |
 | [Design](docs/guides/user-guide/design.md) | How they fit: where they don't overlap, the three knowledge loops, the principles across the set. |
-| [Knowledge Islands][ki-doc] | The Knowledge Islands zone model the KI skills assume, and standard skills & per-base config. |
 | [Installation](docs/guides/user-guide/installation.md) | Installing · using · linking skills, and the development toolchain. |
+
+The user guide is self-contained. For how it relates to the decisions, feature definitions, plans, and skill code underneath it — and to the Knowledge Islands concept — see [docs/docs.md](docs/docs.md).
 
 ## Roadmap
 
 The forward view — what's next and why — lives in [ROADMAP.md](ROADMAP.md). The standards, the mechanical checkers, and the advisory eval harness are all in place, and keeping them applied is a continuous practice (the invariants in [docs/design.md](docs/guides/user-guide/design.md#principles-across-the-set)), not roadmap work.
-
-[ki-doc]: docs/guides/user-guide/knowledge-islands.md
