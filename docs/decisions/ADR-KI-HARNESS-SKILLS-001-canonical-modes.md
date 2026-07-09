@@ -27,4 +27,4 @@ The SHAPE-5 criterion in the skills rubric enforces that every governance skill 
 ## References
 
 - [skills/ki-engineering/references/enforcement-framework.md](../../skills/ki-engineering/references/enforcement-framework.md) §5 — the modes in full.
-- [docs/design.md](../guides/user-guide/design.md) §Principles — "One governance-mode model (SHAPE-5)".
+- [docs/skill-design.md](../guides/user-guide/skill-design.md) §Principles — "One governance-mode model (SHAPE-5)".

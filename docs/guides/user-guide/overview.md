@@ -44,5 +44,5 @@ Several of the skills are built for **Knowledge Islands** work and take its shap
 
 - **[Installation](installation.md)** covers installing, using, and linking the skills, and the development toolchain.
 - **[Onboarding](onboarding.md)** walks through bringing a repository under governance: the bootstrap chain, the four modes, and the greenfield / legacy / remote-run flows.
-- **[Skills](skills.md)** describes the skills one by one and the shape they all share.
-- **[Design](design.md)** explains how they fit — where they deliberately do not overlap, the loops by which the standards improve, and the principles common to the set.
+- **[Skills](skills.md)** covers what a skill is, the six clusters, and the shape they all share; the **[skill catalogue](skill-catalogue.md)** then describes them one by one.
+- **[Skill design](skill-design.md)** explains how they fit — where they deliberately do not overlap, the loops by which the standards improve, and the principles common to the set.

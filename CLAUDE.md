@@ -17,7 +17,7 @@ The canonical home for the Knowledge Islands **Agent Skills** (per the [Agent Sk
 
 ## How skills relate — composition only
 
-Skills relate to one another by **composition**, never a base-coupled extension: a skill runs a sibling's checker/mode **in sequence** and adds its own delta (it never imports another, so each stays valid installed standalone), and **declares the edge** in its AUDIT mode. What a base or repo needs differently is **declared, not forked** — data in its `.ki-config.toml` table (read validate-down), prose in its `CLAUDE.md` — never a `<base>-*` skill that takes the shared modes. See the _Composition only_ principle in [docs/design.md](docs/guides/user-guide/design.md) and the `ki-skills` rubric (SHAPE-2).
+Skills relate to one another by **composition**, never a base-coupled extension: a skill runs a sibling's checker/mode **in sequence** and adds its own delta (it never imports another, so each stays valid installed standalone), and **declares the edge** in its AUDIT mode. What a base or repo needs differently is **declared, not forked** — data in its `.ki-config.toml` table (read validate-down), prose in its `CLAUDE.md` — never a `<base>-*` skill that takes the shared modes. See the _Composition only_ principle in [docs/skill-design.md](docs/guides/user-guide/skill-design.md) and the `ki-skills` rubric (SHAPE-2).
 
 ## Working here
 

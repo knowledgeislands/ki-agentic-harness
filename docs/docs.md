@@ -7,9 +7,10 @@ The map of `docs/`, and how the guide relates to the other sources it deliberate
 The **user guide** is the one-sitting account of what the harness is and how to use it. It is self-contained — it explains the harness on its own terms and does not send you into the decision records or the skill code to follow the narrative.
 
 - [Overview](guides/user-guide/overview.md) — what the harness is, what it does for its owner, how the parts fit.
-- [The skills](guides/user-guide/skills.md) — what a skill is, the six clusters, the catalogue, and the shared governance-skill shape.
+- [The skills](guides/user-guide/skills.md) — what a skill is, the six clusters, their interdependencies, and the shared governance-skill shape.
+- [The skill catalogue](guides/user-guide/skill-catalogue.md) — every skill, one by one, grouped by cluster.
 - [Onboarding](guides/user-guide/onboarding.md) — bringing a repo under governance: the bootstrap chain, the four modes, and the greenfield / legacy / remote-run flows.
-- [Design](guides/user-guide/design.md) — how the skills fit: where they don't overlap, the three knowledge loops, and the principles across the set.
+- [Skill design](guides/user-guide/skill-design.md) — how the skills fit: where they don't overlap, the three knowledge loops, and the principles across the set.
 - [Installation](guides/user-guide/installation.md) — installing, using, and linking the skills, and the development toolchain.
 
 ## How the guide relates to other sources

@@ -80,7 +80,7 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS
 
 **ROAD-1 [J]** `ROADMAP.md` contains only open work. No completed items, no ticked checkboxes, no "~~done~~" entries. Items are removed when done, not checked off. Source: standard §ROADMAP.md rule 1. _Severity: WARN — closed items obscure the open-work signal._
 
-**ROAD-2 [J]** `ROADMAP.md` does not list continuous practices (standing audits, monthly REFRESH runs, ongoing toolchain maintenance) as roadmap items. Source: standard §ROADMAP.md rule 2. _Severity: POLISH — continuous practices belong in `docs/design.md` or `CLAUDE.md`._
+**ROAD-2 [J]** `ROADMAP.md` does not list continuous practices (standing audits, monthly REFRESH runs, ongoing toolchain maintenance) as roadmap items. Source: standard §ROADMAP.md rule 2. _Severity: POLISH — continuous practices belong in `docs/skill-design.md` or `CLAUDE.md`._
 
 **ROAD-3 [J]** `ROADMAP.md` groups open work under the recommended `Next` / `Soon` / `Future` phasing — or the repo's forward view is short enough that a flat list reads more clearly. Source: standard §ROADMAP.md recommended structure. _Severity: POLISH — the phasing is recommended, not required; `ki-plans` references this vocabulary._
 
@@ -94,4 +94,4 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS
 
 ## COLL — Collision and boundary
 
-**COLL-1 [J]** The harness AUDIT mode names each sibling skill it composes on, and the harness `SKILL.md` description names the off-ramps for all four contents-governing skills (`ki-skills`, `ki-agents`, `ki-mcp`, `ki-engineering`, `ki-repo`). Source: `ki-skills` rubric COLL-2; `docs/design.md` _No silent collisions_. _Severity: WARN on the skill — check this when auditing the skill itself via `ki:skills:lint`._
+**COLL-1 [J]** The harness AUDIT mode names each sibling skill it composes on, and the harness `SKILL.md` description names the off-ramps for all four contents-governing skills (`ki-skills`, `ki-agents`, `ki-mcp`, `ki-engineering`, `ki-repo`). Source: `ki-skills` rubric COLL-2; `docs/skill-design.md` _No silent collisions_. _Severity: WARN on the skill — check this when auditing the skill itself via `ki:skills:lint`._

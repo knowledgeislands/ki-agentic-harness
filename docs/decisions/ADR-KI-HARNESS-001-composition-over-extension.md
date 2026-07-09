@@ -20,5 +20,5 @@ Skills relate to one another exclusively through **composition**: a skill runs a
 
 ## References
 
-- [docs/design.md](../guides/user-guide/design.md) §Principles — the Composition-only principle (SHAPE-2).
+- [docs/skill-design.md](../guides/user-guide/skill-design.md) §Principles — the Composition-only principle (SHAPE-2).
 - [skills/ki-engineering/references/enforcement-framework.md](../../skills/ki-engineering/references/enforcement-framework.md) §6 — "Standard, not base-coupled extension (SHAPE-2)".

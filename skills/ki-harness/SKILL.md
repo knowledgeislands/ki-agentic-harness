@@ -28,7 +28,7 @@ Modes: **AUDIT · CONFORM · INIT · REFRESH** (named, alphabetical). If invoked
 3. **Judge the prose the script can't.** Walk the [J]-tagged criteria in [the rubric](references/audit-rubric.md):
    - **CLAUDE.md coverage** — does it open with a what-the-harness-is paragraph covering all four parts? Is the skill map present (if skills exist) and does it reflect current reality? Are working conventions documented for each part? Are the key `bun run *` commands listed?
    - **Freshness** — do the skill count, shelf statuses, and command names in `CLAUDE.md` still match the actual repo state?
-   - **ROADMAP.md discipline** — does it show only open work? Are continuous practices absent (they belong in `docs/design.md`, not the roadmap)?
+   - **ROADMAP.md discipline** — does it show only open work? Are continuous practices absent (they belong in `docs/skill-design.md`, not the roadmap)?
 4. **Report** on the unified severity ladder. A missing required file or table is a FAIL; stale content that is structurally present is a WARN; minor freshness drift (wrong count, outdated command names) is a POLISH.
 
 ## Mode CONFORM — bring a harness into line
@@ -42,7 +42,7 @@ Modes: **AUDIT · CONFORM · INIT · REFRESH** (named, alphabetical). If invoked
 1. **Name the harness.** The repository name is the harness identity; agree on it before creating.
 2. **Scaffold the four parts.** Create `skills/`, `agents/`, `mcp/`, `evals/`, each with a `README.md` describing what it holds — marking any part an empty shelf if it starts unpopulated.
 3. **Write `CLAUDE.md`** using [the standard](references/harness-standard.md) §CLAUDE.md required sections as the template: what-the-harness-is paragraph, four-part directory table with current status, working conventions per part, key `bun run *` commands.
-4. **Add `ROADMAP.md`.** Start with the known open work; mark items open-only. Note: continuous practices are not roadmap items — they belong in `docs/design.md` or `CLAUDE.md`.
+4. **Add `ROADMAP.md`.** Start with the known open work; mark items open-only. Note: continuous practices are not roadmap items — they belong in `docs/skill-design.md` or `CLAUDE.md`.
 5. **Scaffold `package.json`** with the required script families: `ki:skills:link:project`, `ki:skills:lint` minimum (plus `ki:skills:link:global` to install the `ki-bootstrap` keystone); add the common engineering families (`ki:lint:check`, `ki:lint:types`, `ki:lint:md`, `ki:lint:md:check`) from `ki-engineering`'s standard.
 6. **Add `.ki-config.toml`** with at minimum `[ki-repo]`, `[ki-engineering]`, and `[ki-harness]`. Add `[ki-skills]` once `skills/` is populated.
 7. **Self-audit.** Run Mode AUDIT on the new harness before handing it off.

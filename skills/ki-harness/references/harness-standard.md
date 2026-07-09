@@ -99,7 +99,7 @@ Optional but encouraged:
 The harness `ROADMAP.md` holds the **open forward work** only. Two rules:
 
 1. **Open-only.** Items are removed when done, not ticked off. The file always shows what remains.
-2. **No continuous practices.** Ongoing disciplines (running `ki:skills:lint`, monthly REFRESH runs, re-auditing repos) are not roadmap items — they are invariants. They live in `docs/design.md` or a similar always-present reference, not here. A roadmap item that would never close (because it is a standing practice) is a sign it belongs elsewhere.
+2. **No continuous practices.** Ongoing disciplines (running `ki:skills:lint`, monthly REFRESH runs, re-auditing repos) are not roadmap items — they are invariants. They live in `docs/skill-design.md` or a similar always-present reference, not here. A roadmap item that would never close (because it is a standing practice) is a sign it belongs elsewhere.
 
 **Why:** a roadmap that accumulates checked-off items loses the "what's left" signal. A roadmap that lists ongoing practices obscures the "what's new" signal. Keeping the two separate preserves both.
 

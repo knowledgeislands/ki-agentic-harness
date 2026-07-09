@@ -1,6 +1,6 @@
-# How the skills fit together
+# Skill design
 
-The [catalogue](skills.md) says what each skill does. This file is the design behind the set: where the skills that could be confused draw their lines, the loops by which knowledge enters and improves, and the invariants every skill holds.
+The [catalogue](skill-catalogue.md) says what each skill does. This file is the design behind the set: where the skills that could be confused draw their lines, the loops by which knowledge enters and improves, and the invariants every skill holds.
 
 ## Where the skills do not overlap
 
