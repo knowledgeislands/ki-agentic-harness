@@ -1,12 +1,12 @@
 ---
-name: ki-memory
+name: ki-housekeeping
 implies: []
 description: >
-  Governs the Claude Code auto-memory system — the per-project, file-based memory Headroom writes to `~/.claude/projects/<slug>/memory/` plus its `MEMORY.md` index: the four memory types (user/feedback/project/reference), the frontmatter schema, index-file agreement, and the promote-then-delete reconciliation doctrine. Triggers on "audit memory", "memory hygiene", "check MEMORY.md", "auto-memory", "memory frontmatter". Not for a Knowledge Islands base's own memory cascade (`ki-kb-base`'s MEM-2, the root `Admin/MEMORY.md` index of Pillars) — that's KB content read at session start, not the Claude Code session-memory mechanism this skill governs. Not for measuring the token cost of the memory surface — that's `ki-tokenomics`.
+  Governs the Claude Code auto-memory system — the per-project, file-based memory Headroom writes to `~/.claude/projects/<slug>/memory/` plus its `MEMORY.md` index: the four memory types (user/feedback/project/reference), the frontmatter schema, index-file agreement, and the promote-then-delete reconciliation doctrine. Triggers on "audit memory", "memory hygiene", "check MEMORY.md", "auto-memory", "memory frontmatter". Not for a Knowledge Islands base's own memory cascade (`ki-kb`'s MEM-2, the root `Admin/MEMORY.md` index of Pillars) — that's KB content read at session start, not the Claude Code session-memory mechanism this skill governs. Not for measuring the token cost of the memory surface — that's `ki-tokenomics`.
 argument-hint: 'audit [repo-path] | conform [repo-path] | refresh'
 ---
 
-# ki-memory
+# ki-housekeeping
 
 **Standard:** the Claude Code auto-memory convention this harness has standardized on for persistent, cross-session recall — documented in [memory-format.md](references/memory-format.md); line-by-line criteria in [audit-rubric.md](references/audit-rubric.md); tracked sources in [sources.md](references/sources.md).
 
@@ -27,7 +27,7 @@ Carries **AUDIT · CONFORM · REFRESH**. If invoked without a mode, use `AskUser
 
 ## Notes
 
-- The memory directory lives **outside the repo tree** (`~/.claude/projects/<repo-absolute-path with "/" → "-">/memory/`), so a repo opts in explicitly via a `[ki-memory]` table in its own `.ki-config.toml` — the usual repo-external-artifact pattern, same as how a KB base is a separate tree from the code repo that governs it.
+- The memory directory lives **outside the repo tree** (`~/.claude/projects/<repo-absolute-path with "/" → "-">/memory/`), so a repo opts in explicitly via a `[ki-housekeeping]` table in its own `.ki-config.toml` — the usual repo-external-artifact pattern, same as how a KB base is a separate tree from the code repo that governs it.
 - A repo with no `memory/` directory yet (never used auto-memory) is a **SKIP**, not a FAIL.
 - Composes on `ki-authoring` for the Markdown formatting delta (line wrap, footnote markers) of the memory files themselves; the mechanical-checker contract and severity ladder are `ki-engineering`'s [checker-contract.md](../ki-engineering/references/checker-contract.md).
 - Does not assume any particular personal `~/.claude/CLAUDE.md` content — the type taxonomy and reconciliation doctrine this skill checks against are the auto-memory system's own universal instructions, not one user's private elaboration of them.

@@ -57,11 +57,11 @@ const CONCERNS = [
   { name: "authoring", checker: "bun skills/ki-authoring/scripts/audit-authoring.ts", scopeGated: false },
   { name: "engineering", checker: "bun skills/ki-engineering/scripts/audit-engineering.ts", scopeGated: false },
   { name: "repo", checker: "bun skills/ki-repo/scripts/audit-repo.ts", scopeGated: false },
-  { name: "kb", checker: "bun skills/ki-kb-base/scripts/audit-kb.ts", scopeGated: true },
+  { name: "kb", checker: "bun skills/ki-kb/scripts/audit-kb.ts", scopeGated: true },
   { name: "streams", checker: "bun skills/ki-kb-streams/scripts/audit-streams.ts", scopeGated: true },
   { name: "mcp", checker: "bun skills/ki-mcp/scripts/audit-mcp.ts", scopeGated: true },
-  { name: "websites-11ty", checker: "bun skills/ki-websites-11ty/scripts/audit-websites.ts", scopeGated: true },
-  { name: "hosting-cloudflare", checker: "bun skills/ki-hosting-cloudflare/scripts/audit-cloudflare-hosting.ts", scopeGated: true },
+  { name: "websites-11ty", checker: "bun skills/ki-website/scripts/audit-websites.ts", scopeGated: true },
+  { name: "hosting-cloudflare", checker: "bun skills/ki-website-cloudflare/scripts/audit-cloudflare-hosting.ts", scopeGated: true },
   { name: "agents", checker: "bun skills/ki-agents/scripts/lint-agents.ts", scopeGated: true },
   { name: "skills", checker: "bun run ki:skills:lint", scopeGated: false },
   { name: "tokenomics", checker: "bun skills/ki-tokenomics/scripts/audit-tokenomics.ts", scopeGated: false },
@@ -73,7 +73,7 @@ const CONCERNS = [
 const scopeActive = await agent(
   `Read the file \`${target}/.ki-config.toml\` and return a JSON array of concern names
 that appear as top-level TOML table headers matching the pattern [ki-<name>].
-For example if the file contains [ki-kb-base] return ["kb"].
+For example if the file contains [ki-kb] return ["kb"].
 If the file does not exist or is empty return [].
 Return ONLY the JSON array, nothing else.`,
   { label: "scope-guard:read-config", phase: "Per-concern audit" }

@@ -1,5 +1,5 @@
 /**
- * Eval scenarios for the `ki-memory` skill — Headroom's auto-memory files
+ * Eval scenarios for the `ki-housekeeping` skill — Headroom's auto-memory files
  * (MEMORY.md index + one-fact-per-file memory/*.md), which live outside the repo.
  *
  * Design note: a baseline invents a plausible in-repo memory store and generic
@@ -11,7 +11,7 @@ import type { Scenario } from '../harness.ts'
 
 export const scenarios: Scenario[] = [
   {
-    skill: 'ki-memory',
+    skill: 'ki-housekeeping',
     id: 'mem-path-slug',
     prompt:
       "Where does Claude Code's auto-memory for the repo at `/Users/kris/proj` actually get stored on disk? Give the exact path.",
@@ -25,7 +25,7 @@ export const scenarios: Scenario[] = [
       'House fact: memory lives OUTSIDE the repo tree at `~/.claude/projects/<slug>/memory/` with a `MEMORY.md` index, where `<slug>` is the repo\'s absolute path with every `/` replaced by `-` (so `/Users/kris/proj` → `-Users-kris-proj`). A correct answer gives that path and derives the slug correctly, not a `.claude/` folder inside the repo.'
   },
   {
-    skill: 'ki-memory',
+    skill: 'ki-housekeeping',
     id: 'mem-type-enum',
     prompt:
       'Save a memory that the user corrected us yesterday: they always want the test suite run before we commit. Write the memory file.',
@@ -39,7 +39,7 @@ export const scenarios: Scenario[] = [
       'House fact: memory frontmatter is `name`, `description`, and `metadata.type` ∈ `user | feedback | project | reference`; **feedback** and **project** bodies follow the fact with `**Why:**` and `**How to apply:**` lines, and project memories convert relative dates to absolute at save time. A correct answer files this as `metadata.type: feedback` with the Why / How-to-apply structure (and, if dated, an absolute date rather than "yesterday").'
   },
   {
-    skill: 'ki-memory',
+    skill: 'ki-housekeeping',
     id: 'mem-index-promote',
     prompt:
       "One of our memory files just records our import-path and file-layout conventions. Is that fine to keep? And what maintenance does MEMORY.md need?",

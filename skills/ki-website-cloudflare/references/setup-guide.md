@@ -24,7 +24,7 @@ Step-by-step procedure for wiring Cloudflare Workers + Static Assets hosting for
 | Cloudflare account with Workers access                  | dash.cloudflare.com                         |
 | Domain added to Cloudflare (nameservers pointing to CF) | Cloudflare DNS dashboard for the zone       |
 | `wrangler` CLI in `devDependencies`                     | `bun add -D wrangler`                       |
-| A built `dist/` produced by `ki-websites-11ty`          | run `bun run ki:site:build` once to confirm |
+| A built `dist/` produced by `ki-website`                | run `bun run ki:site:build` once to confirm |
 
 Log in to wrangler before doing anything else:
 
@@ -94,7 +94,7 @@ For a **flat** layout (no `site/` subfolder, `wrangler.jsonc` at repo root):
 }
 ```
 
-`ki:site:build` and `ki:site:dev` are owned by `ki-websites-11ty` — do not redefine them here.
+`ki:site:build` and `ki:site:dev` are owned by `ki-website` — do not redefine them here.
 
 ---
 
@@ -119,10 +119,10 @@ site/.wrangler/
 
 ## 5. Mark the repo with `.ki-config.toml`
 
-Add the `[ki-hosting-cloudflare]` table so the mechanical checker can find the repo:
+Add the `[ki-website-cloudflare]` table so the mechanical checker can find the repo:
 
 ```toml
-[ki-hosting-cloudflare]
+[ki-website-cloudflare]
 # site-root is the path (relative to the repo root) where wrangler.jsonc lives.
 # "site" for the subfolder layout; "." for flat.
 site-root = "site"
@@ -195,7 +195,7 @@ If the repo runs a GitHub Action that commits to `main` before deploy (e.g. a co
 Run the mechanical checker to confirm the hosting config is conformant:
 
 ```bash
-bun /path/to/skills/ki-hosting-cloudflare/scripts/audit-cloudflare-hosting.ts <repo-root>
+bun /path/to/skills/ki-website-cloudflare/scripts/audit-cloudflare-hosting.ts <repo-root>
 ```
 
 All items should be `PASS`. The two most common first-run findings:

@@ -1,12 +1,12 @@
 #!/usr/bin/env bun
 /**
- * Mechanical checker for ki-memory.
+ * Mechanical checker for ki-housekeeping.
  *
- * Usage: bun skills/ki-memory/scripts/audit-memory.ts [repo-path] [--json] [--report [dir]]
+ * Usage: bun skills/ki-housekeeping/scripts/audit-memory.ts [repo-path] [--json] [--report [dir]]
  *
  * Resolves the Claude Code auto-memory directory for a repo
  * (~/.claude/projects/<slug>/memory, slug = repo's absolute path with "/" -> "-")
- * and checks index/frontmatter agreement per skills/ki-memory/references/audit-rubric.md.
+ * and checks index/frontmatter agreement per skills/ki-housekeeping/references/audit-rubric.md.
  * See skills/ki-engineering/references/checker-contract.md for the severity ladder,
  * exit-code, and flag contract every checker in this repo follows.
  */
@@ -242,7 +242,7 @@ function report(findings: Finding[], jsonMode: boolean) {
 async function writeReport(dir: string, findings: Finding[]) {
   const outDir = join(resolve(dir), '.ki-meta', 'audits')
   await mkdir(outDir, { recursive: true })
-  await writeFile(join(outDir, 'ki-memory.json'), JSON.stringify(findings, null, 2))
+  await writeFile(join(outDir, 'ki-housekeeping.json'), JSON.stringify(findings, null, 2))
 }
 
 main().catch((err) => {

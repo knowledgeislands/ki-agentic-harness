@@ -13,7 +13,7 @@ The skills are organised into six clusters, and their relationships are declared
 - **Clusters.** (1) **Keystone** — `ki-bootstrap`, `ki-repo`. (2) **Structure-independent governance**, always linked — `ki-authoring`, `ki-engineering`. (3) **Repo-structure**, mutually exclusive, exactly one per repo — `ki-harness`, `ki-kb`, `ki-website`, `ki-mcp`. (4) **General governance** — `ki-agents`, `ki-skills`, `ki-decision-records`, `ki-feature-definitions`, `ki-handoffs`, `ki-plans`. (5) **Implied families** — the KB family under `ki-kb`, the website family under `ki-website`. (6) **Environment**, governing the user's machine rather than a repo — `ki-binding`, `ki-housekeeping`, `ki-tokenomics`.
 - **Implication graph.** Each SKILL.md declares an `implies:` frontmatter list — the single source from which `scripts/skill-graph.ts` generates both the bootstrap chain and the dependency tree (`ki:skills:graph`), validated in `ki:verify`.
 - **Mutual exclusion.** A repo carries exactly one repo-structure skill; `ki-repo`'s coverage cascade enforces it mechanically.
-- **Canonical names.** The cluster names above are the canonical skill names. Where a directory's current name differs (`ki-kb-base`, `ki-websites-11ty`, `ki-hosting-cloudflare`, `ki-memory`), the directory is renamed to its cluster name; `ki-feature-definitions` is introduced for feature specs and `ki-housekeeping` broadens the former memory skill.
+- **Canonical names.** Each skill's directory name is its cluster name. `ki-housekeeping` broadens the former memory skill into machine-state hygiene generally, and `ki-feature-definitions` is the general-governance skill for feature specs.
 
 ## Consequences
 

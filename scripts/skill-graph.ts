@@ -124,13 +124,13 @@ function check(): number {
 const CLUSTER_ORDER = [
   'ki-bootstrap',
   'ki-harness',
-  'ki-kb-base',
-  'ki-websites-11ty',
+  'ki-kb',
+  'ki-website',
   'ki-mcp',
   'ki-handoffs',
   'ki-plans',
   'ki-binding',
-  'ki-memory',
+  'ki-housekeeping',
   'ki-tokenomics'
 ]
 

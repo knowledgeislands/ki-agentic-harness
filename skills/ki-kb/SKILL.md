@@ -1,5 +1,5 @@
 ---
-name: ki-kb-base
+name: ki-kb
 implies: [ki-kb-activities, ki-kb-live-artifacts, ki-kb-streams]
 description: >
   Interact with a Knowledge Islands knowledge base: save AI outputs as notes, update existing notes, query the base, distil a conversation into notes, or write a session digest — and audit a base against the structure model, bring it into line, or scaffold a new one. Targets the Knowledge Islands structure (Calendar / Pillars / Resources / Streams, plus inbound `+` and outbound `-`), so it assumes the zone model rather than asking for it; only a few store-level bindings come from the host project. Triggers: "save to my notes", "save to the knowledge base", "add to the KB", "what do my notes say about", "search my notes", "update the note on", "capture this", "write a session digest", "audit my knowledge base", "is my base structured right", "set up a new knowledge base". For the `Streams` zone (proposals, the Enactment Process) use the `ki-kb-streams` skill it delegates to; for general Markdown or TOML house style (not note content) use `ki-authoring`.
@@ -76,7 +76,7 @@ Root index `Admin/MEMORY.md` lists the active Pillars. Where the base is Pillar-
 
 ## Note templates
 
-The skill ships zone-scoped starter templates in `references/templates/<zone>/`. INIT copies the relevant stubs when scaffolding a new base. QUERY can list available templates when the user asks (`?templates`). A base may override or extend these by declaring a `[ki-kb-base.templates]` table in its `.ki-config.toml` — keys are zone names, values are paths relative to the base.
+The skill ships zone-scoped starter templates in `references/templates/<zone>/`. INIT copies the relevant stubs when scaffolding a new base. QUERY can list available templates when the user asks (`?templates`). A base may override or extend these by declaring a `[ki-kb.templates]` table in its `.ki-config.toml` — keys are zone names, values are paths relative to the base.
 
 | Zone         | Template                        | Use for                                     |
 | ------------ | ------------------------------- | ------------------------------------------- |
@@ -89,15 +89,15 @@ Templates are stubs — headings, frontmatter keys, and inline `<!-- prompts -->
 
 ## Project bindings
 
-Almost everything is fixed by the structure above. Only these come from the host project - take the narrative bindings from the auto-loaded `CLAUDE.md`, then the root memory index. **Declarative overrides** (the zone alias and the lists below) are read from the base's `.ki-config.toml` `[ki-kb-base]` table instead — see the `ki-repo` skill for the shared-file contract; validate your own table (warn on an unrecognised key) and never read another skill's. A base never ships a `<base>-kb` skill: what it needs differently is declared here (data) or in its `CLAUDE.md` (prose), never forked into a coupled skill.
+Almost everything is fixed by the structure above. Only these come from the host project - take the narrative bindings from the auto-loaded `CLAUDE.md`, then the root memory index. **Declarative overrides** (the zone alias and the lists below) are read from the base's `.ki-config.toml` `[ki-kb]` table instead — see the `ki-repo` skill for the shared-file contract; validate your own table (warn on an unrecognised key) and never read another skill's. A base never ships a `<base>-kb` skill: what it needs differently is declared here (data) or in its `CLAUDE.md` (prose), never forked into a coupled skill.
 
 - **Notes store** — canonical alias and location of the notes store. _Default:_ the connected base; refer to it as "the base".
 - **Sources store** — whether a paired sources store exists, and how note extracts mirror its paths. _Default:_ none.
 - **Scope usage** — whether the base is Pillar-scoped (declare an active Pillar) or single-Pillar / flat. _Default:_ Pillar-scoped.
-- **Zone names** — the canonical folder per zone, overridable per base. A `[ki-kb-base.zones]` sub-table maps any canonical zone or staging area to this base's local folder name (e.g. `Pillars = "<local folder>"`); resolve every zone reference through it. Useful for a base mid-migration (drop the entry once the folder is renamed) or one that simply names a zone differently. _Default:_ the canonical names (`Calendar` / `Pillars` / `Resources` / `Streams` / `Admin`, plus the `+` / `-` staging areas).
-- **Required frontmatter** — the keys every note carrying frontmatter must include. Declare them with `required_frontmatter = ["tags", "status", "author"]` under `[ki-kb-base]` to have the checker enforce their presence mechanically (extra keys stay free; keys are always `snake_case`). _Default:_ none declared — required frontmatter stays a judgment call resolved from the host `CLAUDE.md`.
+- **Zone names** — the canonical folder per zone, overridable per base. A `[ki-kb.zones]` sub-table maps any canonical zone or staging area to this base's local folder name (e.g. `Pillars = "<local folder>"`); resolve every zone reference through it. Useful for a base mid-migration (drop the entry once the folder is renamed) or one that simply names a zone differently. _Default:_ the canonical names (`Calendar` / `Pillars` / `Resources` / `Streams` / `Admin`, plus the `+` / `-` staging areas).
+- **Required frontmatter** — the keys every note carrying frontmatter must include. Declare them with `required_frontmatter = ["tags", "status", "author"]` under `[ki-kb]` to have the checker enforce their presence mechanically (extra keys stay free; keys are always `snake_case`). _Default:_ none declared — required frontmatter stays a judgment call resolved from the host `CLAUDE.md`.
 - **Writing standards** — language variant, citation format, structural norms. _Default:_ British English; cite source paths; concise prose.
-- **Domain pre-flight** — any extra reads before drafting (profiles, domain context). Declare them as `preflight = ["<path-or-glob>", …]` under `[ki-kb-base]` — a list of note paths/globs to read before drafting, which the checker validates _down_. _Default:_ none beyond the memory cascade.
+- **Domain pre-flight** — any extra reads before drafting (profiles, domain context). Declare them as `preflight = ["<path-or-glob>", …]` under `[ki-kb]` — a list of note paths/globs to read before drafting, which the checker validates _down_. _Default:_ none beyond the memory cascade.
 
 ## Step 1 - Load context
 
@@ -127,7 +127,7 @@ The memory cascade and the canonical-zone Enactment gate are part of the shared 
 ## Notes
 
 - This skill assumes the Knowledge Islands structure. If a base does not follow it, or a binding cannot be resolved and no default fits, ask the user rather than guess.
-- A base supplies its specifics by **declaration**, not a coupled skill: structured data (zone aliases, required frontmatter, pre-flight reads) in its `.ki-config.toml` `[ki-kb-base]` table, narrative bindings (store alias, scope, writing standards) in its `CLAUDE.md`. There is no `<base>-kb` extension skill; relationships to sibling skills are composition (e.g. the `Streams` zone delegates to `ki-kb-streams`).
+- A base supplies its specifics by **declaration**, not a coupled skill: structured data (zone aliases, required frontmatter, pre-flight reads) in its `.ki-config.toml` `[ki-kb]` table, narrative bindings (store alias, scope, writing standards) in its `CLAUDE.md`. There is no `<base>-kb` extension skill; relationships to sibling skills are composition (e.g. the `Streams` zone delegates to `ki-kb-streams`).
 
 Reference detail: [Knowledge Islands KB Reference](<references/Knowledge Islands KB Reference.md>). Checkable criteria: [the audit rubric](references/audit-rubric.md), enforced mechanically by [`scripts/audit-kb.ts`](scripts/audit-kb.ts).
 

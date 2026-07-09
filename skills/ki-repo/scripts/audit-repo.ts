@@ -261,20 +261,20 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
   { skill: 'engineering', table: 'ki-engineering', artifact: 'package.json', detect: (s) => s.root.has('package.json') },
   {
     skill: 'kb',
-    table: 'ki-kb-base',
+    table: 'ki-kb',
     artifact: 'KB zones (Pillars/ + Resources/)',
     detect: (s) => s.root.has('Pillars') && s.root.has('Resources')
   },
   { skill: 'streams', table: 'ki-kb-streams', artifact: 'Streams/ zone', detect: (s) => s.root.has('Streams') },
   {
     skill: '11ty-websites',
-    table: 'ki-websites-11ty',
+    table: 'ki-website',
     artifact: 'eleventy.config.*',
     detect: (s) => ELEVENTY.some((f) => s.root.has(f)) || [...s.tree].some((p) => ELEVENTY.some((f) => p.endsWith(`/${f}`)))
   },
   {
     skill: 'cloudflare-hosting',
-    table: 'ki-hosting-cloudflare',
+    table: 'ki-website-cloudflare',
     artifact: 'wrangler config',
     detect: (s) => WRANGLER.some((f) => s.root.has(f)) || [...s.tree].some((p) => WRANGLER.some((f) => p.endsWith(`/${f}`)))
   },

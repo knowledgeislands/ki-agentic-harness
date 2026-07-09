@@ -3,13 +3,13 @@
  * Mechanical auditor for a Knowledge Islands 11ty website repo.
  *
  *   bun scripts/audit-websites.ts <repo-path>        # or: node --experimental-strip-types
- *   bun scripts/audit-websites.ts --init             # print the default [ki-websites-11ty] block
+ *   bun scripts/audit-websites.ts --init             # print the default [ki-website] block
  *
- * Checks the SITE-BUILD DELTA of the standard the `ki-websites-11ty` skill
+ * Checks the SITE-BUILD DELTA of the standard the `ki-website` skill
  * codifies — the Eleventy/Nunjucks/Tailwind site that compiles to a portable dist/. It does
  * NOT check the common toolchain (Bun, the lint and deps script families, tsconfig/biome, the
  * type-check) — that is the `ki-engineering` layer; run audit-engineering.ts first. Nor does it
- * check serving the dist/ — that is `ki-hosting-cloudflare`; run
+ * check serving the dist/ — that is `ki-website-cloudflare`; run
  * audit-cloudflare-hosting.ts too if the site is deployed. The judgment items (tokens drive
  * the palette, _data is the single source of structure, SEO wired into base.njk) need a read
  * of the code — see references/audit-rubric.md.
@@ -28,10 +28,10 @@ const findings: Finding[] = []
 const add = (level: Level, area: string, msg: string) => findings.push({ level, area, msg })
 
 // `.ki-config.toml` is a shared per-repo file; this skill owns the
-// [ki-websites-11ty] table. The table header is the opt-in marker and
+// [ki-website] table. The table header is the opt-in marker and
 // the whole of it — there are no per-repo keys today, so `--init` emits a bare table
 // (validate-down warns on any key found under it).
-const KI_SECTION = 'ki-websites-11ty'
+const KI_SECTION = 'ki-website'
 const KI_DEFAULT = `# ${KI_SECTION} — opt-in marker: presence of this table opts the repo into the
 # Eleventy + Tailwind site-build standard. It takes no per-repo keys today.
 [${KI_SECTION}]

@@ -8,21 +8,21 @@ This file is the catalogue: what each skill does, and the shared shape they all 
 
 The twenty sit in **two layers** plus a bridge and a keystone: two cross-cutting **foundations** that every other skill builds on, the **domain** skills that each govern one kind of artifact, `ki-harness` — the **container** skill that governs the bundle holding them all — and `ki-bootstrap`, the **install keystone** that wires a repo's project-local skills into place.
 
-### [`ki-kb-base`](../skills/ki-kb-base/SKILL.md) — Knowledge Islands
+### [`ki-kb`](../skills/ki-kb/SKILL.md) — Knowledge Islands
 
-Interacts with a Knowledge Islands knowledge base over the standard zone model: the note-ops **DIGEST / EXTRACT / QUERY / SAVE / UPDATE**, plus **AUDIT / CONFORM / INIT** to check a base against the structure model, bring it into line, or scaffold a new one. Only store-level bindings come from the host base. Ships a mechanical checker (`audit-kb.ts`): zone-layout conformance plus validate-down of its `[ki-kb-base]` config table. Delegates the **`Streams` zone** to `ki-kb-streams`.
+Interacts with a Knowledge Islands knowledge base over the standard zone model: the note-ops **DIGEST / EXTRACT / QUERY / SAVE / UPDATE**, plus **AUDIT / CONFORM / INIT** to check a base against the structure model, bring it into line, or scaffold a new one. Only store-level bindings come from the host base. Ships a mechanical checker (`audit-kb.ts`): zone-layout conformance plus validate-down of its `[ki-kb]` config table. Delegates the **`Streams` zone** to `ki-kb-streams`.
 
 ### [`ki-kb-streams`](../skills/ki-kb-streams/SKILL.md) — Knowledge Islands
 
-Owns the **`Streams` zone** — the base's working copy ("plan mode") — and the **Enactment Process** that governs it: the lifecycle modes **PROPOSE / ITERATE / READY / ROLLOUT / REVIEW / SETTLE / REJECT**, plus **AUDIT / CONFORM** of a base's Streams structure (Focus lifecycle, the `Proposal` suffix, leaf/parent layout, proposal frontmatter). `ki-kb-base` delegates the zone here, so the heavier process loads only when working in `Streams`. Ships a mechanical checker (`audit-streams.ts`).
+Owns the **`Streams` zone** — the base's working copy ("plan mode") — and the **Enactment Process** that governs it: the lifecycle modes **PROPOSE / ITERATE / READY / ROLLOUT / REVIEW / SETTLE / REJECT**, plus **AUDIT / CONFORM** of a base's Streams structure (Focus lifecycle, the `Proposal` suffix, leaf/parent layout, proposal frontmatter). `ki-kb` delegates the zone here, so the heavier process loads only when working in `Streams`. Ships a mechanical checker (`audit-streams.ts`).
 
 ### [`ki-decision-records`](../skills/ki-decision-records/SKILL.md) — Process
 
-Governs **Decision Records** in any Knowledge Islands repo, code or KB — the typed ID prefixes (`GDR` / `ADR` / `KDR` / …), the five-section format, the status lifecycle, and placement (`docs/decisions/` in a code repo, `Admin/Governance/Decisions/` in a KB). Ships a mechanical checker (`audit-drs.ts`). Defers to `ki-kb-base` for the island structure and the KI-wide frontmatter standard, and to `ki-kb-streams` for the Enactment Process by which a change is ratified.
+Governs **Decision Records** in any Knowledge Islands repo, code or KB — the typed ID prefixes (`GDR` / `ADR` / `KDR` / …), the five-section format, the status lifecycle, and placement (`docs/decisions/` in a code repo, `Admin/Governance/Decisions/` in a KB). Ships a mechanical checker (`audit-drs.ts`). Defers to `ki-kb` for the island structure and the KI-wide frontmatter standard, and to `ki-kb-streams` for the Enactment Process by which a change is ratified.
 
-### [`ki-memory`](../skills/ki-memory/SKILL.md) — Process
+### [`ki-housekeeping`](../skills/ki-housekeeping/SKILL.md) — Process
 
-Governs the Claude Code auto-memory system — the per-project `memory/*.md` files and `MEMORY.md` index that Headroom writes outside the repo tree at `~/.claude/projects/<slug>/memory/`. Owns the index/file-agreement contract, the frontmatter schema (`name` / `description` / `metadata.type` ∈ user, feedback, project, reference), and the promote-then-delete reconciliation doctrine. Ships a mechanical checker (`audit-memory.ts`) that resolves a repo's memory directory and checks it; a repo with none yet is a SKIP, not a FAIL. Distinct from `ki-kb-base`'s **MEM-2** memory cascade (a KB's own root `Admin/MEMORY.md`); off-ramps token-cost measurement to `ki-tokenomics`.
+Governs the Claude Code auto-memory system — the per-project `memory/*.md` files and `MEMORY.md` index that Headroom writes outside the repo tree at `~/.claude/projects/<slug>/memory/`. Owns the index/file-agreement contract, the frontmatter schema (`name` / `description` / `metadata.type` ∈ user, feedback, project, reference), and the promote-then-delete reconciliation doctrine. Ships a mechanical checker (`audit-memory.ts`) that resolves a repo's memory directory and checks it; a repo with none yet is a SKIP, not a FAIL. Distinct from `ki-kb`'s **MEM-2** memory cascade (a KB's own root `Admin/MEMORY.md`); off-ramps token-cost measurement to `ki-tokenomics`.
 
 ### [`ki-plans`](../skills/ki-plans/SKILL.md) — Process
 
@@ -34,11 +34,11 @@ Governs the **handoff doctrine** — plan work once at the top reasoning tier, t
 
 ### [`ki-kb-activities`](../skills/ki-kb-activities/SKILL.md) — Process
 
-Governs **Activity notes** — the operational record of work adopted in a base, kept under `Admin/Operations/Activities/` (naming, frontmatter, realization type, and the index). Checks that an activity declared as a slash command has a backing skill, and that scheduled ones are flagged for the external scheduler. Ships a mechanical checker (`audit-activities.ts`). Composes on `ki-kb-base` for the zone structure.
+Governs **Activity notes** — the operational record of work adopted in a base, kept under `Admin/Operations/Activities/` (naming, frontmatter, realization type, and the index). Checks that an activity declared as a slash command has a backing skill, and that scheduled ones are flagged for the external scheduler. Ships a mechanical checker (`audit-activities.ts`). Composes on `ki-kb` for the zone structure.
 
 ### [`ki-kb-live-artifacts`](../skills/ki-kb-live-artifacts/SKILL.md) — Process
 
-Governs **Live Artifacts** — operational documents that track island state (dashboards, boards, queues, trackers) as a `.md` source paired with a rendered `.html`, kept under `Admin/Operations/Live Artifacts/` with an index, plus the sync rules between the two halves. Ships a mechanical checker (`audit-live-artifacts.ts`). Composes on `ki-kb-base` for the zone structure.
+Governs **Live Artifacts** — operational documents that track island state (dashboards, boards, queues, trackers) as a `.md` source paired with a rendered `.html`, kept under `Admin/Operations/Live Artifacts/` with an index, plus the sync rules between the two halves. Ships a mechanical checker (`audit-live-artifacts.ts`). Composes on `ki-kb` for the zone structure.
 
 ### [`ki-mcp`](../skills/ki-mcp/SKILL.md) — Process
 
@@ -48,13 +48,13 @@ Audits, conforms, and scaffolds workspace MCP servers against the "workspace MCP
 
 Governs the **cross-surface binding** — enabling the KI MCP servers, skills, and agents consistently across the surfaces that run them (Claude Code, Desktop, mcporter, Cowork; claude.ai by convention) from the single chezmoi `mcps.yaml` source, whose per-server `clients:` field is the targeting lever. Ships a mechanical checker (`audit-binding.ts`) that verifies each rendered surface agrees with the source and composes `ki-bootstrap` for the project-local skill half. The write path for the file-editable surfaces is chezmoi (never a hand-written per-surface config, which drifts); Cowork is gated on an external-edit verification before its `enabledPlugins` are wired. Implements the `ki-mcp` design record [cross-surface-enablement.md](../skills/ki-mcp/references/cross-surface-enablement.md).
 
-### [`ki-websites-11ty`](../skills/ki-websites-11ty/SKILL.md) — Process
+### [`ki-website`](../skills/ki-website/SKILL.md) — Process
 
-Audits, conforms, and scaffolds static websites against the house build standard — **Eleventy 3 + Nunjucks + Markdown, TypeScript run natively on Bun, Tailwind 4 config-less with design tokens** — that compile to a portable `dist/`. Owns the **site-build delta** and **composes on** `ki-engineering` (toolchain) and `ki-authoring` (Markdown), handing the built `dist/` to `ki-hosting-cloudflare`. Ships a mechanical checker (`audit-websites.ts`).
+Audits, conforms, and scaffolds static websites against the house build standard — **Eleventy 3 + Nunjucks + Markdown, TypeScript run natively on Bun, Tailwind 4 config-less with design tokens** — that compile to a portable `dist/`. Owns the **site-build delta** and **composes on** `ki-engineering` (toolchain) and `ki-authoring` (Markdown), handing the built `dist/` to `ki-website-cloudflare`. Ships a mechanical checker (`audit-websites.ts`).
 
-### [`ki-hosting-cloudflare`](../skills/ki-hosting-cloudflare/SKILL.md) — Process
+### [`ki-website-cloudflare`](../skills/ki-website-cloudflare/SKILL.md) — Process
 
-Audits, conforms, and scaffolds the house convention for serving a built site on **Cloudflare Workers + Static Assets** (not Pages): one `wrangler.jsonc` pointing `assets.directory` at the site's `dist/`, custom-domain routes, observability, and the `ki:site:deploy` script family. Owns the **hosting delta** for the site Worker; the `dist/` is the seam from `ki-websites-11ty`. Companion Workers (bots, ingress) route to the generic `cloudflare` / `wrangler` skills. Ships a mechanical checker (`audit-cloudflare-hosting.ts`).
+Audits, conforms, and scaffolds the house convention for serving a built site on **Cloudflare Workers + Static Assets** (not Pages): one `wrangler.jsonc` pointing `assets.directory` at the site's `dist/`, custom-domain routes, observability, and the `ki:site:deploy` script family. Owns the **hosting delta** for the site Worker; the `dist/` is the seam from `ki-website`. Companion Workers (bots, ingress) route to the generic `cloudflare` / `wrangler` skills. Ships a mechanical checker (`audit-cloudflare-hosting.ts`).
 
 ### [`ki-skills`](../skills/ki-skills/SKILL.md) — Process
 
@@ -78,7 +78,7 @@ The shared **engineering toolchain** every TS/Bun repo builds on — package.jso
 
 ### [`ki-tokenomics`](../skills/ki-tokenomics/SKILL.md) — Process
 
-Audits, conforms, and tunes the **tokenomics** of a Claude Code environment — the standing context surface paid on every turn, as **composed** across the user-wide `~/.claude` and project-local layers and any base, plus the runtime levers (caching, model tier, compaction, sub-agent fan-out, tool-result verbosity). Attributes cost per layer, holds it to overridable budgets (a `[ki-tokenomics]` table, read validate-down), and checks context-compression tooling — **Headroom**, an extensible registry — is set up optimally. **Composes** on the artifact skills whose surfaces it measures (`ki-mcp` for the tool surface, `ki-skills` for the description surface, `ki-kb-base` for a base's loaded surface) and defers the volatile reference numbers to the `claude-api` skill. Ships a mechanical checker (`audit-tokenomics.ts`) that reads both config layers by design.
+Audits, conforms, and tunes the **tokenomics** of a Claude Code environment — the standing context surface paid on every turn, as **composed** across the user-wide `~/.claude` and project-local layers and any base, plus the runtime levers (caching, model tier, compaction, sub-agent fan-out, tool-result verbosity). Attributes cost per layer, holds it to overridable budgets (a `[ki-tokenomics]` table, read validate-down), and checks context-compression tooling — **Headroom**, an extensible registry — is set up optimally. **Composes** on the artifact skills whose surfaces it measures (`ki-mcp` for the tool surface, `ki-skills` for the description surface, `ki-kb` for a base's loaded surface) and defers the volatile reference numbers to the `claude-api` skill. Ships a mechanical checker (`audit-tokenomics.ts`) that reads both config layers by design.
 
 ### [`ki-harness`](../skills/ki-harness/SKILL.md) — Process
 

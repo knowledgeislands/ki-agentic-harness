@@ -36,8 +36,8 @@ The slugs use slash-hierarchical notation: `<zone>/<arm>/<leaf>`. The zone prefi
 
 | Type                          | Path context                                              | Defined by            |
 | ----------------------------- | --------------------------------------------------------- | --------------------- |
-| `admin/zone`                  | `Admin/Admin.md` (zone root)                              | `ki-kb-base`          |
-| `admin/index`                 | Area index notes (`Admin/Governance/Governance.md`, etc.) | `ki-kb-base`          |
+| `admin/zone`                  | `Admin/Admin.md` (zone root)                              | `ki-kb`               |
+| `admin/index`                 | Area index notes (`Admin/Governance/Governance.md`, etc.) | `ki-kb`               |
 | `admin/governance/decision`   | `Admin/Governance/Decisions/*.md`                         | `ki-decision-records` |
 | `admin/governance/convention` | `Admin/Governance/Conventions/**/*`                       | TBD                   |
 | `admin/governance/policy`     | `Admin/Governance/Policies/**/*`                          | TBD                   |
@@ -52,35 +52,35 @@ The slugs use slash-hierarchical notation: `<zone>/<arm>/<leaf>`. The zone prefi
 
 These types are only valid under `-/`. Files carrying them elsewhere are a ZONE-5 FAIL (see audit rubric).
 
-| Type             | Path context       | Lifecycle                                                                | Defined by   |
-| ---------------- | ------------------ | ------------------------------------------------------------------------ | ------------ |
-| `session-digest` | `-/_DIGESTS/*.md`  | Ephemeral. Delete once content is extracted into Pillars/Streams/handoff | `ki-kb-base` |
-| `handoff`        | `-/_HANDOFFS/*.md` | Ephemeral. Delete once recipient has routed it through their `+/`        | `ki-kb-base` |
+| Type             | Path context       | Lifecycle                                                                | Defined by |
+| ---------------- | ------------------ | ------------------------------------------------------------------------ | ---------- |
+| `session-digest` | `-/_DIGESTS/*.md`  | Ephemeral. Delete once content is extracted into Pillars/Streams/handoff | `ki-kb`    |
+| `handoff`        | `-/_HANDOFFS/*.md` | Ephemeral. Delete once recipient has routed it through their `+/`        | `ki-kb`    |
 
 ### Calendar branch (`calendar/`)
 
-Time-stamped records; the kind is the temporal grain. Governed by `ki-kb-base`.
+Time-stamped records; the kind is the temporal grain. Governed by `ki-kb`.
 
-| Type               | Path context                                          | Defined by   |
-| ------------------ | ----------------------------------------------------- | ------------ |
-| `calendar/index`   | Year / month index notes (`Calendar/<YYYY>/…`)        | `ki-kb-base` |
-| `calendar/daily`   | A day note (`Calendar/<YYYY>/<month>/<YYYY-MM-DD> …`) | `ki-kb-base` |
-| `calendar/weekly`  | A weekly review                                       | `ki-kb-base` |
-| `calendar/monthly` | A monthly summary                                     | `ki-kb-base` |
-| `calendar/meeting` | A meeting note                                        | `ki-kb-base` |
-| `calendar/session` | An AI-assisted work-session note                      | `ki-kb-base` |
+| Type               | Path context                                          | Defined by |
+| ------------------ | ----------------------------------------------------- | ---------- |
+| `calendar/index`   | Year / month index notes (`Calendar/<YYYY>/…`)        | `ki-kb`    |
+| `calendar/daily`   | A day note (`Calendar/<YYYY>/<month>/<YYYY-MM-DD> …`) | `ki-kb`    |
+| `calendar/weekly`  | A weekly review                                       | `ki-kb`    |
+| `calendar/monthly` | A monthly summary                                     | `ki-kb`    |
+| `calendar/meeting` | A meeting note                                        | `ki-kb`    |
+| `calendar/session` | An AI-assisted work-session note                      | `ki-kb`    |
 
 ### Resources branch (`resources/`)
 
-External reference material. The kinds below are the cross-base **core**; a base may declare finer entity kinds (`resources/book`, `resources/location`, …) under its own config. Governed by `ki-kb-base`.
+External reference material. The kinds below are the cross-base **core**; a base may declare finer entity kinds (`resources/book`, `resources/location`, …) under its own config. Governed by `ki-kb`.
 
-| Type                | Path context                          | Defined by   |
-| ------------------- | ------------------------------------- | ------------ |
-| `resources/index`   | Area index notes (`Resources/…/….md`) | `ki-kb-base` |
-| `resources/note`    | A general reference note              | `ki-kb-base` |
-| `resources/person`  | A person reference                    | `ki-kb-base` |
-| `resources/org`     | An organisation reference             | `ki-kb-base` |
-| `resources/concept` | A concept reference                   | `ki-kb-base` |
+| Type                | Path context                          | Defined by |
+| ------------------- | ------------------------------------- | ---------- |
+| `resources/index`   | Area index notes (`Resources/…/….md`) | `ki-kb`    |
+| `resources/note`    | A general reference note              | `ki-kb`    |
+| `resources/person`  | A person reference                    | `ki-kb`    |
+| `resources/org`     | An organisation reference             | `ki-kb`    |
+| `resources/concept` | A concept reference                   | `ki-kb`    |
 
 ### Streams branch (`streams/`)
 
@@ -104,7 +104,7 @@ Some `type` values require additional fields, defined by the skill that owns tha
 | `type` | Additional required field | Valid values | Defined by |
 | --- | --- | --- | --- |
 | `admin/governance/decision` | `decision_type` | nine decision domains‡ | `ki-decision-records` |
-| `calendar/daily` | `day_type` | work-day / weekend / bank-holiday / annual-leave (open enumeration) | `ki-kb-base` |
+| `calendar/daily` | `day_type` | work-day / weekend / bank-holiday / annual-leave (open enumeration) | `ki-kb` |
 | `streams/proposal` | `status` | the Streams proposal lifecycle (values owned by `ki-kb-streams`) | `ki-kb-streams` |
 | `streams/proposal` | `priority` | `urgent` / `high` / `medium` / `low` | `ki-kb-streams` |
 | `streams/proposal` | `dependencies` | list of blocking stream names (`[]` when none) | `ki-kb-streams` |

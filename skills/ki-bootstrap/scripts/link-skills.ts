@@ -65,7 +65,7 @@ function discoverSkills(): string[] {
     .sort()
 }
 
-// A skill's checker script isn't a fixed function of its name (ki-kb-base -> audit-kb.ts,
+// A skill's checker script isn't a fixed function of its name (ki-kb -> audit-kb.ts,
 // ki-decision-records -> audit-drs.ts) — discover it by scanning scripts/ instead of templating.
 interface CheckerScript {
   verb: 'audit' | 'lint'

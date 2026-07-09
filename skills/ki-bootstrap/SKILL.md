@@ -31,7 +31,7 @@ The skill linker/checker is [`scripts/link-skills.ts`](scripts/link-skills.ts); 
 
 1. Run **AUDIT** first.
 2. **Link** the project-local set: `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-skills.ts" [path]` (the harness uses `--all`) and `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-agents.ts" [path]`. Each creates/prunes relative symlinks under `.claude/skills/`/`.claude/agents/` to match its expected set. Preview either with `--dry-run`.
-3. **Make it reproducible:** ensure `package.json` has `"ki:skills:link:project"` and (if `[ki-agents]` is declared) `"ki:agents:link:project"` invoking the keystone linkers, and `.gitignore` carries `.claude/skills/` and `.claude/agents/`. (The keystone must be globally installed — `bun scripts/sync-skills.ts link --only ki-bootstrap` from the harness.) The **Link** step above also scaffolds a `ki:<suffix>:<verb>` script per linked skill that carries a discoverable checker or conform script — e.g. `ki:kb-base:audit`, `ki:repo:conform` — so no separate action is needed for those.
+3. **Make it reproducible:** ensure `package.json` has `"ki:skills:link:project"` and (if `[ki-agents]` is declared) `"ki:agents:link:project"` invoking the keystone linkers, and `.gitignore` carries `.claude/skills/` and `.claude/agents/`. (The keystone must be globally installed — `bun scripts/sync-skills.ts link --only ki-bootstrap` from the harness.) The **Link** step above also scaffolds a `ki:<suffix>:<verb>` script per linked skill that carries a discoverable checker or conform script — e.g. `ki:kb:audit`, `ki:repo:conform` — so no separate action is needed for those.
 4. **Re-run AUDIT** until clean.
 
 ## Mode REFRESH — re-anchor

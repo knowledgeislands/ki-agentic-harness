@@ -1,6 +1,6 @@
 # REFRESH
 
-_On-demand procedure for `ki-memory`'s REFRESH mode. Tracked sources are declared in [sources.md](sources.md); the standard being refreshed lives in [memory-format.md](memory-format.md)._
+_On-demand procedure for `ki-housekeeping`'s REFRESH mode. Tracked sources are declared in [sources.md](sources.md); the standard being refreshed lives in [memory-format.md](memory-format.md)._
 
 Run when [sources.md](sources.md)'s `last reviewed` date has aged past its cadence, or on request.
 

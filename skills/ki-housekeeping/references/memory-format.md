@@ -1,6 +1,6 @@
 # The auto-memory format
 
-_External-spec reference for `ki-memory`. Sourced from the auto-memory system prompt injected into every Claude Code session in this harness (written by Headroom); dated citations tracked in [sources.md](sources.md)._
+_External-spec reference for `ki-housekeeping`. Sourced from the auto-memory system prompt injected into every Claude Code session in this harness (written by Headroom); dated citations tracked in [sources.md](sources.md)._
 
 ## Layout
 

@@ -1,5 +1,5 @@
 /**
- * Eval scenarios for the `ki-websites-11ty` skill — the site-build delta.
+ * Eval scenarios for the `ki-website` skill — the site-build delta.
  *
  * Design note: a capable model knows Eleventy and Tailwind generically, so testing that
  * shows "no difference". These scenarios target house-ARBITRARY specifics a baseline
@@ -10,7 +10,7 @@ import type { Scenario } from '../harness.ts'
 
 export const scenarios: Scenario[] = [
   {
-    skill: 'ki-websites-11ty',
+    skill: 'ki-website',
     id: 'web-invariants',
     prompt:
       'What are the defining invariants of our Knowledge Islands 11ty website standard — specifically how Tailwind is configured, and how the build makes `dist/` portable?',
@@ -23,7 +23,7 @@ export const scenarios: Scenario[] = [
       'House invariants: (1) **config-less Tailwind 4** — there is NO `tailwind.config.*`; `main.css` is `@import "tailwindcss"` then `tokens.css`, whose semantic CSS vars reach utilities via `@theme inline`. (2) The build emits a **portable `dist/`** — an `addTransform` rewrites absolute internal URLs to relative ones so `dist/` serves from any root (this is the seam the hosting skill consumes). A correct answer states the no-config-file Tailwind setup and the absolute→relative URL transform that makes dist/ portable.'
   },
   {
-    skill: 'ki-websites-11ty',
+    skill: 'ki-website',
     id: 'web-ts-native',
     prompt: 'In our 11ty sites, how is the TypeScript (`eleventy.config.ts`, `_data/*.ts`) executed at build time, and what role does `tsc` play?',
     assertions: [
@@ -35,7 +35,7 @@ export const scenarios: Scenario[] = [
       'House rule: TypeScript **runs natively — no transpile step**. `eleventy.config.ts` and `_data/*.ts` execute directly under Bun, with `.ts` + `.json5` data extensions registered in the config. `tsc` is **type-check only** (`--noEmit`, engineering\'s layer), never a build/transpile step; `tsx` is **legacy**. A correct answer states TS runs natively under Bun (no transpile), tsc is type-check only, and tsx is legacy.'
   },
   {
-    skill: 'ki-websites-11ty',
+    skill: 'ki-website',
     id: 'web-site-prefix',
     prompt:
       'Our 11ty repo is flat with the site at the repo root. If we add a second deployable (say an ingress Worker) to the same repo, where does the site move, where does its build output go, and what happens to its package.json scripts?',
