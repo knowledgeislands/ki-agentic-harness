@@ -53,17 +53,30 @@ export function ensureScripts(target: string, additions: Array<[string, string]>
   for (const [key, command] of pending) console.log(`${GREEN}script${RESET} ${key} -> ${DIM}${command}${RESET}`)
   if (dryRun) return
 
-  const scriptsMatch = pkgText.match(/^([ \t]*)"scripts"\s*:\s*\{([\s\S]*?)\n([ \t]*)\}/m)
-  if (!scriptsMatch) {
+  // Locate the `"scripts": {` opener, then brace-count to its matching close so
+  // an empty (`{}`) or single-line block is handled as well as a multi-line one.
+  const openMatch = pkgText.match(/^([ \t]*)"scripts"\s*:\s*\{/m)
+  if (!openMatch || openMatch.index === undefined) {
     console.log(`${YELLOW}skip  ${RESET}package.json ${DIM}(no "scripts" block to extend — add one by hand first)${RESET}`)
     return
   }
-  const [whole, , body, closeIndent] = scriptsMatch
-  const entryIndent = `${closeIndent}  `
-  const trimmedBody = body.replace(/,\s*$/, '')
+  const baseIndent = openMatch[1]
+  const innerStart = openMatch.index + openMatch[0].length
+  let depth = 1
+  let i = innerStart
+  for (; i < pkgText.length && depth > 0; i++) {
+    if (pkgText[i] === '{') depth++
+    else if (pkgText[i] === '}') depth--
+    if (depth === 0) break
+  }
+  const closeIdx = i // index of the matching `}`
+  const inner = pkgText.slice(innerStart, closeIdx)
+  const entryIndent = `${baseIndent}  `
   const newLines = pending.map(([key, command]) => `${entryIndent}"${key}": ${JSON.stringify(command)}`).join(',\n')
-  const rebuilt = `${scriptsMatch[1]}"scripts": {${trimmedBody ? `${trimmedBody},\n` : '\n'}${newLines}\n${closeIndent}}`
-  writeFileSync(pkgPath, pkgText.replace(whole, rebuilt))
+  const existing = inner.replace(/\s+$/, '').replace(/,\s*$/, '') // keep entries; drop trailing ws/comma
+  const newBlock = existing.trim() ? `${existing},\n${newLines}\n${baseIndent}` : `\n${newLines}\n${baseIndent}`
+  const rebuilt = pkgText.slice(0, innerStart) + newBlock + pkgText.slice(closeIdx)
+  writeFileSync(pkgPath, rebuilt)
 }
 
 // Single-script convenience wrapper.
