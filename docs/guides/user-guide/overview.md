@@ -8,8 +8,9 @@ This repository is a **harness**: a single, versioned bundle of the reusable pie
 
 ## What it does for its owner
 
-The harness turns loose conventions into something an agent can apply and check consistently. Each governance skill carries the same three modes:
+The harness turns loose conventions into something an agent can apply and check consistently. Each governance skill carries the same four modes:
 
+- **Init** — bring a target under governance for the first time: vendor the checkers and wire the commands so the repo can govern itself.
 - **Audit** — read a target (a repository, a document, a knowledge base) and report where it departs from the standard.
 - **Conform** — bring the target into line, doing the mechanical fixes automatically.
 - **Refresh** — revisit the standard itself against its upstream source, so it does not drift out of date.
@@ -20,7 +21,7 @@ Alongside the human-judgement half of each standard, a skill ships a **mechanica
 
 The bundle has four parts, plus one install keystone:
 
-- **Skills** (`skills/`) — the twenty governance skills. This is the most built-out part and the reason the harness exists.
+- **Skills** (`skills/`) — the governance skills. This is the most built-out part and the reason the harness exists.
 - **Agents** (`agents/`) — Knowledge Islands subagent definitions: focused roles an agent can delegate to.
 - **MCP servers** (`mcp/`) — a shelf for tool servers that consolidate the workspace's external integrations. Scaffolded, not yet populated.
 - **Evals** (`evals/`) — behavioural test scenarios that check the skills actually behave as intended.
@@ -31,7 +32,7 @@ The skills are not independent islands. They **compose**: one skill runs a sibli
 ## Where to go deeper
 
 - The **[README](../../../README.md)** is the full working reference, with the skill map and quick-start commands.
-- **[docs/skills.md](skills.md)** describes the twenty skills one by one and the shape they all share.
+- **[docs/skills.md](skills.md)** describes the skills one by one and the shape they all share.
 - **[docs/design.md](design.md)** explains how they fit — where they deliberately do not overlap, the loops by which the standards improve, and the principles common to the set.
 - **[docs/installation.md](installation.md)** covers installing, using, and linking the skills, and the development toolchain.
 - **[ROADMAP.md](../../../ROADMAP.md)** is the forward view — what is next and why.

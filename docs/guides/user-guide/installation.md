@@ -23,7 +23,7 @@ The harness CLAUDE.md notes which mode is active in the current machine's chezmo
 
 ### mcporter (MCP proxy daemon)
 
-mcporter consolidates all 19 KI-owned MCP servers behind a single keep-alive daemon and exposes them through a single HTTP MCP endpoint, reducing the `~/.claude.json` `mcpServers` block from 19 stdio entries to one URL entry.
+mcporter consolidates all KI-owned MCP servers behind a single keep-alive daemon and exposes them through a single HTTP MCP endpoint, reducing the `~/.claude.json` `mcpServers` block from many stdio entries to one URL entry.
 
 ```bash
 brew install steipete/tap/mcporter
@@ -33,7 +33,7 @@ Two LaunchAgents are deployed and activated by chezmoi:
 
 | LaunchAgent label         | Command                              | Purpose                                          |
 | ------------------------- | ------------------------------------ | ------------------------------------------------ |
-| `sh.mcporter.daemon`      | `mcporter daemon start --foreground` | Keep-alive process manager for all 19 servers    |
+| `sh.mcporter.daemon`      | `mcporter daemon start --foreground` | Keep-alive process manager for all servers       |
 | `sh.mcporter.http-bridge` | `mcporter serve --http 3333`         | HTTP MCP endpoint at `http://localhost:3333/mcp` |
 
 mcporter's config lives at `~/.mcporter/mcporter.json` (chezmoi-managed). It embeds full server definitions with `"lifecycle": "keep-alive"` for each server, resolved from the same `mcp-servers-json` chezmoi template that generates the Claude Desktop config.
@@ -54,7 +54,7 @@ Tools are exposed as `server__tool` (double underscore). `~/.claude.json` should
 Verify with:
 
 ```bash
-mcporter daemon status          # all 19 servers idle/running
+mcporter daemon status          # all servers idle/running
 curl http://localhost:3333/mcp  # should return a valid MCP JSON response
 ```
 
@@ -65,7 +65,7 @@ Claude Code (and compatible agents) discover skills in two places:
 - **User-global** — `~/.claude/skills/<name>/`, available in every session on this machine.
 - **Per-project** — `<project>/.claude/skills/<name>/`, available only when working in that project (and shareable via the project's repo).
 
-The install model is **keystone-plus-project-local**: only `ki-bootstrap` is installed user-global; every other skill is wired into each repo's `.claude/skills/` on demand. The global skill is paid on every turn everywhere, so keeping one tiny keystone there — instead of all eighteen — keeps the standing description cost out of unrelated sessions, while each repo still loads exactly the skills it declares. Both ends use **symlinks**, so edits in this repo are live wherever a skill is installed and a `git pull` updates every consumer at once. Install dependencies once with `bun install`.
+The install model is **keystone-plus-project-local**: only `ki-bootstrap` is installed user-global; every other skill is wired into each repo's `.claude/skills/` on demand. The global skill is paid on every turn everywhere, so keeping one tiny keystone there — instead of all of them — keeps the standing description cost out of unrelated sessions, while each repo still loads exactly the skills it declares. Both ends use **symlinks**, so edits in this repo are live wherever a skill is installed and a `git pull` updates every consumer at once. Install dependencies once with `bun install`.
 
 ### Install the keystone, once per machine
 

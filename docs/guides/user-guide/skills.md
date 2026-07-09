@@ -1,12 +1,62 @@
 # The skills
 
-The skills are the bulk of the harness today: **twenty** of them, each a **governance skill** — it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones), backed by a tracked `references/sources.md`.
+The skills are the bulk of the harness today, each a **governance skill** — it holds a house standard and ships the universal **INIT / AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones), backed by a tracked `references/sources.md`. This file is the catalogue and the map: what a skill is, how the set fits together, and what each one does. For the boundaries between the ones that could be confused, the loops that run across them, and the invariants they all hold, see [design.md](design.md).
 
-This file is the catalogue: what each skill does, and the shared shape they all follow. For how they fit together — the boundaries between the ones that could be confused, the loops that run across them, and the invariants they all hold — see [design.md](design.md). The overview map lives in the [README](../../../README.md).
+## What a skill is
 
-## The skills
+A skill is a directory containing a `SKILL.md` with YAML frontmatter and a markdown body, per the [Agent Skills open standard](https://agentskills.io/specification) (originated by Anthropic for Claude Code, consumed by Cowork and other agent platforms). Longer detail goes in `references/`, executables in `scripts/`, templates in `assets/` — all loaded on demand (progressive disclosure). Keep `SKILL.md` under ~500 lines / ~5,000 tokens.
 
-The skills sit in **two layers** plus a bridge and a keystone: two cross-cutting **foundations** that every other skill builds on, the **domain** skills that each govern one kind of artifact, `ki-harness` — the **container** skill that governs the bundle holding them all — and `ki-bootstrap`, the **install keystone** that wires a repo's project-local skills into place.
+```text
+<skill-name>/
+├── SKILL.md            # required - frontmatter (name, description) + body
+├── references/         # optional - long-form detail
+├── scripts/            # optional - executable helpers
+└── assets/             # optional - templates and resources
+```
+
+The directory name **is** the skill's `name`: lowercase, hyphenated, and matching the `name:` frontmatter field exactly. Agents discover a skill by its `name`, so the two must stay in sync.
+
+Skills here fall into a few kinds, and the set will grow:
+
+- **Knowledge Islands skills** — operate over the standard Knowledge Islands knowledge-base structure (see [knowledge-islands.md](knowledge-islands.md)). They carry reusable mode logic and resolve only a few store-level bindings from the host base. The `ki-kb-*` family (`ki-kb`, `ki-kb-streams`, `ki-kb-activities`, `ki-kb-live-artifacts`) are these.
+- **Process skills** — encode a workflow or procedure not tied to any particular base (a review process, a release checklist, a research harness).
+- **Scoped skills** — target a specific area: a subset of folders, a single project, or one recurring task.
+
+Every skill in the repo today is a **governance skill**: it holds a house standard and ships the universal **INIT / AUDIT / CONFORM / REFRESH** modes plus a mechanical checker.
+
+## The map
+
+The skills sit in a few clusters — a keystone (`ki-bootstrap`) that pulls `ki-repo`; cross-cutting **foundations** (`ki-authoring`, `ki-engineering`) every other skill builds on; **repo-structure** skills (`ki-harness`, `ki-kb`, `ki-website`, `ki-mcp`), exactly one per repo; **general governance** skills; **implied families** (the KB and website members their parent pulls in); and **environment** skills that govern the machine, not a repo ([ADR-KI-HARNESS-SKILLS-006](../../decisions/ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md)). The `implies:` frontmatter on each `SKILL.md` is the machine-readable graph; this tree is generated from it by `bun run ki:skills:graph --tree` (each root is a skill nothing implies; its children are what it `implies:`):
+
+```text
+ki-bootstrap
+└─ ki-repo
+   ├─ ki-authoring
+   └─ ki-engineering
+
+ki-harness
+├─ ki-skills
+├─ ki-agents
+└─ ki-decision-records
+
+ki-kb
+├─ ki-kb-activities
+├─ ki-kb-live-artifacts
+└─ ki-kb-streams
+
+ki-website
+└─ ki-website-cloudflare
+
+ki-mcp
+ki-handoffs
+ki-plans
+ki-feature-definitions
+ki-binding
+ki-housekeeping
+ki-tokenomics
+```
+
+## The catalogue
 
 ### [`ki-kb`](../../../skills/ki-kb/SKILL.md) — Knowledge Islands
 
@@ -26,7 +76,7 @@ Governs **Feature Definitions** — the behaviour-level "what" of a system, the 
 
 ### [`ki-housekeeping`](../../../skills/ki-housekeeping/SKILL.md) — Process
 
-Governs the Claude Code auto-memory system — the per-project `memory/*.md` files and `MEMORY.md` index that Headroom writes outside the repo tree at `~/.claude/projects/<slug>/memory/`. Owns the index/file-agreement contract, the frontmatter schema (`name` / `description` / `metadata.type` ∈ user, feedback, project, reference), and the promote-then-delete reconciliation doctrine. Ships a mechanical checker (`audit-memory.ts`) that resolves a repo's memory directory and checks it; a repo with none yet is a SKIP, not a FAIL. Distinct from `ki-kb`'s **MEM-2** memory cascade (a KB's own root `Admin/MEMORY.md`); off-ramps token-cost measurement to `ki-tokenomics`.
+Governs the hygiene of accumulated **Claude state** across all its areas — memory, plus sessions, artifacts, and storage that pile up across Claude Desktop / Cowork, Claude Code (`~/.claude/`), and VSCode. It pairs with the `mcp-claude-housekeeping` server on one principle: the skill is the standard and the judgment; the server is the tools ([ADR-KI-HARNESS-SKILLS-007](../../decisions/ADR-KI-HARNESS-SKILLS-007-housekeeping-scope-and-server-pairing.md)). **Memory** it governs fully in-skill — the per-project `memory/*.md` files and `MEMORY.md` index Headroom writes at `~/.claude/projects/<slug>/memory/`, checked by its own `audit-memory.ts`; every other area is audited and cleaned through the server's codified audits and access-gated tools. Sits in the **Environment** cluster. Distinct from `ki-kb`'s **MEM-2** memory cascade (a KB's own root `Admin/MEMORY.md`); off-ramps token-cost measurement to `ki-tokenomics`.
 
 ### [`ki-plans`](../../../skills/ki-plans/SKILL.md) — Process
 
@@ -96,7 +146,7 @@ Where the set is going next is in [ROADMAP.md](../../../ROADMAP.md).
 
 ## The governance-skill shape
 
-All twenty share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in `ki-engineering`'s [enforcement framework](../../../skills/ki-engineering/references/enforcement-framework.md):
+All skills share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in `ki-engineering`'s [enforcement framework](../../../skills/ki-engineering/references/enforcement-framework.md):
 
 - **`<domain>-standard.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like, and why.
 - **`audit-rubric.md`** — the line-by-line checkable criteria, each tagged **mechanical** (a checker enforces it) or **judgment** (a reader assesses it), each citing the standard section it verifies.

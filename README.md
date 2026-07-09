@@ -4,72 +4,12 @@ The **agentic harness** for Knowledge Islands work — the canonical home for wh
 
 A harness is **four parts** — the things an agent is given to work with:
 
-- **Skills** ([`skills/`](skills)) — reusable [Agent Skills](https://agentskills.io/specification): the most-built-out part of the harness today (**twenty**, all governance skills — including `ki-harness`, which governs this four-part container itself, and `ki-bootstrap`, the install keystone). Installed per-repo: `bootstrap` (the one globally-installed skill) wires each repo's project-local `.claude/skills/` from its `.ki-config.toml`. The catalogue is in [docs/skills.md](docs/guides/user-guide/skills.md); how they fit together — boundaries, the knowledge loops, the shared principles — in [docs/design.md](docs/guides/user-guide/design.md).
-- **Agents** ([`agents/`](agents)) — Knowledge Islands [Claude Code subagents](https://code.claude.com/docs/en/sub-agents), one per file. Five governance agents live under `agents/governance/` today, governed by the `ki-agents` skill. See [`agents/README.md`](agents/README.md).
+- **Skills** ([`skills/`](skills)) — reusable [Agent Skills](https://agentskills.io/specification): the most-built-out part of the harness today, all governance skills — including `ki-harness`, which governs this four-part container itself, and `ki-bootstrap`, the install keystone. Installed per-repo: `bootstrap` (the one globally-installed skill) wires each repo's project-local `.claude/skills/` from its `.ki-config.toml`. What a skill is, the map of the set, and the per-skill catalogue are in [docs/skills.md](docs/guides/user-guide/skills.md); how they fit together — boundaries, the knowledge loops, the shared principles — in [docs/design.md](docs/guides/user-guide/design.md).
+- **Agents** ([`agents/`](agents)) — Knowledge Islands [Claude Code subagents](https://code.claude.com/docs/en/sub-agents), one per file. Governance agents live under `agents/governance/`, governed by the `ki-agents` skill. See [`agents/README.md`](agents/README.md).
 - **MCP servers** ([`mcp/`](mcp)) — where KI's MCP servers would consolidate as workspace packages. An empty **shelf** today; they currently live as separate `mcp-*` repos, governed by the `ki-mcp` skill. See [`mcp/README.md`](mcp/README.md).
 - **Evals** ([`evals/`](evals)) — a behavioural test suite that checks a skill actually _changes what the model does_, not just that its `SKILL.md` is well-formed. A rough signal, not a gate. See [`evals/README.md`](evals/README.md).
 
 All four parts are first-class; skills are simply the most built-out, with agents and the eval suite now populated and `mcp/` still an empty shelf. A skill does not have to be wedded to Knowledge Islands — the repository layout, the install steps, and the linking conventions apply to every kind equally.
-
-## What a skill is
-
-A skill is a directory containing a `SKILL.md` with YAML frontmatter and a markdown body, per the Agent Skills open standard (originated by Anthropic for Claude Code, consumed by Cowork and other agent platforms). Longer detail goes in `references/`, executables in `scripts/`, templates in `assets/` — all loaded on demand (progressive disclosure). Keep `SKILL.md` under ~500 lines / ~5,000 tokens.
-
-```text
-<skill-name>/
-├── SKILL.md            # required - frontmatter (name, description) + body
-├── references/         # optional - long-form detail
-├── scripts/            # optional - executable helpers
-└── assets/             # optional - templates and resources
-```
-
-The directory name **is** the skill's `name`: lowercase, hyphenated, and matching the `name:` frontmatter field exactly. Agents discover a skill by its `name`, so the two must stay in sync.
-
-Skills here fall into a few kinds, and the set will grow:
-
-- **Knowledge Islands skills** — operate over the standard Knowledge Islands knowledge-base structure (see [docs/knowledge-islands.md](docs/guides/user-guide/knowledge-islands.md)). They carry reusable mode logic and resolve only a few store-level bindings from the host base. The `ki-kb-*` family (`kb-base`, `kb-streams`, `kb-activities`, `kb-live-artifacts`) are these.
-- **Process skills** — encode a workflow or procedure not tied to any particular base (a review process, a release checklist, a research harness).
-- **Scoped skills** — target a specific area: a subset of folders, a single project, or one recurring task.
-
-Every skill in the repo today is a **governance skill**: it holds a house standard and ships the universal **AUDIT / CONFORM / REFRESH** modes plus a mechanical checker.
-
-## The map — the skills at a glance
-
-The twenty skills sit in **two layers** plus a container governor and an install keystone: two cross-cutting **foundations** that every other skill builds on, the **domain** skills that each govern one kind of artifact, `harness` — which governs the four-part bundle holding them all — and `bootstrap`, which wires a repo's project-local skills into place. The arrows are the structural ties (who _delegates to_, _composes on_, or _feeds_ whom), spelled out in [docs/skills.md](docs/guides/user-guide/skills.md) and [docs/design.md](docs/guides/user-guide/design.md).
-
-```text
-INSTALL KEYSTONE — the one skill kept installed globally; wires every other skill into a repo
-  bootstrap     ──reads a repo's .ki-config.toml coverage──▶ links its .claude/skills/  (composes on repo)
-
-FOUNDATIONS
-  repo         repo ──owns the .ki-config.toml contract──▶ (kb · mcp · engineering consume it)
-  authoring     how we WRITE  ·  Markdown + TOML formatting style
-  engineering   how we BUILD  ·  the shared toolchain + the enforcement framework
-                                       ▲
-                                       │ build on
-───────────────────────────────────────┼──────────────────────────────────────
-                                       │
-DOMAIN — what each skill governs
-  knowledge bases   kb ──delegates the Streams zone──▶ streams
-                    kb ──hands its Admin/ subtrees to──▶ activities · live-artifacts · decision-records
-  repos & code      repo ──owns the .ki-config.toml contract──▶ (kb · mcp · engineering consume it)
-                    mcp  ──composes its checker on──▶ engineering
-  skills & agents   skills ── a SKILL.md (frontmatter + body)   ·   agents ── a subagent definition (the twin)
-  websites          websites-11ty ──emits dist/──▶ hosting-cloudflare   (both compose on engineering)
-  context budget    tokenomics ──audits the standing surface composed across──▶ (kb · mcp · skills · settings)
-  session memory    memory ── Headroom's auto-memory files (MEMORY.md + memory/*.md), outside the repo tree   ·   off-ramps cost to tokenomics
-  handoff doctrine  handoffs ── plan → cheap-tier handoff-spec quality (definition-of-done, decisions-locked)   ·   composes on plans · tokenomics · agents
-
-                                       ▲
-                                       │ defined in
-───────────────────────────────────────┼──────────────────────────────────────
-                                       │
-
-CONTAINER — the bundle that holds all the above (this repo is one)
-  harness       ──composes the checkers of──▶ (skills · agents · mcp · engineering · repo), adds the bundle-layout delta
-```
-
-The per-skill detail is in [docs/skills.md](docs/guides/user-guide/skills.md); [docs/design.md](docs/guides/user-guide/design.md) draws the boundaries between the pairs that could be confused and shows the process loops that run across them.
 
 ## Quick start
 
@@ -86,7 +26,8 @@ Only `ki-bootstrap` is installed globally; every other skill is project-local, w
 | Doc | What's in it |
 | --- | --- |
 | [docs/overview.md](docs/guides/user-guide/overview.md) | A short, human-first account: what the harness is, what it does for its owner, how the parts fit. |
-| [docs/skills.md](docs/guides/user-guide/skills.md) | The twenty skills one by one, and the shared governance-skill shape. |
+| [docs/skills.md](docs/guides/user-guide/skills.md) | What a skill is, the map of the set, the skills one by one, and the shared governance-skill shape. |
+| [docs/guides/user-guide/onboarding.md](docs/guides/user-guide/onboarding.md) | Onboarding a repo: the bootstrap chain, the four modes, and the greenfield / legacy / remote-run flows. |
 | [docs/design.md](docs/guides/user-guide/design.md) | How they fit: where they don't overlap, the three knowledge loops, the principles across the set. |
 | [docs/knowledge-islands.md][ki-doc] | The Knowledge Islands zone model the KI skills assume, and standard skills & per-base config. |
 | [docs/installation.md](docs/guides/user-guide/installation.md) | Installing · using · linking skills, and the development toolchain. |
