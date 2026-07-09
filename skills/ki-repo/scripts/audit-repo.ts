@@ -295,6 +295,18 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
     detect: (s) => s.tree.has('.claude-plugin/marketplace.json') || [...s.tree].some((p) => p.endsWith('/.claude-plugin/marketplace.json'))
   },
   {
+    skill: 'tools',
+    table: 'ki-tools',
+    artifact: 'install.sh + bin/<exe>',
+    detect: (s) => s.root.has('install.sh') && [...s.tree].some((p) => /^bin\/[^/]+$/.test(p))
+  },
+  {
+    skill: 'homebrew-tap',
+    table: 'ki-homebrew-tap',
+    artifact: 'Formula/*.rb',
+    detect: (s) => [...s.tree].some((p) => /^Formula\/[^/]+\.rb$/.test(p))
+  },
+  {
     skill: 'skills',
     table: 'ki-skills',
     artifact: 'skills/*/SKILL.md',

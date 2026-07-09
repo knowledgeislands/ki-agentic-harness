@@ -92,6 +92,8 @@ The detection signals `ki-repo` uses (one recursive tree read + `package.json`):
 | `ki-website-cloudflare` | a `wrangler.*` config                       | `[ki-website-cloudflare]` |
 | `ki-mcp`                | `@modelcontextprotocol/sdk` dependency      | `[ki-mcp]`                |
 | `ki-plugins`            | `.claude-plugin/marketplace.json`           | `[ki-plugins]`            |
+| `ki-tools`              | `install.sh` + a `bin/<exe>`                | `[ki-tools]`              |
+| `ki-homebrew-tap`       | `Formula/*.rb`                              | `[ki-homebrew-tap]`       |
 | `ki-skills`             | `skills/*/SKILL.md`                         | `[ki-skills]`             |
 | `ki-agents`             | `agents/**/*.md`                            | `[ki-agents]`             |
 

@@ -52,6 +52,7 @@ The records are living, compact, and independent, but they were designed to be _
 2. [ADR-KI-HARNESS-SKILLS-005](ADR-KI-HARNESS-SKILLS-005-handoff-doctrine-own-skill.md) — the handoff doctrine is its own skill.
 3. [ADR-KI-HARNESS-SKILLS-007](ADR-KI-HARNESS-SKILLS-007-housekeeping-scope-and-server-pairing.md) — ki-housekeeping's scope and the server pairing.
 4. [ADR-KI-HARNESS-SKILLS-008](ADR-KI-HARNESS-SKILLS-008-feature-definitions-skill.md) — a Feature Definitions skill for the "what".
+5. [ADR-KI-HARNESS-SKILLS-009](ADR-KI-HARNESS-SKILLS-009-tools-and-homebrew-tap-structure-skills.md) — ki-tools and ki-homebrew-tap repo-structure skills.
 
 **5 · Toolchain and orchestration — the mechanical substrate.**
 
@@ -81,6 +82,7 @@ The records are living, compact, and independent, but they were designed to be _
 | ADR-KI-HARNESS-SKILLS-006 | [Six-cluster skill taxonomy and the implication graph](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md) | 2026-07-09 |
 | ADR-KI-HARNESS-SKILLS-007 | [ki-housekeeping scope and the server pairing](ADR-KI-HARNESS-SKILLS-007-housekeeping-scope-and-server-pairing.md) | 2026-07-09 |
 | ADR-KI-HARNESS-SKILLS-008 | [A Feature Definitions skill for the "what"](ADR-KI-HARNESS-SKILLS-008-feature-definitions-skill.md) | 2026-07-09 |
+| ADR-KI-HARNESS-SKILLS-009 | [Two repo-structure skills for standalone tools and their Homebrew tap](ADR-KI-HARNESS-SKILLS-009-tools-and-homebrew-tap-structure-skills.md) | 2026-07-09 |
 | ADR-KI-HARNESS-TOOLCHAIN-001 | [Bun, Biome, and knip standard toolchain](ADR-KI-HARNESS-TOOLCHAIN-001-standard-toolchain.md) | 2026-06-28 |
 | ADR-KI-HARNESS-TOOLCHAIN-002 | [Complementary tooling — current adoptions](ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling.md) | 2026-06-29 |
 | ADR-KI-HARNESS-TOOLCHAIN-003 | [Proxy local MCP servers behind mcporter](ADR-KI-HARNESS-TOOLCHAIN-003-mcporter-mcp-proxy.md) | 2026-06-24 |
