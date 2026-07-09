@@ -16,13 +16,9 @@ A skill is a directory containing a `SKILL.md` with YAML frontmatter and a markd
 
 The directory name **is** the skill's `name`: lowercase, hyphenated, and matching the `name:` frontmatter field exactly. Agents discover a skill by its `name`, so the two must stay in sync.
 
-Skills here fall into a few kinds, and the set will grow:
+Today the set is uniform: every skill here is a **governance skill** — it holds a house standard and ships the universal **INIT / AUDIT / CONFORM / REFRESH** modes plus a mechanical checker — and every one is a Knowledge Islands skill, shipped as part of this system. So what tells the skills apart is not a _kind_ but _what each governs_: a repository's structure, a knowledge base, the machine itself. That distinction is the map below.
 
-- **Knowledge Islands skills** — operate over the standard Knowledge Islands knowledge-base structure (see [knowledge-islands.md](knowledge-islands.md)). They carry reusable mode logic and resolve only a few store-level bindings from the host base. The `ki-kb-*` family (`ki-kb`, `ki-kb-streams`, `ki-kb-activities`, `ki-kb-live-artifacts`) are these.
-- **Process skills** — encode a workflow or procedure not tied to any particular base (a review process, a release checklist, a research harness).
-- **Scoped skills** — target a specific area: a subset of folders, a single project, or one recurring task.
-
-Every skill in the repo today is a **governance skill**: it holds a house standard and ships the universal **INIT / AUDIT / CONFORM / REFRESH** modes plus a mechanical checker.
+The Agent Skills standard is more general than this, though. A skill need not govern a standard at all — it could equally encode a standalone workflow (a review process, a release checklist, a research harness) or target one specific project or recurring task. Nothing here does yet, but the set is expected to grow beyond governance over time.
 
 ## The map
 
