@@ -31,7 +31,7 @@ _REFRESH last run **2026-07-04** (previous: 2026-06-21)._
 
 **Confirmed:**
 
-- [AS] re-fetched live: the Agent Skills specification still defines **no** bundle / harness / container / multi-skill-grouping concept — the four-part structure, the `ki:skills:link:project` install convention, and co-location intent remain entirely a KI architectural convention. The spec now explicitly requires the `name` field to **match the parent directory name** (reinforcing SKILLS-1), and documents additional optional frontmatter fields (`license`, `compatibility`, `metadata`, `allowed-tools`) plus a tightened `name` rule (1–64 chars, no consecutive hyphens). None of this touches the harness standard, which delegates every `SKILL.md` field requirement to `ki-skills`; the new fields are tracked there, not here.
+- [AS] re-fetched live: the Agent Skills specification still defines **no** bundle / harness / container / multi-skill-grouping concept — the five-part structure, the `ki:skills:link:project` install convention, and co-location intent remain entirely a KI architectural convention. The spec now explicitly requires the `name` field to **match the parent directory name** (reinforcing SKILLS-1), and documents additional optional frontmatter fields (`license`, `compatibility`, `metadata`, `allowed-tools`) plus a tightened `name` rule (1–64 chars, no consecutive hyphens). None of this touches the harness standard, which delegates every `SKILL.md` field requirement to `ki-skills`; the new fields are tracked there, not here.
 - [CC] re-fetched live: the subagent definition format (frontmatter `name` / `description` / `tools` / `model` + system-prompt body, project- and user-level install locations) is unchanged. No change to the `agents/` part of the harness contract.
 - [KR] / [KE] re-verified against the repo: `.ki-config.toml` carries `[ki-repo]`, `[ki-engineering]`, `[ki-harness]`, `[ki-skills]`; the enforcement framework's severity ladder and checker contract are still cited correctly by the rubric. The mechanical checker (`ki:harness:audit`) passes 43/43.
 
@@ -43,7 +43,7 @@ _REFRESH last run **2026-07-04** (previous: 2026-06-21)._
 
 - [AS] — Monitor for any Agent Skills spec update that adds bundle / harness-level concepts. If agentskills.io ever formalises a multi-skill container, reconcile with this standard. Also: the newly-documented optional frontmatter fields (`compatibility`, `allowed-tools`, `metadata`) are a `ki-skills` concern to fold in — flag raised, not owned here.
 - [CC] — Monitor Claude Code release notes for any change to skill-install paths or the project-local skill-install convention.
-- [AH] — The harness `CLAUDE.md` four-part table still reads "16 ki-* skills" against an actual 18 (a repo-CLAUDE.md freshness matter, not a standard change) — flagged for central handling.
+- [AH] — The harness `CLAUDE.md` five-part table still reads "16 ki-* skills" against an actual 18 (a repo-CLAUDE.md freshness matter, not a standard change) — flagged for central handling.
 
 [as-spec]: https://agentskills.io/specification
 [cc-subagents]: https://code.claude.com/docs/en/sub-agents

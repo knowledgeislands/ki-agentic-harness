@@ -19,14 +19,15 @@ Each skill ships a **mechanical checker** — a script that decides the clear-cu
 
 ## How the parts fit together
 
-The bundle has four parts, each its own directory:
+The bundle has five parts, each its own directory:
 
 - **Skills** (`skills/`) — the governance skills. This is the most built-out part and the reason the harness exists.
 - **Agents** (`agents/`) — Knowledge Islands subagent definitions: focused roles an agent can delegate to.
 - **MCP servers** (`mcp/`) — a shelf for tool servers that consolidate the workspace's external integrations. Scaffolded, not yet populated.
 - **Evals** (`evals/`) — behavioural test scenarios that check the skills actually behave as intended.
+- **Hooks** (`hooks/`) — Claude Code hook scripts wired into a repo's `.claude/settings.json`. An empty shelf today, reserving the structure ahead of the harness shipping hooks.
 
-The four are meant to be co-installed and versioned together: the skills carry the standards, the agents are the roles that apply them, the MCP servers are the tools those roles reach for, and the evals hold the whole set honest. Shipping them in one bundle keeps them in step — an agent, its skills, and their checks move as a unit rather than drifting apart across separate installs.
+The five are meant to be co-installed and versioned together: the skills carry the standards, the agents are the roles that apply them, the MCP servers are the tools those roles reach for, the evals hold the whole set honest, and the hooks automate the surrounding session. Shipping them in one bundle keeps them in step — an agent, its skills, and their checks move as a unit rather than drifting apart across separate installs.
 
 The skills are designed to build on each other rather than repeat each other. Where two standards overlap, the more specific skill calls the more general one's checker and adds only its own extra rules on top — so a rule is written down once and reused, never copied and left to drift out of sync. Two general **foundation skills** sit underneath the rest this way: one for how we write (Markdown, config), one for how we build (the toolchain). Every more specialised skill leans on those two instead of restating them.
 
@@ -34,7 +35,7 @@ When a repository genuinely needs something different from the shared standard, 
 
 ## The bootstrap keystone
 
-One skill sits apart from the four parts: **`ki-bootstrap`**, the one skill kept installed globally. Every other skill is installed per-repository. Bootstrap reads a repository's own configuration file (`.ki-config.toml`) and wires in exactly the skills that repository has opted into — so each repository self-equips with the right subset, and the harness stays the single source those subsets are drawn from.
+One skill sits apart from the five parts: **`ki-bootstrap`**, the one skill kept installed globally. Every other skill is installed per-repository. Bootstrap reads a repository's own configuration file (`.ki-config.toml`) and wires in exactly the skills that repository has opted into — so each repository self-equips with the right subset, and the harness stays the single source those subsets are drawn from.
 
 ## What "Knowledge Islands" means
 

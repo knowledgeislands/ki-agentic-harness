@@ -65,4 +65,4 @@ Owned by the repo, not the generator: `LICENSE`, `README.md`, `.gitignore`, `.ed
 
 ## Boundary with ki-binding
 
-`ki-binding` owns **generation** (`build-plugin.ts`) and **cross-surface enablement** (BIND-4 checks the machine's `cowork_settings.json` points at the repo and enables the plugin). `ki-plugins` owns the **repo's on-disk shape**. The two do not re-check each other's half. This is composition — each skill runs its own lane and declares the edge (`ADR-KI-HARNESS-001`).
+`ki-binding` owns **generation** (`build-plugin.ts`) and **cross-surface enablement** (BIND-4 checks the machine's `cowork_settings.json` points at the repo and enables the plugin). `ki-plugins` owns the **repo's on-disk shape**. The two do not re-check each other's half. This is composition — each skill runs its own lane and declares the edge (`ADR-KI-HARNESS-003`).

@@ -5,21 +5,21 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated patterns from the KI agentic harness that show what a well-structured four-part bundle looks like. Use these as reference when standing up a new harness, auditing an existing one, or checking that a shelf is correctly declared. The `ki-agentic-harness` is the canonical reference implementation; it demonstrates every structural requirement: four directories each with a `README.md`, the required `package.json` script families, and a `.ki-config.toml` that opts into all four governing skills. Empty shelves (`agents/`, `mcp/`, `evals/`) are shown as a valid starting state — the directory and its `README.md` commit the four-part intent before all parts are built. For the full source list and last-review dates, see [sources.md](sources.md).
+Curated patterns from the KI agentic harness that show what a well-structured five-part bundle looks like. Use these as reference when standing up a new harness, auditing an existing one, or checking that a shelf is correctly declared. The `ki-agentic-harness` is the canonical reference implementation; it demonstrates every structural requirement: five directories each with a `README.md`, the required `package.json` script families, and a `.ki-config.toml` that opts into all four governing skills. Empty shelves (`agents/`, `mcp/`, `evals/`, `hooks/`) are shown as a valid starting state — the directory and its `README.md` commit the five-part intent before all parts are built. For the full source list and last-review dates, see [sources.md](sources.md).
 
 ## Collections
 
 | Source | URL | What it covers |
 | --- | --- | --- |
-| ki-agentic-harness | [canonical harness repo][harness-repo] | The KI canonical reference; all four parts; populated skills shelf |
+| ki-agentic-harness | [canonical harness repo][harness-repo] | The KI canonical reference; all five parts; populated skills shelf |
 | Agent Skills specification | [Agent Skills spec][as-spec] | The `SKILL.md` format and `references/`, `scripts/`, `assets/` layout |
 | Claude Code subagent docs | [CC subagent docs][cc-subagents] | The subagent definition format the `agents/` part serves |
 
 ## Selected patterns
 
-### Four-part directory layout
+### Five-part directory layout
 
-Every harness must have these four directories at the repo root, each containing a `README.md`. The `README.md` distinguishes an intentional empty shelf from an accidentally missing directory — a navigator (human or agent) can confirm at a glance that the harness is complete even before all shelves are populated. The harness root also carries `CLAUDE.md`, `ROADMAP.md`, `package.json`, and `.ki-config.toml`.
+Every harness must have these five directories at the repo root, each containing a `README.md`. The `README.md` distinguishes an intentional empty shelf from an accidentally missing directory — a navigator (human or agent) can confirm at a glance that the harness is complete even before all shelves are populated. The harness root also carries `CLAUDE.md`, `ROADMAP.md`, `package.json`, and `.ki-config.toml`.
 
 ```text
 skills/
@@ -39,6 +39,8 @@ mcp/
   README.md          ← shelf: points to external mcp-* repos
 evals/
   README.md          ← shelf: advisory, run on demand
+hooks/
+  README.md          ← shelf: advisory, wired via .claude/settings.json
 ```
 
 ### `agents/README.md` shelf convention
@@ -75,7 +77,7 @@ The two harness-specific scripts (`ki:skills:link:project` and `ki:skills:lint`)
 
 ### `.ki-config.toml` bundle declaration
 
-A harness must declare `[ki-harness]` — this is the compliance marker the `ki-repo` coverage cascade uses to confirm the four-part layout is intentional. Without it, detecting `skills/*/SKILL.md` without a `[ki-skills]` table, or detecting the harness layout without `[ki-harness]`, would WARN as a detected-but-undeclared artifact. The canonical `ki-agentic-harness` pattern: all four tables present, no per-harness config keys (table presence alone is the declaration).
+A harness must declare `[ki-harness]` — this is the compliance marker the `ki-repo` coverage cascade uses to confirm the five-part layout is intentional. Without it, detecting `skills/*/SKILL.md` without a `[ki-skills]` table, or detecting the harness layout without `[ki-harness]`, would WARN as a detected-but-undeclared artifact. The canonical `ki-agentic-harness` pattern: all four tables present, no per-harness config keys (table presence alone is the declaration).
 
 ```toml
 [ki-repo]

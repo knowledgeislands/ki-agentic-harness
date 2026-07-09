@@ -2,14 +2,15 @@
 
 The **agentic harness** for Knowledge Islands work — the canonical home for what an agent is equipped with here, kept in one place so the whole set can be versioned, reviewed, and installed together rather than scattered across the bases and projects that use it.
 
-A harness is **four parts** — the things an agent is given to work with:
+A harness is **five parts** — the things an agent is given to work with:
 
-- **Skills** ([`skills/`](skills)) — reusable [Agent Skills](https://agentskills.io/specification): the most-built-out part of the harness today, all governance skills — including `ki-harness`, which governs this four-part container itself, and `ki-bootstrap`, the install keystone. Installed per-repo: `bootstrap` (the one globally-installed skill) wires each repo's project-local `.claude/skills/` from its `.ki-config.toml`. What a skill is and the map of the set are in [docs/skills.md](docs/guides/user-guide/skills.md); the per-skill catalogue in [docs/skill-catalogue.md](docs/guides/user-guide/skill-catalogue.md); how they fit together — boundaries, the knowledge loops, the shared principles — in [docs/skill-design.md](docs/guides/user-guide/skill-design.md).
+- **Skills** ([`skills/`](skills)) — reusable [Agent Skills](https://agentskills.io/specification): the most-built-out part of the harness today, all governance skills — including `ki-harness`, which governs this five-part container itself, and `ki-bootstrap`, the install keystone. Installed per-repo: `bootstrap` (the one globally-installed skill) wires each repo's project-local `.claude/skills/` from its `.ki-config.toml`. What a skill is and the map of the set are in [docs/skills.md](docs/guides/user-guide/skills.md); the per-skill catalogue in [docs/skill-catalogue.md](docs/guides/user-guide/skill-catalogue.md); how they fit together — boundaries, the knowledge loops, the shared principles — in [docs/skill-design.md](docs/guides/user-guide/skill-design.md).
 - **Agents** ([`agents/`](agents)) — Knowledge Islands [Claude Code subagents](https://code.claude.com/docs/en/sub-agents), one per file. Governance agents live under `agents/governance/`, governed by the `ki-agents` skill. See [`agents/README.md`](agents/README.md).
 - **MCP servers** ([`mcp/`](mcp)) — where KI's MCP servers would consolidate as workspace packages. An empty **shelf** today; they currently live as separate `mcp-*` repos, governed by the `ki-mcp` skill. See [`mcp/README.md`](mcp/README.md).
 - **Evals** ([`evals/`](evals)) — a behavioural test suite that checks a skill actually _changes what the model does_, not just that its `SKILL.md` is well-formed. A rough signal, not a gate. See [`evals/README.md`](evals/README.md).
+- **Hooks** ([`hooks/`](hooks)) — Claude Code hook scripts a consuming repo wires into its `.claude/settings.json`. An empty **shelf** today, reserving the structure ahead of the harness shipping hooks. See [`hooks/README.md`](hooks/README.md).
 
-All four parts are first-class; skills are simply the most built-out, with agents and the eval suite now populated and `mcp/` still an empty shelf. A skill does not have to be wedded to Knowledge Islands — the repository layout, the install steps, and the linking conventions apply to every kind equally.
+All five parts are first-class; skills are simply the most built-out, with agents and the eval suite now populated and `mcp/` and `hooks/` still empty shelves. A skill does not have to be wedded to Knowledge Islands — the repository layout, the install steps, and the linking conventions apply to every kind equally.
 
 ## Quick start
 

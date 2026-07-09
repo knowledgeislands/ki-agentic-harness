@@ -55,6 +55,9 @@ ki-website
 └─ ki-website-cloudflare
 
 ki-mcp
+ki-plugins
+ki-tools
+ki-homebrew-tap
 ki-handoffs
 ki-plans
 ki-feature-definitions

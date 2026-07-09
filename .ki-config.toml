@@ -11,7 +11,7 @@ license = "MIT"          # SPDX id; the LICENSE, package.json, and GitHub must m
 # This repo fully conforms, so it declares no check overrides. To diverge, add a
 # [ki-engineering.checks] table with one boolean per check (true = enforce).
 
-# This repo IS a Knowledge Islands agentic harness (the four-part skills/ agents/ mcp/ evals/
+# This repo IS a Knowledge Islands agentic harness (the five-part skills/ agents/ mcp/ evals/ hooks/
 # layout), so it declares governance by the ki-harness standard. Presence of this
 # table is the compliance marker; no per-harness keys are defined yet.
 [ki-harness]

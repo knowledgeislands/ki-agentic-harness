@@ -26,7 +26,7 @@ The quotable standard behind [the rubric](audit-rubric.md) and [`../scripts/audi
 - **`NNN`** is a zero-padded decimal serial (≥ 3 digits). Monotonically increasing **per prefix within the `<SCOPE>` namespace** — `GDR-KI-ARCADIA-001` and `SDR-KI-ARCADIA-001` may share the integer `001` because they carry different prefixes. The full DR code (prefix + scope + serial) is the globally unique identifier. A pending DR not yet assigned a real serial uses the literal string `XXX` in place of `NNN` (e.g. `GDR-KI-ARCADIA-XXX-pending-decision.md`); it is renamed to the next available per-prefix serial once it is numbered.
 - **`<slug>`** (optional, preferable) is a short lowercase hyphenated title summary. Makes the file self-describing when referenced by ID from other records or tools.
 
-Examples: `GDR-KI-ARCADIA-001-adopting-decision-records`, `SDR-KI-ARCADIA-001-knowledge-islands-strategy`, `ADR-KI-HARNESS-003-adopting-adrs`.
+Examples: `GDR-KI-ARCADIA-001-adopting-decision-records`, `SDR-KI-ARCADIA-001-knowledge-islands-strategy`, `ADR-KI-HARNESS-001-adopting-adrs`.
 
 ## Prefix table
 
@@ -116,10 +116,10 @@ The resulting context after the decision is applied — positive outcomes, trade
 ```markdown
 ## References
 
-- [Title](../path/to/note.md) -- one-line note on why it is cited.
+- [DR-CODE](DR-CODE-slug.md) -- the foundational decision this record builds on.
 ```
 
-Expected when the decision codifies an existing standard or cites a prior source. Relative Markdown links only. Omit entirely if there are genuinely no relevant references.
+A decision record is **self-contained**. Its only outbound Markdown links are to **sibling DRs in the same decisions set**, following the reading-order layering (reference the foundations a decision builds on). Do **not** link out to skills, guides, feature definitions, workflows, KB notes, or external URLs — name them in prose and inline any context the reader needs, so the record stands on its own. The sole carve-out is a record whose subject _is_ an external artefact (e.g. a toolchain survey adopting named tools), which may cite that artefact's URL as content. Omit the section entirely if there are genuinely no sibling references.
 
 ## Templates
 

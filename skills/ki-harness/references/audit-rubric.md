@@ -20,9 +20,9 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS
 
 ## LAY — Directory layout and file presence
 
-**LAY-1 [M]** `skills/`, `agents/`, `mcp/`, `evals/` all exist as directories at the repo root. Source: standard §Layout. _Severity: FAIL — missing directory breaks the four-part contract._
+**LAY-1 [M]** `skills/`, `agents/`, `mcp/`, `evals/`, `hooks/` all exist as directories at the repo root. Source: standard §Layout. _Severity: FAIL — missing directory breaks the five-part contract._
 
-**LAY-2 [M]** Each of the four directories contains a `README.md`. Source: standard §Layout. _Severity: WARN — README.md absent means no shelf/status declaration._
+**LAY-2 [M]** Each of the five directories contains a `README.md`. Source: standard §Layout. _Severity: WARN — README.md absent means no shelf/status declaration._
 
 **LAY-3 [M]** `CLAUDE.md` exists at the repo root. Source: standard §CLAUDE.md. _Severity: FAIL — CLAUDE.md is the always-loaded orientation; its absence means agents navigate blind._
 
@@ -34,9 +34,9 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS
 
 ## CLAUDE — CLAUDE.md coverage and freshness
 
-**CLAUDE-1 [J]** `CLAUDE.md` opens with a what-the-harness-is paragraph that names all four parts (`skills/`, `agents/`, `mcp/`, `evals/`). Source: standard §CLAUDE.md §1. _Severity: WARN — a CLAUDE.md that doesn't describe the harness contract fails its orientation purpose._
+**CLAUDE-1 [J]** `CLAUDE.md` opens with a what-the-harness-is paragraph that names all five parts (`skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`). Source: standard §CLAUDE.md §1. _Severity: WARN — a CLAUDE.md that doesn't describe the harness contract fails its orientation purpose._
 
-**CLAUDE-2 [J]** `CLAUDE.md` has a four-part directory table (or equivalent block) with current status for each part (populated / empty shelf). Source: standard §CLAUDE.md §2. _Severity: WARN._
+**CLAUDE-2 [J]** `CLAUDE.md` has a five-part directory table (or equivalent block) with current status for each part (populated / empty shelf). Source: standard §CLAUDE.md §2. _Severity: WARN._
 
 **CLAUDE-3 [J]** `CLAUDE.md` documents working conventions for each part (which command runs it, which skill governs it, any install step). May be brief with routes to `docs/` or the relevant skill. Source: standard §CLAUDE.md §3. _Severity: POLISH — missing conventions degrade developer UX but don't break correctness._
 

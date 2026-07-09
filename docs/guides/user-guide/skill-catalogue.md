@@ -26,7 +26,7 @@ The shared **engineering toolchain** every TS/Bun repo builds on — package.jso
 
 ### `ki-harness`
 
-Audits, conforms, and scaffolds the **agentic harness itself** — the container that bundles the other parts: the four-part `skills/` / `agents/` / `mcp/` / `evals/` layout, the root `CLAUDE.md` / `ROADMAP.md` / `package.json` script families / `.ki-config.toml` table, and the `skills:link:*` install convention (whose project-local linking `ki-bootstrap` carries out). Governs the **container, not the contents**: the bridge into the sibling skills rather than a replacement — it **composes** their checkers (`ki-skills`, `ki-agents`, `ki-mcp`, `ki-engineering`, `ki-repo`) and adds only the bundle-structure delta. Ships a mechanical checker (`audit-harness.ts`). Empty shelves are valid — a shelf is not a gap.
+Audits, conforms, and scaffolds the **agentic harness itself** — the container that bundles the other parts: the five-part `skills/` / `agents/` / `mcp/` / `evals/` / `hooks/` layout, the root `CLAUDE.md` / `ROADMAP.md` / `package.json` script families / `.ki-config.toml` table, and the `skills:link:*` install convention (whose project-local linking `ki-bootstrap` carries out). Governs the **container, not the contents**: the bridge into the sibling skills rather than a replacement — it **composes** their checkers (`ki-skills`, `ki-agents`, `ki-mcp`, `ki-engineering`, `ki-repo`) and adds only the bundle-structure delta. Ships a mechanical checker (`audit-harness.ts`). Empty shelves are valid — a shelf is not a gap.
 
 ### `ki-kb`
 

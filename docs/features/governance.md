@@ -28,7 +28,7 @@ _Verify:_ each checker imports the same `Sev` enum shape from `ki-engineering`'s
 
 ### GOV-004 — Composition, not extension
 
-A skill MUST NOT import another skill; it composes by running a sibling's checker or mode in sequence and declaring the edge, per [ADR-KI-HARNESS-001](../decisions/ADR-KI-HARNESS-001-composition-over-extension.md).
+A skill MUST NOT import another skill; it composes by running a sibling's checker or mode in sequence and declaring the edge, per [ADR-KI-HARNESS-003](../decisions/ADR-KI-HARNESS-003-composition-over-extension.md).
 
 _Verify:_ no `skills/*/scripts/*.ts` imports from another skill's directory; cross-skill composition is by subprocess (`execFileSync`) only.
 

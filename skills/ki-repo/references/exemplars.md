@@ -66,9 +66,9 @@ One paragraph: what this repo is and who works in it.
 …key commands and conventions not covered by the topic files…
 ```
 
-### Four-part harness layout with coverage declarations
+### Five-part harness layout with coverage declarations
 
-When a repo carries a four-part agentic harness layout (`skills/`, `agents/`, `mcp/`, `evals/`), its `.ki-config.toml` must declare all four relevant tables so `ki-repo`'s coverage cascade does not warn on detected-but-undeclared artifacts. The harness repo (`ki-agentic-harness`) is the canonical example — it opts into every applicable governance skill and documents why each table is present.
+When a repo carries a five-part agentic harness layout (`skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`), its `.ki-config.toml` must declare all four relevant tables so `ki-repo`'s coverage cascade does not warn on detected-but-undeclared artifacts. The harness repo (`ki-agentic-harness`) is the canonical example — it opts into every applicable governance skill and documents why each table is present.
 
 ```toml
 [ki-repo]
@@ -78,7 +78,7 @@ visibility = "private"
 # Fully conforms; capabilities auto-detected.
 
 [ki-harness]
-# Declares this repo as a KI agentic harness (the four-part layout compliance marker).
+# Declares this repo as a KI agentic harness (the five-part layout compliance marker).
 # No per-harness config keys defined yet — table presence is the declaration.
 
 [ki-skills]

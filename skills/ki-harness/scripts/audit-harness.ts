@@ -96,9 +96,9 @@ function auditHarness(root: string): Finding[] {
 
   // ── LAY — Directory layout and file presence ───────────────────────────────
 
-  const FOUR_PARTS = ['skills', 'agents', 'mcp', 'evals'] as const
+  const PARTS = ['skills', 'agents', 'mcp', 'evals', 'hooks'] as const
 
-  for (const part of FOUR_PARTS) {
+  for (const part of PARTS) {
     const dir = join(root, part)
     check(findings, 'FAIL', `LAY-1 (${part}/)`, existsSync(dir), `${part}/ directory must exist`)
 

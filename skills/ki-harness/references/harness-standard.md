@@ -7,7 +7,7 @@ The rubric ([`audit-rubric.md`](audit-rubric.md)) is the line-by-line checkable 
 ## Contents
 
 - [What a harness is](#what-a-harness-is)
-- [§Layout — the four-part directory requirement](#layout--the-four-part-directory-requirement)
+- [§Layout — the five-part directory requirement](#layout--the-five-part-directory-requirement)
 - [§Skills directory — the naming convention](#skills-directory--the-naming-convention)
 - [§CLAUDE.md required sections](#claudemd-required-sections)
 - [§ROADMAP.md discipline](#roadmapmd-discipline)
@@ -19,7 +19,7 @@ The rubric ([`audit-rubric.md`](audit-rubric.md)) is the line-by-line checkable 
 
 ## What a harness is
 
-An **agentic harness** is a single versioned git repository that co-locates the four parts an agent is equipped with:
+An **agentic harness** is a single versioned git repository that co-locates the five parts an agent is equipped with:
 
 | Directory | What it holds                                            | Install path                                                |
 | --------- | -------------------------------------------------------- | ----------------------------------------------------------- |
@@ -27,26 +27,28 @@ An **agentic harness** is a single versioned git repository that co-locates the 
 | `agents/` | Claude Code subagent definitions — one `.md` per agent   | Symlinked or copied by the Claude Code agent runner         |
 | `mcp/`    | Workspace MCP server packages ‡                          | Referenced by `.claude/settings.json` / `mcp_settings.json` |
 | `evals/`  | Behavioural eval scenarios — advisory signal, not a gate | Run on demand, not in CI                                    |
+| `hooks/`  | Claude Code hook scripts — advisory, no governing skill  | Wired into a repo's `.claude/settings.json`                 |
 
 † Via `bun run ki:skills:link:project` (`ki-bootstrap`).
 
 ‡ Or a shelf pointing to external `mcp-*` repos.
 
-The value of co-location: the four parts are versioned together, reviewed together, and installed together — rather than scattered across the bases and projects that consume them. A change to a skill and the agent that invokes it ships as one PR, not two.
+The value of co-location: the five parts are versioned together, reviewed together, and installed together — rather than scattered across the bases and projects that consume them. A change to a skill and the agent that invokes it ships as one PR, not two.
 
-A harness does **not** have to host every part actively. Empty shelves (`agents/`, `mcp/`, `evals/` populated only by a `README.md`) are a valid, encouraged starting state — the directory structure commits to the four-part intent even before all parts are built. A shelf is not a gap.
+A harness does **not** have to host every part actively. Empty shelves (`agents/`, `mcp/`, `evals/`, `hooks/` populated only by a `README.md`) are a valid, encouraged starting state — the directory structure commits to the five-part intent even before all parts are built. A shelf is not a gap.
 
 ---
 
-## §Layout — the four-part directory requirement
+## §Layout — the five-part directory requirement
 
-Every harness MUST have these four directories at the repo root, each containing a `README.md`:
+Every harness MUST have these five directories at the repo root, each containing a `README.md`:
 
 ```text
 skills/       README.md  (+ one directory per skill)
 agents/       README.md  (+ one .md per agent, or empty shelf)
 mcp/          README.md  (+ server packages, or shelf pointing to mcp-* repos)
 evals/        README.md  (+ scenario files, or rough advisory shelf)
+hooks/        README.md  (+ hook scripts wired via .claude/settings.json, or empty shelf)
 ```
 
 **Why:** discovery. Any tool or agent navigating the harness can reliably find each part without reading prose. The `README.md` in each directory distinguishes an intentional empty shelf from an accidental missing directory — and gives a human reader the context to understand it.
@@ -80,8 +82,8 @@ The quality of the skill's prose, description richness, and adherence to the Age
 
 The harness `CLAUDE.md` is the **always-loaded orientation** — every agent session in the harness repo reads it. It must cover these sections (in order, though the exact headings are flexible):
 
-1. **What this harness is** — one paragraph: what the harness holds, who it's for, why it's a single repo rather than scattered files. Name all four parts.
-2. **The four parts** — a directory table (or equivalent structured block) with each of the four directories, what it holds today, and its current status (populated / empty shelf). Keep this current as shelves become populated.
+1. **What this harness is** — one paragraph: what the harness holds, who it's for, why it's a single repo rather than scattered files. Name all five parts.
+2. **The five parts** — a directory table (or equivalent structured block) with each of the five directories, what it holds today, and its current status (populated / empty shelf). Keep this current as shelves become populated.
 3. **Working conventions per part** — how to add, change, or audit each part: which command to run, which skill governs it, any install step. Brief; route detail to `docs/` or the relevant skill.
 4. **Toolchain** — the key `bun run *` commands: at minimum `ki:skills:link:project`, `ki:skills:lint`, and the common `ki:lint:*` family. Enough to orient a contributor on day one.
 
@@ -139,7 +141,7 @@ Every harness carrying a `.ki-config.toml` (which all KI-governed repos do) MUST
 [ki-skills]      # once skills/ is populated
 ```
 
-The `[ki-harness]` table is the **compliance marker** — `ki-repo`'s coverage cascade detects the four-part harness layout and WARNs if this table is absent. Declaring it is the repo's opt-in to the harness standard.
+The `[ki-harness]` table is the **compliance marker** — `ki-repo`'s coverage cascade detects the five-part harness layout and WARNs if this table is absent. Declaring it is the repo's opt-in to the harness standard.
 
 Currently no per-harness config keys are defined under `[ki-harness]` — the table presence alone is the declaration.
 
@@ -155,6 +157,7 @@ This standard governs the container. The parts inside it each have a governing s
 | `agents/*.md` definitions                   | `ki-agents`                         |
 | `mcp/*/src/` server code                    | `ki-mcp`                            |
 | `evals/` test harness                       | No dedicated skill today — advisory |
+| `hooks/` scripts + settings wiring          | No dedicated skill today — advisory |
 | Engineering toolchain                       | `ki-engineering`                    |
 | GitHub settings, `.ki-config.toml` contract | `ki-repo`                           |
 
