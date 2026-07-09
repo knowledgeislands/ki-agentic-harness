@@ -6,7 +6,7 @@ Knowledge Islands **Claude subagents** live here — one `.md` file per agent, g
 
 Each agent is a Markdown file with YAML frontmatter (`name` and `description` required; `model`/`tools`/`disallowedTools`/`permissionMode`/`color` optional) followed by a system-prompt body, per the wider [subagents spec](https://code.claude.com/docs/en/sub-agents). The `name` field must be unique across the whole tree.
 
-The governing skill for what makes a good agent definition is **`ki-agents`** (under [skills/](../skills/)) — the agents twin of `ki-skills`. Run its AUDIT mode over any agent, or the whole set, before shipping.
+The governing skill for what makes a good agent definition is **`ki-agents`** (under [skills/](../skills)) — the agents twin of `ki-skills`. Run its AUDIT mode over any agent, or the whole set, before shipping.
 
 ## governance/
 

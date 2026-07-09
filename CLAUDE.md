@@ -1,6 +1,6 @@
 # CLAUDE.md — ki-agentic-harness
 
-Always-loaded orientation for an agent working in this repo. The README is the entry point; for a short, human-first summary of what the harness is and does, [docs/overview.md](docs/overview.md) is the plainest starting point. The full picture is in the [docs/](docs/) the README indexes — what each skill is, the map, the boundaries. The forward view is in [ROADMAP.md](ROADMAP.md). This file is the short anchor.
+Always-loaded orientation for an agent working in this repo. The README is the entry point; for a short, human-first summary of what the harness is and does, [docs/overview.md](docs/guides/user-guide/overview.md) is the plainest starting point. The full picture is in the [docs/](docs) the README indexes — what each skill is, the map, the boundaries. The forward view is in [ROADMAP.md](ROADMAP.md). This file is the short anchor.
 
 ## What this repo is
 
@@ -17,7 +17,7 @@ The canonical home for the Knowledge Islands **Agent Skills** (per the [Agent Sk
 
 ## How skills relate — composition only
 
-Skills relate to one another by **composition**, never a base-coupled extension: a skill runs a sibling's checker/mode **in sequence** and adds its own delta (it never imports another, so each stays valid installed standalone), and **declares the edge** in its AUDIT mode. What a base or repo needs differently is **declared, not forked** — data in its `.ki-config.toml` table (read validate-down), prose in its `CLAUDE.md` — never a `<base>-*` skill that takes the shared modes. See the _Composition only_ principle in [docs/design.md](docs/design.md) and the `ki-skills` rubric (SHAPE-2).
+Skills relate to one another by **composition**, never a base-coupled extension: a skill runs a sibling's checker/mode **in sequence** and adds its own delta (it never imports another, so each stays valid installed standalone), and **declares the edge** in its AUDIT mode. What a base or repo needs differently is **declared, not forked** — data in its `.ki-config.toml` table (read validate-down), prose in its `CLAUDE.md` — never a `<base>-*` skill that takes the shared modes. See the _Composition only_ principle in [docs/design.md](docs/guides/user-guide/design.md) and the `ki-skills` rubric (SHAPE-2).
 
 ## Working here
 

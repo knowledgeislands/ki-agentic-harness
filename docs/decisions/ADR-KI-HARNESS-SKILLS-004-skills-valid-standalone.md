@@ -24,5 +24,5 @@ Every skill must be **valid installed standalone**. Specifically:
 
 ## References
 
-- [docs/design.md](../design.md) §Principles — "Composition only" and standalone validity.
+- [docs/design.md](../guides/user-guide/design.md) §Principles — "Composition only" and standalone validity.
 - [skills/ki-engineering/references/enforcement-framework.md](../../skills/ki-engineering/references/enforcement-framework.md) §2 — "depend on Node/Bun builtins only — no npm dependencies; be self-contained: no imports from another skill's files".

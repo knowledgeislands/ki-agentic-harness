@@ -1,6 +1,6 @@
 # Feature Definitions
 
-The behaviour-level contract for what the **ki-agentic-harness** does — the **what**. Decisions capture the why ([`../decisions/`](../decisions/)); guides capture the how ([`../`](../)); these Feature Definitions capture the observable behaviour the harness exhibits today, stated normatively and each paired with a verification hook. This corpus is governed by the `ki-feature-definitions` skill and checked by its `audit-features.ts`.
+The behaviour-level contract for what the **ki-agentic-harness** does — the **what**. Decisions capture the why ([`../decisions/`](../decisions)); guides capture the how ([`../`](..)); these Feature Definitions capture the observable behaviour the harness exhibits today, stated normatively and each paired with a verification hook. This corpus is governed by the `ki-feature-definitions` skill and checked by its `audit-features.ts`.
 
 > **Status:** as-built baseline, behaviour-level.
 

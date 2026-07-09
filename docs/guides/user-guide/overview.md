@@ -30,8 +30,8 @@ The skills are not independent islands. They **compose**: one skill runs a sibli
 
 ## Where to go deeper
 
-- The **[README](../README.md)** is the full working reference, with the skill map and quick-start commands.
+- The **[README](../../../README.md)** is the full working reference, with the skill map and quick-start commands.
 - **[docs/skills.md](skills.md)** describes the twenty skills one by one and the shape they all share.
 - **[docs/design.md](design.md)** explains how they fit — where they deliberately do not overlap, the loops by which the standards improve, and the principles common to the set.
 - **[docs/installation.md](installation.md)** covers installing, using, and linking the skills, and the development toolchain.
-- **[ROADMAP.md](../ROADMAP.md)** is the forward view — what is next and why.
+- **[ROADMAP.md](../../../ROADMAP.md)** is the forward view — what is next and why.
