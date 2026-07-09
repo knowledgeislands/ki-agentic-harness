@@ -19,10 +19,10 @@ Every skill's mechanical half runs standalone — no LLM, no model context — a
 - CI, pre-commit, scheduled REFRESH, and remote bootstrap all run the mechanical half with no model.
 - A skill is usable — and a repo governable — on zero LLM budget; the model improves results but is never required.
 - A pure-CLI run must surface what it skipped (the judgment checks), so a human or agent can finish them later.
-- This is the precondition for the self-sufficiency contract ([ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md)): scripts that run without an LLM can also run without the skill installed.
+- This is the precondition for the self-sufficiency contract ([ADR-KI-HARNESS-008](ADR-KI-HARNESS-008-bootstrapping-and-self-sufficiency.md)): scripts that run without an LLM can also run without the skill installed.
 
 ## References
 
-- [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md) — the self-sufficiency contract that builds on this stance.
+- [ADR-KI-HARNESS-008](ADR-KI-HARNESS-008-bootstrapping-and-self-sufficiency.md) — the self-sufficiency contract that builds on this stance.
 
 The per-skill realisation of this stance — splitting each skill's AUDIT into a mechanical checker and a judgment pass — is the downstream `ADR-KI-HARNESS-SKILLS-002`. The governing principle "Mechanical work belongs in the checker, not in tokens" is in the user guide's skill-design principles, and the modes (including INIT's pure-CLI behaviour) are set out in the `ki-engineering` enforcement framework, §5.

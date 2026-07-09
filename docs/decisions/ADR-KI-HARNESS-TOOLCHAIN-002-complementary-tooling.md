@@ -4,7 +4,7 @@
 
 ## Context
 
-As a session grows and the MCP surface expands, token cost per turn rises and the ergonomics of managing many servers, understanding what is loaded, and scripting against them become friction points. Tools from the [extraheadroom.com/reduce-claude-code-costs](https://extraheadroom.com/reduce-claude-code-costs) survey and adjacent sources are assessed against four criteria: (a) complementarity with the KI skills paradigm, (b) maturity, (c) absence of paradigm conflict — chiefly with the composition-only model ([ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-composition-over-extension.md)), the validate-down config contract ([ADR-KI-HARNESS-CONFIG-001](ADR-KI-HARNESS-CONFIG-001-validate-down-ki-config-contract.md)), and the file-based `memory/` + `MEMORY.md` convention — and (d) whether adoption needs a harness artifact or is satisfied by a personal/dev install. This record states the current disposition of each tool.
+As a session grows and the MCP surface expands, token cost per turn rises and the ergonomics of managing many servers, understanding what is loaded, and scripting against them become friction points. Tools from the [extraheadroom.com/reduce-claude-code-costs](https://extraheadroom.com/reduce-claude-code-costs) survey and adjacent sources are assessed against four criteria: (a) complementarity with the KI skills paradigm, (b) maturity, (c) absence of paradigm conflict — chiefly with the composition-only model ([ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-composition-over-extension.md)), the validate-down config contract ([ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-validate-down-ki-config-contract.md)), and the file-based `memory/` + `MEMORY.md` convention — and (d) whether adoption needs a harness artifact or is satisfied by a personal/dev install. This record states the current disposition of each tool.
 
 ## Decision
 
@@ -48,7 +48,7 @@ house-mcp-manager is a CLI that toggles MCP servers and saves named profiles by 
 ## References
 
 - [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-composition-over-extension.md) — Composition over extension (the paradigm the declines protect).
-- [ADR-KI-HARNESS-CONFIG-001](ADR-KI-HARNESS-CONFIG-001-validate-down-ki-config-contract.md) — Validate-down `.ki-config.toml` contract.
+- [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-validate-down-ki-config-contract.md) — Validate-down `.ki-config.toml` contract.
 - [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) — Skills must be valid standalone.
 - [ADR-KI-HARNESS-AGENTS-001](ADR-KI-HARNESS-AGENTS-001-subagent-isolation.md) — Subagent isolation for multi-skill invocation.
 - [ADR-KI-HARNESS-TOOLCHAIN-003](ADR-KI-HARNESS-TOOLCHAIN-003-mcporter-mcp-proxy.md) — Proxy local MCP servers behind mcporter.

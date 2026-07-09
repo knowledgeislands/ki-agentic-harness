@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-007: The bootstrapping chain and the self-sufficiency contract
+# ADR-KI-HARNESS-008: The bootstrapping chain and the self-sufficiency contract
 
 **Date:** 2026-07-09
 

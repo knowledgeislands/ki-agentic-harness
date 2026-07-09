@@ -25,4 +25,4 @@ The harness is not a general-purpose monorepo. Artefacts that belong to a specif
 
 - [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-composition-over-extension.md) — composition over extension: the paradigm the skills follow.
 - [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-five-part-bundle-layout.md) — the five-part bundle layout this repository realises.
-- [ADR-KI-HARNESS-CONFIG-001](ADR-KI-HARNESS-CONFIG-001-validate-down-ki-config-contract.md) — `.ki-config.toml` as the repo-to-skill binding mechanism.
+- [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-validate-down-ki-config-contract.md) — `.ki-config.toml` as the repo-to-skill binding mechanism.

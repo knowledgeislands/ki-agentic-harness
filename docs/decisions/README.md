@@ -12,13 +12,12 @@ ADR-<SCOPE>-NNN
 
 Sub-scopes used in this harness:
 
-| Sub-scope   | Purpose                                                 |
-| ----------- | ------------------------------------------------------- |
-| _(none)_    | Foundational paradigms and repository-level decisions   |
-| `SKILLS`    | Governance skill structure and canonical modes          |
-| `CONFIG`    | `.ki-config.toml` contract and validate-down convention |
-| `TOOLCHAIN` | Standard toolchain choices (Bun, Biome, etc.)           |
-| `AGENTS`    | Multi-skill invocation and subagent orchestration       |
+| Sub-scope   | Purpose                                               |
+| ----------- | ----------------------------------------------------- |
+| _(none)_    | Foundational paradigms and repository-level decisions |
+| `SKILLS`    | Governance skill structure and canonical modes        |
+| `TOOLCHAIN` | Standard toolchain choices (Bun, Biome, etc.)         |
+| `AGENTS`    | Multi-skill invocation and subagent orchestration     |
 
 ## Reading order
 
@@ -32,8 +31,9 @@ The records are living, compact, and independent. They are grouped here by scope
 4. [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-five-part-bundle-layout.md) — the five-part bundle layout (skills / agents / MCP / evals / hooks).
 5. [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-naming-model-and-harness-as-source.md) — the `ki-` naming model and harness-as-source vs plugin-as-projection.
 6. [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-mechanical-first-llm-optional.md) — mechanical-first, LLM-optional operation.
-7. [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md) — the bootstrapping chain and the self-sufficiency contract.
-8. [ADR-KI-HARNESS-008](ADR-KI-HARNESS-008-public-and-declared-license.md) — public repos and a declared license, decoupled from visibility.
+7. [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-validate-down-ki-config-contract.md) — the validate-down `.ki-config.toml` contract, the repo-to-skill binding every skill reads.
+8. [ADR-KI-HARNESS-008](ADR-KI-HARNESS-008-bootstrapping-and-self-sufficiency.md) — the bootstrapping chain and the self-sufficiency contract.
+9. [ADR-KI-HARNESS-009](ADR-KI-HARNESS-009-public-and-declared-license.md) — public repos and a declared license, decoupled from visibility.
 
 **2 · Skills (`SKILLS`) — how a skill is shaped, how skills relate, and decisions about specific skills.**
 
@@ -47,17 +47,13 @@ The records are living, compact, and independent. They are grouped here by scope
 8. [ADR-KI-HARNESS-SKILLS-008](ADR-KI-HARNESS-SKILLS-008-feature-definitions-skill.md) — a Feature Definitions skill for the "what".
 9. [ADR-KI-HARNESS-SKILLS-009](ADR-KI-HARNESS-SKILLS-009-tools-and-homebrew-tap-structure-skills.md) — ki-tools and ki-homebrew-tap repo-structure skills.
 
-**3 · Config (`CONFIG`) — the repo-to-skill binding.**
-
-1. [ADR-KI-HARNESS-CONFIG-001](ADR-KI-HARNESS-CONFIG-001-validate-down-ki-config-contract.md) — the validate-down `.ki-config.toml` contract.
-
-**4 · Toolchain (`TOOLCHAIN`) — the mechanical substrate.**
+**3 · Toolchain (`TOOLCHAIN`) — the mechanical substrate.**
 
 1. [ADR-KI-HARNESS-TOOLCHAIN-001](ADR-KI-HARNESS-TOOLCHAIN-001-standard-toolchain.md) — the Bun / Biome / knip standard toolchain.
 2. [ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling.md) — complementary tooling currently adopted.
 3. [ADR-KI-HARNESS-TOOLCHAIN-003](ADR-KI-HARNESS-TOOLCHAIN-003-mcporter-mcp-proxy.md) — proxying local MCP servers behind mcporter.
 
-**5 · Agents (`AGENTS`) — multi-skill invocation and orchestration.**
+**4 · Agents (`AGENTS`) — multi-skill invocation and orchestration.**
 
 1. [ADR-KI-HARNESS-AGENTS-001](ADR-KI-HARNESS-AGENTS-001-subagent-isolation.md) — subagent isolation for multi-skill invocation.
 
@@ -71,9 +67,9 @@ The records are living, compact, and independent. They are grouped here by scope
 | ADR-KI-HARNESS-004 | [Five-part harness bundle layout](ADR-KI-HARNESS-004-five-part-bundle-layout.md) | 2024-01-01 |
 | ADR-KI-HARNESS-005 | [The ki- naming model and harness-as-source vs plugin-as-projection](ADR-KI-HARNESS-005-naming-model-and-harness-as-source.md) | 2026-07-07 |
 | ADR-KI-HARNESS-006 | [Mechanical-first, LLM-optional operation](ADR-KI-HARNESS-006-mechanical-first-llm-optional.md) | 2026-07-09 |
-| ADR-KI-HARNESS-007 | [The bootstrapping chain and the self-sufficiency contract](ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md) | 2026-07-09 |
-| ADR-KI-HARNESS-008 | [Public repos and a declared license, decoupled from visibility](ADR-KI-HARNESS-008-public-and-declared-license.md) | 2026-07-09 |
-| ADR-KI-HARNESS-CONFIG-001 | [Validate-down .ki-config.toml contract](ADR-KI-HARNESS-CONFIG-001-validate-down-ki-config-contract.md) | 2024-01-01 |
+| ADR-KI-HARNESS-007 | [Validate-down .ki-config.toml contract](ADR-KI-HARNESS-007-validate-down-ki-config-contract.md) | 2024-01-01 |
+| ADR-KI-HARNESS-008 | [The bootstrapping chain and the self-sufficiency contract](ADR-KI-HARNESS-008-bootstrapping-and-self-sufficiency.md) | 2026-07-09 |
+| ADR-KI-HARNESS-009 | [Public repos and a declared license, decoupled from visibility](ADR-KI-HARNESS-009-public-and-declared-license.md) | 2026-07-09 |
 | ADR-KI-HARNESS-SKILLS-001 | [AUDIT/CONFORM/INIT/REFRESH canonical modes](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) | 2024-01-01 |
 | ADR-KI-HARNESS-SKILLS-002 | [Mechanical and judgment checker split](ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md) | 2024-01-01 |
 | ADR-KI-HARNESS-SKILLS-003 | [Dependency order for multi-skill composition](ADR-KI-HARNESS-SKILLS-003-dependency-order-composition.md) | 2024-01-01 |

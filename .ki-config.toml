@@ -1,7 +1,7 @@
 # Knowledge Islands repo config — read by the ki-repo skill.
 # One [table] per skill that needs per-repo options.
 [ki-repo]
-visibility = "public"    # "public" | "private" — public + MIT (ADR-KI-HARNESS-008)
+visibility = "public"    # "public" | "private" — public + MIT (ADR-KI-HARNESS-009)
 license = "MIT"          # SPDX id; the LICENSE, package.json, and GitHub must match (default MIT).
 # This repo fully conforms, so it declares no check overrides. To diverge, add a
 # [ki-repo.checks] table with one boolean per check (true = enforce).
