@@ -19,5 +19,4 @@ Each governance skill needed to know whether it applied to a given repo, and wha
 
 ## References
 
-- [skills/ki-repo/references/ki-config-standard.md](../../skills/ki-repo/references/ki-config-standard.md) — the full `.ki-config.toml` contract.
-- [skills/ki-repo/SKILL.md](../../skills/ki-repo/SKILL.md) — the coverage-gate model.
+This record is self-contained. Its sources are the `ki-repo` skill's `ki-config-standard` reference, which holds the full `.ki-config.toml` contract, and the `ki-repo` SKILL.md, which describes the coverage-gate model.

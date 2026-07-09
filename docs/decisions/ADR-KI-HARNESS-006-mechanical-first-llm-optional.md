@@ -25,5 +25,5 @@ Every skill's mechanical half runs standalone — no LLM, no model context — a
 
 - [ADR-KI-HARNESS-SKILLS-002](ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md) — the mechanical/judgment checker split this generalises.
 - [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md) — the self-sufficiency contract that builds on this stance.
-- [docs/skill-design.md](../guides/user-guide/skill-design.md) §Principles — "Mechanical work belongs in the checker, not in tokens".
-- [enforcement-framework.md](../../skills/ki-engineering/references/enforcement-framework.md) §5 — the modes, including INIT's pure-CLI behaviour.
+- The user-guide skill-design doc, §Principles — "Mechanical work belongs in the checker, not in tokens".
+- The `ki-engineering` enforcement-framework reference, §5 — the modes, including INIT's pure-CLI behaviour.

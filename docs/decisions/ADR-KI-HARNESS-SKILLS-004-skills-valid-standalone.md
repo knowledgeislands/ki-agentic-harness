@@ -24,5 +24,4 @@ Every skill must be **valid installed standalone**. Specifically:
 
 ## References
 
-- [docs/skill-design.md](../guides/user-guide/skill-design.md) §Principles — "Composition only" and standalone validity.
-- [skills/ki-engineering/references/enforcement-framework.md](../../skills/ki-engineering/references/enforcement-framework.md) §2 — "depend on Node/Bun builtins only — no npm dependencies; be self-contained: no imports from another skill's files".
+This record is self-contained. The "Composition only" principle and standalone validity are set out in the user guide's skill-design principles, and the checker self-containment rule — "depend on Node/Bun builtins only — no npm dependencies; be self-contained: no imports from another skill's files" — is in the `ki-engineering` enforcement framework (§2).

@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-001: Composition over extension
+# ADR-KI-HARNESS-003: Composition over extension
 
 **Date:** 2024-01-01
 
@@ -20,5 +20,4 @@ Skills relate to one another exclusively through **composition**: a skill runs a
 
 ## References
 
-- [docs/skill-design.md](../guides/user-guide/skill-design.md) §Principles — the Composition-only principle (SHAPE-2).
-- [skills/ki-engineering/references/enforcement-framework.md](../../skills/ki-engineering/references/enforcement-framework.md) §6 — "Standard, not base-coupled extension (SHAPE-2)".
+This record is self-contained. The rule it states is carried in the user guide's skill-design principles as the Composition-only principle, and enforced mechanically as SHAPE-2 ("Standard, not base-coupled extension") in the `ki-engineering` enforcement framework and the `ki-skills` rubric.

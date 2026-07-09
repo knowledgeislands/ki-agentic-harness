@@ -26,5 +26,5 @@ Governance bootstraps through a single chain, runnable from the remote source wi
 
 - [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-mechanical-first-llm-optional.md) — the mechanical-first stance this depends on.
 - [ADR-KI-HARNESS-SKILLS-001](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) — INIT as the universal mode whose mechanical half is `scripts/bootstrap.ts`.
-- [skills/ki-bootstrap/SKILL.md](../../skills/ki-bootstrap/SKILL.md) — the chain-starter keystone.
-- [enforcement-framework.md](../../skills/ki-engineering/references/enforcement-framework.md) §5 — INIT and the self-sufficiency contract.
+- The `ki-bootstrap` skill — the chain-starter keystone.
+- The `ki-engineering` enforcement-framework reference, §5 — INIT and the self-sufficiency contract.

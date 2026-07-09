@@ -6,7 +6,7 @@
 
 Releasing the `mgit` CLI produced two repos that no existing repo-structure skill governs: `tools-mgit` (a standalone command-line tool — a bash script, no `package.json`, no TypeScript) and `homebrew-tap` (the Homebrew distribution repo carrying `Formula/*.rb`). Neither matches the five shapes in [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md) (`ki-harness`, `ki-kb`, `ki-website`, `ki-mcp`, `ki-plugins`), so both were published with no `.ki-config.toml` and fell outside governance.
 
-Per [ADR-KI-HARNESS-001](ADR-KI-HARNESS-001-composition-over-extension.md), a genuinely new _repo shape_ warrants a new repo-structure skill; a _variation_ of an existing shape is declared in `.ki-config.toml` + `CLAUDE.md`, never forked. A standalone CLI tool and a package-manager tap are each a genuinely new shape. Two precedents make this low-friction: `ki-kb` is a repo-structure skill whose checker uses only Bun/Node built-ins and never rides the `ki-engineering` TS toolchain; `ki-plugins` is a governed repo with no `package.json` that deliberately omits `[ki-engineering]` and is still compliant (a bare `[ki-repo]` marker is a complete config).
+Per [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-composition-over-extension.md), a genuinely new _repo shape_ warrants a new repo-structure skill; a _variation_ of an existing shape is declared in `.ki-config.toml` + `CLAUDE.md`, never forked. A standalone CLI tool and a package-manager tap are each a genuinely new shape. Two precedents make this low-friction: `ki-kb` is a repo-structure skill whose checker uses only Bun/Node built-ins and never rides the `ki-engineering` TS toolchain; `ki-plugins` is a governed repo with no `package.json` that deliberately omits `[ki-engineering]` and is still compliant (a bare `[ki-repo]` marker is a complete config).
 
 ## Decision
 
@@ -27,6 +27,6 @@ Add two repo-structure skills, growing the cluster-3 membership from five to **s
 ## References
 
 - [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md) — the taxonomy this extends (cluster 3, repo-structure).
-- [ADR-KI-HARNESS-001](ADR-KI-HARNESS-001-composition-over-extension.md) — composition over extension: new shape → new skill, variation → declaration.
+- [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-composition-over-extension.md) — composition over extension: new shape → new skill, variation → declaration.
 - [ADR-KI-HARNESS-SKILLS-008](ADR-KI-HARNESS-SKILLS-008-feature-definitions-skill.md) — the precedent for adding a skill against the ADR-006 taxonomy.
-- [checker-contract.md](../../skills/ki-engineering/references/checker-contract.md) — the checker output/exit contract both new checkers follow.
+- The `ki-engineering` checker-contract reference — the checker output/exit contract both new checkers follow.

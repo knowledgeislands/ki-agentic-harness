@@ -25,5 +25,4 @@ A criterion starts in the checker unless it genuinely requires judgment. A crite
 
 ## References
 
-- [skills/ki-engineering/references/enforcement-framework.md](../../skills/ki-engineering/references/enforcement-framework.md) §2 — the mechanical-checker contract, §3 — the rubric format.
-- [docs/skill-design.md](../guides/user-guide/skill-design.md) §Principles — "Mechanical work belongs in the checker, not in tokens (SHAPE-9)".
+This record is self-contained. The mechanical-checker contract (§2) and the rubric format (§3) are set out in the `ki-engineering` enforcement framework, and the governing principle "Mechanical work belongs in the checker, not in tokens (SHAPE-9)" is in the user guide's skill-design principles.

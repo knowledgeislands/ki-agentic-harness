@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-003: Adopting Architecture Decision Records
+# ADR-KI-HARNESS-001: Adopting Architecture Decision Records
 
 **Date:** 2026-06-23
 
@@ -34,7 +34,4 @@ DR files live in `docs/decisions/` and are indexed in `docs/decisions/README.md`
 
 ## References
 
-- [docs/decisions/README.md](README.md) — the index of all DRs in this harness.
-- `GDR-KI-ARCADIA-001` (ki-arcadia-principal) — the KI-level decision that established DRs as the instrument; this ADR is its harness realisation (`decision_depends_on: ["GDR-KI-ARCADIA-001"]`)
-- [skills/ki-decision-records/SKILL.md](../../skills/ki-decision-records/SKILL.md) — the governance skill that defines and enforces the DR format used here.
-- [Michael Nygard, "Documenting Architecture Decisions"](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) — the original ADR proposal this format descends from.
+This record is self-contained; the sources behind it are named rather than linked. It is the harness realisation of `GDR-KI-ARCADIA-001` (the KI-level governance decision in ki-arcadia-principal that established Decision Records as the instrument, recorded here as `decision_depends_on: ["GDR-KI-ARCADIA-001"]`). The DR format used here is defined and enforced by the `ki-decision-records` skill, and descends from Michael Nygard's 2011 "Documenting Architecture Decisions" proposal. The index of all DRs in this harness is the `README.md` in this directory.

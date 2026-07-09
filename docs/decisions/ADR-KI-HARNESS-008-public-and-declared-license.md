@@ -10,7 +10,7 @@ The repo standard coupled license to visibility: a public repo had to carry MIT,
 
 Knowledge Islands repos are **public by default** (installable from source), and each repo **declares its license** as an SPDX id, decoupled from visibility.
 
-- `[ki-repo]` gains a `license` field — an SPDX id (e.g. `MIT`, `Apache-2.0`), or `UNLICENSED`/`proprietary` for all-rights-reserved — **defaulting to MIT** when unset. [choosealicense.com](https://choosealicense.com/) is the picker and the REFRESH source.
+- `[ki-repo]` gains a `license` field — an SPDX id (e.g. `MIT`, `Apache-2.0`), or `UNLICENSED`/`proprietary` for all-rights-reserved — **defaulting to MIT** when unset. choosealicense.com is the picker and the REFRESH source.
 - The `license`, `license-file`, and `package-license` checks verify that the **live GitHub license, the `LICENSE` file, and `package.json` `"license"` all match the declared-or-default id**. A proprietary declaration expects no recognised OSI license on GitHub and `"UNLICENSED"` in `package.json`.
 - Visibility remains a separate, independently-declared-and-checked fact. A private repo may be MIT; a public repo may be proprietary. This supersedes the ki-plugins-private direction: `ki-plugins` declares its proprietary license and stays public with no FAIL.
 
@@ -24,5 +24,5 @@ Knowledge Islands repos are **public by default** (installable from source), and
 ## References
 
 - [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-naming-model-and-harness-as-source.md) — harness-as-source vs plugin-as-projection, which this makes installable.
-- [repo-standard.md](../../skills/ki-repo/references/repo-standard.md) — the license and visibility checks in full.
+- The `ki-repo` repo standard — the license and visibility checks in full.
 - [ADR-KI-HARNESS-CONFIG-001](ADR-KI-HARNESS-CONFIG-001-validate-down-ki-config-contract.md) — the `.ki-config.toml` contract the `license` field extends.
