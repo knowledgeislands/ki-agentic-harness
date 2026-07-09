@@ -13,6 +13,6 @@ _On-demand procedure for decision-records' AUDIT and CONFORM modes (CONFORM runs
 1. Run **AUDIT** first.
 2. **File renames** — if a filename or prefix does not match, confirm with the user before renaming (a rename changes the canonical ID).
 3. **Section repairs** — add missing section stubs; leave content for the author.
-4. **Index repair** — add missing rows, correct stale dates, restore reveal-order ordering, drop any leftover Status column.
+4. **Index repair** — add missing entries, restore reveal-order ordering, and convert any leftover table to the ordered-list form.
 5. **Present-state migration** — flag any record still carrying old-format lifecycle cruft (`**Status:**`, `**Mutability:**`, `## Changelog`, `Superseded by`/`Supersedes` lines) and rewrite it to the living-record form.
 6. Re-run **AUDIT** to confirm convergence.

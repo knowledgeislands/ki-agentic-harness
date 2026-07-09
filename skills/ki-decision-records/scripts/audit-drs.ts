@@ -125,42 +125,17 @@ async function main() {
 
   const indexContent = hasIndex ? await readFile(join(resolvedDir, indexFile), 'utf8') : ''
 
-  // Parse the index table. The header row locates the Status/Date columns; each data
-  // row yields a DR ID from its first cell — linked (`[ID](file.md)`) or bare — plus
-  // its status/date cells. Works for both the KB (`Decisions.md`) and code (`README.md`)
-  // index conventions.
-  interface IndexRow {
-    date: string
-  }
+  // Parse the index. It is an ordered list in reveal order — each item links a DR by its
+  // ID (`N. [ID](file.md) — title`). IDs are collected in list order so within-prefix
+  // ordering (INDEX-8) can be checked against the reveal sequence. Works for both the KB
+  // (`Decisions.md`) and code (`README.md`) index conventions.
   const indexedIds = new Set<string>()
-  const indexRows = new Map<string, IndexRow>()
-  const ID_IN_CELL = /([A-Z]+DR-[A-Z][A-Z0-9-]+-\d{3,})/
-  let dateCol = -1
-
-  const splitRow = (line: string): string[] | null => {
-    if (!/^\s*\|/.test(line)) return null
-    return line
-      .split('|')
-      .slice(1, -1)
-      .map((c) => c.trim())
-  }
+  const ID_IN_ITEM = /^\s*(?:\d+\.|[-*])\s+.*?([A-Z]+DR-[A-Z][A-Z0-9-]+-\d{3,})/
 
   for (const line of indexContent.split('\n')) {
-    const cells = splitRow(line)
-    if (!cells) continue
-    // Header row: locate the Date column by label, once.
-    if (dateCol === -1 && cells.some((c) => /^date$/i.test(c))) {
-      dateCol = cells.findIndex((c) => /^date$/i.test(c))
-      continue
-    }
-    // Data row: the first cell must carry a DR ID.
-    const idMatch = cells[0]?.match(ID_IN_CELL)
+    const idMatch = line.match(ID_IN_ITEM)
     if (!idMatch) continue
-    const id = idMatch[1]
-    indexedIds.add(id)
-    indexRows.set(id, {
-      date: dateCol >= 0 ? (cells[dateCol] ?? '') : ''
-    })
+    indexedIds.add(idMatch[1])
   }
 
   const seenSerials = new Map<string, string>() // "SCOPE-NNN" → filename
@@ -270,26 +245,41 @@ async function main() {
       }
     }
 
-    // INDEX-2: must have a row in the index
+    // INDEX-2: must have an entry in the index list
     if (hasIndex && !indexedIds.has(drId)) {
-      add('INDEX-2', Sev.FAIL, file, `no row in ${indexFile} for ${drId}`)
+      add('INDEX-2', Sev.FAIL, file, `no entry in ${indexFile} for ${drId}`)
     }
+  }
 
-    // INDEX-5: date sync with index (only when the Date column exists and the DR carries a valid date)
-    if (hasIndex && dateCol >= 0 && dateValue && /^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
-      const row = indexRows.get(drId)
-      if (row?.date && row.date !== dateValue) {
-        add('INDEX-5', Sev.WARN, file, `index date '${row.date}' does not match DR date '${dateValue}'`)
+  // INDEX-3: no orphan entries in the index list
+  if (hasIndex) {
+    for (const indexedId of indexedIds) {
+      if (!drFiles.some((f) => f.startsWith(indexedId))) {
+        add('INDEX-3', Sev.FAIL, indexFile, `index entry for '${indexedId}' has no matching DR file`)
       }
     }
   }
 
-  // INDEX-3: no orphan rows in index
+  // INDEX-8: within each prefix, serials must ascend in reveal (row) order — a
+  // PREFIX-NNN row never precedes a lower-numbered PREFIX-MMM. A violation is a
+  // drafting issue (fix by renumbering, not by reordering out of sequence).
   if (hasIndex) {
+    const maxSerialByPrefix = new Map<string, number>()
     for (const indexedId of indexedIds) {
-      if (!drFiles.some((f) => f.startsWith(indexedId))) {
-        add('INDEX-3', Sev.FAIL, indexFile, `index row for '${indexedId}' has no matching DR file`)
+      const serialMatch = indexedId.match(/^(.*)-(\d{3,})$/)
+      if (!serialMatch) continue
+      const prefixKey = serialMatch[1] ?? ''
+      const serialNum = Number(serialMatch[2])
+      const prevMax = maxSerialByPrefix.get(prefixKey)
+      if (prevMax !== undefined && serialNum < prevMax) {
+        add(
+          'INDEX-8',
+          Sev.WARN,
+          indexFile,
+          `${indexedId} precedes a lower-numbered ${prefixKey}-${String(prevMax).padStart(3, '0')} in the reading order; within a prefix serials must ascend (drafting issue — renumber, don't reorder)`,
+        )
       }
+      maxSerialByPrefix.set(prefixKey, Math.max(prevMax ?? 0, serialNum))
     }
   }
 

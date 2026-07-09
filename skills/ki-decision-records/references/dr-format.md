@@ -176,15 +176,14 @@ author: Written with Claude
 
 ## Index
 
-The index file — `Decisions.md` in a KB, `README.md` in a code repo (GitHub renders it as the folder landing) — must carry a Markdown table with one row per DR. The first column holds the DR ID, as a relative link or bare; the checker locates an optional **Date** column by its header label, so extra columns (e.g. **Type**) are fine. Order rows by **reveal order** — the logical reading sequence derived from the `decision_depends_on` dependency graph (roots first, then dependents), filename within a level. This surfaces the story the DRs collectively tell rather than an arbitrary filename sort (a judgment item — the checker does not enforce a mechanical sort):
+The index file — `Decisions.md` in a KB, `README.md` in a code repo (GitHub renders it as the folder landing) — must carry an **ordered list**, one item per DR, each item linking the record by its ID. A list, not a table: a table earns its overhead only for tabular data or comparison across columns, and an index is neither — it is a single ordered sequence, so a list carries it with less markup. Order the items by **reveal order** — a curated **build narrative**: the records read as if written from scratch, before anything was created, each building on the ones before it, so a concept is introduced at its record and later records may name it explicitly. Weave the sub-scopes into this one sequence where they belong rather than grouping them apart. The order is authorial — a record's dependence on earlier ones is often stated in prose, not only in the `decision_depends_on` field, so the sequence is not mechanically derived. Two constraints hold: roots precede dependents across the whole set (judgment — INDEX-6), and **within any one prefix the serials ascend in reveal order** — a `PREFIX-NNN` never appears before a lower-numbered `PREFIX-MMM`. If the build narrative wants a record earlier than its serial allows, that is a drafting issue fixed by renumbering, not by placing it out of sequence (mechanical — INDEX-8):
 
 ```markdown
-| DR ID           | Title                                                                     | Type       | Date       |
-| --------------- | ------------------------------------------------------------------------- | ---------- | ---------- |
-| GDR-ARCADIA-001 | [Adopting Decision Records](GDR-ARCADIA-001-adopting-decision-records.md) | governance | 2026-06-25 |
+1. [GDR-ARCADIA-001](GDR-ARCADIA-001-adopting-decision-records.md) — adopting Decision Records (the format these records follow).
+2. [GDR-ARCADIA-002](GDR-ARCADIA-002-...) — the next decision in the build sequence.
 ```
 
-The Title cell is a relative link. A **Date** column (if present) must match the DR's own `**Date:**` field. There is no **Status** column — records are living and present-state, not lifecycle-tracked.
+Each item links the record by its ID and gives a short gloss of what it decides. Per-record dates live in each record's own `**Date:**` field, not in the index. There is no status or lifecycle marker — records are living and present-state.
 
 ## Writing guidance
 

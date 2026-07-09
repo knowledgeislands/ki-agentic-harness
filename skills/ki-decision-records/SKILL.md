@@ -29,10 +29,10 @@ You are applying the **Knowledge Islands Decision Records standard** — how Dec
 
 3. **The naming convention** — `<PREFIX>-<SCOPE>-NNN`: open scope (any uppercase alpha-leading token, multi-level), NNN is zero-padded (≥ 3 digits), monotonically increasing **per prefix within the scope** (NNN is unique for a given `<PREFIX>`+`<SCOPE>` — two DRs may share a serial if their prefixes differ).
 4. **The living-record principle** — a DR states the decision as it stands **now** and is edited **in place**; there is no status lifecycle, no mutability marker, no supersession chain, and no changelog. A change of direction rewrites the live record rather than superseding it, so every record reads as if written today. See [dr-format.md](references/dr-format.md).
-5. **The index rule** — `Decisions.md` (code: `README.md` or `Decisions.md`) must contain a table with one row per DR, ordered by filename.
+5. **The index rule** — `Decisions.md` (code: `README.md` or `Decisions.md`) must contain an ordered list, one item per DR, in reveal order.
 6. **The placement rule** — `repo_type = "kb"` in `.ki-config.toml` → `Admin/Governance/Decisions/`; all others → `docs/decisions/`. Pass the actual path to the checker.
 7. **The Enactment Process integration** — a DR is the formal artifact for an Enactment Process proposal whose `Decision` output warrants a standalone record.
-8. **The mechanical checker** — [`scripts/audit-drs.ts`](scripts/audit-drs.ts) validates filenames, prefix–type agreement, required sections, an optional `**Date:**` field, `type`/`decision_type` fields (KB mode), serial uniqueness, and index completeness/date-sync. Detects KB vs code mode automatically from `.ki-config.toml`.
+8. **The mechanical checker** — [`scripts/audit-drs.ts`](scripts/audit-drs.ts) validates filenames, prefix–type agreement, required sections, an optional `**Date:**` field, `type`/`decision_type` fields (KB mode), serial uniqueness, index completeness, and reveal-order serial ascension within each prefix. Detects KB vs code mode automatically from `.ki-config.toml`.
 
 ## Operating modes
 
