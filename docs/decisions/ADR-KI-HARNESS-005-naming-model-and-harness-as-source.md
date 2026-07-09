@@ -30,6 +30,6 @@ The second is packaging. This repository is an agentic harness: a dev-time sourc
 ## References
 
 - The `ki-mcp` cross-surface-enablement design record — the design record for the single-source-to-many-surfaces fan-out that `ki-binding` realises.
-- [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-purpose-and-scope.md) — the bundle layout that is the source this decision projects.
-- [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-purpose-and-scope.md) — the purpose and scope of this repository as the harness.
+- [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-purpose-scope-structure.md) — the bundle layout that is the source this decision projects.
+- [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-purpose-scope-structure.md) — the purpose and scope of this repository as the harness.
 - The `ki-bootstrap` skill — the keystone that links project-local skills, the Claude Code arm of the projection.

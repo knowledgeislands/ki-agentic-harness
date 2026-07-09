@@ -26,7 +26,7 @@ The records are living, compact, and independent. They are grouped here by scope
 **1 · Foundations (`ADR-KI-HARNESS-NNN`) — what the repo is and the paradigms everything rests on.**
 
 1. [ADR-KI-HARNESS-001](ADR-KI-HARNESS-001-adopting-decision-records.md) — adopting Decision Records (the format these records themselves follow).
-2. [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-purpose-and-scope.md) — the purpose, scope, and structure of the repository (its bundle layout).
+2. [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-purpose-scope-structure.md) — the purpose, scope, and structure of the repository (its bundle layout).
 3. [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-composition-over-extension.md) — composition over extension, the principle no skill may break.
 4. [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-naming-model-and-harness-as-source.md) — the `ki-` naming model and harness-as-source vs plugin-as-projection.
 5. [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-mechanical-first-llm-optional.md) — mechanical-first, LLM-optional operation.
@@ -61,7 +61,7 @@ The records are living, compact, and independent. They are grouped here by scope
 | ID | Title | Date |
 | --- | --- | --- |
 | ADR-KI-HARNESS-001 | [Adopting Architecture Decision Records](ADR-KI-HARNESS-001-adopting-decision-records.md) | 2026-06-23 |
-| ADR-KI-HARNESS-002 | [Purpose, scope, and structure of this repository](ADR-KI-HARNESS-002-purpose-and-scope.md) | 2026-06-23 |
+| ADR-KI-HARNESS-002 | [Purpose, scope, and structure of this repository](ADR-KI-HARNESS-002-purpose-scope-structure.md) | 2026-06-23 |
 | ADR-KI-HARNESS-003 | [Composition over extension](ADR-KI-HARNESS-003-composition-over-extension.md) | 2026-06-23 |
 | ADR-KI-HARNESS-005 | [The ki- naming model and harness-as-source vs plugin-as-projection](ADR-KI-HARNESS-005-naming-model-and-harness-as-source.md) | 2026-07-07 |
 | ADR-KI-HARNESS-006 | [Mechanical-first, LLM-optional operation](ADR-KI-HARNESS-006-mechanical-first-llm-optional.md) | 2026-07-09 |
