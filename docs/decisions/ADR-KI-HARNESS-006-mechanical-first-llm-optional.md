@@ -4,7 +4,7 @@
 
 ## Context
 
-The governance skills run in two ways: an agent (LLM) applies judgment, and plain automation (CI, pre-commit hooks, scheduled REFRESH sweeps, a bootstrap on a machine with no model) runs the deterministic work. When a skill's core work needs an LLM to execute at all, none of the automated paths work, and every AUDIT re-derives deterministic facts in model context at token cost. The mechanical/judgment split ([ADR-KI-HARNESS-SKILLS-002](ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md)) already isolates the deterministic criteria in a checker; this record states the broader operating stance that follows.
+The governance skills run in two ways: an agent (LLM) applies judgment, and plain automation (CI, pre-commit hooks, scheduled REFRESH sweeps, a bootstrap on a machine with no model) runs the deterministic work. When a skill's core work needs an LLM to execute at all, none of the automated paths work, and every AUDIT re-derives deterministic facts in model context at token cost. This record fixes the foundational stance that prevents that: the deterministic work must stand on its own, runnable without a model. It is the stance each skill then applies by isolating its deterministic criteria in a standalone checker.
 
 ## Decision
 
@@ -23,7 +23,6 @@ Every skill's mechanical half runs standalone — no LLM, no model context — a
 
 ## References
 
-- [ADR-KI-HARNESS-SKILLS-002](ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md) — the mechanical/judgment checker split this generalises.
 - [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md) — the self-sufficiency contract that builds on this stance.
-- The user-guide skill-design doc, §Principles — "Mechanical work belongs in the checker, not in tokens".
-- The `ki-engineering` enforcement-framework reference, §5 — the modes, including INIT's pure-CLI behaviour.
+
+The per-skill realisation of this stance — splitting each skill's AUDIT into a mechanical checker and a judgment pass — is the downstream `ADR-KI-HARNESS-SKILLS-002`. The governing principle "Mechanical work belongs in the checker, not in tokens" is in the user guide's skill-design principles, and the modes (including INIT's pure-CLI behaviour) are set out in the `ki-engineering` enforcement framework, §5.
