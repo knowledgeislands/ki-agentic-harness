@@ -5,7 +5,7 @@ ADR: [ADR-KI-HARNESS-SKILLS-002](../../../docs/decisions/ADR-KI-HARNESS-SKILLS-0
 A checker is the deterministic half of a standard. It MUST:
 
 - take a target path as its argument and read only that target (`bun scripts/audit-<concern>.ts <path>`);
-- emit grouped findings on the **severity ladder** below, each tagged with an area, and a one-line summary tally;
+- emit grouped findings on the **severity ladder** below, each tagged with an area, and a one-line summary tally in the canonical `KEY=n` form — `FAIL=n WARN=n POLISH=n PASS=n ADVISORY=n NA=n`, in ladder order, listing the subset of levels the concern tracks — optionally prefixed by a target count (`N repo(s) · …`) or suffixed by a concern-specific figure (`… · standing surface ~X`). A per-finding checker with no aggregate count (it prints each finding's level inline, e.g. the DR / feature audits) is exempt from the tally line;
 - print a **remediation footer** whenever the summary is not clean (any FAIL / WARN / POLISH), naming the skill and mode that addresses it — see [The remediation footer](#the-remediation-footer);
 - exit **non-zero iff any FAIL** (every other level exits 0);
 - support **`--json`** (emit findings as JSON to stdout instead of the painted table) and **`--report [dir]`** (write the report under the target's `.ki-meta/audits/`, see `enforcement-framework.md` §5) — both are read-only with respect to the audited content;

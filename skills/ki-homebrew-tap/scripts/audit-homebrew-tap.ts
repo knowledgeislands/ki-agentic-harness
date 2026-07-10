@@ -298,7 +298,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     na: n('NA'),
     pass: n('PASS')
   }
-  const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.na} n/a`
+  const tally = `FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na}`
   const stamp = new Date().toISOString()
 
   if (report) {

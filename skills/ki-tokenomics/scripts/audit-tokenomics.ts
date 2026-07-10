@@ -487,7 +487,7 @@ if (reportOut) {
     const rows = findings.filter((f) => f.level === l)
     return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
   })
-  const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.na} n/a · standing surface ${tok(total)}`
+  const tally = `FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na} · standing surface ${tok(total)}`
   writeFileSync(
     join(reportDir, 'tokenomics.md'),
     [`# tokenomics audit — ${target}`, '', `_${isoStamp}_`, '', tally, ...body, ''].join('\n')
@@ -514,7 +514,7 @@ if (jsonOut) {
     }
   }
   console.log(
-    `\n${paint(C.cyan, 'summary')}: ${paint(C.red, `${fails.length} fail`)}, ${paint(C.yellow, `${warns.length} warn`)} · standing surface ${tok(total)}`
+    `\n${paint(C.cyan, 'summary')}: FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na} · standing surface ${tok(total)}`
   )
   // Remediation footer (checker-contract) — non-clean summary routes to the judgment mode.
   if (fails.length + warns.length + summary.polish > 0) {

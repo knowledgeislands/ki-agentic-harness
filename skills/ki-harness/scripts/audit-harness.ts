@@ -244,9 +244,7 @@ function report(findings: Finding[]): void {
 
   const passCount = findings.filter((f) => f.severity === 'PASS').length
   console.log('')
-  console.log(
-    `  ${DIM}${passCount} passed${RESET}   ${fails > 0 ? `${RED}${fails} failed${RESET}` : `${GREEN}0 failed${RESET}`}   ${warns > 0 ? `${YELLOW}${warns} warned${RESET}` : `${DIM}0 warned${RESET}`}`
-  )
+  console.log(`  ${DIM}FAIL=${fails} WARN=${warns} PASS=${passCount}${RESET}`)
 }
 
 // ── Entry ──────────────────────────────────────────────────────────────────────

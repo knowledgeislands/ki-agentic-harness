@@ -610,7 +610,7 @@ if (reportOut) {
     const rows = all.filter((f) => f.level === l)
     return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
   })
-  const tally = `${skillDirs.length} skill(s) · ${summary.fail} fail · ${summary.warn} warn`
+  const tally = `${skillDirs.length} skill(s) · FAIL=${summary.fail} WARN=${summary.warn}`
   writeFileSync(join(reportDir, 'skills.md'), [`# skills audit — ${reportTarget}`, '', `_${stampIso}_`, '', tally, ...body, ''].join('\n'))
   writeFileSync(
     join(reportDir, 'skills.json'),
@@ -623,9 +623,7 @@ if (jsonOut) {
     `${JSON.stringify({ concern: 'skills', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`
   )
 } else {
-  console.log(
-    `\n${paint(C.cyan, 'summary')}: ${skillDirs.length} skill(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}`
-  )
+  console.log(`\n${paint(C.cyan, 'summary')}: ${skillDirs.length} skill(s) · FAIL=${totalFails} WARN=${totalWarns}`)
   if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'skills.{md,json}')}`))
   if (totalFails + totalWarns > 0) console.log('→ to address: run /ki-skills CONFORM   (judgment criteria: references/audit-rubric.md)')
   console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria from references/audit-rubric.md by reading.'))

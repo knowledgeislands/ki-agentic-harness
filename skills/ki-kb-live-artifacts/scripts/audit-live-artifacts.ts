@@ -170,7 +170,7 @@ for (const level of ORDER) {
 }
 
 const counts = { fail: byLevel.FAIL?.length ?? 0, warn: byLevel.WARN?.length ?? 0 }
-const summary = `${counts.fail} fail · ${counts.warn} warn`
+const summary = `FAIL=${counts.fail} WARN=${counts.warn}`
 console.log('─'.repeat(60))
 console.log(paint(C.dim, summary))
 if (counts.fail + counts.warn > 0)
