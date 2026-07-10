@@ -93,6 +93,13 @@ The trade-off is the prompt cache: deferral shifts cost from a fixed standing ta
 
 The prose surface — `CLAUDE.md` and its `@imports`, the `MEMORY.md` index, and each installed skill's `description` — is standing cost too. The `ki-tokenomics` skill catalogues and budgets it; `bun run ki:tokenomics:audit` measures it. Keeping the keystone-plus-project-local install model (see [Installation](installation.md)) is what keeps unrelated skills' descriptions out of a session in the first place.
 
+Memory is the one layer where two different audits apply, and they are complementary — do the hygiene pass first, because it usually shrinks the surface the cost pass then measures:
+
+- **Cost (tokenomics)** — how many tokens the `MEMORY.md` index and the injected memory block add to the standing prefix. `bun run ki:tokenomics:audit` measures it against the budget.
+- **Hygiene (housekeeping)** — whether the `memory/*.md` entries are still true, correctly typed (user / feedback / project / reference), agree with the index, and are reconciled (a fact promoted to a `CLAUDE.md` must be _deleted_ from memory, not left in both). `bun run ki:housekeeping:audit` runs the memory checker (`audit-memory.ts`) over the per-project store.
+
+The scope rule the hygiene pass enforces is also the cheapest way to keep the index small: repo-specific guidance belongs in that repo's `CLAUDE.md`, cross-project personal preferences in `~/.claude/*.md`, and only genuine user/reference facts stay in memory. Machine-generated noise — stale "learned patterns" blocks, another repo's paths — is both a hygiene failure and dead standing cost; prune it here rather than compressing it at runtime.
+
 ## Runtime — compress and cache what does load
 
 - **Headroom** compresses tool _results_ — it reversibly substitutes large output blocks it has already seen in the stream (see [Installation](installation.md) for proxy vs wrap mode). This is a runtime lever; it does not touch tool definitions.
