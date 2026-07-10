@@ -317,6 +317,15 @@ function lintSkill(skillDir: string): Finding[] {
   if (compat !== undefined && (compat.length < COMPAT_MIN || compat.length > COMPAT_MAX))
     fail('OPT-1', `\`compatibility\` is ${compat.length} chars (must be ${COMPAT_MIN}–${COMPAT_MAX})`)
 
+  // universal HELP mode (SHAPE-10 mechanical; ADR-KI-HARNESS-SKILLS-001). Every
+  // governance skill exposes HELP — the no-mode default and the `help`/`-h`/`?`
+  // pure-explain form — so its `argument-hint` must list a `help` verb. The
+  // HELP block itself is generated (scripts/skill-help.ts); this only checks the
+  // one-token footprint. The prose HELP semantics are a [J] criterion.
+  const hint = fm.keys.get('argument-hint')
+  if (hint !== undefined && !/(^|[|\s'"])help([|\s'"]|$)/.test(hint))
+    fail('SHAPE-11', '`argument-hint` does not expose the universal `help` mode (ADR-KI-HARNESS-SKILLS-001)')
+
   // --- body size (SIZE-1/SIZE-2 soft → WARN) ---
   const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
   const bodyLines = body.split(/\r?\n/).length
