@@ -52,6 +52,7 @@
     "ki:binding:audit": "bun skills/ki-binding/scripts/audit-binding.ts",
     "ki:binding:build-plugin": "bun skills/ki-binding/scripts/build-plugin.ts",
     "ki:binding:conform": "bun .claude/skills/ki-binding/scripts/conform-cowork.ts .",
+    "ki:bootstrap:test": "bun skills/ki-bootstrap/scripts/link-skills.test.ts",
     "ki:codegen": "bun scripts/generate-clients.ts",
     "ki:conform": "bun run ki:deps:refresh && bun run ki:lint:package && bun run ki:lint:format && bun run ki:lint:fix && bun run ki:lint:md",
     "ki:decision-records:audit": "bun skills/ki-decision-records/scripts/audit-drs.ts",
@@ -96,7 +97,7 @@
     "ki:skills:unlink": "bun scripts/sync-skills.ts unlink",
     "ki:tokenomics:audit": "bun skills/ki-tokenomics/scripts/audit-tokenomics.ts",
     "ki:tools:audit": "bun skills/ki-tools/scripts/audit-tools.ts",
-    "ki:verify": "bun run ki:lint:check && bun run ki:lint:types && bun run ki:lint:md:check && bun run ki:knip && bun run ki:skills:graph:check && bun run ki:guide:test",
+    "ki:verify": "bun run ki:lint:check && bun run ki:lint:types && bun run ki:lint:md:check && bun run ki:knip && bun run ki:skills:graph:check && bun run ki:bootstrap:test && bun run ki:guide:test",
     "ki:website-cloudflare:audit": "bun skills/ki-website-cloudflare/scripts/audit-cloudflare-hosting.ts",
     "ki:website:audit": "bun skills/ki-website/scripts/audit-websites.ts",
     "prepare": "husky"

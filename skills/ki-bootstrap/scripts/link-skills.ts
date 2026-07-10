@@ -129,6 +129,18 @@ function expectedSet(all: boolean, available: string[], kiConfigText: string): s
   return [...want].filter((s) => available.includes(s)).sort()
 }
 
+// Declared `[ki-*]` tables that resolve to no discoverable skill in the harness —
+// almost always a table left behind by an upstream rename/removal. `expectedSet`
+// silently filters these out; here we surface them. The baseline/bootstrap entries
+// `expectedSet` special-cases are excluded, so only genuinely unresolvable
+// declarations are flagged.
+function orphanSkills(available: string[], kiConfigText: string): string[] {
+  const special = new Set([BOOTSTRAP, ...BASELINE])
+  return declaredSkills(kiConfigText)
+    .filter((s) => !special.has(s) && !available.includes(s))
+    .sort()
+}
+
 // ── Link (mutate) ──
 function cmdLink(target: string, set: string[], dryRun: boolean): void {
   const claudeSkills = join(target, '.claude', 'skills')
@@ -174,7 +186,7 @@ function cmdLink(target: string, set: string[], dryRun: boolean): void {
 }
 
 // ── Check (audit only) ──
-function cmdCheck(target: string, set: string[]): number {
+function cmdCheck(target: string, set: string[], orphans: string[]): number {
   const findings: Finding[] = []
   const claudeSkills = join(target, '.claude', 'skills')
 
@@ -184,13 +196,19 @@ function cmdCheck(target: string, set: string[]): number {
   const missing = set.filter((s) => !present.includes(s))
   const extra = present.filter((p) => !set.includes(p))
   const broken = present.filter((p) => !existsSync(join(claudeSkills, p)))
-  if (missing.length === 0 && extra.length === 0 && broken.length === 0) {
+  if (missing.length === 0 && extra.length === 0 && broken.length === 0 && orphans.length === 0) {
     findings.push({
       severity: 'PASS',
       criterion: 'BOOT-1',
       message: `.claude/skills matches declared coverage (${set.length} skill${set.length === 1 ? '' : 's'})`
     })
   } else {
+    for (const o of orphans)
+      findings.push({
+        severity: 'FAIL',
+        criterion: 'BOOT-1',
+        message: `.ki-config.toml declares [${o}] but no such skill exists in the harness — likely renamed or removed upstream; reconcile the [${o}] table by hand (the rename mapping isn't mechanical, so it is not auto-renamed)`
+      })
     if (missing.length)
       findings.push({
         severity: 'WARN',
@@ -275,14 +293,16 @@ if (available.length === 0) {
 }
 
 const effectiveAll = all || isHarness
-const set = expectedSet(effectiveAll, available, readText(join(target, '.ki-config.toml')))
+const kiConfigText = readText(join(target, '.ki-config.toml'))
+const set = expectedSet(effectiveAll, available, kiConfigText)
+const orphans = orphanSkills(available, kiConfigText)
 const setLabel = effectiveAll ? (isHarness && !all ? 'all (harness — auto)' : 'all') : 'declared ∪ {repo, authoring}'
 console.log(
   `\n  ${DIM}target:${RESET} ${target}   ${DIM}skills source:${RESET} ${SKILLS_ROOT}   ${DIM}set:${RESET} ${setLabel} (${set.length})\n`
 )
 
 if (checkOnly) {
-  process.exit(cmdCheck(target, set))
+  process.exit(cmdCheck(target, set, orphans))
 }
 cmdLink(target, set, dryRun)
 if (dryRun) console.log(`\n  ${YELLOW}(dry run — nothing changed)${RESET}`)
