@@ -113,11 +113,16 @@ function resolveSet(target: string, all: boolean, seeds: string[]): string[] {
   return [...seen].sort()
 }
 
+// A checker/conform source file, excluding co-located test files (`*.test.ts`), which
+// would otherwise collide with the single-match discovery below (e.g. `audit-memory.ts`
+// + `audit-memory.test.ts`) and silently drop the skill from the vendored set.
+const isSource = (f: string): boolean => !/\.test\.ts$/.test(f)
+
 // A skill's single checker script (audit-*.ts or lint-*.ts) — discovered, not templated.
 function checkerScript(skill: string): { verb: 'audit' | 'lint'; file: string } | null {
   const dir = join(skillDir(skill), 'scripts')
   if (!existsSync(dir)) return null
-  const m = readdirSync(dir).filter((f) => /^(audit|lint)-.*\.ts$/.test(f))
+  const m = readdirSync(dir).filter((f) => /^(audit|lint)-.*\.ts$/.test(f) && isSource(f))
   if (m.length !== 1) return null
   return { verb: m[0].startsWith('audit-') ? 'audit' : 'lint', file: m[0] }
 }
@@ -125,7 +130,7 @@ function checkerScript(skill: string): { verb: 'audit' | 'lint'; file: string } 
 function conformScript(skill: string): string | null {
   const dir = join(skillDir(skill), 'scripts')
   if (!existsSync(dir)) return null
-  const m = readdirSync(dir).filter((f) => /^conform-.*\.ts$/.test(f))
+  const m = readdirSync(dir).filter((f) => /^conform-.*\.ts$/.test(f) && isSource(f))
   return m.length === 1 ? m[0] : null
 }
 

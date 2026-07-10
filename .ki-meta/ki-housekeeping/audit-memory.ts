@@ -2,7 +2,7 @@
 /**
  * Mechanical checker for ki-housekeeping.
  *
- * Usage: bun skills/ki-housekeeping/scripts/audit-memory.ts [repo-path] [--json] [--report [dir]]
+ * Usage: bun skills/ki-housekeeping/scripts/audit-memory.ts [repo-path] [--json] [--report [dir]] [--memory-dir <dir>]
  *
  * Resolves the Claude Code auto-memory directory for a repo
  * (~/.claude/projects/<slug>/memory, slug = repo's absolute path with "/" -> "-")
@@ -13,7 +13,7 @@
 
 import { mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
-import { join, resolve } from 'node:path'
+import { basename, join, resolve } from 'node:path'
 
 enum Sev {
   FAIL = 0,
@@ -81,9 +81,14 @@ async function main() {
   const jsonMode = args.includes('--json')
   const reportIdx = args.indexOf('--report')
   const reportDir = reportIdx !== -1 ? (args[reportIdx + 1] ?? '.') : null
-  const repoArg = args.find((a, i) => !a.startsWith('--') && args[i - 1] !== '--report')
+  const memDirIdx = args.indexOf('--memory-dir')
+  const memDirArg = memDirIdx !== -1 ? args[memDirIdx + 1] : undefined
+  const repoArg = args.find((a, i) => !a.startsWith('--') && args[i - 1] !== '--report' && args[i - 1] !== '--memory-dir')
 
-  const memoryDir = resolveMemoryDir(repoArg)
+  // --memory-dir points the checker at an explicit store (used by the test harness and
+  // for auditing a memory directory directly); otherwise derive it from the repo path.
+  const memoryDir = memDirArg ? resolve(memDirArg) : resolveMemoryDir(repoArg)
+  const repoName = basename(resolve(repoArg ?? process.cwd()))
   const findings: Finding[] = []
   const add = (id: string, severity: Sev, file: string, message: string) => findings.push({ id, severity, file, message })
 
@@ -147,6 +152,27 @@ async function main() {
         add('IDX-5', Sev.WARN, indexFile, 'headroom:learn end marker appears before start marker')
       } else {
         add('IDX-5', Sev.PASS, indexFile, 'headroom:learn block markers well-formed')
+        // IDX-6 — entries inside the learn block that are rooted in another repo are
+        // stale cross-repo captures (headroom learned them in a different island).
+        // Heuristic: absolute `knowledgeislands/<repo>` paths whose <repo> ≠ this repo.
+        const block = indexContent.slice(startPos, endPos)
+        const foreign = new Set<string>()
+        let foreignLines = 0
+        for (const line of block.split('\n')) {
+          const names = [...line.matchAll(/knowledgeislands\/([A-Za-z0-9_-]+)/g)].map((mm) => mm[1]).filter((n) => n !== repoName)
+          if (names.length > 0) {
+            foreignLines++
+            for (const n of names) foreign.add(n)
+          }
+        }
+        if (foreign.size > 0) {
+          add(
+            'IDX-6',
+            Sev.WARN,
+            indexFile,
+            `headroom:learn block has ${foreignLines} line(s) rooted in other repo(s) (${[...foreign].join(', ')}) — stale cross-repo captures; re-learn or prune`
+          )
+        }
       }
     }
   }
@@ -237,6 +263,11 @@ function report(findings: Finding[], jsonMode: boolean) {
     .map((s) => `${SEV_LABELS[s]}=${tally[s] ?? 0}`)
     .concat([Sev.ADVISORY, Sev.NA].map((s) => `${SEV_LABELS[s]}=${tally[s] ?? 0}`))
   console.log(parts.join(' '))
+  // Remediation footer (checker-contract) — non-clean summary routes to the judgment mode.
+  const notClean = (tally[Sev.FAIL] ?? 0) + (tally[Sev.WARN] ?? 0) + (tally[Sev.POLISH] ?? 0) > 0
+  if (notClean) {
+    console.log('→ to address: run /ki-housekeeping CONFORM   (judgment criteria: references/audit-rubric.md)')
+  }
 }
 
 async function writeReport(dir: string, findings: Finding[]) {

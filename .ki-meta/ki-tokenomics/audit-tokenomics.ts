@@ -311,6 +311,35 @@ for (const { layer } of layers) {
   }
 }
 
+// ── TOOL-4: cross-repo entries in the CLAUDE.md headroom:learn block ──
+// `headroom --learn` writes learned patterns into CLAUDE.md between marker comments.
+// Entries rooted in another repo are stale cross-repo captures — re-paid on every turn
+// in the always-on prefix. Heuristic: absolute `knowledgeislands/<repo>` paths inside
+// the markers whose <repo> ≠ this repo. Mirrors ki-housekeeping IDX-6 for MEMORY.md.
+{
+  const projClaudeMd = join(target, 'CLAUDE.md')
+  const text = existsSync(projClaudeMd) ? (readText(projClaudeMd) ?? '') : ''
+  const start = text.indexOf('<!-- headroom:learn:start -->')
+  const end = text.indexOf('<!-- headroom:learn:end -->')
+  if (start !== -1 && end !== -1 && end > start) {
+    const repoName = basename(target)
+    const foreign = new Set<string>()
+    let foreignLines = 0
+    for (const line of text.slice(start, end).split('\n')) {
+      const names = [...line.matchAll(/knowledgeislands\/([A-Za-z0-9_-]+)/g)].map((mm) => mm[1]).filter((n) => n !== repoName)
+      if (names.length > 0) {
+        foreignLines++
+        for (const n of names) foreign.add(n)
+      }
+    }
+    if (foreign.size > 0)
+      warn(
+        'TOOL',
+        `CLAUDE.md headroom:learn block has ${foreignLines} line(s) rooted in other repo(s) (${[...foreign].join(', ')}) — stale cross-repo captures in the standing prefix; re-learn or prune`
+      )
+  }
+}
+
 // Memory: MEMORY.md indices the checker can locate. Project/base: top-level MEMORY.md,
 // Admin/MEMORY.md, and per-Pillar MEMORY.md. User: the per-project memory dir Claude
 // Code derives by encoding the target path (slashes/dots → dashes).
@@ -458,7 +487,7 @@ if (reportOut) {
     const rows = findings.filter((f) => f.level === l)
     return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
   })
-  const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.na} n/a · standing surface ${tok(total)}`
+  const tally = `FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na} · standing surface ${tok(total)}`
   writeFileSync(
     join(reportDir, 'tokenomics.md'),
     [`# tokenomics audit — ${target}`, '', `_${isoStamp}_`, '', tally, ...body, ''].join('\n')
@@ -485,8 +514,12 @@ if (jsonOut) {
     }
   }
   console.log(
-    `\n${paint(C.cyan, 'summary')}: ${paint(C.red, `${fails.length} fail`)}, ${paint(C.yellow, `${warns.length} warn`)} · standing surface ${tok(total)}`
+    `\n${paint(C.cyan, 'summary')}: FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na} · standing surface ${tok(total)}`
   )
+  // Remediation footer (checker-contract) — non-clean summary routes to the judgment mode.
+  if (fails.length + warns.length + summary.polish > 0) {
+    console.log(paint(C.dim, '→ to address: run /ki-tokenomics CONFORM   (judgment criteria: references/audit-rubric.md)'))
+  }
   if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'tokenomics.{md,json}')}`))
   console.log(
     paint(

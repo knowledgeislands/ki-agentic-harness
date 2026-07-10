@@ -317,6 +317,15 @@ function lintSkill(skillDir: string): Finding[] {
   if (compat !== undefined && (compat.length < COMPAT_MIN || compat.length > COMPAT_MAX))
     fail('OPT-1', `\`compatibility\` is ${compat.length} chars (must be ${COMPAT_MIN}–${COMPAT_MAX})`)
 
+  // universal HELP mode (SHAPE-10 mechanical; ADR-KI-HARNESS-SKILLS-001). Every
+  // governance skill exposes HELP — the no-mode default and the `help`/`-h`/`?`
+  // pure-explain form — so its `argument-hint` must list a `help` verb. The
+  // HELP block itself is generated (scripts/skill-help.ts); this only checks the
+  // one-token footprint. The prose HELP semantics are a [J] criterion.
+  const hint = fm.keys.get('argument-hint')
+  if (hint !== undefined && !/(^|[|\s'"])help([|\s'"]|$)/.test(hint))
+    fail('SHAPE-11', '`argument-hint` does not expose the universal `help` mode (ADR-KI-HARNESS-SKILLS-001)')
+
   // --- body size (SIZE-1/SIZE-2 soft → WARN) ---
   const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
   const bodyLines = body.split(/\r?\n/).length
@@ -396,6 +405,33 @@ function lintSkill(skillDir: string): Finding[] {
         warn(
           'SHAPE-9',
           `rubric tags ${mechanical} criteria [M] but the skill ships no scripts/ checker (nor a documented toolchain delegation) — mechanical work belongs in the checker, not in tokens, per SHAPE-9`
+        )
+    }
+  }
+
+  // --- SHAPE-8 mechanical: the checker ships the remediation footer ---
+  // checker-contract.md requires every checker to print a remediation footer on a
+  // non-clean summary, naming its OWN skill's CONFORM mode. A checker source with no
+  // such footer (or one naming another skill) has drifted from the contract. The footer
+  // prefix is standardised wording, so a source scan is reliable; guarding it on non-clean
+  // and suppressing it under --json/--report stay [J] (verify by reading the emit path).
+  const contractScriptsDir = join(skillDir, 'scripts')
+  if (existsSync(contractScriptsDir)) {
+    const checkers = readdirSync(contractScriptsDir).filter(
+      (n) => (n.startsWith('audit-') || n.startsWith('lint-')) && n.endsWith('.ts') && !n.endsWith('.test.ts')
+    )
+    for (const checker of checkers) {
+      const src = readFileSync(join(contractScriptsDir, checker), 'utf8')
+      const footers = [...src.matchAll(/→ to address: run \/([a-z0-9-]+)\b/g)].map((m) => m[1])
+      if (footers.length === 0)
+        warn(
+          'SHAPE-8',
+          `checker ${checker} ships no remediation footer ("→ to address: run /${dirName} CONFORM …") — required by checker-contract.md`
+        )
+      else if (!footers.includes(dirName))
+        warn(
+          'SHAPE-8',
+          `checker ${checker}'s remediation footer names /${footers[0]}, not its own skill /${dirName} — per checker-contract.md`
         )
     }
   }
@@ -610,7 +646,7 @@ if (reportOut) {
     const rows = all.filter((f) => f.level === l)
     return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
   })
-  const tally = `${skillDirs.length} skill(s) · ${summary.fail} fail · ${summary.warn} warn`
+  const tally = `${skillDirs.length} skill(s) · FAIL=${summary.fail} WARN=${summary.warn}`
   writeFileSync(join(reportDir, 'skills.md'), [`# skills audit — ${reportTarget}`, '', `_${stampIso}_`, '', tally, ...body, ''].join('\n'))
   writeFileSync(
     join(reportDir, 'skills.json'),
@@ -623,10 +659,9 @@ if (jsonOut) {
     `${JSON.stringify({ concern: 'skills', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`
   )
 } else {
-  console.log(
-    `\n${paint(C.cyan, 'summary')}: ${skillDirs.length} skill(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}`
-  )
+  console.log(`\n${paint(C.cyan, 'summary')}: ${skillDirs.length} skill(s) · FAIL=${totalFails} WARN=${totalWarns}`)
   if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'skills.{md,json}')}`))
+  if (totalFails + totalWarns > 0) console.log('→ to address: run /ki-skills CONFORM   (judgment criteria: references/audit-rubric.md)')
   console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria from references/audit-rubric.md by reading.'))
 }
 process.exit(totalFails > 0 ? 1 : 0)
