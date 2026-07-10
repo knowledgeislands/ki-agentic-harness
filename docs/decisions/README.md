@@ -68,7 +68,7 @@ Each record is a **living present-state record** — it states the decision as i
 
 ## References
 
-A record is **self-contained**: its only outbound links are to sibling ADRs in this directory, following the reading-order layering (reference the foundations a decision builds on). Do not link out to skills, guides, feature definitions, workflows, or external URLs — name them in prose instead, inlining any context the reader needs. The sole carve-out is a record whose subject _is_ an external artefact (e.g. a toolchain survey), which may name that artefact's URL as content.
+A record is **self-contained**: its outbound links are limited to sibling ADRs in this directory (following the reading-order layering — reference the foundations a decision builds on) and external URLs (a tool's homepage, a spec, a source). Do not link to other internal Knowledge Islands artefacts — skills, guides, feature definitions, workflows, KB notes — name them in prose instead, inlining any context the reader needs. External links are supplementary: the record must read completely without following them. A record also states the decision, not the enforcing skill's volatile identifiers — no `SHAPE-N`/`SCRIPT-N` criterion IDs or `§N` section numbers; name the concept or standard.
 
 - [ADR-KI-HARNESS-NNN](ADR-KI-HARNESS-NNN-slug.md) — the foundational decision this record builds on.
 ```

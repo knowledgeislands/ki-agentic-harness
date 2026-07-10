@@ -16,8 +16,8 @@ Skills relate to one another exclusively through **composition**: a skill runs a
 - Adding or changing a skill does not force changes in skills that happen to compose with it.
 - Composition is explicit and auditable: the AUDIT mode names its siblings.
 - Per-repo variance is visible in `.ki-config.toml` and `CLAUDE.md`, not hidden in a derived skill's override.
-- The SHAPE-2 criterion in the skills rubric enforces this rule mechanically.
+- The skills rubric enforces this rule mechanically.
 
 ## References
 
-This record is self-contained. The rule it states is carried in the user guide's skill-design principles as the Composition-only principle, and enforced mechanically as SHAPE-2 ("Standard, not base-coupled extension") in the engineering enforcement framework and the skills rubric.
+This record is self-contained. The rule it states is carried in the user guide's skill-design principles as the Composition-only principle, and is enforced mechanically — the "standard, not base-coupled extension" check — in the engineering enforcement framework and the skills rubric.

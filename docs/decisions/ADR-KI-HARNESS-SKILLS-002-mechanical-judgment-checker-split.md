@@ -20,11 +20,11 @@ A criterion starts in the checker unless it genuinely requires judgment. A crite
 - Model context is spent only on judgment criteria that genuinely need it.
 - Mechanical findings are reproducible and not subject to per-run variance.
 - The rubric's `[M]`/`[J]` tags make the split visible and auditable.
-- SHAPE-9 in the skills rubric enforces that [M] criteria without a checker are flagged as findings.
+- The skills rubric enforces that [M] criteria without a checker are flagged as findings.
 - Checkers depend only on Node/Bun builtins — no npm dependencies; skills are symlinked individually so cross-skill imports would break.
 
 ## References
 
 - [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-mechanical-first-llm-optional.md) — the mechanical-first, LLM-optional foundation this per-skill split realises.
 
-The mechanical-checker contract (§2) and the rubric format (§3) are set out in the `ki-engineering` enforcement framework, and the governing principle "Mechanical work belongs in the checker, not in tokens (SHAPE-9)" is in the user guide's skill-design principles.
+The mechanical-checker contract and the rubric format are set out in the `ki-engineering` enforcement framework, and the governing principle — mechanical work belongs in the checker, not in tokens — is in the user guide's skill-design principles.

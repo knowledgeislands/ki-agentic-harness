@@ -11,7 +11,7 @@ A repo is brought under Knowledge Islands governance in two situations the earli
 Governance bootstraps through a single chain, runnable from the remote source with no skill installed locally.
 
 - The bootstrap is the minimal chain-starter — kept globally installed only to keep the global surface tiny. It always pulls in the repo standard; from there each skill's INIT (its `scripts/bootstrap.ts`) declares and triggers the skills it `implies:`.
-- INIT satisfies the **self-sufficiency contract**: into the target repo it (1) **vendors copies** of its mechanical scripts (SCRIPT-7 — copies, not symlinks, so they run standalone), (2) installs that skill's `ki:<suffix>:{init,audit,conform}` package.json keys pointing at the vendored copies, and (3) installs or refreshes the repo-wide `ki:audit` / `ki:conform` / `ki:init` aggregates that fan out across every applicable skill.
+- INIT satisfies the **self-sufficiency contract**: into the target repo it (1) **vendors copies** of its mechanical scripts (copies, not symlinks, so they run standalone), (2) installs that skill's `ki:<suffix>:{init,audit,conform}` package.json keys pointing at the vendored copies, and (3) installs or refreshes the repo-wide `ki:audit` / `ki:conform` / `ki:init` aggregates that fan out across every applicable skill.
 - The new / legacy / tracking modes are aggressiveness flags over this one chain, not a separate orchestrator: new = INIT; legacy = INIT + full CONFORM (the migration path); tracking = AUDIT + mechanical CONFORM.
 
 ## Consequences
@@ -27,4 +27,4 @@ Governance bootstraps through a single chain, runnable from the remote source wi
 - [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-mechanical-first-llm-optional.md) — the mechanical-first stance this depends on.
 - [ADR-KI-HARNESS-SKILLS-001](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) — INIT, the universal mode whose mechanical half is `scripts/bootstrap.ts`; the role it plays in bootstrapping is set out above.
 - The bootstrap — the chain-starter keystone.
-- The engineering enforcement-framework reference, §5 — INIT and the self-sufficiency contract.
+- The engineering enforcement-framework reference — INIT and the self-sufficiency contract.

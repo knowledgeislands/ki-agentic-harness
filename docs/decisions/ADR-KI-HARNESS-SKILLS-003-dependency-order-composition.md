@@ -28,5 +28,5 @@ Skill names follow the grammar **`ki-<concern>[-<technology>]`**. The set has th
 ## References
 
 - The `ki-skills` skill — Mode AUDIT, set-audit discipline.
-- The `ki-engineering` enforcement framework, §5 AUDIT — "Auditing a set … bounds its own context".
+- The `ki-engineering` enforcement framework, AUDIT — "Auditing a set … bounds its own context".
 - ADR-KI-HARNESS-AGENTS-001, later in the reading order, uses this dependency order as synthesis-ranking priority when parallelising multi-skill execution.

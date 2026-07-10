@@ -15,7 +15,7 @@ Every governance skill exposes the universal four modes — **AUDIT**, **CONFORM
 - **INIT** — scaffold a new conformant artifact, or bring an off-standard one onto the floor from scratch. Its mechanical half is a per-skill `scripts/bootstrap.ts` (the INIT counterpart to `audit-*.ts`) that runs from the remote source with no skill installed, declares and triggers the skills the frontmatter `implies:`, and satisfies the self-sufficiency contract — vendored scripts, per-skill and repo-wide `ki:*` keys — set out as its own decision later in the reading order.
 - **REFRESH** — re-anchor the standard to its sources on the skill's declared cadence.
 
-SHAPE-5 — a criterion in the skills rubric, the per-criterion checklist the skills governance skill audits `SKILL.md` files against — enforces that every governance skill exposes this shape.
+The skills rubric enforces that every governance skill exposes this shape.
 
 ## Consequences
 
@@ -26,4 +26,4 @@ SHAPE-5 — a criterion in the skills rubric, the per-criterion checklist the sk
 
 ## References
 
-This record is self-contained. The modes in full are set out in the `ki-engineering` enforcement framework (§5), and the governing principle "One governance-mode model (SHAPE-5)" is in the user guide's skill-design principles.
+This record is self-contained. The modes in full are set out in the `ki-engineering` enforcement framework, and the governing one-governance-mode-model principle is in the user guide's skill-design principles.

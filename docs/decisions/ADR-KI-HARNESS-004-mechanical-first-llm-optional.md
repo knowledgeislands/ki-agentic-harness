@@ -10,9 +10,9 @@ The governance skills run in two ways: an agent (LLM) applies judgment, and plai
 
 Every skill's mechanical half runs standalone — no LLM, no model context — as a plain CLI. The LLM is an optional layer that adds judgment on top, never a prerequisite for the mechanical work.
 
-- **AUDIT / CONFORM** — the checker, and the mechanical CONFORM fixes, run to completion as pure CLI; an LLM, when present, adds the `[J]` judgment pass (the `[M]`/`[J]` mechanical/judgment split is the next decision in the reading order).
+- **AUDIT / CONFORM** — the checker, and the mechanical CONFORM fixes, run to completion as pure CLI; an LLM, when present, adds the judgment layer (the mechanical/judgment split is the next decision in the reading order).
 - **INIT** — as pure CLI it scaffolds and wires with safe defaults and **prints the judgment checks it skipped**; under an LLM it also applies that judgment.
-- A criterion a script can decide deterministically belongs in the checker (SHAPE-9 in the skills rubric); the reader's context is spent only on criteria that genuinely need judgment.
+- A criterion a script can decide deterministically belongs in the checker, not in tokens; the reader's context is spent only on criteria that genuinely need judgment.
 
 ## Consequences
 

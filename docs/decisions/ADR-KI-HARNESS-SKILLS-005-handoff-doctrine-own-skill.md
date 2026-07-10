@@ -4,7 +4,7 @@
 
 ## Context
 
-A reusable methodology recurs across bases: spend the top reasoning tier once to plan a body of work, then bank that reasoning as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning. Two existing skills own neighbouring concerns. `ki-plans` owns plan-before-execute and the plan quality bar (in a KB the equivalent is a `ki-kb-streams` proposal Checklist). `ki-tokenomics` owns model-tier cost and selection — `preferred_model`, the mode→tier table, standard §4/§8. Neither owns the connective concern: how to decompose and write work so a cheaper tier can execute it — decisions-locked-vs-escalate, a per-unit recommended tier, and a cold-model readiness test. The set's cardinal rule is composition, not duplication, so the question is whether this is a new skill or an extension of the two.
+A reusable methodology recurs across bases: spend the top reasoning tier once to plan a body of work, then bank that reasoning as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning. Two existing skills own neighbouring concerns. `ki-plans` owns plan-before-execute and the plan quality bar (in a KB the equivalent is a `ki-kb-streams` proposal Checklist). `ki-tokenomics` owns model-tier cost and selection — `preferred_model`, the mode→tier table, the runtime levers and multi-model flows. Neither owns the connective concern: how to decompose and write work so a cheaper tier can execute it — decisions-locked-vs-escalate, a per-unit recommended tier, and a cold-model readiness test. The set's cardinal rule is composition, not duplication, so the question is whether this is a new skill or an extension of the two.
 
 ## Decision
 
@@ -22,4 +22,4 @@ The handoff doctrine is a **new, composition-shaped governance skill, `ki-handof
 - The `ki-handoffs` skill and its handoffs-standard reference.
 - [ADR-KI-HARNESS-SKILLS-003](ADR-KI-HARNESS-SKILLS-003-dependency-order-composition.md) — composition by run-in-sequence and the canonical dependency order.
 - [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) — standalone validity.
-- `ki-tokenomics` standard §4 (runtime levers — model tier) and §8 (multi-model flows) — the boundary this skill defers to.
+- The `ki-tokenomics` standard (runtime levers — model tier; multi-model flows) — the boundary this skill defers to.

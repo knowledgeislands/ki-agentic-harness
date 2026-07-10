@@ -18,7 +18,7 @@ The former `ki-memory` skill governed one narrow thing: the Claude Code auto-mem
 - Memory becomes one area of a coherent housekeeping domain rather than the whole skill.
 - The skill and server compose without overlap: the server ships tools with no policy; the skill holds the policy and only the memory checker. The server's own code quality remains `ki-mcp`'s concern.
 - The skill now tracks two moving sources — Headroom's memory behavior and the server's tool surface — so its REFRESH re-anchors both.
-- Boundaries hold: a KB's own `Admin/MEMORY.md` cascade is `ki-kb` (MEM-2), and the token cost of the context surface is `ki-tokenomics`.
+- Boundaries hold: a KB's own `Admin/MEMORY.md` cascade is `ki-kb`'s concern, and the token cost of the context surface is `ki-tokenomics`.
 
 ## References
 
