@@ -3,7 +3,7 @@ name: ki-binding
 implies: []
 description: >
   Codify, audit, and apply the Knowledge Islands cross-surface binding — enabling the KI MCP servers, skills, and agents consistently across the surfaces that run them (Claude Code, Claude Desktop, Claude Cowork, claude.ai web) from the single chezmoi `mcps.yaml` source. Governs the per-server `clients:` targeting field, the per-surface config each client wants, and the Cowork plugin the skill toggles in `enabledPlugins`. Use when a project's tools are enabled on one surface but not another, wiring a new surface, auditing that every surface agrees with the single source, or adding a server to the inventory. Triggers: "why is this MCP in Code but not Cowork", "enable these tools everywhere", "audit the cross-surface binding", "the surfaces disagree", "wire Cowork". Composes on `ki-bootstrap` (Claude Code skill links) and `ki-mcp` (server-code standard + the cross-surface-enablement.md design record). Not for one server's code (`ki-mcp`) or a repo's skill links alone (`ki-bootstrap`).
-argument-hint: 'audit [project] | conform [project] | refresh'
+argument-hint: 'audit [project] | conform [project] | help | refresh'
 ---
 
 # Knowledge Islands Cross-surface Binding
@@ -19,6 +19,8 @@ You are governing **one control surface for many run surfaces**: a single declar
 - **The Cowork artifact is a KI plugin** in the `knowledgeislands/ki-plugins` marketplace repo — a lossy projection of this harness (ADR-KI-HARNESS-003) carrying **skills + agents** (MCP servers are deferred: host-local, they do not port into Cowork's gVisor sandbox). The plugin is generated from source by [`build-plugin.ts`](scripts/build-plugin.ts); the plugin is the packaging and **this skill is the actor** that registers + toggles it. Design: [cross-surface-enablement.md](../ki-mcp/references/cross-surface-enablement.md). The marketplace repo's **on-disk shape** — the manifest shapes, the verbatim `skills/` copy and flattened `agents/`, the MCP-deferred rule — is governed by the `ki-plugins` repo-structure skill; this skill owns only generation (`build-plugin`) and the cross-surface enablement below (BIND-4), never re-checking the projection shape.
 
 The checker is [`scripts/audit-binding.ts`](scripts/audit-binding.ts); the quotable invariant is [the standard](references/binding-standard.md); the checkable criteria are [the rubric](references/audit-rubric.md).
+
+Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
 
 ## Mode AUDIT — check the surfaces agree with the source
 

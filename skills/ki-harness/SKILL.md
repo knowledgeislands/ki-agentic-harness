@@ -3,7 +3,7 @@ name: ki-harness
 implies: [ki-skills, ki-agents, ki-decision-records]
 description: >
   Audit, conform, and scaffold Knowledge Islands agentic harnesses — repos that bundle skills, agents, MCP servers, evals, and hooks together for versioned, co-installed deployment. Use when creating a new harness, checking an existing harness's five-part layout (`skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`), verifying its CLAUDE.md covers required orientation sections, checking its package.json script families, or auditing its `.ki-config.toml` harness table. Triggers: "audit the harness", "scaffold a new harness", "does this repo follow the harness standard", "refresh the harness standard", "is this a valid harness". Governs the **container** (directory structure, CLAUDE.md, package.json script families, installation conventions, `.ki-config.toml` table) — not the **contents**: skill quality → `ki-skills`; agent quality → `ki-agents`; MCP server code → `ki-mcp`; engineering toolchain → `ki-engineering`; GitHub repo settings → `ki-repo`.
-argument-hint: 'audit [path] | conform [path] | init <name> | refresh'
+argument-hint: 'audit [path] | conform [path] | help | init <name> | refresh'
 ---
 
 # Knowledge Islands Harness
@@ -14,7 +14,7 @@ This skill governs the **container** — the harness's directory layout, its `CL
 
 The full canonical standard — what each part must contain and why — lives in [the harness standard](references/harness-standard.md). The line-by-line checkable criteria live in [the rubric](references/audit-rubric.md). A mechanical checker is [`scripts/audit-harness.ts`](scripts/audit-harness.ts). Load those when you need detail; this file is the operating procedure.
 
-Modes: **AUDIT · CONFORM · INIT · REFRESH** (named, alphabetical). If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too.
+Modes: **AUDIT · CONFORM · INIT · REFRESH** (named, alphabetical). Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
 
 ## Mode AUDIT — check a harness against the standard
 

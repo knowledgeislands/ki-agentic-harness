@@ -3,7 +3,7 @@ name: ki-kb
 implies: [ki-kb-activities, ki-kb-live-artifacts, ki-kb-streams]
 description: >
   Interact with a Knowledge Islands knowledge base: save AI outputs as notes, update existing notes, query the base, distil a conversation into notes, or write a session digest — and audit a base against the structure model, bring it into line, or scaffold a new one. Targets the Knowledge Islands structure (Calendar / Pillars / Resources / Streams, plus inbound `+` and outbound `-`), so it assumes the zone model rather than asking for it; only a few store-level bindings come from the host project. Triggers: "save to my notes", "save to the knowledge base", "add to the KB", "what do my notes say about", "search my notes", "update the note on", "capture this", "write a session digest", "audit my knowledge base", "is my base structured right", "set up a new knowledge base". For the `Streams` zone (proposals, the Enactment Process) use the `ki-kb-streams` skill it delegates to; for general Markdown or TOML house style (not note content) use `ki-authoring`.
-argument-hint: 'audit | conform | digest | extract | improve | init | query <question> | refresh | save | update <note>'
+argument-hint: 'audit | conform | digest | extract | help | improve | init | query <question> | refresh | save | update <note>'
 ---
 
 # Knowledge Islands KB
@@ -107,7 +107,7 @@ Almost everything is fixed by the structure above. Only these come from the host
 
 ## Step 2 - Determine mode and load its procedure
 
-If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too. The shared model above — the five zones, the routing test, the **memory cascade**, the project bindings, and Step 1 — is what every mode needs and stays loaded; each mode's _procedure_ lives in its own on-demand file, so read only the one the request selects. Like every governance skill it carries the universal four **AUDIT · CONFORM · INIT · REFRESH** (INIT scaffolds a base); its base-specific modes are the session-level **IMPROVE** (continuous improvement) and the note-ops **DIGEST · EXTRACT · QUERY · SAVE · UPDATE**. Modes are named and alphabetical.
+Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The shared model above — the five zones, the routing test, the **memory cascade**, the project bindings, and Step 1 — is what every mode needs and stays loaded; each mode's _procedure_ lives in its own on-demand file, so read only the one the request selects. Like every governance skill it carries the universal four **AUDIT · CONFORM · INIT · REFRESH** (INIT scaffolds a base); its base-specific modes are the session-level **IMPROVE** (continuous improvement) and the note-ops **DIGEST · EXTRACT · QUERY · SAVE · UPDATE**. Modes are named and alphabetical.
 
 | Mode    | Fires on                                                  | Read before acting                                        |
 | ------- | --------------------------------------------------------- | --------------------------------------------------------- |

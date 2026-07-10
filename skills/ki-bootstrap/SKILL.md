@@ -3,7 +3,7 @@ name: ki-bootstrap
 implies: [ki-repo]
 description: >
   Bootstraps a Knowledge Islands repo into governance two ways: it runs the INIT chain that vendors each declared skill's mechanical checkers into the repo so it self-governs with `bun run ki:audit` and zero skills installed, and it links the repo's project-local skills (`.claude/skills/`) from its `.ki-config.toml` so the right skills load in-session. Use when bootstrapping a fresh or legacy repo, making a repo self-govern, setting up or auditing skill links, or adding the `ki:audit` / `ki:skills:link:project` conventions. Triggers: "bootstrap this repo", "make this repo self-govern", "set up this repo's skills", "migrate this legacy repo", "why aren't my skills loading in this repo". This is the install keystone — the one knowledgeislands skill kept installed globally, so any repo can self-wire from the remote source. For the `.ki-config.toml` contents and the coverage cascade (which skills a repo should declare) and GitHub settings use `ki-repo`; for the harness's five-part layout use `ki-harness`.
-argument-hint: 'init [target] | audit [path] | conform [path] | refresh'
+argument-hint: 'help | init [target] | audit [path] | conform [path] | refresh'
 ---
 
 # Knowledge Islands Bootstrap
@@ -23,6 +23,8 @@ The two are distinct: vendored **copies** run the mechanical checks anywhere (CI
 - The **harness** (`ki-agentic-harness`) is the authoring hub: it links **all** skills (`--all`), not a coverage subset.
 
 The INIT chain engine is [`scripts/bootstrap.ts`](scripts/bootstrap.ts); the skill linker/checker is [`scripts/link-skills.ts`](scripts/link-skills.ts); the agent linker/checker is [`scripts/link-agents.ts`](scripts/link-agents.ts). All three share the same self-location and package.json-splice logic ([`scripts/package-scripts.ts`](scripts/package-scripts.ts)) and self-locate the harness through their own path. The quotable invariant is [the standard](references/bootstrap-standard.md); the checkable criteria are [the rubric](references/audit-rubric.md). This skill **composes on** `ki-repo`, which owns the `.ki-config.toml` contract it reads — it never edits the config's coverage, only mirrors it.
+
+Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
 
 ## Mode INIT — bring a repo under governance (self-sufficiency chain)
 

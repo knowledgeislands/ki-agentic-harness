@@ -3,7 +3,7 @@ name: ki-website-cloudflare
 implies: []
 description: >
   Codify, audit, conform, and scaffold the Knowledge Islands house convention for serving a built static site on Cloudflare — Workers + Static Assets (not Pages), one `wrangler.jsonc` pointing `assets.directory` at the site's `dist/`, custom-domain routes, observability, and the `ki:site:deploy` script family. Use when deploying a site to Cloudflare, wiring or auditing its `wrangler.jsonc`, bringing hosting up to standard, or scaffolding it. Triggers: "deploy this site to Cloudflare", "audit the Cloudflare hosting", "set up wrangler for the site", "host the dist on Cloudflare", "configure Workers Static Assets", "why won't the site deploy", "conform the hosting". Builds on `ki-website` (which produces the `dist/` it serves — the seam) and `ki-engineering` (the toolchain). For any Worker that is not the static-site server (bots, ingress receivers, APIs, Durable Objects) and general Cloudflare/Workers/wrangler usage, use the `cloudflare` and `wrangler` skills.
-argument-hint: 'audit <repo> | conform <repo> | init <repo> | refresh'
+argument-hint: 'audit <repo> | conform <repo> | help | init <repo> | refresh'
 ---
 
 # Knowledge Islands Cloudflare hosting standard
@@ -54,7 +54,7 @@ This skill consumes exactly what `ki-website` emits: a portable `dist/` of stati
 
 ## Operating modes
 
-Carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT scaffolds a site's hosting. If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too. The mode shape itself is defined in `ki-engineering`'s enforcement framework.
+Carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT scaffolds a site's hosting. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The mode shape itself is defined in `ki-engineering`'s enforcement framework.
 
 ### Mode AUDIT — check a site's hosting against the standard
 

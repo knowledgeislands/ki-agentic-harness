@@ -3,7 +3,7 @@ name: ki-kb-activities
 implies: []
 description: >
   Author, audit, and manage Activity notes in a Knowledge Islands base — the operational record of what automation, scheduling, and agentic work a base has adopted. Governs the naming convention, required frontmatter, realization types, and the Activities.md index in Admin/Operations/Activities/. Checks that activities declared as slash commands have a corresponding skill, and that those declared as scheduled tasks are flagged for registration in an external scheduling system. The harness supports any agentic environment; Claude Code (slash commands / skills) and Claude Cowork (scheduled tasks) are the primary realizations. Triggers: "add an activity", "audit activities", "what activities does this base have", "register this as a scheduled task", "create a skill for this activity", "list my activities", "check activity conformance". For the KB zone structure use `ki-kb`; for skill authoring use `ki-skills`; for the harness bundle layout use `ki-harness`.
-argument-hint: 'audit | conform | new <name> | refresh'
+argument-hint: 'audit | conform | help | new <name> | refresh'
 ---
 
 # Knowledge Islands Activities
@@ -67,7 +67,7 @@ The checker cannot verify registration in an external system; it emits WARN if `
 
 ## Operating modes
 
-Modes: **AUDIT · CONFORM · NEW · REFRESH** (named, alphabetical). If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too.
+Modes: **AUDIT · CONFORM · NEW · REFRESH** (named, alphabetical). Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
 
 ### AUDIT
 

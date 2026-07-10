@@ -3,7 +3,7 @@ name: ki-website
 implies: [ki-website-cloudflare]
 description: >-
   Codifies, audits, and enforces the Knowledge Islands static-site standard: Eleventy 3 with Nunjucks and Markdown, TypeScript run natively on Bun, Tailwind 4 in config-less mode with semantic design tokens, and a portable `dist/` output. Use when building a new KI static site, auditing an existing site against the standard, conforming one to the standard, or scaffolding the initial `eleventy.config.ts`, Tailwind token pair, `src/` layout, and SEO wiring. Triggers: "audit my 11ty site", "does this site follow our standard", "scaffold a new 11ty site", "conform this site to KI standard", "build a static site with Eleventy", "my Tailwind build isn't generating any output", "add a page layout". Builds on ki-engineering (the Bun/lint/type/test toolchain) and ki-authoring (Markdown style); for deploying the built `dist/` to Cloudflare use ki-website-cloudflare. Not for Astro, Next, or other frameworks.
-argument-hint: 'audit <repo> | conform <repo> | init <repo> | refresh'
+argument-hint: 'audit <repo> | conform <repo> | help | init <repo> | refresh'
 ---
 
 # Knowledge Islands 11ty website standard
@@ -61,7 +61,7 @@ This skill's output, and the only thing the hosting skill needs: a `dist/` of st
 
 ## Operating modes
 
-Carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT scaffolds a new site. If invoked without a mode, use `AskUserQuestion` to list each mode with a one-line description; if the chosen mode shows a target in the `argument-hint`, prompt for that too. The mode shape itself is defined in `ki-engineering`'s enforcement framework.
+Carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT scaffolds a new site. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The mode shape itself is defined in `ki-engineering`'s enforcement framework.
 
 ### Mode AUDIT — check a site against the standard
 
