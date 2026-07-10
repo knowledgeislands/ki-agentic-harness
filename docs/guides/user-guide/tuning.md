@@ -131,18 +131,9 @@ A recurring temptation is to have Headroom (or any `ANTHROPIC_BASE_URL` proxy) s
 
 ## When the cost audit reports issues
 
-`ki:tokenomics:audit` groups its output by the rubric's section codes and prints `info` / `warn` / `fail` lines. Budgets are **WARN-only** — a `warn` is a prompt to look, not a build break — and every figure is a `~chars/4` estimate, so treat them as directional. Work each flagged line back to the lever that fixes it:
+`bun run ki:tokenomics:audit` is the mechanical, read-only half — it measures and flags; it does not cut. Budgets are **WARN-only** (a `warn` is a prompt to look, not a build break) and every figure is a `~chars/4` estimate, so treat them as directional. When it flags a layer, hand it to `/ki-tokenomics` CONFORM rather than working codes by hand: the mode applies the judgment the checker can't — whether an over-budget layer earns its size or should be cut, which layer a fact belongs in, and whether a model-tier or Headroom setting actually fits the work. The concrete cuts it draws on — disabling unused built-ins, scoping MCP servers per surface, trimming the standing prose — are the levers documented earlier in this guide.
 
-- **SURF-2** `MEMORY.md … > budget — prune` — run the [hygiene audit](#when-the-hygiene-audit-reports-issues) and prune: stale entries, auto-generated "learned patterns" blocks from other repos, anything promotable to a `CLAUDE.md`. The index shrinks and the number drops.
-- **SURF-1** `CLAUDE.md ~N tok` high — lift detail into an `@import` topic file loaded on demand, or move repo-specific prose into a scoped doc the README indexes; keep the always-on anchor short.
-- **SURF-3** `M skill description(s) ~N tok` — don't shorten descriptions (discovery needs them); unload skills the surface doesn't need. Keep the keystone-plus-project-local model so unrelated skills never link in.
-- **MCP** `K server(s) …` large — structural, not compression: scope servers per-surface via `ki-binding` and per-project, and toggle off connectors a conversation doesn't need. See [Why a compression proxy is the wrong tool](#why-a-compression-proxy-is-the-wrong-tool-for-mcp-schemas).
-- **BUDG** `total standing surface ~N` — over budget is a judgment call (BUDG-3): either cut via the SURF/MCP levers above, or record it as a deliberate, accepted overage. Don't silently normalise it.
-- **RUN-2** `default model pinned …` — confirm the tier matches the work. A mismatch here — e.g. session pinned to `opus[1m]` while `preferred_model = "sonnet"` — is worth resolving so the declared intent and the running tier agree.
-- **TOOL-3** `headroom detected …` — judgment, keys undocumented: confirm the reversible store and cache-aligner are on and that compression isn't busting prompt-cache prefixes. Cross-check the Headroom setup against the `ki-tokenomics` exemplars.
-- **CFG** `[ki-tokenomics] present …` — informational: the config table is found. `preferred_model` here is checked only for _presence_ (CFG-4); its _appropriateness_ is the RUN-2 judgment above.
-
-The `warn` you hit is `SURF-2`: the memory index is over its ~1,000-tok budget. That is the same content the hygiene pass prunes — so the fix is upstream, in the `memory/*.md` store, not a runtime lever. Fix there, then re-run this audit to confirm the number moved.
+The memory layer is the one exception worth calling out: a `MEMORY.md` overage is the same content the [hygiene pass](#when-the-hygiene-audit-reports-issues) prunes, so fix it upstream in the store (via `/ki-housekeeping` CONFORM), not with a runtime lever. Re-run the audit afterwards to confirm the number moved.
 
 ## A starting profile for this harness
 
