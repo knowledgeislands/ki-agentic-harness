@@ -4,7 +4,7 @@ How to install a skill from this repository, how a skill fires once installed, t
 
 ## System dependencies
 
-Two system-level components must be in place before the skills and MCP servers work correctly on a development machine. Both are installed via Homebrew and managed by chezmoi.
+Two system-level components must be in place before the skills and MCP servers work correctly on a development machine. Both are installed via Homebrew and managed by chezmoi. Once they are working, [Tuning](tuning.md) covers making a session lean — which built-in tools, skills, and MCP servers actually load, and where headroom and mcporter do and do not help.
 
 ### headroom-ai
 
