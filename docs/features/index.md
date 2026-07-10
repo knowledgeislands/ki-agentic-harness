@@ -18,9 +18,9 @@ Each requirement is a level-3 heading `### <PREFIX>-NNN — <title>`, one RFC-21
 
     ### BOOT-001 — Self-governing after INIT
 
-    After the INIT chain runs, a target repo MUST pass `bun run ki:audit` with zero skills installed.
+    After the INIT chain runs, a target repo MUST pass `./bin/ki-audit` with zero skills installed.
 
-    _Verify:_ bootstrap a bare fixture and run `ki:audit`; it executes the vendored checkers.
+    _Verify:_ bootstrap a bare fixture and run `./bin/ki-audit`; it executes the vendored checkers.
 
 RFC-2119 keywords (`MUST` / `MUST NOT` / `SHOULD` / `SHOULD NOT` / `MAY`) are normative and uppercase. `_Verify:_` names the concrete check. A requirement governed by a recorded decision cites its DR.
 

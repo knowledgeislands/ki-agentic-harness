@@ -560,7 +560,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     na: n('NA'),
     pass: n('PASS')
   }
-  const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.na} n/a`
+  const tally = `FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na}`
   const stamp = new Date().toISOString()
 
   if (report) {
@@ -588,6 +588,8 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     }
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
+    if (summary.fail + summary.warn + summary.polish > 0)
+      console.log('→ to address: run /ki-engineering CONFORM   (judgment criteria: references/audit-rubric.md)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }

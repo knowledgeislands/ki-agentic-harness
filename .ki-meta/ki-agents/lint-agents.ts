@@ -321,7 +321,7 @@ if (reportOut) {
     const rows = all.filter((f) => f.level === l)
     return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
   })
-  const tally = `${files.length} agent(s) · ${summary.fail} fail · ${summary.warn} warn`
+  const tally = `${files.length} agent(s) · FAIL=${summary.fail} WARN=${summary.warn}`
   writeFileSync(join(reportDir, 'agents.md'), [`# agents audit — ${reportTarget}`, '', `_${stampIso}_`, '', tally, ...body, ''].join('\n'))
   writeFileSync(
     join(reportDir, 'agents.json'),
@@ -334,10 +334,9 @@ if (jsonOut) {
     `${JSON.stringify({ concern: 'agents', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`
   )
 } else {
-  console.log(
-    `\n${paint(C.cyan, 'summary')}: ${files.length} agent(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}`
-  )
+  console.log(`\n${paint(C.cyan, 'summary')}: ${files.length} agent(s) · FAIL=${totalFails} WARN=${totalWarns}`)
   if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'agents.{md,json}')}`))
+  if (totalFails + totalWarns > 0) console.log('→ to address: run /ki-agents CONFORM   (judgment criteria: references/audit-rubric.md)')
   console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria from references/audit-rubric.md by reading.'))
 }
 process.exit(totalFails > 0 ? 1 : 0)

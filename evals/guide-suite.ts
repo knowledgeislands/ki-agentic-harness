@@ -67,11 +67,14 @@ try {
   const gfEnv = { ...process.env, KI_HARNESS: HARNESS, TARGET: gf }
   for (const b of greenfieldBlocks) run(b, HARNESS, gfEnv)
 
-  check(existsSync(join(gf, 'scripts/ki/aggregate.ts')), 'vendored the aggregate runner')
-  const repoChecker = join(gf, 'scripts/ki/ki-repo/audit-repo.ts')
+  check(existsSync(join(gf, '.ki-meta/aggregate.ts')), 'vendored the aggregate runner')
+  const binAudit = join(gf, 'bin/ki-audit')
+  check(existsSync(binAudit), 'wrote the package.json-free bin/ki-audit entry point')
+  check(existsSync(binAudit) && (lstatSync(binAudit).mode & 0o111) !== 0, 'bin/ki-audit is executable')
+  const repoChecker = join(gf, '.ki-meta/ki-repo/audit-repo.ts')
   check(existsSync(repoChecker), 'vendored the ki-repo checker')
   check(existsSync(repoChecker) && !lstatSync(repoChecker).isSymbolicLink(), 'vendored checker is a copy, not a symlink (SCRIPT-7)')
-  check(existsSync(join(gf, 'scripts/ki/ki-mcp/audit-mcp.ts')), 'declared [ki-mcp] pulled ki-mcp into the vendored set')
+  check(existsSync(join(gf, '.ki-meta/ki-mcp/audit-mcp.ts')), 'declared [ki-mcp] pulled ki-mcp into the vendored set')
   const pkg = JSON.parse(readFileSync(join(gf, 'package.json'), 'utf8')) as { scripts: Record<string, string> }
   for (const k of ['ki:audit', 'ki:conform', 'ki:init', 'ki:repo:audit', 'ki:mcp:audit']) check(!!pkg.scripts[k], `installed key ${k}`)
   const audit = run('bun run ki:audit', gf, gfEnv)
@@ -89,8 +92,8 @@ try {
   const lgEnv = { ...process.env, KI_HARNESS: HARNESS, TARGET: lg }
   for (const b of legacyBlocks) run(b, HARNESS, lgEnv)
 
-  check(existsSync(join(lg, 'scripts/ki/ki-repo/audit-repo.ts')), '--legacy vendored the checkers')
-  check(existsSync(join(lg, 'scripts/ki/aggregate.ts')), '--legacy installed the aggregate')
+  check(existsSync(join(lg, '.ki-meta/ki-repo/audit-repo.ts')), '--legacy vendored the checkers')
+  check(existsSync(join(lg, '.ki-meta/aggregate.ts')), '--legacy installed the aggregate')
   const lgAfter = JSON.parse(readFileSync(join(lg, 'package.json'), 'utf8')) as { scripts: Record<string, string> }
   check(lgAfter.scripts['ki:repo:audit'] === 'echo pre-existing', '--legacy left a pre-existing key untouched (never clobbers)')
   check(!!lgAfter.scripts['ki:audit'], '--legacy installed the ki:audit aggregate key')

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Vendored by ki-bootstrap — the package.json-free entry to a repo's self-check.
+# Usage: ./bin/ki-audit [audit|conform|init]   (default: audit)
+set -euo pipefail
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$root"
+exec bun ".ki-meta/aggregate.ts" "${1:-audit}"

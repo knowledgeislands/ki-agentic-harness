@@ -213,6 +213,8 @@ async function main() {
     )
   }
 
+  if (findings.some((f) => ['FAIL', 'WARN', 'POLISH'].includes(SEV_LABELS[f.severity] ?? '')))
+    console.log('→ to address: run /ki-feature-definitions CONFORM   (judgment criteria: references/audit-rubric.md)')
   process.exit(hasFail ? 1 : 0)
 }
 

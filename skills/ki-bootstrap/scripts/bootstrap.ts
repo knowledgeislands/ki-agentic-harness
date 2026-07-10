@@ -2,12 +2,16 @@
 /**
  * ki-bootstrap chain engine — the mechanical half of INIT, and the start of the
  * bootstrap chain (ADR-KI-HARNESS-007). Brings a target repo under Knowledge
- * Islands governance so it governs itself with `bun run ki:audit` and **zero
- * skills installed**: for every skill in the resolved set it vendors *copies*
- * of the skill's checker scripts (SCRIPT-7 — copies, not symlinks) into the
- * target's `scripts/ki/<skill>/`, installs that skill's `ki:<suffix>:{audit,
- * conform}` package.json keys pointing at the copies, and installs/refreshes the
- * repo-wide `ki:audit` / `ki:conform` / `ki:init` aggregates.
+ * Islands governance so it governs itself with `./bin/ki-audit` and **zero
+ * skills installed** — and with **no `package.json` of its own** (dotfiles, KB,
+ * tap): for every skill in the resolved set it vendors *copies* of the skill's
+ * checker scripts (SCRIPT-7 — copies, not symlinks) into the target's
+ * `.ki-meta/<skill>/`, writes a `.ki-meta/aggregate.ts` that discovers and fans
+ * out over those copies, and drops a `bin/ki-audit` wrapper — the
+ * `package.json`-free entry point. Where the target *has* a `package.json`, it
+ * additionally installs that skill's `ki:<suffix>:{audit,conform}` npm keys and
+ * the repo-wide `ki:audit` / `ki:conform` / `ki:init` aggregates as convenience
+ * aliases over the same runner.
  *
  * Remote transport (ADR-KI-HARNESS-007): run straight from GitHub with no local
  * install —
@@ -24,19 +28,18 @@
  */
 
 import { execFileSync } from 'node:child_process'
-import { cpSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
+import { chmodSync, cpSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { ensureScripts, readText } from './package-scripts.ts'
 
 const GREEN = '\x1b[32m'
-const YELLOW = '\x1b[33m'
 const DIM = '\x1b[2m'
 const RESET = '\x1b[0m'
 
 const BASELINE = ['ki-repo', 'ki-authoring']
 const BOOTSTRAP = 'ki-bootstrap'
-const VENDOR_DIR = join('scripts', 'ki') // relative to the target repo root
+const VENDOR_DIR = '.ki-meta' // relative to the target repo root (dot-prefixed, generated-not-authored)
 
 // The harness `skills/` root this engine reads sources from. Local run: the
 // working tree two levels up from this file. (Remote-URL sourcing is a documented
@@ -130,31 +133,58 @@ function scriptKey(skill: string, verb: string): string {
   return `ki:${skill.replace(/^ki-/, '')}:${verb}`
 }
 
-// The aggregate runner vendored into every target — fans `ki:audit`/`ki:conform`/`ki:init`
-// out over the installed `ki:<skill>:<verb>` keys, so it stays correct as skills are added.
+// The aggregate runner vendored into every target — discovers the vendored checkers
+// under its own `.ki-meta/` dir and fans out over them for the given verb. It reads
+// the filesystem, not `package.json`, so it works in a repo that has no `package.json`
+// at all, and stays correct as skills are vendored in or out.
 const AGGREGATE_RUNNER = `#!/usr/bin/env bun
-// Vendored by ki-bootstrap. Runs every ki:<skill>:<verb> package.json script in
-// sequence for the given verb. Usage: bun scripts/ki/aggregate.ts <audit|conform|init>
+// Vendored by ki-bootstrap. Discovers the vendored checkers in this .ki-meta/ dir
+// and runs each in sequence for the given verb — no package.json required.
+// Usage: bun .ki-meta/aggregate.ts <audit|conform|init>
 import { execFileSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { readdirSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const verb = process.argv[2]
 if (!verb) {
   console.error('usage: aggregate.ts <audit|conform|init>')
   process.exit(2)
 }
-const pkg = JSON.parse(readFileSync('package.json', 'utf8'))
-const keys = Object.keys(pkg.scripts ?? {}).filter((k) => /^ki:[a-z0-9-]+:/.test(k) && k.endsWith(':' + verb) && !/^ki:(audit|conform|init)$/.test(k))
+const metaDir = dirname(fileURLToPath(import.meta.url))
+const SKIP = new Set(['audits', 'conform']) // derived report dirs, not skill checkers
+// audit → the checkers; conform → the conform scripts; init has no vendored scripts (no-op).
+const pattern = verb === 'audit' ? /^(audit|lint)-.*\\.ts$/ : verb === 'conform' ? /^conform-.*\\.ts$/ : null
+if (!pattern) process.exit(0)
+const skills = readdirSync(metaDir, { withFileTypes: true })
+  .filter((e) => e.isDirectory() && !SKIP.has(e.name))
+  .map((e) => e.name)
+  .sort()
 let failed = 0
-for (const k of keys.sort()) {
-  console.log('\\n\\x1b[36m==> ' + k + '\\x1b[0m')
+for (const skill of skills) {
+  const dir = join(metaDir, skill)
+  const script = readdirSync(dir).find((f) => pattern.test(f))
+  if (!script) continue
+  const key = 'ki:' + skill.replace(/^ki-/, '') + ':' + verb
+  console.log('\\n\\x1b[36m==> ' + key + '\\x1b[0m')
   try {
-    execFileSync('bun', ['run', k], { stdio: 'inherit' })
+    execFileSync('bun', [join(dir, script), '.'], { stdio: 'inherit' })
   } catch {
     failed++
   }
 }
 process.exit(failed > 0 ? 1 : 0)
+`
+
+// The package.json-free entry point vendored into every target: a tiny wrapper that
+// cd's to the repo root and runs the vendored aggregate. Usage: ./bin/ki-audit [verb].
+const BIN_KI_AUDIT = `#!/usr/bin/env bash
+# Vendored by ki-bootstrap — the package.json-free entry to a repo's self-check.
+# Usage: ./bin/ki-audit [audit|conform|init]   (default: audit)
+set -euo pipefail
+root="$(cd "$(dirname "\${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$root"
+exec bun ".ki-meta/aggregate.ts" "\${1:-audit}"
 `
 
 function vendorSkill(target: string, skill: string, dryRun: boolean): Array<[string, string]> {
@@ -200,10 +230,10 @@ function main(): void {
   const all = rest.includes('--all')
   const mode = parseMode(rest)
 
-  if (!existsSync(join(target, 'package.json'))) {
-    console.error(`${YELLOW}bootstrap${RESET} target has no package.json: ${target}`)
-    process.exit(1)
-  }
+  // No `package.json` is required — a repo self-governs through the vendored
+  // `.ki-meta/` runner and `bin/ki-audit` alone (dotfiles, KB, tap). Where a
+  // package.json *does* exist we additionally splice the `ki:*` convenience keys.
+  const hasPackageJson = existsSync(join(target, 'package.json'))
 
   const set = resolveSet(target, all, seeds)
   console.log(`${DIM}bootstrap ${target} — skills: ${set.join(', ')}${RESET}`)
@@ -211,32 +241,38 @@ function main(): void {
   const keys: Array<[string, string]> = []
   for (const skill of set) keys.push(...vendorSkill(target, skill, dryRun))
 
-  // Vendor the aggregate runner + wire the repo-wide aggregates.
+  // Vendor the aggregate runner + the package.json-free entry point.
   const aggRel = `${VENDOR_DIR}/aggregate.ts`
+  const binRel = join('bin', 'ki-audit')
   if (!dryRun) {
     mkdirSync(join(target, VENDOR_DIR), { recursive: true })
     writeFileSync(join(target, aggRel), AGGREGATE_RUNNER)
+    mkdirSync(join(target, 'bin'), { recursive: true })
+    writeFileSync(join(target, binRel), BIN_KI_AUDIT)
+    chmodSync(join(target, binRel), 0o755)
   }
-  keys.push(['ki:audit', `bun ${aggRel} audit`])
-  keys.push(['ki:conform', `bun ${aggRel} conform`])
-  keys.push(['ki:init', `bun ${aggRel} init`])
+  console.log(`${GREEN}runner${RESET} ${DIM}→ ${aggRel}, ${binRel}${RESET}`)
 
-  ensureScripts(target, keys, dryRun)
+  // Additive convenience: where a package.json exists, wire the repo-wide aggregate
+  // keys over the same runner. Without one, `./bin/ki-audit` is the entry point.
+  if (hasPackageJson) {
+    keys.push(['ki:audit', `bun ${aggRel} audit`])
+    keys.push(['ki:conform', `bun ${aggRel} conform`])
+    keys.push(['ki:init', `bun ${aggRel} init`])
+    ensureScripts(target, keys, dryRun)
+  }
 
   if (dryRun) return
-  if (mode.postConform) {
-    console.log(`${DIM}--legacy: running ki:conform${RESET}`)
+  // Post-INIT passes run the vendored runner directly (not `bun run ki:*`), so they
+  // work whether or not the target has a package.json. The verb is held in a variable
+  // so a bare 'conform'/'audit' arg isn't mistaken for a CLI binary by static analysis.
+  const postVerb = mode.postConform ? 'conform' : mode.postAudit ? 'audit' : null
+  if (postVerb) {
+    console.log(`${DIM}${mode.postConform ? '--legacy' : '--tracking'}: running ${postVerb}${RESET}`)
     try {
-      execFileSync('bun', ['run', 'ki:conform'], { cwd: target, stdio: 'inherit' })
+      execFileSync('bun', [aggRel, postVerb], { cwd: target, stdio: 'inherit' })
     } catch {
-      /* conform surfaces its own findings */
-    }
-  } else if (mode.postAudit) {
-    console.log(`${DIM}--tracking: running ki:audit${RESET}`)
-    try {
-      execFileSync('bun', ['run', 'ki:audit'], { cwd: target, stdio: 'inherit' })
-    } catch {
-      /* audit surfaces drift */
+      /* the runner surfaces its own findings / drift */
     }
   }
 }

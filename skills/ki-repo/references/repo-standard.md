@@ -29,12 +29,17 @@ Every repo carries these at the root. Presence is checked **on the default branc
 
 † The values it carries: `visibility`, the declared `license` (SPDX id, default MIT), and any per-repo check overrides.
 
+**Baseline governance is declared, not assumed.** Every Knowledge Islands repo is governed by `ki-repo` **and** `ki-authoring`; both are required declarations — a `.ki-config.toml` missing `[ki-authoring]` is a FAIL (`authoring-baseline`). Authoring is no longer an implicit universal hidden in the tooling ([ADR-KI-HARNESS-006](../../../docs/decisions/ADR-KI-HARNESS-006-validate-down-ki-config-contract.md)); the config shows the full governance set. Machine/user-surface standards (`ki-tokenomics`, `ki-housekeeping`) stay opt-in, never baseline.
+
+**Self-check capability is required.** A confirmed ki-repo must carry a way to run its checks with zero skills installed: `bin/ki-audit` or `.ki-meta/aggregate.ts` must be present. A marker-only repo with neither is a FAIL (`self-check`) — re-bootstrap to write the runner.
+
 `ROADMAP.md` is **expected but not required** — a warn, not a fail: most repos carry one, but a base that keeps its forward view elsewhere (a KB base's `Streams/Future`) may omit it.
 
 ### `.ki-meta/` — the working-artifacts area
 
 `.ki-meta/` is the working area for Knowledge Islands governance tooling — the artifacts-_out_ counterpart to `.ki-config.toml`'s config-_in_. It is an **extensible namespace**: subdirs are added as tooling grows, each declaring whether it is **derived** (regenerated, gitignored) or **durable** (kept, tracked). Defined subdirs today:
 
+- `.ki-meta/<skill>/<checker>.ts` + `.ki-meta/aggregate.ts` — **durable** (tracked): the vendored checker copies and the runner that `ki-bootstrap`'s INIT writes so the repo self-governs with zero skills installed ([ADR-KI-HARNESS-007](../../../docs/decisions/ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md)). The paired `bin/ki-audit` wrapper is the `package.json`-free entry point.
 - `.ki-meta/audits/<concern>.{md,json}` — the latest audit report per concern (`engineering`, `skills`, `repo`, …), written by a checker run with `--report` and overwritten each run (latest-only, no history). The `.json` is the machine-readable substrate a composed audit merges; the `.md` is the human report.
 - `.ki-meta/conform/<concern>.md` — the latest record of what a CONFORM changed.
 

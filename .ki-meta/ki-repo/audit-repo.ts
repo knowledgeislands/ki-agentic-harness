@@ -199,6 +199,10 @@ license = "MIT"          # SPDX id the LICENSE, package.json, and GitHub must ma
 # [${KI_SECTION}.checks]
 # branch-protection = true   # default off — protect \`main\` on this repo
 # wiki = false               # default on  — allow this repo's Wiki
+
+# The authoring standard (Markdown/TOML house style) is baseline — every KI repo is
+# governed by it. Declared explicitly, not assumed; its presence is the compliance marker.
+[ki-authoring]
 `
 
 // Minimal parser for the constrained schema: `[table]` headers (incl. the dotted
@@ -257,7 +261,8 @@ const REPO_FIELDS =
 // single registry of {skill → detection signal → opt-in table}. `repo` reads only
 // table PRESENCE here (validate-down still owns table CONTENTS); a detected-but-
 // undeclared signal WARNs, a declared-but-undetected table WARNs as possibly stale.
-// `authoring` is universal (every markdown repo) so it has no opt-in table.
+// `authoring` is baseline (every KI repo) and so is not a *detected* coverage signal —
+// it is checked directly as a required declaration above (authoring-baseline), not here.
 const WRANGLER = ['wrangler.jsonc', 'wrangler.json', 'wrangler.toml']
 const ELEVENTY = ['eleventy.config.ts', 'eleventy.config.js', 'eleventy.config.cjs', 'eleventy.config.mjs']
 type Signals = { root: Set<string>; tree: Set<string>; pkg: Pkg | null }
@@ -336,6 +341,22 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
   for (const [check, paths] of REQUIRED_FILES) {
     if (!paths.some((p) => files.has(p))) fail(check, `no ${paths.join(' / ')}`)
   }
+  // ── layer 1: baseline governance + self-check capability (gated on the ki-repo marker) ──
+  // A confirmed ki-repo (carries .ki-config.toml) must (a) declare the baseline
+  // authoring standard explicitly — it is no longer an implicit universal (ADR-006) —
+  // and (b) carry a self-check runner so `./bin/ki-audit` works with zero skills
+  // installed (ADR-007). A marker-only repo with neither runner is a FAIL.
+  if (files.has(KI_CONFIG)) {
+    if (!declaresTable(kiText ?? '', 'ki-authoring'))
+      fail('authoring-baseline', `${KI_CONFIG} does not declare [ki-authoring] — the authoring standard is baseline (run --init)`)
+    const hasRunner = signals.tree.has('bin/ki-audit') || signals.tree.has('.ki-meta/aggregate.ts')
+    if (!hasRunner)
+      fail(
+        'self-check',
+        `${KI_CONFIG} present but no self-check runner (bin/ki-audit or .ki-meta/aggregate.ts) — re-bootstrap so the repo self-governs`
+      )
+  }
+
   // ── layer 1: .ki-meta working area — derived audit/conform artifacts must be gitignored, not committed ──
   // The .ki-meta/ namespace itself may hold tracked artifacts, but its derived subdirs (audits/, conform/)
   // are regenerated each run; finding them in the committed tree means .gitignore is missing the entry.
@@ -667,7 +688,7 @@ if (reportOut) {
     const rows = all.filter((f) => f.level === l)
     return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
   })
-  const tally = `${targets.length} repo(s) · ${summary.fail} fail · ${summary.warn} warn · ${summary.info} info · ${summary.na} n/a`
+  const tally = `${targets.length} repo(s) · FAIL=${summary.fail} WARN=${summary.warn} INFO=${summary.info} NA=${summary.na}`
   writeFileSync(join(reportDir, 'repo.md'), [`# repo audit — ${reportTarget}`, '', `_${stampIso}_`, '', tally, ...body, ''].join('\n'))
   writeFileSync(
     join(reportDir, 'repo.json'),
@@ -681,9 +702,10 @@ if (jsonOut) {
   )
 } else {
   console.log(
-    `\n${paint(C.cyan, 'summary')}: ${targets.length} repo(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}${ghSkipped ? paint(C.dim, `, ${ghSkipped} not on github.com`) : ''}`
+    `\n${paint(C.cyan, 'summary')}: ${targets.length} repo(s) · FAIL=${totalFails} WARN=${totalWarns}${ghSkipped ? paint(C.dim, ` · ${ghSkipped} not on github.com`) : ''}`
   )
   if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'repo.{md,json}')}`))
+  if (totalFails + totalWarns > 0) console.log('→ to address: run /ki-repo CONFORM   (judgment criteria: references/audit-rubric.md)')
   console.log(
     paint(
       C.dim,

@@ -244,9 +244,7 @@ function report(findings: Finding[]): void {
 
   const passCount = findings.filter((f) => f.severity === 'PASS').length
   console.log('')
-  console.log(
-    `  ${DIM}${passCount} passed${RESET}   ${fails > 0 ? `${RED}${fails} failed${RESET}` : `${GREEN}0 failed${RESET}`}   ${warns > 0 ? `${YELLOW}${warns} warned${RESET}` : `${DIM}0 warned${RESET}`}`
-  )
+  console.log(`  ${DIM}FAIL=${fails} WARN=${warns} PASS=${passCount}${RESET}`)
 }
 
 // ── Entry ──────────────────────────────────────────────────────────────────────
@@ -258,4 +256,6 @@ const findings = auditHarness(root)
 report(findings)
 
 const hasFail = findings.some((f) => f.severity === 'FAIL')
+if (findings.some((f) => f.severity === 'FAIL' || f.severity === 'WARN'))
+  console.log('→ to address: run /ki-harness CONFORM   (judgment criteria: references/audit-rubric.md)')
 process.exit(hasFail ? 1 : 0)
