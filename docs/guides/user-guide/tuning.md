@@ -100,6 +100,19 @@ Memory is the one layer where two different audits apply, and they are complemen
 
 The scope rule the hygiene pass enforces is also the cheapest way to keep the index small: repo-specific guidance belongs in that repo's `CLAUDE.md`, cross-project personal preferences in `~/.claude/*.md`, and only genuine user/reference facts stay in memory. Machine-generated noise — stale "learned patterns" blocks, another repo's paths — is both a hygiene failure and dead standing cost; prune it here rather than compressing it at runtime.
 
+### When the hygiene audit reports issues
+
+`ki:housekeeping:audit` exits non-zero on any `FAIL` and prints one line per finding at a severity: `FAIL` (fix before trusting the store), `WARN` / `POLISH` (tidy when convenient), `ADVISORY` (informational). Fix by severity, then re-run until clean. The common findings and their remedies:
+
+| Finding | Means | Fix |
+| --- | --- | --- |
+| `FM-2` | A file's `name:` doesn't match its filename slug | Edit the `name:` to equal the filename without `.md` — the filename is authoritative; don't rename the file |
+| `IDX-4` | A `MEMORY.md` index line exceeds 150 chars | Shorten the hook after the `—`; detail lives in the entry body, so the index only needs a pointer |
+| `IDX-*` | Index and `memory/*.md` files disagree | Add the missing one-line pointer, or drop the pointer to a file you deleted — index and files must be in lockstep |
+| reconcile | A fact lives in both memory and a `CLAUDE.md` | Delete the memory entry (and its index line); `CLAUDE.md` wins — never leave both |
+
+Editing the store is just Edit/Write on the `memory/*.md` files and `MEMORY.md` under the project's memory directory — no tool ceremony. After any edit, re-run `bun run ki:housekeeping:audit` to confirm `FAIL=0`, then `bun run ki:tokenomics:audit` to see whether the prune moved the cost number.
+
 ## Runtime — compress and cache what does load
 
 - **Headroom** compresses tool _results_ — it reversibly substitutes large output blocks it has already seen in the stream (see [Installation](installation.md) for proxy vs wrap mode). This is a runtime lever; it does not touch tool definitions.
