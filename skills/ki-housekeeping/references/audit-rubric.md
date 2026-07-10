@@ -11,6 +11,7 @@ Used by Mode AUDIT. These are the criteria for the **memory area**, the one area
 - **[M] IDX-3** Every `memory/*.md` file (other than `MEMORY.md` itself) appears as an entry in the index. An unindexed file is a WARN (it's invisible to future recall until indexed).
 - **[M] IDX-4** Each index line stays at or under 150 characters. Over is a POLISH.
 - **[M] IDX-5** The Headroom auto-generated block, if present, has both `<!-- headroom:learn:start -->` and `<!-- headroom:learn:end -->` markers, in order. A malformed pair is a WARN.
+- **[M] IDX-6** Entries _inside_ the `headroom:learn` block are not rooted in another repo. `headroom learn` captures patterns from whatever island the session ran in, so an absolute `knowledgeislands/<repo>` path whose `<repo>` differs from the audited repo is a stale cross-repo capture — dead weight in the always-on prefix. Any such line is a WARN; the fix is judgment (re-learn in this repo, or prune), so it routes to CONFORM. Scoped to inside the markers, so a repo's own prose is never touched; the heuristic keys on absolute KI-sibling roots and deliberately leaves relative `../sibling` refs alone, because a cross-repo governance repo uses those legitimately.
 
 ## Frontmatter
 

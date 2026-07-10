@@ -44,6 +44,7 @@ The records are living, compact, and independent. The order below is a **curated
 19. [ADR-KI-HARNESS-SKILLS-009](ADR-KI-HARNESS-SKILLS-009-tools-and-homebrew-tap-structure-skills.md) — ki-tools and ki-homebrew-tap repo-structure skills.
 20. [ADR-KI-HARNESS-AGENTS-001](ADR-KI-HARNESS-AGENTS-001-subagent-isolation.md) — subagent isolation for multi-skill invocation.
 21. [ADR-KI-HARNESS-008](ADR-KI-HARNESS-008-public-and-declared-license.md) — public repos and a declared license, decoupled from visibility.
+22. [ADR-KI-HARNESS-TOOLCHAIN-004](ADR-KI-HARNESS-TOOLCHAIN-004-checker-remediation-footer-and-learn-block-context.md) — checker remediation footer and the headroom:learn cross-repo context check.
 
 ## Template
 
