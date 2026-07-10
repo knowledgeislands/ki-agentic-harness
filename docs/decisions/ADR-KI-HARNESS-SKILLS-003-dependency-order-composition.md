@@ -24,9 +24,3 @@ Skill names follow the grammar **`ki-<concern>[-<technology>]`**. The set has th
 
 - A composing skill's base is judged before the skill itself is reached.
 - In a serial walk, execution time scales with the number of skills; in parallel invocations (ADR-KI-HARNESS-AGENTS-001), this order governs synthesis ranking, not execution order.
-
-## References
-
-- The `ki-skills` skill — Mode AUDIT, set-audit discipline.
-- The `ki-engineering` enforcement framework, AUDIT — "Auditing a set … bounds its own context".
-- ADR-KI-HARNESS-AGENTS-001, later in the reading order, uses this dependency order as synthesis-ranking priority when parallelising multi-skill execution.

@@ -30,6 +30,3 @@ For the harness multi-concern audit specifically, the workflow is codified in `.
 ## References
 
 - [ADR-KI-HARNESS-SKILLS-003](ADR-KI-HARNESS-SKILLS-003-dependency-order-composition.md) — the dependency order that governs synthesis ranking.
-- The `ki-skills` SKILL.md — Mode AUDIT, set-audit discipline.
-- The `ki-harness` SKILL.md — Mode AUDIT step 2, the multi-concern audit.
-- The `ki-multi-skill-audit` workflow — the saved workflow.

@@ -26,5 +26,3 @@ A criterion starts in the checker unless it genuinely requires judgment. A crite
 ## References
 
 - [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-mechanical-first-llm-optional.md) — the mechanical-first, LLM-optional foundation this per-skill split realises.
-
-The mechanical-checker contract and the rubric format are set out in the `ki-engineering` enforcement framework, and the governing principle — mechanical work belongs in the checker, not in tokens — is in the user guide's skill-design principles.

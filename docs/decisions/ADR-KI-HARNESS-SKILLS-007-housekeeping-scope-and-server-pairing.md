@@ -23,4 +23,3 @@ The former `ki-memory` skill governed one narrow thing: the Claude Code auto-mem
 ## References
 
 - [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md) — the taxonomy that places ki-housekeeping in the Environment cluster.
-- The `ki-housekeeping` housekeeping-standard reference — the areas and the skill↔server pairing in full.

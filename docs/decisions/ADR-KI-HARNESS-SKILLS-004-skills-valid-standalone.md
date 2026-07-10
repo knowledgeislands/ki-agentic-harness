@@ -21,7 +21,3 @@ Every skill must be **valid installed standalone**. Specifically:
 - The symlink-based install mechanism works for any skill without modification.
 - Cross-skill references in prose are by name, so they survive path changes.
 - The checker self-containment requirement is part of the mechanical-checker contract (ADR-KI-HARNESS-SKILLS-002).
-
-## References
-
-This record is self-contained. The "Composition only" principle and standalone validity are set out in the user guide's skill-design principles, and the checker self-containment rule — "depend on Node/Bun builtins only — no npm dependencies; be self-contained: no imports from another skill's files" — is in the `ki-engineering` enforcement framework.

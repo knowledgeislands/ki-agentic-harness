@@ -51,8 +51,6 @@ house-mcp-manager is a CLI that toggles MCP servers and saves named profiles by 
 - [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-validate-down-ki-config-contract.md) — Validate-down `.ki-config.toml` contract.
 - [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) — the standalone-valid skill requirement the declines protect.
 
-Named here rather than linked, as they come later in the reading order: ADR-KI-HARNESS-AGENTS-001 (subagent isolation for multi-skill invocation) and ADR-KI-HARNESS-TOOLCHAIN-003 (proxy local MCP servers behind mcporter).
-
 - [extraheadroom.com/reduce-claude-code-costs](https://extraheadroom.com/reduce-claude-code-costs) — the source survey.
 - [headroom-ai](https://headroom.ai/) — context compaction and session management layer (bundles RTK).
 - [mcporter](https://github.com/steipete/mcporter) — MCP ergonomic API/CLI toolkit and proxy daemon.

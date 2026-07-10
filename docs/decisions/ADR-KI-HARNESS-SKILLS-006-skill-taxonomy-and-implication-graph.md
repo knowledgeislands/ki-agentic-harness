@@ -24,6 +24,4 @@ The skills are organised into six clusters, and their relationships are declared
 
 ## References
 
-- The `ki-engineering` enforcement-framework reference — the governance-skill shape each cluster follows.
 - [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-composition-over-extension.md) — composition over extension, how skills relate within the graph.
-- The user-guide skills map and skill catalogue — the clusters, the interdependency graph, and the catalogue the clusters organise.

@@ -23,7 +23,7 @@ The harness adopts ADRs as its canonical record for significant decisions. The f
 
 A Decision Record is a **living present-state record**: it states the decision as it stands now and is edited in place. There is no status lifecycle, no mutability marker, no supersession chain, and no changelog — a decision that changes edits the live record, and the reasoning history lives in git. Superseded/roadmap/forward-looking narration belongs in the ROADMAP (code) or a stream (KB), not in the record.
 
-DR files live in `docs/decisions/` and are indexed in `docs/decisions/README.md`. The naming convention and mechanical rules are governed by a skill.
+DR files live in `docs/decisions/` and are indexed in `docs/decisions/README.md`. The naming convention and mechanical rules are governed by a skill. The format descends from Michael Nygard's 2011 "Documenting Architecture Decisions" proposal, and this adoption is the harness realisation of `GDR-KI-ARCADIA-001`, the KI-level governance decision that established Decision Records across Knowledge Islands.
 
 ## Consequences
 
@@ -31,7 +31,3 @@ DR files live in `docs/decisions/` and are indexed in `docs/decisions/README.md`
 - An agent beginning a session can read the `docs/decisions/` index to understand why the harness is shaped the way it is.
 - Because records are living and edited in place, the index always reflects the current decision; the reasoning history is recovered from git, not from a status field or a supersession chain.
 - Minor decisions (implementation details, naming choices) remain in commit messages; DRs are reserved for choices that would otherwise require excavation to understand.
-
-## References
-
-This record is self-contained; the sources behind it are named rather than linked. It is the harness realisation of `GDR-KI-ARCADIA-001`, the KI-level governance decision in ki-arcadia-principal that established Decision Records as the instrument. The DR format used here is defined and enforced by a skill, and descends from Michael Nygard's 2011 "Documenting Architecture Decisions" proposal. The index of all DRs in this harness is the `README.md` in this directory.

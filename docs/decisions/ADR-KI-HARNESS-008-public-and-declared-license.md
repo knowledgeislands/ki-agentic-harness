@@ -24,5 +24,4 @@ Knowledge Islands repos are **public by default** (installable from source), and
 ## References
 
 - [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-naming-model-and-harness-as-source.md) — harness-as-source vs plugin-as-projection, which this makes installable.
-- The `ki-repo` standard — the license and visibility checks in full.
 - [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-validate-down-ki-config-contract.md) — the `.ki-config.toml` contract the `license` field extends.

@@ -29,4 +29,3 @@ Add two repo-structure skills — **`ki-tools`** and **`ki-homebrew-tap`** — t
 - [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md) — the taxonomy this extends (the repo-structure cluster).
 - [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-composition-over-extension.md) — composition over extension: new shape → new skill, variation → declaration.
 - [ADR-KI-HARNESS-SKILLS-008](ADR-KI-HARNESS-SKILLS-008-feature-definitions-skill.md) — the precedent for adding a skill against the ADR-006 taxonomy.
-- The `ki-engineering` checker-contract reference — the checker output/exit contract both new checkers follow.

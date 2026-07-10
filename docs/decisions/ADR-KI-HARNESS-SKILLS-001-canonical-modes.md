@@ -23,7 +23,3 @@ The skills rubric enforces that every governance skill exposes this shape.
 - Composition is predictable: one skill calls another's AUDIT as a named step; INIT starts the bootstrap chain and pulls the skills it implies.
 - Skill-specific modes extend the vocabulary without replacing it; the universal four are always present.
 - OPTIMISE remains an accepted optional extension for pushing a compliant artifact from the floor toward excellent.
-
-## References
-
-This record is self-contained. The modes in full are set out in the `ki-engineering` enforcement framework, and the governing one-governance-mode-model principle is in the user guide's skill-design principles.

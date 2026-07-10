@@ -119,7 +119,7 @@ The resulting context after the decision is applied — positive outcomes, trade
 - [DR-CODE](DR-CODE-slug.md) -- the foundational decision this record builds on.
 ```
 
-A decision record is **self-contained**. Its outbound Markdown links are limited to two kinds: **sibling DRs in the same decisions set** (following the reading-order layering — reference the foundations a decision builds on) and **external URLs** (a tool's homepage, a spec, a source). Do **not** link to other internal Knowledge Islands artefacts — skills, guides, feature definitions, workflows, KB notes — name them in prose and inline any context the reader needs, so the record never depends on chasing a link that rots. External links are supplementary: the record must still read completely without following them. Omit the section entirely if there are genuinely no references.
+The `## References` section is a list of **followable links only**, of exactly two kinds: **sibling DRs in the same decisions set** (backward in the reading-order layering — the foundations a decision builds on) and **external URLs** (a tool's homepage, a spec, a source). It is not a place for prose or for named internal artefacts. Skills, guides, feature definitions, workflows, KB notes, and the standards a decision grounds in are **named in the body**, where the reader meets them — never listed here — so the record stays self-contained and nothing depends on chasing a link that rots. External links are supplementary: the record must read completely without following them. Omit the section entirely when a record has no such links.
 
 ## Templates
 

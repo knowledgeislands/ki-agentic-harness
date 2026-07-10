@@ -32,5 +32,3 @@ The per-artefact grammar (the `ki-<concern>[-<technology>]` form and how names r
 ## References
 
 - [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-purpose-scope-structure.md) — the purpose, scope, and bundle layout that is the source this decision projects.
-- The cross-surface-enablement design record — the design for the single-source-to-many-surfaces fan-out that binding realises.
-- Bootstrapping — the keystone that links project-local skills, the Claude Code arm of the projection.

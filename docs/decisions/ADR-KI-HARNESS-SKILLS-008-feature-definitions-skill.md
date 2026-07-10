@@ -25,5 +25,4 @@ Introduce **`ki-feature-definitions`**, a general-governance skill that codifies
 ## References
 
 - [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md) — the taxonomy that places this skill in the general-governance cluster.
-- The `ki-feature-definitions` feature-format standard — the format standard in full.
 - [ADR-KI-HARNESS-SKILLS-001](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) — the universal modes this skill carries.

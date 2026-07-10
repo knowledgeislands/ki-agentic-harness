@@ -16,7 +16,3 @@ Each governance skill needed to know whether it applied to a given repo, and wha
 - Adding a new governance standard to a repo is one table addition — no code change in any skill.
 - Forking a skill for a single repo's variation is prevented: the variation is data in `.ki-config.toml`, not code in a derived skill.
 - The repo coverage gate enforces that detected standards are declared.
-
-## References
-
-This record is self-contained. Its source is the repo standard, whose config-standard reference holds the full `.ki-config.toml` contract and whose SKILL.md describes the coverage-gate model.

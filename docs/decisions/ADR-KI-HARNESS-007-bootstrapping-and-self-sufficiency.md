@@ -26,5 +26,3 @@ Governance bootstraps through a single chain, runnable from the remote source wi
 
 - [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-mechanical-first-llm-optional.md) — the mechanical-first stance this depends on.
 - [ADR-KI-HARNESS-SKILLS-001](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) — INIT, the universal mode whose mechanical half is `scripts/bootstrap.ts`; the role it plays in bootstrapping is set out above.
-- The bootstrap — the chain-starter keystone.
-- The engineering enforcement-framework reference — INIT and the self-sufficiency contract.
