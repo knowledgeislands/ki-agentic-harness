@@ -6,7 +6,8 @@
  * **zero skills installed** — and with **no `package.json` of its own** (dotfiles,
  * KB, tap): for every skill in the resolved set it vendors *copies* of the skill's
  * checker scripts (SCRIPT-7 — copies, not symlinks) into the target's
- * `.ki-meta/<skill>/`, writes a `.ki-meta/aggregate.ts` that discovers and fans
+ * `.ki-meta/skills/<skill>/` (named by verb: `audit.ts`/`lint.ts`/`conform.ts`),
+ * writes a `.ki-meta/bin/aggregate.ts` that discovers and fans
  * out over those copies, and drops a `.ki-meta/bin/ki-audit` wrapper — the
  * `package.json`-free entry point, dot-prefixed so it never collides with the
  * repo's own `bin/` and is auto-ignored by chezmoi. Where the target *has* a `package.json`, it
@@ -140,15 +141,16 @@ function scriptKey(skill: string, verb: string): string {
 }
 
 // The aggregate runner vendored into every target — discovers the vendored checkers
-// under its own `.ki-meta/` dir and fans out over them for the given verb. It reads
-// the filesystem, not `package.json`, so it works in a repo that has no `package.json`
-// at all, and stays correct as skills are vendored in or out.
+// under its sibling `../skills/` dir (an allowlist: only that dir is scanned, so `bin/`
+// and the report dirs are never mistaken for skills) and fans out over them for the
+// given verb. It reads the filesystem, not `package.json`, so it works in a repo that
+// has no `package.json` at all, and stays correct as skills are vendored in or out.
 const AGGREGATE_RUNNER = `#!/usr/bin/env bun
-// Vendored by ki-bootstrap. Discovers the vendored checkers in this .ki-meta/ dir
-// and runs each in sequence for the given verb — no package.json required.
-// Usage: bun .ki-meta/aggregate.ts <audit|conform|init>
+// Vendored by ki-bootstrap. Runs each vendored skill checker under ../skills/ in
+// sequence for the given verb — no package.json required.
+// Usage: bun .ki-meta/bin/aggregate.ts <audit|conform|init>
 import { execFileSync } from 'node:child_process'
-import { readdirSync } from 'node:fs'
+import { existsSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -157,18 +159,20 @@ if (!verb) {
   console.error('usage: aggregate.ts <audit|conform|init>')
   process.exit(2)
 }
-const metaDir = dirname(fileURLToPath(import.meta.url))
-const SKIP = new Set(['audits', 'conform']) // derived report dirs, not skill checkers
-// audit → the checkers; conform → the conform scripts; init has no vendored scripts (no-op).
-const pattern = verb === 'audit' ? /^(audit|lint)-.*\\.ts$/ : verb === 'conform' ? /^conform-.*\\.ts$/ : null
+// Vendored copies are named by verb (audit.ts / lint.ts / conform.ts) — the skill dir
+// already carries the identity. audit → the checker; conform → the conform script; init
+// has no vendored scripts (no-op).
+const pattern = verb === 'audit' ? /^(audit|lint)\\.ts$/ : verb === 'conform' ? /^conform\\.ts$/ : null
 if (!pattern) process.exit(0)
-const skills = readdirSync(metaDir, { withFileTypes: true })
-  .filter((e) => e.isDirectory() && !SKIP.has(e.name))
+const skillsDir = join(dirname(fileURLToPath(import.meta.url)), '..', 'skills')
+if (!existsSync(skillsDir)) process.exit(0)
+const skills = readdirSync(skillsDir, { withFileTypes: true })
+  .filter((e) => e.isDirectory())
   .map((e) => e.name)
   .sort()
 let failed = 0
 for (const skill of skills) {
-  const dir = join(metaDir, skill)
+  const dir = join(skillsDir, skill)
   const script = readdirSync(dir).find((f) => pattern.test(f))
   if (!script) continue
   const key = 'ki:' + skill.replace(/^ki-/, '') + ':' + verb
@@ -183,27 +187,30 @@ process.exit(failed > 0 ? 1 : 0)
 `
 
 // The package.json-free entry point vendored into every target: a tiny wrapper that
-// cd's to the repo root and runs the vendored aggregate. It lives under .ki-meta/ so the
-// whole generated surface is dot-prefixed — off the repo's own bin/ and auto-ignored by
-// dotfile managers (chezmoi). Usage: ./.ki-meta/bin/ki-audit [verb].
+// cd's to the repo root and runs the vendored aggregate. It lives under .ki-meta/bin/ so
+// the whole generated surface is dot-prefixed — off the repo's own bin/ and auto-ignored
+// by dotfile managers (chezmoi). Usage: ./.ki-meta/bin/ki-audit [verb].
 const BIN_KI_AUDIT = `#!/usr/bin/env bash
 # Vendored by ki-bootstrap — the package.json-free entry to a repo's self-check.
 # Usage: ./.ki-meta/bin/ki-audit [audit|conform|init]   (default: audit)
 set -euo pipefail
 root="$(cd "$(dirname "\${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$root"
-exec bun ".ki-meta/aggregate.ts" "\${1:-audit}"
+exec bun ".ki-meta/bin/aggregate.ts" "\${1:-audit}"
 `
 
 function vendorSkill(target: string, skill: string, dryRun: boolean): Array<[string, string]> {
   const keys: Array<[string, string]> = []
   const checker = checkerScript(skill)
   if (!checker) return keys
-  const destDir = join(target, VENDOR_DIR, skill)
-  const relChecker = `${VENDOR_DIR}/${skill}/${checker.file}`
+  const destDir = join(target, VENDOR_DIR, 'skills', skill)
+  // Vendored copies are named by verb — the skill dir already carries the identity, so
+  // `audit-repo.ts` → `audit.ts`, `lint-skills.ts` → `lint.ts`, `conform-repo.ts` → `conform.ts`.
+  const checkerDest = `${checker.verb}.ts`
+  const relChecker = `${VENDOR_DIR}/skills/${skill}/${checkerDest}`
   if (!dryRun) {
     mkdirSync(destDir, { recursive: true })
-    cpSync(join(skillDir(skill), 'scripts', checker.file), join(destDir, checker.file))
+    cpSync(join(skillDir(skill), 'scripts', checker.file), join(destDir, checkerDest))
   }
   console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${relChecker}${RESET}`)
   // Vendored checker keys are always the `:audit` verb, regardless of whether the
@@ -212,8 +219,8 @@ function vendorSkill(target: string, skill: string, dryRun: boolean): Array<[str
   keys.push([scriptKey(skill, 'audit'), `bun ${relChecker} .`])
   const conform = conformScript(skill)
   if (conform) {
-    const relConform = `${VENDOR_DIR}/${skill}/${conform}`
-    if (!dryRun) cpSync(join(skillDir(skill), 'scripts', conform), join(destDir, conform))
+    const relConform = `${VENDOR_DIR}/skills/${skill}/conform.ts`
+    if (!dryRun) cpSync(join(skillDir(skill), 'scripts', conform), join(destDir, 'conform.ts'))
     keys.push([scriptKey(skill, 'conform'), `bun ${relConform} .`])
   }
   return keys
@@ -252,7 +259,7 @@ function main(): void {
   // Vendor the aggregate runner + the package.json-free entry point — both under
   // .ki-meta/ so the whole generated surface is dot-prefixed (off the repo's own bin/,
   // auto-ignored by chezmoi).
-  const aggRel = `${VENDOR_DIR}/aggregate.ts`
+  const aggRel = join(VENDOR_DIR, 'bin', 'aggregate.ts')
   const binRel = join(VENDOR_DIR, 'bin', 'ki-audit')
   if (!dryRun) {
     mkdirSync(join(target, VENDOR_DIR, 'bin'), { recursive: true })

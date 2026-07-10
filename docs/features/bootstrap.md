@@ -14,9 +14,9 @@ _Verify:_ bootstrap a bare fixture (`.ki-config.toml` only, no `package.json`, n
 
 ### BOOT-002 — Vendored copies, not symlinks
 
-INIT MUST vendor each resolved skill's checker (and any `conform-*.ts`) into the target's `.ki-meta/<skill>/` as file **copies**, never symlinks, so they run with no harness beside the repo (SCRIPT-7 / [ADR-KI-HARNESS-007](../decisions/ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md)).
+INIT MUST vendor each resolved skill's checker (and any `conform-*.ts`) into the target's `.ki-meta/skills/<skill>/` as file **copies**, never symlinks, so they run with no harness beside the repo (SCRIPT-7 / [ADR-KI-HARNESS-007](../decisions/ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md)).
 
-_Verify:_ after bootstrap, `.ki-meta/ki-repo/audit-repo.ts` in the target is a regular file whose contents equal the harness source, and `git check-ignore` does not ignore it.
+_Verify:_ after bootstrap, `.ki-meta/skills/ki-repo/audit.ts` in the target is a regular file whose contents equal the harness source, and `git check-ignore` does not ignore it.
 
 ### BOOT-003 — Implied-skill closure
 
@@ -26,9 +26,9 @@ _Verify:_ seeding `ki-website` resolves a set that also contains `ki-website-clo
 
 ### BOOT-004 — Repo-wide aggregates
 
-INIT MUST vendor a `.ki-meta/aggregate.ts` that discovers the vendored checkers on the filesystem (no `package.json` read) and fans out over them for a given verb, so the aggregate stays correct as skills are vendored in or out. Where the target has a `package.json`, INIT MUST additionally install (or refresh) the `ki:audit` / `ki:conform` / `ki:init` convenience keys over that runner.
+INIT MUST vendor a `.ki-meta/bin/aggregate.ts` that discovers the vendored checkers on the filesystem (no `package.json` read) and fans out over them for a given verb, so the aggregate stays correct as skills are vendored in or out. Where the target has a `package.json`, INIT MUST additionally install (or refresh) the `ki:audit` / `ki:conform` / `ki:init` convenience keys over that runner.
 
-_Verify:_ a bootstrapped repo has `.ki-meta/aggregate.ts`; running `bun .ki-meta/aggregate.ts audit` invokes every vendored `ki:<skill>:audit` in sequence, and a repo with a `package.json` also has `"ki:audit": "bun .ki-meta/aggregate.ts audit"`.
+_Verify:_ a bootstrapped repo has `.ki-meta/bin/aggregate.ts`; running `bun .ki-meta/bin/aggregate.ts audit` invokes every vendored `ki:<skill>:audit` in sequence, and a repo with a `package.json` also has `"ki:audit": "bun .ki-meta/bin/aggregate.ts audit"`.
 
 ### BOOT-007 — package.json-free entry point
 

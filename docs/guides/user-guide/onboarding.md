@@ -19,8 +19,8 @@ Onboarding is **INIT**. The other three are the day-to-day loop once a repo is g
 
 For every skill in the resolved set — the baseline (`ki-repo`, `ki-authoring`), plus every `[ki-<skill>]` table the target declares in its `.ki-config.toml`, plus their `implies:` closure — INIT:
 
-1. **vendors copies** of the skill's checker scripts into the target's `.ki-meta/<skill>/` (copies, not symlinks, so they run standalone);
-2. **writes** the package.json-free runner — a `.ki-meta/aggregate.ts` that discovers those copies and fans out over them, plus a `.ki-meta/bin/ki-audit` wrapper that invokes it;
+1. **vendors copies** of the skill's checker scripts into the target's `.ki-meta/skills/<skill>/` (copies, not symlinks, so they run standalone);
+2. **writes** the package.json-free runner — a `.ki-meta/bin/aggregate.ts` that discovers those copies and fans out over them, plus a `.ki-meta/bin/ki-audit` wrapper that invokes it;
 3. **where the target has a `package.json`**, additionally installs that skill's `ki:<suffix>:{audit,conform}` keys and the repo-wide `ki:audit` / `ki:conform` / `ki:init` aggregates as convenience aliases over the same runner.
 
 After INIT the repo governs itself with `./.ki-meta/bin/ki-audit` — no `package.json` and **no skills installed anywhere** required. A `.ki-meta/` is dot-prefixed and generated-not-authored, so it stays off the repo's own `scripts/`.

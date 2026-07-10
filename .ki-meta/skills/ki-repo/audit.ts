@@ -349,11 +349,11 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
   if (files.has(KI_CONFIG)) {
     if (!declaresTable(kiText ?? '', 'ki-authoring'))
       fail('authoring-baseline', `${KI_CONFIG} does not declare [ki-authoring] — the authoring standard is baseline (run --init)`)
-    const hasRunner = signals.tree.has('.ki-meta/aggregate.ts') || signals.tree.has('.ki-meta/bin/ki-audit')
+    const hasRunner = signals.tree.has('.ki-meta/bin/aggregate.ts') || signals.tree.has('.ki-meta/bin/ki-audit')
     if (!hasRunner)
       fail(
         'self-check',
-        `${KI_CONFIG} present but no self-check runner (.ki-meta/aggregate.ts or .ki-meta/bin/ki-audit) — re-bootstrap so the repo self-governs`
+        `${KI_CONFIG} present but no self-check runner (.ki-meta/bin/aggregate.ts or .ki-meta/bin/ki-audit) — re-bootstrap so the repo self-governs`
       )
   }
 
