@@ -52,7 +52,10 @@ license = "MIT"          # SPDX id; the LICENSE, package.json, and GitHub must m
 # the acknowledged state; the WARN is there to revisit when the global MCP set is pruned.
 [ki-tokenomics]
 headroom = "recommended"
-preferred_model = "sonnet"
+# Sonnet is the sensible overall default (set user-globally); the harness overrides
+# to opus because governing the skill set — cross-skill consistency, rubric judgment,
+# checker design — is high-reasoning work that earns the tier. Project default wins.
+preferred_model = "opus"
 
 [ki-tokenomics.budgets]
 mcp_servers = 20   # 19 user-scoped at time of first audit (2026-06-22); revisit when scoped
