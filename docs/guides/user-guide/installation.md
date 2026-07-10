@@ -58,6 +58,21 @@ mcporter daemon status          # all servers idle/running
 curl http://localhost:3333/mcp  # should return a valid MCP JSON response
 ```
 
+### claude.ai connectors — the managed alternative
+
+For a third-party SaaS integration (GitHub, Linear, Slack, Notion, the Google and Microsoft suites, and the like) there are two ways to get its tools into a session, and the local MCP server above is only one of them. The other is a **claude.ai managed connector**, authorised once in claude.ai connector settings. Given this setup, the managed route is often the lower-friction one: Anthropic handles the OAuth, so there is no local OAuth flow to complete, no keep-alive daemon or secrets on the machine, and it works on surfaces where an interactive OAuth flow cannot run (a non-interactive Claude Code session, for instance, cannot complete one — it can only use a connector that is already authorised). Managed-connector schemas load on the claude.ai web / Desktop surface, where you toggle them per-conversation in the compose-bar tools menu, rather than into the Claude Code local surface.
+
+Which route to prefer, per integration:
+
+| Prefer | When |
+| --- | --- |
+| **claude.ai connector** | A hosted connector exists and you mainly use that integration on claude.ai web / Desktop — least setup, no local OAuth. |
+| **Local MCP server** | You need it in the Claude Code CLI, need tools no connector offers, or need a KI server's own access gate + audit log † |
+
+† The KI-owned `mcp-*` servers (workspace MCPs with the annotation-driven access-level gate and audit logging) are always the local route — there is no managed equivalent.
+
+Do not wire the same integration **both** ways on the same surface — that loads two copies of its tool schemas. `ki-binding` governs which surface runs which server from the single `mcps.yaml` source and audits that the surfaces agree; see [Tuning](tuning.md) for the leanness view of the same choice.
+
 ## Installing skills
 
 Claude Code (and compatible agents) discover skills in two places:

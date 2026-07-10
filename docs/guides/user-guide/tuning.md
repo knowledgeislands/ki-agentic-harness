@@ -57,7 +57,7 @@ MCP tool schemas are the **largest standing cost** in a session with several ser
 
 - **Per surface** — the `ki-binding` skill governs which servers enable on which surface (Claude Code, Desktop, Cowork, web) from the single `mcps.yaml` source, via each server's `clients:` targeting field. A server the current surface never uses should not be enabled on it.
 - **Per project** — scope servers to the repos that need them rather than enabling them globally.
-- **Connectors vs plugins** — on claude.ai / Desktop, the MCP tools bucket is driven by _connectors_ (e.g. Google Calendar / Drive / Slack), toggled per-conversation in the compose-bar tools menu. These are distinct from _plugins_ (which surface under Skills / Custom agents). Turn off a connector for a conversation that does not need it.
+- **Connectors vs plugins** — on claude.ai / Desktop, the MCP tools bucket is driven by _connectors_ (e.g. Google Calendar / Drive / Slack), toggled per-conversation in the compose-bar tools menu. These are distinct from _plugins_ (which surface under Skills / Custom agents). Turn off a connector for a conversation that does not need it. For a SaaS integration, a managed connector is often the lower-friction route than a local MCP server in the first place — see [Installation](installation.md#claudeai-connectors--the-managed-alternative).
 - **The mcporter caveat** — mcporter (see [Installation](installation.md)) consolidates the `~/.claude.json` `mcpServers` block from many entries to one URL. That trims _config_, not the in-session tool _schemas_ — every consolidated server's tools still load into the prefix. mcporter and schema curation are complementary, not substitutes.
 
 ### Manage the MCP inventory
