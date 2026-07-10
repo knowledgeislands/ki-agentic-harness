@@ -17,7 +17,7 @@
  *      TAP-URL-VERSIONED — `url` is a tagged-release tarball, not a bare branch/HEAD.
  *   3. TAP-README       — each formula name appears in README.md (the formulae table).
  *   4. TAP-BREW         — if `brew` is on PATH, `brew style` + `brew audit --strict` per
- *                         formula (WARN on failure, INFO on pass); SKIP when brew is absent
+ *                         formula (WARN on failure, INFO on pass); NA when brew is absent
  *                         (the tap's own CI runs `brew test-bot`). A brew error never crashes.
  *   5. CONFIG           — `[ki-homebrew-tap]` present; keyless, validate-down (WARN unknown keys).
  *
@@ -47,10 +47,10 @@ const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[3
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 type Finding = { level: Level; area: string; msg: string }
-const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
+const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
 const mk = () => {
   const f: Finding[] = []
   const push =
@@ -62,7 +62,7 @@ const mk = () => {
     fail: push('FAIL'),
     warn: push('WARN'),
     note: push('INFO'),
-    skip: push('SKIP'),
+    na: push('NA'),
     advisory: push('ADVISORY'),
     polish: push('POLISH')
   }
@@ -114,7 +114,7 @@ function descValue(text: string): string | null {
 
 // ── the audit ────────────────────────────────────────────────────────────────
 function auditTap(base: string): Finding[] {
-  const { f, fail, warn, note, skip } = mk()
+  const { f, fail, warn, note, na } = mk()
   const formulaDir = join(base, FORMULA_DIR)
   const formulae = listFormulae(formulaDir)
 
@@ -177,28 +177,28 @@ function auditTap(base: string): Finding[] {
   }
 
   // TAP-BREW [capability] — delegate to Homebrew's own audit when brew is on PATH.
-  runBrew(base, formulaDir, formulae, { warn, note, skip })
+  runBrew(base, formulaDir, formulae, { warn, note, na })
 
   return f
 }
 
-// Delegate to `brew style` + `brew audit --strict` per formula. Capability-gated: SKIP
+// Delegate to `brew style` + `brew audit --strict` per formula. Capability-gated: NA
 // when brew is absent (the tap's own CI runs `brew test-bot`). Robust: any spawn error,
-// non-zero-that-is-not-a-lint-finding, or timeout is caught and downgraded to SKIP so a
+// non-zero-that-is-not-a-lint-finding, or timeout is caught and downgraded to NA so a
 // broken brew never crashes the checker.
 function runBrew(
   base: string,
   formulaDir: string,
   formulae: Formula[],
-  out: { warn: (a: string, m: string) => void; note: (a: string, m: string) => void; skip: (a: string, m: string) => void }
+  out: { warn: (a: string, m: string) => void; note: (a: string, m: string) => void; na: (a: string, m: string) => void }
 ): void {
   const brew = spawnSafe('brew', ['--version'])
   if (brew?.status !== 0) {
-    out.skip('TAP-BREW', 'brew is not on PATH — skipping `brew audit`/`brew style` (the tap runs brew test-bot in CI)')
+    out.na('TAP-BREW', 'brew is not on PATH — skipping `brew audit`/`brew style` (the tap runs brew test-bot in CI)')
     return
   }
   // An invocation / resolution problem (formula not tapped, path-arg form disabled in newer
-  // Homebrew, bad usage) is NOT a formula defect — downgrade it to SKIP so a brew quirk never
+  // Homebrew, bad usage) is NOT a formula defect — downgrade it to NA so a brew quirk never
   // reads as a finding. Only a genuine lint result (brew ran and reported issues) is a WARN.
   const invocationError = (s: string): boolean =>
     /no available formula|not tapped|is disabled|Error: Calling|Usage:|invalid option|unknown command/i.test(s)
@@ -212,13 +212,13 @@ function runBrew(
     ] as Array<[string, string[]]>) {
       const r = spawnSafe('brew', args, base)
       if (!r) {
-        out.skip('TAP-BREW', `${fx.name}: \`brew ${sub}\` could not be run (spawn error) — skipped`)
+        out.na('TAP-BREW', `${fx.name}: \`brew ${sub}\` could not be run (spawn error) — skipped`)
         continue
       }
       const output = `${r.stdout}\n${r.stderr}`.trim()
       if (r.status === 0) out.note('TAP-BREW', `${fx.name}: \`brew ${sub}\` clean`)
       else if (invocationError(output))
-        out.skip(
+        out.na(
           'TAP-BREW',
           `${fx.name}: \`brew ${sub}\` not run against this tap (${sub === 'audit' ? 'formula not tapped — run `brew tap` first, or rely on brew test-bot CI' : 'brew invocation issue'}) — skipped`
         )
@@ -295,10 +295,10 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     polish: n('POLISH'),
     advisory: n('ADVISORY'),
     info: n('INFO'),
-    skip: n('SKIP'),
+    na: n('NA'),
     pass: n('PASS')
   }
-  const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.skip} skip`
+  const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.na} n/a`
   const stamp = new Date().toISOString()
 
   if (report) {

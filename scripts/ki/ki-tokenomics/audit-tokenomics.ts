@@ -73,9 +73,9 @@ headroom = "recommended"          # "required" | "recommended" | "off"
 
 // ── findings ────────────────────────────────────────────────────────────────
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
-const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
 type Area = 'COMP' | 'SURF' | 'MCP' | 'BUDG' | 'RUN' | 'TOOL' | 'CFG'
 const AREA_ORDER: Area[] = ['COMP', 'SURF', 'MCP', 'BUDG', 'RUN', 'TOOL', 'CFG']
 type Finding = { level: Level; area: Area; msg: string }
@@ -447,7 +447,7 @@ const summary = {
   polish: n('POLISH'),
   advisory: n('ADVISORY'),
   info: n('INFO'),
-  skip: n('SKIP'),
+  na: n('NA'),
   pass: n('PASS')
 }
 const isoStamp = new Date().toISOString()
@@ -458,7 +458,7 @@ if (reportOut) {
     const rows = findings.filter((f) => f.level === l)
     return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
   })
-  const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.skip} skip · standing surface ${tok(total)}`
+  const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.na} n/a · standing surface ${tok(total)}`
   writeFileSync(
     join(reportDir, 'tokenomics.md'),
     [`# tokenomics audit — ${target}`, '', `_${isoStamp}_`, '', tally, ...body, ''].join('\n')

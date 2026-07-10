@@ -13,7 +13,7 @@ import { join, resolve } from 'node:path'
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
-type Severity = 'FAIL' | 'WARN' | 'POLISH' | 'PASS' | 'SKIP'
+type Severity = 'FAIL' | 'WARN' | 'POLISH' | 'PASS' | 'NA'
 
 interface Finding {
   severity: Severity
@@ -40,8 +40,8 @@ function badge(s: Severity): string {
       return `${BLUE}POLISH${RESET}`
     case 'PASS':
       return `${GREEN}PASS${RESET}`
-    case 'SKIP':
-      return `${DIM}SKIP${RESET}`
+    case 'NA':
+      return `${DIM}NA${RESET}`
   }
 }
 
@@ -55,8 +55,8 @@ function pass(findings: Finding[], criterion: string, message: string): void {
   findings.push({ severity: 'PASS', criterion, message })
 }
 
-function skip(findings: Finding[], criterion: string, message: string): void {
-  findings.push({ severity: 'SKIP', criterion, message })
+function na(findings: Finding[], criterion: string, message: string): void {
+  findings.push({ severity: 'NA', criterion, message })
 }
 
 function readToml(path: string): string {
@@ -161,8 +161,8 @@ function auditHarness(root: string): Finding[] {
   const toml = readToml(tomlPath)
 
   if (!existsSync(tomlPath)) {
-    skip(findings, 'CONFIG-1', '.ki-config.toml missing — skipping table checks (LAY-5 already FAILs)')
-    skip(findings, 'CONFIG-2', '.ki-config.toml missing')
+    na(findings, 'CONFIG-1', '.ki-config.toml missing — skipping table checks (LAY-5 already FAILs)')
+    na(findings, 'CONFIG-2', '.ki-config.toml missing')
   } else {
     check(findings, 'FAIL', 'CONFIG-1', hasTomlTable(toml, 'ki-harness'), '.ki-config.toml must have [ki-harness] table')
     check(findings, 'WARN', 'CONFIG-2', hasTomlTable(toml, 'ki-repo'), '.ki-config.toml should have [ki-repo] table')
@@ -221,8 +221,8 @@ function auditHarness(root: string): Finding[] {
       }
     }
   } else {
-    skip(findings, 'SKILLS-1', 'skills/ does not exist — skipping name checks')
-    skip(findings, 'SKILLS-2', 'skills/ does not exist — skipping duplicate name check')
+    na(findings, 'SKILLS-1', 'skills/ does not exist — skipping name checks')
+    na(findings, 'SKILLS-2', 'skills/ does not exist — skipping duplicate name check')
   }
 
   return findings
@@ -231,7 +231,7 @@ function auditHarness(root: string): Finding[] {
 // ── Report ─────────────────────────────────────────────────────────────────────
 
 function report(findings: Finding[]): void {
-  const order: Severity[] = ['FAIL', 'WARN', 'POLISH', 'PASS', 'SKIP']
+  const order: Severity[] = ['FAIL', 'WARN', 'POLISH', 'PASS', 'NA']
   const sorted = [...findings].sort((a, b) => order.indexOf(a.severity) - order.indexOf(b.severity))
 
   const fails = findings.filter((f) => f.severity === 'FAIL').length

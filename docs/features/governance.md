@@ -22,7 +22,7 @@ _Verify:_ every artifact skill ships a `scripts/audit-*.ts` (or `lint-*.ts`) tha
 
 ### GOV-003 — Severity ladder
 
-A checker's findings MUST grade on the unified ladder FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS, and the process MUST exit non-zero only when a FAIL is present.
+A checker's findings MUST grade on the unified ladder FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS, and the process MUST exit non-zero only when a FAIL is present.
 
 _Verify:_ each checker imports the same `Sev` enum shape from `ki-engineering`'s checker-contract, and `audit-*.ts` exits `1` iff a FAIL is emitted.
 

@@ -23,10 +23,10 @@ import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'no
 import { basename, join } from 'node:path'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 type Finding = { level: Level; area: string; msg: string }
-const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
+const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
 const findings: Finding[] = []
 const add = (level: Level, area: string, msg: string) => findings.push({ level, area, msg })
 
@@ -195,7 +195,7 @@ if (has('.github', 'workflows', 'ci.yml')) {
     ? add('PASS', 'ci', 'ci.yml runs the single gate step "bun run ki:verify"')
     : add('FAIL', 'ci', 'ci.yml must run "bun run ki:verify" — the single composed gate step (§1, §2)')
 } else {
-  add('SKIP', 'ci', 'no .github/workflows/ci.yml — not applicable')
+  add('NA', 'ci', 'no .github/workflows/ci.yml — not applicable')
 }
 
 // Structural execution checks — verify the actual commands pass, not just that they are declared.
@@ -280,7 +280,7 @@ try {
     )
   }
 } catch {
-  add('SKIP', 'deps', 'bun outdated unavailable — upgrade Bun to check dependency freshness')
+  add('NA', 'deps', 'bun outdated unavailable — upgrade Bun to check dependency freshness')
 }
 
 // ── core: the `bun test` trap ─────────────────────────────────────────────────
@@ -451,7 +451,7 @@ if (hasTests) {
   }
   if (scripts['test:coverage']) runCheck('tests', 'test:coverage', 'bun run test:coverage')
 } else {
-  add('SKIP', 'tests', 'no test capability (no vitest.config / test script) — not applicable')
+  add('NA', 'tests', 'no test capability (no vitest.config / test script) — not applicable')
 }
 
 // ── capability: compiled build + the cli-chmod rule ───────────────────────────
@@ -502,7 +502,7 @@ if (hasBuild) {
   if (!unexpected.length && !missing.length)
     add('PASS', 'build', hasCli ? 'build chmods exactly dist/cli/cli.js' : 'build chmods nothing (no src/cli/) — correct')
 } else {
-  add('SKIP', 'build', 'no compiled-tsc build capability — not applicable')
+  add('NA', 'build', 'no compiled-tsc build capability — not applicable')
 }
 
 // ── capability: env config ────────────────────────────────────────────────────
@@ -517,7 +517,7 @@ if (hasEnv) {
     ? add('FAIL', 'env', `NODE_ENV=development outside a dev/inspect script: ${leaks.map(([k]) => k).join(', ')}`)
     : add('PASS', 'env', 'NODE_ENV=development only in dev/inspect scripts')
 } else {
-  add('SKIP', 'env', 'no env capability — not applicable')
+  add('NA', 'env', 'no env capability — not applicable')
 }
 
 // ── core: .ki-config.toml [ki-engineering] table ────────────────
@@ -557,10 +557,10 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     polish: n('POLISH'),
     advisory: n('ADVISORY'),
     info: n('INFO'),
-    skip: n('SKIP'),
+    na: n('NA'),
     pass: n('PASS')
   }
-  const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.skip} skip`
+  const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.na} n/a`
   const stamp = new Date().toISOString()
 
   if (report) {

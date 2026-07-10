@@ -264,9 +264,9 @@ const jsonOut = process.argv.slice(2).includes('--json')
 const reportOut = process.argv.slice(2).includes('--report')
 const reportTarget = resolve('.')
 const reportDir = join(reportTarget, '.ki-meta', 'audits')
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
-const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
 const all: { level: Level; area: string; msg: string }[] = []
 
 if (!jsonOut) console.log(paint(C.dim, LEGEND))
@@ -312,7 +312,7 @@ if (cross.length > 0) {
   }
 }
 
-const summary = { fail: totalFails, warn: totalWarns, polish: 0, advisory: 0, info: 0, skip: 0, pass: totalPass }
+const summary = { fail: totalFails, warn: totalWarns, polish: 0, advisory: 0, info: 0, na: 0, pass: totalPass }
 const stampIso = new Date().toISOString()
 
 if (reportOut) {

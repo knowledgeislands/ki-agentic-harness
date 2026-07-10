@@ -86,6 +86,6 @@ This skill **rides `ki-repo`** (the tap is first a git repo: README, LICENSE, `.
 ## Notes
 
 - The standard sits on top of a **moving external spec** (Homebrew's Formula Cookbook, `brew audit`, `brew style`/rubocop). When citing a formula requirement, know whether it is **spec-driven** (traces to a Homebrew source in [the source list](references/sources.md)) or **house shape** — never present a tap-shape preference as a Homebrew "MUST". Run Mode REFRESH when in doubt.
-- The checker **degrades gracefully**: when `brew` is absent it SKIPs the `brew audit`/`brew style` checks (the tap's own `brew test-bot` CI is the backstop) and still runs every shape check. A `brew` invocation error is caught and downgraded to SKIP, never a crash.
+- The checker **degrades gracefully**: when `brew` is absent it returns **NA** for the `brew audit`/`brew style` checks (the tap's own `brew test-bot` CI is the backstop) and still runs every shape check. A `brew` invocation error is caught and downgraded to NA, never a crash.
 - Marker `[ki-homebrew-tap]` is a **keyless opt-in table**, validate-down (like `[ki-mcp]`): its presence is the whole config; any key under it is unknown and WARNed. Run the checker with `--init` to print the default block.
 - Checker output conforms to the severity ladder, JSON shape, and exit-code contract in `ki-engineering`'s [checker-contract.md](../ki-engineering/references/checker-contract.md).

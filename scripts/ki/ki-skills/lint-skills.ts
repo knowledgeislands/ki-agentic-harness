@@ -510,9 +510,9 @@ const reportOut = ri !== -1
 const reportTarget = resolve('.')
 const reportDir =
   reportOut && rawArgv[ri + 1] && !rawArgv[ri + 1].startsWith('-') ? rawArgv[ri + 1] : join(reportTarget, '.ki-meta', 'audits')
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
-const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
 const all: { level: Level; area: string; msg: string }[] = []
 
 if (!jsonOut) console.log(paint(C.dim, LEGEND))
@@ -599,7 +599,7 @@ const summary = {
   polish: 0,
   advisory: 0,
   info: all.filter((x) => x.level === 'INFO').length,
-  skip: 0,
+  na: 0,
   pass: 0
 }
 const stampIso = new Date().toISOString()

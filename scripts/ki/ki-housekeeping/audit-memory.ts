@@ -21,7 +21,7 @@ enum Sev {
   POLISH = 2,
   ADVISORY = 3,
   INFO = 4,
-  SKIP = 5,
+  NA = 5,
   PASS = 6
 }
 
@@ -31,7 +31,7 @@ const SEV_LABELS: Record<Sev, string> = {
   [Sev.POLISH]: 'POLISH',
   [Sev.ADVISORY]: 'ADVISORY',
   [Sev.INFO]: 'INFO',
-  [Sev.SKIP]: 'SKIP',
+  [Sev.NA]: 'NA',
   [Sev.PASS]: 'PASS'
 }
 
@@ -95,7 +95,7 @@ async function main() {
   }
 
   if (!dirExists) {
-    add('DIR-1', Sev.SKIP, memoryDir, 'no memory/ directory for this repo yet — not a failure')
+    add('DIR-1', Sev.NA, memoryDir, 'no memory/ directory for this repo yet — not a failure')
     report(findings, jsonMode)
     if (reportDir) await writeReport(reportDir, findings)
     process.exit(0)
@@ -235,7 +235,7 @@ function report(findings: Finding[], jsonMode: boolean) {
   }
   const parts = [Sev.FAIL, Sev.WARN, Sev.POLISH, Sev.PASS]
     .map((s) => `${SEV_LABELS[s]}=${tally[s] ?? 0}`)
-    .concat([Sev.ADVISORY, Sev.SKIP].map((s) => `${SEV_LABELS[s]}=${tally[s] ?? 0}`))
+    .concat([Sev.ADVISORY, Sev.NA].map((s) => `${SEV_LABELS[s]}=${tally[s] ?? 0}`))
   console.log(parts.join(' '))
 }
 

@@ -22,10 +22,10 @@ One ladder, used by **both** the checker's output and the rubric's findings tabl
 | **POLISH**   | violation | no      | A minor or cosmetic divergence.                                           |
 | **ADVISORY** | deferred  | no      | A judgment criterion the checker cannot decide — handed to the reader.    |
 | **INFO**     | context   | no      | Neutral context, not a verdict against a criterion.                       |
-| **SKIP**     | context   | no      | A criterion checked but not applicable to this target.                    |
+| **NA**       | context   | no      | A criterion checked but not applicable to this target.                    |
 | **PASS**     | met       | no      | A criterion is met.                                                       |
 
-FAIL / WARN / POLISH replace the rubrics' old `blocker / standard / polish` grades; INFO replaces the ad-hoc `note` level. **ADVISORY vs WARN** is the line to hold: WARN means the checker _decided_ a soft criterion is violated; ADVISORY means it _cannot_ decide and is pointing the reader at a judgment criterion. The summary tallies FAIL / WARN / POLISH / PASS, then ADVISORY / SKIP; INFO is printed but not tallied.
+FAIL / WARN / POLISH replace the rubrics' old `blocker / standard / polish` grades; INFO replaces the ad-hoc `note` level. **ADVISORY vs WARN** is the line to hold: WARN means the checker _decided_ a soft criterion is violated; ADVISORY means it _cannot_ decide and is pointing the reader at a judgment criterion. The summary tallies FAIL / WARN / POLISH / PASS, then ADVISORY / NA; INFO is printed but not tallied.
 
 The checker owns the mechanical criteria; everything it cannot decide deterministically is left to the judgment half, applied by reading — surfaced inline as ADVISORY where the checker can point at the specific criterion.
 

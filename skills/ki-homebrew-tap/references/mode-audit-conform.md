@@ -5,7 +5,7 @@ _On-demand procedure for ki-homebrew-tap's AUDIT and CONFORM modes (CONFORM runs
 ## Mode AUDIT — check a tap against the standard
 
 1. **Identify the target.** Confirm the tap path (default: the cwd repo). It should be a `homebrew-<x>` repo with a `Formula/` directory.
-2. **Run the mechanical checker.** `bun ../scripts/audit-homebrew-tap.ts <tap-path>` (or `bun skills/ki-homebrew-tap/scripts/audit-homebrew-tap.ts <path>` from the harness root). It grades on the unified severity ladder (FAIL / WARN / … / SKIP — see `ki-engineering`'s [checker-contract.md](../../ki-engineering/references/checker-contract.md)), exits non-zero on any FAIL, and with `--json` / `--report` emits machine-readable findings under `<target>/.ki-meta/audits/homebrew-tap.{md,json}`. It covers: `Formula/` presence, per-formula class/fields/desc-style/versioned-url, the README table, the `[ki-homebrew-tap]` marker, and — when `brew` is on PATH — `brew audit --strict` + `brew style`.
+2. **Run the mechanical checker.** `bun ../scripts/audit-homebrew-tap.ts <tap-path>` (or `bun skills/ki-homebrew-tap/scripts/audit-homebrew-tap.ts <path>` from the harness root). It grades on the unified severity ladder (FAIL / WARN / … / NA — see `ki-engineering`'s [checker-contract.md](../../ki-engineering/references/checker-contract.md)), exits non-zero on any FAIL, and with `--json` / `--report` emits machine-readable findings under `<target>/.ki-meta/audits/homebrew-tap.{md,json}`. It covers: `Formula/` presence, per-formula class/fields/desc-style/versioned-url, the README table, the `[ki-homebrew-tap]` marker, and — when `brew` is on PATH — `brew audit --strict` + `brew style`.
 3. **Also run `ki-repo`'s audit** — the tap is first a repo: `bun skills/ki-repo/scripts/audit-repo.ts <path>` covers README/LICENSE/`.gitignore`/GitHub settings/security. The tap is clean only when both pass. It does **not** run `ki-engineering` (no `package.json` toolchain — the `ki-plugins` pattern).
 4. **Do the judgment pass the script can't** — walk [Audit Rubric](audit-rubric.md)'s **[J]** items:
    - **Meaningful test.** The `test do` exercises the installed binary (real `--version`/`--help` assertion), not a placeholder.
@@ -13,7 +13,7 @@ _On-demand procedure for ki-homebrew-tap's AUDIT and CONFORM modes (CONFORM runs
    - **Sourcing.** The `url` tag version matches `#{version}`; not a branch/HEAD.
    - **Table freshness.** Each README row's description + source link is correct, not a stale placeholder.
    - **CI backstop.** If the checker SKIPped `TAP-BREW` (no local `brew`), confirm a `brew test-bot` workflow runs the deep checks.
-5. **Report.** Group on the ladder: no `Formula/` is a **FAIL**; a missing field / non-versioned url / unlisted formula / `brew` finding is a **WARN**; the config + capability notes are **INFO/SKIP**. Cite `Formula/<file>` and give the fix. Label each finding **spec** (Homebrew's, via `brew` or the Cookbook) or **shape** (this skill's tap convention) so a house preference is never presented as a Homebrew "MUST".
+5. **Report.** Group on the ladder: no `Formula/` is a **FAIL**; a missing field / non-versioned url / unlisted formula / `brew` finding is a **WARN**; the config + capability notes are **INFO/NA**. Cite `Formula/<file>` and give the fix. Label each finding **spec** (Homebrew's, via `brew` or the Cookbook) or **shape** (this skill's tap convention) so a house preference is never presented as a Homebrew "MUST".
 
 ## Mode CONFORM — bring an existing tap up to standard
 

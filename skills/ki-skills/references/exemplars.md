@@ -51,7 +51,7 @@ Every governance skill carries the universal four — AUDIT, CONFORM, INIT, REFR
 
 Review an agent (or every agent in a directory) against the rubric and report.
 
-1. **Run the linter.** `bun scripts/lint-agents.ts <path-to-agent-or-dir>` from this skill's directory. It reports the mechanical criteria on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / SKIP / PASS) and exits non-zero on any FAIL. Capture its output verbatim — do not re-derive what it found.
+1. **Run the linter.** `bun scripts/lint-agents.ts <path-to-agent-or-dir>` from this skill's directory. It reports the mechanical criteria on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS) and exits non-zero on any FAIL. Capture its output verbatim — do not re-derive what it found.
 2. **Read the agent definition** and apply the **judgment** ([J]-tagged) criteria from [the rubric](references/audit-rubric.md) — the linter owns the [M] ones.
 3. **Report** findings by location → criterion → fix; lead with FAIL findings.
 ```

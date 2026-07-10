@@ -21,7 +21,7 @@ enum Sev {
   POLISH = 2,
   ADVISORY = 3,
   INFO = 4,
-  SKIP = 5,
+  NA = 5,
   PASS = 6
 }
 
@@ -31,7 +31,7 @@ const SEV_LABELS: Record<number, string> = {
   2: 'POLISH',
   3: 'ADVISORY',
   4: 'INFO',
-  5: 'SKIP',
+  5: 'NA',
   6: 'PASS'
 }
 

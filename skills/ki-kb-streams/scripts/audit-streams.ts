@@ -61,10 +61,10 @@ const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[3
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 type Finding = { level: Level; area: string; msg: string }
-const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
+const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
 const mk = () => {
   const f: Finding[] = []
   const push =
@@ -76,7 +76,7 @@ const mk = () => {
     fail: push('FAIL'),
     warn: push('WARN'),
     note: push('INFO'),
-    skip: push('SKIP'),
+    na: push('NA'),
     advisory: push('ADVISORY'),
     polish: push('POLISH')
   }
@@ -325,10 +325,10 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     polish: n('POLISH'),
     advisory: n('ADVISORY'),
     info: n('INFO'),
-    skip: n('SKIP'),
+    na: n('NA'),
     pass: n('PASS')
   }
-  const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.skip} skip`
+  const tally = `${summary.fail} fail · ${summary.warn} warn · ${summary.polish} polish · ${summary.pass} pass  ·  ${summary.advisory} advisory · ${summary.na} n/a`
   const stamp = new Date().toISOString()
 
   if (report) {

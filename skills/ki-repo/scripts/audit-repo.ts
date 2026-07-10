@@ -86,9 +86,9 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 // `note` is informational (a per-repo override in effect) — printed, never counted.
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'SKIP' | 'PASS'
-const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'SKIP', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', SKIP: '⊘', PASS: '✅' }
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
 type Finding = { level: Level; check: string; msg: string }
 const mk = () => {
   const f: Finding[] = []
@@ -101,7 +101,7 @@ const mk = () => {
     fail: push('FAIL'),
     warn: push('WARN'),
     note: push('INFO'),
-    skip: push('SKIP'),
+    na: push('NA'),
     advisory: push('ADVISORY'),
     polish: push('POLISH')
   }
@@ -616,8 +616,8 @@ let ghSkipped = 0
 for (const t of targets) {
   if (!t.nameWithOwner) {
     ghSkipped++
-    all.push({ level: 'SKIP', area: t.label, msg: t.note ?? '' })
-    if (!jsonOut) console.log(`\n${paint(C.dim, 'SKIP')}  ${paint(C.cyan, t.label)} ${paint(C.dim, `— ${t.note}`)}`)
+    all.push({ level: 'NA', area: t.label, msg: t.note ?? '' })
+    if (!jsonOut) console.log(`\n${paint(C.dim, 'NA')}  ${paint(C.cyan, t.label)} ${paint(C.dim, `— ${t.note}`)}`)
     continue
   }
   let findings: Finding[]
@@ -656,7 +656,7 @@ const summary = {
   polish: all.filter((f) => f.level === 'POLISH').length,
   advisory: all.filter((f) => f.level === 'ADVISORY').length,
   info: all.filter((f) => f.level === 'INFO').length,
-  skip: all.filter((f) => f.level === 'SKIP').length,
+  na: all.filter((f) => f.level === 'NA').length,
   pass: all.filter((f) => f.level === 'PASS').length
 }
 const stampIso = new Date().toISOString()
@@ -667,7 +667,7 @@ if (reportOut) {
     const rows = all.filter((f) => f.level === l)
     return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
   })
-  const tally = `${targets.length} repo(s) · ${summary.fail} fail · ${summary.warn} warn · ${summary.info} info · ${summary.skip} skip`
+  const tally = `${targets.length} repo(s) · ${summary.fail} fail · ${summary.warn} warn · ${summary.info} info · ${summary.na} n/a`
   writeFileSync(join(reportDir, 'repo.md'), [`# repo audit — ${reportTarget}`, '', `_${stampIso}_`, '', tally, ...body, ''].join('\n'))
   writeFileSync(
     join(reportDir, 'repo.json'),
