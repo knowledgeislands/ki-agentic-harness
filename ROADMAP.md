@@ -12,10 +12,6 @@ This roadmap is itself subject to the house discipline it describes: when a skil
 
 The repos already commit in [Conventional Commits](https://www.conventionalcommits.org/) style (`type(scope): subject`, seen throughout the history), but nothing in the skill set **governs** it — there is no house standard a commit is audited or conformed against. Land one: decide which skill owns git conventions (candidate: `ki-engineering`, which already owns the CI-workflow shape and the toolchain, or a dedicated `ki-git` if the surface is broad enough — commit format, branch naming, the solo-repo-to-`main` policy), specify the allowed `type` set and scope conventions, and add a mechanical check (e.g. a commit-message linter wired into the husky hook chain) plus the AUDIT/CONFORM prose. Cross-reference the per-repo commit guidance already living in `CLAUDE.md` files so the standard and the local instructions stay consistent.
 
-### Enforce the checker remediation footer mechanically
-
-The [checker contract](skills/ki-engineering/references/checker-contract.md)'s remediation footer ([ADR-KI-HARNESS-TOOLCHAIN-004](docs/decisions/ADR-KI-HARNESS-TOOLCHAIN-004-checker-remediation-footer-and-learn-block-context.md)) is now implemented in all 23 checkers, but nothing stops a _new_ checker from shipping without it — the contract is honoured by convention, not enforced. Add a mechanical check (candidate: a `ki-engineering` self-audit that runs each checker against a known-non-clean fixture and asserts a `→ to address: run /<skill> CONFORM` line appears, or a static scan of every `audit-*`/`lint-*` script for the footer string near its summary emit). Decide where the assertion lives and wire it into `ki:verify` so a footer-less checker fails CI.
-
 ## Future
 
 ### `/ki-recap` — recap the session: summarise, surface outstanding work, harvest learnings _(candidate)_

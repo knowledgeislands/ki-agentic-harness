@@ -95,11 +95,12 @@
     "ki:skills:lint": "bun skills/ki-skills/scripts/lint-skills.ts skills",
     "ki:skills:refresh-status": "bun skills/ki-skills/scripts/lint-skills.ts skills --refresh-status",
     "ki:skills:status": "bun scripts/sync-skills.ts status",
+    "ki:skills:test": "bun skills/ki-skills/scripts/lint-skills.test.ts",
     "ki:skills:unlink": "bun scripts/sync-skills.ts unlink",
     "ki:tokenomics:audit": "bun skills/ki-tokenomics/scripts/audit-tokenomics.ts",
     "ki:tokenomics:test": "bun skills/ki-tokenomics/scripts/audit-tokenomics.test.ts",
     "ki:tools:audit": "bun skills/ki-tools/scripts/audit-tools.ts",
-    "ki:verify": "bun run ki:lint:check && bun run ki:lint:types && bun run ki:lint:md:check && bun run ki:knip && bun run ki:skills:graph:check && bun run ki:bootstrap:test && bun run ki:housekeeping:test && bun run ki:tokenomics:test && bun run ki:guide:test",
+    "ki:verify": "bun run ki:lint:check && bun run ki:lint:types && bun run ki:lint:md:check && bun run ki:knip && bun run ki:skills:graph:check && bun run ki:skills:test && bun run ki:bootstrap:test && bun run ki:housekeeping:test && bun run ki:tokenomics:test && bun run ki:guide:test",
     "ki:website-cloudflare:audit": "bun skills/ki-website-cloudflare/scripts/audit-cloudflare-hosting.ts",
     "ki:website:audit": "bun skills/ki-website/scripts/audit-websites.ts",
     "prepare": "husky"

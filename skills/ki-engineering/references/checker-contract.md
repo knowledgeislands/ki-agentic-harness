@@ -47,6 +47,8 @@ Rules:
 - **Suppressed under `--json`** and `--report`'s machine substrate — the footer is a human affordance; the JSON already carries the findings a composed audit merges.
 - **One footer**, after the tally, regardless of how many findings fired.
 
+The footer's presence is **enforced mechanically**: the `ki-skills` linter (SHAPE-8) scans every `audit-*.ts` / `lint-*.ts` source and WARNs if it omits the standardised footer or names another skill's mode — so a new checker cannot ship without one. The linter cannot decide the two behavioural halves — that the footer is _guarded_ on a non-clean run and _suppressed_ under `--json` / `--report` — those stay a judgment read.
+
 ## Relationship to [M]/[J] rubric tags
 
 The rubric's `[M]` tag and the checker are two sides of the same coin: every `[M]` criterion must have a corresponding check in the checker; the checker's output severity for that criterion must match the rubric's severity column. `[J]` criteria are outside the checker's scope; the checker may surface them as ADVISORY to guide the reading pass, but must not emit FAIL or WARN for them. See `ki-skills/references/audit-rubric.md` for the tagging rules.

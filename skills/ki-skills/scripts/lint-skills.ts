@@ -400,6 +400,33 @@ function lintSkill(skillDir: string): Finding[] {
     }
   }
 
+  // --- SHAPE-8 mechanical: the checker ships the remediation footer ---
+  // checker-contract.md requires every checker to print a remediation footer on a
+  // non-clean summary, naming its OWN skill's CONFORM mode. A checker source with no
+  // such footer (or one naming another skill) has drifted from the contract. The footer
+  // prefix is standardised wording, so a source scan is reliable; guarding it on non-clean
+  // and suppressing it under --json/--report stay [J] (verify by reading the emit path).
+  const contractScriptsDir = join(skillDir, 'scripts')
+  if (existsSync(contractScriptsDir)) {
+    const checkers = readdirSync(contractScriptsDir).filter(
+      (n) => (n.startsWith('audit-') || n.startsWith('lint-')) && n.endsWith('.ts') && !n.endsWith('.test.ts')
+    )
+    for (const checker of checkers) {
+      const src = readFileSync(join(contractScriptsDir, checker), 'utf8')
+      const footers = [...src.matchAll(/→ to address: run \/([a-z0-9-]+)\b/g)].map((m) => m[1])
+      if (footers.length === 0)
+        warn(
+          'SHAPE-8',
+          `checker ${checker} ships no remediation footer ("→ to address: run /${dirName} CONFORM …") — required by checker-contract.md`
+        )
+      else if (!footers.includes(dirName))
+        warn(
+          'SHAPE-8',
+          `checker ${checker}'s remediation footer names /${footers[0]}, not its own skill /${dirName} — per checker-contract.md`
+        )
+    }
+  }
+
   // --- LONG-3 / LONG-4: the declared refresh cadence ---
   // One `**Refresh:**` marker drives both. LONG-4 checks the marker is present &
   // coherent; LONG-3 WARNs when overdue against the skill's OWN cadence. WARN-only —
