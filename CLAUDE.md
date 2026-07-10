@@ -23,6 +23,7 @@ Skills relate to one another by **composition**, never a base-coupled extension:
 ## Working here
 
 - **Writing or editing a `SKILL.md`** → follow the `ki-skills` rubric: run `bun run ki:skills:lint` (the mechanical half) and apply the judgment half by reading. The directory name **is** the `name:` frontmatter.
+- **Adding a `ki-skills` rubric criterion** → pick the next code number by scanning **both** `skills/ki-skills/references/audit-rubric.md` **and** `skills/ki-skills/scripts/lint-skills.ts`. Judgment-only `[J]` codes live in the rubric but never appear in the linter, so the linter's highest code is not the true maximum — trusting it alone risks a collision (e.g. a mechanical `SHAPE-10` clashing with the rubric's existing judgment `SHAPE-10`).
 - **Markdown / TOML style** → the `ki-authoring` conventions; `bun run ki:lint:md` is the mechanical gate. Wide tables → footnotes; relative markdown links, never wikilinks; refer to another skill by its `name`, never a file path.
 - **The toolchain** (package.json scripts, `tsconfig`, `biome`) → the `ki-engineering` standard, which this repo itself conforms to (`bun run ki:engineering:audit .`).
 - A change touching a standard another skill cites is **cross-skill** — keep the set internally consistent (the skills linter's cross-skill pass flags collisions).
