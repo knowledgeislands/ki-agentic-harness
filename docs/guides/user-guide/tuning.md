@@ -104,6 +104,16 @@ The scope rule the hygiene pass enforces is also the cheapest way to keep the in
 
 `bun run ki:housekeeping:audit` is only the mechanical, read-only half — it reports; it does not fix. When it flags anything, hand the store to the skill's CONFORM mode rather than hand-editing against the findings: `/ki-housekeeping` CONFORM applies the judgment the checker can't — deciding whether an entry is still true, which layer it belongs in (memory vs. a `CLAUDE.md`), and what to prune vs. reword. Re-running the audit afterwards confirms `FAIL=0`; a `bun run ki:tokenomics:audit` then shows whether the prune moved the cost number.
 
+### Watch what `headroom learn` writes into the prefix
+
+Headroom's `--learn` mode (the `proxy_args` lever, not a runtime one) mines live traffic for command-substitution and error-recovery patterns and writes them back — between `<!-- headroom:learn:start -->` / `<!-- headroom:learn:end -->` markers — into `MEMORY.md` and the project `CLAUDE.md`. This is the one Headroom feature that _adds_ to the standing surface rather than compressing runtime: every learned line is re-paid on every turn. Left unattended the block grows, and because it is machine-generated from whatever repo you happened to be in, it accumulates cross-repo paths and stale commands — dead weight in the always-on prefix (this harness's `MEMORY.md` had picked up ~1.5k tokens of another repo's entries).
+
+Treat it as a curated cache, not an append-only log:
+
+- **Keep, don't hand-tune** the entries — the block regenerates, so edits inside the markers are lost. Prune by clearing the content and leaving the two markers in place (that preserves the injection point and keeps the hygiene checker's `IDX-5` marker check green).
+- **Re-learn after moving repos** so the patterns reflect where you actually work, rather than carrying another island's recovery commands.
+- **Fold it into the audits above** — the learned block counts against the `MEMORY.md` / `CLAUDE.md` budget (tokenomics) and is exactly the "machine-generated noise" the hygiene pass prunes. If either audit flags the memory or `CLAUDE.md` layer, check this block first.
+
 ## Runtime — compress and cache what does load
 
 - **Headroom** compresses tool _results_ — it reversibly substitutes large output blocks it has already seen in the stream (see [Installation](installation.md) for proxy vs wrap mode). This is a runtime lever; it does not touch tool definitions.
