@@ -8,9 +8,9 @@ The behaviour of the bootstrap chain: how the harness brings a target repo under
 
 ### BOOT-001 — Self-governing after INIT
 
-After the INIT chain runs against a target repo, that repo MUST govern itself with `./bin/ki-audit` and **zero** Knowledge Islands skills installed — and with **no `package.json` of its own** — per [ADR-KI-HARNESS-007](../decisions/ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md).
+After the INIT chain runs against a target repo, that repo MUST govern itself with `./.ki-meta/bin/ki-audit` and **zero** Knowledge Islands skills installed — and with **no `package.json` of its own** — per [ADR-KI-HARNESS-007](../decisions/ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md).
 
-_Verify:_ bootstrap a bare fixture (`.ki-config.toml` only, no `package.json`, no `.claude/skills/`) with `skills/ki-bootstrap/scripts/bootstrap.ts <fixture>`, then run `./bin/ki-audit` in it — the vendored checkers execute and report.
+_Verify:_ bootstrap a bare fixture (`.ki-config.toml` only, no `package.json`, no `.claude/skills/`) with `skills/ki-bootstrap/scripts/bootstrap.ts <fixture>`, then run `./.ki-meta/bin/ki-audit` in it — the vendored checkers execute and report.
 
 ### BOOT-002 — Vendored copies, not symlinks
 
@@ -32,9 +32,9 @@ _Verify:_ a bootstrapped repo has `.ki-meta/aggregate.ts`; running `bun .ki-meta
 
 ### BOOT-007 — package.json-free entry point
 
-INIT MUST write an executable `bin/ki-audit` wrapper that runs the vendored aggregate, so a repo with no `package.json` (dotfiles, KB, tap) governs itself through `./bin/ki-audit [audit|conform|init]` alone, per [ADR-KI-HARNESS-007](../decisions/ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md).
+INIT MUST write an executable `.ki-meta/bin/ki-audit` wrapper that runs the vendored aggregate, so a repo with no `package.json` (dotfiles, KB, tap) governs itself through `./.ki-meta/bin/ki-audit [audit|conform|init]` alone, per [ADR-KI-HARNESS-007](../decisions/ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md).
 
-_Verify:_ after bootstrap, `bin/ki-audit` exists, is executable (mode `0755`), and `./bin/ki-audit` runs the same aggregate as `bun run ki:audit`.
+_Verify:_ after bootstrap, `.ki-meta/bin/ki-audit` exists, is executable (mode `0755`), and `./.ki-meta/bin/ki-audit` runs the same aggregate as `bun run ki:audit`.
 
 ## The chain
 

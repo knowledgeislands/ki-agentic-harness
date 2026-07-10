@@ -56,6 +56,16 @@ const read = (...p: string[]): string => {
   }
 }
 
+// Applicability gate: ki-engineering governs the TypeScript/Bun toolchain. A repo with
+// no package.json is not a TS/Bun repo — the same signal ki-repo's coverage cascade uses
+// to detect engineering — so every check below is inapplicable. Emit a single NA and stop,
+// rather than a wall of FAILs. Bootstrap vendors this checker into every repo via the
+// ki-repo → ki-engineering implies edge, including non-code repos (dotfiles, KB, tap).
+if (!has('package.json')) {
+  add('NA', 'scope', 'no package.json — not a TypeScript/Bun repo; the engineering standard does not apply')
+  emit(findings, repo, 'engineering', `Engineering standard audit — ${basename(repo)}  (${repo})`, '')
+}
+
 let pkg: Record<string, unknown> = {}
 try {
   pkg = JSON.parse(read('package.json'))

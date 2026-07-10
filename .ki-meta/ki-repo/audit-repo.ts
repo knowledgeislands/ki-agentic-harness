@@ -344,16 +344,16 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
   // ── layer 1: baseline governance + self-check capability (gated on the ki-repo marker) ──
   // A confirmed ki-repo (carries .ki-config.toml) must (a) declare the baseline
   // authoring standard explicitly — it is no longer an implicit universal (ADR-006) —
-  // and (b) carry a self-check runner so `./bin/ki-audit` works with zero skills
+  // and (b) carry a self-check runner so `./.ki-meta/bin/ki-audit` works with zero skills
   // installed (ADR-007). A marker-only repo with neither runner is a FAIL.
   if (files.has(KI_CONFIG)) {
     if (!declaresTable(kiText ?? '', 'ki-authoring'))
       fail('authoring-baseline', `${KI_CONFIG} does not declare [ki-authoring] — the authoring standard is baseline (run --init)`)
-    const hasRunner = signals.tree.has('bin/ki-audit') || signals.tree.has('.ki-meta/aggregate.ts')
+    const hasRunner = signals.tree.has('.ki-meta/aggregate.ts') || signals.tree.has('.ki-meta/bin/ki-audit')
     if (!hasRunner)
       fail(
         'self-check',
-        `${KI_CONFIG} present but no self-check runner (bin/ki-audit or .ki-meta/aggregate.ts) — re-bootstrap so the repo self-governs`
+        `${KI_CONFIG} present but no self-check runner (.ki-meta/aggregate.ts or .ki-meta/bin/ki-audit) — re-bootstrap so the repo self-governs`
       )
   }
 

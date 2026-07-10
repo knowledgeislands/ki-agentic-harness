@@ -68,9 +68,9 @@ try {
   for (const b of greenfieldBlocks) run(b, HARNESS, gfEnv)
 
   check(existsSync(join(gf, '.ki-meta/aggregate.ts')), 'vendored the aggregate runner')
-  const binAudit = join(gf, 'bin/ki-audit')
-  check(existsSync(binAudit), 'wrote the package.json-free bin/ki-audit entry point')
-  check(existsSync(binAudit) && (lstatSync(binAudit).mode & 0o111) !== 0, 'bin/ki-audit is executable')
+  const binAudit = join(gf, '.ki-meta/bin/ki-audit')
+  check(existsSync(binAudit), 'wrote the package.json-free .ki-meta/bin/ki-audit entry point')
+  check(existsSync(binAudit) && (lstatSync(binAudit).mode & 0o111) !== 0, '.ki-meta/bin/ki-audit is executable')
   const repoChecker = join(gf, '.ki-meta/ki-repo/audit-repo.ts')
   check(existsSync(repoChecker), 'vendored the ki-repo checker')
   check(existsSync(repoChecker) && !lstatSync(repoChecker).isSymbolicLink(), 'vendored checker is a copy, not a symlink (SCRIPT-7)')
@@ -97,6 +97,24 @@ try {
   const lgAfter = JSON.parse(readFileSync(join(lg, 'package.json'), 'utf8')) as { scripts: Record<string, string> }
   check(lgAfter.scripts['ki:repo:audit'] === 'echo pre-existing', '--legacy left a pre-existing key untouched (never clobbers)')
   check(!!lgAfter.scripts['ki:audit'], '--legacy installed the ki:audit aggregate key')
+
+  // ── package.json-free (dotfiles/KB/tap shape) ────────────────────────────
+  // A repo with NO package.json must still self-govern via .ki-meta/bin/ki-audit, and
+  // the ki-engineering checker (pulled in by ki-repo's implies edge) must NA-out rather
+  // than emit a wall of toolchain FAILs.
+  console.log('\npackage.json-free fixture (no package.json):')
+  const pf = join(tmp, 'pkgfree')
+  mkdirSync(pf, { recursive: true })
+  writeFileSync(join(pf, '.ki-config.toml'), '[ki-repo]\nlicense = "MIT"\n')
+  execSync('git init -q', { cwd: pf })
+  const pfEnv = { ...process.env, KI_HARNESS: HARNESS, TARGET: pf }
+  run(`bun "${join(HARNESS, 'skills/ki-bootstrap/scripts/bootstrap.ts')}" "${pf}"`, HARNESS, pfEnv)
+  check(!existsSync(join(pf, 'package.json')), 'bootstrap created no package.json')
+  const pfBin = join(pf, '.ki-meta/bin/ki-audit')
+  check(existsSync(pfBin) && (lstatSync(pfBin).mode & 0o111) !== 0, 'wrote an executable .ki-meta/bin/ki-audit')
+  const pfAudit = run('./.ki-meta/bin/ki-audit audit', pf, pfEnv)
+  check(/==> ki:engineering:audit/.test(pfAudit), 'aggregate ran the vendored ki:engineering checker')
+  check(/not a TypeScript\/Bun repo/.test(pfAudit), 'ki-engineering NA-d out (no package.json) instead of failing')
 } finally {
   rmSync(tmp, { recursive: true, force: true })
 }

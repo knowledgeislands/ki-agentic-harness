@@ -2,13 +2,14 @@
 /**
  * ki-bootstrap chain engine — the mechanical half of INIT, and the start of the
  * bootstrap chain (ADR-KI-HARNESS-007). Brings a target repo under Knowledge
- * Islands governance so it governs itself with `./bin/ki-audit` and **zero
- * skills installed** — and with **no `package.json` of its own** (dotfiles, KB,
- * tap): for every skill in the resolved set it vendors *copies* of the skill's
+ * Islands governance so it governs itself with `./.ki-meta/bin/ki-audit` and
+ * **zero skills installed** — and with **no `package.json` of its own** (dotfiles,
+ * KB, tap): for every skill in the resolved set it vendors *copies* of the skill's
  * checker scripts (SCRIPT-7 — copies, not symlinks) into the target's
  * `.ki-meta/<skill>/`, writes a `.ki-meta/aggregate.ts` that discovers and fans
- * out over those copies, and drops a `bin/ki-audit` wrapper — the
- * `package.json`-free entry point. Where the target *has* a `package.json`, it
+ * out over those copies, and drops a `.ki-meta/bin/ki-audit` wrapper — the
+ * `package.json`-free entry point, dot-prefixed so it never collides with the
+ * repo's own `bin/` and is auto-ignored by chezmoi. Where the target *has* a `package.json`, it
  * additionally installs that skill's `ki:<suffix>:{audit,conform}` npm keys and
  * the repo-wide `ki:audit` / `ki:conform` / `ki:init` aggregates as convenience
  * aliases over the same runner.
@@ -182,12 +183,14 @@ process.exit(failed > 0 ? 1 : 0)
 `
 
 // The package.json-free entry point vendored into every target: a tiny wrapper that
-// cd's to the repo root and runs the vendored aggregate. Usage: ./bin/ki-audit [verb].
+// cd's to the repo root and runs the vendored aggregate. It lives under .ki-meta/ so the
+// whole generated surface is dot-prefixed — off the repo's own bin/ and auto-ignored by
+// dotfile managers (chezmoi). Usage: ./.ki-meta/bin/ki-audit [verb].
 const BIN_KI_AUDIT = `#!/usr/bin/env bash
 # Vendored by ki-bootstrap — the package.json-free entry to a repo's self-check.
-# Usage: ./bin/ki-audit [audit|conform|init]   (default: audit)
+# Usage: ./.ki-meta/bin/ki-audit [audit|conform|init]   (default: audit)
 set -euo pipefail
-root="$(cd "$(dirname "\${BASH_SOURCE[0]}")/.." && pwd)"
+root="$(cd "$(dirname "\${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$root"
 exec bun ".ki-meta/aggregate.ts" "\${1:-audit}"
 `
@@ -236,7 +239,7 @@ function main(): void {
   const mode = parseMode(rest)
 
   // No `package.json` is required — a repo self-governs through the vendored
-  // `.ki-meta/` runner and `bin/ki-audit` alone (dotfiles, KB, tap). Where a
+  // `.ki-meta/` runner and `.ki-meta/bin/ki-audit` alone (dotfiles, KB, tap). Where a
   // package.json *does* exist we additionally splice the `ki:*` convenience keys.
   const hasPackageJson = existsSync(join(target, 'package.json'))
 
@@ -246,20 +249,21 @@ function main(): void {
   const keys: Array<[string, string]> = []
   for (const skill of set) keys.push(...vendorSkill(target, skill, dryRun))
 
-  // Vendor the aggregate runner + the package.json-free entry point.
+  // Vendor the aggregate runner + the package.json-free entry point — both under
+  // .ki-meta/ so the whole generated surface is dot-prefixed (off the repo's own bin/,
+  // auto-ignored by chezmoi).
   const aggRel = `${VENDOR_DIR}/aggregate.ts`
-  const binRel = join('bin', 'ki-audit')
+  const binRel = join(VENDOR_DIR, 'bin', 'ki-audit')
   if (!dryRun) {
-    mkdirSync(join(target, VENDOR_DIR), { recursive: true })
+    mkdirSync(join(target, VENDOR_DIR, 'bin'), { recursive: true })
     writeFileSync(join(target, aggRel), AGGREGATE_RUNNER)
-    mkdirSync(join(target, 'bin'), { recursive: true })
     writeFileSync(join(target, binRel), BIN_KI_AUDIT)
     chmodSync(join(target, binRel), 0o755)
   }
   console.log(`${GREEN}runner${RESET} ${DIM}→ ${aggRel}, ${binRel}${RESET}`)
 
   // Additive convenience: where a package.json exists, wire the repo-wide aggregate
-  // keys over the same runner. Without one, `./bin/ki-audit` is the entry point.
+  // keys over the same runner. Without one, `./.ki-meta/bin/ki-audit` is the entry point.
   if (hasPackageJson) {
     keys.push(['ki:audit', `bun ${aggRel} audit`])
     keys.push(['ki:conform', `bun ${aggRel} conform`])

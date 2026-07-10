@@ -1,6 +1,6 @@
 # Onboarding a repo to Knowledge Islands governance
 
-How to bring a repository under Knowledge Islands governance so it **governs itself** — running `./bin/ki-audit` (or `bun run ki:audit` where the repo has a `package.json`) with **zero skills installed** — and how to migrate a legacy repo off old formats. This guide is the operating manual for the bootstrap chain (ADR-KI-HARNESS-007); its fenced command blocks are executable and are exercised by the harness's own test suite, so they cannot drift from what actually works.
+How to bring a repository under Knowledge Islands governance so it **governs itself** — running `./.ki-meta/bin/ki-audit` (or `bun run ki:audit` where the repo has a `package.json`) with **zero skills installed** — and how to migrate a legacy repo off old formats. This guide is the operating manual for the bootstrap chain (ADR-KI-HARNESS-007); its fenced command blocks are executable and are exercised by the harness's own test suite, so they cannot drift from what actually works.
 
 ## The four modes
 
@@ -20,10 +20,10 @@ Onboarding is **INIT**. The other three are the day-to-day loop once a repo is g
 For every skill in the resolved set — the baseline (`ki-repo`, `ki-authoring`), plus every `[ki-<skill>]` table the target declares in its `.ki-config.toml`, plus their `implies:` closure — INIT:
 
 1. **vendors copies** of the skill's checker scripts into the target's `.ki-meta/<skill>/` (copies, not symlinks, so they run standalone);
-2. **writes** the package.json-free runner — a `.ki-meta/aggregate.ts` that discovers those copies and fans out over them, plus a `bin/ki-audit` wrapper that invokes it;
+2. **writes** the package.json-free runner — a `.ki-meta/aggregate.ts` that discovers those copies and fans out over them, plus a `.ki-meta/bin/ki-audit` wrapper that invokes it;
 3. **where the target has a `package.json`**, additionally installs that skill's `ki:<suffix>:{audit,conform}` keys and the repo-wide `ki:audit` / `ki:conform` / `ki:init` aggregates as convenience aliases over the same runner.
 
-After INIT the repo governs itself with `./bin/ki-audit` — no `package.json` and **no skills installed anywhere** required. A `.ki-meta/` is dot-prefixed and generated-not-authored, so it stays off the repo's own `scripts/`.
+After INIT the repo governs itself with `./.ki-meta/bin/ki-audit` — no `package.json` and **no skills installed anywhere** required. A `.ki-meta/` is dot-prefixed and generated-not-authored, so it stays off the repo's own `scripts/`.
 
 ## Prerequisites
 
@@ -35,7 +35,7 @@ export KI_HARNESS="${KI_HARNESS:-$(pwd)}"
 
 ## Greenfield: a fresh repo
 
-A new repo needs only a `.ki-config.toml` (declaring at least `[ki-repo]`; the `ki-authoring` baseline is added automatically). A `package.json` is optional — with one you also get the `ki:*` convenience keys, without one the repo self-governs through `./bin/ki-audit` alone. Bootstrap it, then confirm it self-governs:
+A new repo needs only a `.ki-config.toml` (declaring at least `[ki-repo]`; the `ki-authoring` baseline is added automatically). A `package.json` is optional — with one you also get the `ki:*` convenience keys, without one the repo self-governs through `./.ki-meta/bin/ki-audit` alone. Bootstrap it, then confirm it self-governs:
 
 ```bash
 bun "$KI_HARNESS/skills/ki-bootstrap/scripts/bootstrap.ts" "$TARGET"
@@ -45,7 +45,7 @@ bun "$KI_HARNESS/skills/ki-bootstrap/scripts/bootstrap.ts" "$TARGET"
 cd "$TARGET" && bun run ki:audit
 ```
 
-The first command vendors the baseline checkers into `.ki-meta/`, writes `bin/ki-audit`, and (since this fixture has a `package.json`) also splices the `ki:*` convenience keys; the second runs the vendored aggregate, which invokes each skill's checker in sequence — with nothing installed in `.claude/skills/`. A repo without a `package.json` runs the identical check with `./bin/ki-audit`.
+The first command vendors the baseline checkers into `.ki-meta/`, writes `.ki-meta/bin/ki-audit`, and (since this fixture has a `package.json`) also splices the `ki:*` convenience keys; the second runs the vendored aggregate, which invokes each skill's checker in sequence — with nothing installed in `.claude/skills/`. A repo without a `package.json` runs the identical check with `./.ki-meta/bin/ki-audit`.
 
 ## Legacy: migrating an existing repo
 
@@ -69,8 +69,8 @@ A single skill's INIT is reachable the same way through its own `scripts/bootstr
 
 ## Day-to-day, once governed
 
-- `./bin/ki-audit` (or `bun run ki:audit` where a `package.json` exists) — report drift across every governed skill (the aggregate).
-- `./bin/ki-audit conform` (or `bun run ki:conform`) — apply the mechanical fixes.
+- `./.ki-meta/bin/ki-audit` (or `bun run ki:audit` where a `package.json` exists) — report drift across every governed skill (the aggregate).
+- `./.ki-meta/bin/ki-audit conform` (or `bun run ki:conform`) — apply the mechanical fixes.
 - `bun run ki:<skill>:audit` — audit one concern (e.g. `ki:repo:audit`), where the `package.json` keys are wired.
 
 Re-running the chain (or `ki:conform`) re-syncs the vendored script copies, so a standard's REFRESH propagates to the target on its next run.
