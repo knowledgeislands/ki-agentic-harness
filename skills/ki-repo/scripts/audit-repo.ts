@@ -684,6 +684,7 @@ if (jsonOut) {
     `\n${paint(C.cyan, 'summary')}: ${targets.length} repo(s), ${paint(C.red, `${totalFails} fail`)}, ${paint(C.yellow, `${totalWarns} warn`)}${ghSkipped ? paint(C.dim, `, ${ghSkipped} not on github.com`) : ''}`
   )
   if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'repo.{md,json}')}`))
+  if (totalFails + totalWarns > 0) console.log('→ to address: run /ki-repo CONFORM   (judgment criteria: references/audit-rubric.md)')
   console.log(
     paint(
       C.dim,

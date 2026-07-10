@@ -275,6 +275,8 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     }
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
+    if (summary.fail + summary.warn + summary.polish > 0)
+      console.log('→ to address: run /ki-website-cloudflare CONFORM   (judgment criteria: references/audit-rubric.md)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }

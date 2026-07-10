@@ -299,6 +299,8 @@ async function main() {
     console.log(`PASS     DR audit — ${drFiles.length} file${drFiles.length === 1 ? '' : 's'}, ${modeLabel}, ${decisionsDir}`)
   }
 
+  if (findings.some((f) => ['FAIL', 'WARN', 'POLISH'].includes(SEV_LABELS[f.severity] ?? '')))
+    console.log('→ to address: run /ki-decision-records CONFORM   (judgment criteria: references/audit-rubric.md)')
   process.exit(hasFail ? 1 : 0)
 }
 

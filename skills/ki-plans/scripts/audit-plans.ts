@@ -264,6 +264,7 @@ function emit(items: Finding[], tgt: string, concern: string, title: string, foo
     }
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
+    if (summary.fail + summary.warn + summary.polish > 0) console.log('→ to address: run /ki-plans CONFORM')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }

@@ -258,4 +258,6 @@ const findings = auditHarness(root)
 report(findings)
 
 const hasFail = findings.some((f) => f.severity === 'FAIL')
+if (findings.some((f) => f.severity === 'FAIL' || f.severity === 'WARN'))
+  console.log('→ to address: run /ki-harness CONFORM   (judgment criteria: references/audit-rubric.md)')
 process.exit(hasFail ? 1 : 0)

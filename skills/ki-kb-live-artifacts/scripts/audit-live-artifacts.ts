@@ -173,6 +173,8 @@ const counts = { fail: byLevel.FAIL?.length ?? 0, warn: byLevel.WARN?.length ?? 
 const summary = `${counts.fail} fail · ${counts.warn} warn`
 console.log('─'.repeat(60))
 console.log(paint(C.dim, summary))
+if (counts.fail + counts.warn > 0)
+  console.log('→ to address: run /ki-kb-live-artifacts CONFORM   (judgment criteria: references/audit-rubric.md)')
 console.log(paint(C.dim, 'mechanical checks only — judgment criteria in references/audit-rubric.md'))
 
 process.exit(counts.fail > 0 ? 1 : 0)

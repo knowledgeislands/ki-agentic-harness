@@ -224,6 +224,8 @@ if (JSON_OUT) {
     process.stdout.write(`  ${colour[f.severity]}${f.severity.padEnd(4)}${RESET} ${DIM}${f.criterion}${RESET}  ${f.message}\n`)
   const n = (s: Severity): number => findings.filter((f) => f.severity === s).length
   process.stdout.write(`${'─'.repeat(60)}\n  ${n('FAIL')} fail · ${n('WARN')} warn · ${n('PASS')} pass · ${n('INFO')} info\n`)
+  if (n('FAIL') + n('WARN') > 0)
+    process.stdout.write('→ to address: run /ki-binding CONFORM   (judgment criteria: references/audit-rubric.md)\n')
 }
 
 // WARN never fails the run; only a hard FAIL does (rubric: all BIND criteria are WARN).
