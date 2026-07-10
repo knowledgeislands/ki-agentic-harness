@@ -6,6 +6,12 @@ This roadmap is itself subject to the house discipline it describes: when a skil
 
 **Continuous practices are not roadmap items.** Keeping the skills audited (`ki:skills:lint`, `ki:repo:audit`, `ki:kb:audit`, the `ki-mcp` audit over the `mcp-*` repos), re-running the advisory [eval suite](evals/README.md) as skills change, and the scheduled `ki-skills-refresh` sweep (which honours each skill's declared `**Refresh:**` cadence) are ongoing disciplines tied to the invariants in [docs/skill-design.md](docs/guides/user-guide/skill-design.md) (_Principles across the set_) — they run continuously, so they live there, not here.
 
+## Soon
+
+### Codify a Conventional Commits git standard across the skills
+
+The repos already commit in [Conventional Commits](https://www.conventionalcommits.org/) style (`type(scope): subject`, seen throughout the history), but nothing in the skill set **governs** it — there is no house standard a commit is audited or conformed against. Land one: decide which skill owns git conventions (candidate: `ki-engineering`, which already owns the CI-workflow shape and the toolchain, or a dedicated `ki-git` if the surface is broad enough — commit format, branch naming, the solo-repo-to-`main` policy), specify the allowed `type` set and scope conventions, and add a mechanical check (e.g. a commit-message linter wired into the husky hook chain) plus the AUDIT/CONFORM prose. Cross-reference the per-repo commit guidance already living in `CLAUDE.md` files so the standard and the local instructions stay consistent.
+
 ## Future
 
 ### Evaluate memtrace as structural-memory layer for the harness _(candidate)_
