@@ -60,6 +60,16 @@ MCP tool schemas are the **largest standing cost** in a session with several ser
 - **Connectors vs plugins** — on claude.ai / Desktop, the MCP tools bucket is driven by _connectors_ (e.g. Google Calendar / Drive / Slack), toggled per-conversation in the compose-bar tools menu. These are distinct from _plugins_ (which surface under Skills / Custom agents). Turn off a connector for a conversation that does not need it.
 - **The mcporter caveat** — mcporter (see [Installation](installation.md)) consolidates the `~/.claude.json` `mcpServers` block from many entries to one URL. That trims _config_, not the in-session tool _schemas_ — every consolidated server's tools still load into the prefix. mcporter and schema curation are complementary, not substitutes.
 
+### Manage the MCP inventory
+
+The list lives across several layers, and the `/mcp` command only touches one of them:
+
+- **This session (transient)** — `/mcp reconnect|enable|disable [<server>|all]` retries or toggles a server for the current session only. A "not connected" server usually means it is not _authorized_ rather than misconfigured; run `/mcp` in the interactive terminal to complete the OAuth flow (it cannot run in a non-interactive session).
+- **Local Claude Code config (`~/.claude.json`)** — the machine-local, per-user Claude Code state file. Among other things it holds the `mcpServers` block; in this setup that block is reduced to a single `ki-mcporter` URL entry, because the KI-owned servers are consolidated behind mcporter rather than listed one by one. It is not chezmoi-managed, so treat it as generated — do not hand-edit the `mcpServers` block.
+- **mcporter config (`~/.mcporter/mcporter.json`, chezmoi-managed)** — the inventory of local KI servers the daemon keeps alive; `mcporter daemon status` lists them. Add or remove a _local_ server here, not in `~/.claude.json`.
+- **Source of truth (chezmoi `mcps.yaml`, governed by `ki-binding`)** — the single list carrying each server's `clients:` targeting, which renders both the mcporter and Desktop configs. Edit here, `chezmoi apply`, restart. This is the durable "manage the list" surface; `ki-binding` audits that every surface agrees.
+- **Cloud connectors (claude.ai settings)** — Calendar / Drive / Slack / M365 / Notion-type connectors are managed in claude.ai connector settings and the compose-bar tools menu, not in any local file.
+
 ### Defer tool schemas with the Tool Search Tool — and beware the proxy gap
 
 Claude Code has a native **Tool Search Tool**: rather than materialising every built-in and MCP schema into the prefix up front, it defers them server-side and loads each on demand when a task needs it. The `Workflow` tool relies on the same mechanism ("Workflow agents can reach all session-connected MCP tools via ToolSearch — schemas load on demand per agent"). At the protocol level an MCP server can also vary its advertised surface at runtime via `tools/list_changed`, and Claude Code has a tool-availability lifecycle (`CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT`).
@@ -75,7 +85,7 @@ Claude Code has a native **Tool Search Tool**: rather than materialising every b
 }
 ```
 
-It takes effect on the _next_ session start — it does not shrink an already-loaded context. Confirm with `/context`: the deferred tools move out of the standing surface and appear only once searched. (The silent-disable is a known headroom interaction, tracked upstream as chopratejas/headroom issue #746.)
+It takes effect on the _next_ session start — it does not shrink an already-loaded context. Confirm with `/context`: the deferred tools move out of the standing surface and appear only once searched. In one measured before/after, built-in tools fell from **44.1k to ≈9k** tokens and the MCP schemas dropped out of the standing surface entirely. (The silent-disable is a known headroom interaction, tracked upstream as chopratejas/headroom issue #746.)
 
 The trade-off is the prompt cache: deferral shifts cost from a fixed standing tax to a per-first-use discovery cost. With a large surface that is mostly idle — the common case here — it is a decisive win; it only approaches a wash if nearly every tool is used every turn.
 
