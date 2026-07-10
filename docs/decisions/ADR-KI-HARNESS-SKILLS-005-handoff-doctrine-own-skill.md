@@ -13,12 +13,13 @@ The handoff doctrine is a **new, composition-shaped governance skill, `ki-handof
 ## Consequences
 
 - The doctrine is discoverable as a named method (`is this ready to hand off`, `make this delegable`) rather than buried in another skill's quality bar.
-- `ki-plans` and `ki-tokenomics` are unchanged; `ki-handoffs` composes on them at runtime by being run in sequence, per ADR-KI-HARNESS-SKILLS-004.
+- `ki-plans` and `ki-tokenomics` are unchanged; `ki-handoffs` composes on them at runtime by being run in sequence (ADR-KI-HARNESS-SKILLS-003), while staying valid standalone (ADR-KI-HARNESS-SKILLS-004).
 - A new opt-in artifact convention (`handoff: true`) is added; only artifacts that opt in are audited, so existing plans and proposals are unaffected.
 - The skill slots into the canonical dependency order (ADR-KI-HARNESS-SKILLS-003) after `ki-plans` / `ki-tokenomics`, which it composes on.
 
 ## References
 
 - The `ki-handoffs` skill and its handoffs-standard reference.
-- [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) — composition by run-in-sequence, standalone validity.
+- [ADR-KI-HARNESS-SKILLS-003](ADR-KI-HARNESS-SKILLS-003-dependency-order-composition.md) — composition by run-in-sequence and the canonical dependency order.
+- [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) — standalone validity.
 - `ki-tokenomics` standard §4 (runtime levers — model tier) and §8 (multi-model flows) — the boundary this skill defers to.

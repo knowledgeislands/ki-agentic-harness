@@ -24,14 +24,14 @@ As a session grows and the MCP surface expands, token cost per turn rises and th
 
 ### Declined
 
-- **superpowers** — a structured SDLC methodology shipped as auto-triggering skills under a monolithic `~/.claude/skills` install; conflicts with the validate-down `.ki-config.toml` contract and the standalone-valid skill requirement (ADR-KI-HARNESS-SKILLS-004, later in the reading order). How a methodology is applied is the KI harness's own domain.
+- **superpowers** — a structured SDLC methodology shipped as auto-triggering skills under a monolithic `~/.claude/skills` install; conflicts with the validate-down `.ki-config.toml` contract and the standalone-valid skill requirement ([ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md)). How a methodology is applied is the KI harness's own domain.
 - **gstack** — a competing monolithic slash-command skill collection outside the KI governance layer; adopting it would create two parallel skill systems with no shared standard. Individual ideas (e.g. OWASP/STRIDE threat modelling) are candidates for KI skills in their own right.
 - **Engram** — a cross-session persistent-memory MCP over SQLite/vector stores. It targets the slot the harness fills with its file-based `memory/` + `MEMORY.md` convention, which is deliberately plain-file, git-trackable, and reconciled into `CLAUDE.md` where it is visible in review; an opaque store would be a second, invisible memory system. The file-based convention is the single persistent-memory mechanism.
 - **[Caveman](https://caveman.so/)** — a token-efficiency toolkit spanning a proxy/gateway (input/prompt compression, not just output), a persistent memory layer ("Cavemem"), a terminal coding agent ("Caveman Code"), and a chat-interface browser extension. It duplicates ground the harness already owns through separate, deliberate mechanisms — headroom-ai at the proxy layer, the file-based `memory/` convention in place of Cavemem — as one monolithic third-party stack outside the KI governance layer.
 
 ### Scale-gated
 
-**Graphify** — builds a self-updating knowledge graph of a _codebase_ (tree-sitter plus LLM extraction) to navigate by structure. Its benefit appears only on large repositories (500+ files); the harness and its siblings are small Markdown/skill/MCP repos, and the KI KB is itself a curated human-authored knowledge graph. Not adopted at current scale. Dropped from the ROADMAP on 2026-07-05 as not needed; revisit from this ADR should a large code corpus ever emerge.
+**Graphify** — builds a self-updating knowledge graph of a _codebase_ (tree-sitter plus LLM extraction) to navigate by structure. Its benefit appears only on large repositories (500+ files); the harness and its siblings are small Markdown/skill/MCP repos, and the KI KB is itself a curated human-authored knowledge graph. Not adopted at current scale; revisit from this ADR should a large code corpus ever emerge.
 
 ### Prior art — house-mcp-manager
 
@@ -49,8 +49,9 @@ house-mcp-manager is a CLI that toggles MCP servers and saves named profiles by 
 
 - [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-composition-over-extension.md) — Composition over extension (the paradigm the declines protect).
 - [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-validate-down-ki-config-contract.md) — Validate-down `.ki-config.toml` contract.
+- [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) — the standalone-valid skill requirement the declines protect.
 
-Named here rather than linked, as they come later in the reading order: ADR-KI-HARNESS-SKILLS-004 (skills must be valid standalone), ADR-KI-HARNESS-AGENTS-001 (subagent isolation for multi-skill invocation), and ADR-KI-HARNESS-TOOLCHAIN-003 (proxy local MCP servers behind mcporter).
+Named here rather than linked, as they come later in the reading order: ADR-KI-HARNESS-AGENTS-001 (subagent isolation for multi-skill invocation) and ADR-KI-HARNESS-TOOLCHAIN-003 (proxy local MCP servers behind mcporter).
 
 - [extraheadroom.com/reduce-claude-code-costs](https://extraheadroom.com/reduce-claude-code-costs) — the source survey.
 - [headroom-ai](https://headroom.ai/) — context compaction and session management layer (bundles RTK).

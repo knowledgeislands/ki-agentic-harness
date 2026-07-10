@@ -8,7 +8,7 @@ Each governance skill needed to know whether it applied to a given repo, and wha
 
 ## Decision
 
-`.ki-config.toml` is the compliance marker and the per-skill configuration carrier. Its presence signals that the repo is a Knowledge Islands repo and all applicable governance standards apply. Each governance skill reads its own `[ki-<skill>]` table; the repo standard verifies that detected standards (Eleventy config → `[ki-website]`, Streams zone → `[ki-kb-streams]`, etc.) have a declared table. A detected-but-undeclared standard is a WARN; a missing `.ki-config.toml` is a FAIL. Per-repo overrides live in the skill's own sub-table, not in a forked skill.
+`.ki-config.toml` is the compliance marker and the per-skill configuration carrier. Its presence signals that the repo is a Knowledge Islands repo and all applicable governance standards apply. Each governance skill reads its own `[ki-<skill>]` table; the repo standard verifies that detected standards (Eleventy config → `[ki-website]`, Streams zone → `[ki-kb-streams]`, etc.) have a declared table. This direction — each skill reads its own table and verifies downward from the standard, rather than the repo pushing configuration up into the skills — is the **validate-down contract**. A detected-but-undeclared standard is a WARN; a missing `.ki-config.toml` is a FAIL. Per-repo overrides live in the skill's own sub-table, not in a forked skill.
 
 ## Consequences
 

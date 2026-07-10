@@ -12,7 +12,7 @@ Knowledge Islands repos are **public by default** (installable from source), and
 
 - `[ki-repo]` gains a `license` field — an SPDX id (e.g. `MIT`, `Apache-2.0`), or `UNLICENSED`/`proprietary` for all-rights-reserved — **defaulting to MIT** when unset. choosealicense.com is the picker and the REFRESH source.
 - The `license`, `license-file`, and `package-license` checks verify that the **live GitHub license, the `LICENSE` file, and `package.json` `"license"` all match the declared-or-default id**. A proprietary declaration expects no recognised OSI license on GitHub and `"UNLICENSED"` in `package.json`.
-- Visibility remains a separate, independently-declared-and-checked fact. A private repo may be MIT; a public repo may be proprietary. This supersedes the ki-plugins-private direction: `ki-plugins` declares its proprietary license and stays public with no FAIL.
+- Visibility remains a separate, independently-declared-and-checked fact. A private repo may be MIT; a public repo may be proprietary. This supersedes the ki-plugins-private direction: `ki-plugins` goes public with its proprietary license declared, and the audit no longer FAILs it.
 
 ## Consequences
 

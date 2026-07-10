@@ -12,10 +12,10 @@ Every governance skill exposes the universal four modes — **AUDIT**, **CONFORM
 
 - **AUDIT** — run the checker, capture its output verbatim, then apply judgment criteria; report by location → criterion → fix.
 - **CONFORM** — run AUDIT to get the fix list, then apply the fixes in place, then re-run AUDIT until clean.
-- **INIT** — scaffold a new conformant artifact, or bring an off-standard one onto the floor from scratch. Its mechanical half is a per-skill `scripts/bootstrap.ts` (the INIT counterpart to `audit-*.ts`) that runs from the remote source with no skill installed, declares and triggers the skills the frontmatter `implies:`, and satisfies the self-sufficiency contract (vendored scripts, per-skill and repo-wide `ki:*` keys).
+- **INIT** — scaffold a new conformant artifact, or bring an off-standard one onto the floor from scratch. Its mechanical half is a per-skill `scripts/bootstrap.ts` (the INIT counterpart to `audit-*.ts`) that runs from the remote source with no skill installed, declares and triggers the skills the frontmatter `implies:`, and satisfies the self-sufficiency contract — vendored scripts, per-skill and repo-wide `ki:*` keys — set out as its own decision later in the reading order.
 - **REFRESH** — re-anchor the standard to its sources on the skill's declared cadence.
 
-The SHAPE-5 criterion in the skills rubric enforces that every governance skill exposes this shape.
+SHAPE-5 — a criterion in the skills rubric, the per-criterion checklist the skills governance skill audits `SKILL.md` files against — enforces that every governance skill exposes this shape.
 
 ## Consequences
 

@@ -13,7 +13,7 @@ This applies to all Knowledge Islands multi-skill invocations, not only audits.
 For any multi-skill invocation (AUDIT, CONFORM, REFRESH, or other modes run across multiple governance skills):
 
 1. **COLL checks first** — run the set-level collision checks (COLL-1: name uniqueness via `bun run ki:skills:lint`; COLL-2: description off-ramp reciprocity by reading all `description` fields) in the main agent context. These are cross-skill by nature and cheap; they must run before fan-out.
-2. **Fan out to subagents** — spawn one `agent()` per concern in `parallel()`. Each subagent receives only its concern's files, runs the mechanical checker (`bun run <concern>:audit --json`) and applies the judgment criteria, and returns a structured JSON object: `{ concern, exit_code, fail[], warn[], polish[], advisory[], pass_count }`.
+2. **Fan out to subagents** — spawn one `agent()` per concern in `parallel()`. Each subagent receives only its concern's files, runs the mechanical checker (`bun run ki:<concern>:audit --json`) and applies the judgment criteria, and returns a structured JSON object: `{ concern, exit_code, fail[], warn[], polish[], advisory[], pass_count }`.
 3. **Synthesise in the main agent** — collect all subagent results, rank findings with dependency-order priority (foundations first, per ADR-KI-HARNESS-SKILLS-003), and report across concerns.
 
 For the harness multi-concern audit specifically, the workflow is codified in `.claude/workflows/ki-multi-skill-audit.ts`.
@@ -30,6 +30,6 @@ For the harness multi-concern audit specifically, the workflow is codified in `.
 ## References
 
 - [ADR-KI-HARNESS-SKILLS-003](ADR-KI-HARNESS-SKILLS-003-dependency-order-composition.md) — the dependency order that governs synthesis ranking.
-- The `ki-skills` SKILL.md — Mode AUDIT, set-audit discipline (updated to reference this ADR).
-- The `ki-harness` SKILL.md — Mode AUDIT step 2 (updated to reference the workflow).
+- The `ki-skills` SKILL.md — Mode AUDIT, set-audit discipline.
+- The `ki-harness` SKILL.md — Mode AUDIT step 2, the multi-concern audit.
 - The `ki-multi-skill-audit` workflow — the saved workflow.

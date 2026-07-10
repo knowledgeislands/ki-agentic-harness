@@ -34,4 +34,4 @@ DR files live in `docs/decisions/` and are indexed in `docs/decisions/README.md`
 
 ## References
 
-This record is self-contained; the sources behind it are named rather than linked. It is the harness realisation of `GDR-KI-ARCADIA-001` (the KI-level governance decision in ki-arcadia-principal that established Decision Records as the instrument, recorded here as `decision_depends_on: ["GDR-KI-ARCADIA-001"]`). The DR format used here is defined and enforced by a skill, and descends from Michael Nygard's 2011 "Documenting Architecture Decisions" proposal. The index of all DRs in this harness is the `README.md` in this directory.
+This record is self-contained; the sources behind it are named rather than linked. It is the harness realisation of `GDR-KI-ARCADIA-001`, the KI-level governance decision in ki-arcadia-principal that established Decision Records as the instrument. The DR format used here is defined and enforced by a skill, and descends from Michael Nygard's 2011 "Documenting Architecture Decisions" proposal. The index of all DRs in this harness is the `README.md` in this directory.
