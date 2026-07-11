@@ -92,7 +92,7 @@
     "ki:skills:graph:check": "bun scripts/skill-graph.ts --check",
     "ki:skills:help": "bun scripts/skill-help.ts",
     "ki:skills:help:check": "bun scripts/skill-help.ts --check",
-    "ki:skills:link:global": "bun scripts/sync-skills.ts link --only ki-bootstrap",
+    "ki:skills:link:global": "bun scripts/sync-skills.ts link --only ki-bootstrap,ki-recap,ki-plan",
     "ki:skills:link:project": "bun skills/ki-bootstrap/scripts/link-skills.ts --all",
     "ki:skills:lint": "bun skills/ki-skills/scripts/lint-skills.ts skills",
     "ki:skills:refresh-status": "bun skills/ki-skills/scripts/lint-skills.ts skills --refresh-status",

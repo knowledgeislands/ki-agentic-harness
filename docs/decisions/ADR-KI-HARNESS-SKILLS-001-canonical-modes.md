@@ -24,6 +24,8 @@ Every governance skill also exposes a fifth universal mode, **HELP** — introsp
   - **`help` / `-h` / `?` is pure explain** — never prompts, never acts. This is the headless-safe form (a subagent or CI run gets the explanation and stops).
   - **No mode given resolves to HELP, then routes** — it emits the same explanation, then, only in an interactive session, offers the mode choice via `AskUserQuestion`. This replaces the earlier "bare invocation → `AskUserQuestion`" behaviour: the caller now learns what the skill _is_ before being asked which mode to run.
 
+**Process skills are exempt.** This decision scopes the universal four modes to **governance skills** (those that hold a standard). A **process skill** — one that drives an action or lifecycle rather than holding a standard ([ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md)) — does **not** carry AUDIT/CONFORM/INIT/REFRESH; its modes follow its own lifecycle (e.g. `ki-plan`'s `new`/`execute`/`done`/`status`, or `ki-recap`'s single mode). It exposes **HELP** only optionally. The skills rubric gates the four-mode and HELP requirements on "governance skill" accordingly (SHAPE-5, SHAPE-11), so a process skill passes with no relaxation of the checker.
+
 The skills rubric enforces that every governance skill exposes this shape.
 
 ## Consequences

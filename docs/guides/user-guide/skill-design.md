@@ -28,6 +28,8 @@ Each skill's `description` carries its own boundaries so the agent selects the r
 | `ki-harness` vs `ki-agents`                               | The **container** holding `agents/` vs a **subagent definition**. ¶¶        |
 | `ki-bootstrap` vs `ki-repo`                               | The install **mechanism** (linking skills) vs config **content**. ‖‖        |
 | `ki-bootstrap` vs `ki-harness`                            | The install **keystone** (one global skill) vs the **container**. ‖‖        |
+| `ki-plan` vs `ki-plans`                                   | **Drives** one plan's lifecycle vs **governs** the class of plans. ¤        |
+| `ki-recap` vs session-mining (offline)                    | **Warm, in-session** recap vs **offline, mechanical** transcript mining. ¤¤ |
 
 † Auditing the `SKILL.md` of an MCP-related skill is `ki-skills`' job; auditing the server's `src/` layout, config injection, and tool surface is `ki-mcp`'s. This is the one pair that could be confused — both "audit against a standard" — so each names the other as the off-ramp.
 
@@ -52,6 +54,10 @@ Each skill's `description` carries its own boundaries so the agent selects the r
 ††† Three sub-governors carve note types out of the `Admin/` zone: `ki-decision-records` owns Decisions (`Admin/Governance/Decisions/`), `ki-kb-activities` owns Activity notes and `ki-kb-live-artifacts` owns Live Artifact pairs (both under `Admin/Operations/`). `ki-kb` owns the five-zone model and the KI-wide frontmatter standard they all conform to; each **defers to kb** for structure and frontmatter, exactly as `ki-kb-streams` does for its zone. (`decision-records` also governs `docs/decisions/` in a code repo, where no base is present.)
 
 ‡‡‡ A proposal passing the Enactment gate (`ki-kb-streams`) may _produce_ a Decision Record on settle, but the durable **record** — its format, ID, and index, owned by `ki-decision-records` — is distinct from the **process** that ratifies the change. Record vs gate.
+
+¤ `ki-plans` (governance) owns the planning _methodology_ and the plan _format_ — when a plan is warranted, the ROADMAP near-horizon principle, the quality bar for Steps and Verify. `ki-plan` (process) is the lifecycle driver that reads that format and _carries out_ `new` / `execute` / `done` / `status` for one plan at a time. Governs-the-class vs drives-an-instance.
+
+¤¤ `ki-recap` is the **warm** leg — run inside a live session, against context still in the window, producing an immediate summarise / surface-outstanding / harvest-learnings pass and an optional compress digest. The offline session-mining candidate (ROADMAP `## Future`) is the **cold** leg — run after the fact, mechanically, over historical transcripts. They are siblings sharing the same grounding substrate (transcript reading, the routing table) rather than one subsuming the other.
 
 ## How knowledge moves and improves — the three loops
 

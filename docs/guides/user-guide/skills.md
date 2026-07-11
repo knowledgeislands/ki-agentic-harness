@@ -1,6 +1,6 @@
 # The skills
 
-The skills are the bulk of the harness today, each a **governance skill** — it holds a house standard and ships the universal **INIT / AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones), backed by a tracked `references/sources.md`. This file is the map: what a skill is, how the set fits together, and the shape they all share; the per-skill entries are in [the catalogue](skill-catalogue.md). For the boundaries between the ones that could be confused, the loops that run across them, and the invariants they all hold, see [skill-design.md](skill-design.md).
+The skills are the bulk of the harness today. Most are **governance skills** — each holds a house standard and ships the universal **INIT / AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones), backed by a tracked `references/sources.md`. A smaller, growing set are **process skills** — lightweight skills that drive an action or lifecycle rather than holding a standard ([ADR-KI-HARNESS-SKILLS-006](../../decisions/ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md)); `ki-recap` and `ki-plan` are the first. This file is the map: what a skill is, how the set fits together, and the shape they share; the per-skill entries are in [the catalogue](skill-catalogue.md). For the boundaries between the ones that could be confused, the loops that run across them, and the invariants they all hold, see [skill-design.md](skill-design.md).
 
 ## What a skill is
 
@@ -16,9 +16,9 @@ A skill is a directory containing a `SKILL.md` with YAML frontmatter and a markd
 
 The directory name **is** the skill's `name`: lowercase, hyphenated, and matching the `name:` frontmatter field exactly. Agents discover a skill by its `name`, so the two must stay in sync.
 
-Today the set is uniform: every skill here is a **governance skill** — it holds a house standard and ships the universal **INIT / AUDIT / CONFORM / REFRESH** modes plus a mechanical checker — and every one is a Knowledge Islands skill, shipped as part of this system. So what tells the skills apart is not a _kind_ but _what each governs_: a repository's structure, a knowledge base, the machine itself. That distinction is the map below.
+Every skill here is a Knowledge Islands skill, shipped as part of this system, but the set now has two **kinds** ([ADR-KI-HARNESS-SKILLS-006](../../decisions/ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md)). Most are **governance skills** — each holds a house standard and ships the universal **INIT / AUDIT / CONFORM / REFRESH** modes plus a mechanical checker; what tells governance skills apart is not their kind but _what each governs_: a repository's structure, a knowledge base, the machine itself. A smaller set are **process skills** — they drive an action or lifecycle rather than holding a standard, are exempt from the four-file shape and universal modes, and expose HELP only optionally: `ki-recap` (summarise / surface-outstanding / harvest-learnings over a live session) and `ki-plan` (the plan lifecycle, promoted from the former `/plan` command — paired deliberately with the governance skill `ki-plans`). That distinction, and the six governance clusters, are the map below.
 
-The Agent Skills standard is more general than this, though. A skill need not govern a standard at all — it could equally encode a standalone workflow (a review process, a release checklist, a research harness) or target one specific project or recurring task. Nothing here does yet, but the set is expected to grow beyond governance over time.
+The Agent Skills standard is more general than this, though. A skill need not govern a standard at all — it could equally encode a standalone workflow (a review process, a release checklist, a research harness) or target one specific project or recurring task. The process kind is the first step into that territory, and the set is expected to grow further over time.
 
 ## The six clusters
 

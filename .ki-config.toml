@@ -44,6 +44,16 @@ license = "MIT"          # SPDX id; the LICENSE, package.json, and GitHub must m
 # This repo ships the ki-plans skill, so it declares governance by its own standard.
 [ki-plans]
 
+# This repo ships the ki-plan process skill (drives the plan lifecycle; paired with the
+# governance skill ki-plans above). Presence of this table is the compliance marker —
+# process skills carry no governance check overrides.
+[ki-plan]
+
+# This repo ships the ki-recap process skill (live-session summarise / surface-outstanding /
+# harvest-learnings, with an optional compress leg). Presence of this table is the
+# compliance marker — process skills carry no governance check overrides.
+[ki-recap]
+
 # This repo ships the ki-handoffs skill, so it declares governance by its own standard.
 # Presence of this table is the compliance marker; tier cost/selection defaults live in
 # [ki-tokenomics] (preferred_model), not here.

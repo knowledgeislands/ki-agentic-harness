@@ -72,11 +72,23 @@ Governs **Feature Definitions** — the behaviour-level "what" of a system, the 
 
 ### `ki-plans`
 
-Governs the **planning methodology** for code repos — when to write a plan, how it derives from the ROADMAP near-horizon, the `blocks` / `blocked-by` dependency graph, and the quality bar for Steps and Verify. Owns the methodology; the plan format lives in `references/plan-format.md` and the `/plan` command drives the lifecycle. In a KB there is no `docs/plans/` — planning is a `ki-kb-streams` proposal Checklist. Ships a mechanical checker (`audit-plans.ts`).
+Governs the **planning methodology** for code repos — when to write a plan, how it derives from the ROADMAP near-horizon, the `blocks` / `blocked-by` dependency graph, and the quality bar for Steps and Verify. Owns the methodology; the plan format lives in `references/plan-format.md`, and the process skill `ki-plan` drives the lifecycle. In a KB there is no `docs/plans/` — planning is a `ki-kb-streams` proposal Checklist. Ships a mechanical checker (`audit-plans.ts`).
 
 ### `ki-handoffs`
 
 Governs the **handoff doctrine** — plan work once at the top reasoning tier, then write it as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning. Owns the reasoning-layer split, the handoff-spec quality bar (decisions-locked-vs-escalate, a per-unit recommended tier, a cold-model readiness test), and the opt-in marker contract (`handoff: true`). Rides on a host artifact — a `ki-plans` plan or a `ki-kb-streams` proposal Checklist — and off-ramps tier cost/selection to `ki-tokenomics`. Ships a mechanical checker (`audit-handoffs.ts`).
+
+## Process skills
+
+Orthogonal to the six clusters ([ADR-KI-HARNESS-SKILLS-006](../../decisions/ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md)): each drives an action or lifecycle rather than holding a house standard, so neither carries the governance four-file shape or the universal modes.
+
+### `ki-recap`
+
+Drives a live-session recap: **summarise** what happened (changes, decisions, files touched), **surface what is outstanding** (unfinished threads, deferred fixes — a ROADMAP item added this session is "what happened", not outstanding), and **harvest the learnings**, routing each to its proper home (a `CLAUDE.md` learned-pattern entry via `headroom learn`, a skill fix or rubric criterion, a new agent, a hook, memory, or a `ki-plan`/ROADMAP item), confirming before writing anywhere durable. An optional **compress** leg writes a carry-forward digest — true in-context compression is the native / PreCompact-hook path, not something a skill can do. Ships a grounding helper (`scripts/recap-grounding.ts`), not a checker. Installable globally, cross-repo, alongside `ki-bootstrap`.
+
+### `ki-plan`
+
+Drives the **plan lifecycle** for a code repo — `new` / `execute` / `done` / `status` — promoted from the former `/plan` command. Reads the format and methodology from `ki-plans` (which owns the standard) and carries them out: id numbering, the `blocks`/`blocked-by` dependency graph, and ROADMAP sync on `done`. Self-guards on `repo_type = "kb"` (planning there is a `ki-kb-streams` proposal Checklist). Paired deliberately with `ki-plans` — singular verb (drive a plan) beside plural class (govern the class of plans). Installable globally alongside `ki-bootstrap`.
 
 ## Implied families
 
