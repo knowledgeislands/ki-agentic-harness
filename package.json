@@ -3,6 +3,9 @@
   "description": "Knowledge Islands agentic harness — canonical home for Agent Skills, Agents, MCP servers, and Evals across the Knowledge Islands ecosystem.",
   "version": "1.0.0",
   "author": "kris@kris.me.uk",
+  "bin": {
+    "ki-bootstrap": "skills/ki-bootstrap/scripts/bootstrap.ts"
+  },
   "bugs": {
     "url": "https://github.com/knowledgeislands/ki-agentic-harness/issues"
   },
