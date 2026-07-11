@@ -4,21 +4,15 @@ How to bring a repository under Knowledge Islands governance so it **governs its
 
 ## The remote-run transport — the primary path
 
-The canonical, zero-install form runs the chain straight from the harness on GitHub — no clone, no global install — pinned to a ref (default `main`), in the usual `curl | bash` installer idiom:
+The canonical, zero-install form is the `curl | sh` installer idiom — **`cd` into the repo you want to govern**, then run:
 
 ```text
-curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh | bash -s -- <target> [--ref <ref>]
+curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh | sh
 ```
 
-The entry point assumes only bash, curl, and tar: it fetches the harness source tarball at the ref (GitHub's codeload endpoint generates it on demand — no publish step), extracts it to a temp dir, and runs the chain engine from that tree. Bun is required as the mechanical layer's runtime — the engine and every vendored checker are TypeScript — so if it is missing the script fails fast with the install instruction rather than installing a runtime silently.
+It bootstraps the current directory from the harness's `main`. The entry point is POSIX `sh` and assumes only curl and tar: it fetches the harness source tarball (GitHub's codeload endpoint generates it on demand — no publish step), extracts it to a temp dir, and runs the chain engine from that tree. Bun is required as the mechanical layer's runtime — the engine and every vendored checker are TypeScript — so if it is missing the script fails fast with the install instruction rather than installing a runtime silently.
 
-Where bun is already installed, the `bunx` idiom runs the engine directly — the harness `package.json` declares it as the package `bin`:
-
-```text
-bunx github:knowledgeislands/ki-agentic-harness#<ref> <target> --ref <ref>
-```
-
-Pin a sha (or tag) rather than a branch — bunx caches floating git refs, so `#main` can serve a stale checkout, and a `.git`-less extract needs the explicit `--ref` to stamp the manifest correctly.
+There is nothing else to pass in the common case: the target is the current directory and the ref is `main`, which is what you want — re-running keeps the repo current with `main` (see [Keeping current](#keeping-current)). Two escape hatches exist for the rare case that needs them: a positional target other than the cwd and a pinned ref, `… | sh -s -- <target> --ref <sha>`; or, where bun is already installed, `bunx github:knowledgeislands/ki-agentic-harness#<sha> <target> --ref <sha>` (pin a sha — bunx caches floating git refs).
 
 ## What bootstrap does
 

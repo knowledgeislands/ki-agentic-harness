@@ -16,15 +16,17 @@
  * `ki-init` can re-run this chain at the same ref later.
  *
  * Remote transport (ADR-KI-HARNESS-007): the sibling `bootstrap.sh` is the
- * zero-install entry point — it fetches the source tarball at a pinned ref and
- * runs this engine from the extracted tree (Bun cannot execute a module over
- * HTTP, and the entry point must not assume bun is even installed):
- *   curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh \
- *     | bash -s -- <target> [--ref <ref>]
- * Where bun is already installed, the bunx form runs this engine as the
- * package bin directly (pin a sha — bunx caches floating git refs):
- *   bunx github:knowledgeislands/ki-agentic-harness#<ref> <target> --ref <ref>
- * The vendored `.ki-meta/bin/ki-init` wrapper pipes that same script at the
+ * zero-install `curl | sh` entry point — cd into the repo and pipe it to sh; it
+ * fetches the source tarball and runs this engine from the extracted tree (Bun
+ * cannot execute a module over HTTP, and the POSIX entry point does not assume
+ * bun is even installed):
+ *   curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh | sh
+ * Everything after `sh -s --` ripples through to this engine; bootstrap.sh injects
+ * the cwd target and `--ref main` only when absent. Where bun is already installed,
+ * the bunx form runs this engine as the package bin directly (pin a sha — bunx
+ * caches floating git refs):
+ *   bunx github:knowledgeislands/ki-agentic-harness#<sha> <target> --ref <sha>
+ * The vendored `.ki-meta/bin/ki-init` wrapper pipes the same script at the
  * manifest's recorded ref. Skill sources are always read from the engine's own
  * working tree; `--ref` records the ref in the manifest when that tree has no
  * `.git` (a tarball extract).
@@ -126,44 +128,44 @@ process.exit(failed > 0 ? 1 : 0)
 // cd's to the repo root and runs the vendored aggregate. It lives under .ki-meta/bin/ so
 // the whole generated surface is dot-prefixed — off the repo's own bin/ and auto-ignored
 // by dotfile managers (chezmoi). Usage: ./.ki-meta/bin/ki-audit [verb].
-const BIN_KI_AUDIT = `#!/usr/bin/env bash
+const BIN_KI_AUDIT = `#!/bin/sh
 # Vendored by ki-bootstrap — the package.json-free entry to a repo's self-check.
 # Usage: ./.ki-meta/bin/ki-audit [audit|conform|init|help]   (default: audit)
-set -euo pipefail
-root="$(cd "$(dirname "\${BASH_SOURCE[0]}")/../.." && pwd)"
+set -eu
+root="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$root"
 exec bun ".ki-meta/bin/aggregate.ts" "\${1:-audit}"
 `
 
 // The conform twin — same runner, verb pinned, so the write pass is a first-class
 // entry beside ki-audit rather than an argument to it.
-const BIN_KI_CONFORM = `#!/usr/bin/env bash
+const BIN_KI_CONFORM = `#!/bin/sh
 # Vendored by ki-bootstrap — apply the mechanical fixes across the vendored set.
 # Usage: ./.ki-meta/bin/ki-conform
-set -euo pipefail
-root="$(cd "$(dirname "\${BASH_SOURCE[0]}")/../.." && pwd)"
+set -eu
+root="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$root"
 exec bun ".ki-meta/bin/aggregate.ts" conform
 `
 
-// The vendored HELP surface: pure bash over the per-skill help.md snapshots the
-// engine renders at vendor time — readable even on a machine without bun.
-const BIN_KI_HELP = `#!/usr/bin/env bash
+// The vendored HELP surface: pure POSIX shell over the per-skill help.md snapshots
+// the engine renders at vendor time — readable even on a machine without bun.
+const BIN_KI_HELP = `#!/bin/sh
 # Vendored by ki-bootstrap — each governed skill's HELP block, rendered from its
 # SKILL.md at vendor time (re-synced by ki-init).
 # Usage: ./.ki-meta/bin/ki-help [skill]    (no argument: list the governed skills)
-set -euo pipefail
-meta="$(cd "$(dirname "\${BASH_SOURCE[0]}")/.." && pwd)"
-if [[ $# -eq 0 ]]; then
+set -eu
+meta="$(cd "$(dirname "$0")/.." && pwd)"
+if [ $# -eq 0 ]; then
   echo "governed skills (./.ki-meta/bin/ki-help <skill>):"
   for d in "$meta"/skills/*/; do
     s="$(basename "$d")"
-    [[ -f "$d/help.md" ]] && echo "  $s"
+    [ -f "$d/help.md" ] && echo "  $s"
   done
   exit 0
 fi
 f="$meta/skills/$1/help.md"
-if [[ ! -f "$f" ]]; then
+if [ ! -f "$f" ]; then
   echo "no help vendored for '$1'" >&2
   exit 1
 fi
@@ -179,27 +181,28 @@ cat "$f"
 // Network-requiring and idempotent; never invoked automatically (only via `ki-init`
 // or the aggregate's `init` verb).
 function binKiInit(ref: string): string {
-  return `#!/usr/bin/env bash
+  return `#!/bin/sh
 # Vendored by ki-bootstrap — re-runs the remote INIT chain to refresh this repo's
-# vendored scripts. Usage: ./.ki-meta/bin/ki-init [--ref <ref>] [--help]
-set -euo pipefail
+# vendored scripts. Usage: ./.ki-meta/bin/ki-init [--ref <ref>] [--dry-run] [--help]
+set -eu
 DEFAULT_REF="${ref}"
 REPO="knowledgeislands/ki-agentic-harness"
 ref="$DEFAULT_REF"
+pass=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --ref) ref="$2"; shift 2 ;;
     --help|-h)
-      echo "usage: ki-init [--ref <ref>]"
+      echo "usage: ki-init [--ref <ref>] [--dry-run]"
       echo "  re-runs the remote bootstrap chain against this repo at <ref> (default: the ref recorded in .ki-meta/manifest.json, ${ref})"
       exit 0
       ;;
-    *) shift ;;
+    *) pass="$pass $1"; shift ;;
   esac
 done
-root="$(cd "$(dirname "\${BASH_SOURCE[0]}")/../.." && pwd)"
+root="$(cd "$(dirname "$0")/../.." && pwd)"
 echo "re-bootstrapping $root from $REPO@$ref"
-curl -fsSL "https://raw.githubusercontent.com/$REPO/$ref/skills/ki-bootstrap/scripts/bootstrap.sh" | bash -s -- "$root" --ref "$ref"
+curl -fsSL "https://raw.githubusercontent.com/$REPO/$ref/skills/ki-bootstrap/scripts/bootstrap.sh" | sh -s -- "$root" --ref "$ref"$pass
 `
 }
 

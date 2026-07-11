@@ -1,57 +1,65 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # ki-bootstrap zero-install entry point (ADR-KI-HARNESS-007).
 #
-# The canonical remote one-liner — no clone, no global install, no runtime
-# assumed beyond bash/curl/tar:
+# The canonical remote one-liner — cd into the repo you want to govern, then:
 #
-#   curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh \
-#     | bash -s -- <target> [--ref <ref>] [--dry-run]
+#   curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh | sh
 #
-# It fetches the harness source tarball at the pinned ref (default: main),
+# It bootstraps the current directory from the harness's `main`: fetches the
+# source tarball (GitHub codeload — generated on demand, no publish step),
 # extracts it to a temp dir, and runs the chain engine (bootstrap.ts) from that
-# tree, forwarding every argument. Bun is required to *run* the engine and the
-# vendored checkers — it is the mechanical layer's runtime, not the entry
-# point's — so a missing bun fails fast with the install instruction rather
-# than being installed silently.
-set -euo pipefail
+# tree. Bun is required to *run* the engine and the vendored checkers — it is the
+# mechanical layer's runtime, not the entry point's — so a missing bun fails fast
+# with the install instruction rather than being installed silently.
+#
+# Everything after `sh -s --` ripples straight through to the engine, with two
+# defaults injected only when absent: the target (the cwd) and `--ref` (`main`).
+# So the zero-arg pipe is `<cwd> --ref main`, while `… | sh -s -- <target>
+# --ref <sha> --dry-run` all reach bootstrap.ts intact. `ki-init` re-syncs this
+# way, pinning `--ref` to the manifest's recorded ref.
+set -eu
 
 REPO="knowledgeislands/ki-agentic-harness"
 
-# Determine the ref to fetch (default main) without consuming the args — the
-# engine receives them all, and needs --ref itself to stamp the manifest from a
-# .git-less tarball extract.
-ref="main"
-args=("$@")
-for ((i = 0; i < ${#args[@]}; i++)); do
-  if [[ "${args[$i]}" == "--ref" && $((i + 1)) -lt ${#args[@]} ]]; then
-    ref="${args[$((i + 1))]}"
-  fi
-done
-have_ref_flag=false
+# Ripple all args through; detect whether a target and a --ref were supplied so we
+# can inject defaults for the missing ones. A tarball extract has no .git, so the
+# engine cannot derive the ref itself — bootstrap.sh must always hand it one.
+ref=""
+target_seen=0
+prev=""
 for a in "$@"; do
-  [[ "$a" == "--ref" ]] && have_ref_flag=true
+  if [ "$prev" = --ref ]; then
+    ref="$a"
+    prev=""
+    continue
+  fi
+  case "$a" in
+    --ref) prev=--ref ;;
+    -*) prev="" ;;
+    *) target_seen=1 ;;
+  esac
 done
+if [ -z "$ref" ]; then
+  ref=main
+  set -- "$@" --ref main
+fi
+[ "$target_seen" = 1 ] || set -- "$(pwd)" "$@"
 
-for dep in curl tar; do
+for dep in curl tar bun; do
   command -v "$dep" >/dev/null 2>&1 || {
-    echo "error: $dep is required" >&2
+    if [ "$dep" = bun ]; then
+      echo "error: bun is required to run the Knowledge Islands mechanical layer." >&2
+      echo "install it first:  curl -fsSL https://bun.sh/install | bash" >&2
+    else
+      echo "error: $dep is required" >&2
+    fi
     exit 1
   }
 done
-command -v bun >/dev/null 2>&1 || {
-  echo "error: bun is required to run the Knowledge Islands mechanical layer." >&2
-  echo "install it first:  curl -fsSL https://bun.sh/install | bash" >&2
-  exit 1
-}
 
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 
-echo "fetching $REPO@$ref"
+echo "bootstrapping from $REPO@$ref"
 curl -fsSL "https://codeload.github.com/$REPO/tar.gz/$ref" | tar -xz -C "$tmp" --strip-components=1
-
-if [[ "$have_ref_flag" == true ]]; then
-  bun "$tmp/skills/ki-bootstrap/scripts/bootstrap.ts" "$@"
-else
-  bun "$tmp/skills/ki-bootstrap/scripts/bootstrap.ts" "$@" --ref "$ref"
-fi
+bun "$tmp/skills/ki-bootstrap/scripts/bootstrap.ts" "$@"

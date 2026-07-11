@@ -4,8 +4,8 @@
  * delegator: it execs the ki-bootstrap chain engine with this skill as an explicit
  * `--seed`, so running this file bootstraps ki-mcp — plus everything it `implies:`
  * and the baseline — into the target repo, satisfying the self-sufficiency contract
- * (vendored script copies + `ki:<suffix>:{audit,conform}` keys + repo-wide
- * `ki:audit`/`ki:conform`/`ki:init` aggregates). Delegating by subprocess is
+ * (vendored script copies + HELP snapshots + the four `.ki-meta/bin/` wrappers;
+ * no `package.json` — that is ki-engineering's). Delegating by subprocess is
  * composition — running a sibling in sequence — not a cross-skill import, so the
  * skill stays valid standalone (ADR-KI-HARNESS-SKILLS-004).
  *

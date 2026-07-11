@@ -54,5 +54,5 @@ _Verify:_ `bun skills/ki-bootstrap/scripts/audit-vendored.ts <target>` reports P
 
 ## Gaps
 
-- Remote-run transport (the `curl | bash` one-liner over `bootstrap.sh`, and the vendored `ki-init` wrapper that pipes the same script) is documented but not yet exercised by an automated test. The original `bun run <raw-github-url>` form was falsified in the field (Bun cannot execute a module over HTTP) and replaced by the tarball-fetching shell entry point; the engine always sources skills from its own working tree.
+- Remote-run transport (the `curl | sh` one-liner over `bootstrap.sh`, and the vendored `ki-init` wrapper that pipes the same script) is documented but not yet exercised by an automated test. The original `bun run <raw-github-url>` form was falsified in the field (Bun cannot execute a module over HTTP) and replaced by the tarball-fetching POSIX-`sh` entry point; the engine always sources skills from its own working tree.
 - No requirement yet covers the `--all` mode used by the harness itself (link/vendor every skill rather than a coverage subset).
