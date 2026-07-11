@@ -1,6 +1,7 @@
 ---
 name: ki-repo
 implies: [ki-authoring]
+vendors: { audit: scripts/audit-repo.ts, conform: scripts/conform-repo.ts }
 description: >
   Codify, audit, and apply the Knowledge Islands repo standard to any Knowledge Islands–compliant git repo — one that carries a `.ki-config.toml` — not only the `knowledgeislands` org, which is its reference set. Covers the local files (README, LICENSE, .gitignore, .editorconfig), GitHub settings (merge policy, branch, features, topics, visibility, description), and security (secret scanning, Dependabot, Actions). Use when checking whether repos match the standard, bringing one into line, onboarding a new repo, or refreshing the standard against GitHub's surface. Triggers: "audit the repos", "do our repos follow the standard", "apply the repo standard", "enable secret scanning / Dependabot", "refresh the repo standard". Discovers repos from a local tree (github.com-gated) or a whole org via `gh`. Governs repo configuration, not source code. Off-ramps: `ki-authoring` (Markdown/TOML style), `ki-engineering` (toolchain), `ki-harness` (bundle layout).
 argument-hint: 'audit | conform <repo> | help | init <repo> | refresh'

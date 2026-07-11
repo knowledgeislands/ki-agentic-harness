@@ -1,6 +1,7 @@
 ---
 name: ki-tools
 implies: []
+vendors: { audit: scripts/audit-tools.ts }
 description: >
   Audit, conform, or scaffold a Knowledge Islands `tools-*` repo — ONE standalone command-line tool per repo, distributed by a `curl | bash` installer AND a companion Homebrew tap formula. Governs the container SHAPE language-agnostically (bash today, a future Python/Go tool fits): the `bin/<tool>` executable + its exec bit, `install.sh`, versioning + `--version` + `vX.Y.Z` tags, `CHANGELOG.md`, a CI workflow, and capability conditionals (a shell entrypoint needs shellcheck + a bats suite; a `package.json` defers to `ki-engineering`). Triggers: "audit this tool repo", "scaffold a CLI tool", "release a command-line tool", "does this tools- repo follow our standard", "check my tools- repo". Off-ramps: the Homebrew tap + its formula → `ki-homebrew-tap`; GitHub settings and standard files (README, LICENSE) → `ki-repo`; a TS/Bun toolchain (`package.json`) → `ki-engineering`. Container, not contents — it does not judge the tool's internal code quality.
 argument-hint: 'audit <repo> | conform <repo> | help | init <repo> | refresh'

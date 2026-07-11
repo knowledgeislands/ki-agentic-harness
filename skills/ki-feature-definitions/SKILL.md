@@ -1,6 +1,7 @@
 ---
 name: ki-feature-definitions
 implies: []
+vendors: { audit: scripts/audit-features.ts }
 description: >
   Codify, audit, and maintain Feature Definitions — the behaviour-level specification of what a system does — in any Knowledge Islands repo. Definitions live in `docs/features/`, flat one-file-per-area, with an `index.md` that defines the ID scheme and the areas table. Each requirement is a `### <PREFIX>-NNN — title` heading carrying one RFC-2119 (MUST / SHOULD / MAY) statement and a `_Verify:_` test hook; IDs are append-only and never reused; an unnumbered `## Gaps` section holds the backlog. Decisions capture the why (`ki-decision-records`), features capture the what, guides capture the how. Use when writing, auditing, or conforming a feature spec, or seeding one for a repo. Triggers: "write a feature definition", "spec this behaviour", "audit the features", "add a requirement", "what does the system do". Off-ramps: ki-decision-records (the governing decisions a requirement cites), ki-authoring (Markdown/TOML style).
 argument-hint: 'audit [dir] | conform [dir] | help | new <area> "<title>" | refresh'

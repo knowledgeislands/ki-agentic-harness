@@ -58,7 +58,7 @@ Review an agent (or every agent in a directory) against the rubric and report.
 
 ### Well-formed mode definition (INIT)
 
-INIT is one of the universal four (its mechanical half a per-skill `scripts/bootstrap.ts` that scaffolds a new artifact — or brings an off-standard one onto the floor from scratch); a skill-specific mode (e.g. an operational note-op, or OPTIMISE) follows the same definition shape, sitting alongside the four, named and alphabetical in the body. A mode definition states what kind of artifact it produces, the inputs it needs, what it reads before writing, and the output format. Do not name a skill-specific mode AUDIT, CONFORM, INIT, or REFRESH — those are reserved for the universal four.
+INIT is one of the universal four (its mechanical half a per-skill `scripts/init.ts` that scaffolds a new artifact — or brings an off-standard one onto the floor from scratch); a skill-specific mode (e.g. an operational note-op, or OPTIMISE) follows the same definition shape, sitting alongside the four, named and alphabetical in the body. A mode definition states what kind of artifact it produces, the inputs it needs, what it reads before writing, and the output format. Do not name a skill-specific mode AUDIT, CONFORM, INIT, or REFRESH — those are reserved for the universal four.
 
 ```markdown
 ## Mode INIT — write a new agent definition

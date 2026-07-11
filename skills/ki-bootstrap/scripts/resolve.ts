@@ -58,7 +58,7 @@ export function impliesOf(skill: string): string[] {
 }
 
 // Transitive closure of BASELINE + declared skills (+ explicit --seed skills) over
-// the `implies:` graph. A per-skill `scripts/bootstrap.ts` delegator seeds itself.
+// the `implies:` graph. A per-skill `scripts/init.ts` delegator seeds itself.
 export function resolveSet(target: string, all: boolean, seeds: string[]): string[] {
   const seed = all
     ? readdirSync(SKILLS_ROOT, { withFileTypes: true })
@@ -83,6 +83,8 @@ export function resolveSet(target: string, all: boolean, seeds: string[]): strin
 export const isSource = (f: string): boolean => !/\.test\.ts$/.test(f)
 
 // A skill's single checker script (audit-*.ts or lint-*.ts) — discovered, not templated.
+// This is the migration-fallback path: the primary source is the `vendors:`
+// frontmatter declaration below.
 export function checkerScript(skill: string): { verb: 'audit' | 'lint'; file: string } | null {
   const dir = join(skillDir(skill), 'scripts')
   if (!existsSync(dir)) return null
@@ -100,4 +102,69 @@ export function conformScript(skill: string): string | null {
 
 export function scriptKey(skill: string, verb: string): string {
   return `ki:${skill.replace(/^ki-/, '')}:${verb}`
+}
+
+// ── `vendors:` frontmatter (ADR-KI-HARNESS-007) ──────────────────────────────────
+// Per-skill declaration, central execution: each governance skill declares its
+// vendorable mechanical unit(s) beside `implies:`, in a single-line flow mapping:
+//
+//   vendors: { audit: scripts/audit-repo.ts, conform: scripts/conform-repo.ts }
+//   vendors: { audit: "cmd: bun run ki:lint:md:check" }
+//
+// A bare `scripts/...` value is a checker FILE, vendored as a copy. A quoted
+// `"cmd: ..."` value is a COMMAND, vendored as a generated thin wrapper script (no
+// package.json required in the target — the wrapper embeds the command literally).
+// Only `audit` and `conform` verbs are recognised (INIT and HELP do not vendor —
+// ADR-KI-HARNESS-007's Consequences).
+export type VendorUnit = { kind: 'file'; path: string } | { kind: 'command'; command: string }
+export type VendorDecl = Partial<Record<'audit' | 'conform', VendorUnit>>
+
+export function vendorsOf(skill: string): VendorDecl | null {
+  const md = readText(join(skillDir(skill), 'SKILL.md'))
+  const fm = md.match(/^---\r?\n([\s\S]*?)\r?\n---/)
+  if (!fm) return null
+  const line = fm[1].split(/\r?\n/).find((l) => /^vendors:/.test(l))
+  if (!line) return null
+  const inner = line
+    .replace(/^vendors:\s*/, '')
+    .trim()
+    .replace(/^\{/, '')
+    .replace(/\}$/, '')
+    .trim()
+  if (!inner) return null
+  const decl: VendorDecl = {}
+  // Split on top-level commas, respecting quoted command strings (which may not
+  // themselves contain commas today, but this keeps the parse honest either way).
+  const parts = inner.match(/(?:[^,"]+|"[^"]*")+/g) ?? []
+  for (const raw of parts) {
+    const m = raw.trim().match(/^(audit|conform):\s*(.+)$/)
+    if (!m) continue
+    const verb = m[1] as 'audit' | 'conform'
+    let value = m[2].trim()
+    if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1)
+    decl[verb] = value.startsWith('cmd:') ? { kind: 'command', command: value.slice(4).trim() } : { kind: 'file', path: value }
+  }
+  return Object.keys(decl).length ? decl : null
+}
+
+// Resolves a skill's vendorable unit for one verb: the declared `vendors:` entry
+// if present, else the old filename-convention discovery — printing a WARN (never
+// a hard fail) naming the missing declaration, per the ADR's migration fallback.
+export function vendorUnit(skill: string, verb: 'audit' | 'conform'): VendorUnit | null {
+  const declared = vendorsOf(skill)?.[verb]
+  if (declared) return declared
+  if (verb === 'audit') {
+    const legacy = checkerScript(skill)
+    if (!legacy) return null
+    console.error(
+      `${'\x1b[33m'}WARN${'\x1b[0m'}  ${skill} has no \`vendors:\` declaration — falling back to filename-convention discovery (scripts/${legacy.file}). Add \`vendors: { audit: scripts/${legacy.file} }\` to its SKILL.md frontmatter.`
+    )
+    return { kind: 'file', path: `scripts/${legacy.file}` }
+  }
+  const legacy = conformScript(skill)
+  if (!legacy) return null
+  console.error(
+    `${'\x1b[33m'}WARN${'\x1b[0m'}  ${skill} has no \`vendors:\` declaration for conform — falling back to filename-convention discovery (scripts/${legacy}). Add \`vendors: { conform: scripts/${legacy} }\` to its SKILL.md frontmatter.`
+  )
+  return { kind: 'file', path: `scripts/${legacy}` }
 }

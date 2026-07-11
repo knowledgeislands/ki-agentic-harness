@@ -1,6 +1,7 @@
 ---
 name: ki-website
 implies: [ki-website-cloudflare]
+vendors: { audit: scripts/audit-websites.ts }
 description: >-
   Codifies, audits, and enforces the Knowledge Islands static-site standard: Eleventy 3 with Nunjucks and Markdown, TypeScript run natively on Bun, Tailwind 4 in config-less mode with semantic design tokens, and a portable `dist/` output. Use when building a new KI static site, auditing an existing site against the standard, conforming one to the standard, or scaffolding the initial `eleventy.config.ts`, Tailwind token pair, `src/` layout, and SEO wiring. Triggers: "audit my 11ty site", "does this site follow our standard", "scaffold a new 11ty site", "conform this site to KI standard", "build a static site with Eleventy", "my Tailwind build isn't generating any output", "add a page layout". Builds on ki-engineering (the Bun/lint/type/test toolchain) and ki-authoring (Markdown style); for deploying the built `dist/` to Cloudflare use ki-website-cloudflare. Not for Astro, Next, or other frameworks.
 argument-hint: 'audit <repo> | conform <repo> | help | init <repo> | refresh'

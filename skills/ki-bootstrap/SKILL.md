@@ -1,6 +1,7 @@
 ---
 name: ki-bootstrap
 implies: [ki-repo]
+vendors: { audit: scripts/audit-vendored.ts }
 description: >
   Bootstraps a Knowledge Islands repo into governance two ways: it runs the INIT chain that vendors each declared skill's checkers into the repo's `.ki-meta/`, so it self-governs via `./.ki-meta/bin/ki-audit` with zero skills installed and no `package.json` of its own; and it links the repo's project-local skills (`.claude/skills/`) from its `.ki-config.toml` so the right skills load in-session. Use when bootstrapping a fresh or legacy repo, making a repo self-govern, setting up or auditing skill links, or adding the `ki:audit` / `ki:skills:link:project` conventions. Triggers: "bootstrap this repo", "make this repo self-govern", "set up this repo's skills", "migrate this legacy repo", "why aren't my skills loading in this repo". This is the install keystone — the one knowledgeislands skill kept installed globally, so any repo can self-wire from the remote source. For the `.ki-config.toml` contents, the coverage cascade, and GitHub settings use `ki-repo`; for the harness's five-part layout use `ki-harness`.
 argument-hint: 'help | init [target] | audit [path] | conform [path] | refresh'
@@ -41,7 +42,7 @@ bun scripts/bootstrap.ts <target-repo> [--new | --legacy | --tracking] [--dry-ru
 
 **Aggressiveness flags** are three strengths of the one chain, not a separate orchestrator: `--new` (default) INIT only; `--legacy` INIT then a full `ki:conform` pass (the migration path off old formats); `--tracking` INIT then `ki:audit` (report drift only).
 
-**Per-skill delegators.** Every other skill owns a `scripts/bootstrap.ts` that is a thin delegator — it execs this engine with itself as an explicit `--seed`, so running one skill's INIT brings that skill (plus its `implies:` closure and the baseline) under governance. Delegating by subprocess is composition, not a cross-skill import, so each skill keeps a concrete INIT and stays valid standalone.
+**Per-skill delegators.** Every other skill owns a `scripts/init.ts` that is a thin delegator — it execs this engine with itself as an explicit `--seed`, so running one skill's INIT brings that skill (plus its `implies:` closure and the baseline) under governance. Delegating by subprocess is composition, not a cross-skill import, so each skill keeps a concrete INIT and stays valid standalone.
 
 ## Mode AUDIT — check a repo's project-local skills and agents
 

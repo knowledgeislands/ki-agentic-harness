@@ -44,7 +44,8 @@
  * Exit code is non-zero if any repo has a FAIL.
  */
 import { execFileSync } from 'node:child_process'
-import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
 // ── the standard (keep in sync with references/repo-standard.md) ──────
@@ -547,8 +548,57 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
   return f
 }
 
+// ── vendor-integrity (ADR-KI-HARNESS-007) ─────────────────────────────────────
+// Offline, local-disk check independent of the GitHub-based checks above: a
+// bootstrapped repo's vendored `.ki-meta/skills/**` copies (+ the aggregate
+// runner) must match the sha256 recorded in `.ki-meta/manifest.json` at vendor
+// time. A mismatch means tampered or partially re-vendored files (FAIL). A repo
+// that carries `.ki-meta/` but no manifest predates the manifest contract
+// (migration WARN). Staleness against the remote harness ref is deliberately NOT
+// checked here — that would require network access; this check stays usable with
+// zero connectivity (ADR-KI-HARNESS-007's Consequences: "offline-safe").
+function localIntegrityFindings(dir: string): Finding[] {
+  const { f, fail, warn } = mk()
+  const metaDir = join(dir, '.ki-meta')
+  if (!existsSync(metaDir)) return f // no vendored surface — nothing to check
+  const manifestPath = join(metaDir, 'manifest.json')
+  if (!existsSync(manifestPath)) {
+    warn(
+      'vendor-integrity',
+      '.ki-meta/ present but no manifest.json — re-bootstrap (ki-init) to migrate to the manifest-based drift contract'
+    )
+    return f
+  }
+  let manifest: { ref?: string; files?: Record<string, string> }
+  try {
+    manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
+  } catch {
+    fail('vendor-integrity', '.ki-meta/manifest.json is not valid JSON')
+    return f
+  }
+  const missing: string[] = []
+  const mismatched: string[] = []
+  for (const [rel, expected] of Object.entries(manifest.files ?? {})) {
+    const abs = join(dir, rel)
+    if (!existsSync(abs)) {
+      missing.push(rel)
+      continue
+    }
+    const actual = createHash('sha256').update(readFileSync(abs)).digest('hex')
+    if (actual !== expected) mismatched.push(rel)
+  }
+  if (missing.length)
+    fail('vendor-integrity', `manifest file(s) missing on disk: ${missing.join(', ')} — re-run ./.ki-meta/bin/ki-init to restore`)
+  if (mismatched.length)
+    fail(
+      'vendor-integrity',
+      `vendored file(s) do not match the manifest hash (tampered or partially re-vendored): ${mismatched.join(', ')} — re-run ./.ki-meta/bin/ki-init to restore`
+    )
+  return f
+}
+
 // ── discovery ────────────────────────────────────────────────────────────────
-type Target = { label: string; nameWithOwner: string | null; note?: string }
+type Target = { label: string; nameWithOwner: string | null; dir?: string; note?: string }
 const GH_REMOTE = /github\.com[:/]([^/]+)\/(.+?)(?:\.git)?$/
 const gitOrigin = (dir: string): string | null => {
   try {
@@ -575,7 +625,7 @@ function localTargets(path: string): Target[] {
   return dirs.map((dir) => {
     const label = dir.split('/').pop() ?? dir
     const m = gitOrigin(dir)?.match(GH_REMOTE)
-    return m ? { label, nameWithOwner: `${m[1]}/${m[2]}` } : { label, nameWithOwner: null, note: 'origin not on github.com' }
+    return m ? { label, nameWithOwner: `${m[1]}/${m[2]}`, dir } : { label, nameWithOwner: null, dir, note: 'origin not on github.com' }
   })
 }
 function orgTargets(org: string): Target[] {
@@ -635,10 +685,20 @@ let totalFails = 0
 let totalWarns = 0
 let ghSkipped = 0
 for (const t of targets) {
+  // Offline, local-disk vendor-integrity check — independent of GitHub reachability,
+  // so it still runs for a target with no github.com origin (or none at all).
+  const localFindings = t.dir ? localIntegrityFindings(t.dir) : []
   if (!t.nameWithOwner) {
     ghSkipped++
     all.push({ level: 'NA', area: t.label, msg: t.note ?? '' })
-    if (!jsonOut) console.log(`\n${paint(C.dim, 'NA')}  ${paint(C.cyan, t.label)} ${paint(C.dim, `— ${t.note}`)}`)
+    for (const x of localFindings) all.push({ level: x.level, area: `${t.label}:${x.check}`, msg: x.msg })
+    totalFails += localFindings.filter((x) => x.level === 'FAIL').length
+    totalWarns += localFindings.filter((x) => x.level === 'WARN').length
+    if (!jsonOut) {
+      console.log(`\n${paint(C.dim, 'NA')}  ${paint(C.cyan, t.label)} ${paint(C.dim, `— ${t.note}`)}`)
+      for (const x of localFindings)
+        console.log(`  ${paint(x.level === 'FAIL' ? C.red : C.yellow, x.level.toLowerCase())} ${paint(C.dim, `[${x.check}]`)} ${x.msg}`)
+    }
     continue
   }
   let findings: Finding[]
@@ -651,9 +711,12 @@ for (const t of targets) {
     const signals: Signals = { root: files, tree: treePaths(t.nameWithOwner, branch), pkg: readPkg(t.nameWithOwner, files) }
     // overrides are applied inside auditRepo: a not-enforced check simply does not fail
     // and is reported as INFO. No post-filtering here.
-    findings = auditRepo(r, files, ki, kiText, signals)
+    findings = [...auditRepo(r, files, ki, kiText, signals), ...localFindings]
   } catch {
-    findings = [{ level: 'FAIL', check: 'access', msg: `could not read ${t.nameWithOwner} via gh (missing repo or insufficient scope)` }]
+    findings = [
+      { level: 'FAIL', check: 'access', msg: `could not read ${t.nameWithOwner} via gh (missing repo or insufficient scope)` },
+      ...localFindings
+    ]
   }
   const fails = findings.filter((x) => x.level === 'FAIL')
   const warns = findings.filter((x) => x.level === 'WARN')
