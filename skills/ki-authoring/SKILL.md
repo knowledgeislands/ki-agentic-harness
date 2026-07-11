@@ -28,7 +28,7 @@ Like every governance skill it carries the universal **AUDIT · CONFORM · INIT 
 
 ### Mode AUDIT — check a document against house style
 
-1. **Run the mechanical checker** — `bun scripts/audit-authoring.ts <repo-path>` (or `bun run ki:authoring:audit <repo-path>` at the harness root). It delegates to `bun run ki:lint:md:check` (Prettier + markdownlint) and surfaces the judgment-layer `[J]` criteria as ADVISORY findings so they are named and visible in CI even though they require a reviewer. Exit code is non-zero on any FAIL.
+1. **Run the mechanical checker** — `bun scripts/audit-authoring.ts <repo-path>` (or `bun run ki:authoring:audit <repo-path>` at the harness root). It runs Prettier + markdownlint directly — the same command `ki:lint:md:check` wraps for convenience — so the check is self-sufficient in any repo, with or without `ki-engineering`/`package.json`. It also surfaces the judgment-layer `[J]` criteria as ADVISORY findings so they are named and visible in CI even though they require a reviewer. Exit code is non-zero on any FAIL.
 2. Apply the **judgment** (`[J]`) criteria from [the rubric](references/audit-rubric.md) — the ADVISORY findings from step 1 name each one. Wide tables that should spill to footnotes, non-descriptive link text, a `.ki-config.toml` that reads poorly. TOML has no mechanical pass — the rubric is all of it.
 3. **Report** by location → criterion → fix; lead with FAIL findings, then judgment findings.
 

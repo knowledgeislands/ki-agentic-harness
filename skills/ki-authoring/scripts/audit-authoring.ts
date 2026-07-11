@@ -4,8 +4,9 @@
  *
  *   bun scripts/audit-authoring.ts <repo-path>
  *
- * Mechanical half: delegates to `bun run ki:lint:md:check` (Prettier + markdownlint-cli2)
- * so every check the toolchain enforces is surfaced here without duplication.
+ * Mechanical half: invokes Prettier + markdownlint-cli2 directly (the same
+ * command `ki:lint:md:check` wraps for convenience) so this check is
+ * self-sufficient — it never depends on package.json or ki-engineering.
  *
  * Judgment half: surfaces the [J] criteria from references/audit-rubric.md as
  * ADVISORY findings. These cannot be automated — a reader must assess them.
@@ -43,33 +44,19 @@ const read = (...p: string[]): string => {
   }
 }
 
-// ── mechanical: run ki:lint:md:check via the repo's toolchain ────────────────────
-// We require the repo to have package.json with a ki:lint:md:check script;
-// if it does, we exec it and surface success or failure as a single finding.
-let pkg: Record<string, unknown> = {}
-try {
-  pkg = JSON.parse(read('package.json'))
-} catch {
-  add('WARN', 'toolchain', 'package.json missing or unparseable — cannot run ki:lint:md:check')
-}
-const scripts = (pkg.scripts ?? {}) as Record<string, string>
-const name = String(pkg.name ?? basename(repo))
+// ── mechanical: run Prettier + markdownlint-cli2 directly ────────────────────
+// Self-sufficient — no package.json / ki-engineering dependency. Mirrors the
+// exact command package.json's "ki:lint:md:check" wraps for convenience.
+const name = basename(repo)
+const MD_CHECK_CMD = 'bunx prettier --check "**/*.md" --ignore-path .gitignore && bunx markdownlint-cli2 "**/*.md"'
 
-if (!scripts['ki:lint:md:check']) {
-  add(
-    'WARN',
-    'toolchain',
-    'no "ki:lint:md:check" script in package.json — Markdown mechanical gate not wired (ki-engineering owns the canonical form)'
-  )
-} else {
-  try {
-    execSync('bun run ki:lint:md:check', { cwd: repo, stdio: ['pipe', 'pipe', 'pipe'], encoding: 'utf8' })
-    add('PASS', 'md-mech', 'ki:lint:md:check passed — Prettier + markdownlint clean (MD-mech)')
-  } catch (err) {
-    const out = (err as { stdout?: string; stderr?: string }).stdout ?? ''
-    const detail = out.trim().split('\n').slice(0, 8).join('\n    ')
-    add('FAIL', 'md-mech', `ki:lint:md:check failed — run "bun run ki:lint:md" to fix (MD-mech)\n    ${detail}`)
-  }
+try {
+  execSync(MD_CHECK_CMD, { cwd: repo, stdio: ['pipe', 'pipe', 'pipe'], encoding: 'utf8' })
+  add('PASS', 'md-mech', 'Prettier + markdownlint clean (MD-mech)')
+} catch (err) {
+  const out = (err as { stdout?: string; stderr?: string }).stdout ?? ''
+  const detail = out.trim().split('\n').slice(0, 8).join('\n    ')
+  add('FAIL', 'md-mech', `Markdown mechanical check failed — run "bun run ki:lint:md" to fix (MD-mech)\n    ${detail}`)
 }
 
 // ── mechanical: .prettierrc.json printWidth ────────────────────────────────────
