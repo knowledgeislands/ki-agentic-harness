@@ -17,11 +17,15 @@
  * `ki:<suffix>:{audit,conform}` npm keys and the repo-wide `ki:audit` /
  * `ki:conform` / `ki:init` aggregates as convenience aliases over the same runner.
  *
- * Remote transport (ADR-KI-HARNESS-007): run straight from GitHub with no local
- * install —
- *   bun run https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/<ref>/skills/ki-bootstrap/scripts/bootstrap.ts <target>
- * When run from a raw URL the skill sources are fetched from the same ref; when
- * run locally they are read from the harness working tree.
+ * Remote transport (ADR-KI-HARNESS-007): Bun cannot execute a module over HTTP,
+ * so the zero-install form fetches the source tarball at a pinned ref and runs
+ * the chain as a local working tree —
+ *   t="$(mktemp -d)" && curl -fsSL "https://codeload.github.com/knowledgeislands/ki-agentic-harness/tar.gz/<ref>" \
+ *     | tar -xz -C "$t" --strip-components=1 && bun "$t/skills/ki-bootstrap/scripts/bootstrap.ts" <target> --ref <ref>
+ * The vendored `.ki-meta/bin/ki-init` wrapper is exactly this one-liner at the
+ * manifest's recorded ref. Skill sources are always read from the engine's own
+ * working tree; `--ref` records the ref in the manifest when that tree has no
+ * `.git` (a tarball extract).
  *
  * Aggressiveness flags (one chain, three strengths):
  *   (default / --new)  INIT only — vendor + keys + aggregates.
@@ -135,8 +139,10 @@ cd "$root"
 exec bun ".ki-meta/bin/aggregate.ts" "\${1:-audit}"
 `
 
-// The re-bootstrap wrapper: re-runs the remote chain one-liner at the ref recorded
-// in the manifest (ADR-KI-HARNESS-007) — `--ref <ref>` overrides to move forward.
+// The re-bootstrap wrapper: re-runs the chain at the ref recorded in the manifest
+// (ADR-KI-HARNESS-007) — `--ref <ref>` overrides to move forward. Bun cannot run a
+// module over HTTP, so the transport is the source tarball at the pinned ref,
+// extracted to a temp dir and run as a local working tree.
 // Network-requiring and idempotent; never invoked automatically (only via `ki-init`
 // or the aggregate's `init` verb).
 function binKiInit(ref: string): string {
@@ -159,9 +165,11 @@ while [ $# -gt 0 ]; do
   esac
 done
 root="$(cd "$(dirname "\${BASH_SOURCE[0]}")/../.." && pwd)"
-url="https://raw.githubusercontent.com/$REPO/$ref/skills/ki-bootstrap/scripts/bootstrap.ts"
-echo "re-bootstrapping $root from $url"
-exec bun run "$url" "$root"
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+echo "re-bootstrapping $root from $REPO@$ref"
+curl -fsSL "https://codeload.github.com/$REPO/tar.gz/$ref" | tar -xz -C "$tmp" --strip-components=1
+bun "$tmp/skills/ki-bootstrap/scripts/bootstrap.ts" "$root" --ref "$ref"
 `
 }
 
@@ -247,13 +255,18 @@ function sha256File(path: string): string {
 
 function main(): void {
   const argv = process.argv.slice(2)
-  // Pull `--seed <skill>` (repeatable) out first so its value is not mistaken for
-  // the positional target. A per-skill delegator passes `--seed <self>`.
+  // Pull the value-taking flags out first so their values are not mistaken for
+  // the positional target: `--seed <skill>` (repeatable — a per-skill delegator
+  // passes `--seed <self>`) and `--ref <ref>` (passed by `ki-init` so a tarball
+  // extract with no .git still stamps the manifest with the ref it ran at).
   const seeds: string[] = []
   const rest: string[] = []
+  let refOverride: string | undefined
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--seed' && argv[i + 1]) {
       seeds.push(argv[++i])
+    } else if (argv[i] === '--ref' && argv[i + 1]) {
+      refOverride = argv[++i]
     } else {
       rest.push(argv[i])
     }
@@ -279,7 +292,7 @@ function main(): void {
   // Vendor the aggregate runner + the package.json-free entry points — both under
   // .ki-meta/ so the whole generated surface is dot-prefixed (off the repo's own bin/,
   // auto-ignored by chezmoi).
-  const ref = harnessRef()
+  const ref = refOverride ?? harnessRef()
   const aggRel = join(VENDOR_DIR, 'bin', 'aggregate.ts')
   const auditBinRel = join(VENDOR_DIR, 'bin', 'ki-audit')
   const initBinRel = join(VENDOR_DIR, 'bin', 'ki-init')

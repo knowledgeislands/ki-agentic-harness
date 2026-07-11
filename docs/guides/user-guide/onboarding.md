@@ -59,13 +59,13 @@ Use `--tracking` instead to run INIT and then a read-only `ki:audit` — report 
 
 ## The remote-run transport
 
-The canonical, zero-install form runs the chain straight from the harness on GitHub — no clone, no global install — pinned to a ref:
+The canonical, zero-install form runs the chain straight from the harness on GitHub — no clone, no global install — pinned to a ref. Bun cannot execute a module over HTTP, so the transport fetches the source tarball at the ref and runs the chain as a local working tree:
 
 ```text
-bun run https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/<ref>/skills/ki-bootstrap/scripts/bootstrap.ts <target>
+t="$(mktemp -d)" && curl -fsSL "https://codeload.github.com/knowledgeislands/ki-agentic-harness/tar.gz/<ref>" | tar -xz -C "$t" --strip-components=1 && bun "$t/skills/ki-bootstrap/scripts/bootstrap.ts" <target> --ref <ref>
 ```
 
-A single skill's INIT is reachable the same way through its own `scripts/init.ts`, which seeds that skill (plus its `implies:` closure) into the target. This is the primary path for both a greenfield repo and a legacy migration: the mechanics and the vendored result are identical to a local run.
+A single skill's INIT is reachable the same way through its own `scripts/init.ts` in the extracted tree, which seeds that skill (plus its `implies:` closure) into the target. This is the primary path for both a greenfield repo and a legacy migration: the mechanics and the vendored result are identical to a local run.
 
 ## Day-to-day, once governed
 

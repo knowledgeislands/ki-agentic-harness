@@ -40,9 +40,9 @@ _Verify:_ after bootstrap, `.ki-meta/bin/ki-audit` exists, is executable (mode `
 
 ### BOOT-005 — Per-skill INIT delegators
 
-Every governance skill MUST own a `scripts/bootstrap.ts` that delegates to the `ki-bootstrap` chain engine with itself as an explicit `--seed`, delegating by subprocess (composition), not by cross-skill import, per [ADR-KI-HARNESS-SKILLS-004](../decisions/ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md).
+Every governance skill MUST own a `scripts/init.ts` that delegates to the `ki-bootstrap` chain engine with itself as an explicit `--seed`, delegating by subprocess (composition), not by cross-skill import, per [ADR-KI-HARNESS-SKILLS-004](../decisions/ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md).
 
-_Verify:_ each `skills/*/scripts/bootstrap.ts` execs `../../ki-bootstrap/scripts/bootstrap.ts` and passes `--seed <its own name>`.
+_Verify:_ each `skills/*/scripts/init.ts` execs `../../ki-bootstrap/scripts/bootstrap.ts` and passes `--seed <its own name>`.
 
 ### BOOT-006 — Aggressiveness flags
 
@@ -58,5 +58,5 @@ _Verify:_ `bun skills/ki-bootstrap/scripts/audit-vendored.ts <target>` reports P
 
 ## Gaps
 
-- Remote-run transport (`bun run <raw-github-url>`) is documented but not yet exercised by an automated test; the engine currently sources skills from the local working tree.
+- Remote-run transport (the tarball one-liner and the vendored `ki-init` wrapper) is documented but not yet exercised by an automated test. The original `bun run <raw-github-url>` form was falsified in the field (Bun cannot execute a module over HTTP) and replaced by the tarball transport; the engine always sources skills from its own working tree.
 - No requirement yet covers the `--all` mode used by the harness itself (link/vendor every skill rather than a coverage subset).
