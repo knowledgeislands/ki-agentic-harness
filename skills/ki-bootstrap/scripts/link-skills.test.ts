@@ -64,6 +64,27 @@ try {
   rmSync(clean, { recursive: true, force: true })
 }
 
+// ── No package.json → BOOT-2/BOOT-5 are N/A (not WARN) ──
+const noPkg = fixture(['ki-kb'])
+try {
+  const { out } = runCheck(noPkg)
+  check('no package.json → no BOOT-2 line', !out.includes('BOOT-2'))
+  check('no package.json → no BOOT-5 line', !out.includes('BOOT-5'))
+} finally {
+  rmSync(noPkg, { recursive: true, force: true })
+}
+
+// ── package.json present but scriptless → BOOT-2/BOOT-5 WARN again ──
+const withPkg = fixture(['ki-kb'])
+try {
+  writeFileSync(join(withPkg, 'package.json'), '{\n  "name": "t",\n  "scripts": {}\n}\n')
+  const { out } = runCheck(withPkg)
+  check('package.json present → BOOT-2 warns', out.includes('BOOT-2'))
+  check('package.json present → BOOT-5 warns', out.includes('BOOT-5'))
+} finally {
+  rmSync(withPkg, { recursive: true, force: true })
+}
+
 if (failed) {
   console.log('\n\x1b[31mlink-skills.test.ts: failures\x1b[0m')
   process.exit(1)

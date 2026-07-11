@@ -221,16 +221,25 @@ function cmdCheck(target: string, set: string[], orphans: string[]): number {
       findings.push({ severity: 'WARN', criterion: 'BOOT-1', message: `dangling links (harness not reachable): ${broken.join(', ')}` })
   }
 
-  const pkgText = readText(join(target, 'package.json'))
-  findings.push(
-    hasScript(pkgText, 'ki:skills:link:project')
-      ? { severity: 'PASS', criterion: 'BOOT-2', message: 'package.json has a ki:skills:link:project script' }
-      : {
-          severity: 'WARN',
-          criterion: 'BOOT-2',
-          message: 'no ki:skills:link:project script in package.json — links are not reproducible on clone'
-        }
-  )
+  // BOOT-2 and BOOT-5 hang npm scripts on package.json. A repo with no package.json
+  // is legitimately package.json-free (engineering is coverage-detected, not implied —
+  // see ki-repo's cascade); its links are reproduced by re-running the keystone linker
+  // and its checkers run via .ki-meta/bin/ki-audit, neither of which needs a script
+  // wrapper. So both are N/A there — WARNing would nag a pure non-code repo toward the
+  // node ecosystem. They apply only once a package.json exists.
+  const hasPkg = existsSync(join(target, 'package.json'))
+  const pkgText = hasPkg ? readText(join(target, 'package.json')) : ''
+  if (hasPkg) {
+    findings.push(
+      hasScript(pkgText, 'ki:skills:link:project')
+        ? { severity: 'PASS', criterion: 'BOOT-2', message: 'package.json has a ki:skills:link:project script' }
+        : {
+            severity: 'WARN',
+            criterion: 'BOOT-2',
+            message: 'no ki:skills:link:project script in package.json — links are not reproducible on clone'
+          }
+    )
+  }
 
   findings.push(
     gitignoresPath(readText(join(target, '.gitignore')), '.claude/skills')
@@ -238,25 +247,27 @@ function cmdCheck(target: string, set: string[], orphans: string[]): number {
       : { severity: 'WARN', criterion: 'BOOT-3', message: '.claude/skills/ is not gitignored — generated links would be committed' }
   )
 
-  const missingKeys: string[] = []
-  for (const skill of set) {
-    const checker = discoverCheckerScript(skill)
-    if (checker && !hasScript(pkgText, scriptKey(skill, checker.verb))) missingKeys.push(scriptKey(skill, checker.verb))
-    const conform = discoverConformScript(skill)
-    if (conform && !hasScript(pkgText, scriptKey(skill, 'conform'))) missingKeys.push(scriptKey(skill, 'conform'))
-  }
-  if (missingKeys.length === 0) {
-    findings.push({
-      severity: 'PASS',
-      criterion: 'BOOT-5',
-      message: 'every linked skill with a checker/conform script has a matching package.json script'
-    })
-  } else {
-    findings.push({
-      severity: 'WARN',
-      criterion: 'BOOT-5',
-      message: `missing scripts: ${missingKeys.join(', ')} — run \`ki:skills:link:project\``
-    })
+  if (hasPkg) {
+    const missingKeys: string[] = []
+    for (const skill of set) {
+      const checker = discoverCheckerScript(skill)
+      if (checker && !hasScript(pkgText, scriptKey(skill, checker.verb))) missingKeys.push(scriptKey(skill, checker.verb))
+      const conform = discoverConformScript(skill)
+      if (conform && !hasScript(pkgText, scriptKey(skill, 'conform'))) missingKeys.push(scriptKey(skill, 'conform'))
+    }
+    if (missingKeys.length === 0) {
+      findings.push({
+        severity: 'PASS',
+        criterion: 'BOOT-5',
+        message: 'every linked skill with a checker/conform script has a matching package.json script'
+      })
+    } else {
+      findings.push({
+        severity: 'WARN',
+        criterion: 'BOOT-5',
+        message: `missing scripts: ${missingKeys.join(', ')} — run \`ki:skills:link:project\``
+      })
+    }
   }
 
   for (const f of findings) {
