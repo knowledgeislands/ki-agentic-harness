@@ -20,7 +20,7 @@ Onboarding is **INIT**. The other three are the day-to-day loop once a repo is g
 For every skill in the resolved set — the baseline (`ki-repo`, `ki-authoring`), plus every `[ki-<skill>]` table the target declares in its `.ki-config.toml`, plus their `implies:` closure — INIT:
 
 1. **vendors copies** of the skill's checker scripts into the target's `.ki-meta/skills/<skill>/` (copies, not symlinks, so they run standalone);
-2. **writes** the package.json-free runner — a `.ki-meta/bin/aggregate.ts` that discovers those copies and fans out over them, plus a `.ki-meta/bin/ki-audit` wrapper that invokes it;
+2. **writes** the package.json-free runner — a `.ki-meta/bin/aggregate.ts` that discovers those copies and fans out over them, plus a `.ki-meta/bin/ki-audit` wrapper that invokes it and a `.ki-meta/bin/ki-init` wrapper for later re-syncs — and **stamps** a vendoring manifest (`.ki-meta/manifest.json`: the harness ref plus a hash per vendored file);
 3. **where the target has a `package.json`**, additionally installs that skill's `ki:<suffix>:{audit,conform}` keys and the repo-wide `ki:audit` / `ki:conform` / `ki:init` aggregates as convenience aliases over the same runner.
 
 After INIT the repo governs itself with `./.ki-meta/bin/ki-audit` — no `package.json` and **no skills installed anywhere** required. A `.ki-meta/` is dot-prefixed and generated-not-authored, so it stays off the repo's own `scripts/`.
@@ -65,12 +65,13 @@ The canonical, zero-install form runs the chain straight from the harness on Git
 bun run https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/<ref>/skills/ki-bootstrap/scripts/bootstrap.ts <target>
 ```
 
-A single skill's INIT is reachable the same way through its own `scripts/bootstrap.ts`, which seeds that skill (plus its `implies:` closure) into the target. This is the primary path for both a greenfield repo and a legacy migration: the mechanics and the vendored result are identical to a local run.
+A single skill's INIT is reachable the same way through its own `scripts/init.ts`, which seeds that skill (plus its `implies:` closure) into the target. This is the primary path for both a greenfield repo and a legacy migration: the mechanics and the vendored result are identical to a local run.
 
 ## Day-to-day, once governed
 
 - `./.ki-meta/bin/ki-audit` (or `bun run ki:audit` where a `package.json` exists) — report drift across every governed skill (the aggregate).
 - `./.ki-meta/bin/ki-audit conform` (or `bun run ki:conform`) — apply the mechanical fixes.
 - `bun run ki:<skill>:audit` — audit one concern (e.g. `ki:repo:audit`), where the `package.json` keys are wired.
+- `./.ki-meta/bin/ki-init` (or `bun run ki:init`) — re-sync the vendored copies by re-running the chain at the ref recorded in the manifest (flag to move to a newer ref).
 
-Re-running the chain (or `ki:conform`) re-syncs the vendored script copies, so a standard's REFRESH propagates to the target on its next run.
+Drift in the vendored copies is handled by the manifest: the audit detects it — offline integrity against the per-file hashes, staleness against the recorded ref when the source is reachable — and conform only prints the advisory ("stale — re-run INIT"), never re-syncs. The repair is the idempotent `ki-init` re-run; that is how a standard's REFRESH propagates to a governed target.
