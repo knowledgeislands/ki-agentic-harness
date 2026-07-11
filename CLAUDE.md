@@ -71,6 +71,10 @@ _~400 tokens/session saved_
 
 - Subagent auto-mode blocks reads of `~/.claude.json` and `~/.claude/settings.json` with a "Credential Exploration" error. Do not attempt these in audit or tool subagents. Use project-local `.ki-config.toml` or `.claude/settings.json` within the repo scope for any config lookups.
 
+### Subagent orchestration resilience
+
+- Subagents can die mid-brief on the account **session limit** ("You've hit your session limit"). Resume via `SendMessage` to the **raw agent ID** from the Agent tool result — the assigned `name` can be unreachable after the death. Structure long programmes as **commit-per-deliverable** so an agent death or compaction loses only the in-flight leg.
+
 ### GitHub CLI limitations
 
 _~200 tokens/session saved_
@@ -88,6 +92,7 @@ _~200 tokens/session saved_
 _~8,000 tokens/session saved_
 
 - `skills/ki-kb/SKILL.md` (~500 lines, ~20 KB) and `skills/ki-kb-streams/SKILL.md` (~500 lines, ~20 KB) are the two largest skill files. Read only when working directly on those skills.
+- `skills/ki-skills/references/audit-rubric.md` and `skills/ki-skills/references/agent-skills-standard.md` are also large and repeatedly re-read across compactions. Read once, targeted by section (offset/limit or grep for the criterion code); never re-read whole after a compaction unless editing them.
 - `README.md` at the harness root is ~30 KB. For structural surveys, prefer `ls` + `cat package.json` + `cat .ki-config.toml` instead.
 
 ### Audit script paths
