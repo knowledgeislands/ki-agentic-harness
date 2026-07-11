@@ -14,7 +14,7 @@ _Verify:_ `ki-engineering`'s enforcement-framework §5 lists the four modes, and
 
 ### GOV-002 — Mechanical-first, LLM-optional
 
-Each skill's mechanical criteria MUST be executable as a CLI checker with no LLM, exiting non-zero on any FAIL, per [ADR-KI-HARNESS-004](../decisions/ADR-KI-HARNESS-004-mechanical-first-llm-optional.md).
+Each skill's mechanical criteria MUST be executable as a CLI checker with no LLM, exiting non-zero on any FAIL, per [ADR-KI-HARNESS-004](../decisions/ADR-KI-HARNESS-004-mechanical-first-progressive-enhancement.md).
 
 _Verify:_ every artifact skill ships a `scripts/audit-*.ts` (or `lint-*.ts`) that runs standalone under `bun` and returns a non-zero exit on FAIL-severity findings.
 

@@ -27,7 +27,7 @@ The records are living, compact, and independent. The order below is a **curated
 2. [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-purpose-scope-structure.md) — the purpose, scope, and structure of the repository (its bundle layout).
 3. [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-naming-model-and-harness-as-source.md) — the `ki-` naming model and harness-as-source vs plugin-as-projection.
 4. [ADR-KI-HARNESS-SKILLS-001](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) — the universal INIT / AUDIT / CONFORM / REFRESH modes.
-5. [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-mechanical-first-llm-optional.md) — mechanical-first, LLM-optional operation.
+5. [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-mechanical-first-progressive-enhancement.md) — mechanical-first; agent judgment progressively enhances.
 6. [SDR-KI-HARNESS-001](SDR-KI-HARNESS-001-runtime-portable-contracts.md) — runtime-portable contracts, executor positioning (Claude Code now, Hermes next, Pi as conformance test), and the best-tool-for-the-job tenet.
 7. [ADR-KI-HARNESS-SKILLS-002](ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md) — the mechanical/judgment checker split.
 8. [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-composition-over-extension.md) — composition over extension, the principle no skill may break.

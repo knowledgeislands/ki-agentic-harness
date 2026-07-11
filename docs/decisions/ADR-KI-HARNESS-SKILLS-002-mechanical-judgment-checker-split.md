@@ -11,7 +11,7 @@ Governance audits required both deterministic checks (file exists, field is non-
 Every governance skill's AUDIT is split into two layers:
 
 - **Mechanical [M]** — a TypeScript/Bun checker in `scripts/audit-<concern>.ts` runs all deterministic criteria, emits findings on the unified severity ladder, and exits non-zero on any FAIL. The AUDIT mode runs the checker first and captures its output verbatim — never re-derives what the checker already found.
-- **Judgment [J]** — the reader/agent applies criteria the checker cannot decide deterministically (prose quality, altitude, collision assessment). These are surfaced inline in the checker output as ADVISORY where the checker can point at the specific criterion.
+- **Judgment [J]** — an agent — human or LLM — applies criteria the checker cannot decide deterministically (prose quality, altitude, collision assessment). These are surfaced inline in the checker output as ADVISORY where the checker can point at the specific criterion.
 
 A criterion starts in the checker unless it genuinely requires judgment. A criterion that is scriptable but left to prose is a finding.
 
@@ -25,4 +25,4 @@ A criterion starts in the checker unless it genuinely requires judgment. A crite
 
 ## References
 
-- [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-mechanical-first-llm-optional.md) — the mechanical-first, LLM-optional foundation this per-skill split realises.
+- [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-mechanical-first-progressive-enhancement.md) — the mechanical-first, progressive-enhancement foundation this per-skill split realises.

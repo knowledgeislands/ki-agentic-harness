@@ -32,7 +32,19 @@ INIT vendors **copies** of each skill's checkers into the target (SCRIPT-7 copie
 
 **Blocked by** the bootstrap-version stamp above — this is its consequence, to assess only after that lands. Today `--legacy` is a manual aggressiveness choice (INIT then a full `ki:conform` pass — the format-migration path), picked blind by the operator. Once staleness is a detected signal, the drift check can drive the response: stale stamp → re-run INIT to refresh the vendored copies, and conditionally trigger the conform pass for content migration — rather than the human selecting `--legacy` up front. Evaluate whether `--legacy` (and possibly `--tracking`) then collapses into a drift-driven re-bootstrap, keeping the conform **capability** while retiring the manual **flag**. Confirm the conform pass survives as an auto-triggered step before removing anything.
 
+### Extend `.ki-meta` vendoring beyond AUDIT
+
+The vendoring mechanism carries any per-skill mechanical script, but in practice a governed repo shows `audit` alone — the reasons are now recorded in [ADR-KI-HARNESS-007](docs/decisions/ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md) (the per-mode asymmetry bullet). This item is the body-of-work to close the gap where it has real value, in three independent threads:
+
+- **CONFORM — author the missing `conform-*.ts` scripts.** The mechanism already vendors conform wherever a skill ships one; today only `ki-repo` and `ki-binding` do, so conform is effectively absent fleet-wide. Work skill-by-skill deciding what each skill's CONFORM can fix _deterministically_ (the judgment is per-skill: some conform steps are inherently LLM/judgment and stay out of the vendored script), authoring a `conform-*.ts` for each that has a mechanical floor, with 100% test coverage per `ki-engineering`. A first exemplar beyond `ki-repo` proves the shape before the sweep.
+- **INIT — nothing to vendor per-skill; the aggregate `init` verb becomes the re-sync prompt.** There is no per-skill re-runnable init check (INIT's mechanical half delegates to the one-shot engine), so the verb instead invokes the vendored `.ki-meta/bin/ki-init` wrapper: re-run the remote chain at the ref recorded in the vendoring manifest, per the drift contract in [ADR-KI-HARNESS-007](docs/decisions/ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md) — audit detects staleness, conform advises, `ki-init` repairs. The manifest (harness ref + per-file hashes) is one concrete answer to [the bootstrap-version stamp](#stamp-a-bootstrap-version-in-ki-configtoml-and-check-it-for-drift) above — reconcile that item against it when picking the version scheme.
+- **HELP — design whether it can vendor at all.** HELP renders from `SKILL.md` headings absent in a target. Decide between vendoring a small metadata manifest the renderer can read, vendoring a rendered snapshot, or leaving HELP as an in-session-only mode. A design record precedes any code here.
+
 ## Future
+
+### Reclassify mis-typed DRs under the unified prefix scheme _(candidate)_
+
+The DR format's own exemplar files "adopting decision records" as a **GDR**, yet this repo carries it as [ADR-KI-HARNESS-001](docs/decisions/ADR-KI-HARNESS-001-adopting-decision-records.md); [ADR-KI-HARNESS-008](docs/decisions/ADR-KI-HARNESS-008-public-and-declared-license.md) (public + declared license) is policy rather than architecture; and the deepened ADR-004 tenet reads governance-flavoured. A reclassification sweep churns filenames, per-prefix serials, sibling links, and the reading-order index, so it is a deliberate one-shot owned by `ki-decision-records`: enumerate the mis-typed records, decide each one's true prefix against the nine-prefix scheme in the skill's format reference, and land the renames with full link/index integrity in a single pass.
 
 ### Sweep decisions, feature definitions, and guides for drift and stale citations _(candidate)_
 
