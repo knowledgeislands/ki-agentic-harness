@@ -109,10 +109,13 @@ const skills = readdirSync(skillsDir, { withFileTypes: true })
   .map((e) => e.name)
   .sort()
 
-// Unified severity ladder — every audit-*.ts/lint-*.ts checker normalizes its findings
-// to this shape before printing, and emits it verbatim under --json as
-// { concern, target, generatedAt, summary, findings: [{level, area, msg}] }.
+// Unified severity ladder — most audit-*.ts/lint-*.ts checkers normalize findings to
+// { level, area, msg } and, under --json, wrap them as
+// { concern, target, generatedAt, summary, findings }. A couple of outliers (e.g.
+// ki-housekeeping) emit a bare findings array with { id, severity: <0-6>, message }
+// instead — SEV_BY_NUM and the field fallbacks below absorb that variant too.
 const ICON = { FAIL: '\\u274c', WARN: '\\u26a0\\ufe0f ', POLISH: '\\u2728', ADVISORY: '\\ud83e\\udded', INFO: '\\u2139\\ufe0f ', NA: '\\u2298', PASS: '\\u2705' }
+const SEV_BY_NUM = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 const RECAP_LEVELS = ['FAIL', 'WARN', 'ADVISORY']
 let failed = 0
 const recap = []
@@ -136,21 +139,39 @@ for (const skill of skills) {
   } catch {
     parsed = null
   }
-  if (!parsed || !Array.isArray(parsed.findings)) {
-    // no --json support (or a crash) — fall back to this checker's native display.
+  const findingsArr = Array.isArray(parsed) ? parsed : Array.isArray(parsed?.findings) ? parsed.findings : null
+  if (!findingsArr) {
+    // no --json support (or a crash, or a shape we don't recognise) — fall back to
+    // this checker's native display.
     process.stdout.write(res.stdout ?? '')
     process.stderr.write(res.stderr ?? '')
     unstructured.push(skill)
   } else {
-    for (const raw of parsed.findings) {
-      const level = String(raw.level ?? raw.severity ?? 'INFO').toUpperCase()
-      const area = String(raw.area ?? raw.criterion ?? raw.check ?? '?')
+    const counts = {}
+    for (const raw of findingsArr) {
+      const level =
+        typeof raw.level === 'string'
+          ? raw.level.toUpperCase()
+          : typeof raw.severity === 'number'
+            ? SEV_BY_NUM[raw.severity] ?? 'INFO'
+            : typeof raw.severity === 'string'
+              ? raw.severity.toUpperCase()
+              : 'INFO'
+      const area = String(raw.area ?? raw.criterion ?? raw.check ?? raw.id ?? '?')
       const msg = String(raw.msg ?? raw.message ?? '')
       const icon = ICON[level] ?? ''
       console.log('  ' + icon + ' ' + level.toLowerCase() + ' \\x1b[2m[' + area + ']\\x1b[0m ' + msg)
+      counts[level] = (counts[level] ?? 0) + 1
       if (RECAP_LEVELS.includes(level)) recap.push({ skill, level, code: area, msg })
     }
-    const s = parsed.summary ?? {}
+    const wrapperSummary = !Array.isArray(parsed) ? parsed?.summary : null
+    const s = wrapperSummary ?? {
+      fail: counts.FAIL ?? 0,
+      warn: counts.WARN ?? 0,
+      advisory: counts.ADVISORY ?? 0,
+      polish: counts.POLISH ?? 0,
+      pass: counts.PASS ?? 0
+    }
     console.log(
       '  \\x1b[2msummary: FAIL=' +
         (s.fail ?? 0) +

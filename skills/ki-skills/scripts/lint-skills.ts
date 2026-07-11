@@ -623,9 +623,12 @@ function discoverSkillDirs(p: string): string[] {
     return []
   }
   if (existsSync(join(abs, 'SKILL.md'))) return [abs]
-  return readdirSync(abs, { withFileTypes: true })
+  // Given a repo root (rather than a skills dir itself), prefer its skills/
+  // subdir — a bare repo root has no SKILL.md among its immediate children.
+  const root = basename(abs) === 'skills' || !existsSync(join(abs, 'skills')) ? abs : join(abs, 'skills')
+  return readdirSync(root, { withFileTypes: true })
     .filter((e) => e.isDirectory() && !e.name.startsWith('.') && e.name !== 'node_modules' && e.name !== 'scripts')
-    .map((e) => join(abs, e.name))
+    .map((e) => join(root, e.name))
     .filter((d) => existsSync(join(d, 'SKILL.md')))
     .sort()
 }

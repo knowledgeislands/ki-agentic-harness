@@ -216,10 +216,20 @@ function crossAgentFindings(agents: Agent[]): Finding[] {
 }
 
 // --- discovery -------------------------------------------------------------
+// Given a repo root (rather than an agents dir itself), prefer its agents/ subdir —
+// walking the whole tree otherwise picks up every unrelated .md (READMEs, ADRs,
+// skill references) and lints them as agents.
+function agentsRoot(abs: string): string {
+  if (basename(abs) === 'agents') return abs
+  const candidate = join(abs, 'agents')
+  return existsSync(candidate) && statSync(candidate).isDirectory() ? candidate : abs
+}
+
 function discoverAgentFiles(p: string): string[] {
   const abs = resolve(p)
   if (!existsSync(abs)) return []
   if (statSync(abs).isFile()) return abs.endsWith('.md') ? [abs] : []
+  const root = agentsRoot(abs)
   const out: string[] = []
   const walk = (d: string): void => {
     for (const e of readdirSync(d, { withFileTypes: true })) {
@@ -236,7 +246,7 @@ function discoverAgentFiles(p: string): string[] {
       }
     }
   }
-  walk(abs)
+  walk(root)
   return out.sort()
 }
 

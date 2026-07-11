@@ -30,10 +30,13 @@ const skills = readdirSync(skillsDir, { withFileTypes: true })
   .map((e) => e.name)
   .sort()
 
-// Unified severity ladder — every audit-*.ts/lint-*.ts checker normalizes its findings
-// to this shape before printing, and emits it verbatim under --json as
-// { concern, target, generatedAt, summary, findings: [{level, area, msg}] }.
+// Unified severity ladder — most audit-*.ts/lint-*.ts checkers normalize findings to
+// { level, area, msg } and, under --json, wrap them as
+// { concern, target, generatedAt, summary, findings }. A couple of outliers (e.g.
+// ki-housekeeping) emit a bare findings array with { id, severity: <0-6>, message }
+// instead — SEV_BY_NUM and the field fallbacks below absorb that variant too.
 const ICON: Record<string, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
+const SEV_BY_NUM = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 const RECAP_LEVELS = ['FAIL', 'WARN', 'ADVISORY']
 let failed = 0
 const recap: { skill: string; level: string; code: string; msg: string }[] = []
@@ -51,27 +54,50 @@ for (const skill of skills) {
     continue
   }
   const res = spawnSync('bun', [scriptPath, '.', '--json'], { encoding: 'utf8' })
-  let parsed: { summary?: Record<string, number>; findings?: Record<string, unknown>[] } | null = null
+  let parsed: unknown = null
   try {
     parsed = JSON.parse(res.stdout ?? '')
   } catch {
     parsed = null
   }
-  if (!parsed || !Array.isArray(parsed.findings)) {
-    // no --json support (or a crash) — fall back to this checker's native display.
+  const findingsArr = Array.isArray(parsed)
+    ? parsed
+    : Array.isArray((parsed as { findings?: unknown })?.findings)
+      ? (parsed as { findings: unknown[] }).findings
+      : null
+  if (!findingsArr) {
+    // no --json support (or a crash, or a shape we don't recognise) — fall back to
+    // this checker's native display.
     process.stdout.write(res.stdout ?? '')
     process.stderr.write(res.stderr ?? '')
     unstructured.push(skill)
   } else {
-    for (const raw of parsed.findings) {
-      const level = String(raw.level ?? raw.severity ?? 'INFO').toUpperCase()
-      const area = String(raw.area ?? raw.criterion ?? raw.check ?? '?')
+    const counts: Record<string, number> = {}
+    for (const item of findingsArr) {
+      const raw = item as Record<string, unknown>
+      const level =
+        typeof raw.level === 'string'
+          ? raw.level.toUpperCase()
+          : typeof raw.severity === 'number'
+            ? SEV_BY_NUM[raw.severity] ?? 'INFO'
+            : typeof raw.severity === 'string'
+              ? raw.severity.toUpperCase()
+              : 'INFO'
+      const area = String(raw.area ?? raw.criterion ?? raw.check ?? raw.id ?? '?')
       const msg = String(raw.msg ?? raw.message ?? '')
       const icon = ICON[level] ?? ''
       console.log('  ' + icon + ' ' + level.toLowerCase() + ' \x1b[2m[' + area + ']\x1b[0m ' + msg)
+      counts[level] = (counts[level] ?? 0) + 1
       if (RECAP_LEVELS.includes(level)) recap.push({ skill, level, code: area, msg })
     }
-    const s = parsed.summary ?? {}
+    const wrapperSummary = !Array.isArray(parsed) ? (parsed as { summary?: Record<string, number> })?.summary : null
+    const s = wrapperSummary ?? {
+      fail: counts.FAIL ?? 0,
+      warn: counts.WARN ?? 0,
+      advisory: counts.ADVISORY ?? 0,
+      polish: counts.POLISH ?? 0,
+      pass: counts.PASS ?? 0
+    }
     console.log(
       '  \x1b[2msummary: FAIL=' +
         (s.fail ?? 0) +

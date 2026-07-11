@@ -153,6 +153,66 @@ function relativeLinkTargets(md: string): string[] {
 const hasWikilink = (md: string): boolean => /\[\[[^\]]+\]\]/.test(md)
 const hasBackslashLink = (md: string): boolean => /\[[^\]]*\]\([^)]*\\[^)]*\)/.test(md)
 
+// --- process vs governance (SHAPE-3 / ADR-KI-HARNESS-SKILLS-006) -----------
+// A process skill self-declares in its description: "(kind: process, ADR-...)".
+// Everything else in the fleet is a governance skill for the purposes of the
+// universal-mode checks (SHAPE-11/12/13).
+const isProcessSkill = (desc: string): boolean => /\(kind:\s*process\b/i.test(desc)
+
+// --- SHAPE-12/13: mode vocabulary + heading structure -----------------------
+// The `## Operating modes` H2 is the home for the shared no-mode/HELP intro plus
+// each mode as a `### Mode <NAME>` H3 (or a `| Mode | … |` dispatch table for
+// router skills with many operational verbs). extractBodyModes reads whichever
+// form is present, scoped to that section only, so a stray "### X" elsewhere in
+// the body (an example, a reference aside) is never mistaken for a mode heading.
+function extractSection(body: string, heading: string): string | null {
+  const re = new RegExp(`^##\\s+${heading}\\s*$`, 'im')
+  const m = re.exec(body)
+  if (!m) return null
+  const start = (m.index ?? 0) + m[0].length
+  const rest = body.slice(start)
+  const next = rest.search(/^##\s+/m)
+  return next === -1 ? rest : rest.slice(0, next)
+}
+
+function extractBodyModes(body: string): Set<string> {
+  const modes = new Set<string>()
+  const section = extractSection(body, 'Operating modes')
+  if (!section) return modes
+  for (const m of section.matchAll(/^###\s+Mode\s+(\w+)/gim)) modes.add((m[1] as string).toUpperCase())
+  let headerSeen = false
+  for (const rawLine of section.split(/\r?\n/)) {
+    const line = rawLine.trim()
+    if (!line.startsWith('|')) {
+      headerSeen = false
+      continue
+    }
+    const cells = line
+      .split('|')
+      .slice(1, -1)
+      .map((c) => c.trim())
+    if (!headerSeen) {
+      if (/^mode$/i.test(cells[0] ?? '')) headerSeen = true
+      continue
+    }
+    const first = (cells[0] ?? '').replace(/`/g, '').trim()
+    if (/^:?-+:?$/.test(first)) continue // separator row
+    if (first) modes.add(first.toUpperCase())
+  }
+  return modes
+}
+
+// First word of each `|`-separated segment of an argument-hint, e.g.
+// `'audit | conform <target> | help'` → ['AUDIT', 'CONFORM', 'HELP'].
+function hintVerbs(hint: string): string[] {
+  const out: string[] = []
+  for (const seg of hint.split('|')) {
+    const m = seg.trim().match(/^[a-zA-Z][a-zA-Z0-9-]*/)
+    if (m) out.push(m[0].toUpperCase())
+  }
+  return out
+}
+
 function listMarkdownFiles(dir: string): string[] {
   const out: string[] = []
   const walk = (d: string): void => {
@@ -328,6 +388,54 @@ function lintSkill(skillDir: string): Finding[] {
 
   // --- body size (SIZE-1/SIZE-2 soft → WARN) ---
   const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
+
+  // --- SHAPE-12/13: universal-mode vocabulary + mode-heading structure ---
+  // Both gate on kind: a process skill (self-declared "(kind: process" in its
+  // description, per SHAPE-3) is fully exempt — its mode count follows its own
+  // lifecycle. Everything else is a governance skill and must carry the canonical
+  // vocabulary (SHAPE-12) and the `## Operating modes` structure (SHAPE-13).
+  if (!isProcessSkill(desc ?? '')) {
+    // SHAPE-12: argument-hint exposes every universal verb (INIT is the common gap).
+    const verbs = hintVerbs(hint ?? '')
+    const missing = ['audit', 'conform', 'help', 'init', 'refresh'].filter((v) => !verbs.includes(v.toUpperCase()))
+    if (missing.length > 0)
+      warn(
+        'SHAPE-12',
+        `\`argument-hint\` is missing the universal verb(s) ${missing.join(', ')} — a governance skill exposes AUDIT, CONFORM, INIT, REFRESH and HELP (ADR-KI-HARNESS-SKILLS-001)`
+      )
+    // SHAPE-12 vendoring leg: the frontmatter declares the vendorable mechanical unit.
+    if (!fm.present.has('vendors'))
+      warn(
+        'SHAPE-12',
+        'frontmatter carries no `vendors:` declaration — declare the vendorable mechanical unit (checker path or `cmd:` form) beside `implies:` so the bootstrap engine can vendor it (ADR-KI-HARNESS-007)'
+      )
+
+    // SHAPE-13: single `## Operating modes` H2 wrapper; modes as `### Mode <NAME>`
+    // H3s or a `| Mode | … |` dispatch table inside it; hint ⊆ body.
+    const section = extractSection(body, 'Operating modes')
+    if (section === null) warn('SHAPE-13', 'no `## Operating modes` H2 — modes live under a single wrapper H2 (ADR-KI-HARNESS-SKILLS-001)')
+    const flatModeH2s = [...stripCode(body).matchAll(/^##\s+Mode\s+(\w+)/gim)].map((m) => m[1] as string)
+    for (const flat of flatModeH2s)
+      warn('SHAPE-13', `flat \`## Mode ${flat}\` H2 — demote to \`### Mode ${flat}\` inside the \`## Operating modes\` wrapper`)
+    if (section !== null) {
+      for (const h3 of stripCode(section).matchAll(/^###\s+(?!Mode\b)(\S[^\n]*)/gim))
+        warn(
+          'SHAPE-13',
+          `bare \`### ${(h3[1] as string).trim()}\` inside \`## Operating modes\` — mode headings carry the \`Mode \` prefix`
+        )
+      // hint ⊆ body: every argument-hint verb appears as a mode in the section
+      // (a `### Mode X` H3 and a `| Mode |` table row count equally). `help` may
+      // instead be satisfied by the no-mode intro (the prose before the first H3
+      // or table) mentioning help — the HELP block itself is generated (SHAPE-11).
+      const bodyModes = extractBodyModes(body)
+      const intro = section.split(/^###\s+|^\s*\|/m)[0] ?? ''
+      for (const v of hintVerbs(hint ?? '')) {
+        if (bodyModes.has(v)) continue
+        if (v === 'HELP' && /\bhelp\b/i.test(intro)) continue
+        warn('SHAPE-13', `\`argument-hint\` verb \`${v.toLowerCase()}\` has no mode in the \`## Operating modes\` section (hint ⊆ body)`)
+      }
+    }
+  }
   const bodyLines = body.split(/\r?\n/).length
   if (bodyLines > BODY_MAX_LINES)
     warn('SIZE-1', `SKILL.md body is ${bodyLines} lines (recommended < ${BODY_MAX_LINES}) — split into references/`)
@@ -515,9 +623,12 @@ function discoverSkillDirs(p: string): string[] {
     return []
   }
   if (existsSync(join(abs, 'SKILL.md'))) return [abs]
-  return readdirSync(abs, { withFileTypes: true })
+  // Given a repo root (rather than a skills dir itself), prefer its skills/
+  // subdir — a bare repo root has no SKILL.md among its immediate children.
+  const root = basename(abs) === 'skills' || !existsSync(join(abs, 'skills')) ? abs : join(abs, 'skills')
+  return readdirSync(root, { withFileTypes: true })
     .filter((e) => e.isDirectory() && !e.name.startsWith('.') && e.name !== 'node_modules' && e.name !== 'scripts')
-    .map((e) => join(abs, e.name))
+    .map((e) => join(root, e.name))
     .filter((d) => existsSync(join(d, 'SKILL.md')))
     .sort()
 }
