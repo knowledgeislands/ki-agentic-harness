@@ -13,7 +13,7 @@
  * BOOT-1 FAIL with a non-zero exit — while a repo whose tables all resolve stays clean.
  */
 import { spawnSync } from 'node:child_process'
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -39,6 +39,11 @@ function fixture(tables: string[]): string {
 
 function runCheck(dir: string): { code: number; out: string } {
   const res = spawnSync('bun', [LINKER, '--check', dir], { encoding: 'utf8' })
+  return { code: res.status ?? 1, out: `${res.stdout ?? ''}${res.stderr ?? ''}` }
+}
+
+function runLink(dir: string): { code: number; out: string } {
+  const res = spawnSync('bun', [LINKER, dir], { encoding: 'utf8' })
   return { code: res.status ?? 1, out: `${res.stdout ?? ''}${res.stderr ?? ''}` }
 }
 
@@ -83,6 +88,18 @@ try {
   check('package.json present → BOOT-5 warns', out.includes('BOOT-5'))
 } finally {
   rmSync(withPkg, { recursive: true, force: true })
+}
+
+// ── Write mode auto-gitignores .claude/skills/ → BOOT-3 clears (no package.json) ──
+const linkDir = fixture(['ki-kb'])
+try {
+  runLink(linkDir)
+  const gitignore = readFileSync(join(linkDir, '.gitignore'), 'utf8')
+  check('write mode → .gitignore contains .claude/skills/', /^\.claude\/skills\/?$/m.test(gitignore))
+  const { out } = runCheck(linkDir)
+  check('write mode → BOOT-3 no longer warns', !/WARN.*BOOT-3/.test(out))
+} finally {
+  rmSync(linkDir, { recursive: true, force: true })
 }
 
 if (failed) {

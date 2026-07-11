@@ -22,7 +22,7 @@
 import { existsSync, lstatSync, mkdirSync, readdirSync, readlinkSync, realpathSync, rmSync, symlinkSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { ensureScript, gitignoresPath, hasScript, readText } from './package-scripts.ts'
+import { ensureGitignore, ensureScript, gitignoresPath, hasScript, readText } from './package-scripts.ts'
 
 // ── Self-location: find the harness agents/governance/ root through the (possibly symlinked) script path ──
 const SELF = realpathSync(fileURLToPath(import.meta.url))
@@ -110,7 +110,10 @@ function cmdLink(target: string, set: string[], dryRun: boolean): void {
     }
   }
 
-  if (set.length > 0) ensureScript(target, 'ki:agents:link:project', 'bun .claude/skills/ki-bootstrap/scripts/link-agents.ts .', dryRun)
+  if (set.length > 0) {
+    ensureGitignore(target, '.claude/agents', dryRun)
+    ensureScript(target, 'ki:agents:link:project', 'bun .claude/skills/ki-bootstrap/scripts/link-agents.ts .', dryRun)
+  }
 }
 
 // ── Check (audit only) ──
