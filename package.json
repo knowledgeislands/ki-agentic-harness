@@ -56,6 +56,7 @@
     "ki:binding:build-plugin": "bun skills/ki-binding/scripts/build-plugin.ts",
     "ki:binding:conform": "bun .claude/skills/ki-binding/scripts/conform-cowork.ts .",
     "ki:bootstrap:audit": "bun skills/ki-bootstrap/scripts/audit-vendored.ts .",
+    "ki:bootstrap:conform": "bun skills/ki-bootstrap/scripts/conform-bootstrap.ts . --all",
     "ki:bootstrap:test": "bun skills/ki-bootstrap/scripts/link-skills.test.ts",
     "ki:codegen": "bun scripts/generate-clients.ts",
     "ki:conform": "bun run ki:deps:refresh && bun run ki:lint:package && bun run ki:lint:format && bun run ki:lint:fix && bun run ki:lint:md",
