@@ -435,6 +435,27 @@ function lintSkill(skillDir: string): Finding[] {
         warn('SHAPE-13', `\`argument-hint\` verb \`${v.toLowerCase()}\` has no mode in the \`## Operating modes\` section (hint ⊆ body)`)
       }
     }
+
+    // SHAPE-14: REFRESH states its harness-only precondition. Its write target is
+    // always this skill's own canonical files in ki-agentic-harness — invoked from a
+    // repo where the skill is merely vendored, it must stop and redirect there (or to
+    // ki-kb's IMPROVE mode). A missing REFRESH section entirely is already SHAPE-12's
+    // job; this only checks the precondition text once a REFRESH mode is present.
+    if (section !== null) {
+      const refreshMatch = /^###\s+Mode\s+REFRESH\b[\s\S]*?(?=^###\s+Mode\s+|$(?![\s\S]))/im.exec(section)
+      let refreshText = refreshMatch ? refreshMatch[0] : ''
+      const refreshRefPath = join(skillDir, 'references', 'mode-refresh.md')
+      if (existsSync(refreshRefPath)) refreshText += `\n${readFileSync(refreshRefPath, 'utf8')}`
+      if (refreshText) {
+        const namesHarness = /ki-agentic-harness/.test(refreshText)
+        const stopsAndRedirects = /\bstop(s)?\b[\s\S]{0,160}\b(redirect|names?|route)/i.test(refreshText)
+        if (!namesHarness || !stopsAndRedirects)
+          warn(
+            'SHAPE-14',
+            'REFRESH section does not state the harness-only precondition — it should name `ki-agentic-harness` as the only place it writes and instruct stopping/redirecting when invoked from a vendored install'
+          )
+      }
+    }
   }
   const bodyLines = body.split(/\r?\n/).length
   if (bodyLines > BODY_MAX_LINES)

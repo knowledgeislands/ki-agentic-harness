@@ -98,6 +98,18 @@ if (verb === 'init' || verb === 'help') {
   execFileSync(join(binDir, verb === 'init' ? 'ki-init' : 'ki-help'), process.argv.slice(3), { stdio: 'inherit' })
   process.exit(0)
 }
+if (verb === 'refresh') {
+  // REFRESH's write target is always a skill's own canonical files under skills/<name>/
+  // in ki-agentic-harness — this vendored runner is by construction never running
+  // there, so refresh is always out of scope here. Say so explicitly instead of
+  // silently falling through the pattern match below to a bare exit(0).
+  console.error(
+    '\\x1b[33m⚠️  REFRESH is harness-only\\x1b[0m — it edits only its own canonical\\n' +
+      "files, which live in ki-agentic-harness. Run it there, or use ki-kb's\\n" +
+      'IMPROVE mode for a pattern recurring across bases.'
+  )
+  process.exit(3)
+}
 // Vendored copies are named by verb (audit.ts / conform.ts) — the skill dir already
 // carries the identity.
 const pattern = verb === 'audit' ? /^(audit|lint)\\.ts$/ : verb === 'conform' ? /^conform\\.ts$/ : null
