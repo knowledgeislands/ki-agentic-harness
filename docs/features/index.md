@@ -34,7 +34,10 @@ Each area file may end with a `## Gaps` section of **unnumbered** bullets — kn
 
 ## Areas
 
-| File          | Prefix | Covers                                                   |
-| ------------- | ------ | -------------------------------------------------------- |
-| bootstrap.md  | `BOOT` | The INIT chain, self-sufficiency contract, vendoring     |
-| governance.md | `GOV`  | Universal modes, mechanical-first, severity, composition |
+| File          | Prefix | Covers                                                    |
+| ------------- | ------ | --------------------------------------------------------- |
+| bootstrap.md  | `BOOT` | The INIT chain, self-sufficiency contract, vendoring      |
+| governance.md | `GOV`  | Universal modes, mechanical-first, severity, composition  |
+| harness.md    | `HARN` | Five-part bundle, root anchors, toolchain, skills naming  |
+| modes.md      | `MODE` | The four universal modes + HELP as a behavioural contract |
+| checkers.md   | `CHK`  | Checker contract: ladder, exit, `--json`, tally, footer   |

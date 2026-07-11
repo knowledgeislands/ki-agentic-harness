@@ -30,7 +30,7 @@ INIT MUST vendor a `.ki-meta/bin/aggregate.ts` runner that discovers the vendore
 
 _Verify:_ a bootstrapped repo has `.ki-meta/bin/aggregate.ts`; running `bun .ki-meta/bin/aggregate.ts audit` invokes every vendored `ki:<skill>:audit` in sequence.
 
-### BOOT-007 — package.json-free entry point
+### BOOT-005 — package.json-free entry point
 
 INIT MUST write four executable wrappers `.ki-meta/bin/{ki-audit,ki-conform,ki-init,ki-help}` (each mode `0755`) over the vendored aggregate, so a repo with no `package.json` (dotfiles, KB, tap) governs itself through `./.ki-meta/bin/ki-audit`, `./.ki-meta/bin/ki-conform`, `./.ki-meta/bin/ki-init`, and `./.ki-meta/bin/ki-help <skill>` alone, per [ADR-KI-HARNESS-007](../decisions/ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md). `ki-help` is pure bash over the vendored `help.md` snapshots, so it runs with no `bun`.
 
@@ -38,7 +38,7 @@ _Verify:_ after bootstrap, all four of `.ki-meta/bin/{ki-audit,ki-conform,ki-ini
 
 ## The chain
 
-### BOOT-005 — Per-skill INIT delegators
+### BOOT-006 — Per-skill INIT delegators
 
 Every governance skill MUST own a `scripts/init.ts` that delegates to the `ki-bootstrap` chain engine with itself as an explicit `--seed`, delegating by subprocess (composition), not by cross-skill import, per [ADR-KI-HARNESS-SKILLS-004](../decisions/ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md).
 
@@ -46,7 +46,7 @@ _Verify:_ each `skills/*/scripts/init.ts` execs `../../ki-bootstrap/scripts/boot
 
 Re-running the idempotent bootstrap chain is the single update path — there are no aggressiveness flags; a re-run brings the target up to date.
 
-### BOOT-008 — Vendored-set alignment check
+### BOOT-007 — Vendored-set alignment check
 
 The harness MUST be able to verify a target's `.ki-meta/skills/` matches the expected resolved set (baseline ∪ declared `[ki-*]` tables ∪ the transitive `implies:` closure, restricted to skills carrying a checker) — since the `implies:` graph lives only in source SKILL.md frontmatter, this check runs harness-side, not from the target's own standalone `.ki-meta/bin/ki-audit`. Drift is a WARN, never a FAIL — a re-bootstrap always reconciles it. See [BOOT-9](../../skills/ki-bootstrap/references/audit-rubric.md).
 
