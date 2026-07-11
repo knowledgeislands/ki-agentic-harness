@@ -17,12 +17,13 @@
  * `ki:<suffix>:{audit,conform}` npm keys and the repo-wide `ki:audit` /
  * `ki:conform` / `ki:init` aggregates as convenience aliases over the same runner.
  *
- * Remote transport (ADR-KI-HARNESS-007): Bun cannot execute a module over HTTP,
- * so the zero-install form fetches the source tarball at a pinned ref and runs
- * the chain as a local working tree —
- *   t="$(mktemp -d)" && curl -fsSL "https://codeload.github.com/knowledgeislands/ki-agentic-harness/tar.gz/<ref>" \
- *     | tar -xz -C "$t" --strip-components=1 && bun "$t/skills/ki-bootstrap/scripts/bootstrap.ts" <target> --ref <ref>
- * The vendored `.ki-meta/bin/ki-init` wrapper is exactly this one-liner at the
+ * Remote transport (ADR-KI-HARNESS-007): the sibling `bootstrap.sh` is the
+ * zero-install entry point — it fetches the source tarball at a pinned ref and
+ * runs this engine from the extracted tree (Bun cannot execute a module over
+ * HTTP, and the entry point must not assume bun is even installed):
+ *   curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh \
+ *     | bash -s -- <target> [--ref <ref>]
+ * The vendored `.ki-meta/bin/ki-init` wrapper pipes that same script at the
  * manifest's recorded ref. Skill sources are always read from the engine's own
  * working tree; `--ref` records the ref in the manifest when that tree has no
  * `.git` (a tarball extract).
@@ -140,9 +141,11 @@ exec bun ".ki-meta/bin/aggregate.ts" "\${1:-audit}"
 `
 
 // The re-bootstrap wrapper: re-runs the chain at the ref recorded in the manifest
-// (ADR-KI-HARNESS-007) — `--ref <ref>` overrides to move forward. Bun cannot run a
-// module over HTTP, so the transport is the source tarball at the pinned ref,
-// extracted to a temp dir and run as a local working tree.
+// (ADR-KI-HARNESS-007) — `--ref <ref>` overrides to move forward. It pipes the
+// sibling `bootstrap.sh` entry point at that ref through bash, so the transport
+// (tarball fetch, temp-dir extract, prerequisite checks) is implemented exactly
+// once. Requires a ref that ships `bootstrap.sh` — true for every ref a current
+// engine can have stamped.
 // Network-requiring and idempotent; never invoked automatically (only via `ki-init`
 // or the aggregate's `init` verb).
 function binKiInit(ref: string): string {
@@ -165,11 +168,8 @@ while [ $# -gt 0 ]; do
   esac
 done
 root="$(cd "$(dirname "\${BASH_SOURCE[0]}")/../.." && pwd)"
-tmp="$(mktemp -d)"
-trap 'rm -rf "$tmp"' EXIT
 echo "re-bootstrapping $root from $REPO@$ref"
-curl -fsSL "https://codeload.github.com/$REPO/tar.gz/$ref" | tar -xz -C "$tmp" --strip-components=1
-bun "$tmp/skills/ki-bootstrap/scripts/bootstrap.ts" "$root" --ref "$ref"
+curl -fsSL "https://raw.githubusercontent.com/$REPO/$ref/skills/ki-bootstrap/scripts/bootstrap.sh" | bash -s -- "$root" --ref "$ref"
 `
 }
 
