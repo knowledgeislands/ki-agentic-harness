@@ -5,12 +5,15 @@
  *   bun evals/guide-suite.ts
  *
  * Extracts the fenced `bash` command blocks from docs/guides/user-guide/onboarding.md
- * and runs the documented onboarding steps against in-harness fixtures — a greenfield
- * repo and a legacy one — driving the bootstrap chain (INIT → the self-sufficiency
- * contract) with **no skills installed**. It then asserts each fixture ends in the
- * documented state: vendored script copies, the `ki:*` keys, and a working `ki:audit`
- * aggregate. Because the commands are extracted from the guide, the guide cannot drift
- * from what actually works. Deterministic; exits non-zero on any failed assertion.
+ * and runs the documented onboarding steps against in-harness fixtures — driving the
+ * bootstrap chain (INIT → the self-sufficiency contract) with **no skills installed**.
+ * It then asserts each fixture ends in the documented state: vendored script copies +
+ * HELP snapshots, the four `.ki-meta/bin/{ki-audit,ki-conform,ki-init,ki-help}` entry
+ * points, an untouched `package.json` (bootstrap wires no keys — that is ki-engineering's
+ * job), a working aggregate, HELP readable with no bun on PATH, and byte-identical output
+ * on a second run (idempotency). Because the commands are extracted from the guide, the
+ * guide cannot drift from what actually works. Deterministic; exits non-zero on any
+ * failed assertion.
  *
  * Unlike the behavioural `harness.ts` evals (non-deterministic, advisory), this is a
  * hard gate and is wired into `ki:verify`. Bun/Node built-ins only.
@@ -53,50 +56,49 @@ function run(cmd: string, cwd: string, env: NodeJS.ProcessEnv): string {
 const guide = readFileSync(GUIDE, 'utf8')
 const blocks = [...guide.matchAll(/```bash\n([\s\S]*?)```/g)].map((m) => m[1].trim())
 check(blocks.length >= 3, `extracted ${blocks.length} bash command blocks from onboarding.md`)
-const greenfieldBlocks = blocks.filter((b) => /bootstrap\.ts|ki:audit/.test(b) && !/--legacy|--tracking|raw\.githubusercontent/.test(b))
-const legacyBlocks = blocks.filter((b) => /--legacy/.test(b))
-check(greenfieldBlocks.length >= 2, 'guide documents the greenfield bootstrap + audit steps')
-check(legacyBlocks.length >= 1, 'guide documents the legacy --legacy step')
+const primaryBlocks = blocks.filter((b) => /bootstrap\.ts|\.ki-meta\/bin\/ki-audit/.test(b) && !/raw\.githubusercontent/.test(b))
+check(primaryBlocks.length >= 2, 'guide documents the bootstrap + self-govern (ki-audit) steps')
+check(!blocks.some((b) => /--legacy|--tracking/.test(b)), 'guide carries no legacy/tracking aggressiveness flags')
 
 const tmp = mkdtempSync(join(tmpdir(), 'ki-guide-'))
 try {
-  // ── greenfield ─────────────────────────────────────────────────────────────
-  console.log('\ngreenfield fixture (declares [ki-repo] + [ki-mcp]):')
-  const gf = join(tmp, 'greenfield')
+  // ── primary: bootstrap builds .ki-meta, wires no package.json ────────────────
+  console.log('\nprimary fixture (declares [ki-repo] + [ki-mcp], carries a package.json):')
+  const gf = join(tmp, 'primary')
   greenfield(gf, ['[ki-repo]', '[ki-mcp]'])
   const gfEnv = { ...process.env, KI_HARNESS: HARNESS, TARGET: gf }
-  for (const b of greenfieldBlocks) run(b, HARNESS, gfEnv)
+  for (const b of primaryBlocks) run(b, HARNESS, gfEnv)
 
   check(existsSync(join(gf, '.ki-meta/bin/aggregate.ts')), 'vendored the aggregate runner')
-  const binAudit = join(gf, '.ki-meta/bin/ki-audit')
-  check(existsSync(binAudit), 'wrote the package.json-free .ki-meta/bin/ki-audit entry point')
-  check(existsSync(binAudit) && (lstatSync(binAudit).mode & 0o111) !== 0, '.ki-meta/bin/ki-audit is executable')
+  // All four package.json-free entry points, each executable.
+  for (const bin of ['ki-audit', 'ki-conform', 'ki-init', 'ki-help']) {
+    const p = join(gf, '.ki-meta/bin', bin)
+    check(existsSync(p) && (lstatSync(p).mode & 0o111) !== 0, `wrote executable .ki-meta/bin/${bin}`)
+  }
   const repoChecker = join(gf, '.ki-meta/skills/ki-repo/audit.ts')
   check(existsSync(repoChecker), 'vendored the ki-repo checker')
   check(existsSync(repoChecker) && !lstatSync(repoChecker).isSymbolicLink(), 'vendored checker is a copy, not a symlink (SCRIPT-7)')
+  check(existsSync(join(gf, '.ki-meta/skills/ki-repo/help.md')), 'rendered the ki-repo HELP snapshot')
   check(existsSync(join(gf, '.ki-meta/skills/ki-mcp/audit.ts')), 'declared [ki-mcp] pulled ki-mcp into the vendored set')
+
+  // Bootstrap touches no package.json — the ki:* keys are ki-engineering's to wire.
   const pkg = JSON.parse(readFileSync(join(gf, 'package.json'), 'utf8')) as { scripts: Record<string, string> }
-  for (const k of ['ki:audit', 'ki:conform', 'ki:init', 'ki:repo:audit', 'ki:mcp:audit']) check(!!pkg.scripts[k], `installed key ${k}`)
-  const audit = run('bun run ki:audit', gf, gfEnv)
-  check(/==> ki:repo:audit/.test(audit), 'ki:audit aggregate invoked the vendored ki:repo:audit')
-  check(/==> ki:mcp:audit/.test(audit), 'ki:audit aggregate invoked the vendored ki:mcp:audit')
+  check(Object.keys(pkg.scripts).length === 0, 'bootstrap wrote no package.json keys (scripts still empty)')
 
-  // ── legacy ───────────────────────────────────────────────────────────────
-  console.log('\nlegacy fixture (--legacy: INIT then a full ki:conform):')
-  const lg = join(tmp, 'legacy')
-  greenfield(lg)
-  // a stale hand-written key the re-vendor must leave intact (ensureScripts never clobbers)
-  const lgPkg = JSON.parse(readFileSync(join(lg, 'package.json'), 'utf8')) as { scripts: Record<string, string> }
-  lgPkg.scripts['ki:repo:audit'] = 'echo pre-existing'
-  writeFileSync(join(lg, 'package.json'), `${JSON.stringify(lgPkg, null, 2)}\n`)
-  const lgEnv = { ...process.env, KI_HARNESS: HARNESS, TARGET: lg }
-  for (const b of legacyBlocks) run(b, HARNESS, lgEnv)
+  // The aggregate fans out over the vendored checkers, via the bin (no package.json key).
+  const audit = run('./.ki-meta/bin/ki-audit audit', gf, gfEnv)
+  check(/==> ki:repo:audit/.test(audit), 'aggregate invoked the vendored ki-repo checker')
+  check(/==> ki:mcp:audit/.test(audit), 'aggregate invoked the vendored ki-mcp checker')
 
-  check(existsSync(join(lg, '.ki-meta/skills/ki-repo/audit.ts')), '--legacy vendored the checkers')
-  check(existsSync(join(lg, '.ki-meta/bin/aggregate.ts')), '--legacy installed the aggregate')
-  const lgAfter = JSON.parse(readFileSync(join(lg, 'package.json'), 'utf8')) as { scripts: Record<string, string> }
-  check(lgAfter.scripts['ki:repo:audit'] === 'echo pre-existing', '--legacy left a pre-existing key untouched (never clobbers)')
-  check(!!lgAfter.scripts['ki:audit'], '--legacy installed the ki:audit aggregate key')
+  // HELP is pure bash over the vendored snapshot — readable with no bun on PATH.
+  const help = run('./.ki-meta/bin/ki-help ki-repo', gf, { ...gfEnv, PATH: '/usr/bin:/bin' })
+  check(/ki-repo/.test(help), 'ki-help prints a skill snapshot with bun off PATH (pure bash)')
+
+  // Idempotency — re-running the chain at the same ref reproduces an identical manifest.
+  const manifest1 = readFileSync(join(gf, '.ki-meta/manifest.json'), 'utf8')
+  run(`bun "${join(HARNESS, 'skills/ki-bootstrap/scripts/bootstrap.ts')}" "${gf}"`, HARNESS, gfEnv)
+  const manifest2 = readFileSync(join(gf, '.ki-meta/manifest.json'), 'utf8')
+  check(manifest1 === manifest2, 're-running bootstrap is idempotent (identical manifest)')
 
   // ── package.json-free (dotfiles/KB/tap shape) ────────────────────────────
   // A repo with NO package.json must still self-govern via .ki-meta/bin/ki-audit. Since

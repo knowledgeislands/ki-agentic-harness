@@ -21,20 +21,15 @@ For a Knowledge Islands repo, `.claude/skills/` contains exactly:
 ## How the links are stored
 
 - **Relative symlinks** into the harness's `skills/` (e.g. `.claude/skills/ki-mcp -> ../../../ki-agentic-harness/skills/ki-mcp`), computed for wherever the harness actually sits.
-- **Gitignored and regenerated, never committed.** Committed cross-repo symlinks dangle on a clone that lacks the harness beside it. The committed artifacts are a `ki:skills:link:project` package.json script (which re-runs the keystone linker) and the `.gitignore` line. A fresh clone runs `ki:skills:link:project` once.
+- **Gitignored and regenerated, never committed.** Committed cross-repo symlinks dangle on a clone that lacks the harness beside it. The only committed artifact is the `.gitignore` line; a fresh clone re-runs the keystone linker once to recreate the links.
 - The keystone linker **self-locates** the harness through its own real path — no hard-coded harness location.
 
 ## Reproducibility contract
 
-Every Knowledge Islands repo carries:
+Every Knowledge Islands repo carries a `.gitignore` entry for `.claude/skills/`; re-running the global keystone linker (the harness uses `--all`) regenerates the links from `.ki-config.toml` alone, on any machine. That makes the project-local skill set reproducible without ever committing the symlinks.
 
-- a `package.json` `"ki:skills:link:project"` script that invokes the global keystone linker (the harness uses `--all`); and
-- a `.gitignore` entry for `.claude/skills/`.
-
-Together these make the project-local skill set reproducible from `.ki-config.toml` alone, on any machine, after a single `ki:skills:link:project`.
-
-The same linker call also scaffolds one `ki:<suffix>:<verb>` script per linked skill that carries a checker script (`ki-kb`'s `audit-kb.ts` → `ki:kb:audit`, `ki-agents`'s `lint-agents.ts` → `ki:agents:lint`, and so on) — so each skill's own AUDIT is reproducible too, not just the link step itself. A skill may separately carry a `conform-*.ts` alongside its checker; when it does, the same call scaffolds a `ki:<suffix>:conform` entry too (`ki-repo`'s `conform-repo.ts` → `ki:repo:conform`) — a skill can have both, discovered independently. Neither script filename is a fixed function of the skill name, so both are **discovered** per skill (scan `scripts/` for a single `(audit|lint)-*.ts` match, and independently for a single `conform-*.ts` match) rather than templated; zero or ambiguous (multiple) matches of either kind is skipped for that kind. An existing script entry for the same key is never overwritten — a repo may have deliberately customized the command.
+Wiring `package.json` convenience keys is no concern of the linker — it manages only the symlinks and the `.gitignore` line. Any `ki:<suffix>:<verb>` script sugar is `ki-engineering`'s to add later, over the vendored `.ki-meta/bin` runners.
 
 ## Governance agents
 
-A parallel, smaller invariant covers `agents/governance/*.md`: a repo's `.claude/agents/` should contain exactly those files, as **relative file symlinks**, when — and only when — the repo's `.ki-config.toml` carries the bare `[ki-agents]` table. Unlike skills there is no baseline: no agent is always-on, so an undeclared repo gets no agent links at all rather than a default subset. [`link-agents.ts`](../scripts/link-agents.ts) is a direct sibling of the skill linker, sharing its self-location and package.json-splice logic (factored into [`package-scripts.ts`](../scripts/package-scripts.ts)); it scaffolds `ki:agents:link:project` the same way, and `.claude/agents/` is likewise gitignored and regenerated, never committed.
+A parallel, smaller invariant covers `agents/governance/*.md`: a repo's `.claude/agents/` should contain exactly those files, as **relative file symlinks**, when — and only when — the repo's `.ki-config.toml` carries the bare `[ki-agents]` table. Unlike skills there is no baseline: no agent is always-on, so an undeclared repo gets no agent links at all rather than a default subset. [`link-agents.ts`](../scripts/link-agents.ts) is a direct sibling of the skill linker, sharing its self-location and gitignore logic (factored into [`package-scripts.ts`](../scripts/package-scripts.ts)); like the skill linker it manages only relative symlinks and the `.gitignore` line, so `.claude/agents/` is likewise gitignored and regenerated, never committed.

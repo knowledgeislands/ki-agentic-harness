@@ -100,10 +100,6 @@ export function conformScript(skill: string): string | null {
   return m.length === 1 ? m[0] : null
 }
 
-export function scriptKey(skill: string, verb: string): string {
-  return `ki:${skill.replace(/^ki-/, '')}:${verb}`
-}
-
 // ── `vendors:` frontmatter (ADR-KI-HARNESS-007) ──────────────────────────────────
 // Per-skill declaration, central execution: each governance skill declares its
 // vendorable mechanical unit(s) beside `implies:`, in a single-line flow mapping:

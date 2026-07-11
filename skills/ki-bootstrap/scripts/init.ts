@@ -8,7 +8,7 @@
  * delegators call. (The engine excludes the chain-starter from the vendored set —
  * `resolve.ts`'s `resolveSet` deletes `BOOTSTRAP` before returning.)
  *
- *   bun scripts/init.ts <target-repo> [--new | --legacy | --tracking] [--dry-run]
+ *   bun scripts/init.ts <target-repo> [--ref <ref>] [--dry-run]
  */
 import { execFileSync } from 'node:child_process'
 import { dirname, resolve } from 'node:path'

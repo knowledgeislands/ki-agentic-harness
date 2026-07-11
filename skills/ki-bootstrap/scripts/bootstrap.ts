@@ -9,13 +9,11 @@
  * filename-convention discovery with a WARN if undeclared) and vendors either a
  * *copy* of the checker file (SCRIPT-7 — copies, not symlinks) or a generated thin
  * command-wrapper into the target's `.ki-meta/skills/<skill>/` (named by verb:
- * `audit.ts`/`conform.ts`), writes a `.ki-meta/bin/aggregate.ts` that discovers and
- * fans out over those copies, drops a `.ki-meta/bin/ki-audit` wrapper — the
- * `package.json`-free entry point — and a `.ki-meta/bin/ki-init` wrapper that
- * re-runs this chain at the ref recorded in the vendoring manifest. Where the
- * target *has* a `package.json`, it additionally installs that skill's
- * `ki:<suffix>:{audit,conform}` npm keys and the repo-wide `ki:audit` /
- * `ki:conform` / `ki:init` aggregates as convenience aliases over the same runner.
+ * `audit.ts`/`conform.ts`), plus a rendered HELP snapshot (`help.md`). It then writes
+ * a `.ki-meta/bin/aggregate.ts` that discovers and fans out over those copies, the
+ * four `package.json`-free entry points `.ki-meta/bin/{ki-audit, ki-conform, ki-init,
+ * ki-help}`, and stamps `.ki-meta/manifest.json` (harness ref + per-file hashes) so
+ * `ki-init` can re-run this chain at the same ref later.
  *
  * Remote transport (ADR-KI-HARNESS-007): the sibling `bootstrap.sh` is the
  * zero-install entry point — it fetches the source tarball at a pinned ref and
@@ -31,37 +29,26 @@
  * working tree; `--ref` records the ref in the manifest when that tree has no
  * `.git` (a tarball extract).
  *
- * Aggressiveness flags (one chain, three strengths):
- *   (default / --new)  INIT only — vendor + keys + aggregates.
- *   --legacy           INIT, then a full `ki:conform` pass (the migration path).
- *   --tracking         INIT, then `ki:audit` (report drift only).
+ * Bootstrap's one job is to build `.ki-meta/` — vendor each resolved skill's
+ * mechanical unit + HELP snapshot, write the `bin/` wrappers, stamp the manifest.
+ * It never touches `package.json` (the `ki:*` convenience keys are ki-engineering's
+ * to wire, as sugar over these bins). Re-running it is the single idempotent way to
+ * bring a target up to date — no separate legacy/tracking modes.
  *
- * Usage: bun bootstrap.ts <target-repo> [--new | --legacy | --tracking] [--all] [--dry-run]
+ * Usage: bun bootstrap.ts <target-repo> [--all] [--ref <ref>] [--dry-run]
  */
 
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { chmodSync, cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { chmodSync, cpSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { ensureScripts } from './package-scripts.ts'
-import { resolveSet, scriptKey, skillDir, vendorUnit } from './resolve.ts'
+import { resolveSet, SKILLS_ROOT, skillDir, vendorUnit } from './resolve.ts'
 
 const GREEN = '\x1b[32m'
 const DIM = '\x1b[2m'
 const RESET = '\x1b[0m'
 
 const VENDOR_DIR = '.ki-meta' // relative to the target repo root (dot-prefixed, generated-not-authored)
-
-interface Mode {
-  postConform: boolean
-  postAudit: boolean
-}
-
-function parseMode(argv: string[]): Mode {
-  if (argv.includes('--legacy')) return { postConform: true, postAudit: false }
-  if (argv.includes('--tracking')) return { postConform: false, postAudit: true }
-  return { postConform: false, postAudit: false } // --new / default
-}
 
 // The current harness ref — recorded in the manifest so `ki-init` can re-run the
 // chain at the same point later. Falls back to 'unknown' when not in a git
@@ -91,7 +78,7 @@ const SKILLS_ROOT_FOR_REF = resolve(import.meta.dirname, '..', '..', '..')
 const AGGREGATE_RUNNER = `#!/usr/bin/env bun
 // Vendored by ki-bootstrap. Runs each vendored skill checker under ../skills/ in
 // sequence for the given verb — no package.json required.
-// Usage: bun .ki-meta/bin/aggregate.ts <audit|conform|init>
+// Usage: bun .ki-meta/bin/aggregate.ts <audit|conform|init|help>
 import { execFileSync } from 'node:child_process'
 import { existsSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -99,13 +86,14 @@ import { fileURLToPath } from 'node:url'
 
 const verb = process.argv[2]
 if (!verb) {
-  console.error('usage: aggregate.ts <audit|conform|init>')
+  console.error('usage: aggregate.ts <audit|conform|init|help>')
   process.exit(2)
 }
 const binDir = dirname(fileURLToPath(import.meta.url))
-if (verb === 'init') {
-  // The local re-sync prompt: re-run the remote chain at the manifest's ref.
-  execFileSync(join(binDir, 'ki-init'), process.argv.slice(3), { stdio: 'inherit' })
+if (verb === 'init' || verb === 'help') {
+  // init: the local re-sync prompt (re-run the remote chain at the manifest's ref).
+  // help: the vendored HELP snapshots. Both exec the sibling wrapper.
+  execFileSync(join(binDir, verb === 'init' ? 'ki-init' : 'ki-help'), process.argv.slice(3), { stdio: 'inherit' })
   process.exit(0)
 }
 // Vendored copies are named by verb (audit.ts / conform.ts) — the skill dir already
@@ -140,11 +128,46 @@ process.exit(failed > 0 ? 1 : 0)
 // by dotfile managers (chezmoi). Usage: ./.ki-meta/bin/ki-audit [verb].
 const BIN_KI_AUDIT = `#!/usr/bin/env bash
 # Vendored by ki-bootstrap — the package.json-free entry to a repo's self-check.
-# Usage: ./.ki-meta/bin/ki-audit [audit|conform|init]   (default: audit)
+# Usage: ./.ki-meta/bin/ki-audit [audit|conform|init|help]   (default: audit)
 set -euo pipefail
 root="$(cd "$(dirname "\${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$root"
 exec bun ".ki-meta/bin/aggregate.ts" "\${1:-audit}"
+`
+
+// The conform twin — same runner, verb pinned, so the write pass is a first-class
+// entry beside ki-audit rather than an argument to it.
+const BIN_KI_CONFORM = `#!/usr/bin/env bash
+# Vendored by ki-bootstrap — apply the mechanical fixes across the vendored set.
+# Usage: ./.ki-meta/bin/ki-conform
+set -euo pipefail
+root="$(cd "$(dirname "\${BASH_SOURCE[0]}")/../.." && pwd)"
+cd "$root"
+exec bun ".ki-meta/bin/aggregate.ts" conform
+`
+
+// The vendored HELP surface: pure bash over the per-skill help.md snapshots the
+// engine renders at vendor time — readable even on a machine without bun.
+const BIN_KI_HELP = `#!/usr/bin/env bash
+# Vendored by ki-bootstrap — each governed skill's HELP block, rendered from its
+# SKILL.md at vendor time (re-synced by ki-init).
+# Usage: ./.ki-meta/bin/ki-help [skill]    (no argument: list the governed skills)
+set -euo pipefail
+meta="$(cd "$(dirname "\${BASH_SOURCE[0]}")/.." && pwd)"
+if [[ $# -eq 0 ]]; then
+  echo "governed skills (./.ki-meta/bin/ki-help <skill>):"
+  for d in "$meta"/skills/*/; do
+    s="$(basename "$d")"
+    [[ -f "$d/help.md" ]] && echo "  $s"
+  done
+  exit 0
+fi
+f="$meta/skills/$1/help.md"
+if [[ ! -f "$f" ]]; then
+  echo "no help vendored for '$1'" >&2
+  exit 1
+fi
+cat "$f"
 `
 
 // The re-bootstrap wrapper: re-runs the chain at the ref recorded in the manifest
@@ -185,26 +208,44 @@ interface VendoredFile {
   abs: string
 }
 
-function vendorSkill(target: string, skill: string, dryRun: boolean, manifestFiles: Record<string, string>): Array<[string, string]> {
-  const keys: Array<[string, string]> = []
+function vendorSkill(target: string, skill: string, dryRun: boolean, manifestFiles: Record<string, string>): void {
   const audit = vendorUnit(skill, 'audit')
-  if (!audit) return keys
+  if (!audit) return
   const destDir = join(target, VENDOR_DIR, 'skills', skill)
   const written: VendoredFile[] = []
 
   written.push(...vendorOne(destDir, 'audit', audit, dryRun))
-  keys.push([scriptKey(skill, 'audit'), `bun ${VENDOR_DIR}/skills/${skill}/audit.ts .`])
 
   const conform = vendorUnit(skill, 'conform')
   if (conform) {
     written.push(...vendorOne(destDir, 'conform', conform, dryRun))
-    keys.push([scriptKey(skill, 'conform'), `bun ${VENDOR_DIR}/skills/${skill}/conform.ts .`])
+  }
+
+  // HELP snapshot — rendered from the skill's SKILL.md at vendor time, the one
+  // moment the sources are guaranteed present, so `.ki-meta/bin/ki-help` answers
+  // offline in a target that has no SKILL.md files. This resolves
+  // ADR-KI-HARNESS-007's former open question by rendered snapshot; drift is
+  // covered by the manifest hash like every other vendored file.
+  const helpAbs = join(destDir, 'help.md')
+  try {
+    const help = execFileSync('bun', [join(SKILLS_ROOT, '..', 'scripts', 'skill-help.ts'), skill], {
+      cwd: join(SKILLS_ROOT, '..'),
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore']
+    })
+    console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/skills/${skill}/help.md (help snapshot)${RESET}`)
+    if (!dryRun) {
+      mkdirSync(destDir, { recursive: true })
+      writeFileSync(helpAbs, help)
+      written.push({ rel: `${VENDOR_DIR}/skills/${skill}/help.md`, abs: helpAbs })
+    }
+  } catch {
+    console.log(`${DIM}warn: no help snapshot for ${skill} (renderer unavailable)${RESET}`)
   }
 
   for (const f of written) {
     if (!dryRun) manifestFiles[f.rel] = sha256File(f.abs)
   }
-  return keys
 }
 
 // Vendors one declared unit: a checker FILE is copied as-is; a COMMAND is wrapped
@@ -282,19 +323,16 @@ function main(): void {
   const target = resolve(positional[0] ?? '.')
   const dryRun = rest.includes('--dry-run')
   const all = rest.includes('--all')
-  const mode = parseMode(rest)
 
-  // No `package.json` is required — a repo self-governs through the vendored
-  // `.ki-meta/` runner and `.ki-meta/bin/ki-audit` alone (dotfiles, KB, tap). Where a
-  // package.json *does* exist we additionally splice the `ki:*` convenience keys.
-  const hasPackageJson = existsSync(join(target, 'package.json'))
-
+  // No `package.json` is ever required or touched — a repo self-governs through the
+  // vendored `.ki-meta/` runner and its `bin/` wrappers alone (dotfiles, KB, tap, or
+  // code repo alike). The `ki:*` convenience keys are ki-engineering's to wire, as
+  // sugar over these same bins.
   const set = resolveSet(target, all, seeds)
   console.log(`${DIM}bootstrap ${target} — skills: ${set.join(', ')}${RESET}`)
 
-  const keys: Array<[string, string]> = []
   const manifestFiles: Record<string, string> = {}
-  for (const skill of set) keys.push(...vendorSkill(target, skill, dryRun, manifestFiles))
+  for (const skill of set) vendorSkill(target, skill, dryRun, manifestFiles)
 
   // Vendor the aggregate runner + the package.json-free entry points — both under
   // .ki-meta/ so the whole generated surface is dot-prefixed (off the repo's own bin/,
@@ -302,47 +340,27 @@ function main(): void {
   const ref = refOverride ?? harnessRef()
   const aggRel = join(VENDOR_DIR, 'bin', 'aggregate.ts')
   const auditBinRel = join(VENDOR_DIR, 'bin', 'ki-audit')
+  const conformBinRel = join(VENDOR_DIR, 'bin', 'ki-conform')
   const initBinRel = join(VENDOR_DIR, 'bin', 'ki-init')
+  const helpBinRel = join(VENDOR_DIR, 'bin', 'ki-help')
   const manifestRel = join(VENDOR_DIR, 'manifest.json')
   if (!dryRun) {
     mkdirSync(join(target, VENDOR_DIR, 'bin'), { recursive: true })
     writeFileSync(join(target, aggRel), AGGREGATE_RUNNER)
     writeFileSync(join(target, auditBinRel), BIN_KI_AUDIT)
     chmodSync(join(target, auditBinRel), 0o755)
+    writeFileSync(join(target, conformBinRel), BIN_KI_CONFORM)
+    chmodSync(join(target, conformBinRel), 0o755)
     writeFileSync(join(target, initBinRel), binKiInit(ref))
     chmodSync(join(target, initBinRel), 0o755)
+    writeFileSync(join(target, helpBinRel), BIN_KI_HELP)
+    chmodSync(join(target, helpBinRel), 0o755)
     manifestFiles[aggRel] = sha256File(join(target, aggRel))
     writeFileSync(join(target, manifestRel), `${JSON.stringify({ ref, files: manifestFiles }, null, 2)}\n`)
   }
-  console.log(`${GREEN}runner${RESET} ${DIM}→ ${aggRel}, ${auditBinRel}, ${initBinRel}, ${manifestRel}${RESET}`)
-
-  // Additive convenience: where a package.json exists, wire the repo-wide aggregate
-  // keys over the same runner. Without one, `./.ki-meta/bin/ki-audit` is the entry point.
-  if (hasPackageJson) {
-    keys.push(['ki:audit', `bun ${aggRel} audit`])
-    keys.push(['ki:conform', `bun ${aggRel} conform`])
-    keys.push(['ki:init', `bun ${aggRel} init`])
-    ensureScripts(target, keys, dryRun)
-  }
-
-  if (dryRun) return
-  // Post-INIT passes run the vendored runner directly (not `bun run ki:*`), so they
-  // work whether or not the target has a package.json. The verb is held in a variable
-  // so a bare 'conform'/'audit' arg isn't mistaken for a CLI binary by static analysis.
-  // CONFORM here fans out over each skill's own vendored `conform.ts` — it never
-  // re-syncs the vendored *copies themselves* (that would be circular: in a
-  // bootstrapped-only repo the local copies are the only source present). Re-syncing
-  // the copies is `ki-init`'s job, surfaced as an advisory by the repo standard's
-  // integrity checker when they've drifted from the manifest.
-  const postVerb = mode.postConform ? 'conform' : mode.postAudit ? 'audit' : null
-  if (postVerb) {
-    console.log(`${DIM}${mode.postConform ? '--legacy' : '--tracking'}: running ${postVerb}${RESET}`)
-    try {
-      execFileSync('bun', [aggRel, postVerb], { cwd: target, stdio: 'inherit' })
-    } catch {
-      /* the runner surfaces its own findings / drift */
-    }
-  }
+  console.log(
+    `${GREEN}runner${RESET} ${DIM}→ ${aggRel}, ${auditBinRel}, ${conformBinRel}, ${initBinRel}, ${helpBinRel}, ${manifestRel}${RESET}`
+  )
 }
 
 main()

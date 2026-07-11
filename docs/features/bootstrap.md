@@ -26,15 +26,15 @@ _Verify:_ seeding `ki-website` resolves a set that also contains `ki-website-clo
 
 ### BOOT-004 — Repo-wide aggregates
 
-INIT MUST vendor a `.ki-meta/bin/aggregate.ts` that discovers the vendored checkers on the filesystem (no `package.json` read) and fans out over them for a given verb, so the aggregate stays correct as skills are vendored in or out. Where the target has a `package.json`, INIT MUST additionally install (or refresh) the `ki:audit` / `ki:conform` / `ki:init` convenience keys over that runner.
+INIT MUST vendor a `.ki-meta/bin/aggregate.ts` runner that discovers the vendored checkers on the filesystem (no `package.json` read) and fans out over them for a given verb, so the aggregate stays correct as skills are vendored in or out. The `package.json` convenience keys are explicitly OUT of `ki-bootstrap`'s scope — `ki-engineering` wires them later as sugar over this runner.
 
-_Verify:_ a bootstrapped repo has `.ki-meta/bin/aggregate.ts`; running `bun .ki-meta/bin/aggregate.ts audit` invokes every vendored `ki:<skill>:audit` in sequence, and a repo with a `package.json` also has `"ki:audit": "bun .ki-meta/bin/aggregate.ts audit"`.
+_Verify:_ a bootstrapped repo has `.ki-meta/bin/aggregate.ts`; running `bun .ki-meta/bin/aggregate.ts audit` invokes every vendored `ki:<skill>:audit` in sequence.
 
 ### BOOT-007 — package.json-free entry point
 
-INIT MUST write an executable `.ki-meta/bin/ki-audit` wrapper that runs the vendored aggregate, so a repo with no `package.json` (dotfiles, KB, tap) governs itself through `./.ki-meta/bin/ki-audit [audit|conform|init]` alone, per [ADR-KI-HARNESS-007](../decisions/ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md).
+INIT MUST write four executable wrappers `.ki-meta/bin/{ki-audit,ki-conform,ki-init,ki-help}` (each mode `0755`) over the vendored aggregate, so a repo with no `package.json` (dotfiles, KB, tap) governs itself through `./.ki-meta/bin/ki-audit`, `./.ki-meta/bin/ki-conform`, `./.ki-meta/bin/ki-init`, and `./.ki-meta/bin/ki-help <skill>` alone, per [ADR-KI-HARNESS-007](../decisions/ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md). `ki-help` is pure bash over the vendored `help.md` snapshots, so it runs with no `bun`.
 
-_Verify:_ after bootstrap, `.ki-meta/bin/ki-audit` exists, is executable (mode `0755`), and `./.ki-meta/bin/ki-audit` runs the same aggregate as `bun run ki:audit`.
+_Verify:_ after bootstrap, all four of `.ki-meta/bin/{ki-audit,ki-conform,ki-init,ki-help}` exist and are executable (mode `0755`), and `./.ki-meta/bin/ki-help <skill>` prints its snapshot with `bun` off `PATH`.
 
 ## The chain
 
@@ -44,11 +44,7 @@ Every governance skill MUST own a `scripts/init.ts` that delegates to the `ki-bo
 
 _Verify:_ each `skills/*/scripts/init.ts` execs `../../ki-bootstrap/scripts/bootstrap.ts` and passes `--seed <its own name>`.
 
-### BOOT-006 — Aggressiveness flags
-
-The chain MUST expose three strengths as flags over one engine, not a separate orchestrator: `--new` (default, INIT only), `--legacy` (INIT then a full `ki:conform`), and `--tracking` (INIT then `ki:audit`).
-
-_Verify:_ `bootstrap.ts` `parseMode` maps `--legacy` to a post-conform pass and `--tracking` to a post-audit pass, with `--new` the default.
+Re-running the idempotent bootstrap chain is the single update path — there are no aggressiveness flags; a re-run brings the target up to date.
 
 ### BOOT-008 — Vendored-set alignment check
 

@@ -5,7 +5,7 @@
 # assumed beyond bash/curl/tar:
 #
 #   curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh \
-#     | bash -s -- <target> [--ref <ref>] [--new | --legacy | --tracking] [--dry-run]
+#     | bash -s -- <target> [--ref <ref>] [--dry-run]
 #
 # It fetches the harness source tarball at the pinned ref (default: main),
 # extracts it to a temp dir, and runs the chain engine (bootstrap.ts) from that

@@ -15,14 +15,13 @@
  * Usage:
  *   bun link-agents.ts [target-repo]   link declared agents into <target>/.claude/agents (default cwd)
  *   --dry-run    print what would change, touch nothing
- *   --check      audit only (no mutation): links match expected, ki:agents:link:project script present,
- *                .claude/agents gitignored; exits non-zero on FAIL
+ *   --check      audit only (no mutation): links match expected and .claude/agents gitignored; exits non-zero on FAIL
  */
 
 import { existsSync, lstatSync, mkdirSync, readdirSync, readlinkSync, realpathSync, rmSync, symlinkSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { ensureGitignore, ensureScript, gitignoresPath, hasScript, readText } from './package-scripts.ts'
+import { ensureGitignore, gitignoresPath, readText } from './package-scripts.ts'
 
 // ── Self-location: find the harness agents/governance/ root through the (possibly symlinked) script path ──
 const SELF = realpathSync(fileURLToPath(import.meta.url))
@@ -112,7 +111,6 @@ function cmdLink(target: string, set: string[], dryRun: boolean): void {
 
   if (set.length > 0) {
     ensureGitignore(target, '.claude/agents', dryRun)
-    ensureScript(target, 'ki:agents:link:project', 'bun .claude/skills/ki-bootstrap/scripts/link-agents.ts .', dryRun)
   }
 }
 
@@ -143,19 +141,8 @@ function cmdCheck(target: string, set: string[]): number {
       findings.push({ severity: 'WARN', criterion: 'BOOT-6', message: `dangling links (harness not reachable): ${broken.join(', ')}` })
   }
 
-  if (set.length > 0) {
-    const pkgText = readText(join(target, 'package.json'))
-    findings.push(
-      hasScript(pkgText, 'ki:agents:link:project')
-        ? { severity: 'PASS', criterion: 'BOOT-7', message: 'package.json has a ki:agents:link:project script' }
-        : {
-            severity: 'WARN',
-            criterion: 'BOOT-7',
-            message: 'no ki:agents:link:project script in package.json — links are not reproducible on clone'
-          }
-    )
-  }
-
+  // package.json script-key wiring (ki:agents:link:project) is out of scope here — it is
+  // ki-engineering's concern. This linker governs only the symlink set and the .gitignore.
   findings.push(
     gitignoresPath(readText(join(target, '.gitignore')), '.claude/agents')
       ? { severity: 'PASS', criterion: 'BOOT-8', message: '.claude/agents/ is gitignored' }

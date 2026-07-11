@@ -9,7 +9,7 @@
  * composition — running a sibling in sequence — not a cross-skill import, so the
  * skill stays valid standalone (ADR-KI-HARNESS-SKILLS-004).
  *
- *   bun scripts/init.ts <target-repo> [--new | --legacy | --tracking] [--dry-run]
+ *   bun scripts/init.ts <target-repo> [--ref <ref>] [--dry-run]
  *
  * Remote transport (documented follow-on, per ki-bootstrap's engine): the same run
  * reached from a raw GitHub URL, pinned to a ref.
