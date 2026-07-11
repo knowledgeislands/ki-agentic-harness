@@ -27,7 +27,7 @@ Modes: **AUDIT · CONFORM · INIT · REFRESH** (named, alphabetical). Invoked as
    - `ki-engineering` — common toolchain (package.json script families, tsconfig, biome)
    - `ki-skills` linter (`bun run ki:skills:lint`) — if `skills/` is populated
    - `ki-agents` linter — if `agents/` is populated
-   - `ki-mcp` audit — if `mcp/` has server code The saved workflow `.claude/workflows/ki-multi-skill-audit.ts` implements this fan-out. See [ADR-KI-HARNESS-002](../../docs/decisions/ADR-KI-HARNESS-002-purpose-scope-structure.md) for the bundle layout this step audits.
+   - `ki-mcp` audit — if `mcp/` has server code The saved workflow `.claude/workflows/ki-multi-skill-audit.ts` implements this fan-out. See [ADR-KI-HARNESS-002](../../docs/decisions/ADR-KI-HARNESS-002-repository-structure.md) for the bundle layout this step audits.
 3. **Judge the prose the script can't.** Walk the [J]-tagged criteria in [the rubric](references/audit-rubric.md):
    - **CLAUDE.md coverage** — does it open with a what-the-harness-is paragraph covering all five parts? Is the skill map present (if skills exist) and does it reflect current reality? Are working conventions documented for each part? Are the key `bun run *` commands listed?
    - **Freshness** — do the skill count, shelf statuses, and command names in `CLAUDE.md` still match the actual repo state?

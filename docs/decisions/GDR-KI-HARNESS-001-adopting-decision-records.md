@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-001: Adopting Decision Records
+# GDR-KI-HARNESS-001: Adopting Decision Records
 
 **Date:** 2026-06-23
 
@@ -12,9 +12,9 @@ The key question was whether to adopt a strict Nygard ADR format, a Y-statements
 
 ## Decision
 
-The harness adopts ADRs as its canonical record for significant decisions. The format used is:
+The harness adopts Decision Records (DRs) as its canonical record for significant decisions. The format used is:
 
-- **Title** — H1 heading, `# ADR-<SCOPE>-NNN: <title>`.
+- **Title** — H1 heading, `# <PREFIX>-<SCOPE>-NNN: <title>`.
 - **Date** (optional) — a bold key-value field immediately under the title.
 - **Context** — why the decision was needed; the forces at play.
 - **Decision** — what was decided, stated plainly.

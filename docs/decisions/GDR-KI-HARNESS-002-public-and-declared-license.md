@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-008: Public repos and a declared license, decoupled from visibility
+# GDR-KI-HARNESS-002: Public repos and a declared license, decoupled from visibility
 
 **Date:** 2026-07-09
 

@@ -31,4 +31,4 @@ The per-artefact grammar (the `ki-<concern>[-<technology>]` form and how names r
 
 ## References
 
-- [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-purpose-scope-structure.md) — the purpose, scope, and bundle layout that is the source this decision projects.
+- [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-repository-structure.md) — the five-part bundle layout that is the source this decision projects.

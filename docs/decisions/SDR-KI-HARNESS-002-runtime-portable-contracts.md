@@ -1,4 +1,4 @@
-# SDR-KI-HARNESS-001: Runtime-portable contracts and executor positioning
+# SDR-KI-HARNESS-002: Runtime-portable contracts and executor positioning
 
 **Date:** 2026-07-11
 
@@ -21,7 +21,7 @@ Skills, checkers, and configuration must avoid runtime-specific assumptions wher
 
 ## References
 
-- [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-purpose-scope-structure.md) — the purpose and scope of the harness whose positioning this record sets.
+- [SDR-KI-HARNESS-001](SDR-KI-HARNESS-001-purpose-and-scope.md) — the purpose and scope of the harness whose positioning this record sets.
 - [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-mechanical-first-progressive-enhancement.md) — the mechanical-first paradigm this strategy generalises.
 - [Hermes Agent](https://github.com/NousResearch/hermes-agent) — the batteries-included persistent runtime.
 - [pi.dev](https://pi.dev) — the minimal TypeScript runtime.

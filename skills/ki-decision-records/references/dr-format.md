@@ -26,7 +26,7 @@ The quotable standard behind [the rubric](audit-rubric.md) and [`../scripts/audi
 - **`NNN`** is a zero-padded decimal serial (≥ 3 digits). Monotonically increasing **per prefix within the `<SCOPE>` namespace** — `GDR-KI-ARCADIA-001` and `SDR-KI-ARCADIA-001` may share the integer `001` because they carry different prefixes. The full DR code (prefix + scope + serial) is the globally unique identifier. A pending DR not yet assigned a real serial uses the literal string `XXX` in place of `NNN` (e.g. `GDR-KI-ARCADIA-XXX-pending-decision.md`); it is renamed to the next available per-prefix serial once it is numbered.
 - **`<slug>`** (optional, preferable) is a short lowercase hyphenated title summary. Makes the file self-describing when referenced by ID from other records or tools.
 
-Examples: `GDR-KI-ARCADIA-001-adopting-decision-records`, `SDR-KI-ARCADIA-001-knowledge-islands-strategy`, `ADR-KI-HARNESS-001-adopting-adrs`.
+Examples: `GDR-KI-ARCADIA-001-adopting-decision-records`, `SDR-KI-ARCADIA-001-knowledge-islands-strategy`, `ADR-KI-HARNESS-002-repository-structure`.
 
 ## Prefix table
 

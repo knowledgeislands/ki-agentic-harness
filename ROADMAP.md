@@ -38,9 +38,9 @@ The checker contract now pins the exact `--json` wrapper shape (`skills/ki-engin
 
 ## Future
 
-### Reclassify mis-typed DRs under the unified prefix scheme _(candidate)_
+### Reclassify the remaining borderline DRs _(candidate)_
 
-The DR format's own exemplar files "adopting decision records" as a **GDR**, yet this repo carries it as [ADR-KI-HARNESS-001](docs/decisions/ADR-KI-HARNESS-001-adopting-decision-records.md); [ADR-KI-HARNESS-008](docs/decisions/ADR-KI-HARNESS-008-public-and-declared-license.md) (public + declared license) is policy rather than architecture; and the deepened ADR-004 tenet reads governance-flavoured. A reclassification sweep churns filenames, per-prefix serials, sibling links, and the reading-order index, so it is a deliberate one-shot owned by `ki-decision-records`: enumerate the mis-typed records, decide each one's true prefix against the nine-prefix scheme in the skill's format reference, and land the renames with full link/index integrity in a single pass.
+The main reclassification landed: [GDR-KI-HARNESS-001](docs/decisions/GDR-KI-HARNESS-001-adopting-decision-records.md) (adopting DRs), the [SDR-KI-HARNESS-001](docs/decisions/SDR-KI-HARNESS-001-purpose-and-scope.md) / [ADR-KI-HARNESS-002](docs/decisions/ADR-KI-HARNESS-002-repository-structure.md) split (purpose/scope vs structure), and [GDR-KI-HARNESS-002](docs/decisions/GDR-KI-HARNESS-002-public-and-declared-license.md) (license) now carry their true prefixes. What remains is a small set of genuinely borderline records the sweep deliberately left as `ADR`: `ADR-KI-HARNESS-004` (mechanical-first reads governance-flavoured), `ADR-KI-HARNESS-TOOLCHAIN-002` (an adopt/decline tooling survey, closer to strategy), and `ADR-KI-HARNESS-SKILLS-007` (ki-housekeeping, closer to operations). Each is a judgment call with a weak case for retyping; revisit only if the ambiguity starts to mislead.
 
 ### Sweep decisions, feature definitions, and guides for drift and stale citations _(candidate)_
 
