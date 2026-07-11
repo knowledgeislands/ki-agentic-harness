@@ -63,6 +63,8 @@ Scaffold a new marketplace repo:
 
 ### Mode REFRESH
 
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
+
 Re-anchor the standard to the current Claude plugin/marketplace spec:
 
 1. **Read [the source list](references/sources.md)** — the authoritative Claude plugin + marketplace manifest spec, each with a `last reviewed` date.

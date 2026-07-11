@@ -71,6 +71,8 @@ INIT scaffolds no standalone artifact — plans are created by the `/plan` comma
 
 ### Mode REFRESH
 
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
+
 Revisit the methodology against current practice:
 
 1. Check whether the near-horizon principle still matches how work flows from ROADMAP into plans.

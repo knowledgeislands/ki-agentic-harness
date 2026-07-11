@@ -1,5 +1,7 @@
 # REFRESH
 
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
+
 _On-demand procedure for `ki-housekeeping`'s REFRESH mode. Tracked sources are declared in [sources.md](sources.md); the standard being refreshed lives in [memory-format.md](memory-format.md)._
 
 Run when [sources.md](sources.md)'s `last reviewed` date has aged past its cadence, or on request.

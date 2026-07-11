@@ -1,5 +1,7 @@
 # Mode REFRESH — keep the structure model current
 
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
+
 _On-demand procedure for kb's REFRESH mode. The shared model — the five-zone structure, routing test, memory cascade, project bindings, and Step 1 (Load context) — lives in [`SKILL.md`](../SKILL.md) and is already loaded; this file is the procedure only._
 
 This skill carries the zone model, routing test, and project-bindings table as fixed knowledge; it must not drift from how the bases that use it are really organised - especially once installed into a shared/cloud catalogue, where it is long-lived and far from its author. Run this periodically (monthly, with the other skills), or when someone asks "is the KB skill still current".

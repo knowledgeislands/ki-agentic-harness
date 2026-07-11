@@ -1,5 +1,7 @@
 # Mode REFRESH — re-anchor the standard to Homebrew's rules
 
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
+
 _On-demand procedure for ki-homebrew-tap's REFRESH mode. The cadence and source list are declared in [`sources.md`](sources.md). The full standard lives in [`homebrew-tap-standard.md`](homebrew-tap-standard.md)._
 
 This skill **wraps Homebrew's external standard** — the Formula Cookbook, `brew audit`, and `brew style`. Those move (new required fields, deprecated DSL, changed style rules), and the in-house standard is built on top. This mode keeps it honest: it pulls Homebrew's current rules and diffs them against what this skill codifies, so the audit never green-lights a formula against a Cookbook that has moved on. Run it on the declared cadence (see [`sources.md`](sources.md)) or when someone asks "is our homebrew-tap standard up to date".

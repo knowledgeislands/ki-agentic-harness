@@ -44,6 +44,8 @@ INIT scaffolds no standalone artifact — house style has no document of its own
 
 ### Mode REFRESH — re-anchor the conventions to their sources
 
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
+
 The house conventions sit on top of external tools and specs (CommonMark, Prettier, markdownlint, the TOML spec), which move. Run on its declared cadence (see `references/sources.md`), or when asked "are the authoring conventions current".
 
 1. **Read [the source list](references/sources.md)** — each tracked source with its `last reviewed` date.

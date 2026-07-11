@@ -1,5 +1,7 @@
 # Mode REFRESH — re-anchor the standard to the latest MCP spec
 
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
+
 _On-demand procedure for mcp's REFRESH mode. The cadence and source list are declared in [`sources.md`](sources.md). The full standard lives in [`workspace-mcp-standard.md`](workspace-mcp-standard.md)._
 
 The MCP specification is versioned by date and moves; the in-house standard is built **on top of** it. This mode keeps the standard honest — it pulls the current gold standard and diffs it against what this skill codifies, so the audit never green-lights a repo against a spec that has moved on. Run it on its declared cadence (see [`sources.md`](sources.md)), or when someone asks "is our MCP standard up to date".

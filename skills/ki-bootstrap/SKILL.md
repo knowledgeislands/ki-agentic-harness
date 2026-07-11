@@ -35,10 +35,9 @@ The mechanical half of INIT, and the start of the bootstrap chain. Run it agains
 
 ```bash
 bun scripts/bootstrap.ts <target-repo> [--all] [--ref <ref>] [--dry-run]
-# remote (zero-install — bootstrap.sh fetches the tarball at the ref and runs the engine from it):
-# curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh | bash -s -- <target> [--ref <ref>]
-# remote, bun already installed (pin a sha — bunx caches floating git refs):
-# bunx github:knowledgeislands/ki-agentic-harness#<ref> <target> --ref <ref>
+# remote (zero-install — cd into the repo, then curl | sh; bootstrap.sh fetches the tarball and runs the engine, defaulting to cwd@main):
+# curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh | sh
+# advanced: … | sh -s -- <target> --ref <sha>   (args ripple through)   ·   bun already installed: bunx github:knowledgeislands/ki-agentic-harness#<sha> <target> --ref <sha>
 ```
 
 1. **Resolve the set.** The baseline `ki-repo` + `ki-authoring`, plus every `[ki-<skill>]` table declared in the target's `.ki-config.toml`, plus the transitive `implies:` closure of all of them (the same graph `ki:skills:graph` renders). `ki-bootstrap` itself is never vendored — it is the global chain-starter.
@@ -63,6 +62,8 @@ The mechanical half is `scripts/conform-bootstrap.ts` (`bun run ki:bootstrap:con
 4. **Re-run AUDIT** until clean.
 
 ### Mode REFRESH — re-anchor
+
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
 
 Canonical, on-change: this skill tracks no external spec. Re-anchor when the install model changes — the INIT chain / self-sufficiency contract (the vendor layout, the aggregate runner, the `implies:` graph shape), the coverage-table contract (`ki-repo`), the `[ki-agents]` gating convention, the skill/agent discovery locations Claude Code reads, or the `ki:skills:link:project`/`ki:agents:link:project` conventions. Read [the source list](references/sources.md), confirm the standard still matches the reference implementation, propose a diff, bump the dates.
 

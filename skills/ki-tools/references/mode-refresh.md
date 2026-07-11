@@ -1,5 +1,7 @@
 # Mode REFRESH — re-anchor the standard to its sources
 
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
+
 _On-demand procedure for tools' REFRESH mode. The cadence and source list are declared in [`sources.md`](sources.md). The full standard lives in [`tools-standard.md`](tools-standard.md)._
 
 The tool-repo standard sits on top of moving external specs (shellcheck, bats, keep-a-changelog, semver, XDG) and the reference repo `tools-mgit`. This mode keeps the standard honest — it re-fetches each source and diffs it against what the skill codifies, so the audit never green-lights a repo against a spec that has moved on. Run it on the declared cadence (see [`sources.md`](sources.md)), or when someone asks "is our tools standard up to date".

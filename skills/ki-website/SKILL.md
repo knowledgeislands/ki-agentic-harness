@@ -83,6 +83,8 @@ Use the canonical shape from **[the standard](references/eleventy-site-standard.
 
 ### Mode REFRESH — re-anchor the standard to its sources
 
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
+
 The standard pins volatile versions (Eleventy, Tailwind, Lucide) and Tailwind-4 idioms that move. Run on its declared cadence (see `references/sources.md`), or when asked "is the website standard current".
 
 1. **Read [the source list](references/sources.md)** — each source with its `last reviewed` date.

@@ -60,6 +60,8 @@ Copy the `package.json` script families, `tsconfig.json`/`biome.json` (and `tsco
 
 ### Mode REFRESH — re-anchor the toolchain pins to their sources
 
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
+
 The standard pins volatile versions (Bun, Node, Biome, TypeScript, vitest, syncpack, markdownlint). Run on its declared cadence (see `references/sources.md`), or when asked "are the engineering standards current".
 
 1. **Read [the source list](references/sources.md)** — each pin with its `last reviewed` date.

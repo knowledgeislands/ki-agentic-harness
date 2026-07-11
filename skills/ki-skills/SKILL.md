@@ -67,6 +67,8 @@ Review a skill (or every skill in a repo) against the rubric and report.
 
 ### Mode REFRESH — re-anchor best practice
 
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
+
 Keep the rubric current — the standard and the community move, and this is why the skill tracks its own sources. Run on its declared cadence (see `references/sources.md`), or when asked "is the skills rubric current".
 
 1. **Read [the source list](references/sources.md)** — the tracked authoritative + community sources, each with a `last reviewed` date and what it governs.

@@ -52,6 +52,8 @@ Modes: **AUDIT · CONFORM · INIT · REFRESH** (named, alphabetical). Invoked as
 
 ### Mode REFRESH — re-anchor the standard
 
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
+
 The harness standard is a KI architectural convention, not an external spec — it is grounded in the [ki-agentic-harness](../../README.md) as the reference implementation. REFRESH means verifying the standard reflects current practice, and checking the external sources it builds on (Agent Skills, Claude Code subagent docs) for changes that affect the harness contract.
 
 1. **Read [the source list](references/sources.md)** — tracked sources, each with a `last reviewed` date.

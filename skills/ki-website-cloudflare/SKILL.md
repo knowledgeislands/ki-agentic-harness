@@ -78,6 +78,8 @@ Follow **[the setup guide](references/setup-guide.md)** — it is the step-by-st
 
 ### Mode REFRESH — re-anchor the standard to its sources
 
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
+
 The standard pins volatile facts (the wrangler version, Static-Assets config keys, the Pages-deprecation status). Run on its declared cadence (see `references/sources.md`), or when asked "is the hosting standard current".
 
 1. **Read [the source list](references/sources.md)** — each source with its `last reviewed` date.

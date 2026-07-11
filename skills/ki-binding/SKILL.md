@@ -47,6 +47,8 @@ INIT scaffolds no standalone artifact — the single source (`mcps.yaml`) lives 
 
 ### Mode REFRESH — re-anchor
 
+**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
+
 Re-anchor when a surface's config contract changes, a surface is added or removed, or the Cowork gate is resolved. The **first open gate** is the Cowork external-edit check: verify an external edit to `local-agent-mode-sessions/<account>/<workspace>/cowork_settings.json` is honoured on next Cowork launch; record the outcome in [cross-surface-enablement.md](../ki-mcp/references/cross-surface-enablement.md). Read [the source list](references/sources.md), confirm the standard still matches the chezmoi template and each surface's real config, propose a diff, bump the dates.
 
 ## Composition
