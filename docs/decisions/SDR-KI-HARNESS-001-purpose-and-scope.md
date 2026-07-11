@@ -4,7 +4,7 @@
 
 ## Context
 
-The `ki-agentic-harness` repository accumulates several kinds of artefact — governance skills, agent definitions, MCP server wrappers, evaluation fixtures, workflow scripts. Without an explicit statement of what this repository is for — and what it is not for — its scope tends to drift, and contributors must infer purpose from content.
+The `ki-agentic-harness` repository accumulates several kinds of artefact — agent skills, agent definitions, MCP servers, evaluation fixtures, workflow scripts. Without an explicit statement of what this repository is for — and what it is not for — its scope tends to drift, and contributors must infer purpose from content.
 
 ## Decision
 
