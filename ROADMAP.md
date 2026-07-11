@@ -36,6 +36,14 @@ The `.ki-meta` vendoring mechanism carries any per-skill mechanical script — C
 
 The checker contract now pins the exact `--json` wrapper shape (`skills/ki-engineering/references/checker-contract.md`: `{concern, target, generatedAt, summary, findings: [{level, area, msg}]}`), written up after `.ki-meta/bin/aggregate.ts`'s recap feature had to grow shape-tolerance logic to survive `ki-housekeeping`'s bare-array, numeric-severity output. Four checkers still deviate: `ki-housekeeping` (bare array, numeric `Sev` enum — its `SEV_LABELS` map already gives the string names, so this is a wrap-and-rename), `ki-binding` (`{severity,criterion,message}` field names, no `summary`/`generatedAt` — a straight rename, severity is already string-valued), and `ki-decision-records` / `ki-feature-definitions` (no `--json` support at all, but both carry the same numeric `Sev`+`SEV_LABELS` pattern as `ki-housekeeping`, so adding it is the same small fix). None require restructuring the checks themselves — each is ~10-20 lines. Once conformed, the aggregator's shape-detection fallback in `aggregate.ts` becomes dead weight and can be simplified back to a single wrapper-object read path.
 
+### Reconcile the harness's own `.ki-meta/` with the documented bin surface
+
+`onboarding.md` and ADR-KI-HARNESS-007 describe bootstrap building four `./.ki-meta/bin/{ki-audit,ki-conform,ki-init,ki-help}` wrappers plus a `.ki-meta/manifest.json`, but the harness's own `.ki-meta/bin/` currently holds only `aggregate.ts` and `ki-audit`, with no manifest. Either the harness has not been re-bootstrapped onto the current chain, or the surface narrowed. Re-run bootstrap (or correct the guide) so the harness's self-hosted `.ki-meta/` matches what its docs promise — the onboarding guide claims these blocks are test-exercised and cannot drift, so the gap is notable.
+
+### Codify the generated-code lint/knip exclusion in `ki-engineering`
+
+ADR-KI-HARNESS-TOOLCHAIN-005 records that generated and vendored code (`src/generated/`, the vendored-checker tree) is excluded from Biome and knip — applied per-repo in config today, not stated in the standard. Lift it into `ki-engineering` so its AUDIT expects the exclusions (a generated tree present but not excluded is a finding) and its exemplars show the `!`-negated `files.includes` and the `knip.ignore` entries.
+
 ## Future
 
 ### Reclassify the remaining borderline DRs _(candidate)_
@@ -45,6 +53,10 @@ The main reclassification landed: [GDR-KI-HARNESS-001](docs/decisions/GDR-KI-HAR
 ### Sweep decisions, feature definitions, and guides for drift and stale citations _(candidate)_
 
 Each governance skill's own REFRESH mode checks its **standard** against its sources, and the scheduled `ki-skills-refresh` sweep honours that cadence — but nothing checks the **content written under those standards** for staleness or cross-artifact drift: whether a DR's `## References` still point at sibling records that exist and haven't been retitled, whether a feature definition's cited decisions still hold, whether a guide in `docs/guides/` still describes what the skills actually do today. `ki-decision-records`'s own mechanical checker (`audit-drs.ts`) already validates DR structure and index completeness within `docs/decisions/`, but stops at that directory's boundary — it doesn't reach into `docs/features/` or `docs/guides/` to check the links and claims that cross between them. Investigate a periodic sweep — mechanical where citation existence can be checked by a script (dead internal links, missing index entries), judgment-based where content currency is the question (does this guide's description still match the skill it documents) — scoped to run less often than per-commit, more like the `ki-skills-refresh` cadence. Decide ownership: a natural extension of `ki-decision-records`' own REFRESH, a `ki-feature-definitions` counterpart, or a cross-cutting sweep skill that walks all three surfaces in one pass.
+
+### Roll out the expanded Feature Definitions pattern to the fleet _(candidate)_
+
+The harness's `docs/features/` now covers the five-part bundle, the universal modes, and the checker contract as a checkable RFC-2119 inventory — a worked exemplar of `ki-feature-definitions`. Roll the same pattern out to the sibling repos (the `mcp-*` servers, `ki-website`, the KB), each getting a small `docs/features/` describing what that repo does and checkable against its own behaviour, using the harness set as the template.
 
 ### Hooks as a governed harness surface — starting with the plan-file lifecycle _(candidate)_
 

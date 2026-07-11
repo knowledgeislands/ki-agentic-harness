@@ -29,7 +29,7 @@ Only `ki-bootstrap` is installed globally; every other skill is project-local, w
 | [Overview](docs/guides/user-guide/overview.md) | A short account: what the harness is, what it does for its owner, how the parts fit. |
 | [Skills](docs/guides/user-guide/skills.md) | What a skill is, the map of the set (the six clusters and their interdependencies), and the shared governance-skill shape. |
 | [Skill catalogue](docs/guides/user-guide/skill-catalogue.md) | Every skill, one by one, grouped by cluster — what each governs and its mechanical checker. |
-| [Onboarding](docs/guides/user-guide/onboarding.md) | Onboarding a repo: the bootstrap chain, the four modes, and the greenfield / legacy / remote-run flows. |
+| [Onboarding](docs/guides/user-guide/onboarding.md) | Onboarding a repo: the remote-run transport, what the bootstrap chain builds in `.ki-meta/`, the day-to-day bins, and keeping current. |
 | [Skill design](docs/guides/user-guide/skill-design.md) | How they fit: where they don't overlap, the three knowledge loops, the principles across the set. |
 | [Installation](docs/guides/user-guide/installation.md) | Installing · using · linking skills, and the development toolchain. |
 | [Prompting guides](docs/guides/prompting/README.md) | How to prompt the models we run — one guide per model (Fable 5, Opus 4.8, Sonnet 5), each with a Sources section for refresh. |
