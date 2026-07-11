@@ -30,6 +30,29 @@ FAIL / WARN / POLISH replace the rubrics' old `blocker / standard / polish` grad
 
 The checker owns the mechanical criteria; everything it cannot decide deterministically is left to the judgment half, applied by reading — surfaced inline as ADVISORY where the checker can point at the specific criterion.
 
+## The `--json` shape
+
+`--json` is not "emit findings somehow as JSON" — the wrapper and field names are pinned, so a consumer that runs every checker in sequence (e.g. `.ki-meta/bin/aggregate.ts`'s recap) never needs to special-case a given skill's output. The shape is exactly:
+
+```json
+{
+  "concern": "housekeeping",
+  "target": "/path/audited",
+  "generatedAt": "2026-07-11T12:00:00.000Z",
+  "summary": { "fail": 0, "warn": 1, "polish": 0, "advisory": 2, "info": 0, "na": 0, "pass": 5 },
+  "findings": [{ "level": "WARN", "area": "SHAPE-2", "msg": "…" }]
+}
+```
+
+Rules:
+
+- **One wrapper object, never a bare array.** `findings` is a wrapped property, not the top-level value — a bare array forces every consumer to detect the shape before it can read it.
+- **Finding fields are exactly `level` / `area` / `msg`** — `level` is the severity-ladder string name (never a numeric enum), `area` is the rubric code, `msg` is the message. Not `severity`/`criterion`/`message`, not `check`/`id`/`file`.
+- **`summary` keys are the lowercased ladder names**, present even at zero — a consumer building a totals line should never need to treat a missing key as zero.
+- A checker may add extra top-level keys for its own use (e.g. a `source` label); consumers only read the five above.
+
+`ki-housekeeping` (bare array, numeric severity), `ki-binding` (`{severity,criterion,message}` field names, no `summary`/`generatedAt`), and `ki-decision-records` / `ki-feature-definitions` (no `--json` support at all) currently deviate — see the ROADMAP for bringing them into conformance.
+
 ## The remediation footer
 
 A checker reports; it does not fix. So when its summary is **not clean** — any FAIL, WARN, or POLISH — it MUST end its human output (not `--json`) with a one-line footer telling the reader how to address what it found: run the owning skill's judgment mode. The fix for a mechanical finding is rarely a matching mechanical edit — deciding _which_ change is right (which layer a fact belongs in, whether an overage is earned, whether a tier fits the work) is the judgment half. The footer routes the reader there instead of leaving them to hand-work the codes.
