@@ -23,6 +23,9 @@
  * HTTP, and the entry point must not assume bun is even installed):
  *   curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh \
  *     | bash -s -- <target> [--ref <ref>]
+ * Where bun is already installed, the bunx form runs this engine as the
+ * package bin directly (pin a sha — bunx caches floating git refs):
+ *   bunx github:knowledgeislands/ki-agentic-harness#<ref> <target> --ref <ref>
  * The vendored `.ki-meta/bin/ki-init` wrapper pipes that same script at the
  * manifest's recorded ref. Skill sources are always read from the engine's own
  * working tree; `--ref` records the ref in the manifest when that tree has no
@@ -65,7 +68,11 @@ function parseMode(argv: string[]): Mode {
 // checkout (e.g. fetched over HTTP without a .git dir) — offline-safe, never fatal.
 function harnessRef(): string {
   try {
-    return execFileSync('git', ['rev-parse', 'HEAD'], { cwd: SKILLS_ROOT_FOR_REF, encoding: 'utf8' }).trim()
+    return execFileSync('git', ['rev-parse', 'HEAD'], {
+      cwd: SKILLS_ROOT_FOR_REF,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'] // no stderr noise from a .git-less tarball/bunx extract
+    }).trim()
   } catch {
     return 'unknown'
   }

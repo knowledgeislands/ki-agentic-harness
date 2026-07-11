@@ -67,6 +67,14 @@ curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness
 
 The entry point assumes only bash, curl, and tar: it fetches the harness source tarball at the ref, extracts it to a temp dir, and runs the chain engine from that tree. Bun is required as the mechanical layer's runtime (the engine and every vendored checker are TypeScript) — if it is missing the script fails fast with the install instruction rather than installing it silently.
 
+Where bun is already installed, the `bunx` idiom runs the engine directly — the harness `package.json` declares it as the package `bin`:
+
+```text
+bunx github:knowledgeislands/ki-agentic-harness#<ref> <target> --ref <ref>
+```
+
+Pin a sha (or tag) rather than a branch — bunx caches floating git refs, so `#main` can serve a stale checkout.
+
 A single skill's INIT is reachable the same way through its own `scripts/init.ts` in the extracted tree, which seeds that skill (plus its `implies:` closure) into the target. This is the primary path for both a greenfield repo and a legacy migration: the mechanics and the vendored result are identical to a local run.
 
 ## Day-to-day, once governed

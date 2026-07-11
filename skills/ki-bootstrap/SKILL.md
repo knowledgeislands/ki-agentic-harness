@@ -37,6 +37,8 @@ The mechanical half of INIT, and the start of the bootstrap chain. Run it agains
 bun scripts/bootstrap.ts <target-repo> [--new | --legacy | --tracking] [--dry-run]
 # remote (zero-install — bootstrap.sh fetches the tarball at the ref and runs the engine from it):
 # curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh | bash -s -- <target> [--ref <ref>]
+# remote, bun already installed (pin a sha — bunx caches floating git refs):
+# bunx github:knowledgeislands/ki-agentic-harness#<ref> <target> --ref <ref>
 ```
 
 1. **Resolve the set.** The baseline `ki-repo` + `ki-authoring`, plus every `[ki-<skill>]` table declared in the target's `.ki-config.toml`, plus the transitive `implies:` closure of all of them (the same graph `ki:skills:graph` renders). `ki-bootstrap` itself is never vendored — it is the global chain-starter.
