@@ -18,7 +18,7 @@ Using warm context plus the helper's `filesTouched` / `diffStat`: state what cha
 
 ## 3. Surface what is outstanding
 
-Look for threads left mid-change: uncommitted edits, a failing gate, a decision still open, work neither done nor parked. Apply the house rule:
+Look for threads left mid-change: uncommitted edits, a failing gate, a decision still open, work neither done nor parked. **Ground every "uncommitted" or "still dirty" claim in the `filesTouched` from the grounding helper run at the start of _this_ recap, never in a `git status`/`git diff` seen earlier in the conversation** — commits (yours or a concurrent process's) can land between that earlier look and the recap itself, and stale context reads as a false outstanding item. If meaningful time has passed since step 1 ran, re-run it before finalizing this section. Apply the house rule:
 
 - A ROADMAP item **added during this session** counts as **what happened** (parking work on ROADMAP is a completed action — the roadmap is the durable home for deferred work), not as outstanding.
 - A `ki-plan` opened this session with unchecked Steps **is** outstanding — cite its id and status.
