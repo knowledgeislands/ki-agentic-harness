@@ -1,0 +1,160 @@
+#!/usr/bin/env bun
+/**
+ * Mechanical CONFORM for the ki-agents rubric — fixes the one unambiguous,
+ * reversible finding from lint-agents.ts and leaves everything else as a
+ * printed manual TODO.
+ *
+ * Scope: this skill's CONFORM mode only auto-fixes LAY-3 (an agent file's
+ * `name:` frontmatter does not match its own filename stem) — rewrites the
+ * `name` field to match the stem. Every other mechanical finding
+ * (NAME-1/2/3/4/5, DESC-1/2/3, PROMPT-1, LINK-1) and every judgment criterion
+ * is printed as a manual TODO with its finding code — never auto-fixed here.
+ *
+ *   bun scripts/conform-agents.ts [path]   # default: agents  (relative to cwd)
+ *   --dry-run                                # print the plan, mutate nothing
+ *
+ * lint-agents.ts must be invoked against an agents/ directory, not repo root
+ * (see this repo's CLAUDE.md learned pattern) — this script's default target
+ * is the sibling `agents` dir, and it resolves any `[path]` the same way
+ * lint-agents.ts's own discovery does (an `agents` dir itself, or a repo root
+ * whose `agents/` subdir is preferred over walking the whole tree).
+ *
+ * Zero npm dependencies (bun + node stdlib only). Exit code is non-zero only
+ * on unrecoverable setup errors (bad path) — findings left as manual TODOs
+ * never fail the run.
+ */
+
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import { basename, join, resolve } from 'node:path'
+
+const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
+const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
+
+// --- minimal frontmatter parser (name field only — kept in lockstep with lint-agents.ts's parser
+// for the one field this script touches; not imported so each script stays valid standalone per
+// the composition-only rule) --------------------------------------------------------------------
+function findName(content: string): { value: string } | null {
+  const m = content.match(/^---\r?\n([\s\S]*?)\r?\n---/)
+  if (!m) return null
+  const block = m[1] as string
+  for (const l of block.split(/\r?\n/)) {
+    const kv = l.match(/^name:(.*)$/)
+    if (kv) {
+      let value = (kv[1] as string).trim()
+      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+        value = value.slice(1, -1)
+      }
+      return { value }
+    }
+  }
+  return null
+}
+
+// --- discovery (mirrors lint-agents.ts's agentsRoot/discoverAgentFiles) -------------------------
+function agentsRoot(abs: string): string {
+  if (basename(abs) === 'agents') return abs
+  const candidate = join(abs, 'agents')
+  return existsSync(candidate) && statSync(candidate).isDirectory() ? candidate : abs
+}
+
+function discoverAgentFiles(p: string): string[] {
+  const abs = resolve(p)
+  if (!existsSync(abs)) return []
+  if (statSync(abs).isFile()) return abs.endsWith('.md') ? [abs] : []
+  const root = agentsRoot(abs)
+  const out: string[] = []
+  const walk = (d: string): void => {
+    for (const e of readdirSync(d, { withFileTypes: true })) {
+      if (e.name.startsWith('.') || e.name === 'node_modules') continue
+      const fp = join(d, e.name)
+      if (e.isDirectory() || e.isSymbolicLink()) {
+        try {
+          if (statSync(fp).isDirectory()) walk(fp)
+        } catch {
+          /* dangling symlink */
+        }
+      } else if (e.name.endsWith('.md') && e.name !== 'README.md') {
+        out.push(fp)
+      }
+    }
+  }
+  walk(root)
+  return out.sort()
+}
+
+// --- main ----------------------------------------------------------------------------------------
+const rawArgs = process.argv.slice(2)
+const dryRun = rawArgs.includes('--dry-run')
+const pathArgs = rawArgs.filter((a) => !a.startsWith('-'))
+// Default target is the sibling `agents` dir (relative to cwd), never repo root — lint-agents.ts
+// must be pointed at agents/ per this repo's own learned pattern, and this script's default
+// mirrors that.
+const target = pathArgs[0] ?? 'agents'
+const abs = resolve(target)
+
+if (!existsSync(abs)) {
+  console.error(paint(C.red, `path not found: ${abs}`))
+  process.exit(1)
+}
+
+console.log(paint(C.dim, `ki-agents CONFORM (mechanical) — ${abs}${dryRun ? ' [dry-run]' : ''}`))
+
+const files = discoverAgentFiles(abs)
+if (files.length === 0) {
+  console.log(paint(C.dim, 'no agents found — nothing to conform'))
+  process.exit(0)
+}
+
+let fixed = 0
+
+for (const file of files) {
+  const content = readFileSync(file, 'utf8')
+  const stem = basename(file).replace(/\.md$/, '')
+  const found = findName(content)
+
+  if (!found) {
+    // No `name:` field at all (NAME-1) or no frontmatter block (LAY-1) — not this script's fix.
+    continue
+  }
+
+  if (found.value && found.value !== stem) {
+    console.log(`\n${paint(C.cyan, basename(file))} ${paint(C.dim, file)}`)
+    console.log(`  ${paint(C.yellow, '[LAY-3]')} \`name\` "${found.value}" does not match filename stem "${stem}"`)
+    if (dryRun) {
+      console.log(`  ${paint(C.dim, `would rewrite name: ${found.value} → ${stem}`)}`)
+    } else {
+      const fullLines = content.split(/\r?\n/)
+      const nameLineIdx = fullLines.findIndex((l) => /^name:/.test(l))
+      if (nameLineIdx !== -1) {
+        fullLines[nameLineIdx] = `name: ${stem}`
+        writeFileSync(file, fullLines.join('\n'))
+        console.log(`  ${paint(C.green, 'fixed')} name: ${found.value} → ${stem}`)
+        fixed++
+      }
+    }
+  }
+}
+
+// --- everything else: printed as manual TODOs, never auto-fixed ---------------------------------
+console.log(`\n${paint(C.cyan, 'manual TODOs (judgment — not auto-fixed by this script)')}`)
+console.log(paint(C.dim, '  NAME-1  `name` missing from frontmatter — author it'))
+console.log(paint(C.dim, '  NAME-2  `name` charset/length invalid — rename per the rubric'))
+console.log(paint(C.dim, '  NAME-3  `name` starts/ends with a hyphen or contains "--" — rename'))
+console.log(paint(C.dim, '  NAME-4  `name` contains an XML tag or a reserved word — rename'))
+console.log(paint(C.dim, '  NAME-5  duplicate `name` across the agent set — rename one'))
+console.log(paint(C.dim, '  DESC-1  `description` missing or empty — author it'))
+console.log(paint(C.dim, '  DESC-2  `description` over the soft length cap — consider trimming'))
+console.log(paint(C.dim, '  DESC-3  `description` contains an XML tag — remove it'))
+console.log(paint(C.dim, '  COLL-1  shared quoted trigger phrase across agents — confirm each names the other as an off-ramp'))
+console.log(
+  paint(
+    C.dim,
+    '  … plus every judgment criterion in references/audit-rubric.md (delegation signal, role/lane, grounding, own-vs-defer, tools/model least-privilege, longevity) — apply by reading, run Mode AUDIT for the full list.'
+  )
+)
+
+console.log(
+  `\n${paint(C.cyan, 'summary')}: ${files.length} agent(s) scanned · ${fixed} fixed (LAY-3)${dryRun ? ' [dry-run — nothing written]' : ''}`
+)
+console.log('→ re-run `bun scripts/lint-agents.ts <path>` to confirm, then Mode AUDIT for the judgment criteria.')
+process.exit(0)
