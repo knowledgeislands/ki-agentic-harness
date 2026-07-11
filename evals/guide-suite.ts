@@ -99,9 +99,9 @@ try {
   check(!!lgAfter.scripts['ki:audit'], '--legacy installed the ki:audit aggregate key')
 
   // ── package.json-free (dotfiles/KB/tap shape) ────────────────────────────
-  // A repo with NO package.json must still self-govern via .ki-meta/bin/ki-audit, and
-  // the ki-engineering checker (pulled in by ki-repo's implies edge) must NA-out rather
-  // than emit a wall of toolchain FAILs.
+  // A repo with NO package.json must still self-govern via .ki-meta/bin/ki-audit. Since
+  // ki-engineering is coverage-detected (not implied by ki-repo), a repo that never
+  // declares [ki-engineering] must never vendor it at all.
   console.log('\npackage.json-free fixture (no package.json):')
   const pf = join(tmp, 'pkgfree')
   mkdirSync(pf, { recursive: true })
@@ -112,9 +112,9 @@ try {
   check(!existsSync(join(pf, 'package.json')), 'bootstrap created no package.json')
   const pfBin = join(pf, '.ki-meta/bin/ki-audit')
   check(existsSync(pfBin) && (lstatSync(pfBin).mode & 0o111) !== 0, 'wrote an executable .ki-meta/bin/ki-audit')
+  check(!existsSync(join(pf, '.ki-meta/skills/ki-engineering')), 'ki-engineering NOT vendored (coverage-detected, not declared)')
   const pfAudit = run('./.ki-meta/bin/ki-audit audit', pf, pfEnv)
-  check(/==> ki:engineering:audit/.test(pfAudit), 'aggregate ran the vendored ki:engineering checker')
-  check(/not a TypeScript\/Bun repo/.test(pfAudit), 'ki-engineering NA-d out (no package.json) instead of failing')
+  check(!/==> ki:engineering:audit/.test(pfAudit), 'aggregate never invoked a ki-engineering checker')
 } finally {
   rmSync(tmp, { recursive: true, force: true })
 }

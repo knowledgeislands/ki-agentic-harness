@@ -16,6 +16,10 @@ Line-by-line criteria for auditing a Knowledge Islands repo's project-local skil
 - **BOOT-7 [M]** WARN — `package.json` has a `ki:agents:link:project` script invoking [`link-agents.ts`](../scripts/link-agents.ts), so the links are reproducible on clone. Only checked when `[ki-agents]` is declared (a repo that doesn't opt in needs no such script).
 - **BOOT-8 [M]** WARN — `.claude/agents/` is gitignored (the links are generated, never committed).
 
+## BOOT — vendored self-sufficiency install
+
+- **BOOT-9 [M]** WARN — the target's `.ki-meta/skills/` mirrors the harness-side expected set — baseline ∪ declared `[ki-*]` tables ∪ the transitive `implies:` closure, restricted to skills carrying a discoverable checker — with no missing and no extra vendored skill directories. Checked by [`audit-vendored.ts`](../scripts/audit-vendored.ts), run from the harness (the `implies:` graph lives in source SKILL.md frontmatter, not in anything copied into the target, so this cannot be checked by the target's own standalone `.ki-meta/bin/ki-audit`). Drift (a stale re-vendor, a `.ki-config.toml` table added/removed since, an upstream skill add/remove) is always conformable — re-run `bun skills/ki-bootstrap/scripts/bootstrap.ts <target>` to reconcile.
+
 ## Reporting
 
 Produce findings on the severity ladder, each `severity · criterion · what · fix`. Almost all BOOT findings are WARN (conformable, never ship-blocking): a missing/dangling link, absent `ki:skills:link:project`/`ki:agents:link:project`/gitignore, or missing per-skill checker/conform script is fixed by Mode CONFORM (re-run the relevant linker; it adds the script / gitignore line / missing `ki:<suffix>:<verb>` entries). The one exception is BOOT-1's orphaned-table case — a declared `[ki-*]` table resolving to no harness skill is a **FAIL**, because CONFORM can't fix it: the rename mapping isn't mechanical, so it needs a human to reconcile `.ki-config.toml`. Close by naming the composition: `ki-repo` owns whether the declared skill coverage is right; whether a repo should opt into `[ki-agents]` at all is likewise a judgment call for the repo owner, not this skill.

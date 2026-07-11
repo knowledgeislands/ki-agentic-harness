@@ -50,6 +50,12 @@ The chain MUST expose three strengths as flags over one engine, not a separate o
 
 _Verify:_ `bootstrap.ts` `parseMode` maps `--legacy` to a post-conform pass and `--tracking` to a post-audit pass, with `--new` the default.
 
+### BOOT-008 — Vendored-set alignment check
+
+The harness MUST be able to verify a target's `.ki-meta/skills/` matches the expected resolved set (baseline ∪ declared `[ki-*]` tables ∪ the transitive `implies:` closure, restricted to skills carrying a checker) — since the `implies:` graph lives only in source SKILL.md frontmatter, this check runs harness-side, not from the target's own standalone `.ki-meta/bin/ki-audit`. Drift is a WARN, never a FAIL — a re-bootstrap always reconciles it. See [BOOT-9](../../skills/ki-bootstrap/references/audit-rubric.md).
+
+_Verify:_ `bun skills/ki-bootstrap/scripts/audit-vendored.ts <target>` reports PASS when `.ki-meta/skills/` equals the expected set, and WARNs (listing both directions) when a skill is stray-vendored or missing.
+
 ## Gaps
 
 - Remote-run transport (`bun run <raw-github-url>`) is documented but not yet exercised by an automated test; the engine currently sources skills from the local working tree.
