@@ -5,7 +5,7 @@
  * Usage: bun skills/ki-housekeeping/scripts/audit-memory.ts [repo-path] [--json] [--report [dir]] [--memory-dir <dir>]
  *
  * Resolves the Claude Code auto-memory directory for a repo
- * (~/.claude/projects/<slug>/memory, slug = repo's absolute path with "/" -> "-")
+ * (~/.claude/projects/<slug>/memory, slug = repo's absolute path with "/" and "." -> "-")
  * and checks index/frontmatter agreement per skills/ki-housekeeping/references/audit-rubric.md.
  * See skills/ki-engineering/references/checker-contract.md for the severity ladder,
  * exit-code, and flag contract every checker in this repo follows.
@@ -45,7 +45,7 @@ interface Finding {
 }
 
 function slugifyRepoPath(absPath: string): string {
-  return absPath.replace(/\//g, '-')
+  return absPath.replace(/[/.]/g, '-')
 }
 
 function resolveMemoryDir(repoArg: string | undefined): string {

@@ -62,7 +62,7 @@ Use `--tracking` instead to run INIT and then a read-only `ki:audit` — report 
 The canonical, zero-install form runs the chain straight from the harness on GitHub — no clone, no global install — pinned to a ref (default `main`), in the usual `curl | bash` installer idiom:
 
 ```text
-curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh | bash -s -- <target> [--ref <ref>] [--legacy | --tracking] [--dry-run]
+curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh | bash -s
 ```
 
 The entry point assumes only bash, curl, and tar: it fetches the harness source tarball at the ref, extracts it to a temp dir, and runs the chain engine from that tree. Bun is required as the mechanical layer's runtime (the engine and every vendored checker are TypeScript) — if it is missing the script fails fast with the install instruction rather than installing it silently.
