@@ -69,5 +69,7 @@ if (extra.length)
     `  ${YELLOW}WARN${RESET}  [BOOT-9]  vendored but no longer expected: ${extra.join(', ')} — a dropped table or upstream implies change; re-bootstrap to prune`
   )
 
+console.log('→ to address: run /ki-bootstrap CONFORM   (re-vendor: bun skills/ki-bootstrap/scripts/bootstrap.ts <target>)')
+
 // Drift here is always conformable by re-vendoring (WARN, never FAIL) — mirrors BOOT-1.
 process.exit(0)
