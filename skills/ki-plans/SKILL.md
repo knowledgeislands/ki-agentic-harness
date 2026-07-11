@@ -4,7 +4,7 @@ implies: []
 vendors: { audit: scripts/audit-plans.ts }
 description: >
   Govern the Knowledge Islands planning methodology for code repos: when to write a plan, how it derives from the ROADMAP, dependency discipline, and plan quality. Owns the mandate (plan before code for multi-file or multi-step changes), the near-horizon principle (plans exist only for ROADMAP "Next" items), the blocks/blocked-by dependency graph, and the quality bar for Steps and Verify. AUDIT checks docs/plans for frontmatter, README sync, and dependency integrity; CONFORM fixes mechanical issues; REFRESH revisits the methodology. Does not own the plan lifecycle (new/execute/done/status) — that is the /plan slash command. A code-repo instrument: in a KB, planning is a stream proposal's Checklist (ki-kb-streams). Triggers: "audit plans", "are my plans in order", "should I write a plan for this", "plan methodology". Off-ramps: /plan (lifecycle), ki-kb-streams (KB planning), ki-decision-records (decisions vs. plans), ki-harness (ROADMAP structure and phasing).
-argument-hint: 'audit [dir] | conform [dir] | help | refresh'
+argument-hint: 'audit [dir] | conform [dir] | help | init <target> | refresh'
 ---
 
 # Knowledge Islands Plans standard
@@ -38,7 +38,7 @@ A plan is ready to execute when it passes these four checks:
 
 ## Operating modes
 
-Carries **AUDIT · CONFORM · REFRESH**. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
+Carries the universal **AUDIT · CONFORM · INIT · REFRESH**. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
 
 ### Mode AUDIT
 
@@ -64,6 +64,10 @@ Fix mechanical FAIL and WARN found in AUDIT, in order:
 5. Commit with message `fix(plans): conform to plans standard`.
 
 Do not change plan content (Context, Current state, Steps) — those belong to the author. CONFORM touches only structure and metadata.
+
+### Mode INIT
+
+INIT scaffolds no standalone artifact — plans are created by the `/plan` command's `new` leg, not scaffolded here. It vendors this skill's declared mechanical unit (the frontmatter `vendors:` declaration) into the target's `.ki-meta/` via the central bootstrap chain: [`scripts/init.ts`](scripts/init.ts) is a thin delegator into the `ki-bootstrap` engine.
 
 ### Mode REFRESH
 

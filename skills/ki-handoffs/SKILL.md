@@ -4,7 +4,7 @@ implies: []
 vendors: { audit: scripts/audit-handoffs.ts }
 description: >
   Govern the Knowledge Islands handoff doctrine: plan work once at the top reasoning tier, then write it as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning. Owns the reasoning-layer split, the handoff-spec quality bar (definition-of-done, decisions-locked vs escalate, ordered steps, acceptance criteria, a recommended implementer tier per unit), and the cold-model readiness test. AUDIT checks handoff-opted-in plans/proposals for the required markers; CONFORM fixes them; REFRESH revisits the doctrine. Does not own model-tier cost or selection — that is ki-tokenomics. Triggers: "is this ready to hand off", "make this delegable", "implementation-ready spec", "plan once execute cheap", "which tier should run this". Off-ramps: ki-tokenomics (tier cost/selection), ki-plans (plan format & lifecycle), ki-kb-streams (KB proposal Checklist), ki-agents (subagent definitions).
-argument-hint: 'audit [dir] | conform [dir] | help | refresh'
+argument-hint: 'audit [dir] | conform [dir] | help | init <target> | refresh'
 ---
 
 # Knowledge Islands handoffs standard
@@ -35,7 +35,7 @@ A spec is ready to hand down a tier when it passes these checks (they extend, no
 
 ## Operating modes
 
-Carries **AUDIT · CONFORM · REFRESH**. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
+Carries the universal **AUDIT · CONFORM · INIT · REFRESH**. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
 
 ### Mode AUDIT
 
@@ -48,6 +48,10 @@ Then apply the judgment half by reading, per [references/audit-rubric.md](refere
 ### Mode CONFORM
 
 Fix what AUDIT found, in place: add a missing `tier`, split an open question into locked-vs-escalate, add or run the readiness marker. Touch only the handoff delta — plan/proposal structure belongs to `ki-plans` / `ki-kb-streams`. Re-run AUDIT until clean.
+
+### Mode INIT
+
+INIT scaffolds no standalone artifact — a handoff rides on an existing plan or proposal, never a document of its own. It vendors this skill's declared mechanical unit (the frontmatter `vendors:` declaration) into the target's `.ki-meta/` via the central bootstrap chain: [`scripts/init.ts`](scripts/init.ts) is a thin delegator into the `ki-bootstrap` engine.
 
 ### Mode REFRESH
 

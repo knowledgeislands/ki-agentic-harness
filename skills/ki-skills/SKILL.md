@@ -20,9 +20,13 @@ Every criterion is one of two kinds — never conflate them:
 - **Mechanical** — deterministically checkable. A bundled linter ([`scripts/lint-skills.ts`](scripts/lint-skills.ts)) runs these: file exists, frontmatter parses, `name` matches the directory and the charset rules, length caps, link resolution, no wikilinks. **Always run the linter first** — do not eyeball what a script checks better.
 - **Judgment** — needs a model. You assess these by reading: is the `description` trigger-rich and third-person, is the body at the right altitude, is detail correctly pushed into `references/`, does a standard skill avoid hard-coding one base. The linter cannot judge these.
 
-The conventions a good skill follows — what each is and why — live in [the Agent Skills standard](references/agent-skills-standard.md); the line-by-line checkable criteria (with `[M]`/`[J]` tags and codes) live in [the rubric](references/audit-rubric.md), each citing its standard section. Load both before an AUDIT, CONFORM, or INIT; this body is the routing overview. (Like every governance skill it carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT here writes a new skill; **OPTIMISE** — pushing a compliant skill from the floor toward excellent — is its skill-specific mode. Modes are named and alphabetical.) Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
+The conventions a good skill follows — what each is and why — live in [the Agent Skills standard](references/agent-skills-standard.md); the line-by-line checkable criteria (with `[M]`/`[J]` tags and codes) live in [the rubric](references/audit-rubric.md), each citing its standard section. Load both before an AUDIT, CONFORM, or INIT; this body is the routing overview.
 
-## Mode AUDIT — review an existing skill
+## Operating modes
+
+Like every governance skill it carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT here writes a new skill; **OPTIMISE** — pushing a compliant skill from the floor toward excellent — is its skill-specific mode. Modes are named and alphabetical. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
+
+### Mode AUDIT — review an existing skill
 
 Review a skill (or every skill in a repo) against the rubric and report.
 
@@ -37,13 +41,13 @@ Review a skill (or every skill in a repo) against the rubric and report.
    - **Collision & longevity** — for any trigger the linter flags as shared (or that you judge semantically overlapping), does **each** description name the other as an off-ramp, or is the guard one-directional? And does the skill hard-code volatile facts (model IDs, API / tool names, URLs, dated specs) without resolving them at runtime or carrying a refresh path — the staleness that bites hardest once a skill ships to a cloud catalogue it can't be eyeballed in? See [the rubric](references/audit-rubric.md) areas COLL and LONG.
 3. **Report** as a table: criterion → verdict (✅ pass / ⚠️ warn / ❌ fail) → the specific fix. Lead with FAILs, then WARNs, then a one-line overall verdict. Cite the rubric criterion number. Offer to apply the fixes.
 
-## Mode CONFORM — bring an existing skill into line
+### Mode CONFORM — bring an existing skill into line
 
 1. Run **AUDIT** first to get the fix list.
 2. **Apply the fixes in place** — `description`, body altitude, progressive disclosure, links, frontmatter — per [the rubric](references/audit-rubric.md), touching only what a criterion calls for and leaving the skill's voice intact.
 3. **Re-run AUDIT** (and the linter) until it is clean.
 
-## Mode INIT — write a new skill
+### Mode INIT — write a new skill
 
 1. **Clarify scope first**: what should fire the skill (the triggers), what kind it is (Knowledge Islands / process / scoped — see ki-agentic-harness `README.md`), and how it relates to sibling skills — always **composition** (run a sibling's checker/mode in sequence and add a delta; declare the edge), never a base-coupled extension that takes another skill's modes.
 2. **Scaffold** `<name>/SKILL.md` with `references/`, `scripts/`, `assets/` only as needed. The directory name **is** the `name:` frontmatter (lowercase, hyphenated, in sync).
@@ -51,7 +55,7 @@ Review a skill (or every skill in a repo) against the rubric and report.
 4. **Self-audit before finishing** — run Mode AUDIT on the new skill. INIT and AUDIT share one rubric on purpose.
 5. **Add it to the set's scheduled refresh** — if the host registers a scheduled run that sweeps the set's REFRESH (LONG-2), add the new skill to that routine so it doesn't silently fall out of the sweep. The routine is host infra, not a repo file, so this is a manual follow-up the audit can't verify.
 
-## Mode OPTIMISE — push a compliant skill toward excellent
+### Mode OPTIMISE — push a compliant skill toward excellent
 
 **Precondition: the skill is already clean.** OPTIMISE assumes AUDIT (and CONFORM where needed) pass with zero FAIL — it improves a skill that has no violations, it does not fix one that does. If AUDIT is not clean, run CONFORM first. This mode works _above_ the caps, not at them; the target is **discoverability-per-token**, not the shortest possible skill — rich enough to fire, lean enough not to tax every turn. Optimising one lever blindly hurts the other; holding both is the work.
 
@@ -61,7 +65,7 @@ Review a skill (or every skill in a repo) against the rubric and report.
 4. **Hold the tension.** A cut that costs a trigger, or an off-ramp that bloats the `description` past where it earns its standing cost, is a regression even when each looks like a local win. The tie-breaker is value-per-token of the **standing** surface — the `description`, paid every turn — over the on-demand body and references.
 5. **Re-audit.** Run Mode AUDIT (and the linter). OPTIMISE must leave the skill clean: nothing here may introduce a FAIL or WARN.
 
-## Mode REFRESH — re-anchor best practice
+### Mode REFRESH — re-anchor best practice
 
 Keep the rubric current — the standard and the community move, and this is why the skill tracks its own sources. Run on its declared cadence (see `references/sources.md`), or when asked "is the skills rubric current".
 

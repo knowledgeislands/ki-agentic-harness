@@ -25,9 +25,11 @@ The two are distinct: vendored **copies** run the mechanical checks anywhere (CI
 
 The INIT chain engine is [`scripts/bootstrap.ts`](scripts/bootstrap.ts); the skill linker/checker is [`scripts/link-skills.ts`](scripts/link-skills.ts); the agent linker/checker is [`scripts/link-agents.ts`](scripts/link-agents.ts). All three share the same self-location and package.json-splice logic ([`scripts/package-scripts.ts`](scripts/package-scripts.ts)) and self-locate the harness through their own path. The quotable invariant is [the standard](references/bootstrap-standard.md); the checkable criteria are [the rubric](references/audit-rubric.md). This skill **composes on** `ki-repo`, which owns the `.ki-config.toml` contract it reads — it never edits the config's coverage, only mirrors it.
 
+## Operating modes
+
 Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
 
-## Mode INIT — bring a repo under governance (self-sufficiency chain)
+### Mode INIT — bring a repo under governance (self-sufficiency chain)
 
 The mechanical half of INIT, and the start of the bootstrap chain. Run it against a target repo — locally, or straight from the remote source with nothing installed:
 
@@ -44,20 +46,20 @@ bun scripts/bootstrap.ts <target-repo> [--new | --legacy | --tracking] [--dry-ru
 
 **Per-skill delegators.** Every other skill owns a `scripts/init.ts` that is a thin delegator — it execs this engine with itself as an explicit `--seed`, so running one skill's INIT brings that skill (plus its `implies:` closure and the baseline) under governance. Delegating by subprocess is composition, not a cross-skill import, so each skill keeps a concrete INIT and stays valid standalone.
 
-## Mode AUDIT — check a repo's project-local skills and agents
+### Mode AUDIT — check a repo's project-local skills and agents
 
 1. **Run the checkers.** `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-skills.ts" [path] --check` and `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-agents.ts" [path] --check` (or `bun run ki:skills:link:project --check` / `bun run ki:agents:link:project --check` if wired). They report on the unified severity ladder (`ki-engineering` enforcement-framework §2): **BOOT-1** `.claude/skills/` matches declared coverage ∪ baseline (and no dangling links) — and a declared `[ki-*]` table resolving to no harness skill (an upstream rename/removal left behind) is a FAIL to reconcile by hand, **BOOT-2** a `ki:skills:link:project` script is present (N/A when the repo has no `package.json` — a package.json-free repo reproduces links via the keystone linker, so is never nagged toward one), **BOOT-3** `.claude/skills/` is gitignored, **BOOT-5** every linked skill with a checker or conform script has a matching `ki:<suffix>:<verb>` package.json script (likewise N/A with no `package.json`), **BOOT-6** `.claude/agents/` matches the `[ki-agents]`-gated set, **BOOT-7** a `ki:agents:link:project` script is present (when the table is declared), **BOOT-8** `.claude/agents/` is gitignored.
 2. **Judge the [J] criterion (BOOT-4) by reading** — is the repo's _declared_ coverage actually right (does it opt into the skills it uses)? That is `ki-repo`'s coverage cascade, not this skill's; name it as the off-ramp rather than re-deciding it here.
 3. **Report** by criterion. A missing/dangling link or absent `ki:skills:link:project`/`ki:agents:link:project`/gitignore is a WARN — all are conformable, none block.
 
-## Mode CONFORM — wire a repo
+### Mode CONFORM — wire a repo
 
 1. Run **AUDIT** first.
 2. **Link** the project-local set: `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-skills.ts" [path]` (the harness uses `--all`) and `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-agents.ts" [path]`. Each creates/prunes relative symlinks under `.claude/skills/`/`.claude/agents/` to match its expected set, and **writes the matching `.gitignore` line** (`.claude/skills/`, and `.claude/agents/` when the agents set is non-empty), creating `.gitignore` if absent — so BOOT-3/8 clear without a manual edit. Preview either with `--dry-run`.
 3. **Make it reproducible:** when the repo has a `package.json`, the **Link** step also scaffolds `"ki:skills:link:project"` / `"ki:agents:link:project"` (invoking the keystone linkers) and a `ki:<suffix>:<verb>` script per linked skill carrying a discoverable checker or conform script — e.g. `ki:kb:audit`, `ki:repo:conform`. A `package.json`-free repo has none of these (BOOT-2/5 are N/A there); it reproduces its links by re-running the keystone linker. (The keystone must be globally installed — `bun scripts/sync-skills.ts link --only ki-bootstrap` from the harness.)
 4. **Re-run AUDIT** until clean.
 
-## Mode REFRESH — re-anchor
+### Mode REFRESH — re-anchor
 
 Canonical, on-change: this skill tracks no external spec. Re-anchor when the install model changes — the INIT chain / self-sufficiency contract (the vendor layout, the aggregate runner, the `implies:` graph shape), the coverage-table contract (`ki-repo`), the `[ki-agents]` gating convention, the skill/agent discovery locations Claude Code reads, or the `ki:skills:link:project`/`ki:agents:link:project` conventions. Read [the source list](references/sources.md), confirm the standard still matches the reference implementation, propose a diff, bump the dates.
 

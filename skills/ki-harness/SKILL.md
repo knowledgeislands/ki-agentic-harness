@@ -15,9 +15,11 @@ This skill governs the **container** — the harness's directory layout, its `CL
 
 The full canonical standard — what each part must contain and why — lives in [the harness standard](references/harness-standard.md). The line-by-line checkable criteria live in [the rubric](references/audit-rubric.md). A mechanical checker is [`scripts/audit-harness.ts`](scripts/audit-harness.ts). Load those when you need detail; this file is the operating procedure.
 
+## Operating modes
+
 Modes: **AUDIT · CONFORM · INIT · REFRESH** (named, alphabetical). Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
 
-## Mode AUDIT — check a harness against the standard
+### Mode AUDIT — check a harness against the standard
 
 1. **Run the mechanical checker.** `bun scripts/audit-harness.ts [path]` from this skill's directory (or `bun run ki:harness:audit` at the harness root, if wired). It checks: the five-part directory presence, each directory's `README.md`, root `CLAUDE.md` / `ROADMAP.md`, `package.json` script families, `.ki-config.toml` `[ki-harness]` table presence, and each `skills/<dir>` name matching its `SKILL.md` `name:` frontmatter. Reports on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — defined in `ki-engineering`'s enforcement-framework §2).
 2. **Compose on sibling skills via subagent isolation** ([ADR-KI-HARNESS-AGENTS-001](../../docs/decisions/ADR-KI-HARNESS-AGENTS-001-subagent-isolation.md)). A harness audit is layered — fan out one `agent()` per concern in `parallel()` after the COLL checks:
@@ -32,13 +34,13 @@ Modes: **AUDIT · CONFORM · INIT · REFRESH** (named, alphabetical). Invoked as
    - **ROADMAP.md discipline** — does it show only open work? Are continuous practices absent (they belong in `docs/skill-design.md`, not the roadmap)?
 4. **Report** on the unified severity ladder. A missing required file or table is a FAIL; stale content that is structurally present is a WARN; minor freshness drift (wrong count, outdated command names) is a POLISH.
 
-## Mode CONFORM — bring a harness into line
+### Mode CONFORM — bring a harness into line
 
 1. Run **AUDIT** first to get the fix list.
 2. **Apply the fixes:** create missing directories with stub `README.md`s, add or correct `CLAUDE.md` sections, update `ROADMAP.md`, add missing `.ki-config.toml` tables, fix `package.json` script families — per [the rubric](references/audit-rubric.md) and [the standard](references/harness-standard.md), touching only what a criterion calls for.
 3. **Re-run AUDIT** until it is clean.
 
-## Mode INIT — scaffold a new harness
+### Mode INIT — scaffold a new harness
 
 1. **Name the harness.** The repository name is the harness identity; agree on it before creating.
 2. **Scaffold the five parts.** Create `skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`, each with a `README.md` describing what it holds — marking any part an empty shelf if it starts unpopulated.
@@ -48,7 +50,7 @@ Modes: **AUDIT · CONFORM · INIT · REFRESH** (named, alphabetical). Invoked as
 6. **Add `.ki-config.toml`** with at minimum `[ki-repo]`, `[ki-engineering]`, and `[ki-harness]`. Add `[ki-skills]` once `skills/` is populated.
 7. **Self-audit.** Run Mode AUDIT on the new harness before handing it off.
 
-## Mode REFRESH — re-anchor the standard
+### Mode REFRESH — re-anchor the standard
 
 The harness standard is a KI architectural convention, not an external spec — it is grounded in the [ki-agentic-harness](../../README.md) as the reference implementation. REFRESH means verifying the standard reflects current practice, and checking the external sources it builds on (Agent Skills, Claude Code subagent docs) for changes that affect the harness contract.
 
