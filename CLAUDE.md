@@ -139,4 +139,11 @@ _~400 tokens/session saved_
 - `bun run ki:skills:lint` uses `skills/` as its default argument. Passing `.` fails with "No skills found (no directory with a SKILL.md)".
 - Explicit form from harness root: `bun skills/ki-skills/scripts/lint-skills.ts skills`
 
+### Remote-run transport for TS entry points
+
+_~1,500 tokens/session saved_
+
+- **Bun cannot execute a module over HTTP.** `bun run https://raw.githubusercontent.com/.../script.ts` fails `Module not found` even when the URL returns HTTP 200. To run a harness script remotely, fetch the source **tarball** and run from a local extract: `https://codeload.github.com/<owner>/<repo>/tar.gz/<ref>` is generated on demand for any ref — no release/publish step — so `curl -fsSL "$url" | tar -xz -C "$tmp" --strip-components=1 && bun "$tmp/.../script.ts"`. This is what `bootstrap.sh` and the vendored `ki-init` wrapper do.
+- **`bunx github:<owner>/<repo>#<ref> …` works** as a bun-present entry point, but only with (a) a package `bin` field pointing at the script, (b) a pinned **sha or tag** — bunx caches floating git refs, so `#main` serves a stale checkout — and (c) an explicit `--ref` passed to the engine, because a bunx/tarball extract has no `.git` and can't derive the ref to stamp into the manifest itself.
+
 <!-- headroom:learn:end -->
