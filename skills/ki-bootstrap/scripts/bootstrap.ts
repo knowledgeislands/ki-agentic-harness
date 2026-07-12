@@ -37,7 +37,7 @@
  * to wire, as sugar over these bins). Re-running it is the single idempotent way to
  * bring a target up to date — no separate legacy/tracking modes.
  *
- * Usage: bun bootstrap.ts <target-repo> [--all] [--ref <ref>] [--dry-run]
+ * Usage: bun bootstrap.ts <target-repo> [--seed <skill>] [--ref <ref>] [--dry-run]
  */
 
 import { execFileSync } from 'node:child_process'
@@ -431,13 +431,14 @@ function main(): void {
   const positional = rest.filter((a) => !a.startsWith('--'))
   const target = resolve(positional[0] ?? '.')
   const dryRun = rest.includes('--dry-run')
-  const all = rest.includes('--all')
 
   // No `package.json` is ever required or touched — a repo self-governs through the
   // vendored `.ki-meta/` runner and its `bin/` wrappers alone (dotfiles, KB, tap, or
   // code repo alike). The `ki:*` convenience keys are ki-engineering's to wire, as
-  // sugar over these same bins.
-  const set = resolveSet(target, all, seeds)
+  // sugar over these same bins. Vendoring is always coverage-scoped (`.ki-config.toml`
+  // + baseline + implies + explicit --seed) — `--all` is a linking concept only, never a
+  // vendoring one (ADR-KI-HARNESS-007).
+  const set = resolveSet(target, false, seeds)
   console.log(`${DIM}bootstrap ${target} — skills: ${set.join(', ')}${RESET}`)
 
   const manifestFiles: Record<string, string> = {}

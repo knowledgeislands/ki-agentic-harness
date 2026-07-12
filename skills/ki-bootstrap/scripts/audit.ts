@@ -15,10 +15,11 @@
  * silently going unnoticed; `bun skills/ki-bootstrap/scripts/bootstrap.ts <target>`
  * fixes it by re-vendoring.
  *
- * Usage: bun audit.ts [target-repo] [--all]   (read-only)
+ * Usage: bun audit.ts [target-repo]   (read-only)
  * Every repo — the harness included — vendors its own DECLARED coverage (the `.ki-config.toml`
  * `[ki-*]` tables + baseline + implies closure), so `ki:audit` fans out over exactly the
- * skills that govern it. `--all` (every harness skill) is opt-in, for a full vendoring sweep.
+ * skills that govern it. Vendoring is always coverage-scoped; `--all` is a linking concept
+ * only (the harness authoring hub links every skill), never a vendoring one (ADR-KI-HARNESS-007).
  */
 
 import { existsSync, readdirSync } from 'node:fs'
@@ -31,8 +32,6 @@ const RESET = '\x1b[0m'
 
 const argv = process.argv.slice(2)
 const target = resolve(argv.find((a) => !a.startsWith('--')) ?? '.')
-// Coverage-scoped by default (like any repo); `--all` for an explicit full sweep.
-const all = argv.includes('--all')
 const vendoredRoot = join(target, '.ki-meta', 'skills')
 
 if (!existsSync(vendoredRoot)) {
@@ -42,7 +41,7 @@ if (!existsSync(vendoredRoot)) {
 
 // Only skills with a discoverable checker are ever vendored (vendorSkill() in
 // bootstrap.ts is a no-op for skills without one), so restrict the expectation to those.
-const expected = resolveSet(target, all, []).filter((s) => checkerScript(s) !== null)
+const expected = resolveSet(target, false, []).filter((s) => checkerScript(s) !== null)
 const actual = readdirSync(vendoredRoot, { withFileTypes: true })
   .filter((e) => e.isDirectory())
   .map((e) => e.name)

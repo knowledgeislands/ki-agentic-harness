@@ -55,7 +55,7 @@
     "ki:authoring:conform": "bun .ki-meta/skills/ki-authoring/conform.ts .",
     "ki:binding:build-plugin": "bun skills/ki-binding/scripts/build-plugin.ts",
     "ki:bootstrap:audit": "bun skills/ki-bootstrap/scripts/audit.ts .",
-    "ki:bootstrap:conform": "bun skills/ki-bootstrap/scripts/conform.ts . --all",
+    "ki:bootstrap:conform": "bun skills/ki-bootstrap/scripts/conform.ts .",
     "ki:codegen": "bun scripts/generate-clients.ts",
     "ki:conform": "bun .ki-meta/bin/aggregate.ts conform",
     "ki:decision-records:audit": "bun .ki-meta/skills/ki-decision-records/audit.ts .",

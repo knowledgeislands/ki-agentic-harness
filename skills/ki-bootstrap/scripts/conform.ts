@@ -21,8 +21,10 @@
  * rename/removal to reconcile by hand).
  *
  * Usage: bun conform.ts [target-repo] [--all] [--dry-run]
- *   --all      link every harness skill (the harness itself); forwarded to the
- *              skills linker and the vendored-set audit
+ *   --all      link every harness skill (the harness authoring hub); forwarded to the
+ *              skills linker ONLY — a linking concept, never vendoring, which is always
+ *              coverage-scoped (ADR-KI-HARNESS-007). The harness is auto-detected, so
+ *              --all is redundant there.
  *   --dry-run  preview both linkers' changes, touch nothing
  */
 
@@ -52,8 +54,10 @@ if (!dryRun) {
   if (run('link-agents.ts', ['--check']) !== 0) failed++
 }
 
-// 3. Advisory only — never re-vendors (ADR-KI-HARNESS-006's drift contract).
-if (run('audit.ts', all ? ['--all'] : []) !== 0) {
+// 3. Advisory only — never re-vendors (ADR-KI-HARNESS-006's drift contract). The
+// vendored-set audit is always coverage-scoped (`--all` is a linking concept only —
+// vendoring follows .ki-config coverage, ADR-KI-HARNESS-007), so it is never forwarded here.
+if (run('audit.ts', []) !== 0) {
   console.log(
     'vendored-set drift is INIT’s to repair — re-run `./.ki-meta/bin/ki-init` (or `bun skills/ki-bootstrap/scripts/init.ts <target>`)'
   )
