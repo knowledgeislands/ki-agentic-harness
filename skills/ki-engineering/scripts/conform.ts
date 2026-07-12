@@ -104,6 +104,9 @@ const TSCONFIG_DEFAULT = `{
 `
 const BIOME_DEFAULT = `{
   "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "files": {
+    "includes": ["**", "!**/.ki-meta"]
+  },
   "formatter": {
     "enabled": true,
     "lineWidth": 140,
