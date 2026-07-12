@@ -115,6 +115,7 @@ Checker output follows the severity ladder, JSON shape, and exit-code contract i
 - **SCRIPT-5 [J]** Validation scripts are verbose — errors name the problem and the valid options. (BP)
 - **SCRIPT-6 [J]** Plan-validate-execute for batch/destructive ops. (BP, COMMUNITY)
 - **SCRIPT-7 [J]** Scripts installed into a target repo's `scripts/` directory are **copies**, not symlinks or out-of-repo references — the target repo must be autonomous. (BP)
+- **SCRIPT-8 [J]** A governance `audit`/`conform` is invoked with the **repo root** (`bun .ki-meta/skills/<skill>/audit.ts .`), not its own content sub-directory. It must therefore **resolve its own scope under the arg** (`docs/features`, `docs/plans`, `docs/decisions`, `memory/`, …) and emit a single `NA` + stop when that scope is absent — rather than treating the arg as its sub-directory (which scans the whole repo and flags unrelated files, e.g. `ROADMAP.md`) or scanning the root and vacuously passing on zero files. Mirrors `ki-engineering` (no `package.json` → NA) and `ki-website-cloudflare` (no `wrangler` → NA). This is what makes the coverage-scoped aggregate `ki:audit` (ADR-KI-HARNESS-007) a clean gate. (KI)
 
 ## LINK — Linking & portability
 
