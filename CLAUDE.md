@@ -24,7 +24,7 @@ Skills relate to one another by **composition**, never a base-coupled extension:
 
 - **Writing or editing a `SKILL.md`** → follow the `ki-skills` rubric: run `bun run ki:skills:lint` (the mechanical half) and apply the judgment half by reading. The directory name **is** the `name:` frontmatter.
 - **Adding a `ki-skills` rubric criterion** → pick the next code number by scanning **both** `skills/ki-skills/references/audit-rubric.md` **and** `skills/ki-skills/scripts/lint-skills.ts`. Judgment-only `[J]` codes live in the rubric but never appear in the linter, so the linter's highest code is not the true maximum — trusting it alone risks a collision (e.g. a mechanical `SHAPE-10` clashing with the rubric's existing judgment `SHAPE-10`).
-- **Markdown / TOML style** → the `ki-authoring` conventions; `bun run ki:lint:md` is the mechanical gate. Wide tables → footnotes; relative markdown links, never wikilinks; refer to another skill by its `name`, never a file path.
+- **Markdown / TOML style** → the `ki-authoring` conventions; `bun run ki:authoring:audit` is the read-only Markdown gate (prettier `--check` + markdownlint) and `ki:authoring:conform` the write pass. Wide tables → footnotes; relative markdown links, never wikilinks; refer to another skill by its `name`, never a file path.
 - **The toolchain** (package.json scripts, `tsconfig`, `biome`) → the `ki-engineering` standard, which this repo itself conforms to (`bun run ki:engineering:audit .`).
 - A change touching a standard another skill cites is **cross-skill** — keep the set internally consistent (the skills linter's cross-skill pass flags collisions).
 - **Recapping a session** (a prompt like "summarise what has happened, what is outstanding, and what lessons could be captured") — a ROADMAP item **added during the session** counts as _what happened_, not as _outstanding_. Parking work on the ROADMAP is a completed action here (the roadmap **is** the durable home for deferred work), so recording it discharges it — do not then re-list it under outstanding. Outstanding means threads left mid-change, unaddressed in the repo: uncommitted edits, a failing gate, a decision still open, work neither done nor parked.
@@ -35,14 +35,15 @@ Skills relate to one another by **composition**, never a base-coupled extension:
 
 [Bun](https://bun.sh) for install/dev; `bun install` wires the husky pre-commit hook.
 
+The read-only gate is the aggregate `ki:audit`; the write pass is `ki:conform`. Both fan out over the vendored per-skill modes in `.ki-meta/` (coverage-scoped to `.ki-config.toml`). The per-tool `ki:lint:*` / `ki:deps:*` / `ki:knip` / `ki:verify` keys are retired (ADR-KI-HARNESS-TOOLCHAIN-001) — the tools live **inside** `ki-engineering`'s audit (biome + tsc + knip + syncpack) and `ki-authoring`'s (the Markdown gate).
+
 ```bash
-bun run ki:conform        # write pass: bring the repo into mechanical conformance (update → format → fix → md)
-bun run ki:verify         # read-only gate: the exact checks CI runs (lint:check + lint:types + lint:md:check)
-bun run ki:lint:check     # Biome (TypeScript + JSON)
-bun run ki:lint:types     # tsc --noEmit
-bun run ki:lint:md        # Prettier + markdownlint over Markdown (writes)
-bun run ki:lint:md:check  # the check-mode twin (the CI Markdown gate)
-bun run ki:skills:lint           # audit every skill's mechanical criteria
+bun run ki:audit                 # read-only gate CI runs (aggregate over vendored per-skill audits)
+bun run ki:conform               # write pass: every skill's mechanical fixes (aggregate)
+bun run test                     # the harness self-tests (checker *.test.ts + graph/help/bootstrap integrity)
+bun run ki:engineering:audit     # the TS/Bun toolchain checks alone (biome + tsc + knip + syncpack)
+bun run ki:authoring:audit       # the Markdown gate alone (prettier --check + markdownlint)
+bun run ki:skills:audit          # audit every skill's mechanical criteria
 bun run ki:skills:link:global    # install the bootstrap keystone into ~/.claude/skills
 bun run ki:skills:link:project   # wire this repo's project-local skills from .ki-config.toml (--all here)
 ```

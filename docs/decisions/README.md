@@ -48,6 +48,7 @@ The records are living, compact, and independent. The order below is a **curated
 23. [ADR-KI-HARNESS-AGENTS-001](ADR-KI-HARNESS-AGENTS-001-subagent-isolation.md) — subagent isolation for multi-skill invocation.
 24. [ADR-KI-HARNESS-TOOLCHAIN-004](ADR-KI-HARNESS-TOOLCHAIN-004-checker-remediation-footer-and-learn-block-context.md) — checker remediation footer and the headroom:learn cross-repo context check.
 25. [ADR-KI-HARNESS-TOOLCHAIN-005](ADR-KI-HARNESS-TOOLCHAIN-005-generated-code-excluded-from-lint-and-knip.md) — generated and vendored code excluded from linting and knip.
+26. [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-uniform-skill-modes-and-coverage-scoped-audit.md) — uniform skill modes (bare audit/conform/init), the toolchain collapse, and the coverage-scoped aggregate gate.
 
 ## Template
 
