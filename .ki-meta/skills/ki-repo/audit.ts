@@ -12,7 +12,7 @@
  * GitHub identity; `--org` lists the org (and so catches repos not cloned locally).
  *
  * The standard has three layers (see references/repo-standard.md):
- *   1. FILES   — README, LICENSE, .gitignore, .editorconfig, and .ki-config.toml
+ *   1. FILES   — README, LICENSE, .gitignore, and .ki-config.toml
  *                (the repo's declared config), all present on the default branch.
  *                .ki-config.toml is also the GATE of the coverage cascade: once a
  *                repo is confirmed a ki-repo by carrying it, each other governance
@@ -77,7 +77,6 @@ const REQUIRED_FILES: [check: string, paths: string[]][] = [
   ['readme', ['README.md']],
   ['license-file', ['LICENSE', 'LICENSE.md']],
   ['gitignore', ['.gitignore']],
-  ['editorconfig', ['.editorconfig']],
   ['claude-md', ['CLAUDE.md']],
   ['ki-config', [KI_CONFIG]]
 ]
@@ -692,7 +691,7 @@ if (!jsonOut) {
   console.log(
     paint(
       C.dim,
-      `standard: files(README,LICENSE,.gitignore,.editorconfig,${KI_CONFIG}) · github(main,license,squash-only,del-branch,update-branch,issues,no-wiki/projects,desc,visibility) · public+(topics) · deeper(dependabot;secret-scanning;actions=all) · coverage[ki-repo→](${COVERAGE.map((c) => c.skill).join(',')}) · overridable via [..checks]: ${Object.keys(CHECK_DEFAULTS).join(',')},coverage-<skill>`
+      `standard: files(README,LICENSE,.gitignore,${KI_CONFIG}) · github(main,license,squash-only,del-branch,update-branch,issues,no-wiki/projects,desc,visibility) · public+(topics) · deeper(dependabot;secret-scanning;actions=all) · coverage[ki-repo→](${COVERAGE.map((c) => c.skill).join(',')}) · overridable via [..checks]: ${Object.keys(CHECK_DEFAULTS).join(',')},coverage-<skill>`
     )
   )
 }

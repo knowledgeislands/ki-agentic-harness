@@ -18,6 +18,7 @@
  * No dependencies — Node/Bun builtins only; no cross-skill imports.
  */
 import { execSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, join } from 'node:path'
 
@@ -59,37 +60,66 @@ try {
   add('FAIL', 'md-mech', `Markdown mechanical check failed — run "bun run ki:authoring:conform" to fix (MD-mech)\n    ${detail}`)
 }
 
-// ── mechanical: .prettierrc.json printWidth ────────────────────────────────────
-// The table-reshape judgment depends on this value; surface it so ADVISORY
-// recipients know the threshold.
-const prettier = read('.prettierrc.json')
-let printWidth = 140
-if (!prettier) {
-  add('WARN', 'toolchain', '.prettierrc.json missing — cannot confirm printWidth for MD-table threshold')
-} else {
-  const m = prettier.match(/"printWidth"\s*:\s*(\d+)/)
-  if (m) {
-    printWidth = Number(m[1])
-    add('PASS', 'toolchain', `.prettierrc.json printWidth = ${printWidth} (the MD-table reshape threshold)`)
-  } else {
-    add('WARN', 'toolchain', '.prettierrc.json has no printWidth — table-reshape threshold unknown')
-  }
+// ── owns: .prettierrc.json / .editorconfig — hash-drift check ────────────────────
+// This skill owns both files wholly (SHAPE-16 `owns:`) — conform always corrects
+// drift unconditionally, so a mismatch here is WARN (informational: conform fixes
+// it), not FAIL. The table-reshape judgment below depends on printWidth; parse it
+// from whatever is on disk so ADVISORY recipients see the real threshold even when
+// the file is drifted.
+const sha256 = (content: string): string => createHash('sha256').update(content).digest('hex')
 
-  // proseWrap is load-bearing for this skill's own conform: anything but "never"
-  // means the Prettier pass conform shells out to actively hard-wraps prose,
-  // contradicting references/markdown-authoring.md's line-wrapping convention.
-  const pw = prettier.match(/"proseWrap"\s*:\s*"(\w+)"/)
-  if (pw?.[1] === 'never') {
-    add('PASS', 'toolchain', '.prettierrc.json proseWrap = "never" (required — conform hard-wraps prose otherwise)')
+const PRETTIER_DEFAULT = `{
+  "printWidth": 140,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": false,
+  "singleQuote": true,
+  "proseWrap": "never",
+  "trailingComma": "none",
+  "overrides": [
+    {
+      "files": "*.md",
+      "options": {
+        "parser": "markdown"
+      }
+    }
+  ]
+}
+`
+
+const EDITORCONFIG_DEFAULT = `root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.md]
+trim_trailing_whitespace = false
+`
+
+function checkOwned(name: string, canonical: string): void {
+  const current = read(name)
+  if (!current) {
+    add('WARN', 'toolchain', `${name} missing — run ki:authoring:conform to scaffold it from the house template`)
+    return
+  }
+  if (sha256(current) === sha256(canonical)) {
+    add('PASS', 'toolchain', `${name} matches the house template (owns:)`)
   } else {
-    add(
-      'FAIL',
-      'toolchain',
-      `.prettierrc.json proseWrap must be "never" (found ${pw ? `"${pw[1]}"` : 'unset'}) — ` +
-        'conform will hard-wrap prose lines, contradicting the house Markdown convention'
-    )
+    add('WARN', 'toolchain', `${name} has drifted from the house template — run ki:authoring:conform to correct it`)
   }
 }
+
+checkOwned('.prettierrc.json', PRETTIER_DEFAULT)
+checkOwned('.editorconfig', EDITORCONFIG_DEFAULT)
+
+const prettier = read('.prettierrc.json')
+const pwMatch = prettier.match(/"printWidth"\s*:\s*(\d+)/)
+const printWidth = pwMatch ? Number(pwMatch[1]) : 140
 
 // ── judgment surface: Markdown [J] criteria ────────────────────────────────────
 // Each advisory names the criterion ID from references/audit-rubric.md and what

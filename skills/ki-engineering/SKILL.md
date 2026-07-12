@@ -2,6 +2,8 @@
 name: ki-engineering
 implies: []
 vendors: [init, audit, conform, help]
+owns: [mise.toml, tsconfig.json, biome.json, knip.json]
+contributes: ['.ki-config.toml', package.json]
 description: >
   Use to audit our engineering standards, conform or scaffold a repo's toolchain, or check script-family / tsconfig / biome consistency. Owns the shared build/lint/test layer every Knowledge Islands TypeScript/Bun repo conforms to — the twin of `ki-authoring`. Covers the closed `package.json` key-set (toolchain fields here; identity/metadata content in `ki-repo`), the `mise.toml` toolchain pin, the `ki:lint:*`/`ki:deps:*` script families, the Bun-install/Node-run split, `tsconfig`/`biome`/`vitest` shape with 100% coverage, the CI-workflow shape, and the build/cli-chmod rule — plus the enforcement framework the governance skills follow. Triggers: "audit our engineering standards", "do the repos' scripts match", "why are lint:/deps: scripts inconsistent". For GitHub settings, security, and the `.ki-config.toml` contract use `ki-repo`; for Markdown/TOML style use `ki-authoring`; for MCP server code use `ki-mcp`.
 argument-hint: 'audit <repo> | conform <repo> | help | init <repo> | refresh'
@@ -73,6 +75,7 @@ The standard pins volatile versions (Bun, Node, Biome, TypeScript, vitest, syncp
 
 Reciprocal off-ramps — each names this skill back for the engineering layer:
 
-- **A repo's GitHub settings, security, the universal local files (README/LICENSE/.gitignore/.editorconfig), and the `.ki-config.toml` _contract_** → `ki-repo`. This skill owns the _engineering_ toolchain inside the repo; `ki-repo` owns the repo's _configuration_ and its `.ki-config.toml` contract (this skill only reads its own table within it).
+- **A repo's GitHub settings, security, the universal local files (README/LICENSE/.gitignore), and the `.ki-config.toml` _contract_** → `ki-repo`. This skill owns the _engineering_ toolchain inside the repo; `ki-repo` owns the repo's _configuration_ and its `.ki-config.toml` contract (this skill only contributes its own table within it).
+- **`.prettierrc.json` and `.editorconfig`** → `ki-authoring`. Prettier backs that skill's own Markdown conform pass, so it owns both files wholly (scaffold, hash-drift check, unconditional overwrite on drift) — this skill no longer scaffolds or content-checks either.
 - **Markdown / TOML _formatting_ style** (including what the `ki:lint:md` pass produces) → `ki-authoring`. This skill owns that the toolchain which runs lint exists and is wired; authoring owns the prose/format conventions it enforces.
 - **Artifact-specific code and deltas** — MCP `src/` layout, tool naming, the access gate, security invariants, the coverage-exclude list → `ki-mcp` (and future artifact skills). They build on this common layer and add their own.

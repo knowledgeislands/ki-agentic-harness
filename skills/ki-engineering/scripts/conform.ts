@@ -7,7 +7,7 @@
  * Scope: a single target repo (default cwd), matching the house conform shape
  * (conform.ts, conform.ts) — `bun conform.ts .` /
  * `ki:engineering:conform`. Known-good defaults (canonical script bodies,
- * tsconfig/biome/prettier/knip field sets, required devDeps) are copied from
+ * tsconfig/biome/knip field sets, required devDeps) are copied from
  * audit.ts rather than imported, so each script stays valid
  * standalone per the composition-only rule.
  *
@@ -20,11 +20,12 @@
  *     per-skill keys, `clean`, `prepare`, and running the write toolchain directly,
  *     missing toolchain devDependencies, and a missing/incomplete
  *     `lint-staged` block — all set/overwritten to the standard's exact value.
- *   - Scaffolds mise.toml / tsconfig.json / biome.json / .prettierrc.json /
- *     knip.json when absent entirely, using the same known-good defaults
- *     audit.ts checks against. Never overwrites an existing file
- *     of these (field-level repair inside an existing file is judgment — the
- *     rubric's [J] half — not scripted here).
+ *   - Scaffolds mise.toml / tsconfig.json / biome.json / knip.json when
+ *     absent entirely, using the same known-good defaults audit.ts checks
+ *     against. Never overwrites an existing file of these (field-level
+ *     repair inside an existing file is judgment — the rubric's [J] half —
+ *     not scripted here). `.prettierrc.json` is owned by ki-authoring
+ *     (it backs that skill's own Markdown conform pass) — not this skill.
  *   - Appends a `[ki-engineering]` marker table to .ki-config.toml when the
  *     table is missing (mirrors conform.ts's own config-marker append).
  *
@@ -38,7 +39,7 @@
  *     files/dist, chmod targets) — depends on repo-specific src/ layout.
  *   - Anything env/secret-related (NODE_ENV leaks outside dev/inspect scripts,
  *     .env*.example authoring) — never auto-fixed; could mask a real leak.
- *   - Field-level repairs inside an EXISTING tsconfig/biome/prettier/knip file
+ *   - Field-level repairs inside an EXISTING tsconfig/biome/knip file
  *     (only scaffolds when the file is missing entirely).
  *
  * Zero npm dependencies (bun + node stdlib only). Exit code is non-zero only on
@@ -123,20 +124,6 @@ const BIOME_DEFAULT = `{
     }
   },
   "organizeImports": { "enabled": true }
-}
-`
-const PRETTIER_DEFAULT = `{
-  "proseWrap": "never",
-  "printWidth": 140,
-  "semi": false,
-  "singleQuote": true,
-  "trailingComma": "none",
-  "overrides": [
-    {
-      "files": "*.md",
-      "options": { "parser": "markdown" }
-    }
-  ]
 }
 `
 const KNIP_DEFAULT = `{
@@ -297,7 +284,7 @@ if (pkgChanged && !dryRun) {
   writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`)
 }
 
-// ── scaffold: mise.toml / tsconfig.json / biome.json / .prettierrc.json / knip.json ──
+// ── scaffold: mise.toml / tsconfig.json / biome.json / knip.json ──
 console.log(`\n${paint(C.cyan, 'toolchain config files (scaffold only if absent)')}`)
 function scaffold(name: string, path: string, content: string): void {
   if (existsSync(path)) {
@@ -310,7 +297,6 @@ function scaffold(name: string, path: string, content: string): void {
 scaffold('mise.toml', join(target, 'mise.toml'), MISE_DEFAULT)
 scaffold('tsconfig.json', join(target, 'tsconfig.json'), TSCONFIG_DEFAULT)
 scaffold('biome.json', join(target, 'biome.json'), BIOME_DEFAULT)
-scaffold('.prettierrc.json', join(target, '.prettierrc.json'), PRETTIER_DEFAULT)
 const hasKnip = existsSync(join(target, 'knip.json')) || existsSync(join(target, 'knip.jsonc')) || existsSync(join(target, 'knip.ts'))
 if (hasKnip) log('skip', 'knip config already present — not touched')
 else scaffold('knip.json', join(target, 'knip.json'), KNIP_DEFAULT)
@@ -399,7 +385,7 @@ manualTodos.push(
   'env / secret-related findings [env] — NODE_ENV leaks outside dev/inspect scripts and .env*.example authoring are never auto-fixed (could mask a real leak)'
 )
 manualTodos.push(
-  'field-level repairs inside an EXISTING tsconfig.json / biome.json / .prettierrc.json / knip.json — only scaffolded when the file was missing entirely; existing-file drift is judgment'
+  'field-level repairs inside an EXISTING tsconfig.json / biome.json / knip.json — only scaffolded when the file was missing entirely; existing-file drift is judgment'
 )
 for (const todo of manualTodos) console.log(`  - ${todo}`)
 

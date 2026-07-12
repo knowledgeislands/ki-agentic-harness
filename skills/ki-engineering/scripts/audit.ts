@@ -355,21 +355,8 @@ else {
   for (const [label, re] of fields) re.test(biome) ? add('PASS', 'biome', label) : add('WARN', 'biome', `biome.json: expected ${label}`)
 }
 
-// ── core: .prettierrc.json (backs ki-authoring's Markdown gate) ──────────────────
-const prettier = read('.prettierrc.json')
-if (!prettier) add('FAIL', 'prettier', '.prettierrc.json missing (Prettier backs ki-authoring audit/conform)')
-else {
-  const pfields: [string, RegExp][] = [
-    ['proseWrap never', /"proseWrap"\s*:\s*"never"/],
-    ['printWidth 140', /"printWidth"\s*:\s*140/],
-    ['semi false', /"semi"\s*:\s*false/],
-    ['singleQuote true', /"singleQuote"\s*:\s*true/],
-    ['trailingComma none', /"trailingComma"\s*:\s*"none"/],
-    ['*.md markdown override', /"parser"\s*:\s*"markdown"/]
-  ]
-  for (const [label, re] of pfields)
-    re.test(prettier) ? add('PASS', 'prettier', label) : add('WARN', 'prettier', `.prettierrc.json: expected ${label}`)
-}
+// .prettierrc.json content is owned and audited by ki-authoring (it backs that
+// skill's own Markdown conform pass) — not checked here (SHAPE-16 ownership split).
 
 // ── core: knip.json (backs the knip check inside ki:engineering:audit) ────────────
 // knip is run directly by ki:engineering:audit (dependency + dead-code hygiene);

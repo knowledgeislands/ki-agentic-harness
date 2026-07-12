@@ -19,8 +19,10 @@
  *   - Layer 3: Dependabot alerts + security updates, allow_update_branch, secret
  *     scanning + push protection (public), Actions allowed_actions = all.
  * Scaffolds locally (only when absent, never overwritten):
- *   - .gitignore, .editorconfig — from this skill's own templates.
+ *   - .gitignore — from this skill's own template.
  *   - .ki-config.toml's [ki-repo] block — audit.ts's `--init` template.
+ * `.editorconfig` is owned by ki-authoring (it backs that skill's own Markdown
+ * conform pass), not this skill.
  *
  * Deliberately NEVER touches (judgment — printed as manual TODOs instead):
  *   - README.md content, LICENSE content.
@@ -61,16 +63,6 @@ visibility = "private"   # "public" | "private" — must match the repo's actual
 # wiki = false               # default on  — allow this repo's Wiki
 `
 const GITIGNORE_DEFAULT = 'node_modules/\n.DS_Store\n.ki-meta/audits/\n.ki-meta/conform/\n'
-const EDITORCONFIG_DEFAULT = `root = true
-
-[*]
-charset = utf-8
-end_of_line = lf
-insert_final_newline = true
-trim_trailing_whitespace = true
-indent_style = space
-indent_size = 2
-`
 
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
@@ -160,7 +152,6 @@ function scaffold(name: string, path: string, content: string): void {
   if (!dryRun) writeFileSync(path, content)
 }
 scaffold('.gitignore', join(target, '.gitignore'), GITIGNORE_DEFAULT)
-scaffold('.editorconfig', join(target, '.editorconfig'), EDITORCONFIG_DEFAULT)
 if (!ki) {
   console.log(
     `  ${paint(C.green, 'append')} ${KI_CONFIG} [${KI_SECTION}] block (edit \`visibility\` to match — currently templated "private")`
