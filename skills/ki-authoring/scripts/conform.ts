@@ -165,6 +165,6 @@ console.log(
 )
 
 console.log(
-  `\n${paint(C.dim, 'mechanical layer applied — re-run `bun scripts/audit.ts ' + target + '` (or `ki:authoring:audit`) to confirm findings clear.')}`
+  `\n${paint(C.dim, `mechanical layer applied — re-run \`bun scripts/audit.ts ${target}\` (or \`ki:authoring:audit\`) to confirm findings clear.`)}`
 )
 console.log(paint(C.dim, 'Judgment criteria (wide tables, link text, TOML style) are not scripted — see SKILL.md Mode CONFORM step 1.'))
