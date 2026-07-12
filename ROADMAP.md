@@ -4,7 +4,13 @@ Where this agentic harness is going. The [README](README.md) and the [docs/](doc
 
 This roadmap is itself subject to the house discipline it describes: when a skill's REFRESH run or an audit surfaces a structural gap, it lands here before it's built — and an item is **removed once done**, not ticked off, so the file always shows only open work.
 
-**Continuous practices are not roadmap items.** Keeping the skills audited (`ki:skills:lint`, `ki:repo:audit`, `ki:kb:audit`, the `ki-mcp` audit over the `mcp-*` repos), re-running the advisory [eval suite](evals/README.md) as skills change, and the scheduled `ki-skills-refresh` sweep (which honours each skill's declared `**Refresh:**` cadence) are ongoing disciplines tied to the invariants the `ki-skills` rubric enforces — they run continuously, so they live there, not here.
+**Continuous practices are not roadmap items.** Keeping the skills audited (`ki:skills:audit`, `ki:repo:audit`, `ki:kb:audit`, the `ki-mcp` audit over the `mcp-*` repos), re-running the advisory [eval suite](evals/README.md) as skills change, and the scheduled `ki-skills-refresh` sweep (which honours each skill's declared `**Refresh:**` cadence) are ongoing disciplines tied to the invariants the `ki-skills` rubric enforces — they run continuously, so they live there, not here.
+
+## Next
+
+### Sweep the `ki:skills:lint` → `ki:skills:audit` rename through the fleet
+
+The toolchain migration renamed the skill-quality gate to `ki:skills:audit` (over the vendored checker), but the old `ki:skills:lint` name survives in ~25 places and one of them is a **live failure**: `ki-harness`'s PKG-2 mechanical check still demands a `ki:skills:lint` key, so `ki:harness:audit` FAILs against this repo's own `package.json`. The sweep is cross-skill: `ki-harness`'s standard, rubric (CLAUDE-4, PKG-2, COLL-1), exemplars, `SKILL.md`, and `audit.ts`/`conform.ts` (checker edits ⇒ re-vendor `.ki-meta/` before verifying); echoes in `ki-skills`' sources/exemplars/conform output and `audit.ts` header; plus prose in `evals/README.md`, `skills/README.md`, the two governance agents, `.claude/workflows/ki-multi-skill-audit.ts`, `docs/features/{governance,harness}.md`, and ADR-KI-HARNESS-AGENTS-001. Decide en route whether PKG-2 should demand the new key by name or defer to the vendored-key doctrine (harness-standard §package.json docs invocation discipline). `CLAUDE.md` and this file are already fixed.
 
 ## Soon
 
