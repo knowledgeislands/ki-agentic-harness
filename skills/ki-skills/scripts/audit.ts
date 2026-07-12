@@ -424,7 +424,11 @@ function lintSkill(skillDir: string): Finding[] {
     const conformPath = join(skillDir, 'scripts', 'conform.ts')
     const auditPath = join(skillDir, 'scripts', 'audit.ts')
     if (existsSync(conformPath)) {
-      const conformSrc = readFileSync(conformPath, 'utf8')
+      // This greps conform SOURCE for scaffold(...)/syncOwned(...) calls, so the scaffolded
+      // filename MUST be the first string literal of the call. Line comments are stripped
+      // first so prose that merely mentions the pattern is not mis-detected as a scaffold —
+      // that false positive bit twice during the cited-findings sweep (ADR-KI-HARNESS-SKILLS-010).
+      const conformSrc = readFileSync(conformPath, 'utf8').replace(/\/\/.*$/gm, '')
       const scaffolded = new Set<string>()
       for (const m of conformSrc.matchAll(/\b(?:scaffold|syncOwned)\(\s*['"]([^'"]+)['"]/g)) scaffolded.add(m[1] as string)
       for (const file of scaffolded)
