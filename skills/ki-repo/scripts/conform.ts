@@ -198,11 +198,11 @@ function scaffold(name: string, area: string, path: string, content: string): vo
   say(`  ${paint(C.green, 'write')} ${name}`)
   if (!dryRun) writeFileSync(path, content)
 }
-scaffold('.gitignore', 'gitignore', join(target, '.gitignore'), GITIGNORE_DEFAULT)
+scaffold('.gitignore', 'FILES-1', join(target, '.gitignore'), GITIGNORE_DEFAULT)
 if (!ki) {
   rec(
     'POLISH',
-    'ki-config',
+    'FILES-1',
     `${KI_CONFIG} [${KI_SECTION}] block appended (edit \`visibility\` to match — templated "private")`,
     STD,
     KI_CONFIG
@@ -210,7 +210,7 @@ if (!ki) {
   say(`  ${paint(C.green, 'append')} ${KI_CONFIG} [${KI_SECTION}] block (edit \`visibility\` to match — currently templated "private")`)
   if (!dryRun) writeFileSync(kiPath, kiText ? `${kiText.replace(/\n*$/, '\n\n')}${KI_DEFAULT}` : KI_DEFAULT)
 } else {
-  rec('PASS', 'ki-config', `${KI_CONFIG} [${KI_SECTION}] block already present`, STD, KI_CONFIG)
+  rec('PASS', 'FILES-1', `${KI_CONFIG} [${KI_SECTION}] block already present`, STD, KI_CONFIG)
 }
 
 // ── Layer 2: core GitHub settings ──
@@ -225,18 +225,18 @@ gh(
     '--enable-squash-merge=true',
     '--delete-branch-on-merge=true'
   ],
-  'merge',
+  'MERGE-1',
   'squash-only + auto-delete-branch',
   'merge, delete-branch'
 )
-if (enforced('wiki')) gh(['repo', 'edit', nwo, '--enable-wiki=false'], 'wiki', 'Wiki off')
-if (enforced('projects')) gh(['repo', 'edit', nwo, '--enable-projects=false'], 'projects', 'Projects off')
-if (enforced('issues')) gh(['repo', 'edit', nwo, '--enable-issues=true'], 'issues', 'Issues on')
+if (enforced('wiki')) gh(['repo', 'edit', nwo, '--enable-wiki=false'], 'TOGGLE-1', 'Wiki off')
+if (enforced('projects')) gh(['repo', 'edit', nwo, '--enable-projects=false'], 'TOGGLE-1', 'Projects off')
+if (enforced('issues')) gh(['repo', 'edit', nwo, '--enable-issues=true'], 'TOGGLE-1', 'Issues on')
 
 if (isPublic && enforced('topics')) {
   const args = ['repo', 'edit', nwo]
   for (const t of TOPICS) args.push('--add-topic', t)
-  gh(args, 'topics', `topics: ${TOPICS.join(', ')}`)
+  gh(args, 'TOPICS-1', `topics: ${TOPICS.join(', ')}`)
 }
 
 if (enforced('branch-protection')) {
@@ -251,43 +251,43 @@ if (enforced('branch-protection')) {
   })
   if (dryRun) {
     say(`  ${paint(C.dim, '$')} gh api -X PUT repos/${nwo}/branches/main/protection --input - <<< ${body}`)
-    rec('POLISH', 'branch-protection', `would set branch protection on main (opted in via [${CHECKS_SECTION}])`, STD)
+    rec('POLISH', 'BP-1', `would set branch protection on main (opted in via [${CHECKS_SECTION}])`, STD)
   } else {
     try {
       execFileSync('gh', ['api', '-X', 'PUT', `repos/${nwo}/branches/main/protection`, '--input', '-'], { input: body, encoding: 'utf8' })
       say(`  ${paint(C.green, 'ok')}    branch protection on main (opted in via [${CHECKS_SECTION}])`)
-      rec('POLISH', 'branch-protection', `branch protection on main (opted in via [${CHECKS_SECTION}])`, STD)
+      rec('POLISH', 'BP-1', `branch protection on main (opted in via [${CHECKS_SECTION}])`, STD)
     } catch (e) {
       const m = String((e as Error).message ?? e).split('\n')[0]
       say(`  ${paint(C.red, 'fail')}  branch protection — ${m}`)
-      rec('FAIL', 'branch-protection', `branch protection — ${m}`, STD)
+      rec('FAIL', 'BP-1', `branch protection — ${m}`, STD)
     }
   }
 } else if (dryRun) {
   say(`  ${paint(C.dim, '$')} gh api -X DELETE repos/${nwo}/branches/main/protection`)
-  rec('POLISH', 'branch-protection', 'would strip any leftover branch protection (default: off)', STD)
+  rec('POLISH', 'BP-1', 'would strip any leftover branch protection (default: off)', STD)
 } else {
   try {
     execFileSync('gh', ['api', '-X', 'DELETE', `repos/${nwo}/branches/main/protection`], { encoding: 'utf8' })
     say(`  ${paint(C.green, 'ok')}    strip any leftover branch protection (default: off)`)
-    rec('POLISH', 'branch-protection', 'stripped leftover branch protection (default: off)', STD)
+    rec('POLISH', 'BP-1', 'stripped leftover branch protection (default: off)', STD)
   } catch (e) {
     const msg = String((e as Error).message ?? e)
     if (!isPublic && /Upgrade to GitHub Pro/.test(msg)) {
       say(`  ${paint(C.dim, 'skip')}  branch protection unavailable on this plan for private repos — nothing to strip`)
-      rec('PASS', 'branch-protection', 'branch protection unavailable on this plan for private repos — nothing to strip', STD)
+      rec('PASS', 'BP-1', 'branch protection unavailable on this plan for private repos — nothing to strip', STD)
     } else {
       say(`  ${paint(C.red, 'fail')}  strip any leftover branch protection (default: off) — ${msg.split('\n')[0]}`)
-      rec('FAIL', 'branch-protection', `strip any leftover branch protection (default: off) — ${msg.split('\n')[0]}`, STD)
+      rec('FAIL', 'BP-1', `strip any leftover branch protection (default: off) — ${msg.split('\n')[0]}`, STD)
     }
   }
 }
 
 // ── Layer 3: deeper GitHub ──
 say(`\n${paint(C.cyan, 'layer 3 — deeper GitHub')}`)
-gh(['api', '-X', 'PUT', `repos/${nwo}/vulnerability-alerts`], 'dependabot-alerts', 'Dependabot alerts on')
-gh(['api', '-X', 'PUT', `repos/${nwo}/automated-security-fixes`], 'dependabot-updates', 'Dependabot security updates on')
-gh(['api', '-X', 'PATCH', `repos/${nwo}`, '-F', 'allow_update_branch=true'], 'update-branch', 'always-suggest-updating-PR-branches on')
+gh(['api', '-X', 'PUT', `repos/${nwo}/vulnerability-alerts`], 'DEP-1', 'Dependabot alerts on')
+gh(['api', '-X', 'PUT', `repos/${nwo}/automated-security-fixes`], 'DEP-1', 'Dependabot security updates on')
+gh(['api', '-X', 'PATCH', `repos/${nwo}`, '-F', 'allow_update_branch=true'], 'DEP-1', 'always-suggest-updating-PR-branches on')
 if (isPublic && (enforced('secret-scanning') || enforced('push-protection'))) {
   const sa: Record<string, unknown> = {}
   const covered: string[] = []
@@ -304,23 +304,23 @@ if (isPublic && (enforced('secret-scanning') || enforced('push-protection'))) {
   const covers = covered.join(', ')
   if (dryRun) {
     say(`  ${paint(C.dim, '$')} gh api -X PATCH repos/${nwo} --input - <<< ${body}`)
-    rec('POLISH', 'secret-scanning', `would set secret scanning / push protection (covers: ${covers})`, STD)
+    rec('POLISH', 'SEC-1', `would set secret scanning / push protection (covers: ${covers})`, STD)
   } else {
     try {
       execFileSync('gh', ['api', '-X', 'PATCH', `repos/${nwo}`, '--input', '-'], { input: body, encoding: 'utf8' })
       say(`  ${paint(C.green, 'ok')}    secret scanning / push protection`)
-      rec('POLISH', 'secret-scanning', `secret scanning / push protection (covers: ${covers})`, STD)
+      rec('POLISH', 'SEC-1', `secret scanning / push protection (covers: ${covers})`, STD)
     } catch (e) {
       const m = String((e as Error).message ?? e).split('\n')[0]
       say(`  ${paint(C.red, 'fail')}  secret scanning / push protection — ${m}`)
-      rec('FAIL', 'secret-scanning', `secret scanning / push protection (covers: ${covers}) — ${m}`, STD)
+      rec('FAIL', 'SEC-1', `secret scanning / push protection (covers: ${covers}) — ${m}`, STD)
     }
   }
 }
 gh(
   // `enabled` is required by the API (422 without it); `allowed_actions` is only honoured when enabled.
   ['api', '-X', 'PUT', `repos/${nwo}/actions/permissions`, '-F', 'enabled=true', '-f', `allowed_actions=${ALLOWED_ACTIONS}`],
-  'actions',
+  'ACT-1',
   `Actions allowed_actions=${ALLOWED_ACTIONS}`
 )
 
@@ -328,16 +328,16 @@ gh(
 // cannot mechanically settle, routed to a human/model reading). Cite the rubric's Judgment
 // section (RUBRIC); audit emits none of these areas, so there is no cross-file conflict.
 say(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
-rec('ADVISORY', 'judgment', `README.md / LICENSE content: accurate and current for ${nwo}?`, RUBRIC, 'README.md')
+rec('ADVISORY', 'FILES-J1', `README.md / LICENSE content: accurate and current for ${nwo}?`, RUBRIC, 'README.md')
 rec(
   'ADVISORY',
-  'description-fit',
+  'DESCFIT-1',
   `GitHub description: does it actually describe ${nwo}'s purpose? (sync with package.json "description")`,
   RUBRIC
 )
 rec(
   'ADVISORY',
-  'overrides',
+  'OVR-J1',
   `[${CHECKS_SECTION}] overrides: genuinely warranted per-repo, not waving off real drift (e.g. branch-protection)?`,
   RUBRIC
 )

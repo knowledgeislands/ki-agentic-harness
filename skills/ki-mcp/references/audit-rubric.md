@@ -2,7 +2,7 @@
 
 Line-by-line pass/fail items for auditing a workspace MCP against the [Workspace MCP Standard](workspace-mcp-standard.md). Run [`../scripts/audit.ts`](../scripts/audit.ts) for the mechanical items (marked **[M]**), then judge the rest by reading the code.
 
-Severity: **FAIL** (security invariant breach or gate bypass — ship-stopper), **WARN** (layout / naming / tooling divergence), **POLISH** (docs / consistency) — the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](../../ki-engineering/references/enforcement-framework.md) §2.
+Every **[M]** item carries a stable `PREFIX-N` code (per `ki-skills`' SHAPE-9 + the checker-contract); the checker emits that code as each finding's `area`, and `conform.ts` uses the same code for its twin action. Judgment **[J]** items are applied by reading and are not emitted, so they carry no code. Severity uses the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](../../ki-engineering/references/enforcement-framework.md) §2: **FAIL** (security invariant breach or gate bypass — ship-stopper), **WARN** (layout / naming / tooling divergence), **POLISH** (docs / consistency).
 
 ## Contents
 
@@ -24,8 +24,8 @@ Severity: **FAIL** (security invariant breach or gate bypass — ship-stopper), 
 
 ## Layout & layers
 
-- [ ] [M] WARN — `src/` has `config/`, `mcp-server/`, `tools/`, `main/`, `utils/`.
-- [ ] [M] WARN — `cli/` present ⇒ has both `cli.ts` and `index.ts`.
+- [ ] [M] WARN — `LAY-1`: `src/` has `config/`, `mcp-server/`, `tools/`, `main/`, `utils/`. (references/workspace-mcp-standard.md)
+- [ ] [M] WARN — `LAY-1`: `cli/` present ⇒ has both `cli.ts` and `index.ts`. (references/workspace-mcp-standard.md)
 - [ ] [J] WARN — `tools/<group>/index.ts` is thin: zod-validate → call `main/` → envelope. No FS/network/git/logic in a tool handler.
 - [ ] [J] WARN — all real logic lives in `main/`, grouped by concern, each with `index.ts`.
 - [ ] [J] FAIL — `main/`/`utils/` have **no `console.*`** (return data; printing is CLI/stderr only). `api`-style layers assert no `console.log` in tests.
@@ -36,13 +36,13 @@ Severity: **FAIL** (security invariant breach or gate bypass — ship-stopper), 
 
 - [ ] [J] FAIL — `loadConfig(env?)` is the only reader of env; **no module-level config singleton**; no top-level `process.env` access outside `config/index.ts`. (`grep -rn "process.env" src --include=*.ts | grep -v config/`)
 - [ ] [J] FAIL — every `main/`/`utils/` entry point takes config (or its slice) as the **first argument**; nothing reaches for ambient state.
-- [ ] [M] WARN — `config/index.ts` exports `AccessLevel`, `ACCESS_LEVELS`, `ACCESS_LEVEL_RANK`, `AuditLogMode`, `loadConfig`.
+- [ ] [M] WARN — `CFG-1`: `config/index.ts` exports `AccessLevel`, `ACCESS_LEVELS`, `ACCESS_LEVEL_RANK`, `AuditLogMode`, `loadConfig`. (references/workspace-mcp-standard.md)
 - [ ] [J] WARN — `Config` has `accessLevel`, `auditLogMode`, `auditLogPath`, `auditLogMaxBytes`, `auditLogKeep` + domain fields.
 - [ ] [J] WARN — tests build a literal `Config`; none call `loadConfig()` or mutate env.
 
 ## Tool naming & surface
 
-- [ ] [M] WARN — every registered tool matches `<app>_<resource>_<action>` with the repo's `<app>` prefix. (`grep -rn registerTool src/tools`)
+- [ ] [M] WARN — `TOOL-1`: every registered tool matches `<app>_<resource>_<action>` with the repo's `<app>` prefix. (`grep -rn registerTool src/tools`) (references/workspace-mcp-standard.md)
 - [ ] [J] WARN — plural resource for collection ops, singular for single-item ops.
 - [ ] [J] POLISH — CLI verbs mirror the tool names/resources.
 - [ ] [J] POLISH — README tool catalog lists every registered tool with I/O shape.
@@ -56,7 +56,7 @@ Severity: **FAIL** (security invariant breach or gate bypass — ship-stopper), 
 
 ## Audit logging
 
-- [ ] [M] WARN — `utils/audit-log.ts` exports `AuditConfig`, `appendAuditEvent`, `withAuditLog`.
+- [ ] [M] WARN — `UTIL-1`: `utils/audit-log.ts` exports `AuditConfig`, `appendAuditEvent`, `withAuditLog`. (references/workspace-mcp-standard.md)
 - [ ] [J] FAIL — no secret (token/PAT/Bearer) is ever written to the audit log or surfaced in an error; only ids/arg-shapes/status.
 - [ ] [J] FAIL — tool boundary returns errors via `errorResult` (not `throw`) so the audit wrapper sees the `isError` envelope.
 
@@ -76,9 +76,9 @@ Severity: **FAIL** (security invariant breach or gate bypass — ship-stopper), 
 ## Spec conformance — tool results & metadata (standard §12)
 
 - [ ] [J] FAIL — tool boundary returns errors as `isError: true` envelopes via `errorResult`, never `throw` (spec 2025-11-25: validation/API/logic errors are Tool Execution Errors, not protocol errors; a throw also bypasses the audit wrapper). Same item as audit-logging below — verify once.
-- [ ] [M] WARN — any tool returning `structuredContent` also declares a matching `outputSchema` at registration (paired, ideally derived from one zod schema via `zod-to-json-schema`). A `jsonResult` emitting `structuredContent` with no declared schema is a WARN finding.
-- [ ] [M] WARN — any repo whose tools return structured JSON (via `jsonResult` or otherwise) but has zero `outputSchema` declarations anywhere in `src/tools/` is a WARN finding — structured-output adoption is a house SHOULD (spec 2025-11-25), not optional.
-- [ ] [M] WARN — tool registration order within each `tools/<group>/index.ts` is stable and deterministic (e.g. alphabetical by tool name or consistent CRUD order). Nondeterministic ordering hurts prompt-cache hit rates.
+- [ ] [M] WARN — `TOOL-1`: any tool returning `structuredContent` also declares a matching `outputSchema` at registration (paired, ideally derived from one zod schema via `zod-to-json-schema`). A `jsonResult` emitting `structuredContent` with no declared schema is a WARN finding. (references/workspace-mcp-standard.md)
+- [ ] [M] WARN — `TOOL-1`: any repo whose tools return structured JSON (via `jsonResult` or otherwise) but has zero `outputSchema` declarations anywhere in `src/tools/` is a WARN finding — structured-output adoption is a house SHOULD (spec 2025-11-25), not optional. (references/workspace-mcp-standard.md)
+- [ ] [M] WARN — `TOOL-1`: tool registration order within each `tools/<group>/index.ts` is stable and deterministic (e.g. alphabetical by tool name or consistent CRUD order). Nondeterministic ordering hurts prompt-cache hit rates. (references/workspace-mcp-standard.md)
 - [ ] [J] POLISH — optional spec metadata (`icons`, `title`, `execution.taskSupport`) is per-repo opt-in, not required — do **not** flag its absence.
 
 ## OAuth security — auth-server repos only: mcp-gsuite, mcp-m365 (standard §13)
@@ -101,24 +101,25 @@ Skip this whole section for the filesystem/subprocess repos.
 
 ## package.json
 
-- [ ] [M] WARN — `main:dist/mcp-server/index.js`; `bin.mcp-<name>` → `dist/mcp-server/index.js` (+ CLI/auth bin where applicable).
-- [ ] [M] WARN — `exports` has `.`, `./config`, `./package.json` + one per reusable `main/<concern>`.
-- [ ] [M] WARN — `ki:server:mcp:dev` / `ki:server:mcp:inspect` / `ki:server:mcp:start` present.
-- [ ] [M] FAIL — `ki:generate:client` script present (the mcporter typed-client codegen — required for every MCP).
-- [ ] [M] FAIL — where `src/auth-server/` exists, the `ki:server:auth:dev` / `ki:server:auth:start` pair is present (the OAuth delta).
-- [ ] [M] WARN — `ki:test:record` and `ki:test:replay` are defined together, or neither (the mcporter record/replay harness).
-- [ ] [M] WARN — where the repo has a `ki:test:smoke` harness, `.github/workflows/ci.yml` runs `bun run ki:test:smoke` after the common gate. The common CI shape (mise-action + `ki:lint:check` / `ki:lint:types` / `ki:lint:md:check` / `test:coverage`) is `ki-engineering`'s (`ki:engineering:audit`); the smoke step is the MCP delta.
+- [ ] [M] WARN — `PKG-1`: `main:dist/mcp-server/index.js`; `bin.mcp-<name>` → `dist/mcp-server/index.js` (+ CLI/auth bin where applicable). (references/workspace-mcp-standard.md)
+- [ ] [M] WARN — `PKG-1`: `exports` has `.`, `./config`, `./package.json` + one per reusable `main/<concern>`. (references/workspace-mcp-standard.md)
+- [ ] [M] WARN — `SCR-1`: `ki:server:mcp:dev` / `ki:server:mcp:inspect` / `ki:server:mcp:start` present. (references/workspace-mcp-standard.md)
+- [ ] [M] FAIL — `SCR-1`: `ki:generate:client` script present (the mcporter typed-client codegen — required for every MCP). (references/workspace-mcp-standard.md)
+- [ ] [M] FAIL — `SCR-1`: where `src/auth-server/` exists, the `ki:server:auth:dev` / `ki:server:auth:start` pair is present (the OAuth delta). (references/workspace-mcp-standard.md)
+- [ ] [M] WARN — `SCR-1`: `ki:test:record` and `ki:test:replay` are defined together, or neither (the mcporter record/replay harness). (references/workspace-mcp-standard.md)
+- [ ] [M] WARN — `CI-1`: where the repo has a `ki:test:smoke` harness, `.github/workflows/ci.yml` runs `bun run ki:test:smoke` after the common gate. The common CI shape (mise-action + `ki:lint:check` / `ki:lint:types` / `ki:lint:md:check` / `test:coverage`) is `ki-engineering`'s (`ki:engineering:audit`); the smoke step is the MCP delta. (references/workspace-mcp-standard.md)
+- [ ] [M] FAIL — `CI-2`: where a `ki:test:smoke` script is defined, `bun run ki:test:smoke` runs green (the smoke harness executes, not merely wired into CI). (references/workspace-mcp-standard.md)
 - [ ] [J] WARN — `src/generated/client.ts` is committed and not stale (the `ki:generate:client` presence itself is `[M]` above). `conform.ts` regenerates it automatically whenever the script is defined (no daemon needed — `mcporter emit-ts` spawns its own ephemeral process), so staleness should only surface between a tool-surface change and the next CONFORM run. If `conform.ts` reports the regen failed (server not registered, `dist/` stale), fix that first, then re-run `bun run ki:generate:client` (or `bun run ki:codegen` from the harness root) by hand. The `<server-name>` argument in the script must match a registered mcporter instance — verify with `mcporter list`.
 - [ ] — `type`/`packageManager`/`engines`/`files`, the `ki:lint:*`/`ki:deps:*`/`build`/`clean`/`test*`/`prepare` families, and the build/cli-chmod rule are the **common engineering layer** (`ki:engineering:audit`); not re-checked here.
 
 ## tsconfig / vitest / biome
 
-- [ ] [M] WARN — vitest coverage `exclude` covers the MCP wiring layers: `mcp-server/index.ts`, `tools/**/index.ts`, `utils/annotations.ts`, and any printing/pure-data module (`cli/cli.ts`, `auth-server/**`).
+- [ ] [M] WARN — `TEST-1`: vitest coverage `exclude` covers the MCP wiring layers: `mcp-server/index.ts`, `tools/**/index.ts`, `utils/annotations.ts`, `src/generated/**`, and any printing/pure-data module (`cli/cli.ts`, `auth-server/**`). (references/workspace-mcp-standard.md)
 - [ ] — `tsconfig.json` / `tsconfig.build.json` / `biome.json` shape and the vitest 100% thresholds are the **common engineering layer** (`ki:engineering:audit`); not re-checked here.
 
 ## .env.example & env
 
-- [ ] [M] WARN — `.env.example` uses the `MCP_<APP>_*` prefix and carries the shared access-level + audit-log block.
+- [ ] [M] WARN — `ENV-1`: `.env.example` uses the `MCP_<APP>_*` prefix and carries the shared access-level + audit-log block. (references/workspace-mcp-standard.md)
 - [ ] — the committed `.env*.example` template, gitignored real `.env.*`, and the `process.loadEnvFile` parity call are the **common engineering layer** (`ki:engineering:audit`).
 
 ## Docs

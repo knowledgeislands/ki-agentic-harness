@@ -29,7 +29,7 @@ type Level = 'FAIL' | 'WARN' | 'ADVISORY' | 'INFO' | 'PASS'
 // shared across KI checkers, so --json and the aggregate render uniformly (mirrors ki-authoring).
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const ORDER: Level[] = ['FAIL', 'WARN', 'ADVISORY', 'INFO', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', ADVISORY: '🧭', INFO: 'ℹ️ ', PASS: '✅' }
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', ADVISORY: '🧭', INFO: 'ℹ️', PASS: '✅' }
 
 // Every ki-kb-activities criterion is documented in the audit rubric — a single pointer.
 const RUBRIC = 'references/audit-rubric.md'

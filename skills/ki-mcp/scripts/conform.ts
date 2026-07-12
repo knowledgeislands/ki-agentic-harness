@@ -129,12 +129,12 @@ async function main() {
   // ── a) main ──
   say(paint(C.cyan, 'package.json fields'))
   if (pkg.main !== MAIN_LITERAL) {
-    rec('POLISH', 'package', `main ${dryRun ? 'would be set' : 'set'} to ${MAIN_LITERAL}`, STD, 'package.json')
+    rec('POLISH', 'PKG-1', `main ${dryRun ? 'would be set' : 'set'} to ${MAIN_LITERAL}`, STD, 'package.json')
     say(`  ${paint(C.green, 'fix')}   main: ${JSON.stringify(pkg.main ?? undefined)} → ${JSON.stringify(MAIN_LITERAL)}`)
     pkg.main = MAIN_LITERAL
     pkgChanged = true
   } else {
-    rec('PASS', 'package', `main already ${MAIN_LITERAL}`, STD, 'package.json')
+    rec('PASS', 'PKG-1', `main already ${MAIN_LITERAL}`, STD, 'package.json')
     say(`  ${paint(C.dim, 'ok')}     main already ${MAIN_LITERAL}`)
   }
 
@@ -144,13 +144,13 @@ async function main() {
   if (!alreadyBin) {
     const keys = Object.keys(bin)
     const binKey = keys.length === 1 ? keys[0] : String(pkg.name ?? 'mcp-server').replace(/^@[^/]+\//, '')
-    rec('POLISH', 'package', `bin["${binKey}"] ${dryRun ? 'would map' : 'mapped'} to ${MAIN_LITERAL}`, STD, 'package.json')
+    rec('POLISH', 'PKG-1', `bin["${binKey}"] ${dryRun ? 'would map' : 'mapped'} to ${MAIN_LITERAL}`, STD, 'package.json')
     say(`  ${paint(C.green, 'fix')}   bin["${binKey}"] → ${MAIN_LITERAL}`)
     bin[binKey as string] = MAIN_LITERAL
     pkg.bin = bin
     pkgChanged = true
   } else {
-    rec('PASS', 'package', `bin already maps to ${MAIN_LITERAL}`, STD, 'package.json')
+    rec('PASS', 'PKG-1', `bin already maps to ${MAIN_LITERAL}`, STD, 'package.json')
     say(`  ${paint(C.dim, 'ok')}     bin already maps to ${MAIN_LITERAL}`)
   }
 
@@ -159,12 +159,12 @@ async function main() {
   let expChanged = false
   for (const k of Object.keys(EXPORTS_KEYS)) {
     if (exp[k] === undefined) {
-      rec('POLISH', 'package', `exports["${k}"] ${dryRun ? 'would be added' : 'added'}`, STD, 'package.json')
+      rec('POLISH', 'PKG-1', `exports["${k}"] ${dryRun ? 'would be added' : 'added'}`, STD, 'package.json')
       say(`  ${paint(C.green, 'fix')}   exports["${k}"] added`)
       exp[k] = EXPORTS_KEYS[k]
       expChanged = true
     } else {
-      rec('PASS', 'package', `exports["${k}"] already present`, STD, 'package.json')
+      rec('PASS', 'PKG-1', `exports["${k}"] already present`, STD, 'package.json')
       say(`  ${paint(C.dim, 'ok')}     exports["${k}"] already present`)
     }
   }
@@ -186,27 +186,21 @@ async function main() {
   if (!scripts['ki:generate:client']) {
     rec(
       'ADVISORY',
-      'scripts',
+      'SCR-1',
       'no ki:generate:client script — defining one is a manual TODO (copy from a sibling package.json)',
       STD,
       'package.json'
     )
     say(`  ${paint(C.dim, 'skip')}   no ki:generate:client script (defining one is a manual TODO, see below)`)
   } else if (dryRun) {
-    rec(
-      'NA',
-      'scripts',
-      'ki:generate:client present — would run `bun run ki:generate:client` (dry run — not executed)',
-      STD,
-      'package.json'
-    )
+    rec('NA', 'SCR-1', 'ki:generate:client present — would run `bun run ki:generate:client` (dry run — not executed)', STD, 'package.json')
     say(`  ${paint(C.dim, 'skip (dry run)')}   would run: bun run ki:generate:client`)
   } else {
     try {
       execSync('bun run ki:generate:client', { cwd: target, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] })
       rec(
         'POLISH',
-        'scripts',
+        'SCR-1',
         'ran `bun run ki:generate:client` — src/generated/{client.ts,types.d.ts} regenerated',
         STD,
         'src/generated/client.ts'
@@ -217,7 +211,7 @@ async function main() {
       const detail = (err.stderr ?? err.stdout ?? String(e)).trim().split('\n')[0]
       rec(
         'FAIL',
-        'scripts',
+        'SCR-1',
         `ki:generate:client failed — regenerate by hand once fixed (verify \`dist/\` is built and the server is registered — \`mcporter list\`): ${detail}`,
         STD,
         'src/generated/client.ts'
@@ -231,13 +225,13 @@ async function main() {
   const kiPath = join(target, KI_CONFIG)
   const kiText = existsSync(kiPath) ? readFileSync(kiPath, 'utf8') : null
   if (kiText === null) {
-    rec('ADVISORY', 'ki-config', `${KI_CONFIG} missing entirely — ki-repo owns the contract; run its INIT/CONFORM first`, STD, KI_CONFIG)
+    rec('ADVISORY', 'KI-CONFIG', `${KI_CONFIG} missing entirely — ki-repo owns the contract; run its INIT/CONFORM first`, STD, KI_CONFIG)
     say(`  ${paint(C.dim, 'no .ki-config.toml — see manual TODOs')}`)
   } else if (/^\[ki-mcp\]/m.test(kiText)) {
-    rec('PASS', 'ki-config', `[${KI_SECTION}] table already present`, STD, KI_CONFIG)
+    rec('PASS', 'KI-CONFIG', `[${KI_SECTION}] table already present`, STD, KI_CONFIG)
     say(`  ${paint(C.dim, 'ok')}     [${KI_SECTION}] table already present`)
   } else {
-    rec('POLISH', 'ki-config', `[${KI_SECTION}] marker table ${dryRun ? 'would be appended' : 'appended'}`, STD, KI_CONFIG)
+    rec('POLISH', 'KI-CONFIG', `[${KI_SECTION}] marker table ${dryRun ? 'would be appended' : 'appended'}`, STD, KI_CONFIG)
     say(`  ${paint(C.green, 'fix')}   append [${KI_SECTION}] marker table`)
     if (!dryRun) {
       const sep = kiText.endsWith('\n') ? '' : '\n'
@@ -248,28 +242,28 @@ async function main() {
   // ── judgment items — never guessed, always surfaced (ADVISORY, matching the audit areas) ──
   const judgment: [string, string, string?][] = [
     [
-      'layout',
-      'src/config, src/mcp-server, src/tools, src/main, src/utils presence/shape — scaffold by hand or copy from the closest healthy sibling MCP repo (audit "layout" area)',
+      'LAY-1',
+      'src/config, src/mcp-server, src/tools, src/main, src/utils presence/shape — scaffold by hand or copy from the closest healthy sibling MCP repo (audit "LAY-1" area)',
       'src'
     ],
     [
-      'scripts',
-      'MCP-specific npm scripts (ki:server:mcp:dev/inspect/start, ki:generate:client, ki:server:auth:* for dual-server MCPs, ki:test:record+ki:test:replay pair) — copy from a sibling package.json (audit "scripts" area)',
+      'SCR-1',
+      'MCP-specific npm scripts (ki:server:mcp:dev/inspect/start, ki:generate:client, ki:server:auth:* for dual-server MCPs, ki:test:record+ki:test:replay pair) — copy from a sibling package.json (audit "SCR-1" area)',
       'package.json'
     ],
     [
-      'vitest',
-      'coverage excludes for mcp-server/index.ts, tools/**/index.ts, utils/annotations.ts, src/generated/** — edit vitest.config.ts by hand (audit "vitest" area)',
+      'TEST-1',
+      'coverage excludes for mcp-server/index.ts, tools/**/index.ts, utils/annotations.ts, src/generated/** — edit vitest.config.ts by hand (audit "TEST-1" area)',
       'vitest.config.ts'
     ],
     [
-      'config',
-      'config/index.ts surface: loadConfig export, process.loadEnvFile call (resolved from import.meta.url, not cwd-relative), ACCESS_LEVELS/ACCESS_LEVEL_RANK/AuditLogMode references — authoring judgment (audit "config" area)',
+      'CFG-1',
+      'config/index.ts surface: loadConfig export, process.loadEnvFile call (resolved from import.meta.url, not cwd-relative), ACCESS_LEVELS/ACCESS_LEVEL_RANK/AuditLogMode references — authoring judgment (audit "CFG-1" area)',
       'src/config/index.ts'
     ],
     [
-      'tools',
-      'tool naming: <app>_<resource>_<action> (or _<action> for metadata) — renaming a registered tool is a breaking change for MCP clients; never auto-renamed (audit "tools" area)',
+      'TOOL-1',
+      'tool naming: <app>_<resource>_<action> (or _<action> for metadata) — renaming a registered tool is a breaking change for MCP clients; never auto-renamed (audit "TOOL-1" area)',
       undefined
     ]
   ]
@@ -277,7 +271,7 @@ async function main() {
   // Always-on judgment handoff to the full [J] rubric pass.
   rec(
     'ADVISORY',
-    'judgment',
+    'JUDGMENT',
     'security invariants, layer purity, and tool-naming quality are not scripted — apply the [J] criteria by reading',
     RUBRIC
   )

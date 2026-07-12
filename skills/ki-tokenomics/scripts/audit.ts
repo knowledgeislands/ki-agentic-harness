@@ -75,7 +75,7 @@ headroom = "recommended"          # "required" | "recommended" | "off"
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘ ', PASS: '✅' }
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️', NA: '🚫', PASS: '✅' }
 type Area = 'COMP' | 'SURF' | 'MCP' | 'BUDG' | 'RUN' | 'TOOL' | 'CFG'
 const AREA_ORDER: Area[] = ['COMP', 'SURF', 'MCP', 'BUDG', 'RUN', 'TOOL', 'CFG']
 // area is the FINE rubric code (COMP-1, BUDG-2, CFG-4, …); its family (the text

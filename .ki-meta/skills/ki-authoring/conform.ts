@@ -131,18 +131,18 @@ const MARKDOWNLINT_DEFAULT = `{
 function syncOwned(name: string, canonical: string): void {
   const path = join(target, name)
   if (!existsSync(path)) {
-    rec('POLISH', 'toolchain', `${name} scaffolded from the house template (was missing)`, 'owns:', name)
+    rec('POLISH', 'OWNS', `${name} scaffolded from the house template (was missing)`, 'owns:', name)
     say(`  ${paint(C.green, 'write')} ${name} (was missing — scaffolded from house template)`)
     if (!dryRun) writeFileSync(path, canonical)
     return
   }
   const current = readFileSync(path, 'utf8')
   if (sha256(current) === sha256(canonical)) {
-    rec('PASS', 'toolchain', `${name} already canonical`, 'owns:', name)
+    rec('PASS', 'OWNS', `${name} already canonical`, 'owns:', name)
     say(`  ${paint(C.dim, 'ok')}    ${name} already canonical`)
     return
   }
-  rec('POLISH', 'toolchain', `${name} drifted from the house template — ${dryRun ? 'would overwrite' : 'overwritten'}`, 'owns:', name)
+  rec('POLISH', 'OWNS', `${name} drifted from the house template — ${dryRun ? 'would overwrite' : 'overwritten'}`, 'owns:', name)
   say(`  ${paint(C.yellow, 'update')} ${name} (drifted from house standard — overwritten)`)
   if (!dryRun) writeFileSync(path, canonical)
 }
@@ -173,7 +173,7 @@ try {
   if (out.trim()) say(out.trim())
   rec(
     'PASS',
-    'md-mech',
+    'MD-mech',
     `Markdown ${dryRun ? 'already conforms' : 'conformed'} (Prettier + markdownlint-cli2)`,
     'references/markdown-authoring.md'
   )
@@ -185,7 +185,7 @@ try {
   if (err) say(err)
   rec(
     dryRun ? 'WARN' : 'FAIL',
-    'md-mech',
+    'MD-mech',
     `Markdown ${dryRun ? 'has findings — run without --dry-run to fix' : 'conform pass reported issues (see above)'}`,
     'references/markdown-authoring.md'
   )
@@ -195,14 +195,14 @@ try {
 }
 
 say(`\n${paint(C.cyan, 'toml')}`)
-rec('ADVISORY', 'toml', 'no TOML formatter in the toolchain — .ki-config.toml style is judgment-only', 'references/toml-config.md')
+rec('ADVISORY', 'TOML', 'no TOML formatter in the toolchain — .ki-config.toml style is judgment-only', 'references/toml-config.md')
 say(`  ${paint(C.dim, 'skip')}  no TOML formatter in the toolchain — .ki-config.toml style is judgment-only (references/toml-config.md)`)
 
 // Judgment handoff — always-on ADVISORY: the [J] criteria conform cannot mechanically
 // fix, routed to a human/model pass (SKILL.md Mode CONFORM step 1).
 rec(
   'ADVISORY',
-  'judgment',
+  'JUDGMENT',
   'wide tables, link text, and TOML style are not scripted — apply the [J] criteria by reading (SKILL.md Mode CONFORM step 1)',
   'references/audit-rubric.md'
 )

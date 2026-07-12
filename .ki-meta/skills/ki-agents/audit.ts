@@ -276,7 +276,7 @@ const reportTarget = resolve('.')
 const reportDir = join(reportTarget, '.ki-meta', 'audits')
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘ ', PASS: '✅' }
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️', NA: '🚫', PASS: '✅' }
 // area is the bare rubric code; ref points at the reference doc the code lives in; file names the
 // agent path a file-scoped finding concerns. ref/file are optional and ride into --json/--report
 // for the aggregate to cite (mirrors ki-authoring audit.ts's Finding shape — the cited-finding standard).

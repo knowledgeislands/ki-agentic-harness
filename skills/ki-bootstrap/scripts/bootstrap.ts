@@ -149,7 +149,10 @@ const skills = readdirSync(skillsDir, { withFileTypes: true })
 // { concern, target, generatedAt, summary, findings }. A couple of outliers (e.g.
 // ki-housekeeping) emit a bare findings array with { id, severity: <0-6>, message }
 // instead — SEV_BY_NUM and the field fallbacks below absorb that variant too.
-const ICON = { FAIL: '\\u274c', WARN: '\\u26a0\\ufe0f ', POLISH: '\\u2728', ADVISORY: '\\ud83e\\udded', INFO: '\\u2139\\ufe0f ', NA: '\\u2298', PASS: '\\u2705' }
+// Every icon is a full-width (2-column) emoji, so no per-glyph space padding is needed —
+// ⚠️/ℹ️ carry their VS16 emoji-presentation selector (render 2 cols), and NA uses 🚫
+// (a 2-col circle-slash) in place of the 1-col ⊘. Uniform width keeps the level column aligned.
+const ICON = { FAIL: '\\u274c', WARN: '\\u26a0\\ufe0f', POLISH: '\\u2728', ADVISORY: '\\ud83e\\udded', INFO: '\\u2139\\ufe0f', NA: '\\ud83d\\udeab', PASS: '\\u2705' }
 const SEV_BY_NUM = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 // The recap splits real violations (FAIL/WARN/POLISH — the checker decided a criterion
 // is broken) from ADVISORY (always-on judgment reminders the checker cannot decide). A
@@ -160,11 +163,13 @@ const verbed = verb === 'conform' ? 'conformed' : 'audited'
 // Render one finding row: icon status [code] file msg (ref). file/ref shown only when
 // the finding carries them (structured fields — most checkers only populate them once
 // swept). full=false trims msg to its first line (recap rows stay one-line).
-// level is padded to 8 (the width of the longest word, "advisory") in BOTH body and
-// recap rows so the [code] column lines up under a consistent icon width (icons are
-// each two display columns — the sub-width glyphs ⊘/⚠️/ℹ️ carry a trailing space).
+// Fixed-width short level tags (fail/warn/pol/adv/info/na/pass) keep the [code] column
+// aligned at a tight 4-wide field — without them "advisory" would force an 8-wide pad.
+// Icons are each two display columns (sub-width glyphs ⊘/⚠️/ℹ️ carry a trailing space),
+// so [code] lands in a constant column across both body and recap rows.
+const SHORT = { FAIL: 'fail', WARN: 'warn', POLISH: 'pol', ADVISORY: 'adv', INFO: 'info', NA: 'na', PASS: 'pass' }
 const findingLine = (icon, level, code, file, msg, ref, skill, full) =>
-  '  ' + icon + ' ' + level.toLowerCase().padEnd(8) +
+  '  ' + icon + ' ' + (SHORT[level] || level.toLowerCase()).padEnd(4) +
   (skill ? ' ' + skill.padEnd(20) : '') +
   ' \\x1b[2m[' + code + ']\\x1b[0m' +
   (file ? ' \\x1b[36m' + file + '\\x1b[0m' : '') +

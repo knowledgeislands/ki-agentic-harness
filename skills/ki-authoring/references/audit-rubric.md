@@ -17,6 +17,10 @@ The checkable criteria behind the [Markdown authoring](markdown-authoring.md) an
 - **TOML-tables [J]** One table per skill, named for the skill, with sub-tables nested under it. The `.ki-config.toml` _contract_ behind this is `ki-repo`'s; this rubric checks only that the TOML is written that way. (toml-config.md)
 - **TOML-comments [J]** Non-obvious keys carry a `#` line above with their _why_. (toml-config.md)
 
-## Judgment / sync
+## Owned files
 
-- **sync [J]** the convention references, this rubric, and [`sources.md`](sources.md) agree; when a convention moves, all three move together (Mode REFRESH).
+- **OWNS [M]** The skill owns `.prettierrc.json`, `.editorconfig`, and `.markdownlint-cli2.jsonc` wholly (SHAPE-16 `owns:`): audit flags hash drift from the house template (WARN — conform corrects it unconditionally), conform scaffolds-if-missing and overwrites on drift. (owns:)
+
+## Judgment / SYNC
+
+- **SYNC [J]** the convention references, this rubric, and [`sources.md`](sources.md) agree; when a convention moves, all three move together (Mode REFRESH).

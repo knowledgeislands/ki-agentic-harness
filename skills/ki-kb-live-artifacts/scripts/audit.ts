@@ -36,7 +36,7 @@ const paint = (c: string, s: string) => `${c}${s}${C.reset}`
 type Level = 'FAIL' | 'WARN' | 'ADVISORY' | 'INFO' | 'PASS'
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const ORDER: Level[] = ['FAIL', 'WARN', 'ADVISORY', 'INFO', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', ADVISORY: '🧭', INFO: 'ℹ️ ', PASS: '✅' }
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', ADVISORY: '🧭', INFO: 'ℹ️', PASS: '✅' }
 
 const findings: Finding[] = []
 const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
