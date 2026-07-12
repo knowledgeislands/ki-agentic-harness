@@ -16,7 +16,7 @@ There is nothing else to pass in the common case: the target is the current dire
 
 ## What bootstrap does
 
-Bootstrap's one job is to build `.ki-meta/`. For every skill in the resolved set — the baseline (`ki-repo`, `ki-authoring`), plus every `[ki-<skill>]` table the target declares in its `.ki-config.toml`, plus their `implies:` closure — it:
+Bootstrap's one job is to build `.ki-meta/`. For every skill in the resolved set — every `[ki-<skill>]` table the target declares in its `.ki-config.toml` (including a bare `[ki-authoring]`, which every repo must declare itself — there is no injected baseline, per [ADR-KI-HARNESS-007](../decisions/ADR-KI-HARNESS-007-uniform-skill-modes-and-coverage-scoped-audit.md)), plus their `implies:` closure — it:
 
 1. **vendors** the skill's declared mechanical unit (its `vendors:` frontmatter — a checker copied verbatim, or a generated command-wrapper) into `.ki-meta/skills/<skill>/<verb>.ts`, and renders the skill's **HELP snapshot** to `.ki-meta/skills/<skill>/help.md`;
 2. **writes** the four `package.json`-free entry points — `.ki-meta/bin/{ki-audit, ki-conform, ki-init, ki-help}` over a `.ki-meta/bin/aggregate.ts` runner that discovers the vendored copies and fans out over them — and **stamps** the vendoring manifest (`.ki-meta/manifest.json`: the harness ref plus a hash per vendored file).
@@ -42,7 +42,7 @@ A local checkout of the harness runs the identical chain. You need [Bun](https:/
 export KI_HARNESS="${KI_HARNESS:-$(pwd)}"
 ```
 
-A new repo needs only a `.ki-config.toml` declaring at least `[ki-repo]` (the `ki-authoring` baseline is added automatically). Bootstrap it:
+A new repo needs a `.ki-config.toml` declaring `[ki-repo]` and a bare `[ki-authoring]` — every repo declares both itself; nothing is injected. Bootstrap it:
 
 ```bash
 bun "$KI_HARNESS/skills/ki-bootstrap/scripts/bootstrap.ts" "$TARGET"
@@ -55,6 +55,23 @@ cd "$TARGET" && ./.ki-meta/bin/ki-audit
 ```
 
 A single skill's INIT is reachable the same way through its own `scripts/init.ts`, which seeds that skill (plus its `implies:` closure) into the target — the mechanics and the vendored result are identical to the full chain.
+
+## Worked example — a real sibling repo (`tools-mgit`)
+
+The placeholders above map onto an ordinary fleet layout — a harness checkout sitting beside its sibling repos on the same machine — like this. `tools-mgit` declares `[ki-repo]`, `[ki-authoring]`, and `[ki-tools]` in its `.ki-config.toml`:
+
+```text
+bun ~/kis/knowledgeislands/ki-agentic-harness/skills/ki-bootstrap/scripts/bootstrap.ts ~/kis/knowledgeislands/tools-mgit
+```
+
+That resolves `tools-mgit`'s set — its three declared tables plus their `implies:` closure — and vendors it into `tools-mgit/.ki-meta/`. Then it self-governs, no `bun` needed beside `.ki-meta/bin/ki-help`:
+
+```text
+cd ~/kis/knowledgeislands/tools-mgit
+./.ki-meta/bin/ki-audit
+```
+
+The same one-liner is the update path: whenever a declared skill's standard changes upstream (a REFRESH, or a `.ki-config.toml` edit adding a table — e.g. declaring `[ki-authoring]` explicitly after ADR-KI-HARNESS-007 dropped the injected baseline), re-run it unchanged. It is idempotent, so running it against an already-current `tools-mgit` reproduces the same manifest byte-for-byte.
 
 ## Keeping current
 
