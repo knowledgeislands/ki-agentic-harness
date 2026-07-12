@@ -92,7 +92,7 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
+const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘ ', PASS: '✅' }
 // Cited-finding shape: `check` is the rubric code (area), `ref` the reference-doc pointer
 // (defaults to the standard STD; the rare judgment finding overrides it), `file` the
 // in-repo path a file-scoped finding concerns. Arg order (check, msg, file?, ref?) puts the
