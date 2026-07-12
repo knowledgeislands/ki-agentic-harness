@@ -326,6 +326,11 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
   }
 ]
 const COVERAGE_SKILLS = new Set(COVERAGE.map((c) => c.skill))
+// The repo-structure skills — exactly one governs a repo's on-disk shape, so their
+// `[ki-<skill>]` tables are mutually exclusive (ADR-KI-HARNESS-SKILLS-006). Implied
+// family members (ki-website-cloudflare under website, ki-kb-streams under kb) are not
+// distinct structures and are excluded from the count.
+const REPO_STRUCTURE_TABLES = ['ki-harness', 'ki-kb', 'ki-website', 'ki-mcp', 'ki-plugins', 'ki-tools', 'ki-homebrew-tap']
 // A `[ki-<skill>]` (or sub-table `[…​.x]`) header on its own line —
 // anchored so a commented-out `# [..]` template line does not count as declared.
 const declaresTable = (kiText: string, table: string): boolean => new RegExp(`^\\[${table}(\\]|\\.)`, 'm').test(kiText)
@@ -476,6 +481,17 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
         )
       else if (declared && !detected) warn('coverage', `declares [${c.table}] but no ${c.artifact} found — stale opt-in?`)
     }
+
+    // ── repo-structure cardinality: exactly one structural identity per repo ──
+    // The repo-structure tables are mutually exclusive; declaring more than one is a
+    // governance error (ADR-KI-HARNESS-SKILLS-006). Zero is allowed here — a dotfiles /
+    // config repo may carry none — the requirement is "at most one", enforced as "not >1".
+    const declaredStructure = REPO_STRUCTURE_TABLES.filter((t) => declaresTable(text, t))
+    if (declaredStructure.length > 1)
+      fail(
+        'repo-structure',
+        `declares ${declaredStructure.length} repo-structure tables (${declaredStructure.map((t) => `[${t}]`).join(', ')}) — a repo has exactly one structural identity; keep one`
+      )
   }
 
   if (enforced('issues') && !r.hasIssuesEnabled) fail('issues', 'Issues are disabled')

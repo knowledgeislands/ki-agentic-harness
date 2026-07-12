@@ -144,6 +144,8 @@ The rubric carries the **org default** for every check. Most are bedrock — fil
 
 A repo that is **not** a ki-repo (no `.ki-config.toml`) is never coverage-checked — it just takes the `ki-config` FAIL, so a lookalike repo (an `eleventy.config` but no marker) is not falsely told to opt in. This is `ki-repo`'s single cross-table read, and it reads only table **presence**, never another skill's keys. The full signal list and the marker-vs-config model live in [the `.ki-config.toml` contract](ki-config-standard.md#coverage-enforcement). Silence one signal with `coverage-<skill> = false` under `[ki-repo.checks]`.
 
+The cascade's companion is a **cardinality** rule: a repo declares **at most one** repo-structure table — `[ki-harness]`, `[ki-kb]`, `[ki-website]`, `[ki-mcp]`, `[ki-plugins]`, `[ki-tools]`, `[ki-homebrew-tap]` — because exactly one skill governs a repo's on-disk shape ([ADR-KI-HARNESS-SKILLS-006](../../../docs/decisions/ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md)). Declaring two or more FAILs (`repo-structure`). Implied family members (`ki-website-cloudflare` under website, `ki-kb-streams` under kb) are not distinct structures and do not count. This is bedrock, not overridable; zero is permitted (a dotfiles or config repo may carry none).
+
 ## Applying it
 
 `gh` CLI, authenticated with repo-admin scope. (zsh: use an array, not a bare string — unquoted `$var` does not word-split.)
