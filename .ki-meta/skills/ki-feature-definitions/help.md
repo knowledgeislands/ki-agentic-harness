@@ -6,11 +6,11 @@ Codify, audit, and maintain Feature Definitions — the behaviour-level specific
 
 **Modes:**
 
-- `AUDIT  `
+- `AUDIT`
 - `CONFORM`
-- `HELP   ` — explain this skill and stop; the default when no mode is given (then routes, if interactive)
-- `INIT   `
-- `NEW    `
+- `HELP` — explain this skill and stop; the default when no mode is given (then routes, if interactive)
+- `INIT`
+- `NEW`
 - `REFRESH`
 
 **See also:** ki-decision-records (the governing decisions a requirement cites), ki-authoring (Markdown/TOML style).

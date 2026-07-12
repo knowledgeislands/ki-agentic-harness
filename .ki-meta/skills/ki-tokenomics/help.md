@@ -6,10 +6,10 @@ Audit, codify, and optimise the tokenomics of a Claude Code environment — the 
 
 **Modes:**
 
-- `AUDIT  `
+- `AUDIT`
 - `CONFORM`
-- `HELP   ` — explain this skill and stop; the default when no mode is given (then routes, if interactive)
-- `INIT   `
+- `HELP` — explain this skill and stop; the default when no mode is given (then routes, if interactive)
+- `INIT`
 - `REFRESH`
 
 **See also:** For the volatile numbers (model ids, prices, cache TTLs, window sizes) use `claude-api`; for a base's structure/content use `ki-kb`; for one skill's quality use `ki-skills`; for an MCP server's code use `ki-mcp`.

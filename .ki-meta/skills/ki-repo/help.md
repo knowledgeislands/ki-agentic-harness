@@ -6,10 +6,10 @@ Codify, audit, and apply the Knowledge Islands repo standard to any Knowledge Is
 
 **Modes:**
 
-- `AUDIT  ` — check a repo against the standard
+- `AUDIT` — check a repo against the standard
 - `CONFORM` — bring a repo (or the org) into line
-- `HELP   ` — explain this skill and stop; the default when no mode is given (then routes, if interactive)
-- `INIT   ` — make a repo Knowledge Islands–compliant
+- `HELP` — explain this skill and stop; the default when no mode is given (then routes, if interactive)
+- `INIT` — make a repo Knowledge Islands–compliant
 - `REFRESH` — re-anchor the standard to GitHub's surface
 
 **See also:** `ki-authoring` (Markdown/TOML style), `ki-engineering` (toolchain), `ki-harness` (bundle layout).

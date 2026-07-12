@@ -6,11 +6,11 @@ Codify, audit, and maintain Decision Records in any Knowledge Islands repo — t
 
 **Modes:**
 
-- `AUDIT  `
+- `AUDIT`
 - `CONFORM`
-- `HELP   ` — explain this skill and stop; the default when no mode is given (then routes, if interactive)
-- `INIT   `
-- `NEW    `
+- `HELP` — explain this skill and stop; the default when no mode is given (then routes, if interactive)
+- `INIT`
+- `NEW`
 - `REFRESH`
 
 **See also:** ki-kb (island structure and frontmatter standard), ki-kb-streams (Enactment Process).

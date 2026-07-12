@@ -134,7 +134,7 @@ function renderBlock(s: Skill): string {
   if (s.modes.length) {
     out.push('**Modes:**', '')
     const w = Math.max(...s.modes.map((m) => m.name.length))
-    for (const m of s.modes) out.push(`- \`${m.name.padEnd(w)}\`${m.gloss ? ` — ${m.gloss}` : ''}`)
+    for (const m of s.modes) out.push(`- \`${m.name}\`${' '.repeat(w - m.name.length)}${m.gloss ? ` — ${m.gloss}` : ''}`)
     out.push('')
   }
   if (s.seeAlso) out.push(`**See also:** ${s.seeAlso}`, '')

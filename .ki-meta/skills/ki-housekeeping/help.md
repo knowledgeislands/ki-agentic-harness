@@ -6,8 +6,8 @@ Governs the hygiene of accumulated Claude state on a machine — the files Claud
 
 **Modes:**
 
-- `AUDIT  `
+- `AUDIT`
 - `CONFORM`
-- `HELP   `
-- `INIT   `
+- `HELP`
+- `INIT`
 - `REFRESH`

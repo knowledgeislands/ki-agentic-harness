@@ -6,10 +6,10 @@ Govern the Knowledge Islands handoff doctrine: plan work once at the top reasoni
 
 **Modes:**
 
-- `AUDIT  `
+- `AUDIT`
 - `CONFORM`
-- `HELP   ` — explain this skill and stop; the default when no mode is given (then routes, if interactive)
-- `INIT   `
+- `HELP` — explain this skill and stop; the default when no mode is given (then routes, if interactive)
+- `INIT`
 - `REFRESH`
 
 **See also:** ki-tokenomics (tier cost/selection), ki-plans (plan format & lifecycle), ki-kb-streams (KB proposal Checklist), ki-agents (subagent definitions).

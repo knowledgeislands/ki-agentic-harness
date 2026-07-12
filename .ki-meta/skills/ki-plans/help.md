@@ -6,10 +6,10 @@ Govern the Knowledge Islands planning methodology for code repos: when to write 
 
 **Modes:**
 
-- `AUDIT  `
+- `AUDIT`
 - `CONFORM`
-- `HELP   ` — explain this skill and stop; the default when no mode is given (then routes, if interactive)
-- `INIT   `
+- `HELP` — explain this skill and stop; the default when no mode is given (then routes, if interactive)
+- `INIT`
 - `REFRESH`
 
 **See also:** /plan (lifecycle), ki-kb-streams (KB planning), ki-decision-records (decisions vs. plans), ki-harness (ROADMAP structure and phasing).

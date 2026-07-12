@@ -6,10 +6,10 @@ Audit, review, and write Claude Code subagent definitions against current best p
 
 **Modes:**
 
-- `AUDIT  ` — review an existing agent
+- `AUDIT` — review an existing agent
 - `CONFORM` — bring an existing agent into line
-- `HELP   ` — explain this skill and stop; the default when no mode is given (then routes, if interactive)
-- `INIT   ` — write a new agent
+- `HELP` — explain this skill and stop; the default when no mode is given (then routes, if interactive)
+- `INIT` — write a new agent
 - `REFRESH` — re-anchor best practice
 
 **See also:** Judges a subagent definition (frontmatter + system prompt) — for authoring a SKILL.md use the `ki-skills` skill instead; for harness-level layout (five-part bundle, `.ki-config.toml` compliance) use `ki-harness`.
