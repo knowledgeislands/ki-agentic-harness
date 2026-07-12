@@ -20,7 +20,7 @@ bun run ki:skills:link:global   # install just the keystone into ~/.claude/skill
 bun run ki:skills:link:project  # wire this repo's .claude/skills/ (the harness links --all)
 ```
 
-Only `ki-bootstrap` is installed globally; every other skill is project-local, wired into each repo's `.claude/skills/` from its `.ki-config.toml` by the keystone. Full install options (the global/project split, plain-shell, verify/remove), how a skill fires once installed, the linking convention, and the development toolchain are in [docs/installation.md](docs/guides/user-guide/installation.md).
+Only `ki-bootstrap` is installed globally; every other skill is project-local, wired into each repo's `.claude/skills/` from its `.ki-config.toml` by the keystone. Full install options (the global/project split, plain-shell, verify/remove) are in [docs/bootstrap.md](docs/guides/user-guide/bootstrap.md); how a skill fires once installed, the linking convention, and the development toolchain are in [docs/installation.md](docs/guides/user-guide/installation.md).
 
 ## Documentation
 
@@ -31,7 +31,9 @@ Only `ki-bootstrap` is installed globally; every other skill is project-local, w
 | [Skill catalogue](docs/guides/user-guide/skill-catalogue.md) | Every skill, one by one, grouped by cluster — what each governs and its mechanical checker. |
 | [Onboarding](docs/guides/user-guide/onboarding.md) | Onboarding a repo: the remote-run transport, what the bootstrap chain builds in `.ki-meta/`, the day-to-day bins, and keeping current. |
 | [Skill design](docs/guides/user-guide/skill-design.md) | How they fit: where they don't overlap, the three knowledge loops, the principles across the set. |
-| [Installation](docs/guides/user-guide/installation.md) | Installing · using · linking skills, and the development toolchain. |
+| [Setup](docs/guides/user-guide/installation.md) | Using · linking skills, and the development toolchain. |
+| [Bootstrap](docs/guides/user-guide/bootstrap.md) | Installing a skill: the keystone-plus-project-local mechanics, plain-shell equivalents, verify/remove. |
+| [Recommended tools](docs/guides/user-guide/recommended-tools.md) | System-level dependencies: chezmoi, headroom-ai, mcporter, claude.ai connectors. |
 | [Prompting guides](docs/guides/prompting/README.md) | How to prompt the models we run — one guide per model (Fable 5, Opus 4.8, Sonnet 5), each with a Sources section for refresh. |
 
 The user guide is self-contained. For how it relates to the decisions, feature definitions, plans, and skill code underneath it — and to the Knowledge Islands concept — see [docs/docs.md](docs/docs.md).

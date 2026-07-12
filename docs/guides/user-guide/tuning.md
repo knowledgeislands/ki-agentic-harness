@@ -57,8 +57,8 @@ MCP tool schemas are the **largest standing cost** in a session with several ser
 
 - **Per surface** — the `ki-binding` skill governs which servers enable on which surface (Claude Code, Desktop, Cowork, web) from the single `mcps.yaml` source, via each server's `clients:` targeting field. A server the current surface never uses should not be enabled on it.
 - **Per project** — scope servers to the repos that need them rather than enabling them globally.
-- **Connectors vs plugins** — on claude.ai / Desktop, the MCP tools bucket is driven by _connectors_ (e.g. Google Calendar / Drive / Slack), toggled per-conversation in the compose-bar tools menu. These are distinct from _plugins_ (which surface under Skills / Custom agents). Turn off a connector for a conversation that does not need it. For a SaaS integration, a managed connector is often the lower-friction route than a local MCP server in the first place — see [Installation](installation.md#claudeai-connectors--the-managed-alternative).
-- **The mcporter caveat** — mcporter (see [Installation](installation.md)) consolidates the `~/.claude.json` `mcpServers` block from many entries to one URL. That trims _config_, not the in-session tool _schemas_ — every consolidated server's tools still load into the prefix. mcporter and schema curation are complementary, not substitutes.
+- **Connectors vs plugins** — on claude.ai / Desktop, the MCP tools bucket is driven by _connectors_ (e.g. Google Calendar / Drive / Slack), toggled per-conversation in the compose-bar tools menu. These are distinct from _plugins_ (which surface under Skills / Custom agents). Turn off a connector for a conversation that does not need it. For a SaaS integration, a managed connector is often the lower-friction route than a local MCP server in the first place — see [Recommended tools](recommended-tools.md#claudeai-connectors--the-managed-alternative).
+- **The mcporter caveat** — mcporter (see [Recommended tools](recommended-tools.md)) consolidates the `~/.claude.json` `mcpServers` block from many entries to one URL. That trims _config_, not the in-session tool _schemas_ — every consolidated server's tools still load into the prefix. mcporter and schema curation are complementary, not substitutes.
 
 ### Manage the MCP inventory
 
@@ -91,7 +91,7 @@ The trade-off is the prompt cache: deferral shifts cost from a fixed standing ta
 
 ### Trim CLAUDE.md, memory, and skill descriptions
 
-The prose surface — `CLAUDE.md` and its `@imports`, the `MEMORY.md` index, and each installed skill's `description` — is standing cost too. The `ki-tokenomics` skill catalogues and budgets it; `bun run ki:tokenomics:audit` measures it. Keeping the keystone-plus-project-local install model (see [Installation](installation.md)) is what keeps unrelated skills' descriptions out of a session in the first place.
+The prose surface — `CLAUDE.md` and its `@imports`, the `MEMORY.md` index, and each installed skill's `description` — is standing cost too. The `ki-tokenomics` skill catalogues and budgets it; `bun run ki:tokenomics:audit` measures it. Keeping the keystone-plus-project-local install model (see [Bootstrap](bootstrap.md)) is what keeps unrelated skills' descriptions out of a session in the first place.
 
 Memory is the one layer where two different audits apply, and they are complementary — do the hygiene pass first, because it usually shrinks the surface the cost pass then measures:
 
@@ -116,7 +116,7 @@ Treat it as a curated cache, not an append-only log:
 
 ## Runtime — compress and cache what does load
 
-- **Headroom** compresses tool _results_ — it reversibly substitutes large output blocks it has already seen in the stream (see [Installation](installation.md) for proxy vs wrap mode). This is a runtime lever; it does not touch tool definitions.
+- **Headroom** compresses tool _results_ — it reversibly substitutes large output blocks it has already seen in the stream (see [Recommended tools](recommended-tools.md) for proxy vs wrap mode). This is a runtime lever; it does not touch tool definitions.
 - **Prompt caching** rewards a stable prefix. Set your `env` disables once and leave them; avoid anything that mutates the tool list mid-session.
 - **Model tier, compaction, verbosity** — right-cost model for the work, compaction hygiene on long conversations, and not dumping raw logs into the turn. The `ki-tokenomics` standard covers each.
 

@@ -1,132 +1,13 @@
-# Installing and using skills
+# Setup for ki-agentic-harness
 
 How to install a skill from this repository, how a skill fires once installed, the linking convention inside a skill, and the development toolchain for working in the repo.
 
-## System dependencies
+Two companion pages cover what this page assumes:
 
-Two system-level components must be in place before the skills and MCP servers work correctly on a development machine. Both are installed via Homebrew and managed by chezmoi. Once they are working, [Tuning](tuning.md) covers making a session lean — which built-in tools, skills, and MCP servers actually load, and where headroom and mcporter do and do not help.
+- **[Recommended tools](recommended-tools.md)** — the system-level dependencies (chezmoi, headroom-ai, mcporter, claude.ai connectors) that skills and MCP servers rely on. Get these in place first.
+- **[Bootstrap](bootstrap.md)** — the keystone-plus-project-local mechanics that actually get a skill from this repo onto a machine and into a target repo: the install commands, plain-shell equivalents, and verify/remove.
 
-### headroom-ai
-
-headroom-ai provides context compaction management (`PreCompact` hook) and shell-output compression via its bundled RTK component.
-
-```bash
-brew install headroom-ai
-```
-
-headroom-ai runs in one of two modes:
-
-- **Proxy mode** — `headroom proxy` starts a local proxy on port 8787; Claude Code is pointed at it via `ANTHROPIC_BASE_URL=http://localhost:8787`.
-- **Wrap mode** — `headroom claude` wraps the Claude CLI directly without a separate proxy process.
-
-The harness CLAUDE.md notes which mode is active in the current machine's chezmoi config.
-
-### mcporter (MCP proxy daemon)
-
-mcporter consolidates all KI-owned MCP servers behind a single keep-alive daemon and exposes them through a single HTTP MCP endpoint, reducing the `~/.claude.json` `mcpServers` block from many stdio entries to one URL entry.
-
-```bash
-brew install steipete/tap/mcporter
-```
-
-Two LaunchAgents are deployed and activated by chezmoi:
-
-| LaunchAgent label         | Command                              | Purpose                                          |
-| ------------------------- | ------------------------------------ | ------------------------------------------------ |
-| `sh.mcporter.daemon`      | `mcporter daemon start --foreground` | Keep-alive process manager for all servers       |
-| `sh.mcporter.http-bridge` | `mcporter serve --http 3333`         | HTTP MCP endpoint at `http://localhost:3333/mcp` |
-
-mcporter's config lives at `~/.mcporter/mcporter.json` (chezmoi-managed). It embeds full server definitions with `"lifecycle": "keep-alive"` for each server, resolved from the same `mcp-servers-json` chezmoi template that generates the Claude Desktop config.
-
-After `chezmoi apply` loads the plists, activate them:
-
-```bash
-launchctl load ~/Library/LaunchAgents/sh.mcporter.daemon.plist
-launchctl load ~/Library/LaunchAgents/sh.mcporter.http-bridge.plist
-```
-
-Tools are exposed as `server__tool` (double underscore). `~/.claude.json` should contain only a single `ki-mcporter` URL entry under `mcpServers`:
-
-```json
-"ki-mcporter": { "type": "url", "url": "http://localhost:3333/mcp" }
-```
-
-Verify with:
-
-```bash
-mcporter daemon status          # all servers idle/running
-curl http://localhost:3333/mcp  # should return a valid MCP JSON response
-```
-
-### claude.ai connectors — the managed alternative
-
-For a third-party SaaS integration (GitHub, Linear, Slack, Notion, the Google and Microsoft suites, and the like) there are two ways to get its tools into a session, and the local MCP server above is only one of them. The other is a **claude.ai managed connector**, authorised once in claude.ai connector settings. Given this setup, the managed route is often the lower-friction one: Anthropic handles the OAuth, so there is no local OAuth flow to complete, no keep-alive daemon or secrets on the machine, and it works on surfaces where an interactive OAuth flow cannot run (a non-interactive Claude Code session, for instance, cannot complete one — it can only use a connector that is already authorised). Managed-connector schemas load on the claude.ai web / Desktop surface, where you toggle them per-conversation in the compose-bar tools menu, rather than into the Claude Code local surface.
-
-Which route to prefer, per integration:
-
-| Prefer | When |
-| --- | --- |
-| **claude.ai connector** | A hosted connector exists and you mainly use that integration on claude.ai web / Desktop — least setup, no local OAuth. |
-| **Local MCP server** | You need it in the Claude Code CLI, need tools no connector offers, or need a KI server's own access gate + audit log † |
-
-† The KI-owned `mcp-*` servers (workspace MCPs with the annotation-driven access-level gate and audit logging) are always the local route — there is no managed equivalent.
-
-Do not wire the same integration **both** ways on the same surface — that loads two copies of its tool schemas. `ki-binding` governs which surface runs which server from the single `mcps.yaml` source and audits that the surfaces agree; see [Tuning](tuning.md) for the leanness view of the same choice.
-
-## Installing skills
-
-Claude Code (and compatible agents) discover skills in two places:
-
-- **User-global** — `~/.claude/skills/<name>/`, available in every session on this machine.
-- **Per-project** — `<project>/.claude/skills/<name>/`, available only when working in that project (and shareable via the project's repo).
-
-The install model is **keystone-plus-project-local**: only `ki-bootstrap` is installed user-global; every other skill is wired into each repo's `.claude/skills/` on demand. The global skill is paid on every turn everywhere, so keeping one tiny keystone there — instead of all of them — keeps the standing description cost out of unrelated sessions, while each repo still loads exactly the skills it declares. Both ends use **symlinks**, so edits in this repo are live wherever a skill is installed and a `git pull` updates every consumer at once. Install dependencies once with `bun install`.
-
-### Install the keystone, once per machine
-
-```bash
-bun run ki:skills:link:global    # symlink just ki-bootstrap into ~/.claude/skills
-```
-
-Under the hood this is `bun scripts/sync-skills.ts link --only ki-bootstrap`. It is idempotent: it refreshes the existing link, skips a target where a _real_ file or directory is in the way (rather than clobbering it), and creates `~/.claude/skills` if needed. With the keystone in place, any Knowledge Islands repo can self-wire from inside it.
-
-### Wire a repo's project-local skills
-
-In the repo you want to work in, the keystone links its `.claude/skills/` from the repo's `.ki-config.toml` — exactly the skills it declares (`[ki-*]` tables), plus the `ki-repo` + `ki-authoring` baseline:
-
-```bash
-bun run ki:skills:link:project   # in the target repo: link .claude/skills/ from .ki-config.toml
-```
-
-These symlinks are **gitignored and regenerated** — the committed artifacts are the `ki:skills:link:project` script and the `.gitignore` line, never the links themselves (which would dangle on a clone that does not have the harness checked out beside it). Re-run after editing the repo's coverage tables or pulling new skills. Preview with `--dry-run`; the harness itself authors every skill, so it links **all** of them rather than a coverage subset (`--all`).
-
-### Without the script (plain shell)
-
-The keystone, user-global:
-
-```bash
-cd /path/to/ki-agentic-harness
-ln -sfn "$PWD/skills/ki-bootstrap" ~/.claude/skills/ki-bootstrap
-```
-
-A single skill into a project, by hand:
-
-```bash
-cd /path/to/target-repo && mkdir -p .claude/skills
-ln -sfn /path/to/ki-agentic-harness/skills/ki-kb .claude/skills/ki-kb
-```
-
-`ln -sfn` forces replacement of an existing link and never dereferences into a directory, so re-running it updates the link in place instead of nesting a second link inside it. The link name must match the skill directory name (and the `name:` frontmatter).
-
-### Verify and remove
-
-```bash
-ls -l ~/.claude/skills            # the keystone; confirm its -> target resolves
-ls -l <repo>/.claude/skills       # a repo's project-local links; confirm they resolve
-rm ~/.claude/skills/<name>        # uninstall: removes the link only, never the repo
-```
-
-Removing a symlink only unlinks it — the skill source in this repository is untouched. Start a new session after adding or removing a skill so the agent re-scans the skills directory.
+Once a skill is installed per Bootstrap, this page covers how it's used day to day.
 
 ## Using a skill
 

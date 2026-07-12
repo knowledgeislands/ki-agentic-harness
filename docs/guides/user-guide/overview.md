@@ -45,7 +45,7 @@ Several of the skills are built for **Knowledge Islands** work and take its shap
 
 ## Where to go deeper
 
-- **[Installation](installation.md)** covers installing, using, and linking the skills, and the development toolchain.
+- **[Setup](installation.md)** covers using and linking the skills day to day, and the development toolchain; it points to **[Bootstrap](bootstrap.md)** (the keystone-plus-project-local install mechanics) and **[Recommended tools](recommended-tools.md)** (chezmoi, headroom-ai, mcporter, claude.ai connectors) for what installing assumes is in place.
 - **[Tuning](tuning.md)** covers making a session lean — the standing surface vs runtime split, which built-in tools and MCP servers to load, and where a compression proxy does and does not help.
 - **[Onboarding](onboarding.md)** walks through bringing a repository under governance: the remote-run transport, what the bootstrap chain builds in `.ki-meta/`, the day-to-day bins, and keeping it current.
 - **[Skills](skills.md)** covers what a skill is, the six clusters, and the shape they all share; the **[skill catalogue](skill-catalogue.md)** then describes them one by one.
