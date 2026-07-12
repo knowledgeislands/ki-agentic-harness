@@ -105,6 +105,18 @@ function stripQuotes(s: string): string {
 
 const hasXmlTag = (s: string): boolean => /<\/?[a-zA-Z][^>]*>/.test(s)
 
+// Parses a flow-list frontmatter value (`owns: ['.gitignore', 'x.json']` or
+// `contributes: [.ki-config.toml]`) into its bare filenames. Empty/absent → [].
+function parseListValue(raw: string | undefined): string[] {
+  if (!raw) return []
+  const inner = raw.trim().replace(/^\[/, '').replace(/\]$/, '')
+  if (inner.trim() === '') return []
+  return inner
+    .split(',')
+    .map((s) => stripQuotes(s))
+    .filter((s) => s.length > 0)
+}
+
 // Remove fenced code blocks and inline code spans, so text-pattern checks don't
 // fire on documentation/examples (e.g. a description that names `<app>` as a
 // placeholder, or a rubric that quotes `[[wikilink]]` syntax to forbid it).
@@ -389,6 +401,35 @@ function lintSkill(skillDir: string): Finding[] {
   // --- body size (SIZE-1/SIZE-2 soft → WARN) ---
   const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
 
+  // SHAPE-16 [M]: declared file ownership. A skill that scaffolds a house-standard
+  // file into a target repo (`scaffold(...)` / `syncOwned(...)` with a literal
+  // filename) must declare that filename under `owns:`; every filename declared
+  // under `owns:`/`contributes:`/`requires:` must also appear literally in the
+  // skill's own audit.ts, since that's where the corresponding check lives. This
+  // covers house-standard files in the *target repo's* working tree — not
+  // `.ki-meta/`, which has its own vendoring/hash mechanism (`vendors:`, SHAPE-12/15).
+  // Applies to every skill (not gated on process-vs-governance kind, unlike SHAPE-12/13).
+  {
+    const owns = parseListValue(fm.keys.get('owns'))
+    const contributes = parseListValue(fm.keys.get('contributes'))
+    const requires = parseListValue(fm.keys.get('requires'))
+    const conformPath = join(skillDir, 'scripts', 'conform.ts')
+    const auditPath = join(skillDir, 'scripts', 'audit.ts')
+    if (existsSync(conformPath)) {
+      const conformSrc = readFileSync(conformPath, 'utf8')
+      const scaffolded = new Set<string>()
+      for (const m of conformSrc.matchAll(/\b(?:scaffold|syncOwned)\(\s*['"]([^'"]+)['"]/g)) scaffolded.add(m[1] as string)
+      for (const file of scaffolded)
+        if (!owns.includes(file)) warn('SHAPE-16', `scaffolds \`${file}\` but does not declare it under \`owns:\` in frontmatter`)
+    }
+    if (existsSync(auditPath)) {
+      const auditSrc = readFileSync(auditPath, 'utf8')
+      for (const file of [...owns, ...contributes, ...requires])
+        if (!auditSrc.includes(file))
+          warn('SHAPE-16', `declares \`${file}\` (owns/contributes/requires) but \`scripts/audit.ts\` never checks it`)
+    }
+  }
+
   // --- SHAPE-12/13: universal-mode vocabulary + mode-heading structure ---
   // Both gate on kind: a process skill (self-declared "(kind: process" in its
   // description, per SHAPE-3) is fully exempt — its mode count follows its own
@@ -658,6 +699,33 @@ function collisionFindings(dirs: string[]): Finding[] {
   return out.sort((a, b) => a.message.localeCompare(b.message))
 }
 
+// SHAPE-16 collision leg: `owns:` is exclusive — two skills both claiming `owns:`
+// on the same filename is a real conflict (the exact shape of the .prettierrc.json
+// bug this criterion exists to catch). `contributes:`/`requires:` are exempt —
+// multiple skills sharing those on one filename is the normal, expected case.
+function ownsCollisions(dirs: string[]): Finding[] {
+  if (dirs.length < 2) return []
+  const byFile = new Map<string, Set<string>>()
+  for (const dir of dirs) {
+    const skillMd = join(dir, 'SKILL.md')
+    if (!existsSync(skillMd)) continue
+    const owns = parseListValue(parseFrontmatter(readFileSync(skillMd, 'utf8')).keys.get('owns'))
+    for (const file of owns) {
+      if (!byFile.has(file)) byFile.set(file, new Set())
+      byFile.get(file)?.add(basename(dir))
+    }
+  }
+  const out: Finding[] = []
+  for (const [file, skills] of byFile)
+    if (skills.size > 1)
+      out.push({
+        severity: 'warn',
+        criterion: 'SHAPE-16',
+        message: `\`owns: ${file}\` is declared by ${[...skills].sort().join(', ')} — owns: is exclusive; split into a single owner plus contributes:/requires: on the rest`
+      })
+  return out.sort((a, b) => a.message.localeCompare(b.message))
+}
+
 // --- discovery -------------------------------------------------------------
 function discoverSkillDirs(p: string): string[] {
   const abs = resolve(p)
@@ -729,7 +797,7 @@ for (const dir of skillDirs) {
 }
 
 // cross-skill pass: collision between sibling descriptions (COLL-1)
-const collisions = collisionFindings(skillDirs)
+const collisions = [...collisionFindings(skillDirs), ...ownsCollisions(skillDirs)]
 if (collisions.length > 0) {
   totalWarns += collisions.length
   for (const x of collisions) all.push({ level: 'WARN', area: `collision:${x.criterion}`, msg: x.message })
