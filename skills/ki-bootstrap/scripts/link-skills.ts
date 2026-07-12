@@ -14,7 +14,6 @@
  *
  * Usage:
  *   bun link-skills.ts [target-repo]   link declared∪baseline into <target>/.claude/skills (default cwd)
- *   --all        link every skill under the harness skills/ (for the harness itself, the authoring hub)
  *   --dry-run    print what would change, touch nothing
  *   --check      audit only (no mutation): links match expected and .claude/skills gitignored; exits non-zero on FAIL
  */
@@ -71,8 +70,7 @@ function declaredSkills(kiConfigText: string): string[] {
   return out
 }
 
-function expectedSet(all: boolean, available: string[], kiConfigText: string): string[] {
-  if (all) return available
+function expectedSet(available: string[], kiConfigText: string): string[] {
   const want = new Set([...BASELINE, ...declaredSkills(kiConfigText)])
   want.delete(BOOTSTRAP) // the keystone is installed globally; never duplicated project-local
   return [...want].filter((s) => available.includes(s)).sort()
@@ -194,15 +192,9 @@ function cmdCheck(target: string, set: string[], orphans: string[]): number {
 
 // ── Entry ──
 const argv = process.argv.slice(2)
-const all = argv.includes('--all')
 const dryRun = argv.includes('--dry-run')
 const checkOnly = argv.includes('--check')
 const target = resolve(argv.find((a) => !a.startsWith('-')) ?? '.')
-
-// The harness is the authoring hub and intentionally links every skill via --all.
-// Detect it automatically so --check reports PASS rather than a false-positive BOOT-1 WARN.
-const HARNESS_ROOT = resolve(dirname(SKILLS_ROOT))
-const isHarness = resolve(target) === HARNESS_ROOT
 
 const available = discoverSkills()
 if (available.length === 0) {
@@ -212,11 +204,14 @@ if (available.length === 0) {
   process.exit(1)
 }
 
-const effectiveAll = all || isHarness
+// Every repo — the harness included — links only its declared coverage (`.ki-config.toml`
+// `[ki-*]` tables + the ki-repo/ki-authoring baseline). The harness is the authoring hub,
+// but a structural skill (ki-mcp, ki-website, …) is exercised against a repo of its type,
+// not loaded in the harness — so it links what governs IT, not the whole fleet.
 const kiConfigText = readText(join(target, '.ki-config.toml'))
-const set = expectedSet(effectiveAll, available, kiConfigText)
+const set = expectedSet(available, kiConfigText)
 const orphans = orphanSkills(available, kiConfigText)
-const setLabel = effectiveAll ? (isHarness && !all ? 'all (harness — auto)' : 'all') : 'declared ∪ {repo, authoring}'
+const setLabel = 'declared ∪ {repo, authoring}'
 console.log(
   `\n  ${DIM}target:${RESET} ${target}   ${DIM}skills source:${RESET} ${SKILLS_ROOT}   ${DIM}set:${RESET} ${setLabel} (${set.length})\n`
 )
