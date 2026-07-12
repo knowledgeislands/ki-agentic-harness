@@ -44,7 +44,7 @@ import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { chmodSync, cpSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { resolveSet, SKILLS_ROOT, skillDir, vendorUnit } from './resolve.ts'
+import { resolveSet, SKILLS_ROOT, skillDir, vendorModesOf, vendorUnit } from './resolve.ts'
 
 const GREEN = '\x1b[32m'
 const DIM = '\x1b[2m'
@@ -307,18 +307,28 @@ interface VendoredFile {
   abs: string
 }
 
+// The universal modes that vendor a COPIED per-skill script. `init` is NOT here: its
+// per-skill `scripts/init.ts` is a harness-relative seed delegator (it resolves the
+// engine via ../../ki-bootstrap) so a verbatim copy into a target's .ki-meta would be
+// a broken path — INIT is instead the aggregate `ki:init` re-sync (ADR-KI-HARNESS-007).
+// `help` renders a snapshot below; `refresh` is harness-only and never vendored.
+const SCRIPT_MODES = ['audit', 'conform'] as const
+
 function vendorSkill(target: string, skill: string, dryRun: boolean, manifestFiles: Record<string, string>): void {
-  const audit = vendorUnit(skill, 'audit')
-  if (!audit) return
+  const declared = vendorModesOf(skill)
+  // Which script modes to copy: the skill's declared list ∩ {audit, conform}, or — for
+  // a skill still on filename-convention discovery (no `vendors:`) — both, as before.
+  const scriptModes = SCRIPT_MODES.filter((m) => !declared || declared.includes(m))
   const destDir = join(target, VENDOR_DIR, 'skills', skill)
   const written: VendoredFile[] = []
 
-  written.push(...vendorOne(destDir, 'audit', audit, dryRun))
-
-  const conform = vendorUnit(skill, 'conform')
-  if (conform) {
-    written.push(...vendorOne(destDir, 'conform', conform, dryRun))
+  for (const mode of scriptModes) {
+    const unit = vendorUnit(skill, mode)
+    if (unit) written.push(...vendorOne(destDir, mode, unit, dryRun))
   }
+  // Nothing vendored (no audit/conform resolvable) — skip the skill entirely, matching
+  // the old `if (!audit) return` guard so bare non-governance dirs are ignored.
+  if (written.length === 0) return
 
   // HELP snapshot — rendered from the skill's SKILL.md at vendor time, the one
   // moment the sources are guaranteed present, so `.ki-meta/bin/ki-help` answers
@@ -353,11 +363,11 @@ function vendorSkill(target: string, skill: string, dryRun: boolean, manifestFil
 // yields a unit runnable in a non-engineering, no-package.json repo").
 function vendorOne(
   destDir: string,
-  verb: 'audit' | 'conform',
+  mode: 'audit' | 'conform',
   unit: { kind: 'file'; path: string } | { kind: 'command'; command: string },
   dryRun: boolean
 ): VendoredFile[] {
-  const destFile = `${verb}.ts`
+  const destFile = `${mode}.ts`
   const rel = `${VENDOR_DIR}/skills/${destDir.split('/').pop()}/${destFile}`
   const abs = join(destDir, destFile)
   if (unit.kind === 'file') {

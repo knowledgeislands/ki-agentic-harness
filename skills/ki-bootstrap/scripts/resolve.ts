@@ -82,85 +82,130 @@ export function resolveSet(target: string, all: boolean, seeds: string[]): strin
 // + `audit-memory.test.ts`) and silently drop the skill from the vendored set.
 export const isSource = (f: string): boolean => !/\.test\.ts$/.test(f)
 
-// A skill's single checker script (audit-*.ts or lint-*.ts) — discovered, not templated.
-// This is the migration-fallback path: the primary source is the `vendors:`
-// frontmatter declaration below.
-export function checkerScript(skill: string): { verb: 'audit' | 'lint'; file: string } | null {
+// A skill's single legacy checker script (audit-*.ts / lint-*.ts / bare audit.ts) —
+// discovered, not templated. Migration fallback only: the primary source is the
+// `vendors:` frontmatter declaration below.
+export function checkerScript(skill: string): { verb: 'audit'; file: string } | null {
   const dir = join(skillDir(skill), 'scripts')
   if (!existsSync(dir)) return null
-  const m = readdirSync(dir).filter((f) => /^(audit|lint)-.*\.ts$/.test(f) && isSource(f))
+  const m = readdirSync(dir).filter((f) => /^(audit\.ts|(audit|lint)-.*\.ts)$/.test(f) && isSource(f))
   if (m.length !== 1) return null
-  return { verb: m[0].startsWith('audit-') ? 'audit' : 'lint', file: m[0] }
+  return { verb: 'audit', file: m[0] }
 }
 
 export function conformScript(skill: string): string | null {
   const dir = join(skillDir(skill), 'scripts')
   if (!existsSync(dir)) return null
-  const m = readdirSync(dir).filter((f) => /^conform-.*\.ts$/.test(f) && isSource(f))
+  const m = readdirSync(dir).filter((f) => /^(conform\.ts|conform-.*\.ts)$/.test(f) && isSource(f))
   return m.length === 1 ? m[0] : null
 }
 
-// ── `vendors:` frontmatter (ADR-KI-HARNESS-006) ──────────────────────────────────
-// Per-skill declaration, central execution: each governance skill declares its
-// vendorable mechanical unit(s) beside `implies:`, in a single-line flow mapping:
+// ── `vendors:` frontmatter (ADR-KI-HARNESS-007) ──────────────────────────────────
+// Per-skill declaration, central execution. Every governance skill declares the
+// universal modes it vendors as a single-line flow LIST beside `implies:`:
 //
-//   vendors: { audit: scripts/audit-repo.ts, conform: scripts/conform-repo.ts }
-//   vendors: { audit: "cmd: bun run ki:lint:md:check" }
+//   vendors: [init, audit, conform, help]
 //
-// A bare `scripts/...` value is a checker FILE, vendored as a copy. A quoted
-// `"cmd: ..."` value is a COMMAND, vendored as a generated thin wrapper script (no
-// package.json required in the target — the wrapper embeds the command literally).
-// Only `audit` and `conform` verbs are recognised (INIT and HELP do not vendor —
-// ADR-KI-HARNESS-006's Consequences).
+// Mode → artifact is DERIVED (no override):
+//   init / audit / conform → scripts/<mode>.ts, vendored as a copied file
+//   help                   → a rendered SKILL.md snapshot (no script; see bootstrap.ts)
+// `refresh` is never vendored (harness-only). During migration two legacy forms are
+// still parsed with a WARN: the map form `vendors: { audit: scripts/x.ts, conform:
+// scripts/y.ts }` (a bare path is a FILE; a quoted `"cmd: ..."` is a COMMAND), and
+// filename-convention discovery when a skill has no `vendors:` line at all.
+export const VENDOR_MODES = ['init', 'audit', 'conform', 'help'] as const
+export type VendorMode = (typeof VENDOR_MODES)[number]
 export type VendorUnit = { kind: 'file'; path: string } | { kind: 'command'; command: string }
-export type VendorDecl = Partial<Record<'audit' | 'conform', VendorUnit>>
 
-export function vendorsOf(skill: string): VendorDecl | null {
+// The raw `vendors:` line's inner text, or null when there is no such line.
+function vendorsInner(skill: string): string | null {
   const md = readText(join(skillDir(skill), 'SKILL.md'))
   const fm = md.match(/^---\r?\n([\s\S]*?)\r?\n---/)
   if (!fm) return null
   const line = fm[1].split(/\r?\n/).find((l) => /^vendors:/.test(l))
   if (!line) return null
-  const inner = line
-    .replace(/^vendors:\s*/, '')
-    .trim()
-    .replace(/^\{/, '')
-    .replace(/\}$/, '')
-    .trim()
-  if (!inner) return null
-  const decl: VendorDecl = {}
-  // Split on top-level commas, respecting quoted command strings (which may not
-  // themselves contain commas today, but this keeps the parse honest either way).
-  const parts = inner.match(/(?:[^,"]+|"[^"]*")+/g) ?? []
-  for (const raw of parts) {
-    const m = raw.trim().match(/^(audit|conform):\s*(.+)$/)
-    if (!m) continue
-    const verb = m[1] as 'audit' | 'conform'
-    let value = m[2].trim()
-    if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1)
-    decl[verb] = value.startsWith('cmd:') ? { kind: 'command', command: value.slice(4).trim() } : { kind: 'file', path: value }
-  }
-  return Object.keys(decl).length ? decl : null
+  const inner = line.replace(/^vendors:\s*/, '').trim()
+  return inner || null
 }
 
-// Resolves a skill's vendorable unit for one verb: the declared `vendors:` entry
-// if present, else the old filename-convention discovery — printing a WARN (never
-// a hard fail) naming the missing declaration, per the ADR's migration fallback.
-export function vendorUnit(skill: string, verb: 'audit' | 'conform'): VendorUnit | null {
-  const declared = vendorsOf(skill)?.[verb]
-  if (declared) return declared
-  if (verb === 'audit') {
-    const legacy = checkerScript(skill)
-    if (!legacy) return null
-    console.error(
-      `${'\x1b[33m'}WARN${'\x1b[0m'}  ${skill} has no \`vendors:\` declaration — falling back to filename-convention discovery (scripts/${legacy.file}). Add \`vendors: { audit: scripts/${legacy.file} }\` to its SKILL.md frontmatter.`
-    )
-    return { kind: 'file', path: `scripts/${legacy.file}` }
+// The declared mode list. Handles the new flow-list form directly, and derives the
+// list from a legacy map form's keys. null when there is no `vendors:` line.
+export function vendorModesOf(skill: string): VendorMode[] | null {
+  const inner = vendorsInner(skill)
+  if (inner === null) return null
+  if (inner.startsWith('[')) {
+    return inner
+      .replace(/^\[/, '')
+      .replace(/\]$/, '')
+      .split(',')
+      .map((s) => s.trim())
+      .filter((s): s is VendorMode => (VENDOR_MODES as readonly string[]).includes(s))
   }
-  const legacy = conformScript(skill)
+  // Legacy map form: keys are the modes.
+  const modes: VendorMode[] = []
+  for (const raw of inner
+    .replace(/^\{/, '')
+    .replace(/\}$/, '')
+    .match(/(?:[^,"]+|"[^"]*")+/g) ?? []) {
+    const m = raw.trim().match(/^(audit|conform):/)
+    if (m && !modes.includes(m[1] as VendorMode)) modes.push(m[1] as VendorMode)
+  }
+  return modes.length ? modes : null
+}
+
+// A legacy map form's explicit unit for one verb (audit/conform), or null.
+function legacyMapUnit(skill: string, verb: 'audit' | 'conform'): VendorUnit | null {
+  const inner = vendorsInner(skill)
+  if (inner === null || inner.startsWith('[')) return null
+  for (const raw of inner
+    .replace(/^\{/, '')
+    .replace(/\}$/, '')
+    .match(/(?:[^,"]+|"[^"]*")+/g) ?? []) {
+    const m = raw.trim().match(/^(audit|conform):\s*(.+)$/)
+    if (!m || m[1] !== verb) continue
+    let value = m[2].trim()
+    if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1)
+    return value.startsWith('cmd:') ? { kind: 'command', command: value.slice(4).trim() } : { kind: 'file', path: value }
+  }
+  return null
+}
+
+// Resolves a skill's vendorable unit for one mode (init/audit/conform — help never
+// vendors a script). Order: derived `scripts/<mode>.ts` from a flow-list declaration,
+// else the legacy map's explicit path, else filename-convention discovery — the last
+// two printing a WARN (never a hard fail) per the ADR's migration fallback.
+export function vendorUnit(skill: string, mode: 'init' | 'audit' | 'conform'): VendorUnit | null {
+  const modes = vendorModesOf(skill)
+  const inner = vendorsInner(skill)
+
+  // New flow-list form: pure derivation.
+  if (inner?.startsWith('[')) {
+    if (!modes?.includes(mode)) return null
+    const path = `scripts/${mode}.ts`
+    if (!existsSync(join(skillDir(skill), path))) return null
+    return { kind: 'file', path }
+  }
+
+  // init has no legacy encoding — only the derived form above.
+  if (mode === 'init') {
+    const path = 'scripts/init.ts'
+    return existsSync(join(skillDir(skill), path)) ? { kind: 'file', path } : null
+  }
+
+  // Legacy map form.
+  const mapped = legacyMapUnit(skill, mode)
+  if (mapped) {
+    console.error(
+      `${'\x1b[33m'}WARN${'\x1b[0m'}  ${skill} uses the legacy \`vendors: { … }\` map — migrate to \`vendors: [init, audit, conform, help]\` with bare scripts/${mode}.ts.`
+    )
+    return mapped
+  }
+
+  // Filename-convention discovery.
+  const legacy = mode === 'audit' ? checkerScript(skill)?.file : conformScript(skill)
   if (!legacy) return null
   console.error(
-    `${'\x1b[33m'}WARN${'\x1b[0m'}  ${skill} has no \`vendors:\` declaration for conform — falling back to filename-convention discovery (scripts/${legacy}). Add \`vendors: { conform: scripts/${legacy} }\` to its SKILL.md frontmatter.`
+    `${'\x1b[33m'}WARN${'\x1b[0m'}  ${skill} has no \`vendors:\` declaration for ${mode} — falling back to filename-convention discovery (scripts/${legacy}). Add \`vendors: [init, audit, conform, help]\` and rename to scripts/${mode}.ts.`
   )
   return { kind: 'file', path: `scripts/${legacy}` }
 }
