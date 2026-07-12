@@ -52,6 +52,10 @@ Audits, conforms, and scaffolds a **standalone command-line tool** repo (`tools-
 
 Audits, conforms, and scaffolds the **Homebrew tap** repo (`homebrew-tap`) that packages the `ki-tools` CLIs, by **wrapping Homebrew's external standard** — `Formula/*.rb` shape (`class`/`desc`/`url`/`sha256`/`license`/`install`/`test do`), versioned-tarball sourcing, the README formulae table. The seventh repo-structure skill; it delegates to `brew audit --strict` / `brew style`, and REFRESH tracks the Homebrew Formula Cookbook. The repo name is fixed by Homebrew; the skill governs shape, not name.
 
+### `ki-dotfiles-chezmoi`
+
+Codifies, audits, and conforms the **chezmoi dotfiles-management standard** — naming-prefix semantics (`dot_`/`executable_`/`private_`/`.tmpl`), edit-source-not-target discipline, shell-loader layering, the bin/ dispatcher pattern, app-mutated-config handling (surgical patch vs full-template reverse-merge), single-source-to-multi-target config templating, CLAUDE.md/agent-instruction layering, and chezmoi-specific repo-shape and OS gotchas. The eighth repo-structure skill; it governs any git repo that is a chezmoi source-state directory (detected via `.chezmoiroot`/`.chezmoi.toml.tmpl`/`.chezmoidata`/root-level `dot_*` files), additive to `ki-repo`'s generic file-presence checks rather than restating them. Derived from a single case-study repo (n=1) — its judgment criteria stay provisional until more repos are audited against it. **Composes on** `ki-authoring`.
+
 ## General governance
 
 ### `ki-skills`
