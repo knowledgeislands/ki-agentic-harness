@@ -122,7 +122,7 @@ Every harness `package.json` MUST declare these script families:
 | `ki:lint:md`             | Prettier + markdownlint (writes)                                 | Markdown formatting gate       |
 | `ki:lint:md:check`       | Prettier + markdownlint (check-only; CI twin of `ki:lint:md`)    | CI Markdown gate               |
 
-§ The `ki-bootstrap` linker; the harness uses `--all`.
+§ The `ki-bootstrap` linker; the harness links its own declared coverage, like any repo (ADR-KI-HARNESS-007).
 
 The `ki:lint:*` family is the common engineering toolchain (`ki-engineering`'s standard). A harness that ships no TypeScript may omit `ki:lint:check` / `ki:lint:types` with a documented reason.
 

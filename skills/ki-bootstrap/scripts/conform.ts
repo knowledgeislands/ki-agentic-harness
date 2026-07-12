@@ -20,12 +20,12 @@
  * declared table resolving to no harness skill (BOOT-1 FAIL — an upstream
  * rename/removal to reconcile by hand).
  *
- * Usage: bun conform.ts [target-repo] [--all] [--dry-run]
- *   --all      link every harness skill (the harness authoring hub); forwarded to the
- *              skills linker ONLY — a linking concept, never vendoring, which is always
- *              coverage-scoped (ADR-KI-HARNESS-007). The harness is auto-detected, so
- *              --all is redundant there.
+ * Usage: bun conform.ts [target-repo] [--dry-run]
  *   --dry-run  preview both linkers' changes, touch nothing
+ *
+ * Every repo — the harness included — links its declared coverage (`.ki-config.toml`
+ * `[ki-*]` tables + the ki-repo/ki-authoring baseline); there is no all-skills mode
+ * (ADR-KI-HARNESS-007). Vendoring is likewise always coverage-scoped.
  */
 
 import { spawnSync } from 'node:child_process'
@@ -33,7 +33,6 @@ import { join, resolve } from 'node:path'
 
 const argv = process.argv.slice(2)
 const dryRun = argv.includes('--dry-run')
-const all = argv.includes('--all')
 const target = resolve(argv.find((a) => !a.startsWith('--')) ?? '.')
 
 function run(script: string, args: string[]): number {
@@ -45,12 +44,12 @@ const flags = dryRun ? ['--dry-run'] : []
 let failed = 0
 
 // 1. Link — skills, then agents (write mode; --dry-run previews).
-if (run('link-skills.ts', [...flags, ...(all ? ['--all'] : [])]) !== 0) failed++
+if (run('link-skills.ts', flags) !== 0) failed++
 if (run('link-agents.ts', flags) !== 0) failed++
 
 // 2. Re-run the checks to confirm (skipped on a preview — nothing changed).
 if (!dryRun) {
-  if (run('link-skills.ts', ['--check', ...(all ? ['--all'] : [])]) !== 0) failed++
+  if (run('link-skills.ts', ['--check']) !== 0) failed++
   if (run('link-agents.ts', ['--check']) !== 0) failed++
 }
 

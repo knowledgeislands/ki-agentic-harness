@@ -16,7 +16,7 @@ For a Knowledge Islands repo, `.claude/skills/` contains exactly:
 
 - **Declared coverage** is owned by `ki-repo`'s coverage cascade — this skill _reads_ the tables, never edits them. Whether the declared set is correct for the repo is a `ki-repo` question.
 - **The baseline** is always linked: `repo` so a greenfield repo can reach INIT to scaffold its config; `authoring` because Markdown/TOML style is universal (it is cascade-exempt — no per-repo table — so it is added explicitly).
-- **The harness** (`ki-agentic-harness`) is the exception: as the authoring hub it links **all** skills, not a subset (`--all`).
+- **The harness** (`ki-agentic-harness`) is not special here: it links its own declared coverage like any repo. It _authors_ every skill (their source lives in its `skills/`), but a structural skill (`ki-mcp`, `ki-website`, …) is exercised against a repo of its type, not loaded in the harness — so linking the whole fleet would only add standing context cost for no authoring gain (ADR-KI-HARNESS-007).
 
 ## How the links are stored
 
@@ -26,7 +26,7 @@ For a Knowledge Islands repo, `.claude/skills/` contains exactly:
 
 ## Reproducibility contract
 
-Every Knowledge Islands repo carries a `.gitignore` entry for `.claude/skills/`; re-running the global keystone linker (the harness uses `--all`) regenerates the links from `.ki-config.toml` alone, on any machine. That makes the project-local skill set reproducible without ever committing the symlinks.
+Every Knowledge Islands repo carries a `.gitignore` entry for `.claude/skills/`; re-running the linker regenerates the links from `.ki-config.toml` alone, on any machine. That makes the project-local skill set reproducible without ever committing the symlinks.
 
 Wiring `package.json` convenience keys is no concern of the linker — it manages only the symlinks and the `.gitignore` line. Any `ki:<suffix>:<verb>` script sugar is `ki-engineering`'s to add later, over the vendored `.ki-meta/bin` runners.
 

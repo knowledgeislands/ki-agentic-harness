@@ -64,7 +64,7 @@ The two harness-specific scripts (`ki:skills:link:project` and `ki:skills:lint`)
 ```jsonc
 {
   "scripts": {
-    "ki:skills:link:project": "bun skills/ki-bootstrap/scripts/link-skills.ts --all",
+    "ki:skills:link:project": "bun skills/ki-bootstrap/scripts/link-skills.ts",
     "ki:skills:link:global": "bun scripts/sync-skills.ts link --only ki-bootstrap",
     "ki:skills:lint": "bun skills/ki-skills/scripts/audit.ts skills",
     "ki:lint:check": "bunx @biomejs/biome check",

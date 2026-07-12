@@ -6,12 +6,12 @@ Provenance only: the record of _what changed_ lives in git (the REFRESH commit),
 
 ## In-house
 
-| Tag  | Source                    | Governs                                                             | Last reviewed |
-| ---- | ------------------------- | ------------------------------------------------------------------- | ------------- |
-| [KR] | `ki-repo` skill           | The `.ki-config.toml` contract and the coverage cascade †           | 2026-07-04    |
-| [KE] | `ki-engineering` skill    | The enforcement framework ‡; `skills:*` scripts                     | 2026-07-04    |
-| [KH] | `ki-harness` skill        | The five-part container and the skill-install convention §          | 2026-07-04    |
-| [AH] | [README](../../README.md) | The reference implementation; the authoring hub linked with `--all` | 2026-07-04    |
+| Tag  | Source                    | Governs                                                                     | Last reviewed |
+| ---- | ------------------------- | --------------------------------------------------------------------------- | ------------- |
+| [KR] | `ki-repo` skill           | The `.ki-config.toml` contract and the coverage cascade †                   | 2026-07-04    |
+| [KE] | `ki-engineering` skill    | The enforcement framework ‡; `skills:*` scripts                             | 2026-07-04    |
+| [KH] | `ki-harness` skill        | The five-part container and the skill-install convention §                  | 2026-07-04    |
+| [AH] | [README](../../README.md) | The reference implementation; the authoring hub, linked to its own coverage | 2026-07-04    |
 
 † The coverage cascade is the set of `[ki-*]` tables the contract reads.
 

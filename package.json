@@ -49,7 +49,7 @@
     "clean": "rm -rf node_modules",
     "ki:agents:audit": "bun .ki-meta/skills/ki-agents/audit.ts .",
     "ki:agents:conform": "bun .ki-meta/skills/ki-agents/conform.ts .",
-    "ki:agents:link:project": "bun .claude/skills/ki-bootstrap/scripts/link-agents.ts .",
+    "ki:agents:link:project": "bun skills/ki-bootstrap/scripts/link-agents.ts .",
     "ki:audit": "bun .ki-meta/bin/aggregate.ts audit",
     "ki:authoring:audit": "bun .ki-meta/skills/ki-authoring/audit.ts .",
     "ki:authoring:conform": "bun .ki-meta/skills/ki-authoring/conform.ts .",
