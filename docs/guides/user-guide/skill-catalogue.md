@@ -90,6 +90,10 @@ Drives a live-session recap: **summarise** what happened (changes, decisions, fi
 
 Drives the **plan lifecycle** for a code repo — `new` / `execute` / `done` / `status` — promoted from the former `/plan` command. Reads the format and methodology from `ki-plans` (which owns the standard) and carries them out: id numbering, the `blocks`/`blocked-by` dependency graph, and ROADMAP sync on `done`. Self-guards on `repo_type = "kb"` (planning there is a `ki-kb-streams` proposal Checklist). Paired deliberately with `ki-plans` — singular verb (drive a plan) beside plural class (govern the class of plans). Installable globally alongside `ki-bootstrap` — and like `ki-bootstrap`, never declared via a `.ki-config.toml` table.
 
+### `ki-delegate`
+
+Turns a task list or an approved `ki-plan` into a **tiered, round-sequenced execution** across sub-agents, in four legs: **classify** each task as judgment / mechanical / research, **assign** it to an agent type and a per-spawn model tier (cheapest that suffices; judgment to a standard-encoding specialist or a stronger model), **sequence** into rounds (blockers and citation-targets first, then a parallel fan-out of the independents, with write-contention named), and **gate** every result (review each cheap-tier diff before commit; adversarially safety-review any auto-executing hook or script). Operationalises `ADR-KI-HARNESS-003` (mechanical-first) and draws model-tier cost/selection policy from `ki-tokenomics` without restating it. The method is written runtime-neutrally with the Claude-Code spawn mechanics tagged `CC`, so the skill models the portability discipline it delivers. Installable globally alongside `ki-bootstrap` — and like `ki-bootstrap`, never declared via a `.ki-config.toml` table.
+
 ## Implied families
 
 ### `ki-kb-streams`
