@@ -6,7 +6,7 @@ How to bring a repository under Knowledge Islands governance so it **governs its
 
 The canonical, zero-install form is the `curl | sh` installer idiom — **`cd` into the repo you want to govern**, then run:
 
-```text
+```bash
 curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh | sh
 ```
 
@@ -55,23 +55,6 @@ cd "$TARGET" && ./.ki-meta/bin/ki-audit
 ```
 
 A single skill's INIT is reachable the same way through its own `scripts/init.ts`, which seeds that skill (plus its `implies:` closure) into the target — the mechanics and the vendored result are identical to the full chain.
-
-## Worked example — a real sibling repo (`tools-mgit`)
-
-The placeholders above map onto an ordinary fleet layout — a harness checkout sitting beside its sibling repos on the same machine — like this. `tools-mgit` declares `[ki-repo]`, `[ki-authoring]`, and `[ki-tools]` in its `.ki-config.toml`:
-
-```text
-bun ~/kis/knowledgeislands/ki-agentic-harness/skills/ki-bootstrap/scripts/bootstrap.ts ~/kis/knowledgeislands/tools-mgit
-```
-
-That resolves `tools-mgit`'s set — its three declared tables plus their `implies:` closure — and vendors it into `tools-mgit/.ki-meta/`. Then it self-governs, no `bun` needed beside `.ki-meta/bin/ki-help`:
-
-```text
-cd ~/kis/knowledgeislands/tools-mgit
-./.ki-meta/bin/ki-audit
-```
-
-The same one-liner is the update path: whenever a declared skill's standard changes upstream (a REFRESH, or a `.ki-config.toml` edit adding a table — e.g. declaring `[ki-authoring]` explicitly after ADR-KI-HARNESS-007 dropped the injected baseline), re-run it unchanged. It is idempotent, so running it against an already-current `tools-mgit` reproduces the same manifest byte-for-byte.
 
 ## Keeping current
 
