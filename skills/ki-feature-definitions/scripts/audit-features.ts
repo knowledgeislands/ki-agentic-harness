@@ -107,7 +107,8 @@ function parseAreasTables(indexContent: string): Map<string, string> {
 }
 
 async function main() {
-  const featuresDir = process.argv[2] ?? DEFAULT_DIR
+  const jsonMode = process.argv.includes('--json')
+  const featuresDir = process.argv.slice(2).find((a) => !a.startsWith('--')) ?? DEFAULT_DIR
   const resolvedDir = resolve(featuresDir)
 
   try {
@@ -197,6 +198,27 @@ async function main() {
         add('REQ-1', Sev.FAIL, file, `${reqs[r].id} has no RFC-2119 keyword (MUST / SHOULD / MAY …) in its statement`)
       if (!/_Verify:_/.test(block)) add('VERIFY-1', Sev.WARN, file, `${reqs[r].id} has no \`_Verify:_\` line`)
     }
+  }
+
+  // --json: emit the pinned checker-contract wrapper (never a bare array); the footer is
+  // suppressed under --json. Exit code still reflects any FAIL.
+  if (jsonMode) {
+    const summary = { fail: 0, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: 0 }
+    for (const f of findings) summary[(SEV_LABELS[f.severity] ?? '').toLowerCase() as keyof typeof summary]++
+    console.log(
+      JSON.stringify(
+        {
+          concern: 'feature-definitions',
+          target: featuresDir,
+          generatedAt: new Date().toISOString(),
+          summary,
+          findings: findings.map((f) => ({ level: SEV_LABELS[f.severity], area: f.check, msg: `${f.file}: ${f.message}` }))
+        },
+        null,
+        2
+      )
+    )
+    process.exit(findings.some((f) => f.severity === Sev.FAIL) ? 1 : 0)
   }
 
   // Report grouped by severity.

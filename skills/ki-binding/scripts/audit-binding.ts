@@ -216,7 +216,19 @@ if (!project) {
 
 // ── Report ──
 if (JSON_OUT) {
-  process.stdout.write(`${JSON.stringify({ source: SOURCE, project: project ?? null, findings }, null, 2)}\n`)
+  // The pinned checker-contract `--json` wrapper: { concern, target, generatedAt,
+  // summary, findings }, each finding { level, area, msg }, summary carrying all seven
+  // lowercase ladder keys present even at zero.
+  const summary = { fail: 0, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: 0 }
+  for (const f of findings) summary[f.severity.toLowerCase() as keyof typeof summary]++
+  const wrapper = {
+    concern: 'binding',
+    target: project ? resolve(project) : SOURCE,
+    generatedAt: new Date().toISOString(),
+    summary,
+    findings: findings.map((f) => ({ level: f.severity, area: f.criterion, msg: f.message }))
+  }
+  process.stdout.write(`${JSON.stringify(wrapper, null, 2)}\n`)
 } else {
   const colour: Record<Severity, string> = { FAIL: RED, WARN: YELLOW, PASS: GREEN, INFO: DIM }
   process.stdout.write(`\n${DIM}ki-binding — cross-surface audit${RESET}\n${DIM}source: ${SOURCE}${RESET}\n${'─'.repeat(60)}\n`)

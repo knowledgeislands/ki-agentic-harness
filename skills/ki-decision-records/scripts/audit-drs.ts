@@ -99,7 +99,9 @@ async function resolveDecisionsDir(arg: string | undefined): Promise<string> {
 }
 
 async function main() {
-  const decisionsDir = await resolveDecisionsDir(process.argv[2])
+  const jsonMode = process.argv.includes('--json')
+  const dirArg = process.argv.slice(2).find((a) => !a.startsWith('--'))
+  const decisionsDir = await resolveDecisionsDir(dirArg)
   const resolvedDir = resolve(decisionsDir)
 
   try {
@@ -309,6 +311,27 @@ async function main() {
       }
       maxSerialByPrefix.set(prefixKey, Math.max(prevMax ?? 0, serialNum))
     }
+  }
+
+  // --json: emit the pinned checker-contract wrapper (never a bare array); the footer is
+  // suppressed under --json. Exit code still reflects any FAIL.
+  if (jsonMode) {
+    const summary = { fail: 0, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: 0 }
+    for (const f of findings) summary[(SEV_LABELS[f.severity] ?? '').toLowerCase() as keyof typeof summary]++
+    console.log(
+      JSON.stringify(
+        {
+          concern: 'decision-records',
+          target: decisionsDir,
+          generatedAt: new Date().toISOString(),
+          summary,
+          findings: findings.map((f) => ({ level: SEV_LABELS[f.severity], area: f.check, msg: `${f.file}: ${f.message}` }))
+        },
+        null,
+        2
+      )
+    )
+    process.exit(findings.some((f) => f.severity === Sev.FAIL) ? 1 : 0)
   }
 
   // Report grouped by severity

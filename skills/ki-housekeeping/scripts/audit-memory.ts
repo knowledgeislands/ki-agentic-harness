@@ -101,8 +101,8 @@ async function main() {
 
   if (!dirExists) {
     add('DIR-1', Sev.NA, memoryDir, 'no memory/ directory for this repo yet — not a failure')
-    report(findings, jsonMode)
-    if (reportDir) await writeReport(reportDir, findings)
+    report(findings, jsonMode, memoryDir)
+    if (reportDir) await writeReport(reportDir, findings, memoryDir)
     process.exit(0)
   }
 
@@ -242,16 +242,31 @@ async function main() {
     add('SUMMARY', Sev.PASS, memoryDir, `all ${memoryFiles.length} memory file(s) pass mechanical checks`)
   }
 
-  report(findings, jsonMode)
-  if (reportDir) await writeReport(reportDir, findings)
+  report(findings, jsonMode, memoryDir)
+  if (reportDir) await writeReport(reportDir, findings, memoryDir)
 
   const hasFail = findings.some((f) => f.severity === Sev.FAIL)
   process.exit(hasFail ? 1 : 0)
 }
 
-function report(findings: Finding[], jsonMode: boolean) {
+// The pinned checker-contract `--json` wrapper: { concern, target, generatedAt, summary,
+// findings }, each finding { level, area, msg }, summary carrying all seven lowercase
+// ladder keys present even at zero. Shared by --json (stdout) and --report (file).
+function jsonReport(findings: Finding[], target: string) {
+  const summary = { fail: 0, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: 0 }
+  for (const f of findings) summary[SEV_LABELS[f.severity].toLowerCase() as keyof typeof summary]++
+  return {
+    concern: 'housekeeping',
+    target,
+    generatedAt: new Date().toISOString(),
+    summary,
+    findings: findings.map((f) => ({ level: SEV_LABELS[f.severity], area: f.id, msg: `${f.file}: ${f.message}` }))
+  }
+}
+
+function report(findings: Finding[], jsonMode: boolean, target: string) {
   if (jsonMode) {
-    console.log(JSON.stringify(findings, null, 2))
+    console.log(JSON.stringify(jsonReport(findings, target), null, 2))
     return
   }
   const tally: Partial<Record<Sev, number>> = {}
@@ -270,10 +285,10 @@ function report(findings: Finding[], jsonMode: boolean) {
   }
 }
 
-async function writeReport(dir: string, findings: Finding[]) {
+async function writeReport(dir: string, findings: Finding[], target: string) {
   const outDir = join(resolve(dir), '.ki-meta', 'audits')
   await mkdir(outDir, { recursive: true })
-  await writeFile(join(outDir, 'ki-housekeeping.json'), JSON.stringify(findings, null, 2))
+  await writeFile(join(outDir, 'ki-housekeeping.json'), JSON.stringify(jsonReport(findings, target), null, 2))
 }
 
 main().catch((err) => {
