@@ -24,10 +24,13 @@ Under the hood this is `bun scripts/sync-skills.ts link --only ki-bootstrap`. It
 In the repo you want to work in, the keystone links its `.claude/skills/` from the repo's `.ki-config.toml` — exactly the skills it declares (`[ki-*]` tables), plus the `ki-repo` + `ki-authoring` baseline:
 
 ```bash
-bun run ki:skills:link:project   # in the target repo: link .claude/skills/ from .ki-config.toml
+cd /path/to/target-repo
+bun ~/.claude/skills/ki-bootstrap/scripts/link-skills.ts   # link .claude/skills/ from .ki-config.toml
 ```
 
-These symlinks are **gitignored and regenerated** — the committed artifacts are the `ki:skills:link:project` script and the `.gitignore` line, never the links themselves (which would dangle on a clone that does not have the harness checked out beside it). Re-run after editing the repo's coverage tables or pulling new skills. Preview with `--dry-run`; the harness itself authors every skill, so it links **all** of them rather than a coverage subset (`--all`).
+The script is self-locating: invoked through the keystone's global symlink it resolves back into the harness checkout and links the sibling skills from there, so the target repo needs no `package.json` — a KB or any other non-TS repo runs it exactly the same way. (Inside the harness repo itself, `bun run ki:skills:link:project` is the `package.json` alias for the same script.)
+
+These symlinks are **gitignored and regenerated** — the committed artifacts are the linking script and the `.gitignore` line, never the links themselves (which would dangle on a clone that does not have the harness checked out beside it). Re-run after editing the repo's coverage tables or pulling new skills. Preview with `--dry-run`; the harness itself authors every skill, so it links **all** of them rather than a coverage subset (`--all`).
 
 ### Without the script (plain shell)
 
