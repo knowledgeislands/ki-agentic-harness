@@ -14,4 +14,4 @@ Skill quality conforms to the **`ki-skills`** standard (a sibling here) — run 
 2. Write to the rubric, not from memory; self-audit with `bun run ki:skills:lint <name>`.
 3. Add it to the catalogue and the dependency-order sweep — see [docs/skills.md](../docs/guides/user-guide/skills.md).
 
-The catalogue (what each skill does) is in [docs/skill-catalogue.md](../docs/guides/user-guide/skill-catalogue.md), the map of the set in [docs/skills.md](../docs/guides/user-guide/skills.md); how they fit together — boundaries, the knowledge loops, the shared principles — in [docs/skill-design.md](../docs/guides/user-guide/skill-design.md). Installed elsewhere by symlink via `bun run skills:link`.
+The catalogue (what each skill does) is in [docs/skill-catalogue.md](../docs/guides/user-guide/skill-catalogue.md), the map of the set in [docs/skills.md](../docs/guides/user-guide/skills.md). Installed elsewhere by symlink via `bun run skills:link`.

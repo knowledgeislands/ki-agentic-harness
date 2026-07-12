@@ -17,7 +17,7 @@ The harness turns loose conventions into something an agent can apply and check 
 
 Each skill ships a **mechanical checker** — a script that decides the clear-cut cases deterministically, so an agent review only spends attention on the parts that genuinely need it. The result: standards live in one place as skills, and the checkers keep every repository honest against them over time, rather than the standard living in someone's head and eroding.
 
-This reflects the harness's central working principle: it serves **two kinds of agent — human and LLM** — and its work splits into **mechanical** (a script can decide it) and **judgemental** (an agent must weigh it). The mechanical layer always stands alone: every governed repository, whatever its kind, carries a way to run its own checks (`./.ki-meta/bin/ki-audit`) with no model and no skills installed. Agent judgment — from either kind of agent — is a layer added on top of that baseline, never a requirement for it. The full statement is [ADR-KI-HARNESS-003](../../decisions/ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md).
+This reflects the harness's central working principle: it serves **two kinds of agent — human and LLM** — and its work splits into **mechanical** (a script can decide it) and **judgemental** (an agent must weigh it). The mechanical layer always stands alone: every governed repository, whatever its kind, carries a way to run its own checks (`./.ki-meta/bin/ki-audit`) with no model and no skills installed. Agent judgment — from either kind of agent — is a layer added on top of that baseline, never a requirement for it. The full statement is `ADR-KI-HARNESS-003`.
 
 ## How the parts fit together
 
@@ -27,7 +27,7 @@ The bundle has five parts, each its own directory:
 - **Agents** (`agents/`) — Knowledge Islands subagent definitions: focused roles an agent can delegate to.
 - **MCP servers** (`mcp/`) — a shelf for tool servers that consolidate the workspace's external integrations. Scaffolded, not yet populated.
 - **Evals** (`evals/`) — behavioural test scenarios that check the skills actually behave as intended.
-- **Hooks** (`hooks/`) — Claude Code hook scripts wired into a repo's `.claude/settings.json`. An empty shelf today, reserving the structure ahead of the harness shipping hooks.
+- **Hooks** (`hooks/`) — Claude Code hook scripts wired into a repo's `.claude/settings.json`. A growing set, starting with the plan-file lifecycle.
 
 The five are meant to be co-installed and versioned together: the skills carry the standards, the agents are the roles that apply them, the MCP servers are the tools those roles reach for, the evals hold the whole set honest, and the hooks automate the surrounding session. Shipping them in one bundle keeps them in step — an agent, its skills, and their checks move as a unit rather than drifting apart across separate installs.
 
@@ -45,8 +45,8 @@ Several of the skills are built for **Knowledge Islands** work and take its shap
 
 ## Where to go deeper
 
-- **[Setup](installation.md)** covers using and linking the skills day to day, and the development toolchain; it points to **[Bootstrap](bootstrap.md)** (the keystone-plus-project-local install mechanics) and **[Recommended tools](recommended-tools.md)** (chezmoi, headroom-ai, mcporter, claude.ai connectors) for what installing assumes is in place.
+- **[Using a skill](installation.md)** covers how a skill fires once installed — by trigger or by slash command.
+- **[Linking skills](linking.md)** covers the keystone-plus-project-local install mechanics; **[Recommended tools](recommended-tools.md)** covers what installing assumes is in place (chezmoi, headroom-ai, mcporter, claude.ai connectors).
 - **[Tuning](tuning.md)** covers making a session lean — the standing surface vs runtime split, which built-in tools and MCP servers to load, and where a compression proxy does and does not help.
 - **[Onboarding](onboarding.md)** walks through bringing a repository under governance: the remote-run transport, what the bootstrap chain builds in `.ki-meta/`, the day-to-day bins, and keeping it current.
 - **[Skills](skills.md)** covers what a skill is, the six clusters, and the shape they all share; the **[skill catalogue](skill-catalogue.md)** then describes them one by one.
-- **[Skill design](skill-design.md)** explains how they fit — where they deliberately do not overlap, the loops by which the standards improve, and the principles common to the set.

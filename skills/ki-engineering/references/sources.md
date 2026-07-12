@@ -34,7 +34,7 @@ The standard is the **majority shape** across the TS/Bun repos under `knowledgei
 
 † the 7 `mcp-*` servers + `ki-agentic-harness`, `ki-arcadia-principal`, `ki-website`.
 
-※ `ki-agentic-harness/docs/skills.md` "governance-skill shape" + `docs/skill-design.md` "Principles across the set".
+※ `ki-agentic-harness/docs/skills.md` "governance-skill shape".
 
 ## Last review
 

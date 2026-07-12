@@ -1,6 +1,6 @@
 # Recommended tools
 
-System-level tools that are not part of this repo but that skills, MCP servers, and day-to-day sessions on a development machine benefit from. None of these are required to read or audit the skills themselves — [Bootstrap](bootstrap.md) covers what actually installs the skill set.
+System-level tools that are not part of this repo but that skills, MCP servers, and day-to-day sessions on a development machine benefit from. None of these are required to read or audit the skills themselves — [Linking skills](linking.md) covers what actually installs the skill set.
 
 ## chezmoi (dotfile and machine-config management)
 

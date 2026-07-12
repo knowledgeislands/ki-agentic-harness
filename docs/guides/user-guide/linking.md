@@ -1,6 +1,6 @@
 # Bootstrapping the skill set
 
-How a skill gets from this repo onto a development machine and into a target repo: the keystone-plus-project-local install model, the commands that wire it, and how to verify or remove a link. See [Recommended tools](recommended-tools.md) for the system-level dependencies (chezmoi, headroom-ai, mcporter) this assumes are already in place, and [Installation](installation.md) for how a skill fires once installed.
+How a skill gets from this repo onto a development machine and into a target repo: the keystone-plus-project-local install model, the commands that wire it, and how to verify or remove a link. See [Recommended tools](recommended-tools.md) for the system-level dependencies (chezmoi, headroom-ai, mcporter) this assumes are already in place, and [Using a skill](installation.md) for how a skill fires once installed.
 
 ## Installing skills
 

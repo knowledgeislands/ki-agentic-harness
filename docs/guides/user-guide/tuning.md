@@ -91,7 +91,7 @@ The trade-off is the prompt cache: deferral shifts cost from a fixed standing ta
 
 ### Trim CLAUDE.md, memory, and skill descriptions
 
-The prose surface — `CLAUDE.md` and its `@imports`, the `MEMORY.md` index, and each installed skill's `description` — is standing cost too. The `ki-tokenomics` skill catalogues and budgets it; `bun run ki:tokenomics:audit` measures it. Keeping the keystone-plus-project-local install model (see [Bootstrap](bootstrap.md)) is what keeps unrelated skills' descriptions out of a session in the first place.
+The prose surface — `CLAUDE.md` and its `@imports`, the `MEMORY.md` index, and each installed skill's `description` — is standing cost too. The `ki-tokenomics` skill catalogues and budgets it; `bun run ki:tokenomics:audit` measures it. Keeping the keystone-plus-project-local install model (see [Linking skills](linking.md)) is what keeps unrelated skills' descriptions out of a session in the first place.
 
 Memory is the one layer where two different audits apply, and they are complementary — do the hygiene pass first, because it usually shrinks the surface the cost pass then measures:
 
