@@ -86,8 +86,10 @@ const CODE_DIR = 'docs/decisions'
 const KB_DIR = 'Admin/Governance/Decisions'
 
 async function resolveDecisionsDir(arg: string | undefined): Promise<string> {
-  if (arg) return arg
-  for (const candidate of [CODE_DIR, KB_DIR]) {
+  const root = arg ?? '.'
+  // The uniform invocation passes the REPO ROOT (`.`): resolve docs/decisions (code) or
+  // Admin/Governance/Decisions (KB) under it.
+  for (const candidate of [join(root, CODE_DIR), join(root, KB_DIR)]) {
     try {
       await stat(resolve(candidate))
       return candidate
@@ -95,7 +97,16 @@ async function resolveDecisionsDir(arg: string | undefined): Promise<string> {
       // not this one — try the next default
     }
   }
-  return KB_DIR // fall back; the not-found error below reports it
+  // Legacy: an arg that is itself a decisions dir is used directly.
+  if (arg) {
+    try {
+      await stat(resolve(arg))
+      return arg
+    } catch {
+      // fall through
+    }
+  }
+  return join(root, KB_DIR) // fall back; the not-found error below reports it
 }
 
 async function main() {
