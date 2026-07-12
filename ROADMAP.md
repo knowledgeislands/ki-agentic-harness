@@ -52,6 +52,14 @@ ADR-KI-HARNESS-TOOLCHAIN-005 records that generated and vendored code (`src/gene
 
 `resolve.ts`'s `declaredSkills()` regex-extracts every `[ki-<name>]` top-level table straight out of `.ki-config.toml`; the closure walk then silently drops any name that doesn't match a real `skills/<name>/` directory (`!isSkill(s)` in the `while (stack.length)` loop) — no warning, no failure. A renamed or retired skill (e.g. `ki-kb-base` → `ki-kb`) can therefore sit in a repo's config indefinitely with zero coverage, invisible unless someone happens to notice the vendored `.ki-meta/` is missing that skill's checker. The existing `coverage-<skill>` validation in `ki-repo`'s audit (`audit.ts:455`) only checks override _keys_ inside `[ki-repo.checks]` against the known skill set — it doesn't touch the top-level `[ki-<skill>]` tables themselves. Add a check (candidate home: `ki-repo`'s audit, alongside the existing coverage cascade, or `resolve.ts` itself) that fails when a declared top-level table names no real skill directory, so a stale rename surfaces mechanically instead of silently dropping coverage.
 
+### Retry blocked memory-store fixes once `memory_*` tools recover
+
+During a memory/`CLAUDE.md` review session (2026-07-12), several fixes were identified but couldn't be applied because every `memory_*` tool (`memory_save`, `memory_update`, `memory_search`, `memory_list`) failed with "No such tool available" — reads and writes alike, ruling out a plan-mode-specific restriction. Once the tools are confirmed working again:
+
+- Fix the stale citation in `project-harness-runtime-strategy.md` (a project memory under `~/.claude/projects/-Users-krisbrown-kis-knowledgeislands-ki-agentic-harness/memory/`): it still points at `docs/decisions/SDR-KI-HARNESS-001-runtime-portable-contracts.md`, but the harness's DR-renumbering commit (`4cfd896`) moved that decision to `SDR-KI-HARNESS-002-runtime-portable-contracts.md` and reassigned slot 001 to an unrelated decision.
+- Delete `feedback-explicit-git-staging.md` and `complete-the-merge-loop.md` from the same memory directory — both were promoted into `CLAUDE.md`'s Committing section and `~/.claude/workflow.md` respectively during the same session, so per the promote-then-delete reconciliation rule they should no longer persist as separate memories.
+- Investigate a possible split between whatever backend the `memory_*` tools actually write to (content from calls made during the outage resurfaced later via automatic recall, so the writes seem to have landed somewhere) and the file-based mirror at `~/.claude/projects/.../memory/*.md` described as canonical in the system prompt — grepping that mirror directly showed no new files after the "successful" saves, so the two stores may not be staying in sync. Worth a `ki-housekeeping` look once reproducible.
+
 ## Future
 
 ### Reclassify the remaining borderline DRs _(candidate)_
