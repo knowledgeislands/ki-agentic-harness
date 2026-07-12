@@ -52,7 +52,8 @@ A checker MUST depend on Node/Bun builtins only (no npm dependencies) and MUST N
 
 _Verify:_ checker-contract.md §1 pins builtins-only and no cross-skill imports; a vendored checker runs from a target's `.ki-meta/skills/` with no harness beside it.
 
-## Gaps
+### CHK-008 — Footer guarded and suppressed
 
-- Several shipped checkers deviate from the pinned `--json` shape (`ki-housekeeping` emits a bare array with numeric severity; `ki-binding` uses `{severity,criterion,message}`; `ki-decision-records` and `ki-feature-definitions` have no `--json` at all) — tracked on the ROADMAP, not yet conformant, so CHK-004 is aspirational for those.
-- The two behavioural halves of the footer contract (guarded on non-clean, suppressed under `--json`) are judgment reads that SHAPE-8 cannot decide mechanically, and are not separately asserted here.
+A checker's remediation footer MUST appear only on a non-clean run (any FAIL / WARN / POLISH) and MUST be suppressed under both `--json` and `--report`, so machine consumers receive only the wrapper object, per [ADR-KI-HARNESS-003](../decisions/ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md).
+
+_Verify:_ checker-contract.md §The remediation footer pins the non-clean guard and the `--json`/`--report` suppression; SHAPE-8 surfaces the standardised footer, and a `--json` run of any `audit-*.ts` emits no footer line.

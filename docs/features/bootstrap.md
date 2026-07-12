@@ -52,7 +52,14 @@ The harness MUST be able to verify a target's `.ki-meta/skills/` matches the exp
 
 _Verify:_ `bun skills/ki-bootstrap/scripts/audit-vendored.ts <target>` reports PASS when `.ki-meta/skills/` equals the expected set, and WARNs (listing both directions) when a skill is stray-vendored or missing.
 
-## Gaps
+### BOOT-008 — Remote INIT transport
 
-- Remote-run transport (the `curl | sh` one-liner over `bootstrap.sh`, and the vendored `ki-init` wrapper that pipes the same script) is documented but not yet exercised by an automated test. The original `bun run <raw-github-url>` form was falsified in the field (Bun cannot execute a module over HTTP) and replaced by the tarball-fetching POSIX-`sh` entry point; the engine always sources skills from its own working tree.
-- No requirement yet covers the `--all` mode used by the harness itself (link/vendor every skill rather than a coverage subset).
+The INIT chain MUST be runnable on a machine carrying nothing but `bun` — via a POSIX-`sh` entry point (`bootstrap.sh`) that fetches the repo tarball from `codeload.github.com` and execs the engine, and via a vendored `.ki-meta/bin/ki-init` wrapper that re-runs the same remote script — per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md).
+
+_Verify:_ `skills/ki-bootstrap/scripts/bootstrap.sh` line 1 is `#!/bin/sh` and its `codeload.github.com` fetch pipes into `bootstrap.ts`; a governed repo's `.ki-meta/bin/ki-init` re-invokes that script (never `bun run <raw-url>`, which Bun cannot execute over HTTP).
+
+### BOOT-009 — `--all` links and vendors every skill
+
+The bootstrap and link engines MUST accept `--all` to link and vendor every skill rather than the coverage subset, and the harness — the authoring hub — MUST use it, so `ki:skills:link:project` passes `--all`.
+
+_Verify:_ `skills/ki-bootstrap/scripts/link-skills.ts` parses `--all` (feeding `expectedSet`), and `package.json`'s `ki:skills:link:project` invokes it with `--all`.

@@ -52,7 +52,24 @@ A process skill (one that drives a lifecycle rather than holding a standard) MUS
 
 _Verify:_ `lint-skills.ts` SHAPE-5 / SHAPE-11 pass a process skill (e.g. `ki-recap`, `ki-plan`) that carries only its own lifecycle modes.
 
-## Gaps
+## Core-optional modes
 
-- The core-optional modes NEW and OPTIMISE have fixed meanings wherever they appear but are not yet lifted into the numbered contract, since they are optional per skill.
-- The no-mode → HELP-then-`AskUserQuestion` interactive routing is specified in the ADR but not asserted here, as it is behaviour of the in-session mode rather than a mechanically checkable artifact.
+### MODE-008 — NEW authors one instance
+
+A collection governance skill that exposes NEW MUST use it to author exactly one new instance into the collection it governs, presupposing INIT has established the collection and never substituting for INIT, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+
+_Verify:_ the collection skills exposing `### Mode NEW` (`ki-decision-records`, `ki-feature-definitions`, `ki-kb-activities`, `ki-kb-live-artifacts`) each also expose INIT; the fixed meaning is pinned in [`skills/ki-skills/references/agent-skills-standard.md`](../../skills/ki-skills/references/agent-skills-standard.md).
+
+### MODE-009 — OPTIMISE pushes toward excellent
+
+A skill that exposes OPTIMISE MUST use it only to push an already-compliant artifact from the standard floor toward excellent, never to bring an off-standard one onto the floor (that is INIT/CONFORM), per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+
+_Verify:_ `ki-skills`'s `### Mode OPTIMISE`; the fixed meaning is pinned in [`skills/ki-skills/references/agent-skills-standard.md`](../../skills/ki-skills/references/agent-skills-standard.md).
+
+## No-mode routing
+
+### MODE-010 — No mode resolves to HELP, then routes
+
+Invoked with no mode, a governance skill MUST emit the same HELP explanation, then — in an interactive session only — offer the mode choice via `AskUserQuestion`; the pure `help` / `-h` / `?` form MUST take no further action (the headless-safe form), per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+
+_Verify:_ every governance `SKILL.md`'s `## Operating modes` section carries the no-mode/`AskUserQuestion` sentence; `bun run ki:skills:help:check` guards HELP-block coverage.

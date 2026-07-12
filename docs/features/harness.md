@@ -48,8 +48,20 @@ For every `skills/<dir>/` containing a `SKILL.md`, the directory name MUST equal
 
 _Verify:_ `audit-harness.ts` SKILLS-1 FAILs on any directory-name/`name:` mismatch; the `ki-skills` cross-skill pass (COLL-1) FAILs on a duplicate `name:`.
 
+## Discipline
+
+### HARN-007 — ROADMAP.md holds only open work
+
+`ROADMAP.md` MUST list only open work — no completed items, no ticked checkboxes, no `~~struck~~` entries — items being removed when done rather than checked off, per the `ki-harness` standard.
+
+_Verify:_ `ki-harness`'s rubric ROAD-1 ([`skills/ki-harness/references/audit-rubric.md`](../../skills/ki-harness/references/audit-rubric.md)), applied by reading (judgment-graded).
+
+### HARN-008 — CLAUDE.md orientation coverage
+
+`CLAUDE.md` MUST open with a paragraph naming all five part-directories (`skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`) and MUST carry a five-part status table marking each part populated or an empty shelf, per the `ki-harness` standard.
+
+_Verify:_ `ki-harness`'s rubric CLAUDE-1 and CLAUDE-2 ([`skills/ki-harness/references/audit-rubric.md`](../../skills/ki-harness/references/audit-rubric.md)), applied by reading (judgment-graded).
+
 ## Gaps
 
-- No requirement yet asserts the `ROADMAP.md` discipline (open work only, no ticked items) — it is judgment-graded (ROAD-1/2/3) in `ki-harness`'s rubric but not lifted into the as-built contract here.
 - The `mcp/` and `hooks/` shelves are scaffolded but empty; no requirement yet describes a populated MCP server or hook, since none ships.
-- CLAUDE.md coverage and freshness (the five-part paragraph, the status table) is checked only as judgment (CLAUDE-1..5) and is deliberately left out of the numbered contract.
