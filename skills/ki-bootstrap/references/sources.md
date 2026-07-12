@@ -31,7 +31,7 @@ Provenance only: the record of _what changed_ lives in git (the REFRESH commit),
 
 REFRESH last run **2026-07-07** — confirmed [CS]: an installed skill's `SKILL.md` with `argument-hint` already produces native `/ki-bootstrap audit|conform|refresh [path]` invocation; no wrapper command needed. [CP]/[CM] reviewed as the packaging contract `ki-binding` projects onto (see [sources.md](../../ki-binding/references/sources.md) for that skill's own review).
 
-- [KR] `ki-repo` — **confirmed.** Coverage cascade unchanged; baseline is still `ki-repo` (bedrock marker) + `ki-authoring` (universal, cascade-exempt). See `ki-config-standard.md` §44/§52.
+- [KR] `ki-repo` — Coverage cascade: every repo declares its foundations (`[ki-repo]` bedrock marker + `[ki-authoring]`) explicitly as `[ki-*]` tables; there is no injected/cascade-exempt baseline (ADR-KI-HARNESS-007). See `ki-config-standard.md` §44/§52.
 - [KE] `ki-engineering` — **confirmed.** enforcement-framework §2 severity ladder and checker contract unchanged.
 - [KH] `ki-harness` — **confirmed.** `ki:skills:link:project` convention, the `--all` harness variant, and the `ki:skills:link:global` keystone install all intact.
 - [AH] README — **confirmed.** Keystone / global-install framing intact; skill count grew to twenty (generic `[ki-*]` model needs no edit).

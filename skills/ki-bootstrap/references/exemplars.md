@@ -42,7 +42,7 @@ preferred_model = "sonnet"
 mcp_servers = 20   # acknowledged overage; documented here for auditability
 ```
 
-The keystone linker also always links the baseline (`ki-repo` + `ki-authoring`) regardless of whether those tables appear — they are cascade-exempt universals.
+Every repo declares its own foundations (`[ki-repo]` + `[ki-authoring]`) as `[ki-*]` tables like any other coverage — there is no injected baseline, so the linker resolves purely from the declared set.
 
 ### The `ki:skills:link:project` invocation
 

@@ -23,9 +23,9 @@
  * Usage: bun conform.ts [target-repo] [--dry-run]
  *   --dry-run  preview both linkers' changes, touch nothing
  *
- * Every repo — the harness included — links its declared coverage (`.ki-config.toml`
- * `[ki-*]` tables + the ki-repo/ki-authoring baseline); there is no all-skills mode
- * (ADR-KI-HARNESS-007). Vendoring is likewise always coverage-scoped.
+ * Every repo — the harness included — links its declared coverage (the `.ki-config.toml`
+ * `[ki-*]` tables, foundations included; no injected baseline); there is no all-skills
+ * mode (ADR-KI-HARNESS-007). Vendoring is likewise always coverage-scoped.
  */
 
 import { spawnSync } from 'node:child_process'

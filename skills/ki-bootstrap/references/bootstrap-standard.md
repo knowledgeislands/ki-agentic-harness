@@ -12,7 +12,7 @@ That leaves a bootstrap problem: something must be globally available to _wire_ 
 
 For a Knowledge Islands repo, `.claude/skills/` contains exactly:
 
-> **the skills the repo declares** (`[ki-<skill>]` tables in `.ki-config.toml`) **∪ the baseline `ki-repo` + `ki-authoring`**, minus `ki-bootstrap` itself (which is global).
+> **the skills the repo declares** (`[ki-<skill>]` tables in `.ki-config.toml`, its foundations `ki-repo` + `ki-authoring` among them), minus `ki-bootstrap` itself (which is global). There is no injected baseline — coverage is purely what the config declares.
 
 - **Declared coverage** is owned by `ki-repo`'s coverage cascade — this skill _reads_ the tables, never edits them. Whether the declared set is correct for the repo is a `ki-repo` question.
 - **The baseline** is always linked: `repo` so a greenfield repo can reach INIT to scaffold its config; `authoring` because Markdown/TOML style is universal (it is cascade-exempt — no per-repo table — so it is added explicitly).

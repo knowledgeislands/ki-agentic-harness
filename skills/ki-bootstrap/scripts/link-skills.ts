@@ -3,10 +3,10 @@
  * ki-bootstrap — wire a repo's project-local skills from its .ki-config.toml.
  *
  * A Knowledge Islands repo's `.claude/skills/` should mirror the skills it declares
- * (`[ki-*]` tables), plus the baseline `ki-repo` +
- * `ki-authoring` (so even a greenfield repo with no coverage tables can still reach
- * repo's INIT). Links are RELATIVE symlinks into the harness's `skills/` — gitignored and
- * regenerated, never committed.
+ * (`[ki-*]` tables) — including its own foundations `[ki-repo]` + `[ki-authoring]`, which
+ * every repo declares explicitly (no injected baseline; a greenfield repo enters via
+ * `ki-repo`'s init, `--seed ki-repo`, to scaffold its config). Links are RELATIVE symlinks
+ * into the harness's `skills/` — gitignored and regenerated, never committed.
  *
  * Self-locating: invoked through its global symlink
  * (`~/.claude/skills/ki-bootstrap/scripts/link-skills.ts`), `import.meta.url` resolves
@@ -29,7 +29,6 @@ const SELF = realpathSync(fileURLToPath(import.meta.url))
 const SKILLS_ROOT = resolve(dirname(SELF), '..', '..')
 
 const BOOTSTRAP = 'ki-bootstrap'
-const BASELINE = ['ki-repo', 'ki-authoring']
 
 // ── ANSI ──
 const RED = '\x1b[31m'
@@ -71,20 +70,19 @@ function declaredSkills(kiConfigText: string): string[] {
 }
 
 function expectedSet(available: string[], kiConfigText: string): string[] {
-  const want = new Set([...BASELINE, ...declaredSkills(kiConfigText)])
+  const want = new Set(declaredSkills(kiConfigText))
   want.delete(BOOTSTRAP) // the keystone is installed globally; never duplicated project-local
   return [...want].filter((s) => available.includes(s)).sort()
 }
 
 // Declared `[ki-*]` tables that resolve to no discoverable skill in the harness —
 // almost always a table left behind by an upstream rename/removal. `expectedSet`
-// silently filters these out; here we surface them. The baseline/bootstrap entries
-// `expectedSet` special-cases are excluded, so only genuinely unresolvable
-// declarations are flagged.
+// silently filters these out; here we surface them. The bootstrap keystone (declared
+// nowhere, installed globally) is excluded, so only genuinely unresolvable declarations
+// are flagged.
 function orphanSkills(available: string[], kiConfigText: string): string[] {
-  const special = new Set([BOOTSTRAP, ...BASELINE])
   return declaredSkills(kiConfigText)
-    .filter((s) => !special.has(s) && !available.includes(s))
+    .filter((s) => s !== BOOTSTRAP && !available.includes(s))
     .sort()
 }
 
@@ -204,14 +202,14 @@ if (available.length === 0) {
   process.exit(1)
 }
 
-// Every repo — the harness included — links only its declared coverage (`.ki-config.toml`
-// `[ki-*]` tables + the ki-repo/ki-authoring baseline). The harness is the authoring hub,
-// but a structural skill (ki-mcp, ki-website, …) is exercised against a repo of its type,
+// Every repo — the harness included — links only its declared coverage (the `.ki-config.toml`
+// `[ki-*]` tables, foundations included; no injected baseline). The harness is the authoring
+// hub, but a structural skill (ki-mcp, ki-website, …) is exercised against a repo of its type,
 // not loaded in the harness — so it links what governs IT, not the whole fleet.
 const kiConfigText = readText(join(target, '.ki-config.toml'))
 const set = expectedSet(available, kiConfigText)
 const orphans = orphanSkills(available, kiConfigText)
-const setLabel = 'declared ∪ {repo, authoring}'
+const setLabel = 'declared'
 console.log(
   `\n  ${DIM}target:${RESET} ${target}   ${DIM}skills source:${RESET} ${SKILLS_ROOT}   ${DIM}set:${RESET} ${setLabel} (${set.length})\n`
 )

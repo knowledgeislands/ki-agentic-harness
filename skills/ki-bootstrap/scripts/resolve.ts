@@ -13,7 +13,6 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { readText } from './package-scripts.ts'
 
-export const BASELINE = ['ki-repo', 'ki-authoring']
 export const BOOTSTRAP = 'ki-bootstrap'
 
 // The harness `skills/` root this engine reads sources from. Local run: the
@@ -57,14 +56,16 @@ export function impliesOf(skill: string): string[] {
     : []
 }
 
-// Transitive closure of BASELINE + declared skills (+ explicit --seed skills) over
-// the `implies:` graph. A per-skill `scripts/init.ts` delegator seeds itself.
+// Transitive closure of the declared skills (+ explicit --seed skills) over the
+// `implies:` graph. Coverage is purely what `.ki-config.toml` declares — every repo
+// declares its own foundations (`[ki-repo]`, `[ki-authoring]`), so there is no injected
+// baseline. A per-skill `scripts/init.ts` delegator seeds itself.
 export function resolveSet(target: string, all: boolean, seeds: string[]): string[] {
   const seed = all
     ? readdirSync(SKILLS_ROOT, { withFileTypes: true })
         .filter((e) => e.isDirectory() && isSkill(e.name))
         .map((e) => e.name)
-    : [...BASELINE, ...declaredSkills(readText(join(target, '.ki-config.toml'))), ...seeds]
+    : [...declaredSkills(readText(join(target, '.ki-config.toml'))), ...seeds]
   const seen = new Set<string>()
   const stack = [...seed]
   while (stack.length) {

@@ -44,15 +44,15 @@ A `[ki-<skill>]` table plays one or both of two roles:
 - **Marker (opt-in)** — its _presence_ declares "this skill governs this repo." The bare header is enough; it needs no keys.
 - **Config** — it carries per-repo declarations the skill reads (data the standard fits to, or `[…checks]` divergences).
 
-The two are separable: a base on the canonical zone names declares a bare `[ki-kb]` (marker only, no keys); a base that renames a zone adds a `[ki-kb.zones]` alias (config). The marker/opt-in skills are `ki-engineering`, `-kb`, `-streams`, `-website`, `-website-cloudflare`, `-mcp`, `-skills`, and `-agents`. `ki-repo` is the **bedrock marker** — the file's very presence is what makes the repo a ki-repo — and `ki-authoring` is **universal** (it governs every markdown repo), so neither needs a separate opt-in.
+The two are separable: a base on the canonical zone names declares a bare `[ki-kb]` (marker only, no keys); a base that renames a zone adds a `[ki-kb.zones]` alias (config). The marker/opt-in skills are `ki-engineering`, `-kb`, `-streams`, `-website`, `-website-cloudflare`, `-mcp`, `-skills`, and `-agents`. `ki-repo` is the **bedrock marker** — the file's very presence is what makes the repo a ki-repo. `ki-authoring` governs every markdown repo, but it is **declared, not assumed**: every repo carries a bare `[ki-authoring]` table like any other coverage (a missing one is a FAIL — `authoring-baseline`, [ADR-KI-HARNESS-005](../../../docs/decisions/ADR-KI-HARNESS-005-validate-down-ki-config-contract.md)). There is no injected/cascade-exempt baseline: coverage is purely what the config declares (ADR-KI-HARNESS-007).
 
 So **what an absent table means is per-skill**, and that is exactly what _Coverage enforcement_ (below) checks:
 
-| Table absent                   | Means                                                                                     |
-| ------------------------------ | ----------------------------------------------------------------------------------------- |
-| `[ki-repo]` (the file)         | not a ki-repo — the marker itself (bedrock; missing file is a FAIL)                       |
-| any other marker skill's table | not opted into that standard — a coverage WARN _if_ the repo shows that skill's artifacts |
-| `ki-authoring`                 | nothing — universal, no opt-in table exists                                               |
+| Table absent                   | Means                                                                                      |
+| ------------------------------ | ------------------------------------------------------------------------------------------ |
+| `[ki-repo]` (the file)         | not a ki-repo — the marker itself (bedrock; missing file is a FAIL)                        |
+| any other marker skill's table | not opted into that standard — a coverage WARN _if_ the repo shows that skill's artifacts  |
+| `ki-authoring`                 | a bare `[ki-authoring]` marker — declared like any coverage, not assumed (FAIL if missing) |
 
 ## Validate your own table
 
