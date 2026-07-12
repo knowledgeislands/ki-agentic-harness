@@ -12,11 +12,11 @@ Knowledge Islands repos are **public by default** (installable from source), and
 
 - `[ki-repo]` gains a `license` field — an SPDX id (e.g. `MIT`, `Apache-2.0`), or `UNLICENSED`/`proprietary` for all-rights-reserved — **defaulting to MIT** when unset. choosealicense.com is the picker and the REFRESH source.
 - The `license`, `license-file`, and `package-license` checks verify that the **live GitHub license, the `LICENSE` file, and `package.json` `"license"` all match the declared-or-default id**. A proprietary declaration expects no recognised OSI license on GitHub and `"UNLICENSED"` in `package.json`.
-- Visibility remains a separate, independently-declared-and-checked fact. A private repo may be MIT; a public repo may be proprietary. This supersedes the ki-plugins-private direction: `ki-plugins` goes public with its proprietary license declared, and the audit no longer FAILs it.
+- Visibility remains a separate, independently-declared-and-checked fact. A private repo may be MIT; a public repo may be proprietary — `ki-plugins`, for one, is public with a proprietary license declared, and the audit passes it.
 
 ## Consequences
 
-- The checker no longer encodes "public ⇒ MIT" — license policy is data in each repo's `.ki-config.toml`, not a constant in `audit-repo.ts`.
+- The checker does not encode "public ⇒ MIT" — license policy is data in each repo's `.ki-config.toml`, not a constant in `audit-repo.ts`.
 - The **mechanism** is built harness-only in this program; the **actual visibility flips** across the sibling fleet are guide-driven and roll out per repo.
 - The harness itself is now reconciled — it declares `license = "MIT"` in `.ki-config.toml`, ships a matching MIT `LICENSE` file and `package.json`, and is public — so a live `ki:repo:audit` of the harness agrees on all three.
 - A repo that wants a non-default license states it once in `[ki-repo]` `license`; the three artifacts are then checked against it uniformly.
