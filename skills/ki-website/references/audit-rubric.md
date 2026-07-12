@@ -1,6 +1,6 @@
 # Audit Rubric
 
-Line-by-line pass/fail items for auditing a site against the [Eleventy site standard](eleventy-site-standard.md). Run [`../scripts/audit-websites.ts`](../scripts/audit-websites.ts) for the mechanical items (marked **[M]**), then judge the rest by reading. Each item cites the standard section it verifies.
+Line-by-line pass/fail items for auditing a site against the [Eleventy site standard](eleventy-site-standard.md). Run [`../scripts/audit.ts`](../scripts/audit.ts) for the mechanical items (marked **[M]**), then judge the rest by reading. Each item cites the standard section it verifies.
 
 Severity: **FAIL** (ship-stopper — the site won't build or `dist/` isn't portable), **WARN** (layout / config / Tailwind divergence), **POLISH** (SEO / consistency) — the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](../../ki-engineering/references/enforcement-framework.md) §2.
 

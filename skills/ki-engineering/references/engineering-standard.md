@@ -4,7 +4,7 @@ ADR: [ADR-KI-HARNESS-TOOLCHAIN-001](../../../docs/decisions/ADR-KI-HARNESS-TOOLC
 
 The shared **engineering toolchain** every Knowledge Islands TypeScript/Bun repo conforms to — the common layer the artifact-type skills (`ki-mcp`, and future ones) build on rather than restate. It is the build/test twin of `ki-authoring` (which owns _how we write_); this owns _how we build, lint, and test_.
 
-This file is the **normative, quotable** standard. The checkable items live in [the rubric](audit-rubric.md); the mechanical checks are in [`../scripts/audit-engineering.ts`](../scripts/audit-engineering.ts); the meta-standard for how this (and any) standard is defined and enforced is [the enforcement framework](enforcement-framework.md).
+This file is the **normative, quotable** standard. The checkable items live in [the rubric](audit-rubric.md); the mechanical checks are in [`../scripts/audit.ts`](../scripts/audit.ts); the meta-standard for how this (and any) standard is defined and enforced is [the enforcement framework](enforcement-framework.md).
 
 ## Contents
 
@@ -27,7 +27,7 @@ The standard applies to any repo carrying a `[ki-engineering]` table in its `.ki
 - **Core** — the baseline every such repo MUST meet, unconditionally (§1–§5).
 - **Capability conditionals** — common rules that fire only when the repo opts into a capability, detected by a marker in the repo (§6–§8). A repo with no tests is not required to have a test script; a repo that _does_ ship tests must use vitest with 100% coverage. The conditional is still _common_ engineering policy — it just doesn't apply where the capability is absent.
 
-**Artifact-specific rules are NOT here.** Anything meaningful only for one artifact type — the MCP coverage-exclude list, `bin → dist/mcp-server/index.js`, `ki:server:mcp:*` scripts, `exports` per `main/<concern>` — lives in that artifact's skill (e.g. `ki-mcp`). A repo is fully audited by **composing** this standard's checker with the artifact skill's checker (run `ki:engineering:audit` for the common layer, then e.g. `audit-mcp.ts` for the MCP delta); the checkers compose by being run in sequence, never by importing each other.
+**Artifact-specific rules are NOT here.** Anything meaningful only for one artifact type — the MCP coverage-exclude list, `bin → dist/mcp-server/index.js`, `ki:server:mcp:*` scripts, `exports` per `main/<concern>` — lives in that artifact's skill (e.g. `ki-mcp`). A repo is fully audited by **composing** this standard's checker with the artifact skill's checker (run `ki:engineering:audit` for the common layer, then e.g. `audit.ts` for the MCP delta); the checkers compose by being run in sequence, never by importing each other.
 
 The capability markers, and what each unlocks:
 
@@ -83,7 +83,7 @@ The manifest is the **engineering** standard's because engineering owns the clos
 
 ### CI workflow
 
-Where the repo has CI (`.github/workflows/ci.yml`), it is a single `build` job on `push` to `main` and `pull_request`, running the common gate **in order**: `jdx/mise-action` (installs the toolchain from `mise.toml`, pinning **no** version itself — no `bun-version:` / `node-version:`, which would bypass `mise.toml` and is drift) → `bun install --frozen-lockfile` → **`bun run ki:verify`**. The single `ki:verify` step _is_ the gate — it composes `ki:lint:check` → `ki:lint:types` → **`ki:lint:md:check`** (+ `build` / `test:coverage` where those capabilities are present), in order (§2). The Markdown gate is load-bearing: `ki:lint:md` self-heals locally with `--write`, so only its `--check` twin (inside `ki:verify`) stops prose-wrap drift reaching `main`. A `ki:test:smoke` step that follows in an MCP repo is that artifact's **delta**, owned by `ki-mcp` and asserted by `audit-mcp.ts` — not part of this common shape.
+Where the repo has CI (`.github/workflows/ci.yml`), it is a single `build` job on `push` to `main` and `pull_request`, running the common gate **in order**: `jdx/mise-action` (installs the toolchain from `mise.toml`, pinning **no** version itself — no `bun-version:` / `node-version:`, which would bypass `mise.toml` and is drift) → `bun install --frozen-lockfile` → **`bun run ki:verify`**. The single `ki:verify` step _is_ the gate — it composes `ki:lint:check` → `ki:lint:types` → **`ki:lint:md:check`** (+ `build` / `test:coverage` where those capabilities are present), in order (§2). The Markdown gate is load-bearing: `ki:lint:md` self-heals locally with `--write`, so only its `--check` twin (inside `ki:verify`) stops prose-wrap drift reaching `main`. A `ki:test:smoke` step that follows in an MCP repo is that artifact's **delta**, owned by `ki-mcp` and asserted by `audit.ts` — not part of this common shape.
 
 ## 2. The script families (core)
 

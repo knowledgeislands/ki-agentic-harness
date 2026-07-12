@@ -6,5 +6,5 @@ bunx lint-staged || exit 1
 staged() { git diff --cached --name-only --diff-filter=ACMR; }
 
 if staged | grep -q '^docs/decisions/'; then bun run ki:decision-records:audit || exit 1; fi
-if staged | grep -q '^skills/'; then bun run ki:skills:lint || exit 1; fi
-if staged | grep -q '^agents/'; then bun run ki:agents:lint || exit 1; fi
+if staged | grep -q '^skills/'; then bun run ki:skills:audit || exit 1; fi
+if staged | grep -q '^agents/'; then bun run ki:agents:audit || exit 1; fi

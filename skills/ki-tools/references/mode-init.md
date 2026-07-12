@@ -10,6 +10,6 @@ _On-demand procedure for tools' INIT mode. The canonical shape, the container-no
    - `tests/<name>.bats` — a starter bats suite (for a shell tool).
    - `CHANGELOG.md` — keep-a-changelog with an `## [Unreleased]` head.
 3. **Add `ki-repo`'s files** (README, LICENSE, `.gitignore`, `.editorconfig`) — run `ki-repo`'s INIT for the local-file + GitHub-settings layer.
-4. **Declare the config tables.** `bun scripts/audit-tools.ts --init >> .ki-config.toml` to add the `[ki-tools]` marker (alongside `[ki-repo]`). If the tool has a `package.json`, also declare `[ki-engineering]` and run its INIT.
+4. **Declare the config tables.** `bun scripts/audit.ts --init >> .ki-config.toml` to add the `[ki-tools]` marker (alongside `[ki-repo]`). If the tool has a `package.json`, also declare `[ki-engineering]` and run its INIT.
 5. **Set up the Homebrew tap** — the companion `Formula/<name>.rb` in the tap repo is `ki-homebrew-tap`'s to scaffold; hand off there.
 6. **Cut the first release** — tag `v0.1.0`, create the GitHub release, and confirm `install.sh` fetches it. Run the checker until clean.

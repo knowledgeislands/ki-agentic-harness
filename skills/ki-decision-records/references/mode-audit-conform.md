@@ -4,7 +4,7 @@ _On-demand procedure for decision-records' AUDIT and CONFORM modes (CONFORM runs
 
 ## Mode AUDIT — check DRs against the standard
 
-1. **Run the mechanical checker**: `bun <skill>/scripts/audit-drs.ts <dir>` where `<dir>` is the decisions directory (`docs/decisions/` for code repos; `Admin/Governance/Decisions/` for KB repos). It auto-detects KB vs code mode from `.ki-config.toml`. Findings graded on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — see `ki-engineering`'s [checker-contract.md](../../ki-engineering/references/checker-contract.md)); exits non-zero on any FAIL. Capture its output verbatim.
+1. **Run the mechanical checker**: `bun <skill>/scripts/audit.ts <dir>` where `<dir>` is the decisions directory (`docs/decisions/` for code repos; `Admin/Governance/Decisions/` for KB repos). It auto-detects KB vs code mode from `.ki-config.toml`. Findings graded on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — see `ki-engineering`'s [checker-contract.md](../../ki-engineering/references/checker-contract.md)); exits non-zero on any FAIL. Capture its output verbatim.
 2. **Apply the judgment items** in [the rubric](audit-rubric.md): sections have real substance, Context is value-neutral forces, Decision is in active voice, each DR is one to two pages, prefix correctly reflects the decision type.
 3. **Report** by `DR · check · fix`, lead with FAILs.
 

@@ -5,7 +5,7 @@
  * ki-engineering §6 scopes unit-test coverage to `src/**` and names the harness as the
  * "run, not unit-tested" case for skill `scripts/`. So this spawns the real helper
  * against a throwaway repo + transcript fixture — matching the convention
- * `audit-memory.test.ts` set.
+ * `audit.test.ts` set.
  */
 import { spawnSync } from 'node:child_process'
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'

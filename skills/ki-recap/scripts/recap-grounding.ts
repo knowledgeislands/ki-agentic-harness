@@ -7,7 +7,7 @@
  *
  * Resolves the Claude Code project directory for a repo
  * (~/.claude/projects/<slug>, slug = repo's absolute path with "/" -> "-" — the same
- * convention ki-housekeeping's audit-memory.ts uses for the memory/ subdirectory),
+ * convention ki-housekeeping's audit.ts uses for the memory/ subdirectory),
  * reads the newest session .jsonl, and emits JSON grounding data: files touched
  * (git status / git diff --stat), a tool-call tally, and high-cost candidates
  * (repeated identical calls, large-file re-reads, clarification round-trips).

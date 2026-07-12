@@ -1,6 +1,6 @@
 # Audit Rubric
 
-Line-by-line pass/fail items for auditing a workspace MCP against the [Workspace MCP Standard](workspace-mcp-standard.md). Run [`../scripts/audit-mcp.ts`](../scripts/audit-mcp.ts) for the mechanical items (marked **[M]**), then judge the rest by reading the code.
+Line-by-line pass/fail items for auditing a workspace MCP against the [Workspace MCP Standard](workspace-mcp-standard.md). Run [`../scripts/audit.ts`](../scripts/audit.ts) for the mechanical items (marked **[M]**), then judge the rest by reading the code.
 
 Severity: **FAIL** (security invariant breach or gate bypass — ship-stopper), **WARN** (layout / naming / tooling divergence), **POLISH** (docs / consistency) — the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](../../ki-engineering/references/enforcement-framework.md) §2.
 

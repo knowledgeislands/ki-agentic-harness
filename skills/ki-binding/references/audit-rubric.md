@@ -1,6 +1,6 @@
 # Audit Rubric — ki-binding
 
-Line-by-line criteria for auditing whether every run surface agrees with the single source, against [the binding standard](binding-standard.md). Each is tagged **[M] mechanical** (the bundled [checker](../scripts/audit-binding.ts) `--check` decides it — capture its output, don't re-derive) or **[J] judgment** (assess by reading). Severity uses the unified ladder defined in `ki-engineering`'s [`enforcement-framework.md`](../../ki-engineering/references/enforcement-framework.md) §2.
+Line-by-line criteria for auditing whether every run surface agrees with the single source, against [the binding standard](binding-standard.md). Each is tagged **[M] mechanical** (the bundled [checker](../scripts/audit.ts) `--check` decides it — capture its output, don't re-derive) or **[J] judgment** (assess by reading). Severity uses the unified ladder defined in `ki-engineering`'s [`enforcement-framework.md`](../../ki-engineering/references/enforcement-framework.md) §2.
 
 ## BIND — cross-surface agreement
 

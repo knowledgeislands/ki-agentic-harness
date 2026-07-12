@@ -17,15 +17,14 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
-      # The engineering gate: lint + types + knip + markdown, as a single step.
-      - name: Verify
-        run: bun run ki:verify
+      # The aggregate read-only gate: fans out over every vendored per-skill audit in
+      # .ki-meta (engineering runs the code toolchain — biome + tsc + knip + syncpack;
+      # authoring runs the Markdown gate; the governance skills run their standards).
+      # The composed verify gate is retired — ki:audit IS the gate (ADR-KI-HARNESS-TOOLCHAIN-001).
+      - name: Audit
+        run: bun run ki:audit
 
-      # Governance audits applicable to this repo. The GitHub-gated repo audit is
-      # omitted (it needs gh auth); it is run manually / from a local tree.
-      - name: Governance audits
-        run: |
-          bun run ki:skills:lint
-          bun run ki:agents:lint
-          bun run ki:decision-records:audit
-          bun run ki:harness:audit
+      # The harness self-test suite (checker *.test.ts + generated-artifact + bootstrap
+      # integrity). The GitHub-gated repo audit is omitted (needs gh auth; run locally).
+      - name: Test
+        run: bun run test

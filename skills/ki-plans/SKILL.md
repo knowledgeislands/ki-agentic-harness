@@ -1,7 +1,7 @@
 ---
 name: ki-plans
 implies: []
-vendors: { audit: scripts/audit-plans.ts }
+vendors: [init, audit, conform, help]
 description: >
   Govern the Knowledge Islands planning methodology for code repos: when to write a plan, how it derives from the ROADMAP, dependency discipline, and plan quality. Owns the mandate (plan before code for multi-file or multi-step changes), the near-horizon principle (plans exist only for ROADMAP "Next" items), the blocks/blocked-by dependency graph, and the quality bar for Steps and Verify. AUDIT checks docs/plans for frontmatter, README sync, and dependency integrity; CONFORM fixes mechanical issues; REFRESH revisits the methodology. Does not own the plan lifecycle (new/execute/done/status) — that is the /plan slash command. A code-repo instrument: in a KB, planning is a stream proposal's Checklist (ki-kb-streams). Triggers: "audit plans", "are my plans in order", "should I write a plan for this", "plan methodology". Off-ramps: /plan (lifecycle), ki-kb-streams (KB planning), ki-decision-records (decisions vs. plans), ki-harness (ROADMAP structure and phasing).
 argument-hint: 'audit [dir] | conform [dir] | help | init <target> | refresh'
@@ -44,7 +44,7 @@ Carries the universal **AUDIT · CONFORM · INIT · REFRESH**. Invoked as `help`
 
 Check that a code repo's plans are methodologically sound and mechanically consistent. In a KB (`repo_type = "kb"` in `.ki-config.toml`), there is no `docs/plans/` — report that KB planning is governed by `ki-kb-streams` and stop.
 
-The mechanical half is [`scripts/audit-plans.ts`](scripts/audit-plans.ts) — run `bun run ki:plans:audit` (or `bun skills/ki-plans/scripts/audit-plans.ts docs/plans`). It checks:
+The mechanical half is [`scripts/audit.ts`](scripts/audit.ts) — run `bun run ki:plans:audit` (or `bun skills/ki-plans/scripts/audit.ts docs/plans`). It checks:
 
 1. **Frontmatter** — each `*.md` under a theme folder (excluding `README.md`) has `id`, `title`, `status`, `roadmap`, `blocks`, `blocked-by`; `status` ∈ {open, in-progress, done}; `id` is a global, zero-padded, three-digit string, unique across themes; **no `phase` field**.
 2. **Placement** — files sit at `docs/plans/<theme>/<NNN>-<slug>.md`; the filename id matches the frontmatter `id`.

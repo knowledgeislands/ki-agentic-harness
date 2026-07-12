@@ -15,7 +15,7 @@ Line-by-line criteria for auditing a Knowledge Islands repo's project-local skil
 
 ## BOOT — vendored self-sufficiency install
 
-- **BOOT-9 [M]** WARN — the target's `.ki-meta/skills/` mirrors the harness-side expected set — baseline ∪ declared `[ki-*]` tables ∪ the transitive `implies:` closure, restricted to skills carrying a discoverable checker — with no missing and no extra vendored skill directories. Checked by [`audit-vendored.ts`](../scripts/audit-vendored.ts), run from the harness (the `implies:` graph lives in source SKILL.md frontmatter, not in anything copied into the target, so this cannot be checked by the target's own standalone `.ki-meta/bin/ki-audit`). Drift (a stale re-vendor, a `.ki-config.toml` table added/removed since, an upstream skill add/remove) is always conformable — re-run `bun skills/ki-bootstrap/scripts/bootstrap.ts <target>` to reconcile.
+- **BOOT-9 [M]** WARN — the target's `.ki-meta/skills/` mirrors the harness-side expected set — baseline ∪ declared `[ki-*]` tables ∪ the transitive `implies:` closure, restricted to skills carrying a discoverable checker — with no missing and no extra vendored skill directories. Checked by [`audit.ts`](../scripts/audit.ts), run from the harness (the `implies:` graph lives in source SKILL.md frontmatter, not in anything copied into the target, so this cannot be checked by the target's own standalone `.ki-meta/bin/ki-audit`). Drift (a stale re-vendor, a `.ki-config.toml` table added/removed since, an upstream skill add/remove) is always conformable — re-run `bun skills/ki-bootstrap/scripts/bootstrap.ts <target>` to reconcile.
 
 ## Reporting
 

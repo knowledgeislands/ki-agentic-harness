@@ -1,7 +1,7 @@
 ---
 name: ki-harness
 implies: [ki-skills, ki-agents, ki-decision-records]
-vendors: { audit: scripts/audit-harness.ts }
+vendors: [init, audit, conform, help]
 description: >
   Audit, conform, and scaffold Knowledge Islands agentic harnesses — repos that bundle skills, agents, MCP servers, evals, and hooks together for versioned, co-installed deployment. Use when creating a new harness, checking an existing harness's five-part layout (`skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`), verifying its CLAUDE.md covers required orientation sections, checking its package.json script families, or auditing its `.ki-config.toml` harness table. Triggers: "audit the harness", "scaffold a new harness", "does this repo follow the harness standard", "refresh the harness standard", "is this a valid harness". Governs the **container** (directory structure, CLAUDE.md, package.json script families, installation conventions, `.ki-config.toml` table) — not the **contents**: skill quality → `ki-skills`; agent quality → `ki-agents`; MCP server code → `ki-mcp`; engineering toolchain → `ki-engineering`; GitHub repo settings → `ki-repo`.
 argument-hint: 'audit [path] | conform [path] | help | init <name> | refresh'
@@ -13,7 +13,7 @@ You are helping audit, conform, or scaffold a **Knowledge Islands agentic harnes
 
 This skill governs the **container** — the harness's directory layout, its `CLAUDE.md` orientation, its `package.json` script families, and its `.ki-config.toml` compliance table. It does not govern the _contents_: skill quality routes to `ki-skills`, agent definitions to `ki-agents`, MCP server code to `ki-mcp`, the engineering toolchain to `ki-engineering`, and GitHub-side settings to `ki-repo`. The harness is the bridge into those skills — it tells you _what the container must look like_ so the contents are findable, installable, and auditable; the sibling skills each tell you _what quality looks like_ inside their part.
 
-The full canonical standard — what each part must contain and why — lives in [the harness standard](references/harness-standard.md). The line-by-line checkable criteria live in [the rubric](references/audit-rubric.md). A mechanical checker is [`scripts/audit-harness.ts`](scripts/audit-harness.ts). Load those when you need detail; this file is the operating procedure.
+The full canonical standard — what each part must contain and why — lives in [the harness standard](references/harness-standard.md). The line-by-line checkable criteria live in [the rubric](references/audit-rubric.md). A mechanical checker is [`scripts/audit.ts`](scripts/audit.ts). Load those when you need detail; this file is the operating procedure.
 
 ## Operating modes
 
@@ -21,7 +21,7 @@ Modes: **AUDIT · CONFORM · INIT · REFRESH** (named, alphabetical). Invoked as
 
 ### Mode AUDIT — check a harness against the standard
 
-1. **Run the mechanical checker.** `bun scripts/audit-harness.ts [path]` from this skill's directory (or `bun run ki:harness:audit` at the harness root, if wired). It checks: the five-part directory presence, each directory's `README.md`, root `CLAUDE.md` / `ROADMAP.md`, `package.json` script families, `.ki-config.toml` `[ki-harness]` table presence, and each `skills/<dir>` name matching its `SKILL.md` `name:` frontmatter. Reports on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — defined in `ki-engineering`'s enforcement-framework §2).
+1. **Run the mechanical checker.** `bun scripts/audit.ts [path]` from this skill's directory (or `bun run ki:harness:audit` at the harness root, if wired). It checks: the five-part directory presence, each directory's `README.md`, root `CLAUDE.md` / `ROADMAP.md`, `package.json` script families, `.ki-config.toml` `[ki-harness]` table presence, and each `skills/<dir>` name matching its `SKILL.md` `name:` frontmatter. Reports on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — defined in `ki-engineering`'s enforcement-framework §2).
 2. **Compose on sibling skills via subagent isolation** ([ADR-KI-HARNESS-AGENTS-001](../../docs/decisions/ADR-KI-HARNESS-AGENTS-001-subagent-isolation.md)). A harness audit is layered — fan out one `agent()` per concern in `parallel()` after the COLL checks:
    - `ki-repo` — GitHub settings and the `.ki-config.toml` contract
    - `ki-engineering` — common toolchain (package.json script families, tsconfig, biome)

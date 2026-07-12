@@ -4,5 +4,6 @@
   "project": ["skills/*/scripts/**/*.ts", "scripts/**/*.ts", "evals/**/*.ts", ".claude/workflows/**/*.ts"],
   "ignore": [".ki-meta/**"],
   "ignoreBinaries": ["claude", "gh"],
+  "ignoreDependencies": ["syncpack"],
   "ignoreExportsUsedInFile": true
 }

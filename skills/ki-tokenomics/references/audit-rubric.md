@@ -1,6 +1,6 @@
 # Audit Rubric — the checkable criteria
 
-Line-by-line pass/fail criteria for auditing the **tokenomics** of a Claude Code environment against [the standard](tokenomics-standard.md). Each is tagged **[M] mechanical** (the bundled [checker](../scripts/audit-tokenomics.ts) decides it) or **[J] judgment** (you assess it by reading). The **code** in bold (`COMP-1`, `MCP-2`, …) is the area's short code plus its number within that area; numbering restarts at 1 per area. Each criterion cites the [standard](tokenomics-standard.md) section it verifies.
+Line-by-line pass/fail criteria for auditing the **tokenomics** of a Claude Code environment against [the standard](tokenomics-standard.md). Each is tagged **[M] mechanical** (the bundled [checker](../scripts/audit.ts) decides it) or **[J] judgment** (you assess it by reading). The **code** in bold (`COMP-1`, `MCP-2`, …) is the area's short code plus its number within that area; numbering restarts at 1 per area. Each criterion cites the [standard](tokenomics-standard.md) section it verifies.
 
 A criterion's tag is a contract with the checker: if you find yourself eyeballing an **[M]** check, run the checker instead; the moment a **[J]** check becomes deterministic (e.g. Headroom's config keys get documented), move it into the checker and flip its tag.
 

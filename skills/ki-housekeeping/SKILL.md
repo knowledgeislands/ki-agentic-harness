@@ -1,9 +1,9 @@
 ---
 name: ki-housekeeping
 implies: []
-vendors: { audit: scripts/audit-memory.ts }
+vendors: [init, audit, conform, help]
 description: >
-  Governs the hygiene of accumulated Claude state on a machine — the files Claude Desktop / Cowork sessions, Claude Code (`~/.claude/`), and VSCode chat sessions leave behind: stored sessions, artifacts and outputs, backups, plugins, project cache, and per-project auto-memory. Owns the standard and the judgment; the paired `mcp-claude-housekeeping` MCP server is its mechanical arm (codified per-area filesystem audits + access-gated cleanup tools). The memory area also carries a local checker (`audit-memory.ts`): the `memory/*.md` + `MEMORY.md` format, the four types (user/feedback/project/reference), index agreement, and promote-then-delete reconciliation. Triggers: "audit memory", "memory hygiene", "clean up Claude storage", "obsolete Cowork sessions", "housekeeping audit", "check ~/.claude". Not a Knowledge Islands base's own memory cascade (`ki-kb`'s MEM-2, the root `Admin/MEMORY.md`) — that is KB content, not machine state. Not the token cost of the context surface — that is `ki-tokenomics`.
+  Governs the hygiene of accumulated Claude state on a machine — the files Claude Desktop / Cowork sessions, Claude Code (`~/.claude/`), and VSCode chat sessions leave behind: stored sessions, artifacts and outputs, backups, plugins, project cache, and per-project auto-memory. Owns the standard and the judgment; the paired `mcp-claude-housekeeping` MCP server is its mechanical arm (codified per-area filesystem audits + access-gated cleanup tools). The memory area also carries a local checker (`audit.ts`): the `memory/*.md` + `MEMORY.md` format, the four types (user/feedback/project/reference), index agreement, and promote-then-delete reconciliation. Triggers: "audit memory", "memory hygiene", "clean up Claude storage", "obsolete Cowork sessions", "housekeeping audit", "check ~/.claude". Not a Knowledge Islands base's own memory cascade (`ki-kb`'s MEM-2, the root `Admin/MEMORY.md`) — that is KB content, not machine state. Not the token cost of the context surface — that is `ki-tokenomics`.
 argument-hint: 'audit [repo-path] | conform [repo-path] | help | init [repo-path] | refresh'
 ---
 
@@ -17,7 +17,7 @@ The **standard and judgment** over the state Claude accumulates on a machine, ac
 
 The **mechanical arm** is split by area:
 
-1. **Memory** — governed locally, in full. The index/file contract (every `memory/*.md` listed in `MEMORY.md`, every entry resolving to a file), the frontmatter schema (`name` / `description` / `metadata.type` ∈ `user` / `feedback` / `project` / `reference`), the four-type doctrine and promote-then-delete reconciliation, checked by [`scripts/audit-memory.ts`](scripts/audit-memory.ts). Detail in [memory-format.md](references/memory-format.md).
+1. **Memory** — governed locally, in full. The index/file contract (every `memory/*.md` listed in `MEMORY.md`, every entry resolving to a file), the frontmatter schema (`name` / `description` / `metadata.type` ∈ `user` / `feedback` / `project` / `reference`), the four-type doctrine and promote-then-delete reconciliation, checked by [`scripts/audit.ts`](scripts/audit.ts). Detail in [memory-format.md](references/memory-format.md).
 2. **Every other area** — the mechanical arm is the paired **`mcp-claude-housekeeping`** MCP server (`@knowledgeislands/mcp-claude-housekeeping`): its codified per-surface audits (e.g. the Cowork filesystem audit) and its access-gated read/destructive tools. The skill states what healthy looks like and applies judgment over the server's findings; the server holds the macOS-filesystem tools that gather them. This skill never re-implements those tools — the pairing is skill-as-standard, server-as-tools.
 
 ## Operating modes
@@ -26,9 +26,9 @@ Carries the universal **AUDIT · CONFORM · INIT · REFRESH**. Invoked as `help`
 
 | Mode | What it does |
 | --- | --- |
-| AUDIT | For the memory area run `audit-memory.ts`; for the other areas run the `mcp-claude-housekeeping` server's codified audits (its audit tools / reports); then apply the judgment criteria in [audit-rubric.md](references/audit-rubric.md). Procedure in [mode-audit-conform.md](references/mode-audit-conform.md). |
+| AUDIT | For the memory area run `audit.ts`; for the other areas run the `mcp-claude-housekeeping` server's codified audits (its audit tools / reports); then apply the judgment criteria in [audit-rubric.md](references/audit-rubric.md). Procedure in [mode-audit-conform.md](references/mode-audit-conform.md). |
 | CONFORM | AUDIT, then fix each finding: memory in place per the rubric; other areas via the server's access-gated cleanup tools (destructive tools require the server's access level). Re-AUDIT until clean. Same procedure file as AUDIT. |
-| INIT | Scaffolds no standalone artifact — the state this skill governs already accumulates outside the repo tree. It vendors the skill's declared mechanical unit (the frontmatter `vendors:` declaration, `audit-memory.ts`) into the target's `.ki-meta/` via the central bootstrap chain: [`scripts/init.ts`](scripts/init.ts) is a thin delegator into the `ki-bootstrap` engine. |
+| INIT | Scaffolds no standalone artifact — the state this skill governs already accumulates outside the repo tree. It vendors the skill's declared mechanical unit (the frontmatter `vendors:` declaration, `audit.ts`) into the target's `.ki-meta/` via the central bootstrap chain: [`scripts/init.ts`](scripts/init.ts) is a thin delegator into the `ki-bootstrap` engine. |
 | REFRESH | Re-check the standard against its sources: Headroom's memory-feature behavior for the memory format, and the `mcp-claude-housekeeping` server's tool surface for the other areas, per [mode-refresh.md](references/mode-refresh.md). |
 
 ## Notes

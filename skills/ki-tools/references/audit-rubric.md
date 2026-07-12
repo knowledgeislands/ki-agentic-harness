@@ -1,6 +1,6 @@
 # Audit Rubric
 
-Line-by-line pass/fail items for auditing a Knowledge Islands `tools-*` repo against the [tool-repo standard](tools-standard.md). Run [`../scripts/audit-tools.ts`](../scripts/audit-tools.ts) for the mechanical items (marked **[M]**), then judge the rest ( **[J]** ) by reading.
+Line-by-line pass/fail items for auditing a Knowledge Islands `tools-*` repo against the [tool-repo standard](tools-standard.md). Run [`../scripts/audit.ts`](../scripts/audit.ts) for the mechanical items (marked **[M]**), then judge the rest ( **[J]** ) by reading.
 
 Every **[M]** item corresponds to a check in the checker (per `ki-skills`' SHAPE-9 + the checker-contract). Severity uses the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](../../ki-engineering/references/enforcement-framework.md) §2: **FAIL** (ship-stopper), **WARN** (expected-but-missing / divergence), **POLISH** (consistency), **ADVISORY** (needs a human/out-of-band check), **INFO** (context).
 

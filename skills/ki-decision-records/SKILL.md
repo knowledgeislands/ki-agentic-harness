@@ -1,7 +1,7 @@
 ---
 name: ki-decision-records
 implies: []
-vendors: { audit: scripts/audit-drs.ts, conform: scripts/conform-drs.ts }
+vendors: [init, audit, conform, help]
 description: >
   Codify, audit, and maintain Decision Records in any Knowledge Islands repo — the unified instrument replacing ki-adrs and ki-kdrs. Each decision_type has its own prefix: GDR- (governance), ADR- (architecture), KDR- (knowledge), SDR- (strategy), PDR- (product), DDR- (data), XDR- (security), ODR- (operations), RDR- (research). Serials are per-prefix within scope. Governs the Nygard five-section format, status lifecycle, and placement: docs/decisions/ for code repos, Admin/Governance/Decisions/ for KB repos. In KB repos DRs carry type: admin/governance/decision plus decision_type, per the KI-wide frontmatter standard in ki-kb. Use when writing, auditing, or conforming decision records. Triggers: "write a DR", "create a decision record", "document this decision", "audit the DRs". Off-ramps: ki-kb (island structure and frontmatter standard), ki-kb-streams (Enactment Process).
 argument-hint: 'audit [dir] | conform [dir] | help | init [dir] | new <scope> "<title>" | refresh'
@@ -33,7 +33,7 @@ You are applying the **Knowledge Islands Decision Records standard** — how Dec
 5. **The index rule** — `Decisions.md` (code: `README.md` or `Decisions.md`) must contain an ordered list, one item per DR, in reveal order.
 6. **The placement rule** — `repo_type = "kb"` in `.ki-config.toml` → `Admin/Governance/Decisions/`; all others → `docs/decisions/`. Pass the actual path to the checker.
 7. **The Enactment Process integration** — a DR is the formal artifact for an Enactment Process proposal whose `Decision` output warrants a standalone record.
-8. **The mechanical checker** — [`scripts/audit-drs.ts`](scripts/audit-drs.ts) validates filenames, prefix–type agreement, required sections, an optional `**Date:**` field, `type`/`decision_type` fields (KB mode), serial uniqueness, index completeness, and reveal-order serial ascension within each prefix. Detects KB vs code mode automatically from `.ki-config.toml`.
+8. **The mechanical checker** — [`scripts/audit.ts`](scripts/audit.ts) validates filenames, prefix–type agreement, required sections, an optional `**Date:**` field, `type`/`decision_type` fields (KB mode), serial uniqueness, index completeness, and reveal-order serial ascension within each prefix. Detects KB vs code mode automatically from `.ki-config.toml`.
 
 ## Operating modes
 

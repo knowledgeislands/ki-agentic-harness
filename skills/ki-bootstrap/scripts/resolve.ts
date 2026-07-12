@@ -1,6 +1,6 @@
 /**
  * Set-resolution helpers shared by the INIT chain (`bootstrap.ts`) and the
- * vendored-set alignment checker (`audit-vendored.ts`). Pure, read-only: given a
+ * vendored-set alignment checker (`audit.ts`). Pure, read-only: given a
  * target repo and the harness `skills/` root, computes which skills *should* be
  * vendored — the transitive `implies:` closure of the baseline plus whatever the
  * target's `.ki-config.toml` declares — and locates each skill's checker/conform
@@ -78,8 +78,8 @@ export function resolveSet(target: string, all: boolean, seeds: string[]): strin
 }
 
 // A checker/conform source file, excluding co-located test files (`*.test.ts`), which
-// would otherwise collide with the single-match discovery below (e.g. `audit-memory.ts`
-// + `audit-memory.test.ts`) and silently drop the skill from the vendored set.
+// would otherwise collide with the single-match discovery below (e.g. `audit.ts`
+// + `audit.test.ts`) and silently drop the skill from the vendored set.
 export const isSource = (f: string): boolean => !/\.test\.ts$/.test(f)
 
 // A skill's single legacy checker script (audit-*.ts / lint-*.ts / bare audit.ts) —

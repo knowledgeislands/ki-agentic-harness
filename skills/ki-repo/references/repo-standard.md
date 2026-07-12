@@ -1,6 +1,6 @@
 # Knowledge Islands repo standard
 
-The canonical configuration a Knowledge Islands repo should carry, so repos present and behave consistently and that consistency is _checkable_ rather than folklore. A Knowledge Islands repo is a git repo that carries a `.ki-config.toml` (its presence is the compliance marker); the standard applies to any such repo — the [`knowledgeislands`](https://github.com/knowledgeislands) org is the reference set it was derived from, not its boundary. Three layers — local files, core GitHub settings, deeper GitHub (security & Actions). Derived and applied 2026-05-31 from an audit of all 10 `knowledgeislands` repos. The mechanical checker is [`../scripts/audit-repo.ts`](../scripts/audit-repo.ts); keep this doc and the script's constants in sync.
+The canonical configuration a Knowledge Islands repo should carry, so repos present and behave consistently and that consistency is _checkable_ rather than folklore. A Knowledge Islands repo is a git repo that carries a `.ki-config.toml` (its presence is the compliance marker); the standard applies to any such repo — the [`knowledgeislands`](https://github.com/knowledgeislands) org is the reference set it was derived from, not its boundary. Three layers — local files, core GitHub settings, deeper GitHub (security & Actions). Derived and applied 2026-05-31 from an audit of all 10 `knowledgeislands` repos. The mechanical checker is [`../scripts/audit.ts`](../scripts/audit.ts); keep this doc and the script's constants in sync.
 
 ## Contents
 
@@ -102,7 +102,7 @@ The engineering coverage manifest assigns the `package.json` **identity & metada
 
 Each repo **declares** its expected visibility in `.ki-config.toml` (`visibility = "public"` or `"private"`); the auditor checks that declaration against the live GitHub visibility. It is a deliberate per-repo choice, **not inferred from the name**. (In practice the `arcadia-*` repos are private bases / internal skills and the `mcp-*` repos are public servers — a pattern, not the rule.)
 
-`.ki-config.toml` is a shared per-repo file; each skill reads its own `[table]`, and a skill with only implicit/default behaviour needs no table. The full cross-skill contract — its presence as the compliance marker, the table-per-skill model, and the validate-your-own-table protocol — is in [the `.ki-config.toml` contract](ki-config-standard.md). This skill owns `[ki-repo]`. Scaffold the default keys with `bun scripts/audit-repo.ts --init >> .ki-config.toml`, then edit the values:
+`.ki-config.toml` is a shared per-repo file; each skill reads its own `[table]`, and a skill with only implicit/default behaviour needs no table. The full cross-skill contract — its presence as the compliance marker, the table-per-skill model, and the validate-your-own-table protocol — is in [the `.ki-config.toml` contract](ki-config-standard.md). This skill owns `[ki-repo]`. Scaffold the default keys with `bun scripts/audit.ts --init >> .ki-config.toml`, then edit the values:
 
 ```toml
 # .ki-config.toml — one [table] per skill that needs per-repo options
@@ -156,7 +156,7 @@ public=(mcp-claude-housekeeping mcp-git-audit mcp-gsuite mcp-kb-fs mcp-kb-notion
 
 # Layer 1 — each repo declares its config in .ki-config.toml (committed via PR like any file).
 #   Scaffold the [ki-repo] defaults, then edit:
-#     bun scripts/audit-repo.ts --init >> .ki-config.toml
+#     bun scripts/audit.ts --init >> .ki-config.toml
 # Visibility is verified (declared vs live), not set here; change actual visibility deliberately:
 #   gh repo edit knowledgeislands/<name> --visibility public|private --accept-visibility-change-consequences
 
@@ -197,8 +197,8 @@ Layer 1 files are added with a normal commit, pushed straight to `main` (it is u
 ## Verifying it
 
 ```zsh
-bun ../scripts/audit-repo.ts ~/kis/knowledgeislands      # enumerate from a local tree (origins)
-bun ../scripts/audit-repo.ts --org knowledgeislands      # enumerate the whole org
+bun ../scripts/audit.ts ~/kis/knowledgeislands      # enumerate from a local tree (origins)
+bun ../scripts/audit.ts --org knowledgeislands      # enumerate the whole org
 ```
 
 Both check every layer against GitHub; the path / `--org` only decides which repos.

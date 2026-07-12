@@ -1,6 +1,6 @@
 # Agent Skills Standard
 
-The normative reference behind `ki-skills`: what a _good_ Agent Skill looks like, and why. The [Audit Rubric](audit-rubric.md) is the line-by-line checklist derived from this — each rubric criterion (`NAME-1`, `DESC-2`, …) verifies a convention stated here. Read the standard to understand or quote a convention; run the rubric (and its [linter](../scripts/lint-skills.ts)) to check a skill against it.
+The normative reference behind `ki-skills`: what a _good_ Agent Skill looks like, and why. The [Audit Rubric](audit-rubric.md) is the line-by-line checklist derived from this — each rubric criterion (`NAME-1`, `DESC-2`, …) verifies a convention stated here. Read the standard to understand or quote a convention; run the rubric (and its [linter](../scripts/audit.ts)) to check a skill against it.
 
 A skill is a directory with a `SKILL.md` (YAML frontmatter + markdown body) per the [Agent Skills open standard](https://agentskills.io/), optionally with `references/`, `scripts/`, `assets/`. Source abbreviations (SPEC, BP, CC, ENG, COMMUNITY, ki-agentic-harness README) resolve in [the source list](sources.md).
 
@@ -25,7 +25,7 @@ A skill is a directory with a `SKILL.md` (YAML frontmatter + markdown body) per 
 
 ## 1. Two-layer model
 
-Every convention is one of two kinds, and the distinction is a contract with the [linter](../scripts/lint-skills.ts):
+Every convention is one of two kinds, and the distinction is a contract with the [linter](../scripts/audit.ts):
 
 - **Mechanical** — deterministically checkable (a file exists, frontmatter parses, a length cap holds, a link resolves). The bundled linter owns these; never eyeball what it checks better.
 - **Judgment** — needs a model reading the skill (is the description trigger-rich, is the body at the right altitude, is detail correctly deferred). The linter cannot assess these.

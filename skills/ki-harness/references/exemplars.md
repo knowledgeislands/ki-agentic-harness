@@ -66,7 +66,7 @@ The two harness-specific scripts (`ki:skills:link:project` and `ki:skills:lint`)
   "scripts": {
     "ki:skills:link:project": "bun skills/ki-bootstrap/scripts/link-skills.ts --all",
     "ki:skills:link:global": "bun scripts/sync-skills.ts link --only ki-bootstrap",
-    "ki:skills:lint": "bun skills/ki-skills/scripts/lint-skills.ts skills",
+    "ki:skills:lint": "bun skills/ki-skills/scripts/audit.ts skills",
     "ki:lint:check": "bunx @biomejs/biome check",
     "ki:lint:types": "tsc --noEmit",
     "ki:lint:md": "bunx prettier --write \"**/*.md\" --ignore-path .gitignore && bunx markdownlint-cli2",

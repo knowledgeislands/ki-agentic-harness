@@ -1,6 +1,6 @@
 # Audit Rubric
 
-Pass/fail items for auditing a Knowledge Islands plugin-marketplace repo against the [Plugins Standard](plugins-standard.md). Run [`../scripts/audit-plugins.ts`](../scripts/audit-plugins.ts) for the mechanical items (marked **[M]**), then judge the rest **[J]** by reading.
+Pass/fail items for auditing a Knowledge Islands plugin-marketplace repo against the [Plugins Standard](plugins-standard.md). Run [`../scripts/audit.ts`](../scripts/audit.ts) for the mechanical items (marked **[M]**), then judge the rest **[J]** by reading.
 
 Severity: **FAIL** (malformed manifest or broken projection contract — ship-stopper), **WARN** (shape divergence or a deferred artifact leaking in), **POLISH** (formatting / consistency) — the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](../../ki-engineering/references/enforcement-framework.md) §2.
 

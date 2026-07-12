@@ -2,7 +2,7 @@
 
 **Refresh:** external-spec · weekly
 
-The authoritative and community sources behind [the standard](tokenomics-standard.md), [the rubric](audit-rubric.md), and [`../scripts/audit-tokenomics.ts`](../scripts/audit-tokenomics.ts). Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + rubric + checker, then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below (what changed is recorded in the commit, not a changelog). This area moves fast — model windows, prices, cache TTLs, Headroom's config surface, Anthropic's guidance, and Claude Code's own context surface — so this list is the skill's memory of where the standard comes from; keep it current.
+The authoritative and community sources behind [the standard](tokenomics-standard.md), [the rubric](audit-rubric.md), and [`../scripts/audit.ts`](../scripts/audit.ts). Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + rubric + checker, then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below (what changed is recorded in the commit, not a changelog). This area moves fast — model windows, prices, cache TTLs, Headroom's config surface, Anthropic's guidance, and Claude Code's own context surface — so this list is the skill's memory of where the standard comes from; keep it current.
 
 The volatile **numbers** themselves (model ids, prices, cache TTLs, context-window sizes) are not held here or in the standard — they live in the `claude-api` skill and are resolved at runtime (standard §7). This list tracks the sources for the budget's _shape_ and the tooling.
 

@@ -1,7 +1,7 @@
 ---
 name: ki-binding
 implies: []
-vendors: { audit: scripts/audit-binding.ts, conform: scripts/conform-cowork.ts }
+vendors: [init, audit, conform, help]
 description: >
   Codify, audit, and apply the Knowledge Islands cross-surface binding — enabling the KI MCP servers, skills, and agents consistently across the surfaces that run them (Claude Code, Claude Desktop, Claude Cowork, claude.ai web) from the single chezmoi `mcps.yaml` source. Governs the per-server `clients:` targeting field, the per-surface config each client wants, and the Cowork plugin the skill toggles in `enabledPlugins`. Use when a project's tools are enabled on one surface but not another, wiring a new surface, auditing that every surface agrees with the single source, or adding a server to the inventory. Triggers: "why is this MCP in Code but not Cowork", "enable these tools everywhere", "audit the cross-surface binding", "the surfaces disagree", "wire Cowork". Composes on `ki-bootstrap` (Claude Code skill links) and `ki-mcp` (server-code standard + the cross-surface-enablement.md design record). Not for one server's code (`ki-mcp`) or a repo's skill links alone (`ki-bootstrap`).
 argument-hint: 'audit [project] | conform [project] | help | init [project] | refresh'
@@ -19,7 +19,7 @@ You are governing **one control surface for many run surfaces**: a single declar
 - **Surfaces sit on a controllability ladder** (design record, most-controllable first): **Claude Code** and **Claude Desktop** are file-editable and already rendered by chezmoi — this skill audits them. **Claude Cowork** is file-editable (`cowork_settings.json`, `enabledPlugins`) — its external-edit gate passed (2026-07-06), so this skill both audits and writes it. **claude.ai web** has no local file — documented convention only, no build.
 - **The Cowork artifact is a KI plugin** in the `knowledgeislands/ki-plugins` marketplace repo — a lossy projection of this harness (ADR-KI-HARNESS-002) carrying **skills + agents** (MCP servers are deferred: host-local, they do not port into Cowork's gVisor sandbox). The plugin is generated from source by [`build-plugin.ts`](scripts/build-plugin.ts); the plugin is the packaging and **this skill is the actor** that registers + toggles it. Design: [cross-surface-enablement.md](../ki-mcp/references/cross-surface-enablement.md). The marketplace repo's **on-disk shape** — the manifest shapes, the verbatim `skills/` copy and flattened `agents/`, the MCP-deferred rule — is governed by the `ki-plugins` repo-structure skill; this skill owns only generation (`build-plugin`) and the cross-surface enablement below (BIND-4), never re-checking the projection shape.
 
-The checker is [`scripts/audit-binding.ts`](scripts/audit-binding.ts); the quotable invariant is [the standard](references/binding-standard.md); the checkable criteria are [the rubric](references/audit-rubric.md).
+The checker is [`scripts/audit.ts`](scripts/audit.ts); the quotable invariant is [the standard](references/binding-standard.md); the checkable criteria are [the rubric](references/audit-rubric.md).
 
 ## Operating modes
 
@@ -27,7 +27,7 @@ Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated H
 
 ### Mode AUDIT — check the surfaces agree with the source
 
-1. **Run the checker.** `bun skills/ki-binding/scripts/audit-binding.ts [project] --check` (or `bun run ki:binding:audit`). It reports on the unified severity ladder (`ki-engineering` enforcement-framework §2): **BIND-1** every rendered surface (Code, Desktop, mcporter) contains exactly the servers whose `clients` names it — no missing, no stray; **BIND-2** the single source parses and every entry has a non-empty `clients` naming only recognised surfaces; **BIND-3** the project-local skill half is wired (delegates to `ki-bootstrap --check`); **BIND-4** Cowork agreement — the KI plugin (`knowledge-islands@ki-plugins`) is registered under `extraKnownMarketplaces` and toggled on in every workspace's `cowork_settings.json` (WARN if a workspace is unconformed; any server still declaring `cowork` is surfaced separately, since MCP servers are deferred as host-local).
+1. **Run the checker.** `bun skills/ki-binding/scripts/audit.ts [project] --check` (or `bun run ki:binding:audit`). It reports on the unified severity ladder (`ki-engineering` enforcement-framework §2): **BIND-1** every rendered surface (Code, Desktop, mcporter) contains exactly the servers whose `clients` names it — no missing, no stray; **BIND-2** the single source parses and every entry has a non-empty `clients` naming only recognised surfaces; **BIND-3** the project-local skill half is wired (delegates to `ki-bootstrap --check`); **BIND-4** Cowork agreement — the KI plugin (`knowledge-islands@ki-plugins`) is registered under `extraKnownMarketplaces` and toggled on in every workspace's `cowork_settings.json` (WARN if a workspace is unconformed; any server still declaring `cowork` is surfaced separately, since MCP servers are deferred as host-local).
 2. **Judge the [J] criteria by reading** — is the `clients` set per server _right_ for how the project is used (does a server a project needs actually target that project's surfaces)? That is intent, not mechanics; name it, do not guess it.
 3. **Report** by criterion. A surface out of step with the source, or a declared-but-unwired Cowork, is a WARN — conformable, not blocking.
 
@@ -38,7 +38,7 @@ Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated H
 3. **Compose the skill half.** Run `ki-bootstrap` CONFORM for the project's project-local skills (`bun run ki:skills:link:project`) — sequence it, never fork it.
 4. **Cowork** (gate passed 2026-07-06 — now built). The surface is a KI plugin published in the `knowledgeislands/ki-plugins` marketplace repo. Two moves:
    - **Regenerate the plugin from source** (skills + agents are a projection of this harness, never hand-maintained): `bun run ki:binding:build-plugin <ki-plugins-checkout>`, then commit + push the plugin repo. MCP servers are deferred — host-local, they do not port into Cowork's gVisor sandbox.
-   - **Register + toggle it:** `bun skills/ki-binding/scripts/conform-cowork.ts` writes `extraKnownMarketplaces["ki-plugins"]` and `enabledPlugins["knowledge-islands@ki-plugins"] = true` into every workspace's `cowork_settings.json` (merge, never clobber). **A full Cowork relaunch is required** for the change to take effect.
+   - **Register + toggle it:** `bun skills/ki-binding/scripts/conform.ts` writes `extraKnownMarketplaces["ki-plugins"]` and `enabledPlugins["knowledge-islands@ki-plugins"] = true` into every workspace's `cowork_settings.json` (merge, never clobber). **A full Cowork relaunch is required** for the change to take effect.
 5. **Re-run AUDIT** until clean.
 
 ### Mode INIT — vendor the binding checks

@@ -1,6 +1,6 @@
 # Audit rubric — the common engineering layer
 
-Line-by-line criteria for auditing a Knowledge Islands TS/Bun repo against [the engineering standard](engineering-standard.md). Each is tagged **[M] mechanical** (enforced by [`../scripts/audit-engineering.ts`](../scripts/audit-engineering.ts) — capture its output, don't re-derive) or **[J] judgment** (assess by reading). Run the checker first, then apply the judgment items. Severity: **FAIL** (ship-stopper) · **WARN** (should-fix divergence) · **POLISH** (minor / cosmetic) — the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](enforcement-framework.md) §2.
+Line-by-line criteria for auditing a Knowledge Islands TS/Bun repo against [the engineering standard](engineering-standard.md). Each is tagged **[M] mechanical** (enforced by [`../scripts/audit.ts`](../scripts/audit.ts) — capture its output, don't re-derive) or **[J] judgment** (assess by reading). Run the checker first, then apply the judgment items. Severity: **FAIL** (ship-stopper) · **WARN** (should-fix divergence) · **POLISH** (minor / cosmetic) — the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](enforcement-framework.md) §2.
 
 Capability conditionals only apply when the repo has the marker (tests / compiled build / env / CLI); a repo without the capability is not graded on it, and the checker reports it as N/A, not a failure.
 
@@ -29,7 +29,7 @@ Capability conditionals only apply when the repo has the marker (tests / compile
 - [ ] [M] WARN — the `mise.toml` `bun` version **equals** the `packageManager` Bun version (the drift pair).
 - [ ] [M] POLISH — no legacy single-tool pin file (`.node-version`, `.nvmrc`, `.bun-version`) lingers beside `mise.toml` (warn).
 - [ ] [M] WARN — where the repo has `.github/workflows/ci.yml`, it installs the toolchain via `jdx/mise-action` and hardcodes no `bun-version:` / `node-version:`.
-- [ ] [M] WARN — that `ci.yml` runs the common gate steps `bun run ki:lint:check`, `bun run ki:lint:types`, and `bun run ki:lint:md:check` (plus `bun run test:coverage` where the repo has tests). `ki:lint:md:check` is the Markdown gate; a following `ki:test:smoke` step is the MCP delta (asserted by `audit-mcp.ts`, not here).
+- [ ] [M] WARN — that `ci.yml` runs the common gate steps `bun run ki:lint:check`, `bun run ki:lint:types`, and `bun run ki:lint:md:check` (plus `bun run test:coverage` where the repo has tests). `ki:lint:md:check` is the Markdown gate; a following `ki:test:smoke` step is the MCP delta (asserted by `audit.ts`, not here).
 
 ## Core — script families (§2)
 
@@ -89,4 +89,4 @@ Capability conditionals only apply when the repo has the marker (tests / compile
 
 ## Reporting
 
-Produce findings grouped by severity, each row `severity · file:line-or-field · what · fix`. Lead with any **FAIL** (a `bun test`, a sub-100% coverage threshold). Close with a one-line verdict (compliant / minor drift / blockers) and name the **artifact-skill audit that must also run** for the repo to be fully clean (e.g. "+ `audit-mcp.ts` for the MCP delta").
+Produce findings grouped by severity, each row `severity · file:line-or-field · what · fix`. Lead with any **FAIL** (a `bun test`, a sub-100% coverage threshold). Close with a one-line verdict (compliant / minor drift / blockers) and name the **artifact-skill audit that must also run** for the repo to be fully clean (e.g. "+ `audit.ts` for the MCP delta").

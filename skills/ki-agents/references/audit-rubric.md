@@ -1,6 +1,6 @@
 # Audit Rubric — the checkable criteria
 
-Line-by-line pass/fail criteria for auditing a Claude Code subagent against the [Agent Definitions Standard](agent-definitions-standard.md). Each is tagged **[M] mechanical** (the bundled [linter](../scripts/lint-agents.ts) checks it) or **[J] judgment** (you assess it by reading). The **code** in bold (`NAME-1`, `DESC-2`, …) is the area's short code plus its number within that area — what the linter prints and what an audit should cite. Source abbreviations resolve in [the source list](sources.md); each area maps to the like-named standard section.
+Line-by-line pass/fail criteria for auditing a Claude Code subagent against the [Agent Definitions Standard](agent-definitions-standard.md). Each is tagged **[M] mechanical** (the bundled [linter](../scripts/audit.ts) checks it) or **[J] judgment** (you assess it by reading). The **code** in bold (`NAME-1`, `DESC-2`, …) is the area's short code plus its number within that area — what the linter prints and what an audit should cite. Source abbreviations resolve in [the source list](sources.md); each area maps to the like-named standard section.
 
 A criterion's tag is a contract with the linter: if you find yourself eyeballing an **[M]** check, run the linter; if the linter starts enforcing a **[J]** check, move its tag here.
 

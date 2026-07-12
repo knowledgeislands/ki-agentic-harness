@@ -51,7 +51,7 @@ Every governance skill carries the universal four — AUDIT, CONFORM, INIT, REFR
 
 Review an agent (or every agent in a directory) against the rubric and report.
 
-1. **Run the linter.** `bun scripts/lint-agents.ts <path-to-agent-or-dir>` from this skill's directory. It reports the mechanical criteria on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS) and exits non-zero on any FAIL. Capture its output verbatim — do not re-derive what it found.
+1. **Run the linter.** `bun scripts/audit.ts <path-to-agent-or-dir>` from this skill's directory. It reports the mechanical criteria on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS) and exits non-zero on any FAIL. Capture its output verbatim — do not re-derive what it found.
 2. **Read the agent definition** and apply the **judgment** ([J]-tagged) criteria from [the rubric](references/audit-rubric.md) — the linter owns the [M] ones.
 3. **Report** findings by location → criterion → fix; lead with FAIL findings.
 ```
@@ -68,7 +68,7 @@ Create a well-formed agent definition from a plain-English description of the ag
 1. **Gather inputs.** If the description is missing a lane boundary (what it defers), ask for it — the own-vs-defer line is the most important judgment call and cannot be inferred from a role alone.
 2. **Read [the standard](references/agent-definitions-standard.md)** before writing — do not generate frontmatter from memory.
 3. **Draft the frontmatter** (`name`, `description`, optional `model` / `tools`) then the system prompt (role declaration, grounding statement, own-vs-defer boundary, operating notes).
-4. **Run the linter** on the draft: `bun scripts/lint-agents.ts <draft-path>`. Fix any FAIL findings before delivering.
+4. **Run the linter** on the draft: `bun scripts/audit.ts <draft-path>`. Fix any FAIL findings before delivering.
 5. Return the complete `.md` file content, annotated with the reasoning for any non-obvious choices.
 ```
 

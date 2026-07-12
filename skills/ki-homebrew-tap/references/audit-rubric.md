@@ -1,6 +1,6 @@
 # Audit Rubric
 
-Line-by-line pass/fail items for auditing a Knowledge Islands Homebrew tap against the [Homebrew tap standard](homebrew-tap-standard.md). Run [`../scripts/audit-homebrew-tap.ts`](../scripts/audit-homebrew-tap.ts) for the mechanical items (marked **[M]**), then judge the rest by reading (**[J]**).
+Line-by-line pass/fail items for auditing a Knowledge Islands Homebrew tap against the [Homebrew tap standard](homebrew-tap-standard.md). Run [`../scripts/audit.ts`](../scripts/audit.ts) for the mechanical items (marked **[M]**), then judge the rest by reading (**[J]**).
 
 Every **[M]** item maps to a check in the checker (SHAPE-9); the checker IDs below are the ones it emits. **[J]** items need a model — is the `test do` meaningful, does the formula install what it claims. Severity uses the shared ladder from `ki-engineering`'s [enforcement-framework.md](../../ki-engineering/references/enforcement-framework.md) §2: **FAIL** (not a tap), **WARN** (formula/shape divergence), **INFO/NA** (capability + config notes).
 

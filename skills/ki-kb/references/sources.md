@@ -29,13 +29,13 @@ These have no URL; they are sampled at REFRESH time through each base's own `kb-
 
 ## Last review
 
-REFRESH last run **2026-07-04** (prior: 2026-06-21). Internal-model re-anchor — no external spec; re-verified against the canonical structure definition and the live layouts of both tracked exemplar bases via their `kb-fs` MCP / filesystem, plus a mechanical audit-kb.ts run against each.
+REFRESH last run **2026-07-04** (prior: 2026-06-21). Internal-model re-anchor — no external spec; re-verified against the canonical structure definition and the live layouts of both tracked exemplar bases via their `kb-fs` MCP / filesystem, plus a mechanical audit.ts run against each.
 
 Per-source outcome:
 
 - **Knowledge Islands KB Reference** — confirmed. Five-zone model + `+`/`-` staging, Pillar unit, wikilink convention, and declared-not-forked rule all still match the SKILL zone table, routing test, and bindings; long-form mode/convention detail unchanged.
-- **`ki-arcadia-principal`** — confirmed. Full canonical structure, all zone indexes, `Admin/Governance/` (Charter.md + Governance.md) and `Admin/Operations/` (Operations.md) present; no zone aliases. audit-kb.ts: 0 fail · 1 warn (Conformance.md absent). Config still on the pre-rename `[knowledgeislands-*]` prefix.
-- **`kit-legal`** — confirmed. Full canonical structure on canonical zone names; no kb config table (no aliases); config now on the `[ki-*]` prefix. audit-kb.ts: 0 fail · 3 warn (Charter/Conformance absent, one non-snake_case key). Zone-alias binding still has no live exemplar.
+- **`ki-arcadia-principal`** — confirmed. Full canonical structure, all zone indexes, `Admin/Governance/` (Charter.md + Governance.md) and `Admin/Operations/` (Operations.md) present; no zone aliases. audit.ts: 0 fail · 1 warn (Conformance.md absent). Config still on the pre-rename `[knowledgeislands-*]` prefix.
+- **`kit-legal`** — confirmed. Full canonical structure on canonical zone names; no kb config table (no aliases); config now on the `[ki-*]` prefix. audit.ts: 0 fail · 3 warn (Charter/Conformance absent, one non-snake_case key). Zone-alias binding still has no live exemplar.
 - **Per-base `.ki-config` declarations** — confirmed. No recurring base-specific declaration has emerged to promote into the standard this cycle.
 
 Open watch-items:

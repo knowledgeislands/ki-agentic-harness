@@ -1,7 +1,7 @@
 ---
 name: ki-kb-streams
 implies: []
-vendors: { audit: scripts/audit-streams.ts }
+vendors: [init, audit, conform, help]
 description: >
   Operate and govern the Streams zone of a Knowledge Islands base — the working copy of work in motion, run as the Enactment Process (the canonical change process: a proposal goes draft → ready → ratify → roll out → review → settle, and nothing reaches stable knowledge except through that gate). Use to start a stream, iterate a proposal, mark one ready, roll out an approved change, run a post-change review, and settle or reject a stream — and to audit a base's Streams structure (Focus lifecycle, the `Proposal` suffix, leaf/parent layout, proposal frontmatter) or conform it. Triggers: "start a stream", "create a proposal", "mark this ready", "roll out this proposal", "settle this stream", "what's the enactment process", "plan mode for my knowledge base", "does this change need a proposal", "audit my streams". For the five-zone model and note CRUD / routing use the `ki-kb` skill, which delegates the Streams zone here; for Markdown / TOML house style use `ki-authoring`.
 argument-hint: 'audit | conform | help | init | iterate | propose | ready | refresh | reject | review | rollout | settle'
@@ -13,7 +13,7 @@ You are operating the **`Streams` zone** of a Knowledge Islands base. `Streams/`
 
 The companion `ki-kb` skill owns the five-zone model and note CRUD / routing, and **delegates the inside of `Streams/` here**; load it for anything outside this zone. This skill carries the structure and process as fixed knowledge; only a couple of store-level **bindings** come from the host base.
 
-The full detail lives in the references (progressive disclosure): the structure in [the Streams structure reference](<references/Streams Structure Reference.md>), the process in [the Enactment Process reference](<references/Enactment Process Reference.md>). The line-by-line checkable items live in [the rubric](references/audit-rubric.md); the mechanical checker is [`scripts/audit-streams.ts`](scripts/audit-streams.ts).
+The full detail lives in the references (progressive disclosure): the structure in [the Streams structure reference](<references/Streams Structure Reference.md>), the process in [the Enactment Process reference](<references/Enactment Process Reference.md>). The line-by-line checkable items live in [the rubric](references/audit-rubric.md); the mechanical checker is [`scripts/audit.ts`](scripts/audit.ts).
 
 ## The Streams zone at a glance
 

@@ -2,7 +2,7 @@
 
 **Refresh:** external-spec · monthly
 
-The toolchain pins and conventions behind [the engineering standard](engineering-standard.md) and [the enforcement framework](enforcement-framework.md). Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + rubric + [`../scripts/audit-engineering.ts`](../scripts/audit-engineering.ts), then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below. Provenance only — what changed goes in the REFRESH commit, not a changelog here.
+The toolchain pins and conventions behind [the engineering standard](engineering-standard.md) and [the enforcement framework](enforcement-framework.md). Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + rubric + [`../scripts/audit.ts`](../scripts/audit.ts), then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below. Provenance only — what changed goes in the REFRESH commit, not a changelog here.
 
 Two layers feed the standard: the **upstream tools** (what they require / their current versions) and the **in-house convention** (the opinionated shape the sibling repos share on top). A pin is only "upstream-driven" if it traces to a tool's release; everything else is house style.
 
@@ -43,7 +43,7 @@ REFRESH last run **2026-07-04**. Cadence: monthly, alongside the other governanc
 - **Pins bumped to match the repos:** Biome `2.5.0 → 2.5.2` (repo `biome.json` `$schema=2.5.1`, devDep `@biomejs/biome=2.5.2`; `2.5.2` is upstream latest), markdownlint-cli2 `^0.22 → ^0.23` (`0.23.0` latest, published ~2026-07-02), prettier confirmed `^3.9.4`. syncpack `^15.3.2` absorbs latest 15.x.
 - **Deps tool replaced:** the `DEPCHECK` row is retired — `depcheck` is no longer a dependency. `ki:deps:*` and `ki:knip` are now **knip**-backed (`ki:deps:check` / `ki:deps:fix` / `ki:deps:update` + `ki:knip`), per `engineering-standard.md` §2/§5 and `audit-rubric.md`. Tracked as `KNIP` going forward.
 - **Pins confirmed current:** `bun@1.3.14` (latest stable, 2026-05-13; no newer 1.3.x), `engines.node >=22.0.0` (22 Maintenance LTS, 24 Active LTS, 26 Current — floor valid; repo node `24.15.0`), TypeScript `^6.0.3` (6.0 still latest **stable**), vitest `4.1.9` (5.0 still beta).
-- **Repo cross-check:** `ki-agentic-harness` self-audit = 0 fail. The prior proseWrap WARN is resolved this run — the standard, checker (`audit-engineering.ts`), and rubric now all specify `proseWrap: never`, matching the repo and `ki-authoring` house style.
+- **Repo cross-check:** `ki-agentic-harness` self-audit = 0 fail. The prior proseWrap WARN is resolved this run — the standard, checker (`audit.ts`), and rubric now all specify `proseWrap: never`, matching the repo and `ki-authoring` house style.
 - **Open watch-items:**
   - **TypeScript 7.0** (Go native port) reached **Release Candidate 2026-06-18**, GA estimated ~July 2026 (no longer "mid-to-late 2026"). Type-checking is structurally identical to 6.0. When 7.0 GAs, decide whether the `^6.0` pin tracks it or holds on 6.x — re-check next refresh.
   - **Node v27** schedule change (one major/year, every release LTS, odd/even dropped) still lands with v27; v26 is the last under the current model. Re-check the `>=22` floor and Node source wording at the first refresh after October 2026.

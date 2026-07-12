@@ -1,7 +1,7 @@
 ---
 name: ki-tools
 implies: []
-vendors: { audit: scripts/audit-tools.ts, conform: scripts/conform-tools.ts, init: scripts/init.ts }
+vendors: [init, audit, conform, help]
 description: >
   Audit, conform, or scaffold a Knowledge Islands `tools-*` repo — ONE standalone command-line tool per repo, distributed by a `curl | bash` installer AND a companion Homebrew tap formula. Governs the container SHAPE language-agnostically (bash today, a future Python/Go tool fits): the `bin/<tool>` executable + its exec bit, `install.sh`, versioning + `--version` + `vX.Y.Z` tags, `CHANGELOG.md`, a CI workflow, and capability conditionals (a shell entrypoint needs shellcheck + a bats suite; a `package.json` defers to `ki-engineering`). Triggers: "audit this tool repo", "scaffold a CLI tool", "release a command-line tool", "does this tools- repo follow our standard", "check my tools- repo". Off-ramps: the Homebrew tap + its formula → `ki-homebrew-tap`; GitHub settings and standard files (README, LICENSE) → `ki-repo`; a TS/Bun toolchain (`package.json`) → `ki-engineering`. Container, not contents — it does not judge the tool's internal code quality.
 argument-hint: 'audit <repo> | conform <repo> | help | init <repo> | refresh'
@@ -13,7 +13,7 @@ You are helping audit, conform, or scaffold a **`tools-*` repo** — a repo hold
 
 This skill rides on `ki-repo` (local files, GitHub settings) but **not** `ki-engineering` — a bash tool has no TypeScript/Bun toolchain to govern, so no `[ki-engineering]` is assumed (the same pattern `ki-kb` follows). If the tool grows a `package.json`, that changes: it then declares `[ki-engineering]` too and defers its lint/test there (see the capability rule below).
 
-The full, quotable standard lives in [tools-standard.md](references/tools-standard.md); the line-by-line pass/fail items live in [audit-rubric.md](references/audit-rubric.md). The mechanical checker is [`scripts/audit-tools.ts`](scripts/audit-tools.ts). Read those when you need detail; this file is the operating procedure.
+The full, quotable standard lives in [tools-standard.md](references/tools-standard.md); the line-by-line pass/fail items live in [audit-rubric.md](references/audit-rubric.md). The mechanical checker is [`scripts/audit.ts`](scripts/audit.ts). Read those when you need detail; this file is the operating procedure.
 
 ## Container, not contents
 
@@ -48,7 +48,7 @@ Mirrors `ki-engineering`'s capability-conditional pattern: what the repo _is_ de
 
 ## The `[ki-tools]` marker
 
-A `tools-*` repo opts into this standard by declaring a **keyless** `[ki-tools]` table in its `.ki-config.toml` — a bare marker, exactly like `[ki-mcp]`. The table is validated **down** (this skill reads only its own table and warns on any unknown key inside it). Run `bun scripts/audit-tools.ts --init` to print the default block.
+A `tools-*` repo opts into this standard by declaring a **keyless** `[ki-tools]` table in its `.ki-config.toml` — a bare marker, exactly like `[ki-mcp]`. The table is validated **down** (this skill reads only its own table and warns on any unknown key inside it). Run `bun scripts/audit.ts --init` to print the default block.
 
 ## Operating modes
 

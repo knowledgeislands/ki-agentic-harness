@@ -1,7 +1,7 @@
 ---
 name: ki-engineering
 implies: []
-vendors: { audit: scripts/audit-engineering.ts, conform: scripts/conform-engineering.ts }
+vendors: [init, audit, conform, help]
 description: >
   Use to audit our engineering standards, conform or scaffold a repo's toolchain, or check script-family / tsconfig / biome consistency. Owns the shared build/lint/test layer every Knowledge Islands TypeScript/Bun repo conforms to — the twin of `ki-authoring`. Covers the closed `package.json` key-set (toolchain fields here; identity/metadata content in `ki-repo`), the `mise.toml` toolchain pin, the `ki:lint:*`/`ki:deps:*` script families, the Bun-install/Node-run split, `tsconfig`/`biome`/`vitest` shape with 100% coverage, the CI-workflow shape, and the build/cli-chmod rule — plus the enforcement framework the governance skills follow. Triggers: "audit our engineering standards", "do the repos' scripts match", "why are lint:/deps: scripts inconsistent". For GitHub settings, security, and the `.ki-config.toml` contract use `ki-repo`; for Markdown/TOML style use `ki-authoring`; for MCP server code use `ki-mcp`.
 argument-hint: 'audit <repo> | conform <repo> | help | init <repo> | refresh'
@@ -33,7 +33,7 @@ The checker is the **common layer**; each artifact skill audits its own delta. T
 
 ```text
 ki:engineering:audit <repo>     →  common toolchain layer (this skill, all 10 TS repos)
-  then audit-mcp.ts <repo>   →  MCP delta (ki-mcp, the 7 mcp-* repos)
+  then audit.ts <repo>   →  MCP delta (ki-mcp, the 7 mcp-* repos)
 ```
 
 A repo is "clean" only when **every applicable** skill's audit passes. The `.ki-config.toml` tables are the selector: `[ki-engineering]` marks the common layer; the artifact skill applies by its own convention.
@@ -44,9 +44,9 @@ Carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT scaf
 
 ### Mode AUDIT — check a repo's common toolchain
 
-1. **Run the mechanical checker**: `bun <skill>/scripts/audit-engineering.ts <repo>` (or `node` after a build). It reports the package.json metadata + script families, the `bun test` trap, `tsconfig`/`biome`, and the capability conditionals (tests / compiled build + cli-chmod / env), and validates-down the `[ki-engineering]` table. It grades findings on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — see [checker-contract.md](references/checker-contract.md)) and exits non-zero on any FAIL; with `--report` it writes its latest report to the target's `.ki-meta/audits/engineering.{md,json}`. Capture its output; don't re-derive the mechanical items.
+1. **Run the mechanical checker**: `bun <skill>/scripts/audit.ts <repo>` (or `node` after a build). It reports the package.json metadata + script families, the `bun test` trap, `tsconfig`/`biome`, and the capability conditionals (tests / compiled build + cli-chmod / env), and validates-down the `[ki-engineering]` table. It grades findings on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — see [checker-contract.md](references/checker-contract.md)) and exits non-zero on any FAIL; with `--report` it writes its latest report to the target's `.ki-meta/audits/engineering.{md,json}`. Capture its output; don't re-derive the mechanical items.
 2. **Apply the judgment items** in [the rubric](references/audit-rubric.md): no per-repo loosening of `strict`/the `noImplicit*` family, the Node `.env` parity call where env is loaded, tests actually reaching the 100% bar, repo-specific scripts not shadowing a family.
-3. **Name the artifact-skill audit that must also run** for the repo to be fully clean (e.g. `audit-mcp.ts` for an MCP repo), and **report** by location → criterion → fix, grouped by severity-ladder level (FAIL first).
+3. **Name the artifact-skill audit that must also run** for the repo to be fully clean (e.g. `audit.ts` for an MCP repo), and **report** by location → criterion → fix, grouped by severity-ladder level (FAIL first).
 
 ### Mode CONFORM — bring a repo's toolchain into line
 
@@ -65,7 +65,7 @@ Copy the `package.json` script families, `tsconfig.json`/`biome.json` (and `tsco
 The standard pins volatile versions (Bun, Node, Biome, TypeScript, vitest, syncpack, markdownlint). Run on its declared cadence (see `references/sources.md`), or when asked "are the engineering standards current".
 
 1. **Read [the source list](references/sources.md)** — each pin with its `last reviewed` date.
-2. **Re-fetch each** (WebFetch / WebSearch) and diff against the standard + rubric + [`scripts/audit-engineering.ts`](scripts/audit-engineering.ts): a bumped Bun or Biome line, a TypeScript option deprecation, a changed default.
+2. **Re-fetch each** (WebFetch / WebSearch) and diff against the standard + rubric + [`scripts/audit.ts`](scripts/audit.ts): a bumped Bun or Biome line, a TypeScript option deprecation, a changed default.
 3. **Propose a diff**; confirm before writing.
 4. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and the `## Last review` block. What changed goes in the commit.
 

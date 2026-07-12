@@ -47,12 +47,12 @@ const skills = readdirSync(skillsDir, { withFileTypes: true })
 // { concern, target, generatedAt, summary, findings }. A couple of outliers (e.g.
 // ki-housekeeping) emit a bare findings array with { id, severity: <0-6>, message }
 // instead — SEV_BY_NUM and the field fallbacks below absorb that variant too.
-const ICON: Record<string, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
+const ICON = { FAIL: '\u274c', WARN: '\u26a0\ufe0f ', POLISH: '\u2728', ADVISORY: '\ud83e\udded', INFO: '\u2139\ufe0f ', NA: '\u2298', PASS: '\u2705' }
 const SEV_BY_NUM = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 const RECAP_LEVELS = ['FAIL', 'WARN', 'ADVISORY']
 let failed = 0
-const recap: { skill: string; level: string; code: string; msg: string }[] = []
-const unstructured: string[] = []
+const recap = []
+const unstructured = []
 for (const skill of skills) {
   const dir = join(skillsDir, skill)
   const script = readdirSync(dir).find((f) => pattern.test(f))
@@ -66,17 +66,13 @@ for (const skill of skills) {
     continue
   }
   const res = spawnSync('bun', [scriptPath, '.', '--json'], { encoding: 'utf8' })
-  let parsed: unknown = null
+  let parsed = null
   try {
     parsed = JSON.parse(res.stdout ?? '')
   } catch {
     parsed = null
   }
-  const findingsArr = Array.isArray(parsed)
-    ? parsed
-    : Array.isArray((parsed as { findings?: unknown })?.findings)
-      ? (parsed as { findings: unknown[] }).findings
-      : null
+  const findingsArr = Array.isArray(parsed) ? parsed : Array.isArray(parsed?.findings) ? parsed.findings : null
   if (!findingsArr) {
     // no --json support (or a crash, or a shape we don't recognise) — fall back to
     // this checker's native display.
@@ -84,9 +80,8 @@ for (const skill of skills) {
     process.stderr.write(res.stderr ?? '')
     unstructured.push(skill)
   } else {
-    const counts: Record<string, number> = {}
-    for (const item of findingsArr) {
-      const raw = item as Record<string, unknown>
+    const counts = {}
+    for (const raw of findingsArr) {
       const level =
         typeof raw.level === 'string'
           ? raw.level.toUpperCase()
@@ -102,7 +97,7 @@ for (const skill of skills) {
       counts[level] = (counts[level] ?? 0) + 1
       if (RECAP_LEVELS.includes(level)) recap.push({ skill, level, code: area, msg })
     }
-    const wrapperSummary = !Array.isArray(parsed) ? (parsed as { summary?: Record<string, number> })?.summary : null
+    const wrapperSummary = !Array.isArray(parsed) ? parsed?.summary : null
     const s = wrapperSummary ?? {
       fail: counts.FAIL ?? 0,
       warn: counts.WARN ?? 0,
@@ -136,7 +131,7 @@ if (verb === 'audit') {
         console.log('  ' + ICON[level] + ' ' + level.padEnd(8) + ' ' + h.skill.padEnd(24) + ' [' + h.code + '] ' + h.msg.split('\n')[0])
       }
     }
-    const count = (l: string) => recap.filter((r) => r.level === l).length
+    const count = (l) => recap.filter((r) => r.level === l).length
     console.log('  \x1b[2mtotals: FAIL=' + count('FAIL') + ' WARN=' + count('WARN') + ' ADVISORY=' + count('ADVISORY') + '\x1b[0m')
   }
   if (unstructured.length) {

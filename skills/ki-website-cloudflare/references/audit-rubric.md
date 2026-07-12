@@ -1,10 +1,10 @@
 # Audit Rubric
 
-Line-by-line pass/fail items for auditing a site's hosting against the [Cloudflare hosting standard](cloudflare-hosting-standard.md). Run [`../scripts/audit-cloudflare-hosting.ts`](../scripts/audit-cloudflare-hosting.ts) for the mechanical items (marked **[M]**), then judge the rest by reading. Each item cites the standard section it verifies.
+Line-by-line pass/fail items for auditing a site's hosting against the [Cloudflare hosting standard](cloudflare-hosting-standard.md). Run [`../scripts/audit.ts`](../scripts/audit.ts) for the mechanical items (marked **[M]**), then judge the rest by reading. Each item cites the standard section it verifies.
 
 Severity: **FAIL** (ship-stopper — the site can't deploy, or deploys the wrong way), **WARN** (config / script divergence), **POLISH** (domains / CI / consistency) — the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](../../ki-engineering/references/enforcement-framework.md) §2.
 
-> **Compose with the siblings.** This rubric is the **hosting delta** only. The toolchain is `ki-engineering` (`ki:engineering:audit`); building the `dist/` this serves is `ki-website` (`audit-websites.ts`). Run both first. Any Worker that is not the static-site server is out of scope — it routes to the generic `cloudflare`/`wrangler` skills. The repo is fully clean only when every applicable audit passes.
+> **Compose with the siblings.** This rubric is the **hosting delta** only. The toolchain is `ki-engineering` (`ki:engineering:audit`); building the `dist/` this serves is `ki-website` (`audit.ts`). Run both first. Any Worker that is not the static-site server is out of scope — it routes to the generic `cloudflare`/`wrangler` skills. The repo is fully clean only when every applicable audit passes.
 
 ## Contents
 
@@ -26,7 +26,7 @@ Severity: **FAIL** (ship-stopper — the site can't deploy, or deploys the wrong
 ## The dist/ seam (§2)
 
 - [ ] [M] FAIL — `assets.directory` is set and points at the build's `dist/` (`./dist` flat, `../dist` from `site/`). (§2)
-- [ ] [J] WARN — the path resolves to the directory `ki-website` builds to (cross-check `audit-websites.ts`). (§2)
+- [ ] [J] WARN — the path resolves to the directory `ki-website` builds to (cross-check `audit.ts`). (§2)
 - [ ] [M] WARN — `dist/` and `.wrangler/` are gitignored. (§2, §4)
 - [ ] [J] POLISH — a `ki:site:preview` chains build → `wrangler dev` for a local check against the Worker runtime. (§2, §4)
 
@@ -64,4 +64,4 @@ Mirrors the `ki-skills` rubric's **LONG-1**.
 
 ## Reporting
 
-Produce a findings table grouped by severity, each row: `severity · file:line · what · fix`. Close with: (a) any intentional, documented divergences you chose **not** to flag (e.g. a site deliberately on `*.workers.dev` with no custom domain yet, or a companion Worker you correctly left alone), and (b) a one-line verdict (compliant / minor drift / blockers). Name the sibling audits that must also pass — `ki:engineering:audit` and `audit-websites.ts` — for the repo to be fully clean.
+Produce a findings table grouped by severity, each row: `severity · file:line · what · fix`. Close with: (a) any intentional, documented divergences you chose **not** to flag (e.g. a site deliberately on `*.workers.dev` with no custom domain yet, or a companion Worker you correctly left alone), and (b) a one-line verdict (compliant / minor drift / blockers). Name the sibling audits that must also pass — `ki:engineering:audit` and `audit.ts` — for the repo to be fully clean.
