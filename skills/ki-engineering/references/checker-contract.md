@@ -40,16 +40,17 @@ The checker owns the mechanical criteria; everything it cannot decide determinis
   "target": "/path/audited",
   "generatedAt": "2026-07-11T12:00:00.000Z",
   "summary": { "fail": 0, "warn": 1, "polish": 0, "advisory": 2, "info": 0, "na": 0, "pass": 5 },
-  "findings": [{ "level": "WARN", "area": "SHAPE-2", "msg": "…" }]
+  "findings": [{ "level": "WARN", "area": "SHAPE-2", "msg": "…", "ref": "references/audit-rubric.md", "file": "skills/foo/SKILL.md" }]
 }
 ```
 
 Rules:
 
 - **One wrapper object, never a bare array.** `findings` is a wrapped property, not the top-level value — a bare array forces every consumer to detect the shape before it can read it.
-- **Finding fields are exactly `level` / `area` / `msg`** — `level` is the severity-ladder string name (never a numeric enum), `area` is the rubric code, `msg` is the message. Not `severity`/`criterion`/`message`, not `check`/`id`/`file`.
+- **Finding fields are at least `level` / `area` / `msg` (required), plus optional `ref` and `file`** — `level` is the severity-ladder string name (never a numeric enum), `area` MUST be a rubric code drawn from the skill's `references/audit-rubric.md`, `msg` is the message. `ref` is the reference-doc pointer the criterion carries (e.g. `references/markdown-authoring.md`, or `owns:` for an owned-file criterion); `file` is the path a file-scoped finding concerns. Use these field names, not `severity`/`criterion`/`message`, not `check`/`id`. `ref` is populated from the rubric criterion's reference pointer and `area` is the criterion's code, so `references/audit-rubric.md` is the single source for both.
 - **`summary` keys are the lowercased ladder names**, present even at zero — a consumer building a totals line should never need to treat a missing key as zero.
 - A checker may add extra top-level keys for its own use (e.g. a `source` label); consumers only read the five above.
+- **`conform` scripts also support `--json`**, emitting the same wrapper this section pins — so the aggregate renders both verbs identically, each conform action becoming a finding on the shared ladder.
 
 `ki-housekeeping` (bare array, numeric severity), `ki-binding` (`{severity,criterion,message}` field names, no `summary`/`generatedAt`), and `ki-decision-records` / `ki-feature-definitions` (no `--json` support at all) currently deviate — see the ROADMAP for bringing them into conformance.
 

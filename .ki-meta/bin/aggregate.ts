@@ -68,6 +68,7 @@ const findingLine = (icon, level, code, file, msg, ref, skill, full) =>
 let failed = 0
 const recap = []
 const unstructured = []
+const extraArgs = process.argv.slice(3).filter((a) => a !== '--json')
 for (const skill of skills) {
   const dir = join(skillsDir, skill)
   const script = readdirSync(dir).find((f) => pattern.test(f))
@@ -79,7 +80,9 @@ for (const skill of skills) {
   // render uniform rows, accumulate the recap. A checker (still) without --json support
   // falls back to its native display. For conform this means --json also drives the
   // writes (a conform without --json just runs its normal write pass and streams prose).
-  const res = spawnSync('bun', [scriptPath, '.', '--json'], { encoding: 'utf8' })
+  // Flags after the verb (e.g. --dry-run) forward through to every child script —
+  // conform's write pass must be skippable aggregate-wide, not just per-skill.
+  const res = spawnSync('bun', [scriptPath, '.', ...extraArgs, '--json'], { encoding: 'utf8' })
   let parsed = null
   try {
     parsed = JSON.parse(res.stdout ?? '')

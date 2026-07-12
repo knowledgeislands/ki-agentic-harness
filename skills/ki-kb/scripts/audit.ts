@@ -53,6 +53,11 @@ const KI_CONFIG = '.ki-config.toml'
 const KI_SECTION = 'ki-kb'
 const ZONES_SECTION = `${KI_SECTION}.zones`
 
+// Reference-doc pointers cited by findings (cited-finding standard). The rubric is the
+// criteria index; the frontmatter standard is the substantive doc for NOTE-* checks.
+const RUBRIC = 'references/audit-rubric.md'
+const FM = 'references/frontmatter-standard.md'
+
 // The default block `--init` emits. The bare [ki-kb] header is the
 // OPT-IN MARKER: its presence declares this base governed by the kb standard
 // (ki-repo's coverage cascade warns a base that has the zone layout but
@@ -82,15 +87,18 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string }
+// area is the rubric code (references/audit-rubric.md); ref its reference-doc pointer;
+// file the path a file-scoped finding concerns. ref/file ride into --json for the
+// aggregate to render (cited-finding standard).
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
 const mk = () => {
   const f: Finding[] = []
   const push =
     (level: Level) =>
-    (area: string, msg: string): void =>
-      void f.push({ level, area, msg })
+    (area: string, msg: string, ref?: string, file?: string): void =>
+      void f.push({ level, area, msg, ref, file })
   return {
     f,
     fail: push('FAIL'),
@@ -190,14 +198,14 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
   // ── config table: validate this skill's own table, DOWN ──
   if (ki) {
     for (const key of Object.keys(ki.keys)) {
-      warn('config', `[${KI_SECTION}] has no scalar key "${key}" — the only keys are zone aliases under [${ZONES_SECTION}]`)
+      warn('CONFIG-1', `[${KI_SECTION}] has no scalar key "${key}" — the only keys are zone aliases under [${ZONES_SECTION}]`, RUBRIC)
     }
     const aliasable = [...ZONES, ...STAGING]
     for (const [zone, folder] of Object.entries(ki.zones)) {
       if (!aliasable.includes(zone))
-        warn('config', `[${ZONES_SECTION}] "${zone}" is not a zone or staging area (one of: ${aliasable.join(', ')})`)
-      else if (folder === zone) note('config', `[${ZONES_SECTION}] ${zone} = "${folder}" restates the canonical name — drop it`)
-      else note('config', `alias in effect: ${zone} resolves to ${folder}/`)
+        warn('CONFIG-3', `[${ZONES_SECTION}] "${zone}" is not a zone or staging area (one of: ${aliasable.join(', ')})`, RUBRIC)
+      else if (folder === zone) note('CONFIG-2', `[${ZONES_SECTION}] ${zone} = "${folder}" restates the canonical name — drop it`, RUBRIC)
+      else note('CONFIG-4', `alias in effect: ${zone} resolves to ${folder}/`, RUBRIC)
     }
   }
 
@@ -206,29 +214,30 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
   // (non-glob) entries should resolve under the base, globs are left to runtime.
   if (ki?.preflight) {
     const missing = ki.preflight.filter((p) => !/[*?[\]]/.test(p) && !existsSync(join(base, p)))
-    if (missing.length) warn('preflight', `declared preflight path(s) not found under the base: ${sampleList(missing)}`)
-    note('preflight', `preflight: ${ki.preflight.length} entr${ki.preflight.length === 1 ? 'y' : 'ies'} declared`)
+    if (missing.length) warn('CONFIG-5', `declared preflight path(s) not found under the base: ${sampleList(missing)}`, RUBRIC)
+    note('CONFIG-5', `preflight: ${ki.preflight.length} entr${ki.preflight.length === 1 ? 'y' : 'ies'} declared`, RUBRIC)
   }
 
   // ── zone layout (resolved through any alias) ──
   const present = ZONES.filter((z) => isDir(join(base, zoneOf(z))))
   if (present.length === 0) {
-    fail('base', `no Knowledge Islands zone folders found at ${base} — not a KB base, or wrong path`)
+    fail('ZONE-1', `no Knowledge Islands zone folders found at ${base} — not a KB base, or wrong path`, RUBRIC)
     return f
   }
   for (const z of ZONES) {
     const folder = zoneOf(z)
     if (!isDir(join(base, folder))) {
-      fail('zone', `zone ${z} missing (expected ${folder}/)`)
+      fail('ZONE-1', `zone ${z} missing (expected ${folder}/)`, RUBRIC, `${folder}/`)
       continue
     }
-    if (!isFile(join(base, folder, `${folder}.md`))) warn('index', `${folder}/ has no same-name index note (${folder}/${folder}.md)`)
+    if (!isFile(join(base, folder, `${folder}.md`)))
+      warn('ZONE-2', `${folder}/ has no same-name index note`, RUBRIC, `${folder}/${folder}.md`)
   }
 
   // ── root memory index (in the Admin zone) ──
   const adminFolder = zoneOf('Admin')
   if (isDir(join(base, adminFolder)) && !isFile(join(base, adminFolder, MEMORY_INDEX)))
-    fail('memory', `root memory index ${adminFolder}/${MEMORY_INDEX} is missing (lists the active Pillars)`)
+    fail('ZONE-3', `root memory index is missing (lists the active Pillars)`, RUBRIC, `${adminFolder}/${MEMORY_INDEX}`)
 
   // ── Admin/ subdivisions (Governance/ and Operations/) ──
   // Both are canonical but opt-in: WARN if absent, WARN if present but missing index note.
@@ -236,9 +245,14 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
     for (const sub of ['Governance', 'Operations'] as const) {
       const subPath = join(base, adminFolder, sub)
       if (!isDir(subPath)) {
-        warn('admin', `${adminFolder}/${sub}/ is absent — consider creating it when that concern becomes active (index note: ${sub}.md)`)
+        warn(
+          'ADMIN-1',
+          `${sub}/ is absent — consider creating it when that concern becomes active (index note: ${sub}.md)`,
+          RUBRIC,
+          `${adminFolder}/${sub}/`
+        )
       } else if (!isFile(join(subPath, `${sub}.md`))) {
-        warn('admin', `${adminFolder}/${sub}/ exists but has no index note (${sub}.md)`)
+        warn('ADMIN-1', `${sub}/ exists but has no index note`, RUBRIC, `${adminFolder}/${sub}/${sub}.md`)
       }
     }
 
@@ -247,9 +261,19 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
     const govPath = join(base, adminFolder, 'Governance')
     if (isDir(govPath)) {
       if (!isFile(join(govPath, 'Charter.md')))
-        warn('charter', `${adminFolder}/Governance/Charter.md is absent — it should declare the base's scope, purpose, and owner`)
+        warn(
+          'ADMIN-2',
+          `Charter.md is absent — it should declare the base's scope, purpose, and owner`,
+          RUBRIC,
+          `${adminFolder}/Governance/Charter.md`
+        )
       if (!isFile(join(govPath, 'Conformance.md')))
-        warn('conformance', `${adminFolder}/Governance/Conformance.md is absent — it should list the active skills and their adoption date`)
+        warn(
+          'ADMIN-3',
+          `Conformance.md is absent — it should list the active skills and their adoption date`,
+          RUBRIC,
+          `${adminFolder}/Governance/Conformance.md`
+        )
     }
   }
 
@@ -261,13 +285,17 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
   if (!anchorName)
     warn(
       'MEM-2',
-      'no CLAUDE.md / AGENTS.md at the base root — the memory cascade (scope + load MEMORY before work) has no always-on anchor'
+      'no CLAUDE.md / AGENTS.md at the base root — the memory cascade (scope + load MEMORY before work) has no always-on anchor',
+      RUBRIC
     )
-  else if (/memory|ki-kb/i.test(readFileSync(join(base, anchorName), 'utf8'))) note('MEM-2', `memory cascade anchored in ${anchorName}`)
+  else if (/memory|ki-kb/i.test(readFileSync(join(base, anchorName), 'utf8')))
+    note('MEM-2', `memory cascade anchored in ${anchorName}`, RUBRIC, anchorName)
   else
     warn(
       'MEM-2',
-      `${anchorName} doesn't anchor the memory cascade — name the root MEMORY index / the scope-before-work rule so it runs on a plain request`
+      `doesn't anchor the memory cascade — name the root MEMORY index / the scope-before-work rule so it runs on a plain request`,
+      RUBRIC,
+      anchorName
     )
 
   // ── note frontmatter ──
@@ -296,19 +324,20 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
     for (const r of required) if (!fm.keys.includes(r)) missingReq.push(`${rel} (${r})`)
   }
   if (unterminated.length)
-    fail('frontmatter', `unterminated frontmatter (no closing \`---\`) in ${unterminated.length} note(s): ${sampleList(unterminated)}`)
+    fail('NOTE-1a', `unterminated frontmatter (no closing \`---\`) in ${unterminated.length} note(s): ${sampleList(unterminated)}`, FM)
   if (missingReq.length)
-    fail('frontmatter', `missing required key(s) [${required.join(', ')}] in ${missingReq.length} note(s): ${sampleList(missingReq)}`)
-  if (badKeys.length) warn('frontmatter', `non-snake_case frontmatter key(s) in ${badKeys.length} note(s): ${sampleList(badKeys)}`)
+    fail('NOTE-1', `missing required key(s) [${required.join(', ')}] in ${missingReq.length} note(s): ${sampleList(missingReq)}`, FM)
+  if (badKeys.length) warn('NOTE-1b', `non-snake_case frontmatter key(s) in ${badKeys.length} note(s): ${sampleList(badKeys)}`, FM)
   note(
-    'frontmatter',
-    `scanned ${scanned} note(s), ${withFm} with frontmatter${required.length ? ` · required keys: ${required.join(', ')}` : ' · no required_frontmatter declared'}`
+    'NOTE-1',
+    `scanned ${scanned} note(s), ${withFm} with frontmatter${required.length ? ` · required keys: ${required.join(', ')}` : ' · no required_frontmatter declared'}`,
+    FM
   )
 
   // ── staging (informational only) ──
   for (const s of STAGING) {
     const folder = zoneOf(s)
-    note('staging', `${folder}/ ${isDir(join(base, folder)) ? 'present' : 'absent'} (staging, not a zone)`)
+    note('ZONE-4', `${folder}/ ${isDir(join(base, folder)) ? 'present' : 'absent'} (staging, not a zone)`, RUBRIC)
   }
 
   return f
@@ -367,7 +396,13 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     mkdirSync(reportDir, { recursive: true })
     const body = ORDER.flatMap((l) => {
       const rows = items.filter((f) => f.level === l)
-      return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+      return rows.length
+        ? [
+            '',
+            `## ${ICON[l]} ${l} (${rows.length})`,
+            ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
+          ]
+        : []
     })
     writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
     writeFileSync(
@@ -384,7 +419,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
       const rows = items.filter((f) => f.level === l)
       if (!rows.length) continue
       console.log(`\n${ICON[l]} ${l} (${rows.length})`)
-      for (const r of rows) console.log(`   [${r.area}] ${r.msg}`)
+      for (const r of rows) console.log(`   [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
     }
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)

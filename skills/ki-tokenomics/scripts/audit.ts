@@ -78,11 +78,16 @@ const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PA
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
 type Area = 'COMP' | 'SURF' | 'MCP' | 'BUDG' | 'RUN' | 'TOOL' | 'CFG'
 const AREA_ORDER: Area[] = ['COMP', 'SURF', 'MCP', 'BUDG', 'RUN', 'TOOL', 'CFG']
-type Finding = { level: Level; area: Area; msg: string }
+// area is the FINE rubric code (COMP-1, BUDG-2, CFG-4, …); its family (the text
+// before the dash) drives the by-area console grouping. ref is the reference-doc
+// pointer, file the path a file-scoped finding concerns — both ride into --json
+// for the aggregate to render, and are appended in the human render.
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const findings: Finding[] = []
-const fail = (area: Area, msg: string): void => void findings.push({ level: 'FAIL', area, msg })
-const warn = (area: Area, msg: string): void => void findings.push({ level: 'WARN', area, msg })
-const note = (area: Area, msg: string): void => void findings.push({ level: 'INFO', area, msg })
+const fail = (area: string, msg: string, ref?: string, file?: string): void => void findings.push({ level: 'FAIL', area, msg, ref, file })
+const warn = (area: string, msg: string, ref?: string, file?: string): void => void findings.push({ level: 'WARN', area, msg, ref, file })
+const note = (area: string, msg: string, ref?: string, file?: string): void => void findings.push({ level: 'INFO', area, msg, ref, file })
+const RUBRIC = 'references/audit-rubric.md'
 
 // ── small IO helpers ─────────────────────────────────────────────────────────
 const readText = (p: string): string | null => {
@@ -277,10 +282,10 @@ if (!argv.includes('--json')) {
 }
 
 // COMP — which layers were read
-if (noUser) note('COMP', 'user-wide layer skipped (--no-user) — auditing the project layer alone')
-else if (existsSync(userDir)) note('COMP', `[user] ${userDir}`)
-else warn('COMP', `[user] ${userDir} not found — cannot weigh the user-wide layer (is this the right home?)`)
-note('COMP', `[project] ${target}`)
+if (noUser) note('COMP-1', 'user-wide layer skipped (--no-user) — auditing the project layer alone', RUBRIC)
+else if (existsSync(userDir)) note('COMP-1', `[user] ${userDir}`, RUBRIC)
+else warn('COMP-1', `[user] ${userDir} not found — cannot weigh the user-wide layer (is this the right home?)`, RUBRIC)
+note('COMP-1', `[project] ${target}`, RUBRIC)
 
 // Gather config table first (drives budgets + headroom expectation).
 const kiText = readText(join(target, '.ki-config.toml'))
@@ -305,9 +310,15 @@ for (const { layer } of layers) {
     standingTotal += tokens
     const label = `[${layer}] ${basename(file)}${broken.length ? ' (+@imports)' : ''}`
     if (tokens > budget('claude_md'))
-      warn('SURF', `${label} ${tok(tokens)} > budget ${tok(budget('claude_md'))} — lift rarely-read detail into on-demand files`)
-    else note('SURF', `${label} ${tok(tokens)}`)
-    for (const b of broken) fail('SURF', `[${layer}] ${basename(file)} has an unresolved @import → "${b}" (broken include)`)
+      warn(
+        'BUDG-1',
+        `${label} ${tok(tokens)} > budget ${tok(budget('claude_md'))} — lift rarely-read detail into on-demand files`,
+        RUBRIC,
+        basename(file)
+      )
+    else note('SURF-1', `${label} ${tok(tokens)}`, RUBRIC, basename(file))
+    for (const b of broken)
+      fail('SURF-1', `[${layer}] ${basename(file)} has an unresolved @import → "${b}" (broken include)`, RUBRIC, basename(file))
   }
 }
 
@@ -334,8 +345,10 @@ for (const { layer } of layers) {
     }
     if (foreign.size > 0)
       warn(
-        'TOOL',
-        `CLAUDE.md headroom:learn block has ${foreignLines} line(s) rooted in other repo(s) (${[...foreign].join(', ')}) — stale cross-repo captures in the standing prefix; re-learn or prune`
+        'TOOL-4',
+        `CLAUDE.md headroom:learn block has ${foreignLines} line(s) rooted in other repo(s) (${[...foreign].join(', ')}) — stale cross-repo captures in the standing prefix; re-learn or prune`,
+        RUBRIC,
+        'CLAUDE.md'
       )
   }
 }
@@ -362,9 +375,11 @@ if (!noUser && existsSync(userDir)) {
 for (const { layer, file } of memoryFiles) {
   const tokens = approxTokens(readText(file) ?? '')
   standingTotal += tokens
-  const label = `[${layer}] ${file.includes('/Pillars/') ? `Pillars/${basename(dirname(file))}/MEMORY.md` : basename(file)}`
-  if (tokens > budget('memory_index')) warn('SURF', `${label} ${tok(tokens)} > budget ${tok(budget('memory_index'))} — prune stale entries`)
-  else note('SURF', `${label} ${tok(tokens)}`)
+  const memLabel = file.includes('/Pillars/') ? `Pillars/${basename(dirname(file))}/MEMORY.md` : basename(file)
+  const label = `[${layer}] ${memLabel}`
+  if (tokens > budget('memory_index'))
+    warn('BUDG-1', `${label} ${tok(tokens)} > budget ${tok(budget('memory_index'))} — prune stale entries`, RUBRIC, memLabel)
+  else note('SURF-2', `${label} ${tok(tokens)}`, RUBRIC, memLabel)
 }
 
 // ── SURF + BUDG: installed-skill selection surface, per layer ──
@@ -375,8 +390,8 @@ for (const { layer, dir } of layers) {
   standingTotal += tokens
   const label = `[${layer}] ${count} skill description(s)`
   if (tokens > budget('skills_surface'))
-    warn('SURF', `${label} ${tok(tokens)} > budget ${tok(budget('skills_surface'))} — consolidate or tighten descriptions (ki-skills)`)
-  else note('SURF', `${label} ${tok(tokens)}`)
+    warn('BUDG-1', `${label} ${tok(tokens)} > budget ${tok(budget('skills_surface'))} — consolidate or tighten descriptions`, RUBRIC)
+  else note('SURF-3', `${label} ${tok(tokens)}`, RUBRIC)
 }
 
 // ── MCP tool surface + RUN: settings signals ──
@@ -402,38 +417,45 @@ if (mcp.length) {
   const byLayer: Record<string, number> = {}
   for (const s of mcp) byLayer[s.layer] = (byLayer[s.layer] ?? 0) + 1
   note(
-    'MCP',
+    'MCP-1',
     `${mcp.length} server(s): ${mcp.map((s) => s.name).join(', ')} (${Object.entries(byLayer)
       .map(([l, n]) => `${n} ${l}`)
-      .join(', ')})`
+      .join(', ')})`,
+    RUBRIC
   )
   if (mcp.length > budget('mcp_servers'))
     warn(
-      'MCP',
-      `${mcp.length} MCP servers > budget ${budget('mcp_servers')} — tool definitions are the dominant standing cost; disable/scope servers this work does not use (ki-mcp)`
+      'BUDG-1',
+      `${mcp.length} MCP servers > budget ${budget('mcp_servers')} — tool definitions are the dominant standing cost; disable/scope servers this work does not use`,
+      RUBRIC
     )
-} else note('MCP', 'no MCP servers configured')
+} else note('MCP-1', 'no MCP servers configured', RUBRIC)
 
 // RUN: the only config-level runtime signal the checker can see is a pinned model.
-if (pinnedModel) note('RUN', `default model pinned: ${pinnedModel} — confirm the tier matches the work (RUN-2)`)
-else note('RUN', 'no default model pinned in settings — tier is the session default (runtime judgment)')
+if (pinnedModel) note('RUN-5', `default model pinned: ${pinnedModel} — confirm the tier matches the work`, RUBRIC)
+else note('RUN-5', 'no default model pinned in settings — tier is the session default (runtime judgment)', RUBRIC)
 
 // ── TOOL: compression tooling + declared expectation ──
 const detectCtx: DetectCtx = { mcp, envKeys }
 const present = REGISTRY.map((t) => ({ name: t.name, mode: t.detect(detectCtx) })).filter((d) => d.mode)
 for (const d of present)
   note(
-    'TOOL',
-    `${d.name} detected — ${d.mode}; confirm reversible store + cache-aligner are optimal (TOOL-3, keys undocumented — judgment)`
+    'TOOL-1',
+    `${d.name} detected — ${d.mode}; confirm reversible store + cache-aligner are optimal (keys undocumented — judgment)`,
+    RUBRIC
   )
 const expectation: HeadroomExpectation = (ki?.headroom as HeadroomExpectation) ?? 'recommended'
 const headroomPresent = present.some((d) => d.name === 'headroom')
 if (!headroomPresent) {
   if (expectation === 'required')
-    fail('TOOL', 'headroom = "required" but no Headroom configuration detected (mcpServers entry, proxy, or HEADROOM_* env)')
+    fail('TOOL-2', 'headroom = "required" but no Headroom configuration detected (mcpServers entry, proxy, or HEADROOM_* env)', RUBRIC)
   else if (expectation === 'recommended')
-    warn('TOOL', 'no context-compression layer detected — Headroom is recommended for tool-heavy work (set headroom = "off" to silence)')
-  else note('TOOL', 'compression layer off (headroom = "off")')
+    warn(
+      'TOOL-2',
+      'no context-compression layer detected — Headroom is recommended for tool-heavy work (set headroom = "off" to silence)',
+      RUBRIC
+    )
+  else note('TOOL-2', 'compression layer off (headroom = "off")', RUBRIC)
 }
 
 // ── BUDG: total standing surface ──
@@ -442,22 +464,55 @@ const overTotal = total > budget('total')
 const headroomPct = ki?.contextWindow
   ? ` — ${Math.round((total / ki.contextWindow) * 100)}% of the declared ${ki.contextWindow.toLocaleString('en-US')}-token window`
   : ''
-if (overTotal) warn('BUDG', `total standing surface ${tok(total)} > budget ${tok(budget('total'))}${headroomPct}`)
-else note('BUDG', `total standing surface ${tok(total)} (budget ${tok(budget('total'))})${headroomPct}`)
+if (overTotal) warn('BUDG-2', `total standing surface ${tok(total)} > budget ${tok(budget('total'))}${headroomPct}`, RUBRIC)
+else note('BUDG-2', `total standing surface ${tok(total)} (budget ${tok(budget('total'))})${headroomPct}`, RUBRIC)
 
 // ── CFG: the config table, validated down ──
-if (!ki?.present) note('CFG', `no [${KI_SECTION}] table in .ki-config.toml — using default budgets (run --init to opt in and tune)`)
+if (!ki?.present)
+  note(
+    'CFG-2',
+    `no [${KI_SECTION}] table in .ki-config.toml — using default budgets (run --init to opt in and tune)`,
+    RUBRIC,
+    '.ki-config.toml'
+  )
 else {
-  note('CFG', `[${KI_SECTION}] present (headroom = "${expectation}"${ki.contextWindow ? `, window ${ki.contextWindow}` : ''})`)
+  note(
+    'CFG-1',
+    `[${KI_SECTION}] present (headroom = "${expectation}"${ki.contextWindow ? `, window ${ki.contextWindow}` : ''})`,
+    RUBRIC,
+    '.ki-config.toml'
+  )
   if (ki.headroomBad)
-    warn('CFG', `headroom = "${ki.headroomBad}" is not one of ${HEADROOM_VALUES.join(' / ')} — defaulting to "recommended"`)
-  if (ki.modelTier) note('CFG', `preferred_model = "${ki.modelTier}" — confirm the tier is appropriate for this environment (RUN-2)`)
+    warn(
+      'CFG-1',
+      `headroom = "${ki.headroomBad}" is not one of ${HEADROOM_VALUES.join(' / ')} — defaulting to "recommended"`,
+      RUBRIC,
+      '.ki-config.toml'
+    )
+  if (ki.modelTier)
+    note('CFG-4', `preferred_model = "${ki.modelTier}" — confirm the tier is appropriate for this environment`, RUBRIC, '.ki-config.toml')
   else if (ki.modelTierBad)
-    warn('CFG', `preferred_model = "${ki.modelTierBad}" is not one of ${MODEL_TIER_VALUES.join(' / ')} — value unrecognised`)
-  else warn('CFG', `preferred_model not declared in [${KI_SECTION}] — add it to codify the default tier for this environment (CFG-4)`)
+    warn(
+      'CFG-4',
+      `preferred_model = "${ki.modelTierBad}" is not one of ${MODEL_TIER_VALUES.join(' / ')} — value unrecognised`,
+      RUBRIC,
+      '.ki-config.toml'
+    )
+  else
+    warn(
+      'CFG-4',
+      `preferred_model not declared in [${KI_SECTION}] — add it to codify the default tier for this environment`,
+      RUBRIC,
+      '.ki-config.toml'
+    )
   for (const k of ki.unknownKeys)
-    warn('CFG', `unrecognised key "${k}" in [${KI_SECTION}] — validate-down (known budgets: ${[...BUDGET_KEYS].join(', ')})`)
-  for (const k of ki.badBudgets) fail('CFG', `"${k}" has a non-numeric/invalid value in [${KI_SECTION}]`)
+    warn(
+      'CFG-1',
+      `unrecognised key "${k}" in [${KI_SECTION}] — validate-down (known budgets: ${[...BUDGET_KEYS].join(', ')})`,
+      RUBRIC,
+      '.ki-config.toml'
+    )
+  for (const k of ki.badBudgets) fail('CFG-1', `"${k}" has a non-numeric/invalid value in [${KI_SECTION}]`, RUBRIC, '.ki-config.toml')
 }
 
 // ── report ───────────────────────────────────────────────────────────────────
@@ -485,7 +540,13 @@ if (reportOut) {
   mkdirSync(reportDir, { recursive: true })
   const body = LADDER.flatMap((l) => {
     const rows = findings.filter((f) => f.level === l)
-    return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+    return rows.length
+      ? [
+          '',
+          `## ${ICON[l]} ${l} (${rows.length})`,
+          ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
+        ]
+      : []
   })
   const tally = `FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na} · standing surface ${tok(total)}`
   writeFileSync(
@@ -499,18 +560,19 @@ if (reportOut) {
 }
 
 if (jsonOut) {
-  process.stdout.write(`${JSON.stringify({ concern: 'tokenomics', target, generatedAt: isoStamp, summary, findings }, null, 2)}\n`)
+  process.stdout.write(JSON.stringify({ concern: 'tokenomics', target, generatedAt: isoStamp, summary, findings }))
 } else {
   const head = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
   console.log(`\n${head}  ${paint(C.cyan, basename(target))}`)
   for (const area of AREA_ORDER) {
-    const inArea = findings.filter((x) => x.area === area)
+    const inArea = findings.filter((x) => x.area.split('-')[0] === area)
     if (!inArea.length) continue
     console.log(paint(C.dim, `  ── ${area} ──`))
     for (const x of inArea) {
-      if (x.level === 'FAIL') console.log(`  ${paint(C.red, 'fail')} ${x.msg}`)
-      else if (x.level === 'WARN') console.log(`  ${paint(C.yellow, 'warn')} ${x.msg}`)
-      else console.log(`  ${paint(C.dim, `${x.level.toLowerCase()} ${x.msg}`)}`)
+      const line = `  [${x.area}]${x.file ? ` ${x.file}` : ''} ${x.msg}${x.ref ? ` (${x.ref})` : ''}`
+      if (x.level === 'FAIL') console.log(paint(C.red, line))
+      else if (x.level === 'WARN') console.log(paint(C.yellow, line))
+      else console.log(paint(C.dim, line))
     }
   }
   console.log(

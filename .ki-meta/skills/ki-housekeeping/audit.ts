@@ -42,6 +42,30 @@ interface Finding {
   severity: Sev
   file: string
   message: string
+  ref?: string
+}
+
+// Reference-doc pointer per criterion (the cited-finding standard). The memory-area
+// index/frontmatter criteria are specified in memory-format.md; the DIR-1 store-resolution
+// rule in the standard; the SUMMARY roll-up in the rubric itself.
+const REF_MEMORY_FORMAT = 'references/memory-format.md'
+const REF_STANDARD = 'references/housekeeping-standard.md'
+const REF_RUBRIC = 'references/audit-rubric.md'
+const REF_BY_ID: Record<string, string> = {
+  'DIR-1': REF_STANDARD,
+  'IDX-1': REF_MEMORY_FORMAT,
+  'IDX-2': REF_MEMORY_FORMAT,
+  'IDX-3': REF_MEMORY_FORMAT,
+  'IDX-4': REF_MEMORY_FORMAT,
+  'IDX-5': REF_MEMORY_FORMAT,
+  'IDX-6': REF_MEMORY_FORMAT,
+  'FM-1': REF_MEMORY_FORMAT,
+  'FM-2': REF_MEMORY_FORMAT,
+  'FM-3': REF_MEMORY_FORMAT,
+  'FM-4': REF_MEMORY_FORMAT,
+  'FM-5': REF_MEMORY_FORMAT,
+  'LINK-1': REF_MEMORY_FORMAT,
+  SUMMARY: REF_RUBRIC
 }
 
 function slugifyRepoPath(absPath: string): string {
@@ -90,7 +114,8 @@ async function main() {
   const memoryDir = memDirArg ? resolve(memDirArg) : resolveMemoryDir(repoArg)
   const repoName = basename(resolve(repoArg ?? process.cwd()))
   const findings: Finding[] = []
-  const add = (id: string, severity: Sev, file: string, message: string) => findings.push({ id, severity, file, message })
+  const add = (id: string, severity: Sev, file: string, message: string) =>
+    findings.push({ id, severity, file, message, ref: REF_BY_ID[id] })
 
   let dirExists = true
   try {
@@ -260,7 +285,7 @@ function jsonReport(findings: Finding[], target: string) {
     target,
     generatedAt: new Date().toISOString(),
     summary,
-    findings: findings.map((f) => ({ level: SEV_LABELS[f.severity], area: f.id, msg: `${f.file}: ${f.message}` }))
+    findings: findings.map((f) => ({ level: SEV_LABELS[f.severity], area: f.id, msg: `${f.file}: ${f.message}`, ref: f.ref, file: f.file }))
   }
 }
 
@@ -272,7 +297,7 @@ function report(findings: Finding[], jsonMode: boolean, target: string) {
   const tally: Partial<Record<Sev, number>> = {}
   for (const f of findings) {
     tally[f.severity] = (tally[f.severity] ?? 0) + 1
-    console.log(`${SEV_LABELS[f.severity].padEnd(8)} ${f.id.padEnd(10)} ${f.file}: ${f.message}`)
+    console.log(`${SEV_LABELS[f.severity].padEnd(8)} ${f.id.padEnd(10)} ${f.file}: ${f.message}${f.ref ? `  (${f.ref})` : ''}`)
   }
   const parts = [Sev.FAIL, Sev.WARN, Sev.POLISH, Sev.PASS]
     .map((s) => `${SEV_LABELS[s]}=${tally[s] ?? 0}`)

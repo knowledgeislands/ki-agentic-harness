@@ -54,7 +54,16 @@ interface Finding {
   severity: Severity
   criterion: string
   message: string
+  // Cited-finding fields: `ref` points at the standard a criterion is judged against,
+  // `file` names the surface/source config a file-scoped finding concerns. Both optional —
+  // an aggregate finding (spanning many files) carries neither.
+  ref?: string
+  file?: string
 }
+
+// The standard every BIND criterion is judged against — the shared `ref` pointer, kept
+// identical to conform.ts so the same criterion cites the same (area, ref) in both surfaces.
+const BIND_REF = 'references/binding-standard.md'
 
 interface ServerEntry {
   name: string
@@ -107,27 +116,28 @@ try {
 }
 
 const findings: Finding[] = []
-const add = (severity: Severity, criterion: string, message: string): void => void findings.push({ severity, criterion, message })
+const add = (severity: Severity, criterion: string, message: string, ref?: string, file?: string): void =>
+  void findings.push({ severity, criterion, message, ref, file })
 
 // BIND-2 — structural validity of the source.
 const universe = new Set<string>()
 for (const [i, e] of entries.entries()) {
   const where = e.name ? `"${e.name}"` : `entry #${i}`
-  if (!e.name) add('WARN', 'BIND-2', `${where} has no \`name\``)
+  if (!e.name) add('WARN', 'BIND-2', `${where} has no \`name\``, BIND_REF, SOURCE)
   else universe.add(e.name)
   const clients = e.clients ?? []
-  if (clients.length === 0) add('WARN', 'BIND-2', `${where} has an empty \`clients\` — targets no surface`)
-  for (const c of clients) if (!RECOGNISED.has(c)) add('WARN', 'BIND-2', `${where} names unrecognised surface \`${c}\``)
+  if (clients.length === 0) add('WARN', 'BIND-2', `${where} has an empty \`clients\` — targets no surface`, BIND_REF, SOURCE)
+  for (const c of clients) if (!RECOGNISED.has(c)) add('WARN', 'BIND-2', `${where} names unrecognised surface \`${c}\``, BIND_REF, SOURCE)
 }
 if (!findings.some((f) => f.criterion === 'BIND-2'))
-  add('PASS', 'BIND-2', `source valid — ${entries.length} servers, all with a name and recognised clients`)
+  add('PASS', 'BIND-2', `source valid — ${entries.length} servers, all with a name and recognised clients`, BIND_REF, SOURCE)
 
 // BIND-1 — each file-editable surface renders exactly the servers whose clients names it.
 for (const s of SURFACES) {
   const expected = new Set([...universe].filter((n) => entries.find((e) => e.name === n)?.clients?.includes(s.token)))
   const cfg = readJson(s.path)
   if (cfg === null) {
-    add('INFO', 'BIND-1', `${s.label} config not present or unreadable (${s.path}) — surface not audited`)
+    add('INFO', 'BIND-1', `${s.label} config not present or unreadable — surface not audited`, BIND_REF, s.path)
     continue
   }
   const presentAll = mcpServerKeys(cfg)
@@ -135,16 +145,24 @@ for (const s of SURFACES) {
   const missing = [...expected].filter((n) => !present.has(n)).sort()
   const stray = [...present].filter((n) => !expected.has(n)).sort()
   if (missing.length === 0 && stray.length === 0) {
-    add('PASS', 'BIND-1', `${s.label} agrees with the source (${expected.size} servers)`)
+    add('PASS', 'BIND-1', `${s.label} agrees with the source (${expected.size} servers)`, BIND_REF, s.path)
   } else {
     if (missing.length)
       add(
         'WARN',
         'BIND-1',
-        `${s.label} missing ${missing.length}: ${missing.join(', ')} — source targets \`${s.token}\` but surface lacks them`
+        `${s.label} missing ${missing.length}: ${missing.join(', ')} — source targets \`${s.token}\` but surface lacks them`,
+        BIND_REF,
+        s.path
       )
     if (stray.length)
-      add('WARN', 'BIND-1', `${s.label} stray ${stray.length}: ${stray.join(', ')} — present but source does not target \`${s.token}\``)
+      add(
+        'WARN',
+        'BIND-1',
+        `${s.label} stray ${stray.length}: ${stray.join(', ')} — present but source does not target \`${s.token}\``,
+        BIND_REF,
+        s.path
+      )
   }
 }
 
@@ -169,7 +187,7 @@ function findCoworkSettings(dir: string, depth = 0): string[] {
 
 const coworkFiles = findCoworkSettings(coworkBase)
 if (coworkFiles.length === 0) {
-  add('INFO', 'BIND-4', `no cowork_settings.json found under ${coworkBase} — Cowork surface not present on this machine`)
+  add('INFO', 'BIND-4', 'no cowork_settings.json found — Cowork surface not present on this machine', BIND_REF, coworkBase)
 } else {
   const unconformed: string[] = []
   for (const path of coworkFiles) {
@@ -181,12 +199,13 @@ if (coworkFiles.length === 0) {
     if (!(on && registered)) unconformed.push(path)
   }
   if (unconformed.length === 0)
-    add('PASS', 'BIND-4', `Cowork agrees — ${COWORK_PLUGIN_KEY} registered + enabled in all ${coworkFiles.length} workspace(s)`)
+    add('PASS', 'BIND-4', `Cowork agrees — ${COWORK_PLUGIN_KEY} registered + enabled in all ${coworkFiles.length} workspace(s)`, BIND_REF)
   else
     add(
       'WARN',
       'BIND-4',
-      `Cowork: ${COWORK_PLUGIN_KEY} not registered/enabled in ${unconformed.length}/${coworkFiles.length} workspace(s) — run conform.ts (then relaunch Cowork)`
+      `Cowork: ${COWORK_PLUGIN_KEY} not registered/enabled in ${unconformed.length}/${coworkFiles.length} workspace(s) — run conform.ts (then relaunch Cowork)`,
+      BIND_REF
     )
 }
 
@@ -195,22 +214,25 @@ if (coworkServers.length > 0)
   add(
     'WARN',
     'BIND-4',
-    `${coworkServers.length} server(s) declare \`cowork\` but MCP servers are deferred (host-local, not sandbox-portable): ${coworkServers.join(', ')} — skills+agents port, servers need separate work`
+    `${coworkServers.length} server(s) declare \`cowork\` but MCP servers are deferred (host-local, not sandbox-portable): ${coworkServers.join(', ')} — skills+agents port, servers need separate work`,
+    BIND_REF
   )
 
 // BIND-3 — compose ki-bootstrap --check for the project's skill half.
 const bootstrap = join(SKILLS_ROOT, 'ki-bootstrap', 'scripts', 'link-skills.ts')
 if (!project) {
-  add('INFO', 'BIND-3', 'no [project] given — skill half (ki-bootstrap) not audited; pass a repo path to include it')
+  add('INFO', 'BIND-3', 'no [project] given — skill half (ki-bootstrap) not audited; pass a repo path to include it', BIND_REF)
 } else if (!existsSync(bootstrap)) {
-  add('INFO', 'BIND-3', `ki-bootstrap checker not found at ${bootstrap} — skill half not audited`)
+  add('INFO', 'BIND-3', 'ki-bootstrap checker not found — skill half not audited', BIND_REF, bootstrap)
 } else {
   const r = spawnSync('bun', [bootstrap, resolve(project), '--check'], { encoding: 'utf8' })
   const ok = r.status === 0
   add(
     ok ? 'PASS' : 'WARN',
     'BIND-3',
-    `ki-bootstrap --check on ${project} ${ok ? 'clean' : `reported findings (exit ${r.status}) — run ki:skills:link:project`}`
+    `ki-bootstrap --check on ${project} ${ok ? 'clean' : `reported findings (exit ${r.status}) — run ki:skills:link:project`}`,
+    BIND_REF,
+    resolve(project)
   )
 }
 
@@ -226,14 +248,17 @@ if (JSON_OUT) {
     target: project ? resolve(project) : SOURCE,
     generatedAt: new Date().toISOString(),
     summary,
-    findings: findings.map((f) => ({ level: f.severity, area: f.criterion, msg: f.message }))
+    findings: findings.map((f) => ({ level: f.severity, area: f.criterion, msg: f.message, ref: f.ref, file: f.file }))
   }
-  process.stdout.write(`${JSON.stringify(wrapper, null, 2)}\n`)
+  process.stdout.write(`${JSON.stringify(wrapper)}\n`)
 } else {
   const colour: Record<Severity, string> = { FAIL: RED, WARN: YELLOW, PASS: GREEN, INFO: DIM }
   process.stdout.write(`\n${DIM}ki-binding — cross-surface audit${RESET}\n${DIM}source: ${SOURCE}${RESET}\n${'─'.repeat(60)}\n`)
-  for (const f of findings)
-    process.stdout.write(`  ${colour[f.severity]}${f.severity.padEnd(4)}${RESET} ${DIM}${f.criterion}${RESET}  ${f.message}\n`)
+  for (const f of findings) {
+    const loc = f.file ? ` ${DIM}${f.file}${RESET}` : ''
+    const cite = f.ref ? ` ${DIM}(${f.ref})${RESET}` : ''
+    process.stdout.write(`  ${colour[f.severity]}${f.severity.padEnd(4)}${RESET} ${DIM}${f.criterion}${RESET}${loc}  ${f.message}${cite}\n`)
+  }
   const n = (s: Severity): number => findings.filter((f) => f.severity === s).length
   process.stdout.write(`${'─'.repeat(60)}\n  FAIL=${n('FAIL')} WARN=${n('WARN')} PASS=${n('PASS')} INFO=${n('INFO')}\n`)
   if (n('FAIL') + n('WARN') > 0)

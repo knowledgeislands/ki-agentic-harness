@@ -28,13 +28,13 @@ _Verify:_ checker-contract.md §1 pins the `bun scripts/audit-<concern>.ts <path
 
 ### CHK-004 — The pinned `--json` wrapper
 
-Under `--json` a checker MUST emit one wrapper object `{ concern, target, generatedAt, summary, findings }` — never a bare array — where each finding carries exactly `level` / `area` / `msg` and `summary` keys are the lowercased ladder names present even at zero, per [ADR-KI-HARNESS-SKILLS-002](../decisions/ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md).
+Under `--json` a checker MUST emit one wrapper object `{ concern, target, generatedAt, summary, findings }` — never a bare array — where each finding carries at least `level` / `area` / `msg` (required) plus optional `ref` / `file`, `area` MUST be a rubric code, and `summary` keys are the lowercased ladder names present even at zero, per [ADR-KI-HARNESS-SKILLS-002](../decisions/ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md).
 
-_Verify:_ checker-contract.md §The `--json` shape pins the wrapper and the `level`/`area`/`msg` field names; a conformant checker's `--json` output validates against it.
+_Verify:_ checker-contract.md §The `--json` shape pins the wrapper and the required `level`/`area`/`msg` plus optional `ref`/`file` field names; a conformant checker's `--json` output validates against it.
 
 ### CHK-005 — The summary tally
 
-A checker with an aggregate count MUST print a one-line summary tally in the canonical `KEY=n` form (`FAIL=n WARN=n POLISH=n PASS=n ADVISORY=n NA=n`, ladder order, subset it tracks); a per-finding checker with no aggregate count is exempt.
+A checker with an aggregate count MUST print a one-line summary tally in the canonical `KEY=n` form (`FAIL=n WARN=n POLISH=n PASS=n ADVISORY=n NA=n`, ladder order, subset it tracks), optionally prefixed by a severity icon, while keeping the `KEY=n` tokens byte-parseable; a per-finding checker with no aggregate count is exempt.
 
 _Verify:_ checker-contract.md §1 pins the `KEY=n` tally; the DR / feature audits are the named per-finding exemptions.
 
@@ -57,3 +57,15 @@ _Verify:_ checker-contract.md §1 pins builtins-only and no cross-skill imports;
 A checker's remediation footer MUST appear only on a non-clean run (any FAIL / WARN / POLISH) and MUST be suppressed under both `--json` and `--report`, so machine consumers receive only the wrapper object, per [ADR-KI-HARNESS-003](../decisions/ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md).
 
 _Verify:_ checker-contract.md §The remediation footer pins the non-clean guard and the `--json`/`--report` suppression; SHAPE-8 surfaces the standardised footer, and a `--json` run of any `audit-*.ts` emits no footer line.
+
+### CHK-009 — Citation completeness
+
+Every FAIL / WARN / POLISH finding MUST carry a resolvable rubric `code` (equal to its `area`) and a `ref` reference-doc pointer, and a file-scoped finding MUST additionally carry the `file` it concerns, per [ADR-KI-HARNESS-SKILLS-002](../decisions/ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md).
+
+_Verify:_ each checker's emitted `area` values are a subset of its `references/audit-rubric.md` codes; a `--json` run's violation-group findings each carry a non-empty `ref`, and file-scoped ones a `file`.
+
+### CHK-010 — Conform is structured
+
+A conform script MUST support `--json`, emitting the CHK-004 wrapper object so the aggregate renders conform and audit identically, per [ADR-KI-HARNESS-SKILLS-002](../decisions/ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md).
+
+_Verify:_ checker-contract.md §The `--json` shape notes conform scripts emit the same wrapper; `bun skills/ki-authoring/scripts/conform.ts . --json` validates against the CHK-004 shape.

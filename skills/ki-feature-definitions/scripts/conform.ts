@@ -20,6 +20,13 @@
  *
  *   bun scripts/conform.ts [path]   # default: cwd (repo root or the features dir)
  *   --dry-run                       # print the plan, mutate nothing
+ *   --json                          # emit the CHK-004 finding wrapper instead of prose
+ *
+ * `--json` reports the same finding wrapper audit.ts emits (CHK-004/010): each action
+ * becomes a finding on the shared ladder — a separator fix → POLISH, nothing-to-fix → PASS,
+ * a manual authoring/judgment TODO → always-on ADVISORY. Each finding pins the SAME
+ * (area, ref) audit.ts uses for that criterion, so the aggregate renders both identically.
+ * `--json` governs *reporting*; `--dry-run` governs *writing* — the two compose.
  *
  * Fixes (unambiguous + reversible only):
  *   - Requirement-heading separator (ID-1): a heading of the form
@@ -62,6 +69,10 @@ const H3_RE = /^###\s+(.+?)\s*$/
 // separator is rewritten to the canonical ` — `.
 const NEAR_MISS_HEADING_RE = /^###\s+([A-Z][A-Z0-9]*(?:-[A-Z][A-Z0-9]*)*-\d{3,})\s*(?:[–—-]{1,2})\s*(\S.*?)\s*$/
 
+// Reference pointer shared by every finding — the audit rubric is the canonical home of every
+// criterion code. Kept identical to audit.ts's RUBRIC for cross-script consistency.
+const RUBRIC = 'references/audit-rubric.md'
+
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
@@ -82,9 +93,22 @@ async function resolveFeaturesDir(target: string): Promise<string> {
 async function main() {
   const argv = process.argv.slice(2)
   const dryRun = argv.includes('--dry-run')
+  const json = argv.includes('--json')
   const target = resolve(argv.find((a) => !a.startsWith('-')) ?? '.')
 
   const resolvedDir = await resolveFeaturesDir(target)
+
+  // Collect-then-emit harness (mirrors audit.ts / ki-authoring's conform). Each action
+  // records a finding; `say` prints the human line only when not in --json mode, so a direct
+  // run streams prose while the aggregate consumes the single-line wrapper. area is the rubric
+  // code, ref its reference pointer, file the feature-doc an action concerns (CHK-004/010).
+  type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+  type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
+  const findings: Finding[] = []
+  const rec = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
+  const say = (line: string): void => {
+    if (!json) console.log(line)
+  }
 
   try {
     await stat(resolvedDir)
@@ -94,15 +118,13 @@ async function main() {
     return
   }
 
-  console.log(paint(C.dim, `target: ${resolvedDir}${dryRun ? '   (dry run)' : ''}\n`))
+  say(paint(C.dim, `target: ${resolvedDir}${dryRun ? '   (dry run)' : ''}\n`))
 
   const entries = await readdir(resolvedDir)
   const areaFiles = entries.filter((f) => f.endsWith('.md') && f !== INDEX_FILE).sort()
 
-  const manualTodos: string[] = []
-
   // ── requirement-heading separator normalization (ID-1, the fixable subset) ──
-  console.log(paint(C.cyan, 'requirement-heading separator (→ canonical “ — ”)'))
+  say(paint(C.cyan, 'requirement-heading separator (→ canonical “ — ”)'))
   let headingFixes = 0
   for (const file of areaFiles) {
     const filePath = join(resolvedDir, file)
@@ -128,7 +150,8 @@ async function main() {
       const title = near[2] as string
       const canonical = `### ${id} — ${title}`
       if (canonical === line) continue
-      console.log(`  ${paint(C.green, 'fix')}   ${file} — ${id}: normalize separator to “ — ”`)
+      rec('POLISH', 'ID-1', `${id}: separator normalized to “ — ”${dryRun ? ' (dry run — not written)' : ''}`, RUBRIC, file)
+      say(`  ${paint(C.green, 'fix')}   ${file} — ${id}: normalize separator to “ — ”`)
       lines[i] = canonical
       changed = true
       headingFixes++
@@ -136,25 +159,49 @@ async function main() {
 
     if (changed && !dryRun) await writeFile(filePath, lines.join('\n'))
   }
-  if (headingFixes === 0) console.log(`  ${paint(C.dim, 'nothing to fix')}`)
+  if (headingFixes === 0) {
+    rec('PASS', 'ID-1', 'requirement-heading separators already canonical (nothing to fix)', RUBRIC)
+    say(`  ${paint(C.dim, 'nothing to fix')}`)
+  }
 
-  // ── judgment / authoring items — never guessed, always surfaced ──
-  console.log(`\n${paint(C.cyan, 'manual TODOs (authoring / judgment — not scripted)')}`)
-  manualTodos.push('INDEX-1 — if docs/features/index.md is missing, author it by hand (the registry).')
-  manualTodos.push('INDEX-2 — if index.md has no areas table (Prefix + File columns), author one.')
-  manualTodos.push('AREA-1 — a file named in an areas table but absent on disk: create it, or drop the row.')
-  manualTodos.push('AREA-2 — an area file not registered in the areas table: add its row (Area/prefix/file) by hand.')
-  manualTodos.push('ID-1 — a level-3 heading that is not a recognisable `### <PREFIX>-NNN — title`: author the ID.')
-  manualTodos.push('ID-2 — a requirement whose prefix is unregistered or registered to another file: reconcile the areas table.')
-  manualTodos.push('ID-3 — a duplicate ID (append-only): renumber the newcomer with the next free serial.')
-  manualTodos.push('REQ-1 — a requirement with no RFC-2119 keyword (MUST / SHOULD / MAY …): write the normative statement.')
-  manualTodos.push('VERIFY-1 — a requirement with no `_Verify:_` line: add a concrete, checkable test hook.')
-  for (const todo of manualTodos) console.log(`  - ${todo}`)
-  console.log(`  ${paint(C.dim, 'Run the audit for the exact files/lines each applies to.')}`)
+  // ── judgment / authoring items — never guessed, always surfaced as ADVISORY ──
+  say(`\n${paint(C.cyan, 'manual TODOs (authoring / judgment — not scripted)')}`)
+  const manualTodos: Array<[string, string]> = [
+    ['INDEX-1', 'if docs/features/index.md is missing, author it by hand (the registry).'],
+    ['INDEX-2', 'if index.md has no areas table (Prefix + File columns), author one.'],
+    ['AREA-1', 'a file named in an areas table but absent on disk: create it, or drop the row.'],
+    ['AREA-2', 'an area file not registered in the areas table: add its row (Area/prefix/file) by hand.'],
+    ['ID-1', 'a level-3 heading that is not a recognisable `### <PREFIX>-NNN — title`: author the ID.'],
+    ['ID-2', 'a requirement whose prefix is unregistered or registered to another file: reconcile the areas table.'],
+    ['ID-3', 'a duplicate ID (append-only): renumber the newcomer with the next free serial.'],
+    ['REQ-1', 'a requirement with no RFC-2119 keyword (MUST / SHOULD / MAY …): write the normative statement.'],
+    ['VERIFY-1', 'a requirement with no `_Verify:_` line: add a concrete, checkable test hook.']
+  ]
+  for (const [code, todo] of manualTodos) {
+    rec('ADVISORY', code, todo, RUBRIC)
+    say(`  - ${code} — ${todo}`)
+  }
+  say(`  ${paint(C.dim, 'Run the audit for the exact files/lines each applies to.')}`)
 
-  console.log(
+  say(
     `\n${paint(C.dim, 'normalize layer applied — re-run `bun scripts/audit.ts` (or `ki:feature-definitions:audit`) to confirm findings clear.')}`
   )
+
+  if (json) {
+    const n = (l: Level): number => findings.filter((f) => f.level === l).length
+    const summary = {
+      fail: n('FAIL'),
+      warn: n('WARN'),
+      polish: n('POLISH'),
+      advisory: n('ADVISORY'),
+      info: n('INFO'),
+      na: n('NA'),
+      pass: n('PASS')
+    }
+    process.stdout.write(
+      JSON.stringify({ concern: 'feature-definitions', target: resolvedDir, generatedAt: new Date().toISOString(), summary, findings })
+    )
+  }
 }
 
 main().catch((err) => {

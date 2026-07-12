@@ -36,15 +36,24 @@ const SEV_LABELS: Record<number, string> = {
   6: 'PASS'
 }
 
+// Every finding carries the rubric CODE (area/check), a human message, the feature-doc it
+// concerns (file, when file-scoped), and a reference pointer (ref) to where the criterion is
+// documented — the cited-finding standard (CHK-004/009/010). conform.ts pins the SAME
+// (area, ref) per criterion so the aggregate renders both identically.
 interface Finding {
   check: string
   severity: Sev
   file: string
   message: string
+  ref: string
 }
 
 const DEFAULT_DIR = 'docs/features'
 const INDEX_FILE = 'index.md'
+
+// Reference pointer shared by every finding: the audit rubric is the canonical home of every
+// criterion code and its severity. Kept identical in conform.ts for cross-script consistency.
+const RUBRIC = 'references/audit-rubric.md'
 
 // RFC-2119 requirement keywords (BCP 14). Matched case-sensitively as whole words so
 // prose "must" (lowercase) does not count — a normative statement uses the uppercase form.
@@ -122,18 +131,14 @@ async function main() {
   if (!existsSync(candidate) && !existsSync(join(resolvedDir, INDEX_FILE))) {
     const msg = 'no docs/features/ — repo is not governed by feature-definitions'
     if (jsonMode) {
-      console.log(
-        JSON.stringify(
-          {
-            concern: 'feature-definitions',
-            target: featuresDir,
-            generatedAt: new Date().toISOString(),
-            summary: { fail: 0, warn: 0, polish: 0, advisory: 0, info: 0, na: 1, pass: 0 },
-            findings: [{ level: 'NA', area: 'scope', msg }]
-          },
-          null,
-          2
-        )
+      process.stdout.write(
+        JSON.stringify({
+          concern: 'feature-definitions',
+          target: featuresDir,
+          generatedAt: new Date().toISOString(),
+          summary: { fail: 0, warn: 0, polish: 0, advisory: 0, info: 0, na: 1, pass: 0 },
+          findings: [{ level: 'NA', area: 'scope', msg, ref: RUBRIC }]
+        })
       )
     } else {
       console.log(`NA       [scope] ${msg}`)
@@ -149,7 +154,8 @@ async function main() {
   }
 
   const findings: Finding[] = []
-  const add = (check: string, severity: Sev, file: string, message: string) => findings.push({ check, severity, file, message })
+  const add = (check: string, severity: Sev, file: string, message: string, ref: string = RUBRIC) =>
+    findings.push({ check, severity, file, message, ref })
 
   const entries = await readdir(resolvedDir)
   const areaFiles = entries.filter((f) => f.endsWith('.md') && f !== INDEX_FILE).sort()
@@ -235,18 +241,14 @@ async function main() {
   if (jsonMode) {
     const summary = { fail: 0, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: 0 }
     for (const f of findings) summary[(SEV_LABELS[f.severity] ?? '').toLowerCase() as keyof typeof summary]++
-    console.log(
-      JSON.stringify(
-        {
-          concern: 'feature-definitions',
-          target: featuresDir,
-          generatedAt: new Date().toISOString(),
-          summary,
-          findings: findings.map((f) => ({ level: SEV_LABELS[f.severity], area: f.check, msg: `${f.file}: ${f.message}` }))
-        },
-        null,
-        2
-      )
+    process.stdout.write(
+      JSON.stringify({
+        concern: 'feature-definitions',
+        target: featuresDir,
+        generatedAt: new Date().toISOString(),
+        summary,
+        findings: findings.map((f) => ({ level: SEV_LABELS[f.severity], area: f.check, msg: f.message, ref: f.ref, file: f.file }))
+      })
     )
     process.exit(findings.some((f) => f.severity === Sev.FAIL) ? 1 : 0)
   }
@@ -255,7 +257,9 @@ async function main() {
   let hasFail = false
   for (let sev = Sev.FAIL; sev <= Sev.PASS; sev++) {
     for (const f of findings.filter((x) => x.severity === sev)) {
-      console.log(`${(SEV_LABELS[f.severity] ?? String(f.severity)).padEnd(8)} [${f.check}] ${f.file}: ${f.message}`)
+      console.log(
+        `${(SEV_LABELS[f.severity] ?? String(f.severity)).padEnd(8)} [${f.check}]${f.file ? ` ${f.file}` : ''} ${f.message}${f.ref ? ` (${f.ref})` : ''}`
+      )
       if (sev === Sev.FAIL) hasFail = true
     }
   }

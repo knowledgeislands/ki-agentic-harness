@@ -22,6 +22,15 @@ A criterion's tag is a contract with the checker: an **[M]** check is run by `au
 - **CONFIG-2 [M]** A zone alias mapping a zone to its **own canonical name** (`Pillars = "Pillars"`) is redundant — advise dropping it.
 - **CONFIG-3 [M]** A key under `[ki-kb.zones]` that is **not a canonical zone name** (a typo, a stale entry) warns.
 - **CONFIG-4 [M]** Only this skill's own table is read; another skill's `[table]` is never inspected. (A declared alias whose folder is absent surfaces via **ZONE-1**, since zones resolve through the alias.)
+- **CONFIG-5 [M]** A recognised `preflight = [...]` array (note paths/globs to read before drafting) resolves under the base — a literal (non-glob) entry that names no existing path warns; glob entries are left to runtime.
+
+## ADMIN — Admin-zone subdivisions
+
+→ [SKILL: The Admin zone](../SKILL.md)
+
+- **ADMIN-1 [M]** The canonical Admin subdivisions `Governance/` and `Operations/` are opt-in: each is checked only advisorily — an absent subdivision, or one present but missing its same-name index note, warns (create when that concern becomes active).
+- **ADMIN-2 [M]** When `Admin/Governance/` is present, it carries `Charter.md` (the base's scope, purpose, owner); absent warns.
+- **ADMIN-3 [M]** When `Admin/Governance/` is present, it carries `Conformance.md` (the active skills and their adoption date); absent warns.
 
 ## ROUTE — routing & placement
 

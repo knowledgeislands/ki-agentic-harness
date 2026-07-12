@@ -17,6 +17,12 @@
  *
  *   bun scripts/conform.ts [path]   # default: cwd (a project or a KB base)
  *   --dry-run                       # no-op here (this conform never mutates), banner only
+ *   --json                          # emit the shared finding wrapper instead of prose
+ *
+ * Because it writes nothing, every finding it surfaces is a manual/judgment TODO —
+ * level ADVISORY on the shared ladder — split into a concrete section (defects the
+ * mechanical scan located in this repo) and a judgment section (the [J] rubric). The
+ * `--json` wrapper mirrors audit.ts's: { concern, target, generatedAt, summary, findings }.
  *
  * Manual TODOs it surfaces (derived from audit.ts's finding areas):
  *   - SURF-1  broken `@import` in a project CLAUDE.md — concrete path listed; fixing
@@ -41,6 +47,20 @@ import { basename, dirname, isAbsolute, join, resolve } from 'node:path'
 // ── colour helpers (same style as audit.ts) ──
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
+
+// ── collect-then-emit harness (mirrors audit.ts / ki-authoring conform) ──
+// This conform is NORMALIZE-ONLY: it writes nothing, so every finding is a manual
+// or judgment TODO — level ADVISORY (or INFO where merely informational). area is
+// the FINE rubric code kept in lockstep with audit.ts; ref the reference-doc
+// pointer; file the path a file-scoped TODO concerns. `say` prints the human line
+// only outside --json, so a direct run streams prose while the aggregate consumes
+// the wrapper.
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
+const findings: Finding[] = []
+const rec = (level: Level, area: string, msg: string, ref?: string, file?: string): void =>
+  void findings.push({ level, area, msg, ref, file })
+const RUBRIC = 'references/audit-rubric.md'
 
 // ── kept in lockstep with audit.ts ──
 const KI_SECTION = 'ki-tokenomics'
@@ -150,79 +170,127 @@ function foreignLearnRoots(target: string): { repos: string[]; lines: number } {
 function main(): number {
   const argv = process.argv.slice(2)
   const dryRun = argv.includes('--dry-run')
+  const json = argv.includes('--json')
   const target = resolve(argv.find((a) => !a.startsWith('-')) ?? '.')
+  const say = (line: string): void => {
+    if (!json) console.log(line)
+  }
 
   if (!existsSync(target)) {
     console.error(paint(C.red, `target path not found: ${target}`))
     return 1
   }
 
-  console.log(paint(C.dim, `target: ${target}${dryRun ? '   (dry run)' : ''}`))
-  console.log(
-    paint(C.dim, 'ki-tokenomics conform is normalize-only — it applies no automatic edits; every gap needs a human trim or choice.\n')
-  )
+  say(paint(C.dim, `target: ${target}${dryRun ? '   (dry run)' : ''}`))
+  say(paint(C.dim, 'ki-tokenomics conform is normalize-only — it applies no automatic edits; every gap needs a human trim or choice.\n'))
 
-  const todos: string[] = []
+  // ── manual TODOs (concrete — derived from this repo's state) — all ADVISORY (nothing is written) ──
+  say(paint(C.cyan, 'manual TODOs (concrete — from this repo)'))
+  let concrete = 0
+  const todo = (area: string, msg: string, file?: string): void => {
+    concrete++
+    rec('ADVISORY', area, msg, RUBRIC, file)
+    say(`  ${paint(C.yellow, '-')} [${area}]${file ? ` ${file}` : ''} ${msg}`)
+  }
 
   // ── SURF-1: broken @imports in the project CLAUDE.md (+ AGENTS.md) ──
   for (const name of ['CLAUDE.md', 'AGENTS.md']) {
     const file = join(target, name)
     if (!existsSync(file)) continue
     for (const b of brokenImports(file)) {
-      todos.push(`SURF-1 — ${name} has an unresolved @import "${b}" (broken include); repair the path or drop the include`)
+      todo('SURF-1', `${name} has an unresolved @import "${b}" (broken include); repair the path or drop the include`, name)
     }
   }
 
   // ── TOOL-4: foreign headroom:learn roots ──
   const { repos, lines } = foreignLearnRoots(target)
   if (repos.length > 0) {
-    todos.push(
-      `TOOL-4 — CLAUDE.md headroom:learn block has ${lines} line(s) rooted in other repo(s) (${repos.join(', ')}); re-learn here or prune`
+    todo(
+      'TOOL-4',
+      `CLAUDE.md headroom:learn block has ${lines} line(s) rooted in other repo(s) (${repos.join(', ')}); re-learn here or prune`,
+      'CLAUDE.md'
     )
   }
 
   // ── CFG: [ki-tokenomics] table defects ──
   const kiText = readText(join(target, '.ki-config.toml'))
   if (kiText == null) {
-    todos.push('CFG — no .ki-config.toml at target; a KI repo needs one (see ki-repo). Then run INIT to add the [ki-tokenomics] table')
+    todo(
+      'CFG-2',
+      'no .ki-config.toml at target; a KI repo needs one (see ki-repo), then run INIT to add the [ki-tokenomics] table',
+      '.ki-config.toml'
+    )
   } else {
     const ki = parseKiConfig(kiText)
     if (!ki.present) {
-      todos.push(`CFG-2 — no [${KI_SECTION}] table in .ki-config.toml; run \`bun scripts/init.ts\` / \`--init\` to scaffold it, then tune`)
+      todo(
+        'CFG-2',
+        `no [${KI_SECTION}] table in .ki-config.toml; run \`bun scripts/init.ts\` / \`--init\` to scaffold it, then tune`,
+        '.ki-config.toml'
+      )
     } else {
-      if (ki.headroomBad) todos.push(`CFG-1 — headroom = "${ki.headroomBad}" invalid; set one of ${HEADROOM_VALUES.join(' / ')}`)
-      if (ki.modelTierBad) todos.push(`CFG-4 — preferred_model = "${ki.modelTierBad}" invalid; set one of ${MODEL_TIER_VALUES.join(' / ')}`)
+      if (ki.headroomBad)
+        todo('CFG-1', `headroom = "${ki.headroomBad}" invalid; set one of ${HEADROOM_VALUES.join(' / ')}`, '.ki-config.toml')
+      if (ki.modelTierBad)
+        todo('CFG-4', `preferred_model = "${ki.modelTierBad}" invalid; set one of ${MODEL_TIER_VALUES.join(' / ')}`, '.ki-config.toml')
       else if (!ki.modelTier)
-        todos.push(`CFG-4 — preferred_model not declared in [${KI_SECTION}]; add the default tier (${MODEL_TIER_VALUES.join(' / ')})`)
+        todo(
+          'CFG-4',
+          `preferred_model not declared in [${KI_SECTION}]; add the default tier (${MODEL_TIER_VALUES.join(' / ')})`,
+          '.ki-config.toml'
+        )
       for (const k of ki.unknownKeys)
-        todos.push(`CFG-1 — unrecognised key "${k}" in [${KI_SECTION}] (validate-down); remove it or move it to its own table`)
-      for (const k of ki.badBudgets) todos.push(`CFG-1 — "${k}" has a non-numeric/invalid value in [${KI_SECTION}]; set a number`)
+        todo(
+          'CFG-1',
+          `unrecognised key "${k}" in [${KI_SECTION}] (validate-down); remove it or move it to its own table`,
+          '.ki-config.toml'
+        )
+      for (const k of ki.badBudgets)
+        todo('CFG-1', `"${k}" has a non-numeric/invalid value in [${KI_SECTION}]; set a number`, '.ki-config.toml')
     }
   }
 
-  // ── report the concrete TODOs ──
-  console.log(paint(C.cyan, 'manual TODOs (concrete — from this repo)'))
-  if (todos.length === 0) {
-    console.log(`  ${paint(C.dim, 'none found by the mechanical scan')}`)
-  } else {
-    for (const t of todos) console.log(`  ${paint(C.yellow, '-')} ${t}`)
+  if (concrete === 0) say(`  ${paint(C.dim, 'none found by the mechanical scan')}`)
+
+  // ── judgment TODOs — the [J] rubric the script cannot decide, always surfaced (ADVISORY) ──
+  say(`\n${paint(C.cyan, 'judgment TODOs (re-run AUDIT, apply the [J] rubric by reading)')}`)
+  for (const [area, p] of [
+    [
+      'SURF-4',
+      'does each heavy CLAUDE.md / memory entry EARN its tokens, or restate what the model knows / belong in an on-demand file? Lift it out.'
+    ],
+    ['BUDG-3', 'any sustained budget overage is either trimmed or a deliberate, recorded decision — not waved-off drift.'],
+    [
+      'MCP-2',
+      'is each configured MCP server actually used here? Disable/scope unused or over-broad servers (keep tool search on); this is usually the biggest lever.'
+    ],
+    ['RUN-2', 'prompt-cache hits, model tier vs work value, autocompact + sub-agent fan-out, tool-result verbosity.'],
+    [
+      'TOOL-3',
+      'where Headroom is present, confirm the reversible store (CCR) + cache-aligner + output-shaper are set optimally (keys undocumented — judgment).'
+    ]
+  ] as const) {
+    rec('ADVISORY', area, p, RUBRIC)
+    say(`  ${paint(C.dim, `- [${area}] ${p}`)}`)
   }
 
-  // ── judgment pointers — the [J] rubric the script cannot decide ──
-  console.log(`\n${paint(C.cyan, 'judgment TODOs (re-run AUDIT, apply the [J] rubric by reading)')}`)
-  for (const p of [
-    'SURF-4 — does each heavy CLAUDE.md / memory entry EARN its tokens, or restate what the model knows / belong in an on-demand file? Lift it out.',
-    'BUDG-3 — any sustained budget overage is either trimmed or a deliberate, recorded decision — not waved-off drift.',
-    'MCP-2/3 — is each configured MCP server actually used here? Disable/scope unused or over-broad servers (keep tool search on); this is usually the biggest lever.',
-    'RUN-1/2/3/4 — prompt-cache hits, model tier vs work value, autocompact + sub-agent fan-out, tool-result verbosity.',
-    'TOOL-3 — where Headroom is present, confirm the reversible store (CCR) + cache-aligner + output-shaper are set optimally (keys undocumented — judgment).'
-  ]) {
-    console.log(`  ${paint(C.dim, `- ${p}`)}`)
-  }
-
-  console.log(
+  say(
     `\n${paint(C.dim, 'no edits applied (normalize-only) — make the trims/choices above by hand, then re-run `bun scripts/audit.ts` (or `ki:tokenomics:audit`) to confirm they clear.')}`
   )
+
+  if (json) {
+    const n = (l: Level): number => findings.filter((f) => f.level === l).length
+    const summary = {
+      fail: n('FAIL'),
+      warn: n('WARN'),
+      polish: n('POLISH'),
+      advisory: n('ADVISORY'),
+      info: n('INFO'),
+      na: n('NA'),
+      pass: n('PASS')
+    }
+    process.stdout.write(JSON.stringify({ concern: 'tokenomics', target, generatedAt: new Date().toISOString(), summary, findings }))
+  }
   return 0
 }
 

@@ -46,6 +46,16 @@ const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.ki-meta', '.attic',
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
+// Collect-then-emit harness (mirrors audit.ts). Each action records a finding; `say`
+// (defined in main once --json is parsed) prints the human line only when not in --json
+// mode. area is the rubric code, ref its reference-doc pointer, file the path an action
+// concerns (CHK-004/009/010). --json governs *reporting*; --dry-run governs *writing*.
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
+const findings: Finding[] = []
+const rec = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
+const STANDARD = 'references/handoffs-standard.md'
+
 async function walk(dir: string, out: string[]): Promise<void> {
   for (const e of await readdir(dir, { withFileTypes: true })) {
     if (e.isDirectory()) {
@@ -74,7 +84,11 @@ function parseFrontmatter(fmBody: string): Record<string, string> {
 async function main() {
   const argv = process.argv.slice(2)
   const dryRun = argv.includes('--dry-run')
+  const json = argv.includes('--json')
   const target = resolve(argv.find((a) => !a.startsWith('-')) ?? '.')
+  const say = (line: string): void => {
+    if (!json) console.log(line)
+  }
 
   try {
     await stat(target)
@@ -84,7 +98,7 @@ async function main() {
     return
   }
 
-  console.log(paint(C.dim, `target: ${target}${dryRun ? '   (dry run)' : ''}\n`))
+  say(paint(C.dim, `target: ${target}${dryRun ? '   (dry run)' : ''}\n`))
 
   const files: string[] = []
   if ((await stat(target)).isDirectory()) await walk(target, files)
@@ -95,7 +109,7 @@ async function main() {
   let optedIn = 0
   let readinessFixes = 0
 
-  console.log(paint(C.cyan, 'readiness marker (HAND-3)'))
+  say(paint(C.cyan, 'readiness marker (HAND-3)'))
   for (const path of files) {
     const content = await readFile(path, 'utf8')
     const fmMatch = content.match(/^---\n([\s\S]*?)\n---/)
@@ -107,44 +121,79 @@ async function main() {
     const body = content.slice(fmMatch[0].length)
 
     // HAND-1: valid tier — judgment, never guessed.
-    if (!fm.tier) manualTodos.push(`${rel}: HAND-1 — add 'tier' frontmatter (haiku | sonnet | opus): the cheapest tier the spec makes safe`)
-    else if (!VALID_TIERS.has(fm.tier))
-      manualTodos.push(`${rel}: HAND-1 — tier '${fm.tier}' is out-of-set; set it to one of haiku | sonnet | opus`)
+    if (!fm.tier) {
+      const msg = `${rel}: HAND-1 — add 'tier' frontmatter (haiku | sonnet | opus): the cheapest tier the spec makes safe`
+      manualTodos.push(msg)
+      rec('ADVISORY', 'HAND-1', msg, STANDARD, rel)
+    } else if (!VALID_TIERS.has(fm.tier)) {
+      const msg = `${rel}: HAND-1 — tier '${fm.tier}' is out-of-set; set it to one of haiku | sonnet | opus`
+      manualTodos.push(msg)
+      rec('ADVISORY', 'HAND-1', msg, STANDARD, rel)
+    }
 
     // HAND-2: decisions section naming both locked and escalate — authoring, never guessed.
     const hasDecisionsHeading = /^#{2,}\s+.*decisions/im.test(body)
     const namesLocked = /locked/i.test(body)
     const namesEscalate = /escalate/i.test(body)
-    if (!hasDecisionsHeading)
-      manualTodos.push(`${rel}: HAND-2 — add a '## Decisions' section splitting locked (closed) from escalate (needs owner)`)
-    else if (!(namesLocked && namesEscalate))
-      manualTodos.push(`${rel}: HAND-2 — decisions section must name both 'locked' and 'escalate' (use "Escalate: none" if empty)`)
+    if (!hasDecisionsHeading) {
+      const msg = `${rel}: HAND-2 — add a '## Decisions' section splitting locked (closed) from escalate (needs owner)`
+      manualTodos.push(msg)
+      rec('ADVISORY', 'HAND-2', msg, STANDARD, rel)
+    } else if (!(namesLocked && namesEscalate)) {
+      const msg = `${rel}: HAND-2 — decisions section must name both 'locked' and 'escalate' (use "Escalate: none" if empty)`
+      manualTodos.push(msg)
+      rec('ADVISORY', 'HAND-2', msg, STANDARD, rel)
+    }
 
     // HAND-3: readiness marker — the one safe normalize (add readiness: pending).
     const hasReadiness = 'readiness' in fm || /^#{2,}\s+readiness/im.test(body) || /\[[ xX]\]\s*readiness test/i.test(body)
     if (!hasReadiness) {
       const newContent = content.replace(fmMatch[0], `---\n${fmMatch[1]}\nreadiness: pending\n---`)
-      console.log(`  ${paint(C.green, 'fix')}   ${rel} — add readiness: pending (cold-agent test not yet run)`)
+      rec('POLISH', 'HAND-3', `${rel} — added readiness: pending (cold-agent test not yet run)`, STANDARD, rel)
+      say(`  ${paint(C.green, 'fix')}   ${rel} — add readiness: pending (cold-agent test not yet run)`)
       if (!dryRun) await writeFile(path, newContent)
       readinessFixes++
     }
   }
-  if (optedIn === 0) console.log(`  ${paint(C.dim, 'no handoff-opted-in artifacts (handoff: true) — nothing to conform')}`)
-  else if (readinessFixes === 0) console.log(`  ${paint(C.dim, 'nothing to fix')}`)
+  if (optedIn === 0) {
+    rec('INFO', 'scope', 'no handoff-opted-in artifacts (handoff: true) — nothing to conform')
+    say(`  ${paint(C.dim, 'no handoff-opted-in artifacts (handoff: true) — nothing to conform')}`)
+  } else if (readinessFixes === 0) {
+    rec('PASS', 'HAND-3', 'readiness markers already present — nothing to fix', STANDARD)
+    say(`  ${paint(C.dim, 'nothing to fix')}`)
+  }
 
   // ── judgment items — never guessed, always surfaced ──
-  console.log(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
+  say(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
   if (manualTodos.length === 0) {
-    console.log(`  ${paint(C.dim, 'none')}`)
+    say(`  ${paint(C.dim, 'none')}`)
   } else {
-    for (const todo of manualTodos) console.log(`  - ${todo}`)
+    for (const todo of manualTodos) say(`  - ${todo}`)
   }
-  console.log(
+  rec(
+    'ADVISORY',
+    'judgment',
+    'Everything else audit.ts flags (HAND-4..8: closed decisions, definition-of-done, tier fit, real readiness, ki-tokenomics deferral) is doctrine judgment — read and assess.',
+    'references/audit-rubric.md'
+  )
+  say(
     `  - Everything else audit.ts flags (HAND-4..8: closed decisions, definition-of-done, tier fit, real readiness, ki-tokenomics deferral) is doctrine judgment — read and assess.`
   )
-  console.log(
-    `\n${paint(C.dim, 'normalize layer applied — re-run `bun scripts/audit.ts` (or `ki:handoffs:audit`) to confirm findings clear.')}`
-  )
+  say(`\n${paint(C.dim, 'normalize layer applied — re-run `bun scripts/audit.ts` (or `ki:handoffs:audit`) to confirm findings clear.')}`)
+
+  if (json) {
+    const n = (l: Level): number => findings.filter((f) => f.level === l).length
+    const summary = {
+      fail: n('FAIL'),
+      warn: n('WARN'),
+      polish: n('POLISH'),
+      advisory: n('ADVISORY'),
+      info: n('INFO'),
+      na: n('NA'),
+      pass: n('PASS')
+    }
+    process.stdout.write(JSON.stringify({ concern: 'handoffs', target, generatedAt: new Date().toISOString(), summary, findings }))
+  }
 }
 
 main().catch((err) => {

@@ -32,11 +32,17 @@ const SEV_LABELS: Record<number, string> = {
   6: 'PASS'
 }
 
+// Every criterion in this checker traces to the one reference doc, so `ref` is a
+// constant pointer; `file` carries the DR path a finding concerns (file-scoped).
+// Both surface in the CHK-004 `--json` wrapper and the human render.
+const REF = 'references/audit-rubric.md'
+
 interface Finding {
   check: string
   severity: Sev
   file: string
   message: string
+  ref?: string
 }
 
 const PREFIX_TO_TYPE: Record<string, string> = {
@@ -128,7 +134,8 @@ async function main() {
   const indexFile = kbMode ? 'Decisions.md' : 'README.md'
   const findings: Finding[] = []
 
-  const add = (check: string, severity: Sev, file: string, message: string) => findings.push({ check, severity, file, message })
+  const add = (check: string, severity: Sev, file: string, message: string, ref: string = REF) =>
+    findings.push({ check, severity, file, message, ref })
 
   // INDEX-1
   const hasIndex = entries.includes(indexFile)
@@ -330,17 +337,13 @@ async function main() {
     const summary = { fail: 0, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: 0 }
     for (const f of findings) summary[(SEV_LABELS[f.severity] ?? '').toLowerCase() as keyof typeof summary]++
     console.log(
-      JSON.stringify(
-        {
-          concern: 'decision-records',
-          target: decisionsDir,
-          generatedAt: new Date().toISOString(),
-          summary,
-          findings: findings.map((f) => ({ level: SEV_LABELS[f.severity], area: f.check, msg: `${f.file}: ${f.message}` }))
-        },
-        null,
-        2
-      )
+      JSON.stringify({
+        concern: 'decision-records',
+        target: decisionsDir,
+        generatedAt: new Date().toISOString(),
+        summary,
+        findings: findings.map((f) => ({ level: SEV_LABELS[f.severity], area: f.check, msg: f.message, ref: f.ref, file: f.file }))
+      })
     )
     process.exit(findings.some((f) => f.severity === Sev.FAIL) ? 1 : 0)
   }
@@ -351,7 +354,7 @@ async function main() {
     const group = findings.filter((f) => f.severity === sev)
     for (const f of group) {
       const label = SEV_LABELS[f.severity] ?? String(f.severity)
-      console.log(`${label.padEnd(8)} [${f.check}] ${f.file}: ${f.message}`)
+      console.log(`${label.padEnd(8)} [${f.check}]${f.file ? ` ${f.file}` : ''} ${f.message}${f.ref ? ` (${f.ref})` : ''}`)
       if (sev === Sev.FAIL) hasFail = true
     }
   }

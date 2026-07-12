@@ -15,7 +15,13 @@
  *
  *   bun scripts/conform.ts [path]        # default: cwd
  *   --dry-run                            # print the plan, mutate nothing
+ *   --json                               # emit the cited-finding wrapper instead of prose
  *   --harness <path>                     # harness root, for slash-command skill TODOs
+ *
+ * `--json` reports the same finding wrapper audit.ts emits (cited-finding shape): each
+ * action becomes a finding on the shared ladder (index entry appended/created → POLISH,
+ * already-listed → PASS, judgment/manual-TODO → ADVISORY). `--json` governs *reporting*,
+ * `--dry-run` governs *writing* — the two compose (a --json run still writes).
  *
  * Fixes (unambiguous, reversible):
  *   - `Activities.md` index (ACT-S-1): an activity note present on disk with no
@@ -49,6 +55,12 @@ const DEFAULT_ACTIVITIES_DIR = 'Admin/Operations/Activities'
 
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
+
+// Cited-finding shape, shared with audit.ts: `area` is the rubric CODE, `ref` its
+// reference-doc pointer, `file` the path an action concerns (mirrors ki-authoring conform).
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
+const RUBRIC = 'references/audit-rubric.md'
 
 const isDir = (p: string): boolean => existsSync(p) && statSync(p).isDirectory()
 const isFile = (p: string): boolean => existsSync(p) && statSync(p).isFile()
@@ -84,6 +96,7 @@ function walkMd(dir: string): string[] {
 function main(): void {
   const argv = process.argv.slice(2)
   const dryRun = argv.includes('--dry-run')
+  const json = argv.includes('--json')
   let harnessPath: string | null = null
   let basePath = '.'
   for (let i = 0; i < argv.length; i++) {
@@ -94,17 +107,45 @@ function main(): void {
     }
   }
 
+  // Collect-then-emit harness (mirrors ki-authoring conform): each action records a finding;
+  // `say` prints the human line only when not in --json mode, so a direct run streams prose
+  // while the aggregate consumes the wrapper. `--json` still writes — only --dry-run gates writes.
+  const findings: Finding[] = []
+  const rec = (level: Level, area: string, msg: string, ref?: string, file?: string): number =>
+    findings.push({ level, area, msg, ref, file })
+  const say = (line: string): void => {
+    if (!json) console.log(line)
+  }
+  const emitJson = (): void => {
+    if (!json) return
+    const n = (l: Level): number => findings.filter((x) => x.level === l).length
+    const summary = {
+      fail: n('FAIL'),
+      warn: n('WARN'),
+      polish: n('POLISH'),
+      advisory: n('ADVISORY'),
+      info: n('INFO'),
+      na: n('NA'),
+      pass: n('PASS')
+    }
+    process.stdout.write(JSON.stringify({ concern: 'kb-activities', target, generatedAt: new Date().toISOString(), summary, findings }))
+  }
+
   const base = resolve(basePath)
+  const target = base
   if (!isDir(base)) {
     console.error(paint(C.red, `not a directory: ${base}`))
     process.exit(1)
   }
 
   const activitiesDir = join(base, DEFAULT_ACTIVITIES_DIR)
-  console.log(paint(C.dim, `target: ${activitiesDir}${dryRun ? '   (dry run)' : ''}\n`))
+  const indexRel = `${DEFAULT_ACTIVITIES_DIR}/${ACTIVITIES_INDEX}`
+  say(paint(C.dim, `target: ${activitiesDir}${dryRun ? '   (dry run)' : ''}\n`))
 
   if (!isDir(activitiesDir)) {
-    console.log(paint(C.dim, `${DEFAULT_ACTIVITIES_DIR}/ not found — no activities to conform`))
+    rec('NA', 'ACT-S-2', 'no activities directory — nothing to conform', RUBRIC, `${DEFAULT_ACTIVITIES_DIR}/`)
+    say(paint(C.dim, `${DEFAULT_ACTIVITIES_DIR}/ not found — no activities to conform`))
+    emitJson()
     return
   }
 
@@ -114,11 +155,17 @@ function main(): void {
   let indexContent = hasIndex ? readFileSync(indexPath, 'utf8') : ''
 
   const manualTodos: string[] = []
+  // Records an ADVISORY finding (judgment — never guessed) and keeps the human-readable TODO list.
+  const todo = (area: string, msg: string, file?: string): void => {
+    rec('ADVISORY', area, msg, RUBRIC, file)
+    manualTodos.push(file ? `${file}: ${msg}` : msg)
+  }
 
-  // ── a) append missing index entries (create the stub when absent) ──
-  console.log(paint(C.cyan, `index entries (${ACTIVITIES_INDEX})`))
+  // ── a) append missing index entries (create the stub when absent) — ACT-S-1 ──
+  say(paint(C.cyan, `index entries (${ACTIVITIES_INDEX})`))
   if (notePaths.length === 0) {
-    console.log(`  ${paint(C.dim, 'no activity notes found — nothing to index')}`)
+    rec('PASS', 'ACT-S-1', 'no activity notes found — nothing to index', RUBRIC, indexRel)
+    say(`  ${paint(C.dim, 'no activity notes found — nothing to index')}`)
   } else {
     let appended = 0
     const appendLines: string[] = []
@@ -132,20 +179,26 @@ function main(): void {
       const title = headingMatch ? (headingMatch[1] as string).trim() : rel.replace(/\.md$/, '')
 
       appendLines.push(`- [${title}](${rel})`)
-      manualTodos.push(`${ACTIVITIES_INDEX}: move the appended entry for '${title}' to its correct position and enrich its description`)
-      console.log(`  ${paint(C.green, 'append')} ${title} → ${rel}`)
+      rec('POLISH', 'ACT-S-1', `index entry appended for '${title}' → ${rel}`, RUBRIC, indexRel)
+      todo('ACT-J-2', `move the appended entry for '${title}' to its correct position and enrich its description`, indexRel)
+      say(`  ${paint(C.green, 'append')} ${title} → ${rel}`)
       appended++
     }
 
     if (appended === 0) {
-      console.log(`  ${paint(C.dim, 'nothing to append — every note is listed')}`)
+      rec('PASS', 'ACT-S-1', 'every note is listed in the index', RUBRIC, indexRel)
+      say(`  ${paint(C.dim, 'nothing to append — every note is listed')}`)
     } else if (!dryRun) {
       if (!hasIndex) indexContent = '# Activities\n\n'
       indexContent = `${indexContent.replace(/\n*$/, '\n')}${appendLines.join('\n')}\n`
       writeFileSync(indexPath, indexContent)
-      if (!hasIndex) console.log(`  ${paint(C.green, 'create')} ${ACTIVITIES_INDEX} (stub) — review the header and ordering`)
+      if (!hasIndex) {
+        rec('POLISH', 'ACT-S-1', 'Activities.md index stub created', RUBRIC, indexRel)
+        say(`  ${paint(C.green, 'create')} ${ACTIVITIES_INDEX} (stub) — review the header and ordering`)
+      }
     } else if (!hasIndex) {
-      console.log(`  ${paint(C.green, 'create')} ${ACTIVITIES_INDEX} (stub) — would be authored with the appended entries`)
+      rec('POLISH', 'ACT-S-1', 'Activities.md index stub would be created (dry run)', RUBRIC, indexRel)
+      say(`  ${paint(C.green, 'create')} ${ACTIVITIES_INDEX} (stub) — would be authored with the appended entries`)
     }
   }
 
@@ -154,63 +207,67 @@ function main(): void {
     const rel = notePath.slice(base.length + 1)
     const fm = parseFrontmatter(readFileSync(notePath, 'utf8'))
     if (!fm) {
-      manualTodos.push(`${rel}: no frontmatter block — author one by hand (status + realization at minimum)`)
+      todo('ACT-F-1', 'no frontmatter block — author one by hand (status + realization at minimum)', rel)
       continue
     }
 
     // ACT-F-1
     const status = fm.status
     if (!status) {
-      manualTodos.push(`${rel}: missing 'status' (active | paused | retired) — set it by hand, do not guess`)
+      todo('ACT-F-1', "missing 'status' (active | paused | retired) — set it by hand, do not guess", rel)
     } else if (!['active', 'paused', 'retired'].includes(status)) {
-      manualTodos.push(`${rel}: status '${status}' is not active / paused / retired — correct it by hand`)
+      todo('ACT-F-1', `status '${status}' is not active / paused / retired — correct it by hand`, rel)
     }
 
     // ACT-F-2 / ACT-F-3
     const realization = fm.realization
     if (!realization) {
-      manualTodos.push(`${rel}: missing 'realization' — set it by hand, do not guess`)
+      todo('ACT-F-2', "missing 'realization' — set it by hand, do not guess", rel)
       continue
     }
     if (!(KNOWN_REALIZATIONS as readonly string[]).includes(realization)) {
-      manualTodos.push(`${rel}: realization '${realization}' is not in the known list — confirm the agentic environment is documented`)
+      todo('ACT-F-3', `realization '${realization}' is not in the known list — confirm the agentic environment is documented`, rel)
     }
 
     // ACT-R-1/2
     if (realization === 'slash-command') {
       const skillName = fm.skill
       if (!skillName) {
-        manualTodos.push(`${rel}: 'slash-command' needs a 'skill' field naming the SKILL.md — add it by hand`)
+        todo('ACT-R-1', "'slash-command' needs a 'skill' field naming the SKILL.md — add it by hand", rel)
       } else if (harnessPath) {
         if (!isFile(join(harnessPath, 'skills', skillName, 'SKILL.md'))) {
-          manualTodos.push(
-            `${rel}: skill '${skillName}' not found in the harness — scaffold it via ki-skills NEW (confirm-gated), not here`
-          )
+          todo('ACT-R-2', `skill '${skillName}' not found in the harness — scaffold it via ki-skills NEW (confirm-gated), not here`, rel)
         }
       } else {
-        manualTodos.push(`${rel}: skill '${skillName}' declared — pass --harness <path> to verify it exists`)
+        todo('ACT-R-2', `skill '${skillName}' declared — pass --harness <path> to verify it exists`, rel)
       }
     }
 
     // ACT-R-3
     if (realization === 'scheduled-task' && !fm.schedule_name) {
-      manualTodos.push(`${rel}: 'scheduled-task' needs a 'schedule_name' — supply it and register the task in the external system`)
+      todo('ACT-R-3', "'scheduled-task' needs a 'schedule_name' — supply it and register the task in the external system", rel)
     }
   }
 
   // ── judgment items — never guessed, always surfaced ──
-  console.log(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
+  say(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
   if (manualTodos.length === 0) {
-    console.log(`  ${paint(C.dim, 'none')}`)
+    say(`  ${paint(C.dim, 'none')}`)
   } else {
-    for (const todo of manualTodos) console.log(`  - ${todo}`)
+    for (const t of manualTodos) say(`  - ${t}`)
   }
-  console.log(
-    `  - Everything else the rubric's [J] criteria flag (ACT-J-1..5: note clarity, index currency, retirement rationale) is judgment.`
+  rec(
+    'ADVISORY',
+    'judgment',
+    "everything else the rubric's [J] criteria flag (ACT-J-1..5: note clarity, index currency, retirement rationale) is judgment",
+    RUBRIC
   )
-  console.log(
+  say(`  - Everything else the rubric's [J] criteria flag (ACT-J-1..5: note clarity, index currency, retirement rationale) is judgment.`)
+  say(
     `\n${paint(C.dim, 'mechanical layer applied — re-run `bun scripts/audit.ts` (or `ki:kb-activities:audit`) to confirm findings clear.')}`
   )
+
+  emitJson()
 }
 
 main()

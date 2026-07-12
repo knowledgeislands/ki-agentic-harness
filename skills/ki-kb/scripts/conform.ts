@@ -13,6 +13,11 @@
  *
  *   bun scripts/conform.ts [path]   # default: cwd
  *   --dry-run                           # print the plan, mutate nothing
+ *   --json                              # emit the shared finding wrapper instead of prose
+ *
+ * `--json` governs *reporting* (each action becomes a finding on the shared ladder:
+ * write → POLISH, already-canonical → PASS, judgment handoff → ADVISORY); `--dry-run`
+ * governs *writing* — the two compose, so `--json` still writes unless `--dry-run` is set.
  *
  * Fixes:
  *   - Config marker: when `.ki-config.toml` has no `[ki-kb]` table at all, appends
@@ -55,6 +60,10 @@ const MEMORY_INDEX = 'MEMORY.md'
 const KI_CONFIG = '.ki-config.toml'
 const KI_SECTION = 'ki-kb'
 const ZONES_SECTION = `${KI_SECTION}.zones`
+
+// Reference-doc pointers cited by findings — same (area, ref) pairs audit.ts uses.
+const RUBRIC = 'references/audit-rubric.md'
+const FM = 'references/frontmatter-standard.md'
 
 // Same opt-in marker audit.ts's `--init` emits.
 const KI_DEFAULT = `# ${KI_SECTION} — opt-in marker: declaring this table opts the base into the kb standard.
@@ -109,11 +118,29 @@ const isFile = (p: string): boolean => existsSync(p) && statSync(p).isFile()
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
+// ── collect-then-emit harness (mirrors ki-authoring conform.ts). Each action records a
+// finding on the shared ladder; `say` prints the human line only outside --json mode, so a
+// direct run streams prose while the aggregate consumes the wrapper. area is the rubric code,
+// ref its reference-doc pointer, file the path an action concerns. Level mapping: a write
+// (written/overwritten/appended/created) → POLISH; already-canonical / nothing-to-do → PASS;
+// a judgment handoff / manual TODO → ADVISORY; an unrecoverable failure → FAIL.
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
+
 // ── entry ──
 async function main() {
   const argv = process.argv.slice(2)
   const dryRun = argv.includes('--dry-run')
+  const json = argv.includes('--json')
   const target = resolve(argv.find((a) => !a.startsWith('-')) ?? '.')
+
+  const findings: Finding[] = []
+  const rec = (level: Level, area: string, msg: string, ref?: string, file?: string): void => {
+    findings.push({ level, area, msg, ref, file })
+  }
+  const say = (line: string): void => {
+    if (!json) console.log(line)
+  }
 
   if (!isDir(target)) {
     console.error(paint(C.red, `not a directory: ${target}`))
@@ -126,49 +153,60 @@ async function main() {
   const ki = kiText ? parseKiKb(kiText) : null
   const zoneOf = (z: string): string => ki?.zones[z] ?? z
 
-  console.log(paint(C.dim, `target: ${target}${dryRun ? '   (dry run)' : ''}\n`))
-
-  const manualTodos: string[] = []
+  say(paint(C.dim, `target: ${target}${dryRun ? '   (dry run)' : ''}\n`))
 
   // ── a) config marker: append the bare [ki-kb] opt-in table if entirely absent ──
-  console.log(paint(C.cyan, `${KI_CONFIG} [${KI_SECTION}] marker`))
+  say(paint(C.cyan, `${KI_CONFIG} [${KI_SECTION}] marker`))
   if (ki) {
-    console.log(`  ${paint(C.dim, `[${KI_SECTION}] table already present — leaving contents untouched (CONFIG-1/2/3 are judgment)`)}`)
+    rec(
+      'PASS',
+      'config-marker',
+      `[${KI_SECTION}] table already present — contents left untouched (CONFIG-1/2/3 are judgment)`,
+      RUBRIC,
+      KI_CONFIG
+    )
+    say(`  ${paint(C.dim, `[${KI_SECTION}] table already present — leaving contents untouched (CONFIG-1/2/3 are judgment)`)}`)
   } else {
-    console.log(`  ${paint(C.green, 'append')} ${KI_CONFIG} [${KI_SECTION}] opt-in marker`)
+    rec('POLISH', 'config-marker', `${dryRun ? 'would append' : 'appended'} the [${KI_SECTION}] opt-in marker`, RUBRIC, KI_CONFIG)
+    say(`  ${paint(C.green, 'append')} ${KI_CONFIG} [${KI_SECTION}] opt-in marker`)
     if (!dryRun) writeFileSync(kiPath, kiText ? `${kiText.replace(/\n*$/, '\n\n')}${KI_DEFAULT}` : KI_DEFAULT)
   }
 
   // ── b) zone index notes (ZONE-2) — only inside a zone folder that already exists ──
-  console.log(`\n${paint(C.cyan, 'zone index notes (ZONE-2)')}`)
+  say(`\n${paint(C.cyan, 'zone index notes (ZONE-2)')}`)
   let zoneFixes = 0
   for (const z of ZONES) {
     const folder = zoneOf(z)
     const zoneDir = join(target, folder)
     if (!isDir(zoneDir)) {
-      console.log(`  ${paint(C.dim, `${folder}/ absent — zone folder creation is a judgment call, not scaffolded here`)}`)
+      rec('ADVISORY', 'ZONE-2', `${folder}/ absent — zone folder creation is a judgment call, not scaffolded`, RUBRIC, `${folder}/`)
+      say(`  ${paint(C.dim, `${folder}/ absent — zone folder creation is a judgment call, not scaffolded here`)}`)
       continue
     }
     const indexPath = join(zoneDir, `${folder}.md`)
     if (isFile(indexPath)) continue
-    console.log(`  ${paint(C.green, 'write')} ${folder}/${folder}.md`)
+    rec('POLISH', 'ZONE-2', `${dryRun ? 'would scaffold' : 'scaffolded'} same-name zone index note`, RUBRIC, `${folder}/${folder}.md`)
+    say(`  ${paint(C.green, 'write')} ${folder}/${folder}.md`)
     if (!dryRun) writeFileSync(indexPath, `# ${folder}\n`)
     zoneFixes++
   }
-  if (zoneFixes === 0) console.log(`  ${paint(C.dim, 'nothing to scaffold')}`)
+  if (zoneFixes === 0) say(`  ${paint(C.dim, 'nothing to scaffold')}`)
 
   // ── c) root memory index (ZONE-3) — only inside an existing Admin/ folder ──
-  console.log(`\n${paint(C.cyan, 'root memory index (ZONE-3)')}`)
+  say(`\n${paint(C.cyan, 'root memory index (ZONE-3)')}`)
   const adminFolder = zoneOf('Admin')
   const adminDir = join(target, adminFolder)
   if (!isDir(adminDir)) {
-    console.log(`  ${paint(C.dim, `${adminFolder}/ absent — zone folder creation is a judgment call, not scaffolded here`)}`)
+    rec('ADVISORY', 'ZONE-3', `${adminFolder}/ absent — zone folder creation is a judgment call, not scaffolded`, RUBRIC, `${adminFolder}/`)
+    say(`  ${paint(C.dim, `${adminFolder}/ absent — zone folder creation is a judgment call, not scaffolded here`)}`)
   } else {
     const memoryPath = join(adminDir, MEMORY_INDEX)
     if (isFile(memoryPath)) {
-      console.log(`  ${paint(C.dim, 'nothing to scaffold')}`)
+      rec('PASS', 'ZONE-3', `root memory index already present`, RUBRIC, `${adminFolder}/${MEMORY_INDEX}`)
+      say(`  ${paint(C.dim, 'nothing to scaffold')}`)
     } else {
-      console.log(`  ${paint(C.green, 'write')} ${adminFolder}/${MEMORY_INDEX}`)
+      rec('POLISH', 'ZONE-3', `${dryRun ? 'would scaffold' : 'scaffolded'} root memory index`, RUBRIC, `${adminFolder}/${MEMORY_INDEX}`)
+      say(`  ${paint(C.green, 'write')} ${adminFolder}/${MEMORY_INDEX}`)
       if (!dryRun) {
         mkdirSync(dirname(memoryPath), { recursive: true })
         writeFileSync(memoryPath, `# MEMORY\n\n## Active Pillars\n\n<!-- list active Pillars here -->\n`)
@@ -176,20 +214,38 @@ async function main() {
     }
   }
 
-  // ── judgment items — never guessed, always surfaced ──
-  manualTodos.push('MEM-2 — CLAUDE.md / AGENTS.md anchor prose: name the MEMORY index / scope-before-work rule at the base root.')
-  manualTodos.push(
-    'NOTE-1 / NOTE-1a / NOTE-1b — per-note frontmatter content (required keys, unterminated fences, non-snake_case keys): repair by hand, never guessed.'
+  // ── judgment items — never guessed, always surfaced as ADVISORY ──
+  rec('ADVISORY', 'MEM-2', 'CLAUDE.md / AGENTS.md anchor prose: name the MEMORY index / scope-before-work rule at the base root', RUBRIC)
+  rec(
+    'ADVISORY',
+    'NOTE-1',
+    'per-note frontmatter content (required keys, unterminated fences, non-snake_case keys): repair by hand, never guessed',
+    FM
   )
-  manualTodos.push('CONFIG-1 / CONFIG-2 / CONFIG-3 — once a [ki-kb] table exists, its keys/aliases are judgment, not auto-fixed.')
-  manualTodos.push(
-    'Admin/Governance/, Admin/Operations/, Charter.md, Conformance.md — opt-in subdivisions; create and author only when that concern is active.'
+  rec('ADVISORY', 'CONFIG-1', 'once a [ki-kb] table exists, its keys/aliases are judgment, not auto-fixed', RUBRIC)
+  rec(
+    'ADVISORY',
+    'ADMIN-1',
+    'Admin/Governance/, Admin/Operations/, Charter.md, Conformance.md — opt-in subdivisions; author only when that concern is active',
+    RUBRIC
   )
-  console.log(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
-  for (const todo of manualTodos) console.log(`  - ${todo}`)
-  console.log(
-    `\n${paint(C.dim, 'mechanical layer applied — re-run `bun scripts/audit.ts .` (or `ki:kb:audit`) to confirm findings clear.')}`
-  )
+  say(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
+  for (const t of findings.filter((x) => x.level === 'ADVISORY')) say(`  - ${t.area} — ${t.msg}`)
+  say(`\n${paint(C.dim, 'mechanical layer applied — re-run `bun scripts/audit.ts .` (or `ki:kb:audit`) to confirm findings clear.')}`)
+
+  if (json) {
+    const n = (l: Level): number => findings.filter((f) => f.level === l).length
+    const summary = {
+      fail: n('FAIL'),
+      warn: n('WARN'),
+      polish: n('POLISH'),
+      advisory: n('ADVISORY'),
+      info: n('INFO'),
+      na: n('NA'),
+      pass: n('PASS')
+    }
+    process.stdout.write(JSON.stringify({ concern: 'kb', target, generatedAt: new Date().toISOString(), summary, findings }))
+  }
 }
 
 main().catch((err) => {

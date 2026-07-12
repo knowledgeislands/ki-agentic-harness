@@ -14,6 +14,10 @@
  * the palette, _data is the single source of structure, SEO wired into base.njk) need a read
  * of the code — see references/audit-rubric.md.
  *
+ * Each finding carries the rubric CODE (references/audit-rubric.md WEB-N) as its area, a
+ * reference-doc pointer (the standard section it verifies), and — when file-scoped — the path
+ * it concerns; ref/file ride into --json for the aggregate to render (CHK-004/009/010).
+ *
  * Output is grouped pass/warn/fail; exit non-zero if any FAIL. No dependencies — Node/Bun builtins only.
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
@@ -21,11 +25,19 @@ import { basename, join } from 'node:path'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string }
+// area is the rubric code (references/audit-rubric.md, WEB-N); ref is its reference-doc
+// pointer (the standard section the criterion verifies); file names the path a file-scoped
+// finding concerns. ref/file are optional and ride into --json for the aggregate (CHK-004/009/010).
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
 const findings: Finding[] = []
-const add = (level: Level, area: string, msg: string) => findings.push({ level, area, msg })
+const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
+
+// Reference-doc pointers (the `(reference.md)` citation each finding carries).
+const STD = 'references/eleventy-site-standard.md'
+const RUBRIC = 'references/audit-rubric.md'
+const std = (section: string): string => `${STD} ${section}`
 
 // `.ki-config.toml` is a shared per-repo file; this skill owns the
 // [ki-website] table. The table header is the opt-in marker and
@@ -74,23 +86,30 @@ if (flatCfg) {
   layout = 'site/ subfolder'
 }
 const siteAt = (...p: string[]) => (siteRoot ? join(siteRoot, ...p) : join(...p))
+const cfgPath = cfgName ? siteAt(cfgName) : ''
 
 if (!cfgName) {
-  add('FAIL', 'layout', 'no eleventy.config.{ts,js,mjs,cjs} at repo root or site/ — not an Eleventy site')
+  add('FAIL', 'WEB-6', 'no eleventy.config.{ts,js,mjs,cjs} at repo root or site/ — not an Eleventy site', std('§2'))
 } else if (layout === 'flat') {
   // Standard §2: every house site is a monorepo, never flat — the site is its own site/ workspace.
-  add('WARN', 'layout', `${cfgName} present at repo root (flat layout) — standard §2 requires the site/ workspace; move it under site/`)
+  add(
+    'WARN',
+    'WEB-6',
+    `${cfgName} present at repo root (flat layout) — standard §2 requires the site/ workspace; move it under site/`,
+    std('§2'),
+    cfgName
+  )
 } else {
-  add('PASS', 'layout', `${siteRoot}/${cfgName} present (${layout} layout)`)
+  add('PASS', 'WEB-6', `${siteRoot}/${cfgName} present (${layout} layout)`, std('§2'), cfgPath)
 }
-has('ROADMAP.md') ? add('PASS', 'layout', 'ROADMAP.md present') : add('WARN', 'layout', 'no ROADMAP.md')
+has('ROADMAP.md') ? add('PASS', 'WEB-7', 'ROADMAP.md present', std('§2'), 'ROADMAP.md') : add('WARN', 'WEB-7', 'no ROADMAP.md', std('§2'))
 
 // ── package.json ──────────────────────────────────────────────────────────────
 let pkg: Record<string, unknown> = {}
 try {
   pkg = JSON.parse(read('package.json'))
 } catch {
-  add('FAIL', 'package', 'package.json missing or unparseable')
+  add('FAIL', 'WEB-39', 'package.json missing or unparseable', std('§2'), 'package.json')
 }
 const deps = { ...((pkg.dependencies as object) ?? {}), ...((pkg.devDependencies as object) ?? {}) } as Record<string, string>
 const scripts = (pkg.scripts ?? {}) as Record<string, string>
@@ -98,57 +117,72 @@ const name = String(pkg.name ?? basename(repo))
 
 // ── stack ───────────────────────────────────────────────────────────────────
 deps['@11ty/eleventy']
-  ? add('PASS', 'stack', `@11ty/eleventy ${deps['@11ty/eleventy']}`)
-  : add('FAIL', 'stack', '@11ty/eleventy not a dependency')
+  ? add('PASS', 'WEB-1', `@11ty/eleventy ${deps['@11ty/eleventy']}`, std('§1'), 'package.json')
+  : add('FAIL', 'WEB-1', '@11ty/eleventy not a dependency', std('§1'), 'package.json')
 for (const f of ['astro', 'next']) {
-  if (deps[f]) add('WARN', 'stack', `${f} present — this skill governs Eleventy sites, not ${f}`)
+  if (deps[f]) add('WARN', 'WEB-2', `${f} present — this skill governs Eleventy sites, not ${f}`, std('§1'), 'package.json')
 }
 // tsx is the legacy TS runner (5g-emerge); native Bun / Node (type stripping stable/unflagged) is the standard.
 const usesTsx = deps.tsx !== undefined || Object.values(scripts).some((s) => /tsx\/esm|--import\s+tsx/.test(s))
 usesTsx
-  ? add('WARN', 'stack', 'tsx detected (legacy TS runner) — run TS natively on Bun / Node')
-  : add('PASS', 'stack', 'no tsx (TS runs natively)')
+  ? add('WARN', 'WEB-3', 'tsx detected (legacy TS runner) — run TS natively on Bun / Node', std('§1'), 'package.json')
+  : add('PASS', 'WEB-3', 'no tsx (TS runs natively)', std('§1'), 'package.json')
 
 // ── Tailwind: config-less ─────────────────────────────────────────────────────
 const TW_CONFIGS = ['tailwind.config.js', 'tailwind.config.ts', 'tailwind.config.cjs', 'tailwind.config.mjs']
 const strayTw = TW_CONFIGS.filter((f) => has(f) || (siteRoot && has(siteRoot, f)))
 strayTw.length
-  ? add('FAIL', 'tailwind', `config-less Tailwind 4 expected, found ${strayTw.join(', ')}`)
-  : add('PASS', 'tailwind', 'no tailwind.config.* (config-less Tailwind 4)')
+  ? add('FAIL', 'WEB-18', `config-less Tailwind 4 expected, found ${strayTw.join(', ')}`, std('§5'), strayTw.join(', '))
+  : add('PASS', 'WEB-18', 'no tailwind.config.* (config-less Tailwind 4)', std('§5'))
 
 deps['@tailwindcss/cli']
-  ? add('PASS', 'tailwind', `@tailwindcss/cli ${deps['@tailwindcss/cli']}`)
-  : add('WARN', 'tailwind', '@tailwindcss/cli not a dependency')
+  ? add('PASS', 'WEB-40', `@tailwindcss/cli ${deps['@tailwindcss/cli']}`, std('§5'), 'package.json')
+  : add('WARN', 'WEB-40', '@tailwindcss/cli not a dependency', std('§5'), 'package.json')
 
+const mainCssPath = siteAt('src', 'assets', 'css', 'main.css')
 const mainCss = read(siteAt('src', 'assets', 'css', 'main.css'))
 if (mainCss) {
   const importsTw = /@import\s+["']tailwindcss["']/.test(mainCss)
-  add(importsTw ? 'PASS' : 'FAIL', 'tailwind', importsTw ? 'main.css imports "tailwindcss"' : 'main.css does not @import "tailwindcss"')
+  add(
+    importsTw ? 'PASS' : 'FAIL',
+    'WEB-19',
+    importsTw ? 'main.css imports "tailwindcss"' : 'main.css does not @import "tailwindcss"',
+    std('§5'),
+    mainCssPath
+  )
   const importsTokens = /@import\s+["']\.\/tokens\.css["']/.test(mainCss)
   add(
     importsTokens ? 'PASS' : 'WARN',
-    'tailwind',
-    importsTokens ? 'main.css imports tokens.css' : 'main.css does not import ./tokens.css (design tokens expected alongside)'
+    'WEB-19',
+    importsTokens ? 'main.css imports tokens.css' : 'main.css does not import ./tokens.css (design tokens expected alongside)',
+    std('§5'),
+    mainCssPath
   )
 } else {
-  add('FAIL', 'tailwind', `${siteAt('src/assets/css/main.css')} missing`)
+  add('FAIL', 'WEB-19', 'main.css missing', std('§5'), mainCssPath)
 }
 
+const tokensCssPath = siteAt('src', 'assets', 'css', 'tokens.css')
 const tokensCss = read(siteAt('src', 'assets', 'css', 'tokens.css'))
 if (tokensCss) {
   const themeInline = /@theme\s+inline/.test(tokensCss)
   add(
     themeInline ? 'PASS' : 'WARN',
-    'tailwind',
-    themeInline ? 'tokens.css exposes vars via @theme inline' : 'tokens.css present but no @theme inline (tokens not exposed to utilities)'
+    'WEB-20',
+    themeInline ? 'tokens.css exposes vars via @theme inline' : 'tokens.css present but no @theme inline (tokens not exposed to utilities)',
+    std('§5'),
+    tokensCssPath
   )
 } else {
-  add('WARN', 'tailwind', `${siteAt('src/assets/css/tokens.css')} missing (no design-token layer)`)
+  add('WARN', 'WEB-20', 'tokens.css missing (no design-token layer)', std('§5'), tokensCssPath)
 }
 
 // ── src/ layout ───────────────────────────────────────────────────────────────
 for (const d of ['_data', '_includes/layouts', '_includes/partials', 'assets/css']) {
-  isDir(siteAt('src', ...d.split('/'))) ? add('PASS', 'layout', `src/${d}/ present`) : add('FAIL', 'layout', `src/${d}/ missing`)
+  const dir = siteAt('src', ...d.split('/'))
+  isDir(siteAt('src', ...d.split('/')))
+    ? add('PASS', 'WEB-9', `src/${d}/ present`, std('§2'), dir)
+    : add('FAIL', 'WEB-9', `src/${d}/ missing`, std('§2'), dir)
 }
 
 // seo-meta partial (any extension)
@@ -164,8 +198,8 @@ if (isDir(partialsDir)) {
   tryWalk(partialsDir)
 }
 hasSeoMeta
-  ? add('PASS', 'seo', 'seo-meta partial present')
-  : add('WARN', 'seo', 'no seo-meta partial under _includes/partials/ (SEO meta tags)')
+  ? add('PASS', 'WEB-26', 'seo-meta partial present', std('§7'), partialsDir)
+  : add('WARN', 'WEB-26', 'no seo-meta partial under _includes/partials/ (SEO meta tags)', std('§7'), partialsDir)
 
 // ── eleventy.config patterns ──────────────────────────────────────────────────
 const cfg = cfgName ? read(siteAt(cfgName)) : ''
@@ -173,32 +207,46 @@ if (cfg) {
   const hasRelTransform = /toRelativeOutputUrl|explicit-index-links/.test(cfg) || (/addTransform/.test(cfg) && /\brelative\(/.test(cfg))
   add(
     hasRelTransform ? 'PASS' : 'FAIL',
-    'config',
-    hasRelTransform ? 'portable-dist/ URL transform present' : 'no absolute→relative URL transform (dist/ will not be portable)'
+    'WEB-12',
+    hasRelTransform ? 'portable-dist/ URL transform present' : 'no absolute→relative URL transform (dist/ will not be portable)',
+    std('§4'),
+    cfgPath
   )
 
   const hasTsData = /addDataExtension\(\s*["']ts["']/.test(cfg)
   add(
     hasTsData ? 'PASS' : 'FAIL',
-    'config',
-    hasTsData ? "addDataExtension('ts') registered" : "no addDataExtension('ts') (TypeScript data files)"
+    'WEB-13',
+    hasTsData ? "addDataExtension('ts') registered" : "no addDataExtension('ts') (TypeScript data files)",
+    std('§4'),
+    cfgPath
   )
 
   const hasJson5Data = /addDataExtension\(\s*["']json5["']/.test(cfg)
-  add(hasJson5Data ? 'PASS' : 'WARN', 'config', hasJson5Data ? "addDataExtension('json5') registered" : "no addDataExtension('json5')")
+  add(
+    hasJson5Data ? 'PASS' : 'WARN',
+    'WEB-14',
+    hasJson5Data ? "addDataExtension('json5') registered" : "no addDataExtension('json5')",
+    std('§4'),
+    cfgPath
+  )
 
   const hasTwHook = /on\(\s*["']eleventy\.before["']/.test(cfg) && /tailwindcss/.test(cfg)
   add(
     hasTwHook ? 'PASS' : 'WARN',
-    'config',
-    hasTwHook ? 'Tailwind compiled via eleventy.before hook' : 'no eleventy.before hook invoking the Tailwind CLI'
+    'WEB-15',
+    hasTwHook ? 'Tailwind compiled via eleventy.before hook' : 'no eleventy.before hook invoking the Tailwind CLI',
+    std('§4'),
+    cfgPath
   )
 
   const hasWatch = /addWatchTarget/.test(cfg)
   add(
     hasWatch ? 'PASS' : 'WARN',
-    'config',
-    hasWatch ? 'addWatchTarget present (dev reload on CSS)' : 'no addWatchTarget for the compiled CSS'
+    'WEB-16',
+    hasWatch ? 'addWatchTarget present (dev reload on CSS)' : 'no addWatchTarget for the compiled CSS',
+    std('§4'),
+    cfgPath
   )
 }
 
@@ -206,19 +254,21 @@ if (cfg) {
 const script = (base: string) => scripts[`ki:site:${base}`] ?? scripts[`ki:${base}`] ?? scripts[base]
 const build = script('build')
 build && /eleventy/.test(build)
-  ? add('PASS', 'scripts', 'build script invokes Eleventy')
-  : add('FAIL', 'scripts', 'no build script invoking Eleventy (ki:site:build)')
+  ? add('PASS', 'WEB-30', 'build script invokes Eleventy', std('§8'), 'package.json')
+  : add('FAIL', 'WEB-30', 'no build script invoking Eleventy (ki:site:build)', std('§8'), 'package.json')
 const dev = script('dev')
 dev && /concurrently/.test(dev)
-  ? add('PASS', 'scripts', 'dev script runs Tailwind watch + Eleventy serve (concurrently)')
-  : add('WARN', 'scripts', 'no concurrently dev script (ki:site:dev)')
-script('clean') ? add('PASS', 'scripts', 'clean script present') : add('WARN', 'scripts', 'no ki:site:clean script')
+  ? add('PASS', 'WEB-30', 'dev script runs Tailwind watch + Eleventy serve (concurrently)', std('§8'), 'package.json')
+  : add('WARN', 'WEB-30', 'no concurrently dev script (ki:site:dev)', std('§8'), 'package.json')
+script('clean')
+  ? add('PASS', 'WEB-32', 'clean script present', std('§8'), 'package.json')
+  : add('WARN', 'WEB-32', 'no ki:site:clean script', std('§8'), 'package.json')
 // the concurrently dev script fans out to a Tailwind watcher + an Eleventy server
 if (dev && /concurrently/.test(dev)) {
   for (const sub of ['dev:css', 'dev:serve']) {
     script(sub)
-      ? add('PASS', 'scripts', `ki:site:${sub} present (dev fan-out)`)
-      : add('WARN', 'scripts', `ki:site:${sub} missing — the concurrently dev script fans out to it`)
+      ? add('PASS', 'WEB-31', `ki:site:${sub} present (dev fan-out)`, std('§8'), 'package.json')
+      : add('WARN', 'WEB-31', `ki:site:${sub} missing — the concurrently dev script fans out to it`, std('§8'), 'package.json')
   }
 }
 
@@ -235,29 +285,38 @@ const distCorrect = siteRoot
 const distRootMisplaced = siteRoot && /^\s*\/dist\/?\s*$/m.test(gitignore)
 add(
   distCorrect ? 'PASS' : distRootMisplaced ? 'FAIL' : 'WARN',
-  'dist',
+  'WEB-33',
   distCorrect
     ? `${siteRoot ? 'site/dist/' : 'dist/'} is correctly gitignored`
     : distRootMisplaced
       ? 'gitignore has /dist (repo root) but site/ layout puts output at site/dist/ — update to /site/dist'
-      : `${siteRoot ? 'site/dist/' : 'dist/'} not found in .gitignore (build output should not be committed)`
+      : `${siteRoot ? 'site/dist/' : 'dist/'} not found in .gitignore (build output should not be committed)`,
+  std('§9'),
+  '.gitignore'
 )
 
 // ── wrangler.jsonc: assets.directory must be dist, not ../dist ────────────────
 // In the site/ subfolder layout, wrangler.jsonc lives at site/wrangler.jsonc and
 // must point at `dist` (relative to site/). `../dist` means output is at $root/dist/.
 if (siteRoot) {
+  const wranglerPath = has(siteRoot, 'wrangler.jsonc') ? siteAt('wrangler.jsonc') : siteAt('wrangler.json')
   const wrangler = read(siteRoot, 'wrangler.jsonc') || read(siteRoot, 'wrangler.json')
   if (wrangler) {
     const assetsDir = /"directory"\s*:\s*"([^"]+)"/.exec(wrangler)?.[1]
     if (assetsDir === undefined) {
-      add('WARN', 'dist', 'wrangler.jsonc present but no assets.directory found')
+      add('WARN', 'WEB-36', 'wrangler.jsonc present but no assets.directory found', std('§9'), wranglerPath)
     } else if (assetsDir === 'dist' || assetsDir === './dist') {
-      add('PASS', 'dist', `wrangler.jsonc assets.directory = "${assetsDir}" (correct — site/dist/)`)
+      add('PASS', 'WEB-36', `wrangler.jsonc assets.directory = "${assetsDir}" (correct — site/dist/)`, std('§9'), wranglerPath)
     } else if (assetsDir === '../dist') {
-      add('FAIL', 'dist', 'wrangler.jsonc assets.directory = "../dist" (points to $root/dist/ — change to "dist")')
+      add(
+        'FAIL',
+        'WEB-36',
+        'wrangler.jsonc assets.directory = "../dist" (points to $root/dist/ — change to "dist")',
+        std('§9'),
+        wranglerPath
+      )
     } else {
-      add('WARN', 'dist', `wrangler.jsonc assets.directory = "${assetsDir}" (unexpected value)`)
+      add('WARN', 'WEB-36', `wrangler.jsonc assets.directory = "${assetsDir}" (unexpected value)`, std('§9'), wranglerPath)
     }
   }
 }
@@ -267,15 +326,23 @@ const ki = read('.ki-config.toml')
 const kiTable = new RegExp(`^\\[${KI_SECTION}\\]`, 'm').test(ki)
 add(
   kiTable ? 'PASS' : 'WARN',
-  'config',
-  kiTable ? `[${KI_SECTION}] table present in .ki-config.toml` : `no [${KI_SECTION}] table in .ki-config.toml (run --init to scaffold it)`
+  'WEB-41',
+  kiTable ? `[${KI_SECTION}] table present in .ki-config.toml` : `no [${KI_SECTION}] table in .ki-config.toml (run --init to scaffold it)`,
+  std('§2'),
+  '.ki-config.toml'
 )
 if (kiTable) {
   // This table is a bare marker — validate-down: any key under it is a typo or a
   // stale option, never a recognised setting. `^\[` ends the slice at the next header.
   const body = ki.split(new RegExp(`^\\[${KI_SECTION}\\]`, 'm'))[1]?.split(/^\[/m)[0] ?? ''
   for (const m of body.matchAll(/^\s*([A-Za-z0-9_-]+)\s*=/gm)) {
-    add('WARN', 'config', `unknown key under [${KI_SECTION}]: ${m[1]} (validate-down — this table takes no keys today)`)
+    add(
+      'WARN',
+      'WEB-42',
+      `unknown key under [${KI_SECTION}]: ${m[1]} (validate-down — this table takes no keys today)`,
+      std('§2'),
+      '.ki-config.toml'
+    )
   }
 }
 
@@ -304,7 +371,13 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     mkdirSync(reportDir, { recursive: true })
     const body = ORDER.flatMap((l) => {
       const rows = items.filter((f) => f.level === l)
-      return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+      return rows.length
+        ? [
+            '',
+            `## ${ICON[l]} ${l} (${rows.length})`,
+            ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
+          ]
+        : []
     })
     writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
     writeFileSync(
@@ -321,7 +394,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
       const rows = items.filter((f) => f.level === l)
       if (!rows.length) continue
       console.log(`\n${ICON[l]} ${l} (${rows.length})`)
-      for (const r of rows) console.log(`   [${r.area}] ${r.msg}`)
+      for (const r of rows) console.log(`   [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
     }
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
@@ -333,8 +406,8 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
   process.exit(summary.fail ? 1 : 0)
 }
 
-add('INFO', 'scope', 'site-build delta only — compose with audit.ts (toolchain) + audit.ts (if deployed) for full coverage')
-add('ADVISORY', 'judgment', 'mechanical layer only — apply the [J] criteria in references/audit-rubric.md by reading')
+add('INFO', 'scope', 'site-build delta only — compose with audit.ts (toolchain) + audit.ts (if deployed) for full coverage', RUBRIC)
+add('ADVISORY', 'judgment', 'mechanical layer only — apply the [J] criteria in references/audit-rubric.md by reading', RUBRIC)
 emit(
   findings,
   repo,

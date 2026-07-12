@@ -42,6 +42,11 @@ const KI_SECTION = 'ki-kb-streams'
 const KB_ZONES = 'ki-kb.zones'
 const SCHEMES = ['type', 'tags']
 
+// Reference-doc pointers for the cited-finding standard (ref column).
+const REF_STRUCTURE = 'references/Streams Structure Reference.md'
+const REF_ENACT = 'references/Enactment Process Reference.md'
+const REF_SKILL = '../SKILL.md'
+
 // The default block `--init` emits. The bare [ki-kb-streams] header is the
 // OPT-IN MARKER: its presence declares this base's Streams zone governed by the
 // Enactment Process (ki-repo's coverage cascade warns a base that has a
@@ -62,15 +67,18 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string }
+// area is the rubric code (references/audit-rubric.md); ref is its reference-doc
+// pointer; file names the path a file-scoped finding concerns. ref/file are optional
+// and ride into --json for the aggregate to render (cited-finding standard).
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
 const mk = () => {
   const f: Finding[] = []
   const push =
     (level: Level) =>
-    (area: string, msg: string): void =>
-      void f.push({ level, area, msg })
+    (area: string, msg: string, ref?: string, file?: string): void =>
+      void f.push({ level, area, msg, ref, file })
   return {
     f,
     fail: push('FAIL'),
@@ -168,21 +176,21 @@ const sampleList = (xs: string[], n = 10): string => xs.slice(0, n).join('; ') +
 function auditStreams(base: string, ki: Ki): Finding[] {
   const { f, fail, warn, note } = mk()
   const streamsRoot = join(base, ki.streamsZone)
-  if (ki.streamsZone !== 'Streams') note('alias', `Streams zone resolves to ${ki.streamsZone}/ (per [${KB_ZONES}])`)
+  if (ki.streamsZone !== 'Streams') note('alias', `Streams zone resolves to ${ki.streamsZone}/ (per [${KB_ZONES}])`, REF_STRUCTURE)
 
   if (!isDir(streamsRoot)) {
-    note('zone', `no ${ki.streamsZone}/ zone at ${base} — nothing to audit (its presence is a ki-kb ZONE check)`)
+    note('zone', `no ${ki.streamsZone}/ zone at ${base} — nothing to audit (its presence is a ki-kb ZONE check)`, REF_STRUCTURE)
     return f
   }
 
   // ── config table: validate this skill's own table, DOWN ──
   for (const key of Object.keys(ki.keys)) {
     if (key !== 'process_note' && key !== 'note_type_scheme')
-      warn('config', `[${KI_SECTION}] has no key "${key}" — recognised: process_note, note_type_scheme`)
+      warn('CONFIG-1', `unrecognised key "${key}" — recognised: process_note, note_type_scheme`, REF_SKILL, KI_CONFIG)
   }
   const scheme = ki.keys.note_type_scheme
   if (scheme !== undefined && !SCHEMES.includes(scheme))
-    warn('config', `[${KI_SECTION}] note_type_scheme "${scheme}" is not one of: ${SCHEMES.join(', ')}`)
+    warn('CONFIG-2', `note_type_scheme "${scheme}" is not one of: ${SCHEMES.join(', ')}`, REF_SKILL, KI_CONFIG)
 
   // ── STREAM-1: folders directly under Streams/ are the Focus set ──
   const present = subdirs(streamsRoot)
@@ -190,11 +198,13 @@ function auditStreams(base: string, ki: Ki): Finding[] {
     if (!(FOCI as readonly string[]).includes(name))
       warn(
         'STREAM-1',
-        `${ki.streamsZone}/${name}/ is not a Focus (one of: ${FOCI.join(', ')}) — a stream filed without a Focus, or a stray folder`
+        `not a Focus (one of: ${FOCI.join(', ')}) — a stream filed without a Focus, or a stray folder`,
+        REF_STRUCTURE,
+        `${ki.streamsZone}/${name}`
       )
   }
   const foci = FOCI.filter((x) => present.includes(x))
-  note('STREAM-1', `Focus folders present: ${foci.join(', ') || '(none)'}`)
+  note('STREAM-1', `Focus folders present: ${foci.join(', ') || '(none)'}`, REF_STRUCTURE)
 
   // ── STREAM-2 / STREAM-3: per Focus ──
   // A stream is either a FULL PROPOSAL (a governed change — carries the proposal
@@ -207,7 +217,7 @@ function auditStreams(base: string, ki: Ki): Finding[] {
   for (const focus of foci) {
     const focusDir = join(streamsRoot, focus)
     if (!isFile(join(focusDir, `${focus}.md`)))
-      warn('STREAM-2', `${ki.streamsZone}/${focus}/ has no same-name index note (${focus}/${focus}.md)`)
+      warn('STREAM-2', `has no same-name index note (${focus}/${focus}.md)`, REF_STRUCTURE, `${ki.streamsZone}/${focus}`)
     for (const leaf of leafStreamFolders(focusDir)) {
       if (hasProposalNote(leaf)) continue // conforming leaf or parent
       const idx = join(leaf, `${basename(leaf)}.md`)
@@ -219,7 +229,8 @@ function auditStreams(base: string, ki: Ki): Finding[] {
   if (missingSuffix.length)
     warn(
       'STREAM-3',
-      `proposal stream(s) missing the \` Proposal\` suffix (a lightweight tracker stream needs none) in ${missingSuffix.length}: ${sampleList(missingSuffix)}`
+      `proposal stream(s) missing the \` Proposal\` suffix (a lightweight tracker stream needs none) in ${missingSuffix.length}: ${sampleList(missingSuffix)}`,
+      REF_ENACT
     )
 
   // ── ENACT-1 / ENACT-2: proposal-document frontmatter ──
@@ -244,13 +255,22 @@ function auditStreams(base: string, ki: Ki): Finding[] {
     if ('priority' in fm.map && !PRIORITY.includes(fm.map.priority as string)) badPriority.push(`${rel}: "${fm.map.priority}"`)
   }
   if (unterminated.length)
-    fail('ENACT-1', `unterminated frontmatter (no closing \`---\`) in ${unterminated.length} proposal(s): ${sampleList(unterminated)}`)
+    fail(
+      'ENACT-1',
+      `unterminated frontmatter (no closing \`---\`) in ${unterminated.length} proposal(s): ${sampleList(unterminated)}`,
+      REF_ENACT
+    )
   if (missingKeys.length)
-    warn('ENACT-1', `proposal(s) missing ${PROPOSAL_FM.join('/')} frontmatter in ${missingKeys.length}: ${sampleList(missingKeys)}`)
+    warn(
+      'ENACT-1',
+      `proposal(s) missing ${PROPOSAL_FM.join('/')} frontmatter in ${missingKeys.length}: ${sampleList(missingKeys)}`,
+      REF_ENACT
+    )
   if (badStatus.length)
-    warn('ENACT-2', `status outside the lifecycle vocabulary (bare token) in ${badStatus.length}: ${sampleList(badStatus)}`)
-  if (badPriority.length) warn('ENACT-2', `priority outside {${PRIORITY.join(', ')}} in ${badPriority.length}: ${sampleList(badPriority)}`)
-  note('ENACT-1', `${proposals.length} proposal document(s) found (\`* Proposal.md\`)`)
+    warn('ENACT-2', `status outside the lifecycle vocabulary (bare token) in ${badStatus.length}: ${sampleList(badStatus)}`, REF_ENACT)
+  if (badPriority.length)
+    warn('ENACT-2', `priority outside {${PRIORITY.join(', ')}} in ${badPriority.length}: ${sampleList(badPriority)}`, REF_ENACT)
+  note('ENACT-1', `${proposals.length} proposal document(s) found (\`* Proposal.md\`)`, REF_ENACT)
 
   // ── GATE-1: the Enactment gate is anchored in always-loaded context ──
   // Skills load on demand, so the gate only fires on a plain edit if the base's
@@ -258,23 +278,30 @@ function auditStreams(base: string, ki: Ki): Finding[] {
   // once the base actually runs proposals; a base with only lightweight streams
   // (no proposals) hasn't opted into the gated model, so the anchor isn't demanded.
   if (proposals.length === 0) {
-    note('GATE-1', 'no proposals yet — the gate applies once the base runs the proposal model (lightweight streams alone need no anchor)')
+    note(
+      'GATE-1',
+      'no proposals yet — the gate applies once the base runs the proposal model (lightweight streams alone need no anchor)',
+      REF_SKILL
+    )
   } else {
     const anchorFile = ['CLAUDE.md', 'AGENTS.md'].map((n) => join(base, n)).find(isFile)
     if (!anchorFile) {
       warn(
         'GATE-1',
-        "no CLAUDE.md / AGENTS.md at the base root — the Enactment gate has no always-on anchor, so the skill won't fire on a plain edit"
+        "no CLAUDE.md / AGENTS.md at the base root — the Enactment gate has no always-on anchor, so the skill won't fire on a plain edit",
+        REF_SKILL
       )
     } else {
       const txt = readFileSync(anchorFile, 'utf8')
       const namesProcess = /Enactment Process|ki-kb-streams/i.test(txt)
       const namesGate = /proposal|canonical/i.test(txt)
-      if (namesProcess && namesGate) note('GATE-1', `Enactment gate anchored in ${basename(anchorFile)}`)
+      if (namesProcess && namesGate) note('GATE-1', 'Enactment gate anchored', REF_SKILL, basename(anchorFile))
       else
         warn(
           'GATE-1',
-          `${basename(anchorFile)} does not anchor the Enactment gate — add a standing directive (route canonical changes through a proposal; load ki-kb-streams) so the gate fires on a plain edit`
+          'does not anchor the Enactment gate — add a standing directive (route canonical changes through a proposal; load ki-kb-streams) so the gate fires on a plain edit',
+          REF_SKILL,
+          basename(anchorFile)
         )
     }
   }
@@ -335,7 +362,13 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     mkdirSync(reportDir, { recursive: true })
     const body = ORDER.flatMap((l) => {
       const rows = items.filter((f) => f.level === l)
-      return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+      return rows.length
+        ? [
+            '',
+            `## ${ICON[l]} ${l} (${rows.length})`,
+            ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
+          ]
+        : []
     })
     writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
     writeFileSync(
@@ -352,7 +385,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
       const rows = items.filter((f) => f.level === l)
       if (!rows.length) continue
       console.log(`\n${ICON[l]} ${l} (${rows.length})`)
-      for (const r of rows) console.log(`   [${r.area}] ${r.msg}`)
+      for (const r of rows) console.log(`   [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
     }
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)

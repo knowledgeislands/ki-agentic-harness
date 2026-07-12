@@ -5,6 +5,7 @@
  *
  *   bun scripts/conform.ts [path]   # default: cwd
  *   --dry-run                                  # check-mode only, write nothing
+ *   --json                                     # emit the CHK-004 wrapper instead of prose
  *
  * Owns `.prettierrc.json` and `.editorconfig` wholly (SHAPE-16 `owns:` —
  * this skill backs its own Markdown conform pass with Prettier, so it is the
@@ -17,6 +18,12 @@
  * to conform there; the judgment layer (wide tables, link text, TOML style)
  * is out of scope for this script — see SKILL.md Mode CONFORM step 1, which
  * is a human/model task, not a mechanical one.
+ *
+ * `--json` reports the same finding wrapper audit emits (CHK-004/010), so the
+ * aggregate renders conform and audit identically: each action becomes a finding
+ * on the shared ladder (file written/overwritten → POLISH, already-canonical →
+ * PASS, gate still failing → FAIL, judgment handoff → always-on ADVISORY).
+ * `--json` governs *reporting*; `--dry-run` governs *writing* — the two compose.
  *
  * Exit code is non-zero only on an unrecoverable error (target path missing);
  * never because Prettier/markdownlint reported changes or findings.
@@ -31,11 +38,24 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 const argv = process.argv.slice(2)
 const dryRun = argv.includes('--dry-run')
+const json = argv.includes('--json')
 const target = argv.find((a) => !a.startsWith('-')) ?? '.'
 
 if (!existsSync(target)) {
   console.error(paint(C.red, `${target}: no such path`))
   process.exit(2)
+}
+
+// Collect-then-emit harness (mirrors audit.ts). Each action records a finding; `say`
+// prints the human line only when not in --json mode, so a direct run streams prose
+// while the aggregate consumes the wrapper. area is the rubric code, ref its
+// reference-doc pointer, file the path an action concerns (CHK-004/009/010).
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
+const findings: Finding[] = []
+const rec = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
+const say = (line: string): void => {
+  if (!json) console.log(line)
 }
 
 // ── owns: .prettierrc.json / .editorconfig — scaffold + unconditional overwrite on drift ──
@@ -111,24 +131,27 @@ const MARKDOWNLINT_DEFAULT = `{
 function syncOwned(name: string, canonical: string): void {
   const path = join(target, name)
   if (!existsSync(path)) {
-    console.log(`  ${paint(C.green, 'write')} ${name} (was missing — scaffolded from house template)`)
+    rec('POLISH', 'toolchain', `${name} scaffolded from the house template (was missing)`, 'owns:', name)
+    say(`  ${paint(C.green, 'write')} ${name} (was missing — scaffolded from house template)`)
     if (!dryRun) writeFileSync(path, canonical)
     return
   }
   const current = readFileSync(path, 'utf8')
   if (sha256(current) === sha256(canonical)) {
-    console.log(`  ${paint(C.dim, 'ok')}    ${name} already canonical`)
+    rec('PASS', 'toolchain', `${name} already canonical`, 'owns:', name)
+    say(`  ${paint(C.dim, 'ok')}    ${name} already canonical`)
     return
   }
-  console.log(`  ${paint(C.yellow, 'update')} ${name} (drifted from house standard — overwritten)`)
+  rec('POLISH', 'toolchain', `${name} drifted from the house template — ${dryRun ? 'would overwrite' : 'overwritten'}`, 'owns:', name)
+  say(`  ${paint(C.yellow, 'update')} ${name} (drifted from house standard — overwritten)`)
   if (!dryRun) writeFileSync(path, canonical)
 }
 
-console.log(`${paint(C.cyan, 'owned files')}`)
+say(`${paint(C.cyan, 'owned files')}`)
 syncOwned('.prettierrc.json', PRETTIER_DEFAULT)
 syncOwned('.editorconfig', EDITORCONFIG_DEFAULT)
 syncOwned('.markdownlint-cli2.jsonc', MARKDOWNLINT_DEFAULT)
-console.log('')
+say('')
 
 // The Markdown gate tools, run directly (ki:lint:md is retired, TOOLCHAIN-001) — write mode
 // runs --write/--fix; dry-run runs the check-mode twins and reports only.
@@ -141,30 +164,63 @@ const PRETTIER = dryRun
 const MARKDOWNLINT = dryRun ? 'bunx markdownlint-cli2' : 'bunx markdownlint-cli2 --fix'
 const cmd = `${PRETTIER} && ${MARKDOWNLINT}`
 
-console.log(paint(C.dim, `target: ${target}${dryRun ? '   (dry run — check mode, no writes)' : ''}\n`))
-console.log(`${paint(C.cyan, 'markdown')}`)
-console.log(`  ${paint(C.dim, '$')} ${cmd}`)
+say(paint(C.dim, `target: ${target}${dryRun ? '   (dry run — check mode, no writes)' : ''}\n`))
+say(`${paint(C.cyan, 'markdown')}`)
+say(`  ${paint(C.dim, '$')} ${cmd}`)
 
 try {
   const out = execSync(cmd, { cwd: target, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] })
-  if (out.trim()) console.log(out.trim())
-  console.log(`  ${paint(C.green, 'ok')}    Markdown ${dryRun ? 'already conforms' : 'conformed'} (Prettier + markdownlint-cli2)`)
+  if (out.trim()) say(out.trim())
+  rec(
+    'PASS',
+    'md-mech',
+    `Markdown ${dryRun ? 'already conforms' : 'conformed'} (Prettier + markdownlint-cli2)`,
+    'references/markdown-authoring.md'
+  )
+  say(`  ${paint(C.green, 'ok')}    Markdown ${dryRun ? 'already conforms' : 'conformed'} (Prettier + markdownlint-cli2)`)
 } catch (e) {
   const out = ((e as { stdout?: string }).stdout ?? '').trim()
   const err = ((e as { stderr?: string }).stderr ?? '').trim()
-  if (out) console.log(out)
-  if (err) console.log(err)
-  console.log(
-    `  ${paint(dryRun ? C.red : C.red, dryRun ? 'diff' : 'fail')}  Markdown ${dryRun ? 'has findings — run without --dry-run to fix' : 'conform pass reported issues (see above)'}`
+  if (out) say(out)
+  if (err) say(err)
+  rec(
+    dryRun ? 'WARN' : 'FAIL',
+    'md-mech',
+    `Markdown ${dryRun ? 'has findings — run without --dry-run to fix' : 'conform pass reported issues (see above)'}`,
+    'references/markdown-authoring.md'
+  )
+  say(
+    `  ${paint(C.red, dryRun ? 'diff' : 'fail')}  Markdown ${dryRun ? 'has findings — run without --dry-run to fix' : 'conform pass reported issues (see above)'}`
   )
 }
 
-console.log(`\n${paint(C.cyan, 'toml')}`)
-console.log(
-  `  ${paint(C.dim, 'skip')}  no TOML formatter in the toolchain — .ki-config.toml style is judgment-only (references/toml-config.md)`
-)
+say(`\n${paint(C.cyan, 'toml')}`)
+rec('ADVISORY', 'toml', 'no TOML formatter in the toolchain — .ki-config.toml style is judgment-only', 'references/toml-config.md')
+say(`  ${paint(C.dim, 'skip')}  no TOML formatter in the toolchain — .ki-config.toml style is judgment-only (references/toml-config.md)`)
 
-console.log(
+// Judgment handoff — always-on ADVISORY: the [J] criteria conform cannot mechanically
+// fix, routed to a human/model pass (SKILL.md Mode CONFORM step 1).
+rec(
+  'ADVISORY',
+  'judgment',
+  'wide tables, link text, and TOML style are not scripted — apply the [J] criteria by reading (SKILL.md Mode CONFORM step 1)',
+  'references/audit-rubric.md'
+)
+say(
   `\n${paint(C.dim, `mechanical layer applied — re-run \`bun scripts/audit.ts ${target}\` (or \`ki:authoring:audit\`) to confirm findings clear.`)}`
 )
-console.log(paint(C.dim, 'Judgment criteria (wide tables, link text, TOML style) are not scripted — see SKILL.md Mode CONFORM step 1.'))
+say(paint(C.dim, 'Judgment criteria (wide tables, link text, TOML style) are not scripted — see SKILL.md Mode CONFORM step 1.'))
+
+if (json) {
+  const n = (l: Level): number => findings.filter((f) => f.level === l).length
+  const summary = {
+    fail: n('FAIL'),
+    warn: n('WARN'),
+    polish: n('POLISH'),
+    advisory: n('ADVISORY'),
+    info: n('INFO'),
+    na: n('NA'),
+    pass: n('PASS')
+  }
+  process.stdout.write(JSON.stringify({ concern: 'authoring', target, generatedAt: new Date().toISOString(), summary, findings }))
+}

@@ -277,7 +277,13 @@ const reportDir = join(reportTarget, '.ki-meta', 'audits')
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
-const all: { level: Level; area: string; msg: string }[] = []
+// area is the bare rubric code; ref points at the reference doc the code lives in; file names the
+// agent path a file-scoped finding concerns. ref/file are optional and ride into --json/--report
+// for the aggregate to cite (mirrors ki-authoring audit.ts's Finding shape — the cited-finding standard).
+const RUBRIC = 'references/audit-rubric.md'
+type Row = { level: Level; area: string; msg: string; ref?: string; file?: string }
+const all: Row[] = []
+const add = (level: Level, area: string, msg: string, ref?: string, file?: string): void => void all.push({ level, area, msg, ref, file })
 
 if (!jsonOut) console.log(paint(C.dim, LEGEND))
 
@@ -294,13 +300,13 @@ for (const file of files) {
   totalWarns += warns.length
   if (fails.length === 0 && warns.length === 0) totalPass++
   const label = agent.name ?? basename(file)
-  for (const x of findings) all.push({ level: x.severity === 'fail' ? 'FAIL' : 'WARN', area: `${label}:${x.criterion}`, msg: x.message })
+  for (const x of findings) add(x.severity === 'fail' ? 'FAIL' : 'WARN', x.criterion, x.message, RUBRIC, file)
   if (!jsonOut) {
     const stamp = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
     console.log(`\n${stamp}  ${paint(C.cyan, label)} ${paint(C.dim, file)}`)
     for (const x of findings) {
       const tag = x.severity === 'fail' ? paint(C.red, 'fail') : paint(C.yellow, 'warn')
-      console.log(`  ${tag} ${paint(C.dim, `[${x.criterion}]`)} ${x.message}`)
+      console.log(`  ${tag} ${paint(C.dim, `[${x.criterion}]`)} ${x.message} ${paint(C.dim, `(${RUBRIC})`)}`)
     }
     if (findings.length === 0) console.log(paint(C.dim, '  all mechanical checks passed'))
   }
@@ -311,13 +317,13 @@ if (cross.length > 0) {
   for (const x of cross) {
     if (x.severity === 'fail') totalFails++
     else totalWarns++
-    all.push({ level: x.severity === 'fail' ? 'FAIL' : 'WARN', area: `cross-agent:${x.criterion}`, msg: x.message })
+    add(x.severity === 'fail' ? 'FAIL' : 'WARN', x.criterion, x.message, RUBRIC)
   }
   if (!jsonOut) {
     console.log(`\n${paint(C.yellow, 'CROSS')}  ${paint(C.cyan, 'cross-agent')}`)
     for (const x of cross) {
       const tag = x.severity === 'fail' ? paint(C.red, 'fail') : paint(C.yellow, 'warn')
-      console.log(`  ${tag} ${paint(C.dim, `[${x.criterion}]`)} ${x.message}`)
+      console.log(`  ${tag} ${paint(C.dim, `[${x.criterion}]`)} ${x.message} ${paint(C.dim, `(${RUBRIC})`)}`)
     }
   }
 }
@@ -329,7 +335,13 @@ if (reportOut) {
   mkdirSync(reportDir, { recursive: true })
   const body = LADDER.flatMap((l) => {
     const rows = all.filter((f) => f.level === l)
-    return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+    return rows.length
+      ? [
+          '',
+          `## ${ICON[l]} ${l} (${rows.length})`,
+          ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
+        ]
+      : []
   })
   const tally = `${files.length} agent(s) · FAIL=${summary.fail} WARN=${summary.warn}`
   writeFileSync(join(reportDir, 'agents.md'), [`# agents audit — ${reportTarget}`, '', `_${stampIso}_`, '', tally, ...body, ''].join('\n'))

@@ -1,7 +1,9 @@
 #!/bin/sh
 # Vendored by ki-bootstrap — the package.json-free entry to a repo's self-check.
-# Usage: ./.ki-meta/bin/ki-audit [audit|conform|init|help]   (default: audit)
+# Usage: ./.ki-meta/bin/ki-audit [audit|conform|init|help] [--dry-run ...]   (default verb: audit)
 set -eu
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$root"
-exec bun ".ki-meta/bin/aggregate.ts" "${1:-audit}"
+verb="${1:-audit}"
+[ $# -gt 0 ] && shift
+exec bun ".ki-meta/bin/aggregate.ts" "$verb" "$@"

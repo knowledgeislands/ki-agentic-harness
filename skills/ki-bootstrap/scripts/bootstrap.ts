@@ -279,22 +279,25 @@ process.exit(failed > 0 ? 1 : 0)
 // by dotfile managers (chezmoi). Usage: ./.ki-meta/bin/ki-audit [verb].
 const BIN_KI_AUDIT = `#!/bin/sh
 # Vendored by ki-bootstrap — the package.json-free entry to a repo's self-check.
-# Usage: ./.ki-meta/bin/ki-audit [audit|conform|init|help]   (default: audit)
+# Usage: ./.ki-meta/bin/ki-audit [audit|conform|init|help] [--dry-run ...]   (default verb: audit)
 set -eu
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$root"
-exec bun ".ki-meta/bin/aggregate.ts" "\${1:-audit}"
+verb="\${1:-audit}"
+[ $# -gt 0 ] && shift
+exec bun ".ki-meta/bin/aggregate.ts" "$verb" "$@"
 `
 
 // The conform twin — same runner, verb pinned, so the write pass is a first-class
-// entry beside ki-audit rather than an argument to it.
+// entry beside ki-audit rather than an argument to it. Flags (e.g. --dry-run) still
+// forward through — the verb is pinned, not the whole argument list.
 const BIN_KI_CONFORM = `#!/bin/sh
 # Vendored by ki-bootstrap — apply the mechanical fixes across the vendored set.
-# Usage: ./.ki-meta/bin/ki-conform
+# Usage: ./.ki-meta/bin/ki-conform [--dry-run]
 set -eu
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$root"
-exec bun ".ki-meta/bin/aggregate.ts" conform
+exec bun ".ki-meta/bin/aggregate.ts" conform "$@"
 `
 
 // The vendored HELP surface: pure POSIX shell over the per-skill help.md snapshots

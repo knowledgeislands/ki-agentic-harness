@@ -13,6 +13,14 @@
  *
  *   bun scripts/conform.ts [path]   # default: cwd
  *   --dry-run                            # print the plan, mutate nothing
+ *   --json                               # emit the CHK-004 finding wrapper instead of prose
+ *
+ * `--json` reports the same finding wrapper audit.ts emits (CHK-004/010) — each action
+ * becomes a finding on the shared ladder: a written/appended fix → POLISH, an
+ * already-conformant no-op → PASS, an unfixable gate failure → FAIL, a judgment/manual
+ * TODO → ADVISORY. area is the rubric code (kept in lockstep with audit.ts) and ref its
+ * reference-doc pointer, so audit and conform render identically in the aggregate.
+ * `--json` governs *reporting*; `--dry-run` governs *writing* — the two compose.
  *
  * Fixes:
  *   - `decision_type` frontmatter: when the field is missing, invalid, or
@@ -103,11 +111,29 @@ async function resolveDecisionsDir(target: string): Promise<{ dir: string; kbMod
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
+// Every criterion traces to the one reference doc, so `ref` is a constant pointer kept
+// identical to audit.ts's REF (consistency: same criterion → same area+ref across both).
+const REF = 'references/audit-rubric.md'
+
+// Collect-then-emit harness (mirrors audit.ts / the ki-authoring conform). Each action
+// records a finding; `say` prints the human line only when not in --json mode, so a direct
+// run streams prose while the aggregate consumes the CHK-004 wrapper. area is the rubric
+// code, ref its reference-doc pointer, file the DR path an action concerns.
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
+
 // ── entry ──
 async function main() {
   const argv = process.argv.slice(2)
   const dryRun = argv.includes('--dry-run')
+  const json = argv.includes('--json')
   const target = resolve(argv.find((a) => !a.startsWith('-')) ?? '.')
+
+  const findings: Finding[] = []
+  const rec = (level: Level, area: string, msg: string, file?: string, ref: string = REF) => findings.push({ level, area, msg, ref, file })
+  const say = (line: string): void => {
+    if (!json) console.log(line)
+  }
 
   const { dir: resolvedDir, kbMode } = await resolveDecisionsDir(target)
 
@@ -119,7 +145,7 @@ async function main() {
     return
   }
 
-  console.log(paint(C.dim, `target: ${resolvedDir}   ${kbMode ? 'KB mode' : 'code mode'}${dryRun ? '   (dry run)' : ''}\n`))
+  say(paint(C.dim, `target: ${resolvedDir}   ${kbMode ? 'KB mode' : 'code mode'}${dryRun ? '   (dry run)' : ''}\n`))
 
   const entries = await readdir(resolvedDir)
   const drFiles = entries.filter((f) => DR_FILENAME_RE.test(f)).sort()
@@ -137,7 +163,7 @@ async function main() {
   const manualTodos: string[] = []
 
   // ── a) decision_type frontmatter repair ──
-  console.log(paint(C.cyan, 'decision_type frontmatter'))
+  say(paint(C.cyan, 'decision_type frontmatter'))
   let fmFixes = 0
   for (const file of drFiles) {
     const match = DR_FILENAME_RE.exec(file)
@@ -151,6 +177,7 @@ async function main() {
     const fmMatch = content.match(/^---\n([\s\S]*?)\n---/)
     if (!fmMatch) {
       manualTodos.push(`${file}: FM-0 — no frontmatter block; author one by hand (not just decision_type)`)
+      rec('ADVISORY', 'FM-0', 'no frontmatter block; author one by hand (not just decision_type)', file)
       continue
     }
 
@@ -159,7 +186,8 @@ async function main() {
     if (!dtMatch) {
       const newFm = `${fm}\ndecision_type: ${expectedType}`
       const newContent = content.replace(fmMatch[0], `---\n${newFm}\n---`)
-      console.log(`  ${paint(C.green, 'fix')}   ${file} — add decision_type: ${expectedType}`)
+      rec('POLISH', 'FM-4', `${dryRun ? 'would add' : 'added'} decision_type: ${expectedType}`, file)
+      say(`  ${paint(C.green, 'fix')}   ${file} — add decision_type: ${expectedType}`)
       if (!dryRun) await writeFile(filePath, newContent)
       fmFixes++
       continue
@@ -169,18 +197,23 @@ async function main() {
     if (currentValue !== expectedType) {
       const newFm = fm.replace(/^decision_type:\s*.+$/m, `decision_type: ${expectedType}`)
       const newContent = content.replace(fmMatch[0], `---\n${newFm}\n---`)
-      console.log(`  ${paint(C.green, 'fix')}   ${file} — decision_type '${currentValue}' → '${expectedType}'`)
+      rec('POLISH', 'PREFIX-TYPE-1', `${dryRun ? 'would set' : 'set'} decision_type '${currentValue}' → '${expectedType}'`, file)
+      say(`  ${paint(C.green, 'fix')}   ${file} — decision_type '${currentValue}' → '${expectedType}'`)
       if (!dryRun) await writeFile(filePath, newContent)
       fmFixes++
     }
   }
-  if (fmFixes === 0) console.log(`  ${paint(C.dim, 'nothing to fix')}`)
+  if (fmFixes === 0) {
+    rec('PASS', 'FM-4', 'decision_type frontmatter already conforms', indexFile)
+    say(`  ${paint(C.dim, 'nothing to fix')}`)
+  }
 
   // ── b) append missing index entries ──
-  console.log(`\n${paint(C.cyan, `index entries (${indexFile})`)}`)
+  say(`\n${paint(C.cyan, `index entries (${indexFile})`)}`)
   if (!hasIndex) {
     manualTodos.push(`${indexFile}: INDEX-1 — index file missing entirely; author it by hand`)
-    console.log(`  ${paint(C.dim, 'no index file — see manual TODOs')}`)
+    rec('ADVISORY', 'INDEX-1', 'index file missing entirely; author it by hand', indexFile)
+    say(`  ${paint(C.dim, 'no index file — see manual TODOs')}`)
   } else {
     let appended = 0
     const appendLines: string[] = []
@@ -201,11 +234,18 @@ async function main() {
 
       appendLines.push(`- [${drId}](${file}) — ${title}`)
       manualTodos.push(`${indexFile}: move the appended entry for ${drId} to its correct reading-order position`)
-      console.log(`  ${paint(C.green, 'append')} ${drId} — ${title}`)
+      rec(
+        'POLISH',
+        'INDEX-2',
+        `${dryRun ? 'would append' : 'appended'} index entry for ${drId} — ${title} (then move to reading-order position)`,
+        indexFile
+      )
+      say(`  ${paint(C.green, 'append')} ${drId} — ${title}`)
       appended++
     }
     if (appended === 0) {
-      console.log(`  ${paint(C.dim, 'nothing to append')}`)
+      rec('PASS', 'INDEX-2', 'every DR file already has an index entry', indexFile)
+      say(`  ${paint(C.dim, 'nothing to append')}`)
     } else if (!dryRun) {
       indexContent = `${indexContent.replace(/\n*$/, '\n')}${appendLines.join('\n')}\n`
       await writeFile(indexPath, indexContent)
@@ -213,16 +253,39 @@ async function main() {
   }
 
   // ── judgment items — never guessed, always surfaced ──
-  console.log(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
+  say(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
   if (manualTodos.length === 0) {
-    console.log(`  ${paint(C.dim, 'none')}`)
+    say(`  ${paint(C.dim, 'none')}`)
   } else {
-    for (const todo of manualTodos) console.log(`  - ${todo}`)
+    for (const todo of manualTodos) say(`  - ${todo}`)
   }
-  console.log(`  - Everything else audit.ts flags (FM-3, BODY-1/3/4, FILENAME-2, INDEX-3, INDEX-8, …) is prose/authoring judgment.`)
-  console.log(
+  // Judgment handoff — always-on ADVISORY: the criteria conform cannot mechanically fix.
+  rec(
+    'ADVISORY',
+    'judgment',
+    'FM-3, BODY-1/3/4, FILENAME-2, INDEX-3, INDEX-8 and the [J] criteria are prose/authoring judgment — apply by reading',
+    indexFile
+  )
+  say(`  - Everything else audit.ts flags (FM-3, BODY-1/3/4, FILENAME-2, INDEX-3, INDEX-8, …) is prose/authoring judgment.`)
+  say(
     `\n${paint(C.dim, 'mechanical layer applied — re-run `bun scripts/audit.ts` (or `ki:decision-records:audit`) to confirm findings clear.')}`
   )
+
+  if (json) {
+    const n = (l: Level): number => findings.filter((f) => f.level === l).length
+    const summary = {
+      fail: n('FAIL'),
+      warn: n('WARN'),
+      polish: n('POLISH'),
+      advisory: n('ADVISORY'),
+      info: n('INFO'),
+      na: n('NA'),
+      pass: n('PASS')
+    }
+    process.stdout.write(
+      JSON.stringify({ concern: 'decision-records', target: resolvedDir, generatedAt: new Date().toISOString(), summary, findings })
+    )
+  }
 }
 
 main().catch((err) => {

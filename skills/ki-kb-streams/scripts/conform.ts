@@ -62,8 +62,27 @@ const KI_SECTION = 'ki-kb-streams'
 const KB_ZONES = 'ki-kb.zones'
 const SCHEMES = ['type', 'tags']
 
+// Reference-doc pointers for the cited-finding standard — kept in lockstep with audit.ts.
+const REF_STRUCTURE = 'references/Streams Structure Reference.md'
+const REF_ENACT = 'references/Enactment Process Reference.md'
+const REF_SKILL = '../SKILL.md'
+
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
+
+// Collect-then-emit harness (mirrors audit.ts + ki-authoring conform.ts). Each action
+// records a finding on the shared ladder; `say` prints the human line only when not in
+// --json mode, so a direct run streams prose while the aggregate consumes the wrapper.
+// area is the rubric code, ref its reference-doc pointer, file the path an action concerns.
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
+const findings: Finding[] = []
+const rec = (level: Level, area: string, msg: string, ref?: string, file?: string): void =>
+  void findings.push({ level, area, msg, ref, file })
+const json = process.argv.slice(2).includes('--json')
+const say = (line: string): void => {
+  if (!json) console.log(line)
+}
 
 // ── filesystem helpers — copied from audit.ts ────────────────────────────────
 const isDir = (p: string): boolean => existsSync(p) && statSync(p).isDirectory()
@@ -179,7 +198,7 @@ function main(): void {
   const ki: Ki = isFile(kiPath) ? parseKi(readFileSync(kiPath, 'utf8')) : { keys: {}, streamsZone: 'Streams' }
   const streamsRoot = join(base, ki.streamsZone)
 
-  console.log(
+  say(
     paint(
       C.dim,
       `target: ${streamsRoot}   ${ki.streamsZone !== 'Streams' ? `(aliased from Streams/)   ` : ''}${dryRun ? '(dry run)' : ''}\n`
@@ -187,14 +206,16 @@ function main(): void {
   )
 
   if (!isDir(streamsRoot)) {
-    console.log(paint(C.dim, `no ${ki.streamsZone}/ zone — nothing to conform (its presence is a ki-kb ZONE check).`))
+    rec('NA', 'zone', `no ${ki.streamsZone}/ zone — nothing to conform (its presence is a ki-kb ZONE check)`, REF_STRUCTURE)
+    say(paint(C.dim, `no ${ki.streamsZone}/ zone — nothing to conform (its presence is a ki-kb ZONE check).`))
+    emitJson(base)
     return
   }
 
   const manualTodos: string[] = []
 
   // ── ENACT-2: normalise status/priority prose → bare token ──
-  console.log(paint(C.cyan, 'ENACT-2 status/priority bare-token normalization'))
+  say(paint(C.cyan, 'ENACT-2 status/priority bare-token normalization'))
   const proposals = walkMarkdown(streamsRoot).filter((p) => basename(p, '.md').endsWith(PROPOSAL_SUFFIX))
   let fixes = 0
   for (const file of proposals) {
@@ -202,15 +223,20 @@ function main(): void {
     const fm = frontmatter(content)
     const rel = file.slice(base.length + 1)
     if (!fm) {
+      rec('ADVISORY', 'ENACT-1', 'no frontmatter block; author status/priority/dependencies by hand', REF_ENACT, rel)
       manualTodos.push(`${rel}: ENACT-1 — no frontmatter block; author status/priority/dependencies by hand`)
       continue
     }
     if (!fm.terminated) {
+      rec('ADVISORY', 'ENACT-1', 'unterminated frontmatter (no closing `---`); fix the fence by hand', REF_ENACT, rel)
       manualTodos.push(`${rel}: ENACT-1 — unterminated frontmatter (no closing \`---\`); fix the fence by hand`)
       continue
     }
     for (const k of PROPOSAL_FM)
-      if (!(k in fm.map)) manualTodos.push(`${rel}: ENACT-1 — missing \`${k}\` (value is content, not derivable)`)
+      if (!(k in fm.map)) {
+        rec('ADVISORY', 'ENACT-1', `missing \`${k}\` (value is content, not derivable)`, REF_ENACT, rel)
+        manualTodos.push(`${rel}: ENACT-1 — missing \`${k}\` (value is content, not derivable)`)
+      }
 
     // Rewrite only the top-level status:/priority: lines, inside the frontmatter block.
     const lines = content.split('\n')
@@ -230,34 +256,65 @@ function main(): void {
       const raw = (m[2] as string).trim()
       const bare = bareToken(raw, key === 'status' ? STATUS : PRIORITY)
       if (bare === null) {
-        if (!(key === 'status' ? STATUS : PRIORITY).includes(raw))
+        if (!(key === 'status' ? STATUS : PRIORITY).includes(raw)) {
+          rec('ADVISORY', 'ENACT-2', `${key} "${raw}" begins with no known token; set it by hand`, REF_ENACT, rel)
           manualTodos.push(`${rel}: ENACT-2 — ${key} "${raw}" begins with no known token; set it by hand`)
+        }
         continue
       }
       lines[i] = `${key}: ${bare}`
-      console.log(`  ${paint(C.green, 'fix')}   ${rel} — ${key} "${raw}" → "${bare}"`)
+      rec('POLISH', 'ENACT-2', `${key} "${raw}" ${dryRun ? '→ would normalize to' : 'normalized to'} "${bare}"`, REF_ENACT, rel)
+      say(`  ${paint(C.green, 'fix')}   ${rel} — ${key} "${raw}" → "${bare}"`)
       changed = true
       fixes++
     }
     if (changed && !dryRun) writeFileSync(file, lines.join('\n'))
   }
-  if (fixes === 0) console.log(`  ${paint(C.dim, 'nothing to normalize')}`)
+  if (fixes === 0) {
+    rec('PASS', 'ENACT-2', 'status/priority already bare tokens — nothing to normalize', REF_ENACT)
+    say(`  ${paint(C.dim, 'nothing to normalize')}`)
+  }
 
   // ── gather the judgment categories the audit would flag, as manual TODOs ──
   gatherJudgmentTodos(base, ki, streamsRoot, proposals, manualTodos)
 
   // ── manual TODOs — never guessed, always surfaced ──
-  console.log(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
+  say(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
   if (manualTodos.length === 0) {
-    console.log(`  ${paint(C.dim, 'none')}`)
+    say(`  ${paint(C.dim, 'none')}`)
   } else {
-    for (const todo of manualTodos) console.log(`  - ${todo}`)
+    for (const todo of manualTodos) say(`  - ${todo}`)
   }
-  console.log(`  - Everything else audit.ts grades [J] (STREAM-4/5, ENACT-3/4/5, GATE-2) is judgment — apply it by reading the rubric.`)
+  rec(
+    'ADVISORY',
+    'judgment',
+    'everything audit.ts grades [J] (STREAM-4/5, ENACT-3/4/5, GATE-2) is judgment — apply it by reading the rubric',
+    'references/audit-rubric.md'
+  )
+  say(`  - Everything else audit.ts grades [J] (STREAM-4/5, ENACT-3/4/5, GATE-2) is judgment — apply it by reading the rubric.`)
 
-  console.log(
+  say(
     `\n${paint(C.dim, 'normalize-only layer applied — re-run `bun scripts/audit.ts` (or `ki:kb-streams:audit`) to confirm findings clear.')}`
   )
+
+  emitJson(base)
+}
+
+// ── JSON wrapper — the same finding shape audit.ts emits, so the aggregate renders
+// conform and audit identically. `--json` governs reporting; `--dry-run` governs writing.
+function emitJson(target: string): void {
+  if (!json) return
+  const n = (l: Level): number => findings.filter((f) => f.level === l).length
+  const summary = {
+    fail: n('FAIL'),
+    warn: n('WARN'),
+    polish: n('POLISH'),
+    advisory: n('ADVISORY'),
+    info: n('INFO'),
+    na: n('NA'),
+    pass: n('PASS')
+  }
+  process.stdout.write(JSON.stringify({ concern: 'kb-streams', target, generatedAt: new Date().toISOString(), summary, findings }))
 }
 
 // Surface the non-derivable drift categories as manual TODOs (a subset of what
@@ -265,25 +322,44 @@ function main(): void {
 function gatherJudgmentTodos(base: string, ki: Ki, streamsRoot: string, proposals: string[], todos: string[]): void {
   // CONFIG — validate this skill's own table, down.
   for (const key of Object.keys(ki.keys))
-    if (key !== 'process_note' && key !== 'note_type_scheme')
+    if (key !== 'process_note' && key !== 'note_type_scheme') {
+      rec('ADVISORY', 'CONFIG-1', `unrecognised key "${key}"; recognised: process_note, note_type_scheme`, REF_SKILL, KI_CONFIG)
       todos.push(`.ki-config.toml: CONFIG-1 — unrecognised [${KI_SECTION}] key "${key}"; recognised: process_note, note_type_scheme`)
+    }
   const scheme = ki.keys.note_type_scheme
-  if (scheme !== undefined && !SCHEMES.includes(scheme))
+  if (scheme !== undefined && !SCHEMES.includes(scheme)) {
+    rec('ADVISORY', 'CONFIG-2', `note_type_scheme "${scheme}" not one of ${SCHEMES.join(', ')}`, REF_SKILL, KI_CONFIG)
     todos.push(`.ki-config.toml: CONFIG-2 — note_type_scheme "${scheme}" not one of ${SCHEMES.join(', ')}`)
+  }
 
   // STREAM-1 — stray non-Focus folders directly under the zone.
   const present = subdirs(streamsRoot)
   const stray = present.filter((n) => !(FOCI as readonly string[]).includes(n))
-  if (stray.length)
+  if (stray.length) {
+    rec(
+      'ADVISORY',
+      'STREAM-1',
+      `non-Focus folder(s) under ${ki.streamsZone}/: ${sampleList(stray)}; move each into a Focus (rename — confirm first)`,
+      REF_STRUCTURE
+    )
     todos.push(
       `STREAM-1 — non-Focus folder(s) under ${ki.streamsZone}/: ${sampleList(stray)}; move each into a Focus (rename — confirm first)`
     )
+  }
   const foci = FOCI.filter((x) => present.includes(x))
 
   // STREAM-2 — a present Focus missing its same-name index note.
   for (const focus of foci)
-    if (!isFile(join(streamsRoot, focus, `${focus}.md`)))
+    if (!isFile(join(streamsRoot, focus, `${focus}.md`))) {
+      rec(
+        'ADVISORY',
+        'STREAM-2',
+        `has no ${focus}.md index note; author the Focus dashboard + ordered table by hand`,
+        REF_STRUCTURE,
+        `${ki.streamsZone}/${focus}`
+      )
       todos.push(`STREAM-2 — ${ki.streamsZone}/${focus}/ has no ${focus}.md index note; author the Focus dashboard + ordered table by hand`)
+    }
 
   // STREAM-3 — a stream that declares itself a proposal but lacks the ` Proposal` suffix.
   const missingSuffix: string[] = []
@@ -297,25 +373,46 @@ function gatherJudgmentTodos(base: string, ki: Ki, streamsRoot: string, proposal
       if (declaresProposal) missingSuffix.push(leaf.slice(base.length + 1))
     }
   }
-  if (missingSuffix.length)
+  if (missingSuffix.length) {
+    rec(
+      'ADVISORY',
+      'STREAM-3',
+      `proposal stream(s) missing the \` Proposal\` suffix: ${sampleList(missingSuffix)}; rename folder + note (confirm first)`,
+      REF_ENACT
+    )
     todos.push(
       `STREAM-3 — proposal stream(s) missing the \` Proposal\` suffix: ${sampleList(missingSuffix)}; rename folder + note (confirm first)`
     )
+  }
 
   // GATE-1 — once proposals exist, the gate must be anchored in always-loaded context.
   if (proposals.length > 0) {
     const anchorFile = ['CLAUDE.md', 'AGENTS.md'].map((n) => join(base, n)).find(isFile)
     if (!anchorFile) {
+      rec(
+        'ADVISORY',
+        'GATE-1',
+        'no CLAUDE.md / AGENTS.md at the base root; add one anchoring the Enactment gate (first confirm the base should run proposals)',
+        REF_SKILL
+      )
       todos.push(
         'GATE-1 — no CLAUDE.md / AGENTS.md at the base root; add one anchoring the Enactment gate (first confirm the base should run proposals)'
       )
     } else {
       const txt = readFileSync(anchorFile, 'utf8')
       const anchored = /Enactment Process|ki-kb-streams/i.test(txt) && /proposal|canonical/i.test(txt)
-      if (!anchored)
+      if (!anchored) {
+        rec(
+          'ADVISORY',
+          'GATE-1',
+          'does not anchor the Enactment gate; add the standing directive by hand (first confirm the base should run proposals)',
+          REF_SKILL,
+          basename(anchorFile)
+        )
         todos.push(
           `GATE-1 — ${basename(anchorFile)} does not anchor the Enactment gate; add the standing directive by hand (first confirm the base should run proposals)`
         )
+      }
     }
   }
 }

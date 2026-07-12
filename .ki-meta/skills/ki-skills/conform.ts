@@ -13,6 +13,12 @@
  *
  *   bun scripts/conform.ts [path]   # default: cwd
  *   --dry-run                               # print the plan, mutate nothing
+ *   --json                                  # emit the shared finding wrapper instead of prose
+ *
+ * `--json` reports the same finding wrapper audit.ts emits, so the aggregate renders conform
+ * and audit identically: each action becomes a finding on the shared ladder (fix → POLISH,
+ * already-canonical → PASS, manual-TODO / judgment handoff → ADVISORY). `--json` governs
+ * *reporting*; `--dry-run` governs *writing* — the two compose.
  *
  * Fixes:
  *   - NAME-5: `name:` frontmatter rewritten to match the directory name.
@@ -43,6 +49,23 @@ import { basename, join, resolve } from 'node:path'
 
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
+
+// Collect-then-emit harness (mirrors ki-authoring conform.ts). Each action records a finding on
+// the shared ladder; `say` prints the human line only when NOT in --json mode, so a direct run
+// streams prose while the aggregate consumes the wrapper. area is the rubric code, ref its
+// reference-doc pointer, file the path an action concerns. --json governs *reporting*; --dry-run
+// governs *writing* — the two compose (a --json run still writes unless --dry-run is also set).
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
+const RUBRIC = 'references/audit-rubric.md'
+const argv = process.argv.slice(2)
+const json = argv.includes('--json')
+const findings: Finding[] = []
+const rec = (level: Level, area: string, msg: string, ref?: string, file?: string): void =>
+  void findings.push({ level, area, msg, ref, file })
+const say = (line: string): void => {
+  if (!json) console.log(line)
+}
 
 // ── kept in lockstep with audit.ts ──
 const isProcessSkill = (desc: string): boolean => /\(kind:\s*process\b/i.test(desc)
@@ -114,16 +137,18 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
   const dirName = basename(dir)
   if (!existsSync(skillMdPath)) {
     todos.push(`${dirName}: LAY-1 — no SKILL.md`)
+    rec('ADVISORY', `${dirName}:LAY-1`, 'no SKILL.md — author by hand', RUBRIC, 'SKILL.md')
     return
   }
   const content = readFileSync(skillMdPath, 'utf8')
   const block = frontmatterBlock(content)
   if (block === null) {
     todos.push(`${dirName}: LAY-1/NAME-1 — no frontmatter block; author by hand`)
+    rec('ADVISORY', `${dirName}:LAY-1/NAME-1`, 'no frontmatter block; author by hand', RUBRIC, 'SKILL.md')
     return
   }
 
-  console.log(`\n${paint(C.cyan, dirName)}`)
+  say(`\n${paint(C.cyan, dirName)}`)
   let workingBlock = block
   let fixedAny = false
   const process = isProcessSkill(content)
@@ -134,11 +159,13 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
     const nameVal = (nameLine.match(/^name:\s*(.+)$/)?.[1] ?? '').trim()
     if (nameVal !== dirName) {
       workingBlock = workingBlock.replace(nameLine, `name: ${dirName}`)
-      console.log(`  ${paint(C.green, 'fix')}   NAME-5 — name '${nameVal}' → '${dirName}'`)
+      say(`  ${paint(C.green, 'fix')}   NAME-5 — name '${nameVal}' → '${dirName}'`)
+      rec('POLISH', `${dirName}:NAME-5`, `name '${nameVal}' → '${dirName}'`, RUBRIC, 'SKILL.md')
       fixedAny = true
     }
   } else {
     todos.push(`${dirName}: NAME-1 — no \`name\` field at all; author by hand`)
+    rec('ADVISORY', `${dirName}:NAME-1`, 'no `name` field at all; author by hand', RUBRIC, 'SKILL.md')
   }
 
   // ── SHAPE-11 (help token) + SHAPE-12 (universal verbs) ──
@@ -152,7 +179,8 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
     if (!/(^|[|\s'"])help([|\s'"]|$)/.test(hintLine)) {
       hintVal = `${hintVal} | help`
       hintChanged = true
-      console.log(`  ${paint(C.green, 'fix')}   SHAPE-11 — appended \`help\` to argument-hint`)
+      say(`  ${paint(C.green, 'fix')}   SHAPE-11 — appended \`help\` to argument-hint`)
+      rec('POLISH', `${dirName}:SHAPE-11`, 'appended `help` to argument-hint', RUBRIC, 'SKILL.md')
     }
 
     if (!process) {
@@ -161,7 +189,8 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
       if (missing.length > 0) {
         hintVal = `${hintVal} | ${missing.join(' | ')}`
         hintChanged = true
-        console.log(`  ${paint(C.green, 'fix')}   SHAPE-12 — appended missing verb(s) to argument-hint: ${missing.join(', ')}`)
+        say(`  ${paint(C.green, 'fix')}   SHAPE-12 — appended missing verb(s) to argument-hint: ${missing.join(', ')}`)
+        rec('POLISH', `${dirName}:SHAPE-12`, `appended missing verb(s) to argument-hint: ${missing.join(', ')}`, RUBRIC, 'SKILL.md')
       }
     }
 
@@ -171,6 +200,7 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
     }
   } else if (!process) {
     todos.push(`${dirName}: SHAPE-11/SHAPE-12 — no \`argument-hint\` field at all; author one by hand`)
+    rec('ADVISORY', `${dirName}:SHAPE-11/SHAPE-12`, 'no `argument-hint` field at all; author one by hand', RUBRIC, 'SKILL.md')
   }
 
   // ── SHAPE-12 (vendors leg) — process skills are exempt, same as audit.ts ──
@@ -187,15 +217,24 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
         if (conformScript) parts.push(`conform: scripts/${conformScript}`)
         const newLine = `vendors: { ${parts.join(', ')} }`
         workingBlock = vendorsLine ? workingBlock.replace(vendorsLine, newLine) : insertAfterAnchor(workingBlock, newLine)
-        console.log(`  ${paint(C.green, 'fix')}   SHAPE-12 — authored \`${newLine}\``)
+        say(`  ${paint(C.green, 'fix')}   SHAPE-12 — authored \`${newLine}\``)
+        rec('POLISH', `${dirName}:SHAPE-12`, `authored \`${newLine}\``, RUBRIC, 'SKILL.md')
         fixedAny = true
       } else if (!vendorsLine) {
         todos.push(`${dirName}: SHAPE-12 — no \`vendors:\` declaration and no scripts/audit-*.ts|lint-*.ts to point at; needs a human call`)
+        rec(
+          'ADVISORY',
+          `${dirName}:SHAPE-12`,
+          'no `vendors:` declaration and no scripts/audit-*.ts|lint-*.ts to point at; needs a human call',
+          RUBRIC,
+          'SKILL.md'
+        )
       }
     } else if (!/\bconform:/.test(vendorsLine) && conformScript) {
       const newLine = vendorsLine.replace(/\}\s*$/, `, conform: scripts/${conformScript} }`)
       workingBlock = workingBlock.replace(vendorsLine, newLine)
-      console.log(`  ${paint(C.green, 'fix')}   SHAPE-12 — added missing \`conform: scripts/${conformScript}\` to vendors`)
+      say(`  ${paint(C.green, 'fix')}   SHAPE-12 — added missing \`conform: scripts/${conformScript}\` to vendors`)
+      rec('POLISH', `${dirName}:SHAPE-12`, `added missing \`conform: scripts/${conformScript}\` to vendors`, RUBRIC, 'SKILL.md')
       fixedAny = true
     }
   }
@@ -203,7 +242,8 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
   if (fixedAny) {
     if (!dryRun) writeFileSync(skillMdPath, content.replace(block, workingBlock))
   } else {
-    console.log(`  ${paint(C.dim, 'frontmatter: nothing to fix')}`)
+    say(`  ${paint(C.dim, 'frontmatter: nothing to fix')}`)
+    rec('PASS', `${dirName}:frontmatter`, 'frontmatter already canonical (nothing to fix)', RUBRIC, 'SKILL.md')
   }
 
   // ── LAY-4: backslash link separators, across every markdown file ──
@@ -219,16 +259,19 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
     if (count > 0) {
       lay4Fixes += count
       const rel = file.slice(dir.length + 1)
-      console.log(`  ${paint(C.green, 'fix')}   LAY-4 — ${rel}: ${count} backslash link target(s) → forward slashes`)
+      say(`  ${paint(C.green, 'fix')}   LAY-4 — ${rel}: ${count} backslash link target(s) → forward slashes`)
+      rec('POLISH', `${dirName}:LAY-4`, `${count} backslash link target(s) → forward slashes`, RUBRIC, rel)
       if (!dryRun) writeFileSync(file, fixed)
     }
   }
-  if (lay4Fixes === 0) console.log(`  ${paint(C.dim, 'LAY-4: nothing to fix')}`)
+  if (lay4Fixes === 0) {
+    say(`  ${paint(C.dim, 'LAY-4: nothing to fix')}`)
+    rec('PASS', `${dirName}:LAY-4`, 'no backslash link separators (nothing to fix)', RUBRIC)
+  }
 }
 
 // --- entry -------------------------------------------------------------------
 function main(): void {
-  const argv = process.argv.slice(2)
   const dryRun = argv.includes('--dry-run')
   const target = argv.find((a) => !a.startsWith('-')) ?? '.'
 
@@ -239,23 +282,44 @@ function main(): void {
     return
   }
 
-  console.log(paint(C.dim, `target: ${resolve(target)}   ${skillDirs.length} skill(s)${dryRun ? '   (dry run)' : ''}`))
+  say(paint(C.dim, `target: ${resolve(target)}   ${skillDirs.length} skill(s)${dryRun ? '   (dry run)' : ''}`))
 
   const todos: string[] = []
   for (const dir of skillDirs) conformSkill(dir, dryRun, todos)
 
-  console.log(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
+  say(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
   if (todos.length === 0) {
-    console.log(`  ${paint(C.dim, 'none from the fixable set')}`)
+    say(`  ${paint(C.dim, 'none from the fixable set')}`)
   } else {
-    for (const todo of todos) console.log(`  - ${todo}`)
+    for (const todo of todos) say(`  - ${todo}`)
   }
-  console.log(
+  // Judgment handoff — always-on ADVISORY: the [J] criteria conform cannot mechanically fix.
+  rec(
+    'ADVISORY',
+    'judgment',
+    'Everything else audit.ts flags — DESC-1/2/3, SHAPE-13, SIZE-1/2, LINK-2, SHAPE-2/7/8/9, REF-3, COLL-1, LONG-3/4 — is prose/authoring or cross-file judgment, never auto-fixed here; apply by reading',
+    RUBRIC
+  )
+  say(
     `  - Everything else audit.ts flags — DESC-1/2/3, SHAPE-13, SIZE-1/2, LINK-2, SHAPE-2/7/8/9, REF-3, COLL-1, LONG-3/4 — is prose/authoring or cross-file judgment, never auto-fixed here.`
   )
-  console.log(
-    `\n${paint(C.dim, 'mechanical layer applied — re-run `bun scripts/audit.ts` (or `ki:skills:audit`) to confirm findings clear.')}`
-  )
+  say(`\n${paint(C.dim, 'mechanical layer applied — re-run `bun scripts/audit.ts` (or `ki:skills:audit`) to confirm findings clear.')}`)
+
+  if (json) {
+    const n = (l: Level): number => findings.filter((f) => f.level === l).length
+    const summary = {
+      fail: n('FAIL'),
+      warn: n('WARN'),
+      polish: n('POLISH'),
+      advisory: n('ADVISORY'),
+      info: n('INFO'),
+      na: n('NA'),
+      pass: n('PASS')
+    }
+    process.stdout.write(
+      JSON.stringify({ concern: 'skills', target: resolve(target), generatedAt: new Date().toISOString(), summary, findings })
+    )
+  }
 }
 
 main()

@@ -56,6 +56,10 @@ const DEFAULT_LICENSE = 'MIT'
 const TOPICS = ['mcp', 'model-context-protocol', 'claude', 'typescript', 'bun']
 const REQUIRED_CHECK = 'build'
 const ALLOWED_ACTIONS = 'all'
+// Reference-doc pointers carried on every finding (the cited-finding standard): STD is
+// the standard each mechanical criterion verifies; RUBRIC is where the judgment criteria
+// live. Kept identical to conform.ts so a given criterion cites the same (area, ref) in both.
+const STD = 'references/repo-standard.md'
 // Overridable checks and the org default for each — `true` = enforced by default.
 // A repo overrides any of these per-repo in [ki-repo.checks];
 // a check it omits takes the default here, so a fully-conforming repo writes none.
@@ -89,13 +93,17 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
-type Finding = { level: Level; check: string; msg: string }
+// Cited-finding shape: `check` is the rubric code (area), `ref` the reference-doc pointer
+// (defaults to the standard STD; the rare judgment finding overrides it), `file` the
+// in-repo path a file-scoped finding concerns. Arg order (check, msg, file?, ref?) puts the
+// often-set `file` before the usually-defaulted `ref`, so most call sites stay two-arg.
+type Finding = { level: Level; check: string; msg: string; ref?: string; file?: string }
 const mk = () => {
   const f: Finding[] = []
   const push =
     (level: Level) =>
-    (check: string, msg: string): void =>
-      void f.push({ level, check, msg })
+    (check: string, msg: string, file?: string, ref: string = STD): void =>
+      void f.push({ level, check, msg, ref, file })
   return {
     f,
     fail: push('FAIL'),
@@ -360,7 +368,7 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
 
   // ── layer 1: files (presence on the default branch) ──
   for (const [check, paths] of REQUIRED_FILES) {
-    if (!paths.some((p) => files.has(p))) fail(check, `no ${paths.join(' / ')}`)
+    if (!paths.some((p) => files.has(p))) fail(check, `no ${paths.join(' / ')}`, paths[0])
   }
   // ── layer 1: baseline governance + self-check capability (gated on the ki-repo marker) ──
   // A confirmed ki-repo (carries .ki-config.toml) must (a) declare the baseline
@@ -369,12 +377,17 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
   // installed (ADR-007). A marker-only repo with neither runner is a FAIL.
   if (files.has(KI_CONFIG)) {
     if (!declaresTable(kiText ?? '', 'ki-authoring'))
-      fail('authoring-baseline', `${KI_CONFIG} does not declare [ki-authoring] — the authoring standard is baseline (run --init)`)
+      fail(
+        'authoring-baseline',
+        `${KI_CONFIG} does not declare [ki-authoring] — the authoring standard is baseline (run --init)`,
+        KI_CONFIG
+      )
     const hasRunner = signals.tree.has('.ki-meta/bin/aggregate.ts') || signals.tree.has('.ki-meta/bin/ki-audit')
     if (!hasRunner)
       fail(
         'self-check',
-        `${KI_CONFIG} present but no self-check runner (.ki-meta/bin/aggregate.ts or .ki-meta/bin/ki-audit) — re-bootstrap so the repo self-governs`
+        `${KI_CONFIG} present but no self-check runner (.ki-meta/bin/aggregate.ts or .ki-meta/bin/ki-audit) — re-bootstrap so the repo self-governs`,
+        KI_CONFIG
       )
   }
 
@@ -385,7 +398,8 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
   if (metaCommitted.length)
     warn(
       'ki-meta',
-      `${metaCommitted.length} derived .ki-meta artifact(s) committed (e.g. ${metaCommitted[0]}) — add \`.ki-meta/audits/\` and \`.ki-meta/conform/\` to .gitignore`
+      `${metaCommitted.length} derived .ki-meta artifact(s) committed (e.g. ${metaCommitted[0]}) — add \`.ki-meta/audits/\` and \`.ki-meta/conform/\` to .gitignore`,
+      '.gitignore'
     )
 
   // ── layer 2: core GitHub ──
@@ -409,7 +423,11 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
     const pkgLicense = typeof signals.pkg.license === 'string' ? signals.pkg.license : null
     const wantPkg = proprietary ? 'UNLICENSED' : declaredLicense
     if (pkgLicense !== wantPkg)
-      fail('package-license', `package.json "license" is ${JSON.stringify(pkgLicense)} (want ${JSON.stringify(wantPkg)} per ${KI_CONFIG})`)
+      fail(
+        'package-license',
+        `package.json "license" is ${JSON.stringify(pkgLicense)} (want ${JSON.stringify(wantPkg)} per ${KI_CONFIG})`,
+        'package.json'
+      )
   }
   // ── layer 2: package.json identity & metadata (the repo skill's manifest keys) ──
   // engineering's coverage manifest assigns the identity/metadata keys to this skill;
@@ -420,20 +438,23 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
     const isStr = (v: unknown): v is string => typeof v === 'string' && v.trim().length > 0
     const urlOf = (v: unknown): string | null =>
       isStr(v) ? v : v && typeof v === 'object' ? ((v as { url?: unknown }).url as string) : null
-    if (!isStr(p.name)) fail('package-name', 'package.json "name" missing')
+    if (!isStr(p.name)) fail('package-name', 'package.json "name" missing', 'package.json')
     if (typeof p.version !== 'string' || !/^\d+\.\d+\.\d+/.test(p.version))
-      fail('package-version', `package.json "version" must be semver, got ${JSON.stringify(p.version)}`)
-    if (!isStr(p.author) && !(p.author != null && typeof p.author === 'object')) fail('package-author', 'package.json "author" missing')
+      fail('package-version', `package.json "version" must be semver, got ${JSON.stringify(p.version)}`, 'package.json')
+    if (!isStr(p.author) && !(p.author != null && typeof p.author === 'object'))
+      fail('package-author', 'package.json "author" missing', 'package.json')
     const repoUrl = urlOf(p.repository)
-    if (!isStr(repoUrl)) fail('package-repository', 'package.json "repository" missing a url')
+    if (!isStr(repoUrl)) fail('package-repository', 'package.json "repository" missing a url', 'package.json')
     else if (!repoUrl.includes(r.nameWithOwner))
-      warn('package-repository', `package.json "repository" url should reference ${r.nameWithOwner}\n      got: ${repoUrl}`)
-    if (r.visibility === 'PRIVATE' && p.private !== true) fail('package-private', 'private repo: package.json must set "private": true')
-    if (r.visibility === 'PUBLIC' && p.private === true) fail('package-private', 'public repo: package.json must not set "private": true')
-    if (!isStr(urlOf(p.bugs))) warn('package-bugs', 'package.json "bugs" should carry a url')
-    if (!isStr(p.homepage)) warn('package-homepage', 'package.json "homepage" missing')
+      warn('package-repository', `package.json "repository" url should reference ${r.nameWithOwner}\n      got: ${repoUrl}`, 'package.json')
+    if (r.visibility === 'PRIVATE' && p.private !== true)
+      fail('package-private', 'private repo: package.json must set "private": true', 'package.json')
+    if (r.visibility === 'PUBLIC' && p.private === true)
+      fail('package-private', 'public repo: package.json must not set "private": true', 'package.json')
+    if (!isStr(urlOf(p.bugs))) warn('package-bugs', 'package.json "bugs" should carry a url', 'package.json')
+    if (!isStr(p.homepage)) warn('package-homepage', 'package.json "homepage" missing', 'package.json')
     if (!Array.isArray(p.keywords) || p.keywords.length === 0)
-      warn('package-keywords', 'package.json "keywords" should be a non-empty array')
+      warn('package-keywords', 'package.json "keywords" should be a non-empty array', 'package.json')
   }
   if (!r.description?.trim()) fail('description', 'description is empty')
   // description-sync: the GitHub description must equal the repo's package.json
@@ -700,7 +721,14 @@ const jsonOut = process.argv.slice(2).includes('--json')
 const reportOut = process.argv.slice(2).includes('--report')
 const reportTarget = resolve('.')
 const reportDir = join(reportTarget, '.ki-meta', 'audits')
-const all: { level: Level; area: string; msg: string }[] = []
+const all: { level: Level; area: string; msg: string; ref?: string; file?: string }[] = []
+// Fold the repo identity into `file` for the aggregate/JSON: `area` stays the bare rubric
+// code (so it reads as a rubric code, not `nwo:code`), and the nwo — plus any in-repo path
+// the finding carried — disambiguates findings across a multi-repo sweep.
+const scoped = (nwo: string, f: Finding): string => `${nwo}${f.file ? `/${f.file}` : ''}`
+// Shared human render for a per-repo finding line (mirrors the report/JSON builder).
+const line = (colored: string, f: Finding): string =>
+  `  ${colored} ${paint(C.dim, `[${f.check}]`)}${f.file ? ` ${f.file}` : ''} ${f.msg}${f.ref ? paint(C.dim, ` (${f.ref})`) : ''}`
 
 if (!jsonOut) {
   console.log(paint(C.dim, `scope: ${scope}`))
@@ -721,14 +749,13 @@ for (const t of targets) {
   const localFindings = t.dir ? localIntegrityFindings(t.dir) : []
   if (!t.nameWithOwner) {
     ghSkipped++
-    all.push({ level: 'NA', area: t.label, msg: t.note ?? '' })
-    for (const x of localFindings) all.push({ level: x.level, area: `${t.label}:${x.check}`, msg: x.msg })
+    all.push({ level: 'NA', area: 'access', msg: t.note ?? '', file: t.label })
+    for (const x of localFindings) all.push({ level: x.level, area: x.check, msg: x.msg, ref: x.ref, file: scoped(t.label, x) })
     totalFails += localFindings.filter((x) => x.level === 'FAIL').length
     totalWarns += localFindings.filter((x) => x.level === 'WARN').length
     if (!jsonOut) {
       console.log(`\n${paint(C.dim, 'NA')}  ${paint(C.cyan, t.label)} ${paint(C.dim, `— ${t.note}`)}`)
-      for (const x of localFindings)
-        console.log(`  ${paint(x.level === 'FAIL' ? C.red : C.yellow, x.level.toLowerCase())} ${paint(C.dim, `[${x.check}]`)} ${x.msg}`)
+      for (const x of localFindings) console.log(line(paint(x.level === 'FAIL' ? C.red : C.yellow, x.level.toLowerCase()), x))
     }
     continue
   }
@@ -738,14 +765,13 @@ for (const t of targets) {
   if (!ghAuthed()) {
     ghSkipped++
     const note = `${t.nameWithOwner}: gh not authenticated — GitHub checks skipped (gh auth login)`
-    all.push({ level: 'NA', area: `${t.nameWithOwner}:access`, msg: note })
-    for (const x of localFindings) all.push({ level: x.level, area: `${t.nameWithOwner}:${x.check}`, msg: x.msg })
+    all.push({ level: 'NA', area: 'access', msg: note, file: t.nameWithOwner })
+    for (const x of localFindings) all.push({ level: x.level, area: x.check, msg: x.msg, ref: x.ref, file: scoped(t.nameWithOwner, x) })
     totalFails += localFindings.filter((x) => x.level === 'FAIL').length
     totalWarns += localFindings.filter((x) => x.level === 'WARN').length
     if (!jsonOut) {
       console.log(`\n${paint(C.dim, 'NA')}  ${paint(C.cyan, t.nameWithOwner)} ${paint(C.dim, '— gh not authenticated')}`)
-      for (const x of localFindings)
-        console.log(`  ${paint(x.level === 'FAIL' ? C.red : C.yellow, x.level.toLowerCase())} ${paint(C.dim, `[${x.check}]`)} ${x.msg}`)
+      for (const x of localFindings) console.log(line(paint(x.level === 'FAIL' ? C.red : C.yellow, x.level.toLowerCase()), x))
     }
     continue
   }
@@ -771,13 +797,13 @@ for (const t of targets) {
   const notes = findings.filter((x) => x.level === 'INFO')
   totalFails += fails.length
   totalWarns += warns.length
-  for (const x of findings) all.push({ level: x.level, area: `${t.nameWithOwner}:${x.check}`, msg: x.msg })
+  for (const x of findings) all.push({ level: x.level, area: x.check, msg: x.msg, ref: x.ref, file: scoped(t.nameWithOwner, x) })
   if (!jsonOut) {
     const stamp = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
     console.log(`\n${stamp}  ${paint(C.cyan, t.nameWithOwner)}`)
-    for (const x of fails) console.log(`  ${paint(C.red, 'fail')} ${paint(C.dim, `[${x.check}]`)} ${x.msg}`)
-    for (const x of warns) console.log(`  ${paint(C.yellow, 'warn')} ${paint(C.dim, `[${x.check}]`)} ${x.msg}`)
-    for (const x of notes) console.log(`  ${paint(C.dim, `info [${x.check}] ${x.msg}`)}`)
+    for (const x of fails) console.log(line(paint(C.red, 'fail'), x))
+    for (const x of warns) console.log(line(paint(C.yellow, 'warn'), x))
+    for (const x of notes) console.log(line(paint(C.dim, 'info'), x))
     if (fails.length + warns.length === 0) console.log(paint(C.dim, '  conforms'))
   }
 }
@@ -797,7 +823,13 @@ if (reportOut) {
   mkdirSync(reportDir, { recursive: true })
   const body = LADDER.flatMap((l) => {
     const rows = all.filter((f) => f.level === l)
-    return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+    return rows.length
+      ? [
+          '',
+          `## ${ICON[l]} ${l} (${rows.length})`,
+          ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
+        ]
+      : []
   })
   const tally = `${targets.length} repo(s) · FAIL=${summary.fail} WARN=${summary.warn} INFO=${summary.info} NA=${summary.na}`
   writeFileSync(join(reportDir, 'repo.md'), [`# repo audit — ${reportTarget}`, '', `_${stampIso}_`, '', tally, ...body, ''].join('\n'))
@@ -808,9 +840,7 @@ if (reportOut) {
 }
 
 if (jsonOut) {
-  process.stdout.write(
-    `${JSON.stringify({ concern: 'repo', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`
-  )
+  process.stdout.write(JSON.stringify({ concern: 'repo', target: reportTarget, generatedAt: stampIso, summary, findings: all }))
 } else {
   console.log(
     `\n${paint(C.cyan, 'summary')}: ${targets.length} repo(s) · FAIL=${totalFails} WARN=${totalWarns}${ghSkipped ? paint(C.dim, ` · ${ghSkipped} skipped (no github.com origin or gh unauthenticated)`) : ''}`

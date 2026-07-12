@@ -12,6 +12,14 @@
  *
  *   bun scripts/conform.ts [path]   # default: agents  (relative to cwd)
  *   --dry-run                                # print the plan, mutate nothing
+ *   --json                                   # emit the shared finding wrapper instead of prose
+ *
+ * Reporting mirrors ki-authoring conform.ts: each action records a finding on the shared ladder
+ * (a fix written/would-write → POLISH, an agent already in shape → PASS, a criterion this script
+ * cannot mechanically fix → ADVISORY). The finding's `area` carries the rubric code (LAY-3, …) and
+ * `ref` its reference-doc pointer — so audit and conform cite the same criterion the same way.
+ * `--json` governs *reporting* (suppresses the prose, emits the wrapper); `--dry-run` governs
+ * *writing* — the two compose, and `--json` on its own still writes.
  *
  * audit.ts must be invoked against an agents/ directory, not repo root
  * (see this repo's CLAUDE.md learned pattern) — this script's default target
@@ -29,6 +37,34 @@ import { basename, join, resolve } from 'node:path'
 
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
+
+// Collect-then-emit harness (mirrors ki-authoring conform.ts). Each action records a finding on the
+// shared ladder; `say` prints the human line only when not in --json mode, so a direct run streams
+// prose while the aggregate consumes the wrapper. area is the rubric code, ref its reference-doc
+// pointer, file the agent path an action concerns.
+const RUBRIC = 'references/audit-rubric.md'
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
+const findings: Finding[] = []
+const rec = (level: Level, area: string, msg: string, ref?: string, file?: string): void =>
+  void findings.push({ level, area, msg, ref, file })
+
+// When --json, emit the shared wrapper (single line) as the only stdout — the lowercased ladder
+// summary plus the findings verbatim. --dry-run still writes; --json only changes reporting.
+function emit(): void {
+  if (!json) return
+  const n = (l: Level): number => findings.filter((f) => f.level === l).length
+  const summary = {
+    fail: n('FAIL'),
+    warn: n('WARN'),
+    polish: n('POLISH'),
+    advisory: n('ADVISORY'),
+    info: n('INFO'),
+    na: n('NA'),
+    pass: n('PASS')
+  }
+  process.stdout.write(JSON.stringify({ concern: 'agents', target, generatedAt: new Date().toISOString(), summary, findings }))
+}
 
 // --- minimal frontmatter parser (name field only — kept in lockstep with audit.ts's parser
 // for the one field this script touches; not imported so each script stays valid standalone per
@@ -85,6 +121,10 @@ function discoverAgentFiles(p: string): string[] {
 // --- main ----------------------------------------------------------------------------------------
 const rawArgs = process.argv.slice(2)
 const dryRun = rawArgs.includes('--dry-run')
+const json = rawArgs.includes('--json')
+const say = (line: string): void => {
+  if (!json) console.log(line)
+}
 const pathArgs = rawArgs.filter((a) => !a.startsWith('-'))
 // Default target is the sibling `agents` dir (relative to cwd), never repo root — audit.ts
 // must be pointed at agents/ per this repo's own learned pattern, and this script's default
@@ -97,11 +137,13 @@ if (!existsSync(abs)) {
   process.exit(1)
 }
 
-console.log(paint(C.dim, `ki-agents CONFORM (mechanical) — ${abs}${dryRun ? ' [dry-run]' : ''}`))
+say(paint(C.dim, `ki-agents CONFORM (mechanical) — ${abs}${dryRun ? ' [dry-run]' : ''}`))
 
 const files = discoverAgentFiles(abs)
 if (files.length === 0) {
-  console.log(paint(C.dim, 'no agents found — nothing to conform'))
+  rec('PASS', 'scope', 'no agents found — nothing to conform', RUBRIC)
+  say(paint(C.dim, 'no agents found — nothing to conform'))
+  emit()
   process.exit(0)
 }
 
@@ -113,48 +155,63 @@ for (const file of files) {
   const found = findName(content)
 
   if (!found) {
-    // No `name:` field at all (NAME-1) or no frontmatter block (LAY-1) — not this script's fix.
+    // No `name:` field at all (NAME-1) or no frontmatter block (LAY-1) — not this script's fix,
+    // but record the handoff so the aggregate still sees it.
+    rec('ADVISORY', 'NAME-1', `${basename(file)} has no name: field to conform — author it (or add frontmatter, LAY-1)`, RUBRIC, file)
     continue
   }
 
   if (found.value && found.value !== stem) {
-    console.log(`\n${paint(C.cyan, basename(file))} ${paint(C.dim, file)}`)
-    console.log(`  ${paint(C.yellow, '[LAY-3]')} \`name\` "${found.value}" does not match filename stem "${stem}"`)
+    say(`\n${paint(C.cyan, basename(file))} ${paint(C.dim, file)}`)
+    say(`  ${paint(C.yellow, '[LAY-3]')} \`name\` "${found.value}" does not match filename stem "${stem}"`)
     if (dryRun) {
-      console.log(`  ${paint(C.dim, `would rewrite name: ${found.value} → ${stem}`)}`)
+      rec('POLISH', 'LAY-3', `\`name\` "${found.value}" does not match filename stem "${stem}" — would rewrite to "${stem}"`, RUBRIC, file)
+      say(`  ${paint(C.dim, `would rewrite name: ${found.value} → ${stem}`)}`)
     } else {
       const fullLines = content.split(/\r?\n/)
       const nameLineIdx = fullLines.findIndex((l) => /^name:/.test(l))
       if (nameLineIdx !== -1) {
         fullLines[nameLineIdx] = `name: ${stem}`
         writeFileSync(file, fullLines.join('\n'))
-        console.log(`  ${paint(C.green, 'fixed')} name: ${found.value} → ${stem}`)
+        rec('POLISH', 'LAY-3', `\`name\` rewritten "${found.value}" → "${stem}" to match filename stem`, RUBRIC, file)
+        say(`  ${paint(C.green, 'fixed')} name: ${found.value} → ${stem}`)
         fixed++
       }
     }
+  } else {
+    rec('PASS', 'LAY-3', `${basename(file)} \`name\` already matches filename stem`, RUBRIC, file)
   }
 }
 
 // --- everything else: printed as manual TODOs, never auto-fixed ---------------------------------
-console.log(`\n${paint(C.cyan, 'manual TODOs (judgment — not auto-fixed by this script)')}`)
-console.log(paint(C.dim, '  NAME-1  `name` missing from frontmatter — author it'))
-console.log(paint(C.dim, '  NAME-2  `name` charset/length invalid — rename per the rubric'))
-console.log(paint(C.dim, '  NAME-3  `name` starts/ends with a hyphen or contains "--" — rename'))
-console.log(paint(C.dim, '  NAME-4  `name` contains an XML tag or a reserved word — rename'))
-console.log(paint(C.dim, '  NAME-5  duplicate `name` across the agent set — rename one'))
-console.log(paint(C.dim, '  DESC-1  `description` missing or empty — author it'))
-console.log(paint(C.dim, '  DESC-2  `description` over the soft length cap — consider trimming'))
-console.log(paint(C.dim, '  DESC-3  `description` contains an XML tag — remove it'))
-console.log(paint(C.dim, '  COLL-1  shared quoted trigger phrase across agents — confirm each names the other as an off-ramp'))
-console.log(
+// One consolidated ADVISORY carries the judgment handoff into the aggregate (mirrors ki-authoring
+// conform.ts's single judgment advisory); the human enumeration below stays as prose.
+rec(
+  'ADVISORY',
+  'judgment',
+  'the remaining mechanical findings (NAME-1/2/3/4/5, DESC-1/2/3, COLL-1) and every judgment criterion are not auto-fixed — run Mode AUDIT and apply by reading',
+  RUBRIC
+)
+say(`\n${paint(C.cyan, 'manual TODOs (judgment — not auto-fixed by this script)')}`)
+say(paint(C.dim, '  NAME-1  `name` missing from frontmatter — author it'))
+say(paint(C.dim, '  NAME-2  `name` charset/length invalid — rename per the rubric'))
+say(paint(C.dim, '  NAME-3  `name` starts/ends with a hyphen or contains "--" — rename'))
+say(paint(C.dim, '  NAME-4  `name` contains an XML tag or a reserved word — rename'))
+say(paint(C.dim, '  NAME-5  duplicate `name` across the agent set — rename one'))
+say(paint(C.dim, '  DESC-1  `description` missing or empty — author it'))
+say(paint(C.dim, '  DESC-2  `description` over the soft length cap — consider trimming'))
+say(paint(C.dim, '  DESC-3  `description` contains an XML tag — remove it'))
+say(paint(C.dim, '  COLL-1  shared quoted trigger phrase across agents — confirm each names the other as an off-ramp'))
+say(
   paint(
     C.dim,
     '  … plus every judgment criterion in references/audit-rubric.md (delegation signal, role/lane, grounding, own-vs-defer, tools/model least-privilege, longevity) — apply by reading, run Mode AUDIT for the full list.'
   )
 )
 
-console.log(
+say(
   `\n${paint(C.cyan, 'summary')}: ${files.length} agent(s) scanned · ${fixed} fixed (LAY-3)${dryRun ? ' [dry-run — nothing written]' : ''}`
 )
-console.log('→ re-run `bun scripts/audit.ts <path>` to confirm, then Mode AUDIT for the judgment criteria.')
+say('→ re-run `bun scripts/audit.ts <path>` to confirm, then Mode AUDIT for the judgment criteria.')
+emit()
 process.exit(0)

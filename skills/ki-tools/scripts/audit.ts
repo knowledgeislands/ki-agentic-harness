@@ -63,16 +63,30 @@ const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[3
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
+// area is the rubric CODE (references/audit-rubric.md); ref its reference-doc pointer;
+// file the path a file-scoped finding concerns. ref/file surface as cited findings and
+// serialize verbatim under --json.
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string }
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
+
+// Reference-doc pointers per rubric section — the standard behind each criterion.
+const REF = {
+  layout: 'references/tools-standard.md#repository-layout',
+  exec: 'references/tools-standard.md#the-executable--bintool',
+  dist: 'references/tools-standard.md#the-distribution-contract',
+  ver: 'references/tools-standard.md#versioning--releases',
+  cap: 'references/tools-standard.md#capability-conditionals',
+  marker: 'references/tools-standard.md#the-ki-tools-marker'
+} as const
+
 const mk = () => {
   const f: Finding[] = []
   const push =
     (level: Level) =>
-    (area: string, msg: string): void =>
-      void f.push({ level, area, msg })
+    (area: string, msg: string, ref?: string, file?: string): void =>
+      void f.push({ level, area, msg, ref, file })
   return {
     f,
     fail: push('FAIL'),
@@ -151,19 +165,20 @@ function auditTools(repo: string): Finding[] {
   // ── TOOL-BIN [FAIL]: bin/ exists and holds ≥1 file ──
   const bins = binFiles(repo)
   if (!isDir(join(repo, 'bin'))) {
-    fail('TOOL-BIN', 'bin/ is missing — a tools-* repo ships its executable at bin/<tool>')
+    fail('TOOL-BIN', 'bin/ is missing — a tools-* repo ships its executable at bin/<tool>', REF.layout, 'bin/')
     return f
   }
   if (bins.length === 0) {
-    fail('TOOL-BIN', 'bin/ holds no files — the tool executable lives at bin/<tool>')
+    fail('TOOL-BIN', 'bin/ holds no files — the tool executable lives at bin/<tool>', REF.layout, 'bin/')
     return f
   }
-  note('TOOL-BIN', `bin/ holds ${bins.length} file(s): ${bins.join(', ')}`)
+  note('TOOL-BIN', `bin/ holds ${bins.length} file(s): ${bins.join(', ')}`, REF.layout, 'bin/')
 
   // ── TOOL-EXEC [FAIL]: every bin file carries the executable bit ──
   const notExec = bins.filter((n) => !isExecutable(join(repo, 'bin', n)))
-  if (notExec.length) fail('TOOL-EXEC', `bin/ file(s) missing the executable bit (git tracks it — chmod +x): ${notExec.join(', ')}`)
-  else note('TOOL-EXEC', 'every bin/ file is executable')
+  if (notExec.length)
+    fail('TOOL-EXEC', `bin/ file(s) missing the executable bit (git tracks it — chmod +x): ${notExec.join(', ')}`, REF.exec, 'bin/')
+  else note('TOOL-EXEC', 'every bin/ file is executable', REF.exec, 'bin/')
 
   const primary = primaryBin(repo, bins) as string
   const primaryPath = join(repo, 'bin', primary)
@@ -172,9 +187,10 @@ function auditTools(repo: string): Finding[] {
 
   // ── TOOL-INSTALL [WARN]: install.sh present at root and executable (curl contract) ──
   const installPath = join(repo, 'install.sh')
-  if (!isFile(installPath)) warn('TOOL-INSTALL', 'no install.sh at the repo root — the `curl | bash` install contract needs one')
-  else if (!isExecutable(installPath)) warn('TOOL-INSTALL', 'install.sh is present but not executable (chmod +x)')
-  else note('TOOL-INSTALL', 'install.sh present and executable')
+  if (!isFile(installPath))
+    warn('TOOL-INSTALL', 'no install.sh at the repo root — the `curl | bash` install contract needs one', REF.dist, 'install.sh')
+  else if (!isExecutable(installPath)) warn('TOOL-INSTALL', 'install.sh is present but not executable (chmod +x)', REF.dist, 'install.sh')
+  else note('TOOL-INSTALL', 'install.sh present and executable', REF.dist, 'install.sh')
 
   // ── TOOL-VERSION [WARN/ADVISORY]: the primary bin answers --version ──
   let binText = ''
@@ -183,67 +199,83 @@ function auditTools(repo: string): Finding[] {
   } catch {
     binText = ''
   }
-  if (!binText) advisory('TOOL-VERSION', `could not read bin/${primary} to check for --version handling — verify by hand`)
-  else if (binText.includes('--version')) note('TOOL-VERSION', `bin/${primary} handles --version`)
-  else warn('TOOL-VERSION', `bin/${primary} has no visible --version handling — a CLI tool should answer --version`)
+  const binRel = `bin/${primary}`
+  if (!binText) advisory('TOOL-VERSION', `could not read bin/${primary} to check for --version handling — verify by hand`, REF.ver, binRel)
+  else if (binText.includes('--version')) note('TOOL-VERSION', `bin/${primary} handles --version`, REF.ver, binRel)
+  else warn('TOOL-VERSION', `bin/${primary} has no visible --version handling — a CLI tool should answer --version`, REF.ver, binRel)
 
   // ── TOOL-CHANGELOG [WARN]: CHANGELOG.md present (README/LICENSE are ki-repo's) ──
-  if (!isFile(join(repo, 'CHANGELOG.md'))) warn('TOOL-CHANGELOG', 'no CHANGELOG.md — releases follow keep-a-changelog + semver')
-  else note('TOOL-CHANGELOG', 'CHANGELOG.md present')
+  if (!isFile(join(repo, 'CHANGELOG.md')))
+    warn('TOOL-CHANGELOG', 'no CHANGELOG.md — releases follow keep-a-changelog + semver', REF.ver, 'CHANGELOG.md')
+  else note('TOOL-CHANGELOG', 'CHANGELOG.md present', REF.ver, 'CHANGELOG.md')
 
   // ── TOOL-CI [WARN]: at least one .github/workflows/*.yml ──
   const workflows = workflowFiles(repo)
-  if (workflows.length === 0) warn('TOOL-CI', 'no .github/workflows/*.yml — CI should lint and test the tool on every push')
-  else note('TOOL-CI', `${workflows.length} CI workflow file(s) present`)
+  if (workflows.length === 0)
+    warn('TOOL-CI', 'no .github/workflows/*.yml — CI should lint and test the tool on every push', REF.layout, '.github/workflows/')
+  else note('TOOL-CI', `${workflows.length} CI workflow file(s) present`, REF.layout, '.github/workflows/')
 
   // ── TOOL-TESTS [WARN, capability]: tests/ present ──
   const hasTests = isDir(join(repo, 'tests'))
-  if (!hasTests) warn('TOOL-TESTS', 'no tests/ directory — a CLI tool should ship an executable test suite')
-  else note('TOOL-TESTS', 'tests/ directory present')
+  if (!hasTests) warn('TOOL-TESTS', 'no tests/ directory — a CLI tool should ship an executable test suite', REF.layout, 'tests/')
+  else note('TOOL-TESTS', 'tests/ directory present', REF.layout, 'tests/')
 
   // ── capability conditionals — mirror ki-engineering's capability-conditional pattern ──
   const wfText = workflowText(repo)
   if (isShell) {
-    note('shell', `bin/${primary} is a SHELL entrypoint (shebang: ${primaryShebang || '—'})`)
+    note('SHELL-LINT', `bin/${primary} is a SHELL entrypoint (shebang: ${primaryShebang || '—'})`, REF.cap, binRel)
     // SHELL-LINT [WARN]: a CI workflow must reference shellcheck.
     if (!/shellcheck/i.test(wfText))
-      warn('SHELL-LINT', 'shell entrypoint but no CI workflow references shellcheck — a shell tool must be shellcheck-clean in CI')
-    else note('SHELL-LINT', 'a CI workflow references shellcheck')
+      warn('SHELL-LINT', 'shell entrypoint but no CI workflow references shellcheck — a shell tool must be shellcheck-clean in CI', REF.cap)
+    else note('SHELL-LINT', 'a CI workflow references shellcheck', REF.cap)
     // SHELL-TEST [WARN]: tests/ should hold a *.bats file and a CI workflow reference bats.
     const hasBats = hasTests && readdirSync(join(repo, 'tests')).some((n) => n.endsWith('.bats'))
-    if (!hasBats) warn('SHELL-TEST', 'shell entrypoint but tests/ has no *.bats file — shell tools use a bats suite')
-    else if (!/\bbats\b/i.test(wfText)) warn('SHELL-TEST', 'a *.bats suite exists but no CI workflow references bats — CI must run it')
-    else note('SHELL-TEST', 'a *.bats suite exists and a CI workflow references bats')
+    if (!hasBats) warn('SHELL-TEST', 'shell entrypoint but tests/ has no *.bats file — shell tools use a bats suite', REF.cap, 'tests/')
+    else if (!/\bbats\b/i.test(wfText))
+      warn('SHELL-TEST', 'a *.bats suite exists but no CI workflow references bats — CI must run it', REF.cap)
+    else note('SHELL-TEST', 'a *.bats suite exists and a CI workflow references bats', REF.cap)
   } else {
-    note('shell', `bin/${primary} is not a shell entrypoint (shebang: ${primaryShebang || '—'}) — shell capability checks skipped`)
+    note(
+      'SHELL-LINT',
+      `bin/${primary} is not a shell entrypoint (shebang: ${primaryShebang || '—'}) — shell capability checks skipped`,
+      REF.cap,
+      binRel
+    )
   }
 
   // ── LANG-DEFER [INFO]: a package.json ⇒ defer lint/test to ki-engineering ──
   if (isFile(join(repo, 'package.json')))
     note(
       'LANG-DEFER',
-      'package.json present — this is a TS/Bun tool: it defers lint/test to ki-engineering, so the repo must ALSO declare [ki-engineering]'
+      'package.json present — this is a TS/Bun tool: it defers lint/test to ki-engineering, so the repo must ALSO declare [ki-engineering]',
+      REF.cap,
+      'package.json'
     )
 
   // ── CONFIG [WARN]: [ki-tools] opt-in marker, validate-down ──
   const kiPath = join(repo, KI_CONFIG)
-  if (!isFile(kiPath)) warn('CONFIG', `${KI_CONFIG} missing (ki-repo owns the contract) — add a [${KI_SECTION}] marker to opt in`)
+  if (!isFile(kiPath))
+    warn('CONFIG', `${KI_CONFIG} missing (ki-repo owns the contract) — add a [${KI_SECTION}] marker to opt in`, REF.marker, KI_CONFIG)
   else {
     const keys = parseKiTools(readFileSync(kiPath, 'utf8'))
-    if (keys === null) warn('CONFIG', `no [${KI_SECTION}] table — add it to mark this repo as governed by the tools standard`)
+    if (keys === null)
+      warn('CONFIG', `no [${KI_SECTION}] table — add it to mark this repo as governed by the tools standard`, REF.marker, KI_CONFIG)
     else {
-      note('CONFIG', `[${KI_SECTION}] table present`)
+      note('CONFIG', `[${KI_SECTION}] table present`, REF.marker, KI_CONFIG)
       // Validate-down: there are no keys today, so any key is unknown.
       const KNOWN = new Set<string>([])
       for (const k of keys)
-        KNOWN.has(k) ? note('CONFIG', `known key ${k}`) : warn('CONFIG', `unknown key under [${KI_SECTION}]: ${k} (validate-down)`)
+        KNOWN.has(k)
+          ? note('CONFIG', `known key ${k}`, REF.marker, KI_CONFIG)
+          : warn('CONFIG', `unknown key under [${KI_SECTION}]: ${k} (validate-down)`, REF.marker, KI_CONFIG)
     }
   }
 
   // ── RELEASE [ADVISORY]: git tags / GitHub releases can't be seen from a path ──
   advisory(
     'RELEASE',
-    'releases are vX.Y.Z git tags with a GitHub release each — not checkable from a path; verify tags/releases exist and match CHANGELOG'
+    'releases are vX.Y.Z git tags with a GitHub release each — not checkable from a path; verify tags/releases exist and match CHANGELOG',
+    REF.ver
   )
 
   return f
@@ -299,7 +331,13 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     mkdirSync(reportDir, { recursive: true })
     const body = ORDER.flatMap((l) => {
       const rows = items.filter((f) => f.level === l)
-      return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+      return rows.length
+        ? [
+            '',
+            `## ${ICON[l]} ${l} (${rows.length})`,
+            ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
+          ]
+        : []
     })
     writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
     writeFileSync(
@@ -316,7 +354,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
       const rows = items.filter((f) => f.level === l)
       if (!rows.length) continue
       console.log(`\n${ICON[l]} ${l} (${rows.length})`)
-      for (const r of rows) console.log(`   [${r.area}] ${r.msg}`)
+      for (const r of rows) console.log(`   [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
     }
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)

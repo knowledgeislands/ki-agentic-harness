@@ -19,12 +19,18 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSy
 import { basename, join } from 'node:path'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
+// `area` is the rubric code (PLUG-N, references/audit-rubric.md); `ref` the reference-doc
+// pointer for that criterion; `file` the repo-relative path a file-scoped finding concerns.
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string }
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
 const findings: Finding[] = []
-const add = (level: Level, area: string, msg: string) => findings.push({ level, area, msg })
+const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
+
+// Reference-doc pointers, minted per-criterion in references/audit-rubric.md (PLUG-N codes).
+const STD = 'references/plugins-standard.md'
+const RUB = 'references/audit-rubric.md'
 
 const repo = process.argv[2]
 if (!repo || !existsSync(repo)) {
@@ -47,9 +53,10 @@ const ORG = 'Knowledge Islands'
 // The marketplace is the entry point: one manifest, exactly one plugin, owned by the org.
 let plugin = '' // the plugin's source dir, learned from the marketplace entry
 let mktDescription = '' // the plugin entry's description, for plugin.json agreement below
+const MKT_FILE = '.claude-plugin/marketplace.json'
 const marketplaceRaw = read('.claude-plugin', 'marketplace.json')
 if (!marketplaceRaw) {
-  add('FAIL', 'marketplace', '.claude-plugin/marketplace.json missing — this is not a plugin-marketplace repo')
+  add('FAIL', 'PLUG-1', 'marketplace.json missing — this is not a plugin-marketplace repo', STD, MKT_FILE)
 } else {
   let mkt: Record<string, unknown> = {}
   let parsed = true
@@ -57,48 +64,49 @@ if (!marketplaceRaw) {
     mkt = JSON.parse(marketplaceRaw)
   } catch {
     parsed = false
-    add('FAIL', 'marketplace', '.claude-plugin/marketplace.json is unparseable JSON')
+    add('FAIL', 'PLUG-1', 'marketplace.json is unparseable JSON', STD, MKT_FILE)
   }
   if (parsed) {
     typeof mkt.name === 'string' && mkt.name
-      ? add('PASS', 'marketplace', `marketplace name = ${JSON.stringify(mkt.name)}`)
-      : add('FAIL', 'marketplace', 'marketplace.json has no "name"')
+      ? add('PASS', 'PLUG-1', `marketplace name = ${JSON.stringify(mkt.name)}`, STD, MKT_FILE)
+      : add('FAIL', 'PLUG-1', 'marketplace.json has no "name"', STD, MKT_FILE)
     const owner = (mkt.owner ?? {}) as Record<string, unknown>
     owner.name === ORG
-      ? add('PASS', 'marketplace', `owner.name = ${JSON.stringify(ORG)}`)
-      : add('FAIL', 'marketplace', `owner.name should be ${JSON.stringify(ORG)}, got ${JSON.stringify(owner.name)}`)
+      ? add('PASS', 'PLUG-2', `owner.name = ${JSON.stringify(ORG)}`, STD, MKT_FILE)
+      : add('FAIL', 'PLUG-2', `owner.name should be ${JSON.stringify(ORG)}, got ${JSON.stringify(owner.name)}`, STD, MKT_FILE)
     const plugins = Array.isArray(mkt.plugins) ? (mkt.plugins as Record<string, unknown>[]) : null
-    if (!plugins) add('FAIL', 'marketplace', 'marketplace.json "plugins" is not an array')
-    else if (plugins.length !== 1) add('FAIL', 'marketplace', `marketplace must list exactly one plugin, found ${plugins.length}`)
+    if (!plugins) add('FAIL', 'PLUG-2', 'marketplace.json "plugins" is not an array', STD, MKT_FILE)
+    else if (plugins.length !== 1) add('FAIL', 'PLUG-2', `marketplace must list exactly one plugin, found ${plugins.length}`, STD, MKT_FILE)
     else {
       const p = plugins[0]
       typeof p.name === 'string' && p.name
-        ? add('PASS', 'marketplace', `plugin name = ${JSON.stringify(p.name)}`)
-        : add('FAIL', 'marketplace', 'the plugin entry has no "name"')
+        ? add('PASS', 'PLUG-3', `plugin name = ${JSON.stringify(p.name)}`, STD, MKT_FILE)
+        : add('FAIL', 'PLUG-3', 'the plugin entry has no "name"', STD, MKT_FILE)
       if (typeof p.name === 'string') plugin = p.name
       const src = typeof p.source === 'string' ? p.source : ''
       const wantSrc = `./${plugin}`
       src === wantSrc
-        ? add('PASS', 'marketplace', `plugin source = ${JSON.stringify(wantSrc)}`)
-        : add('FAIL', 'marketplace', `plugin source should be ${JSON.stringify(wantSrc)}, got ${JSON.stringify(p.source)}`)
+        ? add('PASS', 'PLUG-3', `plugin source = ${JSON.stringify(wantSrc)}`, STD, MKT_FILE)
+        : add('FAIL', 'PLUG-3', `plugin source should be ${JSON.stringify(wantSrc)}, got ${JSON.stringify(p.source)}`, STD, MKT_FILE)
       typeof p.description === 'string' && p.description
-        ? add('PASS', 'marketplace', 'plugin entry has a description')
-        : add('FAIL', 'marketplace', 'the plugin entry has no "description"')
+        ? add('PASS', 'PLUG-3', 'plugin entry has a description', STD, MKT_FILE)
+        : add('FAIL', 'PLUG-3', 'the plugin entry has no "description"', STD, MKT_FILE)
       if (typeof p.description === 'string') mktDescription = p.description
       // The source dir must exist on disk and match the plugin name.
       plugin && isDir(plugin)
-        ? add('PASS', 'marketplace', `plugin source dir ${plugin}/ exists`)
-        : add('FAIL', 'marketplace', `plugin source dir ${plugin || '(unknown)'}/ does not exist`)
+        ? add('PASS', 'PLUG-3', `plugin source dir ${plugin}/ exists`, STD, MKT_FILE)
+        : add('FAIL', 'PLUG-3', `plugin source dir ${plugin || '(unknown)'}/ does not exist`, STD, MKT_FILE)
     }
   }
   // Formatting: 2-space JSON + trailing newline (the generator's contract).
-  jsonFormat('marketplace', '.claude-plugin/marketplace.json', marketplaceRaw)
+  jsonFormat('PLUG-4', MKT_FILE, marketplaceRaw)
 }
 
 // ── plugin manifest ───────────────────────────────────────────────────────────
 if (plugin) {
+  const pjFile = `${plugin}/.claude-plugin/plugin.json`
   const pjRaw = read(plugin, '.claude-plugin', 'plugin.json')
-  if (!pjRaw) add('FAIL', 'plugin', `${plugin}/.claude-plugin/plugin.json missing`)
+  if (!pjRaw) add('FAIL', 'PLUG-5', `${pjFile} missing`, STD, pjFile)
   else {
     let pj: Record<string, unknown> = {}
     let ok = true
@@ -106,53 +114,68 @@ if (plugin) {
       pj = JSON.parse(pjRaw)
     } catch {
       ok = false
-      add('FAIL', 'plugin', `${plugin}/.claude-plugin/plugin.json is unparseable JSON`)
+      add('FAIL', 'PLUG-5', `${pjFile} is unparseable JSON`, STD, pjFile)
     }
     if (ok) {
       pj.name === plugin
-        ? add('PASS', 'plugin', `plugin.json name = ${JSON.stringify(plugin)} (matches source dir)`)
-        : add('FAIL', 'plugin', `plugin.json name should be ${JSON.stringify(plugin)}, got ${JSON.stringify(pj.name)}`)
+        ? add('PASS', 'PLUG-5', `plugin.json name = ${JSON.stringify(plugin)} (matches source dir)`, STD, pjFile)
+        : add('FAIL', 'PLUG-5', `plugin.json name should be ${JSON.stringify(plugin)}, got ${JSON.stringify(pj.name)}`, STD, pjFile)
       typeof pj.version === 'string' && /^\d+\.\d+\.\d+/.test(pj.version)
-        ? add('PASS', 'plugin', `plugin.json version = ${JSON.stringify(pj.version)}`)
+        ? add('PASS', 'PLUG-7', `plugin.json version = ${JSON.stringify(pj.version)}`, STD, pjFile)
         : add(
             'WARN',
-            'plugin',
-            `plugin.json version missing or not semver (tracks the harness package.json): ${JSON.stringify(pj.version)}`
+            'PLUG-7',
+            `plugin.json version missing or not semver (tracks the harness package.json): ${JSON.stringify(pj.version)}`,
+            STD,
+            pjFile
           )
       const author = (pj.author ?? {}) as Record<string, unknown>
       author.name === ORG
-        ? add('PASS', 'plugin', `author.name = ${JSON.stringify(ORG)}`)
-        : add('FAIL', 'plugin', `plugin.json author.name should be ${JSON.stringify(ORG)}, got ${JSON.stringify(author.name)}`)
+        ? add('PASS', 'PLUG-6', `author.name = ${JSON.stringify(ORG)}`, STD, pjFile)
+        : add('FAIL', 'PLUG-6', `plugin.json author.name should be ${JSON.stringify(ORG)}, got ${JSON.stringify(author.name)}`, STD, pjFile)
       if (mktDescription)
         pj.description === mktDescription
-          ? add('PASS', 'plugin', 'plugin.json description matches the marketplace entry')
-          : add('WARN', 'plugin', 'plugin.json description differs from the marketplace entry — regenerate to keep them in sync')
+          ? add('PASS', 'PLUG-7', 'plugin.json description matches the marketplace entry', STD, pjFile)
+          : add(
+              'WARN',
+              'PLUG-7',
+              'plugin.json description differs from the marketplace entry — regenerate to keep them in sync',
+              STD,
+              pjFile
+            )
     }
-    jsonFormat('plugin', `${plugin}/.claude-plugin/plugin.json`, pjRaw)
+    jsonFormat('PLUG-4', pjFile, pjRaw)
   }
 
   // ── projected skills — copied verbatim, each carries a SKILL.md ──────────────
-  if (!isDir(plugin, 'skills')) add('FAIL', 'skills', `${plugin}/skills/ missing`)
+  if (!isDir(plugin, 'skills')) add('FAIL', 'PLUG-8', `${plugin}/skills/ missing`, STD, `${plugin}/skills`)
   else {
     const skillDirs = readdirSync(at(plugin, 'skills'), { withFileTypes: true }).filter((e) => e.isDirectory() && !e.name.startsWith('.'))
-    if (!skillDirs.length) add('WARN', 'skills', `${plugin}/skills/ is empty`)
+    if (!skillDirs.length) add('WARN', 'PLUG-8', `${plugin}/skills/ is empty`, STD, `${plugin}/skills`)
     else {
       const noManifest = skillDirs.filter((e) => !has(plugin, 'skills', e.name, 'SKILL.md')).map((e) => e.name)
       noManifest.length
-        ? add('FAIL', 'skills', `projected skill dirs without a SKILL.md: ${noManifest.join(', ')}`)
-        : add('PASS', 'skills', `${skillDirs.length} projected skills, each with a SKILL.md`)
+        ? add('FAIL', 'PLUG-8', `projected skill dirs without a SKILL.md: ${noManifest.join(', ')}`, STD, `${plugin}/skills`)
+        : add('PASS', 'PLUG-8', `${skillDirs.length} projected skills, each with a SKILL.md`, STD, `${plugin}/skills`)
     }
   }
 
   // ── projected agents — flattened .md files, no nesting ───────────────────────
-  if (!isDir(plugin, 'agents')) add('WARN', 'agents', `${plugin}/agents/ missing (the projection carries the governance agents)`)
+  if (!isDir(plugin, 'agents'))
+    add('WARN', 'PLUG-9', `${plugin}/agents/ missing (the projection carries the governance agents)`, STD, `${plugin}/agents`)
   else {
     const entries = readdirSync(at(plugin, 'agents'), { withFileTypes: true }).filter((e) => !e.name.startsWith('.'))
     const nested = entries.filter((e) => e.isDirectory()).map((e) => e.name)
     const mdFiles = entries.filter((e) => e.isFile() && e.name.endsWith('.md'))
     nested.length
-      ? add('FAIL', 'agents', `agents/ must be flat .md files (from agents/governance/) — found subdirs: ${nested.join(', ')}`)
-      : add('PASS', 'agents', `${mdFiles.length} agents, flattened to .md files`)
+      ? add(
+          'FAIL',
+          'PLUG-9',
+          `agents/ must be flat .md files (from agents/governance/) — found subdirs: ${nested.join(', ')}`,
+          STD,
+          `${plugin}/agents`
+        )
+      : add('PASS', 'PLUG-9', `${mdFiles.length} agents, flattened to .md files`, STD, `${plugin}/agents`)
   }
 
   // ── MCP deferred — no .mcp.json anywhere in the plugin ───────────────────────
@@ -167,20 +190,25 @@ if (plugin) {
   }
   walk(at(plugin))
   mcpHits.length
-    ? add('WARN', 'mcp', `MCP servers are deferred (host-local, not Cowork's sandbox) — unexpected .mcp.json: ${mcpHits.join(', ')}`)
-    : add('PASS', 'mcp', 'no .mcp.json in the plugin (MCP servers correctly deferred)')
+    ? add(
+        'WARN',
+        'PLUG-10',
+        `MCP servers are deferred (host-local, not Cowork's sandbox) — unexpected .mcp.json: ${mcpHits.join(', ')}`,
+        STD
+      )
+    : add('PASS', 'PLUG-10', 'no .mcp.json in the plugin (MCP servers correctly deferred)', STD)
 }
 
 // ── repo scaffold (owned by the repo, untouched by regeneration) ───────────────
 for (const f of ['LICENSE', 'README.md', '.gitignore', 'CLAUDE.md']) {
-  has(f) ? add('PASS', 'scaffold', `${f} present`) : add('FAIL', 'scaffold', `${f} missing`)
+  has(f) ? add('PASS', 'PLUG-13', `${f} present`, STD, f) : add('FAIL', 'PLUG-13', `${f} missing`, STD, f)
 }
 // The generated-not-hand-edited invariant must be stated so no one edits the projection.
 const claude = read('CLAUDE.md')
 if (claude)
   /generated/i.test(claude) && /hand-?edit|hand-?maintain/i.test(claude)
-    ? add('PASS', 'scaffold', 'CLAUDE.md states the generated-not-hand-edited invariant')
-    : add('WARN', 'scaffold', 'CLAUDE.md should state that the projection is generated and must not be hand-edited')
+    ? add('PASS', 'PLUG-14', 'CLAUDE.md states the generated-not-hand-edited invariant', STD, 'CLAUDE.md')
+    : add('WARN', 'PLUG-14', 'CLAUDE.md should state that the projection is generated and must not be hand-edited', STD, 'CLAUDE.md')
 
 // ── .ki-config.toml [ki-plugins] opt-in marker ─────────────────────────────────
 // The shared file is ki-repo's contract, but this skill reads its OWN table: a
@@ -188,22 +216,22 @@ if (claude)
 // (ki-repo's coverage cascade enforces the same presence from the marketplace.json
 // signal). Validate-down — no per-repo keys defined yet.
 const kiText = read('.ki-config.toml')
-if (!kiText) add('WARN', 'ki-config', '.ki-config.toml missing (ki-repo owns the contract)')
+if (!kiText) add('WARN', 'PLUG-15', '.ki-config.toml missing (ki-repo owns the contract)', STD, '.ki-config.toml')
 else if (!/^\[ki-plugins\]/m.test(kiText))
-  add('WARN', 'ki-config', 'no [ki-plugins] table — add it to mark this repo as governed by the plugins standard')
+  add('WARN', 'PLUG-15', 'no [ki-plugins] table — add it to mark this repo as governed by the plugins standard', STD, '.ki-config.toml')
 else {
-  add('PASS', 'ki-config', '[ki-plugins] table present')
+  add('PASS', 'PLUG-15', '[ki-plugins] table present', STD, '.ki-config.toml')
   const body = kiText.split(/^\[ki-plugins\]/m)[1]?.split(/^\[/m)[0] ?? ''
   const KNOWN = new Set<string>([]) // no top-level options yet
   for (const m of body.matchAll(/^\s*([A-Za-z0-9_-]+)\s*=/gm)) {
     KNOWN.has(m[1] as string)
-      ? add('PASS', 'ki-config', `known key ${m[1]}`)
-      : add('WARN', 'ki-config', `unknown key under [ki-plugins]: ${m[1]} (validate-down)`)
+      ? add('PASS', 'PLUG-15', `known key ${m[1]}`, STD, '.ki-config.toml')
+      : add('WARN', 'PLUG-15', `unknown key under [ki-plugins]: ${m[1]} (validate-down)`, STD, '.ki-config.toml')
   }
 }
 
 // 2-space JSON + trailing newline — the generator writes both manifests this way.
-function jsonFormat(area: string, rel: string, raw: string): void {
+function jsonFormat(code: string, rel: string, raw: string): void {
   let obj: unknown
   try {
     obj = JSON.parse(raw)
@@ -212,8 +240,8 @@ function jsonFormat(area: string, rel: string, raw: string): void {
   }
   const want = `${JSON.stringify(obj, null, 2)}\n`
   raw === want
-    ? add('PASS', area, `${rel} is 2-space JSON with a trailing newline`)
-    : add('POLISH', area, `${rel} not in canonical 2-space-JSON + trailing-newline form — regenerate`)
+    ? add('PASS', code, `${rel} is 2-space JSON with a trailing newline`, STD, rel)
+    : add('POLISH', code, `${rel} not in canonical 2-space-JSON + trailing-newline form — regenerate`, STD, rel)
 }
 
 // ── report ────────────────────────────────────────────────────────────────────
@@ -241,7 +269,13 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     mkdirSync(reportDir, { recursive: true })
     const body = ORDER.flatMap((l) => {
       const rows = items.filter((f) => f.level === l)
-      return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+      return rows.length
+        ? [
+            '',
+            `## ${ICON[l]} ${l} (${rows.length})`,
+            ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
+          ]
+        : []
     })
     writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
     writeFileSync(
@@ -258,7 +292,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
       const rows = items.filter((f) => f.level === l)
       if (!rows.length) continue
       console.log(`\n${ICON[l]} ${l} (${rows.length})`)
-      for (const r of rows) console.log(`   [${r.area}] ${r.msg}`)
+      for (const r of rows) console.log(`   [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
     }
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
@@ -270,11 +304,12 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
   process.exit(summary.fail ? 1 : 0)
 }
 
-add('INFO', 'scope', 'projection shape only — generation + Cowork enablement are the ki-binding layer (BIND-4)')
+add('INFO', 'scope', 'projection shape only — generation + Cowork enablement are the ki-binding layer (BIND-4)', RUB)
 add(
   'ADVISORY',
-  'judgment',
-  'mechanical layer only — apply the [J] criteria in references/audit-rubric.md by reading (esp. stale-projection)'
+  'PLUG-11',
+  'mechanical layer only — apply the [J] criteria (stale projection PLUG-11, reproducibility PLUG-12, prose drift PLUG-16) by reading',
+  RUB
 )
 emit(
   findings,

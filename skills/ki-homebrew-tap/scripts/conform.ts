@@ -82,6 +82,9 @@ function hasKiTap(text: string): boolean {
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
+// The reference doc every tap-shape criterion cites (mirrors audit.ts's STD).
+const STD = 'references/homebrew-tap-standard.md'
+
 async function isDir(p: string): Promise<boolean> {
   try {
     return (await stat(p)).isDirectory()
@@ -90,11 +93,25 @@ async function isDir(p: string): Promise<boolean> {
   }
 }
 
+// Collect-then-emit harness (mirrors audit.ts + ki-authoring conform.ts). Each action
+// records a finding; `say` prints the human line only when not in --json mode, so a direct
+// run streams prose while the aggregate consumes the wrapper. area is the rubric code, ref
+// its reference-doc pointer, file the path an action concerns.
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
+const findings: Finding[] = []
+const rec = (level: Level, area: string, msg: string, ref?: string, file?: string): void =>
+  void findings.push({ level, area, msg, ref, file })
+
 // ── entry ──
 async function main() {
   const argv = process.argv.slice(2)
   const dryRun = argv.includes('--dry-run')
+  const json = argv.includes('--json')
   const target = resolve(argv.find((a) => !a.startsWith('-')) ?? '.')
+  const say = (line: string): void => {
+    if (!json) console.log(line)
+  }
 
   const formulaDir = join(target, FORMULA_DIR)
   if (!(await isDir(formulaDir))) {
@@ -103,22 +120,21 @@ async function main() {
     return
   }
 
-  console.log(paint(C.dim, `target: ${target}${dryRun ? '   (dry run)' : ''}\n`))
+  say(paint(C.dim, `target: ${target}${dryRun ? '   (dry run)' : ''}\n`))
 
   const formulae = (await readdir(formulaDir)).filter((n) => n.endsWith('.rb')).sort()
-  const manualTodos: string[] = []
 
-  // README, read once for the TAP-README manual TODOs.
+  // README, read once for the TAP-README findings.
   const readmePath = join(target, README)
   let readme: string | null = null
   try {
     readme = await readFile(readmePath, 'utf8')
   } catch {
-    manualTodos.push(`${README}: absent — author a formulae table so each formula is discoverable (TAP-README)`)
+    rec('ADVISORY', 'TAP-README', 'absent — author a formulae table so each formula is discoverable', STD, README)
   }
 
   // ── a) config marker — the one mechanical, reversible fix ──
-  console.log(paint(C.cyan, `config marker ([${KI_SECTION}] in ${KI_CONFIG})`))
+  say(paint(C.cyan, `config marker ([${KI_SECTION}] in ${KI_CONFIG})`))
   const configPath = join(target, KI_CONFIG)
   let configText: string | null = null
   try {
@@ -126,59 +142,76 @@ async function main() {
   } catch {
     configText = null
   }
-  let configFixes = 0
   if (configText === null) {
-    manualTodos.push(`${KI_CONFIG}: absent — author the repo config (that is ki-repo's job), then re-run to add the marker`)
-    console.log(`  ${paint(C.dim, `no ${KI_CONFIG} — see manual TODOs`)}`)
+    rec('ADVISORY', 'CONFIG', "absent — author the repo config (that is ki-repo's job), then re-run to add the marker", STD, KI_CONFIG)
+    say(`  ${paint(C.dim, `no ${KI_CONFIG} — see manual TODOs`)}`)
   } else if (hasKiTap(configText)) {
-    console.log(`  ${paint(C.dim, 'nothing to fix')}`)
+    rec('PASS', 'CONFIG', `[${KI_SECTION}] marker already present`, STD, KI_CONFIG)
+    say(`  ${paint(C.dim, 'nothing to fix')}`)
   } else {
     const newText = `${configText.replace(/\n*$/, '\n')}\n${KI_DEFAULT}`
-    console.log(`  ${paint(C.green, 'fix')}   ${KI_CONFIG} — append the keyless [${KI_SECTION}] marker`)
+    rec('POLISH', 'CONFIG', `append the keyless [${KI_SECTION}] marker${dryRun ? ' (dry run — not written)' : ''}`, STD, KI_CONFIG)
+    say(`  ${paint(C.green, 'fix')}   ${KI_CONFIG} — append the keyless [${KI_SECTION}] marker`)
     if (!dryRun) await writeFile(configPath, newText)
-    configFixes++
   }
 
-  // ── b) formula-shape divergences — authoring / brew-delegated → manual TODOs ──
-  console.log(`\n${paint(C.cyan, 'formula shape (authoring / brew — not scripted)')}`)
+  // ── b) formula-shape divergences — authoring / brew-delegated → ADVISORY (never guessed) ──
+  say(`\n${paint(C.cyan, 'formula shape (authoring / brew — not scripted)')}`)
   for (const file of formulae) {
     const where = `${FORMULA_DIR}/${file}`
     const text = await readFile(join(formulaDir, file), 'utf8')
     const name = file.replace(/\.rb$/, '')
 
-    if (!CLASS_RE.test(text)) manualTodos.push(`${where}: no \`class <Camel> < Formula\` declaration (TAP-CLASS) — author by hand`)
+    if (!CLASS_RE.test(text)) rec('ADVISORY', 'TAP-CLASS', 'no `class <Camel> < Formula` declaration — author by hand', STD, where)
     for (const [label, re] of FIELD_PROBES)
-      if (!re.test(text)) manualTodos.push(`${where}: missing \`${label}\` (TAP-FIELDS) — author by hand`)
+      if (!re.test(text)) rec('ADVISORY', 'TAP-FIELDS', `missing \`${label}\` — author by hand`, STD, where)
 
     const descM = text.match(DESC_RE)
     if (descM) {
       const desc = descM[1] as string
-      if (desc.length > 80) manualTodos.push(`${where}: \`desc\` is ${desc.length} chars (TAP-DESC-STYLE, ≤ 80) — shorten by hand`)
+      if (desc.length > 80) rec('ADVISORY', 'TAP-DESC-STYLE', `\`desc\` is ${desc.length} chars (≤ 80) — shorten by hand`, STD, where)
       if (/^(A|An|The)\s/.test(desc))
-        manualTodos.push(`${where}: \`desc\` starts with an article (TAP-DESC-STYLE) — de-article + recapitalise by hand`)
+        rec('ADVISORY', 'TAP-DESC-STYLE', '`desc` starts with an article — de-article + recapitalise by hand', STD, where)
     }
 
     const urlM = text.match(URL_RE)
     if (urlM && !VERSIONED_URL_RE.test(urlM[1] as string))
-      manualTodos.push(`${where}: \`url\` is not a tagged-release tarball (TAP-URL-VERSIONED) — repoint + recompute sha256 by hand`)
+      rec('ADVISORY', 'TAP-URL-VERSIONED', '`url` is not a tagged-release tarball — repoint + recompute sha256 by hand', STD, where)
 
     if (readme !== null && !readme.includes(name))
-      manualTodos.push(`${where}: formula "${name}" not in ${README} (TAP-README) — add its formulae-table row by hand`)
+      rec('ADVISORY', 'TAP-README', `formula "${name}" not in ${README} — add its formulae-table row by hand`, STD, where)
   }
 
   // ── judgment / delegated items — never guessed, always surfaced ──
-  console.log(`\n${paint(C.cyan, 'manual TODOs (judgment / brew-delegated — not scripted)')}`)
-  if (manualTodos.length === 0) {
-    console.log(`  ${paint(C.dim, 'none')}`)
-  } else {
-    for (const todo of manualTodos) console.log(`  - ${todo}`)
-  }
-  console.log(
-    `  - TAP-BREW: run \`brew style\` + \`brew audit --strict\` per formula locally and fix by hand — Homebrew's audit is delegated, never scripted here.`
+  rec(
+    'ADVISORY',
+    'TAP-BREW',
+    "run `brew style` + `brew audit --strict` per formula locally and fix by hand — Homebrew's audit is delegated, never scripted here",
+    STD
   )
-  console.log(
+
+  const advisories = findings.filter((f) => f.level === 'ADVISORY')
+  say(`\n${paint(C.cyan, 'manual TODOs (judgment / brew-delegated — not scripted)')}`)
+  for (const f of advisories) say(`  - ${f.file ? `${f.file}: ` : ''}${f.msg} (${f.area})`)
+
+  const configFixes = findings.filter((f) => f.area === 'CONFIG' && f.level === 'POLISH').length
+  say(
     `\n${paint(C.dim, `${configFixes} mechanical fix(es) applied${dryRun ? ' (dry run — nothing written)' : ''} — re-run \`bun scripts/audit.ts\` (or \`ki:homebrew-tap:audit\`) to confirm findings clear.`)}`
   )
+
+  if (json) {
+    const n = (l: Level): number => findings.filter((f) => f.level === l).length
+    const summary = {
+      fail: n('FAIL'),
+      warn: n('WARN'),
+      polish: n('POLISH'),
+      advisory: n('ADVISORY'),
+      info: n('INFO'),
+      na: n('NA'),
+      pass: n('PASS')
+    }
+    process.stdout.write(JSON.stringify({ concern: 'homebrew-tap', target, generatedAt: new Date().toISOString(), summary, findings }))
+  }
 }
 
 main().catch((err) => {

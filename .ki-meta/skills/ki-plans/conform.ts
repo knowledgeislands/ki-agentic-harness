@@ -16,6 +16,7 @@
  *
  *   bun scripts/conform.ts [path]   # default: cwd → docs/plans
  *   --dry-run                       # print the plan, mutate nothing
+ *   --json                          # emit the shared finding wrapper instead of prose
  *
  * Fixes (unambiguous, reversible only):
  *   - Missing `id` frontmatter field: when the YAML block exists but has no `id`,
@@ -52,6 +53,43 @@ const FILENAME_RE = /^(\d{3,})-[a-z0-9-]+\.md$/
 const REQUIRED_FIELDS = ['id', 'title', 'status', 'roadmap', 'blocks', 'blocked-by']
 const VALID_STATUS = new Set(['open', 'in-progress', 'done'])
 const PLANS_DIR = 'docs/plans'
+
+// Reference-doc pointers — kept in lockstep with audit.ts (same criterion → same
+// (area, ref)). Format criteria cite references/plan-format.md; the planning
+// methodology (the judgment layer) is prose in SKILL.md.
+const FORMAT_REF = 'references/plan-format.md'
+const METHOD_REF = 'SKILL.md'
+
+// Collect-then-emit harness mirroring audit.ts. Each action records a finding on the
+// shared ladder; `say` prints the human line only outside --json, so a direct run
+// streams prose while the aggregate consumes the wrapper. Action → level:
+// written/scaffolded/overwritten/fixed → POLISH, already-canonical/no-op → PASS,
+// still-failing → FAIL, judgment/manual-TODO → ADVISORY.
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
+const findings: Finding[] = []
+const rec = (level: Level, area: string, msg: string, ref?: string, file?: string): void => {
+  findings.push({ level, area, msg, ref, file })
+}
+const jsonMode = process.argv.includes('--json')
+const say = (line: string): void => {
+  if (!jsonMode) console.log(line)
+}
+// Lowercased ladder-keyed summary + wrapper — the shape the aggregate consumes (matches audit.ts).
+function emitJson(target: string): void {
+  if (!jsonMode) return
+  const n = (l: Level): number => findings.filter((f) => f.level === l).length
+  const summary = {
+    fail: n('FAIL'),
+    warn: n('WARN'),
+    polish: n('POLISH'),
+    advisory: n('ADVISORY'),
+    info: n('INFO'),
+    na: n('NA'),
+    pass: n('PASS')
+  }
+  process.stdout.write(JSON.stringify({ concern: 'plans', target, generatedAt: new Date().toISOString(), summary, findings }))
+}
 
 async function findKiConfig(startDir: string): Promise<string | null> {
   let dir = resolve(startDir)
@@ -111,8 +149,15 @@ async function main() {
   const target = resolve(argv.find((a) => !a.startsWith('-')) ?? '.')
 
   if (await detectKbMode(target)) {
-    console.log(paint(C.cyan, 'KB repo (repo_type = "kb")'))
-    console.log(`  ${paint(C.dim, 'planning is a stream proposal Checklist (ki-kb-streams) — no docs/plans/ to conform.')}`)
+    rec(
+      'PASS',
+      'scope',
+      'KB repo (repo_type = "kb") — planning is a stream proposal Checklist (ki-kb-streams); no docs/plans/ to conform',
+      METHOD_REF
+    )
+    say(paint(C.cyan, 'KB repo (repo_type = "kb")'))
+    say(`  ${paint(C.dim, 'planning is a stream proposal Checklist (ki-kb-streams) — no docs/plans/ to conform.')}`)
+    emitJson(target)
     process.exit(0)
     return
   }
@@ -124,20 +169,26 @@ async function main() {
     return
   }
 
-  console.log(paint(C.dim, `target: ${plansDir}${dryRun ? '   (dry run)' : ''}\n`))
+  say(paint(C.dim, `target: ${plansDir}${dryRun ? '   (dry run)' : ''}\n`))
 
+  // A manual TODO both prints for a human and records an ADVISORY finding (judgment,
+  // not scripted) — file-scoped where it names a path (mirrors audit.ts's file/ref).
   const manualTodos: string[] = []
+  const todo = (area: string, msg: string, ref: string, file?: string): void => {
+    manualTodos.push(file ? `${file}: ${msg}` : msg)
+    rec('ADVISORY', area, msg, ref, file)
+  }
   const dirEntries = await readdir(plansDir, { withFileTypes: true })
 
   // Stray .md directly under the plans root (other than README.md) — placement judgment.
   for (const e of dirEntries) {
     if (e.isFile() && e.name.endsWith('.md') && e.name !== 'README.md') {
-      manualTodos.push(`${e.name}: plan files must live in a theme folder (docs/plans/<theme>/) — move it by hand`)
+      todo('PLACE', 'plan files must live in a theme folder (docs/plans/<theme>/) — move it by hand', FORMAT_REF, e.name)
     }
   }
 
   // ── a) per-file frontmatter normalisation ──
-  console.log(paint(C.cyan, 'frontmatter'))
+  say(paint(C.cyan, 'frontmatter'))
   let fmFixes = 0
   const plans: PlanRow[] = []
 
@@ -150,7 +201,7 @@ async function main() {
       const rel = `${theme}/${name}`
       const fnMatch = FILENAME_RE.exec(name)
       if (!fnMatch) {
-        manualTodos.push(`${rel}: filename must be <NNN>-<slug>.md — rename by hand`)
+        todo('PLACE', 'filename must be <NNN>-<slug>.md — rename by hand', FORMAT_REF, rel)
         continue
       }
       const fileId = fnMatch[1] as string
@@ -159,7 +210,7 @@ async function main() {
 
       const fmMatch = content.match(/^---\n([\s\S]*?)\n---/)
       if (!fmMatch) {
-        manualTodos.push(`${rel}: no frontmatter block — author one by hand (id, title, status, roadmap, blocks, blocked-by)`)
+        todo('FM', 'no frontmatter block — author one by hand (id, title, status, roadmap, blocks, blocked-by)', FORMAT_REF, rel)
         continue
       }
 
@@ -179,27 +230,29 @@ async function main() {
           .split('\n')
           .filter((l) => !/^phase:\s*/.test(l))
           .join('\n')
-        console.log(`  ${paint(C.green, 'fix')}   ${rel} — remove forbidden 'phase' field`)
+        rec('POLISH', 'FM', "removed forbidden 'phase' field", FORMAT_REF, rel)
+        say(`  ${paint(C.green, 'fix')}   ${rel} — remove forbidden 'phase' field`)
         changed = true
       }
 
       // Fix: fill a missing `id` from the filename (derivable, authoritative).
       if (!('id' in fm)) {
         fmText = `id: '${fileId}'\n${fmText}`
-        console.log(`  ${paint(C.green, 'fix')}   ${rel} — add id: '${fileId}' (from filename)`)
+        rec('POLISH', 'FM', `added id: '${fileId}' (from filename)`, FORMAT_REF, rel)
+        say(`  ${paint(C.green, 'fix')}   ${rel} — add id: '${fileId}' (from filename)`)
         fm.id = fileId
         changed = true
       }
 
       // Remaining frontmatter issues → manual TODOs (never guessed).
       for (const f of REQUIRED_FIELDS) {
-        if (!(f in fm)) manualTodos.push(`${rel}: frontmatter missing '${f}' — fill it by hand`)
+        if (!(f in fm)) todo('FM', `frontmatter missing '${f}' — fill it by hand`, FORMAT_REF, rel)
       }
       if (fm.id && /^\d{3,}$/.test(fm.id) && fm.id !== fileId) {
-        manualTodos.push(`${rel}: frontmatter id '${fm.id}' ≠ filename id '${fileId}' — rename file or fix field (human call)`)
+        todo('FM', `frontmatter id '${fm.id}' ≠ filename id '${fileId}' — rename file or fix field (human call)`, FORMAT_REF, rel)
       }
       if (fm.status && !VALID_STATUS.has(fm.status)) {
-        manualTodos.push(`${rel}: status '${fm.status}' not one of open | in-progress | done — correct by hand`)
+        todo('FM', `status '${fm.status}' not one of open | in-progress | done — correct by hand`, FORMAT_REF, rel)
       }
 
       if (changed) {
@@ -215,14 +268,17 @@ async function main() {
       plans.push({ id, theme, file: rel, title, status, blocks })
     }
   }
-  if (fmFixes === 0) console.log(`  ${paint(C.dim, 'nothing to fix')}`)
+  if (fmFixes === 0) {
+    rec('PASS', 'FM', 'frontmatter already conforms — nothing to fix', FORMAT_REF)
+    say(`  ${paint(C.dim, 'nothing to fix')}`)
+  }
 
   // ── b) append missing README index rows ──
-  console.log(`\n${paint(C.cyan, 'index rows (README.md)')}`)
+  say(`\n${paint(C.cyan, 'index rows (README.md)')}`)
   const readmePath = join(plansDir, 'README.md')
   if (!(await exists(readmePath))) {
-    manualTodos.push('README.md: index missing entirely — author it by hand (table + dependency graph)')
-    console.log(`  ${paint(C.dim, 'no README.md — see manual TODOs')}`)
+    todo('IDX', 'index missing entirely — author it by hand (table + dependency graph)', FORMAT_REF, 'README.md')
+    say(`  ${paint(C.dim, 'no README.md — see manual TODOs')}`)
   } else {
     let readme = await readFile(readmePath, 'utf8')
     const lines = readme.split('\n')
@@ -240,13 +296,14 @@ async function main() {
     const planIds = new Set(plans.map((p) => p.id))
     for (const indexedId of indexedIds) {
       if (!planIds.has(indexedId)) {
-        manualTodos.push(`README.md: row for plan ${indexedId} has no matching file — remove or restore the file by hand`)
+        todo('IDX', `row for plan ${indexedId} has no matching file — remove or restore the file by hand`, FORMAT_REF, 'README.md')
       }
     }
 
     const missing = plans.filter((p) => !indexedIds.has(p.id))
     if (missing.length === 0) {
-      console.log(`  ${paint(C.dim, 'nothing to append')}`)
+      rec('PASS', 'IDX', 'index already lists every plan — nothing to append', FORMAT_REF)
+      say(`  ${paint(C.dim, 'nothing to append')}`)
     } else {
       // Find the last table data row to append after.
       let lastRow = -1
@@ -254,15 +311,22 @@ async function main() {
         if (/^\s*\|/.test(lines[i] as string)) lastRow = i
       }
       if (lastRow === -1) {
-        manualTodos.push('README.md: no index table found — add the rows by hand')
-        console.log(`  ${paint(C.dim, 'no table found — see manual TODOs')}`)
+        todo('IDX', 'no index table found — add the rows by hand', FORMAT_REF, 'README.md')
+        say(`  ${paint(C.dim, 'no table found — see manual TODOs')}`)
       } else {
         const newRows: string[] = []
         for (const p of missing) {
           const row = `| [${p.id}](${p.file}) | ${p.theme} | ${p.title} | ${p.status} | ${p.blocks} |`
           newRows.push(row)
-          manualTodos.push(`README.md: move the appended row for plan ${p.id} into reading order and rebuild the dependency graph`)
-          console.log(`  ${paint(C.green, 'append')} ${p.id} — ${p.title}`)
+          rec(
+            'POLISH',
+            'IDX',
+            `appended index row for plan ${p.id} (${p.title})${dryRun ? ' — dry-run, not written' : ''}`,
+            FORMAT_REF,
+            'README.md'
+          )
+          todo('IDX', `move the appended row for plan ${p.id} into reading order and rebuild the dependency graph`, FORMAT_REF, 'README.md')
+          say(`  ${paint(C.green, 'append')} ${p.id} — ${p.title}`)
         }
         lines.splice(lastRow + 1, 0, ...newRows)
         readme = lines.join('\n')
@@ -272,19 +336,27 @@ async function main() {
   }
 
   // ── judgment items — never guessed, always surfaced ──
-  console.log(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
+  say(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
   if (manualTodos.length === 0) {
-    console.log(`  ${paint(C.dim, 'none')}`)
+    say(`  ${paint(C.dim, 'none')}`)
   } else {
-    for (const todo of manualTodos) console.log(`  - ${todo}`)
+    for (const line of manualTodos) say(`  - ${line}`)
   }
-  console.log(
+  rec(
+    'ADVISORY',
+    'DEP',
+    'dependency integrity (missing/dangling refs, reverse links, cycles) and the README dependency graph are dependency-graph edits — resolve by hand',
+    FORMAT_REF
+  )
+  rec('ADVISORY', 'judgment', 'near-horizon, the quality bar, and the zombie check are read-and-assess, never scripted', METHOD_REF)
+  say(
     `  - Dependency integrity (missing/dangling refs, reverse links, cycles) and the README dependency graph are dependency-graph edits — resolve by hand.`
   )
-  console.log(`  - ADVISORY checks (near-horizon, the quality bar, the zombie check) are read-and-assess, never scripted.`)
-  console.log(
+  say(`  - ADVISORY checks (near-horizon, the quality bar, the zombie check) are read-and-assess, never scripted.`)
+  say(
     `\n${paint(C.dim, 'mechanical layer applied — re-run `bun scripts/audit.ts docs/plans` (or `ki:plans:audit`) to confirm findings clear.')}`
   )
+  emitJson(target)
 }
 
 main().catch((err) => {

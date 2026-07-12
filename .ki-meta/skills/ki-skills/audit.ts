@@ -26,7 +26,13 @@ const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[3
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 type Severity = 'fail' | 'warn'
-type Finding = { severity: Severity; criterion: string; message: string }
+// area = the rubric code (criterion); ref = the reference-doc pointer the criterion cites
+// (this skill's rubric); file = the path a file-scoped finding concerns. ref/file feed the
+// cited-finding render (`[area] file msg (ref)`) and are serialised verbatim under --json.
+type Finding = { severity: Severity; criterion: string; message: string; ref?: string; file?: string }
+
+// Every ki-skills criterion is defined in this skill's rubric — the default reference pointer.
+const RUBRIC = 'references/audit-rubric.md'
 
 // --- limits (from references/agent-skills-standard.md §16 — keep in sync) ----------------------
 const NAME_MAX = 64
@@ -345,8 +351,10 @@ function computeRefreshStatus(sourcesText: string): RefreshInfo {
 
 function lintSkill(skillDir: string): Finding[] {
   const f: Finding[] = []
-  const fail = (criterion: string, message: string): void => void f.push({ severity: 'fail', criterion, message })
-  const warn = (criterion: string, message: string): void => void f.push({ severity: 'warn', criterion, message })
+  const fail = (criterion: string, message: string, file?: string): void =>
+    void f.push({ severity: 'fail', criterion, message, ref: RUBRIC, file })
+  const warn = (criterion: string, message: string, file?: string): void =>
+    void f.push({ severity: 'warn', criterion, message, ref: RUBRIC, file })
 
   const skillMd = join(skillDir, 'SKILL.md')
   if (!existsSync(skillMd)) {
@@ -532,24 +540,25 @@ function lintSkill(skillDir: string): Finding[] {
     const text = stripCode(md) // exclude code blocks/spans from text-pattern checks
     const rel = file.slice(skillDir.length + 1)
     const isSkillMd = basename(file) === 'SKILL.md'
-    if (hasWikilink(text)) fail('LINK-1', `${rel}: uses Obsidian wikilinks ([[...]]) — use relative markdown links`)
-    if (hasBackslashLink(text)) fail('LAY-4', `${rel}: a link target uses backslashes — use forward slashes`)
+    if (hasWikilink(text)) fail('LINK-1', 'uses Obsidian wikilinks ([[...]]) — use relative markdown links', rel)
+    if (hasBackslashLink(text)) fail('LAY-4', 'a link target uses backslashes — use forward slashes', rel)
     for (const target of relativeLinkTargets(text)) {
       const resolved = resolve(dirname(file), target)
-      if (!existsSync(resolved)) fail('LINK-2', `${rel}: broken relative link → "${target}"`)
+      if (!existsSync(resolved)) fail('LINK-2', `broken relative link → "${target}"`, rel)
     }
     // ToC on long reference files (not SKILL.md itself)
     if (!isSkillMd) {
       const lineCount = md.split(/\r?\n/).length
       if (lineCount > TOC_LINE_THRESHOLD && !hasTableOfContents(md))
-        warn('REF-3', `${rel}: ${lineCount} lines but no table of contents near the top`)
+        warn('REF-3', `${lineCount} lines but no table of contents near the top`, rel)
     }
     // SHAPE-2: endorsement of the retired extension pattern, in the SKILL.md body OR any
     // reference file (a standard's prose can drift even when the SKILL.md body is clean).
     if (endorsesRetiredExtension(isSkillMd ? body : md))
       warn(
         'SHAPE-2',
-        `${isSkillMd ? '' : `${rel}: `}endorses the retired base-coupled extension pattern (ship/"prefer" an extension skill, "delegates the modes back", "extends this one") — relationships are composition only; declare base differences in .ki-config / CLAUDE.md, per SHAPE-2`
+        'endorses the retired base-coupled extension pattern (ship/"prefer" an extension skill, "delegates the modes back", "extends this one") — relationships are composition only; declare base differences in .ki-config / CLAUDE.md, per SHAPE-2',
+        rel
       )
   }
 
@@ -693,7 +702,8 @@ function collisionFindings(dirs: string[]): Finding[] {
       out.push({
         severity: 'warn',
         criterion: 'COLL-1',
-        message: `trigger "${phrase}" is shared by ${[...skills].sort().join(', ')} — confirm each names the other as an off-ramp (COLL-2)`
+        message: `trigger "${phrase}" is shared by ${[...skills].sort().join(', ')} — confirm each names the other as an off-ramp (COLL-2)`,
+        ref: RUBRIC
       })
   }
   return out.sort((a, b) => a.message.localeCompare(b.message))
@@ -721,7 +731,8 @@ function ownsCollisions(dirs: string[]): Finding[] {
       out.push({
         severity: 'warn',
         criterion: 'SHAPE-16',
-        message: `\`owns: ${file}\` is declared by ${[...skills].sort().join(', ')} — owns: is exclusive; split into a single owner plus contributes:/requires: on the rest`
+        message: `\`owns: ${file}\` is declared by ${[...skills].sort().join(', ')} — owns: is exclusive; split into a single owner plus contributes:/requires: on the rest`,
+        ref: RUBRIC
       })
   return out.sort((a, b) => a.message.localeCompare(b.message))
 }
@@ -771,7 +782,7 @@ const reportDir =
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
-const all: { level: Level; area: string; msg: string }[] = []
+const all: { level: Level; area: string; msg: string; ref?: string; file?: string }[] = []
 
 if (!jsonOut) console.log(paint(C.dim, LEGEND))
 
@@ -784,13 +795,21 @@ for (const dir of skillDirs) {
   totalFails += fails.length
   totalWarns += warns.length
   for (const x of findings)
-    all.push({ level: x.severity === 'fail' ? 'FAIL' : 'WARN', area: `${basename(dir)}:${x.criterion}`, msg: x.message })
+    all.push({
+      level: x.severity === 'fail' ? 'FAIL' : 'WARN',
+      area: `${basename(dir)}:${x.criterion}`,
+      msg: x.message,
+      ref: x.ref,
+      file: x.file
+    })
   if (!jsonOut) {
     const stamp = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
     console.log(`\n${stamp}  ${paint(C.cyan, basename(dir))}`)
     for (const x of findings) {
       const tag = x.severity === 'fail' ? paint(C.red, 'fail') : paint(C.yellow, 'warn')
-      console.log(`  ${tag} ${paint(C.dim, `[${x.criterion}]`)} ${x.message}`)
+      console.log(
+        `  ${tag} ${paint(C.dim, `[${x.criterion}]`)}${x.file ? ` ${x.file}` : ''} ${x.message}${x.ref ? paint(C.dim, ` (${x.ref})`) : ''}`
+      )
     }
     if (findings.length === 0) console.log(paint(C.dim, '  all mechanical checks passed'))
   }
@@ -800,10 +819,13 @@ for (const dir of skillDirs) {
 const collisions = [...collisionFindings(skillDirs), ...ownsCollisions(skillDirs)]
 if (collisions.length > 0) {
   totalWarns += collisions.length
-  for (const x of collisions) all.push({ level: 'WARN', area: `collision:${x.criterion}`, msg: x.message })
+  for (const x of collisions) all.push({ level: 'WARN', area: `collision:${x.criterion}`, msg: x.message, ref: x.ref })
   if (!jsonOut) {
     console.log(`\n${paint(C.yellow, 'WARN')}  ${paint(C.cyan, 'collision (cross-skill)')}`)
-    for (const x of collisions) console.log(`  ${paint(C.yellow, 'warn')} ${paint(C.dim, `[${x.criterion}]`)} ${x.message}`)
+    for (const x of collisions)
+      console.log(
+        `  ${paint(C.yellow, 'warn')} ${paint(C.dim, `[${x.criterion}]`)} ${x.message}${x.ref ? paint(C.dim, ` (${x.ref})`) : ''}`
+      )
   }
 }
 
@@ -866,7 +888,13 @@ if (reportOut) {
   mkdirSync(reportDir, { recursive: true })
   const body = LADDER.flatMap((l) => {
     const rows = all.filter((f) => f.level === l)
-    return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+    return rows.length
+      ? [
+          '',
+          `## ${ICON[l]} ${l} (${rows.length})`,
+          ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
+        ]
+      : []
   })
   const tally = `${skillDirs.length} skill(s) · FAIL=${summary.fail} WARN=${summary.warn}`
   writeFileSync(join(reportDir, 'skills.md'), [`# skills audit — ${reportTarget}`, '', `_${stampIso}_`, '', tally, ...body, ''].join('\n'))

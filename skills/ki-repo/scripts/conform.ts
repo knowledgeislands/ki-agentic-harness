@@ -10,6 +10,14 @@
  *
  *   bun scripts/conform.ts [path]      # default: cwd
  *   --dry-run                                # print the plan, run nothing
+ *   --json                                   # emit the cited-finding wrapper (audit's shape)
+ *
+ * Each action records a cited finding on the shared ladder — written/enabled/set → POLISH,
+ * already-conformant → PASS, action failed → FAIL, judgment manual-TODO → ADVISORY — so the
+ * aggregate renders conform and audit identically. `--json` governs *reporting*, `--dry-run`
+ * governs *writing*; the two compose. A single atomic `gh` call that satisfies several fine
+ * audit checks (merge+delete-branch, secret-scanning+push-protection) cites the parent code
+ * and enumerates the covered checks; audit still emits each fine check with its own code.
  *
  * Applies, via `gh`:
  *   - Layer 2: merge method (squash-only), auto-delete-branch, Wiki/Projects off,
@@ -42,6 +50,11 @@ import { join, resolve } from 'node:path'
 const TOPICS = ['mcp', 'model-context-protocol', 'claude', 'typescript', 'bun']
 const REQUIRED_CHECK = 'build'
 const ALLOWED_ACTIONS = 'all'
+// Reference-doc pointers carried on every finding — identical to audit.ts, so a criterion
+// cites the same (area, ref) in both. STD is the standard a mechanical action applies;
+// RUBRIC is where the judgment (manual-TODO) criteria live.
+const STD = 'references/repo-standard.md'
+const RUBRIC = 'references/audit-rubric.md'
 const CHECK_DEFAULTS: Record<string, boolean> = {
   'branch-protection': false,
   wiki: true,
@@ -67,16 +80,43 @@ const GITIGNORE_DEFAULT = 'node_modules/\n.DS_Store\n.ki-meta/audits/\n.ki-meta/
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
-function gh(args: string[], dryRun: boolean, label: string): void {
+const argv = process.argv.slice(2)
+const dryRun = argv.includes('--dry-run')
+const json = argv.includes('--json')
+const say = (line: string): void => {
+  if (!json) console.log(line)
+}
+
+// Collect-then-emit harness (mirrors audit.ts / ki-authoring conform). Each action records
+// a cited finding; `say` prints the human line only when not in --json mode, so a direct run
+// streams prose while the aggregate consumes the JSON wrapper. `--json` governs *reporting*;
+// `--dry-run` governs *writing* — the two compose. Level ladder: written/enabled/set → POLISH,
+// already-conformant → PASS, action failed → FAIL, judgment/manual-TODO → ADVISORY.
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
+const findings: Finding[] = []
+const rec = (level: Level, area: string, msg: string, ref?: string, file?: string): void =>
+  void findings.push({ level, area, msg, ref, file })
+
+// `gh()` applies one GitHub setting. `area` is the rubric code it satisfies; when a single
+// atomic `gh` call covers several fine audit checks (e.g. merge + delete-branch), `covers`
+// enumerates them in the msg while `area` stays the bundle's parent code — audit still emits
+// each fine check with its own code. dry-run records the planned action as POLISH.
+const gh = (args: string[], area: string, label: string, covers?: string): void => {
+  const detail = covers ? `${label} (covers: ${covers})` : label
   if (dryRun) {
-    console.log(`  ${paint(C.dim, '$')} gh ${args.join(' ')}`)
+    say(`  ${paint(C.dim, '$')} gh ${args.join(' ')}`)
+    rec('POLISH', area, `would ${detail}`, STD)
     return
   }
   try {
     execFileSync('gh', args, { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 })
-    console.log(`  ${paint(C.green, 'ok')}    ${label}`)
+    say(`  ${paint(C.green, 'ok')}    ${label}`)
+    rec('POLISH', area, detail, STD)
   } catch (e) {
-    console.log(`  ${paint(C.red, 'fail')}  ${label} — ${String((e as Error).message ?? e).split('\n')[0]}`)
+    const m = String((e as Error).message ?? e).split('\n')[0]
+    say(`  ${paint(C.red, 'fail')}  ${label} — ${m}`)
+    rec('FAIL', area, `${detail} — ${m}`, STD)
   }
 }
 const ghJSON = (apiPath: string): unknown => JSON.parse(execFileSync('gh', ['api', apiPath], { encoding: 'utf8' }))
@@ -117,8 +157,6 @@ function gitOrigin(dir: string): string | null {
 const GH_REMOTE = /github\.com[:/]([^/]+)\/(.+?)(?:\.git)?$/
 
 // ── entry ──
-const argv = process.argv.slice(2)
-const dryRun = argv.includes('--dry-run')
 const target = resolve(argv.find((a) => !a.startsWith('-')) ?? '.')
 
 const origin = gitOrigin(target)
@@ -143,24 +181,40 @@ try {
 }
 const isPublic = visibility === 'PUBLIC'
 
-console.log(paint(C.dim, `target: ${nwo}   ${isPublic ? 'public' : 'private'}${dryRun ? '   (dry run)' : ''}\n`))
+say(paint(C.dim, `target: ${nwo}   ${isPublic ? 'public' : 'private'}${dryRun ? '   (dry run)' : ''}\n`))
 
 // ── local file scaffolding (only when absent; never overwrite) ──
-function scaffold(name: string, path: string, content: string): void {
-  if (existsSync(path)) return
-  console.log(`  ${paint(C.green, 'write')} ${name}`)
+// A scaffold line cites the presence-check code (audit's `gitignore` / `ki-config`) with
+// file = the scaffolded path: written → POLISH, already present → PASS (never overwritten).
+// The scaffolded filename is the FIRST argument by contract — ki-skills SHAPE-16 reads
+// the leading string literal of each scaffold/syncOwned call cross-skill to check the
+// file is declared under `owns:`, so the real path (not the area code) must lead.
+function scaffold(name: string, area: string, path: string, content: string): void {
+  if (existsSync(path)) {
+    rec('PASS', area, `${name} already present`, STD, name)
+    return
+  }
+  rec('POLISH', area, `${name} scaffolded (was missing)`, STD, name)
+  say(`  ${paint(C.green, 'write')} ${name}`)
   if (!dryRun) writeFileSync(path, content)
 }
-scaffold('.gitignore', join(target, '.gitignore'), GITIGNORE_DEFAULT)
+scaffold('.gitignore', 'gitignore', join(target, '.gitignore'), GITIGNORE_DEFAULT)
 if (!ki) {
-  console.log(
-    `  ${paint(C.green, 'append')} ${KI_CONFIG} [${KI_SECTION}] block (edit \`visibility\` to match — currently templated "private")`
+  rec(
+    'POLISH',
+    'ki-config',
+    `${KI_CONFIG} [${KI_SECTION}] block appended (edit \`visibility\` to match — templated "private")`,
+    STD,
+    KI_CONFIG
   )
+  say(`  ${paint(C.green, 'append')} ${KI_CONFIG} [${KI_SECTION}] block (edit \`visibility\` to match — currently templated "private")`)
   if (!dryRun) writeFileSync(kiPath, kiText ? `${kiText.replace(/\n*$/, '\n\n')}${KI_DEFAULT}` : KI_DEFAULT)
+} else {
+  rec('PASS', 'ki-config', `${KI_CONFIG} [${KI_SECTION}] block already present`, STD, KI_CONFIG)
 }
 
 // ── Layer 2: core GitHub settings ──
-console.log(`\n${paint(C.cyan, 'layer 2 — core GitHub')}`)
+say(`\n${paint(C.cyan, 'layer 2 — core GitHub')}`)
 gh(
   [
     'repo',
@@ -171,17 +225,18 @@ gh(
     '--enable-squash-merge=true',
     '--delete-branch-on-merge=true'
   ],
-  dryRun,
-  'squash-only + auto-delete-branch'
+  'merge',
+  'squash-only + auto-delete-branch',
+  'merge, delete-branch'
 )
-if (enforced('wiki')) gh(['repo', 'edit', nwo, '--enable-wiki=false'], dryRun, 'Wiki off')
-if (enforced('projects')) gh(['repo', 'edit', nwo, '--enable-projects=false'], dryRun, 'Projects off')
-if (enforced('issues')) gh(['repo', 'edit', nwo, '--enable-issues=true'], dryRun, 'Issues on')
+if (enforced('wiki')) gh(['repo', 'edit', nwo, '--enable-wiki=false'], 'wiki', 'Wiki off')
+if (enforced('projects')) gh(['repo', 'edit', nwo, '--enable-projects=false'], 'projects', 'Projects off')
+if (enforced('issues')) gh(['repo', 'edit', nwo, '--enable-issues=true'], 'issues', 'Issues on')
 
 if (isPublic && enforced('topics')) {
   const args = ['repo', 'edit', nwo]
   for (const t of TOPICS) args.push('--add-topic', t)
-  gh(args, dryRun, `topics: ${TOPICS.join(', ')}`)
+  gh(args, 'topics', `topics: ${TOPICS.join(', ')}`)
 }
 
 if (enforced('branch-protection')) {
@@ -194,63 +249,113 @@ if (enforced('branch-protection')) {
     allow_force_pushes: false,
     allow_deletions: false
   })
-  if (dryRun) console.log(`  ${paint(C.dim, '$')} gh api -X PUT repos/${nwo}/branches/main/protection --input - <<< ${body}`)
-  else {
+  if (dryRun) {
+    say(`  ${paint(C.dim, '$')} gh api -X PUT repos/${nwo}/branches/main/protection --input - <<< ${body}`)
+    rec('POLISH', 'branch-protection', `would set branch protection on main (opted in via [${CHECKS_SECTION}])`, STD)
+  } else {
     try {
       execFileSync('gh', ['api', '-X', 'PUT', `repos/${nwo}/branches/main/protection`, '--input', '-'], { input: body, encoding: 'utf8' })
-      console.log(`  ${paint(C.green, 'ok')}    branch protection on main (opted in via [${CHECKS_SECTION}])`)
+      say(`  ${paint(C.green, 'ok')}    branch protection on main (opted in via [${CHECKS_SECTION}])`)
+      rec('POLISH', 'branch-protection', `branch protection on main (opted in via [${CHECKS_SECTION}])`, STD)
     } catch (e) {
-      console.log(`  ${paint(C.red, 'fail')}  branch protection — ${String((e as Error).message ?? e).split('\n')[0]}`)
+      const m = String((e as Error).message ?? e).split('\n')[0]
+      say(`  ${paint(C.red, 'fail')}  branch protection — ${m}`)
+      rec('FAIL', 'branch-protection', `branch protection — ${m}`, STD)
     }
   }
 } else if (dryRun) {
-  console.log(`  ${paint(C.dim, '$')} gh api -X DELETE repos/${nwo}/branches/main/protection`)
+  say(`  ${paint(C.dim, '$')} gh api -X DELETE repos/${nwo}/branches/main/protection`)
+  rec('POLISH', 'branch-protection', 'would strip any leftover branch protection (default: off)', STD)
 } else {
   try {
     execFileSync('gh', ['api', '-X', 'DELETE', `repos/${nwo}/branches/main/protection`], { encoding: 'utf8' })
-    console.log(`  ${paint(C.green, 'ok')}    strip any leftover branch protection (default: off)`)
+    say(`  ${paint(C.green, 'ok')}    strip any leftover branch protection (default: off)`)
+    rec('POLISH', 'branch-protection', 'stripped leftover branch protection (default: off)', STD)
   } catch (e) {
     const msg = String((e as Error).message ?? e)
     if (!isPublic && /Upgrade to GitHub Pro/.test(msg)) {
-      console.log(`  ${paint(C.dim, 'skip')}  branch protection unavailable on this plan for private repos — nothing to strip`)
+      say(`  ${paint(C.dim, 'skip')}  branch protection unavailable on this plan for private repos — nothing to strip`)
+      rec('PASS', 'branch-protection', 'branch protection unavailable on this plan for private repos — nothing to strip', STD)
     } else {
-      console.log(`  ${paint(C.red, 'fail')}  strip any leftover branch protection (default: off) — ${msg.split('\n')[0]}`)
+      say(`  ${paint(C.red, 'fail')}  strip any leftover branch protection (default: off) — ${msg.split('\n')[0]}`)
+      rec('FAIL', 'branch-protection', `strip any leftover branch protection (default: off) — ${msg.split('\n')[0]}`, STD)
     }
   }
 }
 
 // ── Layer 3: deeper GitHub ──
-console.log(`\n${paint(C.cyan, 'layer 3 — deeper GitHub')}`)
-gh(['api', '-X', 'PUT', `repos/${nwo}/vulnerability-alerts`], dryRun, 'Dependabot alerts on')
-gh(['api', '-X', 'PUT', `repos/${nwo}/automated-security-fixes`], dryRun, 'Dependabot security updates on')
-gh(['api', '-X', 'PATCH', `repos/${nwo}`, '-F', 'allow_update_branch=true'], dryRun, 'always-suggest-updating-PR-branches on')
+say(`\n${paint(C.cyan, 'layer 3 — deeper GitHub')}`)
+gh(['api', '-X', 'PUT', `repos/${nwo}/vulnerability-alerts`], 'dependabot-alerts', 'Dependabot alerts on')
+gh(['api', '-X', 'PUT', `repos/${nwo}/automated-security-fixes`], 'dependabot-updates', 'Dependabot security updates on')
+gh(['api', '-X', 'PATCH', `repos/${nwo}`, '-F', 'allow_update_branch=true'], 'update-branch', 'always-suggest-updating-PR-branches on')
 if (isPublic && (enforced('secret-scanning') || enforced('push-protection'))) {
   const sa: Record<string, unknown> = {}
-  if (enforced('secret-scanning')) sa.secret_scanning = { status: 'enabled' }
-  if (enforced('push-protection')) sa.secret_scanning_push_protection = { status: 'enabled' }
+  const covered: string[] = []
+  if (enforced('secret-scanning')) {
+    sa.secret_scanning = { status: 'enabled' }
+    covered.push('secret-scanning')
+  }
+  if (enforced('push-protection')) {
+    sa.secret_scanning_push_protection = { status: 'enabled' }
+    covered.push('push-protection')
+  }
   const body = JSON.stringify({ security_and_analysis: sa })
-  if (dryRun) console.log(`  ${paint(C.dim, '$')} gh api -X PATCH repos/${nwo} --input - <<< ${body}`)
-  else {
+  // One atomic PATCH bundles both fine checks; cite the parent code, enumerate the covered set.
+  const covers = covered.join(', ')
+  if (dryRun) {
+    say(`  ${paint(C.dim, '$')} gh api -X PATCH repos/${nwo} --input - <<< ${body}`)
+    rec('POLISH', 'secret-scanning', `would set secret scanning / push protection (covers: ${covers})`, STD)
+  } else {
     try {
       execFileSync('gh', ['api', '-X', 'PATCH', `repos/${nwo}`, '--input', '-'], { input: body, encoding: 'utf8' })
-      console.log(`  ${paint(C.green, 'ok')}    secret scanning / push protection`)
+      say(`  ${paint(C.green, 'ok')}    secret scanning / push protection`)
+      rec('POLISH', 'secret-scanning', `secret scanning / push protection (covers: ${covers})`, STD)
     } catch (e) {
-      console.log(`  ${paint(C.red, 'fail')}  secret scanning / push protection — ${String((e as Error).message ?? e).split('\n')[0]}`)
+      const m = String((e as Error).message ?? e).split('\n')[0]
+      say(`  ${paint(C.red, 'fail')}  secret scanning / push protection — ${m}`)
+      rec('FAIL', 'secret-scanning', `secret scanning / push protection (covers: ${covers}) — ${m}`, STD)
     }
   }
 }
 gh(
   // `enabled` is required by the API (422 without it); `allowed_actions` is only honoured when enabled.
   ['api', '-X', 'PUT', `repos/${nwo}/actions/permissions`, '-F', 'enabled=true', '-f', `allowed_actions=${ALLOWED_ACTIONS}`],
-  dryRun,
+  'actions',
   `Actions allowed_actions=${ALLOWED_ACTIONS}`
 )
 
-// ── judgment items — never guessed, always surfaced ──
-console.log(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
-console.log(`  - README.md content: is it accurate and current for ${nwo}?`)
-console.log(`  - GitHub description text: does it actually describe the repo's purpose? (sync with package.json's "description" once set)`)
-console.log(`  - [${CHECKS_SECTION}] overrides: does this repo genuinely need to diverge from an org default (e.g. branch-protection)?`)
-console.log(
-  `\n${paint(C.dim, 'mechanical layer applied — re-run `bun scripts/audit.ts .` (or `ki:repo:audit`) to confirm findings clear.')}`
+// ── judgment items — never guessed, always surfaced as ADVISORY (the [J] criteria conform
+// cannot mechanically settle, routed to a human/model reading). Cite the rubric's Judgment
+// section (RUBRIC); audit emits none of these areas, so there is no cross-file conflict.
+say(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
+rec('ADVISORY', 'judgment', `README.md / LICENSE content: accurate and current for ${nwo}?`, RUBRIC, 'README.md')
+rec(
+  'ADVISORY',
+  'description-fit',
+  `GitHub description: does it actually describe ${nwo}'s purpose? (sync with package.json "description")`,
+  RUBRIC
 )
+rec(
+  'ADVISORY',
+  'overrides',
+  `[${CHECKS_SECTION}] overrides: genuinely warranted per-repo, not waving off real drift (e.g. branch-protection)?`,
+  RUBRIC
+)
+say(`  - README.md content: is it accurate and current for ${nwo}?`)
+say(`  - GitHub description text: does it actually describe the repo's purpose? (sync with package.json's "description" once set)`)
+say(`  - [${CHECKS_SECTION}] overrides: does this repo genuinely need to diverge from an org default (e.g. branch-protection)?`)
+say(`\n${paint(C.dim, 'mechanical layer applied — re-run `bun scripts/audit.ts .` (or `ki:repo:audit`) to confirm findings clear.')}`)
+
+if (json) {
+  const n = (l: Level): number => findings.filter((f) => f.level === l).length
+  const summary = {
+    fail: n('FAIL'),
+    warn: n('WARN'),
+    polish: n('POLISH'),
+    advisory: n('ADVISORY'),
+    info: n('INFO'),
+    na: n('NA'),
+    pass: n('PASS')
+  }
+  process.stdout.write(JSON.stringify({ concern: 'repo', target, generatedAt: new Date().toISOString(), summary, findings }))
+}

@@ -48,15 +48,20 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string }
+// area is the rubric code (references/audit-rubric.md); ref is its reference-doc
+// pointer; file names the path a file-scoped finding concerns. ref/file are optional
+// and ride into --json for the aggregate to render.
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
+// The reference doc every tap-shape criterion cites.
+const STD = 'references/homebrew-tap-standard.md'
 const mk = () => {
   const f: Finding[] = []
   const push =
     (level: Level) =>
-    (area: string, msg: string): void =>
-      void f.push({ level, area, msg })
+    (area: string, msg: string, ref?: string, file?: string): void =>
+      void f.push({ level, area, msg, ref, file })
   return {
     f,
     fail: push('FAIL'),
@@ -120,26 +125,26 @@ function auditTap(base: string): Finding[] {
 
   // TAP-FORMULA-DIR [FAIL] — a tap is Formula/ + ≥1 *.rb.
   if (!isDir(formulaDir)) {
-    fail('TAP-FORMULA-DIR', `no ${FORMULA_DIR}/ directory — not a Homebrew tap`)
+    fail('TAP-FORMULA-DIR', `no ${FORMULA_DIR}/ directory — not a Homebrew tap`, STD)
     return f
   }
   if (formulae.length === 0) {
-    fail('TAP-FORMULA-DIR', `${FORMULA_DIR}/ has no *.rb formulae`)
+    fail('TAP-FORMULA-DIR', `${FORMULA_DIR}/ has no *.rb formulae`, STD)
     return f
   }
-  note('TAP-FORMULA-DIR', `${formulae.length} formula(e): ${formulae.map((x) => x.name).join(', ')}`)
+  note('TAP-FORMULA-DIR', `${formulae.length} formula(e): ${formulae.map((x) => x.name).join(', ')}`, STD)
 
   // README, read once for TAP-README.
   const readmePath = join(base, README)
   const readme = isFile(readmePath) ? readFileSync(readmePath, 'utf8') : null
-  if (readme === null) warn('TAP-README', `no ${README} — cannot verify a formulae table lists each formula`)
+  if (readme === null) warn('TAP-README', `no ${README} — cannot verify a formulae table lists each formula`, STD, README)
 
   for (const fx of formulae) {
     const where = `${FORMULA_DIR}/${fx.file}`
 
     // TAP-CLASS [WARN] — `class <Camel> < Formula`.
     if (!/^\s*class\s+[A-Z][A-Za-z0-9]*\s+<\s+Formula\b/m.test(fx.text))
-      warn('TAP-CLASS', `${where}: no \`class <Camel> < Formula\` declaration`)
+      warn('TAP-CLASS', 'no `class <Camel> < Formula` declaration', STD, where)
 
     // TAP-FIELDS [WARN] — one warn per missing field.
     const fields: Array<[string, RegExp]> = [
@@ -151,14 +156,14 @@ function auditTap(base: string): Finding[] {
       ['install method', /^\s*def\s+install\b/m],
       ['test do', /^\s*test\s+do\b/m]
     ]
-    for (const [label, re] of fields) if (!re.test(fx.text)) warn('TAP-FIELDS', `${where}: missing \`${label}\``)
+    for (const [label, re] of fields) if (!re.test(fx.text)) warn('TAP-FIELDS', `missing \`${label}\``, STD, where)
 
     // TAP-DESC-STYLE [WARN] — ≤ 80 chars, not starting with an article (Homebrew style).
     const desc = descValue(fx.text)
     if (desc !== null) {
-      if (desc.length > 80) warn('TAP-DESC-STYLE', `${where}: \`desc\` is ${desc.length} chars (Homebrew style: ≤ 80)`)
+      if (desc.length > 80) warn('TAP-DESC-STYLE', `\`desc\` is ${desc.length} chars (Homebrew style: ≤ 80)`, STD, where)
       if (/^(A|An|The)\s/.test(desc))
-        warn('TAP-DESC-STYLE', `${where}: \`desc\` starts with an article ("${desc.split(' ')[0]} …") — Homebrew style forbids it`)
+        warn('TAP-DESC-STYLE', `\`desc\` starts with an article ("${desc.split(' ')[0]} …") — Homebrew style forbids it`, STD, where)
     }
 
     // TAP-URL-VERSIONED [WARN] — a tagged-release tarball, not a bare branch/HEAD.
@@ -168,12 +173,14 @@ function auditTap(base: string): Finding[] {
       if (!/\/archive\/refs\/tags\/|\/releases\/download\//.test(url))
         warn(
           'TAP-URL-VERSIONED',
-          `${where}: \`url\` is not a tagged-release tarball (expected /archive/refs/tags/ or /releases/download/) → ${url}`
+          `\`url\` is not a tagged-release tarball (expected /archive/refs/tags/ or /releases/download/) → ${url}`,
+          STD,
+          where
         )
     }
 
     // TAP-README [WARN] — the formula name appears in the README formulae table.
-    if (readme !== null && !readme.includes(fx.name)) warn('TAP-README', `${where}: formula name "${fx.name}" not found in ${README}`)
+    if (readme !== null && !readme.includes(fx.name)) warn('TAP-README', `formula name "${fx.name}" not found in ${README}`, STD, where)
   }
 
   // TAP-BREW [capability] — delegate to Homebrew's own audit when brew is on PATH.
@@ -190,11 +197,15 @@ function runBrew(
   base: string,
   formulaDir: string,
   formulae: Formula[],
-  out: { warn: (a: string, m: string) => void; note: (a: string, m: string) => void; na: (a: string, m: string) => void }
+  out: {
+    warn: (a: string, m: string, ref?: string, file?: string) => void
+    note: (a: string, m: string, ref?: string, file?: string) => void
+    na: (a: string, m: string, ref?: string, file?: string) => void
+  }
 ): void {
   const brew = spawnSafe('brew', ['--version'])
   if (brew?.status !== 0) {
-    out.na('TAP-BREW', 'brew is not on PATH — skipping `brew audit`/`brew style` (the tap runs brew test-bot in CI)')
+    out.na('TAP-BREW', 'brew is not on PATH — skipping `brew audit`/`brew style` (the tap runs brew test-bot in CI)', STD)
     return
   }
   // An invocation / resolution problem (formula not tapped, path-arg form disabled in newer
@@ -204,6 +215,7 @@ function runBrew(
     /no available formula|not tapped|is disabled|Error: Calling|Usage:|invalid option|unknown command/i.test(s)
   for (const fx of formulae) {
     const path = join(formulaDir, fx.file)
+    const where = `${FORMULA_DIR}/${fx.file}`
     // `brew style` takes a path; `brew audit` needs the formula NAME (path args are disabled in
     // newer Homebrew and resolve to nothing unless the tap is installed).
     for (const [sub, args] of [
@@ -212,19 +224,21 @@ function runBrew(
     ] as Array<[string, string[]]>) {
       const r = spawnSafe('brew', args, base)
       if (!r) {
-        out.na('TAP-BREW', `${fx.name}: \`brew ${sub}\` could not be run (spawn error) — skipped`)
+        out.na('TAP-BREW', `${fx.name}: \`brew ${sub}\` could not be run (spawn error) — skipped`, STD, where)
         continue
       }
       const output = `${r.stdout}\n${r.stderr}`.trim()
-      if (r.status === 0) out.note('TAP-BREW', `${fx.name}: \`brew ${sub}\` clean`)
+      if (r.status === 0) out.note('TAP-BREW', `${fx.name}: \`brew ${sub}\` clean`, STD, where)
       else if (invocationError(output))
         out.na(
           'TAP-BREW',
-          `${fx.name}: \`brew ${sub}\` not run against this tap (${sub === 'audit' ? 'formula not tapped — run `brew tap` first, or rely on brew test-bot CI' : 'brew invocation issue'}) — skipped`
+          `${fx.name}: \`brew ${sub}\` not run against this tap (${sub === 'audit' ? 'formula not tapped — run `brew tap` first, or rely on brew test-bot CI' : 'brew invocation issue'}) — skipped`,
+          STD,
+          where
         )
       else {
         const detail = output.split(/\r?\n/).filter(Boolean).slice(0, 4).join(' · ')
-        out.warn('TAP-BREW', `${fx.name}: \`brew ${sub}\` reported issues — ${detail || `exit ${r.status}`}`)
+        out.warn('TAP-BREW', `${fx.name}: \`brew ${sub}\` reported issues — ${detail || `exit ${r.status}`}`, STD, where)
       }
     }
   }
@@ -263,11 +277,19 @@ if (!ki)
   findings.push({
     level: 'WARN',
     area: 'CONFIG',
-    msg: `no [${KI_SECTION}] table in ${KI_CONFIG} — add it (run with --init to print the default block) so this tap is a declared, self-governing repo`
+    msg: `no [${KI_SECTION}] table in ${KI_CONFIG} — add it (run with --init to print the default block) so this tap is a declared, self-governing repo`,
+    ref: STD,
+    file: KI_CONFIG
   })
 else if (ki.keys.length)
-  findings.push({ level: 'WARN', area: 'CONFIG', msg: `[${KI_SECTION}] is a keyless marker; unknown key(s): ${ki.keys.join(', ')}` })
-else findings.push({ level: 'INFO', area: 'CONFIG', msg: `[${KI_SECTION}] present (keyless marker)` })
+  findings.push({
+    level: 'WARN',
+    area: 'CONFIG',
+    msg: `[${KI_SECTION}] is a keyless marker; unknown key(s): ${ki.keys.join(', ')}`,
+    ref: STD,
+    file: KI_CONFIG
+  })
+else findings.push({ level: 'INFO', area: 'CONFIG', msg: `[${KI_SECTION}] present (keyless marker)`, ref: STD, file: KI_CONFIG })
 
 emit(
   findings,
@@ -305,7 +327,13 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     mkdirSync(reportDir, { recursive: true })
     const body = ORDER.flatMap((l) => {
       const rows = items.filter((f) => f.level === l)
-      return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+      return rows.length
+        ? [
+            '',
+            `## ${ICON[l]} ${l} (${rows.length})`,
+            ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
+          ]
+        : []
     })
     writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
     writeFileSync(
@@ -322,7 +350,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
       const rows = items.filter((f) => f.level === l)
       if (!rows.length) continue
       console.log(`\n${ICON[l]} ${l} (${rows.length})`)
-      for (const r of rows) console.log(`   [${r.area}] ${r.msg}`)
+      for (const r of rows) console.log(`   [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
     }
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)

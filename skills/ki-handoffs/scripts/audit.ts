@@ -21,11 +21,14 @@ import { join, relative, resolve } from 'node:path'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string }
+// area is the rubric code (references/audit-rubric.md); ref is its reference-doc
+// pointer; file names the path a file-scoped finding concerns. ref/file are optional
+// and ride into --json for the aggregate to render (CHK-004/009/010).
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
 const findings: Finding[] = []
-const add = (level: Level, area: string, msg: string) => findings.push({ level, area, msg })
+const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
 
 const rawTarget = process.argv[2] ?? '.'
 const target = resolve(rawTarget)
@@ -73,21 +76,36 @@ for (const path of files) {
   const body = content.slice(fmMatch[0].length)
 
   // HAND-1: valid tier
-  if (!fm.tier) add('FAIL', 'HAND-1', `${rel}: handoff artifact missing 'tier' (one of haiku | sonnet | opus)`)
-  else if (!VALID_TIERS.has(fm.tier)) add('FAIL', 'HAND-1', `${rel}: tier '${fm.tier}' not one of haiku | sonnet | opus`)
+  if (!fm.tier)
+    add('FAIL', 'HAND-1', `${rel}: handoff artifact missing 'tier' (one of haiku | sonnet | opus)`, 'references/handoffs-standard.md', rel)
+  else if (!VALID_TIERS.has(fm.tier))
+    add('FAIL', 'HAND-1', `${rel}: tier '${fm.tier}' not one of haiku | sonnet | opus`, 'references/handoffs-standard.md', rel)
 
   // HAND-2: decisions section naming both locked and escalate
   const hasDecisionsHeading = /^#{2,}\s+.*decisions/im.test(body)
   const namesLocked = /locked/i.test(body)
   const namesEscalate = /escalate/i.test(body)
-  if (!hasDecisionsHeading) add('FAIL', 'HAND-2', `${rel}: no decisions section (a '## Decisions' heading)`)
+  if (!hasDecisionsHeading)
+    add('FAIL', 'HAND-2', `${rel}: no decisions section (a '## Decisions' heading)`, 'references/handoffs-standard.md', rel)
   else if (!(namesLocked && namesEscalate))
-    add('FAIL', 'HAND-2', `${rel}: decisions section must distinguish 'locked' from 'escalate' (both labels present)`)
+    add(
+      'FAIL',
+      'HAND-2',
+      `${rel}: decisions section must distinguish 'locked' from 'escalate' (both labels present)`,
+      'references/handoffs-standard.md',
+      rel
+    )
 
   // HAND-3: readiness marker
   const hasReadiness = 'readiness' in fm || /^#{2,}\s+readiness/im.test(body) || /\[[ xX]\]\s*readiness test/i.test(body)
   if (!hasReadiness)
-    add('WARN', 'HAND-3', `${rel}: no readiness marker (readiness: frontmatter, a '## Readiness' heading, or a 'Readiness test' checkbox)`)
+    add(
+      'WARN',
+      'HAND-3',
+      `${rel}: no readiness marker (readiness: frontmatter, a '## Readiness' heading, or a 'Readiness test' checkbox)`,
+      'references/handoffs-standard.md',
+      rel
+    )
 }
 
 // ── judgment surface (ADVISORY) ─────────────────────────────────────────────────
@@ -95,17 +113,20 @@ if (optedIn > 0) {
   add(
     'ADVISORY',
     'HAND-4',
-    'locked decisions [J]: confirm they are genuinely closed — no residual reasoning or open questions parked under "locked".'
+    'locked decisions [J]: confirm they are genuinely closed — no residual reasoning or open questions parked under "locked".',
+    'references/handoffs-standard.md'
   )
   add(
     'ADVISORY',
     'HAND-6',
-    'tier fit [J]: confirm the assigned tier matches how concrete the steps are; a unit that needs the planning tier is under-decomposed.'
+    'tier fit [J]: confirm the assigned tier matches how concrete the steps are; a unit that needs the planning tier is under-decomposed.',
+    'references/handoffs-standard.md'
   )
   add(
     'ADVISORY',
     'HAND-7',
-    'readiness [J]: confirm a cold agent at the assigned tier could execute phase 1 from the spec alone (see references/audit-rubric.md).'
+    'readiness [J]: confirm a cold agent at the assigned tier could execute phase 1 from the spec alone.',
+    'references/handoffs-standard.md'
   )
 } else {
   add('INFO', 'scope', `no handoff-opted-in artifacts (handoff: true) under ${rawTarget} — nothing to check.`)
@@ -141,7 +162,13 @@ function emit(items: Finding[], tgt: string, concern: string, title: string, foo
     mkdirSync(reportDir, { recursive: true })
     const body = ORDER.flatMap((l) => {
       const rows = items.filter((f) => f.level === l)
-      return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+      return rows.length
+        ? [
+            '',
+            `## ${ICON[l]} ${l} (${rows.length})`,
+            ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
+          ]
+        : []
     })
     writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${tgt}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
     writeFileSync(
@@ -158,7 +185,7 @@ function emit(items: Finding[], tgt: string, concern: string, title: string, foo
       const rows = items.filter((f) => f.level === l)
       if (!rows.length) continue
       console.log(`\n${ICON[l]} ${l} (${rows.length})`)
-      for (const r of rows) console.log(`   [${r.area}] ${r.msg}`)
+      for (const r of rows) console.log(`   [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
     }
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)

@@ -20,12 +20,20 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { basename, dirname, join, resolve } from 'node:path'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
+// area is the criterion code; ref its reference-doc pointer; file the plan path a
+// file-scoped finding concerns (cited-finding standard — matches ki-authoring).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string }
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
 const findings: Finding[] = []
-const add = (level: Level, area: string, msg: string) => findings.push({ level, area, msg })
+const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
+
+// Reference-doc pointers: the plan format (frontmatter, placement, index, deps) is
+// owned by references/plan-format.md; the planning methodology (near-horizon, quality
+// bar, zombie check) is prose in SKILL.md. ki-plans has no separate audit-rubric.md.
+const FORMAT_REF = 'references/plan-format.md'
+const METHOD_REF = 'SKILL.md'
 
 // The uniform invocation passes the REPO ROOT (`.`); audit <repo>/docs/plans. Legacy:
 // an arg that is itself the plans dir (basename "plans") is used directly.
@@ -87,7 +95,7 @@ const entries = readdirSync(target, { withFileTypes: true })
 // A stray .md directly under the plans dir (other than README.md) is misplaced.
 for (const e of entries) {
   if (e.isFile() && e.name.endsWith('.md') && e.name !== 'README.md') {
-    add('FAIL', 'PLACE', `${e.name}: plan files must live in a theme folder — docs/plans/<theme>/${e.name}, not the plans root`)
+    add('FAIL', 'PLACE', `plan files must live in a theme folder — docs/plans/<theme>/${e.name}, not the plans root`, FORMAT_REF, e.name)
   }
 }
 
@@ -104,14 +112,14 @@ for (const dir of entries.filter((e) => e.isDirectory())) {
     const rel = `${theme}/${name}`
     const fnMatch = FILENAME_RE.exec(name)
     if (!fnMatch) {
-      add('FAIL', 'PLACE', `${rel}: filename must be <NNN>-<slug>.md (3+ digit id, lowercase-kebab slug)`)
+      add('FAIL', 'PLACE', 'filename must be <NNN>-<slug>.md (3+ digit id, lowercase-kebab slug)', FORMAT_REF, rel)
       continue
     }
     const fileId = fnMatch[1]
     const content = readFileSync(join(themeDir, name), 'utf8')
     const fmMatch = content.match(/^---\n([\s\S]*?)\n---/)
     if (!fmMatch) {
-      add('FAIL', 'FM', `${rel}: missing YAML frontmatter`)
+      add('FAIL', 'FM', 'missing YAML frontmatter', FORMAT_REF, rel)
       continue
     }
     const fm: Record<string, string> = {}
@@ -122,23 +130,24 @@ for (const dir of entries.filter((e) => e.isDirectory())) {
 
     // FM-1: required fields present
     for (const f of REQUIRED_FIELDS) {
-      if (!(f in fm)) add('FAIL', 'FM', `${rel}: frontmatter missing '${f}'`)
+      if (!(f in fm)) add('FAIL', 'FM', `frontmatter missing '${f}'`, FORMAT_REF, rel)
     }
     // FM-4: no phase field
-    if ('phase' in fm) add('FAIL', 'FM', `${rel}: 'phase' field is not allowed — phasing lives in ROADMAP.md`)
+    if ('phase' in fm) add('FAIL', 'FM', "'phase' field is not allowed — phasing lives in ROADMAP.md", FORMAT_REF, rel)
     // FM-2: status vocabulary
     if (fm.status && !VALID_STATUS.has(fm.status)) {
-      add('FAIL', 'FM', `${rel}: status '${fm.status}' not one of open | in-progress | done`)
+      add('FAIL', 'FM', `status '${fm.status}' not one of open | in-progress | done`, FORMAT_REF, rel)
     }
     // FM-3: id format + filename agreement
-    if (fm.id && !/^\d{3,}$/.test(fm.id)) add('FAIL', 'FM', `${rel}: id '${fm.id}' must be a zero-padded 3+ digit string`)
-    if (fm.id && fm.id !== fileId) add('FAIL', 'FM', `${rel}: frontmatter id '${fm.id}' does not match filename id '${fileId}'`)
+    if (fm.id && !/^\d{3,}$/.test(fm.id)) add('FAIL', 'FM', `id '${fm.id}' must be a zero-padded 3+ digit string`, FORMAT_REF, rel)
+    if (fm.id && fm.id !== fileId) add('FAIL', 'FM', `frontmatter id '${fm.id}' does not match filename id '${fileId}'`, FORMAT_REF, rel)
     // FM-5: global id uniqueness
     const id = fm.id || fileId
-    if (seenIds.has(id)) add('FAIL', 'FM', `${rel}: id ${id} already used by ${seenIds.get(id)} (ids are global across themes)`)
+    if (seenIds.has(id)) add('FAIL', 'FM', `id ${id} already used by ${seenIds.get(id)} (ids are global across themes)`, FORMAT_REF, rel)
     else seenIds.set(id, rel)
     // roadmap link presence is FM-1 (required); its validity is judgment (ADVISORY below)
-    if (fm.roadmap === '') add('WARN', 'ROADMAP', `${rel}: 'roadmap' is empty — every plan names the ROADMAP "Next" item it executes`)
+    if (fm.roadmap === '')
+      add('WARN', 'ROADMAP', '\'roadmap\' is empty — every plan names the ROADMAP "Next" item it executes', FORMAT_REF, rel)
 
     plans.push({ id, file: rel, theme, fm, blocks: idsFromValue(fm.blocks), blockedBy: idsFromValue(fm['blocked-by']) })
   }
@@ -147,7 +156,7 @@ for (const dir of entries.filter((e) => e.isDirectory())) {
 // ── README index sync ──────────────────────────────────────────────────────────
 const readmePath = join(target, 'README.md')
 const hasIndex = existsSync(readmePath)
-if (!hasIndex) add('FAIL', 'IDX', 'README.md not found in the plans directory')
+if (!hasIndex) add('FAIL', 'IDX', 'not found in the plans directory', FORMAT_REF, 'README.md')
 const readme = hasIndex ? readFileSync(readmePath, 'utf8') : ''
 
 const indexedIds = new Set<string>()
@@ -161,17 +170,17 @@ for (const line of readme.split('\n')) {
 
 const planIds = new Set(plans.map((p) => p.id))
 for (const p of plans) {
-  if (hasIndex && !indexedIds.has(p.id)) add('FAIL', 'IDX', `${p.file}: no row in README.md for plan ${p.id}`)
+  if (hasIndex && !indexedIds.has(p.id)) add('FAIL', 'IDX', `no row in README.md for plan ${p.id}`, FORMAT_REF, p.file)
 }
 for (const indexedId of indexedIds) {
-  if (!planIds.has(indexedId)) add('FAIL', 'IDX', `README.md: row for plan ${indexedId} has no matching plan file`)
+  if (!planIds.has(indexedId)) add('FAIL', 'IDX', `row for plan ${indexedId} has no matching plan file`, FORMAT_REF, 'README.md')
 }
 
 // ── dependency integrity: existence, reverse links, cycles ─────────────────────
 const byId = new Map(plans.map((p) => [p.id, p]))
 for (const p of plans) {
   for (const dep of [...p.blocks, ...p.blockedBy]) {
-    if (!byId.has(dep)) add('FAIL', 'DEP', `${p.file}: references plan ${dep}, which does not exist`)
+    if (!byId.has(dep)) add('FAIL', 'DEP', `references plan ${dep}, which does not exist`, FORMAT_REF, p.file)
   }
   // reverse-link consistency
   for (const b of p.blocks) {
@@ -207,19 +216,17 @@ if (plans.length) {
   add(
     'ADVISORY',
     'near-horizon',
-    'roadmap [J]: each plan\'s `roadmap:` item should be a current ROADMAP "Next" entry — plans are for the near horizon only.'
+    'roadmap [J]: each plan\'s `roadmap:` item should be a current ROADMAP "Next" entry — plans are for the near horizon only.',
+    METHOD_REF
   )
-  add(
-    'ADVISORY',
-    'quality',
-    'quality-bar [J]: Steps concrete, Verify checkable, Current state honest, Files touched minimal (see the Plan quality bar in SKILL.md).'
-  )
+  add('ADVISORY', 'quality', 'quality-bar [J]: Steps concrete, Verify checkable, Current state honest, Files touched minimal.', METHOD_REF)
   const wip = plans.filter((p) => p.fm.status === 'in-progress')
   if (wip.length)
     add(
       'ADVISORY',
       'zombie',
-      `zombie [J]: ${wip.length} plan(s) in-progress — confirm each has recent commits; a stalled plan should be advanced or closed.`
+      `zombie [J]: ${wip.length} plan(s) in-progress — confirm each has recent commits; a stalled plan should be advanced or closed.`,
+      METHOD_REF
     )
 }
 
@@ -253,7 +260,13 @@ function emit(items: Finding[], tgt: string, concern: string, title: string, foo
     mkdirSync(reportDir, { recursive: true })
     const body = ORDER.flatMap((l) => {
       const rows = items.filter((f) => f.level === l)
-      return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+      return rows.length
+        ? [
+            '',
+            `## ${ICON[l]} ${l} (${rows.length})`,
+            ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
+          ]
+        : []
     })
     writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${tgt}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
     writeFileSync(
@@ -270,7 +283,7 @@ function emit(items: Finding[], tgt: string, concern: string, title: string, foo
       const rows = items.filter((f) => f.level === l)
       if (!rows.length) continue
       console.log(`\n${ICON[l]} ${l} (${rows.length})`)
-      for (const r of rows) console.log(`   [${r.area}] ${r.msg}`)
+      for (const r of rows) console.log(`   [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
     }
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
