@@ -151,10 +151,26 @@ const skills = readdirSync(skillsDir, { withFileTypes: true })
 // instead — SEV_BY_NUM and the field fallbacks below absorb that variant too.
 const ICON = { FAIL: '\\u274c', WARN: '\\u26a0\\ufe0f ', POLISH: '\\u2728', ADVISORY: '\\ud83e\\udded', INFO: '\\u2139\\ufe0f ', NA: '\\u2298', PASS: '\\u2705' }
 const SEV_BY_NUM = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
-const RECAP_LEVELS = ['FAIL', 'WARN', 'ADVISORY']
+// The recap splits real violations (FAIL/WARN/POLISH — the checker decided a criterion
+// is broken) from ADVISORY (always-on judgment reminders the checker cannot decide). A
+// genuine failure must never be buried under the unconditional reminders.
+const FAILURE_LEVELS = ['FAIL', 'WARN', 'POLISH']
+const RECAP_LEVELS = ['FAIL', 'WARN', 'POLISH', 'ADVISORY']
+const verbed = verb === 'conform' ? 'conformed' : 'audited'
+// Render one finding row: icon status [code] file msg (ref). file/ref shown only when
+// the finding carries them (structured fields — most checkers only populate them once
+// swept). full=false trims msg to its first line (recap rows stay one-line).
+const findingLine = (icon, level, code, file, msg, ref, skill, full) =>
+  '  ' + icon + ' ' + level.toLowerCase().padEnd(skill ? 8 : 0) +
+  (skill ? ' ' + skill.padEnd(20) : '') +
+  ' \\x1b[2m[' + code + ']\\x1b[0m' +
+  (file ? ' \\x1b[36m' + file + '\\x1b[0m' : '') +
+  ' ' + (full ? msg : String(msg).split('\\n')[0]) +
+  (ref ? ' \\x1b[2m(' + ref + ')\\x1b[0m' : '')
 let failed = 0
 const recap = []
 const unstructured = []
+const extraArgs = process.argv.slice(3).filter((a) => a !== '--json')
 for (const skill of skills) {
   const dir = join(skillsDir, skill)
   const script = readdirSync(dir).find((f) => pattern.test(f))
@@ -162,12 +178,13 @@ for (const skill of skills) {
   const key = 'ki:' + skill.replace(/^ki-/, '') + ':' + verb
   console.log('\\n\\x1b[36m==> ' + key + '\\x1b[0m')
   const scriptPath = join(dir, script)
-  if (verb !== 'audit') {
-    const res = spawnSync('bun', [scriptPath, '.'], { stdio: 'inherit' })
-    if ((res.status ?? 0) !== 0) failed++
-    continue
-  }
-  const res = spawnSync('bun', [scriptPath, '.', '--json'], { encoding: 'utf8' })
+  // Both verbs render through the same structured path: run --json, parse the wrapper,
+  // render uniform rows, accumulate the recap. A checker (still) without --json support
+  // falls back to its native display. For conform this means --json also drives the
+  // writes (a conform without --json just runs its normal write pass and streams prose).
+  // Flags after the verb (e.g. --dry-run) forward through to every child script —
+  // conform's write pass must be skippable aggregate-wide, not just per-skill.
+  const res = spawnSync('bun', [scriptPath, '.', ...extraArgs, '--json'], { encoding: 'utf8' })
   let parsed = null
   try {
     parsed = JSON.parse(res.stdout ?? '')
@@ -194,51 +211,64 @@ for (const skill of skills) {
               : 'INFO'
       const area = String(raw.area ?? raw.criterion ?? raw.check ?? raw.id ?? '?')
       const msg = String(raw.msg ?? raw.message ?? '')
+      const ref = raw.ref ? String(raw.ref) : ''
+      const file = raw.file ? String(raw.file) : ''
       const icon = ICON[level] ?? ''
-      console.log('  ' + icon + ' ' + level.toLowerCase() + ' \\x1b[2m[' + area + ']\\x1b[0m ' + msg)
+      console.log(findingLine(icon, level, area, file, msg, ref, '', true))
       counts[level] = (counts[level] ?? 0) + 1
-      if (RECAP_LEVELS.includes(level)) recap.push({ skill, level, code: area, msg })
+      if (RECAP_LEVELS.includes(level)) recap.push({ skill, level, code: area, msg, ref, file })
     }
     const wrapperSummary = !Array.isArray(parsed) ? parsed?.summary : null
     const s = wrapperSummary ?? {
       fail: counts.FAIL ?? 0,
       warn: counts.WARN ?? 0,
-      advisory: counts.ADVISORY ?? 0,
       polish: counts.POLISH ?? 0,
-      pass: counts.PASS ?? 0
+      pass: counts.PASS ?? 0,
+      advisory: counts.ADVISORY ?? 0,
+      na: counts.NA ?? 0
     }
+    // Icon prefixes the label; the KEY=n tokens stay byte-identical so CHK-005 parses.
+    const sicon = (s.fail ?? 0) ? ICON.FAIL : (s.warn ?? 0) ? ICON.WARN : (s.polish ?? 0) ? ICON.POLISH : (s.advisory ?? 0) ? ICON.ADVISORY : ICON.PASS
     console.log(
-      '  \\x1b[2msummary: FAIL=' +
+      '  ' + sicon + ' \\x1b[2msummary: FAIL=' +
         (s.fail ?? 0) +
         ' WARN=' +
         (s.warn ?? 0) +
-        ' ADVISORY=' +
-        (s.advisory ?? 0) +
         ' POLISH=' +
         (s.polish ?? 0) +
         ' PASS=' +
         (s.pass ?? 0) +
+        ' ADVISORY=' +
+        (s.advisory ?? 0) +
+        ' NA=' +
+        (s.na ?? 0) +
         '\\x1b[0m'
     )
   }
   if ((res.status ?? 0) !== 0) failed++
 }
-if (verb === 'audit') {
-  console.log('\\n\\x1b[36m==> recap\\x1b[0m')
-  if (recap.length === 0) {
-    console.log('  \\x1b[32mno FAIL / WARN / ADVISORY hits across audited skills\\x1b[0m')
-  } else {
-    for (const level of RECAP_LEVELS) {
-      for (const h of recap.filter((r) => r.level === level)) {
-        console.log('  ' + ICON[level] + ' ' + level.padEnd(8) + ' ' + h.skill.padEnd(24) + ' [' + h.code + '] ' + h.msg.split('\\n')[0])
-      }
-    }
-    const count = (l) => recap.filter((r) => r.level === l).length
-    console.log('  \\x1b[2mtotals: FAIL=' + count('FAIL') + ' WARN=' + count('WARN') + ' ADVISORY=' + count('ADVISORY') + '\\x1b[0m')
-  }
-  if (unstructured.length) {
-    console.log('  \\x1b[2m(no structured output — see native output above for: ' + unstructured.join(', ') + ')\\x1b[0m')
-  }
+console.log('\\n\\x1b[36m==> recap\\x1b[0m')
+const fails = recap.filter((r) => FAILURE_LEVELS.includes(r.level))
+const reminders = recap.filter((r) => r.level === 'ADVISORY')
+if (fails.length === 0) {
+  console.log('  \\x1b[32m\\u2705 no FAIL / WARN / POLISH across ' + verbed + ' skills\\x1b[0m')
+} else {
+  console.log('  \\x1b[1mfailures & warnings\\x1b[0m')
+  for (const level of FAILURE_LEVELS)
+    for (const h of fails.filter((r) => r.level === level))
+      console.log(findingLine(ICON[level], level, h.code, h.file, h.msg, h.ref, h.skill, false))
+}
+if (reminders.length) {
+  console.log('  \\x1b[1mjudgment reminders (always on — read & assess)\\x1b[0m')
+  for (const h of reminders) console.log(findingLine(ICON.ADVISORY, 'ADVISORY', h.code, h.file, h.msg, h.ref, h.skill, false))
+}
+const count = (l) => recap.filter((r) => r.level === l).length
+const ticon = count('FAIL') ? ICON.FAIL : count('WARN') ? ICON.WARN : count('POLISH') ? ICON.POLISH : ICON.PASS
+console.log(
+  '  ' + ticon + ' \\x1b[2mtotals: FAIL=' + count('FAIL') + ' WARN=' + count('WARN') + ' POLISH=' + count('POLISH') + ' ADVISORY=' + count('ADVISORY') + '\\x1b[0m'
+)
+if (unstructured.length) {
+  console.log('  \\x1b[2m(no structured output — see native output above for: ' + unstructured.join(', ') + ')\\x1b[0m')
 }
 process.exit(failed > 0 ? 1 : 0)
 `

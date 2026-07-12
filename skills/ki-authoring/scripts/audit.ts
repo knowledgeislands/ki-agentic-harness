@@ -24,11 +24,14 @@ import { basename, join } from 'node:path'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string }
+// area is the rubric code (references/audit-rubric.md); ref is its reference-doc
+// pointer; file names the path a file-scoped finding concerns. ref/file are optional
+// and ride into --json for the aggregate to render (CHK-004/009/010).
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️ ', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️ ', NA: '⊘', PASS: '✅' }
 const findings: Finding[] = []
-const add = (level: Level, area: string, msg: string) => findings.push({ level, area, msg })
+const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
 
 const repo = process.argv[2]
 if (!repo || !existsSync(repo)) {
@@ -56,11 +59,16 @@ const MD_CHECK_CMD = 'bunx prettier --check "**/*.md" "!.ki-meta/**" --ignore-pa
 
 try {
   execSync(MD_CHECK_CMD, { cwd: repo, stdio: ['pipe', 'pipe', 'pipe'], encoding: 'utf8' })
-  add('PASS', 'md-mech', 'Prettier + markdownlint clean (MD-mech)')
+  add('PASS', 'md-mech', 'Prettier + markdownlint clean', 'references/markdown-authoring.md')
 } catch (err) {
   const out = (err as { stdout?: string; stderr?: string }).stdout ?? ''
   const detail = out.trim().split('\n').slice(0, 8).join('\n    ')
-  add('FAIL', 'md-mech', `Markdown mechanical check failed — run "bun run ki:authoring:conform" to fix (MD-mech)\n    ${detail}`)
+  add(
+    'FAIL',
+    'md-mech',
+    `Markdown mechanical check failed — run "bun run ki:authoring:conform" to fix\n    ${detail}`,
+    'references/markdown-authoring.md'
+  )
 }
 
 // ── owns: .prettierrc.json / .editorconfig — hash-drift check ────────────────────
@@ -139,13 +147,13 @@ trim_trailing_whitespace = false
 function checkOwned(name: string, canonical: string): void {
   const current = read(name)
   if (!current) {
-    add('WARN', 'toolchain', `${name} missing — run ki:authoring:conform to scaffold it from the house template`)
+    add('WARN', 'toolchain', `${name} missing — run ki:authoring:conform to scaffold it from the house template`, 'owns:', name)
     return
   }
   if (sha256(current) === sha256(canonical)) {
-    add('PASS', 'toolchain', `${name} matches the house template (owns:)`)
+    add('PASS', 'toolchain', `${name} matches the house template`, 'owns:', name)
   } else {
-    add('WARN', 'toolchain', `${name} has drifted from the house template — run ki:authoring:conform to correct it`)
+    add('WARN', 'toolchain', `${name} has drifted from the house template — run ki:authoring:conform to correct it`, 'owns:', name)
   }
 }
 
@@ -165,16 +173,16 @@ add(
   'ADVISORY',
   'md-table',
   `MD-table [J]: tables exceeding printWidth (${printWidth}) must be reshaped — descriptive matrix → subheadings or bullet list; ` +
-    'genuinely tabular data with one long column → keep table, move that column to footnotes with a one-char marker. ' +
-    '(references/markdown-authoring.md)'
+    'genuinely tabular data with one long column → keep table, move that column to footnotes with a one-char marker.',
+  'references/markdown-authoring.md'
 )
 
 add(
   'ADVISORY',
   'md-footnote',
   'MD-footnote [J]: footnotes use the marker series † ‡ § ¶ ‖ (then doubled), reset per table; ' +
-    'a second series ※ ❡ ¤ ¥ where one table needs two. Each footnote separated by a blank line. ' +
-    '(references/markdown-authoring.md)'
+    'a second series ※ ❡ ¤ ¥ where one table needs two. Each footnote separated by a blank line.',
+  'references/markdown-authoring.md'
 )
 
 add(
@@ -183,14 +191,16 @@ add(
   "MD-link [J]: link text must be descriptive (words you'd skim for) beyond what MD059 enforces. " +
     'Use relative markdown links in house files (SKILL.md, repo docs) — wikilinks are correct only ' +
     'in KB note content and agent system prompts (scoped by ki-kb / ki-agents LINK-2). ' +
-    'Angle-bracket form for paths with spaces. (references/markdown-authoring.md)'
+    'Angle-bracket form for paths with spaces.',
+  'references/markdown-authoring.md'
 )
 
 add(
   'ADVISORY',
   'md-cell-prose',
   'MD-cell-prose [J]: table cells must not contain long descriptive prose — move prose to a footnote, ' +
-    'leave only a brief label + marker in the cell. (references/markdown-authoring.md)'
+    'leave only a brief label + marker in the cell.',
+  'references/markdown-authoring.md'
 )
 
 // ── judgment surface: TOML [J] criteria ───────────────────────────────────────
@@ -204,22 +214,25 @@ if (!hasKiConfig) {
     'ADVISORY',
     'toml-keys',
     'TOML-keys [J]: keys lowercase, snake_case for multi-word, named for the noun the value holds ' +
-      '(e.g. "visibility" not "repo_visibility_setting"). (references/toml-config.md)'
+      '(e.g. "visibility" not "repo_visibility_setting").',
+    'references/toml-config.md'
   )
-  add('ADVISORY', 'toml-values', 'TOML-values [J]: strings double-quoted; short lists inline ["a", "b"]. (references/toml-config.md)')
+  add('ADVISORY', 'toml-values', 'TOML-values [J]: strings double-quoted; short lists inline ["a", "b"].', 'references/toml-config.md')
   add(
     'ADVISORY',
     'toml-tables',
-    'TOML-tables [J]: one table per skill, named for the skill, with sub-tables nested under it. ' + '(references/toml-config.md)'
+    'TOML-tables [J]: one table per skill, named for the skill, with sub-tables nested under it.',
+    'references/toml-config.md'
   )
-  add('ADVISORY', 'toml-comments', 'TOML-comments [J]: non-obvious keys carry a # line above with their why. (references/toml-config.md)')
+  add('ADVISORY', 'toml-comments', 'TOML-comments [J]: non-obvious keys carry a # line above with their why.', 'references/toml-config.md')
 }
 
 // ── judgment surface: sync criterion ──────────────────────────────────────────
 add(
   'ADVISORY',
   'sync',
-  'sync [J]: the convention references, audit-rubric.md, and sources.md must agree; when a convention moves, all three move together (Mode REFRESH).'
+  'sync [J]: the convention references, audit-rubric.md, and sources.md must agree; when a convention moves, all three move together (Mode REFRESH).',
+  'references/audit-rubric.md'
 )
 
 // ── report ────────────────────────────────────────────────────────────────────
@@ -248,7 +261,13 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     mkdirSync(reportDir, { recursive: true })
     const body = ORDER.flatMap((l) => {
       const rows = items.filter((f) => f.level === l)
-      return rows.length ? ['', `## ${ICON[l]} ${l} (${rows.length})`, ...rows.map((r) => `- [${r.area}] ${r.msg}`)] : []
+      return rows.length
+        ? [
+            '',
+            `## ${ICON[l]} ${l} (${rows.length})`,
+            ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
+          ]
+        : []
     })
     writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
     writeFileSync(
@@ -265,7 +284,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
       const rows = items.filter((f) => f.level === l)
       if (!rows.length) continue
       console.log(`\n${ICON[l]} ${l} (${rows.length})`)
-      for (const r of rows) console.log(`   [${r.area}] ${r.msg}`)
+      for (const r of rows) console.log(`   [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
     }
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
