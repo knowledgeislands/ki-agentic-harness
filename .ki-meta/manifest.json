@@ -1,5 +1,5 @@
 {
-  "ref": "5aff7cabeb2706534b5913f6e397bd61ce7ccc94",
+  "ref": "f9438e97c1d0117307a9d73959024c85b4f9e281",
   "files": {
     ".ki-meta/skills/ki-agents/audit.ts": "bd5d5871c3b7a0c65c5a21aea5c3d9f2d876874c18be141731332651adab77ee",
     ".ki-meta/skills/ki-agents/conform.ts": "b184328a974795a12bc5e6f76ddca97e89cd0fca8367033068f64c19d1971357",
@@ -37,6 +37,6 @@
     ".ki-meta/skills/ki-tokenomics/audit.ts": "d350863971fdab0355ea3f857b4fea6639a6638182e03fb72ea18321c50633f0",
     ".ki-meta/skills/ki-tokenomics/conform.ts": "e1222762bbe4120821cc7b74824308c50c40f9f19d0f8bbaf62fe88cf16f1114",
     ".ki-meta/skills/ki-tokenomics/help.md": "8d87e59a4c1711da4cf59eef110c35108079e741b70d085955d88283493438cd",
-    ".ki-meta/bin/aggregate.ts": "b814b3eb6f46d3d303888715946e58ff9d489fc44089665f9b9dcbcbc8587ed0"
+    ".ki-meta/bin/aggregate.ts": "24fa41a97ea08ccb14266b6bf77b57df8fd43d85c6441fb815788d3c60d3ef35"
   }
 }

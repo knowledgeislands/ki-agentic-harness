@@ -160,8 +160,11 @@ const verbed = verb === 'conform' ? 'conformed' : 'audited'
 // Render one finding row: icon status [code] file msg (ref). file/ref shown only when
 // the finding carries them (structured fields — most checkers only populate them once
 // swept). full=false trims msg to its first line (recap rows stay one-line).
+// level is padded to 8 (the width of the longest word, "advisory") in BOTH body and
+// recap rows so the [code] column lines up under a consistent icon width (icons are
+// each two display columns — the sub-width glyphs ⊘/⚠️/ℹ️ carry a trailing space).
 const findingLine = (icon, level, code, file, msg, ref, skill, full) =>
-  '  ' + icon + ' ' + level.toLowerCase().padEnd(skill ? 8 : 0) +
+  '  ' + icon + ' ' + level.toLowerCase().padEnd(8) +
   (skill ? ' ' + skill.padEnd(20) : '') +
   ' \\x1b[2m[' + code + ']\\x1b[0m' +
   (file ? ' \\x1b[36m' + file + '\\x1b[0m' : '') +
