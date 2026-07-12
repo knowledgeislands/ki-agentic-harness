@@ -56,6 +56,8 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS
 
 **PKG-4 [M]** `package.json` carries the harness skill-management / codegen / eval surface: `ki:skills:link:global`, `ki:skills:status`, `ki:skills:unlink`, `ki:skills:refresh-status`, `ki:codegen`, `ki:eval`. Source: standard §package.json. _Severity: WARN per missing script._
 
+**PKG-5 [J]** Docs aimed at governed repos (the user guide especially) never present a `ki:*` `package.json` key as _the_ invocation of a vendored checker: the `.ki-meta` path (`bun .ki-meta/skills/<skill>/<mode>.ts .`, aggregate `./.ki-meta/bin/ki-audit`) is canonical and the key its harness-local alias, with the equivalence stated or linked. A bare key is acceptable only in an explicitly harness-repo-only doc. Source: standard §package.json docs invocation discipline. _Severity: WARN — a key-only instruction silently excludes every governed repo without a `package.json`._
+
 ---
 
 ## CONFIG — .ki-config.toml declarations

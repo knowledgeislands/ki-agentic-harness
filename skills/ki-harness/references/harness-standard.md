@@ -128,6 +128,8 @@ The `ki:lint:*` family is the common engineering toolchain (`ki-engineering`'s s
 
 The harness-specific scripts are `ki:skills:link:project` and `ki:skills:lint` — these are the delivery and quality mechanisms the harness concept depends on. Absence of either is a FAIL. The harness additionally carries the rest of its skill-management / codegen / eval surface (PKG-4, WARN): `ki:skills:link:global` (`sync-skills.ts link --only ki-bootstrap`) to install the one global keystone, `ki:skills:status` / `ki:skills:unlink` (inspect / tear down the project-local links), `ki:skills:refresh-status` (refresh the skills status block), `ki:codegen` (regenerate every MCP's typed client from the harness root), and `ki:eval` (run the `evals/` suite). Skills are not installed wholesale into `~/.claude/skills/`; they are wired **project-local** per repo by `ki-bootstrap`, only the keystone is kept global.
 
+**Docs invocation discipline.** Every `ki:<skill>:<mode>` key is convenience sugar over a vendored entry point any bootstrapped repo already has — `bun run ki:tokenomics:audit` is `bun .ki-meta/skills/ki-tokenomics/audit.ts .`, and `./.ki-meta/bin/ki-audit` is the aggregate — so a `package.json` is never required to run the checks (ADR-KI-HARNESS-006). Harness documentation whose audience includes governed repos (the user guide especially) MUST NOT present a `package.json` key as _the_ invocation of a vendored checker: state the equivalence (or link to where it is stated) and make clear the `.ki-meta` path is the canonical form, the key the harness-local alias. A key may stand alone only in a doc that is explicitly harness-repo-only (e.g. `ki:skills:graph`).
+
 ---
 
 ## §.ki-config.toml tables
