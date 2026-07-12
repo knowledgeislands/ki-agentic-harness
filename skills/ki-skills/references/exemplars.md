@@ -80,6 +80,6 @@ When a skill runs a sibling's checker in sequence, it declares the edge explicit
 ## Mode AUDIT — audit the harness bundle
 
 1. **Run the engineering checker first.** Invoke the `ki-engineering` skill in AUDIT mode against this repo — it checks the toolchain, `tsconfig`, and Biome config. Capture its findings; do not re-derive them here.
-2. **Run the skills linter.** `bun run ki:skills:lint` from the harness root — it audits every SKILL.md in `skills/` against the mechanical criteria. Capture its output verbatim.
+2. **Run the skills linter.** `bun run ki:skills:audit` from the harness root — it audits every SKILL.md in `skills/` against the mechanical criteria. Capture its output verbatim.
 3. **Apply harness-specific judgment** — five-part bundle completeness, `.ki-config.toml` table presence for each populated part, and cross-skill consistency (no two skills claiming the same domain). The engineering and skills passes are the delta this skill adds over the siblings it called.
 ```

@@ -49,7 +49,10 @@ const read = (...p: string[]): string => {
 // Self-sufficient — no package.json / ki-engineering dependency. Mirrors the
 // the read-only Markdown gate — the same tools ki:authoring:conform runs with --write.
 const name = basename(repo)
-const MD_CHECK_CMD = 'bunx prettier --check "**/*.md" --ignore-path .gitignore && bunx markdownlint-cli2 "**/*.md"'
+// .ki-meta/ holds vendored/generated bootstrap artifacts — the harness owns their
+// formatting, so the target repo's Markdown gate must not judge them. Prettier gets the
+// exclusion inline; markdownlint's lives in the owned .markdownlint-cli2.jsonc below.
+const MD_CHECK_CMD = 'bunx prettier --check "**/*.md" "!.ki-meta/**" --ignore-path .gitignore && bunx markdownlint-cli2 "**/*.md"'
 
 try {
   execSync(MD_CHECK_CMD, { cwd: repo, stdio: ['pipe', 'pipe', 'pipe'], encoding: 'utf8' })
@@ -87,6 +90,38 @@ const PRETTIER_DEFAULT = `{
 }
 `
 
+const MARKDOWNLINT_DEFAULT = `{
+  // Base: enable all rules, then selectively adjust below.
+  "config": {
+    "default": true,
+
+    // MD013 - line length: disabled. Prettier owns line length via printWidth / proseWrap.
+    "MD013": false,
+
+    // MD024 - duplicate headings: allow in sibling sections only.
+    "MD024": { "siblings_only": true },
+
+    // MD025 - single H1: ignore the frontmatter title field.
+    "MD025": { "front_matter_title": "" },
+
+    // MD033 - inline HTML: disabled. <br> is used in table cells and skills use angle-bracket placeholders.
+    "MD033": false,
+
+    // MD036 - bold as heading: disabled. Bold labels are used intentionally in skill bodies.
+    "MD036": false
+  },
+
+  // Skill bodies, references, and repo docs are all markdown content.
+  "globs": ["**/*.md"],
+
+  // Never lint generated output, vendored/generated trees, or dependencies. The
+  // \`.ki-meta/\` vendored checkers + rendered help snapshots and the \`.claude/\` generated
+  // skill/agent symlinks are machine-generated (ADR-KI-HARNESS-TOOLCHAIN-005) — excluded
+  // like dist/, so their formatting is never a finding.
+  "ignores": ["dist/**", "node_modules/**", ".ki-meta/**", ".claude/**"]
+}
+`
+
 const EDITORCONFIG_DEFAULT = `root = true
 
 [*]
@@ -116,6 +151,7 @@ function checkOwned(name: string, canonical: string): void {
 
 checkOwned('.prettierrc.json', PRETTIER_DEFAULT)
 checkOwned('.editorconfig', EDITORCONFIG_DEFAULT)
+checkOwned('.markdownlint-cli2.jsonc', MARKDOWNLINT_DEFAULT)
 
 const prettier = read('.prettierrc.json')
 const pwMatch = prettier.match(/"printWidth"\s*:\s*(\d+)/)

@@ -19,7 +19,7 @@ The skill set lives in `skills/` in the harness. Before acting, read the relevan
 - `skills/ki-skills/references/audit-rubric.md` — the line-by-line criteria with `[M]`/`[J]` tags
 - `skills/ki-skills/references/skill-definitions-standard.md` — the normative standard behind the rubric
 
-Run `bun run ki:skills:lint` (from the harness root) to check the mechanical criteria before applying judgment.
+Run `bun run ki:skills:audit` (from the harness root) to check the mechanical criteria before applying judgment.
 
 ## When invoked
 
@@ -31,7 +31,7 @@ Run `bun run ki:skills:lint` (from the harness root) to check the mechanical cri
 
 ## What you own vs defer
 
-- **Own**: SKILL.md authoring, auditing, and conformance; the ki-skills rubric; cross-skill composition edges and off-ramp reciprocity; the `ki:skills:lint` script as the mechanical gate.
+- **Own**: SKILL.md authoring, auditing, and conformance; the ki-skills rubric; cross-skill composition edges and off-ramp reciprocity; the `ki:skills:audit` script as the mechanical gate.
 - **Defer**: repo structure, toolchain, and `.ki-config.toml` compliance → [[ki-engineering-lead]]; KB zone health and note structure → [[ki-kb-curator]]; DR authoring (SDR/GDR/ADR) prompted by a skill gap → [[ki-decision-author]]; streams/proposals for new skill scope → [[ki-kb-streams-curator]].
 
 ## Authoring skills
@@ -41,5 +41,5 @@ You may draft and update `SKILL.md` files, following the KI conventions:
 - **Confirm with the user before writing any file.**
 - Follow the ki-skills rubric: correct frontmatter, all four universal modes (AUDIT · CONFORM · REFRESH + the skill-specific mode), description as a delegation signal, no wikilinks in SKILL.md bodies (skills are relocatable).
 - The directory name **is** the `name:` frontmatter — keep them in sync.
-- Run `bun run ki:skills:lint` after writing; do not hand off until it is clean.
+- Run `bun run ki:skills:audit` after writing; do not hand off until it is clean.
 - Quality over quantity: a focused, auditable skill beats a sprawling one.

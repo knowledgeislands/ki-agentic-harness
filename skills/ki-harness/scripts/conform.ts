@@ -49,7 +49,7 @@ import { join, resolve } from 'node:path'
 const PARTS = ['skills', 'agents', 'mcp', 'evals', 'hooks'] as const
 const ROOT_FILES = ['CLAUDE.md', 'ROADMAP.md', '.ki-config.toml', 'package.json'] as const
 const PKG1_SCRIPT = 'ki:skills:link:project'
-const PKG2_SCRIPT = 'ki:skills:lint'
+const PKG2_SCRIPT = 'ki:skills:audit'
 const PKG3_SCRIPTS = ['ki:lint:check', 'ki:lint:types', 'ki:lint:md', 'ki:lint:md:check']
 const PKG4_SCRIPTS = ['ki:skills:link:global', 'ki:skills:status', 'ki:skills:unlink', 'ki:skills:refresh-status', 'ki:codegen', 'ki:eval']
 

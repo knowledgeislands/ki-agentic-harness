@@ -59,14 +59,14 @@ _No agent definitions yet — this is an empty shelf. Add a `.md` per agent when
 
 ### Required `package.json` scripts for a harness
 
-The two harness-specific scripts (`ki:skills:link:project` and `ki:skills:lint`) are the delivery and quality mechanisms the harness concept depends on — absence of either is a FAIL. `ki:skills:link:global` installs the one globally-kept keystone (`ki-bootstrap`); skills themselves are wired project-local, not global. The `ki:lint:*` family is the common engineering toolchain. The `--all` flag on `ki:skills:link:project` tells the bootstrap linker to wire every skill declared in `.ki-config.toml` rather than a named subset.
+The two harness-specific scripts (`ki:skills:link:project` and `ki:skills:audit`) are the delivery and quality mechanisms the harness concept depends on — absence of either is a FAIL. `ki:skills:link:global` installs the one globally-kept keystone (`ki-bootstrap`); skills themselves are wired project-local, not global. The `ki:lint:*` family is the common engineering toolchain. The `--all` flag on `ki:skills:link:project` tells the bootstrap linker to wire every skill declared in `.ki-config.toml` rather than a named subset.
 
 ```jsonc
 {
   "scripts": {
     "ki:skills:link:project": "bun skills/ki-bootstrap/scripts/link-skills.ts",
     "ki:skills:link:global": "bun scripts/sync-skills.ts link --only ki-bootstrap",
-    "ki:skills:lint": "bun skills/ki-skills/scripts/audit.ts skills",
+    "ki:skills:audit": "bun .ki-meta/skills/ki-skills/audit.ts .",
     "ki:lint:check": "bunx @biomejs/biome check",
     "ki:lint:types": "tsc --noEmit",
     "ki:lint:md": "bunx prettier --write \"**/*.md\" --ignore-path .gitignore && bunx markdownlint-cli2",

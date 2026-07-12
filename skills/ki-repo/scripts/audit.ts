@@ -110,6 +110,22 @@ const mk = () => {
 function gh(args: string[]): string {
   return execFileSync('gh', args, { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 })
 }
+// gh authentication is a precondition for every GitHub-touching check. In CI there is
+// no token (the workflow runs this gate for its offline vendor-integrity value only —
+// see ci.yml), so an unauthenticated `gh` must degrade the GitHub checks to a skip, not
+// hard-FAIL. Cached: `gh auth status` is one process, and auth does not change mid-run.
+let ghAuthedCache: boolean | null = null
+function ghAuthed(): boolean {
+  if (ghAuthedCache === null) {
+    try {
+      execFileSync('gh', ['auth', 'status'], { stdio: 'ignore' })
+      ghAuthedCache = true
+    } catch {
+      ghAuthedCache = false
+    }
+  }
+  return ghAuthedCache
+}
 const ghOk = (apiPath: string): boolean => {
   try {
     gh(['api', apiPath])
@@ -716,6 +732,23 @@ for (const t of targets) {
     }
     continue
   }
+  // gh unauthenticated (typically CI): every GitHub-touching check is impossible, so skip
+  // them as NA rather than emitting a spurious access-FAIL. The offline vendor-integrity
+  // findings above still count — that is the value this gate carries in CI (see ci.yml).
+  if (!ghAuthed()) {
+    ghSkipped++
+    const note = `${t.nameWithOwner}: gh not authenticated — GitHub checks skipped (gh auth login)`
+    all.push({ level: 'NA', area: `${t.nameWithOwner}:access`, msg: note })
+    for (const x of localFindings) all.push({ level: x.level, area: `${t.nameWithOwner}:${x.check}`, msg: x.msg })
+    totalFails += localFindings.filter((x) => x.level === 'FAIL').length
+    totalWarns += localFindings.filter((x) => x.level === 'WARN').length
+    if (!jsonOut) {
+      console.log(`\n${paint(C.dim, 'NA')}  ${paint(C.cyan, t.nameWithOwner)} ${paint(C.dim, '— gh not authenticated')}`)
+      for (const x of localFindings)
+        console.log(`  ${paint(x.level === 'FAIL' ? C.red : C.yellow, x.level.toLowerCase())} ${paint(C.dim, `[${x.check}]`)} ${x.msg}`)
+    }
+    continue
+  }
   let findings: Finding[]
   try {
     const r = JSON.parse(gh(['repo', 'view', t.nameWithOwner, '--json', REPO_FIELDS])) as Repo
@@ -780,7 +813,7 @@ if (jsonOut) {
   )
 } else {
   console.log(
-    `\n${paint(C.cyan, 'summary')}: ${targets.length} repo(s) · FAIL=${totalFails} WARN=${totalWarns}${ghSkipped ? paint(C.dim, ` · ${ghSkipped} not on github.com`) : ''}`
+    `\n${paint(C.cyan, 'summary')}: ${targets.length} repo(s) · FAIL=${totalFails} WARN=${totalWarns}${ghSkipped ? paint(C.dim, ` · ${ghSkipped} skipped (no github.com origin or gh unauthenticated)`) : ''}`
   )
   if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'repo.{md,json}')}`))
   if (totalFails + totalWarns > 0) console.log('→ to address: run /ki-repo CONFORM   (judgment criteria: references/audit-rubric.md)')

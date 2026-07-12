@@ -25,7 +25,7 @@ Modes: **AUDIT · CONFORM · INIT · REFRESH** (named, alphabetical). Invoked as
 2. **Compose on sibling skills via subagent isolation** ([ADR-KI-HARNESS-AGENTS-001](../../docs/decisions/ADR-KI-HARNESS-AGENTS-001-subagent-isolation.md)). A harness audit is layered — fan out one `agent()` per concern in `parallel()` after the COLL checks:
    - `ki-repo` — GitHub settings and the `.ki-config.toml` contract
    - `ki-engineering` — common toolchain (package.json script families, tsconfig, biome)
-   - `ki-skills` linter (`bun run ki:skills:lint`) — if `skills/` is populated
+   - `ki-skills` linter (`bun run ki:skills:audit`) — if `skills/` is populated
    - `ki-agents` linter — if `agents/` is populated
    - `ki-mcp` audit — if `mcp/` has server code The saved workflow `.claude/workflows/ki-multi-skill-audit.ts` implements this fan-out. See [ADR-KI-HARNESS-001](../../docs/decisions/ADR-KI-HARNESS-001-repository-structure.md) for the bundle layout this step audits.
 3. **Judge the prose the script can't.** Walk the [J]-tagged criteria in [the rubric](references/audit-rubric.md):
@@ -46,7 +46,7 @@ Modes: **AUDIT · CONFORM · INIT · REFRESH** (named, alphabetical). Invoked as
 2. **Scaffold the five parts.** Create `skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`, each with a `README.md` describing what it holds — marking any part an empty shelf if it starts unpopulated.
 3. **Write `CLAUDE.md`** using [the standard](references/harness-standard.md) §CLAUDE.md required sections as the template: what-the-harness-is paragraph, five-part directory table with current status, working conventions per part, key `bun run *` commands.
 4. **Add `ROADMAP.md`.** Start with the known open work; mark items open-only. Note: continuous practices are not roadmap items — they belong in the `ki-engineering` enforcement framework or `CLAUDE.md`.
-5. **Scaffold `package.json`** with the required script families: `ki:skills:link:project`, `ki:skills:lint` minimum (plus `ki:skills:link:global` to install the `ki-bootstrap` keystone); add the common engineering families (`ki:lint:check`, `ki:lint:types`, `ki:lint:md`, `ki:lint:md:check`) from `ki-engineering`'s standard.
+5. **Scaffold `package.json`** with the required script families: `ki:skills:link:project`, `ki:skills:audit` minimum (plus `ki:skills:link:global` to install the `ki-bootstrap` keystone); add the common engineering families (`ki:lint:check`, `ki:lint:types`, `ki:lint:md`, `ki:lint:md:check`) from `ki-engineering`'s standard.
 6. **Add `.ki-config.toml`** with at minimum `[ki-repo]`, `[ki-engineering]`, and `[ki-harness]`. Add `[ki-skills]` once `skills/` is populated.
 7. **Self-audit.** Run Mode AUDIT on the new harness before handing it off.
 

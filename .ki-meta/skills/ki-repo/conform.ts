@@ -240,7 +240,8 @@ if (isPublic && (enforced('secret-scanning') || enforced('push-protection'))) {
   }
 }
 gh(
-  ['api', '-X', 'PUT', `repos/${nwo}/actions/permissions`, '-f', `allowed_actions=${ALLOWED_ACTIONS}`],
+  // `enabled` is required by the API (422 without it); `allowed_actions` is only honoured when enabled.
+  ['api', '-X', 'PUT', `repos/${nwo}/actions/permissions`, '-F', 'enabled=true', '-f', `allowed_actions=${ALLOWED_ACTIONS}`],
   dryRun,
   `Actions allowed_actions=${ALLOWED_ACTIONS}`
 )

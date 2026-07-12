@@ -10,7 +10,7 @@
 //   bun scripts/audit.ts [path ...]            # a skill dir, or a dir containing skills
 //   bun scripts/audit.ts <skill> --footprint   # + per-skill token footprint (SIZE-5, INFO) for Mode OPTIMISE
 //   bun scripts/audit.ts skills --refresh-status # + per-skill refresh class/cadence/status (LONG-3/§5, INFO)
-//   bun run ki:skills:lint                               # (from the ki-agentic-harness repo root)
+//   bun run ki:skills:audit                              # (from the ki-agentic-harness repo root)
 //
 // A path containing SKILL.md is treated as one skill; otherwise its immediate
 // subdirectories that contain a SKILL.md are each linted. Defaults to the current dir.

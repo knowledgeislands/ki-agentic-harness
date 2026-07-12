@@ -385,7 +385,7 @@ const hasEnv = Boolean(envExample) || usesLoadEnv
 // ki:audit; a repo that produces a compiled build should fold `build` into its conform.
 {
   const conform = scripts['ki:conform'] ?? ''
-  if (hasTests && !scripts['test'])
+  if (hasTests && !scripts.test)
     add('FAIL', 'scripts', 'repo has tests but no bare "test" script (the whole *.test.ts suite, run after ki:audit)')
   else if (hasTests) add('PASS', 'scripts', 'bare "test" idiom present')
   if (hasBuild && !conform.includes('build'))

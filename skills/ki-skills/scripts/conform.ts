@@ -254,7 +254,7 @@ function main(): void {
     `  - Everything else audit.ts flags — DESC-1/2/3, SHAPE-13, SIZE-1/2, LINK-2, SHAPE-2/7/8/9, REF-3, COLL-1, LONG-3/4 — is prose/authoring or cross-file judgment, never auto-fixed here.`
   )
   console.log(
-    `\n${paint(C.dim, 'mechanical layer applied — re-run `bun scripts/audit.ts` (or `ki:skills:lint`) to confirm findings clear.')}`
+    `\n${paint(C.dim, 'mechanical layer applied — re-run `bun scripts/audit.ts` (or `ki:skills:audit`) to confirm findings clear.')}`
   )
 }
 

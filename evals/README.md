@@ -1,6 +1,6 @@
 # Skill evals
 
-A quick way to check that a skill **actually changes what the model does** — not just that its `SKILL.md` is well-formed (that part is what `ki:skills:lint` checks). This is the behavioural half of what the `ki-skills` rubric asks of a skill.
+A quick way to check that a skill **actually changes what the model does** — not just that its `SKILL.md` is well-formed (that part is what `ki:skills:audit` checks). This is the behavioural half of what the `ki-skills` rubric asks of a skill.
 
 The idea is simple: take a question the skill is meant to help with, ask the model **twice** — once with the skill off, once with it on — and compare. If the skill is pulling its weight, the "on" answer should be clearly better.
 

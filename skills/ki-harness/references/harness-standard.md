@@ -85,7 +85,7 @@ The harness `CLAUDE.md` is the **always-loaded orientation** — every agent ses
 1. **What this harness is** — one paragraph: what the harness holds, who it's for, why it's a single repo rather than scattered files. Name all five parts.
 2. **The five parts** — a directory table (or equivalent structured block) with each of the five directories, what it holds today, and its current status (populated / empty shelf). Keep this current as shelves become populated.
 3. **Working conventions per part** — how to add, change, or audit each part: which command to run, which skill governs it, any install step. Brief; route detail to `docs/` or the relevant skill.
-4. **Toolchain** — the key `bun run *` commands: at minimum `ki:skills:link:project`, `ki:skills:lint`, and the common `ki:lint:*` family. Enough to orient a contributor on day one.
+4. **Toolchain** — the key `bun run *` commands: at minimum `ki:skills:link:project`, `ki:skills:audit`, and the common `ki:lint:*` family. Enough to orient a contributor on day one.
 
 Optional but encouraged:
 
@@ -101,7 +101,7 @@ Optional but encouraged:
 The harness `ROADMAP.md` holds the **open forward work** only. Two rules:
 
 1. **Open-only.** Items are removed when done, not ticked off. The file always shows what remains.
-2. **No continuous practices.** Ongoing disciplines (running `ki:skills:lint`, monthly REFRESH runs, re-auditing repos) are not roadmap items — they are invariants. They live in the `ki-engineering` enforcement framework or a similar always-present reference, not here. A roadmap item that would never close (because it is a standing practice) is a sign it belongs elsewhere.
+2. **No continuous practices.** Ongoing disciplines (running `ki:skills:audit`, monthly REFRESH runs, re-auditing repos) are not roadmap items — they are invariants. They live in the `ki-engineering` enforcement framework or a similar always-present reference, not here. A roadmap item that would never close (because it is a standing practice) is a sign it belongs elsewhere.
 
 **Why:** a roadmap that accumulates checked-off items loses the "what's left" signal. A roadmap that lists ongoing practices obscures the "what's new" signal. Keeping the two separate preserves both.
 
@@ -116,7 +116,7 @@ Every harness `package.json` MUST declare these script families:
 | Script                   | What it does                                                     | Why required                   |
 | ------------------------ | ---------------------------------------------------------------- | ------------------------------ |
 | `ki:skills:link:project` | Wires this repo's `.claude/skills/` from its `.ki-config.toml` § | The primary delivery mechanism |
-| `ki:skills:lint`         | Runs the `ki-skills` mechanical checker over `skills/`           | The gate for skill quality     |
+| `ki:skills:audit`        | Runs the `ki-skills` mechanical checker over `skills/`           | The gate for skill quality     |
 | `ki:lint:check`          | Biome — TypeScript + JSON lint (no write)                        | Common engineering gate        |
 | `ki:lint:types`          | `tsc --noEmit`                                                   | Type safety gate               |
 | `ki:lint:md`             | Prettier + markdownlint (writes)                                 | Markdown formatting gate       |
@@ -126,7 +126,7 @@ Every harness `package.json` MUST declare these script families:
 
 The `ki:lint:*` family is the common engineering toolchain (`ki-engineering`'s standard). A harness that ships no TypeScript may omit `ki:lint:check` / `ki:lint:types` with a documented reason.
 
-The harness-specific scripts are `ki:skills:link:project` and `ki:skills:lint` — these are the delivery and quality mechanisms the harness concept depends on. Absence of either is a FAIL. The harness additionally carries the rest of its skill-management / codegen / eval surface (PKG-4, WARN): `ki:skills:link:global` (`sync-skills.ts link --only ki-bootstrap`) to install the one global keystone, `ki:skills:status` / `ki:skills:unlink` (inspect / tear down the project-local links), `ki:skills:refresh-status` (refresh the skills status block), `ki:codegen` (regenerate every MCP's typed client from the harness root), and `ki:eval` (run the `evals/` suite). Skills are not installed wholesale into `~/.claude/skills/`; they are wired **project-local** per repo by `ki-bootstrap`, only the keystone is kept global.
+The harness-specific scripts are `ki:skills:link:project` and `ki:skills:audit` — these are the delivery and quality mechanisms the harness concept depends on. Absence of either is a FAIL. The harness additionally carries the rest of its skill-management / codegen / eval surface (PKG-4, WARN): `ki:skills:link:global` (`sync-skills.ts link --only ki-bootstrap`) to install the one global keystone, `ki:skills:status` / `ki:skills:unlink` (inspect / tear down the project-local links), `ki:skills:refresh-status` (refresh the skills status block), `ki:codegen` (regenerate every MCP's typed client from the harness root), and `ki:eval` (run the `evals/` suite). Skills are not installed wholesale into `~/.claude/skills/`; they are wired **project-local** per repo by `ki-bootstrap`, only the keystone is kept global.
 
 **Docs invocation discipline.** Every `ki:<skill>:<mode>` key is convenience sugar over a vendored entry point any bootstrapped repo already has — `bun run ki:tokenomics:audit` is `bun .ki-meta/skills/ki-tokenomics/audit.ts .`, and `./.ki-meta/bin/ki-audit` is the aggregate — so a `package.json` is never required to run the checks (ADR-KI-HARNESS-006). Harness documentation whose audience includes governed repos (the user guide especially) MUST NOT present a `package.json` key as _the_ invocation of a vendored checker: state the equivalence (or link to where it is stated) and make clear the `.ki-meta` path is the canonical form, the key the harness-local alias. A key may stand alone only in a doc that is explicitly harness-repo-only (e.g. `ki:skills:graph`).
 

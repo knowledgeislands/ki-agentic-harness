@@ -76,6 +76,38 @@ insert_final_newline = true
 trim_trailing_whitespace = false
 `
 
+const MARKDOWNLINT_DEFAULT = `{
+  // Base: enable all rules, then selectively adjust below.
+  "config": {
+    "default": true,
+
+    // MD013 - line length: disabled. Prettier owns line length via printWidth / proseWrap.
+    "MD013": false,
+
+    // MD024 - duplicate headings: allow in sibling sections only.
+    "MD024": { "siblings_only": true },
+
+    // MD025 - single H1: ignore the frontmatter title field.
+    "MD025": { "front_matter_title": "" },
+
+    // MD033 - inline HTML: disabled. <br> is used in table cells and skills use angle-bracket placeholders.
+    "MD033": false,
+
+    // MD036 - bold as heading: disabled. Bold labels are used intentionally in skill bodies.
+    "MD036": false
+  },
+
+  // Skill bodies, references, and repo docs are all markdown content.
+  "globs": ["**/*.md"],
+
+  // Never lint generated output, vendored/generated trees, or dependencies. The
+  // \`.ki-meta/\` vendored checkers + rendered help snapshots and the \`.claude/\` generated
+  // skill/agent symlinks are machine-generated (ADR-KI-HARNESS-TOOLCHAIN-005) — excluded
+  // like dist/, so their formatting is never a finding.
+  "ignores": ["dist/**", "node_modules/**", ".ki-meta/**", ".claude/**"]
+}
+`
+
 function syncOwned(name: string, canonical: string): void {
   const path = join(target, name)
   if (!existsSync(path)) {
@@ -95,13 +127,17 @@ function syncOwned(name: string, canonical: string): void {
 console.log(`${paint(C.cyan, 'owned files')}`)
 syncOwned('.prettierrc.json', PRETTIER_DEFAULT)
 syncOwned('.editorconfig', EDITORCONFIG_DEFAULT)
+syncOwned('.markdownlint-cli2.jsonc', MARKDOWNLINT_DEFAULT)
 console.log('')
 
 // The Markdown gate tools, run directly (ki:lint:md is retired, TOOLCHAIN-001) — write mode
 // runs --write/--fix; dry-run runs the check-mode twins and reports only.
+// .ki-meta/ holds vendored/generated bootstrap artifacts — the harness owns their
+// formatting, so the target repo's Markdown gate must not touch them. Prettier gets the
+// exclusion inline; markdownlint's lives in the owned .markdownlint-cli2.jsonc (mirrors audit.ts).
 const PRETTIER = dryRun
-  ? 'bunx prettier --check "**/*.md" --ignore-path .gitignore'
-  : 'bunx prettier --write "**/*.md" --ignore-path .gitignore'
+  ? 'bunx prettier --check "**/*.md" "!.ki-meta/**" --ignore-path .gitignore'
+  : 'bunx prettier --write "**/*.md" "!.ki-meta/**" --ignore-path .gitignore'
 const MARKDOWNLINT = dryRun ? 'bunx markdownlint-cli2' : 'bunx markdownlint-cli2 --fix'
 const cmd = `${PRETTIER} && ${MARKDOWNLINT}`
 
@@ -129,6 +165,6 @@ console.log(
 )
 
 console.log(
-  `\n${paint(C.dim, 'mechanical layer applied — re-run `bun scripts/audit.ts ' + target + '` (or `ki:authoring:audit`) to confirm findings clear.')}`
+  `\n${paint(C.dim, `mechanical layer applied — re-run \`bun scripts/audit.ts ${target}\` (or \`ki:authoring:audit\`) to confirm findings clear.`)}`
 )
 console.log(paint(C.dim, 'Judgment criteria (wide tables, link text, TOML style) are not scripted — see SKILL.md Mode CONFORM step 1.'))

@@ -12,7 +12,7 @@ This applies to all Knowledge Islands multi-skill invocations, not only audits.
 
 For any multi-skill invocation (AUDIT, CONFORM, REFRESH, or other modes run across multiple governance skills):
 
-1. **COLL checks first** — run the set-level collision checks (COLL-1: name uniqueness via `bun run ki:skills:lint`; COLL-2: description off-ramp reciprocity by reading all `description` fields) in the main agent context. These are cross-skill by nature and cheap; they must run before fan-out.
+1. **COLL checks first** — run the set-level collision checks (COLL-1: name uniqueness via `bun run ki:skills:audit`; COLL-2: description off-ramp reciprocity by reading all `description` fields) in the main agent context. These are cross-skill by nature and cheap; they must run before fan-out.
 2. **Fan out to subagents** — spawn one `agent()` per concern in `parallel()`. Each subagent receives only its concern's files, runs the mechanical checker (`bun run ki:<concern>:audit --json`) and applies the judgment criteria, and returns a structured JSON object: `{ concern, exit_code, fail[], warn[], polish[], advisory[], pass_count }`.
 3. **Synthesise in the main agent** — collect all subagent results, rank findings with dependency-order priority (foundations first, per ADR-KI-HARNESS-SKILLS-003), and report across concerns.
 
