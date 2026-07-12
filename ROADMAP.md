@@ -48,6 +48,10 @@ Beyond the enforced `ki:<suffix>:audit`/`conform` pair, a third category of `ki:
 
 ADR-KI-HARNESS-TOOLCHAIN-005 records that generated and vendored code (`src/generated/`, the vendored-checker tree) is excluded from Biome and knip — applied per-repo in config today, not stated in the standard. The Markdown side of this landed with the mode migration (`.ki-meta/**` and `.claude/**` added to the markdownlint `ignores`, and `syncpack` to `knip.ignoreDependencies` since it is invoked via `bunx` inside the vendored engineering scripts). Lift the rest into `ki-engineering` so its AUDIT expects the exclusions (a generated tree present but not excluded is a finding) and its exemplars show the `!`-negated `files.includes`, the `knip.ignore` entries, and the markdownlint `ignores`.
 
+### Warn or fail when `.ki-config.toml` declares an unresolvable `[ki-<skill>]` table
+
+`resolve.ts`'s `declaredSkills()` regex-extracts every `[ki-<name>]` top-level table straight out of `.ki-config.toml`; the closure walk then silently drops any name that doesn't match a real `skills/<name>/` directory (`!isSkill(s)` in the `while (stack.length)` loop) — no warning, no failure. A renamed or retired skill (e.g. `ki-kb-base` → `ki-kb`) can therefore sit in a repo's config indefinitely with zero coverage, invisible unless someone happens to notice the vendored `.ki-meta/` is missing that skill's checker. The existing `coverage-<skill>` validation in `ki-repo`'s audit (`audit.ts:455`) only checks override _keys_ inside `[ki-repo.checks]` against the known skill set — it doesn't touch the top-level `[ki-<skill>]` tables themselves. Add a check (candidate home: `ki-repo`'s audit, alongside the existing coverage cascade, or `resolve.ts` itself) that fails when a declared top-level table names no real skill directory, so a stale rename surfaces mechanically instead of silently dropping coverage.
+
 ## Future
 
 ### Reclassify the remaining borderline DRs _(candidate)_
