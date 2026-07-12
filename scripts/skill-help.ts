@@ -133,8 +133,9 @@ function renderBlock(s: Skill): string {
   if (s.invoke) out.push(`**Invoke:** \`${s.name} ${s.invoke}\``, '')
   if (s.modes.length) {
     out.push('**Modes:**', '')
-    const w = Math.max(...s.modes.map((m) => m.name.length))
-    for (const m of s.modes) out.push(`- \`${m.name}\`${' '.repeat(w - m.name.length)}${m.gloss ? ` — ${m.gloss}` : ''}`)
+    // No column padding: prettier collapses any run of spaces to one, so padded output
+    // would desync from the manifest hash the moment the Markdown gate / lint-staged runs.
+    for (const m of s.modes) out.push(`- \`${m.name}\`${m.gloss ? ` — ${m.gloss}` : ''}`)
     out.push('')
   }
   if (s.seeAlso) out.push(`**See also:** ${s.seeAlso}`, '')
