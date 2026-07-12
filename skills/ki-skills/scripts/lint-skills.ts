@@ -407,7 +407,7 @@ function lintSkill(skillDir: string): Finding[] {
     if (!fm.present.has('vendors'))
       warn(
         'SHAPE-12',
-        'frontmatter carries no `vendors:` declaration — declare the vendorable mechanical unit (checker path or `cmd:` form) beside `implies:` so the bootstrap engine can vendor it (ADR-KI-HARNESS-007)'
+        'frontmatter carries no `vendors:` declaration — declare the vendorable mechanical unit (checker path or `cmd:` form) beside `implies:` so the bootstrap engine can vendor it (ADR-KI-HARNESS-006)'
       )
 
     // SHAPE-13: single `## Operating modes` H2 wrapper; modes as `### Mode <NAME>`

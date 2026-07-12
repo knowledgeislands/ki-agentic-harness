@@ -24,19 +24,19 @@ Sub-scopes used in this harness:
 The records are living, compact, and independent. The order below is a **curated build sequence** — it reads as if the harness were being constructed from scratch, each record building on the ones before it, weaving the sub-scopes (`SKILLS`, `TOOLCHAIN`, `AGENTS`) in where they belong rather than grouping them apart. Numbering stays per-scope for identity; this order is the pedagogical path, and a concept is introduced at its record so later records may name it. A newcomer can read top to bottom; this list is the index (per-record dates live in each record's `**Date:**` field).
 
 1. [GDR-KI-HARNESS-001](GDR-KI-HARNESS-001-adopting-decision-records.md) — adopting Decision Records (the format these records themselves follow).
-2. [GDR-KI-HARNESS-002](GDR-KI-HARNESS-002-public-and-declared-license.md) — public repos and a declared license, decoupled from visibility.
-3. [SDR-KI-HARNESS-001](SDR-KI-HARNESS-001-purpose-and-scope.md) — the purpose and scope of the harness (what it is for, and not for).
-4. [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-repository-structure.md) — the repository structure (the five-part bundle layout).
-5. [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-naming-model-and-harness-as-source.md) — the `ki-` naming model and harness-as-source vs plugin-as-projection.
-6. [ADR-KI-HARNESS-SKILLS-001](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) — the universal INIT / AUDIT / CONFORM / REFRESH modes.
-7. [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-mechanical-first-progressive-enhancement.md) — mechanical-first; agent judgment progressively enhances.
-8. [SDR-KI-HARNESS-002](SDR-KI-HARNESS-002-runtime-portable-contracts.md) — runtime-portable contracts, executor positioning (Claude Code now, Hermes next, Pi as conformance test), and the best-tool-for-the-job tenet.
-9. [ADR-KI-HARNESS-SKILLS-002](ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md) — the mechanical/judgment checker split.
-10. [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-composition-over-extension.md) — composition over extension, the principle no skill may break.
-11. [ADR-KI-HARNESS-SKILLS-003](ADR-KI-HARNESS-SKILLS-003-dependency-order-composition.md) — the naming grammar and dependency order for composition.
-12. [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) — every skill must be valid standalone.
-13. [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-validate-down-ki-config-contract.md) — the validate-down `.ki-config.toml` contract, the repo-to-skill binding every skill reads.
-14. [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md) — the bootstrapping chain and the self-sufficiency contract.
+2. [SDR-KI-HARNESS-001](SDR-KI-HARNESS-001-purpose-and-scope.md) — the purpose and scope of the harness (what it is for, and not for).
+3. [ADR-KI-HARNESS-001](ADR-KI-HARNESS-001-repository-structure.md) — the repository structure (the five-part bundle layout).
+4. [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-naming-model-and-harness-as-source.md) — the `ki-` naming model and harness-as-source vs plugin-as-projection.
+5. [ADR-KI-HARNESS-SKILLS-001](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) — the universal INIT / AUDIT / CONFORM / REFRESH modes.
+6. [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md) — mechanical-first; agent judgment progressively enhances.
+7. [SDR-KI-HARNESS-002](SDR-KI-HARNESS-002-runtime-portable-contracts.md) — runtime-portable contracts, executor positioning (Claude Code now, Hermes next, Pi as conformance test), and the best-tool-for-the-job tenet.
+8. [ADR-KI-HARNESS-SKILLS-002](ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md) — the mechanical/judgment checker split.
+9. [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-composition-over-extension.md) — composition over extension, the principle no skill may break.
+10. [ADR-KI-HARNESS-SKILLS-003](ADR-KI-HARNESS-SKILLS-003-dependency-order-composition.md) — the naming grammar and dependency order for composition.
+11. [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) — every skill must be valid standalone.
+12. [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-validate-down-ki-config-contract.md) — the validate-down `.ki-config.toml` contract, the repo-to-skill binding every skill reads.
+13. [GDR-KI-HARNESS-002](GDR-KI-HARNESS-002-public-and-declared-license.md) — public repos and a declared license, decoupled from visibility.
+14. [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md) — the bootstrapping chain and the self-sufficiency contract.
 15. [ADR-KI-HARNESS-TOOLCHAIN-001](ADR-KI-HARNESS-TOOLCHAIN-001-standard-toolchain.md) — the Bun / Biome / knip standard toolchain.
 16. [ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling.md) — complementary tooling currently adopted.
 17. [ADR-KI-HARNESS-TOOLCHAIN-003](ADR-KI-HARNESS-TOOLCHAIN-003-mcporter-mcp-proxy.md) — proxying local MCP servers behind mcporter.

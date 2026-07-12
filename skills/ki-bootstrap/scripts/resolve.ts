@@ -100,7 +100,7 @@ export function conformScript(skill: string): string | null {
   return m.length === 1 ? m[0] : null
 }
 
-// ── `vendors:` frontmatter (ADR-KI-HARNESS-007) ──────────────────────────────────
+// ── `vendors:` frontmatter (ADR-KI-HARNESS-006) ──────────────────────────────────
 // Per-skill declaration, central execution: each governance skill declares its
 // vendorable mechanical unit(s) beside `implies:`, in a single-line flow mapping:
 //
@@ -111,7 +111,7 @@ export function conformScript(skill: string): string | null {
 // `"cmd: ..."` value is a COMMAND, vendored as a generated thin wrapper script (no
 // package.json required in the target — the wrapper embeds the command literally).
 // Only `audit` and `conform` verbs are recognised (INIT and HELP do not vendor —
-// ADR-KI-HARNESS-007's Consequences).
+// ADR-KI-HARNESS-006's Consequences).
 export type VendorUnit = { kind: 'file'; path: string } | { kind: 'command'; command: string }
 export type VendorDecl = Partial<Record<'audit' | 'conform', VendorUnit>>
 

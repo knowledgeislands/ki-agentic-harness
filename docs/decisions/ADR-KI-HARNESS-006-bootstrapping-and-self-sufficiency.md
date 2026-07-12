@@ -1,10 +1,10 @@
-# ADR-KI-HARNESS-007: The bootstrapping chain and the self-sufficiency contract
+# ADR-KI-HARNESS-006: The bootstrapping chain and the self-sufficiency contract
 
 **Date:** 2026-07-09
 
 ## Context
 
-A repo is brought under Knowledge Islands governance in two situations the earlier "install the skills, then run them" model served poorly: a greenfield repo with nothing installed, and a legacy Knowledge Islands repo carrying old formats that must be migrated. Requiring the full skill set to be installed first makes onboarding heavy and couples every repo to a global install. The mechanical-first stance ([ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-mechanical-first-progressive-enhancement.md)) already lets the scripts run without an LLM; the remaining step is to let them run without the skill installed at all.
+A repo is brought under Knowledge Islands governance in two situations the earlier "install the skills, then run them" model served poorly: a greenfield repo with nothing installed, and a legacy Knowledge Islands repo carrying old formats that must be migrated. Requiring the full skill set to be installed first makes onboarding heavy and couples every repo to a global install. The mechanical-first stance ([ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md)) already lets the scripts run without an LLM; the remaining step is to let them run without the skill installed at all.
 
 ## Decision
 
@@ -31,5 +31,5 @@ Governance bootstraps through a single chain, runnable from the remote source wi
 
 ## References
 
-- [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-mechanical-first-progressive-enhancement.md) — the mechanical-first stance this depends on.
+- [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md) — the mechanical-first stance this depends on.
 - [ADR-KI-HARNESS-SKILLS-001](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) — INIT, the universal mode whose mechanical half is `scripts/init.ts`; the role it plays in bootstrapping is set out above.

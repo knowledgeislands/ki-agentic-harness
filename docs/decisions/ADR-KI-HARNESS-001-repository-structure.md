@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-002: Repository structure — the five-part bundle
+# ADR-KI-HARNESS-001: Repository structure — the five-part bundle
 
 **Date:** 2026-06-23
 

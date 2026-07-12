@@ -4,7 +4,7 @@
 
 ## Context
 
-The `ki-repo` standard coupled license to visibility: a public repo had to carry MIT, a private repo a proprietary LICENSE and `"UNLICENSED"` in `package.json`. That coupling baked a policy into the checker — "public means MIT" — and left no way for a repo to be public under a different license, or to state its license as an explicit fact. Separately, the earlier direction kept `ki-plugins` private; but the harness is the source and the plugin set is its projection ([ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-naming-model-and-harness-as-source.md)), and a governance skill set is only useful if it can be installed from source — which wants public repos.
+The `ki-repo` standard coupled license to visibility: a public repo had to carry MIT, a private repo a proprietary LICENSE and `"UNLICENSED"` in `package.json`. That coupling baked a policy into the checker — "public means MIT" — and left no way for a repo to be public under a different license, or to state its license as an explicit fact. Separately, the earlier direction kept `ki-plugins` private; but the harness is the source and the plugin set is its projection ([ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-naming-model-and-harness-as-source.md)), and a governance skill set is only useful if it can be installed from source — which wants public repos.
 
 ## Decision
 
@@ -17,11 +17,11 @@ Knowledge Islands repos are **public by default** (installable from source), and
 ## Consequences
 
 - The checker no longer encodes "public ⇒ MIT" — license policy is data in each repo's `.ki-config.toml`, not a constant in `audit-repo.ts`.
-- The **mechanism** is built harness-only in this program; the **actual visibility flips** (the harness and the sibling fleet going public) are the deferred, guide-driven rollout, not done here.
-- The harness declares `license = "MIT"` as intent; reconciling its own live LICENSE, `package.json`, and GitHub visibility is part of that deferred rollout, so a live `ki:repo:audit` of the harness reports those until then.
+- The **mechanism** is built harness-only in this program; the **actual visibility flips** across the sibling fleet are guide-driven and roll out per repo.
+- The harness itself is now reconciled — it declares `license = "MIT"` in `.ki-config.toml`, ships a matching MIT `LICENSE` file and `package.json`, and is public — so a live `ki:repo:audit` of the harness agrees on all three.
 - A repo that wants a non-default license states it once in `[ki-repo]` `license`; the three artifacts are then checked against it uniformly.
 
 ## References
 
-- [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-naming-model-and-harness-as-source.md) — harness-as-source vs plugin-as-projection, which this makes installable.
-- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-validate-down-ki-config-contract.md) — the `.ki-config.toml` contract the `license` field extends.
+- [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-naming-model-and-harness-as-source.md) — harness-as-source vs plugin-as-projection, which this makes installable.
+- [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-validate-down-ki-config-contract.md) — the `.ki-config.toml` contract the `license` field extends.

@@ -1,6 +1,6 @@
 # Onboarding a repo to Knowledge Islands governance
 
-How to bring a repository under Knowledge Islands governance so it **governs itself** — running `./.ki-meta/bin/ki-audit` with **zero skills installed** and **no `package.json` required**. The one onboarding action is **INIT**: building the repo's `.ki-meta/`. Re-running it is also how a repo stays current — there is no separate migration mode. This guide is the operating manual for the bootstrap chain (ADR-KI-HARNESS-007); its fenced `bash` blocks are executable and are exercised by the harness's own test suite, so they cannot drift from what actually works.
+How to bring a repository under Knowledge Islands governance so it **governs itself** — running `./.ki-meta/bin/ki-audit` with **zero skills installed** and **no `package.json` required**. The one onboarding action is **INIT**: building the repo's `.ki-meta/`. Re-running it is also how a repo stays current — there is no separate migration mode. This guide is the operating manual for the bootstrap chain (ADR-KI-HARNESS-006); its fenced `bash` blocks are executable and are exercised by the harness's own test suite, so they cannot drift from what actually works.
 
 ## The remote-run transport — the primary path
 

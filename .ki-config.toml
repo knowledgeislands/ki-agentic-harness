@@ -1,28 +1,30 @@
 # Knowledge Islands repo config — read by the ki-repo skill.
-# One [table] per skill that needs per-repo options.
+# One [table] per skill that needs per-repo options. Each skill validates down into its
+# own table, so governance is declared here, never assumed — the validate-down
+# .ki-config.toml contract (ADR-KI-HARNESS-005).
 [ki-repo]
-visibility = "public"    # "public" | "private" — public + MIT (ADR-KI-HARNESS-008)
+visibility = "public"    # "public" | "private" — public + MIT (GDR-KI-HARNESS-002)
 license = "MIT"          # SPDX id; the LICENSE, package.json, and GitHub must match (default MIT).
 # This repo fully conforms, so it declares no check overrides. To diverge, add a
 # [ki-repo.checks] table with one boolean per check (true = enforce).
 
 # The authoring standard (Markdown/TOML house style) is baseline for every KI repo —
-# declared explicitly, not assumed (ADR-KI-HARNESS-006). Presence is the compliance marker.
+# declared explicitly, not assumed (ADR-KI-HARNESS-005). Presence is the compliance marker.
 [ki-authoring]
 
-# Read by the ki-engineering skill (the common build/lint/test toolchain).
+# Read by the ki-engineering skill (the common build/lint/test toolchain — ADR-KI-HARNESS-TOOLCHAIN-001).
 [ki-engineering]
 # This repo fully conforms, so it declares no check overrides. To diverge, add a
 # [ki-engineering.checks] table with one boolean per check (true = enforce).
 
 # This repo IS a Knowledge Islands agentic harness (the five-part skills/ agents/ mcp/ evals/ hooks/
-# layout), so it declares governance by the ki-harness standard. Presence of this
-# table is the compliance marker; no per-harness keys are defined yet.
+# layout — ADR-KI-HARNESS-001), so it declares governance by the ki-harness standard. Presence of
+# this table is the compliance marker; no per-harness keys are defined yet.
 [ki-harness]
 
 # This repo ships skills under skills/, so it declares governance by the ki-skills
-# standard. (Read by ki-repo's coverage check; the skills linter lints the SKILL.md
-# files themselves.)
+# standard (the skill taxonomy and four-file shape — ADR-KI-HARNESS-SKILLS-006). (Read by ki-repo's
+# coverage check; the skills linter lints the SKILL.md files themselves.)
 [ki-skills]
 
 # This repo ships agents under agents/governance/, so it declares governance by the
@@ -32,24 +34,25 @@ license = "MIT"          # SPDX id; the LICENSE, package.json, and GitHub must m
 # This repo ships the ki-decision-records skill, so it declares governance by its own standard.
 [ki-decision-records]
 
-# This repo ships the ki-feature-definitions skill, so it declares governance by its own standard
-# over its own docs/features/ Feature Definitions corpus.
+# This repo ships the ki-feature-definitions skill (ADR-KI-HARNESS-SKILLS-008), so it declares
+# governance by its own standard over its own docs/features/ Feature Definitions corpus.
 [ki-feature-definitions]
 
-# This repo ships the ki-housekeeping skill, so it declares governance by its own standard over the
-# Claude Code auto-memory directory (~/.claude/projects/<slug>/memory/), which lives outside
-# this repo's tree — same repo-external-artifact pattern as a KB base.
+# This repo ships the ki-housekeeping skill (ADR-KI-HARNESS-SKILLS-007), so it declares governance
+# by its own standard over the Claude Code auto-memory directory (~/.claude/projects/<slug>/memory/),
+# which lives outside this repo's tree — same repo-external-artifact pattern as a KB base.
 [ki-housekeeping]
 
 # This repo ships the ki-plans skill, so it declares governance by its own standard.
 [ki-plans]
 
-# This repo ships the ki-handoffs skill, so it declares governance by its own standard.
-# Presence of this table is the compliance marker; tier cost/selection defaults live in
-# [ki-tokenomics] (preferred_model), not here.
+# This repo ships the ki-handoffs skill (its own skill, not a mode — ADR-KI-HARNESS-SKILLS-005), so it
+# declares governance by its own standard. Presence of this table is the compliance marker; tier
+# cost/selection defaults live in [ki-tokenomics] (preferred_model), not here.
 [ki-handoffs]
 
 # Tokenomics governance — audits the standing context surface for this environment.
+# Headroom is adopted as complementary tooling (ADR-KI-HARNESS-TOOLCHAIN-002).
 # MCP server count is user-scoped (not harness-controlled); all 19 are intentional.
 # With Claude Code's default tool search (ENABLE_TOOL_SEARCH=auto), schemas are deferred,
 # so the real standing cost is lower than the raw count implies. The raised budget documents

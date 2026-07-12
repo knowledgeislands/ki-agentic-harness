@@ -6,7 +6,7 @@
 
 Releasing the `mgit` CLI produced two repos that no existing repo-structure skill governs: `tools-mgit` (a standalone command-line tool — a bash script, no `package.json`, no TypeScript) and `homebrew-tap` (the Homebrew distribution repo carrying `Formula/*.rb`). Neither matches the existing repo-structure shapes in [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md) (`ki-harness`, `ki-kb`, `ki-website`, `ki-mcp`, `ki-plugins`), so both were published with no `.ki-config.toml` and fell outside governance.
 
-Per [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-composition-over-extension.md), a genuinely new _repo shape_ warrants a new repo-structure skill; a _variation_ of an existing shape is declared in `.ki-config.toml` + `CLAUDE.md`, never forked. A standalone CLI tool and a package-manager tap are each a genuinely new shape. Two precedents make this low-friction: `ki-kb` is a repo-structure skill whose checker uses only Bun/Node built-ins and never rides the `ki-engineering` TS toolchain; `ki-plugins` is a governed repo with no `package.json` that deliberately omits `[ki-engineering]` and is still compliant (a bare `[ki-repo]` marker is a complete config).
+Per [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-composition-over-extension.md), a genuinely new _repo shape_ warrants a new repo-structure skill; a _variation_ of an existing shape is declared in `.ki-config.toml` + `CLAUDE.md`, never forked. A standalone CLI tool and a package-manager tap are each a genuinely new shape. Two precedents make this low-friction: `ki-kb` is a repo-structure skill whose checker uses only Bun/Node built-ins and never rides the `ki-engineering` TS toolchain; `ki-plugins` is a governed repo with no `package.json` that deliberately omits `[ki-engineering]` and is still compliant (a bare `[ki-repo]` marker is a complete config).
 
 ## Decision
 
@@ -19,13 +19,13 @@ Add two repo-structure skills — **`ki-tools`** and **`ki-homebrew-tap`** — t
 
 ## Consequences
 
-- The two live repos are retrofitted to declare their governance — `tools-mgit` carries `[ki-repo]` + `[ki-tools]`, `homebrew-tap` carries `[ki-repo]` + `[ki-homebrew-tap]` — and are audited **from the harness** (`bun skills/ki-tools/scripts/audit-tools.ts ../tools-mgit`), the `ki-plugins` pattern. They are **not** self-governing via `bun run ki:audit`: `ki-bootstrap` requires a `package.json`, and neither pure repo carries one (adding npm to a bash tool contradicts its premise). Teaching `ki-bootstrap` to vendor a standalone runner into a package.json-less repo is a deferred follow-up.
+- The two live repos are retrofitted to declare their governance — `tools-mgit` carries `[ki-repo]` + `[ki-tools]`, `homebrew-tap` carries `[ki-repo]` + `[ki-homebrew-tap]` — and are audited **from the harness** during development (`bun skills/ki-tools/scripts/audit-tools.ts ../tools-mgit`), the `ki-plugins` pattern. They can also self-govern standalone: the bootstrapping chain and self-sufficiency contract (ADR-KI-HARNESS-006) vendors each checker into `.ki-meta/` and writes the `./.ki-meta/bin/ki-audit` runner **without ever touching a `package.json`** — which suits these repos exactly, since neither carries one (adding npm to a bash tool would contradict its premise). The standalone-runner work this record once anticipated as a follow-up is subsumed by that package.json-free chain.
 - The shell toolchain (shellcheck + bats) lives **inside** `ki-tools` for now — a single consumer, so no separate foundations skill. Extracting a `ki-shell` twin of `ki-engineering` is deferred until a second structure skill needs the same shell layer (YAGNI at n=1).
 - Homebrew's formula rules (`brew audit`/`brew style`, the Formula Cookbook) become a tracked source for `ki-homebrew-tap`, reconciled on its REFRESH cadence.
-- The harness gains `ki:tools:*` / `ki:homebrew-tap:*` script families; both checkers are run from the harness against the sibling repos (there is no package.json in a `tools-*` or tap repo for `ki-bootstrap` to vendor into).
+- The harness gains `ki:tools:*` / `ki:homebrew-tap:*` script families; both checkers are run from the harness against the sibling repos during development, and each repo also self-governs standalone via its own vendored `.ki-meta/` runner (no `package.json` required).
 
 ## References
 
 - [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md) — the taxonomy this extends (the repo-structure cluster).
-- [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-composition-over-extension.md) — composition over extension: new shape → new skill, variation → declaration.
+- [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-composition-over-extension.md) — composition over extension: new shape → new skill, variation → declaration.
 - [ADR-KI-HARNESS-SKILLS-008](ADR-KI-HARNESS-SKILLS-008-feature-definitions-skill.md) — the precedent for adding a skill against the ADR-006 taxonomy.

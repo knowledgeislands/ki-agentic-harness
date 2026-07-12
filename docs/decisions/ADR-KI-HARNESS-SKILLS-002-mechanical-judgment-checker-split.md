@@ -25,4 +25,4 @@ A criterion starts in the checker unless it genuinely requires judgment. A crite
 
 ## References
 
-- [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-mechanical-first-progressive-enhancement.md) — the mechanical-first, progressive-enhancement foundation this per-skill split realises.
+- [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md) — the mechanical-first, progressive-enhancement foundation this per-skill split realises.

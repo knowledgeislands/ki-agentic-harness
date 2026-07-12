@@ -1,5 +1,5 @@
 #!/bin/sh
-# ki-bootstrap zero-install entry point (ADR-KI-HARNESS-007).
+# ki-bootstrap zero-install entry point (ADR-KI-HARNESS-006).
 #
 # The canonical remote one-liner — cd into the repo you want to govern, then:
 #

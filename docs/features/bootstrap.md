@@ -8,13 +8,13 @@ The behaviour of the bootstrap chain: how the harness brings a target repo under
 
 ### BOOT-001 — Self-governing after INIT
 
-After the INIT chain runs against a target repo, that repo MUST govern itself with `./.ki-meta/bin/ki-audit` and **zero** Knowledge Islands skills installed — and with **no `package.json` of its own** — per [ADR-KI-HARNESS-007](../decisions/ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md).
+After the INIT chain runs against a target repo, that repo MUST govern itself with `./.ki-meta/bin/ki-audit` and **zero** Knowledge Islands skills installed — and with **no `package.json` of its own** — per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md).
 
 _Verify:_ bootstrap a bare fixture (`.ki-config.toml` only, no `package.json`, no `.claude/skills/`) with `skills/ki-bootstrap/scripts/bootstrap.ts <fixture>`, then run `./.ki-meta/bin/ki-audit` in it — the vendored checkers execute and report.
 
 ### BOOT-002 — Vendored copies, not symlinks
 
-INIT MUST vendor each resolved skill's checker (and any `conform-*.ts`) into the target's `.ki-meta/skills/<skill>/` as file **copies**, never symlinks, so they run with no harness beside the repo (SCRIPT-7 / [ADR-KI-HARNESS-007](../decisions/ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md)).
+INIT MUST vendor each resolved skill's checker (and any `conform-*.ts`) into the target's `.ki-meta/skills/<skill>/` as file **copies**, never symlinks, so they run with no harness beside the repo (SCRIPT-7 / [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)).
 
 _Verify:_ after bootstrap, `.ki-meta/skills/ki-repo/audit.ts` in the target is a regular file whose contents equal the harness source, and `git check-ignore` does not ignore it.
 
@@ -32,7 +32,7 @@ _Verify:_ a bootstrapped repo has `.ki-meta/bin/aggregate.ts`; running `bun .ki-
 
 ### BOOT-005 — package.json-free entry point
 
-INIT MUST write four executable wrappers `.ki-meta/bin/{ki-audit,ki-conform,ki-init,ki-help}` (each mode `0755`) over the vendored aggregate, so a repo with no `package.json` (dotfiles, KB, tap) governs itself through `./.ki-meta/bin/ki-audit`, `./.ki-meta/bin/ki-conform`, `./.ki-meta/bin/ki-init`, and `./.ki-meta/bin/ki-help <skill>` alone, per [ADR-KI-HARNESS-007](../decisions/ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md). `ki-help` is pure bash over the vendored `help.md` snapshots, so it runs with no `bun`.
+INIT MUST write four executable wrappers `.ki-meta/bin/{ki-audit,ki-conform,ki-init,ki-help}` (each mode `0755`) over the vendored aggregate, so a repo with no `package.json` (dotfiles, KB, tap) governs itself through `./.ki-meta/bin/ki-audit`, `./.ki-meta/bin/ki-conform`, `./.ki-meta/bin/ki-init`, and `./.ki-meta/bin/ki-help <skill>` alone, per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md). `ki-help` is pure bash over the vendored `help.md` snapshots, so it runs with no `bun`.
 
 _Verify:_ after bootstrap, all four of `.ki-meta/bin/{ki-audit,ki-conform,ki-init,ki-help}` exist and are executable (mode `0755`), and `./.ki-meta/bin/ki-help <skill>` prints its snapshot with `bun` off `PATH`.
 

@@ -139,6 +139,7 @@ async function main() {
   }
 
   const seenSerials = new Map<string, string>() // "SCOPE-NNN" → filename
+  const serialsByGroup = new Map<string, number[]>() // "PREFIX-SCOPE" → serial integers (for FILENAME-3 contiguity)
 
   for (const file of drFiles) {
     const filePath = join(resolvedDir, file)
@@ -158,6 +159,12 @@ async function main() {
     } else {
       seenSerials.set(serialKey, file)
     }
+
+    // FILENAME-3: accumulate serials per (prefix, scope) series for the post-loop contiguity check
+    const groupKey = `${prefix}-${scopeKey}`
+    const group = serialsByGroup.get(groupKey)
+    if (group) group.push(Number(serial))
+    else serialsByGroup.set(groupKey, [Number(serial)])
 
     // FM-0: frontmatter required for KB repos
     const fmMatch = content.match(/^---\n([\s\S]*?)\n---/)
@@ -248,6 +255,27 @@ async function main() {
     // INDEX-2: must have an entry in the index list
     if (hasIndex && !indexedIds.has(drId)) {
       add('INDEX-2', Sev.FAIL, file, `no entry in ${indexFile} for ${drId}`)
+    }
+  }
+
+  // FILENAME-3: within each (prefix, scope) series the serials start at 001 and
+  // are contiguous — no gaps, whatever the cause (deletion or a reclassification
+  // that vacated a serial). A gap is a drafting issue fixed by renumbering the
+  // series to close it, not left open. (XXX pending files never match
+  // DR_FILENAME_RE, so they are naturally exempt.)
+  for (const [groupKey, serials] of serialsByGroup) {
+    const sorted = [...new Set(serials)].sort((a, b) => a - b)
+    const expected = sorted.map((_, i) => i + 1)
+    const missing = expected.filter((n) => !sorted.includes(n))
+    if (missing.length > 0) {
+      add(
+        'FILENAME-3',
+        Sev.WARN,
+        indexFile,
+        `${groupKey} serials are not contiguous from 001: have [${sorted
+          .map((n) => String(n).padStart(3, '0'))
+          .join(', ')}], missing [${missing.map((n) => String(n).padStart(3, '0')).join(', ')}] — renumber the series to close the gap`
+      )
     }
   }
 

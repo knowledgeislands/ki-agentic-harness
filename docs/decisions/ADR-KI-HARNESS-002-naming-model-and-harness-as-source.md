@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-003: The ki- naming model and harness-as-source vs plugin-as-projection
+# ADR-KI-HARNESS-002: The ki- naming model and harness-as-source vs plugin-as-projection
 
 **Date:** 2026-07-07
 
@@ -8,7 +8,7 @@ Two structural facts about this harness need a stated home so that later decisio
 
 The first is naming. The `knowledgeislands` GitHub organisation holds several repositories, and their names carry meaning: they signal what governs what. **Knowledge Islands** is the portable model — the framework: the organisation itself, the family of `ki-*` skills, and the `KI-` decision-record scope. **Arcadia** is the first and canonical Knowledge Island, the exemplar base that proves the model in practice. A repository name that does not align to this distinction leaves a reader guessing whether a repo is framework-level infrastructure or territory-scoped island content.
 
-The second is packaging. This repository is an agentic harness: a dev-time source bundle that co-locates its parts — `skills/`, `agents/`, `mcp/`, `evals/`, `hooks/` (ADR-KI-HARNESS-002) — each installed by its own native mechanism. Separately, the Claude plugin/marketplace format (the Cowork packaging format) is a way to distribute skills, agents, and MCP servers to a host. These are two different things at two different points in the lifecycle, and conflating them — treating the plugin as something the harness "becomes", or as a competitor to it — misstates how the source reaches each surface.
+The second is packaging. This repository is an agentic harness: a dev-time source bundle that co-locates its parts — `skills/`, `agents/`, `mcp/`, `evals/`, `hooks/` (ADR-KI-HARNESS-001) — each installed by its own native mechanism. Separately, the Claude plugin/marketplace format (the Cowork packaging format) is a way to distribute skills, agents, and MCP servers to a host. These are two different things at two different points in the lifecycle, and conflating them — treating the plugin as something the harness "becomes", or as a competitor to it — misstates how the source reaches each surface.
 
 ## Decision
 
@@ -31,4 +31,4 @@ The per-artefact grammar (the `ki-<concern>[-<technology>]` form and how names r
 
 ## References
 
-- [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-repository-structure.md) — the five-part bundle layout that is the source this decision projects.
+- [ADR-KI-HARNESS-001](ADR-KI-HARNESS-001-repository-structure.md) — the five-part bundle layout that is the source this decision projects.

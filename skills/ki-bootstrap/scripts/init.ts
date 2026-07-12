@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * ki-bootstrap INIT — thin delegator, kept for shape uniformity with every other
- * skill's `scripts/init.ts` (ADR-KI-HARNESS-007). ki-bootstrap *is* the chain
+ * skill's `scripts/init.ts` (ADR-KI-HARNESS-006). ki-bootstrap *is* the chain
  * engine (`scripts/bootstrap.ts`), so this simply execs it in place with itself as
  * an explicit `--seed` — every skill exposes the same `scripts/init.ts <target>`
  * entry, even the one whose mechanical half also serves as the engine the other

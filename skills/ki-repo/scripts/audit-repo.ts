@@ -548,7 +548,7 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
   return f
 }
 
-// ── vendor-integrity (ADR-KI-HARNESS-007) ─────────────────────────────────────
+// ── vendor-integrity (ADR-KI-HARNESS-006) ─────────────────────────────────────
 // Offline, local-disk check independent of the GitHub-based checks above: a
 // bootstrapped repo's vendored `.ki-meta/skills/**` copies (+ the aggregate
 // runner) must match the sha256 recorded in `.ki-meta/manifest.json` at vendor
@@ -556,7 +556,7 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
 // that carries `.ki-meta/` but no manifest predates the manifest contract
 // (migration WARN). Staleness against the remote harness ref is deliberately NOT
 // checked here — that would require network access; this check stays usable with
-// zero connectivity (ADR-KI-HARNESS-007's Consequences: "offline-safe").
+// zero connectivity (ADR-KI-HARNESS-006's Consequences: "offline-safe").
 function localIntegrityFindings(dir: string): Finding[] {
   const { f, fail, warn } = mk()
   const metaDir = join(dir, '.ki-meta')

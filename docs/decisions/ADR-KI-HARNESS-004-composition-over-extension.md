@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-005: Composition over extension
+# ADR-KI-HARNESS-004: Composition over extension
 
 **Date:** 2026-06-23
 

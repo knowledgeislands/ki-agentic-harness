@@ -14,7 +14,7 @@ _Verify:_ `ki-engineering`'s [checker-contract.md](../../skills/ki-engineering/r
 
 ### CHK-002 — Exit non-zero iff any FAIL
 
-A checker MUST exit non-zero when and only when at least one FAIL-severity finding is present; every other level exits 0, per [ADR-KI-HARNESS-004](../decisions/ADR-KI-HARNESS-004-mechanical-first-progressive-enhancement.md).
+A checker MUST exit non-zero when and only when at least one FAIL-severity finding is present; every other level exits 0, per [ADR-KI-HARNESS-003](../decisions/ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md).
 
 _Verify:_ checker-contract.md pins "exit non-zero iff any FAIL"; run any `audit-*.ts` against a fixture with only PASS/WARN findings and observe exit 0.
 
@@ -40,7 +40,7 @@ _Verify:_ checker-contract.md §1 pins the `KEY=n` tally; the DR / feature audit
 
 ### CHK-006 — The remediation footer
 
-On any non-clean run (any FAIL / WARN / POLISH) a checker's human output MUST end with a one-line footer naming the owning skill and mode that addresses it, and this footer MUST be suppressed under `--json` and `--report`, per [ADR-KI-HARNESS-004](../decisions/ADR-KI-HARNESS-004-mechanical-first-progressive-enhancement.md).
+On any non-clean run (any FAIL / WARN / POLISH) a checker's human output MUST end with a one-line footer naming the owning skill and mode that addresses it, and this footer MUST be suppressed under `--json` and `--report`, per [ADR-KI-HARNESS-003](../decisions/ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md).
 
 _Verify:_ `bun skills/ki-skills/scripts/lint-skills.ts skills` — SHAPE-8 scans every `audit-*.ts` / `lint-*.ts` and WARNs if the standardised footer is omitted or names another skill's mode.
 
@@ -48,7 +48,7 @@ _Verify:_ `bun skills/ki-skills/scripts/lint-skills.ts skills` — SHAPE-8 scans
 
 ### CHK-007 — Builtins-only and self-contained
 
-A checker MUST depend on Node/Bun builtins only (no npm dependencies) and MUST NOT import another skill's files; checkers compose by being run in sequence, per [ADR-KI-HARNESS-004](../decisions/ADR-KI-HARNESS-004-mechanical-first-progressive-enhancement.md).
+A checker MUST depend on Node/Bun builtins only (no npm dependencies) and MUST NOT import another skill's files; checkers compose by being run in sequence, per [ADR-KI-HARNESS-003](../decisions/ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md).
 
 _Verify:_ checker-contract.md §1 pins builtins-only and no cross-skill imports; a vendored checker runs from a target's `.ki-meta/skills/` with no harness beside it.
 

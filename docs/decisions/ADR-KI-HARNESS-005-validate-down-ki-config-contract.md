@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-006: Validate-down .ki-config.toml contract
+# ADR-KI-HARNESS-005: Validate-down .ki-config.toml contract
 
 **Date:** 2026-06-23
 

@@ -22,7 +22,7 @@ Skills, checkers, and configuration must avoid runtime-specific assumptions wher
 ## References
 
 - [SDR-KI-HARNESS-001](SDR-KI-HARNESS-001-purpose-and-scope.md) — the purpose and scope of the harness whose positioning this record sets.
-- [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-mechanical-first-progressive-enhancement.md) — the mechanical-first paradigm this strategy generalises.
+- [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md) — the mechanical-first paradigm this strategy generalises.
 - [Hermes Agent](https://github.com/NousResearch/hermes-agent) — the batteries-included persistent runtime.
 - [pi.dev](https://pi.dev) — the minimal TypeScript runtime.
 - [OpenClaw](https://docs.openclaw.ai) — the multi-channel gateway runtime.

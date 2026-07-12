@@ -6,7 +6,7 @@ Used by Mode AUDIT. Each criterion is tagged **[M]** (mechanical — the checker
 
 - **[M] FILENAME-1** — filename matches `^(SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z][A-Z0-9]*(-[A-Z][A-Z0-9]*)*-(XXX|\d{3,})(-[a-z0-9-]+)?\.md$` (`XXX` is the reserved serial for a pending DR not yet assigned a real number)
 - **[M] FILENAME-2** — NNN is unique **per prefix within its `<SCOPE>` namespace**; two files may share the same integer if they carry different prefixes (e.g. `GDR-KI-ARCADIA-001` and `SDR-KI-ARCADIA-001` are both valid); no two files share the same prefix+scope+serial combination. `XXX` files are exempt from uniqueness.
-- **[M] FILENAME-3** — NNN is monotonically increasing per prefix within its scope; no gaps introduced by deletion. `XXX` files are exempt.
+- **[M] FILENAME-3** — within each prefix+scope series the serials start at `001` and are contiguous — no gaps, whatever the cause (a deletion, or a reclassification that changes a record's prefix and vacates its serial). A gap is a drafting issue fixed by **renumbering the series to close it** — and sweeping every citation of the shifted codes in the same change — not by leaving the hole open. `XXX` pending files are exempt.
 
 ## Frontmatter checks (KB repos only)
 

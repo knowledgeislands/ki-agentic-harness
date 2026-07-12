@@ -23,4 +23,4 @@ Generated and vendored code is excluded from the conformance toolchain — it is
 ## References
 
 - [ADR-KI-HARNESS-TOOLCHAIN-001](ADR-KI-HARNESS-TOOLCHAIN-001-standard-toolchain.md) — the Biome / knip toolchain these exclusions configure.
-- [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-bootstrapping-and-self-sufficiency.md) — the self-sufficiency contract that vendors the checkers this rule protects.
+- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md) — the self-sufficiency contract that vendors the checkers this rule protects.

@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-004: Mechanical-first — agent judgment progressively enhances
+# ADR-KI-HARNESS-003: Mechanical-first — agent judgment progressively enhances
 
 **Date:** 2026-07-09
 
@@ -10,7 +10,7 @@ An agentic harness serves two kinds of agent: **human and LLM**. Its work divide
 
 Every skill's mechanical half runs standalone — no LLM, no model context — as a plain CLI. It is _mechanical_ in the precise sense that it runs **outside the agentic loop**: a CI job, a pre-commit hook, a scheduled sweep, or a bare shell can invoke it with no model in the picture. Agent judgment — human or LLM — is a **progressive enhancement** layered on that mechanical baseline, never a prerequisite for it: the baseline always runs and is always useful alone; an agent, when present, adds the judgment layer on top.
 
-- **AUDIT / CONFORM** — the checker, and the mechanical CONFORM fixes, run to completion as pure CLI; an agent, when present, adds the judgment layer (the mechanical/judgment split is the next decision in the reading order).
+- **AUDIT / CONFORM** — the checker, and the mechanical CONFORM fixes, run to completion as pure CLI; an agent, when present, adds the judgment layer (the mechanical/judgment split, later in the reading order).
 - **INIT** — as pure CLI it scaffolds and wires with safe defaults and **prints the judgment checks it skipped**; under an agent it also applies that judgment. A human agent reading the printed list and finishing the checks by hand is the same pattern as an LLM doing so — the enhancement layer does not care which kind of agent supplies it.
 - A criterion a script can decide deterministically belongs in the checker, not in tokens; an agent's context — a model's window or a human's attention — is spent only on criteria that genuinely need judgment.
 - **Every environment has a mechanical prompt.** Whatever the repo type — engineering or not, `package.json` or not — a governed repo always carries an invocation surface for its mechanical layer: `./.ki-meta/bin/ki-audit`. That universality is why the vendoring exists (the bootstrapping decision, later in the reading order), and it is what makes the progressive-enhancement claim true everywhere rather than only in code repos.

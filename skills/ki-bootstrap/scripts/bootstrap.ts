@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * ki-bootstrap chain engine — the mechanical half of INIT, and the start of the
- * bootstrap chain (ADR-KI-HARNESS-007). Brings a target repo under Knowledge
+ * bootstrap chain (ADR-KI-HARNESS-006). Brings a target repo under Knowledge
  * Islands governance so it governs itself with `./.ki-meta/bin/ki-audit` and
  * **zero skills installed** — and with **no `package.json` of its own** (dotfiles,
  * KB, tap): for every skill in the resolved set it reads the skill's declared
@@ -15,7 +15,7 @@
  * ki-help}`, and stamps `.ki-meta/manifest.json` (harness ref + per-file hashes) so
  * `ki-init` can re-run this chain at the same ref later.
  *
- * Remote transport (ADR-KI-HARNESS-007): the sibling `bootstrap.sh` is the
+ * Remote transport (ADR-KI-HARNESS-006): the sibling `bootstrap.sh` is the
  * zero-install `curl | sh` entry point — cd into the repo and pipe it to sh; it
  * fetches the source tarball and runs this engine from the extracted tree (Bun
  * cannot execute a module over HTTP, and the POSIX entry point does not assume
@@ -75,7 +75,7 @@ const SKILLS_ROOT_FOR_REF = resolve(import.meta.dirname, '..', '..', '..')
 // has no `package.json` at all, and stays correct as skills are vendored in or out.
 // The `init` verb is the local re-sync prompt — it execs the sibling `ki-init`
 // wrapper, which re-runs the remote chain at the manifest's recorded ref
-// (ADR-KI-HARNESS-007's Consequences: "INIT vendors nothing per skill... the
+// (ADR-KI-HARNESS-006's Consequences: "INIT vendors nothing per skill... the
 // aggregate init verb is instead the local re-sync prompt").
 const AGGREGATE_RUNNER = `#!/usr/bin/env bun
 // Vendored by ki-bootstrap. Runs each vendored skill checker under ../skills/ in
@@ -269,7 +269,7 @@ cat "$f"
 `
 
 // The re-bootstrap wrapper: re-runs the chain at the ref recorded in the manifest
-// (ADR-KI-HARNESS-007) — `--ref <ref>` overrides to move forward. It pipes the
+// (ADR-KI-HARNESS-006) — `--ref <ref>` overrides to move forward. It pipes the
 // sibling `bootstrap.sh` entry point at that ref through bash, so the transport
 // (tarball fetch, temp-dir extract, prerequisite checks) is implemented exactly
 // once. Requires a ref that ships `bootstrap.sh` — true for every ref a current
@@ -323,7 +323,7 @@ function vendorSkill(target: string, skill: string, dryRun: boolean, manifestFil
   // HELP snapshot — rendered from the skill's SKILL.md at vendor time, the one
   // moment the sources are guaranteed present, so `.ki-meta/bin/ki-help` answers
   // offline in a target that has no SKILL.md files. This resolves
-  // ADR-KI-HARNESS-007's former open question by rendered snapshot; drift is
+  // ADR-KI-HARNESS-006's former open question by rendered snapshot; drift is
   // covered by the manifest hash like every other vendored file.
   const helpAbs = join(destDir, 'help.md')
   try {
@@ -349,7 +349,7 @@ function vendorSkill(target: string, skill: string, dryRun: boolean, manifestFil
 
 // Vendors one declared unit: a checker FILE is copied as-is; a COMMAND is wrapped
 // in a thin generated script so it runs with no package.json in the target
-// (ADR-KI-HARNESS-007 — "even a skill whose mechanical gate is a shared command...
+// (ADR-KI-HARNESS-006 — "even a skill whose mechanical gate is a shared command...
 // yields a unit runnable in a non-engineering, no-package.json repo").
 function vendorOne(
   destDir: string,

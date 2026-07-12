@@ -11,7 +11,7 @@
  * `ki:<suffix>:<verb>` keys — then re-runs both `--check` audits to confirm.
  *
  * Vendored-set drift is NEVER fixed here: per the drift contract
- * (ADR-KI-HARNESS-007) CONFORM only advises. `audit-vendored.ts` runs read-only
+ * (ADR-KI-HARNESS-006) CONFORM only advises. `audit-vendored.ts` runs read-only
  * at the end, and any drift it reports is repaired by re-running INIT
  * (`./.ki-meta/bin/ki-init`, or `bun skills/ki-bootstrap/scripts/init.ts`).
  *
@@ -52,7 +52,7 @@ if (!dryRun) {
   if (run('link-agents.ts', ['--check']) !== 0) failed++
 }
 
-// 3. Advisory only — never re-vendors (ADR-KI-HARNESS-007's drift contract).
+// 3. Advisory only — never re-vendors (ADR-KI-HARNESS-006's drift contract).
 if (run('audit-vendored.ts', all ? ['--all'] : []) !== 0) {
   console.log(
     'vendored-set drift is INIT’s to repair — re-run `./.ki-meta/bin/ki-init` (or `bun skills/ki-bootstrap/scripts/init.ts <target>`)'

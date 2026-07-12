@@ -22,7 +22,7 @@ Two layers feed the standard: the **Claude plugin / marketplace manifest spec** 
 
 ## In-house (projection convention)
 
-The one-plugin marketplace, the verbatim `skills/` copy, the `agents/governance` → flat `agents/` flattening, the MCP-deferred rule, and the byte-for-byte-reproducible invariant are house choices, defined by the generator [`ki-binding/scripts/build-plugin.ts`](../../ki-binding/scripts/build-plugin.ts) and recorded in `ADR-KI-HARNESS-003`. They are not spec requirements — a REFRESH must not promote them to "MUST" against the authoritative table.
+The one-plugin marketplace, the verbatim `skills/` copy, the `agents/governance` → flat `agents/` flattening, the MCP-deferred rule, and the byte-for-byte-reproducible invariant are house choices, defined by the generator [`ki-binding/scripts/build-plugin.ts`](../../ki-binding/scripts/build-plugin.ts) and recorded in `ADR-KI-HARNESS-002`. They are not spec requirements — a REFRESH must not promote them to "MUST" against the authoritative table.
 
 ## Last review
 
