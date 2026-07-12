@@ -8,13 +8,13 @@ The canonical home for the Knowledge Islands **Agent Skills** (per the [Agent Sk
 
 ## Five-part bundle status
 
-| Part        | Directory | Status                                                            |
-| ----------- | --------- | ----------------------------------------------------------------- |
-| Skills      | `skills/` | **Populated** — the governance `ki-*` skills                      |
-| Agents      | `agents/` | **Populated** — governance agents in `agents/governance/`         |
-| MCP servers | `mcp/`    | **Shelf** — scaffolded, no servers yet                            |
-| Evals       | `evals/`  | **Populated (partial)** — scenarios + result matrices in `evals/` |
-| Hooks       | `hooks/`  | **Shelf** — scaffolded, no hooks yet                              |
+| Part | Directory | Status |
+| --- | --- | --- |
+| Skills | `skills/` | **Populated** — the governance `ki-*` skills |
+| Agents | `agents/` | **Populated** — governance agents in `agents/governance/` |
+| MCP servers | `mcp/` | **Shelf** — scaffolded, no servers yet |
+| Evals | `evals/` | **Populated (partial)** — scenarios + result matrices in `evals/` |
+| Hooks | `hooks/` | **Populated (partial)** — plan-file lifecycle pair (`hooks/plan-stamp.sh`, `hooks/plan-sync.sh`) + `ki:hooks:link:global` |
 
 ## How skills relate — composition only
 

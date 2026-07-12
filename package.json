@@ -70,6 +70,7 @@
     "ki:harness:audit": "bun .ki-meta/skills/ki-harness/audit.ts .",
     "ki:harness:conform": "bun .ki-meta/skills/ki-harness/conform.ts .",
     "ki:help": "bun .ki-meta/bin/aggregate.ts help",
+    "ki:hooks:link:global": "bun skills/ki-bootstrap/scripts/link-hooks.ts",
     "ki:housekeeping:audit": "bun .ki-meta/skills/ki-housekeeping/audit.ts .",
     "ki:housekeeping:conform": "bun .ki-meta/skills/ki-housekeeping/conform.ts .",
     "ki:init": "bun .ki-meta/bin/aggregate.ts init",
@@ -89,7 +90,7 @@
     "ki:tokenomics:audit": "bun .ki-meta/skills/ki-tokenomics/audit.ts .",
     "ki:tokenomics:conform": "bun .ki-meta/skills/ki-tokenomics/conform.ts .",
     "prepare": "husky",
-    "test": "bun skills/ki-bootstrap/scripts/link-skills.test.ts && bun skills/ki-skills/scripts/audit.test.ts && bun skills/ki-housekeeping/scripts/audit.test.ts && bun skills/ki-tokenomics/scripts/audit.test.ts && bun evals/guide-suite.ts && bun scripts/skill-graph.ts --check && bun scripts/skill-help.ts --check && bun skills/ki-bootstrap/scripts/audit.ts ."
+    "test": "bun skills/ki-bootstrap/scripts/link-skills.test.ts && bun hooks/plan-stamp.test.ts && bun hooks/plan-sync.test.ts && bun skills/ki-skills/scripts/audit.test.ts && bun skills/ki-housekeeping/scripts/audit.test.ts && bun skills/ki-tokenomics/scripts/audit.test.ts && bun evals/guide-suite.ts && bun scripts/skill-graph.ts --check && bun scripts/skill-help.ts --check && bun skills/ki-bootstrap/scripts/audit.ts ."
   },
   "type": "module"
 }
