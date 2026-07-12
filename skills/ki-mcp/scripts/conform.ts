@@ -28,13 +28,21 @@
  *     keys already present.
  *   - .ki-config.toml: appends a `[ki-mcp]` marker table when absent, mirroring
  *     how conform.ts appends its own `[ki-repo]` marker.
+ *   - Typed client: if `ki:generate:client` is already defined, runs it
+ *     (`bun run ki:generate:client`) to regenerate `src/generated/client.ts` +
+ *     `types.d.ts` against the current tool surface. Best-effort — it needs
+ *     the server registered with mcporter and `dist/` already built (not the
+ *     mcporter daemon; ki-mcp servers are ephemeral, so `mcporter emit-ts`
+ *     spawns its own short-lived process). A failure is surfaced as a manual
+ *     TODO, never fatal to the run.
  *
  * Deliberately NEVER touches (judgment → manual TODOs):
  *   - src/ layout (config/mcp-server/tools/main/utils presence) — scaffold by
  *     hand or copy from the closest healthy sibling.
- *   - MCP-specific npm scripts (ki:server:mcp:*, ki:generate:client,
- *     ki:server:auth:*, ki:test:record/replay) — copy from a sibling
- *     package.json, don't invent.
+ *   - Defining MCP-specific npm scripts in the first place (ki:server:mcp:*,
+ *     ki:generate:client, ki:server:auth:*, ki:test:record/replay) — copy from
+ *     a sibling package.json, don't invent. (Once `ki:generate:client` exists,
+ *     CONFORM does run it — see Fixes above.)
  *   - vitest coverage excludes (mcp-server/index.ts, tools/**, etc.) — repo's
  *     own vitest.config.ts, edit by hand.
  *   - config/index.ts surface (loadConfig, process.loadEnvFile,
@@ -47,6 +55,7 @@
  * fixes never fail the run.
  */
 
+import { execSync } from 'node:child_process'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
@@ -141,7 +150,28 @@ async function main() {
   }
   if (!pkgChanged) console.log(`  ${paint(C.dim, 'nothing to fix')}`)
 
-  // ── d) [ki-mcp] config marker ──
+  // ── d) typed client (ki:generate:client) ──
+  console.log(`\n${paint(C.cyan, 'typed client (ki:generate:client)')}`)
+  const scripts = (pkg.scripts ?? {}) as Record<string, string>
+  if (!scripts['ki:generate:client']) {
+    console.log(`  ${paint(C.dim, 'skip')}   no ki:generate:client script (defining one is a manual TODO, see below)`)
+  } else if (dryRun) {
+    console.log(`  ${paint(C.dim, 'skip (dry run)')}   would run: bun run ki:generate:client`)
+  } else {
+    try {
+      execSync('bun run ki:generate:client', { cwd: target, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] })
+      console.log(`  ${paint(C.green, 'ran')}   bun run ki:generate:client — src/generated/{client.ts,types.d.ts} regenerated`)
+    } catch (e) {
+      const err = e as { stderr?: string; stdout?: string }
+      const detail = (err.stderr ?? err.stdout ?? String(e)).trim().split('\n')[0]
+      manualTodos.push(
+        `ki:generate:client failed — regenerate by hand once fixed (verify \`dist/\` is built and the server is registered — \`mcporter list\`): ${detail}`
+      )
+      console.log(`  ${paint(C.red, 'failed')}  bun run ki:generate:client — see manual TODOs`)
+    }
+  }
+
+  // ── e) [ki-mcp] config marker ──
   console.log(`\n${paint(C.cyan, `${KI_CONFIG} [${KI_SECTION}] marker`)}`)
   const kiPath = join(target, KI_CONFIG)
   const kiText = existsSync(kiPath) ? readFileSync(kiPath, 'utf8') : null
