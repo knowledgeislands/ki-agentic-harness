@@ -16,7 +16,8 @@
 # defaults injected only when absent: the target (the cwd) and `--ref` (`main`).
 # So the zero-arg pipe is `<cwd> --ref main`, while `… | sh -s -- <target>
 # --ref <sha> --dry-run` all reach bootstrap.ts intact. `ki-init` re-syncs this
-# way, pinning `--ref` to the manifest's recorded ref.
+# way, defaulting `--ref` to `main` (latest) unless a ref is passed; the engine
+# resolves whatever ref ran to a concrete SHA and records that in the manifest.
 set -eu
 
 REPO="knowledgeislands/ki-agentic-harness"

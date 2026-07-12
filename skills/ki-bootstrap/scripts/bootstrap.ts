@@ -26,10 +26,11 @@
  * the bunx form runs this engine as the package bin directly (pin a sha — bunx
  * caches floating git refs):
  *   bunx github:knowledgeislands/ki-agentic-harness#<sha> <target> --ref <sha>
- * The vendored `.ki-meta/bin/ki-init` wrapper pipes the same script at the
- * manifest's recorded ref. Skill sources are always read from the engine's own
- * working tree; `--ref` records the ref in the manifest when that tree has no
- * `.git` (a tarball extract).
+ * The vendored `.ki-meta/bin/ki-init` wrapper pipes the same script at `main` by
+ * default (or the `--ref` passed). Skill sources are always read from the engine's
+ * own working tree; `--ref` supplies the ref when that tree has no `.git` (a tarball
+ * extract), and the engine resolves it to a concrete SHA before recording it in the
+ * manifest.
  *
  * Bootstrap's one job is to build `.ki-meta/` — vendor each resolved skill's
  * mechanical unit + HELP snapshot, write the `bin/` wrappers, stamp the manifest.
@@ -51,6 +52,7 @@ const DIM = '\x1b[2m'
 const RESET = '\x1b[0m'
 
 const VENDOR_DIR = '.ki-meta' // relative to the target repo root (dot-prefixed, generated-not-authored)
+const REPO_SLUG = 'knowledgeislands/ki-agentic-harness'
 
 // The current harness ref — recorded in the manifest so `ki-init` can re-run the
 // chain at the same point later. Falls back to 'unknown' when not in a git
@@ -68,13 +70,34 @@ function harnessRef(): string {
 }
 const SKILLS_ROOT_FOR_REF = resolve(import.meta.dirname, '..', '..', '..')
 
+// Resolve a possibly-symbolic ref (a branch like `main`, a tag, a short SHA) to the
+// concrete 40-hex commit SHA, so the manifest always records an immutable point even
+// when the chain was invoked with `--ref main`. This is the record/policy split:
+// `ki-init` defaults its *policy* to the moving `main` (always fetch latest), while the
+// manifest keeps an exact *record* of what was actually applied. Best-effort: a full
+// SHA passes through untouched, and any failure (git absent, offline) falls back to the
+// ref as given — offline-safe, never fatal, matching harnessRef().
+function resolveRef(ref: string): string {
+  if (/^[0-9a-f]{40}$/.test(ref) || ref === 'unknown') return ref
+  try {
+    const out = execFileSync('git', ['ls-remote', `https://github.com/${REPO_SLUG}.git`, ref], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore']
+    }).trim()
+    const sha = out.split('\n')[0]?.split('\t')[0]?.trim()
+    return sha && /^[0-9a-f]{40}$/.test(sha) ? sha : ref
+  } catch {
+    return ref
+  }
+}
+
 // The aggregate runner vendored into every target — discovers the vendored checkers
 // under its sibling `../skills/` dir (an allowlist: only that dir is scanned, so `bin/`
 // and the report dirs are never mistaken for skills) and fans out over them for the
 // given verb. It reads the filesystem, not `package.json`, so it works in a repo that
 // has no `package.json` at all, and stays correct as skills are vendored in or out.
 // The `init` verb is the local re-sync prompt — it execs the sibling `ki-init`
-// wrapper, which re-runs the remote chain at the manifest's recorded ref
+// wrapper, which re-runs the remote chain at `main` (or a passed `--ref`)
 // (ADR-KI-HARNESS-006's Consequences: "INIT vendors nothing per skill... the
 // aggregate init verb is instead the local re-sync prompt").
 const AGGREGATE_RUNNER = `#!/usr/bin/env bun
@@ -268,20 +291,23 @@ fi
 cat "$f"
 `
 
-// The re-bootstrap wrapper: re-runs the chain at the ref recorded in the manifest
-// (ADR-KI-HARNESS-006) — `--ref <ref>` overrides to move forward. It pipes the
+// The re-bootstrap wrapper: bare, it re-runs the chain at `main` — always pulling the
+// latest harness — while `--ref <ref>` pins to a specific commit/tag. It pipes the
 // sibling `bootstrap.sh` entry point at that ref through bash, so the transport
-// (tarball fetch, temp-dir extract, prerequisite checks) is implemented exactly
-// once. Requires a ref that ships `bootstrap.sh` — true for every ref a current
-// engine can have stamped.
+// (tarball fetch, temp-dir extract, prerequisite checks) is implemented exactly once.
+// Requires a ref that ships `bootstrap.sh` — true for every ref a current engine can
+// have stamped. The exact commit last applied is not baked in here (it would just
+// duplicate — and drift from — the manifest): `.ki-meta/manifest.json` is the sole
+// record of what was applied, and the engine resolves whatever ref ran to a concrete
+// SHA before writing it there (see resolveRef).
 // Network-requiring and idempotent; never invoked automatically (only via `ki-init`
 // or the aggregate's `init` verb).
-function binKiInit(ref: string): string {
+function binKiInit(): string {
   return `#!/bin/sh
 # Vendored by ki-bootstrap — re-runs the remote INIT chain to refresh this repo's
 # vendored scripts. Usage: ./.ki-meta/bin/ki-init [--ref <ref>] [--dry-run] [--help]
 set -eu
-DEFAULT_REF="${ref}"
+DEFAULT_REF="main"
 REPO="knowledgeislands/ki-agentic-harness"
 ref="$DEFAULT_REF"
 pass=""
@@ -290,7 +316,8 @@ while [ $# -gt 0 ]; do
     --ref) ref="$2"; shift 2 ;;
     --help|-h)
       echo "usage: ki-init [--ref <ref>] [--dry-run]"
-      echo "  re-runs the remote bootstrap chain against this repo at <ref> (default: the ref recorded in .ki-meta/manifest.json, ${ref})"
+      echo "  re-runs the remote bootstrap chain against this repo at <ref> (default: main — the latest harness)."
+      echo "  the exact commit last applied is recorded in .ki-meta/manifest.json."
       exit 0
       ;;
     *) pass="$pass $1"; shift ;;
@@ -447,7 +474,7 @@ function main(): void {
   // Vendor the aggregate runner + the package.json-free entry points — both under
   // .ki-meta/ so the whole generated surface is dot-prefixed (off the repo's own bin/,
   // auto-ignored by chezmoi).
-  const ref = refOverride ?? harnessRef()
+  const ref = resolveRef(refOverride ?? harnessRef())
   const aggRel = join(VENDOR_DIR, 'bin', 'aggregate.ts')
   const auditBinRel = join(VENDOR_DIR, 'bin', 'ki-audit')
   const conformBinRel = join(VENDOR_DIR, 'bin', 'ki-conform')
@@ -461,7 +488,7 @@ function main(): void {
     chmodSync(join(target, auditBinRel), 0o755)
     writeFileSync(join(target, conformBinRel), BIN_KI_CONFORM)
     chmodSync(join(target, conformBinRel), 0o755)
-    writeFileSync(join(target, initBinRel), binKiInit(ref))
+    writeFileSync(join(target, initBinRel), binKiInit())
     chmodSync(join(target, initBinRel), 0o755)
     writeFileSync(join(target, helpBinRel), BIN_KI_HELP)
     chmodSync(join(target, helpBinRel), 0o755)
