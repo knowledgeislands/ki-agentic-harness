@@ -212,8 +212,20 @@ if (enforced('branch-protection')) {
       console.log(`  ${paint(C.red, 'fail')}  branch protection — ${String((e as Error).message ?? e).split('\n')[0]}`)
     }
   }
+} else if (dryRun) {
+  console.log(`  ${paint(C.dim, '$')} gh api -X DELETE repos/${nwo}/branches/main/protection`)
 } else {
-  gh(['api', '-X', 'DELETE', `repos/${nwo}/branches/main/protection`], dryRun, 'strip any leftover branch protection (default: off)')
+  try {
+    execFileSync('gh', ['api', '-X', 'DELETE', `repos/${nwo}/branches/main/protection`], { encoding: 'utf8' })
+    console.log(`  ${paint(C.green, 'ok')}    strip any leftover branch protection (default: off)`)
+  } catch (e) {
+    const msg = String((e as Error).message ?? e)
+    if (!isPublic && /Upgrade to GitHub Pro/.test(msg)) {
+      console.log(`  ${paint(C.dim, 'skip')}  branch protection unavailable on this plan for private repos — nothing to strip`)
+    } else {
+      console.log(`  ${paint(C.red, 'fail')}  strip any leftover branch protection (default: off) — ${msg.split('\n')[0]}`)
+    }
+  }
 }
 
 // ── Layer 3: deeper GitHub ──
