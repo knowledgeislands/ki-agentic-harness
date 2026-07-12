@@ -74,6 +74,21 @@ if (!prettier) {
   } else {
     add('WARN', 'toolchain', '.prettierrc.json has no printWidth — table-reshape threshold unknown')
   }
+
+  // proseWrap is load-bearing for this skill's own conform: anything but "never"
+  // means the Prettier pass conform shells out to actively hard-wraps prose,
+  // contradicting references/markdown-authoring.md's line-wrapping convention.
+  const pw = prettier.match(/"proseWrap"\s*:\s*"(\w+)"/)
+  if (pw?.[1] === 'never') {
+    add('PASS', 'toolchain', '.prettierrc.json proseWrap = "never" (required — conform hard-wraps prose otherwise)')
+  } else {
+    add(
+      'FAIL',
+      'toolchain',
+      `.prettierrc.json proseWrap must be "never" (found ${pw ? `"${pw[1]}"` : 'unset'}) — ` +
+        'conform will hard-wrap prose lines, contradicting the house Markdown convention'
+    )
+  }
 }
 
 // ── judgment surface: Markdown [J] criteria ────────────────────────────────────

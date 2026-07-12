@@ -1,10 +1,10 @@
 {
-  "ref": "b752d2efbb309df6cfda25dddd5d3be3f2b15692",
+  "ref": "4a327ca2f94ced1dc9e499cce07e81cbab576169",
   "files": {
     ".ki-meta/skills/ki-agents/audit.ts": "dfd37ac46add26f0ca4e72e6c66fb8e75df13b2491bf0cfbadbb2de31309bc03",
     ".ki-meta/skills/ki-agents/conform.ts": "f6d26714d4b5ab2c3f55196b190b9624d5cba76767274e7611acd9b3d0f195d3",
     ".ki-meta/skills/ki-agents/help.md": "6267cb596e86d0a578d2370d0ff850d3bc11ed6c3086ac05337df5f4c65341da",
-    ".ki-meta/skills/ki-authoring/audit.ts": "65dbe8dac967a3a122c31e8485d586576335ee1e037a7b71e4a803f63d8df9ad",
+    ".ki-meta/skills/ki-authoring/audit.ts": "748a34c86942dcfd5a4036aee30bafebd7aba8190ddef0b466b01a81934a9fc1",
     ".ki-meta/skills/ki-authoring/conform.ts": "73ea8ebc371bc1307d8e5aa24cf924376ab575e95dede89b92fcc80add557fc1",
     ".ki-meta/skills/ki-authoring/help.md": "ee3408470f0ac2c1800451a9f494170b99b55c227850fa3d5c537f7160cdc6b1",
     ".ki-meta/skills/ki-decision-records/audit.ts": "3d01c055eb18791564070f27153411df280219d1058ff6b9ae3e39fb444f651c",
