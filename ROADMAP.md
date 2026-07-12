@@ -88,10 +88,6 @@ Two leads to check when this is picked up: mcporter itself already covers some o
 
 [Hermes](https://github.com/nousresearch/hermes-agent) is a candidate host for offloading long-running or overnight agent work — the goal is background async execution (e.g. while asleep or away from the laptop), not a replacement for the interactive harness workflow; keep Hermes a tool invoked for a specific class of work, not the main focus of daily use. Two candidate homes: the Mac Studio (always-on, local network, no extra cost) versus an AWS account (reachable from anywhere, but adds cloud spend and a security/access-control surface to manage). Evaluate: which harness surfaces (skills/agents/MCP) Hermes needs to reach and whether that repeats the host-local reachability wall already tracked above (Cowork sandbox, mcporter web-parity items) — a remote Hermes instance likely needs the same authenticated-endpoint treatment as those; how a job gets handed to Hermes and how its results get back into the harness/KB; and what "done, needs review" surfacing looks like so background runs don't silently pile up unreviewed.
 
-### Rename `mcp-kb-notion-mirror` to `mcp-ki-kb-notion-mirror`
-
-Bring the repo's directory/package name in line with the `ki-` prefix convention. Mechanical rename across the repo (package.json `name`, README, CI badges, any cross-repo references such as `ki-agentic-harness/scripts/generate-clients.ts` and the `ki-mcp` standard doc's repo list) plus the GitHub repo rename itself.
-
 ### The harness `docs/` is canonical authoring; the website vendors a copy
 
 Skill and design documentation is authored here and stays canonical — it is an **input** to two downstream consumers: ki-arcadia-principal references it (via the `Agentic Tool Documentation` stream), and ki-website needs it for its pages. The harness stays **canonical for its own story** — the human-first overview ([docs/overview.md](docs/guides/user-guide/overview.md)) and the skill/design docs live here; the downstream repos reference rather than own them.

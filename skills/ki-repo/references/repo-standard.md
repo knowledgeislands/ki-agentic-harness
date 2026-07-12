@@ -151,8 +151,8 @@ The cascade's companion is a **cardinality** rule: a repo declares **at most one
 `gh` CLI, authenticated with repo-admin scope. (zsh: use an array, not a bare string — unquoted `$var` does not word-split.)
 
 ```zsh
-all=(ki-arcadia-principal ki-agentic-harness ki-website mcp-claude-housekeeping mcp-git-audit mcp-gsuite mcp-kb-fs mcp-kb-notion-mirror mcp-m365)
-public=(mcp-claude-housekeeping mcp-git-audit mcp-gsuite mcp-kb-fs mcp-kb-notion-mirror mcp-m365)
+all=(ki-arcadia-principal ki-agentic-harness ki-website mcp-claude-housekeeping mcp-git-audit mcp-gsuite mcp-kb-fs mcp-ki-kb-notion-mirror mcp-m365)
+public=(mcp-claude-housekeeping mcp-git-audit mcp-gsuite mcp-kb-fs mcp-ki-kb-notion-mirror mcp-m365)
 
 # Layer 1 — each repo declares its config in .ki-config.toml (committed via PR like any file).
 #   Scaffold the [ki-repo] defaults, then edit:
@@ -205,4 +205,4 @@ Both check every layer against GitHub; the path / `--org` only decides which rep
 
 ## Conformance
 
-As of **2026-05-31**, all 9 `knowledgeislands` repos conform on layers 2–3. Outstanding layer-1 work: every repo still needs a `.ki-config.toml` (declaring its visibility + any check overrides), and `mcp-kb-notion-mirror` needs `.editorconfig` — each a direct commit to `main`.
+As of **2026-05-31**, all 9 `knowledgeislands` repos conform on layers 2–3. Outstanding layer-1 work: every repo still needs a `.ki-config.toml` (declaring its visibility + any check overrides), and `mcp-ki-kb-notion-mirror` needs `.editorconfig` — each a direct commit to `main`.
