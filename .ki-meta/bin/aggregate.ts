@@ -47,10 +47,12 @@ const skills = readdirSync(skillsDir, { withFileTypes: true })
 // { concern, target, generatedAt, summary, findings }. A couple of outliers (e.g.
 // ki-housekeeping) emit a bare findings array with { id, severity: <0-6>, message }
 // instead — SEV_BY_NUM and the field fallbacks below absorb that variant too.
-// Every icon is a full-width (2-column) emoji, so no per-glyph space padding is needed —
-// ⚠️/ℹ️ carry their VS16 emoji-presentation selector (render 2 cols), and NA uses 🚫
-// (a 2-col circle-slash) in place of the 1-col ⊘. Uniform width keeps the level column aligned.
-const ICON = { FAIL: '\u274c', WARN: '\u26a0\ufe0f', POLISH: '\u2728', ADVISORY: '\ud83e\udded', INFO: '\u2139\ufe0f', NA: '\ud83d\udeab', PASS: '\u2705' }
+// Every icon must occupy two display columns so the level column aligns. Most are
+// Emoji_Presentation=Yes glyphs (genuinely 2 cols everywhere); ⚠️/ℹ️ have narrow base
+// chars that VS16 does NOT widen under wcwidth-style terminals (VS Code/xterm.js counts
+// them 1 col), so they carry an explicit trailing space to make up the second column.
+// NA uses 🚫 (a 2-col circle-slash) in place of the 1-col ⊘.
+const ICON = { FAIL: '\u274c', WARN: '\u26a0\ufe0f ', POLISH: '\u2728', ADVISORY: '\ud83e\udded', INFO: '\u2139\ufe0f ', NA: '\ud83d\udeab', PASS: '\u2705' }
 const SEV_BY_NUM = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 // The recap splits real violations (FAIL/WARN/POLISH — the checker decided a criterion
 // is broken) from ADVISORY (always-on judgment reminders the checker cannot decide). A
