@@ -77,6 +77,10 @@ During a memory/`CLAUDE.md` review session (2026-07-12), several fixes were iden
 
 During the audit/conform standardization session (2026-07-12), two background agents (`norm-mcp`, `norm-repo`, dispatched via the `Agent` tool with implicit backgrounding) were reported as still running at the point `/compact` fired. After compaction, their target files (`skills/ki-mcp/scripts/*.ts`, `skills/ki-repo/scripts/*.ts`) showed zero changes — the agents' work, if any had completed, never persisted, and there was no error or notification marking the loss; it only surfaced because a `git status` diff came back empty against what the pre-compaction summary claimed. The recovery was to re-dispatch fresh, fully self-contained agent prompts rather than attempt to resume the original agent IDs. Worth turning into a durable guardrail: either (a) avoid firing `/compact` while a background agent is outstanding — e.g. `TaskOutput`/`Monitor`-wait for it first — or (b) have the harness/skill guidance flag this explicitly so a future session doesn't need to rediscover it. Candidate home: `workflow.md` (global) or a `ki-tokenomics`/`ki-recap` note, since it's a cross-project agent-orchestration gotcha, not specific to this repo.
 
+### Run a `ki-housekeeping` cleanup pass on this machine's Claude Code state
+
+A live `kit-mcp-claude-housekeeping` call via the `mcporter` bridge (2026-07-13) found `~/.claude/projects` at 715 MB and `~/.claude/telemetry` at 145 MB on this machine — flagged in passing while verifying the bridge worked, not yet triaged. Run `ki-housekeeping`'s CONFORM mode (from Claude Desktop or via `mcporter`, since the server's access level needs to be `destructive` rather than this machine's default `read` to actually clean anything) to see what's safe to prune — likely session/telemetry retention, not memory (already audited clean this session).
+
 ## Future
 
 ### Reclassify the remaining borderline DRs _(candidate)_
