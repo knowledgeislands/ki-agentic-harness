@@ -23,7 +23,7 @@
  * Vendored-set drift is NEVER fixed here: per the drift contract
  * (ADR-KI-HARNESS-006) CONFORM only advises. `audit.ts` runs read-only
  * at the end, and any drift it reports is repaired by re-running INIT
- * (`./.ki-meta/bin/ki-init`, or `bun skills/ki-bootstrap/scripts/init.ts`).
+ * (`./.ki-meta/bin/ki-init`, or `bun skills/keystone/ki-bootstrap/scripts/init.ts`).
  *
  * NEVER touches (judgment → manual): the declared coverage itself (the
  * `.ki-config.toml` `[ki-*]` tables — BOOT-4, ki-repo's coverage cascade) and a
@@ -93,7 +93,7 @@ if (run('audit.ts', []) !== 0) {
   rec('INFO', 'BOOT-9', 'vendored-set drift detected — INIT’s to repair (`./.ki-meta/bin/ki-init`)', RUBRIC, '.ki-meta/skills/')
   if (!json)
     console.log(
-      'vendored-set drift is INIT’s to repair — re-run `./.ki-meta/bin/ki-init` (or `bun skills/ki-bootstrap/scripts/init.ts <target>`)'
+      'vendored-set drift is INIT’s to repair — re-run `./.ki-meta/bin/ki-init` (or `bun skills/keystone/ki-bootstrap/scripts/init.ts <target>`)'
     )
 } else {
   rec('PASS', 'BOOT-9', 'vendored-set audit reports no drift', RUBRIC, '.ki-meta/skills/')

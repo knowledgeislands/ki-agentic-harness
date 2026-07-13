@@ -44,7 +44,7 @@ Carries the universal **AUDIT · CONFORM · INIT · REFRESH**. Invoked as `help`
 
 Check that a code repo's plans are methodologically sound and mechanically consistent. In a KB (`repo_type = "kb"` in `.ki-config.toml`), there is no `docs/plans/` — report that KB planning is governed by `ki-kb-streams` and stop.
 
-The mechanical half is [`scripts/audit.ts`](scripts/audit.ts) — run `bun run ki:plans:audit` (or `bun skills/ki-plans/scripts/audit.ts docs/plans`). It checks:
+The mechanical half is [`scripts/audit.ts`](scripts/audit.ts) — run `bun run ki:plans:audit` (or `bun skills/general-governance/ki-plans/scripts/audit.ts docs/plans`). It checks:
 
 1. **Frontmatter** — each `*.md` under a theme folder (excluding `README.md`) has `id`, `title`, `status`, `roadmap`, `blocks`, `blocked-by`; `status` ∈ {open, in-progress, done}; `id` is a global, zero-padded, three-digit string, unique across themes; **no `phase` field**.
 2. **Placement** — files sit at `docs/plans/<theme>/<NNN>-<slug>.md`; the filename id matches the frontmatter `id`.

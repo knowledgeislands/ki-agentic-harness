@@ -10,7 +10,7 @@ The behaviour of the bootstrap chain: how the harness brings a target repo under
 
 After the INIT chain runs against a target repo, that repo MUST govern itself with `./.ki-meta/bin/ki-audit` and **zero** Knowledge Islands skills installed — and with **no `package.json` of its own** — per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md).
 
-_Verify:_ bootstrap a bare fixture (`.ki-config.toml` only, no `package.json`, no `.claude/skills/`) with `skills/ki-bootstrap/scripts/bootstrap.ts <fixture>`, then run `./.ki-meta/bin/ki-audit` in it — the vendored checkers execute and report.
+_Verify:_ bootstrap a bare fixture (`.ki-config.toml` only, no `package.json`, no `.claude/skills/`) with `skills/keystone/ki-bootstrap/scripts/bootstrap.ts <fixture>`, then run `./.ki-meta/bin/ki-audit` in it — the vendored checkers execute and report.
 
 ### BOOT-002 — Vendored copies, not symlinks
 
@@ -48,18 +48,18 @@ Re-running the idempotent bootstrap chain is the single update path — there ar
 
 ### BOOT-007 — Vendored-set alignment check
 
-The harness MUST be able to verify a target's `.ki-meta/skills/` matches the expected resolved set (baseline ∪ declared `[ki-*]` tables ∪ the transitive `implies:` closure, restricted to skills carrying a checker) — since the `implies:` graph lives only in source SKILL.md frontmatter, this check runs harness-side, not from the target's own standalone `.ki-meta/bin/ki-audit`. Drift is a WARN, never a FAIL — a re-bootstrap always reconciles it. See [BOOT-9](../../skills/ki-bootstrap/references/audit-rubric.md).
+The harness MUST be able to verify a target's `.ki-meta/skills/` matches the expected resolved set (baseline ∪ declared `[ki-*]` tables ∪ the transitive `implies:` closure, restricted to skills carrying a checker) — since the `implies:` graph lives only in source SKILL.md frontmatter, this check runs harness-side, not from the target's own standalone `.ki-meta/bin/ki-audit`. Drift is a WARN, never a FAIL — a re-bootstrap always reconciles it. See [BOOT-9](../../skills/keystone/ki-bootstrap/references/audit-rubric.md).
 
-_Verify:_ `bun skills/ki-bootstrap/scripts/audit-vendored.ts <target>` reports PASS when `.ki-meta/skills/` equals the expected set, and WARNs (listing both directions) when a skill is stray-vendored or missing.
+_Verify:_ `bun skills/keystone/ki-bootstrap/scripts/audit-vendored.ts <target>` reports PASS when `.ki-meta/skills/` equals the expected set, and WARNs (listing both directions) when a skill is stray-vendored or missing.
 
 ### BOOT-008 — Remote INIT transport
 
 The INIT chain MUST be runnable on a machine carrying nothing but `bun` — via a POSIX-`sh` entry point (`bootstrap.sh`) that fetches the repo tarball from `codeload.github.com` and execs the engine, and via a vendored `.ki-meta/bin/ki-init` wrapper that re-runs the same remote script — per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md).
 
-_Verify:_ `skills/ki-bootstrap/scripts/bootstrap.sh` line 1 is `#!/bin/sh` and its `codeload.github.com` fetch pipes into `bootstrap.ts`; a governed repo's `.ki-meta/bin/ki-init` re-invokes that script (never `bun run <raw-url>`, which Bun cannot execute over HTTP).
+_Verify:_ `skills/keystone/ki-bootstrap/scripts/bootstrap.sh` line 1 is `#!/bin/sh` and its `codeload.github.com` fetch pipes into `bootstrap.ts`; a governed repo's `.ki-meta/bin/ki-init` re-invokes that script (never `bun run <raw-url>`, which Bun cannot execute over HTTP).
 
 ### BOOT-009 — `--all` links and vendors every skill
 
 The bootstrap and link engines MUST accept `--all` to link and vendor every skill rather than the coverage subset, and the harness — the authoring hub — MUST use it, so `ki:skills:link:project` passes `--all`.
 
-_Verify:_ `skills/ki-bootstrap/scripts/link-skills.ts` parses `--all` (feeding `expectedSet`), and `package.json`'s `ki:skills:link:project` invokes it with `--all`.
+_Verify:_ `skills/keystone/ki-bootstrap/scripts/link-skills.ts` parses `--all` (feeding `expectedSet`), and `package.json`'s `ki:skills:link:project` invokes it with `--all`.

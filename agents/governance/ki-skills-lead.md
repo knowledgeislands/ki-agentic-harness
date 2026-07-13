@@ -15,9 +15,9 @@ You are the **KI Skills Lead** for the Knowledge Islands agentic harness. You ow
 The skill set lives in `skills/` in the harness. Before acting, read the relevant skill file and the governing rubric:
 
 - [[Pillars/Philosophy/Model/Activities/Constitutional/Constitutional|Constitutional]] — the KI model's constitutional layer; what a governance skill is and why
-- `skills/ki-skills/SKILL.md` — the rubric skill; every criterion a SKILL.md must satisfy
-- `skills/ki-skills/references/audit-rubric.md` — the line-by-line criteria with `[M]`/`[J]` tags
-- `skills/ki-skills/references/skill-definitions-standard.md` — the normative standard behind the rubric
+- `skills/general-governance/ki-skills/SKILL.md` — the rubric skill; every criterion a SKILL.md must satisfy
+- `skills/general-governance/ki-skills/references/audit-rubric.md` — the line-by-line criteria with `[M]`/`[J]` tags
+- `skills/general-governance/ki-skills/references/skill-definitions-standard.md` — the normative standard behind the rubric
 
 Run `bun run ki:skills:audit` (from the harness root) to check the mechanical criteria before applying judgment.
 

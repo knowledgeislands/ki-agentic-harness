@@ -12,7 +12,7 @@
  * `implies:` closure, restricted to skills that actually carry a checker) and diffs
  * it against the target's `.ki-meta/skills/*` directories. Any drift — stale config,
  * an upstream skill add/remove, a partial re-vendor — surfaces as a WARN rather than
- * silently going unnoticed; `bun skills/ki-bootstrap/scripts/bootstrap.ts <target>`
+ * silently going unnoticed; `bun skills/keystone/ki-bootstrap/scripts/bootstrap.ts <target>`
  * fixes it by re-vendoring.
  *
  * Usage: bun audit.ts [target-repo] [--json]   (read-only)
@@ -99,7 +99,7 @@ function emit(items: Finding[], tgt: string, concern: string, title: string, foo
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
     if (summary.warn > 0)
-      console.log('→ to address: run /ki-bootstrap CONFORM   (re-vendor: bun skills/ki-bootstrap/scripts/bootstrap.ts <target>)')
+      console.log('→ to address: run /ki-bootstrap CONFORM   (re-vendor: bun skills/keystone/ki-bootstrap/scripts/bootstrap.ts <target>)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }
@@ -138,7 +138,7 @@ if (missing.length)
   add(
     'WARN',
     'BOOT-9',
-    `missing from .ki-meta/skills/: ${missing.join(', ')} — re-run \`bun skills/ki-bootstrap/scripts/bootstrap.ts ${target}\``,
+    `missing from .ki-meta/skills/: ${missing.join(', ')} — re-run \`bun skills/keystone/ki-bootstrap/scripts/bootstrap.ts ${target}\``,
     RUBRIC,
     '.ki-meta/skills/'
   )

@@ -8,7 +8,7 @@
 // Usage:
 //   bun sync-skills.ts <command> [--target <dir>] [--root <dir>] [--dry-run]
 //
-// Canonical home is skills/ki-bootstrap/scripts/; it is also vendored into a
+// Canonical home is skills/keystone/ki-bootstrap/scripts/; it is also vendored into a
 // governed harness-shaped target's .ki-meta/bin/. It resolves the skills tree
 // from the current working directory (repo root), not relative to its own file,
 // so the same copy works from either location (ADR-KI-HARNESS-008).

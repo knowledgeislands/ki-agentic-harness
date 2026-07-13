@@ -36,7 +36,7 @@ import { fileURLToPath } from 'node:url'
 
 // ── Self-location: find the harness hooks/ root through the (possibly symlinked) script path ──
 const SELF = realpathSync(fileURLToPath(import.meta.url))
-// .../skills/ki-bootstrap/scripts/link-hooks.ts → up to the harness root, then hooks
+// .../skills/keystone/ki-bootstrap/scripts/link-hooks.ts → up to the harness root, then hooks
 const HARNESS_ROOT = resolve(dirname(SELF), '..', '..', '..')
 const HOOKS_SOURCE_ROOT = join(HARNESS_ROOT, 'hooks')
 

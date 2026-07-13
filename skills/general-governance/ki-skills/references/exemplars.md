@@ -18,9 +18,9 @@ Curated illustrations of well-formed `SKILL.md` files. Use these when writing a 
 | `ki-agents` SKILL.md †               | Reference implementation: full frontmatter + skill-specific INIT mode  | 2026-06-21    |
 | `ki-repo` SKILL.md ‡                 | Reference implementation: argument-hint, standard-skill mode structure | 2026-06-21    |
 
-† Located at `skills/ki-agents/SKILL.md` in the harness.
+† Located at `skills/general-governance/ki-agents/SKILL.md` in the harness.
 
-‡ Located at `skills/ki-repo/SKILL.md` in the harness.
+‡ Located at `skills/keystone/ki-repo/SKILL.md` in the harness.
 
 [spec]: https://agentskills.io/specification
 [bp]: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices

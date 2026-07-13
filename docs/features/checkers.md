@@ -10,7 +10,7 @@ The behaviour of a conformant mechanical checker: the deterministic half of ever
 
 A checker's findings MUST grade on the unified ladder FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS, emitting the subset of levels its domain warrants, per [ADR-KI-HARNESS-SKILLS-002](../decisions/ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md).
 
-_Verify:_ `ki-engineering`'s [checker-contract.md](../../skills/ki-engineering/references/checker-contract.md) §The severity ladder enumerates the seven levels every checker draws from.
+_Verify:_ `ki-engineering`'s [checker-contract.md](../../skills/foundations/ki-engineering/references/checker-contract.md) §The severity ladder enumerates the seven levels every checker draws from.
 
 ### CHK-002 — Exit non-zero iff any FAIL
 
@@ -42,7 +42,7 @@ _Verify:_ checker-contract.md §1 pins the `KEY=n` tally; the DR / feature audit
 
 On any non-clean run (any FAIL / WARN / POLISH) a checker's human output MUST end with a one-line footer naming the owning skill and mode that addresses it, and this footer MUST be suppressed under `--json` and `--report`, per [ADR-KI-HARNESS-003](../decisions/ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md).
 
-_Verify:_ `bun skills/ki-skills/scripts/lint-skills.ts skills` — SHAPE-8 scans every `audit-*.ts` / `lint-*.ts` and WARNs if the standardised footer is omitted or names another skill's mode.
+_Verify:_ `bun skills/general-governance/ki-skills/scripts/lint-skills.ts skills` — SHAPE-8 scans every `audit-*.ts` / `lint-*.ts` and WARNs if the standardised footer is omitted or names another skill's mode.
 
 ### CHK-011 — The finding line
 
@@ -80,4 +80,4 @@ _Verify:_ each checker's emitted `area` values are a subset of its `references/a
 
 A conform script MUST support `--json`, emitting the CHK-004 wrapper object so the aggregate renders conform and audit identically, per [ADR-KI-HARNESS-SKILLS-002](../decisions/ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md).
 
-_Verify:_ checker-contract.md §The `--json` shape notes conform scripts emit the same wrapper; `bun skills/ki-authoring/scripts/conform.ts . --json` validates against the CHK-004 shape.
+_Verify:_ checker-contract.md §The `--json` shape notes conform scripts emit the same wrapper; `bun skills/foundations/ki-authoring/scripts/conform.ts . --json` validates against the CHK-004 shape.

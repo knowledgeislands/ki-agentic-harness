@@ -78,7 +78,7 @@ See [[audit-rubric|the rubric]].
 
 <!-- Wrong: file path reference for a skill -->
 
-See `skills/ki-kb/SKILL.md` for KB conventions.
+See `skills/repo-structure/ki-kb/SKILL.md` for KB conventions.
 ```
 
 ### Well-formed `.ki-config.toml` table

@@ -400,7 +400,7 @@ function lintSkill(skillDir: string): Finding[] {
   // universal HELP mode (SHAPE-10 mechanical; ADR-KI-HARNESS-SKILLS-001). Every
   // governance skill exposes HELP — the no-mode default and the `help`/`-h`/`?`
   // pure-explain form — so its `argument-hint` must list a `help` verb. The
-  // HELP block itself is generated (skills/ki-bootstrap/scripts/skill-help.ts); this only checks the
+  // HELP block itself is generated (skills/keystone/ki-bootstrap/scripts/skill-help.ts); this only checks the
   // one-token footprint. The prose HELP semantics are a [J] criterion.
   const hint = fm.keys.get('argument-hint')
   if (hint !== undefined && !/(^|[|\s'"])help([|\s'"]|$)/.test(hint))

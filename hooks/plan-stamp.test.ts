@@ -2,7 +2,7 @@
 /**
  * Run-based behavioural test for `plan-stamp.sh`.
  *
- * Mirrors skills/ki-bootstrap/scripts/link-skills.test.ts's convention: spawnSync the real
+ * Mirrors skills/keystone/ki-bootstrap/scripts/link-skills.test.ts's convention: spawnSync the real
  * script against throwaway fixtures rather than a vitest suite, since the script is a hook
  * entry point (stdin in, exit code out) not an importable module.
  *

@@ -17,7 +17,7 @@ The install model is **keystone-plus-project-local**: only `ki-bootstrap` is ins
 bun run ki:skills:link:global    # symlink just ki-bootstrap into ~/.claude/skills
 ```
 
-Under the hood this is `bun skills/ki-bootstrap/scripts/sync-skills.ts link --only ki-bootstrap`. It is idempotent: it refreshes the existing link, skips a target where a _real_ file or directory is in the way (rather than clobbering it), and creates `~/.claude/skills` if needed. With the keystone in place, any Knowledge Islands repo can self-wire from inside it.
+Under the hood this is `bun skills/keystone/ki-bootstrap/scripts/sync-skills.ts link --only ki-bootstrap`. It is idempotent: it refreshes the existing link, skips a target where a _real_ file or directory is in the way (rather than clobbering it), and creates `~/.claude/skills` if needed. With the keystone in place, any Knowledge Islands repo can self-wire from inside it.
 
 ### Wire a repo's project-local skills
 
@@ -38,14 +38,14 @@ The keystone, user-global:
 
 ```bash
 cd /path/to/ki-agentic-harness
-ln -sfn "$PWD/skills/ki-bootstrap" ~/.claude/skills/ki-bootstrap
+ln -sfn "$PWD/skills/keystone/ki-bootstrap" ~/.claude/skills/ki-bootstrap
 ```
 
 A single skill into a project, by hand:
 
 ```bash
 cd /path/to/target-repo && mkdir -p .claude/skills
-ln -sfn /path/to/ki-agentic-harness/skills/ki-kb .claude/skills/ki-kb
+ln -sfn /path/to/ki-agentic-harness/skills/repo-structure/ki-kb .claude/skills/ki-kb
 ```
 
 `ln -sfn` forces replacement of an existing link and never dereferences into a directory, so re-running it updates the link in place instead of nesting a second link inside it. The link name must match the skill directory name (and the `name:` frontmatter).

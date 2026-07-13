@@ -289,7 +289,7 @@ async function main() {
     `  - Everything else audit.ts flags (IDX-2 dangling entries, IDX-4/5/6, FM-5 duplicate names, DOC-1..6 content doctrine) is prose/judgment.`
   )
   say(
-    `\n${paint(C.dim, 'mechanical layer applied — re-run `bun skills/ki-housekeeping/scripts/audit.ts` (or `ki:housekeeping:audit`) to confirm findings clear.')}`
+    `\n${paint(C.dim, 'mechanical layer applied — re-run `bun skills/environment/ki-housekeeping/scripts/audit.ts` (or `ki:housekeeping:audit`) to confirm findings clear.')}`
   )
 
   emit(findings, json, memoryDir)

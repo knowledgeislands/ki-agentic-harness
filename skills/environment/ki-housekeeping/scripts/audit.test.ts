@@ -71,7 +71,9 @@ try {
 }
 
 // ── Control: a learn-block referencing only this repo → no IDX-6, no footer ──
-const clean = fixture('- Command `bun skills/ki-mcp/scripts/audit.ts ../mcp-gsuite` from knowledgeislands/ki-agentic-harness works.')
+const clean = fixture(
+  '- Command `bun skills/repo-structure/ki-mcp/scripts/audit.ts ../mcp-gsuite` from knowledgeislands/ki-agentic-harness works.'
+)
 try {
   const { code, out } = run(clean)
   check('own-repo block → exit 0', code === 0)

@@ -55,7 +55,7 @@ The records are living, compact, and independent. The order below is a **curated
 
 ## Template
 
-Each record is a **living present-state record** — it states the decision as it stands now and is edited in place; there is no Status, Mutability, supersession, or Changelog. A `**Date:**` line is optional. The full rules live in the `ki-decision-records` skill ([dr-format.md](../../skills/ki-decision-records/references/dr-format.md)).
+Each record is a **living present-state record** — it states the decision as it stands now and is edited in place; there is no Status, Mutability, supersession, or Changelog. A `**Date:**` line is optional. The full rules live in the `ki-decision-records` skill ([dr-format.md](../../skills/general-governance/ki-decision-records/references/dr-format.md)).
 
 ```markdown
 # <PREFIX>-KI-<SCOPE>-NNN: <Title>

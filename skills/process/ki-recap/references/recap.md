@@ -5,10 +5,10 @@ _On-demand procedure for `ki-recap`. The kind, scope, and leg summary live in [`
 ## 1. Run the grounding helper
 
 ```bash
-bun skills/ki-recap/scripts/recap-grounding.ts --json
+bun skills/process/ki-recap/scripts/recap-grounding.ts --json
 ```
 
-(From another repo, use the harness-absolute path, per the "Audit script paths" convention: `bun /path/to/ki-agentic-harness/skills/ki-recap/scripts/recap-grounding.ts --json`.)
+(From another repo, use the harness-absolute path, per the "Audit script paths" convention: `bun /path/to/ki-agentic-harness/skills/process/ki-recap/scripts/recap-grounding.ts --json`.)
 
 This emits `filesTouched` (git status), `diffStat`, `toolTally`, and `highCostCandidates` (repeated identical calls, large-file re-reads). It is a **helper**, not a checker — treat its output as raw signal to combine with warm in-session context, not a verdict.
 

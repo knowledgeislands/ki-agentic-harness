@@ -99,7 +99,7 @@ function emitJson(): void {
 }
 
 function harnessPackageVersion(): string | null {
-  // This script lives at <harness>/skills/ki-plugins/scripts/conform.ts —
+  // This script lives at <harness>/skills/repo-structure/ki-plugins/scripts/conform.ts —
   // walk up to the harness root's package.json regardless of cwd.
   try {
     const here = dirname(fileURLToPath(import.meta.url))
@@ -296,7 +296,7 @@ say(
   '  - Everything else audit.ts flags (repo scaffold files, [ki-plugins] .ki-config.toml marker, plugin name/source-dir agreement, stale projection) is authoring/regeneration judgment.'
 )
 say(
-  `\n${paint(C.dim, 'mechanical layer applied — re-run `bun skills/ki-plugins/scripts/audit.ts` (or `ki:plugins:audit`) to confirm findings clear.')}`
+  `\n${paint(C.dim, 'mechanical layer applied — re-run `bun skills/repo-structure/ki-plugins/scripts/audit.ts` (or `ki:plugins:audit`) to confirm findings clear.')}`
 )
 
 emitJson()

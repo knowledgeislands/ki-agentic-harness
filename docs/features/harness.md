@@ -10,7 +10,7 @@ The behaviour of the harness as a repository: the five-part bundle and the conta
 
 The repo root MUST contain `skills/`, `agents/`, `mcp/`, `evals/`, and `hooks/` as directories, per [ADR-KI-HARNESS-001](../decisions/ADR-KI-HARNESS-001-repository-structure.md).
 
-_Verify:_ `bun skills/ki-harness/scripts/audit-harness.ts .` — LAY-1 PASSes only when all five directories are present (a missing one is a FAIL).
+_Verify:_ `bun skills/repo-structure/ki-harness/scripts/audit-harness.ts .` — LAY-1 PASSes only when all five directories are present (a missing one is a FAIL).
 
 ### HARN-002 — Each part declares its status
 
@@ -54,13 +54,13 @@ _Verify:_ `audit-harness.ts` SKILLS-1 FAILs on any directory-name/`name:` mismat
 
 `ROADMAP.md` MUST list only open work — no completed items, no ticked checkboxes, no `~~struck~~` entries — items being removed when done rather than checked off, per the `ki-harness` standard.
 
-_Verify:_ `ki-harness`'s rubric ROAD-1 ([`skills/ki-harness/references/audit-rubric.md`](../../skills/ki-harness/references/audit-rubric.md)), applied by reading (judgment-graded).
+_Verify:_ `ki-harness`'s rubric ROAD-1 ([`skills/repo-structure/ki-harness/references/audit-rubric.md`](../../skills/repo-structure/ki-harness/references/audit-rubric.md)), applied by reading (judgment-graded).
 
 ### HARN-008 — CLAUDE.md orientation coverage
 
 `CLAUDE.md` MUST open with a paragraph naming all five part-directories (`skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`) and MUST carry a five-part status table marking each part populated or an empty shelf, per the `ki-harness` standard.
 
-_Verify:_ `ki-harness`'s rubric CLAUDE-1 and CLAUDE-2 ([`skills/ki-harness/references/audit-rubric.md`](../../skills/ki-harness/references/audit-rubric.md)), applied by reading (judgment-graded).
+_Verify:_ `ki-harness`'s rubric CLAUDE-1 and CLAUDE-2 ([`skills/repo-structure/ki-harness/references/audit-rubric.md`](../../skills/repo-structure/ki-harness/references/audit-rubric.md)), applied by reading (judgment-graded).
 
 ## Gaps
 

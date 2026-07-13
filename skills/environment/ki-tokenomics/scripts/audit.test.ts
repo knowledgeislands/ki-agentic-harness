@@ -70,7 +70,7 @@ function run(dir: string): { code: number; out: string } {
 {
   const { base, dir } = fixture(
     'ki-agentic-harness',
-    '- `bun skills/ki-mcp/scripts/audit.ts ../mcp-gsuite` from knowledgeislands/ki-agentic-harness.'
+    '- `bun skills/repo-structure/ki-mcp/scripts/audit.ts ../mcp-gsuite` from knowledgeislands/ki-agentic-harness.'
   )
   try {
     const { out } = run(dir)

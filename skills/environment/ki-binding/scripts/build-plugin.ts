@@ -28,7 +28,7 @@ import { fileURLToPath } from 'node:url'
 
 // ── Self-location: resolve the harness root from this script's path ──
 const SELF = fileURLToPath(import.meta.url)
-// .../skills/ki-binding/scripts/build-plugin.ts → up to the harness root
+// .../skills/environment/ki-binding/scripts/build-plugin.ts → up to the harness root
 const HARNESS_ROOT = resolve(dirname(SELF), '..', '..', '..')
 const SKILLS_DIR = join(HARNESS_ROOT, 'skills')
 const AGENTS_DIR = join(HARNESS_ROOT, 'agents', 'governance')

@@ -36,7 +36,7 @@ The mechanical half of INIT, and the start of the bootstrap chain. Run it agains
 ```bash
 bun scripts/bootstrap.ts <target-repo> [--all] [--ref <ref>] [--dry-run]
 # remote (zero-install — cd into the repo, then curl | sh; bootstrap.sh fetches the tarball and runs the engine, defaulting to cwd@main):
-# curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh | sh
+# curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/bootstrap.sh | sh
 # advanced: … | sh -s -- <target> --ref <sha>   (args ripple through)   ·   bun already installed: bunx github:knowledgeislands/ki-agentic-harness#<sha> <target> --ref <sha>
 ```
 
@@ -58,7 +58,7 @@ The mechanical half is `scripts/conform.ts` (`bun run ki:bootstrap:conform` wher
 
 1. Run **AUDIT** first.
 2. **Link** the project-local set: `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-skills.ts" [path]` (the harness uses `--all`) and `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-agents.ts" [path]`. Each creates/prunes relative symlinks under `.claude/skills/`/`.claude/agents/` to match its expected set, and **writes the matching `.gitignore` line** (`.claude/skills/`, and `.claude/agents/` when the agents set is non-empty), creating `.gitignore` if absent — so BOOT-3/8 clear without a manual edit. Preview either with `--dry-run`.
-3. **Make it reproducible:** a repo reproduces its links by re-running the keystone linkers (the **Link** step above) — no `package.json` script is required, and the linkers scaffold none (package.json script-key wiring is `ki-engineering`'s concern). (The keystone must be globally installed — `bun skills/ki-bootstrap/scripts/sync-skills.ts link --only ki-bootstrap` from the harness.)
+3. **Make it reproducible:** a repo reproduces its links by re-running the keystone linkers (the **Link** step above) — no `package.json` script is required, and the linkers scaffold none (package.json script-key wiring is `ki-engineering`'s concern). (The keystone must be globally installed — `bun skills/keystone/ki-bootstrap/scripts/sync-skills.ts link --only ki-bootstrap` from the harness.)
 4. **Re-run AUDIT** until clean.
 
 ### Mode REFRESH — re-anchor

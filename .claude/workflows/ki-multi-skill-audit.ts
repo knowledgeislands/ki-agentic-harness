@@ -54,18 +54,23 @@ phase("Per-concern audit");
 // target's .ki-config.toml. Universal concerns (authoring, engineering, repo, skills,
 // tokenomics, harness) always run.
 const CONCERNS = [
-  { name: "authoring", checker: "bun skills/ki-authoring/scripts/audit-authoring.ts", scopeGated: false },
-  { name: "engineering", checker: "bun skills/ki-engineering/scripts/audit-engineering.ts", scopeGated: false },
-  { name: "repo", checker: "bun skills/ki-repo/scripts/audit-repo.ts", scopeGated: false },
-  { name: "kb", checker: "bun skills/ki-kb/scripts/audit-kb.ts", scopeGated: true },
-  { name: "streams", checker: "bun skills/ki-kb-streams/scripts/audit-streams.ts", scopeGated: true },
-  { name: "mcp", checker: "bun skills/ki-mcp/scripts/audit-mcp.ts", scopeGated: true },
-  { name: "website", checker: "bun skills/ki-website/scripts/audit-websites.ts", scopeGated: true },
-  { name: "website-cloudflare", checker: "bun skills/ki-website-cloudflare/scripts/audit-cloudflare-hosting.ts", scopeGated: true },
-  { name: "agents", checker: "bun skills/ki-agents/scripts/lint-agents.ts", scopeGated: true },
-  { name: "skills", checker: "bun run ki:skills:audit", scopeGated: false },
-  { name: "tokenomics", checker: "bun skills/ki-tokenomics/scripts/audit-tokenomics.ts", scopeGated: false },
-  { name: "harness", checker: "bun skills/ki-harness/scripts/audit-harness.ts", scopeGated: false },
+  { name: "authoring", dir: "foundations/ki-authoring", checker: "bun skills/foundations/ki-authoring/scripts/audit-authoring.ts", scopeGated: false },
+  { name: "engineering", dir: "foundations/ki-engineering", checker: "bun skills/foundations/ki-engineering/scripts/audit-engineering.ts", scopeGated: false },
+  { name: "repo", dir: "keystone/ki-repo", checker: "bun skills/keystone/ki-repo/scripts/audit-repo.ts", scopeGated: false },
+  { name: "kb", dir: "repo-structure/ki-kb", checker: "bun skills/repo-structure/ki-kb/scripts/audit-kb.ts", scopeGated: true },
+  { name: "streams", dir: "implied-families/ki-kb-streams", checker: "bun skills/implied-families/ki-kb-streams/scripts/audit-streams.ts", scopeGated: true },
+  { name: "mcp", dir: "repo-structure/ki-mcp", checker: "bun skills/repo-structure/ki-mcp/scripts/audit-mcp.ts", scopeGated: true },
+  { name: "website", dir: "repo-structure/ki-website", checker: "bun skills/repo-structure/ki-website/scripts/audit-websites.ts", scopeGated: true },
+  {
+    name: "website-cloudflare",
+    dir: "implied-families/ki-website-cloudflare",
+    checker: "bun skills/implied-families/ki-website-cloudflare/scripts/audit-cloudflare-hosting.ts",
+    scopeGated: true
+  },
+  { name: "agents", dir: "general-governance/ki-agents", checker: "bun skills/general-governance/ki-agents/scripts/lint-agents.ts", scopeGated: true },
+  { name: "skills", dir: "general-governance/ki-skills", checker: "bun run ki:skills:audit", scopeGated: false },
+  { name: "tokenomics", dir: "environment/ki-tokenomics", checker: "bun skills/environment/ki-tokenomics/scripts/audit-tokenomics.ts", scopeGated: false },
+  { name: "harness", dir: "repo-structure/ki-harness", checker: "bun skills/repo-structure/ki-harness/scripts/audit-harness.ts", scopeGated: false },
 ];
 
 // Read target's .ki-config.toml once in main context to determine which scope-gated
@@ -100,8 +105,8 @@ Concern: ${c.name}
 Steps:
 1. Run the mechanical checker: \`${c.checker} ${target} --json\` from the harness root. If the checker script does not exist or fails to start, note that and skip to judgment.
 2. Capture its output verbatim — do not re-derive what it found.
-3. Read \`skills/ki-${c.name}/SKILL.md\` and its \`references/\` directory.
-4. Apply the judgment ([J]-tagged) criteria from \`skills/ki-${c.name}/references/audit-rubric.md\`.
+3. Read \`skills/${c.dir}/SKILL.md\` and its \`references/\` directory.
+4. Apply the judgment ([J]-tagged) criteria from \`skills/${c.dir}/references/audit-rubric.md\`.
 5. Return structured findings only — no preamble.`,
       {
         label: `audit:${c.name}`,

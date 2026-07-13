@@ -86,11 +86,11 @@ The keystone linker self-locates the harness through its own real path — no ha
 ```text
 .claude/
 └── skills/
-    ├── ki-authoring  -> ../../../ki-agentic-harness/skills/ki-authoring
-    ├── ki-kb         -> ../../../ki-agentic-harness/skills/ki-kb
-    ├── ki-repo       -> ../../../ki-agentic-harness/skills/ki-repo
-    ├── ki-kb-streams    -> ../../../ki-agentic-harness/skills/ki-kb-streams
-    └── ki-tokenomics -> ../../../ki-agentic-harness/skills/ki-tokenomics
+    ├── ki-authoring  -> ../../../ki-agentic-harness/skills/foundations/ki-authoring
+    ├── ki-kb         -> ../../../ki-agentic-harness/skills/repo-structure/ki-kb
+    ├── ki-repo       -> ../../../ki-agentic-harness/skills/keystone/ki-repo
+    ├── ki-kb-streams    -> ../../../ki-agentic-harness/skills/implied-families/ki-kb-streams
+    └── ki-tokenomics -> ../../../ki-agentic-harness/skills/environment/ki-tokenomics
 ```
 
 The `.claude/skills/` directory is gitignored — the committed artifact is the `ki:skills:link:project` script and a `.gitignore` line. The symlinks are regenerated, never committed.

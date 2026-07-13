@@ -10,7 +10,7 @@ The behavioural contract of the operating vocabulary every governance skill expo
 
 Every governance skill MUST expose AUDIT, CONFORM, INIT, and REFRESH under those exact names, presented under a single `## Operating modes` H2, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
 
-_Verify:_ `bun skills/ki-skills/scripts/lint-skills.ts skills` — the SHAPE mode-coverage check FAILs a governance `SKILL.md` missing any of the four.
+_Verify:_ `bun skills/general-governance/ki-skills/scripts/lint-skills.ts skills` — the SHAPE mode-coverage check FAILs a governance `SKILL.md` missing any of the four.
 
 ### MODE-002 — AUDIT reports, does not fix
 
@@ -42,7 +42,7 @@ _Verify:_ each `## Mode REFRESH` section declares the harness-only write target 
 
 Every governance skill MUST expose HELP — invoked as `help` / `-h` / `?` — which surfaces the skill's name, one-line purpose, invocation, mode list, and off-ramps from what the `SKILL.md` already declares, and takes no action, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
 
-_Verify:_ `bun run ki:skills:help <name>` renders the generated block via `skills/ki-bootstrap/scripts/skill-help.ts` with no per-skill authored prose; the block is non-acting.
+_Verify:_ `bun run ki:skills:help <name>` renders the generated block via `skills/keystone/ki-bootstrap/scripts/skill-help.ts` with no per-skill authored prose; the block is non-acting.
 
 ## Exemptions
 
@@ -58,13 +58,13 @@ _Verify:_ `lint-skills.ts` SHAPE-5 / SHAPE-11 pass a process skill (e.g. `ki-rec
 
 A collection governance skill that exposes NEW MUST use it to author exactly one new instance into the collection it governs, presupposing INIT has established the collection and never substituting for INIT, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
 
-_Verify:_ the collection skills exposing `### Mode NEW` (`ki-decision-records`, `ki-feature-definitions`, `ki-kb-activities`, `ki-kb-live-artifacts`) each also expose INIT; the fixed meaning is pinned in [`skills/ki-skills/references/agent-skills-standard.md`](../../skills/ki-skills/references/agent-skills-standard.md).
+_Verify:_ the collection skills exposing `### Mode NEW` (`ki-decision-records`, `ki-feature-definitions`, `ki-kb-activities`, `ki-kb-live-artifacts`) each also expose INIT; the fixed meaning is pinned in [`skills/general-governance/ki-skills/references/agent-skills-standard.md`](../../skills/general-governance/ki-skills/references/agent-skills-standard.md).
 
 ### MODE-009 — OPTIMISE pushes toward excellent
 
 A skill that exposes OPTIMISE MUST use it only to push an already-compliant artifact from the standard floor toward excellent, never to bring an off-standard one onto the floor (that is INIT/CONFORM), per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
 
-_Verify:_ `ki-skills`'s `### Mode OPTIMISE`; the fixed meaning is pinned in [`skills/ki-skills/references/agent-skills-standard.md`](../../skills/ki-skills/references/agent-skills-standard.md).
+_Verify:_ `ki-skills`'s `### Mode OPTIMISE`; the fixed meaning is pinned in [`skills/general-governance/ki-skills/references/agent-skills-standard.md`](../../skills/general-governance/ki-skills/references/agent-skills-standard.md).
 
 ## No-mode routing
 

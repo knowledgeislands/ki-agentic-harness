@@ -2,12 +2,12 @@
 /**
  * Mechanical checker for ki-housekeeping.
  *
- * Usage: bun skills/ki-housekeeping/scripts/audit.ts [repo-path] [--json] [--report [dir]] [--memory-dir <dir>]
+ * Usage: bun skills/environment/ki-housekeeping/scripts/audit.ts [repo-path] [--json] [--report [dir]] [--memory-dir <dir>]
  *
  * Resolves the Claude Code auto-memory directory for a repo
  * (~/.claude/projects/<slug>/memory, slug = repo's absolute path with "/" and "." -> "-")
- * and checks index/frontmatter agreement per skills/ki-housekeeping/references/audit-rubric.md.
- * See skills/ki-engineering/references/checker-contract.md for the severity ladder,
+ * and checks index/frontmatter agreement per skills/environment/ki-housekeeping/references/audit-rubric.md.
+ * See skills/foundations/ki-engineering/references/checker-contract.md for the severity ladder,
  * exit-code, and flag contract every checker in this repo follows.
  */
 

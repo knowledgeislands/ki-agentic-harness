@@ -20,7 +20,7 @@ For a Knowledge Islands repo, `.claude/skills/` contains exactly:
 
 ## How the links are stored
 
-- **Relative symlinks** into the harness's `skills/` (e.g. `.claude/skills/ki-mcp -> ../../../ki-agentic-harness/skills/ki-mcp`), computed for wherever the harness actually sits.
+- **Relative symlinks** into the harness's `skills/` (e.g. `.claude/skills/ki-mcp -> ../../../ki-agentic-harness/skills/repo-structure/ki-mcp`), computed for wherever the harness actually sits.
 - **Gitignored and regenerated, never committed.** Committed cross-repo symlinks dangle on a clone that lacks the harness beside it. The only committed artifact is the `.gitignore` line; a fresh clone re-runs the keystone linker once to recreate the links.
 - The keystone linker **self-locates** the harness through its own real path — no hard-coded harness location.
 

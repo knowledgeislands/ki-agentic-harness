@@ -31,7 +31,7 @@ declare const Bun: { YAML: { parse(input: string): unknown } }
 
 // ── Self-location: find the harness skills/ root through the (possibly symlinked) script path ──
 const SELF = realpathSync(fileURLToPath(import.meta.url))
-// .../skills/ki-binding/scripts/audit.ts → up to .../skills
+// .../skills/environment/ki-binding/scripts/audit.ts → up to .../skills
 const SKILLS_ROOT = resolve(dirname(SELF), '..', '..')
 
 const HOME = homedir()

@@ -41,7 +41,7 @@ const STD = 'references/binding-chezmoi-standard.md'
 
 // ── Self-location: find the harness skills/ root through the (possibly symlinked) script path ──
 const SELF = realpathSync(fileURLToPath(import.meta.url))
-// .../skills/ki-binding-chezmoi/scripts/audit.ts → up to .../skills
+// .../skills/implied-families/ki-binding-chezmoi/scripts/audit.ts → up to .../skills
 const SKILLS_ROOT = resolve(dirname(SELF), '..', '..')
 
 // ── Args ──
