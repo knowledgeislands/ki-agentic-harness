@@ -1,7 +1,7 @@
 {
-  "ref": "3dcf19a5e19c41bb36c696c21e5b0f746dc39d5e",
+  "ref": "bb3ca493f16c87eef2a0612e3c749d85952511c2",
   "files": {
-    ".ki-meta/skills/ki-agents/audit.ts": "632d485b8b3839d1824c33a74142429ea7b3a00b9956a035c9b438daea7fd21c",
+    ".ki-meta/skills/ki-agents/audit.ts": "744039a6365910a9d34d688fecec590cecc83ae15b5766d008dec5a0639d2d9a",
     ".ki-meta/skills/ki-agents/conform.ts": "b184328a974795a12bc5e6f76ddca97e89cd0fca8367033068f64c19d1971357",
     ".ki-meta/skills/ki-agents/help.md": "cb3849ce4e51c41c596198413cfd38478ab866c74375d065bf24cf09ac453afd",
     ".ki-meta/skills/ki-authoring/audit.ts": "a86e1c239f87021bb3c5aed773d1ec5717402b43332c799854e9c16816cdfbd4",

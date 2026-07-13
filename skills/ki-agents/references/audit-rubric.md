@@ -62,6 +62,7 @@ A criterion's tag is a contract with the linter: if you find yourself eyeballing
 - **FM-8 [J]** `effort`, if set, pins reasoning effort for this agent — `low` for mechanical/high-volume roles where full reasoning is wasted; `high`+ for deep-analysis roles where the extra reasoning is load-bearing. Prefer inheriting (omit) when the session effort is appropriate. (CC)
 - **FM-9 [J]** `isolation: worktree`, if set, runs the agent in a fresh git worktree — use only when the role makes file edits that could conflict with the caller's working tree. The overhead is real; do not use for read-only or advisory roles. (CC)
 - **FM-10 [J]** `background: true`, if set, always runs the agent as a non-blocking background task — use when the caller does not need to wait for the result. For roles where the caller needs the result, omit. (CC)
+- **FM-11 [M]** `model` is **tier-agnostic** — the mechanical floor under FM-2, per the §5 `model` guidance. `inherit` (or omitted) passes; a Claude alias (`sonnet` / `opus` / `haiku` / `fable`) is an advisory **WARN** (a portable pin, acceptable only with a stated reason the linter cannot see — see FM-2); any other value is a rot-prone **full model id** and **FAILs** (e.g. `claude-opus-4-8` — prefer an alias or `inherit`). The model-tier analogue of a skill hardcoding a runtime. (BP, HOUSE)
 
 ## PROMPT — System-prompt quality
 

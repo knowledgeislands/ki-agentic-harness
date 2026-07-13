@@ -32,6 +32,10 @@ type Finding = { severity: Severity; criterion: string; message: string }
 const NAME_MAX = 64
 const DESC_MAX = 1024 // soft cap → WARN
 const RESERVED = ['anthropic', 'claude']
+// FM-11 — model-tier agnosticism. `inherit`/omitted is agnostic; a Claude alias is a portable pin
+// (advisory WARN — a reason is a judgment call the linter can't see, FM-2); anything else is a
+// rot-prone full model id (FAIL). Keep in sync with agent-definitions-standard.md §5 `model`.
+const MODEL_ALIASES = ['sonnet', 'opus', 'haiku', 'fable']
 
 // --- minimal frontmatter parser (shared shape with audit.ts) -----------
 // Handles top-level scalar keys and `>`/`|` block scalars. Avoids a YAML dependency.
@@ -159,6 +163,19 @@ function lintAgent(file: string): { findings: Finding[]; agent: Agent } {
   else {
     if (desc.length > DESC_MAX) warn('DESC-2', `\`description\` is ${desc.length} chars (recommended ≤ ${DESC_MAX})`)
     if (hasXmlTag(stripCode(desc))) fail('DESC-3', '`description` contains an XML tag')
+  }
+
+  // model tier agnosticism (FM-11 mechanical) — the model analogue of a skill hardcoding a runtime.
+  // `inherit`/omitted is agnostic (OK); a Claude alias is a portable pin acceptable only with a
+  // stated reason the linter can't see (advisory WARN, FM-2); a full model id rots (FAIL).
+  const model = fm.keys.get('model')
+  if (model !== undefined && model !== '' && model !== 'inherit') {
+    if (MODEL_ALIASES.includes(model))
+      warn(
+        'FM-11',
+        `\`model: ${model}\` pins a Claude alias — acceptable only with a stated reason (FM-2); prefer \`inherit\` for model-agnosticism`
+      )
+    else fail('FM-11', `\`model: ${model}\` is a rot-prone full model id — prefer an alias (${MODEL_ALIASES.join('/')}) or \`inherit\``)
   }
 
   // body present (PROMPT-1)
