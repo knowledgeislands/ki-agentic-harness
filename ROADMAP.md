@@ -6,11 +6,13 @@ This roadmap is itself subject to the house discipline it describes: when a skil
 
 **Continuous practices are not roadmap items.** Keeping the skills audited (`ki:skills:audit`, `ki:repo:audit`, `ki:kb:audit`, the `ki-mcp` audit over the `mcp-*` repos), re-running the advisory [eval suite](evals/README.md) as skills change, and the scheduled `ki-skills-refresh` sweep (which honours each skill's declared `**Refresh:**` cadence) are ongoing disciplines tied to the invariants the `ki-skills` rubric enforces — they run continuously, so they live there, not here.
 
-## Soon
+## Next
 
 ### Register OpenAI Codex CLI as a target runtime and update the governance layer
 
 Scope is the governance/decision layer only — no adapter code. Amend `SDR-KI-HARNESS-002` to register Codex CLI as a second target runtime, add the runtime feature-coverage matrix, split the `ki-agents` standard into a portable core plus a Claude-Code appendix, and update the README/keyword/footnote references accordingly. Two follow-on research items are now scoped and deliberately deferred to later sessions: (a) map Claude Code's markdown+frontmatter `.md` agents onto Codex's TOML `.codex/agents/*.toml` format (documented fields `name`/`description`/`developer_instructions`), and verify the `SubagentStart`/`SubagentStop` hook payload ↔ named-agent wiring, which the Codex docs leave unspecified; (b) the vendor-neutral agents/hooks/install adapter code (Workstream B Phases 2-4) is a separate later session that will register its own ROADMAP item when picked up. The de-mandate-chezmoi `ki-binding` work, originally bundled with this initiative, has been **split out as an independent item** (see "De-mandate chezmoi as `ki-binding`'s MCP-config source" under Cross-surface & remote runtime) — it delivers value regardless of whether a second runtime ever ships, so it no longer shares this thread's sequencing or blockers.
+
+## Soon
 
 ### Config contract & migration cleanup
 
