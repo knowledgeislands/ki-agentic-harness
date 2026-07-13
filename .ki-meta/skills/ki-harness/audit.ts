@@ -98,19 +98,12 @@ if (!existsSync(pkgPath)) {
   for (const script of ['ki:lint:check', 'ki:lint:types', 'ki:lint:md', 'ki:lint:md:check']) {
     check('WARN', 'PKG-3', hasScript(pkg, script), `should have a '${script}' script`, STD, 'package.json')
   }
-  for (const script of [
-    'ki:skills:link:global',
-    'ki:skills:status',
-    'ki:skills:unlink',
-    'ki:skills:refresh-status',
-    'ki:codegen',
-    'ki:eval'
-  ]) {
+  for (const script of ['ki:skills:link:global', 'ki:skills:status', 'ki:skills:unlink', 'ki:skills:refresh-status', 'ki:eval']) {
     check(
       'WARN',
       'PKG-4',
       hasScript(pkg, script),
-      `should have a '${script}' script (harness skill-management / codegen / eval surface)`,
+      `should have a '${script}' script (harness skill-management / eval surface)`,
       STD,
       'package.json'
     )

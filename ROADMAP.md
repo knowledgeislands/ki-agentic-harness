@@ -62,7 +62,7 @@ The uniform four-mode migration (bare `audit.ts`/`conform.ts`, `vendors: [init, 
 
 ### Standardise the free-form named-action `package.json` keys
 
-Beyond the enforced `ki:<suffix>:audit`/`conform` pair, a third category of `ki:`-namespaced keys is unenforced convention — `ki:binding:build-plugin`, `ki:codegen`, `ki:eval`, `ki:skills:graph`, `ki:skills:help`, `ki:skills:link:*`, `ki:skills:unlink`, `ki:skills:status`, `ki:skills:refresh-status`, `ki:agents:link:project`. Review whether each is still needed and whether the category can be standardised (a declared `actions:` list per skill, or folding some into audit/conform) rather than left as open-ended convention.
+Beyond the enforced `ki:<suffix>:audit`/`conform` pair, a third category of `ki:`-namespaced keys is unenforced convention — `ki:binding:build-plugin`, `ki:eval`, `ki:skills:graph`, `ki:skills:help`, `ki:skills:link:*`, `ki:skills:unlink`, `ki:skills:status`, `ki:skills:refresh-status`, `ki:agents:link:project`. Review whether each is still needed and whether the category can be standardised (a declared `actions:` list per skill, or folding some into audit/conform) rather than left as open-ended convention.
 
 ### Codify the generated-code lint/knip exclusion in `ki-engineering`
 

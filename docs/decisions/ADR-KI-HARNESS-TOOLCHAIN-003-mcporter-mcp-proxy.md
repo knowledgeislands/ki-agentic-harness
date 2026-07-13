@@ -19,7 +19,7 @@ KI-owned local stdio MCP servers are proxied behind mcporter and consume a singl
 
 - The 19 KI servers occupy one Claude Code slot, leaving headroom for third-party servers within the active-server budget.
 - The server set lives in one chezmoi-managed source (`~/.mcporter/mcporter.json`), which also feeds the Claude Desktop config; `~/.claude.json` carries only the single proxy entry plus any third-party servers.
-- mcporter's typed clients for the harness scripts and `mcp-*` repos are generated via `ki:codegen` (`scripts/generate-clients.ts`).
+- mcporter's typed clients for the `mcp-*` repos are generated per-repo via each repo's `ki:generate:client` script (ki-mcp conform).
 - The `ki-tokenomics` checks confirm the KB-FS-adjacent servers are distinct capabilities, not redundant.
 
 ## References

@@ -12,7 +12,7 @@ As a session grows and the MCP surface expands, token cost per turn rises and th
 
 **headroom-ai** — the primary context management layer. It injects a `PreCompact` hook to preserve the system prompt across compaction and bundles RTK (Rust Token Killer) as its shell-output compression sub-component (RTK is not a separately adopted tool — it ships and wires its `PreToolUse` hook automatically when headroom-ai runs). Deployed either in proxy mode (`headroom proxy` on port 8787, with `ANTHROPIC_BASE_URL=http://localhost:8787 claude`) or wrap mode (`headroom wrap claude`). A MarkItDown add-on is available through headroom for flattening binary documents at the ingestion boundary.
 
-**mcporter** — adopted in two roles. As the **MCP proxy daemon**, all 19 KI-owned stdio servers sit behind mcporter's keep-alive daemon, exposed as a single `ki-mcporter` URL entry (`http://localhost:3333/mcp`) in `~/.claude.json`, with tools namespaced `server__tool`; this is the subject of ADR-KI-HARNESS-TOOLCHAIN-003, later in the reading order. As a **typed client**, mcporter generates the per-repo clients the harness scripts and `mcp-*` repos call, via `ki:codegen` (`scripts/generate-clients.ts`). Installed via Homebrew (`brew install steipete/tap/mcporter`); chezmoi deploys the config and LaunchAgents.
+**mcporter** — adopted in two roles. As the **MCP proxy daemon**, all 19 KI-owned stdio servers sit behind mcporter's keep-alive daemon, exposed as a single `ki-mcporter` URL entry (`http://localhost:3333/mcp`) in `~/.claude.json`, with tools namespaced `server__tool`; this is the subject of ADR-KI-HARNESS-TOOLCHAIN-003, later in the reading order. As a **typed client**, mcporter generates each `mcp-*` repo's typed client per-repo via that repo's `ki:generate:client` script (owned by `ki-mcp`'s audit/conform). Installed via Homebrew (`brew install steipete/tap/mcporter`); chezmoi deploys the config and LaunchAgents.
 
 **house-agents** (user-level) — a collection of four sub-agents (`house-research`, `house-bash`, `house-git`, `house-mcp`) that offload token-heavy operations into isolated context windows. Each is a plain `.md` file with YAML frontmatter — the same file-based pattern as KI agent definitions — and validates the sub-agent isolation model in ADR-KI-HARNESS-AGENTS-001, later in the reading order. They install to `~/.claude/agents/`; they are not KI-governed, so they serve as the reference pattern for KI-authored agents on the harness `agents/` shelf, not as shelf contents.
 
@@ -39,7 +39,7 @@ house-mcp-manager is a CLI that toggles MCP servers and saves named profiles by 
 
 ## Consequences
 
-- headroom-ai is the primary context layer (with bundled RTK compression); mcporter is the MCP proxy daemon and the typed-client generator (`ki:codegen`).
+- headroom-ai is the primary context layer (with bundled RTK compression); mcporter is the MCP proxy daemon and the typed-client generator (`ki:generate:client`).
 - The KI skills paradigm remains the single skill-governance layer; no competing monolithic-skill install conventions (superpowers, gstack, Caveman) are introduced.
 - The file-based `memory/` + `MEMORY.md` convention is the single persistent-memory mechanism (Engram declined); the `mcp/` shelf stays KI-authored-only (MarkItDown's server excluded).
 - The `agents/` shelf has a validated reference pattern (house-agents); house-code adds active pruning as a personal tool.
