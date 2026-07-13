@@ -16,12 +16,43 @@ import { readText } from './package-scripts.ts'
 export const BOOTSTRAP = 'ki-bootstrap'
 
 // The harness `skills/` root this engine reads sources from. Local run: the
-// working tree two levels up from this file. (Remote-URL sourcing is a documented
-// follow-on; the vendored output is identical either way.)
+// working tree two levels up from this file. (Bumped to three levels once
+// ki-bootstrap itself moves under a cluster subfolder — see the physical-layout
+// migration.) (Remote-URL sourcing is a documented follow-on; the vendored output
+// is identical either way.)
 export const SKILLS_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..')
 
+// Skills live two levels under SKILLS_ROOT (skills/<cluster>/<name>/SKILL.md) —
+// built once and memoized so every by-name lookup below stays O(1) after the
+// first call. Keyed by bare skill name; callers never need to know a skill's
+// cluster.
+let skillIndexCache: Map<string, string> | null = null
+function skillIndex(): Map<string, string> {
+  if (skillIndexCache) return skillIndexCache
+  const idx = new Map<string, string>()
+  for (const entry of readdirSync(SKILLS_ROOT, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue
+    const clusterDir = join(SKILLS_ROOT, entry.name)
+    if (existsSync(join(clusterDir, 'SKILL.md'))) {
+      idx.set(entry.name, clusterDir) // tolerate a flat leftover during migration
+      continue
+    }
+    for (const sub of readdirSync(clusterDir, { withFileTypes: true })) {
+      if (!sub.isDirectory()) continue
+      const skillPath = join(clusterDir, sub.name)
+      if (existsSync(join(skillPath, 'SKILL.md'))) idx.set(sub.name, skillPath)
+    }
+  }
+  skillIndexCache = idx
+  return idx
+}
+
 export function skillDir(skill: string): string {
-  return join(SKILLS_ROOT, skill)
+  return skillIndex().get(skill) ?? join(SKILLS_ROOT, skill)
+}
+
+export function allSkillNames(): string[] {
+  return [...skillIndex().keys()].sort()
 }
 
 export function isSkill(skill: string): boolean {
@@ -61,11 +92,7 @@ export function impliesOf(skill: string): string[] {
 // declares its own foundations (`[ki-repo]`, `[ki-authoring]`), so there is no injected
 // baseline. A per-skill `scripts/init.ts` delegator seeds itself.
 export function resolveSet(target: string, all: boolean, seeds: string[]): string[] {
-  const seed = all
-    ? readdirSync(SKILLS_ROOT, { withFileTypes: true })
-        .filter((e) => e.isDirectory() && isSkill(e.name))
-        .map((e) => e.name)
-    : [...declaredSkills(readText(join(target, '.ki-config.toml'))), ...seeds]
+  const seed = all ? allSkillNames() : [...declaredSkills(readText(join(target, '.ki-config.toml'))), ...seeds]
   const seen = new Set<string>()
   const stack = [...seed]
   while (stack.length) {

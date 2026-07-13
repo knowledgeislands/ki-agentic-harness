@@ -54,12 +54,34 @@ function isSymlink(p: string): boolean {
   }
 }
 
+// Skills live one or two levels under SKILLS_ROOT — either flat (skills/<name>,
+// tolerated as a migration leftover) or clustered (skills/<cluster>/<name>).
+// Memoized so every by-name source lookup below stays O(1) after the first call.
+let skillIndexCache: Map<string, string> | null = null
+function skillIndex(): Map<string, string> {
+  if (skillIndexCache) return skillIndexCache
+  const idx = new Map<string, string>()
+  if (existsSync(SKILLS_ROOT)) {
+    for (const entry of readdirSync(SKILLS_ROOT, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue
+      const clusterDir = join(SKILLS_ROOT, entry.name)
+      if (existsSync(join(clusterDir, 'SKILL.md'))) {
+        idx.set(entry.name, clusterDir)
+        continue
+      }
+      for (const sub of readdirSync(clusterDir, { withFileTypes: true })) {
+        if (!sub.isDirectory()) continue
+        const skillPath = join(clusterDir, sub.name)
+        if (existsSync(join(skillPath, 'SKILL.md'))) idx.set(sub.name, skillPath)
+      }
+    }
+  }
+  skillIndexCache = idx
+  return idx
+}
+
 function discoverSkills(): string[] {
-  if (!existsSync(SKILLS_ROOT)) return []
-  return readdirSync(SKILLS_ROOT, { withFileTypes: true })
-    .filter((e) => e.isDirectory() && existsSync(join(SKILLS_ROOT, e.name, 'SKILL.md')))
-    .map((e) => e.name)
-    .sort()
+  return [...skillIndex().keys()].sort()
 }
 
 // Declared `[ki-<skill>]` top-level tables (sub-tables like `.checks` / `.zones` are ignored).
@@ -95,7 +117,7 @@ function cmdLink(target: string, set: string[], dryRun: boolean): void {
   }
 
   for (const skill of set) {
-    const source = join(SKILLS_ROOT, skill)
+    const source = skillIndex().get(skill) ?? join(SKILLS_ROOT, skill)
     const linkPath = join(claudeSkills, skill)
     const rel = relative(claudeSkills, source)
     if (isSymlink(linkPath) && resolve(dirname(linkPath), readlinkSync(linkPath)) === resolve(source)) {

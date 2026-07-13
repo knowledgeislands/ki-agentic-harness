@@ -20,7 +20,7 @@
  * fetches the source tarball and runs this engine from the extracted tree (Bun
  * cannot execute a module over HTTP, and the POSIX entry point does not assume
  * bun is even installed):
- *   curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh | sh
+ *   curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/bootstrap.sh | sh
  * Everything after `sh -s --` ripples through to this engine; bootstrap.sh injects
  * the cwd target and `--ref main` only when absent. Where bun is already installed,
  * the bunx form runs this engine as the package bin directly (pin a sha — bunx
@@ -66,7 +66,7 @@ const REPO_SLUG = 'knowledgeislands/ki-agentic-harness'
 // skills/ tree: validate/render the `implies:` graph, render HELP, install skills.
 // Vendored into .ki-meta/bin/ ONLY when the resolved set includes ki-harness —
 // engine-level, not per-skill `vendors:` units (ADR-KI-HARNESS-008). Their
-// canonical home is skills/ki-bootstrap/scripts/.
+// canonical home is skills/keystone/ki-bootstrap/scripts/.
 const HARNESS_BIN_SCRIPTS = ['skill-graph.ts', 'skill-help.ts', 'sync-skills.ts'] as const
 
 // The current harness ref — recorded in the manifest so `ki-init` can re-run the
@@ -383,7 +383,7 @@ while [ $# -gt 0 ]; do
 done
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 echo "re-bootstrapping $root from $REPO@$ref"
-curl -fsSL "https://raw.githubusercontent.com/$REPO/$ref/skills/ki-bootstrap/scripts/bootstrap.sh" | sh -s -- "$root" --ref "$ref"$pass
+curl -fsSL "https://raw.githubusercontent.com/$REPO/$ref/skills/keystone/ki-bootstrap/scripts/bootstrap.sh" | sh -s -- "$root" --ref "$ref"$pass
 `
 }
 
@@ -422,7 +422,7 @@ function vendorSkill(target: string, skill: string, dryRun: boolean, manifestFil
   // covered by the manifest hash like every other vendored file.
   const helpAbs = join(destDir, 'help.md')
   try {
-    const help = execFileSync('bun', [join(SKILLS_ROOT, 'ki-bootstrap', 'scripts', 'skill-help.ts'), skill], {
+    const help = execFileSync('bun', [join(skillDir('ki-bootstrap'), 'scripts', 'skill-help.ts'), skill], {
       cwd: join(SKILLS_ROOT, '..'),
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore']
@@ -557,7 +557,7 @@ function main(): void {
     if (set.includes('ki-harness')) {
       for (const name of HARNESS_BIN_SCRIPTS) {
         const rel = join(VENDOR_DIR, 'bin', name)
-        cpSync(join(SKILLS_ROOT, 'ki-bootstrap', 'scripts', name), join(target, rel))
+        cpSync(join(skillDir('ki-bootstrap'), 'scripts', name), join(target, rel))
         manifestFiles[rel] = sha256File(join(target, rel))
       }
       console.log(`${GREEN}bin${RESET} ${DIM}→ ${VENDOR_DIR}/bin/{${HARNESS_BIN_SCRIPTS.join(', ')}} (harness cross-skill scripts)${RESET}`)

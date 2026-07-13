@@ -13,10 +13,33 @@
 // derive from it, so a broken edge (e.g. an un-updated name after a rename) fails
 // the `--check` gate that `bun run test` runs.
 
-import { readdirSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 const SKILLS_DIR = 'skills'
+
+// Skills live one or two levels under SKILLS_DIR — either flat (skills/<name>,
+// tolerated as a migration leftover) or clustered (skills/<cluster>/<name>).
+// Resolves the on-disk path for every skill name, keyed by bare name.
+function skillPaths(): Map<string, string> {
+  const paths = new Map<string, string>()
+  const top = readdirSync(SKILLS_DIR, { withFileTypes: true })
+    .filter((d) => d.isDirectory())
+    .map((d) => d.name)
+  for (const name of top) {
+    const p1 = join(SKILLS_DIR, name)
+    if (existsSync(join(p1, 'SKILL.md'))) {
+      paths.set(name, p1)
+      continue
+    }
+    for (const sub of readdirSync(p1, { withFileTypes: true })) {
+      if (!sub.isDirectory()) continue
+      const p2 = join(p1, sub.name)
+      if (existsSync(join(p2, 'SKILL.md'))) paths.set(sub.name, p2)
+    }
+  }
+  return paths
+}
 
 type Graph = Map<string, string[]>
 
@@ -38,17 +61,10 @@ function parseImplies(skillMd: string): string[] | null {
 function loadGraph(): { graph: Graph; unannotated: string[] } {
   const graph: Graph = new Map()
   const unannotated: string[] = []
-  const dirs = readdirSync(SKILLS_DIR, { withFileTypes: true })
-    .filter((d) => d.isDirectory())
-    .map((d) => d.name)
-    .sort()
+  const paths = skillPaths()
+  const dirs = [...paths.keys()].sort()
   for (const dir of dirs) {
-    let md: string
-    try {
-      md = readFileSync(join(SKILLS_DIR, dir, 'SKILL.md'), 'utf8')
-    } catch {
-      continue // not a skill directory
-    }
+    const md = readFileSync(join(paths.get(dir) as string, 'SKILL.md'), 'utf8')
     const implies = parseImplies(md)
     if (implies === null) {
       unannotated.push(dir)
