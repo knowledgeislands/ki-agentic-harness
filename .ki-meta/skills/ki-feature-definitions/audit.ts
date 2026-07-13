@@ -162,7 +162,7 @@ async function main() {
 
   // INDEX-1: index.md present.
   const hasIndex = entries.includes(INDEX_FILE)
-  if (!hasIndex) add('INDEX-1', Sev.FAIL, INDEX_FILE, `${INDEX_FILE} not found in ${featuresDir}`)
+  if (!hasIndex) add('INDEX-1', Sev.FAIL, INDEX_FILE, `not found in ${featuresDir}`)
   const indexContent = hasIndex ? await readFile(join(resolvedDir, INDEX_FILE), 'utf8') : ''
 
   const prefixToFile = parseAreasTables(indexContent)

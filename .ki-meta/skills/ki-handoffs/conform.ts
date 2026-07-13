@@ -122,12 +122,12 @@ async function main() {
 
     // HAND-1: valid tier — judgment, never guessed.
     if (!fm.tier) {
-      const msg = `${rel}: HAND-1 — add 'tier' frontmatter (haiku | sonnet | opus): the cheapest tier the spec makes safe`
-      manualTodos.push(msg)
+      const msg = `add 'tier' frontmatter (haiku | sonnet | opus): the cheapest tier the spec makes safe`
+      manualTodos.push(`${rel}: HAND-1 — ${msg}`)
       rec('ADVISORY', 'HAND-1', msg, STANDARD, rel)
     } else if (!VALID_TIERS.has(fm.tier)) {
-      const msg = `${rel}: HAND-1 — tier '${fm.tier}' is out-of-set; set it to one of haiku | sonnet | opus`
-      manualTodos.push(msg)
+      const msg = `tier '${fm.tier}' is out-of-set; set it to one of haiku | sonnet | opus`
+      manualTodos.push(`${rel}: HAND-1 — ${msg}`)
       rec('ADVISORY', 'HAND-1', msg, STANDARD, rel)
     }
 
@@ -136,12 +136,12 @@ async function main() {
     const namesLocked = /locked/i.test(body)
     const namesEscalate = /escalate/i.test(body)
     if (!hasDecisionsHeading) {
-      const msg = `${rel}: HAND-2 — add a '## Decisions' section splitting locked (closed) from escalate (needs owner)`
-      manualTodos.push(msg)
+      const msg = `add a '## Decisions' section splitting locked (closed) from escalate (needs owner)`
+      manualTodos.push(`${rel}: HAND-2 — ${msg}`)
       rec('ADVISORY', 'HAND-2', msg, STANDARD, rel)
     } else if (!(namesLocked && namesEscalate)) {
-      const msg = `${rel}: HAND-2 — decisions section must name both 'locked' and 'escalate' (use "Escalate: none" if empty)`
-      manualTodos.push(msg)
+      const msg = `decisions section must name both 'locked' and 'escalate' (use "Escalate: none" if empty)`
+      manualTodos.push(`${rel}: HAND-2 — ${msg}`)
       rec('ADVISORY', 'HAND-2', msg, STANDARD, rel)
     }
 

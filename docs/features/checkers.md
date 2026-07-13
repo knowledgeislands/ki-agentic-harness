@@ -44,6 +44,18 @@ On any non-clean run (any FAIL / WARN / POLISH) a checker's human output MUST en
 
 _Verify:_ `bun skills/ki-skills/scripts/lint-skills.ts skills` — SHAPE-8 scans every `audit-*.ts` / `lint-*.ts` and WARNs if the standardised footer is omitted or names another skill's mode.
 
+### CHK-011 — The finding line
+
+The shared aggregate renderer MUST render every structured finding as the pinned row layout `<icon> <level, 4-wide> [<area>] <file> <msg> (<ref>)`, with a two-display-column icon per ladder level (narrow-base VS16 glyphs padded by a trailing space) and the short level tags `fail`/`warn`/`pol`/`adv`/`info`/`na`/`pass`, per [ADR-KI-HARNESS-SKILLS-010](../decisions/ADR-KI-HARNESS-SKILLS-010-comparable-cited-checker-findings.md).
+
+_Verify:_ checker-contract.md §The finding line pins the layout; a run of `bun run ki:audit` renders every structured finding in it, with the `[area]` column aligned across levels.
+
+### CHK-012 — Non-restating messages
+
+A finding's `msg` MUST NOT begin with its own `area` code or its own `file` path/basename — those render as their own columns of the finding line — and ADVISORY messages MUST NOT carry a `[J]:` prefix, per checker-contract.md §The finding line.
+
+_Verify:_ a `--json` run of every checker shows no finding whose `msg` starts with its `area` or with its `file`'s basename.
+
 ## Portability
 
 ### CHK-007 — Builtins-only and self-contained

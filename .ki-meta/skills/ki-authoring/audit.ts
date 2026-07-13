@@ -147,13 +147,13 @@ trim_trailing_whitespace = false
 function checkOwned(name: string, canonical: string): void {
   const current = read(name)
   if (!current) {
-    add('WARN', 'OWNS', `${name} missing — run ki:authoring:conform to scaffold it from the house template`, 'owns:', name)
+    add('WARN', 'OWNS', `missing — run ki:authoring:conform to scaffold it from the house template`, 'owns:', name)
     return
   }
   if (sha256(current) === sha256(canonical)) {
-    add('PASS', 'OWNS', `${name} matches the house template`, 'owns:', name)
+    add('PASS', 'OWNS', `matches the house template`, 'owns:', name)
   } else {
-    add('WARN', 'OWNS', `${name} has drifted from the house template — run ki:authoring:conform to correct it`, 'owns:', name)
+    add('WARN', 'OWNS', `has drifted from the house template — run ki:authoring:conform to correct it`, 'owns:', name)
   }
 }
 
@@ -172,7 +172,7 @@ const printWidth = pwMatch ? Number(pwMatch[1]) : 140
 add(
   'ADVISORY',
   'MD-table',
-  `MD-table [J]: tables exceeding printWidth (${printWidth}) must be reshaped — descriptive matrix → subheadings or bullet list; ` +
+  `tables exceeding printWidth (${printWidth}) must be reshaped — descriptive matrix → subheadings or bullet list; ` +
     'genuinely tabular data with one long column → keep table, move that column to footnotes with a one-char marker.',
   'references/markdown-authoring.md'
 )
@@ -180,7 +180,7 @@ add(
 add(
   'ADVISORY',
   'MD-footnote',
-  'MD-footnote [J]: footnotes use the marker series † ‡ § ¶ ‖ (then doubled), reset per table; ' +
+  'footnotes use the marker series † ‡ § ¶ ‖ (then doubled), reset per table; ' +
     'a second series ※ ❡ ¤ ¥ where one table needs two. Each footnote separated by a blank line.',
   'references/markdown-authoring.md'
 )
@@ -188,7 +188,7 @@ add(
 add(
   'ADVISORY',
   'MD-link',
-  "MD-link [J]: link text must be descriptive (words you'd skim for) beyond what MD059 enforces. " +
+  "link text must be descriptive (words you'd skim for) beyond what MD059 enforces. " +
     'Use relative markdown links in house files (SKILL.md, repo docs) — wikilinks are correct only ' +
     'in KB note content and agent system prompts (scoped by ki-kb / ki-agents LINK-2). ' +
     'Angle-bracket form for paths with spaces.',
@@ -198,8 +198,7 @@ add(
 add(
   'ADVISORY',
   'MD-cell-prose',
-  'MD-cell-prose [J]: table cells must not contain long descriptive prose — move prose to a footnote, ' +
-    'leave only a brief label + marker in the cell.',
+  'table cells must not contain long descriptive prose — move prose to a footnote, ' + 'leave only a brief label + marker in the cell.',
   'references/markdown-authoring.md'
 )
 
@@ -213,25 +212,19 @@ if (!hasKiConfig) {
   add(
     'ADVISORY',
     'TOML-keys',
-    'TOML-keys [J]: keys lowercase, snake_case for multi-word, named for the noun the value holds ' +
-      '(e.g. "visibility" not "repo_visibility_setting").',
+    'keys lowercase, snake_case for multi-word, named for the noun the value holds ' + '(e.g. "visibility" not "repo_visibility_setting").',
     'references/toml-config.md'
   )
-  add('ADVISORY', 'TOML-values', 'TOML-values [J]: strings double-quoted; short lists inline ["a", "b"].', 'references/toml-config.md')
-  add(
-    'ADVISORY',
-    'TOML-tables',
-    'TOML-tables [J]: one table per skill, named for the skill, with sub-tables nested under it.',
-    'references/toml-config.md'
-  )
-  add('ADVISORY', 'TOML-comments', 'TOML-comments [J]: non-obvious keys carry a # line above with their why.', 'references/toml-config.md')
+  add('ADVISORY', 'TOML-values', 'strings double-quoted; short lists inline ["a", "b"].', 'references/toml-config.md')
+  add('ADVISORY', 'TOML-tables', 'one table per skill, named for the skill, with sub-tables nested under it.', 'references/toml-config.md')
+  add('ADVISORY', 'TOML-comments', 'non-obvious keys carry a # line above with their why.', 'references/toml-config.md')
 }
 
 // ── judgment surface: sync criterion ──────────────────────────────────────────
 add(
   'ADVISORY',
   'SYNC',
-  'SYNC [J]: the convention references, audit-rubric.md, and sources.md must agree; when a convention moves, all three move together (Mode REFRESH).',
+  'the convention references, audit-rubric.md, and sources.md must agree; when a convention moves, all three move together (Mode REFRESH).',
   'references/audit-rubric.md'
 )
 

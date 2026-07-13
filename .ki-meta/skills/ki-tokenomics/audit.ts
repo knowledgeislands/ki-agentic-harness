@@ -252,7 +252,15 @@ type KiConfig = {
 }
 const BUDGET_KEYS = new Set<string>(['claude_md', 'memory_index', 'skills_surface', 'mcp_servers', 'total'])
 function parseKiConfig(text: string): KiConfig {
-  const cfg: KiConfig = { present: false, bindings: {}, bindingBadKeys: [], bindingEmptyKeys: [], budgets: {}, unknownKeys: [], badBudgets: [] }
+  const cfg: KiConfig = {
+    present: false,
+    bindings: {},
+    bindingBadKeys: [],
+    bindingEmptyKeys: [],
+    budgets: {},
+    unknownKeys: [],
+    badBudgets: []
+  }
   let section = ''
   const BUDGETS = `${KI_SECTION}.budgets`
   const BINDINGS = `${KI_SECTION}.model_tier_bindings`
@@ -545,7 +553,9 @@ else {
   // CFG-4 — the ambient default model *type* (portable; ADR-KI-HARNESS-009).
   if (ki.legacyModelTier) {
     const mapped = LEGACY_ALIAS_TO_TYPE[ki.legacyModelTier]
-    const hint = mapped ? ` — map it to preferred_model_type = "${mapped}"` : ` — replace it with a preferred_model_type value (${MODEL_TIER_VALUES.join(' / ')})`
+    const hint = mapped
+      ? ` — map it to preferred_model_type = "${mapped}"`
+      : ` — replace it with a preferred_model_type value (${MODEL_TIER_VALUES.join(' / ')})`
     fail(
       'CFG-4',
       `preferred_model = "${ki.legacyModelTier}" uses the retired Claude-only key; renamed to preferred_model_type${hint} (ADR-KI-HARNESS-009)`,

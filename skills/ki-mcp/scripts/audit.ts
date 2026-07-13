@@ -356,18 +356,12 @@ if (isDir('src', 'tools')) {
         add(
           'ADVISORY',
           'TOOL-1',
-          `${gf.replace(at(''), '')}: registerTool order (${names.join(', ')}) is not alphabetical — verify it is intentionally stable`,
+          `registerTool order (${names.join(', ')}) is not alphabetical — verify it is intentionally stable`,
           STD,
           gf.replace(at(''), '')
         )
       } else {
-        add(
-          'PASS',
-          'TOOL-1',
-          `${gf.replace(at(''), '')}: tool registration order is deterministic (${names.join(', ')})`,
-          STD,
-          gf.replace(at(''), '')
-        )
+        add('PASS', 'TOOL-1', `tool registration order is deterministic (${names.join(', ')})`, STD, gf.replace(at(''), ''))
       }
     }
   }

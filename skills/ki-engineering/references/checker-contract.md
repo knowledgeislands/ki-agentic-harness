@@ -54,6 +54,19 @@ Rules:
 
 `ki-housekeeping` (bare array, numeric severity), `ki-binding` (`{severity,criterion,message}` field names, no `summary`/`generatedAt`), and `ki-decision-records` / `ki-feature-definitions` (no `--json` support at all) currently deviate — see the ROADMAP for bringing them into conformance.
 
+## The finding line
+
+One row per finding, rendered by the one shared renderer in the aggregate (`.ki-meta/bin/aggregate.ts`, per [ADR-KI-HARNESS-SKILLS-010](../../../docs/decisions/ADR-KI-HARNESS-SKILLS-010-comparable-cited-checker-findings.md)); a checker's native display follows the same column order (`[area] file msg (ref)`). The layout is:
+
+```text
+  <icon> <level, 4-wide> [<area>] <file> <msg> (<ref>)
+```
+
+- **Icon** — one per ladder level: ❌ FAIL, ⚠️ WARN, ✨ POLISH, 🧭 ADVISORY, ℹ️ INFO, 🚫 NA, ✅ PASS. Every icon occupies **two display columns**: most are Emoji_Presentation glyphs (natively 2 cols); the narrow-base VS16 glyphs ⚠️/ℹ️ carry an explicit trailing space, because wcwidth-style terminals (VS Code/xterm.js) count them 1 col and VS16 does not widen them.
+- **Level** — the short tags `fail` / `warn` / `pol` / `adv` / `info` / `na` / `pass`, padded to a 4-wide field so the `[area]` column aligns.
+- **`[area]`**, **`file`** (when the finding carries one, painted cyan) and the trailing dim **`(ref)`** come straight from the finding's structured fields.
+- **`msg` restates nothing.** The message MUST NOT restate the finding's `area` or `file` — they render as their own columns, so a restatement prints twice (`[IDX-5] MEMORY.md MEMORY.md: …`). A path may appear in `msg` only when it is _not_ the finding's `file` (or the finding has no `file`). ADVISORY messages carry no `[J]:` prefix — the ADVISORY level _is_ the judgment marker.
+
 ## The remediation footer
 
 A checker reports; it does not fix. So when its summary is **not clean** — any FAIL, WARN, or POLISH — it MUST end its human output (not `--json`) with a one-line footer telling the reader how to address what it found: run the owning skill's judgment mode. The fix for a mechanical finding is rarely a matching mechanical edit — deciding _which_ change is right (which layer a fact belongs in, whether an overage is earned, whether a tier fits the work) is the judgment half. The footer routes the reader there instead of leaving them to hand-work the codes.

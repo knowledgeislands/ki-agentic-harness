@@ -252,9 +252,17 @@ function main(): number {
       if (ki.legacyModelTier) {
         const mapped = LEGACY_ALIAS_TO_TYPE[ki.legacyModelTier]
         const to = mapped ? `preferred_model_type = "${mapped}"` : `preferred_model_type = "…" (${MODEL_TIER_VALUES.join(' / ')})`
-        todo('CFG-4', `preferred_model = "${ki.legacyModelTier}" is the retired Claude-only key; replace it with ${to} (ADR-KI-HARNESS-009)`, '.ki-config.toml')
+        todo(
+          'CFG-4',
+          `preferred_model = "${ki.legacyModelTier}" is the retired Claude-only key; replace it with ${to} (ADR-KI-HARNESS-009)`,
+          '.ki-config.toml'
+        )
       } else if (ki.modelTierTypeBad)
-        todo('CFG-4', `preferred_model_type = "${ki.modelTierTypeBad}" invalid; set one of ${MODEL_TIER_VALUES.join(' / ')}`, '.ki-config.toml')
+        todo(
+          'CFG-4',
+          `preferred_model_type = "${ki.modelTierTypeBad}" invalid; set one of ${MODEL_TIER_VALUES.join(' / ')}`,
+          '.ki-config.toml'
+        )
       else if (!ki.modelTierType)
         todo(
           'CFG-4',

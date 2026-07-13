@@ -224,21 +224,21 @@ function runBrew(
     ] as Array<[string, string[]]>) {
       const r = spawnSafe('brew', args, base)
       if (!r) {
-        out.na('TAP-BREW', `${fx.name}: \`brew ${sub}\` could not be run (spawn error) — skipped`, STD, where)
+        out.na('TAP-BREW', `\`brew ${sub}\` could not be run (spawn error) — skipped`, STD, where)
         continue
       }
       const output = `${r.stdout}\n${r.stderr}`.trim()
-      if (r.status === 0) out.note('TAP-BREW', `${fx.name}: \`brew ${sub}\` clean`, STD, where)
+      if (r.status === 0) out.note('TAP-BREW', `\`brew ${sub}\` clean`, STD, where)
       else if (invocationError(output))
         out.na(
           'TAP-BREW',
-          `${fx.name}: \`brew ${sub}\` not run against this tap (${sub === 'audit' ? 'formula not tapped — run `brew tap` first, or rely on brew test-bot CI' : 'brew invocation issue'}) — skipped`,
+          `\`brew ${sub}\` not run against this tap (${sub === 'audit' ? 'formula not tapped — run `brew tap` first, or rely on brew test-bot CI' : 'brew invocation issue'}) — skipped`,
           STD,
           where
         )
       else {
         const detail = output.split(/\r?\n/).filter(Boolean).slice(0, 4).join(' · ')
-        out.warn('TAP-BREW', `${fx.name}: \`brew ${sub}\` reported issues — ${detail || `exit ${r.status}`}`, STD, where)
+        out.warn('TAP-BREW', `\`brew ${sub}\` reported issues — ${detail || `exit ${r.status}`}`, STD, where)
       }
     }
   }

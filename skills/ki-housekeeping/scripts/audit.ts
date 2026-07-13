@@ -285,7 +285,7 @@ function jsonReport(findings: Finding[], target: string) {
     target,
     generatedAt: new Date().toISOString(),
     summary,
-    findings: findings.map((f) => ({ level: SEV_LABELS[f.severity], area: f.id, msg: `${f.file}: ${f.message}`, ref: f.ref, file: f.file }))
+    findings: findings.map((f) => ({ level: SEV_LABELS[f.severity], area: f.id, msg: f.message, ref: f.ref, file: f.file }))
   }
 }
 

@@ -185,11 +185,13 @@ for (const p of plans) {
   // reverse-link consistency
   for (const b of p.blocks) {
     const other = byId.get(b)
-    if (other && !other.blockedBy.includes(p.id)) add('WARN', 'DEP', `${p.file}: blocks ${b}, but ${b} does not list ${p.id} in blocked-by`)
+    if (other && !other.blockedBy.includes(p.id))
+      add('WARN', 'DEP', `blocks ${b}, but ${b} does not list ${p.id} in blocked-by`, FORMAT_REF, p.file)
   }
   for (const b of p.blockedBy) {
     const other = byId.get(b)
-    if (other && !other.blocks.includes(p.id)) add('WARN', 'DEP', `${p.file}: blocked-by ${b}, but ${b} does not list ${p.id} in blocks`)
+    if (other && !other.blocks.includes(p.id))
+      add('WARN', 'DEP', `blocked-by ${b}, but ${b} does not list ${p.id} in blocks`, FORMAT_REF, p.file)
   }
 }
 // cycle detection over the blocked-by graph
@@ -216,16 +218,16 @@ if (plans.length) {
   add(
     'ADVISORY',
     'near-horizon',
-    'roadmap [J]: each plan\'s `roadmap:` item should be a current ROADMAP "Next" entry — plans are for the near horizon only.',
+    'each plan\'s `roadmap:` item should be a current ROADMAP "Next" entry — plans are for the near horizon only.',
     METHOD_REF
   )
-  add('ADVISORY', 'quality', 'quality-bar [J]: Steps concrete, Verify checkable, Current state honest, Files touched minimal.', METHOD_REF)
+  add('ADVISORY', 'quality', 'Steps concrete, Verify checkable, Current state honest, Files touched minimal.', METHOD_REF)
   const wip = plans.filter((p) => p.fm.status === 'in-progress')
   if (wip.length)
     add(
       'ADVISORY',
       'zombie',
-      `zombie [J]: ${wip.length} plan(s) in-progress — confirm each has recent commits; a stalled plan should be advanced or closed.`,
+      `${wip.length} plan(s) in-progress — confirm each has recent commits; a stalled plan should be advanced or closed.`,
       METHOD_REF
     )
 }

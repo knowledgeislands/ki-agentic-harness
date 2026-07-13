@@ -13,7 +13,7 @@
  * Output is grouped by severity; exit code is non-zero iff any FAIL. No dependencies —
  * Node/Bun builtins only; no cross-skill imports (checker-contract.md).
  */
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from 'node:fs'
 import { basename, join } from 'node:path'
 
 // Unified severity ladder — shared by every KI checker (checker-contract.md).
@@ -138,22 +138,21 @@ if (!has('.git')) {
 add(
   'ADVISORY',
   'PATTERN-J1',
-  'PATTERN-J1 [J]: for each app-mutated config file, confirm Pattern A (surgical patch) vs Pattern B (full template + ' +
+  'for each app-mutated config file, confirm Pattern A (surgical patch) vs Pattern B (full template + ' +
     'reverse-merge) matches the ≥90%-app-owned decision rule for that specific file.',
   'references/dotfiles-standard.md'
 )
 add(
   'ADVISORY',
   'LAYER-J1',
-  'LAYER-J1 [J]: confirm CLAUDE.md-style guidance sits at the right layer — repo-local vs user-level vs persistent memory.',
+  'confirm CLAUDE.md-style guidance sits at the right layer — repo-local vs user-level vs persistent memory.',
   'references/dotfiles-standard.md'
 )
 if (has('.chezmoiignore')) {
   add(
     'ADVISORY',
     'CHEZMOI-J1',
-    'CHEZMOI-J1 [J]: confirm any .chezmoiignore negation (!pattern) is a deliberate, documented un-ignore, not an ' +
-      'accidentally-too-broad ignore rule.',
+    'confirm any .chezmoiignore negation (!pattern) is a deliberate, documented un-ignore, not an ' + 'accidentally-too-broad ignore rule.',
     'references/dotfiles-standard.md',
     '.chezmoiignore'
   )
@@ -161,13 +160,13 @@ if (has('.chezmoiignore')) {
 add(
   'ADVISORY',
   'ETIQ-J1',
-  'ETIQ-J1 [J]: confirm audit findings were reported as file + one-line problem + options, with no fix applied ' + 'without confirmation.',
+  'confirm audit findings were reported as file + one-line problem + options, with no fix applied ' + 'without confirmation.',
   'references/dotfiles-standard.md'
 )
 add(
   'ADVISORY',
   'SYNC-1',
-  'SYNC-1 [J]: this rubric, the standard, and this script must agree; when the standard moves, all three move together (REFRESH).',
+  'this rubric, the standard, and this script must agree; when the standard moves, all three move together (REFRESH).',
   'references/audit-rubric.md'
 )
 
