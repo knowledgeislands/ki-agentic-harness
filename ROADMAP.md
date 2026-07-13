@@ -89,6 +89,10 @@ During the audit/conform standardization session (2026-07-12), two background ag
 
 A live `kit-mcp-claude-housekeeping` call via the `mcporter` bridge (2026-07-13) found `~/.claude/projects` at 715 MB and `~/.claude/telemetry` at 145 MB on this machine — flagged in passing while verifying the bridge worked, not yet triaged. Run `ki-housekeeping`'s CONFORM mode (from Claude Desktop or via `mcporter`, since the server's access level needs to be `destructive` rather than this machine's default `read` to actually clean anything) to see what's safe to prune — likely session/telemetry retention, not memory (already audited clean this session).
 
+### Formal schema for `.ki-config.toml` _(candidate)_
+
+Today the file-level contract is prose ([ki-config-standard.md](skills/ki-repo/references/ki-config-standard.md)) and each skill hand-validates only its own table at audit time ("validate down, ignore across") — there is no single machine-checkable schema an editor or a generic tool can validate against, and no ratified TOML-native schema standard exists to reach for (TOML has no JSON-Schema equivalent). The realistic options: (a) a JSON Schema per `[ki-<skill>]` table (TOML maps 1:1 onto JSON-compatible values), stitched into one document and validated via [Taplo](https://taplo.tamasfe.dev) (the engine behind the "Even Better TOML" VS Code extension), opted into per-file with a `#:schema` directive comment — gives editor-time autocomplete/validation for free; or (b) keep per-skill hand-validation as-is but formalize the convention each `audit.ts` already follows. Investigate before building: whether Taplo/JSON-Schema is worth the added toolchain surface for a config file only ever hand-edited by an agent, or whether the existing validate-down checker pattern already gives equivalent safety without a new artifact to keep in sync across ~12 skill tables.
+
 ## Future
 
 ### Reclassify the remaining borderline DRs _(candidate)_
