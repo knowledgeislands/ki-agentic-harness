@@ -86,6 +86,10 @@ The [tuning guide](docs/guides/user-guide/tuning.md) documents three ways to lig
 
 ### Session & operational follow-ups
 
+#### `FILES-3` promises config-scaffolding that no script performs
+
+Working `vallearmonia-website` through `ki-bootstrap` (2026-07-13) surfaced that `ki-repo`'s `FILES-3` check fails with "`.ki-config.toml` does not declare `[ki-authoring]` — the authoring standard is baseline (run `--init`)", but nothing in the chain actually performs that fix. `ki-bootstrap`'s `bootstrap.ts` engine never writes `.ki-config.toml` under any circumstance (no write path exists in the source at all — confirmed by reading it, not just failing to find one), `ki-repo`'s own `scripts/init.ts` is just a delegator to that same engine (`--seed ki-repo`), and `ki-repo`'s `conform.ts` has no `FILES-3` handling either. This also means the `ki-bootstrap` SKILL.md's greenfield story ("a repo with no `.ki-config.toml` enters through `ki-repo`'s init... to scaffold the config") is aspirational — `bootstrap.ts` doesn't implement it. The workaround for now is a hand edit. Fix either the message (stop promising `--init` will do it) or the gap itself (real config-scaffolding logic in `ki-repo`'s init/conform, covering both "table missing on an existing config" and the greenfield "no config at all" case) — candidate home: `ki-repo`'s `scripts/init.ts`, since `ki-bootstrap`'s engine is meant to stay config-agnostic (it only vendors/links against whatever coverage already exists).
+
 #### Retry blocked memory-store fixes once `memory_*` tools recover
 
 During a memory/`CLAUDE.md` review session (2026-07-12), several fixes were identified but couldn't be applied because every `memory_*` tool (`memory_save`, `memory_update`, `memory_search`, `memory_list`) failed with "No such tool available" — reads and writes alike, ruling out a plan-mode-specific restriction. Once the tools are confirmed working again:
