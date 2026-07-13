@@ -4,7 +4,7 @@ The quotable invariant for `ki-binding`: what the single source is, how a server
 
 ## The single source
 
-`~/.local/share/chezmoi/.chezmoidata/mcps.yaml` (chezmoi source path; overridable via `--source`). One `mcpServers:` list; each entry is one MCP server:
+A plain `mcpServers:` YAML, owned by no one dotfiles manager. Its canonical, tool-neutral home is `~/.config/ki/mcp-servers.yaml` (XDG). The checker resolves it in order: `--source <path>` → `$KI_MCP_SOURCE` → the canonical path → a legacy chezmoi data path (`~/.local/share/chezmoi/.chezmoidata/mcps.yaml`, kept as a transitional fallback) → project-local `.ki/mcps.yaml` — first that exists wins. `ki-binding` reads this source **directly** and is renderer-neutral: it never requires a particular renderer to be installed. Applying the source to the surfaces is a **renderer's** job — the composition skill `ki-binding-chezmoi` renders it through chezmoi templates + `chezmoi apply`, but any tool that reads the canonical file qualifies. One `mcpServers:` list; each entry is one MCP server:
 
 ```yaml
 mcpServers:
@@ -14,7 +14,7 @@ mcpServers:
     args: [/abs/path/to/dist/mcp-server/index.js]
     env:
       MCP_GSUITE_ACCESS_LEVEL: read
-      SECRET: { op: op://vault/item/field } # 1Password ref, resolved at chezmoi apply
+      SECRET: { op: op://vault/item/field } # 1Password ref, resolved at render time (e.g. chezmoi apply)
 ```
 
 Two shapes: a **command server** (`command` + `args` + `env`, as above) or a **url server** (`url:` only — an already-running endpoint such as the mcporter proxy). The `clients` field is the one this skill governs; the rest is the server's own definition (owned by `ki-mcp`).
@@ -23,13 +23,13 @@ Two shapes: a **command server** (`command` + `args` + `env`, as above) or a **u
 
 | Surface | `clients` token | Rendered config (the write target) | Controllability |
 | --- | --- | --- | --- |
-| Claude Code | `code` | `~/.claude.json` `mcpServers` (in practice: the one `ki-mcporter` url proxy) | file-editable · chezmoi-rendered |
-| Desktop | `desktop` | `~/Library/Application Support/Claude/claude_desktop_config.json` | file-editable · chezmoi-rendered |
-| mcporter | `mcporter` | `~/.mcporter/mcporter.json` `mcpServers` (proxied daemon) | file-editable · chezmoi-rendered |
+| Claude Code | `code` | `~/.claude.json` `mcpServers` (in practice: the one `ki-mcporter` url proxy) | file-editable · renderer-written § |
+| Desktop | `desktop` | `~/Library/Application Support/Claude/claude_desktop_config.json` | file-editable · renderer-written § |
+| mcporter | `mcporter` | `~/.mcporter/mcporter.json` `mcpServers` (proxied daemon) | file-editable · renderer-written § |
 | Cowork | `cowork` † | `local-agent-mode-sessions/<account>/<workspace>/cowork_settings.json` (`enabledPlugins`) | file-editable · this skill writes it ‡ |
 | claude.ai | _(none)_ | no local file — Admin Console allowlist | manual-only · documented convention |
 
-† The Cowork surface is the KI plugin `knowledge-islands@ki-plugins`, carrying **skills + agents** only. MCP servers are deferred: they are host-local and do not port into Cowork's gVisor sandbox, so a server declaring `cowork` is surfaced by BIND-4 as deferred-not-shipped, never silently bundled. ‡ Gate **PASSED 2026-07-06** (design record Verification log): an external edit to `cowork_settings.json` is honoured on next Cowork launch. The plugin + marketplace repo is **built** (`knowledgeislands/ki-plugins`); this skill registers it under `extraKnownMarketplaces` and toggles `enabledPlugins` via [`conform.ts`](../scripts/conform.ts). A full Cowork relaunch applies the change.
+† The Cowork surface is the KI plugin `knowledge-islands@ki-plugins`, carrying **skills + agents** only. MCP servers are deferred: they are host-local and do not port into Cowork's gVisor sandbox, so a server declaring `cowork` is surfaced by BIND-4 as deferred-not-shipped, never silently bundled. ‡ Gate **PASSED 2026-07-06** (design record Verification log): an external edit to `cowork_settings.json` is honoured on next Cowork launch. The plugin + marketplace repo is **built** (`knowledgeislands/ki-plugins`); this skill registers it under `extraKnownMarketplaces` and toggles `enabledPlugins` via [`conform.ts`](../scripts/conform.ts). A full Cowork relaunch applies the change. § "Renderer-written" = generated from the single source by a renderer (e.g. `ki-binding-chezmoi` via chezmoi templates + `chezmoi apply`), never hand-authored per surface. `ki-binding` audits agreement; it does not itself render these surfaces.
 
 ## The Cowork enablement schema (characterized 2026-07-06)
 
@@ -58,7 +58,8 @@ So a Cowork surface for KI is: **a KI plugin published in a GitHub marketplace r
 
 ## Invariants
 
-- **One source.** No surface config is authored by hand; each is rendered from `mcps.yaml` via chezmoi (the file-editable surfaces) or written by this skill from the same source (Cowork, once wired). A hand-edit that diverges from the source is drift, reported by BIND-1.
+- **One source.** No surface config is authored by hand; each is rendered from `mcps.yaml` by a renderer (the file-editable surfaces — `ki-binding-chezmoi` on the maintainer's machine, or any tool reading the canonical source) or written by this skill from the same source (Cowork, once wired). A hand-edit that diverges from the source is drift, reported by BIND-1.
+- **Renderer-neutral.** `ki-binding` reads the source and audits agreement; it does not depend on any one renderer being installed. The chezmoi render path lives in the composition skill `ki-binding-chezmoi` (which depends on `ki-binding` + `ki-dotfiles-chezmoi`), not here.
 - **`clients` is the only binding lever.** Turning a server on for a surface is a one-line `clients` edit, never a per-surface script.
 - **Cowork is gated, not skipped.** A `cowork` token with no verified path is surfaced (WARN), never dropped.
 

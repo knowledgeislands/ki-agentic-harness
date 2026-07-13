@@ -2,18 +2,21 @@
 /**
  * ki-binding — audit that every run surface agrees with the single source.
  *
- * The single source is chezmoi's `.chezmoidata/mcps.yaml`: one `mcpServers:` list where
- * each entry declares a `clients:` set naming the surfaces it targets. chezmoi renders that
- * into Claude Code, Claude Desktop, and the mcporter proxy. This checker compares each
- * rendered surface against the source and reports drift on the unified severity ladder.
+ * The single source is a plain `mcpServers:` YAML — one list where each entry declares a
+ * `clients:` set naming the surfaces it targets. Its canonical, tool-neutral home is
+ * `~/.config/ki/mcp-servers.yaml`, owned by no one dotfiles manager. A renderer (chezmoi on
+ * the maintainer's machine, or any tool that reads this file) applies it to Claude Code,
+ * Claude Desktop, and the mcporter proxy. This checker reads the source directly — it does
+ * not require any particular renderer to be installed — compares each surface against it,
+ * and reports drift on the unified severity ladder.
  *
- * It is READ-ONLY: it never writes a surface config (that is CONFORM's job — edit the
- * source and `chezmoi apply`). See references/binding-standard.md for the model.
+ * It is READ-ONLY: it never writes a surface config (that is the renderer's job — edit the
+ * source, then re-render, e.g. `chezmoi apply`). See references/binding-standard.md for the model.
  *
  * Usage:
  *   bun audit.ts [project]            audit surfaces; [project] scopes the skill half
  *   --check                                   audit only; exit non-zero on FAIL (WARN never fails)
- *   --source <path>                           override the mcps.yaml source
+ *   --source <path>                           override the source (else $KI_MCP_SOURCE, else first default that exists)
  *   --json                                    emit findings as JSON
  */
 
@@ -32,7 +35,18 @@ const SELF = realpathSync(fileURLToPath(import.meta.url))
 const SKILLS_ROOT = resolve(dirname(SELF), '..', '..')
 
 const HOME = homedir()
-const DEFAULT_SOURCE = join(HOME, '.local', 'share', 'chezmoi', '.chezmoidata', 'mcps.yaml')
+
+// ── Source candidates ──
+// The canonical, tool-neutral home is `~/.config/ki/mcp-servers.yaml` (XDG). chezmoi is one
+// *renderer* that reads the source and applies it to surfaces — its legacy data path stays as a
+// transitional fallback so an un-migrated machine keeps auditing until its renderer is repointed
+// at the canonical file. Project-local `.ki/mcps.yaml` is the last default. Explicit `--source`
+// or `$KI_MCP_SOURCE` win over all of these.
+const XDG_CONFIG = process.env.XDG_CONFIG_HOME ?? join(HOME, '.config')
+const CANONICAL_SOURCE = join(XDG_CONFIG, 'ki', 'mcp-servers.yaml')
+const LEGACY_CHEZMOI_SOURCE = join(HOME, '.local', 'share', 'chezmoi', '.chezmoidata', 'mcps.yaml')
+const PROJECT_LOCAL_SOURCE = join(process.cwd(), '.ki', 'mcps.yaml')
+const inferBackend = (p: string): 'chezmoi' | 'plain' => (p.includes('chezmoi') ? 'chezmoi' : 'plain')
 const RECOGNISED = new Set(['code', 'desktop', 'mcporter', 'cowork'])
 
 // The file-editable, chezmoi-rendered surfaces this checker compares against the source.
@@ -81,7 +95,13 @@ const opt = (name: string): string | undefined => {
 }
 const CHECK = flag('--check')
 const JSON_OUT = flag('--json')
-const SOURCE = resolve(opt('--source') ?? DEFAULT_SOURCE)
+// Resolve the source: explicit `--source`/`$KI_MCP_SOURCE` win; otherwise the first default
+// that exists, canonical-first. Falls back to the canonical path so a not-found error names it.
+const sourceOverride = opt('--source') ?? process.env.KI_MCP_SOURCE
+const SOURCE = sourceOverride
+  ? resolve(sourceOverride)
+  : ([CANONICAL_SOURCE, LEGACY_CHEZMOI_SOURCE, PROJECT_LOCAL_SOURCE].find((p) => existsSync(p)) ?? CANONICAL_SOURCE)
+const BACKEND = inferBackend(SOURCE)
 const project = argv.find((a, i) => !a.startsWith('--') && argv[i - 1] !== '--source')
 
 // ── Helpers ──
@@ -101,7 +121,9 @@ function mcpServerKeys(cfg: Record<string, unknown> | null): Set<string> {
 
 // ── Load & validate the single source (BIND-2) ──
 if (!existsSync(SOURCE)) {
-  process.stderr.write(`${RED}error${RESET} single source not found: ${SOURCE}\n  pass --source <path> or check the chezmoi install.\n`)
+  process.stderr.write(
+    `${RED}error${RESET} single source not found: ${SOURCE}\n  create it at the canonical path, or point elsewhere with --source <path> / $KI_MCP_SOURCE.\n`
+  )
   process.exit(2)
 }
 
@@ -253,7 +275,9 @@ if (JSON_OUT) {
   process.stdout.write(`${JSON.stringify(wrapper)}\n`)
 } else {
   const colour: Record<Severity, string> = { FAIL: RED, WARN: YELLOW, PASS: GREEN, INFO: DIM }
-  process.stdout.write(`\n${DIM}ki-binding — cross-surface audit${RESET}\n${DIM}source: ${SOURCE}${RESET}\n${'─'.repeat(60)}\n`)
+  process.stdout.write(
+    `\n${DIM}ki-binding — cross-surface audit${RESET}\n${DIM}source: ${SOURCE} (${BACKEND} backend)${RESET}\n${'─'.repeat(60)}\n`
+  )
   for (const f of findings) {
     const loc = f.file ? ` ${DIM}${f.file}${RESET}` : ''
     const cite = f.ref ? ` ${DIM}(${f.ref})${RESET}` : ''

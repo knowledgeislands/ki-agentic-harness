@@ -120,7 +120,11 @@ Audits, conforms, and scaffolds the house convention for serving a built site on
 
 ### `ki-binding`
 
-Governs the **cross-surface binding** — enabling the KI MCP servers, skills, and agents consistently across the surfaces that run them (Claude Code, Desktop, mcporter, Cowork; claude.ai by convention) from the single chezmoi `mcps.yaml` source, whose per-server `clients:` field is the targeting lever. Verifies each rendered surface agrees with the source and composes `ki-bootstrap` for the project-local skill half. The write path for the file-editable surfaces is chezmoi (never a hand-written per-surface config, which drifts); Cowork is gated on an external-edit verification before its `enabledPlugins` are wired. Implements the `ki-mcp` design record on cross-surface enablement.
+Governs the **cross-surface binding** — enabling the KI MCP servers, skills, and agents consistently across the surfaces that run them (Claude Code, Desktop, mcporter, Cowork; claude.ai by convention) from the single renderer-neutral `mcp-servers.yaml` source (canonically `~/.config/ki/mcp-servers.yaml`), whose per-server `clients:` field is the targeting lever. Reads the source directly — requiring no particular renderer installed — verifies each surface agrees with it, and composes `ki-bootstrap` for the project-local skill half. The write path for the file-editable surfaces is a renderer (the chezmoi render path lives in `ki-binding-chezmoi`), never a hand-written per-surface config, which drifts; Cowork is gated on an external-edit verification before its `enabledPlugins` are wired. Implements the `ki-mcp` design record on cross-surface enablement.
+
+### `ki-binding-chezmoi`
+
+The **chezmoi render path** for the cross-surface binding — a composition skill (`implies:` `ki-binding` + `ki-dotfiles-chezmoi`) that supplies what the renderer-neutral `ki-binding` deliberately omits: rendering the canonical `mcp-servers.yaml` source through chezmoi templates + `chezmoi apply` so the file-editable surfaces are generated from the single source. Its AUDIT runs the `ki-dotfiles-chezmoi` and `ki-binding` checkers in sequence, then adds the render-wiring delta. Installed only by chezmoi users; a non-chezmoi setup uses `ki-binding` alone. The composition-not-fork shape follows `ADR-KI-HARNESS-SKILLS-004`.
 
 ### `ki-housekeeping`
 
