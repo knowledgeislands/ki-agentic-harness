@@ -11,10 +11,12 @@ The canonical home for the Knowledge Islands **Agent Skills** (per the [Agent Sk
 | Part | Directory | Status |
 | --- | --- | --- |
 | Skills | `skills/` | **Populated** — the governance `ki-*` skills |
-| Agents | `agents/` | **Populated** — governance agents in `agents/governance/` |
+| Agents | `agents/` | **Populated**† — governance agents in `agents/governance/` |
 | MCP servers | `mcp/` | **Shelf** — scaffolded, no servers yet |
 | Evals | `evals/` | **Populated (partial)** — scenarios + result matrices in `evals/` |
-| Hooks | `hooks/` | **Populated (partial)** — plan-file lifecycle pair (`hooks/plan-stamp.sh`, `hooks/plan-sync.sh`) + `ki:hooks:link:global` |
+| Hooks | `hooks/` | **Populated (partial)**† — plan-file lifecycle pair (`hooks/plan-stamp.sh`, `hooks/plan-sync.sh`) + `ki:hooks:link:global` |
+
+† Agents and Hooks are Claude-Code-specific today; multi-runtime support (Claude Code + OpenAI Codex CLI) is a targeted future effort — see `SDR-KI-HARNESS-002-runtime-portable-contracts.md`.
 
 ## How skills relate — composition only
 

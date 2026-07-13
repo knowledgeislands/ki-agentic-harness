@@ -23,6 +23,7 @@ The skills are organised into six clusters, and their relationships are declared
 - The bootstrap chain and the user-guide tree cannot drift — both derive from `implies:`, and a broken edge fails CI.
 - Cluster 6 gives the machine/environment skills a home the earlier repo-only taxonomy lacked.
 - The generated plugin-marketplace repo (`knowledgeislands/ki-plugins`, `ADR-KI-HARNESS-002`) is a further repo shape; `ki-plugins` governs its on-disk projection so it is no longer a repo carrying zero repo-structure skills. Its **generation and cross-surface enablement** stay with the environment skill `ki-binding` (they govern the machine, not the repo) — the split keeps each cluster's defining property intact.
+- Runtime-adapter concerns (multi-runtime support) are not a new taxonomy cluster or axis — they live inside individual skills' standards and each repo's `.ki-config.toml`, not a seventh cluster.
 
 ## References
 

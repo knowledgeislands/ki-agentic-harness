@@ -8,6 +8,10 @@ This roadmap is itself subject to the house discipline it describes: when a skil
 
 ## Soon
 
+### Register OpenAI Codex CLI as a target runtime and update the governance layer
+
+Scope is the governance/decision layer only — no adapter code. Amend `SDR-KI-HARNESS-002` to register Codex CLI as a second target runtime, add the runtime feature-coverage matrix, split the `ki-agents` standard into a portable core plus a Claude-Code appendix, and update the README/keyword/footnote references accordingly. Two follow-on research items are now scoped and deliberately deferred to later sessions: (a) map Claude Code's markdown+frontmatter `.md` agents onto Codex's TOML `.codex/agents/*.toml` format (documented fields `name`/`description`/`developer_instructions`), and verify the `SubagentStart`/`SubagentStop` hook payload ↔ named-agent wiring, which the Codex docs leave unspecified; (b) the vendor-neutral agents/hooks/install adapter code (Workstream B Phases 2-4) and the de-chezmoi `ki-binding` pluggable-backend work (Workstream C) are separate later sessions that will register their own ROADMAP items when picked up.
+
 ### Config contract & migration cleanup
 
 #### Remove the legacy `preferred_model` migration bridge in `ki-tokenomics`
