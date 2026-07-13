@@ -38,6 +38,14 @@
  * to wire, as sugar over these bins). Re-running it is the single idempotent way to
  * bring a target up to date — no separate legacy/tracking modes.
  *
+ * Harness-shaped targets only: when the resolved set includes `ki-harness` (the
+ * target authors and operates its own skills/ tree), the engine additionally
+ * vendors the three cross-skill operational scripts (skill-graph, skill-help,
+ * sync-skills) into `.ki-meta/bin/`, each manifest-hashed like every other vendored
+ * file. These are engine-level, not per-skill `vendors:` units — the same class as
+ * the aggregate runner and bin wrappers (ADR-KI-HARNESS-008). A non-harness repo
+ * has no skills/ tree to operate on and never receives them.
+ *
  * Usage: bun bootstrap.ts <target-repo> [--seed <skill>] [--ref <ref>] [--dry-run]
  */
 
@@ -53,6 +61,13 @@ const RESET = '\x1b[0m'
 
 const VENDOR_DIR = '.ki-meta' // relative to the target repo root (dot-prefixed, generated-not-authored)
 const REPO_SLUG = 'knowledgeislands/ki-agentic-harness'
+
+// Cross-skill operational scripts a harness-shaped target needs to run its own
+// skills/ tree: validate/render the `implies:` graph, render HELP, install skills.
+// Vendored into .ki-meta/bin/ ONLY when the resolved set includes ki-harness —
+// engine-level, not per-skill `vendors:` units (ADR-KI-HARNESS-008). Their
+// canonical home is skills/ki-bootstrap/scripts/.
+const HARNESS_BIN_SCRIPTS = ['skill-graph.ts', 'skill-help.ts', 'sync-skills.ts'] as const
 
 // The current harness ref — recorded in the manifest so `ki-init` can re-run the
 // chain at the same point later. Falls back to 'unknown' when not in a git
@@ -407,7 +422,7 @@ function vendorSkill(target: string, skill: string, dryRun: boolean, manifestFil
   // covered by the manifest hash like every other vendored file.
   const helpAbs = join(destDir, 'help.md')
   try {
-    const help = execFileSync('bun', [join(SKILLS_ROOT, '..', 'scripts', 'skill-help.ts'), skill], {
+    const help = execFileSync('bun', [join(SKILLS_ROOT, 'ki-bootstrap', 'scripts', 'skill-help.ts'), skill], {
       cwd: join(SKILLS_ROOT, '..'),
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore']
@@ -536,6 +551,17 @@ function main(): void {
     writeFileSync(join(target, helpBinRel), BIN_KI_HELP)
     chmodSync(join(target, helpBinRel), 0o755)
     manifestFiles[aggRel] = sha256File(join(target, aggRel))
+    // Harness-shaped targets additionally get the cross-skill scripts that operate
+    // on the whole skills/ tree — engine-level, manifest-hashed like every vendored
+    // file, gated on ki-harness membership (ADR-KI-HARNESS-008).
+    if (set.includes('ki-harness')) {
+      for (const name of HARNESS_BIN_SCRIPTS) {
+        const rel = join(VENDOR_DIR, 'bin', name)
+        cpSync(join(SKILLS_ROOT, 'ki-bootstrap', 'scripts', name), join(target, rel))
+        manifestFiles[rel] = sha256File(join(target, rel))
+      }
+      console.log(`${GREEN}bin${RESET} ${DIM}→ ${VENDOR_DIR}/bin/{${HARNESS_BIN_SCRIPTS.join(', ')}} (harness cross-skill scripts)${RESET}`)
+    }
     writeFileSync(join(target, manifestRel), `${JSON.stringify({ ref, files: manifestFiles }, null, 2)}\n`)
   }
   console.log(

@@ -49,7 +49,8 @@ The records are living, compact, and independent. The order below is a **curated
 24. [ADR-KI-HARNESS-TOOLCHAIN-004](ADR-KI-HARNESS-TOOLCHAIN-004-checker-remediation-footer-and-learn-block-context.md) — checker remediation footer and the headroom:learn cross-repo context check.
 25. [ADR-KI-HARNESS-TOOLCHAIN-005](ADR-KI-HARNESS-TOOLCHAIN-005-generated-code-excluded-from-lint-and-knip.md) — generated and vendored code excluded from linting and knip.
 26. [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-uniform-skill-modes-and-coverage-scoped-audit.md) — uniform skill modes (bare audit/conform/init), the toolchain collapse, and the coverage-scoped aggregate gate.
-27. [ADR-KI-HARNESS-SKILLS-010](ADR-KI-HARNESS-SKILLS-010-comparable-cited-checker-findings.md) — comparable, cited checker findings across audit and conform (the `ref`/`file` finding fields, conform `--json`, and the shared aggregate renderer).
+27. [ADR-KI-HARNESS-008](ADR-KI-HARNESS-008-vendored-cross-skill-scripts.md) — vendoring the cross-skill scripts (graph, help, sync) into `.ki-meta/bin/` for harness-shaped targets.
+28. [ADR-KI-HARNESS-SKILLS-010](ADR-KI-HARNESS-SKILLS-010-comparable-cited-checker-findings.md) — comparable, cited checker findings across audit and conform (the `ref`/`file` finding fields, conform `--json`, and the shared aggregate renderer).
 
 ## Template
 

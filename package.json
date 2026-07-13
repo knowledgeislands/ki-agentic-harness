@@ -80,17 +80,17 @@
     "ki:repo:conform": "bun .ki-meta/skills/ki-repo/conform.ts .",
     "ki:skills:audit": "bun .ki-meta/skills/ki-skills/audit.ts .",
     "ki:skills:conform": "bun .ki-meta/skills/ki-skills/conform.ts .",
-    "ki:skills:graph": "bun scripts/skill-graph.ts --tree",
-    "ki:skills:help": "bun scripts/skill-help.ts",
-    "ki:skills:link:global": "bun scripts/sync-skills.ts link --only ki-bootstrap,ki-recap,ki-plan,ki-delegate",
+    "ki:skills:graph": "bun .ki-meta/bin/skill-graph.ts --tree",
+    "ki:skills:help": "bun .ki-meta/bin/skill-help.ts",
+    "ki:skills:link:global": "bun .ki-meta/bin/sync-skills.ts link --only ki-bootstrap,ki-recap,ki-plan,ki-delegate",
     "ki:skills:link:project": "bun skills/ki-bootstrap/scripts/link-skills.ts",
     "ki:skills:refresh-status": "bun skills/ki-skills/scripts/audit.ts skills --refresh-status",
-    "ki:skills:status": "bun scripts/sync-skills.ts status",
-    "ki:skills:unlink": "bun scripts/sync-skills.ts unlink",
+    "ki:skills:status": "bun .ki-meta/bin/sync-skills.ts status",
+    "ki:skills:unlink": "bun .ki-meta/bin/sync-skills.ts unlink",
     "ki:tokenomics:audit": "bun .ki-meta/skills/ki-tokenomics/audit.ts .",
     "ki:tokenomics:conform": "bun .ki-meta/skills/ki-tokenomics/conform.ts .",
     "prepare": "husky",
-    "test": "bun skills/ki-bootstrap/scripts/link-skills.test.ts && bun hooks/plan-stamp.test.ts && bun hooks/plan-sync.test.ts && bun skills/ki-skills/scripts/audit.test.ts && bun skills/ki-housekeeping/scripts/audit.test.ts && bun skills/ki-tokenomics/scripts/audit.test.ts && bun evals/guide-suite.ts && bun scripts/skill-graph.ts --check && bun scripts/skill-help.ts --check && bun skills/ki-bootstrap/scripts/audit.ts ."
+    "test": "bun skills/ki-bootstrap/scripts/link-skills.test.ts && bun hooks/plan-stamp.test.ts && bun hooks/plan-sync.test.ts && bun skills/ki-skills/scripts/audit.test.ts && bun skills/ki-housekeeping/scripts/audit.test.ts && bun skills/ki-tokenomics/scripts/audit.test.ts && bun evals/guide-suite.ts && bun skills/ki-bootstrap/scripts/skill-graph.ts --check && bun skills/ki-bootstrap/scripts/skill-help.ts --check && bun skills/ki-bootstrap/scripts/audit.ts ."
   },
   "type": "module"
 }

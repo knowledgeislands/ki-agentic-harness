@@ -115,6 +115,28 @@ if (!existsSync(pkgPath)) {
       'package.json'
     )
   }
+  // PKG-6 — every ki:* key that shells `bun <path>` must reference a file that
+  // exists. A dangling target means the key is dead on arrival — e.g. a vendored
+  // .ki-meta/bin script the target was never bootstrapped to receive.
+  const scripts = (pkg.scripts as Record<string, string> | undefined) ?? {}
+  const isScriptPath = (t: string): boolean => /\.(ts|tsx|js|mjs|cjs|sh)$/.test(t) || t.startsWith('./') || t.startsWith('.ki-meta/')
+  let danglers = 0
+  for (const [key, cmd] of Object.entries(scripts)) {
+    if (!key.startsWith('ki:') || typeof cmd !== 'string') continue
+    for (const segment of cmd.split(/&&|\|\||[;|]/)) {
+      const tokens = segment.trim().split(/\s+/)
+      for (let i = 0; i < tokens.length - 1; i++) {
+        if (tokens[i] !== 'bun' && tokens[i] !== 'bunx') continue
+        const arg = tokens[i + 1] as string
+        if (arg === 'run' || arg.startsWith('-') || !isScriptPath(arg)) continue
+        if (!existsSync(join(root, arg))) {
+          add('WARN', 'PKG-6', `script '${key}' shells 'bun ${arg}', which does not exist`, STD, 'package.json')
+          danglers++
+        }
+      }
+    }
+  }
+  if (danglers === 0) add('PASS', 'PKG-6', 'all ki:* `bun <path>` script targets resolve to a file', STD, 'package.json')
 }
 
 // ── CONFIG — .ki-config.toml declarations ──

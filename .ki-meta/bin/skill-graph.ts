@@ -1,14 +1,17 @@
 #!/usr/bin/env bun
-// scripts/skill-graph.ts — read the `implies:` frontmatter graph across every
-// SKILL.md and (a) validate it, (b) render the dependency tree.
+// skill-graph.ts — read the `implies:` frontmatter graph across every SKILL.md
+// and (a) validate it, (b) render the dependency tree.
 //
-//   bun scripts/skill-graph.ts --check   validate the graph (CI gate); exit 1 on error
-//   bun scripts/skill-graph.ts --tree     print the Markdown dependency tree to stdout
+//   bun skill-graph.ts --check   validate the graph (CI gate); exit 1 on error
+//   bun skill-graph.ts --tree    print the Markdown dependency tree to stdout
 //
-// The `implies:` list in each skill's frontmatter is the single declared source
-// of the implication graph: linking a skill pulls in the skills it implies. Both
-// the bootstrap chain and the user-guide dependency tree derive from it, so a
-// broken edge (e.g. an un-updated name after a rename) fails `ki:verify`.
+// Canonical home is skills/ki-bootstrap/scripts/; also vendored into a governed
+// harness-shaped target's .ki-meta/bin/ (ADR-KI-HARNESS-008). It resolves skills/
+// from the cwd (repo root). The `implies:` list in each skill's frontmatter is the
+// single declared source of the implication graph: linking a skill pulls in the
+// skills it implies. Both the bootstrap chain and the user-guide dependency tree
+// derive from it, so a broken edge (e.g. an un-updated name after a rename) fails
+// the `--check` gate that `bun run test` runs.
 
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'

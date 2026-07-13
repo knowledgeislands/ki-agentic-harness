@@ -58,6 +58,8 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS
 
 **PKG-5 [J]** Docs aimed at governed repos (the user guide especially) never present a `ki:*` `package.json` key as _the_ invocation of a vendored checker: the `.ki-meta` path (`bun .ki-meta/skills/<skill>/<mode>.ts .`, aggregate `./.ki-meta/bin/ki-audit`) is canonical and the key its harness-local alias, with the equivalence stated or linked. A bare key is acceptable only in an explicitly harness-repo-only doc. Source: standard §package.json docs invocation discipline. _Severity: WARN — a key-only instruction silently excludes every governed repo without a `package.json`._
 
+**PKG-6 [M]** Every `ki:*` script whose command shells `bun <path>` / `bunx <path>` references a file that exists under the repo root (`bun run <key>` delegations and non-path args are ignored; a path is a token ending `.ts`/`.js`/`.sh`/… or under `.ki-meta/`). A dangling target means the key is dead on arrival — most often a `.ki-meta/bin/*` script the target was never bootstrapped to receive (ADR-KI-HARNESS-008), or a script referenced after a move. Source: standard §package.json. _Severity: WARN per dangling target — the key silently fails at first use._
+
 ---
 
 ## CONFIG — .ki-config.toml declarations

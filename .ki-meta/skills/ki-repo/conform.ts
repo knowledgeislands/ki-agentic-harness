@@ -19,6 +19,13 @@
  * audit checks (merge+delete-branch, secret-scanning+push-protection) cites the parent code
  * and enumerates the covered checks; audit still emits each fine check with its own code.
  *
+ * Every GitHub-settings action reads live state first (the same REST fields `audit.ts` checks,
+ * via one `repos/${nwo}` fetch plus a handful of per-setting reads) and only issues a `gh` call
+ * when that setting actually differs from the standard — an already-conformant setting records
+ * PASS and is never re-written. This matters because a `gh` write is not silently free: it's a
+ * live mutation (and, for branch-protection, PUT fully replaces the rule rather than patching
+ * it), so skip-when-conformant is the correct behavior, not just a nicety.
+ *
  * Applies, via `gh`:
  *   - Layer 2: merge method (squash-only), auto-delete-branch, Wiki/Projects off,
  *     Issues on, topics (public, standard set), branch protection (present-but-off
@@ -120,6 +127,27 @@ const gh = (args: string[], area: string, label: string, covers?: string): void 
   }
 }
 const ghJSON = (apiPath: string): unknown => JSON.parse(execFileSync('gh', ['api', apiPath], { encoding: 'utf8' }))
+const ghOk = (apiPath: string): boolean => {
+  try {
+    execFileSync('gh', ['api', apiPath], { encoding: 'utf8' })
+    return true
+  } catch {
+    return false
+  }
+}
+
+// `ghIfNeeded` is `gh()`'s conformance-checked twin: when `already` is true the setting is
+// left untouched and recorded PASS; otherwise it delegates to `gh()` as before (which itself
+// still records POLISH on write / FAIL on error, dry-run included).
+const ghIfNeeded = (already: boolean, args: string[], area: string, label: string, covers?: string): void => {
+  if (already) {
+    const detail = covers ? `${label} (covers: ${covers})` : label
+    say(`  ${paint(C.dim, 'ok')}    ${detail} — already conformant`)
+    rec('PASS', area, `${detail} already conformant`, STD)
+    return
+  }
+  gh(args, area, label, covers)
+}
 
 // Same minimal parser as audit.ts.
 type KiConfig = { visibility?: string; checks: Record<string, boolean> }
@@ -172,14 +200,29 @@ const kiText = existsSync(kiPath) ? readFileSync(kiPath, 'utf8') : ''
 const ki = kiText ? parseKiConfig(kiText) : null
 const enforced = (id: string): boolean => ki?.checks[id] ?? CHECK_DEFAULTS[id] ?? true
 
-let visibility: 'PUBLIC' | 'PRIVATE' | null = null
+type RepoInfo = {
+  private?: boolean
+  has_wiki?: boolean
+  has_projects?: boolean
+  has_issues?: boolean
+  allow_merge_commit?: boolean
+  allow_rebase_merge?: boolean
+  allow_squash_merge?: boolean
+  delete_branch_on_merge?: boolean
+  allow_update_branch?: boolean
+  security_and_analysis?: {
+    secret_scanning?: { status?: string }
+    secret_scanning_push_protection?: { status?: string }
+  }
+}
+let repoInfo: RepoInfo
 try {
-  visibility = (ghJSON(`repos/${nwo}`) as { private?: boolean }).private ? 'PRIVATE' : 'PUBLIC'
+  repoInfo = ghJSON(`repos/${nwo}`) as RepoInfo
 } catch {
   console.error(paint(C.red, `could not read repos/${nwo} via gh — is gh authenticated? (gh auth status)`))
   process.exit(1)
 }
-const isPublic = visibility === 'PUBLIC'
+const isPublic = !repoInfo.private
 
 say(paint(C.dim, `target: ${nwo}   ${isPublic ? 'public' : 'private'}${dryRun ? '   (dry run)' : ''}\n`))
 
@@ -215,7 +258,13 @@ if (!ki) {
 
 // ── Layer 2: core GitHub settings ──
 say(`\n${paint(C.cyan, 'layer 2 — core GitHub')}`)
-gh(
+const mergeConformant =
+  repoInfo.allow_merge_commit === false &&
+  repoInfo.allow_rebase_merge === false &&
+  repoInfo.allow_squash_merge === true &&
+  repoInfo.delete_branch_on_merge === true
+ghIfNeeded(
+  mergeConformant,
   [
     'repo',
     'edit',
@@ -229,17 +278,32 @@ gh(
   'squash-only + auto-delete-branch',
   'merge, delete-branch'
 )
-if (enforced('wiki')) gh(['repo', 'edit', nwo, '--enable-wiki=false'], 'TOGGLE-1', 'Wiki off')
-if (enforced('projects')) gh(['repo', 'edit', nwo, '--enable-projects=false'], 'TOGGLE-1', 'Projects off')
-if (enforced('issues')) gh(['repo', 'edit', nwo, '--enable-issues=true'], 'TOGGLE-1', 'Issues on')
+if (enforced('wiki')) ghIfNeeded(repoInfo.has_wiki === false, ['repo', 'edit', nwo, '--enable-wiki=false'], 'TOGGLE-1', 'Wiki off')
+if (enforced('projects'))
+  ghIfNeeded(repoInfo.has_projects === false, ['repo', 'edit', nwo, '--enable-projects=false'], 'TOGGLE-1', 'Projects off')
+if (enforced('issues')) ghIfNeeded(repoInfo.has_issues === true, ['repo', 'edit', nwo, '--enable-issues=true'], 'TOGGLE-1', 'Issues on')
 
 if (isPublic && enforced('topics')) {
+  let currentTopics: string[] = []
+  try {
+    currentTopics = (ghJSON(`repos/${nwo}/topics`) as { names?: string[] }).names ?? []
+  } catch {
+    currentTopics = []
+  }
+  const topicsConformant = TOPICS.every((t) => currentTopics.includes(t))
   const args = ['repo', 'edit', nwo]
   for (const t of TOPICS) args.push('--add-topic', t)
-  gh(args, 'TOPICS-1', `topics: ${TOPICS.join(', ')}`)
+  ghIfNeeded(topicsConformant, args, 'TOPICS-1', `topics: ${TOPICS.join(', ')}`)
 }
 
-if (enforced('branch-protection')) {
+const branchProtectionOn = ghOk(`repos/${nwo}/branches/main/protection`)
+if (enforced('branch-protection') && branchProtectionOn) {
+  say(`  ${paint(C.dim, 'ok')}    branch protection on main — already conformant`)
+  rec('PASS', 'BP-1', `branch protection on main (opted in via [${CHECKS_SECTION}]) already conformant`, STD)
+} else if (!enforced('branch-protection') && !branchProtectionOn) {
+  say(`  ${paint(C.dim, 'ok')}    no branch protection on main — already conformant (default: off)`)
+  rec('PASS', 'BP-1', 'no branch protection on main already conformant (default: off)', STD)
+} else if (enforced('branch-protection')) {
   const body = JSON.stringify({
     required_status_checks: { strict: true, checks: [{ context: REQUIRED_CHECK }] },
     enforce_admins: false,
@@ -285,24 +349,46 @@ if (enforced('branch-protection')) {
 
 // ── Layer 3: deeper GitHub ──
 say(`\n${paint(C.cyan, 'layer 3 — deeper GitHub')}`)
-gh(['api', '-X', 'PUT', `repos/${nwo}/vulnerability-alerts`], 'DEP-1', 'Dependabot alerts on')
-gh(['api', '-X', 'PUT', `repos/${nwo}/automated-security-fixes`], 'DEP-1', 'Dependabot security updates on')
-gh(['api', '-X', 'PATCH', `repos/${nwo}`, '-F', 'allow_update_branch=true'], 'DEP-1', 'always-suggest-updating-PR-branches on')
+ghIfNeeded(
+  ghOk(`repos/${nwo}/vulnerability-alerts`),
+  ['api', '-X', 'PUT', `repos/${nwo}/vulnerability-alerts`],
+  'DEP-1',
+  'Dependabot alerts on'
+)
+let autoSecurityFixesOn = false
+try {
+  autoSecurityFixesOn = (ghJSON(`repos/${nwo}/automated-security-fixes`) as { enabled?: boolean }).enabled === true
+} catch {
+  autoSecurityFixesOn = false
+}
+ghIfNeeded(autoSecurityFixesOn, ['api', '-X', 'PUT', `repos/${nwo}/automated-security-fixes`], 'DEP-1', 'Dependabot security updates on')
+ghIfNeeded(
+  repoInfo.allow_update_branch === true,
+  ['api', '-X', 'PATCH', `repos/${nwo}`, '-F', 'allow_update_branch=true'],
+  'DEP-1',
+  'always-suggest-updating-PR-branches on'
+)
 if (isPublic && (enforced('secret-scanning') || enforced('push-protection'))) {
   const sa: Record<string, unknown> = {}
   const covered: string[] = []
+  let allConformant = true
   if (enforced('secret-scanning')) {
     sa.secret_scanning = { status: 'enabled' }
     covered.push('secret-scanning')
+    if (repoInfo.security_and_analysis?.secret_scanning?.status !== 'enabled') allConformant = false
   }
   if (enforced('push-protection')) {
     sa.secret_scanning_push_protection = { status: 'enabled' }
     covered.push('push-protection')
+    if (repoInfo.security_and_analysis?.secret_scanning_push_protection?.status !== 'enabled') allConformant = false
   }
   const body = JSON.stringify({ security_and_analysis: sa })
   // One atomic PATCH bundles both fine checks; cite the parent code, enumerate the covered set.
   const covers = covered.join(', ')
-  if (dryRun) {
+  if (allConformant) {
+    say(`  ${paint(C.dim, 'ok')}    secret scanning / push protection (covers: ${covers}) — already conformant`)
+    rec('PASS', 'SEC-1', `secret scanning / push protection (covers: ${covers}) already conformant`, STD)
+  } else if (dryRun) {
     say(`  ${paint(C.dim, '$')} gh api -X PATCH repos/${nwo} --input - <<< ${body}`)
     rec('POLISH', 'SEC-1', `would set secret scanning / push protection (covers: ${covers})`, STD)
   } else {
@@ -317,7 +403,15 @@ if (isPublic && (enforced('secret-scanning') || enforced('push-protection'))) {
     }
   }
 }
-gh(
+let actionsConformant = false
+try {
+  const perms = ghJSON(`repos/${nwo}/actions/permissions`) as { enabled?: boolean; allowed_actions?: string }
+  actionsConformant = perms.enabled === true && perms.allowed_actions === ALLOWED_ACTIONS
+} catch {
+  actionsConformant = false
+}
+ghIfNeeded(
+  actionsConformant,
   // `enabled` is required by the API (422 without it); `allowed_actions` is only honoured when enabled.
   ['api', '-X', 'PUT', `repos/${nwo}/actions/permissions`, '-F', 'enabled=true', '-f', `allowed_actions=${ALLOWED_ACTIONS}`],
   'ACT-1',

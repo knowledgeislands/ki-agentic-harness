@@ -42,7 +42,7 @@ _Verify:_ each `## Mode REFRESH` section declares the harness-only write target 
 
 Every governance skill MUST expose HELP — invoked as `help` / `-h` / `?` — which surfaces the skill's name, one-line purpose, invocation, mode list, and off-ramps from what the `SKILL.md` already declares, and takes no action, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
 
-_Verify:_ `bun run ki:skills:help <name>` renders the generated block via `scripts/skill-help.ts` with no per-skill authored prose; the block is non-acting.
+_Verify:_ `bun run ki:skills:help <name>` renders the generated block via `skills/ki-bootstrap/scripts/skill-help.ts` with no per-skill authored prose; the block is non-acting.
 
 ## Exemptions
 

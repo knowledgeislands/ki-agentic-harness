@@ -6,7 +6,12 @@
 // or `git pull`, updates every consumer at once.
 //
 // Usage:
-//   bun scripts/sync-skills.ts <command> [--target <dir>] [--dry-run]
+//   bun sync-skills.ts <command> [--target <dir>] [--root <dir>] [--dry-run]
+//
+// Canonical home is skills/ki-bootstrap/scripts/; it is also vendored into a
+// governed harness-shaped target's .ki-meta/bin/. It resolves the skills tree
+// from the current working directory (repo root), not relative to its own file,
+// so the same copy works from either location (ADR-KI-HARNESS-008).
 //
 // Commands:
 //   link      Create/refresh a symlink for every skill in the target dir
@@ -15,6 +20,7 @@
 //
 // Options:
 //   --target <dir>   Where to install (default: ~/.claude/skills)
+//   --root <dir>     Repo root holding skills/ (default: current working directory)
 //   --relative       Emit relative symlinks (portable: survives a clone when the
 //                    target and this repo keep their relative layout). Default is
 //                    absolute, for a machine-local global install.
@@ -25,16 +31,19 @@
 import { existsSync, lstatSync, mkdirSync, readdirSync, readlinkSync, rmSync, symlinkSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { dirname, join, relative, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-
-const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const skillsRoot = join(repoRoot, 'skills')
 
 // --- arg parsing -----------------------------------------------------------
 const argv = process.argv.slice(2)
 const command = argv.find((a) => !a.startsWith('-'))
 const dryRun = argv.includes('--dry-run')
 const useRelative = argv.includes('--relative')
+// Resolve the skills tree from the repo root — the cwd by default (package.json
+// keys and the vendored .ki-meta/bin wrapper both run at root), or an explicit
+// --root. Never file-relative: a vendored copy under .ki-meta/bin must still find
+// the target's skills/ (ADR-KI-HARNESS-008).
+const rootFlag = argv.indexOf('--root')
+const repoRoot = rootFlag !== -1 && argv[rootFlag + 1] ? resolve(argv[rootFlag + 1] as string) : process.cwd()
+const skillsRoot = join(repoRoot, 'skills')
 const onlyFlag = argv.indexOf('--only')
 const onlyNames =
   onlyFlag !== -1 && argv[onlyFlag + 1]
@@ -176,6 +185,6 @@ switch (command) {
     break
   default:
     console.error(paint(C.red, `Unknown command: ${command}`))
-    console.error('Usage: bun scripts/sync-skills.ts <link|unlink|status> [--target <dir>] [--dry-run]')
+    console.error('Usage: bun sync-skills.ts <link|unlink|status> [--target <dir>] [--root <dir>] [--dry-run]')
     process.exit(1)
 }

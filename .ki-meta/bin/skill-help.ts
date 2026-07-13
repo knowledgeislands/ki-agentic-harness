@@ -1,11 +1,17 @@
 #!/usr/bin/env bun
-// scripts/skill-help.ts — surface a skill's self-description ("HELP") from what
-// its SKILL.md already declares. One generator, three uses:
+// skill-help.ts — surface a skill's self-description ("HELP") from what its
+// SKILL.md already declares. One generator, three uses:
 //
-//   bun scripts/skill-help.ts <name>   print the HELP block for one skill
-//   bun scripts/skill-help.ts          print the lean index of every skill (stdout)
-//   bun scripts/skill-help.ts --check  coverage guard: every skill dir appears in
-//                                      the editorial catalogue and vice-versa; exit 1 on drift
+//   bun skill-help.ts <name>   print the HELP block for one skill
+//   bun skill-help.ts          print the lean index of every skill (stdout)
+//   bun skill-help.ts --check  coverage guard: every skill dir appears in the
+//                              editorial catalogue and vice-versa; exit 1 on drift
+//
+// Canonical home is skills/ki-bootstrap/scripts/; also vendored into a governed
+// harness-shaped target's .ki-meta/bin/ (ADR-KI-HARNESS-008). It resolves skills/
+// and the catalogue from the cwd (repo root). A freshly-bootstrapped harness has
+// no editorial catalogue yet, so --check SKIPS (exit 0) when it is absent rather
+// than hard-failing; the render paths never touch the catalogue.
 //
 // HELP is *generated, not authored*: it reads only what a SKILL.md already
 // declares (name, first sentence of description, argument-hint, `### Mode`
@@ -159,8 +165,11 @@ function check(): number {
   try {
     catalogue = readFileSync(CATALOGUE, 'utf8')
   } catch {
-    console.error(`FAIL  skill-help — cannot read ${CATALOGUE}`)
-    return 1
+    // A freshly-bootstrapped harness has no editorial catalogue yet — skip the
+    // coverage guard rather than hard-fail (ADR-KI-HARNESS-008). Where the
+    // catalogue exists (this repo), the full two-way check below still runs.
+    console.log(`SKIP  skill-help — no ${CATALOGUE} to check coverage against`)
+    return 0
   }
   const errors: string[] = []
   for (const s of skills) {

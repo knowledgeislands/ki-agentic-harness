@@ -17,7 +17,7 @@ The install model is **keystone-plus-project-local**: only `ki-bootstrap` is ins
 bun run ki:skills:link:global    # symlink just ki-bootstrap into ~/.claude/skills
 ```
 
-Under the hood this is `bun scripts/sync-skills.ts link --only ki-bootstrap`. It is idempotent: it refreshes the existing link, skips a target where a _real_ file or directory is in the way (rather than clobbering it), and creates `~/.claude/skills` if needed. With the keystone in place, any Knowledge Islands repo can self-wire from inside it.
+Under the hood this is `bun skills/ki-bootstrap/scripts/sync-skills.ts link --only ki-bootstrap`. It is idempotent: it refreshes the existing link, skips a target where a _real_ file or directory is in the way (rather than clobbering it), and creates `~/.claude/skills` if needed. With the keystone in place, any Knowledge Islands repo can self-wire from inside it.
 
 ### Wire a repo's project-local skills
 
