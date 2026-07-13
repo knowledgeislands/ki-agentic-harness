@@ -18,6 +18,8 @@ The volatile **numbers** themselves (model ids, prices, cache TTLs, context-wind
 | [Claude Code settings][cc-settings] | `settings.json` keys: model, compaction, skill-listing caps (§2,§4) | 2026-07-04 |
 | [Claude Code MCP][cc-mcp] | where MCP servers are configured; tool search defers schemas (§2) | 2026-06-21 |
 | [Agent Skills standard][skills-std] | skill `description` loads in the selection surface (§2) | 2026-07-04 |
+| [Prompting guides — model-type resolution][prompt-guides] | which concrete model each portable type resolves to per runtime (§3, ADR-008); the Claude column | 2026-07-13 |
+| [GPT-5.6 Codex tiers (preview)][gpt56] | the Codex column of the type resolution — **preview, volatile; reconfirm each REFRESH** | 2026-07-13 |
 
 ※ Governs the finite-resource framing, minimal tool sets, and context ordering (§1, §6).
 
@@ -50,5 +52,7 @@ REFRESH last run **2026-07-04** (prior: 2026-06-21). Re-verified live this run: 
 [cc-settings]: https://code.claude.com/docs/en/settings
 [cc-mcp]: https://code.claude.com/docs/en/mcp
 [skills-std]: https://agentskills.io/specification
+[prompt-guides]: ../../../docs/guides/prompting/README.md
+[gpt56]: https://codex.danielvaughan.com/2026/06/26/gpt-5-6-sol-terra-luna-preview-codex-cli-model-tiers-pricing-ultra-mode-configuration/
 [hr]: https://github.com/chopratejas/headroom
 [hra]: https://extraheadroom.com/

@@ -51,6 +51,7 @@ The records are living, compact, and independent. The order below is a **curated
 26. [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-uniform-skill-modes-and-coverage-scoped-audit.md) — uniform skill modes (bare audit/conform/init), the toolchain collapse, and the coverage-scoped aggregate gate.
 27. [ADR-KI-HARNESS-008](ADR-KI-HARNESS-008-vendored-cross-skill-scripts.md) — vendoring the cross-skill scripts (graph, help, sync) into `.ki-meta/bin/` for harness-shaped targets.
 28. [ADR-KI-HARNESS-SKILLS-010](ADR-KI-HARNESS-SKILLS-010-comparable-cited-checker-findings.md) — comparable, cited checker findings across audit and conform (the `ref`/`file` finding fields, conform `--json`, and the shared aggregate renderer).
+29. [ADR-KI-HARNESS-009](ADR-KI-HARNESS-009-portable-model-types.md) — portable model _types_ (`frontier`/`reasoning`/`standard`/`fast`) not vendor model names in governance config; the `preferred_model_type` rename and `model_tier_bindings` sub-table.
 
 ## Template
 

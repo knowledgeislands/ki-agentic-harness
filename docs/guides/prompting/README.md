@@ -13,14 +13,29 @@ Filenames carry the model version (`opus-4-8`, `gpt-5-5`, `glm-5-2`) so a new ge
 | Claude Fable 5 / Mythos 5 | [fable-5.md](fable-5.md) | The hardest long-horizon, ambiguous, autonomous work — multi-hour runs, subagent orchestrations, unsolved problems |
 | Claude Opus 4.8 | [opus-4-8.md](opus-4-8.md) | The heavy-lifting tier: reasoning, coding, agentic work where Fable 5 is overkill |
 | Claude Sonnet 5 | [sonnet-5.md](sonnet-5.md) | Fast, cost-efficient tier: well-scoped coding and agentic tasks, high-volume or latency-sensitive workloads |
+| Claude Haiku 4.5 | [haiku.md](haiku.md) | Fastest, lowest-cost tier: mechanical/bulk steps, sub-agent fan-out, scaffolding and conform-style edits |
 
 The tier pick — how to trade cost against capability — is governed by the `ki-tokenomics` skill, and plan-at-the-top-tier / execute-at-a-cheaper-tier by `ki-handoffs`.
+
+### Portable model types — one vocabulary across runtimes
+
+The harness declares work by a portable **model type** (purpose), not a vendor's model name; each runtime resolves the type to a concrete model ([ADR-KI-HARNESS-009](../../decisions/ADR-KI-HARNESS-009-portable-model-types.md), governed by `ki-tokenomics`). The type is the stable thing; the columns below are the volatile resolution.
+
+| Type | Purpose | Claude Code | Codex (GPT-5.6) |
+| --- | --- | --- | --- |
+| `frontier` | Long-horizon, minimally-supervised autonomous execution — multi-hour runs, subagent orchestration | [Fable 5](fable-5.md) | [Sol @ Ultra](gpt-5-6.md) |
+| `reasoning` | Hardest one-shot judgment — architecture, research, novel design | [Opus 4.8](opus-4-8.md) | [Sol @ High/Max](gpt-5-6.md) |
+| `standard` | Well-scoped default — everyday coding, high-volume or latency-sensitive work | [Sonnet 5](sonnet-5.md) | [Terra @ Medium](gpt-5-6.md) |
+| `fast` | Mechanical/bulk steps where full reasoning is wasted | [Haiku 4.5](haiku.md) | [Luna @ Light](gpt-5-6.md) |
+
+Model and effort are two independent axes on both vendors' real pickers — a single config value (`reasoning = "opus, gpt-5.6-sol"`) can list both runtimes' models and each resolves the first it supports.
 
 ### Other frontier and open-weight models — cross-model reference
 
 | Model | Guide | When to reach for it |
 | --- | --- | --- |
 | OpenAI GPT-5.5 | [gpt-5-5.md](gpt-5-5.md) | Building on or comparing against the OpenAI stack: coding, agentic, knowledge work |
+| OpenAI GPT-5.6 (Sol / Terra / Luna) | [gpt-5-6.md](gpt-5-6.md) | The Codex CLI tier family (Sol/Terra/Luna × effort); the Codex-side resolution of the portable model types |
 | Google Gemini 3 | [gemini-3.md](gemini-3.md) | The Gemini stack: long-context, multimodal, agentic work |
 | GLM-5.2 (Z.ai) | [glm-5-2.md](glm-5-2.md) | Leading open-weight model for agentic/coding; self-hostable under MIT |
 | DeepSeek V3.2 | [deepseek-v3-2.md](deepseek-v3-2.md) | Open reasoning/maths baseline; low-cost self-hosting |

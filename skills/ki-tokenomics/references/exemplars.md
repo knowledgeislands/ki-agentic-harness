@@ -23,18 +23,18 @@ Concrete patterns showing what good context hygiene looks like in practice: how 
 
 ### The `[ki-tokenomics]` config table
 
-A repo opts into tokenomics governance with a `[ki-tokenomics]` table in its `.ki-config.toml`. All keys are optional; `headroom` and `preferred_model` are the most impactful defaults to set. From `ki-arcadia-principal/.ki-config.toml`:
+A repo opts into tokenomics governance with a `[ki-tokenomics]` table in its `.ki-config.toml`. All keys are optional; `headroom` and `preferred_model_type` are the most impactful defaults to set. From `ki-arcadia-principal/.ki-config.toml`:
 
 ```toml
 [ki-tokenomics]
 headroom = "recommended"
-preferred_model = "sonnet"
+preferred_model_type = "standard"
 
 [ki-tokenomics.budgets]
 mcp_servers = 20   # 19 user-scoped at time of first audit (2026-06-22); revisit when scoped
 ```
 
-`headroom = "recommended"` sets the expectation that a compression layer is present but does not hard-fail if absent. Use `"required"` in environments where tool-result bloat is a known problem and the absence of Headroom is a genuine defect. `preferred_model = "sonnet"` sets the ambient default tier; individual steps that need more reasoning override it explicitly. The `mcp_servers` budget override here documents an acknowledged overage with a comment explaining why — a budget override without a comment is a WARN.
+`headroom = "recommended"` sets the expectation that a compression layer is present but does not hard-fail if absent. Use `"required"` in environments where tool-result bloat is a known problem and the absence of Headroom is a genuine defect. `preferred_model_type = "standard"` sets the ambient default type (portable — resolves to Claude's `sonnet` or Codex's `gpt-5.6-terra` per runtime; ADR-KI-HARNESS-009); individual steps that need more reasoning override it explicitly. A repo whose runtime is not Claude Code adds a `[ki-tokenomics.model_tier_bindings]` table to rebind each type to its own models. The `mcp_servers` budget override here documents an acknowledged overage with a comment explaining why — a budget override without a comment is a WARN.
 
 ### Headroom proxy configuration pattern
 

@@ -52,7 +52,23 @@ const BUDGET_DEFAULTS: Record<BudgetKey, number> = {
 }
 const HEADROOM_VALUES = ['required', 'recommended', 'off'] as const
 type HeadroomExpectation = (typeof HEADROOM_VALUES)[number]
-const MODEL_TIER_VALUES = ['opus', 'sonnet', 'haiku', 'fable'] as const
+// Portable, purpose-based model *types* (ADR-KI-HARNESS-009). The concrete model
+// each type resolves to is runtime-specific and lives in docs/guides/prompting/
+// (Claude aliases, GPT-5.6 tiers, …), not here — this checker holds no model ids.
+const MODEL_TIER_VALUES = ['frontier', 'reasoning', 'standard', 'fast'] as const
+// Default binding per type, for the [ki-tokenomics.model_tier_bindings] example
+// only — a repo overrides these with the concrete models its runtime supports.
+const DEFAULT_BINDINGS: Record<(typeof MODEL_TIER_VALUES)[number], string> = {
+  frontier: 'fable',
+  reasoning: 'opus',
+  standard: 'sonnet',
+  fast: 'haiku'
+}
+// Reverse of the Claude defaults — maps a legacy `preferred_model` alias to the
+// portable type it becomes, so the CFG-4 migration finding can suggest the rename.
+const LEGACY_ALIAS_TO_TYPE: Record<string, string> = Object.fromEntries(
+  Object.entries(DEFAULT_BINDINGS).map(([type, alias]) => [alias, type])
+)
 
 const KI_SECTION = 'ki-tokenomics'
 const KI_DEFAULT = `[${KI_SECTION}]
@@ -60,7 +76,17 @@ const KI_DEFAULT = `[${KI_SECTION}]
 headroom = "recommended"          # "required" | "recommended" | "off"
 # Optional — the real context window, so the total budget reads as a headroom %.
 # context_window_tokens = 200000
-# preferred_model = "sonnet"        # "opus" | "sonnet" | "haiku" | "fable" — default tier for this environment
+# preferred_model_type = "standard" # "frontier" | "reasoning" | "standard" | "fast" — default *type* for this environment
+#
+# Optional — rebind each portable type to the concrete model(s) this environment's
+# runtime supports. Values are an ordered, comma-separated preference list; each
+# runtime resolves to the first entry it recognises (Claude Code → the alias,
+# Codex → the GPT-5.6 tier). Omit a type to take its documented default.
+# [${KI_SECTION}.model_tier_bindings]
+# frontier  = "fable, gpt-5.6-sol"
+# reasoning = "opus, gpt-5.6-sol"
+# standard  = "sonnet, gpt-5.6-terra"
+# fast      = "haiku, gpt-5.6-luna"
 
 # Per-component token budgets (estimates, chars/4). Omit any to take the default.
 # [${KI_SECTION}.budgets]
@@ -203,12 +229,22 @@ const REGISTRY: Tool[] = [
 // `key = <number>` on one line, `#` comments. NOT a full TOML parser. Returns the
 // skill's config (or absent), the unknown keys seen (validate-down → WARN), and any
 // malformed budget value (non-numeric → FAIL).
+type ModelType = (typeof MODEL_TIER_VALUES)[number]
 type KiConfig = {
   present: boolean
   headroom?: string
   headroomBad?: string
-  modelTier?: string
-  modelTierBad?: string
+  modelTierType?: string
+  modelTierTypeBad?: string
+  // A lingering pre-ADR-008 `preferred_model` alias, if present — drives the CFG-4
+  // migration finding. Holds the raw value so the finding can name the mapping.
+  legacyModelTier?: string
+  // Resolved [ki-tokenomics.model_tier_bindings] — each declared type's ordered
+  // comma-list of candidate models. Keys outside the type set / empty values are
+  // collected separately for CFG-5 findings; individual model names stay open.
+  bindings: Partial<Record<ModelType, string[]>>
+  bindingBadKeys: string[]
+  bindingEmptyKeys: string[]
   contextWindow?: number
   budgets: Partial<Record<BudgetKey, number>>
   unknownKeys: string[]
@@ -216,19 +252,20 @@ type KiConfig = {
 }
 const BUDGET_KEYS = new Set<string>(['claude_md', 'memory_index', 'skills_surface', 'mcp_servers', 'total'])
 function parseKiConfig(text: string): KiConfig {
-  const cfg: KiConfig = { present: false, budgets: {}, unknownKeys: [], badBudgets: [] }
+  const cfg: KiConfig = { present: false, bindings: {}, bindingBadKeys: [], bindingEmptyKeys: [], budgets: {}, unknownKeys: [], badBudgets: [] }
   let section = ''
   const BUDGETS = `${KI_SECTION}.budgets`
+  const BINDINGS = `${KI_SECTION}.model_tier_bindings`
   for (const raw of text.split(/\r?\n/)) {
     const line = raw.replace(/#.*$/, '').trim()
     if (!line) continue
     const header = line.match(/^\[(.+)\]$/)
     if (header) {
       section = (header[1] as string).trim()
-      if (section === KI_SECTION || section === BUDGETS) cfg.present = true
+      if (section === KI_SECTION || section === BUDGETS || section === BINDINGS) cfg.present = true
       continue
     }
-    if (section !== KI_SECTION && section !== BUDGETS) continue
+    if (section !== KI_SECTION && section !== BUDGETS && section !== BINDINGS) continue
     const eq = line.indexOf('=')
     if (eq === -1) continue
     const key = line.slice(0, eq).trim()
@@ -240,14 +277,30 @@ function parseKiConfig(text: string): KiConfig {
       if (key === 'headroom') {
         if ((HEADROOM_VALUES as readonly string[]).includes(val)) cfg.headroom = val
         else cfg.headroomBad = val
+      } else if (key === 'preferred_model_type') {
+        if ((MODEL_TIER_VALUES as readonly string[]).includes(val)) cfg.modelTierType = val
+        else cfg.modelTierTypeBad = val
       } else if (key === 'preferred_model') {
-        if ((MODEL_TIER_VALUES as readonly string[]).includes(val)) cfg.modelTier = val
-        else cfg.modelTierBad = val
+        // Pre-ADR-008 key — recognised only to emit a loud migration finding.
+        cfg.legacyModelTier = val
       } else if (key === 'context_window_tokens') {
         const n = Number(val)
         if (Number.isFinite(n) && n > 0) cfg.contextWindow = n
         else cfg.badBudgets.push(key)
       } else cfg.unknownKeys.push(key)
+    } else if (section === BINDINGS) {
+      // Keys strict (must be a portable type); values open, comma-separated,
+      // ≥1 non-empty entry (ADR-KI-HARNESS-009 / rubric CFG-5).
+      if (!(MODEL_TIER_VALUES as readonly string[]).includes(key)) {
+        cfg.bindingBadKeys.push(key)
+        continue
+      }
+      const entries = val
+        .split(',')
+        .map((e) => e.trim())
+        .filter(Boolean)
+      if (entries.length === 0) cfg.bindingEmptyKeys.push(key)
+      else cfg.bindings[key as ModelType] = entries
     } else if (!BUDGET_KEYS.has(key)) {
       cfg.unknownKeys.push(key)
     } else {
@@ -489,22 +542,55 @@ else {
       RUBRIC,
       '.ki-config.toml'
     )
-  if (ki.modelTier)
-    note('CFG-4', `preferred_model = "${ki.modelTier}" — confirm the tier is appropriate for this environment`, RUBRIC, '.ki-config.toml')
-  else if (ki.modelTierBad)
+  // CFG-4 — the ambient default model *type* (portable; ADR-KI-HARNESS-009).
+  if (ki.legacyModelTier) {
+    const mapped = LEGACY_ALIAS_TO_TYPE[ki.legacyModelTier]
+    const hint = mapped ? ` — map it to preferred_model_type = "${mapped}"` : ` — replace it with a preferred_model_type value (${MODEL_TIER_VALUES.join(' / ')})`
+    fail(
+      'CFG-4',
+      `preferred_model = "${ki.legacyModelTier}" uses the retired Claude-only key; renamed to preferred_model_type${hint} (ADR-KI-HARNESS-009)`,
+      RUBRIC,
+      '.ki-config.toml'
+    )
+  } else if (ki.modelTierType)
+    note(
+      'CFG-4',
+      `preferred_model_type = "${ki.modelTierType}" — confirm the type is appropriate for this environment`,
+      RUBRIC,
+      '.ki-config.toml'
+    )
+  else if (ki.modelTierTypeBad)
     warn(
       'CFG-4',
-      `preferred_model = "${ki.modelTierBad}" is not one of ${MODEL_TIER_VALUES.join(' / ')} — value unrecognised`,
+      `preferred_model_type = "${ki.modelTierTypeBad}" is not one of ${MODEL_TIER_VALUES.join(' / ')} — value unrecognised`,
       RUBRIC,
       '.ki-config.toml'
     )
   else
     warn(
       'CFG-4',
-      `preferred_model not declared in [${KI_SECTION}] — add it to codify the default tier for this environment`,
+      `preferred_model_type not declared in [${KI_SECTION}] — add it to codify the default type for this environment`,
       RUBRIC,
       '.ki-config.toml'
     )
+  // CFG-5 — optional per-type binding overrides. Keys strict (bad key = FAIL),
+  // values open comma-lists (empty = FAIL); recognised bindings surfaced as INFO.
+  for (const k of ki.bindingBadKeys)
+    fail(
+      'CFG-5',
+      `"${k}" in [${KI_SECTION}.model_tier_bindings] is not a model type — keys must be one of ${MODEL_TIER_VALUES.join(' / ')}`,
+      RUBRIC,
+      '.ki-config.toml'
+    )
+  for (const k of ki.bindingEmptyKeys)
+    fail(
+      'CFG-5',
+      `${k} in [${KI_SECTION}.model_tier_bindings] has no non-empty model — give an ordered, comma-separated list (e.g. "opus, gpt-5.6-sol")`,
+      RUBRIC,
+      '.ki-config.toml'
+    )
+  for (const [type, models] of Object.entries(ki.bindings))
+    note('CFG-5', `${type} → ${(models as string[]).join(', ')} (first supported model per runtime)`, RUBRIC, '.ki-config.toml')
   for (const k of ki.unknownKeys)
     warn(
       'CFG-1',

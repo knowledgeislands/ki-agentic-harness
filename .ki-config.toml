@@ -46,7 +46,7 @@ license = "MIT"          # SPDX id; the LICENSE, package.json, and GitHub must m
 
 # This repo ships the ki-handoffs skill, so it declares governance by its own standard.
 # Presence of this table is the compliance marker; tier cost/selection defaults live in
-# [ki-tokenomics] (preferred_model), not here.
+# [ki-tokenomics] (preferred_model_type), not here.
 [ki-handoffs]
 
 # Tokenomics governance — audits the standing context surface for this environment.
@@ -56,10 +56,12 @@ license = "MIT"          # SPDX id; the LICENSE, package.json, and GitHub must m
 # the acknowledged state; the WARN is there to revisit when the global MCP set is pruned.
 [ki-tokenomics]
 headroom = "recommended"
-# Sonnet is the sensible overall default (set user-globally); the harness overrides
-# to opus because governing the skill set — cross-skill consistency, rubric judgment,
-# checker design — is high-reasoning work that earns the tier. Project default wins.
-preferred_model = "opus"
+# The `standard` type is the sensible overall default (set user-globally); the harness
+# overrides to `reasoning` because governing the skill set — cross-skill consistency,
+# rubric judgment, checker design — is high-reasoning work that earns the type. Project
+# default wins. The type resolves to the runtime's model (Claude Code → opus); no
+# model_tier_bindings table is needed here since this repo runs under Claude Code.
+preferred_model_type = "reasoning"
 
 [ki-tokenomics.budgets]
 mcp_servers = 20   # 19 user-scoped at time of first audit (2026-06-22); revisit when scoped

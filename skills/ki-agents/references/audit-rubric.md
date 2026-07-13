@@ -53,7 +53,7 @@ A criterion's tag is a contract with the linter: if you find yourself eyeballing
 → [standard §5](agent-definitions-standard.md#5-frontmatter-optional-fields) · [§8](agent-definitions-standard.md#8-tools--model)
 
 - **FM-1 [J]** `tools` / `disallowedTools`, if set, is **least-privilege** — only what the role needs (omitting inherits all, the wrong default for a narrow role). An advisory agent carries no write/exec tools. (CC, BP)
-- **FM-2 [J]** `model` is deliberate: `inherit` by default, a pin (alias `sonnet` / `opus` / `haiku` / `fable`, not a rot-prone full id) only with a stated reason. (CC, BP)
+- **FM-2 [J]** `model` is deliberate: `inherit` by default, a pin (a Claude alias `sonnet` / `opus` / `haiku` / `fable`, not a rot-prone full id) only with a stated reason. The reason should trace to the portable model _type_ the role needs (`fast` / `standard` / `reasoning` / `frontier` — `ki-tokenomics`, ADR-KI-HARNESS-009), of which the alias is this runtime's resolution. (CC, BP)
 - **FM-3 [J]** Every frontmatter field is in the current subagents spec set — `name`, `description`, `tools`, `disallowedTools`, `model`, `permissionMode`, `maxTurns`, `skills`, `mcpServers`, `hooks`, `memory`, `background`, `effort`, `isolation`, `color`, `initialPrompt`. A field outside this set is flagged as a portability risk. (CC)
 - **FM-4 [J]** `permissionMode`, if set, is deliberate, and `bypassPermissions` (which skips permission prompts) carries a stated reason. (CC)
 - **FM-5 [J]** `skills`, if set, preloads a named skill's full content at startup — use only when the role must always have that standard before acting and runtime discovery would be fragile. For optional or situational context, prefer grounding-at-runtime (the agent reads the skill on demand). (CC)

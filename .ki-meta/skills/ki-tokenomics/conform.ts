@@ -7,7 +7,7 @@
  * (does a heavy CLAUDE.md earn its tokens; is an MCP server actually used; is the
  * model tier proportionate; is Headroom's reversible/cache config optimal) or a
  * trim/choice only a human can make (which prose to lift out, which value to pick
- * for `preferred_model`, whether a broken `@import` is a typo or a moved file,
+ * for `preferred_model_type`, whether a broken `@import` is a typo or a moved file,
  * whether a cross-repo `headroom:learn` line should be re-learned or pruned). None
  * reduces to a deterministic, reversible rewrite the way (say) a DR's
  * `decision_type` derives from its filename — so there is nothing safe to auto-fix,
@@ -30,7 +30,7 @@
  *   - TOOL-4  foreign `knowledgeislands/<repo>` line(s) inside the project CLAUDE.md
  *             `headroom:learn` markers — listed; re-learn here or prune (judgment).
  *   - CFG     `.ki-config.toml` [ki-tokenomics] defects: table absent (run INIT),
- *             invalid `headroom`, missing/invalid `preferred_model`, unknown keys
+ *             invalid `headroom`, missing/invalid `preferred_model_type`, unknown keys
  *             (validate-down), non-numeric budgets — the operator picks the value.
  *   - SURF-4 / BUDG / MCP-2/3 / RUN / TOOL-3 pointer TODOs: altitude, budget
  *             overages, MCP-server usefulness, runtime levers, Headroom optimality —
@@ -65,7 +65,10 @@ const RUBRIC = 'references/audit-rubric.md'
 // ── kept in lockstep with audit.ts ──
 const KI_SECTION = 'ki-tokenomics'
 const HEADROOM_VALUES = ['required', 'recommended', 'off'] as const
-const MODEL_TIER_VALUES = ['opus', 'sonnet', 'haiku', 'fable'] as const
+// Portable, purpose-based model *types* (ADR-KI-HARNESS-009) — kept in lockstep
+// with audit.ts. Concrete models per runtime live in docs/guides/prompting/.
+const MODEL_TIER_VALUES = ['frontier', 'reasoning', 'standard', 'fast'] as const
+const LEGACY_ALIAS_TO_TYPE: Record<string, string> = { fable: 'frontier', opus: 'reasoning', sonnet: 'standard', haiku: 'fast' }
 const BUDGET_KEYS = new Set<string>(['claude_md', 'memory_index', 'skills_surface', 'mcp_servers', 'total'])
 
 const readText = (p: string): string | null => {
@@ -100,25 +103,29 @@ function brokenImports(file: string, seen = new Set<string>(), out: string[] = [
 type KiConfig = {
   present: boolean
   headroomBad?: string
-  modelTier?: string
-  modelTierBad?: string
+  modelTierType?: string
+  modelTierTypeBad?: string
+  legacyModelTier?: string
+  bindingBadKeys: string[]
+  bindingEmptyKeys: string[]
   unknownKeys: string[]
   badBudgets: string[]
 }
 function parseKiConfig(text: string): KiConfig {
-  const cfg: KiConfig = { present: false, unknownKeys: [], badBudgets: [] }
+  const cfg: KiConfig = { present: false, bindingBadKeys: [], bindingEmptyKeys: [], unknownKeys: [], badBudgets: [] }
   let section = ''
   const BUDGETS = `${KI_SECTION}.budgets`
+  const BINDINGS = `${KI_SECTION}.model_tier_bindings`
   for (const raw of text.split(/\r?\n/)) {
     const line = raw.replace(/#.*$/, '').trim()
     if (!line) continue
     const header = line.match(/^\[(.+)\]$/)
     if (header) {
       section = (header[1] as string).trim()
-      if (section === KI_SECTION || section === BUDGETS) cfg.present = true
+      if (section === KI_SECTION || section === BUDGETS || section === BINDINGS) cfg.present = true
       continue
     }
-    if (section !== KI_SECTION && section !== BUDGETS) continue
+    if (section !== KI_SECTION && section !== BUDGETS && section !== BINDINGS) continue
     const eq = line.indexOf('=')
     if (eq === -1) continue
     const key = line.slice(0, eq).trim()
@@ -129,13 +136,24 @@ function parseKiConfig(text: string): KiConfig {
     if (section === KI_SECTION) {
       if (key === 'headroom') {
         if (!(HEADROOM_VALUES as readonly string[]).includes(val)) cfg.headroomBad = val
+      } else if (key === 'preferred_model_type') {
+        if ((MODEL_TIER_VALUES as readonly string[]).includes(val)) cfg.modelTierType = val
+        else cfg.modelTierTypeBad = val
       } else if (key === 'preferred_model') {
-        if ((MODEL_TIER_VALUES as readonly string[]).includes(val)) cfg.modelTier = val
-        else cfg.modelTierBad = val
+        cfg.legacyModelTier = val // pre-ADR-008 key — conform maps it to preferred_model_type
       } else if (key === 'context_window_tokens') {
         const n = Number(val)
         if (!(Number.isFinite(n) && n > 0)) cfg.badBudgets.push(key)
       } else cfg.unknownKeys.push(key)
+    } else if (section === BINDINGS) {
+      if (!(MODEL_TIER_VALUES as readonly string[]).includes(key)) cfg.bindingBadKeys.push(key)
+      else if (
+        val
+          .split(',')
+          .map((e) => e.trim())
+          .filter(Boolean).length === 0
+      )
+        cfg.bindingEmptyKeys.push(key)
     } else if (!BUDGET_KEYS.has(key)) {
       cfg.unknownKeys.push(key)
     } else {
@@ -231,12 +249,28 @@ function main(): number {
     } else {
       if (ki.headroomBad)
         todo('CFG-1', `headroom = "${ki.headroomBad}" invalid; set one of ${HEADROOM_VALUES.join(' / ')}`, '.ki-config.toml')
-      if (ki.modelTierBad)
-        todo('CFG-4', `preferred_model = "${ki.modelTierBad}" invalid; set one of ${MODEL_TIER_VALUES.join(' / ')}`, '.ki-config.toml')
-      else if (!ki.modelTier)
+      if (ki.legacyModelTier) {
+        const mapped = LEGACY_ALIAS_TO_TYPE[ki.legacyModelTier]
+        const to = mapped ? `preferred_model_type = "${mapped}"` : `preferred_model_type = "…" (${MODEL_TIER_VALUES.join(' / ')})`
+        todo('CFG-4', `preferred_model = "${ki.legacyModelTier}" is the retired Claude-only key; replace it with ${to} (ADR-KI-HARNESS-009)`, '.ki-config.toml')
+      } else if (ki.modelTierTypeBad)
+        todo('CFG-4', `preferred_model_type = "${ki.modelTierTypeBad}" invalid; set one of ${MODEL_TIER_VALUES.join(' / ')}`, '.ki-config.toml')
+      else if (!ki.modelTierType)
         todo(
           'CFG-4',
-          `preferred_model not declared in [${KI_SECTION}]; add the default tier (${MODEL_TIER_VALUES.join(' / ')})`,
+          `preferred_model_type not declared in [${KI_SECTION}]; add the default type (${MODEL_TIER_VALUES.join(' / ')})`,
+          '.ki-config.toml'
+        )
+      for (const k of ki.bindingBadKeys)
+        todo(
+          'CFG-5',
+          `"${k}" in [${KI_SECTION}.model_tier_bindings] is not a model type; keys must be one of ${MODEL_TIER_VALUES.join(' / ')}`,
+          '.ki-config.toml'
+        )
+      for (const k of ki.bindingEmptyKeys)
+        todo(
+          'CFG-5',
+          `${k} in [${KI_SECTION}.model_tier_bindings] has no non-empty model; give a comma-separated list (e.g. "opus, gpt-5.6-sol")`,
           '.ki-config.toml'
         )
       for (const k of ki.unknownKeys)

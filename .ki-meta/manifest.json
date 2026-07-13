@@ -1,5 +1,5 @@
 {
-  "ref": "93afca57bafc47c913fecb724ecc414006af7518",
+  "ref": "1a702bd577ffe8942040201d1f49ef486c7d466e",
   "files": {
     ".ki-meta/skills/ki-agents/audit.ts": "632d485b8b3839d1824c33a74142429ea7b3a00b9956a035c9b438daea7fd21c",
     ".ki-meta/skills/ki-agents/conform.ts": "b184328a974795a12bc5e6f76ddca97e89cd0fca8367033068f64c19d1971357",
@@ -34,8 +34,8 @@
     ".ki-meta/skills/ki-skills/audit.ts": "16469feabf9bd09cfac0344e1698acd979e28ce8e7464152528dece2cedfaf06",
     ".ki-meta/skills/ki-skills/conform.ts": "f7b9ae00e675e31ac9101f5d07f9b09ec4fc1ca3377922923ed2e0845b4ce420",
     ".ki-meta/skills/ki-skills/help.md": "02c70438e5f1bdd2b00212b7ee64e0306f7788bd047b7b768d43c785ea2605ab",
-    ".ki-meta/skills/ki-tokenomics/audit.ts": "8fe6d0e287d972981a6d4aa440cd55dcfecdda6ef7e9caca2268350820714559",
-    ".ki-meta/skills/ki-tokenomics/conform.ts": "e1222762bbe4120821cc7b74824308c50c40f9f19d0f8bbaf62fe88cf16f1114",
+    ".ki-meta/skills/ki-tokenomics/audit.ts": "d23f4dc86d2b754a84bd155350d44ddf5cd9f08b4b29b646a2bb3aabcc31c6d0",
+    ".ki-meta/skills/ki-tokenomics/conform.ts": "7febf121241efb7bf9ca22671ee82133d7b320dd2f9a3e87233f07975e5343ab",
     ".ki-meta/skills/ki-tokenomics/help.md": "8d87e59a4c1711da4cf59eef110c35108079e741b70d085955d88283493438cd",
     ".ki-meta/bin/aggregate.ts": "51b9691ea7e0e12f3fa1f823fd6e093a5ebfae04b8c5afc9f514383f84d96f75",
     ".ki-meta/bin/skill-graph.ts": "b680a34ae30e4382d7eade0dba644ea426df4d5488b08bb6984ea90e73382e36",

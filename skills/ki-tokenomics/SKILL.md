@@ -26,7 +26,7 @@ This is a **standard, base-agnostic Process skill**: it hard-codes no single env
 **2. The runtime levers** — what each turn and each sub-agent then costs:
 
 - **Prompt caching** — is the stable prefix actually cacheable, and being hit?
-- **Model tier** — is the work on the right-cost model?
+- **Model type** — is the work on the right-cost model _type_ (`frontier` / `reasoning` / `standard` / `fast`), whatever concrete model each resolves to per runtime?
 - **Compaction** — is a long conversation compacted before it bloats?
 - **Sub-agent fan-out** — each sub-agent re-pays the standing surface; is the fan-out worth it? Whether a given unit of work is delegation-ready in the first place is `ki-handoffs`'s concern, not this skill's.
 - **Tool-result verbosity** — raw logs / JSON dumps re-read every turn; this is where context-**compression** tooling earns its place.

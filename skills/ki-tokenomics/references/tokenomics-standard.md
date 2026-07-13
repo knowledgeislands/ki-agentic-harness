@@ -11,7 +11,7 @@ The normative, quotable reference behind [the rubric](audit-rubric.md) and [`../
 - [5. Context-compression tooling (Headroom) and the registry](#5-context-compression-tooling-headroom-and-the-registry)
 - [6. Best practice — context as a finite resource](#6-best-practice--context-as-a-finite-resource)
 - [7. The boundary with claude-api](#7-the-boundary-with-claude-api)
-- [8. Multi-model flows — mixing tiers within a single session or workflow](#8-multi-model-flows--mixing-tiers-within-a-single-session-or-workflow)
+- [8. Multi-model flows — mixing types within a single session or workflow](#8-multi-model-flows--mixing-types-within-a-single-session-or-workflow)
 
 ## 1. The composition model — why standing context dominates
 
@@ -56,7 +56,17 @@ The budgets are **guide-rails, not gates**: an overage is a WARN, never a FAIL. 
 [ki-tokenomics]
 headroom = "recommended"          # "required" | "recommended" | "off"
 context_window_tokens = 200000    # optional — turns the total budget into a headroom %
-preferred_model = "sonnet"        # "opus" | "sonnet" | "haiku" — the default tier for this environment
+preferred_model_type = "standard" # "frontier" | "reasoning" | "standard" | "fast" — the default type for this environment
+
+# Optional — rebind each portable type to the concrete model(s) this environment's
+# runtime supports. Values are an ordered, comma-separated preference list; each
+# runtime resolves a type to the first entry it recognises (Claude Code → the alias,
+# Codex → the GPT-5.6 tier). Omit a type to take its documented default binding.
+[ki-tokenomics.model_tier_bindings]
+frontier  = "fable, gpt-5.6-sol"
+reasoning = "opus, gpt-5.6-sol"
+standard  = "sonnet, gpt-5.6-terra"
+fast      = "haiku, gpt-5.6-luna"
 
 [ki-tokenomics.budgets]
 # one key per overridable budget; omit any to take the default above
@@ -67,26 +77,29 @@ mcp_servers = 5
 total = 30000
 ```
 
+**Model _types_, not model names (ADR-KI-HARNESS-009).** `preferred_model_type` and the binding keys name a **purpose** — `frontier` (long-horizon autonomous work), `reasoning` (hardest one-shot judgment), `standard` (well-scoped default), `fast` (mechanical/bulk) — never a vendor's product name. This keeps the config portable across runtimes: the type is what the harness declares, and the concrete model each type resolves to is a **runtime-specific downstream mapping** held in [`docs/guides/prompting/`](../../../docs/guides/prompting/) (Claude aliases; GPT-5.6 Sol/Terra/Luna), not restated here. A repo omits `model_tier_bindings` entirely to take the documented Claude defaults (`frontier`→`fable`, `reasoning`→`opus`, `standard`→`sonnet`, `fast`→`haiku`); a Codex-hosted environment lists its GPT-5.6 tiers, and a single config that lists both (as above) works in either runtime.
+
 ## 4. The runtime levers
 
 Once the standing surface is lean, these govern what each turn and each sub-agent then costs. Most are runtime judgment (the checker reports only the config-level signals it can see, e.g. a pinned default model):
 
 - **Prompt caching.** The stable prefix (system prompt, tool definitions) should be cacheable and actually **hit** — which means not invalidating it by placing volatile content (timestamps, per-turn ids) high in the prompt. Caching turns the re-paid standing surface from full price into cache-read price; it is the single highest-leverage runtime move.
-- **Model tier.** Match the model to the work's value — a cheap tier for mechanical or bulk steps, the top tier reserved for the hard ones. The preferred tier can be codified per environment (§3 `preferred_model`) and is checked mechanically; the _appropriateness_ judgment remains human-driven. See §8 for multi-model flow guidance.
+- **Model type.** Match the model to the work's value — a `fast` type for mechanical or bulk steps, a `reasoning`/`frontier` type reserved for the hard ones. The preferred type can be codified per environment (§3 `preferred_model_type`) and is checked mechanically; the _appropriateness_ judgment remains human-driven. See §8 for multi-model flow guidance.
 - **Compaction.** A long conversation should be compacted before history bloats the window; know where the compaction boundary is. Claude Code auto-compacts as the window nears its limit by default (`autoCompactEnabled`, toggled off via `DISABLE_AUTO_COMPACT`). Note what survives a compaction differs by component: the project-root `CLAUDE.md` is re-read from disk, but the skill-description listing is **not** re-injected — only skills already invoked are preserved — so a compaction can quietly change which skills the model can still see.
 - **Sub-agent fan-out.** Each sub-agent re-pays the whole standing surface, so fan-out multiplies the §2 cost — worth it for genuine parallel/independent work, wasteful for what one context could hold.
 - **Tool-result verbosity.** Raw logs, JSON dumps, and file reads are re-read on every subsequent turn. Keeping them lean (or compressing them — §5) is what stops a single noisy tool call from taxing the rest of the session.
 
-**Recommended mode → tier assignments.** These are defaults; override where the work demands it. Tier names are semantic (`opus`, `sonnet`, `haiku`); exact model IDs resolve at runtime via the `claude-api` skill.
+**Recommended mode → type assignments.** These are defaults; override where the work demands it. Type names are portable and purpose-based (`frontier`, `reasoning`, `standard`, `fast`); the concrete model each resolves to is runtime-specific and lives in [`docs/guides/prompting/`](../../../docs/guides/prompting/) (Claude aliases, GPT-5.6 tiers), not here.
 
-| Mode / task type | Recommended tier | Reasoning |
+| Mode / task type | Recommended type | Reasoning |
 | --- | --- | --- |
-| INIT — scaffolding a new config from scratch | opus | One-off creative/architectural step; investment is bounded |
-| AUDIT — reading and classifying findings | sonnet | Analytical but bounded; context is the bottleneck, not reasoning depth |
-| CONFORM — applying a known fix list | sonnet | Mostly mechanical edits; a haiku may suffice for very small targets |
-| REFRESH — re-anchoring to updated sources | sonnet | Web-research + diff; rarely needs top-tier reasoning |
-| Mechanical sub-agent (bulk, uniform steps) | haiku | Low reasoning depth; primary lever is fan-out count, not per-step quality |
-| Hard synthesise / adversarial verify / judge | opus | Pay the premium only for the irreducible reasoning step |
+| INIT — scaffolding a new config from scratch | reasoning | One-off creative/architectural step; investment is bounded |
+| AUDIT — reading and classifying findings | standard | Analytical but bounded; context is the bottleneck, not reasoning depth |
+| CONFORM — applying a known fix list | standard | Mostly mechanical edits; `fast` may suffice for very small targets |
+| REFRESH — re-anchoring to updated sources | standard | Web-research + diff; rarely needs the top type |
+| Mechanical sub-agent (bulk, uniform steps) | fast | Low reasoning depth; primary lever is fan-out count, not per-step quality |
+| Hard synthesise / adversarial verify / judge | reasoning | Pay the premium only for the irreducible reasoning step |
+| Long-horizon autonomous run / subagent orchestration | frontier | Multi-hour, minimally-supervised work that plans, executes, and self-checks |
 
 ## 5. Context-compression tooling (Headroom) and the registry
 
@@ -117,15 +130,15 @@ These are the _why_ behind the budgets: the numbers are a proxy for "is this sur
 
 This standard names volatile facts but **holds none of them**. Model ids, per-token prices, cache write/read multipliers and TTLs, and context-window sizes change on Anthropic's cadence, not this skill's; they live in the `claude-api` skill and are resolved at runtime. When an audit needs a real number — to convert an estimate to a cost, or a token total to a headroom percentage against the true window — it draws it from `claude-api`. Keeping the figures out of this standard is what lets the _shape_ of the budget stay stable while the numbers move.
 
-## 8. Multi-model flows — mixing tiers within a single session or workflow
+## 8. Multi-model flows — mixing types within a single session or workflow
 
-A single session or workflow is not bound to one model. Tiers can be mixed at four points:
+A single session or workflow is not bound to one model. Types can be mixed at four points:
 
 - **`/model <id>` mid-session** — switches the interactive model for the rest of the session; useful after a cheap bulk pass where the next step needs more reasoning depth.
-- **`model:` on the `Agent` tool** — each spawned sub-agent gets its own tier; the parent stays on the ambient default (`preferred_model` or the session default).
-- **`opts.model` in a Workflow `agent()` call** — sets the tier per step inside a `pipeline()` or `parallel()` block, so mechanical steps run on haiku while the synthesise/judge step runs on opus in the same script.
-- **Pinned model on a remote trigger** — a `RemoteTrigger` or scheduled run can specify a model at creation time, locking the tier for that automated flow.
+- **`model:` on the `Agent` tool** — each spawned sub-agent gets its own type; the parent stays on the ambient default (`preferred_model_type` or the session default).
+- **`opts.model` / `opts.effort` in a Workflow `agent()` call** — sets the type per step inside a `pipeline()` or `parallel()` block, so `fast` mechanical steps run cheaply while the synthesise/judge step runs on a `reasoning` model in the same script. (Model and effort are two independent levers — see §4.)
+- **Pinned model on a remote trigger** — a `RemoteTrigger` or scheduled run can specify a model at creation time, locking the type for that automated flow.
 
-**The principle: match the tier to the step, not the session.** Pay for top-tier reasoning only at the irreducible step — adversarial verify, hard synthesis, judge panel — and run mechanical bulk steps (bulk read, classify, scaffold, conform) on a cheaper tier. The mode → tier table in §4 gives starting defaults.
+**The principle: match the type to the step, not the session.** Pay for a `reasoning`/`frontier` model only at the irreducible step — adversarial verify, hard synthesis, judge panel — and run mechanical bulk steps (bulk read, classify, scaffold, conform) on a `fast` model. The mode → type table in §4 gives starting defaults.
 
-**`preferred_model` is the ambient default.** Declaring it in the config table (§3) sets what `/model` and the `Agent` tool use when no override is supplied. It is not a lock — explicit `model:` params always win. A mid-flow override that outlasts its step is a finding (RUN-2).
+**`preferred_model_type` is the ambient default.** Declaring it in the config table (§3) sets which type `/model` and the `Agent` tool resolve to when no override is supplied. It is not a lock — explicit `model:` params always win. A mid-flow override that outlasts its step is a finding (RUN-2).

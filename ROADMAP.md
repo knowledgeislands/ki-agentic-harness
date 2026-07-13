@@ -8,6 +8,10 @@ This roadmap is itself subject to the house discipline it describes: when a skil
 
 ## Soon
 
+### Remove the legacy `preferred_model` migration bridge in `ki-tokenomics`
+
+[ADR-KI-HARNESS-009](docs/decisions/ADR-KI-HARNESS-009-portable-model-types.md) renamed the config key `preferred_model` (a Claude alias) to `preferred_model_type` (a portable type) and left a deliberate, temporary bridge: the checker still recognises a lingering `preferred_model` solely to FAIL loudly (`CFG-4`) with a migration hint, and conform emits a concrete "replace with `preferred_model_type = …`" TODO mapping the old alias to its type (the `LEGACY_ALIAS_TO_TYPE` map in `audit.ts`/`conform.ts`). Once the fleet's sibling repos (`ki-arcadia-principal`, the six `mcp-*` repos, any other consumer) have migrated their `.ki-config.toml`, delete the bridge: drop `LEGACY_ALIAS_TO_TYPE`, the `legacyModelTier` config field and its parse branch, and the `CFG-4` legacy-key finding in both scripts, so an unrecognised `preferred_model` falls through to the normal unknown-key path. Target: a few days out (post-migration) — remove once `grep -rl 'preferred_model\b' */.ki-config.toml` across the fleet is empty.
+
 ### Codify a Conventional Commits git standard across the skills
 
 The repos already commit in [Conventional Commits](https://www.conventionalcommits.org/) style (`type(scope): subject`, seen throughout the history), but nothing in the skill set **governs** it — there is no house standard a commit is audited or conformed against. Land one: decide which skill owns git conventions (candidate: `ki-engineering`, which already owns the CI-workflow shape and the toolchain, or a dedicated `ki-git` if the surface is broad enough — commit format, branch naming, the solo-repo-to-`main` policy), specify the allowed `type` set and scope conventions, and add a mechanical check (e.g. a commit-message linter wired into the husky hook chain) plus the AUDIT/CONFORM prose. Cross-reference the per-repo commit guidance already living in `CLAUDE.md` files so the standard and the local instructions stay consistent.
