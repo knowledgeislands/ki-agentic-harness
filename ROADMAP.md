@@ -48,6 +48,10 @@ Follow-up to the [ADR-KI-HARNESS-SKILLS-010](docs/decisions/ADR-KI-HARNESS-SKILL
 
 The pre-commit hook runs the governance audits gated on what is staged, so a commit touching only some paths never runs the repo-wide engineering gate — `ki-dotfiles-chezmoi` shipped (`7c08411`) with an unused `readFileSync` import that failed BIO-1/TSC-1 on every subsequent full `ki:audit`, and the breakage only surfaced in an unrelated session (fixed en route in `3ef5c50`). Options: run `ki:engineering:audit` whenever any `skills/**/*.ts` is staged (biome+tsc are repo-wide anyway, so the scope-gating buys little there), or accept the gap and rely on CI running the aggregate `ki:audit` on push. Decide and wire one.
 
+#### Gate the hand-pasted skill-graph tree in `skills.md` against its generator _(candidate)_
+
+`docs/guides/user-guide/skills.md` embeds a fenced `ki:skills:graph --tree` block that no gate compares to the live command output, so it drifts silently — it had gone stale (omitting `ki-engineering`, `ki-delegate`, `ki-plan`, `ki-recap`, in an older singleton format) and was only corrected when a skill was added (`12d8ac6`). Add a mechanical check (candidate home: a `bun run test` step, or a `ki-harness` audit criterion) that regenerates `ki:skills:graph --tree` and fails when the block in `skills.md` doesn't match — the same generated-not-hand-edited discipline the graph itself enforces. Until then, regenerating the block on any skill/`implies:` change is a manual step (noted in `CLAUDE.md`).
+
 ### Toolchain & naming conventions
 
 #### Codify a Conventional Commits git standard across the skills
