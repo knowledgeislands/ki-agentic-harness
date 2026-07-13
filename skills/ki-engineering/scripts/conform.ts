@@ -402,12 +402,42 @@ say(`\n${paint(C.cyan, 'toolchain write pass (biome · syncpack · knip · deps)
       continue
     }
     try {
-      execSync(cmd, { cwd: target, stdio: 'ignore' })
+      execSync(cmd, { cwd: target, stdio: 'pipe' })
       log('fix', label)
       rec('POLISH', code, `${label} ran`, STD)
-    } catch {
-      log('skip', `${label} — exited non-zero (residual manual work; re-run ki:engineering:audit)`)
-      rec('FAIL', code, `${label} exited non-zero — residual manual work; re-run ki:engineering:audit`, STD)
+    } catch (err) {
+      const detail = err instanceof Error && 'stderr' in err ? String((err as { stderr?: Buffer }).stderr ?? '').trim() : ''
+      log(
+        'skip',
+        `${label} — exited non-zero (residual manual work; re-run ki:engineering:audit)${detail ? `: ${detail.split('\n')[0]}` : ''}`
+      )
+      rec(
+        'FAIL',
+        code,
+        `${label} exited non-zero — residual manual work; re-run ki:engineering:audit${detail ? ` (${detail.split('\n')[0]})` : ''}`,
+        STD
+      )
+    }
+  }
+  // 'bun update --latest' can exit non-zero partway through, leaving bun.lock with
+  // unresolved "latest" placeholders — always follow with a plain install to reconcile.
+  if (dryRun) {
+    log('run', 'bun install (skipped — dry run)')
+    rec('ADVISORY', 'DEPS-1', 'bun install (lockfile reconcile) would run (dry run — no writes)', STD)
+  } else {
+    try {
+      execSync('bun install', { cwd: target, stdio: 'pipe' })
+      log('fix', 'bun install (lockfile reconcile)')
+      rec('POLISH', 'DEPS-1', 'bun install (lockfile reconcile) ran', STD)
+    } catch (err) {
+      const detail = err instanceof Error && 'stderr' in err ? String((err as { stderr?: Buffer }).stderr ?? '').trim() : ''
+      log('skip', `bun install (lockfile reconcile) — exited non-zero${detail ? `: ${detail.split('\n')[0]}` : ''}`)
+      rec(
+        'FAIL',
+        'DEPS-1',
+        `bun install (lockfile reconcile) exited non-zero — residual manual work; re-run ki:engineering:audit${detail ? ` (${detail.split('\n')[0]})` : ''}`,
+        STD
+      )
     }
   }
 }
