@@ -7,7 +7,7 @@ How to bring a repository under Knowledge Islands governance so it **governs its
 The canonical, zero-install form is the `curl | sh` installer idiom — **`cd` into the repo you want to govern**, then run:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh | sh
+curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/bootstrap.sh | sh
 ```
 
 It bootstraps the current directory from the harness's `main`. The entry point is POSIX `sh` and assumes only curl and tar: it fetches the harness source tarball (GitHub's codeload endpoint generates it on demand — no publish step), extracts it to a temp dir, and runs the chain engine from that tree. Bun is required as the mechanical layer's runtime — the engine and every vendored checker are TypeScript — so if it is missing the script fails fast with the install instruction rather than installing a runtime silently.
@@ -19,7 +19,7 @@ There is nothing else to pass in the common case: the target is the current dire
 The one-liner above is per-repo. To bootstrap — or re-sync — every repo in a fleet at once, run it through [`mgit`](https://github.com/knowledgeislands/tools-mgit) in bare mode from the fleet's container directory (each checkout registered in its `.mgitconfig`):
 
 ```bash
-mgit -B sh -c 'curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/ki-bootstrap/scripts/bootstrap.sh | sh'
+mgit -B sh -c 'curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/bootstrap.sh | sh'
 ```
 
 `-B`/`--bare` execs the given argv directly in each registered repo (`cd "$repo" && "$@"`) instead of prefixing it with `git` — there is no shell in between, so a bare `curl … | sh` won't work as argv (the pipe has nowhere to run); wrap it in `sh -c '...'` as above. The same escape hatches apply per repo, wrapped the same way — e.g. `mgit -B sh -c 'curl -fsSL … | sh -s -- . --ref <sha>'` to pin every repo to one ref.
@@ -55,7 +55,7 @@ export KI_HARNESS="${KI_HARNESS:-$(pwd)}"
 A new repo needs a `.ki-config.toml` declaring `[ki-repo]` and a bare `[ki-authoring]` — every repo declares both itself; nothing is injected. Bootstrap it:
 
 ```bash
-bun "$KI_HARNESS/skills/ki-bootstrap/scripts/bootstrap.ts" "$TARGET"
+bun "$KI_HARNESS/skills/keystone/ki-bootstrap/scripts/bootstrap.ts" "$TARGET"
 ```
 
 Then confirm it self-governs — the vendored aggregate invokes each skill's checker in sequence, with nothing installed in `.claude/skills/`:

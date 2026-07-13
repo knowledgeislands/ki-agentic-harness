@@ -1,5 +1,5 @@
 {
-  "ref": "bb3ca493f16c87eef2a0612e3c749d85952511c2",
+  "ref": "0cc4dfa019c88d61a576784ac982f5ad7de92bd1",
   "files": {
     ".ki-meta/skills/ki-agents/audit.ts": "744039a6365910a9d34d688fecec590cecc83ae15b5766d008dec5a0639d2d9a",
     ".ki-meta/skills/ki-agents/conform.ts": "b184328a974795a12bc5e6f76ddca97e89cd0fca8367033068f64c19d1971357",
@@ -31,15 +31,15 @@
     ".ki-meta/skills/ki-repo/audit.ts": "c284533d9a8d4596669829e54b4a051034721635036fcfe3c3b50d12816b0edd",
     ".ki-meta/skills/ki-repo/conform.ts": "a73ee65184a70a9e9168a4c102be6fe8b6d1320804398c20065d904a302a5685",
     ".ki-meta/skills/ki-repo/help.md": "9bf94b66e47a72e59ca64fb8c5798d1d7f93633502fdf255849230aa8bb4ffc6",
-    ".ki-meta/skills/ki-skills/audit.ts": "16469feabf9bd09cfac0344e1698acd979e28ce8e7464152528dece2cedfaf06",
+    ".ki-meta/skills/ki-skills/audit.ts": "92aacd8c013f3c7ee6c02f0eb5d85be7846cea08d8c73025973b0bed224773f0",
     ".ki-meta/skills/ki-skills/conform.ts": "f7b9ae00e675e31ac9101f5d07f9b09ec4fc1ca3377922923ed2e0845b4ce420",
     ".ki-meta/skills/ki-skills/help.md": "02c70438e5f1bdd2b00212b7ee64e0306f7788bd047b7b768d43c785ea2605ab",
     ".ki-meta/skills/ki-tokenomics/audit.ts": "83c678141370a1e487150fb074fe2465e47ffe0db2bc3123d1ad467876c06125",
     ".ki-meta/skills/ki-tokenomics/conform.ts": "dfc5137d67a723dca022e8c3dd1c7675568ab3a05eaaafb7aa4f29ec201aecee",
     ".ki-meta/skills/ki-tokenomics/help.md": "8d87e59a4c1711da4cf59eef110c35108079e741b70d085955d88283493438cd",
     ".ki-meta/bin/aggregate.ts": "51b9691ea7e0e12f3fa1f823fd6e093a5ebfae04b8c5afc9f514383f84d96f75",
-    ".ki-meta/bin/skill-graph.ts": "b680a34ae30e4382d7eade0dba644ea426df4d5488b08bb6984ea90e73382e36",
-    ".ki-meta/bin/skill-help.ts": "bfc710c157de66d6fab4a3b060abcb3a01c50a9318c18a62cf4d2862c288ff3f",
-    ".ki-meta/bin/sync-skills.ts": "7fee080e164915c64b652a829b75d3aa40d682809d3987611d2b960a70f48ef3"
+    ".ki-meta/bin/skill-graph.ts": "852b050a5f3a6fa305a2237d95f9c0d4688582a663daaf2a9c4a9dba3dc5e594",
+    ".ki-meta/bin/skill-help.ts": "4b480bd2cfe48184863df48b8b8be839d26d7dcefb8cfd4dc46d55604dde04f8",
+    ".ki-meta/bin/sync-skills.ts": "2e60ddd1f0577e7473f5b3585283cc05f9337fef68824b1c91e101561a95addf"
   }
 }

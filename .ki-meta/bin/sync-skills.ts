@@ -67,13 +67,34 @@ type LinkState =
   | { kind: 'linked-elsewhere'; dest: string }
 
 // --- discovery -------------------------------------------------------------
+// Skills live one or two levels under skillsRoot — either flat (skills/<name>,
+// tolerated as a migration leftover) or clustered (skills/<cluster>/<name>).
+// Memoized so every by-name source lookup below stays O(1) after the first call.
+let skillIndexCache: Map<string, string> | null = null
+function skillIndex(): Map<string, string> {
+  if (skillIndexCache) return skillIndexCache
+  const idx = new Map<string, string>()
+  if (existsSync(skillsRoot)) {
+    for (const entry of readdirSync(skillsRoot, { withFileTypes: true })) {
+      if (!entry.isDirectory() || entry.name.startsWith('.')) continue
+      const clusterDir = join(skillsRoot, entry.name)
+      if (existsSync(join(clusterDir, 'SKILL.md'))) {
+        idx.set(entry.name, clusterDir)
+        continue
+      }
+      for (const sub of readdirSync(clusterDir, { withFileTypes: true })) {
+        if (!sub.isDirectory()) continue
+        const skillPath = join(clusterDir, sub.name)
+        if (existsSync(join(skillPath, 'SKILL.md'))) idx.set(sub.name, skillPath)
+      }
+    }
+  }
+  skillIndexCache = idx
+  return idx
+}
+
 function discoverSkills(): string[] {
-  if (!existsSync(skillsRoot)) return []
-  return readdirSync(skillsRoot, { withFileTypes: true })
-    .filter((e) => e.isDirectory() && !e.name.startsWith('.'))
-    .filter((e) => existsSync(join(skillsRoot, e.name, 'SKILL.md')))
-    .map((e) => e.name)
-    .sort()
+  return [...skillIndex().keys()].sort()
 }
 
 function isSymlink(p: string): boolean {
@@ -101,7 +122,7 @@ function cmdLink(skills: string[]): void {
     if (!dryRun) mkdirSync(target, { recursive: true })
   }
   for (const name of skills) {
-    const source = join(skillsRoot, name)
+    const source = skillIndex().get(name) ?? join(skillsRoot, name)
     const linkPath = join(target, name)
     const state = linkState(linkPath, source)
 
@@ -125,7 +146,7 @@ function cmdLink(skills: string[]): void {
 
 function cmdUnlink(skills: string[]): void {
   for (const name of skills) {
-    const source = join(skillsRoot, name)
+    const source = skillIndex().get(name) ?? join(skillsRoot, name)
     const linkPath = join(target, name)
     const state = linkState(linkPath, source)
     if (state.kind === 'linked' || state.kind === 'linked-other-here') {
@@ -143,7 +164,7 @@ function cmdUnlink(skills: string[]): void {
 function cmdStatus(skills: string[]): void {
   console.log(paint(C.cyan, `target: ${target}\n`))
   for (const name of skills) {
-    const source = join(skillsRoot, name)
+    const source = skillIndex().get(name) ?? join(skillsRoot, name)
     const state = linkState(join(target, name), source)
     const dest = 'dest' in state ? state.dest : ''
     const label = {
