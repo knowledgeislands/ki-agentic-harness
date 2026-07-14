@@ -9,13 +9,13 @@ Curated patterns from the KI repo set that show what a well-configured Knowledge
 
 ## Collections
 
-| Source | URL | What it covers |
-| --- | --- | --- |
-| ki-agentic-harness | [github][harness] | Private repo; all layer-1 files; full `.ki-config.toml`; rich `CLAUDE.md` |
-| mcp-gsuite | [github][mcp-gsuite] | Public repo; MIT license; standard topic set; Dependabot auto-merge |
-| mcp-kb-fs | [github][mcp-kb-fs] | Public repo; canonical layer-2/3 settings; `branch-protection` off |
-| GitHub REST API — repo settings | [docs.github.com][repo-settings] | Merge methods, auto-delete-branch, features |
-| GitHub branch protection | [docs.github.com][branch-protection] | Optional `branch-protection` body |
+| Source                          | URL                                  | What it covers                                                            |
+| ------------------------------- | ------------------------------------ | ------------------------------------------------------------------------- |
+| ki-agentic-harness              | [github][harness]                    | Private repo; all layer-1 files; full `.ki-config.toml`; rich `CLAUDE.md` |
+| mcp-gsuite                      | [github][mcp-gsuite]                 | Public repo; MIT license; standard topic set; Dependabot auto-merge       |
+| mcp-kb-fs                       | [github][mcp-kb-fs]                  | Public repo; canonical layer-2/3 settings; `branch-protection` off        |
+| GitHub REST API — repo settings | [docs.github.com][repo-settings]     | Merge methods, auto-delete-branch, features                               |
+| GitHub branch protection        | [docs.github.com][branch-protection] | Optional `branch-protection` body                                         |
 
 ## Selected patterns
 
@@ -64,6 +64,34 @@ One paragraph: what this repo is and who works in it.
 ## Working here
 
 …key commands and conventions not covered by the topic files…
+```
+
+### `AGENTS.md`-literal orientation for a multi-runtime repo
+
+A repo whose `[ki-repo]` `target_runtimes` names a runtime besides `claude-code` (e.g. `codex`) keeps its root orientation in a literal `AGENTS.md` — Codex reads `AGENTS.md` but cannot resolve Claude Code's `@`-import syntax, so the orientation content itself has to live there, not behind an import. `CLAUDE.md` then stays a thin appendix: one line naming it as the Claude Code supplement, then a single `@AGENTS.md` import, then any topic-file imports Claude Code alone needs. A personal chezmoi dotfiles repo (outside the `knowledgeislands` org, but the same pattern) is a working example: its `AGENTS.md` carries the literal orientation and core rules, and its `CLAUDE.md` opens with `@AGENTS.md` before adding Claude-only topic imports.
+
+```markdown
+<!-- AGENTS.md — literal, runtime-neutral orientation -->
+
+# Working in this repo
+
+This is the shared, runtime-neutral orientation for agents in this repository. It is deliberately literal rather than an `@`-import index: Codex reads `AGENTS.md` but does not resolve Claude Code-style imports.
+
+## Core rules
+
+…
+```
+
+```markdown
+<!-- CLAUDE.md — thin Claude Code supplement -->
+
+# Claude Code supplement
+
+@AGENTS.md
+
+The shared orientation lives in AGENTS.md, imported above. The following topic files are Claude Code's automatically loaded detail.
+
+@.claude/conventions.md @.claude/workflow.md
 ```
 
 ### Five-part harness layout with coverage declarations

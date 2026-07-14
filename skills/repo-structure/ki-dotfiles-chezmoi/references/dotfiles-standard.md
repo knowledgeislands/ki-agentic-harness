@@ -76,6 +76,8 @@ Two layers, and the decision rule for which one a piece of guidance belongs in:
 
 **Decision rule**: repo-specific guidance → Layer 1. A personal preference that holds across every project → Layer 2. A fact about the user themselves (their role, their working style) → a persistent-memory mechanism, not either CLAUDE.md layer — CLAUDE.md is instructions, memory is facts.
 
+This is a _repo-local-vs-user-level_ split — a different axis from `ki-repo`'s runtime-neutral-vs-Claude-specific split (a literal root `AGENTS.md` plus a thin `CLAUDE.md` that imports it, for repos targeting a non-Claude-Code runtime; see [its standard](../../../keystone/ki-repo/references/repo-standard.md#layer-1--repo-files)). A chezmoi repo commonly runs both at once: this skill's Layer 1/Layer 2 for _where_ a piece of guidance lives, `ki-repo`'s split for _which file_ carries the runtime-neutral orientation within Layer 1.
+
 ## OS/tooling gotchas
 
 - **macOS case-insensitive filesystems.** APFS and HFS+ are case-insensitive by default: two paths differing only in letter case resolve to the _same inode_. Before treating two differently-cased "files" (often left behind by a rename that only changed case) as distinct, verify with `stat -f "%i" path1 path2` — matching inode numbers mean it's one file under two names, and deleting one deletes both.
