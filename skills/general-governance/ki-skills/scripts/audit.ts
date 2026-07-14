@@ -451,7 +451,9 @@ function lintSkill(skillDir: string): Finding[] {
     const scriptsDir = join(skillDir, 'scripts')
     if (existsSync(scriptsDir)) {
       for (const entry of readdirSync(scriptsDir)) {
-        if (!entry.endsWith('.ts')) continue
+        // Only vendorable units are in scope — test files are never vendored (SCRIPT-9's
+        // premise), and a *.test.ts routinely embeds import-shaped strings as fixture data.
+        if (!entry.endsWith('.ts') || entry.endsWith('.test.ts')) continue
         const scriptPath = join(scriptsDir, entry)
         const src = readFileSync(scriptPath, 'utf8')
         for (const m of src.matchAll(/\bfrom\s+['"](\.\.?\/[^'"]+)['"]/g)) {

@@ -451,14 +451,19 @@ function lintSkill(skillDir: string): Finding[] {
     const scriptsDir = join(skillDir, 'scripts')
     if (existsSync(scriptsDir)) {
       for (const entry of readdirSync(scriptsDir)) {
-        if (!entry.endsWith('.ts')) continue
+        // Only vendorable units are in scope — test files are never vendored (SCRIPT-9's
+        // premise), and a *.test.ts routinely embeds import-shaped strings as fixture data.
+        if (!entry.endsWith('.ts') || entry.endsWith('.test.ts')) continue
         const scriptPath = join(scriptsDir, entry)
         const src = readFileSync(scriptPath, 'utf8')
         for (const m of src.matchAll(/\bfrom\s+['"](\.\.?\/[^'"]+)['"]/g)) {
           const spec = m[1] as string
           const resolved = resolve(dirname(scriptPath), spec)
           if (!resolved.startsWith(`${skillDir}/`))
-            fail('SCRIPT-9', `\`scripts/${entry}\` imports \`${spec}\`, which resolves outside the skill's own directory — vendoring copies this file standalone, so the import would break in every repo that vendors it`)
+            fail(
+              'SCRIPT-9',
+              `\`scripts/${entry}\` imports \`${spec}\`, which resolves outside the skill's own directory — vendoring copies this file standalone, so the import would break in every repo that vendors it`
+            )
         }
       }
     }
