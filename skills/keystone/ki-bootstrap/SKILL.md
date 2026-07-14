@@ -21,7 +21,7 @@ The two are distinct: vendored **copies** run the mechanical checks anywhere (CI
 - A repo's `.claude/skills/` should mirror its **declared coverage** — the `[ki-<skill>]` tables in its `.ki-config.toml`, its own foundations `[ki-repo]` + `[ki-authoring]` included. Every repo declares its foundations explicitly; there is no injected baseline (a greenfield repo enters via `ki-repo`'s init, `--seed ki-repo`, to scaffold the config). The keystone itself is never linked project-local — it is global.
 - A repo's `.claude/agents/` should mirror `agents/governance/*.md` **only when** it carries the bare `[ki-agents]` table — no baseline, since no agent is always-on.
 - Links are **relative symlinks** into the harness's `skills/`/`agents/governance/`, **gitignored and regenerated** — the only committed artifact is the `.gitignore` lines, never the symlinks (which would dangle on a clone without the harness beside it). A repo re-links by re-running the keystone linkers; any `ki:*:link:project` convenience key is `ki-engineering`'s to wire, not the linker's.
-- The **harness** (`ki-agentic-harness`) is the authoring hub: it links **all** skills (`--all`), not a coverage subset.
+- The **harness** (`ki-agentic-harness`) links only its own declared coverage, same as any other repo — a structural skill like `ki-mcp` or `ki-website` is exercised against a repo of its type, not loaded in the harness itself, so the harness links what governs it, not the whole fleet.
 
 The INIT chain engine is [`scripts/bootstrap.ts`](scripts/bootstrap.ts); the skill linker/checker is [`scripts/link-skills.ts`](scripts/link-skills.ts); the agent linker/checker is [`scripts/link-agents.ts`](scripts/link-agents.ts). The linkers share their `.gitignore` helpers ([`scripts/package-scripts.ts`](scripts/package-scripts.ts)) and self-locate the harness through their own path. The quotable invariant is [the standard](references/bootstrap-standard.md); the checkable criteria are [the rubric](references/audit-rubric.md). This skill **composes on** `ki-repo`, which owns the `.ki-config.toml` contract it reads — it never edits the config's coverage, only mirrors it.
 
@@ -34,7 +34,7 @@ Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated H
 The mechanical half of INIT, and the start of the bootstrap chain. Run it against a target repo — locally, or straight from the remote source with nothing installed:
 
 ```bash
-bun scripts/bootstrap.ts <target-repo> [--all] [--ref <ref>] [--dry-run]
+bun scripts/bootstrap.ts <target-repo> [--ref <ref>] [--dry-run]
 # remote (zero-install — cd into the repo, then curl | sh; bootstrap.sh fetches the tarball and runs the engine, defaulting to cwd@main):
 # curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/bootstrap.sh | sh
 # advanced: … | sh -s -- <target> --ref <sha>   (args ripple through)   ·   bun already installed: bunx github:knowledgeislands/ki-agentic-harness#<sha> <target> --ref <sha>
@@ -57,7 +57,7 @@ bun scripts/bootstrap.ts <target-repo> [--all] [--ref <ref>] [--dry-run]
 The mechanical half is `scripts/conform.ts` (`bun run ki:bootstrap:conform` where wired) — it composes the steps below and finishes with the vendored-set audit, whose drift it only advises on (the repair is INIT, per the drift contract). Step by step:
 
 1. Run **AUDIT** first.
-2. **Link** the project-local set: `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-skills.ts" [path]` (the harness uses `--all`) and `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-agents.ts" [path]`. Each creates/prunes relative symlinks under `.claude/skills/`/`.claude/agents/` to match its expected set, and **writes the matching `.gitignore` line** (`.claude/skills/`, and `.claude/agents/` when the agents set is non-empty), creating `.gitignore` if absent — so BOOT-3/8 clear without a manual edit. Preview either with `--dry-run`.
+2. **Link** the project-local set: `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-skills.ts" [path]` and `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-agents.ts" [path]`. Each creates/prunes relative symlinks under `.claude/skills/`/`.claude/agents/` to match its expected set, and **writes the matching `.gitignore` line** (`.claude/skills/`, and `.claude/agents/` when the agents set is non-empty), creating `.gitignore` if absent — so BOOT-3/8 clear without a manual edit. Preview either with `--dry-run`.
 3. **Make it reproducible:** a repo reproduces its links by re-running the keystone linkers (the **Link** step above) — no `package.json` script is required, and the linkers scaffold none (package.json script-key wiring is `ki-engineering`'s concern). (The keystone must be globally installed — `bun skills/keystone/ki-bootstrap/scripts/sync-skills.ts link --only ki-bootstrap` from the harness.)
 4. **Re-run AUDIT** until clean.
 

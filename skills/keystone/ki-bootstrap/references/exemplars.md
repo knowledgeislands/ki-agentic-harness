@@ -12,9 +12,9 @@ Concrete patterns showing what a correctly bootstrapped Knowledge Islands repo l
 | Source               | URL             | What it covers                                                                 |
 | -------------------- | --------------- | ------------------------------------------------------------------------------ |
 | ki-arcadia-principal | No public URL ※ | Live `.ki-config.toml`, `package.json` script, and post-link `.claude/skills/` |
-| ki-agentic-harness   | No public URL ※ | The `--all` variant used by the authoring hub †                                |
+| ki-agentic-harness   | No public URL ※ | Links only its own declared coverage, same as any other repo †                 |
 
-† The harness links all skills (`--all`) rather than a declared subset; it is the exception, not the template. A normal KB or repo declares only the skills it uses.
+† The harness is the authoring hub but is not a special case here: a structural skill (`ki-mcp`, `ki-website`, …) is exercised against a repo of its own type, not loaded in the harness itself, so it links what governs it, not the whole fleet.
 
 ※ KI repos are the primary exemplars; they have no public URL.
 
@@ -62,15 +62,7 @@ Running it:
 bun run ki:skills:link:project
 ```
 
-The keystone linker self-locates the harness through its own real path — no harness location is hard-coded in the script. On the harness itself, the invocation adds `--all`:
-
-```json
-{
-  "scripts": {
-    "ki:skills:link:project": "bun $HOME/.claude/skills/ki-bootstrap/scripts/link-skills.ts --all"
-  }
-}
-```
+The keystone linker self-locates the harness through its own real path — no harness location is hard-coded in the script. The harness uses the identical invocation, unmodified: it links only the skills its own `.ki-config.toml` declares, same as any other repo.
 
 ### Before and after bootstrapping
 

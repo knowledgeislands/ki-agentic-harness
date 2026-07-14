@@ -33,7 +33,7 @@ REFRESH last run **2026-07-07** — confirmed [CS]: an installed skill's `SKILL.
 
 - [KR] `ki-repo` — Coverage cascade: every repo declares its foundations (`[ki-repo]` bedrock marker + `[ki-authoring]`) explicitly as `[ki-*]` tables; there is no injected/cascade-exempt baseline (ADR-KI-HARNESS-007). See `ki-config-standard.md` §44/§52.
 - [KE] `ki-engineering` — **confirmed.** enforcement-framework §2 severity ladder and checker contract unchanged.
-- [KH] `ki-harness` — **confirmed.** `ki:skills:link:project` convention, the `--all` harness variant, and the `ki:skills:link:global` keystone install all intact.
+- [KH] `ki-harness` — **confirmed.** `ki:skills:link:project` convention and the `ki:skills:link:global` keystone install intact. **Correction (2026-07-14):** the documented `--all` harness variant was never implemented in `link-skills.ts`, whose own code encodes the opposite, reasoned design — the harness links only its declared coverage like any other repo. Docs (`SKILL.md`, `exemplars.md`) brought in line with the code rather than the reverse.
 - [AH] README — **confirmed.** Keystone / global-install framing intact; skill count grew to twenty (generic `[ki-*]` model needs no edit).
 
 ### Open watch-items
