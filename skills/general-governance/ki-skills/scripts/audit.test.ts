@@ -97,6 +97,33 @@ const withFooter = (skill: string) =>
   }
 }
 
+// ── SCRIPT-9: cross-skill relative imports in scripts/*.ts ─────────────────────
+
+// ── Same-directory import stays inside the skill's own tree → no SCRIPT-9 fail ──
+{
+  const { base, dir } = fixture('ki-fixture-samedir-import', "import { helper } from './helper.ts'\nhelper()\n")
+  try {
+    check('same-directory import → no SCRIPT-9 fail', !run(dir).includes('SCRIPT-9'))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
+
+// ── Relative import climbs out of the skill's own directory → SCRIPT-9 FAIL ──
+{
+  const { base, dir } = fixture(
+    'ki-fixture-cross-skill-import',
+    "import { helper } from '../../ki-other-skill/scripts/helper.ts'\nhelper()\n"
+  )
+  try {
+    const out = run(dir)
+    check('cross-skill import → SCRIPT-9 fail', out.includes('SCRIPT-9'))
+    check('cross-skill import → names the offending import', out.includes('ki-other-skill'))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
+
 // ── SHAPE-12 / SHAPE-13 fixtures ──────────────────────────────────────────────
 
 /** Build a throwaway skill dir from full frontmatter fields + body markdown. */

@@ -442,6 +442,31 @@ function lintSkill(skillDir: string): Finding[] {
     }
   }
 
+  // SCRIPT-9 [M]: no cross-skill relative imports. `ki-bootstrap` vendors a skill's
+  // scripts/*.ts as standalone copies, flat, into every governed repo's
+  // .ki-meta/skills/<skill>/ — no sibling skill directory is ever copied alongside it
+  // (ADR-KI-HARNESS-006), so a relative import climbing out of the skill's own directory
+  // would silently break wherever the unit is vendored.
+  {
+    const scriptsDir = join(skillDir, 'scripts')
+    if (existsSync(scriptsDir)) {
+      for (const entry of readdirSync(scriptsDir)) {
+        if (!entry.endsWith('.ts')) continue
+        const scriptPath = join(scriptsDir, entry)
+        const src = readFileSync(scriptPath, 'utf8')
+        for (const m of src.matchAll(/\bfrom\s+['"](\.\.?\/[^'"]+)['"]/g)) {
+          const spec = m[1] as string
+          const resolved = resolve(dirname(scriptPath), spec)
+          if (!resolved.startsWith(`${skillDir}/`))
+            fail(
+              'SCRIPT-9',
+              `\`scripts/${entry}\` imports \`${spec}\`, which resolves outside the skill's own directory — vendoring copies this file standalone, so the import would break in every repo that vendors it`
+            )
+        }
+      }
+    }
+  }
+
   // --- SHAPE-12/13: universal-mode vocabulary + mode-heading structure ---
   // Both gate on kind: a process skill (self-declared "(kind: process" in its
   // description, per SHAPE-3) is fully exempt — its mode count follows its own

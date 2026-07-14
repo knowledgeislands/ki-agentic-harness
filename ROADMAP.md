@@ -206,6 +206,12 @@ Because the website build must be **autonomous** — no reach into a sibling rep
 
 The sync above (item: "The harness `docs/` is canonical authoring; the website vendors a copy") makes the copy step mechanical, but nothing yet **detects** when the website's vendored subset has fallen behind the harness's canonical `docs/` — a harness doc can change without the sync running, and the website silently serves stale content with no signal to either repo. Investigate a drift check: a hash or content comparison between the harness source paths and the website's vendored copies, run either as a harness-side audit criterion (candidate: `ki-website`'s AUDIT, since it already owns the website-repo-structure skill) or as a scheduled sweep alongside the `ki-skills-refresh` cadence. Decide whether staleness should fail a gate (CI) or just surface as an advisory finding — a hard fail risks blocking the website on harness-side edits it hasn't synced yet.
 
+### KI philosophy vs. portable standards
+
+#### Separate KI-opinionated conventions from genuinely general/portable standards _(candidate)_
+
+Some of what the harness currently codifies as a shared house standard is actually **KI's own philosophy or house taste** rather than a general, vendor-neutral convention any repo would want regardless of who governs it — the two are currently mixed together in the same skills/standards without a marked boundary. Once the harness itself is stable (the vendoring architecture, the cluster-subfolder layout, and the coverage cascade have settled — see "Vendoring architecture & runtime portability" above), revisit the standards corpus and identify which criteria are KI-specific opinion versus which are portable best practice, so the KI-specific pieces can be migrated to a clearly KI-scoped layer (or a KI-specific skill/table) rather than sitting undistinguished inside a standard that reads as universal. No specific criteria are called out yet — this is a placeholder to do the sorting pass, not a decision about which items move.
+
 ### Session tooling, memory & housekeeping
 
 #### Mine historical sessions for recurring context bloat _(candidate)_
