@@ -34,3 +34,5 @@ Provenance only: the record of _what changed_ lives in git (the REFRESH commit),
 ## Last review
 
 REFRESH last run **2026-07-06** (initial scaffold; internal-model anchor — no external spec). All four in-house sources confirmed against the live chezmoi install: 19 servers, `clients` tokens `{code, desktop, mcporter}` in use, `cowork` not yet present.
+
+**REFRESH, 2026-07-14** — `clients` tokens: explicit literal set `mcporter`, `claude-desktop`, `claude-code`; no other value is recognised. Cowork has no `clients` token — it rides on `claude-desktop` and is checked by BIND-4 against the plugin registration only. Standard, rubric, and checker updated together (BINDCHEZ-7 discipline). Verified: `ki-binding audit --source ~/.config/ki/mcp-servers.yaml` PASSes clean (FAIL=0 WARN=0).

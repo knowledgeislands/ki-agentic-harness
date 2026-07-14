@@ -41,8 +41,8 @@ const STD = 'references/binding-chezmoi-standard.md'
 
 // ── Self-location: find the harness skills/ root through the (possibly symlinked) script path ──
 const SELF = realpathSync(fileURLToPath(import.meta.url))
-// .../skills/implied-families/ki-binding-chezmoi/scripts/audit.ts → up to .../skills
-const SKILLS_ROOT = resolve(dirname(SELF), '..', '..')
+// .../skills/<cluster>/ki-binding-chezmoi/scripts/audit.ts → up to .../skills
+const SKILLS_ROOT = resolve(dirname(SELF), '..', '..', '..')
 
 // ── Args ──
 const argv = process.argv.slice(2)
@@ -62,10 +62,27 @@ const CHEZMOI_REPO = positional ? resolve(positional) : join(process.env.XDG_DAT
 // Each sibling emits the checker-contract `--json` wrapper on stdout; we fold its summary into
 // a single finding so the composition edge is visible and its exit reflected. A hard error
 // (source/repo not present → exit 2, no JSON) folds to INFO rather than a false FAIL.
+function findSkillScript(skill: string): string | undefined {
+  // Skills live under skills/<cluster>/<skill>/ — search each cluster subfolder rather than
+  // assume a flat layout (skills/ was reorganised into cluster subfolders, ADR-KI-HARNESS-SKILLS-006).
+  for (const cluster of readdirSync(SKILLS_ROOT, { withFileTypes: true })) {
+    if (!cluster.isDirectory()) continue
+    const candidate = join(SKILLS_ROOT, cluster.name, skill, 'scripts', 'audit.ts')
+    if (existsSync(candidate)) return candidate
+  }
+  return undefined
+}
+
 function composeAudit(skill: string, scriptArgs: string[], criterion: string): void {
-  const script = join(SKILLS_ROOT, skill, 'scripts', 'audit.ts')
-  if (!existsSync(script)) {
-    add('INFO', criterion, `composed ${skill} checker not found — sibling audit skipped`, STD, script)
+  const script = findSkillScript(skill)
+  if (!script) {
+    add(
+      'INFO',
+      criterion,
+      `composed ${skill} checker not found — sibling audit skipped`,
+      STD,
+      join(SKILLS_ROOT, '*', skill, 'scripts', 'audit.ts')
+    )
     return
   }
   const r = spawnSync('bun', [script, ...scriptArgs, '--json'], { encoding: 'utf8' })

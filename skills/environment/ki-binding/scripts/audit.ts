@@ -48,7 +48,20 @@ const CANONICAL_SOURCE = join(XDG_CONFIG, 'ki', 'mcp-servers.yaml')
 const LEGACY_CHEZMOI_SOURCE = join(XDG_DATA, 'chezmoi', '.chezmoidata', 'mcps.yaml')
 const PROJECT_LOCAL_SOURCE = join(process.cwd(), '.ki', 'mcps.yaml')
 const inferBackend = (p: string): 'chezmoi' | 'plain' => (p.includes('chezmoi') ? 'chezmoi' : 'plain')
-const RECOGNISED = new Set(['code', 'desktop', 'mcporter', 'cowork'])
+
+// The recognised `clients` tokens are an explicit, literal enumeration — not a generic
+// `<any>-desktop` pattern — so a typo'd or unintended token is caught as unrecognised rather
+// than silently accepted. `desktop`/`code` are client-specific config surfaces and are only
+// recognised with the `claude-` prefix; `mcporter` is provider-agnostic (the HTTP bridge is
+// reachable from any client) and is bare.
+const RECOGNISED: ReadonlyMap<string, string> = new Map([
+  ['mcporter', 'mcporter'],
+  ['claude-desktop', 'desktop'],
+  ['claude-code', 'code']
+])
+function baseSurface(token: string): string | undefined {
+  return RECOGNISED.get(token)
+}
 
 // The file-editable, chezmoi-rendered surfaces this checker compares against the source.
 const SURFACES: Array<{ token: string; label: string; path: string }> = [
@@ -150,14 +163,14 @@ for (const [i, e] of entries.entries()) {
   else universe.add(e.name)
   const clients = e.clients ?? []
   if (clients.length === 0) add('WARN', 'BIND-2', `${where} has an empty \`clients\` — targets no surface`, BIND_REF, SOURCE)
-  for (const c of clients) if (!RECOGNISED.has(c)) add('WARN', 'BIND-2', `${where} names unrecognised surface \`${c}\``, BIND_REF, SOURCE)
+  for (const c of clients) if (!baseSurface(c)) add('WARN', 'BIND-2', `${where} names unrecognised surface \`${c}\``, BIND_REF, SOURCE)
 }
 if (!findings.some((f) => f.criterion === 'BIND-2'))
   add('PASS', 'BIND-2', `source valid — ${entries.length} servers, all with a name and recognised clients`, BIND_REF, SOURCE)
 
 // BIND-1 — each file-editable surface renders exactly the servers whose clients names it.
 for (const s of SURFACES) {
-  const expected = new Set([...universe].filter((n) => entries.find((e) => e.name === n)?.clients?.includes(s.token)))
+  const expected = new Set([...universe].filter((n) => entries.find((e) => e.name === n)?.clients?.some((c) => baseSurface(c) === s.token)))
   const cfg = readJson(s.path)
   if (cfg === null) {
     add('INFO', 'BIND-1', `${s.label} config not present or unreadable — surface not audited`, BIND_REF, s.path)
@@ -191,8 +204,9 @@ for (const s of SURFACES) {
 
 // BIND-4 — Cowork agreement: the KI plugin is registered + toggled in every workspace.
 // v1 ships a skills+agents plugin (no servers port into the sandbox), so this checks the
-// plugin enablement in cowork_settings.json rather than server rendering. Any server that
-// nonetheless declares `cowork` is surfaced separately, since servers are deferred.
+// plugin enablement in cowork_settings.json rather than server rendering. Cowork has no
+// `clients` token — it rides on `claude-desktop` (see RECOGNISED above) — so this check is
+// independent of any per-server `clients` declaration.
 const COWORK_MARKETPLACE = 'ki-plugins'
 const COWORK_PLUGIN_KEY = `knowledge-islands@${COWORK_MARKETPLACE}`
 const COWORK_REPO = 'knowledgeislands/ki-plugins'
@@ -231,15 +245,6 @@ if (coworkFiles.length === 0) {
       BIND_REF
     )
 }
-
-const coworkServers = [...universe].filter((n) => entries.find((e) => e.name === n)?.clients?.includes('cowork')).sort()
-if (coworkServers.length > 0)
-  add(
-    'WARN',
-    'BIND-4',
-    `${coworkServers.length} server(s) declare \`cowork\` but MCP servers are deferred (host-local, not sandbox-portable): ${coworkServers.join(', ')} — skills+agents port, servers need separate work`,
-    BIND_REF
-  )
 
 // BIND-3 — compose ki-bootstrap --check for the project's skill half.
 const bootstrap = join(SKILLS_ROOT, 'ki-bootstrap', 'scripts', 'link-skills.ts')

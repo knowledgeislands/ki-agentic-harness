@@ -9,7 +9,7 @@ A plain `mcpServers:` YAML, owned by no one dotfiles manager. Its canonical, too
 ```yaml
 mcpServers:
   - name: kit-mcp-gsuite # unique key; the server's key in every rendered mcpServers map
-    clients: [desktop, mcporter] # the surfaces this server targets — the binding field
+    clients: [claude-desktop, mcporter] # the surfaces this server targets — the binding field
     command: node
     args: [/abs/path/to/dist/mcp-server/index.js]
     env:
@@ -21,15 +21,17 @@ Two shapes: a **command server** (`command` + `args` + `env`, as above) or a **u
 
 ## Recognised surfaces
 
+The recognised `clients` tokens are an explicit, literal set: `mcporter`, `claude-desktop`, `claude-code` — not a generic `<provider>-<surface>` pattern. `desktop`/`code` are client-specific config surfaces and are only recognised with the `claude-` prefix; a bare `desktop`/`code` is not recognised. `mcporter` is provider-agnostic (the HTTP bridge is reachable from any client) and is bare. Cowork is **not** its own `clients` token — Cowork is a mode of the Claude Desktop app, not a fourth independent surface, so its enablement rides on `claude-desktop` rather than needing a `claude-cowork` token of its own; see below for how Cowork is actually checked.
+
 | Surface | `clients` token | Rendered config (the write target) | Controllability |
 | --- | --- | --- | --- |
-| Claude Code | `code` | `~/.claude.json` `mcpServers` (in practice: the one `ki-mcporter` url proxy) | file-editable · renderer-written § |
-| Desktop | `desktop` | `~/Library/Application Support/Claude/claude_desktop_config.json` | file-editable · renderer-written § |
+| Claude Code | `claude-code` | `~/.claude.json` `mcpServers` (in practice: the one `ki-mcporter` url proxy) | file-editable · renderer-written § |
+| Desktop | `claude-desktop` | `~/Library/Application Support/Claude/claude_desktop_config.json` | file-editable · renderer-written § |
 | mcporter | `mcporter` | `~/.mcporter/mcporter.json` `mcpServers` (proxied daemon) | file-editable · renderer-written § |
-| Cowork | `cowork` † | `local-agent-mode-sessions/<account>/<workspace>/cowork_settings.json` (`enabledPlugins`) | file-editable · this skill writes it ‡ |
+| Cowork | _(none — rides on `claude-desktop`, see above)_ † | `local-agent-mode-sessions/<account>/<workspace>/cowork_settings.json` (`enabledPlugins`) | file-editable · this skill writes it ‡ |
 | claude.ai | _(none)_ | no local file — Admin Console allowlist | manual-only · documented convention |
 
-† The Cowork surface is the KI plugin `knowledge-islands@ki-plugins`, carrying **skills + agents** only. MCP servers are deferred: they are host-local and do not port into Cowork's gVisor sandbox, so a server declaring `cowork` is surfaced by BIND-4 as deferred-not-shipped, never silently bundled. ‡ Gate **PASSED 2026-07-06** (design record Verification log): an external edit to `cowork_settings.json` is honoured on next Cowork launch. The plugin + marketplace repo is **built** (`knowledgeislands/ki-plugins`); this skill registers it under `extraKnownMarketplaces` and toggles `enabledPlugins` via [`conform.ts`](../scripts/conform.ts). A full Cowork relaunch applies the change. § "Renderer-written" = generated from the single source by a renderer (e.g. `ki-binding-chezmoi` via chezmoi templates + `chezmoi apply`), never hand-authored per surface. `ki-binding` audits agreement; it does not itself render these surfaces.
+† The Cowork surface is the KI plugin `knowledge-islands@ki-plugins`, carrying **skills + agents** only. MCP servers are deferred: they are host-local and do not port into Cowork's gVisor sandbox — there is deliberately no `cowork` `clients` token for a server to declare. ‡ Gate **PASSED 2026-07-06** (design record Verification log): an external edit to `cowork_settings.json` is honoured on next Cowork launch. The plugin + marketplace repo is **built** (`knowledgeislands/ki-plugins`); this skill registers it under `extraKnownMarketplaces` and toggles `enabledPlugins` via [`conform.ts`](../scripts/conform.ts). A full Cowork relaunch applies the change. § "Renderer-written" = generated from the single source by a renderer (e.g. `ki-binding-chezmoi` via chezmoi templates + `chezmoi apply`), never hand-authored per surface. `ki-binding` audits agreement; it does not itself render these surfaces.
 
 ## The Cowork enablement schema (characterized 2026-07-06)
 
@@ -51,8 +53,8 @@ So a Cowork surface for KI is: **a KI plugin published in a GitHub marketplace r
 
 ## The read model — how the skill computes "on for this surface"
 
-1. **Parse the source** (`Bun.YAML.parse`). Validate: `mcpServers` is a list; every entry has a `name`; every entry has a non-empty `clients` naming only recognised tokens.
-2. **For each surface `S`**, the expected server set is `{ e.name for e in mcpServers if S in e.clients }`.
+1. **Parse the source** (`Bun.YAML.parse`). Validate: `mcpServers` is a list; every entry has a `name`; every entry has a non-empty `clients` naming only recognised tokens — the explicit set `mcporter`, `claude-desktop`, `claude-code` (see "Recognised surfaces" above).
+2. **For each surface `S`**, the expected server set is `{ e.name for e in mcpServers if S in { baseSurface(c) for c in e.clients } }` — a provider-prefixed token counts toward its bare surface.
 3. **Compare** that expected set against the surface's rendered config `mcpServers` keys (or `enabledPlugins` for Cowork). Missing (in source, not in surface) and stray (in surface, not in source) are both drift.
 4. **The skill half** — project-local skills for the surface — is not in `mcps.yaml`; it is `.ki-config.toml` coverage, checked by composing `ki-bootstrap --check`. Servers and skills are audited by their own sources; this skill only asserts the two agree with their declarations.
 
@@ -61,7 +63,7 @@ So a Cowork surface for KI is: **a KI plugin published in a GitHub marketplace r
 - **One source.** No surface config is authored by hand; each is rendered from `mcps.yaml` by a renderer (the file-editable surfaces — `ki-binding-chezmoi` on the maintainer's machine, or any tool reading the canonical source) or written by this skill from the same source (Cowork, once wired). A hand-edit that diverges from the source is drift, reported by BIND-1.
 - **Renderer-neutral.** `ki-binding` reads the source and audits agreement; it does not depend on any one renderer being installed. The chezmoi render path lives in the composition skill `ki-binding-chezmoi` (which depends on `ki-binding` + `ki-dotfiles-chezmoi`), not here.
 - **`clients` is the only binding lever.** Turning a server on for a surface is a one-line `clients` edit, never a per-surface script.
-- **Cowork is gated, not skipped.** A `cowork` token with no verified path is surfaced (WARN), never dropped.
+- **Cowork rides on Desktop, not its own token.** Cowork is a mode of the Claude Desktop app rather than a fourth independent surface, so there is no `cowork`/`claude-cowork` token; its enablement is checked independently (BIND-4), against the plugin registration, not per-server `clients`.
 
 ## The Cowork plugin & marketplace format (characterized 2026-07-06)
 
