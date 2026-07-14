@@ -58,6 +58,14 @@ The pre-commit hook runs the governance audits gated on what is staged, so a com
 
 `ki-bootstrap` vendors a package.json-free entry point (`.ki-meta/bin/ki-audit` — a bash script that `exec bun ".ki-meta/bin/aggregate.ts" "$@"`) so a repo with no `ki-engineering` toolchain can still self-govern; repos that also have `ki-engineering` additionally get `bun run ki:audit`/`ki:conform` package.json scripts pointed at the same vendored `aggregate.ts`. Both paths are assumed to run the identical aggregate and produce identical results, but nothing mechanically confirms that — it surfaced as a live question in a 2026-07-14 session (chezmoi's dotfiles repo, which has no `ki-engineering`, reported a `bun run ki:authoring:conform` failure message that doesn't actually exist as a script there; `./.ki-meta/bin/ki-conform` was the working equivalent and ran clean). Add a check — a `bun run test` case, or a `ki-bootstrap`/`ki-harness` audit criterion — that runs both invocation forms (where both exist) and asserts matching exit codes and findings, and that confirms the shell-wrapper form alone is sufficient and correct on repos without `ki-engineering`.
 
+#### Backfill the missing `SHAPE-15` rubric entry
+
+`SHAPE-15` is enforced in `skills/general-governance/ki-skills/scripts/audit.ts` (~lines 466–485) but has no corresponding entry in `skills/general-governance/ki-skills/references/audit-rubric.md`, which jumps straight from `SHAPE-14` to `SHAPE-16`. Spotted 2026-07-14 during the flat-`.ki-meta`-vendoring / `SCRIPT-9` work, out of scope there and left unfixed. Add the missing rubric entry so the checker and its documented rubric stay in sync.
+
+#### Test new regex-based mechanical checks against the linter's own test files
+
+Adding `SCRIPT-9` (no cross-skill relative imports in vendored `scripts/*.ts`) to `ki-skills` on 2026-07-14 produced a false positive: the checker's own `audit.test.ts` embeds a string literal shaped like a bad import (`"import { helper } from '../../ki-other-skill/scripts/helper.ts'\n..."`) as fixture data, and the checker's naive `matchAll` regex matched it when scanning `audit.test.ts` as if it were a real vendorable script. Fixed narrowly by excluding `*.test.ts` from the scan (test files are never vendored, so it's in-scope for the exclusion, not just a workaround). The general lesson: a new regex/text-based mechanical check should be run against the linter's own test files before being considered done, since they are exactly the kind of adversarial fixture content most likely to trip a naive pattern match. Worth a line in `ki-skills`'s checker-authoring guidance (or the rubric's own meta-notes) so future mechanical criteria get this check for free.
+
 ### Toolchain & naming conventions
 
 #### Codify a Conventional Commits git standard across the skills
