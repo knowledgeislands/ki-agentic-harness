@@ -27,7 +27,7 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 // This script runs under Bun (shebang); tsc types are node-only, so declare the one Bun global used.
-declare const Bun: { YAML: { parse(input: string): unknown } }
+declare const Bun: { YAML: { parse(input: string): unknown }; TOML: { parse(input: string): unknown } }
 
 // ── Self-location: find the harness skills/ root through the (possibly symlinked) script path ──
 const SELF = realpathSync(fileURLToPath(import.meta.url))
@@ -51,23 +51,27 @@ const inferBackend = (p: string): 'chezmoi' | 'plain' => (p.includes('chezmoi') 
 
 // The recognised `clients` tokens are an explicit, literal enumeration — not a generic
 // `<any>-desktop` pattern — so a typo'd or unintended token is caught as unrecognised rather
-// than silently accepted. `desktop`/`code` are client-specific config surfaces and are only
-// recognised with the `claude-` prefix; `mcporter` is provider-agnostic (the HTTP bridge is
-// reachable from any client) and is bare.
-const RECOGNISED: ReadonlyMap<string, string> = new Map([
-  ['mcporter', 'mcporter'],
-  ['claude-desktop', 'desktop'],
-  ['claude-code', 'code']
-])
-function baseSurface(token: string): string | undefined {
-  return RECOGNISED.get(token)
-}
+// than silently accepted. Each is named by vendor-type (`<vendor>-<surface>`), except
+// `mcporter`, which is provider-agnostic (the HTTP bridge is reachable from any client) and so
+// carries no vendor prefix. A bare `desktop`/`code` is not recognised — only the `claude-`
+// prefixed form is.
+const RECOGNISED = new Set(['mcporter', 'claude-code', 'claude-desktop', 'chatgpt-codex'])
 
-// The file-editable, chezmoi-rendered surfaces this checker compares against the source.
-const SURFACES: Array<{ token: string; label: string; path: string }> = [
-  { token: 'code', label: 'Claude Code', path: join(HOME, '.claude.json') },
-  { token: 'desktop', label: 'Claude Desktop', path: join(HOME, 'Library', 'Application Support', 'Claude', 'claude_desktop_config.json') },
-  { token: 'mcporter', label: 'mcporter', path: join(HOME, '.mcporter', 'mcporter.json') }
+// The file-editable surfaces this checker compares against the source, keyed by their own
+// `clients` token (vendor-type). `claude-code`/`claude-desktop`/`mcporter` are JSON,
+// chezmoi-rendered; `chatgpt-codex` is TOML (`[mcp_servers.<name>]` in the live
+// `~/.codex/config.toml`), rendered by ki-binding via the native `codex mcp add|remove` writers
+// (see render-codex.ts). The checker only reads them — it never renders.
+const SURFACES: Array<{ token: string; label: string; path: string; format: 'json' | 'toml' }> = [
+  { token: 'claude-code', label: 'Claude Code', path: join(HOME, '.claude.json'), format: 'json' },
+  {
+    token: 'claude-desktop',
+    label: 'Claude Desktop',
+    path: join(HOME, 'Library', 'Application Support', 'Claude', 'claude_desktop_config.json'),
+    format: 'json'
+  },
+  { token: 'mcporter', label: 'mcporter', path: join(HOME, '.mcporter', 'mcporter.json'), format: 'json' },
+  { token: 'chatgpt-codex', label: 'Codex CLI', path: join(HOME, '.codex', 'config.toml'), format: 'toml' }
 ]
 
 // ── ANSI ──
@@ -133,6 +137,29 @@ function mcpServerKeys(cfg: Record<string, unknown> | null): Set<string> {
   return m && typeof m === 'object' ? new Set(Object.keys(m as Record<string, unknown>)) : new Set()
 }
 
+function readToml(path: string): Record<string, unknown> | null {
+  if (!existsSync(path)) return null
+  try {
+    return Bun.TOML.parse(readFileSync(path, 'utf8')) as Record<string, unknown>
+  } catch {
+    return null
+  }
+}
+
+// The server-name set a surface currently declares, reading its native format. JSON surfaces key
+// under `mcpServers`; the Codex TOML surface keys under `[mcp_servers.<name>]` (`mcp_servers` map).
+// Returns null when the surface's config is absent or unreadable (→ surface not audited).
+function surfaceServerKeys(s: { path: string; format: 'json' | 'toml' }): Set<string> | null {
+  if (s.format === 'toml') {
+    const cfg = readToml(s.path)
+    if (cfg === null) return null
+    const m = cfg.mcp_servers
+    return m && typeof m === 'object' ? new Set(Object.keys(m as Record<string, unknown>)) : new Set()
+  }
+  const cfg = readJson(s.path)
+  return cfg === null ? null : mcpServerKeys(cfg)
+}
+
 // ── Load & validate the single source (BIND-2) ──
 if (!existsSync(SOURCE)) {
   process.stderr.write(
@@ -163,20 +190,19 @@ for (const [i, e] of entries.entries()) {
   else universe.add(e.name)
   const clients = e.clients ?? []
   if (clients.length === 0) add('WARN', 'BIND-2', `${where} has an empty \`clients\` — targets no surface`, BIND_REF, SOURCE)
-  for (const c of clients) if (!baseSurface(c)) add('WARN', 'BIND-2', `${where} names unrecognised surface \`${c}\``, BIND_REF, SOURCE)
+  for (const c of clients) if (!RECOGNISED.has(c)) add('WARN', 'BIND-2', `${where} names unrecognised surface \`${c}\``, BIND_REF, SOURCE)
 }
 if (!findings.some((f) => f.criterion === 'BIND-2'))
   add('PASS', 'BIND-2', `source valid — ${entries.length} servers, all with a name and recognised clients`, BIND_REF, SOURCE)
 
 // BIND-1 — each file-editable surface renders exactly the servers whose clients names it.
 for (const s of SURFACES) {
-  const expected = new Set([...universe].filter((n) => entries.find((e) => e.name === n)?.clients?.some((c) => baseSurface(c) === s.token)))
-  const cfg = readJson(s.path)
-  if (cfg === null) {
+  const expected = new Set([...universe].filter((n) => entries.find((e) => e.name === n)?.clients?.includes(s.token)))
+  const presentAll = surfaceServerKeys(s)
+  if (presentAll === null) {
     add('INFO', 'BIND-1', `${s.label} config not present or unreadable — surface not audited`, BIND_REF, s.path)
     continue
   }
-  const presentAll = mcpServerKeys(cfg)
   const present = new Set([...presentAll].filter((n) => universe.has(n))) // KI-governed only
   const missing = [...expected].filter((n) => !present.has(n)).sort()
   const stray = [...present].filter((n) => !expected.has(n)).sort()

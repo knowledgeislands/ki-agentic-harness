@@ -27,7 +27,7 @@ Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated H
 
 ### Mode AUDIT — check the surfaces agree with the source
 
-1. **Run the checker.** `bun skills/environment/ki-binding/scripts/audit.ts [project] --check` (or `bun run ki:binding:audit`). It reports on the unified severity ladder (`ki-engineering` enforcement-framework §2): **BIND-1** every rendered surface (Code, Desktop, mcporter) contains exactly the servers whose `clients` names it — no missing, no stray; **BIND-2** the single source parses and every entry has a non-empty `clients` naming only recognised surfaces; **BIND-3** the project-local skill half is wired (delegates to `ki-bootstrap --check`); **BIND-4** Cowork agreement — the KI plugin (`knowledge-islands@ki-plugins`) is registered under `extraKnownMarketplaces` and toggled on in every workspace's `cowork_settings.json` (WARN if a workspace is unconformed; any server still declaring `cowork` is surfaced separately, since MCP servers are deferred as host-local).
+1. **Run the checker.** `bun skills/environment/ki-binding/scripts/audit.ts [project] --check` (or `bun run ki:binding:audit`). It reports on the unified severity ladder (`ki-engineering` enforcement-framework §2): **BIND-1** every rendered surface (Code, Desktop, mcporter, Codex CLI) contains exactly the servers whose `clients` names it — no missing, no stray (the Codex TOML surface's own ChatGPT-app servers are excluded, not compared); **BIND-2** the single source parses and every entry has a non-empty `clients` naming only recognised surfaces; **BIND-3** the project-local skill half is wired (delegates to `ki-bootstrap --check`); **BIND-4** Cowork agreement — the KI plugin (`knowledge-islands@ki-plugins`) is registered under `extraKnownMarketplaces` and toggled on in every workspace's `cowork_settings.json` (WARN if a workspace is unconformed; any server still declaring `cowork` is surfaced separately, since MCP servers are deferred as host-local).
 2. **Judge the [J] criteria by reading** — is the `clients` set per server _right_ for how the project is used (does a server a project needs actually target that project's surfaces)? That is intent, not mechanics; name it, do not guess it.
 3. **Report** by criterion. A surface out of step with the source, or a declared-but-unwired Cowork, is a WARN — conformable, not blocking.
 
@@ -35,11 +35,12 @@ Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated H
 
 1. Run **AUDIT** first.
 2. **Reconcile the file-editable surfaces.** For Code / Desktop / mcporter the write path is a renderer: edit the source (`clients` field / new entry), then re-render. The chezmoi render path (`chezmoi apply`, preview with `chezmoi diff`) lives in `ki-binding-chezmoi`; a non-chezmoi setup re-runs whatever tool reads the canonical source. This skill never hand-edits a rendered config — that would drift from the source.
-3. **Compose the skill half.** Run `ki-bootstrap` CONFORM for the project's project-local skills (`bun run ki:skills:link:project`) — sequence it, never fork it.
-4. **Cowork** (gate passed 2026-07-06 — now built). The surface is a KI plugin published in the `knowledgeislands/ki-plugins` marketplace repo. Two moves:
+3. **Codex CLI.** The one file-editable surface this skill renders itself, since `~/.codex/config.toml` is a live user file no chezmoi template should own whole-file: `bun skills/environment/ki-binding/scripts/render-codex.ts [--check] [--source <path>]` shells Codex's own merge-safe `codex mcp add|remove` per KI-governed server name, leaving the ChatGPT app's own servers untouched.
+4. **Compose the skill half.** Run `ki-bootstrap` CONFORM for the project's project-local skills (`bun run ki:skills:link:project`) — sequence it, never fork it.
+5. **Cowork** (gate passed 2026-07-06 — now built). The surface is a KI plugin published in the `knowledgeislands/ki-plugins` marketplace repo. Two moves:
    - **Regenerate the plugin from source** (skills + agents are a projection of this harness, never hand-maintained): `bun run ki:binding:build-plugin <ki-plugins-checkout>`, then commit + push the plugin repo. MCP servers are deferred — host-local, they do not port into Cowork's gVisor sandbox.
    - **Register + toggle it:** `bun skills/environment/ki-binding/scripts/conform.ts` writes `extraKnownMarketplaces["ki-plugins"]` and `enabledPlugins["knowledge-islands@ki-plugins"] = true` into every workspace's `cowork_settings.json` (merge, never clobber). **A full Cowork relaunch is required** for the change to take effect.
-5. **Re-run AUDIT** until clean.
+6. **Re-run AUDIT** until clean.
 
 ### Mode INIT — vendor the binding checks
 
