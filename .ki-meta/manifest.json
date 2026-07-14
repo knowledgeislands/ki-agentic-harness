@@ -1,5 +1,5 @@
 {
-  "ref": "610dff5c7c764daf9e0a648c6ede32d22e9f94aa",
+  "ref": "988ea495603a48bcde5a4a359baa1bbfec70d6d5",
   "files": {
     ".ki-meta/skills/ki-agents/audit.ts": "744039a6365910a9d34d688fecec590cecc83ae15b5766d008dec5a0639d2d9a",
     ".ki-meta/skills/ki-agents/conform.ts": "b184328a974795a12bc5e6f76ddca97e89cd0fca8367033068f64c19d1971357",
@@ -28,7 +28,7 @@
     ".ki-meta/skills/ki-plans/audit.ts": "d216a8b805bbfb12633772beb0496d2dcde5a0b968e908aced78ac6d3b07a4f9",
     ".ki-meta/skills/ki-plans/conform.ts": "ec3a2bb400fc7c38a2c5f5c1d5c4cec08193c9c52f85fa247608442a01f9c6d0",
     ".ki-meta/skills/ki-plans/help.md": "f437d57e93b09605376fd675f67c0868e92278205cf5c53d97b42f2241a4a3e0",
-    ".ki-meta/skills/ki-repo/audit.ts": "c284533d9a8d4596669829e54b4a051034721635036fcfe3c3b50d12816b0edd",
+    ".ki-meta/skills/ki-repo/audit.ts": "01862f8b013eaad754dd3c50d9f1756451d489367143a7dabb8c23b79ef74596",
     ".ki-meta/skills/ki-repo/conform.ts": "a73ee65184a70a9e9168a4c102be6fe8b6d1320804398c20065d904a302a5685",
     ".ki-meta/skills/ki-repo/help.md": "9bf94b66e47a72e59ca64fb8c5798d1d7f93633502fdf255849230aa8bb4ffc6",
     ".ki-meta/skills/ki-skills/audit.ts": "a5f00dfbca697beadc56d8931b8c3290e8a9f4dcd5b8c0f937955fe991e21379",

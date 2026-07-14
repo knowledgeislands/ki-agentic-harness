@@ -667,6 +667,59 @@ function localIntegrityFindings(dir: string): Finding[] {
   return f
 }
 
+// The agent runtimes the bootstrap linkers know how to install for. A repo may
+// declare a subset in `[ki-repo] target_runtimes`; anything outside this set has no
+// discovery path, so the linker would silently do nothing for it (RUNTIMES-1).
+const KNOWN_RUNTIMES = ['claude-code', 'codex']
+
+// Parse `target_runtimes = ["a", "b"]` from the [ki-repo] table only (the documented
+// home of the key — table-aware, unlike the bootstrap resolver's tolerant match).
+// Returns null when the key is absent (the ["claude-code"] default applies, nothing to
+// check), else the declared list (possibly empty).
+function parseTargetRuntimes(text: string): string[] | null {
+  let section = ''
+  for (const raw of text.split(/\r?\n/)) {
+    const line = raw.replace(/#.*$/, '').trim()
+    const header = line.match(/^\[(.+)\]$/)
+    if (header) {
+      section = (header[1] as string).trim()
+      continue
+    }
+    if (section !== KI_SECTION) continue
+    const m = line.match(/^target_runtimes\s*=\s*\[([^\]]*)\]/)
+    if (m) return [...(m[1] as string).matchAll(/["']([^"']+)["']/g)].map((x) => x[1] as string)
+  }
+  return null
+}
+
+// RUNTIMES-1: validate `[ki-repo] target_runtimes` if declared. A pure local
+// .ki-config.toml read — offline-safe, sits beside vendor-integrity. Absent key →
+// default ["claude-code"], nothing to check. Every declared name must be a runtime the
+// linkers recognise; an empty list would target nothing.
+function localConfigFindings(dir: string): Finding[] {
+  const { f, warn } = mk()
+  const cfgPath = join(dir, KI_CONFIG)
+  if (!existsSync(cfgPath)) return f
+  const runtimes = parseTargetRuntimes(readFileSync(cfgPath, 'utf8'))
+  if (runtimes === null) return f
+  if (runtimes.length === 0) {
+    warn(
+      'RUNTIMES-1',
+      `[${KI_SECTION}] target_runtimes is empty — the linkers would target no runtime; omit the key to default to ["claude-code"]`,
+      KI_CONFIG
+    )
+    return f
+  }
+  const unknown = runtimes.filter((rt) => !KNOWN_RUNTIMES.includes(rt))
+  if (unknown.length)
+    warn(
+      'RUNTIMES-1',
+      `[${KI_SECTION}] target_runtimes names unknown runtime(s): ${unknown.join(', ')} (known: ${KNOWN_RUNTIMES.join(', ')})`,
+      KI_CONFIG
+    )
+  return f
+}
+
 // ── discovery ────────────────────────────────────────────────────────────────
 type Target = { label: string; nameWithOwner: string | null; dir?: string; note?: string }
 const GH_REMOTE = /github\.com[:/]([^/]+)\/(.+?)(?:\.git)?$/
@@ -764,7 +817,7 @@ let ghSkipped = 0
 for (const t of targets) {
   // Offline, local-disk vendor-integrity check — independent of GitHub reachability,
   // so it still runs for a target with no github.com origin (or none at all).
-  const localFindings = t.dir ? localIntegrityFindings(t.dir) : []
+  const localFindings = t.dir ? [...localIntegrityFindings(t.dir), ...localConfigFindings(t.dir)] : []
   if (!t.nameWithOwner) {
     ghSkipped++
     all.push({ level: 'NA', area: 'access', msg: t.note ?? '', file: t.label })

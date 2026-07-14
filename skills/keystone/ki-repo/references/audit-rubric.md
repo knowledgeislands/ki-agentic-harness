@@ -56,6 +56,7 @@ Where one atomic `conform.ts` action satisfies several fine-grained audit checks
 
 - **vendor-integrity [M]** `` `VENDOR-1` `` a repo carrying `.ki-meta/` also carries `.ki-meta/manifest.json`, and every manifest-listed vendored file's sha256 matches what's on disk (ADR-KI-HARNESS-006) — offline, no network required. Missing manifest is a migration WARN; a missing or mismatched file is FAIL. (standard: vendor-integrity)
 - **access [M]** `` `ACCESS-1` `` the repo is reachable — `gh` is authenticated and the nameWithOwner resolves — and, when reachable, is not archived (an archived repo skips remaining checks with a WARN rather than cascading FAILs). Unreachable/unauthenticated is reported NA, not FAIL, so an offline or unauthenticated run doesn't manufacture false drift. (standard: Layer 2 preconditions)
+- **target-runtimes [M, warn]** `` `RUNTIMES-1` `` if `[ki-repo]` declares `target_runtimes`, every entry is a runtime the bootstrap linkers recognise (`claude-code`, `codex`), and the list is non-empty. An unknown name has no discovery path — the linker would silently install nothing for it — and an empty list would target no runtime at all; either WARNs. The key is **absent-safe**: omitting it takes the `["claude-code"]` default, which is not flagged. Local `.ki-config.toml` read, offline-safe (beside vendor-integrity); like `VENDOR-1` it is detect-only — the intended runtime can't be guessed, so there is no `conform.ts` twin. (standard: `[ki-repo]` table — `target_runtimes`)
 
 ## Judgment (not deterministic — apply by reading)
 
