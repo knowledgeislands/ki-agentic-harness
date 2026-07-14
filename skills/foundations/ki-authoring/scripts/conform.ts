@@ -64,7 +64,7 @@ const say = (line: string): void => {
 const sha256 = (content: string): string => createHash('sha256').update(content).digest('hex')
 
 const PRETTIER_DEFAULT = `{
-  "printWidth": 140,
+  "printWidth": 160,
   "tabWidth": 2,
   "useTabs": false,
   "semi": false,
