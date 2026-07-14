@@ -15,8 +15,8 @@ The near-term goal is not full feature parity but the narrower, higher-value mil
 
 ## Current state
 
-- **Orientation.** All orientation lives in `CLAUDE.md`, which Claude Code reads and Codex ignores. Verified facts: Claude Code reads `CLAUDE.md` only and supports `@path` imports (recursive, depth 4); Codex reads `AGENTS.md` (the open agents.md standard, honored by 20+ tools) and merges across scopes but has **no import directive** — literal content only, 32 KiB cap. Neither reads the other's file natively.
-- **MCP.** `ki-binding` audits surface agreement against a renderer-neutral `mcp-servers.yaml`, but does not itself render surfaces (a backend such as `ki-binding-chezmoi` does). No Codex surface is recognised and nothing writes `~/.codex/config.toml`. `ki-binding`'s checker is not coverage-scoped/vendored here, so edits to it are live (no re-vendor).
+- **Orientation — done** (Workstream A, commit `2f5813a`; scorecard row flipped to ●). Runtime-neutral orientation now lives in a root `AGENTS.md`, `CLAUDE.md` opens with `@AGENTS.md` plus a thin Claude-only appendix, and the `ki-harness` CLAUDE-1..5 coverage check follows the split. Verified facts that shaped it: Claude Code reads `CLAUDE.md` only and supports `@path` imports (recursive, depth 4); Codex reads `AGENTS.md` (the open agents.md standard, honored by 20+ tools) and merges across scopes but has **no import directive** — literal content only, 32 KiB cap. A Codex session is now oriented; only MCP remains on the critical path.
+- **MCP — not started.** `ki-binding` audits surface agreement against a renderer-neutral `mcp-servers.yaml`, but does not itself render surfaces (a backend such as `ki-binding-chezmoi` does). No Codex surface is recognised and nothing writes `~/.codex/config.toml`. `ki-binding`'s checker is not coverage-scoped/vendored here, so edits to it are live (no re-vendor). Whether a repo renders the Codex surface is gated on `[ki-repo] target_runtimes` (relocated from `[ki-harness]` this cycle) including `"codex"`.
 - **Codex MCP shape — binary-verified** (`codex-cli 0.144.4`, 2026-07-14, `codex mcp add ki-probe --env FOO=bar -- /usr/bin/env node server.js`, read back, removed). The written block is:
 
   ```toml
@@ -63,4 +63,4 @@ The near-term goal is not full feature parity but the narrower, higher-value mil
 
 ## Dependencies / blocks
 
-Independent of plans 001/002 — skills install (the other concurrent-dev prerequisite) already landed. Does not cover agents (MD→TOML generator) or hooks (Phase 3) — those stay off the concurrent-dev path as their own future items. Workstream A (orientation) and Workstream B (MCP) are independently landable; either can go first.
+Standalone — the two prerequisites it once depended on have both landed and their plans been removed: the Codex runtime governance layer (former plan 001) and the multi-runtime install linkers incl. `sync-skills.ts --runtime` (former plan 002). Skills now install in both runtimes. Does not cover agents (MD→TOML generator) or hooks (Phase 3) — those stay off the concurrent-dev path as their own future items. With Workstream A done, only Workstream B (MCP) remains.
