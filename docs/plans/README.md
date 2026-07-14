@@ -6,13 +6,10 @@ Phasing (Next / Soon / Future) lives in [ROADMAP.md](../../ROADMAP.md), not here
 
 | Plan                                                  | Theme | Title                                      | Status      | Blocks |
 | ----------------------------------------------------- | ----- | ------------------------------------------ | ----------- | ------ |
-| [001](codex/001-register-codex-runtime.md)            | codex | Register Codex CLI as a target runtime     | open        | —      |
 | [003](codex/003-develop-in-both-agents-md-and-mcp.md) | codex | AGENTS.md orientation + Codex MCP renderer | in-progress | —      |
 
 ## Dependency graph
 
 ```text
-001
-
 003
 ```
