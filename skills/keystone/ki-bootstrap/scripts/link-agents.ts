@@ -21,7 +21,7 @@
 import { existsSync, lstatSync, mkdirSync, readdirSync, readlinkSync, realpathSync, rmSync, symlinkSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { ensureGitignore, gitignoresPath, readText } from './package-scripts.ts'
+import { ensureGitignore, gitignoresPath, readText, runtimeAgentsDir, targetRuntimes } from './package-scripts.ts'
 
 // ── Self-location: find the harness agents/governance/ root through the (possibly symlinked) script path ──
 const SELF = realpathSync(fileURLToPath(import.meta.url))
@@ -69,8 +69,11 @@ function expectedSet(available: string[], kiConfigText: string): string[] {
 }
 
 // ── Link (mutate) ──
-function cmdLink(target: string, set: string[], dryRun: boolean): void {
-  const claudeAgents = join(target, '.claude', 'agents')
+// `agentsSubdir` is the runtime's project-local agents dir (e.g. `.claude/agents`);
+// the entry point resolves it per runtime and skips any runtime without a supported
+// agents path (Codex, pending the TOML-generator format spike).
+function cmdLink(target: string, set: string[], dryRun: boolean, agentsSubdir: string): void {
+  const claudeAgents = join(target, agentsSubdir)
   if (!existsSync(claudeAgents) && set.length > 0) {
     console.log(`${DIM}creating ${claudeAgents}${RESET}`)
     if (!dryRun) mkdirSync(claudeAgents, { recursive: true })
@@ -110,14 +113,14 @@ function cmdLink(target: string, set: string[], dryRun: boolean): void {
   }
 
   if (set.length > 0) {
-    ensureGitignore(target, '.claude/agents', dryRun)
+    ensureGitignore(target, agentsSubdir, dryRun)
   }
 }
 
 // ── Check (audit only) ──
-function cmdCheck(target: string, set: string[]): number {
+function cmdCheck(target: string, set: string[], agentsSubdir: string): number {
   const findings: Finding[] = []
-  const claudeAgents = join(target, '.claude', 'agents')
+  const claudeAgents = join(target, agentsSubdir)
 
   const present = existsSync(claudeAgents) ? readdirSync(claudeAgents).filter((n) => isSymlink(join(claudeAgents, n))) : []
   const missing = set.filter((a) => !present.includes(a))
@@ -127,7 +130,7 @@ function cmdCheck(target: string, set: string[]): number {
     findings.push({
       severity: 'PASS',
       criterion: 'BOOT-6',
-      message: `.claude/agents matches declared set (${set.length} agent${set.length === 1 ? '' : 's'})`
+      message: `${agentsSubdir} matches declared set (${set.length} agent${set.length === 1 ? '' : 's'})`
     })
   } else {
     if (missing.length)
@@ -144,9 +147,9 @@ function cmdCheck(target: string, set: string[]): number {
   // package.json script-key wiring (ki:agents:link:project) is out of scope here — it is
   // ki-engineering's concern. This linker governs only the symlink set and the .gitignore.
   findings.push(
-    gitignoresPath(readText(join(target, '.gitignore')), '.claude/agents')
-      ? { severity: 'PASS', criterion: 'BOOT-8', message: '.claude/agents/ is gitignored' }
-      : { severity: 'WARN', criterion: 'BOOT-8', message: '.claude/agents/ is not gitignored — generated links would be committed' }
+    gitignoresPath(readText(join(target, '.gitignore')), agentsSubdir)
+      ? { severity: 'PASS', criterion: 'BOOT-8', message: `${agentsSubdir}/ is gitignored` }
+      : { severity: 'WARN', criterion: 'BOOT-8', message: `${agentsSubdir}/ is not gitignored — generated links would be committed` }
   )
 
   for (const f of findings) {
@@ -168,15 +171,38 @@ const dryRun = argv.includes('--dry-run')
 const checkOnly = argv.includes('--check')
 const target = resolve(argv.find((a) => !a.startsWith('-')) ?? '.')
 
+const kiConfigText = readText(join(target, '.ki-config.toml'))
 const available = discoverAgents()
-const set = expectedSet(available, readText(join(target, '.ki-config.toml')))
+const set = expectedSet(available, kiConfigText)
 const setLabel = set.length > 0 ? 'declared ([ki-agents] present)' : 'none ([ki-agents] absent)'
+// Runtimes this repo installs agents for — `[ki-harness] target_runtimes`, default
+// ["claude-code"]. A runtime with no supported agents path (Codex, pending the TOML
+// format spike) is reported and skipped, not guessed and not silently dropped.
+const runtimes = targetRuntimes(kiConfigText)
 console.log(
-  `\n  ${DIM}target:${RESET} ${target}   ${DIM}agents source:${RESET} ${AGENTS_ROOT}   ${DIM}set:${RESET} ${setLabel} (${set.length})\n`
+  `\n  ${DIM}target:${RESET} ${target}   ${DIM}agents source:${RESET} ${AGENTS_ROOT}   ${DIM}set:${RESET} ${setLabel} (${set.length})   ${DIM}runtimes:${RESET} ${runtimes.join(', ')}\n`
 )
 
-if (checkOnly) {
-  process.exit(cmdCheck(target, set))
+// Resolve each runtime to its agents dir; report+skip runtimes without one.
+const resolved: Array<{ rt: string; dir: string }> = []
+for (const rt of runtimes) {
+  try {
+    resolved.push({ rt, dir: runtimeAgentsDir(rt) })
+  } catch (e) {
+    console.log(`  ${YELLOW}skip  [${rt}]${RESET} ${DIM}(${(e as Error).message})${RESET}`)
+  }
 }
-cmdLink(target, set, dryRun)
+
+if (checkOnly) {
+  let rc = 0
+  for (const { rt, dir } of resolved) {
+    console.log(`  ${DIM}[${rt}]${RESET}`)
+    if (cmdCheck(target, set, dir) !== 0) rc = 1
+  }
+  process.exit(rc)
+}
+for (const { rt, dir } of resolved) {
+  console.log(`  ${DIM}[${rt}]${RESET}`)
+  cmdLink(target, set, dryRun, dir)
+}
 if (dryRun) console.log(`\n  ${YELLOW}(dry run — nothing changed)${RESET}`)

@@ -21,7 +21,7 @@
 import { existsSync, lstatSync, mkdirSync, readdirSync, readlinkSync, realpathSync, rmSync, symlinkSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { ensureGitignore, gitignoresPath, readText } from './package-scripts.ts'
+import { ensureGitignore, gitignoresPath, readText, runtimeSkillsDir, targetRuntimes } from './package-scripts.ts'
 
 // ── Self-location: find the harness skills/ root through the (possibly symlinked) script path ──
 const SELF = realpathSync(fileURLToPath(import.meta.url))
@@ -109,8 +109,10 @@ function orphanSkills(available: string[], kiConfigText: string): string[] {
 }
 
 // ── Link (mutate) ──
-function cmdLink(target: string, set: string[], dryRun: boolean): void {
-  const claudeSkills = join(target, '.claude', 'skills')
+// `skillsSubdir` is the runtime's project-local skills dir (e.g. `.claude/skills`
+// for Claude Code, `.agents/skills` for Codex) — the entry point loops the runtimes.
+function cmdLink(target: string, set: string[], dryRun: boolean, skillsSubdir: string): void {
+  const claudeSkills = join(target, skillsSubdir)
   if (!existsSync(claudeSkills)) {
     console.log(`${DIM}creating ${claudeSkills}${RESET}`)
     if (!dryRun) mkdirSync(claudeSkills, { recursive: true })
@@ -149,13 +151,13 @@ function cmdLink(target: string, set: string[], dryRun: boolean): void {
     }
   }
 
-  ensureGitignore(target, '.claude/skills', dryRun)
+  ensureGitignore(target, skillsSubdir, dryRun)
 }
 
 // ── Check (audit only) ──
-function cmdCheck(target: string, set: string[], orphans: string[]): number {
+function cmdCheck(target: string, set: string[], orphans: string[], skillsSubdir: string): number {
   const findings: Finding[] = []
-  const claudeSkills = join(target, '.claude', 'skills')
+  const claudeSkills = join(target, skillsSubdir)
 
   const present = existsSync(claudeSkills)
     ? readdirSync(claudeSkills).filter((n) => n.startsWith('ki-') && isSymlink(join(claudeSkills, n)))
@@ -167,7 +169,7 @@ function cmdCheck(target: string, set: string[], orphans: string[]): number {
     findings.push({
       severity: 'PASS',
       criterion: 'BOOT-1',
-      message: `.claude/skills matches declared coverage (${set.length} skill${set.length === 1 ? '' : 's'})`
+      message: `${skillsSubdir} matches declared coverage (${set.length} skill${set.length === 1 ? '' : 's'})`
     })
   } else {
     for (const o of orphans)
@@ -192,9 +194,9 @@ function cmdCheck(target: string, set: string[], orphans: string[]): number {
   // out of scope here — it is ki-engineering's concern, as sugar over the vendored
   // .ki-meta/bin/* wrappers. This linker only governs the symlink set and the .gitignore.
   findings.push(
-    gitignoresPath(readText(join(target, '.gitignore')), '.claude/skills')
-      ? { severity: 'PASS', criterion: 'BOOT-3', message: '.claude/skills/ is gitignored' }
-      : { severity: 'WARN', criterion: 'BOOT-3', message: '.claude/skills/ is not gitignored — generated links would be committed' }
+    gitignoresPath(readText(join(target, '.gitignore')), skillsSubdir)
+      ? { severity: 'PASS', criterion: 'BOOT-3', message: `${skillsSubdir}/ is gitignored` }
+      : { severity: 'WARN', criterion: 'BOOT-3', message: `${skillsSubdir}/ is not gitignored — generated links would be committed` }
   )
 
   for (const f of findings) {
@@ -232,12 +234,23 @@ const kiConfigText = readText(join(target, '.ki-config.toml'))
 const set = expectedSet(available, kiConfigText)
 const orphans = orphanSkills(available, kiConfigText)
 const setLabel = 'declared'
+// The runtimes this repo installs skills for — `[ki-harness] target_runtimes`,
+// defaulting to ["claude-code"] when absent so existing repos are unchanged.
+const runtimes = targetRuntimes(kiConfigText)
 console.log(
-  `\n  ${DIM}target:${RESET} ${target}   ${DIM}skills source:${RESET} ${SKILLS_ROOT}   ${DIM}set:${RESET} ${setLabel} (${set.length})\n`
+  `\n  ${DIM}target:${RESET} ${target}   ${DIM}skills source:${RESET} ${SKILLS_ROOT}   ${DIM}set:${RESET} ${setLabel} (${set.length})   ${DIM}runtimes:${RESET} ${runtimes.join(', ')}\n`
 )
 
 if (checkOnly) {
-  process.exit(cmdCheck(target, set, orphans))
+  let rc = 0
+  for (const rt of runtimes) {
+    console.log(`  ${DIM}[${rt}]${RESET}`)
+    if (cmdCheck(target, set, orphans, runtimeSkillsDir(rt)) !== 0) rc = 1
+  }
+  process.exit(rc)
 }
-cmdLink(target, set, dryRun)
+for (const rt of runtimes) {
+  console.log(`  ${DIM}[${rt}]${RESET}`)
+  cmdLink(target, set, dryRun, runtimeSkillsDir(rt))
+}
 if (dryRun) console.log(`\n  ${YELLOW}(dry run — nothing changed)${RESET}`)

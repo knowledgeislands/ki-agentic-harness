@@ -18,6 +18,49 @@ export function readText(path: string): string {
   return existsSync(path) ? readFileSync(path, 'utf8') : ''
 }
 
+// ── Multi-runtime target resolution ──────────────────────────────────────────
+// A repo declares which agent runtimes it installs skills/agents for via
+// `[ki-harness] target_runtimes = [...]`. Absent → the historical default
+// ["claude-code"], so every repo predating multi-runtime support is unchanged.
+// Discovery paths differ per runtime: Claude Code reads `.claude/`, OpenAI Codex
+// CLI reads `.agents/` (the runtime feature-coverage matrix, SDR-KI-HARNESS-002).
+export function targetRuntimes(kiConfigText: string): string[] {
+  const m = kiConfigText.match(/^target_runtimes\s*=\s*\[([^\]]*)\]/m)
+  if (!m) return ['claude-code']
+  const list = [...(m[1] as string).matchAll(/["']([^"']+)["']/g)].map((x) => x[1] as string)
+  return list.length ? list : ['claude-code']
+}
+
+// Where each runtime discovers project-local SKILLS. Unknown runtime → throw
+// (fail loud rather than silently install into a guessed path).
+export function runtimeSkillsDir(runtime: string): string {
+  const map: Record<string, string> = {
+    'claude-code': join('.claude', 'skills'),
+    codex: join('.agents', 'skills')
+  }
+  const dir = map[runtime]
+  if (!dir) throw new Error(`unknown target_runtime "${runtime}" — no known skills path (expected one of: ${Object.keys(map).join(', ')})`)
+  return dir
+}
+
+// Where each runtime discovers project-local AGENTS. Claude Code uses Markdown+YAML
+// under `.claude/agents/`; Codex uses TOML under `~/.codex/agents/` with a different
+// field shape (name/description/developer_instructions) — a generator, not a symlink,
+// and not yet built (the open subagent-format item in SDR-KI-HARNESS-002). Codex is
+// therefore intentionally absent here: link-agents surfaces a clear "unsupported
+// pending format spike" message for it rather than guess a path.
+export function runtimeAgentsDir(runtime: string): string {
+  const map: Record<string, string> = {
+    'claude-code': join('.claude', 'agents')
+  }
+  const dir = map[runtime]
+  if (!dir)
+    throw new Error(
+      `target_runtime "${runtime}" has no supported project-local agents path yet — Codex subagents are TOML under ~/.codex/agents/ (a generator, not a symlink), pending the format spike (SDR-KI-HARNESS-002)`
+    )
+  return dir
+}
+
 export function gitignoresPath(gitignore: string, path: string): boolean {
   const pattern = new RegExp(`^${path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/?$`)
   return gitignore.split(/\r?\n/).some((l) => pattern.test(l.trim()))
