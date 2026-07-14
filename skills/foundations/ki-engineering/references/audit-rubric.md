@@ -89,6 +89,7 @@ Capability conditionals only apply when the repo has the marker (tests / compile
 - [ ] **ENV-1** [M] WARN — a committed `.env*.example` template exists. (Also the code for the N/A when the repo has no env capability.)
 - [ ] **ENV-2** [M] FAIL — `NODE_ENV=development` appears only in dev/inspect scripts, never in `start`/`build`/`test`.
 - [ ] **ENV-3** [J] WARN — real `.env.*` (non-`.example`) is gitignored; the loader has the Node parity call.
+- [ ] **ENV-4** [J] WARN — any script resolving a config/data/cache/state directory honours the matching `$XDG_*` env var, falling back to the spec default only when unset (engineering-standard.md's XDG Base Directory paths subsection). A hardcoded `~/.config`/`~/.local/share`/etc with no env-var check is the finding.
 
 ## Core — `.ki-config.toml` (§9)
 

@@ -212,6 +212,12 @@ When a repo reads environment config (it has `.env*.example`, or calls `process.
 
 The variable **names/prefix** and which vars exist are artifact-specific (e.g. an MCP uses `MCP_<APP>_*` with the shared access-level + audit-log block) and live in that artifact's skill.
 
+### XDG Base Directory paths (capability: the repo resolves a config/data/cache/state directory on the host)
+
+When a script computes a filesystem path for its own or another tool's config, data, cache, or state directory (`~/.config/...`, `~/.local/share/...`, `~/.cache/...`, `~/.local/state/...`), it honours the corresponding [XDG Base Directory](https://specifications.freedesktop.org/basedir/latest/) env var — `$XDG_CONFIG_HOME`, `$XDG_DATA_HOME`, `$XDG_CACHE_HOME`, `$XDG_STATE_HOME` — falling back to the spec's own default (`~/.config`, `~/.local/share`, `~/.cache`, `~/.local/state` respectively) only when the var is unset. A bare `join(homedir(), '.config', ...)` with no env-var check is the anti-pattern: it silently diverges from a machine that has repointed the var (e.g. a chezmoi-managed dotfiles setup exporting `$XDG_DATA_HOME` for a non-default `chezmoi` source dir). `ki-binding` and `ki-binding-chezmoi` are the reference implementations (see their `references/binding-standard.md`).
+
+This does not license inventing a path a tool doesn't already use — mcporter's `~/.mcporter/mcporter.json`, for instance, is that tool's own fixed convention, not one this standard overrides; the rule applies only where the repo itself is choosing the config/data/cache/state location.
+
 ## 9. `.ki-config.toml` — `[ki-engineering]` (core)
 
 A governed repo declares a `[ki-engineering]` table. Presence marks "the engineering standard applies here" (the selector for the common layer). Following the `.ki-config.toml` table-per-skill contract (owned by `ki-repo`), the table is minimal — capabilities are auto-detected from markers (above), so no profile field is needed. A repo that deliberately diverges declares it explicitly:
