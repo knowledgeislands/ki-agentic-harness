@@ -17,6 +17,19 @@ The near-term goal is not full feature parity but the narrower, higher-value mil
 
 - **Orientation.** All orientation lives in `CLAUDE.md`, which Claude Code reads and Codex ignores. Verified facts: Claude Code reads `CLAUDE.md` only and supports `@path` imports (recursive, depth 4); Codex reads `AGENTS.md` (the open agents.md standard, honored by 20+ tools) and merges across scopes but has **no import directive** — literal content only, 32 KiB cap. Neither reads the other's file natively.
 - **MCP.** `ki-binding` audits surface agreement against a renderer-neutral `mcp-servers.yaml`, but does not itself render surfaces (a backend such as `ki-binding-chezmoi` does). No Codex surface is recognised and nothing writes `~/.codex/config.toml`. `ki-binding`'s checker is not coverage-scoped/vendored here, so edits to it are live (no re-vendor).
+- **Codex MCP shape — binary-verified** (`codex-cli 0.144.4`, 2026-07-14, `codex mcp add ki-probe --env FOO=bar -- /usr/bin/env node server.js`, read back, removed). The written block is:
+
+  ```toml
+  [mcp_servers.<name>]
+  command = "…"
+  args = ["…", "…"]           # omitted when there are no args
+  # optional: startup_timeout_sec (float), cwd, enabled
+
+  [mcp_servers.<name>.env]
+  KEY = "value"
+  ```
+
+  Two facts change the renderer design: (1) `~/.codex/config.toml` is a **live user file** — it already carries the ChatGPT desktop app's own servers (`node_repl`, `computer-use`) plus `[marketplaces.*]`/`[plugins.*]`/`[desktop]` tables — so a whole-file rewrite would clobber them. (2) Codex ships **native merge-safe writers**: `codex mcp add|remove|get|list` edit only the `[mcp_servers.*]` region in place. The renderer should shell `codex mcp add` (idempotent per name) rather than hand-serialise TOML into the user's file.
 
 ## Steps
 
@@ -30,7 +43,7 @@ The near-term goal is not full feature parity but the narrower, higher-value mil
 ### B. ki-binding Codex MCP renderer
 
 1. Recognise `codex` / `~/.codex/config.toml` as a binding **surface** in `ki-binding` (standard + rubric + `sources.md`), alongside the existing Claude surfaces.
-2. Add a **render** capability to `ki-binding` that writes `[mcp_servers.<name>]` TOML into `~/.codex/config.toml` from the neutral `mcp-servers.yaml` — the read side stays the single source; Codex becomes a rendered surface. Verify the exact Codex MCP TOML shape (`command`/`args`/`env`, stdio) and the config keys **against the shipped `codex` binary** before treating them as settled (the research flagged `project_doc_*` and config spellings as doc-sourced, not binary-verified).
+2. Add a **render** capability to `ki-binding` that projects each `mcp-servers.yaml` entry into Codex's `[mcp_servers.<name>]` — the read side stays the single source; Codex becomes a rendered surface. **Render by shelling `codex mcp add <name> --env … -- <command> <args…>`, not by hand-writing TOML** into the user's live `~/.codex/config.toml` (shape + rationale binary-verified in Current state). `codex mcp add` is idempotent per name, so re-render = remove-then-add or add-over. This makes the Codex renderer a thin adapter over the binary rather than a TOML serialiser.
 3. Extend `ki-binding`'s AUDIT so the Codex surface is checked for agreement with the source, exactly as the Claude surfaces are.
 
 ## Files touched
