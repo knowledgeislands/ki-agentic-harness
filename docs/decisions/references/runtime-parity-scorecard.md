@@ -12,19 +12,19 @@ Two lenses, deliberately separate: the **feature-coverage matrix** tracks the _n
 
 ## Scorecard
 
-| Part                | Claude Code                | Codex CLI        | Parity | Comments                                                |
-| ------------------- | -------------------------- | ---------------- | ------ | ------------------------------------------------------- |
-| Skills — content    | `SKILL.md`                 | same `SKILL.md`  | ●      | Open Agent Skills standard; one identical file. †       |
-| Skills — install    | `.claude/skills`           | `.agents/skills` | ●      | Bootstrap linker loops declared runtimes (landed).      |
-| Project orientation | `CLAUDE.md` → `@AGENTS.md` | `AGENTS.md`      | ●      | `AGENTS.md` is the common core; `CLAUDE.md` imports it. |
-| MCP servers         | JSON surfaces              | TOML (absent)    | ○      | Needs a Codex renderer off the neutral source. ‡        |
-| Agents              | MD+YAML `.claude/agents`   | TOML (absent)    | ○      | Needs an MD→TOML generator; linker skips Codex. §       |
-| Hooks               | Plan-Mode hooks            | none             | ○      | No confirmed Codex equivalent. ¶                        |
-| Evals               | scenarios                  | unproven         | ○      | Runtime-agnostic by design; never run on Codex.         |
+| Part | Claude Code | Codex CLI | Parity | Comments |
+| --- | --- | --- | --- | --- |
+| Skills — content | `SKILL.md` | same `SKILL.md` | ● | Open Agent Skills standard; one identical file. † |
+| Skills — install | `.claude/skills` | `.agents/skills` | ● | Bootstrap linker loops declared runtimes (landed). |
+| Project orientation | `CLAUDE.md` → `@AGENTS.md` | `AGENTS.md` | ● | `AGENTS.md` is the common core; `CLAUDE.md` imports it. |
+| MCP servers | JSON surfaces | TOML `~/.codex/config.toml` | ● | `ki-binding` renders it via `codex mcp add\|remove`. ‡ |
+| Agents | MD+YAML `.claude/agents` | TOML (absent) | ○ | Needs an MD→TOML generator; linker skips Codex. § |
+| Hooks | Plan-Mode hooks | none | ○ | No confirmed Codex equivalent. ¶ |
+| Evals | scenarios | unproven | ○ | Runtime-agnostic by design; never run on Codex. |
 
 † Skill checkers are `bun` scripts and the `ki:*` package.json keys wrap them — runtime-blind, so they run identically under either runtime once discovered.
 
-‡ `ki-binding`'s source is a renderer-neutral `mcp-servers.yaml`; a Codex renderer writes `[mcp_servers.<name>]` into `~/.codex/config.toml` from it, exactly as the Claude surfaces render from the same source. Separately, `mcp/` ships no servers yet.
+‡ `ki-binding`'s source is a renderer-neutral `mcp-servers.yaml`; its Codex renderer (`render-codex.ts`) shells Codex's native merge-safe `codex mcp add|remove` to write `[mcp_servers.<name>]` into `~/.codex/config.toml`, verified end-to-end against codex-cli 0.144.4. Separately, `mcp/` ships no servers yet.
 
 § Codex subagents are TOML under `~/.codex/agents/` (`name`/`description`/`developer_instructions`), a different shape from Claude Code's Markdown+YAML. `link-agents.ts` reports-and-skips Codex pending the generator; the format is spiked, not built.
 
@@ -32,13 +32,13 @@ Two lenses, deliberately separate: the **feature-coverage matrix** tracks the _n
 
 ## Working in both concurrently — the critical path
 
-The near-term goal is **not** full feature parity of everything shipped today. It is the narrower, more valuable milestone of being able to **develop in both runtimes side by side**. That needs only two of the parts above at parity — **skills** (so tools and instructions load in both) and **MCP** (so the same servers are reachable in both). Concretely, in order:
+The near-term goal was **not** full feature parity of everything shipped today. It was the narrower, more valuable milestone of being able to **develop in both runtimes side by side** — needing only **skills** and **MCP** at parity. **Done, 2026-07-14:**
 
 1. **Skills — done.** Both runtimes install and discover them; nothing blocks concurrent use here.
-2. **`AGENTS.md`** — generate it from `CLAUDE.md` (symlink or copy) so a Codex session is oriented the same as a Claude one. Cheap, high leverage.
-3. **MCP → Codex** — add a Codex renderer to `ki-binding` that emits `~/.codex/config.toml` `[mcp_servers.*]` from the neutral `mcp-servers.yaml`. The one real build on this path.
+2. **`AGENTS.md` — done.** The runtime-neutral orientation core; `CLAUDE.md` opens with `@AGENTS.md`.
+3. **MCP → Codex — done.** `ki-binding`'s Codex renderer emits `~/.codex/config.toml` `[mcp_servers.*]` from the neutral `mcp-servers.yaml`.
 
-Explicitly **off** the concurrent-dev critical path — deferred without blocking it: **agents** (MD→TOML generator), **hooks** (Phase 3 generator + the Plan-Mode question), and **evals** on Codex. These are governance/automation depth, added incrementally once side-by-side development is working.
+The develop-in-both milestone is closed. Explicitly **off** that path, still open as their own future items: **agents** (MD→TOML generator), **hooks** (Phase 3 generator + the Plan-Mode question), and **evals** on Codex. These are governance/automation depth, not blockers to concurrent development.
 
 ## When to revisit
 

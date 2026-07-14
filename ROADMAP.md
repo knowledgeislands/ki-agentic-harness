@@ -12,10 +12,6 @@ This roadmap is itself subject to the house discipline it describes: when a skil
 
 Claude Code's interactive Plan Mode (`EnterPlanMode`/`ExitPlanMode`) plans land only as scratch files under `~/.claude/plans/`, stamped and progress-synced in place by `hooks/plan-stamp.sh`/`hooks/plan-sync.sh`. Add a `promote` subcommand to the `ki-plan` lifecycle (`skills/process/ki-plan/references/lifecycle.md`) that turns a session's Plan Mode plan into a governed `docs/plans/<theme>/<NNN>-<slug>.md` entry — reusing `plan-stamp.sh`'s existing `~/.claude/plans/.state/<session_id>` pointer to locate the scratch file, and `new`'s existing id-derivation/theme/roadmap-confirmation logic to place it correctly. Deliberately a user-invoked lifecycle command, not a new auto-firing hook: the `roadmap:`/theme/id fields require judgment a `PostToolUse` hook can't safely apply unattended, and widening either existing hook's write surface from `~/.claude/plans/` to arbitrary repo paths is a separate, security-sensitive change left out of scope here. See `docs/plans/hooks/004-promote-plan-mode-plans.md`.
 
-### Develop-in-both milestone — AGENTS.md orientation + Codex MCP rendering
-
-The two remaining parts on the critical path to developing in Claude Code and Codex CLI side by side (skills already install in both). **Orientation:** establish `AGENTS.md` at the repo root as the runtime-neutral orientation core — the open agents.md standard that Codex and 20+ tools read directly — and reduce `CLAUDE.md` to `@AGENTS.md` plus a thin Claude-specific appendix; update the `ki-harness` CLAUDE.md-coverage check to follow the split. **MCP:** give `ki-binding` a Codex renderer that writes `~/.codex/config.toml` `[mcp_servers.*]` from the neutral `mcp-servers.yaml` (Codex becomes a first-class binding surface, audited for agreement like the Claude surfaces). Explicitly off this path: agents (MD→TOML generator) and hooks (Phase 3). See `docs/plans/codex/003-develop-in-both-agents-md-and-mcp.md` and the runtime parity scorecard.
-
 ## Soon
 
 ### Multi-machine portability & shared state
