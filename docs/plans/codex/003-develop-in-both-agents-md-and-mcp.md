@@ -1,7 +1,7 @@
 ---
 id: '003'
 title: Develop-in-both milestone — AGENTS.md orientation + Codex MCP rendering
-status: open
+status: in-progress
 roadmap: Develop-in-both milestone — AGENTS.md orientation + Codex MCP rendering
 blocks: —
 blocked-by: —
@@ -20,7 +20,7 @@ The near-term goal is not full feature parity but the narrower, higher-value mil
 
 ## Steps
 
-### A. AGENTS.md as the common orientation core
+### A. AGENTS.md as the common orientation core — done (commit `2f5813a`)
 
 1. Create `AGENTS.md` at the repo root holding the **runtime-neutral** orientation — the bulk of today's `CLAUDE.md` that is not Claude-Code-specific (what the repo is, the skill taxonomy, how skills compose, markdown/TOML style, the toolchain). Self-contained (Codex can't import); keep it under Codex's 32 KiB cap.
 2. Reduce `CLAUDE.md` to `@AGENTS.md` (first line) plus a thin **Claude-specific appendix**: the `.claude/` paths, re-vendoring via `ki-bootstrap`, `ki:*` package.json keys, and the headroom-managed learn markers.

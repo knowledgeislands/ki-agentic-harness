@@ -12,15 +12,15 @@ Two lenses, deliberately separate: the **feature-coverage matrix** tracks the _n
 
 ## Scorecard
 
-| Part                | Claude Code              | Codex CLI            | Parity | Comments                                             |
-| ------------------- | ------------------------ | -------------------- | ------ | ---------------------------------------------------- |
-| Skills — content    | `SKILL.md`               | same `SKILL.md`      | ●      | Open Agent Skills standard; one identical file. †    |
-| Skills — install    | `.claude/skills`         | `.agents/skills`     | ●      | Bootstrap linker loops declared runtimes (landed).   |
-| Project orientation | `CLAUDE.md`              | `AGENTS.md` (absent) | ○      | Codex reads `AGENTS.md`; the harness emits none yet. |
-| MCP servers         | JSON surfaces            | TOML (absent)        | ○      | Needs a Codex renderer off the neutral source. ‡     |
-| Agents              | MD+YAML `.claude/agents` | TOML (absent)        | ○      | Needs an MD→TOML generator; linker skips Codex. §    |
-| Hooks               | Plan-Mode hooks          | none                 | ○      | No confirmed Codex equivalent. ¶                     |
-| Evals               | scenarios                | unproven             | ○      | Runtime-agnostic by design; never run on Codex.      |
+| Part                | Claude Code                | Codex CLI        | Parity | Comments                                                |
+| ------------------- | -------------------------- | ---------------- | ------ | ------------------------------------------------------- |
+| Skills — content    | `SKILL.md`                 | same `SKILL.md`  | ●      | Open Agent Skills standard; one identical file. †       |
+| Skills — install    | `.claude/skills`           | `.agents/skills` | ●      | Bootstrap linker loops declared runtimes (landed).      |
+| Project orientation | `CLAUDE.md` → `@AGENTS.md` | `AGENTS.md`      | ●      | `AGENTS.md` is the common core; `CLAUDE.md` imports it. |
+| MCP servers         | JSON surfaces              | TOML (absent)    | ○      | Needs a Codex renderer off the neutral source. ‡        |
+| Agents              | MD+YAML `.claude/agents`   | TOML (absent)    | ○      | Needs an MD→TOML generator; linker skips Codex. §       |
+| Hooks               | Plan-Mode hooks            | none             | ○      | No confirmed Codex equivalent. ¶                        |
+| Evals               | scenarios                  | unproven         | ○      | Runtime-agnostic by design; never run on Codex.         |
 
 † Skill checkers are `bun` scripts and the `ki:*` package.json keys wrap them — runtime-blind, so they run identically under either runtime once discovered.
 
