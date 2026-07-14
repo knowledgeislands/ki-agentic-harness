@@ -26,7 +26,7 @@ import { ensureGitignore, gitignoresPath, readText } from './package-scripts.ts'
 // ── Self-location: find the harness agents/governance/ root through the (possibly symlinked) script path ──
 const SELF = realpathSync(fileURLToPath(import.meta.url))
 // .../skills/keystone/ki-bootstrap/scripts/link-agents.ts → up to the harness root, then agents/governance
-const HARNESS_ROOT = resolve(dirname(SELF), '..', '..', '..')
+const HARNESS_ROOT = resolve(dirname(SELF), '..', '..', '..', '..')
 const AGENTS_ROOT = join(HARNESS_ROOT, 'agents', 'governance')
 
 // ── ANSI ──
