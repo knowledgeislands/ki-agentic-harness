@@ -355,7 +355,16 @@ const COVERAGE_SKILLS = new Set(COVERAGE.map((c) => c.skill))
 // `[ki-<skill>]` tables are mutually exclusive (ADR-KI-HARNESS-SKILLS-006). Implied
 // family members (ki-website-cloudflare under website, ki-kb-streams under kb) are not
 // distinct structures and are excluded from the count.
-const REPO_STRUCTURE_TABLES = ['ki-harness', 'ki-kb', 'ki-website', 'ki-mcp', 'ki-plugins', 'ki-tools', 'ki-homebrew-tap']
+const REPO_STRUCTURE_TABLES = [
+  'ki-harness',
+  'ki-kb',
+  'ki-website',
+  'ki-mcp',
+  'ki-plugins',
+  'ki-tools',
+  'ki-homebrew-tap',
+  'ki-dotfiles-chezmoi'
+]
 // A `[ki-<skill>]` (or sub-table `[…​.x]`) header on its own line —
 // anchored so a commented-out `# [..]` template line does not count as declared.
 const declaresTable = (kiText: string, table: string): boolean => new RegExp(`^\\[${table}(\\]|\\.)`, 'm').test(kiText)
