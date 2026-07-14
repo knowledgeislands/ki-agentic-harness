@@ -6,7 +6,7 @@
 // or `git pull`, updates every consumer at once.
 //
 // Usage:
-//   bun sync-skills.ts <command> [--target <dir>] [--root <dir>] [--dry-run]
+//   bun sync-skills.ts <command> [--runtime <name>] [--target <dir>] [--root <dir>] [--dry-run]
 //
 // Canonical home is skills/keystone/ki-bootstrap/scripts/; it is also vendored into a
 // governed harness-shaped target's .ki-meta/bin/. It resolves the skills tree
@@ -19,7 +19,9 @@
 //   status    Show each skill and its link state in the target dir
 //
 // Options:
-//   --target <dir>   Where to install (default: ~/.claude/skills)
+//   --runtime <name> Target runtime, picks the default install dir: claude-code
+//                    → ~/.claude/skills (default), codex → ~/.agents/skills.
+//   --target <dir>   Where to install (overrides --runtime's default)
 //   --root <dir>     Repo root holding skills/ (default: current working directory)
 //   --relative       Emit relative symlinks (portable: survives a clone when the
 //                    target and this repo keep their relative layout). Default is
@@ -52,8 +54,23 @@ const onlyNames =
         .map((s) => s.trim())
         .filter(Boolean)
     : null
+// Per-runtime default install dir under $HOME. --runtime picks the discovery path
+// (Claude Code → .claude/skills, Codex → .agents/skills); default preserves the
+// historical ~/.claude/skills. An explicit --target always overrides. Inlined (not
+// imported) so the vendored .ki-meta/bin copy stays self-contained.
+const RUNTIME_SKILLS_SUBDIR: Record<string, string> = {
+  'claude-code': join('.claude', 'skills'),
+  codex: join('.agents', 'skills')
+}
+const runtimeFlag = argv.indexOf('--runtime')
+const runtime = runtimeFlag !== -1 && argv[runtimeFlag + 1] ? (argv[runtimeFlag + 1] as string) : 'claude-code'
+const runtimeSubdir = RUNTIME_SKILLS_SUBDIR[runtime]
+if (!runtimeSubdir) {
+  console.error(`unknown --runtime "${runtime}" (expected one of: ${Object.keys(RUNTIME_SKILLS_SUBDIR).join(', ')})`)
+  process.exit(1)
+}
 const targetFlag = argv.indexOf('--target')
-const defaultTarget = join(homedir(), '.claude', 'skills')
+const defaultTarget = join(homedir(), runtimeSubdir)
 const target = targetFlag !== -1 && argv[targetFlag + 1] ? resolve(argv[targetFlag + 1] as string) : defaultTarget
 
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
@@ -206,6 +223,6 @@ switch (command) {
     break
   default:
     console.error(paint(C.red, `Unknown command: ${command}`))
-    console.error('Usage: bun sync-skills.ts <link|unlink|status> [--target <dir>] [--root <dir>] [--dry-run]')
+    console.error('Usage: bun sync-skills.ts <link|unlink|status> [--runtime <name>] [--target <dir>] [--root <dir>] [--dry-run]')
     process.exit(1)
 }
