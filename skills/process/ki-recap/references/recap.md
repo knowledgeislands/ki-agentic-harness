@@ -45,12 +45,12 @@ Use `highCostCandidates` from the grounding helper as a starting list, not the f
 
 ## 5. Specific actions
 
-Close the recap with a **Specific actions** section: a short, concrete, imperative list of everything actionable that emerged from steps 3 and 4 — each item something that could be done right now, with the exact command, file, or artefact named. Typical entries:
+Close the recap with a **Specific actions** section: a short, concrete, imperative list of everything actionable that emerged from steps 3 and 4 — each item something that could be done right now, with the exact command, file, or artefact named. Prefix each item with a short unique code (`A1`, `A2`, `A3`, …) so the user can respond in chat by code ("do A1 and A3, skip A2") instead of restating the action. Typical entries:
 
-- Commit (or explicitly discard) the session's uncommitted files — name the paths and suggest the commit message.
-- Create the offered ROADMAP line or `ki-plan` for outstanding work that has no home.
-- Apply an approved learning route (the `CLAUDE.md` entry, rubric criterion, hook, or memory write from step 4).
-- Re-run a gate that was left failing, or finish a mid-change thread.
+- `A1` — Commit (or explicitly discard) the session's uncommitted files — name the paths and suggest the commit message.
+- `A2` — Create the offered ROADMAP line or `ki-plan` for outstanding work that has no home.
+- `A3` — Apply an approved learning route (the `CLAUDE.md` entry, rubric criterion, hook, or memory write from step 4).
+- `A4` — Re-run a gate that was left failing, or finish a mid-change thread.
 
 If nothing is actionable, say so in one line ("No actions — tree clean, nothing outstanding"). Do **not** perform the actions unprompted — this section is the checklist the user acts on (or asks you to act on); durable writes still require the step-4 confirmation.
 
