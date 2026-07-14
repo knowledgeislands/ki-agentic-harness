@@ -49,18 +49,18 @@ Presence is **not required** — the directory appears the first time a checker 
 
 For every repo on github.com:
 
-| Setting | Value | Why |
-| --- | --- | --- |
-| Default branch | `main` | Uniform; what tooling and docs assume. |
-| License | Live GitHub license matches the declared `license` SPDX id (default MIT) | Decoupled from visibility. |
-| Package license | `package.json` `"license"` matches the declared id (`UNLICENSED` if proprietary) | Matches the declared license. |
-| Description | Present, one sentence; synced with `package.json` where one exists | One-line identity on GitHub. |
-| Merge methods | **Squash only** — merge-commit off, rebase off | One commit per PR; clean, linear `main`. |
-| Auto-delete branch | On | No stale merged branches. |
-| Issues | On | The tracker. |
-| Wiki | Off | Docs live in-repo. |
-| Projects | Off | Unused. |
-| Discussions | Off | Unused. |
+| Setting            | Value                                                                            | Why                                      |
+| ------------------ | -------------------------------------------------------------------------------- | ---------------------------------------- |
+| Default branch     | `main`                                                                           | Uniform; what tooling and docs assume.   |
+| License            | Live GitHub license matches the declared `license` SPDX id (default MIT)         | Decoupled from visibility.               |
+| Package license    | `package.json` `"license"` matches the declared id (`UNLICENSED` if proprietary) | Matches the declared license.            |
+| Description        | Present, one sentence; synced with `package.json` where one exists               | One-line identity on GitHub.             |
+| Merge methods      | **Squash only** — merge-commit off, rebase off                                   | One commit per PR; clean, linear `main`. |
+| Auto-delete branch | On                                                                               | No stale merged branches.                |
+| Issues             | On                                                                               | The tracker.                             |
+| Wiki               | Off                                                                              | Docs live in-repo.                       |
+| Projects           | Off                                                                              | Unused.                                  |
+| Discussions        | Off                                                                              | Unused.                                  |
 
 Public repos (`mcp-*`) additionally:
 
@@ -128,8 +128,11 @@ The rubric carries the **org default** for every check. Most are bedrock — fil
 | `topics`            | on          | _(public)_ carries the standard topic set.          |
 | `secret-scanning`   | on          | _(public)_ secret scanning enabled.                 |
 | `push-protection`   | on          | _(public)_ secret-scanning push protection enabled. |
+| `structure`         | on          | Declares at least one repo-structure table §.       |
 
 ‡ When enforced, `branch-protection` requires: a PR (0 approvals), the `build` status check, linear history; no force-push/deletion; admins not enforced.
+
+§ `structure` WARNs (never FAILs) — see the cardinality rule below. Set `structure = false` for a repo that genuinely carries no repo-structure table (e.g. a dotfiles/config repo).
 
 - "Org default **on**" means the check fails unless satisfied — the standard's normal behaviour — and a repo sets the key `false` to step out of it (e.g. `wiki = false` to keep a Wiki). `branch-protection` is the one check that's **off** by default; a repo sets it `true` to protect `main`.
 - The required status check for `branch-protection` is **`build`** — the single job in each repo's `.github/workflows/ci.yml` (workflow "CI"). A repo that turns it on but lacks that job can't satisfy the check; add the CI job first.
@@ -144,7 +147,7 @@ The rubric carries the **org default** for every check. Most are bedrock — fil
 
 A repo that is **not** a ki-repo (no `.ki-config.toml`) is never coverage-checked — it just takes the `ki-config` FAIL, so a lookalike repo (an `eleventy.config` but no marker) is not falsely told to opt in. This is `ki-repo`'s single cross-table read, and it reads only table **presence**, never another skill's keys. The full signal list and the marker-vs-config model live in [the `.ki-config.toml` contract](ki-config-standard.md#coverage-enforcement). Silence one signal with `coverage-<skill> = false` under `[ki-repo.checks]`.
 
-The cascade's companion is a **cardinality** rule: a repo declares **at most one** repo-structure table — `[ki-harness]`, `[ki-kb]`, `[ki-website]`, `[ki-mcp]`, `[ki-plugins]`, `[ki-tools]`, `[ki-homebrew-tap]` — because exactly one skill governs a repo's on-disk shape ([ADR-KI-HARNESS-SKILLS-006](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md)). Declaring two or more FAILs (`repo-structure`). Implied family members (`ki-website-cloudflare` under website, `ki-kb-streams` under kb) are not distinct structures and do not count. This is bedrock, not overridable; zero is permitted (a dotfiles or config repo may carry none).
+The cascade's companion is a **cardinality** rule: a repo declares **at most one** repo-structure table — `[ki-harness]`, `[ki-kb]`, `[ki-website]`, `[ki-mcp]`, `[ki-plugins]`, `[ki-tools]`, `[ki-homebrew-tap]` — because exactly one skill governs a repo's on-disk shape ([ADR-KI-HARNESS-SKILLS-006](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md)). Declaring two or more FAILs (`repo-structure`, bedrock — not overridable). Implied family members (`ki-website-cloudflare` under website, `ki-kb-streams` under kb) are not distinct structures and do not count. Declaring **zero** WARNs (`structure`, overridable — see the table above): silence usually means nobody declared it, not that none applies, so a genuinely structureless repo (dotfiles/config) says so explicitly via `structure = false`.
 
 ## Applying it
 

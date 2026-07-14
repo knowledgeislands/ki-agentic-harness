@@ -1,10 +1,26 @@
 # ki-agentic-harness roadmap
 
-Where this agentic harness is going. The [README](README.md) and the [docs/](docs) it indexes cover what exists today and how to install it; this file is the forward view. Open work is grouped by horizon — **Next**, **Soon**, **Future** — the house phasing owned by `ki-harness` and referenced by `ki-plans`; speculative items are marked _(candidate)_ until committed. Within each horizon, items are further grouped by theme so related work can be tackled together.
+Where this agentic harness is going. The [README](README.md) and the [docs/](docs) it indexes cover what exists today and how to install it; this file is the forward view. Open work is grouped by horizon — **Critical**, **Next**, **Soon**, **Future** — the house phasing owned by `ki-harness` and referenced by `ki-plans`; Critical work blocks the Next horizon, and speculative items are marked _(candidate)_ until committed. Within each horizon, items are further grouped by theme so related work can be tackled together.
 
 This roadmap is itself subject to the house discipline it describes: when a skill's REFRESH run or an audit surfaces a structural gap, it lands here before it's built — and an item is **removed once done**, not ticked off, so the file always shows only open work.
 
 **Continuous practices are not roadmap items.** Keeping the skills audited (`ki:skills:audit`, `ki:repo:audit`, `ki:kb:audit`, the `ki-mcp` audit over the `mcp-*` repos), re-running the advisory [eval suite](evals/README.md) as skills change, and the scheduled `ki-skills-refresh` sweep (which honours each skill's declared `**Refresh:**` cadence) are ongoing disciplines tied to the invariants the `ki-skills` rubric enforces — they run continuously, so they live there, not here.
+
+## Critical
+
+### Complete Codex skill-install parity before further Next work
+
+The multi-runtime project linker and `sync-skills.ts --runtime codex` implementation have landed, but the user-facing install contract remains partly Claude-only. This is a functional portability gap, not documentation polish: a Codex-only machine cannot reliably use the documented `ki:skills:link:project`, `ki:skills:link:global`, `ki:skills:status`, or `ki:skills:unlink` paths without knowing the underlying scripts and supplying runtime-specific arguments by hand. Close the gap as one coherent install-parity change before starting any Next item:
+
+- Make global link, status, and unlink operations cover the declared runtimes, or expose explicit Claude Code and Codex variants with a clear aggregate command; preserve `sync-skills.ts`'s idempotence and refusal to clobber real directories.
+- Replace the documented and scaffolded `~/.claude/skills/ki-bootstrap` project-link entry point with a runtime-neutral invocation that works on Claude-only, Codex-only, and dual-runtime machines.
+- Decide and encode the harness's own dogfood posture: if Codex is supported here, declare `target_runtimes = ["claude-code", "codex"]` in `.ki-config.toml` and generate both `.claude/skills/` and `.agents/skills/`; if not, narrow the parity claim explicitly rather than implying the harness exercises both.
+- Reconcile the install model across `README.md`, `docs/guides/user-guide/linking.md`, `ki-bootstrap`, `ki-harness`, the skill catalogue, exemplars, source-watch notes, and script comments: discovery paths are runtime-specific; `target_runtimes` belongs to `[ki-repo]`; and the intended global set is `ki-bootstrap` plus the process skills `ki-plan`, `ki-recap`, and `ki-delegate`, not only the keystone.
+- Add behavioural regression coverage for a Codex-only fixture and a dual-runtime fixture: global install/status/unlink under `~/.agents/skills`, project links and `.gitignore` entries under `.agents/skills`, unknown-runtime failure, and clean `--check` results for both runtime directories. Extend the checks so this contract drift cannot pass `ki:bootstrap:audit` and `link-skills.test.ts` unnoticed again.
+- Restore a self-upgrade path for repositories bootstrapped before the clustered skill-directory reorganisation: their vendored `ki-init` fetches the retired `skills/ki-bootstrap/scripts/bootstrap.sh` URL and now receives a 404 before it can install the corrected wrapper. Keep a compatibility entry point at the legacy URL or add an equivalent durable redirect/fallback, and test that a legacy `ki-init` fixture can upgrade itself through `main` without manual intervention.
+- Re-vendor any changed cross-skill scripts into `.ki-meta/bin/`, refresh the manifest, and verify the canonical and vendored copies are byte-identical before committing.
+
+Done means a clean Codex-only environment can install the four global KI entry points, bootstrap a governed repository, discover exactly its declared project skills, inspect and remove those links, and follow the public documentation without a Claude installation or undocumented command; the same flow must remain clean for Claude-only and dual-runtime environments.
 
 ## Next
 

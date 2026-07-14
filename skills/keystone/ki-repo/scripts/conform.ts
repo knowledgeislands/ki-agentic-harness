@@ -69,7 +69,8 @@ const CHECK_DEFAULTS: Record<string, boolean> = {
   issues: true,
   topics: true,
   'secret-scanning': true,
-  'push-protection': true
+  'push-protection': true,
+  structure: true
 }
 const KI_CONFIG = '.ki-config.toml'
 const KI_SECTION = 'ki-repo'
