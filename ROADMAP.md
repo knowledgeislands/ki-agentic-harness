@@ -14,6 +14,12 @@ Scope is the governance/decision layer only — no adapter code. Amend `SDR-KI-H
 
 ## Soon
 
+### Multi-machine portability & shared state
+
+#### Run the harness seamlessly across multiple machines (laptop + desktop)
+
+A key overall goal of the project: allow multiple agent systems to run on a common set of tooling — effectively a **knowledge operating system** (existing discussion of this framing is to be brought into the Knowledge Islands philosophy soon; much of this should fall back into Knowledge Islands as an approach). The near-term technical goal is to run the harness on both the laptop and the desktop and move between them seamlessly. What that means concretely: pull knowledge **out of application state and machine-local state** and move it to **shared state** — e.g. plans becoming part of the knowledge base, and more generally using the KB as the central point of interaction between machines and agent systems. Scoping work: inventory which harness/session state is currently machine-local (plans in `docs/plans/`, per-project auto-memory, `~/.claude` settings/hooks, Headroom learned patterns, `.ki-meta` vendoring), decide which of it moves to shared state (the KB) versus stays local-but-synced (chezmoi already covers dotfiles), and how the KB-as-shared-state pattern composes with `ki-plans`/`ki-kb`. Related: the "Run Hermes remotely" and mcporter/reachability items under _Cross-surface & remote runtime_ share the same underlying move away from single-host state.
+
 ### Config contract & migration cleanup
 
 #### Remove the legacy `preferred_model` migration bridge in `ki-tokenomics`
