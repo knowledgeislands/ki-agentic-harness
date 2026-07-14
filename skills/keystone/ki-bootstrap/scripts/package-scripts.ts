@@ -20,8 +20,10 @@ export function readText(path: string): string {
 
 // ── Multi-runtime target resolution ──────────────────────────────────────────
 // A repo declares which agent runtimes it installs skills/agents for via
-// `[ki-harness] target_runtimes = [...]`. Absent → the historical default
-// ["claude-code"], so every repo predating multi-runtime support is unchanged.
+// `[ki-repo] target_runtimes = [...]` — a repo-wide fact, not a harness-structure
+// detail. Absent → the historical default ["claude-code"], so every repo predating
+// multi-runtime support is unchanged. (The match is table-agnostic, but the key's
+// documented home is [ki-repo].)
 // Discovery paths differ per runtime: Claude Code reads `.claude/`, OpenAI Codex
 // CLI reads `.agents/` (the runtime feature-coverage matrix, SDR-KI-HARNESS-002).
 export function targetRuntimes(kiConfigText: string): string[] {
