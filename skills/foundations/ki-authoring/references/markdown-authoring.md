@@ -17,7 +17,7 @@ Don't hand-apply or document any of these — the toolchain owns them, and resta
 - **Bullet, emphasis, and quote characters; trailing commas; blank-line spacing** — Prettier normalises these.
 - **Heading hierarchy, single H1, duplicate-heading and list rules** — markdownlint-cli2 flags these.
 
-The one place column width _is_ your job is **tables** — Prettier aligns table columns but will not reflow a row's content. Crucially, Prettier only pads columns when the result fits within `printWidth`; if the widest row would exceed 140 chars, Prettier leaves the table in compact (unpadded) format. So an over-long row blocks column alignment too — that's the first convention below.
+The one place column width _is_ your job is **tables** — Prettier aligns table columns but will not reflow a row's content. Crucially, Prettier only pads columns when the result fits within `printWidth`; if the widest row would exceed 160 chars, Prettier leaves the table in compact (unpadded) format. So an over-long row blocks column alignment too — that's the first convention below.
 
 ## Tables and footnotes
 
@@ -35,7 +35,7 @@ Rule of thumb: **table for parallel data across several dimensions; list for ter
 
 ### Keeping tables skimmable
 
-Keep every table **skimmable at a glance**. Prettier pads columns to align them but never breaks a cell across lines, so a cell with too much content forces a very wide row that's unreadable in a terminal or in print. Aim to keep each row within `printWidth` (140 chars — the same limit the formatter enforces on prose).
+Keep every table **skimmable at a glance**. Prettier pads columns to align them but never breaks a cell across lines, so a cell with too much content forces a very wide row that's unreadable in a terminal or in print. Aim to keep each row within `printWidth` (160 chars — the same limit the formatter enforces on prose).
 
 When a column's content would force the table to wrap awkwardly or demand cryptic abbreviations in the headers, **move the long content into footnotes below the table** and leave a footnote marker in the cell instead.
 
