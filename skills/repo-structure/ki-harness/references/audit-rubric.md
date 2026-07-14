@@ -34,6 +34,8 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS
 
 ## CLAUDE — CLAUDE.md coverage and freshness
 
+> **Split orientation (AGENTS.md).** A harness may keep the runtime-neutral orientation in a root `AGENTS.md` (the open agents.md standard, read by Codex and other runtimes) and have `CLAUDE.md` import it with `@AGENTS.md`, leaving `CLAUDE.md` a thin Claude-Code-specific appendix. When it does, apply CLAUDE-1..5 to the imported content: the coverage they require is satisfied in `AGENTS.md`, and `CLAUDE.md` need only carry the `@AGENTS.md` import plus any genuinely Claude-only notes. LAY-3 (the file exists) still applies to `CLAUDE.md` itself.
+
 **CLAUDE-1 [J]** `CLAUDE.md` opens with a what-the-harness-is paragraph that names all five parts (`skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`). Source: standard §CLAUDE.md §1. _Severity: WARN — a CLAUDE.md that doesn't describe the harness contract fails its orientation purpose._
 
 **CLAUDE-2 [J]** `CLAUDE.md` has a five-part directory table (or equivalent block) with current status for each part (populated / empty shelf). Source: standard §CLAUDE.md §2. _Severity: WARN._
