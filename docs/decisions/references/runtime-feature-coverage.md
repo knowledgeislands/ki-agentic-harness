@@ -4,6 +4,8 @@ Reference companion to [SDR-KI-HARNESS-002](../SDR-KI-HARNESS-002-runtime-portab
 
 It enumerates the harness-relevant **native runtime primitives** and marks, for each of the two runtimes the harness has probed, whether the primitive is present. It exists so that later workstream phases have one place to check a mechanism's portability **before** assuming a runtime-native feature ports for free.
 
+For the complementary lens — where each of the harness's own **bundle parts** stands on Claude Code vs Codex, and the critical path to developing in both concurrently — see the [runtime parity scorecard](runtime-parity-scorecard.md).
+
 ## Legend
 
 - **Native** — a first-class runtime primitive with a documented interface.
