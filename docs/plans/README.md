@@ -7,9 +7,11 @@ Phasing (Next / Soon / Future) lives in [ROADMAP.md](../../ROADMAP.md), not here
 | Plan                                                  | Theme | Title                                      | Status      | Blocks |
 | ----------------------------------------------------- | ----- | ------------------------------------------ | ----------- | ------ |
 | [003](codex/003-develop-in-both-agents-md-and-mcp.md) | codex | AGENTS.md orientation + Codex MCP renderer | in-progress | —      |
+| [004](hooks/004-promote-plan-mode-plans.md)           | hooks | Promote Plan Mode plans into `docs/plans/` | open        | —      |
 
 ## Dependency graph
 
 ```text
 003
+004
 ```
