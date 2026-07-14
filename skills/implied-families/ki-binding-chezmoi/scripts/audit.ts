@@ -124,18 +124,34 @@ function walk(dir: string, onFile: (path: string) => void, depth = 0): void {
 }
 
 if (existsSync(CHEZMOI_REPO)) {
-  // BINDCHEZ-3 — the chezmoi source repo carries the MCP source data (`.chezmoidata/*mcp*`).
+  // BINDCHEZ-3 — the chezmoi source repo carries the MCP source data, either as the legacy
+  // `.chezmoidata/*mcp*` data-merge file, or as a plain managed source file applied verbatim to
+  // the canonical XDG path (inverted pattern, e.g. dot_config/ki/mcp-servers.yaml).
   const dataDir = join(CHEZMOI_REPO, '.chezmoidata')
   let dataFile: string | null = null
+  let dataPattern: 'data-merge' | 'inverted' | null = null
   if (existsSync(dataDir)) {
-    for (const e of readdirSync(dataDir)) if (/mcp/i.test(e) && /\.(ya?ml|toml|json)$/.test(e)) dataFile = join('.chezmoidata', e)
+    for (const e of readdirSync(dataDir))
+      if (/mcp/i.test(e) && /\.(ya?ml|toml|json)$/.test(e)) {
+        dataFile = join('.chezmoidata', e)
+        dataPattern = 'data-merge'
+      }
   }
-  if (dataFile) add('PASS', 'BINDCHEZ-3', `chezmoi repo carries the MCP source data (${dataFile})`, STD, dataFile)
+  if (!dataFile) {
+    walk(CHEZMOI_REPO, (p) => {
+      if (dataFile) return
+      if (/mcp-servers\.ya?ml$/i.test(basename(p)) && !p.endsWith('.tmpl')) {
+        dataFile = p.slice(CHEZMOI_REPO.length + 1)
+        dataPattern = 'inverted'
+      }
+    })
+  }
+  if (dataFile) add('PASS', 'BINDCHEZ-3', `chezmoi repo carries the MCP source data (${dataFile}, ${dataPattern} pattern)`, STD, dataFile)
   else
     add(
       'WARN',
       'BINDCHEZ-3',
-      'chezmoi repo has no `.chezmoidata/*mcp*` data file — the render path has no MCP source to render from',
+      'chezmoi repo has no `.chezmoidata/*mcp*` data file and no inverted `*mcp-servers.yaml` source file — the render path has no MCP source to render from',
       STD,
       '.chezmoidata/'
     )

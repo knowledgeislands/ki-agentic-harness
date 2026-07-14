@@ -11,7 +11,7 @@ This is a **composition** checker: BINDCHEZ-1 and BINDCHEZ-2 are the two compose
 
 ## BINDCHEZ — render-path delta
 
-- **BINDCHEZ-3 [M]** WARN — the chezmoi source repo carries the MCP source data (`.chezmoidata/*mcp*` in a YAML/TOML/JSON file) — the data chezmoi renders from. (standard: The render contract §1)
+- **BINDCHEZ-3 [M]** WARN — the chezmoi source repo carries the MCP source data, either as `.chezmoidata/*mcp*` (legacy data-merge pattern) or as a plain managed source file applied verbatim to the canonical XDG path and read via chezmoi's `include` (inverted pattern, e.g. `dot_config/ki/mcp-servers.yaml`) — the data chezmoi renders from. (standard: The render contract §1)
 - **BINDCHEZ-4 [M]** WARN — the `mcp-servers-json` render template partial exists in the chezmoi repo. (standard: The render contract §2)
 - **BINDCHEZ-5 [M]** WARN — at least one target `.tmpl` references the `mcp-servers-json` partial, so a `chezmoi apply` writes a surface from the source. (standard: The render contract §3)
 
