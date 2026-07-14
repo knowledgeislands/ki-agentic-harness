@@ -54,6 +54,10 @@ The pre-commit hook runs the governance audits gated on what is staged, so a com
 
 `docs/guides/user-guide/skills.md` embeds a fenced `ki:skills:graph --tree` block that no gate compares to the live command output, so it drifts silently — it had gone stale (omitting `ki-engineering`, `ki-delegate`, `ki-plan`, `ki-recap`, in an older singleton format) and was only corrected when a skill was added (`12d8ac6`). Add a mechanical check (candidate home: a `bun run test` step, or a `ki-harness` audit criterion) that regenerates `ki:skills:graph --tree` and fails when the block in `skills.md` doesn't match — the same generated-not-hand-edited discipline the graph itself enforces. Until then, regenerating the block on any skill/`implies:` change is a manual step (noted in `CLAUDE.md`).
 
+#### Explicitly test the `.ki-meta/bin/ki-audit`/`ki-conform` shell wrapper against the `bun run ki:*` package.json path
+
+`ki-bootstrap` vendors a package.json-free entry point (`.ki-meta/bin/ki-audit` — a bash script that `exec bun ".ki-meta/bin/aggregate.ts" "$@"`) so a repo with no `ki-engineering` toolchain can still self-govern; repos that also have `ki-engineering` additionally get `bun run ki:audit`/`ki:conform` package.json scripts pointed at the same vendored `aggregate.ts`. Both paths are assumed to run the identical aggregate and produce identical results, but nothing mechanically confirms that — it surfaced as a live question in a 2026-07-14 session (chezmoi's dotfiles repo, which has no `ki-engineering`, reported a `bun run ki:authoring:conform` failure message that doesn't actually exist as a script there; `./.ki-meta/bin/ki-conform` was the working equivalent and ran clean). Add a check — a `bun run test` case, or a `ki-bootstrap`/`ki-harness` audit criterion — that runs both invocation forms (where both exist) and asserts matching exit codes and findings, and that confirms the shell-wrapper form alone is sufficient and correct on repos without `ki-engineering`.
+
 ### Toolchain & naming conventions
 
 #### Codify a Conventional Commits git standard across the skills
