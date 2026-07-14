@@ -22,6 +22,8 @@ The recap always closes with a **Specific actions** section: a concrete, imperat
 
 Optionally, with `--compress`, add a further leg: write a carry-forward digest of the recapped span (Context / Decisions / Files Touched / Outstanding / Learnings-routed / Keywords). This is honestly scoped — a skill cannot rewrite its own context window; true in-context compression is the native or `PreCompact`-hook path (`ki-tokenomics`). The digest is a carry-forward artefact, not a context reduction.
 
+The recap grounds every checkable claim in current reality, not in warm context or recalled memory: before asserting a commit landed, a gate passed, or a file's state, it re-checks (`git log`, the read-only gate, a fresh read) — stale context otherwise reads as fact.
+
 A mechanical **grounding helper**, [`scripts/recap-grounding.ts`](scripts/recap-grounding.ts), resolves the session transcript and emits files-touched / tool-tally / high-cost-candidate data — it grounds the summarise and harvest legs, it does not replace judgment over them.
 
 ## Invocation
