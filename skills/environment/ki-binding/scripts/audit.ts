@@ -43,8 +43,9 @@ const HOME = homedir()
 // at the canonical file. Project-local `.ki/mcps.yaml` is the last default. Explicit `--source`
 // or `$KI_MCP_SOURCE` win over all of these.
 const XDG_CONFIG = process.env.XDG_CONFIG_HOME ?? join(HOME, '.config')
+const XDG_DATA = process.env.XDG_DATA_HOME ?? join(HOME, '.local', 'share')
 const CANONICAL_SOURCE = join(XDG_CONFIG, 'ki', 'mcp-servers.yaml')
-const LEGACY_CHEZMOI_SOURCE = join(HOME, '.local', 'share', 'chezmoi', '.chezmoidata', 'mcps.yaml')
+const LEGACY_CHEZMOI_SOURCE = join(XDG_DATA, 'chezmoi', '.chezmoidata', 'mcps.yaml')
 const PROJECT_LOCAL_SOURCE = join(process.cwd(), '.ki', 'mcps.yaml')
 const inferBackend = (p: string): 'chezmoi' | 'plain' => (p.includes('chezmoi') ? 'chezmoi' : 'plain')
 const RECOGNISED = new Set(['code', 'desktop', 'mcporter', 'cowork'])

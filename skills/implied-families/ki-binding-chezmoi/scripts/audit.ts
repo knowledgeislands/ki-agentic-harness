@@ -54,8 +54,9 @@ const VALUE_OPTS = new Set(['--source', '--report'])
 const positional = argv.find((a, i) => !a.startsWith('-') && !VALUE_OPTS.has(argv[i - 1] ?? ''))
 const sourceOverride = opt('--source')
 
-// The chezmoi source repo that renders the surfaces. Default: the conventional chezmoi source dir.
-const CHEZMOI_REPO = positional ? resolve(positional) : join(homedir(), '.local', 'share', 'chezmoi')
+// The chezmoi source repo that renders the surfaces. Default: the conventional chezmoi source dir,
+// honouring $XDG_DATA_HOME (chezmoi itself resolves its source dir this way).
+const CHEZMOI_REPO = positional ? resolve(positional) : join(process.env.XDG_DATA_HOME ?? join(homedir(), '.local', 'share'), 'chezmoi')
 
 // ── Compose sibling audits as subprocesses (not imports) ──
 // Each sibling emits the checker-contract `--json` wrapper on stdout; we fold its summary into
