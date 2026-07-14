@@ -306,6 +306,17 @@ const BIN_KI_AUDIT = `#!/bin/sh
 # Vendored by ki-bootstrap — the package.json-free entry to a repo's self-check.
 # Usage: ./.ki-meta/bin/ki-audit [audit|conform|init|help] [--dry-run ...]   (default verb: audit)
 set -eu
+case "\${1:-}" in
+  -h|--help)
+    echo "usage: ki-audit [audit|conform|init|help] [--dry-run ...]   (default verb: audit)"
+    echo "  runs each vendored skill checker under .ki-meta/skills/ for the given verb."
+    echo "  audit    read-only self-check (the default verb)"
+    echo "  conform  apply the mechanical fixes (same as ./.ki-meta/bin/ki-conform)"
+    echo "  init     re-sync the vendored scripts from the harness (same as ./.ki-meta/bin/ki-init)"
+    echo "  help     list governed skills, or show one skill's HELP (same as ./.ki-meta/bin/ki-help)"
+    exit 0
+    ;;
+esac
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$root"
 verb="\${1:-audit}"
@@ -320,6 +331,14 @@ const BIN_KI_CONFORM = `#!/bin/sh
 # Vendored by ki-bootstrap — apply the mechanical fixes across the vendored set.
 # Usage: ./.ki-meta/bin/ki-conform [--dry-run]
 set -eu
+case "\${1:-}" in
+  -h|--help)
+    echo "usage: ki-conform [--dry-run]"
+    echo "  applies each vendored skill's mechanical fixes across .ki-meta/skills/."
+    echo "  --dry-run  report what would change without writing."
+    exit 0
+    ;;
+esac
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$root"
 exec bun ".ki-meta/bin/aggregate.ts" conform "$@"
