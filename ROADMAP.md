@@ -22,6 +22,10 @@ The multi-runtime project linker and `sync-skills.ts --runtime codex` implementa
 
 Done means a clean Codex-only environment can install the four global KI entry points, bootstrap a governed repository, discover exactly its declared project skills, inspect and remove those links, and follow the public documentation without a Claude installation or undocumented command; the same flow must remain clean for Claude-only and dual-runtime environments.
 
+### Fix `ki-recap`'s grounding helper: `slugifyRepoPath` drops dotted-path repos silently
+
+Found 2026-07-14 while recapping a session in a repo whose absolute path contains a `.` component (`~/.local/share/chezmoi`): `skills/process/ki-recap/scripts/recap-grounding.ts`'s `slugifyRepoPath` (line 38) only replaces `/` with `-`, but Claude Code's real project-directory slug also replaces `.`. On a dotted path this computes the wrong `~/.claude/projects/<slug>` directory, `readdirSync` throws inside `resolveProjectDir`, and the script silently returns `{transcript: null, ...}` with no error surfaced to the invoking skill — the recap ran with empty grounding and no indication anything had failed. The two other copies of this same slugify helper in the harness, `skills/environment/ki-housekeeping/scripts/conform.ts` and `audit.ts`, already use the correct regex (`/[/.]/g`) — `ki-recap`'s copy alone has drifted stale. Fix: change line 38 to `absPath.replace(/[/.]/g, '-')`, matching the other two copies, and add a regression fixture (a dotted-path repo, e.g. mirroring `conform.ts`'s or `audit.ts`'s existing tests) to `recap-grounding.test.ts` so this can't silently regress again. Marked Critical because the failure mode is silent — a recap can complete and report a clean, grounded summary while its grounding data was actually null.
+
 ## Next
 
 ### Promote Plan Mode plans into `docs/plans/`
