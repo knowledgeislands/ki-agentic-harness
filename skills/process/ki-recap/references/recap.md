@@ -18,7 +18,9 @@ Using warm context plus the helper's `filesTouched` / `diffStat`: state what cha
 
 ## 3. Surface what is outstanding
 
-Look for threads left mid-change: uncommitted edits, a failing gate, a decision still open, work neither done nor parked. **Ground every "uncommitted" or "still dirty" claim in the `filesTouched` from the grounding helper run at the start of _this_ recap, never in a `git status`/`git diff` seen earlier in the conversation** — commits (yours or a concurrent process's) can land between that earlier look and the recap itself, and stale context reads as a false outstanding item. If meaningful time has passed since step 1 ran, re-run it before finalizing this section. Apply the house rule:
+**Always check whether everything is committed** — even if the session felt "done", verify the working tree is clean for the files this session touched (staged, unstaged, and untracked). Uncommitted session work is the most common silently-dropped outstanding item. Files dirty from _other_ threads of work are out of scope (per the stay-scoped rule) — note their existence in one line at most, never enumerate or adopt them.
+
+Then look for threads left mid-change: uncommitted edits, a failing gate, a decision still open, work neither done nor parked. **Ground every "uncommitted" or "still dirty" claim in the `filesTouched` from the grounding helper run at the start of _this_ recap, never in a `git status`/`git diff` seen earlier in the conversation** — commits (yours or a concurrent process's) can land between that earlier look and the recap itself, and stale context reads as a false outstanding item. If meaningful time has passed since step 1 ran, re-run it before finalizing this section. Apply the house rule:
 
 - A ROADMAP item **added during this session** counts as **what happened** (parking work on ROADMAP is a completed action — the roadmap is the durable home for deferred work), not as outstanding.
 - A `ki-plan` opened this session with unchecked Steps **is** outstanding — cite its id and status.
@@ -39,7 +41,18 @@ For each dead-end, workaround, or convention discovered this session, route it t
 
 Use `highCostCandidates` from the grounding helper as a starting list, not the full set — warm context surfaces things the helper cannot see (a design dead-end, a rejected approach).
 
-## 5. Compress (only when `--compress` is passed)
+## 5. Specific actions
+
+Close the recap with a **Specific actions** section: a short, concrete, imperative list of everything actionable that emerged from steps 3 and 4 — each item something that could be done right now, with the exact command, file, or artefact named. Typical entries:
+
+- Commit (or explicitly discard) the session's uncommitted files — name the paths and suggest the commit message.
+- Create the offered ROADMAP line or `ki-plan` for outstanding work that has no home.
+- Apply an approved learning route (the `CLAUDE.md` entry, rubric criterion, hook, or memory write from step 4).
+- Re-run a gate that was left failing, or finish a mid-change thread.
+
+If nothing is actionable, say so in one line ("No actions — tree clean, nothing outstanding"). Do **not** perform the actions unprompted — this section is the checklist the user acts on (or asks you to act on); durable writes still require the step-4 confirmation.
+
+## 6. Compress (only when `--compress` is passed)
 
 Write a carry-forward digest of the recapped span:
 
