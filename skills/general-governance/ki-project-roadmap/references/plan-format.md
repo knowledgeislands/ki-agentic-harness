@@ -59,3 +59,5 @@ Narrative dependency context.
 ```
 
 During execution, mark completed steps without deleting their instructions. Delete the plan when it lands; do not retain done plans in the index.
+
+Composed governance may add `handoff`, `tier`, or `readiness` frontmatter and additional H2 sections, but it must preserve the six core sections exactly once and in the order above.

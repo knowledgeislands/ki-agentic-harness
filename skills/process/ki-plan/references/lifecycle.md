@@ -17,9 +17,10 @@ Split the argument on the first space to get **sub-command** and **rest**. The l
 ## `execute <id>`
 
 1. Require the thematic profile. Locate the one `<NNN>-*.md` under `docs/roadmap/*/plans/` whose global numeric prefix matches `<id>`.
-2. Read it and verify that every `blocked-by` id has cleared the active global index. Set `status: in-progress`.
-3. Work `## Steps` sequentially; after each completes, prefix that line with `✓` (or check its `- [x]` box). Commit progress as you go — the plan file travels with the code it describes.
-4. When all steps are done, set `status: done`. Run `done <id>` to close the plan and its canonical roadmap item only after the implementation and verification have landed.
+2. Run the read-only `ki-project-roadmap` audit and continue only with zero FAIL and zero WARN. Read the plan and verify that every `blocked-by` id has cleared the active global index.
+3. For each plan edit — the initial `status: in-progress`, every completed Step marker, and the final transient `status: done` — snapshot the exact plan and `docs/roadmap/README.md` bytes, prepare both replacements, then revalidate the clean audit and snapshots immediately before writing. Publish the plan and regenerated index through same-directory temporary files; run the audit again. On failure, restore only transaction-owned bytes and only while the current files still equal the bytes this transaction wrote. Stop rather than overwrite a concurrent change.
+4. Work `## Steps` sequentially; after each completes, prefix that line with `✓` (or check its `- [x]` box). Commit progress as you go — the plan file and regenerated index travel with the code they describe.
+5. When all steps are done, make the final transient `status: done` plus index update through the same transaction, then run `done <id>` to close the plan and its canonical roadmap item only after the implementation and verification have landed.
 
 ## `new <theme> <title>`
 

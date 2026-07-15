@@ -12,4 +12,4 @@ Govern the Knowledge Islands handoff doctrine: plan work once at the top reasoni
 - `INIT`
 - `REFRESH`
 
-**See also:** ki-tokenomics (tier cost/selection), ki-plans (plan format & lifecycle), ki-kb-streams (KB proposal Checklist), ki-agents (subagent definitions).
+**See also:** ki-tokenomics (tier cost/selection), ki-project-roadmap (non-KB roadmap and plan standard), ki-kb-streams (KB proposal Checklist), ki-agents (subagent definitions).

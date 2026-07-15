@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /** Run-based profile, linkage, projection, dependency, KB, and safe-write tests. */
 import { spawnSync } from 'node:child_process'
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -146,7 +146,10 @@ function thematicFixture(): string {
   const root = thematicFixture()
   try {
     mkdirSync(join(root, 'docs', 'roadmap', 'docs'), { recursive: true })
-    writeFileSync(join(root, 'docs', 'roadmap', 'docs', 'ROADMAP.md'), roadmap('Docs roadmap'))
+    writeFileSync(
+      join(root, 'docs', 'roadmap', 'docs', 'ROADMAP.md'),
+      roadmap('Docs roadmap', { Soon: ['Allow `printWidth` via `.ki-config.toml`'] })
+    )
     const dry = run(CONFORM, root, ['--dry-run'])
     check('thematic CONFORM dry-run exits zero', dry.code === 0)
     check(
@@ -164,6 +167,10 @@ function thematicFixture(): string {
     check(
       'root is a compact linked projection',
       readFileSync(join(root, 'ROADMAP.md'), 'utf8').includes('hooks/ROADMAP.md#harden-hook-linking')
+    )
+    check(
+      'root links use rendered Markdown heading anchors',
+      readFileSync(join(root, 'ROADMAP.md'), 'utf8').includes('docs/ROADMAP.md#allow-printwidth-via-ki-configtoml')
     )
     check('global index renders dependency edge', readFileSync(join(root, 'docs', 'roadmap', 'README.md'), 'utf8').includes('001 ──► 002'))
     writeFileSync(join(root, 'ROADMAP.md'), '# drift\n')
@@ -224,6 +231,110 @@ function thematicFixture(): string {
   }
 }
 
+// Plan frontmatter, dependency fields, and body structure fail closed.
+{
+  const root = thematicFixture()
+  try {
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '002-add-runtime-parity.md')
+    const original = plan('002', 'Add runtime parity', 'runtime/add-runtime-parity', '—', '001')
+    writeFileSync(path, original.replace("id: '002'", 'id: 002').concat("\nid: '002'\n"))
+    const result = run(AUDIT, root)
+    check('quoted id must occur in frontmatter, not the body', result.code !== 0 && result.out.includes('id must be quoted in frontmatter'))
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+{
+  const root = thematicFixture()
+  try {
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '002-add-runtime-parity.md')
+    const original = plan('002', 'Add runtime parity', 'runtime/add-runtime-parity', '—', '001')
+    writeFileSync(path, original.replace('title: Add runtime parity', 'title: Add runtime parity\ntitle: Duplicate title'))
+    const result = run(AUDIT, root)
+    check('duplicate frontmatter keys fail', result.code !== 0 && result.out.includes("duplicate frontmatter key 'title'"))
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+{
+  const root = thematicFixture()
+  try {
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '002-add-runtime-parity.md')
+    const original = plan('002', 'Add runtime parity', 'runtime/add-runtime-parity', '—', '001')
+    writeFileSync(path, original.replace('status: open', 'status: open\nowner: nobody'))
+    const result = run(AUDIT, root)
+    check('unexpected frontmatter keys fail', result.code !== 0 && result.out.includes('frontmatter has unexpected field(s): owner'))
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+for (const field of ['id', 'title', 'status', 'roadmap']) {
+  const root = thematicFixture()
+  try {
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '002-add-runtime-parity.md')
+    const original = plan('002', 'Add runtime parity', 'runtime/add-runtime-parity', '—', '001')
+    writeFileSync(path, original.replace(new RegExp(`^${field}:.*$`, 'm'), `${field}:`))
+    const result = run(AUDIT, root)
+    check(`empty ${field} fails`, result.code !== 0 && result.out.includes(`frontmatter field '${field}' must not be empty`))
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+{
+  const root = thematicFixture()
+  try {
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '002-add-runtime-parity.md')
+    writeFileSync(path, plan('002', 'Add runtime parity', 'runtime/add-runtime-parity', '002, 002', '001'))
+    const result = run(AUDIT, root)
+    check('duplicate dependency ids fail', result.code !== 0 && result.out.includes('blocks contains duplicate id(s): 002'))
+    check('self dependencies fail', result.code !== 0 && result.out.includes('plan 002 must not depend on itself'))
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+{
+  const root = thematicFixture()
+  try {
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '002-add-runtime-parity.md')
+    const original = plan('002', 'Add runtime parity', 'runtime/add-runtime-parity', '—', '001')
+    writeFileSync(path, original.replace('## Current state', '## Verify first'))
+    const result = run(AUDIT, root)
+    check(
+      'plan body requires the exact ordered core H2 sections',
+      result.code !== 0 && result.out.includes('body must contain each core H2 exactly once')
+    )
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+for (const section of ['Steps', 'Verify']) {
+  const root = thematicFixture()
+  try {
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '002-add-runtime-parity.md')
+    const original = plan('002', 'Add runtime parity', 'runtime/add-runtime-parity', '—', '001')
+    const next = section === 'Steps' ? 'Files touched' : 'Dependencies / blocks'
+    writeFileSync(path, original.replace(new RegExp(`(## ${section})[\\s\\S]*?(?=## ${next})`), `$1\n\n`))
+    const result = run(AUDIT, root)
+    check(`plan body rejects empty ${section}`, result.code !== 0 && result.out.includes(`body section '${section}' must not be empty`))
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+{
+  const root = thematicFixture()
+  try {
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '002-add-runtime-parity.md')
+    const composed = plan('002', 'Add runtime parity', 'runtime/add-runtime-parity', '—', '001')
+      .replace('blocked-by: 001', 'blocked-by: 001\nhandoff: true\ntier: sonnet\nreadiness: pending')
+      .concat('\n## Decisions\n\nLocked: use the thematic layout.\n\nEscalate: none.\n')
+    writeFileSync(path, composed)
+    run(CONFORM, root)
+    check('composed handoff fields and extension sections remain valid', run(AUDIT, root).code === 0)
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+
 // Generated outputs never follow symlinks.
 {
   const root = thematicFixture()
@@ -238,6 +349,47 @@ function thematicFixture(): string {
   } finally {
     rmSync(root, { recursive: true, force: true })
     rmSync(outside, { recursive: true, force: true })
+  }
+}
+
+// Dangling generated-output symlinks are entries and must never be replaced.
+{
+  const root = fixture()
+  try {
+    const path = join(root, 'ROADMAP.md')
+    symlinkSync(join(root, 'missing-roadmap'), path)
+    const result = run(INIT, root)
+    check('INIT refuses a dangling ROADMAP symlink', result.code !== 0 && result.out.includes('SAFE-1'))
+    check('INIT leaves a dangling ROADMAP symlink in place', lstatSync(path).isSymbolicLink())
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+{
+  const root = thematicFixture()
+  try {
+    const path = join(root, 'ROADMAP.md')
+    symlinkSync(join(root, 'missing-roadmap'), path)
+    const result = run(CONFORM, root)
+    check('CONFORM refuses a dangling root projection symlink', result.code !== 0 && result.out.includes('SAFE-1'))
+    check('CONFORM leaves a dangling root projection symlink in place', lstatSync(path).isSymbolicLink())
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+{
+  const root = thematicFixture()
+  try {
+    const initial = run(CONFORM, root)
+    const path = join(root, 'docs', 'roadmap', 'README.md')
+    rmSync(path)
+    symlinkSync(join(root, 'missing-index'), path)
+    const result = run(CONFORM, root)
+    check('CONFORM dangling-index fixture starts canonical', initial.code === 0)
+    check('CONFORM refuses a dangling generated-index symlink', result.code !== 0 && result.out.includes('SAFE-1'))
+    check('CONFORM leaves a dangling generated-index symlink in place', lstatSync(path).isSymbolicLink())
+  } finally {
+    rmSync(root, { recursive: true, force: true })
   }
 }
 

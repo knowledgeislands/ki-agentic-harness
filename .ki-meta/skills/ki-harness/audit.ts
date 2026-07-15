@@ -184,7 +184,7 @@ add('INFO', 'scope', 'harness container audit — five-part layout, CLAUDE.md, p
 add(
   'ADVISORY',
   'judgment',
-  'CLAUDE-1..5 (coverage/freshness), LONG-1, and COLL-1 are [J] criteria — assess by reading the rubric. ROADMAP content discipline is governed by ki-plans.',
+  'CLAUDE-1..5 (coverage/freshness), LONG-1, and COLL-1 are [J] criteria — assess by reading the rubric. ROADMAP content discipline is governed by ki-project-roadmap.',
   'references/audit-rubric.md'
 )
 

@@ -16,7 +16,7 @@ Canonical themes and active execution plans.
 
 | Plan | Theme | Title | Roadmap item | Status | Blocks |
 | --- | --- | --- | --- | --- | --- |
-| [004](hooks/plans/004-promote-plan-mode-plans.md) | hooks | Promote Plan Mode plans into `docs/plans/` | hooks/promote-plan-mode-plans-into-docs-plans | in-progress | — |
+| [004](hooks/plans/004-promote-plan-mode-plans.md) | hooks | Promote Plan Mode plans into thematic roadmaps | hooks/promote-plan-mode-plans-into-thematic-roadmaps | in-progress | — |
 | [005](project-roadmap/plans/005-replace-ki-plans-with-project-roadmap.md) | project-roadmap | Replace ki-plans with ki-project-roadmap | project-roadmap/replace-ki-plans-with-ki-project-roadmap | in-progress | — |
 
 ## Dependency graph

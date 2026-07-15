@@ -215,7 +215,7 @@ async function main() {
   rec(
     'ADVISORY',
     'judgment',
-    'CLAUDE.md coverage/freshness (CLAUDE-1..5) is prose judgment — read the rubric. ROADMAP content discipline is governed by ki-plans.',
+    'CLAUDE.md coverage/freshness (CLAUDE-1..5) is prose judgment — read the rubric. ROADMAP content discipline is governed by ki-project-roadmap.',
     'references/audit-rubric.md'
   )
 

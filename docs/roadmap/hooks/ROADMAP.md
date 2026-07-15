@@ -4,9 +4,9 @@
 
 ## Next
 
-### Promote Plan Mode plans into `docs/plans/`
+### Promote Plan Mode plans into thematic roadmaps
 
-Claude Code's interactive Plan Mode (`EnterPlanMode`/`ExitPlanMode`) plans land only as scratch files under `~/.claude/plans/`, stamped and progress-synced in place by `hooks/plan-stamp.sh`/`hooks/plan-sync.sh`. Add a `promote` subcommand to the `ki-plan` lifecycle (`skills/process/ki-plan/references/lifecycle.md`) that turns a session's Plan Mode plan into a governed `docs/plans/<theme>/<NNN>-<slug>.md` entry — reusing `plan-stamp.sh`'s existing `~/.claude/plans/.state/<session_id>` pointer to locate the scratch file, and `new`'s existing id-derivation/theme/roadmap-confirmation logic to place it correctly. Deliberately a user-invoked lifecycle command, not a new auto-firing hook: the `roadmap:`/theme/id fields require judgment a `PostToolUse` hook can't safely apply unattended, and widening either existing hook's write surface from `~/.claude/plans/` to arbitrary repo paths is a separate, security-sensitive change left out of scope here. See `docs/plans/hooks/004-promote-plan-mode-plans.md`.
+Claude Code's interactive Plan Mode (`EnterPlanMode`/`ExitPlanMode`) plans land only as scratch files under `~/.claude/plans/`, stamped and progress-synced in place by `hooks/plan-stamp.sh`/`hooks/plan-sync.sh`. Reconcile the optional `promote` subcommand in the `ki-plan` lifecycle (`skills/process/ki-plan/references/lifecycle.md`) with repo-first planning so a selected scratch plan can become a governed `docs/roadmap/<theme>/plans/<NNN>-<slug>.md` entry without making Plan Mode canonical or mandatory. Keep promotion deliberate and user-invoked: the qualified `roadmap:` locator, theme, and global id require judgment an auto-firing hook cannot safely apply unattended. See `plans/004-promote-plan-mode-plans.md`.
 
 ## Soon
 

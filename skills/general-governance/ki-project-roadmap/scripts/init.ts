@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /** Scaffold the non-KB simple project-roadmap profile without clobbering. */
-import { closeSync, existsSync, fsyncSync, lstatSync, openSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'node:fs'
+import { closeSync, existsSync, fsyncSync, linkSync, lstatSync, openSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
@@ -53,6 +53,15 @@ function isKb(): boolean {
   }
 }
 
+function entry(path: string): ReturnType<typeof lstatSync> | null {
+  try {
+    return lstatSync(path)
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return null
+    throw error
+  }
+}
+
 function atomicCreate(path: string, content: string): void {
   const temp = join(dirname(path), `.${Date.now()}-${process.pid}-${Math.random().toString(16).slice(2)}.tmp`)
   const fd = openSync(temp, 'wx', 0o644)
@@ -63,8 +72,8 @@ function atomicCreate(path: string, content: string): void {
     closeSync(fd)
   }
   try {
-    if (existsSync(path)) throw new Error(`refusing to clobber ${path}`)
-    renameSync(temp, path)
+    linkSync(temp, path)
+    unlinkSync(temp)
   } catch (error) {
     if (existsSync(temp)) unlinkSync(temp)
     throw error
@@ -107,7 +116,7 @@ if (isKb()) {
   })
   emit()
 }
-if (existsSync(thematic)) {
+if (entry(thematic)) {
   findings.push({
     level: 'PASS',
     area: 'PROFILE-1',
@@ -116,9 +125,12 @@ if (existsSync(thematic)) {
   })
   emit()
 }
-if (existsSync(roadmap)) {
-  if (lstatSync(roadmap).isSymbolicLink()) {
+const existingRoadmap = entry(roadmap)
+if (existingRoadmap) {
+  if (existingRoadmap.isSymbolicLink()) {
     findings.push({ level: 'FAIL', area: 'SAFE-1', msg: 'refusing symlink ROADMAP.md', ref: STANDARD_REF, file: 'ROADMAP.md' })
+  } else if (!existingRoadmap.isFile()) {
+    findings.push({ level: 'FAIL', area: 'SAFE-1', msg: 'ROADMAP.md must be a regular file', ref: STANDARD_REF, file: 'ROADMAP.md' })
   } else
     findings.push({
       level: 'PASS',

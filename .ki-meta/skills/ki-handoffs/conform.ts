@@ -7,8 +7,8 @@
  *
  * Scope: a single target tree (default cwd), matching the house conform shape
  * (audit.ts / conform.ts) — `bun conform.ts .` / `ki:handoffs:conform`. Handoffs
- * ride on a host artifact (a ki-plans plan, a ki-kb-streams proposal Checklist);
- * this only touches the delegation-readiness delta on artifacts that opt in with
+ * ride on a host artifact (a ki-project-roadmap plan, a ki-kb-streams proposal
+ * Checklist); this only touches the delegation-readiness delta on artifacts that opt in with
  * `handoff: true`. The file walk, frontmatter parse, opt-in test, tier set, and
  * the decisions / readiness detection are kept in lockstep with audit.ts (copied
  * rather than imported, so each script stays valid standalone per composition-only).
