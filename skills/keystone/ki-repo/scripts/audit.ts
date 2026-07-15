@@ -216,7 +216,7 @@ function treePaths(nwo: string, branch: string): Set<string> {
 // This skill owns the [ki-repo] table. The default block
 // (written by `--init`) is the authoritative key list — authoring a repo emits it.
 const KI_SECTION = 'ki-repo'
-const KI_DEFAULT = `[${KI_SECTION}]
+const KI_REPO_DEFAULT = `[${KI_SECTION}]
 visibility = "private"   # "public" | "private" — must match the repo's actual GitHub visibility
 license = "MIT"          # SPDX id the LICENSE, package.json, and GitHub must match; default MIT. Use "UNLICENSED" for proprietary. Pick one at https://choosealicense.com/
 
@@ -225,11 +225,13 @@ license = "MIT"          # SPDX id the LICENSE, package.json, and GitHub must ma
 # [${KI_SECTION}.checks]
 # branch-protection = true   # default off — protect \`main\` on this repo
 # wiki = false               # default on  — allow this repo's Wiki
+`
 
-# The authoring standard (Markdown/TOML house style) is baseline — every KI repo is
+const KI_AUTHORING_DEFAULT = `# The authoring standard (Markdown/TOML house style) is baseline — every KI repo is
 # governed by it. Declared explicitly, not assumed; its presence is the compliance marker.
 [ki-authoring]
 `
+const KI_DEFAULT = `${KI_REPO_DEFAULT}\n${KI_AUTHORING_DEFAULT}`
 
 // Minimal parser for the constrained schema: `[table]` headers (incl. the dotted
 // `[...checks]` sub-table), flat `key = "string"` and `key = true|false` on a single
@@ -247,7 +249,7 @@ function parseKiConfig(text: string): KiConfig | null {
     const header = line.match(/^\[(.+)\]$/)
     if (header) {
       section = (header[1] as string).trim()
-      if (section === KI_SECTION || section === CHECKS_SECTION) seen = true
+      if (section === KI_SECTION) seen = true
       continue
     }
     const eq = line.indexOf('=')
@@ -368,6 +370,8 @@ const REPO_STRUCTURE_TABLES = [
 // A `[ki-<skill>]` (or sub-table `[…​.x]`) header on its own line —
 // anchored so a commented-out `# [..]` template line does not count as declared.
 const declaresTable = (kiText: string, table: string): boolean => new RegExp(`^\\[${table}(\\]|\\.)`, 'm').test(kiText)
+const declaresRootTable = (kiText: string, table: string): boolean =>
+  kiText.split(/\r?\n/).some((raw) => raw.replace(/#.*$/, '').trim() === `[${table}]`)
 
 function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: string | null, signals: Signals): Finding[] {
   const { f, fail, warn, note } = mk()
@@ -387,7 +391,7 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
   // and (b) carry a self-check runner so `./.ki-meta/bin/ki-audit` works with zero skills
   // installed (ADR-007). A marker-only repo with neither runner is a FAIL.
   if (files.has(KI_CONFIG)) {
-    if (!declaresTable(kiText ?? '', 'ki-authoring'))
+    if (!declaresRootTable(kiText ?? '', 'ki-authoring'))
       fail('FILES-3', `${KI_CONFIG} does not declare [ki-authoring] — the authoring standard is baseline (run --init)`, KI_CONFIG)
     const hasRunner = signals.tree.has('.ki-meta/bin/aggregate.ts') || signals.tree.has('.ki-meta/bin/ki-audit')
     if (!hasRunner)
