@@ -51,6 +51,7 @@ bun scripts/bootstrap.ts <target-repo> [--ref <ref>] [--dry-run]
 1. **Run the checkers.** `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-skills.ts" [path] --check` and `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-agents.ts" [path] --check` (or `bun run ki:skills:link:project --check` / `bun run ki:agents:link:project --check` if wired). They report on the unified severity ladder (`ki-engineering` enforcement-framework §2): **BOOT-1** `.claude/skills/` matches declared coverage ∪ baseline (and no dangling links) — and a declared `[ki-*]` table resolving to no harness skill (an upstream rename/removal left behind) is a FAIL to reconcile by hand, **BOOT-3** `.claude/skills/` is gitignored, **BOOT-6** `.claude/agents/` matches the `[ki-agents]`-gated set, **BOOT-8** `.claude/agents/` is gitignored. Package.json script-key wiring (the `ki:*:link:project` and per-skill `ki:<suffix>:<verb>` keys) is out of scope for this linker — it is `ki-engineering`'s concern, sugar over the vendored `.ki-meta/bin/*` wrappers — so there is no BOOT-2/5/7.
 2. **Judge the [J] criterion (BOOT-4) by reading** — is the repo's _declared_ coverage actually right (does it opt into the skills it uses)? That is `ki-repo`'s coverage cascade, not this skill's; name it as the off-ramp rather than re-deciding it here.
 3. **Report** by criterion. A missing/dangling link or absent gitignore entry is a WARN — all are conformable, none block.
+4. **Aggregate judgmental sweep (BOOT-10).** Run the mechanical aggregate — `./.ki-meta/bin/ki-audit` (or `bun run ki:audit`) — and capture its per-skill findings verbatim; do not re-derive them. Then, for each governed skill it reports on, apply that skill's `[J]` judgment criteria from its own `audit-rubric.md` — delegating to `agents/governance/<skill>-lead` where a lead agent exists, reading the rubric directly where none does. Report each skill's judgment result as an **ADVISORY** finding alongside the mechanical output, so the repo's governance is judged end to end, not just its wiring.
 
 ### Mode CONFORM — wire a repo
 
@@ -59,7 +60,8 @@ The mechanical half is `scripts/conform.ts` (`bun run ki:bootstrap:conform` wher
 1. Run **AUDIT** first.
 2. **Link** the project-local set: `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-skills.ts" [path]` and `bun "$HOME/.claude/skills/ki-bootstrap/scripts/link-agents.ts" [path]`. Each creates/prunes relative symlinks under `.claude/skills/`/`.claude/agents/` to match its expected set, and **writes the matching `.gitignore` line** (`.claude/skills/`, and `.claude/agents/` when the agents set is non-empty), creating `.gitignore` if absent — so BOOT-3/8 clear without a manual edit. Preview either with `--dry-run`.
 3. **Make it reproducible:** a repo reproduces its links by re-running the keystone linkers (the **Link** step above) — no `package.json` script is required, and the linkers scaffold none (package.json script-key wiring is `ki-engineering`'s concern). (The keystone must be globally installed — `bun skills/keystone/ki-bootstrap/scripts/sync-skills.ts link --only ki-bootstrap` from the harness.)
-4. **Re-run AUDIT** until clean.
+4. **Aggregate judgmental sweep (BOOT-10).** Run `./.ki-meta/bin/ki-conform` (or `bun run ki:conform`) for the mechanical fixes, then re-apply the per-skill `[J]` judgment from AUDIT step 4 to confirm each skill's judged findings are resolved too — a clean mechanical pass is not sufficient on its own.
+5. **Re-run AUDIT** until clean.
 
 ### Mode REFRESH — re-anchor
 

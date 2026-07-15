@@ -99,6 +99,17 @@ if (run('audit.ts', []) !== 0) {
   rec('PASS', 'BOOT-9', 'vendored-set audit reports no drift', RUBRIC, '.ki-meta/skills/')
 }
 
+// BOOT-10 (ADR-KI-HARNESS-SKILLS-001's AUDIT/CONFORM contract, applied transitively):
+// re-stated here since --json suppresses the spawned audit.ts's own ADVISORY — a
+// mechanical CONFORM pass never substitutes for re-applying each governed skill's
+// [J] judgment.
+rec(
+  'ADVISORY',
+  'BOOT-10',
+  "re-apply each governed skill's [J] judgment after this CONFORM pass — a clean mechanical run is not sufficient",
+  RUBRIC
+)
+
 if (json) {
   const n = (l: Level): number => findings.filter((f) => f.level === l).length
   const summary = {

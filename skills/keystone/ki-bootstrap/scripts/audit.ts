@@ -1,7 +1,10 @@
 #!/usr/bin/env bun
 /**
  * ki-bootstrap — BOOT-9: audit a target repo's vendored `.ki-meta/skills/` set
- * against what it *should* be.
+ * against what it *should* be. Also emits BOOT-10, the always-on reminder that
+ * AUDIT's judgmental sweep — ADR-KI-HARNESS-SKILLS-001's AUDIT contract, applied
+ * transitively across every governed skill — still needs applying by the agent
+ * running this; no mechanical check can decide judgment for it.
  *
  * The mechanical `.ki-meta/bin/ki-audit` self-check runs standalone (no harness, no
  * skills installed) — but it has no way to re-derive the expected set, since the
@@ -17,7 +20,7 @@
  *
  * Usage: bun audit.ts [target-repo] [--json]   (read-only)
  *   --json   emit the shared CHK-004 finding wrapper instead of prose, so the
- *            aggregate renders BOOT-9 structured alongside every other checker.
+ *            aggregate renders BOOT-9/BOOT-10 structured alongside every other checker.
  * Every repo — the harness included — vendors its own DECLARED coverage (the `.ki-config.toml`
  * `[ki-*]` tables + baseline + implies closure), so `ki:audit` fans out over exactly the
  * skills that govern it. Vendoring is always coverage-scoped; `--all` is a linking concept
@@ -133,6 +136,15 @@ if (missing.length === 0 && extra.length === 0) {
     '.ki-meta/skills/'
   )
 }
+
+// BOOT-10 is always-on and never mechanically decidable — a reminder handed off
+// to the agent running AUDIT, per ADR-KI-HARNESS-SKILLS-001's AUDIT contract.
+add(
+  'ADVISORY',
+  'BOOT-10',
+  `apply each governed skill's own [J] judgment across the ${actual.length} vendored skill${actual.length === 1 ? '' : 's'} (lead agent where one exists, its audit-rubric.md otherwise) — the mechanical aggregate alone is not sufficient`,
+  RUBRIC
+)
 
 if (missing.length)
   add(
