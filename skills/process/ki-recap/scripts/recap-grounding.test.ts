@@ -8,7 +8,7 @@
  * `audit.test.ts` set.
  */
 import { spawnSync } from 'node:child_process'
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -84,6 +84,28 @@ try {
 } finally {
   rmSync(emptyTranscriptsDir, { recursive: true, force: true })
   rmSync(bareRepo, { recursive: true, force: true })
+}
+
+// ── Dotted repo path → resolves Claude's matching project-directory slug ──
+const dottedFixtureRoot = mkdtempSync(join(tmpdir(), 'ki.recap-dotted-fixture-'))
+const dottedRepo = join(dottedFixtureRoot, '.local', 'share', 'chezmoi')
+const fixtureHome = join(dottedFixtureRoot, 'home')
+const projectSlug = dottedRepo.replace(/[/.]/g, '-')
+const dottedProjectDir = join(fixtureHome, '.claude', 'projects', projectSlug)
+const dottedTranscript = join(dottedProjectDir, 'dotted-session.jsonl')
+mkdirSync(dottedRepo, { recursive: true })
+mkdirSync(dottedProjectDir, { recursive: true })
+spawnSync('git', ['init', '-q'], { cwd: dottedRepo })
+writeFileSync(dottedTranscript, toolUseLine('Read', { file_path: '/x/dotted.ts' }))
+try {
+  const res = spawnSync('bun', [HELPER, dottedRepo, '--json'], {
+    encoding: 'utf8',
+    env: { ...process.env, HOME: fixtureHome }
+  })
+  const parsed = JSON.parse(res.stdout ?? '{}')
+  check('dotted repo path resolves its Claude project transcript', res.status === 0 && parsed.transcript === dottedTranscript)
+} finally {
+  rmSync(dottedFixtureRoot, { recursive: true, force: true })
 }
 
 if (failed) {

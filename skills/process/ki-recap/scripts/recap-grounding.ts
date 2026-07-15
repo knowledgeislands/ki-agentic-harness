@@ -6,7 +6,7 @@
  * Usage: bun skills/process/ki-recap/scripts/recap-grounding.ts [repo-path] [--json] [--transcripts-dir <dir>]
  *
  * Resolves the Claude Code project directory for a repo
- * (~/.claude/projects/<slug>, slug = repo's absolute path with "/" -> "-" — the same
+ * (~/.claude/projects/<slug>, slug = repo's absolute path with "/" and "." -> "-" — the same
  * convention ki-housekeeping's audit.ts uses for the memory/ subdirectory),
  * reads the newest session .jsonl, and emits JSON grounding data: files touched
  * (git status / git diff --stat), a tool-call tally, and high-cost candidates
@@ -35,7 +35,7 @@ interface Grounding {
 }
 
 function slugifyRepoPath(absPath: string): string {
-  return absPath.replace(/\//g, '-')
+  return absPath.replace(/[/.]/g, '-')
 }
 
 function resolveProjectDir(repoArg: string | undefined): string {

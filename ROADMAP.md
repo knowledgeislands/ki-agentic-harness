@@ -2,7 +2,7 @@
 
 Where this agentic harness is going. The [README](README.md) and the [docs/](docs) it indexes cover what exists today and how to install it; this file is the forward view. Open work is grouped by the five horizons — **Blocking**, **Next**, **Soon**, **Waiting for**, **Future** — owned by `ki-plans`; Blocking work must complete before Next can proceed, and speculative items are marked _(candidate)_ until committed. Within each horizon, items are further grouped by theme so related work can be tackled together.
 
-Two aids for picking work up as a batch. A theme with an internal order carries a **Sequence** lead-in stating what to do first, what subsumes or blocks what, and what to batch — the point being to land related work in one pass and not rewrite the same prose or checker twice. And the genuine **quick wins** — small, self-contained, low-rework items worth clearing opportunistically wherever they sit — are, as of now: the `slugifyRepoPath` fix (Blocking); the `SHAPE-15` rubric backfill and the regex-check-against-test-files guidance (Soon → _Checker infrastructure & output uniformity_); the `ki-housekeeping` cleanup pass (Soon → _Session & operational follow-ups_); and the `headroom memory delete` note plus `ki-recap`'s explicit clean-state message (Future → _Session tooling, memory & housekeeping_). Quick wins are removed as done like everything else here.
+Two aids for picking work up as a batch. A theme with an internal order carries a **Sequence** lead-in stating what to do first, what subsumes or blocks what, and what to batch — the point being to land related work in one pass and not rewrite the same prose or checker twice. And the genuine **quick wins** — small, self-contained, low-rework items worth clearing opportunistically wherever they sit — are, as of now: the `SHAPE-15` rubric backfill and the regex-check-against-test-files guidance (Soon → _Checker infrastructure & output uniformity_); the `ki-housekeeping` cleanup pass (Soon → _Session & operational follow-ups_); and the `headroom memory delete` note plus `ki-recap`'s explicit clean-state message (Future → _Session tooling, memory & housekeeping_). Quick wins are removed as done like everything else here.
 
 This roadmap is itself subject to the house discipline it describes: when a skill's REFRESH run or an audit surfaces a structural gap, it lands here before it's built — and an item is **removed once done**, not ticked off, so the file always shows only open work.
 
@@ -11,10 +11,6 @@ This roadmap is itself subject to the house discipline it describes: when a skil
 ## Blocking
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
-
-### Fix `ki-recap`'s grounding helper: `slugifyRepoPath` drops dotted-path repos silently
-
-Found 2026-07-14 while recapping a session in a repo whose absolute path contains a `.` component (`~/.local/share/chezmoi`): `skills/process/ki-recap/scripts/recap-grounding.ts`'s `slugifyRepoPath` (line 38) only replaces `/` with `-`, but Claude Code's real project-directory slug also replaces `.`. On a dotted path this computes the wrong `~/.claude/projects/<slug>` directory, `readdirSync` throws inside `resolveProjectDir`, and the script silently returns `{transcript: null, ...}` with no error surfaced to the invoking skill — the recap ran with empty grounding and no indication anything had failed. The two other copies of this same slugify helper in the harness, `skills/environment/ki-housekeeping/scripts/conform.ts` and `audit.ts`, already use the correct regex (`/[/.]/g`) — `ki-recap`'s copy alone has drifted stale. Fix: change line 38 to `absPath.replace(/[/.]/g, '-')`, matching the other two copies, and add a regression fixture (a dotted-path repo, e.g. mirroring `conform.ts`'s or `audit.ts`'s existing tests) to `recap-grounding.test.ts` so this can't silently regress again. Marked Blocking because the failure mode is silent — a recap can complete and report a clean, grounded summary while its grounding data was actually null.
 
 ## Next
 
@@ -318,7 +314,7 @@ Some of what the harness currently codifies as a shared house standard is actual
 
 ### Session tooling, memory & housekeeping
 
-**Sequence.** The `ki-recap` items batch with the `slugifyRepoPath` fix under _Blocking_ — the invoking-session resolution, the explicit clean-state message, and the grounding-helper fix all touch the same grounding path. The `headroom memory delete` note and the clean-state message are quick wins. The historical-session mining and the `CLAUDE.md` → skill promotion tooling share `ki-recap`'s transcript substrate and `ki-tokenomics`'s scope — scope them against those before building.
+**Sequence.** The invoking-session resolution and the explicit clean-state message both touch `ki-recap`'s grounding path and can be batched. The `headroom memory delete` note and the clean-state message are quick wins. The historical-session mining and the `CLAUDE.md` → skill promotion tooling share `ki-recap`'s transcript substrate and `ki-tokenomics`'s scope — scope them against those before building.
 
 #### Mine historical sessions for recurring context bloat _(candidate)_
 
