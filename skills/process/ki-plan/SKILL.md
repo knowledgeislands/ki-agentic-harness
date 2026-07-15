@@ -14,6 +14,10 @@ argument-hint: 'done <id> | execute <id> | new <theme> <title> | promote | statu
 
 Runs the plan lifecycle for a **code repo**: `done` (close a plan and sync ROADMAP), `execute` (work its Steps), `new` (write a plan file), `promote` (turn the current Claude Code Plan Mode scratch plan into a governed plan), and `status` (show the active index). It is the process counterpart to `ki-plans` — paired deliberately, singular verb beside plural class, drive-an-instance beside govern-the-class. It reads the plan format and quality bar from `ki-plans`' [plan-format.md](../../general-governance/ki-plans/references/plan-format.md) rather than restating them.
 
+## Planning is repo-first
+
+In a KI code repo the plan is a governed file under `docs/plans/`, authored through this skill — never a Claude-native Plan Mode scratch file in `~/.claude/plans/`. When a user asks to plan, including by entering native Plan Mode, treat `docs/plans/<theme>/<NNN>-<slug>.md` as the source of truth and create it here with `new`; a `~/.claude/plans/` scratch file, if one exists, is only a draft and is never canonical. Where a native draft exists, prefer to leave in it a pointer to the governed repo plan rather than duplicating content. This keeps planning identical across runtimes — Codex has no Plan Mode, so plans simply live where the repo expects them — and removes any dependency on Plan Mode hooks firing. The `promote` verb, which bridges a native Plan Mode scratch plan into `docs/plans/` via the `ExitPlanMode` hook, is therefore an optional Claude-Code-CLI-only convenience subordinate to `new`, and is unavailable on surfaces that do not fire that hook (e.g. the SDK/editor extension).
+
 ## Invocation
 
 `help` / `-h` / `?` explains this skill and stops, taking no action. With no argument, present the five lifecycle verbs in the order above using the runtime's available interactive choice mechanism; in a non-interactive session, print the same choices and stop. Otherwise dispatch on the first token of the argument per [references/lifecycle.md](references/lifecycle.md).

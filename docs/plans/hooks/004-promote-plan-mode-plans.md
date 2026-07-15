@@ -83,3 +83,7 @@ So the approach below adds a deliberate, user-invoked **`/ki-plan promote` lifec
 ## Dependencies / blocks
 
 No plan dependency. Runtime dependency for `promote`: Claude Code skill substitution plus the installed v1 `plan-stamp.sh` hook using the default `$HOME/.claude/plans` scratch directory. The governed plan format remains a KI-owned portable artifact; Plan Mode discovery and its provenance bridge are Claude-Code-specific.
+
+## Update — direction change (2026-07-16)
+
+A live check found that `${CLAUDE_SESSION_ID}` substitution in `SKILL.md` and the `plan-stamp.sh` state serialization both work, but the runtime does **not** fire the `PostToolUse(ExitPlanMode)` hook on the Claude Code SDK / editor-extension surface — only the interactive CLI does. So Step 7's "live authenticated smoke test" cannot be met on that surface; it was never an auth problem. Rather than harden the bridge further, the decision is to make `ki-plan` **repo-first**: plans are authored via `new` straight into `docs/plans/`, native Plan Mode's `~/.claude/plans/` scratch file is never canonical, and `promote` is demoted to an optional Claude-Code-CLI-only convenience. This removes the hook dependency and is portable to Codex (which has no Plan Mode). `ki-plan`'s `SKILL.md` now records this stance ("Planning is repo-first"). This plan stays `in-progress`; full rescoping/closing — and any trimming of the `promote` procedure in `lifecycle.md` — is deferred until the in-flight `ki-plans` → `ki-project-roadmap` rename lands, to avoid colliding with that work.
