@@ -8,7 +8,7 @@ Every path below (`.claude/skills/`, `~/.claude/skills/`) is the **Claude Code**
 
 A skill's `name` + `description` sits in the selection surface on **every turn**. Installing all governance skills globally (`~/.claude/skills/`) pays that cost in every session, including ones that never touch a Knowledge Islands repo. So the governance skills are **project-local** — placed in a repo's `.claude/skills/`, loaded only when that repo is in the session.
 
-That leaves a bootstrap problem: something must be globally available to _wire_ a repo's project-local skills, vendor its self-checking surface, and reach `ki-repo`'s INIT in a repo that has no `.ki-config.toml` yet. Globalizing the heavy `repo` skill wastes the budget. So a single tiny skill — this one — is the global keystone and chain engine; `ki-repo` remains the exclusive owner of config-file bytes.
+That leaves a bootstrap problem: something must be globally available to _wire_ a repo's project-local skills, vendor its self-checking surface, and reach `ki-repo`'s INIT in a repo that has no `.ki-config.toml` yet. Globalizing the heavy `repo` skill wastes the budget. So a single tiny skill — this one — is the global keystone and chain engine; `ki-repo` retains the config's file-level contract and foundation scaffold, while each sibling skill may conform its own table.
 
 ## The invariant
 
