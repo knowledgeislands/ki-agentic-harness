@@ -132,6 +132,22 @@ try {
   rmSync(invalidSeed, { recursive: true, force: true })
 }
 
+for (const seed of ['keystone/ki-repo', '../skills/keystone/ki-repo']) {
+  const pathSeed = fixture()
+  try {
+    mkdirSync(join(pathSeed, '.ki-meta'), { recursive: true })
+    writeFileSync(join(pathSeed, '.ki-meta', 'sentinel.txt'), 'reject noncanonical seed names\n')
+    const before = snapshot(pathSeed)
+    const result = spawnSync('bun', [BOOTSTRAP, pathSeed, '--seed', seed], { encoding: 'utf8' })
+    const output = `${result.stdout ?? ''}${result.stderr ?? ''}`
+    check(`bootstrap path-shaped seed ${seed} → non-zero exit`, (result.status ?? 0) !== 0)
+    check(`bootstrap path-shaped seed ${seed} → names rejected value`, output.includes(seed))
+    check(`bootstrap path-shaped seed ${seed} → target remains byte-identical`, snapshot(pathSeed) === before)
+  } finally {
+    rmSync(pathSeed, { recursive: true, force: true })
+  }
+}
+
 const seededRepo = fixture()
 try {
   const result = spawnSync('bun', [BOOTSTRAP, seededRepo, '--seed', 'ki-repo'], { encoding: 'utf8' })

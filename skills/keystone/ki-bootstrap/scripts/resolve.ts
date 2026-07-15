@@ -46,8 +46,21 @@ function skillIndex(): Map<string, string> {
   return idx
 }
 
+export class SkillResolutionError extends Error {
+  readonly unresolved: string[]
+
+  constructor(unresolved: Iterable<string>) {
+    const sorted = [...new Set(unresolved)].sort()
+    super(`unresolvable skill root${sorted.length === 1 ? '' : 's'}: ${sorted.join(', ')}`)
+    this.name = 'SkillResolutionError'
+    this.unresolved = sorted
+  }
+}
+
 export function skillDir(skill: string): string {
-  return skillIndex().get(skill) ?? join(SKILLS_ROOT, skill)
+  const dir = skillIndex().get(skill)
+  if (!dir) throw new SkillResolutionError([skill])
+  return dir
 }
 
 export function allSkillNames(): string[] {
@@ -55,18 +68,7 @@ export function allSkillNames(): string[] {
 }
 
 export function isSkill(skill: string): boolean {
-  return existsSync(join(skillDir(skill), 'SKILL.md'))
-}
-
-export class SkillResolutionError extends Error {
-  readonly unresolved: string[]
-
-  constructor(unresolved: Iterable<string>) {
-    const sorted = [...new Set(unresolved)].sort()
-    super(`unresolvable skill declaration${sorted.length === 1 ? '' : 's'}: ${sorted.join(', ')}`)
-    this.name = 'SkillResolutionError'
-    this.unresolved = sorted
-  }
+  return skillIndex().has(skill)
 }
 
 // Skill roots named by `[ki-<skill>]` tables or their dotted sub-tables in the
