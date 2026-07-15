@@ -145,6 +145,8 @@ function thematicFixture(): string {
 {
   const root = thematicFixture()
   try {
+    mkdirSync(join(root, 'docs', 'roadmap', 'docs'), { recursive: true })
+    writeFileSync(join(root, 'docs', 'roadmap', 'docs', 'ROADMAP.md'), roadmap('Docs roadmap'))
     const dry = run(CONFORM, root, ['--dry-run'])
     check('thematic CONFORM dry-run exits zero', dry.code === 0)
     check(
@@ -158,6 +160,7 @@ function thematicFixture(): string {
     )
     const audited = run(AUDIT, root)
     check('valid thematic profile audits cleanly', audited.code === 0 && !/FAIL \(/.test(audited.out))
+    check('theme without active plans needs no plans directory', !existsSync(join(root, 'docs', 'roadmap', 'docs', 'plans')))
     check(
       'root is a compact linked projection',
       readFileSync(join(root, 'ROADMAP.md'), 'utf8').includes('hooks/ROADMAP.md#harden-hook-linking')

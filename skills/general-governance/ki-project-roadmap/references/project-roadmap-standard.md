@@ -29,7 +29,7 @@ docs/roadmap/
   README.md
   <theme>/
     ROADMAP.md
-    plans/
+    plans/                  # present only while the theme has active plans
       <NNN>-<slug>.md
 ```
 

@@ -233,7 +233,6 @@ function discoverThematic(): { themes: string[]; items: Item[]; plans: Plan[] } 
     }
     const plansDir = join(themeRoot, 'plans')
     if (!existsSync(plansDir)) {
-      add('FAIL', 'THEME-1', 'theme has no plans/ directory', STANDARD_REF, `docs/roadmap/${theme}`)
       continue
     }
     if (lstatSync(plansDir).isSymbolicLink() || !lstatSync(plansDir).isDirectory()) {
