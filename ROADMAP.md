@@ -2,6 +2,8 @@
 
 Where this agentic harness is going. The [README](README.md) and the [docs/](docs) it indexes cover what exists today and how to install it; this file is the forward view. Open work is grouped by the five horizons — **Blocking**, **Next**, **Soon**, **Waiting for**, **Future** — owned by `ki-plans`; Blocking work must complete before Next can proceed, and speculative items are marked _(candidate)_ until committed. Within each horizon, items are further grouped by theme so related work can be tackled together.
 
+Two aids for picking work up as a batch. A theme with an internal order carries a **Sequence** lead-in stating what to do first, what subsumes or blocks what, and what to batch — the point being to land related work in one pass and not rewrite the same prose or checker twice. And the genuine **quick wins** — small, self-contained, low-rework items worth clearing opportunistically wherever they sit — are, as of now: the `slugifyRepoPath` fix (Blocking); the `SHAPE-15` rubric backfill and the regex-check-against-test-files guidance (Soon → _Checker infrastructure & output uniformity_); the `ki-housekeeping` cleanup pass (Soon → _Session & operational follow-ups_); and the `headroom memory delete` note plus `ki-recap`'s explicit clean-state message (Future → _Session tooling, memory & housekeeping_). Quick wins are removed as done like everything else here.
+
 This roadmap is itself subject to the house discipline it describes: when a skill's REFRESH run or an audit surfaces a structural gap, it lands here before it's built — and an item is **removed once done**, not ticked off, so the file always shows only open work.
 
 **Continuous practices are not roadmap items.** Keeping the skills audited (`ki:skills:audit`, `ki:repo:audit`, `ki:kb:audit`, the `ki-mcp` audit over the `mcp-*` repos), re-running the advisory [eval suite](evals/README.md) as skills change, and the scheduled `ki-skills-refresh` sweep (which honours each skill's declared `**Refresh:**` cadence) are ongoing disciplines tied to the invariants the `ki-skills` rubric enforces — they run continuously, so they live there, not here.
@@ -38,6 +40,8 @@ A key overall goal of the project: allow multiple agent systems to run on a comm
 
 ### Config contract & migration cleanup
 
+**Sequence.** Two here are standalone and can land any time: removing the `preferred_model` bridge (time-gated on the fleet finishing its config migration) and the unresolvable-`[ki-<skill>]`-table check. The four that follow — a formal `.ki-config.toml` schema, the per-repo `printWidth` override, documenting each skill's overridable keys, and the comment-style CONFORM — interlock, so design them as one: the `printWidth` override is the worked first example of the override surface, the per-skill overridable-key documentation is most of a hand-written schema already, and the comment-tidy convention rides in with them rather than as a separate pass. `ki-dotfiles-chezmoi`'s config-editing tool-selection standard is separate — it governs _how_ to patch a config, not the config contract.
+
 #### Remove the legacy `preferred_model` migration bridge in `ki-tokenomics`
 
 [ADR-KI-HARNESS-009](docs/decisions/ADR-KI-HARNESS-009-portable-model-types.md) renamed the config key `preferred_model` (a Claude alias) to `preferred_model_type` (a portable type) and left a deliberate, temporary bridge: the checker still recognises a lingering `preferred_model` solely to FAIL loudly (`CFG-4`) with a migration hint, and conform emits a concrete "replace with `preferred_model_type = …`" TODO mapping the old alias to its type (the `LEGACY_ALIAS_TO_TYPE` map in `audit.ts`/`conform.ts`). Once the fleet's sibling repos (`ki-arcadia-principal`, the six `mcp-*` repos, any other consumer) have migrated their `.ki-config.toml`, delete the bridge: drop `LEGACY_ALIAS_TO_TYPE`, the `legacyModelTier` config field and its parse branch, and the `CFG-4` legacy-key finding in both scripts, so an unrecognised `preferred_model` falls through to the normal unknown-key path. Target: a few days out (post-migration) — remove once `grep -rl 'preferred_model\b' */.ki-config.toml` across the fleet is empty.
@@ -73,6 +77,8 @@ Decided 2026-07-14 in the `chezmoi` dotfiles repo while landing a Codex `config.
 The `chezmoi` repo carries only the concrete instance (a Codex `tomlkit`-via-`uv` script + `brew "uv"`, already landed); this skill should carry the reusable heuristic. What that implementation taught is ready to write from — notably `dasel` v3's no-create limit and `tomlkit`'s byte-exact round-trip on the real file.
 
 ### Checker infrastructure & output uniformity
+
+**Sequence.** Clear the two quick fixes first — the `SHAPE-15` rubric backfill and the regex-check-against-test-files guidance — they carry no rework. Then treat the JSON-output work as one batch, not four: the checker-output overhaul (pure JSON emitters + a single formatter) **subsumes** the `--json`-shape polish item, carries the CHK-012 runtime check for free, and shares its runtime-collection harness with CHK-009 enforcement — so build the overhaul once and hang CHK-009/CHK-012 off it rather than doing the polish or the checks standalone and redoing them. The NA-skip universal-gate work, the staged-scope pre-commit gap, the `skills.md`-tree generator gate, and the shell-wrapper-vs-`package.json` parity test are independent and can go in any order.
 
 #### Make `ki:audit` a fully universal clean gate — NA-skip the remaining over-reaching audits
 
@@ -112,6 +118,8 @@ Adding `SCRIPT-9` (no cross-skill relative imports in vendored `scripts/*.ts`) t
 
 ### Toolchain & naming conventions
 
+**Sequence.** Do the `ki-engineering` → `ki-engineering-ts` rename and settle the vitest-vs-bare-`test` posture **before** the fleet-wide toolchain-prose reconciliation: that sweep already rewrites ~28 files, and both the new name and the vitest posture have to land in that same prose, so doing them first avoids rewriting it twice. The `mcp-*` mode sweep, the named-action-key standardisation, the generated-code lint/knip exclusion, and the Conventional Commits standard are independent of that batch.
+
 #### Codify a Conventional Commits git standard across the skills
 
 The repos already commit in [Conventional Commits](https://www.conventionalcommits.org/) style (`type(scope): subject`, seen throughout the history), but nothing in the skill set **governs** it — there is no house standard a commit is audited or conformed against. Land one: decide which skill owns git conventions (candidate: `ki-engineering`, which already owns the CI-workflow shape and the toolchain, or a dedicated `ki-git` if the surface is broad enough — commit format, branch naming, the solo-repo-to-`main` policy), specify the allowed `type` set and scope conventions, and add a mechanical check (e.g. a commit-message linter wired into the husky hook chain) plus the AUDIT/CONFORM prose. Cross-reference the per-repo commit guidance already living in `CLAUDE.md` files so the standard and the local instructions stay consistent.
@@ -142,6 +150,8 @@ ADR-KI-HARNESS-TOOLCHAIN-005 records that generated and vendored code (`src/gene
 
 ### Skills & docs consistency
 
+**Sequence.** The convention-placement model + knowledge-promotion loop is the meta-item — it names the layers the concrete items here are instances of (`CLAUDE.md` → skill, the `docs/guides/agents/` staging area, the git-write-safety skill extraction), so let those inform it, but it must **not** front-run the multi-machine state-migration item (Soon) or the KI-vs-portable split (Future), which own the moves it only maps. The mode-vocabulary/heading normalisation is independent.
+
 #### Normalise mode vocabulary and mode-heading structure across the skills
 
 Building the HELP mode ([ADR-KI-HARNESS-SKILLS-001](docs/decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md)) surfaced that the skills disagree on two things the `skill-help.ts` renderer had to be made tolerant of, and which the `ki-skills` rubric does not yet enforce. **Mode verbs drift:** the canonical scaffold mode is `INIT`, but `ki-decision-records`, `ki-kb-activities`, and `ki-kb-live-artifacts` use `NEW`, and `ki-feature-definitions` carries _both_ — decide whether `NEW` is an alias to retire in favour of `INIT` or a distinct mode worth defining, and settle the accepted skill-specific extensions (`OPTIMISE`, the `ki-kb-streams` lifecycle verbs) against the universal set. **Mode-heading structure drifts:** most skills use `## Mode X — gloss` (H2), `ki-authoring` uses `### Mode X` (H3), and `ki-kb` / `ki-housekeeping` declare their modes in prose with no per-mode heading at all — pick one convention so a mode list is mechanically extractable the same way everywhere (rather than relying on the renderer's argument-hint fallback). Land both as `ki-skills` rubric criteria with a mechanical check in `lint-skills.ts`, then conform the set.
@@ -169,6 +179,8 @@ Land a single artifact (candidate home: a `docs/guides/` page owned by `ki-agent
 Found 2026-07-14 in the `chezmoi` dotfiles repo while reviewing whether its `.claude/*.md` files should become skills: the "don't leave `.git/*.lock` files behind, don't parallelise write-mode git commands" rule is generic agent behavior with no chezmoi/dotfiles content, yet it was duplicated in two wrong places there — a Claude Code-only, repo-scoped `.claude/git-hygiene.md`, and, worse, buried in `ki-dotfiles-chezmoi`'s `references/dotfiles-standard.md` (`## Git & audit hygiene` section), a skill whose actual scope is chezmoi dotfiles patterns. Per that repo's three-tier guidance model (project+Claude-only / project+both-agents / all-projects+all-agents), this rule belongs in the last tier as its own small skill here (candidate home: `skills/environment/`, alongside `ki-binding`/`ki-housekeeping`/`ki-tokenomics`, since it's a cross-cutting technical convention rather than a driven multi-step process). Needs proper skill scaffolding (rubric-compliant `SKILL.md`, likely via this repo's own `ki-skills`/`ki-bootstrap` tooling rather than hand-written). Once it exists: remove the duplicated line from `ki-dotfiles-chezmoi`'s `dotfiles-standard.md` (replace with an off-ramp pointer), and the `chezmoi` repo can reconsider whether its `.claude/git-hygiene.md` becomes a thin skill-pointer or is removed outright now that the ambient safety rule is skill-governed.
 
 ### Session & operational follow-ups
+
+**Sequence.** Independent items. The `ki-housekeeping` cleanup pass is a quick, one-time operational action — but it needs the server's access level raised from `read` before it can actually prune.
 
 #### `FILES-3` promises config-scaffolding that no script performs
 
@@ -203,6 +215,8 @@ During a memory/`CLAUDE.md` review session (2026-07-12), several fixes were iden
 Speculative or not yet scoped: items marked `(candidate)` need a scoping pass, or a decision to drop them, before they become actionable.
 
 ### Vendoring architecture & runtime portability
+
+**Sequence.** Framing → mechanism → integrity → ergonomics. The "vendor-in, then use in-repo" framing (and the AI-multiplier framing) is the _why_ the rest answer to — state it first. Whole-skill vendoring into `.ki-meta/skills/` is the mechanism; the source-vs-vendored hash check extends naturally once it lands, and hooks-as-governed-surface + per-repo agent-vendor-scope are the conditional-vendoring cases of the same mechanism. The thin `ki` CLI is a pure wrapper over the result — build it last, after the shell-wrapper-vs-`package.json` parity test under _Next_ has settled the invocation paths it must match.
 
 #### Hooks as a governed harness surface
 
@@ -297,6 +311,8 @@ The sync above (item: "The harness `docs/` is canonical authoring; the website v
 Some of what the harness currently codifies as a shared house standard is actually **KI's own philosophy or house taste** rather than a general, vendor-neutral convention any repo would want regardless of who governs it — the two are currently mixed together in the same skills/standards without a marked boundary. Once the harness itself is stable (the vendoring architecture, the cluster-subfolder layout, and the coverage cascade have settled — see "Vendoring architecture & runtime portability" above), revisit the standards corpus and identify which criteria are KI-specific opinion versus which are portable best practice, so the KI-specific pieces can be migrated to a clearly KI-scoped layer (or a KI-specific skill/table) rather than sitting undistinguished inside a standard that reads as universal. No specific criteria are called out yet — this is a placeholder to do the sorting pass, not a decision about which items move.
 
 ### Session tooling, memory & housekeeping
+
+**Sequence.** The `ki-recap` items batch with the `slugifyRepoPath` fix under _Blocking_ — the invoking-session resolution, the explicit clean-state message, and the grounding-helper fix all touch the same grounding path. The `headroom memory delete` note and the clean-state message are quick wins. The historical-session mining and the `CLAUDE.md` → skill promotion tooling share `ki-recap`'s transcript substrate and `ki-tokenomics`'s scope — scope them against those before building.
 
 #### Mine historical sessions for recurring context bloat _(candidate)_
 
