@@ -9,7 +9,6 @@ Nothing queued.
 ## Next
 
 - [Hooks: Promote Plan Mode plans into thematic roadmaps](docs/roadmap/hooks/ROADMAP.md#promote-plan-mode-plans-into-thematic-roadmaps)
-- [Project Roadmap: Replace `ki-plans` with `ki-project-roadmap`](docs/roadmap/project-roadmap/ROADMAP.md#replace-ki-plans-with-ki-project-roadmap)
 
 ## Soon
 
