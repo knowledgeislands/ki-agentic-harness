@@ -233,34 +233,31 @@ const KI_AUTHORING_DEFAULT = `# The authoring standard (Markdown/TOML house styl
 `
 const KI_DEFAULT = `${KI_REPO_DEFAULT}\n${KI_AUTHORING_DEFAULT}`
 
-// Minimal parser for the constrained schema: `[table]` headers (incl. the dotted
-// `[...checks]` sub-table), flat `key = "string"` and `key = true|false` on a single
-// line, `#` comments. NOT a full TOML parser. Returns this skill's config, or null
-// if the file has no [ki-repo] table at all.
+// Parse the owned table with Bun's TOML parser so quoted table keys, comments,
+// and multiline strings cannot be mistaken for schema. Returns null when the
+// document is invalid or has no object-valued [ki-repo] table.
 type KiConfig = { visibility?: string; license?: string; checks: Record<string, boolean> }
 const CHECKS_SECTION = `${KI_SECTION}.checks`
+const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
 function parseKiConfig(text: string): KiConfig | null {
-  let section = ''
-  let seen = false
-  const out: KiConfig = { checks: {} }
-  for (const raw of text.split(/\r?\n/)) {
-    const line = raw.replace(/#.*$/, '').trim()
-    if (!line) continue
-    const header = line.match(/^\[(.+)\]$/)
-    if (header) {
-      section = (header[1] as string).trim()
-      if (section === KI_SECTION) seen = true
-      continue
-    }
-    const eq = line.indexOf('=')
-    if (eq === -1) continue
-    const key = line.slice(0, eq).trim()
-    const val = line.slice(eq + 1).trim()
-    if (section === KI_SECTION && key === 'visibility') out.visibility = val.replace(/^["']|["']$/g, '')
-    if (section === KI_SECTION && key === 'license') out.license = val.replace(/^["']|["']$/g, '')
-    else if (section === CHECKS_SECTION && (val === 'true' || val === 'false')) out.checks[key] = val === 'true'
+  let document: Record<string, unknown>
+  try {
+    document = TOML.parse(text) as Record<string, unknown>
+  } catch {
+    return null
   }
-  return seen ? out : null
+  const value = document[KI_SECTION]
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null
+  const table = value as Record<string, unknown>
+  const out: KiConfig = { checks: {} }
+  if (typeof table.visibility === 'string') out.visibility = table.visibility
+  if (typeof table.license === 'string') out.license = table.license
+  if (table.checks && typeof table.checks === 'object' && !Array.isArray(table.checks)) {
+    for (const [key, check] of Object.entries(table.checks as Record<string, unknown>)) {
+      if (typeof check === 'boolean') out.checks[key] = check
+    }
+  }
+  return out
 }
 
 type Repo = {
@@ -367,11 +364,57 @@ const REPO_STRUCTURE_TABLES = [
   'ki-homebrew-tap',
   'ki-dotfiles-chezmoi'
 ]
-// A `[ki-<skill>]` (or sub-table `[…​.x]`) header on its own line —
-// anchored so a commented-out `# [..]` template line does not count as declared.
-const declaresTable = (kiText: string, table: string): boolean => new RegExp(`^\\[${table}(\\]|\\.)`, 'm').test(kiText)
+type MultilineDelimiter = '"""' | "'''"
+function tripleClose(line: string, delimiter: MultilineDelimiter, from: number): number {
+  let at = line.indexOf(delimiter, from)
+  while (at !== -1) {
+    const backslashes = line.slice(0, at).match(/\\+$/)?.[0].length ?? 0
+    if (delimiter === "'''" || backslashes % 2 === 0) return at
+    at = line.indexOf(delimiter, at + delimiter.length)
+  }
+  return -1
+}
+
+function declaredTables(text: string): Array<{ root: string; exact: boolean }> {
+  const tables: Array<{ root: string; exact: boolean }> = []
+  let multiline: MultilineDelimiter | null = null
+  for (const raw of text.split(/\r?\n/)) {
+    if (multiline) {
+      if (tripleClose(raw, multiline, 0) !== -1) multiline = null
+      continue
+    }
+    let code = ''
+    let quote: '"' | "'" | null = null
+    let escaped = false
+    for (let i = 0; i < raw.length; i++) {
+      const delimiter = raw.startsWith('"""', i) ? '"""' : raw.startsWith("'''", i) ? "'''" : null
+      if (!quote && delimiter) {
+        if (tripleClose(raw, delimiter, i + delimiter.length) === -1) multiline = delimiter
+        break
+      }
+      const char = raw[i] as string
+      if (!quote && char === '#') break
+      code += char
+      if (quote === '"') {
+        if (!escaped && char === '"') quote = null
+        escaped = !escaped && char === '\\'
+      } else if (quote === "'") {
+        if (char === "'") quote = null
+      } else if (char === '"' || char === "'") {
+        quote = char
+        escaped = false
+      }
+    }
+    const match = code.trim().match(/^\[\s*(?:"([^"\\]+)"|'([^']+)'|([A-Za-z0-9_-]+))\s*(\.|\])/)
+    const root = match?.[1] ?? match?.[2] ?? match?.[3]
+    if (root) tables.push({ root, exact: match?.[4] === ']' })
+  }
+  return tables
+}
+
+const declaresTable = (kiText: string, table: string): boolean => declaredTables(kiText).some(({ root }) => root === table)
 const declaresRootTable = (kiText: string, table: string): boolean =>
-  kiText.split(/\r?\n/).some((raw) => raw.replace(/#.*$/, '').trim() === `[${table}]`)
+  declaredTables(kiText).some(({ root, exact }) => root === table && exact)
 
 function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: string | null, signals: Signals): Finding[] {
   const { f, fail, warn, note } = mk()
@@ -698,19 +741,18 @@ const KNOWN_RUNTIMES = ['claude-code', 'codex']
 // Returns null when the key is absent (the ["claude-code"] default applies, nothing to
 // check), else the declared list (possibly empty).
 function parseTargetRuntimes(text: string): string[] | null {
-  let section = ''
-  for (const raw of text.split(/\r?\n/)) {
-    const line = raw.replace(/#.*$/, '').trim()
-    const header = line.match(/^\[(.+)\]$/)
-    if (header) {
-      section = (header[1] as string).trim()
-      continue
-    }
-    if (section !== KI_SECTION) continue
-    const m = line.match(/^target_runtimes\s*=\s*\[([^\]]*)\]/)
-    if (m) return [...(m[1] as string).matchAll(/["']([^"']+)["']/g)].map((x) => x[1] as string)
+  let document: Record<string, unknown>
+  try {
+    document = TOML.parse(text) as Record<string, unknown>
+  } catch {
+    return null
   }
-  return null
+  const table = document[KI_SECTION]
+  if (!table || typeof table !== 'object' || Array.isArray(table)) return null
+  const runtimes = (table as Record<string, unknown>).target_runtimes
+  if (runtimes === undefined) return null
+  if (!Array.isArray(runtimes)) return []
+  return runtimes.filter((runtime): runtime is string => typeof runtime === 'string')
 }
 
 // RUNTIMES-1: validate `[ki-repo] target_runtimes` if declared. A pure local
