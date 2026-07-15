@@ -13,6 +13,7 @@ import { join } from 'node:path'
 const GREEN = '\x1b[32m'
 const DIM = '\x1b[2m'
 const RESET = '\x1b[0m'
+const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
 
 export function readText(path: string): string {
   return existsSync(path) ? readFileSync(path, 'utf8') : ''
@@ -22,14 +23,22 @@ export function readText(path: string): string {
 // A repo declares which agent runtimes it installs skills/agents for via
 // `[ki-repo] target_runtimes = [...]` — a repo-wide fact, not a harness-structure
 // detail. Absent → the historical default ["claude-code"], so every repo predating
-// multi-runtime support is unchanged. (The match is table-agnostic, but the key's
-// documented home is [ki-repo].)
+// multi-runtime support is unchanged. Parsing is table-aware so a lookalike key
+// in another table or a multiline string cannot redirect runtime installation.
 // Discovery paths differ per runtime: Claude Code reads `.claude/`, OpenAI Codex
 // CLI reads `.agents/` (the runtime feature-coverage matrix, SDR-KI-HARNESS-002).
 export function targetRuntimes(kiConfigText: string): string[] {
-  const m = kiConfigText.match(/^target_runtimes\s*=\s*\[([^\]]*)\]/m)
-  if (!m) return ['claude-code']
-  const list = [...(m[1] as string).matchAll(/["']([^"']+)["']/g)].map((x) => x[1] as string)
+  let document: Record<string, unknown>
+  try {
+    document = TOML.parse(kiConfigText) as Record<string, unknown>
+  } catch {
+    return ['claude-code']
+  }
+  const repo = document['ki-repo']
+  if (!repo || typeof repo !== 'object' || Array.isArray(repo)) return ['claude-code']
+  const runtimes = (repo as Record<string, unknown>).target_runtimes
+  if (!Array.isArray(runtimes)) return ['claude-code']
+  const list = runtimes.filter((runtime): runtime is string => typeof runtime === 'string')
   return list.length ? list : ['claude-code']
 }
 

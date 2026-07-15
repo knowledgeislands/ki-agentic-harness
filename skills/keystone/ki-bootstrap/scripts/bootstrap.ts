@@ -523,6 +523,16 @@ function scaffoldRepoConfig(target: string, dryRun: boolean): void {
   }
 }
 
+function resolvedSetOrExit(target: string, seeds: string[]): string[] {
+  try {
+    return resolveSet(target, false, seeds)
+  } catch (error) {
+    if (!(error instanceof SkillResolutionError)) throw error
+    console.error(`${'\x1b[31m'}FAIL${RESET}  [BOOT-9] ${error.message} — reconcile .ki-config.toml or the explicit --seed value`)
+    process.exit(1)
+  }
+}
+
 function main(): void {
   const argv = process.argv.slice(2)
   // Pull the value-taking flags out first so their values are not mistaken for
@@ -551,22 +561,15 @@ function main(): void {
   // sugar over these same bins. Vendoring is always coverage-scoped (`.ki-config.toml`
   // + baseline + implies + explicit --seed) — `--all` is a linking concept only, never a
   // vendoring one (ADR-KI-HARNESS-007).
-  let set: string[]
-  try {
-    set = resolveSet(target, false, seeds)
-  } catch (error) {
-    if (!(error instanceof SkillResolutionError)) throw error
-    console.error(`${'\x1b[31m'}FAIL${RESET}  [BOOT-9] ${error.message} — reconcile .ki-config.toml or the explicit --seed value`)
-    process.exit(1)
-  }
+  let set = resolvedSetOrExit(target, seeds)
 
-  // ki-repo exclusively owns .ki-config.toml. Once the initial resolution has
-  // proved every declared/seeded root valid, compose its scaffold-only INIT leg
+  // ki-repo owns the file-level contract and foundation-marker scaffold. Once
+  // initial resolution proves every declared/seeded root valid, compose that leg
   // before any .ki-meta mutation, then re-resolve against the converged config.
   // Bare bootstrap with no config/seed resolves no ki-repo and remains empty-set.
   if (set.includes('ki-repo')) {
     scaffoldRepoConfig(target, dryRun)
-    set = resolveSet(target, false, seeds)
+    set = resolvedSetOrExit(target, seeds)
   }
   console.log(`${DIM}bootstrap ${target} — skills: ${set.join(', ')}${RESET}`)
 

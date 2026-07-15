@@ -157,34 +157,76 @@ const ghIfNeeded = (already: boolean, args: string[], area: string, label: strin
   gh(args, area, label, covers)
 }
 
-// Same minimal parser as audit.ts.
+// Same TOML-aware owned-table parser as audit.ts.
 type KiConfig = { visibility?: string; checks: Record<string, boolean> }
 const CHECKS_SECTION = `${KI_SECTION}.checks`
+const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
 function parseKiConfig(text: string): KiConfig | null {
-  let section = ''
-  let seen = false
-  const out: KiConfig = { checks: {} }
-  for (const raw of text.split(/\r?\n/)) {
-    const line = raw.replace(/#.*$/, '').trim()
-    if (!line) continue
-    const header = line.match(/^\[(.+)\]$/)
-    if (header) {
-      section = (header[1] as string).trim()
-      if (section === KI_SECTION) seen = true
-      continue
-    }
-    const eq = line.indexOf('=')
-    if (eq === -1) continue
-    const key = line.slice(0, eq).trim()
-    const val = line.slice(eq + 1).trim()
-    if (section === KI_SECTION && key === 'visibility') out.visibility = val.replace(/^["']|["']$/g, '')
-    else if (section === CHECKS_SECTION && (val === 'true' || val === 'false')) out.checks[key] = val === 'true'
+  let document: Record<string, unknown>
+  try {
+    document = TOML.parse(text) as Record<string, unknown>
+  } catch {
+    return null
   }
-  return seen ? out : null
+  const value = document[KI_SECTION]
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null
+  const table = value as Record<string, unknown>
+  const out: KiConfig = { checks: {} }
+  if (typeof table.visibility === 'string') out.visibility = table.visibility
+  if (table.checks && typeof table.checks === 'object' && !Array.isArray(table.checks)) {
+    for (const [key, check] of Object.entries(table.checks as Record<string, unknown>)) {
+      if (typeof check === 'boolean') out.checks[key] = check
+    }
+  }
+  return out
 }
 
-const declaresRootTable = (text: string, table: string): boolean =>
-  text.split(/\r?\n/).some((raw) => raw.replace(/#.*$/, '').trim() === `[${table}]`)
+type MultilineDelimiter = '"""' | "'''"
+function tripleClose(line: string, delimiter: MultilineDelimiter, from: number): number {
+  let at = line.indexOf(delimiter, from)
+  while (at !== -1) {
+    const backslashes = line.slice(0, at).match(/\\+$/)?.[0].length ?? 0
+    if (delimiter === "'''" || backslashes % 2 === 0) return at
+    at = line.indexOf(delimiter, at + delimiter.length)
+  }
+  return -1
+}
+
+function declaresRootTable(text: string, table: string): boolean {
+  let multiline: MultilineDelimiter | null = null
+  for (const raw of text.split(/\r?\n/)) {
+    if (multiline) {
+      if (tripleClose(raw, multiline, 0) !== -1) multiline = null
+      continue
+    }
+    let code = ''
+    let quote: '"' | "'" | null = null
+    let escaped = false
+    for (let i = 0; i < raw.length; i++) {
+      const delimiter = raw.startsWith('"""', i) ? '"""' : raw.startsWith("'''", i) ? "'''" : null
+      if (!quote && delimiter) {
+        if (tripleClose(raw, delimiter, i + delimiter.length) === -1) multiline = delimiter
+        break
+      }
+      const char = raw[i] as string
+      if (!quote && char === '#') break
+      code += char
+      if (quote === '"') {
+        if (!escaped && char === '"') quote = null
+        escaped = !escaped && char === '\\'
+      } else if (quote === "'") {
+        if (char === "'") quote = null
+      } else if (char === '"' || char === "'") {
+        quote = char
+        escaped = false
+      }
+    }
+    const match = code.trim().match(/^\[\s*(?:"([^"\\]+)"|'([^']+)'|([A-Za-z0-9_-]+))\s*(\.|\])/)
+    const root = match?.[1] ?? match?.[2] ?? match?.[3]
+    if (root === table && match?.[4] === ']') return true
+  }
+  return false
+}
 
 type ConfigPlan = { text: string; addRepo: boolean; addAuthoring: boolean }
 function configPlan(existing: string): ConfigPlan {

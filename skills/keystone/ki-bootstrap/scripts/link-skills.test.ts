@@ -40,8 +40,8 @@ function fixture(tables: string[], runtimes?: string[]): string {
   // mkdtemp path has a different depth-to-root than its resolved one — since the
   // symlinks this creates are relative, that mismatch would make them dangle.
   const dir = realpathSync(mkdtempSync(join(tmpdir(), 'ki-boot-linktest-')))
-  const runtimesLine = runtimes ? `target_runtimes = [${runtimes.map((r) => `"${r}"`).join(', ')}]\n` : ''
-  writeFileSync(join(dir, '.ki-config.toml'), `${runtimesLine}${tables.map((t) => `[${t}]`).join('\n')}\n`)
+  const runtimeTable = runtimes ? `[ki-repo]\ntarget_runtimes = [${runtimes.map((r) => `"${r}"`).join(', ')}]\n` : ''
+  writeFileSync(join(dir, '.ki-config.toml'), `${runtimeTable}${tables.map((t) => `[${t}]`).join('\n')}\n`)
   return dir
 }
 
@@ -147,6 +147,28 @@ try {
   check('unknown runtime → fail-loud message names the runtime', out.includes('bogus-runtime'))
 } finally {
   rmSync(unknown, { recursive: true, force: true })
+}
+
+const quotedRuntime = fixture([])
+try {
+  writeFileSync(join(quotedRuntime, '.ki-config.toml'), '["ki-repo"]\ntarget_runtimes = ["codex"]\n["ki-kb"]\n')
+  const { code } = runLink(quotedRuntime)
+  check('quoted repo/runtime table → exit 0', code === 0)
+  check('quoted repo/runtime table → codex path selected', existsSync(join(quotedRuntime, '.agents', 'skills', 'ki-kb')))
+  check('quoted repo/runtime table → default Claude path not selected', !existsSync(join(quotedRuntime, '.claude', 'skills')))
+} finally {
+  rmSync(quotedRuntime, { recursive: true, force: true })
+}
+
+const multilineRuntime = fixture([])
+try {
+  writeFileSync(join(multilineRuntime, '.ki-config.toml'), '[ki-kb]\nnote = """\ntarget_runtimes = ["codex"]\n"""\n')
+  const { code } = runLink(multilineRuntime)
+  check('multiline runtime lookalike → exit 0', code === 0)
+  check('multiline runtime lookalike → ignored in favour of default', existsSync(join(multilineRuntime, '.claude', 'skills', 'ki-kb')))
+  check('multiline runtime lookalike → does not select codex path', !existsSync(join(multilineRuntime, '.agents', 'skills')))
+} finally {
+  rmSync(multilineRuntime, { recursive: true, force: true })
 }
 
 if (failed) {

@@ -132,6 +132,42 @@ try {
   rmSync(subtable, { recursive: true, force: true })
 }
 
+const multilineLookalikes = `[ki-repo.checks]
+note = """
+[ki-repo]
+[ki-authoring]
+"""
+`
+const multiline = fixture(multilineLookalikes)
+try {
+  const first = runInit(multiline)
+  const afterFirst = readFileSync(join(multiline, '.ki-config.toml'), 'utf8')
+  const second = runInit(multiline)
+  const afterSecond = readFileSync(join(multiline, '.ki-config.toml'), 'utf8')
+  check('INIT multiline lookalikes → exits cleanly', first.code === 0)
+  check('INIT multiline lookalikes → preserves the string bytes as prefix', afterFirst.startsWith(multilineLookalikes))
+  check(
+    'INIT multiline lookalikes → appends real roots after the string closes',
+    afterFirst.lastIndexOf('[ki-repo]') > afterFirst.lastIndexOf('"""')
+  )
+  check('INIT multiline lookalikes → second run is byte-identical', second.code === 0 && afterSecond === afterFirst)
+} finally {
+  rmSync(multiline, { recursive: true, force: true })
+}
+
+const quotedRootsText = '["ki-repo"]\nvisibility = "private"\n["ki-authoring"]\n'
+const quotedRoots = fixture(quotedRootsText)
+try {
+  const result = runInit(quotedRoots)
+  check('INIT quoted exact roots → exits cleanly', result.code === 0)
+  check(
+    'INIT quoted exact roots → recognised without a rewrite',
+    readFileSync(join(quotedRoots, '.ki-config.toml'), 'utf8') === quotedRootsText
+  )
+} finally {
+  rmSync(quotedRoots, { recursive: true, force: true })
+}
+
 const dry = fixture(null)
 try {
   const result = runInit(dry, true)

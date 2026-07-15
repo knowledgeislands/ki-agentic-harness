@@ -50,8 +50,11 @@ function snapshot(root: string): string {
 const parsed = declaredSkills(`
 [ki-plan] # exact with a comment
 [ki-plan.checks]
-[ki-housekeeping.zones.local] # dotted owner
-[ki-bootstrap]
+description = """
+[ki-multiline-missing]
+"""
+["ki-housekeeping".zones.local] # dotted quoted owner
+["ki-bootstrap"]
 # [ki-commented-out]
 coverage-extra = "[ki-value-only]"
 `)
@@ -97,6 +100,22 @@ try {
   )
 } finally {
   rmSync(unresolved, { recursive: true, force: true })
+}
+
+const noncanonical = fixture('[ki-NotReal]\n')
+try {
+  let caught: unknown
+  try {
+    resolveSet(noncanonical, false, [])
+  } catch (error) {
+    caught = error
+  }
+  check(
+    'noncanonical ki-like header → fails loudly instead of disappearing',
+    caught instanceof SkillResolutionError && caught.unresolved.includes('ki-NotReal')
+  )
+} finally {
+  rmSync(noncanonical, { recursive: true, force: true })
 }
 
 const invalidConfig = fixture('[ki-does-not-exist]\n')

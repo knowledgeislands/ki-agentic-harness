@@ -71,12 +71,66 @@ export function isSkill(skill: string): boolean {
   return skillIndex().has(skill)
 }
 
-// Skill roots named by `[ki-<skill>]` tables or their dotted sub-tables in the
-// target's .ki-config.toml. Comments and values that merely contain table-looking
-// text are ignored; repeated roots are collapsed so diagnostics stay deterministic.
+type MultilineDelimiter = '"""' | "'''"
+
+function tripleClose(line: string, delimiter: MultilineDelimiter, from: number): number {
+  let at = line.indexOf(delimiter, from)
+  while (at !== -1) {
+    const backslashes = line.slice(0, at).match(/\\+$/)?.[0].length ?? 0
+    if (delimiter === "'''" || backslashes % 2 === 0) return at
+    at = line.indexOf(delimiter, at + delimiter.length)
+  }
+  return -1
+}
+
+// Return only physical TOML table-header lines, ignoring comments, ordinary
+// strings, and whole lines occupied by multiline basic/literal strings.
+function tableHeaderLines(text: string): string[] {
+  const headers: string[] = []
+  let multiline: MultilineDelimiter | null = null
+  for (const raw of text.split(/\r?\n/)) {
+    if (multiline) {
+      if (tripleClose(raw, multiline, 0) !== -1) multiline = null
+      continue
+    }
+    let code = ''
+    let quote: '"' | "'" | null = null
+    let escaped = false
+    for (let i = 0; i < raw.length; i++) {
+      const delimiter = raw.startsWith('"""', i) ? '"""' : raw.startsWith("'''", i) ? "'''" : null
+      if (!quote && delimiter) {
+        if (tripleClose(raw, delimiter, i + delimiter.length) === -1) multiline = delimiter
+        break
+      }
+      const char = raw[i] as string
+      if (!quote && char === '#') break
+      code += char
+      if (quote === '"') {
+        if (!escaped && char === '"') quote = null
+        escaped = !escaped && char === '\\'
+      } else if (quote === "'") {
+        if (char === "'") quote = null
+      } else if (char === '"' || char === "'") {
+        quote = char
+        escaped = false
+      }
+    }
+    const header = code.trim()
+    if (header.startsWith('[')) headers.push(header)
+  }
+  return headers
+}
+
+// Skill roots named by exact or dotted TOML tables. Bare and simply-quoted root
+// keys are accepted; malformed/noncanonical ki-like names reach resolution and
+// fail against the index instead of disappearing. Repeated roots collapse.
 export function declaredSkills(kiConfigText: string): string[] {
   const out = new Set<string>()
-  for (const match of kiConfigText.matchAll(/^[ \t]*\[(ki-[a-z0-9-]+)(?:\.[a-zA-Z0-9_-]+)*\][ \t]*(?:#.*)?$/gm)) out.add(match[1])
+  for (const header of tableHeaderLines(kiConfigText)) {
+    const match = header.match(/^\[\s*(?:"(ki-[^"\\]+)"|'(ki-[^']+)'|(ki-[A-Za-z0-9_-]+))\s*(?:\.|\])/)
+    const root = match?.[1] ?? match?.[2] ?? match?.[3]
+    if (root) out.add(root)
+  }
   return [...out].sort()
 }
 

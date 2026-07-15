@@ -23,7 +23,7 @@ The governance set is derived from `.ki-config.toml`, so silently dropping a dec
 
 ## Steps
 
-1. ✓ Trace both gaps and lock ownership: `ki-bootstrap` is the canonical skill-index authority and must fail resolution before mutation; `ki-repo` owns every `.ki-config.toml` byte and exposes a scaffold-only INIT leg that bootstrap invokes by subprocess composition.
+1. ✓ Trace both gaps and lock ownership: `ki-bootstrap` is the canonical skill-index authority and must fail resolution before mutation; `ki-repo` owns the config's file-level contract and foundation scaffolding, exposing a scaffold-only INIT leg that bootstrap invokes by subprocess composition.
 2. Harden `ki-bootstrap` resolution and all callers:
    - Parse and deduplicate root owners from exact and dotted `[ki-*]` headers while ignoring comments and `coverage-*` keys.
    - Validate declared roots and explicit seeds against the ref-specific canonical skill index; return a typed, sorted unresolved-root error instead of a partial set.
