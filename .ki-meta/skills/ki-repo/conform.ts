@@ -35,7 +35,8 @@
  *     scanning + push protection (public), Actions allowed_actions = all.
  * Scaffolds locally (only when absent, never overwritten):
  *   - .gitignore — from this skill's own template.
- *   - .ki-config.toml's [ki-repo] block — audit.ts's `--init` template.
+ *   - .ki-config.toml's missing [ki-repo] / [ki-authoring] root markers —
+ *     audit.ts's `--init` template, appended without rewriting existing bytes.
  * `.editorconfig` is owned by ki-authoring (it backs that skill's own Markdown
  * conform pass), not this skill.
  *
@@ -74,8 +75,9 @@ const CHECK_DEFAULTS: Record<string, boolean> = {
 }
 const KI_CONFIG = '.ki-config.toml'
 const KI_SECTION = 'ki-repo'
-const KI_DEFAULT = `[${KI_SECTION}]
+const KI_REPO_DEFAULT = `[${KI_SECTION}]
 visibility = "private"   # "public" | "private" — must match the repo's actual GitHub visibility
+license = "MIT"          # SPDX id the LICENSE, package.json, and GitHub must match; default MIT. Use "UNLICENSED" for proprietary. Pick one at https://choosealicense.com/
 
 # Per-repo check overrides — true = enforce, false = don't. Omit any check to take
 # the org default; a repo that fully conforms needs nothing here.
@@ -83,6 +85,11 @@ visibility = "private"   # "public" | "private" — must match the repo's actual
 # branch-protection = true   # default off — protect \`main\` on this repo
 # wiki = false               # default on  — allow this repo's Wiki
 `
+const KI_AUTHORING_DEFAULT = `# The authoring standard (Markdown/TOML house style) is baseline — every KI repo is
+# governed by it. Declared explicitly, not assumed; its presence is the compliance marker.
+[ki-authoring]
+`
+const KI_DEFAULT = `${KI_REPO_DEFAULT}\n${KI_AUTHORING_DEFAULT}`
 const GITIGNORE_DEFAULT = 'node_modules/\n.DS_Store\n.ki-meta/audits/\n.ki-meta/conform/\n'
 
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
@@ -163,7 +170,7 @@ function parseKiConfig(text: string): KiConfig | null {
     const header = line.match(/^\[(.+)\]$/)
     if (header) {
       section = (header[1] as string).trim()
-      if (section === KI_SECTION || section === CHECKS_SECTION) seen = true
+      if (section === KI_SECTION) seen = true
       continue
     }
     const eq = line.indexOf('=')
@@ -174,6 +181,36 @@ function parseKiConfig(text: string): KiConfig | null {
     else if (section === CHECKS_SECTION && (val === 'true' || val === 'false')) out.checks[key] = val === 'true'
   }
   return seen ? out : null
+}
+
+const declaresRootTable = (text: string, table: string): boolean =>
+  text.split(/\r?\n/).some((raw) => raw.replace(/#.*$/, '').trim() === `[${table}]`)
+
+type ConfigPlan = { text: string; addRepo: boolean; addAuthoring: boolean }
+function configPlan(existing: string): ConfigPlan {
+  const addRepo = !declaresRootTable(existing, KI_SECTION)
+  const addAuthoring = !declaresRootTable(existing, 'ki-authoring')
+  if (existing.length === 0 && addRepo && addAuthoring) return { text: KI_DEFAULT, addRepo, addAuthoring }
+  const blocks = [addRepo ? KI_REPO_DEFAULT : '', addAuthoring ? KI_AUTHORING_DEFAULT : ''].filter(Boolean)
+  if (blocks.length === 0) return { text: existing, addRepo, addAuthoring }
+  const separator = existing.length === 0 ? '' : existing.endsWith('\n\n') ? '' : existing.endsWith('\n') ? '\n' : '\n\n'
+  return { text: `${existing}${separator}${blocks.join('\n')}`, addRepo, addAuthoring }
+}
+
+// ── local file scaffolding (only when absent; never overwrite) ──
+// A scaffold line cites the presence-check code (audit's `gitignore` / `ki-config`) with
+// file = the scaffolded path: written → POLISH, already present → PASS (never overwritten).
+// The scaffolded filename is the FIRST argument by contract — ki-skills SHAPE-16 reads
+// the leading string literal of each scaffold/syncOwned call cross-skill to check the
+// file is declared under `owns:`, so the real path (not the area code) must lead.
+function scaffold(name: string, area: string, path: string, content: string): void {
+  if (existsSync(path)) {
+    rec('PASS', area, `${name} already present`, STD, name)
+    return
+  }
+  rec('POLISH', area, `${name} scaffolded (was missing)`, STD, name)
+  say(`  ${paint(C.green, 'write')} ${name}`)
+  if (!dryRun) writeFileSync(path, content)
 }
 
 function gitOrigin(dir: string): string | null {
@@ -187,6 +224,32 @@ const GH_REMOTE = /github\.com[:/]([^/]+)\/(.+?)(?:\.git)?$/
 
 // ── entry ──
 const target = resolve(argv.find((a) => !a.startsWith('-')) ?? '.')
+const kiPath = join(target, KI_CONFIG)
+const kiText = existsSync(kiPath) ? readFileSync(kiPath, 'utf8') : ''
+const plannedConfig = configPlan(kiText)
+
+// Layer 1 is local and must converge even when the target has no GitHub remote or
+// `gh` is unauthenticated. Live-state checks begin only after these writes finish.
+scaffold('.gitignore', 'FILES-1', join(target, '.gitignore'), GITIGNORE_DEFAULT)
+if (plannedConfig.addRepo) {
+  rec(
+    'POLISH',
+    'FILES-1',
+    `${KI_CONFIG} [${KI_SECTION}] block appended (edit \`visibility\` to match — templated "private")`,
+    STD,
+    KI_CONFIG
+  )
+  say(`  ${paint(C.green, 'append')} ${KI_CONFIG} [${KI_SECTION}] block (edit \`visibility\` to match — currently templated "private")`)
+} else {
+  rec('PASS', 'FILES-1', `${KI_CONFIG} [${KI_SECTION}] block already present`, STD, KI_CONFIG)
+}
+if (plannedConfig.addAuthoring) {
+  rec('POLISH', 'FILES-3', `${KI_CONFIG} [ki-authoring] marker appended`, STD, KI_CONFIG)
+  say(`  ${paint(C.green, 'append')} ${KI_CONFIG} [ki-authoring] marker`)
+} else {
+  rec('PASS', 'FILES-3', `${KI_CONFIG} [ki-authoring] marker already present`, STD, KI_CONFIG)
+}
+if (!dryRun && (plannedConfig.addRepo || plannedConfig.addAuthoring)) writeFileSync(kiPath, plannedConfig.text)
 
 const origin = gitOrigin(target)
 const m = origin?.match(GH_REMOTE)
@@ -196,9 +259,7 @@ if (!m) {
 }
 const nwo = `${m[1]}/${m[2]}`
 
-const kiPath = join(target, KI_CONFIG)
-const kiText = existsSync(kiPath) ? readFileSync(kiPath, 'utf8') : ''
-const ki = kiText ? parseKiConfig(kiText) : null
+const ki = parseKiConfig(plannedConfig.text)
 const enforced = (id: string): boolean => ki?.checks[id] ?? CHECK_DEFAULTS[id] ?? true
 
 type RepoInfo = {
@@ -226,36 +287,6 @@ try {
 const isPublic = !repoInfo.private
 
 say(paint(C.dim, `target: ${nwo}   ${isPublic ? 'public' : 'private'}${dryRun ? '   (dry run)' : ''}\n`))
-
-// ── local file scaffolding (only when absent; never overwrite) ──
-// A scaffold line cites the presence-check code (audit's `gitignore` / `ki-config`) with
-// file = the scaffolded path: written → POLISH, already present → PASS (never overwritten).
-// The scaffolded filename is the FIRST argument by contract — ki-skills SHAPE-16 reads
-// the leading string literal of each scaffold/syncOwned call cross-skill to check the
-// file is declared under `owns:`, so the real path (not the area code) must lead.
-function scaffold(name: string, area: string, path: string, content: string): void {
-  if (existsSync(path)) {
-    rec('PASS', area, `${name} already present`, STD, name)
-    return
-  }
-  rec('POLISH', area, `${name} scaffolded (was missing)`, STD, name)
-  say(`  ${paint(C.green, 'write')} ${name}`)
-  if (!dryRun) writeFileSync(path, content)
-}
-scaffold('.gitignore', 'FILES-1', join(target, '.gitignore'), GITIGNORE_DEFAULT)
-if (!ki) {
-  rec(
-    'POLISH',
-    'FILES-1',
-    `${KI_CONFIG} [${KI_SECTION}] block appended (edit \`visibility\` to match — templated "private")`,
-    STD,
-    KI_CONFIG
-  )
-  say(`  ${paint(C.green, 'append')} ${KI_CONFIG} [${KI_SECTION}] block (edit \`visibility\` to match — currently templated "private")`)
-  if (!dryRun) writeFileSync(kiPath, kiText ? `${kiText.replace(/\n*$/, '\n\n')}${KI_DEFAULT}` : KI_DEFAULT)
-} else {
-  rec('PASS', 'FILES-1', `${KI_CONFIG} [${KI_SECTION}] block already present`, STD, KI_CONFIG)
-}
 
 // ── Layer 2: core GitHub settings ──
 say(`\n${paint(C.cyan, 'layer 2 — core GitHub')}`)
