@@ -33,7 +33,7 @@ So the approach below adds a deliberate, user-invoked **`/ki-plan promote` lifec
 - Promoted plans are independent in v1: `blocks: —` and `blocked-by: —`. Promotion will not make reciprocal edits to other active plans; dependency wiring remains an explicit later plan edit after the new artifact exists and passes audit.
 - Hooks are registered via `skills/keystone/ki-bootstrap/scripts/link-hooks.ts`'s `HOOK_NAMES`/`HOOK_PAIRS`, merge-patched into `~/.claude/settings.json` under `hooks.PostToolUse` as `{matcher, hooks:[{type:'command', command, timeout:5}]}`. No new entry is needed here since no new hook script is being added.
 - Claude Code's scratch `plansDirectory` and the governed repository destination are separate boundaries. Promotion v1 supports only the hooks' default `$HOME/.claude/plans` scratch root and the repository's default `<git-root>/docs/plans` destination; it does not honor either a Claude Code scratch override or a KI `[plans] path` override.
-- The promotion lifecycle, runtime coverage, catalogue, and hook documentation now encode the reviewed transaction. Repository-wide tests and audits pass; the remaining closure gate is a live Claude Code `/ki-plan promote` smoke test, because session substitution and prose-driven execution cannot be exercised from this Codex runtime.
+- The promotion lifecycle, runtime coverage, catalogue, and hook documentation now encode the reviewed transaction. Repository-wide tests and audits pass. An isolated Claude CLI smoke fixture reached the runtime with an explicit session id but correctly had no access to the user's authentication (`Not logged in`, zero API turns and zero cost); credentials were not copied into the fixture. The remaining closure gate is therefore an authenticated interactive Claude Code `/ki-plan promote` smoke test.
 
 ## Steps
 
@@ -55,7 +55,7 @@ So the approach below adds a deliberate, user-invoked **`/ki-plan promote` lifec
    - Require the destination to be absent by `lstat` semantics, including no dangling symlink. Re-resolve every path component and recheck the id union, clean audit, and destination immediately before an exclusive/no-clobber write; abort on drift.
    - Preserve the source scratch and state pointer, write the plan and index/graph consistently, and run the plan audit again. If the new transaction does not audit cleanly, roll back only its new plan/index changes and report the failure.
 6. ✓ Clean up the surrounding contract in `hooks/README.md`, `docs/guides/user-guide/skill-catalogue.md`, and `docs/decisions/references/runtime-feature-coverage.md`: document the v1 JSON/legacy boundary; distinguish the portable governed-plan artifact from Claude-Code-only Plan Mode discovery; use `/ki-plan`; and present lifecycle verbs in one consistent rubric-compliant order.
-7. Run the live Claude Code `/ki-plan promote` success and rejection smoke test. Focused hook tests, plan/skill/authoring audits, Markdown checks, the full repository test suite, and two adversarial reviews are complete; keep the plan `in-progress` until the runtime-only smoke test passes.
+7. Run the live authenticated Claude Code `/ki-plan promote` success and rejection smoke test. Focused hook tests, plan/skill/authoring audits, Markdown checks, the full repository test suite, and two adversarial reviews are complete. The isolated unauthenticated CLI attempt made no model call and no repository change; keep the plan `in-progress` until the runtime-only smoke test passes.
 
 ## Files touched
 
