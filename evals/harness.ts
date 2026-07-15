@@ -44,7 +44,7 @@ import { scenarios as streamsScenarios } from './scenarios/ki-kb-streams.ts'
 import { scenarios as tokenomicsScenarios } from './scenarios/ki-tokenomics.ts'
 import { scenarios as decisionRecordsScenarios } from './scenarios/ki-decision-records.ts'
 import { scenarios as handoffsScenarios } from './scenarios/ki-handoffs.ts'
-import { scenarios as plansScenarios } from './scenarios/ki-plans.ts'
+import { scenarios as projectRoadmapScenarios } from './scenarios/ki-project-roadmap.ts'
 import { scenarios as activitiesScenarios } from './scenarios/ki-kb-activities.ts'
 import { scenarios as liveArtifactsScenarios } from './scenarios/ki-kb-live-artifacts.ts'
 import { scenarios as housekeepingScenarios } from './scenarios/ki-housekeeping.ts'
@@ -72,7 +72,7 @@ const ALL: Scenario[] = [
   ...decisionRecordsScenarios,
   ...featureDefinitionsScenarios,
   ...handoffsScenarios,
-  ...plansScenarios,
+  ...projectRoadmapScenarios,
   ...activitiesScenarios,
   ...liveArtifactsScenarios,
   ...housekeepingScenarios,

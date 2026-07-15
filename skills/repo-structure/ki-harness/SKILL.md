@@ -1,9 +1,9 @@
 ---
 name: ki-harness
-implies: [ki-skills, ki-agents, ki-decision-records]
+implies: [ki-skills, ki-agents, ki-decision-records, ki-project-roadmap]
 vendors: [init, audit, conform, help]
 description: >
-  Audit, conform, and scaffold Knowledge Islands agentic harnesses — repos that bundle skills, agents, MCP servers, evals, and hooks together for versioned, co-installed deployment. Use when creating a new harness, checking an existing harness's five-part layout (`skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`), verifying its CLAUDE.md covers required orientation sections, checking its package.json script families, or auditing its `.ki-config.toml` harness table. Triggers: "audit the harness", "scaffold a new harness", "does this repo follow the harness standard", "refresh the harness standard", "is this a valid harness". Governs the **container** (directory structure, CLAUDE.md, package.json script families, installation conventions, `.ki-config.toml` table) — not the **contents**: skill quality → `ki-skills`; agent quality → `ki-agents`; MCP server code → `ki-mcp`; engineering toolchain → `ki-engineering`; GitHub repo settings → `ki-repo`.
+  Audit, conform, and scaffold Knowledge Islands agentic harnesses — repos that bundle skills, agents, MCP servers, evals, and hooks together for versioned, co-installed deployment. Use when creating a new harness, checking an existing harness's five-part layout (`skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`), verifying its CLAUDE.md covers required orientation sections, checking its package.json script families, or auditing its `.ki-config.toml` harness table. Triggers: "audit the harness", "scaffold a new harness", "does this repo follow the harness standard", "refresh the harness standard", "is this a valid harness". Governs the **container** (directory structure, CLAUDE.md, package.json script families, installation conventions, `.ki-config.toml` table) — not the **contents**: skill quality → `ki-skills`; agent quality → `ki-agents`; project roadmap → `ki-project-roadmap`; MCP server code → `ki-mcp`; engineering toolchain → `ki-engineering`; GitHub repo settings → `ki-repo`.
 argument-hint: 'audit [path] | conform [path] | help | init <name> | refresh'
 ---
 
@@ -11,7 +11,7 @@ argument-hint: 'audit [path] | conform [path] | help | init <name> | refresh'
 
 You are helping audit, conform, or scaffold a **Knowledge Islands agentic harness** — a single versioned repository that co-locates the five parts an agent is equipped with: skills (`skills/`), agents (`agents/`), MCP servers (`mcp/`), evals (`evals/`), and hooks (`hooks/`). The canonical reference implementation is [ki-agentic-harness](../../../README.md).
 
-This skill governs the **container** — the harness's directory layout, its `CLAUDE.md` orientation, its `package.json` script families, and its `.ki-config.toml` compliance table. It does not govern the _contents_: skill quality routes to `ki-skills`, agent definitions to `ki-agents`, MCP server code to `ki-mcp`, the engineering toolchain to `ki-engineering`, and GitHub-side settings to `ki-repo`. The harness is the bridge into those skills — it tells you _what the container must look like_ so the contents are findable, installable, and auditable; the sibling skills each tell you _what quality looks like_ inside their part.
+This skill governs the **container** — the harness's directory layout, its `CLAUDE.md` orientation, its `package.json` script families, and its `.ki-config.toml` compliance table. It does not govern the _contents_: skill quality routes to `ki-skills`, agent definitions to `ki-agents`, roadmap content to `ki-project-roadmap`, MCP server code to `ki-mcp`, the engineering toolchain to `ki-engineering`, and GitHub-side settings to `ki-repo`. The harness is the bridge into those skills — it tells you _what the container must look like_ so the contents are findable, installable, and auditable; the sibling skills each tell you _what quality looks like_ inside their part.
 
 The full canonical standard — what each part must contain and why — lives in [the harness standard](references/harness-standard.md). The line-by-line checkable criteria live in [the rubric](references/audit-rubric.md). A mechanical checker is [`scripts/audit.ts`](scripts/audit.ts). Load those when you need detail; this file is the operating procedure.
 
@@ -25,13 +25,14 @@ Modes: **AUDIT · CONFORM · INIT · REFRESH** (named, alphabetical). Invoked as
 2. **Compose on sibling skills via subagent isolation** ([ADR-KI-HARNESS-AGENTS-001](../../../docs/decisions/ADR-KI-HARNESS-AGENTS-001-subagent-isolation.md)). A harness audit is layered — fan out one `agent()` per concern in `parallel()` after the COLL checks:
    - `ki-repo` — GitHub settings and the `.ki-config.toml` contract
    - `ki-engineering` — common toolchain (package.json script families, tsconfig, biome)
+   - `ki-project-roadmap` — non-KB roadmap profile, content discipline, and thematic projections
    - `ki-skills` linter (`bun run ki:skills:audit`) — if `skills/` is populated
    - `ki-agents` linter — if `agents/` is populated
    - `ki-mcp` audit — if `mcp/` has server code The saved workflow `.claude/workflows/ki-multi-skill-audit.ts` implements this fan-out. See [ADR-KI-HARNESS-001](../../../docs/decisions/ADR-KI-HARNESS-001-repository-structure.md) for the bundle layout this step audits.
 3. **Judge the prose the script can't.** Walk the [J]-tagged criteria in [the rubric](references/audit-rubric.md):
    - **CLAUDE.md coverage** — does it open with a what-the-harness-is paragraph covering all five parts? Is the skill map present (if skills exist) and does it reflect current reality? Are working conventions documented for each part? Are the key `bun run *` commands listed?
    - **Freshness** — do the skill count, shelf statuses, and command names in `CLAUDE.md` still match the actual repo state?
-   - **ROADMAP.md discipline** — does it show only open work? Are continuous practices absent (they belong in the `ki-engineering` enforcement framework, not the roadmap)?
+   - **ROADMAP.md discipline** — does it show only open work? If the repository uses the thematic profile, is the root an exact generated portfolio rather than a second home for item prose? Are continuous practices absent (they belong in the `ki-engineering` enforcement framework, not the roadmap)?
 4. **Report** on the unified severity ladder. A missing required file or table is a FAIL; stale content that is structurally present is a WARN; minor freshness drift (wrong count, outdated command names) is a POLISH.
 
 ### Mode CONFORM — bring a harness into line
@@ -66,6 +67,6 @@ Run REFRESH on this skill's declared cadence (the `**Refresh:**` marker in [`ref
 
 ## Notes
 
-- Auditing a harness runs the harness _delta_ on top of the sibling skills' checks — AUDIT step 2 lists the composition order. Don't double-report what a sibling's checker already surfaces.
+- Auditing a harness runs the harness _delta_ on top of the sibling skills' checks — AUDIT step 2 lists the composition order. Don't double-report what a sibling's checker already surfaces. The root `ROADMAP.md` exists by the harness contract; its non-KB content and profile belong to `ki-project-roadmap`.
 - A harness that has empty shelves (`agents/`, `mcp/`, `evals/` with no real content) is a valid harness — the shelves exist to mark intent and reserve the structure. A shelf is not a gap.
 - The `ki:skills:link:project` install convention (the `ki-bootstrap` keystone) is the harness's primary delivery mechanism — verifying it is wired in `package.json` is a FAIL criterion, not advisory.

@@ -89,4 +89,4 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS
 
 ## COLL — Collision and boundary
 
-**COLL-1 [J]** The harness AUDIT mode names each sibling skill it composes on, and the harness `SKILL.md` description names the off-ramps for all four contents-governing skills (`ki-skills`, `ki-agents`, `ki-mcp`, `ki-engineering`, `ki-repo`). Source: `ki-skills` rubric COLL-2. _Severity: WARN on the skill — check this when auditing the skill itself via `ki:skills:audit`._
+**COLL-1 [J]** The harness AUDIT mode names each sibling skill it composes on, and the harness `SKILL.md` description names the off-ramps for the contents-governing skills (`ki-skills`, `ki-agents`, `ki-project-roadmap`, `ki-mcp`, `ki-engineering`, `ki-repo`). Source: `ki-skills` rubric COLL-2. _Severity: WARN on the skill — check this when auditing the skill itself via `ki:skills:audit`._

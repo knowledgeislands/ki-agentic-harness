@@ -26,7 +26,7 @@ The shared **engineering toolchain** every TS/Bun repo builds on — package.jso
 
 ### `ki-harness`
 
-Audits, conforms, and scaffolds a **harness repository** — the container that bundles the other parts: the five-part `skills/` / `agents/` / `mcp/` / `evals/` / `hooks/` layout, the root `CLAUDE.md` / `ROADMAP.md` / `package.json` script families / `.ki-config.toml` table, and the `skills:link:*` install convention (whose project-local linking `ki-bootstrap` carries out). Governs the **container, not the contents**: the bridge into the sibling skills rather than a replacement — it **composes** their checkers (`ki-skills`, `ki-agents`, `ki-mcp`, `ki-engineering`, `ki-repo`) and adds only the bundle-structure delta. Empty shelves are valid — a shelf is not a gap.
+Audits, conforms, and scaffolds a **harness repository** — the container that bundles the other parts: the five-part `skills/` / `agents/` / `mcp/` / `evals/` / `hooks/` layout, the root `CLAUDE.md` / `ROADMAP.md` / `package.json` script families / `.ki-config.toml` table, and the `skills:link:*` install convention (whose project-local linking `ki-bootstrap` carries out). Governs the **container, not the contents**: the bridge into the sibling skills rather than a replacement — it **composes** their checkers (`ki-skills`, `ki-agents`, `ki-project-roadmap`, `ki-mcp`, `ki-engineering`, `ki-repo`) and adds only the bundle-structure delta. Empty shelves are valid — a shelf is not a gap.
 
 ### `ki-kb`
 
@@ -74,13 +74,13 @@ Governs **Decision Records** in any Knowledge Islands repo, code or KB — the t
 
 Governs **Feature Definitions** — the behaviour-level "what" of a system, the third leg of the `docs/` triad (decisions = why, features = what, guides = how). Definitions live in `docs/features/`, flat one-file-per-area, with an `index.md` defining the ID scheme and an areas table. Each requirement is a `### <PREFIX>-NNN — title` heading carrying one RFC-2119 (`MUST` / `SHOULD` / `MAY`) statement and a `_Verify:_` test hook; IDs are append-only, and an unnumbered `## Gaps` section holds the backlog. Off-ramps the governing decisions a requirement cites to `ki-decision-records`.
 
-### `ki-plans`
+### `ki-project-roadmap`
 
-Governs the **planning methodology** for code repos — when to write a plan, how it derives from the ROADMAP near-horizon, the `blocks` / `blocked-by` dependency graph, and the quality bar for Steps and Verify. Owns the methodology; the plan format lives in `references/plan-format.md`, and the process skill `ki-plan` drives the lifecycle. In a KB there is no `docs/plans/` — planning is a `ki-kb-streams` proposal Checklist.
+Governs **forward work in non-KB repositories** through two automatically detected profiles. A simple repository keeps its complete open view in root `ROADMAP.md`. A thematic repository keeps canonical work in `docs/roadmap/<theme>/ROADMAP.md`, plans for Blocking/Next items beside it under `plans/`, a global plan index and dependency graph in `docs/roadmap/README.md`, and an exact generated root portfolio. Qualified `<theme>/<item-slug>` locators bind plans to one authoritative item home. The process skill `ki-plan` drives individual plan lifecycles. Knowledge Bases use `ki-kb-streams` instead; project-roadmap artifacts do not apply there.
 
 ### `ki-handoffs`
 
-Governs the **handoff doctrine** — plan work once at the top reasoning tier, then write it as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning. Owns the reasoning-layer split, the handoff-spec quality bar (decisions-locked-vs-escalate, a per-unit recommended tier, a cold-model readiness test), and the opt-in marker contract (`handoff: true`). Rides on a host artifact — a `ki-plans` plan or a `ki-kb-streams` proposal Checklist — and off-ramps tier cost/selection to `ki-tokenomics`.
+Governs the **handoff doctrine** — plan work once at the top reasoning tier, then write it as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning. Owns the reasoning-layer split, the handoff-spec quality bar (decisions-locked-vs-escalate, a per-unit recommended tier, a cold-model readiness test), and the opt-in marker contract (`handoff: true`). Rides on a host artifact — a `ki-project-roadmap` thematic plan or a `ki-kb-streams` proposal Checklist — and off-ramps tier cost/selection to `ki-tokenomics`.
 
 ## Process skills
 
@@ -92,7 +92,7 @@ Drives a live-session recap: **summarise** what happened (changes, decisions, fi
 
 ### `ki-plan`
 
-Drives the **plan lifecycle** for a code repo — `done` / `execute` / `new` / `promote` / `status`. Reads the format and methodology from `ki-plans` (which owns the standard) and carries them out: global id allocation, the `blocks`/`blocked-by` dependency graph, and ROADMAP sync on `done`. `/ki-plan promote` deliberately turns the current authenticated Claude Code Plan Mode scratch plan into an independent governed plan; this discovery bridge is Claude-Code-only, while the `docs/plans/` artifact and the other file-oriented lifecycle procedures are runtime-neutral. Self-guards on `repo_type = "kb"` (planning there is a `ki-kb-streams` proposal Checklist). Paired deliberately with `ki-plans` — singular verb (drive a plan) beside plural class (govern the class of plans). Installable globally alongside `ki-bootstrap` — and like `ki-bootstrap`, never declared via a `.ki-config.toml` table.
+Drives the **plan lifecycle** for a non-KB repository — `done` / `execute` / `new` / `promote` / `status`. Reads the format and methodology from `ki-project-roadmap` and carries them out in the thematic profile: qualified roadmap locators, global id allocation, the `blocks`/`blocked-by` dependency graph, theme-aware status, and transactional roadmap/projection sync on `done`. `/ki-plan promote` turns the current authenticated Claude Code Plan Mode scratch plan into the same independent governed artifact; this discovery bridge is Claude-Code-only, while `docs/roadmap/<theme>/plans/` and the other file-oriented lifecycle procedures are runtime-neutral. Simple repositories expand to the thematic profile before creating a plan. Knowledge Bases route to a `ki-kb-streams` proposal Checklist. Installable globally alongside `ki-bootstrap` — and like `ki-bootstrap`, never declared via a `.ki-config.toml` table.
 
 ### `ki-delegate`
 

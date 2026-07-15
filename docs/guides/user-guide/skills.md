@@ -8,7 +8,7 @@ A skill is a self-contained capability an agent can load on demand — a name an
 
 A `SKILL.md` follows the open [Agent Skills standard](https://agentskills.io/), so it is not Claude-Code-specific: a second runtime such as OpenAI Codex CLI discovers the same `SKILL.md` files from its own path (`.agents/skills`, vs Claude Code's `.claude/skills`), though it reads project instructions from `AGENTS.md` rather than `CLAUDE.md`.
 
-Every skill here is a Knowledge Islands skill, shipped as part of this system, but the set now has two **kinds** (`ADR-KI-HARNESS-SKILLS-006`). Most are **governance skills** — each holds a house standard and ships the universal **INIT / AUDIT / CONFORM / REFRESH** modes plus a mechanical checker; what tells governance skills apart is not their kind but _what each governs_: a repository's structure, a knowledge base, the machine itself. A smaller set are **process skills** — they drive an action or lifecycle rather than holding a standard, are exempt from the four-file shape and universal modes, and expose HELP only optionally: `ki-recap` (summarise / surface-outstanding / harvest-learnings over a live session) `ki-plan` (the plan lifecycle, promoted from the former `/plan` command — paired deliberately with the governance skill `ki-plans`), and `ki-delegate` (decompose a task list or plan across agent and model tiers — classify / assign / sequence / gate). That distinction, and the six governance clusters, are the map below.
+Every skill here is a Knowledge Islands skill, shipped as part of this system, but the set now has two **kinds** (`ADR-KI-HARNESS-SKILLS-006`). Most are **governance skills** — each holds a house standard and ships the universal **INIT / AUDIT / CONFORM / REFRESH** modes plus a mechanical checker; what tells governance skills apart is not their kind but _what each governs_: a repository's structure, a knowledge base, the machine itself. A smaller set are **process skills** — they drive an action or lifecycle rather than holding a standard, are exempt from the four-file shape and universal modes, and expose HELP only optionally: `ki-recap` (summarise / surface-outstanding / harvest-learnings over a live session), `ki-plan` (the non-KB plan lifecycle, paired with `ki-project-roadmap`), and `ki-delegate` (decompose a task list or plan across agent and model tiers — classify / assign / sequence / gate). Knowledge Bases use `ki-kb-streams` instead of either project-roadmap profile. That distinction, and the six governance clusters, are the map below.
 
 The Agent Skills standard is more general than this, though. A skill need not govern a standard at all — it could equally encode a standalone workflow (a review process, a release checklist, a research harness) or target one specific project or recurring task. The process kind is the first step into that territory, and the set is expected to grow further over time.
 
@@ -19,7 +19,7 @@ The skills sit in **six clusters**, by the role each plays in the set:
 1. **Keystone** — `ki-bootstrap` (the one skill kept installed globally) and the `ki-repo` it pulls: the install entry point every governed repo starts from.
 2. **Foundations** — `ki-authoring`, `ki-engineering`: the write-layer and build-layer standards every other skill builds on. `ki-authoring` is universal (part of the `ki-repo` baseline, implied everywhere); `ki-engineering` is coverage-detected — it applies only where a `package.json` exists, so a repo declares `[ki-engineering]` itself rather than inheriting it through `ki-repo`.
 3. **Repo-structure** — `ki-harness`, `ki-kb`, `ki-website`, `ki-mcp`, `ki-plugins`, `ki-tools`, `ki-homebrew-tap`, `ki-dotfiles-chezmoi`: exactly one applies per repo, fixing that repo's shape.
-4. **General governance** — `ki-skills`, `ki-agents`, `ki-decision-records`, `ki-feature-definitions`, `ki-plans`, `ki-handoffs`: cross-cutting instruments a repo of any shape may adopt.
+4. **General governance** — `ki-skills`, `ki-agents`, `ki-decision-records`, `ki-feature-definitions`, `ki-project-roadmap`, `ki-handoffs`: cross-cutting instruments a repo may adopt; `ki-project-roadmap` applies only to non-KB repositories.
 5. **Implied families** — the members a parent repo-structure skill pulls in: `ki-kb-streams`, `ki-kb-activities`, `ki-kb-live-artifacts` under `ki-kb`; `ki-website-cloudflare` under `ki-website`.
 6. **Environment** — `ki-binding`, `ki-binding-chezmoi`, `ki-housekeeping`, `ki-tokenomics`: govern the machine and the workspace, not any one repo. `ki-binding-chezmoi` is a composition skill (it `implies:` `ki-binding` + `ki-dotfiles-chezmoi`) supplying the chezmoi render path that the renderer-neutral `ki-binding` deliberately omits — installed only by chezmoi users (ADR-KI-HARNESS-SKILLS-004).
 
@@ -35,7 +35,8 @@ ki-bootstrap
 ki-harness
 ├─ ki-skills
 ├─ ki-agents
-└─ ki-decision-records
+├─ ki-decision-records
+└─ ki-project-roadmap
 
 ki-kb
 ├─ ki-kb-activities
@@ -50,8 +51,6 @@ ki-mcp
 ki-plugins
 
 ki-handoffs
-
-ki-plans
 
 ki-feature-definitions
 

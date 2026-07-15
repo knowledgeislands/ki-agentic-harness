@@ -50,8 +50,9 @@ target_runtimes = ["claude-code", "codex"]
 # this repo's tree — same repo-external-artifact pattern as a KB base.
 [ki-housekeeping]
 
-# This repo ships the ki-plans skill, so it declares governance by its own standard.
-[ki-plans]
+# This repo uses the non-KB project-roadmap standard. The table is the compliance marker;
+# this repository's thematic profile lives under docs/roadmap/.
+[ki-project-roadmap]
 
 # This repo ships the ki-handoffs skill, so it declares governance by its own standard.
 # Presence of this table is the compliance marker; tier cost/selection defaults live in
