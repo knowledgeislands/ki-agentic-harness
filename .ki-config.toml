@@ -7,10 +7,11 @@ license = "MIT"          # SPDX id; the LICENSE, package.json, and GitHub must m
 # skills, agents, MCP), not a harness-structure detail, so it lives on [ki-repo]. The bootstrap
 # linkers loop over these, each with its own discovery path (Claude Code → .claude/, Codex →
 # .agents/; see the runtime feature-coverage matrix in SDR-KI-HARNESS-002). Absent →
-# ["claude-code"], so every repo predating multi-runtime support is unchanged. Codex agent
-# install is not wired yet (TOML generator pending the subagent-format spike) — declaring it
-# here would be reported-and-skipped by link-agents, not silently dropped.
-target_runtimes = ["claude-code"]
+# ["claude-code"], so every repo predating multi-runtime support is unchanged. This repo
+# declares both — dogfooding Codex skill discovery (.agents/skills) alongside Claude Code.
+# Codex agent install is not wired yet (TOML generator pending the subagent-format spike) —
+# declaring codex here is reported-and-skipped by link-agents, not silently dropped.
+target_runtimes = ["claude-code", "codex"]
 # This repo fully conforms, so it declares no check overrides. To diverge, add a
 # [ki-repo.checks] table with one boolean per check (true = enforce).
 

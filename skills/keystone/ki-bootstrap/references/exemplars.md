@@ -22,7 +22,7 @@ Concrete patterns showing what a correctly bootstrapped Knowledge Islands repo l
 
 ### Correct `.ki-config.toml` bootstrap declaration
 
-A repo opts skills in by adding `[ki-<skill>]` tables. The keystone linker reads these tables and mirrors the matching skills from the harness into `.claude/skills/`. Tables with no keys (bare `[ki-kb]`) are valid — presence alone is the opt-in signal. From `ki-arcadia-principal/.ki-config.toml`:
+A repo opts skills in by adding `[ki-<skill>]` tables. The keystone linker reads these tables and mirrors the matching skills from the harness into each declared runtime's project-local skills dir — `.claude/skills/` for Claude Code (the running example below), `.agents/skills/` for Codex, per `[ki-repo] target_runtimes`. Tables with no keys (bare `[ki-kb]`) are valid — presence alone is the opt-in signal. From `ki-arcadia-principal/.ki-config.toml`:
 
 ```toml
 # Read by the ki-kb skill.

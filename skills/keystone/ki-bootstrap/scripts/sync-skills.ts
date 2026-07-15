@@ -19,9 +19,13 @@
 //   status    Show each skill and its link state in the target dir
 //
 // Options:
-//   --runtime <name> Target runtime, picks the default install dir: claude-code
-//                    → ~/.claude/skills (default), codex → ~/.agents/skills.
-//   --target <dir>   Where to install (overrides --runtime's default)
+//   --runtime <name> Target one runtime's install dir: claude-code → ~/.claude/skills,
+//                    codex → ~/.agents/skills. Without it, loops every runtime the
+//                    repo declares (--root's .ki-config.toml [ki-repo] target_runtimes,
+//                    default ["claude-code"]) — one pass per runtime, each with its own
+//                    `[<runtime>]` header.
+//   --target <dir>   Where to install (overrides runtime resolution — a single pinned
+//                    directory, no loop)
 //   --root <dir>     Repo root holding skills/ (default: current working directory)
 //   --relative       Emit relative symlinks (portable: survives a clone when the
 //                    target and this repo keep their relative layout). Default is
@@ -30,7 +34,7 @@
 //                    — e.g. to scope a repo's .claude/skills to the skills it uses.
 //   --dry-run        Print what would change without touching the filesystem
 
-import { existsSync, lstatSync, mkdirSync, readdirSync, readlinkSync, rmSync, symlinkSync } from 'node:fs'
+import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, readlinkSync, rmSync, symlinkSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { dirname, join, relative, resolve } from 'node:path'
 
@@ -63,15 +67,33 @@ const RUNTIME_SKILLS_SUBDIR: Record<string, string> = {
   codex: join('.agents', 'skills')
 }
 const runtimeFlag = argv.indexOf('--runtime')
-const runtime = runtimeFlag !== -1 && argv[runtimeFlag + 1] ? (argv[runtimeFlag + 1] as string) : 'claude-code'
-const runtimeSubdir = RUNTIME_SKILLS_SUBDIR[runtime]
-if (!runtimeSubdir) {
-  console.error(`unknown --runtime "${runtime}" (expected one of: ${Object.keys(RUNTIME_SKILLS_SUBDIR).join(', ')})`)
-  process.exit(1)
-}
+const explicitRuntime = runtimeFlag !== -1 && argv[runtimeFlag + 1] ? (argv[runtimeFlag + 1] as string) : null
 const targetFlag = argv.indexOf('--target')
-const defaultTarget = join(homedir(), runtimeSubdir)
-const target = targetFlag !== -1 && argv[targetFlag + 1] ? resolve(argv[targetFlag + 1] as string) : defaultTarget
+const explicitTarget = targetFlag !== -1 && argv[targetFlag + 1] ? resolve(argv[targetFlag + 1] as string) : null
+
+// Runtimes to operate over, resolved in precedence order: an explicit --runtime always
+// wins (the override, single runtime); else an explicit --target runs once, standalone
+// (the directory is already pinned — no runtime loop needed); else the repo's declared
+// `target_runtimes` (`.ki-config.toml` [ki-repo]), defaulting to ["claude-code"] so a
+// repo predating multi-runtime support is unchanged. Regex mirrors package-scripts.ts's
+// targetRuntimes — inlined (not imported) so the vendored .ki-meta/bin copy stays
+// self-contained.
+function declaredTargetRuntimes(): string[] {
+  const cfgPath = join(repoRoot, '.ki-config.toml')
+  const text = existsSync(cfgPath) ? readFileSync(cfgPath, 'utf8') : ''
+  const m = text.match(/^target_runtimes\s*=\s*\[([^\]]*)\]/m)
+  if (!m) return ['claude-code']
+  const list = [...(m[1] as string).matchAll(/["']([^"']+)["']/g)].map((x) => x[1] as string)
+  return list.length ? list : ['claude-code']
+}
+const runtimes = explicitRuntime ? [explicitRuntime] : explicitTarget ? [] : declaredTargetRuntimes()
+for (const rt of runtimes) {
+  if (!RUNTIME_SKILLS_SUBDIR[rt]) {
+    console.error(`unknown target runtime "${rt}" (expected one of: ${Object.keys(RUNTIME_SKILLS_SUBDIR).join(', ')})`)
+    process.exit(1)
+  }
+}
+let target = explicitTarget ?? join(homedir(), RUNTIME_SKILLS_SUBDIR[runtimes[0] as string] as string)
 
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
@@ -210,19 +232,34 @@ if (onlyNames) {
 }
 const skills = onlyNames ? allSkills.filter((n) => onlyNames.includes(n)) : allSkills
 
-switch (command) {
-  case 'link':
-    cmdLink(skills)
-    break
-  case 'unlink':
-    cmdUnlink(skills)
-    break
-  case undefined:
-  case 'status':
-    cmdStatus(skills)
-    break
-  default:
-    console.error(paint(C.red, `Unknown command: ${command}`))
-    console.error('Usage: bun sync-skills.ts <link|unlink|status> [--runtime <name>] [--target <dir>] [--root <dir>] [--dry-run]')
-    process.exit(1)
+function dispatch(): void {
+  switch (command) {
+    case 'link':
+      cmdLink(skills)
+      break
+    case 'unlink':
+      cmdUnlink(skills)
+      break
+    case undefined:
+    case 'status':
+      cmdStatus(skills)
+      break
+    default:
+      console.error(paint(C.red, `Unknown command: ${command}`))
+      console.error('Usage: bun sync-skills.ts <link|unlink|status> [--runtime <name>] [--target <dir>] [--root <dir>] [--dry-run]')
+      process.exit(1)
+  }
+}
+
+// An explicit --target pins a single directory — run once, no runtime loop. Otherwise
+// loop the resolved runtimes (one, from --runtime; or the declared set), printing a
+// `[<runtime>]` group header per iteration (mirrors link-skills.ts's project-linker loop).
+if (explicitTarget) {
+  dispatch()
+} else {
+  for (const rt of runtimes) {
+    target = join(homedir(), RUNTIME_SKILLS_SUBDIR[rt] as string)
+    console.log(paint(C.cyan, `[${rt}]`))
+    dispatch()
+  }
 }

@@ -4,37 +4,39 @@ How a skill gets from this repo onto a development machine and into a target rep
 
 ## Installing skills
 
-Claude Code (and compatible agents) discover skills in two places:
+Skills are discovered per **agent runtime**, each with its own discovery path — Claude Code reads `.claude/`, OpenAI Codex CLI reads `.agents/` (the runtime feature-coverage matrix, see `SDR-KI-HARNESS-002`). A repo declares which runtime(s) it installs for via `.ki-config.toml`'s `[ki-repo] target_runtimes` (e.g. `["claude-code"]`, `["codex"]`, or both) — absent, it defaults to `["claude-code"]` so a repo predating multi-runtime support is unchanged. Each declared runtime gets two install locations:
 
-- **User-global** — `~/.claude/skills/<name>/`, available in every session on this machine.
-- **Per-project** — `<project>/.claude/skills/<name>/`, available only when working in that project (and shareable via the project's repo).
+- **User-global** — `~/.claude/skills/<name>/` (Claude Code) or `~/.agents/skills/<name>/` (Codex), available in every session on this machine.
+- **Per-project** — `<project>/.claude/skills/<name>/` or `<project>/.agents/skills/<name>/`, available only when working in that project (and shareable via the project's repo).
 
-The install model is **keystone-plus-project-local**: only `ki-bootstrap` is installed user-global; every other skill is wired into each repo's `.claude/skills/` on demand. The global skill is paid on every turn everywhere, so keeping one tiny keystone there — instead of all of them — keeps the standing description cost out of unrelated sessions, while each repo still loads exactly the skills it declares. Both ends use **symlinks**, so edits in this repo are live wherever a skill is installed and a `git pull` updates every consumer at once. Install dependencies once with `bun install`.
+The install model is **keystone-plus-project-local**: only a small global set — `ki-bootstrap` (the keystone), `ki-recap`, `ki-plan`, `ki-delegate` — is installed user-global; every other skill is wired into each repo's project-local skills dir on demand. The global set is paid on every turn everywhere, so keeping it small keeps the standing description cost out of unrelated sessions, while each repo still loads exactly the skills it declares. Both ends use **symlinks**, so edits in this repo are live wherever a skill is installed and a `git pull` updates every consumer at once. Install dependencies once with `bun install`.
 
-### Install the keystone, once per machine
+### Install the global set, once per machine
 
 ```bash
-bun run ki:skills:link:global    # symlink just ki-bootstrap into ~/.claude/skills
+bun run ki:skills:link:global    # symlink the global set into every declared runtime's skills dir
 ```
 
-Under the hood this is `bun skills/keystone/ki-bootstrap/scripts/sync-skills.ts link --only ki-bootstrap`. It is idempotent: it refreshes the existing link, skips a target where a _real_ file or directory is in the way (rather than clobbering it), and creates `~/.claude/skills` if needed. With the keystone in place, any Knowledge Islands repo can self-wire from inside it.
+Under the hood this is `bun skills/keystone/ki-bootstrap/scripts/sync-skills.ts link --only ki-bootstrap,ki-recap,ki-plan,ki-delegate`. With no `--runtime` flag it loops this repo's declared `target_runtimes`, one pass per runtime (each with a `[<runtime>]` header) — so on a repo declaring both, the same command lands the set under `~/.claude/skills` **and** `~/.agents/skills`. An explicit `--runtime <name>` targets one runtime only; an explicit `--target <dir>` pins a single directory, skipping the loop entirely. It is idempotent: it refreshes existing links, skips a target where a _real_ file or directory is in the way (rather than clobbering it), and creates the skills dir if needed. With the keystone in place, any Knowledge Islands repo can self-wire from inside it.
 
 ### Wire a repo's project-local skills
 
-In the repo you want to work in, the keystone links its `.claude/skills/` from the repo's `.ki-config.toml` — exactly the skills it declares (`[ki-*]` tables), plus the `ki-repo` + `ki-authoring` baseline:
+In the repo you want to work in, the keystone links each declared runtime's project-local skills dir from the repo's `.ki-config.toml` — exactly the skills it declares (`[ki-*]` tables), plus the `ki-repo` + `ki-authoring` baseline:
 
 ```bash
 cd /path/to/target-repo
-bun ~/.claude/skills/ki-bootstrap/scripts/link-skills.ts   # link .claude/skills/ from .ki-config.toml
+bun ~/.claude/skills/ki-bootstrap/scripts/link-skills.ts   # link every declared runtime's skills dir from .ki-config.toml
 ```
+
+(If the keystone is installed only under `~/.agents/skills` on a Codex-only machine, invoke it from there instead — the script itself is runtime-agnostic; only the install path differs.)
 
 The script is self-locating: invoked through the keystone's global symlink it resolves back into the harness checkout and links the sibling skills from there, so the target repo needs no `package.json` — a KB or any other non-TS repo runs it exactly the same way. (Inside the harness repo itself, `bun run ki:skills:link:project` is the `package.json` alias for the same script.)
 
-These symlinks are **gitignored and regenerated** — the committed artifacts are the linking script and the `.gitignore` line, never the links themselves (which would dangle on a clone that does not have the harness checked out beside it). Re-run after editing the repo's coverage tables or pulling new skills. Preview with `--dry-run`; the harness itself authors every skill, so it links **all** of them rather than a coverage subset (`--all`).
+These symlinks are **gitignored and regenerated** — the committed artifacts are the linking script and the `.gitignore` line(s), never the links themselves (which would dangle on a clone that does not have the harness checked out beside it). Re-run after editing the repo's coverage tables, its `target_runtimes`, or pulling new skills. Preview with `--dry-run`; the harness itself authors every skill, so it links **all** of them rather than a coverage subset (`--all`).
 
 ### Without the script (plain shell)
 
-The keystone, user-global:
+The keystone, user-global (swap `.claude` for `.agents` on a Codex-only machine):
 
 ```bash
 cd /path/to/ki-agentic-harness
@@ -53,8 +55,8 @@ ln -sfn /path/to/ki-agentic-harness/skills/repo-structure/ki-kb .claude/skills/k
 ### Verify and remove
 
 ```bash
-ls -l ~/.claude/skills            # the keystone; confirm its -> target resolves
-ls -l <repo>/.claude/skills       # a repo's project-local links; confirm they resolve
+ls -l ~/.claude/skills            # the keystone; confirm its -> target resolves (or ~/.agents/skills on Codex)
+ls -l <repo>/.claude/skills       # a repo's project-local links; confirm they resolve (or <repo>/.agents/skills on Codex)
 rm ~/.claude/skills/<name>        # uninstall: removes the link only, never the repo
 ```
 

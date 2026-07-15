@@ -1,5 +1,5 @@
 {
-  "ref": "9815d191b859dda00c95ab2253ef7b4baf788d8c",
+  "ref": "33c8896bc16b5f0a418e9d8ac649132d1cd87bd8",
   "files": {
     ".ki-meta/skills/ki-agents/audit.ts": "744039a6365910a9d34d688fecec590cecc83ae15b5766d008dec5a0639d2d9a",
     ".ki-meta/skills/ki-agents/conform.ts": "b184328a974795a12bc5e6f76ddca97e89cd0fca8367033068f64c19d1971357",
@@ -40,6 +40,6 @@
     ".ki-meta/bin/aggregate.ts": "51b9691ea7e0e12f3fa1f823fd6e093a5ebfae04b8c5afc9f514383f84d96f75",
     ".ki-meta/bin/skill-graph.ts": "4c3f85c198f2e34bf4977991cb98edb4324a19d7e1303f856ef8d84cc6837efa",
     ".ki-meta/bin/skill-help.ts": "f73ecece12f94f4d401197ea93c20d9159a46f503031aeb7e5cbf39ba6bd0361",
-    ".ki-meta/bin/sync-skills.ts": "fa87aa70bd4eff43923427d60b6b57401e9454f9f30c29a0adc73704c4c6081d"
+    ".ki-meta/bin/sync-skills.ts": "46684c52c5d0d6701470eb2aa4c64d9b04ad03605dc2609ebd27b28473bd07b7"
   }
 }

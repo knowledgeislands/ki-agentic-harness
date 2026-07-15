@@ -2,6 +2,8 @@
 
 The normative model `ki-bootstrap` governs. It is small by design: this is the **keystone**, the one `ki-*` skill kept globally installed, so its standing cost is paid on every turn in every project.
 
+Every path below (`.claude/skills/`, `~/.claude/skills/`) is the **Claude Code** discovery path, used as the running example. Each declared runtime has its own — OpenAI Codex CLI's is `.agents/skills/` / `~/.agents/skills/` — per the repo's `.ki-config.toml` `[ki-repo] target_runtimes` (default `["claude-code"]`; see `SDR-KI-HARNESS-002`'s runtime feature-coverage matrix). The invariant below applies once per declared runtime.
+
 ## Why project-local, and why a keystone
 
 A skill's `name` + `description` sits in the selection surface on **every turn**. Installing all governance skills globally (`~/.claude/skills/`) pays that cost in every session, including ones that never touch a Knowledge Islands repo. So the governance skills are **project-local** — placed in a repo's `.claude/skills/`, loaded only when that repo is in the session.

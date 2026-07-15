@@ -85,12 +85,12 @@
     "ki:skills:link:global": "bun .ki-meta/bin/sync-skills.ts link --only ki-bootstrap,ki-recap,ki-plan,ki-delegate",
     "ki:skills:link:project": "bun skills/keystone/ki-bootstrap/scripts/link-skills.ts",
     "ki:skills:refresh-status": "bun skills/general-governance/ki-skills/scripts/audit.ts skills --refresh-status",
-    "ki:skills:status": "bun .ki-meta/bin/sync-skills.ts status",
-    "ki:skills:unlink": "bun .ki-meta/bin/sync-skills.ts unlink",
+    "ki:skills:status": "bun .ki-meta/bin/sync-skills.ts status --only ki-bootstrap,ki-recap,ki-plan,ki-delegate",
+    "ki:skills:unlink": "bun .ki-meta/bin/sync-skills.ts unlink --only ki-bootstrap,ki-recap,ki-plan,ki-delegate",
     "ki:tokenomics:audit": "bun .ki-meta/skills/ki-tokenomics/audit.ts .",
     "ki:tokenomics:conform": "bun .ki-meta/skills/ki-tokenomics/conform.ts .",
     "prepare": "husky",
-    "test": "bun skills/keystone/ki-bootstrap/scripts/link-skills.test.ts && bun hooks/plan-stamp.test.ts && bun hooks/plan-sync.test.ts && bun skills/general-governance/ki-skills/scripts/audit.test.ts && bun skills/environment/ki-housekeeping/scripts/audit.test.ts && bun skills/environment/ki-tokenomics/scripts/audit.test.ts && bun evals/guide-suite.ts && bun skills/keystone/ki-bootstrap/scripts/skill-graph.ts --check && bun skills/keystone/ki-bootstrap/scripts/skill-help.ts --check && bun skills/keystone/ki-bootstrap/scripts/audit.ts ."
+    "test": "bun skills/keystone/ki-bootstrap/scripts/link-skills.test.ts && bun skills/keystone/ki-bootstrap/scripts/sync-skills.test.ts && bun skills/ki-bootstrap/scripts/bootstrap-shim.test.ts && bun hooks/plan-stamp.test.ts && bun hooks/plan-sync.test.ts && bun skills/general-governance/ki-skills/scripts/audit.test.ts && bun skills/environment/ki-housekeeping/scripts/audit.test.ts && bun skills/environment/ki-tokenomics/scripts/audit.test.ts && bun evals/guide-suite.ts && bun skills/keystone/ki-bootstrap/scripts/skill-graph.ts --check && bun skills/keystone/ki-bootstrap/scripts/skill-help.ts --check && bun skills/keystone/ki-bootstrap/scripts/audit.ts ."
   },
   "type": "module"
 }

@@ -13,7 +13,7 @@
  * BOOT-1 FAIL with a non-zero exit — while a repo whose tables all resolve stays clean.
  */
 import { spawnSync } from 'node:child_process'
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -30,10 +30,18 @@ function check(label: string, cond: boolean): void {
   }
 }
 
-/** Build a throwaway repo whose `.ki-config.toml` holds the given `[ki-*]` tables. */
-function fixture(tables: string[]): string {
-  const dir = mkdtempSync(join(tmpdir(), 'ki-boot-linktest-'))
-  writeFileSync(join(dir, '.ki-config.toml'), `${tables.map((t) => `[${t}]`).join('\n')}\n`)
+/**
+ * Build a throwaway repo whose `.ki-config.toml` holds the given `[ki-*]` tables,
+ * optionally declaring `target_runtimes` (defaults to unset → the ["claude-code"]
+ * fallback in package-scripts.ts's `targetRuntimes`).
+ */
+function fixture(tables: string[], runtimes?: string[]): string {
+  // realpath: macOS aliases /tmp → /private/tmp (and /var → /private/var), so a raw
+  // mkdtemp path has a different depth-to-root than its resolved one — since the
+  // symlinks this creates are relative, that mismatch would make them dangle.
+  const dir = realpathSync(mkdtempSync(join(tmpdir(), 'ki-boot-linktest-')))
+  const runtimesLine = runtimes ? `target_runtimes = [${runtimes.map((r) => `"${r}"`).join(', ')}]\n` : ''
+  writeFileSync(join(dir, '.ki-config.toml'), `${runtimesLine}${tables.map((t) => `[${t}]`).join('\n')}\n`)
   return dir
 }
 
@@ -79,6 +87,47 @@ try {
   check('write mode → BOOT-3 no longer warns', !/WARN.*BOOT-3/.test(out))
 } finally {
   rmSync(linkDir, { recursive: true, force: true })
+}
+
+// ── Codex-only: links + gitignore land under .agents/skills, nothing under .claude/skills ──
+const codexOnly = fixture(['ki-kb'], ['codex'])
+try {
+  runLink(codexOnly)
+  check('codex-only → .agents/skills/ki-kb symlink created', existsSync(join(codexOnly, '.agents', 'skills', 'ki-kb')))
+  check('codex-only → nothing under .claude/skills', !existsSync(join(codexOnly, '.claude', 'skills')))
+  const gitignore = readFileSync(join(codexOnly, '.gitignore'), 'utf8')
+  check('codex-only → .gitignore contains .agents/skills/', /^\.agents\/skills\/?$/m.test(gitignore))
+  const { code, out } = runCheck(codexOnly)
+  check('codex-only → --check exit 0', code === 0)
+  check('codex-only → --check reports [codex]', out.includes('[codex]'))
+} finally {
+  rmSync(codexOnly, { recursive: true, force: true })
+}
+
+// ── Dual-runtime: links + gitignore land under both dirs, --check clean for both ──
+const dual = fixture(['ki-kb'], ['claude-code', 'codex'])
+try {
+  runLink(dual)
+  check('dual-runtime → .claude/skills/ki-kb symlink created', existsSync(join(dual, '.claude', 'skills', 'ki-kb')))
+  check('dual-runtime → .agents/skills/ki-kb symlink created', existsSync(join(dual, '.agents', 'skills', 'ki-kb')))
+  const gitignore = readFileSync(join(dual, '.gitignore'), 'utf8')
+  check('dual-runtime → .gitignore contains .claude/skills/', /^\.claude\/skills\/?$/m.test(gitignore))
+  check('dual-runtime → .gitignore contains .agents/skills/', /^\.agents\/skills\/?$/m.test(gitignore))
+  const { code, out } = runCheck(dual)
+  check('dual-runtime → --check exit 0', code === 0)
+  check('dual-runtime → --check reports both runtimes', out.includes('[claude-code]') && out.includes('[codex]'))
+} finally {
+  rmSync(dual, { recursive: true, force: true })
+}
+
+// ── Unknown runtime → non-zero exit, fail-loud message (runtimeSkillsDir's throw) ──
+const unknown = fixture(['ki-kb'], ['bogus-runtime'])
+try {
+  const { code, out } = runLink(unknown)
+  check('unknown runtime → non-zero exit', code !== 0)
+  check('unknown runtime → fail-loud message names the runtime', out.includes('bogus-runtime'))
+} finally {
+  rmSync(unknown, { recursive: true, force: true })
 }
 
 if (failed) {
