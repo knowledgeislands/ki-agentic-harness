@@ -5,7 +5,7 @@
  * their real CLI boundaries directly instead of introducing a vitest project.
  */
 import { spawnSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -130,6 +130,50 @@ try {
   check('bootstrap invalid seed → target remains byte-identical', snapshot(invalidSeed) === before)
 } finally {
   rmSync(invalidSeed, { recursive: true, force: true })
+}
+
+const seededRepo = fixture()
+try {
+  const result = spawnSync('bun', [BOOTSTRAP, seededRepo, '--seed', 'ki-repo'], { encoding: 'utf8' })
+  const config = readFileSync(join(seededRepo, '.ki-config.toml'), 'utf8')
+  const roots = declaredSkills(config)
+  const selfCheck = spawnSync(join(seededRepo, '.ki-meta', 'bin', 'ki-audit'), ['--help'], { encoding: 'utf8' })
+  check('seeded ki-repo → bootstrap exits cleanly', result.status === 0)
+  check('seeded ki-repo → owner scaffolds both foundation roots', JSON.stringify(roots) === JSON.stringify(['ki-authoring', 'ki-repo']))
+  check(
+    'seeded ki-repo → same run vendors both foundations',
+    existsSync(join(seededRepo, '.ki-meta', 'skills', 'ki-repo')) && existsSync(join(seededRepo, '.ki-meta', 'skills', 'ki-authoring'))
+  )
+  check('seeded ki-repo → self-check entry point is runnable', selfCheck.status === 0 && selfCheck.stdout.includes('usage: ki-audit'))
+} finally {
+  rmSync(seededRepo, { recursive: true, force: true })
+}
+
+const partialRepoText = '# preserve this prefix\n[ki-repo]\nvisibility = "public"\n'
+const partialRepo = fixture(partialRepoText)
+try {
+  const result = spawnSync('bun', [BOOTSTRAP, partialRepo], { encoding: 'utf8' })
+  const config = readFileSync(join(partialRepo, '.ki-config.toml'), 'utf8')
+  check('bare re-bootstrap → partial config exits cleanly', result.status === 0)
+  check('bare re-bootstrap → existing config bytes remain the exact prefix', config.startsWith(partialRepoText))
+  check(
+    'bare re-bootstrap → missing authoring root is declared and vendored',
+    declaredSkills(config).includes('ki-authoring') && existsSync(join(partialRepo, '.ki-meta', 'skills', 'ki-authoring'))
+  )
+} finally {
+  rmSync(partialRepo, { recursive: true, force: true })
+}
+
+const seededDryRun = fixture()
+try {
+  const result = spawnSync('bun', [BOOTSTRAP, seededDryRun, '--seed', 'ki-repo', '--dry-run'], { encoding: 'utf8' })
+  check('seeded ki-repo dry-run → exits cleanly', result.status === 0)
+  check(
+    'seeded ki-repo dry-run → writes neither config nor vendored state',
+    !existsSync(join(seededDryRun, '.ki-config.toml')) && !existsSync(join(seededDryRun, '.ki-meta'))
+  )
+} finally {
+  rmSync(seededDryRun, { recursive: true, force: true })
 }
 
 const auditInvalid = fixture('[ki-audit-missing.checks]\n')

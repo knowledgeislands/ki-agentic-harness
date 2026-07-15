@@ -514,6 +514,15 @@ function sha256File(path: string): string {
   return createHash('sha256').update(readFileSync(path)).digest('hex')
 }
 
+function scaffoldRepoConfig(target: string, dryRun: boolean): void {
+  const repoInit = join(skillDir('ki-repo'), 'scripts', 'init.ts')
+  try {
+    execFileSync('bun', [repoInit, target, '--scaffold-config-only', ...(dryRun ? ['--dry-run'] : [])], { stdio: 'inherit' })
+  } catch (error) {
+    process.exit((error as { status?: number }).status ?? 1)
+  }
+}
+
 function main(): void {
   const argv = process.argv.slice(2)
   // Pull the value-taking flags out first so their values are not mistaken for
@@ -549,6 +558,15 @@ function main(): void {
     if (!(error instanceof SkillResolutionError)) throw error
     console.error(`${'\x1b[31m'}FAIL${RESET}  [BOOT-9] ${error.message} — reconcile .ki-config.toml or the explicit --seed value`)
     process.exit(1)
+  }
+
+  // ki-repo exclusively owns .ki-config.toml. Once the initial resolution has
+  // proved every declared/seeded root valid, compose its scaffold-only INIT leg
+  // before any .ki-meta mutation, then re-resolve against the converged config.
+  // Bare bootstrap with no config/seed resolves no ki-repo and remains empty-set.
+  if (set.includes('ki-repo')) {
+    scaffoldRepoConfig(target, dryRun)
+    set = resolveSet(target, false, seeds)
   }
   console.log(`${DIM}bootstrap ${target} — skills: ${set.join(', ')}${RESET}`)
 
