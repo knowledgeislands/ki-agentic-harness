@@ -1,12 +1,12 @@
 # ki-agentic-harness roadmap
 
-Where this agentic harness is going. The [README](README.md) and the [docs/](docs) it indexes cover what exists today and how to install it; this file is the forward view. Open work is grouped by horizon — **Critical**, **Next**, **Soon**, **Future** — the house phasing owned by `ki-harness` and referenced by `ki-plans`; Critical work blocks the Next horizon, and speculative items are marked _(candidate)_ until committed. Within each horizon, items are further grouped by theme so related work can be tackled together.
+Where this agentic harness is going. The [README](README.md) and the [docs/](docs) it indexes cover what exists today and how to install it; this file is the forward view. Open work is grouped by the four horizons — **Blocking**, **Next**, **Soon**, **Future** — owned by `ki-plans`; Blocking work must complete before Next can proceed, and speculative items are marked _(candidate)_ until committed. Within each horizon, items are further grouped by theme so related work can be tackled together.
 
 This roadmap is itself subject to the house discipline it describes: when a skill's REFRESH run or an audit surfaces a structural gap, it lands here before it's built — and an item is **removed once done**, not ticked off, so the file always shows only open work.
 
 **Continuous practices are not roadmap items.** Keeping the skills audited (`ki:skills:audit`, `ki:repo:audit`, `ki:kb:audit`, the `ki-mcp` audit over the `mcp-*` repos), re-running the advisory [eval suite](evals/README.md) as skills change, and the scheduled `ki-skills-refresh` sweep (which honours each skill's declared `**Refresh:**` cadence) are ongoing disciplines tied to the invariants the `ki-skills` rubric enforces — they run continuously, so they live there, not here.
 
-## Critical
+## Blocking
 
 ### Complete Codex skill-install parity before further Next work
 
@@ -24,7 +24,7 @@ Done means a clean Codex-only environment can install the four global KI entry p
 
 ### Fix `ki-recap`'s grounding helper: `slugifyRepoPath` drops dotted-path repos silently
 
-Found 2026-07-14 while recapping a session in a repo whose absolute path contains a `.` component (`~/.local/share/chezmoi`): `skills/process/ki-recap/scripts/recap-grounding.ts`'s `slugifyRepoPath` (line 38) only replaces `/` with `-`, but Claude Code's real project-directory slug also replaces `.`. On a dotted path this computes the wrong `~/.claude/projects/<slug>` directory, `readdirSync` throws inside `resolveProjectDir`, and the script silently returns `{transcript: null, ...}` with no error surfaced to the invoking skill — the recap ran with empty grounding and no indication anything had failed. The two other copies of this same slugify helper in the harness, `skills/environment/ki-housekeeping/scripts/conform.ts` and `audit.ts`, already use the correct regex (`/[/.]/g`) — `ki-recap`'s copy alone has drifted stale. Fix: change line 38 to `absPath.replace(/[/.]/g, '-')`, matching the other two copies, and add a regression fixture (a dotted-path repo, e.g. mirroring `conform.ts`'s or `audit.ts`'s existing tests) to `recap-grounding.test.ts` so this can't silently regress again. Marked Critical because the failure mode is silent — a recap can complete and report a clean, grounded summary while its grounding data was actually null.
+Found 2026-07-14 while recapping a session in a repo whose absolute path contains a `.` component (`~/.local/share/chezmoi`): `skills/process/ki-recap/scripts/recap-grounding.ts`'s `slugifyRepoPath` (line 38) only replaces `/` with `-`, but Claude Code's real project-directory slug also replaces `.`. On a dotted path this computes the wrong `~/.claude/projects/<slug>` directory, `readdirSync` throws inside `resolveProjectDir`, and the script silently returns `{transcript: null, ...}` with no error surfaced to the invoking skill — the recap ran with empty grounding and no indication anything had failed. The two other copies of this same slugify helper in the harness, `skills/environment/ki-housekeeping/scripts/conform.ts` and `audit.ts`, already use the correct regex (`/[/.]/g`) — `ki-recap`'s copy alone has drifted stale. Fix: change line 38 to `absPath.replace(/[/.]/g, '-')`, matching the other two copies, and add a regression fixture (a dotted-path repo, e.g. mirroring `conform.ts`'s or `audit.ts`'s existing tests) to `recap-grounding.test.ts` so this can't silently regress again. Marked Blocking because the failure mode is silent — a recap can complete and report a clean, grounded summary while its grounding data was actually null.
 
 ## Next
 

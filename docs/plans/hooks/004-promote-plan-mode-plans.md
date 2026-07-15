@@ -15,7 +15,7 @@ Claude Code's interactive Plan Mode (`EnterPlanMode`/`ExitPlanMode`) plans land 
 
 The original framing was "a hook that moves the plan file." Research surfaced why a blind, auto-firing hook is the wrong shape for the _move_ itself:
 
-- `docs/plans/` frontmatter requires a `roadmap:` field — a plan with no ROADMAP "Next" item is misfiled per the near-horizon principle (`skills/general-governance/ki-plans/references/plan-format.md`). A Plan Mode plan has no such linkage; picking one is a judgment call, not a mechanical copy.
+- `docs/plans/` frontmatter requires a `roadmap:` field — a plan with no ROADMAP `Blocking` or `Next` item is misfiled per the near-horizon principle (`skills/general-governance/ki-plans/references/plan-format.md`). A Plan Mode plan has no such linkage; picking one is a judgment call, not a mechanical copy.
 - Filename placement (`<theme>/<NNN>-<slug>.md`) requires deriving the next global id (scan `docs/plans/README.md` for the current max) and picking/confirming a theme against ROADMAP sections — again judgment, not string manipulation a `PostToolUse` shell hook can safely do unattended.
 - `docs/decisions/references/runtime-feature-coverage.md` explicitly flags that Claude Code's "Plan Mode" and this repo's "plan" artifact are "same word, entirely different mechanisms" — bridging them silently on every `ExitPlanMode` risks polluting `docs/plans/` with throwaway plans the user never meant to keep.
 - `ki-plan`'s existing `new` subcommand (`skills/process/ki-plan/references/lifecycle.md`) already implements this exact id/theme/roadmap logic — but only as prose Claude executes itself when the skill runs, not as an importable script. There's nothing to shell out to from a hook.
@@ -28,7 +28,7 @@ So the approach below keeps the **existing hooks unchanged** and adds a new **`/
 - `hooks/plan-stamp.sh` (`PostToolUse(ExitPlanMode)`) stamps YAML frontmatter (`status`, `created`, `cwd`) onto the Plan Mode scratch file in place, and — critically — writes `~/.claude/plans/.state/<session_id>` containing the resolved path to that scratch file. This state file is the exact pointer a promotion step needs.
 - `hooks/plan-sync.sh` (`PostToolUse(TodoWrite)`) uses that same state file to keep syncing `TodoWrite` progress into the scratch plan as the user works.
 - Both hooks hard-validate (via `realpath`-style resolution) that the target file stays inside `$HOME/.claude/plans` — a safety gate that must **not** be loosened; it stays exactly as-is.
-- `ki-plan`'s `new` subcommand (`skills/process/ki-plan/SKILL.md`, `references/lifecycle.md`) already knows how to: derive the next global id from `docs/plans/README.md`, confirm a theme folder against ROADMAP, confirm the `roadmap:` field against a ROADMAP "Next" entry, write the canonical template (`plan-format.md`), and append the README row + dependency graph. There is no `execute`/`done`/`status`-style script backing it — it's all skill-invocation prose.
+- `ki-plan`'s `new` subcommand (`skills/process/ki-plan/SKILL.md`, `references/lifecycle.md`) already knows how to: derive the next global id from `docs/plans/README.md`, confirm a theme folder against ROADMAP, confirm the `roadmap:` field against a ROADMAP `Blocking` or `Next` entry, write the canonical template (`plan-format.md`), and append the README row + dependency graph. There is no `execute`/`done`/`status`-style script backing it — it's all skill-invocation prose.
 - Hooks are registered via `skills/keystone/ki-bootstrap/scripts/link-hooks.ts`'s `HOOK_NAMES`/`HOOK_PAIRS`, merge-patched into `~/.claude/settings.json` under `hooks.PostToolUse` as `{matcher, hooks:[{type:'command', command, timeout:5}]}`. No new entry is needed here since no new hook script is being added.
 
 ## Steps
@@ -37,7 +37,7 @@ So the approach below keeps the **existing hooks unchanged** and adds a new **`/
 2. Add a `promote` section to `skills/process/ki-plan/references/lifecycle.md` describing the algorithm:
    - Resolve `session_id`, read `~/.claude/plans/.state/<session_id>`; if absent, tell the user there's no Plan Mode plan for this session to promote.
    - Read the stamped scratch plan file; extract a title (first `#`/first line) and the freeform body.
-   - Confirm the theme (from the optional `[theme]` arg, else ask) and the `roadmap:` item (must match a ROADMAP "Next" entry — refuse and ask the user to add one first if none fits, per the near-horizon principle; do not invent a linkage).
+   - Confirm the theme (from the optional `[theme]` arg, else ask) and the `roadmap:` item (must match a ROADMAP `Blocking` or `Next` entry — refuse and ask the user to add one first if none fits, per the near-horizon principle; do not invent a linkage).
    - Derive the next global id the same way `new` does (max id across `docs/plans/README.md` + 1).
    - Map the scratch plan's prose into the canonical sections (`Context`, `Current state`, `Steps`, `Files touched`, `Verify`, `Dependencies / blocks`), marking anything that doesn't map cleanly with `<!-- TODO -->` — the same best-effort convention `new` already uses for gaps.
    - Write `docs/plans/<theme>/<NNN>-<slug>.md`, append the `README.md` row, rebuild the dependency graph.

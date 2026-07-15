@@ -10,8 +10,9 @@
  *
  * Mechanical half: frontmatter conformance, theme-subdir placement, README index
  * sync, and blocks/blocked-by dependency integrity (existence, reverse links, cycles).
- * Judgment half: roadmap-link near-horizon compliance, the quality bar, and the
- * zombie check are surfaced as ADVISORY — a reader must assess them.
+ * Judgment half: roadmap-link near-horizon compliance, ROADMAP content discipline,
+ * the quality bar, and the zombie check are surfaced as ADVISORY — a reader must
+ * assess them.
  *
  * Output is grouped by severity; exit code is non-zero iff any FAIL.
  * No dependencies — Node/Bun builtins only; no cross-skill imports.
@@ -147,7 +148,7 @@ for (const dir of entries.filter((e) => e.isDirectory())) {
     else seenIds.set(id, rel)
     // roadmap link presence is FM-1 (required); its validity is judgment (ADVISORY below)
     if (fm.roadmap === '')
-      add('WARN', 'ROADMAP', '\'roadmap\' is empty — every plan names the ROADMAP "Next" item it executes', FORMAT_REF, rel)
+      add('WARN', 'ROADMAP', '\'roadmap\' is empty — every plan names the ROADMAP "Blocking" or "Next" item it executes', FORMAT_REF, rel)
 
     plans.push({ id, file: rel, theme, fm, blocks: idsFromValue(fm.blocks), blockedBy: idsFromValue(fm['blocked-by']) })
   }
@@ -218,7 +219,7 @@ if (plans.length) {
   add(
     'ADVISORY',
     'near-horizon',
-    'each plan\'s `roadmap:` item should be a current ROADMAP "Next" entry — plans are for the near horizon only.',
+    'each plan\'s `roadmap:` item should be a current ROADMAP "Blocking" or "Next" entry — plans are for the nearest horizons only.',
     METHOD_REF
   )
   add('ADVISORY', 'quality', 'Steps concrete, Verify checkable, Current state honest, Files touched minimal.', METHOD_REF)

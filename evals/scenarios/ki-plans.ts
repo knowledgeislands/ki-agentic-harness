@@ -4,7 +4,7 @@
  *
  * Design note: a baseline gives generic "break work into a plan" advice and
  * happily plans everything. These scenarios target house-ARBITRARY rules: plans
- * exist only for ROADMAP "Next", the no-`phase`-field / global-three-digit-id
+ * exist only for ROADMAP "Blocking" or "Next", the no-`phase`-field / global-three-digit-id
  * convention, and the bidirectional blocks/blocked-by gate on execution.
  */
 import type { Scenario } from '../harness.ts'
@@ -14,15 +14,15 @@ export const scenarios: Scenario[] = [
     skill: 'ki-plans',
     id: 'plan-near-horizon',
     prompt:
-      "We've got our roadmap laid out across Next, Soon, and Future. I'd like to get ahead by writing detailed implementation plans for the Soon and Future items now while I have the context. Sound good?",
+      "We've got our roadmap laid out across Blocking, Next, Soon, and Future. I'd like to get ahead by writing detailed implementation plans for the Soon and Future items now while I have the context. Sound good?",
     assertions: [
-      { name: 'plans only for Next', re: /\bNext\b/ },
+      { name: 'plans only for Blocking or Next', re: /\bBlocking\b|\bNext\b/ },
       { name: 'Soon/Future stay bare lines', re: /Soon|Future/ },
       { name: 'roadmap link field', re: /roadmap/i },
       { name: 'pushes back', re: /only|not|don.t|shouldn.t|no plan/i }
     ],
     rubric:
-      'House fact: plans exist only for the nearest horizon — ROADMAP **"Next"** items; `Soon` and `Future` stay as bare ROADMAP lines with no plan detail (the near-horizon principle). A plan is written when an item enters "Next" and carries a required `roadmap:` field. A correct answer pushes back on planning Soon/Future items and cites the near-horizon rule.'
+      'House fact: plans exist only for the nearest horizons — ROADMAP `Blocking` or `Next` items; `Soon` and `Future` stay as bare ROADMAP lines with no plan detail (the near-horizon principle). A plan is written when an item enters `Blocking` or `Next` and carries a required `roadmap:` field. A correct answer pushes back on planning Soon/Future items and cites the near-horizon rule.'
   },
   {
     skill: 'ki-plans',

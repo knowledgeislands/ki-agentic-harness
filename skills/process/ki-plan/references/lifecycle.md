@@ -10,7 +10,7 @@ Enter plan mode immediately. While in plan mode:
 
 1. Read `README.md`. Next id = highest global id across all theme folders + 1, zero-padded to three digits; `001` if none.
 2. `<theme>` is the first token of `rest` — a kebab-case folder matching a ROADMAP section (create `docs/plans/<theme>/` if absent). The remainder is the title; derive the `<slug>` per the format reference.
-3. Confirm the **`roadmap:`** item this plan executes (which ROADMAP "Next" entry), and **blocks** / **blocked-by** (ids or —). Infer from context and confirm; do not ask for a `phase` — there is none.
+3. Confirm the **`roadmap:`** item this plan executes (which ROADMAP `Blocking` or `Next` entry), and **blocks** / **blocked-by** (ids or —). Infer from context and confirm; do not ask for a `phase` — there is none.
 4. Write `docs/plans/<theme>/<NNN>-<slug>.md` using the template in `ki-plans`' [plan-format.md](../../../general-governance/ki-plans/references/plan-format.md). Fill Steps with concrete, checkable actions; fill the rest from context, marking gaps `<!-- TODO -->`.
 5. Add a row to the flat index in `README.md` and rebuild the dependency graph.
 6. Tell the user the plan is written; exit plan mode. Do **not** begin implementation — that is `execute`.
@@ -37,4 +37,4 @@ Print `README.md` as-is — the flat active index and the dependency graph. If i
 
 ## Mandate
 
-For any multi-file or multi-step change, run `new` before touching code. The plan file is committed to git as part of the work — a recoverable, dependency-ordered record that survives context resets. Plans exist only for ROADMAP "Next" items (the near-horizon principle in `ki-plans`).
+For any multi-file or multi-step change, run `new` before touching code. The plan file is committed to git as part of the work — a recoverable, dependency-ordered record that survives context resets. Plans exist only for ROADMAP `Blocking` or `Next` items (the near-horizon principle in `ki-plans`).

@@ -28,7 +28,7 @@
  *     declaration — a complete fix, not a stub).
  *
  * Deliberately NEVER touches (judgment → ADVISORY manual TODOs): LAY-3/4/5,
- * PKG-1..4, CONFIG-2, SKILLS-1/2, and the prose criteria CLAUDE-1..5 / ROAD-1..3.
+ * PKG-1..4, CONFIG-2, SKILLS-1/2, and the prose criteria CLAUDE-1..5.
  *
  * Zero npm dependencies (bun + node stdlib only).
  */
@@ -215,7 +215,7 @@ async function main() {
   rec(
     'ADVISORY',
     'judgment',
-    'CLAUDE.md coverage/freshness (CLAUDE-1..5) and ROADMAP.md discipline (ROAD-1..3) are prose judgment — read the rubric.',
+    'CLAUDE.md coverage/freshness (CLAUDE-1..5) is prose judgment — read the rubric. ROADMAP content discipline is governed by ki-plans.',
     'references/audit-rubric.md'
   )
 

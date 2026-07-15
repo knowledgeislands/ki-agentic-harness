@@ -10,7 +10,7 @@ The rubric ([`audit-rubric.md`](audit-rubric.md)) is the line-by-line checkable 
 - [§Layout — the five-part directory requirement](#layout--the-five-part-directory-requirement)
 - [§Skills directory — the naming convention](#skills-directory--the-naming-convention)
 - [§CLAUDE.md required sections](#claudemd-required-sections)
-- [§ROADMAP.md discipline](#roadmapmd-discipline)
+- [§ROADMAP.md](#roadmapmd)
 - [§package.json required scripts](#packagejson-required-scripts)
 - [§.ki-config.toml tables](#ki-configtoml-tables)
 - [§Boundary declarations](#boundary-declarations)
@@ -96,16 +96,9 @@ Optional but encouraged:
 
 ---
 
-## §ROADMAP.md discipline
+## §ROADMAP.md
 
-The harness `ROADMAP.md` holds the **open forward work** only. Two rules:
-
-1. **Open-only.** Items are removed when done, not ticked off. The file always shows what remains.
-2. **No continuous practices.** Ongoing disciplines (running `ki:skills:audit`, monthly REFRESH runs, re-auditing repos) are not roadmap items — they are invariants. They live in the `ki-engineering` enforcement framework or a similar always-present reference, not here. A roadmap item that would never close (because it is a standing practice) is a sign it belongs elsewhere.
-
-**Why:** a roadmap that accumulates checked-off items loses the "what's left" signal. A roadmap that lists ongoing practices obscures the "what's new" signal. Keeping the two separate preserves both.
-
-**Recommended structure.** Group open items under `## Next` (nearest-term, highest-impact), `## Soon` (opportunistic, can overlap with Next), and `## Future` (larger, blocked, or calendar-gated). This `Next / Soon / Future` phasing is the house vocabulary, owned here — `ki-plans` references it: a code-repo plan is written when an item enters **Next** and removed when it lands. The structure is recommended, not required — a repo with a short forward view may keep a flat list, and a KB base keeps its forward view in `Streams` (the Focus lifecycle) rather than a `ROADMAP.md`. The two discipline rules above always apply; the phasing is the shape they hang on.
+A harness carries `ROADMAP.md` as part of its root layout (LAY-4). `ki-plans` owns the ROADMAP content discipline and horizon vocabulary; see its [roadmap reference](../../../general-governance/ki-plans/references/roadmap.md). This skill does not govern the file beyond its existence.
 
 ---
 

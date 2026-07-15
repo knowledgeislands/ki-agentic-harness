@@ -3,7 +3,7 @@ name: ki-plans
 implies: []
 vendors: [init, audit, conform, help]
 description: >
-  Govern the Knowledge Islands planning methodology for code repos: when to write a plan, how it derives from the ROADMAP, dependency discipline, and plan quality. Owns the mandate (plan before code for multi-file or multi-step changes), the near-horizon principle (plans exist only for ROADMAP "Next" items), the blocks/blocked-by dependency graph, and the quality bar for Steps and Verify. AUDIT checks docs/plans for frontmatter, README sync, and dependency integrity; CONFORM fixes mechanical issues; REFRESH revisits the methodology. Does not own the plan lifecycle (new/execute/done/status) — that is the /plan slash command. A code-repo instrument: in a KB, planning is a stream proposal's Checklist (ki-kb-streams). Triggers: "audit plans", "are my plans in order", "should I write a plan for this", "plan methodology". Off-ramps: /plan (lifecycle), ki-kb-streams (KB planning), ki-decision-records (decisions vs. plans), ki-harness (ROADMAP structure and phasing).
+  Govern the Knowledge Islands planning methodology for code repos: plans, ROADMAP linkage, dependencies, quality, and content discipline. Owns the mandate (plan before code for multi-file or multi-step changes), the four-horizon model, the near-horizon principle (plans exist only for ROADMAP "Blocking" or "Next" items), the blocks/blocked-by dependency graph, and the quality bar for Steps and Verify. AUDIT checks docs/plans for frontmatter, README sync, and dependency integrity; CONFORM fixes mechanical issues; REFRESH revisits the methodology. Does not own the plan lifecycle (new/execute/done/status) — that is the /plan slash command. A code-repo instrument: in a KB, planning is a stream proposal's Checklist (ki-kb-streams). Triggers: "audit plans", "are my plans in order", "should I write a plan for this", "plan methodology". Off-ramps: /plan (lifecycle), ki-kb-streams (KB planning), ki-decision-records (decisions vs. plans), ki-harness (ROADMAP.md existence as harness layout).
 argument-hint: 'audit [dir] | conform [dir] | help | init <target> | refresh'
 ---
 
@@ -16,13 +16,14 @@ Plans are a **code-repo instrument.** In a Knowledge Islands KB the plan already
 ## What this skill owns
 
 1. **The mandate** — any multi-file or multi-step change in a code repo requires a plan file before code is touched. A plan is the recoverable, dependency-ordered record that survives context resets and handoffs. Not every change needs one (see Notes).
-2. **The near-horizon principle** — plans exist only for the nearest horizon: ROADMAP "Next" items. `Soon` and `Future` are ROADMAP lines with no plan detail. A plan is written when an item enters "Next"; it is deleted when the item lands. This keeps the plans directory small and the ROADMAP the single forward-view — no duplicated phase tables.
-3. **Roadmap linkage and closure** — every plan carries a `roadmap:` field naming the item it executes and is filed under that item's theme folder. Because ROADMAP is open-only (removed-when-done, per `ki-harness`), closing a plan also removes its ROADMAP line — one motion.
-4. **Dependency discipline** — `blocks` and `blocked-by` are bidirectional and consistent: if A blocks B, B's `blocked-by` lists A. The dependency graph in `README.md` is the authoritative execution order. No plan may move to `in-progress` before its blockers are `done`.
-5. **The quality bar** — see [Plan quality bar](#plan-quality-bar). Four non-negotiables: concrete Steps, a checkable Verify, an honest Current state, a minimal Files touched.
-6. **Placement** — `docs/plans/<theme>/<NNN>-<slug>.md`, global three-digit ids; theme folder matches a ROADMAP section. Format detail in [references/plan-format.md](references/plan-format.md).
-7. **The index rule** — `docs/plans/README.md` is a flat active index (one row per plan on disk) plus a dependency graph, always in sync: every file has a row, every row has a file.
-8. **Plans vs. Decision Records** — a plan answers "how do we execute this?" with ordered steps; a DR answers "why did we decide this?" with context and consequences. A DR may precede a plan, or a plan may reference a DR. Use `ki-decision-records` for the latter.
+2. **The near-horizon principle** — plans exist only for the nearest horizons: ROADMAP `Blocking` or `Next` items. `Blocking` must complete before `Next` can proceed. `Soon` and `Future` are ROADMAP lines with no plan detail. A plan is written when an item enters `Blocking` or `Next`; it is deleted when the item lands. This keeps the plans directory small and the ROADMAP the single forward-view — no duplicated phase tables.
+3. **ROADMAP content discipline** — the four-horizon vocabulary, open-only rule, exclusion of continuous practices, and `(candidate)` convention are defined in [references/roadmap.md](references/roadmap.md). The content rules are judgment checks, not a mechanical ROADMAP parser.
+4. **Roadmap linkage and closure** — every plan carries a `roadmap:` field naming the item it executes and is filed under that item's theme folder. Because ROADMAP is open-only (removed when done), closing a plan also removes its ROADMAP line — one motion.
+5. **Dependency discipline** — `blocks` and `blocked-by` are bidirectional and consistent: if A blocks B, B's `blocked-by` lists A. The dependency graph in `README.md` is the authoritative execution order. No plan may move to `in-progress` before its blockers are `done`.
+6. **The quality bar** — see [Plan quality bar](#plan-quality-bar). Four non-negotiables: concrete Steps, a checkable Verify, an honest Current state, a minimal Files touched.
+7. **Placement** — `docs/plans/<theme>/<NNN>-<slug>.md`, global three-digit ids; theme folder matches a ROADMAP section. Format detail in [references/plan-format.md](references/plan-format.md).
+8. **The index rule** — `docs/plans/README.md` is a flat active index (one row per plan on disk) plus a dependency graph, always in sync: every file has a row, every row has a file.
+9. **Plans vs. Decision Records** — a plan answers "how do we execute this?" with ordered steps; a DR answers "why did we decide this?" with context and consequences. A DR may precede a plan, or a plan may reference a DR. Use `ki-decision-records` for the latter.
 
 ## Plan quality bar
 
@@ -51,7 +52,7 @@ The mechanical half is [`scripts/audit.ts`](scripts/audit.ts) — run `bun run k
 3. **Index sync** — every plan file has a row in `README.md` (matched by id); every row has a file.
 4. **Dependency integrity** — every `blocks` / `blocked-by` id exists; reverse links are consistent; no cycles.
 
-Then apply the judgment half by reading: **roadmap-link validity** (does the `roadmap:` item exist in ROADMAP's "Next"? — near-horizon compliance), **quality bar** on each `in-progress` plan (concrete Steps, checkable Verify), and a **zombie check** (an `in-progress` plan with no recent commits touching it). The checker surfaces these as ADVISORY. Report on the severity ladder in `ki-engineering`'s [checker-contract.md](../../foundations/ki-engineering/references/checker-contract.md).
+Then apply the judgment half by reading: **roadmap-link validity** (does the `roadmap:` item exist in ROADMAP's `Blocking` or `Next` horizon? — near-horizon compliance), **ROADMAP content discipline** ([references/roadmap.md](references/roadmap.md)), **quality bar** on each `in-progress` plan (concrete Steps, checkable Verify), and a **zombie check** (an `in-progress` plan with no recent commits touching it). The checker surfaces these as ADVISORY. Report on the severity ladder in `ki-engineering`'s [checker-contract.md](../../foundations/ki-engineering/references/checker-contract.md).
 
 ### Mode CONFORM
 
@@ -77,8 +78,8 @@ Revisit the methodology against current practice:
 
 1. Check whether the near-horizon principle still matches how work flows from ROADMAP into plans.
 2. Review whether the quality bar needs sharpening based on patterns seen in real plans.
-3. Confirm the placement and roadmap-linkage rules still hold against `ki-harness`'s ROADMAP standard.
-4. Update this `SKILL.md` (and [references/plan-format.md](references/plan-format.md) if the format itself moved). Summarise what changed and why in the commit message.
+3. Confirm the four-horizon model, roadmap-linkage rules, and [ROADMAP content discipline](references/roadmap.md) still fit current practice.
+4. Update this `SKILL.md` and the affected references. Summarise what changed and why in the commit message.
 
 ## Notes
 

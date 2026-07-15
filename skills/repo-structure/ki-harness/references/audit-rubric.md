@@ -12,7 +12,6 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS
 - [PKG — package.json script families](#pkg--packagejson-script-families)
 - [CONFIG — .ki-config.toml declarations](#config--ki-configtoml-declarations)
 - [SKILLS — skills/ directory convention](#skills--skills-directory-convention)
-- [ROAD — ROADMAP.md discipline](#road--roadmapmd-discipline)
 - [LONG — Longevity and refresh path](#long--longevity-and-refresh-path)
 - [COLL — Collision and boundary](#coll--collision-and-boundary)
 
@@ -79,16 +78,6 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS
 **SKILLS-1 [M]** For each `skills/<dir>` that contains a `SKILL.md`: the directory name exactly matches the `name:` frontmatter field in that `SKILL.md`. Source: standard §Skills directory. _Severity: FAIL — name/path mismatch breaks agent skill discovery._
 
 **SKILLS-2 [J]** No two `skills/` entries share a `name:` frontmatter value. (The `ki-skills` cross-skill linter pass — COLL-1 — also checks this; don't double-report what it surfaces.) Source: Agent Skills specification; standard §Skills directory. _Severity: FAIL — duplicate names are ambiguous at selection time._
-
----
-
-## ROAD — ROADMAP.md discipline
-
-**ROAD-1 [J]** `ROADMAP.md` contains only open work. No completed items, no ticked checkboxes, no "~~done~~" entries. Items are removed when done, not checked off. Source: standard §ROADMAP.md rule 1. _Severity: WARN — closed items obscure the open-work signal._
-
-**ROAD-2 [J]** `ROADMAP.md` does not list continuous practices (standing audits, monthly REFRESH runs, ongoing toolchain maintenance) as roadmap items. Source: standard §ROADMAP.md rule 2. _Severity: POLISH — continuous practices belong in the `ki-engineering` enforcement framework or `CLAUDE.md`._
-
-**ROAD-3 [J]** `ROADMAP.md` groups open work under the recommended `Next` / `Soon` / `Future` phasing — or the repo's forward view is short enough that a flat list reads more clearly. Source: standard §ROADMAP.md recommended structure. _Severity: POLISH — the phasing is recommended, not required; `ki-plans` references this vocabulary._
 
 ---
 

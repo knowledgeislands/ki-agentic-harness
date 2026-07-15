@@ -43,11 +43,11 @@ blocked-by: <comma-separated ids, or —>
 | `id` | Quoted, zero-padded, ≥ 3 digits, globally unique across themes. |
 | `title` | One line; matches the README row and the `#` heading. |
 | `status` | One of `open`, `in-progress`, `done`. |
-| `roadmap` | Names the ROADMAP "Next" item this plan executes. Required — a plan with no roadmap item is misfiled (see the near-horizon principle in `SKILL.md`). |
+| `roadmap` | Names the ROADMAP `Blocking` or `Next` item this plan executes. Required — a plan with no roadmap item is misfiled (see the near-horizon principle in `SKILL.md`). |
 | `blocks` | Ids this plan unblocks, comma-separated, or `—`. |
 | `blocked-by` | Ids that must be `done` first, comma-separated, or `—`. Bidirectional with the blocker's `blocks`. |
 
-There is **no `phase` field.** Phasing (Next / Soon / Future) lives in `ROADMAP.md`, owned by `ki-harness`. A plan exists only for a "Next" item, so its phase is implicit.
+There is **no `phase` field.** The four-horizon model and ROADMAP content discipline are owned by `ki-plans`; see [roadmap.md](roadmap.md). A plan exists only for a `Blocking` or `Next` item, so its phase is implicit.
 
 ## Sections
 
@@ -82,12 +82,12 @@ During execution, completed steps are marked with a leading `✓` (or a `- [x]` 
 
 ## The index — `docs/plans/README.md`
 
-A **flat active index** — one row per plan on disk — followed by a dependency graph. Plans exist only for the near horizon, so there are no Next / Soon / Future tables here; phasing is ROADMAP's job.
+A **flat active index** — one row per plan on disk — followed by a dependency graph. Plans exist only for the nearest horizons (`Blocking` and `Next`), so the index carries no phase tables; ROADMAP carries the horizon placement.
 
 ````markdown
 # Implementation Plans
 
-Active plans only — one file per ROADMAP "Next" item. Each plan is self-contained: context, current state, ordered steps, files touched, and a verify section. Phasing (Next / Soon / Future) lives in ROADMAP.md; a plan is written when an item enters "Next" and removed when it lands.
+Active plans only — one file per ROADMAP `Blocking` or `Next` item. Each plan is self-contained: context, current state, ordered steps, files touched, and a verify section. The four-horizon model lives in ROADMAP.md; a plan is written when an item enters `Blocking` or `Next` and removed when it lands.
 
 | Plan                       | Theme | Title                       | Status           | Blocks |
 | -------------------------- | ----- | --------------------------- | ---------------- | ------ |

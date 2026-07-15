@@ -73,7 +73,8 @@ const CHECK_DEFAULTS: Record<string, boolean> = {
   issues: true, //              Issues enabled
   topics: true, //              (public) carries the standard topic set
   'secret-scanning': true, //   (public) secret scanning on
-  'push-protection': true //    (public) secret-scanning push protection on
+  'push-protection': true, //   (public) secret-scanning push protection on
+  structure: true //            declares at least one repo-structure table
 }
 const KI_CONFIG = '.ki-config.toml'
 // Required root files. Each entry is one or more acceptable paths (first found wins).
@@ -354,7 +355,16 @@ const COVERAGE_SKILLS = new Set(COVERAGE.map((c) => c.skill))
 // `[ki-<skill>]` tables are mutually exclusive (ADR-KI-HARNESS-SKILLS-006). Implied
 // family members (ki-website-cloudflare under website, ki-kb-streams under kb) are not
 // distinct structures and are excluded from the count.
-const REPO_STRUCTURE_TABLES = ['ki-harness', 'ki-kb', 'ki-website', 'ki-mcp', 'ki-plugins', 'ki-tools', 'ki-homebrew-tap']
+const REPO_STRUCTURE_TABLES = [
+  'ki-harness',
+  'ki-kb',
+  'ki-website',
+  'ki-mcp',
+  'ki-plugins',
+  'ki-tools',
+  'ki-homebrew-tap',
+  'ki-dotfiles-chezmoi'
+]
 // A `[ki-<skill>]` (or sub-table `[…​.x]`) header on its own line —
 // anchored so a commented-out `# [..]` template line does not count as declared.
 const declaresTable = (kiText: string, table: string): boolean => new RegExp(`^\\[${table}(\\]|\\.)`, 'm').test(kiText)
@@ -495,7 +505,8 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
     issues: 'TOGGLE-1',
     topics: 'TOPICS-1',
     'secret-scanning': 'SEC-1',
-    'push-protection': 'SEC-1'
+    'push-protection': 'SEC-1',
+    structure: 'STRUCT-2'
   }
   for (const [id, v] of Object.entries(ki?.checks ?? {})) {
     if (id.startsWith('coverage-')) {
@@ -536,15 +547,21 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
       else if (declared && !detected) warn('COV-1', `declares [${c.table}] but no ${c.artifact} found — stale opt-in?`)
     }
 
-    // ── repo-structure cardinality: exactly one structural identity per repo ── STRUCT-1
+    // ── repo-structure cardinality: exactly one structural identity per repo ── STRUCT-1/2
     // The repo-structure tables are mutually exclusive; declaring more than one is a
-    // governance error (ADR-KI-HARNESS-SKILLS-006). Zero is allowed here — a dotfiles /
-    // config repo may carry none — the requirement is "at most one", enforced as "not >1".
+    // governance error (ADR-KI-HARNESS-SKILLS-006) — bedrock, not overridable. Zero is
+    // WARNed (STRUCT-2, overridable via `structure = false`) rather than FAILed — a
+    // dotfiles/config repo may genuinely carry no structure skill.
     const declaredStructure = REPO_STRUCTURE_TABLES.filter((t) => declaresTable(text, t))
     if (declaredStructure.length > 1)
       fail(
         'STRUCT-1',
         `declares ${declaredStructure.length} repo-structure tables (${declaredStructure.map((t) => `[${t}]`).join(', ')}) — a repo has exactly one structural identity; keep one`
+      )
+    else if (declaredStructure.length === 0 && enforced('structure'))
+      warn(
+        'STRUCT-2',
+        'declares no repo-structure table — pick the one that matches its layout (ki-harness/ki-kb/ki-website/ki-mcp/ki-plugins/ki-tools/ki-homebrew-tap/ki-dotfiles-chezmoi), or set `structure = false` in [ki-repo.checks] if this repo genuinely has none'
       )
   }
 

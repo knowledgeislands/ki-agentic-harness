@@ -52,9 +52,9 @@ _Verify:_ `audit-harness.ts` SKILLS-1 FAILs on any directory-name/`name:` mismat
 
 ### HARN-007 — ROADMAP.md holds only open work
 
-`ROADMAP.md` MUST list only open work — no completed items, no ticked checkboxes, no `~~struck~~` entries — items being removed when done rather than checked off, per the `ki-harness` standard.
+`ROADMAP.md` MUST list only open work — no completed items, no ticked checkboxes, no `~~struck~~` entries — items being removed when done rather than checked off, per `ki-plans`' ROADMAP content discipline.
 
-_Verify:_ `ki-harness`'s rubric ROAD-1 ([`skills/repo-structure/ki-harness/references/audit-rubric.md`](../../skills/repo-structure/ki-harness/references/audit-rubric.md)), applied by reading (judgment-graded).
+_Verify:_ `ki-plans`' [ROADMAP content discipline](../../skills/general-governance/ki-plans/references/roadmap.md), applied by reading (judgment-graded).
 
 ### HARN-008 — CLAUDE.md orientation coverage
 
