@@ -103,7 +103,7 @@ Once the standing surface is lean, these govern what each turn and each sub-agen
 
 ## 5. Context-compression tooling (Headroom) and the registry
 
-Tool-result and log bloat (§4) is exactly what a **context-compression layer** removes before content reaches the model, reversibly, so the model can still retrieve the original on demand. The house default treats one such layer as a **recommended** best practice; the expectation is set per environment (`headroom = "required" | "recommended" | "off"`).
+Tool-result and log bloat (§4) is exactly what a **context-compression layer** removes before content reaches the model, reversibly, so the model can still retrieve the original on demand. The house default treats one such layer as a **recommended** best practice; the expectation is set per environment (`headroom = "required" | "recommended" | "off"`). When an environment runs more than one agent runtime, validate the integration and its savings per runtime: a working proxy path for one client does not establish that another client should be routed through it. Disable an unproven runtime-specific route while retaining the layer where it demonstrably works.
 
 The seeded registry entry is **Headroom** (chopratejas/headroom, published as the `headroom-ai` package, and the extraheadroom.com app) — a reversible context-compression proxy / MCP server. It is detected across both layers by any of:
 
