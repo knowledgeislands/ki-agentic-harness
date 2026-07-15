@@ -8,7 +8,7 @@ Every path below (`.claude/skills/`, `~/.claude/skills/`) is the **Claude Code**
 
 A skill's `name` + `description` sits in the selection surface on **every turn**. Installing all governance skills globally (`~/.claude/skills/`) pays that cost in every session, including ones that never touch a Knowledge Islands repo. So the governance skills are **project-local** — placed in a repo's `.claude/skills/`, loaded only when that repo is in the session.
 
-That leaves a bootstrap problem: something must be globally available to _wire_ a repo's project-local skills, and to reach `ki-repo`'s INIT in a repo that has no `.ki-config.toml` yet. Globalizing the heavy `repo` skill wastes the budget. So a single tiny skill — this one — is the global keystone; it does nothing but mirror a repo's declared coverage into its `.claude/skills/`.
+That leaves a bootstrap problem: something must be globally available to _wire_ a repo's project-local skills, vendor its self-checking surface, and reach `ki-repo`'s INIT in a repo that has no `.ki-config.toml` yet. Globalizing the heavy `repo` skill wastes the budget. So a single tiny skill — this one — is the global keystone and chain engine; `ki-repo` remains the exclusive owner of config-file bytes.
 
 ## The invariant
 
@@ -16,9 +16,15 @@ For a Knowledge Islands repo, `.claude/skills/` contains exactly:
 
 > **the skills the repo declares** (`[ki-<skill>]` tables in `.ki-config.toml`, its foundations `ki-repo` + `ki-authoring` among them), minus `ki-bootstrap` itself (which is global). There is no injected baseline — coverage is purely what the config declares.
 
-- **Declared coverage** is owned by `ki-repo`'s coverage cascade — this skill _reads_ the tables, never edits them. Whether the declared set is correct for the repo is a `ki-repo` question.
-- **The baseline** is always linked: `repo` so a greenfield repo can reach INIT to scaffold its config; `authoring` because Markdown/TOML style is universal (it is cascade-exempt — no per-repo table — so it is added explicitly).
+- **Declared coverage** is owned by `ki-repo`'s coverage cascade. Bootstrap reads the root owner from exact and dotted tables but injects nothing; whether the declared set is correct is a `ki-repo` question.
+- **Resolution is strict.** Every declared root must exist in the ref-specific harness skill index. An unresolved root is a sorted FAIL in check, write, and dry-run modes before any link mutation; it is never filtered from a partial set and never auto-renamed.
 - **The harness** (`ki-agentic-harness`) is not special here: it links its own declared coverage like any repo. It _authors_ every skill (their source lives in its `skills/`), but a structural skill (`ki-mcp`, `ki-website`, …) is exercised against a repo of its type, not loaded in the harness — so linking the whole fleet would only add standing context cost for no authoring gain (ADR-KI-HARNESS-007).
+
+## INIT resolution and owner composition
+
+INIT resolves the root owners from exact and dotted `[ki-*]` tables plus explicit `--seed` values, then follows the transitive `implies:` graph. Every declaration, seed, and dependency must resolve before `.ki-meta/` is touched. `ki-bootstrap` itself may be declared or seeded, but as the global chain-starter it is excluded from the vendored set. Bare bootstrap against a missing or empty config with no seed therefore resolves the empty set.
+
+When `ki-repo` is initially seeded or resolved, bootstrap subprocesses `ki-repo`'s scaffold-only INIT leg before vendoring, forwarding dry-run state. This is composition through the owner, not shared ownership: bootstrap embeds no TOML template and never writes `.ki-config.toml` directly. The owner creates a missing file with canonical `[ki-repo]` defaults plus bare `[ki-authoring]`, or append-only repairs whichever exact root marker is missing while preserving all existing bytes. Bootstrap then re-resolves so those declared foundations and their self-check units are vendored in the same run.
 
 ## How the links are stored
 
@@ -28,7 +34,7 @@ For a Knowledge Islands repo, `.claude/skills/` contains exactly:
 
 ## Reproducibility contract
 
-Every Knowledge Islands repo carries a `.gitignore` entry for `.claude/skills/`; re-running the linker regenerates the links from `.ki-config.toml` alone, on any machine. That makes the project-local skill set reproducible without ever committing the symlinks.
+Every Knowledge Islands repo carries a `.gitignore` entry for `.claude/skills/`; re-running the linker regenerates the links from `.ki-config.toml` alone, on any machine. That makes the project-local skill set reproducible without ever committing the symlinks. If any declaration no longer resolves, every linker mode stops before changing links and names the roots a human must reconcile.
 
 Wiring `package.json` convenience keys is no concern of the linker — it manages only the symlinks and the `.gitignore` line. Any `ki:<suffix>:<verb>` script sugar is `ki-engineering`'s to add later, over the vendored `.ki-meta/bin` runners.
 

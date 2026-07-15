@@ -31,6 +31,8 @@ Every repo carries these at the root. Presence is checked **on the default branc
 
 **Baseline governance is declared, not assumed.** Every Knowledge Islands repo is governed by `ki-repo` **and** `ki-authoring`; both are required declarations — a `.ki-config.toml` missing `[ki-authoring]` is a FAIL (`authoring-baseline`). Authoring is no longer an implicit universal hidden in the tooling ([ADR-KI-HARNESS-005](../../../../docs/decisions/ADR-KI-HARNESS-005-validate-down-ki-config-contract.md)); the config shows the full governance set. Machine/user-surface standards (`ki-tokenomics`, `ki-housekeeping`) stay opt-in, never baseline.
 
+**Foundation scaffolding is owner-controlled and append-only.** `ki-repo` exclusively writes `.ki-config.toml`. Its INIT and CONFORM create a missing file with the canonical `[ki-repo]` defaults plus bare `[ki-authoring]`, or append only a missing exact root marker to a partial file; a dotted `[ki-repo.checks]` sub-table alone does not satisfy `[ki-repo]`. They preserve all existing bytes, are idempotent, and make no write in dry-run. CONFORM completes this local repair before any live GitHub work. Bootstrap may subprocess the owner's scaffold-only INIT when `ki-repo` is seeded or resolved, but carries no TOML template and never edits the config directly.
+
 **Self-check capability is required.** A confirmed ki-repo must carry a way to run its checks with zero skills installed: `.ki-meta/bin/ki-audit` or `.ki-meta/bin/aggregate.ts` must be present. A marker-only repo with neither is a FAIL (`self-check`) — re-bootstrap to write the runner.
 
 `ROADMAP.md` is **expected but not required** — a warn, not a fail: most repos carry one, but a base that keeps its forward view elsewhere (a KB base's `Streams/Future`) may omit it.
@@ -104,17 +106,21 @@ The engineering coverage manifest assigns the `package.json` **identity & metada
 
 Each repo **declares** its expected visibility in `.ki-config.toml` (`visibility = "public"` or `"private"`); the auditor checks that declaration against the live GitHub visibility. It is a deliberate per-repo choice, **not inferred from the name**. (In practice the `arcadia-*` repos are private bases / internal skills and the `mcp-*` repos are public servers — a pattern, not the rule.)
 
-`.ki-config.toml` is a shared per-repo file; each skill reads its own `[table]`, and a skill with only implicit/default behaviour needs no table. The full cross-skill contract — its presence as the compliance marker, the table-per-skill model, and the validate-your-own-table protocol — is in [the `.ki-config.toml` contract](ki-config-standard.md). This skill owns `[ki-repo]`. Scaffold the default keys with `bun scripts/audit.ts --init >> .ki-config.toml`, then edit the values:
+`.ki-config.toml` is a shared per-repo file; each skill reads and defines the schema of its own `[table]`, while `ki-repo` exclusively owns file mutation. The full cross-skill contract — its presence as the compliance marker, the table-per-skill model, and the validate-your-own-table protocol — is in [the `.ki-config.toml` contract](ki-config-standard.md). Run `bun scripts/init.ts <target-repo>` to establish the canonical foundations and self-check surface in one operation (or its internal `--scaffold-config-only` leg when only the append-only config repair is required), then edit the values:
 
 ```toml
 # .ki-config.toml — one [table] per skill that needs per-repo options
 [ki-repo]
 visibility = "public"   # "public" | "private"
+license = "MIT"         # SPDX id; use "UNLICENSED" for proprietary
 
 # Optional. One boolean per overridable check; omit any to take the org default.
 # A repo that fully conforms needs nothing here.
 [ki-repo.checks]
 branch-protection = true   # default off — protect `main` on this repo
+
+# Required foundation marker — declared, never injected.
+[ki-authoring]
 ```
 
 ## Per-repo overrides
@@ -160,8 +166,8 @@ all=(ki-arcadia-principal ki-agentic-harness ki-website mcp-claude-housekeeping 
 public=(mcp-claude-housekeeping mcp-git-audit mcp-gsuite mcp-kb-fs mcp-ki-kb-notion-mirror mcp-m365)
 
 # Layer 1 — each repo declares its config in .ki-config.toml (committed via PR like any file).
-#   Scaffold the [ki-repo] defaults, then edit:
-#     bun scripts/audit.ts --init >> .ki-config.toml
+#   Scaffold/repair [ki-repo] + [ki-authoring], vendor their self-checks, then edit:
+#     bun skills/keystone/ki-repo/scripts/init.ts <target-repo>
 # Visibility is verified (declared vs live), not set here; change actual visibility deliberately:
 #   gh repo edit knowledgeislands/<name> --visibility public|private --accept-visibility-change-consequences
 
