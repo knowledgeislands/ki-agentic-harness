@@ -4,12 +4,14 @@ Active plans only — one file per ROADMAP `Blocking` or `Next` item. Each plan 
 
 The five-horizon model lives in [ROADMAP.md](../../ROADMAP.md), not here — a plan is written when an item enters `Blocking` or `Next` and removed when it lands. The format is defined in the `ki-plans` skill's [plan-format.md](../../skills/general-governance/ki-plans/references/plan-format.md).
 
-| Plan                                        | Theme | Title                                      | Status      | Blocks |
-| ------------------------------------------- | ----- | ------------------------------------------ | ----------- | ------ |
-| [004](hooks/004-promote-plan-mode-plans.md) | hooks | Promote Plan Mode plans into `docs/plans/` | in-progress | —      |
+| Plan                                                        | Theme   | Title                                      | Status      | Blocks |
+| ----------------------------------------------------------- | ------- | ------------------------------------------ | ----------- | ------ |
+| [004](hooks/004-promote-plan-mode-plans.md)                 | hooks   | Promote Plan Mode plans into `docs/plans/` | in-progress | —      |
+| [005](roadmap/005-replace-ki-plans-with-project-roadmap.md) | roadmap | Replace ki-plans with ki-project-roadmap   | open        | —      |
 
 ## Dependency graph
 
 ```text
 004
+005
 ```
