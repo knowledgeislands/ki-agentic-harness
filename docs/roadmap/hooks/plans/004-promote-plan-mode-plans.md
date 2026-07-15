@@ -2,7 +2,7 @@
 id: '004'
 title: Promote Plan Mode plans into `docs/plans/`
 status: in-progress
-roadmap: Promote Plan Mode plans into `docs/plans/`
+roadmap: hooks/promote-plan-mode-plans-into-docs-plans
 blocks: —
 blocked-by: —
 ---

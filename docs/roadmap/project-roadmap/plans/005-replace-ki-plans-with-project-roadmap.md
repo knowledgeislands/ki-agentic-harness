@@ -1,8 +1,8 @@
 ---
 id: '005'
 title: Replace ki-plans with ki-project-roadmap
-status: open
-roadmap: Replace `ki-plans` with `ki-project-roadmap`
+status: in-progress
+roadmap: project-roadmap/replace-ki-plans-with-ki-project-roadmap
 blocks: —
 blocked-by: —
 ---
