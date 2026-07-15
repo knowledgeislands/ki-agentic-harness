@@ -1,0 +1,456 @@
+#!/usr/bin/env bun
+/** Mechanical auditor for the non-KB project-roadmap standard. */
+import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { join, relative, resolve } from 'node:path'
+
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
+type Horizon = (typeof HORIZONS)[number]
+type Item = { theme: string; title: string; slug: string; horizon: Horizon; file: string }
+type Plan = {
+  id: string
+  theme: string
+  file: string
+  name: string
+  fm: Record<string, string>
+  blocks: string[]
+  blockedBy: string[]
+}
+
+const HORIZONS = ['Blocking', 'Next', 'Soon', 'Waiting for', 'Future'] as const
+const NEAR = new Set<Horizon>(['Blocking', 'Next'])
+const THEME_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+const PLAN_RE = /^(\d{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/
+const REQUIRED = ['id', 'title', 'status', 'roadmap', 'blocks', 'blocked-by']
+const VALID_STATUS = new Set(['open', 'in-progress', 'done'])
+const STANDARD_REF = 'references/project-roadmap-standard.md'
+const FORMAT_REF = 'references/plan-format.md'
+const RUBRIC_REF = 'references/audit-rubric.md'
+const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
+const findings: Finding[] = []
+const add = (level: Level, area: string, msg: string, ref = RUBRIC_REF, file?: string): void => {
+  findings.push({ level, area, msg, ref, file })
+}
+
+const argv = process.argv.slice(2)
+const positional = argv.find((arg) => !arg.startsWith('-')) ?? '.'
+const root = resolve(positional)
+if (!existsSync(root) || !lstatSync(root).isDirectory()) {
+  console.error(`usage: audit.ts [repo]   (repository directory required; got ${positional})`)
+  process.exit(2)
+}
+
+function isKb(repo: string): boolean {
+  const config = join(repo, '.ki-config.toml')
+  if (!existsSync(config)) return false
+  try {
+    const parsed = TOML.parse(readFileSync(config, 'utf8')) as Record<string, unknown>
+    const repoTable = parsed['ki-repo']
+    return (
+      parsed.repo_type === 'kb' ||
+      (typeof repoTable === 'object' && repoTable !== null && (repoTable as Record<string, unknown>).repo_type === 'kb')
+    )
+  } catch {
+    return /^\s*repo_type\s*=\s*["']kb["']/m.test(readFileSync(config, 'utf8'))
+  }
+}
+
+function markdownHeadings(text: string): Array<{ level: number; title: string; line: number }> {
+  const result: Array<{ level: number; title: string; line: number }> = []
+  let fence: '`' | '~' | null = null
+  for (const [index, line] of text.split(/\r?\n/).entries()) {
+    const fenceMatch = line.match(/^\s*(`{3,}|~{3,})/)
+    if (fenceMatch) {
+      const kind = fenceMatch[1][0] as '`' | '~'
+      fence = fence === null ? kind : fence === kind ? null : fence
+      continue
+    }
+    if (fence) continue
+    const match = line.match(/^(#{1,6})\s+(.+?)\s*#*\s*$/)
+    if (match) result.push({ level: match[1].length, title: match[2].trim(), line: index + 1 })
+  }
+  return result
+}
+
+function itemSlug(title: string): string {
+  return title
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/[`*_~]/g, '')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+function parseRoadmap(path: string, display: string, theme?: string): Item[] {
+  if (lstatSync(path).isSymbolicLink()) {
+    add('FAIL', 'SAFE-1', 'authored roadmap must not be a symlink', STANDARD_REF, display)
+    return []
+  }
+  const headings = markdownHeadings(readFileSync(path, 'utf8'))
+  const h1 = headings.filter((heading) => heading.level === 1)
+  if (h1.length !== 1) add('FAIL', 'ROAD-1', `expected exactly one H1; found ${h1.length}`, STANDARD_REF, display)
+  const h2 = headings.filter((heading) => heading.level === 2).map((heading) => heading.title)
+  if (JSON.stringify(h2) !== JSON.stringify(HORIZONS)) {
+    add('FAIL', 'ROAD-1', `horizons must be exactly ${HORIZONS.join(' → ')}; found ${h2.join(' → ') || 'none'}`, STANDARD_REF, display)
+  }
+  if (!theme) return []
+
+  const items: Item[] = []
+  let horizon: Horizon | null = null
+  for (const heading of headings) {
+    if (heading.level === 2) {
+      horizon = HORIZONS.includes(heading.title as Horizon) ? (heading.title as Horizon) : null
+      continue
+    }
+    if (heading.level !== 3) continue
+    if (!horizon) {
+      add('FAIL', 'THEME-1', `item heading on line ${heading.line} is not beneath a canonical horizon`, STANDARD_REF, display)
+      continue
+    }
+    const slug = itemSlug(heading.title)
+    if (!slug) {
+      add('FAIL', 'ITEM-1', `item heading on line ${heading.line} has no usable locator slug`, STANDARD_REF, display)
+      continue
+    }
+    items.push({ theme, title: heading.title, slug, horizon, file: display })
+  }
+  return items
+}
+
+function parseFrontmatter(text: string): Record<string, string> | null {
+  const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)
+  if (!match) return null
+  const result: Record<string, string> = {}
+  for (const line of match[1].split(/\r?\n/)) {
+    const field = line.match(/^([a-zA-Z-]+):\s*(.*?)\s*$/)
+    if (field) result[field[1]] = field[2].replace(/^(['"])(.*)\1$/, '$2')
+  }
+  return result
+}
+
+function ids(value: string | undefined): string[] {
+  if (!value || value.trim() === '—') return []
+  return value
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean)
+}
+
+function projection(items: Item[]): string {
+  const lines = [
+    '# Project roadmap',
+    '',
+    'This portfolio view is generated from the canonical theme roadmaps under `docs/roadmap/`. Edit those files, then run `ki-project-roadmap` CONFORM.',
+    ''
+  ]
+  for (const horizon of HORIZONS) {
+    lines.push(`## ${horizon}`, '')
+    const selected = items
+      .filter((item) => item.horizon === horizon)
+      .sort((a, b) => a.theme.localeCompare(b.theme) || a.title.localeCompare(b.title))
+    if (!selected.length) lines.push('Nothing queued.', '')
+    else {
+      for (const item of selected) {
+        const label = item.theme
+          .split('-')
+          .map((part) => part[0].toUpperCase() + part.slice(1))
+          .join(' ')
+        lines.push(`- [${label}: ${item.title}](docs/roadmap/${item.theme}/ROADMAP.md#${item.slug})`)
+      }
+      lines.push('')
+    }
+  }
+  return `${lines.join('\n').trimEnd()}\n`
+}
+
+function planIndex(themes: string[], plans: Plan[]): string {
+  const lines = ['# Project roadmap index', '', 'Canonical themes and active execution plans.', '', '## Themes', '']
+  for (const theme of themes) lines.push(`- [${theme}](${theme}/ROADMAP.md)`)
+  lines.push(
+    '',
+    '## Active plans',
+    '',
+    '| Plan | Theme | Title | Roadmap item | Status | Blocks |',
+    '| --- | --- | --- | --- | --- | --- |'
+  )
+  for (const plan of [...plans].sort((a, b) => a.id.localeCompare(b.id))) {
+    const blockers = plan.blockedBy.filter((id) => plans.find((candidate) => candidate.id === id)?.fm.status !== 'done')
+    const status = blockers.length ? `${plan.fm.status} (needs ${blockers.join('+')})` : plan.fm.status
+    lines.push(
+      `| [${plan.id}](${plan.theme}/plans/${plan.name}) | ${plan.theme} | ${plan.fm.title} | ${plan.fm.roadmap} | ${status} | ${plan.fm.blocks || '—'} |`
+    )
+  }
+  if (!plans.length) lines.push('| — | — | No active plans | — | — | — |')
+  lines.push('', '## Dependency graph', '', '```text')
+  const edges = plans.flatMap((plan) => plan.blocks.map((blocked) => `${plan.id} ──► ${blocked}`)).sort()
+  lines.push(...(edges.length ? edges : ['No dependencies.']), '```', '')
+  return lines.join('\n')
+}
+
+function discoverThematic(): { themes: string[]; items: Item[]; plans: Plan[] } {
+  const roadmapDir = join(root, 'docs', 'roadmap')
+  const themes: string[] = []
+  const items: Item[] = []
+  const plans: Plan[] = []
+  const entries = readdirSync(roadmapDir, { withFileTypes: true })
+  for (const entry of entries) {
+    if (entry.name === 'README.md') continue
+    if (!entry.isDirectory()) {
+      add(
+        'FAIL',
+        'THEME-1',
+        'only README.md and theme directories belong directly under docs/roadmap',
+        STANDARD_REF,
+        `docs/roadmap/${entry.name}`
+      )
+      continue
+    }
+    if (!THEME_RE.test(entry.name)) {
+      add('FAIL', 'THEME-1', 'theme directory must be lowercase kebab-case', STANDARD_REF, `docs/roadmap/${entry.name}`)
+      continue
+    }
+    const theme = entry.name
+    themes.push(theme)
+    const themeRoot = join(roadmapDir, theme)
+    const roadmap = join(themeRoot, 'ROADMAP.md')
+    if (!existsSync(roadmap)) {
+      add('FAIL', 'THEME-1', 'theme has no ROADMAP.md', STANDARD_REF, `docs/roadmap/${theme}`)
+      continue
+    }
+    items.push(...parseRoadmap(roadmap, `docs/roadmap/${theme}/ROADMAP.md`, theme))
+    const allowed = new Set(['ROADMAP.md', 'plans'])
+    for (const child of readdirSync(themeRoot)) {
+      if (!allowed.has(child))
+        add(
+          'FAIL',
+          'THEME-1',
+          'unexpected theme entry; only ROADMAP.md and plans/ are allowed',
+          STANDARD_REF,
+          `docs/roadmap/${theme}/${child}`
+        )
+    }
+    const plansDir = join(themeRoot, 'plans')
+    if (!existsSync(plansDir)) {
+      add('FAIL', 'THEME-1', 'theme has no plans/ directory', STANDARD_REF, `docs/roadmap/${theme}`)
+      continue
+    }
+    if (lstatSync(plansDir).isSymbolicLink() || !lstatSync(plansDir).isDirectory()) {
+      add('FAIL', 'SAFE-1', 'plans must be a real directory', STANDARD_REF, `docs/roadmap/${theme}/plans`)
+      continue
+    }
+    for (const name of readdirSync(plansDir).sort()) {
+      const display = `docs/roadmap/${theme}/plans/${name}`
+      const path = join(plansDir, name)
+      if (lstatSync(path).isSymbolicLink()) {
+        add('FAIL', 'SAFE-1', 'plan must not be a symlink', STANDARD_REF, display)
+        continue
+      }
+      const match = PLAN_RE.exec(name)
+      if (!match || !lstatSync(path).isFile()) {
+        add('FAIL', 'PLAN-1', 'plan filename must be <NNN>-<slug>.md', FORMAT_REF, display)
+        continue
+      }
+      const content = readFileSync(path, 'utf8')
+      const fm = parseFrontmatter(content)
+      if (!fm) {
+        add('FAIL', 'PLAN-1', 'missing YAML frontmatter', FORMAT_REF, display)
+        continue
+      }
+      for (const field of REQUIRED) if (!(field in fm)) add('FAIL', 'PLAN-1', `frontmatter missing '${field}'`, FORMAT_REF, display)
+      if ('phase' in fm) add('FAIL', 'PLAN-1', "'phase' is forbidden; the roadmap horizon is authoritative", FORMAT_REF, display)
+      if (!/^id:\s*(['"])\d{3,}\1\s*$/m.test(content)) add('FAIL', 'PLAN-1', 'id must be quoted in frontmatter', FORMAT_REF, display)
+      if (fm.id && !/^\d{3,}$/.test(fm.id))
+        add('FAIL', 'PLAN-1', `id '${fm.id}' must be a quoted zero-padded 3+ digit string`, FORMAT_REF, display)
+      if (fm.id && fm.id !== match[1]) add('FAIL', 'PLAN-1', `id '${fm.id}' does not match filename id '${match[1]}'`, FORMAT_REF, display)
+      if (fm.status && !VALID_STATUS.has(fm.status)) add('FAIL', 'PLAN-1', `invalid status '${fm.status}'`, FORMAT_REF, display)
+      if (match[2].length > 50) add('FAIL', 'PLAN-1', `filename slug is ${match[2].length} characters; maximum is 50`, FORMAT_REF, display)
+      plans.push({ id: fm.id || match[1], theme, file: display, name, fm, blocks: ids(fm.blocks), blockedBy: ids(fm['blocked-by']) })
+    }
+  }
+  return { themes: themes.sort(), items, plans }
+}
+
+const rootRoadmap = join(root, 'ROADMAP.md')
+const thematicDir = join(root, 'docs', 'roadmap')
+if (isKb(root)) {
+  const artifacts = [rootRoadmap, thematicDir].filter(existsSync).map((path) => relative(root, path))
+  if (artifacts.length)
+    add('FAIL', 'SCOPE-1', `KB repositories use ki-kb-streams; remove project-roadmap artifacts: ${artifacts.join(', ')}`, STANDARD_REF)
+  else add('NA', 'SCOPE-1', 'KB repository: streams and proposal checklists are governed by ki-kb-streams', STANDARD_REF)
+  emit()
+}
+
+if (existsSync(join(root, 'docs', 'plans'))) {
+  add('FAIL', 'PROFILE-1', 'legacy docs/plans is outside both profiles; migrate it into thematic roadmap plans', STANDARD_REF, 'docs/plans')
+}
+
+if (!existsSync(thematicDir)) {
+  if (!existsSync(rootRoadmap)) add('FAIL', 'PROFILE-1', 'non-KB repository has no root ROADMAP.md', STANDARD_REF, 'ROADMAP.md')
+  else {
+    parseRoadmap(rootRoadmap, 'ROADMAP.md')
+    add('INFO', 'PROFILE-1', 'simple profile detected', STANDARD_REF)
+    add(
+      'ADVISORY',
+      'PROFILE-2',
+      'confirm the simple profile still gives sufficient focus and no item needs an execution plan',
+      STANDARD_REF
+    )
+  }
+} else {
+  if (lstatSync(thematicDir).isSymbolicLink() || !lstatSync(thematicDir).isDirectory()) {
+    add('FAIL', 'SAFE-1', 'docs/roadmap must be a real directory', STANDARD_REF, 'docs/roadmap')
+    emit()
+  }
+  const { themes, items, plans } = discoverThematic()
+  if (!themes.length) add('FAIL', 'PROFILE-1', 'thematic profile has no theme directories', STANDARD_REF, 'docs/roadmap')
+  const locators = new Map<string, Item>()
+  for (const item of items) {
+    const locator = `${item.theme}/${item.slug}`
+    const previous = locators.get(locator)
+    if (previous) add('FAIL', 'ITEM-1', `qualified locator '${locator}' duplicates an item in ${previous.file}`, STANDARD_REF, item.file)
+    else locators.set(locator, item)
+  }
+
+  const idsSeen = new Map<string, string>()
+  const byId = new Map<string, Plan>()
+  const planLocators = new Map<string, string>()
+  for (const plan of plans) {
+    if (idsSeen.has(plan.id))
+      add('FAIL', 'PLAN-1', `global id ${plan.id} is already used by ${idsSeen.get(plan.id)}`, FORMAT_REF, plan.file)
+    else {
+      idsSeen.set(plan.id, plan.file)
+      byId.set(plan.id, plan)
+    }
+    const item = locators.get(plan.fm.roadmap)
+    if (planLocators.has(plan.fm.roadmap)) {
+      add(
+        'FAIL',
+        'PLAN-2',
+        `roadmap locator '${plan.fm.roadmap}' already has plan ${planLocators.get(plan.fm.roadmap)}`,
+        FORMAT_REF,
+        plan.file
+      )
+    } else planLocators.set(plan.fm.roadmap, plan.id)
+    if (!/^[-a-z0-9]+\/[-a-z0-9]+$/.test(plan.fm.roadmap ?? ''))
+      add('FAIL', 'PLAN-2', 'roadmap must be a qualified <theme>/<item-slug> locator', FORMAT_REF, plan.file)
+    else if (!item) add('FAIL', 'PLAN-2', `roadmap locator '${plan.fm.roadmap}' does not resolve`, FORMAT_REF, plan.file)
+    else {
+      if (item.theme !== plan.theme)
+        add('FAIL', 'PLAN-2', `locator theme '${item.theme}' does not match plan theme '${plan.theme}'`, FORMAT_REF, plan.file)
+      if (!NEAR.has(item.horizon))
+        add('FAIL', 'PLAN-2', `locator resolves to ${item.horizon}; plans exist only in Blocking or Next`, FORMAT_REF, plan.file)
+    }
+  }
+  for (const plan of plans) {
+    for (const dependency of [...plan.blocks, ...plan.blockedBy]) {
+      if (!/^\d{3,}$/.test(dependency)) add('FAIL', 'PLAN-3', `dependency '${dependency}' is not a global plan id`, FORMAT_REF, plan.file)
+      else if (!byId.has(dependency)) add('FAIL', 'PLAN-3', `dependency ${dependency} does not exist`, FORMAT_REF, plan.file)
+    }
+    for (const blocked of plan.blocks) {
+      const other = byId.get(blocked)
+      if (other && !other.blockedBy.includes(plan.id))
+        add('FAIL', 'PLAN-3', `blocks ${blocked}, but its blocked-by omits ${plan.id}`, FORMAT_REF, plan.file)
+    }
+    for (const blocker of plan.blockedBy) {
+      const other = byId.get(blocker)
+      if (other && !other.blocks.includes(plan.id))
+        add('FAIL', 'PLAN-3', `blocked-by ${blocker}, but its blocks omits ${plan.id}`, FORMAT_REF, plan.file)
+      if (plan.fm.status === 'in-progress' && other?.fm.status !== 'done') {
+        add('FAIL', 'PLAN-3', `in-progress plan still has non-done blocker ${blocker}`, FORMAT_REF, plan.file)
+      }
+    }
+  }
+  const state = new Map(plans.map((plan) => [plan.id, 0]))
+  let cycle = false
+  const visit = (id: string, stack: string[]): void => {
+    state.set(id, 1)
+    for (const blocker of byId.get(id)?.blockedBy ?? []) {
+      if (!byId.has(blocker)) continue
+      if (state.get(blocker) === 1 && !cycle) {
+        add('FAIL', 'PLAN-3', `dependency cycle: ${[...stack, id, blocker].join(' → ')}`, FORMAT_REF)
+        cycle = true
+      } else if (state.get(blocker) === 0) visit(blocker, [...stack, id])
+    }
+    state.set(id, 2)
+  }
+  for (const plan of plans) if (state.get(plan.id) === 0) visit(plan.id, [])
+
+  if (existsSync(rootRoadmap) && lstatSync(rootRoadmap).isSymbolicLink()) {
+    add('FAIL', 'SAFE-1', 'generated portfolio must not be a symlink', STANDARD_REF, 'ROADMAP.md')
+  } else if (!existsSync(rootRoadmap) || readFileSync(rootRoadmap, 'utf8') !== projection(items)) {
+    add('FAIL', 'PROJ-1', 'generated portfolio is missing or drifted; run CONFORM', STANDARD_REF, 'ROADMAP.md')
+  }
+  const readme = join(thematicDir, 'README.md')
+  if (existsSync(readme) && lstatSync(readme).isSymbolicLink()) {
+    add('FAIL', 'SAFE-1', 'generated index must not be a symlink', STANDARD_REF, 'docs/roadmap/README.md')
+  } else if (!existsSync(readme) || readFileSync(readme, 'utf8') !== planIndex(themes, plans)) {
+    add('FAIL', 'INDEX-1', 'generated theme/plan index is missing or drifted; run CONFORM', STANDARD_REF, 'docs/roadmap/README.md')
+  }
+  add(
+    'INFO',
+    'PROFILE-1',
+    `thematic profile detected: ${themes.length} theme(s), ${items.length} item(s), ${plans.length} plan(s)`,
+    STANDARD_REF
+  )
+  add('ADVISORY', 'ROAD-2', 'review horizon choices, Waiting-for conditions, and Future candidate markers', STANDARD_REF)
+  add('ADVISORY', 'ROAD-3', 'confirm every item is open finite work rather than history or continuous practice', STANDARD_REF)
+  add('ADVISORY', 'THEME-2', 'confirm theme boundaries are coherent workstreams', STANDARD_REF)
+  if (plans.some((plan) => plan.fm.status === 'in-progress')) {
+    add('ADVISORY', 'PLAN-4', 'review in-progress plans against the plan quality bar', STANDARD_REF)
+    add('ADVISORY', 'PLAN-5', 'confirm in-progress plans reflect live work', STANDARD_REF)
+  }
+}
+
+if (!findings.some((finding) => ['FAIL', 'WARN', 'POLISH'].includes(finding.level))) {
+  add('PASS', 'PROFILE-1', 'project-roadmap mechanics conform', STANDARD_REF)
+}
+emit()
+
+function emit(): never {
+  const order: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
+  const icon: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️', NA: '🚫', PASS: '✅' }
+  const n = (level: Level): number => findings.filter((finding) => finding.level === level).length
+  const summary = {
+    fail: n('FAIL'),
+    warn: n('WARN'),
+    polish: n('POLISH'),
+    advisory: n('ADVISORY'),
+    info: n('INFO'),
+    na: n('NA'),
+    pass: n('PASS')
+  }
+  const payload = { concern: 'project-roadmap', target: root, generatedAt: new Date().toISOString(), summary, findings }
+  const json = argv.includes('--json')
+  const reportAt = argv.indexOf('--report')
+  if (reportAt >= 0) {
+    const reportDir =
+      argv[reportAt + 1] && !argv[reportAt + 1].startsWith('-') ? resolve(argv[reportAt + 1]) : join(root, '.ki-meta', 'audits')
+    mkdirSync(reportDir, { recursive: true })
+    writeFileSync(join(reportDir, 'project-roadmap.json'), `${JSON.stringify(payload, null, 2)}\n`)
+    const rows = findings
+      .map((finding) => `- ${finding.level} [${finding.area}]${finding.file ? ` ${finding.file}` : ''} ${finding.msg}`)
+      .join('\n')
+    writeFileSync(join(reportDir, 'project-roadmap.md'), `# Project roadmap audit\n\n${rows}\n`)
+  }
+  if (json) process.stdout.write(`${JSON.stringify(payload, null, 2)}\n`)
+  else {
+    console.log(`\nProject roadmap audit — ${positional}\n${'─'.repeat(60)}`)
+    for (const level of order) {
+      const rows = findings.filter((finding) => finding.level === level)
+      if (!rows.length) continue
+      console.log(`\n${icon[level]} ${level} (${rows.length})`)
+      for (const finding of rows)
+        console.log(`   [${finding.area}]${finding.file ? ` ${finding.file}` : ''} ${finding.msg}${finding.ref ? ` (${finding.ref})` : ''}`)
+    }
+    console.log(
+      `\n${'─'.repeat(60)}\nFAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na}`
+    )
+    if (summary.fail + summary.warn + summary.polish > 0) {
+      console.log('→ to address: run /ki-project-roadmap CONFORM   (judgment criteria: references/audit-rubric.md)')
+    }
+    console.log('')
+  }
+  process.exit(summary.fail ? 1 : 0)
+}

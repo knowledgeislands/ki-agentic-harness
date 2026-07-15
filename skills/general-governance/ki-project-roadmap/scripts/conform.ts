@@ -1,0 +1,289 @@
+#!/usr/bin/env bun
+/** Normalize only derivable project-roadmap projections. */
+import { spawnSync } from 'node:child_process'
+import {
+  closeSync,
+  existsSync,
+  fsyncSync,
+  lstatSync,
+  mkdirSync,
+  openSync,
+  readdirSync,
+  readFileSync,
+  renameSync,
+  unlinkSync,
+  writeFileSync
+} from 'node:fs'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
+type Horizon = (typeof HORIZONS)[number]
+type Item = { theme: string; title: string; slug: string; horizon: Horizon }
+type Plan = { id: string; theme: string; name: string; fm: Record<string, string>; blocks: string[]; blockedBy: string[] }
+
+const HORIZONS = ['Blocking', 'Next', 'Soon', 'Waiting for', 'Future'] as const
+const STANDARD_REF = 'references/project-roadmap-standard.md'
+const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
+const findings: Finding[] = []
+const argv = process.argv.slice(2)
+const dryRun = argv.includes('--dry-run')
+const json = argv.includes('--json')
+const positional = argv.find((arg) => !arg.startsWith('-')) ?? '.'
+const root = resolve(positional)
+const roadmapDir = join(root, 'docs', 'roadmap')
+const rootRoadmap = join(root, 'ROADMAP.md')
+const readme = join(roadmapDir, 'README.md')
+
+function isKb(): boolean {
+  const config = join(root, '.ki-config.toml')
+  if (!existsSync(config)) return false
+  try {
+    const parsed = TOML.parse(readFileSync(config, 'utf8')) as Record<string, unknown>
+    const repoTable = parsed['ki-repo']
+    return (
+      parsed.repo_type === 'kb' ||
+      (typeof repoTable === 'object' && repoTable !== null && (repoTable as Record<string, unknown>).repo_type === 'kb')
+    )
+  } catch {
+    return /^\s*repo_type\s*=\s*["']kb["']/m.test(readFileSync(config, 'utf8'))
+  }
+}
+
+function headings(text: string): Array<{ level: number; title: string }> {
+  const result: Array<{ level: number; title: string }> = []
+  let fence: '`' | '~' | null = null
+  for (const line of text.split(/\r?\n/)) {
+    const fm = line.match(/^\s*(`{3,}|~{3,})/)
+    if (fm) {
+      const kind = fm[1][0] as '`' | '~'
+      fence = fence === null ? kind : fence === kind ? null : fence
+      continue
+    }
+    if (fence) continue
+    const match = line.match(/^(#{1,6})\s+(.+?)\s*#*\s*$/)
+    if (match) result.push({ level: match[1].length, title: match[2].trim() })
+  }
+  return result
+}
+
+function slug(title: string): string {
+  return title
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/[`*_~]/g, '')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+function parseFm(text: string): Record<string, string> {
+  const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)
+  const result: Record<string, string> = {}
+  if (!match) return result
+  for (const line of match[1].split(/\r?\n/)) {
+    const field = line.match(/^([a-zA-Z-]+):\s*(.*?)\s*$/)
+    if (field) result[field[1]] = field[2].replace(/^(['"])(.*)\1$/, '$2')
+  }
+  return result
+}
+
+const ids = (value: string | undefined): string[] =>
+  !value || value.trim() === '—'
+    ? []
+    : value
+        .split(',')
+        .map((part) => part.trim())
+        .filter(Boolean)
+
+function discover(): { themes: string[]; items: Item[]; plans: Plan[] } {
+  const themes = readdirSync(roadmapDir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort()
+  const items: Item[] = []
+  const plans: Plan[] = []
+  for (const theme of themes) {
+    let horizon: Horizon | null = null
+    for (const heading of headings(readFileSync(join(roadmapDir, theme, 'ROADMAP.md'), 'utf8'))) {
+      if (heading.level === 2) horizon = HORIZONS.includes(heading.title as Horizon) ? (heading.title as Horizon) : null
+      else if (heading.level === 3 && horizon) items.push({ theme, title: heading.title, slug: slug(heading.title), horizon })
+    }
+    const plansDir = join(roadmapDir, theme, 'plans')
+    if (!existsSync(plansDir)) continue
+    for (const name of readdirSync(plansDir)
+      .filter((name) => name.endsWith('.md'))
+      .sort()) {
+      const fm = parseFm(readFileSync(join(plansDir, name), 'utf8'))
+      plans.push({ id: fm.id, theme, name, fm, blocks: ids(fm.blocks), blockedBy: ids(fm['blocked-by']) })
+    }
+  }
+  return { themes, items, plans }
+}
+
+function projection(items: Item[]): string {
+  const lines = [
+    '# Project roadmap',
+    '',
+    'This portfolio view is generated from the canonical theme roadmaps under `docs/roadmap/`. Edit those files, then run `ki-project-roadmap` CONFORM.',
+    ''
+  ]
+  for (const horizon of HORIZONS) {
+    lines.push(`## ${horizon}`, '')
+    const selected = items
+      .filter((item) => item.horizon === horizon)
+      .sort((a, b) => a.theme.localeCompare(b.theme) || a.title.localeCompare(b.title))
+    if (!selected.length) lines.push('Nothing queued.', '')
+    else {
+      for (const item of selected) {
+        const label = item.theme
+          .split('-')
+          .map((part) => part[0].toUpperCase() + part.slice(1))
+          .join(' ')
+        lines.push(`- [${label}: ${item.title}](docs/roadmap/${item.theme}/ROADMAP.md#${item.slug})`)
+      }
+      lines.push('')
+    }
+  }
+  return `${lines.join('\n').trimEnd()}\n`
+}
+
+function index(themes: string[], plans: Plan[]): string {
+  const lines = ['# Project roadmap index', '', 'Canonical themes and active execution plans.', '', '## Themes', '']
+  for (const theme of themes) lines.push(`- [${theme}](${theme}/ROADMAP.md)`)
+  lines.push(
+    '',
+    '## Active plans',
+    '',
+    '| Plan | Theme | Title | Roadmap item | Status | Blocks |',
+    '| --- | --- | --- | --- | --- | --- |'
+  )
+  for (const plan of [...plans].sort((a, b) => a.id.localeCompare(b.id))) {
+    const blockers = plan.blockedBy.filter((id) => plans.find((candidate) => candidate.id === id)?.fm.status !== 'done')
+    const status = blockers.length ? `${plan.fm.status} (needs ${blockers.join('+')})` : plan.fm.status
+    lines.push(
+      `| [${plan.id}](${plan.theme}/plans/${plan.name}) | ${plan.theme} | ${plan.fm.title} | ${plan.fm.roadmap} | ${status} | ${plan.fm.blocks || '—'} |`
+    )
+  }
+  if (!plans.length) lines.push('| — | — | No active plans | — | — | — |')
+  lines.push('', '## Dependency graph', '', '```text')
+  const edges = plans.flatMap((plan) => plan.blocks.map((blocked) => `${plan.id} ──► ${blocked}`)).sort()
+  lines.push(...(edges.length ? edges : ['No dependencies.']), '```', '')
+  return lines.join('\n')
+}
+
+function rejectUnsafe(path: string, display: string): boolean {
+  if (existsSync(path) && lstatSync(path).isSymbolicLink()) {
+    findings.push({ level: 'FAIL', area: 'SAFE-1', msg: 'refusing to replace a symlink output path', ref: STANDARD_REF, file: display })
+    return true
+  }
+  return false
+}
+
+function atomicWrite(path: string, content: string): void {
+  mkdirSync(dirname(path), { recursive: true })
+  const temp = join(dirname(path), `.${Date.now()}-${process.pid}-${Math.random().toString(16).slice(2)}.tmp`)
+  const fd = openSync(temp, 'wx', 0o644)
+  try {
+    writeFileSync(fd, content)
+    fsyncSync(fd)
+  } finally {
+    closeSync(fd)
+  }
+  try {
+    if (existsSync(path) && lstatSync(path).isSymbolicLink()) throw new Error(`output became a symlink: ${path}`)
+    renameSync(temp, path)
+  } catch (error) {
+    if (existsSync(temp)) unlinkSync(temp)
+    throw error
+  }
+}
+
+function emit(exitCode = 0): never {
+  const n = (level: Level): number => findings.filter((finding) => finding.level === level).length
+  const summary = {
+    fail: n('FAIL'),
+    warn: n('WARN'),
+    polish: n('POLISH'),
+    advisory: n('ADVISORY'),
+    info: n('INFO'),
+    na: n('NA'),
+    pass: n('PASS')
+  }
+  const payload = { concern: 'project-roadmap', target: root, generatedAt: new Date().toISOString(), summary, findings }
+  if (json) process.stdout.write(`${JSON.stringify(payload, null, 2)}\n`)
+  else {
+    for (const finding of findings)
+      console.log(`${finding.level.padEnd(8)} [${finding.area}]${finding.file ? ` ${finding.file}` : ''} ${finding.msg}`)
+    console.log(
+      `FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na}`
+    )
+  }
+  process.exit(exitCode || (summary.fail ? 1 : 0))
+}
+
+if (!existsSync(root) || !lstatSync(root).isDirectory()) {
+  findings.push({ level: 'FAIL', area: 'PROFILE-1', msg: 'repository directory does not exist', ref: STANDARD_REF })
+  emit(2)
+}
+if (isKb()) {
+  findings.push({
+    level: 'NA',
+    area: 'SCOPE-1',
+    msg: 'KB repository: use ki-kb-streams; no project-roadmap files changed',
+    ref: STANDARD_REF
+  })
+  emit()
+}
+if (!existsSync(roadmapDir)) {
+  findings.push({ level: 'PASS', area: 'PROFILE-1', msg: 'simple profile has no generated files to conform', ref: STANDARD_REF })
+  emit()
+}
+if (rejectUnsafe(rootRoadmap, 'ROADMAP.md') || rejectUnsafe(readme, 'docs/roadmap/README.md')) emit()
+
+const audit = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
+const checked = spawnSync(process.execPath, [audit, root, '--json'], { encoding: 'utf8' })
+let payload: { findings?: Finding[] }
+try {
+  payload = JSON.parse(checked.stdout || '{}')
+} catch {
+  findings.push({ level: 'FAIL', area: 'SAFE-1', msg: `preflight audit did not return valid JSON: ${checked.stderr}`, ref: STANDARD_REF })
+  emit()
+}
+const nonDerivable = (payload.findings ?? []).filter((finding) => finding.level === 'FAIL' && !['PROJ-1', 'INDEX-1'].includes(finding.area))
+if (nonDerivable.length) {
+  findings.push(...nonDerivable)
+  findings.push({
+    level: 'FAIL',
+    area: 'SAFE-1',
+    msg: 'refusing generation until non-derivable audit failures are resolved',
+    ref: STANDARD_REF
+  })
+  emit()
+}
+
+const { themes, items, plans } = discover()
+const outputs = [
+  { path: rootRoadmap, display: 'ROADMAP.md', area: 'PROJ-1', content: projection(items) },
+  { path: readme, display: 'docs/roadmap/README.md', area: 'INDEX-1', content: index(themes, plans) }
+]
+for (const output of outputs) {
+  const current = existsSync(output.path) ? readFileSync(output.path, 'utf8') : null
+  if (current === output.content)
+    findings.push({ level: 'PASS', area: output.area, msg: 'already canonical', ref: STANDARD_REF, file: output.display })
+  else if (dryRun)
+    findings.push({
+      level: 'POLISH',
+      area: output.area,
+      msg: 'would regenerate (dry-run; not written)',
+      ref: STANDARD_REF,
+      file: output.display
+    })
+  else {
+    atomicWrite(output.path, output.content)
+    findings.push({ level: 'POLISH', area: output.area, msg: 'regenerated atomically', ref: STANDARD_REF, file: output.display })
+  }
+}
+emit()
