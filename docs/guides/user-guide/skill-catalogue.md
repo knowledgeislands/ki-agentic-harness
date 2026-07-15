@@ -92,7 +92,7 @@ Drives a live-session recap: **summarise** what happened (changes, decisions, fi
 
 ### `ki-plan`
 
-Drives the **plan lifecycle** for a code repo — `new` / `execute` / `done` / `status` — promoted from the former `/plan` command. Reads the format and methodology from `ki-plans` (which owns the standard) and carries them out: id numbering, the `blocks`/`blocked-by` dependency graph, and ROADMAP sync on `done`. Self-guards on `repo_type = "kb"` (planning there is a `ki-kb-streams` proposal Checklist). Paired deliberately with `ki-plans` — singular verb (drive a plan) beside plural class (govern the class of plans). Installable globally alongside `ki-bootstrap` — and like `ki-bootstrap`, never declared via a `.ki-config.toml` table.
+Drives the **plan lifecycle** for a code repo — `done` / `execute` / `new` / `promote` / `status`. Reads the format and methodology from `ki-plans` (which owns the standard) and carries them out: global id allocation, the `blocks`/`blocked-by` dependency graph, and ROADMAP sync on `done`. `/ki-plan promote` deliberately turns the current authenticated Claude Code Plan Mode scratch plan into an independent governed plan; this discovery bridge is Claude-Code-only, while the `docs/plans/` artifact and the other file-oriented lifecycle procedures are runtime-neutral. Self-guards on `repo_type = "kb"` (planning there is a `ki-kb-streams` proposal Checklist). Paired deliberately with `ki-plans` — singular verb (drive a plan) beside plural class (govern the class of plans). Installable globally alongside `ki-bootstrap` — and like `ki-bootstrap`, never declared via a `.ki-config.toml` table.
 
 ### `ki-delegate`
 

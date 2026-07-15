@@ -2,8 +2,8 @@
 name: ki-plan
 implies: []
 description: >
-  Drives the plan lifecycle for a code repo — new / execute / done / status — promoted from the former `/plan` command so it is installable globally, not just project-local to this repo. A process skill (kind: process, ADR-KI-HARNESS-SKILLS-006): it carries out the lifecycle, it does not hold the standard. The format (frontmatter, sections, filename, README index) and methodology (when to plan, the near-horizon principle, quality bar) belong to the governance skill `ki-plans`, which this skill composes on and never restates. Triggers: "new plan", "start a plan", "execute plan", "plan status", "close out this plan", "/plan". Not for Knowledge Islands KB repos (`repo_type = "kb"`) — there, planning is a `ki-kb-streams` proposal Checklist.
-argument-hint: 'new <theme> <title> | execute <id> | done <id> | status | help'
+  Drives the plan lifecycle for a code repo — done / execute / new / promote / status — as an installable process skill (kind: process, ADR-KI-HARNESS-SKILLS-006). It creates and executes governed plans, closes them with ROADMAP sync, and deliberately promotes the current Claude Code Plan Mode scratch plan into `docs/plans/`. The format and methodology belong to the governance skill `ki-plans`, which this skill composes on and never restates. Triggers: "close this plan", "execute plan", "new plan", "promote this Plan Mode plan", "plan status", "/ki-plan". Not for Knowledge Islands KB repos (`repo_type = "kb"`), where planning is a `ki-kb-streams` proposal Checklist.
+argument-hint: 'done <id> | execute <id> | new <theme> <title> | promote | status | help'
 ---
 
 # ki-plan
@@ -12,19 +12,22 @@ argument-hint: 'new <theme> <title> | execute <id> | done <id> | status | help'
 
 ## What this skill does
 
-Runs the plan lifecycle for a **code repo**: `new` (write a plan file), `execute` (work its Steps), `done` (close it out and sync ROADMAP), `status` (show the active index). It is the process counterpart to `ki-plans` — paired deliberately, singular verb beside plural class, drive-an-instance beside govern-the-class. It reads the plan format and quality bar from `ki-plans`' [plan-format.md](../../general-governance/ki-plans/references/plan-format.md) rather than restating them.
+Runs the plan lifecycle for a **code repo**: `done` (close a plan and sync ROADMAP), `execute` (work its Steps), `new` (write a plan file), `promote` (turn the current Claude Code Plan Mode scratch plan into a governed plan), and `status` (show the active index). It is the process counterpart to `ki-plans` — paired deliberately, singular verb beside plural class, drive-an-instance beside govern-the-class. It reads the plan format and quality bar from `ki-plans`' [plan-format.md](../../general-governance/ki-plans/references/plan-format.md) rather than restating them.
 
 ## Invocation
 
-`help` / `-h` / `?` explains this skill and stops, taking no action. With no argument, in an interactive session, it offers the four sub-commands via `AskUserQuestion`. Otherwise dispatch on the first token of the argument per [references/lifecycle.md](references/lifecycle.md).
+`help` / `-h` / `?` explains this skill and stops, taking no action. With no argument, present the five lifecycle verbs in the order above using the runtime's available interactive choice mechanism; in a non-interactive session, print the same choices and stop. Otherwise dispatch on the first token of the argument per [references/lifecycle.md](references/lifecycle.md).
+
+**Claude Code session token for `promote`:** `${CLAUDE_SESSION_ID}`. Claude Code resolves this always-loaded value before the skill reaches the model. `promote` binds that resolved value as the current session id and fails closed if it remains unresolved or is not filename-safe; do not move this placeholder into the on-demand lifecycle reference. Other lifecycle verbs do not depend on it.
 
 ## Preflight (every sub-command)
 
 1. `git rev-parse --show-toplevel` → git root.
 2. If `.ki-config.toml` at the git root has `repo_type = "kb"`: **stop** — in a KB, planning is a stream proposal's `## Checklist`, governed by `ki-kb-streams`. This skill is code-repo only.
-3. Plans directory: `<git-root>/docs/plans/` (or a `[plans] path` override in `.ki-config.toml`). Create it if absent; if `README.md` is missing, seed it from the index structure in `ki-plans`' [plan-format.md](../../general-governance/ki-plans/references/plan-format.md).
+3. For `done`, `execute`, `new`, and `status`, resolve the plans directory as `<git-root>/docs/plans/` or the `[plans] path` override in `.ki-config.toml`; create missing plan structure only when the selected verb writes it. `promote` has a deliberately narrower, read-first preflight: it supports only the default physical `<git-root>/docs/plans/`, rejects an override, and creates nothing until every validation gate in the lifecycle procedure passes.
 
 ## Notes
 
 - No universal AUDIT/CONFORM/INIT/REFRESH modes — this is a process skill (ADR-KI-HARNESS-SKILLS-001, ADR-KI-HARNESS-SKILLS-006); its "modes" are the lifecycle sub-commands above.
 - Installable globally (`ki:skills:link:global`), alongside `ki-bootstrap` — usable in any code repo on the machine, not just this one. Like `ki-bootstrap`, never vendored or declared in a repo's `.ki-config.toml` — no `[ki-plan]` table, ever.
+- The governed `docs/plans/` artifact and the file-oriented `done`, `execute`, `new`, and `status` procedures are runtime-neutral; adapt interactive prompts to the host runtime. `promote` is Claude-Code-only because it consumes Claude Code's Plan Mode hook state and session substitution.
