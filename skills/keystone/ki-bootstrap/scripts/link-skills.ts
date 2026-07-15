@@ -22,6 +22,7 @@ import { existsSync, lstatSync, mkdirSync, readdirSync, readlinkSync, realpathSy
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { ensureGitignore, gitignoresPath, readText, runtimeSkillsDir, targetRuntimes } from './package-scripts.ts'
+import { assertResolvableSkills, declaredSkills, SkillResolutionError } from './resolve.ts'
 
 // ── Self-location: find the harness skills/ root through the (possibly symlinked) script path ──
 const SELF = realpathSync(fileURLToPath(import.meta.url))
@@ -84,28 +85,10 @@ function discoverSkills(): string[] {
   return [...skillIndex().keys()].sort()
 }
 
-// Declared `[ki-<skill>]` top-level tables (sub-tables like `.checks` / `.zones` are ignored).
-function declaredSkills(kiConfigText: string): string[] {
-  const out: string[] = []
-  for (const m of kiConfigText.matchAll(/^\[ki-([a-z0-9-]+)\][ \t]*$/gm)) out.push(`ki-${m[1]}`)
-  return out
-}
-
 function expectedSet(available: string[], kiConfigText: string): string[] {
   const want = new Set(declaredSkills(kiConfigText))
   want.delete(BOOTSTRAP) // the keystone is installed globally; never duplicated project-local
   return [...want].filter((s) => available.includes(s)).sort()
-}
-
-// Declared `[ki-*]` tables that resolve to no discoverable skill in the harness —
-// almost always a table left behind by an upstream rename/removal. `expectedSet`
-// silently filters these out; here we surface them. The bootstrap keystone (declared
-// nowhere, installed globally) is excluded, so only genuinely unresolvable declarations
-// are flagged.
-function orphanSkills(available: string[], kiConfigText: string): string[] {
-  return declaredSkills(kiConfigText)
-    .filter((s) => s !== BOOTSTRAP && !available.includes(s))
-    .sort()
 }
 
 // ── Link (mutate) ──
@@ -232,7 +215,13 @@ if (available.length === 0) {
 // not loaded in the harness — so it links what governs IT, not the whole fleet.
 const kiConfigText = readText(join(target, '.ki-config.toml'))
 const set = expectedSet(available, kiConfigText)
-const orphans = orphanSkills(available, kiConfigText)
+let orphans: string[] = []
+try {
+  assertResolvableSkills(declaredSkills(kiConfigText).filter((skill) => skill !== BOOTSTRAP))
+} catch (error) {
+  if (!(error instanceof SkillResolutionError)) throw error
+  orphans = error.unresolved
+}
 const setLabel = 'declared'
 // The runtimes this repo installs skills for — `[ki-harness] target_runtimes`,
 // defaulting to ["claude-code"] when absent so existing repos are unchanged.
@@ -248,6 +237,13 @@ if (checkOnly) {
     if (cmdCheck(target, set, orphans, runtimeSkillsDir(rt)) !== 0) rc = 1
   }
   process.exit(rc)
+}
+if (orphans.length) {
+  for (const orphan of orphans)
+    console.error(
+      `${RED}FAIL${RESET}  [BOOT-1] .ki-config.toml declares [${orphan}] but no such skill exists in the harness — reconcile the table by hand before linking`
+    )
+  process.exit(1)
 }
 for (const rt of runtimes) {
   console.log(`  ${DIM}[${rt}]${RESET}`)

@@ -1,0 +1,150 @@
+#!/usr/bin/env bun
+/**
+ * Run-based regressions for fail-before-write bootstrap resolution. These scripts
+ * are operational tooling rather than shipped `src/`, so the harness exercises
+ * their real CLI boundaries directly instead of introducing a vitest project.
+ */
+import { spawnSync } from 'node:child_process'
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { dirname, join, relative } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { declaredSkills, resolveSet, SkillResolutionError } from './resolve.ts'
+
+const SCRIPTS = dirname(fileURLToPath(import.meta.url))
+const BOOTSTRAP = join(SCRIPTS, 'bootstrap.ts')
+const AUDIT = join(SCRIPTS, 'audit.ts')
+
+let failed = false
+function check(label: string, condition: boolean): void {
+  if (condition) console.log(`  \x1b[32mok\x1b[0m   ${label}`)
+  else {
+    failed = true
+    console.log(`  \x1b[31mFAIL\x1b[0m ${label}`)
+  }
+}
+
+function fixture(config = ''): string {
+  const dir = realpathSync(mkdtempSync(join(tmpdir(), 'ki-boot-resolve-')))
+  if (config) writeFileSync(join(dir, '.ki-config.toml'), config)
+  return dir
+}
+
+function snapshot(root: string): string {
+  const rows: string[] = []
+  function walk(dir: string): void {
+    for (const name of readdirSync(dir).sort()) {
+      const path = join(dir, name)
+      const rel = relative(root, path)
+      const stat = statSync(path)
+      if (stat.isDirectory()) {
+        rows.push(`d:${rel}`)
+        walk(path)
+      } else rows.push(`f:${rel}:${readFileSync(path).toString('base64')}`)
+    }
+  }
+  walk(root)
+  return rows.join('\n')
+}
+
+const parsed = declaredSkills(`
+[ki-plan] # exact with a comment
+[ki-plan.checks]
+[ki-housekeeping.zones.local] # dotted owner
+[ki-bootstrap]
+# [ki-commented-out]
+coverage-extra = "[ki-value-only]"
+`)
+check(
+  'parser → exact/dotted roots are deduplicated and sorted',
+  JSON.stringify(parsed) === JSON.stringify(['ki-bootstrap', 'ki-housekeeping', 'ki-plan'])
+)
+
+const valid = fixture(`
+[ki-plan]
+[ki-housekeeping.zones]
+[ki-bootstrap]
+[ki-harness]
+`)
+try {
+  const set = resolveSet(valid, false, [])
+  check('valid declarations → process skill remains resolvable', set.includes('ki-plan'))
+  check('valid declarations → environment/global skill remains resolvable', set.includes('ki-housekeeping'))
+  check('known implication → ki-harness closure includes ki-skills', set.includes('ki-harness') && set.includes('ki-skills'))
+  check('bootstrap declaration → chain-starter stays excluded', !set.includes('ki-bootstrap'))
+} finally {
+  rmSync(valid, { recursive: true, force: true })
+}
+
+const unresolved = fixture(`
+[ki-zeta-missing]
+[ki-alpha-missing.checks]
+[ki-zeta-missing.zones]
+# [ki-comment-missing]
+coverage-extra = "ki-value-missing"
+`)
+try {
+  let caught: unknown
+  try {
+    resolveSet(unresolved, false, [])
+  } catch (error) {
+    caught = error
+  }
+  check('unknown declarations → typed resolution error', caught instanceof SkillResolutionError)
+  check(
+    'unknown declarations → each root appears once in sorted order',
+    caught instanceof SkillResolutionError && JSON.stringify(caught.unresolved) === JSON.stringify(['ki-alpha-missing', 'ki-zeta-missing'])
+  )
+} finally {
+  rmSync(unresolved, { recursive: true, force: true })
+}
+
+const invalidConfig = fixture('[ki-does-not-exist]\n')
+try {
+  mkdirSync(join(invalidConfig, '.ki-meta'), { recursive: true })
+  writeFileSync(join(invalidConfig, '.ki-meta', 'sentinel.txt'), 'keep me byte-identical\n')
+  const before = snapshot(invalidConfig)
+  const result = spawnSync('bun', [BOOTSTRAP, invalidConfig], { encoding: 'utf8' })
+  const output = `${result.stdout ?? ''}${result.stderr ?? ''}`
+  check('bootstrap unknown declaration → non-zero exit', (result.status ?? 0) !== 0)
+  check('bootstrap unknown declaration → names BOOT-9 and root', output.includes('BOOT-9') && output.includes('ki-does-not-exist'))
+  check('bootstrap unknown declaration → target remains byte-identical', snapshot(invalidConfig) === before)
+} finally {
+  rmSync(invalidConfig, { recursive: true, force: true })
+}
+
+const invalidSeed = fixture()
+try {
+  mkdirSync(join(invalidSeed, '.ki-meta'), { recursive: true })
+  writeFileSync(join(invalidSeed, '.ki-meta', 'sentinel.txt'), 'keep seed failure clean\n')
+  const before = snapshot(invalidSeed)
+  const result = spawnSync('bun', [BOOTSTRAP, invalidSeed, '--seed', 'ki-zeta-seed', '--seed', 'ki-alpha-seed', '--seed', 'ki-zeta-seed'], {
+    encoding: 'utf8'
+  })
+  const output = `${result.stdout ?? ''}${result.stderr ?? ''}`
+  check('bootstrap invalid seed → non-zero exit', (result.status ?? 0) !== 0)
+  check(
+    'bootstrap invalid seeds → deduplicated and sorted',
+    output.indexOf('ki-alpha-seed') < output.indexOf('ki-zeta-seed') && output.match(/ki-zeta-seed/g)?.length === 1
+  )
+  check('bootstrap invalid seed → target remains byte-identical', snapshot(invalidSeed) === before)
+} finally {
+  rmSync(invalidSeed, { recursive: true, force: true })
+}
+
+const auditInvalid = fixture('[ki-audit-missing.checks]\n')
+try {
+  const result = spawnSync('bun', [AUDIT, auditInvalid, '--json'], { encoding: 'utf8' })
+  const report = JSON.parse(result.stdout) as { findings?: Array<{ area?: string; level?: string; msg?: string }> }
+  const boot9 = report.findings?.find((finding) => finding.area === 'BOOT-9')
+  check('BOOT-9 invalid declaration → structured non-zero FAIL', (result.status ?? 0) !== 0 && boot9?.level === 'FAIL')
+  check('BOOT-9 invalid declaration → names dotted owner root', boot9?.msg?.includes('ki-audit-missing') === true)
+} finally {
+  rmSync(auditInvalid, { recursive: true, force: true })
+}
+
+if (failed) {
+  console.log('\n\x1b[31mresolve.test.ts: failures\x1b[0m')
+  process.exit(1)
+}
+console.log('\n\x1b[32mresolve.test.ts: all checks passed\x1b[0m')

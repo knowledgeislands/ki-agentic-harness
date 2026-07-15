@@ -50,8 +50,8 @@ function runCheck(dir: string): { code: number; out: string } {
   return { code: res.status ?? 1, out: `${res.stdout ?? ''}${res.stderr ?? ''}` }
 }
 
-function runLink(dir: string): { code: number; out: string } {
-  const res = spawnSync('bun', [LINKER, dir], { encoding: 'utf8' })
+function runLink(dir: string, dryRun = false): { code: number; out: string } {
+  const res = spawnSync('bun', [LINKER, dir, ...(dryRun ? ['--dry-run'] : [])], { encoding: 'utf8' })
   return { code: res.status ?? 1, out: `${res.stdout ?? ''}${res.stderr ?? ''}` }
 }
 
@@ -65,6 +65,25 @@ try {
   check('stale table → names the orphaned table', out.includes('ki-websites-11ty'))
 } finally {
   rmSync(stale, { recursive: true, force: true })
+}
+
+// ── Write/dry-run reject dotted + duplicate unknown owners before any mutation ──
+for (const dryRun of [false, true]) {
+  const invalid = fixture(['ki-zeta-missing', 'ki-alpha-missing.checks', 'ki-zeta-missing.zones'])
+  try {
+    const before = readFileSync(join(invalid, '.ki-config.toml'), 'utf8')
+    const { code, out } = runLink(invalid, dryRun)
+    check(`${dryRun ? 'dry-run' : 'write'} unknown roots → non-zero exit`, code !== 0)
+    check(`${dryRun ? 'dry-run' : 'write'} unknown roots → sorted names`, out.indexOf('ki-alpha-missing') < out.indexOf('ki-zeta-missing'))
+    check(`${dryRun ? 'dry-run' : 'write'} unknown roots → no skills dir`, !existsSync(join(invalid, '.claude', 'skills')))
+    check(`${dryRun ? 'dry-run' : 'write'} unknown roots → no .gitignore`, !existsSync(join(invalid, '.gitignore')))
+    check(
+      `${dryRun ? 'dry-run' : 'write'} unknown roots → config unchanged`,
+      readFileSync(join(invalid, '.ki-config.toml'), 'utf8') === before
+    )
+  } finally {
+    rmSync(invalid, { recursive: true, force: true })
+  }
 }
 
 // ── Control: every declared table resolves → no orphan FAIL, exit 0 ──

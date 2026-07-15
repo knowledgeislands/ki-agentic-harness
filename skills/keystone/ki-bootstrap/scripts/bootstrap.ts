@@ -53,7 +53,7 @@ import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { chmodSync, cpSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { resolveSet, SKILLS_ROOT, skillDir, vendorModesOf, vendorUnit } from './resolve.ts'
+import { resolveSet, SKILLS_ROOT, SkillResolutionError, skillDir, vendorModesOf, vendorUnit } from './resolve.ts'
 
 const GREEN = '\x1b[32m'
 const DIM = '\x1b[2m'
@@ -542,7 +542,14 @@ function main(): void {
   // sugar over these same bins. Vendoring is always coverage-scoped (`.ki-config.toml`
   // + baseline + implies + explicit --seed) — `--all` is a linking concept only, never a
   // vendoring one (ADR-KI-HARNESS-007).
-  const set = resolveSet(target, false, seeds)
+  let set: string[]
+  try {
+    set = resolveSet(target, false, seeds)
+  } catch (error) {
+    if (!(error instanceof SkillResolutionError)) throw error
+    console.error(`${'\x1b[31m'}FAIL${RESET}  [BOOT-9] ${error.message} — reconcile .ki-config.toml or the explicit --seed value`)
+    process.exit(1)
+  }
   console.log(`${DIM}bootstrap ${target} — skills: ${set.join(', ')}${RESET}`)
 
   const manifestFiles: Record<string, string> = {}

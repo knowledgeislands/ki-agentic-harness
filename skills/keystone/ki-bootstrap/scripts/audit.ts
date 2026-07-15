@@ -29,7 +29,7 @@
 
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { checkerScript, resolveSet } from './resolve.ts'
+import { checkerScript, resolveSet, SkillResolutionError } from './resolve.ts'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
@@ -111,6 +111,23 @@ function emit(items: Finding[], tgt: string, concern: string, title: string, foo
 
 const emitBootstrap = (): never => emit(findings, target, 'bootstrap', `Bootstrap vendored-set audit  (${target})`, '')
 
+function expectedResolvedSet(): string[] {
+  try {
+    return resolveSet(target, false, [])
+  } catch (error) {
+    if (!(error instanceof SkillResolutionError)) throw error
+    add(
+      'FAIL',
+      'BOOT-9',
+      `${error.message} — reconcile the declared .ki-config.toml table before auditing or re-vendoring`,
+      RUBRIC,
+      '.ki-config.toml'
+    )
+    return emitBootstrap()
+  }
+}
+const resolved = expectedResolvedSet()
+
 if (!existsSync(vendoredRoot)) {
   add('NA', 'BOOT-9', 'no .ki-meta/skills/ — nothing to check (not yet bootstrapped)', RUBRIC, '.ki-meta/skills/')
   emitBootstrap()
@@ -118,7 +135,7 @@ if (!existsSync(vendoredRoot)) {
 
 // Only skills with a discoverable checker are ever vendored (vendorSkill() in
 // bootstrap.ts is a no-op for skills without one), so restrict the expectation to those.
-const expected = resolveSet(target, false, []).filter((s) => checkerScript(s) !== null)
+const expected = resolved.filter((s) => checkerScript(s) !== null)
 const actual = readdirSync(vendoredRoot, { withFileTypes: true })
   .filter((e) => e.isDirectory())
   .map((e) => e.name)

@@ -58,11 +58,29 @@ export function isSkill(skill: string): boolean {
   return existsSync(join(skillDir(skill), 'SKILL.md'))
 }
 
-// `[ki-<skill>]` top-level tables declared in the target's .ki-config.toml.
+export class SkillResolutionError extends Error {
+  readonly unresolved: string[]
+
+  constructor(unresolved: Iterable<string>) {
+    const sorted = [...new Set(unresolved)].sort()
+    super(`unresolvable skill declaration${sorted.length === 1 ? '' : 's'}: ${sorted.join(', ')}`)
+    this.name = 'SkillResolutionError'
+    this.unresolved = sorted
+  }
+}
+
+// Skill roots named by `[ki-<skill>]` tables or their dotted sub-tables in the
+// target's .ki-config.toml. Comments and values that merely contain table-looking
+// text are ignored; repeated roots are collapsed so diagnostics stay deterministic.
 export function declaredSkills(kiConfigText: string): string[] {
-  const out: string[] = []
-  for (const m of kiConfigText.matchAll(/^\[ki-([a-z0-9-]+)\][ \t]*$/gm)) out.push(`ki-${m[1]}`)
-  return out
+  const out = new Set<string>()
+  for (const match of kiConfigText.matchAll(/^[ \t]*\[(ki-[a-z0-9-]+)(?:\.[a-zA-Z0-9_-]+)*\][ \t]*(?:#.*)?$/gm)) out.add(match[1])
+  return [...out].sort()
+}
+
+export function assertResolvableSkills(skills: Iterable<string>): void {
+  const unresolved = [...new Set(skills)].filter((skill) => !isSkill(skill))
+  if (unresolved.length) throw new SkillResolutionError(unresolved)
 }
 
 // The `implies:` flow list from a skill's SKILL.md frontmatter.
@@ -93,13 +111,19 @@ export function impliesOf(skill: string): string[] {
 export function resolveSet(target: string, all: boolean, seeds: string[]): string[] {
   const seed = all ? allSkillNames() : [...declaredSkills(readText(join(target, '.ki-config.toml'))), ...seeds]
   const seen = new Set<string>()
+  const unresolved = new Set<string>()
   const stack = [...seed]
   while (stack.length) {
     const s = stack.pop()
-    if (s === undefined || seen.has(s) || !isSkill(s)) continue
+    if (s === undefined || seen.has(s)) continue
+    if (!isSkill(s)) {
+      unresolved.add(s)
+      continue
+    }
     seen.add(s)
     for (const dep of impliesOf(s)) stack.push(dep)
   }
+  if (unresolved.size) throw new SkillResolutionError(unresolved)
   seen.delete(BOOTSTRAP) // the chain-starter is not vendored into targets
   return [...seen].sort()
 }
