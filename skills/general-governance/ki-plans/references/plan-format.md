@@ -47,7 +47,7 @@ blocked-by: <comma-separated ids, or —>
 | `blocks` | Ids this plan unblocks, comma-separated, or `—`. |
 | `blocked-by` | Ids that must be `done` first, comma-separated, or `—`. Bidirectional with the blocker's `blocks`. |
 
-There is **no `phase` field.** The four-horizon model and ROADMAP content discipline are owned by `ki-plans`; see [roadmap.md](roadmap.md). A plan exists only for a `Blocking` or `Next` item, so its phase is implicit.
+There is **no `phase` field.** The five-horizon model and ROADMAP content discipline are owned by `ki-plans`; see [roadmap.md](roadmap.md). A plan exists only for a `Blocking` or `Next` item, so its phase is implicit.
 
 ## Sections
 
@@ -87,7 +87,7 @@ A **flat active index** — one row per plan on disk — followed by a dependenc
 ````markdown
 # Implementation Plans
 
-Active plans only — one file per ROADMAP `Blocking` or `Next` item. Each plan is self-contained: context, current state, ordered steps, files touched, and a verify section. The four-horizon model lives in ROADMAP.md; a plan is written when an item enters `Blocking` or `Next` and removed when it lands.
+Active plans only — one file per ROADMAP `Blocking` or `Next` item. Each plan is self-contained: context, current state, ordered steps, files touched, and a verify section. The five-horizon model lives in ROADMAP.md; a plan is written when an item enters `Blocking` or `Next` and removed when it lands.
 
 | Plan                       | Theme | Title                       | Status           | Blocks |
 | -------------------------- | ----- | --------------------------- | ---------------- | ------ |

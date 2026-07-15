@@ -10,11 +10,11 @@ GPT-5.6 exposes model choice and reasoning effort as two separate, independently
 
 **Tier (model line):**
 
-| Tier | Positioning | Portable type | OpenAI's recommended routing |
-| --- | --- | --- | --- |
-| **Sol** | Flagship — deepest reasoning | `reasoning` (and `frontier` in Ultra mode) | Architecture, security, hard refactors, novel design |
-| **Terra** | Balanced default | `standard` | Standard feature work, everyday engineering |
-| **Luna** | Volume / cheap | `fast` | Docs, formatting, mechanical and sub-agent tasks |
+| Tier      | Positioning                  | Portable type                              | OpenAI's recommended routing                         |
+| --------- | ---------------------------- | ------------------------------------------ | ---------------------------------------------------- |
+| **Sol**   | Flagship — deepest reasoning | `reasoning` (and `frontier` in Ultra mode) | Architecture, security, hard refactors, novel design |
+| **Terra** | Balanced default             | `standard`                                 | Standard feature work, everyday engineering          |
+| **Luna**  | Volume / cheap               | `fast`                                     | Docs, formatting, mechanical and sub-agent tasks     |
 
 **Effort (per request):** `Light` → `Medium` → `High` → `Extra High`, plus two special modes — `Max` (more thinking time on a single task) and `Ultra` (subagent-parallel work; consumes usage limits fastest).
 

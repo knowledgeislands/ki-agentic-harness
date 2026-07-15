@@ -9,11 +9,11 @@ Curated patterns from the KI agentic harness that show what a well-structured fi
 
 ## Collections
 
-| Source | URL | What it covers |
-| --- | --- | --- |
-| ki-agentic-harness | [canonical harness repo][harness-repo] | The KI canonical reference; all five parts; populated skills shelf |
-| Agent Skills specification | [Agent Skills spec][as-spec] | The `SKILL.md` format and `references/`, `scripts/`, `assets/` layout |
-| Claude Code subagent docs | [CC subagent docs][cc-subagents] | The subagent definition format the `agents/` part serves |
+| Source                     | URL                                    | What it covers                                                        |
+| -------------------------- | -------------------------------------- | --------------------------------------------------------------------- |
+| ki-agentic-harness         | [canonical harness repo][harness-repo] | The KI canonical reference; all five parts; populated skills shelf    |
+| Agent Skills specification | [Agent Skills spec][as-spec]           | The `SKILL.md` format and `references/`, `scripts/`, `assets/` layout |
+| Claude Code subagent docs  | [CC subagent docs][cc-subagents]       | The subagent definition format the `agents/` part serves              |
 
 ## Selected patterns
 

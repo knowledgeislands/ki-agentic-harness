@@ -4,16 +4,15 @@
 
 ## Horizons
 
-Group open work under these four horizons, in order:
+Group open work under these five horizons, in order. Each ROADMAP carries the horizon's narrative as a one-line lead-in directly under its `##` heading — above any theme or item sub-heading — so every ROADMAP reads the same way:
 
-| Horizon    | Meaning                                              | Plan? |
-| ---------- | ---------------------------------------------------- | ----- |
-| `Blocking` | Must complete before the `Next` horizon can proceed. | Yes   |
-| `Next`     | The nearest planned work.                            | Yes   |
-| `Soon`     | Named work without plan detail yet.                  | No    |
-| `Future`   | Named work without plan detail yet.                  | No    |
+- **`Blocking`** — Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire. _Carries a plan._
+- **`Next`** — Scoped and ready to start: the immediate queue, picked up before anything in `Soon` or `Future`. _Carries a plan._
+- **`Soon`** — Understood and roughly scoped but not yet started: worth doing once the `Next` queue clears, ahead of anything still speculative.
+- **`Waiting for`** — Worth doing, but presently blocked on an external dependency or decision. Revisit when its named condition changes rather than treating it as dormant local work.
+- **`Future`** — Speculative or not yet scoped: items marked `(candidate)` need a scoping pass, or a decision to drop them, before they become actionable.
 
-Plans are written only for `Blocking` and `Next` items. A repo with a short forward view may still use a flat list when horizons would add no clarity. A Knowledge Islands KB keeps its forward view in `Streams` through the Focus lifecycle rather than in `ROADMAP.md`.
+Plans are written only for `Blocking` and `Next` items; `Soon`, `Waiting for`, and `Future` carry no plan detail — a `Waiting for` item is planned once its named condition clears and it moves up. A repo with a short forward view may still use a flat list when horizons would add no clarity. A Knowledge Islands KB keeps its forward view in `Streams` through the Focus lifecycle rather than in `ROADMAP.md`.
 
 ## Content discipline
 

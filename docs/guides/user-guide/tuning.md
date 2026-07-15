@@ -30,18 +30,18 @@ Claude Code's own built-in tools (Workflow, Artifact, the advisor, background ta
 
 The context-relevant toggles, each verified to exist as a literal string in the shipped CLI binary:
 
-| Environment variable | Removes from the toolset | Notes |
-| --- | --- | --- |
-| `CLAUDE_CODE_DISABLE_WORKFLOWS` | The `Workflow` tool | Largest single built-in description — it inlines a scripting DSL |
-| `CLAUDE_CODE_DISABLE_ARTIFACT` | The `Artifact` tool | Drop if you never publish claude.ai artifacts |
-| `CLAUDE_CODE_DISABLE_ADVISOR_TOOL` | The advisor tool | — |
-| `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS` | `Monitor` and background-shell tooling | Keep if you rely on long-running watches |
-| `CLAUDE_CODE_DISABLE_CRON` | `CronCreate` / `CronList` / `CronDelete` | — |
-| `CLAUDE_CODE_DISABLE_AGENT_VIEW` | Background-agent view / `--bg` support | — |
-| `CLAUDE_CODE_DISABLE_BUNDLED_SKILLS` | _All_ of Claude Code's own bundled skills | This repo's own `ki-*` skills are unaffected † |
-| `CLAUDE_CODE_DISABLE_CLAUDE_API_SKILL` | Just the bundled `claude-api` skill | Finer-grained than the all-or-nothing flag above |
-| `CLAUDE_CODE_DISABLE_CLAUDE_CODE_SKILL` | Just the bundled `claude-code` guide skill | — |
-| `CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS` | The git-guidance block of the system prompt | Drop if you don't want git conventions in-session |
+| Environment variable                    | Removes from the toolset                    | Notes                                                            |
+| --------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------- |
+| `CLAUDE_CODE_DISABLE_WORKFLOWS`         | The `Workflow` tool                         | Largest single built-in description — it inlines a scripting DSL |
+| `CLAUDE_CODE_DISABLE_ARTIFACT`          | The `Artifact` tool                         | Drop if you never publish claude.ai artifacts                    |
+| `CLAUDE_CODE_DISABLE_ADVISOR_TOOL`      | The advisor tool                            | —                                                                |
+| `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS`  | `Monitor` and background-shell tooling      | Keep if you rely on long-running watches                         |
+| `CLAUDE_CODE_DISABLE_CRON`              | `CronCreate` / `CronList` / `CronDelete`    | —                                                                |
+| `CLAUDE_CODE_DISABLE_AGENT_VIEW`        | Background-agent view / `--bg` support      | —                                                                |
+| `CLAUDE_CODE_DISABLE_BUNDLED_SKILLS`    | _All_ of Claude Code's own bundled skills   | This repo's own `ki-*` skills are unaffected †                   |
+| `CLAUDE_CODE_DISABLE_CLAUDE_API_SKILL`  | Just the bundled `claude-api` skill         | Finer-grained than the all-or-nothing flag above                 |
+| `CLAUDE_CODE_DISABLE_CLAUDE_CODE_SKILL` | Just the bundled `claude-code` guide skill  | —                                                                |
+| `CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS`  | The git-guidance block of the system prompt | Drop if you don't want git conventions in-session                |
 
 † The bundled skills are Claude Code's own (dataviz, web-perf, and the like), discovered separately from the `~/.claude/skills/` and project-local `.claude/skills/` links this harness installs.
 

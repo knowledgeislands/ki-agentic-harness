@@ -1,12 +1,14 @@
 # ki-agentic-harness roadmap
 
-Where this agentic harness is going. The [README](README.md) and the [docs/](docs) it indexes cover what exists today and how to install it; this file is the forward view. Open work is grouped by the four horizons — **Blocking**, **Next**, **Soon**, **Future** — owned by `ki-plans`; Blocking work must complete before Next can proceed, and speculative items are marked _(candidate)_ until committed. Within each horizon, items are further grouped by theme so related work can be tackled together.
+Where this agentic harness is going. The [README](README.md) and the [docs/](docs) it indexes cover what exists today and how to install it; this file is the forward view. Open work is grouped by the five horizons — **Blocking**, **Next**, **Soon**, **Waiting for**, **Future** — owned by `ki-plans`; Blocking work must complete before Next can proceed, and speculative items are marked _(candidate)_ until committed. Within each horizon, items are further grouped by theme so related work can be tackled together.
 
 This roadmap is itself subject to the house discipline it describes: when a skill's REFRESH run or an audit surfaces a structural gap, it lands here before it's built — and an item is **removed once done**, not ticked off, so the file always shows only open work.
 
 **Continuous practices are not roadmap items.** Keeping the skills audited (`ki:skills:audit`, `ki:repo:audit`, `ki:kb:audit`, the `ki-mcp` audit over the `mcp-*` repos), re-running the advisory [eval suite](evals/README.md) as skills change, and the scheduled `ki-skills-refresh` sweep (which honours each skill's declared `**Refresh:**` cadence) are ongoing disciplines tied to the invariants the `ki-skills` rubric enforces — they run continuously, so they live there, not here.
 
 ## Blocking
+
+Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
 ### Complete Codex skill-install parity before further Next work
 
@@ -28,6 +30,8 @@ Found 2026-07-14 while recapping a session in a repo whose absolute path contain
 
 ## Next
 
+Scoped and ready to start: the immediate queue, picked up before anything in `Soon` or `Future`.
+
 ### Promote Plan Mode plans into `docs/plans/`
 
 Claude Code's interactive Plan Mode (`EnterPlanMode`/`ExitPlanMode`) plans land only as scratch files under `~/.claude/plans/`, stamped and progress-synced in place by `hooks/plan-stamp.sh`/`hooks/plan-sync.sh`. Add a `promote` subcommand to the `ki-plan` lifecycle (`skills/process/ki-plan/references/lifecycle.md`) that turns a session's Plan Mode plan into a governed `docs/plans/<theme>/<NNN>-<slug>.md` entry — reusing `plan-stamp.sh`'s existing `~/.claude/plans/.state/<session_id>` pointer to locate the scratch file, and `new`'s existing id-derivation/theme/roadmap-confirmation logic to place it correctly. Deliberately a user-invoked lifecycle command, not a new auto-firing hook: the `roadmap:`/theme/id fields require judgment a `PostToolUse` hook can't safely apply unattended, and widening either existing hook's write surface from `~/.claude/plans/` to arbitrary repo paths is a separate, security-sensitive change left out of scope here. See `docs/plans/hooks/004-promote-plan-mode-plans.md`.
@@ -37,6 +41,8 @@ Claude Code's interactive Plan Mode (`EnterPlanMode`/`ExitPlanMode`) plans land 
 Found 2026-07-15 in the `chezmoi` dotfiles repo: the installed Headroom proxy (0.31.0) already supports per-project savings attribution — an `X-Headroom-Project` header or a `/p/<name>` URL-path prefix (`headroom.proxy.project_context`), accumulated into a `savings.per_project` breakdown already returned live by `GET /stats` — but nothing in the harness governs or replicates the pattern across repos. `chezmoi` landed a first instance by hand: `.claude/settings.json`'s `env.ANTHROPIC_BASE_URL` set to `http://127.0.0.1:8787/p/chezmoi`, scoping that repo's Claude Code traffic to its own bucket. This is currently a one-off, manually-applied convention with no owning skill, no audit/conform, and no documented recommendation for whether every repo behind a local Headroom proxy should adopt a `/p/<repo-name>` suffix. Candidate home: `ki-tokenomics`, which already covers Headroom setup — add the pattern to its guidance, and consider an AUDIT check that a repo's `.claude/settings.json` `env.ANTHROPIC_BASE_URL` (when a Headroom proxy override is present at all) carries a `/p/<repo-name>` suffix matching the repo, plus a CONFORM that writes it. Separately worth a note upstream: Headroom's own `savings` CLI still has no per-project subcommand — the breakdown is only reachable via raw `/stats` JSON today.
 
 ## Soon
+
+Understood and roughly scoped but not yet started: worth doing once the `Next` queue clears, ahead of anything still speculative.
 
 ### Multi-machine portability & shared state
 
@@ -180,7 +186,19 @@ Found 2026-07-14 in the `chezmoi` dotfiles repo while reviewing whether its `.cl
 
 Working `vallearmonia-website` through `ki-bootstrap` (2026-07-13) surfaced that `ki-repo`'s `FILES-3` check fails with "`.ki-config.toml` does not declare `[ki-authoring]` — the authoring standard is baseline (run `--init`)", but nothing in the chain actually performs that fix. `ki-bootstrap`'s `bootstrap.ts` engine never writes `.ki-config.toml` under any circumstance (no write path exists in the source at all — confirmed by reading it, not just failing to find one), `ki-repo`'s own `scripts/init.ts` is just a delegator to that same engine (`--seed ki-repo`), and `ki-repo`'s `conform.ts` has no `FILES-3` handling either. This also means the `ki-bootstrap` SKILL.md's greenfield story ("a repo with no `.ki-config.toml` enters through `ki-repo`'s init... to scaffold the config") is aspirational — `bootstrap.ts` doesn't implement it. The workaround for now is a hand edit. Fix either the message (stop promising `--init` will do it) or the gap itself (real config-scaffolding logic in `ki-repo`'s init/conform, covering both "table missing on an existing config" and the greenfield "no config at all" case) — candidate home: `ki-repo`'s `scripts/init.ts`, since `ki-bootstrap`'s engine is meant to stay config-agnostic (it only vendors/links against whatever coverage already exists).
 
-#### Retry blocked memory-store fixes once `memory_*` tools recover
+#### Background agents lose their handle across `/compact`
+
+During the audit/conform standardization session (2026-07-12), two background agents (`norm-mcp`, `norm-repo`, dispatched via the `Agent` tool with implicit backgrounding) were reported as still running at the point `/compact` fired. After compaction, their target files (`skills/ki-mcp/scripts/*.ts`, `skills/ki-repo/scripts/*.ts`) showed zero changes — the agents' work, if any had completed, never persisted, and there was no error or notification marking the loss; it only surfaced because a `git status` diff came back empty against what the pre-compaction summary claimed. The recovery was to re-dispatch fresh, fully self-contained agent prompts rather than attempt to resume the original agent IDs. Worth turning into a durable guardrail: either (a) avoid firing `/compact` while a background agent is outstanding — e.g. `TaskOutput`/`Monitor`-wait for it first — or (b) have the harness/skill guidance flag this explicitly so a future session doesn't need to rediscover it. Candidate home: `workflow.md` (global) or a `ki-tokenomics`/`ki-recap` note, since it's a cross-project agent-orchestration gotcha, not specific to this repo.
+
+#### Run a `ki-housekeeping` cleanup pass on this machine's Claude Code state
+
+A live `kit-mcp-claude-housekeeping` call via the `mcporter` bridge (2026-07-13) found `~/.claude/projects` at 715 MB and `~/.claude/telemetry` at 145 MB on this machine — flagged in passing while verifying the bridge worked, not yet triaged. Run `ki-housekeeping`'s CONFORM mode (from Claude Desktop or via `mcporter`, since the server's access level needs to be `destructive` rather than this machine's default `read` to actually clean anything) to see what's safe to prune — likely session/telemetry retention, not memory (already audited clean this session).
+
+## Waiting for
+
+Worth doing, but presently blocked on an external dependency or decision. Revisit when its named condition changes rather than treating it as dormant local work.
+
+### Retry blocked memory-store fixes once `memory_*` tools recover
 
 During a memory/`CLAUDE.md` review session (2026-07-12), several fixes were identified but couldn't be applied because every `memory_*` tool (`memory_save`, `memory_update`, `memory_search`, `memory_list`) failed with "No such tool available" — reads and writes alike, ruling out a plan-mode-specific restriction. Once the tools are confirmed working again:
 
@@ -192,15 +210,9 @@ During a memory/`CLAUDE.md` review session (2026-07-12), several fixes were iden
   - A `reference` memory: Gmail/Google Workspace access is available via the `mcporter` CLI's `kit-mcp-gsuite` server (39 tools), not a natively-connected MCP session — key tools are `gsuite_auth_status`, `gsuite_email_labels_list`, `gsuite_email_messages_search` (query + labelIds), `gsuite_email_message_get` (messageId, format `metadata`\|`full`), `gsuite_email_attachment_get` (messageId, attachmentId, outputPath — downloads under `MCP_GSUITE_DOWNLOAD_PATH`, default `~/Downloads`).
   - A `feedback` memory: the user prefers fixing a real, fixable bug directly in-session (even in a different local repo, e.g. an upstream skill/harness repo) over only logging it on a ROADMAP; reserve ROADMAP-only entries for gaps too large/architectural to fix in-session. Confirmed 2026-07-13 when asked to fix a `ki-agentic-harness` bug directly rather than just documenting it.
 
-#### Background agents lose their handle across `/compact`
-
-During the audit/conform standardization session (2026-07-12), two background agents (`norm-mcp`, `norm-repo`, dispatched via the `Agent` tool with implicit backgrounding) were reported as still running at the point `/compact` fired. After compaction, their target files (`skills/ki-mcp/scripts/*.ts`, `skills/ki-repo/scripts/*.ts`) showed zero changes — the agents' work, if any had completed, never persisted, and there was no error or notification marking the loss; it only surfaced because a `git status` diff came back empty against what the pre-compaction summary claimed. The recovery was to re-dispatch fresh, fully self-contained agent prompts rather than attempt to resume the original agent IDs. Worth turning into a durable guardrail: either (a) avoid firing `/compact` while a background agent is outstanding — e.g. `TaskOutput`/`Monitor`-wait for it first — or (b) have the harness/skill guidance flag this explicitly so a future session doesn't need to rediscover it. Candidate home: `workflow.md` (global) or a `ki-tokenomics`/`ki-recap` note, since it's a cross-project agent-orchestration gotcha, not specific to this repo.
-
-#### Run a `ki-housekeeping` cleanup pass on this machine's Claude Code state
-
-A live `kit-mcp-claude-housekeeping` call via the `mcporter` bridge (2026-07-13) found `~/.claude/projects` at 715 MB and `~/.claude/telemetry` at 145 MB on this machine — flagged in passing while verifying the bridge worked, not yet triaged. Run `ki-housekeeping`'s CONFORM mode (from Claude Desktop or via `mcporter`, since the server's access level needs to be `destructive` rather than this machine's default `read` to actually clean anything) to see what's safe to prune — likely session/telemetry retention, not memory (already audited clean this session).
-
 ## Future
+
+Speculative or not yet scoped: items marked `(candidate)` need a scoping pass, or a decision to drop them, before they become actionable.
 
 ### Vendoring architecture & runtime portability
 

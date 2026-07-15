@@ -72,10 +72,10 @@ For a third-party SaaS integration (GitHub, Linear, Slack, Notion, the Google an
 
 Which route to prefer, per integration:
 
-| Prefer | When |
-| --- | --- |
+| Prefer                  | When                                                                                                                    |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | **claude.ai connector** | A hosted connector exists and you mainly use that integration on claude.ai web / Desktop — least setup, no local OAuth. |
-| **Local MCP server** | You need it in the Claude Code CLI, need tools no connector offers, or need a KI server's own access gate + audit log † |
+| **Local MCP server**    | You need it in the Claude Code CLI, need tools no connector offers, or need a KI server's own access gate + audit log † |
 
 † The KI-owned `mcp-*` servers (workspace MCPs with the annotation-driven access-level gate and audit logging) are always the local route — there is no managed equivalent.
 

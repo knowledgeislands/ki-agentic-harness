@@ -14,14 +14,14 @@ The state spans three surfaces on macOS:
 
 ## 2. The areas
 
-| Area | What it covers | Mechanical arm |
-| --- | --- | --- |
-| **Sessions** | Stored session transcripts; obsolete / superseded sessions | Server |
-| **Artifacts / outputs** | Generated artifacts, uploads, downloaded outputs; orphaned or oversized | Server |
-| **Backups** | Automatic backups that multiply without bound | Server |
-| **Plugins** | Installed-plugin inventory and staleness | Server |
-| **Project cache** | Per-project caches and debug info | Server |
-| **Auto-memory** | The per-project `memory/*.md` + `MEMORY.md` Headroom writes | **Local** (`audit.ts`) + memory-format.md |
+| Area                    | What it covers                                                          | Mechanical arm                            |
+| ----------------------- | ----------------------------------------------------------------------- | ----------------------------------------- |
+| **Sessions**            | Stored session transcripts; obsolete / superseded sessions              | Server                                    |
+| **Artifacts / outputs** | Generated artifacts, uploads, downloaded outputs; orphaned or oversized | Server                                    |
+| **Backups**             | Automatic backups that multiply without bound                           | Server                                    |
+| **Plugins**             | Installed-plugin inventory and staleness                                | Server                                    |
+| **Project cache**       | Per-project caches and debug info                                       | Server                                    |
+| **Auto-memory**         | The per-project `memory/*.md` + `MEMORY.md` Headroom writes             | **Local** (`audit.ts`) + memory-format.md |
 
 ## 3. The skill↔server pairing
 

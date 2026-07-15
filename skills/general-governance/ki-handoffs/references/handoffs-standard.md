@@ -42,12 +42,12 @@ The `tier` value is **semantic** — the house `haiku` / `sonnet` / `opus` class
 
 A handoff spec is delegable when it passes all four. These **extend** the host artifact's quality bar (`ki-plans`: concrete Steps, checkable Verify, honest Current state, minimal Files touched — or the `ki-kb-streams` proposal equivalents); they do not replace it.
 
-| Check | Ready | Failure mode |
-| --- | --- | --- |
+| Check                  | Ready                                                            | Failure mode                                             |
+| ---------------------- | ---------------------------------------------------------------- | -------------------------------------------------------- |
 | **Decisions resolved** | Every judgement is either locked (closed) or escalated (flagged) | An unmarked open question the executor must reason about |
-| **Definition-of-done** | Each unit has a pass/fail acceptance test | "Make it good" — a goal, not a test |
-| **Tier assigned** | Each unit names the cheapest safe tier, one-line rationale | No tier, so execution defaults to the planning tier |
-| **Readiness tested** | The cold-agent test was run and recorded | Readiness assumed, not demonstrated |
+| **Definition-of-done** | Each unit has a pass/fail acceptance test                        | "Make it good" — a goal, not a test                      |
+| **Tier assigned**      | Each unit names the cheapest safe tier, one-line rationale       | No tier, so execution defaults to the planning tier      |
+| **Readiness tested**   | The cold-agent test was run and recorded                         | Readiness assumed, not demonstrated                      |
 
 ## Tier assignment
 
