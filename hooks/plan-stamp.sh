@@ -8,16 +8,93 @@ input=$(cat)
 
 command -v jq >/dev/null 2>&1 || exit 0
 
-plan_file=$(printf '%s' "$input" | jq -r '.tool_input.planFilePath // empty')
-[ -z "$plan_file" ] && exit 0
+session_id=$(printf '%s' "$input" | jq -er '
+  .session_id
+  | select(
+      type == "string"
+      and length >= 1
+      and length <= 128
+      and test("^[A-Za-z0-9]")
+      and (test("[^A-Za-z0-9_-]") | not)
+    )
+') || exit 0
+LC_ALL=C
+case "$session_id" in
+  '' | [!A-Za-z0-9]* | *[!A-Za-z0-9_-]*) exit 0 ;;
+esac
+[ "${#session_id}" -le 128 ] || exit 0
+
+# Select exact-target filesystem primitives once. Falling back after an attempted
+# move/link is unsafe because the first command may already have changed state.
+case "$(uname -s 2>/dev/null)" in
+  Darwin)
+    replace_exact() { mv -h -- "$1" "$2"; }
+    publish_exclusive() { ln -h -- "$1" "$2"; }
+    stat_owner() { stat -f '%u' "$1"; }
+    stat_mode() { stat -f '%Lp' "$1"; }
+    ;;
+  Linux)
+    replace_exact() { mv -T -- "$1" "$2"; }
+    publish_exclusive() { ln -T -- "$1" "$2"; }
+    stat_owner() { stat -c '%u' "$1"; }
+    stat_mode() { stat -c '%a' "$1"; }
+    ;;
+  *) exit 0 ;;
+esac
+
+current_uid=$(id -u) || exit 0
+
+secure_state_dir() {
+  [ -d "$state_dir" ] || return 1
+  [ -L "$state_dir" ] && return 1
+  [ "$(cd "$state_dir" 2>/dev/null && pwd -P)" = "$state_dir" ] || return 1
+  [ "$(dirname "$state_dir")" = "$resolved_plans" ] || return 1
+
+  state_owner=$(stat_owner "$state_dir") || return 1
+  state_mode=$(stat_mode "$state_dir") || return 1
+  [ "$state_owner" = "$current_uid" ] || return 1
+  case "$state_mode" in
+    '' | *[!0-7]*) return 1 ;;
+  esac
+  [ $(( (8#$state_mode) & (8#22) )) -eq 0 ] || return 1
+}
+
+# Resolve the plans root before touching state. `.state` must be exactly one real
+# directory below that physical root; a symlink here would otherwise let the hook
+# invalidate or replace an arbitrary file outside the plans jail.
+plans_dir="$HOME/.claude/plans"
+resolved_plans=$(cd "$plans_dir" 2>/dev/null && pwd -P) || exit 0
+state_dir="$resolved_plans/.state"
+
+if [ -e "$state_dir" ] || [ -L "$state_dir" ]; then
+  [ -d "$state_dir" ] || exit 0
+  [ -L "$state_dir" ] && exit 0
+else
+  old_umask=$(umask)
+  umask 077
+  mkdir "$state_dir" 2>/dev/null || { umask "$old_umask"; exit 0; }
+  umask "$old_umask"
+  chmod 700 "$state_dir" 2>/dev/null || exit 0
+fi
+
+secure_state_dir || exit 0
+resolved_state="$state_dir"
+
+state_file="$resolved_state/$session_id"
+
+# From this point the session filename and its parent jail are trusted. Invalidate
+# first so any later rejection cannot leave an older plan current for this session.
+rm -f -- "$state_file" 2>/dev/null || exit 0
+
+plan_file=$(printf '%s' "$input" | jq -er '.tool_input.planFilePath | select(type == "string" and length > 0)') || exit 0
+case "$plan_file" in
+  /*) ;;
+  *) exit 0 ;;
+esac
+[ -L "$plan_file" ] && exit 0
 [ -f "$plan_file" ] || exit 0
 
-# Containment must be checked against the *resolved* path, not a string prefix — a
-# planFilePath smuggling `../` (e.g. "$HOME/.claude/plans/../../etc/hosts") would pass a
-# literal "$HOME/.claude/plans/"* glob while resolving well outside the plans jail.
-plans_dir="$HOME/.claude/plans"
 resolved_dir=$(cd "$(dirname "$plan_file")" 2>/dev/null && pwd -P) || exit 0
-resolved_plans=$(cd "$plans_dir" 2>/dev/null && pwd -P) || exit 0
 case "$resolved_dir" in
   "$resolved_plans" | "$resolved_plans"/*) ;;
   *) exit 0 ;;
@@ -26,38 +103,56 @@ plan_file="$resolved_dir/$(basename "$plan_file")"
 [ -L "$plan_file" ] && exit 0
 [ -f "$plan_file" ] || exit 0
 
-session_id=$(printf '%s' "$input" | jq -r '.session_id // empty')
-case "$session_id" in
-  '' | */* | . | ..) exit 0 ;;
+event_cwd=$(printf '%s' "$input" | jq -er '.cwd | select(type == "string" and length > 0)') || exit 0
+case "$event_cwd" in
+  /*) ;;
+  *) exit 0 ;;
 esac
+[ -d "$event_cwd" ] || exit 0
+resolved_cwd=$(cd "$event_cwd" 2>/dev/null && pwd -P) || exit 0
 
-mkdir -p "$HOME/.claude/plans/.state" || exit 0
-state_file="$HOME/.claude/plans/.state/$session_id"
-# `mv` replaces a symlink at $state_file rather than writing through it (unlike `>`
-# redirect, which would follow a planted symlink and clobber its target).
-state_tmp=$(mktemp "$HOME/.claude/plans/.state/.plan-stamp.XXXXXX") || exit 0
-printf '%s' "$plan_file" > "$state_tmp" || { rm -f "$state_tmp"; exit 0; }
-mv "$state_tmp" "$state_file" || exit 0
-
-# Re-check immediately before reading: narrows (does not eliminate) the check-then-use
-# window between the earlier -L guard and this read.
+# Re-check immediately before reading and replacing the scratch file. This narrows
+# the unavoidable check/use window around a concurrently changed filesystem entry.
 [ -L "$plan_file" ] && exit 0
 first_line=$(head -n1 "$plan_file") || exit 0
 first_line=${first_line%$'\r'}
-[ "$first_line" = "---" ] && exit 0
 
-cwd=$(printf '%s' "$input" | jq -r '.cwd // empty' | tr '\n' ' ')
-[ -z "$cwd" ] && cwd="$PWD"
+if [ "$first_line" != "---" ]; then
+  cwd_yaml=$(jq -Rn --arg value "$resolved_cwd" '$value') || exit 0
+  [ "$(cd "$resolved_dir" 2>/dev/null && pwd -P)" = "$resolved_dir" ] || exit 0
+  tmp=$(mktemp "$resolved_dir/.plan-stamp.XXXXXX") || exit 0
+  {
+    printf -- '---\n'
+    printf 'status: open\n'
+    printf 'created: %s\n' "$(date +%F)"
+    printf 'cwd: %s\n' "$cwd_yaml"
+    printf -- '---\n'
+    printf '\n'
+    cat "$plan_file"
+  } > "$tmp" || { rm -f -- "$tmp"; exit 0; }
 
-tmp=$(mktemp "$(dirname "$plan_file")/.plan-stamp.XXXXXX") || exit 0
-{
-  printf -- '---\n'
-  printf 'status: open\n'
-  printf 'created: %s\n' "$(date +%F)"
-  printf 'cwd: %s\n' "$cwd"
-  printf -- '---\n'
-  printf '\n'
-  cat "$plan_file"
-} > "$tmp" || { rm -f "$tmp"; exit 0; }
+  [ "$(cd "$resolved_dir" 2>/dev/null && pwd -P)" = "$resolved_dir" ] || { rm -f -- "$tmp"; exit 0; }
+  [ -L "$plan_file" ] && { rm -f -- "$tmp"; exit 0; }
+  replace_exact "$tmp" "$plan_file" || { rm -f -- "$tmp"; exit 0; }
+fi
 
-mv "$tmp" "$plan_file" || exit 0
+# Publish provenance only after the scratch file is known to be usable. JSON is
+# generated by jq rather than interpolation so every stored string is escaped.
+state_json=$(jq -cn \
+  --arg session_id "$session_id" \
+  --arg plan_file "$plan_file" \
+  --arg cwd "$resolved_cwd" \
+  '{version: 1, session_id: $session_id, plan_file: $plan_file, cwd: $cwd}') || exit 0
+
+old_umask=$(umask)
+umask 077
+state_tmp=$(mktemp "$resolved_state/.plan-stamp.XXXXXX") || { umask "$old_umask"; exit 0; }
+umask "$old_umask"
+printf '%s\n' "$state_json" > "$state_tmp" || { rm -f -- "$state_tmp"; exit 0; }
+
+# Re-prove the jail, then publish with an exclusive same-directory hard link.
+# Unlike a plain move, this cannot overwrite a leaf planted after invalidation or
+# interpret a symlink-to-directory destination as a directory operand.
+secure_state_dir || { rm -f -- "$state_tmp"; exit 0; }
+publish_exclusive "$state_tmp" "$state_file" || { rm -f -- "$state_tmp"; exit 0; }
+rm -f -- "$state_tmp" || exit 0
