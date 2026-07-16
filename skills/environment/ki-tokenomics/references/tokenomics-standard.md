@@ -115,6 +115,8 @@ The seeded registry entry is **Headroom** (chopratejas/headroom, published as th
 
 The registry is **extensible**: other compression / context projects are added as new entries with their own detection signals and optimal-setup notes, so "leverage best practices like Headroom and other projects" stays a list, not a hard-coded single tool.
 
+Headroom's observability stores are operationally independent. The CLI savings ledger, `headroom perf` log history, live `/stats` counters, and durable proxy/dashboard savings do not share a universal reset; use the version-pinned [Headroom operational maintenance procedure](headroom-operations.md) and snapshot the intended surface before clearing it.
+
 ## 6. Best practice — context as a finite resource
 
 The standard tracks Anthropic's context-engineering guidance and the wider community practice; the durable principles:

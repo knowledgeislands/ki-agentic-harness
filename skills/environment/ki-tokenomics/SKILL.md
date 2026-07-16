@@ -37,6 +37,8 @@ The full catalogue, the budget table, and the rationale (curate context as a fin
 
 Tool-result bloat is the runtime cost a **context-compression layer** attacks. The house default treats one such layer as a **recommended** best practice and checks that, where configured, it is set up well. The seeded entry is **Headroom** (the chopratejas / extraheadroom compression proxy / MCP server): the checker detects it across both layers — an `mcpServers` `headroom` entry exposing `headroom_compress` / `headroom_retrieve` / `headroom_stats`, a `headroom proxy`, or `HEADROOM_*` env — and reports whether its reversible store and cache-aligned prefixes look sound. The registry is **extensible**: add other projects alongside it. Whether the layer is `required`, `recommended`, or `off` is declared per environment (below).
 
+Headroom's savings ledger, performance logs, live counters, and durable proxy history are separate operational surfaces with different reset mechanics. Use the version-pinned [operational maintenance procedure](references/headroom-operations.md); do not treat `headroom savings --reset` as a universal dashboard reset.
+
 ## The config table — overridable budgets
 
 A target opts in (and tunes) via a `[ki-tokenomics]` table in its `.ki-config.toml`, read **validate-down** (warn on a key it does not recognise; never read another skill's table). It carries the per-component and total token budgets (a `[…budgets]` sub-table), the `headroom` expectation, and an optional `context_window_tokens` to express headroom as a percentage. Omit any to take the default; `init` scaffolds the keys. A budget overage is a **WARN**, never a FAIL — these are guide-rails, not gates.
