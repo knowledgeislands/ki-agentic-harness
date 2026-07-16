@@ -15,7 +15,6 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
 - [Foundation Tooling: Allow `printWidth` to be overridden per repo via `.ki-config.toml` _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#allow-printwidth-to-be-overridden-per-repo-via-ki-configtoml-candidate)
-- [Foundation Tooling: Close the staged-scope gap in the pre-commit gate](docs/roadmap/foundation-tooling/ROADMAP.md#close-the-staged-scope-gap-in-the-pre-commit-gate)
 - [Foundation Tooling: Codify a Conventional Commits git standard across the skills](docs/roadmap/foundation-tooling/ROADMAP.md#codify-a-conventional-commits-git-standard-across-the-skills)
 - [Foundation Tooling: Codify the config-editing tool-selection standard in `ki-dotfiles-chezmoi`](docs/roadmap/foundation-tooling/ROADMAP.md#codify-the-config-editing-tool-selection-standard-in-ki-dotfiles-chezmoi)
 - [Foundation Tooling: Codify the generated-code lint/knip exclusion in `ki-engineering`](docs/roadmap/foundation-tooling/ROADMAP.md#codify-the-generated-code-lintknip-exclusion-in-ki-engineering)

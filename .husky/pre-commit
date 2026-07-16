@@ -1,22 +1,47 @@
 bunx lint-staged || exit 1
 
 # Governance audits: nothing else runs them locally, so validate each artifact
-# set when it is staged (added/copied/modified/renamed) — a failure blocks the
+# set when it is staged (added/copied/modified/renamed/deleted/type-changed) — a failure blocks the
 # commit. The heavier, GitHub-gated repo/harness audits run in CI, not here.
-staged() { git diff --cached --name-only --diff-filter=ACMRD; }
+# Split renames into their delete/add paths so moving a governed file cannot
+# hide its original path from a scope trigger.
+staged() { git diff --cached --name-only --no-renames --diff-filter=ACMDT; }
+staged_paths="$(staged)" || exit 1
+matches_staged() { printf '%s\n' "$staged_paths" | grep -Eq "$1"; }
+repo_root="$(git rev-parse --show-toplevel)" || exit 1
 
-bootstrap_audit_staged() {
+audit_staged_governance() {
   snapshot="$(mktemp -d)" || return 1
   trap 'rm -rf "$snapshot"' EXIT HUP INT TERM
   git checkout-index --all --prefix="$snapshot/" || return 1
-  bun "$snapshot/skills/keystone/ki-bootstrap/scripts/audit.ts" "$snapshot"
-  status=$?
+  status=0
+  if [ "$1" -eq 1 ]; then
+    if [ ! -d "$repo_root/node_modules" ]; then
+      echo 'pre-commit: node_modules is required for the staged engineering audit; run bun install' >&2
+      status=1
+    else
+      ln -s "$repo_root/node_modules" "$snapshot/node_modules" || status=1
+      if [ "$status" -eq 0 ]; then
+        PATH="$snapshot/node_modules/.bin:$PATH" bun "$snapshot/.ki-meta/skills/ki-engineering/audit.ts" "$snapshot" || status=$?
+      fi
+    fi
+  fi
+  if [ "$status" -eq 0 ] && [ "$2" -eq 1 ]; then
+    bun "$snapshot/skills/keystone/ki-bootstrap/scripts/audit.ts" "$snapshot" || status=$?
+  fi
   rm -rf "$snapshot"
   trap - EXIT HUP INT TERM
   return "$status"
 }
 
-if staged | grep -q '^docs/decisions/'; then bun run ki:decision-records:audit || exit 1; fi
-if staged | grep -q '^skills/'; then bun run ki:skills:audit || exit 1; fi
-if staged | grep -Eq '^(skills/|\.ki-meta/skills/)'; then bootstrap_audit_staged || exit 1; fi
-if staged | grep -q '^agents/'; then bun run ki:agents:audit || exit 1; fi
+if matches_staged '^docs/decisions/'; then bun run ki:decision-records:audit || exit 1; fi
+if matches_staged '^skills/'; then bun run ki:skills:audit || exit 1; fi
+if matches_staged '^agents/'; then bun run ki:agents:audit || exit 1; fi
+
+engineering_scope=0
+bootstrap_scope=0
+if matches_staged '^skills/.*\.ts$'; then engineering_scope=1; fi
+if matches_staged '^(skills/|\.ki-meta/skills/)'; then bootstrap_scope=1; fi
+if [ "$engineering_scope" -eq 1 ] || [ "$bootstrap_scope" -eq 1 ]; then
+  audit_staged_governance "$engineering_scope" "$bootstrap_scope" || exit 1
+fi
