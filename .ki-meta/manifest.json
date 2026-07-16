@@ -1,5 +1,5 @@
 {
-  "ref": "71d942d72f4fa35b571e04385fd2b78c52303745",
+  "ref": "5814ad389328085ce40874f04e6b6863f4fe1981",
   "files": {
     ".ki-meta/skills/ki-agents/audit.ts": "744039a6365910a9d34d688fecec590cecc83ae15b5766d008dec5a0639d2d9a",
     ".ki-meta/skills/ki-agents/conform.ts": "b184328a974795a12bc5e6f76ddca97e89cd0fca8367033068f64c19d1971357",
@@ -25,8 +25,8 @@
     ".ki-meta/skills/ki-housekeeping/audit.ts": "4c02141d78eb55af9abfc42f0425a3bf60ce5c027696bda0619255d4e7cfebc1",
     ".ki-meta/skills/ki-housekeeping/conform.ts": "1ea3d2914c7bd7f76f37915fc75615b98de2703316f63835dcb660fb5a2485e1",
     ".ki-meta/skills/ki-housekeeping/help.md": "c21450bab2fddcd102e3661ca08030756d51837d1a08a5e0bb29407607aa0937",
-    ".ki-meta/skills/ki-project-roadmap/audit.ts": "6a73697d53952ba15ec5136c11b731792d123e45ea5dadace75e37c9f5a41eb6",
-    ".ki-meta/skills/ki-project-roadmap/conform.ts": "f64790e7f48f78a091016f82a66f36bbcfd1e250982b0b70ea6987de5009f0c3",
+    ".ki-meta/skills/ki-project-roadmap/audit.ts": "8710b102386f58e6a49d634f45ebd896d9d7b21678c81d73b20d513a671f1b4f",
+    ".ki-meta/skills/ki-project-roadmap/conform.ts": "002f9323b6e0fe0a6ba2a9ef21ab7c1ec60070ed09fd262fb5e20847b731784c",
     ".ki-meta/skills/ki-project-roadmap/help.md": "86feddb7d31ef53a73d0fb91530441f5de75304d9ed82d0641c360944ebcf497",
     ".ki-meta/skills/ki-repo/audit.ts": "4127d0edae5ed467c4a4ab6b6bc877d2de10232e7984eb1d26f7afed6840e7ed",
     ".ki-meta/skills/ki-repo/conform.ts": "b4e7f9f509432005ff8d90a5ecb1d2aae94b55081250443e5291d358cd35dfff",

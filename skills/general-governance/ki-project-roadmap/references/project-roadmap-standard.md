@@ -55,6 +55,6 @@ CONFORM is narrower. It may insert a missing canonical horizon blurb and rebuild
 
 ## Plan discipline
 
-Plans are recoverable execution documents for multi-file or multi-step changes. They exist only for `Blocking` and `Next` items and use the [plan format](plan-format.md). Ids are global across themes. Dependencies are bidirectional, existent, and acyclic. No plan moves to `in-progress` while a listed blocker is not `done`.
+Plans are recoverable execution documents for multi-file or multi-step changes. They exist only for `Blocking` and `Next` items and use the [plan format](plan-format.md). Numeric ids form a separate sequence inside each theme, beginning at `001`; the canonical plan reference is `<theme>/<NNN>`. Dependencies use canonical plan references and are bidirectional, existent, and acyclic. No plan moves to `in-progress` while a listed blocker is not `done`.
 
 A ready plan has concrete Steps, a checkable Verify section, an honest Current state, and a minimal Files touched list. A completed plan and its roadmap item are removed together; git history is the archive.

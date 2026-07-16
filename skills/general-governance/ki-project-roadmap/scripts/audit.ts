@@ -38,6 +38,7 @@ const HORIZON_BLURBS: Record<Horizon, string> = {
 const NEAR = new Set<Horizon>(['Blocking', 'Next'])
 const THEME_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const PLAN_RE = /^(\d{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/
+const PLAN_REF_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*\/\d{3,}$/
 const REQUIRED = ['id', 'title', 'status', 'roadmap', 'blocks', 'blocked-by']
 const OPTIONAL = ['handoff', 'tier', 'readiness']
 const VALID_STATUS = new Set(['open', 'in-progress', 'done'])
@@ -186,6 +187,8 @@ function ids(value: string | undefined): string[] {
     .filter(Boolean)
 }
 
+const planRef = (plan: Pick<Plan, 'theme' | 'id'>): string => `${plan.theme}/${plan.id}`
+
 function validatePlanBody(body: string, display: string): void {
   const requiredSections = ['Context', 'Current state', 'Steps', 'Files touched', 'Verify', 'Dependencies / blocks']
   const bodyLines = body.split(/\r?\n/)
@@ -253,15 +256,22 @@ function planIndex(themes: string[], plans: Plan[]): string {
   for (const theme of themes) lines.push(`- [${theme}](${theme}/ROADMAP.md)`)
   lines.push('', '## Active plans', '')
   const rows = [['Plan', 'Theme', 'Title', 'Roadmap item', 'Status', 'Blocks']]
-  for (const plan of [...plans].sort((a, b) => a.id.localeCompare(b.id))) {
-    const blockers = plan.blockedBy.filter((id) => plans.find((candidate) => candidate.id === id)?.fm.status !== 'done')
+  for (const plan of [...plans].sort((a, b) => planRef(a).localeCompare(planRef(b)))) {
+    const blockers = plan.blockedBy.filter((reference) => plans.find((candidate) => planRef(candidate) === reference)?.fm.status !== 'done')
     const status = blockers.length ? `${plan.fm.status} (needs ${blockers.join('+')})` : plan.fm.status
-    rows.push([`[${plan.id}](${plan.theme}/plans/${plan.name})`, plan.theme, plan.fm.title, plan.fm.roadmap, status, plan.fm.blocks || '—'])
+    rows.push([
+      `[${planRef(plan)}](${plan.theme}/plans/${plan.name})`,
+      plan.theme,
+      plan.fm.title,
+      plan.fm.roadmap,
+      status,
+      plan.fm.blocks || '—'
+    ])
   }
   if (!plans.length) rows.push(['—', '—', 'No active plans', '—', '—', '—'])
   lines.push(...markdownTable(rows))
   lines.push('', '## Dependency graph', '', '```text')
-  const edges = plans.flatMap((plan) => plan.blocks.map((blocked) => `${plan.id} ──► ${blocked}`)).sort()
+  const edges = plans.flatMap((plan) => plan.blocks.map((blocked) => `${planRef(plan)} ──► ${blocked}`)).sort()
   lines.push(...(edges.length ? edges : ['No dependencies.']), '```', '')
   return lines.join('\n')
 }
@@ -362,8 +372,9 @@ function discoverThematic(): { themes: string[]; items: Item[]; plans: Plan[] } 
         if (duplicates.length) add('FAIL', 'PLAN-3', `${field} contains duplicate id(s): ${duplicates.join(', ')}`, FORMAT_REF, display)
       }
       const planId = fm.id || match[1]
-      if (blocks.includes(planId) || blockedBy.includes(planId))
-        add('FAIL', 'PLAN-3', `plan ${planId} must not depend on itself`, FORMAT_REF, display)
+      const reference = `${theme}/${planId}`
+      if (blocks.includes(reference) || blockedBy.includes(reference))
+        add('FAIL', 'PLAN-3', `plan ${reference} must not depend on itself`, FORMAT_REF, display)
       plans.push({ id: planId, theme, file: display, name, fm, blocks, blockedBy })
     }
   }
@@ -411,15 +422,16 @@ if (!existsSync(thematicDir)) {
     else locators.set(locator, item)
   }
 
-  const idsSeen = new Map<string, string>()
-  const byId = new Map<string, Plan>()
+  const refsSeen = new Map<string, string>()
+  const byRef = new Map<string, Plan>()
   const planLocators = new Map<string, string>()
   for (const plan of plans) {
-    if (idsSeen.has(plan.id))
-      add('FAIL', 'PLAN-1', `global id ${plan.id} is already used by ${idsSeen.get(plan.id)}`, FORMAT_REF, plan.file)
+    const reference = planRef(plan)
+    if (refsSeen.has(reference))
+      add('FAIL', 'PLAN-1', `plan reference ${reference} is already used by ${refsSeen.get(reference)}`, FORMAT_REF, plan.file)
     else {
-      idsSeen.set(plan.id, plan.file)
-      byId.set(plan.id, plan)
+      refsSeen.set(reference, plan.file)
+      byRef.set(reference, plan)
     }
     const item = locators.get(plan.fm.roadmap)
     if (planLocators.has(plan.fm.roadmap)) {
@@ -430,7 +442,7 @@ if (!existsSync(thematicDir)) {
         FORMAT_REF,
         plan.file
       )
-    } else planLocators.set(plan.fm.roadmap, plan.id)
+    } else planLocators.set(plan.fm.roadmap, reference)
     if (!/^[-a-z0-9]+\/[-a-z0-9]+$/.test(plan.fm.roadmap ?? ''))
       add('FAIL', 'PLAN-2', 'roadmap must be a qualified <theme>/<item-slug> locator', FORMAT_REF, plan.file)
     else if (!item) add('FAIL', 'PLAN-2', `roadmap locator '${plan.fm.roadmap}' does not resolve`, FORMAT_REF, plan.file)
@@ -442,38 +454,43 @@ if (!existsSync(thematicDir)) {
     }
   }
   for (const plan of plans) {
+    const reference = planRef(plan)
     for (const dependency of [...plan.blocks, ...plan.blockedBy]) {
-      if (!/^\d{3,}$/.test(dependency)) add('FAIL', 'PLAN-3', `dependency '${dependency}' is not a global plan id`, FORMAT_REF, plan.file)
-      else if (!byId.has(dependency)) add('FAIL', 'PLAN-3', `dependency ${dependency} does not exist`, FORMAT_REF, plan.file)
+      if (!PLAN_REF_RE.test(dependency))
+        add('FAIL', 'PLAN-3', `dependency '${dependency}' is not a qualified <theme>/<NNN> plan reference`, FORMAT_REF, plan.file)
+      else if (!byRef.has(dependency)) add('FAIL', 'PLAN-3', `dependency ${dependency} does not exist`, FORMAT_REF, plan.file)
     }
     for (const blocked of plan.blocks) {
-      const other = byId.get(blocked)
-      if (other && !other.blockedBy.includes(plan.id))
-        add('FAIL', 'PLAN-3', `blocks ${blocked}, but its blocked-by omits ${plan.id}`, FORMAT_REF, plan.file)
+      const other = byRef.get(blocked)
+      if (other && !other.blockedBy.includes(reference))
+        add('FAIL', 'PLAN-3', `blocks ${blocked}, but its blocked-by omits ${reference}`, FORMAT_REF, plan.file)
     }
     for (const blocker of plan.blockedBy) {
-      const other = byId.get(blocker)
-      if (other && !other.blocks.includes(plan.id))
-        add('FAIL', 'PLAN-3', `blocked-by ${blocker}, but its blocks omits ${plan.id}`, FORMAT_REF, plan.file)
+      const other = byRef.get(blocker)
+      if (other && !other.blocks.includes(reference))
+        add('FAIL', 'PLAN-3', `blocked-by ${blocker}, but its blocks omits ${reference}`, FORMAT_REF, plan.file)
       if (plan.fm.status === 'in-progress' && other?.fm.status !== 'done') {
         add('FAIL', 'PLAN-3', `in-progress plan still has non-done blocker ${blocker}`, FORMAT_REF, plan.file)
       }
     }
   }
-  const state = new Map(plans.map((plan) => [plan.id, 0]))
+  const state = new Map(plans.map((plan) => [planRef(plan), 0]))
   let cycle = false
-  const visit = (id: string, stack: string[]): void => {
-    state.set(id, 1)
-    for (const blocker of byId.get(id)?.blockedBy ?? []) {
-      if (!byId.has(blocker)) continue
+  const visit = (reference: string, stack: string[]): void => {
+    state.set(reference, 1)
+    for (const blocker of byRef.get(reference)?.blockedBy ?? []) {
+      if (!byRef.has(blocker)) continue
       if (state.get(blocker) === 1 && !cycle) {
-        add('FAIL', 'PLAN-3', `dependency cycle: ${[...stack, id, blocker].join(' → ')}`, FORMAT_REF)
+        add('FAIL', 'PLAN-3', `dependency cycle: ${[...stack, reference, blocker].join(' → ')}`, FORMAT_REF)
         cycle = true
-      } else if (state.get(blocker) === 0) visit(blocker, [...stack, id])
+      } else if (state.get(blocker) === 0) visit(blocker, [...stack, reference])
     }
-    state.set(id, 2)
+    state.set(reference, 2)
   }
-  for (const plan of plans) if (state.get(plan.id) === 0) visit(plan.id, [])
+  for (const plan of plans) {
+    const reference = planRef(plan)
+    if (state.get(reference) === 0) visit(reference, [])
+  }
 
   if (existsSync(rootRoadmap) && lstatSync(rootRoadmap).isSymbolicLink()) {
     add('FAIL', 'SAFE-1', 'generated portfolio must not be a symlink', STANDARD_REF, 'ROADMAP.md')

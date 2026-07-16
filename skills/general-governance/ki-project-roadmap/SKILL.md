@@ -21,7 +21,7 @@ The standard has two profiles, detected from repository shape:
 - **Simple** — root `ROADMAP.md` is canonical and carries the five horizons. It has no plan files. A substantial item that needs a plan first moves to the thematic profile through EXPAND.
 - **Thematic** — each `docs/roadmap/<theme>/ROADMAP.md` is canonical. Its active plans live in `docs/roadmap/<theme>/plans/`; `docs/roadmap/README.md` is the global plan index and dependency graph; root `ROADMAP.md` is an exact generated portfolio projection.
 
-An item has one authoritative home. Every roadmap carries the standard's exact explanatory blurb immediately beneath each horizon heading so its placement model is understandable in the file itself. In the thematic profile an item's stable locator is `<theme>/<item-slug>`, where the slug derives from the item heading. Plan ids and dependency ids are global across themes. Plans exist only for `Blocking` and `Next` items.
+An item has one authoritative home. Every roadmap carries the standard's exact explanatory blurb immediately beneath each horizon heading so its placement model is understandable in the file itself. In the thematic profile an item's stable locator is `<theme>/<item-slug>`, where the slug derives from the item heading. Numeric plan ids are local to a theme and begin at `001`; the canonical plan reference is the globally unambiguous `<theme>/<NNN>`, also used by dependencies. Plans exist only for `Blocking` and `Next` items.
 
 ## Operating modes
 
@@ -29,7 +29,7 @@ Carries the universal **AUDIT · CONFORM · INIT · REFRESH** plus judgment-led 
 
 ### Mode AUDIT
 
-Run [`scripts/audit.ts`](scripts/audit.ts) against the repository root. It detects the profile and applies the mechanical criteria in [the rubric](references/audit-rubric.md): horizon structure and exact blurbs; theme and item identity; qualified plan linkage; frontmatter, placement, global ids, and dependency integrity; exact generated projection and index. It reports KB scope as NA, or FAIL when a KB carries project-roadmap artifacts, and makes no changes.
+Run [`scripts/audit.ts`](scripts/audit.ts) against the repository root. It detects the profile and applies the mechanical criteria in [the rubric](references/audit-rubric.md): horizon structure and exact blurbs; theme and item identity; qualified plan linkage; frontmatter, placement, theme-local ids, qualified references, and dependency integrity; exact generated projection and index. It reports KB scope as NA, or FAIL when a KB carries project-roadmap artifacts, and makes no changes.
 
 Then apply the rubric's judgment criteria by reading: item quality and horizon choice, plan quality, honest in-progress state, whether simple still fits, and whether theme boundaries are coherent. Iterate until mechanical findings are clean and judgment findings are resolved.
 

@@ -8,7 +8,7 @@ Plans exist only in the thematic profile and only for `Blocking` or `Next` items
 docs/roadmap/<theme>/plans/<NNN>-<slug>.md
 ```
 
-`<theme>` matches the canonical roadmap directory. `<NNN>` is a quoted, zero-padded id of at least three digits, globally unique across themes. `<slug>` is lowercase kebab-case and no longer than 50 characters.
+`<theme>` matches the canonical roadmap directory. `<NNN>` is a quoted, zero-padded id of at least three digits, allocated within that theme from `001`; the canonical, globally unique plan reference is `<theme>/<NNN>`. `<slug>` is lowercase kebab-case and no longer than 50 characters.
 
 ## Frontmatter
 
@@ -25,7 +25,7 @@ blocked-by: —
 
 - `status` is `open`, `in-progress`, or transient `done`.
 - `roadmap` is a qualified `<theme>/<item-slug>` locator for an item in `Blocking` or `Next`; its theme must match the plan directory.
-- `blocks` and `blocked-by` are comma-separated global ids or `—`, and are reverse-consistent.
+- `blocks` and `blocked-by` are comma-separated canonical `<theme>/<NNN>` plan references or `—`, and are reverse-consistent.
 - There is no `phase` field; the canonical roadmap horizon is authoritative.
 
 ## Body

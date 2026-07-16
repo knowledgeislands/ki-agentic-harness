@@ -3,8 +3,8 @@
  *
  * These target house-arbitrary rules a generic roadmap answer will miss: simple
  * repositories do not carry plans, thematic item prose has one authoritative
- * home, plan locators are qualified while ids remain global, and the dependency
- * graph is bidirectional.
+ * home, plan locators are qualified while numeric ids restart within each theme,
+ * and the dependency graph uses qualified, bidirectional references.
  */
 import type { Scenario } from '../harness.ts'
 
@@ -25,17 +25,17 @@ export const scenarios: Scenario[] = [
   },
   {
     skill: 'ki-project-roadmap',
-    id: 'project-roadmap-qualified-locator-global-id',
+    id: 'project-roadmap-qualified-locator-theme-local-id',
     prompt:
       "Set up frontmatter and placement for a new plan for the 'replace stale links' item under the seo theme. I want the id to restart at 001 within seo and roadmap: to contain only the item title. Anything to correct?",
     assertions: [
       { name: 'qualified roadmap locator', re: /seo\/replace-stale-links/i },
-      { name: 'id global across themes', re: /global|across (all )?themes|unique/i },
+      { name: 'id restarts within theme', re: /001|restart|per-theme|theme-local|within (the )?theme/i },
       { name: 'plan path convention', re: /docs\/roadmap\/seo\/plans\//i },
       { name: 'no title-only linkage', re: /qualified|locator|not.*title|rather than.*title/i }
     ],
     rubric:
-      'House fact: thematic plans live at docs/roadmap/<theme>/plans/<NNN>-<slug>.md. Their roadmap field uses the stable qualified <theme>/<item-slug> locator, not a title. Plan ids are zero-padded and globally unique across every theme; they never restart per theme.'
+      'House fact: thematic plans live at docs/roadmap/<theme>/plans/<NNN>-<slug>.md. Their roadmap field uses the stable qualified <theme>/<item-slug> locator, not a title. Numeric plan ids are zero-padded, local to their theme, and start at 001 in each theme; the canonical plan reference is <theme>/<NNN>.'
   },
   {
     skill: 'ki-project-roadmap',
@@ -55,14 +55,14 @@ export const scenarios: Scenario[] = [
     skill: 'ki-project-roadmap',
     id: 'project-roadmap-blocks-graph',
     prompt:
-      "Plan 005 cannot start until plan 004 is finished. I've added blocked-by: seo/004 to plan 005 and would like to start 005 now in parallel. Anything wrong with that?",
+      "Plan seo/005 cannot start until plan content/004 is finished. I've added blocked-by: 004 to seo/005 and would like to start it now in parallel. Anything wrong with that?",
     assertions: [
       { name: 'blocked-by field', re: /blocked-by/i },
       { name: 'reverse blocks edge', re: /blocks/i },
-      { name: 'bare global id not theme-qualified', re: /\b004\b/ },
+      { name: 'qualified blocker reference', re: /content\/004/ },
       { name: 'no in-progress before blockers done', re: /done|finish|complete|wait|before/i }
     ],
     rubric:
-      'House fact: blocks/blocked-by are bidirectional and use bare global ids (blocked-by: 004, never seo/004); if A blocks B then B lists A and A lists B. No plan may move to in-progress before its blockers are done.'
+      'House fact: numeric ids are theme-local, so blocks/blocked-by are bidirectional and use qualified <theme>/<NNN> plan references: seo/005 lists blocked-by: content/004, and content/004 lists blocks: seo/005. No plan may move to in-progress before its blockers are done.'
   }
 ]

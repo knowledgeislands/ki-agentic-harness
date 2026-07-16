@@ -21,9 +21,9 @@ The checker applies `[M]` criteria. A reviewer applies `[J]` criteria after the 
 
 ## Plans
 
-- **PLAN-1 [M]** Plans use `docs/roadmap/<theme>/plans/<NNN>-<slug>.md`, global unique ids, and required frontmatter; filename and id agree. ([format](plan-format.md#placement))
+- **PLAN-1 [M]** Plans use `docs/roadmap/<theme>/plans/<NNN>-<slug>.md`, theme-local ids beginning at `001`, globally unique `<theme>/<NNN>` references, and required frontmatter; filename and id agree. ([format](plan-format.md#placement))
 - **PLAN-2 [M]** `roadmap:` is a qualified locator in the same theme and resolves to a `Blocking` or `Next` item. ([format](plan-format.md#frontmatter))
-- **PLAN-3 [M]** Dependencies exist, are reverse-consistent, and are acyclic. An in-progress plan has no non-done blocker. ([standard](project-roadmap-standard.md#plan-discipline))
+- **PLAN-3 [M]** Dependencies use canonical `<theme>/<NNN>` plan references, exist, are reverse-consistent, and are acyclic. An in-progress plan has no non-done blocker. ([standard](project-roadmap-standard.md#plan-discipline))
 - **PLAN-4 [J]** In-progress plans have concrete Steps, checkable Verify, honest Current state, and minimal Files touched. ([standard](project-roadmap-standard.md#plan-discipline))
 - **PLAN-5 [J]** In-progress status reflects live work; stale plans are advanced, returned to open, or removed. ([standard](project-roadmap-standard.md#plan-discipline))
 - **INDEX-1 [M]** `docs/roadmap/README.md` exactly matches the generated theme index, active-plan table, and dependency graph. ([standard](project-roadmap-standard.md#thematic-profile))

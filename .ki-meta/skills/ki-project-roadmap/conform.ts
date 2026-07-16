@@ -118,6 +118,8 @@ const ids = (value: string | undefined): string[] =>
         .map((part) => part.trim())
         .filter(Boolean)
 
+const planRef = (plan: Pick<Plan, 'theme' | 'id'>): string => `${plan.theme}/${plan.id}`
+
 function discover(): { themes: string[]; items: Item[]; plans: Plan[] } {
   const themes = readdirSync(roadmapDir, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
@@ -210,15 +212,22 @@ function index(themes: string[], plans: Plan[]): string {
   for (const theme of themes) lines.push(`- [${theme}](${theme}/ROADMAP.md)`)
   lines.push('', '## Active plans', '')
   const rows = [['Plan', 'Theme', 'Title', 'Roadmap item', 'Status', 'Blocks']]
-  for (const plan of [...plans].sort((a, b) => a.id.localeCompare(b.id))) {
-    const blockers = plan.blockedBy.filter((id) => plans.find((candidate) => candidate.id === id)?.fm.status !== 'done')
+  for (const plan of [...plans].sort((a, b) => planRef(a).localeCompare(planRef(b)))) {
+    const blockers = plan.blockedBy.filter((reference) => plans.find((candidate) => planRef(candidate) === reference)?.fm.status !== 'done')
     const status = blockers.length ? `${plan.fm.status} (needs ${blockers.join('+')})` : plan.fm.status
-    rows.push([`[${plan.id}](${plan.theme}/plans/${plan.name})`, plan.theme, plan.fm.title, plan.fm.roadmap, status, plan.fm.blocks || '—'])
+    rows.push([
+      `[${planRef(plan)}](${plan.theme}/plans/${plan.name})`,
+      plan.theme,
+      plan.fm.title,
+      plan.fm.roadmap,
+      status,
+      plan.fm.blocks || '—'
+    ])
   }
   if (!plans.length) rows.push(['—', '—', 'No active plans', '—', '—', '—'])
   lines.push(...markdownTable(rows))
   lines.push('', '## Dependency graph', '', '```text')
-  const edges = plans.flatMap((plan) => plan.blocks.map((blocked) => `${plan.id} ──► ${blocked}`)).sort()
+  const edges = plans.flatMap((plan) => plan.blocks.map((blocked) => `${planRef(plan)} ──► ${blocked}`)).sort()
   lines.push(...(edges.length ? edges : ['No dependencies.']), '```', '')
   return lines.join('\n')
 }
