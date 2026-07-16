@@ -58,7 +58,7 @@ Assess a deliberate migration in which checkers emit the canonical JSON wrapper 
 
 ### Codify Git workflow and commit conventions _(candidate)_
 
-Choose an owner for repository Git discipline, including Conventional Commit messages, the allowed type and scope vocabulary, safe lock and cleanup behaviour, and consistency with repository-local instructions. Add mechanical enforcement only after the standard is settled.
+Choose an owner for repository Git discipline, including Conventional Commit messages, the allowed type and scope vocabulary, safe lock and cleanup behaviour, and consistency with repository-local instructions. Decide whether that owner should be a dedicated `ki-git` skill, including ownership of the shipped stale Git-lock guard rather than leaving it as an ungoverned hook. Add mechanical enforcement only after the standard is settled.
 
 ### Rename `ki-engineering` to `ki-engineering-ts` _(candidate)_
 
