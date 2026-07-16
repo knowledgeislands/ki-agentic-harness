@@ -1,7 +1,7 @@
 ---
 id: '001'
 title: Copy project skills by default, with development links
-status: open
+status: in-progress
 roadmap: runtime-portability/copy-project-local-skills-by-default-with-development-links
 blocks: —
 blocked-by: —
@@ -22,12 +22,12 @@ Copied skills remain generated runtime payloads, gitignored and refreshed from t
 
 ## Steps
 
-1. Define separate normal-copy and explicit development-link command boundaries without changing the existing runtime-selection mapping or agent/global-skill ownership.
-2. Implement normal bootstrap and CONFORM publication of complete regular-file copies for every declared skill and selected runtime; preserve source modes, reject invalid source or destination shapes, and keep copied trees self-contained after a temporary bootstrap source disappears.
-3. Implement a deliberately named development-link command that can replace only normal copied payloads or links into the active local harness; make legacy link entry points require the explicit development intent rather than silently creating links.
-4. Migrate the skill audit/check contract from expected links to expected copied payloads; preserve generated `.gitignore` handling, selected-runtime behaviour, orphan reporting, and explicit Codex-agent non-support. Keep agents on their existing independent link path.
-5. Update bootstrap, runtime-portability, developer-linking, and user-facing guidance so normal use, refresh, migration, and local authoring are distinguishable.
-6. Add focused copy, refresh, migration, temporary-source-survival, development-link, runtime-selection, agent-isolation, and hostile-path regressions; run focused tests, `bun run test`, then `bun run ki:audit` sequentially.
+1. [x] Define separate normal-copy and explicit development-link command boundaries without changing the existing runtime-selection mapping or agent/global-skill ownership.
+2. [x] Implement normal bootstrap and CONFORM publication of complete regular-file copies for every declared skill and selected runtime; preserve source modes, reject invalid source or destination shapes, and keep copied trees self-contained after a temporary bootstrap source disappears.
+3. [x] Implement a deliberately named development-link command that can replace only normal copied payloads or links into the active local harness; make legacy link entry points require the explicit development intent rather than silently creating links.
+4. [x] Migrate the skill audit/check contract from expected links to expected copied payloads; preserve generated `.gitignore` handling, selected-runtime behaviour, orphan reporting, and explicit Codex-agent non-support. Keep agents on their existing independent link path.
+5. [x] Update bootstrap, runtime-portability, developer-linking, and user-facing guidance so normal use, refresh, migration, and local authoring are distinguishable.
+6. [x] Add focused copy, refresh, migration, temporary-source-survival, development-link, runtime-selection, agent-isolation, and hostile-path regressions; run focused tests, `bun run test`, then `bun run ki:audit` sequentially.
 
 ## Files touched
 
@@ -43,9 +43,9 @@ Independent of hook delivery, chezmoi binding, global skill publication, and the
 
 ## Decisions
 
-**Locked:** `.ki-meta/` remains the durable mechanical-script surface and never stores complete runtime skills or development-link state. Normal bootstrap and CONFORM create regular copied skill payloads; a separately named command with explicit development intent creates links. Copied payloads remain generated and gitignored, rather than editable or committed consumer-repository source. Existing agents, global skill publication, hooks, settings, and the `target_runtimes` mapping remain outside this migration. Existing project links may be replaced only when they point into the active harness or are normal generated copies; unfamiliar links, real directories, and authored files fail with a migration diagnostic.
+**Locked:** `.ki-meta/` remains the durable mechanical-script surface and never stores complete runtime skills or development-link state. Normal bootstrap and CONFORM create regular copied skill payloads; a separately named command with explicit development intent creates links. Copied payloads remain generated and gitignored, rather than editable or committed consumer-repository source. Existing agents, global skill publication, hooks, settings, and the `target_runtimes` mapping remain outside this migration. A generated payload carries a deterministic marker that binds its logical source and copied-tree integrity; in the deliberately local repository trust model, a valid marker identifies a refreshable generated payload but is not cryptographic provenance against a user who deliberately fabricates one. Unmarked or integrity-mismatched links, real directories, and authored files fail with a migration diagnostic.
 
-**Escalate:** a request to commit copied payloads as consumer source, a new runtime payload location, a need to carry runtime state in `.ki-meta/`, a requirement to alter agent/global/hook ownership, or a migration that cannot distinguish an expected generated payload from authored material.
+**Escalate:** a request to commit copied payloads as consumer source, a new runtime payload location, a need to carry runtime state in `.ki-meta/`, a requirement to alter agent/global/hook ownership, hostile-destination or cryptographic-provenance guarantees, or a migration that cannot distinguish an expected generated payload from authored material under the local convention.
 
 ## Readiness
 

@@ -8,6 +8,7 @@ import { spawnSync } from 'node:child_process'
 import {
   cpSync,
   existsSync,
+  lstatSync,
   mkdirSync,
   mkdtempSync,
   readdirSync,
@@ -191,9 +192,33 @@ try {
     'seeded ki-repo → same run vendors both foundations',
     existsSync(join(seededRepo, '.ki-meta', 'skills', 'ki-repo')) && existsSync(join(seededRepo, '.ki-meta', 'skills', 'ki-authoring'))
   )
+  check(
+    'seeded ki-repo → same run publishes regular runtime skill copies',
+    lstatSync(join(seededRepo, '.claude', 'skills', 'ki-repo')).isDirectory() &&
+      !lstatSync(join(seededRepo, '.claude', 'skills', 'ki-repo')).isSymbolicLink() &&
+      existsSync(join(seededRepo, '.claude', 'skills', 'ki-repo', 'SKILL.md'))
+  )
   check('seeded ki-repo → self-check entry point is runnable', selfCheck.status === 0 && selfCheck.stdout.includes('usage: ki-audit'))
 } finally {
   rmSync(seededRepo, { recursive: true, force: true })
+}
+
+const temporaryHarness = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-temporary-source-')))
+const temporaryTarget = fixture()
+try {
+  cpSync(SKILLS_ROOT, join(temporaryHarness, 'skills'), { recursive: true, dereference: true })
+  const temporaryBootstrap = join(temporaryHarness, 'skills', 'keystone', 'ki-bootstrap', 'scripts', 'bootstrap.ts')
+  const result = spawnSync('bun', [temporaryBootstrap, temporaryTarget, '--seed', 'ki-repo'], { encoding: 'utf8' })
+  rmSync(temporaryHarness, { recursive: true, force: true })
+  const copiedSkill = join(temporaryTarget, '.claude', 'skills', 'ki-repo', 'SKILL.md')
+  check('temporary bootstrap source → publishes copied runtime skills', result.status === 0 && existsSync(copiedSkill))
+  check(
+    'temporary bootstrap source removal → copied runtime skill remains readable',
+    !lstatSync(copiedSkill).isSymbolicLink() && readFileSync(copiedSkill, 'utf8').includes('#')
+  )
+} finally {
+  rmSync(temporaryHarness, { recursive: true, force: true })
+  rmSync(temporaryTarget, { recursive: true, force: true })
 }
 
 const partialRepoText = '# preserve this prefix\n[ki-repo]\nvisibility = "public"\n'

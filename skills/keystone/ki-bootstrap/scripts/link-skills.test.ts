@@ -13,12 +13,13 @@
  * BOOT-1 FAIL with a non-zero exit — while a repo whose tables all resolve stays clean.
  */
 import { spawnSync } from 'node:child_process'
-import { existsSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, lstatSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const LINKER = join(dirname(fileURLToPath(import.meta.url)), 'link-skills.ts')
+const COPIER = join(dirname(fileURLToPath(import.meta.url)), 'copy-skills.ts')
 
 let failed = false
 function check(label: string, cond: boolean): void {
@@ -51,7 +52,7 @@ function runCheck(dir: string): { code: number; out: string } {
 }
 
 function runLink(dir: string, dryRun = false): { code: number; out: string } {
-  const res = spawnSync('bun', [LINKER, dir, ...(dryRun ? ['--dry-run'] : [])], { encoding: 'utf8' })
+  const res = spawnSync('bun', [COPIER, dir, ...(dryRun ? ['--dry-run'] : [])], { encoding: 'utf8' })
   return { code: res.status ?? 1, out: `${res.stdout ?? ''}${res.stderr ?? ''}` }
 }
 
@@ -108,11 +109,15 @@ try {
   rmSync(linkDir, { recursive: true, force: true })
 }
 
-// ── Codex-only: links + gitignore land under .agents/skills, nothing under .claude/skills ──
+// ── Codex-only: copies + gitignore land under .agents/skills, nothing under .claude/skills ──
 const codexOnly = fixture(['ki-kb'], ['codex'])
 try {
   runLink(codexOnly)
-  check('codex-only → .agents/skills/ki-kb symlink created', existsSync(join(codexOnly, '.agents', 'skills', 'ki-kb')))
+  check(
+    'codex-only → .agents/skills/ki-kb regular payload created',
+    lstatSync(join(codexOnly, '.agents', 'skills', 'ki-kb')).isDirectory() &&
+      !lstatSync(join(codexOnly, '.agents', 'skills', 'ki-kb')).isSymbolicLink()
+  )
   check('codex-only → nothing under .claude/skills', !existsSync(join(codexOnly, '.claude', 'skills')))
   const gitignore = readFileSync(join(codexOnly, '.gitignore'), 'utf8')
   check('codex-only → .gitignore contains .agents/skills/', /^\.agents\/skills\/?$/m.test(gitignore))
@@ -123,12 +128,12 @@ try {
   rmSync(codexOnly, { recursive: true, force: true })
 }
 
-// ── Dual-runtime: links + gitignore land under both dirs, --check clean for both ──
+// ── Dual-runtime: copies + gitignore land under both dirs, --check clean for both ──
 const dual = fixture(['ki-kb'], ['claude-code', 'codex'])
 try {
   runLink(dual)
-  check('dual-runtime → .claude/skills/ki-kb symlink created', existsSync(join(dual, '.claude', 'skills', 'ki-kb')))
-  check('dual-runtime → .agents/skills/ki-kb symlink created', existsSync(join(dual, '.agents', 'skills', 'ki-kb')))
+  check('dual-runtime → .claude/skills/ki-kb copied', lstatSync(join(dual, '.claude', 'skills', 'ki-kb')).isDirectory())
+  check('dual-runtime → .agents/skills/ki-kb copied', lstatSync(join(dual, '.agents', 'skills', 'ki-kb')).isDirectory())
   const gitignore = readFileSync(join(dual, '.gitignore'), 'utf8')
   check('dual-runtime → .gitignore contains .claude/skills/', /^\.claude\/skills\/?$/m.test(gitignore))
   check('dual-runtime → .gitignore contains .agents/skills/', /^\.agents\/skills\/?$/m.test(gitignore))
@@ -169,6 +174,22 @@ try {
   check('multiline runtime lookalike → does not select codex path', !existsSync(join(multilineRuntime, '.agents', 'skills')))
 } finally {
   rmSync(multilineRuntime, { recursive: true, force: true })
+}
+
+const development = fixture(['ki-kb'])
+try {
+  const normal = runLink(development)
+  const linked = spawnSync('bun', [LINKER, development, '--development'], { encoding: 'utf8' })
+  check('normal copy → exits cleanly before local development linking', normal.code === 0)
+  check('development link → requires and accepts explicit intent', linked.status === 0)
+  check(
+    'development link → replaces generated copy with a symlink',
+    lstatSync(join(development, '.claude', 'skills', 'ki-kb')).isSymbolicLink()
+  )
+  const accidental = spawnSync('bun', [LINKER, development], { encoding: 'utf8' })
+  check('legacy link entry point → refuses without explicit development intent', accidental.status !== 0)
+} finally {
+  rmSync(development, { recursive: true, force: true })
 }
 
 if (failed) {

@@ -2,6 +2,7 @@
 /** Hostile-path and transaction regressions for the combined project link writer. */
 import { spawnSync } from 'node:child_process'
 import {
+  chmodSync,
   existsSync,
   lstatSync,
   mkdirSync,
@@ -38,7 +39,25 @@ function fixture(runtimes = ['claude-code']): string {
 }
 
 function run(root: string, env: Record<string, string> = {}): ReturnType<typeof spawnSync> {
-  return spawnSync('bun', [LINKER, root], { encoding: 'utf8', env: { ...process.env, ...env } })
+  return spawnSync('bun', [LINKER, root], {
+    encoding: 'utf8',
+    env: { ...process.env, ...env, ...(env.KI_PROJECT_LINKS_TEST_SKILLS_ROOT ? { NODE_ENV: 'test' } : {}) }
+  })
+}
+
+function fakeSkillsRoot(): { root: string; skill: string; nested: string } {
+  const root = realpathSync(mkdtempSync(join(tmpdir(), 'ki-project-links-skills-')))
+  const skill = join(root, 'cluster', 'ki-kb')
+  const nested = join(skill, 'nested')
+  mkdirSync(nested, { recursive: true })
+  writeFileSync(join(skill, 'SKILL.md'), '# Fake skill\n')
+  writeFileSync(join(nested, 'mode-sensitive.txt'), 'payload\n')
+  for (const name of ['ki-repo', 'ki-agents']) {
+    const sibling = join(root, 'cluster', name)
+    mkdirSync(sibling)
+    writeFileSync(join(sibling, 'SKILL.md'), `# ${name}\n`)
+  }
+  return { root, skill, nested }
 }
 
 function snapshot(root: string): string {
@@ -63,8 +82,13 @@ const normal = fixture(['claude-code', 'codex'])
 try {
   const result = run(normal)
   check('combined publication → exits successfully', result.status === 0)
-  check('combined publication → Claude skill link exists', lstatSync(join(normal, '.claude', 'skills', 'ki-kb')).isSymbolicLink())
-  check('combined publication → Codex skill link exists', lstatSync(join(normal, '.agents', 'skills', 'ki-kb')).isSymbolicLink())
+  check('combined publication → Claude skill copy exists', lstatSync(join(normal, '.claude', 'skills', 'ki-kb')).isDirectory())
+  check('combined publication → Codex skill copy exists', lstatSync(join(normal, '.agents', 'skills', 'ki-kb')).isDirectory())
+  check(
+    'combined publication → copied skill has no top-level symlink',
+    !lstatSync(join(normal, '.claude', 'skills', 'ki-kb')).isSymbolicLink() &&
+      existsSync(join(normal, '.claude', 'skills', 'ki-kb', 'SKILL.md'))
+  )
   check(
     'combined publication → Claude agent link exists',
     lstatSync(join(normal, '.claude', 'agents', 'ki-kb-curator.md')).isSymbolicLink()
@@ -151,7 +175,7 @@ const rollback = fixture()
 try {
   const before = snapshot(rollback)
   check('partial publication failure → transaction reports failure', run(rollback, { KI_PROJECT_LINKS_TEST_FAIL_AFTER: '1' }).status !== 0)
-  check('partial publication failure → links, agent, gitignore and created directories roll back', snapshot(rollback) === before)
+  check('partial publication failure → copies, agent, gitignore and created directories roll back', snapshot(rollback) === before)
 } finally {
   rmSync(rollback, { recursive: true, force: true })
 }
@@ -181,7 +205,7 @@ try {
     readFileSync(gitignore, 'utf8') === 'third-party change\n'
   )
   check(
-    'destination changed after validation → no generated link is published',
+    'destination changed after validation → no generated copy is published',
     !existsSync(join(changedAfterPlan, '.claude', 'skills', 'ki-kb'))
   )
 } finally {
@@ -197,15 +221,12 @@ try {
   writeFileSync(join(pruneOutside, 'sentinel'), 'outside\n')
   symlinkSync(join(pruneOutside, 'sentinel'), join(skills, 'ki-removed'))
   const before = snapshot(pruneOutside)
-  check('dangling generated orphan → transaction succeeds', run(prune).status === 0)
+  check('unfamiliar legacy link → transaction refuses migration', run(prune).status !== 0)
   check(
-    'dangling generated orphan → transaction prunes it',
-    !existsSync(join(skills, 'legacy-dangling')) && lstatSync(join(skills, 'ki-kb')).isSymbolicLink()
+    'unfamiliar legacy link → transaction preserves the local entries',
+    lstatSync(join(skills, 'legacy-dangling')).isSymbolicLink() && lstatSync(join(skills, 'ki-removed')).isSymbolicLink()
   )
-  check(
-    'pruned replacement link → outside target remains unchanged',
-    !existsSync(join(skills, 'ki-removed')) && snapshot(pruneOutside) === before
-  )
+  check('unfamiliar legacy link → outside target remains unchanged', snapshot(pruneOutside) === before)
 } finally {
   rmSync(prune, { recursive: true, force: true })
   rmSync(pruneOutside, { recursive: true, force: true })
@@ -221,6 +242,60 @@ try {
   )
 } finally {
   rmSync(codexOnly, { recursive: true, force: true })
+}
+
+const sourceSymlink = fixture()
+const sourceSymlinkRoot = fakeSkillsRoot()
+try {
+  const outside = join(sourceSymlinkRoot.root, 'outside')
+  writeFileSync(outside, 'must not follow\n')
+  symlinkSync(outside, join(sourceSymlinkRoot.skill, 'nested', 'escaped'))
+  const before = snapshot(sourceSymlink)
+  check(
+    'symlinked source-tree entry → transaction refuses before publication',
+    run(sourceSymlink, { KI_PROJECT_LINKS_TEST_SKILLS_ROOT: sourceSymlinkRoot.root }).status !== 0
+  )
+  check('symlinked source-tree entry → repository remains unchanged', snapshot(sourceSymlink) === before)
+} finally {
+  rmSync(sourceSymlink, { recursive: true, force: true })
+  rmSync(sourceSymlinkRoot.root, { recursive: true, force: true })
+}
+
+const sourceModes = fixture()
+const sourceModesRoot = fakeSkillsRoot()
+try {
+  const sourceFile = join(sourceModesRoot.nested, 'mode-sensitive.txt')
+  chmodSync(sourceFile, 0o751)
+  const result = run(sourceModes, { KI_PROJECT_LINKS_TEST_SKILLS_ROOT: sourceModesRoot.root })
+  const copied = join(sourceModes, '.claude', 'skills', 'ki-kb', 'nested', 'mode-sensitive.txt')
+  if (result.status !== 0) console.log(`${result.stdout ?? ''}${result.stderr ?? ''}`)
+  check('regular source tree → transaction copies the payload', result.status === 0 && existsSync(copied))
+  check(
+    'copied regular file → preserves source mode',
+    existsSync(copied) && (lstatSync(copied).mode & 0o7777) === (lstatSync(sourceFile).mode & 0o7777)
+  )
+  chmodSync(copied, 0o600)
+  const before = snapshot(sourceModes)
+  check(
+    'mode-drifted copied payload → refuses replacement',
+    run(sourceModes, { KI_PROJECT_LINKS_TEST_SKILLS_ROOT: sourceModesRoot.root }).status !== 0
+  )
+  check('mode-drifted copied payload → preserves the local payload', snapshot(sourceModes) === before)
+} finally {
+  rmSync(sourceModes, { recursive: true, force: true })
+  rmSync(sourceModesRoot.root, { recursive: true, force: true })
+}
+
+const forgedMarker = fixture()
+try {
+  check('fresh generated payload → initial publication succeeds', run(forgedMarker).status === 0)
+  const copiedSkill = join(forgedMarker, '.claude', 'skills', 'ki-kb')
+  writeFileSync(join(copiedSkill, 'SKILL.md'), '# locally altered payload\n')
+  const before = snapshot(forgedMarker)
+  check('marker with mismatched payload → transaction refuses replacement', run(forgedMarker).status !== 0)
+  check('marker with mismatched payload → preserves the local payload', snapshot(forgedMarker) === before)
+} finally {
+  rmSync(forgedMarker, { recursive: true, force: true })
 }
 
 if (failed) {

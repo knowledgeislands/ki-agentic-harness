@@ -4,10 +4,10 @@
  *
  * The mechanical half of Mode CONFORM — the verb-named counterpart to
  * `audit.ts` (AUDIT) and `init.ts` (INIT). Composes the two linkers in
- * write mode — `project-links.ts` — which creates/prunes the relative symlinks
- * under the declared runtime skill paths and supported Claude agent path, and
- * writes all matching `.gitignore` lines in one guarded transaction. It then
- * re-runs the standalone compatibility checks to confirm.
+ * write mode — `project-links.ts` — which creates/prunes generated copied skill
+ * payloads under the declared runtime paths, keeps supported Claude agents on
+ * their independent link path, and writes matching `.gitignore` lines in one
+ * guarded transaction. It then re-runs the standalone compatibility checks.
  *
  * This script is a pure ORCHESTRATOR: it spawns the linkers and the vendored-set
  * audit rather than emitting per-criterion findings of its own. So its `--json`
@@ -75,12 +75,12 @@ function step(script: string, args: string[], area: string, label: string): void
   }
 }
 
-// 1. Link both managed surfaces as one all-or-nothing transaction.
+// 1. Publish copied skills and linked agent definitions as one guarded transaction.
 step('project-links.ts', flags, 'BOOT-1/BOOT-6', `project-links ${dryRun ? '(dry-run preview)' : 'write pass'}`)
 
 // 2. Re-run the checks to confirm (skipped on a preview — nothing changed).
 if (!dryRun) {
-  step('link-skills.ts', ['--check'], 'BOOT-1', 'link-skills --check confirms links')
+  step('copy-skills.ts', ['--check'], 'BOOT-1', 'copy-skills --check confirms copied payloads')
   step('link-agents.ts', ['--check'], 'BOOT-6', 'link-agents --check confirms links')
 }
 

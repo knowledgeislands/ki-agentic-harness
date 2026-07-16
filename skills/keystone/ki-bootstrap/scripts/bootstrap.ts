@@ -1267,6 +1267,16 @@ function runBootstrapTransaction(target: string, targetIdentity: EntrySnapshot &
   }
 }
 
+function publishRuntimeSkillCopies(target: string, dryRun: boolean): void {
+  const args = [join(import.meta.dirname, 'copy-skills.ts'), target]
+  if (dryRun) args.push('--dry-run')
+  try {
+    execFileSync('bun', args, { stdio: 'inherit' })
+  } catch {
+    throw new Error('project runtime skill copy publication failed')
+  }
+}
+
 function main(): void {
   const argv = process.argv.slice(2)
   if (argv.includes('--help') || argv.includes('-h')) {
@@ -1324,6 +1334,9 @@ function main(): void {
     const manifestFiles: Record<string, string> = {}
     for (const skill of set) vendorSkill(join(target, VENDOR_DIR), skill, true, manifestFiles)
   } else runBootstrapTransaction(target, boundTarget.identity, set, ref)
+  // Runtime payloads are separate from `.ki-meta/`: normal bootstrap publishes
+  // complete generated copies for the selected runtimes, never development links.
+  publishRuntimeSkillCopies(target, dryRun)
   console.log(
     `${GREEN}runner${RESET} ${DIM}→ ${aggRel}, ${auditBinRel}, ${conformBinRel}, ${initBinRel}, ${helpBinRel}, ${manifestRel}${RESET}`
   )
