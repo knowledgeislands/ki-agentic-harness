@@ -12,6 +12,10 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
+### Rename the universal `INIT` mode to Educate
+
+Migrate the universal governance mode from `INIT` to **Educate** across skill contracts, vendored runners, agent and CLI invocation guidance, documentation, tests, and generated artifacts. Establish the compatibility approach before implementation, so the vocabulary changes consistently across the harness and its repository fleet rather than becoming a documentation-only alias.
+
 ### Codify convention placement and the knowledge-promotion loop
 
 Define the runtime-neutral ladder that prevents useful knowledge becoming trapped in session or project memory: ephemeral agent memory → project guidance or an on-demand `docs/guides/agents/` document → shared governance or reference material → a reusable skill. For each rung, state what belongs there, the evidence that triggers promotion, the durable destination, and the reconciliation step that removes or redirects the lower-layer duplicate. Keep `AGENTS.md` as the portable orientation, reserve runtime files such as `CLAUDE.md` for runtime-specific imports and guidance, and route genuinely personal cross-project conventions to synchronized user configuration.
