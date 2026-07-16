@@ -252,7 +252,7 @@ function thematicFixture(): string {
   }
 }
 
-// An empty active-plan index is stable under the repository's Markdown formatter.
+// An empty active-plan index uses a readable sentence rather than a placeholder table.
 {
   const root = fixture()
   try {
@@ -262,17 +262,15 @@ function thematicFixture(): string {
     const generated = readFileSync(join(root, 'docs', 'roadmap', 'README.md'), 'utf8')
     check('zero-plan index conforms cleanly', conformed.code === 0 && run(AUDIT, root).code === 0)
     check(
-      'zero-plan table uses formatter-stable alignment',
-      generated.includes(
-        '| Plan | Theme | Title           | Roadmap item | Status | Blocks |\n| ---- | ----- | --------------- | ------------ | ------ | ------ |\n| —    | —     | No active plans | —            | —      | —      |'
-      )
+      'zero-plan index avoids a placeholder table',
+      generated.includes('## Active plans\n\nNo active plans.\n\n## Dependency graph') && !generated.includes('| Plan |')
     )
   } finally {
     rmSync(root, { recursive: true, force: true })
   }
 }
 
-// A wide active-plan index stays compact, matching Prettier's print-width behavior.
+// Long plan metadata remains readable because each plan is rendered as a subsection.
 {
   const root = thematicFixture()
   try {
@@ -289,8 +287,12 @@ function thematicFixture(): string {
     const generated = readFileSync(join(root, 'docs', 'roadmap', 'README.md'), 'utf8')
     check('wide active-plan index conforms cleanly', conformed.code === 0 && run(AUDIT, root).code === 0)
     check(
-      'wide active-plan table uses formatter-stable compact rows',
-      generated.includes('| Plan | Theme | Title | Roadmap item | Status | Blocks |\n| --- | --- | --- | --- | --- | --- |')
+      'wide active-plan index uses a linked heading and metadata list',
+      generated.includes('### [project-roadmap/001](project-roadmap/plans/001-canonical-horizon-blurbs.md)') &&
+        generated.includes(`- **Title:** ${title}`) &&
+        generated.includes('- **Theme:** `project-roadmap`') &&
+        generated.includes('- **Roadmap item:** `project-roadmap/require-canonical-horizon-blurbs-and-restore-them-during-conform`') &&
+        !generated.includes('| Plan |')
     )
   } finally {
     rmSync(root, { recursive: true, force: true })

@@ -45,7 +45,7 @@ docs/roadmap/
 
 Theme names are unique lowercase kebab-case names. A theme roadmap has one H1, all five horizons, and each item is a `###` heading beneath exactly one horizon. Item prose follows its heading until the next item or horizon. A locator is `<theme>/<item-slug>`; the slug is the normalised item heading. Locators must be unique.
 
-Root `ROADMAP.md` is generated in this profile. It links every canonical item under its horizon but repeats none of its prose. `docs/roadmap/README.md` is also generated: it links themes, indexes every active plan, and renders the global dependency graph. Edit canonical theme roadmaps or plan files, then run CONFORM; never hand-edit either projection.
+Root `ROADMAP.md` is generated in this profile. It links every canonical item under its horizon but repeats none of its prose. `docs/roadmap/README.md` is also generated: it links themes, indexes every active plan as a short subsection with a metadata list, and renders the global dependency graph. The plan index never uses a Markdown table because its long links and locators are difficult to scan in columns. Edit canonical theme roadmaps or plan files, then run CONFORM; never hand-edit either projection.
 
 ## Expansion boundary
 

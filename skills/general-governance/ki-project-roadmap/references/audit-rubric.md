@@ -26,7 +26,7 @@ The checker applies `[M]` criteria. A reviewer applies `[J]` criteria after the 
 - **PLAN-3 [M]** Dependencies use canonical `<theme>/<NNN>` plan references, exist, are reverse-consistent, and are acyclic. An in-progress plan has no non-done blocker. ([standard](project-roadmap-standard.md#plan-discipline))
 - **PLAN-4 [J]** In-progress plans have concrete Steps, checkable Verify, honest Current state, and minimal Files touched. ([standard](project-roadmap-standard.md#plan-discipline))
 - **PLAN-5 [J]** In-progress status reflects live work; stale plans are advanced, returned to open, or removed. ([standard](project-roadmap-standard.md#plan-discipline))
-- **INDEX-1 [M]** `docs/roadmap/README.md` exactly matches the generated theme index, active-plan table, and dependency graph. ([standard](project-roadmap-standard.md#thematic-profile))
+- **INDEX-1 [M]** `docs/roadmap/README.md` exactly matches the generated theme index, list-based active-plan sections, and dependency graph. ([standard](project-roadmap-standard.md#thematic-profile))
 
 ## Safe mechanics
 

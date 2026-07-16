@@ -12,10 +12,21 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-| Plan | Theme | Title | Roadmap item | Status | Blocks |
-| --- | --- | --- | --- | --- | --- |
-| [foundation-tooling/002](foundation-tooling/plans/002-safe-generated-writes.md) | foundation-tooling | Finish rollout-critical generated-write hardening | foundation-tooling/finish-hardening-the-remaining-rollout-critical-generated-writes | in-progress | — |
-| [foundation-tooling/004](foundation-tooling/plans/004-mcp-uniform-mode-rollout.md) | foundation-tooling | Roll out uniform modes across MCP repositories | foundation-tooling/roll-out-the-uniform-mode-model-across-the-mcp-repositories | open | — |
+### [foundation-tooling/002](foundation-tooling/plans/002-safe-generated-writes.md)
+
+- **Title:** Finish rollout-critical generated-write hardening
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/finish-hardening-the-remaining-rollout-critical-generated-writes`
+- **Status:** in-progress
+- **Blocks:** —
+
+### [foundation-tooling/004](foundation-tooling/plans/004-mcp-uniform-mode-rollout.md)
+
+- **Title:** Roll out uniform modes across MCP repositories
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/roll-out-the-uniform-mode-model-across-the-mcp-repositories`
+- **Status:** open
+- **Blocks:** —
 
 ## Dependency graph
 

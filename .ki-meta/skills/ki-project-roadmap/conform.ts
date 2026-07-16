@@ -197,36 +197,26 @@ function withHorizonBlurbs(text: string): string {
   return `${lines.join(eol)}${trailingEol ? eol : ''}`
 }
 
-function markdownTable(rows: string[][]): string[] {
-  const widths = rows[0].map((_, column) => Math.max(3, ...rows.map((row) => row[column].length)))
-  const render = (row: string[]): string => `| ${row.map((cell, column) => cell.padEnd(widths[column])).join(' | ')} |`
-  if (render(rows[0]).length > 160) {
-    const compact = (row: string[]): string => `| ${row.join(' | ')} |`
-    return [compact(rows[0]), compact(rows[0].map(() => '---')), ...rows.slice(1).map(compact)]
-  }
-  return [render(rows[0]), `| ${widths.map((width) => '-'.repeat(width)).join(' | ')} |`, ...rows.slice(1).map(render)]
-}
-
 function index(themes: string[], plans: Plan[]): string {
   const lines = ['# Project roadmap index', '', 'Canonical themes and active execution plans.', '', '## Themes', '']
   for (const theme of themes) lines.push(`- [${theme}](${theme}/ROADMAP.md)`)
   lines.push('', '## Active plans', '')
-  const rows = [['Plan', 'Theme', 'Title', 'Roadmap item', 'Status', 'Blocks']]
   for (const plan of [...plans].sort((a, b) => planRef(a).localeCompare(planRef(b)))) {
     const blockers = plan.blockedBy.filter((reference) => plans.find((candidate) => planRef(candidate) === reference)?.fm.status !== 'done')
     const status = blockers.length ? `${plan.fm.status} (needs ${blockers.join('+')})` : plan.fm.status
-    rows.push([
-      `[${planRef(plan)}](${plan.theme}/plans/${plan.name})`,
-      plan.theme,
-      plan.fm.title,
-      plan.fm.roadmap,
-      status,
-      plan.fm.blocks || '—'
-    ])
+    lines.push(
+      `### [${planRef(plan)}](${plan.theme}/plans/${plan.name})`,
+      '',
+      `- **Title:** ${plan.fm.title}`,
+      `- **Theme:** \`${plan.theme}\``,
+      `- **Roadmap item:** \`${plan.fm.roadmap}\``,
+      `- **Status:** ${status}`,
+      `- **Blocks:** ${plan.fm.blocks || '—'}`,
+      ''
+    )
   }
-  if (!plans.length) rows.push(['—', '—', 'No active plans', '—', '—', '—'])
-  lines.push(...markdownTable(rows))
-  lines.push('', '## Dependency graph', '', '```text')
+  if (!plans.length) lines.push('No active plans.', '')
+  lines.push('## Dependency graph', '', '```text')
   const edges = plans.flatMap((plan) => plan.blocks.map((blocked) => `${planRef(plan)} ──► ${blocked}`)).sort()
   lines.push(...(edges.length ? edges : ['No dependencies.']), '```', '')
   return lines.join('\n')
