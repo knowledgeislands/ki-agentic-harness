@@ -35,7 +35,6 @@ Understood and roughly scoped but not yet started — worth doing once the **Nex
 - [Governance Consistency: Formalize `docs/guides/agents/` as the neutral staging area for repository agent guidance _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#formalize-docsguidesagents-as-the-neutral-staging-area-for-repository-agent-guidance-candidate)
 - [Governance Consistency: Normalise mode vocabulary and mode-heading structure across the skills](docs/roadmap/governance-consistency/ROADMAP.md#normalise-mode-vocabulary-and-mode-heading-structure-across-the-skills)
 - [Hooks: Govern Claude Code hooks as a first-class harness surface](docs/roadmap/hooks/ROADMAP.md#govern-claude-code-hooks-as-a-first-class-harness-surface)
-- [Operations: Background agents lose their handle across `/compact`](docs/roadmap/operations/ROADMAP.md#background-agents-lose-their-handle-across-compact)
 - [Operations: Codify per-project Headroom base-URL scoping as a repo pattern _(candidate)_](docs/roadmap/operations/ROADMAP.md#codify-per-project-headroom-base-url-scoping-as-a-repo-pattern-candidate)
 - [Runtime Portability: Route multi-machine harness state through portable or synchronized homes](docs/roadmap/runtime-portability/ROADMAP.md#route-multi-machine-harness-state-through-portable-or-synchronized-homes)
 
