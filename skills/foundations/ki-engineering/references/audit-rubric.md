@@ -13,7 +13,7 @@ Capability conditionals only apply when the repo has the marker (tests / compile
 - [Core — Bun vs Node (§3)](#core--bun-vs-node-3)
 - [Core — tsconfig.json (§4)](#core--tsconfigjson-4)
 - [Core — biome.json & prettier config (§5)](#core--biomejson--prettier-config-5)
-- [Capability: tests (§6)](#capability-tests-6--marker-vitestconfig-or-a-test-script)
+- [Capability: tests (§6)](#capability-tests-6--marker-a-bare-test-script-or-recognised-root-vitestconfig)
 - [Capability: compiled build & CLI (§7)](#capability-compiled-build--cli-7--marker-tsconfigbuildjson-or-a-tsc-build)
 - [Capability: env config (§8)](#capability-env-config-8--marker-envexample-or-processloadenvfile)
 - [Core — .ki-config.toml (§9)](#core--ki-configtoml-9)
@@ -52,7 +52,7 @@ Capability conditionals only apply when the repo has the marker (tests / compile
 
 ## Core — Bun vs Node (§3)
 
-- [ ] **SCR-6** [M] FAIL — **no script value contains `bun test`** (it would invoke Bun's runner, not vitest).
+- [ ] **SCR-6** [M] FAIL — **no script value contains `bun test`**: it bypasses the governed package script and invokes Bun's runner; use `bun run test`.
 - [ ] **BUN-1** [J] WARN — where the repo loads `.env`, `loadConfig` (or equivalent) calls `process.loadEnvFile()` in a try/catch for Node parity.
 
 ## Core — tsconfig.json (§4)
@@ -66,16 +66,16 @@ Capability conditionals only apply when the repo has the marker (tests / compile
 - [ ] **KNIP-1** [M] FAIL — `knip.json` present (per-repo entry points + ignores; backs the knip check — KNIP-2 — inside `ki:engineering:audit`). See §5.
 - [ ] _(prettier)_ — `.prettierrc.json` is **owned by `ki-authoring`** (it backs that skill's own Markdown conform pass), so its presence/shape (`proseWrap: never`, `printWidth: 140`, `semi: false`, `singleQuote: true`, `trailingComma: none`, `*.md` override) is graded there — not by this checker (SHAPE-16 ownership split).
 
-## Capability: tests (§6) — marker: `vitest.config.*` or a `test` script
+## Capability: tests (§6) — marker: a bare `test` script or recognised root `vitest.config.*`
 
-> Executable helper scripts (`scripts/`, eval harnesses, a skill's bundled `audit-*.ts` / `lint-*.ts` checkers) are tooling, not shipped `src/` — coverage is scoped to `src/**` and never matches them. A repo whose only TypeScript is such scripts does not trigger this capability; its lack of tests is conformant, not a gap. Do not flag it. (§6)
+> Executable helper scripts (`scripts/`, eval harnesses, a skill's bundled `audit-*.ts` / `lint-*.ts` checkers) are tooling, not shipped `src/` — Vitest coverage is scoped to source and never governs them. They may expose standalone self-tests through the bare `test` idiom without carrying `vitest.config.*`; the Vitest key-shape and 100% thresholds then do not apply. (§6)
 
-- [ ] **TEST-1** [M] WARN/FAIL — `test` = `vitest run`; `test:coverage` = `vitest run --coverage`; `test:watch` = `vitest` (missing → WARN, wrong value → FAIL). A non-vitest `test` runner is INFO (the vitest key-shape + coverage rules do not apply); no test capability is N/A.
-- [ ] **TEST-2** [M] FAIL — vitest coverage thresholds are **100%** on all four metrics (lines/functions/branches/statements).
-- [ ] **TEST-3** [M] WARN — coverage `exclude` drops `src/**/*.test.ts`. (The _additional_ excludes are artifact-specific — not graded here; the artifact skill grades them.)
-- [ ] **TEST-4** [M] WARN — **Monorepo exception (§0):** when `package.json` declares a `workspaces` array, `include`/`exclude` and the vitest `reportsDirectory` are **workspace-scoped** (e.g. `include: ['site/scripts/**/*.test.ts']`, `reportsDirectory: 'site/coverage'`) rather than the flat `src/**` / root `coverage/` — the paths sit under the owning workspace, not the repo root.
-- [ ] **TEST-5** [M] FAIL — `bun run test:coverage` exits clean (the suite passes and meets the thresholds).
-- [ ] **TEST-6** [J] WARN — tests are co-located with the source they cover (`src/**/*.test.ts` in the flat shape; under the owning workspace, e.g. `site/scripts/**/*.test.ts`, in a monorepo) and actually reach the 100% bar.
+- [ ] **TEST-1** [M] INFO/WARN/FAIL — every test-capable repo exposes a bare `test` script. A runner-neutral bare test without `vitest.config.*` is INFO and the Vitest rules below do not apply. A recognised root `vitest.config.*` opts the repo into the Vitest profile: `test` = `vitest run`; `test:coverage` = `vitest run --coverage`; `test:watch` = `vitest` (missing companion script → WARN, wrong value → FAIL). No test capability is N/A.
+- [ ] **TEST-2** [M] FAIL — under the Vitest profile, coverage thresholds are **100%** on all four metrics (lines/functions/branches/statements).
+- [ ] **TEST-3** [M] WARN — under the Vitest profile, coverage `exclude` drops `src/**/*.test.ts`. (The _additional_ excludes are artifact-specific — not graded here; the artifact skill grades them.)
+- [ ] **TEST-4** [M] WARN — under the Vitest profile, the **monorepo exception (§0)** applies: when `package.json` declares a `workspaces` array, `include`/`exclude` and `reportsDirectory` are workspace-scoped (e.g. `include: ['site/scripts/**/*.test.ts']`, `reportsDirectory: 'site/coverage'`) rather than the flat `src/**` / root `coverage/`.
+- [ ] **TEST-5** [M] FAIL — under the Vitest profile, `bun run test:coverage` exits clean when that companion script is present (the suite passes and meets the thresholds).
+- [ ] **TEST-6** [J] WARN — under the Vitest profile, tests are co-located with the source they cover (`src/**/*.test.ts` in the flat shape; under the owning workspace, e.g. `site/scripts/**/*.test.ts`, in a monorepo) and actually reach the 100% bar.
 
 ## Capability: compiled build & CLI (§7) — marker: `tsconfig.build.json` or a `tsc` build
 

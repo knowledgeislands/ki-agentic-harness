@@ -11,13 +11,13 @@ For the full upstream pin list and in-house sources, see [sources.md](sources.md
 
 ## Collections
 
-| Source                        | URL                               | What it covers                                               |
-| ----------------------------- | --------------------------------- | ------------------------------------------------------------ |
-| mcp-gsuite                    | [github][mcp-gsuite]              | Canonical flat-repo compiled-TS profile with env config      |
-| mcp-kb-fs                     | [github][mcp-kb-fs]               | Canonical flat-repo compiled-TS profile, no CLI binary       |
-| ki-agentic-harness            | [github][harness]                 | Scripts-only profile (no `src/`, no tests); the harness repo |
-| Biome configuration reference | [biomejs.dev][biome-config]       | The schema the `$schema` pin tracks                          |
-| TypeScript compiler options   | [typescriptlang.org][ts-tsconfig] | The invariants and the compiled-TS profile options           |
+| Source                        | URL                               | What it covers                                             |
+| ----------------------------- | --------------------------------- | ---------------------------------------------------------- |
+| mcp-gsuite                    | [github][mcp-gsuite]              | Canonical flat-repo compiled-TS profile with env config    |
+| mcp-kb-fs                     | [github][mcp-kb-fs]               | Canonical flat-repo compiled-TS profile, no CLI binary     |
+| ki-agentic-harness            | [github][harness]                 | Scripts-only profile; runner-neutral standalone self-tests |
+| Biome configuration reference | [biomejs.dev][biome-config]       | The schema the `$schema` pin tracks                        |
+| TypeScript compiler options   | [typescriptlang.org][ts-tsconfig] | The invariants and the compiled-TS profile options         |
 
 ## Selected patterns
 
@@ -77,9 +77,9 @@ Used by every `mcp-*` repo. The universal invariants (`strict`, `nodenext`, `noE
 }
 ```
 
-### Required script families in `package.json`
+### Required script families and the Vitest profile in `package.json`
 
-The two families (`ki:lint:*` and `ki:deps:*`) are byte-identical across all 10 repos — the checker exact-matches them. Extras (`ki:skills:*`, `ki:repo:audit`, `ki:engineering:audit`, repo-specific dev scripts) are never drift. The critical trap: the test script is `vitest run`, never `bun test` — `bun test` silently invokes Bun's own runner. Note that `ki:lint:md` is the local-fix variant (writes) and `ki:lint:md:check` is what CI runs (`--check` exits non-zero on violations without writing).
+The two families (`ki:lint:*` and `ki:deps:*`) are byte-identical across all 10 repos — the checker exact-matches them. Extras (`ki:skills:*`, `ki:repo:audit`, `ki:engineering:audit`, repo-specific dev scripts) are never drift. The critical trap is the literal command `bun test`: it bypasses the governed package script and invokes Bun's own runner. Use `bun run test`; a Vitest-configured repo maps that idiom to `vitest run`, while another profile may map it to a different whole-suite command. Note that `ki:lint:md` is the local-fix variant (writes) and `ki:lint:md:check` is what CI runs (`--check` exits non-zero on violations without writing).
 
 ```jsonc
 {
@@ -104,6 +104,18 @@ The two families (`ki:lint:*` and `ki:deps:*`) are byte-identical across all 10 
   }
 }
 ```
+
+The harness's [actual package manifest](../../../../package.json) uses the same bare idiom without a Vitest configuration; each standalone test program remains explicit and the complete entry chains the whole suite. An abbreviated shape:
+
+```jsonc
+{
+  "scripts": {
+    "test": "bun hooks/plan-stamp.test.ts && bun hooks/plan-sync.test.ts && bun skills/keystone/ki-bootstrap/scripts/resolve.test.ts"
+  }
+}
+```
+
+This runner-neutral profile does not opt into `test:coverage`, `test:watch`, or the Vitest threshold checks. It still must not contain the literal `bun test`.
 
 ### Monorepo: workspace-scoped vitest coverage (§0, §6)
 

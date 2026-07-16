@@ -26,7 +26,6 @@ Understood and roughly scoped but not yet started — worth doing once the **Nex
 - [Foundation Tooling: Overhaul checker output: pure JSON emitters + a single formatter](docs/roadmap/foundation-tooling/ROADMAP.md#overhaul-checker-output-pure-json-emitters--a-single-formatter)
 - [Foundation Tooling: Reconcile the fleet's toolchain prose with the collapsed toolchain](docs/roadmap/foundation-tooling/ROADMAP.md#reconcile-the-fleets-toolchain-prose-with-the-collapsed-toolchain)
 - [Foundation Tooling: Rename `ki-engineering` to `ki-engineering-ts`](docs/roadmap/foundation-tooling/ROADMAP.md#rename-ki-engineering-to-ki-engineering-ts)
-- [Foundation Tooling: Revisit the vitest mandate vs the bare-`test` idiom in `ki-engineering`](docs/roadmap/foundation-tooling/ROADMAP.md#revisit-the-vitest-mandate-vs-the-bare-test-idiom-in-ki-engineering)
 - [Foundation Tooling: Standardise the free-form named-action `package.json` keys](docs/roadmap/foundation-tooling/ROADMAP.md#standardise-the-free-form-named-action-packagejson-keys)
 - [Foundation Tooling: Sweep the `mcp-*` repos onto the uniform mode model + re-check naming across surfaces](docs/roadmap/foundation-tooling/ROADMAP.md#sweep-the-mcp--repos-onto-the-uniform-mode-model--re-check-naming-across-surfaces)
 - [Governance Consistency: Codify the convention-placement model and knowledge-promotion loop](docs/roadmap/governance-consistency/ROADMAP.md#codify-the-convention-placement-model-and-knowledge-promotion-loop)

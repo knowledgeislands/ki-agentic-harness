@@ -427,7 +427,14 @@ has('knip.json') || has('knip.jsonc') || has('knip.ts')
   : add('FAIL', 'KNIP-1', 'knip.json missing (config for knip — run by ki:engineering:audit/conform)', STD, 'knip.json')
 
 // ── capability detection ──────────────────────────────────────────────────────
-const vitestFile = ['vitest.config.ts', 'vitest.config.js', 'vitest.config.mts'].find((f) => has(f))
+const vitestFile = [
+  'vitest.config.ts',
+  'vitest.config.js',
+  'vitest.config.mts',
+  'vitest.config.cts',
+  'vitest.config.mjs',
+  'vitest.config.cjs'
+].find((f) => has(f))
 const hasTests = Boolean(vitestFile) || Boolean(scripts.test)
 const buildScript = scripts.build ?? ''
 const hasBuild = has('tsconfig.build.json') || /\btsc\b/.test(buildScript)
@@ -468,7 +475,195 @@ if (vitestFile) {
   }
   {
     const vc = read(vitestFile)
-    const covOk = /lines:\s*100/.test(vc) && /branches:\s*100/.test(vc) && /functions:\s*100/.test(vc) && /statements:\s*100/.test(vc)
+    const objectAt = (source: string, open: number): string | undefined => {
+      if (source[open] !== '{') return undefined
+      let depth = 0
+      let quote = ''
+      let escapedChar = false
+      let lineComment = false
+      let blockComment = false
+      for (let i = open; i < source.length; i += 1) {
+        const char = source[i]
+        const next = source[i + 1]
+        if (lineComment) {
+          if (char === '\n') lineComment = false
+          continue
+        }
+        if (blockComment) {
+          if (char === '*' && next === '/') {
+            blockComment = false
+            i += 1
+          }
+          continue
+        }
+        if (quote) {
+          if (escapedChar) escapedChar = false
+          else if (char === '\\') escapedChar = true
+          else if (char === quote) quote = ''
+          continue
+        }
+        if (char === '/' && next === '/') {
+          lineComment = true
+          i += 1
+          continue
+        }
+        if (char === '/' && next === '*') {
+          blockComment = true
+          i += 1
+          continue
+        }
+        if (char === '"' || char === "'" || char === '`') {
+          quote = char
+          continue
+        }
+        if (char === '{') depth += 1
+        if (char === '}') {
+          depth -= 1
+          if (depth === 0) return source.slice(open, i + 1)
+        }
+      }
+      return undefined
+    }
+    const maskNonCode = (source: string): string => {
+      const masked = source.split('')
+      let quote = ''
+      let escapedChar = false
+      let lineComment = false
+      let blockComment = false
+      for (let i = 0; i < source.length; i += 1) {
+        const char = source[i]
+        const next = source[i + 1]
+        if (lineComment) {
+          if (char === '\n') lineComment = false
+          else masked[i] = ' '
+          continue
+        }
+        if (blockComment) {
+          masked[i] = ' '
+          if (char === '*' && next === '/') {
+            masked[i + 1] = ' '
+            blockComment = false
+            i += 1
+          }
+          continue
+        }
+        if (quote) {
+          masked[i] = ' '
+          if (escapedChar) escapedChar = false
+          else if (char === '\\') escapedChar = true
+          else if (char === quote) quote = ''
+          continue
+        }
+        if (char === '/' && next === '/') {
+          masked[i] = ' '
+          masked[i + 1] = ' '
+          lineComment = true
+          i += 1
+          continue
+        }
+        if (char === '/' && next === '*') {
+          masked[i] = ' '
+          masked[i + 1] = ' '
+          blockComment = true
+          i += 1
+          continue
+        }
+        if (char === '"' || char === "'" || char === '`') {
+          masked[i] = ' '
+          quote = char
+        }
+      }
+      return masked.join('')
+    }
+    const exportedConfig = (source: string): string | undefined => {
+      const code = maskNonCode(source)
+      const starts = [
+        /\bexport\s+default\s+(?:defineConfig\s*\(\s*)?\{/m.exec(code),
+        /\bmodule\.exports\s*=\s*(?:defineConfig\s*\(\s*)?\{/m.exec(code)
+      ].filter((match): match is RegExpExecArray => Boolean(match))
+      const start = starts.sort((a, b) => a.index - b.index)[0]
+      if (!start) return undefined
+      return objectAt(source, start.index + start[0].lastIndexOf('{'))
+    }
+    const directPropertyMatch = (
+      source: string,
+      property: string,
+      valuePattern: string
+    ): { index: number; match: RegExpExecArray } | undefined => {
+      if (!source.startsWith('{')) return undefined
+      const escaped = property.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const propertyStart = new RegExp(`^(?:["']${escaped}["']|${escaped})\\s*:\\s*${valuePattern}`)
+      let depth = 0
+      let quote = ''
+      let escapedChar = false
+      let lineComment = false
+      let blockComment = false
+      let expectsProperty = false
+      for (let i = 0; i < source.length; i += 1) {
+        const char = source[i]
+        const next = source[i + 1]
+        if (lineComment) {
+          if (char === '\n') lineComment = false
+          continue
+        }
+        if (blockComment) {
+          if (char === '*' && next === '/') {
+            blockComment = false
+            i += 1
+          }
+          continue
+        }
+        if (quote) {
+          if (escapedChar) escapedChar = false
+          else if (char === '\\') escapedChar = true
+          else if (char === quote) quote = ''
+          continue
+        }
+        if (char === '/' && next === '/') {
+          lineComment = true
+          i += 1
+          continue
+        }
+        if (char === '/' && next === '*') {
+          blockComment = true
+          i += 1
+          continue
+        }
+        if (depth === 1 && expectsProperty && !/\s/.test(char)) {
+          const match = propertyStart.exec(source.slice(i))
+          if (match) return { index: i, match }
+          expectsProperty = false
+        }
+        if (char === '"' || char === "'" || char === '`') {
+          quote = char
+          continue
+        }
+        if (char === '{') {
+          depth += 1
+          if (depth === 1) expectsProperty = true
+          continue
+        }
+        if (char === '}') {
+          depth -= 1
+          continue
+        }
+        if (depth === 1 && char === ',') expectsProperty = true
+      }
+      return undefined
+    }
+    const directObjectProperty = (source: string, property: string): string | undefined => {
+      const found = directPropertyMatch(source, property, '\\{')
+      return found ? objectAt(source, found.index + found.match[0].lastIndexOf('{')) : undefined
+    }
+    const rootConfig = exportedConfig(vc)
+    const testConfig = rootConfig ? directObjectProperty(rootConfig, 'test') : undefined
+    const coverage = testConfig ? directObjectProperty(testConfig, 'coverage') : undefined
+    const thresholds = coverage ? directObjectProperty(coverage, 'thresholds') : undefined
+    const exactHundred = (metric: string): boolean => {
+      if (!thresholds) return false
+      return Boolean(directPropertyMatch(thresholds, metric, '100(?=\\s*[,}])'))
+    }
+    const covOk = ['lines', 'branches', 'functions', 'statements'].every(exactHundred)
     add(
       covOk ? 'PASS' : 'FAIL',
       'TEST-2',

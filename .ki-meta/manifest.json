@@ -1,5 +1,5 @@
 {
-  "ref": "4d26d51328e66cbe9025405a90648aba35600021",
+  "ref": "837a6e59da3e4dec1b049364512fd4694b3909f6",
   "files": {
     ".ki-meta/skills/ki-agents/audit.ts": "744039a6365910a9d34d688fecec590cecc83ae15b5766d008dec5a0639d2d9a",
     ".ki-meta/skills/ki-agents/conform.ts": "b184328a974795a12bc5e6f76ddca97e89cd0fca8367033068f64c19d1971357",
@@ -10,7 +10,7 @@
     ".ki-meta/skills/ki-decision-records/audit.ts": "3b663f0422f9b90e009a6e3f51507c6f4e65dcec5d6e8538c7ffcc0a3d63ced9",
     ".ki-meta/skills/ki-decision-records/conform.ts": "88e39adf23ec9db32841c6158dd12f3767e0a28378d203b9b8c9786b4061220e",
     ".ki-meta/skills/ki-decision-records/help.md": "e190d86a89323e923dd28b0204082845f9e76d401b96466988a49e5eb86d2f56",
-    ".ki-meta/skills/ki-engineering/audit.ts": "81dbcd2e3f71a66cc6e8b5ae8ae5a2e30718c1a83738d357cd4156cb01720003",
+    ".ki-meta/skills/ki-engineering/audit.ts": "e4e89f588bd320a9ff90a3024d0ffecac13b71e7a2dd0daffb2e1cc75e4ecb7d",
     ".ki-meta/skills/ki-engineering/conform.ts": "25add7f2fccecbc5e5f0f3eb5a05e672b26c101ae5b4466f6d2212aafa96a802",
     ".ki-meta/skills/ki-engineering/help.md": "c1a36923096d6af3e84a10556a7255747fb84e21469bc88cd47ad416fa21be59",
     ".ki-meta/skills/ki-feature-definitions/audit.ts": "ccdffcd3950deb22d7d087d7298c9a363b35ed8bc289452778cf9f14c464fb56",
