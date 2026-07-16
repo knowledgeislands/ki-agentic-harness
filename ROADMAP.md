@@ -26,6 +26,7 @@ Understood and roughly scoped but not yet started — worth doing once the **Nex
 - [Hooks: Govern the shipped Claude Code hooks as `ki-claude-hooks`](docs/roadmap/hooks/ROADMAP.md#govern-the-shipped-claude-code-hooks-as-ki-claude-hooks)
 - [Hooks: Manage Claude hooks through chezmoi and verify required hooks](docs/roadmap/hooks/ROADMAP.md#manage-claude-hooks-through-chezmoi-and-verify-required-hooks)
 - [Operations: Make `ki-recap` resolve the invoking session explicitly](docs/roadmap/operations/ROADMAP.md#make-ki-recap-resolve-the-invoking-session-explicitly)
+- [Runtime Portability: Copy project-local skills by default, with development links](docs/roadmap/runtime-portability/ROADMAP.md#copy-project-local-skills-by-default-with-development-links)
 - [Runtime Portability: Route multi-machine harness state through durable homes](docs/roadmap/runtime-portability/ROADMAP.md#route-multi-machine-harness-state-through-durable-homes)
 
 ## Waiting for
@@ -50,4 +51,3 @@ Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass
 - [Governance Consistency: Roll Feature Definitions out across the repository fleet _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#roll-feature-definitions-out-across-the-repository-fleet-candidate)
 - [Governance Consistency: Separate Knowledge Islands policy from portable governance _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#separate-knowledge-islands-policy-from-portable-governance-candidate)
 - [Runtime Portability: Use `target_runtimes` to select runtime-bound integrations _(candidate)_](docs/roadmap/runtime-portability/ROADMAP.md#use-targetruntimes-to-select-runtime-bound-integrations-candidate)
-- [Runtime Portability: Vendor complete declared skills into the repository _(candidate)_](docs/roadmap/runtime-portability/ROADMAP.md#vendor-complete-declared-skills-into-the-repository-candidate)

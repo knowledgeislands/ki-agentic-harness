@@ -16,6 +16,10 @@ Understood and roughly scoped but not yet started — worth doing once the **Nex
 
 Produce a finite routing table or decision record assigning each state class to repository tracking, knowledge-base content, synchronized personal configuration, or intentionally disposable machine-local storage. Cover project memory, runtime settings and hooks, learned patterns, and caches; create follow-up migrations only for state proven to be in the wrong home.
 
+### Copy project-local skills by default, with development links
+
+Keep `.ki-meta/` exclusively for durable mechanical scripts and runners. Make bootstrap copy each declared complete skill directly into `.claude/skills/` and `.agents/skills/` for normal use, while an explicit local development-link capability may point those directories at a harness authoring tree. Scope the runtime-payload publication, refresh, integrity, audit, migration, and test contract; do not fold global skills, agents, hooks, or user settings into this work.
+
 ## Waiting for
 
 Worth doing, but presently blocked on an external dependency or decision. Revisit when its named condition changes rather than treating it as dormant local work.
@@ -27,10 +31,6 @@ Choose between sandbox-bundled servers and authenticated remote endpoints for ho
 ## Future
 
 Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass (or a decision to drop them) before they're actionable.
-
-### Vendor complete declared skills into the repository _(candidate)_
-
-Assess extending bootstrap so each declared skill is copied as a complete unit into `.ki-meta/skills`, then runtime skill paths link to that in-repository copy rather than to the harness checkout. Settle source/vendor parity, coexistence with checker units, orphan handling, and safe publication before promotion to Soon. Keep agents, hooks, shared configs, and general third-party dependency vendoring out of this unit.
 
 ### Use `target_runtimes` to select runtime-bound integrations _(candidate)_
 
