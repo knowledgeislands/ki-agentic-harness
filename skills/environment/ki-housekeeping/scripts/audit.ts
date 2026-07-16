@@ -195,7 +195,7 @@ async function main() {
             'IDX-6',
             Sev.WARN,
             indexFile,
-            `headroom:learn block has ${foreignLines} line(s) rooted in other repo(s) (${[...foreign].join(', ')}) — stale cross-repo captures; re-learn or prune`
+            `headroom:learn block has ${foreignLines} line(s) rooted in other repo(s) (${[...foreign].join(', ')}) — remove the source with headroom memory list/show/delete --db-path; re-learn here if still useful`
           )
         }
       }

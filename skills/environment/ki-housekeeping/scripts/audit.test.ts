@@ -65,6 +65,7 @@ try {
   check('foreign root → cites IDX-6', out.includes('IDX-6'))
   check('foreign root → WARN severity', /WARN\s+IDX-6/.test(out))
   check('foreign root → names the other repo', out.includes('arcadia-agentic-harness'))
+  check('foreign root → names source-store remedy', out.includes('headroom memory list/show/delete --db-path'))
   check('foreign root → prints remediation footer', out.includes('/ki-housekeeping CONFORM'))
 } finally {
   rmSync(foreign, { recursive: true, force: true })
