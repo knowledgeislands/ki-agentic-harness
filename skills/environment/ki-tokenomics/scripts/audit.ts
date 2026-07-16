@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+
 // Mechanical auditor for the Knowledge Islands tokenomics standard.
 //
 //   bun scripts/audit.ts [target]    # default: cwd — a project or a KB base
@@ -27,6 +28,7 @@
 //
 // No npm dependencies — Bun/Node builtins only. Exit code is non-zero if any FAIL.
 
+import { spawnSync } from 'node:child_process'
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path'
@@ -131,6 +133,77 @@ const readJSON = (p: string): Record<string, unknown> | null => {
   } catch {
     return null
   }
+}
+
+const SAFE_PROJECT_SLUG = /^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$/
+function safeProjectSlug(value: unknown): string | null {
+  if (typeof value !== 'string') return null
+  const unscoped = value.startsWith('@') ? value.slice(value.indexOf('/') + 1) : value
+  return SAFE_PROJECT_SLUG.test(unscoped) ? unscoped : null
+}
+
+function expectedProjectSlug(target: string): string {
+  // A linked worktree's directory is commonly named for the branch, not the repo.
+  // Use the origin basename only in that case; normal repos retain their target basename.
+  const gitMarker = join(target, '.git')
+  if (readText(gitMarker) != null) {
+    const result = spawnSync('git', ['-C', target, 'remote', 'get-url', 'origin'], { encoding: 'utf8' })
+    if (result.status === 0) {
+      const remoteName = result.stdout
+        .trim()
+        .replace(/[\\/]$/, '')
+        .split(/[\\/:]/)
+        .at(-1)
+        ?.replace(/\.git$/, '')
+      const fromRemote = safeProjectSlug(remoteName)
+      if (fromRemote) return fromRemote
+    }
+  }
+  return safeProjectSlug(basename(target)) ?? basename(target)
+}
+
+type HeadroomProjectUrl = { recognized: false } | { recognized: true; valid: boolean; actualSlug: string | null; corrected: string }
+
+function inspectHeadroomProjectUrl(raw: string, expectedSlug: string): HeadroomProjectUrl {
+  let url: URL
+  try {
+    url = new URL(raw)
+  } catch {
+    return { recognized: false }
+  }
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') return { recognized: false }
+  const host = url.hostname.replace(/^\[|\]$/g, '').toLowerCase()
+  if (!['127.0.0.1', 'localhost', '::1'].includes(host)) return { recognized: false }
+
+  const match = url.pathname.match(/^\/p\/([^/]+)\/?$/)
+  const cleanRoot = url.pathname === '/' && url.search === '' && url.hash === ''
+  if (!match && !(url.port === '8787' && cleanRoot)) return { recognized: false }
+  let actualSlug: string | null = null
+  if (match) {
+    try {
+      actualSlug = decodeURIComponent(match[1] as string)
+    } catch {
+      actualSlug = null
+    }
+  }
+  url.pathname = `/p/${encodeURIComponent(expectedSlug)}`
+  return { recognized: true, valid: actualSlug === expectedSlug, actualSlug, corrected: url.toString() }
+}
+
+function headroomProjectHeader(raw: unknown): { present: boolean; project: string; malformedEncoding: boolean } {
+  if (typeof raw !== 'string') return { present: false, project: '', malformedEncoding: false }
+  for (const line of raw.split(/\r?\n/)) {
+    const match = line.match(/^\s*X-Headroom-Project\s*:\s*(.*?)\s*$/i)
+    if (match) {
+      const encoded = match[1] as string
+      try {
+        return { present: true, project: decodeURIComponent(encoded), malformedEncoding: false }
+      } catch {
+        return { present: true, project: encoded, malformedEncoding: true }
+      }
+    }
+  }
+  return { present: false, project: '', malformedEncoding: false }
 }
 const stripCode = (md: string): string => md.replace(/```[\s\S]*?```/g, '').replace(/`[^`\n]*`/g, '')
 
@@ -466,6 +539,74 @@ if (!noUser) {
 settingsSources.push({ layer: 'project', file: join(target, '.claude', 'settings.json') })
 settingsSources.push({ layer: 'project', file: join(target, '.claude', 'settings.local.json') })
 settingsSources.push({ layer: 'project', file: join(target, '.mcp.json') })
+
+// TOOL-5 — a project-local Headroom proxy URL carries a per-project path so its
+// savings are attributable. Remote URLs are outside this local-proxy convention;
+// a custom local port is treated as Headroom only when it is already /p/... scoped.
+const projectSlug = expectedProjectSlug(target)
+let projectHeadroomProxyPresent = false
+type ProjectSettings = { name: string; obj: Record<string, unknown> }
+const projectSettings: ProjectSettings[] = []
+let projectSettingsMalformed = false
+for (const name of ['settings.json', 'settings.local.json']) {
+  const text = readText(join(target, '.claude', name))
+  if (text == null) continue
+  try {
+    const parsed = JSON.parse(text) as unknown
+    if (parsed == null || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('root is not an object')
+    projectSettings.push({ name, obj: parsed as Record<string, unknown> })
+  } catch {
+    projectSettingsMalformed = true
+    warn('TOOL-5', `${name} is malformed — Headroom project scope cannot be inspected`, RUBRIC, `.claude/${name}`)
+  }
+}
+const envOf = (settings: ProjectSettings | undefined): Record<string, unknown> => {
+  const env = settings?.obj.env
+  return env && typeof env === 'object' && !Array.isArray(env) ? (env as Record<string, unknown>) : {}
+}
+const baseSettings = projectSettings.find((s) => s.name === 'settings.json')
+const localSettings = projectSettings.find((s) => s.name === 'settings.local.json')
+const baseEnv = envOf(baseSettings)
+const localEnv = envOf(localSettings)
+const effectiveValue = (key: string): { value: unknown; name: string } =>
+  Object.hasOwn(localEnv, key) ? { value: localEnv[key], name: 'settings.local.json' } : { value: baseEnv[key], name: 'settings.json' }
+if (!projectSettingsMalformed) {
+  const { value: raw, name } = effectiveValue('ANTHROPIC_BASE_URL')
+  if (typeof raw === 'string') {
+    const inspected = inspectHeadroomProjectUrl(raw, projectSlug)
+    if (inspected.recognized) {
+      projectHeadroomProxyPresent = true
+      const { value: rawHeaders, name: headerName } = effectiveValue('ANTHROPIC_CUSTOM_HEADERS')
+      const header = headroomProjectHeader(rawHeaders)
+      if (header.present) {
+        if (header.project === projectSlug)
+          note(
+            'TOOL-5',
+            `${headerName} scopes the local Headroom proxy to project ${projectSlug} via header`,
+            RUBRIC,
+            `.claude/${headerName}`
+          )
+        else
+          warn(
+            'TOOL-5',
+            `${headerName} X-Headroom-Project scopes ${header.project || '(empty)'}${header.malformedEncoding ? ' (malformed percent-encoding)' : ''}; expected ${projectSlug} (header overrides the URL path)`,
+            RUBRIC,
+            `.claude/${headerName}`
+          )
+      } else if (inspected.valid) note('TOOL-5', `${name} scopes the local Headroom proxy to /p/${projectSlug}`, RUBRIC, `.claude/${name}`)
+      else
+        warn(
+          'TOOL-5',
+          inspected.actualSlug == null
+            ? `${name} local Headroom proxy URL is missing /p/${projectSlug} project scope`
+            : `${name} local Headroom proxy URL scopes ${inspected.actualSlug}; expected /p/${projectSlug}`,
+          RUBRIC,
+          `.claude/${name}`
+        )
+    }
+  }
+}
+
 let pinnedModel: string | null = null
 for (const { layer, file } of settingsSources) {
   const obj = readJSON(file)
@@ -499,6 +640,8 @@ else note('RUN-5', 'no default model pinned in settings — tier is the session 
 // ── TOOL: compression tooling + declared expectation ──
 const detectCtx: DetectCtx = { mcp, envKeys }
 const present = REGISTRY.map((t) => ({ name: t.name, mode: t.detect(detectCtx) })).filter((d) => d.mode)
+if (projectHeadroomProxyPresent && !present.some((d) => d.name === 'headroom'))
+  present.push({ name: 'headroom', mode: '[project] local proxy URL' })
 for (const d of present)
   note(
     'TOOL-1',

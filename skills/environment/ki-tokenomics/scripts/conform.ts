@@ -1,9 +1,11 @@
 #!/usr/bin/env bun
+
 /**
  * Mechanical CONFORM for the ki-tokenomics standard.
  *
- * Honest normalize-only conform — it applies NO automatic edits. Tokenomics is
- * measurement + judgment: every gap audit.ts can find is either a judgment call
+ * Honest narrow conform — it applies one deterministic edit: an unscoped or
+ * mismatched project-local Headroom URL on the canonical loopback proxy is given
+ * the target's `/p/<slug>` path. All other tokenomics gaps remain judgment calls
  * (does a heavy CLAUDE.md earn its tokens; is an MCP server actually used; is the
  * model tier proportionate; is Headroom's reversible/cache config optimal) or a
  * trim/choice only a human can make (which prose to lift out, which value to pick
@@ -16,11 +18,11 @@
  * category into a concrete, actionable manual TODO, then points back at AUDIT.
  *
  *   bun scripts/conform.ts [path]   # default: cwd (a project or a KB base)
- *   --dry-run                       # no-op here (this conform never mutates), banner only
+ *   --dry-run                       # report the Headroom URL edit without writing
  *   --json                          # emit the shared finding wrapper instead of prose
  *
- * Because it writes nothing, every finding it surfaces is a manual/judgment TODO —
- * level ADVISORY on the shared ladder — split into a concrete section (defects the
+ * Every other finding it surfaces is a manual/judgment TODO — level ADVISORY on
+ * the shared ladder — split into a concrete section (defects the
  * mechanical scan located in this repo) and a judgment section (the [J] rubric). The
  * `--json` wrapper mirrors audit.ts's: { concern, target, generatedAt, summary, findings }.
  *
@@ -40,7 +42,8 @@
  * unrecoverable error (target path unreadable); findings/TODOs never fail the run.
  */
 
-import { existsSync, readFileSync, statSync } from 'node:fs'
+import { spawnSync } from 'node:child_process'
+import { existsSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path'
 
@@ -49,8 +52,8 @@ const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[3
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 // ── collect-then-emit harness (mirrors audit.ts / ki-authoring conform) ──
-// This conform is NORMALIZE-ONLY: it writes nothing, so every finding is a manual
-// or judgment TODO — level ADVISORY (or INFO where merely informational). area is
+// This conform has one narrow mechanical normalization (TOOL-5); every other finding
+// is a manual or judgment TODO — level ADVISORY (or INFO where merely informational). area is
 // the FINE rubric code kept in lockstep with audit.ts; ref the reference-doc
 // pointer; file the path a file-scoped TODO concerns. `say` prints the human line
 // only outside --json, so a direct run streams prose while the aggregate consumes
@@ -77,6 +80,103 @@ const readText = (p: string): string | null => {
   } catch {
     return null
   }
+}
+
+const SAFE_PROJECT_SLUG = /^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$/
+function safeProjectSlug(value: unknown): string | null {
+  if (typeof value !== 'string') return null
+  const unscoped = value.startsWith('@') ? value.slice(value.indexOf('/') + 1) : value
+  return SAFE_PROJECT_SLUG.test(unscoped) ? unscoped : null
+}
+
+function expectedProjectSlug(target: string): string {
+  if (readText(join(target, '.git')) != null) {
+    const result = spawnSync('git', ['-C', target, 'remote', 'get-url', 'origin'], { encoding: 'utf8' })
+    if (result.status === 0) {
+      const remoteName = result.stdout
+        .trim()
+        .replace(/[\\/]$/, '')
+        .split(/[\\/:]/)
+        .at(-1)
+        ?.replace(/\.git$/, '')
+      const fromRemote = safeProjectSlug(remoteName)
+      if (fromRemote) return fromRemote
+    }
+  }
+  return safeProjectSlug(basename(target)) ?? basename(target)
+}
+
+type HeadroomProjectUrl = { recognized: false } | { recognized: true; valid: boolean; actualSlug: string | null; corrected: string }
+
+function inspectHeadroomProjectUrl(raw: string, expectedSlug: string): HeadroomProjectUrl {
+  let url: URL
+  try {
+    url = new URL(raw)
+  } catch {
+    return { recognized: false }
+  }
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') return { recognized: false }
+  const host = url.hostname.replace(/^\[|\]$/g, '').toLowerCase()
+  if (!['127.0.0.1', 'localhost', '::1'].includes(host)) return { recognized: false }
+  const match = url.pathname.match(/^\/p\/([^/]+)\/?$/)
+  const cleanRoot = url.pathname === '/' && url.search === '' && url.hash === ''
+  if (!match && !(url.port === '8787' && cleanRoot)) return { recognized: false }
+  let actualSlug: string | null = null
+  if (match) {
+    try {
+      actualSlug = decodeURIComponent(match[1] as string)
+    } catch {
+      actualSlug = null
+    }
+  }
+  url.pathname = `/p/${encodeURIComponent(expectedSlug)}`
+  return { recognized: true, valid: actualSlug === expectedSlug, actualSlug, corrected: url.toString() }
+}
+
+function headroomProjectHeader(raw: unknown): { present: boolean; project: string; malformedEncoding: boolean } {
+  if (typeof raw !== 'string') return { present: false, project: '', malformedEncoding: false }
+  for (const line of raw.split(/\r?\n/)) {
+    const match = line.match(/^\s*X-Headroom-Project\s*:\s*(.*?)\s*$/i)
+    if (match) {
+      const encoded = match[1] as string
+      try {
+        return { present: true, project: decodeURIComponent(encoded), malformedEncoding: false }
+      } catch {
+        return { present: true, project: encoded, malformedEncoding: true }
+      }
+    }
+  }
+  return { present: false, project: '', malformedEncoding: false }
+}
+
+function replaceUniqueJsonStringValue(text: string, key: string, oldValue: string, newValue: string): string | null {
+  const stringToken = /"(?:\\.|[^"\\])*"/g
+  const matches: { start: number; end: number; value: unknown }[] = []
+  for (const match of text.matchAll(stringToken)) {
+    let decoded: unknown
+    try {
+      decoded = JSON.parse(match[0])
+    } catch {
+      continue
+    }
+    if (decoded !== key || match.index == null) continue
+    const afterKey = text.slice(match.index + match[0].length)
+    const separator = afterKey.match(/^\s*:\s*/)?.[0]
+    if (!separator) continue
+    const valueStart = match.index + match[0].length + separator.length
+    stringToken.lastIndex = valueStart
+    const valueMatch = stringToken.exec(text)
+    if (!valueMatch || valueMatch.index !== valueStart) continue
+    try {
+      matches.push({ start: valueStart, end: valueStart + valueMatch[0].length, value: JSON.parse(valueMatch[0]) })
+    } catch {
+      // Fail closed below when no uniquely matching token is available.
+    }
+  }
+  if (matches.length !== 1) return null
+  const [match] = matches
+  if (match?.value !== oldValue) return null
+  return `${text.slice(0, match?.start)}${JSON.stringify(newValue)}${text.slice(match?.end)}`
 }
 const stripCode = (md: string): string => md.replace(/```[\s\S]*?```/g, '').replace(/`[^`\n]*`/g, '')
 
@@ -200,7 +300,7 @@ function main(): number {
   }
 
   say(paint(C.dim, `target: ${target}${dryRun ? '   (dry run)' : ''}`))
-  say(paint(C.dim, 'ki-tokenomics conform is normalize-only — it applies no automatic edits; every gap needs a human trim or choice.\n'))
+  say(paint(C.dim, 'ki-tokenomics conform applies only safe Headroom URL scoping; every other gap needs a human trim or choice.\n'))
 
   // ── manual TODOs (concrete — derived from this repo's state) — all ADVISORY (nothing is written) ──
   say(paint(C.cyan, 'manual TODOs (concrete — from this repo)'))
@@ -228,6 +328,83 @@ function main(): number {
       `CLAUDE.md headroom:learn block has ${lines} line(s) rooted in other repo(s) (${repos.join(', ')}); re-learn here or prune`,
       'CLAUDE.md'
     )
+  }
+
+  // ── TOOL-5: safely scope the effective project-local Headroom URL ──
+  type ProjectSettings = { name: string; file: string; text: string; obj: Record<string, unknown> }
+  const projectSettings: ProjectSettings[] = []
+  let projectSettingsMalformed = false
+  for (const name of ['settings.json', 'settings.local.json']) {
+    const file = join(target, '.claude', name)
+    const text = readText(file)
+    if (text == null) continue
+    try {
+      const parsed = JSON.parse(text) as unknown
+      if (parsed == null || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('root is not an object')
+      projectSettings.push({ name, file, text, obj: parsed as Record<string, unknown> })
+    } catch {
+      projectSettingsMalformed = true
+      todo('TOOL-5', `${name} is malformed; preserve it and inspect Headroom project scope manually`, `.claude/${name}`)
+    }
+  }
+  const envOf = (settings: ProjectSettings | undefined): Record<string, unknown> => {
+    const env = settings?.obj.env
+    return env && typeof env === 'object' && !Array.isArray(env) ? (env as Record<string, unknown>) : {}
+  }
+  const baseSettings = projectSettings.find((s) => s.name === 'settings.json')
+  const localSettings = projectSettings.find((s) => s.name === 'settings.local.json')
+  const baseEnv = envOf(baseSettings)
+  const localEnv = envOf(localSettings)
+  const effectiveValue = (key: string): { value: unknown; settings: ProjectSettings | undefined } =>
+    Object.hasOwn(localEnv, key) ? { value: localEnv[key], settings: localSettings } : { value: baseEnv[key], settings: baseSettings }
+  const { value: rawUrl, settings: urlSettings } = effectiveValue('ANTHROPIC_BASE_URL')
+  if (!projectSettingsMalformed && typeof rawUrl === 'string' && urlSettings) {
+    const slug = expectedProjectSlug(target)
+    const inspected = inspectHeadroomProjectUrl(rawUrl, slug)
+    if (inspected.recognized) {
+      const { value: rawHeaders, settings: headerSettings } = effectiveValue('ANTHROPIC_CUSTOM_HEADERS')
+      const header = headroomProjectHeader(rawHeaders)
+      if (header.present) {
+        if (header.project === slug) {
+          rec('PASS', 'TOOL-5', `Headroom project header already scopes ${slug}`, RUBRIC, `.claude/${headerSettings?.name}`)
+          say(`  ${paint(C.green, '-')} [TOOL-5] Headroom project header already scopes ${slug}`)
+        } else {
+          todo(
+            'TOOL-5',
+            `X-Headroom-Project scopes ${header.project || '(empty)'}${header.malformedEncoding ? ' (malformed percent-encoding)' : ''}, expected ${slug}; header wins over the URL, so correct it manually`,
+            `.claude/${headerSettings?.name}`
+          )
+        }
+      } else if (inspected.valid) {
+        rec('PASS', 'TOOL-5', `Headroom URL already scopes /p/${slug}`, RUBRIC, `.claude/${urlSettings.name}`)
+        say(`  ${paint(C.green, '-')} [TOOL-5] Headroom URL already scopes /p/${slug}`)
+      } else if (urlSettings.name === 'settings.local.json') {
+        todo(
+          'TOOL-5',
+          `effective Headroom URL needs /p/${slug}, but settings.local.json may be runtime-owned; correct it manually`,
+          '.claude/settings.local.json'
+        )
+      } else {
+        const updated = replaceUniqueJsonStringValue(urlSettings.text, 'ANTHROPIC_BASE_URL', rawUrl, inspected.corrected)
+        if (updated == null) {
+          todo(
+            'TOOL-5',
+            `could not identify one unambiguous ANTHROPIC_BASE_URL token; preserve settings.json and scope /p/${slug} manually`,
+            '.claude/settings.json'
+          )
+        } else {
+          if (!dryRun) writeFileSync(urlSettings.file, updated)
+          rec(
+            'POLISH',
+            'TOOL-5',
+            `${dryRun ? 'would scope' : 'scoped'} the local Headroom proxy to /p/${slug}`,
+            RUBRIC,
+            '.claude/settings.json'
+          )
+          say(`  ${paint(C.cyan, '-')} [TOOL-5] ${dryRun ? 'would scope' : 'scoped'} local Headroom URL to /p/${slug}`)
+        }
+      }
+    }
   }
 
   // ── CFG: [ki-tokenomics] table defects ──
@@ -317,7 +494,7 @@ function main(): number {
   }
 
   say(
-    `\n${paint(C.dim, 'no edits applied (normalize-only) — make the trims/choices above by hand, then re-run `bun scripts/audit.ts` (or `ki:tokenomics:audit`) to confirm they clear.')}`
+    `\n${paint(C.dim, 'make the remaining trims/choices above by hand, then re-run `bun scripts/audit.ts` (or `ki:tokenomics:audit`) to confirm they clear.')}`
   )
 
   if (json) {

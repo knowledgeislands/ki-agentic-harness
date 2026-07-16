@@ -12,10 +12,6 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
-### Codify per-project Headroom base-URL scoping as a repo pattern _(candidate)_
-
-Found 2026-07-15 in the `chezmoi` dotfiles repo: the installed Headroom proxy (0.31.0) already supports per-project savings attribution — an `X-Headroom-Project` header or a `/p/<name>` URL-path prefix (`headroom.proxy.project_context`), accumulated into a `savings.per_project` breakdown already returned live by `GET /stats` — but nothing in the harness governs or replicates the pattern across repos. `chezmoi` landed a first instance by hand: `.claude/settings.json`'s `env.ANTHROPIC_BASE_URL` set to `http://127.0.0.1:8787/p/chezmoi`, scoping that repo's Claude Code traffic to its own bucket. This is currently a one-off, manually-applied convention with no owning skill, no audit/conform, and no documented recommendation for whether every repo behind a local Headroom proxy should adopt a `/p/<repo-name>` suffix. Candidate home: `ki-tokenomics`, which already covers Headroom setup — add the pattern to its guidance, and consider an AUDIT check that a repo's `.claude/settings.json` `env.ANTHROPIC_BASE_URL` (when a Headroom proxy override is present at all) carries a `/p/<repo-name>` suffix matching the repo, plus a CONFORM that writes it. Separately worth a note upstream: Headroom's own `savings` CLI still has no per-project subcommand — the breakdown is only reachable via raw `/stats` JSON today.
-
 ## Waiting for
 
 Worth doing, but presently blocked on an external dependency or decision. Revisit when its named condition changes rather than treating it as dormant local work.

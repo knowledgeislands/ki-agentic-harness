@@ -57,6 +57,18 @@ Headroom is detected by any of three signals. The MCP install (`headroom mcp ins
 
 Placed in `settings.json` (user-scoped) or `.mcp.json` (project-scoped). The `HEADROOM_OUTPUT_SHAPER` and `HEADROOM_OUTPUT_HOLDOUT` env keys are the documented shaping controls; set them deliberately rather than leaving them at an unexamined default. The checker confirms the server is wired; the correctness of the shaper and holdout values is a judgment item (the upstream config surface is not yet fully documented — see `sources.md` watch-items).
 
+For Claude Code proxy mode, scope an existing project-local override to the repository name so Headroom's `/stats` response attributes savings per project:
+
+```json
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:8787/p/ki-agentic-harness"
+  }
+}
+```
+
+Do this only when the project already uses the loopback Headroom proxy. An `X-Headroom-Project: ki-agentic-harness` entry in `ANTHROPIC_CUSTOM_HEADERS` is equivalent and takes precedence over the path. The audit evaluates the effective project value (`settings.local.json` overrides `settings.json`); CONFORM repairs only an unambiguous tracked `settings.json` URL, never a local override or explicit header. The convention does not add a proxy dependency to a repository, rewrite remote Anthropic-compatible gateways, or reserialize unrelated settings.
+
 ### Compaction and what survives it
 
 Claude Code auto-compacts as the window nears its limit (`autoCompactEnabled` defaults on). What matters for tokenomics: the project-root `CLAUDE.md` is re-read from disk after a compaction, but the skill-description listing is **not** re-injected — only skills already invoked survive. Configure compaction intentionally:
