@@ -2,7 +2,7 @@
 
 A short, plain-language guide to what this repository is, what it does for its owner, and where to go for detail.
 
-## In one paragraph
+## Introduction
 
 An agentic harness is everything around an agent that helps it do a job well. Like a capable person, an agent needs tools to act, knowledge and training to use them, and guardrails that keep work safe and consistent. This harness brings those things together: tools and automation let an agent act; skills and specialist agents provide reusable knowledge and ways of working; and governance checks make good practice repeatable. Keeping them together gives each project a dependable working environment rather than a collection of unrelated prompts and scripts.
 
@@ -18,6 +18,8 @@ The harness turns loose conventions into something an agent can apply and check 
 Each skill ships a **mechanical checker** — a script that decides the clear-cut cases deterministically, so an agent review only spends attention on the parts that genuinely need it. The result: standards live in one place as skills, and the checkers keep every repository honest against them over time, rather than the standard living in someone's head and eroding.
 
 This reflects the harness's central working principle: it serves **two kinds of agent — human and LLM** — and its work splits into **mechanical** (a script can decide it) and **judgemental** (an agent must weigh it). The mechanical layer always stands alone: every governed repository, whatever its kind, carries a way to run its own checks (`./.ki-meta/bin/ki-audit`) with no model and no skills installed. Agent judgment — from either kind of agent — is a layer added on top of that baseline, never a requirement for it. The full statement is `ADR-KI-HARNESS-003`.
+
+That matters because a harness does more than make agents faster. It gives people and AI systems access to accumulated knowledge, practical methods, and boundaries that help them use powerful tools well. A hammer can build a home or cause harm; the tool matters, but the education, judgment, and conditions around its use matter just as much. Used thoughtlessly, AI can deskill us and amplify poor decisions. Used deliberately, with shared knowledge and guardrails, it can help more people do capable, constructive work — and improve the quality of what we make together.
 
 ## How the parts fit together
 
