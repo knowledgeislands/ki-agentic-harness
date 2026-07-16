@@ -20,6 +20,14 @@ Canonical themes and active execution plans.
 - **Status:** open
 - **Blocks:** —
 
+### [runtime-portability/001](runtime-portability/plans/001-copy-project-skills-by-default.md)
+
+- **Title:** Copy project skills by default, with development links
+- **Theme:** `runtime-portability`
+- **Roadmap item:** `runtime-portability/copy-project-local-skills-by-default-with-development-links`
+- **Status:** open
+- **Blocks:** —
+
 ## Dependency graph
 
 ```text

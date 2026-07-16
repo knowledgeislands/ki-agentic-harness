@@ -11,6 +11,7 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
 - [Foundation Tooling: Roll out the uniform mode model across the `mcp-*` repositories](docs/roadmap/foundation-tooling/ROADMAP.md#roll-out-the-uniform-mode-model-across-the-mcp--repositories)
+- [Runtime Portability: Copy project-local skills by default, with development links](docs/roadmap/runtime-portability/ROADMAP.md#copy-project-local-skills-by-default-with-development-links)
 
 ## Soon
 
@@ -25,7 +26,6 @@ Understood and roughly scoped but not yet started — worth doing once the **Nex
 - [Hooks: Govern the shipped Claude Code hooks as `ki-claude-hooks`](docs/roadmap/hooks/ROADMAP.md#govern-the-shipped-claude-code-hooks-as-ki-claude-hooks)
 - [Hooks: Manage Claude hooks through chezmoi and verify required hooks](docs/roadmap/hooks/ROADMAP.md#manage-claude-hooks-through-chezmoi-and-verify-required-hooks)
 - [Operations: Make `ki-recap` resolve the invoking session explicitly](docs/roadmap/operations/ROADMAP.md#make-ki-recap-resolve-the-invoking-session-explicitly)
-- [Runtime Portability: Copy project-local skills by default, with development links](docs/roadmap/runtime-portability/ROADMAP.md#copy-project-local-skills-by-default-with-development-links)
 - [Runtime Portability: Route multi-machine harness state through durable homes](docs/roadmap/runtime-portability/ROADMAP.md#route-multi-machine-harness-state-through-durable-homes)
 
 ## Waiting for
