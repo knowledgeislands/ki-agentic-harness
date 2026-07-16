@@ -16,98 +16,20 @@
  * reached from a raw GitHub URL, pinned to a ref.
  */
 import { execFileSync } from 'node:child_process'
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const SKILL = 'ki-repo'
-const KI_CONFIG = '.ki-config.toml'
-const KI_REPO_DEFAULT = `[ki-repo]
-visibility = "private"   # "public" | "private" — must match the repo's actual GitHub visibility
-license = "MIT"          # SPDX id the LICENSE, package.json, and GitHub must match; default MIT. Use "UNLICENSED" for proprietary. Pick one at https://choosealicense.com/
-
-# Per-repo check overrides — true = enforce, false = don't. Omit any check to take
-# the org default; a repo that fully conforms needs nothing here.
-# [ki-repo.checks]
-# branch-protection = true   # default off — protect \`main\` on this repo
-# wiki = false               # default on  — allow this repo's Wiki
-`
-const KI_AUTHORING_DEFAULT = `# The authoring standard (Markdown/TOML house style) is baseline — every KI repo is
-# governed by it. Declared explicitly, not assumed; its presence is the compliance marker.
-[ki-authoring]
-`
-
-type MultilineDelimiter = '"""' | "'''"
-function tripleClose(line: string, delimiter: MultilineDelimiter, from: number): number {
-  let at = line.indexOf(delimiter, from)
-  while (at !== -1) {
-    const backslashes = line.slice(0, at).match(/\\+$/)?.[0].length ?? 0
-    if (delimiter === "'''" || backslashes % 2 === 0) return at
-    at = line.indexOf(delimiter, at + delimiter.length)
-  }
-  return -1
-}
-
-function declaresRootTable(text: string, table: string): boolean {
-  let multiline: MultilineDelimiter | null = null
-  for (const raw of text.split(/\r?\n/)) {
-    if (multiline) {
-      if (tripleClose(raw, multiline, 0) !== -1) multiline = null
-      continue
-    }
-    let code = ''
-    let quote: '"' | "'" | null = null
-    let escaped = false
-    for (let i = 0; i < raw.length; i++) {
-      const delimiter = raw.startsWith('"""', i) ? '"""' : raw.startsWith("'''", i) ? "'''" : null
-      if (!quote && delimiter) {
-        if (tripleClose(raw, delimiter, i + delimiter.length) === -1) multiline = delimiter
-        break
-      }
-      const char = raw[i] as string
-      if (!quote && char === '#') break
-      code += char
-      if (quote === '"') {
-        if (!escaped && char === '"') quote = null
-        escaped = !escaped && char === '\\'
-      } else if (quote === "'") {
-        if (char === "'") quote = null
-      } else if (char === '"' || char === "'") {
-        quote = char
-        escaped = false
-      }
-    }
-    const match = code.trim().match(/^\[\s*(?:"([^"\\]+)"|'([^']+)'|([A-Za-z0-9_-]+))\s*(\.|\])/)
-    const root = match?.[1] ?? match?.[2] ?? match?.[3]
-    if (root === table && match?.[4] === ']') return true
-  }
-  return false
-}
-
-function appendMissingConfig(target: string, dryRun: boolean): void {
-  const path = join(target, KI_CONFIG)
-  const existing = existsSync(path) ? readFileSync(path, 'utf8') : ''
-  const blocks = [
-    !declaresRootTable(existing, SKILL) ? KI_REPO_DEFAULT : '',
-    !declaresRootTable(existing, 'ki-authoring') ? KI_AUTHORING_DEFAULT : ''
-  ].filter(Boolean)
-  if (blocks.length === 0) {
-    console.log(`${KI_CONFIG}: required root markers already present`)
-    return
-  }
-  const separator = existing.length === 0 ? '' : existing.endsWith('\n\n') ? '' : existing.endsWith('\n') ? '\n' : '\n\n'
-  const next = `${existing}${separator}${blocks.join('\n')}`
-  const labels = blocks.map((block) => (block === KI_REPO_DEFAULT ? '[ki-repo]' : '[ki-authoring]')).join(', ')
-  console.log(`${dryRun ? 'would append' : 'appended'} ${KI_CONFIG}: ${labels}`)
-  if (!dryRun) writeFileSync(path, next)
-}
-
 const argv = process.argv.slice(2)
+const scripts = dirname(fileURLToPath(import.meta.url))
+
 if (argv.includes('--scaffold-config-only')) {
-  const target = resolve(argv.find((arg) => !arg.startsWith('-')) ?? '.')
-  appendMissingConfig(target, argv.includes('--dry-run'))
+  // CONFORM owns the one self-contained, vendorable local-file transaction. INIT
+  // delegates its config-only internal leg there so the builtins-only safety
+  // primitive is not forked while bootstrap still composes through the owner.
+  execFileSync('bun', [resolve(scripts, 'conform.ts'), ...argv], { stdio: 'inherit' })
   process.exit(0)
 }
 
-const engine = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'ki-bootstrap', 'scripts', 'bootstrap.ts')
+const engine = resolve(scripts, '..', '..', 'ki-bootstrap', 'scripts', 'bootstrap.ts')
 execFileSync('bun', [engine, ...argv, '--seed', SKILL], { stdio: 'inherit' })
