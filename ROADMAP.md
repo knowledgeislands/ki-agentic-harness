@@ -12,7 +12,6 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 
 - [Foundation Tooling: Finish repository-local generated-write hardening](docs/roadmap/foundation-tooling/ROADMAP.md#finish-repository-local-generated-write-hardening)
 - [Foundation Tooling: Roll out the uniform mode model across the `mcp-*` repositories](docs/roadmap/foundation-tooling/ROADMAP.md#roll-out-the-uniform-mode-model-across-the-mcp--repositories)
-- [Hooks: Install Claude Code hooks from GitHub safely](docs/roadmap/hooks/ROADMAP.md#install-claude-code-hooks-from-github-safely)
 
 ## Soon
 

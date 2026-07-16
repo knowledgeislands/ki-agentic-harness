@@ -18,14 +18,14 @@ The harness separates hook payload delivery, user-environment binding, and repos
 - A future compliant user-environment manager may satisfy the same hook-binding requirement without adopting chezmoi. Hook-consuming skills remain independent of the chosen manager.
 - Each skill that depends on a hook declares and audits the capability it needs. Its CONFORM path may repair only its repository-facing declaration or direct the user to the environment manager; it never writes global Claude settings or installs an unmanaged hook.
 
-The existing symlink linker and direct settings writer are legacy migration surfaces. Their replacement and the safe migration of recognised existing links are tracked on the hooks roadmap. A separate `ki-claude-hooks` governance skill is deferred until real deployments show that the renderer-neutral requirement needs its own durable standard.
+The legacy symlink linker and direct settings writer are retired. The payload installer automatically replaces only recognised links into a verified legacy harness checkout, leaving all other user-owned files and links alone. A separate `ki-claude-hooks` governance skill is deferred until real deployments show that the renderer-neutral requirement needs its own durable standard.
 
 ## Consequences
 
 - Hook installation survives repository moves, worktrees, cleanup of downloaded sources, and updates because the configured command names an owned regular file rather than a checkout path.
 - A chezmoi-managed machine has one settings writer. Other managers can implement the same binding contract, so the hook consumer contract does not become chezmoi-specific.
 - The hook payload installer can be tested independently of Claude settings, while the settings binding can test its payload precondition and preservation of unrelated user configuration.
-- The current `link-hooks.ts` interface, its tests, documentation, and feature definition require migration. Until that work lands, the legacy path remains an accurately documented implementation debt rather than the target architecture.
+- The payload installer owns only payload files, their manifest, and its active pointer. It cannot make hooks take effect in Claude Code until the environment manager binds the active payload into the user-managed settings file.
 - The hook-specific binding contract and chezmoi composition path need scoped implementation plans before they change user settings or add checks to consuming skills.
 
 ## References

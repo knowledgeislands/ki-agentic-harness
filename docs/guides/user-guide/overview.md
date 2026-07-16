@@ -27,7 +27,7 @@ The bundle has five parts, each its own directory:
 - **Agents** (`agents/`) — Knowledge Islands subagent definitions: focused roles an agent can delegate to.
 - **MCP servers** (`mcp/`) — a shelf for tool servers that consolidate the workspace's external integrations. Scaffolded, not yet populated.
 - **Evals** (`evals/`) — behavioural test scenarios that check the skills actually behave as intended.
-- **Hooks** (`hooks/`) — global Claude Code automation installed into `~/.claude/settings.json`, currently covering Plan Mode lifecycle and stale Git-lock recovery.
+- **Hooks** (`hooks/`) — durable global Claude Code hook payloads for Plan Mode lifecycle and stale Git-lock recovery; a user-environment manager binds them into settings separately.
 
 The five are meant to be co-installed and versioned together: the skills carry the standards, the agents are the roles that apply them, the MCP servers are the tools those roles reach for, the evals hold the whole set honest, and the hooks automate the surrounding session. Shipping them in one bundle keeps them in step — an agent, its skills, and their checks move as a unit rather than drifting apart across separate installs.
 

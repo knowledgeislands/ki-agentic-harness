@@ -1,0 +1,373 @@
+#!/usr/bin/env bun
+import { spawnSync } from 'node:child_process'
+/** Adversarial tests for the disposable-source hook-payload installer. */
+import {
+  chmodSync,
+  copyFileSync,
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync
+} from 'node:fs'
+import { tmpdir } from 'node:os'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const SCRIPTS = dirname(fileURLToPath(import.meta.url))
+const SCRIPT = join(SCRIPTS, 'install-hooks.ts')
+const ENTRYPOINT = join(SCRIPTS, 'install-hooks.sh')
+const NAMES = ['plan-stamp.sh', 'plan-sync.sh', 'git-lock-check.sh'] as const
+
+let failures = 0
+
+function check(label: string, condition: boolean): void {
+  if (condition) console.log(`  \x1b[32mok\x1b[0m   ${label}`)
+  else {
+    failures += 1
+    console.log(`  \x1b[31mFAIL\x1b[0m ${label}`)
+  }
+}
+
+type Fixture = {
+  root: string
+  home: string
+  source: string
+  claude: string
+  settings: string
+  namespace: string
+}
+
+function fixture(): Fixture {
+  const root = mkdtempSync(join(tmpdir(), 'ki-install-hooks-'))
+  const home = join(root, 'home')
+  const source = join(root, 'source')
+  mkdirSync(home)
+  mkdirSync(source)
+  for (const [index, name] of NAMES.entries()) {
+    const path = join(source, name)
+    writeFileSync(path, `#!/bin/sh\necho hook-${index}\n`)
+    chmodSync(path, 0o755)
+  }
+  const claude = join(home, '.claude')
+  return {
+    root,
+    home,
+    source,
+    claude,
+    settings: join(claude, 'settings.json'),
+    namespace: join(claude, 'hooks', 'knowledgeislands', 'ki-agentic-harness')
+  }
+}
+
+function run(env: Fixture, ...args: string[]): ReturnType<typeof spawnSync> {
+  return spawnSync('bun', [SCRIPT, '--source', env.source, '--home', env.home, '--ref', 'test-ref', ...args], {
+    encoding: 'utf8'
+  })
+}
+
+function runWithStagingFailure(env: Fixture): ReturnType<typeof spawnSync> {
+  return spawnSync('bun', [SCRIPT, '--source', env.source, '--home', env.home, '--ref', 'test-ref'], {
+    encoding: 'utf8',
+    env: { ...process.env, KI_HOOKS_TEST_FAIL_STAGE: '1' }
+  })
+}
+
+function output(result: ReturnType<typeof spawnSync>): string {
+  return typeof result.stdout === 'string' ? result.stdout : (result.stdout?.toString() ?? '')
+}
+
+function activeId(env: Fixture): string | undefined {
+  try {
+    const active = JSON.parse(readFileSync(join(env.namespace, 'active.json'), 'utf8')) as { payload_id?: unknown }
+    return typeof active.payload_id === 'string' ? active.payload_id : undefined
+  } catch {
+    return undefined
+  }
+}
+
+function payload(env: Fixture, id = activeId(env)): string | undefined {
+  return id ? join(env.namespace, id) : undefined
+}
+
+function payloadIds(env: Fixture): string[] {
+  return existsSync(env.namespace) ? readdirSync(env.namespace).filter((name) => /^[a-f0-9]{64}$/.test(name)) : []
+}
+
+function isRegular(path: string, mode: number): boolean {
+  const entry = lstatSync(path)
+  return entry.isFile() && !entry.isSymbolicLink() && (entry.mode & 0o777) === mode
+}
+
+function clean(env: Fixture): void {
+  rmSync(env.root, { recursive: true, force: true })
+}
+
+// The installer creates copied, executable payload files and does not inspect or
+// mutate user-managed Claude settings (even when those settings are malformed).
+{
+  const env = fixture()
+  try {
+    mkdirSync(env.claude)
+    writeFileSync(env.settings, '{ this is deliberately malformed JSON }\n')
+    const settingsBefore = readFileSync(env.settings)
+    const result = run(env)
+    const id = activeId(env)
+    const installed = payload(env, id)
+    check('fresh payload install succeeds', result.status === 0 && Boolean(id) && Boolean(installed))
+    check('fresh install passes its payload check', run(env, '--check').status === 0)
+    check(
+      'payload and active pointer are regular owned files',
+      Boolean(installed) &&
+        NAMES.every((name) => isRegular(join(installed as string, name), 0o755)) &&
+        isRegular(join(installed as string, 'manifest.json'), 0o600) &&
+        isRegular(join(env.namespace, 'active.json'), 0o600)
+    )
+    check('payload directory contains only declared payload files', Boolean(installed) && readdirSync(installed as string).length === 4)
+    check('installer leaves Claude settings byte-identical', readFileSync(env.settings).equals(settingsBefore))
+    check(
+      'payload survives source removal',
+      (() => {
+        rmSync(env.source, { recursive: true, force: true })
+        return NAMES.every((name) => isRegular(join(installed as string, name), 0o755))
+      })()
+    )
+  } finally {
+    clean(env)
+  }
+}
+{
+  const env = fixture()
+  try {
+    check(
+      'a staging failure removes the unpublished payload and private artifacts',
+      runWithStagingFailure(env).status !== 0 && payloadIds(env).length === 0 && readdirSync(env.namespace).length === 0
+    )
+  } finally {
+    clean(env)
+  }
+}
+
+// It is idempotent for the same source and activates a new immutable payload for
+// changed content, while retaining the prior content-addressed payload.
+{
+  const env = fixture()
+  try {
+    check('initial install succeeds', run(env).status === 0)
+    const first = activeId(env) as string
+    const firstPointer = readFileSync(join(env.namespace, 'active.json'))
+    check(
+      'reinstalling unchanged sources is byte-stable',
+      run(env).status === 0 && activeId(env) === first && readFileSync(join(env.namespace, 'active.json')).equals(firstPointer)
+    )
+    writeFileSync(join(env.source, 'plan-sync.sh'), '#!/bin/sh\necho upgraded\n')
+    chmodSync(join(env.source, 'plan-sync.sh'), 0o755)
+    const upgraded = run(env)
+    const second = activeId(env)
+    check('changed source activates a distinct payload', upgraded.status === 0 && typeof second === 'string' && second !== first)
+    check(
+      'previous immutable payload remains intact',
+      NAMES.every((name) => isRegular(join(env.namespace, first, name), 0o755))
+    )
+  } finally {
+    clean(env)
+  }
+}
+{
+  const env = fixture()
+  try {
+    check('install for permission drift check succeeds', run(env).status === 0)
+    const installed = payload(env) as string
+    chmodSync(installed, 0o777)
+    check('weakened payload directory fails validation without replacement', run(env, '--check').status !== 0 && run(env).status !== 0)
+  } finally {
+    clean(env)
+  }
+}
+{
+  const env = fixture()
+  try {
+    check('install for namespace permission drift check succeeds', run(env).status === 0)
+    chmodSync(env.namespace, 0o777)
+    check('weakened namespace fails validation without replacement', run(env, '--check').status !== 0 && run(env).status !== 0)
+  } finally {
+    clean(env)
+  }
+}
+
+// Dry-run validates source inputs but makes no home-directory changes.
+{
+  const env = fixture()
+  try {
+    check('dry run writes nothing', run(env, '--dry-run').status === 0 && !existsSync(env.claude))
+  } finally {
+    clean(env)
+  }
+}
+
+// Unsafe sources and destinations fail closed before an installer-owned payload
+// is written.
+{
+  const env = fixture()
+  try {
+    rmSync(join(env.source, 'plan-stamp.sh'))
+    symlinkSync('/missing', join(env.source, 'plan-stamp.sh'))
+    check('symlink source is rejected before writes', run(env).status !== 0 && !existsSync(env.claude))
+  } finally {
+    clean(env)
+  }
+}
+{
+  const env = fixture()
+  try {
+    const preview = run(env, '--dry-run')
+    const id = output(preview).match(/[a-f0-9]{64}/)?.[0]
+    mkdirSync(env.namespace, { recursive: true })
+    writeFileSync(join(env.namespace, `${id}.lock`), 'another install owns this lock\n')
+    check(
+      'a publication lock leaves no partial payload',
+      preview.status === 0 && typeof id === 'string' && run(env).status !== 0 && !existsSync(join(env.namespace, id))
+    )
+  } finally {
+    clean(env)
+  }
+}
+{
+  const env = fixture()
+  try {
+    check('install for corruption check succeeds', run(env).status === 0)
+    const installed = payload(env) as string
+    writeFileSync(join(installed, 'manifest.json'), '{}\n')
+    check(
+      'corrupt owned payload fails closed without replacement',
+      run(env).status !== 0 && readFileSync(join(installed, 'manifest.json'), 'utf8') === '{}\n'
+    )
+  } finally {
+    clean(env)
+  }
+}
+{
+  const env = fixture()
+  try {
+    writeFileSync(env.claude, 'not a directory')
+    check('hostile .claude file is rejected unchanged', run(env).status !== 0 && readFileSync(env.claude, 'utf8') === 'not a directory')
+  } finally {
+    clean(env)
+  }
+}
+{
+  const env = fixture()
+  try {
+    const outside = join(env.root, 'outside')
+    mkdirSync(outside)
+    symlinkSync(outside, env.claude)
+    check('hostile .claude symlink is rejected', run(env).status !== 0 && lstatSync(env.claude).isSymbolicLink())
+  } finally {
+    clean(env)
+  }
+}
+{
+  const env = fixture()
+  try {
+    const outside = join(env.root, 'outside-hooks')
+    mkdirSync(env.claude)
+    mkdirSync(outside)
+    symlinkSync(outside, join(env.claude, 'hooks'))
+    check('hostile hooks symlink is rejected', run(env).status !== 0 && lstatSync(join(env.claude, 'hooks')).isSymbolicLink())
+  } finally {
+    clean(env)
+  }
+}
+{
+  const env = fixture()
+  try {
+    const outside = join(env.root, 'outside-namespace')
+    mkdirSync(join(env.claude, 'hooks', 'knowledgeislands'), { recursive: true })
+    mkdirSync(outside)
+    symlinkSync(outside, env.namespace)
+    check('hostile payload namespace symlink is rejected', run(env).status !== 0 && lstatSync(env.namespace).isSymbolicLink())
+  } finally {
+    clean(env)
+  }
+}
+{
+  const env = fixture()
+  try {
+    mkdirSync(env.namespace, { recursive: true })
+    writeFileSync(join(env.namespace, 'active.json'), 'not installer JSON\n')
+    check(
+      'invalid active pointer is not overwritten or accompanied by a payload',
+      run(env).status !== 0 &&
+        readFileSync(join(env.namespace, 'active.json'), 'utf8') === 'not installer JSON\n' &&
+        payloadIds(env).length === 0
+    )
+  } finally {
+    clean(env)
+  }
+}
+{
+  const env = fixture()
+  try {
+    mkdirSync(env.namespace, { recursive: true })
+    symlinkSync('/unrelated', join(env.namespace, 'active.json'))
+    check('active-pointer symlink is rejected before payload publication', run(env).status !== 0 && payloadIds(env).length === 0)
+  } finally {
+    clean(env)
+  }
+}
+{
+  const env = fixture()
+  try {
+    mkdirSync(env.namespace, { recursive: true })
+    mkdirSync(join(env.namespace, '.installer.lock'))
+    check('existing installer-wide lock blocks publication', run(env).status !== 0 && payloadIds(env).length === 0)
+  } finally {
+    clean(env)
+  }
+}
+// Legacy checkout links are migrated only when explicitly requested and only
+// when they point to a matching durable harness hook file.
+{
+  const env = fixture()
+  try {
+    const hooks = join(env.claude, 'hooks')
+    mkdirSync(hooks, { recursive: true })
+    const priorHarnessHooks = join(env.root, 'prior', 'ki-agentic-harness', 'hooks')
+    mkdirSync(priorHarnessHooks, { recursive: true })
+    copyFileSync(join(env.source, 'plan-stamp.sh'), join(priorHarnessHooks, 'plan-stamp.sh'))
+    chmodSync(join(priorHarnessHooks, 'plan-stamp.sh'), 0o755)
+    writeFileSync(join(env.root, 'prior', 'ki-agentic-harness', 'package.json'), '{"name":"@knowledgeislands/ki-agentic-harness"}\n')
+    const legacyScripts = join(env.root, 'prior', 'ki-agentic-harness', 'skills', 'keystone', 'ki-bootstrap', 'scripts')
+    mkdirSync(legacyScripts, { recursive: true })
+    writeFileSync(
+      join(legacyScripts, 'link-hooks.ts'),
+      "const HOOKS_SOURCE_ROOT = join(HARNESS_ROOT, 'hooks')\nconst HOOKS = [{ name: 'plan-stamp.sh' }]\n"
+    )
+    symlinkSync(join(priorHarnessHooks, 'plan-stamp.sh'), join(hooks, 'plan-stamp.sh'))
+    symlinkSync('/unrelated', join(hooks, 'plan-sync.sh'))
+    const result = run(env)
+    check('recognised legacy migration is the default', result.status === 0 && isRegular(join(hooks, 'plan-stamp.sh'), 0o755))
+    check('unrecognised legacy link is left untouched', lstatSync(join(hooks, 'plan-sync.sh')).isSymbolicLink())
+  } finally {
+    clean(env)
+  }
+}
+
+// The remote entry point fetches a disposable source and does not smuggle in a
+// bootstrap or settings-binding responsibility.
+{
+  const entrypoint = readFileSync(ENTRYPOINT, 'utf8')
+  check('remote entry point fetches the selected GitHub ref', entrypoint.includes('codeload.github.com/$REPO/tar.gz/$ref'))
+  check(
+    'remote entry point invokes only the payload installer',
+    entrypoint.includes('install-hooks.ts') && !entrypoint.includes('bootstrap.ts')
+  )
+  check('remote entry point never mentions Claude settings', !entrypoint.includes('settings.json'))
+}
+
+if (failures > 0) process.exit(1)
+console.log('\ninstall-hooks tests passed')

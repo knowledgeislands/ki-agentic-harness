@@ -33,6 +33,16 @@ Bootstrap's one job is to build `.ki-meta/`. For every skill in the resolved set
 
 It **never touches `package.json`.** A `.ki-meta/` is dot-prefixed and generated-not-authored, so it stays off the repo's own `scripts/`, and (being idempotent) re-running the bootstrap at the same ref reproduces byte-identical output. The `ki:*` convenience keys that a code repo may want — `bun run ki:audit` aliasing `./.ki-meta/bin/ki-audit` — are wired later by `ki-engineering` when it comes online for that repo, as sugar over these same bins, never by bootstrap.
 
+## Optional global Claude hook payload
+
+Repository bootstrap does not install or configure user-global hooks. If the local user environment needs the harness's Claude Code Plan Mode lifecycle and stale Git-lock payload, install it once with the separate remote entry point:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/install-hooks.sh | sh
+```
+
+It downloads a disposable source, copies the hook files as manifest-verified regular files below `~/.claude/hooks/knowledgeislands/ki-agentic-harness/`, and records the active content-addressed payload. It never creates hook symlinks and never reads or writes `~/.claude/settings.json`. A compliant user-environment manager — currently chezmoi through `ki-dotfiles-chezmoi` — separately checks that payload and owns the matching Claude settings registrations. Do not add this command to a per-repository or `mgit` bootstrap run.
+
 ## The four bins — day-to-day, once governed
 
 After INIT the repo governs itself with no skills installed and no `package.json`:

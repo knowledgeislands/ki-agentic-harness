@@ -64,15 +64,15 @@ _Verify:_ `ki-harness`'s rubric CLAUDE-1 and CLAUDE-2 ([`skills/repo-structure/k
 
 ### HARN-009 — Claude Code plan lifecycle hooks
 
-The harness MUST ship `hooks/plan-stamp.sh` and `hooks/plan-sync.sh` as a Claude-Code-specific lifecycle pair and expose `ki:hooks:link:global` to install their `PostToolUse(ExitPlanMode)` and `PostToolUse(TodoWrite)` wiring.
+The harness MUST ship `hooks/plan-stamp.sh` and `hooks/plan-sync.sh` as a Claude-Code-specific lifecycle pair and expose `ki:hooks:install` to install the complete hook payload as manifest-verified executable regular files under an owned content-addressed `~/.claude/hooks/knowledgeislands/ki-agentic-harness/` namespace. It MUST NOT write Claude settings or create hook symlinks.
 
-_Verify:_ `bun hooks/plan-stamp.test.ts && bun hooks/plan-sync.test.ts` exercises the pair; `bun skills/keystone/ki-bootstrap/scripts/link-hooks.ts --check` audits the installed symlinks and Claude Code settings wiring.
+_Verify:_ `bun hooks/plan-stamp.test.ts && bun hooks/plan-sync.test.ts` exercises the pair; `bun skills/keystone/ki-bootstrap/scripts/install-hooks.test.ts` exercises payload ownership, durability, and settings non-mutation.
 
 ### HARN-010 — Claude Code stale Git-lock guard
 
-The harness MUST ship `hooks/git-lock-check.sh` as a Claude-Code-specific `Stop(*)` hook that removes stale lock files only from the current worktree's physical Git directory and only when no relevant Git process is active. The global hook linker MUST install and audit each hook against its own declared event, matcher, command, and timeout while preserving unrelated settings.
+The harness MUST ship `hooks/git-lock-check.sh` as a Claude-Code-specific `Stop(*)` hook that removes stale lock files only from the current worktree's physical Git directory and only when no relevant Git process is active. The payload installer MUST carry it with the lifecycle pair and provide an active, manifest-verified payload for a separate user-environment binding to register.
 
-_Verify:_ `bun hooks/git-lock-check.test.ts` exercises repository, process, path, and symlink safety; `bun skills/keystone/ki-bootstrap/scripts/link-hooks.test.ts` exercises mixed-event settings convergence and no-clobber behavior.
+_Verify:_ `bun hooks/git-lock-check.test.ts` exercises repository, process, path, and symlink safety; `bun skills/keystone/ki-bootstrap/scripts/install-hooks.test.ts` exercises the payload installer.
 
 ## Gaps
 

@@ -10,10 +10,12 @@ This directory is where the harness's hook scripts consolidate — the `PreToolU
 
 The lock guard is best-effort recovery in a trusted user account. It rechecks candidate type, physical parent containment, and process state immediately before each removal, but portable shell cannot combine that parent proof and unlink into one descriptor-relative operation. It therefore does not claim to defend against a same-UID adversary concurrently replacing Git-administration path components.
 
-Two install patterns apply, and they diverge:
+Two ownership boundaries apply, and they deliberately diverge:
 
-- **Project-local** (the general pattern) — a consuming repo wires a handler into its own `.claude/settings.json`, scoped to that repo.
-- **Global** (the current surface) — install via `bun run ki:hooks:link:global` (or `bun skills/keystone/ki-bootstrap/scripts/link-hooks.ts`), which symlinks all three scripts into `~/.claude/hooks/` and merge-patches each script's declared event and matcher into `~/.claude/settings.json`. Plan-file lifecycle is tied to personal `~/.claude/plans/` state; the lock guard applies across every worktree. Both therefore install at the home-directory level rather than per-repo.
+- **Repository-facing declarations** — a consuming skill may declare and audit that it needs a hook capability, but it does not write the user's global Claude settings.
+- **Global payload and binding** — `bun run ki:hooks:install` copies the three hooks as executable regular files into a content-addressed namespace below `~/.claude/hooks/knowledgeislands/ki-agentic-harness/`, records a manifest, and updates an installer-owned `active.json` pointer. It never reads or writes `~/.claude/settings.json`, and it never creates hook symlinks. It also replaces recognised legacy harness-checkout links by default, while leaving unknown user files and links untouched. The remote one-time form is `curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/install-hooks.sh | sh`.
+
+The user-environment manager owns the next step: on a chezmoi-managed machine, `ki-dotfiles-chezmoi` will validate the durable payload and render the matching Claude Code registrations. That binding is deliberately outside the installer and repository bootstrap. Plan-file lifecycle is tied to personal `~/.claude/plans/` state; the lock guard applies across every worktree, so both remain home-directory capabilities rather than project-local hook installation.
 
 Hooks have no dedicated governing skill yet — they are advisory, like [evals/](../evals). The bundle layout is fixed by ADR-KI-HARNESS-001 and governed by the **`ki-harness`** skill under [skills/](../skills).
 

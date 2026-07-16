@@ -8,10 +8,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Install Claude Code hooks from GitHub safely
-
-Provide the three Claude Code hooks as an owned, versioned, regular-file payload under `~/.claude/hooks/`; no hook may be symlinked. The payload installer must not run during repository bootstrap or a parallel `mgit` fleet operation, and it must not write Claude settings. Preflight hostile parents and owned destinations, leave no disposable-source dependency, and cover fresh install, migration from legacy symlinks, upgrade, blocker, partial-failure, and idempotence cases.
-
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.

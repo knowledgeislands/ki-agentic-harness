@@ -28,14 +28,6 @@ Canonical themes and active execution plans.
 - **Status:** open
 - **Blocks:** —
 
-### [hooks/001](hooks/plans/001-install-remote-global-hooks.md)
-
-- **Title:** Install durable Claude hook payloads safely
-- **Theme:** `hooks`
-- **Roadmap item:** `hooks/install-claude-code-hooks-from-github-safely`
-- **Status:** in-progress
-- **Blocks:** —
-
 ## Dependency graph
 
 ```text
