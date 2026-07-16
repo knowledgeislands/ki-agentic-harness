@@ -51,8 +51,27 @@
 
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { chmodSync, cpSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import {
+  chmodSync,
+  closeSync,
+  cpSync,
+  fstatSync,
+  fsyncSync,
+  linkSync,
+  lstatSync,
+  mkdirSync,
+  mkdtempSync,
+  openSync,
+  readdirSync,
+  readFileSync,
+  realpathSync,
+  renameSync,
+  rmdirSync,
+  rmSync,
+  unlinkSync,
+  writeFileSync
+} from 'node:fs'
+import { dirname, join, resolve } from 'node:path'
 import { resolveSet, SKILLS_ROOT, SkillResolutionError, skillDir, vendorModesOf, vendorUnit } from './resolve.ts'
 
 const GREEN = '\x1b[32m'
@@ -411,6 +430,240 @@ interface VendoredFile {
   abs: string
 }
 
+type EntrySnapshot =
+  | { kind: 'directory'; dev: number; ino: number; mode: number; uid: number }
+  | { kind: 'file'; dev: number; ino: number; mode: number; uid: number; bytes: Buffer }
+
+type OwnedSnapshot = Map<string, EntrySnapshot>
+
+interface PublishedEntry {
+  rel: string
+  after: EntrySnapshot
+  before?: QuarantinedEntry
+}
+
+interface QuarantinedEntry {
+  rel: string
+  expected: EntrySnapshot
+  path: string
+  movedPath: string
+}
+
+interface CreatedDirectory {
+  rel: string
+  identity: EntrySnapshot & { kind: 'directory' }
+}
+
+class RollbackConflictError extends Error {}
+
+function lstatOrNull(path: string): ReturnType<typeof lstatSync> | null {
+  try {
+    return lstatSync(path)
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return null
+    throw error
+  }
+}
+
+function snapshotEntry(path: string): EntrySnapshot {
+  const stat = lstatSync(path)
+  const common = { dev: stat.dev, ino: stat.ino, mode: stat.mode & 0o777, uid: stat.uid }
+  if (stat.isSymbolicLink()) throw new Error(`unsafe symlink entry: ${path}`)
+  if (stat.isDirectory()) return { kind: 'directory', ...common }
+  if (stat.isFile()) return { kind: 'file', ...common, bytes: readFileSync(path) }
+  throw new Error(`unsafe non-file entry: ${path}`)
+}
+
+function sameSnapshot(a: EntrySnapshot | undefined, b: EntrySnapshot | undefined, identity = true): boolean {
+  if (!a || !b || a.kind !== b.kind || a.mode !== b.mode || a.uid !== b.uid) return a === b
+  if (identity && (a.dev !== b.dev || a.ino !== b.ino)) return false
+  return a.kind === 'directory' || (b.kind === 'file' && a.bytes.equals(b.bytes))
+}
+
+function snapshotTree(metaDir: string, rel: string, out: OwnedSnapshot): void {
+  const abs = join(metaDir, rel)
+  const snap = snapshotEntry(abs)
+  out.set(rel, snap)
+  if (snap.kind !== 'directory') return
+  for (const name of readdirSync(abs).sort()) snapshotTree(metaDir, join(rel, name), out)
+}
+
+function snapshotOwned(metaDir: string): OwnedSnapshot {
+  const out: OwnedSnapshot = new Map()
+  for (const rel of ['skills', 'bin', 'manifest.json']) {
+    if (lstatOrNull(join(metaDir, rel))) snapshotTree(metaDir, rel, out)
+  }
+  return out
+}
+
+function sameOwnedSnapshot(a: OwnedSnapshot, b: OwnedSnapshot): boolean {
+  if (a.size !== b.size) return false
+  for (const [rel, before] of a) if (!sameSnapshot(before, b.get(rel))) return false
+  return true
+}
+
+function assertCurrent(metaDir: string, rel: string, expected: EntrySnapshot | undefined): void {
+  const path = join(metaDir, rel)
+  const current = lstatOrNull(path) ? snapshotEntry(path) : undefined
+  if (!sameSnapshot(expected, current)) throw new Error(`destination changed before publication: ${join(VENDOR_DIR, rel)}`)
+}
+
+function physicalTarget(path: string): { path: string; identity: EntrySnapshot & { kind: 'directory' } } {
+  const canonical = realpathSync(resolve(path))
+  const identity = snapshotEntry(canonical)
+  if (identity.kind !== 'directory') throw new Error(`target must resolve to a real directory: ${path}`)
+  return { path: canonical, identity }
+}
+
+function establishMeta(
+  target: string,
+  targetIdentity: EntrySnapshot & { kind: 'directory' }
+): { path: string; created?: EntrySnapshot & { kind: 'directory' } } {
+  if (!exactIdentity(target, targetIdentity) || realpathSync(target) !== target) {
+    throw new Error('physical target changed before .ki-meta establishment')
+  }
+  const metaDir = join(target, VENDOR_DIR)
+  const existing = lstatOrNull(metaDir)
+  if (!existing) {
+    if (process.env.NODE_ENV === 'test' && process.env.KI_BOOTSTRAP_TEST_RACE_META_CREATE === '1') mkdirSync(metaDir)
+    mkdirSync(metaDir, { mode: 0o755 })
+    const created = snapshotEntry(metaDir)
+    try {
+      if (created.kind !== 'directory' || realpathSync(metaDir) !== metaDir || dirname(metaDir) !== target) {
+        throw new Error(`${VENDOR_DIR} was not created as the expected real directory`)
+      }
+    } catch (error) {
+      if (created.kind === 'directory' && exactIdentity(metaDir, created) && readdirSync(metaDir).length === 0) rmdirSync(metaDir)
+      throw error
+    }
+    if (!exactIdentity(target, targetIdentity)) throw new Error('physical target changed during .ki-meta establishment')
+    validateMetaPrivacy(metaDir)
+    return { path: metaDir, created }
+  }
+  const current = snapshotEntry(metaDir)
+  if (current.kind !== 'directory' || realpathSync(metaDir) !== metaDir || dirname(metaDir) !== target) {
+    throw new Error(`${VENDOR_DIR} must be a real directory directly beneath the physical target`)
+  }
+  if (!exactIdentity(target, targetIdentity)) throw new Error('physical target changed during .ki-meta validation')
+  validateMetaPrivacy(metaDir)
+  return { path: metaDir }
+}
+
+function validateMetaPrivacy(metaDir: string): void {
+  const stat = lstatSync(metaDir)
+  const getuid = process.getuid
+  if (typeof getuid === 'function' && stat.uid !== getuid.call(process)) {
+    throw new Error(`${VENDOR_DIR} must be owned by the current user before creating private transaction state`)
+  }
+  if ((stat.mode & 0o022) !== 0) throw new Error(`${VENDOR_DIR} must not be writable by group or other users`)
+}
+
+function exactIdentity(path: string, expected: EntrySnapshot): boolean {
+  const current = lstatOrNull(path)
+  if (!current) return false
+  const snap = snapshotEntry(path)
+  return snap.kind === expected.kind && snap.dev === expected.dev && snap.ino === expected.ino
+}
+
+function cleanupExact(path: string, expected: EntrySnapshot, recursive = false): void {
+  if (!exactIdentity(path, expected)) throw new Error(`refusing cleanup after identity change: ${path}`)
+  if (recursive) rmSync(path, { recursive: true })
+  else if (expected.kind === 'directory') rmdirSync(path)
+  else unlinkSync(path)
+}
+
+function acquireLock(metaDir: string): { path: string; identity: EntrySnapshot & { kind: 'file' } } {
+  const path = join(metaDir, '.bootstrap.lock')
+  const fd = openSync(path, 'wx', 0o600)
+  const stat = fstatSync(fd)
+  const identity: EntrySnapshot & { kind: 'file' } = {
+    kind: 'file',
+    dev: stat.dev,
+    ino: stat.ino,
+    mode: stat.mode & 0o777,
+    uid: stat.uid,
+    bytes: Buffer.alloc(0)
+  }
+  closeSync(fd)
+  if (!exactIdentity(path, identity)) throw new Error('bootstrap lock changed during acquisition')
+  return { path, identity }
+}
+
+function createStaging(metaDir: string): { path: string; identity: EntrySnapshot & { kind: 'directory' } } {
+  const forcedSuffix = process.env.NODE_ENV === 'test' ? process.env.KI_BOOTSTRAP_TEST_STAGING_SUFFIX : undefined
+  const path = forcedSuffix ? join(metaDir, `.bootstrap-staging-${forcedSuffix}`) : mkdtempSync(join(metaDir, '.bootstrap-staging-'))
+  if (forcedSuffix) mkdirSync(path, { mode: 0o700 })
+  chmodSync(path, 0o700)
+  const identity = snapshotEntry(path)
+  if (identity.kind !== 'directory') throw new Error('bootstrap staging entry is not a directory')
+  return { path, identity }
+}
+
+function validateGeneration(staging: string, journal: OwnedSnapshot, manifestFiles: Record<string, string>): OwnedSnapshot {
+  const topLevel = readdirSync(staging).sort()
+  if (JSON.stringify(topLevel) !== JSON.stringify(['bin', 'manifest.json', 'skills'])) {
+    throw new Error(`candidate generation has unexpected top-level entries: ${topLevel.join(', ')}`)
+  }
+  const tree = new Map<string, EntrySnapshot>()
+  for (const rel of ['skills', 'bin', 'manifest.json']) {
+    if (!lstatOrNull(join(staging, rel))) throw new Error(`candidate generation is missing ${rel}`)
+    snapshotTree(staging, rel, tree)
+  }
+  if (!sameOwnedSnapshot(journal, tree)) throw new Error('candidate generation changed after creation journal entry')
+  for (const [manifestRel, expectedHash] of Object.entries(manifestFiles)) {
+    const rel = manifestRel.startsWith(`${VENDOR_DIR}/`) ? manifestRel.slice(VENDOR_DIR.length + 1) : manifestRel
+    const entry = tree.get(rel)
+    if (entry?.kind !== 'file' || createHash('sha256').update(entry.bytes).digest('hex') !== expectedHash) {
+      throw new Error(`candidate generation hash mismatch: ${manifestRel}`)
+    }
+  }
+  return tree
+}
+
+function restoreSnapshot(path: string, before: EntrySnapshot & { kind: 'file' }): void {
+  const temp = join(dirname(path), `.bootstrap-restore-${process.pid}-${Math.random().toString(16).slice(2)}`)
+  const fd = openSync(temp, 'wx', 0o600)
+  try {
+    writeFileSync(fd, before.bytes)
+    fsyncSync(fd)
+    chmodSync(temp, before.mode)
+  } finally {
+    closeSync(fd)
+  }
+  try {
+    renameSync(temp, path)
+  } finally {
+    if (lstatOrNull(temp)) unlinkSync(temp)
+  }
+}
+
+function maybeInjectPublicationFailure(count: number): void {
+  if (process.env.NODE_ENV !== 'test') return
+  const after = Number(process.env.KI_BOOTSTRAP_TEST_FAIL_AFTER ?? '')
+  if (Number.isInteger(after) && after > 0 && count === after) throw new Error(`injected publication failure after ${count}`)
+}
+
+function copyRegularFile(source: string, destination: string): void {
+  const before = snapshotEntry(source)
+  if (before.kind !== 'file') throw new Error(`source is not a regular file: ${source}`)
+  cpSync(source, destination)
+  const after = snapshotEntry(destination)
+  if (after.kind !== 'file' || !before.bytes.equals(after.bytes)) throw new Error(`copied source changed during read: ${source}`)
+}
+
+function recordGenerated(journal: OwnedSnapshot, staging: string, rel: string): void {
+  journal.set(rel, snapshotEntry(join(staging, rel)))
+  if (process.env.NODE_ENV === 'test' && process.env.KI_BOOTSTRAP_TEST_FAIL_BUILD_AFTER_REL === rel) {
+    throw new Error(`injected candidate-build failure after ${rel}`)
+  }
+}
+
+function hashJournalFile(journal: OwnedSnapshot, rel: string): string {
+  const entry = journal.get(rel)
+  if (entry?.kind !== 'file') throw new Error(`creation journal is missing regular file: ${rel}`)
+  return createHash('sha256').update(entry.bytes).digest('hex')
+}
+
 // The universal modes that vendor a COPIED per-skill script. `init` is NOT here: its
 // per-skill `scripts/init.ts` is a harness-relative seed delegator (it resolves the
 // engine via ../../ki-bootstrap) so a verbatim copy into a target's .ki-meta would be
@@ -418,17 +671,23 @@ interface VendoredFile {
 // `help` renders a snapshot below; `refresh` is harness-only and never vendored.
 const SCRIPT_MODES = ['audit', 'conform'] as const
 
-function vendorSkill(target: string, skill: string, dryRun: boolean, manifestFiles: Record<string, string>): void {
+function vendorSkill(
+  generationRoot: string,
+  skill: string,
+  dryRun: boolean,
+  manifestFiles: Record<string, string>,
+  journal?: OwnedSnapshot
+): void {
   const declared = vendorModesOf(skill)
   // Which script modes to copy: the skill's declared list ∩ {audit, conform}, or — for
   // a skill still on filename-convention discovery (no `vendors:`) — both, as before.
   const scriptModes = SCRIPT_MODES.filter((m) => !declared || declared.includes(m))
-  const destDir = join(target, VENDOR_DIR, 'skills', skill)
+  const destDir = join(generationRoot, 'skills', skill)
   const written: VendoredFile[] = []
 
   for (const mode of scriptModes) {
     const unit = vendorUnit(skill, mode)
-    if (unit) written.push(...vendorOne(destDir, mode, unit, dryRun))
+    if (unit) written.push(...vendorOne(generationRoot, destDir, skill, mode, unit, dryRun, journal))
   }
   // Nothing vendored (no audit/conform resolvable) — skip the skill entirely, matching
   // the old `if (!audit) return` guard so bare non-governance dirs are ignored.
@@ -440,24 +699,27 @@ function vendorSkill(target: string, skill: string, dryRun: boolean, manifestFil
   // ADR-KI-HARNESS-006's former open question by rendered snapshot; drift is
   // covered by the manifest hash like every other vendored file.
   const helpAbs = join(destDir, 'help.md')
-  try {
-    const help = execFileSync('bun', [join(skillDir('ki-bootstrap'), 'scripts', 'skill-help.ts'), skill], {
-      cwd: join(SKILLS_ROOT, '..'),
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore']
-    })
-    console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/skills/${skill}/help.md (help snapshot)${RESET}`)
-    if (!dryRun) {
-      mkdirSync(destDir, { recursive: true })
-      writeFileSync(helpAbs, help)
-      written.push({ rel: `${VENDOR_DIR}/skills/${skill}/help.md`, abs: helpAbs })
-    }
-  } catch {
-    console.log(`${DIM}warn: no help snapshot for ${skill} (renderer unavailable)${RESET}`)
+  const helpEnv = process.env.KI_BOOTSTRAP_TEST_HELP_PATH ? { ...process.env, PATH: process.env.KI_BOOTSTRAP_TEST_HELP_PATH } : process.env
+  const help = execFileSync('bun', [join(skillDir('ki-bootstrap'), 'scripts', 'skill-help.ts'), skill], {
+    cwd: join(SKILLS_ROOT, '..'),
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'ignore'],
+    env: helpEnv
+  })
+  console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/skills/${skill}/help.md (help snapshot)${RESET}`)
+  if (!dryRun) {
+    mkdirSync(destDir, { recursive: true })
+    if (journal) recordGenerated(journal, generationRoot, join('skills', skill))
+    writeFileSync(helpAbs, help)
+    if (journal) recordGenerated(journal, generationRoot, join('skills', skill, 'help.md'))
+    written.push({ rel: `${VENDOR_DIR}/skills/${skill}/help.md`, abs: helpAbs })
   }
 
   for (const f of written) {
-    if (!dryRun) manifestFiles[f.rel] = sha256File(f.abs)
+    if (!dryRun) {
+      if (!journal) throw new Error('candidate generation requires a creation journal')
+      manifestFiles[f.rel] = hashJournalFile(journal, f.rel.slice(VENDOR_DIR.length + 1))
+    }
   }
 }
 
@@ -466,27 +728,32 @@ function vendorSkill(target: string, skill: string, dryRun: boolean, manifestFil
 // (ADR-KI-HARNESS-006 — "even a skill whose mechanical gate is a shared command...
 // yields a unit runnable in a non-engineering, no-package.json repo").
 function vendorOne(
+  generationRoot: string,
   destDir: string,
+  skill: string,
   mode: 'audit' | 'conform',
   unit: { kind: 'file'; path: string } | { kind: 'command'; command: string },
-  dryRun: boolean
+  dryRun: boolean,
+  journal?: OwnedSnapshot
 ): VendoredFile[] {
   const destFile = `${mode}.ts`
-  const rel = `${VENDOR_DIR}/skills/${destDir.split('/').pop()}/${destFile}`
+  const rel = `${VENDOR_DIR}/skills/${skill}/${destFile}`
   const abs = join(destDir, destFile)
   if (unit.kind === 'file') {
-    const skill = destDir.split('/').pop() as string
     console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (file)${RESET}`)
     if (!dryRun) {
       mkdirSync(destDir, { recursive: true })
-      cpSync(join(skillDir(skill), unit.path), abs)
+      if (journal) recordGenerated(journal, generationRoot, join('skills', skill))
+      copyRegularFile(join(skillDir(skill), unit.path), abs)
+      if (journal) recordGenerated(journal, generationRoot, join('skills', skill, destFile))
     }
   } else {
-    const skill = destDir.split('/').pop() as string
     console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (command wrapper)${RESET}`)
     if (!dryRun) {
       mkdirSync(destDir, { recursive: true })
+      if (journal) recordGenerated(journal, generationRoot, join('skills', skill))
       writeFileSync(abs, commandWrapper(unit.command))
+      if (journal) recordGenerated(journal, generationRoot, join('skills', skill, destFile))
     }
   }
   return [{ rel, abs }]
@@ -510,16 +777,22 @@ try {
 `.replace('COMMAND_PLACEHOLDER', command.replace(/\\/g, '\\\\').replace(/"/g, '\\"'))
 }
 
-function sha256File(path: string): string {
-  return createHash('sha256').update(readFileSync(path)).digest('hex')
-}
-
-function scaffoldRepoConfig(target: string, dryRun: boolean): void {
+function scaffoldRepoConfig(target: string, targetIdentity: EntrySnapshot & { kind: 'directory' }, dryRun: boolean): void {
   const repoInit = join(skillDir('ki-repo'), 'scripts', 'init.ts')
+  if (!exactIdentity(target, targetIdentity) || realpathSync(target) !== target) {
+    throw new Error('physical target changed before repository config scaffold')
+  }
   try {
     execFileSync('bun', [repoInit, target, '--scaffold-config-only', ...(dryRun ? ['--dry-run'] : [])], { stdio: 'inherit' })
   } catch (error) {
     process.exit((error as { status?: number }).status ?? 1)
+  }
+  if (process.env.NODE_ENV === 'test' && process.env.KI_BOOTSTRAP_TEST_REPLACE_ROOT_AFTER_SCAFFOLD_WITH) {
+    renameSync(target, process.env.KI_BOOTSTRAP_TEST_REPLACE_ROOT_AFTER_SCAFFOLD_WITH)
+    mkdirSync(target)
+  }
+  if (!exactIdentity(target, targetIdentity) || realpathSync(target) !== target) {
+    throw new Error('physical target changed during repository config scaffold')
   }
 }
 
@@ -533,8 +806,474 @@ function resolvedSetOrExit(target: string, seeds: string[]): string[] {
   }
 }
 
+function buildCandidate(
+  staging: string,
+  set: string[],
+  ref: string,
+  journal: OwnedSnapshot
+): { files: Record<string, string>; tree: OwnedSnapshot } {
+  const manifestFiles: Record<string, string> = {}
+  mkdirSync(join(staging, 'skills'), { mode: 0o755 })
+  recordGenerated(journal, staging, 'skills')
+  mkdirSync(join(staging, 'bin'), { mode: 0o755 })
+  recordGenerated(journal, staging, 'bin')
+  for (const skill of set) vendorSkill(staging, skill, false, manifestFiles, journal)
+
+  const aggregate = join(staging, 'bin', 'aggregate.ts')
+  writeFileSync(aggregate, AGGREGATE_RUNNER)
+  recordGenerated(journal, staging, join('bin', 'aggregate.ts'))
+  writeFileSync(join(staging, 'bin', 'ki-audit'), BIN_KI_AUDIT)
+  chmodSync(join(staging, 'bin', 'ki-audit'), 0o755)
+  recordGenerated(journal, staging, join('bin', 'ki-audit'))
+  writeFileSync(join(staging, 'bin', 'ki-conform'), BIN_KI_CONFORM)
+  chmodSync(join(staging, 'bin', 'ki-conform'), 0o755)
+  recordGenerated(journal, staging, join('bin', 'ki-conform'))
+  writeFileSync(join(staging, 'bin', 'ki-init'), binKiInit())
+  chmodSync(join(staging, 'bin', 'ki-init'), 0o755)
+  recordGenerated(journal, staging, join('bin', 'ki-init'))
+  writeFileSync(join(staging, 'bin', 'ki-help'), BIN_KI_HELP)
+  chmodSync(join(staging, 'bin', 'ki-help'), 0o755)
+  recordGenerated(journal, staging, join('bin', 'ki-help'))
+  manifestFiles[join(VENDOR_DIR, 'bin', 'aggregate.ts')] = hashJournalFile(journal, join('bin', 'aggregate.ts'))
+
+  if (set.includes('ki-harness')) {
+    for (const name of HARNESS_BIN_SCRIPTS) {
+      const destination = join(staging, 'bin', name)
+      copyRegularFile(join(skillDir('ki-bootstrap'), 'scripts', name), destination)
+      recordGenerated(journal, staging, join('bin', name))
+      manifestFiles[join(VENDOR_DIR, 'bin', name)] = hashJournalFile(journal, join('bin', name))
+    }
+    console.log(`${GREEN}bin${RESET} ${DIM}→ ${VENDOR_DIR}/bin/{${HARNESS_BIN_SCRIPTS.join(', ')}} (harness cross-skill scripts)${RESET}`)
+  }
+
+  writeFileSync(join(staging, 'manifest.json'), `${JSON.stringify({ ref, files: manifestFiles }, null, 2)}\n`)
+  recordGenerated(journal, staging, 'manifest.json')
+  maybeInjectStagedMutation(staging)
+  return { files: manifestFiles, tree: validateGeneration(staging, journal, manifestFiles) }
+}
+
+function validateTransactionParents(
+  target: string,
+  targetIdentity: EntrySnapshot & { kind: 'directory' },
+  metaDir: string,
+  metaIdentity: EntrySnapshot & { kind: 'directory' },
+  lockPath: string,
+  lockIdentity: EntrySnapshot & { kind: 'file' }
+): void {
+  if (!exactIdentity(target, targetIdentity) || realpathSync(target) !== target) {
+    throw new Error('physical target changed before publication')
+  }
+  if (!exactIdentity(metaDir, metaIdentity) || realpathSync(metaDir) !== metaDir || dirname(metaDir) !== target) {
+    throw new Error(`${VENDOR_DIR} changed before publication`)
+  }
+  if (!exactIdentity(lockPath, lockIdentity)) throw new Error('bootstrap lock changed before publication')
+}
+
+function validateDestinationShape(metaDir: string, candidate: OwnedSnapshot, includeManifest: boolean): OwnedSnapshot {
+  const current = snapshotOwned(metaDir)
+  const expectedEntries = [...candidate.entries()].filter(([rel]) => includeManifest || rel !== 'manifest.json')
+  const currentEntries = [...current.entries()].filter(([rel]) => includeManifest || rel !== 'manifest.json')
+  if (expectedEntries.length !== currentEntries.length) throw new Error('published generation has an unexpected owned-entry set')
+  for (const [rel, expected] of expectedEntries) {
+    if (!sameSnapshot(expected, current.get(rel), false)) throw new Error(`published generation differs at ${join(VENDOR_DIR, rel)}`)
+  }
+  return current
+}
+
+function validateStagingForCleanup(staging: string, identity: EntrySnapshot, candidate: OwnedSnapshot): void {
+  if (!exactIdentity(staging, identity)) throw new Error(`refusing staging cleanup after identity change: ${staging}`)
+  const current = new Map<string, EntrySnapshot>()
+  for (const name of readdirSync(staging).sort()) snapshotTree(staging, name, current)
+  for (const [rel, entry] of current) {
+    if (!sameSnapshot(entry, candidate.get(rel))) throw new Error(`refusing staging cleanup after content change: ${rel}`)
+  }
+}
+
+function cleanupTrustedStaging(staging: string, identity: EntrySnapshot): void {
+  cleanupExact(staging, identity, true)
+}
+
+function maybeInjectRollbackConflict(metaDir: string): void {
+  if (process.env.NODE_ENV !== 'test') return
+  const rel = process.env.KI_BOOTSTRAP_TEST_ROLLBACK_CONFLICT_REL
+  if (!rel) return
+  const destination = join(metaDir, rel)
+  const entry = lstatOrNull(destination)
+  if (!entry?.isFile() || entry.isSymbolicLink()) return
+  writeFileSync(destination, 'third-party rollback conflict\n')
+}
+
+function maybeInjectPrePublicationReplacement(metaDir: string): void {
+  if (process.env.NODE_ENV !== 'test') return
+  const rel = process.env.KI_BOOTSTRAP_TEST_PREPUBLISH_REPLACE_REL
+  if (!rel) return
+  const destination = join(metaDir, rel)
+  const before = snapshotEntry(destination)
+  if (before.kind !== 'file') throw new Error(`test replacement is not a regular file: ${rel}`)
+  restoreSnapshot(destination, before)
+}
+
+function maybeInjectPruneConflict(metaDir: string, rel: string): void {
+  if (process.env.NODE_ENV !== 'test' || process.env.KI_BOOTSTRAP_TEST_PRUNE_CONFLICT_REL !== rel) return
+  writeFileSync(join(metaDir, rel), 'third-party prune conflict\n')
+}
+
+function maybeInjectStagedMutation(staging: string): void {
+  if (process.env.NODE_ENV !== 'test') return
+  const rel = process.env.KI_BOOTSTRAP_TEST_MUTATE_STAGED_REL
+  if (rel) writeFileSync(join(staging, rel), 'third-party staged mutation\n')
+}
+
+function maybeInjectLateDestinationMutation(
+  metaDir: string,
+  phase: 'pre-manifest' | 'between-validation-manifest' | 'post-manifest'
+): void {
+  if (process.env.NODE_ENV !== 'test') return
+  const phaseKey =
+    phase === 'pre-manifest'
+      ? 'PRE_MANIFEST'
+      : phase === 'between-validation-manifest'
+        ? 'BETWEEN_VALIDATION_AND_MANIFEST'
+        : 'POST_MANIFEST'
+  const rel = process.env[`KI_BOOTSTRAP_TEST_LATE_${phaseKey}_REL`]
+  if (!rel) return
+  const destination = join(metaDir, rel)
+  const before = snapshotEntry(destination)
+  if (before.kind !== 'file') throw new Error(`test late mutation is not a regular file: ${rel}`)
+  restoreSnapshot(destination, before)
+}
+
+interface Quarantine {
+  path: string
+  next: number
+  entries: QuarantinedEntry[]
+}
+
+function createPrivateSnapshot(path: string, expected: EntrySnapshot & { kind: 'file' }): string {
+  const snapshotPath = `${path}.snapshot`
+  const fd = openSync(snapshotPath, 'wx', 0o600)
+  try {
+    writeFileSync(fd, expected.bytes)
+    fsyncSync(fd)
+    chmodSync(snapshotPath, expected.mode)
+  } finally {
+    closeSync(fd)
+  }
+  const privateSnapshot = snapshotEntry(snapshotPath)
+  if (!sameSnapshot(expected, privateSnapshot, false)) throw new Error(`private quarantine snapshot differs: ${snapshotPath}`)
+  return snapshotPath
+}
+
+function createQuarantine(staging: string): Quarantine {
+  const path = join(staging, '.quarantine')
+  mkdirSync(path, { mode: 0o700 })
+  chmodSync(path, 0o700)
+  return { path, next: 0, entries: [] }
+}
+
+function quarantineExisting(metaDir: string, rel: string, expected: EntrySnapshot, quarantine: Quarantine): QuarantinedEntry {
+  const destination = join(metaDir, rel)
+  const movedPath = join(quarantine.path, `${String(quarantine.next++).padStart(6, '0')}-${rel.replaceAll('/', '_')}`)
+  renameSync(destination, movedPath)
+  const entry: QuarantinedEntry = { rel, expected, path: movedPath, movedPath }
+  quarantine.entries.push(entry)
+  try {
+    if (process.env.NODE_ENV === 'test' && process.env.KI_BOOTSTRAP_TEST_FAIL_QUARANTINE_SNAPSHOT_REL === rel) {
+      throw new Error(`injected post-rename snapshot failure for ${rel}`)
+    }
+    const moved = snapshotEntry(movedPath)
+    const changed = !sameSnapshot(expected, moved) || (moved.kind === 'directory' && readdirSync(movedPath).length > 0)
+    if (!changed) {
+      if (expected.kind === 'file') entry.path = createPrivateSnapshot(movedPath, expected)
+      if (
+        process.env.NODE_ENV === 'test' &&
+        process.env.KI_BOOTSTRAP_TEST_MUTATE_ALIAS_AFTER_QUARANTINE_REL === rel &&
+        process.env.KI_BOOTSTRAP_TEST_MUTATE_ALIAS_PATH
+      ) {
+        writeFileSync(process.env.KI_BOOTSTRAP_TEST_MUTATE_ALIAS_PATH, 'external hard-link mutation\n')
+      }
+      return entry
+    }
+  } catch (error) {
+    if (expected.kind === 'file') {
+      const moved = lstatOrNull(movedPath)
+      if (moved?.isFile() && !moved.isSymbolicLink() && moved.dev === expected.dev && moved.ino === expected.ino) {
+        try {
+          linkSync(movedPath, destination)
+        } catch {
+          // Preserve both paths and report the conflict below.
+        }
+      }
+    }
+    throw new RollbackConflictError(
+      `destination could not be validated after quarantine: ${join(VENDOR_DIR, rel)}; preserved at ${movedPath}; ${(error as Error).message}`
+    )
+  }
+  if (expected.kind === 'file') {
+    try {
+      linkSync(movedPath, destination)
+    } catch {
+      // Preserve both paths and report the conflict below.
+    }
+  }
+  throw new RollbackConflictError(`destination changed during quarantine: ${join(VENDOR_DIR, rel)}; preserved at ${movedPath}`)
+}
+
+function maybeInjectPostQuarantineRecreation(metaDir: string, rel: string): void {
+  if (process.env.NODE_ENV !== 'test' || process.env.KI_BOOTSTRAP_TEST_POST_QUARANTINE_RECREATE_REL !== rel) return
+  writeFileSync(join(metaDir, rel), 'third-party post-check replacement\n', { flag: 'wx' })
+}
+
+function restoreQuarantined(metaDir: string, entry: QuarantinedEntry): void {
+  const destination = join(metaDir, entry.rel)
+  if (entry.expected.kind === 'file') {
+    linkSync(entry.path, destination)
+    return
+  }
+  mkdirSync(destination, { mode: entry.expected.mode })
+  chmodSync(destination, entry.expected.mode)
+}
+
+function rollbackPublishedDestination(metaDir: string, item: PublishedEntry, quarantine: Quarantine): void {
+  quarantineExisting(metaDir, item.rel, item.after, quarantine)
+}
+
+function finalizeTransaction(
+  metaDir: string,
+  lock: { path: string; identity: EntrySnapshot & { kind: 'file' } },
+  staging: { path: string; identity: EntrySnapshot & { kind: 'directory' } },
+  quarantine?: Quarantine
+): void {
+  const privateQuarantine = quarantine ?? createQuarantine(staging.path)
+  if (process.env.NODE_ENV === 'test' && process.env.KI_BOOTSTRAP_TEST_REPLACE_LOCK_AFTER_CHECK === '1') {
+    if (!exactIdentity(lock.path, lock.identity)) throw new RollbackConflictError('bootstrap lock changed before final quarantine')
+    restoreSnapshot(lock.path, { ...lock.identity, bytes: Buffer.from('third-party lock replacement\n') })
+  }
+  quarantineExisting(metaDir, '.bootstrap.lock', lock.identity, privateQuarantine)
+  cleanupTrustedStaging(staging.path, staging.identity)
+}
+
+function createCleanupStaging(metaDir: string): { path: string; identity: EntrySnapshot & { kind: 'directory' } } {
+  const path = mkdtempSync(join(metaDir, '.bootstrap-staging-cleanup-'))
+  chmodSync(path, 0o700)
+  const identity = snapshotEntry(path)
+  if (identity.kind !== 'directory') throw new Error('bootstrap cleanup staging entry is not a directory')
+  return { path, identity }
+}
+
+function publishCandidate(
+  target: string,
+  targetIdentity: EntrySnapshot & { kind: 'directory' },
+  metaDir: string,
+  metaIdentity: EntrySnapshot & { kind: 'directory' },
+  lock: { path: string; identity: EntrySnapshot & { kind: 'file' } },
+  staging: { path: string; identity: EntrySnapshot & { kind: 'directory' } },
+  before: OwnedSnapshot,
+  candidate: OwnedSnapshot
+): void {
+  const published: PublishedEntry[] = []
+  const displaced: QuarantinedEntry[] = []
+  const createdDirectories: CreatedDirectory[] = []
+  const quarantine = createQuarantine(staging.path)
+  let publicationCount = 0
+
+  try {
+    validateTransactionParents(target, targetIdentity, metaDir, metaIdentity, lock.path, lock.identity)
+    if (!sameOwnedSnapshot(before, snapshotOwned(metaDir))) throw new Error('owned bootstrap destinations changed before publication')
+
+    const candidateDirectories = [...candidate.entries()]
+      .filter(([, entry]) => entry.kind === 'directory')
+      .sort(([a], [b]) => a.split('/').length - b.split('/').length || a.localeCompare(b))
+    for (const [rel] of candidateDirectories) {
+      const expected = before.get(rel)
+      if (expected) {
+        if (expected.kind !== 'directory') throw new Error(`owned destination is not a directory: ${join(VENDOR_DIR, rel)}`)
+        assertCurrent(metaDir, rel, expected)
+        continue
+      }
+      const destination = join(metaDir, rel)
+      mkdirSync(destination, { mode: 0o755 })
+      const identity = snapshotEntry(destination)
+      if (identity.kind !== 'directory') throw new Error(`failed to create owned directory: ${join(VENDOR_DIR, rel)}`)
+      createdDirectories.push({ rel, identity })
+    }
+
+    const candidateFiles = [...candidate.entries()]
+      .filter(([rel, entry]) => entry.kind === 'file' && rel !== 'manifest.json')
+      .sort(([a], [b]) => a.localeCompare(b)) as [string, EntrySnapshot & { kind: 'file' }][]
+    for (const [rel, next] of candidateFiles) {
+      const old = before.get(rel)
+      if (old?.kind === 'directory') throw new Error(`owned destination is not a file: ${join(VENDOR_DIR, rel)}`)
+      assertCurrent(metaDir, rel, old)
+      const source = join(staging.path, rel)
+      const destination = join(metaDir, rel)
+      if (old?.kind === 'file' && sameSnapshot(old, next, false)) continue
+      let quarantined: QuarantinedEntry | undefined
+      if (old) {
+        quarantined = quarantineExisting(metaDir, rel, old, quarantine)
+        displaced.push(quarantined)
+      }
+      maybeInjectPostQuarantineRecreation(metaDir, rel)
+      linkSync(source, destination)
+      published.push({ rel, before: quarantined, after: next })
+      assertCurrent(metaDir, rel, next)
+      maybeInjectPublicationFailure(++publicationCount)
+    }
+
+    const obsoleteFiles = [...before.entries()]
+      .filter(([rel, entry]) => entry.kind === 'file' && (rel.startsWith('skills/') || rel.startsWith('bin/')) && !candidate.has(rel))
+      .sort(([a], [b]) => a.localeCompare(b))
+    for (const [rel, entry] of obsoleteFiles) {
+      maybeInjectPruneConflict(metaDir, rel)
+      displaced.push(quarantineExisting(metaDir, rel, entry, quarantine))
+    }
+
+    const obsoleteDirectories = [...before.entries()]
+      .filter(
+        ([rel, entry]) =>
+          entry.kind === 'directory' &&
+          (rel === 'skills' || rel === 'bin' || rel.startsWith('skills/') || rel.startsWith('bin/')) &&
+          !candidate.has(rel)
+      )
+      .sort(([a], [b]) => b.split('/').length - a.split('/').length || b.localeCompare(a))
+    for (const [rel, entry] of obsoleteDirectories) {
+      displaced.push(quarantineExisting(metaDir, rel, entry, quarantine))
+    }
+
+    const beforeManifest = snapshotOwned(metaDir)
+    maybeInjectLateDestinationMutation(metaDir, 'pre-manifest')
+    if (!sameOwnedSnapshot(beforeManifest, snapshotOwned(metaDir))) {
+      throw new Error('owned bootstrap destinations changed before manifest publication')
+    }
+    validateDestinationShape(metaDir, candidate, false)
+    validateTransactionParents(target, targetIdentity, metaDir, metaIdentity, lock.path, lock.identity)
+    maybeInjectLateDestinationMutation(metaDir, 'between-validation-manifest')
+
+    const nextManifest = candidate.get('manifest.json')
+    if (nextManifest?.kind !== 'file') throw new Error('candidate manifest is not a regular file')
+    const oldManifest = before.get('manifest.json')
+    if (oldManifest?.kind === 'directory') throw new Error('owned manifest destination is not a file')
+    assertCurrent(metaDir, 'manifest.json', oldManifest)
+    let finalManifestIdentity = oldManifest
+    if (!(oldManifest?.kind === 'file' && sameSnapshot(oldManifest, nextManifest, false))) {
+      let quarantined: QuarantinedEntry | undefined
+      if (oldManifest) {
+        quarantined = quarantineExisting(metaDir, 'manifest.json', oldManifest, quarantine)
+        displaced.push(quarantined)
+      }
+      maybeInjectPostQuarantineRecreation(metaDir, 'manifest.json')
+      linkSync(join(staging.path, 'manifest.json'), join(metaDir, 'manifest.json'))
+      published.push({ rel: 'manifest.json', before: quarantined, after: nextManifest })
+      assertCurrent(metaDir, 'manifest.json', nextManifest)
+      finalManifestIdentity = nextManifest
+      maybeInjectPublicationFailure(++publicationCount)
+    }
+    const expectedComplete = new Map(beforeManifest)
+    if (finalManifestIdentity) expectedComplete.set('manifest.json', finalManifestIdentity)
+    else expectedComplete.delete('manifest.json')
+    const complete = validateDestinationShape(metaDir, candidate, true)
+    if (!sameOwnedSnapshot(expectedComplete, complete)) {
+      throw new Error('owned bootstrap destination identities changed during manifest publication')
+    }
+    maybeInjectLateDestinationMutation(metaDir, 'post-manifest')
+    if (!sameOwnedSnapshot(expectedComplete, snapshotOwned(metaDir))) {
+      throw new Error('owned bootstrap destinations changed after manifest publication')
+    }
+    validateTransactionParents(target, targetIdentity, metaDir, metaIdentity, lock.path, lock.identity)
+  } catch (error) {
+    maybeInjectRollbackConflict(metaDir)
+    const conflicts: string[] = error instanceof RollbackConflictError ? [error.message] : []
+
+    for (const item of [...published].reverse()) {
+      try {
+        rollbackPublishedDestination(metaDir, item, quarantine)
+      } catch {
+        conflicts.push(join(VENDOR_DIR, item.rel))
+      }
+    }
+
+    const directories = displaced.filter((item) => item.expected.kind === 'directory').reverse()
+    const files = displaced.filter((item) => item.expected.kind === 'file').reverse()
+    for (const item of [...directories, ...files]) {
+      try {
+        restoreQuarantined(metaDir, item)
+      } catch {
+        conflicts.push(join(VENDOR_DIR, item.rel))
+      }
+    }
+
+    for (const item of [...createdDirectories].reverse()) {
+      try {
+        quarantineExisting(metaDir, item.rel, item.identity, quarantine)
+      } catch {
+        conflicts.push(join(VENDOR_DIR, item.rel))
+      }
+    }
+
+    if (conflicts.length > 0) {
+      throw new RollbackConflictError(`${(error as Error).message}; rollback conflicts: ${[...new Set(conflicts)].join(', ')}`)
+    }
+    finalizeTransaction(metaDir, lock, staging, quarantine)
+    throw error
+  }
+
+  finalizeTransaction(metaDir, lock, staging, quarantine)
+}
+
+function runBootstrapTransaction(target: string, targetIdentity: EntrySnapshot & { kind: 'directory' }, set: string[], ref: string): void {
+  if (process.env.NODE_ENV === 'test' && process.env.KI_BOOTSTRAP_TEST_REPLACE_BOUND_ROOT_WITH) {
+    renameSync(target, process.env.KI_BOOTSTRAP_TEST_REPLACE_BOUND_ROOT_WITH)
+    mkdirSync(target)
+  }
+  const established = establishMeta(target, targetIdentity)
+  const metaIdentity = snapshotEntry(established.path)
+  if (metaIdentity.kind !== 'directory') throw new Error(`${VENDOR_DIR} is not a directory`)
+  let lock: ReturnType<typeof acquireLock> | undefined
+  let staging: ReturnType<typeof createStaging> | undefined
+  const buildJournal: OwnedSnapshot = new Map()
+  try {
+    if (process.env.NODE_ENV === 'test' && process.env.KI_BOOTSTRAP_TEST_RACE_META_CLEANUP === '1') {
+      writeFileSync(join(established.path, 'third-party-sentinel'), 'preserve me\n')
+      writeFileSync(join(established.path, '.bootstrap.lock'), 'third-party lock\n')
+    }
+    lock = acquireLock(established.path)
+    const before = snapshotOwned(established.path)
+    staging = createStaging(established.path)
+    const { tree } = buildCandidate(staging.path, set, ref, buildJournal)
+    maybeInjectPrePublicationReplacement(established.path)
+    publishCandidate(target, targetIdentity, established.path, metaIdentity, lock, staging, before, tree)
+    lock = undefined
+    staging = undefined
+  } catch (error) {
+    if (error instanceof RollbackConflictError) throw error
+    if (staging && exactIdentity(staging.path, staging.identity)) {
+      try {
+        validateStagingForCleanup(staging.path, staging.identity, buildJournal)
+      } catch (cleanupError) {
+        throw new RollbackConflictError(`${(error as Error).message}; staging cleanup conflict: ${(cleanupError as Error).message}`)
+      }
+    }
+    if (lock && exactIdentity(lock.path, lock.identity)) {
+      const cleanupStaging = staging && exactIdentity(staging.path, staging.identity) ? staging : createCleanupStaging(established.path)
+      finalizeTransaction(established.path, lock, cleanupStaging)
+    } else if (lock && lstatOrNull(lock.path)) {
+      throw new RollbackConflictError(`${(error as Error).message}; bootstrap lock changed before cleanup`)
+    }
+    throw error
+  } finally {
+    if (established.created && exactIdentity(established.path, established.created) && readdirSync(established.path).length === 0) {
+      rmdirSync(established.path)
+    }
+  }
+}
+
 function main(): void {
   const argv = process.argv.slice(2)
+  if (argv.includes('--help') || argv.includes('-h')) {
+    console.log('usage: bootstrap.ts <target-repo> [--seed <skill>] [--ref <ref>] [--dry-run]')
+    console.log('  vendors the resolved governance set into an atomic .ki-meta generation')
+    return
+  }
   // Pull the value-taking flags out first so their values are not mistaken for
   // the positional target: `--seed <skill>` (repeatable — a per-skill delegator
   // passes `--seed <self>`) and `--ref <ref>` (passed by `ki-init` so a tarball
@@ -552,7 +1291,8 @@ function main(): void {
     }
   }
   const positional = rest.filter((a) => !a.startsWith('--'))
-  const target = resolve(positional[0] ?? '.')
+  const boundTarget = physicalTarget(positional[0] ?? '.')
+  const target = boundTarget.path
   const dryRun = rest.includes('--dry-run')
 
   // No `package.json` is ever required or touched — a repo self-governs through the
@@ -568,17 +1308,11 @@ function main(): void {
   // before any .ki-meta mutation, then re-resolve against the converged config.
   // Bare bootstrap with no config/seed resolves no ki-repo and remains empty-set.
   if (set.includes('ki-repo')) {
-    scaffoldRepoConfig(target, dryRun)
+    scaffoldRepoConfig(target, boundTarget.identity, dryRun)
     set = resolvedSetOrExit(target, seeds)
   }
   console.log(`${DIM}bootstrap ${target} — skills: ${set.join(', ')}${RESET}`)
 
-  const manifestFiles: Record<string, string> = {}
-  for (const skill of set) vendorSkill(target, skill, dryRun, manifestFiles)
-
-  // Vendor the aggregate runner + the package.json-free entry points — both under
-  // .ki-meta/ so the whole generated surface is dot-prefixed (off the repo's own bin/,
-  // auto-ignored by chezmoi).
   const ref = resolveRef(refOverride ?? harnessRef())
   const aggRel = join(VENDOR_DIR, 'bin', 'aggregate.ts')
   const auditBinRel = join(VENDOR_DIR, 'bin', 'ki-audit')
@@ -586,31 +1320,10 @@ function main(): void {
   const initBinRel = join(VENDOR_DIR, 'bin', 'ki-init')
   const helpBinRel = join(VENDOR_DIR, 'bin', 'ki-help')
   const manifestRel = join(VENDOR_DIR, 'manifest.json')
-  if (!dryRun) {
-    mkdirSync(join(target, VENDOR_DIR, 'bin'), { recursive: true })
-    writeFileSync(join(target, aggRel), AGGREGATE_RUNNER)
-    writeFileSync(join(target, auditBinRel), BIN_KI_AUDIT)
-    chmodSync(join(target, auditBinRel), 0o755)
-    writeFileSync(join(target, conformBinRel), BIN_KI_CONFORM)
-    chmodSync(join(target, conformBinRel), 0o755)
-    writeFileSync(join(target, initBinRel), binKiInit())
-    chmodSync(join(target, initBinRel), 0o755)
-    writeFileSync(join(target, helpBinRel), BIN_KI_HELP)
-    chmodSync(join(target, helpBinRel), 0o755)
-    manifestFiles[aggRel] = sha256File(join(target, aggRel))
-    // Harness-shaped targets additionally get the cross-skill scripts that operate
-    // on the whole skills/ tree — engine-level, manifest-hashed like every vendored
-    // file, gated on ki-harness membership (ADR-KI-HARNESS-008).
-    if (set.includes('ki-harness')) {
-      for (const name of HARNESS_BIN_SCRIPTS) {
-        const rel = join(VENDOR_DIR, 'bin', name)
-        cpSync(join(skillDir('ki-bootstrap'), 'scripts', name), join(target, rel))
-        manifestFiles[rel] = sha256File(join(target, rel))
-      }
-      console.log(`${GREEN}bin${RESET} ${DIM}→ ${VENDOR_DIR}/bin/{${HARNESS_BIN_SCRIPTS.join(', ')}} (harness cross-skill scripts)${RESET}`)
-    }
-    writeFileSync(join(target, manifestRel), `${JSON.stringify({ ref, files: manifestFiles }, null, 2)}\n`)
-  }
+  if (dryRun) {
+    const manifestFiles: Record<string, string> = {}
+    for (const skill of set) vendorSkill(join(target, VENDOR_DIR), skill, true, manifestFiles)
+  } else runBootstrapTransaction(target, boundTarget.identity, set, ref)
   console.log(
     `${GREEN}runner${RESET} ${DIM}→ ${aggRel}, ${auditBinRel}, ${conformBinRel}, ${initBinRel}, ${helpBinRel}, ${manifestRel}${RESET}`
   )
