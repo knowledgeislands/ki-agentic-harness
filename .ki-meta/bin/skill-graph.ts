@@ -2,8 +2,9 @@
 // skill-graph.ts — read the `implies:` frontmatter graph across every SKILL.md
 // and (a) validate it, (b) render the dependency tree.
 //
-//   bun skill-graph.ts --check   validate the graph (CI gate); exit 1 on error
-//   bun skill-graph.ts --tree    print the Markdown dependency tree to stdout
+//   bun skill-graph.ts --check                     validate the graph; exit 1 on error
+//   bun skill-graph.ts --check --check-doc <path>  also compare a marked documentation block
+//   bun skill-graph.ts --tree                      print the Markdown dependency tree to stdout
 //
 // Canonical home is skills/keystone/ki-bootstrap/scripts/; also vendored into a governed
 // harness-shaped target's .ki-meta/bin/ (ADR-KI-HARNESS-008). It resolves skills/
@@ -17,6 +18,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 const SKILLS_DIR = 'skills'
+const DOC_START = '<!-- BEGIN GENERATED SKILL GRAPH -->'
+const DOC_END = '<!-- END GENERATED SKILL GRAPH -->'
 
 // Skills live one or two levels under SKILLS_DIR — either flat (skills/<name>,
 // tolerated as a migration leftover) or clustered (skills/<cluster>/<name>).
@@ -110,10 +113,31 @@ function findCycle(graph: Graph): string[] | null {
   return null
 }
 
-function check(): number {
-  const { graph, unannotated } = loadGraph()
-  const errors: string[] = []
+function checkDocument(path: string, expectedTree: string, errors: string[]): void {
+  if (!existsSync(path)) {
+    errors.push(`${path}: documentation path does not exist`)
+    return
+  }
+  const document = readFileSync(path, 'utf8')
+  const start = document.indexOf(DOC_START)
+  const end = document.indexOf(DOC_END)
+  if (start === -1 || end === -1 || end < start) {
+    errors.push(`${path}: missing or misordered generated skill-graph markers`)
+    return
+  }
+  if (document.lastIndexOf(DOC_START) !== start || document.lastIndexOf(DOC_END) !== end) {
+    errors.push(`${path}: generated skill-graph markers must occur exactly once`)
+    return
+  }
+  const actual = document.slice(start, end + DOC_END.length)
+  const expected = `${DOC_START}\n\n\`\`\`text\n${expectedTree}\n\`\`\`\n\n${DOC_END}`
+  if (actual !== expected) {
+    errors.push(`${path}: generated skill-graph block is stale; replace its marked region with the current --tree output`)
+  }
+}
 
+function graphErrors(graph: Graph, unannotated: string[]): string[] {
+  const errors: string[] = []
   for (const skill of unannotated) {
     errors.push(`${skill}: SKILL.md has no \`implies:\` frontmatter key (every skill must declare one, even if empty)`)
   }
@@ -129,13 +153,22 @@ function check(): number {
   }
   const cycle = findCycle(graph)
   if (cycle) errors.push(`implication cycle: ${cycle.join(' → ')}`)
+  return errors
+}
 
-  if (errors.length > 0) {
-    console.error('FAIL  skill-graph — implication graph invalid:')
-    for (const e of errors) console.error(`  · ${e}`)
-    return 1
-  }
-  console.log(`PASS  skill-graph — ${graph.size} skills, implication graph valid`)
+function reportErrors(errors: string[]): number {
+  console.error('FAIL  skill-graph — graph/document check failed:')
+  for (const error of errors) console.error(`  · ${error}`)
+  return 1
+}
+
+function check(documentPath?: string): number {
+  const { graph, unannotated } = loadGraph()
+  const errors = graphErrors(graph, unannotated)
+  if (documentPath && errors.length === 0) checkDocument(documentPath, renderTree(graph), errors)
+
+  if (errors.length > 0) return reportErrors(errors)
+  console.log(`PASS  skill-graph — ${graph.size} skills, implication graph valid${documentPath ? ', rendered document current' : ''}`)
   return 0
 }
 
@@ -155,8 +188,7 @@ const CLUSTER_ORDER = [
   'ki-tokenomics'
 ]
 
-function renderTree(): string {
-  const { graph } = loadGraph()
+function renderTree(graph: Graph): string {
   const implied = new Set<string>()
   for (const targets of graph.values()) for (const t of targets) implied.add(t)
   const roots = [...graph.keys()]
@@ -191,10 +223,36 @@ function renderTree(): string {
 }
 
 const argv = process.argv.slice(2)
-if (argv.includes('--tree')) {
-  console.log(renderTree())
+const documentFlag = argv.indexOf('--check-doc')
+const documentPath = documentFlag === -1 ? undefined : argv[documentFlag + 1]
+const usage = (): never => {
+  console.error('usage: skill-graph.ts [--check [--check-doc <path>] | --tree]')
+  process.exit(2)
+}
+let documentFlags = 0
+for (let index = 0; index < argv.length; index += 1) {
+  const argument = argv[index]
+  if (argument === '--check' || argument === '--tree') continue
+  if (argument === '--check-doc') {
+    documentFlags += 1
+    const path = argv[index + 1]
+    if (!path || path.startsWith('--')) usage()
+    index += 1
+    continue
+  }
+  usage()
+}
+const checkFlags = argv.filter((argument) => argument === '--check').length
+const treeFlags = argv.filter((argument) => argument === '--tree').length
+if (checkFlags > 1 || treeFlags > 1 || documentFlags > 1 || (treeFlags > 0 && (checkFlags > 0 || documentFlags > 0))) usage()
+
+if (treeFlags === 1) {
+  const { graph, unannotated } = loadGraph()
+  const errors = graphErrors(graph, unannotated)
+  if (errors.length > 0) process.exit(reportErrors(errors))
+  console.log(renderTree(graph))
   process.exit(0)
 } else {
   // default is --check
-  process.exit(check())
+  process.exit(check(documentPath))
 }

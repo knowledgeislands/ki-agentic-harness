@@ -27,6 +27,8 @@ The skills sit in **six clusters**, by the role each plays in the set:
 
 The clusters group the skills by role. A second relationship runs across them: which skill **pulls in** which. Because skills compose rather than fork, a skill declares the siblings it builds on in its `implies:` frontmatter, and installing one brings in everything it implies. That makes a machine-readable graph — rendered as a tree by `bun run ki:skills:graph --tree` (each root is a skill nothing implies; its children are what it `implies:`):
 
+<!-- BEGIN GENERATED SKILL GRAPH -->
+
 ```text
 ki-bootstrap
 └─ ki-repo
@@ -75,6 +77,8 @@ ki-recap
 
 ki-tools
 ```
+
+<!-- END GENERATED SKILL GRAPH -->
 
 ## The governance-skill shape
 
