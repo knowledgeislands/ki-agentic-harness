@@ -1,7 +1,7 @@
 ---
 id: '004'
 title: Roll out uniform modes across MCP repositories
-status: open
+status: in-progress
 roadmap: foundation-tooling/roll-out-the-uniform-mode-model-across-the-mcp-repositories
 blocks: —
 blocked-by: —
@@ -16,16 +16,30 @@ The six sibling MCP repositories are the first fleet cohort for the uniform four
 
 ## Current state
 
-The harness carries the target model and onboarding path; sibling repositories remain on the prior layout. Their repository paths, local changes, declarations, and exact baseline failures must be discovered at execution time. This plan coordinates multiple repositories and therefore must not assume they are all writable or clean.
+The harness carries the target model and onboarding path. The six sibling repositories are clean, on `main`, and share the same pre-rollout governance shape: `[ki-repo]`, `[ki-authoring]`, `[ki-engineering]`, and `[ki-mcp]` declarations; no explicit `target_runtimes`; a `.ki-meta` vendor reference of `8240bc5629d40ca33f08f20d8141973b6984f93e`; and legacy convenience commands that call removed project-local skill script paths. This plan coordinates multiple repositories and therefore retains the clean-preflight requirement for every later mutation.
+
+### Read-only baseline — 2026-07-16
+
+| Repository | State | Migration surface | Pilot readout |
+| --- | --- | --- | --- |
+| `mcp-claude-housekeeping` | Clean `main` | Shared legacy bootstrap and command surface | Valid representative; retain as an early matched follow-up. |
+| `mcp-git-audit` | Clean `main` | Shared legacy bootstrap and command surface | Valid representative; retain as an early matched follow-up. |
+| `mcp-gsuite` | Clean `main` | Shared surface plus auth and record/replay tooling | Defer until the MCP-only pilot proves the recipe. |
+| `mcp-ki-kb-fs` | Clean `main` | Shared legacy bootstrap and command surface | **Selected pilot:** narrow MCP-only implementation. |
+| `mcp-ki-kb-notion-mirror` | Clean `main` | Shared surface; custom aggregate and empty legacy payload directory | Valid follow-up; confirms the recipe against a custom aggregate. |
+| `mcp-m365` | Clean `main` | Shared surface plus auth and record/replay tooling | Defer until the MCP-only pilot proves the recipe. |
+
+No direct access, cleanliness, or configuration blocker prevents a pilot. The selected pilot must first capture its own governed local plan and read-only audit/test baseline; a failing legacy command is migration evidence, not a reason to patch around the harness.
 
 ## Steps
 
-1. Discover the six MCP repository roots and record a read-only baseline matrix: clean/dirty state, current branch, `.ki-config.toml` declarations, `.ki-meta` version, package convenience keys, and audit/test results.
-2. Select one clean representative repository whose capabilities exercise the common MCP surface; document why it is representative and create a repository-local governed plan there before mutation.
-3. Re-bootstrap the pilot, reconcile only the expected aggregate/scoped package aliases and uniform skill-mode surfaces, then run its focused tests, self-test, artifact audit, and aggregate audit.
-4. Review the pilot diff and failures; update the migration recipe in this coordinating plan. Escalate any harness defect back to this repository rather than patching around it per consumer.
-5. For each remaining clean repository, create a local plan and apply the proven recipe. Use separate worktrees only where concurrent writes to the same repository are otherwise unavoidable; never mix unrelated dirty state.
-6. Record the final six-repository acceptance matrix and close this coordinating plan only when every in-scope repository is clean or carries a named external blocker.
+1. [x] Discover the six MCP repository roots and record a read-only configuration baseline: clean/dirty state, current branch, `.ki-config.toml` declarations, `.ki-meta` version, and package convenience keys.
+2. [x] Select one clean representative repository whose capabilities exercise the common MCP surface. `mcp-ki-kb-fs` is selected because it is clean, MCP-only, and otherwise shares the cohort's legacy governance surface.
+3. Create a repository-local governed plan in the pilot, then record its executable audit/test baseline before mutation.
+4. Re-bootstrap the pilot, reconcile only the expected aggregate/scoped package aliases and uniform skill-mode surfaces, then run its focused tests, self-test, artifact audit, and aggregate audit.
+5. Review the pilot diff and failures; update the migration recipe in this coordinating plan. Escalate any harness defect back to this repository rather than patching around it per consumer.
+6. For each remaining clean repository, create a local plan and apply the proven recipe. Use separate worktrees only where concurrent writes to the same repository are otherwise unavoidable; never mix unrelated dirty state.
+7. Record the final six-repository acceptance matrix and close this coordinating plan only when every in-scope repository is clean or carries a named external blocker.
 
 ## Files touched
 
@@ -47,4 +61,4 @@ Unblocked for the read-only baseline, pilot selection, and operations already co
 
 ## Readiness
 
-- [ ] Readiness test: a cold executor can build the baseline matrix and choose a defensible pilot from this plan without mutating any sibling repository.
+- [x] Readiness test: a cold executor can build the baseline matrix and choose a defensible pilot from this plan without mutating any sibling repository. Passed on 2026-07-16; `mcp-ki-kb-fs` is the selected pilot.

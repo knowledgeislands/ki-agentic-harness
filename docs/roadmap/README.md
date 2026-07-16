@@ -17,7 +17,7 @@ Canonical themes and active execution plans.
 - **Title:** Roll out uniform modes across MCP repositories
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/roll-out-the-uniform-mode-model-across-the-mcp-repositories`
-- **Status:** open
+- **Status:** in-progress
 - **Blocks:** —
 
 ## Dependency graph
