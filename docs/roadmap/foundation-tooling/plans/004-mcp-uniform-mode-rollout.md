@@ -51,6 +51,7 @@ The pilot has 220 passing tests, a passing 13-tool smoke check, and a zero-failu
 | ------------------------- | ------------------------------------------- | ----------------- | -------------------------------------------------------------- |
 | `mcp-ki-kb-fs`            | Closed `foundation-tooling/001` (`0a0cec1`) | `c3315fa`         | 220 tests; 13-tool smoke; aggregate and bootstrap audits pass. |
 | `mcp-claude-housekeeping` | Closed `foundation-tooling/001` (`f3b7571`) | `891fc09`         | 307 tests; 39-tool smoke; aggregate and bootstrap audits pass. |
+| `mcp-git-audit`           | Closed `foundation-tooling/001` (`06a2d7c`) | `cb8e4f5`         | 161 tests; 12-tool smoke; aggregate and bootstrap audits pass. |
 
 ## Steps
 
