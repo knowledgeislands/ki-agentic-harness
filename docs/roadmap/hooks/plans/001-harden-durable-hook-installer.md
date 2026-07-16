@@ -22,7 +22,7 @@ The remaining work is confined to installer integrity: prove a legacy link belon
 
 ## Steps
 
-1. Tighten legacy-link recognition and migration so only a complete, verifiable legacy harness installation is replaced; preserve unknown or ambiguous user state unchanged.
+1. Retire automatic legacy-link mutation outside the private installer namespace; preserve all pre-existing user-space hook links for a user-environment manager or deliberate manual migration.
 2. Bind payload validation and active-pointer publication to verified regular-file identities and owned directory permissions, failing closed on replacement or drift.
 3. Add adversarial tests for legacy lookalikes, post-read replacement, permission drift, and staging or publication failure with rollback or retained-conflict evidence.
 4. Run focused installer tests, the full self-test suite, and the aggregate audit; update the installer documentation only where its verified behaviour changes.
@@ -33,7 +33,7 @@ The remaining work is confined to installer integrity: prove a legacy link belon
 
 ## Verify
 
-Pass when the installer publishes only verified regular payload files, refuses replacement or permission drift without clobbering another process's state, migrates only recognised complete legacy harness links, leaves unknown user-owned files untouched, and proves clean rollback or durable conflict evidence for injected failures. Focused tests, `bun run test`, and `bun run ki:audit` pass.
+Pass when the installer publishes only verified regular payload files, refuses replacement or permission drift without clobbering another process's state, leaves all pre-existing user-owned hook links untouched, and proves clean rollback or durable conflict evidence for injected failures. Focused tests, `bun run test`, and `bun run ki:audit` pass.
 
 ## Dependencies / blocks
 

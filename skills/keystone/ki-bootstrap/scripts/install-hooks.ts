@@ -8,6 +8,7 @@
 import { createHash } from 'node:crypto'
 import {
   closeSync,
+  constants,
   fchmodSync,
   fstatSync,
   linkSync,
@@ -17,7 +18,6 @@ import {
   openSync,
   readdirSync,
   readFileSync,
-  readlinkSync,
   renameSync,
   rmdirSync,
   rmSync,
@@ -25,7 +25,7 @@ import {
   writeFileSync
 } from 'node:fs'
 import { homedir } from 'node:os'
-import { dirname, join, resolve } from 'node:path'
+import { basename, dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const SELF = fileURLToPath(import.meta.url)
@@ -132,14 +132,32 @@ function requireDirectory(path: string): void {
 }
 
 function requireFile(path: string, expectedMode?: number): Buffer {
-  const expected = snapshot(path)
-  const entry = lstat(path)
-  if (!entry) fail(`${path} must be a regular non-symlink file`)
-  if (entry.isSymbolicLink() || !entry.isFile()) fail(`${path} must be a regular non-symlink file`)
-  if (expectedMode !== undefined && permissions(entry) !== expectedMode) fail(`${path} must have mode ${expectedMode.toString(8)}`)
-  const bytes = readFileSync(path)
-  if (!sameSnapshot(path, expected)) fail(`${path} changed while it was being read`)
-  return bytes
+  let descriptor: number
+  try {
+    descriptor = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW)
+  } catch {
+    fail(`${path} must be a regular non-symlink file`)
+  }
+  try {
+    const before = fstatSync(descriptor)
+    if (!before.isFile()) fail(`${path} must be a regular non-symlink file`)
+    if (expectedMode !== undefined && permissions(before) !== expectedMode) fail(`${path} must have mode ${expectedMode.toString(8)}`)
+    const bytes = readFileSync(descriptor)
+    const after = fstatSync(descriptor)
+    const first = identityFromStat(before)
+    const last = identityFromStat(after)
+    if (
+      first.dev !== last.dev ||
+      first.ino !== last.ino ||
+      first.mode !== last.mode ||
+      first.size !== last.size ||
+      first.mtimeMs !== last.mtimeMs
+    )
+      fail(`${path} changed while it was being read`)
+    return bytes
+  } finally {
+    closeSync(descriptor)
+  }
 }
 
 function sha256(bytes: Buffer): string {
@@ -258,8 +276,10 @@ function publishActive(namespace: string, id: string): void {
   if (current === id) return
 
   const before = existing ? snapshot(path) : undefined
+  const previous = before ? requireFile(path, 0o600) : undefined
   const temporary = join(namespace, `.active-${process.pid}-${Math.random().toString(16).slice(2)}`)
   let created: Created | undefined
+  let published: Snapshot | undefined
   try {
     created = writeCreatedFile(temporary, `${JSON.stringify(activeManifest(id), null, 2)}\n`, 0o600)
     if (!sameIdentity(temporary, created.identity) || !sameSnapshot(path, before)) fail(`${path} changed before active payload publication`)
@@ -273,57 +293,31 @@ function publishActive(namespace: string, id: string): void {
       renameSync(temporary, path)
       created = undefined
     }
+    published = snapshot(path)
+    if (!published) fail(`${path} disappeared after active payload publication`)
+    if (process.env.KI_HOOKS_TEST_FAIL_AFTER_ACTIVE === '1') fail('injected active-pointer validation failure')
     if (activePayloadId(namespace) !== id) fail(`${path} failed post-publication validation`)
+  } catch (error) {
+    if (published && sameIdentity(path, published)) {
+      if (previous) {
+        const rollback = join(namespace, `.active-rollback-${process.pid}-${Math.random().toString(16).slice(2)}`)
+        let restored: Created | undefined
+        try {
+          restored = writeCreatedFile(rollback, previous, 0o600)
+          if (!sameIdentity(path, published) || !sameIdentity(rollback, restored.identity))
+            fail(`${path} changed before active payload rollback`)
+          renameSync(rollback, path)
+          restored = undefined
+        } finally {
+          if (restored) removeCreatedFile(restored)
+        }
+      } else {
+        unlinkSync(path)
+      }
+    }
+    throw error
   } finally {
     if (created) removeCreatedFile(created)
-  }
-}
-
-function recognisedLegacyLink(path: string, name: string, bytes: Buffer): boolean {
-  try {
-    const entry = lstat(path)
-    if (!entry?.isSymbolicLink()) return false
-    const target = resolve(dirname(path), readlinkSync(path))
-    const hooks = dirname(target)
-    const harness = dirname(hooks)
-    if (target !== join(harness, 'hooks', name) || requireFile(target).equals(bytes) === false) return false
-    const metadata = JSON.parse(requireFile(join(harness, 'package.json')).toString('utf8')) as JsonObject
-    const legacyLinker = requireFile(join(harness, 'skills', 'keystone', 'ki-bootstrap', 'scripts', 'link-hooks.ts')).toString('utf8')
-    return (
-      metadata.name === '@knowledgeislands/ki-agentic-harness' &&
-      legacyLinker.includes("const HOOKS_SOURCE_ROOT = join(HARNESS_ROOT, 'hooks')") &&
-      legacyLinker.includes(`name: '${name}'`)
-    )
-  } catch {
-    return false
-  }
-}
-
-function migrateLegacyLinks(hooks: string, files: Map<string, Buffer>): void {
-  for (const name of NAMES) {
-    const legacy = join(hooks, name)
-    const bytes = files.get(name) as Buffer
-    if (!lstat(legacy) || !recognisedLegacyLink(legacy, name, bytes)) continue
-    const temporary = join(hooks, `.legacy-${name}-${process.pid}-${Math.random().toString(16).slice(2)}`)
-    let created: Created | undefined
-    try {
-      created = writeCreatedFile(temporary, bytes, 0o755)
-      if (!sameIdentity(temporary, created.identity) || !recognisedLegacyLink(legacy, name, bytes))
-        fail(`${legacy} changed before recognised legacy migration`)
-      renameSync(temporary, legacy)
-      created = undefined
-      const migrated = lstat(legacy)
-      if (
-        !migrated ||
-        migrated.isSymbolicLink() ||
-        !migrated.isFile() ||
-        permissions(migrated) !== 0o755 ||
-        !readFileSync(legacy).equals(bytes)
-      )
-        fail(`${legacy} failed recognised legacy migration`)
-    } finally {
-      if (created) removeCreatedFile(created)
-    }
   }
 }
 
@@ -365,6 +359,8 @@ function writePayload(namespace: string, target: string, id: string, ref: string
   if (!lockIdentity) fail(`${lock} disappeared during creation`)
   let stage: Created | undefined
   const stagedFiles: Created[] = []
+  let published: Created | undefined
+  let publishedFiles: Created[] = []
   try {
     const stagePath = mkdtempSync(join(namespace, '.install-'))
     const stageIdentity = snapshot(stagePath)
@@ -381,8 +377,15 @@ function writePayload(namespace: string, target: string, id: string, ref: string
     if (!sameIdentity(lock, lockIdentity) || !sameIdentity(stage.path, stage.identity))
       fail('publication staging changed during installation')
     renameSync(stage.path, target)
+    published = { path: target, identity: stage.identity }
+    publishedFiles = stagedFiles.map((created) => ({ path: join(target, basename(created.path)), identity: created.identity }))
     stage = undefined
+    if (process.env.KI_HOOKS_TEST_FAIL_AFTER_PAYLOAD === '1') fail('injected post-publication validation failure')
     if (!validPayload(target, id, files)) fail(`${target} failed post-publication validation`)
+  } catch (error) {
+    for (const created of publishedFiles.toReversed()) removeCreatedFile(created)
+    if (published) removeCreatedDirectory(published)
+    throw error
   } finally {
     if (stage) {
       for (const created of stagedFiles.toReversed()) removeCreatedFile(created)
@@ -393,7 +396,7 @@ function writePayload(namespace: string, target: string, id: string, ref: string
 }
 
 function usage(): never {
-  console.error('usage: bun install-hooks.ts [--source <hooks-dir>] [--home <dir>] [--ref <ref>] [--dry-run|--check] [--no-migrate-legacy]')
+  console.error('usage: bun install-hooks.ts [--source <hooks-dir>] [--home <dir>] [--ref <ref>] [--dry-run|--check]')
   process.exit(2)
 }
 
@@ -403,13 +406,11 @@ function main(): number {
   let ref = 'main'
   let dryRun = false
   let check = false
-  let migrateLegacy = true
   const args = process.argv.slice(2)
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index]
     if (arg === '--dry-run') dryRun = true
     else if (arg === '--check') check = true
-    else if (arg === '--no-migrate-legacy') migrateLegacy = false
     else if (arg === '--source' || arg === '--home' || arg === '--ref') {
       const value = args[++index]
       if (!value) usage()
@@ -449,7 +450,6 @@ function main(): number {
     if (lstat(active) && !activePayloadId(namespace)) fail(`${active} exists but is not a valid installer-owned active pointer`)
     writePayload(namespace, target, id, ref, files)
     publishActive(namespace, id)
-    if (migrateLegacy) migrateLegacyLinks(hooks, files)
   })
   console.log(`installed durable Claude hook payload: ${id}`)
   return 0

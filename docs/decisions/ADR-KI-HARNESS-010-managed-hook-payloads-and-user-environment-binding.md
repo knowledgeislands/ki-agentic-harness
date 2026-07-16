@@ -18,7 +18,7 @@ The harness separates hook payload delivery, user-environment binding, and repos
 - A future compliant user-environment manager may satisfy the same hook-binding requirement without adopting chezmoi. Hook-consuming skills remain independent of the chosen manager.
 - Each skill that depends on a hook declares and audits the capability it needs. Its CONFORM path may repair only its repository-facing declaration or direct the user to the environment manager; it never writes global Claude settings or installs an unmanaged hook.
 
-The legacy symlink linker and direct settings writer are retired. The payload installer automatically replaces only recognised links into a verified legacy harness checkout, leaving all other user-owned files and links alone. A separate `ki-claude-hooks` governance skill is deferred until real deployments show that the renderer-neutral requirement needs its own durable standard.
+The legacy symlink linker and direct settings writer are retired. The payload installer does not mutate legacy hook links outside its private namespace: even a link that appears to originate from a prior harness checkout may have changed ownership after recognition. It leaves all such user-space residue untouched for the user-environment manager or a deliberate manual migration, while it publishes a separate durable payload. A separate `ki-claude-hooks` governance skill is deferred until real deployments show that the renderer-neutral requirement needs its own durable standard.
 
 ## Consequences
 

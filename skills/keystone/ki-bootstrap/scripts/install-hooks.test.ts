@@ -3,7 +3,6 @@ import { spawnSync } from 'node:child_process'
 /** Adversarial tests for the disposable-source hook-payload installer. */
 import {
   chmodSync,
-  copyFileSync,
   existsSync,
   lstatSync,
   mkdirSync,
@@ -77,6 +76,20 @@ function runWithStagingFailure(env: Fixture): ReturnType<typeof spawnSync> {
   })
 }
 
+function runWithPostPublicationFailure(env: Fixture): ReturnType<typeof spawnSync> {
+  return spawnSync('bun', [SCRIPT, '--source', env.source, '--home', env.home, '--ref', 'test-ref'], {
+    encoding: 'utf8',
+    env: { ...process.env, KI_HOOKS_TEST_FAIL_AFTER_PAYLOAD: '1' }
+  })
+}
+
+function runWithActivePointerFailure(env: Fixture): ReturnType<typeof spawnSync> {
+  return spawnSync('bun', [SCRIPT, '--source', env.source, '--home', env.home, '--ref', 'test-ref'], {
+    encoding: 'utf8',
+    env: { ...process.env, KI_HOOKS_TEST_FAIL_AFTER_ACTIVE: '1' }
+  })
+}
+
 function output(result: ReturnType<typeof spawnSync>): string {
   return typeof result.stdout === 'string' ? result.stdout : (result.stdout?.toString() ?? '')
 }
@@ -135,6 +148,32 @@ function clean(env: Fixture): void {
         rmSync(env.source, { recursive: true, force: true })
         return NAMES.every((name) => isRegular(join(installed as string, name), 0o755))
       })()
+    )
+  } finally {
+    clean(env)
+  }
+}
+{
+  const env = fixture()
+  try {
+    check('install for active-pointer rollback succeeds', run(env).status === 0)
+    const first = activeId(env)
+    writeFileSync(join(env.source, 'plan-sync.sh'), '#!/bin/sh\necho active-pointer-upgrade\n')
+    chmodSync(join(env.source, 'plan-sync.sh'), 0o755)
+    check(
+      'an active-pointer validation failure restores the prior active payload',
+      runWithActivePointerFailure(env).status !== 0 && activeId(env) === first
+    )
+  } finally {
+    clean(env)
+  }
+}
+{
+  const env = fixture()
+  try {
+    check(
+      'a post-publication validation failure removes the installer-owned payload and private artifacts',
+      runWithPostPublicationFailure(env).status !== 0 && payloadIds(env).length === 0 && readdirSync(env.namespace).length === 0
     )
   } finally {
     clean(env)
@@ -329,29 +368,18 @@ function clean(env: Fixture): void {
     clean(env)
   }
 }
-// Legacy checkout links are migrated only when explicitly requested and only
-// when they point to a matching durable harness hook file.
+// The installer never mutates legacy hook links outside its private namespace;
+// user-environment management adopts the durable payload separately.
 {
   const env = fixture()
   try {
     const hooks = join(env.claude, 'hooks')
     mkdirSync(hooks, { recursive: true })
-    const priorHarnessHooks = join(env.root, 'prior', 'ki-agentic-harness', 'hooks')
-    mkdirSync(priorHarnessHooks, { recursive: true })
-    copyFileSync(join(env.source, 'plan-stamp.sh'), join(priorHarnessHooks, 'plan-stamp.sh'))
-    chmodSync(join(priorHarnessHooks, 'plan-stamp.sh'), 0o755)
-    writeFileSync(join(env.root, 'prior', 'ki-agentic-harness', 'package.json'), '{"name":"@knowledgeislands/ki-agentic-harness"}\n')
-    const legacyScripts = join(env.root, 'prior', 'ki-agentic-harness', 'skills', 'keystone', 'ki-bootstrap', 'scripts')
-    mkdirSync(legacyScripts, { recursive: true })
-    writeFileSync(
-      join(legacyScripts, 'link-hooks.ts'),
-      "const HOOKS_SOURCE_ROOT = join(HARNESS_ROOT, 'hooks')\nconst HOOKS = [{ name: 'plan-stamp.sh' }]\n"
-    )
-    symlinkSync(join(priorHarnessHooks, 'plan-stamp.sh'), join(hooks, 'plan-stamp.sh'))
+    symlinkSync('/recognised-looking-but-user-managed', join(hooks, 'plan-stamp.sh'))
     symlinkSync('/unrelated', join(hooks, 'plan-sync.sh'))
     const result = run(env)
-    check('recognised legacy migration is the default', result.status === 0 && isRegular(join(hooks, 'plan-stamp.sh'), 0o755))
-    check('unrecognised legacy link is left untouched', lstatSync(join(hooks, 'plan-sync.sh')).isSymbolicLink())
+    check('legacy-looking links are left untouched', result.status === 0 && lstatSync(join(hooks, 'plan-stamp.sh')).isSymbolicLink())
+    check('unknown legacy links are left untouched', lstatSync(join(hooks, 'plan-sync.sh')).isSymbolicLink())
   } finally {
     clean(env)
   }
