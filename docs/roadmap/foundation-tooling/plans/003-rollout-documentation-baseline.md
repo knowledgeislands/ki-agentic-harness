@@ -7,7 +7,7 @@ blocks: foundation-tooling/004
 blocked-by: foundation-tooling/001
 handoff: true
 tier: sonnet
-readiness: pending
+readiness: 2026-07-16
 ---
 
 ## Context
@@ -16,19 +16,21 @@ The implementation has collapsed onto aggregate audit/conform entrypoints and a 
 
 ## Current state
 
-Stale prose spans `ki-engineering`, sibling skills, and user guides. Historical decision records intentionally describe the retired model and must remain unchanged. The proposed `ki-engineering-ts` rename is deferred until after the release baseline because it would expand the blast radius without improving immediate adoption.
+The frozen inventory contains 21 stale Markdown/standard surfaces plus live TypeScript comments and evals that still reward the retired behaviour. The main groups are `ki-authoring`, `ki-engineering`, the MCP and website deltas, `ki-engineering-lead`, the engineering eval, and two governance examples/checks. Historical decision records intentionally describe the retired model and must remain unchanged. Existing retirement explanations, regression fixtures, the correct config-gated Vitest rubric, and the `CANON` aggregate map in engineering conform are also intentional. The proposed `ki-engineering-ts` rename is deferred until after the release baseline because it would expand the blast radius without improving immediate adoption.
 
 ## Steps
 
-1. Build an evidence-backed inventory of live non-historical references to retired `ki:lint:*`, `ki:deps:*`, `ki:knip`, `ki:verify`, CANON, and unconditional Vitest assumptions; explicitly classify historical references that must stay.
-2. After plan 001 lands, update standards, rubrics, exemplars, SKILL prose, and guides to one shipped model: aggregate `ki:audit`/`ki:conform`; skill-scoped `ki:<suffix>:audit`/`conform`; code tools internal to `ki-engineering`; Markdown internal to `ki-authoring`; runner-neutral `test`; config-gated Vitest.
-3. Preserve the closed `package.json` top-level manifest, standalone `.ki-meta` invocation, and deliberate historical ADR wording.
-4. Add or extend drift checks for executable onboarding snippets and any normative command inventory that can be checked mechanically.
-5. Run Markdown conform/audit, skill audit, full tests, and aggregate audit; review every edited standard for cross-skill consistency.
+1. After plan 001 lands, run this stable inventory seed over `AGENTS.md`, `agents/`, `evals/`, `skills/`, and `docs/guides/`: `rg -n --glob '*.md' --glob '*.ts' 'bun run ki:(lint|deps|knip|verify)|ki:lint:|ki:deps:|ki:knip|ki:verify|vitest/globals|vitest\\.config'`. Sort the results by path and classify every hit against the locked inclusions/exclusions below.
+2. Rewrite the foundations together: `ki-engineering` standard/SKILL/exemplars/sources/enforcement prose, `ki-authoring` standard/SKILL/rubric/exemplars/sources, and the `ki-skills` delegation example. Establish one shipped vocabulary: aggregate `ki:audit`/`ki:conform`; skill-scoped `ki:<suffix>:audit`/`conform`; code tools internal to `ki-engineering`; Markdown internal to `ki-authoring`; runner-neutral `test`; config-gated Vitest.
+3. Update the MCP and website deltas after plan 001's checker edits land. Make MCP Vitest and coverage-exclude examples explicitly conditional on the repository selecting the Vitest profile.
+4. Update live agent, eval, TypeScript comment, and exemplar/check prose. Replace the obsolete engineering eval assertions with aggregate/scoped keys, internal tool execution, runner-neutral tests, and config-gated Vitest.
+5. Preserve the closed `package.json` top-level manifest, standalone `.ki-meta` invocation, explicit “retired key” explanations, retirement regression fixtures, correct live references, and deliberate historical decision-record wording.
+6. Add a narrow drift test for executable guidance that recommends `bun run ki:(lint|deps|knip|verify)` as a live command. Do not raw-scan tokens whose correct retirement/history uses must remain.
+7. Run authoring conform once, then authoring audit, skill audit, full tests, and aggregate audit sequentially; review every edited standard for cross-skill consistency.
 
 ## Files touched
 
-Live non-historical SKILL/reference prose and `docs/guides/` surfaces identified by the inventory; focused guide or drift tests where an executable contract exists. No decision-record rewrites and no `ki-engineering` rename.
+Live non-historical SKILL/reference prose, agent/eval surfaces, and TypeScript comments identified by the inventory; focused drift tests. No decision-record rewrites, generated-copy hand edits, or `ki-engineering` rename.
 
 ## Verify
 
@@ -40,10 +42,10 @@ Blocked by `foundation-tooling/001` so documentation describes the final univers
 
 ## Decisions
 
-**Locked:** Update live operational claims only; preserve historical ADRs; defer `ki-engineering-ts`; keep the shipped aggregate/scoped/test model and config-gated Vitest posture. The recommended tier is `sonnet`: the inventory is mechanical, while distinguishing live norm from history and maintaining cross-skill semantics needs bounded judgment.
+**Locked:** Update live operational and behavioural claims, including TypeScript comments/evals; preserve historical ADRs, explicit retirement explanations, and regression fixtures; editing a `sources.md` current-state block does not change its review date unless external sources are actually refreshed; generated `.ki-meta` copies change only through re-vendoring; defer `ki-engineering-ts`; keep the shipped aggregate/scoped/test model and config-gated Vitest posture. The recommended tier is `sonnet`: the inventory is mechanical, while distinguishing live norm from history and maintaining cross-skill semantics needs bounded judgment.
 
 **Escalate:** A source contradicts the shipped implementation or appears normative but cannot be classified confidently as live versus historical.
 
 ## Readiness
 
-- [ ] Readiness test: a cold executor can classify the first ten search hits and update the first live guide without reopening toolchain design.
+- [x] Readiness test: a cold executor ran the frozen search, classified its first ten sorted hits, and confirmed the `ki-authoring` batch can proceed without reopening toolchain design (2026-07-16).
