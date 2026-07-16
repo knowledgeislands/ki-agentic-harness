@@ -10,17 +10,20 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-- [Foundation Tooling: Finish hardening the remaining rollout-critical generated writes](docs/roadmap/foundation-tooling/ROADMAP.md#finish-hardening-the-remaining-rollout-critical-generated-writes)
+- [Foundation Tooling: Finish repository-local generated-write hardening](docs/roadmap/foundation-tooling/ROADMAP.md#finish-repository-local-generated-write-hardening)
 - [Foundation Tooling: Roll out the uniform mode model across the `mcp-*` repositories](docs/roadmap/foundation-tooling/ROADMAP.md#roll-out-the-uniform-mode-model-across-the-mcp--repositories)
-- [Hooks: Govern the shipped Claude Code hooks as `ki-claude-hooks`](docs/roadmap/hooks/ROADMAP.md#govern-the-shipped-claude-code-hooks-as-ki-claude-hooks)
+- [Hooks: Install Claude Code hooks from GitHub safely](docs/roadmap/hooks/ROADMAP.md#install-claude-code-hooks-from-github-safely)
 
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
+- [Foundation Tooling: Codify the generated-write safety contract](docs/roadmap/foundation-tooling/ROADMAP.md#codify-the-generated-write-safety-contract)
 - [Foundation Tooling: Enforce CHK-009 citation completeness with runtime collection](docs/roadmap/foundation-tooling/ROADMAP.md#enforce-chk-009-citation-completeness-with-runtime-collection)
 - [Foundation Tooling: Enforce generated-code exclusions in `ki-engineering`](docs/roadmap/foundation-tooling/ROADMAP.md#enforce-generated-code-exclusions-in-ki-engineering)
+- [Foundation Tooling: Harden global runtime skill publication](docs/roadmap/foundation-tooling/ROADMAP.md#harden-global-runtime-skill-publication)
 - [Governance Consistency: Codify convention placement and the knowledge-promotion loop](docs/roadmap/governance-consistency/ROADMAP.md#codify-convention-placement-and-the-knowledge-promotion-loop)
+- [Hooks: Govern the shipped Claude Code hooks as `ki-claude-hooks`](docs/roadmap/hooks/ROADMAP.md#govern-the-shipped-claude-code-hooks-as-ki-claude-hooks)
 - [Operations: Make `ki-recap` resolve the invoking session explicitly](docs/roadmap/operations/ROADMAP.md#make-ki-recap-resolve-the-invoking-session-explicitly)
 - [Runtime Portability: Route multi-machine harness state through durable homes](docs/roadmap/runtime-portability/ROADMAP.md#route-multi-machine-harness-state-through-durable-homes)
 

@@ -8,9 +8,9 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Finish hardening the remaining rollout-critical generated writes
+### Finish repository-local generated-write hardening
 
-Bootstrap publication, Plan Mode hooks, the stale Git-lock guard, project-roadmap publication, and hook-settings JSON are hardened and tested. Finish the release subset by promoting the filesystem-safety contract into the enforcement framework, then hardening scaffold-only `.ki-config.toml` and `.gitignore` writes, project skill and agent linkers, and global skill and hook symlink publication. Keep report writers and direct conformers out of the rollout gate; they are a separate long-tail item.
+Bootstrap publication, Plan Mode hooks, the stale Git-lock guard, project-roadmap publication, scaffold-only `.ki-config.toml` and `.gitignore`, and hook-settings JSON are hardened and tested. Finish the normal per-repository path by hardening project skill and supported Claude agent links. Global user-home skill publication and hook delivery are explicit one-time operations with their own roadmap items; report writers and direct conformers remain long-tail work.
 
 ### Roll out the uniform mode model across the `mcp-*` repositories
 
@@ -27,6 +27,14 @@ Run each checker through its structured JSON surface, collect emitted finding co
 ### Enforce generated-code exclusions in `ki-engineering`
 
 The exclusion policy is already decided and applied in examples. Add only the missing mechanical enforcement: when generated or vendored trees exist, AUDIT must require the matching Biome, knip, and Markdown exclusions.
+
+### Codify the generated-write safety contract
+
+Define the compact mutation-class, authorized-root, transaction, publication, rollback, and exclusion contract for governed writers. Start by documenting the already-hardened bootstrap, scaffold, and project-link surfaces; do not reopen their implementation.
+
+### Harden global runtime skill publication
+
+Make user-home runtime skill installation fail-safe, runtime-selected, and independently testable. Preserve unrelated links and refuse unsafe parents; keep it separate from repository bootstrap and from Claude Code hook delivery.
 
 ## Waiting for
 

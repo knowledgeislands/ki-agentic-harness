@@ -14,9 +14,9 @@ Canonical themes and active execution plans.
 
 ### [foundation-tooling/002](foundation-tooling/plans/002-safe-generated-writes.md)
 
-- **Title:** Finish rollout-critical generated-write hardening
+- **Title:** Finish repository-local generated-write hardening
 - **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/finish-hardening-the-remaining-rollout-critical-generated-writes`
+- **Roadmap item:** `foundation-tooling/finish-repository-local-generated-write-hardening`
 - **Status:** in-progress
 - **Blocks:** —
 
@@ -32,7 +32,7 @@ Canonical themes and active execution plans.
 
 - **Title:** Install remote global Claude hooks safely
 - **Theme:** `hooks`
-- **Roadmap item:** `hooks/govern-the-shipped-claude-code-hooks-as-ki-claude-hooks`
+- **Roadmap item:** `hooks/install-claude-code-hooks-from-github-safely`
 - **Status:** in-progress
 - **Blocks:** —
 

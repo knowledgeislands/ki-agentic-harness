@@ -2,7 +2,7 @@
 id: '001'
 title: Install remote global Claude hooks safely
 status: in-progress
-roadmap: hooks/govern-the-shipped-claude-code-hooks-as-ki-claude-hooks
+roadmap: hooks/install-claude-code-hooks-from-github-safely
 blocks: —
 blocked-by: —
 handoff: true
@@ -20,19 +20,20 @@ The zero-install repository bootstrap intentionally executes from a disposable G
 
 ## Steps
 
-1. Define an explicit GitHub-backed installer entry point, its pinned/ref-selected source identity, durable payload location under `~/.claude/hooks/`, and the command path written into settings. Keep it independent from `bootstrap.sh` and fleet bootstrap instructions.
-2. Extend the hook installer/linker to publish the complete hook payload into the owned durable location, atomically where practical; merge only the three owned settings registrations and preserve unrelated settings and handlers. Refuse unsafe or user-owned blockers without modifying settings.
-3. Preserve a persistent-checkout developer path where useful, but make the remote entry point select the durable-copy mode. Migrate only registrations owned by this installer; do not remove unrelated hook files or handlers.
-4. Add focused tests for a disposable source, idempotent reruns, upgrades, malformed/symlinked settings, owned and unowned blockers, partial publication failure, and exact settings registration.
-5. Document the one-time installer alongside the repository bootstrap, format changed files, run focused tests, a dedicated adversarial review, `bun run test`, and `bun run ki:audit`.
+1. Define an explicit GitHub-backed installer entry point, its requested ref, and a content-addressed durable payload location under `~/.claude/hooks/knowledgeislands/ki-agentic-harness/`. Keep it independent from `bootstrap.sh` and fleet bootstrap instructions.
+2. Publish the complete hook payload as executable regular files plus a manifest in that owned versioned directory. Treat an existing payload id as reusable only when its manifest, bytes, hashes, and modes match; otherwise refuse without clobbering it.
+3. Merge only the three owned settings registrations, including legacy unversioned KI commands and exact old-version commands. Preserve unrelated settings, matchers, handlers, and legacy hook files. Write settings only after a valid payload exists; an unreferenced payload after a settings failure is an accepted retry-safe residue.
+4. Preserve the persistent-checkout symlink linker as a compatibility/developer path, but make the remote entry point select the durable-copy installer. Do not remove old top-level links automatically.
+5. Add focused tests for a disposable source, idempotent reruns, upgrades, malformed/symlinked settings, owned and unowned blockers, partial publication failure, source validation, migration, and exact settings registration.
+6. Document the one-time installer alongside the repository bootstrap, format changed files, run focused tests, a dedicated adversarial review, `bun run test`, and `bun run ki:audit`.
 
 ## Files touched
 
-The hook installer/linker and tests, a POSIX remote entry point, package-script and user-facing hook/onboarding documentation, and the generated roadmap projections.
+The durable hook installer and tests, a POSIX remote entry point, package script and user-facing hook/onboarding documentation, and the generated roadmap projections.
 
 ## Verify
 
-From a disposable GitHub-tarball-equivalent source, the installer leaves executable durable hook files under the owned `~/.claude/hooks/` location, settings references that durable location rather than the disposable source, preserves unrelated settings, and succeeds on an idempotent rerun. Unsafe settings or destination blockers leave existing files and settings unchanged. Focused tests, independent safety review, `bun run test`, and `bun run ki:audit` pass.
+From a disposable GitHub-tarball-equivalent source, the installer leaves executable, manifest-verified durable hook files under the owned versioned `~/.claude/hooks/` namespace. Settings reference that payload rather than the disposable source, unrelated settings remain unchanged, and reruns are byte-stable. Unsafe settings or destination blockers leave existing files and settings unchanged. Focused tests, independent safety review, `bun run test`, and `bun run ki:audit` pass.
 
 ## Dependencies / blocks
 
