@@ -47,7 +47,7 @@ Several of the skills are built for **Knowledge Islands** work and take its shap
 
 ## Where to go deeper
 
-- **[Install and get started](getting-started.md)** covers optional machine tools, repository bootstrap, and the separate hook-payload installer.
+- **[Getting started](getting-started.md)** covers optional machine tools, repository bootstrap, and the separate hook-payload installer.
 - **[Use skills](using-skills.md)** covers how a skill fires — by plain-language request or slash command.
 - **[Recommended tools](recommended-tools.md)** explains optional machine-level tools such as chezmoi, headroom-ai, and mcporter.
 - **[Tuning](tuning.md)** covers making a session lean — the standing surface vs runtime split, which built-in tools and MCP servers to load, and where a compression proxy does and does not help.
