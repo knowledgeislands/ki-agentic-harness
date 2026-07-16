@@ -53,7 +53,7 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS
 
 **PKG-2 [M]** `package.json` contains a `ki:skills:audit` script. Source: standard §package.json §ki:skills:audit. _Severity: FAIL — the skill quality gate is absent._
 
-**PKG-3 [M]** `package.json` contains the common engineering families: `ki:lint:check`, `ki:lint:types`, `ki:lint:md`, `ki:lint:md:check`. Source: standard §package.json, `ki-engineering`'s toolchain standard. _Severity: WARN per missing script. (A harness with no TypeScript may omit `ki:lint:check` / `ki:lint:types` with a documented reason — check `.ki-config.toml` for an override before reporting.)_
+**PKG-3 (retired)** The former harness-level common-toolchain check duplicated `ki-engineering`. Aggregate entrypoints are enforced by that skill's SCR-2; internal code and authoring tools are composed underneath them. The harness checker emits no PKG-3 finding, preserving single ownership.
 
 **PKG-4 [M]** `package.json` carries the harness skill-management / eval surface: `ki:skills:link:global`, `ki:skills:status`, `ki:skills:unlink`, `ki:skills:refresh-status`, `ki:eval`. Source: standard §package.json. _Severity: WARN per missing script._
 

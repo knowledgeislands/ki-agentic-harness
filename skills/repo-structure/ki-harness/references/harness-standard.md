@@ -85,7 +85,7 @@ The harness `CLAUDE.md` is the **always-loaded orientation** — every agent ses
 1. **What this harness is** — one paragraph: what the harness holds, who it's for, why it's a single repo rather than scattered files. Name all five parts.
 2. **The five parts** — a directory table (or equivalent structured block) with each of the five directories, what it holds today, and its current status (populated / empty shelf). Keep this current as shelves become populated.
 3. **Working conventions per part** — how to add, change, or audit each part: which command to run, which skill governs it, any install step. Brief; route detail to `docs/` or the relevant skill.
-4. **Toolchain** — the key `bun run *` commands: at minimum `ki:skills:link:project`, `ki:skills:audit`, and the common `ki:lint:*` family. Enough to orient a contributor on day one.
+4. **Toolchain** — the key `bun run *` commands: at minimum `ki:skills:link:project`, `ki:skills:audit`, `ki:audit`, and `ki:conform`. Enough to orient a contributor on day one.
 
 Optional but encouraged:
 
@@ -104,20 +104,16 @@ A harness carries `ROADMAP.md` as part of its root layout (LAY-4). `ki-project-r
 
 ## §package.json required scripts
 
-Every harness `package.json` MUST declare these script families:
+Every harness `package.json` MUST declare these harness-specific scripts:
 
 | Script                   | What it does                                                     | Why required                   |
 | ------------------------ | ---------------------------------------------------------------- | ------------------------------ |
 | `ki:skills:link:project` | Wires this repo's `.claude/skills/` from its `.ki-config.toml` § | The primary delivery mechanism |
 | `ki:skills:audit`        | Runs the `ki-skills` mechanical checker over `skills/`           | The gate for skill quality     |
-| `ki:lint:check`          | Biome — TypeScript + JSON lint (no write)                        | Common engineering gate        |
-| `ki:lint:types`          | `tsc --noEmit`                                                   | Type safety gate               |
-| `ki:lint:md`             | Prettier + markdownlint (writes)                                 | Markdown formatting gate       |
-| `ki:lint:md:check`       | Prettier + markdownlint (check-only; CI twin of `ki:lint:md`)    | CI Markdown gate               |
 
 § The `ki-bootstrap` linker; the harness links its own declared coverage, like any repo (ADR-KI-HARNESS-007).
 
-The `ki:lint:*` family is the common engineering toolchain (`ki-engineering`'s standard). A harness that ships no TypeScript may omit `ki:lint:check` / `ki:lint:types` with a documented reason.
+The aggregate entrypoints are the public toolchain contract, but they are not harness-specific. `ki-engineering` owns their package-script shape and internal code checks (Biome, TypeScript, knip, syncpack), while `ki-authoring` owns the Markdown pass. A complete harness audit composes those skills; this standard does not duplicate their findings.
 
 The harness-specific scripts are `ki:skills:link:project` and `ki:skills:audit` — these are the delivery and quality mechanisms the harness concept depends on. Absence of either is a FAIL. The harness additionally carries the rest of its skill-management / codegen / eval surface (PKG-4, WARN): `ki:skills:link:global` (`sync-skills.ts link --only ki-bootstrap`) to install the one global keystone, `ki:skills:status` / `ki:skills:unlink` (inspect / tear down the project-local links), `ki:skills:refresh-status` (refresh the skills status block), and `ki:eval` (run the `evals/` suite). Skills are not installed wholesale into `~/.claude/skills/`; they are wired **project-local** per repo by `ki-bootstrap`, only the keystone is kept global.
 

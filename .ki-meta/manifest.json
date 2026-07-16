@@ -1,5 +1,5 @@
 {
-  "ref": "837a6e59da3e4dec1b049364512fd4694b3909f6",
+  "ref": "00df30158d8b0d8c5c58e47f16712f502b37b5cd",
   "files": {
     ".ki-meta/skills/ki-agents/audit.ts": "744039a6365910a9d34d688fecec590cecc83ae15b5766d008dec5a0639d2d9a",
     ".ki-meta/skills/ki-agents/conform.ts": "b184328a974795a12bc5e6f76ddca97e89cd0fca8367033068f64c19d1971357",
@@ -19,8 +19,8 @@
     ".ki-meta/skills/ki-handoffs/audit.ts": "1c71ecd0bacbb0aa6287e5e21b2dada1fafc22916e4a09742967651e66f8f318",
     ".ki-meta/skills/ki-handoffs/conform.ts": "98ce31f66753fb56d87a5d1efdb1d5fb4defdb2238e3fd1f406e39584f6de5e6",
     ".ki-meta/skills/ki-handoffs/help.md": "ccfddc2a832c1ae0a097eedc5c13286f1a36bd5ff58d086106a5d80664287a78",
-    ".ki-meta/skills/ki-harness/audit.ts": "16d0e9ae6862deb7f1458212e9d18784828403ab7ead81e8693fa8bd7f0545ec",
-    ".ki-meta/skills/ki-harness/conform.ts": "e35d64daa7a2082c5af65e4109cc0d860e96d7b3b29ad1f5f5d1228bc0c93e58",
+    ".ki-meta/skills/ki-harness/audit.ts": "3b57ba939ee0f6b862db519b5cf5dd5334b2223ce69a8dd97645b3a588a134a5",
+    ".ki-meta/skills/ki-harness/conform.ts": "c65bc8b3a9c0d0eca7eb98da0014ee1e734b84f5b1eb90272940ea3961854c7a",
     ".ki-meta/skills/ki-harness/help.md": "b18b503d78b5c569cb82a13fd040be8329b42f5b9d61a1845252beabe570d2ee",
     ".ki-meta/skills/ki-housekeeping/audit.ts": "65574bceeca59796bfbbb2919fc13452b267047bea752967cd975b57f5cf27ea",
     ".ki-meta/skills/ki-housekeeping/conform.ts": "1ea3d2914c7bd7f76f37915fc75615b98de2703316f63835dcb660fb5a2485e1",

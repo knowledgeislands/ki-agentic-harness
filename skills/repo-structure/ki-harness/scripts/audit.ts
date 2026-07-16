@@ -83,7 +83,6 @@ const pkgPath = join(root, 'package.json')
 if (!existsSync(pkgPath)) {
   add('FAIL', 'PKG-1', 'package.json missing — cannot check scripts', STD, 'package.json')
   add('FAIL', 'PKG-2', 'package.json missing — cannot check scripts', STD, 'package.json')
-  add('WARN', 'PKG-3', 'package.json missing — cannot check scripts', STD, 'package.json')
 } else {
   const pkg = readPackageJson(pkgPath)
   check(
@@ -95,9 +94,6 @@ if (!existsSync(pkgPath)) {
     'package.json'
   )
   check('FAIL', 'PKG-2', hasScript(pkg, 'ki:skills:audit'), "must have a 'ki:skills:audit' script", STD, 'package.json')
-  for (const script of ['ki:lint:check', 'ki:lint:types', 'ki:lint:md', 'ki:lint:md:check']) {
-    check('WARN', 'PKG-3', hasScript(pkg, script), `should have a '${script}' script`, STD, 'package.json')
-  }
   for (const script of ['ki:skills:link:global', 'ki:skills:status', 'ki:skills:unlink', 'ki:skills:refresh-status', 'ki:eval']) {
     check(
       'WARN',

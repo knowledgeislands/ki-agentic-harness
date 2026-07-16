@@ -28,7 +28,7 @@
  *     declaration — a complete fix, not a stub).
  *
  * Deliberately NEVER touches (judgment → ADVISORY manual TODOs): LAY-3/4/5,
- * PKG-1..4, CONFIG-2, SKILLS-1/2, and the prose criteria CLAUDE-1..5.
+ * PKG-1/2/4, CONFIG-2, SKILLS-1/2, and the prose criteria CLAUDE-1..5.
  *
  * Zero npm dependencies (bun + node stdlib only).
  */
@@ -42,7 +42,6 @@ const PARTS = ['skills', 'agents', 'mcp', 'evals', 'hooks'] as const
 const ROOT_FILES = ['CLAUDE.md', 'ROADMAP.md', '.ki-config.toml', 'package.json'] as const
 const PKG1_SCRIPT = 'ki:skills:link:project'
 const PKG2_SCRIPT = 'ki:skills:audit'
-const PKG3_SCRIPTS = ['ki:lint:check', 'ki:lint:types', 'ki:lint:md', 'ki:lint:md:check']
 const PKG4_SCRIPTS = ['ki:skills:link:global', 'ki:skills:status', 'ki:skills:unlink', 'ki:skills:refresh-status', 'ki:codegen', 'ki:eval']
 
 function hasTomlTable(toml: string, table: string): boolean {
@@ -161,10 +160,10 @@ async function main() {
     }
   }
 
-  // PKG-1..4 — missing package.json scripts
+  // PKG-1/2/4 — missing package.json scripts
   const pkgPath = join(target, 'package.json')
   if (!(await exists(pkgPath))) {
-    rec('ADVISORY', 'PKG-1', 'package.json missing at root — author it with the required script families (PKG-1..4)', STD, 'package.json')
+    rec('ADVISORY', 'PKG-1', 'package.json missing at root — author it with the required script families (PKG-1/2/4)', STD, 'package.json')
   } else {
     let scripts: Record<string, unknown> = {}
     try {
@@ -173,7 +172,7 @@ async function main() {
     } catch {
       rec('ADVISORY', 'PKG-1', 'package.json could not be parsed as JSON — fix it by hand', STD, 'package.json')
     }
-    const missing = [PKG1_SCRIPT, PKG2_SCRIPT, ...PKG3_SCRIPTS, ...PKG4_SCRIPTS].filter((s) => !(s in scripts))
+    const missing = [PKG1_SCRIPT, PKG2_SCRIPT, ...PKG4_SCRIPTS].filter((s) => !(s in scripts))
     if (missing.length > 0) {
       rec('ADVISORY', 'PKG-1', `add scripts (command strings are repo-specific, not guessed): ${missing.join(', ')}`, STD, 'package.json')
     }

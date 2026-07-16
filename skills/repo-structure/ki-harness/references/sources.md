@@ -19,7 +19,7 @@ The tracked sources behind the harness standard. Provenance only: the record of 
 | ---- | -------------------------------------- | ----------------------------------------------------------------------------------- | ------------- |
 | [AH] | [ki-agentic-harness README][ah-readme] | The KI canonical reference implementation §                                         | 2026-07-04    |
 | [KR] | `ki-repo` skill                        | The `.ki-config.toml` contract, coverage cascade, and what makes a KI-governed repo | 2026-07-04    |
-| [KE] | `ki-engineering` skill                 | The enforcement framework ‡ plus the common toolchain script families               | 2026-07-04    |
+| [KE] | `ki-engineering` skill                 | The enforcement framework ‡ plus the toolchain ownership boundary                   | 2026-07-04    |
 
 § All structure inferred from this repo.
 
