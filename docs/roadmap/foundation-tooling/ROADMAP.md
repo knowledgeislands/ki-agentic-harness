@@ -8,61 +8,25 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Harden generated-file writes against symlinks and read/check/write races
+### Finish hardening the remaining rollout-critical generated writes
 
-**Sequence.** Hardening generated-file writes can land independently. The four that follow — a formal `.ki-config.toml` schema, the per-repo `printWidth` override, documenting each skill's overridable keys, and the comment-style CONFORM — interlock, so design them as one: the `printWidth` override is the worked first example of the override surface, the per-skill overridable-key documentation is most of a hand-written schema already, and the comment-tidy convention rides in with them rather than as a separate pass. `ki-dotfiles-chezmoi`'s config-editing tool-selection standard is separate — it governs _how_ to patch a config, not the config contract.
+Bootstrap publication, Plan Mode hooks, the stale Git-lock guard, project-roadmap publication, and hook-settings JSON are hardened and tested. Finish the release subset by promoting the filesystem-safety contract into the enforcement framework, then hardening scaffold-only `.ki-config.toml` and `.gitignore` writes, project skill and agent linkers, and global skill and hook symlink publication. Keep report writers and direct conformers out of the rollout gate; they are a separate long-tail item.
 
-The config-integrity adversarial review found that the new `.ki-config.toml` scaffold paths use ordinary `existsSync`/`readFileSync`/`writeFileSync`, so a repo-controlled symlink can redirect a write outside the target and a concurrent replacement can race the check. The same trust assumption predates that work in `.ki-meta/` vendoring, so solve this once as a generated-file write policy rather than special-casing config: inventory bootstrap, INIT, CONFORM, hook, and vendoring destinations; decide the trusted-checkout boundary; reject symlink leaves and unsafe parent chains where required; prefer same-directory temporary files plus atomic rename/no-follow semantics; and add hostile symlink/race fixtures to every auto-executing writer. Keep it separate from config-declaration correctness because it changes the filesystem threat model across the harness.
+### Roll out the uniform mode model across the `mcp-*` repositories
 
-### Sweep the `mcp-*` repos onto the uniform mode model + re-check naming across surfaces
-
-The uniform four-mode migration (bare `audit.ts`/`conform.ts`, `vendors: [init, audit, conform, help]`, derived `ki:<suffix>:audit`/`conform` keys, coverage-scoped `ki:audit`) landed in the harness; the 6 sibling `mcp-*` repos are still on the old layout and need re-bootstrapping onto it. As part of that, re-check the aggregate-vs-scoped naming (2-segment `ki:<verb>` = repo-wide, 3-segment `ki:<slug>:<verb>` = skill-scoped) stays consistent across the three surfaces — `.ki-meta/` paths, `.ki-meta/bin/` wrappers, and `package.json` keys — now that the derivation + SHAPE-15 + the engineering per-key check enforce it on the harness side.
+Build a read-only baseline for the six sibling MCP repositories, select one clean representative pilot, and prove the four-mode bootstrap recipe there before applying it repository by repository. Each repository gets a clean preflight, a local governed plan, focused tests, its surface-specific audit, and the aggregate audit. An unresolved writer blocks only the operation that needs it, not the baseline or unrelated rollout work.
 
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
-### Formal schema for `.ki-config.toml` _(candidate)_
+### Enforce CHK-009 citation completeness with runtime collection
 
-Today the file-level contract is prose ([ki-config-standard.md](../../../skills/keystone/ki-repo/references/ki-config-standard.md)) and each skill hand-validates only its own table at audit time ("validate down, ignore across") — there is no single machine-checkable schema an editor or a generic tool can validate against, and no ratified TOML-native schema standard exists to reach for (TOML has no JSON-Schema equivalent). The realistic options: (a) a JSON Schema per `[ki-<skill>]` table (TOML maps 1:1 onto JSON-compatible values), stitched into one document and validated via [Taplo](https://taplo.tamasfe.dev) (the engine behind the "Even Better TOML" VS Code extension), opted into per-file with a `#:schema` directive comment — gives editor-time autocomplete/validation for free; or (b) keep per-skill hand-validation as-is but formalize the convention each `audit.ts` already follows. Investigate before building: whether Taplo/JSON-Schema is worth the added toolchain surface for a config file only ever hand-edited by an agent, or whether the existing validate-down checker pattern already gives equivalent safety without a new artifact to keep in sync across ~12 skill tables.
+Run each checker through its structured JSON surface, collect emitted finding codes, and reconcile them with the owning rubric, including declared judgment-only exemptions. Start as a reporting check, clean the known undocumented codes, then promote it to a gate. Use the same collection pass to enforce CHK-012's non-restating message rule.
 
-### Allow `printWidth` to be overridden per repo via `.ki-config.toml` _(candidate)_
+### Enforce generated-code exclusions in `ki-engineering`
 
-Today the Markdown-table `printWidth` threshold — the "pad a table only if its widest row stays within `printWidth`" rule in `ki-authoring`'s [markdown-authoring.md](../../../skills/foundations/ki-authoring/references/markdown-authoring.md) — is fixed at whatever the harness's own `.prettierrc.json` declares (160, as of the 2026-07-14 bump from 140), with no per-repo override: every consuming repo's Prettier config carries that same fixed value regardless of that repo's own table-width needs. Add a declared key (candidate home: `.ki-config.toml`'s `[ki-authoring]` table) letting a repo raise or lower its own `printWidth`, with `ki-authoring`'s AUDIT/CONFORM reading it when checking/writing `.prettierrc.json` instead of assuming the harness default. Needs design: whether the override should apply repo-wide (`.prettierrc.json`'s single top-level `printWidth`, which also governs code files formatted by Prettier, if any) or be scoped narrowly to the Markdown table-padding decision only; and how it's meant to interact with `ki-engineering`'s separate, currently-unlinked `biome.json` `"lineWidth"` (code formatting) — a repo wanting one consistent column width today has to change two independent settings.
-
-### Document each skill's overridable `.ki-config.toml` properties _(candidate)_
-
-No single place lists, for a given skill, which of its `[ki-<skill>]` table's properties are safe to override per-repo versus which are structural/fixed — a repo author has to read the skill's `references/*-standard.md` prose (or the checker source itself) to discover what's actually tunable. Add a convention (candidate home: the `ki-skills` rubric, as a new criterion) requiring each skill's standard doc to carry an explicit "Overridable properties" table or section — naming every `.ki-config.toml` key the skill's audit/conform actually reads, its default, and what it controls — so a repo can discover its override surface without reading the checker. Pairs naturally with the "Formal schema for `.ki-config.toml`" item above (a documented overridable-property list per skill is most of the way to a hand-written schema already) and with the `printWidth`-override item just above, which would be the first entry in that documentation once landed.
-
-### Judgmental CONFORM pass to tidy `.ki-config.toml` comment style _(candidate)_
-
-Found 2026-07-14 comparing this file against a consuming repo's: `.ki-config.toml` comment style is inconsistent in a way no boolean check can catch, only judgment. This repo's own file interleaves long, prose-dense justifications inline under each `[ki-<skill>]` table with no visual separation between tables; the `chezmoi` dotfiles repo instead uses a `# ---...` banner line separating each table plus a single one-line comment stating that table's purpose before it opens — tidier to scan, easier to see where one skill's config ends and the next begins. Because "tidy" here is a judgment call (comment density, banner placement, what's worth keeping vs. cutting) rather than a structural pass/fail, this is CONFORM-only, not a new AUDIT check. Candidate home: `ki-repo`'s CONFORM mode, since it already `contributes: ['.ki-config.toml']`. Needs design: whether to formalize the banner-plus-one-liner style as the documented convention in [ki-config-standard.md](../../../skills/keystone/ki-repo/references/ki-config-standard.md) before writing a CONFORM step that applies it, and whether this repo's own file should be the first brought into line. Pairs with "Document each skill's overridable `.ki-config.toml` properties" above — a tidied, one-line-per-table comment convention is a natural place to also name each table's overridable keys.
-
-### Enforce CHK-009 citation completeness with a cross-skill check
-
-[ADR-KI-HARNESS-SKILLS-010](../../../docs/decisions/ADR-KI-HARNESS-SKILLS-010-comparable-cited-checker-findings.md) landed the structured `code`/`ref`/`file` finding model and CHK-009 (every FAIL/WARN/POLISH carries a resolvable rubric code + ref; the emitted `area` set ⊆ the rubric's codes), but the **enforcing check is not built** — CHK-009 is documented, not mechanised. It is deliberately deferred because it is a real design problem, not a quick script: a static assessment (extract `area` string-literals from `audit.ts`/`conform.ts`, `**CODE**` headings from `references/audit-rubric.md`) is unreliable in both directions — it captures non-codes (`utf8`, `fail`), misses dynamic codes (`ki-skills` conform emits `${skill}:${CODE}`), and per-skill rubric formatting varies (housekeeping/tools codes read as false "strays"). Doing it soundly needs either a typed per-skill code enum the checkers draw from, or a runtime-collection harness (run each `--json`, collect real `area` values) that handles NA-skipping checkers plus a declared `[J]`-only exemption list, and reconciles the known undocumented emitted codes (e.g. `ki-repo`'s `archived`/`authoring-baseline`/`package-*`). Build it as a reporting check first, promote to a blocking gate once the fleet is clean. Owner candidate: `ki-skills` (it already runs the cross-skill collision/owns checks) or `ki-engineering`. The same runtime-collection harness can cheaply enforce **CHK-012** (non-restating messages, added `3ef5c50`): assert no collected finding's `msg` starts with its own `area` code or its `file`'s basename — a simple string check once the `--json` sweep exists.
-
-### Overhaul checker output: pure JSON emitters + a single formatter
-
-Invert today's split (each checker renders its own native display _and_ serialises `--json`; the aggregate re-renders the JSON): make every checker emit **only** the CHK-004 JSON wrapper — always returning all findings, all levels — and move rendering into one shared formatter that consumes it. The formatter owns the CHK-011 finding line and can then offer what per-checker rendering never can uniformly: alternative styles, level filtering (`--only fail,warn`, hide PASS/INFO), grouping, and future report formats — without touching 24+ checkers. Placement must respect the standalone rule ([ADR-KI-HARNESS-SKILLS-004](../../../docs/decisions/ADR-KI-HARNESS-SKILLS-004-composition-not-extension.md), no cross-skill imports): the natural home is the bootstrap-vendored runner (`aggregate.ts` already half-is this formatter), with a standalone checker falling back to bare JSON. The same sweep must remove current compact-versus-pretty `--json` serialization drift and can carry the CHK-012 runtime check for free. A deliberate overhaul — batch it, don't drift into it piecemeal.
-
-### Codify a Conventional Commits git standard across the skills
-
-**Sequence.** Do the `ki-engineering` → `ki-engineering-ts` rename **before** the fleet-wide toolchain-prose reconciliation: that sweep already rewrites ~28 files, and the new name has to land in the same prose, so doing the rename first avoids rewriting it twice. Carry the now-formalised runner-neutral bare-`test` / config-gated Vitest posture through that sweep. The `mcp-*` mode sweep, the named-action-key standardisation, the generated-code lint/knip exclusion, and the Conventional Commits standard are independent of that batch.
-
-The repos already commit in [Conventional Commits](https://www.conventionalcommits.org/) style (`type(scope): subject`, seen throughout the history), but nothing in the skill set **governs** it — there is no house standard a commit is audited or conformed against. Land one: decide which skill owns git conventions (candidate: `ki-engineering`, which already owns the CI-workflow shape and the toolchain, or a dedicated `ki-git` if the surface is broad enough — commit format, branch naming, the solo-repo-to-`main` policy), specify the allowed `type` set and scope conventions, and add a mechanical check (e.g. a commit-message linter wired into the husky hook chain) plus the AUDIT/CONFORM prose. Cross-reference the per-repo commit guidance already living in `CLAUDE.md` files so the standard and the local instructions stay consistent.
-
-### Rename `ki-engineering` to `ki-engineering-ts`
-
-`ki-engineering` is really the **TypeScript/Bun** toolchain skill — its whole surface (Biome, `tsc`, knip, syncpack, vitest, the `package.json` key-set) is TS-specific, and its own audit NA-skips any repo without a `package.json`. The name claims a generality it doesn't have; a future `ki-engineering-py` (or `-go`) would want the same slot. Rename it `ki-engineering-ts` so the language scope is explicit and the naming leaves room for sibling toolchain skills. Mechanical rename across the skill dir, `vendors:`/`implies:` edges, the `.ki-config.toml` tables, package.json `ki:engineering:*` keys, and every cross-skill citation.
-
-### Standardise the free-form named-action `package.json` keys
-
-Beyond the enforced `ki:<suffix>:audit`/`conform` pair, a third category of `ki:`-namespaced keys is unenforced convention — `ki:binding:build-plugin`, `ki:eval`, `ki:skills:graph`, `ki:skills:help`, `ki:skills:link:*`, `ki:skills:unlink`, `ki:skills:status`, `ki:skills:refresh-status`, `ki:agents:link:project`. Review whether each is still needed and whether the category can be standardised (a declared `actions:` list per skill, or folding some into audit/conform) rather than left as open-ended convention.
-
-### Codify the generated-code lint/knip exclusion in `ki-engineering`
-
-ADR-KI-HARNESS-TOOLCHAIN-005 records that generated and vendored code (`src/generated/`, the vendored-checker tree) is excluded from Biome and knip — applied per-repo in config today, not stated in the standard. The Markdown side of this landed with the mode migration (`.ki-meta/**` and `.claude/**` added to the markdownlint `ignores`, and `syncpack` to `knip.ignoreDependencies` since it is invoked via `bunx` inside the vendored engineering scripts). Lift the rest into `ki-engineering` so its AUDIT expects the exclusions (a generated tree present but not excluded is a finding) and its exemplars show the `!`-negated `files.includes`, the `knip.ignore` entries, and the markdownlint `ignores`.
+The exclusion policy is already decided and applied in examples. Add only the missing mechanical enforcement: when generated or vendored trees exist, AUDIT must require the matching Biome, knip, and Markdown exclusions.
 
 ## Waiting for
 
@@ -70,8 +34,28 @@ Worth doing, but presently blocked on an external dependency or decision. Revisi
 
 ### Remove the legacy `preferred_model` migration bridge in `ki-tokenomics`
 
-[ADR-KI-HARNESS-009](../../../docs/decisions/ADR-KI-HARNESS-009-portable-model-types.md) renamed the config key `preferred_model` (a Claude alias) to `preferred_model_type` (a portable type) and left a deliberate, temporary bridge: the checker still recognises a lingering `preferred_model` solely to FAIL loudly (`CFG-4`) with a migration hint, and conform emits a concrete "replace with `preferred_model_type = …`" TODO mapping the old alias to its type. Wait until every sibling repo has migrated its `.ki-config.toml`; then drop `LEGACY_ALIAS_TO_TYPE`, the `legacyModelTier` parse branch, and the `CFG-4` legacy-key finding in both scripts. Unblock when a fleet-wide search for `preferred_model` in `.ki-config.toml` is empty.
+The checker deliberately recognises `preferred_model` only to issue a migration failure. Remove that parsing and its alias mapping when a fleet-wide search confirms that no sibling `.ki-config.toml` still uses the legacy key.
 
 ## Future
 
 Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass (or a decision to drop them) before they're actionable.
+
+### Define the `.ki-config.toml` override contract _(candidate)_
+
+Decide whether the existing per-skill validate-down convention is sufficient or whether a composed editor-facing schema is worth its maintenance cost. As one coherent design, document each skill's supported overrides, use `ki-authoring.printWidth` as the worked example, and settle the compact comment convention without creating a judgmental auto-rewriter.
+
+### Overhaul checker output around pure JSON and one formatter _(candidate)_
+
+Assess a deliberate migration in which checkers emit the canonical JSON wrapper and a bootstrap-vendored formatter owns presentation, filtering, and grouping. Preserve standalone skill operation and avoid a piecemeal mixed model.
+
+### Codify Git workflow and commit conventions _(candidate)_
+
+Choose an owner for repository Git discipline, including Conventional Commit messages, the allowed type and scope vocabulary, safe lock and cleanup behaviour, and consistency with repository-local instructions. Add mechanical enforcement only after the standard is settled.
+
+### Rename `ki-engineering` to `ki-engineering-ts` _(candidate)_
+
+The skill governs the TypeScript and Bun toolchain rather than language-neutral engineering. Scope the mechanical rename across declarations, vendored paths, package aliases, composition edges, and citations before starting it.
+
+### Harden non-critical report writers and direct conformers _(candidate)_
+
+After the rollout-critical filesystem work closes, inventory the remaining report generators and direct conformers by mutation class and migrate them in bounded batches. Opaque subprocess writers must retain honest exclusions unless a separate isolation design is approved.
