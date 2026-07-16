@@ -2,14 +2,18 @@
 
 Knowledge Islands **Claude Code hooks**.
 
-This directory is where the harness's hook scripts consolidate — the `PreToolUse`, `PostToolUse`, `SessionStart`, `PreCompact`, and similar handlers a consuming repo (or the personal `~/.claude/` environment) wires into a `settings.json`. It now holds its first pair: `plan-stamp.sh` and `plan-sync.sh`, a `PostToolUse(ExitPlanMode)` / `PostToolUse(TodoWrite)` pair that stamps and syncs lifecycle status onto Claude Code's personal `~/.claude/plans/` Plan Mode scratch files.
+This directory is where the harness's hook scripts consolidate — the `PreToolUse`, `PostToolUse`, `Stop`, `SessionStart`, `PreCompact`, and similar handlers a consuming repo (or the personal `~/.claude/` environment) wires into a `settings.json`. The current surface has two concerns: the `plan-stamp.sh` / `plan-sync.sh` Plan Mode lifecycle pair and the `git-lock-check.sh` stale-lock guard.
 
 `plan-stamp.sh` records the authenticated current-session pointer at `~/.claude/plans/.state/<session_id>` as v1 JSON with exactly `version`, `session_id`, `plan_file`, and the hook event's physically resolved `cwd`. `plan-sync.sh` validates that state before updating progress. It temporarily accepts a safe legacy one-line plaintext plan pointer for progress sync only; malformed JSON is rejected, and `/ki-plan promote` rejects all legacy state because it has no trusted repository provenance. Neither hook promotes or writes a governed repository plan: promotion remains a deliberate `/ki-plan promote` action, and it preserves the scratch plan and state record.
+
+`git-lock-check.sh` runs at `Stop(*)`. In the current Git worktree it removes stale `*.lock` files from the physical Git directory only when no relevant Git process is active. It exits successfully without mutation outside a worktree, when process state cannot be checked safely, or when a candidate no longer proves to be a real file beneath that Git directory. This guard recovers locks left by killed commands; it is not permission to interrupt write-mode Git operations.
+
+The lock guard is best-effort recovery in a trusted user account. It rechecks candidate type, physical parent containment, and process state immediately before each removal, but portable shell cannot combine that parent proof and unlink into one descriptor-relative operation. It therefore does not claim to defend against a same-UID adversary concurrently replacing Git-administration path components.
 
 Two install patterns apply, and they diverge:
 
 - **Project-local** (the general pattern) — a consuming repo wires a handler into its own `.claude/settings.json`, scoped to that repo.
-- **Global** (this pair) — install via `bun run ki:hooks:link:global` (or `bun skills/keystone/ki-bootstrap/scripts/link-hooks.ts`), which symlinks `plan-stamp.sh`/`plan-sync.sh` into `~/.claude/hooks/` and merge-patches `~/.claude/settings.json` directly. Plan-file lifecycle is inherently personal/global — tied to `~/.claude/plans/`, not any one repo — so it installs at the home-directory level rather than per-repo.
+- **Global** (the current surface) — install via `bun run ki:hooks:link:global` (or `bun skills/keystone/ki-bootstrap/scripts/link-hooks.ts`), which symlinks all three scripts into `~/.claude/hooks/` and merge-patches each script's declared event and matcher into `~/.claude/settings.json`. Plan-file lifecycle is tied to personal `~/.claude/plans/` state; the lock guard applies across every worktree. Both therefore install at the home-directory level rather than per-repo.
 
 Hooks have no dedicated governing skill yet — they are advisory, like [evals/](../evals). The bundle layout is fixed by ADR-KI-HARNESS-001 and governed by the **`ki-harness`** skill under [skills/](../skills).
 

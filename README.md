@@ -8,7 +8,7 @@ A harness is **five parts** — the things an agent is given to work with:
 - **Agents** ([`agents/`](agents)) — Knowledge Islands [Claude Code subagents](https://code.claude.com/docs/en/sub-agents), one per file. Governance agents live under `agents/governance/`, governed by the `ki-agents` skill. See [`agents/README.md`](agents/README.md).
 - **MCP servers** ([`mcp/`](mcp)) — where KI's MCP servers would consolidate as workspace packages. An empty **shelf** today; they currently live as separate `mcp-*` repos, governed by the `ki-mcp` skill. See [`mcp/README.md`](mcp/README.md).
 - **Evals** ([`evals/`](evals)) — a behavioural test suite that checks a skill actually _changes what the model does_, not just that its `SKILL.md` is well-formed. A rough signal, not a gate. See [`evals/README.md`](evals/README.md).
-- **Hooks** ([`hooks/`](hooks)) — Claude Code hook scripts a consuming repo wires into its `.claude/settings.json`. A growing set, starting with the plan-file lifecycle. See [`hooks/README.md`](hooks/README.md).
+- **Hooks** ([`hooks/`](hooks)) — global Claude Code automation installed into `~/.claude/settings.json`, currently covering Plan Mode lifecycle and stale Git-lock recovery. See [`hooks/README.md`](hooks/README.md).
 
 All five parts are first-class; skills are simply the most built-out, with agents, the eval suite, and hooks now populated and `mcp/` still an empty shelf. A skill does not have to be wedded to Knowledge Islands — the repository layout, the install steps, and the linking conventions apply to every kind equally.
 

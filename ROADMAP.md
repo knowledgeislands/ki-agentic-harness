@@ -10,8 +10,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-- [Hooks: Graduate `git-lock-check.sh` into the harness hook surface](docs/roadmap/hooks/ROADMAP.md#graduate-git-lock-checksh-into-the-harness-hook-surface)
-
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.

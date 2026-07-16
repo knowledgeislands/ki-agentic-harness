@@ -8,10 +8,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Graduate `git-lock-check.sh` into the harness hook surface
-
-Move the chezmoi repo's user-level `Stop` hook for stale `.git/*.lock` files into harness ownership alongside the plan lifecycle pair. Add `hooks/git-lock-check.sh` and an adversarial `hooks/git-lock-check.test.ts`; document the third hook in `hooks/README.md`; and generalize `skills/keystone/ki-bootstrap/scripts/link-hooks.ts` so each declared hook carries its own event and matcher rather than hardcoding `hooks.PostToolUse`. The new hook uses `Stop` with matcher `*`; `plan-stamp.sh` and `plan-sync.sh` remain `PostToolUse`. The dependent chezmoi removal is tracked in that repo.
-
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.

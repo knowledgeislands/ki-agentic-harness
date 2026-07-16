@@ -7,7 +7,7 @@ The runtime-neutral orientation for this repo lives in [AGENTS.md](AGENTS.md), i
 ## Claude Code specifics
 
 - **Install/link paths** — the bootstrap keystone links into `~/.claude/skills` (`bun run ki:skills:link:global`); this repo's project-local skills/agents wire under `.claude/skills` and `.claude/agents` (`bun run ki:skills:link:project`, `--all` here). Codex uses `.agents/skills` and `~/.codex/` — see the [runtime parity scorecard](docs/decisions/references/runtime-parity-scorecard.md).
-- **Hooks** — the plan-file lifecycle pair registers via `.claude/settings.json` (`ki:hooks:link:global`); these ride Claude Code's native Plan Mode and have no confirmed Codex equivalent.
+- **Hooks** — three global scripts register via `.claude/settings.json` (`ki:hooks:link:global`): the Plan Mode lifecycle pair and the `Stop(*)` stale Git-lock guard. These are Claude Code-native and have no confirmed Codex equivalent.
 
 <!-- headroom:learn:start -->
 

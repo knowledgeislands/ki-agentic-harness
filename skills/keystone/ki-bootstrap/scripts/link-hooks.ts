@@ -1,12 +1,10 @@
 #!/usr/bin/env bun
 /**
- * ki-bootstrap — install the harness's global hook pair into `~/.claude/`.
+ * ki-bootstrap — install the harness's global hooks into `~/.claude/`.
  *
- * Plan-file lifecycle (`plan-stamp.sh` / `plan-sync.sh`) is inherently personal/global —
- * it operates on Claude Code's own `~/.claude/plans/` scratch files, not any one repo —
- * so unlike the project-local linkers this installs into the home directory and merge-
- * patches `~/.claude/settings.json` directly, rather than a consuming repo's own
- * `.claude/settings.json`.
+ * These hooks are inherently personal/global: they operate on Claude Code's own state
+ * or guard every repository on the machine. Unlike project-local linkers, this installs
+ * into the home directory and merge-patches `~/.claude/settings.json` directly.
  *
  * Self-locating: invoked through its global symlink (or directly from the harness),
  * `import.meta.url` resolves to its real path inside the harness, from which the
@@ -19,6 +17,7 @@
  */
 
 import {
+  chmodSync,
   existsSync,
   lstatSync,
   mkdirSync,
@@ -27,6 +26,7 @@ import {
   realpathSync,
   renameSync,
   rmSync,
+  statSync,
   symlinkSync,
   writeFileSync
 } from 'node:fs'
@@ -40,8 +40,6 @@ const SELF = realpathSync(fileURLToPath(import.meta.url))
 const HARNESS_ROOT = resolve(dirname(SELF), '..', '..', '..', '..')
 const HOOKS_SOURCE_ROOT = join(HARNESS_ROOT, 'hooks')
 
-const HOOK_NAMES = ['plan-stamp.sh', 'plan-sync.sh']
-
 const CLAUDE_HOOKS_DIR = join(homedir(), '.claude', 'hooks')
 const SETTINGS_PATH = join(homedir(), '.claude', 'settings.json')
 
@@ -52,15 +50,38 @@ const GREEN = '\x1b[32m'
 const DIM = '\x1b[2m'
 const RESET = '\x1b[0m'
 
-interface HookPair {
+interface HookDeclaration {
+  name: string
+  event: string
   matcher: string
   command: string
+  timeout: number
 }
 
-const HOOK_PAIRS: HookPair[] = [
-  { matcher: 'ExitPlanMode', command: '$HOME/.claude/hooks/plan-stamp.sh' },
-  { matcher: 'TodoWrite', command: '$HOME/.claude/hooks/plan-sync.sh' }
+const HOOKS: HookDeclaration[] = [
+  {
+    name: 'plan-stamp.sh',
+    event: 'PostToolUse',
+    matcher: 'ExitPlanMode',
+    command: '$HOME/.claude/hooks/plan-stamp.sh',
+    timeout: 5
+  },
+  {
+    name: 'plan-sync.sh',
+    event: 'PostToolUse',
+    matcher: 'TodoWrite',
+    command: '$HOME/.claude/hooks/plan-sync.sh',
+    timeout: 5
+  },
+  {
+    name: 'git-lock-check.sh',
+    event: 'Stop',
+    matcher: '*',
+    command: '$HOME/.claude/hooks/git-lock-check.sh',
+    timeout: 10
+  }
 ]
+const HOOK_NAMES = HOOKS.map((hook) => hook.name)
 
 // ── Helpers ──
 function readText(path: string): string {
@@ -76,7 +97,8 @@ function isSymlink(p: string): boolean {
 }
 
 // ── Symlink step ──
-function cmdLinkSymlinks(dryRun: boolean): void {
+function cmdLinkSymlinks(dryRun: boolean): boolean {
+  let ok = true
   if (!existsSync(CLAUDE_HOOKS_DIR)) {
     console.log(`${DIM}creating ${CLAUDE_HOOKS_DIR}${RESET}`)
     if (!dryRun) mkdirSync(CLAUDE_HOOKS_DIR, { recursive: true })
@@ -91,7 +113,8 @@ function cmdLinkSymlinks(dryRun: boolean): void {
       continue
     }
     if (existsSync(linkPath) && !isSymlink(linkPath)) {
-      console.log(`${YELLOW}skip  ${name}${RESET} ${DIM}(a real file is in the way)${RESET}`)
+      console.log(`${RED}FAIL  ${name}${RESET} ${DIM}(a real file is in the way)${RESET}`)
+      ok = false
       continue
     }
     if (!dryRun) {
@@ -100,14 +123,28 @@ function cmdLinkSymlinks(dryRun: boolean): void {
     }
     console.log(`${GREEN}link  ${RESET}${name} -> ${DIM}${rel}${RESET}`)
   }
+  return ok
 }
 
 // ── Settings JSON parsing (shared) ──
 function parseSettings(): Record<string, unknown> | undefined {
-  const raw = readText(SETTINGS_PATH)
-  if (!raw) return {}
+  if (isSymlink(SETTINGS_PATH)) {
+    console.log(`${RED}FAIL  ${RESET}${SETTINGS_PATH} must not be a symlink`)
+    return undefined
+  }
   try {
-    return JSON.parse(raw)
+    if (existsSync(SETTINGS_PATH) && !lstatSync(SETTINGS_PATH).isFile()) {
+      console.log(`${RED}FAIL  ${RESET}${SETTINGS_PATH} must be a regular file`)
+      return undefined
+    }
+    const raw = readText(SETTINGS_PATH)
+    if (!raw) return {}
+    const data: unknown = JSON.parse(raw)
+    if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+      console.log(`${RED}FAIL  ${RESET}${SETTINGS_PATH} must contain a JSON object`)
+      return undefined
+    }
+    return data as Record<string, unknown>
   } catch (err) {
     console.log(`${RED}FAIL  ${RESET}${SETTINGS_PATH} is not valid JSON: ${(err as Error).message}`)
     return undefined
@@ -115,32 +152,67 @@ function parseSettings(): Record<string, unknown> | undefined {
 }
 
 // ── Settings-patch step ──
-function cmdPatchSettings(dryRun: boolean): number {
-  const data = parseSettings()
-  if (!data) return 1
-  if (typeof data.hooks !== 'object' || data.hooks === null) data.hooks = {}
+function cmdPatchSettings(data: Record<string, unknown>, dryRun: boolean): number {
+  if (typeof data.hooks !== 'object' || data.hooks === null || Array.isArray(data.hooks)) data.hooks = {}
   const hooks = data.hooks as Record<string, unknown>
-  if (!Array.isArray(hooks.PostToolUse)) hooks.PostToolUse = []
-  const postToolUse = hooks.PostToolUse as Array<{ matcher: string; hooks: Array<{ type: string; command: string; timeout: number }> }>
 
   let changed = false
-  for (const pair of HOOK_PAIRS) {
-    const entry = postToolUse.find((e) => e.matcher === pair.matcher)
-    if (entry) {
-      if (!Array.isArray(entry.hooks)) entry.hooks = []
-      const hasCommand = entry.hooks.some((h) => h.command === pair.command)
-      if (hasCommand) {
-        console.log(`${DIM}ok    ${pair.matcher} -> ${pair.command}${RESET}`)
-        continue
+  for (const hook of HOOKS) {
+    if (!Array.isArray(hooks[hook.event])) hooks[hook.event] = []
+    const eventEntries = hooks[hook.event] as unknown[]
+    const matchingEntries = eventEntries.filter(
+      (candidate): candidate is { matcher: string; hooks?: unknown } =>
+        typeof candidate === 'object' && candidate !== null && (candidate as { matcher?: unknown }).matcher === hook.matcher
+    )
+    let entry = matchingEntries[0]
+    let handler: Record<string, unknown> | undefined
+    for (const candidateEntry of matchingEntries) {
+      if (!Array.isArray(candidateEntry.hooks)) continue
+      const candidate = candidateEntry.hooks.find(
+        (item): item is Record<string, unknown> =>
+          typeof item === 'object' && item !== null && (item as { command?: unknown }).command === hook.command
+      )
+      if (candidate) {
+        entry = candidateEntry
+        handler = candidate
+        break
       }
-      entry.hooks.push({ type: 'command', command: pair.command, timeout: 5 })
-      changed = true
-      console.log(`${GREEN}link  ${RESET}${pair.matcher} -> ${DIM}${pair.command}${RESET}`)
-    } else {
-      postToolUse.push({ matcher: pair.matcher, hooks: [{ type: 'command', command: pair.command, timeout: 5 }] })
-      changed = true
-      console.log(`${GREEN}link  ${RESET}${pair.matcher} -> ${DIM}${pair.command}${RESET}`)
     }
+
+    if (!entry) {
+      entry = { matcher: hook.matcher, hooks: [] }
+      eventEntries.push(entry)
+      changed = true
+    }
+    if (!Array.isArray(entry.hooks)) {
+      entry.hooks = []
+      changed = true
+    }
+    const handlers = entry.hooks as unknown[]
+    if (!handler) {
+      handler = { type: 'command', command: hook.command, timeout: hook.timeout }
+      handlers.push(handler)
+      changed = true
+    } else if (handler.type !== 'command' || handler.timeout !== hook.timeout) {
+      handler.type = 'command'
+      handler.timeout = hook.timeout
+      changed = true
+    }
+
+    for (const candidateEntry of matchingEntries) {
+      if (!Array.isArray(candidateEntry.hooks)) continue
+      const before = candidateEntry.hooks.length
+      const filteredHandlers = candidateEntry.hooks.filter(
+        (candidate) =>
+          candidate === handler ||
+          typeof candidate !== 'object' ||
+          candidate === null ||
+          (candidate as { command?: unknown }).command !== hook.command
+      )
+      candidateEntry.hooks = filteredHandlers
+      if (filteredHandlers.length !== before) changed = true
+    }
+    console.log(`${changed ? `${GREEN}link  ${RESET}` : `${DIM}ok    `}${hook.event}(${hook.matcher}) -> ${DIM}${hook.command}${RESET}`)
   }
 
   if (!changed) {
@@ -150,8 +222,17 @@ function cmdPatchSettings(dryRun: boolean): number {
   if (dryRun) return 0
 
   const tmpPath = `${SETTINGS_PATH}.tmp-${process.pid}`
-  writeFileSync(tmpPath, `${JSON.stringify(data, null, 2)}\n`)
-  renameSync(tmpPath, SETTINGS_PATH)
+  const settingsMode = existsSync(SETTINGS_PATH) ? statSync(SETTINGS_PATH).mode & 0o777 : 0o600
+  let createdTemp = false
+  try {
+    writeFileSync(tmpPath, `${JSON.stringify(data, null, 2)}\n`, { flag: 'wx', mode: 0o600 })
+    createdTemp = true
+    chmodSync(tmpPath, settingsMode)
+    renameSync(tmpPath, SETTINGS_PATH)
+  } catch (error) {
+    if (createdTemp && existsSync(tmpPath) && !isSymlink(tmpPath)) rmSync(tmpPath)
+    throw error
+  }
   return 0
 }
 
@@ -178,16 +259,28 @@ function cmdCheck(): number {
 
   const data = parseSettings()
   if (!data) return 1
-  const postToolUse = (data.hooks as Record<string, unknown> | undefined)?.PostToolUse
-  const list: Array<{ matcher: string; hooks?: Array<{ command: string }> }> = Array.isArray(postToolUse) ? postToolUse : []
-  for (const pair of HOOK_PAIRS) {
-    const entry = list.find((e) => e.matcher === pair.matcher)
-    const present = Array.isArray(entry?.hooks) && entry.hooks.some((h) => h.command === pair.command)
+  const hooks = data.hooks as Record<string, unknown> | undefined
+  for (const hook of HOOKS) {
+    const eventEntries = hooks?.[hook.event]
+    const list: unknown[] = Array.isArray(eventEntries) ? eventEntries : []
+    const matchingEntries = list.filter(
+      (candidate): candidate is { matcher: string; hooks?: unknown } =>
+        typeof candidate === 'object' && candidate !== null && (candidate as { matcher?: unknown }).matcher === hook.matcher
+    )
+    const ownedHandlers = matchingEntries
+      .flatMap((entry) => (Array.isArray(entry.hooks) ? entry.hooks : []))
+      .filter(
+        (candidate) => typeof candidate === 'object' && candidate !== null && (candidate as { command?: unknown }).command === hook.command
+      )
+    const present =
+      ownedHandlers.length === 1 &&
+      (ownedHandlers[0] as { type?: unknown }).type === 'command' &&
+      (ownedHandlers[0] as { timeout?: unknown }).timeout === hook.timeout
     if (!present) {
-      console.log(`${YELLOW}WARN  ${RESET}missing PostToolUse hook: ${pair.matcher} -> ${pair.command}`)
+      console.log(`${YELLOW}WARN  ${RESET}missing ${hook.event} hook: ${hook.matcher} -> ${hook.command}`)
       ok = false
     } else {
-      console.log(`${DIM}PASS  ${pair.matcher} -> ${pair.command}${RESET}`)
+      console.log(`${DIM}PASS  ${hook.event}(${hook.matcher}) -> ${hook.command}${RESET}`)
     }
   }
 
@@ -207,7 +300,9 @@ console.log(
 if (checkOnly) {
   process.exit(cmdCheck())
 }
-cmdLinkSymlinks(dryRun)
-const patchStatus = cmdPatchSettings(dryRun)
+const settings = parseSettings()
+if (!settings) process.exit(1)
+if (!cmdLinkSymlinks(dryRun)) process.exit(1)
+const patchStatus = cmdPatchSettings(settings, dryRun)
 if (patchStatus !== 0) process.exit(patchStatus)
 if (dryRun) console.log(`\n  ${YELLOW}(dry run — nothing changed)${RESET}`)
