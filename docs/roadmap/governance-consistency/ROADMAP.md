@@ -18,7 +18,7 @@ Migrate the universal governance mode from `INIT` to **Educate** across skill co
 
 ### Codify convention placement and the knowledge-promotion loop
 
-Define the runtime-neutral ladder that prevents useful knowledge becoming trapped in session or project memory: ephemeral agent memory → project guidance or an on-demand `docs/guides/agents/` document → shared governance or reference material → a reusable skill. For each rung, state what belongs there, the evidence that triggers promotion, the durable destination, and the reconciliation step that removes or redirects the lower-layer duplicate. Keep `AGENTS.md` as the portable orientation, reserve runtime files such as `CLAUDE.md` for runtime-specific imports and guidance, and route genuinely personal cross-project conventions to synchronized user configuration.
+Define one runtime-neutral routing reference and manual promotion loop that prevents useful knowledge becoming trapped in session or project memory: ephemeral agent memory → project guidance or an on-demand guide → shared governance or reference material → a reusable skill. For each rung, state what belongs there, the evidence that triggers promotion, the durable destination, and the reconciliation step that removes or redirects the lower-layer duplicate. Keep `AGENTS.md` as the portable orientation, reserve runtime files such as `CLAUDE.md` for runtime-specific imports and guidance, and route genuinely personal cross-project conventions to synchronized user configuration. Do not add automatic transcript mining or a new guide area by default.
 
 ## Waiting for
 
@@ -30,12 +30,8 @@ Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass
 
 ### Separate Knowledge Islands policy from portable governance _(candidate)_
 
-Identify which rules are universal enough to ship as portable governance and which are Knowledge Islands estate policy. Make the boundary explicit without duplicating standards or weakening the current composition model.
-
-### Enforce cross-artifact reference integrity mechanically _(candidate)_
-
-Scope a narrow drift check for identifiers, links, composition declarations, and generated indexes that can be validated without judgment. Do not turn this into a general prose-consistency engine.
+Write a compact boundary matrix separating portable contract, Knowledge Islands estate policy, and runtime binding. Do not split standards or redesign composition unless the matrix exposes a concrete ownership conflict.
 
 ### Roll Feature Definitions out across the repository fleet _(candidate)_
 
-Once the local standard is stable, identify repositories whose externally visible behaviour benefits from governed requirements, then pilot the format before any fleet-wide adoption.
+Select one named repository with externally visible behaviour and an owner, then pilot the format there. Do not begin fleet rollout before that pilot exists.

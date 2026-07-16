@@ -12,9 +12,9 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
-### Make `ki-recap` resolve the invoking session explicitly
+### Let `ki-recap` accept an explicit transcript selector
 
-Allow the grounding helper to accept the invoking session or transcript identifier instead of selecting by recency. Thread the identifier through the process surface and test two concurrent sessions in the same repository so recap evidence cannot be borrowed from the wrong transcript.
+Allow the grounding helper to accept an explicit transcript or session selector instead of selecting only by recency. Use it when supplied, retain recency only as an advisory fallback, and test two concurrent sessions in the same repository so recap evidence cannot be borrowed from the wrong transcript. Do not promise an ambient runtime session identifier unless a host actually exposes one.
 
 ## Waiting for
 

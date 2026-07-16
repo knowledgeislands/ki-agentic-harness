@@ -20,14 +20,10 @@ Produce a finite routing table or decision record assigning each state class to 
 
 Worth doing, but presently blocked on an external dependency or decision. Revisit when its named condition changes rather than treating it as dormant local work.
 
-### Make KI MCP capabilities reachable from Cowork and web surfaces
+### Make KI MCP servers reachable from Cowork
 
-Choose between sandbox-bundled servers and authenticated remote endpoints for host-local KI MCP capabilities, then prove one supported path. Resolve the `ki-plugins` license and visibility conflict as part of that decision; local connector parity is the same reachability problem, not a separate roadmap stream. Unblock when the owner selects the sandbox-versus-endpoint security posture and settles the plugin's license and visibility.
+Choose between sandbox-bundled servers and authenticated remote endpoints for host-local KI MCP servers in Cowork, then prove one supported path. Resolve the `ki-plugins` license and visibility conflict as part of that decision. Unblock when the owner selects the sandbox-versus-endpoint security posture and settles the plugin's license and visibility. Web remains a separate, manual-connector concern.
 
 ## Future
 
 Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass (or a decision to drop them) before they're actionable.
-
-### Use `target_runtimes` to select runtime-bound integrations _(candidate)_
-
-Decide whether each governed runtime-bound surface reads `[ki-repo] target_runtimes` directly or whether bootstrap coordinates installation. Claude Code hooks are the first concrete case; settle that ownership boundary before adding broader runtime-specific installation.

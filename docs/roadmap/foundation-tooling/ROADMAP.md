@@ -16,17 +16,17 @@ Build a read-only baseline for the six sibling MCP repositories, select one clea
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
-### Enforce CHK-009 citation completeness with runtime collection
+### Complete cited JSON checker-contract conformance and enforce CHK-009/CHK-012
 
-Run each checker through its structured JSON surface, collect emitted finding codes, and reconcile them with the owning rubric, including declared judgment-only exemptions. Start as a reporting check, clean the known undocumented codes, then promote it to a gate. Use the same collection pass to enforce CHK-012's non-restating message rule.
+Bring the remaining checker JSON-contract exceptions into the already-decided single aggregate-renderer model, then run each checker through its structured surface, collect emitted finding codes, and reconcile them with the owning rubric, including declared judgment-only exemptions. Start as a reporting check, clean the known undocumented codes and the known `ki-housekeeping`, `ki-binding`, `ki-decision-records`, and `ki-feature-definitions` contract exceptions, then promote it to a gate. Use the same collection pass to enforce CHK-012's non-restating message rule.
 
 ### Enforce generated-code exclusions in `ki-engineering`
 
 The exclusion policy is already decided and applied in examples. Add only the missing mechanical enforcement: when generated or vendored trees exist, AUDIT must require the matching Biome, knip, and Markdown exclusions.
 
-### Codify the generated-write safety contract
+### Document generated-write boundaries
 
-Define the compact mutation-class, authorized-root, transaction, publication, rollback, and exclusion contract for governed writers. Start by documenting the already-hardened bootstrap, scaffold, and project-link surfaces; do not reopen their implementation.
+Document the ownership, generated-marker, copying-versus-development-link, `.gitignore`, preservation, and migration boundaries already implemented for bootstrap, scaffold, and project-link surfaces. Do not reopen race hardening or treat deliberate local development links as hostile deployment input.
 
 ### Harden global runtime skill publication
 
@@ -44,22 +44,14 @@ The checker deliberately recognises `preferred_model` only to issue a migration 
 
 Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass (or a decision to drop them) before they're actionable.
 
-### Define the `.ki-config.toml` override contract _(candidate)_
+### Document per-skill `.ki-config.toml` ownership _(candidate)_
 
-Decide whether the existing per-skill validate-down convention is sufficient or whether a composed editor-facing schema is worth its maintenance cost. As one coherent design, document each skill's supported overrides, use `ki-authoring.printWidth` as the worked example, and settle the compact comment convention without creating a judgmental auto-rewriter.
-
-### Overhaul checker output around pure JSON and one formatter _(candidate)_
-
-Assess a deliberate migration in which checkers emit the canonical JSON wrapper and a bootstrap-vendored formatter owns presentation, filtering, and grouping. Preserve standalone skill operation and avoid a piecemeal mixed model.
+Document the existing validate-down convention: each skill owns and validates its own table, while shared configuration stays with its owner. Use `ki-authoring.printWidth` as the worked example; do not design a central editor schema without a concrete cross-skill use case.
 
 ### Codify Git workflow and commit conventions _(candidate)_
 
 Choose an owner for repository Git discipline, including Conventional Commit messages, the allowed type and scope vocabulary, safe lock and cleanup behaviour, and consistency with repository-local instructions. Decide whether that owner should be a dedicated `ki-git` skill, including ownership of the shipped stale Git-lock guard rather than leaving it as an ungoverned hook. Add mechanical enforcement only after the standard is settled.
 
-### Rename `ki-engineering` to `ki-engineering-ts` _(candidate)_
+### Inventory non-critical writers for bounded follow-up _(candidate)_
 
-The skill governs the TypeScript and Bun toolchain rather than language-neutral engineering. Scope the mechanical rename across declarations, vendored paths, package aliases, composition edges, and citations before starting it.
-
-### Harden non-critical report writers and direct conformers _(candidate)_
-
-After the rollout-critical filesystem work closes, inventory the remaining report generators and direct conformers by mutation class and migrate them in bounded batches. Opaque subprocess writers must retain honest exclusions unless a separate isolation design is approved.
+After the rollout-critical filesystem work closes, inventory remaining report generators and direct conformers by mutation class. Prioritise external, user-space, or destructive writers; leave ordinary local report writers alone unless the inventory identifies a concrete risk. Opaque subprocess writers retain honest exclusions unless a separate isolation design is approved.
