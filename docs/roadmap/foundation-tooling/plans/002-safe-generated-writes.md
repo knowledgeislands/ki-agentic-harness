@@ -1,13 +1,13 @@
 ---
 id: '002'
 title: Harden generated-file writes
-status: open
+status: in-progress
 roadmap: foundation-tooling/harden-generated-file-writes-against-symlinks-and-read-check-write-races
-blocks: —
+blocks: foundation-tooling/004
 blocked-by: —
 handoff: true
 tier: opus
-readiness: pending
+readiness: 2026-07-16
 ---
 
 ## Context
@@ -17,8 +17,6 @@ Bootstrap, INIT, CONFORM, hooks, and linkers write into repositories that may co
 ## Current state
 
 The cold inventory found six local mutation classes: generated replacement, authored mutation, exclusive create, deletion/pruning, metadata mutation, and rollback cleanup; remote/external mutation is a seventh class outside the local publication contract. The strongest current examples are project-roadmap publication, plan hooks, and hook-settings writes. Bootstrap/vendor publication, config scaffolding, `.gitignore`, linkers, many conformers, report writers, and `chmod` paths still use ordinary path-based sequences. Node/Bun expose strong leaf controls but no portable descriptor-relative `openat`/`renameat` boundary, so a native-helper guarantee would be a separate architecture decision. This plan changes filesystem safety only, not config correctness or schema.
-
-A disposable bootstrap prototype confirmed that the literal same-UID leaf-race guarantee cannot be met with Node/Bun builtins alone. No prototype code landed. Pause implementation until the plan deliberately chooses a narrower private-transaction trust boundary or a native helper; this broader hardening is not part of the trusted-estate rollout baseline.
 
 ## Steps
 
@@ -43,7 +41,7 @@ Pass when every inventoried writer has a documented class/root/transaction/rule;
 
 ## Dependencies / blocks
 
-Independent hardening work. It does not block a pilot that uses clean-repository preflight and the existing trusted-estate posture. It does not include `.ki-config.toml` schema, per-repo overrides, or comment-style work.
+Independent first-round work. It blocks fleet rollout because re-bootstrap and conform are the rollout mechanism. It does not include `.ki-config.toml` schema, per-repo overrides, or comment-style work.
 
 ## Batch A bootstrap protocol
 
@@ -66,4 +64,4 @@ Batch A passes only with fixtures for: absent greenfield `.ki-meta` success plus
 
 ## Readiness
 
-- [ ] Readiness test: a cold executor can implement batch A without inferring whether private transaction paths are trusted or require native descriptor-relative operations.
+- [x] Readiness test: a cold executor reproduced the six-class inventory and confirmed batch A can proceed without inferring the threat model, trusted roots, transaction boundary, or residual-race posture (2026-07-16).
