@@ -20,20 +20,21 @@ The installer already uses a content-addressed payload directory, regular execut
 
 The remaining work is confined to installer integrity: prove a legacy link belongs to a verified prior harness before touching it; fail closed if a payload, manifest, pointer, or parent changes identity during verification or publication; and demonstrate that injected failures leave no unsafe partial state.
 
+The user-environment binding must not expose a content-addressed payload identifier in Claude settings. The installer therefore needs to publish its own stable, user-readable command copies inside its private namespace, declare their exact paths and checksums in the active manifest, and publish them before the active pointer. They remain installer-owned regular files; the binding consumes the declared contract and never guesses a payload directory.
+
 ## Steps
 
 1. Retire automatic legacy-link mutation outside the private installer namespace; preserve all pre-existing user-space hook links for a user-environment manager or deliberate manual migration.
 2. Bind payload validation and active-pointer publication to verified regular-file identities and owned directory permissions, failing closed on replacement or drift.
-3. Add adversarial tests for legacy lookalikes, post-read replacement, permission drift, and staging or publication failure with rollback or retained-conflict evidence.
-4. Run focused installer tests, the full self-test suite, and the aggregate audit; update the installer documentation only where its verified behaviour changes.
+3. Add adversarial tests for legacy lookalikes, post-read replacement, permission drift, and staging or publication failure with rollback or retained-conflict evidence. ✓ 4. Publish manifest-declared stable `current/<hook-name>` command copies as installer-owned regular files, validate their identity and checksums with the selected content-addressed payload, and activate only after that publication succeeds. ✓ 5. Run focused installer tests, the full self-test suite, and the aggregate audit; update the installer documentation only where its verified behaviour changes.
 
 ## Files touched
 
-`skills/keystone/ki-bootstrap/scripts/install-hooks.ts`, its focused test suite, and any directly affected hook-installer documentation or vendored checker copies.
+`skills/keystone/ki-bootstrap/scripts/install-hooks.ts`, its focused test suite, the active-payload contract documentation, and any directly affected hook-installer documentation or vendored checker copies.
 
 ## Verify
 
-Pass when the installer publishes only verified regular payload files, refuses replacement or permission drift without clobbering another process's state, leaves all pre-existing user-owned hook links untouched, and proves clean rollback or durable conflict evidence for injected failures. Focused tests, `bun run test`, and `bun run ki:audit` pass.
+Pass when the installer publishes only verified regular payload files, declares and verifies stable user-readable command copies in the active manifest, refuses replacement or permission drift without clobbering another process's state, leaves all pre-existing user-owned hook links untouched, and proves clean rollback or durable conflict evidence for injected failures. Focused tests, `bun run test`, and `bun run ki:audit` pass.
 
 ## Dependencies / blocks
 
@@ -41,7 +42,7 @@ Blocks user-environment hook binding through chezmoi. Independent of repository 
 
 ## Decisions
 
-**Locked:** hook payloads are regular files, never symlinks; bootstrap does not install hooks or write Claude settings; the installer owns only its namespace, manifest, and active pointer; unknown user-owned paths are never overwritten; chezmoi remains the sole writer of its managed Claude settings entries.
+**Locked:** hook payloads and stable command copies are regular files, never symlinks; bootstrap does not install hooks or write Claude settings; the installer owns only its namespace, manifest, active pointer, and stable command copies; unknown user-owned paths are never overwritten; chezmoi remains the sole writer of its managed Claude settings entries.
 
 **Escalate:** any need to modify Claude settings from the installer, identify an arbitrary user-owned link as legacy without cryptographic or structural proof, add a new runtime dependency, or weaken fail-closed behaviour to preserve convenience.
 

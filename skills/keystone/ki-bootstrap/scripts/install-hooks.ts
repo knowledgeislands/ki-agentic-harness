@@ -7,6 +7,7 @@
  */
 import { createHash } from 'node:crypto'
 import {
+  chmodSync,
   closeSync,
   constants,
   fchmodSync,
@@ -32,7 +33,7 @@ const SELF = fileURLToPath(import.meta.url)
 const HARNESS_ROOT = resolve(dirname(SELF), '..', '..', '..', '..')
 const NAMES = ['plan-stamp.sh', 'plan-sync.sh', 'git-lock-check.sh'] as const
 const REPOSITORY = 'knowledgeislands/ki-agentic-harness'
-const SCHEMA = 1
+const SCHEMA = 2
 
 type JsonObject = Record<string, unknown>
 type StatNumber = number | bigint
@@ -164,8 +165,11 @@ function sha256(bytes: Buffer): string {
   return createHash('sha256').update(bytes).digest('hex')
 }
 
-function payloadId(files: Map<string, Buffer>): string {
+function payloadId(files: Map<string, Buffer>, schema = SCHEMA): string {
   const hash = createHash('sha256')
+  // Schema 1 predates stable command copies. Preserve its exact legacy address
+  // only for migration; every new payload is bound to its contract schema.
+  if (schema !== 1) hash.update(`schema:${schema}\0`)
   for (const name of NAMES) {
     const bytes = files.get(name)
     if (!bytes) fail(`missing hook source: ${name}`)
@@ -183,17 +187,28 @@ function isObject(value: unknown): value is JsonObject {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
-function manifestFor(id: string, ref: string, files: Map<string, Buffer>): JsonObject {
+function commandsFor(namespace: string): JsonObject {
+  return Object.fromEntries(NAMES.map((name) => [name, join(namespace, 'current', name)]))
+}
+
+function commandsMatch(value: unknown, namespace: string): boolean {
+  if (!isObject(value)) return false
+  const expected = commandsFor(namespace)
+  return Object.keys(value).sort().join(',') === NAMES.slice().sort().join(',') && NAMES.every((name) => value[name] === expected[name])
+}
+
+function manifestFor(id: string, ref: string, files: Map<string, Buffer>, namespace: string): JsonObject {
   return {
     schema: SCHEMA,
     repository: REPOSITORY,
     requested_ref: ref,
     payload_id: id,
+    commands: commandsFor(namespace),
     hooks: NAMES.map((name) => ({ name, sha256: sha256(files.get(name) as Buffer), mode: '0755' }))
   }
 }
 
-function storedPayload(path: string, id: string): Map<string, Buffer> | undefined {
+function storedPayload(path: string, id: string, schema = SCHEMA): Map<string, Buffer> | undefined {
   try {
     const dir = lstat(path)
     const before = snapshot(path)
@@ -204,8 +219,9 @@ function storedPayload(path: string, id: string): Map<string, Buffer> | undefine
     const manifest = JSON.parse(requireFile(manifestPath, 0o600).toString('utf8')) as JsonObject
     if (
       !isObject(manifest) ||
-      Object.keys(manifest).sort().join(',') !== 'hooks,payload_id,repository,requested_ref,schema' ||
-      manifest.schema !== SCHEMA ||
+      Object.keys(manifest).sort().join(',') !==
+        (schema === 1 ? 'hooks,payload_id,repository,requested_ref,schema' : 'commands,hooks,payload_id,repository,requested_ref,schema') ||
+      manifest.schema !== schema ||
       manifest.repository !== REPOSITORY ||
       manifest.payload_id !== id ||
       typeof manifest.requested_ref !== 'string' ||
@@ -214,6 +230,7 @@ function storedPayload(path: string, id: string): Map<string, Buffer> | undefine
       manifest.hooks.length !== NAMES.length
     )
       return undefined
+    if (schema !== 1 && !commandsMatch(manifest.commands, dirname(path))) return undefined
     const rows = new Map<string, JsonObject>()
     for (const row of manifest.hooks) {
       if (!isObject(row) || Object.keys(row).sort().join(',') !== 'mode,name,sha256' || typeof row.name !== 'string' || rows.has(row.name))
@@ -228,7 +245,7 @@ function storedPayload(path: string, id: string): Map<string, Buffer> | undefine
       if (row.sha256 !== sha256(bytes)) return undefined
       stored.set(name, bytes)
     }
-    return sameSnapshot(path, before) && payloadId(stored) === id ? stored : undefined
+    return sameSnapshot(path, before) && payloadId(stored, schema) === id ? stored : undefined
   } catch {
     return undefined
   }
@@ -239,26 +256,63 @@ function validPayload(path: string, id: string, files: Map<string, Buffer>): boo
   return Boolean(stored && NAMES.every((name) => stored.get(name)?.equals(files.get(name) as Buffer)))
 }
 
-function activeManifest(id: string): JsonObject {
-  return { schema: SCHEMA, repository: REPOSITORY, payload_id: id }
+type CurrentSnapshot = { path: string; directory: Snapshot; files: Map<string, Snapshot> }
+
+function commandSnapshot(path: string, files: Map<string, Buffer>): CurrentSnapshot | undefined {
+  try {
+    const directory = lstat(path)
+    const before = snapshot(path)
+    if (!directory || !before || directory.isSymbolicLink() || !directory.isDirectory() || permissions(directory) !== 0o700)
+      return undefined
+    if (readdirSync(path).sort().join(',') !== NAMES.slice().sort().join(',')) return undefined
+    const entries = new Map<string, Snapshot>()
+    for (const name of NAMES) {
+      const bytes = requireFile(join(path, name), 0o755)
+      if (!bytes.equals(files.get(name) as Buffer)) return undefined
+      const identity = snapshot(join(path, name))
+      if (!identity) return undefined
+      entries.set(name, identity)
+    }
+    return sameSnapshot(path, before) ? { path, directory: before, files: entries } : undefined
+  } catch {
+    return undefined
+  }
 }
 
-function activePayloadId(namespace: string): string | undefined {
+function currentSnapshot(namespace: string, files: Map<string, Buffer>): CurrentSnapshot | undefined {
+  return commandSnapshot(join(namespace, 'current'), files)
+}
+
+function removeCurrent(snapshot: CurrentSnapshot): void {
+  if (!sameIdentity(snapshot.path, snapshot.directory)) return
+  try {
+    if (readdirSync(snapshot.path).sort().join(',') !== NAMES.slice().sort().join(',')) return
+    for (const name of NAMES) {
+      const path = join(snapshot.path, name)
+      if (!sameSnapshot(path, snapshot.files.get(name))) return
+    }
+    for (const name of NAMES) unlinkSync(join(snapshot.path, name))
+    removeCreatedDirectory({ path: snapshot.path, identity: snapshot.directory })
+  } catch {
+    // Retain a conflicting prior directory rather than deleting it.
+  }
+}
+
+function activePayloadIdForSchema(namespace: string, schema: number): string | undefined {
   try {
     const namespaceBefore = snapshot(namespace)
     const namespaceEntry = lstat(namespace)
-    if (!namespaceBefore || !namespaceEntry) return undefined
-    if (!namespaceEntry.isDirectory() || permissions(namespaceEntry) !== 0o700) return undefined
+    if (!namespaceBefore || !namespaceEntry?.isDirectory() || permissions(namespaceEntry) !== 0o700) return undefined
     const path = join(namespace, 'active.json')
     const active = JSON.parse(requireFile(path, 0o600).toString('utf8')) as JsonObject
     if (
       !isObject(active) ||
       Object.keys(active).sort().join(',') !== 'payload_id,repository,schema' ||
-      active.schema !== SCHEMA ||
+      active.schema !== schema ||
       active.repository !== REPOSITORY ||
       typeof active.payload_id !== 'string' ||
       !/^[a-f0-9]{64}$/.test(active.payload_id) ||
-      !storedPayload(join(namespace, active.payload_id), active.payload_id) ||
+      !storedPayload(join(namespace, active.payload_id), active.payload_id, schema) ||
       !sameSnapshot(namespace, namespaceBefore)
     )
       return undefined
@@ -268,10 +322,26 @@ function activePayloadId(namespace: string): string | undefined {
   }
 }
 
+function activeManifest(id: string): JsonObject {
+  return { schema: SCHEMA, repository: REPOSITORY, payload_id: id }
+}
+
+function activePayloadId(namespace: string): string | undefined {
+  return activePayloadIdForSchema(namespace, SCHEMA)
+}
+
+function publishedPayload(namespace: string): { id: string; files: Map<string, Buffer> } | undefined {
+  const current = activePayloadId(namespace)
+  if (current) return { id: current, files: storedPayload(join(namespace, current), current) as Map<string, Buffer> }
+  const legacy = activePayloadIdForSchema(namespace, 1)
+  if (legacy) return { id: legacy, files: storedPayload(join(namespace, legacy), legacy, 1) as Map<string, Buffer> }
+  return undefined
+}
+
 function publishActive(namespace: string, id: string): void {
   const path = join(namespace, 'active.json')
   const existing = lstat(path)
-  const current = activePayloadId(namespace)
+  const current = publishedPayload(namespace)?.id
   if (existing && !current) fail(`${path} exists but is not a valid installer-owned active pointer`)
   if (current === id) return
 
@@ -318,6 +388,63 @@ function publishActive(namespace: string, id: string): void {
     throw error
   } finally {
     if (created) removeCreatedFile(created)
+  }
+}
+
+function publishCurrent(namespace: string, files: Map<string, Buffer>): void {
+  const path = join(namespace, 'current')
+  if (currentSnapshot(namespace, files)) return
+
+  const existing = lstat(path)
+  let previous: CurrentSnapshot | undefined
+  if (existing) {
+    const active = publishedPayload(namespace)
+    if (!active) fail(`${path} exists without a valid installer-owned active payload`)
+    previous = currentSnapshot(namespace, active.files)
+    if (!previous) fail(`${path} exists but is not a valid installer-owned stable command directory`)
+  }
+
+  const stagePath = mkdtempSync(join(namespace, '.current-'))
+  chmodSync(stagePath, 0o700)
+  const stageIdentity = snapshot(stagePath)
+  if (!stageIdentity) fail(`${stagePath} disappeared during creation`)
+  const stage: Created = { path: stagePath, identity: stageIdentity }
+  const stageFiles: Created[] = []
+  let published: CurrentSnapshot | undefined
+  let backup: CurrentSnapshot | undefined
+  try {
+    for (const name of NAMES) stageFiles.push(writeCreatedFile(join(stage.path, name), files.get(name) as Buffer, 0o755))
+    if (!commandSnapshot(stage.path, files)) fail(`${stage.path} failed stable-command staging validation`)
+    if (previous) {
+      const backupPath = join(namespace, `.previous-current-${process.pid}-${Math.random().toString(16).slice(2)}`)
+      if (lstat(backupPath) || !sameSnapshot(path, previous.directory)) fail(`${path} changed before stable-command publication`)
+      renameSync(path, backupPath)
+      backup = { ...previous, path: backupPath }
+      if (!sameIdentity(backup.path, backup.directory)) fail(`${path} changed during stable-command publication`)
+    }
+    if (lstat(path)) fail(`${path} appeared during stable-command publication`)
+    renameSync(stage.path, path)
+    const entries = new Map(stageFiles.map((created) => [basename(created.path), created.identity]))
+    published = { path, directory: stage.identity, files: entries }
+    if (!currentSnapshot(namespace, files)) fail(`${path} failed post-publication validation`)
+    // The old directory is verified installer-owned and removed only if it has
+    // not changed since it was displaced. A concurrent replacement is retained.
+    if (backup) removeCurrent(backup)
+  } catch (error) {
+    if (published) removeCurrent(published)
+    if (backup && !lstat(path) && sameIdentity(backup.path, backup.directory)) {
+      try {
+        renameSync(backup.path, path)
+      } catch {
+        // A conflicting path is durable evidence; never overwrite it.
+      }
+    }
+    throw error
+  } finally {
+    if (!published) {
+      for (const created of stageFiles.toReversed()) removeCreatedFile(created)
+      removeCreatedDirectory(stage)
+    }
   }
 }
 
@@ -370,7 +497,7 @@ function writePayload(namespace: string, target: string, id: string, ref: string
       stagedFiles.push(writeCreatedFile(join(stage.path, name), files.get(name) as Buffer, 0o755))
     }
     stagedFiles.push(
-      writeCreatedFile(join(stage.path, 'manifest.json'), `${JSON.stringify(manifestFor(id, ref, files), null, 2)}\n`, 0o600)
+      writeCreatedFile(join(stage.path, 'manifest.json'), `${JSON.stringify(manifestFor(id, ref, files, namespace), null, 2)}\n`, 0o600)
     )
     if (process.env.KI_HOOKS_TEST_FAIL_STAGE === '1') fail('injected staging failure')
     if (lstat(target)) fail(`${target} appeared during publication`)
@@ -432,7 +559,7 @@ function main(): number {
   for (const path of [claude, hooks, join(hooks, 'knowledgeislands'), namespace, target]) requireDirectory(path)
 
   if (check) {
-    const ok = validPayload(target, id, files) && activePayloadId(namespace) === id
+    const ok = validPayload(target, id, files) && currentSnapshot(namespace, files) && activePayloadId(namespace) === id
     console.log(ok ? `PASS hook payload ${id} is active` : `FAIL hook payload ${id} is absent, inactive, or drifted`)
     return ok ? 0 : 1
   }
@@ -447,8 +574,9 @@ function main(): number {
   requirePrivateDirectory(namespace)
   withInstallationLock(namespace, () => {
     const active = join(namespace, 'active.json')
-    if (lstat(active) && !activePayloadId(namespace)) fail(`${active} exists but is not a valid installer-owned active pointer`)
+    if (lstat(active) && !publishedPayload(namespace)) fail(`${active} exists but is not a valid installer-owned active pointer`)
     writePayload(namespace, target, id, ref, files)
+    publishCurrent(namespace, files)
     publishActive(namespace, id)
   })
   console.log(`installed durable Claude hook payload: ${id}`)

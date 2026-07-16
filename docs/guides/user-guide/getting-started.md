@@ -27,7 +27,7 @@ Claude Code's Plan Mode and stale Git-lock hooks are a separate **user-environme
 curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/install-hooks.sh | sh
 ```
 
-This copies verified regular files below `~/.claude/hooks/knowledgeislands/ki-agentic-harness/`. It does not run repository bootstrap and it never writes `~/.claude/settings.json`. On a chezmoi-managed machine, chezmoi is responsible for registering the installed payload in Claude Code settings.
+This copies verified regular files below `~/.claude/hooks/knowledgeislands/ki-agentic-harness/`. The active manifest declares stable regular command copies at `current/plan-stamp.sh`, `current/plan-sync.sh`, and `current/git-lock-check.sh`; a user-environment manager consumes those declarations instead of a content-addressed directory name. It does not run repository bootstrap and it never writes `~/.claude/settings.json`. On a chezmoi-managed machine, chezmoi is responsible for registering the installed payload in Claude Code settings.
 
 ## Start using skills
 

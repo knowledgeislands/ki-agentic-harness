@@ -64,7 +64,7 @@ _Verify:_ `ki-harness`'s rubric CLAUDE-1 and CLAUDE-2 ([`skills/repo-structure/k
 
 ### HARN-009 — Claude Code plan lifecycle hooks
 
-The harness MUST ship `hooks/plan-stamp.sh` and `hooks/plan-sync.sh` as a Claude-Code-specific lifecycle pair and expose `ki:hooks:install` to install the complete hook payload as manifest-verified executable regular files under an owned content-addressed `~/.claude/hooks/knowledgeislands/ki-agentic-harness/` namespace. It MUST NOT write Claude settings or create hook symlinks.
+The harness MUST ship `hooks/plan-stamp.sh` and `hooks/plan-sync.sh` as a Claude-Code-specific lifecycle pair and expose `ki:hooks:install` to install the complete hook payload as manifest-verified executable regular files under an owned content-addressed `~/.claude/hooks/knowledgeislands/ki-agentic-harness/` namespace. Its active manifest MUST declare stable regular `current/<hook-name>` command copies, each matching the manifest checksum, for a user-environment manager to register without embedding a payload hash. It MUST NOT write Claude settings or create hook symlinks.
 
 _Verify:_ `bun hooks/plan-stamp.test.ts && bun hooks/plan-sync.test.ts` exercises the pair; `bun skills/keystone/ki-bootstrap/scripts/install-hooks.test.ts` exercises payload ownership, durability, and settings non-mutation.
 

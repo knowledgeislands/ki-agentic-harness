@@ -1,5 +1,6 @@
 #!/usr/bin/env bun
 import { spawnSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 /** Adversarial tests for the disposable-source hook-payload installer. */
 import {
   chmodSync,
@@ -107,6 +108,64 @@ function payload(env: Fixture, id = activeId(env)): string | undefined {
   return id ? join(env.namespace, id) : undefined
 }
 
+function current(env: Fixture): string {
+  return join(env.namespace, 'current')
+}
+
+function manifest(env: Fixture, id = activeId(env)): Record<string, unknown> | undefined {
+  try {
+    return JSON.parse(readFileSync(join(payload(env, id) as string, 'manifest.json'), 'utf8')) as Record<string, unknown>
+  } catch {
+    return undefined
+  }
+}
+
+function digest(bytes: Buffer): string {
+  return createHash('sha256').update(bytes).digest('hex')
+}
+
+function writeLegacyPayload(env: Fixture): string {
+  const files = new Map(NAMES.map((name) => [name, readFileSync(join(env.source, name))]))
+  const hash = createHash('sha256')
+  for (const name of NAMES) {
+    const bytes = files.get(name) as Buffer
+    hash.update(name)
+    hash.update('\0')
+    hash.update(String(bytes.length))
+    hash.update('\0')
+    hash.update(bytes)
+    hash.update('\0')
+  }
+  const id = hash.digest('hex')
+  const installed = join(env.namespace, id)
+  mkdirSync(installed, { recursive: true, mode: 0o700 })
+  chmodSync(env.namespace, 0o700)
+  chmodSync(installed, 0o700)
+  for (const name of NAMES) {
+    writeFileSync(join(installed, name), files.get(name) as Buffer, { mode: 0o755 })
+    chmodSync(join(installed, name), 0o755)
+  }
+  writeFileSync(
+    join(installed, 'manifest.json'),
+    `${JSON.stringify({
+      schema: 1,
+      repository: 'knowledgeislands/ki-agentic-harness',
+      requested_ref: 'legacy-fixture',
+      payload_id: id,
+      hooks: NAMES.map((name) => ({ name, sha256: digest(files.get(name) as Buffer), mode: '0755' }))
+    })}\n`,
+    { mode: 0o600 }
+  )
+  chmodSync(join(installed, 'manifest.json'), 0o600)
+  writeFileSync(
+    join(env.namespace, 'active.json'),
+    `${JSON.stringify({ schema: 1, repository: 'knowledgeislands/ki-agentic-harness', payload_id: id })}\n`,
+    { mode: 0o600 }
+  )
+  chmodSync(join(env.namespace, 'active.json'), 0o600)
+  return id
+}
+
 function payloadIds(env: Fixture): string[] {
   return existsSync(env.namespace) ? readdirSync(env.namespace).filter((name) => /^[a-f0-9]{64}$/.test(name)) : []
 }
@@ -134,20 +193,50 @@ function clean(env: Fixture): void {
     check('fresh payload install succeeds', result.status === 0 && Boolean(id) && Boolean(installed))
     check('fresh install passes its payload check', run(env, '--check').status === 0)
     check(
-      'payload and active pointer are regular owned files',
+      'payload, stable commands, and active pointer are regular owned files',
       Boolean(installed) &&
         NAMES.every((name) => isRegular(join(installed as string, name), 0o755)) &&
+        NAMES.every((name) => isRegular(join(current(env), name), 0o755)) &&
         isRegular(join(installed as string, 'manifest.json'), 0o600) &&
         isRegular(join(env.namespace, 'active.json'), 0o600)
     )
     check('payload directory contains only declared payload files', Boolean(installed) && readdirSync(installed as string).length === 4)
+    check(
+      'manifest declares stable user-readable command paths and their payload checksums',
+      (() => {
+        const installedManifest = manifest(env)
+        const commands = installedManifest?.commands as Record<string, unknown> | undefined
+        const hooks = installedManifest?.hooks as Array<Record<string, unknown>> | undefined
+        return (
+          installedManifest?.schema === 2 &&
+          NAMES.every((name) => commands?.[name] === join(current(env), name)) &&
+          NAMES.every((name) => {
+            const row = hooks?.find((hook) => hook.name === name)
+            return row?.sha256 === digest(readFileSync(join(current(env), name)))
+          })
+        )
+      })()
+    )
     check('installer leaves Claude settings byte-identical', readFileSync(env.settings).equals(settingsBefore))
     check(
       'payload survives source removal',
       (() => {
         rmSync(env.source, { recursive: true, force: true })
-        return NAMES.every((name) => isRegular(join(installed as string, name), 0o755))
+        return NAMES.every((name) => isRegular(join(installed as string, name), 0o755) && isRegular(join(current(env), name), 0o755))
       })()
+    )
+  } finally {
+    clean(env)
+  }
+}
+{
+  const env = fixture()
+  try {
+    const legacy = writeLegacyPayload(env)
+    check('schema-1 payload upgrades to the stable-command contract', run(env).status === 0 && activeId(env) !== legacy)
+    check(
+      'schema-1 upgrade retains immutable legacy payload and publishes regular stable commands',
+      NAMES.every((name) => isRegular(join(env.namespace, legacy, name), 0o755) && isRegular(join(current(env), name), 0o755))
     )
   } finally {
     clean(env)
@@ -212,6 +301,25 @@ function clean(env: Fixture): void {
       'previous immutable payload remains intact',
       NAMES.every((name) => isRegular(join(env.namespace, first, name), 0o755))
     )
+    check(
+      'stable command paths switch to the new active payload without symlinks',
+      typeof second === 'string' &&
+        NAMES.every((name) => {
+          const stable = join(current(env), name)
+          return isRegular(stable, 0o755) && readFileSync(stable).equals(readFileSync(join(env.namespace, second, name)))
+        })
+    )
+  } finally {
+    clean(env)
+  }
+}
+{
+  const env = fixture()
+  try {
+    check('install for stable-command symlink check succeeds', run(env).status === 0)
+    rmSync(current(env), { recursive: true, force: true })
+    symlinkSync('/unsafe', current(env))
+    check('symlinked stable command directory is rejected without replacement', run(env, '--check').status !== 0 && run(env).status !== 0)
   } finally {
     clean(env)
   }
