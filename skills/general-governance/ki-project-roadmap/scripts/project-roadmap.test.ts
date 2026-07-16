@@ -181,6 +181,26 @@ function thematicFixture(): string {
   }
 }
 
+// An empty active-plan index is stable under the repository's Markdown formatter.
+{
+  const root = fixture()
+  try {
+    mkdirSync(join(root, 'docs', 'roadmap', 'hooks'), { recursive: true })
+    writeFileSync(join(root, 'docs', 'roadmap', 'hooks', 'ROADMAP.md'), roadmap('Hooks roadmap'))
+    const conformed = run(CONFORM, root)
+    const generated = readFileSync(join(root, 'docs', 'roadmap', 'README.md'), 'utf8')
+    check('zero-plan index conforms cleanly', conformed.code === 0 && run(AUDIT, root).code === 0)
+    check(
+      'zero-plan table uses formatter-stable alignment',
+      generated.includes(
+        '| Plan | Theme | Title           | Roadmap item | Status | Blocks |\n| ---- | ----- | --------------- | ------------ | ------ | ------ |\n| —    | —     | No active plans | —            | —      | —      |'
+      )
+    )
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+
 // Invalid locator and non-near horizon are mechanical failures.
 {
   const root = thematicFixture()

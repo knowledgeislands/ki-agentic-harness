@@ -14,9 +14,9 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-| Plan | Theme | Title | Roadmap item | Status | Blocks |
-| --- | --- | --- | --- | --- | --- |
-| [004](hooks/plans/004-promote-plan-mode-plans.md) | hooks | Promote Plan Mode plans into thematic roadmaps | hooks/promote-plan-mode-plans-into-thematic-roadmaps | in-progress | — |
+| Plan | Theme | Title           | Roadmap item | Status | Blocks |
+| ---- | ----- | --------------- | ------------ | ------ | ------ |
+| —    | —     | No active plans | —            | —      | —      |
 
 ## Dependency graph
 

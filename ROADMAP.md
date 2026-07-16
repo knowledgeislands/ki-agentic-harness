@@ -8,7 +8,7 @@ Nothing queued.
 
 ## Next
 
-- [Hooks: Promote Plan Mode plans into thematic roadmaps](docs/roadmap/hooks/ROADMAP.md#promote-plan-mode-plans-into-thematic-roadmaps)
+Nothing queued.
 
 ## Soon
 

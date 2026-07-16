@@ -161,24 +161,24 @@ function projection(items: Item[]): string {
   return `${lines.join('\n').trimEnd()}\n`
 }
 
+function markdownTable(rows: string[][]): string[] {
+  const widths = rows[0].map((_, column) => Math.max(3, ...rows.map((row) => row[column].length)))
+  const render = (row: string[]): string => `| ${row.map((cell, column) => cell.padEnd(widths[column])).join(' | ')} |`
+  return [render(rows[0]), `| ${widths.map((width) => '-'.repeat(width)).join(' | ')} |`, ...rows.slice(1).map(render)]
+}
+
 function index(themes: string[], plans: Plan[]): string {
   const lines = ['# Project roadmap index', '', 'Canonical themes and active execution plans.', '', '## Themes', '']
   for (const theme of themes) lines.push(`- [${theme}](${theme}/ROADMAP.md)`)
-  lines.push(
-    '',
-    '## Active plans',
-    '',
-    '| Plan | Theme | Title | Roadmap item | Status | Blocks |',
-    '| --- | --- | --- | --- | --- | --- |'
-  )
+  lines.push('', '## Active plans', '')
+  const rows = [['Plan', 'Theme', 'Title', 'Roadmap item', 'Status', 'Blocks']]
   for (const plan of [...plans].sort((a, b) => a.id.localeCompare(b.id))) {
     const blockers = plan.blockedBy.filter((id) => plans.find((candidate) => candidate.id === id)?.fm.status !== 'done')
     const status = blockers.length ? `${plan.fm.status} (needs ${blockers.join('+')})` : plan.fm.status
-    lines.push(
-      `| [${plan.id}](${plan.theme}/plans/${plan.name}) | ${plan.theme} | ${plan.fm.title} | ${plan.fm.roadmap} | ${status} | ${plan.fm.blocks || '—'} |`
-    )
+    rows.push([`[${plan.id}](${plan.theme}/plans/${plan.name})`, plan.theme, plan.fm.title, plan.fm.roadmap, status, plan.fm.blocks || '—'])
   }
-  if (!plans.length) lines.push('| — | — | No active plans | — | — | — |')
+  if (!plans.length) rows.push(['—', '—', 'No active plans', '—', '—', '—'])
+  lines.push(...markdownTable(rows))
   lines.push('', '## Dependency graph', '', '```text')
   const edges = plans.flatMap((plan) => plan.blocks.map((blocked) => `${plan.id} ──► ${blocked}`)).sort()
   lines.push(...(edges.length ? edges : ['No dependencies.']), '```', '')
