@@ -24,6 +24,7 @@ Understood and roughly scoped but not yet started — worth doing once the **Nex
 - [Foundation Tooling: Harden global runtime skill publication](docs/roadmap/foundation-tooling/ROADMAP.md#harden-global-runtime-skill-publication)
 - [Governance Consistency: Codify convention placement and the knowledge-promotion loop](docs/roadmap/governance-consistency/ROADMAP.md#codify-convention-placement-and-the-knowledge-promotion-loop)
 - [Hooks: Govern the shipped Claude Code hooks as `ki-claude-hooks`](docs/roadmap/hooks/ROADMAP.md#govern-the-shipped-claude-code-hooks-as-ki-claude-hooks)
+- [Hooks: Manage Claude hooks through chezmoi and verify required hooks](docs/roadmap/hooks/ROADMAP.md#manage-claude-hooks-through-chezmoi-and-verify-required-hooks)
 - [Operations: Make `ki-recap` resolve the invoking session explicitly](docs/roadmap/operations/ROADMAP.md#make-ki-recap-resolve-the-invoking-session-explicitly)
 - [Runtime Portability: Route multi-machine harness state through durable homes](docs/roadmap/runtime-portability/ROADMAP.md#route-multi-machine-harness-state-through-durable-homes)
 

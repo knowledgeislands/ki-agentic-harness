@@ -30,7 +30,7 @@ Canonical themes and active execution plans.
 
 ### [hooks/001](hooks/plans/001-install-remote-global-hooks.md)
 
-- **Title:** Install remote global Claude hooks safely
+- **Title:** Install durable Claude hook payloads safely
 - **Theme:** `hooks`
 - **Roadmap item:** `hooks/install-claude-code-hooks-from-github-safely`
 - **Status:** in-progress

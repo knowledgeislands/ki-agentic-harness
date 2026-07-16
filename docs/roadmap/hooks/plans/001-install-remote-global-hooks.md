@@ -1,6 +1,6 @@
 ---
 id: '001'
-title: Install remote global Claude hooks safely
+title: Install durable Claude hook payloads safely
 status: in-progress
 roadmap: hooks/install-claude-code-hooks-from-github-safely
 blocks: —
@@ -12,19 +12,19 @@ readiness: 2026-07-16
 
 ## Context
 
-The zero-install repository bootstrap intentionally executes from a disposable GitHub tarball. The current hook linker creates symlinks back to its source, so it cannot be used from that transport without leaving broken global hooks. A separate, explicit global installation action is needed before fleet rollout; it must never be invoked by a per-repository bootstrap.
+The zero-install repository bootstrap intentionally executes from a disposable GitHub tarball and installs skills only. The current hook linker creates symlinks back to its source, so it cannot be used from that transport without leaving broken global hooks. The three shipped hooks need a durable regular-file payload before a chezmoi-managed environment can safely register them in Claude settings.
 
 ## Current state
 
-`link-hooks.ts` can link the three Claude Code hooks from a persistent harness checkout and merge their registrations into `~/.claude/settings.json`. It has no durable remote-install mode, while the onboarding path documents only the per-repository bootstrap. The existing hook behaviour and registrations are already tested; this plan changes delivery only.
+`link-hooks.ts` symlinks the three Claude Code hooks from a persistent harness checkout and merge-patches their registrations into `~/.claude/settings.json`. It has no durable remote-install mode, while the onboarding path documents only the per-repository bootstrap. The existing hook behaviour and registrations are already tested. This plan changes payload delivery only; `ki-dotfiles-chezmoi` will later own managed settings configuration and the skills that consume hooks will audit their required capability.
 
 ## Steps
 
-1. Define an explicit GitHub-backed installer entry point, its requested ref, and a content-addressed durable payload location under `~/.claude/hooks/knowledgeislands/ki-agentic-harness/`. Keep it independent from `bootstrap.sh` and fleet bootstrap instructions.
+1. Define an explicit GitHub-backed payload installer, its requested ref, and a content-addressed durable payload location under `~/.claude/hooks/knowledgeislands/ki-agentic-harness/`. Keep it independent from `bootstrap.sh` and fleet bootstrap instructions; its caller may be a later chezmoi-managed path, but bootstrap must never invoke it.
 2. Publish the complete hook payload as executable regular files plus a manifest in that owned versioned directory. Treat an existing payload id as reusable only when its manifest, bytes, hashes, and modes match; otherwise refuse without clobbering it.
-3. Merge only the three owned settings registrations, including legacy unversioned KI commands and exact old-version commands. Preserve unrelated settings, matchers, handlers, and legacy hook files. Write settings only after a valid payload exists; an unreferenced payload after a settings failure is an accepted retry-safe residue.
-4. Preserve the persistent-checkout symlink linker as a compatibility/developer path, but make the remote entry point select the durable-copy installer. Do not remove old top-level links automatically.
-5. Add focused tests for a disposable source, idempotent reruns, upgrades, malformed/symlinked settings, owned and unowned blockers, partial publication failure, source validation, migration, and exact settings registration.
+3. Leave `~/.claude/settings.json` untouched. A later `ki-dotfiles-chezmoi` path will inspect the installed manifest and own matching registrations; neither this installer nor repository bootstrap may mutate that settings file.
+4. Retire the persistent-checkout hook symlink linker as an installer. Safely replace only recognised legacy hook symlinks with validated owned copies; do not alter user-owned files or links.
+5. Add focused tests for a disposable source, idempotent reruns, upgrades, owned and unowned blockers, partial publication failure, source validation, and exact manifest validation.
 6. Document the one-time installer alongside the repository bootstrap, format changed files, run focused tests, a dedicated adversarial review, `bun run test`, and `bun run ki:audit`.
 
 ## Files touched
@@ -33,7 +33,7 @@ The durable hook installer and tests, a POSIX remote entry point, package script
 
 ## Verify
 
-From a disposable GitHub-tarball-equivalent source, the installer leaves executable, manifest-verified durable hook files under the owned versioned `~/.claude/hooks/` namespace. Settings reference that payload rather than the disposable source, unrelated settings remain unchanged, and reruns are byte-stable. Unsafe settings or destination blockers leave existing files and settings unchanged. Focused tests, independent safety review, `bun run test`, and `bun run ki:audit` pass.
+From a disposable GitHub-tarball-equivalent source, the installer leaves executable, manifest-verified regular hook files under the owned versioned `~/.claude/hooks/` namespace and does not create or modify `~/.claude/settings.json`. No hook is a symlink after a successful recognised migration. Reruns are byte-stable and unsafe destination blockers leave existing files unchanged. Focused tests, independent safety review, `bun run test`, and `bun run ki:audit` pass.
 
 ## Dependencies / blocks
 
@@ -41,9 +41,9 @@ Independent of repository bootstrap and of Plan 002. It is intentionally a one-t
 
 ## Decisions
 
-**Locked:** Keep hook installation separate from per-repository bootstrap; use a durable copy or versioned payload rather than a symlink into a fetched tarball; retain the existing three hook registrations and behaviours; preserve unrelated settings and fail closed on unsafe destination shapes; use the strongest review tier for the auto-executing installer.
+**Locked:** Keep hook payload installation separate from per-repository bootstrap; bootstrap installs skills only. Use an owned durable regular-file payload, never a symlink, including from a persistent checkout; never write Claude settings from the payload installer or bootstrap; retain the existing hook behaviours; fail closed on unsafe payload destinations; and use the strongest review tier for the auto-executing installer. A future `ki-dotfiles-chezmoi` binding path owns settings registration and payload availability on managed machines; each hook-consuming skill audits its required hook capability.
 
-**Escalate:** A need to install hooks for a non-Claude runtime, a requirement to silently replace user-owned global hook files, a new external runtime dependency, or any claim of filesystem-wide atomicity across payload and settings.
+**Escalate:** A need to install hooks for a non-Claude runtime, a requirement to silently replace user-owned global hook files, a new external runtime dependency, a direct settings write from the installer or bootstrap, or any claim of filesystem-wide atomicity across payload and settings.
 
 ## Readiness
 

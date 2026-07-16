@@ -53,6 +53,7 @@ The records are living, compact, and independent. The order below is a **curated
 28. [ADR-KI-HARNESS-SKILLS-010](ADR-KI-HARNESS-SKILLS-010-comparable-cited-checker-findings.md) — comparable, cited checker findings across audit and conform (the `ref`/`file` finding fields, conform `--json`, and the shared aggregate renderer).
 29. [ADR-KI-HARNESS-SKILLS-011](ADR-KI-HARNESS-SKILLS-011-project-roadmaps-for-non-kb-repositories.md) — the non-KB project-roadmap profiles, thematic plan layout, and Knowledge Base Streams boundary.
 30. [ADR-KI-HARNESS-009](ADR-KI-HARNESS-009-portable-model-types.md) — portable model _types_ (`frontier`/`reasoning`/`standard`/`fast`) not vendor model names in governance config; the `preferred_model_type` rename and `model_tier_bindings` sub-table.
+31. [ADR-KI-HARNESS-010](ADR-KI-HARNESS-010-managed-hook-payloads-and-user-environment-binding.md) — durable hook payloads, user-environment settings binding, and the repository-bootstrap boundary.
 
 ## Template
 
