@@ -31,13 +31,25 @@ The harness carries the target model and onboarding path. The six sibling reposi
 
 No direct access, cleanliness, or configuration blocker prevents a pilot. The selected pilot must first capture its own governed local plan and read-only audit/test baseline; a failing legacy command is migration evidence, not a reason to patch around the harness.
 
+### Proven pilot recipe — 2026-07-16
+
+`mcp-ki-kb-fs` completed the pilot in commit `c3315fa` with no harness defect found. The reusable migration sequence is:
+
+1. Add `[ki-project-roadmap]` to `.ki-config.toml`, then bootstrap from the current harness source to vendor the five declared skills.
+2. Replace legacy local wrappers with `.ki-meta/bin/aggregate.ts` and generated per-skill commands, retaining repository-specific server, generator, and smoke-test commands.
+3. Align CI to run `ki:audit`, tests, coverage, and the repository's existing MCP smoke test; delete only superseded `scripts/ki/` wrappers.
+4. Run the generated authoring conformer to refresh its owned Markdown config. Exclude generated `.ki-meta/**` from Knip and retain a `syncpack` ignore because its checker invokes it dynamically.
+5. Validate aggregate audit, repository tests, MCP smoke test, focused bootstrap audit, roadmap audit, and a clean diff before committing.
+
+The pilot has 220 passing tests, a passing 13-tool smoke check, and a zero-failure aggregate audit.
+
 ## Steps
 
 1. [x] Discover the six MCP repository roots and record a read-only configuration baseline: clean/dirty state, current branch, `.ki-config.toml` declarations, `.ki-meta` version, and package convenience keys.
 2. [x] Select one clean representative repository whose capabilities exercise the common MCP surface. `mcp-ki-kb-fs` is selected because it is clean, MCP-only, and otherwise shares the cohort's legacy governance surface.
-3. Create a repository-local governed plan in the pilot, then record its executable audit/test baseline before mutation.
-4. Re-bootstrap the pilot, reconcile only the expected aggregate/scoped package aliases and uniform skill-mode surfaces, then run its focused tests, self-test, artifact audit, and aggregate audit.
-5. Review the pilot diff and failures; update the migration recipe in this coordinating plan. Escalate any harness defect back to this repository rather than patching around it per consumer.
+3. [x] Create a repository-local governed plan in the pilot, then record its executable audit/test baseline before mutation.
+4. [x] Re-bootstrap the pilot, reconcile only the expected aggregate/scoped package aliases and uniform skill-mode surfaces, then run its focused tests, self-test, artifact audit, and aggregate audit.
+5. [x] Review the pilot diff and failures; update the migration recipe in this coordinating plan. Escalate any harness defect back to this repository rather than patching around it per consumer.
 6. For each remaining clean repository, create a local plan and apply the proven recipe. Use separate worktrees only where concurrent writes to the same repository are otherwise unavoidable; never mix unrelated dirty state.
 7. Record the final six-repository acceptance matrix and close this coordinating plan only when every in-scope repository is clean or carries a named external blocker.
 
