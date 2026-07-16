@@ -8,9 +8,7 @@ Canonical themes and active execution plans.
 - [governance-consistency](governance-consistency/ROADMAP.md)
 - [hooks](hooks/ROADMAP.md)
 - [operations](operations/ROADMAP.md)
-- [project-roadmap](project-roadmap/ROADMAP.md)
 - [runtime-portability](runtime-portability/ROADMAP.md)
-- [website-docs](website-docs/ROADMAP.md)
 
 ## Active plans
 

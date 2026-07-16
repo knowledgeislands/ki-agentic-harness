@@ -18,17 +18,19 @@ Found 2026-07-15 in the `chezmoi` dotfiles repo: the installed Headroom proxy (0
 
 ### Background agents lose their handle across `/compact`
 
-**Sequence.** Independent items. The `ki-housekeeping` cleanup pass is a quick, one-time operational action — but it needs the server's access level raised from `read` before it can actually prune.
-
 During the audit/conform standardization session (2026-07-12), two background agents (`norm-mcp`, `norm-repo`, dispatched via the `Agent` tool with implicit backgrounding) were reported as still running at the point `/compact` fired. After compaction, their target files (`skills/ki-mcp/scripts/*.ts`, `skills/ki-repo/scripts/*.ts`) showed zero changes — the agents' work, if any had completed, never persisted, and there was no error or notification marking the loss; it only surfaced because a `git status` diff came back empty against what the pre-compaction summary claimed. The recovery was to re-dispatch fresh, fully self-contained agent prompts rather than attempt to resume the original agent IDs. Worth turning into a durable guardrail: either (a) avoid firing `/compact` while a background agent is outstanding — e.g. `TaskOutput`/`Monitor`-wait for it first — or (b) have the harness/skill guidance flag this explicitly so a future session doesn't need to rediscover it. Candidate home: `workflow.md` (global) or a `ki-tokenomics`/`ki-recap` note, since it's a cross-project agent-orchestration gotcha, not specific to this repo.
-
-### Run a `ki-housekeeping` cleanup pass on this machine's Claude Code state
-
-A live `kit-mcp-claude-housekeeping` call via the `mcporter` bridge (2026-07-13) found `~/.claude/projects` at 715 MB and `~/.claude/telemetry` at 145 MB on this machine — flagged in passing while verifying the bridge worked, not yet triaged. Run `ki-housekeeping`'s CONFORM mode (from Claude Desktop or via `mcporter`, since the server's access level needs to be `destructive` rather than this machine's default `read` to actually clean anything) to see what's safe to prune — likely session/telemetry retention, not memory (already audited clean this session).
 
 ## Waiting for
 
 Worth doing, but presently blocked on an external dependency or decision. Revisit when its named condition changes rather than treating it as dormant local work.
+
+### Run a `ki-housekeeping` cleanup pass on this machine's Claude Code state
+
+A live `kit-mcp-claude-housekeeping` call via the `mcporter` bridge (2026-07-13) found `~/.claude/projects` at 715 MB and `~/.claude/telemetry` at 145 MB on this machine. Run `ki-housekeeping` CONFORM to review and prune safe session/telemetry retention once the housekeeping server's access level is raised from this machine's default `read` to `destructive`. Do not target memory, which already audited clean. Unblock when destructive access is deliberately enabled for the cleanup session.
+
+### Extend `ki-housekeeping` to cover `~/.claude/workflows/`
+
+`ki-housekeeping` governs accumulated Claude Code state under `~/.claude/`, but its standard does not cover saved workflow scripts. The directory does not exist on this machine yet, so there is no concrete hygiene contract to derive. Revisit once workflows are actually being saved and observable staleness, naming, or orphan-script concerns provide evidence for the audit and conform behavior.
 
 ### Retry blocked memory-store fixes once `memory_*` tools recover
 
@@ -71,10 +73,6 @@ Some work in this ecosystem is inherently periodic and not triggered by an LLM d
 ### Make `ki-recap`'s grounding helper resolve the invoking session, not heuristically guess it _(candidate)_
 
 `scripts/recap-grounding.ts` resolves "the" session transcript to ground its files-touched/tool-tally/high-cost-candidate output, but in a repo with more than one concurrent or recent Claude Code session it can latch onto the wrong one — observed directly: a recap invoked mid-session pulled tool-tally data (`ExitPlanMode`, `Agent`, `Write` calls) that belonged to a different, concurrent session editing `ki-authoring`/`ki-engineering`/`ki-repo`, not the one that asked for the recap. Investigate whether the actual invoking session's ID/transcript path is available to the skill at invocation time (rather than inferred by recency or file-mtime heuristics) and, if so, thread it through so grounding is never ambiguous when multiple sessions are live in the same repo.
-
-### Extend `ki-housekeeping` to cover `~/.claude/workflows/` _(candidate)_
-
-`ki-housekeeping` governs the hygiene of accumulated Claude Code state under `~/.claude/` — sessions, artifacts, backups, plugins, project cache, per-project auto-memory — but its own skill files never mention saved workflow scripts (`~/.claude/workflows/`), which accumulate the same way and would need the same kind of staleness/naming/orphan-script judgment. The directory doesn't exist yet on this machine, so there's nothing concrete to audit today; revisit once workflows are actually being saved and it's clear what hygiene concerns arise in practice.
 
 ### Tooling to promote genuinely reusable `CLAUDE.md` content into skills _(candidate)_
 
