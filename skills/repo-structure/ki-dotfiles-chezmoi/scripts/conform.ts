@@ -61,6 +61,10 @@ if (existsSync(chezmoiignorePath)) {
 // ── judgment handoff — printed, never auto-applied ────────────────────────────
 const judgmentTodos = [
   ['PATTERN-J1', 'For each app-mutated config file, confirm Pattern A vs Pattern B matches its actual key composition.'],
+  [
+    'CONFIG-J1',
+    'For every Pattern A writer, select and prove a format-preserving editor with explicit absent-path and fail-closed input behavior.'
+  ],
   ['LAYER-J1', 'Confirm each piece of CLAUDE.md-style guidance sits at the right layer (repo-local / user-level / memory).'],
   ['CHEZMOI-J1', 'Confirm any .chezmoiignore negation is deliberate, not an accidentally-too-broad ignore rule.'],
   ['ETIQ-J1', 'Confirm audit findings were reported as file + one-line problem + options, never a silent fix.']

@@ -144,6 +144,13 @@ add(
 )
 add(
   'ADVISORY',
+  'CONFIG-J1',
+  'for every Pattern A writer, confirm the edit API fits its declared format, absent paths are explicit, ' +
+    'unsupported input fails closed, representative fixtures preserve unrelated syntax, and a second identical run is a no-op.',
+  'references/dotfiles-standard.md'
+)
+add(
+  'ADVISORY',
   'LAYER-J1',
   'confirm CLAUDE.md-style guidance sits at the right layer — repo-local vs user-level vs persistent memory.',
   'references/dotfiles-standard.md'

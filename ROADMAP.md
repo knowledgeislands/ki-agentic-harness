@@ -18,7 +18,6 @@ Understood and roughly scoped but not yet started — worth doing once the **Nex
 
 - [Foundation Tooling: Allow `printWidth` to be overridden per repo via `.ki-config.toml` _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#allow-printwidth-to-be-overridden-per-repo-via-ki-configtoml-candidate)
 - [Foundation Tooling: Codify a Conventional Commits git standard across the skills](docs/roadmap/foundation-tooling/ROADMAP.md#codify-a-conventional-commits-git-standard-across-the-skills)
-- [Foundation Tooling: Codify the config-editing tool-selection standard in `ki-dotfiles-chezmoi`](docs/roadmap/foundation-tooling/ROADMAP.md#codify-the-config-editing-tool-selection-standard-in-ki-dotfiles-chezmoi)
 - [Foundation Tooling: Codify the generated-code lint/knip exclusion in `ki-engineering`](docs/roadmap/foundation-tooling/ROADMAP.md#codify-the-generated-code-lintknip-exclusion-in-ki-engineering)
 - [Foundation Tooling: Document each skill's overridable `.ki-config.toml` properties _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#document-each-skills-overridable-ki-configtoml-properties-candidate)
 - [Foundation Tooling: Enforce CHK-009 citation completeness with a cross-skill check](docs/roadmap/foundation-tooling/ROADMAP.md#enforce-chk-009-citation-completeness-with-a-cross-skill-check)

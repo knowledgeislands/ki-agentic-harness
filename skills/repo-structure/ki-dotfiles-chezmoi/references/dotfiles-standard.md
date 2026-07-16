@@ -9,6 +9,7 @@ The rationale behind [the audit rubric](audit-rubric.md) and [`../scripts/audit.
 - [Shell configuration: loader, not rc](#shell-configuration-loader-not-rc)
 - [bin/ dispatcher pattern](#bin-dispatcher-pattern)
 - [App-mutated config handling](#app-mutated-config-handling)
+  - [Selecting a surgical config editor](#selecting-a-surgical-config-editor)
 - [Single-source, multi-target config templating](#single-source-multi-target-config-templating)
 - [CLAUDE.md / agent-instruction layering](#claudemd--agent-instruction-layering)
 - [OS/tooling gotchas](#ostooling-gotchas)
@@ -58,10 +59,28 @@ Some config files are partly hand-authored, partly rewritten by the application 
 
 **Decision rule** — inventory the file's top-level keys. If roughly 90% or more are app-owned (the app rewrites them and a human essentially never touches them directly), use **Pattern A**. Otherwise, use **Pattern B**.
 
-- **Pattern A — surgical patch.** Leave the live file _out_ of chezmoi's managed set entirely (list it in `.chezmoiignore`). Instead, patch only the specific user-owned keys after the app has written its own state, via a `run_onchange_after_<name>.sh.tmpl` script — chezmoi re-runs a `run_onchange_` script only when its own rendered content (including any resolved secrets) changes, giving a natural "re-patch when the desired state changes" trigger — using a JSON-patching tool like `jq` to touch only the user-owned keys and leave the app's own state alone.
+- **Pattern A — surgical patch.** Leave the live file _out_ of chezmoi's managed set entirely (list it in `.chezmoiignore`). Instead, patch only the specific user-owned keys after the app has written its own state, via a `run_onchange_after_<name>.sh.tmpl` script — chezmoi re-runs a `run_onchange_` script only when its own rendered content (including any resolved secrets) changes, giving a natural "re-patch when the desired state changes" trigger. Select a format-preserving editor as described below; a value-model query tool that rewrites the whole document is not a surgical editor. Confirm separately that the application retains the patched keys after later writes, or add an appropriate reconciliation trigger.
 - **Pattern B — full template + reverse-merge.** Manage the entire file as a `.tmpl` end-to-end. Because the app still mutates parts of it at runtime, a companion merge script pulls the live file's current (app-mutated) state back into the source template _before_ `chezmoi diff`/`chezmoi apply` runs — the template's `{{ }}`-interpolated subtrees are the source of truth ("tainted", never overwritten by the merge), while everything else flows live → source on each merge. The workflow is **merge → diff → apply**, in that order, every time.
 
 Switching a file from one pattern to the other requires explicitly deleting/adding the `.tmpl` + merge script (Pattern B) or the `.chezmoiignore` entry + patch script (Pattern A) accordingly — the two are not simultaneously valid for the same file.
+
+### Selecting a surgical config editor
+
+A Pattern A write is surgical only when it changes the intended values while preserving unrelated concrete syntax as far as the format and editor support: comments, key order, quoting, indentation, line endings, and final-newline state should not churn merely because the file was parsed and written. Minimal textual churn, not semantic equivalence alone, is the selection criterion.
+
+Separate inspection from mutation. Value-model tools are useful for querying or validating data, and they may be used to write when whole-document canonicalization is an explicit requirement. Do not use one for a surgical write unless its documented edit API and representative fixtures demonstrate the required preservation.
+
+Use these house defaults as starting points:
+
+- **TOML** — `tomlkit`, which exposes a style-preserving document model for Python.
+- **YAML** — `ruamel.yaml`'s round-trip API. Exercise the actual constructs present, especially anchors, tags, block scalars, and comments; round-trip support is not a promise that every input is byte-identical.
+- **JSON / JSONC** — `jsonc-parser`'s edit API, which computes localized edits while retaining comments and existing formatting around untouched content. Plain JSON is a valid subset of this workflow.
+- **JSONL** — parse and replace only the intended records; copy every unchanged line verbatim rather than serializing the complete file.
+- **JSON5 and other unsupported formats** — there is no house default. Stop and prove a narrow editor against representative fixtures, or choose a pattern that explicitly owns the whole document; never silently fall back to whole-file reserialization.
+
+Python editors may run in an on-demand isolated environment via `uv run --with <package> python <script>`; add `--no-project` when the patch must not inherit the current project's dependencies. That is dependency execution, not a preservation guarantee: pin a compatible version when reproducibility matters, and account for dependency availability when the patch must work offline.
+
+Every surgical writer defines what happens when the file, parent object, or target key is absent; parses before and after the edit; fails without truncating the original on invalid input; and has representative fixtures proving that the intended value changes, unrelated syntax remains stable, and a second identical run produces no diff. Include the format features actually present in the live file rather than relying on a toy fixture. Filesystem replacement, symlink, permissions, ownership, secret-redaction, and concurrent-app-write policy remain part of the implementation's safety review even when the editor itself is format-preserving.
 
 ## Single-source, multi-target config templating
 
