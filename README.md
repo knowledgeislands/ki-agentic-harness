@@ -4,35 +4,35 @@ The **agentic harness** for Knowledge Islands work — the canonical home for wh
 
 A harness is **five parts** — the things an agent is given to work with:
 
-- **Skills** ([`skills/`](skills)) — reusable [Agent Skills](https://agentskills.io/specification): the most-built-out part of the harness today, all governance skills — including `ki-harness`, which governs this five-part container itself, and `ki-bootstrap`, the install keystone. Installed per-repo: a small global set (`ki-bootstrap`, `ki-recap`, `ki-plan`, `ki-delegate`) wires each repo's project-local skills dir — `.claude/skills/` for Claude Code, `.agents/skills/` for OpenAI Codex CLI, per the repo's declared `target_runtimes` — from its `.ki-config.toml`. What a skill is and the map of the set are in [docs/skills.md](docs/guides/user-guide/skills.md); the per-skill catalogue in [docs/skill-catalogue.md](docs/guides/user-guide/skill-catalogue.md).
+- **Skills** ([`skills/`](skills)) — reusable [Agent Skills](https://agentskills.io/specification): the most-built-out part of the harness today, all governance skills — including `ki-harness`, which governs this five-part container itself, and `ki-bootstrap`, the repository bootstrap keystone. What a skill is and the map of the set are in [Skills](docs/guides/user-guide/skills.md); the per-skill catalogue is in [Skill catalogue](docs/guides/user-guide/skill-catalogue.md).
 - **Agents** ([`agents/`](agents)) — Knowledge Islands [Claude Code subagents](https://code.claude.com/docs/en/sub-agents), one per file. Governance agents live under `agents/governance/`, governed by the `ki-agents` skill. See [`agents/README.md`](agents/README.md).
 - **MCP servers** ([`mcp/`](mcp)) — where KI's MCP servers would consolidate as workspace packages. An empty **shelf** today; they currently live as separate `mcp-*` repos, governed by the `ki-mcp` skill. See [`mcp/README.md`](mcp/README.md).
 - **Evals** ([`evals/`](evals)) — a behavioural test suite that checks a skill actually _changes what the model does_, not just that its `SKILL.md` is well-formed. A rough signal, not a gate. See [`evals/README.md`](evals/README.md).
 - **Hooks** ([`hooks/`](hooks)) — durable global Claude Code hook payloads for Plan Mode lifecycle and stale Git-lock recovery; a user-environment manager binds them into settings separately. See [`hooks/README.md`](hooks/README.md).
 
-All five parts are first-class; skills are simply the most built-out, with agents, the eval suite, and hooks now populated and `mcp/` still an empty shelf. A skill does not have to be wedded to Knowledge Islands — the repository layout, the install steps, and the linking conventions apply to every kind equally.
+All five parts are first-class; skills are simply the most built-out, with agents, the eval suite, and hooks now populated and `mcp/` still an empty shelf. A skill does not have to be wedded to Knowledge Islands — the repository layout and delivery conventions apply to every kind equally.
 
-## Quick start
+## Get started
 
 ```bash
-bun install                     # install dev dependencies and wire the git hook
-bun run ki:skills:link:global   # install the global set into every declared runtime's skills dir (re-runnable)
-bun run ki:skills:link:project  # wire this repo's declared runtimes' skills dirs (the harness links --all)
+cd /path/to/repository-you-want-to-govern
+curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/bootstrap.sh | sh
 ```
 
-Only the small global set (`ki-bootstrap`, `ki-recap`, `ki-plan`, `ki-delegate`) is installed globally; every other skill is project-local, wired into each repo's declared-runtime skills dir(s) from its `.ki-config.toml` by the keystone. Full install options (the global/project split, plain-shell, verify/remove) are in [docs/linking.md](docs/guides/user-guide/linking.md); how a skill fires once installed is in [docs/installation.md](docs/guides/user-guide/installation.md).
+This is repository bootstrap: it creates that repository's governance machinery and does not change the rest of your user environment. [Install and get started](docs/guides/user-guide/installation.md) covers optional user-environment tooling and hook payloads; [Use skills](docs/guides/user-guide/using-skills.md) explains how to work with the resulting skills. Harness contributors should see [local skill linking](docs/guides/developer/linking-skills.md).
 
 ## Documentation
 
 | Doc | What's in it |
 | --- | --- |
 | [Overview](docs/guides/user-guide/overview.md) | A short account: what the harness is, what it does for its owner, how the parts fit. |
+| [Install and get started](docs/guides/user-guide/installation.md) | The practical starting point: optional tools, repository bootstrap, and user-environment hook payloads. |
+| [Use skills](docs/guides/user-guide/using-skills.md) | How a skill fires from a plain-language request or slash command. |
 | [Skills](docs/guides/user-guide/skills.md) | What a skill is, the map of the set (the six clusters and their interdependencies), and the shared governance-skill shape. |
 | [Skill catalogue](docs/guides/user-guide/skill-catalogue.md) | Every skill, one by one, grouped by cluster — what each governs and when to reach for it. |
-| [Onboarding](docs/guides/user-guide/onboarding.md) | Onboarding a repo: the remote-run transport, what the bootstrap chain builds in `.ki-meta/`, the day-to-day bins, and keeping current. |
-| [Using a skill](docs/guides/user-guide/installation.md) | How a skill fires once installed: by trigger or by slash command. |
-| [Linking skills](docs/guides/user-guide/linking.md) | Installing a skill: the keystone-plus-project-local mechanics, plain-shell equivalents, verify/remove. |
+| [Bootstrap reference](docs/guides/user-guide/onboarding.md) | The detailed bootstrap model: remote transport, `.ki-meta/`, day-to-day bins, fleet use, and keeping current. |
 | [Recommended tools](docs/guides/user-guide/recommended-tools.md) | System-level dependencies: chezmoi, headroom-ai, mcporter, claude.ai connectors. |
+| [Developer linking](docs/guides/developer/linking-skills.md) | The current local live-link workflow for harness contributors. |
 | [Prompting guides](docs/guides/prompting/README.md) | How to prompt the models we run — one guide per model (Fable 5, Opus 4.8, Sonnet 5), each with a Sources section for refresh. |
 
 The user guide is self-contained. For how it relates to the decisions, feature definitions, plans, and skill code underneath it — and to the Knowledge Islands concept — see [docs/docs.md](docs/docs.md).

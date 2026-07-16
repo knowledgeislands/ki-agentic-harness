@@ -6,7 +6,7 @@ Every skill in the harness, grouped by cluster in the order of [the six clusters
 
 ### `ki-bootstrap`
 
-Wires a repo's **project-local skills** (`.claude/skills/`) from its `.ki-config.toml` — links exactly the skills it declares plus the `ki-repo` + `ki-authoring` baseline, as **gitignored, regenerated** relative symlinks (the committed artifacts are a `ki:skills:link:project` script and the `.gitignore` line, never the links). This is the **install keystone** — the one `ki-*` skill kept installed globally in `~/.claude/skills`, so its `description` is deliberately tiny and any repo can self-wire. **Composes on** `ki-repo` (which owns the `.ki-config.toml` contract and coverage cascade it reads); it is the project-local counterpart of `ki-harness`'s install convention.
+Bootstraps a repository into governance from its `.ki-config.toml`. It vendors the mechanical checks that let a repository govern itself with no skills installed, and it makes the repository's declared skills available to the active runtime. **Composes on** `ki-repo`, which owns the `.ki-config.toml` contract and coverage cascade it reads. The user-facing starting point is [Install and get started](installation.md); live linking from a harness checkout is contributor-only machinery.
 
 ### `ki-repo`
 
@@ -26,7 +26,7 @@ The shared **engineering toolchain** every TS/Bun repo builds on — aggregate/s
 
 ### `ki-harness`
 
-Audits, conforms, and scaffolds a **harness repository** — the container that bundles the other parts: the five-part `skills/` / `agents/` / `mcp/` / `evals/` / `hooks/` layout, the root `CLAUDE.md` / `ROADMAP.md` / `package.json` script families / `.ki-config.toml` table, and the `skills:link:*` install convention (whose project-local linking `ki-bootstrap` carries out). Governs the **container, not the contents**: the bridge into the sibling skills rather than a replacement — it **composes** their checkers (`ki-skills`, `ki-agents`, `ki-project-roadmap`, `ki-mcp`, `ki-engineering`, `ki-repo`) and adds only the bundle-structure delta. Empty shelves are valid — a shelf is not a gap.
+Audits, conforms, and scaffolds a **harness repository** — the container that bundles the other parts: the five-part `skills/` / `agents/` / `mcp/` / `evals/` / `hooks/` layout, the root `CLAUDE.md` / `ROADMAP.md` / `package.json` script families / `.ki-config.toml` table, and the delivery conventions that make its components available. Governs the **container, not the contents**: the bridge into the sibling skills rather than a replacement — it **composes** their checkers (`ki-skills`, `ki-agents`, `ki-project-roadmap`, `ki-mcp`, `ki-engineering`, `ki-repo`) and adds only the bundle-structure delta. Empty shelves are valid — a shelf is not a gap.
 
 ### `ki-kb`
 

@@ -4,11 +4,11 @@ A short, plain-language guide to what this repository is, what it does for its o
 
 ## In one paragraph
 
-This repository is a **harness**: a single, versioned bundle of the reusable pieces an agent needs to do Knowledge Islands work well, kept together instead of scattered. Its centre of gravity is a set of **skills** — packets of standing know-how the agent loads on demand. Most of them are **governance skills**: each one holds a house standard (how we write Markdown, how a repository is laid out, how a knowledge base is structured) and ships the tools to keep work true to that standard.
+An agentic harness is everything around an agent that helps it do a job well. Like a capable person, an agent needs tools to act, knowledge and training to use them, and guardrails that keep work safe and consistent. This harness brings those things together: tools and automation let an agent act; skills and specialist agents provide reusable knowledge and ways of working; and governance checks make good practice repeatable. Keeping them together gives each project a dependable working environment rather than a collection of unrelated prompts and scripts.
 
 ## What it does for its owner
 
-The harness turns loose conventions into something an agent can apply and check consistently. Each governance skill carries the same four modes:
+The harness turns loose conventions into something an agent can apply and check consistently. A skill usually combines guidance with the practical checks or actions that put it to work. Governance skills share four modes:
 
 - **Init** — bring a target under governance for the first time: vendor the checkers and wire the commands so the repo can govern itself.
 - **Audit** — read a target (a repository, a document, a knowledge base) and report where it departs from the standard.
@@ -21,13 +21,13 @@ This reflects the harness's central working principle: it serves **two kinds of 
 
 ## How the parts fit together
 
-The bundle has five parts, each its own directory:
+The bundle has five parts, each with a different job:
 
-- **Skills** (`skills/`) — the governance skills. This is the most built-out part and the reason the harness exists.
-- **Agents** (`agents/`) — Knowledge Islands subagent definitions: focused roles an agent can delegate to.
-- **MCP servers** (`mcp/`) — a shelf for tool servers that consolidate the workspace's external integrations. Scaffolded, not yet populated.
-- **Evals** (`evals/`) — behavioural test scenarios that check the skills actually behave as intended.
-- **Hooks** (`hooks/`) — durable global Claude Code hook payloads for Plan Mode lifecycle and stale Git-lock recovery; a user-environment manager binds them into settings separately.
+- **Skills** (`skills/`) — reusable knowledge, working methods, and governance checks. This is the most built-out part and the reason the harness exists.
+- **Agents** (`agents/`) — focused specialist roles an agent can delegate to.
+- **MCP servers** (`mcp/`) — the tool surface an agent uses to act on external systems. It is a scaffolded shelf here; KI's servers currently live in separate repositories.
+- **Evals** (`evals/`) — practical scenarios that check the skills change behaviour as intended.
+- **Hooks** (`hooks/`) — optional automation around a Claude Code session, such as Plan Mode lifecycle and stale Git-lock recovery.
 
 The five are meant to be co-installed and versioned together: the skills carry the standards, the agents are the roles that apply them, the MCP servers are the tools those roles reach for, the evals hold the whole set honest, and the hooks automate the surrounding session. Shipping them in one bundle keeps them in step — an agent, its skills, and their checks move as a unit rather than drifting apart across separate installs.
 
@@ -35,9 +35,9 @@ The skills are designed to build on each other rather than repeat each other. Wh
 
 When a repository genuinely needs something different from the shared standard, it says so in its own `.ki-config.toml` and its own `CLAUDE.md` — a local exception the skills read and respect. It never copies a skill and edits the copy. That keeps one authoritative version of each standard, with per-repository differences recorded as data rather than as diverging forks.
 
-## The bootstrap keystone
+## Repository and user environment
 
-One skill sits apart from the five parts: **`ki-bootstrap`**, the one skill kept installed globally. Every other skill is installed per-repository. Bootstrap reads a repository's own configuration file (`.ki-config.toml`) and wires in exactly the skills that repository has opted into — so each repository self-equips with the right subset, and the harness stays the single source those subsets are drawn from.
+The harness works at two deliberately separate scopes. **Repository bootstrap** gives one repository the checks and guidance it needs to govern itself; it creates the repository's durable `.ki-meta/` machinery and does not change a person's wider machine setup. **User-environment installation** is optional and affects a person's home directory instead — for example, a durable Claude Code hook payload that a chezmoi-managed environment can register in Claude settings. Keeping the two scopes separate makes it clear what a command will change.
 
 ## What "Knowledge Islands" means
 
@@ -45,8 +45,9 @@ Several of the skills are built for **Knowledge Islands** work and take its shap
 
 ## Where to go deeper
 
-- **[Using a skill](installation.md)** covers how a skill fires once installed — by trigger or by slash command.
-- **[Linking skills](linking.md)** covers the keystone-plus-project-local install mechanics; **[Recommended tools](recommended-tools.md)** covers what installing assumes is in place (chezmoi, headroom-ai, mcporter, claude.ai connectors).
+- **[Install and get started](installation.md)** covers optional machine tools, repository bootstrap, and the separate hook-payload installer.
+- **[Use skills](using-skills.md)** covers how a skill fires — by plain-language request or slash command.
+- **[Recommended tools](recommended-tools.md)** explains optional machine-level tools such as chezmoi, headroom-ai, and mcporter.
 - **[Tuning](tuning.md)** covers making a session lean — the standing surface vs runtime split, which built-in tools and MCP servers to load, and where a compression proxy does and does not help.
-- **[Onboarding](onboarding.md)** walks through bringing a repository under governance: the remote-run transport, what the bootstrap chain builds in `.ki-meta/`, the day-to-day bins, and keeping it current.
+- **[Bootstrap reference](onboarding.md)** explains what repository bootstrap creates, its fleet and local forms, the day-to-day bins, and keeping a repository current.
 - **[Skills](skills.md)** covers what a skill is, the six clusters, and the shape they all share; the **[skill catalogue](skill-catalogue.md)** then describes them one by one.

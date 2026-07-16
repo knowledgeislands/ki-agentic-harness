@@ -1,19 +1,36 @@
-# Using a skill
+# Install and get started
 
-How a skill fires once it's installed: by trigger or by slash command.
+Start here when you want to use the harness. There are two different kinds of installation, and they intentionally do different things:
 
-Two companion pages cover installing a skill in the first place:
+- **Repository bootstrap** gives one repository the checks and guidance it needs to govern itself. It writes only inside that repository.
+- **User-environment installation** is optional machine setup. It writes under your home directory and is managed separately from any repository.
 
-- **[Recommended tools](recommended-tools.md)** — the system-level dependencies (chezmoi, headroom-ai, mcporter, claude.ai connectors) that skills and MCP servers rely on. Get these in place first.
-- **[Linking skills](linking.md)** — the keystone-plus-project-local mechanics that actually get a skill from this repo onto a machine and into a target repo: the install commands, plain-shell equivalents, and verify/remove.
+## Before you begin
 
-## By trigger or by slash command
+Repository bootstrap needs [Bun](https://bun.sh). The [recommended tools](recommended-tools.md) guide covers optional machine-level tools: chezmoi manages user configuration, headroom-ai helps manage context, and mcporter provides a local MCP tool surface. Install only the tools that suit your environment; none of them are required merely to read this guide.
 
-Once a skill is installed, there is nothing to import or configure — the agent loads it on demand. There are two ways it fires:
+## Bootstrap a repository
 
-- **By trigger (automatic)** — just describe the task in plain language. The agent matches your request against each skill's `description` (the part that says _when_ to use it) and loads the skill itself. "audit the m365 MCP against our standard" or "save this to my notes" will pull in the right skill without you naming it.
-- **By slash command (explicit)** — type `/<skill-name>` to invoke it directly, optionally followed by arguments: `/ki-mcp audit ~/kis/knowledgeislands/mcp-gsuite`. Use this when you want to be certain which skill runs, or to pass a specific mode.
+From the repository you want to govern, run:
 
-A skill that takes modes or arguments advertises them in its `argument-hint` frontmatter, shown as you type the slash command. For example `ki-mcp` lists `audit <repo> | conform <repo> | init <repo> | refresh` — the words before each `<...>` are the modes, and the rest is what to pass. The arguments are a hint, not a parser: anything you type after the name reaches the skill as free text, so a plain-language phrasing of the same request works equally well.
+```bash
+curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/bootstrap.sh | sh
+```
 
-This is why per-skill usage is **not** repeated in each `SKILL.md` body: the `description` documents when a skill fires and the `argument-hint` documents its modes, both machine-read at selection time. How to invoke _any_ skill — the slash-vs-trigger mechanics above — is a property of Claude Code and lives here, once.
+This is a **zero-install** repository action. It downloads a temporary copy of the harness, builds the repository's `.ki-meta/` governance machinery, then removes the temporary source. It does not install skills globally, write Claude settings, or change another repository. The `main` in the URL is the harness branch being used; use the [bootstrap reference](onboarding.md) when you need a pinned revision, a different target, or fleet operation.
+
+## Optionally install the Claude Code hook payload
+
+Claude Code's Plan Mode and stale Git-lock hooks are a separate **user-environment** capability. Install their durable payload once for your user account with:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/install-hooks.sh | sh
+```
+
+This copies verified regular files below `~/.claude/hooks/knowledgeislands/ki-agentic-harness/`. It does not run repository bootstrap and it never writes `~/.claude/settings.json`. On a chezmoi-managed machine, chezmoi is responsible for registering the installed payload in Claude Code settings.
+
+## Start using skills
+
+Once a repository is governed, describe what you need in plain language or use a slash command. [Use skills](using-skills.md) explains both approaches.
+
+For the detailed repository-bootstrap model, what `.ki-meta/` contains, and how to keep a repository current, continue to the [bootstrap reference](onboarding.md).

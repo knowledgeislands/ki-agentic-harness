@@ -1,6 +1,6 @@
 # Recommended tools
 
-System-level tools that are not part of this repo but that skills, MCP servers, and day-to-day sessions on a development machine benefit from. None of these are required to read or audit the skills themselves — [Linking skills](linking.md) covers what actually installs the skill set.
+Optional system-level tools that affect a person's machine rather than a governed repository. Skills, MCP servers, and day-to-day sessions can benefit from them, but none is required merely to read or audit the harness. [Install and get started](installation.md) explains when repository bootstrap or optional user-environment setup is appropriate.
 
 ## chezmoi (dotfile and machine-config management)
 
