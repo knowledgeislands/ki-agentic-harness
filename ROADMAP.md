@@ -10,6 +10,11 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
+- [Foundation Tooling: Harden generated-file writes against symlinks and read/check/write races](docs/roadmap/foundation-tooling/ROADMAP.md#harden-generated-file-writes-against-symlinks-and-readcheckwrite-races)
+- [Foundation Tooling: Make `ki:audit` a fully universal clean gate — NA-skip the remaining over-reaching audits](docs/roadmap/foundation-tooling/ROADMAP.md#make-kiaudit-a-fully-universal-clean-gate--na-skip-the-remaining-over-reaching-audits)
+- [Foundation Tooling: Reconcile the fleet's toolchain prose with the collapsed toolchain](docs/roadmap/foundation-tooling/ROADMAP.md#reconcile-the-fleets-toolchain-prose-with-the-collapsed-toolchain)
+- [Foundation Tooling: Sweep the `mcp-*` repos onto the uniform mode model + re-check naming across surfaces](docs/roadmap/foundation-tooling/ROADMAP.md#sweep-the-mcp--repos-onto-the-uniform-mode-model--re-check-naming-across-surfaces)
+
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
@@ -20,14 +25,10 @@ Understood and roughly scoped but not yet started — worth doing once the **Nex
 - [Foundation Tooling: Document each skill's overridable `.ki-config.toml` properties _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#document-each-skills-overridable-ki-configtoml-properties-candidate)
 - [Foundation Tooling: Enforce CHK-009 citation completeness with a cross-skill check](docs/roadmap/foundation-tooling/ROADMAP.md#enforce-chk-009-citation-completeness-with-a-cross-skill-check)
 - [Foundation Tooling: Formal schema for `.ki-config.toml` _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#formal-schema-for-ki-configtoml-candidate)
-- [Foundation Tooling: Harden generated-file writes against symlinks and read/check/write races _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#harden-generated-file-writes-against-symlinks-and-readcheckwrite-races-candidate)
 - [Foundation Tooling: Judgmental CONFORM pass to tidy `.ki-config.toml` comment style _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#judgmental-conform-pass-to-tidy-ki-configtoml-comment-style-candidate)
-- [Foundation Tooling: Make `ki:audit` a fully universal clean gate — NA-skip the remaining over-reaching audits](docs/roadmap/foundation-tooling/ROADMAP.md#make-kiaudit-a-fully-universal-clean-gate--na-skip-the-remaining-over-reaching-audits)
 - [Foundation Tooling: Overhaul checker output: pure JSON emitters + a single formatter](docs/roadmap/foundation-tooling/ROADMAP.md#overhaul-checker-output-pure-json-emitters--a-single-formatter)
-- [Foundation Tooling: Reconcile the fleet's toolchain prose with the collapsed toolchain](docs/roadmap/foundation-tooling/ROADMAP.md#reconcile-the-fleets-toolchain-prose-with-the-collapsed-toolchain)
 - [Foundation Tooling: Rename `ki-engineering` to `ki-engineering-ts`](docs/roadmap/foundation-tooling/ROADMAP.md#rename-ki-engineering-to-ki-engineering-ts)
 - [Foundation Tooling: Standardise the free-form named-action `package.json` keys](docs/roadmap/foundation-tooling/ROADMAP.md#standardise-the-free-form-named-action-packagejson-keys)
-- [Foundation Tooling: Sweep the `mcp-*` repos onto the uniform mode model + re-check naming across surfaces](docs/roadmap/foundation-tooling/ROADMAP.md#sweep-the-mcp--repos-onto-the-uniform-mode-model--re-check-naming-across-surfaces)
 - [Governance Consistency: Codify the convention-placement model and knowledge-promotion loop](docs/roadmap/governance-consistency/ROADMAP.md#codify-the-convention-placement-model-and-knowledge-promotion-loop)
 - [Governance Consistency: Delineate the meta-skill ownership boundaries across the environment family _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#delineate-the-meta-skill-ownership-boundaries-across-the-environment-family-candidate)
 - [Governance Consistency: Extract the git write-safety rule into its own skill _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#extract-the-git-write-safety-rule-into-its-own-skill-candidate)
