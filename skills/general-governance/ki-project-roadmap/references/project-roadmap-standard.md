@@ -6,13 +6,23 @@ This standard applies only to non-KB repositories. A repository whose `.ki-confi
 
 ## Horizons
 
-Every authored roadmap carries these five `##` horizons exactly once and in this order:
+Every roadmap carries these five `##` horizons exactly once and in this order:
 
 1. `Blocking` — actively broken or preventing `Next`; plans permitted.
 2. `Next` — scoped and ready for immediate work; plans permitted.
 3. `Soon` — understood but not yet started; no plans.
 4. `Waiting for` — blocked by a named external condition; no plans.
 5. `Future` — speculative or unscoped; no plans, with `(candidate)` on uncommitted work.
+
+Each horizon heading is followed by one blank line, its exact canonical blurb, and one blank line before any item or the next horizon:
+
+- **Blocking:** Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
+- **Next:** Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
+- **Soon:** Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
+- **Waiting for:** Worth doing, but presently blocked on an external dependency or decision. Revisit when its named condition changes rather than treating it as dormant local work.
+- **Future:** Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass (or a decision to drop them) before they're actionable.
+
+The blurb is the empty-horizon explanation; do not add a separate `Nothing queued.` placeholder. CONFORM may insert a missing canonical blurb because its wording and position are mechanically derivable. It preserves any existing prose after the insertion rather than guessing whether that prose was an altered blurb or authored context.
 
 Roadmaps are open-only: completed work is removed. Continuous practices belong in a standard or orientation file, not among finite work items.
 
@@ -41,7 +51,7 @@ Root `ROADMAP.md` is generated in this profile. It links every canonical item un
 
 EXPAND changes authorship, so it requires judgment. It moves complete items from the simple root into coherent themes, preserving their horizons and prose, then generates the projections. It must prove conservation: every original open item appears once after expansion, with none duplicated.
 
-CONFORM is narrower. It may rebuild derivable projections and indexes, but it must never choose a theme, move an item, change a horizon, invent a locator, or rewrite prose.
+CONFORM is narrower. It may insert a missing canonical horizon blurb and rebuild derivable projections and indexes, but it must never choose a theme, move an item, change a horizon, invent a locator, remove authored content, or rewrite existing prose.
 
 ## Plan discipline
 

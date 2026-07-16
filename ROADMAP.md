@@ -4,13 +4,15 @@ This portfolio view is generated from the canonical theme roadmaps under `docs/r
 
 ## Blocking
 
-Nothing queued.
+Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
 ## Next
 
-Nothing queued.
+Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
 ## Soon
+
+Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
 - [Foundation Tooling: Allow `printWidth` to be overridden per repo via `.ki-config.toml` _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#allow-printwidth-to-be-overridden-per-repo-via-ki-configtoml-candidate)
 - [Foundation Tooling: Close the staged-scope gap in the pre-commit gate](docs/roadmap/foundation-tooling/ROADMAP.md#close-the-staged-scope-gap-in-the-pre-commit-gate)
@@ -46,9 +48,13 @@ Nothing queued.
 
 ## Waiting for
 
+Worth doing, but presently blocked on an external dependency or decision. Revisit when its named condition changes rather than treating it as dormant local work.
+
 - [Operations: Retry blocked memory-store fixes once `memory_*` tools recover](docs/roadmap/operations/ROADMAP.md#retry-blocked-memory-store-fixes-once-memory-tools-recover)
 
 ## Future
+
+Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass (or a decision to drop them) before they're actionable.
 
 - [Governance Consistency: Reclassify the remaining borderline DRs _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#reclassify-the-remaining-borderline-drs-candidate)
 - [Governance Consistency: Roll out the expanded Feature Definitions pattern to the fleet _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#roll-out-the-expanded-feature-definitions-pattern-to-the-fleet-candidate)

@@ -25,6 +25,16 @@ type Frontmatter = {
 }
 
 const HORIZONS = ['Blocking', 'Next', 'Soon', 'Waiting for', 'Future'] as const
+const HORIZON_BLURBS: Record<Horizon, string> = {
+  Blocking:
+    'Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.',
+  Next: 'Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.',
+  Soon: 'Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.',
+  'Waiting for':
+    'Worth doing, but presently blocked on an external dependency or decision. Revisit when its named condition changes rather than treating it as dormant local work.',
+  Future:
+    "Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass (or a decision to drop them) before they're actionable."
+}
 const NEAR = new Set<Horizon>(['Blocking', 'Next'])
 const THEME_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const PLAN_RE = /^(\d{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/
@@ -105,12 +115,22 @@ function parseRoadmap(path: string, display: string, theme?: string): Item[] {
     add('FAIL', 'SAFE-1', 'authored roadmap must not be a symlink', STANDARD_REF, display)
     return []
   }
-  const headings = markdownHeadings(readFileSync(path, 'utf8'))
+  const text = readFileSync(path, 'utf8')
+  const lines = text.split(/\r?\n/)
+  const headings = markdownHeadings(text)
   const h1 = headings.filter((heading) => heading.level === 1)
   if (h1.length !== 1) add('FAIL', 'ROAD-1', `expected exactly one H1; found ${h1.length}`, STANDARD_REF, display)
   const h2 = headings.filter((heading) => heading.level === 2).map((heading) => heading.title)
   if (JSON.stringify(h2) !== JSON.stringify(HORIZONS)) {
     add('FAIL', 'ROAD-1', `horizons must be exactly ${HORIZONS.join(' → ')}; found ${h2.join(' → ') || 'none'}`, STANDARD_REF, display)
+  }
+  for (const heading of headings.filter(
+    (candidate): candidate is typeof candidate & { title: Horizon } =>
+      candidate.level === 2 && HORIZONS.includes(candidate.title as Horizon)
+  )) {
+    if (lines[heading.line] !== '' || lines[heading.line + 1] !== HORIZON_BLURBS[heading.title]) {
+      add('FAIL', 'ROAD-4', `the ${heading.title} horizon must be followed immediately by its canonical blurb`, STANDARD_REF, display)
+    }
   }
   if (!theme) return []
 
@@ -200,12 +220,11 @@ function projection(items: Item[]): string {
     ''
   ]
   for (const horizon of HORIZONS) {
-    lines.push(`## ${horizon}`, '')
+    lines.push(`## ${horizon}`, '', HORIZON_BLURBS[horizon], '')
     const selected = items
       .filter((item) => item.horizon === horizon)
       .sort((a, b) => a.theme.localeCompare(b.theme) || a.title.localeCompare(b.title))
-    if (!selected.length) lines.push('Nothing queued.', '')
-    else {
+    if (selected.length) {
       for (const item of selected) {
         const label = item.theme
           .split('-')
@@ -222,6 +241,10 @@ function projection(items: Item[]): string {
 function markdownTable(rows: string[][]): string[] {
   const widths = rows[0].map((_, column) => Math.max(3, ...rows.map((row) => row[column].length)))
   const render = (row: string[]): string => `| ${row.map((cell, column) => cell.padEnd(widths[column])).join(' | ')} |`
+  if (render(rows[0]).length > 160) {
+    const compact = (row: string[]): string => `| ${row.join(' | ')} |`
+    return [compact(rows[0]), compact(rows[0].map(() => '---')), ...rows.slice(1).map(compact)]
+  }
   return [render(rows[0]), `| ${widths.map((width) => '-'.repeat(width)).join(' | ')} |`, ...rows.slice(1).map(render)]
 }
 

@@ -10,6 +10,17 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 const AUDIT = join(HERE, 'audit.ts')
 const CONFORM = join(HERE, 'conform.ts')
 const INIT = join(HERE, 'init.ts')
+const HORIZONS = ['Blocking', 'Next', 'Soon', 'Waiting for', 'Future'] as const
+const HORIZON_BLURBS = {
+  Blocking:
+    'Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.',
+  Next: 'Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.',
+  Soon: 'Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.',
+  'Waiting for':
+    'Worth doing, but presently blocked on an external dependency or decision. Revisit when its named condition changes rather than treating it as dormant local work.',
+  Future:
+    "Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass (or a decision to drop them) before they're actionable."
+} as const
 let failed = false
 
 function check(label: string, condition: boolean): void {
@@ -31,8 +42,8 @@ function run(script: string, root: string, args: string[] = []): { code: number;
 
 function roadmap(title: string, items: Partial<Record<'Blocking' | 'Next' | 'Soon' | 'Waiting for' | 'Future', string[]>> = {}): string {
   const lines = [`# ${title}`, '']
-  for (const horizon of ['Blocking', 'Next', 'Soon', 'Waiting for', 'Future'] as const) {
-    lines.push(`## ${horizon}`, '')
+  for (const horizon of HORIZONS) {
+    lines.push(`## ${horizon}`, '', HORIZON_BLURBS[horizon], '')
     for (const item of items[horizon] ?? []) lines.push(`### ${item}`, '', `${item} details.`, '')
   }
   return `${lines.join('\n').trimEnd()}\n`
@@ -104,9 +115,38 @@ function thematicFixture(): string {
     const created = run(INIT, root)
     check('simple INIT creates ROADMAP.md', created.code === 0 && existsSync(join(root, 'ROADMAP.md')))
     const before = readFileSync(join(root, 'ROADMAP.md'), 'utf8')
+    check(
+      'simple INIT includes every horizon blurb',
+      HORIZONS.every((horizon) => before.includes(HORIZON_BLURBS[horizon]))
+    )
+    check('simple INIT needs no empty-horizon placeholder', !before.includes('Nothing queued.'))
     check('simple AUDIT passes', run(AUDIT, root).code === 0)
     run(INIT, root)
     check('simple INIT never clobbers existing roadmap', readFileSync(join(root, 'ROADMAP.md'), 'utf8') === before)
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+
+// Simple CONFORM repairs missing blurbs without discarding existing prose and is dry-run safe and idempotent.
+{
+  const root = fixture()
+  try {
+    const custom = 'Keep this authored horizon context.'
+    const original = roadmap('Roadmap', { Next: ['Ship the feature'] }).replace(HORIZON_BLURBS.Next, custom)
+    writeFileSync(join(root, 'ROADMAP.md'), original)
+    const invalid = run(AUDIT, root)
+    check('missing simple-profile blurb fails ROAD-4', invalid.code !== 0 && invalid.out.includes('ROAD-4'))
+    const dry = run(CONFORM, root, ['--dry-run'])
+    check('simple CONFORM dry-run exits zero', dry.code === 0)
+    check('simple CONFORM dry-run preserves bytes', readFileSync(join(root, 'ROADMAP.md'), 'utf8') === original)
+    const conformed = run(CONFORM, root)
+    const repaired = readFileSync(join(root, 'ROADMAP.md'), 'utf8')
+    check('simple CONFORM inserts the canonical blurb', conformed.code === 0 && repaired.includes(HORIZON_BLURBS.Next))
+    check('simple CONFORM preserves authored context', repaired.includes(custom))
+    check('repaired simple profile audits cleanly', run(AUDIT, root).code === 0)
+    run(CONFORM, root)
+    check('simple CONFORM is idempotent', readFileSync(join(root, 'ROADMAP.md'), 'utf8') === repaired)
   } finally {
     rmSync(root, { recursive: true, force: true })
   }
@@ -169,6 +209,11 @@ function thematicFixture(): string {
       readFileSync(join(root, 'ROADMAP.md'), 'utf8').includes('hooks/ROADMAP.md#harden-hook-linking')
     )
     check(
+      'root projection includes every horizon blurb',
+      HORIZONS.every((horizon) => readFileSync(join(root, 'ROADMAP.md'), 'utf8').includes(HORIZON_BLURBS[horizon]))
+    )
+    check('root projection needs no empty-horizon placeholder', !readFileSync(join(root, 'ROADMAP.md'), 'utf8').includes('Nothing queued.'))
+    check(
       'root links use rendered Markdown heading anchors',
       readFileSync(join(root, 'ROADMAP.md'), 'utf8').includes('docs/ROADMAP.md#allow-printwidth-via-ki-configtoml')
     )
@@ -176,6 +221,29 @@ function thematicFixture(): string {
     writeFileSync(join(root, 'ROADMAP.md'), '# drift\n')
     const drift = run(AUDIT, root)
     check('projection drift fails exactly', drift.code !== 0 && drift.out.includes('PROJ-1'))
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+
+// Thematic CONFORM repairs canonical theme roadmaps and preserves existing prose.
+{
+  const root = thematicFixture()
+  try {
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'ROADMAP.md')
+    const custom = 'Keep this theme-specific horizon context.'
+    const original = readFileSync(path, 'utf8').replace(HORIZON_BLURBS.Next, custom)
+    writeFileSync(path, original)
+    const dry = run(CONFORM, root, ['--dry-run'])
+    check('thematic blurb repair dry-run exits zero', dry.code === 0)
+    check('thematic blurb repair dry-run preserves bytes', readFileSync(path, 'utf8') === original)
+    const conformed = run(CONFORM, root)
+    const repaired = readFileSync(path, 'utf8')
+    check('thematic CONFORM inserts the canonical blurb', conformed.code === 0 && repaired.includes(HORIZON_BLURBS.Next))
+    check('thematic CONFORM preserves authored context', repaired.includes(custom))
+    check('repaired thematic profile audits cleanly', run(AUDIT, root).code === 0)
+    run(CONFORM, root)
+    check('thematic CONFORM is idempotent', readFileSync(path, 'utf8') === repaired)
   } finally {
     rmSync(root, { recursive: true, force: true })
   }
@@ -195,6 +263,31 @@ function thematicFixture(): string {
       generated.includes(
         '| Plan | Theme | Title           | Roadmap item | Status | Blocks |\n| ---- | ----- | --------------- | ------------ | ------ | ------ |\n| —    | —     | No active plans | —            | —      | —      |'
       )
+    )
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+
+// A wide active-plan index stays compact, matching Prettier's print-width behavior.
+{
+  const root = thematicFixture()
+  try {
+    const theme = 'project-roadmap'
+    const title = 'Require canonical horizon blurbs and restore them during CONFORM'
+    const themeRoot = join(root, 'docs', 'roadmap', theme)
+    mkdirSync(join(themeRoot, 'plans'), { recursive: true })
+    writeFileSync(join(themeRoot, 'ROADMAP.md'), roadmap('Project roadmap roadmap', { Next: [title] }))
+    writeFileSync(
+      join(themeRoot, 'plans', '003-canonical-horizon-blurbs.md'),
+      plan('003', title, 'project-roadmap/require-canonical-horizon-blurbs-and-restore-them-during-conform')
+    )
+    const conformed = run(CONFORM, root)
+    const generated = readFileSync(join(root, 'docs', 'roadmap', 'README.md'), 'utf8')
+    check('wide active-plan index conforms cleanly', conformed.code === 0 && run(AUDIT, root).code === 0)
+    check(
+      'wide active-plan table uses formatter-stable compact rows',
+      generated.includes('| Plan | Theme | Title | Roadmap item | Status | Blocks |\n| --- | --- | --- | --- | --- | --- |')
     )
   } finally {
     rmSync(root, { recursive: true, force: true })

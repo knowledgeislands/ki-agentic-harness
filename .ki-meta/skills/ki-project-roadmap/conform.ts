@@ -25,6 +25,16 @@ type Item = { theme: string; title: string; slug: string; anchor: string; horizo
 type Plan = { id: string; theme: string; name: string; fm: Record<string, string>; blocks: string[]; blockedBy: string[] }
 
 const HORIZONS = ['Blocking', 'Next', 'Soon', 'Waiting for', 'Future'] as const
+const HORIZON_BLURBS: Record<Horizon, string> = {
+  Blocking:
+    'Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.',
+  Next: 'Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.',
+  Soon: 'Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.',
+  'Waiting for':
+    'Worth doing, but presently blocked on an external dependency or decision. Revisit when its named condition changes rather than treating it as dormant local work.',
+  Future:
+    "Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass (or a decision to drop them) before they're actionable."
+}
 const STANDARD_REF = 'references/project-roadmap-standard.md'
 const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
 const findings: Finding[] = []
@@ -142,12 +152,11 @@ function projection(items: Item[]): string {
     ''
   ]
   for (const horizon of HORIZONS) {
-    lines.push(`## ${horizon}`, '')
+    lines.push(`## ${horizon}`, '', HORIZON_BLURBS[horizon], '')
     const selected = items
       .filter((item) => item.horizon === horizon)
       .sort((a, b) => a.theme.localeCompare(b.theme) || a.title.localeCompare(b.title))
-    if (!selected.length) lines.push('Nothing queued.', '')
-    else {
+    if (selected.length) {
       for (const item of selected) {
         const label = item.theme
           .split('-')
@@ -161,9 +170,38 @@ function projection(items: Item[]): string {
   return `${lines.join('\n').trimEnd()}\n`
 }
 
+function withHorizonBlurbs(text: string): string {
+  const eol = text.includes('\r\n') ? '\r\n' : '\n'
+  const trailingEol = text.endsWith('\n')
+  const lines = text.split(/\r?\n/)
+  if (trailingEol) lines.pop()
+  for (const horizon of [...HORIZONS].reverse()) {
+    const heading = lines.findIndex((line) => line.match(/^##\s+(.+?)\s*#*\s*$/)?.[1].trim() === horizon)
+    if (heading < 0) continue
+    let firstContent = heading + 1
+    while (lines[firstContent] === '') firstContent += 1
+    if (lines[firstContent] === HORIZON_BLURBS[horizon]) {
+      lines.splice(heading + 1, firstContent - heading - 1, '')
+      let nextContent = heading + 3
+      while (lines[nextContent] === '') nextContent += 1
+      if (nextContent === lines.length) lines.splice(heading + 3)
+      else lines.splice(heading + 3, nextContent - heading - 3, '')
+    } else {
+      const replacement = ['', HORIZON_BLURBS[horizon]]
+      if (firstContent < lines.length) replacement.push('')
+      lines.splice(heading + 1, firstContent - heading - 1, ...replacement)
+    }
+  }
+  return `${lines.join(eol)}${trailingEol ? eol : ''}`
+}
+
 function markdownTable(rows: string[][]): string[] {
   const widths = rows[0].map((_, column) => Math.max(3, ...rows.map((row) => row[column].length)))
   const render = (row: string[]): string => `| ${row.map((cell, column) => cell.padEnd(widths[column])).join(' | ')} |`
+  if (render(rows[0]).length > 160) {
+    const compact = (row: string[]): string => `| ${row.join(' | ')} |`
+    return [compact(rows[0]), compact(rows[0].map(() => '---')), ...rows.slice(1).map(compact)]
+  }
   return [render(rows[0]), `| ${widths.map((width) => '-'.repeat(width)).join(' | ')} |`, ...rows.slice(1).map(render)]
 }
 
@@ -273,12 +311,6 @@ if (isKb()) {
   })
   emit()
 }
-if (!existsSync(roadmapDir)) {
-  findings.push({ level: 'PASS', area: 'PROFILE-1', msg: 'simple profile has no generated files to conform', ref: STANDARD_REF })
-  emit()
-}
-if (rejectUnsafe(rootRoadmap, 'ROADMAP.md') || rejectUnsafe(readme, 'docs/roadmap/README.md')) emit()
-
 const audit = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
 const checked = spawnSync(process.execPath, [audit, root, '--json'], { encoding: 'utf8' })
 let payload: { findings?: Finding[] }
@@ -288,7 +320,9 @@ try {
   findings.push({ level: 'FAIL', area: 'SAFE-1', msg: `preflight audit did not return valid JSON: ${checked.stderr}`, ref: STANDARD_REF })
   emit()
 }
-const nonDerivable = (payload.findings ?? []).filter((finding) => finding.level === 'FAIL' && !['PROJ-1', 'INDEX-1'].includes(finding.area))
+const nonDerivable = (payload.findings ?? []).filter(
+  (finding) => finding.level === 'FAIL' && !['PROJ-1', 'INDEX-1', 'ROAD-4'].includes(finding.area)
+)
 if (nonDerivable.length) {
   findings.push(...nonDerivable)
   findings.push({
@@ -300,8 +334,51 @@ if (nonDerivable.length) {
   emit()
 }
 
+if (!existsSync(roadmapDir)) {
+  if (rejectUnsafe(rootRoadmap, 'ROADMAP.md')) emit()
+  const current = outputBytes(rootRoadmap)
+  if (current === null) {
+    findings.push({ level: 'FAIL', area: 'PROFILE-1', msg: 'simple profile has no ROADMAP.md', ref: STANDARD_REF, file: 'ROADMAP.md' })
+    emit()
+  }
+  const content = withHorizonBlurbs(current)
+  if (current === content)
+    findings.push({ level: 'PASS', area: 'ROAD-4', msg: 'horizon blurbs already canonical', ref: STANDARD_REF, file: 'ROADMAP.md' })
+  else if (dryRun)
+    findings.push({
+      level: 'POLISH',
+      area: 'ROAD-4',
+      msg: 'would insert missing horizon blurbs (dry-run; not written)',
+      ref: STANDARD_REF,
+      file: 'ROADMAP.md'
+    })
+  else {
+    atomicWrite(rootRoadmap, content, current)
+    findings.push({
+      level: 'POLISH',
+      area: 'ROAD-4',
+      msg: 'inserted missing horizon blurbs atomically',
+      ref: STANDARD_REF,
+      file: 'ROADMAP.md'
+    })
+  }
+  emit()
+}
+if (rejectUnsafe(rootRoadmap, 'ROADMAP.md') || rejectUnsafe(readme, 'docs/roadmap/README.md')) emit()
+
 const { themes, items, plans } = discover()
+const authoredOutputs = themes.map((theme) => {
+  const path = join(roadmapDir, theme, 'ROADMAP.md')
+  return {
+    path,
+    display: `docs/roadmap/${theme}/ROADMAP.md`,
+    area: 'ROAD-4',
+    content: withHorizonBlurbs(readFileSync(path, 'utf8'))
+  }
+})
+if (authoredOutputs.some((output) => rejectUnsafe(output.path, output.display))) emit()
 const outputs = [
+  ...authoredOutputs,
   { path: rootRoadmap, display: 'ROADMAP.md', area: 'PROJ-1', content: projection(items) },
   { path: readme, display: 'docs/roadmap/README.md', area: 'INDEX-1', content: index(themes, plans) }
 ]

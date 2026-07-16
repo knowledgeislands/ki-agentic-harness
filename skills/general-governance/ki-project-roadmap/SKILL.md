@@ -21,7 +21,7 @@ The standard has two profiles, detected from repository shape:
 - **Simple** — root `ROADMAP.md` is canonical and carries the five horizons. It has no plan files. A substantial item that needs a plan first moves to the thematic profile through EXPAND.
 - **Thematic** — each `docs/roadmap/<theme>/ROADMAP.md` is canonical. Its active plans live in `docs/roadmap/<theme>/plans/`; `docs/roadmap/README.md` is the global plan index and dependency graph; root `ROADMAP.md` is an exact generated portfolio projection.
 
-An item has one authoritative home. In the thematic profile its stable locator is `<theme>/<item-slug>`, where the slug derives from the item heading. Plan ids and dependency ids are global across themes. Plans exist only for `Blocking` and `Next` items.
+An item has one authoritative home. Every roadmap carries the standard's exact explanatory blurb immediately beneath each horizon heading so its placement model is understandable in the file itself. In the thematic profile an item's stable locator is `<theme>/<item-slug>`, where the slug derives from the item heading. Plan ids and dependency ids are global across themes. Plans exist only for `Blocking` and `Next` items.
 
 ## Operating modes
 
@@ -29,7 +29,7 @@ Carries the universal **AUDIT · CONFORM · INIT · REFRESH** plus judgment-led 
 
 ### Mode AUDIT
 
-Run [`scripts/audit.ts`](scripts/audit.ts) against the repository root. It detects the profile and applies the mechanical criteria in [the rubric](references/audit-rubric.md): horizon structure; theme and item identity; qualified plan linkage; frontmatter, placement, global ids, and dependency integrity; exact generated projection and index. It reports KB scope as NA, or FAIL when a KB carries project-roadmap artifacts, and makes no changes.
+Run [`scripts/audit.ts`](scripts/audit.ts) against the repository root. It detects the profile and applies the mechanical criteria in [the rubric](references/audit-rubric.md): horizon structure and exact blurbs; theme and item identity; qualified plan linkage; frontmatter, placement, global ids, and dependency integrity; exact generated projection and index. It reports KB scope as NA, or FAIL when a KB carries project-roadmap artifacts, and makes no changes.
 
 Then apply the rubric's judgment criteria by reading: item quality and horizon choice, plan quality, honest in-progress state, whether simple still fits, and whether theme boundaries are coherent. Iterate until mechanical findings are clean and judgment findings are resolved.
 
@@ -37,7 +37,7 @@ After changing the scripts, run [`scripts/project-roadmap.test.ts`](scripts/proj
 
 ### Mode CONFORM
 
-Run [`scripts/conform.ts`](scripts/conform.ts) against the repository root. In a valid thematic profile it rebuilds only the derivable root projection and global index/graph, using guarded atomic local-file writes. In simple mode it is a no-op. It never invents themes, moves horizons, rewrites item prose, repairs ambiguous locators, or changes plan content. Use `--dry-run` to inspect the intended writes. Re-run AUDIT afterward.
+Run [`scripts/conform.ts`](scripts/conform.ts) against the repository root. In either profile it inserts any missing canonical horizon blurb immediately beneath its heading, preserving all existing authored content. In a valid thematic profile it also rebuilds the derivable root projection and global index/graph. Every write uses guarded atomic local-file replacement. It never invents themes, moves horizons, removes or rewrites authored prose, repairs ambiguous locators, or changes plan content. Use `--dry-run` to inspect the intended writes. Re-run AUDIT afterward.
 
 ### Mode EXPAND
 
@@ -53,7 +53,7 @@ There is no automatic collapse operation: merging themes back into one authored 
 
 ### Mode INIT
 
-Run [`scripts/init.ts`](scripts/init.ts) against a non-KB repository. It creates the simple profile only when `ROADMAP.md` and `docs/roadmap/` are both absent; it never overwrites an existing roadmap. In a KB it reports the `ki-kb-streams` off-ramp and writes nothing.
+Run [`scripts/init.ts`](scripts/init.ts) against a non-KB repository. It creates the simple profile, including every canonical horizon blurb, only when `ROADMAP.md` and `docs/roadmap/` are both absent; it never overwrites an existing roadmap. In a KB it reports the `ki-kb-streams` off-ramp and writes nothing.
 
 ### Mode REFRESH
 

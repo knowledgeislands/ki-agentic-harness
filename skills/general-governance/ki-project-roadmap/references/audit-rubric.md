@@ -13,6 +13,7 @@ The checker applies `[M]` criteria. A reviewer applies `[J]` criteria after the 
 - **ROAD-1 [M]** Every authored roadmap has one H1 and the five horizons exactly once, in canonical order. ([standard](project-roadmap-standard.md#horizons))
 - **ROAD-2 [J]** Items sit in honest horizons; Waiting-for items name their external condition; speculative Future work says `(candidate)`. ([standard](project-roadmap-standard.md#horizons))
 - **ROAD-3 [J]** Roadmaps are open-only and contain finite work rather than continuous practice. ([standard](project-roadmap-standard.md#horizons))
+- **ROAD-4 [M]** Every horizon heading is followed immediately by its exact canonical blurb; CONFORM inserts a missing blurb without removing existing authored content. ([standard](project-roadmap-standard.md#horizons))
 - **THEME-1 [M]** Theme directories are lowercase kebab-case, contain `ROADMAP.md`, and thematic items are `###` headings under a horizon. ([standard](project-roadmap-standard.md#thematic-profile))
 - **THEME-2 [J]** Themes are coherent workstreams, neither catch-alls nor one-item bureaucracy. ([standard](project-roadmap-standard.md#expansion-boundary))
 - **ITEM-1 [M]** Each thematic item has one unique qualified `<theme>/<item-slug>` locator. Duplicate derived locators FAIL. ([standard](project-roadmap-standard.md#thematic-profile))

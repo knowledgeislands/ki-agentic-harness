@@ -2,9 +2,15 @@
 
 ## Blocking
 
+Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
+
 ## Next
 
+Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
+
 ## Soon
+
+Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
 ### Codify per-project Headroom base-URL scoping as a repo pattern _(candidate)_
 
@@ -22,6 +28,8 @@ A live `kit-mcp-claude-housekeeping` call via the `mcporter` bridge (2026-07-13)
 
 ## Waiting for
 
+Worth doing, but presently blocked on an external dependency or decision. Revisit when its named condition changes rather than treating it as dormant local work.
+
 ### Retry blocked memory-store fixes once `memory_*` tools recover
 
 During a memory/`CLAUDE.md` review session (2026-07-12), several fixes were identified but couldn't be applied because every `memory_*` tool (`memory_save`, `memory_update`, `memory_search`, `memory_list`) failed with "No such tool available" — reads and writes alike, ruling out a plan-mode-specific restriction. Once the tools are confirmed working again:
@@ -35,6 +43,8 @@ During a memory/`CLAUDE.md` review session (2026-07-12), several fixes were iden
   - A `feedback` memory: the user prefers fixing a real, fixable bug directly in-session (even in a different local repo, e.g. an upstream skill/harness repo) over only logging it on a ROADMAP; reserve ROADMAP-only entries for gaps too large/architectural to fix in-session. Confirmed 2026-07-13 when asked to fix a `ki-agentic-harness` bug directly rather than just documenting it.
 
 ## Future
+
+Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass (or a decision to drop them) before they're actionable.
 
 ### Mine historical sessions for recurring context bloat _(candidate)_
 
