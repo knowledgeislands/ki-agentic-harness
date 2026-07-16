@@ -12,20 +12,20 @@ This applies to all Knowledge Islands multi-skill invocations, not only audits.
 
 For any multi-skill invocation (AUDIT, CONFORM, REFRESH, or other modes run across multiple governance skills):
 
-1. **COLL checks first** — run the set-level collision checks (COLL-1: name uniqueness via `bun run ki:skills:audit`; COLL-2: description off-ramp reciprocity by reading all `description` fields) in the main agent context. These are cross-skill by nature and cheap; they must run before fan-out.
-2. **Fan out to subagents** — spawn one `agent()` per concern in `parallel()`. Each subagent receives only its concern's files, runs the mechanical checker (`bun run ki:<concern>:audit --json`) and applies the judgment criteria, and returns a structured JSON object: `{ concern, exit_code, fail[], warn[], polish[], advisory[], pass_count }`.
-3. **Synthesise in the main agent** — collect all subagent results, rank findings with dependency-order priority (foundations first, per ADR-KI-HARNESS-SKILLS-003), and report across concerns.
+1. **Run the mechanical aggregate first** — the repository's `ki:audit` entrypoint is the authoritative mechanical result. Keep set-level checks such as skill-name collisions and description reciprocity in the orchestrator, because they are cross-skill by nature.
+2. **Fan out only independent judgment review** — when the host supports subagents and the review is large enough to justify them, use `ki-delegate` to give each reviewer one bounded concern and the already-captured mechanical result. Do not re-run or reinterpret another concern's checker in a subagent.
+3. **Synthesise in the main agent** — collect the bounded reviews, rank findings with dependency-order priority (foundations first, per ADR-KI-HARNESS-SKILLS-003), and report across concerns. The orchestrator remains responsible for gating any resulting changes.
 
-For the harness multi-concern audit specifically, the workflow is codified in `.claude/workflows/ki-multi-skill-audit.ts`.
+This is a method, not a tracked runtime workflow. Each host uses its available delegation mechanism without making that mechanism part of the governed harness contract.
 
 ## Consequences
 
-- Multi-skill runs complete in time proportional to the slowest single concern, not the sum.
-- Each subagent's context is bounded to a single concern.
+- The mechanical audit remains reproducible without an agent runtime or custom workflow code.
+- When used, each reviewer’s context is bounded to a single concern and independent judgment review can complete in parallel.
 - The dependency order from ADR-KI-HARNESS-SKILLS-003 becomes synthesis ranking priority, not execution order.
-- A subagent failure (one concern) does not abort the others.
-- COLL checks remain in the main context because they are cross-skill and cannot be isolated per concern.
-- The saved workflow (`.claude/workflows/ki-multi-skill-audit.ts`) is the canonical implementation for harness audits.
+- A reviewer failure does not invalidate the aggregate mechanical result; report the review gap honestly and retry or review it in the main context.
+- Cross-skill checks remain in the main context because they cannot be isolated per concern.
+- No Claude-specific workflow must track changing checker paths, concern names, or runtime APIs.
 
 ## References
 

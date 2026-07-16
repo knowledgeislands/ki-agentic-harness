@@ -64,7 +64,8 @@ Revisit the doctrine against practice: does the reasoning-layer split still matc
 - `ki-tokenomics` — owns _which tier costs what and how to pick it_ (`preferred_model`, the mode→tier table, standard §4/§8). This skill owns _how to decompose and write work so a cheaper tier can execute it_ and points at `ki-tokenomics` for the cost/selection question, never restating the tier table.
 - `ki-project-roadmap` — owns non-KB project roadmaps and the thematic plan **format**. A handoff spec **is** a plan under `docs/roadmap/<theme>/plans/`; this skill adds the delegation-readiness delta and owns no roadmap artifact.
 - `ki-kb-streams` — owns KB planning: a stream proposal's `## Checklist` is the handoff spec. Run in a KB, this skill adds the delta and defers the artifact and its lifecycle to `ki-kb-streams`.
-- `ki-agents` — owns subagent **definitions** and fan-out mechanics. This skill is about the _work spec_ handed to any executor — a cheaper model, a cold agent, or a person — not the agent definition. When the question is how to define the subagent, go there.
+- `ki-agents` — owns subagent **definitions**. This skill is about the _work spec_ handed to any executor — a cheaper model, a cold agent, or a person — not the agent definition. When the question is how to define the subagent, go there.
+- `ki-delegate` — owns the runtime orchestration of a multi-agent run: classify, assign, sequence, and gate the work. A handoff that will be executed in parallel uses `ki-delegate`; this skill remains the quality bar for the artifact handed over.
 
 ## Notes
 

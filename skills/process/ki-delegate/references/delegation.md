@@ -33,6 +33,10 @@ Subagent-type selection `(CC)`: use `Explore` for read-only search, `Plan` for d
 
 Order the assigned tasks into **rounds**. A round is a set of tasks with no dependency on each other that can run concurrently.
 
+### Multi-concern audits
+
+For a repository-wide audit, run the repository's aggregate `ki:audit` entrypoint first and treat that output as the authoritative mechanical result. Keep cross-skill checks such as collisions and reciprocity with the orchestrator. Only then split independent [J] reviews into bounded concerns; each reviewer receives the relevant mechanical output and must not re-run or reinterpret the whole checker fleet. Synthesise those reviews in dependency order and gate every resulting change. Do not create a tracked runtime-specific workflow for this pattern: substitute the host's available delegation mechanism at execution time.
+
 1. **Round 1 — blockers and citation-targets.** Anything others depend on lands first: research spikes (they gate downstream trust) and any artefact that later work must cite or build on (a decision record, a shared interface). Run the independent ones concurrently `(CC: one message, multiple Agent calls)`.
 2. **Round 2+ — fan out the independents.** Once the citation-targets exist, dispatch the mutually-independent mechanical work in parallel. Most mechanical doc/code edits are independent and belong here.
 3. **Name write-contention.** Before dispatching a round, check that no two tasks edit the same file — if they do, serialise them or merge them into one task. Two agents editing one file race and clobber.
