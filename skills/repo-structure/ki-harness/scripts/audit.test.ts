@@ -12,6 +12,7 @@ const CONFORM = join(SCRIPTS_DIR, 'conform.ts')
 const RETIRED_SCRIPTS = ['ki:lint:check', 'ki:lint:types', 'ki:lint:md', 'ki:lint:md:check']
 const AGGREGATE_SCRIPTS = ['ki:audit', 'ki:conform']
 const ENGINEERING_SCRIPTS = [...RETIRED_SCRIPTS, ...AGGREGATE_SCRIPTS]
+const RETIRED_HARNESS_SCRIPTS = ['ki:codegen']
 
 type Finding = { level: string; area: string; msg: string }
 type Run = { status: number | null; findings: Finding[] }
@@ -71,6 +72,10 @@ try {
   check(
     'conform never recommends engineering-owned script keys',
     ENGINEERING_SCRIPTS.every((key) => conform.findings.every((finding) => !finding.msg.includes(key)))
+  )
+  check(
+    'conform never recommends retired harness script keys',
+    RETIRED_HARNESS_SCRIPTS.every((key) => conform.findings.every((finding) => !finding.msg.includes(key)))
   )
 } finally {
   rmSync(validFixture, { recursive: true, force: true })

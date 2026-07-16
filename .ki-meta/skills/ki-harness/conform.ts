@@ -42,7 +42,7 @@ const PARTS = ['skills', 'agents', 'mcp', 'evals', 'hooks'] as const
 const ROOT_FILES = ['CLAUDE.md', 'ROADMAP.md', '.ki-config.toml', 'package.json'] as const
 const PKG1_SCRIPT = 'ki:skills:link:project'
 const PKG2_SCRIPT = 'ki:skills:audit'
-const PKG4_SCRIPTS = ['ki:skills:link:global', 'ki:skills:status', 'ki:skills:unlink', 'ki:skills:refresh-status', 'ki:codegen', 'ki:eval']
+const PKG4_SCRIPTS = ['ki:skills:link:global', 'ki:skills:status', 'ki:skills:unlink', 'ki:skills:refresh-status', 'ki:eval']
 
 function hasTomlTable(toml: string, table: string): boolean {
   const escaped = table.replace(/-/g, '\\-')
