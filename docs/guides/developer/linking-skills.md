@@ -1,6 +1,6 @@
 # Local skill linking for harness development
 
-This is a developer workflow for working on a local checkout of the harness. It is not part of normal user installation: a person using the harness should start with [Install and get started](../user-guide/installation.md) and repository bootstrap.
+This is a developer workflow for working on a local checkout of the harness. It is not part of normal user installation: a person using the harness should start with [Install and get started](../user-guide/getting-started.md) and repository bootstrap.
 
 The current local-development model uses symlinks so changes in this checkout take effect immediately in selected runtime skill directories. The deferred runtime-portability work will make ordinary project skill delivery copied by default and retain explicit development linking only where it is useful; this guide describes today's live-link behaviour, not that future model.
 

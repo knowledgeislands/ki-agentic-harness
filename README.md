@@ -19,14 +19,14 @@ cd /path/to/repository-you-want-to-govern
 curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/bootstrap.sh | sh
 ```
 
-This is repository bootstrap: it creates that repository's governance machinery and does not change the rest of your user environment. [Install and get started](docs/guides/user-guide/installation.md) covers optional user-environment tooling and hook payloads; [Use skills](docs/guides/user-guide/using-skills.md) explains how to work with the resulting skills. Harness contributors should see [local skill linking](docs/guides/developer/linking-skills.md).
+This is repository bootstrap: it creates that repository's governance machinery and does not change the rest of your user environment. [Install and get started](docs/guides/user-guide/getting-started.md) covers optional user-environment tooling and hook payloads; [Use skills](docs/guides/user-guide/using-skills.md) explains how to work with the resulting skills. Harness contributors should see [local skill linking](docs/guides/developer/linking-skills.md).
 
 ## Documentation
 
 | Doc | What's in it |
 | --- | --- |
 | [Overview](docs/guides/user-guide/overview.md) | A short account: what the harness is, what it does for its owner, how the parts fit. |
-| [Install and get started](docs/guides/user-guide/installation.md) | The practical starting point: optional tools, repository bootstrap, and user-environment hook payloads. |
+| [Install and get started](docs/guides/user-guide/getting-started.md) | The practical starting point: optional tools, repository bootstrap, and user-environment hook payloads. |
 | [Use skills](docs/guides/user-guide/using-skills.md) | How a skill fires from a plain-language request or slash command. |
 | [Skills](docs/guides/user-guide/skills.md) | What a skill is, the map of the set (the six clusters and their interdependencies), and the shared governance-skill shape. |
 | [Skill catalogue](docs/guides/user-guide/skill-catalogue.md) | Every skill, one by one, grouped by cluster — what each governs and when to reach for it. |

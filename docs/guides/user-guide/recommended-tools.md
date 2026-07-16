@@ -1,6 +1,6 @@
 # Recommended tools
 
-Optional system-level tools that affect a person's machine rather than a governed repository. Skills, MCP servers, and day-to-day sessions can benefit from them, but none is required merely to read or audit the harness. [Install and get started](installation.md) explains when repository bootstrap or optional user-environment setup is appropriate.
+Optional system-level tools that affect a person's machine rather than a governed repository. Skills, MCP servers, and day-to-day sessions can benefit from them, but none is required merely to read or audit the harness. [Install and get started](getting-started.md) explains when repository bootstrap or optional user-environment setup is appropriate.
 
 ## chezmoi (dotfile and machine-config management)
 

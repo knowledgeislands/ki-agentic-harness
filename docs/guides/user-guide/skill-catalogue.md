@@ -6,7 +6,7 @@ Every skill in the harness, grouped by cluster in the order of [the six clusters
 
 ### `ki-bootstrap`
 
-Bootstraps a repository into governance from its `.ki-config.toml`. It vendors the mechanical checks that let a repository govern itself with no skills installed, and it makes the repository's declared skills available to the active runtime. **Composes on** `ki-repo`, which owns the `.ki-config.toml` contract and coverage cascade it reads. The user-facing starting point is [Install and get started](installation.md); live linking from a harness checkout is contributor-only machinery.
+Bootstraps a repository into governance from its `.ki-config.toml`. It vendors the mechanical checks that let a repository govern itself with no skills installed, and it makes the repository's declared skills available to the active runtime. **Composes on** `ki-repo`, which owns the `.ki-config.toml` contract and coverage cascade it reads. The user-facing starting point is [Install and get started](getting-started.md); live linking from a harness checkout is contributor-only machinery.
 
 ### `ki-repo`
 

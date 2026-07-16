@@ -1,6 +1,6 @@
 # Bootstrap a repository
 
-This is the detailed reference for bringing a repository under Knowledge Islands governance so it **governs itself** — running `./.ki-meta/bin/ki-audit` with **zero skills installed** and **no `package.json` required**. For the practical first-time command, including optional user-environment hook installation, start with [Install and get started](installation.md).
+This is the detailed reference for bringing a repository under Knowledge Islands governance so it **governs itself** — running `./.ki-meta/bin/ki-audit` with **zero skills installed** and **no `package.json` required**. For the practical first-time command, including optional user-environment hook installation, start with [Install and get started](getting-started.md).
 
 Bootstrap is a repository action: it builds that repository's `.ki-meta/` directory and does not configure the user's wider environment. Re-running it is also how a repository stays current — there is no separate migration mode. This guide is the operating manual for the bootstrap chain (ADR-KI-HARNESS-006); its fenced `bash` blocks are executable and are exercised by the harness's own test suite, so they cannot drift from what actually works.
 
@@ -35,7 +35,7 @@ Bootstrap's one job is to build `.ki-meta/`. For every skill in the resolved set
 
 It **never touches `package.json`.** A `.ki-meta/` is dot-prefixed and generated-not-authored, so it stays off the repo's own `scripts/`, and (being idempotent) re-running the bootstrap at the same ref reproduces byte-identical output. The `ki:*` convenience keys that a code repo may want — `bun run ki:audit` aliasing `./.ki-meta/bin/ki-audit` — are wired later by `ki-engineering` when it comes online for that repo, as sugar over these same bins, never by bootstrap.
 
-Repository bootstrap does not install or configure user-global hooks. The optional Claude Code hook payload is a separate user-environment action, documented in [Install and get started](installation.md); do not add it to a per-repository or `mgit` bootstrap run.
+Repository bootstrap does not install or configure user-global hooks. The optional Claude Code hook payload is a separate user-environment action, documented in [Install and get started](getting-started.md); do not add it to a per-repository or `mgit` bootstrap run.
 
 ## The four bins — day-to-day, once governed
 

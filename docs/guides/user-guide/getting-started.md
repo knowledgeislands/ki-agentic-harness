@@ -1,4 +1,4 @@
-# Install and get started
+# Getting Started
 
 Start here when you want to use the harness. There are two different kinds of installation, and they intentionally do different things:
 
