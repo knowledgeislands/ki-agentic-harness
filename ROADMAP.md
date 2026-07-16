@@ -12,6 +12,7 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 
 - [Foundation Tooling: Finish hardening the remaining rollout-critical generated writes](docs/roadmap/foundation-tooling/ROADMAP.md#finish-hardening-the-remaining-rollout-critical-generated-writes)
 - [Foundation Tooling: Roll out the uniform mode model across the `mcp-*` repositories](docs/roadmap/foundation-tooling/ROADMAP.md#roll-out-the-uniform-mode-model-across-the-mcp--repositories)
+- [Hooks: Govern the shipped Claude Code hooks as `ki-claude-hooks`](docs/roadmap/hooks/ROADMAP.md#govern-the-shipped-claude-code-hooks-as-ki-claude-hooks)
 
 ## Soon
 
@@ -20,7 +21,6 @@ Understood and roughly scoped but not yet started — worth doing once the **Nex
 - [Foundation Tooling: Enforce CHK-009 citation completeness with runtime collection](docs/roadmap/foundation-tooling/ROADMAP.md#enforce-chk-009-citation-completeness-with-runtime-collection)
 - [Foundation Tooling: Enforce generated-code exclusions in `ki-engineering`](docs/roadmap/foundation-tooling/ROADMAP.md#enforce-generated-code-exclusions-in-ki-engineering)
 - [Governance Consistency: Codify convention placement and the knowledge-promotion loop](docs/roadmap/governance-consistency/ROADMAP.md#codify-convention-placement-and-the-knowledge-promotion-loop)
-- [Hooks: Govern the shipped Claude Code hooks as `ki-claude-hooks`](docs/roadmap/hooks/ROADMAP.md#govern-the-shipped-claude-code-hooks-as-ki-claude-hooks)
 - [Operations: Make `ki-recap` resolve the invoking session explicitly](docs/roadmap/operations/ROADMAP.md#make-ki-recap-resolve-the-invoking-session-explicitly)
 - [Runtime Portability: Route multi-machine harness state through durable homes](docs/roadmap/runtime-portability/ROADMAP.md#route-multi-machine-harness-state-through-durable-homes)
 
