@@ -1,7 +1,8 @@
 #!/usr/bin/env bun
 /**
  * ki-bootstrap — BOOT-9: audit a target repo's vendored `.ki-meta/skills/` set
- * against what it *should* be. Also emits BOOT-10, the always-on reminder that
+ * against what it *should* be. BOOT-11 additionally checks direct source copies
+ * when the target carries matching canonical skills. Also emits BOOT-10, the always-on reminder that
  * AUDIT's judgmental sweep — ADR-KI-HARNESS-SKILLS-001's AUDIT contract, applied
  * transitively across every governed skill — still needs applying by the agent
  * running this; no mechanical check can decide judgment for it.
@@ -16,20 +17,21 @@
  * it against the target's `.ki-meta/skills/*` directories. Any drift — stale config,
  * an upstream skill add/remove, a partial re-vendor — surfaces as a WARN rather than
  * silently going unnoticed; `bun skills/keystone/ki-bootstrap/scripts/bootstrap.ts <target>`
- * fixes it by re-vendoring.
+ * fixes it by re-vendoring. In a source-bearing harness, a direct source-copy mismatch is
+ * a ship-blocking FAIL rather than set drift.
  *
  * Usage: bun audit.ts [target-repo] [--json]   (read-only)
  *   --json   emit the shared CHK-004 finding wrapper instead of prose, so the
- *            aggregate renders BOOT-9/BOOT-10 structured alongside every other checker.
+ *            aggregate renders BOOT-9/BOOT-10/BOOT-11 structured alongside every other checker.
  * Every repo — the harness included — vendors its own DECLARED coverage (the `.ki-config.toml`
  * `[ki-*]` tables + baseline + implies closure), so `ki:audit` fans out over exactly the
  * skills that govern it. Vendoring is always coverage-scoped; `--all` is a linking concept
  * only (the harness authoring hub links every skill), never a vendoring one (ADR-KI-HARNESS-007).
  */
 
-import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
+import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { checkerScript, resolveSet, SkillResolutionError } from './resolve.ts'
+import { checkerScript, resolveSet, SkillResolutionError, vendorUnit } from './resolve.ts'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
@@ -101,7 +103,7 @@ function emit(items: Finding[], tgt: string, concern: string, title: string, foo
     }
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
-    if (summary.warn > 0)
+    if (summary.fail > 0 || summary.warn > 0)
       console.log('→ to address: run /ki-bootstrap CONFORM   (re-vendor: bun skills/keystone/ki-bootstrap/scripts/bootstrap.ts <target>)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
@@ -149,6 +151,67 @@ if (missing.length === 0 && extra.length === 0) {
     'PASS',
     'BOOT-9',
     `.ki-meta/skills/ matches the expected resolved set (${expected.length} skill${expected.length === 1 ? '' : 's'})`,
+    RUBRIC,
+    '.ki-meta/skills/'
+  )
+}
+
+function targetSkillDir(skill: string): string | null {
+  const root = join(target, 'skills')
+  if (!existsSync(root)) return null
+  for (const entry of readdirSync(root, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue
+    const direct = join(root, entry.name)
+    if (entry.name === skill && existsSync(join(direct, 'SKILL.md'))) return direct
+    const nested = join(direct, skill)
+    if (existsSync(join(nested, 'SKILL.md'))) return nested
+  }
+  return null
+}
+
+const drifted: string[] = []
+let checked = 0
+for (const skill of expected) {
+  const localSkill = targetSkillDir(skill)
+  if (!localSkill) continue
+  for (const mode of ['audit', 'conform'] as const) {
+    const unit = vendorUnit(skill, mode)
+    if (unit?.kind !== 'file') continue
+    const source = join(localSkill, unit.path)
+    checked += 1
+    const vendored = join(vendoredRoot, skill, `${mode}.ts`)
+    if (!existsSync(source) || !lstatSync(source).isFile()) {
+      drifted.push(`${skill}/${mode}.ts (canonical source missing or not a regular file)`)
+      continue
+    }
+    if (!existsSync(vendored) || !lstatSync(vendored).isFile()) {
+      drifted.push(`${skill}/${mode}.ts (vendored copy missing or not a regular file)`)
+      continue
+    }
+    if (!readFileSync(source).equals(readFileSync(vendored))) drifted.push(`${skill}/${mode}.ts`)
+  }
+}
+if (checked === 0) {
+  add(
+    'NA',
+    'BOOT-11',
+    'canonical skill sources are not inside the target repo; source-copy integrity is not applicable',
+    RUBRIC,
+    '.ki-meta/skills/'
+  )
+} else if (drifted.length) {
+  add(
+    'FAIL',
+    'BOOT-11',
+    `canonical source/vendor integrity mismatch: ${drifted.join(', ')} — restore or format sources, then re-bootstrap before committing`,
+    RUBRIC,
+    '.ki-meta/skills/'
+  )
+} else {
+  add(
+    'PASS',
+    'BOOT-11',
+    `${checked} direct file-kind vendor unit${checked === 1 ? '' : 's'} match canonical source byte-for-byte`,
     RUBRIC,
     '.ki-meta/skills/'
   )

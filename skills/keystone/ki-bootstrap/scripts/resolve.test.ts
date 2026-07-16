@@ -5,11 +5,23 @@
  * their real CLI boundaries directly instead of introducing a vitest project.
  */
 import { spawnSync } from 'node:child_process'
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync } from 'node:fs'
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  statSync,
+  symlinkSync,
+  writeFileSync
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { declaredSkills, resolveSet, SkillResolutionError } from './resolve.ts'
+import { declaredSkills, resolveSet, SKILLS_ROOT, SkillResolutionError, skillDir } from './resolve.ts'
 
 const SCRIPTS = dirname(fileURLToPath(import.meta.url))
 const BOOTSTRAP = join(SCRIPTS, 'bootstrap.ts')
@@ -220,6 +232,82 @@ try {
   check('BOOT-9 invalid declaration → names dotted owner root', boot9?.msg?.includes('ki-audit-missing') === true)
 } finally {
   rmSync(auditInvalid, { recursive: true, force: true })
+}
+
+type AuditReport = { findings?: Array<{ area?: string; level?: string; msg?: string }> }
+
+const sourceBearing = fixture('[ki-authoring]\n')
+try {
+  const source = skillDir('ki-authoring')
+  const targetSource = join(sourceBearing, 'skills', relative(SKILLS_ROOT, source))
+  mkdirSync(dirname(targetSource), { recursive: true })
+  cpSync(source, targetSource, { recursive: true })
+
+  const bootstrapped = spawnSync('bun', [BOOTSTRAP, sourceBearing], { encoding: 'utf8' })
+  const freshAudit = spawnSync('bun', [AUDIT, sourceBearing, '--json'], { encoding: 'utf8' })
+  const freshReport = JSON.parse(freshAudit.stdout) as AuditReport
+  const freshBoot11 = freshReport.findings?.find((finding) => finding.area === 'BOOT-11')
+  check('BOOT-11 fresh file-kind vendors → bootstrap exits cleanly', bootstrapped.status === 0)
+  check('BOOT-11 fresh file-kind vendors → explicit PASS with no drift', freshAudit.status === 0 && freshBoot11?.level === 'PASS')
+
+  for (const mode of ['audit', 'conform']) {
+    const vendored = join(sourceBearing, '.ki-meta', 'skills', 'ki-authoring', `${mode}.ts`)
+    writeFileSync(vendored, `${readFileSync(vendored, 'utf8')}\n// injected BOOT-11 drift\n`)
+
+    const driftAudit = spawnSync('bun', [AUDIT, sourceBearing, '--json'], { encoding: 'utf8' })
+    const driftReport = JSON.parse(driftAudit.stdout) as AuditReport
+    const driftBoot11 = driftReport.findings?.find((finding) => finding.area === 'BOOT-11')
+    check(`BOOT-11 mutated ${mode}.ts → ship-blocking FAIL`, (driftAudit.status ?? 0) !== 0 && driftBoot11?.level === 'FAIL')
+
+    const repaired = spawnSync('bun', [BOOTSTRAP, sourceBearing], { encoding: 'utf8' })
+    const repairedAudit = spawnSync('bun', [AUDIT, sourceBearing, '--json'], { encoding: 'utf8' })
+    const repairedReport = JSON.parse(repairedAudit.stdout) as AuditReport
+    const repairedBoot11 = repairedReport.findings?.find((finding) => finding.area === 'BOOT-11')
+    check(
+      `BOOT-11 re-bootstrap repairs ${mode}.ts drift`,
+      repaired.status === 0 && repairedAudit.status === 0 && repairedBoot11?.level === 'PASS'
+    )
+  }
+
+  const canonicalAudit = join(targetSource, 'scripts', 'audit.ts')
+  const canonicalAuditBytes = readFileSync(canonicalAudit)
+  rmSync(canonicalAudit)
+  const missingSourceAudit = spawnSync('bun', [AUDIT, sourceBearing, '--json'], { encoding: 'utf8' })
+  const missingSourceReport = JSON.parse(missingSourceAudit.stdout) as AuditReport
+  check(
+    'BOOT-11 missing declared canonical source → ship-blocking FAIL',
+    (missingSourceAudit.status ?? 0) !== 0 &&
+      missingSourceReport.findings?.some((finding) => finding.area === 'BOOT-11' && finding.level === 'FAIL') === true
+  )
+  writeFileSync(canonicalAudit, canonicalAuditBytes)
+
+  const vendoredAudit = join(sourceBearing, '.ki-meta', 'skills', 'ki-authoring', 'audit.ts')
+  const vendoredAuditBytes = readFileSync(vendoredAudit)
+  rmSync(vendoredAudit)
+  symlinkSync(canonicalAudit, vendoredAudit)
+  const symlinkAudit = spawnSync('bun', [AUDIT, sourceBearing, '--json'], { encoding: 'utf8' })
+  const symlinkReport = JSON.parse(symlinkAudit.stdout) as AuditReport
+  check(
+    'BOOT-11 symlinked vendor → ship-blocking FAIL',
+    (symlinkAudit.status ?? 0) !== 0 &&
+      symlinkReport.findings?.some((finding) => finding.area === 'BOOT-11' && finding.level === 'FAIL') === true
+  )
+  rmSync(vendoredAudit)
+  writeFileSync(vendoredAudit, vendoredAuditBytes)
+} finally {
+  rmSync(sourceBearing, { recursive: true, force: true })
+}
+
+const externalConsumer = fixture('[ki-authoring]\n')
+try {
+  const bootstrapped = spawnSync('bun', [BOOTSTRAP, externalConsumer], { encoding: 'utf8' })
+  const audit = spawnSync('bun', [AUDIT, externalConsumer, '--json'], { encoding: 'utf8' })
+  const report = JSON.parse(audit.stdout) as AuditReport
+  const boot11 = report.findings?.find((finding) => finding.area === 'BOOT-11')
+  check('BOOT-11 external consumer without canonical source → bootstrap exits cleanly', bootstrapped.status === 0)
+  check('BOOT-11 external consumer without canonical source → explicit NA, not failure', audit.status === 0 && boot11?.level === 'NA')
+} finally {
+  rmSync(externalConsumer, { recursive: true, force: true })
 }
 
 if (failed) {
