@@ -4,7 +4,7 @@ title: Reconcile rollout documentation
 status: open
 roadmap: foundation-tooling/reconcile-the-fleet-s-toolchain-prose-with-the-collapsed-toolchain
 blocks: foundation-tooling/004
-blocked-by: foundation-tooling/001
+blocked-by: —
 handoff: true
 tier: sonnet
 readiness: 2026-07-16
@@ -20,9 +20,9 @@ The frozen inventory contains 21 stale Markdown/standard surfaces plus live Type
 
 ## Steps
 
-1. After plan 001 lands, run this stable inventory seed over `AGENTS.md`, `agents/`, `evals/`, `skills/`, and `docs/guides/`: `rg -n --glob '*.md' --glob '*.ts' 'bun run ki:(lint|deps|knip|verify)|ki:lint:|ki:deps:|ki:knip|ki:verify|vitest/globals|vitest\\.config'`. Sort the results by path and classify every hit against the locked inclusions/exclusions below.
+1. Run this stable inventory seed over `AGENTS.md`, `agents/`, `evals/`, `skills/`, and `docs/guides/`: `rg -n --glob '*.md' --glob '*.ts' 'bun run ki:(lint|deps|knip|verify)|ki:lint:|ki:deps:|ki:knip|ki:verify|vitest/globals|vitest\\.config'`. Sort the results by path and classify every hit against the locked inclusions/exclusions below.
 2. Rewrite the foundations together: `ki-engineering` standard/SKILL/exemplars/sources/enforcement prose, `ki-authoring` standard/SKILL/rubric/exemplars/sources, and the `ki-skills` delegation example. Establish one shipped vocabulary: aggregate `ki:audit`/`ki:conform`; skill-scoped `ki:<suffix>:audit`/`conform`; code tools internal to `ki-engineering`; Markdown internal to `ki-authoring`; runner-neutral `test`; config-gated Vitest.
-3. Update the MCP and website deltas after plan 001's checker edits land. Make MCP Vitest and coverage-exclude examples explicitly conditional on the repository selecting the Vitest profile.
+3. Update the MCP and website deltas against the landed universal-audit behaviour. Make MCP Vitest and coverage-exclude examples explicitly conditional on the repository selecting the Vitest profile.
 4. Update live agent, eval, TypeScript comment, and exemplar/check prose. Replace the obsolete engineering eval assertions with aggregate/scoped keys, internal tool execution, runner-neutral tests, and config-gated Vitest.
 5. Preserve the closed `package.json` top-level manifest, standalone `.ki-meta` invocation, explicit “retired key” explanations, retirement regression fixtures, correct live references, and deliberate historical decision-record wording.
 6. Add a narrow drift test for executable guidance that recommends `bun run ki:(lint|deps|knip|verify)` as a live command. Do not raw-scan tokens whose correct retirement/history uses must remain.
@@ -38,7 +38,7 @@ Pass when a fleet-wide repository search finds no unexplained live assertion tha
 
 ## Dependencies / blocks
 
-Blocked by `foundation-tooling/001` so documentation describes the final universal audit behaviour. It blocks the MCP rollout because rollout instructions must match the gate being deployed.
+Unblocked. It blocks the MCP rollout because rollout instructions must match the gate being deployed.
 
 ## Decisions
 

@@ -4,7 +4,7 @@ title: Pilot uniform modes across MCP repositories
 status: open
 roadmap: foundation-tooling/sweep-the-mcp-repos-onto-the-uniform-mode-model-re-check-naming-across-surfaces
 blocks: —
-blocked-by: foundation-tooling/001, foundation-tooling/002, foundation-tooling/003
+blocked-by: foundation-tooling/002, foundation-tooling/003
 handoff: true
 tier: sonnet
 readiness: pending
@@ -20,7 +20,7 @@ The harness carries the target model and onboarding path; sibling repositories r
 
 ## Steps
 
-1. After plans 001–003 close, discover the six MCP repository roots and record a read-only baseline matrix: clean/dirty state, current branch, `.ki-config.toml` declarations, `.ki-meta` version, package convenience keys, and audit/test results.
+1. After plans 002–003 close, discover the six MCP repository roots and record a read-only baseline matrix: clean/dirty state, current branch, `.ki-config.toml` declarations, `.ki-meta` version, package convenience keys, and audit/test results.
 2. Select one clean representative repository whose capabilities exercise the common MCP surface; document why it is representative and create a repository-local governed plan there before mutation.
 3. Re-bootstrap the pilot, reconcile only the expected aggregate/scoped package aliases and uniform skill-mode surfaces, then run its focused tests, self-test, artifact audit, and aggregate audit.
 4. Review the pilot diff and failures; update the migration recipe in this coordinating plan. Escalate any harness defect back to this repository rather than patching around it per consumer.
@@ -37,7 +37,7 @@ Pass when the acceptance matrix names all six repositories and each reports a cl
 
 ## Dependencies / blocks
 
-Blocked by plans `foundation-tooling/001`, `foundation-tooling/002`, and `foundation-tooling/003`. It is the release-baseline pilot for broader fleet adoption.
+Blocked by plans `foundation-tooling/002` and `foundation-tooling/003`. It is the release-baseline pilot for broader fleet adoption.
 
 ## Decisions
 

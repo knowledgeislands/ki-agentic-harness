@@ -11,7 +11,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
 - [Foundation Tooling: Harden generated-file writes against symlinks and read/check/write races](docs/roadmap/foundation-tooling/ROADMAP.md#harden-generated-file-writes-against-symlinks-and-readcheckwrite-races)
-- [Foundation Tooling: Make `ki:audit` a fully universal clean gate — NA-skip the remaining over-reaching audits](docs/roadmap/foundation-tooling/ROADMAP.md#make-kiaudit-a-fully-universal-clean-gate--na-skip-the-remaining-over-reaching-audits)
 - [Foundation Tooling: Reconcile the fleet's toolchain prose with the collapsed toolchain](docs/roadmap/foundation-tooling/ROADMAP.md#reconcile-the-fleets-toolchain-prose-with-the-collapsed-toolchain)
 - [Foundation Tooling: Sweep the `mcp-*` repos onto the uniform mode model + re-check naming across surfaces](docs/roadmap/foundation-tooling/ROADMAP.md#sweep-the-mcp--repos-onto-the-uniform-mode-model--re-check-naming-across-surfaces)
 

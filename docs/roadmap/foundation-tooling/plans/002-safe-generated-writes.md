@@ -1,7 +1,7 @@
 ---
 id: '002'
 title: Harden generated-file writes
-status: open
+status: in-progress
 roadmap: foundation-tooling/harden-generated-file-writes-against-symlinks-and-read-check-write-races
 blocks: foundation-tooling/004
 blocked-by: —
