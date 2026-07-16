@@ -4,6 +4,8 @@ Line-by-line pass/fail criteria for auditing a **Knowledge Islands base** agains
 
 A criterion's tag is a contract with the checker: an **[M]** check is run by `audit.ts` (do not eyeball it); a **[J]** check needs a model and is applied by reading in Mode AUDIT step 2. This is the kb half of the shared governance-skill shape (`<standard>` + `audit-rubric.md` + `references/sources.md` + a checker); its standard is the zone model itself, not a separate `*-standard.md`.
 
+Applicability: `[ki-kb]` / `[ki-kb.zones]` or any canonical zone directory activates the complete audit. With neither, **ZONE-1 [M]** emits exactly one `NA` and stops; either signal retains the zone, config, and note checks below.
+
 ## ZONE — zone layout
 
 → [SKILL: The Knowledge Islands structure](../SKILL.md)

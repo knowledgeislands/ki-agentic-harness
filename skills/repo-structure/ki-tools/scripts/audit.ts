@@ -101,6 +101,7 @@ const mk = () => {
 const isDir = (p: string): boolean => existsSync(p) && statSync(p).isDirectory()
 const isFile = (p: string): boolean => existsSync(p) && statSync(p).isFile()
 const isExecutable = (p: string): boolean => existsSync(p) && (statSync(p).mode & 0o111) !== 0
+const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
 
 // The first line of a file (for shebang detection), or ''.
 const firstLine = (p: string): string => {
@@ -144,22 +145,23 @@ function primaryBin(repo: string, names: string[]): string | null {
   return names.find((n) => n === tool) ?? (names[0] as string)
 }
 
-// Minimal validate-DOWN read of this skill's own [ki-tools] table. Returns the
-// keys found inside it, or null when the table is absent. Never reads another
-// skill's table (validate down, ignore across).
-function parseKiTools(text: string): string[] | null {
-  if (!/^\[ki-tools\]/m.test(text)) return null
-  const body = text.split(/^\[ki-tools\]/m)[1]?.split(/^\[/m)[0] ?? ''
-  const keys: string[] = []
-  for (const raw of body.split(/\r?\n/)) {
-    const line = raw.replace(/#.*$/, '').trim()
-    const m = line.match(/^([A-Za-z0-9_-]+)\s*=/)
-    if (m) keys.push(m[1] as string)
+// Semantic validate-DOWN read of this skill's own [ki-tools] table. Quoted
+// table keys are declarations; header-shaped text inside TOML strings is not.
+// A malformed document is distinguished so applicability fails closed.
+type KiToolsParse = { keys: string[] | null; malformed: boolean }
+function parseKiTools(text: string): KiToolsParse {
+  let document: Record<string, unknown>
+  try {
+    document = TOML.parse(text) as Record<string, unknown>
+  } catch {
+    return { keys: null, malformed: true }
   }
-  return keys
+  const value = document[KI_SECTION]
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return { keys: null, malformed: false }
+  return { keys: Object.keys(value as Record<string, unknown>), malformed: false }
 }
 
-function auditTools(repo: string): Finding[] {
+function auditTools(repo: string, kiTools: KiToolsParse): Finding[] {
   const { f, fail, warn, note, advisory } = mk()
 
   // ── TOOL-BIN [FAIL]: bin/ exists and holds ≥1 file ──
@@ -257,7 +259,7 @@ function auditTools(repo: string): Finding[] {
   if (!isFile(kiPath))
     warn('CONFIG', `${KI_CONFIG} missing (ki-repo owns the contract) — add a [${KI_SECTION}] marker to opt in`, REF.marker, KI_CONFIG)
   else {
-    const keys = parseKiTools(readFileSync(kiPath, 'utf8'))
+    const keys = kiTools.keys
     if (keys === null)
       warn('CONFIG', `no [${KI_SECTION}] table — add it to mark this repo as governed by the tools standard`, REF.marker, KI_CONFIG)
     else {
@@ -294,7 +296,17 @@ if (!isDir(repo)) {
   process.exit(2)
 }
 
-const findings = auditTools(repo)
+const kiPath = join(repo, KI_CONFIG)
+const kiTools = isFile(kiPath) ? parseKiTools(readFileSync(kiPath, 'utf8')) : { keys: null, malformed: false }
+const declaresTools = kiTools.keys !== null
+const hasToolsStructure = isDir(join(repo, 'bin'))
+if (!declaresTools && !kiTools.malformed && !hasToolsStructure) {
+  const { f, na } = mk()
+  na('CONFIG', 'ki-tools not applicable: no [ki-tools] declaration or bin/ structural marker', REF.marker)
+  emit(f, repo, 'tools', `Tool repo audit — ${repo}`, '')
+}
+
+const findings = auditTools(repo, kiTools)
 emit(
   findings,
   repo,

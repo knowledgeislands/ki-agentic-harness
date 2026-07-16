@@ -112,54 +112,42 @@ const mk = () => {
 
 const isDir = (p: string): boolean => existsSync(p) && statSync(p).isDirectory()
 const isFile = (p: string): boolean => existsSync(p) && statSync(p).isFile()
+const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
 
-// Minimal parser for the constrained schema: `[table]` headers (incl. the dotted
-// `[ki-kb.zones]` sub-table), flat `key = "value"` / `key = true|false`
-// on one line, `#` comments. NOT a full TOML parser, and it reads ONLY this skill's
-// tables — another skill's `[table]` is ignored entirely (validate down, ignore
-// across). Returns null if the file has no `[ki-kb…]` table at all.
+// Semantic parser for this skill's owned table. It reads ONLY the parsed
+// [ki-kb] object (validate down, ignore across), accepts quoted/dotted table
+// spellings, and distinguishes malformed TOML so applicability fails closed.
 type KiKb = {
   keys: Record<string, string>
   zones: Record<string, string>
   requiredFrontmatter: string[] | null
   preflight: string[] | null
 }
-const unquote = (s: string): string => s.replace(/^["']|["']$/g, '')
-// `key = ["a", "b"]` → ['a','b']; tolerant of single/double quotes and spacing.
-const parseInlineArray = (val: string): string[] => {
-  const m = val.match(/^\[(.*)\]$/)
-  if (!m) return []
-  return (m[1] as string)
-    .split(',')
-    .map((s) => unquote(s.trim()))
-    .filter(Boolean)
-}
-function parseKiKb(text: string): KiKb | null {
-  let section = ''
-  let seen = false
-  const out: KiKb = { keys: {}, zones: {}, requiredFrontmatter: null, preflight: null }
-  for (const raw of text.split(/\r?\n/)) {
-    const line = raw.replace(/#.*$/, '').trim()
-    if (!line) continue
-    const header = line.match(/^\[(.+)\]$/)
-    if (header) {
-      section = (header[1] as string).trim()
-      if (section === KI_SECTION || section === ZONES_SECTION) seen = true
-      continue
-    }
-    const eq = line.indexOf('=')
-    if (eq === -1) continue
-    const key = line.slice(0, eq).trim()
-    const rawVal = line.slice(eq + 1).trim()
-    if (section === KI_SECTION) {
-      // `required_frontmatter` and `preflight` are the recognised array keys; any
-      // other scalar key is unrecognised and warns (CONFIG-1).
-      if (key === 'required_frontmatter') out.requiredFrontmatter = parseInlineArray(rawVal)
-      else if (key === 'preflight') out.preflight = parseInlineArray(rawVal)
-      else out.keys[key] = unquote(rawVal)
-    } else if (section === ZONES_SECTION) out.zones[unquote(key)] = unquote(rawVal)
+type KiKbParse = { value: KiKb | null; malformed: boolean }
+function parseKiKb(text: string): KiKbParse {
+  let document: Record<string, unknown>
+  try {
+    document = TOML.parse(text) as Record<string, unknown>
+  } catch {
+    return { value: null, malformed: true }
   }
-  return seen ? out : null
+  const value = document[KI_SECTION]
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return { value: null, malformed: false }
+  const table = value as Record<string, unknown>
+  const out: KiKb = { keys: {}, zones: {}, requiredFrontmatter: null, preflight: null }
+  if (Array.isArray(table.required_frontmatter))
+    out.requiredFrontmatter = table.required_frontmatter.filter((entry): entry is string => typeof entry === 'string')
+  if (Array.isArray(table.preflight)) out.preflight = table.preflight.filter((entry): entry is string => typeof entry === 'string')
+  const zones = table.zones
+  if (zones && typeof zones === 'object' && !Array.isArray(zones)) {
+    for (const [zone, folder] of Object.entries(zones as Record<string, unknown>)) {
+      if (typeof folder === 'string') out.zones[zone] = folder
+    }
+  }
+  for (const [key, entry] of Object.entries(table)) {
+    if (key !== 'required_frontmatter' && key !== 'preflight' && key !== 'zones') out.keys[key] = String(entry)
+  }
+  return { value: out, malformed: false }
 }
 
 // House convention: frontmatter keys are snake_case (lowercase, digits, underscore).
@@ -357,7 +345,15 @@ if (!isDir(base)) {
 }
 
 const kiPath = join(base, KI_CONFIG)
-const ki = isFile(kiPath) ? parseKiKb(readFileSync(kiPath, 'utf8')) : null
+const parsedKiKb = isFile(kiPath) ? parseKiKb(readFileSync(kiPath, 'utf8')) : { value: null, malformed: false }
+const ki = parsedKiKb.value
+
+const hasKbStructure = ZONES.some((zone) => isDir(join(base, zone)))
+if (!ki && !parsedKiKb.malformed && !hasKbStructure) {
+  const { f, na } = mk()
+  na('ZONE-1', 'ki-kb not applicable: no [ki-kb] declaration or canonical KB zone structural marker', RUBRIC)
+  emit(f, base, 'kb', `Knowledge base audit — ${base}`, '')
+}
 
 const findings = auditBase(base, ki)
 emit(

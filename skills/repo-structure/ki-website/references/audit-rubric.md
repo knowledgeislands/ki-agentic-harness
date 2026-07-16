@@ -8,6 +8,8 @@ Severity: **FAIL** (ship-stopper — the site won't build or `dist/` isn't porta
 
 > **Common toolchain → `ki-engineering`.** This rubric is the **site-build delta** only. The Bun mandate, the `ki:lint:*`/`ki:deps:*` families, `tsconfig`/`biome`, and the `tsc --noEmit` type-check are the common engineering layer — **run `ki:engineering:audit` first**. Serving the built `dist/` is **`ki-website-cloudflare`** — run its audit too if the site is deployed. The repo is fully clean only when every applicable audit passes.
 
+Applicability: `[ki-website]` or an `eleventy.config.{ts,js,mjs,cjs}` at the repository root / `site/` activates the complete audit. With neither, **WEB-41** emits exactly one `NA` and stops; a declaration or config marker retains all existing failures and warnings. (§2)
+
 ## Contents
 
 - [Stack](#stack-1)
@@ -35,7 +37,7 @@ Severity: **FAIL** (ship-stopper — the site won't build or `dist/` isn't porta
 - [ ] **WEB-7** [M] WARN — `ROADMAP.md` present. (§2)
 - [ ] **WEB-9** [M] FAIL — `src/` (under `site/`) has `_data/`, `_includes/layouts/`, `_includes/partials/`, `assets/css/`. (§2, §3)
 - [ ] **WEB-39** [M] FAIL — `package.json` is present and parseable (foundational — the stack/scripts checks read it). (§2)
-- [ ] **WEB-41** [M] WARN — the `[ki-website]` opt-in table is present in `.ki-config.toml` (`audit.ts --init` scaffolds it). (§2)
+- [ ] **WEB-41** [M] WARN — on an applicable site, the `[ki-website]` opt-in table is present in `.ki-config.toml` (`audit.ts --init` scaffolds it). (§2)
 - [ ] **WEB-42** [M] WARN — no unknown keys under `[ki-website]` (validate-down — the marker table takes no keys today). (§2)
 - [ ] **WEB-8** [J] WARN — the root `package.json` declares a `workspaces` array that includes `site` (the monorepo shape, engineering §0; not yet mechanically checked). (§2)
 - [ ] **WEB-10** [J] WARN — every site script carries the `site:` prefix (driven by the monorepo shape, not by observing the folder). (§2, §8)

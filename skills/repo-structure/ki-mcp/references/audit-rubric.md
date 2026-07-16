@@ -4,6 +4,8 @@ Line-by-line pass/fail items for auditing a workspace MCP against the [Workspace
 
 Every **[M]** item carries a stable `PREFIX-N` code (per `ki-skills`' SHAPE-9 + the checker-contract); the checker emits that code as each finding's `area`, and `conform.ts` uses the same code for its twin action. Judgment **[J]** items are applied by reading and are not emitted, so they carry no code. Severity uses the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](../../../foundations/ki-engineering/references/enforcement-framework.md) §2: **FAIL** (security invariant breach or gate bypass — ship-stopper), **WARN** (layout / naming / tooling divergence), **POLISH** (docs / consistency).
 
+Applicability: `[ki-mcp]` or `src/mcp-server/` activates the complete audit. With neither, **`KI-CONFIG` [M]** emits exactly one `NA` and stops; a declaration or structural marker must never suppress the existing findings below. ([standard](workspace-mcp-standard.md#applicability))
+
 ## Contents
 
 - [Layout & layers](#layout--layers)

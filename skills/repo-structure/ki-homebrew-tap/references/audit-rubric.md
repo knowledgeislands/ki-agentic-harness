@@ -6,6 +6,8 @@ Every **[M]** item maps to a check in the checker (SHAPE-9); the checker IDs bel
 
 Because this skill **wraps Homebrew's external standard**, the deepest formula checks are delegated: when `brew` is on PATH the checker runs `brew audit --strict` + `brew style` and surfaces their findings (`TAP-BREW`). The rubric's own items are the tap-**shape** checks `brew` cannot make.
 
+Applicability: `[ki-homebrew-tap]` or `Formula/` activates the complete audit. With neither, **CONFIG [M]** emits exactly one `NA` and stops; either signal retains the tap-structure and config findings below.
+
 ## Contents
 
 - [Tap structure](#tap-structure)

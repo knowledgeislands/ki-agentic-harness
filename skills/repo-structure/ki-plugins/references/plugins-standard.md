@@ -2,6 +2,8 @@
 
 The quotable standard for a Knowledge Islands **plugin-marketplace repo** — a generated Claude plugin marketplace that projects the harness's skills and agents onto the Claude Cowork surface. The reference instance is `knowledgeislands/ki-plugins`. The [SKILL.md](../SKILL.md) is the operating procedure and carries the canonical shape; this file is the standard it audits against.
 
+The standard applies when a repository either declares `[ki-plugins]` in `.ki-config.toml` or carries `.claude-plugin/marketplace.json`. With neither, the checker reports one `NA` and stops. Either signal activates the complete projection audit, so a declared but incomplete marketplace still fails and a marketplace manifest without a declaration still surfaces the missing marker.
+
 ## Contents
 
 - [The projection model](#the-projection-model)

@@ -6,6 +6,8 @@ Severity: **FAIL** (malformed manifest or broken projection contract — ship-st
 
 Each criterion carries a stable code (`PLUG-N`) the checker emits as the finding `area`; **[M]** codes are enforced by `audit.ts`, **[J]** codes are judged by reading. The reference pointer in parentheses is the finding `ref` the cited-finding output attaches — the standard section a reader consults ([`plugins-standard.md`](plugins-standard.md)), or this rubric for judgment-only codes.
 
+Applicability: `[ki-plugins]` or `.claude-plugin/marketplace.json` activates the complete audit. With neither, **PLUG-15 [M]** emits exactly one `NA` and stops; either signal retains all existing marketplace and projection findings.
+
 ## Marketplace manifest
 
 - **[M] PLUG-1** `.claude-plugin/marketplace.json` exists and parses. (FAIL) (plugins-standard.md)
@@ -31,7 +33,7 @@ Each criterion carries a stable code (`PLUG-N`) the checker emits as the finding
 
 - **[M] PLUG-13** `LICENSE`, `README.md`, `.gitignore`, `CLAUDE.md` present. (FAIL) (plugins-standard.md)
 - **[M] PLUG-14** `CLAUDE.md` states the generated-not-hand-edited invariant. (WARN) (plugins-standard.md)
-- **[M] PLUG-15** `.ki-config.toml` declares `[ki-plugins]`; unknown keys under it validate-down (WARN). (WARN if table missing) (plugins-standard.md)
+- **[M] PLUG-15** on an applicable marketplace, `.ki-config.toml` declares `[ki-plugins]`; unknown keys under it validate-down (WARN). (WARN if table missing) (plugins-standard.md)
 - **[J] PLUG-16** `README.md` / `CLAUDE.md` describe the projection model without drift; the LICENSE divergence (public-but-proprietary) is still deliberate and documented. (audit-rubric.md)
 
 ## Boundary (not this skill's job)

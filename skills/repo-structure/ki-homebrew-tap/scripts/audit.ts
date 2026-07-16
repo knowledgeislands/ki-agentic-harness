@@ -75,30 +75,24 @@ const mk = () => {
 
 const isDir = (p: string): boolean => existsSync(p) && statSync(p).isDirectory()
 const isFile = (p: string): boolean => existsSync(p) && statSync(p).isFile()
+const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
 
 // ── config: read ONLY this skill's [ki-homebrew-tap] table (validate down, ignore across) ──
-// Minimal parser for the constrained schema: `[table]` headers, flat `key = value`,
-// `#` comments. Returns null when the file carries no `[ki-homebrew-tap]` table at all.
+// Semantic parser for the constrained schema. Quoted table keys are declarations;
+// header-shaped text inside TOML strings is not. Malformed TOML is distinguished so
+// applicability fails closed.
 type KiTap = { keys: string[] }
-function parseKiTap(text: string): KiTap | null {
-  let inSection = false
-  let seen = false
-  const keys: string[] = []
-  for (const raw of text.split(/\r?\n/)) {
-    const line = raw.replace(/#.*$/, '').trim()
-    if (line === '') continue
-    const header = line.match(/^\[(.+)\]$/)
-    if (header) {
-      inSection = (header[1] as string).trim() === KI_SECTION
-      if (inSection) seen = true
-      continue
-    }
-    if (!inSection) continue
-    const eq = line.indexOf('=')
-    if (eq === -1) continue
-    keys.push(line.slice(0, eq).trim())
+type KiTapParse = { value: KiTap | null; malformed: boolean }
+function parseKiTap(text: string): KiTapParse {
+  let document: Record<string, unknown>
+  try {
+    document = TOML.parse(text) as Record<string, unknown>
+  } catch {
+    return { value: null, malformed: true }
   }
-  return seen ? { keys } : null
+  const value = document[KI_SECTION]
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return { value: null, malformed: false }
+  return { value: { keys: Object.keys(value as Record<string, unknown>) }, malformed: false }
 }
 
 // ── formula parsing ────────────────────────────────────────────────────────────
@@ -268,11 +262,19 @@ if (!isDir(base)) {
   process.exit(2)
 }
 
-const findings = auditTap(base)
-
 // CONFIG [WARN] — the opt-in marker, validate-down (warn on unknown keys).
 const kiPath = join(base, KI_CONFIG)
-const ki = isFile(kiPath) ? parseKiTap(readFileSync(kiPath, 'utf8')) : null
+const parsedKiTap = isFile(kiPath) ? parseKiTap(readFileSync(kiPath, 'utf8')) : { value: null, malformed: false }
+const ki = parsedKiTap.value
+const hasTapStructure = isDir(join(base, FORMULA_DIR))
+if (!ki && !parsedKiTap.malformed && !hasTapStructure) {
+  const { f, na } = mk()
+  na('CONFIG', 'ki-homebrew-tap not applicable: no [ki-homebrew-tap] declaration or Formula/ structural marker', STD)
+  emit(f, base, 'homebrew-tap', `Homebrew tap audit — ${base}`, '')
+}
+
+const findings = auditTap(base)
+
 if (!ki)
   findings.push({
     level: 'WARN',

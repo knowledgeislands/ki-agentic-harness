@@ -4,6 +4,8 @@ The normative, quotable reference for the Knowledge Islands 11ty website standar
 
 This skill owns the **site-build delta**. The toolchain it sits on (Bun mandate, `ki:lint:*`/`ki:deps:*` families, `tsconfig`/`biome`, the `tsc --noEmit` type-check) is `ki-engineering`'s and is referenced here, not restated.
 
+The standard applies when a repository either declares `[ki-website]` in `.ki-config.toml` or carries an `eleventy.config.{ts,js,mjs,cjs}` structural marker at the repository root or under `site/`. Neither signal produces one `NA` and stops the checker; either signal activates the complete site audit, so a declared but incomplete site and an undeclared Eleventy site still surface their existing findings.
+
 ## Contents
 
 - [1. Stack](#1-stack)

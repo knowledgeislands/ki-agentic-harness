@@ -16,7 +16,9 @@ The quotable standard behind the [ki-homebrew-tap](../SKILL.md) skill and its [A
 
 ## What a tap is
 
-A Homebrew **tap** is a git repository of formulae. A repo becomes a tap by carrying a `Formula/` directory with one or more `*.rb` formula files _(spec)_. Knowledge Islands keeps a single tap, `homebrew-tap`, that distributes the `tools-*` command-line tools; each tool gets one formula _(shape)_. A repo with no `Formula/*.rb` is not a tap — the checker FAILs it rather than warn.
+A Homebrew **tap** is a git repository of formulae. A repo becomes a tap by carrying a `Formula/` directory with one or more `*.rb` formula files _(spec)_. Knowledge Islands keeps a single tap, `homebrew-tap`, that distributes the `tools-*` command-line tools; each tool gets one formula _(shape)_. An applicable tap with no `Formula/*.rb` fails rather than warns.
+
+Checker applicability is declaration or structure: `[ki-homebrew-tap]` in `.ki-config.toml` or a root `Formula/` directory activates the complete audit. With neither, the checker reports one `NA` and stops. A declared repository with no `Formula/`, and a structurally marked but empty `Formula/`, remain applicable failures; an undeclared repository with `Formula/` remains applicable and surfaces the missing marker.
 
 ## The name is fixed by Homebrew
 

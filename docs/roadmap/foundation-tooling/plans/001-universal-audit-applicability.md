@@ -1,13 +1,13 @@
 ---
 id: '001'
 title: Make audit applicability universal
-status: open
+status: in-progress
 roadmap: foundation-tooling/make-ki-audit-a-fully-universal-clean-gate-na-skip-the-remaining-over-reaching-audits
 blocks: foundation-tooling/003, foundation-tooling/004
 blocked-by: —
 handoff: true
 tier: sonnet
-readiness: pending
+readiness: 2026-07-16
 ---
 
 ## Context
@@ -20,11 +20,11 @@ Fleet rollout needs `ki:audit` to distinguish “this standard does not apply he
 
 ## Steps
 
-1. Inventory each target checker's current config-table and structural markers; record the exact applicability predicate without changing the standard's positive requirements.
-2. Add an early applicability gate to each checker: when neither its `[ki-<skill>]` table nor its structural marker is present, emit one scoped `NA` and stop before structural failures. A declaration or structural marker keeps the full audit active.
-3. Add fixtures for three cases per checker: absent and structurally irrelevant → one `NA`; explicitly declared but structurally incomplete → existing failures; structurally applicable without a declaration → full audit remains active.
-4. Update only the standards/rubrics whose applicability wording is missing or contradicted by the code; do not broaden the work into output-format unification.
-5. Format changed checkers, re-bootstrap coverage-scoped vendors, and verify source/vendor parity.
+1. ✓ Inventory each target checker's current config-table and structural markers; record the exact applicability predicate without changing the standard's positive requirements.
+2. ✓ Add an early applicability gate to each checker: when neither its `[ki-<skill>]` table nor its structural marker is present, emit one scoped `NA` and stop before structural failures. A declaration or structural marker keeps the full audit active.
+3. ✓ Add fixtures for three cases per checker: absent and structurally irrelevant → one `NA`; explicitly declared but structurally incomplete → existing failures; structurally applicable without a declaration → full audit remains active.
+4. ✓ Update only the standards/rubrics whose applicability wording is missing or contradicted by the code; do not broaden the work into output-format unification.
+5. ✓ Format changed checkers, re-bootstrap coverage-scoped vendors, and verify source/vendor parity.
 
 ## Files touched
 
@@ -46,4 +46,6 @@ Independent first-round work. It blocks the documentation baseline because that 
 
 ## Readiness
 
-- [ ] Readiness test: a cold executor can identify all six predicates and implement the first checker from this plan plus the owning skill's standard.
+- [x] Readiness test: a cold executor identified all six predicates and could implement the first checker from this plan plus the owning skill's standard.
+
+Passed 2026-07-16: `[ki-mcp]` or `src/mcp-server/`; `[ki-website]` or an Eleventy config at the repository root / `site/`; `[ki-tools]` or `bin/`; `[ki-kb]` (including its `[ki-kb.zones]` subtable) or any canonical KB zone; `[ki-plugins]` or `.claude-plugin/marketplace.json`; `[ki-homebrew-tap]` or `Formula/`.

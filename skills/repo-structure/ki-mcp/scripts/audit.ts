@@ -59,6 +59,29 @@ const read = (...p: string[]): string => {
   }
 }
 const isDir = (...p: string[]) => has(...p) && statSync(at(...p)).isDirectory()
+const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
+const parseToml = (text: string): { document: Record<string, unknown> | null; malformed: boolean } => {
+  try {
+    return { document: TOML.parse(text) as Record<string, unknown>, malformed: false }
+  } catch {
+    return { document: null, malformed: true }
+  }
+}
+const asTable = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : null
+
+// Applicability is declaration OR structure. A repo with neither is outside the
+// MCP standard; stop before emitting layout/package failures. Either signal keeps
+// the complete audit active so declared-but-incomplete repos cannot escape it.
+const kiMcpText = read('.ki-config.toml')
+const parsedKiMcp = parseToml(kiMcpText)
+const kiMcpTable = asTable(parsedKiMcp.document?.['ki-mcp'])
+const declaresKiMcp = kiMcpTable !== null
+const hasMcpStructure = isDir('src', 'mcp-server')
+if (!declaresKiMcp && !parsedKiMcp.malformed && !hasMcpStructure) {
+  add('NA', 'KI-CONFIG', 'ki-mcp not applicable: no [ki-mcp] declaration or src/mcp-server/ structural marker', STD)
+  emit(findings, repo, 'mcp', `MCP standards audit — ${basename(repo)}  (${repo})`, '')
+}
 
 // ── layout ──────────────────────────────────────────────────────────────────
 for (const d of ['config', 'mcp-server', 'tools', 'main', 'utils']) {
@@ -372,18 +395,17 @@ if (isDir('src', 'tools')) {
 // table: an MCP repo opts into the MCP standard by declaring [ki-mcp]
 // (ki-repo's coverage cascade enforces the same presence across the org,
 // from the MCP-SDK dependency signal). Validate-down — no per-repo keys defined yet.
-const kiMcp = read('.ki-config.toml')
+const kiMcp = kiMcpText
 if (!kiMcp) add('WARN', 'KI-CONFIG', '.ki-config.toml missing (ki-repo owns the contract)', STD, '.ki-config.toml')
-else if (!/^\[ki-mcp\]/m.test(kiMcp))
+else if (!kiMcpTable)
   add('WARN', 'KI-CONFIG', 'no [ki-mcp] table — add it to mark this repo as governed by the MCP standard', STD, '.ki-config.toml')
 else {
   add('PASS', 'KI-CONFIG', '[ki-mcp] table present', STD, '.ki-config.toml')
-  const body = kiMcp.split(/^\[ki-mcp\]/m)[1]?.split(/^\[/m)[0] ?? ''
   const KNOWN = new Set<string>([]) // no top-level options yet
-  for (const m of body.matchAll(/^\s*([A-Za-z0-9_-]+)\s*=/gm)) {
-    KNOWN.has(m[1] as string)
-      ? add('PASS', 'KI-CONFIG', `known key ${m[1]}`, STD, '.ki-config.toml')
-      : add('WARN', 'KI-CONFIG', `unknown key under [ki-mcp]: ${m[1]} (validate-down)`, STD, '.ki-config.toml')
+  for (const key of Object.keys(kiMcpTable)) {
+    KNOWN.has(key)
+      ? add('PASS', 'KI-CONFIG', `known key ${key}`, STD, '.ki-config.toml')
+      : add('WARN', 'KI-CONFIG', `unknown key under [ki-mcp]: ${key} (validate-down)`, STD, '.ki-config.toml')
   }
 }
 

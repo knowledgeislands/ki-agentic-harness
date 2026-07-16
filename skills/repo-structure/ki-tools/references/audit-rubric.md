@@ -4,6 +4,8 @@ Line-by-line pass/fail items for auditing a Knowledge Islands `tools-*` repo aga
 
 Every **[M]** item corresponds to a check in the checker (per `ki-skills`' SHAPE-9 + the checker-contract). Severity uses the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](../../../foundations/ki-engineering/references/enforcement-framework.md) §2: **FAIL** (ship-stopper), **WARN** (expected-but-missing / divergence), **POLISH** (consistency), **ADVISORY** (needs a human/out-of-band check), **INFO** (context).
 
+Applicability: `[ki-tools]` or `bin/` activates the complete audit. With neither, **CONFIG [M]** emits exactly one `NA` and stops; either signal retains all existing findings. ([standard](tools-standard.md#scope-container-not-contents))
+
 ## Contents
 
 - [Layout & executable](#layout--executable)

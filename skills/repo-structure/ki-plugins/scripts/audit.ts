@@ -48,6 +48,28 @@ const read = (...p: string[]): string => {
 }
 const isDir = (...p: string[]) => has(...p) && statSync(at(...p)).isDirectory()
 const ORG = 'Knowledge Islands'
+const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
+const parseToml = (text: string): { document: Record<string, unknown> | null; malformed: boolean } => {
+  try {
+    return { document: TOML.parse(text) as Record<string, unknown>, malformed: false }
+  } catch {
+    return { document: null, malformed: true }
+  }
+}
+const asTable = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : null
+
+// Applicability is declaration OR the marketplace entry-point manifest. Neither
+// means this repository is unrelated, so stop before projection-shape failures.
+const kiPluginsText = read('.ki-config.toml')
+const parsedKiPlugins = parseToml(kiPluginsText)
+const kiPluginsTable = asTable(parsedKiPlugins.document?.['ki-plugins'])
+const declaresPlugins = kiPluginsTable !== null
+const hasPluginStructure = has('.claude-plugin', 'marketplace.json')
+if (!declaresPlugins && !parsedKiPlugins.malformed && !hasPluginStructure) {
+  add('NA', 'PLUG-15', 'ki-plugins not applicable: no [ki-plugins] declaration or marketplace.json structural marker', STD)
+  emit(findings, repo, 'plugins', `Plugin-marketplace audit — ${basename(repo)}  (${repo})`, '')
+}
 
 // ── marketplace manifest ──────────────────────────────────────────────────────
 // The marketplace is the entry point: one manifest, exactly one plugin, owned by the org.
@@ -215,18 +237,17 @@ if (claude)
 // marketplace repo opts into the plugins standard by declaring [ki-plugins]
 // (ki-repo's coverage cascade enforces the same presence from the marketplace.json
 // signal). Validate-down — no per-repo keys defined yet.
-const kiText = read('.ki-config.toml')
+const kiText = kiPluginsText
 if (!kiText) add('WARN', 'PLUG-15', '.ki-config.toml missing (ki-repo owns the contract)', STD, '.ki-config.toml')
-else if (!/^\[ki-plugins\]/m.test(kiText))
+else if (!kiPluginsTable)
   add('WARN', 'PLUG-15', 'no [ki-plugins] table — add it to mark this repo as governed by the plugins standard', STD, '.ki-config.toml')
 else {
   add('PASS', 'PLUG-15', '[ki-plugins] table present', STD, '.ki-config.toml')
-  const body = kiText.split(/^\[ki-plugins\]/m)[1]?.split(/^\[/m)[0] ?? ''
   const KNOWN = new Set<string>([]) // no top-level options yet
-  for (const m of body.matchAll(/^\s*([A-Za-z0-9_-]+)\s*=/gm)) {
-    KNOWN.has(m[1] as string)
-      ? add('PASS', 'PLUG-15', `known key ${m[1]}`, STD, '.ki-config.toml')
-      : add('WARN', 'PLUG-15', `unknown key under [ki-plugins]: ${m[1]} (validate-down)`, STD, '.ki-config.toml')
+  for (const key of Object.keys(kiPluginsTable)) {
+    KNOWN.has(key)
+      ? add('PASS', 'PLUG-15', `known key ${key}`, STD, '.ki-config.toml')
+      : add('WARN', 'PLUG-15', `unknown key under [ki-plugins]: ${key} (validate-down)`, STD, '.ki-config.toml')
   }
 }
 

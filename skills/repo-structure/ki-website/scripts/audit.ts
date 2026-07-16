@@ -69,6 +69,28 @@ const read = (...p: string[]): string => {
 }
 const isDir = (...p: string[]) => has(...p) && statSync(at(...p)).isDirectory()
 const CONFIG_NAMES = ['eleventy.config.ts', 'eleventy.config.js', 'eleventy.config.mjs', 'eleventy.config.cjs']
+const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
+const parseToml = (text: string): { document: Record<string, unknown> | null; malformed: boolean } => {
+  try {
+    return { document: TOML.parse(text) as Record<string, unknown>, malformed: false }
+  } catch {
+    return { document: null, malformed: true }
+  }
+}
+const asTable = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : null
+
+// Applicability is declaration OR structure. With neither signal, this is not a
+// website target and the checker must stop before site-layout failures.
+const kiText = read('.ki-config.toml')
+const parsedKiWebsite = parseToml(kiText)
+const kiWebsiteTable = asTable(parsedKiWebsite.document?.[KI_SECTION])
+const declaresWebsite = kiWebsiteTable !== null
+const hasWebsiteStructure = CONFIG_NAMES.some((f) => has(f) || has('site', f))
+if (!declaresWebsite && !parsedKiWebsite.malformed && !hasWebsiteStructure) {
+  add('NA', 'WEB-41', 'ki-website not applicable: no [ki-website] declaration or Eleventy config structural marker', std('§2'))
+  emit(findings, repo, 'websites', `11ty website audit — ${basename(repo)}  (${repo})`, '')
+}
 
 // ── locate the site root: flat (repo root) or site/ subfolder ─────────────────
 const flatCfg = CONFIG_NAMES.find((f) => has(f))
@@ -322,24 +344,23 @@ if (siteRoot) {
 }
 
 // ── .ki-config.toml opt-in table ──────────────────────────────────────────────
-const ki = read('.ki-config.toml')
-const kiTable = new RegExp(`^\\[${KI_SECTION}\\]`, 'm').test(ki)
 add(
-  kiTable ? 'PASS' : 'WARN',
+  kiWebsiteTable ? 'PASS' : 'WARN',
   'WEB-41',
-  kiTable ? `[${KI_SECTION}] table present in .ki-config.toml` : `no [${KI_SECTION}] table in .ki-config.toml (run --init to scaffold it)`,
+  kiWebsiteTable
+    ? `[${KI_SECTION}] table present in .ki-config.toml`
+    : `no [${KI_SECTION}] table in .ki-config.toml (run --init to scaffold it)`,
   std('§2'),
   '.ki-config.toml'
 )
-if (kiTable) {
+if (kiWebsiteTable) {
   // This table is a bare marker — validate-down: any key under it is a typo or a
-  // stale option, never a recognised setting. `^\[` ends the slice at the next header.
-  const body = ki.split(new RegExp(`^\\[${KI_SECTION}\\]`, 'm'))[1]?.split(/^\[/m)[0] ?? ''
-  for (const m of body.matchAll(/^\s*([A-Za-z0-9_-]+)\s*=/gm)) {
+  // stale option, never a recognised setting.
+  for (const key of Object.keys(kiWebsiteTable)) {
     add(
       'WARN',
       'WEB-42',
-      `unknown key under [${KI_SECTION}]: ${m[1]} (validate-down — this table takes no keys today)`,
+      `unknown key under [${KI_SECTION}]: ${key} (validate-down — this table takes no keys today)`,
       std('§2'),
       '.ki-config.toml'
     )
