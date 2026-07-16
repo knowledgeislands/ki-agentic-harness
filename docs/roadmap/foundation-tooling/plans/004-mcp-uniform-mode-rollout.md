@@ -4,7 +4,7 @@ title: Pilot uniform modes across MCP repositories
 status: open
 roadmap: foundation-tooling/sweep-the-mcp-repos-onto-the-uniform-mode-model-re-check-naming-across-surfaces
 blocks: —
-blocked-by: —
+blocked-by: foundation-tooling/002
 handoff: true
 tier: sonnet
 readiness: pending
@@ -20,7 +20,7 @@ The harness carries the target model and onboarding path; sibling repositories r
 
 ## Steps
 
-1. Discover the six MCP repository roots and record a read-only baseline matrix: clean/dirty state, current branch, `.ki-config.toml` declarations, `.ki-meta` version, package convenience keys, and audit/test results.
+1. After plan 002 closes, discover the six MCP repository roots and record a read-only baseline matrix: clean/dirty state, current branch, `.ki-config.toml` declarations, `.ki-meta` version, package convenience keys, and audit/test results.
 2. Select one clean representative repository whose capabilities exercise the common MCP surface; document why it is representative and create a repository-local governed plan there before mutation.
 3. Re-bootstrap the pilot, reconcile only the expected aggregate/scoped package aliases and uniform skill-mode surfaces, then run its focused tests, self-test, artifact audit, and aggregate audit.
 4. Review the pilot diff and failures; update the migration recipe in this coordinating plan. Escalate any harness defect back to this repository rather than patching around it per consumer.
@@ -37,7 +37,7 @@ Pass when the acceptance matrix names all six repositories and each reports a cl
 
 ## Dependencies / blocks
 
-Unblocked. The completed documentation baseline supplies the migration contract; clean-repository preflight and the existing trusted-estate posture are sufficient for the representative pilot. Broader generated-write hardening remains independent.
+Blocked by plan `foundation-tooling/002`. The completed documentation baseline supplies the migration contract; generated-write hardening remains the final release-baseline prerequisite for broader fleet adoption.
 
 ## Decisions
 
