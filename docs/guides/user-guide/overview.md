@@ -10,7 +10,7 @@ An agentic harness is everything around an agent that helps it do a job well. Li
 
 The harness turns loose conventions into something an agent can apply and check consistently. A skill usually combines guidance with the practical checks or actions that put it to work. Governance skills share four modes:
 
-- **Init** — bring a target under governance for the first time: vendor the checkers and wire the commands so the repo can govern itself.
+- **Educate (`INIT`)** — give a target the knowledge, checkers, and commands it needs to govern itself. Run it to establish that foundation or bring it up to date.
 - **Audit** — read a target (a repository, a document, a knowledge base) and report where it departs from the standard.
 - **Conform** — bring the target into line, doing the mechanical fixes automatically.
 - **Refresh** — revisit the standard itself against its upstream source, so it stays relevant.
