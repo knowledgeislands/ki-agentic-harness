@@ -43,6 +43,15 @@ No direct access, cleanliness, or configuration blocker prevents a pilot. The se
 
 The pilot has 220 passing tests, a passing 13-tool smoke check, and a zero-failure aggregate audit.
 
+### Matched follow-up — 2026-07-16
+
+`mcp-claude-housekeeping` applied the recipe unchanged in commits `e67466c` (roadmap adoption) and `891fc09` (governance migration). It reports 307 passing tests, a passing 39-tool smoke check, a zero-failure aggregate audit, and a passing bootstrap vendor-set audit. Its historical roadmap claimed the smoke test was absent, but the executable `scripts/smoke.ts`, package command, and CI step were already present; that documentation drift was corrected by the thematic roadmap adoption rather than expanded into feature work.
+
+| Repository                | Local plan               | Governance commit | Validation                                                     |
+| ------------------------- | ------------------------ | ----------------- | -------------------------------------------------------------- |
+| `mcp-ki-kb-fs`            | `foundation-tooling/001` | `c3315fa`         | 220 tests; 13-tool smoke; aggregate and bootstrap audits pass. |
+| `mcp-claude-housekeeping` | `foundation-tooling/001` | `891fc09`         | 307 tests; 39-tool smoke; aggregate and bootstrap audits pass. |
+
 ## Steps
 
 1. [x] Discover the six MCP repository roots and record a read-only configuration baseline: clean/dirty state, current branch, `.ki-config.toml` declarations, `.ki-meta` version, and package convenience keys.
