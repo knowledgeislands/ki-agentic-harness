@@ -5,13 +5,13 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated patterns from the KI agentic harness that show what a well-structured five-part bundle looks like. Use these as reference when standing up a new harness, auditing an existing one, or checking that a shelf is correctly declared. The `ki-agentic-harness` is the canonical reference implementation; it demonstrates every structural requirement: five directories each with a `README.md`, the required `package.json` script families, and a `.ki-config.toml` that opts into all four governing skills. Empty shelves (`agents/`, `mcp/`, `evals/`, `hooks/`) are shown as a valid starting state — the directory and its `README.md` commit the five-part intent before all parts are built. For the full source list and last-review dates, see [sources.md](sources.md).
+Curated patterns from the KI agentic harness that show what a well-structured five-part bundle looks like. Use these as reference when standing up a new harness, auditing an existing one, or checking that a shelf is correctly declared. The `ki-agentic-harness` is the canonical reference implementation; it demonstrates every structural requirement: five directories each with a `README.md`, the required `package.json` script families, and a `.ki-config.toml` that opts into all four governing skills. Its `skills/`, `agents/`, `evals/`, and `hooks/` shelves are populated while `mcp/` demonstrates a valid empty shelf. Populated contents are examples, not a requirement: any shelf may start empty when its `README.md` declares that state. For the full source list and last-review dates, see [sources.md](sources.md).
 
 ## Collections
 
 | Source                     | URL                                    | What it covers                                                        |
 | -------------------------- | -------------------------------------- | --------------------------------------------------------------------- |
-| ki-agentic-harness         | [canonical harness repo][harness-repo] | The KI canonical reference; all five parts; populated skills shelf    |
+| ki-agentic-harness         | [canonical harness repo][harness-repo] | The KI canonical reference; four populated parts and an empty MCP     |
 | Agent Skills specification | [Agent Skills spec][as-spec]           | The `SKILL.md` format and `references/`, `scripts/`, `assets/` layout |
 | Claude Code subagent docs  | [CC subagent docs][cc-subagents]       | The subagent definition format the `agents/` part serves              |
 
@@ -19,7 +19,7 @@ Curated patterns from the KI agentic harness that show what a well-structured fi
 
 ### Five-part directory layout
 
-Every harness must have these five directories at the repo root, each containing a `README.md`. The `README.md` distinguishes an intentional empty shelf from an accidentally missing directory — a navigator (human or agent) can confirm at a glance that the harness is complete even before all shelves are populated. The harness root also carries `CLAUDE.md`, `ROADMAP.md`, `package.json`, and `.ki-config.toml`.
+Every harness must have these five directories at the repo root, each containing a `README.md`. The `README.md` distinguishes an intentional empty shelf from an accidentally missing directory — a navigator (human or agent) can confirm at a glance that the harness is complete even before all shelves are populated. The populated contents below show this repository's current state; other harnesses need not ship the same agents, evals, or hooks. The harness root also carries `CLAUDE.md`, `ROADMAP.md`, `package.json`, and `.ki-config.toml`.
 
 ```text
 skills/
@@ -34,18 +34,24 @@ skills/
     scripts/
   …
 agents/
-  README.md          ← shelf: no agent definitions yet
+  README.md
+  governance/
+    ki-skills-lead.md
 mcp/
-  README.md          ← shelf: points to external mcp-* repos
+  README.md          ← intentional empty shelf: points to external mcp-* repos
 evals/
-  README.md          ← shelf: advisory, run on demand
+  README.md
+  guide-suite.ts
+  scenarios/
 hooks/
-  README.md          ← shelf: advisory, wired via .claude/settings.json
+  README.md
+  plan-stamp.sh
+  plan-sync.sh
 ```
 
-### `agents/README.md` shelf convention
+### Shelf status convention
 
-An empty `agents/` shelf declares the intent, explains the format for future contributors, and routes to the governing skill. It does not apologise for being empty — a shelf is a valid, encouraged starting state. The pattern below is the `ki-agentic-harness` shelf: format pointer, one-line note on current state, and a forward pointer for when the shelf becomes populated.
+Every part's `README.md` declares its current state and routes contributors to the relevant format or governing skill. A populated shelf indexes what it ships; an empty shelf explains what would live there without apologising for its state. The pattern below is suitable when a harness has not yet added any agent definitions:
 
 ```markdown
 # Agents

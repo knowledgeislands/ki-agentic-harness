@@ -62,6 +62,12 @@ _Verify:_ `ki-project-roadmap`'s [project-roadmap standard](../../skills/general
 
 _Verify:_ `ki-harness`'s rubric CLAUDE-1 and CLAUDE-2 ([`skills/repo-structure/ki-harness/references/audit-rubric.md`](../../skills/repo-structure/ki-harness/references/audit-rubric.md)), applied by reading (judgment-graded).
 
+### HARN-009 — Claude Code plan lifecycle hooks
+
+The harness MUST ship `hooks/plan-stamp.sh` and `hooks/plan-sync.sh` as a Claude-Code-specific lifecycle pair and expose `ki:hooks:link:global` to install their `PostToolUse(ExitPlanMode)` and `PostToolUse(TodoWrite)` wiring.
+
+_Verify:_ `bun hooks/plan-stamp.test.ts && bun hooks/plan-sync.test.ts` exercises the pair; `bun skills/keystone/ki-bootstrap/scripts/link-hooks.ts --check` audits the installed symlinks and Claude Code settings wiring.
+
 ## Gaps
 
-- The `mcp/` and `hooks/` shelves are scaffolded but empty; no requirement yet describes a populated MCP server or hook, since none ships.
+- The `mcp/` shelf is scaffolded but empty; no requirement yet describes a populated MCP server because none ships here.
