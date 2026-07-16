@@ -12,14 +12,6 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-### [foundation-tooling/002](foundation-tooling/plans/002-safe-generated-writes.md)
-
-- **Title:** Finish repository-local generated-write hardening
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/finish-repository-local-generated-write-hardening`
-- **Status:** in-progress
-- **Blocks:** —
-
 ### [foundation-tooling/004](foundation-tooling/plans/004-mcp-uniform-mode-rollout.md)
 
 - **Title:** Roll out uniform modes across MCP repositories

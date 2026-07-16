@@ -8,10 +8,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Finish repository-local generated-write hardening
-
-Bootstrap publication, Plan Mode hooks, the stale Git-lock guard, project-roadmap publication, scaffold-only `.ki-config.toml` and `.gitignore`, and hook-settings JSON are hardened and tested. Finish the normal per-repository path by hardening project skill and supported Claude agent links. Global user-home skill publication and hook delivery are explicit one-time operations with their own roadmap items; report writers and direct conformers remain long-tail work.
-
 ### Roll out the uniform mode model across the `mcp-*` repositories
 
 Build a read-only baseline for the six sibling MCP repositories, select one clean representative pilot, and prove the four-mode bootstrap recipe there before applying it repository by repository. Each repository gets a clean preflight, a local governed plan, focused tests, its surface-specific audit, and the aggregate audit. An unresolved writer blocks only the operation that needs it, not the baseline or unrelated rollout work.

@@ -12,7 +12,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-- [Foundation Tooling: Finish repository-local generated-write hardening](docs/roadmap/foundation-tooling/ROADMAP.md#finish-repository-local-generated-write-hardening)
 - [Foundation Tooling: Roll out the uniform mode model across the `mcp-*` repositories](docs/roadmap/foundation-tooling/ROADMAP.md#roll-out-the-uniform-mode-model-across-the-mcp--repositories)
 
 ## Soon
