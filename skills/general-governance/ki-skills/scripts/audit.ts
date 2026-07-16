@@ -623,7 +623,7 @@ function lintSkill(skillDir: string): Finding[] {
 
   // --- mechanical work belongs in the checker, not in tokens (SHAPE-9 heuristic) ---
   // A rubric that tags criteria [M] (mechanical) must ship a scripts/ checker that
-  // implements them — or document a toolchain delegation (authoring → `bun run ki:lint:md`).
+  // implements them — or document delegation to another skill-scoped audit.
   // [M] criteria left to prose make the reader re-derive deterministic checks in tokens.
   const rubricFile = join(skillDir, 'references', 'audit-rubric.md')
   if (existsSync(rubricFile)) {

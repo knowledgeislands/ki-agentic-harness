@@ -16,11 +16,12 @@
  * failed assertion.
  *
  * Unlike the behavioural `harness.ts` evals (non-deterministic, advisory), this is a
- * hard gate and is wired into `ki:verify`. Bun/Node built-ins only.
+ * hard gate and is included in the repository's runner-neutral bare `test` suite.
+ * Bun/Node built-ins only.
  */
 
 import { execSync } from 'node:child_process'
-import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -52,6 +53,18 @@ function run(cmd: string, cwd: string, env: NodeJS.ProcessEnv): string {
   }
 }
 
+function liveGuidanceFiles(root: string): string[] {
+  const files: string[] = []
+  for (const entry of readdirSync(root, { withFileTypes: true })) {
+    const path = join(root, entry.name)
+    if (entry.isDirectory()) files.push(...liveGuidanceFiles(path))
+    else if ((entry.name.endsWith('.md') || entry.name.endsWith('.ts')) && !entry.name.endsWith('.test.ts')) {
+      files.push(path)
+    }
+  }
+  return files
+}
+
 // ── extract the guide's bash blocks ──────────────────────────────────────────
 const guide = readFileSync(GUIDE, 'utf8')
 const blocks = [...guide.matchAll(/```bash\n([\s\S]*?)```/g)].map((m) => m[1].trim())
@@ -59,6 +72,29 @@ check(blocks.length >= 3, `extracted ${blocks.length} bash command blocks from o
 const primaryBlocks = blocks.filter((b) => /bootstrap\.ts|\.ki-meta\/bin\/ki-audit/.test(b) && !/raw\.githubusercontent/.test(b))
 check(primaryBlocks.length >= 2, 'guide documents the bootstrap + self-govern (ki-audit) steps')
 check(!blocks.some((b) => /--legacy|--tracking/.test(b)), 'guide carries no legacy/tracking aggressiveness flags')
+
+const retiredCommand =
+  /\bbun run ki:(?:lint(?::[a-z0-9*:_-]+)?|deps(?::[a-z0-9*:_-]+)?|knip|verify)(?=[\s`'"),.;:&|\]]|$)/i
+check(
+  retiredCommand.test(['Run bun run ', 'ki:verify; do not postpone it.'].join('')),
+  'retired-command guard cannot be escaped by unrelated retirement language'
+)
+const staleGuidance = [
+  join(HARNESS, 'AGENTS.md'),
+  ...['agents', 'evals', 'skills', join('docs', 'guides')].flatMap((dir) => liveGuidanceFiles(join(HARNESS, dir)))
+]
+  .flatMap((file) =>
+    readFileSync(file, 'utf8')
+      .split('\n')
+      .map((line, index) => ({ file, line, number: index + 1 }))
+  )
+  .filter(({ line }) => retiredCommand.test(line))
+check(
+  staleGuidance.length === 0,
+  staleGuidance.length === 0
+    ? 'live guidance recommends no retired per-tool command'
+    : `retired command remains live at ${staleGuidance.map(({ file, number }) => `${file}:${number}`).join(', ')}`
+)
 
 const tmp = mkdtempSync(join(tmpdir(), 'ki-guide-'))
 try {

@@ -16,10 +16,10 @@ The standard pins versions in `packageManager`, `engines`, `biome.json`'s `$sche
 | NODE | [Node release schedule][node] | `engines.node >= 22` (the runtime `dist/` targets) | >=22.0.0 | 2026-07-04 |
 | BIOME | [biomejs.dev][biome] | `biome.json` schema + the formatter/linter config | 2.5.2 | 2026-07-04 |
 | TS | [typescript releases][ts] | the `tsconfig` / `tsconfig.build` compiler options | ^6.0 | 2026-07-04 |
-| VITEST | [vitest.dev][vitest] | the test runner + 100% coverage config (`vitest run`, v8) | current | 2026-07-04 |
-| SYNCPACK | [syncpack][syncpack] | `ki:lint:package` (`syncpack format`) | ^15 | 2026-07-04 |
-| MDLINT | [markdownlint-cli2][mdlint] / [prettier][prettier] | `ki:lint:md` ❡ | mdl ^0.23 / prettier ^3 | 2026-07-04 |
-| KNIP | [knip][knip] | ki:knip (dead-code + deps gate) / ki:deps:check\|fix | current | 2026-07-04 |
+| VITEST | [vitest.dev][vitest] | the config-gated test profile + 100% coverage (`vitest run`, v8) | current | 2026-07-04 |
+| SYNCPACK | [syncpack][syncpack] | package ordering inside engineering audit/conform | ^15 | 2026-07-04 |
+| MDLINT | [markdownlint-cli2][mdlint] / [prettier][prettier] | Markdown audit/conform inside `ki-authoring` ❡ | mdl ^0.23 / prettier ^3 | 2026-07-04 |
+| KNIP | [knip][knip] | dependency + dead-code checks inside engineering audit/conform | current | 2026-07-04 |
 
 ❡ The Markdown mechanical pass.
 
@@ -29,7 +29,7 @@ The standard is the **majority shape** across the TS/Bun repos under `knowledgei
 
 | Tag       | Source                        | Governs                                                                              | Last reviewed |
 | --------- | ----------------------------- | ------------------------------------------------------------------------------------ | ------------- |
-| REPOS     | the 10 TS/Bun sibling repos † | the script families, tsconfig/biome/vitest shape, the build/chmod rule               | 2026-06-21    |
+| REPOS     | the 10 TS/Bun sibling repos † | aggregate/scoped scripts, tsconfig/biome, config-gated Vitest, build/chmod           | 2026-06-21    |
 | FRAMEWORK | harness docs ※                | the enforcement framework (modes, checker contract, rubric tagging, sources cadence) | 2026-06-21    |
 
 † the 7 `mcp-*` servers + `ki-agentic-harness`, `ki-arcadia-principal`, `ki-website`.
@@ -41,7 +41,7 @@ The standard is the **majority shape** across the TS/Bun repos under `knowledgei
 REFRESH last run **2026-07-04**. Cadence: monthly, alongside the other governance skills (the `ki-skills-refresh` routine). **Drift folded in this cycle:** the living-source repos have upgraded three toolchain pins ahead of this file, and the deps tool was replaced.
 
 - **Pins bumped to match the repos:** Biome `2.5.0 → 2.5.2` (repo `biome.json` `$schema=2.5.1`, devDep `@biomejs/biome=2.5.2`; `2.5.2` is upstream latest), markdownlint-cli2 `^0.22 → ^0.23` (`0.23.0` latest, published ~2026-07-02), prettier confirmed `^3.9.4`. syncpack `^15.3.2` absorbs latest 15.x.
-- **Deps tool replaced:** the `DEPCHECK` row is retired — `depcheck` is no longer a dependency. `ki:deps:*` and `ki:knip` are now **knip**-backed (`ki:deps:check` / `ki:deps:fix` / `ki:deps:update` + `ki:knip`), per `engineering-standard.md` §2/§5 and `audit-rubric.md`. Tracked as `KNIP` going forward.
+- **Deps tool replaced:** the `DEPCHECK` row is retired — `depcheck` is no longer a dependency. Knip now runs directly inside engineering audit/conform for dependency and dead-code checks, per `engineering-standard.md` §2/§5 and `audit-rubric.md`. Tracked as `KNIP` going forward.
 - **Pins confirmed current:** `bun@1.3.14` (latest stable, 2026-05-13; no newer 1.3.x), `engines.node >=22.0.0` (22 Maintenance LTS, 24 Active LTS, 26 Current — floor valid; repo node `24.15.0`), TypeScript `^6.0.3` (6.0 still latest **stable**), vitest `4.1.9` (5.0 still beta).
 - **Repo cross-check:** `ki-agentic-harness` self-audit = 0 fail. The prior proseWrap WARN is resolved this run — the standard, checker (`audit.ts`), and rubric now all specify `proseWrap: never`, matching the repo and `ki-authoring` house style.
 - **Open watch-items:**

@@ -9,7 +9,7 @@ Capability conditionals only apply when the repo has the marker (tests / compile
 ## Contents
 
 - [Core — package.json & toolchain pinning (§1)](#core--packagejson--toolchain-pinning-1)
-- [Core — script families (§2)](#core--script-families-2)
+- [Core — governed script surface (§2)](#core--governed-script-surface-2)
 - [Core — Bun vs Node (§3)](#core--bun-vs-node-3)
 - [Core — tsconfig.json (§4)](#core--tsconfigjson-4)
 - [Core — biome.json & prettier config (§5)](#core--biomejson--prettier-config-5)
@@ -25,15 +25,15 @@ Capability conditionals only apply when the repo has the marker (tests / compile
 - [ ] **PKG-2** [M] WARN — `"packageManager"` starts with `bun@` (pinned patch).
 - [ ] **PKG-3** [M] WARN — `"engines.node"` floor is `>= 22`.
 - [ ] **PKG-4** [M] FAIL — **coverage manifest (exhaustive)**: every top-level `package.json` key is in the manifest (§1) — `name`, `version`, `description`, `author`, `license`, `private`, `repository`, `homepage`, `bugs`, `keywords`, `type`, `packageManager`, `engines`, `scripts`, `devDependencies`, `dependencies`, `workspaces`, `lint-staged`, `main`, `bin`, `exports`, `files`. An unknown key is drift. (Also the code for an unparseable `package.json`.)
-- [ ] **PKG-5** [M] FAIL — toolchain `devDependencies` present: `@biomejs/biome`, `knip`, `prettier`, `husky`, `lint-staged`, `markdownlint-cli2`, `syncpack`, `typescript` (the tools the families invoke — declared, not implied). `depcheck` / `node-jq` are gone (replaced by knip).
+- [ ] **PKG-5** [M] FAIL — toolchain `devDependencies` present: `@biomejs/biome`, `knip`, `prettier`, `husky`, `lint-staged`, `markdownlint-cli2`, `syncpack`, `typescript` (the tools the engineering and authoring modes invoke — declared, not implied). `depcheck` / `node-jq` are gone (replaced by knip).
 - [ ] **PKG-6** [M] FAIL/WARN — `lint-staged` block present (FAIL if missing) and fans out to `@biomejs/biome` on code + `prettier` + `markdownlint` on Markdown (WARN otherwise).
 - [ ] **MISE-1** [M] WARN — a root `mise.toml` pins both `node` and `bun` under `[tools]`.
 - [ ] **MISE-2** [M] WARN — the `mise.toml` `bun` version **equals** the `packageManager` Bun version (the drift pair).
 - [ ] **MISE-3** [M] POLISH — no legacy single-tool pin file (`.node-version`, `.nvmrc`, `.bun-version`) lingers beside `mise.toml` (warn).
 - [ ] **CI-1** [M] WARN — where the repo has `.github/workflows/ci.yml`, it installs the toolchain via `jdx/mise-action` and hardcodes no `bun-version:` / `node-version:`.
-- [ ] **CI-2** [M] WARN — that `ci.yml` runs the aggregate read-only gate `bun run ki:audit` (followed by `bun run test` for the repo's self-tests), and no longer references the retired `ki:verify` (ADR-KI-HARNESS-TOOLCHAIN-001). `ki:audit` fans out over the vendored per-skill audits (engineering's code toolchain + authoring's Markdown gate).
+- [ ] **CI-2** [M] FAIL/WARN — that `ci.yml` runs the exact aggregate read-only gate `bun run ki:audit`, followed by the exact `bun run test` command when the repo exposes tests (missing or misordered gate → FAIL), and no longer references the retired `ki:verify` (WARN; ADR-KI-HARNESS-TOOLCHAIN-001). `ki:audit` fans out over the vendored per-skill audits (engineering's code toolchain + authoring's Markdown gate).
 
-## Core — script families (§2)
+## Core — governed script surface (§2)
 
 > **TOOLCHAIN-001 note.** The per-tool `ki:lint:*` / `ki:deps:*` / `ki:knip` families and `ki:verify` are **retired** — the tools now run **directly inside** `ki:engineering:audit`/`conform` (Biome, tsc, syncpack, knip; see BIO-1 / TSC-1 / SYNC-1 / KNIP-2 below), and the repo exposes only the two aggregate entrypoints. Those retired keys are now flagged as drift (SCR-3), not required.
 
@@ -42,13 +42,13 @@ Capability conditionals only apply when the repo has the marker (tests / compile
 - [ ] **SCR-3** [M] FAIL — no retired keys linger: the `ki:lint:*` / `ki:deps:*` / `ki:knip` families, `ki:verify`, and any per-skill `ki:<skill>:lint` are folded into `ki:engineering:audit`/`conform` + the aggregate `ki:audit` (TOOLCHAIN-001) — their presence is drift.
 - [ ] **SCR-4** [M] FAIL — every skill vendored into `.ki-meta/skills/<skill>/` is reachable by the derived keys `ki:<suffix>:audit` / `ki:<suffix>:conform` (suffix = skill dir minus `ki-`).
 - [ ] **SCR-5** [M] FAIL/WARN — `clean` removes `node_modules` (FAIL otherwise) and `prepare` = `husky` (WARN otherwise); `clean` also removes `dist` where the repo builds.
-- [ ] **SCR-7** [M] FAIL/WARN — capability tails: a repo with tests exposes the bare `test` idiom (FAIL if missing); a repo that produces a compiled build folds `build` into `ki:conform` (WARN otherwise).
+- [ ] **SCR-7** [M] FAIL — a repo with tests exposes the runner-neutral bare `test` idiom. Compiled repos expose bare `build`; neither lifecycle command is appended to the canonical aggregate entrypoints.
 - [ ] **BIO-1** [M] FAIL — `bunx @biomejs/biome check` exits clean (the read-only Biome pass, run directly by `ki:engineering:audit`).
 - [ ] **TSC-1** [M] FAIL — the type-check exits clean: `tsc --noEmit` at the root, or per-workspace `tsc --noEmit -p <ws>/tsconfig.json` when `package.json` declares a `workspaces` array (each listed workspace must have a `tsconfig.json`).
 - [ ] **SYNC-1** [M] FAIL — `bunx syncpack format --check` exits clean (dependency-range / package.json field ordering).
 - [ ] **KNIP-2** [M] FAIL — `bunx knip` exits clean (the dependency + dead-code gate, run directly by `ki:engineering:audit`).
 - [ ] **DEPS-1** [M] ADVISORY — `bun outdated` reports no available updates; if any, review and run `bun run ki:engineering:conform`.
-- [ ] **SCR-8** [J] POLISH — repo-specific scripts beyond the families are fine; the checker must not flag them. Just confirm none shadow a family name with a divergent definition.
+- [ ] **SCR-8** [J] POLISH — repo-specific scripts beyond the aggregate/scoped governance surface are fine when an owning skill governs them; the checker must not flag them. Confirm none shadow a governed entrypoint with a divergent definition.
 
 ## Core — Bun vs Node (§3)
 

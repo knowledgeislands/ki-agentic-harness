@@ -19,7 +19,7 @@ function check(label: string, condition: boolean): void {
   }
 }
 
-function fixture(scripts: Record<string, string>, vitest?: { file: string; content: string }): string {
+function fixture(scripts: Record<string, string>, vitest?: { file: string; content: string }, ci?: string): string {
   const dir = mkdtempSync(join(tmpdir(), 'ki-engineering-test-'))
   const fakeBin = join(dir, '.fake-bin')
   mkdirSync(fakeBin)
@@ -76,6 +76,10 @@ function fixture(scripts: Record<string, string>, vitest?: { file: string; conte
   writeFileSync(join(dir, 'knip.json'), '{}\n')
   writeFileSync(join(dir, '.ki-config.toml'), '[ki-engineering]\n')
   if (vitest) writeFileSync(join(dir, vitest.file), vitest.content)
+  if (ci) {
+    mkdirSync(join(dir, '.github', 'workflows'), { recursive: true })
+    writeFileSync(join(dir, '.github', 'workflows', 'ci.yml'), ci)
+  }
   return dir
 }
 
@@ -96,9 +100,10 @@ function hasFinding(findings: Finding[], area: string, level: string, message: s
 function withFixture(
   scripts: Record<string, string>,
   assertion: (findings: Finding[]) => void,
-  vitest?: { file: string; content: string }
+  vitest?: { file: string; content: string },
+  ci?: string
 ): void {
-  const dir = fixture(scripts, vitest)
+  const dir = fixture(scripts, vitest, ci)
   try {
     assertion(run(dir))
   } finally {
@@ -118,6 +123,42 @@ withFixture({ test: 'bun test' }, (findings) => {
 withFixture({ test: 'bun scripts/checker.test.ts', 'ki:ci': 'bun run test' }, (findings) => {
   check('bun run test is not mistaken for literal bun test', hasFinding(findings, 'SCR-6', 'PASS', 'no "bun test"'))
 })
+
+withFixture(
+  { test: 'bun scripts/checker.test.ts' },
+  (findings) => {
+    check('CI without the self-test command fails CI-2', hasFinding(findings, 'CI-2', 'FAIL', 'exact command'))
+  },
+  undefined,
+  'steps:\n  - uses: jdx/mise-action@v3\n  - run: bun run ki:audit\n'
+)
+
+withFixture(
+  { test: 'bun scripts/checker.test.ts' },
+  (findings) => {
+    check('CI with aggregate audit and self-tests passes CI-2', hasFinding(findings, 'CI-2', 'PASS', 'self-test suite'))
+  },
+  undefined,
+  'steps:\n  - uses: jdx/mise-action@v3\n  - run: bun run ki:audit\n  - run: bun run test\n'
+)
+
+withFixture(
+  { test: 'bun scripts/checker.test.ts' },
+  (findings) => {
+    check('CI rejects test:coverage as the bare self-test command', hasFinding(findings, 'CI-2', 'FAIL', 'exact command'))
+  },
+  undefined,
+  'steps:\n  - uses: jdx/mise-action@v3\n  - run: bun run ki:audit\n  - run: bun run test:coverage\n'
+)
+
+withFixture(
+  { test: 'bun scripts/checker.test.ts' },
+  (findings) => {
+    check('CI rejects self-tests before the aggregate audit', hasFinding(findings, 'CI-2', 'FAIL', 'before "bun run test"'))
+  },
+  undefined,
+  'steps:\n  - uses: jdx/mise-action@v3\n  - run: bun run test\n  - run: bun run ki:audit\n'
+)
 
 const exactThresholds = `
 export default {

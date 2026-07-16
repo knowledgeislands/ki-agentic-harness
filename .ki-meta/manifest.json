@@ -1,5 +1,5 @@
 {
-  "ref": "3c1ab30f7014e3679db3f81772d102bc2d2d9853",
+  "ref": "d32b16dc467ab0ac31d35d0a1606e560804e36d2",
   "files": {
     ".ki-meta/skills/ki-agents/audit.ts": "744039a6365910a9d34d688fecec590cecc83ae15b5766d008dec5a0639d2d9a",
     ".ki-meta/skills/ki-agents/conform.ts": "b184328a974795a12bc5e6f76ddca97e89cd0fca8367033068f64c19d1971357",
@@ -10,9 +10,9 @@
     ".ki-meta/skills/ki-decision-records/audit.ts": "3b663f0422f9b90e009a6e3f51507c6f4e65dcec5d6e8538c7ffcc0a3d63ced9",
     ".ki-meta/skills/ki-decision-records/conform.ts": "88e39adf23ec9db32841c6158dd12f3767e0a28378d203b9b8c9786b4061220e",
     ".ki-meta/skills/ki-decision-records/help.md": "e190d86a89323e923dd28b0204082845f9e76d401b96466988a49e5eb86d2f56",
-    ".ki-meta/skills/ki-engineering/audit.ts": "e4e89f588bd320a9ff90a3024d0ffecac13b71e7a2dd0daffb2e1cc75e4ecb7d",
+    ".ki-meta/skills/ki-engineering/audit.ts": "d4cc5b5c8754de2037d960a7a6b8df0c01cfaef8f768314f96532a363464218f",
     ".ki-meta/skills/ki-engineering/conform.ts": "25add7f2fccecbc5e5f0f3eb5a05e672b26c101ae5b4466f6d2212aafa96a802",
-    ".ki-meta/skills/ki-engineering/help.md": "c1a36923096d6af3e84a10556a7255747fb84e21469bc88cd47ad416fa21be59",
+    ".ki-meta/skills/ki-engineering/help.md": "007e06e672074e470c88b44bb5b1d497faff8b8584308c661516daca74e68eaf",
     ".ki-meta/skills/ki-feature-definitions/audit.ts": "ccdffcd3950deb22d7d087d7298c9a363b35ed8bc289452778cf9f14c464fb56",
     ".ki-meta/skills/ki-feature-definitions/conform.ts": "a37d78057efdf117bc66c4488c1acec6a698368ca76b52091bd30a24b15f1240",
     ".ki-meta/skills/ki-feature-definitions/help.md": "10de2f33c0f5a0b2d644eeb353a8298c376c9c1f166cf50172f748318cf78fd4",
@@ -31,7 +31,7 @@
     ".ki-meta/skills/ki-repo/audit.ts": "4127d0edae5ed467c4a4ab6b6bc877d2de10232e7984eb1d26f7afed6840e7ed",
     ".ki-meta/skills/ki-repo/conform.ts": "b4e7f9f509432005ff8d90a5ecb1d2aae94b55081250443e5291d358cd35dfff",
     ".ki-meta/skills/ki-repo/help.md": "9bf94b66e47a72e59ca64fb8c5798d1d7f93633502fdf255849230aa8bb4ffc6",
-    ".ki-meta/skills/ki-skills/audit.ts": "a5f00dfbca697beadc56d8931b8c3290e8a9f4dcd5b8c0f937955fe991e21379",
+    ".ki-meta/skills/ki-skills/audit.ts": "a3db2a9d9dade27119afcf6c0ea159bfe63c04d96197370bf05f667d8c78fc48",
     ".ki-meta/skills/ki-skills/conform.ts": "f7b9ae00e675e31ac9101f5d07f9b09ec4fc1ca3377922923ed2e0845b4ce420",
     ".ki-meta/skills/ki-skills/help.md": "02c70438e5f1bdd2b00212b7ee64e0306f7788bd047b7b768d43c785ea2605ab",
     ".ki-meta/skills/ki-tokenomics/audit.ts": "7eab1ae43d67e40f0adcdaddf43b7185cbf3970cf9be7fe4fabfe1253c4c53a8",

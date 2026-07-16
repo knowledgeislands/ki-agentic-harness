@@ -6,9 +6,9 @@
  *
  * Checks the MCP DELTA of the standard the `ki-mcp` skill codifies —
  * the `src/` layout, `main`/`bin`/`exports`, the shared utils helpers, config-injection
- * surface, tool naming, and the MCP coverage-excludes. The COMMON toolchain (package.json
- * families, tsconfig/biome/vitest with 100% coverage, the `bun test` trap, .env, the
- * cli-chmod rule) is the `ki-engineering` layer — run audit.ts
+ * surface, tool naming, and the config-gated MCP coverage excludes. The COMMON toolchain
+ * (aggregate/scoped audit wiring, direct code tools, tsconfig/biome, config-gated Vitest,
+ * the `bun test` trap, .env, and the cli-chmod rule) is the `ki-engineering` layer — run audit.ts
  * first; it is not re-checked here. This script also does NOT judge tool-naming quality,
  * layer purity, or the security invariants — those need a human/agent read of the code
  * (see references/audit-rubric.md). Output is grouped pass/warn/fail; exit non-zero if any FAIL.
@@ -114,7 +114,14 @@ else
     : add('FAIL', 'FILES', 'CHANGELOG.md is an empty stub — add a release entry (e.g. 1.0.0) or remove it', STD, 'CHANGELOG.md')
 
 // vitest config presence — located only so the MCP coverage-exclude check below can read it.
-const vitestFile = ['vitest.config.ts', 'vitest.config.js', 'vitest.config.mts'].find((f) => has(f))
+const vitestFile = [
+  'vitest.config.ts',
+  'vitest.config.js',
+  'vitest.config.mts',
+  'vitest.config.cts',
+  'vitest.config.mjs',
+  'vitest.config.cjs'
+].find((f) => has(f))
 
 // ── package.json ──────────────────────────────────────────────────────────────
 let pkg: Record<string, unknown> = {}
@@ -126,9 +133,9 @@ try {
 const scripts = (pkg.scripts ?? {}) as Record<string, string>
 const name = String(pkg.name ?? basename(repo))
 
-// ── CI delta: the smoke step. The common CI shape (mise-action + ki:lint:check / ki:lint:types /
-// ki:lint:md:check + test:coverage) is engineering's, asserted by audit.ts; the MCP
-// delta is the ki:test:smoke step appended after it.
+// ── CI delta: the smoke step. The common CI shape (mise-action + aggregate ki:audit +
+// runner-neutral test) is engineering's, asserted by audit.ts; the MCP delta is the
+// ki:test:smoke step appended after it.
 if (scripts['ki:test:smoke'] && has('.github', 'workflows', 'ci.yml')) {
   read('.github', 'workflows', 'ci.yml').includes('bun run ki:test:smoke')
     ? add('PASS', 'CI-1', 'ci.yml runs ki:test:smoke (MCP delta, after the common gate)', STD, '.github/workflows/ci.yml')
@@ -162,9 +169,9 @@ for (const k of ['.', './config', './package.json']) {
     : add('FAIL', 'PKG-1', `exports missing "${k}"`, STD, 'package.json')
 }
 
-// MCP scripts: only the ki:server:mcp:* surface is MCP-specific. The ki:lint:*/deps:*/build/clean/
-// test* families, the `bun test` trap, NODE_ENV-in-dev, and the cli-chmod rule are the common
-// engineering layer (audit.ts).
+// MCP scripts: only the ki:server:mcp:* surface is MCP-specific. Aggregate/scoped audit
+// wiring, lifecycle scripts, the `bun test` trap, NODE_ENV-in-dev, and the cli-chmod rule
+// are the common engineering layer (audit.ts).
 for (const k of ['ki:server:mcp:dev', 'ki:server:mcp:inspect', 'ki:server:mcp:start']) {
   scripts[k]
     ? add('PASS', 'SCR-1', `${k} present`, STD, 'package.json')

@@ -3,7 +3,7 @@ name: ki-website
 implies: [ki-website-cloudflare]
 vendors: [init, audit, conform, help]
 description: >-
-  Codifies, audits, and enforces the Knowledge Islands static-site standard: Eleventy 3 with Nunjucks and Markdown, TypeScript run natively on Bun, Tailwind 4 in config-less mode with semantic design tokens, and a portable `dist/` output. Use when building a new KI static site, auditing an existing site against the standard, conforming one to the standard, or scaffolding the initial `eleventy.config.ts`, Tailwind token pair, `src/` layout, and SEO wiring. Triggers: "audit my 11ty site", "does this site follow our standard", "scaffold a new 11ty site", "conform this site to KI standard", "build a static site with Eleventy", "my Tailwind build isn't generating any output", "add a page layout". Builds on ki-engineering (the Bun/lint/type/test toolchain) and ki-authoring (Markdown style); for deploying the built `dist/` to Cloudflare use ki-website-cloudflare. Not for Astro, Next, or other frameworks.
+  Codifies, audits, and enforces the Knowledge Islands static-site standard: Eleventy 3 with Nunjucks and Markdown, TypeScript run natively on Bun, Tailwind 4 in config-less mode with semantic design tokens, and a portable `dist/` output. Use when building a new KI static site, auditing an existing site against the standard, conforming one to the standard, or scaffolding the initial `eleventy.config.ts`, Tailwind token pair, `src/` layout, and SEO wiring. Triggers: "audit my 11ty site", "does this site follow our standard", "scaffold a new 11ty site", "conform this site to KI standard", "build a static site with Eleventy", "my Tailwind build isn't generating any output", "add a page layout". Builds on ki-engineering (the aggregate/scoped Bun code-toolchain gate) and ki-authoring (Markdown style); for deploying the built `dist/` to Cloudflare use ki-website-cloudflare. Not for Astro, Next, or other frameworks.
 argument-hint: 'audit <repo> | conform <repo> | help | init <repo> | refresh'
 ---
 
@@ -13,7 +13,7 @@ You are applying the **Knowledge Islands 11ty website standard** — the shared 
 
 This is a **standard, base-agnostic Process skill**. It hard-codes no single repo; it applies to any repo carrying a `[ki-website]` table in its `.ki-config.toml`. How it sits beside the other skills, and where it must not overlap them, is documented once in the ki-agentic-harness `README.md`.
 
-This skill owns the **site-build delta** only. The generic toolchain (Bun mandate, `ki:lint:*`/`ki:deps:*` families, `tsconfig`/`biome`/`tsc --noEmit`) is `ki-engineering`'s; Markdown/TOML style is `ki-authoring`'s; **serving the built `dist/`** on Cloudflare is `ki-website-cloudflare`'s. It **composes** on top of those rather than restating them.
+This skill owns the **site-build delta** only. The generic toolchain (Bun mandate, aggregate/scoped audit wiring, and direct `tsconfig`/Biome/TypeScript checks) is `ki-engineering`'s; Markdown/TOML style is `ki-authoring`'s; **serving the built `dist/`** on Cloudflare is `ki-website-cloudflare`'s. It **composes** on top of those rather than restating them.
 
 The full, quotable standard is [the Eleventy site standard](references/eleventy-site-standard.md); the line-by-line pass/fail items are in [the audit rubric](references/audit-rubric.md); the tracked provenance is [the source list](references/sources.md). A mechanical checker is [`scripts/audit.ts`](scripts/audit.ts). Read those for detail; this file is the operating procedure.
 
@@ -49,7 +49,7 @@ Four invariants define the standard — most findings are a breach of one:
 The checker is the **site-build layer**; the toolchain and hosting layers each audit their own. They compose by being **run in sequence**, never by importing each other (each skill is symlinked standalone):
 
 ```text
-ki:engineering:audit <repo>                          →  common toolchain (Bun, ki:lint:*/deps:*, tsconfig/biome)
+ki:engineering:audit <repo>                          →  common toolchain (aggregate/scoped wiring + direct code tools)
   then audit.ts <repo>                   →  site-build delta (THIS skill)
   then audit.ts <repo>         →  serving the dist/ (if the site is deployed to Cloudflare)
 ```
@@ -75,7 +75,7 @@ Carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT scaf
 
 1. Run **AUDIT** first, so you change against a known gap list.
 2. Fix the gaps in place — use the canonical shape from [the standard](references/eleventy-site-standard.md): the lean layout (§2–§5) and the fuller patterns (tokens, layouts, SEO — §5–§7) as needed. Add the `[ki-website]` table if missing (`bun scripts/audit.ts --init >> .ki-config.toml`).
-3. Re-run the checker; settle the repo's own `bun run ki:lint:*` / `ki:lint:types` (and `ki:lint:md` for any Markdown). For the toolchain block, run `ki-engineering`'s CONFORM; for the deploy block, `ki-website-cloudflare`'s.
+3. Re-run the checker and the relevant skill-scoped audits. For the toolchain block, run `ki-engineering`'s CONFORM; for Markdown run `ki-authoring`'s audit/conform; for the deploy block, `ki-website-cloudflare`'s.
 
 ### Mode INIT — scaffold a new site
 
@@ -96,7 +96,7 @@ The standard pins volatile versions (Eleventy, Tailwind, Lucide) and Tailwind-4 
 
 Reciprocal off-ramps — each names this skill back for the site-build layer:
 
-- **The Bun mandate, `ki:lint:*`/`ki:deps:*` families, `tsconfig`/`biome`, type-check** → `ki-engineering`. This skill owns the _site-build_ delta on top of that common layer; it references it, never restates it.
+- **The Bun mandate, aggregate/scoped audit wiring, direct code-tool execution, `tsconfig`/`biome`, and type-check** → `ki-engineering`. This skill owns the _site-build_ delta on top of that common layer; it references it, never restates it.
 - **Markdown / TOML formatting style** (including content prose) → `ki-authoring`.
 - **Serving the built `dist/`** — the `wrangler.jsonc`, Workers + Static Assets, custom domains, deploy scripts → `ki-website-cloudflare`. The `dist/` is the seam between the two.
 - **Any Worker that is not a static site** (bots, ingress receivers, APIs, Durable Objects), and general Cloudflare/Workers usage → the generic `cloudflare` / `wrangler` skills.

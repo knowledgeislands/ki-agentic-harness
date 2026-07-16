@@ -1,7 +1,7 @@
 ---
 id: '003'
 title: Reconcile rollout documentation
-status: open
+status: in-progress
 roadmap: foundation-tooling/reconcile-the-fleet-s-toolchain-prose-with-the-collapsed-toolchain
 blocks: foundation-tooling/004
 blocked-by: —

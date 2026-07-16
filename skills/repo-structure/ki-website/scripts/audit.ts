@@ -7,8 +7,8 @@
  *
  * Checks the SITE-BUILD DELTA of the standard the `ki-website` skill
  * codifies — the Eleventy/Nunjucks/Tailwind site that compiles to a portable dist/. It does
- * NOT check the common toolchain (Bun, the lint and deps script families, tsconfig/biome, the
- * type-check) — that is the `ki-engineering` layer; run audit.ts first. Nor does it
+ * NOT check the common toolchain (aggregate/scoped audit wiring, direct code-tool execution,
+ * tsconfig/biome, or the type-check) — that is the `ki-engineering` layer; run audit.ts first. Nor does it
  * check serving the dist/ — that is `ki-website-cloudflare`; run
  * audit.ts too if the site is deployed. The judgment items (tokens drive
  * the palette, _data is the single source of structure, SEO wired into base.njk) need a read

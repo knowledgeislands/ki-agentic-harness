@@ -18,9 +18,9 @@ function fixture(): string {
   return mkdtempSync(join(tmpdir(), 'ki-mcp-applicability-'))
 }
 
-function run(root: string): { code: number; findings: Array<{ level: string }>; summary: { fail: number; na: number } } {
+function run(root: string): { code: number; findings: Array<{ level: string; area: string }>; summary: { fail: number; na: number } } {
   const result = spawnSync(process.execPath, [AUDIT, root, '--json'], { encoding: 'utf8' })
-  const json = JSON.parse(result.stdout) as { findings: Array<{ level: string }>; summary: { fail: number; na: number } }
+  const json = JSON.parse(result.stdout) as { findings: Array<{ level: string; area: string }>; summary: { fail: number; na: number } }
   return { code: result.status ?? 1, ...json }
 }
 
@@ -54,6 +54,14 @@ for (const [label, arrange, assert] of [
     'structural marker without declaration runs the full audit',
     (root: string) => mkdirSync(join(root, 'src', 'mcp-server'), { recursive: true }),
     (r: ReturnType<typeof run>) => r.code !== 0 && r.summary.fail > 0 && r.summary.na === 0
+  ],
+  [
+    'vitest.config.cjs activates the MCP coverage delta',
+    (root: string) => {
+      writeFileSync(join(root, '.ki-config.toml'), '[ki-mcp]\n')
+      writeFileSync(join(root, 'vitest.config.cjs'), 'module.exports = {}\n')
+    },
+    (r: ReturnType<typeof run>) => r.findings.some((finding) => finding.area === 'TEST-1' && finding.level === 'WARN')
   ]
 ] as const) {
   const root = fixture()

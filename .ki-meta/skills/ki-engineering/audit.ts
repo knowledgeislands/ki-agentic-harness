@@ -162,7 +162,7 @@ missingDev.length
   ? add(
       'FAIL',
       'PKG-5',
-      `missing toolchain devDependencies: ${missingDev.join(', ')} (the lint:* / format / type toolchain the families invoke)`,
+      `missing toolchain devDependencies: ${missingDev.join(', ')} (the code and authoring tools the governance modes invoke)`,
       STD,
       'package.json'
     )
@@ -222,6 +222,14 @@ strayPins.length
 // retired: ki:audit IS the gate now (ADR-KI-HARNESS-TOOLCHAIN-001).
 if (has('.github', 'workflows', 'ci.yml')) {
   const ci = read('.github', 'workflows', 'ci.yml')
+  const commandIndex = (script: string): number => {
+    const escaped = script.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const command = new RegExp(
+      `(?:^[ \\t]*(?:-[ \\t]*)?(?:run:[ \\t]*)?|&&[ \\t]*|\\|\\|[ \\t]*|;[ \\t]*)(["']?)bun[ \\t]+run[ \\t]+${escaped}[ \\t]*\\1(?=[ \\t]*(?:&&|\\|\\||;|#|\\r?$))`,
+      'm'
+    )
+    return ci.search(command)
+  }
   const usesMise = /mise-action/.test(ci)
   usesMise
     ? add('PASS', 'CI-1', 'ci.yml installs the toolchain via jdx/mise-action', STD, '.github/workflows/ci.yml')
@@ -235,7 +243,8 @@ if (has('.github', 'workflows', 'ci.yml')) {
       STD,
       '.github/workflows/ci.yml'
     )
-  ci.includes('bun run ki:audit')
+  const auditIndex = commandIndex('ki:audit')
+  auditIndex >= 0
     ? add('PASS', 'CI-2', 'ci.yml runs the aggregate gate "bun run ki:audit"', STD, '.github/workflows/ci.yml')
     : add(
         'FAIL',
@@ -244,6 +253,20 @@ if (has('.github', 'workflows', 'ci.yml')) {
         STD,
         '.github/workflows/ci.yml'
       )
+  if (scripts.test) {
+    const testIndex = commandIndex('test')
+    if (testIndex < 0)
+      add(
+        'FAIL',
+        'CI-2',
+        'ci.yml must run the exact command "bun run test" after ki:audit when package.json exposes tests',
+        STD,
+        '.github/workflows/ci.yml'
+      )
+    else if (auditIndex >= 0 && auditIndex < testIndex)
+      add('PASS', 'CI-2', 'ci.yml runs the repository self-test suite "bun run test" after ki:audit', STD, '.github/workflows/ci.yml')
+    else add('FAIL', 'CI-2', 'ci.yml must run "bun run ki:audit" before "bun run test"', STD, '.github/workflows/ci.yml')
+  }
   if (/\bki:verify\b/.test(ci))
     add(
       'WARN',
@@ -375,8 +398,8 @@ bunTest.length
 // ── core: tsconfig.json (universal invariants only; richer base is profiled) ──
 // tsconfig may carry // comments (the website's does), so check by regex on text,
 // not JSON.parse. Only the invariants ALL repos share are core; the fuller shared
-// base (es2024, verbatimModuleSyntax, the noImplicit* family, vitest/globals types)
-// is checked under the compiled-build capability below.
+// base (es2024, verbatimModuleSyntax, the noImplicit* family, and config-gated
+// vitest/globals types) is checked under the compiled-build capability below.
 const ts = read('tsconfig.json')
 if (!ts) add('FAIL', 'TSC-2', 'tsconfig.json missing', STD, 'tsconfig.json')
 else {
@@ -449,15 +472,10 @@ const hasEnv = Boolean(envExample) || usesLoadEnv
 // ── core: capability tails + the bare test idiom (§2) ─────────────────────────
 // ki:audit / ki:conform are asserted above (the aggregate gate + write pass). A repo
 // with tests exposes the bare `test` idiom (the whole *.test.ts suite), run in CI after
-// ki:audit; a repo that produces a compiled build should fold `build` into its conform.
-{
-  const conform = scripts['ki:conform'] ?? ''
-  if (hasTests && !scripts.test)
-    add('FAIL', 'SCR-7', 'repo has tests but no bare "test" script (the whole *.test.ts suite, run after ki:audit)', STD, 'package.json')
-  else if (hasTests) add('PASS', 'SCR-7', 'bare "test" idiom present', STD, 'package.json')
-  if (hasBuild && !conform.includes('build'))
-    add('WARN', 'SCR-7', 'ki:conform should append " && bun run build" (compiled-build capability)', STD, 'package.json')
-}
+// ki:audit. Compiled builds remain the separate bare `build` lifecycle command.
+if (hasTests && !scripts.test)
+  add('FAIL', 'SCR-7', 'repo has tests but no bare "test" script (the whole *.test.ts suite, run after ki:audit)', STD, 'package.json')
+else if (hasTests) add('PASS', 'SCR-7', 'bare "test" idiom present', STD, 'package.json')
 
 // ── capability: tests ─────────────────────────────────────────────────────────
 // Vitest is the recommended runner and the ONLY one the coverage rules below apply to,

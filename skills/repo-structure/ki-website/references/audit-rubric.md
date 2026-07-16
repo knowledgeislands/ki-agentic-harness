@@ -6,7 +6,7 @@ Every criterion carries a stable **`WEB-N`** code — the identifier `audit.ts` 
 
 Severity: **FAIL** (ship-stopper — the site won't build or `dist/` isn't portable), **WARN** (layout / config / Tailwind divergence), **POLISH** (SEO / consistency) — the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](../../../foundations/ki-engineering/references/enforcement-framework.md) §2.
 
-> **Common toolchain → `ki-engineering`.** This rubric is the **site-build delta** only. The Bun mandate, the `ki:lint:*`/`ki:deps:*` families, `tsconfig`/`biome`, and the `tsc --noEmit` type-check are the common engineering layer — **run `ki:engineering:audit` first**. Serving the built `dist/` is **`ki-website-cloudflare`** — run its audit too if the site is deployed. The repo is fully clean only when every applicable audit passes.
+> **Common toolchain → `ki-engineering`.** This rubric is the **site-build delta** only. The Bun mandate, aggregate/scoped audit wiring, direct code-tool execution, `tsconfig`/`biome`, and TypeScript checking are the common engineering layer — **run `ki:engineering:audit` first**. Serving the built `dist/` is **`ki-website-cloudflare`** — run its audit too if the site is deployed. The repo is fully clean only when every applicable audit passes.
 
 Applicability: `[ki-website]` or an `eleventy.config.{ts,js,mjs,cjs}` at the repository root / `site/` activates the complete audit. With neither, **WEB-41** emits exactly one `NA` and stops; a declaration or config marker retains all existing failures and warnings. (§2)
 
@@ -78,7 +78,7 @@ Applicability: `[ki-website]` or an `eleventy.config.{ts,js,mjs,cjs}` at the rep
 
 - [ ] **WEB-30** [M] WARN — a build script invokes Eleventy with `--config=eleventy.config.ts`; a dev script runs Tailwind `--watch` + Eleventy `--serve --port 3000` via `concurrently`. (`ki:site:build`, `ki:site:dev`.) (§8)
 - [ ] **WEB-31** [M] WARN — the `concurrently` dev script fans out to `ki:site:dev:css` (the Tailwind watcher) and `ki:site:dev:serve` (the Eleventy server). (§8)
-- [ ] **WEB-32** [M] WARN — `ki:site:clean` present (mechanically checked); `ki:site:types` (`tsc --noEmit -p site`) and `ki:site:verify` (types + build) present, all `site:`-prefixed (judged). (§8)
+- [ ] **WEB-32** [M] WARN — `ki:site:clean` present. TypeScript checking belongs inside `ki:engineering:audit`; the aggregate gate is `ki:audit`, not a parallel site-specific verify script. (§8)
 
 ## dist/ contract (§9)
 

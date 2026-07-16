@@ -95,7 +95,7 @@ Skip this whole section for the filesystem/subprocess repos.
 - [ ] [J] WARN — _Remote resource-server role only — N/A to today's stdio repos; skip unless a server is deployed as a remote HTTP resource server._ RFC 8707 `resource` parameter bound into the token `aud`, and `aud` validated against the server's canonical URI before a token is accepted. (AUTH 2025-11-25; standard §13 item 7)
 - [ ] [J] WARN — _Authorization-server role only — N/A to today's stdio repos; skip unless a workspace component acts as an MCP authorization server._ Client ID Metadata Documents — AS declares `client_id_metadata_document_supported: true` and handles URL-formatted `client_id` (HTTPS fetch, exact `client_id` match, `redirect_uris` validation, SSRF mitigations). (AUTH 2025-11-25, SHOULD; standard §13 item 8)
 
-> **Common toolchain → `ki-engineering`.** The four sections below cover only the **MCP delta**. The generic toolchain — the `ki:lint:*`/`ki:deps:*` families, the `bun test` trap, `tsconfig`/`biome`/`vitest` shape with 100% coverage, the `.env*.example` template, the build/cli-chmod rule — is the common engineering layer; **run `ki:engineering:audit` first** for it. A repo is fully clean only when both audits pass.
+> **Common toolchain → `ki-engineering`.** The four sections below cover only the **MCP delta**. The generic toolchain — aggregate/scoped audit wiring, direct code-tool checks, the `bun test` trap, `tsconfig`/`biome`, config-gated Vitest, the `.env*.example` template, and the build/cli-chmod rule — is the common engineering layer; **run `ki:engineering:audit` first** for it. A repo is fully clean only when both audits pass.
 
 ## Bun vs Node
 
@@ -109,15 +109,15 @@ Skip this whole section for the filesystem/subprocess repos.
 - [ ] [M] FAIL — `SCR-1`: `ki:generate:client` script present (the mcporter typed-client codegen — required for every MCP). (references/workspace-mcp-standard.md)
 - [ ] [M] FAIL — `SCR-1`: where `src/auth-server/` exists, the `ki:server:auth:dev` / `ki:server:auth:start` pair is present (the OAuth delta). (references/workspace-mcp-standard.md)
 - [ ] [M] WARN — `SCR-1`: `ki:test:record` and `ki:test:replay` are defined together, or neither (the mcporter record/replay harness). (references/workspace-mcp-standard.md)
-- [ ] [M] WARN — `CI-1`: where the repo has a `ki:test:smoke` harness, `.github/workflows/ci.yml` runs `bun run ki:test:smoke` after the common gate. The common CI shape (mise-action + `ki:lint:check` / `ki:lint:types` / `ki:lint:md:check` / `test:coverage`) is `ki-engineering`'s (`ki:engineering:audit`); the smoke step is the MCP delta. (references/workspace-mcp-standard.md)
+- [ ] [M] WARN — `CI-1`: where the repo has a `ki:test:smoke` harness, `.github/workflows/ci.yml` includes `bun run ki:test:smoke` alongside the common aggregate `ki:audit` and runner-neutral `test` gate. The common CI shape is `ki-engineering`'s (`ki:engineering:audit`); the smoke step is the MCP delta. (references/workspace-mcp-standard.md)
 - [ ] [M] FAIL — `CI-2`: where a `ki:test:smoke` script is defined, `bun run ki:test:smoke` runs green (the smoke harness executes, not merely wired into CI). (references/workspace-mcp-standard.md)
 - [ ] [J] WARN — `src/generated/client.ts` is committed and not stale (the `ki:generate:client` presence itself is `[M]` above). `conform.ts` regenerates it automatically whenever the script is defined (no daemon needed — `mcporter emit-ts` spawns its own ephemeral process), so staleness should only surface between a tool-surface change and the next CONFORM run. If `conform.ts` reports the regen failed (server not registered, `dist/` stale), fix that first, then re-run `bun run ki:generate:client` by hand. The `<server-name>` argument in the script must match a registered mcporter instance — verify with `mcporter list`.
-- [ ] — `type`/`packageManager`/`engines`/`files`, the `ki:lint:*`/`ki:deps:*`/`build`/`clean`/`test*`/`prepare` families, and the build/cli-chmod rule are the **common engineering layer** (`ki:engineering:audit`); not re-checked here.
+- [ ] — `type`/`packageManager`/`engines`/`files`, aggregate/scoped audit wiring, lifecycle scripts, and the build/cli-chmod rule are the **common engineering layer** (`ki:engineering:audit`); not re-checked here.
 
 ## tsconfig / vitest / biome
 
-- [ ] [M] WARN — `TEST-1`: vitest coverage `exclude` covers the MCP wiring layers: `mcp-server/index.ts`, `tools/**/index.ts`, `utils/annotations.ts`, `src/generated/**`, and any printing/pure-data module (`cli/cli.ts`, `auth-server/**`). (references/workspace-mcp-standard.md)
-- [ ] — `tsconfig.json` / `tsconfig.build.json` / `biome.json` shape and the vitest 100% thresholds are the **common engineering layer** (`ki:engineering:audit`); not re-checked here.
+- [ ] [M] WARN — `TEST-1`: when the repository carries `vitest.config.*`, coverage `exclude` covers the MCP wiring layers: `mcp-server/index.ts`, `tools/**/index.ts`, `utils/annotations.ts`, `src/generated/**`, and any printing/pure-data module (`cli/cli.ts`, `auth-server/**`). Without a Vitest config this criterion is not applicable. (references/workspace-mcp-standard.md)
+- [ ] — `tsconfig.json` / `tsconfig.build.json` / `biome.json` shape and, when configured, the Vitest 100% thresholds are the **common engineering layer** (`ki:engineering:audit`); not re-checked here.
 
 ## .env.example & env
 

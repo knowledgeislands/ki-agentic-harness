@@ -21,7 +21,7 @@ Each governance skill is a directory of this shape (loaded on demand — keep `S
 - **`references/<domain>-standard.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like, and why.
 - **`references/audit-rubric.md`** — the line-by-line checkable criteria (§3).
 - **`references/sources.md`** — the tracked provenance (§4).
-- **a mechanical checker** in `scripts/` (→ `checker-contract.md`) — or, where the toolchain already enforces the mechanical half (authoring's `bun run ki:lint:md`), a pointer to it.
+- **a mechanical checker** in `scripts/` (→ `checker-contract.md`) — or, where another skill's checker enforces the mechanical half, a pointer to that skill-scoped audit.
 
 ## 2. The mechanical-checker contract
 

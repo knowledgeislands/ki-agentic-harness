@@ -1,6 +1,6 @@
 # Markdown authoring conventions
 
-The **judgment-layer** rules for the markdown we write across Knowledge Islands repos and bases — the choices a formatter can't make. Everything mechanical (prose wrapping, bullet and quote characters, heading hierarchy, single H1, list spacing) is owned by **Prettier + markdownlint-cli2**; run `bun run ki:lint:md` at the repo root and let it settle those. This file only covers what's left to a person.
+The **judgment-layer** rules for the markdown we write across Knowledge Islands repos and bases — the choices a formatter can't make. Everything mechanical (prose wrapping, bullet and quote characters, heading hierarchy, single H1, list spacing) is owned by **Prettier + markdownlint-cli2**; run `ki:authoring:conform` at the repo root and let that skill settle those. This file only covers what's left to a person.
 
 ## Contents
 
@@ -75,7 +75,7 @@ Learned applying this; bake them in:
 2. **Footnoting a column often isn't enough to reach `printWidth`.** A long `Source` URL still blows the row out; convert such URLs to **reference-style links** (`[text][ref]` in the cell, `[ref]: https://…` definitions collected at the file bottom).
 3. **When the long cell is content, not a URL,** reference links don't help — shorten the cell to a short label with a marker and move the full content to a **second-series (`※`) footnote**.
 4. **Watch for a pre-existing footnote series.** If a table already uses `†` for something (e.g. a date caveat), give the dominant content series the primary daggers and move the lone caveat to the `※` series so markers don't collide.
-5. **Author loosely, then `bun run ki:lint:md`.** Prettier re-aligns table padding (`MD060`) and markdownlint flags `MD052` (undefined reference) until the `[ref]:` defs land — both transient; the pass should end at 0 errors.
+5. **Author loosely, then run `ki:authoring:conform`.** Prettier re-aligns table padding (`MD060`) and markdownlint flags `MD052` (undefined reference) until the `[ref]:` defs land — both transient; the pass should end at 0 errors.
 
 ## Links
 

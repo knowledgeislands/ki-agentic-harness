@@ -50,8 +50,8 @@
  *     ki:generate:client, ki:server:auth:*, ki:test:record/replay) — copy from
  *     a sibling package.json, don't invent. (Once `ki:generate:client` exists,
  *     CONFORM does run it — see Fixes above.)
- *   - vitest coverage excludes (mcp-server/index.ts, tools/**, etc.) — repo's
- *     own vitest.config.ts, edit by hand.
+ *   - Vitest coverage excludes (mcp-server/index.ts, tools/**, etc.) — when the repo
+ *     carries vitest.config.*, edit that file by hand.
  *   - config/index.ts surface (loadConfig, process.loadEnvFile,
  *     ACCESS_LEVELS/ACCESS_LEVEL_RANK/AuditLogMode) — authoring judgment.
  *   - tool-naming conventions (<app>_<resource>_<action>) — renaming a
@@ -240,6 +240,14 @@ async function main() {
   }
 
   // ── judgment items — never guessed, always surfaced (ADVISORY, matching the audit areas) ──
+  const vitestFile = [
+    'vitest.config.ts',
+    'vitest.config.js',
+    'vitest.config.mts',
+    'vitest.config.cts',
+    'vitest.config.mjs',
+    'vitest.config.cjs'
+  ].find((file) => existsSync(join(target, file)))
   const judgment: [string, string, string?][] = [
     [
       'LAY-1',
@@ -251,11 +259,15 @@ async function main() {
       'MCP-specific npm scripts (ki:server:mcp:dev/inspect/start, ki:generate:client, ki:server:auth:* for dual-server MCPs, ki:test:record+ki:test:replay pair) — copy from a sibling package.json (audit "SCR-1" area)',
       'package.json'
     ],
-    [
-      'TEST-1',
-      'coverage excludes for mcp-server/index.ts, tools/**/index.ts, utils/annotations.ts, src/generated/** — edit vitest.config.ts by hand (audit "TEST-1" area)',
-      'vitest.config.ts'
-    ],
+    ...(vitestFile
+      ? ([
+          [
+            'TEST-1',
+            `coverage excludes for mcp-server/index.ts, tools/**/index.ts, utils/annotations.ts, src/generated/** — edit ${vitestFile} by hand (audit "TEST-1" area)`,
+            vitestFile
+          ]
+        ] as [string, string, string?][])
+      : []),
     [
       'CFG-1',
       'config/index.ts surface: loadConfig export, process.loadEnvFile call (resolved from import.meta.url, not cwd-relative), ACCESS_LEVELS/ACCESS_LEVEL_RANK/AuditLogMode references — authoring judgment (audit "CFG-1" area)',
