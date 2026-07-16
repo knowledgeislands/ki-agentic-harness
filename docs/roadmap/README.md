@@ -12,13 +12,7 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-### [foundation-tooling/004](foundation-tooling/plans/004-mcp-uniform-mode-rollout.md)
-
-- **Title:** Roll out uniform modes across MCP repositories
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/roll-out-the-uniform-mode-model-across-the-mcp-repositories`
-- **Status:** in-progress
-- **Blocks:** —
+No active plans.
 
 ## Dependency graph
 

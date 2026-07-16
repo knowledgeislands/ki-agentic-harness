@@ -8,10 +8,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Roll out the uniform mode model across the `mcp-*` repositories
-
-Build a read-only baseline for the six sibling MCP repositories, select one clean representative pilot, and prove the four-mode bootstrap recipe there before applying it repository by repository. Each repository gets a clean preflight, a local governed plan, focused tests, its surface-specific audit, and the aggregate audit. An unresolved writer blocks only the operation that needs it, not the baseline or unrelated rollout work.
-
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
