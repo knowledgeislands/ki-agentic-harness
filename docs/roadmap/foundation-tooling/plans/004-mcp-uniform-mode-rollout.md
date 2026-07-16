@@ -47,12 +47,14 @@ The pilot has 220 passing tests, a passing 13-tool smoke check, and a zero-failu
 
 `mcp-claude-housekeeping` applied the recipe unchanged in commits `e67466c` (roadmap adoption) and `891fc09` (governance migration). It reports 307 passing tests, a passing 39-tool smoke check, a zero-failure aggregate audit, and a passing bootstrap vendor-set audit. Its historical roadmap claimed the smoke test was absent, but the executable `scripts/smoke.ts`, package command, and CI step were already present; that documentation drift was corrected by the thematic roadmap adoption rather than expanded into feature work.
 
-| Repository                | Local plan                                  | Governance commit | Validation                                                     |
-| ------------------------- | ------------------------------------------- | ----------------- | -------------------------------------------------------------- |
-| `mcp-ki-kb-fs`            | Closed `foundation-tooling/001` (`0a0cec1`) | `c3315fa`         | 220 tests; 13-tool smoke; aggregate and bootstrap audits pass. |
-| `mcp-claude-housekeeping` | Closed `foundation-tooling/001` (`f3b7571`) | `891fc09`         | 307 tests; 39-tool smoke; aggregate and bootstrap audits pass. |
-| `mcp-git-audit`           | Closed `foundation-tooling/001` (`06a2d7c`) | `cb8e4f5`         | 161 tests; 12-tool smoke; aggregate and bootstrap audits pass. |
-| `mcp-ki-kb-notion-mirror` | Closed `foundation-tooling/001` (`7b63bbe`) | `6cfb271`         | 288 tests; 14-tool smoke; aggregate and bootstrap audits pass. |
+| Repository | Local plan | Governance commit | Validation |
+| --- | --- | --- | --- |
+| `mcp-ki-kb-fs` | Closed `foundation-tooling/001` (`0a0cec1`) | `c3315fa` | 220 tests; 13-tool smoke; aggregate and bootstrap audits pass. |
+| `mcp-claude-housekeeping` | Closed `foundation-tooling/001` (`f3b7571`) | `891fc09` | 307 tests; 39-tool smoke; aggregate and bootstrap audits pass. |
+| `mcp-git-audit` | Closed `foundation-tooling/001` (`06a2d7c`) | `cb8e4f5` | 161 tests; 12-tool smoke; aggregate and bootstrap audits pass. |
+| `mcp-ki-kb-notion-mirror` | Closed `foundation-tooling/001` (`7b63bbe`) | `6cfb271` | 288 tests; 14-tool smoke; aggregate and bootstrap audits pass. |
+| `mcp-m365` | Closed `foundation-tooling/001` (`d94206e`) | `460eb68` | 551 tests; 100% coverage; 32-tool smoke; aggregate and bootstrap audits pass. |
+| `mcp-gsuite` | Closed `foundation-tooling/001` (`25fc708`) | `2ea307c` | 464 tests; 42-tool smoke; aggregate and bootstrap audits pass. |
 
 ## Steps
 
@@ -61,8 +63,8 @@ The pilot has 220 passing tests, a passing 13-tool smoke check, and a zero-failu
 3. [x] Create a repository-local governed plan in the pilot, then record its executable audit/test baseline before mutation.
 4. [x] Re-bootstrap the pilot, reconcile only the expected aggregate/scoped package aliases and uniform skill-mode surfaces, then run its focused tests, self-test, artifact audit, and aggregate audit.
 5. [x] Review the pilot diff and failures; update the migration recipe in this coordinating plan. Escalate any harness defect back to this repository rather than patching around it per consumer.
-6. For each remaining clean repository, create a local plan and apply the proven recipe. Use separate worktrees only where concurrent writes to the same repository are otherwise unavoidable; never mix unrelated dirty state.
-7. Record the final six-repository acceptance matrix and close this coordinating plan only when every in-scope repository is clean or carries a named external blocker.
+6. [x] For each remaining clean repository, create a local plan and apply the proven recipe. Use separate worktrees only where concurrent writes to the same repository are otherwise unavoidable; never mix unrelated dirty state.
+7. [x] Record the final six-repository acceptance matrix and close this coordinating plan only when every in-scope repository is clean or carries a named external blocker.
 
 ## Files touched
 
