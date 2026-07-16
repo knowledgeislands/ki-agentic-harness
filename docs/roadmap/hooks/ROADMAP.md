@@ -4,6 +4,10 @@
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
+### Harden durable hook-installer publication
+
+Close the migration and race-safety gaps in the shipped durable hook-payload installer before a user-environment manager binds the payload into Claude Code settings. Preserve unknown user-owned files, migrate only proven legacy harness links, bind verification to the published file identities, and prove staging and publication failures leave no unsafe partial state.
+
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.

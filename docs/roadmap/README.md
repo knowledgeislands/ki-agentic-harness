@@ -28,6 +28,14 @@ Canonical themes and active execution plans.
 - **Status:** open
 - **Blocks:** —
 
+### [hooks/001](hooks/plans/001-harden-durable-hook-installer.md)
+
+- **Title:** Harden durable hook-installer publication
+- **Theme:** `hooks`
+- **Roadmap item:** `hooks/harden-durable-hook-installer-publication`
+- **Status:** in-progress
+- **Blocks:** —
+
 ## Dependency graph
 
 ```text
