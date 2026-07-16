@@ -14,7 +14,7 @@ Understood and roughly scoped but not yet started — worth doing once the **Nex
 
 ### Govern the shipped Claude Code hooks as `ki-claude-hooks`
 
-Create a governance skill and checker for the already-shipped Plan Mode lifecycle hooks, stale Git-lock guard, settings installation, and linker contract. The work is to codify ownership, fail-safe behaviour, portability limits, tests, and audit expectations around the current surface; it does not redesign the hooks. Sequence it after the remaining linker-publication hardening.
+Create a governance skill and checker for the already-shipped Plan Mode lifecycle hooks, stale Git-lock guard, settings installation, and linker contract. Close the remote-delivery gap explicitly: the per-repository `curl | sh` bootstrap runs from a disposable tarball and cannot leave hook symlinks pointing into that source, so provide a separate one-time GitHub-backed global install leg that copies or version-stamps the Claude Code hook payload under `~/.claude/hooks/` and merge-patches `~/.claude/settings.json`. Do not make every repository bootstrap—or a parallel `mgit` fleet run—race to mutate the same global settings. Codify ownership, fail-safe behaviour, runtime selection, portability limits, tests, and audit expectations around the resulting surface without redesigning the hook behaviour. Sequence it after the remaining linker-publication hardening.
 
 ## Waiting for
 
