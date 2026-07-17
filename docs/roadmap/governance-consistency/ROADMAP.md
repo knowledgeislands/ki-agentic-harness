@@ -8,6 +8,14 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
+### Rename `ki-project-roadmap` to `ki-repo-roadmap`
+
+Rename the roadmap skill to describe its repository-level scope without implying that every non-KB repository is a conventional project. Define a safe migration for the canonical skill directory and frontmatter, references, installation/linking, generated guidance, configuration, tests, and the existing `ki-plan` composition. Until that work is delivered, use the currently installed `ki-project-roadmap` name as authoritative; do not add an alias or change existing consumers opportunistically.
+
+### Prefix plan identifiers with stable theme codes
+
+Extend the then-current roadmap skill so every theme has a stable short code and plan filenames and references use `<THEME>-<NNN>` — for example, `FND-003-enforce-checker-json-contract.md` in `foundation-tooling`. Update the standard, plan parser, generated index, dependency references, and audit/conform rules together. Decide the safe migration of existing plan ids before renaming any current plan; do not alter an in-progress plan's identity opportunistically.
+
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
@@ -15,6 +23,10 @@ Understood and roughly scoped but not yet started — worth doing once the **Nex
 ### Codify convention placement and the knowledge-promotion loop
 
 Define one runtime-neutral routing reference and manual promotion loop that prevents useful knowledge becoming trapped in session or project memory: ephemeral agent memory → project guidance or an on-demand guide → shared governance or reference material → a reusable skill. For each rung, state what belongs there, the evidence that triggers promotion, the durable destination, and the reconciliation step that removes or redirects the lower-layer duplicate. Keep `AGENTS.md` as the portable orientation, reserve runtime files such as `CLAUDE.md` for runtime-specific imports and guidance, and route genuinely personal cross-project conventions to synchronized user configuration. Do not add automatic transcript mining or a new guide area by default.
+
+### Make the first decision record adopt Decision Records
+
+Extend `ki-decision-records` so the first decision record in a repository is always the record that adopts Decision Records. Define its required decision type, title, and index position; update the NEW guidance, exemplars, and audit rules so a new collection cannot begin with an unrelated decision. Preserve existing collections as migration cases rather than renumbering or rewriting their records automatically.
 
 ## Waiting for
 
@@ -35,7 +47,3 @@ Select one named repository with externally visible behaviour and an owner, then
 ### Review the skill dependency graph and implementation quality _(candidate)_
 
 Build one complete dependency graph for every skill relationship: declared composition and `implies:` edges, documentation and reference links, configuration ownership, subprocess or import edges, and generated or vendored runtime dependencies. Use it to review skills in dependency order from roots to dependants, covering each skill's `SKILL.md`, references, scripts, tests, and generated surfaces. Prefer executable, versioned source files inside the skill — including schemas — referenced from documentation, rather than making Markdown code blocks the only source of truth; retain short examples only where they clarify use. Record concrete repairs as separately scoped plans rather than turning this review into an unbounded rewrite.
-
-### Prefix plan identifiers with stable theme codes _(candidate)_
-
-Extend `ki-project-roadmap` so every theme has a stable short code and plan filenames and references use `<THEME>-<NNN>` — for example, `FND-003-enforce-checker-json-contract.md` in `foundation-tooling`. Update the standard, plan parser, generated index, dependency references, and audit/conform rules together. Decide the safe migration of existing plan ids before renaming any current plan; do not alter an in-progress plan's identity opportunistically.
