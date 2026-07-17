@@ -35,3 +35,7 @@ Select one named repository with externally visible behaviour and an owner, then
 ### Review the skill dependency graph and implementation quality _(candidate)_
 
 Build one complete dependency graph for every skill relationship: declared composition and `implies:` edges, documentation and reference links, configuration ownership, subprocess or import edges, and generated or vendored runtime dependencies. Use it to review skills in dependency order from roots to dependants, covering each skill's `SKILL.md`, references, scripts, tests, and generated surfaces. Prefer executable, versioned source files inside the skill — including schemas — referenced from documentation, rather than making Markdown code blocks the only source of truth; retain short examples only where they clarify use. Record concrete repairs as separately scoped plans rather than turning this review into an unbounded rewrite.
+
+### Prefix plan identifiers with stable theme codes _(candidate)_
+
+Extend `ki-project-roadmap` so every theme has a stable short code and plan filenames and references use `<THEME>-<NNN>` — for example, `FND-003-enforce-checker-json-contract.md` in `foundation-tooling`. Update the standard, plan parser, generated index, dependency references, and audit/conform rules together. Decide the safe migration of existing plan ids before renaming any current plan; do not alter an in-progress plan's identity opportunistically.

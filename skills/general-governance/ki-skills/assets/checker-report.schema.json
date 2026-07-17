@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledgeislands.dev/schemas/checker-report/v1.json",
+  "title": "Knowledge Islands canonical checker report",
+  "description": "The machine-readable result of one governance skill audit or conform run.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "mode", "concern", "target", "generatedAt", "summary", "findings"],
+  "properties": {
+    "version": { "const": 1 },
+    "mode": { "enum": ["audit", "conform"] },
+    "concern": { "type": "string", "minLength": 1 },
+    "target": { "type": "string", "minLength": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fail", "warn", "polish", "advisory", "info", "na", "pass"],
+      "properties": {
+        "fail": { "type": "integer", "minimum": 0 },
+        "warn": { "type": "integer", "minimum": 0 },
+        "polish": { "type": "integer", "minimum": 0 },
+        "advisory": { "type": "integer", "minimum": 0 },
+        "info": { "type": "integer", "minimum": 0 },
+        "na": { "type": "integer", "minimum": 0 },
+        "pass": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "level", "code", "rule", "message"],
+        "properties": {
+          "type": { "enum": ["M", "J"] },
+          "level": { "enum": ["FAIL", "WARN", "POLISH", "ADVISORY", "INFO", "NA", "PASS"] },
+          "code": { "type": "string", "minLength": 1 },
+          "rule": { "type": "string", "minLength": 1 },
+          "message": { "type": "string", "minLength": 1 },
+          "ref": { "type": "string", "minLength": 1 },
+          "file": { "type": "string", "minLength": 1 }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "type": { "const": "J" } } },
+            "then": { "properties": { "level": { "const": "ADVISORY" } }, "required": ["ref"] }
+          }
+        ]
+      }
+    }
+  }
+}
