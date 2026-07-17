@@ -24,6 +24,10 @@ The exclusion policy is already decided and applied in examples. Add only the mi
 
 Review the `ki-agentic-harness` repository as the active skill-authoring environment, separately from ordinary consumer repositories. Decide and verify that its own runtime skill directories use development symlinks to the canonical `skills/` sources by default, while consumer repositories continue to receive regenerated regular-file copies. Cover every supported runtime, safe replacement of stale copies or links, and the audit/conform signal when the harness is not in its expected development-linked state.
 
+### Make vendored EDUCATE operations standalone and dispatchable
+
+Replace the current bootstrap-only re-sync meaning of `ki-educate` with a dispatch surface over vendored per-skill EDUCATE operations. Each copied EDUCATE payload must be a target-local, standalone operation—not the current harness-relative seed delegator—so `./.ki-meta/bin/ki-educate <skill>` can run it without a harness checkout while the no-skill form continues to re-bootstrap the governed set. Resolve the present mismatch where `vendors:` declares `educate` but bootstrap deliberately omits it, then test the per-skill and whole-set paths without retaining the retired omission as a compatibility branch.
+
 ### Rename the vendored mechanical surface to `.ki-meta/checkers`
 
 Migrate the self-contained audit/conform payload from `.ki-meta/skills/` to `.ki-meta/checkers/`, making clear that it is a runtime-neutral checker surface rather than an installed agent-skill directory. Update bootstrap, aggregate runners, manifests, audit/conform rules, documentation, tests, and generated exclusions together; retain `.claude/skills` and `.agents/skills` as the separate runtime instruction surfaces. Provide one deliberate migration path for existing repositories and do not leave both layouts as permanent compatibility paths.

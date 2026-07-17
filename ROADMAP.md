@@ -13,6 +13,7 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 - [Foundation Tooling: Enforce generated-code exclusions in `ki-engineering`](docs/roadmap/foundation-tooling/ROADMAP.md#enforce-generated-code-exclusions-in-ki-engineering)
 - [Foundation Tooling: Establish canonical checker reporter and enforce cited findings](docs/roadmap/foundation-tooling/ROADMAP.md#establish-canonical-checker-reporter-and-enforce-cited-findings)
 - [Foundation Tooling: Make governance identifiers readable and navigable](docs/roadmap/foundation-tooling/ROADMAP.md#make-governance-identifiers-readable-and-navigable)
+- [Foundation Tooling: Make vendored EDUCATE operations standalone and dispatchable](docs/roadmap/foundation-tooling/ROADMAP.md#make-vendored-educate-operations-standalone-and-dispatchable)
 - [Foundation Tooling: Rename the vendored mechanical surface to `.ki-meta/checkers`](docs/roadmap/foundation-tooling/ROADMAP.md#rename-the-vendored-mechanical-surface-to-ki-metacheckers)
 - [Foundation Tooling: Review harness self-installation of KI skills](docs/roadmap/foundation-tooling/ROADMAP.md#review-harness-self-installation-of-ki-skills)
 - [Governance Consistency: Prefix plan identifiers with stable theme codes](docs/roadmap/governance-consistency/ROADMAP.md#prefix-plan-identifiers-with-stable-theme-codes)
