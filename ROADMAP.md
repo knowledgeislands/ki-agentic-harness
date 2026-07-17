@@ -24,6 +24,7 @@ Understood and roughly scoped but not yet started — worth doing once the **Nex
 
 - [Foundation Tooling: Harden global runtime skill publication](docs/roadmap/foundation-tooling/ROADMAP.md#harden-global-runtime-skill-publication)
 - [Governance Consistency: Codify convention placement and the knowledge-promotion loop](docs/roadmap/governance-consistency/ROADMAP.md#codify-convention-placement-and-the-knowledge-promotion-loop)
+- [Governance Consistency: Create `ki-repo-review` as a human-led process skill](docs/roadmap/governance-consistency/ROADMAP.md#create-ki-repo-review-as-a-human-led-process-skill)
 - [Governance Consistency: Make the first decision record adopt Decision Records](docs/roadmap/governance-consistency/ROADMAP.md#make-the-first-decision-record-adopt-decision-records)
 - [Runtime Portability: Route multi-machine harness state through durable homes](docs/roadmap/runtime-portability/ROADMAP.md#route-multi-machine-harness-state-through-durable-homes)
 
