@@ -12,6 +12,10 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 
 - [Foundation Tooling: Enforce generated-code exclusions in `ki-engineering`](docs/roadmap/foundation-tooling/ROADMAP.md#enforce-generated-code-exclusions-in-ki-engineering)
 - [Foundation Tooling: Establish canonical checker reports and enforce cited findings](docs/roadmap/foundation-tooling/ROADMAP.md#establish-canonical-checker-reports-and-enforce-cited-findings)
+- [Foundation Tooling: Make governance identifiers readable and navigable](docs/roadmap/foundation-tooling/ROADMAP.md#make-governance-identifiers-readable-and-navigable)
+- [Foundation Tooling: Rename the vendored mechanical surface to `.ki-meta/checkers`](docs/roadmap/foundation-tooling/ROADMAP.md#rename-the-vendored-mechanical-surface-to-ki-metacheckers)
+- [Foundation Tooling: Review harness self-installation of KI skills](docs/roadmap/foundation-tooling/ROADMAP.md#review-harness-self-installation-of-ki-skills)
+- [Governance Consistency: Codify the self-governing checker-contract root](docs/roadmap/governance-consistency/ROADMAP.md#codify-the-self-governing-checker-contract-root)
 
 ## Soon
 
@@ -37,6 +41,7 @@ Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass
 - [Foundation Tooling: Codify Git workflow and commit conventions _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#codify-git-workflow-and-commit-conventions-candidate)
 - [Foundation Tooling: Document per-skill `.ki-config.toml` ownership _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#document-per-skill-ki-configtoml-ownership-candidate)
 - [Foundation Tooling: Inventory non-critical writers for bounded follow-up _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#inventory-non-critical-writers-for-bounded-follow-up-candidate)
+- [Governance Consistency: Prefix plan identifiers with stable theme codes _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#prefix-plan-identifiers-with-stable-theme-codes-candidate)
 - [Governance Consistency: Review the skill dependency graph and implementation quality _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#review-the-skill-dependency-graph-and-implementation-quality-candidate)
 - [Governance Consistency: Roll Feature Definitions out across the repository fleet _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#roll-feature-definitions-out-across-the-repository-fleet-candidate)
 - [Governance Consistency: Separate Knowledge Islands policy from portable governance _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#separate-knowledge-islands-policy-from-portable-governance-candidate)

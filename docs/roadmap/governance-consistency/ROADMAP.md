@@ -8,6 +8,10 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
+### Codify the self-governing checker-contract root
+
+Define `ki-skills` as the root of the checker-contract system, not as the sole root of every governance concern. Add a feature requirement, rubric criterion, and decision record proving that it self-governs, has no checker-support dependency on itself, and runs from its own shipped files. Reconcile this boundary with the controlled vendored-support design before migrating dependent checkers.
+
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
