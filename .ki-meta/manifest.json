@@ -1,12 +1,12 @@
 {
-  "ref": "422b52fec047a5ac634171b80f932b5875f4efd2",
+  "ref": "bff81e4b5f9b9b12ec2fece0f3153accd2559a71",
   "files": {
     ".ki-meta/skills/ki-agents/audit.ts": "dec60076397b1786695c6e66c9b7276e87e48f984c85dc48282bd5654d3c1ad8",
     ".ki-meta/skills/ki-agents/conform.ts": "ab12216285dde19153a1f9da6b41ba45ecc725f2dc923a07a50d7504aa158a4a",
     ".ki-meta/skills/ki-agents/help.md": "1e8a5617d470fab7029bf0286b0207dd5e3c4ce8d2f9bee40250ab40da30bc40",
     ".ki-meta/skills/ki-authoring/audit.ts": "af7b0b53be68f2a908e61249704d26dd38b7e425995e41f04fd5b97ad3898b5c",
     ".ki-meta/skills/ki-authoring/conform.ts": "2974ebd08eeb477ceaa6d6e27538e0d51ab0f69527300a94c995e491013f4bc8",
-    ".ki-meta/skills/ki-authoring/vendored/ki-skills/checker-reporter.ts": "2e528263e3ba82a31f7f9a22193cf5feb3a5a126f3df1684848d9c8e6a7858d0",
+    ".ki-meta/skills/ki-authoring/vendored/ki-skills/checker-reporter.ts": "fbfbec6f3091e631d8a130dae9166a64d2976ee36d2f66fab9e01630c83fdb95",
     ".ki-meta/skills/ki-authoring/help.md": "2eaed57639dba4200bc06850d16e8bc2b430fa2fd29180ab9c0cec96e8434fe7",
     ".ki-meta/skills/ki-decision-records/audit.ts": "87e05fa9a197b452699d17411d1a4fcf8a7268008f1859960984808d11e74e75",
     ".ki-meta/skills/ki-decision-records/conform.ts": "d183add00779f493ad636211d4dc2f3e0f70758b03cc86e09af6928cc51a162c",
