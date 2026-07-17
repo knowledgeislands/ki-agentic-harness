@@ -16,10 +16,6 @@ Bring the remaining checker JSON-contract exceptions into the already-decided si
 
 The exclusion policy is already decided and applied in examples. Add only the missing mechanical enforcement: when generated or vendored trees exist, AUDIT must require the matching Biome, knip, and Markdown exclusions.
 
-### Document generated-write boundaries
-
-Document the ownership, generated-marker, copying-versus-development-link, `.gitignore`, preservation, and migration boundaries already implemented for bootstrap, scaffold, and project-link surfaces. Do not reopen race hardening or treat deliberate local development links as hostile deployment input.
-
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.

@@ -11,7 +11,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
 - [Foundation Tooling: Complete cited JSON checker-contract conformance and enforce CHK-009/CHK-012](docs/roadmap/foundation-tooling/ROADMAP.md#complete-cited-json-checker-contract-conformance-and-enforce-chk-009chk-012)
-- [Foundation Tooling: Document generated-write boundaries](docs/roadmap/foundation-tooling/ROADMAP.md#document-generated-write-boundaries)
 - [Foundation Tooling: Enforce generated-code exclusions in `ki-engineering`](docs/roadmap/foundation-tooling/ROADMAP.md#enforce-generated-code-exclusions-in-ki-engineering)
 
 ## Soon
