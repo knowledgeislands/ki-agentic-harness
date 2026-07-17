@@ -24,19 +24,11 @@ Canonical themes and active execution plans.
 - **Title:** Establish canonical checker reports and enforce cited findings
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/establish-canonical-checker-reports-and-enforce-cited-findings`
-- **Status:** open (needs governance-consistency/001)
-- **Blocks:** —
-
-### [governance-consistency/001](governance-consistency/plans/001-codify-checker-contract-root.md)
-
-- **Title:** Codify the self-governing checker-contract root
-- **Theme:** `governance-consistency`
-- **Roadmap item:** `governance-consistency/codify-the-self-governing-checker-contract-root`
 - **Status:** in-progress
-- **Blocks:** foundation-tooling/003
+- **Blocks:** —
 
 ## Dependency graph
 
 ```text
-governance-consistency/001 ──► foundation-tooling/003
+No dependencies.
 ```

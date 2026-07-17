@@ -406,6 +406,18 @@ function lintSkill(skillDir: string): Finding[] {
   if (hint !== undefined && !/(^|[|\s'"])help([|\s'"]|$)/.test(hint))
     fail('SHAPE-11', '`argument-hint` does not expose the universal `help` mode (ADR-KI-HARNESS-SKILLS-001)')
 
+  // ROOT-1 [M]: ki-skills is the checker-contract root. It provides the report
+  // builder from its own shipped files, and never requires a copied support module
+  // from itself or another skill.
+  if (name === 'ki-skills') {
+    const supports = parseListValue(fm.keys.get('checker-supports'))
+    const requires = parseListValue(fm.keys.get('checker-requires'))
+    if (!supports.includes('checker-report')) fail('ROOT-1', '`ki-skills` must expose `checker-report` under `checker-supports:`')
+    if (!existsSync(join(skillDir, 'scripts', 'checker-report.ts')))
+      fail('ROOT-1', '`ki-skills` must ship `scripts/checker-report.ts` from its own files')
+    if (requires.length > 0) fail('ROOT-1', '`ki-skills` is the checker-contract root and must not declare `checker-requires:`')
+  }
+
   // --- body size (SIZE-1/SIZE-2 soft → WARN) ---
   const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
 

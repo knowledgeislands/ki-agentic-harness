@@ -23,6 +23,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const LINTER = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
+const SKILL_ROOT = dirname(LINTER)
 
 let failed = false
 function check(label: string, cond: boolean): void {
@@ -61,6 +62,20 @@ function run(dir: string): string {
 }
 
 const withFooter = (skill: string) => `console.log('→ to address: run /${skill} CONFORM   (judgment criteria: references/rubric.md)')\n`
+
+// ── ROOT-1: ki-skills owns the checker contract without a self-dependency ─────
+{
+  check('checker-contract root → no ROOT-1 fail', !run(SKILL_ROOT).includes('ROOT-1'))
+}
+
+{
+  const { base, dir } = fixture('ki-skills', withFooter('ki-skills'))
+  try {
+    check('missing checker-contract root declaration → ROOT-1 fail', run(dir).includes('ROOT-1'))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
 
 // ── Checker ships the footer naming its own skill → no SHAPE-8 warn ──
 {

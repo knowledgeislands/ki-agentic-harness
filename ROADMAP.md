@@ -15,7 +15,6 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 - [Foundation Tooling: Make governance identifiers readable and navigable](docs/roadmap/foundation-tooling/ROADMAP.md#make-governance-identifiers-readable-and-navigable)
 - [Foundation Tooling: Rename the vendored mechanical surface to `.ki-meta/checkers`](docs/roadmap/foundation-tooling/ROADMAP.md#rename-the-vendored-mechanical-surface-to-ki-metacheckers)
 - [Foundation Tooling: Review harness self-installation of KI skills](docs/roadmap/foundation-tooling/ROADMAP.md#review-harness-self-installation-of-ki-skills)
-- [Governance Consistency: Codify the self-governing checker-contract root](docs/roadmap/governance-consistency/ROADMAP.md#codify-the-self-governing-checker-contract-root)
 
 ## Soon
 

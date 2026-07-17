@@ -1,10 +1,10 @@
 ---
 id: '003'
 title: Establish canonical checker reports and enforce cited findings
-status: open
+status: in-progress
 roadmap: foundation-tooling/establish-canonical-checker-reports-and-enforce-cited-findings
 blocks: —
-blocked-by: governance-consistency/001
+blocked-by: —
 ---
 
 ## Context

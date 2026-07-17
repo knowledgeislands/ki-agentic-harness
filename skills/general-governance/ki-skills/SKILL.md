@@ -2,6 +2,7 @@
 name: ki-skills
 implies: []
 vendors: [educate, audit, conform, help]
+checker-supports: [checker-report]
 description: >
   Audit, review, and write Agent Skills against current best practice. Use when creating a new skill, reviewing or critiquing an existing SKILL.md, checking a skill before it ships, asking "is this skill any good / well-written / discoverable", or refreshing the house rubric against new community guidance. Carries a checkable rubric (split into mechanical checks a bundled linter runs, and judgment checks you apply), the Knowledge Islands skill conventions, and a tracked source list it revisits. Triggers: "audit this skill", "review my skill", "is this SKILL.md good", "write a new skill", "scaffold a skill", "lint the skills", "check skills against best practice", "refresh the skills rubric", "what do we expect from a skill". Judges a `SKILL.md` itself (frontmatter + body prose), not a repo's code or config. Off-ramps: `ki-agents` (subagent defs), `ki-mcp` (server code), `ki-authoring` (Markdown/TOML style), `ki-harness` (bundle layout).
 argument-hint: 'audit <skill-or-repo> | conform <skill> | help | educate <description> | optimise <skill> | refresh'
