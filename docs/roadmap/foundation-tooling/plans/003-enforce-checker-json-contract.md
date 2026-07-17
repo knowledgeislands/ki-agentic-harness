@@ -1,7 +1,7 @@
 ---
 id: '003'
 title: Establish canonical checker reports and enforce cited findings
-status: open
+status: in-progress
 roadmap: foundation-tooling/establish-canonical-checker-reports-and-enforce-cited-findings
 blocks: —
 blocked-by: —
@@ -9,7 +9,7 @@ blocked-by: —
 
 ## Context
 
-An audit checker is a governance skill's small deterministic `scripts/audit.ts` program: it verifies the mechanical portion of that skill's standard and returns findings for the shared aggregate.
+An audit checker is a governance skill's small deterministic `scripts/audit.ts` program: it verifies the mechanical portion of that skill's standard, then returns its results and explicit prompts for the judgment portion in one report for the shared aggregate.
 
 Every checker needs one canonical report object so the bootstrap aggregate can render a consistent human view without each checker inventing its own presentation.
 
@@ -33,10 +33,10 @@ The aggregate receives canonical reports and owns presentation; a direct checker
 
 ## Steps
 
-1. [ ] Move the checker-report contract into `ki-skills` and name it plainly: **canonical checker report**. Define one versioned report object containing `concern`, `target`, `generatedAt`, `summary`, and `findings`; every finding has a recognised level, stable `code`, human-readable `rule` title, and `message`, with optional citation and file fields. Keep existing identifiers such as `CHK-004` as stable traceability keys, but render the title first — for example, `Canonical checker report (CHK-004)` — rather than displaying a bare code.
+1. [ ] Move the checker-report contract into `ki-skills` and name it plainly: **canonical checker report**. Define one versioned report object containing `mode` (`audit` or `conform`), `concern`, `target`, `generatedAt`, `summary`, and `findings`; every finding has `type` (`M` or `J`), a recognised level, stable `code`, human-readable `rule` title, and `message`, with optional citation and file fields. The same envelope applies to both modes: an `M` finding reports observed state during AUDIT and an action or resulting state during CONFORM. A `J` finding is an explicit judgment-review prompt and always uses `ADVISORY`, so it never changes the process exit status. Keep existing identifiers such as `CHK-004` as stable traceability keys, but render code then title — for example, `CHK-004: Canonical checker report` — rather than displaying a bare code.
 2. [ ] Add a source-harness contract test under `ki-skills` that discovers every shipped `scripts/audit.ts`, invokes it against the harness with no output-format flag, and names the emitting checker on every failure. Keep the collector read-only: it must neither alter audited content nor write report files.
-3. [ ] Validate every canonical report: one parseable JSON object; non-empty concern, target, and timestamp; every lowercased severity key in `summary`; and findings with a recognised level, code, rule title, and message. Require summary counts and process exit status to agree with the findings.
-4. [ ] Parse the emitting skill's own `references/rubric.md` to collect its declared codes and criterion titles. For every FAIL, WARN, and POLISH finding, require its `code` and `rule` to resolve to that rubric and require a non-empty citation; if a finding names a file, require a non-empty file value. PASS, INFO, NA, and ADVISORY remain exempt from the citation requirement while still conforming to the report shape.
+3. [ ] Validate every canonical report: one parseable JSON object; a valid audit or conform mode; non-empty concern, target, and timestamp; every lowercased severity key in `summary`; and findings with a valid type, recognised level, code, rule title, and message. Require summary counts and process exit status to agree with the findings; `J` findings must be `ADVISORY` and cannot affect that exit status.
+4. [ ] Parse the emitting skill's own `references/rubric.md` to collect each declared code, criterion title, and `[M]`/`[J]` type. Require every finding's type, code, and rule title to resolve to that rubric; require every `[J]` criterion to appear once as a cited `J`/`ADVISORY` review prompt, so the full audit scope arrives in one report. For every FAIL, WARN, POLISH, or `J` finding, require a non-empty citation; if a finding names a file, require a non-empty file value. PASS, INFO, NA, and `M`/ADVISORY findings remain exempt from the citation requirement while still conforming to the report shape.
 5. [ ] Reject a message that begins with its own code, rule title, file path or basename, or a `[J]:` marker: the aggregate already renders those facts in separate columns. Use focused synthetic reports for each rejection plus a clean report so the assertion is independently tested.
 6. [ ] Migrate every shipped audit and conform checker to emit the canonical report by default, remove their `--json` branches, and change the bootstrap aggregate to invoke checkers without that flag. Remove its native-display fallback: malformed checker output becomes a clear aggregate failure, not silently different presentation. Preserve the single aggregate renderer, checker self-containment, and each mode's explicit write controls such as `--dry-run`.
 7. [ ] Repair only concrete source-checker or rubric violations the collection test exposes. Do not add cross-skill imports, a new shared runtime library, or compatibility shims for the retired output switch.
@@ -56,9 +56,9 @@ The aggregate receives canonical reports and owns presentation; a direct checker
 ## Verify
 
 - The new `ki-skills` source-harness test runs every shipped audit checker with its normal invocation and names the emitter for every malformed report or contract breach.
-- Every emitted FAIL, WARN, and POLISH finding maps its stable code and readable rule title to that skill's rubric and carries a citation; malformed report fields, inaccurate summaries, and exit/finding disagreement fail the test.
+- Every emitted finding maps its type, stable code, and readable rule title to that skill's rubric. Every declared `[J]` criterion appears once as a cited `J`/`ADVISORY` review prompt; FAIL, WARN, and POLISH findings also carry citations. Malformed report fields, inaccurate summaries, and exit/finding disagreement fail the test.
 - No emitted message repeats its own code, rule title, file/path basename, or a `[J]:` prefix.
-- Audit and conform scripts emit canonical reports by default, and the aggregate's human output derives solely from those reports.
+- Audit and conform scripts emit the same canonical report envelope by default, distinguished by `mode`; the aggregate's human output derives solely from those reports.
 - The focused contract test, then `bun run test`, then `bun run ki:audit` pass sequentially.
 
 ## Dependencies / blocks

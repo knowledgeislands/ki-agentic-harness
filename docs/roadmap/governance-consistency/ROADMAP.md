@@ -31,3 +31,7 @@ Write a compact boundary matrix separating portable contract, Knowledge Islands 
 ### Roll Feature Definitions out across the repository fleet _(candidate)_
 
 Select one named repository with externally visible behaviour and an owner, then pilot the format there. Do not begin fleet rollout before that pilot exists.
+
+### Review the skill dependency graph and implementation quality _(candidate)_
+
+Build one complete dependency graph for every skill relationship: declared composition and `implies:` edges, documentation and reference links, configuration ownership, subprocess or import edges, and generated or vendored runtime dependencies. Use it to review skills in dependency order from roots to dependants, covering each skill's `SKILL.md`, references, scripts, tests, and generated surfaces. Prefer executable, versioned source files inside the skill — including schemas — referenced from documentation, rather than making Markdown code blocks the only source of truth; retain short examples only where they clarify use. Record concrete repairs as separately scoped plans rather than turning this review into an unbounded rewrite.

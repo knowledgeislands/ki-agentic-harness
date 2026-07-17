@@ -24,7 +24,7 @@ Canonical themes and active execution plans.
 - **Title:** Establish canonical checker reports and enforce cited findings
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/establish-canonical-checker-reports-and-enforce-cited-findings`
-- **Status:** open
+- **Status:** in-progress
 - **Blocks:** —
 
 ## Dependency graph
