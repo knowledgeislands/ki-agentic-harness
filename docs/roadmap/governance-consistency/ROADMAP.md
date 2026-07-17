@@ -51,3 +51,7 @@ Select one named repository with externally visible behaviour and an owner, then
 ### Review the skill dependency graph and implementation quality _(candidate)_
 
 Build one complete dependency graph for every skill relationship: declared composition and `implies:` edges, documentation and reference links, configuration ownership, subprocess or import edges, and generated or vendored runtime dependencies. Use it to review skills in dependency order from roots to dependants, covering each skill's `SKILL.md`, references, scripts, tests, and generated surfaces. Prefer executable, versioned source files inside the skill — including schemas — referenced from documentation, rather than making Markdown code blocks the only source of truth; retain short examples only where they clarify use. Record concrete repairs as separately scoped plans rather than turning this review into an unbounded rewrite.
+
+### Add engineering change value profiles to the verb map _(candidate)_
+
+Define a compact, evidence-backed way to compare engineering changes without collapsing them into one misleading score. The profile should cover new capability, comprehensibility, maintenance reduction from duplicated or divergent implementation, reliability and risk reduction, leverage across repositories or agents, and delivery cost and reversibility. Decide which dimensions belong on each work verb or plan, how claims become measurable evidence, and how the profile informs roadmap ordering without becoming ceremony for small fixes.
