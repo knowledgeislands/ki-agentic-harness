@@ -4,6 +4,13 @@ Used by Mode AUDIT. These are the criteria for the **memory area**, the one area
 
 **[M]** = mechanical, checker-enforced (see [`scripts/audit.ts`](../scripts/audit.ts)). **[J]** = judgment, applied by reading; the checker may surface these as ADVISORY but never FAILs or WARNs on them.
 
+## Repository-local companion
+
+- **[M] SELF-1** For every recognised runtime declared by `[ki-repo].target_runtimes`, the repository contains the `ki-self` payload at that runtime's discovery path: `.claude/skills/ki-self/SKILL.md` for `claude-code`; `.agents/skills/ki-self/SKILL.md` for `codex`. Missing is a WARN. A symlink or non-regular file is a FAIL.
+- **[M] SELF-2** Each present payload declares `name: ki-self`. A mismatch is a FAIL.
+- **[M] SELF-3** When several recognised runtimes are declared, their `ki-self` payloads are byte-identical. Drift is a FAIL.
+- **[J] SELF-4** The local skill gives its repository an intelligible local-concerns contract: regular work has a repeatable check or procedure; semi-regular human review has a ledger such as `HOUSEKEEPING.md`; one-off work remains on the roadmap; cross-repository patterns graduate to a named shared skill.
+
 ## Index/file agreement
 
 - **[M] IDX-1** `MEMORY.md` exists in the resolved memory directory. Missing is a FAIL (a non-empty `memory/` with no index is unusable).

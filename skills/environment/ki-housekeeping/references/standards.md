@@ -38,3 +38,11 @@ The server is governed as an MCP server by `ki-mcp`; this skill is its standard-
 - **Not** the token cost of the standing-context surface — that is `ki-tokenomics`, which measures what the loaded surface costs per turn rather than the hygiene of what accumulates on disk.
 - **Not** the MCP server's own code quality — that is `ki-mcp`, which audits `mcp-claude-housekeeping` as server code.
 - **Not** a repository's own local concerns — repeatable repository checks, semi-regular human review, and repository-specific maintenance belong to its repo-local `ki-self` governance skill. `ki-self audit` is the local-housekeeping audit for those concerns; a pattern that repeats across repositories graduates into a named shared Knowledge Islands skill. `ki-housekeeping` expects this companion boundary but does not install or manage a repo's local skill.
+
+### The `ki-self` companion contract
+
+Every governed repository is expected to carry `ki-self` as a committed local governance skill for its local concerns. The contract is runtime-neutral: read only `[ki-repo].target_runtimes`, never scan runtime directories for an inferred “latest” or preferred location. The discovery paths are `.claude/skills/ki-self/SKILL.md` for `claude-code` and `.agents/skills/ki-self/SKILL.md` for `codex`.
+
+Each declared runtime's payload is an owned regular file, never a symlink, with `name: ki-self`. When more than one declared runtime is supported, the payload bytes are identical so the same local governance interface travels with the repository. The `ki-housekeeping` checker reports absence as a WARN, unsafe or misidentified payloads as FAIL, and does not inspect the repository-specific local concerns themselves.
+
+CONFORM does not manufacture a local ledger, audit procedures, or a `ki-self` body: those are local authoring decisions. `ki-self EDUCATE` establishes them when the repository needs them, and `ki-self CONFORM` handles their later source-state remediation.

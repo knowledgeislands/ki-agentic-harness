@@ -16,6 +16,8 @@ For a Knowledge Islands repo, `.claude/skills/` contains exactly:
 
 > **the skills the repo declares** (`[ki-<skill>]` tables in `.ki-config.toml`, its foundations `ki-repo` + `ki-authoring` among them), minus `ki-bootstrap` itself (which is global). There is no injected baseline — coverage is purely what the config declares.
 
+The one deliberate exception is a valid repo-local `ki-self` directory. It is committed source, not a generated declaration or an indexed harness skill: it contains a regular `SKILL.md` declaring `name: ki-self`, is preserved by publication and ignored by generated-coverage reconciliation, and is governed by `ki-housekeeping`'s companion contract. Every other unfamiliar `ki-*` entry remains a fail-closed migration blocker.
+
 - **Declared coverage** is owned by `ki-repo`'s coverage cascade. Bootstrap reads the root owner from exact and dotted tables but injects nothing; whether the declared set is correct is a `ki-repo` question.
 - **Resolution is strict.** Every declared root must exist in the ref-specific harness skill index. An unresolved root is a sorted FAIL in check, write, and dry-run modes before any link mutation; it is never filtered from a partial set and never auto-renamed.
 - **The harness** (`ki-agentic-harness`) is not special here: it links its own declared coverage like any repo. It _authors_ every skill (their source lives in its `skills/`), but a structural skill (`ki-mcp`, `ki-website`, …) is exercised against a repo of its type, not loaded in the harness — so linking the whole fleet would only add standing context cost for no authoring gain (ADR-KI-HARNESS-007).

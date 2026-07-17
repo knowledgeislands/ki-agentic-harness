@@ -73,8 +73,9 @@ export function runtimeAgentsDir(runtime: string): string {
 }
 
 export function gitignoresPath(gitignore: string, path: string): boolean {
-  const pattern = new RegExp(`^${path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/?$`)
-  return gitignore.split(/\r?\n/).some((l) => pattern.test(l.trim()))
+  const escaped = path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const patterns = [new RegExp(`^${escaped}/?$`), new RegExp(`^${escaped}/\\*$`)]
+  return gitignore.split(/\r?\n/).some((line) => patterns.some((pattern) => pattern.test(line.trim())))
 }
 
 // Append a generated-links ignore for `path` (e.g. `.claude/skills`) if the .gitignore

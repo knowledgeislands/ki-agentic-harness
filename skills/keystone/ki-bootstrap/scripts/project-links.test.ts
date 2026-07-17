@@ -38,11 +38,18 @@ function fixture(runtimes = ['claude-code']): string {
   return root
 }
 
-function run(root: string, env: Record<string, string> = {}): ReturnType<typeof spawnSync> {
-  return spawnSync('bun', [LINKER, root], {
+function run(root: string, env: Record<string, string> = {}, args: string[] = []): ReturnType<typeof spawnSync> {
+  return spawnSync('bun', [LINKER, ...args, root], {
     encoding: 'utf8',
     env: { ...process.env, ...env, ...(env.KI_PROJECT_LINKS_TEST_SKILLS_ROOT ? { NODE_ENV: 'test' } : {}) }
   })
+}
+
+function writeLocalKiSelf(root: string, runtime: 'claude-code' | 'codex'): string {
+  const path = join(root, runtime === 'claude-code' ? '.claude' : '.agents', 'skills', 'ki-self', 'SKILL.md')
+  mkdirSync(dirname(path), { recursive: true })
+  writeFileSync(path, ['---', 'name: ki-self', 'description: Local concerns.', '---', '', '# KI Self', ''].join('\n'))
+  return path
 }
 
 function fakeSkillsRoot(): { root: string; skill: string; nested: string } {
@@ -104,6 +111,30 @@ try {
   )
 } finally {
   rmSync(normal, { recursive: true, force: true })
+}
+
+const localSelf = fixture(['claude-code', 'codex'])
+try {
+  const claudeSelf = writeLocalKiSelf(localSelf, 'claude-code')
+  const codexSelf = writeLocalKiSelf(localSelf, 'codex')
+  writeFileSync(
+    join(localSelf, '.gitignore'),
+    '.claude/skills/*\n!.claude/skills/ki-self/\n!.claude/skills/ki-self/**\n.agents/skills/*\n!.agents/skills/ki-self/\n!.agents/skills/ki-self/**\n'
+  )
+  const result = run(localSelf)
+  check('valid local ki-self → publication succeeds', result.status === 0)
+  check('valid local ki-self → both regular payloads are preserved', lstatSync(claudeSelf).isFile() && lstatSync(codexSelf).isFile())
+  const checked = run(localSelf, {}, ['--check'])
+  check(
+    'valid local ki-self → generated-coverage check accepts the exception',
+    checked.status === 0 && !checked.stdout.includes('[BOOT-1]')
+  )
+  check(
+    'valid local ki-self → wildcard ignores are accepted without rewriting',
+    !/^(?:\.claude|\.agents)\/skills\/?$/m.test(readFileSync(join(localSelf, '.gitignore'), 'utf8'))
+  )
+} finally {
+  rmSync(localSelf, { recursive: true, force: true })
 }
 
 const blocker = fixture()

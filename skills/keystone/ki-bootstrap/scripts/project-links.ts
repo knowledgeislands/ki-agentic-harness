@@ -63,6 +63,7 @@ const SKILLS_ROOT = resolve(
 const HARNESS_ROOT = resolve(SCRIPTS, '..', '..', '..', '..')
 const AGENTS_ROOT = join(HARNESS_ROOT, 'agents', 'governance')
 const BOOTSTRAP = 'ki-bootstrap'
+const LOCAL_GOVERNANCE_SKILL = 'ki-self'
 const GENERATED_SKILL_MARKER = '.ki-generated-runtime-skill'
 type SkillMarker = { schema: 1; skill: string; source: string; integrity: string }
 
@@ -220,6 +221,17 @@ function managedSkillPayload(path: string, skill: string, source: string): boole
   return linkResolvesTo(path, source) || generatedSkillCopy(path, skill, source)
 }
 
+// ki-self is the one deliberately committed project-local governance skill. It is
+// not part of the harness index or declared coverage, so the publisher must leave
+// a valid local payload alone while retaining its fail-closed behaviour for every
+// other unfamiliar ki-* entry.
+function localKiSelfPayload(path: string): boolean {
+  const root = entry(path)
+  if (root?.kind !== 'dir') return false
+  const skill = entry(join(path, 'SKILL.md'))
+  return skill?.kind === 'file' && /^name:\s*ki-self\s*$/m.test(skill.bytes?.toString('utf8') ?? '')
+}
+
 let skills: Map<string, string> | undefined
 function skillIndex(): Map<string, string> {
   if (skills) return skills
@@ -333,7 +345,9 @@ function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: Pr
           if (!found || desired.has(name)) continue
           const source = index.get(name)
           const managed = source && managedSkillPayload(destination, name, source)
-          if (name.startsWith('ki-') && !managed) throw new Error(`refusing to remove unfamiliar project skill payload at ${destination}`)
+          if (name.startsWith('ki-') && !managed && !(name === LOCAL_GOVERNANCE_SKILL && localKiSelfPayload(destination))) {
+            throw new Error(`refusing to remove unfamiliar project skill payload at ${destination}`)
+          }
           if (managed && !plan.links.some((item) => item.destination === destination)) {
             plan.removes.push({ destination, label: `${subdir}/${name}`, before: found })
             plan.guards.push({ path: destination, before: found, label: `${subdir}/${name}` })
@@ -573,7 +587,7 @@ function printCheck(target: string, scope: ProjectLinkScope): number {
         const source = skillIndex().get(name)
         return !source || !copiesSource(join(dir, name), name, source)
       })
-      const extra = present.filter((name) => !wanted.has(name))
+      const extra = present.filter((name) => !wanted.has(name) && !(name === LOCAL_GOVERNANCE_SKILL && localKiSelfPayload(join(dir, name))))
       const links = present.filter((name) => entry(join(dir, name))?.kind === 'link')
       for (const orphan of orphans)
         console.log(`  ${RED}FAIL${RESET}  [BOOT-1] .ki-config.toml declares [${orphan}] but no such skill exists in the harness`)

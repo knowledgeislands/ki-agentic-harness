@@ -23,7 +23,7 @@ Its universal modes apply at local scale:
 - **CONFORM** runs AUDIT first, then proposes and—only after confirmation—applies the appropriate source-state remediation.
 - **REFRESH** retires resolved concerns and promotes either a recurring cross-repository pattern into a named Knowledge Islands skill or multi-step change work into the repository roadmap.
 
-`ki-housekeeping` recognises this boundary: it governs accumulated machine state, while `ki-self` governs the repository-local concerns that sit beside it. The [single-page skills illustration](../../diagrams/skills-map.svg) shows `ki-self` outside the shared harness cluster, with its universal modes and any local commands, plus a promotion edge back to a named shared skill.
+`ki-housekeeping` recognises this boundary: it governs accumulated machine state, while `ki-self` governs the repository-local concerns that sit beside it. The [single-page skills illustration](../../diagrams/skills-map.svg) shows `ki-self` outside the shared harness cluster, with its universal modes and any local commands, plus a promotion edge back to a named shared skill. Its [interactive companion](../../diagrams/skills-map.html) adds purpose tooltips and direct-relationship tracing without changing the canonical SVG map.
 
 ## The six clusters
 

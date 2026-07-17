@@ -11,7 +11,8 @@
  * exit-code, and flag contract every checker in this repo follows.
  */
 
-import { mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises'
+import { readFileSync } from 'node:fs'
+import { lstat, mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { basename, join, resolve } from 'node:path'
 
@@ -36,6 +37,14 @@ const SEV_LABELS: Record<Sev, string> = {
 }
 
 const VALID_TYPES = new Set(['user', 'feedback', 'project', 'reference'])
+
+// A governed repository may declare either runtime. This is deliberately a small
+// consumer contract rather than a bootstrap implementation: ki-self is authored
+// locally, and its two runtime payloads are committed regular files.
+const RUNTIME_SKILL_PATHS: Record<string, string> = {
+  'claude-code': '.claude/skills/ki-self/SKILL.md',
+  codex: '.agents/skills/ki-self/SKILL.md'
+}
 
 interface Finding {
   id: string
@@ -65,6 +74,9 @@ const REF_BY_ID: Record<string, string> = {
   'FM-4': REF_MEMORY_FORMAT,
   'FM-5': REF_MEMORY_FORMAT,
   'LINK-1': REF_MEMORY_FORMAT,
+  'SELF-1': REF_STANDARD,
+  'SELF-2': REF_STANDARD,
+  'SELF-3': REF_STANDARD,
   SUMMARY: REF_RUBRIC
 }
 
@@ -76,6 +88,67 @@ function resolveMemoryDir(repoArg: string | undefined): string {
   const repoAbs = resolve(repoArg ?? process.cwd())
   const slug = slugifyRepoPath(repoAbs)
   return join(homedir(), '.claude', 'projects', slug, 'memory')
+}
+
+function declaredTargetRuntimes(repoRoot: string): string[] | null {
+  let config: string
+  try {
+    config = readFileSync(join(repoRoot, '.ki-config.toml'), 'utf8')
+  } catch {
+    return null
+  }
+
+  const match = config.match(/^target_runtimes\s*=\s*\[([^\]]*)\]/m)
+  if (!match) return ['claude-code']
+  const runtimes = [...match[1].matchAll(/["']([^"']+)["']/g)].map((entry) => entry[1])
+  return runtimes.length > 0 ? runtimes : ['claude-code']
+}
+
+async function auditKiSelf(repoRoot: string, add: (id: string, severity: Sev, file: string, message: string) => void): Promise<void> {
+  const runtimes = declaredTargetRuntimes(repoRoot)
+  if (!runtimes) {
+    add('SELF-1', Sev.NA, '.ki-config.toml', 'no governed-repository config — repo-local ki-self companion is not applicable')
+    return
+  }
+
+  const payloads = new Map<string, string>()
+  for (const runtime of runtimes) {
+    const relativePath = RUNTIME_SKILL_PATHS[runtime]
+    if (!relativePath) continue // ki-repo owns validation of an unknown runtime declaration.
+    const payloadPath = join(repoRoot, relativePath)
+    let payload: string
+    try {
+      const kind = await lstat(payloadPath)
+      if (!kind.isFile() || kind.isSymbolicLink()) {
+        add(
+          'SELF-1',
+          Sev.FAIL,
+          relativePath,
+          `ki-self payload for declared ${runtime} runtime must be an owned regular file, not a symlink`
+        )
+        continue
+      }
+      payload = await readFile(payloadPath, 'utf8')
+    } catch {
+      add('SELF-1', Sev.WARN, relativePath, `missing repo-local ki-self payload for declared ${runtime} runtime`)
+      continue
+    }
+    if (!/^name:\s*ki-self\s*$/m.test(payload)) {
+      add('SELF-2', Sev.FAIL, relativePath, 'repo-local skill payload must declare name: ki-self')
+      continue
+    }
+    payloads.set(runtime, payload)
+  }
+
+  if (payloads.size === runtimes.filter((runtime) => RUNTIME_SKILL_PATHS[runtime]).length && payloads.size > 0) {
+    const [canonicalRuntime, canonicalPayload] = payloads.entries().next().value as [string, string]
+    const mismatched = [...payloads.entries()].filter(([, payload]) => payload !== canonicalPayload).map(([runtime]) => runtime)
+    if (mismatched.length > 0) {
+      add('SELF-3', Sev.FAIL, 'ki-self', `runtime payloads differ: ${canonicalRuntime} is not identical to ${mismatched.join(', ')}`)
+    } else {
+      add('SELF-1', Sev.PASS, 'ki-self', `repo-local ki-self payload present for declared runtime(s): ${[...payloads.keys()].join(', ')}`)
+    }
+  }
 }
 
 function parseFrontmatter(content: string): Record<string, unknown> | null {
@@ -112,10 +185,13 @@ async function main() {
   // --memory-dir points the checker at an explicit store (used by the test harness and
   // for auditing a memory directory directly); otherwise derive it from the repo path.
   const memoryDir = memDirArg ? resolve(memDirArg) : resolveMemoryDir(repoArg)
+  const repoRoot = resolve(repoArg ?? process.cwd())
   const repoName = basename(resolve(repoArg ?? process.cwd()))
   const findings: Finding[] = []
   const add = (id: string, severity: Sev, file: string, message: string) =>
     findings.push({ id, severity, file, message, ref: REF_BY_ID[id] })
+
+  await auditKiSelf(repoRoot, add)
 
   let dirExists = true
   try {

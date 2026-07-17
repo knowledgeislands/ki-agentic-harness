@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Knowledge Islands skills map</title>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --canvas: #fbfcfe;
+        --ink: #172033;
+        --muted: #52647a;
+        --line: #8192a8;
+        --panel: #ffffff;
+        --keystone: #57a775;
+        --foundation: #9566d2;
+        --structure: #5b9bd5;
+        --governance: #db8a45;
+        --family: #cf6c98;
+        --environment: #43a69f;
+        --process: #748095;
+        --local: #c39600;
+        --mechanical: #8192a8;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --canvas: #121720;
+          --ink: #edf2fa;
+          --muted: #b8c2d1;
+          --line: #8290a3;
+          --panel: #1d2531;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--canvas);
+        color: var(--ink);
+        font:
+          15px/1.45 system-ui,
+          sans-serif;
+      }
+      main {
+        max-width: 1400px;
+        margin: auto;
+        padding: 1.25rem;
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+      p {
+        margin: 0.35rem 0 1rem;
+        color: var(--muted);
+      }
+      #map {
+        width: 100%;
+        min-height: 680px;
+        display: block;
+        border: 1px solid color-mix(in srgb, var(--line) 45%, transparent);
+        border-radius: 0.75rem;
+        background: var(--panel);
+      }
+      .edge {
+        fill: none;
+        stroke: var(--line);
+        stroke-width: 1.4;
+        opacity: 0.72;
+      }
+      .edge.is-muted,
+      .node.is-muted {
+        opacity: 0.13;
+      }
+      .edge.is-active {
+        stroke: var(--ink);
+        stroke-width: 2.5;
+        opacity: 1;
+      }
+      .node {
+        cursor: pointer;
+      }
+      .node circle {
+        stroke: var(--panel);
+        stroke-width: 2.5;
+      }
+      .node text {
+        fill: var(--ink);
+        font-size: 12px;
+        font-weight: 550;
+        pointer-events: none;
+      }
+      .group-label {
+        fill: var(--muted);
+        font-size: 12px;
+        font-weight: 650;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      #detail {
+        min-height: 3.5rem;
+        margin-top: 0.9rem;
+        padding: 0.85rem 1rem;
+        border-left: 4px solid var(--line);
+        background: color-mix(in srgb, var(--panel) 92%, var(--canvas));
+      }
+      #detail strong {
+        display: block;
+      }
+      #detail span {
+        color: var(--muted);
+      }
+      #tooltip {
+        position: fixed;
+        z-index: 1;
+        max-width: 19rem;
+        padding: 0.6rem 0.75rem;
+        border-radius: 0.45rem;
+        background: var(--ink);
+        color: var(--canvas);
+        font-size: 0.88rem;
+        pointer-events: none;
+        opacity: 0;
+        transform: translate(-50%, calc(-100% - 12px));
+        transition: opacity 120ms ease;
+      }
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem 1rem;
+        margin: 0.5rem 0 1rem;
+        color: var(--muted);
+        font-size: 0.86rem;
+      }
+      .legend span::before {
+        content: '';
+        display: inline-block;
+        width: 0.7rem;
+        height: 0.7rem;
+        margin-right: 0.35rem;
+        border-radius: 50%;
+        background: var(--swatch);
+      }
+      @media (max-width: 680px) {
+        main {
+          padding: 0.75rem;
+        }
+        #map {
+          min-height: 780px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Knowledge Islands skills</h1>
+      <p>Hover for purpose; select a skill to trace its direct relationships.</p>
+      <div class="legend" aria-label="Skill group legend"></div>
+      <svg id="map" role="img" aria-labelledby="map-title map-description" viewBox="0 0 1240 720">
+        <title id="map-title">Knowledge Islands skills and their direct relationships</title>
+        <desc id="map-description">
+          An interactive map of shared governance and process skills, their mechanical arms, and the repository-local ki-self companion.
+        </desc>
+      </svg>
+      <section id="detail" aria-live="polite"><strong>Select a skill</strong><span>Its scope and direct relationships will appear here.</span></section>
+      <div id="tooltip" role="tooltip"></div>
+    </main>
+    <script>
+      const groups = [
+        ['keystone', 'Keystone'],
+        ['foundation', 'Foundations'],
+        ['structure', 'Repository structure'],
+        ['governance', 'General governance'],
+        ['family', 'Implied families'],
+        ['environment', 'Environment'],
+        ['process', 'Process skills'],
+        ['local', 'Repository-local governance'],
+        ['mechanical', 'Mechanical arms']
+      ]
+      const nodes = [
+        ['ki-bootstrap', 'keystone', 'Installs governance, links declared skills, and vendors checkers.'],
+        ['ki-repo', 'keystone', 'Governs repository structure, settings, and the KI config marker.'],
+        ['ki-authoring', 'foundation', 'Shared Markdown and TOML authoring conventions.'],
+        ['ki-engineering', 'foundation', 'Toolchain, tests, and checker contract.'],
+        ['ki-harness', 'structure', 'Agentic-harness repository shape.'],
+        ['ki-kb', 'structure', 'Knowledge-base shape.'],
+        ['ki-website', 'structure', 'Website repository shape.'],
+        ['ki-mcp', 'structure', 'MCP server shape.'],
+        ['ki-plugins', 'structure', 'Plugin marketplace shape.'],
+        ['ki-tools', 'structure', 'Standalone CLI shape.'],
+        ['ki-homebrew-tap', 'structure', 'Formula repository shape.'],
+        ['ki-dotfiles-chezmoi', 'structure', 'Managed user-environment source repository.'],
+        ['ki-skills', 'governance', 'Quality standard for SKILL.md files.'],
+        ['ki-agents', 'governance', 'Quality standard for governance agents.'],
+        ['ki-decision-records', 'governance', 'Architecture and significant-decision records.'],
+        ['ki-feature-definitions', 'governance', 'Feature behavioural definitions.'],
+        ['ki-project-roadmap', 'governance', 'Thematic forward work.'],
+        ['ki-handoffs', 'governance', 'Implementation-ready handoffs.'],
+        ['ki-kb-activities', 'family', 'KB activity family.'],
+        ['ki-kb-live-artifacts', 'family', 'KB live-artifact family.'],
+        ['ki-kb-streams', 'family', 'KB stream lifecycle family.'],
+        ['ki-website-cloudflare', 'family', 'Cloudflare deployment companion.'],
+        ['ki-binding-chezmoi', 'family', 'ChezMoi render path for MCP binding.'],
+        ['ki-binding', 'environment', 'MCP binding across runtime surfaces.'],
+        ['ki-housekeeping', 'environment', 'Accumulated machine-state hygiene.'],
+        ['ki-tokenomics', 'environment', 'Standing context cost and token economics.'],
+        ['ki-recap', 'process', 'Live-session recap and outstanding-work harvest.'],
+        ['ki-plan', 'process', 'Governed plan lifecycle.'],
+        ['ki-delegate', 'process', 'Tiered work decomposition and review gates.'],
+        ['ki-self', 'local', 'Repository-local governance: AUDIT, CONFORM, EDUCATE, REFRESH, plus local diagnostic commands.'],
+        ['local concerns', 'local', 'Ledger, focused audits, and repository-specific maintenance.'],
+        ['checkers', 'mechanical', 'Audit, conform, and test mechanical arms.'],
+        ['.ki-meta', 'mechanical', 'Vendored checkers and runners.'],
+        ['mcp-claude-housekeeping', 'mechanical', 'Access-gated machine-state tools.'],
+        ['hooks', 'mechanical', 'Runtime hook payloads.']
+      ].map(([id, group, description]) => ({ id, group, description }))
+      const edges = [
+        ['ki-bootstrap', 'ki-repo', 'implies'],
+        ['ki-repo', 'ki-authoring', 'implies'],
+        ['ki-harness', 'ki-skills', 'implies'],
+        ['ki-harness', 'ki-agents', 'implies'],
+        ['ki-harness', 'ki-decision-records', 'implies'],
+        ['ki-harness', 'ki-project-roadmap', 'implies'],
+        ['ki-kb', 'ki-kb-activities', 'implies'],
+        ['ki-kb', 'ki-kb-live-artifacts', 'implies'],
+        ['ki-kb', 'ki-kb-streams', 'implies'],
+        ['ki-website', 'ki-website-cloudflare', 'implies'],
+        ['ki-dotfiles-chezmoi', 'ki-authoring', 'implies'],
+        ['ki-binding-chezmoi', 'ki-binding', 'composes'],
+        ['ki-binding-chezmoi', 'ki-dotfiles-chezmoi', 'composes'],
+        ['ki-plan', 'ki-project-roadmap', 'drives'],
+        ['ki-delegate', 'ki-plan', 'executes'],
+        ['ki-housekeeping', 'mcp-claude-housekeeping', 'judges'],
+        ['ki-housekeeping', 'ki-self', 'recognises'],
+        ['ki-self', 'local concerns', 'audits'],
+        ['ki-self', 'ki-skills', 'promotes patterns into'],
+        ['ki-skills', 'checkers', 'governs'],
+        ['checkers', '.ki-meta', 'vendored into'],
+        ['ki-binding', 'hooks', 'binds runtime']
+      ].map(([source, target, label]) => ({ source, target, label }))
+      const byId = new Map(nodes.map((node) => [node.id, node]))
+      const color = (group) => `var(--${group})`
+      const svg = d3.select('#map')
+      const width = 1240,
+        height = 720
+      const groupIndex = new Map(groups.map(([id], index) => [id, index]))
+      const perGroup = new Map(groups.map(([id]) => [id, 0]))
+      nodes.forEach((node) => {
+        const index = perGroup.get(node.group)
+        perGroup.set(node.group, index + 1)
+        node.x = 90 + (groupIndex.get(node.group) % 3) * 510 + (index % 3) * 145
+        node.y = 86 + Math.floor(groupIndex.get(node.group) / 3) * 215 + Math.floor(index / 3) * 54
+        node.homeX = node.x
+        node.homeY = node.y
+      })
+      const legend = d3.select('.legend')
+      legend
+        .selectAll('span')
+        .data(groups)
+        .join('span')
+        .style('--swatch', ([id]) => color(id))
+        .text(([, label]) => label)
+      svg
+        .append('defs')
+        .append('marker')
+        .attr('id', 'arrow')
+        .attr('viewBox', '0 -5 10 10')
+        .attr('refX', 13)
+        .attr('refY', 0)
+        .attr('markerWidth', 6)
+        .attr('markerHeight', 6)
+        .attr('orient', 'auto')
+        .append('path')
+        .attr('d', 'M0,-5L10,0L0,5')
+        .attr('fill', 'var(--line)')
+      const labelLayer = svg.append('g')
+      labelLayer
+        .selectAll('text')
+        .data(groups)
+        .join('text')
+        .attr('class', 'group-label')
+        .attr('x', ([id]) => 30 + (groupIndex.get(id) % 3) * 410)
+        .attr('y', ([id]) => 40 + Math.floor(groupIndex.get(id) / 3) * 230)
+        .text(([, label]) => label)
+      const edgeLayer = svg.append('g')
+      const edge = edgeLayer.selectAll('path').data(edges).join('path').attr('class', 'edge').attr('marker-end', 'url(#arrow)')
+      const nodeLayer = svg.append('g')
+      const node = nodeLayer
+        .selectAll('g')
+        .data(nodes)
+        .join('g')
+        .attr('class', 'node')
+        .attr('aria-label', (d) => `${d.id}: ${d.description}`)
+      node
+        .append('circle')
+        .attr('r', 15)
+        .attr('fill', (d) => color(d.group))
+      node
+        .append('text')
+        .attr('x', 21)
+        .attr('dy', '0.35em')
+        .text((d) => d.id)
+      const detail = d3.select('#detail'),
+        tooltip = d3.select('#tooltip')
+      function connected(id) {
+        return new Set(edges.filter((edge) => edge.source === id || edge.target === id).flatMap((edge) => [edge.source, edge.target]))
+      }
+      function draw() {
+        edge.attr('d', (d) => {
+          const source = byId.get(d.source),
+            target = byId.get(d.target)
+          return `M${source.x},${source.y} L${target.x},${target.y}`
+        })
+        node.attr('transform', (d) => `translate(${d.x},${d.y})`)
+      }
+      const simulation = d3
+        .forceSimulation(nodes)
+        .force('charge', d3.forceManyBody().strength(-60))
+        .force('collide', d3.forceCollide(64))
+        .force('x', d3.forceX((d) => d.homeX).strength(0.03))
+        .force('y', d3.forceY((d) => d.homeY).strength(0.03))
+        .on('tick', draw)
+      simulation.alpha(0.7).restart()
+      setTimeout(() => simulation.stop(), 850)
+      function selectSkill(selected) {
+        const neighbours = connected(selected.id)
+        node.classed('is-muted', (d) => !neighbours.has(d.id))
+        edge
+          .classed('is-muted', (d) => d.source !== selected.id && d.target !== selected.id)
+          .classed('is-active', (d) => d.source === selected.id || d.target === selected.id)
+        const relations = edges
+          .filter((edge) => edge.source === selected.id || edge.target === selected.id)
+          .map((edge) => `${edge.source === selected.id ? edge.label : '← ' + edge.label} ${edge.source === selected.id ? edge.target : edge.source}`)
+        detail.html(
+          `<strong>${selected.id}</strong><span>${selected.description}${relations.length ? ` Direct: ${relations.join(' · ')}.` : ' No direct map edge.'}</span>`
+        )
+      }
+      node
+        .on('mouseenter', (event, d) => tooltip.text(d.description).style('opacity', 1).style('left', `${event.clientX}px`).style('top', `${event.clientY}px`))
+        .on('mousemove', (event) => tooltip.style('left', `${event.clientX}px`).style('top', `${event.clientY}px`))
+        .on('mouseleave', () => tooltip.style('opacity', 0))
+        .on('click', (_, d) => selectSkill(d))
+      node.append('title').text((d) => d.description)
+      draw()
+    </script>
+  </body>
+</html>

@@ -56,7 +56,7 @@ const name = basename(repo)
 // formatting, so the target repo's Markdown gate must not judge them. Prettier gets the
 // exclusion inline; markdownlint's lives in the owned .markdownlint-cli2.jsonc below.
 const MD_CHECK_CMD =
-  'bunx prettier --check "**/*.md" "!.ki-meta/**" "!src/generated/**" "!.claude/skills/**" "!.claude/agents/**" "!.agents/skills/**" --ignore-path .gitignore && bunx markdownlint-cli2 "**/*.md"'
+  'bunx prettier --check "**/*.md" "!.ki-meta/**" "!src/generated/**" "!.claude/commands/**" "!.claude/skills/**" "!.claude/agents/**" "!.agents/skills/**" --ignore-path .gitignore && bunx markdownlint-cli2 "**/*.md"'
 
 try {
   execSync(MD_CHECK_CMD, { cwd: repo, stdio: ['pipe', 'pipe', 'pipe'], encoding: 'utf8' })
@@ -126,8 +126,9 @@ const MARKDOWNLINT_DEFAULT = `{
   // Never lint generated output, vendored/generated trees, or dependencies. The
   // \`.ki-meta/\` vendored checkers, generated source, and generated runtime payloads are
   // machine-produced (ADR-KI-HARNESS-TOOLCHAIN-005) — excluded like dist/, so their
-  // formatting is never a finding. Keep authored \`.claude/\` siblings such as workflows in scope.
-  "ignores": ["dist/**", "node_modules/**", ".ki-meta/**", "src/generated/**", ".claude/skills/**", ".claude/agents/**", ".agents/skills/**"]
+  // formatting is never a finding. Command files are frontmatter-first runtime definitions,
+  // while authored \`.claude/\` siblings such as workflows remain in scope.
+  "ignores": ["dist/**", "node_modules/**", ".ki-meta/**", "src/generated/**", ".claude/commands/**", ".claude/skills/**", ".claude/agents/**", ".agents/skills/**"]
 }
 `
 
