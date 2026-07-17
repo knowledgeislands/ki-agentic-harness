@@ -1,7 +1,7 @@
 ---
 id: '001'
 title: Document generated-write boundaries
-status: open
+status: in-progress
 roadmap: foundation-tooling/document-generated-write-boundaries
 blocks: —
 blocked-by: —
@@ -19,10 +19,10 @@ Users and maintainers have no one concise reference for which component owns eac
 
 ## Steps
 
-1. [ ] Inventory the existing bootstrap, scaffold, and project-link ownership contracts without changing their behaviour.
-2. [ ] Write one user/developer-facing boundary guide covering ownership, markers, copying versus development links, `.gitignore`, preservation, and safe recovery.
-3. [ ] Link the guide from the relevant bootstrap and onboarding documentation without duplicating normative rules.
-4. [ ] Run the authoring, skill, and aggregate gates; close the plan when the new guide accurately reflects the implementation.
+1. [x] Inventory the existing bootstrap, scaffold, and project-link ownership contracts without changing their behaviour.
+2. [x] Write one user/developer-facing boundary guide covering ownership, markers, copying versus development links, `.gitignore`, preservation, and safe recovery.
+3. [x] Link the guide from the relevant bootstrap and onboarding documentation without duplicating normative rules.
+4. [x] Run the authoring, skill, and aggregate gates; close the plan when the new guide accurately reflects the implementation.
 
 ## Files touched
 

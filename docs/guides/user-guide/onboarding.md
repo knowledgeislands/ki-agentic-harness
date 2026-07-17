@@ -4,6 +4,8 @@ This is the detailed reference for bringing a repository under Knowledge Islands
 
 Bootstrap is a repository action: it builds that repository's `.ki-meta/` directory and does not configure the user's wider environment. Re-running it is also how a repository stays current — there is no separate migration mode. This guide is the operating manual for the bootstrap chain (ADR-KI-HARNESS-006); its fenced `bash` blocks are executable and are exercised by the harness's own test suite, so they cannot drift from what actually works.
 
+If you maintain the harness itself, [Generated write boundaries](../developer/generated-write-boundaries.md) explains which surfaces are committed, copied, linked, or user-environment-managed and how to recover each safely.
+
 ## The remote-run transport — the primary path
 
 The canonical, zero-install form is the `curl | sh` installer idiom — **`cd` into the repo you want to govern**, then run:

@@ -44,14 +44,14 @@ mcp_servers = 20   # acknowledged overage; documented here for auditability
 
 Every repo declares its own foundations (`[ki-repo]` + `[ki-authoring]`) as `[ki-*]` tables like any other coverage — there is no injected baseline, so the linker resolves purely from the declared set.
 
-### The `ki:skills:link:project` invocation
+### The `ki:skills:copy:project` invocation
 
-The reproducibility contract requires a `ki:skills:link:project` script in `package.json`. Running it once after a fresh clone re-wires `.claude/skills/` from `.ki-config.toml` without any hard-coded paths:
+The reproducibility contract may wire a `ki:skills:copy:project` script in `package.json`. Running it once after a fresh clone rebuilds `.claude/skills/` from `.ki-config.toml` without any hard-coded paths:
 
 ```json
 {
   "scripts": {
-    "ki:skills:link:project": "bun $HOME/.claude/skills/ki-bootstrap/scripts/link-skills.ts"
+    "ki:skills:copy:project": "bun $HOME/.claude/skills/ki-bootstrap/scripts/copy-skills.ts"
   }
 }
 ```
@@ -59,7 +59,7 @@ The reproducibility contract requires a `ki:skills:link:project` script in `pack
 Running it:
 
 ```bash
-bun run ki:skills:link:project
+bun run ki:skills:copy:project
 ```
 
 The keystone linker self-locates the harness through its own real path — no harness location is hard-coded in the script. The harness uses the identical invocation, unmodified: it links only the skills its own `.ki-config.toml` declares, same as any other repo.
@@ -73,19 +73,21 @@ The keystone linker self-locates the harness through its own real path — no ha
 └── (no skills/ directory)
 ```
 
-**After** `bun run ki:skills:link:project` — `.claude/skills/` contains relative symlinks for every declared skill plus the baseline:
+**After** `bun run ki:skills:copy:project` — `.claude/skills/` contains complete generated copies for every declared skill plus the baseline:
 
 ```text
 .claude/
 └── skills/
-    ├── ki-authoring  -> ../../../ki-agentic-harness/skills/foundations/ki-authoring
-    ├── ki-kb         -> ../../../ki-agentic-harness/skills/repo-structure/ki-kb
-    ├── ki-repo       -> ../../../ki-agentic-harness/skills/keystone/ki-repo
-    ├── ki-kb-streams    -> ../../../ki-agentic-harness/skills/implied-families/ki-kb-streams
-    └── ki-tokenomics -> ../../../ki-agentic-harness/skills/environment/ki-tokenomics
+    ├── ki-authoring/
+    ├── ki-kb/
+    ├── ki-kb-streams/
+    ├── ki-repo/
+    └── ki-tokenomics/
 ```
 
-The `.claude/skills/` directory is gitignored — the committed artifact is the `ki:skills:link:project` script and a `.gitignore` line. The symlinks are regenerated, never committed.
+The `.claude/skills/` directory is gitignored — the committed artifact is the `ki:skills:copy:project` script and a `.gitignore` line. The copied payloads are regenerated, never committed.
+
+Harness authors who deliberately want live local edits may use `ki:skills:link:project`, which passes `--development` and replaces those copies with relative links into an active harness checkout. It is not the normal reproducibility path.
 
 ### CLAUDE.md import pattern for skills
 

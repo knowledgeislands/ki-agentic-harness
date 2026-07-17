@@ -17,7 +17,7 @@ Canonical themes and active execution plans.
 - **Title:** Document generated-write boundaries
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/document-generated-write-boundaries`
-- **Status:** open
+- **Status:** in-progress
 - **Blocks:** —
 
 ### [foundation-tooling/002](foundation-tooling/plans/002-enforce-generated-code-exclusions.md)
