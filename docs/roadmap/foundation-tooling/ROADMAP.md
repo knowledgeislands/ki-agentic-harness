@@ -8,9 +8,9 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Complete cited JSON checker-contract conformance and enforce CHK-009/CHK-012
+### Establish canonical checker reports and enforce cited findings
 
-Bring the remaining checker JSON-contract exceptions into the already-decided single aggregate-renderer model, then run each checker through its structured surface, collect emitted finding codes, and reconcile them with the owning rubric, including declared judgment-only exemptions. Start as a reporting check, clean the known undocumented codes and the known `ki-housekeeping`, `ki-binding`, `ki-decision-records`, and `ki-feature-definitions` contract exceptions, then promote it to a gate. Use the same collection pass to enforce CHK-012's non-restating message rule.
+Make a versioned structured report the default output of every checker, with the aggregate solely responsible for human presentation. Each finding carries both a stable code and readable rule title, so a reader sees `Canonical checker report (CHK-004)`, not an opaque identifier alone. Have `ki-skills` prove report shape, cited rubric findings, accurate summaries, consistent exit status, and messages that do not repeat fields the renderer already displays. This is a current-state breaking migration: remove the `--json` output switch and the aggregate's prose fallback rather than carrying compatibility paths.
 
 ### Enforce generated-code exclusions in `ki-engineering`
 
