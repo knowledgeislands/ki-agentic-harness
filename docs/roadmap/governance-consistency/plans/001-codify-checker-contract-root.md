@@ -21,7 +21,7 @@ The checker import boundary now enforces that a script can import only within it
 
 ## Steps
 
-1. [ ] Add a governance Decision Record that preserves standalone skills and composition while defining the narrow copied-support exception: a declared provider module is materialised under the dependent checker's own `scripts/vendored/<provider>/` directory before execution; no source or vendored checker imports a sibling path.
+1. [x] Add a governance Decision Record that preserves standalone skills and composition while defining the narrow copied-support exception: a declared provider module is materialised under the dependent checker's own `scripts/vendored/<provider>/` directory before execution; no source or vendored checker imports a sibling path.
 2. [ ] Add as-built feature requirements for the checker-contract root and the local copied-support boundary, with verification hooks that prove `ki-skills` runs from its own shipped files and has no support dependency on itself.
 3. [ ] Update the `ki-skills` standard and rubric so the mechanical import rule covers all local script modules and the declared-support exception is constrained to the approved local namespace.
 4. [ ] Add focused tests for the root's self-contained execution, support declaration resolution, copied-module layout, and rejection of a direct cross-skill or escaping import.
