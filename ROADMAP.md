@@ -44,3 +44,4 @@ Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass
 - [Governance Consistency: Review the skill dependency graph and implementation quality _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#review-the-skill-dependency-graph-and-implementation-quality-candidate)
 - [Governance Consistency: Roll Feature Definitions out across the repository fleet _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#roll-feature-definitions-out-across-the-repository-fleet-candidate)
 - [Governance Consistency: Separate Knowledge Islands policy from portable governance _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#separate-knowledge-islands-policy-from-portable-governance-candidate)
+- [Operations: Define opt-in repository observability via OTLP _(candidate)_](docs/roadmap/operations/ROADMAP.md#define-opt-in-repository-observability-via-otlp-candidate)

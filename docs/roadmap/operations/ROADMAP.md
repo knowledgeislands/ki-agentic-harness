@@ -27,3 +27,7 @@ When the project memory store is writable, update `project-harness-runtime-strat
 ## Future
 
 Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass (or a decision to drop them) before they're actionable.
+
+### Define opt-in repository observability via OTLP _(candidate)_
+
+Define an off-by-default `ki-observability` capability for reporting repository and skill activity to a configured OTLP-compatible endpoint. Specify its configuration, signal levels, resource and run attributes, privacy allowlist, secret handling, and failure semantics: disabled means no network activity; enabled reporting is best-effort and never changes an AUDIT or CONFORM result. Start with lifecycle logs and low-cardinality duration/count metrics, keeping per-run identifiers in events rather than metric dimensions. Define the boundary between harness-reported activity, optional runtime token deltas, and a later AI gateway that can authoritatively normalise request, response, cache, and cost data. Keep this separate from checker-module vendoring and do not introduce transcript scraping or a required gateway in the first slice.
