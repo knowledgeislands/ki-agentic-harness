@@ -8,10 +8,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-## Soon
-
-Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
-
 ### Complete cited JSON checker-contract conformance and enforce CHK-009/CHK-012
 
 Bring the remaining checker JSON-contract exceptions into the already-decided single aggregate-renderer model, then run each checker through its structured surface, collect emitted finding codes, and reconcile them with the owning rubric, including declared judgment-only exemptions. Start as a reporting check, clean the known undocumented codes and the known `ki-housekeeping`, `ki-binding`, `ki-decision-records`, and `ki-feature-definitions` contract exceptions, then promote it to a gate. Use the same collection pass to enforce CHK-012's non-restating message rule.
@@ -23,6 +19,10 @@ The exclusion policy is already decided and applied in examples. Add only the mi
 ### Document generated-write boundaries
 
 Document the ownership, generated-marker, copying-versus-development-link, `.gitignore`, preservation, and migration boundaries already implemented for bootstrap, scaffold, and project-link surfaces. Do not reopen race hardening or treat deliberate local development links as hostile deployment input.
+
+## Soon
+
+Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
 ### Harden global runtime skill publication
 

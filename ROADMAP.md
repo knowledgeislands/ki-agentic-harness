@@ -10,13 +10,14 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
+- [Foundation Tooling: Complete cited JSON checker-contract conformance and enforce CHK-009/CHK-012](docs/roadmap/foundation-tooling/ROADMAP.md#complete-cited-json-checker-contract-conformance-and-enforce-chk-009chk-012)
+- [Foundation Tooling: Document generated-write boundaries](docs/roadmap/foundation-tooling/ROADMAP.md#document-generated-write-boundaries)
+- [Foundation Tooling: Enforce generated-code exclusions in `ki-engineering`](docs/roadmap/foundation-tooling/ROADMAP.md#enforce-generated-code-exclusions-in-ki-engineering)
+
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
-- [Foundation Tooling: Complete cited JSON checker-contract conformance and enforce CHK-009/CHK-012](docs/roadmap/foundation-tooling/ROADMAP.md#complete-cited-json-checker-contract-conformance-and-enforce-chk-009chk-012)
-- [Foundation Tooling: Document generated-write boundaries](docs/roadmap/foundation-tooling/ROADMAP.md#document-generated-write-boundaries)
-- [Foundation Tooling: Enforce generated-code exclusions in `ki-engineering`](docs/roadmap/foundation-tooling/ROADMAP.md#enforce-generated-code-exclusions-in-ki-engineering)
 - [Foundation Tooling: Harden global runtime skill publication](docs/roadmap/foundation-tooling/ROADMAP.md#harden-global-runtime-skill-publication)
 - [Governance Consistency: Codify convention placement and the knowledge-promotion loop](docs/roadmap/governance-consistency/ROADMAP.md#codify-convention-placement-and-the-knowledge-promotion-loop)
 - [Runtime Portability: Route multi-machine harness state through durable homes](docs/roadmap/runtime-portability/ROADMAP.md#route-multi-machine-harness-state-through-durable-homes)
