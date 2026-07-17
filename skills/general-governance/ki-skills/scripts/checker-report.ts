@@ -11,16 +11,26 @@
 
 export const CHECKER_LEVELS = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS'] as const
 export type CheckerLevel = (typeof CHECKER_LEVELS)[number]
-export type FindingType = 'M' | 'J'
 
-export type CheckerFinding = {
-  type: FindingType
+export type MechanicalFinding = {
+  type: 'M'
   level: CheckerLevel
   code: string
   message: string
   ref?: string
   file?: string
 }
+
+export type JudgmentFinding = {
+  type: 'J'
+  level: 'ADVISORY'
+  code: string
+  message: string
+  ref: string
+  file?: string
+}
+
+export type CheckerFinding = MechanicalFinding | JudgmentFinding
 
 export type CheckerReportRun = {
   version: 1
@@ -54,7 +64,16 @@ export type CheckerReportInput = {
   findings: CheckerFinding[]
 }
 
+function assertFinding(finding: CheckerFinding): void {
+  if (!finding.code.trim()) throw new Error('checker finding code must be non-empty')
+  if (!finding.message.trim()) throw new Error('checker finding message must be non-empty')
+  if (finding.type === 'J' && !finding.ref?.trim()) throw new Error('J finding must cite its judgment criterion')
+}
+
 export function buildCheckerReportEvents(input: CheckerReportInput): CheckerReportEvent[] {
+  if (!input.concern.trim()) throw new Error('checker report concern must be non-empty')
+  if (!input.target.trim()) throw new Error('checker report target must be non-empty')
+  for (const finding of input.findings) assertFinding(finding)
   const summary: CheckerReportSummary['summary'] = { fail: 0, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: 0 }
   for (const finding of input.findings) summary[finding.level.toLowerCase() as keyof typeof summary]++
 
