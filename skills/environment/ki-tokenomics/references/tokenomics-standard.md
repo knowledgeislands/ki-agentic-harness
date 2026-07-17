@@ -50,7 +50,7 @@ The budgets are **guide-rails, not gates**: an overage is a WARN, never a FAIL. 
 
 ¶ The count is the deterministic proxy for the tool-definition cost (§2); Anthropic's guidance is to keep three-to-five tools always loaded and dynamic-discover beyond ~10, so a high server count is a prompt to prune, not an automatic fault. ‖ A rough fraction of a typical context window; the window size itself is volatile (resolve via the `claude-api` skill), so the default is an absolute figure. Declaring `context_window_tokens` lets the checker convert the total into a headroom **percentage**.
 
-**The config table.** A target opts in with a `[ki-tokenomics]` table in its `.ki-config.toml`, read **validate-down**: the checker validates only its own table, WARNs on a key it does not recognise, and never reads another skill's table. Shape (all keys optional; `--init` scaffolds them):
+**The config table.** A target opts in with a `[ki-tokenomics]` table in its `.ki-config.toml`, read **validate-down**: the checker validates only its own table, WARNs on a key it does not recognise, and never reads another skill's table. Shape (all keys optional; `--educate` scaffolds them):
 
 ```toml
 [ki-tokenomics]
@@ -93,7 +93,7 @@ Once the standing surface is lean, these govern what each turn and each sub-agen
 
 | Mode / task type                                     | Recommended type | Reasoning                                                                   |
 | ---------------------------------------------------- | ---------------- | --------------------------------------------------------------------------- |
-| INIT — scaffolding a new config from scratch         | reasoning        | One-off creative/architectural step; investment is bounded                  |
+| EDUCATE — scaffolding a new config from scratch      | reasoning        | One-off creative/architectural step; investment is bounded                  |
 | AUDIT — reading and classifying findings             | standard         | Analytical but bounded; context is the bottleneck, not reasoning depth      |
 | CONFORM — applying a known fix list                  | standard         | Mostly mechanical edits; `fast` may suffice for very small targets          |
 | REFRESH — re-anchoring to updated sources            | standard         | Web-research + diff; rarely needs the top type                              |

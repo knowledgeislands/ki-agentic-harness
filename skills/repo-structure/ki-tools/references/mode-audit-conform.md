@@ -24,6 +24,6 @@ _On-demand procedure for tools' AUDIT and CONFORM modes (CONFORM runs AUDIT firs
    - Missing `--version` → add the version marker literal and the `--version`/`-V` case.
    - Missing `CHANGELOG.md` → seed keep-a-changelog with an `## [Unreleased]` head.
    - Missing CI / shellcheck / bats → adapt `tools-mgit`'s `.github/workflows/ci.yml` (a `shellcheck` lint job + a `bats tests/` job).
-   - Missing `[ki-tools]` marker → `bun scripts/audit.ts --init >> .ki-config.toml` (then tidy).
+   - Missing `[ki-tools]` marker → `bun scripts/audit.ts --educate >> .ki-config.toml` (then tidy).
 3. For a TS/Bun tool, run `ki-engineering`'s CONFORM for its toolchain and ensure `[ki-engineering]` is declared.
 4. Re-run the checker (and `ki-repo`'s) until clean; a shell tool should also be `shellcheck bin/<tool> install.sh`-clean and `bats tests/`-green locally.

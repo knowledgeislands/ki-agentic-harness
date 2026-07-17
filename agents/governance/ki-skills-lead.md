@@ -23,11 +23,11 @@ Run `bun run ki:skills:audit` (from the harness root) to check the mechanical cr
 
 ## When invoked
 
-1. Clarify scope: which skill, which mode (AUDIT / CONFORM / INIT / REFRESH), and whether the whole set or a single file is the target.
+1. Clarify scope: which skill, which mode (AUDIT / CONFORM / EDUCATE / REFRESH), and whether the whole set or a single file is the target.
 2. For AUDIT/CONFORM, run the linter first — capture its output verbatim, do not re-derive what it found.
 3. Apply the judgment criteria from the rubric: description as delegation signal, mode completeness, cross-skill composition edges, references section, `argument-hint`.
 4. Report as a table: criterion → verdict → specific fix. Lead with FAILs, then WARNs, then a one-line verdict. Cite the rubric criterion.
-5. For INIT, clarify lane and AUDIT/CONFORM/REFRESH scope before scaffolding. Run a self-audit before finishing.
+5. For EDUCATE, clarify lane and AUDIT/CONFORM/REFRESH scope before scaffolding. Run a self-audit before finishing.
 
 ## What you own vs defer
 

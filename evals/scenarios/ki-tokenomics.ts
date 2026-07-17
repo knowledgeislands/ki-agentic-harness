@@ -35,7 +35,7 @@ export const scenarios: Scenario[] = [
       { name: 'numbers defer to claude-api', re: /claude-api/i }
     ],
     rubric:
-      'House rules: a budget overage is a **WARN, never a FAIL** — the budgets are guide-rails, not gates. Budgets are configured in a `[ki-tokenomics]` table in the target\'s `.ki-config.toml` (read validate-down; `init` scaffolds the keys). The volatile reference numbers — model ids, prices, cache TTLs, context-window sizes — are deliberately NOT held in this skill; they resolve through the `claude-api` skill at runtime, and token figures here are a chars/4 estimate marked `~`, for budgeting not billing. A correct answer states WARN, names the `[ki-tokenomics]` table, and routes the numbers to `claude-api`.'
+      'House rules: a budget overage is a **WARN, never a FAIL** — the budgets are guide-rails, not gates. Budgets are configured in a `[ki-tokenomics]` table in the target\'s `.ki-config.toml` (read validate-down; `educate` scaffolds the keys). The volatile reference numbers — model ids, prices, cache TTLs, context-window sizes — are deliberately NOT held in this skill; they resolve through the `claude-api` skill at runtime, and token figures here are a chars/4 estimate marked `~`, for budgeting not billing. A correct answer states WARN, names the `[ki-tokenomics]` table, and routes the numbers to `claude-api`.'
   },
   {
     skill: 'ki-tokenomics',

@@ -9,7 +9,7 @@
  *
  *   - CONFIG — when `.ki-config.toml` exists but carries no `[ki-homebrew-tap]`
  *     table, APPEND the keyless opt-in marker block (the same block
- *     `audit.ts --init` prints). Existing content is never rewritten.
+ *     `audit.ts --educate` prints). Existing content is never rewritten.
  *
  * Everything else audit.ts flags is surfaced as a printed manual TODO, never
  * guessed:

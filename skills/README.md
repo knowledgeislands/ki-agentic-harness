@@ -10,7 +10,7 @@ Skill quality conforms to the **`ki-skills`** standard (a sibling here) — run 
 
 ## Adding a skill
 
-1. Scaffold `<name>/SKILL.md` (run `ki-skills` Mode INIT), adding `references/` / `scripts/` / `assets/` only as needed.
+1. Scaffold `<name>/SKILL.md` (run `ki-skills` Mode EDUCATE), adding `references/` / `scripts/` / `assets/` only as needed.
 2. Write to the rubric, not from memory; self-audit with `bun run ki:skills:audit <name>`.
 3. Add it to the catalogue and the dependency-order sweep — see [docs/skills.md](../docs/guides/user-guide/skills.md).
 

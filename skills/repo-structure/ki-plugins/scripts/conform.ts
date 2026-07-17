@@ -37,7 +37,7 @@
  *
  * Deliberately NEVER touches (judgment → advisory findings):
  *   - marketplace.json missing entirely (FAIL "not a plugin-marketplace repo")
- *     — scaffolding a whole marketplace repo is `ki-plugins` INIT, not a
+ *     — scaffolding a whole marketplace repo is `ki-plugins` EDUCATE, not a
  *     mechanical fill-in.
  *   - marketplace.json "plugins" missing/not-an-array, or not exactly one
  *     entry — deciding which plugin(s) belong is judgment.
@@ -125,9 +125,9 @@ say(paint(C.dim, `target: ${target}${dryRun ? '   (dry run)' : ''}\n`))
 say(paint(C.cyan, 'marketplace.json'))
 const mktPath = at('.claude-plugin', 'marketplace.json')
 if (!existsSync(mktPath)) {
-  rec('FAIL', 'PLUG-1', 'marketplace.json missing — not a plugin-marketplace repo; run ki-plugins INIT to scaffold one', STD, MKT_FILE)
+  rec('FAIL', 'PLUG-1', 'marketplace.json missing — not a plugin-marketplace repo; run ki-plugins EDUCATE to scaffold one', STD, MKT_FILE)
   say(paint(C.red, '.claude-plugin/marketplace.json missing — not a plugin-marketplace repo'))
-  say(paint(C.dim, 'run `ki-plugins` INIT to scaffold one; nothing to conform here.'))
+  say(paint(C.dim, 'run `ki-plugins` EDUCATE to scaffold one; nothing to conform here.'))
   emitJson()
   process.exit(1)
 }

@@ -8,13 +8,13 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-## Soon
-
-Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
-
 ### Let `ki-recap` accept an explicit transcript selector
 
 Allow the grounding helper to accept an explicit transcript or session selector instead of selecting only by recency. Use it when supplied, retain recency only as an advisory fallback, and test two concurrent sessions in the same repository so recap evidence cannot be borrowed from the wrong transcript. Do not promise an ambient runtime session identifier unless a host actually exposes one.
+
+## Soon
+
+Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
 ## Waiting for
 

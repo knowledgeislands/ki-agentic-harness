@@ -10,6 +10,9 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
+- [Governance Consistency: Rename the universal `INIT` mode to Educate](docs/roadmap/governance-consistency/ROADMAP.md#rename-the-universal-init-mode-to-educate)
+- [Operations: Let `ki-recap` accept an explicit transcript selector](docs/roadmap/operations/ROADMAP.md#let-ki-recap-accept-an-explicit-transcript-selector)
+
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
@@ -19,8 +22,6 @@ Understood and roughly scoped but not yet started — worth doing once the **Nex
 - [Foundation Tooling: Enforce generated-code exclusions in `ki-engineering`](docs/roadmap/foundation-tooling/ROADMAP.md#enforce-generated-code-exclusions-in-ki-engineering)
 - [Foundation Tooling: Harden global runtime skill publication](docs/roadmap/foundation-tooling/ROADMAP.md#harden-global-runtime-skill-publication)
 - [Governance Consistency: Codify convention placement and the knowledge-promotion loop](docs/roadmap/governance-consistency/ROADMAP.md#codify-convention-placement-and-the-knowledge-promotion-loop)
-- [Governance Consistency: Rename the universal `INIT` mode to Educate](docs/roadmap/governance-consistency/ROADMAP.md#rename-the-universal-init-mode-to-educate)
-- [Operations: Let `ki-recap` accept an explicit transcript selector](docs/roadmap/operations/ROADMAP.md#let-ki-recap-accept-an-explicit-transcript-selector)
 - [Runtime Portability: Route multi-machine harness state through durable homes](docs/roadmap/runtime-portability/ROADMAP.md#route-multi-machine-harness-state-through-durable-homes)
 
 ## Waiting for

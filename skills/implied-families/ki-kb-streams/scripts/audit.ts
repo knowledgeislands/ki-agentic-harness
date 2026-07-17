@@ -3,7 +3,7 @@
  * Mechanical checker for the `Streams` zone of a Knowledge Islands base.
  *
  *   bun scripts/audit.ts [base-path]   # audit a base (default: cwd)
- *   bun scripts/audit.ts --init        # print the default [ki-kb-streams] block
+ *   bun scripts/audit.ts --educate        # print the default [ki-kb-streams] block
  *
  * This is the mechanical half of the skill's Mode AUDIT — the deterministic
  * layer the judgment pass (index ordering, Governance sections, proposals-index
@@ -24,7 +24,7 @@
  * `ki-kb` checker's ZONE-* job, not repeated here. Parent / multi
  * proposal layout and the [J] criteria are applied by reading, per the rubric.
  *
- * READ-ONLY: never mutates the base. `--init` prints the default block to stdout.
+ * READ-ONLY: never mutates the base. `--educate` prints the default block to stdout.
  * No npm dependencies — Bun/Node built-ins only. Exit code is non-zero on any FAIL.
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
@@ -47,7 +47,7 @@ const REF_STRUCTURE = 'references/Streams Structure Reference.md'
 const REF_ENACT = 'references/Enactment Process Reference.md'
 const REF_SKILL = '../SKILL.md'
 
-// The default block `--init` emits. The bare [ki-kb-streams] header is the
+// The default block `--educate` emits. The bare [ki-kb-streams] header is the
 // OPT-IN MARKER: its presence declares this base's Streams zone governed by the
 // Enactment Process (ki-repo's coverage cascade warns a base that has a
 // Streams/ zone but no table). The keys below are optional — a base on the defaults
@@ -311,7 +311,7 @@ function auditStreams(base: string, ki: Ki): Finding[] {
 
 // ── run ──────────────────────────────────────────────────────────────────────
 const argv = process.argv.slice(2)
-if (argv.includes('--init')) {
+if (argv.includes('--educate')) {
   process.stdout.write(KI_DEFAULT)
   process.exit(0)
 }

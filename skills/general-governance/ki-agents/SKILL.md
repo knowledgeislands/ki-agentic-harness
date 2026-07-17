@@ -1,10 +1,10 @@
 ---
 name: ki-agents
 implies: []
-vendors: [init, audit, conform, help]
+vendors: [educate, audit, conform, help]
 description: >
   Audit, review, and write Claude Code subagent definitions against current best practice. Use when creating a new agent (subagent), reviewing or critiquing an agent's definition, checking an agent before it ships, asking "is this agent any good / well-scoped", or refreshing the agents rubric. Carries a checkable rubric — mechanical checks a bundled linter runs, judgment checks applied by reading — covering the name and description (the delegation signal), the system-prompt shape (role/lane, grounding, when-invoked, own-vs-defer), least-privilege tools and model choice, and cross-agent lane collisions. Triggers: "audit this agent", "review my subagent", "write a new agent", "is this agent definition good", "scaffold an agent", "refresh the agents rubric", "check the agents". Judges a subagent definition (frontmatter + system prompt) — for authoring a SKILL.md use the `ki-skills` skill instead; for harness-level layout (five-part bundle, `.ki-config.toml` compliance) use `ki-harness`.
-argument-hint: 'audit <agent-or-dir> | conform <agent> | help | init <description> | refresh'
+argument-hint: 'audit <agent-or-dir> | conform <agent> | help | educate <description> | refresh'
 ---
 
 # Knowledge Islands Agents
@@ -18,13 +18,13 @@ Every criterion is one of two kinds — never conflate them:
 - **Mechanical** — deterministically checkable. A bundled linter ([`scripts/audit.ts`](scripts/audit.ts)) runs these: frontmatter parses, `name` charset and **uniqueness across the agent set**, `description` present and within length, relative links resolve. **Always run the linter first** — do not eyeball what a script checks better.
 - **Judgment** — needs a model. You assess these by reading: is the `description` a strong delegation signal (what the agent _owns_ + _when_ to delegate, third person), is the system prompt a focused role with a clear lane, does it ground itself before acting, does its own-vs-defer boundary keep it from colliding with sibling agents, are its `tools` least-privilege. The linter cannot judge these.
 
-The conventions a good agent follows — what each is and why — live in [the standard](references/agent-definitions-standard.md); the line-by-line checkable criteria (with `[M]`/`[J]` tags and codes) live in [the rubric](references/audit-rubric.md), each citing its standard section. Load both before an AUDIT, CONFORM, or INIT; this body is the routing overview.
+The conventions a good agent follows — what each is and why — live in [the standard](references/agent-definitions-standard.md); the line-by-line checkable criteria (with `[M]`/`[J]` tags and codes) live in [the rubric](references/audit-rubric.md), each citing its standard section. Load both before an AUDIT, CONFORM, or EDUCATE; this body is the routing overview.
 
 A note on linking: unlike a `SKILL.md` (which forbids Obsidian wikilinks), an agent's system prompt **may** use `[[wikilinks]]` to point at knowledge-base notes — that is how an agent grounded in a KB cites its sources. See [the rubric](references/audit-rubric.md) area LINK.
 
 ## Operating modes
 
-Like every governance skill it carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT here writes a new agent. Modes are named and alphabetical. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
+Like every governance skill it carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH** — EDUCATE here writes a new agent. Modes are named and alphabetical. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
 
 ### Mode AUDIT — review an existing agent
 
@@ -48,12 +48,12 @@ Review an agent (or every agent in a directory) against the rubric and report.
 2. **Apply the fixes in place** — `description`, the system-prompt shape, `tools`/`model`, the own-vs-defer boundary — per [the rubric](references/audit-rubric.md), touching only what a criterion calls for and leaving the agent's voice intact.
 3. **Re-run AUDIT** (and the linter) until it is clean.
 
-### Mode INIT — write a new agent
+### Mode EDUCATE — write a new agent
 
 1. **Clarify scope first**: what the agent owns (its lane), what should delegate _to_ it (the description cues), what it must **not** own (the boundary with sibling agents), and which tools/model it needs.
 2. **Scaffold** `<name>.md` (the filename stem should match the `name:` frontmatter; group it in a domain subdirectory if the set uses one).
 3. **Write to the rubric, not from memory** — open [the rubric](references/audit-rubric.md) and satisfy each criterion as you draft. In particular: a third-person `description` stating owns-+-when; a focused role with an explicit lane and own-vs-defer boundary; grounding before acting; least-privilege `tools`; a deliberate `model`; and `name` unique across the set.
-4. **Self-audit before finishing** — run Mode AUDIT on the new agent (over the whole directory, so collision and uniqueness are checked). INIT and AUDIT share one rubric on purpose.
+4. **Self-audit before finishing** — run Mode AUDIT on the new agent (over the whole directory, so collision and uniqueness are checked). EDUCATE and AUDIT share one rubric on purpose.
 
 ### Mode REFRESH — re-anchor best practice
 

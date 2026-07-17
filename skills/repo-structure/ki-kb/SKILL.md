@@ -1,10 +1,10 @@
 ---
 name: ki-kb
 implies: [ki-kb-activities, ki-kb-live-artifacts, ki-kb-streams]
-vendors: [init, audit, conform, help]
+vendors: [educate, audit, conform, help]
 description: >
   Interact with a Knowledge Islands knowledge base: save AI outputs as notes, update existing notes, query the base, distil a conversation into notes, or write a session digest — and audit a base against the structure model, bring it into line, or scaffold a new one. Targets the Knowledge Islands structure (Calendar / Pillars / Resources / Streams, plus inbound `+` and outbound `-`), so it assumes the zone model rather than asking for it; only a few store-level bindings come from the host project. Triggers: "save to my notes", "save to the knowledge base", "add to the KB", "what do my notes say about", "search my notes", "update the note on", "capture this", "write a session digest", "audit my knowledge base", "is my base structured right", "set up a new knowledge base". For the `Streams` zone (proposals, the Enactment Process) use the `ki-kb-streams` skill it delegates to; for general Markdown or TOML house style (not note content) use `ki-authoring`.
-argument-hint: 'audit | conform | digest | extract | help | improve | init | query <question> | refresh | save | update <note>'
+argument-hint: 'audit | conform | digest | extract | help | improve | educate | query <question> | refresh | save | update <note>'
 ---
 
 # Knowledge Islands KB
@@ -46,12 +46,12 @@ The specific artefact types under these subdivisions are governed by sibling ski
 
 When `Admin/Governance/` is present, two documents are expected there:
 
-| File                              | Holds                                                                                      |
-| --------------------------------- | ------------------------------------------------------------------------------------------ |
-| `Admin/Governance/Charter.md`     | Scope, purpose, and owner of the base. Created on INIT; kept current by the base's owner.  |
-| `Admin/Governance/Conformance.md` | The active skill set governing this base, with adoption dates. Updated when skills change. |
+| File                              | Holds                                                                                        |
+| --------------------------------- | -------------------------------------------------------------------------------------------- |
+| `Admin/Governance/Charter.md`     | Scope, purpose, and owner of the base. Created on EDUCATE; kept current by the base's owner. |
+| `Admin/Governance/Conformance.md` | The active skill set governing this base, with adoption dates. Updated when skills change.   |
 
-Both are checked by the mechanical audit and created as stubs by INIT and CONFORM. Absence is a WARN (not FAIL) — a base that has no `Governance/` folder yet is not penalised for missing them.
+Both are checked by the mechanical audit and created as stubs by EDUCATE and CONFORM. Absence is a WARN (not FAIL) — a base that has no `Governance/` folder yet is not penalised for missing them.
 
 **Pillars** are the second-level unit of organisation: each whole knowledge base is an "island"; within it, a Pillar is a major strand of its subject matter (a case, a client, a domain, a theme). A base may use one Pillar or many.
 
@@ -77,7 +77,7 @@ Root index `Admin/MEMORY.md` lists the active Pillars. Where the base is Pillar-
 
 ## Note templates
 
-The skill ships zone-scoped starter templates in `references/templates/<zone>/`. INIT copies the relevant stubs when scaffolding a new base. QUERY can list available templates when the user asks (`?templates`). A base may override or extend these by declaring a `[ki-kb.templates]` table in its `.ki-config.toml` — keys are zone names, values are paths relative to the base.
+The skill ships zone-scoped starter templates in `references/templates/<zone>/`. EDUCATE copies the relevant stubs when scaffolding a new base. QUERY can list available templates when the user asks (`?templates`). A base may override or extend these by declaring a `[ki-kb.templates]` table in its `.ki-config.toml` — keys are zone names, values are paths relative to the base.
 
 | Zone         | Template                        | Use for                                     |
 | ------------ | ------------------------------- | ------------------------------------------- |
@@ -86,7 +86,7 @@ The skill ships zone-scoped starter templates in `references/templates/<zone>/`.
 | `Pillars/`   | `templates/pillars/note.md`     | Settled canonical knowledge notes.          |
 | `Resources/` | `templates/resources/source.md` | External reference entries.                 |
 
-Templates are stubs — headings, frontmatter keys, and inline `<!-- prompts -->`. They do not carry content; the skill fills in what the user provides during SAVE / EXTRACT / INIT.
+Templates are stubs — headings, frontmatter keys, and inline `<!-- prompts -->`. They do not carry content; the skill fills in what the user provides during SAVE / EXTRACT / EDUCATE.
 
 ## Project bindings
 
@@ -108,7 +108,7 @@ Almost everything is fixed by the structure above. Only these come from the host
 
 ## Operating modes
 
-Step 2 - determine the mode and load its procedure. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The shared model above — the five zones, the routing test, the **memory cascade**, the project bindings, and Step 1 — is what every mode needs and stays loaded; each mode's _procedure_ lives in its own on-demand file, so read only the one the request selects. Like every governance skill it carries the universal four **AUDIT · CONFORM · INIT · REFRESH** (INIT scaffolds a base); its base-specific modes are the session-level **IMPROVE** (continuous improvement) and the note-ops **DIGEST · EXTRACT · QUERY · SAVE · UPDATE**. Modes are named and alphabetical.
+Step 2 - determine the mode and load its procedure. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The shared model above — the five zones, the routing test, the **memory cascade**, the project bindings, and Step 1 — is what every mode needs and stays loaded; each mode's _procedure_ lives in its own on-demand file, so read only the one the request selects. Like every governance skill it carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH** (EDUCATE scaffolds a base); its base-specific modes are the session-level **IMPROVE** (continuous improvement) and the note-ops **DIGEST · EXTRACT · QUERY · SAVE · UPDATE**. Modes are named and alphabetical.
 
 | Mode    | Fires on                                                  | Read before acting                                        |
 | ------- | --------------------------------------------------------- | --------------------------------------------------------- |
@@ -117,7 +117,7 @@ Step 2 - determine the mode and load its procedure. Invoked as `help` / `-h` / `
 | DIGEST  | "write a session digest"                                  | [mode-digest.md](references/mode-digest.md)               |
 | EXTRACT | "distil this conversation into notes"                     | [mode-extract.md](references/mode-extract.md)             |
 | IMPROVE | continuous-improvement sweep (at session end)             | [mode-improve.md](references/mode-improve.md)             |
-| INIT    | "set up a new knowledge base"                             | [mode-init.md](references/mode-init.md)                   |
+| EDUCATE | "set up a new knowledge base"                             | [mode-educate.md](references/mode-educate.md)             |
 | QUERY   | "what do my notes say / search my notes"                  | [mode-query.md](references/mode-query.md)                 |
 | REFRESH | "is the KB skill still current" (on its declared cadence) | [mode-refresh.md](references/mode-refresh.md)             |
 | SAVE    | "save to my notes / capture this"                         | [mode-save.md](references/mode-save.md)                   |

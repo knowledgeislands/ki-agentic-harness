@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url'
 const HERE = dirname(fileURLToPath(import.meta.url))
 const AUDIT = join(HERE, 'audit.ts')
 const CONFORM = join(HERE, 'conform.ts')
-const INIT = join(HERE, 'init.ts')
+const EDUCATE = join(HERE, 'educate.ts')
 const HORIZONS = ['Blocking', 'Next', 'Soon', 'Waiting for', 'Future'] as const
 const HORIZON_BLURBS = {
   Blocking:
@@ -105,24 +105,24 @@ function thematicFixture(): string {
   return root
 }
 
-// Simple profile: INIT is dry-run safe, creates once, and AUDIT accepts it.
+// Simple profile: EDUCATE is dry-run safe, creates once, and AUDIT accepts it.
 {
   const root = fixture()
   try {
-    const dry = run(INIT, root, ['--dry-run'])
-    check('simple INIT dry-run exits zero', dry.code === 0)
-    check('simple INIT dry-run writes nothing', !existsSync(join(root, 'ROADMAP.md')))
-    const created = run(INIT, root)
-    check('simple INIT creates ROADMAP.md', created.code === 0 && existsSync(join(root, 'ROADMAP.md')))
+    const dry = run(EDUCATE, root, ['--dry-run'])
+    check('simple EDUCATE dry-run exits zero', dry.code === 0)
+    check('simple EDUCATE dry-run writes nothing', !existsSync(join(root, 'ROADMAP.md')))
+    const created = run(EDUCATE, root)
+    check('simple EDUCATE creates ROADMAP.md', created.code === 0 && existsSync(join(root, 'ROADMAP.md')))
     const before = readFileSync(join(root, 'ROADMAP.md'), 'utf8')
     check(
-      'simple INIT includes every horizon blurb',
+      'simple EDUCATE includes every horizon blurb',
       HORIZONS.every((horizon) => before.includes(HORIZON_BLURBS[horizon]))
     )
-    check('simple INIT needs no empty-horizon placeholder', !before.includes('Nothing queued.'))
+    check('simple EDUCATE needs no empty-horizon placeholder', !before.includes('Nothing queued.'))
     check('simple AUDIT passes', run(AUDIT, root).code === 0)
-    run(INIT, root)
-    check('simple INIT never clobbers existing roadmap', readFileSync(join(root, 'ROADMAP.md'), 'utf8') === before)
+    run(EDUCATE, root)
+    check('simple EDUCATE never clobbers existing roadmap', readFileSync(join(root, 'ROADMAP.md'), 'utf8') === before)
   } finally {
     rmSync(root, { recursive: true, force: true })
   }
@@ -164,15 +164,15 @@ function thematicFixture(): string {
   }
 }
 
-// KB off-ramp: no artifact is NA; project artifacts fail; INIT never writes.
+// KB off-ramp: no artifact is NA; project artifacts fail; EDUCATE never writes.
 {
   const root = fixture()
   try {
     writeFileSync(join(root, '.ki-config.toml'), '["ki-repo"]\nrepo_type = "kb"\n')
     const clean = run(AUDIT, root)
     check('KB without project artifacts reports off-ramp', clean.code === 0 && clean.out.includes('ki-kb-streams'))
-    run(INIT, root)
-    check('KB INIT writes nothing', !existsSync(join(root, 'ROADMAP.md')))
+    run(EDUCATE, root)
+    check('KB EDUCATE writes nothing', !existsSync(join(root, 'ROADMAP.md')))
     writeFileSync(join(root, 'ROADMAP.md'), roadmap('Wrong KB roadmap'))
     const invalid = run(AUDIT, root)
     check('KB project artifact fails scope', invalid.code !== 0 && invalid.out.includes('SCOPE-1'))
@@ -510,9 +510,9 @@ for (const section of ['Steps', 'Verify']) {
   try {
     const path = join(root, 'ROADMAP.md')
     symlinkSync(join(root, 'missing-roadmap'), path)
-    const result = run(INIT, root)
-    check('INIT refuses a dangling ROADMAP symlink', result.code !== 0 && result.out.includes('SAFE-1'))
-    check('INIT leaves a dangling ROADMAP symlink in place', lstatSync(path).isSymbolicLink())
+    const result = run(EDUCATE, root)
+    check('EDUCATE refuses a dangling ROADMAP symlink', result.code !== 0 && result.out.includes('SAFE-1'))
+    check('EDUCATE leaves a dangling ROADMAP symlink in place', lstatSync(path).isSymbolicLink())
   } finally {
     rmSync(root, { recursive: true, force: true })
   }

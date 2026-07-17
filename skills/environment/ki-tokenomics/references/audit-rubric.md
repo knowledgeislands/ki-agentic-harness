@@ -72,7 +72,7 @@ A criterion's tag is a contract with the checker: if you find yourself eyeballin
 → [standard §3](tokenomics-standard.md#3-budgets-and-the-config-table)
 
 - **CFG-1 [M]** The `[ki-tokenomics]` table is parsed and **validated down** — an unrecognised key WARNs; a malformed budget value (non-numeric) **FAILs**; another skill's table is never read.
-- **CFG-2 [M]** `--init` emits the table's default keys (the authoritative key list a target scaffolds from).
+- **CFG-2 [M]** `--educate` emits the table's default keys (the authoritative key list a target scaffolds from).
 - **CFG-3 [J]** The declared budgets and `headroom` expectation are **warranted** for this environment, not copied boilerplate that merely restates the defaults.
 - **CFG-4 [M]** `preferred_model_type` is **declared** in the `[ki-tokenomics]` table with a value in the portable set (`frontier` / `reasoning` / `standard` / `fast`); whether the chosen type is appropriate for the work stays judgment (RUN-2). A lingering pre-ADR-KI-HARNESS-009 `preferred_model` (a Claude alias) is a FAIL with a migration hint — conform maps the alias to its type.
 - **CFG-5 [M]** `[ki-tokenomics.model_tier_bindings]`, if present, rebinds each type to the concrete model(s) this runtime supports. Keys are strict — each must be one of the four types (an unknown key is a FAIL); values are open, comma-separated ordered preference lists resolved first-match per runtime, requiring ≥1 non-empty entry (an empty value is a FAIL). Individual model names stay open (runtime-specific, volatile) — an unrecognised name is judgment (RUN-2), never a mechanical FAIL. Resolved bindings surface as INFO.

@@ -21,7 +21,7 @@
  *
  * Fixes:
  *   - Config marker: when `.ki-config.toml` has no `[ki-kb]` table at all, appends
- *     the bare opt-in marker (audit.ts's `--init` template) — never overwrites
+ *     the bare opt-in marker (audit.ts's `--educate` template) — never overwrites
  *     an existing table, never edits its contents (that's CONFIG-1/2/3, judgment).
  *   - ZONE-2 (missing same-name zone index note): scaffolds an empty index note
  *     stub — `<zone>/<zone>.md` — but ONLY inside a zone folder that ALREADY
@@ -65,7 +65,7 @@ const ZONES_SECTION = `${KI_SECTION}.zones`
 const RUBRIC = 'references/audit-rubric.md'
 const FM = 'references/frontmatter-standard.md'
 
-// Same opt-in marker audit.ts's `--init` emits.
+// Same opt-in marker audit.ts's `--educate` emits.
 const KI_DEFAULT = `# ${KI_SECTION} — opt-in marker: declaring this table opts the base into the kb standard.
 # The keys below are optional; a base on the canonical zone names (${ZONES.join(' / ')})
 # with no frontmatter contract and no extra pre-flight declares just the bare table header.

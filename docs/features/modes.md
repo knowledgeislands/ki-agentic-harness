@@ -8,7 +8,7 @@ The behavioural contract of the operating vocabulary every governance skill expo
 
 ### MODE-001 — Governance skills carry the four modes
 
-Every governance skill MUST expose AUDIT, CONFORM, INIT, and REFRESH under those exact names, presented under a single `## Operating modes` H2, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+Every governance skill MUST expose AUDIT, CONFORM, EDUCATE, and REFRESH under those exact names, presented under a single `## Operating modes` H2, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
 
 _Verify:_ `bun skills/general-governance/ki-skills/scripts/lint-skills.ts skills` — the SHAPE mode-coverage check FAILs a governance `SKILL.md` missing any of the four.
 
@@ -24,11 +24,11 @@ CONFORM MUST run AUDIT to obtain the fix list, apply the fixes in place, then re
 
 _Verify:_ each governance `SKILL.md`'s `## Mode CONFORM` describes the audit → fix → re-audit loop; `lint-skills.ts` checks the mode's presence.
 
-### MODE-004 — INIT is mandatory even when thin
+### MODE-004 — EDUCATE is mandatory even when thin
 
-Every governance skill MUST carry an INIT — a `scripts/init.ts` delegating into the `ki-bootstrap` chain — even when it scaffolds no standalone artifact, in which case INIT's job is to vendor the skill's declared `vendors:` unit into the target's `.ki-meta/`, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+Every governance skill MUST carry an EDUCATE — a `scripts/educate.ts` delegating into the `ki-bootstrap` chain — even when it scaffolds no standalone artifact, in which case EDUCATE's job is to vendor the skill's declared `vendors:` unit into the target's `.ki-meta/`, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
 
-_Verify:_ every `skills/*/scripts/init.ts` exists and execs the chain engine; `lint-skills.ts` SHAPE checks the INIT mode and delegator.
+_Verify:_ every `skills/*/scripts/educate.ts` exists and execs the chain engine; `lint-skills.ts` SHAPE checks the EDUCATE mode and delegator.
 
 ### MODE-005 — REFRESH runs only in the harness
 
@@ -56,13 +56,13 @@ _Verify:_ `lint-skills.ts` SHAPE-5 / SHAPE-11 pass a process skill (e.g. `ki-rec
 
 ### MODE-008 — NEW authors one instance
 
-A collection governance skill that exposes NEW MUST use it to author exactly one new instance into the collection it governs, presupposing INIT has established the collection and never substituting for INIT, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+A collection governance skill that exposes NEW MUST use it to author exactly one new instance into the collection it governs, presupposing EDUCATE has established the collection and never substituting for EDUCATE, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
 
-_Verify:_ the collection skills exposing `### Mode NEW` (`ki-decision-records`, `ki-feature-definitions`, `ki-kb-activities`, `ki-kb-live-artifacts`) each also expose INIT; the fixed meaning is pinned in [`skills/general-governance/ki-skills/references/agent-skills-standard.md`](../../skills/general-governance/ki-skills/references/agent-skills-standard.md).
+_Verify:_ the collection skills exposing `### Mode NEW` (`ki-decision-records`, `ki-feature-definitions`, `ki-kb-activities`, `ki-kb-live-artifacts`) each also expose EDUCATE; the fixed meaning is pinned in [`skills/general-governance/ki-skills/references/agent-skills-standard.md`](../../skills/general-governance/ki-skills/references/agent-skills-standard.md).
 
 ### MODE-009 — OPTIMISE pushes toward excellent
 
-A skill that exposes OPTIMISE MUST use it only to push an already-compliant artifact from the standard floor toward excellent, never to bring an off-standard one onto the floor (that is INIT/CONFORM), per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+A skill that exposes OPTIMISE MUST use it only to push an already-compliant artifact from the standard floor toward excellent, never to bring an off-standard one onto the floor (that is EDUCATE/CONFORM), per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
 
 _Verify:_ `ki-skills`'s `### Mode OPTIMISE`; the fixed meaning is pinned in [`skills/general-governance/ki-skills/references/agent-skills-standard.md`](../../skills/general-governance/ki-skills/references/agent-skills-standard.md).
 

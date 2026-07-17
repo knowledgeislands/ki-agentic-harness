@@ -23,7 +23,7 @@
  *     mechanical fill-in).
  *   - CONFIG: appends the `[ki-tools]` opt-in marker to .ki-config.toml when
  *     the table is absent. Never overwrites an existing table, never creates
- *     .ki-config.toml from scratch (that's ki-repo's INIT/CONFORM job).
+ *     .ki-config.toml from scratch (that's ki-repo's EDUCATE/CONFORM job).
  *
  * Deliberately NEVER touches (judgment → manual TODOs):
  *   - TOOL-BIN (bin/ missing entirely) — scaffolding the tool's own
@@ -121,7 +121,7 @@ async function main() {
   say(paint(C.cyan, 'bin/ executable bit (TOOL-EXEC)'))
   const bins = binFiles(target)
   if (!isDir(join(target, 'bin'))) {
-    rec('ADVISORY', 'TOOL-BIN', 'bin/ is missing entirely; scaffold the tool executable by hand (see Mode INIT)', REF.layout, 'bin/')
+    rec('ADVISORY', 'TOOL-BIN', 'bin/ is missing entirely; scaffold the tool executable by hand (see Mode EDUCATE)', REF.layout, 'bin/')
     say(`  ${paint(C.dim, 'bin/ missing — see manual TODOs')}`)
   } else if (bins.length === 0) {
     rec('ADVISORY', 'TOOL-BIN', 'bin/ holds no files; add the tool executable by hand', REF.layout, 'bin/')
@@ -150,7 +150,7 @@ async function main() {
     rec(
       'ADVISORY',
       'TOOL-INSTALL',
-      'no install.sh at the repo root; author the curl-installer by hand (see Mode INIT)',
+      'no install.sh at the repo root; author the curl-installer by hand (see Mode EDUCATE)',
       REF.dist,
       'install.sh'
     )
@@ -171,7 +171,7 @@ async function main() {
     rec(
       'ADVISORY',
       'CONFIG',
-      `${KI_CONFIG} is missing entirely; run ki-repo's CONFORM/INIT to scaffold it, then re-run this script`,
+      `${KI_CONFIG} is missing entirely; run ki-repo's CONFORM/EDUCATE to scaffold it, then re-run this script`,
       REF.marker,
       KI_CONFIG
     )

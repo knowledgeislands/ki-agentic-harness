@@ -141,7 +141,7 @@ function modeFixture(name: string, opts: { desc?: string; hint?: string; vendors
   return { base, dir }
 }
 
-const FULL_HINT = 'audit <target> | conform <target> | help | init <target> | refresh'
+const FULL_HINT = 'audit <target> | conform <target> | help | educate <target> | refresh'
 const VENDORS = (name: string) => `{ audit: scripts/audit-${name}.ts }`
 const CONFORMANT_BODY = [
   '## Operating modes',
@@ -156,7 +156,7 @@ const CONFORMANT_BODY = [
   '',
   'Fix the artifact.',
   '',
-  '### Mode INIT',
+  '### Mode EDUCATE',
   '',
   'Scaffold the artifact.',
   '',
@@ -190,7 +190,7 @@ const CONFORMANT_BODY = [
     '| ------- | ----------------------- |',
     '| AUDIT   | Check the artifact.     |',
     '| CONFORM | Fix the artifact.       |',
-    '| INIT    | Scaffold the artifact.  |',
+    '| EDUCATE    | Scaffold the artifact.  |',
     '| REFRESH | Re-anchor the standard. |'
   ].join('\n')
   const { base, dir } = modeFixture(name, { hint: FULL_HINT, vendors: VENDORS(name), body: tableBody })
@@ -203,7 +203,7 @@ const CONFORMANT_BODY = [
   }
 }
 
-// ── Missing `init` verb in argument-hint → SHAPE-12 WARN ──
+// ── Missing `educate` verb in argument-hint → SHAPE-12 WARN ──
 {
   const name = 'ki-fixture-noinit'
   const { base, dir } = modeFixture(name, {
@@ -213,8 +213,8 @@ const CONFORMANT_BODY = [
   })
   try {
     const out = run(dir)
-    check('missing init verb → SHAPE-12 warn', out.includes('SHAPE-12'))
-    check('missing init verb → names init', /SHAPE-12[^\n]*init/.test(out))
+    check('missing educate verb → SHAPE-12 warn', out.includes('SHAPE-12'))
+    check('missing educate verb → names educate', /SHAPE-12[^\n]*educate/.test(out))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }

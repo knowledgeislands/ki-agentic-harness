@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * ki-bootstrap chain engine — the mechanical half of INIT, and the start of the
+ * ki-bootstrap chain engine — the mechanical half of EDUCATE, and the start of the
  * bootstrap chain (ADR-KI-HARNESS-006). Brings a target repo under Knowledge
  * Islands governance so it governs itself with `./.ki-meta/bin/ki-audit` and
  * **zero skills installed** — and with **no `package.json` of its own** (dotfiles,
@@ -11,9 +11,9 @@
  * command-wrapper into the target's `.ki-meta/skills/<skill>/` (named by verb:
  * `audit.ts`/`conform.ts`), plus a rendered HELP snapshot (`help.md`). It then writes
  * a `.ki-meta/bin/aggregate.ts` that discovers and fans out over those copies, the
- * four `package.json`-free entry points `.ki-meta/bin/{ki-audit, ki-conform, ki-init,
+ * four `package.json`-free entry points `.ki-meta/bin/{ki-audit, ki-conform, ki-educate,
  * ki-help}`, and stamps `.ki-meta/manifest.json` (harness ref + per-file hashes) so
- * `ki-init` can re-run this chain at the same ref later.
+ * `ki-educate` can re-run this chain at the same ref later.
  *
  * Remote transport (ADR-KI-HARNESS-006): the sibling `bootstrap.sh` is the
  * zero-install `curl | sh` entry point — cd into the repo and pipe it to sh; it
@@ -26,7 +26,7 @@
  * the bunx form runs this engine as the package bin directly (pin a sha — bunx
  * caches floating git refs):
  *   bunx github:knowledgeislands/ki-agentic-harness#<sha> <target> --ref <sha>
- * The vendored `.ki-meta/bin/ki-init` wrapper pipes the same script at `main` by
+ * The vendored `.ki-meta/bin/ki-educate` wrapper pipes the same script at `main` by
  * default (or the `--ref` passed). Skill sources are always read from the engine's
  * own working tree; `--ref` supplies the ref when that tree has no `.git` (a tarball
  * extract), and the engine resolves it to a concrete SHA before recording it in the
@@ -88,7 +88,7 @@ const REPO_SLUG = 'knowledgeislands/ki-agentic-harness'
 // canonical home is skills/keystone/ki-bootstrap/scripts/.
 const HARNESS_BIN_SCRIPTS = ['skill-graph.ts', 'skill-help.ts', 'sync-skills.ts'] as const
 
-// The current harness ref — recorded in the manifest so `ki-init` can re-run the
+// The current harness ref — recorded in the manifest so `ki-educate` can re-run the
 // chain at the same point later. Falls back to 'unknown' when not in a git
 // checkout (e.g. fetched over HTTP without a .git dir) — offline-safe, never fatal.
 function harnessRef(): string {
@@ -107,7 +107,7 @@ const SKILLS_ROOT_FOR_REF = resolve(import.meta.dirname, '..', '..', '..', '..')
 // Resolve a possibly-symbolic ref (a branch like `main`, a tag, a short SHA) to the
 // concrete 40-hex commit SHA, so the manifest always records an immutable point even
 // when the chain was invoked with `--ref main`. This is the record/policy split:
-// `ki-init` defaults its *policy* to the moving `main` (always fetch latest), while the
+// `ki-educate` defaults its *policy* to the moving `main` (always fetch latest), while the
 // manifest keeps an exact *record* of what was actually applied. Best-effort: a full
 // SHA passes through untouched, and any failure (git absent, offline) falls back to the
 // ref as given — offline-safe, never fatal, matching harnessRef().
@@ -130,14 +130,14 @@ function resolveRef(ref: string): string {
 // and the report dirs are never mistaken for skills) and fans out over them for the
 // given verb. It reads the filesystem, not `package.json`, so it works in a repo that
 // has no `package.json` at all, and stays correct as skills are vendored in or out.
-// The `init` verb is the local re-sync prompt — it execs the sibling `ki-init`
+// The `educate` verb is the local re-sync prompt — it execs the sibling `ki-educate`
 // wrapper, which re-runs the remote chain at `main` (or a passed `--ref`)
-// (ADR-KI-HARNESS-006's Consequences: "INIT vendors nothing per skill... the
-// aggregate init verb is instead the local re-sync prompt").
+// (ADR-KI-HARNESS-006's Consequences: "EDUCATE vendors nothing per skill... the
+// aggregate educate verb is instead the local re-sync prompt").
 const AGGREGATE_RUNNER = `#!/usr/bin/env bun
 // Vendored by ki-bootstrap. Runs each vendored skill checker under ../skills/ in
 // sequence for the given verb — no package.json required.
-// Usage: bun .ki-meta/bin/aggregate.ts <audit|conform|init|help>
+// Usage: bun .ki-meta/bin/aggregate.ts <audit|conform|educate|help>
 import { execFileSync, spawnSync } from 'node:child_process'
 import { existsSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -145,14 +145,14 @@ import { fileURLToPath } from 'node:url'
 
 const verb = process.argv[2]
 if (!verb) {
-  console.error('usage: aggregate.ts <audit|conform|init|help>')
+  console.error('usage: aggregate.ts <audit|conform|educate|help>')
   process.exit(2)
 }
 const binDir = dirname(fileURLToPath(import.meta.url))
-if (verb === 'init' || verb === 'help') {
-  // init: the local re-sync prompt (re-run the remote chain at the manifest's ref).
+if (verb === 'educate' || verb === 'help') {
+  // educate: the local re-sync prompt (re-run the remote chain at the manifest's ref).
   // help: the vendored HELP snapshots. Both exec the sibling wrapper.
-  execFileSync(join(binDir, verb === 'init' ? 'ki-init' : 'ki-help'), process.argv.slice(3), { stdio: 'inherit' })
+  execFileSync(join(binDir, verb === 'educate' ? 'ki-educate' : 'ki-help'), process.argv.slice(3), { stdio: 'inherit' })
   process.exit(0)
 }
 if (verb === 'refresh') {
@@ -323,15 +323,15 @@ process.exit(failed > 0 ? 1 : 0)
 // by dotfile managers (chezmoi). Usage: ./.ki-meta/bin/ki-audit [verb].
 const BIN_KI_AUDIT = `#!/bin/sh
 # Vendored by ki-bootstrap — the package.json-free entry to a repo's self-check.
-# Usage: ./.ki-meta/bin/ki-audit [audit|conform|init|help] [--dry-run ...]   (default verb: audit)
+# Usage: ./.ki-meta/bin/ki-audit [audit|conform|educate|help] [--dry-run ...]   (default verb: audit)
 set -eu
 case "\${1:-}" in
   -h|--help)
-    echo "usage: ki-audit [audit|conform|init|help] [--dry-run ...]   (default verb: audit)"
+    echo "usage: ki-audit [audit|conform|educate|help] [--dry-run ...]   (default verb: audit)"
     echo "  runs each vendored skill checker under .ki-meta/skills/ for the given verb."
     echo "  audit    read-only self-check (the default verb)"
     echo "  conform  apply the mechanical fixes (same as ./.ki-meta/bin/ki-conform)"
-    echo "  init     re-sync the vendored scripts from the harness (same as ./.ki-meta/bin/ki-init)"
+    echo "  educate     re-sync the vendored scripts from the harness (same as ./.ki-meta/bin/ki-educate)"
     echo "  help     list governed skills, or show one skill's HELP (same as ./.ki-meta/bin/ki-help)"
     exit 0
     ;;
@@ -367,7 +367,7 @@ exec bun ".ki-meta/bin/aggregate.ts" conform "$@"
 // the engine renders at vendor time — readable even on a machine without bun.
 const BIN_KI_HELP = `#!/bin/sh
 # Vendored by ki-bootstrap — each governed skill's HELP block, rendered from its
-# SKILL.md at vendor time (re-synced by ki-init).
+# SKILL.md at vendor time (re-synced by ki-educate).
 # Usage: ./.ki-meta/bin/ki-help [skill]    (no argument: list the governed skills)
 set -eu
 meta="$(cd "$(dirname "$0")/.." && pwd)"
@@ -396,12 +396,12 @@ cat "$f"
 // duplicate — and drift from — the manifest): `.ki-meta/manifest.json` is the sole
 // record of what was applied, and the engine resolves whatever ref ran to a concrete
 // SHA before writing it there (see resolveRef).
-// Network-requiring and idempotent; never invoked automatically (only via `ki-init`
-// or the aggregate's `init` verb).
+// Network-requiring and idempotent; never invoked automatically (only via `ki-educate`
+// or the aggregate's `educate` verb).
 function binKiInit(): string {
   return `#!/bin/sh
-# Vendored by ki-bootstrap — re-runs the remote INIT chain to refresh this repo's
-# vendored scripts. Usage: ./.ki-meta/bin/ki-init [--ref <ref>] [--dry-run] [--help]
+# Vendored by ki-bootstrap — re-runs the remote EDUCATE chain to refresh this repo's
+# vendored scripts. Usage: ./.ki-meta/bin/ki-educate [--ref <ref>] [--dry-run] [--help]
 set -eu
 DEFAULT_REF="main"
 REPO="knowledgeislands/ki-agentic-harness"
@@ -411,7 +411,7 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --ref) ref="$2"; shift 2 ;;
     --help|-h)
-      echo "usage: ki-init [--ref <ref>] [--dry-run]"
+      echo "usage: ki-educate [--ref <ref>] [--dry-run]"
       echo "  re-runs the remote bootstrap chain against this repo at <ref> (default: main — the latest harness)."
       echo "  the exact commit last applied is recorded in .ki-meta/manifest.json."
       exit 0
@@ -664,10 +664,10 @@ function hashJournalFile(journal: OwnedSnapshot, rel: string): string {
   return createHash('sha256').update(entry.bytes).digest('hex')
 }
 
-// The universal modes that vendor a COPIED per-skill script. `init` is NOT here: its
-// per-skill `scripts/init.ts` is a harness-relative seed delegator (it resolves the
+// The universal modes that vendor a COPIED per-skill script. `educate` is NOT here: its
+// per-skill `scripts/educate.ts` is a harness-relative seed delegator (it resolves the
 // engine via ../../ki-bootstrap) so a verbatim copy into a target's .ki-meta would be
-// a broken path — INIT is instead the aggregate `ki:init` re-sync (ADR-KI-HARNESS-007).
+// a broken path — EDUCATE is instead the aggregate `ki:educate` re-sync (ADR-KI-HARNESS-007).
 // `help` renders a snapshot below; `refresh` is harness-only and never vendored.
 const SCRIPT_MODES = ['audit', 'conform'] as const
 
@@ -764,7 +764,7 @@ function vendorOne(
 function commandWrapper(command: string): string {
   return `#!/usr/bin/env bun
 // Generated by ki-bootstrap from a \`vendors:\` command declaration. Do not edit —
-// re-run INIT to regenerate.
+// re-run EDUCATE to regenerate.
 import { execFileSync } from 'node:child_process'
 import { resolve } from 'node:path'
 
@@ -778,7 +778,7 @@ try {
 }
 
 function scaffoldRepoConfig(target: string, targetIdentity: EntrySnapshot & { kind: 'directory' }, dryRun: boolean): void {
-  const repoInit = join(skillDir('ki-repo'), 'scripts', 'init.ts')
+  const repoInit = join(skillDir('ki-repo'), 'scripts', 'educate.ts')
   if (!exactIdentity(target, targetIdentity) || realpathSync(target) !== target) {
     throw new Error('physical target changed before repository config scaffold')
   }
@@ -828,9 +828,9 @@ function buildCandidate(
   writeFileSync(join(staging, 'bin', 'ki-conform'), BIN_KI_CONFORM)
   chmodSync(join(staging, 'bin', 'ki-conform'), 0o755)
   recordGenerated(journal, staging, join('bin', 'ki-conform'))
-  writeFileSync(join(staging, 'bin', 'ki-init'), binKiInit())
-  chmodSync(join(staging, 'bin', 'ki-init'), 0o755)
-  recordGenerated(journal, staging, join('bin', 'ki-init'))
+  writeFileSync(join(staging, 'bin', 'ki-educate'), binKiInit())
+  chmodSync(join(staging, 'bin', 'ki-educate'), 0o755)
+  recordGenerated(journal, staging, join('bin', 'ki-educate'))
   writeFileSync(join(staging, 'bin', 'ki-help'), BIN_KI_HELP)
   chmodSync(join(staging, 'bin', 'ki-help'), 0o755)
   recordGenerated(journal, staging, join('bin', 'ki-help'))
@@ -1286,7 +1286,7 @@ function main(): void {
   }
   // Pull the value-taking flags out first so their values are not mistaken for
   // the positional target: `--seed <skill>` (repeatable — a per-skill delegator
-  // passes `--seed <self>`) and `--ref <ref>` (passed by `ki-init` so a tarball
+  // passes `--seed <self>`) and `--ref <ref>` (passed by `ki-educate` so a tarball
   // extract with no .git still stamps the manifest with the ref it ran at).
   const seeds: string[] = []
   const rest: string[] = []
@@ -1327,7 +1327,7 @@ function main(): void {
   const aggRel = join(VENDOR_DIR, 'bin', 'aggregate.ts')
   const auditBinRel = join(VENDOR_DIR, 'bin', 'ki-audit')
   const conformBinRel = join(VENDOR_DIR, 'bin', 'ki-conform')
-  const initBinRel = join(VENDOR_DIR, 'bin', 'ki-init')
+  const initBinRel = join(VENDOR_DIR, 'bin', 'ki-educate')
   const helpBinRel = join(VENDOR_DIR, 'bin', 'ki-help')
   const manifestRel = join(VENDOR_DIR, 'manifest.json')
   if (dryRun) {

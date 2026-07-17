@@ -31,7 +31,7 @@ Every repo carries these at the root. Presence is checked **on the default branc
 
 **Baseline governance is declared, not assumed.** Every Knowledge Islands repo is governed by `ki-repo` **and** `ki-authoring`; both are required declarations — a `.ki-config.toml` missing `[ki-authoring]` is a FAIL (`authoring-baseline`). Authoring is no longer an implicit universal hidden in the tooling ([ADR-KI-HARNESS-005](../../../../docs/decisions/ADR-KI-HARNESS-005-validate-down-ki-config-contract.md)); the config shows the full governance set. Machine/user-surface standards (`ki-tokenomics`, `ki-housekeeping`) stay opt-in, never baseline.
 
-**Foundation scaffolding is owner-controlled and append-only.** `ki-repo` owns the file-level contract and writes its `[ki-repo]` block plus the required bare `[ki-authoring]` foundation marker. Its INIT and CONFORM create a missing file with both, or append only a missing exact root marker to a partial file; a dotted `[ki-repo.checks]` sub-table alone does not satisfy `[ki-repo]`. They preserve all existing bytes, are idempotent, and make no write in dry-run. Sibling skills may conform their own tables under the validate-down/conform-down boundary. CONFORM completes this local repair before any live GitHub work. Bootstrap may subprocess the owner's scaffold-only INIT when `ki-repo` is seeded or resolved, but carries no TOML template and never edits the config directly.
+**Foundation scaffolding is owner-controlled and append-only.** `ki-repo` owns the file-level contract and writes its `[ki-repo]` block plus the required bare `[ki-authoring]` foundation marker. Its EDUCATE and CONFORM create a missing file with both, or append only a missing exact root marker to a partial file; a dotted `[ki-repo.checks]` sub-table alone does not satisfy `[ki-repo]`. They preserve all existing bytes, are idempotent, and make no write in dry-run. Sibling skills may conform their own tables under the validate-down/conform-down boundary. CONFORM completes this local repair before any live GitHub work. Bootstrap may subprocess the owner's scaffold-only EDUCATE when `ki-repo` is seeded or resolved, but carries no TOML template and never edits the config directly.
 
 **Self-check capability is required.** A confirmed ki-repo must carry a way to run its checks with zero skills installed: `.ki-meta/bin/ki-audit` or `.ki-meta/bin/aggregate.ts` must be present. A marker-only repo with neither is a FAIL (`self-check`) — re-bootstrap to write the runner.
 
@@ -43,7 +43,7 @@ Every repo carries these at the root. Presence is checked **on the default branc
 
 `.ki-meta/` is the working area for Knowledge Islands governance tooling — the artifacts-_out_ counterpart to `.ki-config.toml`'s config-_in_. It is an **extensible namespace**: subdirs are added as tooling grows, each declaring whether it is **derived** (regenerated, gitignored) or **durable** (kept, tracked). Defined subdirs today:
 
-- `.ki-meta/skills/<skill>/audit.ts` + `.ki-meta/bin/aggregate.ts` — **durable** (tracked): the vendored checker copies and the runner that `ki-bootstrap`'s INIT writes so the repo self-governs with zero skills installed ([ADR-KI-HARNESS-006](../../../../docs/decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)). The paired `.ki-meta/bin/ki-audit` wrapper is the `package.json`-free entry point.
+- `.ki-meta/skills/<skill>/audit.ts` + `.ki-meta/bin/aggregate.ts` — **durable** (tracked): the vendored checker copies and the runner that `ki-bootstrap`'s EDUCATE writes so the repo self-governs with zero skills installed ([ADR-KI-HARNESS-006](../../../../docs/decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)). The paired `.ki-meta/bin/ki-audit` wrapper is the `package.json`-free entry point.
 - `.ki-meta/audits/<concern>.{md,json}` — the latest audit report per concern (`engineering`, `skills`, `repo`, …), written by a checker run with `--report` and overwritten each run (latest-only, no history). The `.json` is the machine-readable substrate a composed audit merges; the `.md` is the human report.
 - `.ki-meta/conform/<concern>.md` — the latest record of what a CONFORM changed.
 
@@ -106,7 +106,7 @@ The engineering coverage manifest assigns the `package.json` **identity & metada
 
 Each repo **declares** its expected visibility in `.ki-config.toml` (`visibility = "public"` or `"private"`); the auditor checks that declaration against the live GitHub visibility. It is a deliberate per-repo choice, **not inferred from the name**. (In practice the `arcadia-*` repos are private bases / internal skills and the `mcp-*` repos are public servers — a pattern, not the rule.)
 
-`.ki-config.toml` is a shared per-repo file; each skill reads and may conform the schema of its own `[table]`, while `ki-repo` owns the file-level contract and required foundation markers. The full cross-skill contract — its presence as the compliance marker, the table-per-skill model, and the validate-your-own-table protocol — is in [the `.ki-config.toml` contract](ki-config-standard.md). Run `bun scripts/init.ts <target-repo>` to establish the canonical foundations and self-check surface in one operation (or its internal `--scaffold-config-only` leg when only the append-only config repair is required), then edit the values:
+`.ki-config.toml` is a shared per-repo file; each skill reads and may conform the schema of its own `[table]`, while `ki-repo` owns the file-level contract and required foundation markers. The full cross-skill contract — its presence as the compliance marker, the table-per-skill model, and the validate-your-own-table protocol — is in [the `.ki-config.toml` contract](ki-config-standard.md). Run `bun scripts/educate.ts <target-repo>` to establish the canonical foundations and self-check surface in one operation (or its internal `--scaffold-config-only` leg when only the append-only config repair is required), then edit the values:
 
 ```toml
 # .ki-config.toml — one [table] per skill that needs per-repo options
@@ -167,7 +167,7 @@ public=(mcp-claude-housekeeping mcp-git-audit mcp-gsuite mcp-kb-fs mcp-ki-kb-not
 
 # Layer 1 — each repo declares its config in .ki-config.toml (committed via PR like any file).
 #   Scaffold/repair [ki-repo] + [ki-authoring], vendor their self-checks, then edit:
-#     bun skills/keystone/ki-repo/scripts/init.ts <target-repo>
+#     bun skills/keystone/ki-repo/scripts/educate.ts <target-repo>
 # Visibility is verified (declared vs live), not set here; change actual visibility deliberately:
 #   gh repo edit knowledgeislands/<name> --visibility public|private --accept-visibility-change-consequences
 

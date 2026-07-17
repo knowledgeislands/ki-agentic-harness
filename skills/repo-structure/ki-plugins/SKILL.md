@@ -1,10 +1,10 @@
 ---
 name: ki-plugins
 implies: []
-vendors: [init, audit, conform, help]
+vendors: [educate, audit, conform, help]
 description: >
   Audit, conform, and scaffold a Knowledge Islands **plugin-marketplace** repo — the generated Claude plugin marketplace that projects the harness's skills and agents onto the Cowork surface (`knowledgeislands/ki-plugins`, `ADR-KI-HARNESS-002`). The fifth repo-structure skill (with `ki-harness`, `ki-kb`, `ki-website`, `ki-mcp`), exactly one per repo. Governs the on-disk projection: the `marketplace.json` and `plugin.json` manifests, the verbatim `skills/` copy and flattened `agents/`, the MCP-deferred rule (no `.mcp.json`), and the generated-not-hand-edited invariant. Triggers: "audit the plugin marketplace", "is ki-plugins well-formed", "check marketplace.json", "scaffold a plugin marketplace", "refresh the plugins standard". Generation and cross-surface enablement belong to `ki-binding` (`ki:binding:build-plugin` + Cowork wiring); this skill owns only the projection's on-disk correctness. For GitHub config and LICENSE use `ki-repo`; for Markdown/TOML style use `ki-authoring`.
-argument-hint: 'audit <repo> | conform <repo> | help | init <repo> | refresh'
+argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 
 # Knowledge Islands plugin-marketplace standard
@@ -37,7 +37,7 @@ Three rules define the shape — most audit findings are a violation of one:
 
 ## Operating modes
 
-Every governance skill carries the universal four **AUDIT · CONFORM · INIT · REFRESH**; INIT here scaffolds a new marketplace repo. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
+Every governance skill carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH**; EDUCATE here scaffolds a new marketplace repo. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
 
 ### Mode AUDIT
 
@@ -53,7 +53,7 @@ Run AUDIT first. Then bring the repo into line:
 2. **Fix the repo scaffold by hand** where AUDIT flagged it (missing `[ki-plugins]` table, a drifted `CLAUDE.md` invariant, a missing standard file) — the scaffold is the repo's own, not generated.
 3. **Re-run AUDIT** to confirm clean (bar the acknowledged LICENSE divergence).
 
-### Mode INIT
+### Mode EDUCATE
 
 Scaffold a new marketplace repo:
 

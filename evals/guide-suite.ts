@@ -6,9 +6,9 @@
  *
  * Extracts the fenced `bash` command blocks from docs/guides/user-guide/onboarding.md
  * and runs the documented onboarding steps against in-harness fixtures — driving the
- * bootstrap chain (INIT → the self-sufficiency contract) with **no skills installed**.
+ * bootstrap chain (EDUCATE → the self-sufficiency contract) with **no skills installed**.
  * It then asserts each fixture ends in the documented state: vendored script copies +
- * HELP snapshots, the four `.ki-meta/bin/{ki-audit,ki-conform,ki-init,ki-help}` entry
+ * HELP snapshots, the four `.ki-meta/bin/{ki-audit,ki-conform,ki-educate,ki-help}` entry
  * points, an untouched `package.json` (bootstrap wires no keys — that is ki-engineering's
  * job), a working aggregate, HELP readable with no bun on PATH, and byte-identical output
  * on a second run (idempotency). Because the commands are extracted from the guide, the
@@ -107,7 +107,7 @@ try {
 
   check(existsSync(join(gf, '.ki-meta/bin/aggregate.ts')), 'vendored the aggregate runner')
   // All four package.json-free entry points, each executable.
-  for (const bin of ['ki-audit', 'ki-conform', 'ki-init', 'ki-help']) {
+  for (const bin of ['ki-audit', 'ki-conform', 'ki-educate', 'ki-help']) {
     const p = join(gf, '.ki-meta/bin', bin)
     check(existsSync(p) && (lstatSync(p).mode & 0o111) !== 0, `wrote executable .ki-meta/bin/${bin}`)
   }

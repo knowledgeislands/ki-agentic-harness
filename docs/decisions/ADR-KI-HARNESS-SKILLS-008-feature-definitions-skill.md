@@ -8,7 +8,7 @@ The skill set governed the **why** (Decision Records, `ki-decision-records`) and
 
 ## Decision
 
-Introduce **`ki-feature-definitions`**, a general-governance skill that codifies Feature Definitions as the third leg of the `docs/` triad — decisions (why) / **features (what)** / guides (how). It mirrors `ki-decision-records`' shape: a format standard, an audit rubric, the universal INIT/AUDIT/CONFORM/REFRESH modes plus NEW, and a mechanical checker (`audit-features.ts`).
+Introduce **`ki-feature-definitions`**, a general-governance skill that codifies Feature Definitions as the third leg of the `docs/` triad — decisions (why) / **features (what)** / guides (how). It mirrors `ki-decision-records`' shape: a format standard, an audit rubric, the universal EDUCATE/AUDIT/CONFORM/REFRESH modes plus NEW, and a mechanical checker (`audit-features.ts`).
 
 - **Layout** — `docs/features/`, flat one file per area; an `index.md` carries the ID scheme, the Gaps convention, and one or more **areas tables** (columns include `Prefix` and `File`) that register each area's prefix.
 - **Requirement** — `### <PREFIX>-NNN — <title>` (multi-segment uppercase prefix, ≥ 3-digit serial, em-dash), one **RFC-2119** normative statement, and a `_Verify:_` hook naming the concrete check. IDs are **append-only, never reused**; deprecated entries keep their number struck through.

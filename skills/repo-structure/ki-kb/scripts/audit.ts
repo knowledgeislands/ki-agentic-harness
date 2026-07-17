@@ -3,7 +3,7 @@
  * Mechanical checker for a Knowledge Islands knowledge base.
  *
  *   bun scripts/audit.ts [base-path]   # audit a base (default: cwd)
- *   bun scripts/audit.ts --init        # print the default [ki-kb] block
+ *   bun scripts/audit.ts --educate        # print the default [ki-kb] block
  *
  * This is the mechanical half of the skill's Mode AUDIT — the deterministic
  * layer the judgment pass (note routing, memory-index accuracy) builds on. It
@@ -34,7 +34,7 @@
  *      to the judgment pass. Whether a note SHOULD carry frontmatter at all is
  *      base/type-specific and stays judgment.
  *
- * READ-ONLY: never mutates the base. `--init` writes nothing — it prints the
+ * READ-ONLY: never mutates the base. `--educate` writes nothing — it prints the
  * default block to stdout for the author to paste into the base's config.
  * No npm dependencies — Bun/Node built-ins only. Exit code is non-zero on any FAIL.
  */
@@ -58,7 +58,7 @@ const ZONES_SECTION = `${KI_SECTION}.zones`
 const RUBRIC = 'references/audit-rubric.md'
 const FM = 'references/frontmatter-standard.md'
 
-// The default block `--init` emits. The bare [ki-kb] header is the
+// The default block `--educate` emits. The bare [ki-kb] header is the
 // OPT-IN MARKER: its presence declares this base governed by the kb standard
 // (ki-repo's coverage cascade warns a base that has the zone layout but
 // no table). The keys below are all optional — a base on the canonical zone names with
@@ -333,7 +333,7 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
 
 // ── run ──────────────────────────────────────────────────────────────────────
 const argv = process.argv.slice(2)
-if (argv.includes('--init')) {
+if (argv.includes('--educate')) {
   process.stdout.write(KI_DEFAULT)
   process.exit(0)
 }

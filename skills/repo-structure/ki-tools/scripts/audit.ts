@@ -5,7 +5,7 @@
  * Homebrew tap formula.
  *
  *   bun scripts/audit.ts [repo-path]   # audit a tool repo (default: cwd)
- *   bun scripts/audit.ts --init        # print the default [ki-tools] block
+ *   bun scripts/audit.ts --educate        # print the default [ki-tools] block
  *
  * This is the mechanical half of the skill's Mode AUDIT — the deterministic
  * layer the judgment pass (release/tag hygiene, the tool's actual behaviour)
@@ -35,7 +35,7 @@
  * README / LICENSE and the GitHub settings are ki-repo's job; the Homebrew tap
  * is ki-homebrew-tap's — this checker does not duplicate them.
  *
- * READ-ONLY: never mutates the repo. `--init` writes nothing — it prints the
+ * READ-ONLY: never mutates the repo. `--educate` writes nothing — it prints the
  * default block to stdout for the author to paste into the repo's config.
  * No npm dependencies — Bun/Node built-ins only. Exit code is non-zero on any FAIL.
  */
@@ -45,7 +45,7 @@ import { basename, join, resolve } from 'node:path'
 const KI_CONFIG = '.ki-config.toml'
 const KI_SECTION = 'ki-tools'
 
-// The default block `--init` emits. The bare [ki-tools] header is the OPT-IN
+// The default block `--educate` emits. The bare [ki-tools] header is the OPT-IN
 // MARKER: its presence declares this repo governed by the tools standard
 // (ki-repo's coverage cascade warns a repo that has bin/<exe> + install.sh but
 // no table). There are no keys today — it is a keyless marker, exactly like
@@ -285,7 +285,7 @@ function auditTools(repo: string, kiTools: KiToolsParse): Finding[] {
 
 // ── run ──────────────────────────────────────────────────────────────────────
 const argv = process.argv.slice(2)
-if (argv.includes('--init')) {
+if (argv.includes('--educate')) {
   process.stdout.write(KI_DEFAULT)
   process.exit(0)
 }

@@ -1,10 +1,10 @@
 ---
 name: ki-dotfiles-chezmoi
 implies: [ki-authoring]
-vendors: [init, audit, conform, help]
+vendors: [educate, audit, conform, help]
 description: >
   Codify, audit, and conform the chezmoi dotfiles-management standard — naming-prefix semantics, edit-source-not-target discipline, shell-loader layering, the bin/ dispatcher pattern, app-mutated-config handling (surgical patch vs full-template reverse-merge), format-preserving config editor selection, single-source-to-multi-target config templating, repo-local-vs-user-level CLAUDE.md layering, and chezmoi-specific repo-shape and OS gotchas. Use when auditing or authoring a chezmoi source repo, deciding how to manage or surgically edit an app-mutated config file, structuring shell config or a bin/ directory, or checking dotfiles conventions are followed. Triggers: "chezmoi standard", "audit my chezmoi repo", "how should I manage this dotfile", "surgical patch or reverse-merge", "preserve config comments", "dotfiles conventions". Not for a specific repo's own personal tool choices (its exact scripts, taps, MCP servers) — those belong in that repo's own `CLAUDE.md`, not this skill.
-argument-hint: 'audit <repo> | conform <repo> | help | init <repo> | refresh'
+argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 
 # The chezmoi dotfiles-management standard
@@ -29,7 +29,7 @@ This is a **standard, repo- and application-agnostic governance skill** — it h
 
 ## Operating modes
 
-Like every governance skill it carries the universal **AUDIT · CONFORM · INIT · REFRESH**. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for the target path the chosen mode's `argument-hint` shows.
+Like every governance skill it carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for the target path the chosen mode's `argument-hint` shows.
 
 ### Mode AUDIT — check a chezmoi repo against the standard
 
@@ -43,9 +43,9 @@ Like every governance skill it carries the universal **AUDIT · CONFORM · INIT 
 2. Everything else in the standard is judgment-driven and is **not** auto-fixed: restructuring shell config into the loader pattern, choosing Pattern A vs B for a given app config, selecting and proving a format-preserving surgical editor, moving CLAUDE.md content between layers, and so on are manual procedures — CONFORM prints them as TODOs (see [the rubric](references/audit-rubric.md)'s `[J]` list) rather than guessing.
 3. Re-audit until `scripts/audit.ts` is clean and the judgment criteria are satisfied.
 
-### Mode INIT — vendor the checker into a target repo
+### Mode EDUCATE — vendor the checker into a target repo
 
-INIT vendors this skill's declared mechanical unit (the frontmatter `vendors:` declaration) into the target's `.ki-meta/` via the central `ki-bootstrap` chain: [`scripts/init.ts`](scripts/init.ts) is a thin delegator into that engine, matching every other governance skill's INIT.
+EDUCATE vendors this skill's declared mechanical unit (the frontmatter `vendors:` declaration) into the target's `.ki-meta/` via the central `ki-bootstrap` chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator into that engine, matching every other governance skill's EDUCATE.
 
 ### Mode REFRESH — re-anchor the standard to its sources
 

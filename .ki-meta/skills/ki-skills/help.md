@@ -2,14 +2,14 @@
 
 Audit, review, and write Agent Skills against current best practice.
 
-**Invoke:** `ki-skills audit <skill-or-repo> | conform <skill> | help | init <description> | optimise <skill> | refresh`
+**Invoke:** `ki-skills audit <skill-or-repo> | conform <skill> | help | educate <description> | optimise <skill> | refresh`
 
 **Modes:**
 
 - `AUDIT` — review an existing skill
 - `CONFORM` — bring an existing skill into line
+- `EDUCATE` — write a new skill
 - `HELP` — explain this skill and stop; the default when no mode is given (then routes, if interactive)
-- `INIT` — write a new skill
 - `OPTIMISE` — push a compliant skill toward excellent
 - `REFRESH` — re-anchor best practice
 

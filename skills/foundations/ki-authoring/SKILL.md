@@ -1,11 +1,11 @@
 ---
 name: ki-authoring
 implies: []
-vendors: [init, audit, conform, help]
+vendors: [educate, audit, conform, help]
 owns: ['.prettierrc.json', '.editorconfig', '.markdownlint-cli2.jsonc']
 description: >
   The foundational authoring and formatting conventions shared across every Knowledge Islands skill, repo, and base — the common style layer the others build on rather than restate. Currently covers Markdown authoring (wide tables → footnotes, link style) and TOML formatting style (for the shared `.ki-config.toml`). Use when writing or editing Markdown or TOML, bringing a document, README, table, or config to house style (conform), checking one against the conventions (audit), or refreshing them against their sources. Triggers: "format this to our style", "fix this markdown", "tidy this README", "audit this doc's formatting", "does this follow house style", "what's our convention for tables / links / footnotes". For KB note-writing use the `ki-kb` skill; for a repo's configuration and the `.ki-config.toml` contract use `ki-repo`; to judge a SKILL.md use `ki-skills`; for the build/lint/test toolchain use `ki-engineering`.
-argument-hint: 'audit <path> | conform <path> | help | init <target> | refresh'
+argument-hint: 'audit <path> | conform <path> | help | educate <target> | refresh'
 ---
 
 # Knowledge Islands authoring conventions
@@ -25,7 +25,7 @@ So the workflow when authoring or tidying Markdown is: write to the judgment con
 
 ## Operating modes
 
-Like every governance skill it carries the universal **AUDIT · CONFORM · INIT · REFRESH**; INIT scaffolds no artifact of its own. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The conventions each mode acts on are the **Convention sets** below; the checkable criteria are in [the rubric](references/audit-rubric.md).
+Like every governance skill it carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**; EDUCATE scaffolds no artifact of its own. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The conventions each mode acts on are the **Convention sets** below; the checkable criteria are in [the rubric](references/audit-rubric.md).
 
 ### Mode AUDIT — check a document against house style
 
@@ -39,9 +39,9 @@ Like every governance skill it carries the universal **AUDIT · CONFORM · INIT 
 2. Run `bun run ki:authoring:conform` (or the standalone `conform.ts`) to settle the mechanical layer (table alignment and transient `MD052`/`MD060` until references and alignment land).
 3. Re-run until `ki:authoring:audit` is clean and the judgment criteria pass.
 
-### Mode INIT — vendor the style gate, scaffold the owned files
+### Mode EDUCATE — vendor the style gate, scaffold the owned files
 
-INIT vendors this skill's declared mechanical unit (the frontmatter `vendors:` declaration) into the target's `.ki-meta/` via the central bootstrap chain: [`scripts/init.ts`](scripts/init.ts) is a thin delegator into the `ki-bootstrap` engine. The `.prettierrc.json`/`.editorconfig` scaffold-or-correct itself lives in CONFORM (mirroring `ki-engineering`'s INIT/CONFORM split — INIT wires the checker in, CONFORM does the actual file write), so a fresh target only gets both files on its first `ki:authoring:conform` run.
+EDUCATE vendors this skill's declared mechanical unit (the frontmatter `vendors:` declaration) into the target's `.ki-meta/` via the central bootstrap chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator into the `ki-bootstrap` engine. The `.prettierrc.json`/`.editorconfig` scaffold-or-correct itself lives in CONFORM (mirroring `ki-engineering`'s EDUCATE/CONFORM split — EDUCATE wires the checker in, CONFORM does the actual file write), so a fresh target only gets both files on its first `ki:authoring:conform` run.
 
 ### Mode REFRESH — re-anchor the conventions to their sources
 

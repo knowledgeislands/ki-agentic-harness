@@ -30,7 +30,7 @@ Audits, conforms, and scaffolds a **harness repository** — the container that 
 
 ### `ki-kb`
 
-Interacts with a Knowledge Islands knowledge base over the standard zone model: the note-ops **DIGEST / EXTRACT / QUERY / SAVE / UPDATE**, plus **AUDIT / CONFORM / INIT** to check a base against the structure model, bring it into line, or scaffold a new one. Only store-level bindings come from the host base. Delegates the **`Streams` zone** to `ki-kb-streams`.
+Interacts with a Knowledge Islands knowledge base over the standard zone model: the note-ops **DIGEST / EXTRACT / QUERY / SAVE / UPDATE**, plus **AUDIT / CONFORM / EDUCATE** to check a base against the structure model, bring it into line, or scaffold a new one. Only store-level bindings come from the host base. Delegates the **`Streams` zone** to `ki-kb-streams`.
 
 ### `ki-website`
 

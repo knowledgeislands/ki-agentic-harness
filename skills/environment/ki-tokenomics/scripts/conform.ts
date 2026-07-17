@@ -31,7 +31,7 @@
  *             it (repair the path, or drop the include) is a judgment call.
  *   - TOOL-4  foreign `knowledgeislands/<repo>` line(s) inside the project CLAUDE.md
  *             `headroom:learn` markers — listed; re-learn here or prune (judgment).
- *   - CFG     `.ki-config.toml` [ki-tokenomics] defects: table absent (run INIT),
+ *   - CFG     `.ki-config.toml` [ki-tokenomics] defects: table absent (run EDUCATE),
  *             invalid `headroom`, missing/invalid `preferred_model_type`, unknown keys
  *             (validate-down), non-numeric budgets — the operator picks the value.
  *   - SURF-4 / BUDG / MCP-2/3 / RUN / TOOL-3 pointer TODOs: altitude, budget
@@ -412,7 +412,7 @@ function main(): number {
   if (kiText == null) {
     todo(
       'CFG-2',
-      'no .ki-config.toml at target; a KI repo needs one (see ki-repo), then run INIT to add the [ki-tokenomics] table',
+      'no .ki-config.toml at target; a KI repo needs one (see ki-repo), then run EDUCATE to add the [ki-tokenomics] table',
       '.ki-config.toml'
     )
   } else {
@@ -420,7 +420,7 @@ function main(): number {
     if (!ki.present) {
       todo(
         'CFG-2',
-        `no [${KI_SECTION}] table in .ki-config.toml; run \`bun scripts/init.ts\` / \`--init\` to scaffold it, then tune`,
+        `no [${KI_SECTION}] table in .ki-config.toml; run \`bun scripts/educate.ts\` / \`--educate\` to scaffold it, then tune`,
         '.ki-config.toml'
       )
     } else {

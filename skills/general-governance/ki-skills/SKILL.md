@@ -1,10 +1,10 @@
 ---
 name: ki-skills
 implies: []
-vendors: [init, audit, conform, help]
+vendors: [educate, audit, conform, help]
 description: >
   Audit, review, and write Agent Skills against current best practice. Use when creating a new skill, reviewing or critiquing an existing SKILL.md, checking a skill before it ships, asking "is this skill any good / well-written / discoverable", or refreshing the house rubric against new community guidance. Carries a checkable rubric (split into mechanical checks a bundled linter runs, and judgment checks you apply), the Knowledge Islands skill conventions, and a tracked source list it revisits. Triggers: "audit this skill", "review my skill", "is this SKILL.md good", "write a new skill", "scaffold a skill", "lint the skills", "check skills against best practice", "refresh the skills rubric", "what do we expect from a skill". Judges a `SKILL.md` itself (frontmatter + body prose), not a repo's code or config. Off-ramps: `ki-agents` (subagent defs), `ki-mcp` (server code), `ki-authoring` (Markdown/TOML style), `ki-harness` (bundle layout).
-argument-hint: 'audit <skill-or-repo> | conform <skill> | help | init <description> | optimise <skill> | refresh'
+argument-hint: 'audit <skill-or-repo> | conform <skill> | help | educate <description> | optimise <skill> | refresh'
 ---
 
 # Knowledge Islands Skills
@@ -20,11 +20,11 @@ Every criterion is one of two kinds — never conflate them:
 - **Mechanical** — deterministically checkable. A bundled linter ([`scripts/audit.ts`](scripts/audit.ts)) runs these: file exists, frontmatter parses, `name` matches the directory and the charset rules, length caps, link resolution, no wikilinks. **Always run the linter first** — do not eyeball what a script checks better.
 - **Judgment** — needs a model. You assess these by reading: is the `description` trigger-rich and third-person, is the body at the right altitude, is detail correctly pushed into `references/`, does a standard skill avoid hard-coding one base. The linter cannot judge these.
 
-The conventions a good skill follows — what each is and why — live in [the Agent Skills standard](references/agent-skills-standard.md); the line-by-line checkable criteria (with `[M]`/`[J]` tags and codes) live in [the rubric](references/audit-rubric.md), each citing its standard section. Load both before an AUDIT, CONFORM, or INIT; this body is the routing overview.
+The conventions a good skill follows — what each is and why — live in [the Agent Skills standard](references/agent-skills-standard.md); the line-by-line checkable criteria (with `[M]`/`[J]` tags and codes) live in [the rubric](references/audit-rubric.md), each citing its standard section. Load both before an AUDIT, CONFORM, or EDUCATE; this body is the routing overview.
 
 ## Operating modes
 
-Like every governance skill it carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT here writes a new skill; **OPTIMISE** — pushing a compliant skill from the floor toward excellent — is its skill-specific mode. Modes are named and alphabetical. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
+Like every governance skill it carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH** — EDUCATE here writes a new skill; **OPTIMISE** — pushing a compliant skill from the floor toward excellent — is its skill-specific mode. Modes are named and alphabetical. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
 
 ### Mode AUDIT — review an existing skill
 
@@ -47,12 +47,12 @@ Review a skill (or every skill in a repo) against the rubric and report.
 2. **Apply the fixes in place** — `description`, body altitude, progressive disclosure, links, frontmatter — per [the rubric](references/audit-rubric.md), touching only what a criterion calls for and leaving the skill's voice intact.
 3. **Re-run AUDIT** (and the linter) until it is clean.
 
-### Mode INIT — write a new skill
+### Mode EDUCATE — write a new skill
 
 1. **Clarify scope first**: what should fire the skill (the triggers), what kind it is (Knowledge Islands / process / scoped — see ki-agentic-harness `README.md`), and how it relates to sibling skills — always **composition** (run a sibling's checker/mode in sequence and add a delta; declare the edge), never a base-coupled extension that takes another skill's modes.
 2. **Scaffold** `<name>/SKILL.md` with `references/`, `scripts/`, `assets/` only as needed. The directory name **is** the `name:` frontmatter (lowercase, hyphenated, in sync).
 3. **Write to the rubric, not from memory** — open [the rubric](references/audit-rubric.md) and satisfy each criterion as you draft. In particular: trigger-rich third-person `description`; body under 500 lines / ~5,000 tokens; one default approach with an escape hatch, not a menu; detail in `references/`; relative markdown links (angle-bracket form for paths with spaces), never wikilinks; refer to other skills by `name`, never path.
-4. **Self-audit before finishing** — run Mode AUDIT on the new skill. INIT and AUDIT share one rubric on purpose.
+4. **Self-audit before finishing** — run Mode AUDIT on the new skill. EDUCATE and AUDIT share one rubric on purpose.
 5. **Add it to the set's scheduled refresh** — if the host registers a scheduled run that sweeps the set's REFRESH (LONG-2), add the new skill to that routine so it doesn't silently fall out of the sweep. The routine is host infra, not a repo file, so this is a manual follow-up the audit can't verify.
 
 ### Mode OPTIMISE — push a compliant skill toward excellent

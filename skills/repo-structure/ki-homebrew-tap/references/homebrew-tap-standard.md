@@ -77,7 +77,7 @@ A tap MAY carry a `.github/workflows/` job running [`brew test-bot`][testbot] â€
 
 ## Config marker
 
-The tap opts into governance with a keyless `[ki-homebrew-tap]` table in `.ki-config.toml`, alongside `[ki-repo]` _(shape)_. It is **validate-down**: presence is the whole config, any key under it is unknown and WARNed (the tap's shape is fixed by Homebrew, so there is nothing to tune). Run `bun scripts/audit.ts --init` to print the default block.
+The tap opts into governance with a keyless `[ki-homebrew-tap]` table in `.ki-config.toml`, alongside `[ki-repo]` _(shape)_. It is **validate-down**: presence is the whole config, any key under it is unknown and WARNed (the tap's shape is fixed by Homebrew, so there is nothing to tune). Run `bun scripts/audit.ts --educate` to print the default block.
 
 ## What `brew` checks that this skill does not
 

@@ -1,10 +1,10 @@
 ---
 name: ki-tokenomics
 implies: []
-vendors: [init, audit, conform, help]
+vendors: [educate, audit, conform, help]
 description: >
   Audit, codify, and optimise the tokenomics of a Claude Code environment — the standing context surface paid on every turn, composed across the user-wide (`~/.claude`) and project-local layers and any Knowledge Islands base, plus the runtime levers (caching, model tier, compaction, sub-agent fan-out, verbosity). Measures each layer's CLAUDE.md (+`@imports`), memory, installed-skill descriptions, MCP tool definitions, and settings against budgets, and checks context-compression tooling such as Headroom is set up optimally. Use when context feels heavy or token costs climb. Triggers: "audit my token usage", "why is my context so big", "reduce my token costs", "trim my context", "too many MCP tools", "is Headroom set up right". For the volatile numbers (model ids, prices, cache TTLs, window sizes) use `claude-api`; for a base's structure/content use `ki-kb`; for one skill's quality use `ki-skills`; for an MCP server's code use `ki-mcp`.
-argument-hint: 'audit | conform | help | init | refresh'
+argument-hint: 'audit | conform | help | educate | refresh'
 ---
 
 # Knowledge Islands tokenomics
@@ -41,11 +41,11 @@ Headroom's savings ledger, performance logs, live counters, and durable proxy hi
 
 ## The config table — overridable budgets
 
-A target opts in (and tunes) via a `[ki-tokenomics]` table in its `.ki-config.toml`, read **validate-down** (warn on a key it does not recognise; never read another skill's table). It carries the per-component and total token budgets (a `[…budgets]` sub-table), the `headroom` expectation, and an optional `context_window_tokens` to express headroom as a percentage. Omit any to take the default; `init` scaffolds the keys. A budget overage is a **WARN**, never a FAIL — these are guide-rails, not gates.
+A target opts in (and tunes) via a `[ki-tokenomics]` table in its `.ki-config.toml`, read **validate-down** (warn on a key it does not recognise; never read another skill's table). It carries the per-component and total token budgets (a `[…budgets]` sub-table), the `headroom` expectation, and an optional `context_window_tokens` to express headroom as a percentage. Omit any to take the default; `educate` scaffolds the keys. A budget overage is a **WARN**, never a FAIL — these are guide-rails, not gates.
 
 ## Operating modes
 
-Every governance skill carries the universal four **AUDIT · CONFORM · INIT · REFRESH**. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
+Every governance skill carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH**. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
 
 ### Mode AUDIT
 
@@ -55,9 +55,9 @@ Every governance skill carries the universal four **AUDIT · CONFORM · INIT · 
 
 → Read [references/mode-audit-conform.md](references/mode-audit-conform.md)
 
-### Mode INIT
+### Mode EDUCATE
 
-→ Read [references/mode-init.md](references/mode-init.md)
+→ Read [references/mode-educate.md](references/mode-educate.md)
 
 ### Mode REFRESH
 

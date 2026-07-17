@@ -1,10 +1,10 @@
 ---
 name: ki-harness
 implies: [ki-skills, ki-agents, ki-decision-records, ki-project-roadmap]
-vendors: [init, audit, conform, help]
+vendors: [educate, audit, conform, help]
 description: >
   Audit, conform, and scaffold Knowledge Islands agentic harnesses — repos that bundle skills, agents, MCP servers, evals, and hooks together for versioned, co-installed deployment. Use when creating a new harness, checking an existing harness's five-part layout (`skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`), verifying its CLAUDE.md covers required orientation sections, checking its package.json script families, or auditing its `.ki-config.toml` harness table. Triggers: "audit the harness", "scaffold a new harness", "does this repo follow the harness standard", "refresh the harness standard", "is this a valid harness". Governs the **container** (directory structure, CLAUDE.md, package.json script families, installation conventions, `.ki-config.toml` table) — not the **contents**: skill quality → `ki-skills`; agent quality → `ki-agents`; project roadmap → `ki-project-roadmap`; MCP server code → `ki-mcp`; engineering toolchain → `ki-engineering`; GitHub repo settings → `ki-repo`.
-argument-hint: 'audit [path] | conform [path] | help | init <name> | refresh'
+argument-hint: 'audit [path] | conform [path] | help | educate <name> | refresh'
 ---
 
 # Knowledge Islands Harness
@@ -17,7 +17,7 @@ The full canonical standard — what each part must contain and why — lives in
 
 ## Operating modes
 
-Modes: **AUDIT · CONFORM · INIT · REFRESH** (named, alphabetical). Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
+Modes: **AUDIT · CONFORM · EDUCATE · REFRESH** (named, alphabetical). Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
 
 ### Mode AUDIT — check a harness against the standard
 
@@ -41,13 +41,13 @@ Modes: **AUDIT · CONFORM · INIT · REFRESH** (named, alphabetical). Invoked as
 2. **Apply the fixes:** create missing directories with stub `README.md`s, add or correct `CLAUDE.md` sections, update `ROADMAP.md`, add missing `.ki-config.toml` tables, fix `package.json` script families — per [the rubric](references/audit-rubric.md) and [the standard](references/harness-standard.md), touching only what a criterion calls for.
 3. **Re-run AUDIT** until it is clean.
 
-### Mode INIT — scaffold a new harness
+### Mode EDUCATE — scaffold a new harness
 
 1. **Name the harness.** The repository name is the harness identity; agree on it before creating.
 2. **Scaffold the five parts.** Create `skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`, each with a `README.md` describing what it holds — marking any part an empty shelf if it starts unpopulated.
 3. **Write `CLAUDE.md`** using [the standard](references/harness-standard.md) §CLAUDE.md required sections as the template: what-the-harness-is paragraph, five-part directory table with current status, working conventions per part, key `bun run *` commands.
 4. **Add `ROADMAP.md`.** Start with the known open work; mark items open-only. Note: continuous practices are not roadmap items — they belong in the `ki-engineering` enforcement framework or `CLAUDE.md`.
-5. **Scaffold `package.json`** with the harness-specific required scripts: `ki:skills:link:project` and `ki:skills:audit`. The cross-skill operational keys point at the three scripts `ki-bootstrap` vendors into `.ki-meta/bin/` for a harness-shaped target — `ki:skills:graph` (`bun .ki-meta/bin/skill-graph.ts --tree`), `ki:skills:help` (`bun .ki-meta/bin/skill-help.ts`), `ki:skills:status` / `ki:skills:unlink` (`bun .ki-meta/bin/sync-skills.ts status|unlink`), and `ki:skills:link:global` (`bun .ki-meta/bin/sync-skills.ts link --only ki-bootstrap` — the keystone is the only universally-correct global install; extend the `--only` list per harness). These resolve only once INIT has bootstrapped `.ki-meta/` (step 7), so run the bootstrap before invoking them. Compose `ki-engineering` and `ki-authoring` for the aggregate entrypoints and toolchain passes; this skill does not duplicate their checks.
+5. **Scaffold `package.json`** with the harness-specific required scripts: `ki:skills:link:project` and `ki:skills:audit`. The cross-skill operational keys point at the three scripts `ki-bootstrap` vendors into `.ki-meta/bin/` for a harness-shaped target — `ki:skills:graph` (`bun .ki-meta/bin/skill-graph.ts --tree`), `ki:skills:help` (`bun .ki-meta/bin/skill-help.ts`), `ki:skills:status` / `ki:skills:unlink` (`bun .ki-meta/bin/sync-skills.ts status|unlink`), and `ki:skills:link:global` (`bun .ki-meta/bin/sync-skills.ts link --only ki-bootstrap` — the keystone is the only universally-correct global install; extend the `--only` list per harness). These resolve only once EDUCATE has bootstrapped `.ki-meta/` (step 7), so run the bootstrap before invoking them. Compose `ki-engineering` and `ki-authoring` for the aggregate entrypoints and toolchain passes; this skill does not duplicate their checks.
 6. **Add `.ki-config.toml`** with at minimum `[ki-repo]`, `[ki-engineering]`, and `[ki-harness]`. Add `[ki-skills]` once `skills/` is populated.
 7. **Self-audit.** Run Mode AUDIT on the new harness before handing it off.
 

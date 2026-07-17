@@ -3,7 +3,7 @@
  * Mechanical auditor for a Knowledge Islands 11ty website repo.
  *
  *   bun scripts/audit.ts <repo-path>        # or: node --experimental-strip-types
- *   bun scripts/audit.ts --init             # print the default [ki-website] block
+ *   bun scripts/audit.ts --educate             # print the default [ki-website] block
  *
  * Checks the SITE-BUILD DELTA of the standard the `ki-website` skill
  * codifies — the Eleventy/Nunjucks/Tailwind site that compiles to a portable dist/. It does
@@ -41,14 +41,14 @@ const std = (section: string): string => `${STD} ${section}`
 
 // `.ki-config.toml` is a shared per-repo file; this skill owns the
 // [ki-website] table. The table header is the opt-in marker and
-// the whole of it — there are no per-repo keys today, so `--init` emits a bare table
+// the whole of it — there are no per-repo keys today, so `--educate` emits a bare table
 // (validate-down warns on any key found under it).
 const KI_SECTION = 'ki-website'
 const KI_DEFAULT = `# ${KI_SECTION} — opt-in marker: presence of this table opts the repo into the
 # Eleventy + Tailwind site-build standard. It takes no per-repo keys today.
 [${KI_SECTION}]
 `
-if (process.argv.slice(2).includes('--init')) {
+if (process.argv.slice(2).includes('--educate')) {
   process.stdout.write(KI_DEFAULT)
   process.exit(0)
 }
@@ -349,7 +349,7 @@ add(
   'WEB-41',
   kiWebsiteTable
     ? `[${KI_SECTION}] table present in .ki-config.toml`
-    : `no [${KI_SECTION}] table in .ki-config.toml (run --init to scaffold it)`,
+    : `no [${KI_SECTION}] table in .ki-config.toml (run --educate to scaffold it)`,
   std('§2'),
   '.ki-config.toml'
 )

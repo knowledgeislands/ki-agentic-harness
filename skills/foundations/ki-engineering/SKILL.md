@@ -1,12 +1,12 @@
 ---
 name: ki-engineering
 implies: []
-vendors: [init, audit, conform, help]
+vendors: [educate, audit, conform, help]
 owns: [mise.toml, tsconfig.json, biome.json, knip.json]
 contributes: ['.ki-config.toml', package.json]
 description: >
   Use to audit our engineering standards, conform or scaffold a repo's toolchain, or check audit wiring, tsconfig, or Biome consistency. Owns the shared build/lint/test layer every Knowledge Islands TypeScript/Bun repo conforms to — the twin of `ki-authoring`. Covers the closed `package.json` key-set (toolchain fields here; identity/metadata content in `ki-repo`), the `mise.toml` toolchain pin, aggregate `ki:audit`/`ki:conform` plus derived skill-scoped modes, direct code-tool execution, the Bun-install/Node-run split, runner-neutral test entrypoint, conditional `vitest` shape with 100% coverage, and the build/cli-chmod rule — plus the enforcement framework the governance skills follow. Triggers: "audit our engineering standards", "do the repos' scripts match", "why are audit/conform scripts inconsistent". For GitHub settings, security, and the `.ki-config.toml` contract use `ki-repo`; for Markdown/TOML style use `ki-authoring`; for MCP server code use `ki-mcp`.
-argument-hint: 'audit <repo> | conform <repo> | help | init <repo> | refresh'
+argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 
 # Knowledge Islands engineering standard
@@ -42,7 +42,7 @@ A repo is "clean" only when **every applicable** skill's audit passes. The `.ki-
 
 ## Operating modes
 
-Carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT scaffolds a new TS repo's toolchain. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The mode shape itself is defined in [the enforcement framework](references/enforcement-framework.md).
+Carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH** — EDUCATE scaffolds a new TS repo's toolchain. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The mode shape itself is defined in [the enforcement framework](references/enforcement-framework.md).
 
 ### Mode AUDIT — check a repo's common toolchain
 
@@ -56,7 +56,7 @@ Carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT scaf
 2. Fix the gaps in place — restore the aggregate and derived skill-scoped audit/conform surface, the `tsconfig`/`biome` shape, the runner-neutral bare `test` entrypoint and (where configured) the canonical Vitest shape, plus the build/cli-chmod rule — **copying from the closest healthy sibling** rather than inventing. Add the `[ki-engineering]` table if missing.
 3. Re-run `bun run ki:engineering:audit`; for Markdown changes also run `bun run ki:authoring:audit`.
 
-### Mode INIT — scaffold a new TS/Bun repo's toolchain
+### Mode EDUCATE — scaffold a new TS/Bun repo's toolchain
 
 Copy the aggregate/scoped `package.json` entrypoints, `tsconfig.json`/`biome.json` (plus `tsconfig.build.json` when it compiles, and `vitest.config.ts` only when selecting Vitest), and the `[ki-engineering]` table from the closest healthy sibling; adapt only names/paths. Then run the checker.
 

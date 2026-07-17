@@ -3,7 +3,7 @@
  * Mechanical checker for a Knowledge Islands Homebrew tap (`homebrew-<x>`).
  *
  *   scripts/audit.ts [tap-path]   (default: cwd)
- *   scripts/audit.ts --init        # print the default [ki-homebrew-tap] block
+ *   scripts/audit.ts --educate        # print the default [ki-homebrew-tap] block
  *
  * The skill's Mode AUDIT runs this for the deterministic items; the judgment pass
  * (does the formula install what it claims, is the test meaningful) is layered on by
@@ -22,7 +22,7 @@
  *   5. CONFIG           — `[ki-homebrew-tap]` present; keyless, validate-down (WARN unknown keys).
  *
  * Wraps Homebrew's EXTERNAL standard (the Formula Cookbook + `brew audit`/`brew style`);
- * it does not invent a house formula style. READ-ONLY: never writes to the tap. `--init`
+ * it does not invent a house formula style. READ-ONLY: never writes to the tap. `--educate`
  * prints the config block and nothing else. Bun/Node built-ins only. Exit non-zero on FAIL.
  */
 import { spawnSync } from 'node:child_process'
@@ -34,7 +34,7 @@ const README = 'README.md'
 const KI_CONFIG = '.ki-config.toml'
 const KI_SECTION = 'ki-homebrew-tap'
 
-// The default `--init` block: a keyless opt-in marker. Presence of the table is the
+// The default `--educate` block: a keyless opt-in marker. Presence of the table is the
 // whole config — the tap's shape is fixed by Homebrew, so the skill governs shape, not
 // keys. Validate-down: any key here is unknown and WARNed (CONFIG). Extra tables free.
 const KI_DEFAULT = `# Opt this repo into the ki-homebrew-tap standard (a Knowledge Islands Homebrew tap).
@@ -251,7 +251,7 @@ function spawnSafe(cmd: string, args: string[], cwd?: string): SpawnResult | nul
 
 // ── run ──────────────────────────────────────────────────────────────────────
 const argv = process.argv.slice(2)
-if (argv.includes('--init')) {
+if (argv.includes('--educate')) {
   process.stdout.write(KI_DEFAULT)
   process.exit(0)
 }
@@ -279,7 +279,7 @@ if (!ki)
   findings.push({
     level: 'WARN',
     area: 'CONFIG',
-    msg: `no [${KI_SECTION}] table in ${KI_CONFIG} — add it (run with --init to print the default block) so this tap is a declared, self-governing repo`,
+    msg: `no [${KI_SECTION}] table in ${KI_CONFIG} — add it (run with --educate to print the default block) so this tap is a declared, self-governing repo`,
     ref: STD,
     file: KI_CONFIG
   })

@@ -1,10 +1,10 @@
 ---
 name: ki-tools
 implies: []
-vendors: [init, audit, conform, help]
+vendors: [educate, audit, conform, help]
 description: >
   Audit, conform, or scaffold a Knowledge Islands `tools-*` repo — ONE standalone command-line tool per repo, distributed by a `curl | bash` installer AND a companion Homebrew tap formula. Governs the container SHAPE language-agnostically (bash today, a future Python/Go tool fits): the `bin/<tool>` executable + its exec bit, `install.sh`, versioning + `--version` + `vX.Y.Z` tags, `CHANGELOG.md`, a CI workflow, and capability conditionals (a shell entrypoint needs shellcheck + a bats suite; a `package.json` defers to `ki-engineering`). Triggers: "audit this tool repo", "scaffold a CLI tool", "release a command-line tool", "does this tools- repo follow our standard", "check my tools- repo". Off-ramps: the Homebrew tap + its formula → `ki-homebrew-tap`; GitHub settings and standard files (README, LICENSE) → `ki-repo`; a TS/Bun toolchain (`package.json`) → `ki-engineering`. Container, not contents — it does not judge the tool's internal code quality.
-argument-hint: 'audit <repo> | conform <repo> | help | init <repo> | refresh'
+argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 
 # Knowledge Islands tool-repo standard
@@ -48,11 +48,11 @@ Mirrors `ki-engineering`'s capability-conditional pattern: what the repo _is_ de
 
 ## The `[ki-tools]` marker
 
-A `tools-*` repo opts into this standard by declaring a **keyless** `[ki-tools]` table in its `.ki-config.toml` — a bare marker, exactly like `[ki-mcp]`. The table is validated **down** (this skill reads only its own table and warns on any unknown key inside it). Run `bun scripts/audit.ts --init` to print the default block.
+A `tools-*` repo opts into this standard by declaring a **keyless** `[ki-tools]` table in its `.ki-config.toml` — a bare marker, exactly like `[ki-mcp]`. The table is validated **down** (this skill reads only its own table and warns on any unknown key inside it). Run `bun scripts/audit.ts --educate` to print the default block.
 
 ## Operating modes
 
-Every governance skill carries the universal four **AUDIT · CONFORM · INIT · REFRESH**; INIT here scaffolds a new tool repo. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
+Every governance skill carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH**; EDUCATE here scaffolds a new tool repo. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
 
 ### Mode AUDIT
 
@@ -62,9 +62,9 @@ Every governance skill carries the universal four **AUDIT · CONFORM · INIT · 
 
 → Read [references/mode-audit-conform.md](references/mode-audit-conform.md)
 
-### Mode INIT
+### Mode EDUCATE
 
-→ Read [references/mode-init.md](references/mode-init.md)
+→ Read [references/mode-educate.md](references/mode-educate.md)
 
 ### Mode REFRESH
 

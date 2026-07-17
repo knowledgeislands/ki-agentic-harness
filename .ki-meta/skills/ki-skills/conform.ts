@@ -23,7 +23,7 @@
  * Fixes:
  *   - NAME-5: `name:` frontmatter rewritten to match the directory name.
  *   - SHAPE-11: argument-hint missing the `help` token gets ` | help` appended.
- *   - SHAPE-12 (verbs): argument-hint missing any of audit/conform/help/init/
+ *   - SHAPE-12 (verbs): argument-hint missing any of audit/conform/help/educate/
  *     refresh (skipped for self-declared process skills, ADR-KI-HARNESS-SKILLS-006)
  *     gets the missing verb(s) appended as bare ` | <verb>` segments.
  *   - SHAPE-12 (vendors leg): a missing `vendors:` frontmatter line is authored
@@ -69,7 +69,7 @@ const say = (line: string): void => {
 
 // ── kept in lockstep with audit.ts ──
 const isProcessSkill = (desc: string): boolean => /\(kind:\s*process\b/i.test(desc)
-const UNIVERSAL_VERBS = ['audit', 'conform', 'help', 'init', 'refresh']
+const UNIVERSAL_VERBS = ['audit', 'conform', 'help', 'educate', 'refresh']
 
 function hintVerbs(hint: string): string[] {
   const out: string[] = []

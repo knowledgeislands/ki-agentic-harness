@@ -15,7 +15,7 @@
  * Fixes (unambiguous + reversible only):
  *   - `.ki-config.toml` [ki-website] opt-in table (WEB-41): when the marker table
  *     is absent, APPENDS the canonical bare table — the exact block `audit.ts
- *     --init` emits. This table takes no per-repo keys, so the value is fully
+ *     --educate` emits. This table takes no per-repo keys, so the value is fully
  *     determined; no judgment is involved.
  *   - `.gitignore` dist entry (WEB-33): ensures the build output is ignored. In the
  *     site/ workspace layout, a misplaced root `/dist` entry is rewritten to

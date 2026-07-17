@@ -1,10 +1,10 @@
 ---
 name: ki-website
 implies: [ki-website-cloudflare]
-vendors: [init, audit, conform, help]
+vendors: [educate, audit, conform, help]
 description: >-
   Codifies, audits, and enforces the Knowledge Islands static-site standard: Eleventy 3 with Nunjucks and Markdown, TypeScript run natively on Bun, Tailwind 4 in config-less mode with semantic design tokens, and a portable `dist/` output. Use when building a new KI static site, auditing an existing site against the standard, conforming one to the standard, or scaffolding the initial `eleventy.config.ts`, Tailwind token pair, `src/` layout, and SEO wiring. Triggers: "audit my 11ty site", "does this site follow our standard", "scaffold a new 11ty site", "conform this site to KI standard", "build a static site with Eleventy", "my Tailwind build isn't generating any output", "add a page layout". Builds on ki-engineering (the aggregate/scoped Bun code-toolchain gate) and ki-authoring (Markdown style); for deploying the built `dist/` to Cloudflare use ki-website-cloudflare. Not for Astro, Next, or other frameworks.
-argument-hint: 'audit <repo> | conform <repo> | help | init <repo> | refresh'
+argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 
 # Knowledge Islands 11ty website standard
@@ -62,7 +62,7 @@ This skill's output, and the only thing the hosting skill needs: a `dist/` of st
 
 ## Operating modes
 
-Carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT scaffolds a new site. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The mode shape itself is defined in `ki-engineering`'s enforcement framework.
+Carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH** — EDUCATE scaffolds a new site. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The mode shape itself is defined in `ki-engineering`'s enforcement framework.
 
 ### Mode AUDIT — check a site against the standard
 
@@ -74,12 +74,12 @@ Carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT scaf
 ### Mode CONFORM — bring a site up to standard
 
 1. Run **AUDIT** first, so you change against a known gap list.
-2. Fix the gaps in place — use the canonical shape from [the standard](references/eleventy-site-standard.md): the lean layout (§2–§5) and the fuller patterns (tokens, layouts, SEO — §5–§7) as needed. Add the `[ki-website]` table if missing (`bun scripts/audit.ts --init >> .ki-config.toml`).
+2. Fix the gaps in place — use the canonical shape from [the standard](references/eleventy-site-standard.md): the lean layout (§2–§5) and the fuller patterns (tokens, layouts, SEO — §5–§7) as needed. Add the `[ki-website]` table if missing (`bun scripts/audit.ts --educate >> .ki-config.toml`).
 3. Re-run the checker and the relevant skill-scoped audits. For the toolchain block, run `ki-engineering`'s CONFORM; for Markdown run `ki-authoring`'s audit/conform; for the deploy block, `ki-website-cloudflare`'s.
 
-### Mode INIT — scaffold a new site
+### Mode EDUCATE — scaffold a new site
 
-Use the canonical shape from **[the standard](references/eleventy-site-standard.md)** over inventing: the `eleventy.config.ts` patterns (§4), the `main.css`/`tokens.css` pair (§5), the `_includes/{layouts,partials}/` shells (§3), and the build/dev script family (§8). Adapt names, palette, and content; keep the four invariants from day one. Add the `[ki-website]` table (`bun scripts/audit.ts --init >> .ki-config.toml`). Then run the checker. For the toolchain scaffold defer to `ki-engineering` INIT; for hosting, `ki-website-cloudflare` INIT.
+Use the canonical shape from **[the standard](references/eleventy-site-standard.md)** over inventing: the `eleventy.config.ts` patterns (§4), the `main.css`/`tokens.css` pair (§5), the `_includes/{layouts,partials}/` shells (§3), and the build/dev script family (§8). Adapt names, palette, and content; keep the four invariants from day one. Add the `[ki-website]` table (`bun scripts/audit.ts --educate >> .ki-config.toml`). Then run the checker. For the toolchain scaffold defer to `ki-engineering` EDUCATE; for hosting, `ki-website-cloudflare` EDUCATE.
 
 ### Mode REFRESH — re-anchor the standard to its sources
 

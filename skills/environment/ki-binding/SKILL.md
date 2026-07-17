@@ -1,10 +1,10 @@
 ---
 name: ki-binding
 implies: []
-vendors: [init, audit, conform, help]
+vendors: [educate, audit, conform, help]
 description: >
   Codify, audit, and apply the Knowledge Islands cross-surface binding — enabling the KI MCP servers, skills, and agents consistently across the surfaces that run them (Claude Code, Claude Desktop, Claude Cowork, claude.ai web) from the single renderer-neutral `mcp-servers.yaml` source. Governs the per-server `clients:` targeting field, the per-surface config each client wants, and the Cowork plugin the skill toggles in `enabledPlugins`. Use when a project's tools are enabled on one surface but not another, wiring a new surface, auditing that every surface agrees with the single source, or adding a server to the inventory. Triggers: "why is this MCP in Code but not Cowork", "enable these tools everywhere", "audit the cross-surface binding", "the surfaces disagree", "wire Cowork". Composes on `ki-bootstrap` (Claude Code skill links) and `ki-mcp` (server-code standard + the cross-surface-enablement.md design record). Not for one server's code (`ki-mcp`) or a repo's skill links alone (`ki-bootstrap`).
-argument-hint: 'audit [project] | conform [project] | help | init [project] | refresh'
+argument-hint: 'audit [project] | conform [project] | help | educate [project] | refresh'
 ---
 
 # Knowledge Islands Cross-surface Binding
@@ -42,9 +42,9 @@ Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated H
    - **Register + toggle it:** `bun skills/environment/ki-binding/scripts/conform.ts` writes `extraKnownMarketplaces["ki-plugins"]` and `enabledPlugins["knowledge-islands@ki-plugins"] = true` into every workspace's `cowork_settings.json` (merge, never clobber). **A full Cowork relaunch is required** for the change to take effect.
 6. **Re-run AUDIT** until clean.
 
-### Mode INIT — vendor the binding checks
+### Mode EDUCATE — vendor the binding checks
 
-INIT scaffolds no standalone artifact — the single source (`mcp-servers.yaml`) lives at the canonical source path, never in a target repo. It vendors this skill's declared mechanical unit (the frontmatter `vendors:` declaration — the checker and the Cowork conformer) into the target's `.ki-meta/` via the central bootstrap chain: [`scripts/init.ts`](scripts/init.ts) is a thin delegator that execs the `ki-bootstrap` engine with this skill as an explicit seed.
+EDUCATE scaffolds no standalone artifact — the single source (`mcp-servers.yaml`) lives at the canonical source path, never in a target repo. It vendors this skill's declared mechanical unit (the frontmatter `vendors:` declaration — the checker and the Cowork conformer) into the target's `.ki-meta/` via the central bootstrap chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator that execs the `ki-bootstrap` engine with this skill as an explicit seed.
 
 ### Mode REFRESH — re-anchor
 

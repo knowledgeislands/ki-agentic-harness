@@ -1,10 +1,10 @@
 ---
 name: ki-binding-chezmoi
 implies: [ki-binding, ki-dotfiles-chezmoi]
-vendors: [init, audit, conform, help]
+vendors: [educate, audit, conform, help]
 description: >
   Codify, audit, and conform the chezmoi render path for the KI MCP binding — rendering the canonical `mcp-servers.yaml` single source into the file-editable surfaces (Claude Code, Desktop, mcporter) through chezmoi: the `mcp-servers-json` template, `.chezmoidata` wiring, and `chezmoi apply`. A composition skill — its AUDIT runs `ki-dotfiles-chezmoi` then `ki-binding` in sequence, then adds its delta: the chezmoi repo carries the MCP data and render template, and an apply reproduces the surfaces `ki-binding` audits. Use when rendering the MCP source through chezmoi, wiring the render template, or checking an apply reproduces the audited surfaces. Triggers: "render the mcp source through chezmoi", "chezmoi apply the mcp config", "wire the mcp-servers-json template", "the rendered mcp surfaces are stale". Not the renderer-neutral surface audit (`ki-binding`) or the generic chezmoi repo standard (`ki-dotfiles-chezmoi`) — only the MCP render contract tying them (ADR-KI-HARNESS-SKILLS-004).
-argument-hint: 'audit <target> | conform <target> | help | init <target> | refresh'
+argument-hint: 'audit <target> | conform <target> | help | educate <target> | refresh'
 ---
 
 # The chezmoi render path for the KI MCP binding
@@ -20,7 +20,7 @@ This skill's **delta** is the render contract that ties them together — the `m
 
 ## Operating modes
 
-Like every governance skill it carries the universal **AUDIT · CONFORM · INIT · REFRESH**. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for the target the chosen mode's `argument-hint` shows.
+Like every governance skill it carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for the target the chosen mode's `argument-hint` shows.
 
 ### Mode AUDIT — check the render path, by composition
 
@@ -39,9 +39,9 @@ The AUDIT is a **composition**, declared here and run in sequence — it does no
 3. **Render** — edit the MCP source (`.chezmoidata` / the canonical file), preview with `chezmoi diff`, then `chezmoi apply`. The render path regenerates a surface from the source; it never blesses a hand-edited rendered config, which would diverge from the source. `scripts/conform.ts` scaffolds no target-repo file — it prints these steps as TODOs.
 4. **Re-run AUDIT** until clean.
 
-### Mode INIT — vendor the render-path checks
+### Mode EDUCATE — vendor the render-path checks
 
-INIT scaffolds no standalone artifact. It vendors this skill's declared mechanical unit (the frontmatter `vendors:` declaration) into the target's `.ki-meta/` via the central bootstrap chain: [`scripts/init.ts`](scripts/init.ts) is a thin delegator that execs the `ki-bootstrap` engine with this skill as an explicit seed — pulling in everything it `implies:` (`ki-binding`, `ki-dotfiles-chezmoi`) too.
+EDUCATE scaffolds no standalone artifact. It vendors this skill's declared mechanical unit (the frontmatter `vendors:` declaration) into the target's `.ki-meta/` via the central bootstrap chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator that execs the `ki-bootstrap` engine with this skill as an explicit seed — pulling in everything it `implies:` (`ki-binding`, `ki-dotfiles-chezmoi`) too.
 
 ### Mode REFRESH — re-anchor the render contract
 

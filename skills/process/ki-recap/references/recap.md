@@ -12,6 +12,14 @@ bun skills/process/ki-recap/scripts/recap-grounding.ts --json
 
 (From another repo, use the harness-absolute path, per the "Audit script paths" convention: `bun /path/to/ki-agentic-harness/skills/process/ki-recap/scripts/recap-grounding.ts --json`.)
 
+When more than one Claude session is active for the repository, choose the session explicitly instead of relying on newest modification time:
+
+```bash
+bun skills/process/ki-recap/scripts/recap-grounding.ts --json --transcript <session-file>.jsonl
+```
+
+The selector is a filename, not a path. It must name an existing regular `.jsonl` file directly inside the repository's derived Claude transcript directory; absolute paths, traversal, other extensions, and symlinks are rejected.
+
 This emits `filesTouched` (git status), `diffStat`, `toolTally`, and `highCostCandidates` (repeated identical calls, large-file re-reads). It is a **helper**, not a checker — treat its output as raw signal to combine with warm in-session context, not a verdict.
 
 ## 2. Summarise

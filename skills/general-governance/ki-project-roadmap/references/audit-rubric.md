@@ -30,5 +30,5 @@ The checker applies `[M]` criteria. A reviewer applies `[J]` criteria after the 
 
 ## Safe mechanics
 
-- **SAFE-1 [M]** CONFORM and INIT refuse symlink output paths, support dry-run, avoid clobbering authored files, and write generated files atomically. ([standard](project-roadmap-standard.md#expansion-boundary))
+- **SAFE-1 [M]** CONFORM and EDUCATE refuse symlink output paths, support dry-run, avoid clobbering authored files, and write generated files atomically. ([standard](project-roadmap-standard.md#expansion-boundary))
 - **EXPAND-1 [J]** EXPAND conserves every open item exactly once and preserves its horizon and prose. ([standard](project-roadmap-standard.md#expansion-boundary))

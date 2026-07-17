@@ -15,7 +15,7 @@
 # Everything after `sh -s --` ripples straight through to the engine, with two
 # defaults injected only when absent: the target (the cwd) and `--ref` (`main`).
 # So the zero-arg pipe is `<cwd> --ref main`, while `… | sh -s -- <target>
-# --ref <sha> --dry-run` all reach bootstrap.ts intact. `ki-init` re-syncs this
+# --ref <sha> --dry-run` all reach bootstrap.ts intact. `ki-educate` re-syncs this
 # way, defaulting `--ref` to `main` (latest) unless a ref is passed; the engine
 # resolves whatever ref ran to a concrete SHA and records that in the manifest.
 set -eu

@@ -8,7 +8,7 @@ Every path below (`.claude/skills/`, `~/.claude/skills/`) is the **Claude Code**
 
 A skill's `name` + `description` sits in the selection surface on **every turn**. Installing all governance skills globally (`~/.claude/skills/`) pays that cost in every session, including ones that never touch a Knowledge Islands repo. So the governance skills are **project-local** — placed in a repo's `.claude/skills/`, loaded only when that repo is in the session.
 
-That leaves a bootstrap problem: something must be globally available to _wire_ a repo's project-local skills, vendor its self-checking surface, and reach `ki-repo`'s INIT in a repo that has no `.ki-config.toml` yet. Globalizing the heavy `repo` skill wastes the budget. So a single tiny skill — this one — is the global keystone and chain engine; `ki-repo` retains the config's file-level contract and foundation scaffold, while each sibling skill may conform its own table.
+That leaves a bootstrap problem: something must be globally available to _wire_ a repo's project-local skills, vendor its self-checking surface, and reach `ki-repo`'s EDUCATE in a repo that has no `.ki-config.toml` yet. Globalizing the heavy `repo` skill wastes the budget. So a single tiny skill — this one — is the global keystone and chain engine; `ki-repo` retains the config's file-level contract and foundation scaffold, while each sibling skill may conform its own table.
 
 ## The invariant
 
@@ -20,11 +20,11 @@ For a Knowledge Islands repo, `.claude/skills/` contains exactly:
 - **Resolution is strict.** Every declared root must exist in the ref-specific harness skill index. An unresolved root is a sorted FAIL in check, write, and dry-run modes before any link mutation; it is never filtered from a partial set and never auto-renamed.
 - **The harness** (`ki-agentic-harness`) is not special here: it links its own declared coverage like any repo. It _authors_ every skill (their source lives in its `skills/`), but a structural skill (`ki-mcp`, `ki-website`, …) is exercised against a repo of its type, not loaded in the harness — so linking the whole fleet would only add standing context cost for no authoring gain (ADR-KI-HARNESS-007).
 
-## INIT resolution and owner composition
+## EDUCATE resolution and owner composition
 
-INIT resolves the root owners from exact and dotted `[ki-*]` tables plus explicit `--seed` values, then follows the transitive `implies:` graph. Every declaration, seed, and dependency must resolve before `.ki-meta/` is touched. `ki-bootstrap` itself may be declared or seeded, but as the global chain-starter it is excluded from the vendored set. Bare bootstrap against a missing or empty config with no seed therefore resolves the empty set.
+EDUCATE resolves the root owners from exact and dotted `[ki-*]` tables plus explicit `--seed` values, then follows the transitive `implies:` graph. Every declaration, seed, and dependency must resolve before `.ki-meta/` is touched. `ki-bootstrap` itself may be declared or seeded, but as the global chain-starter it is excluded from the vendored set. Bare bootstrap against a missing or empty config with no seed therefore resolves the empty set.
 
-When `ki-repo` is initially seeded or resolved, bootstrap subprocesses `ki-repo`'s scaffold-only INIT leg before vendoring, forwarding dry-run state. This is composition through the owner, not shared ownership: bootstrap embeds no TOML template and never writes `.ki-config.toml` directly. The owner creates a missing file with canonical `[ki-repo]` defaults plus bare `[ki-authoring]`, or append-only repairs whichever exact root marker is missing while preserving all existing bytes. Bootstrap then re-resolves so those declared foundations and their self-check units are vendored in the same run.
+When `ki-repo` is initially seeded or resolved, bootstrap subprocesses `ki-repo`'s scaffold-only EDUCATE leg before vendoring, forwarding dry-run state. This is composition through the owner, not shared ownership: bootstrap embeds no TOML template and never writes `.ki-config.toml` directly. The owner creates a missing file with canonical `[ki-repo]` defaults plus bare `[ki-authoring]`, or append-only repairs whichever exact root marker is missing while preserving all existing bytes. Bootstrap then re-resolves so those declared foundations and their self-check units are vendored in the same run.
 
 ## How project skill payloads are stored
 

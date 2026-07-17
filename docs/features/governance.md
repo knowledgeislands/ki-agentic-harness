@@ -8,7 +8,7 @@ The behaviour of the governance model the harness applies to itself and to the r
 
 ### GOV-001 — Universal modes
 
-Every governance skill MUST carry the universal modes INIT · AUDIT · CONFORM · REFRESH (plus any skill-specific modes), per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+Every governance skill MUST carry the universal modes EDUCATE · AUDIT · CONFORM · REFRESH (plus any skill-specific modes), per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
 
 _Verify:_ `ki-engineering`'s enforcement-framework §5 lists the four modes, and each `skills/*/SKILL.md` exposes them; `ki:skills:audit` passes.
 

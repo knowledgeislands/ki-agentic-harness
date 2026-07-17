@@ -3,7 +3,7 @@
 /**
  * Grounding helper for ki-recap (not a checker — no severity ladder, no FAIL/exit-1 contract).
  *
- * Usage: bun skills/process/ki-recap/scripts/recap-grounding.ts [repo-path] [--json] [--transcripts-dir <dir>]
+ * Usage: bun skills/process/ki-recap/scripts/recap-grounding.ts [repo-path] [--json] [--transcripts-dir <dir>] [--transcript <session-file>]
  *
  * Resolves the Claude Code project directory for a repo
  * (~/.claude/projects/<slug>, slug = repo's absolute path with "/" and "." -> "-" — the same
@@ -16,9 +16,9 @@
  */
 
 import { execFileSync } from 'node:child_process'
-import { readdirSync, readFileSync, statSync } from 'node:fs'
+import { lstatSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { homedir } from 'node:os'
-import { join, resolve } from 'node:path'
+import { basename, isAbsolute, join, resolve } from 'node:path'
 
 interface ToolCall {
   name: string
@@ -58,6 +58,65 @@ function newestTranscript(projectDir: string): string | null {
   })
   withTimes.sort((a, b) => b.mtime - a.mtime)
   return withTimes[0].full
+}
+
+function explicitTranscript(projectDir: string, selector: string): string {
+  if (
+    selector.length <= '.jsonl'.length ||
+    !selector.endsWith('.jsonl') ||
+    isAbsolute(selector) ||
+    basename(selector) !== selector ||
+    selector.includes('\\')
+  ) {
+    throw new Error('`--transcript` must be a .jsonl filename in the repository transcript directory')
+  }
+
+  const transcript = join(projectDir, selector)
+  try {
+    if (!lstatSync(transcript).isFile()) {
+      throw new Error('not a regular file')
+    }
+  } catch {
+    throw new Error(`selected transcript is not an existing regular file: ${selector}`)
+  }
+  return transcript
+}
+
+interface Arguments {
+  jsonMode: boolean
+  repoArg: string | undefined
+  transcriptsDir: string | undefined
+  transcriptSelector: string | undefined
+}
+
+function parseArguments(args: string[]): Arguments {
+  let jsonMode = false
+  let repoArg: string | undefined
+  let transcriptsDir: string | undefined
+  let transcriptSelector: string | undefined
+
+  for (let i = 0; i < args.length; i += 1) {
+    const arg = args[i]
+    if (arg === '--json') {
+      jsonMode = true
+      continue
+    }
+    if (arg === '--transcripts-dir' || arg === '--transcript') {
+      const value = args[i + 1]
+      if (!value || value.startsWith('--')) {
+        throw new Error(`\`${arg}\` requires a value`)
+      }
+      if (arg === '--transcripts-dir') transcriptsDir = value
+      else transcriptSelector = value
+      i += 1
+      continue
+    }
+    if (arg.startsWith('--')) throw new Error(`unknown option: ${arg}`)
+    if (repoArg) throw new Error(`unexpected argument: ${arg}`)
+    repoArg = arg
+  }
+
+  return { jsonMode, repoArg, transcriptsDir, transcriptSelector }
 }
 
 function readToolCalls(transcriptPath: string): ToolCall[] {
@@ -117,15 +176,11 @@ function findHighCostCandidates(calls: ToolCall[]): string[] {
 }
 
 function main() {
-  const args = process.argv.slice(2)
-  const jsonMode = args.includes('--json')
-  const dirIdx = args.indexOf('--transcripts-dir')
-  const dirArg = dirIdx !== -1 ? args[dirIdx + 1] : undefined
-  const repoArg = args.find((a, i) => !a.startsWith('--') && args[i - 1] !== '--transcripts-dir')
+  const { jsonMode, repoArg, transcriptsDir, transcriptSelector } = parseArguments(process.argv.slice(2))
 
   const repoAbs = resolve(repoArg ?? process.cwd())
-  const projectDir = dirArg ? resolve(dirArg) : resolveProjectDir(repoArg)
-  const transcript = newestTranscript(projectDir)
+  const projectDir = transcriptsDir ? resolve(transcriptsDir) : resolveProjectDir(repoArg)
+  const transcript = transcriptSelector ? explicitTranscript(projectDir, transcriptSelector) : newestTranscript(projectDir)
 
   const filesTouched = gitOutput(repoAbs, ['status', '--porcelain'])
     .split('\n')
@@ -165,4 +220,10 @@ function main() {
   }
 }
 
-main()
+try {
+  main()
+} catch (error) {
+  const message = error instanceof Error ? error.message : String(error)
+  console.error(`recap-grounding: ${message}`)
+  process.exitCode = 1
+}

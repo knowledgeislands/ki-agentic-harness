@@ -27,7 +27,7 @@ The records are living, compact, and independent. The order below is a **curated
 2. [SDR-KI-HARNESS-001](SDR-KI-HARNESS-001-purpose-and-scope.md) — the purpose and scope of the harness (what it is for, and not for).
 3. [ADR-KI-HARNESS-001](ADR-KI-HARNESS-001-repository-structure.md) — the repository structure (the five-part bundle layout).
 4. [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-naming-model-and-harness-as-source.md) — the `ki-` naming model and harness-as-source vs plugin-as-projection.
-5. [ADR-KI-HARNESS-SKILLS-001](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) — the universal INIT / AUDIT / CONFORM / REFRESH modes.
+5. [ADR-KI-HARNESS-SKILLS-001](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) — the universal EDUCATE / AUDIT / CONFORM / REFRESH modes.
 6. [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md) — mechanical-first; agent judgment progressively enhances.
 7. [SDR-KI-HARNESS-002](SDR-KI-HARNESS-002-runtime-portable-contracts.md) — runtime-portable contracts, executor positioning (Claude Code now, Hermes next, Pi as conformance test), and the best-tool-for-the-job tenet.
 8. [ADR-KI-HARNESS-SKILLS-002](ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md) — the mechanical/judgment checker split.
@@ -48,7 +48,7 @@ The records are living, compact, and independent. The order below is a **curated
 23. [ADR-KI-HARNESS-AGENTS-001](ADR-KI-HARNESS-AGENTS-001-subagent-isolation.md) — subagent isolation for multi-skill invocation.
 24. [ADR-KI-HARNESS-TOOLCHAIN-004](ADR-KI-HARNESS-TOOLCHAIN-004-checker-remediation-footer-and-learn-block-context.md) — checker remediation footer and the headroom:learn cross-repo context check.
 25. [ADR-KI-HARNESS-TOOLCHAIN-005](ADR-KI-HARNESS-TOOLCHAIN-005-generated-code-excluded-from-lint-and-knip.md) — generated and vendored code excluded from linting and knip.
-26. [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-uniform-skill-modes-and-coverage-scoped-audit.md) — uniform skill modes (bare audit/conform/init), the toolchain collapse, and the coverage-scoped aggregate gate.
+26. [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-uniform-skill-modes-and-coverage-scoped-audit.md) — uniform skill modes (bare audit/conform/educate), the toolchain collapse, and the coverage-scoped aggregate gate.
 27. [ADR-KI-HARNESS-008](ADR-KI-HARNESS-008-vendored-cross-skill-scripts.md) — vendoring the cross-skill scripts (graph, help, sync) into `.ki-meta/bin/` for harness-shaped targets.
 28. [ADR-KI-HARNESS-SKILLS-010](ADR-KI-HARNESS-SKILLS-010-comparable-cited-checker-findings.md) — comparable, cited checker findings across audit and conform (the `ref`/`file` finding fields, conform `--json`, and the shared aggregate renderer).
 29. [ADR-KI-HARNESS-SKILLS-011](ADR-KI-HARNESS-SKILLS-011-project-roadmaps-for-non-kb-repositories.md) — the non-KB project-roadmap profiles, thematic plan layout, and Knowledge Base Streams boundary.

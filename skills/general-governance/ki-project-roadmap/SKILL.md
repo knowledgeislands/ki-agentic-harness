@@ -1,11 +1,11 @@
 ---
 name: ki-project-roadmap
 implies: []
-vendors: [init, audit, conform, help]
+vendors: [educate, audit, conform, help]
 owns: ['ROADMAP.md', 'docs/roadmap/README.md']
 description: >
   Governs project roadmaps and execution plans in non-KB repositories. Use for "audit the roadmap", "split this roadmap by theme", "expand the roadmap", "audit plans", roadmap horizons, thematic roadmaps, qualified roadmap locators, plan dependencies, or generated portfolio drift. Supports a simple root-only ROADMAP and a thematic docs/roadmap tree with plans. Knowledge Bases are out of scope: use ki-kb-streams, where streams and proposal checklists replace project roadmaps and plans. The ki-plan process skill drives individual plan lifecycle operations; ki-decision-records owns durable decisions.
-argument-hint: 'audit <repo> | conform <repo> | expand <theme> | help | init <repo> | refresh'
+argument-hint: 'audit <repo> | conform <repo> | expand <theme> | help | educate <repo> | refresh'
 ---
 
 # Knowledge Islands project roadmap standard
@@ -25,7 +25,7 @@ An item has one authoritative home. Every roadmap carries the standard's exact e
 
 ## Operating modes
 
-Carries the universal **AUDIT · CONFORM · INIT · REFRESH** plus judgment-led **EXPAND**. Invoked as `help` / `-h` / `?`, it emits generated HELP and stops. With no recognised mode, it emits the same HELP and, only in an interactive session, offers the mode choice and prompts for the target shown in `argument-hint`.
+Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** plus judgment-led **EXPAND**. Invoked as `help` / `-h` / `?`, it emits generated HELP and stops. With no recognised mode, it emits the same HELP and, only in an interactive session, offers the mode choice and prompts for the target shown in `argument-hint`.
 
 ### Mode AUDIT
 
@@ -51,9 +51,9 @@ EXPAND is judgment-led because selecting coherent themes and moving prose cannot
 
 There is no automatic collapse operation: merging themes back into one authored roadmap requires the same content judgment and is a deliberate migration.
 
-### Mode INIT
+### Mode EDUCATE
 
-Run [`scripts/init.ts`](scripts/init.ts) against a non-KB repository. It creates the simple profile, including every canonical horizon blurb, only when `ROADMAP.md` and `docs/roadmap/` are both absent; it never overwrites an existing roadmap. In a KB it reports the `ki-kb-streams` off-ramp and writes nothing.
+Run [`scripts/educate.ts`](scripts/educate.ts) against a non-KB repository. It creates the simple profile, including every canonical horizon blurb, only when `ROADMAP.md` and `docs/roadmap/` are both absent; it never overwrites an existing roadmap. In a KB it reports the `ki-kb-streams` off-ramp and writes nothing.
 
 ### Mode REFRESH
 

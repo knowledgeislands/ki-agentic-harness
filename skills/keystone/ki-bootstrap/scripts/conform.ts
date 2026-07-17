@@ -3,7 +3,7 @@
  * ki-bootstrap — CONFORM: bring a repo's project-local wiring into line.
  *
  * The mechanical half of Mode CONFORM — the verb-named counterpart to
- * `audit.ts` (AUDIT) and `init.ts` (INIT). Composes the two linkers in
+ * `audit.ts` (AUDIT) and `educate.ts` (EDUCATE). Composes the two linkers in
  * write mode — `project-links.ts` — which creates/prunes generated copied skill
  * payloads under the declared runtime paths, keeps supported Claude agents on
  * their independent link path, and writes matching `.gitignore` lines in one
@@ -21,8 +21,8 @@
  *
  * Vendored-set drift is NEVER fixed here: per the drift contract
  * (ADR-KI-HARNESS-006) CONFORM only advises. `audit.ts` runs read-only
- * at the end, and any drift it reports is repaired by re-running INIT
- * (`./.ki-meta/bin/ki-init`, or `bun skills/keystone/ki-bootstrap/scripts/init.ts`).
+ * at the end, and any drift it reports is repaired by re-running EDUCATE
+ * (`./.ki-meta/bin/ki-educate`, or `bun skills/keystone/ki-bootstrap/scripts/educate.ts`).
  *
  * NEVER touches (judgment → manual): the declared coverage itself (the
  * `.ki-config.toml` `[ki-*]` tables — BOOT-4, ki-repo's coverage cascade) and a
@@ -88,10 +88,10 @@ if (!dryRun) {
 // vendored-set audit is always coverage-scoped (`--all` is a linking concept only —
 // vendoring follows .ki-config coverage, ADR-KI-HARNESS-007), so it is never forwarded here.
 if (run('audit.ts', []) !== 0) {
-  rec('INFO', 'BOOT-9', 'vendored-set drift detected — INIT’s to repair (`./.ki-meta/bin/ki-init`)', RUBRIC, '.ki-meta/skills/')
+  rec('INFO', 'BOOT-9', 'vendored-set drift detected — EDUCATE’s to repair (`./.ki-meta/bin/ki-educate`)', RUBRIC, '.ki-meta/skills/')
   if (!json)
     console.log(
-      'vendored-set drift is INIT’s to repair — re-run `./.ki-meta/bin/ki-init` (or `bun skills/keystone/ki-bootstrap/scripts/init.ts <target>`)'
+      'vendored-set drift is EDUCATE’s to repair — re-run `./.ki-meta/bin/ki-educate` (or `bun skills/keystone/ki-bootstrap/scripts/educate.ts <target>`)'
     )
 } else {
   rec('PASS', 'BOOT-9', 'vendored-set audit reports no drift', RUBRIC, '.ki-meta/skills/')

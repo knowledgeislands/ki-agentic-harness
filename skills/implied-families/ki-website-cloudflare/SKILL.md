@@ -1,10 +1,10 @@
 ---
 name: ki-website-cloudflare
 implies: []
-vendors: [init, audit, conform, help]
+vendors: [educate, audit, conform, help]
 description: >
   Codify, audit, conform, and scaffold the Knowledge Islands house convention for serving a built static site on Cloudflare — Workers + Static Assets (not Pages), one `wrangler.jsonc` pointing `assets.directory` at the site's `dist/`, custom-domain routes, observability, and the `ki:site:deploy` script family. Use when deploying a site to Cloudflare, wiring or auditing its `wrangler.jsonc`, bringing hosting up to standard, or scaffolding it. Triggers: "deploy this site to Cloudflare", "audit the Cloudflare hosting", "set up wrangler for the site", "host the dist on Cloudflare", "configure Workers Static Assets", "why won't the site deploy", "conform the hosting". Builds on `ki-website` (which produces the `dist/` it serves — the seam) and `ki-engineering` (the toolchain). For any Worker that is not the static-site server (bots, ingress receivers, APIs, Durable Objects) and general Cloudflare/Workers/wrangler usage, use the `cloudflare` and `wrangler` skills.
-argument-hint: 'audit <repo> | conform <repo> | help | init <repo> | refresh'
+argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 ---
 
 # Knowledge Islands Cloudflare hosting standard
@@ -55,7 +55,7 @@ This skill consumes exactly what `ki-website` emits: a portable `dist/` of stati
 
 ## Operating modes
 
-Carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT scaffolds a site's hosting. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The mode shape itself is defined in `ki-engineering`'s enforcement framework.
+Carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH** — EDUCATE scaffolds a site's hosting. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The mode shape itself is defined in `ki-engineering`'s enforcement framework.
 
 ### Mode AUDIT — check a site's hosting against the standard
 
@@ -67,14 +67,14 @@ Carries the universal four **AUDIT · CONFORM · INIT · REFRESH** — INIT scaf
 ### Mode CONFORM — bring a site's hosting up to standard
 
 1. Run **AUDIT** first, so you change against a known gap list.
-2. Fix the gaps in place — use the canonical shape from [the standard](references/cloudflare-hosting-standard.md): the `wrangler.jsonc` shape (`assets.directory`, `routes`, `observability`) and the `site:{deploy,preview,clean}` scripts. Adapt name, domains, and the `dist/` relative path to the layout. Add the `[ki-website-cloudflare]` table if missing (`bun scripts/audit.ts --init >> .ki-config.toml`, then set `site-root`). If a `wrangler pages deploy` is found, migrate it to Workers + Static Assets.
+2. Fix the gaps in place — use the canonical shape from [the standard](references/cloudflare-hosting-standard.md): the `wrangler.jsonc` shape (`assets.directory`, `routes`, `observability`) and the `site:{deploy,preview,clean}` scripts. Adapt name, domains, and the `dist/` relative path to the layout. Add the `[ki-website-cloudflare]` table if missing (`bun scripts/audit.ts --educate >> .ki-config.toml`, then set `site-root`). If a `wrangler pages deploy` is found, migrate it to Workers + Static Assets.
 3. Re-run the checker; `bunx wrangler deploy --dry-run` from the site root should read the assets directory cleanly.
 
-### Mode INIT — scaffold a site's hosting
+### Mode EDUCATE — scaffold a site's hosting
 
 Follow **[the setup guide](references/setup-guide.md)** — it is the step-by-step walkthrough of every action below. Summary:
 
-**Use the `wrangler.jsonc` shape from [the standard](references/cloudflare-hosting-standard.md)** and the `ki:site:deploy`/`ki:site:preview` scripts; adapt `name`, `compatibility_date`, the `assets.directory` relative path (`./dist` flat, `../dist` from `site/`), and the custom-domain routes. Add the `[ki-website-cloudflare]` table to `.ki-config.toml` (`bun scripts/audit.ts --init >> .ki-config.toml`, then set `site-root`). Update `.gitignore` (`dist/`, `.wrangler/`). Then run the checker and `bunx wrangler deploy --dry-run` from the site root to confirm the assets directory resolves. Wire the custom domain and `www` redirect rule in the dashboard, then set up Cloudflare Workers Builds for CI/CD (see the guide's §7–§9).
+**Use the `wrangler.jsonc` shape from [the standard](references/cloudflare-hosting-standard.md)** and the `ki:site:deploy`/`ki:site:preview` scripts; adapt `name`, `compatibility_date`, the `assets.directory` relative path (`./dist` flat, `../dist` from `site/`), and the custom-domain routes. Add the `[ki-website-cloudflare]` table to `.ki-config.toml` (`bun scripts/audit.ts --educate >> .ki-config.toml`, then set `site-root`). Update `.gitignore` (`dist/`, `.wrangler/`). Then run the checker and `bunx wrangler deploy --dry-run` from the site root to confirm the assets directory resolves. Wire the custom domain and `www` redirect rule in the dashboard, then set up Cloudflare Workers Builds for CI/CD (see the guide's §7–§9).
 
 ### Mode REFRESH — re-anchor the standard to its sources
 

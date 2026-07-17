@@ -3,7 +3,7 @@ name: ki-recap
 implies: []
 description: >
   Recaps a live session in three legs — summarise what happened (changes, decisions, files touched), surface what is outstanding (unfinished threads, deferred fixes, work that belongs on ROADMAP or a `ki-plan`), and harvest the learnings (dead-ends, workarounds, conventions), routing each to its proper home. Optionally compresses the recapped span into a compact carry-forward digest. A process skill (kind: process, ADR-KI-HARNESS-SKILLS-006): it drives an action, it does not hold a standard. Installable globally, cross-repo — usable in any repo on the machine, not just this one. Triggers: "recap this session", "summarise what happened", "what's outstanding", "harvest what we learned", "/ki-recap". Not the offline, mechanical mining of historical transcripts after the fact — that is a separate ROADMAP candidate sharing this skill's grounding substrate.
-argument-hint: 'recap [--compress] | help'
+argument-hint: 'recap [--compress] [--transcript <session-file>] | help'
 ---
 
 # ki-recap
@@ -28,10 +28,10 @@ A mechanical **grounding helper**, [`scripts/recap-grounding.ts`](scripts/recap-
 
 ## Invocation
 
-`help` / `-h` / `?` explains this skill and stops, taking no action. With no argument, run the three-leg procedure over the current session. `--compress` adds the fourth leg.
+`help` / `-h` / `?` explains this skill and stops, taking no action. With no argument, run the three-leg procedure over the current session. `--compress` adds the fourth leg. `--transcript <session-file>` selects a particular Claude session when concurrent sessions make newest-by-modification-time ambiguous; it accepts only an existing `.jsonl` filename in this repository's Claude transcript directory.
 
 ## Notes
 
-- No universal AUDIT/CONFORM/INIT/REFRESH modes — this is a process skill (ADR-KI-HARNESS-SKILLS-001, ADR-KI-HARNESS-SKILLS-006); it has one procedure with an optional leg.
+- No universal AUDIT/CONFORM/EDUCATE/REFRESH modes — this is a process skill (ADR-KI-HARNESS-SKILLS-001, ADR-KI-HARNESS-SKILLS-006); it has one procedure with an optional leg.
 - Sibling to the offline, mechanical "mine historical sessions" ROADMAP candidate — that is the **cold** leg (after the fact, over stored transcripts); this is the **warm** leg (in-session, while context is live). They share the grounding substrate and the routing table, not an implementation.
 - Installable globally (`ki:skills:link:global`), alongside `ki-bootstrap` — usable in any repo on the machine. Like `ki-bootstrap`, never vendored or declared in a repo's `.ki-config.toml` — no `[ki-recap]` table, ever.

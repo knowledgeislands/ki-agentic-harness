@@ -16,9 +16,9 @@ The behaviour-level contract for what the **ki-agentic-harness** does — the **
 
 Each requirement is a level-3 heading `### <PREFIX>-NNN — <title>`, one RFC-2119 statement, and a `_Verify:_` hook. For example:
 
-    ### BOOT-001 — Self-governing after INIT
+    ### BOOT-001 — Self-governing after EDUCATE
 
-    After the INIT chain runs, a target repo MUST pass `./.ki-meta/bin/ki-audit` with zero skills installed.
+    After the EDUCATE chain runs, a target repo MUST pass `./.ki-meta/bin/ki-audit` with zero skills installed.
 
     _Verify:_ bootstrap a bare fixture and run `./.ki-meta/bin/ki-audit`; it executes the vendored checkers.
 
@@ -36,7 +36,7 @@ Each area file may end with a `## Gaps` section of **unnumbered** bullets — kn
 
 | File          | Prefix | Covers                                                    |
 | ------------- | ------ | --------------------------------------------------------- |
-| bootstrap.md  | `BOOT` | The INIT chain, self-sufficiency contract, vendoring      |
+| bootstrap.md  | `BOOT` | The EDUCATE chain, self-sufficiency contract, vendoring   |
 | governance.md | `GOV`  | Universal modes, mechanical-first, severity, composition  |
 | harness.md    | `HARN` | Five-part bundle, root anchors, toolchain, skills naming  |
 | modes.md      | `MODE` | The four universal modes + HELP as a behavioural contract |

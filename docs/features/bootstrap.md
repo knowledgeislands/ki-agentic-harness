@@ -6,15 +6,15 @@ The behaviour of the bootstrap chain: how the harness brings a target repo under
 
 ## Self-sufficiency
 
-### BOOT-001 — Self-governing after INIT
+### BOOT-001 — Self-governing after EDUCATE
 
-After the INIT chain runs against a target repo, that repo MUST govern itself with `./.ki-meta/bin/ki-audit` and **zero** Knowledge Islands skills installed — and with **no `package.json` of its own** — per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md).
+After the EDUCATE chain runs against a target repo, that repo MUST govern itself with `./.ki-meta/bin/ki-audit` and **zero** Knowledge Islands skills installed — and with **no `package.json` of its own** — per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md).
 
 _Verify:_ bootstrap a bare fixture (`.ki-config.toml` only, no `package.json`, no `.claude/skills/`) with `skills/keystone/ki-bootstrap/scripts/bootstrap.ts <fixture>`, then run `./.ki-meta/bin/ki-audit` in it — the vendored checkers execute and report.
 
 ### BOOT-002 — Vendored copies, not symlinks
 
-INIT MUST vendor each resolved skill's checker (and any `conform-*.ts`) into the target's `.ki-meta/skills/<skill>/` as file **copies**, never symlinks, so they run with no harness beside the repo (SCRIPT-7 / [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)).
+EDUCATE MUST vendor each resolved skill's checker (and any `conform-*.ts`) into the target's `.ki-meta/skills/<skill>/` as file **copies**, never symlinks, so they run with no harness beside the repo (SCRIPT-7 / [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)).
 
 _Verify:_ after bootstrap, `.ki-meta/skills/ki-repo/audit.ts` in the target is a regular file whose contents equal the harness source, and `git check-ignore` does not ignore it.
 
@@ -26,23 +26,23 @@ _Verify:_ seeding `ki-website` resolves a set that also contains `ki-website-clo
 
 ### BOOT-004 — Repo-wide aggregates
 
-INIT MUST vendor a `.ki-meta/bin/aggregate.ts` runner that discovers the vendored checkers on the filesystem (no `package.json` read) and fans out over them for a given verb, so the aggregate stays correct as skills are vendored in or out. The `package.json` convenience keys are explicitly OUT of `ki-bootstrap`'s scope — `ki-engineering` wires them later as sugar over this runner.
+EDUCATE MUST vendor a `.ki-meta/bin/aggregate.ts` runner that discovers the vendored checkers on the filesystem (no `package.json` read) and fans out over them for a given verb, so the aggregate stays correct as skills are vendored in or out. The `package.json` convenience keys are explicitly OUT of `ki-bootstrap`'s scope — `ki-engineering` wires them later as sugar over this runner.
 
 _Verify:_ a bootstrapped repo has `.ki-meta/bin/aggregate.ts`; running `bun .ki-meta/bin/aggregate.ts audit` invokes every vendored `ki:<skill>:audit` in sequence.
 
 ### BOOT-005 — package.json-free entry point
 
-INIT MUST write four executable wrappers `.ki-meta/bin/{ki-audit,ki-conform,ki-init,ki-help}` (each mode `0755`) over the vendored aggregate, so a repo with no `package.json` (dotfiles, KB, tap) governs itself through `./.ki-meta/bin/ki-audit`, `./.ki-meta/bin/ki-conform`, `./.ki-meta/bin/ki-init`, and `./.ki-meta/bin/ki-help <skill>` alone, per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md). `ki-help` is pure bash over the vendored `help.md` snapshots, so it runs with no `bun`.
+EDUCATE MUST write four executable wrappers `.ki-meta/bin/{ki-audit,ki-conform,ki-educate,ki-help}` (each mode `0755`) over the vendored aggregate, so a repo with no `package.json` (dotfiles, KB, tap) governs itself through `./.ki-meta/bin/ki-audit`, `./.ki-meta/bin/ki-conform`, `./.ki-meta/bin/ki-educate`, and `./.ki-meta/bin/ki-help <skill>` alone, per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md). `ki-help` is pure bash over the vendored `help.md` snapshots, so it runs with no `bun`.
 
-_Verify:_ after bootstrap, all four of `.ki-meta/bin/{ki-audit,ki-conform,ki-init,ki-help}` exist and are executable (mode `0755`), and `./.ki-meta/bin/ki-help <skill>` prints its snapshot with `bun` off `PATH`.
+_Verify:_ after bootstrap, all four of `.ki-meta/bin/{ki-audit,ki-conform,ki-educate,ki-help}` exist and are executable (mode `0755`), and `./.ki-meta/bin/ki-help <skill>` prints its snapshot with `bun` off `PATH`.
 
 ## The chain
 
-### BOOT-006 — Per-skill INIT delegators
+### BOOT-006 — Per-skill EDUCATE delegators
 
-Every governance skill MUST own a `scripts/init.ts` that delegates to the `ki-bootstrap` chain engine with itself as an explicit `--seed`, delegating by subprocess (composition), not by cross-skill import, per [ADR-KI-HARNESS-SKILLS-004](../decisions/ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md).
+Every governance skill MUST own a `scripts/educate.ts` that delegates to the `ki-bootstrap` chain engine with itself as an explicit `--seed`, delegating by subprocess (composition), not by cross-skill import, per [ADR-KI-HARNESS-SKILLS-004](../decisions/ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md).
 
-_Verify:_ each `skills/*/scripts/init.ts` execs `../../ki-bootstrap/scripts/bootstrap.ts` and passes `--seed <its own name>`.
+_Verify:_ each `skills/*/scripts/educate.ts` execs `../../ki-bootstrap/scripts/bootstrap.ts` and passes `--seed <its own name>`.
 
 Re-running the idempotent bootstrap chain is the single update path — there are no aggressiveness flags; a re-run brings the target up to date.
 
@@ -52,11 +52,11 @@ The harness MUST be able to verify a target's `.ki-meta/skills/` matches the exp
 
 _Verify:_ `bun skills/keystone/ki-bootstrap/scripts/audit-vendored.ts <target>` reports PASS when `.ki-meta/skills/` equals the expected set, and WARNs (listing both directions) when a skill is stray-vendored or missing.
 
-### BOOT-008 — Remote INIT transport
+### BOOT-008 — Remote EDUCATE transport
 
-The INIT chain MUST be runnable on a machine carrying nothing but `bun` — via a POSIX-`sh` entry point (`bootstrap.sh`) that fetches the repo tarball from `codeload.github.com` and execs the engine, and via a vendored `.ki-meta/bin/ki-init` wrapper that re-runs the same remote script — per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md).
+The EDUCATE chain MUST be runnable on a machine carrying nothing but `bun` — via a POSIX-`sh` entry point (`bootstrap.sh`) that fetches the repo tarball from `codeload.github.com` and execs the engine, and via a vendored `.ki-meta/bin/ki-educate` wrapper that re-runs the same remote script — per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md).
 
-_Verify:_ `skills/keystone/ki-bootstrap/scripts/bootstrap.sh` line 1 is `#!/bin/sh` and its `codeload.github.com` fetch pipes into `bootstrap.ts`; a governed repo's `.ki-meta/bin/ki-init` re-invokes that script (never `bun run <raw-url>`, which Bun cannot execute over HTTP).
+_Verify:_ `skills/keystone/ki-bootstrap/scripts/bootstrap.sh` line 1 is `#!/bin/sh` and its `codeload.github.com` fetch pipes into `bootstrap.ts`; a governed repo's `.ki-meta/bin/ki-educate` re-invokes that script (never `bun run <raw-url>`, which Bun cannot execute over HTTP).
 
 ### BOOT-009 — `--all` links and vendors every skill
 

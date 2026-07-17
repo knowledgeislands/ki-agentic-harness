@@ -5,7 +5,7 @@
 //   bun scripts/audit.ts [target]    # default: cwd — a project or a KB base
 //   bun scripts/audit.ts --no-user    # audit the project layer alone
 //   bun scripts/audit.ts --user <dir> # point the user layer elsewhere (testing)
-//   bun scripts/audit.ts --init       # print the .ki-config.toml table block
+//   bun scripts/audit.ts --educate       # print the .ki-config.toml table block
 //
 // Tokenomics is the cost of the context the model carries on EVERY turn, and
 // that cost is a COMPOSITION of two configuration layers, not one file:
@@ -395,7 +395,7 @@ function parseKiConfig(text: string): KiConfig {
 
 // ── run ──────────────────────────────────────────────────────────────────────
 const argv = process.argv.slice(2)
-if (argv.includes('--init')) {
+if (argv.includes('--educate')) {
   process.stdout.write(KI_DEFAULT)
   process.exit(0)
 }
@@ -675,7 +675,7 @@ else note('BUDG-2', `total standing surface ${tok(total)} (budget ${tok(budget('
 if (!ki?.present)
   note(
     'CFG-2',
-    `no [${KI_SECTION}] table in .ki-config.toml — using default budgets (run --init to opt in and tune)`,
+    `no [${KI_SECTION}] table in .ki-config.toml — using default budgets (run --educate to opt in and tune)`,
     RUBRIC,
     '.ki-config.toml'
   )

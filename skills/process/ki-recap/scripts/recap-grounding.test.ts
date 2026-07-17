@@ -8,7 +8,7 @@
  * `audit.test.ts` set.
  */
 import { spawnSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, rmSync, symlinkSync, utimesSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -33,7 +33,7 @@ const repoDir = mkdtempSync(join(tmpdir(), 'ki-recap-repo-'))
 spawnSync('git', ['init', '-q'], { cwd: repoDir })
 writeFileSync(join(repoDir, 'tracked.txt'), 'hello\n')
 spawnSync('git', ['add', 'tracked.txt'], { cwd: repoDir })
-spawnSync('git', ['commit', '-q', '-m', 'init'], { cwd: repoDir })
+spawnSync('git', ['commit', '-q', '-m', 'educate'], { cwd: repoDir })
 writeFileSync(join(repoDir, 'tracked.txt'), 'hello again\n')
 writeFileSync(join(repoDir, 'new-file.txt'), 'new\n')
 
@@ -46,10 +46,18 @@ const lines = [
   toolUseLine('Bash', { command: 'ls' }),
   toolUseLine('Bash', { command: 'ls' })
 ]
-writeFileSync(join(transcriptsDir, 'session1.jsonl'), lines.join('\n'))
+const olderTranscript = join(transcriptsDir, 'session1.jsonl')
+const newerTranscript = join(transcriptsDir, 'session2.jsonl')
+writeFileSync(olderTranscript, lines.join('\n'))
+writeFileSync(newerTranscript, toolUseLine('Task', { description: 'concurrent session' }))
+const now = Date.now() / 1000
+utimesSync(olderTranscript, now - 10, now - 10)
+utimesSync(newerTranscript, now, now)
 
-function run(): { code: number; out: string } {
-  const res = spawnSync('bun', [HELPER, repoDir, '--json', '--transcripts-dir', transcriptsDir], { encoding: 'utf8' })
+function run(...args: string[]): { code: number; out: string } {
+  const res = spawnSync('bun', [HELPER, repoDir, '--json', '--transcripts-dir', transcriptsDir, ...args], {
+    encoding: 'utf8'
+  })
   return { code: res.status ?? 1, out: `${res.stdout ?? ''}${res.stderr ?? ''}` }
 }
 
@@ -57,17 +65,37 @@ try {
   const { code, out } = run()
   check('exits 0', code === 0)
   const parsed = JSON.parse(out)
-  check('finds the transcript', typeof parsed.transcript === 'string' && parsed.transcript.endsWith('session1.jsonl'))
+  check('defaults to the newest transcript', parsed.transcript === newerTranscript)
+
+  const selected = run('--transcript', 'session1.jsonl')
+  check('explicitly selects an older concurrent transcript', selected.code === 0)
+  const selectedParsed = JSON.parse(selected.out)
+  check('uses the requested transcript basename', selectedParsed.transcript === olderTranscript)
   check('reports files touched', Array.isArray(parsed.filesTouched) && parsed.filesTouched.length >= 2)
-  check('tallies tool calls', parsed.toolTally.Bash === 3 && parsed.toolTally.Read === 2)
+  check('tallies selected transcript tool calls', selectedParsed.toolTally.Bash === 3 && selectedParsed.toolTally.Read === 2)
   check(
     'flags repeated identical Bash call',
-    parsed.highCostCandidates.some((c: string) => c.includes('repeated identical Bash'))
+    selectedParsed.highCostCandidates.some((c: string) => c.includes('repeated identical Bash'))
   )
   check(
     'flags re-read of big.ts',
-    parsed.highCostCandidates.some((c: string) => c.includes('re-read of /x/big.ts'))
+    selectedParsed.highCostCandidates.some((c: string) => c.includes('re-read of /x/big.ts'))
   )
+
+  mkdirSync(join(transcriptsDir, 'directory.jsonl'))
+  symlinkSync(olderTranscript, join(transcriptsDir, 'linked.jsonl'))
+  for (const [label, selector] of [
+    ['missing selector value', undefined],
+    ['path traversal', '../session1.jsonl'],
+    ['absolute path', olderTranscript],
+    ['wrong extension', 'session1.txt'],
+    ['missing file', 'missing.jsonl'],
+    ['directory', 'directory.jsonl'],
+    ['symlink', 'linked.jsonl']
+  ] as const) {
+    const rejected = selector === undefined ? run('--transcript') : run('--transcript', selector)
+    check(`rejects ${label}`, rejected.code !== 0)
+  }
 } finally {
   rmSync(repoDir, { recursive: true, force: true })
   rmSync(transcriptsDir, { recursive: true, force: true })

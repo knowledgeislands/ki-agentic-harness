@@ -22,7 +22,7 @@ Severity: **FAIL** (ship-stopper — the site can't deploy, or deploys the wrong
 - [ ] **WCF-1** [M] FAIL — a **site** `wrangler.jsonc` exists at the site root (the config carrying an `assets` block). Its absence is the classic finding — `ki:site:deploy` has nothing to deploy. Also the applicability gate: no config and no opt-in table → **NA** (not Cloudflare-hosted; skip). (§1)
 - [ ] **WCF-2** [M] FAIL — deploy is **Workers + Static Assets** (`wrangler deploy`), **never** `wrangler pages deploy` anywhere in scripts. (§1)
 - [ ] **WCF-3** [M] WARN — exactly one site Worker (one config with `assets`), at `site/wrangler.jsonc` — the monorepo `site/` workspace (engineering §0); the root `package.json` `workspaces` includes `site`. (A one-off flat consumer with a root config is valid generic hosting.) (§1)
-- [ ] **WCF-20** [M] WARN — the `[ki-website-cloudflare]` opt-in table is present in `.ki-config.toml` (run `audit.ts --init` to scaffold it). (§1)
+- [ ] **WCF-20** [M] WARN — the `[ki-website-cloudflare]` opt-in table is present in `.ki-config.toml` (run `audit.ts --educate` to scaffold it). (§1)
 - [ ] **WCF-21** [M] WARN — validate-down under `[ki-website-cloudflare]`: only `site-root` is declarable, and a declared `site-root` actually holds a wrangler config. (§1)
 
 ## The dist/ seam (§2)

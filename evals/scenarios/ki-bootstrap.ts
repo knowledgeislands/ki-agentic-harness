@@ -20,7 +20,7 @@ export const scenarios: Scenario[] = [
       { name: 'keystone never project-local', re: /keystone[^.\n]{0,30}(never|not)[^.\n]{0,20}(project-local|linked)|global[^.\n]{0,20}only|never[^.\n]{0,20}project-local/i }
     ],
     rubric:
-      "House model: a repo's `.claude/skills/` mirrors its **declared coverage** — the `[ki-<skill>]` tables in its `.ki-config.toml` — **plus a baseline of `ki-repo` + `ki-authoring`**, always, so a greenfield repo with no tables can still reach repo's INIT and Markdown/TOML style is always governed. The keystone (`ki-bootstrap`) itself is **never linked project-local** — it is the one global skill. (The harness itself is the exception that links `--all`.) A correct answer names declared-coverage-from-the-config plus the repo + authoring baseline."
+      "House model: a repo's `.claude/skills/` mirrors its **declared coverage** — the `[ki-<skill>]` tables in its `.ki-config.toml` — **plus a baseline of `ki-repo` + `ki-authoring`**, always, so a greenfield repo with no tables can still reach repo's EDUCATE and Markdown/TOML style is always governed. The keystone (`ki-bootstrap`) itself is **never linked project-local** — it is the one global skill. (The harness itself is the exception that links `--all`.) A correct answer names declared-coverage-from-the-config plus the repo + authoring baseline."
   },
   {
     skill: 'ki-bootstrap',

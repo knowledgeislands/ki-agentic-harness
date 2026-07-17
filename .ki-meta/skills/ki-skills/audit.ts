@@ -475,13 +475,13 @@ function lintSkill(skillDir: string): Finding[] {
   // lifecycle. Everything else is a governance skill and must carry the canonical
   // vocabulary (SHAPE-12) and the `## Operating modes` structure (SHAPE-13).
   if (!isProcessSkill(desc ?? '')) {
-    // SHAPE-12: argument-hint exposes every universal verb (INIT is the common gap).
+    // SHAPE-12: argument-hint exposes every universal verb (EDUCATE is the common gap).
     const verbs = hintVerbs(hint ?? '')
-    const missing = ['audit', 'conform', 'help', 'init', 'refresh'].filter((v) => !verbs.includes(v.toUpperCase()))
+    const missing = ['audit', 'conform', 'help', 'educate', 'refresh'].filter((v) => !verbs.includes(v.toUpperCase()))
     if (missing.length > 0)
       warn(
         'SHAPE-12',
-        `\`argument-hint\` is missing the universal verb(s) ${missing.join(', ')} — a governance skill exposes AUDIT, CONFORM, INIT, REFRESH and HELP (ADR-KI-HARNESS-SKILLS-001)`
+        `\`argument-hint\` is missing the universal verb(s) ${missing.join(', ')} — a governance skill exposes AUDIT, CONFORM, EDUCATE, REFRESH and HELP (ADR-KI-HARNESS-SKILLS-001)`
       )
     // SHAPE-12 vendoring leg: the frontmatter declares the vendorable mechanical unit.
     if (!fm.present.has('vendors'))
@@ -491,21 +491,21 @@ function lintSkill(skillDir: string): Finding[] {
       )
 
     // SHAPE-15 [M]: the vendored modes are declared UNIFORMLY as the flow-list
-    // `[init, audit, conform, help]` (modes derive their scripts by name — no map form,
+    // `[educate, audit, conform, help]` (modes derive their scripts by name — no map form,
     // no override), and the bare mode scripts exist. `refresh` is harness-only and never
     // vendored. Redundant skill-name-suffixed scripts (audit-<skill>.ts) are the
     // pre-migration form (ADR-KI-HARNESS-007).
     if (fm.present.has('vendors')) {
       const vendorsLine = (fm.keys.get('vendors') ?? '').trim()
-      if (vendorsLine !== '[init, audit, conform, help]')
+      if (vendorsLine !== '[educate, audit, conform, help]')
         fail(
           'SHAPE-15',
-          `\`vendors:\` must be the uniform list \`[init, audit, conform, help]\` (got \`${vendorsLine}\`) — modes derive their scripts by name; the map/override form is retired (ADR-KI-HARNESS-007)`
+          `\`vendors:\` must be the uniform list \`[educate, audit, conform, help]\` (got \`${vendorsLine}\`) — modes derive their scripts by name; the map/override form is retired (ADR-KI-HARNESS-007)`
         )
       const sdir = join(skillDir, 'scripts')
-      for (const mode of ['init', 'audit', 'conform'])
+      for (const mode of ['educate', 'audit', 'conform'])
         if (!existsSync(join(sdir, `${mode}.ts`)))
-          fail('SHAPE-15', `\`scripts/${mode}.ts\` missing — a governance skill vendors bare \`init.ts\`/\`audit.ts\`/\`conform.ts\``)
+          fail('SHAPE-15', `\`scripts/${mode}.ts\` missing — a governance skill vendors bare \`educate.ts\`/\`audit.ts\`/\`conform.ts\``)
       if (existsSync(sdir))
         for (const n of readdirSync(sdir))
           if (/^(audit|lint|conform)-[a-z0-9-]+\.ts$/.test(n) && !n.endsWith('.test.ts'))

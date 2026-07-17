@@ -3,7 +3,7 @@
  * Mechanical auditor for a Knowledge Islands site's Cloudflare hosting.
  *
  *   bun scripts/audit.ts <repo-path>   # or: node --experimental-strip-types
- *   bun scripts/audit.ts --init        # print the default [ki-website-cloudflare] block
+ *   bun scripts/audit.ts --educate        # print the default [ki-website-cloudflare] block
  *
  * Checks the HOSTING DELTA the `ki-website-cloudflare` skill codifies — the SITE
  * Worker that serves the built dist/ via Workers + Static Assets. It does NOT build the dist/
@@ -33,7 +33,7 @@ const STD = 'references/cloudflare-hosting-standard.md'
 const RUBRIC = 'references/audit-rubric.md'
 
 // `.ki-config.toml` is a shared per-repo file; this skill owns the
-// [ki-website-cloudflare] table. The default block (written by `--init`)
+// [ki-website-cloudflare] table. The default block (written by `--educate`)
 // is the authoritative key list — the table header is the opt-in marker; `site-root`
 // is the one declarable key (validate-down warns on anything else under the table).
 const KI_SECTION = 'ki-website-cloudflare'
@@ -45,7 +45,7 @@ const KI_DEFAULT = `# ${KI_SECTION} — opt-in marker: presence of this table op
 # the auditor discover it (it scans the repo root and one level of subdirs).
 # site-root = "."
 `
-if (process.argv.slice(2).includes('--init')) {
+if (process.argv.slice(2).includes('--educate')) {
   process.stdout.write(KI_DEFAULT)
   process.exit(0)
 }
@@ -226,7 +226,9 @@ add(
 add(
   kiTable ? 'PASS' : 'WARN',
   'WCF-20',
-  kiTable ? `[${KI_SECTION}] table present in .ki-config.toml` : `no [${KI_SECTION}] table in .ki-config.toml (run --init to scaffold it)`,
+  kiTable
+    ? `[${KI_SECTION}] table present in .ki-config.toml`
+    : `no [${KI_SECTION}] table in .ki-config.toml (run --educate to scaffold it)`,
   STD,
   '.ki-config.toml'
 )

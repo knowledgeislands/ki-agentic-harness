@@ -19,5 +19,5 @@ _On-demand procedure for ki-homebrew-tap's AUDIT and CONFORM modes (CONFORM runs
 
 1. Run **AUDIT** first, so you change against a known gap list.
 2. Fix the gaps in place, **copying from the healthiest existing formula** rather than inventing: add the missing formula field(s), shorten/de-article a `desc`, repoint a `url` at a tagged-release tarball and recompute its `sha256` (`curl -sL <url> | shasum -a 256`), add the formula's row to the README `## Formulae` table.
-3. Add the `[ki-homebrew-tap]` marker (and `[ki-repo]`) to `.ki-config.toml` if absent — `bun ../scripts/audit.ts --init` prints the block. Run `ki-repo`'s CONFORM for the repo-level files/settings.
+3. Add the `[ki-homebrew-tap]` marker (and `[ki-repo]`) to `.ki-config.toml` if absent — `bun ../scripts/audit.ts --educate` prints the block. Run `ki-repo`'s CONFORM for the repo-level files/settings.
 4. **Re-run `brew` locally if it is installed** — `brew style Formula/<tool>.rb` and `brew audit --strict Formula/<tool>.rb` must pass — then re-run the checker until clean (0 FAIL). Do not hand off while `brew` reports issues.

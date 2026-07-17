@@ -37,7 +37,7 @@ Applicability: `[ki-website]` or an `eleventy.config.{ts,js,mjs,cjs}` at the rep
 - [ ] **WEB-7** [M] WARN — `ROADMAP.md` present. (§2)
 - [ ] **WEB-9** [M] FAIL — `src/` (under `site/`) has `_data/`, `_includes/layouts/`, `_includes/partials/`, `assets/css/`. (§2, §3)
 - [ ] **WEB-39** [M] FAIL — `package.json` is present and parseable (foundational — the stack/scripts checks read it). (§2)
-- [ ] **WEB-41** [M] WARN — on an applicable site, the `[ki-website]` opt-in table is present in `.ki-config.toml` (`audit.ts --init` scaffolds it). (§2)
+- [ ] **WEB-41** [M] WARN — on an applicable site, the `[ki-website]` opt-in table is present in `.ki-config.toml` (`audit.ts --educate` scaffolds it). (§2)
 - [ ] **WEB-42** [M] WARN — no unknown keys under `[ki-website]` (validate-down — the marker table takes no keys today). (§2)
 - [ ] **WEB-8** [J] WARN — the root `package.json` declares a `workspaces` array that includes `site` (the monorepo shape, engineering §0; not yet mechanically checked). (§2)
 - [ ] **WEB-10** [J] WARN — every site script carries the `site:` prefix (driven by the monorepo shape, not by observing the folder). (§2, §8)

@@ -1,5 +1,5 @@
 /**
- * Set-resolution helpers shared by the INIT chain (`bootstrap.ts`) and the
+ * Set-resolution helpers shared by the EDUCATE chain (`bootstrap.ts`) and the
  * vendored-set alignment checker (`audit.ts`). Pure, read-only: given a
  * target repo and the harness `skills/` root, computes which skills *should* be
  * vendored — the transitive `implies:` closure of the baseline plus whatever the
@@ -163,7 +163,7 @@ export function impliesOf(skill: string): string[] {
 // Transitive closure of the declared skills (+ explicit --seed skills) over the
 // `implies:` graph. Coverage is purely what `.ki-config.toml` declares — every repo
 // declares its own foundations (`[ki-repo]`, `[ki-authoring]`), so there is no injected
-// baseline. A per-skill `scripts/init.ts` delegator seeds itself.
+// baseline. A per-skill `scripts/educate.ts` delegator seeds itself.
 export function resolveSet(target: string, all: boolean, seeds: string[]): string[] {
   const seed = all ? allSkillNames() : [...declaredSkills(readText(join(target, '.ki-config.toml'))), ...seeds]
   const seen = new Set<string>()
@@ -211,16 +211,16 @@ export function conformScript(skill: string): string | null {
 // Per-skill declaration, central execution. Every governance skill declares the
 // universal modes it vendors as a single-line flow LIST beside `implies:`:
 //
-//   vendors: [init, audit, conform, help]
+//   vendors: [educate, audit, conform, help]
 //
 // Mode → artifact is DERIVED (no override):
-//   init / audit / conform → scripts/<mode>.ts, vendored as a copied file
+//   educate / audit / conform → scripts/<mode>.ts, vendored as a copied file
 //   help                   → a rendered SKILL.md snapshot (no script; see bootstrap.ts)
 // `refresh` is never vendored (harness-only). During migration two legacy forms are
 // still parsed with a WARN: the map form `vendors: { audit: scripts/x.ts, conform:
 // scripts/y.ts }` (a bare path is a FILE; a quoted `"cmd: ..."` is a COMMAND), and
 // filename-convention discovery when a skill has no `vendors:` line at all.
-export const VENDOR_MODES = ['init', 'audit', 'conform', 'help'] as const
+export const VENDOR_MODES = ['educate', 'audit', 'conform', 'help'] as const
 export type VendorMode = (typeof VENDOR_MODES)[number]
 export type VendorUnit = { kind: 'file'; path: string } | { kind: 'command'; command: string }
 
@@ -277,11 +277,11 @@ function legacyMapUnit(skill: string, verb: 'audit' | 'conform'): VendorUnit | n
   return null
 }
 
-// Resolves a skill's vendorable unit for one mode (init/audit/conform — help never
+// Resolves a skill's vendorable unit for one mode (educate/audit/conform — help never
 // vendors a script). Order: derived `scripts/<mode>.ts` from a flow-list declaration,
 // else the legacy map's explicit path, else filename-convention discovery — the last
 // two printing a WARN (never a hard fail) per the ADR's migration fallback.
-export function vendorUnit(skill: string, mode: 'init' | 'audit' | 'conform'): VendorUnit | null {
+export function vendorUnit(skill: string, mode: 'educate' | 'audit' | 'conform'): VendorUnit | null {
   const modes = vendorModesOf(skill)
   const inner = vendorsInner(skill)
 
@@ -293,9 +293,9 @@ export function vendorUnit(skill: string, mode: 'init' | 'audit' | 'conform'): V
     return { kind: 'file', path }
   }
 
-  // init has no legacy encoding — only the derived form above.
-  if (mode === 'init') {
-    const path = 'scripts/init.ts'
+  // educate has no legacy encoding — only the derived form above.
+  if (mode === 'educate') {
+    const path = 'scripts/educate.ts'
     return existsSync(join(skillDir(skill), path)) ? { kind: 'file', path } : null
   }
 
@@ -303,7 +303,7 @@ export function vendorUnit(skill: string, mode: 'init' | 'audit' | 'conform'): V
   const mapped = legacyMapUnit(skill, mode)
   if (mapped) {
     console.error(
-      `${'\x1b[33m'}WARN${'\x1b[0m'}  ${skill} uses the legacy \`vendors: { … }\` map — migrate to \`vendors: [init, audit, conform, help]\` with bare scripts/${mode}.ts.`
+      `${'\x1b[33m'}WARN${'\x1b[0m'}  ${skill} uses the legacy \`vendors: { … }\` map — migrate to \`vendors: [educate, audit, conform, help]\` with bare scripts/${mode}.ts.`
     )
     return mapped
   }
@@ -312,7 +312,7 @@ export function vendorUnit(skill: string, mode: 'init' | 'audit' | 'conform'): V
   const legacy = mode === 'audit' ? checkerScript(skill)?.file : conformScript(skill)
   if (!legacy) return null
   console.error(
-    `${'\x1b[33m'}WARN${'\x1b[0m'}  ${skill} has no \`vendors:\` declaration for ${mode} — falling back to filename-convention discovery (scripts/${legacy}). Add \`vendors: [init, audit, conform, help]\` and rename to scripts/${mode}.ts.`
+    `${'\x1b[33m'}WARN${'\x1b[0m'}  ${skill} has no \`vendors:\` declaration for ${mode} — falling back to filename-convention discovery (scripts/${legacy}). Add \`vendors: [educate, audit, conform, help]\` and rename to scripts/${mode}.ts.`
   )
   return { kind: 'file', path: `scripts/${legacy}` }
 }

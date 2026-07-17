@@ -16,4 +16,4 @@ Edits local config; confirm before mutating, and remember that turning off an MC
 1. Run **AUDIT** first for the gap list.
 2. Trim the biggest line items: lift rarely-read detail out of `CLAUDE.md` into on-demand files (or exclude an irrelevant ancestor `CLAUDE.md` via `claudeMdExcludes`); prune stale memory; switch off or scope the MCP servers the work does not use (the largest single lever, keeping tool search on so unused servers' schemas stay deferred); consolidate redundant skills.
 3. Wire context-compression tooling where it is `recommended` / `required` and absent; turn on prompt caching and pick the right model type where the runtime levers are idle.
-4. Add or correct the `[ki-tokenomics]` table (or run **INIT**). Re-run **AUDIT** until clean.
+4. Add or correct the `[ki-tokenomics]` table (or run **EDUCATE**). Re-run **AUDIT** until clean.
