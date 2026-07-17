@@ -2,8 +2,7 @@
 
 Line-by-line criteria for auditing a Knowledge Islands agentic harness. Each criterion is tagged **[M]** (mechanical — the checker [`scripts/audit.ts`](../scripts/audit.ts) enforces it deterministically) or **[J]** (judgment — a reader/model assesses it). Each cites its standard section.
 
-Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS  
-(defined in `ki-engineering`'s enforcement-framework §2)
+Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS (defined in `ki-engineering`'s enforcement-framework §2)
 
 ## Contents
 
