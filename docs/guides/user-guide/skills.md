@@ -12,6 +12,19 @@ Every skill here is a Knowledge Islands skill, shipped as part of this system, b
 
 The Agent Skills standard is more general than this, though. A skill need not govern a standard at all — it could equally encode a standalone workflow (a review process, a release checklist, a research harness) or target one specific project or recurring task. The process kind is the first step into that territory, and the set is expected to grow further over time.
 
+## `ki-self`: local governance for local concerns
+
+Every governed repository is expected to carry a repo-local `ki-self` skill for concerns that are real in that repository but do not yet belong to a shared Knowledge Islands skill. It is a **governance skill**, not a process wrapper: it holds the repository's local standard for repeatable checks, semi-regular housekeeping, and repository-specific maintenance. It is special only in placement and scope: it stays in the repository, is never installed into a user-wide skills directory, and is deliberately absent from the harness's shared implication graph and catalogue.
+
+Its universal modes apply at local scale:
+
+- **EDUCATE** establishes the local-concerns contract when needed: the repo-local skill, a judgmental recurring-work ledger such as `HOUSEKEEPING.md`, and documented focused procedures for repeatable checks.
+- **AUDIT** is the repository's local-housekeeping audit. With no narrower concern it reviews the whole local-concerns contract; `audit <concern>` is an additive focused diagnostic command.
+- **CONFORM** runs AUDIT first, then proposes and—only after confirmation—applies the appropriate source-state remediation.
+- **REFRESH** retires resolved concerns and promotes either a recurring cross-repository pattern into a named Knowledge Islands skill or multi-step change work into the repository roadmap.
+
+`ki-housekeeping` recognises this boundary: it governs accumulated machine state, while `ki-self` governs the repository-local concerns that sit beside it. A single-page skills illustration should show `ki-self` outside the shared harness cluster, with its universal modes and any local commands, plus a promotion edge back to a named shared skill.
+
 ## The six clusters
 
 The skills sit in **six clusters**, by the role each plays in the set:

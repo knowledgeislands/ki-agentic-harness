@@ -34,6 +34,7 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**. Invoked as `he
 ## Notes
 
 - The state this skill governs lives **outside the repo tree** — under `~/.claude/`, `~/Library/Application Support/Claude/`, and VSCode's `workspaceStorage/`. A repo opts a machine into the memory-area check via a `[ki-housekeeping]` table in its `.ki-config.toml`; the session / artifact / storage areas are machine-level and audited directly through the server, not per-repo.
+- Every governed repository is expected to carry a repo-local `ki-self` governance skill for its **local concerns**. `ki-self audit` is that repository's local-housekeeping audit; `ki-housekeeping` remains the machine-state audit and does not absorb or install the local skill. The shared taxonomy records the boundary in [The skills](../../../docs/guides/user-guide/skills.md#ki-self-local-governance-for-local-concerns).
 - A repo with no `memory/` directory yet (never used auto-memory) is an **NA**, not a FAIL.
 - Composes on `ki-authoring` for the Markdown formatting delta of the memory files; the mechanical-checker contract and severity ladder are `ki-engineering`'s [checker-contract.md](../../foundations/ki-engineering/references/checker-contract.md).
 - Does not assume any particular personal `~/.claude/CLAUDE.md` content — the doctrines checked are the systems' own universal instructions, not one user's private elaboration of them.
