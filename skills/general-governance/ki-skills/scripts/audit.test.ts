@@ -98,11 +98,44 @@ const withFooter = (skill: string) => `console.log('→ to address: run /${skill
 
 // ── SCRIPT-9: cross-skill relative imports in scripts/*.ts ─────────────────────
 
-// ── Same-directory import stays inside the skill's own tree → no SCRIPT-9 fail ──
+// ── Same-directory import stays inside scripts/ → no SCRIPT-9 fail ──
 {
   const { base, dir } = fixture('ki-fixture-samedir-import', "import { helper } from './helper.ts'\nhelper()\n")
   try {
     check('same-directory import → no SCRIPT-9 fail', !run(dir).includes('SCRIPT-9'))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
+
+// ── Dynamic import climbing out of scripts/ → SCRIPT-9 FAIL ──
+{
+  const { base, dir } = fixture('ki-fixture-dynamic-cross-skill-import', "await import('../references/helper.ts')\n")
+  try {
+    check('dynamic cross-scripts import → SCRIPT-9 fail', run(dir).includes('SCRIPT-9'))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
+
+// ── CommonJS require climbing out of scripts/ → SCRIPT-9 FAIL ──
+{
+  const { base, dir } = fixture('ki-fixture-require-cross-skill-import', "require('../references/helper.ts')\n")
+  try {
+    check('require cross-scripts import → SCRIPT-9 fail', run(dir).includes('SCRIPT-9'))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
+
+// ── A nested script module is subject to the same boundary → SCRIPT-9 FAIL ──
+{
+  const { base, dir } = fixture('ki-fixture-vendored-cross-skill-import', withFooter('ki-fixture-vendored-cross-skill-import'))
+  try {
+    const supportDir = join(dir, 'scripts', 'vendored', 'ki-skills')
+    mkdirSync(supportDir, { recursive: true })
+    writeFileSync(join(supportDir, 'checker-report.ts'), "import { helper } from '../../../../../other-skill/scripts/helper.ts'\n")
+    check('nested script escape → SCRIPT-9 fail', run(dir).includes('SCRIPT-9'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }

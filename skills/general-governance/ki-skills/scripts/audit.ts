@@ -20,7 +20,7 @@
 // two descriptions declaring the same quoted trigger phrase are WARNed.
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { basename, dirname, join, resolve } from 'node:path'
+import { basename, dirname, join, relative, resolve } from 'node:path'
 
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
@@ -442,27 +442,35 @@ function lintSkill(skillDir: string): Finding[] {
     }
   }
 
-  // SCRIPT-9 [M]: no cross-skill relative imports. `ki-bootstrap` vendors a skill's
-  // scripts/*.ts as standalone copies, flat, into every governed repo's
-  // .ki-meta/skills/<skill>/ — no sibling skill directory is ever copied alongside it
-  // (ADR-KI-HARNESS-006), so a relative import climbing out of the skill's own directory
-  // would silently break wherever the unit is vendored.
+  // SCRIPT-9 [M]: no relative import may escape scripts/. `ki-bootstrap` vendors a
+  // skill's scripts payload into every governed repo's .ki-meta/skills/<skill>/ — no
+  // sibling skill directory or non-script source file is implicitly available. Imports
+  // must be satisfied within the local scripts directory, never by a path that happens
+  // to work in this harness checkout.
   {
     const scriptsDir = join(skillDir, 'scripts')
     if (existsSync(scriptsDir)) {
-      for (const entry of readdirSync(scriptsDir)) {
+      const scriptPaths: string[] = []
+      const collect = (dir: string): void => {
+        for (const entry of readdirSync(dir, { withFileTypes: true })) {
+          const path = join(dir, entry.name)
+          if (entry.isDirectory()) collect(path)
+          else if (entry.isFile() && entry.name.endsWith('.ts') && !entry.name.endsWith('.test.ts')) scriptPaths.push(path)
+        }
+      }
+      collect(scriptsDir)
+      for (const scriptPath of scriptPaths) {
         // Only vendorable units are in scope — test files are never vendored (SCRIPT-9's
         // premise), and a *.test.ts routinely embeds import-shaped strings as fixture data.
-        if (!entry.endsWith('.ts') || entry.endsWith('.test.ts')) continue
-        const scriptPath = join(scriptsDir, entry)
+        const entry = relative(scriptsDir, scriptPath)
         const src = readFileSync(scriptPath, 'utf8')
-        for (const m of src.matchAll(/\bfrom\s+['"](\.\.?\/[^'"]+)['"]/g)) {
+        for (const m of src.matchAll(/\b(?:from\s+|import\s*\(\s*|require\s*\(\s*)['"](\.\.?\/[^'"]+)['"]/g)) {
           const spec = m[1] as string
           const resolved = resolve(dirname(scriptPath), spec)
-          if (!resolved.startsWith(`${skillDir}/`))
+          if (!resolved.startsWith(`${scriptsDir}/`))
             fail(
               'SCRIPT-9',
-              `\`scripts/${entry}\` imports \`${spec}\`, which resolves outside the skill's own directory — vendoring copies this file standalone, so the import would break in every repo that vendors it`
+              `\`scripts/${entry}\` imports \`${spec}\`, which resolves outside its own scripts directory — package the required module locally before importing it`
             )
         }
       }
