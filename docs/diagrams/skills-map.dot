@@ -1,0 +1,177 @@
+// Canonical source for the harness skills map. DOT is authoritative; regenerate
+// skills-map.svg with: dot -Tsvg skills-map.dot -o skills-map.svg
+digraph skills_map {
+  graph [
+    bgcolor="#fbfcfe"
+    color="#d9e1ea"
+    compound=true
+    fontname="Helvetica"
+    fontsize=20
+    label="Knowledge Islands skills — one-page orientation map"
+    labelloc=t
+    margin=0.25
+    nodesep=0.28
+    rankdir=LR
+    ranksep=0.7
+    splines=ortho
+  ]
+
+  node [
+    color="#9aaabd"
+    fontcolor="#172033"
+    fontname="Helvetica"
+    fontsize=11
+    margin="0.13,0.08"
+    penwidth=1.2
+    shape=box
+    style="rounded,filled"
+  ]
+
+  edge [
+    arrowsize=0.7
+    color="#8192a8"
+    fontcolor="#52647a"
+    fontname="Helvetica"
+    fontsize=9
+    penwidth=1.1
+  ]
+
+  subgraph cluster_keystone {
+    color="#9ac8b1"
+    fontcolor="#266242"
+    fontsize=12
+    label="Keystone"
+    style="rounded,filled"
+    fillcolor="#edf8f1"
+    bootstrap [fillcolor="#d9f0e2", label=< <b>ki-bootstrap</b><br/><font point-size="9">install · link · self-govern</font> >, tooltip="Keystone installer and self-governance bootstrap"]
+    repo [fillcolor="#d9f0e2", label=< <b>ki-repo</b><br/><font point-size="9">repository standard</font> >, tooltip="Repository structure, settings, and .ki-config.toml"]
+  }
+
+  subgraph cluster_foundations {
+    color="#c9b3e8"
+    fontcolor="#67439b"
+    fontsize=12
+    label="Foundations"
+    style="rounded,filled"
+    fillcolor="#f6f0fc"
+    authoring [fillcolor="#eee3fb", label=< <b>ki-authoring</b><br/><font point-size="9">writing conventions</font> >, tooltip="Markdown and TOML authoring conventions"]
+    engineering [fillcolor="#eee3fb", label=< <b>ki-engineering</b><br/><font point-size="9">toolchain · checker contract</font> >, tooltip="Engineering toolchain and enforcement framework"]
+  }
+
+  subgraph cluster_structure {
+    color="#a9cbe8"
+    fontcolor="#2e608d"
+    fontsize=12
+    label="Repository structure"
+    style="rounded,filled"
+    fillcolor="#eff7fd"
+    harness [fillcolor="#e0f0fc", label=< <b>ki-harness</b><br/><font point-size="9">agentic-harness shape</font> >]
+    kb [fillcolor="#e0f0fc", label=< <b>ki-kb</b><br/><font point-size="9">knowledge-base shape</font> >]
+    website [fillcolor="#e0f0fc", label=< <b>ki-website</b><br/><font point-size="9">site build</font> >]
+    mcp [fillcolor="#e0f0fc", label=< <b>ki-mcp</b><br/><font point-size="9">MCP server shape</font> >]
+    plugins [fillcolor="#e0f0fc", label=< <b>ki-plugins</b><br/><font point-size="9">plugin marketplace</font> >]
+    tools [fillcolor="#e0f0fc", label=< <b>ki-tools</b><br/><font point-size="9">standalone CLI</font> >]
+    tap [fillcolor="#e0f0fc", label=< <b>ki-homebrew-tap</b><br/><font point-size="9">formula repository</font> >]
+    dotfiles [fillcolor="#e0f0fc", label=< <b>ki-dotfiles-chezmoi</b><br/><font point-size="9">managed user environment</font> >]
+  }
+
+  subgraph cluster_governance {
+    color="#f0bd86"
+    fontcolor="#8c4d16"
+    fontsize=12
+    label="General governance"
+    style="rounded,filled"
+    fillcolor="#fff7ed"
+    skills [fillcolor="#feead2", label=< <b>ki-skills</b><br/><font point-size="9">skill quality</font> >]
+    agents [fillcolor="#feead2", label=< <b>ki-agents</b><br/><font point-size="9">agent quality</font> >]
+    decisions [fillcolor="#feead2", label=< <b>ki-decision-records</b><br/><font point-size="9">decision records</font> >]
+    features [fillcolor="#feead2", label=< <b>ki-feature-definitions</b><br/><font point-size="9">feature behaviour</font> >]
+    roadmap [fillcolor="#feead2", label=< <b>ki-project-roadmap</b><br/><font point-size="9">forward work</font> >]
+    handoffs [fillcolor="#feead2", label=< <b>ki-handoffs</b><br/><font point-size="9">implementation-ready handoffs</font> >]
+  }
+
+  subgraph cluster_families {
+    color="#e7b0c9"
+    fontcolor="#91405f"
+    fontsize=12
+    label="Implied families"
+    style="rounded,filled"
+    fillcolor="#fff1f6"
+    kb_activities [fillcolor="#f8dce8", label=< <b>ki-kb-activities</b><br/><font point-size="9">KB activities</font> >]
+    kb_artifacts [fillcolor="#f8dce8", label=< <b>ki-kb-live-artifacts</b><br/><font point-size="9">KB live artifacts</font> >]
+    kb_streams [fillcolor="#f8dce8", label=< <b>ki-kb-streams</b><br/><font point-size="9">KB streams</font> >]
+    cloudflare [fillcolor="#f8dce8", label=< <b>ki-website-cloudflare</b><br/><font point-size="9">deployment</font> >]
+    binding_chezmoi [fillcolor="#f8dce8", label=< <b>ki-binding-chezmoi</b><br/><font point-size="9">MCP render path</font> >]
+  }
+
+  subgraph cluster_environment {
+    color="#8fc9c4"
+    fontcolor="#1d6d67"
+    fontsize=12
+    label="Environment"
+    style="rounded,filled"
+    fillcolor="#ecfbf9"
+    binding [fillcolor="#d7f2ee", label=< <b>ki-binding</b><br/><font point-size="9">MCP binding</font> >]
+    housekeeping [fillcolor="#d7f2ee", label=< <b>ki-housekeeping</b><br/><font point-size="9">machine-state hygiene</font> >]
+    tokenomics [fillcolor="#d7f2ee", label=< <b>ki-tokenomics</b><br/><font point-size="9">context cost</font> >]
+  }
+
+  subgraph cluster_process {
+    color="#bfc6d3"
+    fontcolor="#4f5c70"
+    fontsize=12
+    label="Process skills"
+    style="rounded,filled"
+    fillcolor="#f4f6f9"
+    recap [fillcolor="#e7ebf1", label=< <b>ki-recap</b><br/><font point-size="9">session recap</font> >]
+    plan [fillcolor="#e7ebf1", label=< <b>ki-plan</b><br/><font point-size="9">plan lifecycle</font> >]
+    delegate [fillcolor="#e7ebf1", label=< <b>ki-delegate</b><br/><font point-size="9">tiered delegation</font> >]
+  }
+
+  subgraph cluster_local {
+    color="#f1c65f"
+    fontcolor="#735500"
+    fontsize=12
+    label="Repository-local governance (not harness-shipped)"
+    style="rounded,filled,dashed"
+    fillcolor="#fff9df"
+    self [fillcolor="#fff0b8", label=< <b>ki-self</b><br/><font point-size="9">AUDIT · CONFORM · EDUCATE · REFRESH</font> >, tooltip="Local concerns; audit is the repository-local housekeeping audit"]
+    concerns [fillcolor="#fff8db", label=< <b>local concerns</b><br/><font point-size="9">ledger · focused audits · maintenance</font> >, shape=folder, tooltip="Repository-specific checks and semi-regular human review"]
+  }
+
+  subgraph cluster_arms {
+    color="#d6dde7"
+    fontcolor="#56677b"
+    fontsize=12
+    label="Mechanical arms"
+    style="rounded,filled"
+    fillcolor="#f7f9fb"
+    checkers [fillcolor="#edf1f5", label=< <b>checkers</b><br/><font point-size="9">audit · conform · tests</font> >, shape=component]
+    meta [fillcolor="#edf1f5", label=< <b>.ki-meta</b><br/><font point-size="9">vendored checkers and runners</font> >, shape=folder]
+    mcp_housekeeping [fillcolor="#edf1f5", label=< <b>mcp-claude-housekeeping</b><br/><font point-size="9">access-gated machine tools</font> >, shape=component]
+    hooks [fillcolor="#edf1f5", label=< <b>hooks</b><br/><font point-size="9">runtime payloads</font> >, shape=component]
+  }
+
+  bootstrap -> repo [xlabel="implies"]
+  repo -> authoring [xlabel="implies"]
+  harness -> skills [xlabel="implies"]
+  harness -> agents [xlabel="implies"]
+  harness -> decisions [xlabel="implies"]
+  harness -> roadmap [xlabel="implies"]
+  kb -> kb_activities [xlabel="implies"]
+  kb -> kb_artifacts [xlabel="implies"]
+  kb -> kb_streams [xlabel="implies"]
+  website -> cloudflare [xlabel="implies"]
+  dotfiles -> authoring [xlabel="implies"]
+  binding_chezmoi -> binding [xlabel="composes"]
+  binding_chezmoi -> dotfiles [xlabel="composes"]
+  plan -> roadmap [xlabel="drives", style=dashed]
+  delegate -> plan [xlabel="executes", style=dashed]
+  housekeeping -> mcp_housekeeping [xlabel="judges", style=dashed]
+  housekeeping -> self [xlabel="recognises", style=dashed, ltail=cluster_environment, lhead=cluster_local]
+  self -> concerns [xlabel="audits"]
+  self -> skills [xlabel="promotes patterns into", style=dashed, ltail=cluster_local, lhead=cluster_governance]
+  skills -> checkers [xlabel="governs", style=dashed]
+  checkers -> meta [xlabel="vendored into", style=dashed]
+  binding -> hooks [xlabel="binds runtime", style=dashed]
+}
