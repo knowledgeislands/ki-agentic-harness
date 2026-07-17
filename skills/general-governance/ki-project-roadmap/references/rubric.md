@@ -16,6 +16,7 @@ The checker applies `[M]` criteria. A reviewer applies `[J]` criteria after the 
 - **ROAD-4 [M]** Every horizon heading is followed immediately by its exact canonical blurb; CONFORM inserts a missing blurb without removing existing authored content. ([standard](standards.md#horizons))
 - **THEME-1 [M]** Theme directories are lowercase kebab-case, contain `ROADMAP.md`, and thematic items are `###` headings under a horizon. ([standard](standards.md#thematic-profile))
 - **THEME-2 [J]** Themes are coherent workstreams, neither catch-alls nor one-item bureaucracy. ([standard](standards.md#expansion-boundary))
+- **THEME-3 [M]** A theme roadmap contains at least one item. CONFORM prunes only an otherwise scaffold-only empty theme, retaining `docs/roadmap/README.md` and every repository `README.md`. ([standard](standards.md#thematic-profile))
 - **ITEM-1 [M]** Each thematic item has one unique qualified `<theme>/<item-slug>` locator. Duplicate derived locators FAIL. ([standard](standards.md#thematic-profile))
 - **PROJ-1 [M]** The thematic root `ROADMAP.md` exactly matches the generated linked portfolio and repeats no item prose. ([standard](standards.md#thematic-profile))
 

@@ -252,19 +252,45 @@ function thematicFixture(): string {
   }
 }
 
-// An empty active-plan index uses a readable sentence rather than a placeholder table.
+// Empty scaffold-only themes are pruned, while the durable index and repository README remain.
 {
   const root = fixture()
   try {
     mkdirSync(join(root, 'docs', 'roadmap', 'hooks'), { recursive: true })
     writeFileSync(join(root, 'docs', 'roadmap', 'hooks', 'ROADMAP.md'), roadmap('Hooks roadmap'))
+    writeFileSync(join(root, 'README.md'), '# Repository readme\n')
+    const dry = run(CONFORM, root, ['--dry-run'])
+    check('empty-theme CONFORM dry-run exits zero', dry.code === 0)
+    check(
+      'empty-theme CONFORM dry-run preserves the theme and writes no index',
+      existsSync(join(root, 'docs', 'roadmap', 'hooks')) && !existsSync(join(root, 'docs', 'roadmap', 'README.md'))
+    )
     const conformed = run(CONFORM, root)
-    const generated = readFileSync(join(root, 'docs', 'roadmap', 'README.md'), 'utf8')
-    check('zero-plan index conforms cleanly', conformed.code === 0 && run(AUDIT, root).code === 0)
+    const indexPath = join(root, 'docs', 'roadmap', 'README.md')
+    const generated = existsSync(indexPath) ? readFileSync(indexPath, 'utf8') : ''
+    check('empty scaffold-only theme is pruned', conformed.code === 0 && !existsSync(join(root, 'docs', 'roadmap', 'hooks')))
+    check('zero-plan thematic profile conforms cleanly', run(AUDIT, root).code === 0)
+    check('global index survives empty-theme pruning', existsSync(join(root, 'docs', 'roadmap', 'README.md')))
+    check('repository README survives empty-theme pruning', readFileSync(join(root, 'README.md'), 'utf8') === '# Repository readme\n')
     check(
       'zero-plan index avoids a placeholder table',
       generated.includes('## Active plans\n\nNo active plans.\n\n## Dependency graph') && !generated.includes('| Plan |')
     )
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+
+// Authored context is never mistaken for disposable scaffold content.
+{
+  const root = fixture()
+  try {
+    const path = join(root, 'docs', 'roadmap', 'hooks', 'ROADMAP.md')
+    mkdirSync(join(root, 'docs', 'roadmap', 'hooks'), { recursive: true })
+    writeFileSync(path, `${roadmap('Hooks roadmap')}\nKeep this authored context.\n`)
+    const result = run(CONFORM, root)
+    check('CONFORM refuses to prune an empty theme with authored context', result.code !== 0 && result.out.includes('SAFE-1'))
+    check('CONFORM preserves authored empty-theme context', readFileSync(path, 'utf8').includes('Keep this authored context.'))
   } finally {
     rmSync(root, { recursive: true, force: true })
   }

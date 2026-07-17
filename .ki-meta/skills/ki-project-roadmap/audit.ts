@@ -296,7 +296,16 @@ function discoverThematic(): { themes: string[]; items: Item[]; plans: Plan[] } 
       add('FAIL', 'THEME-1', 'theme has no ROADMAP.md', STANDARD_REF, `docs/roadmap/${theme}`)
       continue
     }
-    items.push(...parseRoadmap(roadmap, `docs/roadmap/${theme}/ROADMAP.md`, theme))
+    const themeItems = parseRoadmap(roadmap, `docs/roadmap/${theme}/ROADMAP.md`, theme)
+    if (!themeItems.length)
+      add(
+        'FAIL',
+        'THEME-3',
+        'empty theme roadmap must be pruned; retain only docs/roadmap/README.md',
+        STANDARD_REF,
+        `docs/roadmap/${theme}/ROADMAP.md`
+      )
+    items.push(...themeItems)
     const allowed = new Set(['ROADMAP.md', 'plans'])
     for (const child of readdirSync(themeRoot)) {
       if (!allowed.has(child))
@@ -403,7 +412,6 @@ if (!existsSync(thematicDir)) {
     emit()
   }
   const { themes, items, plans } = discoverThematic()
-  if (!themes.length) add('FAIL', 'PROFILE-1', 'thematic profile has no theme directories', STANDARD_REF, 'docs/roadmap')
   const locators = new Map<string, Item>()
   for (const item of items) {
     const locator = `${item.theme}/${item.slug}`

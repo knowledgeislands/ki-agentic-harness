@@ -6,7 +6,6 @@ Canonical themes and active execution plans.
 
 - [foundation-tooling](foundation-tooling/ROADMAP.md)
 - [governance-consistency](governance-consistency/ROADMAP.md)
-- [hooks](hooks/ROADMAP.md)
 - [operations](operations/ROADMAP.md)
 - [runtime-portability](runtime-portability/ROADMAP.md)
 
