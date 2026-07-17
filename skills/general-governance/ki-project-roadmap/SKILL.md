@@ -2,6 +2,7 @@
 name: ki-project-roadmap
 implies: []
 vendors: [educate, audit, conform, help]
+checker-dependencies: [ki-skills/checker-reporter]
 owns: ['ROADMAP.md', 'docs/roadmap/README.md']
 description: >
   Governs project roadmaps and execution plans in non-KB repositories. Use for "audit the roadmap", "split this roadmap by theme", "expand the roadmap", "audit plans", roadmap horizons, thematic roadmaps, qualified roadmap locators, plan dependencies, or generated portfolio drift. Supports a simple root-only ROADMAP and a thematic docs/roadmap tree with plans. Knowledge Bases are out of scope: use ki-kb-streams, where streams and proposal checklists replace project roadmaps and plans. The ki-plan process skill drives individual plan lifecycle operations; ki-decision-records owns durable decisions.
@@ -67,4 +68,4 @@ On the cadence in [the source list](references/sources.md), compare actual proje
 - Exploration needs no plan; multi-file or multi-step implementation does.
 - A plan answers “how”; a Decision Record answers “why”. Use `ki-decision-records` for the latter.
 - The `ki-plan` process skill operates plan instances. This skill owns their standard and project-roadmap representation.
-- Checker output follows the severity ladder and JSON/report contract in `ki-engineering`.
+- Checker output uses the canonical checker reporter supplied by `ki-skills`; its locally vendored module keeps this checker standalone when installed.

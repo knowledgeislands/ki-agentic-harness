@@ -1,10 +1,14 @@
 #!/usr/bin/env bun
 /** Focused contract tests for the canonical checker-reporter JSONL builder. */
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import {
   buildCheckerReporterEvents,
   CHECKER_LEVELS,
   type CheckerFinding,
   checkerReporterExitCode,
+  judgmentFindingsFromRubric,
   parseCheckerReporterJsonl,
   validateCheckerReporterEvents
 } from './checker-reporter.ts'
@@ -100,6 +104,19 @@ try {
   rejectedMissingCitation = true
 }
 check('validation → non-passing mechanical findings require citations', rejectedMissingCitation)
+
+const rubricFixture = mkdtempSync(join(tmpdir(), 'ki-checker-rubric-'))
+try {
+  const rubric = join(rubricFixture, 'rubric.md')
+  writeFileSync(
+    rubric,
+    '- **RULE-1 [M]** mechanical\n- **MD-table [J]** table judgment\n- **JUDGMENT [M + J]** review\n- **[J] DEC-1** alternate rubric ordering\n'
+  )
+  const judgmentCodes = judgmentFindingsFromRubric(rubric).map((finding) => finding.code)
+  check('judgment prompts → accepts both rubric tag orders and named codes', judgmentCodes.join(',') === 'DEC-1,JUDGMENT,MD-table')
+} finally {
+  rmSync(rubricFixture, { recursive: true, force: true })
+}
 
 if (failed) process.exit(1)
 console.log('\n\x1b[32mchecker-reporter.test.ts: all checks passed\x1b[0m')

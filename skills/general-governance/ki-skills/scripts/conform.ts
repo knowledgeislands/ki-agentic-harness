@@ -11,14 +11,10 @@
  * is copied from audit.ts — kept in lockstep, never imported, so this
  * script stays valid standalone per the composition-only rule.
  *
- *   bun scripts/conform.ts [path]   # default: cwd
- *   --dry-run                               # print the plan, mutate nothing
- *   --json                                  # emit the shared finding wrapper instead of prose
+ *   bun scripts/conform.ts [path] [--dry-run]   # default target: cwd
  *
- * `--json` reports the same finding wrapper audit.ts emits, so the aggregate renders conform
- * and audit identically: each action becomes a finding on the shared ladder (fix → POLISH,
- * already-canonical → PASS, manual-TODO / judgment handoff → ADVISORY). `--json` governs
- * *reporting*; `--dry-run` governs *writing* — the two compose.
+ * Every invocation emits the canonical checker reporter. `--dry-run` governs
+ * writing only, so it composes with the same machine-readable report stream.
  *
  * Fixes:
  *   - NAME-5: `name:` frontmatter rewritten to match the directory name.
@@ -45,26 +41,26 @@
  */
 
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { basename, join, resolve } from 'node:path'
+import { basename, dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { type CheckerFinding, checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './checker-reporter.ts'
 
-const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
-const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
-
-// Collect-then-emit harness (mirrors ki-authoring conform.ts). Each action records a finding on
-// the shared ladder; `say` prints the human line only when NOT in --json mode, so a direct run
-// streams prose while the aggregate consumes the wrapper. area is the rubric code, ref its
-// reference-doc pointer, file the path an action concerns. --json governs *reporting*; --dry-run
-// governs *writing* — the two compose (a --json run still writes unless --dry-run is also set).
+// Each action records a typed domain finding. The canonical reporter owns transport;
+// the bootstrap aggregate is the only terminal renderer.
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const RUBRIC = 'references/rubric.md'
 const argv = process.argv.slice(2)
-const json = argv.includes('--json')
-const findings: Finding[] = []
-const rec = (level: Level, area: string, msg: string, ref?: string, file?: string): void =>
-  void findings.push({ level, area, msg, ref, file })
-const say = (line: string): void => {
-  if (!json) console.log(line)
+const findings: CheckerFinding[] = []
+function reportCode(area: string): string {
+  return area.match(/[A-Z]+-\d+/)?.[0] ?? 'SHAPE-12'
+}
+const rec = (level: Level, area: string, message: string, ref?: string, file?: string): void =>
+  void findings.push({ type: 'M', level, code: reportCode(area), message, ref, file })
+
+function localRubricPath(): string {
+  const scriptDir = dirname(fileURLToPath(import.meta.url))
+  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
+  return join(skillRoot, 'references', 'rubric.md')
 }
 
 // ── kept in lockstep with audit.ts ──
@@ -148,7 +144,6 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
     return
   }
 
-  say(`\n${paint(C.cyan, dirName)}`)
   let workingBlock = block
   let fixedAny = false
   const process = isProcessSkill(content)
@@ -159,7 +154,6 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
     const nameVal = (nameLine.match(/^name:\s*(.+)$/)?.[1] ?? '').trim()
     if (nameVal !== dirName) {
       workingBlock = workingBlock.replace(nameLine, `name: ${dirName}`)
-      say(`  ${paint(C.green, 'fix')}   NAME-5 — name '${nameVal}' → '${dirName}'`)
       rec('POLISH', `${dirName}:NAME-5`, `name '${nameVal}' → '${dirName}'`, RUBRIC, 'SKILL.md')
       fixedAny = true
     }
@@ -179,7 +173,6 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
     if (!/(^|[|\s'"])help([|\s'"]|$)/.test(hintLine)) {
       hintVal = `${hintVal} | help`
       hintChanged = true
-      say(`  ${paint(C.green, 'fix')}   SHAPE-11 — appended \`help\` to argument-hint`)
       rec('POLISH', `${dirName}:SHAPE-11`, 'appended `help` to argument-hint', RUBRIC, 'SKILL.md')
     }
 
@@ -189,7 +182,6 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
       if (missing.length > 0) {
         hintVal = `${hintVal} | ${missing.join(' | ')}`
         hintChanged = true
-        say(`  ${paint(C.green, 'fix')}   SHAPE-12 — appended missing verb(s) to argument-hint: ${missing.join(', ')}`)
         rec('POLISH', `${dirName}:SHAPE-12`, `appended missing verb(s) to argument-hint: ${missing.join(', ')}`, RUBRIC, 'SKILL.md')
       }
     }
@@ -217,7 +209,6 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
         if (conformScript) parts.push(`conform: scripts/${conformScript}`)
         const newLine = `vendors: { ${parts.join(', ')} }`
         workingBlock = vendorsLine ? workingBlock.replace(vendorsLine, newLine) : insertAfterAnchor(workingBlock, newLine)
-        say(`  ${paint(C.green, 'fix')}   SHAPE-12 — authored \`${newLine}\``)
         rec('POLISH', `${dirName}:SHAPE-12`, `authored \`${newLine}\``, RUBRIC, 'SKILL.md')
         fixedAny = true
       } else if (!vendorsLine) {
@@ -233,7 +224,6 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
     } else if (!/\bconform:/.test(vendorsLine) && conformScript) {
       const newLine = vendorsLine.replace(/\}\s*$/, `, conform: scripts/${conformScript} }`)
       workingBlock = workingBlock.replace(vendorsLine, newLine)
-      say(`  ${paint(C.green, 'fix')}   SHAPE-12 — added missing \`conform: scripts/${conformScript}\` to vendors`)
       rec('POLISH', `${dirName}:SHAPE-12`, `added missing \`conform: scripts/${conformScript}\` to vendors`, RUBRIC, 'SKILL.md')
       fixedAny = true
     }
@@ -242,7 +232,6 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
   if (fixedAny) {
     if (!dryRun) writeFileSync(skillMdPath, content.replace(block, workingBlock))
   } else {
-    say(`  ${paint(C.dim, 'frontmatter: nothing to fix')}`)
     rec('PASS', `${dirName}:frontmatter`, 'frontmatter already canonical (nothing to fix)', RUBRIC, 'SKILL.md')
   }
 
@@ -259,13 +248,11 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
     if (count > 0) {
       lay4Fixes += count
       const rel = file.slice(dir.length + 1)
-      say(`  ${paint(C.green, 'fix')}   LAY-4 — ${rel}: ${count} backslash link target(s) → forward slashes`)
       rec('POLISH', `${dirName}:LAY-4`, `${count} backslash link target(s) → forward slashes`, RUBRIC, rel)
       if (!dryRun) writeFileSync(file, fixed)
     }
   }
   if (lay4Fixes === 0) {
-    say(`  ${paint(C.dim, 'LAY-4: nothing to fix')}`)
     rec('PASS', `${dirName}:LAY-4`, 'no backslash link separators (nothing to fix)', RUBRIC)
   }
 }
@@ -277,49 +264,27 @@ function main(): void {
 
   const skillDirs = discoverSkillDirs(target)
   if (skillDirs.length === 0) {
-    console.error(paint(C.red, `No skills found under: ${resolve(target)}`))
-    process.exit(1)
+    const rubricPath = localRubricPath()
+    findings.push({
+      type: 'M',
+      level: 'FAIL',
+      code: 'LAY-1',
+      message: 'No skills were found below the requested target.',
+      ref: RUBRIC
+    })
+    findings.push(...judgmentFindingsFromRubric(rubricPath, RUBRIC))
+    emitCheckerReporter({ mode: 'conform', concern: 'skills', target: resolve(target), findings })
+    process.exit(checkerReporterExitCode(findings))
     return
   }
-
-  say(paint(C.dim, `target: ${resolve(target)}   ${skillDirs.length} skill(s)${dryRun ? '   (dry run)' : ''}`))
 
   const todos: string[] = []
   for (const dir of skillDirs) conformSkill(dir, dryRun, todos)
 
-  say(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
-  if (todos.length === 0) {
-    say(`  ${paint(C.dim, 'none from the fixable set')}`)
-  } else {
-    for (const todo of todos) say(`  - ${todo}`)
-  }
-  // Judgment handoff — always-on ADVISORY: the [J] criteria conform cannot mechanically fix.
-  rec(
-    'ADVISORY',
-    'judgment',
-    'Everything else audit.ts flags — DESC-1/2/3, SHAPE-13, SIZE-1/2, LINK-2, SHAPE-2/7/8/9, REF-3, COLL-1, LONG-3/4 — is prose/authoring or cross-file judgment, never auto-fixed here; apply by reading',
-    RUBRIC
-  )
-  say(
-    `  - Everything else audit.ts flags — DESC-1/2/3, SHAPE-13, SIZE-1/2, LINK-2, SHAPE-2/7/8/9, REF-3, COLL-1, LONG-3/4 — is prose/authoring or cross-file judgment, never auto-fixed here.`
-  )
-  say(`\n${paint(C.dim, 'mechanical layer applied — re-run `bun scripts/audit.ts` (or `ki:skills:audit`) to confirm findings clear.')}`)
-
-  if (json) {
-    const n = (l: Level): number => findings.filter((f) => f.level === l).length
-    const summary = {
-      fail: n('FAIL'),
-      warn: n('WARN'),
-      polish: n('POLISH'),
-      advisory: n('ADVISORY'),
-      info: n('INFO'),
-      na: n('NA'),
-      pass: n('PASS')
-    }
-    process.stdout.write(
-      JSON.stringify({ concern: 'skills', target: resolve(target), generatedAt: new Date().toISOString(), summary, findings })
-    )
-  }
+  const rubricPath = localRubricPath()
+  findings.push(...judgmentFindingsFromRubric(rubricPath, RUBRIC))
+  emitCheckerReporter({ mode: 'conform', concern: 'skills', target: resolve(target), findings })
+  process.exit(checkerReporterExitCode(findings))
 }
 
 main()

@@ -2,6 +2,7 @@
 name: ki-repo
 implies: [ki-authoring]
 vendors: [educate, audit, conform, help]
+checker-dependencies: [ki-skills/checker-reporter]
 owns: ['.gitignore']
 contributes: ['.ki-config.toml']
 description: >
@@ -34,7 +35,7 @@ Every governance skill carries the universal four **AUDIT · CONFORM · EDUCATE 
 Auditing a whole tree or org is a set audit — **bound the context** (the set-audit discipline in `ki-engineering`'s enforcement-framework §5): take the checker's one set-level run over every repo, then do the per-repo judgment pass **one repo at a time**, fully (its composed `engineering` / artifact-skill audits included) before moving to the next; repos are independent, so the order is free.
 
 1. Confirm `gh` is authenticated against the org (`gh auth status`).
-2. **Run the mechanical checker**: `bun scripts/audit.ts <tree-path>` (local repos, github.com-gated) or `--org <org>` (the whole org, including repos not cloned locally). It grades findings on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — see `ki-engineering`'s [checker-contract.md](../../foundations/ki-engineering/references/checker-contract.md)) and exits non-zero on any FAIL; with `--json` / `--report` it emits machine-readable findings and writes the latest report to the repo's `.ki-meta/audits/repo.{md,json}`. Capture its output verbatim.
+2. **Run the mechanical checker**: `bun scripts/audit.ts <tree-path>` (local repos, github.com-gated) or `--org <org>` (the whole org, including repos not cloned locally). It emits the canonical JSONL checker stream on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — see `ki-engineering`'s [checker-contract.md](../../foundations/ki-engineering/references/checker-contract.md)) and exits non-zero on any mechanical FAIL. Capture its output verbatim.
 3. **Do the judgment pass the script can't** — the `[J]` items in [the rubric](references/rubric.md): does each description actually _match the repo's purpose_ (the script now checks non-emptiness and `package.json` sync mechanically — `description` / `description-sync` — but not fit); is each per-repo override (a `note` in the output) a warranted decision rather than waved-off drift.
 4. **Report** by `repo · check · fix`, lead with FAILs, surface any **coverage** WARNs (a detected standard with no opt-in table), and call out the overrides (`note`s) you judged warranted.
 
@@ -42,7 +43,7 @@ Auditing a whole tree or org is a set audit — **bound the context** (the set-a
 
 Outward-facing: it changes live GitHub settings and may open PRs. Show the diff and confirm before mutating.
 
-The audit-rubric's `[M]` findings are scripted: `bun scripts/conform.ts [path]` (`--dry-run` to preview) first repairs the local `.gitignore` and required config root markers, then applies every mechanical `gh` call in [the standard](references/standards.md#applying-it) directly — merge methods, auto-delete-branch, Wiki/Projects/Issues, topics, branch protection (only when `[ki-repo.checks]` opts it in), Dependabot alerts/updates, `allow_update_branch`, secret scanning + push protection (public), Actions permissions. Local repair is deliberately first, so it still converges when the repo has no GitHub remote or `gh` is unauthenticated. A missing config receives the canonical `[ki-repo]` defaults plus bare `[ki-authoring]`; a partial config receives only its missing exact root marker. Existing bytes remain an exact prefix, a second run is byte-identical, and `--dry-run` writes nothing. CONFORM prints the 3 `[J]` findings (README content, description text/visibility, whether a `[ki-repo.checks]` override is warranted) as manual TODOs rather than guessing — those still need a human read.
+The audit-rubric's `[M]` findings are scripted: `bun scripts/conform.ts [path]` (`--dry-run` to preview) first repairs the local `.gitignore` and required config root markers, then applies every mechanical `gh` call in [the standard](references/standards.md#applying-it) directly — merge methods, auto-delete-branch, Wiki/Projects/Issues, topics, branch protection (only when `[ki-repo.checks]` opts it in), Dependabot alerts/updates, `allow_update_branch`, secret scanning + push protection (public), Actions permissions. Local repair is deliberately first, so it still converges when the repo has no GitHub remote or `gh` is unauthenticated. A missing config receives the canonical `[ki-repo]` defaults plus bare `[ki-authoring]`; a partial config receives only its missing exact root marker. Existing bytes remain an exact prefix, a second run is byte-identical, and `--dry-run` writes nothing. CONFORM emits the rubric's `[J]` criteria as canonical advisory findings rather than guessing; they still need a human read.
 
 1. Run **AUDIT** first, so you change against a known gap list.
 2. Run `conform.ts` for the mechanical layer (or apply the `gh` commands in [the standard](references/standards.md) by hand).

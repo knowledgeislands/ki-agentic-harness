@@ -11,16 +11,21 @@
 // An agent is a single .md file (frontmatter + system prompt). A path to a .md file lints that
 // file; a directory is walked recursively for *.md (README.md excluded). An existing dir with no
 // agents is a clean pass (exit 0); a path that does not exist is an error (exit 1). Exits non-zero
-// if any FAIL is reported (WARN never fails the run).
+// if any FAIL is reported (WARN never fails the run). The canonical checker reporter is the only
+// output transport; terminal rendering belongs to the bootstrap aggregate.
 //
 // With >= 2 agents in scope it also runs cross-agent checks: duplicate `name` (NAME-5, FAIL) and
 // shared quoted trigger phrases between descriptions (COLL-1, WARN).
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { basename, dirname, join, resolve } from 'node:path'
-
-const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
-const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
+import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 type Severity = 'fail' | 'warn'
 type Finding = { severity: Severity; criterion: string; message: string }
@@ -270,112 +275,55 @@ function discoverAgentFiles(p: string): string[] {
 // --- main ------------------------------------------------------------------
 const args = process.argv.slice(2).filter((a) => !a.startsWith('-'))
 const roots = args.length ? args : ['.']
+const target = resolve(roots[0] ?? '.')
+const RUBRIC = 'references/rubric.md'
 
-const missing = roots.filter((r) => !existsSync(resolve(r)))
+function localRubricPath(): string {
+  const scriptDir = dirname(fileURLToPath(import.meta.url))
+  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
+  return join(skillRoot, 'references', 'rubric.md')
+}
+
+function emit(findings: CheckerFinding[]): never {
+  emitCheckerReporter({ mode: 'audit', concern: 'agents', target, findings })
+  process.exit(checkerReporterExitCode(findings))
+}
+
+const missing = roots.filter((root) => !existsSync(resolve(root)))
 if (missing.length) {
-  for (const r of missing) console.error(paint(C.red, `path not found: ${resolve(r)}`))
-  process.exit(1)
+  emit([
+    { type: 'M', level: 'FAIL', code: 'LAY-1', message: 'A requested audit path does not exist.', ref: RUBRIC },
+    ...judgmentFindingsFromRubric(localRubricPath(), RUBRIC)
+  ])
 }
 
 const files = [...new Set(roots.flatMap(discoverAgentFiles))].sort()
-if (files.length === 0) {
-  console.log(paint(C.dim, 'no agents found — nothing to lint'))
-  process.exit(0)
-}
-
-const LEGEND =
-  'area codes — LAY layout · NAME name · DESC description · FM tools/model · PROMPT system-prompt · LANE lane · LINK linking · PROC process · LONG longevity · COLL collision'
-
-// Output flags + unified-ladder aggregation across every audited agent (enforcement-framework §2/§5).
-const jsonOut = process.argv.slice(2).includes('--json')
-const reportOut = process.argv.slice(2).includes('--report')
-const reportTarget = resolve('.')
-const reportDir = join(reportTarget, '.ki-meta', 'audits')
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️', NA: '🚫', PASS: '✅' }
-// area is the bare rubric code; ref points at the reference doc the code lives in; file names the
-// agent path a file-scoped finding concerns. ref/file are optional and ride into --json/--report
-// for the aggregate to cite (mirrors ki-authoring audit.ts's Finding shape — the cited-finding standard).
-const RUBRIC = 'references/rubric.md'
-type Row = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const all: Row[] = []
-const add = (level: Level, area: string, msg: string, ref?: string, file?: string): void => void all.push({ level, area, msg, ref, file })
-
-if (!jsonOut) console.log(paint(C.dim, LEGEND))
-
-let totalFails = 0
-let totalWarns = 0
-let totalPass = 0
 const agents: Agent[] = []
+const findings: CheckerFinding[] = []
 for (const file of files) {
-  const { findings, agent } = lintAgent(file)
+  const { findings: agentFindings, agent } = lintAgent(file)
   agents.push(agent)
-  const fails = findings.filter((x) => x.severity === 'fail')
-  const warns = findings.filter((x) => x.severity === 'warn')
-  totalFails += fails.length
-  totalWarns += warns.length
-  if (fails.length === 0 && warns.length === 0) totalPass++
-  const label = agent.name ?? basename(file)
-  for (const x of findings) add(x.severity === 'fail' ? 'FAIL' : 'WARN', x.criterion, x.message, RUBRIC, file)
-  if (!jsonOut) {
-    const stamp = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
-    console.log(`\n${stamp}  ${paint(C.cyan, label)} ${paint(C.dim, file)}`)
-    for (const x of findings) {
-      const tag = x.severity === 'fail' ? paint(C.red, 'fail') : paint(C.yellow, 'warn')
-      console.log(`  ${tag} ${paint(C.dim, `[${x.criterion}]`)} ${x.message} ${paint(C.dim, `(${RUBRIC})`)}`)
-    }
-    if (findings.length === 0) console.log(paint(C.dim, '  all mechanical checks passed'))
-  }
+  for (const finding of agentFindings)
+    findings.push({
+      type: 'M',
+      level: finding.severity === 'fail' ? 'FAIL' : 'WARN',
+      code: finding.criterion,
+      message: finding.message,
+      ref: RUBRIC,
+      file
+    })
+  if (agentFindings.length === 0)
+    findings.push({ type: 'M', level: 'PASS', code: 'LAY-1', message: 'Mechanical checks passed.', ref: RUBRIC, file })
 }
 
-const cross = crossAgentFindings(agents)
-if (cross.length > 0) {
-  for (const x of cross) {
-    if (x.severity === 'fail') totalFails++
-    else totalWarns++
-    add(x.severity === 'fail' ? 'FAIL' : 'WARN', x.criterion, x.message, RUBRIC)
-  }
-  if (!jsonOut) {
-    console.log(`\n${paint(C.yellow, 'CROSS')}  ${paint(C.cyan, 'cross-agent')}`)
-    for (const x of cross) {
-      const tag = x.severity === 'fail' ? paint(C.red, 'fail') : paint(C.yellow, 'warn')
-      console.log(`  ${tag} ${paint(C.dim, `[${x.criterion}]`)} ${x.message} ${paint(C.dim, `(${RUBRIC})`)}`)
-    }
-  }
-}
-
-const summary = { fail: totalFails, warn: totalWarns, polish: 0, advisory: 0, info: 0, na: 0, pass: totalPass }
-const stampIso = new Date().toISOString()
-
-if (reportOut) {
-  mkdirSync(reportDir, { recursive: true })
-  const body = LADDER.flatMap((l) => {
-    const rows = all.filter((f) => f.level === l)
-    return rows.length
-      ? [
-          '',
-          `## ${ICON[l]} ${l} (${rows.length})`,
-          ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
-        ]
-      : []
+for (const finding of crossAgentFindings(agents))
+  findings.push({
+    type: 'M',
+    level: finding.severity === 'fail' ? 'FAIL' : 'WARN',
+    code: finding.criterion,
+    message: finding.message,
+    ref: RUBRIC
   })
-  const tally = `${files.length} agent(s) · FAIL=${summary.fail} WARN=${summary.warn}`
-  writeFileSync(join(reportDir, 'agents.md'), [`# agents audit — ${reportTarget}`, '', `_${stampIso}_`, '', tally, ...body, ''].join('\n'))
-  writeFileSync(
-    join(reportDir, 'agents.json'),
-    `${JSON.stringify({ concern: 'agents', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`
-  )
-}
 
-if (jsonOut) {
-  process.stdout.write(
-    `${JSON.stringify({ concern: 'agents', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`
-  )
-} else {
-  console.log(`\n${paint(C.cyan, 'summary')}: ${files.length} agent(s) · FAIL=${totalFails} WARN=${totalWarns}`)
-  if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'agents.{md,json}')}`))
-  if (totalFails + totalWarns > 0) console.log('→ to address: run /ki-agents CONFORM   (judgment criteria: references/rubric.md)')
-  console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria from references/rubric.md by reading.'))
-}
-process.exit(totalFails > 0 ? 1 : 0)
+findings.push(...judgmentFindingsFromRubric(localRubricPath(), RUBRIC))
+emit(findings)

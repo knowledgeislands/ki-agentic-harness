@@ -2,6 +2,7 @@
 name: ki-agents
 implies: []
 vendors: [educate, audit, conform, help]
+checker-dependencies: [ki-skills/checker-reporter]
 description: >
   Audit, review, and write Claude Code subagent definitions against current best practice. Use when creating a new agent (subagent), reviewing or critiquing an agent's definition, checking an agent before it ships, asking "is this agent any good / well-scoped", or refreshing the agents rubric. Carries a checkable rubric — mechanical checks a bundled linter runs, judgment checks applied by reading — covering the name and description (the delegation signal), the system-prompt shape (role/lane, grounding, when-invoked, own-vs-defer), least-privilege tools and model choice, and cross-agent lane collisions. Triggers: "audit this agent", "review my subagent", "write a new agent", "is this agent definition good", "scaffold an agent", "refresh the agents rubric", "check the agents". Judges a subagent definition (frontmatter + system prompt) — for authoring a SKILL.md use the `ki-skills` skill instead; for harness-level layout (five-part bundle, `.ki-config.toml` compliance) use `ki-harness`.
 argument-hint: 'audit <agent-or-dir> | conform <agent> | help | educate <description> | refresh'
@@ -32,7 +33,7 @@ Review an agent (or every agent in a directory) against the rubric and report.
 
 **Auditing a whole directory? Bound the context** (the set-audit discipline in `ki-engineering`'s enforcement-framework §5): run the linter's set-level pass once (COLL-1 lane collisions + `name` uniqueness over the directory), then review the agents **one at a time** — they are peers, so the order is free — loading and releasing each definition before the next rather than holding the whole set in context at once.
 
-1. **Run the linter.** `bun scripts/audit.ts <path-to-agent-or-dir>` from this skill's directory. It reports the mechanical criteria on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — see `ki-engineering`'s [checker-contract.md](../../foundations/ki-engineering/references/checker-contract.md)) and exits non-zero on any FAIL; with `--json` / `--report` it emits machine-readable findings and writes the latest report to the target's `.ki-meta/audits/agents.{md,json}`. Capture its output verbatim — do not re-derive what it found. Point it at the **agents directory** (e.g. a repo's `agents/`), not a lone file, so the cross-agent collision pass (COLL-1) and the `name`-uniqueness check have the siblings to compare.
+1. **Run the linter.** `bun scripts/audit.ts <path-to-agent-or-dir>` from this skill's directory. It emits the canonical machine-readable report on the unified severity ladder and exits non-zero on any FAIL. Capture its output verbatim — do not re-derive what it found. Point it at the **agents directory** (e.g. a repo's `agents/`), not a lone file, so the cross-agent collision pass (COLL-1) and the `name`-uniqueness check have the siblings to compare.
 2. **Read the agent definition** and apply the **judgment** ([J]-tagged) criteria from [the rubric](references/rubric.md) — the linter owns the [M] ones. Focus on:
    - **Description (the delegation signal)** — does it state both _what the agent owns_ and _when to delegate to it_, in the third person, with concrete cues the orchestrating agent would match on? This is the only signal at selection time.
    - **Role & lane** — is the system prompt a focused role with one clear lane, opening by saying what it owns and what it does **not**?
@@ -73,4 +74,4 @@ Keep the rubric current — the subagents spec and house practice move, and this
 - A WARN is not a FAIL. Length and the third-person-description heuristic are _recommendations_ — report them, but an agent can ship over a soft cap with a reason.
 - This skill audits agents, not skills. To audit or author a `SKILL.md`, use `ki-skills`; the two name each other as off-ramps.
 - This skill governs agent definitions; when you change the rubric, re-run Mode AUDIT on the harness's agents.
-- Checker output conforms to the severity ladder, JSON shape, and exit-code contract in `ki-engineering`'s [checker-contract.md](../../foundations/ki-engineering/references/checker-contract.md).
+- Checker output uses the canonical checker reporter supplied by `ki-skills`; its locally vendored module makes this checker standalone when installed.

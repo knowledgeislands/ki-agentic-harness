@@ -1,7 +1,14 @@
 #!/usr/bin/env bun
 /** Mechanical auditor for the non-KB project-roadmap standard. */
-import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join, relative, resolve } from 'node:path'
+import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
+import { basename, dirname, join, relative, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
@@ -54,10 +61,6 @@ const add = (level: Level, area: string, msg: string, ref = RUBRIC_REF, file?: s
 const argv = process.argv.slice(2)
 const positional = argv.find((arg) => !arg.startsWith('-')) ?? '.'
 const root = resolve(positional)
-if (!existsSync(root) || !lstatSync(root).isDirectory()) {
-  console.error(`usage: audit.ts [repo]   (repository directory required; got ${positional})`)
-  process.exit(2)
-}
 
 function isKb(repo: string): boolean {
   const config = join(repo, '.ki-config.toml')
@@ -382,6 +385,10 @@ function discoverThematic(): { themes: string[]; items: Item[]; plans: Plan[] } 
 
 const rootRoadmap = join(root, 'ROADMAP.md')
 const thematicDir = join(root, 'docs', 'roadmap')
+if (!existsSync(root) || !lstatSync(root).isDirectory()) {
+  add('FAIL', 'PROFILE-1', `repository directory does not exist: ${positional}`, STANDARD_REF)
+  emit()
+}
 if (isKb(root)) {
   const artifacts = [rootRoadmap, thematicDir].filter(existsSync).map((path) => relative(root, path))
   if (artifacts.length)
@@ -399,12 +406,6 @@ if (!existsSync(thematicDir)) {
   else {
     parseRoadmap(rootRoadmap, 'ROADMAP.md')
     add('INFO', 'PROFILE-1', 'simple profile detected', STANDARD_REF)
-    add(
-      'ADVISORY',
-      'PROFILE-2',
-      'confirm the simple profile still gives sufficient focus and no item needs an execution plan',
-      STANDARD_REF
-    )
   }
 } else {
   if (lstatSync(thematicDir).isSymbolicLink() || !lstatSync(thematicDir).isDirectory()) {
@@ -507,13 +508,6 @@ if (!existsSync(thematicDir)) {
     `thematic profile detected: ${themes.length} theme(s), ${items.length} item(s), ${plans.length} plan(s)`,
     STANDARD_REF
   )
-  add('ADVISORY', 'ROAD-2', 'review horizon choices, Waiting-for conditions, and Future candidate markers', STANDARD_REF)
-  add('ADVISORY', 'ROAD-3', 'confirm every item is open finite work rather than history or continuous practice', STANDARD_REF)
-  add('ADVISORY', 'THEME-2', 'confirm theme boundaries are coherent workstreams', STANDARD_REF)
-  if (plans.some((plan) => plan.fm.status === 'in-progress')) {
-    add('ADVISORY', 'PLAN-4', 'review in-progress plans against the plan quality bar', STANDARD_REF)
-    add('ADVISORY', 'PLAN-5', 'confirm in-progress plans reflect live work', STANDARD_REF)
-  }
 }
 
 if (!findings.some((finding) => ['FAIL', 'WARN', 'POLISH'].includes(finding.level))) {
@@ -522,48 +516,17 @@ if (!findings.some((finding) => ['FAIL', 'WARN', 'POLISH'].includes(finding.leve
 emit()
 
 function emit(): never {
-  const order: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
-  const icon: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️', NA: '🚫', PASS: '✅' }
-  const n = (level: Level): number => findings.filter((finding) => finding.level === level).length
-  const summary = {
-    fail: n('FAIL'),
-    warn: n('WARN'),
-    polish: n('POLISH'),
-    advisory: n('ADVISORY'),
-    info: n('INFO'),
-    na: n('NA'),
-    pass: n('PASS')
-  }
-  const payload = { concern: 'project-roadmap', target: root, generatedAt: new Date().toISOString(), summary, findings }
-  const json = argv.includes('--json')
-  const reportAt = argv.indexOf('--report')
-  if (reportAt >= 0) {
-    const reportDir =
-      argv[reportAt + 1] && !argv[reportAt + 1].startsWith('-') ? resolve(argv[reportAt + 1]) : join(root, '.ki-meta', 'audits')
-    mkdirSync(reportDir, { recursive: true })
-    writeFileSync(join(reportDir, 'project-roadmap.json'), `${JSON.stringify(payload, null, 2)}\n`)
-    const rows = findings
-      .map((finding) => `- ${finding.level} [${finding.area}]${finding.file ? ` ${finding.file}` : ''} ${finding.msg}`)
-      .join('\n')
-    writeFileSync(join(reportDir, 'project-roadmap.md'), `# Project roadmap audit\n\n${rows}\n`)
-  }
-  if (json) process.stdout.write(`${JSON.stringify(payload, null, 2)}\n`)
-  else {
-    console.log(`\nProject roadmap audit — ${positional}\n${'─'.repeat(60)}`)
-    for (const level of order) {
-      const rows = findings.filter((finding) => finding.level === level)
-      if (!rows.length) continue
-      console.log(`\n${icon[level]} ${level} (${rows.length})`)
-      for (const finding of rows)
-        console.log(`   [${finding.area}]${finding.file ? ` ${finding.file}` : ''} ${finding.msg}${finding.ref ? ` (${finding.ref})` : ''}`)
-    }
-    console.log(
-      `\n${'─'.repeat(60)}\nFAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na}`
-    )
-    if (summary.fail + summary.warn + summary.polish > 0) {
-      console.log('→ to address: run /ki-project-roadmap CONFORM   (judgment criteria: references/rubric.md)')
-    }
-    console.log('')
-  }
-  process.exit(summary.fail ? 1 : 0)
+  const scriptDir = dirname(fileURLToPath(import.meta.url))
+  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
+  const canonical: CheckerFinding[] = findings.map((finding) => ({
+    type: 'M',
+    level: finding.level,
+    code: finding.area,
+    message: finding.msg,
+    ref: finding.ref,
+    file: finding.file
+  }))
+  canonical.push(...judgmentFindingsFromRubric(join(skillRoot, 'references', 'rubric.md'), RUBRIC_REF))
+  emitCheckerReporter({ mode: 'audit', concern: 'project-roadmap', target: root, findings: canonical })
+  process.exit(checkerReporterExitCode(canonical))
 }

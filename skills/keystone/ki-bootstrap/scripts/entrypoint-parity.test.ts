@@ -82,7 +82,13 @@ const rootOk = process.cwd() === process.env.KI_EXPECT_ROOT && process.argv[2] =
 const forcedFailure = process.env.KI_FIXTURE_FAIL === '1'
 const ok = rootOk && !forcedFailure
 const msg = !rootOk ? 'aggregate did not run at the repo root' : forcedFailure ? 'synthetic failure' : 'synthetic audit passed'
-process.stdout.write(JSON.stringify({ findings: [{ level: ok ? 'PASS' : 'FAIL', area: 'FIX-1', msg }] }) + '\\n')
+const run = { version: 1, runId: crypto.randomUUID(), mode: 'audit', concern: 'fixture', target: process.cwd(), generatedAt: new Date().toISOString() }
+const level = ok ? 'PASS' : 'FAIL'
+for (const record of [
+  { ...run, record: 'meta' },
+  { ...run, record: 'finding', type: 'M', level, code: 'FIX-1', message: msg, ref: 'references/rubric.md' },
+  { ...run, record: 'summary', summary: { fail: ok ? 0 : 1, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: ok ? 1 : 0 } }
+]) process.stdout.write(JSON.stringify(record) + '\\n')
 process.exit(ok ? 0 : 1)
 `
 
@@ -93,7 +99,13 @@ const dryRun = process.argv.includes('--dry-run')
 if (!dryRun) writeFileSync('unexpected-conform-write', 'write occurred\\n')
 const ok = rootOk && dryRun
 const msg = !rootOk ? 'aggregate did not run at the repo root' : dryRun ? 'synthetic conform dry-run passed' : 'dry-run was not forwarded'
-process.stdout.write(JSON.stringify({ findings: [{ level: ok ? 'PASS' : 'FAIL', area: 'FIX-1', msg }] }) + '\\n')
+const run = { version: 1, runId: crypto.randomUUID(), mode: 'conform', concern: 'fixture', target: process.cwd(), generatedAt: new Date().toISOString() }
+const level = ok ? 'PASS' : 'FAIL'
+for (const record of [
+  { ...run, record: 'meta' },
+  { ...run, record: 'finding', type: 'M', level, code: 'FIX-1', message: msg, ref: 'references/rubric.md' },
+  { ...run, record: 'summary', summary: { fail: ok ? 0 : 1, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: ok ? 1 : 0 } }
+]) process.stdout.write(JSON.stringify(record) + '\\n')
 process.exit(ok ? 0 : 1)
 `
 

@@ -68,14 +68,14 @@ function conform(dir: string, dryRun = false): { code: number; out: string } {
   return { code: res.status ?? 1, out: `${res.stdout ?? ''}${res.stderr ?? ''}` }
 }
 
-// ── Foreign: CLAUDE.md learn block rooted in another KI repo → TOOL-4 WARN + footer ──
+// ── Foreign: CLAUDE.md learn block rooted in another KI repo → TOOL-4 WARN ──
 {
   const { base, dir } = fixture('ki-agentic-harness', '- `cd /Users/x/kis/knowledgeislands/arcadia-agentic-harness && bun run x` — use Y.')
   try {
     const { out } = run(dir)
     check('foreign root → raises cross-repo learn warn', out.includes('headroom:learn block has'))
     check('foreign root → names the other repo', out.includes('arcadia-agentic-harness'))
-    check('foreign root → prints remediation footer', out.includes('/ki-tokenomics CONFORM'))
+    check('foreign root → does not retain a terminal remediation footer', !out.includes('/ki-tokenomics CONFORM'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
@@ -152,8 +152,8 @@ function conform(dir: string, dryRun = false): { code: number; out: string } {
     const remote = run(dir).out
     writeSettings(dir, '{"env":{"ANTHROPIC_BASE_URL":"http://localhost:9999"}}\n')
     const custom = run(dir).out
-    check('remote URL → ignored by TOOL-5', !remote.includes('[TOOL-5]'))
-    check('unscoped custom-port URL → ignored by TOOL-5', !custom.includes('[TOOL-5]'))
+    check('remote URL → ignored by TOOL-5', !remote.includes('"code":"TOOL-5"'))
+    check('unscoped custom-port URL → ignored by TOOL-5', !custom.includes('"code":"TOOL-5"'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
@@ -166,9 +166,9 @@ function conform(dir: string, dryRun = false): { code: number; out: string } {
     const before = readFileSync(file, 'utf8')
     const audit = run(dir).out
     const result = conform(dir)
-    check('canonical port with foreign path → ignored by TOOL-5 audit', !audit.includes('[TOOL-5]'))
+    check('canonical port with foreign path → ignored by TOOL-5 audit', !audit.includes('"code":"TOOL-5"'))
     check('canonical port with foreign path → conform preserves bytes', readFileSync(file, 'utf8') === before)
-    check('canonical port with foreign path → no conform TOOL-5 finding', !result.out.includes('[TOOL-5]'))
+    check('canonical port with foreign path → no conform TOOL-5 finding', !result.out.includes('"code":"TOOL-5"'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
@@ -181,7 +181,7 @@ function conform(dir: string, dryRun = false): { code: number; out: string } {
     const before = readFileSync(file, 'utf8')
     const audit = run(dir).out
     conform(dir)
-    check('root URL with query/hash → conservatively ignored', !audit.includes('[TOOL-5]'))
+    check('root URL with query/hash → conservatively ignored', !audit.includes('"code":"TOOL-5"'))
     check('root URL with query/hash → conform preserves bytes', readFileSync(file, 'utf8') === before)
   } finally {
     rmSync(base, { recursive: true, force: true })
@@ -275,7 +275,7 @@ function conform(dir: string, dryRun = false): { code: number; out: string } {
     const file = writeSettings(dir, before)
     const result = conform(dir)
     const expected = before.replace('"http://127.0.0.1:8787"', '"http://127.0.0.1:8787/p/repo-preserve"')
-    check('conform scoped URL → POLISH', result.out.includes('scoped local Headroom URL to /p/repo-preserve'))
+    check('conform scoped URL → POLISH', result.out.includes('scoped the local Headroom proxy to /p/repo-preserve'))
     check('conform scoped URL → preserves every unrelated byte', readFileSync(file, 'utf8') === expected)
     const once = readFileSync(file, 'utf8')
     const second = conform(dir)
@@ -292,7 +292,7 @@ function conform(dir: string, dryRun = false): { code: number; out: string } {
     const file = writeSettings(dir, '{"env":{"ANTHROPIC_BASE_URL":"http://localhost:8787/p/wrong"}}\n')
     const before = readFileSync(file, 'utf8')
     const result = conform(dir, true)
-    check('dry-run → reports would-change POLISH', result.out.includes('would scope local Headroom URL to /p/repo-dry-run'))
+    check('dry-run → reports would-change POLISH', result.out.includes('would scope the local Headroom proxy to /p/repo-dry-run'))
     check('dry-run → writes nothing', readFileSync(file, 'utf8') === before)
   } finally {
     rmSync(base, { recursive: true, force: true })

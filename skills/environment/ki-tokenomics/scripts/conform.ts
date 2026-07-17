@@ -19,12 +19,11 @@
  *
  *   bun scripts/conform.ts [path]   # default: cwd (a project or a KB base)
  *   --dry-run                       # report the Headroom URL edit without writing
- *   --json                          # emit the shared finding wrapper instead of prose
  *
  * Every other finding it surfaces is a manual/judgment TODO — level ADVISORY on
  * the shared ladder — split into a concrete section (defects the
  * mechanical scan located in this repo) and a judgment section (the [J] rubric). The
- * `--json` wrapper mirrors audit.ts's: { concern, target, generatedAt, summary, findings }.
+ * Every invocation emits the canonical checker JSONL stream.
  *
  * Manual TODOs it surfaces (derived from audit.ts's finding areas):
  *   - SURF-1  broken `@import` in a project CLAUDE.md — concrete path listed; fixing
@@ -46,24 +45,25 @@ import { spawnSync } from 'node:child_process'
 import { existsSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
-// ── colour helpers (same style as audit.ts) ──
-const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
-const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
-
-// ── collect-then-emit harness (mirrors audit.ts / ki-authoring conform) ──
-// This conform has one narrow mechanical normalization (TOOL-5); every other finding
-// is a manual or judgment TODO — level ADVISORY (or INFO where merely informational). area is
-// the FINE rubric code kept in lockstep with audit.ts; ref the reference-doc
-// pointer; file the path a file-scoped TODO concerns. `say` prints the human line
-// only outside --json, so a direct run streams prose while the aggregate consumes
-// the wrapper.
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const findings: Finding[] = []
+const findings: CheckerFinding[] = []
 const rec = (level: Level, area: string, msg: string, ref?: string, file?: string): void =>
-  void findings.push({ level, area, msg, ref, file })
+  void findings.push({ type: 'M', level, code: area, message: msg, ...(ref ? { ref } : {}), ...(file ? { file } : {}) })
 const RUBRIC = 'references/rubric.md'
+
+function localRubricPath(): string {
+  const scriptDir = dirname(fileURLToPath(import.meta.url))
+  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
+  return join(skillRoot, 'references', 'rubric.md')
+}
 
 // ── kept in lockstep with audit.ts ──
 const KI_SECTION = 'ki-tokenomics'
@@ -288,27 +288,20 @@ function foreignLearnRoots(target: string): { repos: string[]; lines: number } {
 function main(): number {
   const argv = process.argv.slice(2)
   const dryRun = argv.includes('--dry-run')
-  const json = argv.includes('--json')
   const target = resolve(argv.find((a) => !a.startsWith('-')) ?? '.')
-  const say = (line: string): void => {
-    if (!json) console.log(line)
-  }
 
   if (!existsSync(target)) {
-    console.error(paint(C.red, `target path not found: ${target}`))
-    return 1
+    rec('FAIL', 'SCOPE', `Target path not found: ${target}.`, RUBRIC, target)
+    findings.push(...judgmentFindingsFromRubric(localRubricPath(), RUBRIC))
+    emitCheckerReporter({ mode: 'conform', concern: 'tokenomics', target, findings })
+    return checkerReporterExitCode(findings)
   }
 
-  say(paint(C.dim, `target: ${target}${dryRun ? '   (dry run)' : ''}`))
-  say(paint(C.dim, 'ki-tokenomics conform applies only safe Headroom URL scoping; every other gap needs a human trim or choice.\n'))
-
   // ── manual TODOs (concrete — derived from this repo's state) — all ADVISORY (nothing is written) ──
-  say(paint(C.cyan, 'manual TODOs (concrete — from this repo)'))
   let concrete = 0
   const todo = (area: string, msg: string, file?: string): void => {
     concrete++
     rec('ADVISORY', area, msg, RUBRIC, file)
-    say(`  ${paint(C.yellow, '-')} [${area}]${file ? ` ${file}` : ''} ${msg}`)
   }
 
   // ── SURF-1: broken @imports in the project CLAUDE.md (+ AGENTS.md) ──
@@ -367,7 +360,6 @@ function main(): number {
       if (header.present) {
         if (header.project === slug) {
           rec('PASS', 'TOOL-5', `Headroom project header already scopes ${slug}`, RUBRIC, `.claude/${headerSettings?.name}`)
-          say(`  ${paint(C.green, '-')} [TOOL-5] Headroom project header already scopes ${slug}`)
         } else {
           todo(
             'TOOL-5',
@@ -377,7 +369,6 @@ function main(): number {
         }
       } else if (inspected.valid) {
         rec('PASS', 'TOOL-5', `Headroom URL already scopes /p/${slug}`, RUBRIC, `.claude/${urlSettings.name}`)
-        say(`  ${paint(C.green, '-')} [TOOL-5] Headroom URL already scopes /p/${slug}`)
       } else if (urlSettings.name === 'settings.local.json') {
         todo(
           'TOOL-5',
@@ -401,7 +392,6 @@ function main(): number {
             RUBRIC,
             '.claude/settings.json'
           )
-          say(`  ${paint(C.cyan, '-')} [TOOL-5] ${dryRun ? 'would scope' : 'scoped'} local Headroom URL to /p/${slug}`)
         }
       }
     }
@@ -469,53 +459,17 @@ function main(): number {
     }
   }
 
-  if (concrete === 0) say(`  ${paint(C.dim, 'none found by the mechanical scan')}`)
-
-  // ── judgment TODOs — the [J] rubric the script cannot decide, always surfaced (ADVISORY) ──
-  say(`\n${paint(C.cyan, 'judgment TODOs (re-run AUDIT, apply the [J] rubric by reading)')}`)
-  for (const [area, p] of [
-    [
-      'SURF-4',
-      'does each heavy CLAUDE.md / memory entry EARN its tokens, or restate what the model knows / belong in an on-demand file? Lift it out.'
-    ],
-    ['BUDG-3', 'any sustained budget overage is either trimmed or a deliberate, recorded decision — not waved-off drift.'],
-    [
-      'MCP-2',
-      'is each configured MCP server actually used here? Disable/scope unused or over-broad servers (keep tool search on); this is usually the biggest lever.'
-    ],
-    ['RUN-2', 'prompt-cache hits, model tier vs work value, autocompact + sub-agent fan-out, tool-result verbosity.'],
-    [
-      'TOOL-3',
-      'where Headroom is present, confirm the reversible store (CCR) + cache-aligner + output-shaper are set optimally (keys undocumented — judgment).'
-    ]
-  ] as const) {
-    rec('ADVISORY', area, p, RUBRIC)
-    say(`  ${paint(C.dim, `- [${area}] ${p}`)}`)
-  }
-
-  say(
-    `\n${paint(C.dim, 'make the remaining trims/choices above by hand, then re-run `bun scripts/audit.ts` (or `ki:tokenomics:audit`) to confirm they clear.')}`
-  )
-
-  if (json) {
-    const n = (l: Level): number => findings.filter((f) => f.level === l).length
-    const summary = {
-      fail: n('FAIL'),
-      warn: n('WARN'),
-      polish: n('POLISH'),
-      advisory: n('ADVISORY'),
-      info: n('INFO'),
-      na: n('NA'),
-      pass: n('PASS')
-    }
-    process.stdout.write(JSON.stringify({ concern: 'tokenomics', target, generatedAt: new Date().toISOString(), summary, findings }))
-  }
-  return 0
+  if (concrete === 0) rec('PASS', 'CONFORM', 'No deterministic tokenomics changes are needed.')
+  findings.push(...judgmentFindingsFromRubric(localRubricPath(), RUBRIC))
+  emitCheckerReporter({ mode: 'conform', concern: 'tokenomics', target, findings })
+  return checkerReporterExitCode(findings)
 }
 
 try {
   process.exit(main())
 } catch (err) {
-  console.error(`ERROR: ${String(err)}`)
-  process.exit(1)
+  const failed: CheckerFinding[] = [{ type: 'M', level: 'FAIL', code: 'RUNTIME', message: `Checker failed: ${String(err)}.`, ref: RUBRIC }]
+  failed.push(...judgmentFindingsFromRubric(localRubricPath(), RUBRIC))
+  emitCheckerReporter({ mode: 'conform', concern: 'tokenomics', target: resolve('.'), findings: failed })
+  process.exit(checkerReporterExitCode(failed))
 }

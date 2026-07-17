@@ -10,7 +10,15 @@
  */
 
 import { readdir, readFile, stat } from 'node:fs/promises'
-import { dirname, join, resolve } from 'node:path'
+import { basename, dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  type CheckerLevel,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 enum Sev {
   FAIL = 0,
@@ -32,18 +40,15 @@ const SEV_LABELS: Record<number, string> = {
   6: 'PASS'
 }
 
-// Every criterion in this checker traces to the one reference doc, so `ref` is a
-// constant pointer; `file` carries the DR path a finding concerns (file-scoped).
-// Both surface in the CHK-004 `--json` wrapper and the human render.
+// Every criterion in this checker traces to the one reference doc.
 const REF = 'references/rubric.md'
-
-interface Finding {
-  check: string
-  severity: Sev
-  file: string
-  message: string
-  ref?: string
+function localRubricPath(): string {
+  const scriptDir = dirname(fileURLToPath(import.meta.url))
+  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
+  return join(skillRoot, 'references', 'rubric.md')
 }
+
+const RUBRIC_PATH = localRubricPath()
 
 const PREFIX_TO_TYPE: Record<string, string> = {
   SDR: 'strategy',
@@ -116,27 +121,29 @@ async function resolveDecisionsDir(arg: string | undefined): Promise<string> {
 }
 
 async function main() {
-  const jsonMode = process.argv.includes('--json')
   const dirArg = process.argv.slice(2).find((a) => !a.startsWith('--'))
   const decisionsDir = await resolveDecisionsDir(dirArg)
   const resolvedDir = resolve(decisionsDir)
+  const findings: CheckerFinding[] = []
+
+  const add = (code: string, severity: Sev, file: string, message: string, ref: string = REF): void => {
+    findings.push({ type: 'M', code, level: SEV_LABELS[severity] as CheckerLevel, message, ref, file })
+  }
 
   try {
     await stat(resolvedDir)
   } catch {
-    console.error(`FAIL: decisions directory not found: ${resolvedDir}`)
-    process.exit(1)
+    add('INDEX-1', Sev.FAIL, resolvedDir, 'Decision records directory is not present.')
+    findings.push(...judgmentFindingsFromRubric(RUBRIC_PATH, REF))
+    emitCheckerReporter({ mode: 'audit', concern: 'decision-records', target: resolvedDir, findings })
+    process.exitCode = checkerReporterExitCode(findings)
+    return
   }
 
   const kbMode = await detectKbMode(resolvedDir)
   const entries = await readdir(resolvedDir)
   const drFiles = entries.filter((f) => DR_FILENAME_RE.test(f)).sort()
   const indexFile = kbMode ? 'Decisions.md' : 'README.md'
-  const findings: Finding[] = []
-
-  const add = (check: string, severity: Sev, file: string, message: string, ref: string = REF) =>
-    findings.push({ check, severity, file, message, ref })
-
   // INDEX-1
   const hasIndex = entries.includes(indexFile)
   if (!hasIndex) {
@@ -331,45 +338,16 @@ async function main() {
     }
   }
 
-  // --json: emit the pinned checker-contract wrapper (never a bare array); the footer is
-  // suppressed under --json. Exit code still reflects any FAIL.
-  if (jsonMode) {
-    const summary = { fail: 0, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: 0 }
-    for (const f of findings) summary[(SEV_LABELS[f.severity] ?? '').toLowerCase() as keyof typeof summary]++
-    console.log(
-      JSON.stringify({
-        concern: 'decision-records',
-        target: decisionsDir,
-        generatedAt: new Date().toISOString(),
-        summary,
-        findings: findings.map((f) => ({ level: SEV_LABELS[f.severity], area: f.check, msg: f.message, ref: f.ref, file: f.file }))
-      })
-    )
-    process.exit(findings.some((f) => f.severity === Sev.FAIL) ? 1 : 0)
-  }
-
-  // Report grouped by severity
-  let hasFail = false
-  for (let sev = Sev.FAIL; sev <= Sev.PASS; sev++) {
-    const group = findings.filter((f) => f.severity === sev)
-    for (const f of group) {
-      const label = SEV_LABELS[f.severity] ?? String(f.severity)
-      console.log(`${label.padEnd(8)} [${f.check}]${f.file ? ` ${f.file}` : ''} ${f.message}${f.ref ? ` (${f.ref})` : ''}`)
-      if (sev === Sev.FAIL) hasFail = true
-    }
-  }
-
-  if (findings.length === 0) {
-    const modeLabel = kbMode ? 'KB mode' : 'code mode'
-    console.log(`PASS     DR audit — ${drFiles.length} file${drFiles.length === 1 ? '' : 's'}, ${modeLabel}, ${decisionsDir}`)
-  }
-
-  if (findings.some((f) => ['FAIL', 'WARN', 'POLISH'].includes(SEV_LABELS[f.severity] ?? '')))
-    console.log('→ to address: run /ki-decision-records CONFORM   (judgment criteria: references/rubric.md)')
-  process.exit(hasFail ? 1 : 0)
+  findings.push(...judgmentFindingsFromRubric(RUBRIC_PATH, REF))
+  emitCheckerReporter({ mode: 'audit', concern: 'decision-records', target: resolvedDir, findings })
+  process.exitCode = checkerReporterExitCode(findings)
 }
 
 main().catch((err) => {
-  console.error(`ERROR: ${String(err)}`)
-  process.exit(1)
+  const target = resolve(process.argv.slice(2).find((arg) => !arg.startsWith('--')) ?? '.')
+  const findings: CheckerFinding[] = [
+    { type: 'M', level: 'FAIL', code: 'INDEX-1', message: `Checker could not inspect the decision records: ${String(err)}`, ref: REF }
+  ]
+  emitCheckerReporter({ mode: 'audit', concern: 'decision-records', target, findings })
+  process.exitCode = checkerReporterExitCode(findings)
 })

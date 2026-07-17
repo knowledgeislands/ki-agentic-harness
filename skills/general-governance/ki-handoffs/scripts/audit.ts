@@ -17,25 +17,37 @@
  * Output is grouped by severity; exit code is non-zero iff any FAIL.
  * No dependencies — Node/Bun builtins only; no cross-skill imports.
  */
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
-import { join, relative, resolve } from 'node:path'
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { basename, dirname, join, relative, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-// area is the rubric code (references/rubric.md); ref is its reference-doc
-// pointer; file names the path a file-scoped finding concerns. ref/file are optional
-// and ride into --json for the aggregate to render (CHK-004/009/010).
-type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️', NA: '🚫', PASS: '✅' }
-const findings: Finding[] = []
-const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
+const RUBRIC = 'references/rubric.md'
+const findings: CheckerFinding[] = []
+const add = (level: Level, code: string, message: string, ref?: string, file?: string): void => {
+  findings.push({ type: 'M', level, code, message, ref, file })
+}
+
+function localRubricPath(): string {
+  const scriptDir = dirname(fileURLToPath(import.meta.url))
+  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
+  return join(skillRoot, 'references', 'rubric.md')
+}
 
 const rawTarget = process.argv[2] ?? '.'
 const target = resolve(rawTarget)
 if (!existsSync(target)) {
-  console.error(`usage: audit.ts <dir>   (path must exist; got ${rawTarget})`)
-  process.exit(2)
+  add('FAIL', 'HAND-1', `Requested audit path does not exist: ${rawTarget}`, 'references/standards.md')
+  findings.push(...judgmentFindingsFromRubric(localRubricPath(), RUBRIC))
+  emitCheckerReporter({ mode: 'audit', concern: 'handoffs', target, findings })
+  process.exit(checkerReporterExitCode(findings))
 }
 
 const VALID_TIERS = new Set(['haiku', 'sonnet', 'opus'])
@@ -135,71 +147,6 @@ if (findings.every((f) => f.level === 'INFO' || f.level === 'NA')) {
   add('PASS', 'handoffs', `${optedIn} handoff artifact(s) checked, ${rawTarget}`)
 }
 
-// ── report ──────────────────────────────────────────────────────────────────────
-// Shared emit harness — copy verbatim across KI checkers (enforcement-framework §2/§5).
-function emit(items: Finding[], tgt: string, concern: string, title: string, footer: string): never {
-  const argv = process.argv.slice(2)
-  const json = argv.includes('--json')
-  const ri = argv.indexOf('--report')
-  const report = ri !== -1
-  const reportDir = report && argv[ri + 1] && !argv[ri + 1].startsWith('-') ? argv[ri + 1] : join(tgt, '.ki-meta', 'audits')
-
-  const n = (l: Level): number => items.filter((f) => f.level === l).length
-  const summary = {
-    fail: n('FAIL'),
-    warn: n('WARN'),
-    polish: n('POLISH'),
-    advisory: n('ADVISORY'),
-    info: n('INFO'),
-    na: n('NA'),
-    pass: n('PASS')
-  }
-  const tally = `FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na}`
-  const stamp = new Date().toISOString()
-
-  if (report) {
-    mkdirSync(reportDir, { recursive: true })
-    const body = ORDER.flatMap((l) => {
-      const rows = items.filter((f) => f.level === l)
-      return rows.length
-        ? [
-            '',
-            `## ${ICON[l]} ${l} (${rows.length})`,
-            ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
-          ]
-        : []
-    })
-    writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${tgt}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
-    writeFileSync(
-      join(reportDir, `${concern}.json`),
-      `${JSON.stringify({ concern, target: tgt, generatedAt: stamp, summary, findings: items }, null, 2)}\n`
-    )
-  }
-
-  if (json) {
-    process.stdout.write(`${JSON.stringify({ concern, target: tgt, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
-  } else {
-    console.log(`\n${title}\n${'─'.repeat(60)}`)
-    for (const l of ORDER) {
-      const rows = items.filter((f) => f.level === l)
-      if (!rows.length) continue
-      console.log(`\n${ICON[l]} ${l} (${rows.length})`)
-      for (const r of rows) console.log(`   [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
-    }
-    console.log(`\n${'─'.repeat(60)}\n${tally}`)
-    if (footer) console.log(footer)
-    if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-handoffs CONFORM   (judgment criteria: references/rubric.md)')
-    if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
-    console.log('')
-  }
-  process.exit(summary.fail ? 1 : 0)
-}
-
-emit(
-  findings,
-  target,
-  'handoffs',
-  `Handoffs audit — ${rawTarget}`,
-  'Judgment criteria ([J]) are surfaced as ADVISORY — a reviewer must assess them by reading the artifacts.'
-)
+findings.push(...judgmentFindingsFromRubric(localRubricPath(), RUBRIC))
+emitCheckerReporter({ mode: 'audit', concern: 'handoffs', target, findings })
+process.exit(checkerReporterExitCode(findings))

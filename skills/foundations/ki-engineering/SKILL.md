@@ -2,6 +2,7 @@
 name: ki-engineering
 implies: []
 vendors: [educate, audit, conform, help]
+checker-dependencies: [ki-skills/checker-reporter]
 owns: [mise.toml, tsconfig.json, biome.json, knip.json]
 contributes: ['.ki-config.toml', package.json]
 description: >
@@ -46,7 +47,7 @@ Carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH** — EDUCAT
 
 ### Mode AUDIT — check a repo's common toolchain
 
-1. **Run the mechanical checker**: `bun <skill>/scripts/audit.ts <repo>` (or `node` after a build). It reports the package.json metadata + aggregate/scoped script surface, runs the code-tool checks, checks the `bun test` trap, `tsconfig`/`biome`, and capability conditionals (tests / compiled build + cli-chmod / env), and validates-down the `[ki-engineering]` table. It grades findings on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — see [checker-contract.md](references/checker-contract.md)) and exits non-zero on any FAIL; with `--report` it writes its latest report to the target's `.ki-meta/audits/engineering.{md,json}`. Capture its output; don't re-derive the mechanical items.
+1. **Run the mechanical checker**: `bun <skill>/scripts/audit.ts <repo>` (or `node` after a build). It reports the package.json metadata + aggregate/scoped script surface, runs the code-tool checks, checks the `bun test` trap, `tsconfig`/`biome`, and capability conditionals (tests / compiled build + cli-chmod / env), and validates-down the `[ki-engineering]` table. It emits the canonical JSONL checker stream on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — see [checker-contract.md](references/checker-contract.md)) and exits non-zero on any mechanical FAIL. Capture its output; don't re-derive the mechanical items.
 2. **Apply the judgment items** in [the rubric](references/rubric.md): no per-repo loosening of `strict`/the `noImplicit*` family, the Node `.env` parity call where env is loaded, Vitest-configured source tests actually reaching the 100% bar, and repo-specific scripts not shadowing governed entrypoints.
 3. **Name the artifact-skill audit that must also run** for the repo to be fully clean (e.g. `audit.ts` for an MCP repo), and **report** by location → criterion → fix, grouped by severity-ladder level (FAIL first).
 

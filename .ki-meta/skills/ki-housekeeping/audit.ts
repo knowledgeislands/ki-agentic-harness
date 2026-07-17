@@ -12,9 +12,17 @@
  */
 
 import { readFileSync } from 'node:fs'
-import { lstat, mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises'
+import { lstat, readdir, readFile, stat } from 'node:fs/promises'
 import { homedir } from 'node:os'
-import { basename, join, resolve } from 'node:path'
+import { basename, dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  type CheckerLevel,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 enum Sev {
   FAIL = 0,
@@ -78,6 +86,23 @@ const REF_BY_ID: Record<string, string> = {
   'SELF-2': REF_STANDARD,
   'SELF-3': REF_STANDARD,
   SUMMARY: REF_RUBRIC
+}
+
+function localRubricPath(): string {
+  const scriptDir = dirname(fileURLToPath(import.meta.url))
+  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
+  return join(skillRoot, 'references', 'rubric.md')
+}
+
+function canonicalFindings(findings: Finding[]): CheckerFinding[] {
+  return findings.map((finding) => ({
+    type: 'M',
+    level: SEV_LABELS[finding.severity] as CheckerLevel,
+    code: finding.id,
+    message: finding.message,
+    ref: finding.ref,
+    file: finding.file
+  }))
 }
 
 function slugifyRepoPath(absPath: string): string {
@@ -175,12 +200,9 @@ function parseFrontmatter(content: string): Record<string, unknown> | null {
 
 async function main() {
   const args = process.argv.slice(2)
-  const jsonMode = args.includes('--json')
-  const reportIdx = args.indexOf('--report')
-  const reportDir = reportIdx !== -1 ? (args[reportIdx + 1] ?? '.') : null
   const memDirIdx = args.indexOf('--memory-dir')
   const memDirArg = memDirIdx !== -1 ? args[memDirIdx + 1] : undefined
-  const repoArg = args.find((a, i) => !a.startsWith('--') && args[i - 1] !== '--report' && args[i - 1] !== '--memory-dir')
+  const repoArg = args.find((arg, index) => !arg.startsWith('-') && args[index - 1] !== '--memory-dir')
 
   // --memory-dir points the checker at an explicit store (used by the test harness and
   // for auditing a memory directory directly); otherwise derive it from the repo path.
@@ -202,9 +224,11 @@ async function main() {
 
   if (!dirExists) {
     add('DIR-1', Sev.NA, memoryDir, 'no memory/ directory for this repo yet — not a failure')
-    report(findings, jsonMode, memoryDir)
-    if (reportDir) await writeReport(reportDir, findings, memoryDir)
-    process.exit(0)
+    const reporterFindings = canonicalFindings(findings)
+    reporterFindings.push(...judgmentFindingsFromRubric(localRubricPath(), REF_RUBRIC))
+    emitCheckerReporter({ mode: 'audit', concern: 'housekeeping', target: memoryDir, findings: reporterFindings })
+    process.exitCode = checkerReporterExitCode(reporterFindings)
+    return
   }
 
   const entries = await readdir(memoryDir)
@@ -343,56 +367,19 @@ async function main() {
     add('SUMMARY', Sev.PASS, memoryDir, `all ${memoryFiles.length} memory file(s) pass mechanical checks`)
   }
 
-  report(findings, jsonMode, memoryDir)
-  if (reportDir) await writeReport(reportDir, findings, memoryDir)
-
-  const hasFail = findings.some((f) => f.severity === Sev.FAIL)
-  process.exit(hasFail ? 1 : 0)
-}
-
-// The pinned checker-contract `--json` wrapper: { concern, target, generatedAt, summary,
-// findings }, each finding { level, area, msg }, summary carrying all seven lowercase
-// ladder keys present even at zero. Shared by --json (stdout) and --report (file).
-function jsonReport(findings: Finding[], target: string) {
-  const summary = { fail: 0, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: 0 }
-  for (const f of findings) summary[SEV_LABELS[f.severity].toLowerCase() as keyof typeof summary]++
-  return {
-    concern: 'housekeeping',
-    target,
-    generatedAt: new Date().toISOString(),
-    summary,
-    findings: findings.map((f) => ({ level: SEV_LABELS[f.severity], area: f.id, msg: f.message, ref: f.ref, file: f.file }))
-  }
-}
-
-function report(findings: Finding[], jsonMode: boolean, target: string) {
-  if (jsonMode) {
-    console.log(JSON.stringify(jsonReport(findings, target), null, 2))
-    return
-  }
-  const tally: Partial<Record<Sev, number>> = {}
-  for (const f of findings) {
-    tally[f.severity] = (tally[f.severity] ?? 0) + 1
-    console.log(`${SEV_LABELS[f.severity].padEnd(8)} ${f.id.padEnd(10)} ${f.file}: ${f.message}${f.ref ? `  (${f.ref})` : ''}`)
-  }
-  const parts = [Sev.FAIL, Sev.WARN, Sev.POLISH, Sev.PASS]
-    .map((s) => `${SEV_LABELS[s]}=${tally[s] ?? 0}`)
-    .concat([Sev.ADVISORY, Sev.NA].map((s) => `${SEV_LABELS[s]}=${tally[s] ?? 0}`))
-  console.log(parts.join(' '))
-  // Remediation footer (checker-contract) — non-clean summary routes to the judgment mode.
-  const notClean = (tally[Sev.FAIL] ?? 0) + (tally[Sev.WARN] ?? 0) + (tally[Sev.POLISH] ?? 0) > 0
-  if (notClean) {
-    console.log('→ to address: run /ki-housekeeping CONFORM   (judgment criteria: references/rubric.md)')
-  }
-}
-
-async function writeReport(dir: string, findings: Finding[], target: string) {
-  const outDir = join(resolve(dir), '.ki-meta', 'audits')
-  await mkdir(outDir, { recursive: true })
-  await writeFile(join(outDir, 'ki-housekeeping.json'), JSON.stringify(jsonReport(findings, target), null, 2))
+  const reporterFindings = canonicalFindings(findings)
+  reporterFindings.push(...judgmentFindingsFromRubric(localRubricPath(), REF_RUBRIC))
+  emitCheckerReporter({ mode: 'audit', concern: 'housekeeping', target: memoryDir, findings: reporterFindings })
+  process.exitCode = checkerReporterExitCode(reporterFindings)
 }
 
 main().catch((err) => {
-  console.error(`ERROR: ${err.message}`)
-  process.exit(1)
+  const target = resolve(process.argv.slice(2).find((arg) => !arg.startsWith('-')) ?? '.')
+  emitCheckerReporter({
+    mode: 'audit',
+    concern: 'housekeeping',
+    target,
+    findings: [{ type: 'M', level: 'FAIL', code: 'DIR-1', message: `Audit failed: ${String(err)}`, ref: REF_STANDARD }]
+  })
+  process.exitCode = 1
 })

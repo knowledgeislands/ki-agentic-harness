@@ -17,36 +17,59 @@
  *
  * Each finding carries a minted rubric code (PKG-*, MISE-*, SCR-*, …), a
  * reference-doc pointer (`ref`), and — when file-scoped — the path it concerns
- * (`file`); all three ride into `--json` so the aggregate renders a cited finding.
+ * (`file`); all three ride into the canonical JSONL reporter so the aggregate
+ * can render a cited finding.
  * The one-to-one code↔criterion map is references/rubric.md.
  *
- * Output is grouped pass/warn/fail; exit code is non-zero iff any FAIL.
- * No dependencies — Node/Bun builtins only; no cross-skill imports.
+ * Output is the canonical JSONL checker stream; exit code is non-zero iff any
+ * mechanical FAIL is present. The local reporter is vendored from ki-skills,
+ * so this checker remains standalone after bootstrap.
  */
 import { execSync } from 'node:child_process'
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
-import { basename, join } from 'node:path'
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { basename, dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 // area is the minted rubric code (references/rubric.md); ref is its
 // reference-doc pointer; file names the path a file-scoped finding concerns.
-// ref/file are optional and ride into --json for the aggregate to render.
+// ref/file are optional and ride into the canonical reporter for the aggregate to render.
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️', NA: '🚫', PASS: '✅' }
 const findings: Finding[] = []
-const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
+const add = (level: Level, area: string, msg: string, ref?: string, file?: string): void =>
+  void findings.push({ level, area, msg, ref, file })
 
 // Reference-doc pointers — the substantive standard (cited by every minted code) and
 // the rubric that maps code↔criterion (cited by the judgment/scope handoff).
 const STD = 'references/standards.md'
 const RUBRIC = 'references/rubric.md'
 
+function localRubricPath(): string {
+  const scriptDir = dirname(fileURLToPath(import.meta.url))
+  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
+  return join(skillRoot, 'references', 'rubric.md')
+}
+
+function finishAudit(target: string): never {
+  const canonicalFindings: CheckerFinding[] = [
+    ...findings.map(({ level, area, msg, ref, file }) => ({ type: 'M' as const, level, code: area, message: msg, ref, file })),
+    ...judgmentFindingsFromRubric(localRubricPath(), RUBRIC)
+  ]
+  emitCheckerReporter({ mode: 'audit', concern: 'engineering', target, findings: canonicalFindings })
+  process.exit(checkerReporterExitCode(canonicalFindings))
+}
+
 const repo = process.argv[2]
 if (!repo || !existsSync(repo)) {
-  console.error('usage: audit.ts <repo-path>   (path must exist)')
-  process.exit(2)
+  add('FAIL', 'SCOPE', 'audit target is missing or does not exist', STD)
+  finishAudit(repo || process.cwd())
 }
 const at = (...p: string[]) => join(repo, ...p)
 function runCheck(area: string, label: string, cmd: string, ref?: string, file?: string) {
@@ -76,7 +99,7 @@ const read = (...p: string[]): string => {
 // ki-repo → ki-engineering implies edge, including non-code repos (dotfiles, KB, tap).
 if (!has('package.json')) {
   add('NA', 'scope', 'no package.json — not a TypeScript/Bun repo; the engineering standard does not apply')
-  emit(findings, repo, 'engineering', `Engineering standard audit — ${basename(repo)}  (${repo})`, '')
+  finishAudit(repo)
 }
 
 let pkg: Record<string, unknown> = {}
@@ -86,8 +109,6 @@ try {
   add('FAIL', 'PKG-4', 'package.json missing or unparseable', STD, 'package.json')
 }
 const scripts = (pkg.scripts ?? {}) as Record<string, string>
-const name = String(pkg.name ?? basename(repo))
-
 // ── core: package.json metadata ───────────────────────────────────────────────
 pkg.type === 'module'
   ? add('PASS', 'PKG-1', 'type = "module"', STD, 'package.json')
@@ -914,76 +935,5 @@ else if (!/^\[ki-engineering\]/m.test(ki)) {
   }
 }
 
-// ── report ────────────────────────────────────────────────────────────────────
-// Shared emit harness — copy verbatim across KI checkers (enforcement-framework §2/§5).
-// Renders the painted table by default, JSON on `--json`, and writes the latest
-// report under <target>/.ki-meta/audits/<concern>.{md,json} on `--report [dir]`.
-function emit(items: Finding[], target: string, concern: string, title: string, footer: string): never {
-  const argv = process.argv.slice(2)
-  const json = argv.includes('--json')
-  const ri = argv.indexOf('--report')
-  const report = ri !== -1
-  const reportDir = report && argv[ri + 1] && !argv[ri + 1].startsWith('-') ? argv[ri + 1] : join(target, '.ki-meta', 'audits')
-
-  const n = (l: Level): number => items.filter((f) => f.level === l).length
-  const summary = {
-    fail: n('FAIL'),
-    warn: n('WARN'),
-    polish: n('POLISH'),
-    advisory: n('ADVISORY'),
-    info: n('INFO'),
-    na: n('NA'),
-    pass: n('PASS')
-  }
-  const tally = `FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na}`
-  const stamp = new Date().toISOString()
-
-  if (report) {
-    mkdirSync(reportDir, { recursive: true })
-    const body = ORDER.flatMap((l) => {
-      const rows = items.filter((f) => f.level === l)
-      return rows.length
-        ? [
-            '',
-            `## ${ICON[l]} ${l} (${rows.length})`,
-            ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
-          ]
-        : []
-    })
-    writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
-    writeFileSync(
-      join(reportDir, `${concern}.json`),
-      `${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`
-    )
-  }
-
-  if (json) {
-    process.stdout.write(`${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
-  } else {
-    console.log(`\n${title}\n${'─'.repeat(60)}`)
-    for (const l of ORDER) {
-      const rows = items.filter((f) => f.level === l)
-      if (!rows.length) continue
-      console.log(`\n${ICON[l]} ${l} (${rows.length})`)
-      for (const r of rows) console.log(`   [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
-    }
-    console.log(`\n${'─'.repeat(60)}\n${tally}`)
-    if (footer) console.log(footer)
-    if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-engineering CONFORM   (judgment criteria: references/rubric.md)')
-    if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
-    console.log('')
-  }
-  process.exit(summary.fail ? 1 : 0)
-}
-
 add('INFO', 'scope', 'engineering common layer — compose with the artifact-skill audit for full coverage')
-add('ADVISORY', 'judgment', 'mechanical layer only — apply the [J] criteria in references/rubric.md by reading', RUBRIC)
-
-emit(
-  findings,
-  repo,
-  'engineering',
-  `Engineering standard audit — ${name}  (${repo})`,
-  'Common layer only — run the artifact skill audit too (e.g. audit.ts for an MCP repo).'
-)
+finishAudit(repo)

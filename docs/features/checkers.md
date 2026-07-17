@@ -1,83 +1,83 @@
 # Checkers — `CHK`
 
-The behaviour of a conformant mechanical checker: the deterministic half of every standard. The severity ladder it grades on, its exit-code contract, the pinned `--json` shape, the summary tally, the remediation footer, and its self-containment. Part of the Feature Definitions corpus; see [index.md](index.md).
+The behaviour of a conformant governance checker: the deterministic half of a standard and the canonical report it gives the aggregate to render.
 
-> **Status:** as-built baseline, behaviour-level.
+Part of the Feature Definitions corpus; see [index.md](index.md).
+
+> **Status:** current-state contract.
 
 ## Grading and exit
 
 ### CHK-001 — The severity ladder
 
-A checker's findings MUST grade on the unified ladder FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS, emitting the subset of levels its domain warrants, per [ADR-KI-HARNESS-SKILLS-002](../decisions/ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md).
+A checker MUST grade findings on the unified FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS ladder, emitting the subset its domain warrants.
 
-_Verify:_ `ki-engineering`'s [checker-contract.md](../../skills/foundations/ki-engineering/references/checker-contract.md) §The severity ladder enumerates the seven levels every checker draws from.
+_Verify:_ [checker-contract.md](../../skills/foundations/ki-engineering/references/checker-contract.md) enumerates the seven levels.
 
-### CHK-002 — Exit non-zero iff any FAIL
+### CHK-002 — Exit non-zero iff an M/FAIL exists
 
-A checker MUST exit non-zero when and only when at least one FAIL-severity finding is present; every other level exits 0, per [ADR-KI-HARNESS-003](../decisions/ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md).
+A checker MUST exit non-zero if and only if at least one M/FAIL finding is present; every other level, including J/ADVISORY, exits zero.
 
-_Verify:_ checker-contract.md pins "exit non-zero iff any FAIL"; run any `audit-*.ts` against a fixture with only PASS/WARN findings and observe exit 0.
+_Verify:_ the canonical reporter contract and its focused tests compare findings with process status.
 
-### CHK-003 — Reads only its target
+### CHK-003 — Normal invocation is machine-readable
 
-A checker MUST take a target path as its argument and read only that target, and MUST support `--json` (findings to stdout) and `--report [dir]` (write under the target's `.ki-meta/audits/`), both read-only with respect to the audited content, per [ADR-KI-HARNESS-SKILLS-002](../decisions/ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md).
+A checker MUST take its target path, read only that target, and emit canonical JSONL on its normal invocation; it MUST NOT retain an output-format flag, native terminal renderer, or report-file output.
 
-_Verify:_ checker-contract.md §1 pins the `bun scripts/audit-<concern>.ts <path>` signature and the read-only `--json` / `--report` flags.
+_Verify:_ the `ki-skills` source-harness checker test invokes each checker without a format flag and validates its output.
 
-## Output shape
+## Canonical report
 
-### CHK-004 — The pinned `--json` wrapper
+### CHK-004 — JSONL event stream
 
-Under `--json` a checker MUST emit one wrapper object `{ concern, target, generatedAt, summary, findings }` — never a bare array — where each finding carries at least `level` / `area` / `msg` (required) plus optional `ref` / `file`, `area` MUST be a rubric code, and `summary` keys are the lowercased ladder names present even at zero, per [ADR-KI-HARNESS-SKILLS-002](../decisions/ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md).
+A checker MUST emit exactly one canonical run: a meta record, zero or more typed finding records, and a final summary record, each with the same versioned run identity.
 
-_Verify:_ checker-contract.md §The `--json` shape pins the wrapper and the required `level`/`area`/`msg` plus optional `ref`/`file` field names; a conformant checker's `--json` output validates against it.
+_Verify:_ the canonical reporter validator accepts the stream and rejects invalid order, identity, record fields, or mode.
 
-### CHK-005 — The summary tally
+### CHK-005 — Exact complete summary
 
-A checker with an aggregate count MUST print a one-line summary tally in the canonical `KEY=n` form (`FAIL=n WARN=n POLISH=n PASS=n ADVISORY=n NA=n`, ladder order, subset it tracks), optionally prefixed by a severity icon, while keeping the `KEY=n` tokens byte-parseable; a per-finding checker with no aggregate count is exempt.
+The final summary record MUST contain every lowercased severity key, including zeros, and its values MUST exactly count the preceding finding records.
 
-_Verify:_ checker-contract.md §1 pins the `KEY=n` tally; the DR / feature audits are the named per-finding exemptions.
+_Verify:_ the canonical reporter validator rejects missing, extra, non-integral, or inaccurate summary values.
 
-### CHK-006 — The remediation footer
+### CHK-006 — Judgment prompts are first-class findings
 
-On any non-clean run (any FAIL / WARN / POLISH) a checker's human output MUST end with a one-line footer naming the owning skill and mode that addresses it, and this footer MUST be suppressed under `--json` and `--report`, per [ADR-KI-HARNESS-003](../decisions/ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md).
+Every declared `[J]` criterion MUST appear once as a cited J/ADVISORY finding; it MUST NOT alter exit status.
 
-_Verify:_ `bun skills/general-governance/ki-skills/scripts/lint-skills.ts skills` — SHAPE-8 scans every `audit-*.ts` / `lint-*.ts` and WARNs if the standardised footer is omitted or names another skill's mode.
+_Verify:_ the source-harness checker test resolves emitted codes and types against the emitting rubric.
 
-### CHK-011 — The finding line
+### CHK-007 — Standalone local dependencies
 
-The shared aggregate renderer MUST render every structured finding as the pinned row layout `<icon> <level, 4-wide> [<area>] <file> <msg> (<ref>)`, with a two-display-column icon per ladder level (narrow-base VS16 glyphs padded by a trailing space) and the short level tags `fail`/`warn`/`pol`/`adv`/`info`/`na`/`pass`, per [ADR-KI-HARNESS-SKILLS-010](../decisions/ADR-KI-HARNESS-SKILLS-010-comparable-cited-checker-findings.md).
+A checker MUST use only builtins and its own files after vendoring; its only permitted shared implementation dependency is a declared checker module copied under its local `scripts/vendored/<provider>/` namespace.
 
-_Verify:_ checker-contract.md §The finding line pins the layout; a run of `bun run ki:audit` renders every structured finding in it, with the `[area]` column aligned across levels.
+_Verify:_ `ki-skills` rejects script imports that escape a skill’s scripts tree, and bootstrap verifies declared module payloads.
 
-### CHK-012 — Non-restating messages
+### CHK-008 — Aggregate-only presentation
 
-A finding's `msg` MUST NOT begin with its own `area` code or its own `file` path/basename — those render as their own columns of the finding line — and ADVISORY messages MUST NOT carry a `[J]:` prefix, per checker-contract.md §The finding line.
+The bootstrap aggregate MUST be the sole terminal renderer of checker findings and MUST reject malformed checker output rather than fall back to native text.
 
-_Verify:_ a `--json` run of every checker shows no finding whose `msg` starts with its `area` or with its `file`'s basename.
-
-## Portability
-
-### CHK-007 — Builtins-only and self-contained
-
-A checker MUST depend on Node/Bun builtins only (no npm dependencies) and MUST NOT import another skill's files; checkers compose by being run in sequence, per [ADR-KI-HARNESS-003](../decisions/ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md).
-
-_Verify:_ checker-contract.md §1 pins builtins-only and no cross-skill imports; a vendored checker runs from a target's `.ki-meta/skills/` with no harness beside it.
-
-### CHK-008 — Footer guarded and suppressed
-
-A checker's remediation footer MUST appear only on a non-clean run (any FAIL / WARN / POLISH) and MUST be suppressed under both `--json` and `--report`, so machine consumers receive only the wrapper object, per [ADR-KI-HARNESS-003](../decisions/ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md).
-
-_Verify:_ checker-contract.md §The remediation footer pins the non-clean guard and the `--json`/`--report` suppression; SHAPE-8 surfaces the standardised footer, and a `--json` run of any `audit-*.ts` emits no footer line.
+_Verify:_ aggregate tests run valid canonical streams and malformed-stream fixtures.
 
 ### CHK-009 — Citation completeness
 
-Every FAIL / WARN / POLISH finding MUST carry a resolvable rubric `code` (equal to its `area`) and a `ref` reference-doc pointer, and a file-scoped finding MUST additionally carry the `file` it concerns, per [ADR-KI-HARNESS-SKILLS-002](../decisions/ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md).
+Every FAIL, WARN, POLISH, or J finding MUST resolve to its own rubric code and carry a non-empty citation; a file-scoped finding MUST carry its file.
 
-_Verify:_ each checker's emitted `area` values are a subset of its `references/rubric.md` codes; a `--json` run's violation-group findings each carry a non-empty `ref`, and file-scoped ones a `file`.
+_Verify:_ the canonical reporter validator and source-harness checker test reject missing citations, files, or unresolved codes.
 
-### CHK-010 — Conform is structured
+### CHK-010 — Conform uses the same stream
 
-A conform script MUST support `--json`, emitting the CHK-004 wrapper object so the aggregate renders conform and audit identically, per [ADR-KI-HARNESS-SKILLS-002](../decisions/ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md).
+An audit and conform checker MUST use the same canonical JSONL report format, distinguished only by their mode and typed domain findings.
 
-_Verify:_ checker-contract.md §The `--json` shape notes conform scripts emit the same wrapper; `bun skills/foundations/ki-authoring/scripts/conform.ts . --json` validates against the CHK-004 shape.
+_Verify:_ the source-harness checker test validates both script families with the same parser and validator.
+
+### CHK-011 — Title-first rendered identity
+
+The aggregate MUST resolve each finding’s code through the emitting rubric and render the readable criterion title followed by its stable code in parentheses.
+
+_Verify:_ aggregate rendering tests assert the resolved title and code for a vendored rubric fixture.
+
+### CHK-012 — Non-repeating messages
+
+A finding message MUST NOT begin with its own code, resolved rule title, file path or basename, or a `[J]:` marker.
+
+_Verify:_ source-harness checker tests reject synthetic reports that repeat those rendered fields.

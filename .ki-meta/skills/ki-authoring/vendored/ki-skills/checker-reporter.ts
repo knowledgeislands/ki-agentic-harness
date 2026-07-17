@@ -9,6 +9,8 @@
  * valid in a vendored `.ki-meta/` payload.
  */
 
+import { readFileSync } from 'node:fs'
+
 export const CHECKER_LEVELS = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS'] as const
 export type CheckerLevel = (typeof CHECKER_LEVELS)[number]
 
@@ -85,6 +87,24 @@ function sameRunValue(left: unknown, right: unknown): boolean {
 export type CheckerReporterParseResult = {
   events: unknown[]
   errors: string[]
+}
+
+/**
+ * Turn the declaring skill's judgment rubric into its one-per-run review prompts.
+ * The rubric remains the source of truth for codes and types; checkers only decide
+ * their mechanical findings.
+ */
+export function judgmentFindingsFromRubric(rubricPath: string, ref = 'references/rubric.md'): CheckerFinding[] {
+  const codes = new Set<string>()
+  const rubric = readFileSync(rubricPath, 'utf8')
+  // Both established rubric forms are accepted: `CODE [J]` and `[J] CODE`.
+  // The reporter owns this small syntax tolerance so consumer checkers do not
+  // each reimplement a rubric parser.
+  for (const match of rubric.matchAll(/^\s*-\s+\*\*([A-Z][A-Za-z0-9-]*)\s+\[([^\]]*\bJ\b[^\]]*)\]\*\*/gm)) codes.add(match[1] as string)
+  for (const match of rubric.matchAll(/^\s*-\s+\*\*\[[^\]]*\bJ\b[^\]]*\]\s+([A-Z][A-Za-z0-9-]*)\*\*/gm)) codes.add(match[1] as string)
+  return [...codes]
+    .sort()
+    .map((code) => ({ type: 'J', level: 'ADVISORY', code, message: 'Review this judgment criterion against the audited scope.', ref }))
 }
 
 /** Parse JSON Lines without coupling a caller to a particular checker process. */

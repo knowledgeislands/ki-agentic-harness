@@ -5,10 +5,11 @@ import { chmodSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:f
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { parseCheckerReporterJsonl, validateCheckerReporterEvents } from '../../../general-governance/ki-skills/scripts/checker-reporter.ts'
 
 const CHECKER = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
 
-type Finding = { level: string; area: string; msg: string }
+type Finding = { level: string; code: string; message: string }
 
 let failed = false
 function check(label: string, condition: boolean): void {
@@ -85,16 +86,29 @@ function fixture(scripts: Record<string, string>, vitest?: { file: string; conte
 
 function run(dir: string): Finding[] {
   const fakeBin = join(dir, '.fake-bin')
-  const result = spawnSync(process.execPath, [CHECKER, dir, '--json'], {
+  const result = spawnSync(process.execPath, [CHECKER, dir], {
     encoding: 'utf8',
     env: { ...process.env, PATH: `${fakeBin}:${process.env.PATH ?? ''}` }
   })
-  if (!result.stdout) throw new Error(`checker produced no JSON: ${result.stderr}`)
-  return JSON.parse(result.stdout).findings as Finding[]
+  const parsed = parseCheckerReporterJsonl(result.stdout ?? '')
+  const errors = [...parsed.errors, ...validateCheckerReporterEvents(parsed.events, result.status ?? undefined)]
+  if (errors.length) throw new Error(`checker produced an invalid canonical stream: ${errors.join('; ')}`)
+  return parsed.events.flatMap((event) => {
+    if (typeof event !== 'object' || event === null || Array.isArray(event)) return []
+    const record = event as Record<string, unknown>
+    if (
+      record.record !== 'finding' ||
+      typeof record.level !== 'string' ||
+      typeof record.code !== 'string' ||
+      typeof record.message !== 'string'
+    )
+      return []
+    return [{ level: record.level, code: record.code, message: record.message }]
+  })
 }
 
 function hasFinding(findings: Finding[], area: string, level: string, message: string): boolean {
-  return findings.some((finding) => finding.area === area && finding.level === level && finding.msg.includes(message))
+  return findings.some((finding) => finding.code === area && finding.level === level && finding.message.includes(message))
 }
 
 function withFixture(
@@ -245,7 +259,7 @@ withFixture(
     check('vitest.config.cts activates the Vitest profile', hasFinding(findings, 'TEST-1', 'PASS', 'test = "vitest run"'))
     check(
       'exact Vitest script profile passes',
-      findings.filter((finding) => finding.area === 'TEST-1' && finding.level === 'PASS').length === 3
+      findings.filter((finding) => finding.code === 'TEST-1' && finding.level === 'PASS').length === 3
     )
     check('quoted exact 100 thresholds pass', hasFinding(findings, 'TEST-2', 'PASS', 'coverage thresholds 100%'))
   },

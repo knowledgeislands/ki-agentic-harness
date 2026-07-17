@@ -29,12 +29,16 @@
 // No npm dependencies — Bun/Node builtins only. Exit code is non-zero if any FAIL.
 
 import { spawnSync } from 'node:child_process'
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path'
-
-const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
-const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
+import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 // ── token estimate ────────────────────────────────────────────────────────
 // chars/4 is the house budgeting proxy for Claude's tokenizer on English + code.
@@ -101,21 +105,20 @@ headroom = "recommended"          # "required" | "recommended" | "off"
 
 // ── findings ────────────────────────────────────────────────────────────────
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️', NA: '🚫', PASS: '✅' }
-type Area = 'COMP' | 'SURF' | 'MCP' | 'BUDG' | 'RUN' | 'TOOL' | 'CFG'
-const AREA_ORDER: Area[] = ['COMP', 'SURF', 'MCP', 'BUDG', 'RUN', 'TOOL', 'CFG']
-// area is the FINE rubric code (COMP-1, BUDG-2, CFG-4, …); its family (the text
-// before the dash) drives the by-area console grouping. ref is the reference-doc
-// pointer, file the path a file-scoped finding concerns — both ride into --json
-// for the aggregate to render, and are appended in the human render.
-type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const findings: Finding[] = []
-const fail = (area: string, msg: string, ref?: string, file?: string): void => void findings.push({ level: 'FAIL', area, msg, ref, file })
-const warn = (area: string, msg: string, ref?: string, file?: string): void => void findings.push({ level: 'WARN', area, msg, ref, file })
-const note = (area: string, msg: string, ref?: string, file?: string): void => void findings.push({ level: 'INFO', area, msg, ref, file })
 const RUBRIC = 'references/rubric.md'
+const findings: CheckerFinding[] = []
+const fail = (code: string, message: string, ref?: string, file?: string): void =>
+  void findings.push({ type: 'M', level: 'FAIL', code, message, ...(ref ? { ref } : {}), ...(file ? { file } : {}) })
+const warn = (code: string, message: string, ref?: string, file?: string): void =>
+  void findings.push({ type: 'M', level: 'WARN', code, message, ...(ref ? { ref } : {}), ...(file ? { file } : {}) })
+const note = (code: string, message: string, ref?: string, file?: string): void =>
+  void findings.push({ type: 'M', level: 'INFO', code, message, ...(ref ? { ref } : {}), ...(file ? { file } : {}) })
+
+function localRubricPath(): string {
+  const scriptDir = dirname(fileURLToPath(import.meta.url))
+  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
+  return join(skillRoot, 'references', 'rubric.md')
+}
 
 // ── small IO helpers ─────────────────────────────────────────────────────────
 const readText = (p: string): string | null => {
@@ -403,17 +406,6 @@ const noUser = argv.includes('--no-user')
 const userIdx = argv.indexOf('--user')
 const userDir = userIdx !== -1 ? resolve(argv[userIdx + 1] ?? '') : join(homedir(), '.claude')
 const target = resolve(argv.find((a, i) => !a.startsWith('-') && argv[i - 1] !== '--user') ?? '.')
-
-if (!argv.includes('--json')) {
-  console.log(paint(C.dim, `target: ${target}`))
-  console.log(paint(C.dim, `user layer: ${noUser ? '(skipped)' : userDir}`))
-  console.log(
-    paint(
-      C.dim,
-      'standard: standing surface (CLAUDE.md+@imports · memory · skills · MCP tool surface · settings) + runtime levers; budgets WARN-only; figures ~chars/4 estimates'
-    )
-  )
-}
 
 // COMP — which layers were read
 if (noUser) note('COMP-1', 'user-wide layer skipped (--no-user) — auditing the project layer alone', RUBRIC)
@@ -754,79 +746,6 @@ else {
   for (const k of ki.badBudgets) fail('CFG-1', `"${k}" has a non-numeric/invalid value in [${KI_SECTION}]`, RUBRIC, '.ki-config.toml')
 }
 
-// ── report ───────────────────────────────────────────────────────────────────
-// Unified-ladder output; keeps the by-area console grouping, adds --json / --report (enforcement-framework §2/§5).
-const jsonOut = argv.includes('--json')
-const ri = argv.indexOf('--report')
-const reportOut = ri !== -1
-const reportDir = reportOut && argv[ri + 1] && !argv[ri + 1].startsWith('-') ? argv[ri + 1] : join(target, '.ki-meta', 'audits')
-
-const fails = findings.filter((x) => x.level === 'FAIL')
-const warns = findings.filter((x) => x.level === 'WARN')
-const n = (l: Level): number => findings.filter((x) => x.level === l).length
-const summary = {
-  fail: fails.length,
-  warn: warns.length,
-  polish: n('POLISH'),
-  advisory: n('ADVISORY'),
-  info: n('INFO'),
-  na: n('NA'),
-  pass: n('PASS')
-}
-const isoStamp = new Date().toISOString()
-
-if (reportOut) {
-  mkdirSync(reportDir, { recursive: true })
-  const body = LADDER.flatMap((l) => {
-    const rows = findings.filter((f) => f.level === l)
-    return rows.length
-      ? [
-          '',
-          `## ${ICON[l]} ${l} (${rows.length})`,
-          ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
-        ]
-      : []
-  })
-  const tally = `FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na} · standing surface ${tok(total)}`
-  writeFileSync(
-    join(reportDir, 'tokenomics.md'),
-    [`# tokenomics audit — ${target}`, '', `_${isoStamp}_`, '', tally, ...body, ''].join('\n')
-  )
-  writeFileSync(
-    join(reportDir, 'tokenomics.json'),
-    `${JSON.stringify({ concern: 'tokenomics', target, generatedAt: isoStamp, summary, findings }, null, 2)}\n`
-  )
-}
-
-if (jsonOut) {
-  process.stdout.write(JSON.stringify({ concern: 'tokenomics', target, generatedAt: isoStamp, summary, findings }))
-} else {
-  const head = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
-  console.log(`\n${head}  ${paint(C.cyan, basename(target))}`)
-  for (const area of AREA_ORDER) {
-    const inArea = findings.filter((x) => x.area.split('-')[0] === area)
-    if (!inArea.length) continue
-    console.log(paint(C.dim, `  ── ${area} ──`))
-    for (const x of inArea) {
-      const line = `  [${x.area}]${x.file ? ` ${x.file}` : ''} ${x.msg}${x.ref ? ` (${x.ref})` : ''}`
-      if (x.level === 'FAIL') console.log(paint(C.red, line))
-      else if (x.level === 'WARN') console.log(paint(C.yellow, line))
-      else console.log(paint(C.dim, line))
-    }
-  }
-  console.log(
-    `\n${paint(C.cyan, 'summary')}: FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na} · standing surface ${tok(total)}`
-  )
-  // Remediation footer (checker-contract) — non-clean summary routes to the judgment mode.
-  if (fails.length + warns.length + summary.polish > 0) {
-    console.log(paint(C.dim, '→ to address: run /ki-tokenomics CONFORM   (judgment criteria: references/rubric.md)'))
-  }
-  if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'tokenomics.{md,json}')}`))
-  console.log(
-    paint(
-      C.dim,
-      'mechanical checks only — apply the judgment criteria (altitude, MCP usefulness, runtime levers, Headroom optimality) from references/rubric.md by reading.'
-    )
-  )
-}
-process.exit(fails.length > 0 ? 1 : 0)
+findings.push(...judgmentFindingsFromRubric(localRubricPath(), RUBRIC))
+emitCheckerReporter({ mode: 'audit', concern: 'tokenomics', target, findings })
+process.exit(checkerReporterExitCode(findings))

@@ -19,16 +19,15 @@
 // With >= 2 skills in scope it also runs a cross-skill collision pass (COLL-1):
 // two descriptions declaring the same quoted trigger phrase are WARNed.
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, dirname, join, relative, resolve } from 'node:path'
-
-const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
-const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
+import { fileURLToPath } from 'node:url'
+import { type CheckerFinding, checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './checker-reporter.ts'
 
 type Severity = 'fail' | 'warn'
 // area = the rubric code (criterion); ref = the reference-doc pointer the criterion cites
-// (this skill's rubric); file = the path a file-scoped finding concerns. ref/file feed the
-// cited-finding render (`[area] file msg (ref)`) and are serialised verbatim under --json.
+// (this skill's rubric); file = the path a file-scoped finding concerns. The canonical
+// reporter transports both separately from the aggregate's eventual presentation.
 type Finding = { severity: Severity; criterion: string; message: string; ref?: string; file?: string }
 
 // Every ki-skills criterion is defined in this skill's rubric — the default reference pointer.
@@ -661,12 +660,10 @@ function lintSkill(skillDir: string): Finding[] {
     }
   }
 
-  // --- SHAPE-8 mechanical: the checker ships the remediation footer ---
-  // checker-contract.md requires every checker to print a remediation footer on a
-  // non-clean summary, naming its OWN skill's CONFORM mode. A checker source with no
-  // such footer (or one naming another skill) has drifted from the contract. The footer
-  // prefix is standardised wording, so a source scan is reliable; guarding it on non-clean
-  // and suppressing it under --json/--report stay [J] (verify by reading the emit path).
+  // --- SHAPE-8 mechanical: every checker uses its local canonical reporter ---
+  // A governed checker is standalone after vendoring, so it must import and call its
+  // local reporter module rather than retain a terminal renderer or an output-format
+  // switch. The source-harness contract test validates the resulting JSONL stream.
   const contractScriptsDir = join(skillDir, 'scripts')
   if (existsSync(contractScriptsDir)) {
     const checkers = readdirSync(contractScriptsDir).filter(
@@ -674,16 +671,11 @@ function lintSkill(skillDir: string): Finding[] {
     )
     for (const checker of checkers) {
       const src = readFileSync(join(contractScriptsDir, checker), 'utf8')
-      const footers = [...src.matchAll(/→ to address: run \/([a-z0-9-]+)\b/g)].map((m) => m[1])
-      if (footers.length === 0)
+      const usesReporter = /from\s+['"][^'"]*checker-reporter\.ts['"]/.test(src) && /\bemitCheckerReporter\b/.test(src)
+      if (!usesReporter)
         warn(
           'SHAPE-8',
-          `checker ${checker} ships no remediation footer ("→ to address: run /${dirName} CONFORM …") — required by checker-contract.md`
-        )
-      else if (!footers.includes(dirName))
-        warn(
-          'SHAPE-8',
-          `checker ${checker}'s remediation footer names /${footers[0]}, not its own skill /${dirName} — per checker-contract.md`
+          `checker ${checker} does not import and emit its local canonical checker reporter — required by checker-reporter.md`
         )
     }
   }
@@ -791,10 +783,7 @@ function ownsCollisions(dirs: string[]): Finding[] {
 // --- discovery -------------------------------------------------------------
 function discoverSkillDirs(p: string): string[] {
   const abs = resolve(p)
-  if (!existsSync(abs)) {
-    console.error(paint(C.red, `path not found: ${abs}`))
-    return []
-  }
+  if (!existsSync(abs)) return []
   if (existsSync(join(abs, 'SKILL.md'))) return [abs]
   // Given a repo root (rather than a skills dir itself), prefer its skills/
   // subdir — a bare repo root has no SKILL.md among its immediate children.
@@ -818,102 +807,76 @@ function discoverSkillDirs(p: string): string[] {
 }
 
 // --- main ------------------------------------------------------------------
-const args = process.argv.slice(2).filter((a) => !a.startsWith('-'))
-const roots = args.length ? args : ['.']
-const skillDirs = [...new Set(roots.flatMap(discoverSkillDirs))].sort()
+const rawArgv = process.argv.slice(2)
+const roots = rawArgv.filter((arg) => !arg.startsWith('-'))
+const skillDirs = [...new Set((roots.length ? roots : ['.']).flatMap(discoverSkillDirs))].sort()
+const footprintOut = rawArgv.includes('--footprint') // SIZE-5: per-skill token footprint as INFO (Mode OPTIMISE)
+const refreshStatusOut = rawArgv.includes('--refresh-status') // per-skill refresh cadence status as INFO (LONG-3/§5; the REFRESH gate reads this)
+const reportTarget = resolve('.')
+const all: CheckerFinding[] = []
+
+function judgmentFindings(): CheckerFinding[] {
+  return judgmentFindingsFromRubric(localRubricPath(), RUBRIC)
+}
+
+function localRubricPath(): string {
+  const scriptDir = dirname(fileURLToPath(import.meta.url))
+  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
+  return join(skillRoot, 'references', 'rubric.md')
+}
 
 if (skillDirs.length === 0) {
-  console.error(paint(C.red, 'No skills found (no directory with a SKILL.md).'))
+  const findings: CheckerFinding[] = [
+    {
+      type: 'M',
+      level: 'FAIL',
+      code: 'LAY-1',
+      message: 'No skills were found below the requested target.',
+      ref: RUBRIC
+    },
+    ...judgmentFindings()
+  ]
+  emitCheckerReporter({ mode: 'audit', concern: 'skills', target: reportTarget, findings })
   process.exit(1)
 }
 
-// One-line key for the area codes printed below (full catalogue: references/rubric.md).
-const LEGEND =
-  'area codes — LAY layout · NAME name · DESC description · OPT optional-fm · SIZE size · REF references · BODY content · SCRIPT scripts · LINK linking · SHAPE KI-shape · PROC process · COLL collision · LONG longevity'
-
-// Output flags + unified-ladder aggregation across every audited skill (enforcement-framework §2/§5).
-const rawArgv = process.argv.slice(2)
-const jsonOut = rawArgv.includes('--json')
-const footprintOut = rawArgv.includes('--footprint') // SIZE-5: per-skill token footprint as INFO (Mode OPTIMISE)
-const refreshStatusOut = rawArgv.includes('--refresh-status') // per-skill refresh cadence status as INFO (LONG-3/§5; the REFRESH gate reads this)
-const ri = rawArgv.indexOf('--report')
-const reportOut = ri !== -1
-const reportTarget = resolve('.')
-const reportDir =
-  reportOut && rawArgv[ri + 1] && !rawArgv[ri + 1].startsWith('-') ? rawArgv[ri + 1] : join(reportTarget, '.ki-meta', 'audits')
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️', NA: '🚫', PASS: '✅' }
-const all: { level: Level; area: string; msg: string; ref?: string; file?: string }[] = []
-
-if (!jsonOut) console.log(paint(C.dim, LEGEND))
-
-let totalFails = 0
-let totalWarns = 0
 for (const dir of skillDirs) {
   const findings = lintSkill(dir)
-  const fails = findings.filter((x) => x.severity === 'fail')
-  const warns = findings.filter((x) => x.severity === 'warn')
-  totalFails += fails.length
-  totalWarns += warns.length
   for (const x of findings)
     all.push({
+      type: 'M',
       level: x.severity === 'fail' ? 'FAIL' : 'WARN',
-      area: `${basename(dir)}:${x.criterion}`,
-      msg: x.message,
-      ref: x.ref,
-      file: x.file
+      code: x.criterion,
+      message: x.message,
+      ref: x.ref ?? RUBRIC,
+      file: x.file ? relative(reportTarget, join(dir, x.file)) : undefined
     })
-  if (!jsonOut) {
-    const stamp = fails.length ? paint(C.red, 'FAIL') : warns.length ? paint(C.yellow, 'WARN') : paint(C.green, 'PASS')
-    console.log(`\n${stamp}  ${paint(C.cyan, basename(dir))}`)
-    for (const x of findings) {
-      const tag = x.severity === 'fail' ? paint(C.red, 'fail') : paint(C.yellow, 'warn')
-      console.log(
-        `  ${tag} ${paint(C.dim, `[${x.criterion}]`)}${x.file ? ` ${x.file}` : ''} ${x.message}${x.ref ? paint(C.dim, ` (${x.ref})`) : ''}`
-      )
-    }
-    if (findings.length === 0) console.log(paint(C.dim, '  all mechanical checks passed'))
-  }
 }
 
 // cross-skill pass: collision between sibling descriptions (COLL-1)
 const collisions = [...collisionFindings(skillDirs), ...ownsCollisions(skillDirs)]
-if (collisions.length > 0) {
-  totalWarns += collisions.length
-  for (const x of collisions) all.push({ level: 'WARN', area: `collision:${x.criterion}`, msg: x.message, ref: x.ref })
-  if (!jsonOut) {
-    console.log(`\n${paint(C.yellow, 'WARN')}  ${paint(C.cyan, 'collision (cross-skill)')}`)
-    for (const x of collisions)
-      console.log(
-        `  ${paint(C.yellow, 'warn')} ${paint(C.dim, `[${x.criterion}]`)} ${x.message}${x.ref ? paint(C.dim, ` (${x.ref})`) : ''}`
-      )
-  }
-}
+for (const x of collisions) all.push({ type: 'M', level: 'WARN', code: x.criterion, message: x.message, ref: x.ref ?? RUBRIC })
 
 // per-skill footprint (SIZE-5) — opt-in, INFO only, never affects the fail/warn tally or exit code
 if (footprintOut) {
   for (const dir of skillDirs) {
     const fp = footprint(dir)
-    const sk = basename(dir)
     const refs = fp.rows.filter((r) => r.kind === 'reference').length
-    all.push({ level: 'INFO', area: `${sk}:SIZE-5`, msg: `footprint ~${fp.total} tokens (description + body + ${refs} reference file(s))` })
+    all.push({
+      type: 'M',
+      level: 'INFO',
+      code: 'SIZE-5',
+      message: `Estimated footprint is ${fp.total} tokens across description, body, and ${refs} reference file(s).`
+    })
     for (const r of fp.rows) {
       const big = r.kind === 'reference' && r.tokens > FOOTPRINT_REF_NOTE_TOKENS
       all.push({
+        type: 'M',
         level: 'INFO',
-        area: `${sk}:SIZE-5`,
-        msg: `  ${r.kind} ${r.path}: ~${r.tokens} tokens${big ? ' — large, candidate to split or trim' : ''}`
+        code: 'SIZE-5',
+        message: `Estimated ${r.kind} footprint is ${r.tokens} tokens${big ? '; consider splitting or trimming it' : '.'}`,
+        file: relative(reportTarget, join(dir, r.path))
       })
-    }
-    if (!jsonOut) {
-      console.log(`\n${paint(C.cyan, sk)} ${paint(C.dim, 'footprint')}  ${ICON.INFO}~${fp.total} tokens`)
-      for (const r of fp.rows) {
-        const big = r.kind === 'reference' && r.tokens > FOOTPRINT_REF_NOTE_TOKENS
-        console.log(
-          paint(C.dim, `    ${r.kind} ${r.path}: ~${r.tokens} tokens`) + (big ? paint(C.yellow, ' — large, candidate to split') : '')
-        )
-      }
     }
   }
 }
@@ -922,7 +885,6 @@ if (footprintOut) {
 // The REFRESH mode's too-soon gate reads this (within-window → confirm before forcing / skip on a scheduled run).
 if (refreshStatusOut) {
   for (const dir of skillDirs) {
-    const sk = basename(dir)
     const sp = join(dir, 'references', 'sources.md')
     const line = existsSync(sp)
       ? (() => {
@@ -930,50 +892,10 @@ if (refreshStatusOut) {
           return `${i.cls ?? 'unmarked'} · ${i.cadence ?? '—'} · last ${i.lastReviewed ?? '—'} · age ${i.ageDays ?? '—'}d · ${i.status.toUpperCase()}`
         })()
       : 'no sources.md'
-    all.push({ level: 'INFO', area: `${sk}:refresh`, msg: line })
-    if (!jsonOut) console.log(`\n${paint(C.cyan, sk)} ${paint(C.dim, 'refresh')}  ${ICON.INFO}${line}`)
+    all.push({ type: 'M', level: 'INFO', code: 'LONG-3', message: `Refresh status: ${line}`, file: relative(reportTarget, sp) })
   }
 }
 
-const summary = {
-  fail: totalFails,
-  warn: totalWarns,
-  polish: 0,
-  advisory: 0,
-  info: all.filter((x) => x.level === 'INFO').length,
-  na: 0,
-  pass: 0
-}
-const stampIso = new Date().toISOString()
-
-if (reportOut) {
-  mkdirSync(reportDir, { recursive: true })
-  const body = LADDER.flatMap((l) => {
-    const rows = all.filter((f) => f.level === l)
-    return rows.length
-      ? [
-          '',
-          `## ${ICON[l]} ${l} (${rows.length})`,
-          ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
-        ]
-      : []
-  })
-  const tally = `${skillDirs.length} skill(s) · FAIL=${summary.fail} WARN=${summary.warn}`
-  writeFileSync(join(reportDir, 'skills.md'), [`# skills audit — ${reportTarget}`, '', `_${stampIso}_`, '', tally, ...body, ''].join('\n'))
-  writeFileSync(
-    join(reportDir, 'skills.json'),
-    `${JSON.stringify({ concern: 'skills', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`
-  )
-}
-
-if (jsonOut) {
-  process.stdout.write(
-    `${JSON.stringify({ concern: 'skills', target: reportTarget, generatedAt: stampIso, summary, findings: all }, null, 2)}\n`
-  )
-} else {
-  console.log(`\n${paint(C.cyan, 'summary')}: ${skillDirs.length} skill(s) · FAIL=${totalFails} WARN=${totalWarns}`)
-  if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'skills.{md,json}')}`))
-  if (totalFails + totalWarns > 0) console.log('→ to address: run /ki-skills CONFORM   (judgment criteria: references/rubric.md)')
-  console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria from references/rubric.md by reading.'))
-}
-process.exit(totalFails > 0 ? 1 : 0)
+all.push(...judgmentFindings())
+emitCheckerReporter({ mode: 'audit', concern: 'skills', target: reportTarget, findings: all })
+process.exit(checkerReporterExitCode(all))

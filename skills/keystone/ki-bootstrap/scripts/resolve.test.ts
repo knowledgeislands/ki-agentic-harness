@@ -255,6 +255,48 @@ try {
   rmSync(seededRepo, { recursive: true, force: true })
 }
 
+const checkerRoot = fixture('[ki-skills]\n')
+try {
+  const result = spawnSync('bun', [BOOTSTRAP, checkerRoot], { encoding: 'utf8' })
+  check('checker-module provider → bootstrap exits cleanly', result.status === 0)
+  check(
+    'checker-module provider → owns a standalone local payload',
+    existsSync(join(checkerRoot, '.ki-meta', 'skills', 'ki-skills', 'checker-reporter.ts'))
+  )
+  check(
+    'checker-module provider → carries rubric metadata beside its runnable payload',
+    existsSync(join(checkerRoot, '.ki-meta', 'skills', 'ki-skills', 'references', 'rubric.md'))
+  )
+  const vendoredAudit = spawnSync('bun', [join(checkerRoot, '.ki-meta', 'skills', 'ki-skills', 'audit.ts'), SKILLS_ROOT], {
+    encoding: 'utf8'
+  })
+  const firstRecord = vendoredAudit.stdout.split(/\r?\n/, 1)[0]
+  check('checker-module provider → standalone audit emits a canonical stream', JSON.parse(firstRecord).record === 'meta')
+
+  const aggregate = join(checkerRoot, '.ki-meta', 'bin', 'aggregate.ts')
+  const canonicalAggregate = spawnSync('bun', [aggregate, 'audit'], { cwd: checkerRoot, encoding: 'utf8' })
+  check(
+    'aggregate → renders a valid canonical stream without treating it as malformed',
+    canonicalAggregate.status === 1 &&
+      canonicalAggregate.stdout.includes('[LAY-1]') &&
+      !canonicalAggregate.stdout.includes('invalid checker reports')
+  )
+
+  const invalidSkill = join(checkerRoot, '.ki-meta', 'skills', 'ki-invalid')
+  mkdirSync(invalidSkill, { recursive: true })
+  writeFileSync(join(invalidSkill, 'audit.ts'), "process.stdout.write('legacy prose\\n')\n")
+  const malformedAggregate = spawnSync('bun', [aggregate, 'audit'], { cwd: checkerRoot, encoding: 'utf8' })
+  check(
+    'aggregate → rejects malformed child output without a legacy fallback',
+    malformedAggregate.status === 1 &&
+      malformedAggregate.stdout.includes('invalid checker reports') &&
+      malformedAggregate.stdout.includes('ki-invalid') &&
+      !malformedAggregate.stdout.includes('legacy prose')
+  )
+} finally {
+  rmSync(checkerRoot, { recursive: true, force: true })
+}
+
 const temporaryHarness = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-temporary-source-')))
 const temporaryTarget = fixture()
 try {

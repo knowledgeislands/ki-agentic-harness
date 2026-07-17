@@ -7,9 +7,8 @@
  * against throwaway skill directories and asserts on its output — matching the
  * convention `link-skills.test.ts` set.
  *
- * Covers the SHAPE-8 mechanical footer check: a checker whose source omits the
- * remediation footer (or names another skill's CONFORM) must WARN; a checker that
- * ships the footer naming its own skill must not.
+ * Covers the SHAPE-8 mechanical reporter check: a checker that does not import
+ * and emit its local canonical reporter must WARN.
  *
  * Also covers SHAPE-12 (universal mode vocabulary in `argument-hint` + the
  * `vendors:` frontmatter declaration) and SHAPE-13 (the `## Operating modes`
@@ -21,6 +20,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { parseCheckerReporterJsonl, validateCheckerReporterEvents } from './checker-reporter.ts'
 
 const LINTER = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
 const SKILL_ROOT = dirname(LINTER)
@@ -43,7 +43,7 @@ function fixture(name: string, checkerSrc: string): { base: string; dir: string 
   const skillMd = [
     '---',
     `name: ${name}`,
-    'description: A throwaway fixture skill used only to exercise the SHAPE-8 footer check in the linter.',
+    'description: A throwaway fixture skill used only to exercise the SHAPE-8 reporter check in the linter.',
     '---',
     '',
     '# Fixture',
@@ -56,20 +56,48 @@ function fixture(name: string, checkerSrc: string): { base: string; dir: string 
   return { base, dir }
 }
 
-function run(dir: string): string {
+function runResult(dir: string): { output: string; status: number | null } {
   const res = spawnSync('bun', [LINTER, dir], { encoding: 'utf8' })
-  return `${res.stdout ?? ''}${res.stderr ?? ''}`
+  return { output: `${res.stdout ?? ''}${res.stderr ?? ''}`, status: res.status }
 }
 
-const withFooter = (skill: string) => `console.log('→ to address: run /${skill} CONFORM   (judgment criteria: references/rubric.md)')\n`
+function run(dir: string): string {
+  return runResult(dir).output
+}
+
+function hasMechanicalFinding(output: string, code: string): boolean {
+  return output.split(/\r?\n/).some((line) => {
+    try {
+      const event = JSON.parse(line) as { type?: string; code?: string }
+      return event.type === 'M' && event.code === code
+    } catch {
+      return false
+    }
+  })
+}
+
+const withReporter = "import { emitCheckerReporter } from './checker-reporter.ts'\nemitCheckerReporter({})\n"
 
 // ── ROOT-1: ki-skills owns the checker contract without a self-dependency ─────
 {
-  check('checker-contract root → no ROOT-1 fail', !run(SKILL_ROOT).includes('ROOT-1'))
+  const result = runResult(SKILL_ROOT)
+  const parsed = parseCheckerReporterJsonl(result.output)
+  check('checker-contract root → no ROOT-1 fail', !result.output.includes('ROOT-1'))
+  check(
+    'checker-contract root → emits one valid canonical JSONL run',
+    parsed.errors.length === 0 && validateCheckerReporterEvents(parsed.events, result.status ?? 1).length === 0
+  )
+  check(
+    'checker-contract root → emits cited J review prompts',
+    parsed.events.some((event) => {
+      const finding = event as { type?: string; level?: string; ref?: string }
+      return finding.type === 'J' && finding.level === 'ADVISORY' && finding.ref === 'references/rubric.md'
+    })
+  )
 }
 
 {
-  const { base, dir } = fixture('ki-skills', withFooter('ki-skills'))
+  const { base, dir } = fixture('ki-skills', withReporter)
   try {
     check('missing checker-contract root declaration → ROOT-1 fail', run(dir).includes('ROOT-1'))
   } finally {
@@ -77,35 +105,35 @@ const withFooter = (skill: string) => `console.log('→ to address: run /${skill
   }
 }
 
-// ── Checker ships the footer naming its own skill → no SHAPE-8 warn ──
+// ── Checker imports and emits its local reporter → no SHAPE-8 warn ──
 {
-  const { base, dir } = fixture('ki-fixture-good', withFooter('ki-fixture-good'))
+  const { base, dir } = fixture('ki-fixture-good', withReporter)
   try {
-    check('own-skill footer → no SHAPE-8 warn', !run(dir).includes('SHAPE-8'))
+    check('local reporter → no SHAPE-8 warn', !hasMechanicalFinding(run(dir), 'SHAPE-8'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
 }
 
-// ── Checker ships no footer at all → SHAPE-8 WARN ──
+// ── Checker ships no reporter → SHAPE-8 WARN ──
 {
-  const { base, dir } = fixture('ki-fixture-nofooter', "console.log('done')\n")
+  const { base, dir } = fixture('ki-fixture-noreporter', "console.log('done')\n")
   try {
     const out = run(dir)
-    check('missing footer → SHAPE-8 warn', out.includes('SHAPE-8'))
-    check('missing footer → names the gap', out.includes('ships no remediation footer'))
+    check('missing reporter → SHAPE-8 warn', hasMechanicalFinding(out, 'SHAPE-8'))
+    check('missing reporter → names the gap', out.includes('does not import and emit its local canonical checker reporter'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
 }
 
-// ── Checker footer names a different skill → SHAPE-8 WARN ──
+// ── Legacy terminal output is not a reporter → SHAPE-8 WARN ──
 {
-  const { base, dir } = fixture('ki-fixture-wrong', withFooter('ki-other-skill'))
+  const { base, dir } = fixture('ki-fixture-legacy-output', "console.log('legacy terminal output')\n")
   try {
     const out = run(dir)
-    check('foreign-skill footer → SHAPE-8 warn', out.includes('SHAPE-8'))
-    check('foreign-skill footer → flags the wrong skill', out.includes('not its own skill'))
+    check('legacy output → SHAPE-8 warn', hasMechanicalFinding(out, 'SHAPE-8'))
+    check('legacy output → flags the missing reporter', out.includes('canonical checker reporter'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
@@ -145,7 +173,7 @@ const withFooter = (skill: string) => `console.log('→ to address: run /${skill
 
 // ── A nested script module is subject to the same boundary → SCRIPT-9 FAIL ──
 {
-  const { base, dir } = fixture('ki-fixture-vendored-cross-skill-import', withFooter('ki-fixture-vendored-cross-skill-import'))
+  const { base, dir } = fixture('ki-fixture-vendored-cross-skill-import', withReporter)
   try {
     const supportDir = join(dir, 'scripts', 'vendored', 'ki-skills')
     mkdirSync(supportDir, { recursive: true })
@@ -184,7 +212,7 @@ function modeFixture(name: string, opts: { desc?: string; hint?: string; vendors
   if (opts.hint) fm.push(`argument-hint: '${opts.hint}'`)
   fm.push('---', '', `# Fixture`, '', opts.body, '')
   writeFileSync(join(dir, 'SKILL.md'), fm.join('\n'))
-  writeFileSync(join(dir, 'scripts', `audit-${name}.ts`), withFooter(name))
+  writeFileSync(join(dir, 'scripts', `audit-${name}.ts`), withReporter)
   return { base, dir }
 }
 

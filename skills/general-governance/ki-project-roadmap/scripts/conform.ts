@@ -16,8 +16,16 @@ import {
   unlinkSync,
   writeFileSync
 } from 'node:fs'
-import { dirname, join, resolve } from 'node:path'
+import { basename, dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric,
+  parseCheckerReporterJsonl,
+  validateCheckerReporterEvents
+} from './vendored/ki-skills/checker-reporter.ts'
 
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
@@ -42,7 +50,6 @@ const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unk
 const findings: Finding[] = []
 const argv = process.argv.slice(2)
 const dryRun = argv.includes('--dry-run')
-const json = argv.includes('--json')
 const positional = argv.find((arg) => !arg.startsWith('-')) ?? '.'
 const root = resolve(positional)
 const roadmapDir = join(root, 'docs', 'roadmap')
@@ -340,32 +347,51 @@ function atomicWrite(path: string, content: string, expected: string | null): vo
   }
 }
 
-function emit(exitCode = 0): never {
-  const n = (level: Level): number => findings.filter((finding) => finding.level === level).length
-  const summary = {
-    fail: n('FAIL'),
-    warn: n('WARN'),
-    polish: n('POLISH'),
-    advisory: n('ADVISORY'),
-    info: n('INFO'),
-    na: n('NA'),
-    pass: n('PASS')
-  }
-  const payload = { concern: 'project-roadmap', target: root, generatedAt: new Date().toISOString(), summary, findings }
-  if (json) process.stdout.write(`${JSON.stringify(payload, null, 2)}\n`)
-  else {
-    for (const finding of findings)
-      console.log(`${finding.level.padEnd(8)} [${finding.area}]${finding.file ? ` ${finding.file}` : ''} ${finding.msg}`)
-    console.log(
-      `FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na}`
-    )
-  }
-  process.exit(exitCode || (summary.fail ? 1 : 0))
+function localRubricPath(): string {
+  const scriptDir = dirname(fileURLToPath(import.meta.url))
+  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
+  return join(skillRoot, 'references', 'rubric.md')
+}
+
+function emit(): never {
+  const canonical: CheckerFinding[] = findings.map((finding) => ({
+    type: 'M',
+    level: finding.level,
+    code: finding.area,
+    message: finding.msg,
+    ref: finding.ref,
+    file: finding.file
+  }))
+  canonical.push(...judgmentFindingsFromRubric(localRubricPath()))
+  emitCheckerReporter({ mode: 'conform', concern: 'project-roadmap', target: root, findings: canonical })
+  process.exit(checkerReporterExitCode(canonical))
+}
+
+function auditFindings(result: ReturnType<typeof spawnSync>): Finding[] | null {
+  if (result.error) return null
+  const stdout = typeof result.stdout === 'string' ? result.stdout : ''
+  const parsed = parseCheckerReporterJsonl(stdout)
+  const errors = [...parsed.errors, ...validateCheckerReporterEvents(parsed.events, result.status ?? undefined)]
+  if (errors.length) return null
+  return parsed.events.flatMap((event) => {
+    if (typeof event !== 'object' || event === null || Array.isArray(event)) return []
+    const record = event as Record<string, unknown>
+    if (record.record !== 'finding') return []
+    return [
+      {
+        level: record.level as Level,
+        area: record.code as string,
+        msg: record.message as string,
+        ref: record.ref as string | undefined,
+        file: record.file as string | undefined
+      }
+    ]
+  })
 }
 
 if (!existsSync(root) || !lstatSync(root).isDirectory()) {
   findings.push({ level: 'FAIL', area: 'PROFILE-1', msg: 'repository directory does not exist', ref: STANDARD_REF })
-  emit(2)
+  emit()
 }
 if (isKb()) {
   findings.push({
@@ -377,15 +403,18 @@ if (isKb()) {
   emit()
 }
 const audit = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
-const checked = spawnSync(process.execPath, [audit, root, '--json'], { encoding: 'utf8' })
-let payload: { findings?: Finding[] }
-try {
-  payload = JSON.parse(checked.stdout || '{}')
-} catch {
-  findings.push({ level: 'FAIL', area: 'SAFE-1', msg: `preflight audit did not return valid JSON: ${checked.stderr}`, ref: STANDARD_REF })
+const checked = spawnSync(process.execPath, [audit, root], { encoding: 'utf8' })
+const auditResults = auditFindings(checked)
+if (!auditResults) {
+  findings.push({
+    level: 'FAIL',
+    area: 'SAFE-1',
+    msg: 'preflight audit did not return a valid canonical checker report',
+    ref: STANDARD_REF
+  })
   emit()
 }
-const nonDerivable = (payload.findings ?? []).filter(
+const nonDerivable = auditResults.filter(
   (finding) => finding.level === 'FAIL' && !['PROJ-1', 'INDEX-1', 'ROAD-4', 'THEME-3'].includes(finding.area)
 )
 if (nonDerivable.length) {
@@ -433,7 +462,7 @@ if (rejectUnsafe(rootRoadmap, 'ROADMAP.md') || rejectUnsafe(readme, 'docs/roadma
 
 const prunable = prunableThemes()
 const emptyThemeFiles = new Set(
-  (payload.findings ?? []).filter((finding) => finding.level === 'FAIL' && finding.area === 'THEME-3').map((finding) => finding.file)
+  auditResults.filter((finding) => finding.level === 'FAIL' && finding.area === 'THEME-3').map((finding) => finding.file)
 )
 const unprunable = [...emptyThemeFiles].filter((file) => !prunable.some((theme) => file === `docs/roadmap/${theme.theme}/ROADMAP.md`))
 if (unprunable.length) {
@@ -448,11 +477,9 @@ if (unprunable.length) {
 
 const stagedThemes = dryRun ? [] : stagePrunableThemes(prunable)
 if (!dryRun) {
-  const postPrune = spawnSync(process.execPath, [audit, root, '--json'], { encoding: 'utf8' })
-  let postPayload: { findings?: Finding[] }
-  try {
-    postPayload = JSON.parse(postPrune.stdout || '{}')
-  } catch {
+  const postPrune = spawnSync(process.execPath, [audit, root], { encoding: 'utf8' })
+  const postAuditResults = auditFindings(postPrune)
+  if (!postAuditResults) {
     const conflicts = restoreStagedThemes(stagedThemes)
     findings.push({
       level: 'FAIL',
@@ -462,7 +489,7 @@ if (!dryRun) {
     })
     emit()
   }
-  const postPruneFailures = (postPayload.findings ?? []).filter(
+  const postPruneFailures = postAuditResults.filter(
     (finding) => finding.level === 'FAIL' && !['PROJ-1', 'INDEX-1', 'ROAD-4'].includes(finding.area)
   )
   if (postPruneFailures.length) {

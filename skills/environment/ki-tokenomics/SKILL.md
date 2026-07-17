@@ -2,6 +2,7 @@
 name: ki-tokenomics
 implies: []
 vendors: [educate, audit, conform, help]
+checker-dependencies: [ki-skills/checker-reporter]
 description: >
   Audit, codify, and optimise the tokenomics of a Claude Code environment — the standing context surface paid on every turn, composed across the user-wide (`~/.claude`) and project-local layers and any Knowledge Islands base, plus the runtime levers (caching, model tier, compaction, sub-agent fan-out, verbosity). Measures each layer's CLAUDE.md (+`@imports`), memory, installed-skill descriptions, MCP tool definitions, and settings against budgets, and checks context-compression tooling such as Headroom is set up optimally. Use when context feels heavy or token costs climb. Triggers: "audit my token usage", "why is my context so big", "reduce my token costs", "trim my context", "too many MCP tools", "is Headroom set up right". For the volatile numbers (model ids, prices, cache TTLs, window sizes) use `claude-api`; for a base's structure/content use `ki-kb`; for one skill's quality use `ki-skills`; for an MCP server's code use `ki-mcp`.
 argument-hint: 'audit | conform | help | educate | refresh'
