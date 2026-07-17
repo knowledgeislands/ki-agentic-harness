@@ -22,7 +22,16 @@ import {
 import { tmpdir } from 'node:os'
 import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { declaredSkills, resolveSet, SKILLS_ROOT, SkillResolutionError, skillDir } from './resolve.ts'
+import {
+  checkerDependenciesOf,
+  checkerModulePayload,
+  checkerModulePayloadAt,
+  declaredSkills,
+  resolveSet,
+  SKILLS_ROOT,
+  SkillResolutionError,
+  skillDir
+} from './resolve.ts'
 
 const SCRIPTS = dirname(fileURLToPath(import.meta.url))
 const BOOTSTRAP = join(SCRIPTS, 'bootstrap.ts')
@@ -75,6 +84,45 @@ check(
   'parser → exact/dotted roots are deduplicated and sorted',
   JSON.stringify(parsed) === JSON.stringify(['ki-bootstrap', 'ki-housekeeping', 'ki-plan'])
 )
+
+const authoringModule = checkerDependenciesOf('ki-authoring')
+check(
+  'checker module → consumer declares the canonical reporter',
+  JSON.stringify(authoringModule) === JSON.stringify([{ provider: 'ki-skills', module: 'checker-reporter' }])
+)
+check(
+  'checker module → declared dependency resolves a provider file payload',
+  (() => {
+    const payload = checkerModulePayload(authoringModule[0] as { provider: string; module: string })
+    return (
+      payload.kind === 'file' &&
+      payload.targetName === 'checker-reporter.ts' &&
+      payload.source.endsWith('ki-skills/scripts/checker-reporter.ts')
+    )
+  })()
+)
+
+const modulePayloadFixture = fixture()
+try {
+  const scripts = join(modulePayloadFixture, 'scripts')
+  mkdirSync(join(scripts, 'directory-module'), { recursive: true })
+  writeFileSync(join(scripts, 'directory-module', 'index.ts'), 'export const payload = true\n')
+  const payload = checkerModulePayloadAt('directory-module', scripts)
+  check(
+    'checker module → extension-free declaration resolves a directory payload',
+    payload.kind === 'directory' && payload.targetName === 'directory-module' && payload.source === join(scripts, 'directory-module')
+  )
+  writeFileSync(join(scripts, 'directory-module.ts'), 'export const conflict = true\n')
+  let rejectedAmbiguous = false
+  try {
+    checkerModulePayloadAt('directory-module', scripts)
+  } catch {
+    rejectedAmbiguous = true
+  }
+  check('checker module → ambiguous file and directory payload is rejected', rejectedAmbiguous)
+} finally {
+  rmSync(modulePayloadFixture, { recursive: true, force: true })
+}
 
 const valid = fixture(`
 [ki-plan]
@@ -191,6 +239,10 @@ try {
   check(
     'seeded ki-repo → same run vendors both foundations',
     existsSync(join(seededRepo, '.ki-meta', 'skills', 'ki-repo')) && existsSync(join(seededRepo, '.ki-meta', 'skills', 'ki-authoring'))
+  )
+  check(
+    'seeded ki-repo → checker module is copied beneath its consumer',
+    existsSync(join(seededRepo, '.ki-meta', 'skills', 'ki-authoring', 'vendored', 'ki-skills', 'checker-reporter.ts'))
   )
   check(
     'seeded ki-repo → same run publishes regular runtime skill copies',

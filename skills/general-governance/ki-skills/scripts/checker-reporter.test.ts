@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
-/** Focused contract tests for the canonical checker-report JSONL builder. */
-import { buildCheckerReportEvents, CHECKER_LEVELS, type CheckerFinding, checkerExitCode } from './checker-report.ts'
+/** Focused contract tests for the canonical checker-reporter JSONL builder. */
+import { buildCheckerReporterEvents, CHECKER_LEVELS, type CheckerFinding, checkerReporterExitCode } from './checker-reporter.ts'
 
 let failed = false
 function check(label: string, condition: boolean): void {
@@ -17,7 +17,7 @@ const findings: CheckerFinding[] = [
   { type: 'J', level: 'ADVISORY', code: 'RULE-3', message: 'review the authored explanation', ref: 'references/rubric.md' }
 ]
 
-const events = buildCheckerReportEvents({ mode: 'audit', concern: 'fixture', target: '/fixture', findings })
+const events = buildCheckerReporterEvents({ mode: 'audit', concern: 'fixture', target: '/fixture', findings })
 const meta = events[0]
 const summary = events.at(-1)
 
@@ -35,12 +35,12 @@ check(
   'summary → counts the typed findings exactly',
   summary?.record === 'summary' && summary.summary.fail === 1 && summary.summary.pass === 1 && summary.summary.advisory === 1
 )
-check('exit status → M FAIL returns non-zero', checkerExitCode(findings) === 1)
-check('exit status → J advisory alone returns zero', checkerExitCode([findings[2] as CheckerFinding]) === 0)
+check('exit status → M FAIL returns non-zero', checkerReporterExitCode(findings) === 1)
+check('exit status → J advisory alone returns zero', checkerReporterExitCode([findings[2] as CheckerFinding]) === 0)
 
 let rejectedEmptyCode = false
 try {
-  buildCheckerReportEvents({
+  buildCheckerReporterEvents({
     mode: 'audit',
     concern: 'fixture',
     target: '/fixture',
@@ -52,4 +52,4 @@ try {
 check('validation → empty finding code is rejected', rejectedEmptyCode)
 
 if (failed) process.exit(1)
-console.log('\n\x1b[32mchecker-report.test.ts: all checks passed\x1b[0m')
+console.log('\n\x1b[32mchecker-reporter.test.ts: all checks passed\x1b[0m')

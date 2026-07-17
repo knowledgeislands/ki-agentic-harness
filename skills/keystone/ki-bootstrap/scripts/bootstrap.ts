@@ -72,7 +72,18 @@ import {
   writeFileSync
 } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
-import { resolveSet, SKILLS_ROOT, SkillResolutionError, skillDir, vendorModesOf, vendorUnit } from './resolve.ts'
+import {
+  type CheckerModule,
+  type CheckerModulePayload,
+  checkerDependenciesOf,
+  checkerModulePayload,
+  resolveSet,
+  SKILLS_ROOT,
+  SkillResolutionError,
+  skillDir,
+  vendorModesOf,
+  vendorUnit
+} from './resolve.ts'
 
 const GREEN = '\x1b[32m'
 const DIM = '\x1b[2m'
@@ -651,6 +662,42 @@ function copyRegularFile(source: string, destination: string): void {
   if (after.kind !== 'file' || !before.bytes.equals(after.bytes)) throw new Error(`copied source changed during read: ${source}`)
 }
 
+function vendorCheckerModulePayload(
+  generationRoot: string,
+  destDir: string,
+  skill: string,
+  module: CheckerModule,
+  payload: CheckerModulePayload,
+  journal: OwnedSnapshot
+): VendoredFile[] {
+  const copied: VendoredFile[] = []
+  const vendorRoot = join(destDir, 'vendored', module.provider)
+  const vendorRootRel = join('skills', skill, 'vendored', module.provider)
+  const target = join(vendorRoot, payload.targetName)
+  const targetRel = join(vendorRootRel, payload.targetName)
+
+  mkdirSync(vendorRoot, { recursive: true })
+  recordGenerated(journal, generationRoot, join('skills', skill, 'vendored'))
+  recordGenerated(journal, generationRoot, vendorRootRel)
+
+  const copyTree = (source: string, destination: string, rel: string): void => {
+    const stat = lstatSync(source)
+    if (stat.isSymbolicLink() || (!stat.isFile() && !stat.isDirectory())) throw new Error(`unsafe checker module payload entry: ${source}`)
+    if (stat.isFile()) {
+      copyRegularFile(source, destination)
+      recordGenerated(journal, generationRoot, rel)
+      copied.push({ rel: `${VENDOR_DIR}/${rel}`, abs: destination })
+      return
+    }
+    mkdirSync(destination)
+    recordGenerated(journal, generationRoot, rel)
+    for (const name of readdirSync(source).sort()) copyTree(join(source, name), join(destination, name), join(rel, name))
+  }
+
+  copyTree(payload.source, target, targetRel)
+  return copied
+}
+
 function recordGenerated(journal: OwnedSnapshot, staging: string, rel: string): void {
   journal.set(rel, snapshotEntry(join(staging, rel)))
   if (process.env.NODE_ENV === 'test' && process.env.KI_BOOTSTRAP_TEST_FAIL_BUILD_AFTER_REL === rel) {
@@ -692,6 +739,16 @@ function vendorSkill(
   // Nothing vendored (no audit/conform resolvable) — skip the skill entirely, matching
   // the old `if (!audit) return` guard so bare non-governance dirs are ignored.
   if (written.length === 0) return
+
+  for (const module of checkerDependenciesOf(skill)) {
+    const payload = checkerModulePayload(module)
+    const rel = `${VENDOR_DIR}/skills/${skill}/vendored/${module.provider}/${payload.targetName}`
+    console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (checker module payload)${RESET}`)
+    if (!dryRun) {
+      if (!journal) throw new Error('candidate generation requires a creation journal')
+      written.push(...vendorCheckerModulePayload(generationRoot, destDir, skill, module, payload, journal))
+    }
+  }
 
   // HELP snapshot — rendered from the skill's SKILL.md at vendor time, the one
   // moment the sources are guaranteed present, so `.ki-meta/bin/ki-help` answers

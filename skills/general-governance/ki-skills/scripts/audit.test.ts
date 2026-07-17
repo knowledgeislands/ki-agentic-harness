@@ -149,7 +149,7 @@ const withFooter = (skill: string) => `console.log('→ to address: run /${skill
   try {
     const supportDir = join(dir, 'scripts', 'vendored', 'ki-skills')
     mkdirSync(supportDir, { recursive: true })
-    writeFileSync(join(supportDir, 'checker-report.ts'), "import { helper } from '../../../../../other-skill/scripts/helper.ts'\n")
+    writeFileSync(join(supportDir, 'checker-reporter.ts'), "import { helper } from '../../../../../other-skill/scripts/helper.ts'\n")
     check('nested script escape → SCRIPT-9 fail', run(dir).includes('SCRIPT-9'))
   } finally {
     rmSync(base, { recursive: true, force: true })

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://knowledgeislands.dev/schemas/checker-report/v1.json",
-  "title": "Knowledge Islands canonical checker report record",
+  "$id": "https://knowledgeislands.dev/schemas/checker-reporter/v1.json",
+  "title": "Knowledge Islands canonical checker reporter record",
   "description": "One JSONL record from a governance skill audit or conform run.",
   "type": "object",
   "additionalProperties": false,

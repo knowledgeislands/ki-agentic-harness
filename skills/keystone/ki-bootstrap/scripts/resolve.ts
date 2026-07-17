@@ -8,7 +8,7 @@
  * without triggering the other's CLI behaviour.
  */
 
-import { existsSync, readdirSync } from 'node:fs'
+import { existsSync, lstatSync, readdirSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { readText } from './package-scripts.ts'
@@ -158,6 +158,95 @@ export function impliesOf(skill: string): string[] {
         .map((s) => s.trim())
         .filter(Boolean)
     : []
+}
+
+function flowListFrontmatter(skill: string, key: string): string[] {
+  const md = readText(join(skillDir(skill), 'SKILL.md'))
+  const fm = md.match(/^---\r?\n([\s\S]*?)\r?\n---/)
+  if (!fm) return []
+  const line = fm[1].split(/\r?\n/).find((candidate) => candidate.startsWith(`${key}:`))
+  if (!line) return []
+  const inner = line
+    .replace(new RegExp(`^${key}:\\s*`), '')
+    .trim()
+    .replace(/^\[/, '')
+    .replace(/\]$/, '')
+    .trim()
+  return inner
+    ? inner
+        .split(',')
+        .map((entry) => entry.trim())
+        .filter(Boolean)
+    : []
+}
+
+export type CheckerModule = {
+  provider: string
+  module: string
+}
+
+// A module name is an extension-free logical identifier. Its provider can publish
+// either the conventional `scripts/<module>.ts` file or a
+// `scripts/<module>/` directory containing a self-contained local closure. The
+// consumer preserves that shape below `scripts/vendored/<provider>/`.
+export type CheckerModulePayload = {
+  source: string
+  kind: 'file' | 'directory'
+  targetName: string
+}
+
+const CHECKER_MODULE = /^(ki-[A-Za-z0-9_-]+)\/([A-Za-z0-9_-]+)$/
+
+function parseCheckerModule(value: string, field: string, skill: string): CheckerModule {
+  const match = value.match(CHECKER_MODULE)
+  if (!match) throw new Error(`${skill} declares invalid ${field} entry: ${value}`)
+  return { provider: match[1] as string, module: match[2] as string }
+}
+
+// A provider declares modules it publishes; a consumer declares exact provider/module
+// requirements. This is deliberately independent of `implies:`: support modules are
+// copied implementation, never a governance-coverage or mode-composition edge.
+export function checkerModulesOf(skill: string): string[] {
+  return flowListFrontmatter(skill, 'checker-modules')
+}
+
+export function checkerDependenciesOf(skill: string): CheckerModule[] {
+  return flowListFrontmatter(skill, 'checker-dependencies').map((value) => parseCheckerModule(value, 'checker-dependencies', skill))
+}
+
+function assertSafeCheckerModuleTree(path: string): void {
+  const stat = lstatSync(path)
+  if (stat.isSymbolicLink()) throw new Error(`checker module payload contains symlink: ${path}`)
+  if (stat.isFile()) return
+  if (!stat.isDirectory()) throw new Error(`checker module payload contains unsafe entry: ${path}`)
+  for (const entry of readdirSync(path)) assertSafeCheckerModuleTree(join(path, entry))
+}
+
+// Exported for focused fixture tests. It deliberately resolves only the physical
+// shape; `checkerModulePayload` below owns the provider declaration check.
+export function checkerModulePayloadAt(module: string, scriptsDir: string): CheckerModulePayload {
+  const file = join(scriptsDir, `${module}.ts`)
+  const directory = join(scriptsDir, module)
+  const filePresent = existsSync(file)
+  const directoryPresent = existsSync(directory)
+  if (filePresent === directoryPresent) {
+    const state = filePresent ? 'ambiguous (both file and directory exist)' : 'missing'
+    throw new Error(`checker module payload is ${state}: ${module}`)
+  }
+  const source = filePresent ? file : directory
+  assertSafeCheckerModuleTree(source)
+  const kind = filePresent ? 'file' : 'directory'
+  return { source, kind, targetName: filePresent ? `${module}.ts` : module }
+}
+
+export function checkerModulePayload(module: CheckerModule): CheckerModulePayload {
+  const modules = checkerModulesOf(module.provider)
+  if (!modules.includes(module.module)) throw new Error(`${module.provider} does not declare checker module: ${module.module}`)
+  try {
+    return checkerModulePayloadAt(module.module, join(skillDir(module.provider), 'scripts'))
+  } catch (error) {
+    throw new Error(`checker module payload is missing or unsafe: ${module.provider}/${module.module}`, { cause: error })
+  }
 }
 
 // Transitive closure of the declared skills (+ explicit --seed skills) over the

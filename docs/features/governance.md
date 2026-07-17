@@ -52,6 +52,6 @@ _Verify:_ `ki-repo`'s `audit-repo.ts` `license` / `license-file` / `package-lice
 
 ### GOV-008 — Self-governing checker-contract root
 
-`ki-skills` MUST provide the canonical checker-report support from its own shipped files and MUST NOT require checker support from itself or another skill, per [ADR-KI-HARNESS-SKILLS-012](../decisions/ADR-KI-HARNESS-SKILLS-012-local-copies-for-checker-support.md).
+`ki-skills` MUST provide the canonical checker reporter from its own shipped files and MUST NOT declare a checker-module dependency on itself or another skill, per [ADR-KI-HARNESS-SKILLS-012](../decisions/ADR-KI-HARNESS-SKILLS-012-local-copies-for-checker-support.md).
 
 _Verify:_ `bun skills/general-governance/ki-skills/scripts/audit.ts skills/general-governance/ki-skills` passes ROOT-1, and `bun skills/general-governance/ki-skills/scripts/audit.test.ts` covers the missing-root declaration.

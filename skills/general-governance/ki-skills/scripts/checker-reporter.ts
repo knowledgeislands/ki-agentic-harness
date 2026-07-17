@@ -1,5 +1,5 @@
 /**
- * Canonical machine-report builder for governance checkers.
+ * Canonical checker reporter for governance checkers.
  *
  * This module deliberately knows nothing about a skill's policy or terminal
  * presentation. A checker gives it already-collected findings; it creates the
@@ -32,7 +32,7 @@ export type JudgmentFinding = {
 
 export type CheckerFinding = MechanicalFinding | JudgmentFinding
 
-export type CheckerReportRun = {
+export type CheckerReporterRun = {
   version: 1
   runId: string
   mode: 'audit' | 'conform'
@@ -41,23 +41,23 @@ export type CheckerReportRun = {
   generatedAt: string
 }
 
-export type CheckerReportMeta = CheckerReportRun & {
+export type CheckerReporterMeta = CheckerReporterRun & {
   record: 'meta'
 }
 
-export type CheckerReportFinding = CheckerReportRun &
+export type CheckerReporterFinding = CheckerReporterRun &
   CheckerFinding & {
     record: 'finding'
   }
 
-export type CheckerReportSummary = CheckerReportRun & {
+export type CheckerReporterSummary = CheckerReporterRun & {
   record: 'summary'
   summary: Record<Lowercase<CheckerLevel>, number>
 }
 
-export type CheckerReportEvent = CheckerReportMeta | CheckerReportFinding | CheckerReportSummary
+export type CheckerReporterEvent = CheckerReporterMeta | CheckerReporterFinding | CheckerReporterSummary
 
-export type CheckerReportInput = {
+export type CheckerReporterInput = {
   mode: 'audit' | 'conform'
   concern: string
   target: string
@@ -70,14 +70,14 @@ function assertFinding(finding: CheckerFinding): void {
   if (finding.type === 'J' && !finding.ref?.trim()) throw new Error('J finding must cite its judgment criterion')
 }
 
-export function buildCheckerReportEvents(input: CheckerReportInput): CheckerReportEvent[] {
-  if (!input.concern.trim()) throw new Error('checker report concern must be non-empty')
-  if (!input.target.trim()) throw new Error('checker report target must be non-empty')
+export function buildCheckerReporterEvents(input: CheckerReporterInput): CheckerReporterEvent[] {
+  if (!input.concern.trim()) throw new Error('checker reporter concern must be non-empty')
+  if (!input.target.trim()) throw new Error('checker reporter target must be non-empty')
   for (const finding of input.findings) assertFinding(finding)
-  const summary: CheckerReportSummary['summary'] = { fail: 0, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: 0 }
+  const summary: CheckerReporterSummary['summary'] = { fail: 0, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: 0 }
   for (const finding of input.findings) summary[finding.level.toLowerCase() as keyof typeof summary]++
 
-  const run: CheckerReportRun = {
+  const run: CheckerReporterRun = {
     version: 1,
     runId: crypto.randomUUID(),
     mode: input.mode,
@@ -93,12 +93,12 @@ export function buildCheckerReportEvents(input: CheckerReportInput): CheckerRepo
   ]
 }
 
-export function emitCheckerReport(input: CheckerReportInput): CheckerReportEvent[] {
-  const events = buildCheckerReportEvents(input)
+export function emitCheckerReporter(input: CheckerReporterInput): CheckerReporterEvent[] {
+  const events = buildCheckerReporterEvents(input)
   for (const event of events) process.stdout.write(`${JSON.stringify(event)}\n`)
   return events
 }
 
-export function checkerExitCode(findings: readonly CheckerFinding[]): number {
+export function checkerReporterExitCode(findings: readonly CheckerFinding[]): number {
   return findings.some((finding) => finding.type === 'M' && finding.level === 'FAIL') ? 1 : 0
 }

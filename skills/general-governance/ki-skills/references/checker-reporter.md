@@ -1,8 +1,8 @@
-# Canonical checker report
+# Canonical checker reporter
 
-The canonical checker report is the JSON Lines (JSONL) machine-readable result emitted by every governance skill's `audit.ts` and `conform.ts`.
+The canonical checker reporter is the JSON Lines (JSONL) machine-readable result emitted by every governance skill's `audit.ts` and `conform.ts`.
 
-The executable source of truth is [`../assets/checker-report.schema.json`](../assets/checker-report.schema.json), not a copied JSON example in Markdown.
+The executable source of truth is [`../assets/checker-reporter.schema.json`](../assets/checker-reporter.schema.json), not a copied JSON example in Markdown.
 
 ## Purpose
 
@@ -56,12 +56,18 @@ A checker exits non-zero if and only if it emits at least one FAIL M finding.
 
 The schema is a shipped asset of `ki-skills` for review and validation in the harness source.
 
-The canonical report-builder source belongs to `ki-skills` and is declared by dependent governance skills as a `checker-support` dependency.
+The canonical checker-reporter source belongs to `ki-skills`, whose frontmatter publishes it as `checker-modules: [checker-reporter]`.
 
-The harness and bootstrap copy it under `scripts/vendored/<provider>/<module>.ts` in each dependent checker's source and vendored payload.
+A dependent governance skill declares the exact implementation dependency as `checker-dependencies: [ki-skills/checker-reporter]`; this declaration is not an `implies:` edge.
 
-This is deliberately separate from `implies:`: checker support supplies implementation, while `implies:` selects governance coverage and composition.
+The module name is extension-free and identifies one local payload: either the conventional provider file `scripts/<module>.ts` or a directory `scripts/<module>/` containing its own local closure.
 
-Each checker imports only that local vendored copy, remains standalone after vendoring, uses builtins only, and has no other cross-skill implementation dependency.
+The harness preserves that shape under `scripts/vendored/<provider>/`: a file becomes `<module>.ts`; a directory becomes `<module>/` with its contents copied recursively.
+
+The provider must expose exactly one of those shapes, and neither it nor any entry below a directory payload may be a symlink.
+
+This is deliberately separate from `implies:`: checker modules supply implementation, while `implies:` selects governance coverage and composition.
+
+Each checker imports only that local vendored payload, remains standalone after vendoring, uses builtins only, and has no other cross-skill implementation dependency.
 
 The vendored aggregate may consume this shared format because it runs the already-vendored checker copies in sequence.

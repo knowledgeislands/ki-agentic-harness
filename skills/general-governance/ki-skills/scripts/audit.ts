@@ -406,16 +406,16 @@ function lintSkill(skillDir: string): Finding[] {
   if (hint !== undefined && !/(^|[|\s'"])help([|\s'"]|$)/.test(hint))
     fail('SHAPE-11', '`argument-hint` does not expose the universal `help` mode (ADR-KI-HARNESS-SKILLS-001)')
 
-  // ROOT-1 [M]: ki-skills is the checker-contract root. It provides the report
+  // ROOT-1 [M]: ki-skills is the checker-contract root. It provides the reporter
   // builder from its own shipped files, and never requires a copied support module
   // from itself or another skill.
   if (name === 'ki-skills') {
-    const supports = parseListValue(fm.keys.get('checker-supports'))
-    const requires = parseListValue(fm.keys.get('checker-requires'))
-    if (!supports.includes('checker-report')) fail('ROOT-1', '`ki-skills` must expose `checker-report` under `checker-supports:`')
-    if (!existsSync(join(skillDir, 'scripts', 'checker-report.ts')))
-      fail('ROOT-1', '`ki-skills` must ship `scripts/checker-report.ts` from its own files')
-    if (requires.length > 0) fail('ROOT-1', '`ki-skills` is the checker-contract root and must not declare `checker-requires:`')
+    const modules = parseListValue(fm.keys.get('checker-modules'))
+    const dependencies = parseListValue(fm.keys.get('checker-dependencies'))
+    if (!modules.includes('checker-reporter')) fail('ROOT-1', '`ki-skills` must expose `checker-reporter` under `checker-modules:`')
+    if (!existsSync(join(skillDir, 'scripts', 'checker-reporter.ts')))
+      fail('ROOT-1', '`ki-skills` must ship `scripts/checker-reporter.ts` from its own files')
+    if (dependencies.length > 0) fail('ROOT-1', '`ki-skills` is the checker-contract root and must not declare `checker-dependencies:`')
   }
 
   // --- body size (SIZE-1/SIZE-2 soft → WARN) ---
