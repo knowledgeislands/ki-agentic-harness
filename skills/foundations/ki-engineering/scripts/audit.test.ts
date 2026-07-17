@@ -111,6 +111,69 @@ function withFixture(
   }
 }
 
+function withGeneratedFixture(
+  dirs: string[],
+  configs: { biome?: string; knip?: string; markdownlint?: string },
+  assertion: (findings: Finding[]) => void
+): void {
+  const dir = fixture({})
+  try {
+    for (const path of dirs) mkdirSync(join(dir, path), { recursive: true })
+    if (configs.biome) writeFileSync(join(dir, 'biome.json'), configs.biome)
+    if (configs.knip) writeFileSync(join(dir, 'knip.json'), configs.knip)
+    if (configs.markdownlint) writeFileSync(join(dir, '.markdownlint-cli2.jsonc'), configs.markdownlint)
+    assertion(run(dir))
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+}
+
+const generatedBiome = `{
+  "files": {
+    "includes": [
+      "src/**",
+      "*.ts",
+      "*.json",
+      "!.ki-meta/**",
+      "!src/generated/**",
+      "!.claude/skills/**",
+      "!.claude/agents/**",
+      "!.agents/skills/**"
+    ]
+  },
+  "formatter": { "lineWidth": 140, "indentWidth": 2 },
+  "javascript": { "formatter": { "quoteStyle": "single", "semicolons": "asNeeded", "trailingCommas": "none" } },
+  "linter": { "rules": { "recommended": true, "suspicious": { "noExplicitAny": "off" } } },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } }
+}\n`
+const generatedKnip = `{
+  "ignore": [".ki-meta/**", "src/generated/**", ".claude/skills/**", ".claude/agents/**", ".agents/skills/**"]
+}\n`
+const generatedMarkdownlint = `{
+  "ignores": [".ki-meta/**", "src/generated/**", ".claude/**", ".agents/**"]
+}\n`
+const generatedDirs = ['.ki-meta', 'src/generated', '.claude/skills', '.claude/agents', '.agents/skills']
+
+withFixture({}, (findings) => {
+  check('no generated surface is GEN-1 N/A', hasFinding(findings, 'GEN-1', 'NA', 'no generated or vendored surfaces'))
+})
+
+withGeneratedFixture(generatedDirs, { biome: generatedBiome, knip: generatedKnip, markdownlint: generatedMarkdownlint }, (findings) => {
+  check('matching exclusions pass GEN-1', hasFinding(findings, 'GEN-1', 'PASS', 'excluded across Biome, knip, and Markdown'))
+})
+
+withGeneratedFixture(
+  generatedDirs,
+  {
+    biome: generatedBiome,
+    knip: generatedKnip.replace(', ".agents/skills/**"', ''),
+    markdownlint: generatedMarkdownlint
+  },
+  (findings) => {
+    check('partial exclusions fail GEN-1', hasFinding(findings, 'GEN-1', 'FAIL', 'knip.json → .agents/skills/'))
+  }
+)
+
 withFixture({ test: 'bun scripts/checker.test.ts' }, (findings) => {
   check('runner-neutral bare test satisfies SCR-7', hasFinding(findings, 'SCR-7', 'PASS', 'bare "test" idiom present'))
   check('runner-neutral bare test selects the non-Vitest policy', hasFinding(findings, 'TEST-1', 'INFO', 'non-vitest test runner'))

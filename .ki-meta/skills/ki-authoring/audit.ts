@@ -55,7 +55,8 @@ const name = basename(repo)
 // .ki-meta/ holds vendored/generated bootstrap artifacts — the harness owns their
 // formatting, so the target repo's Markdown gate must not judge them. Prettier gets the
 // exclusion inline; markdownlint's lives in the owned .markdownlint-cli2.jsonc below.
-const MD_CHECK_CMD = 'bunx prettier --check "**/*.md" "!.ki-meta/**" --ignore-path .gitignore && bunx markdownlint-cli2 "**/*.md"'
+const MD_CHECK_CMD =
+  'bunx prettier --check "**/*.md" "!.ki-meta/**" "!src/generated/**" "!.claude/skills/**" "!.claude/agents/**" "!.agents/skills/**" --ignore-path .gitignore && bunx markdownlint-cli2 "**/*.md"'
 
 try {
   execSync(MD_CHECK_CMD, { cwd: repo, stdio: ['pipe', 'pipe', 'pipe'], encoding: 'utf8' })
@@ -123,10 +124,10 @@ const MARKDOWNLINT_DEFAULT = `{
   "globs": ["**/*.md"],
 
   // Never lint generated output, vendored/generated trees, or dependencies. The
-  // \`.ki-meta/\` vendored checkers + rendered help snapshots and the \`.claude/\` generated
-  // skill/agent symlinks are machine-generated (ADR-KI-HARNESS-TOOLCHAIN-005) — excluded
-  // like dist/, so their formatting is never a finding.
-  "ignores": ["dist/**", "node_modules/**", ".ki-meta/**", ".claude/**"]
+  // \`.ki-meta/\` vendored checkers, generated source, and generated runtime payloads are
+  // machine-produced (ADR-KI-HARNESS-TOOLCHAIN-005) — excluded like dist/, so their
+  // formatting is never a finding. Keep authored \`.claude/\` siblings such as workflows in scope.
+  "ignores": ["dist/**", "node_modules/**", ".ki-meta/**", "src/generated/**", ".claude/skills/**", ".claude/agents/**", ".agents/skills/**"]
 }
 `
 

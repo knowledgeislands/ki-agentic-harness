@@ -8,7 +8,7 @@
  * Checks the shared toolchain the `ki-engineering` skill codifies —
  * package.json metadata, the mise.toml toolchain pin (node + bun, bun matched to
  * packageManager, CI via mise-action) + the aggregate ki:audit/ki:conform entrypoints, the
- * `bun test` trap, tsconfig.json + biome.json, and the capability conditionals
+ * `bun test` trap, tsconfig.json + tool exclusions, and the capability conditionals
  * (tests, compiled build + the cli-chmod rule, env) that fire only when the repo opts in.
  * It is deliberately PERMISSIVE about additive repo-specific scripts, and it does
  * NOT judge anything artifact-specific (an MCP's coverage-excludes, bin, tool
@@ -438,9 +438,6 @@ else {
       : add('WARN', 'BIO-2', `biome.json: expected ${label}`, STD, 'biome.json')
 }
 
-// .prettierrc.json content is owned and audited by ki-authoring (it backs that
-// skill's own Markdown conform pass) — not checked here (SHAPE-16 ownership split).
-
 // ── core: knip.json (backs the knip check inside ki:engineering:audit) ────────────
 // knip is run directly by ki:engineering:audit (dependency + dead-code hygiene);
 // every repo carries a knip.json declaring its entry points (so the public surface
@@ -448,6 +445,75 @@ else {
 has('knip.json') || has('knip.jsonc') || has('knip.ts')
   ? add('PASS', 'KNIP-1', 'knip.json present (entry points + ignores for the knip check in ki:engineering:audit)', STD, 'knip.json')
   : add('FAIL', 'KNIP-1', 'knip.json missing (config for knip — run by ki:engineering:audit/conform)', STD, 'knip.json')
+
+// ── core: generated and vendored surfaces ────────────────────────────────────
+// These are byte-for-byte artifacts owned elsewhere. Formatting or dead-code checks
+// must never rewrite or report them. `ki-authoring` owns the Markdown configuration,
+// but this common engineering rule verifies the three tool surfaces agree.
+type GeneratedSurface = {
+  signal: string[]
+  label: string
+  biome: string
+  knip: string
+  markdown: string
+}
+const GENERATED_SURFACES: GeneratedSurface[] = [
+  { signal: ['.ki-meta'], label: '.ki-meta/', biome: '.ki-meta', knip: '.ki-meta', markdown: '.ki-meta' },
+  { signal: ['src', 'generated'], label: 'src/generated/', biome: 'src/generated', knip: 'src/generated', markdown: 'src/generated' },
+  {
+    signal: ['.claude', 'skills'],
+    label: '.claude/skills/',
+    biome: '.claude/skills',
+    knip: '.claude/skills',
+    markdown: '.claude/skills'
+  },
+  {
+    signal: ['.claude', 'agents'],
+    label: '.claude/agents/',
+    biome: '.claude/agents',
+    knip: '.claude/agents',
+    markdown: '.claude/agents'
+  },
+  {
+    signal: ['.agents', 'skills'],
+    label: '.agents/skills/',
+    biome: '.agents/skills',
+    knip: '.agents/skills',
+    markdown: '.agents/skills'
+  }
+]
+const escapeRe = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const excludes = (content: string, path: string, negative = false): boolean => {
+  const prefix = negative ? '!' : ''
+  // A parent exclusion (for example `.claude/**`) legitimately covers a selected
+  // generated child (`.claude/skills/**`), while preserving authored siblings is
+  // preferred where those siblings exist.
+  const ancestors = path.split('/').map((_, index, parts) => parts.slice(0, index + 1).join('/'))
+  return ancestors.some((candidate) => new RegExp(`["']${escapeRe(`${prefix}${candidate}`)}(?:/\\*\\*)?["']`).test(content))
+}
+const markdownlint = read('.markdownlint-cli2.jsonc')
+const activeGeneratedSurfaces = GENERATED_SURFACES.filter((surface) => isDir(...surface.signal))
+if (!activeGeneratedSurfaces.length) {
+  add('NA', 'GEN-1', 'no generated or vendored surfaces detected', STD)
+} else {
+  const missing: string[] = []
+  for (const surface of activeGeneratedSurfaces) {
+    if (!excludes(biome, surface.biome, true)) missing.push(`biome.json → ${surface.label}`)
+    if (!excludes(read('knip.json') || read('knip.jsonc') || read('knip.ts'), surface.knip)) missing.push(`knip.json → ${surface.label}`)
+    if (!excludes(markdownlint, surface.markdown)) missing.push(`.markdownlint-cli2.jsonc → ${surface.label}`)
+  }
+  missing.length
+    ? add('FAIL', 'GEN-1', `generated/vendored surfaces need matching Biome, knip, and Markdown exclusions: ${missing.join('; ')}`, STD)
+    : add(
+        'PASS',
+        'GEN-1',
+        `generated/vendored surfaces excluded across Biome, knip, and Markdown: ${activeGeneratedSurfaces.map((s) => s.label).join(', ')}`,
+        STD
+      )
+}
+
+// .prettierrc.json content is owned and audited by ki-authoring (it backs that
+// skill's own Markdown conform pass) — not checked here (SHAPE-16 ownership split).
 
 // ── capability detection ──────────────────────────────────────────────────────
 const vitestFile = [

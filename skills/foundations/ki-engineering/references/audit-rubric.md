@@ -2,7 +2,7 @@
 
 Line-by-line criteria for auditing a Knowledge Islands TS/Bun repo against [the engineering standard](engineering-standard.md). Each is tagged **[M] mechanical** (enforced by [`../scripts/audit.ts`](../scripts/audit.ts) — capture its output, don't re-derive) or **[J] judgment** (assess by reading). Run the checker first, then apply the judgment items. Severity: **FAIL** (ship-stopper) · **WARN** (should-fix divergence) · **POLISH** (minor / cosmetic) — the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](enforcement-framework.md) §2.
 
-Each criterion carries a **stable code** (`PKG-*`, `MISE-*`, `CI-*`, `SCR-*`, `DEPS-*`, `TSC-*`, `BIO-*`, `SYNC-*`, `KNIP-*`, `TEST-*`, `BUILD-*`, `ENV-*`, `TOML-*`, `BUN-*`). `audit.ts` and `conform.ts` stamp every finding with its code plus a `(engineering-standard.md)` reference pointer, so a finding cites the exact criterion it enforces. Codes are append-only — never renumber or reuse. `[M]` codes appear in the checker; `[J]` codes are judgment-only and live here alone.
+Each criterion carries a **stable code** (`PKG-*`, `MISE-*`, `CI-*`, `SCR-*`, `DEPS-*`, `TSC-*`, `BIO-*`, `SYNC-*`, `KNIP-*`, `GEN-*`, `TEST-*`, `BUILD-*`, `ENV-*`, `TOML-*`, `BUN-*`). `audit.ts` and `conform.ts` stamp every finding with its code plus a `(engineering-standard.md)` reference pointer, so a finding cites the exact criterion it enforces. Codes are append-only — never renumber or reuse. `[M]` codes appear in the checker; `[J]` codes are judgment-only and live here alone.
 
 Capability conditionals only apply when the repo has the marker (tests / compiled build / env / CLI); a repo without the capability is not graded on it, and the checker reports it as N/A, not a failure.
 
@@ -64,6 +64,7 @@ Capability conditionals only apply when the repo has the marker (tests / compile
 
 - [ ] **BIO-2** [M] FAIL/WARN — `biome.json` present (FAIL if missing) and matches the shared config field-set (formatter 2-space / lineWidth 140; JS single quotes, `semicolons: asNeeded`, no trailing commas; `preset: recommended` with `noExplicitAny: off`; `organizeImports: on`) — each mismatched field is a WARN.
 - [ ] **KNIP-1** [M] FAIL — `knip.json` present (per-repo entry points + ignores; backs the knip check — KNIP-2 — inside `ki:engineering:audit`). See §5.
+- [ ] **GEN-1** [M] FAIL/NA — when a known generated/vendored surface exists (`.ki-meta/`, `src/generated/`, `.claude/skills/`, `.claude/agents/`, `.agents/skills/`), it has matching Biome, knip, and Markdown exclusions. No such surface → N/A. `ki-authoring` owns the Markdown configuration; this criterion checks that it agrees with the engineering exclusions.
 - [ ] _(prettier)_ — `.prettierrc.json` is **owned by `ki-authoring`** (it backs that skill's own Markdown conform pass), so its presence/shape (`proseWrap: never`, `printWidth: 140`, `semi: false`, `singleQuote: true`, `trailingComma: none`, `*.md` override) is graded there — not by this checker (SHAPE-16 ownership split).
 
 ## Capability: tests (§6) — marker: a bare `test` script or recognised root `vitest.config.*`

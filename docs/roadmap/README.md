@@ -17,7 +17,7 @@ Canonical themes and active execution plans.
 - **Title:** Enforce generated-code exclusions in ki-engineering
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/enforce-generated-code-exclusions-in-ki-engineering`
-- **Status:** open
+- **Status:** in-progress
 - **Blocks:** —
 
 ### [foundation-tooling/003](foundation-tooling/plans/003-enforce-checker-json-contract.md)
