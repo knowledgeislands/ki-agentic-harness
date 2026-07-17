@@ -2,9 +2,9 @@
 
 **Refresh:** external-spec · monthly
 
-The sources behind [the standard](agent-definitions-standard.md) and its [rubric](audit-rubric.md). Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + rubric, then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below (what changed is recorded in the commit, not a changelog). This is the skill's memory of where best practice comes from — keep it current.
+The sources behind [the standard](standards.md) and its [rubric](rubric.md). Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + rubric, then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below (what changed is recorded in the commit, not a changelog). This is the skill's memory of where best practice comes from — keep it current.
 
-Abbreviations match the `(SOURCE)` tags in [the standard](agent-definitions-standard.md) and [rubric](audit-rubric.md).
+Abbreviations match the `(SOURCE)` tags in [the standard](standards.md) and [rubric](rubric.md).
 
 ## Authoritative
 
@@ -12,6 +12,7 @@ Abbreviations match the `(SOURCE)` tags in [the standard](agent-definitions-stan
 | --- | ------------------------------------ | ----------------------------------------------------------------------- | ------------- |
 | CC  | [Claude Code — subagents][cc]        | Subagent file format, the frontmatter spec set,[^cc] invocation control | 2026-07-04    |
 | BP  | [Skill authoring best practices][bp] | Description, conciseness, least-privilege, evaluation-first †           | 2026-07-04    |
+| A2A | [Agent2Agent protocol][a2a]          | Remote-agent discovery plus task lifecycle and status updates           | 2026-07-17    |
 
 [^cc]: Full set: `name`, `description`, `tools`, `disallowedTools`, `model`, `permissionMode`, `maxTurns`, `skills`, `mcpServers`, `hooks`, `memory`, `background`, `effort`, `isolation`, `color`, `initialPrompt`.
 
@@ -42,6 +43,7 @@ Abbreviations match the `(SOURCE)` tags in [the standard](agent-definitions-stan
 
 - **CC (Claude Code subagents docs):** re-fetched live 2026-07-04. Frontmatter field set unchanged — the 16-field set in FM-3 still stands. `Agent(type)` spawn-allowlist, nested subagents, and depth ≤ 5 still documented (LANE-3/LANE-4 current). The doc now cross-links two adjacent-but-distinct surfaces — **background agents** (`/en/agent-view`) and **agent teams** (`/en/agent-teams`); both sit outside a single-session subagent definition, so no criterion changes. `last reviewed` bumped to 2026-07-04.
 - **BP:** re-fetched live 2026-07-04. Third-person description (explicit warning), specific/key-term discoverability, least-privilege, evaluation-first, and the caps (name ≤ 64, description ≤ 1024) all unchanged — DESC-2/DESC-5, FM-1, PROC-1 remain accurate. `last reviewed` bumped to 2026-07-04.
+- **A2A:** added 2026-07-17 as an interoperability watch source. It defines remote-agent discovery and task lifecycle/status exchange; it does not yet impose a requirement on local Claude Code subagent definition files.
 - **COM1 (awesome-claude-code-subagents):** not re-fetched — reviewed 2026-06-26, within monthly cadence. Now cited by PROC-1.
 - **COM2 (PubNub best practices):** not re-fetched — within cadence. Its `SubagentStop`-hook pattern is now cited by FM-7.
 - **HOUSE:** not re-read this pass — within cadence. The role/lane prompt shape and KB-wikilink divergence stand; the 5 governance agents in `agents/governance/` remain the reference set (linter green, 0 fail / 0 warn on 2026-07-04).
@@ -53,5 +55,6 @@ Abbreviations match the `(SOURCE)` tags in [the standard](agent-definitions-stan
 
 [cc]: https://code.claude.com/docs/en/sub-agents
 [bp]: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices
+[a2a]: https://a2a-protocol.org/latest/
 [c1]: https://github.com/VoltAgent/awesome-claude-code-subagents
 [c2]: https://www.pubnub.com/blog/best-practices-for-claude-code-sub-agents/

@@ -48,14 +48,14 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-// area is the rubric code (references/audit-rubric.md); ref is its reference-doc
+// area is the rubric code (references/rubric.md); ref is its reference-doc
 // pointer; file names the path a file-scoped finding concerns. ref/file are optional
 // and ride into --json for the aggregate to render.
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️', NA: '🚫', PASS: '✅' }
 // The reference doc every tap-shape criterion cites.
-const STD = 'references/homebrew-tap-standard.md'
+const STD = 'references/standards.md'
 const mk = () => {
   const f: Finding[] = []
   const push =
@@ -298,7 +298,7 @@ emit(
   base,
   'homebrew-tap',
   `Homebrew tap audit — ${base}`,
-  'mechanical checks only — apply the judgment (does the formula install what it claims, is the test meaningful) by reading. Homebrew shape is the external standard; see references/homebrew-tap-standard.md.'
+  'mechanical checks only — apply the judgment (does the formula install what it claims, is the test meaningful) by reading. Homebrew shape is the external standard; see references/standards.md.'
 )
 
 // ── report ────────────────────────────────────────────────────────────────────
@@ -357,7 +357,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
     if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-homebrew-tap CONFORM   (judgment criteria: references/audit-rubric.md)')
+      console.log('→ to address: run /ki-homebrew-tap CONFORM   (judgment criteria: references/rubric.md)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }

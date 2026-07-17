@@ -63,7 +63,7 @@ type Finding = { level: Level; area: string; msg: string; ref?: string; file?: s
 const findings: Finding[] = []
 const rec = (level: Level, area: string, msg: string, ref?: string, file?: string): void =>
   void findings.push({ level, area, msg, ref, file })
-const RUBRIC = 'references/audit-rubric.md'
+const RUBRIC = 'references/rubric.md'
 
 // ── kept in lockstep with audit.ts ──
 const KI_SECTION = 'ki-tokenomics'

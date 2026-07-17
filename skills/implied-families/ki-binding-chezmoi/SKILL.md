@@ -16,7 +16,7 @@ The two composed layers:
 - **`ki-binding`** is renderer-neutral. It reads the single source (`~/.config/ki/mcp-servers.yaml`, canonical) and audits that each surface (Claude Code, Claude Desktop, mcporter) agrees with it — it renders nothing and requires no renderer installed. Each server's `clients:` set names the surfaces it targets.
 - **`ki-dotfiles-chezmoi`** is the house standard for any chezmoi source repo — naming prefixes, templating, `chezmoi apply`, surgical-patch reverse-merge — with no knowledge of MCP.
 
-This skill's **delta** is the render contract that ties them together — the `mcp-servers-json` template, the `.chezmoidata` wiring, and the `chezmoi apply` that generates the surfaces `ki-binding` audits. That contract belongs to neither sibling: `ki-binding` owns no renderer, and `ki-dotfiles-chezmoi` covers only generic dotfile templating. The full model is in [the standard](references/binding-chezmoi-standard.md); the checkable criteria are in [the rubric](references/audit-rubric.md); provenance is in [the sources list](references/sources.md).
+This skill's **delta** is the render contract that ties them together — the `mcp-servers-json` template, the `.chezmoidata` wiring, and the `chezmoi apply` that generates the surfaces `ki-binding` audits. That contract belongs to neither sibling: `ki-binding` owns no renderer, and `ki-dotfiles-chezmoi` covers only generic dotfile templating. The full model is in [the standard](references/standards.md); the checkable criteria are in [the rubric](references/rubric.md); provenance is in [the sources list](references/sources.md).
 
 ## Operating modes
 

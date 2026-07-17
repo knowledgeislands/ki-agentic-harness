@@ -37,7 +37,7 @@ import { mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 
 // ── kept in lockstep with audit.ts ──
-const STD = 'references/harness-standard.md'
+const STD = 'references/standards.md'
 const PARTS = ['skills', 'agents', 'mcp', 'evals', 'hooks'] as const
 const ROOT_FILES = ['CLAUDE.md', 'ROADMAP.md', '.ki-config.toml', 'package.json'] as const
 const PKG1_SCRIPT = 'ki:skills:link:project'
@@ -215,7 +215,7 @@ async function main() {
     'ADVISORY',
     'judgment',
     'CLAUDE.md coverage/freshness (CLAUDE-1..5) is prose judgment — read the rubric. ROADMAP content discipline is governed by ki-project-roadmap.',
-    'references/audit-rubric.md'
+    'references/rubric.md'
   )
 
   for (const f of findings.slice(before)) say(`  - [${f.area}]${f.file ? ` ${f.file}` : ''} ${f.msg}`)

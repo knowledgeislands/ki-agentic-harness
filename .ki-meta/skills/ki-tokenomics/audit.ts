@@ -43,7 +43,7 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 const approxTokens = (s: string): number => Math.ceil(s.length / 4)
 const tok = (n: number): string => `~${n.toLocaleString('en-US')} tok`
 
-// ── budgets (keep in sync with references/tokenomics-standard.md §3) ───
+// ── budgets (keep in sync with references/standards.md §3) ───
 type BudgetKey = 'claude_md' | 'memory_index' | 'skills_surface' | 'mcp_servers' | 'total'
 const BUDGET_DEFAULTS: Record<BudgetKey, number> = {
   claude_md: 2500, //       each CLAUDE.md incl. @imports
@@ -115,7 +115,7 @@ const findings: Finding[] = []
 const fail = (area: string, msg: string, ref?: string, file?: string): void => void findings.push({ level: 'FAIL', area, msg, ref, file })
 const warn = (area: string, msg: string, ref?: string, file?: string): void => void findings.push({ level: 'WARN', area, msg, ref, file })
 const note = (area: string, msg: string, ref?: string, file?: string): void => void findings.push({ level: 'INFO', area, msg, ref, file })
-const RUBRIC = 'references/audit-rubric.md'
+const RUBRIC = 'references/rubric.md'
 
 // ── small IO helpers ─────────────────────────────────────────────────────────
 const readText = (p: string): string | null => {
@@ -819,13 +819,13 @@ if (jsonOut) {
   )
   // Remediation footer (checker-contract) — non-clean summary routes to the judgment mode.
   if (fails.length + warns.length + summary.polish > 0) {
-    console.log(paint(C.dim, '→ to address: run /ki-tokenomics CONFORM   (judgment criteria: references/audit-rubric.md)'))
+    console.log(paint(C.dim, '→ to address: run /ki-tokenomics CONFORM   (judgment criteria: references/rubric.md)'))
   }
   if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'tokenomics.{md,json}')}`))
   console.log(
     paint(
       C.dim,
-      'mechanical checks only — apply the judgment criteria (altitude, MCP usefulness, runtime levers, Headroom optimality) from references/audit-rubric.md by reading.'
+      'mechanical checks only — apply the judgment criteria (altitude, MCP usefulness, runtime levers, Headroom optimality) from references/rubric.md by reading.'
     )
   )
 }

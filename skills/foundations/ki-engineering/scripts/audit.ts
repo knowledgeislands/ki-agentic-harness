@@ -13,12 +13,12 @@
  * It is deliberately PERMISSIVE about additive repo-specific scripts, and it does
  * NOT judge anything artifact-specific (an MCP's coverage-excludes, bin, tool
  * surface) — that is the artifact skill's checker (e.g. audit.ts), run after
- * this one. See references/audit-rubric.md for the judgment half.
+ * this one. See references/rubric.md for the judgment half.
  *
  * Each finding carries a minted rubric code (PKG-*, MISE-*, SCR-*, …), a
  * reference-doc pointer (`ref`), and — when file-scoped — the path it concerns
  * (`file`); all three ride into `--json` so the aggregate renders a cited finding.
- * The one-to-one code↔criterion map is references/audit-rubric.md.
+ * The one-to-one code↔criterion map is references/rubric.md.
  *
  * Output is grouped pass/warn/fail; exit code is non-zero iff any FAIL.
  * No dependencies — Node/Bun builtins only; no cross-skill imports.
@@ -28,7 +28,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSy
 import { basename, join } from 'node:path'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
-// area is the minted rubric code (references/audit-rubric.md); ref is its
+// area is the minted rubric code (references/rubric.md); ref is its
 // reference-doc pointer; file names the path a file-scoped finding concerns.
 // ref/file are optional and ride into --json for the aggregate to render.
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
@@ -40,8 +40,8 @@ const add = (level: Level, area: string, msg: string, ref?: string, file?: strin
 
 // Reference-doc pointers — the substantive standard (cited by every minted code) and
 // the rubric that maps code↔criterion (cited by the judgment/scope handoff).
-const STD = 'references/engineering-standard.md'
-const RUBRIC = 'references/audit-rubric.md'
+const STD = 'references/standards.md'
+const RUBRIC = 'references/rubric.md'
 
 const repo = process.argv[2]
 if (!repo || !existsSync(repo)) {
@@ -970,7 +970,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
     if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-engineering CONFORM   (judgment criteria: references/audit-rubric.md)')
+      console.log('→ to address: run /ki-engineering CONFORM   (judgment criteria: references/rubric.md)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }
@@ -978,7 +978,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
 }
 
 add('INFO', 'scope', 'engineering common layer — compose with the artifact-skill audit for full coverage')
-add('ADVISORY', 'judgment', 'mechanical layer only — apply the [J] criteria in references/audit-rubric.md by reading', RUBRIC)
+add('ADVISORY', 'judgment', 'mechanical layer only — apply the [J] criteria in references/rubric.md by reading', RUBRIC)
 
 emit(
   findings,

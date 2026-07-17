@@ -35,7 +35,7 @@ const SEV_LABELS: Record<number, string> = {
 // Every criterion in this checker traces to the one reference doc, so `ref` is a
 // constant pointer; `file` carries the DR path a finding concerns (file-scoped).
 // Both surface in the CHK-004 `--json` wrapper and the human render.
-const REF = 'references/audit-rubric.md'
+const REF = 'references/rubric.md'
 
 interface Finding {
   check: string
@@ -365,7 +365,7 @@ async function main() {
   }
 
   if (findings.some((f) => ['FAIL', 'WARN', 'POLISH'].includes(SEV_LABELS[f.severity] ?? '')))
-    console.log('→ to address: run /ki-decision-records CONFORM   (judgment criteria: references/audit-rubric.md)')
+    console.log('→ to address: run /ki-decision-records CONFORM   (judgment criteria: references/rubric.md)')
   process.exit(hasFail ? 1 : 0)
 }
 

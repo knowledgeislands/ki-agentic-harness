@@ -289,7 +289,7 @@ function main(): void {
     'ADVISORY',
     'judgment',
     'everything audit.ts grades [J] (STREAM-4/5, ENACT-3/4/5, GATE-2) is judgment — apply it by reading the rubric',
-    'references/audit-rubric.md'
+    'references/rubric.md'
   )
   say(`  - Everything else audit.ts grades [J] (STREAM-4/5, ENACT-3/4/5, GATE-2) is judgment — apply it by reading the rubric.`)
 

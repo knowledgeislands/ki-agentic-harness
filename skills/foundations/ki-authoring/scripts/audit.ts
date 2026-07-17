@@ -8,7 +8,7 @@
  * Markdown gate (audit = lint without fixing), self-sufficient so it never depends on
  * package.json or ki-engineering. The old ki:lint:md:check key is retired (TOOLCHAIN-001).
  *
- * Judgment half: surfaces the [J] criteria from references/audit-rubric.md as
+ * Judgment half: surfaces the [J] criteria from references/rubric.md as
  * ADVISORY findings. These cannot be automated — a reader must assess them.
  * The script names each criterion and cites where to read the standard.
  *
@@ -24,7 +24,7 @@ import { basename, join } from 'node:path'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-// area is the rubric code (references/audit-rubric.md); ref is its reference-doc
+// area is the rubric code (references/rubric.md); ref is its reference-doc
 // pointer; file names the path a file-scoped finding concerns. ref/file are optional
 // and ride into --json for the aggregate to render (CHK-004/009/010).
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
@@ -167,7 +167,7 @@ const pwMatch = prettier.match(/"printWidth"\s*:\s*(\d+)/)
 const printWidth = pwMatch ? Number(pwMatch[1]) : 140
 
 // ── judgment surface: Markdown [J] criteria ────────────────────────────────────
-// Each advisory names the criterion ID from references/audit-rubric.md and what
+// Each advisory names the criterion ID from references/rubric.md and what
 // to look for. They are informational prompts — a reviewer must assess them.
 
 add(
@@ -225,8 +225,8 @@ if (!hasKiConfig) {
 add(
   'ADVISORY',
   'SYNC',
-  'the convention references, audit-rubric.md, and sources.md must agree; when a convention moves, all three move together (Mode REFRESH).',
-  'references/audit-rubric.md'
+  'the convention references, rubric.md, and sources.md must agree; when a convention moves, all three move together (Mode REFRESH).',
+  'references/rubric.md'
 )
 
 // ── report ────────────────────────────────────────────────────────────────────
@@ -283,7 +283,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
     if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-authoring CONFORM   (judgment criteria: references/audit-rubric.md)')
+      console.log('→ to address: run /ki-authoring CONFORM   (judgment criteria: references/rubric.md)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }
@@ -291,11 +291,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
 }
 
 add('INFO', 'SCOPE', 'authoring conventions — Markdown mechanical gate + judgment criteria surface')
-add(
-  'ADVISORY',
-  'JUDGMENT',
-  'mechanical half only for Markdown; TOML and all [J] criteria require human review — see references/audit-rubric.md'
-)
+add('ADVISORY', 'JUDGMENT', 'mechanical half only for Markdown; TOML and all [J] criteria require human review — see references/rubric.md')
 
 emit(
   findings,

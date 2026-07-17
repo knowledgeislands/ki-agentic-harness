@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * Mechanical CONFORM for the Knowledge Islands repo standard — the [M] half of
- * references/repo-standard.md's "Applying it" recipe, scripted so it needn't be
+ * references/standards.md's "Applying it" recipe, scripted so it needn't be
  * copy-pasted by hand per repo.
  *
  * Scope: a single target repo (default cwd), matching how ki-bootstrap scaffolds
@@ -73,15 +73,15 @@ import {
 } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
 
-// ── the standard (kept in sync with audit.ts / references/repo-standard.md) ──
+// ── the standard (kept in sync with audit.ts / references/standards.md) ──
 const TOPICS = ['mcp', 'model-context-protocol', 'claude', 'typescript', 'bun']
 const REQUIRED_CHECK = 'build'
 const ALLOWED_ACTIONS = 'all'
 // Reference-doc pointers carried on every finding — identical to audit.ts, so a criterion
 // cites the same (area, ref) in both. STD is the standard a mechanical action applies;
 // RUBRIC is where the judgment (manual-TODO) criteria live.
-const STD = 'references/repo-standard.md'
-const RUBRIC = 'references/audit-rubric.md'
+const STD = 'references/standards.md'
+const RUBRIC = 'references/rubric.md'
 const CHECK_DEFAULTS: Record<string, boolean> = {
   'branch-protection': false,
   wiki: true,

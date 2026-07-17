@@ -5,7 +5,7 @@
 - [Collections](#collections)
 - [Selected patterns](#selected-patterns)
 
-Curated patterns worth reading when authoring or auditing a Knowledge Islands Cloudflare hosting configuration. Use these as concrete references — what a correct `wrangler.jsonc` looks like for a Workers + Static Assets deployment, what the script family looks like in the monorepo shape, and how the build and deploy steps chain in CI. Do not copy them wholesale; adapt to the specific site's `name`, `compatibility_date`, and domain. For the full standard, see [cloudflare-hosting-standard.md](cloudflare-hosting-standard.md); for source provenance, see [sources.md](sources.md).
+Curated patterns worth reading when authoring or auditing a Knowledge Islands Cloudflare hosting configuration. Use these as concrete references — what a correct `wrangler.jsonc` looks like for a Workers + Static Assets deployment, what the script family looks like in the monorepo shape, and how the build and deploy steps chain in CI. Do not copy them wholesale; adapt to the specific site's `name`, `compatibility_date`, and domain. For the full standard, see [standards.md](standards.md); for source provenance, see [sources.md](sources.md).
 
 ## Collections
 

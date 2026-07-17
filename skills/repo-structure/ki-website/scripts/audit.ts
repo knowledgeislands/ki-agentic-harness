@@ -12,9 +12,9 @@
  * check serving the dist/ — that is `ki-website-cloudflare`; run
  * audit.ts too if the site is deployed. The judgment items (tokens drive
  * the palette, _data is the single source of structure, SEO wired into base.njk) need a read
- * of the code — see references/audit-rubric.md.
+ * of the code — see references/rubric.md.
  *
- * Each finding carries the rubric CODE (references/audit-rubric.md WEB-N) as its area, a
+ * Each finding carries the rubric CODE (references/rubric.md WEB-N) as its area, a
  * reference-doc pointer (the standard section it verifies), and — when file-scoped — the path
  * it concerns; ref/file ride into --json for the aggregate to render (CHK-004/009/010).
  *
@@ -25,7 +25,7 @@ import { basename, join } from 'node:path'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-// area is the rubric code (references/audit-rubric.md, WEB-N); ref is its reference-doc
+// area is the rubric code (references/rubric.md, WEB-N); ref is its reference-doc
 // pointer (the standard section the criterion verifies); file names the path a file-scoped
 // finding concerns. ref/file are optional and ride into --json for the aggregate (CHK-004/009/010).
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
@@ -35,8 +35,8 @@ const findings: Finding[] = []
 const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
 
 // Reference-doc pointers (the `(reference.md)` citation each finding carries).
-const STD = 'references/eleventy-site-standard.md'
-const RUBRIC = 'references/audit-rubric.md'
+const STD = 'references/standards.md'
+const RUBRIC = 'references/rubric.md'
 const std = (section: string): string => `${STD} ${section}`
 
 // `.ki-config.toml` is a shared per-repo file; this skill owns the
@@ -420,7 +420,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
     if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-website CONFORM   (judgment criteria: references/audit-rubric.md)')
+      console.log('→ to address: run /ki-website CONFORM   (judgment criteria: references/rubric.md)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }
@@ -428,7 +428,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
 }
 
 add('INFO', 'scope', 'site-build delta only — compose with audit.ts (toolchain) + audit.ts (if deployed) for full coverage', RUBRIC)
-add('ADVISORY', 'judgment', 'mechanical layer only — apply the [J] criteria in references/audit-rubric.md by reading', RUBRIC)
+add('ADVISORY', 'judgment', 'mechanical layer only — apply the [J] criteria in references/rubric.md by reading', RUBRIC)
 emit(
   findings,
   repo,

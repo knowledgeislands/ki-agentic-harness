@@ -1,6 +1,6 @@
 # Cloudflare hosting setup guide
 
-Step-by-step procedure for wiring Cloudflare Workers + Static Assets hosting for a new Knowledge Islands site. Follow this once per site; subsequent changes are handled by CONFORM or AUDIT modes. The full standard is in [cloudflare-hosting-standard.md](cloudflare-hosting-standard.md); this guide is the opinionated walkthrough of it.
+Step-by-step procedure for wiring Cloudflare Workers + Static Assets hosting for a new Knowledge Islands site. Follow this once per site; subsequent changes are handled by CONFORM or AUDIT modes. The full standard is in [standards.md](standards.md); this guide is the opinionated walkthrough of it.
 
 ## Contents
 

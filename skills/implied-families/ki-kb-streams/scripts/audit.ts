@@ -67,7 +67,7 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-// area is the rubric code (references/audit-rubric.md); ref is its reference-doc
+// area is the rubric code (references/rubric.md); ref is its reference-doc
 // pointer; file names the path a file-scoped finding concerns. ref/file are optional
 // and ride into --json for the aggregate to render (cited-finding standard).
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
@@ -390,7 +390,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
     if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-kb-streams CONFORM   (judgment criteria: references/audit-rubric.md)')
+      console.log('→ to address: run /ki-kb-streams CONFORM   (judgment criteria: references/rubric.md)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }

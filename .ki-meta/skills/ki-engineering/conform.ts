@@ -65,8 +65,8 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 // Reference-doc pointers — same strings audit.ts cites, so a given criterion maps to
 // the same (code, ref) in both files.
-const STD = 'references/engineering-standard.md'
-const RUBRIC = 'references/audit-rubric.md'
+const STD = 'references/standards.md'
+const RUBRIC = 'references/rubric.md'
 
 // ── kept in lockstep with audit.ts ──
 const REQUIRED_DEV = ['@biomejs/biome', 'knip', 'prettier', 'husky', 'lint-staged', 'markdownlint-cli2', 'syncpack', 'typescript']

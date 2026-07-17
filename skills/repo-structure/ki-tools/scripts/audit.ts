@@ -63,7 +63,7 @@ const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[3
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
-// area is the rubric CODE (references/audit-rubric.md); ref its reference-doc pointer;
+// area is the rubric CODE (references/rubric.md); ref its reference-doc pointer;
 // file the path a file-scoped finding concerns. ref/file surface as cited findings and
 // serialize verbatim under --json.
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
@@ -73,12 +73,12 @@ const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨'
 
 // Reference-doc pointers per rubric section — the standard behind each criterion.
 const REF = {
-  layout: 'references/tools-standard.md#repository-layout',
-  exec: 'references/tools-standard.md#the-executable--bintool',
-  dist: 'references/tools-standard.md#the-distribution-contract',
-  ver: 'references/tools-standard.md#versioning--releases',
-  cap: 'references/tools-standard.md#capability-conditionals',
-  marker: 'references/tools-standard.md#the-ki-tools-marker'
+  layout: 'references/standards.md#repository-layout',
+  exec: 'references/standards.md#the-executable--bintool',
+  dist: 'references/standards.md#the-distribution-contract',
+  ver: 'references/standards.md#versioning--releases',
+  cap: 'references/standards.md#capability-conditionals',
+  marker: 'references/standards.md#the-ki-tools-marker'
 } as const
 
 const mk = () => {
@@ -371,7 +371,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
     if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-tools CONFORM   (judgment criteria: references/audit-rubric.md)')
+      console.log('→ to address: run /ki-tools CONFORM   (judgment criteria: references/rubric.md)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }

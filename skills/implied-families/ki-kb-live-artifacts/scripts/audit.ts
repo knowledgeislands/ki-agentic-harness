@@ -4,7 +4,7 @@
  *
  *   bun scripts/audit.ts [base-path] [--threshold-hours <n>] [--json]
  *
- * Checks (rubric codes in references/audit-rubric.md):
+ * Checks (rubric codes in references/rubric.md):
  *   LA-S-1  Index note (Live Artifacts.md) exists when artifact files are found.
  *   LA-S-2  Each .md artifact has a same-stem .html in the same directory.
  *   LA-S-3  Each .html has a matching .md (no orphaned renders).
@@ -25,12 +25,12 @@ import { basename, extname, join, resolve } from 'node:path'
 const INDEX_NOTE = 'Live Artifacts.md'
 const DEFAULT_ARTIFACTS_DIR = 'Admin/Operations/Live Artifacts'
 const DEFAULT_THRESHOLD_HOURS = 24
-const RUBRIC = 'references/audit-rubric.md'
+const RUBRIC = 'references/rubric.md'
 
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m' }
 const paint = (c: string, s: string) => `${c}${s}${C.reset}`
 
-// area is the rubric code (references/audit-rubric.md); ref is its reference-doc
+// area is the rubric code (references/rubric.md); ref is its reference-doc
 // pointer; file names the path a file-scoped finding concerns. ref/file are optional
 // and ride into --json for the aggregate to render.
 type Level = 'FAIL' | 'WARN' | 'ADVISORY' | 'INFO' | 'PASS'
@@ -189,8 +189,8 @@ if (json) {
   console.log(`\n${'─'.repeat(60)}`)
   console.log(paint(C.dim, `FAIL=${summary.fail} WARN=${summary.warn}`))
   if (summary.fail + summary.warn > 0)
-    console.log('→ to address: run /ki-kb-live-artifacts CONFORM   (judgment criteria: references/audit-rubric.md)')
-  console.log(paint(C.dim, 'mechanical checks only — judgment criteria in references/audit-rubric.md'))
+    console.log('→ to address: run /ki-kb-live-artifacts CONFORM   (judgment criteria: references/rubric.md)')
+  console.log(paint(C.dim, 'mechanical checks only — judgment criteria in references/rubric.md'))
 }
 
 process.exit(summary.fail > 0 ? 1 : 0)

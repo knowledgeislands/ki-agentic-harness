@@ -63,8 +63,8 @@ const hasObservability = (t: string) =>
   /"observability"\s*:\s*\{[\s\S]*?"enabled"\s*:\s*true/.test(t) || /\[observability\][\s\S]*?enabled\s*=\s*true/.test(t)
 
 // Reference-doc pointers cited on findings (mirrors audit.ts).
-const STD = 'references/cloudflare-hosting-standard.md'
-const RUBRIC = 'references/audit-rubric.md'
+const STD = 'references/standards.md'
+const RUBRIC = 'references/rubric.md'
 
 type Cfg = { rel: string; text: string }
 

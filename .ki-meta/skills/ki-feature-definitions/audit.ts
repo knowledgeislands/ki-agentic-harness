@@ -53,7 +53,7 @@ const INDEX_FILE = 'index.md'
 
 // Reference pointer shared by every finding: the audit rubric is the canonical home of every
 // criterion code and its severity. Kept identical in conform.ts for cross-script consistency.
-const RUBRIC = 'references/audit-rubric.md'
+const RUBRIC = 'references/rubric.md'
 
 // RFC-2119 requirement keywords (BCP 14). Matched case-sensitively as whole words so
 // prose "must" (lowercase) does not count — a normative statement uses the uppercase form.
@@ -270,7 +270,7 @@ async function main() {
   }
 
   if (findings.some((f) => ['FAIL', 'WARN', 'POLISH'].includes(SEV_LABELS[f.severity] ?? '')))
-    console.log('→ to address: run /ki-feature-definitions CONFORM   (judgment criteria: references/audit-rubric.md)')
+    console.log('→ to address: run /ki-feature-definitions CONFORM   (judgment criteria: references/rubric.md)')
   process.exit(hasFail ? 1 : 0)
 }
 

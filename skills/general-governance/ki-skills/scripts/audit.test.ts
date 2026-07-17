@@ -60,8 +60,7 @@ function run(dir: string): string {
   return `${res.stdout ?? ''}${res.stderr ?? ''}`
 }
 
-const withFooter = (skill: string) =>
-  `console.log('→ to address: run /${skill} CONFORM   (judgment criteria: references/audit-rubric.md)')\n`
+const withFooter = (skill: string) => `console.log('→ to address: run /${skill} CONFORM   (judgment criteria: references/rubric.md)')\n`
 
 // ── Checker ships the footer naming its own skill → no SHAPE-8 warn ──
 {

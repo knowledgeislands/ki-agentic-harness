@@ -62,7 +62,7 @@ In `SKILL.md` files and all harness documents, use standard relative Markdown li
 ```markdown
 <!-- Correct: relative Markdown link -->
 
-See [the rubric](references/audit-rubric.md) for the line-by-line criteria.
+See [the rubric](references/rubric.md) for the line-by-line criteria.
 
 <!-- Correct: path with spaces uses angle-bracket form -->
 
@@ -83,7 +83,7 @@ See `skills/repo-structure/ki-kb/SKILL.md` for KB conventions.
 
 ### Well-formed `.ki-config.toml` table
 
-Keys are lowercase `snake_case`. Strings are double-quoted. Arrays use the inline `["a", "b"]` form for short lists. One table per skill, named for the skill (`[ki-repo]`), with sub-tables nested under it. Comment non-obvious keys with a `#` line above them — the _why_, not the _what_. The contract behind what each table means (the one-table-per-skill model, validate-your-own-table protocol) lives in `ki-repo`'s `ki-config-standard.md`; this pattern covers formatting only.
+Keys are lowercase `snake_case`. Strings are double-quoted. Arrays use the inline `["a", "b"]` form for short lists. One table per skill, named for the skill (`[ki-repo]`), with sub-tables nested under it. Comment non-obvious keys with a `#` line above them — the _why_, not the _what_. The contract behind what each table means (the one-table-per-skill model, validate-your-own-table protocol) lives in `ki-repo`'s `config-standards.md`; this pattern covers formatting only.
 
 ```toml
 [ki-repo]

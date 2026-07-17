@@ -57,7 +57,7 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 // governs *writing* — the two compose (a --json run still writes unless --dry-run is also set).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const RUBRIC = 'references/audit-rubric.md'
+const RUBRIC = 'references/rubric.md'
 const argv = process.argv.slice(2)
 const json = argv.includes('--json')
 const findings: Finding[] = []

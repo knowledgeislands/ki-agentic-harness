@@ -35,7 +35,7 @@ const HORIZON_BLURBS: Record<Horizon, string> = {
   Future:
     "Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass (or a decision to drop them) before they're actionable."
 }
-const STANDARD_REF = 'references/project-roadmap-standard.md'
+const STANDARD_REF = 'references/standards.md'
 const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
 const findings: Finding[] = []
 const argv = process.argv.slice(2)

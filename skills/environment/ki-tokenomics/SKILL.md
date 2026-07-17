@@ -11,7 +11,7 @@ argument-hint: 'audit | conform | help | educate | refresh'
 
 You are helping hold a Claude Code working environment to one budget for its **tokenomics** — the cost of the context the model carries, paid not once but on **every turn**, and re-paid by every sub-agent. The premise of this skill is that this cost is rarely one file's fault: it is the **composition** of two configuration layers — the **user-wide** `~/.claude` and the **project-local** `.claude` / `CLAUDE.md` — over any **Knowledge Islands base** in play. You measure that composed surface, attribute it to its layers, hold it to a budget, and tune the runtime levers that multiply it.
 
-This is a **standard, base-agnostic Process skill**: it hard-codes no single environment, resolving the user layer from `~/.claude` at runtime and taking the project or base as its target. Its quotable standard is [the standard](references/tokenomics-standard.md); the line-by-line criteria (each tagged mechanical/judgment) are [the rubric](references/audit-rubric.md); the mechanical checker is [`scripts/audit.ts`](scripts/audit.ts). How it sits beside the other skills is documented once in the ki-agentic-harness `README.md`, not repeated here.
+This is a **standard, base-agnostic Process skill**: it hard-codes no single environment, resolving the user layer from `~/.claude` at runtime and taking the project or base as its target. Its quotable standard is [the standard](references/standards.md); the line-by-line criteria (each tagged mechanical/judgment) are [the rubric](references/rubric.md); the mechanical checker is [`scripts/audit.ts`](scripts/audit.ts). How it sits beside the other skills is documented once in the ki-agentic-harness `README.md`, not repeated here.
 
 ## What it governs — two halves
 
@@ -31,7 +31,7 @@ This is a **standard, base-agnostic Process skill**: it hard-codes no single env
 - **Sub-agent fan-out** — each sub-agent re-pays the standing surface; is the fan-out worth it? Whether a given unit of work is delegation-ready in the first place is `ki-handoffs`'s concern, not this skill's.
 - **Tool-result verbosity** — raw logs / JSON dumps re-read every turn; this is where context-**compression** tooling earns its place.
 
-The full catalogue, the budget table, and the rationale (curate context as a finite resource; keep tool sets minimal) are in [the standard](references/tokenomics-standard.md). The volatile reference numbers it leans on — model ids, prices, cache TTLs, context-window sizes — are **not** restated here; resolve them through the `claude-api` skill.
+The full catalogue, the budget table, and the rationale (curate context as a finite resource; keep tool sets minimal) are in [the standard](references/standards.md). The volatile reference numbers it leans on — model ids, prices, cache TTLs, context-window sizes — are **not** restated here; resolve them through the `claude-api` skill.
 
 ## Context-compression tooling (Headroom)
 

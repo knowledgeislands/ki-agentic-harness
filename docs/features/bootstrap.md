@@ -48,7 +48,7 @@ Re-running the idempotent bootstrap chain is the single update path — there ar
 
 ### BOOT-007 — Vendored-set alignment check
 
-The harness MUST be able to verify a target's `.ki-meta/skills/` matches the expected resolved set (baseline ∪ declared `[ki-*]` tables ∪ the transitive `implies:` closure, restricted to skills carrying a checker) — since the `implies:` graph lives only in source SKILL.md frontmatter, this check runs harness-side, not from the target's own standalone `.ki-meta/bin/ki-audit`. Drift is a WARN, never a FAIL — a re-bootstrap always reconciles it. See [BOOT-9](../../skills/keystone/ki-bootstrap/references/audit-rubric.md).
+The harness MUST be able to verify a target's `.ki-meta/skills/` matches the expected resolved set (baseline ∪ declared `[ki-*]` tables ∪ the transitive `implies:` closure, restricted to skills carrying a checker) — since the `implies:` graph lives only in source SKILL.md frontmatter, this check runs harness-side, not from the target's own standalone `.ki-meta/bin/ki-audit`. Drift is a WARN, never a FAIL — a re-bootstrap always reconciles it. See [BOOT-9](../../skills/keystone/ki-bootstrap/references/rubric.md).
 
 _Verify:_ `bun skills/keystone/ki-bootstrap/scripts/audit-vendored.ts <target>` reports PASS when `.ki-meta/skills/` equals the expected set, and WARNs (listing both directions) when a skill is stray-vendored or missing.
 

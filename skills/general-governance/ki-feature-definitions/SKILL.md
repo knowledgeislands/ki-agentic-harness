@@ -9,7 +9,7 @@ argument-hint: 'audit [dir] | conform [dir] | help | educate [dir] | new <area> 
 
 # Knowledge Islands Feature Definitions standard
 
-You are applying the **Knowledge Islands Feature Definitions standard** — how a system's behaviour is written down as a testable, append-only contract. A Feature Definition is the **what**: the behaviour a built system exhibits, stated normatively and paired with a verification hook, so a test suite (or a reader) can check the system against it. It sits between the **why** (Decision Records, `ki-decision-records`) and the **how** (guides). The full format with rationale lives in [the format standard](references/feature-format.md); the line-by-line checkable criteria live in [the rubric](references/audit-rubric.md); worked examples are in [exemplars](references/exemplars.md); the canonical sources are in [sources](references/sources.md).
+You are applying the **Knowledge Islands Feature Definitions standard** — how a system's behaviour is written down as a testable, append-only contract. A Feature Definition is the **what**: the behaviour a built system exhibits, stated normatively and paired with a verification hook, so a test suite (or a reader) can check the system against it. It sits between the **why** (Decision Records, `ki-decision-records`) and the **how** (guides). The full format with rationale lives in [the format standard](references/feature-format.md); the line-by-line checkable criteria live in [the rubric](references/rubric.md); worked examples are in [exemplars](references/exemplars.md); the canonical sources are in [sources](references/sources.md).
 
 ## What this skill owns
 

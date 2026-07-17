@@ -113,7 +113,7 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 // Every criterion traces to the one reference doc, so `ref` is a constant pointer kept
 // identical to audit.ts's REF (consistency: same criterion → same area+ref across both).
-const REF = 'references/audit-rubric.md'
+const REF = 'references/rubric.md'
 
 // Collect-then-emit harness (mirrors audit.ts / the ki-authoring conform). Each action
 // records a finding; `say` prints the human line only when not in --json mode, so a direct

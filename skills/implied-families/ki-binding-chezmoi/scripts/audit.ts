@@ -18,7 +18,7 @@
  *                                                   ki-binding audits.
  *
  * The composed siblings own their own criteria; this checker only owns the BINDCHEZ delta
- * (see references/binding-chezmoi-standard.md / references/audit-rubric.md). Exit code is
+ * (see references/standards.md / references/rubric.md). Exit code is
  * non-zero iff any FAIL (a composed sibling FAIL folds up as a FAIL here). No cross-skill
  * imports — Node/Bun builtins only (checker-contract.md).
  */
@@ -37,7 +37,7 @@ const findings: Finding[] = []
 const add = (level: Level, area: string, msg: string, ref?: string, file?: string): void =>
   void findings.push({ level, area, msg, ref, file })
 
-const STD = 'references/binding-chezmoi-standard.md'
+const STD = 'references/standards.md'
 
 // ── Self-location: find the harness skills/ root through the (possibly symlinked) script path ──
 const SELF = realpathSync(fileURLToPath(import.meta.url))
@@ -207,7 +207,7 @@ if (existsSync(CHEZMOI_REPO)) {
     )
 }
 
-// ── judgment surface: [J] criteria from references/audit-rubric.md ──
+// ── judgment surface: [J] criteria from references/rubric.md ──
 add(
   'ADVISORY',
   'BINDCHEZ-6',
@@ -218,7 +218,7 @@ add(
   'ADVISORY',
   'BINDCHEZ-7',
   'this rubric, the standard, and this script must agree; when the standard moves, all three move together (REFRESH).',
-  'references/audit-rubric.md'
+  'references/rubric.md'
 )
 
 // ── report ──────────────────────────────────────────────────────────────────
@@ -274,7 +274,7 @@ function emit(items: Finding[], target: string, concern: string, title: string):
     }
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-binding-chezmoi CONFORM   (judgment criteria: references/audit-rubric.md)')
+      console.log('→ to address: run /ki-binding-chezmoi CONFORM   (judgment criteria: references/rubric.md)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }

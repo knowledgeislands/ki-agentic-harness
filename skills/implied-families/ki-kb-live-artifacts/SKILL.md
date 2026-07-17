@@ -86,4 +86,4 @@ Declare in the base's `.ki-config.toml` `[ki-kb-live-artifacts]` table:
 
 ## Audit rubric
 
-See [references/audit-rubric.md](references/audit-rubric.md) for the full rubric (mechanical + judgment).
+See [references/rubric.md](references/rubric.md) for the full rubric (mechanical + judgment).

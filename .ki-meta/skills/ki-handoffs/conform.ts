@@ -54,7 +54,7 @@ type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const findings: Finding[] = []
 const rec = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
-const STANDARD = 'references/handoffs-standard.md'
+const STANDARD = 'references/standards.md'
 
 async function walk(dir: string, out: string[]): Promise<void> {
   for (const e of await readdir(dir, { withFileTypes: true })) {
@@ -174,7 +174,7 @@ async function main() {
     'ADVISORY',
     'judgment',
     'Everything else audit.ts flags (HAND-4..8: closed decisions, definition-of-done, tier fit, real readiness, ki-tokenomics deferral) is doctrine judgment — read and assess.',
-    'references/audit-rubric.md'
+    'references/rubric.md'
   )
   say(
     `  - Everything else audit.ts flags (HAND-4..8: closed decisions, definition-of-done, tier fit, real readiness, ki-tokenomics deferral) is doctrine judgment — read and assess.`

@@ -4,7 +4,7 @@
 
 ## Context
 
-The harness governed "which model to use" through `preferred_model` in the `[ki-tokenomics]` table of a repo's `.ki-config.toml`, validated mechanically against a closed set `['opus', 'sonnet', 'haiku', 'fable']` in `ki-tokenomics`' `audit.ts`/`conform.ts`, documented across `tokenomics-standard.md` and rubric codes `CFG-4`/`RUN-2`. `ki-agents`' `FM-2` mirrored the same closed alias list for an individual agent's `model:` frontmatter pin.
+The harness governed "which model to use" through `preferred_model` in the `[ki-tokenomics]` table of a repo's `.ki-config.toml`, validated mechanically against a closed set `['opus', 'sonnet', 'haiku', 'fable']` in `ki-tokenomics`' `audit.ts`/`conform.ts`, documented across `standards.md` and rubric codes `CFG-4`/`RUN-2`. `ki-agents`' `FM-2` mirrored the same closed alias list for an individual agent's `model:` frontmatter pin.
 
 Every one of those aliases is a **Claude Code-specific model family name**. That is backwards for a harness whose own [SDR-KI-HARNESS-002](SDR-KI-HARNESS-002-runtime-portable-contracts.md) commits to runtime-portable contracts (Claude Code today; Hermes, Pi, Codex tomorrow) and whose best-tool-for-the-job tenet treats model independence as _capability_ independence — the cheapest sufficient tier for mechanical work, frontier reasoning only where judgment is load-bearing. A config key that can only ever hold `"opus"` states a vendor's product name, not a purpose.
 

@@ -6,7 +6,7 @@
  *
  * Resolves the Claude Code auto-memory directory for a repo
  * (~/.claude/projects/<slug>/memory, slug = repo's absolute path with "/" and "." -> "-")
- * and checks index/frontmatter agreement per skills/environment/ki-housekeeping/references/audit-rubric.md.
+ * and checks index/frontmatter agreement per skills/environment/ki-housekeeping/references/rubric.md.
  * See skills/foundations/ki-engineering/references/checker-contract.md for the severity ladder,
  * exit-code, and flag contract every checker in this repo follows.
  */
@@ -49,8 +49,8 @@ interface Finding {
 // index/frontmatter criteria are specified in memory-format.md; the DIR-1 store-resolution
 // rule in the standard; the SUMMARY roll-up in the rubric itself.
 const REF_MEMORY_FORMAT = 'references/memory-format.md'
-const REF_STANDARD = 'references/housekeeping-standard.md'
-const REF_RUBRIC = 'references/audit-rubric.md'
+const REF_STANDARD = 'references/standards.md'
+const REF_RUBRIC = 'references/rubric.md'
 const REF_BY_ID: Record<string, string> = {
   'DIR-1': REF_STANDARD,
   'IDX-1': REF_MEMORY_FORMAT,
@@ -306,7 +306,7 @@ function report(findings: Finding[], jsonMode: boolean, target: string) {
   // Remediation footer (checker-contract) — non-clean summary routes to the judgment mode.
   const notClean = (tally[Sev.FAIL] ?? 0) + (tally[Sev.WARN] ?? 0) + (tally[Sev.POLISH] ?? 0) > 0
   if (notClean) {
-    console.log('→ to address: run /ki-housekeeping CONFORM   (judgment criteria: references/audit-rubric.md)')
+    console.log('→ to address: run /ki-housekeeping CONFORM   (judgment criteria: references/rubric.md)')
   }
 }
 

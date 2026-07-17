@@ -98,7 +98,7 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 // Reference-doc pointers (the cited-finding standard) — kept in lockstep with audit.ts.
 const REF_MEMORY_FORMAT = 'references/memory-format.md'
-const REF_RUBRIC = 'references/audit-rubric.md'
+const REF_RUBRIC = 'references/rubric.md'
 
 // Shared finding shape (mirrors audit.ts / ki-authoring conform).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
@@ -150,13 +150,7 @@ async function main() {
   }
   if (!dirExists) {
     // Mirrors audit.ts DIR-1 NA: no store for this repo yet is not a failure.
-    rec(
-      'NA',
-      'DIR-1',
-      `no memory/ directory for this repo yet — nothing to conform: ${memoryDir}`,
-      'references/housekeeping-standard.md',
-      memoryDir
-    )
+    rec('NA', 'DIR-1', `no memory/ directory for this repo yet — nothing to conform: ${memoryDir}`, 'references/standards.md', memoryDir)
     say(paint(C.dim, `no memory/ directory for this repo yet — nothing to conform: ${memoryDir}`))
     emit(findings, json, memoryDir)
     return

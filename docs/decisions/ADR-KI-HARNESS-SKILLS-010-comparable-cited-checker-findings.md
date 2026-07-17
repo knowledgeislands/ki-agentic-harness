@@ -10,7 +10,7 @@ The mechanical/judgment split gave every skill a checker whose findings carried 
 
 Extend the mechanical-checker finding model along three axes:
 
-- **Richer, mandatorily-cited findings.** A finding gains two optional structured fields on top of the required `level` / `area` / `msg`: `ref`, the reference-doc pointer the criterion carries (e.g. its `references/…` path, or `owns:` for an owned-file criterion), and `file`, the path a file-scoped finding concerns. `area` is mandatorily the criterion's code drawn from the skill's `references/audit-rubric.md`, so that one rubric is the single source for both the code and its reference pointer.
+- **Richer, mandatorily-cited findings.** A finding gains two optional structured fields on top of the required `level` / `area` / `msg`: `ref`, the reference-doc pointer the criterion carries (e.g. its `references/…` path, or `owns:` for an owned-file criterion), and `file`, the path a file-scoped finding concerns. `area` is mandatorily the criterion's code drawn from the skill's `references/rubric.md`, so that one rubric is the single source for both the code and its reference pointer.
 - **A `--json` conform mode.** Conform scripts gain a collect-then-emit `--json` mode that produces the same wrapper object audit produces, so each conform action becomes a finding on the shared ladder and the two verbs are merged identically.
 - **One shared renderer in the aggregate.** All rendering centralises in the vendored aggregate runner — the single formatter for both verbs — which renders each finding as `[code] file msg (ref)`, puts icons on the summary and totals lines, and splits the recap into real violations (FAIL / WARN / POLISH) versus the always-on judgment reminders (ADVISORY), for both audit and conform.
 

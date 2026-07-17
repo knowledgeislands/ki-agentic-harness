@@ -52,7 +52,7 @@ type Finding = { level: Level; area: string; msg: string; ref?: string; file?: s
 const findings: Finding[] = []
 const rec = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
 
-const RUBRIC = 'references/audit-rubric.md'
+const RUBRIC = 'references/rubric.md'
 
 // In --json mode suppress the spawned children's own prose so stdout carries only
 // the single-line wrapper; otherwise inherit it for a streaming human run.

@@ -44,17 +44,17 @@ const say = (line: string): void => {
 // ── CHEZMOI-1: scaffold .chezmoiignore if missing ─────────────────────────────
 const chezmoiignorePath = join(target, '.chezmoiignore')
 if (existsSync(chezmoiignorePath)) {
-  rec('PASS', 'CHEZMOI-1', '.chezmoiignore already present', 'references/dotfiles-standard.md', '.chezmoiignore')
+  rec('PASS', 'CHEZMOI-1', '.chezmoiignore already present', 'references/standards.md', '.chezmoiignore')
   say(paint(C.dim, '.chezmoiignore already present'))
 } else if (dryRun) {
-  rec('POLISH', 'CHEZMOI-1', 'would scaffold .chezmoiignore (--dry-run, not written)', 'references/dotfiles-standard.md', '.chezmoiignore')
+  rec('POLISH', 'CHEZMOI-1', 'would scaffold .chezmoiignore (--dry-run, not written)', 'references/standards.md', '.chezmoiignore')
   say(paint(C.yellow, 'would scaffold .chezmoiignore (--dry-run)'))
 } else {
   writeFileSync(
     chezmoiignorePath,
-    '# Files/directories chezmoi should never manage.\n# See references/dotfiles-standard.md (Repo layout & naming) in the ki-dotfiles-chezmoi skill.\n'
+    '# Files/directories chezmoi should never manage.\n# See references/standards.md (Repo layout & naming) in the ki-dotfiles-chezmoi skill.\n'
   )
-  rec('POLISH', 'CHEZMOI-1', 'scaffolded an empty .chezmoiignore', 'references/dotfiles-standard.md', '.chezmoiignore')
+  rec('POLISH', 'CHEZMOI-1', 'scaffolded an empty .chezmoiignore', 'references/standards.md', '.chezmoiignore')
   say(paint(C.green, 'scaffolded .chezmoiignore'))
 }
 
@@ -70,11 +70,11 @@ const judgmentTodos = [
   ['ETIQ-J1', 'Confirm audit findings were reported as file + one-line problem + options, never a silent fix.']
 ] as const
 
-for (const [area, msg] of judgmentTodos) rec('ADVISORY', area, `${msg} (manual — not auto-applied)`, 'references/audit-rubric.md')
+for (const [area, msg] of judgmentTodos) rec('ADVISORY', area, `${msg} (manual — not auto-applied)`, 'references/rubric.md')
 
 if (!json) {
   say('')
-  say(paint(C.cyan, 'Judgment items (not auto-applied — see references/audit-rubric.md):'))
+  say(paint(C.cyan, 'Judgment items (not auto-applied — see references/rubric.md):'))
   for (const [area, msg] of judgmentTodos) say(`  [${area}] ${msg}`)
 }
 

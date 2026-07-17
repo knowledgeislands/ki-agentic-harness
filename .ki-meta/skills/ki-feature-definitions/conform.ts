@@ -71,7 +71,7 @@ const NEAR_MISS_HEADING_RE = /^###\s+([A-Z][A-Z0-9]*(?:-[A-Z][A-Z0-9]*)*-\d{3,})
 
 // Reference pointer shared by every finding — the audit rubric is the canonical home of every
 // criterion code. Kept identical to audit.ts's RUBRIC for cross-script consistency.
-const RUBRIC = 'references/audit-rubric.md'
+const RUBRIC = 'references/rubric.md'
 
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`

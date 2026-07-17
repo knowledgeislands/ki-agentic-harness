@@ -11,7 +11,7 @@
  * and reports drift on the unified severity ladder.
  *
  * It is READ-ONLY: it never writes a surface config (that is the renderer's job — edit the
- * source, then re-render, e.g. `chezmoi apply`). See references/binding-standard.md for the model.
+ * source, then re-render, e.g. `chezmoi apply`). See references/standards.md for the model.
  *
  * Usage:
  *   bun audit.ts [project]            audit surfaces; [project] scopes the skill half
@@ -95,7 +95,7 @@ interface Finding {
 
 // The standard every BIND criterion is judged against — the shared `ref` pointer, kept
 // identical to conform.ts so the same criterion cites the same (area, ref) in both surfaces.
-const BIND_REF = 'references/binding-standard.md'
+const BIND_REF = 'references/standards.md'
 
 interface ServerEntry {
   name: string
@@ -317,8 +317,7 @@ if (JSON_OUT) {
   }
   const n = (s: Severity): number => findings.filter((f) => f.severity === s).length
   process.stdout.write(`${'─'.repeat(60)}\n  FAIL=${n('FAIL')} WARN=${n('WARN')} PASS=${n('PASS')} INFO=${n('INFO')}\n`)
-  if (n('FAIL') + n('WARN') > 0)
-    process.stdout.write('→ to address: run /ki-binding CONFORM   (judgment criteria: references/audit-rubric.md)\n')
+  if (n('FAIL') + n('WARN') > 0) process.stdout.write('→ to address: run /ki-binding CONFORM   (judgment criteria: references/rubric.md)\n')
 }
 
 // WARN never fails the run; only a hard FAIL does (rubric: all BIND criteria are WARN).

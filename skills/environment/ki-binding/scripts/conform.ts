@@ -49,7 +49,7 @@ const PLUGIN_KEY = `${PLUGIN}@${MARKETPLACE}`
 // This conform writes the Cowork surface only — the criterion it discharges is BIND-4, and it
 // cites the same standard audit.ts does so the shared criterion carries the same (area, ref).
 const BIND_AREA = 'BIND-4'
-const BIND_REF = 'references/binding-standard.md'
+const BIND_REF = 'references/standards.md'
 
 // Collect-then-emit findings on the unified ladder, threaded for --json. The bespoke human
 // status table below is preserved (gated on !JSON_OUT); the wrapper mirrors audit.ts's shape.

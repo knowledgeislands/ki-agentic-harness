@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // Lint Claude Code subagents against the MECHANICAL criteria of the ki-agents rubric.
 //
-// This is the deterministic half of the rubric (see ../references/audit-rubric.md). The JUDGMENT
+// This is the deterministic half of the rubric (see ../references/rubric.md). The JUDGMENT
 // half — description as a delegation signal, role/lane quality, grounding, own-vs-defer — needs a
 // model and is NOT checked here. Run this first, then apply the judgment criteria by reading.
 //
@@ -25,7 +25,7 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 type Severity = 'fail' | 'warn'
 type Finding = { severity: Severity; criterion: string; message: string }
 
-// --- limits (from references/agent-definitions-standard.md — keep in sync) ---------------------
+// --- limits (from references/standards.md — keep in sync) ---------------------
 // NAME_MAX and RESERVED derive from the skills `name` spec (BP), not the CC subagents page — that
 // page states only "lowercase letters and hyphens, unique" for a subagent name. We carry the caps
 // for consistency with skills; do not "correct" them against the CC subagents docs.
@@ -34,7 +34,7 @@ const DESC_MAX = 1024 // soft cap → WARN
 const RESERVED = ['anthropic', 'claude']
 // FM-11 — model-tier agnosticism. `inherit`/omitted is agnostic; a Claude alias is a portable pin
 // (advisory WARN — a reason is a judgment call the linter can't see, FM-2); anything else is a
-// rot-prone full model id (FAIL). Keep in sync with agent-definitions-standard.md §5 `model`.
+// rot-prone full model id (FAIL). Keep in sync with standards.md §5 `model`.
 const MODEL_ALIASES = ['sonnet', 'opus', 'haiku', 'fable']
 
 // --- minimal frontmatter parser (shared shape with audit.ts) -----------
@@ -297,7 +297,7 @@ const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨'
 // area is the bare rubric code; ref points at the reference doc the code lives in; file names the
 // agent path a file-scoped finding concerns. ref/file are optional and ride into --json/--report
 // for the aggregate to cite (mirrors ki-authoring audit.ts's Finding shape — the cited-finding standard).
-const RUBRIC = 'references/audit-rubric.md'
+const RUBRIC = 'references/rubric.md'
 type Row = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const all: Row[] = []
 const add = (level: Level, area: string, msg: string, ref?: string, file?: string): void => void all.push({ level, area, msg, ref, file })
@@ -375,7 +375,7 @@ if (jsonOut) {
 } else {
   console.log(`\n${paint(C.cyan, 'summary')}: ${files.length} agent(s) · FAIL=${totalFails} WARN=${totalWarns}`)
   if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'agents.{md,json}')}`))
-  if (totalFails + totalWarns > 0) console.log('→ to address: run /ki-agents CONFORM   (judgment criteria: references/audit-rubric.md)')
-  console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria from references/audit-rubric.md by reading.'))
+  if (totalFails + totalWarns > 0) console.log('→ to address: run /ki-agents CONFORM   (judgment criteria: references/rubric.md)')
+  console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria from references/rubric.md by reading.'))
 }
 process.exit(totalFails > 0 ? 1 : 0)

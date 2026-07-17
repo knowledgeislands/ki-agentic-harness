@@ -204,7 +204,7 @@ rec(
   'ADVISORY',
   'JUDGMENT',
   'wide tables, link text, and TOML style are not scripted — apply the [J] criteria by reading (SKILL.md Mode CONFORM step 1)',
-  'references/audit-rubric.md'
+  'references/rubric.md'
 )
 say(
   `\n${paint(C.dim, `mechanical layer applied — re-run \`bun scripts/audit.ts ${target}\` (or \`ki:authoring:audit\`) to confirm findings clear.`)}`

@@ -2,7 +2,7 @@
 
 **Refresh:** external-spec · quarterly
 
-The authoritative Homebrew sources behind the [Homebrew tap standard](homebrew-tap-standard.md) and [Audit Rubric](audit-rubric.md). This skill **wraps an external standard**: Homebrew defines what a valid tap and formula are, and the in-house standard is only the tap-**shape** layer on top. Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + rubric + [`scripts/audit.ts`](../scripts/audit.ts), then **bumps the `Last reviewed` dates** and refreshes the `## Last review` block below (what changed is recorded in the commit, not a changelog). This is the skill's memory of where the standard comes from — keep it current.
+The authoritative Homebrew sources behind the [Homebrew tap standard](standards.md) and [Audit Rubric](rubric.md). This skill **wraps an external standard**: Homebrew defines what a valid tap and formula are, and the in-house standard is only the tap-**shape** layer on top. Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + rubric + [`scripts/audit.ts`](../scripts/audit.ts), then **bumps the `Last reviewed` dates** and refreshes the `## Last review` block below (what changed is recorded in the commit, not a changelog). This is the skill's memory of where the standard comes from — keep it current.
 
 A finding is only **spec-driven** if it traces to the Authoritative table (Homebrew's own rules); everything else is this skill's tap-shape convention and should be labelled as such so it is not mistaken for a Homebrew requirement.
 

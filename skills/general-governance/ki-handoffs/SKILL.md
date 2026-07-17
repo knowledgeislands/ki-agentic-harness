@@ -9,7 +9,7 @@ argument-hint: 'audit [dir] | conform [dir] | help | educate <target> | refresh'
 
 # Knowledge Islands handoffs standard
 
-You are applying the **Knowledge Islands handoff doctrine** — how to split expensive reasoning from cheap execution so that work planned once at the top tier can be handed to a cheaper tier, a cold agent, or another person and executed without re-reasoning. This skill owns the _doctrine_. The normative spec — the opt-in marker contract, the quality bar in full, and the tier-assignment rules — lives in [references/handoffs-standard.md](references/handoffs-standard.md) as its single source of truth; the line-by-line criteria live in [references/audit-rubric.md](references/audit-rubric.md). Neither restates the other.
+You are applying the **Knowledge Islands handoff doctrine** — how to split expensive reasoning from cheap execution so that work planned once at the top tier can be handed to a cheaper tier, a cold agent, or another person and executed without re-reasoning. This skill owns the _doctrine_. The normative spec — the opt-in marker contract, the quality bar in full, and the tier-assignment rules — lives in [references/standards.md](references/standards.md) as its single source of truth; the line-by-line criteria live in [references/rubric.md](references/rubric.md). Neither restates the other.
 
 Handoffs are a **cross-tier instrument** that rides on an existing artifact — it owns no artifact of its own. In a non-KB repository the spec is a thematic plan file, governed by `ki-project-roadmap`; in a Knowledge Base it is a stream proposal's `## Checklist`, governed by `ki-kb-streams`. This skill adds the **delegation-readiness delta** on top of whichever host artifact carries the work. Run where there is no such artifact, it points at `ki-project-roadmap` / `ki-kb-streams` and stops.
 
@@ -19,7 +19,7 @@ Handoffs are a **cross-tier instrument** that rides on an existing artifact — 
 2. **The handoff-spec quality bar** — see [Handoff quality bar](#handoff-quality-bar). The delta over a plain plan: decisions-locked-vs-escalate, a per-unit recommended tier, and a recorded readiness test.
 3. **Tier assignment** — each unit of work names the **cheapest tier that its spec makes safe**, referred to by the house classes (haiku / sonnet / opus, cheapest to most capable). _Which_ tier costs what and how to select the ambient default is entirely `ki-tokenomics` (its standard §4 and §8, and `preferred_model`); this skill only requires that a tier be assigned and justified in one line, and never hard-codes model ids or prices.
 4. **The readiness test** — a spec is ready when a cold agent at the assigned tier can execute the first phase from the spec alone, with no reasoning that lives only in the planner's head. The test is recorded on the artifact, not left implicit.
-5. **The opt-in marker contract** — an artifact opts into handoff-governance with `handoff: true` frontmatter; it then must carry the markers the checker enforces (`tier`, a decisions-locked-vs-escalate section, a readiness marker). Opt-in keeps the doctrine off artifacts that do not want it. Full contract in [references/handoffs-standard.md](references/handoffs-standard.md).
+5. **The opt-in marker contract** — an artifact opts into handoff-governance with `handoff: true` frontmatter; it then must carry the markers the checker enforces (`tier`, a decisions-locked-vs-escalate section, a readiness marker). Opt-in keeps the doctrine off artifacts that do not want it. Full contract in [references/standards.md](references/standards.md).
 
 ## Handoff quality bar
 
@@ -43,7 +43,7 @@ Check that handoff-opted-in artifacts are delegable. **Run the host artifact's a
 
 The mechanical half is [`scripts/audit.ts`](scripts/audit.ts) — run `bun run ki:handoffs:audit <dir>` (default `.`). It scans for `handoff: true` artifacts and checks: `tier` present and one of the semantic values; a decisions-locked-vs-escalate section present; a readiness marker present. It reports on the severity ladder in `ki-engineering`'s [checker-contract.md](../../foundations/ki-engineering/references/checker-contract.md) and exits non-zero on any FAIL.
 
-Then apply the judgment half by reading, per [references/audit-rubric.md](references/audit-rubric.md): are the locked decisions genuinely closed (no residual reasoning), is the assigned tier appropriate to how concrete the steps are, and would the readiness test actually pass. Report FAILs first, then WARNs, then a one-line verdict.
+Then apply the judgment half by reading, per [references/rubric.md](references/rubric.md): are the locked decisions genuinely closed (no residual reasoning), is the assigned tier appropriate to how concrete the steps are, and would the readiness test actually pass. Report FAILs first, then WARNs, then a one-line verdict.
 
 ### Mode CONFORM
 
@@ -57,7 +57,7 @@ EDUCATE scaffolds no standalone artifact — a handoff rides on an existing plan
 
 **Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
 
-Revisit the doctrine against practice: does the reasoning-layer split still match how work flows from the top tier to execution; does the quality bar need sharpening from real handoffs; is the composition boundary with `ki-tokenomics` still clean. Update this `SKILL.md` and [references/handoffs-standard.md](references/handoffs-standard.md); record what changed in the commit, and refresh [references/sources.md](references/sources.md).
+Revisit the doctrine against practice: does the reasoning-layer split still match how work flows from the top tier to execution; does the quality bar need sharpening from real handoffs; is the composition boundary with `ki-tokenomics` still clean. Update this `SKILL.md` and [references/standards.md](references/standards.md); record what changed in the commit, and refresh [references/sources.md](references/sources.md).
 
 ## Composition
 

@@ -13,7 +13,7 @@ You are helping audit, conform, or scaffold a **`tools-*` repo** — a repo hold
 
 This skill rides on `ki-repo` (local files, GitHub settings) but **not** `ki-engineering` — a bash tool has no TypeScript/Bun toolchain to govern, so no `[ki-engineering]` is assumed (the same pattern `ki-kb` follows). If the tool grows a `package.json`, that changes: it then declares `[ki-engineering]` too and defers its lint/test there (see the capability rule below).
 
-The full, quotable standard lives in [tools-standard.md](references/tools-standard.md); the line-by-line pass/fail items live in [audit-rubric.md](references/audit-rubric.md). The mechanical checker is [`scripts/audit.ts`](scripts/audit.ts). Read those when you need detail; this file is the operating procedure.
+The full, quotable standard lives in [standards.md](references/standards.md); the line-by-line pass/fail items live in [rubric.md](references/rubric.md). The mechanical checker is [`scripts/audit.ts`](scripts/audit.ts). Read those when you need detail; this file is the operating procedure.
 
 ## Container, not contents
 

@@ -41,7 +41,7 @@ const say = (line: string): void => {
   if (!json) console.log(line)
 }
 
-const STD = 'references/binding-chezmoi-standard.md'
+const STD = 'references/standards.md'
 
 // ── composition handoff — printed, never auto-applied ──
 // Each composed sibling owns its own write pass; the render step is a manual chezmoi apply.
@@ -60,7 +60,7 @@ for (const [area, msg] of todos) rec('ADVISORY', area, `${msg} (manual — not a
 if (!json) {
   say(paint(C.cyan, 'ki-binding-chezmoi — render-path CONFORM (composition; no file scaffolded)'))
   say('')
-  say(paint(C.cyan, 'Steps (not auto-applied — see references/binding-chezmoi-standard.md):'))
+  say(paint(C.cyan, 'Steps (not auto-applied — see references/standards.md):'))
   for (const [area, msg] of todos) say(`  [${area}] ${msg}`)
 }
 

@@ -1,6 +1,6 @@
 # Prompting Claude Haiku 4.5
 
-How to prompt Claude Haiku 4.5, the fastest, lowest-cost Claude tier. Read the shared [Prompting guides](README.md) principles first; this guide carries only what is distinctive to Haiku 4.5. It is the resolution of the portable `fast` model type ([`ki-tokenomics`](../../../skills/environment/ki-tokenomics/references/tokenomics-standard.md), ADR-KI-HARNESS-009).
+How to prompt Claude Haiku 4.5, the fastest, lowest-cost Claude tier. Read the shared [Prompting guides](README.md) principles first; this guide carries only what is distinctive to Haiku 4.5. It is the resolution of the portable `fast` model type ([`ki-tokenomics`](../../../skills/environment/ki-tokenomics/references/standards.md), ADR-KI-HARNESS-009).
 
 ## When to reach for it
 

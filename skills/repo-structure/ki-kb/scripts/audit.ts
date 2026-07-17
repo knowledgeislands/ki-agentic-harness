@@ -55,8 +55,8 @@ const ZONES_SECTION = `${KI_SECTION}.zones`
 
 // Reference-doc pointers cited by findings (cited-finding standard). The rubric is the
 // criteria index; the frontmatter standard is the substantive doc for NOTE-* checks.
-const RUBRIC = 'references/audit-rubric.md'
-const FM = 'references/frontmatter-standard.md'
+const RUBRIC = 'references/rubric.md'
+const FM = 'references/standards.md'
 
 // The default block `--educate` emits. The bare [ki-kb] header is the
 // OPT-IN MARKER: its presence declares this base governed by the kb standard
@@ -87,7 +87,7 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-// area is the rubric code (references/audit-rubric.md); ref its reference-doc pointer;
+// area is the rubric code (references/rubric.md); ref its reference-doc pointer;
 // file the path a file-scoped finding concerns. ref/file ride into --json for the
 // aggregate to render (cited-finding standard).
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
@@ -420,7 +420,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
     if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-kb CONFORM   (judgment criteria: references/audit-rubric.md)')
+      console.log('→ to address: run /ki-kb CONFORM   (judgment criteria: references/rubric.md)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }

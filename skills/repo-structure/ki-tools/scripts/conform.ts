@@ -65,12 +65,12 @@ type Finding = { level: Level; area: string; msg: string; ref?: string; file?: s
 
 // Reference-doc pointers per rubric section — kept in lockstep with audit.ts's REF.
 const REF = {
-  layout: 'references/tools-standard.md#repository-layout',
-  exec: 'references/tools-standard.md#the-executable--bintool',
-  dist: 'references/tools-standard.md#the-distribution-contract',
-  ver: 'references/tools-standard.md#versioning--releases',
-  cap: 'references/tools-standard.md#capability-conditionals',
-  marker: 'references/tools-standard.md#the-ki-tools-marker'
+  layout: 'references/standards.md#repository-layout',
+  exec: 'references/standards.md#the-executable--bintool',
+  dist: 'references/standards.md#the-distribution-contract',
+  ver: 'references/standards.md#versioning--releases',
+  cap: 'references/standards.md#capability-conditionals',
+  marker: 'references/standards.md#the-ki-tools-marker'
 } as const
 
 const isDir = (p: string): boolean => existsSync(p) && statSync(p).isDirectory()

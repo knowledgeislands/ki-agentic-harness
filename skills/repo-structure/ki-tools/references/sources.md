@@ -2,7 +2,7 @@
 
 **Refresh:** external-spec · quarterly
 
-The authoritative and in-house sources behind the [tool-repo standard](tools-standard.md) and [audit-rubric.md](audit-rubric.md). Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + rubric + [`scripts/audit.ts`](../scripts/audit.ts), then **bumps the `Last reviewed` dates** and refreshes the `## Last review` block below (what changed is recorded in the commit, not a changelog). This is the skill's memory of where the standard comes from — keep it current.
+The authoritative and in-house sources behind the [tool-repo standard](standards.md) and [rubric.md](rubric.md). Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + rubric + [`scripts/audit.ts`](../scripts/audit.ts), then **bumps the `Last reviewed` dates** and refreshes the `## Last review` block below (what changed is recorded in the commit, not a changelog). This is the skill's memory of where the standard comes from — keep it current.
 
 Two layers feed the standard: the **external specs** (shellcheck, bats, keep-a-changelog, semver, XDG) that a conformant tool repo builds on, and the **in-house reference repo** (`tools-mgit`) that fixes the opinionated shape. A finding is only "spec-driven" if it traces to an external spec; everything else is house style layered on top and should be labelled as such.
 

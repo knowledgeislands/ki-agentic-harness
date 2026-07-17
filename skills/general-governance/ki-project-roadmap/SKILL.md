@@ -12,7 +12,7 @@ argument-hint: 'audit <repo> | conform <repo> | expand <theme> | help | educate 
 
 This governance skill owns the forward-work model for **non-KB projects**. Small projects use one root roadmap; projects needing focused workstreams use canonical thematic roadmaps and colocated plans. Knowledge Bases use the `ki-kb-streams` skill instead: a stream is the thematic roadmap, its proposals are roadmap items, and proposal checklists are plans.
 
-Read [the project-roadmap standard](references/project-roadmap-standard.md) before changing a roadmap profile or plan structure. Read [the audit rubric](references/audit-rubric.md) for the mechanical and judgment criteria. Plan file details live in [the plan format](references/plan-format.md). Tracked methodology sources and the REFRESH cadence live in [the source list](references/sources.md).
+Read [the project-roadmap standard](references/standards.md) before changing a roadmap profile or plan structure. Read [the audit rubric](references/rubric.md) for the mechanical and judgment criteria. Plan file details live in [the plan format](references/plan-format.md). Tracked methodology sources and the REFRESH cadence live in [the source list](references/sources.md).
 
 ## Shared model
 
@@ -29,7 +29,7 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** plus judgment-l
 
 ### Mode AUDIT
 
-Run [`scripts/audit.ts`](scripts/audit.ts) against the repository root. It detects the profile and applies the mechanical criteria in [the rubric](references/audit-rubric.md): horizon structure and exact blurbs; theme and item identity; qualified plan linkage; frontmatter, placement, theme-local ids, qualified references, and dependency integrity; exact generated projection and index. It reports KB scope as NA, or FAIL when a KB carries project-roadmap artifacts, and makes no changes.
+Run [`scripts/audit.ts`](scripts/audit.ts) against the repository root. It detects the profile and applies the mechanical criteria in [the rubric](references/rubric.md): horizon structure and exact blurbs; theme and item identity; qualified plan linkage; frontmatter, placement, theme-local ids, qualified references, and dependency integrity; exact generated projection and index. It reports KB scope as NA, or FAIL when a KB carries project-roadmap artifacts, and makes no changes.
 
 Then apply the rubric's judgment criteria by reading: item quality and horizon choice, plan quality, honest in-progress state, whether simple still fits, and whether theme boundaries are coherent. Iterate until mechanical findings are clean and judgment findings are resolved.
 
@@ -59,7 +59,7 @@ Run [`scripts/educate.ts`](scripts/educate.ts) against a non-KB repository. It c
 
 **Precondition:** REFRESH writes only the canonical skill files in `ki-agentic-harness`. If invoked from a repo where the skill is vendored, stop and redirect to that harness; route recurring base-specific pressure through the `ki-kb` IMPROVE mode.
 
-On the cadence in [the source list](references/sources.md), compare actual project-roadmap usage with [the standard](references/project-roadmap-standard.md) and [rubric](references/audit-rubric.md). Revisit the horizon model, simple-to-thematic threshold, locator stability, projection usefulness, and plan quality bar. Update the source review dates and explain normative changes in the commit.
+On the cadence in [the source list](references/sources.md), compare actual project-roadmap usage with [the standard](references/standards.md) and [rubric](references/rubric.md). Revisit the horizon model, simple-to-thematic threshold, locator stability, projection usefulness, and plan quality bar. Update the source review dates and explain normative changes in the commit.
 
 ## Notes
 

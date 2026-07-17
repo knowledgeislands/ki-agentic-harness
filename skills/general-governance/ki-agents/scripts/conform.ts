@@ -42,7 +42,7 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 // shared ladder; `say` prints the human line only when not in --json mode, so a direct run streams
 // prose while the aggregate consumes the wrapper. area is the rubric code, ref its reference-doc
 // pointer, file the agent path an action concerns.
-const RUBRIC = 'references/audit-rubric.md'
+const RUBRIC = 'references/rubric.md'
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const findings: Finding[] = []
@@ -205,7 +205,7 @@ say(paint(C.dim, '  COLL-1  shared quoted trigger phrase across agents — confi
 say(
   paint(
     C.dim,
-    '  … plus every judgment criterion in references/audit-rubric.md (delegation signal, role/lane, grounding, own-vs-defer, tools/model least-privilege, longevity) — apply by reading, run Mode AUDIT for the full list.'
+    '  … plus every judgment criterion in references/rubric.md (delegation signal, role/lane, grounding, own-vs-defer, tools/model least-privilege, longevity) — apply by reading, run Mode AUDIT for the full list.'
   )
 )
 

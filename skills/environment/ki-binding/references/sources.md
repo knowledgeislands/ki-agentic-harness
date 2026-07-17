@@ -9,7 +9,7 @@ Provenance only: the record of _what changed_ lives in git (the REFRESH commit),
 | Tag | Source | Governs | Last reviewed |
 | --- | --- | --- | --- |
 | [DR] | [cross-surface-enablement.md](../../../repo-structure/ki-mcp/references/cross-surface-enablement.md) | Per-surface controllability, home decision, build sequence † | 2026-07-06 |
-| [SRC] | `~/.config/ki/mcp-servers.yaml` (canonical; resolution order in [the standard](binding-standard.md)) | The single source this skill reads and audits against ‡ | 2026-07-13 |
+| [SRC] | `~/.config/ki/mcp-servers.yaml` (canonical; resolution order in [the standard](standards.md)) | The single source this skill reads and audits against ‡ | 2026-07-13 |
 | [RDR] | `ki-binding-chezmoi` skill (composes this + `ki-dotfiles-chezmoi`) | The chezmoi render path — templates + `chezmoi apply` — kept out of this renderer-neutral skill | 2026-07-13 |
 | [KB] | `ki-bootstrap` skill | The project-local skill half (BIND-3 composes its `--check`) | 2026-07-06 |
 | [KM] | `ki-mcp` skill | Each server's own code; hosts the design record [DR] | 2026-07-06 |

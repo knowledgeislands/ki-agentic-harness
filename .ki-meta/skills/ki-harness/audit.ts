@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * Mechanical audit for a Knowledge Islands agentic harness.
- * Checks the [M]-tagged criteria in references/audit-rubric.md.
+ * Checks the [M]-tagged criteria in references/rubric.md.
  * Judgment ([J]) criteria are assessed by the agent reading the rubric.
  *
  *   bun scripts/audit.ts [path-to-harness-root]   # default: cwd
@@ -19,7 +19,7 @@ import { basename, join, resolve } from 'node:path'
 
 // ── severity ladder — shared by every KI checker (enforcement-framework §2) ──
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-// area is the rubric code (references/audit-rubric.md); ref its reference-doc pointer;
+// area is the rubric code (references/rubric.md); ref its reference-doc pointer;
 // file names the path a file-scoped finding concerns. ref/file are optional and ride
 // into --json for the aggregate to render (CHK-004/009/010).
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
@@ -29,7 +29,7 @@ const findings: Finding[] = []
 const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
 
 // The standard doc every [M] criterion cites (standard §...).
-const STD = 'references/harness-standard.md'
+const STD = 'references/standards.md'
 
 const root = resolve(process.argv[2] ?? '.')
 if (!existsSync(root)) {
@@ -181,7 +181,7 @@ add(
   'ADVISORY',
   'judgment',
   'CLAUDE-1..5 (coverage/freshness), LONG-1, and COLL-1 are [J] criteria — assess by reading the rubric. ROADMAP content discipline is governed by ki-project-roadmap.',
-  'references/audit-rubric.md'
+  'references/rubric.md'
 )
 
 // ── report ──────────────────────────────────────────────────────────────────
@@ -238,7 +238,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
     if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-harness CONFORM   (judgment criteria: references/audit-rubric.md)')
+      console.log('→ to address: run /ki-harness CONFORM   (judgment criteria: references/rubric.md)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }

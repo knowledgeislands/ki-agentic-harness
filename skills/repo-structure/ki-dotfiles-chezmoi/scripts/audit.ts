@@ -5,9 +5,9 @@
  *   bun scripts/audit.ts <repo-path>
  *
  * Mechanical half: four real, self-contained filesystem checks (CHEZMOI-1, CHEZMOI-2, BIN-1,
- * GIT-1) — see references/audit-rubric.md. No package.json / ki-engineering dependency.
+ * GIT-1) — see references/rubric.md. No package.json / ki-engineering dependency.
  *
- * Judgment half: surfaces the [J] criteria from references/audit-rubric.md as ADVISORY
+ * Judgment half: surfaces the [J] criteria from references/rubric.md as ADVISORY
  * findings. These cannot be automated — a reader must assess them.
  *
  * Output is grouped by severity; exit code is non-zero iff any FAIL. No dependencies —
@@ -52,15 +52,9 @@ const SKIP_DIRS = new Set(['.git', 'node_modules', '.ki-meta', '.claude'])
 
 // ── CHEZMOI-1: .chezmoiignore present ─────────────────────────────────────────
 if (has('.chezmoiignore')) {
-  add('PASS', 'CHEZMOI-1', '.chezmoiignore present', 'references/dotfiles-standard.md')
+  add('PASS', 'CHEZMOI-1', '.chezmoiignore present', 'references/standards.md')
 } else {
-  add(
-    'FAIL',
-    'CHEZMOI-1',
-    '.chezmoiignore missing — run CONFORM to scaffold an empty one',
-    'references/dotfiles-standard.md',
-    '.chezmoiignore'
-  )
+  add('FAIL', 'CHEZMOI-1', '.chezmoiignore missing — run CONFORM to scaffold an empty one', 'references/standards.md', '.chezmoiignore')
 }
 
 // ── CHEZMOI-2: .chezmoidata/.chezmoitemplates present iff .tmpl files exist ──
@@ -75,13 +69,13 @@ walk(
 if (!hasTmplFiles) {
   add('NA', 'CHEZMOI-2', 'no .tmpl files in tree — .chezmoidata/.chezmoitemplates check not applicable')
 } else if (has('.chezmoidata') || has('.chezmoitemplates')) {
-  add('PASS', 'CHEZMOI-2', '.chezmoidata/ or .chezmoitemplates/ present alongside .tmpl files', 'references/dotfiles-standard.md')
+  add('PASS', 'CHEZMOI-2', '.chezmoidata/ or .chezmoitemplates/ present alongside .tmpl files', 'references/standards.md')
 } else {
   add(
     'WARN',
     'CHEZMOI-2',
     '.tmpl files exist but neither .chezmoidata/ nor .chezmoitemplates/ is present — templating may be ad hoc rather than using the shared-data/shared-partial shape',
-    'references/dotfiles-standard.md'
+    'references/standards.md'
   )
 }
 
@@ -98,13 +92,13 @@ if (has('bin')) {
     const RECOGNIZED_PREFIXES = ['executable_', 'symlink_', 'private_', 'readonly_', 'dot_', 'create_', 'modify_']
     const prefix = RECOGNIZED_PREFIXES.find((p) => entry.startsWith(p))
     if (prefix) {
-      add('PASS', 'BIN-1', `follows the ${prefix} naming convention`, 'references/dotfiles-standard.md', `bin/${entry}`)
+      add('PASS', 'BIN-1', `follows the ${prefix} naming convention`, 'references/standards.md', `bin/${entry}`)
     } else {
       add(
         'WARN',
         'BIN-1',
         'no recognized chezmoi source-attribute prefix — confirm this is intentionally unmanaged (e.g. a README)',
-        'references/dotfiles-standard.md',
+        'references/standards.md',
         `bin/${entry}`
       )
     }
@@ -129,38 +123,38 @@ if (has('.git', 'refs')) {
 if (!has('.git')) {
   add('NA', 'GIT-1', 'no .git directory — not a git repo')
 } else if (strayLocks.length) {
-  for (const lock of strayLocks) add('FAIL', 'GIT-1', `stray git lock file present: ${lock}`, 'references/dotfiles-standard.md', lock)
+  for (const lock of strayLocks) add('FAIL', 'GIT-1', `stray git lock file present: ${lock}`, 'references/standards.md', lock)
 } else {
-  add('PASS', 'GIT-1', 'no stray .git/*.lock files', 'references/dotfiles-standard.md')
+  add('PASS', 'GIT-1', 'no stray .git/*.lock files', 'references/standards.md')
 }
 
-// ── judgment surface: [J] criteria from references/audit-rubric.md ───────────
+// ── judgment surface: [J] criteria from references/rubric.md ───────────
 add(
   'ADVISORY',
   'PATTERN-J1',
   'for each app-mutated config file, confirm Pattern A (surgical patch) vs Pattern B (full template + ' +
     'reverse-merge) matches the ≥90%-app-owned decision rule for that specific file.',
-  'references/dotfiles-standard.md'
+  'references/standards.md'
 )
 add(
   'ADVISORY',
   'CONFIG-J1',
   'for every Pattern A writer, confirm the edit API fits its declared format, absent paths are explicit, ' +
     'unsupported input fails closed, representative fixtures preserve unrelated syntax, and a second identical run is a no-op.',
-  'references/dotfiles-standard.md'
+  'references/standards.md'
 )
 add(
   'ADVISORY',
   'LAYER-J1',
   'confirm CLAUDE.md-style guidance sits at the right layer — repo-local vs user-level vs persistent memory.',
-  'references/dotfiles-standard.md'
+  'references/standards.md'
 )
 if (has('.chezmoiignore')) {
   add(
     'ADVISORY',
     'CHEZMOI-J1',
     'confirm any .chezmoiignore negation (!pattern) is a deliberate, documented un-ignore, not an ' + 'accidentally-too-broad ignore rule.',
-    'references/dotfiles-standard.md',
+    'references/standards.md',
     '.chezmoiignore'
   )
 }
@@ -168,13 +162,13 @@ add(
   'ADVISORY',
   'ETIQ-J1',
   'confirm audit findings were reported as file + one-line problem + options, with no fix applied ' + 'without confirmation.',
-  'references/dotfiles-standard.md'
+  'references/standards.md'
 )
 add(
   'ADVISORY',
   'SYNC-1',
   'this rubric, the standard, and this script must agree; when the standard moves, all three move together (REFRESH).',
-  'references/audit-rubric.md'
+  'references/rubric.md'
 )
 
 // ── report ────────────────────────────────────────────────────────────────────
@@ -230,7 +224,7 @@ function emit(items: Finding[], target: string, concern: string, title: string):
     }
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-dotfiles-chezmoi CONFORM   (judgment criteria: references/audit-rubric.md)')
+      console.log('→ to address: run /ki-dotfiles-chezmoi CONFORM   (judgment criteria: references/rubric.md)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }

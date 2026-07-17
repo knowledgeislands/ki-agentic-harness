@@ -32,7 +32,7 @@ const ORDER: Level[] = ['FAIL', 'WARN', 'ADVISORY', 'INFO', 'PASS']
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', ADVISORY: '🧭', INFO: 'ℹ️', PASS: '✅' }
 
 // Every ki-kb-activities criterion is documented in the audit rubric — a single pointer.
-const RUBRIC = 'references/audit-rubric.md'
+const RUBRIC = 'references/rubric.md'
 
 const mk = () => {
   const f: Finding[] = []
@@ -218,8 +218,7 @@ for (const level of ORDER) {
 const tally = `FAIL=${summary.fail} WARN=${summary.warn} ADVISORY=${summary.advisory}`
 console.log('─'.repeat(60))
 console.log(paint(C.dim, tally))
-if (summary.fail + summary.warn > 0)
-  console.log('→ to address: run /ki-kb-activities CONFORM   (judgment criteria: references/audit-rubric.md)')
-console.log(paint(C.dim, 'mechanical checks only — judgment criteria in references/audit-rubric.md'))
+if (summary.fail + summary.warn > 0) console.log('→ to address: run /ki-kb-activities CONFORM   (judgment criteria: references/rubric.md)')
+console.log(paint(C.dim, 'mechanical checks only — judgment criteria in references/rubric.md'))
 
 process.exit(summary.fail > 0 ? 1 : 0)

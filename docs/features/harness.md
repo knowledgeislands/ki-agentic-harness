@@ -54,13 +54,13 @@ _Verify:_ `audit-harness.ts` SKILLS-1 FAILs on any directory-name/`name:` mismat
 
 The project roadmap MUST list only open work — no completed items, no ticked checkboxes, no `~~struck~~` entries — items being removed when done rather than checked off. In the thematic profile, each item's prose MUST live only in its canonical `docs/roadmap/<theme>/ROADMAP.md`, while the root `ROADMAP.md` MUST be the exact generated linked portfolio.
 
-_Verify:_ `ki-project-roadmap`'s [project-roadmap standard](../../skills/general-governance/ki-project-roadmap/references/project-roadmap-standard.md), plus its mechanical audit of the exact root projection.
+_Verify:_ `ki-project-roadmap`'s [project-roadmap standard](../../skills/general-governance/ki-project-roadmap/references/standards.md), plus its mechanical audit of the exact root projection.
 
 ### HARN-008 — CLAUDE.md orientation coverage
 
 `CLAUDE.md` MUST open with a paragraph naming all five part-directories (`skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`) and MUST carry a five-part status table marking each part populated or an empty shelf, per the `ki-harness` standard.
 
-_Verify:_ `ki-harness`'s rubric CLAUDE-1 and CLAUDE-2 ([`skills/repo-structure/ki-harness/references/audit-rubric.md`](../../skills/repo-structure/ki-harness/references/audit-rubric.md)), applied by reading (judgment-graded).
+_Verify:_ `ki-harness`'s rubric CLAUDE-1 and CLAUDE-2 ([`skills/repo-structure/ki-harness/references/rubric.md`](../../skills/repo-structure/ki-harness/references/rubric.md)), applied by reading (judgment-graded).
 
 ### HARN-009 — Claude Code plan lifecycle hooks
 

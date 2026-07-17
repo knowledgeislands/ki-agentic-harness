@@ -13,7 +13,7 @@ You are helping audit, conform, or scaffold the **Homebrew tap** repo — `homeb
 
 This skill **wraps an external standard.** Homebrew already defines what a valid tap and formula are (the Formula Cookbook, `brew audit`, `brew style`); this skill does not re-invent that. It checks the tap's **shape** — the things a tap needs beyond a single valid formula — and, where `brew` is installed, hands formula-correctness straight to `brew audit --strict` / `brew style`. So a finding is either **shape** (this skill's house convention for the tap: a `Formula/` dir, a README formulae table, a versioned-tarball source) or **spec** (Homebrew's own rule, surfaced by `brew`). Never present a shape preference as a Homebrew "MUST"; when unsure which a rule is, run Mode REFRESH against the Cookbook.
 
-The full, quotable standard lives in [Homebrew tap standard](references/homebrew-tap-standard.md); the line-by-line pass/fail items in [Audit Rubric](references/audit-rubric.md). The mechanical checker is [`scripts/audit.ts`](scripts/audit.ts). Read those when you need detail; this file is the operating procedure.
+The full, quotable standard lives in [Homebrew tap standard](references/standards.md); the line-by-line pass/fail items in [Audit Rubric](references/rubric.md). The mechanical checker is [`scripts/audit.ts`](scripts/audit.ts). Read those when you need detail; this file is the operating procedure.
 
 ## The canonical shape at a glance
 

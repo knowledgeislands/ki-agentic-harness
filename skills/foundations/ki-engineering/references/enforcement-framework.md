@@ -18,8 +18,8 @@ A **governance skill** holds a house standard and ships the universal modes over
 Each governance skill is a directory of this shape (loaded on demand — keep `SKILL.md` under ~500 lines / ~5,000 tokens):
 
 - **`SKILL.md`** — frontmatter (`name` = directory name; trigger-rich `description` that names its off-ramps; `argument-hint` listing the modes) + a body that states what it governs, the model "at a glance", and the modes. Per-skill _usage_ is not repeated here — `description` + `argument-hint` are machine-read at selection time.
-- **`references/<domain>-standard.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like, and why.
-- **`references/audit-rubric.md`** — the line-by-line checkable criteria (§3).
+- **`references/<domain>standards.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like, and why.
+- **`references/rubric.md`** — the line-by-line checkable criteria (§3).
 - **`references/sources.md`** — the tracked provenance (§4).
 - **a mechanical checker** in `scripts/` (→ `checker-contract.md`) — or, where another skill's checker enforces the mechanical half, a pointer to that skill-scoped audit.
 
@@ -31,7 +31,7 @@ Summary of constraints for quick reference: a checker takes a target path, emits
 
 ## 3. The rubric format
 
-`audit-rubric.md` lists every criterion with a stable id, tagged by who enforces it:
+`rubric.md` lists every criterion with a stable id, tagged by who enforces it:
 
 - **[M] mechanical** — a checker enforces it; in AUDIT you capture the checker's output verbatim and never re-derive it by hand.
 - **[J] judgment** — a reader/agent assesses it; the checker cannot decide it deterministically.

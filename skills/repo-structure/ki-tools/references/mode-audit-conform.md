@@ -7,7 +7,7 @@ _On-demand procedure for tools' AUDIT and CONFORM modes (CONFORM runs AUDIT firs
 1. **Identify the target.** Confirm the repo path (default: the cwd repo). Note the tool name (`<name>` from `tools-<name>`) and the primary bin file's language (its shebang).
 2. **Run the mechanical checker.** `bun scripts/audit.ts <repo-path>` covers the container: `bin/` + exec bit (FAIL), `install.sh`, `--version`, `CHANGELOG.md`, CI workflow, `tests/`, the shell capability conditionals (shellcheck + bats), the `package.json`→`ki-engineering` note, and the `[ki-tools]` marker. It grades on the unified severity ladder, exits non-zero on any FAIL, and with `--json` / `--report` emits machine-readable findings under the target's `.ki-meta/audits/tools.{md,json}`. Capture its output verbatim — don't re-derive what it found.
 3. **Run `ki-repo`'s audit too.** The tool repo's standard files (README, LICENSE, `.gitignore`, `.editorconfig`) and GitHub settings are `ki-repo`'s — run its checker for that layer. A TS/Bun tool (a `package.json` present) also runs `ki-engineering`'s audit.
-4. **Do the judgment pass the script can't** — walk [audit-rubric.md](audit-rubric.md)'s **[J]** items:
+4. **Do the judgment pass the script can't** — walk [rubric.md](rubric.md)'s **[J]** items:
    - **`install.sh` robustness**: read it — POSIX-ish, honours the target-dir + version env overrides, verifies the download, idempotent on re-run.
    - **Versioning coherence**: the single version marker, the latest `vX.Y.Z` tag, and the top `CHANGELOG.md` entry all agree (`git tag`, `gh release list`).
    - **CHANGELOG shape**: keep-a-changelog + semver.

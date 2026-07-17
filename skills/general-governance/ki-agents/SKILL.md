@@ -18,9 +18,9 @@ Every criterion is one of two kinds — never conflate them:
 - **Mechanical** — deterministically checkable. A bundled linter ([`scripts/audit.ts`](scripts/audit.ts)) runs these: frontmatter parses, `name` charset and **uniqueness across the agent set**, `description` present and within length, relative links resolve. **Always run the linter first** — do not eyeball what a script checks better.
 - **Judgment** — needs a model. You assess these by reading: is the `description` a strong delegation signal (what the agent _owns_ + _when_ to delegate, third person), is the system prompt a focused role with a clear lane, does it ground itself before acting, does its own-vs-defer boundary keep it from colliding with sibling agents, are its `tools` least-privilege. The linter cannot judge these.
 
-The conventions a good agent follows — what each is and why — live in [the standard](references/agent-definitions-standard.md); the line-by-line checkable criteria (with `[M]`/`[J]` tags and codes) live in [the rubric](references/audit-rubric.md), each citing its standard section. Load both before an AUDIT, CONFORM, or EDUCATE; this body is the routing overview.
+The conventions a good agent follows — what each is and why — live in [the standard](references/standards.md); the line-by-line checkable criteria (with `[M]`/`[J]` tags and codes) live in [the rubric](references/rubric.md), each citing its standard section. Load both before an AUDIT, CONFORM, or EDUCATE; this body is the routing overview.
 
-A note on linking: unlike a `SKILL.md` (which forbids Obsidian wikilinks), an agent's system prompt **may** use `[[wikilinks]]` to point at knowledge-base notes — that is how an agent grounded in a KB cites its sources. See [the rubric](references/audit-rubric.md) area LINK.
+A note on linking: unlike a `SKILL.md` (which forbids Obsidian wikilinks), an agent's system prompt **may** use `[[wikilinks]]` to point at knowledge-base notes — that is how an agent grounded in a KB cites its sources. See [the rubric](references/rubric.md) area LINK.
 
 ## Operating modes
 
@@ -33,26 +33,26 @@ Review an agent (or every agent in a directory) against the rubric and report.
 **Auditing a whole directory? Bound the context** (the set-audit discipline in `ki-engineering`'s enforcement-framework §5): run the linter's set-level pass once (COLL-1 lane collisions + `name` uniqueness over the directory), then review the agents **one at a time** — they are peers, so the order is free — loading and releasing each definition before the next rather than holding the whole set in context at once.
 
 1. **Run the linter.** `bun scripts/audit.ts <path-to-agent-or-dir>` from this skill's directory. It reports the mechanical criteria on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — see `ki-engineering`'s [checker-contract.md](../../foundations/ki-engineering/references/checker-contract.md)) and exits non-zero on any FAIL; with `--json` / `--report` it emits machine-readable findings and writes the latest report to the target's `.ki-meta/audits/agents.{md,json}`. Capture its output verbatim — do not re-derive what it found. Point it at the **agents directory** (e.g. a repo's `agents/`), not a lone file, so the cross-agent collision pass (COLL-1) and the `name`-uniqueness check have the siblings to compare.
-2. **Read the agent definition** and apply the **judgment** ([J]-tagged) criteria from [the rubric](references/audit-rubric.md) — the linter owns the [M] ones. Focus on:
+2. **Read the agent definition** and apply the **judgment** ([J]-tagged) criteria from [the rubric](references/rubric.md) — the linter owns the [M] ones. Focus on:
    - **Description (the delegation signal)** — does it state both _what the agent owns_ and _when to delegate to it_, in the third person, with concrete cues the orchestrating agent would match on? This is the only signal at selection time.
    - **Role & lane** — is the system prompt a focused role with one clear lane, opening by saying what it owns and what it does **not**?
    - **Grounding** — does it read and cite its sources before acting rather than reasoning from memory?
-   - **Own-vs-defer** — is the boundary explicit, and where a sibling agent is adjacent does **each** name the other as the hand-off (reciprocal), not a one-directional guard? See [the rubric](references/audit-rubric.md) areas LANE and COLL.
+   - **Own-vs-defer** — is the boundary explicit, and where a sibling agent is adjacent does **each** name the other as the hand-off (reciprocal), not a one-directional guard? See [the rubric](references/rubric.md) areas LANE and COLL.
    - **Tools & model** — are `tools` least-privilege (only what the role needs) and is the `model` choice deliberate?
-   - **Longevity** — does it hard-code volatile facts (model IDs, tool names, note paths) without resolving them at runtime or carrying a refresh path? See [the rubric](references/audit-rubric.md) area LONG.
+   - **Longevity** — does it hard-code volatile facts (model IDs, tool names, note paths) without resolving them at runtime or carrying a refresh path? See [the rubric](references/rubric.md) area LONG.
 3. **Report** as a table: criterion → verdict (✅ pass / ⚠️ warn / ❌ fail) → the specific fix. Lead with FAILs, then WARNs, then a one-line overall verdict. Cite the rubric criterion number. Offer to apply the fixes.
 
 ### Mode CONFORM — bring an existing agent into line
 
 1. Run **AUDIT** first to get the fix list.
-2. **Apply the fixes in place** — `description`, the system-prompt shape, `tools`/`model`, the own-vs-defer boundary — per [the rubric](references/audit-rubric.md), touching only what a criterion calls for and leaving the agent's voice intact.
+2. **Apply the fixes in place** — `description`, the system-prompt shape, `tools`/`model`, the own-vs-defer boundary — per [the rubric](references/rubric.md), touching only what a criterion calls for and leaving the agent's voice intact.
 3. **Re-run AUDIT** (and the linter) until it is clean.
 
 ### Mode EDUCATE — write a new agent
 
 1. **Clarify scope first**: what the agent owns (its lane), what should delegate _to_ it (the description cues), what it must **not** own (the boundary with sibling agents), and which tools/model it needs.
 2. **Scaffold** `<name>.md` (the filename stem should match the `name:` frontmatter; group it in a domain subdirectory if the set uses one).
-3. **Write to the rubric, not from memory** — open [the rubric](references/audit-rubric.md) and satisfy each criterion as you draft. In particular: a third-person `description` stating owns-+-when; a focused role with an explicit lane and own-vs-defer boundary; grounding before acting; least-privilege `tools`; a deliberate `model`; and `name` unique across the set.
+3. **Write to the rubric, not from memory** — open [the rubric](references/rubric.md) and satisfy each criterion as you draft. In particular: a third-person `description` stating owns-+-when; a focused role with an explicit lane and own-vs-defer boundary; grounding before acting; least-privilege `tools`; a deliberate `model`; and `name` unique across the set.
 4. **Self-audit before finishing** — run Mode AUDIT on the new agent (over the whole directory, so collision and uniqueness are checked). EDUCATE and AUDIT share one rubric on purpose.
 
 ### Mode REFRESH — re-anchor best practice
@@ -62,9 +62,9 @@ Review an agent (or every agent in a directory) against the rubric and report.
 Keep the rubric current — the subagents spec and house practice move, and this is why the skill tracks its own sources. Run on its declared cadence (see `references/sources.md`), or when asked "is the agents rubric current".
 
 1. **Read [the source list](references/sources.md)** — the tracked sources (the Claude Code subagents docs and the house agent conventions), each with a `last reviewed` date.
-2. **Re-fetch each source** (WebFetch/WebSearch) and **diff against the current [standard](references/agent-definitions-standard.md) + [rubric](references/audit-rubric.md)**: new/changed frontmatter fields (`model`, `tools`, `color`, invocation control), new constraints, deprecations. Note where sources disagree.
+2. **Re-fetch each source** (WebFetch/WebSearch) and **diff against the current [standard](references/standards.md) + [rubric](references/rubric.md)**: new/changed frontmatter fields (`model`, `tools`, `color`, invocation control), new constraints, deprecations. Note where sources disagree.
 3. **Scan the live agents** in the harness for emergent patterns that work but aren't yet codified — promote the good ones; flag drift.
-4. **Propose a diff** to [the standard](references/agent-definitions-standard.md), [rubric](references/audit-rubric.md), and where relevant [the linter](scripts/audit.ts) (a newly-mechanical check moves from judgment into the script). Confirm before writing.
+4. **Propose a diff** to [the standard](references/standards.md), [rubric](references/rubric.md), and where relevant [the linter](scripts/audit.ts) (a newly-mechanical check moves from judgment into the script). Confirm before writing.
 5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date, add/retire sources, and refresh the `## Last review` block. The record of _what changed_ is the commit itself — history lives in git, not a changelog.
 
 ## Notes

@@ -11,7 +11,7 @@
  * the `bun test` trap, .env, and the cli-chmod rule) is the `ki-engineering` layer — run audit.ts
  * first; it is not re-checked here. This script also does NOT judge tool-naming quality,
  * layer purity, or the security invariants — those need a human/agent read of the code
- * (see references/audit-rubric.md). Output is grouped pass/warn/fail; exit non-zero if any FAIL.
+ * (see references/rubric.md). Output is grouped pass/warn/fail; exit non-zero if any FAIL.
  *
  * No dependencies — Node/Bun builtins only.
  */
@@ -21,7 +21,7 @@ import { basename, join } from 'node:path'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-// area is the criterion identifier (references/audit-rubric.md); ref is its reference-doc
+// area is the criterion identifier (references/rubric.md); ref is its reference-doc
 // pointer (the standard the criterion enforces); file names the path a file-scoped finding
 // concerns. ref/file are optional and ride into --json for the aggregate to render.
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
@@ -31,8 +31,8 @@ const findings: Finding[] = []
 const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
 
 // The standard the MCP-delta criteria enforce; the judgment handoff points at the rubric.
-const STD = 'references/workspace-mcp-standard.md'
-const RUBRIC = 'references/audit-rubric.md'
+const STD = 'references/standards.md'
+const RUBRIC = 'references/rubric.md'
 
 const repo = process.argv[2]
 if (!repo || !existsSync(repo)) {
@@ -469,7 +469,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
     if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-mcp CONFORM   (judgment criteria: references/audit-rubric.md)')
+      console.log('→ to address: run /ki-mcp CONFORM   (judgment criteria: references/rubric.md)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }
@@ -477,11 +477,11 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
 }
 
 add('INFO', 'SCOPE', 'MCP server delta only — compose with audit.ts (common toolchain) for full coverage', RUBRIC)
-add('ADVISORY', 'JUDGMENT', 'mechanical layer only — apply the [J] criteria in references/audit-rubric.md by reading', RUBRIC)
+add('ADVISORY', 'JUDGMENT', 'mechanical layer only — apply the [J] criteria in references/rubric.md by reading', RUBRIC)
 emit(
   findings,
   repo,
   'mcp',
   `MCP standards audit — ${name}  (${repo})`,
-  'MCP delta only — also run audit.ts (common toolchain) + the semantic pass in references/audit-rubric.md.'
+  'MCP delta only — also run audit.ts (common toolchain) + the semantic pass in references/rubric.md.'
 )

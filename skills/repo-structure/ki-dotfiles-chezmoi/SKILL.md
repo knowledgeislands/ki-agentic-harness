@@ -9,7 +9,7 @@ argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 
 # The chezmoi dotfiles-management standard
 
-You are applying the **chezmoi dotfiles-management standard** — house conventions for structuring and operating a [chezmoi](https://www.chezmoi.io/) source-state repository, on top of what chezmoi itself already enforces. A **chezmoi-managed repo** is any git repository that is chezmoi's source directory: detect it by the presence of `.chezmoiroot`, `.chezmoi.toml.tmpl`, a `.chezmoidata/` directory, or any `dot_*`/`private_*`/`executable_*`-prefixed file at the tree root. The rationale lives in [the standard](references/dotfiles-standard.md); the line-by-line checkable criteria (mechanical vs judgment) are in [the rubric](references/audit-rubric.md); where the standard's claims come from is in [the sources list](references/sources.md).
+You are applying the **chezmoi dotfiles-management standard** — house conventions for structuring and operating a [chezmoi](https://www.chezmoi.io/) source-state repository, on top of what chezmoi itself already enforces. A **chezmoi-managed repo** is any git repository that is chezmoi's source directory: detect it by the presence of `.chezmoiroot`, `.chezmoi.toml.tmpl`, a `.chezmoidata/` directory, or any `dot_*`/`private_*`/`executable_*`-prefixed file at the tree root. The rationale lives in [the standard](references/standards.md); the line-by-line checkable criteria (mechanical vs judgment) are in [the rubric](references/rubric.md); where the standard's claims come from is in [the sources list](references/sources.md).
 
 This is a **standard, repo- and application-agnostic governance skill** — it hard-codes no specific dotfiles content and assumes no particular set of managed applications. It names general-purpose format editors where a reusable default is justified; a repo's exact scripts and package choices remain local. Install it in any chezmoi source repo. How it sits alongside the other skills in this repository is documented once in the `ki-agentic-harness` `README.md`, not repeated here.
 
@@ -33,14 +33,14 @@ Like every governance skill it carries the universal **AUDIT · CONFORM · EDUCA
 
 ### Mode AUDIT — check a chezmoi repo against the standard
 
-1. **Run the mechanical checker** — `bun scripts/audit.ts <repo-path>`. It checks the four **[M]** criteria in [the rubric](references/audit-rubric.md) (`.chezmoiignore` presence, `.chezmoidata`/`.chezmoitemplates` presence when `.tmpl` files exist, `bin/` executable-prefix conformance, git lock-file hygiene) and surfaces every **[J]** criterion as an ADVISORY finding so it is named and visible even though it needs a reader. Exit code is non-zero on any FAIL.
+1. **Run the mechanical checker** — `bun scripts/audit.ts <repo-path>`. It checks the four **[M]** criteria in [the rubric](references/rubric.md) (`.chezmoiignore` presence, `.chezmoidata`/`.chezmoitemplates` presence when `.tmpl` files exist, `bin/` executable-prefix conformance, git lock-file hygiene) and surfaces every **[J]** criterion as an ADVISORY finding so it is named and visible even though it needs a reader. Exit code is non-zero on any FAIL.
 2. Apply the **judgment** (`[J]`) criteria the ADVISORY findings name — Pattern A/B correctness for a given app config, format-preserving editor selection and evidence for every surgical writer, CLAUDE.md Layer 1/2 placement quality, `.chezmoiignore` negation intent, and whether audit-reporting etiquette was actually followed.
 3. **Report** by location → criterion → fix; lead with FAIL findings, then judgment findings; present options, don't silently fix.
 
 ### Mode CONFORM — bring a repo into house shape
 
 1. `bun scripts/conform.ts <repo-path>` scaffolds `.chezmoiignore` if it's missing — the one criterion with no legitimate reason to be absent and no per-repo content to preserve.
-2. Everything else in the standard is judgment-driven and is **not** auto-fixed: restructuring shell config into the loader pattern, choosing Pattern A vs B for a given app config, selecting and proving a format-preserving surgical editor, moving CLAUDE.md content between layers, and so on are manual procedures — CONFORM prints them as TODOs (see [the rubric](references/audit-rubric.md)'s `[J]` list) rather than guessing.
+2. Everything else in the standard is judgment-driven and is **not** auto-fixed: restructuring shell config into the loader pattern, choosing Pattern A vs B for a given app config, selecting and proving a format-preserving surgical editor, moving CLAUDE.md content between layers, and so on are manual procedures — CONFORM prints them as TODOs (see [the rubric](references/rubric.md)'s `[J]` list) rather than guessing.
 3. Re-audit until `scripts/audit.ts` is clean and the judgment criteria are satisfied.
 
 ### Mode EDUCATE — vendor the checker into a target repo
@@ -54,7 +54,7 @@ EDUCATE vendors this skill's declared mechanical unit (the frontmatter `vendors:
 chezmoi's own documented behavior (naming semantics, `.chezmoiignore`, `run_onchange_` scripts, health-check commands) and the selected format editors' documented APIs are the authoritative tool-behavior layer; the house-convention layer on top of them (shell-loader pattern, the two app-mutated-config patterns, editor-selection and verification policy, the templating pattern) is this skill's own judgment and should be re-anchored as tools change and more repos are audited against it. Run on the declared cadence (see [the sources list](references/sources.md)), or when asked "is the chezmoi standard current".
 
 1. **Read [the source list](references/sources.md)** — each tracked source with its `last reviewed` date.
-2. **Re-fetch each** (WebFetch; fall back to WebSearch if a host is blocked or returns non-200) and diff against [the standard](references/dotfiles-standard.md): changed chezmoi naming/templating behavior, a new `run_onchange_` capability, a changed format-editor preservation contract, or a pattern this standard has not captured yet.
+2. **Re-fetch each** (WebFetch; fall back to WebSearch if a host is blocked or returns non-200) and diff against [the standard](references/standards.md): changed chezmoi naming/templating behavior, a new `run_onchange_` capability, a changed format-editor preservation contract, or a pattern this standard has not captured yet.
 3. **Propose a diff** to the standard and rubric; confirm before writing.
 4. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and refresh the `## Last review` block. What changed goes in the commit, not a changelog.
 

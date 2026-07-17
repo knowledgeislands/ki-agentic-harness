@@ -74,7 +74,7 @@ _Verify:_ checker-contract.md §The remediation footer pins the non-clean guard 
 
 Every FAIL / WARN / POLISH finding MUST carry a resolvable rubric `code` (equal to its `area`) and a `ref` reference-doc pointer, and a file-scoped finding MUST additionally carry the `file` it concerns, per [ADR-KI-HARNESS-SKILLS-002](../decisions/ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md).
 
-_Verify:_ each checker's emitted `area` values are a subset of its `references/audit-rubric.md` codes; a `--json` run's violation-group findings each carry a non-empty `ref`, and file-scoped ones a `file`.
+_Verify:_ each checker's emitted `area` values are a subset of its `references/rubric.md` codes; a `--json` run's violation-group findings each carry a non-empty `ref`, and file-scoped ones a `file`.
 
 ### CHK-010 — Conform is structured
 

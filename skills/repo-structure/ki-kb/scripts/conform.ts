@@ -62,8 +62,8 @@ const KI_SECTION = 'ki-kb'
 const ZONES_SECTION = `${KI_SECTION}.zones`
 
 // Reference-doc pointers cited by findings — same (area, ref) pairs audit.ts uses.
-const RUBRIC = 'references/audit-rubric.md'
-const FM = 'references/frontmatter-standard.md'
+const RUBRIC = 'references/rubric.md'
+const FM = 'references/standards.md'
 
 // Same opt-in marker audit.ts's `--educate` emits.
 const KI_DEFAULT = `# ${KI_SECTION} — opt-in marker: declaring this table opts the base into the kb standard.

@@ -56,7 +56,7 @@ import { basename, extname, join, resolve } from 'node:path'
 // ── kept in lockstep with audit.ts ──
 const INDEX_NOTE = 'Live Artifacts.md'
 const DEFAULT_ARTIFACTS_DIR = 'Admin/Operations/Live Artifacts'
-const RUBRIC = 'references/audit-rubric.md'
+const RUBRIC = 'references/rubric.md'
 
 const isDir = (p: string): boolean => existsSync(p) && statSync(p).isDirectory()
 const isFile = (p: string): boolean => existsSync(p) && statSync(p).isFile()

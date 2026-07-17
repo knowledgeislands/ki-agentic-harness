@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // Lint Agent Skills against the MECHANICAL criteria of the ki-skills rubric.
 //
-// This is the deterministic half of the rubric (see ../references/audit-rubric.md). The
+// This is the deterministic half of the rubric (see ../references/rubric.md). The
 // JUDGMENT half — description quality, altitude, progressive-disclosure sensibility,
 // standard-vs-extension shape — needs a model and is NOT checked here. Run this first,
 // then apply the judgment criteria by reading.
@@ -32,9 +32,9 @@ type Severity = 'fail' | 'warn'
 type Finding = { severity: Severity; criterion: string; message: string; ref?: string; file?: string }
 
 // Every ki-skills criterion is defined in this skill's rubric — the default reference pointer.
-const RUBRIC = 'references/audit-rubric.md'
+const RUBRIC = 'references/rubric.md'
 
-// --- limits (from references/agent-skills-standard.md §16 — keep in sync) ----------------------
+// --- limits (from references/standards.md §16 — keep in sync) ----------------------
 const NAME_MAX = 64
 const DESC_MAX = 1024
 const COMPAT_MIN = 1
@@ -625,7 +625,7 @@ function lintSkill(skillDir: string): Finding[] {
   // A rubric that tags criteria [M] (mechanical) must ship a scripts/ checker that
   // implements them — or document delegation to another skill-scoped audit.
   // [M] criteria left to prose make the reader re-derive deterministic checks in tokens.
-  const rubricFile = join(skillDir, 'references', 'audit-rubric.md')
+  const rubricFile = join(skillDir, 'references', 'rubric.md')
   if (existsSync(rubricFile)) {
     const rubric = readFileSync(rubricFile, 'utf8')
     const mechanical = (rubric.match(/\[M\]/g) ?? []).length
@@ -807,7 +807,7 @@ if (skillDirs.length === 0) {
   process.exit(1)
 }
 
-// One-line key for the area codes printed below (full catalogue: references/audit-rubric.md).
+// One-line key for the area codes printed below (full catalogue: references/rubric.md).
 const LEGEND =
   'area codes — LAY layout · NAME name · DESC description · OPT optional-fm · SIZE size · REF references · BODY content · SCRIPT scripts · LINK linking · SHAPE KI-shape · PROC process · COLL collision · LONG longevity'
 
@@ -953,7 +953,7 @@ if (jsonOut) {
 } else {
   console.log(`\n${paint(C.cyan, 'summary')}: ${skillDirs.length} skill(s) · FAIL=${totalFails} WARN=${totalWarns}`)
   if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'skills.{md,json}')}`))
-  if (totalFails + totalWarns > 0) console.log('→ to address: run /ki-skills CONFORM   (judgment criteria: references/audit-rubric.md)')
-  console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria from references/audit-rubric.md by reading.'))
+  if (totalFails + totalWarns > 0) console.log('→ to address: run /ki-skills CONFORM   (judgment criteria: references/rubric.md)')
+  console.log(paint(C.dim, 'mechanical checks only — apply the judgment criteria from references/rubric.md by reading.'))
 }
 process.exit(totalFails > 0 ? 1 : 0)

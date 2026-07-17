@@ -2,7 +2,7 @@
 
 **Refresh:** external-spec · 180d
 
-Four tracked sources cover the two mechanical arms (see [housekeeping-standard.md](housekeeping-standard.md) §3): **Headroom's memory-feature behavior** — the `MEMORY.md` index format, `memory/*.md` frontmatter schema, `headroom:learn` auto-block markers, and installed memory-database CLI contract the memory-area standard and rubric encode — and the **`mcp-claude-housekeeping` server's tool surface**, the mechanical arm for the session / artifact / storage areas, whose per-surface audits and area coverage the standard's area table tracks. Update `last reviewed` on every REFRESH, whether or not anything changed.
+Four tracked sources cover the two mechanical arms (see [standards.md](standards.md) §3): **Headroom's memory-feature behavior** — the `MEMORY.md` index format, `memory/*.md` frontmatter schema, `headroom:learn` auto-block markers, and installed memory-database CLI contract the memory-area standard and rubric encode — and the **`mcp-claude-housekeeping` server's tool surface**, the mechanical arm for the session / artifact / storage areas, whose per-surface audits and area coverage the standard's area table tracks. Update `last reviewed` on every REFRESH, whether or not anything changed.
 
 | Source                                                                  | last reviewed |
 | ----------------------------------------------------------------------- | ------------- |

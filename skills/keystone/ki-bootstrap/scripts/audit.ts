@@ -35,7 +35,7 @@ import { checkerScript, resolveSet, SkillResolutionError, vendorUnit } from './r
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-// area is the rubric code (references/audit-rubric.md); ref is its reference-doc
+// area is the rubric code (references/rubric.md); ref is its reference-doc
 // pointer; file names the path a file-scoped finding concerns. ref/file are optional
 // and ride into --json for the aggregate to render (CHK-004/009/010).
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
@@ -44,7 +44,7 @@ const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨'
 const findings: Finding[] = []
 const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
 
-const RUBRIC = 'references/audit-rubric.md'
+const RUBRIC = 'references/rubric.md'
 
 const argv = process.argv.slice(2)
 const target = resolve(argv.find((a) => !a.startsWith('--')) ?? '.')
@@ -222,7 +222,7 @@ if (checked === 0) {
 add(
   'ADVISORY',
   'BOOT-10',
-  `apply each governed skill's own [J] judgment across the ${actual.length} vendored skill${actual.length === 1 ? '' : 's'} (lead agent where one exists, its audit-rubric.md otherwise) — the mechanical aggregate alone is not sufficient`,
+  `apply each governed skill's own [J] judgment across the ${actual.length} vendored skill${actual.length === 1 ? '' : 's'} (lead agent where one exists, its rubric.md otherwise) — the mechanical aggregate alone is not sufficient`,
   RUBRIC
 )
 

@@ -1,6 +1,6 @@
 # Modes AUDIT and CONFORM
 
-On-demand procedure for this skill's AUDIT and CONFORM modes (CONFORM runs AUDIT first, so they share this file). The standard is in [feature-format.md](feature-format.md); the criteria are in [audit-rubric.md](audit-rubric.md).
+On-demand procedure for this skill's AUDIT and CONFORM modes (CONFORM runs AUDIT first, so they share this file). The standard is in [feature-format.md](feature-format.md); the criteria are in [rubric.md](rubric.md).
 
 ## Mode AUDIT — check a repo's Feature Definitions
 

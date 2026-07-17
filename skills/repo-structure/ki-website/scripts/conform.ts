@@ -54,8 +54,8 @@ const KI_DEFAULT = `# ${KI_SECTION} — opt-in marker: presence of this table op
 # Eleventy + Tailwind site-build standard. It takes no per-repo keys today.
 [${KI_SECTION}]
 `
-const STD = 'references/eleventy-site-standard.md'
-const RUBRIC = 'references/audit-rubric.md'
+const STD = 'references/standards.md'
+const RUBRIC = 'references/rubric.md'
 
 const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`

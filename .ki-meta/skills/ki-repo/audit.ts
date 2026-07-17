@@ -11,7 +11,7 @@
  * mode reads each dir's `origin` and audits the github.com ones under their real
  * GitHub identity; `--org` lists the org (and so catches repos not cloned locally).
  *
- * The standard has three layers (see references/repo-standard.md):
+ * The standard has three layers (see references/standards.md):
  *   1. FILES   — README, LICENSE, .gitignore, and .ki-config.toml
  *                (the repo's declared config), all present on the default branch.
  *                .ki-config.toml is also the GATE of the coverage cascade: once a
@@ -48,7 +48,7 @@ import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
-// ── the standard (keep in sync with references/repo-standard.md) ──────
+// ── the standard (keep in sync with references/standards.md) ──────
 const DEFAULT_BRANCH = 'main'
 // The declared license defaults to MIT when `[ki-repo] license` is unset. Decoupled
 // from visibility (a private repo may be MIT; a public repo may be proprietary).
@@ -59,7 +59,7 @@ const ALLOWED_ACTIONS = 'all'
 // Reference-doc pointers carried on every finding (the cited-finding standard): STD is
 // the standard each mechanical criterion verifies; RUBRIC is where the judgment criteria
 // live. Kept identical to conform.ts so a given criterion cites the same (area, ref) in both.
-const STD = 'references/repo-standard.md'
+const STD = 'references/standards.md'
 // Overridable checks and the org default for each — `true` = enforced by default.
 // A repo overrides any of these per-repo in [ki-repo.checks];
 // a check it omits takes the default here, so a fully-conforming repo writes none.
@@ -94,7 +94,7 @@ const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 const LADDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
 const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️', NA: '🚫', PASS: '✅' }
-// Cited-finding shape: `area` is the rubric code (references/audit-rubric.md), `ref` the
+// Cited-finding shape: `area` is the rubric code (references/rubric.md), `ref` the
 // reference-doc pointer (defaults to the standard STD; the rare judgment finding overrides
 // it), `file` the in-repo path a file-scoped finding concerns. Arg order (area, msg, file?,
 // ref?) puts the often-set `file` before the usually-defaulted `ref`, so most call sites
@@ -981,7 +981,7 @@ if (jsonOut) {
     `\n${paint(C.cyan, 'summary')}: ${targets.length} repo(s) · FAIL=${totalFails} WARN=${totalWarns}${ghSkipped ? paint(C.dim, ` · ${ghSkipped} skipped (no github.com origin or gh unauthenticated)`) : ''}`
   )
   if (reportOut) console.log(paint(C.dim, `report → ${join(reportDir, 'repo.{md,json}')}`))
-  if (totalFails + totalWarns > 0) console.log('→ to address: run /ki-repo CONFORM   (judgment criteria: references/audit-rubric.md)')
+  if (totalFails + totalWarns > 0) console.log('→ to address: run /ki-repo CONFORM   (judgment criteria: references/rubric.md)')
   console.log(
     paint(
       C.dim,

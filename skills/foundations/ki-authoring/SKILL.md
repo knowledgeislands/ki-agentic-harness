@@ -25,12 +25,12 @@ So the workflow when authoring or tidying Markdown is: write to the judgment con
 
 ## Operating modes
 
-Like every governance skill it carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**; EDUCATE scaffolds no artifact of its own. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The conventions each mode acts on are the **Convention sets** below; the checkable criteria are in [the rubric](references/audit-rubric.md).
+Like every governance skill it carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**; EDUCATE scaffolds no artifact of its own. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The conventions each mode acts on are the **Convention sets** below; the checkable criteria are in [the rubric](references/rubric.md).
 
 ### Mode AUDIT — check a document against house style
 
 1. **Run the mechanical checker** — `bun scripts/audit.ts <repo-path>` (or `bun run ki:authoring:audit <repo-path>` at the harness root). It runs Prettier + markdownlint directly, so the check is self-sufficient in any repo, with or without `ki-engineering`/`package.json`. It also surfaces the judgment-layer `[J]` criteria as ADVISORY findings so they are named and visible in CI even though they require a reviewer. Exit code is non-zero on any FAIL.
-2. Apply the **judgment** (`[J]`) criteria from [the rubric](references/audit-rubric.md) — the ADVISORY findings from step 1 name each one. Wide tables that should spill to footnotes, non-descriptive link text, a `.ki-config.toml` that reads poorly. TOML has no mechanical pass — the rubric is all of it.
+2. Apply the **judgment** (`[J]`) criteria from [the rubric](references/rubric.md) — the ADVISORY findings from step 1 name each one. Wide tables that should spill to footnotes, non-descriptive link text, a `.ki-config.toml` that reads poorly. TOML has no mechanical pass — the rubric is all of it.
 3. **Report** by location → criterion → fix; lead with FAIL findings, then judgment findings.
 
 ### Mode CONFORM — bring a document into house style

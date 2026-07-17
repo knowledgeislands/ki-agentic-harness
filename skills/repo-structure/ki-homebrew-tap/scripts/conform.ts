@@ -83,7 +83,7 @@ const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[3
 const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
 
 // The reference doc every tap-shape criterion cites (mirrors audit.ts's STD).
-const STD = 'references/homebrew-tap-standard.md'
+const STD = 'references/standards.md'
 
 async function isDir(p: string): Promise<boolean> {
   try {

@@ -9,11 +9,11 @@ argument-hint: 'audit [repo-path] | conform [repo-path] | help | educate [repo-p
 
 # ki-housekeeping
 
-**Standard:** the hygiene of accumulated Claude state across the surfaces where it collects — the areas and the skill↔server pairing in [housekeeping-standard.md](references/housekeeping-standard.md); the memory area's file format in [memory-format.md](references/memory-format.md); line-by-line criteria in [audit-rubric.md](references/audit-rubric.md); tracked sources in [sources.md](references/sources.md).
+**Standard:** the hygiene of accumulated Claude state across the surfaces where it collects — the areas and the skill↔server pairing in [standards.md](references/standards.md); the memory area's file format in [memory-format.md](references/memory-format.md); line-by-line criteria in [rubric.md](references/rubric.md); tracked sources in [sources.md](references/sources.md).
 
 ## What this skill owns
 
-The **standard and judgment** over the state Claude accumulates on a machine, across three surfaces — Claude Desktop / Cowork sessions, Claude Code (`~/.claude/`), and VSCode chat sessions — spanning the areas: **sessions**, **artifacts / outputs**, **backups**, **plugins**, **project cache**, and **auto-memory**. Full model in [housekeeping-standard.md](references/housekeeping-standard.md).
+The **standard and judgment** over the state Claude accumulates on a machine, across three surfaces — Claude Desktop / Cowork sessions, Claude Code (`~/.claude/`), and VSCode chat sessions — spanning the areas: **sessions**, **artifacts / outputs**, **backups**, **plugins**, **project cache**, and **auto-memory**. Full model in [standards.md](references/standards.md).
 
 The **mechanical arm** is split by area:
 
@@ -26,7 +26,7 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**. Invoked as `he
 
 | Mode | What it does |
 | --- | --- |
-| AUDIT | For the memory area run `audit.ts`; for the other areas run the `mcp-claude-housekeeping` server's codified audits (its audit tools / reports); then apply the judgment criteria in [audit-rubric.md](references/audit-rubric.md). Procedure in [mode-audit-conform.md](references/mode-audit-conform.md). |
+| AUDIT | For the memory area run `audit.ts`; for the other areas run the `mcp-claude-housekeeping` server's codified audits (its audit tools / reports); then apply the judgment criteria in [rubric.md](references/rubric.md). Procedure in [mode-audit-conform.md](references/mode-audit-conform.md). |
 | CONFORM | AUDIT, then fix each finding: memory in place per the rubric; other areas via the server's access-gated cleanup tools (destructive tools require the server's access level). Re-AUDIT until clean. Same procedure file as AUDIT. |
 | EDUCATE | Scaffolds no standalone artifact — the state this skill governs already accumulates outside the repo tree. It vendors the skill's declared mechanical unit (the frontmatter `vendors:` declaration, `audit.ts`) into the target's `.ki-meta/` via the central bootstrap chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator into the `ki-bootstrap` engine. |
 | REFRESH | Re-check the standard against its sources: Headroom's memory-feature behavior for the memory format, and the `mcp-claude-housekeeping` server's tool surface for the other areas, per [mode-refresh.md](references/mode-refresh.md). |

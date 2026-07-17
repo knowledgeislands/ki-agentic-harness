@@ -11,7 +11,7 @@
  * toolchain (`ki-engineering`). It scopes to the SITE Worker (the wrangler config
  * carrying an `assets` block); a companion Worker (a `main` entry, no `assets` — a bot, ingress,
  * API) is NOTED, not flagged, and routes to the generic cloudflare/wrangler skills. The judgment
- * items (domains correct, build-before-deploy, CI wired) need a read — see references/audit-rubric.md.
+ * items (domains correct, build-before-deploy, CI wired) need a read — see references/rubric.md.
  *
  * Output is grouped pass/warn/fail; exit non-zero if any FAIL. No dependencies — Node/Bun builtins only.
  */
@@ -20,7 +20,7 @@ import { basename, dirname, join } from 'node:path'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-// Cited finding: `area` is the rubric code (WCF-N, references/audit-rubric.md), `ref`
+// Cited finding: `area` is the rubric code (WCF-N, references/rubric.md), `ref`
 // the reference-doc pointer, `file` the path a file-scoped finding concerns.
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
@@ -29,8 +29,8 @@ const findings: Finding[] = []
 const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
 
 // Reference-doc pointers (relative to the skill root) cited on findings.
-const STD = 'references/cloudflare-hosting-standard.md'
-const RUBRIC = 'references/audit-rubric.md'
+const STD = 'references/standards.md'
+const RUBRIC = 'references/rubric.md'
 
 // `.ki-config.toml` is a shared per-repo file; this skill owns the
 // [ki-website-cloudflare] table. The default block (written by `--educate`)
@@ -330,7 +330,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
     if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-website-cloudflare CONFORM   (judgment criteria: references/audit-rubric.md)')
+      console.log('→ to address: run /ki-website-cloudflare CONFORM   (judgment criteria: references/rubric.md)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }

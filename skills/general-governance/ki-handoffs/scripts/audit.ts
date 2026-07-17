@@ -22,7 +22,7 @@ import { join, relative, resolve } from 'node:path'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-// area is the rubric code (references/audit-rubric.md); ref is its reference-doc
+// area is the rubric code (references/rubric.md); ref is its reference-doc
 // pointer; file names the path a file-scoped finding concerns. ref/file are optional
 // and ride into --json for the aggregate to render (CHK-004/009/010).
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
@@ -77,22 +77,21 @@ for (const path of files) {
   const body = content.slice(fmMatch[0].length)
 
   // HAND-1: valid tier
-  if (!fm.tier)
-    add('FAIL', 'HAND-1', `handoff artifact missing 'tier' (one of haiku | sonnet | opus)`, 'references/handoffs-standard.md', rel)
+  if (!fm.tier) add('FAIL', 'HAND-1', `handoff artifact missing 'tier' (one of haiku | sonnet | opus)`, 'references/standards.md', rel)
   else if (!VALID_TIERS.has(fm.tier))
-    add('FAIL', 'HAND-1', `tier '${fm.tier}' not one of haiku | sonnet | opus`, 'references/handoffs-standard.md', rel)
+    add('FAIL', 'HAND-1', `tier '${fm.tier}' not one of haiku | sonnet | opus`, 'references/standards.md', rel)
 
   // HAND-2: decisions section naming both locked and escalate
   const hasDecisionsHeading = /^#{2,}\s+.*decisions/im.test(body)
   const namesLocked = /locked/i.test(body)
   const namesEscalate = /escalate/i.test(body)
-  if (!hasDecisionsHeading) add('FAIL', 'HAND-2', `no decisions section (a '## Decisions' heading)`, 'references/handoffs-standard.md', rel)
+  if (!hasDecisionsHeading) add('FAIL', 'HAND-2', `no decisions section (a '## Decisions' heading)`, 'references/standards.md', rel)
   else if (!(namesLocked && namesEscalate))
     add(
       'FAIL',
       'HAND-2',
       `decisions section must distinguish 'locked' from 'escalate' (both labels present)`,
-      'references/handoffs-standard.md',
+      'references/standards.md',
       rel
     )
 
@@ -103,7 +102,7 @@ for (const path of files) {
       'WARN',
       'HAND-3',
       `no readiness marker (readiness: frontmatter, a '## Readiness' heading, or a 'Readiness test' checkbox)`,
-      'references/handoffs-standard.md',
+      'references/standards.md',
       rel
     )
 }
@@ -114,19 +113,19 @@ if (optedIn > 0) {
     'ADVISORY',
     'HAND-4',
     'locked decisions: confirm they are genuinely closed — no residual reasoning or open questions parked under "locked".',
-    'references/handoffs-standard.md'
+    'references/standards.md'
   )
   add(
     'ADVISORY',
     'HAND-6',
     'tier fit: confirm the assigned tier matches how concrete the steps are; a unit that needs the planning tier is under-decomposed.',
-    'references/handoffs-standard.md'
+    'references/standards.md'
   )
   add(
     'ADVISORY',
     'HAND-7',
     'readiness: confirm a cold agent at the assigned tier could execute phase 1 from the spec alone.',
-    'references/handoffs-standard.md'
+    'references/standards.md'
   )
 } else {
   add('INFO', 'scope', `no handoff-opted-in artifacts (handoff: true) under ${rawTarget} — nothing to check.`)
@@ -190,7 +189,7 @@ function emit(items: Finding[], tgt: string, concern: string, title: string, foo
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
     if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-handoffs CONFORM   (judgment criteria: references/audit-rubric.md)')
+      console.log('→ to address: run /ki-handoffs CONFORM   (judgment criteria: references/rubric.md)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }

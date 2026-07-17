@@ -50,7 +50,7 @@ const SOURCE = sourceOverride
   ? resolve(sourceOverride)
   : ([CANONICAL_SOURCE, LEGACY_CHEZMOI_SOURCE, PROJECT_LOCAL_SOURCE].find((p) => existsSync(p)) ?? CANONICAL_SOURCE)
 const CODEX_CONFIG = join(HOME, '.codex', 'config.toml')
-const REF = 'references/binding-standard.md'
+const REF = 'references/standards.md'
 
 // ── ANSI ──
 const RED = '\x1b[31m'

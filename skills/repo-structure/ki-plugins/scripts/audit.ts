@@ -11,7 +11,7 @@
  * its CROSS-SURFACE ENABLEMENT are the `ki-binding` layer (build-plugin.ts + BIND-4) — not
  * re-checked here. This script also does NOT judge whether the projected set is up to date
  * against the harness (a stale projection needs a human/agent read + regenerate — see
- * references/audit-rubric.md). Output is grouped pass/warn/fail; exit non-zero if any FAIL.
+ * references/rubric.md). Output is grouped pass/warn/fail; exit non-zero if any FAIL.
  *
  * No dependencies — Node/Bun builtins only.
  */
@@ -19,7 +19,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSy
 import { basename, join } from 'node:path'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
-// `area` is the rubric code (PLUG-N, references/audit-rubric.md); `ref` the reference-doc
+// `area` is the rubric code (PLUG-N, references/rubric.md); `ref` the reference-doc
 // pointer for that criterion; `file` the repo-relative path a file-scoped finding concerns.
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
@@ -28,9 +28,9 @@ const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨'
 const findings: Finding[] = []
 const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
 
-// Reference-doc pointers, minted per-criterion in references/audit-rubric.md (PLUG-N codes).
-const STD = 'references/plugins-standard.md'
-const RUB = 'references/audit-rubric.md'
+// Reference-doc pointers, minted per-criterion in references/rubric.md (PLUG-N codes).
+const STD = 'references/standards.md'
+const RUB = 'references/rubric.md'
 
 const repo = process.argv[2]
 if (!repo || !existsSync(repo)) {
@@ -318,7 +318,7 @@ function emit(items: Finding[], target: string, concern: string, title: string, 
     console.log(`\n${'─'.repeat(60)}\n${tally}`)
     if (footer) console.log(footer)
     if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-plugins CONFORM   (judgment criteria: references/audit-rubric.md)')
+      console.log('→ to address: run /ki-plugins CONFORM   (judgment criteria: references/rubric.md)')
     if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
     console.log('')
   }
@@ -337,5 +337,5 @@ emit(
   repo,
   'plugins',
   `Plugin-marketplace audit — ${basename(repo)}  (${repo})`,
-  'Projection shape only — also confirm the projected set is not stale vs the harness (references/audit-rubric.md).'
+  'Projection shape only — also confirm the projected set is not stale vs the harness (references/rubric.md).'
 )

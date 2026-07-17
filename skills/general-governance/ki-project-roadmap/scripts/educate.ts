@@ -5,7 +5,7 @@ import { dirname, join, resolve } from 'node:path'
 
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const STANDARD_REF = 'references/project-roadmap-standard.md'
+const STANDARD_REF = 'references/standards.md'
 const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
 const argv = process.argv.slice(2)
 const dryRun = argv.includes('--dry-run')

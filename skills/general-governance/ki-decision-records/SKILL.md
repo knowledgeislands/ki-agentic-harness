@@ -9,7 +9,7 @@ argument-hint: 'audit [dir] | conform [dir] | help | educate [dir] | new <scope>
 
 # Knowledge Islands Decision Records standard
 
-You are applying the **Knowledge Islands Decision Records standard** — how Decision Records are written, named, maintained, and indexed in any Knowledge Islands repo, code or KB. DRs are the single instrument for significant standalone decisions; each `decision_type` has its own prefix so the kind of decision is readable from the filename alone. The full format with rationale lives in [the format standard](references/dr-format.md); the line-by-line checkable criteria live in [the rubric](references/audit-rubric.md); the canonical sources are in [sources](references/sources.md).
+You are applying the **Knowledge Islands Decision Records standard** — how Decision Records are written, named, maintained, and indexed in any Knowledge Islands repo, code or KB. DRs are the single instrument for significant standalone decisions; each `decision_type` has its own prefix so the kind of decision is readable from the filename alone. The full format with rationale lives in [the format standard](references/dr-format.md); the line-by-line checkable criteria live in [the rubric](references/rubric.md); the canonical sources are in [sources](references/sources.md).
 
 ## What this skill owns
 
@@ -66,5 +66,5 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**, plus **NEW** (
 - **Serials are per-prefix within scope** — NNN is unique for a given `<PREFIX>`+`<SCOPE>`. `GDR-ARCADIA-001` and `SDR-ARCADIA-001` are both valid; two DRs never share the same prefix+scope+serial.
 - **Not every proposal needs a DR** — routine content additions, typo fixes, and minor configuration changes do not warrant one. Reserve DRs for decisions with standalone standing.
 - **KB repos** use `Admin/Governance/Decisions/` and require frontmatter (`type`, `decision_type`, `status`, `author`). **Code repos** use `docs/decisions/` and frontmatter is optional.
-- The KI-wide frontmatter standard (universal fields and the `type` taxonomy) lives in `ki-kb`'s [frontmatter-standard.md](../../repo-structure/ki-kb/references/frontmatter-standard.md).
+- The KI-wide frontmatter standard (universal fields and the `type` taxonomy) lives in `ki-kb`'s [standards.md](../../repo-structure/ki-kb/references/standards.md).
 - Checker output conforms to the severity ladder, JSON shape, and exit-code contract in `ki-engineering`'s [checker-contract.md](../../foundations/ki-engineering/references/checker-contract.md).

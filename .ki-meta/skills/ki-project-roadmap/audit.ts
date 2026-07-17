@@ -42,9 +42,9 @@ const PLAN_REF_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*\/\d{3,}$/
 const REQUIRED = ['id', 'title', 'status', 'roadmap', 'blocks', 'blocked-by']
 const OPTIONAL = ['handoff', 'tier', 'readiness']
 const VALID_STATUS = new Set(['open', 'in-progress', 'done'])
-const STANDARD_REF = 'references/project-roadmap-standard.md'
+const STANDARD_REF = 'references/standards.md'
 const FORMAT_REF = 'references/plan-format.md'
-const RUBRIC_REF = 'references/audit-rubric.md'
+const RUBRIC_REF = 'references/rubric.md'
 const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
 const findings: Finding[] = []
 const add = (level: Level, area: string, msg: string, ref = RUBRIC_REF, file?: string): void => {
@@ -553,7 +553,7 @@ function emit(): never {
       `\n${'─'.repeat(60)}\nFAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na}`
     )
     if (summary.fail + summary.warn + summary.polish > 0) {
-      console.log('→ to address: run /ki-project-roadmap CONFORM   (judgment criteria: references/audit-rubric.md)')
+      console.log('→ to address: run /ki-project-roadmap CONFORM   (judgment criteria: references/rubric.md)')
     }
     console.log('')
   }
