@@ -12,21 +12,7 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-### [governance-consistency/001](governance-consistency/plans/001-rename-universal-init-mode-to-educate.md)
-
-- **Title:** Rename universal INIT mode to Educate
-- **Theme:** `governance-consistency`
-- **Roadmap item:** `governance-consistency/rename-the-universal-init-mode-to-educate`
-- **Status:** in-progress
-- **Blocks:** —
-
-### [operations/001](operations/plans/001-select-recap-transcript.md)
-
-- **Title:** Select the recap grounding transcript explicitly
-- **Theme:** `operations`
-- **Roadmap item:** `operations/let-ki-recap-accept-an-explicit-transcript-selector`
-- **Status:** in-progress
-- **Blocks:** —
+No active plans.
 
 ## Dependency graph
 

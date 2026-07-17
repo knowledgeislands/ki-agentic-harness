@@ -8,10 +8,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Rename the universal `INIT` mode to Educate
-
-Migrate the universal governance mode from `INIT` to **Educate** across skill contracts, vendored runners, agent and CLI invocation guidance, documentation, tests, and generated artifacts. This is a clean breaking change: `educate` is the sole KI-owned term at release, with no `init` alias, compatibility shim, or migration bridge. Apply it consistently across the harness and its repository fleet rather than creating a documentation-only rename.
-
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.

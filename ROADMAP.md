@@ -10,9 +10,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-- [Governance Consistency: Rename the universal `INIT` mode to Educate](docs/roadmap/governance-consistency/ROADMAP.md#rename-the-universal-init-mode-to-educate)
-- [Operations: Let `ki-recap` accept an explicit transcript selector](docs/roadmap/operations/ROADMAP.md#let-ki-recap-accept-an-explicit-transcript-selector)
-
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
