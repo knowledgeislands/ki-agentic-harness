@@ -84,6 +84,7 @@ A criterion's tag is a contract with the linter: if you find yourself eyeballing
 - **LANE-2 [J]** Where a sibling is genuinely adjacent, **each** names the other as the hand-off — reciprocal, not one-directional. (HOUSE)
 - **LANE-3 [J]** A **coordinator** agent — one that spawns subagents — restricts which agents it may spawn via `Agent(type)` in `tools` (e.g., `tools: Agent(worker, researcher)`). Its own-vs-defer boundary declares which agents it orchestrates and why; an unrestricted coordinator is a blast-radius risk. (CC)
 - **LANE-4 [J]** Subagents may nest to a depth of ≤ 5. A coordinator's system prompt declares its spawn depth so callers can reason about total depth. Avoid nesting unless hierarchical decomposition genuinely helps; flat fan-out is simpler and easier to audit. (CC)
+- **LANE-5 [J]** A coordinator's system prompt states that it owns progress visibility for long-running/background work: it announces the next checkpoint, reports phase completion and material blockers, and uses the caller's cadence or the five-minute default. Workers report to the coordinator; the coordinator updates the caller. (HOUSE)
 
 ## LINK — Linking
 

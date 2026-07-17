@@ -19,6 +19,8 @@ Four legs, always in this order:
 3. **Sequence** — order into **rounds**: blockers and citation-targets first, then fan out mutually-independent tasks in parallel. Name any write-contention so two agents never edit one file at once.
 4. **Gate** — the orchestrator reviews **every** cheap-tier diff before it commits; any auto-executing hook or script gets a dedicated adversarial safety-review pass, regardless of which tier produced it.
 
+**Operating invariant — progress visibility.** The orchestrator, not a background worker, owns user-visible progress. Before dispatching work likely to outlast a normal interactive turn, state the expected next checkpoint. Report at phase boundaries and material blockers; when no cadence is agreed, give a compact update at least every five minutes. Each update names what completed, what is currently running, the next checkpoint, and any blocker or changed estimate. A terminal result never substitutes for overdue progress.
+
 ## Invocation
 
 `help` / `-h` / `?` explains this skill and stops, taking no action. With no argument, run the four legs over the current task list or the active `ki-plan`. Given a plan file or an explicit task list, classify and sequence that.
