@@ -14,7 +14,7 @@ Repository bootstrap needs [Bun](https://bun.sh). The [recommended tools](recomm
 From the repository you want to govern, run:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/bootstrap.sh | sh
+curl -fsSL https://knowledgeislands.info/harness/install | sh
 ```
 
 This is a **zero-install** repository action. It downloads a temporary copy of the harness, builds the repository's `.ki-meta/` governance machinery, then removes the temporary source. It does not install skills globally, write Claude settings, or change another repository. The `main` in the URL is the harness branch being used; use the [bootstrap reference](onboarding.md) when you need a pinned revision, a different target, or fleet operation.

@@ -20,7 +20,7 @@
  * fetches the source tarball and runs this engine from the extracted tree (Bun
  * cannot execute a module over HTTP, and the POSIX entry point does not assume
  * bun is even installed):
- *   curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/bootstrap.sh | sh
+ *   curl -fsSL https://knowledgeislands.info/harness/install | sh
  * Everything after `sh -s --` ripples through to this engine; bootstrap.sh injects
  * the cwd target and `--ref main` only when absent. Where bun is already installed,
  * the bunx form runs this engine as the package bin directly (pin a sha — bunx

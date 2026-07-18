@@ -3,7 +3,7 @@
 #
 # The canonical remote one-liner — cd into the repo you want to govern, then:
 #
-#   curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/bootstrap.sh | sh
+#   curl -fsSL https://knowledgeislands.info/harness/install | sh
 #
 # It bootstraps the current directory from the harness's `main`: fetches the
 # source tarball (GitHub codeload — generated on demand, no publish step),

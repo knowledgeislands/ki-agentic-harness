@@ -37,7 +37,7 @@ The mechanical half of EDUCATE, and the start of the bootstrap chain. Run it aga
 ```bash
 bun scripts/bootstrap.ts <target-repo> [--ref <ref>] [--dry-run]
 # remote (zero-install — cd into the repo, then curl | sh; bootstrap.sh fetches the tarball and runs the engine, defaulting to cwd@main):
-# curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/bootstrap.sh | sh
+# curl -fsSL https://knowledgeislands.info/harness/install | sh
 # advanced: … | sh -s -- <target> --ref <sha>   (args ripple through)   ·   bun already installed: bunx github:knowledgeislands/ki-agentic-harness#<sha> <target> --ref <sha>
 ```
 
