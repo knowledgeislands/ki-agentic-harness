@@ -317,6 +317,11 @@ try {
     'checker-module provider → carries rubric metadata beside its runnable payload',
     existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'references', 'rubric.md'))
   )
+  check(
+    'mode-element declaration → bootstrap copies the regular declaration beside the checker payload',
+    existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'mode-elements.json')) &&
+      !lstatSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'mode-elements.json')).isSymbolicLink()
+  )
   const vendoredAudit = spawnSync('bun', [join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'audit.ts'), SKILLS_ROOT], {
     encoding: 'utf8'
   })

@@ -1,5 +1,5 @@
 {
-  "ref": "7f0a4a0957bd25d68c34951fee05cd50bd228809",
+  "ref": "d8c4354e5cea1e15c6c332015643ea37df0c1397",
   "files": {
     ".ki-meta/checkers/ki-agents/scripts/audit.ts": "21e3d3b0a8f7cf3818436dc6083bbc79f08bea0d7379db1d3fb5273749158858",
     ".ki-meta/checkers/ki-agents/scripts/conform.ts": "11c6f147bd83a53bcad99590b697780387cb8e7d34ebba87b6ec1965c5e0b0c2",
@@ -63,6 +63,7 @@
     ".ki-meta/educators/ki-repo/educate.ts": "c86d13ddf2fc4b9427b9effa26d66d8f963f800fc13ca593fc0618132f058ba8",
     ".ki-meta/checkers/ki-skills/scripts/audit.ts": "74b9994bdd1534af40d3d30acb46f69e9d3e54fed09b664468af8fcef75d623f",
     ".ki-meta/checkers/ki-skills/scripts/conform.ts": "fddc2f44a767cfb54fcf2ae950dca5d0c929dbe9fbf1e148a3f08f69c0da0674",
+    ".ki-meta/checkers/ki-skills/mode-elements.json": "5940b9a23b52d753eff97432bb7bfeae4568278f8325eab1074173f63d662651",
     ".ki-meta/checkers/ki-skills/references/rubric.md": "5046a7f91e6875c1204e41b87af9ff342ca2923c5e1e31482c2fc549f93436a9",
     ".ki-meta/checkers/ki-skills/scripts/checker-reporter.ts": "41d95a0c1759278f87812a91d283b85cc036349be1010eb0cc53580e3ba22344",
     ".ki-meta/checkers/ki-skills/help.md": "b3a9fbf1da1746e3d0eb5ad17d8b95b6b79e7fc81e93f7dfb3c91bc27cca00e5",

@@ -59,8 +59,11 @@ export function validateModeElements(skill: string, declaration: unknown): strin
     }
     const element = candidate as Record<string, unknown>
     if (typeof element.id !== 'string' || !ID.test(element.id)) errors.push(`${label}.id must be a kebab-case identifier`)
-    else if (ids.has(element.id)) errors.push(`duplicate element id: ${element.id}`)
-    else ids.add(element.id)
+    else if (element.mode === 'audit' || element.mode === 'conform') {
+      const key = `${element.mode}/${element.id}`
+      if (ids.has(key)) errors.push(`duplicate ${element.mode} element id: ${element.id}`)
+      else ids.add(key)
+    }
     if (element.mode !== 'audit' && element.mode !== 'conform') errors.push(`${label}.mode must be audit or conform`)
     if (typeof element.phase !== 'string' || !MODE_ELEMENT_PHASES.includes(element.phase as ModeElementPhase))
       errors.push(`${label}.phase is unknown`)

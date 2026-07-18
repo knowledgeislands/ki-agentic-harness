@@ -1,4 +1,6 @@
 #!/usr/bin/env bun
+import { readFileSync } from 'node:fs'
+import { join, resolve } from 'node:path'
 import { type ModeElements, planModeElements, validateModeElements } from './mode-elements.ts'
 
 let failed = false
@@ -54,6 +56,8 @@ const elements: Record<string, ModeElements> = {
 }
 
 check('valid declaration → no errors', validateModeElements('ki-repo', elements['ki-repo']).length === 0)
+const selfDeclaration = JSON.parse(readFileSync(join(resolve(import.meta.dirname, '..'), 'mode-elements.json'), 'utf8')) as ModeElements
+check('ki-skills declaration → conforms to the executable schema contract', validateModeElements('ki-skills', selfDeclaration).length === 0)
 check(
   'invalid declaration → rejects missing scopes',
   validateModeElements('ki-invalid', {

@@ -1025,6 +1025,26 @@ function vendorSkill(
   // the old `if (!audit) return` guard so bare non-governance dirs are ignored.
   if (written.length === 0) return
 
+  // Mode elements are data, not generated code: copy the skill-local declaration
+  // beside its runnable payload so a target can build the same aggregate graph
+  // without reaching back to the harness source. A declaration is optional until
+  // the fleet migration in GOV-003 is complete; once present it is always a
+  // regular file, never a link.
+  const modeElementsSource = join(skillDir(skill), 'mode-elements.json')
+  if (existsSync(modeElementsSource)) {
+    const modeElementsRel = join(CHECKERS_DIR, skill, 'mode-elements.json')
+    const modeElementsAbs = join(generationRoot, modeElementsRel)
+    if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${modeElementsRel} (mode elements)${RESET}`)
+    if (!dryRun) {
+      if (!journal) throw new Error('candidate generation requires a creation journal')
+      mkdirSync(dirname(modeElementsAbs), { recursive: true })
+      recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill))
+      copyRegularFile(modeElementsSource, modeElementsAbs)
+      recordGenerated(journal, generationRoot, modeElementsRel)
+      written.push({ rel: `${VENDOR_DIR}/${modeElementsRel}`, abs: modeElementsAbs })
+    }
+  }
+
   // Checker reports resolve both their own judgment prompts and aggregate titles from
   // the emitting skill's rubric. Copy that metadata with the runnable payload so the
   // footprint remains standalone rather than reaching back into harness source.
