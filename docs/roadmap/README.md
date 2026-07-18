@@ -11,7 +11,13 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-No active plans.
+### [FND-001](foundation-tooling/plans/FND-001-separate-user-install-from-repository-bootstrap.md)
+
+- **Title:** Separate user harness installation from repository bootstrap
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/separate-user-harness-installation-from-repository-bootstrap`
+- **Status:** open
+- **Blocks:** —
 
 ## Dependency graph
 

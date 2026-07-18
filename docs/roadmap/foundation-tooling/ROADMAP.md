@@ -12,13 +12,19 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
+### Separate user harness installation from repository bootstrap
+
+Define the distinct user installation, repository bootstrap, and harness-developer link journeys.
+
+Plan: [FND-001 — Separate user harness installation from repository bootstrap](plans/FND-001-separate-user-install-from-repository-bootstrap.md).
+
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
-### Harden global runtime skill publication
+### Harden user harness installation and runtime skill publication
 
-Make user-home runtime skill installation fail-safe, runtime-selected, and independently testable. Preserve unrelated links and refuse unsafe parents; keep it separate from repository bootstrap and from Claude Code hook delivery.
+After the first installer establishes the user-level contract, make runtime skill publication fail-safe, runtime-selected, and independently testable. Preserve unrelated user files and refuse unsafe parents.
 
 ## Waiting for
 
