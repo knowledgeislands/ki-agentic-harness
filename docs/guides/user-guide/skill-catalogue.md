@@ -76,7 +76,7 @@ Governs **Feature Definitions** — the behaviour-level "what" of a system, the 
 
 ### `ki-project-roadmap`
 
-Governs **forward work in non-KB repositories** through two automatically detected profiles. A simple repository keeps its complete open view in root `ROADMAP.md`. A thematic repository keeps canonical work in `docs/roadmap/<theme>/ROADMAP.md`, plans for Blocking/Next items beside it under `plans/`, a global plan index and dependency graph in `docs/roadmap/README.md`, and an exact generated root portfolio. Qualified `<theme>/<item-slug>` locators bind plans to one authoritative item home. The process skill `ki-plan` drives individual plan lifecycles. Knowledge Bases use `ki-kb-streams` instead; project-roadmap artifacts do not apply there.
+Governs **forward work in non-KB repositories** through two automatically detected profiles. A simple repository keeps its complete open view in root `ROADMAP.md`. A thematic repository keeps canonical work in `docs/roadmap/<theme>/ROADMAP.md`, plans for Blocking/Next items beside it under `plans/`, a global plan index and dependency graph in `docs/roadmap/README.md`, and an exact generated root portfolio. Qualified `<theme>/<item-slug>` locators bind plans to one authoritative item home. It owns the readiness rules for authored horizon transitions; the `ki-next` process applies those rules to select and promote work, while `ki-plan` drives individual plan lifecycles. Knowledge Bases use `ki-kb-streams` instead; project-roadmap artifacts do not apply there.
 
 ### `ki-handoffs`
 
@@ -89,6 +89,10 @@ Orthogonal to the six clusters (`ADR-KI-HARNESS-SKILLS-006`): each drives an act
 ### `ki-recap`
 
 Drives a live-session recap: **summarise** what happened (changes, decisions, files touched), **surface what is outstanding** (unfinished threads, deferred fixes — a ROADMAP item added this session is "what happened", not outstanding), and **harvest the learnings**, routing each to its proper home (a `CLAUDE.md` learned-pattern entry via `headroom learn`, a skill fix or rubric criterion, a new agent, a hook, memory, or a `ki-plan`/ROADMAP item), confirming before writing anywhere durable. An optional **compress** leg writes a carry-forward digest — true in-context compression is the native / PreCompact-hook path, not something a skill can do. Installable globally, cross-repo, alongside `ki-bootstrap` — and like `ki-bootstrap`, never declared via a `.ki-config.toml` table.
+
+### `ki-next`
+
+Selects the next **roadmap-directed** work in a non-KB repository. It grounds the current roadmap and active-plan graph, optionally reviews stale or changed work, evaluates eligible Blocking and Next items first, then replenishes an empty immediate queue through separately confirmed Soon-to-Next and Future-to-Soon promotions. It applies the readiness rules owned by `ki-project-roadmap`, invokes `ki-plan` only for work already in Blocking or Next, and stops for plan review rather than implementation. A recent `ki-recap` can provide current-session context but is never required; `ki-next` does not mine historical transcripts. Installable globally, cross-repo, alongside `ki-bootstrap` — and like `ki-bootstrap`, never declared via a `.ki-config.toml` table.
 
 ### `ki-plan`
 

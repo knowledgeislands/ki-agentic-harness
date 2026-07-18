@@ -48,7 +48,7 @@ Canonical themes and active execution plans.
 - **Title:** Create ki-next for roadmap-directed planning
 - **Theme:** `governance-consistency`
 - **Roadmap item:** `governance-consistency/create-ki-next-for-roadmap-directed-planning`
-- **Status:** open
+- **Status:** in-progress
 - **Blocks:** foundation-tooling/001
 
 ### [governance-consistency/005](governance-consistency/plans/005-update-ki-recap-direct-handoff.md)

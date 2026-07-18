@@ -26,6 +26,17 @@ The blurb is the empty-horizon explanation; do not add a separate `Nothing queue
 
 Roadmaps are open-only: completed work is removed. Continuous practices belong in a standard or orientation file, not among finite work items.
 
+## Promotion and readiness
+
+Horizon moves are authored, judgment-led decisions. CONFORM never makes them: it may repair only mechanical blurbs and generated projections.
+
+- **Future → Soon** requires enough scope to state the intended outcome and boundary. It remains Future when that minimum is not known.
+- **Soon → Next** requires actionable scope, understood dependencies, and readiness to start. It is not a planning shortcut: the item must first be moved to Next, then evaluated there.
+- **Waiting for → another horizon** requires evidence that its named external condition has changed and a fresh placement judgment.
+- **Blocking / Next** are the only horizons that may carry a plan. A plan is created only after the item is there and the user has confirmed it.
+
+When the immediate queue has no eligible work, a human-led process such as `ki-next` replenishes it in stages: evaluate Blocking and Next first, then evaluate Soon, and only then scope Future candidates to enter Soon. Each confirmed move is re-evaluated at its destination because the readiness contract changes. The process presents proposals and obtains confirmation before every authored move; this governance skill does not depend on that process.
+
 ## Simple profile
 
 The root `ROADMAP.md` is the sole roadmap artifact. It has one H1 and the five horizons. It can use lower headings to organise its open work, but it carries no `docs/roadmap/` directory or plan files. Requiring an execution plan is the signal to run EXPAND first.

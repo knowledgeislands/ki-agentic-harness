@@ -1,6 +1,6 @@
 # The skills
 
-The skills are the bulk of the harness today. Most are **governance skills** — each holds a house standard and ships the universal **EDUCATE / AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones), backed by a tracked `references/sources.md`. A smaller, growing set are **process skills** — lightweight skills that drive an action or lifecycle rather than holding a standard (`ADR-KI-HARNESS-SKILLS-006`); `ki-recap`, `ki-plan`, and `ki-delegate` are the current set. This file is the map: what a skill is, how the set fits together, and the shape they share; the per-skill entries are in [the catalogue](skill-catalogue.md).
+The skills are the bulk of the harness today. Most are **governance skills** — each holds a house standard and ships the universal **EDUCATE / AUDIT / CONFORM / REFRESH** modes (plus skill-specific ones), backed by a tracked `references/sources.md`. A smaller, growing set are **process skills** — lightweight skills that drive an action or lifecycle rather than holding a standard (`ADR-KI-HARNESS-SKILLS-006`); `ki-recap`, `ki-next`, `ki-plan`, and `ki-delegate` are the current set. This file is the map: what a skill is, how the set fits together, and the shape they share; the per-skill entries are in [the catalogue](skill-catalogue.md).
 
 ## What a skill is
 
@@ -8,7 +8,7 @@ A skill is a self-contained capability an agent can load on demand — a name an
 
 A `SKILL.md` follows the open [Agent Skills standard](https://agentskills.io/), so it is not Claude-Code-specific: a second runtime such as OpenAI Codex CLI discovers the same `SKILL.md` files from its own path (`.agents/skills`, vs Claude Code's `.claude/skills`), though it reads project instructions from `AGENTS.md` rather than `CLAUDE.md`.
 
-Every skill here is a Knowledge Islands skill, shipped as part of this system, but the set now has two **kinds** (`ADR-KI-HARNESS-SKILLS-006`). Most are **governance skills** — each holds a house standard and ships the universal **EDUCATE / AUDIT / CONFORM / REFRESH** modes plus a mechanical checker; what tells governance skills apart is not their kind but _what each governs_: a repository's structure, a knowledge base, the machine itself. A smaller set are **process skills** — they drive an action or lifecycle rather than holding a standard, are exempt from the four-file shape and universal modes, and expose HELP only optionally: `ki-recap` (summarise / surface-outstanding / harvest-learnings over a live session), `ki-plan` (the non-KB plan lifecycle, paired with `ki-project-roadmap`), and `ki-delegate` (decompose a task list or plan across agent and model tiers — classify / assign / sequence / gate). Knowledge Bases use `ki-kb-streams` instead of either project-roadmap profile. That distinction, and the six governance clusters, are the map below.
+Every skill here is a Knowledge Islands skill, shipped as part of this system, but the set now has two **kinds** (`ADR-KI-HARNESS-SKILLS-006`). Most are **governance skills** — each holds a house standard and ships the universal **EDUCATE / AUDIT / CONFORM / REFRESH** modes plus a mechanical checker; what tells governance skills apart is not their kind but _what each governs_: a repository's structure, a knowledge base, the machine itself. A smaller set are **process skills** — they drive an action or lifecycle rather than holding a standard, are exempt from the four-file shape and universal modes, and expose HELP only optionally: `ki-recap` (summarise / surface-outstanding / harvest-learnings over a live session), `ki-next` (select and confirm the next roadmap work, then route it to `ki-plan`), `ki-plan` (the non-KB plan lifecycle, paired with `ki-project-roadmap`), and `ki-delegate` (decompose a task list or plan across agent and model tiers — classify / assign / sequence / gate). Knowledge Bases use `ki-kb-streams` instead of either project-roadmap profile. That distinction, and the six governance clusters, are the map below.
 
 The Agent Skills standard is more general than this, though. A skill need not govern a standard at all — it could equally encode a standalone workflow (a review process, a release checklist, a research harness) or target one specific project or recurring task. The process kind is the first step into that territory, and the set is expected to grow further over time.
 
@@ -83,6 +83,8 @@ ki-delegate
 ki-engineering
 
 ki-homebrew-tap
+
+ki-next
 
 ki-plan
 

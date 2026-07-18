@@ -11,7 +11,7 @@ argument-hint: 'audit <repo> | conform <repo> | expand <theme> | help | educate 
 
 # Knowledge Islands project roadmap standard
 
-This governance skill owns the forward-work model for **non-KB projects**. Small projects use one root roadmap; projects needing focused workstreams use canonical thematic roadmaps and colocated plans. Knowledge Bases use the `ki-kb-streams` skill instead: a stream is the thematic roadmap, its proposals are roadmap items, and proposal checklists are plans.
+This governance skill owns the forward-work model for **non-KB projects**. Small projects use one root roadmap; projects needing focused workstreams use canonical thematic roadmaps and colocated plans. Knowledge Bases use the `ki-kb-streams` skill instead: a stream is the thematic roadmap, its proposals are roadmap items, and proposal checklists are plans. `ki-next` is the separate process skill that applies this skill's user-confirmed transition rules to select the next work; this governance skill has no process-skill dependency.
 
 Read [the project-roadmap standard](references/standards.md) before changing a roadmap profile or plan structure. Read [the audit rubric](references/rubric.md) for the mechanical and judgment criteria. Plan file details live in [the plan format](references/plan-format.md). Tracked methodology sources and the REFRESH cadence live in [the source list](references/sources.md).
 
@@ -32,7 +32,7 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** plus judgment-l
 
 Run [`scripts/audit.ts`](scripts/audit.ts) against the repository root. It detects the profile and applies the mechanical criteria in [the rubric](references/rubric.md): horizon structure and exact blurbs; theme and item identity; qualified plan linkage; frontmatter, placement, theme-local ids, qualified references, and dependency integrity; exact generated projection and index. It reports KB scope as NA, or FAIL when a KB carries project-roadmap artifacts, and makes no changes.
 
-Then apply the rubric's judgment criteria by reading: item quality and horizon choice, plan quality, honest in-progress state, whether simple still fits, and whether theme boundaries are coherent. Iterate until mechanical findings are clean and judgment findings are resolved.
+Then apply the rubric's judgment criteria by reading: item quality, horizon placement and transition readiness, plan quality, honest in-progress state, whether simple still fits, and whether theme boundaries are coherent. Iterate until mechanical findings are clean and judgment findings are resolved.
 
 After changing the scripts, run [`scripts/project-roadmap.test.ts`](scripts/project-roadmap.test.ts) for the focused profile, projection, locator, dependency, KB, and safe-write fixtures.
 
@@ -68,4 +68,5 @@ On the cadence in [the source list](references/sources.md), compare actual proje
 - Exploration needs no plan; multi-file or multi-step implementation does.
 - A plan answers “how”; a Decision Record answers “why”. Use `ki-decision-records` for the latter.
 - The `ki-plan` process skill operates plan instances. This skill owns their standard and project-roadmap representation.
+- The `ki-next` process skill selects and promotes work through the readiness contract defined here. It gathers confirmation and invokes `ki-plan`; it does not alter this skill's ownership of horizons, profiles, or plan format.
 - Checker output uses the canonical checker reporter supplied by `ki-skills`; its locally vendored module keeps this checker standalone when installed.
