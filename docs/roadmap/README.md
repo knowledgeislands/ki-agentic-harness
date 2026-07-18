@@ -11,10 +11,24 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-No active plans.
+### [GOV-001](governance-consistency/plans/GOV-001-rename-ki-project-roadmap-to-ki-repo-roadmap.md)
+
+- **Title:** Rename ki-project-roadmap to ki-repo-roadmap
+- **Theme:** `governance-consistency`
+- **Roadmap item:** `governance-consistency/rename-ki-project-roadmap-to-ki-repo-roadmap`
+- **Status:** open
+- **Blocks:** GOV-002
+
+### [GOV-002](governance-consistency/plans/GOV-002-align-kb-stream-focus-with-non-kb-roadmap-horizons.md)
+
+- **Title:** Align KB Stream focus with non-KB roadmap horizons
+- **Theme:** `governance-consistency`
+- **Roadmap item:** `governance-consistency/align-kb-stream-focus-with-non-kb-roadmap-horizons`
+- **Status:** open (needs GOV-001)
+- **Blocks:** —
 
 ## Dependency graph
 
 ```text
-No dependencies.
+GOV-001 ──► GOV-002
 ```
