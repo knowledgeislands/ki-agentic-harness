@@ -44,7 +44,10 @@ const SOURCE = sourceOverride
   : ([CANONICAL_SOURCE, PROJECT_LOCAL_SOURCE].find((path) => existsSync(path)) ?? CANONICAL_SOURCE)
 const TARGET = project ? resolve(project) : SOURCE
 const BIND_REF = 'references/standards.md'
-const RUBRIC = join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md')
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
+const RUBRIC = existsSync(join(SCRIPT_DIR, 'references', 'rubric.md'))
+  ? join(SCRIPT_DIR, 'references', 'rubric.md')
+  : join(SCRIPT_DIR, '..', 'references', 'rubric.md')
 const SELF = realpathSync(fileURLToPath(import.meta.url))
 const SKILLS_ROOT = resolve(dirname(SELF), '..', '..', '..')
 const RECOGNISED = new Set(['mcporter', 'claude-code', 'claude-desktop', 'chatgpt-codex'])

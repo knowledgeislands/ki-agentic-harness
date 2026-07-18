@@ -17,7 +17,8 @@
  * judgment / render items remain outstanding.
  */
 import { existsSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import {
   type CheckerFinding,
   checkerReporterExitCode,
@@ -29,7 +30,10 @@ const argv = process.argv.slice(2)
 const positional = argv.find((a) => !a.startsWith('-'))
 const target = positional ? resolve(positional) : '.'
 const STD = 'references/standards.md'
-const rubricPath = new URL('../references/rubric.md', import.meta.url).pathname
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
+const rubricPath = existsSync(join(SCRIPT_DIR, 'references', 'rubric.md'))
+  ? join(SCRIPT_DIR, 'references', 'rubric.md')
+  : join(SCRIPT_DIR, '..', 'references', 'rubric.md')
 
 if (positional && !existsSync(target)) {
   const findings: CheckerFinding[] = [{ type: 'M', level: 'FAIL', code: 'BINDCHEZ-1', message: `No such path: ${target}`, ref: STD }]

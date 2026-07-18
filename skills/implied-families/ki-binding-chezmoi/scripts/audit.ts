@@ -45,6 +45,10 @@ const STD = 'references/standards.md'
 const SELF = realpathSync(fileURLToPath(import.meta.url))
 // .../skills/<cluster>/ki-binding-chezmoi/scripts/audit.ts → up to .../skills
 const SKILLS_ROOT = resolve(dirname(SELF), '..', '..', '..')
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
+const RUBRIC = existsSync(join(SCRIPT_DIR, 'references', 'rubric.md'))
+  ? join(SCRIPT_DIR, 'references', 'rubric.md')
+  : join(SCRIPT_DIR, '..', 'references', 'rubric.md')
 
 // ── Args ──
 const argv = process.argv.slice(2)
@@ -64,6 +68,9 @@ const CHEZMOI_REPO = positional ? resolve(positional) : join(process.env.XDG_DAT
 // Each sibling emits canonical JSONL; fold its final summary record into one
 // composition finding while retaining each checker's standalone boundary.
 function findSkillScript(skill: string): string | undefined {
+  const localVendored = join(dirname(SELF), '..', skill, 'audit.ts')
+  if (existsSync(localVendored)) return localVendored
+
   // Skills live under skills/<cluster>/<skill>/ — search each cluster subfolder rather than
   // assume a flat layout (skills/ was reorganised into cluster subfolders, ADR-KI-HARNESS-SKILLS-006).
   for (const cluster of readdirSync(SKILLS_ROOT, { withFileTypes: true })) {
@@ -205,6 +212,6 @@ if (existsSync(CHEZMOI_REPO)) {
     )
 }
 
-findings.push(...judgmentFindingsFromRubric(join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md')))
+findings.push(...judgmentFindingsFromRubric(RUBRIC))
 emitCheckerReporter({ mode: 'audit', concern: 'binding-chezmoi', target: CHEZMOI_REPO, findings })
 process.exit(checkerReporterExitCode(findings))

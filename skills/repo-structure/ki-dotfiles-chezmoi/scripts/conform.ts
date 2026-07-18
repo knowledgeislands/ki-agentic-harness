@@ -17,7 +17,10 @@ import {
 
 const STD = 'references/standards.md'
 const RUBRIC = 'references/rubric.md'
-const rubricPath = join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md')
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
+const rubricPath = existsSync(join(SCRIPT_DIR, 'references', 'rubric.md'))
+  ? join(SCRIPT_DIR, 'references', 'rubric.md')
+  : join(SCRIPT_DIR, '..', 'references', 'rubric.md')
 
 function main(): void {
   const args = process.argv.slice(2)

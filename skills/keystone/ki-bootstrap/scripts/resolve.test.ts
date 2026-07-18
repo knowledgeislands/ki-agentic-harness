@@ -297,6 +297,20 @@ try {
   rmSync(checkerRoot, { recursive: true, force: true })
 }
 
+const reporterConsumerRoot = fixture('[ki-binding]\n[ki-binding-chezmoi]\n[ki-dotfiles-chezmoi]\n')
+try {
+  const result = spawnSync('bun', [BOOTSTRAP, reporterConsumerRoot], { encoding: 'utf8' })
+  check('reporter consumers → bootstrap exits cleanly', result.status === 0)
+  const aggregate = join(reporterConsumerRoot, '.ki-meta', 'bin', 'aggregate.ts')
+  const consumerAggregate = spawnSync('bun', [aggregate, 'audit'], { cwd: reporterConsumerRoot, encoding: 'utf8' })
+  check(
+    'reporter consumers → vendored aggregate has no malformed checker output',
+    consumerAggregate.stdout.includes('ki-binding') && !consumerAggregate.stdout.includes('invalid checker reports')
+  )
+} finally {
+  rmSync(reporterConsumerRoot, { recursive: true, force: true })
+}
+
 const temporaryHarness = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-temporary-source-')))
 const temporaryTarget = fixture()
 try {

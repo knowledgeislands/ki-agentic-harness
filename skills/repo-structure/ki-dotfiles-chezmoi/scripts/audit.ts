@@ -32,7 +32,10 @@ const add = (level: Level, code: string, message: string, ref?: string, file?: s
 
 const repo = resolve(process.argv.find((arg, index) => index > 1 && !arg.startsWith('-')) ?? '.')
 const RUBRIC = 'references/rubric.md'
-const rubricPath = join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md')
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
+const rubricPath = existsSync(join(SCRIPT_DIR, 'references', 'rubric.md'))
+  ? join(SCRIPT_DIR, 'references', 'rubric.md')
+  : join(SCRIPT_DIR, '..', 'references', 'rubric.md')
 if (!existsSync(repo) || !statSync(repo).isDirectory()) {
   const invalidTarget: CheckerFinding[] = [
     {

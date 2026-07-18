@@ -43,7 +43,10 @@ const VALUE_OPTIONS = new Set(['--repo', '--marketplace', '--plugin'])
 const positional = argv.find((argument, index) => !argument.startsWith('-') && !VALUE_OPTIONS.has(argv[index - 1] ?? ''))
 const target = positional ? resolve(positional) : base
 const BIND_REF = 'references/standards.md'
-const RUBRIC = join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md')
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
+const RUBRIC = existsSync(join(SCRIPT_DIR, 'references', 'rubric.md'))
+  ? join(SCRIPT_DIR, 'references', 'rubric.md')
+  : join(SCRIPT_DIR, '..', 'references', 'rubric.md')
 
 const findings: CheckerFinding[] = []
 const add = (level: Level, code: string, message: string, ref?: string, file?: string): void => {
