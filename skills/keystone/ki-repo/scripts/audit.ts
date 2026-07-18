@@ -46,7 +46,7 @@
  */
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
@@ -83,6 +83,7 @@ const CHECK_DEFAULTS: Record<string, boolean> = {
   structure: true //            declares at least one repo-structure table
 }
 const KI_CONFIG = '.ki-config.toml'
+const VENDOR_DIR = '.ki-meta'
 
 function localRubricPath(): string {
   const scriptDir = dirname(fileURLToPath(import.meta.url))
@@ -746,6 +747,68 @@ function localIntegrityFindings(dir: string): Finding[] {
   return f
 }
 
+// CAPABILITY-COMPLETE: the shared config declares the target's governance roots;
+// this local-only check verifies that each declared root has the complete generated
+// contract that lets the repository govern itself without an installed harness.
+// It reads table *names* only (never another skill's keys), and treats the manifest
+// as the authoritative generated inventory. Hash integrity remains VENDOR-1's job.
+const capabilityPayloads = (skill: string): string[] => [
+  `${VENDOR_DIR}/checkers/${skill}/scripts/audit.ts`,
+  `${VENDOR_DIR}/checkers/${skill}/scripts/conform.ts`,
+  `${VENDOR_DIR}/educators/${skill}/educate.ts`
+]
+
+function isRegularNonLink(path: string): boolean {
+  try {
+    const stat = lstatSync(path)
+    return stat.isFile() && !stat.isSymbolicLink()
+  } catch {
+    return false
+  }
+}
+
+function localCapabilityFindings(dir: string): Finding[] {
+  const { f, fail } = mk()
+  const cfgPath = join(dir, KI_CONFIG)
+  if (!existsSync(cfgPath)) return f
+
+  const roots = [
+    ...new Set(
+      declaredTables(readFileSync(cfgPath, 'utf8'))
+        .map(({ root }) => root)
+        .filter((root) => root.startsWith('ki-'))
+    )
+  ].sort()
+  if (roots.length === 0) return f
+
+  const manifestPath = join(dir, VENDOR_DIR, 'manifest.json')
+  let files: Record<string, string> = {}
+  try {
+    files = (JSON.parse(readFileSync(manifestPath, 'utf8')) as { files?: Record<string, string> }).files ?? {}
+  } catch {
+    fail(
+      'CAPABILITY-COMPLETE',
+      `declared governance roots have no readable generated manifest — run ./.ki-meta/bin/ki-educate to publish their local EDUCATE / AUDIT / CONFORM payloads`,
+      KI_CONFIG
+    )
+    return f
+  }
+
+  const missing: string[] = []
+  for (const skill of roots) {
+    for (const rel of capabilityPayloads(skill)) {
+      if (!files[rel] || !isRegularNonLink(join(dir, rel))) missing.push(rel)
+    }
+  }
+  if (missing.length)
+    fail(
+      'CAPABILITY-COMPLETE',
+      `declared governance root(s) lack complete local EDUCATE / AUDIT / CONFORM payloads: ${missing.join(', ')} — remove process/global-only tables, or repair the governance skill and re-run ./.ki-meta/bin/ki-educate`,
+      KI_CONFIG
+    )
+  return f
+}
+
 // The agent runtimes the bootstrap linkers know how to install for. A repo may
 // declare a subset in `[ki-repo] target_runtimes`; anything outside this set has no
 // discovery path, so the linker would silently do nothing for it (RUNTIMES-1).
@@ -874,7 +937,7 @@ const scoped = (nwo: string, f: Finding): string => `${nwo}${f.file ? `/${f.file
 for (const t of targets) {
   // Offline, local-disk vendor-integrity check — independent of GitHub reachability,
   // so it still runs for a target with no github.com origin (or none at all).
-  const localFindings = t.dir ? [...localIntegrityFindings(t.dir), ...localConfigFindings(t.dir)] : []
+  const localFindings = t.dir ? [...localIntegrityFindings(t.dir), ...localConfigFindings(t.dir), ...localCapabilityFindings(t.dir)] : []
   if (!t.nameWithOwner) {
     all.push({ level: 'NA', area: 'ACCESS-1', msg: t.note ?? 'GitHub checks skipped', ref: STD, file: t.label })
     for (const x of localFindings) all.push({ level: x.level, area: x.area, msg: x.msg, ref: x.ref, file: scoped(t.label, x) })

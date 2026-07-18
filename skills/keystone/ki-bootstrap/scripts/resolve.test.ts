@@ -212,6 +212,23 @@ try {
   rmSync(invalidSeed, { recursive: true, force: true })
 }
 
+const globalOnlyDeclaration = fixture('[ki-plan]\n')
+try {
+  mkdirSync(join(globalOnlyDeclaration, '.ki-meta'), { recursive: true })
+  writeFileSync(join(globalOnlyDeclaration, '.ki-meta', 'sentinel.txt'), 'keep capability failure clean\n')
+  const before = snapshot(globalOnlyDeclaration)
+  const result = spawnSync('bun', [BOOTSTRAP, globalOnlyDeclaration], { encoding: 'utf8' })
+  const output = `${result.stdout ?? ''}${result.stderr ?? ''}`
+  check('bootstrap process/global declaration → non-zero exit', (result.status ?? 0) !== 0)
+  check(
+    'bootstrap process/global declaration → names the complete-capability contract and skill',
+    output.includes('CAPABILITY-COMPLETE') && output.includes('ki-plan')
+  )
+  check('bootstrap process/global declaration → target remains byte-identical', snapshot(globalOnlyDeclaration) === before)
+} finally {
+  rmSync(globalOnlyDeclaration, { recursive: true, force: true })
+}
+
 for (const seed of ['keystone/ki-repo', '../skills/keystone/ki-repo']) {
   const pathSeed = fixture()
   try {

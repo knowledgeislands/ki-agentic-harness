@@ -28,6 +28,7 @@ const SCRIPTS = dirname(fileURLToPath(import.meta.url))
 const AUDIT = join(SCRIPTS, 'audit.ts')
 const CONFORM = join(SCRIPTS, 'conform.ts')
 const EDUCATE = join(SCRIPTS, 'educate.ts')
+const BOOTSTRAP = join(SCRIPTS, '..', '..', 'ki-bootstrap', 'scripts', 'bootstrap.ts')
 const MKFIFO = ['/usr/bin/mkfifo', '/bin/mkfifo'].find((path) => existsSync(path))
 
 let failed = false
@@ -101,6 +102,40 @@ function prepareConformFixture(initial: string | null): { dir: string; env: Node
 const templateRun = run(AUDIT, ['--educate'])
 const template = templateRun.out
 check('audit --educate exits cleanly', templateRun.code === 0)
+
+function auditFindings(output: string): Array<{ code?: string; level?: string; message?: string }> {
+  return output
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map((line) => JSON.parse(line) as { record?: string; code?: string; level?: string; message?: string })
+    .filter((event) => event.record === 'finding')
+}
+
+const incompleteCapability = fixture('[ki-repo]\n[ki-authoring]\n')
+try {
+  execFileSync('git', ['init', '-q', incompleteCapability])
+  const result = run(AUDIT, [incompleteCapability])
+  const finding = auditFindings(result.out).find((event) => event.code === 'CAPABILITY-COMPLETE')
+  check('CAPABILITY-COMPLETE missing local payloads → fails', result.code !== 0 && finding?.level === 'FAIL')
+  check(
+    'CAPABILITY-COMPLETE missing local payloads → gives the educate repair route',
+    finding?.message?.includes('.ki-meta/bin/ki-educate') === true
+  )
+} finally {
+  rmSync(incompleteCapability, { recursive: true, force: true })
+}
+
+const completeCapability = fixture('[ki-repo]\n[ki-authoring]\n')
+try {
+  const bootstrapped = run(BOOTSTRAP, [completeCapability])
+  execFileSync('git', ['init', '-q', completeCapability])
+  const result = run(AUDIT, [completeCapability])
+  const finding = auditFindings(result.out).find((event) => event.code === 'CAPABILITY-COMPLETE')
+  check('CAPABILITY-COMPLETE bootstrapped governance roots → bootstrap exits cleanly', bootstrapped.code === 0)
+  check('CAPABILITY-COMPLETE bootstrapped governance roots → emits no failure', finding === undefined && result.code === 0)
+} finally {
+  rmSync(completeCapability, { recursive: true, force: true })
+}
 
 // Missing file: the owner emits the complete canonical template.
 const missing = fixture(null)

@@ -83,6 +83,7 @@ import {
   SKILLS_ROOT,
   SkillResolutionError,
   skillDir,
+  VENDOR_MODES,
   vendorModesOf,
   vendorUnit
 } from './resolve.ts'
@@ -1097,6 +1098,37 @@ function resolvedSetOrExit(target: string, seeds: string[]): string[] {
   }
 }
 
+// A configured root is a target-local governance contract, not merely a name that
+// happens to resolve in the harness index. Process skills and the bootstrap
+// chain-starter stay globally installed, so they must not appear in a project's
+// `.ki-config.toml`: they have no self-contained EDUCATE / AUDIT / CONFORM payload
+// to publish. Check this before opening the `.ki-meta` transaction so a malformed
+// declaration cannot produce a partial generated footprint.
+function assertCompleteCapabilitySetOrExit(set: string[]): void {
+  const incomplete: string[] = []
+  for (const skill of set) {
+    const declared = vendorModesOf(skill)
+    const missingModes = VENDOR_MODES.filter((mode) => !declared?.includes(mode))
+    const missingPayloads = (['educate', 'audit', 'conform'] as const).filter((mode) => vendorUnit(skill, mode) === null)
+    if (missingModes.length || missingPayloads.length) {
+      const details = [
+        missingModes.length ? `vendors: ${missingModes.join(', ')}` : '',
+        missingPayloads.length ? `scripts: ${missingPayloads.map((mode) => `${mode}.ts`).join(', ')}` : ''
+      ]
+        .filter(Boolean)
+        .join('; ')
+      incomplete.push(`${skill} (${details})`)
+    }
+  }
+  if (incomplete.length === 0) return
+  console.error(
+    `\x1b[31mFAIL${RESET}  [CAPABILITY-COMPLETE] declared skill roots must publish EDUCATE, AUDIT, and CONFORM locally: ${incomplete.join(
+      ', '
+    )} — remove process/global-only tables from .ki-config.toml, or repair the governance skill before EDUCATE`
+  )
+  process.exit(1)
+}
+
 function buildCandidate(
   staging: string,
   set: string[],
@@ -1633,6 +1665,7 @@ function main(): void {
     scaffoldRepoConfig(target, boundTarget.identity, dryRun)
     set = resolvedSetOrExit(target, seeds)
   }
+  assertCompleteCapabilitySetOrExit(set)
   console.log(`${DIM}bootstrap ${target} — skills: ${set.join(', ')}${RESET}`)
 
   const ref = resolveRef(refOverride ?? harnessRef())
