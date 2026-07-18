@@ -20,6 +20,10 @@ Rename the roadmap skill to describe its repository-level scope without implying
 
 Extend the then-current roadmap skill so every theme has a stable short code and plan filenames and references use `<THEME>-<NNN>` — for example, `FND-003-enforce-checker-json-contract.md` in `foundation-tooling`. Update the standard, plan parser, generated index, dependency references, and audit/conform rules together. Decide the safe migration of existing plan ids before renaming any current plan; do not alter an in-progress plan's identity opportunistically.
 
+### Align the four-repository ecosystem contract
+
+Record and operationalise the authority and publication relationship between Arcadia Principal, the KI Agentic Harness, KI Specifications, and the KI Website. Establish mirrored ecosystem decisions, mutually reinforcing repository orientation, lightweight cross-repository choreography, and a stable public bootstrap address. Keep the website independently deployable from source-labelled vendored material, without transferring canonical ownership from the base, harness, or specifications.
+
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
