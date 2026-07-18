@@ -85,4 +85,9 @@ Each test follows one of those production commands and moves with its owner.
 
 This plan makes the desired current contract directly, without a compatibility path for existing global symlink footprints; they will be reconciled by the new installer.
 
-Hand off this website roadmap item: **Publish stable user and repository harness entry points** — bind `/harness/install` to the one-time user installer and `/harness/bootstrap` to the zero-install repository bootstrap entry point. The friendly routes are the user-facing contract; no public developer-link or hook-only route is required now.
+Hand off this website roadmap item: **Publish stable user and repository harness entry points**. The friendly routes are the user-facing contract; no public developer-link or hook-only route is required now.
+
+- `https://knowledgeislands.info/harness/install` serves or redirects to `https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/user-install.sh`.
+- `https://knowledgeislands.info/harness/bootstrap` serves or redirects to `https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh`.
+
+The website binding must preserve shell arguments, including a caller-supplied pinned ref. The raw GitHub files are implementation locations; the two `knowledgeislands.info` URLs are the stable documented interface.
