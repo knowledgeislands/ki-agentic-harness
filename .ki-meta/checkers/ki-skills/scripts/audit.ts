@@ -578,6 +578,21 @@ function lintSkill(skillDir: string): Finding[] {
       }
     }
   }
+
+  // SHAPE-17: every skill declares its dependency intent explicitly. An empty
+  // flow list is meaningful: it proves the author considered dependencies and
+  // chose none. Bootstrap validates the referenced skill names and a target's
+  // matching .ki-config.toml declarations when the skill is selected.
+  if (!fm.present.has('depends-on')) {
+    fail(
+      'SHAPE-17',
+      'frontmatter carries no `depends-on:` declaration — declare `depends-on: []` when the skill has no governance dependencies'
+    )
+  } else {
+    const dependencyLine = (fm.keys.get('depends-on') ?? '').trim()
+    if (!/^\[[^\]]*\]$/.test(dependencyLine))
+      fail('SHAPE-17', `\`depends-on:\` must be a single-line flow list (got \`${dependencyLine}\`)`)
+  }
   const bodyLines = body.split(/\r?\n/).length
   if (bodyLines > BODY_MAX_LINES)
     warn('SIZE-1', `SKILL.md body is ${bodyLines} lines (recommended < ${BODY_MAX_LINES}) — split into references/`)

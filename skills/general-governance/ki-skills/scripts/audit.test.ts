@@ -202,11 +202,15 @@ const withReporter = "import { emitCheckerReporter } from './checker-reporter.ts
 // ── SHAPE-12 / SHAPE-13 fixtures ──────────────────────────────────────────────
 
 /** Build a throwaway skill dir from full frontmatter fields + body markdown. */
-function modeFixture(name: string, opts: { desc?: string; hint?: string; vendors?: string; body: string }): { base: string; dir: string } {
+function modeFixture(
+  name: string,
+  opts: { dependsOn?: string; desc?: string; hint?: string; vendors?: string; body: string }
+): { base: string; dir: string } {
   const base = mkdtempSync(join(tmpdir(), 'ki-skills-test-'))
   const dir = join(base, name)
   mkdirSync(join(dir, 'scripts'), { recursive: true })
   const fm = ['---', `name: ${name}`]
+  if (opts.dependsOn !== undefined) fm.push(`depends-on: ${opts.dependsOn}`)
   if (opts.vendors) fm.push(`vendors: ${opts.vendors}`)
   fm.push(`description: ${opts.desc ?? 'A throwaway fixture skill used only to exercise the SHAPE-12/13 mode checks in the linter.'}`)
   if (opts.hint) fm.push(`argument-hint: '${opts.hint}'`)
@@ -239,6 +243,36 @@ const CONFORMANT_BODY = [
   '',
   'Re-anchor the standard.'
 ].join('\n')
+
+// ── SHAPE-17: every skill has an explicit dependency declaration ─────────────
+{
+  const { base, dir } = modeFixture('ki-fixture-missing-dependencies', {
+    hint: FULL_HINT,
+    vendors: VENDORS('ki-fixture-missing-dependencies'),
+    body: CONFORMANT_BODY
+  })
+  try {
+    const result = runResult(dir)
+    check('missing depends-on → SHAPE-17 FAIL', result.status !== 0 && hasMechanicalFinding(result.output, 'SHAPE-17'))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
+
+{
+  const { base, dir } = modeFixture('ki-fixture-malformed-dependencies', {
+    dependsOn: 'ki-authoring',
+    hint: FULL_HINT,
+    vendors: VENDORS('ki-fixture-malformed-dependencies'),
+    body: CONFORMANT_BODY
+  })
+  try {
+    const result = runResult(dir)
+    check('non-list depends-on → SHAPE-17 FAIL', result.status !== 0 && hasMechanicalFinding(result.output, 'SHAPE-17'))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
 
 // ── Conformant wrapper + `### Mode` H3s → no SHAPE-12/13 warns ──
 {
