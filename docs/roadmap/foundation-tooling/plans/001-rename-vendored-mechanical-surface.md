@@ -1,7 +1,7 @@
 ---
 id: '001'
 title: Rename the vendored mechanical surface to .ki-meta/checkers
-status: open
+status: in-progress
 roadmap: foundation-tooling/rename-the-vendored-mechanical-surface-to-ki-meta-checkers
 blocks: foundation-tooling/002
 blocked-by: —

@@ -238,11 +238,11 @@ try {
   check('seeded ki-repo → owner scaffolds both foundation roots', JSON.stringify(roots) === JSON.stringify(['ki-authoring', 'ki-repo']))
   check(
     'seeded ki-repo → same run vendors both foundations',
-    existsSync(join(seededRepo, '.ki-meta', 'skills', 'ki-repo')) && existsSync(join(seededRepo, '.ki-meta', 'skills', 'ki-authoring'))
+    existsSync(join(seededRepo, '.ki-meta', 'checkers', 'ki-repo')) && existsSync(join(seededRepo, '.ki-meta', 'checkers', 'ki-authoring'))
   )
   check(
     'seeded ki-repo → checker module is copied beneath its consumer',
-    existsSync(join(seededRepo, '.ki-meta', 'skills', 'ki-authoring', 'vendored', 'ki-skills', 'checker-reporter.ts'))
+    existsSync(join(seededRepo, '.ki-meta', 'checkers', 'ki-authoring', 'vendored', 'ki-skills', 'checker-reporter.ts'))
   )
   check(
     'seeded ki-repo → same run publishes regular runtime skill copies',
@@ -261,13 +261,13 @@ try {
   check('checker-module provider → bootstrap exits cleanly', result.status === 0)
   check(
     'checker-module provider → owns a standalone local payload',
-    existsSync(join(checkerRoot, '.ki-meta', 'skills', 'ki-skills', 'checker-reporter.ts'))
+    existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'checker-reporter.ts'))
   )
   check(
     'checker-module provider → carries rubric metadata beside its runnable payload',
-    existsSync(join(checkerRoot, '.ki-meta', 'skills', 'ki-skills', 'references', 'rubric.md'))
+    existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'references', 'rubric.md'))
   )
-  const vendoredAudit = spawnSync('bun', [join(checkerRoot, '.ki-meta', 'skills', 'ki-skills', 'audit.ts'), SKILLS_ROOT], {
+  const vendoredAudit = spawnSync('bun', [join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'audit.ts'), SKILLS_ROOT], {
     encoding: 'utf8'
   })
   const firstRecord = vendoredAudit.stdout.split(/\r?\n/, 1)[0]
@@ -282,7 +282,7 @@ try {
       !canonicalAggregate.stdout.includes('invalid checker reports')
   )
 
-  const invalidSkill = join(checkerRoot, '.ki-meta', 'skills', 'ki-invalid')
+  const invalidSkill = join(checkerRoot, '.ki-meta', 'checkers', 'ki-invalid')
   mkdirSync(invalidSkill, { recursive: true })
   writeFileSync(join(invalidSkill, 'audit.ts'), "process.stdout.write('legacy prose\\n')\n")
   const malformedAggregate = spawnSync('bun', [aggregate, 'audit'], { cwd: checkerRoot, encoding: 'utf8' })
@@ -338,7 +338,7 @@ try {
   check('bare re-bootstrap → existing config bytes remain the exact prefix', config.startsWith(partialRepoText))
   check(
     'bare re-bootstrap → missing authoring root is declared and vendored',
-    declaredSkills(config).includes('ki-authoring') && existsSync(join(partialRepo, '.ki-meta', 'skills', 'ki-authoring'))
+    declaredSkills(config).includes('ki-authoring') && existsSync(join(partialRepo, '.ki-meta', 'checkers', 'ki-authoring'))
   )
 } finally {
   rmSync(partialRepo, { recursive: true, force: true })
@@ -395,7 +395,7 @@ try {
   check('BOOT-11 fresh file-kind vendors → explicit PASS with no drift', freshAudit.status === 0 && freshBoot11?.level === 'PASS')
 
   for (const mode of ['audit', 'conform']) {
-    const vendored = join(sourceBearing, '.ki-meta', 'skills', 'ki-authoring', `${mode}.ts`)
+    const vendored = join(sourceBearing, '.ki-meta', 'checkers', 'ki-authoring', `${mode}.ts`)
     writeFileSync(vendored, `${readFileSync(vendored, 'utf8')}\n// injected BOOT-11 drift\n`)
 
     const driftAudit = spawnSync('bun', [AUDIT, sourceBearing], { encoding: 'utf8' })
@@ -425,7 +425,7 @@ try {
   )
   writeFileSync(canonicalAudit, canonicalAuditBytes)
 
-  const vendoredAudit = join(sourceBearing, '.ki-meta', 'skills', 'ki-authoring', 'audit.ts')
+  const vendoredAudit = join(sourceBearing, '.ki-meta', 'checkers', 'ki-authoring', 'audit.ts')
   const vendoredAuditBytes = readFileSync(vendoredAudit)
   rmSync(vendoredAudit)
   symlinkSync(canonicalAudit, vendoredAudit)

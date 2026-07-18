@@ -282,14 +282,14 @@ say(`\n${paint(C.cyan, 'package.json — aggregate entrypoints + per-skill keys'
     any = true
   }
   // Derived per-skill keys for every vendored skill in .ki-meta (offline-safe).
-  const metaSkills = join(target, '.ki-meta', 'skills')
-  if (existsSync(metaSkills)) {
-    for (const skill of readdirSync(metaSkills).filter((d) => statSync(join(metaSkills, d)).isDirectory())) {
+  const metaCheckers = join(target, '.ki-meta', 'checkers')
+  if (existsSync(metaCheckers)) {
+    for (const skill of readdirSync(metaCheckers).filter((d) => statSync(join(metaCheckers, d)).isDirectory())) {
       const suffix = skill.replace(/^ki-/, '')
       for (const mode of ['audit', 'conform'] as const) {
-        if (!existsSync(join(metaSkills, skill, `${mode}.ts`))) continue
+        if (!existsSync(join(metaCheckers, skill, `${mode}.ts`))) continue
         const key = `ki:${suffix}:${mode}`
-        const val = `bun .ki-meta/skills/${skill}/${mode}.ts .`
+        const val = `bun .ki-meta/checkers/${skill}/${mode}.ts .`
         if (scripts[key] !== val) {
           log('fix', scripts[key] ? `${key}: repointed → vendored ${skill}/${mode}.ts` : `${key}: missing → added`)
           rec(

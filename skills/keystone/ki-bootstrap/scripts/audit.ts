@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * ki-bootstrap — BOOT-9: audit a target repo's vendored `.ki-meta/skills/` set
+ * ki-bootstrap — BOOT-9: audit a target repo's vendored `.ki-meta/checkers/` set
  * against what it *should* be. BOOT-11 additionally checks direct source copies
  * when the target carries matching canonical skills. Also emits BOOT-10, the always-on reminder that
  * AUDIT's judgmental sweep — ADR-KI-HARNESS-SKILLS-001's AUDIT contract, applied
@@ -14,7 +14,7 @@
  * re-bootstrapping already does: it resolves the expected set the same way
  * `bootstrap.ts` does (baseline ∪ declared `[ki-*]` tables ∪ the transitive
  * `implies:` closure, restricted to skills that actually carry a checker) and diffs
- * it against the target's `.ki-meta/skills/*` directories. Any drift — stale config,
+ * it against the target's `.ki-meta/checkers/*` directories. Any drift — stale config,
  * an upstream skill add/remove, a partial re-vendor — surfaces as a WARN rather than
  * silently going unnoticed; `bun skills/keystone/ki-bootstrap/scripts/bootstrap.ts <target>`
  * fixes it by re-vendoring. In a source-bearing harness, a direct source-copy mismatch is
@@ -50,7 +50,8 @@ const RUBRIC = 'references/rubric.md'
 
 const argv = process.argv.slice(2)
 const target = resolve(argv.find((a) => !a.startsWith('--')) ?? '.')
-const vendoredRoot = join(target, '.ki-meta', 'skills')
+const vendoredRoot = join(target, '.ki-meta', 'checkers')
+const retiredRoot = join(target, '.ki-meta', 'skills')
 
 const emitBootstrap = (): never => {
   const all = [...findings, ...judgmentFindingsFromRubric(join(import.meta.dirname, '..', 'references', 'rubric.md'))]
@@ -75,8 +76,12 @@ function expectedResolvedSet(): string[] {
 }
 const resolved = expectedResolvedSet()
 
+if (existsSync(retiredRoot)) {
+  add('WARN', 'BOOT-9', 'retired .ki-meta/skills/ payload is present — re-run EDUCATE to migrate it safely', RUBRIC, '.ki-meta/skills')
+}
+
 if (!existsSync(vendoredRoot)) {
-  add('NA', 'BOOT-9', 'No vendored skills are present — nothing to check yet.', RUBRIC, '.ki-meta/skills')
+  add('NA', 'BOOT-9', 'No vendored checkers are present — nothing to check yet.', RUBRIC, '.ki-meta/checkers')
   emitBootstrap()
 }
 
@@ -97,7 +102,7 @@ if (missing.length === 0 && extra.length === 0) {
     'BOOT-9',
     `Vendored skill set matches the expected resolved set (${expected.length} skill${expected.length === 1 ? '' : 's'}).`,
     RUBRIC,
-    '.ki-meta/skills'
+    '.ki-meta/checkers'
   )
 }
 
@@ -142,7 +147,7 @@ if (checked === 0) {
     'BOOT-11',
     'canonical skill sources are not inside the target repo; source-copy integrity is not applicable',
     RUBRIC,
-    '.ki-meta/skills'
+    '.ki-meta/checkers'
   )
 } else if (drifted.length) {
   add(
@@ -150,7 +155,7 @@ if (checked === 0) {
     'BOOT-11',
     `canonical source/vendor integrity mismatch: ${drifted.join(', ')} — restore or format sources, then re-bootstrap before committing`,
     RUBRIC,
-    '.ki-meta/skills'
+    '.ki-meta/checkers'
   )
 } else {
   add(
@@ -158,7 +163,7 @@ if (checked === 0) {
     'BOOT-11',
     `${checked} direct file-kind vendor unit${checked === 1 ? '' : 's'} match canonical source byte-for-byte`,
     RUBRIC,
-    '.ki-meta/skills'
+    '.ki-meta/checkers'
   )
 }
 
@@ -166,9 +171,9 @@ if (missing.length)
   add(
     'WARN',
     'BOOT-9',
-    `missing from .ki-meta/skills/: ${missing.join(', ')} — re-run \`bun skills/keystone/ki-bootstrap/scripts/bootstrap.ts ${target}\``,
+    `missing from .ki-meta/checkers/: ${missing.join(', ')} — re-run \`bun skills/keystone/ki-bootstrap/scripts/bootstrap.ts ${target}\``,
     RUBRIC,
-    '.ki-meta/skills'
+    '.ki-meta/checkers'
   )
 if (extra.length)
   add(
@@ -176,7 +181,7 @@ if (extra.length)
     'BOOT-9',
     `vendored but no longer expected: ${extra.join(', ')} — a dropped table or upstream implies change; re-bootstrap to prune`,
     RUBRIC,
-    '.ki-meta/skills'
+    '.ki-meta/checkers'
   )
 
 // Drift here is always conformable by re-vendoring (WARN, never FAIL) — mirrors BOOT-1.

@@ -8,7 +8,7 @@
  * `vendors:` unit(s) (SKILL.md frontmatter — `resolve.ts#vendorUnit`; falls back to
  * filename-convention discovery with a WARN if undeclared) and vendors either a
  * *copy* of the checker file (SCRIPT-7 — copies, not symlinks) or a generated thin
- * command-wrapper into the target's `.ki-meta/skills/<skill>/` (named by verb:
+ * command-wrapper into the target's `.ki-meta/checkers/<skill>/` (named by verb:
  * `audit.ts`/`conform.ts`), plus a rendered HELP snapshot (`help.md`). It then writes
  * a `.ki-meta/bin/aggregate.ts` that discovers and fans out over those copies, the
  * four `package.json`-free entry points `.ki-meta/bin/{ki-audit, ki-conform, ki-educate,
@@ -92,6 +92,8 @@ const DIM = '\x1b[2m'
 const RESET = '\x1b[0m'
 
 const VENDOR_DIR = '.ki-meta' // relative to the target repo root (dot-prefixed, generated-not-authored)
+const CHECKERS_DIR = 'checkers'
+const RETIRED_CHECKERS_DIR = 'skills'
 const REPO_SLUG = 'knowledgeislands/ki-agentic-harness'
 
 // Cross-skill operational scripts a harness-shaped target needs to run its own
@@ -139,7 +141,7 @@ function resolveRef(ref: string): string {
 }
 
 // The aggregate runner vendored into every target — discovers the vendored checkers
-// under its sibling `../skills/` dir (an allowlist: only that dir is scanned, so `bin/`
+// under its sibling `../checkers/` dir (an allowlist: only that dir is scanned, so `bin/`
 // and the report dirs are never mistaken for skills) and fans out over them for the
 // given verb. It reads the filesystem, not `package.json`, so it works in a repo that
 // has no `package.json` at all, and stays correct as skills are vendored in or out.
@@ -148,7 +150,7 @@ function resolveRef(ref: string): string {
 // (ADR-KI-HARNESS-006's Consequences: "EDUCATE vendors nothing per skill... the
 // aggregate educate verb is instead the local re-sync prompt").
 const AGGREGATE_RUNNER = `#!/usr/bin/env bun
-// Vendored by ki-bootstrap. Runs each vendored skill checker under ../skills/ in
+// Vendored by ki-bootstrap. Runs each vendored skill checker under ../checkers/ in
 // sequence for the given verb — no package.json required.
 // Usage: bun .ki-meta/bin/aggregate.ts <audit|conform|educate|help>
 import { execFileSync, spawnSync } from 'node:child_process'
@@ -184,9 +186,9 @@ if (verb === 'refresh') {
 // carries the identity.
 const pattern = verb === 'audit' ? /^(audit|lint)\\.ts$/ : verb === 'conform' ? /^conform\\.ts$/ : null
 if (!pattern) process.exit(0)
-const skillsDir = join(binDir, '..', 'skills')
-if (!existsSync(skillsDir)) process.exit(0)
-const skills = readdirSync(skillsDir, { withFileTypes: true })
+const checkersDir = join(binDir, '..', 'checkers')
+if (!existsSync(checkersDir)) process.exit(0)
+const checkers = readdirSync(checkersDir, { withFileTypes: true })
   .filter((e) => e.isDirectory())
   .map((e) => e.name)
   .sort()
@@ -325,8 +327,8 @@ let failed = false
 const recap = []
 const reportErrors = []
 const extraArgs = process.argv.slice(3)
-for (const skill of skills) {
-  const dir = join(skillsDir, skill)
+for (const skill of checkers) {
+  const dir = join(checkersDir, skill)
   const script = readdirSync(dir).find((f) => pattern.test(f))
   if (!script) continue
   const key = 'ki:' + skill.replace(/^ki-/, '') + ':' + verb
@@ -403,7 +405,7 @@ set -eu
 case "\${1:-}" in
   -h|--help)
     echo "usage: ki-audit [audit|conform|educate|help] [--dry-run ...]   (default verb: audit)"
-    echo "  runs each vendored skill checker under .ki-meta/skills/ for the given verb."
+    echo "  runs each vendored skill checker under .ki-meta/checkers/ for the given verb."
     echo "  audit    read-only self-check (the default verb)"
     echo "  conform  apply the mechanical fixes (same as ./.ki-meta/bin/ki-conform)"
     echo "  educate     re-sync the vendored scripts from the harness (same as ./.ki-meta/bin/ki-educate)"
@@ -428,7 +430,7 @@ set -eu
 case "\${1:-}" in
   -h|--help)
     echo "usage: ki-conform [--dry-run]"
-    echo "  applies each vendored skill's mechanical fixes across .ki-meta/skills/."
+    echo "  applies each vendored skill's mechanical fixes across .ki-meta/checkers/."
     echo "  --dry-run  report what would change without writing."
     exit 0
     ;;
@@ -448,13 +450,13 @@ set -eu
 meta="$(cd "$(dirname "$0")/.." && pwd)"
 if [ $# -eq 0 ]; then
   echo "governed skills (./.ki-meta/bin/ki-help <skill>):"
-  for d in "$meta"/skills/*/; do
+  for d in "$meta"/checkers/*/; do
     s="$(basename "$d")"
     [ -f "$d/help.md" ] && echo "  $s"
   done
   exit 0
 fi
-f="$meta/skills/$1/help.md"
+f="$meta/checkers/$1/help.md"
 if [ ! -f "$f" ]; then
   echo "no help vendored for '$1'" >&2
   exit 1
@@ -565,10 +567,68 @@ function snapshotTree(metaDir: string, rel: string, out: OwnedSnapshot): void {
 
 function snapshotOwned(metaDir: string): OwnedSnapshot {
   const out: OwnedSnapshot = new Map()
-  for (const rel of ['skills', 'bin', 'manifest.json']) {
+  for (const rel of [CHECKERS_DIR, RETIRED_CHECKERS_DIR, 'bin', 'manifest.json']) {
     if (lstatOrNull(join(metaDir, rel))) snapshotTree(metaDir, rel, out)
   }
   return out
+}
+
+// A pre-checker-layout `.ki-meta/skills/` tree is removed only when the manifest
+// proves that every file is the generated payload it claims to be. This is a
+// deliberately one-way current-state migration: a stale, hand-edited, or unsafe
+// legacy tree remains untouched and makes EDUCATE fail rather than being guessed at.
+function validateRetiredCheckerLayout(metaDir: string): void {
+  const retired = join(metaDir, RETIRED_CHECKERS_DIR)
+  if (!lstatOrNull(retired)) return
+
+  const manifestPath = join(metaDir, 'manifest.json')
+  const manifestEntry = lstatOrNull(manifestPath)
+  if (!manifestEntry || manifestEntry.isSymbolicLink() || !manifestEntry.isFile()) {
+    throw new Error(`cannot safely migrate ${VENDOR_DIR}/${RETIRED_CHECKERS_DIR}: manifest.json is missing or unsafe`)
+  }
+
+  let files: Record<string, string>
+  try {
+    const parsed = JSON.parse(readFileSync(manifestPath, 'utf8')) as { files?: unknown }
+    if (!parsed.files || typeof parsed.files !== 'object' || Array.isArray(parsed.files)) throw new Error('files is not an object')
+    files = parsed.files as Record<string, string>
+  } catch (error) {
+    throw new Error(`cannot safely migrate ${VENDOR_DIR}/${RETIRED_CHECKERS_DIR}: manifest.json is invalid (${(error as Error).message})`)
+  }
+
+  const tree = new Map<string, EntrySnapshot>()
+  snapshotTree(metaDir, RETIRED_CHECKERS_DIR, tree)
+  const expected = Object.entries(files)
+    .filter(([rel]) => rel.startsWith(`${VENDOR_DIR}/${RETIRED_CHECKERS_DIR}/`))
+    .map(([rel, hash]) => [rel.slice(VENDOR_DIR.length + 1), hash] as const)
+    .sort(([a], [b]) => a.localeCompare(b))
+  const actualFiles = [...tree.entries()].filter(([, entry]) => entry.kind === 'file').sort(([a], [b]) => a.localeCompare(b))
+  const expectedDirectories = new Set<string>([RETIRED_CHECKERS_DIR])
+  for (const [rel] of expected) {
+    let parent = dirname(rel)
+    while (parent !== '.' && parent !== RETIRED_CHECKERS_DIR) {
+      expectedDirectories.add(parent)
+      parent = dirname(parent)
+    }
+  }
+  const actualDirectories = [...tree.entries()]
+    .filter(([, entry]) => entry.kind === 'directory')
+    .map(([rel]) => rel)
+    .sort()
+
+  if (expected.length !== actualFiles.length || JSON.stringify(actualDirectories) !== JSON.stringify([...expectedDirectories].sort())) {
+    throw new Error(`cannot safely migrate ${VENDOR_DIR}/${RETIRED_CHECKERS_DIR}: manifest tree does not match the retired payload`)
+  }
+  for (const [[rel, hash], [actualRel, entry]] of expected.map((value, index) => [value, actualFiles[index]] as const)) {
+    if (
+      rel !== actualRel ||
+      entry.kind !== 'file' ||
+      !/^[0-9a-f]{64}$/.test(hash) ||
+      createHash('sha256').update(entry.bytes).digest('hex') !== hash
+    ) {
+      throw new Error(`cannot safely migrate ${VENDOR_DIR}/${RETIRED_CHECKERS_DIR}: manifest mismatch at ${rel}`)
+    }
+  }
 }
 
 function sameOwnedSnapshot(a: OwnedSnapshot, b: OwnedSnapshot): boolean {
@@ -676,11 +736,11 @@ function createStaging(metaDir: string): { path: string; identity: EntrySnapshot
 
 function validateGeneration(staging: string, journal: OwnedSnapshot, manifestFiles: Record<string, string>): OwnedSnapshot {
   const topLevel = readdirSync(staging).sort()
-  if (JSON.stringify(topLevel) !== JSON.stringify(['bin', 'manifest.json', 'skills'])) {
+  if (JSON.stringify(topLevel) !== JSON.stringify(['bin', CHECKERS_DIR, 'manifest.json'].sort())) {
     throw new Error(`candidate generation has unexpected top-level entries: ${topLevel.join(', ')}`)
   }
   const tree = new Map<string, EntrySnapshot>()
-  for (const rel of ['skills', 'bin', 'manifest.json']) {
+  for (const rel of [CHECKERS_DIR, 'bin', 'manifest.json']) {
     if (!lstatOrNull(join(staging, rel))) throw new Error(`candidate generation is missing ${rel}`)
     snapshotTree(staging, rel, tree)
   }
@@ -737,12 +797,12 @@ function vendorCheckerModulePayload(
 ): VendoredFile[] {
   const copied: VendoredFile[] = []
   const vendorRoot = ownModule ? destDir : join(destDir, 'vendored', module.provider)
-  const vendorRootRel = ownModule ? join('skills', skill) : join('skills', skill, 'vendored', module.provider)
+  const vendorRootRel = ownModule ? join(CHECKERS_DIR, skill) : join(CHECKERS_DIR, skill, 'vendored', module.provider)
   const target = join(vendorRoot, payload.targetName)
   const targetRel = join(vendorRootRel, payload.targetName)
 
   mkdirSync(vendorRoot, { recursive: true })
-  if (!ownModule) recordGenerated(journal, generationRoot, join('skills', skill, 'vendored'))
+  if (!ownModule) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, 'vendored'))
   recordGenerated(journal, generationRoot, vendorRootRel)
 
   const copyTree = (source: string, destination: string, rel: string): void => {
@@ -794,7 +854,7 @@ function vendorSkill(
   // Which script modes to copy: the skill's declared list ∩ {audit, conform}, or — for
   // a skill still on filename-convention discovery (no `vendors:`) — both, as before.
   const scriptModes = SCRIPT_MODES.filter((m) => !declared || declared.includes(m))
-  const destDir = join(generationRoot, 'skills', skill)
+  const destDir = join(generationRoot, CHECKERS_DIR, skill)
   const written: VendoredFile[] = []
 
   for (const mode of scriptModes) {
@@ -810,13 +870,13 @@ function vendorSkill(
   // footprint remains standalone rather than reaching back into harness source.
   const rubricSource = join(skillDir(skill), 'references', 'rubric.md')
   if (existsSync(rubricSource)) {
-    const rubricRel = join('skills', skill, 'references', 'rubric.md')
+    const rubricRel = join(CHECKERS_DIR, skill, 'references', 'rubric.md')
     const rubricAbs = join(generationRoot, rubricRel)
     console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${rubricRel} (rubric metadata)${RESET}`)
     if (!dryRun) {
       if (!journal) throw new Error('candidate generation requires a creation journal')
       mkdirSync(dirname(rubricAbs), { recursive: true })
-      recordGenerated(journal, generationRoot, join('skills', skill, 'references'))
+      recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, 'references'))
       copyRegularFile(rubricSource, rubricAbs)
       recordGenerated(journal, generationRoot, rubricRel)
       written.push({ rel: `${VENDOR_DIR}/${rubricRel}`, abs: rubricAbs })
@@ -829,7 +889,7 @@ function vendorSkill(
   for (const moduleName of checkerModulesOf(skill)) {
     const module = { provider: skill, module: moduleName }
     const payload = checkerModulePayload(module)
-    const rel = `${VENDOR_DIR}/skills/${skill}/${payload.targetName}`
+    const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/${payload.targetName}`
     console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (owned checker module payload)${RESET}`)
     if (!dryRun) {
       if (!journal) throw new Error('candidate generation requires a creation journal')
@@ -839,7 +899,7 @@ function vendorSkill(
 
   for (const module of checkerDependenciesOf(skill)) {
     const payload = checkerModulePayload(module)
-    const rel = `${VENDOR_DIR}/skills/${skill}/vendored/${module.provider}/${payload.targetName}`
+    const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/vendored/${module.provider}/${payload.targetName}`
     console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (checker module payload)${RESET}`)
     if (!dryRun) {
       if (!journal) throw new Error('candidate generation requires a creation journal')
@@ -860,13 +920,13 @@ function vendorSkill(
     stdio: ['ignore', 'pipe', 'ignore'],
     env: helpEnv
   })
-  console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/skills/${skill}/help.md (help snapshot)${RESET}`)
+  console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/help.md (help snapshot)${RESET}`)
   if (!dryRun) {
     mkdirSync(destDir, { recursive: true })
-    if (journal) recordGenerated(journal, generationRoot, join('skills', skill))
+    if (journal) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill))
     writeFileSync(helpAbs, help)
-    if (journal) recordGenerated(journal, generationRoot, join('skills', skill, 'help.md'))
-    written.push({ rel: `${VENDOR_DIR}/skills/${skill}/help.md`, abs: helpAbs })
+    if (journal) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, 'help.md'))
+    written.push({ rel: `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/help.md`, abs: helpAbs })
   }
 
   for (const f of written) {
@@ -891,23 +951,23 @@ function vendorOne(
   journal?: OwnedSnapshot
 ): VendoredFile[] {
   const destFile = `${mode}.ts`
-  const rel = `${VENDOR_DIR}/skills/${skill}/${destFile}`
+  const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/${destFile}`
   const abs = join(destDir, destFile)
   if (unit.kind === 'file') {
     console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (file)${RESET}`)
     if (!dryRun) {
       mkdirSync(destDir, { recursive: true })
-      if (journal) recordGenerated(journal, generationRoot, join('skills', skill))
+      if (journal) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill))
       copyRegularFile(join(skillDir(skill), unit.path), abs)
-      if (journal) recordGenerated(journal, generationRoot, join('skills', skill, destFile))
+      if (journal) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, destFile))
     }
   } else {
     console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (command wrapper)${RESET}`)
     if (!dryRun) {
       mkdirSync(destDir, { recursive: true })
-      if (journal) recordGenerated(journal, generationRoot, join('skills', skill))
+      if (journal) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill))
       writeFileSync(abs, commandWrapper(unit.command))
-      if (journal) recordGenerated(journal, generationRoot, join('skills', skill, destFile))
+      if (journal) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, destFile))
     }
   }
   return [{ rel, abs }]
@@ -969,8 +1029,8 @@ function buildCandidate(
   journal: OwnedSnapshot
 ): { files: Record<string, string>; tree: OwnedSnapshot } {
   const manifestFiles: Record<string, string> = {}
-  mkdirSync(join(staging, 'skills'), { mode: 0o755 })
-  recordGenerated(journal, staging, 'skills')
+  mkdirSync(join(staging, CHECKERS_DIR), { mode: 0o755 })
+  recordGenerated(journal, staging, CHECKERS_DIR)
   mkdirSync(join(staging, 'bin'), { mode: 0o755 })
   recordGenerated(journal, staging, 'bin')
   for (const skill of set) vendorSkill(staging, skill, false, manifestFiles, journal)
@@ -1277,7 +1337,12 @@ function publishCandidate(
     }
 
     const obsoleteFiles = [...before.entries()]
-      .filter(([rel, entry]) => entry.kind === 'file' && (rel.startsWith('skills/') || rel.startsWith('bin/')) && !candidate.has(rel))
+      .filter(
+        ([rel, entry]) =>
+          entry.kind === 'file' &&
+          (rel.startsWith(`${CHECKERS_DIR}/`) || rel.startsWith(`${RETIRED_CHECKERS_DIR}/`) || rel.startsWith('bin/')) &&
+          !candidate.has(rel)
+      )
       .sort(([a], [b]) => a.localeCompare(b))
     for (const [rel, entry] of obsoleteFiles) {
       maybeInjectPruneConflict(metaDir, rel)
@@ -1288,7 +1353,12 @@ function publishCandidate(
       .filter(
         ([rel, entry]) =>
           entry.kind === 'directory' &&
-          (rel === 'skills' || rel === 'bin' || rel.startsWith('skills/') || rel.startsWith('bin/')) &&
+          (rel === CHECKERS_DIR ||
+            rel === RETIRED_CHECKERS_DIR ||
+            rel === 'bin' ||
+            rel.startsWith(`${CHECKERS_DIR}/`) ||
+            rel.startsWith(`${RETIRED_CHECKERS_DIR}/`) ||
+            rel.startsWith('bin/')) &&
           !candidate.has(rel)
       )
       .sort(([a], [b]) => b.split('/').length - a.split('/').length || b.localeCompare(a))
@@ -1393,6 +1463,7 @@ function runBootstrapTransaction(target: string, targetIdentity: EntrySnapshot &
       writeFileSync(join(established.path, '.bootstrap.lock'), 'third-party lock\n')
     }
     lock = acquireLock(established.path)
+    validateRetiredCheckerLayout(established.path)
     const before = snapshotOwned(established.path)
     staging = createStaging(established.path)
     const { tree } = buildCandidate(staging.path, set, ref, buildJournal)

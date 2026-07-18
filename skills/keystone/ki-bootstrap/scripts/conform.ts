@@ -90,9 +90,9 @@ if (!dryRun) {
 // vendored-set audit is always coverage-scoped (`--all` is a linking concept only —
 // vendoring follows .ki-config coverage, ADR-KI-HARNESS-007), so it is never forwarded here.
 if (run('audit.ts', []) !== 0) {
-  rec('INFO', 'BOOT-9', 'vendored-set drift detected; EDUCATE repairs it', RUBRIC, '.ki-meta/skills/')
+  rec('INFO', 'BOOT-9', 'vendored-set drift detected; EDUCATE repairs it', RUBRIC, '.ki-meta/checkers/')
 } else {
-  rec('PASS', 'BOOT-9', 'vendored-set audit reports no drift', RUBRIC, '.ki-meta/skills/')
+  rec('PASS', 'BOOT-9', 'vendored-set audit reports no drift', RUBRIC, '.ki-meta/checkers/')
 }
 
 const all = [...findings, ...judgmentFindingsFromRubric(join(import.meta.dirname, '..', 'references', 'rubric.md'))]

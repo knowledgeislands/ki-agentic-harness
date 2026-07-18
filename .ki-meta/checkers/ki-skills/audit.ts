@@ -454,7 +454,7 @@ function lintSkill(skillDir: string): Finding[] {
   }
 
   // SCRIPT-9 [M]: no relative import may escape scripts/. `ki-bootstrap` vendors a
-  // skill's scripts payload into every governed repo's .ki-meta/skills/<skill>/ — no
+  // skill's scripts payload into every governed repo's .ki-meta/checkers/<skill>/ — no
   // sibling skill directory or non-script source file is implicitly available. Imports
   // must be satisfied within the local scripts directory, never by a path that happens
   // to work in this harness checkout.

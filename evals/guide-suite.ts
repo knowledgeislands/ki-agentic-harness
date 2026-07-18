@@ -111,11 +111,11 @@ try {
     const p = join(gf, '.ki-meta/bin', bin)
     check(existsSync(p) && (lstatSync(p).mode & 0o111) !== 0, `wrote executable .ki-meta/bin/${bin}`)
   }
-  const repoChecker = join(gf, '.ki-meta/skills/ki-repo/audit.ts')
+  const repoChecker = join(gf, '.ki-meta/checkers/ki-repo/audit.ts')
   check(existsSync(repoChecker), 'vendored the ki-repo checker')
   check(existsSync(repoChecker) && !lstatSync(repoChecker).isSymbolicLink(), 'vendored checker is a copy, not a symlink (SCRIPT-7)')
-  check(existsSync(join(gf, '.ki-meta/skills/ki-repo/help.md')), 'rendered the ki-repo HELP snapshot')
-  check(existsSync(join(gf, '.ki-meta/skills/ki-mcp/audit.ts')), 'declared [ki-mcp] pulled ki-mcp into the vendored set')
+  check(existsSync(join(gf, '.ki-meta/checkers/ki-repo/help.md')), 'rendered the ki-repo HELP snapshot')
+  check(existsSync(join(gf, '.ki-meta/checkers/ki-mcp/audit.ts')), 'declared [ki-mcp] pulled ki-mcp into the vendored set')
 
   // Bootstrap touches no package.json — the ki:* keys are ki-engineering's to wire.
   const pkg = JSON.parse(readFileSync(join(gf, 'package.json'), 'utf8')) as { scripts: Record<string, string> }
@@ -150,7 +150,7 @@ try {
   check(!existsSync(join(pf, 'package.json')), 'bootstrap created no package.json')
   const pfBin = join(pf, '.ki-meta/bin/ki-audit')
   check(existsSync(pfBin) && (lstatSync(pfBin).mode & 0o111) !== 0, 'wrote an executable .ki-meta/bin/ki-audit')
-  check(!existsSync(join(pf, '.ki-meta/skills/ki-engineering')), 'ki-engineering NOT vendored (coverage-detected, not declared)')
+  check(!existsSync(join(pf, '.ki-meta/checkers/ki-engineering')), 'ki-engineering NOT vendored (coverage-detected, not declared)')
   const pfAudit = run('./.ki-meta/bin/ki-audit audit', pf, pfEnv)
   check(!/==> ki:engineering:audit/.test(pfAudit), 'aggregate never invoked a ki-engineering checker')
 } finally {

@@ -16,7 +16,7 @@ Canonical themes and active execution plans.
 - **Title:** Rename the vendored mechanical surface to .ki-meta/checkers
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/rename-the-vendored-mechanical-surface-to-ki-meta-checkers`
-- **Status:** open
+- **Status:** in-progress
 - **Blocks:** foundation-tooling/002
 
 ### [foundation-tooling/002](foundation-tooling/plans/002-make-vendored-educate-standalone.md)

@@ -12,6 +12,7 @@ import {
   readFileSync,
   readlinkSync,
   realpathSync,
+  renameSync,
   rmSync,
   symlinkSync,
   writeFileSync
@@ -83,7 +84,7 @@ try {
 
 for (const [label, rel] of [
   ['partial candidate', 'bin/aggregate.ts'],
-  ['HELP snapshot', 'skills/ki-authoring/help.md']
+  ['HELP snapshot', 'checkers/ki-authoring/help.md']
 ] as const) {
   const root = fixture()
   try {
@@ -206,16 +207,60 @@ try {
   mkdirSync(join(greenfield, '.ki-meta', 'audits'))
   writeFileSync(join(greenfield, '.ki-meta', 'audits', 'report.json'), '{"preserve":true}\n')
   const audits = snapshot(join(greenfield, '.ki-meta', 'audits'))
-  mkdirSync(join(greenfield, '.ki-meta', 'skills', 'obsolete'))
-  writeFileSync(join(greenfield, '.ki-meta', 'skills', 'obsolete', 'audit.ts'), 'obsolete\n')
+  mkdirSync(join(greenfield, '.ki-meta', 'checkers', 'obsolete'))
+  writeFileSync(join(greenfield, '.ki-meta', 'checkers', 'obsolete', 'audit.ts'), 'obsolete\n')
   check('successful re-bootstrap → succeeds', run(greenfield).status === 0)
-  check('successful re-bootstrap → obsolete vendor is pruned', !existsSync(join(greenfield, '.ki-meta', 'skills', 'obsolete')))
+  check('successful re-bootstrap → obsolete checker is pruned', !existsSync(join(greenfield, '.ki-meta', 'checkers', 'obsolete')))
   check('successful re-bootstrap → audits are byte-for-byte preserved', snapshot(join(greenfield, '.ki-meta', 'audits')) === audits)
 } finally {
   rmSync(greenfield, { recursive: true, force: true })
 }
 
-for (const leaf of ['skills', 'bin', 'manifest.json'] as const) {
+const legacyMigration = fixture()
+try {
+  check('legacy checker-layout fixture → initial bootstrap succeeds', run(legacyMigration).status === 0)
+  const meta = join(legacyMigration, '.ki-meta')
+  renameSync(join(meta, 'checkers'), join(meta, 'skills'))
+  const manifestPath = join(meta, 'manifest.json')
+  writeFileSync(manifestPath, readFileSync(manifestPath, 'utf8').replaceAll('.ki-meta/checkers/', '.ki-meta/skills/'))
+  const result = run(legacyMigration)
+  check('generated legacy checker layout → re-bootstrap migrates cleanly', result.status === 0)
+  check('generated legacy checker layout → retired skills directory is removed', !existsSync(join(meta, 'skills')))
+  check('generated legacy checker layout → checkers directory is published', existsSync(join(meta, 'checkers', 'ki-authoring', 'audit.ts')))
+} finally {
+  rmSync(legacyMigration, { recursive: true, force: true })
+}
+
+const staleLegacy = fixture()
+try {
+  check('stale legacy fixture → initial bootstrap succeeds', run(staleLegacy).status === 0)
+  const meta = join(staleLegacy, '.ki-meta')
+  renameSync(join(meta, 'checkers'), join(meta, 'skills'))
+  const manifestPath = join(meta, 'manifest.json')
+  writeFileSync(manifestPath, readFileSync(manifestPath, 'utf8').replaceAll('.ki-meta/checkers/', '.ki-meta/skills/'))
+  const altered = join(meta, 'skills', 'ki-authoring', 'audit.ts')
+  writeFileSync(altered, `${readFileSync(altered, 'utf8')}\n// stale legacy mutation\n`)
+  check('altered legacy checker layout → bootstrap refuses', run(staleLegacy).status !== 0)
+  check('altered legacy checker layout → payload is preserved', readFileSync(altered, 'utf8').includes('stale legacy mutation'))
+} finally {
+  rmSync(staleLegacy, { recursive: true, force: true })
+}
+
+const symlinkedLegacy = fixture()
+const symlinkedLegacyOutside = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-legacy-outside-')))
+try {
+  mkdirSync(join(symlinkedLegacy, '.ki-meta'))
+  writeFileSync(join(symlinkedLegacyOutside, 'sentinel'), 'outside\n')
+  symlinkSync(symlinkedLegacyOutside, join(symlinkedLegacy, '.ki-meta', 'skills'))
+  const before = snapshot(symlinkedLegacyOutside)
+  check('symlinked legacy checker layout → bootstrap refuses', run(symlinkedLegacy).status !== 0)
+  check('symlinked legacy checker layout → outside remains unchanged', snapshot(symlinkedLegacyOutside) === before)
+} finally {
+  rmSync(symlinkedLegacy, { recursive: true, force: true })
+  rmSync(symlinkedLegacyOutside, { recursive: true, force: true })
+}
+
+for (const leaf of ['checkers', 'bin', 'manifest.json'] as const) {
   const root = fixture()
   const outside = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-outside-')))
   try {
@@ -339,7 +384,7 @@ for (const [label, envName] of [
 const rollbackMode = fixture()
 try {
   check('N=2 rollback fixture → initial bootstrap succeeds', run(rollbackMode).status === 0)
-  const obsolete = join(rollbackMode, '.ki-meta', 'skills', 'obsolete')
+  const obsolete = join(rollbackMode, '.ki-meta', 'checkers', 'obsolete')
   mkdirSync(obsolete, { mode: 0o711 })
   chmodSync(obsolete, 0o711)
   writeFileSync(join(obsolete, 'audit.ts'), 'obsolete\n')

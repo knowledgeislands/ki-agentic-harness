@@ -113,7 +113,7 @@ try {
   const bootstrapped = run('bun', [bootstrap, fixture], root)
   check('bootstrap fixture → exits cleanly', bootstrapped.status === 0)
 
-  const fixtureSkill = join(fixture, '.ki-meta', 'skills', 'ki-fixture')
+  const fixtureSkill = join(fixture, '.ki-meta', 'checkers', 'ki-fixture')
   mkdirSync(fixtureSkill, { recursive: true })
   writeFileSync(join(fixtureSkill, 'audit.ts'), auditFixture)
   writeFileSync(join(fixtureSkill, 'conform.ts'), conformFixture)

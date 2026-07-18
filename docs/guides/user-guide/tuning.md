@@ -2,7 +2,7 @@
 
 How to make a session lean — which tools, skills, and MCP servers actually load, and where to cut. This is the operator _how_; the _why_ and the normative budget live in the `ki-tokenomics` skill and its tokenomics standard, which this guide defers to throughout.
 
-A note on invocations: this guide writes the audits as `bun run ki:<skill>:<mode>` — the `package.json` convenience keys this harness carries. Every such key is sugar over a vendored checker any bootstrapped repo already has: `bun run ki:tokenomics:audit` is `bun .ki-meta/skills/ki-tokenomics/audit.ts .`. In a governed repo without a `package.json` (a KB, for instance), run the `.ki-meta` path directly, or the aggregate `./.ki-meta/bin/ki-audit` — see [Onboarding a repository](onboarding.md).
+A note on invocations: this guide writes the audits as `bun run ki:<skill>:<mode>` — the `package.json` convenience keys this harness carries. Every such key is sugar over a vendored checker any bootstrapped repo already has: `bun run ki:tokenomics:audit` is `bun .ki-meta/checkers/ki-tokenomics/audit.ts .`. In a governed repo without a `package.json` (a KB, for instance), run the `.ki-meta` path directly, or the aggregate `./.ki-meta/bin/ki-audit` — see [Onboarding a repository](onboarding.md).
 
 ## The one distinction that matters
 

@@ -14,9 +14,9 @@ _Verify:_ bootstrap a bare fixture (`.ki-config.toml` only, no `package.json`, n
 
 ### BOOT-002 — Vendored copies, not symlinks
 
-EDUCATE MUST vendor each resolved skill's checker (and any `conform-*.ts`) into the target's `.ki-meta/skills/<skill>/` as file **copies**, never symlinks, so they run with no harness beside the repo (SCRIPT-7 / [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)).
+EDUCATE MUST vendor each resolved skill's checker (and any `conform-*.ts`) into the target's `.ki-meta/checkers/<skill>/` as file **copies**, never symlinks, so they run with no harness beside the repo (SCRIPT-7 / [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)).
 
-_Verify:_ after bootstrap, `.ki-meta/skills/ki-repo/audit.ts` in the target is a regular file whose contents equal the harness source, and `git check-ignore` does not ignore it.
+_Verify:_ after bootstrap, `.ki-meta/checkers/ki-repo/audit.ts` in the target is a regular file whose contents equal the harness source, and `git check-ignore` does not ignore it.
 
 ### BOOT-003 — Implied-skill closure
 
@@ -48,9 +48,9 @@ Re-running the idempotent bootstrap chain is the single update path — there ar
 
 ### BOOT-007 — Vendored-set alignment check
 
-The harness MUST be able to verify a target's `.ki-meta/skills/` matches the expected resolved set (baseline ∪ declared `[ki-*]` tables ∪ the transitive `implies:` closure, restricted to skills carrying a checker) — since the `implies:` graph lives only in source SKILL.md frontmatter, this check runs harness-side, not from the target's own standalone `.ki-meta/bin/ki-audit`. Drift is a WARN, never a FAIL — a re-bootstrap always reconciles it. See [BOOT-9](../../skills/keystone/ki-bootstrap/references/rubric.md).
+The harness MUST be able to verify a target's `.ki-meta/checkers/` matches the expected resolved set (baseline ∪ declared `[ki-*]` tables ∪ the transitive `implies:` closure, restricted to skills carrying a checker) — since the `implies:` graph lives only in source SKILL.md frontmatter, this check runs harness-side, not from the target's own standalone `.ki-meta/bin/ki-audit`. Drift is a WARN, never a FAIL — a re-bootstrap always reconciles it. See [BOOT-9](../../skills/keystone/ki-bootstrap/references/rubric.md).
 
-_Verify:_ `bun skills/keystone/ki-bootstrap/scripts/audit-vendored.ts <target>` reports PASS when `.ki-meta/skills/` equals the expected set, and WARNs (listing both directions) when a skill is stray-vendored or missing.
+_Verify:_ `bun skills/keystone/ki-bootstrap/scripts/audit.ts <target>` reports PASS when `.ki-meta/checkers/` equals the expected set, and WARNs (listing both directions) when a checker is stray-vendored or missing.
 
 ### BOOT-008 — Remote EDUCATE transport
 
