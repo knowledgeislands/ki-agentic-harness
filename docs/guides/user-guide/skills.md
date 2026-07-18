@@ -31,7 +31,7 @@ The skills sit in **six clusters**, by the role each plays in the set:
 
 1. **Keystone** — `ki-bootstrap` (the one skill kept installed globally) and the `ki-repo` it pulls: the install entry point every governed repo starts from.
 2. **Foundations** — `ki-authoring`, `ki-engineering`: the write-layer and build-layer standards every other skill builds on. `ki-authoring` is universal (part of the `ki-repo` baseline, implied everywhere); `ki-engineering` is coverage-detected — it applies only where a `package.json` exists, so a repo declares `[ki-engineering]` itself rather than inheriting it through `ki-repo`.
-3. **Repo-structure** — `ki-harness`, `ki-kb`, `ki-website`, `ki-mcp`, `ki-plugins`, `ki-tools`, `ki-homebrew-tap`, `ki-dotfiles-chezmoi`: exactly one applies per repo, fixing that repo's shape.
+3. **Repo-structure** — `ki-harness`, `ki-kb`, `ki-website`, `ki-mcp`, `ki-plugins`, `ki-specifications`, `ki-tools`, `ki-homebrew-tap`, `ki-dotfiles-chezmoi`: exactly one applies per repo, fixing that repo's shape.
 4. **General governance** — `ki-skills`, `ki-agents`, `ki-decision-records`, `ki-feature-definitions`, `ki-project-roadmap`, `ki-handoffs`: cross-cutting instruments a repo may adopt; `ki-project-roadmap` applies only to non-KB repositories.
 5. **Implied families** — the members a parent repo-structure skill pulls in: `ki-kb-streams`, `ki-kb-activities`, `ki-kb-live-artifacts` under `ki-kb`; `ki-website-cloudflare` under `ki-website`.
 6. **Environment** — `ki-binding`, `ki-binding-chezmoi`, `ki-housekeeping`, `ki-tokenomics`: govern the machine and the workspace, not any one repo. `ki-binding-chezmoi` is a composition skill (it `implies:` `ki-binding` + `ki-dotfiles-chezmoi`) supplying the chezmoi render path that the renderer-neutral `ki-binding` deliberately omits — installed only by chezmoi users (ADR-KI-HARNESS-SKILLS-004).
@@ -64,6 +64,8 @@ ki-website
 ki-mcp
 
 ki-plugins
+
+ki-specifications
 
 ki-handoffs
 

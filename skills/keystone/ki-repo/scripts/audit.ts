@@ -332,6 +332,12 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
     detect: (s) => s.tree.has('.claude-plugin/marketplace.json') || [...s.tree].some((p) => p.endsWith('/.claude-plugin/marketplace.json'))
   },
   {
+    skill: 'specifications',
+    table: 'ki-specifications',
+    artifact: 'proposals/ + specifications/ + schemas/',
+    detect: (s) => s.root.has('proposals') && s.root.has('specifications') && s.root.has('schemas')
+  },
+  {
     skill: 'tools',
     table: 'ki-tools',
     artifact: 'install.sh + bin/<exe>',
@@ -367,6 +373,7 @@ const REPO_STRUCTURE_TABLES = [
   'ki-website',
   'ki-mcp',
   'ki-plugins',
+  'ki-specifications',
   'ki-tools',
   'ki-homebrew-tap',
   'ki-dotfiles-chezmoi'
@@ -615,7 +622,7 @@ function auditRepo(r: Repo, files: Set<string>, ki: KiConfig | null, kiText: str
     else if (declaredStructure.length === 0 && enforced('structure'))
       warn(
         'STRUCT-2',
-        'declares no repo-structure table — pick the one that matches its layout (ki-harness/ki-kb/ki-website/ki-mcp/ki-plugins/ki-tools/ki-homebrew-tap/ki-dotfiles-chezmoi), or set `structure = false` in [ki-repo.checks] if this repo genuinely has none'
+        'declares no repo-structure table — pick the one that matches its layout (ki-harness/ki-kb/ki-website/ki-mcp/ki-plugins/ki-specifications/ki-tools/ki-homebrew-tap/ki-dotfiles-chezmoi), or set `structure = false` in [ki-repo.checks] if this repo genuinely has none'
       )
   }
 

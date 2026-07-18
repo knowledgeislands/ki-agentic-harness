@@ -86,19 +86,20 @@ The gate is what prevents a **false positive**: a plain git repo that has, say, 
 
 The detection signals `ki-repo` uses (one recursive tree read + `package.json`):
 
-| Skill                   | Detection signal                            | Opt-in table              |
-| ----------------------- | ------------------------------------------- | ------------------------- |
-| `ki-engineering`        | `package.json` present                      | `[ki-engineering]`        |
-| `ki-kb`                 | canonical zones (`Pillars/` + `Resources/`) | `[ki-kb]`                 |
-| `ki-kb-streams`         | `Streams/` zone                             | `[ki-kb-streams]`         |
-| `ki-website`            | `eleventy.config.*`                         | `[ki-website]`            |
-| `ki-website-cloudflare` | a `wrangler.*` config                       | `[ki-website-cloudflare]` |
-| `ki-mcp`                | `@modelcontextprotocol/sdk` dependency      | `[ki-mcp]`                |
-| `ki-plugins`            | `.claude-plugin/marketplace.json`           | `[ki-plugins]`            |
-| `ki-tools`              | `install.sh` + a `bin/<exe>`                | `[ki-tools]`              |
-| `ki-homebrew-tap`       | `Formula/*.rb`                              | `[ki-homebrew-tap]`       |
-| `ki-skills`             | `skills/*/SKILL.md`                         | `[ki-skills]`             |
-| `ki-agents`             | `agents/**/*.md`                            | `[ki-agents]`             |
+| Skill                   | Detection signal                              | Opt-in table              |
+| ----------------------- | --------------------------------------------- | ------------------------- |
+| `ki-engineering`        | `package.json` present                        | `[ki-engineering]`        |
+| `ki-kb`                 | canonical zones (`Pillars/` + `Resources/`)   | `[ki-kb]`                 |
+| `ki-kb-streams`         | `Streams/` zone                               | `[ki-kb-streams]`         |
+| `ki-website`            | `eleventy.config.*`                           | `[ki-website]`            |
+| `ki-website-cloudflare` | a `wrangler.*` config                         | `[ki-website-cloudflare]` |
+| `ki-mcp`                | `@modelcontextprotocol/sdk` dependency        | `[ki-mcp]`                |
+| `ki-plugins`            | `.claude-plugin/marketplace.json`             | `[ki-plugins]`            |
+| `ki-specifications`     | `proposals/` + `specifications/` + `schemas/` | `[ki-specifications]`     |
+| `ki-tools`              | `install.sh` + a `bin/<exe>`                  | `[ki-tools]`              |
+| `ki-homebrew-tap`       | `Formula/*.rb`                                | `[ki-homebrew-tap]`       |
+| `ki-skills`             | `skills/*/SKILL.md`                           | `[ki-skills]`             |
+| `ki-agents`             | `agents/**/*.md`                              | `[ki-agents]`             |
 
 This is the **one place** `ki-repo` reads across skill tables — and it reads only table **presence**, never another skill's keys (_validate down, ignore across_ still governs table _contents_). It is an **audit-time enforcement** run by `repo`'s auditor, not behaviour baked into the regular use of each skill. A repo opts out of a single signal it doesn't want enforced with a `coverage-<skill> = false` entry in its `[ki-repo.checks]` table (e.g. a repo that vendors an `eleventy.config` it does not own) — reported as an acknowledged note.
 

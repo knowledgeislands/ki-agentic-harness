@@ -180,6 +180,7 @@ const CLUSTER_ORDER = [
   'ki-website',
   'ki-mcp',
   'ki-plugins',
+  'ki-specifications',
   'ki-handoffs',
   'ki-project-roadmap',
   'ki-feature-definitions',
