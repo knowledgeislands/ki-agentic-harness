@@ -48,7 +48,14 @@
  */
 
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
-import { basename, join, resolve } from 'node:path'
+import { basename, dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 // ── the structure model — kept in lockstep with audit.ts ─────────────────────
 const FOCI = ['Active', 'Background', 'Dormant', 'Future', 'Settled'] as const
@@ -67,22 +74,11 @@ const REF_STRUCTURE = 'references/Streams Structure Reference.md'
 const REF_ENACT = 'references/Enactment Process Reference.md'
 const REF_SKILL = '../SKILL.md'
 
-const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
-const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
-
-// Collect-then-emit harness (mirrors audit.ts + ki-authoring conform.ts). Each action
-// records a finding on the shared ladder; `say` prints the human line only when not in
-// --json mode, so a direct run streams prose while the aggregate consumes the wrapper.
-// area is the rubric code, ref its reference-doc pointer, file the path an action concerns.
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const findings: Finding[] = []
-const rec = (level: Level, area: string, msg: string, ref?: string, file?: string): void =>
-  void findings.push({ level, area, msg, ref, file })
-const json = process.argv.slice(2).includes('--json')
-const say = (line: string): void => {
-  if (!json) console.log(line)
-}
+// Collect only policy findings. The canonical reporter owns JSONL transport; this
+// checker never renders terminal output itself.
+const findings: CheckerFinding[] = []
+const rec = (level: CheckerFinding['level'], code: string, message: string, ref?: string, file?: string): void =>
+  void findings.push({ type: 'M', level, code, message, ref, file })
 
 // ── filesystem helpers — copied from audit.ts ────────────────────────────────
 const isDir = (p: string): boolean => existsSync(p) && statSync(p).isDirectory()
@@ -190,32 +186,24 @@ function main(): void {
   const base = resolve(argv.find((a) => !a.startsWith('-')) ?? '.')
 
   if (!isDir(base)) {
-    console.error(paint(C.red, `not a directory: ${base}`))
-    process.exit(2)
+    rec('FAIL', 'STREAM-1', `Not a directory: ${base}`, REF_STRUCTURE)
+    finalize(base)
+    return
   }
 
   const kiPath = join(base, KI_CONFIG)
   const ki: Ki = isFile(kiPath) ? parseKi(readFileSync(kiPath, 'utf8')) : { keys: {}, streamsZone: 'Streams' }
   const streamsRoot = join(base, ki.streamsZone)
 
-  say(
-    paint(
-      C.dim,
-      `target: ${streamsRoot}   ${ki.streamsZone !== 'Streams' ? `(aliased from Streams/)   ` : ''}${dryRun ? '(dry run)' : ''}\n`
-    )
-  )
-
   if (!isDir(streamsRoot)) {
-    rec('NA', 'zone', `no ${ki.streamsZone}/ zone — nothing to conform (its presence is a ki-kb ZONE check)`, REF_STRUCTURE)
-    say(paint(C.dim, `no ${ki.streamsZone}/ zone — nothing to conform (its presence is a ki-kb ZONE check).`))
-    emitJson(base)
+    rec('NA', 'STREAM-1', `no ${ki.streamsZone}/ zone — nothing to conform (its presence is a ki-kb ZONE check)`, REF_STRUCTURE)
+    finalize(base)
     return
   }
 
   const manualTodos: string[] = []
 
   // ── ENACT-2: normalise status/priority prose → bare token ──
-  say(paint(C.cyan, 'ENACT-2 status/priority bare-token normalization'))
   const proposals = walkMarkdown(streamsRoot).filter((p) => basename(p, '.md').endsWith(PROPOSAL_SUFFIX))
   let fixes = 0
   for (const file of proposals) {
@@ -264,7 +252,6 @@ function main(): void {
       }
       lines[i] = `${key}: ${bare}`
       rec('POLISH', 'ENACT-2', `${key} "${raw}" ${dryRun ? '→ would normalize to' : 'normalized to'} "${bare}"`, REF_ENACT, rel)
-      say(`  ${paint(C.green, 'fix')}   ${rel} — ${key} "${raw}" → "${bare}"`)
       changed = true
       fixes++
     }
@@ -272,49 +259,18 @@ function main(): void {
   }
   if (fixes === 0) {
     rec('PASS', 'ENACT-2', 'status/priority already bare tokens — nothing to normalize', REF_ENACT)
-    say(`  ${paint(C.dim, 'nothing to normalize')}`)
   }
 
   // ── gather the judgment categories the audit would flag, as manual TODOs ──
   gatherJudgmentTodos(base, ki, streamsRoot, proposals, manualTodos)
 
-  // ── manual TODOs — never guessed, always surfaced ──
-  say(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
-  if (manualTodos.length === 0) {
-    say(`  ${paint(C.dim, 'none')}`)
-  } else {
-    for (const todo of manualTodos) say(`  - ${todo}`)
-  }
-  rec(
-    'ADVISORY',
-    'judgment',
-    'everything audit.ts grades [J] (STREAM-4/5, ENACT-3/4/5, GATE-2) is judgment — apply it by reading the rubric',
-    'references/rubric.md'
-  )
-  say(`  - Everything else audit.ts grades [J] (STREAM-4/5, ENACT-3/4/5, GATE-2) is judgment — apply it by reading the rubric.`)
-
-  say(
-    `\n${paint(C.dim, 'normalize-only layer applied — re-run `bun scripts/audit.ts` (or `ki:kb-streams:audit`) to confirm findings clear.')}`
-  )
-
-  emitJson(base)
+  finalize(base)
 }
 
-// ── JSON wrapper — the same finding shape audit.ts emits, so the aggregate renders
-// conform and audit identically. `--json` governs reporting; `--dry-run` governs writing.
-function emitJson(target: string): void {
-  if (!json) return
-  const n = (l: Level): number => findings.filter((f) => f.level === l).length
-  const summary = {
-    fail: n('FAIL'),
-    warn: n('WARN'),
-    polish: n('POLISH'),
-    advisory: n('ADVISORY'),
-    info: n('INFO'),
-    na: n('NA'),
-    pass: n('PASS')
-  }
-  process.stdout.write(JSON.stringify({ concern: 'kb-streams', target, generatedAt: new Date().toISOString(), summary, findings }))
+function finalize(target: string): void {
+  findings.push(...judgmentFindingsFromRubric(join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md')))
+  emitCheckerReporter({ mode: 'conform', concern: 'kb-streams', target, findings })
+  process.exitCode = checkerReporterExitCode(findings)
 }
 
 // Surface the non-derivable drift categories as manual TODOs (a subset of what

@@ -70,16 +70,16 @@ function main(): void {
     const directory = join(root, part)
     check('FAIL', 'LAY-1', existsSync(directory), 'Required five-part directory is present.', `${part}/`)
     if (existsSync(directory))
-      check('WARN', 'LAY-2', existsSync(join(directory, 'README.md')), 'README.md must exist.', `${part}/README.md`)
+      check('WARN', 'LAY-2', existsSync(join(directory, 'README.md')), 'Required shelf description is present.', `${part}/README.md`)
   }
-  check('FAIL', 'LAY-3', existsSync(join(root, 'CLAUDE.md')), 'CLAUDE.md must exist at harness root.', 'CLAUDE.md')
-  check('WARN', 'LAY-4', existsSync(join(root, 'ROADMAP.md')), 'ROADMAP.md must exist at harness root.', 'ROADMAP.md')
-  check('FAIL', 'LAY-5', existsSync(join(root, '.ki-config.toml')), '.ki-config.toml must exist at harness root.', '.ki-config.toml')
+  check('FAIL', 'LAY-3', existsSync(join(root, 'CLAUDE.md')), 'Required root orientation is present.', 'CLAUDE.md')
+  check('WARN', 'LAY-4', existsSync(join(root, 'ROADMAP.md')), 'Open-work register is present.', 'ROADMAP.md')
+  check('FAIL', 'LAY-5', existsSync(join(root, '.ki-config.toml')), 'Required KI configuration is present.', '.ki-config.toml')
 
   const pkgPath = join(root, 'package.json')
   if (!existsSync(pkgPath)) {
-    add('FAIL', 'PKG-1', 'package.json is missing — cannot check scripts.', STD, 'package.json')
-    add('FAIL', 'PKG-2', 'package.json is missing — cannot check scripts.', STD, 'package.json')
+    add('FAIL', 'PKG-1', 'Package manifest is absent — cannot check scripts.', STD, 'package.json')
+    add('FAIL', 'PKG-2', 'Package manifest is absent — cannot check scripts.', STD, 'package.json')
   } else {
     const pkg = readPackageJson(pkgPath)
     check('FAIL', 'PKG-1', hasScript(pkg, 'ki:skills:link:project'), "Must have a 'ki:skills:link:project' script.", 'package.json')
@@ -113,8 +113,8 @@ function main(): void {
 
   const tomlPath = join(root, '.ki-config.toml')
   if (!existsSync(tomlPath)) {
-    add('NA', 'CONFIG-1', '.ki-config.toml is missing — skipping table checks.', STD, '.ki-config.toml')
-    add('NA', 'CONFIG-2', '.ki-config.toml is missing.', STD, '.ki-config.toml')
+    add('NA', 'CONFIG-1', 'KI configuration is absent — skipping table checks.', STD, '.ki-config.toml')
+    add('NA', 'CONFIG-2', 'KI configuration is absent.', STD, '.ki-config.toml')
   } else {
     const toml = readFileSync(tomlPath, 'utf8')
     check('FAIL', 'CONFIG-1', hasTomlTable(toml, 'ki-harness'), 'Must have a [ki-harness] table.', '.ki-config.toml')
@@ -123,8 +123,8 @@ function main(): void {
 
   const skillsDir = join(root, 'skills')
   if (!existsSync(skillsDir)) {
-    add('NA', 'SKILLS-1', 'skills/ does not exist — skipping name checks.', STD, 'skills/')
-    add('NA', 'SKILLS-2', 'skills/ does not exist — skipping duplicate-name check.', STD, 'skills/')
+    add('NA', 'SKILLS-1', 'Skill directory is absent — skipping name checks.', STD, 'skills/')
+    add('NA', 'SKILLS-2', 'Skill directory is absent — skipping duplicate-name check.', STD, 'skills/')
   } else {
     const names = new Map<string, string[]>()
     for (const entry of readdirSync(skillsDir)) {

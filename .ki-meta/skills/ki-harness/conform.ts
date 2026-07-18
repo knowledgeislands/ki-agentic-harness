@@ -82,15 +82,15 @@ async function main(): Promise<void> {
     } else rec('PASS', 'LAY-1', `${part}/ is present.`, `${part}/`)
     const readme = join(directory, 'README.md')
     if (!(await exists(readme))) {
-      rec('POLISH', 'LAY-2', `${part}/README.md ${dryRun ? 'would be scaffolded' : 'scaffolded'}.`, `${part}/README.md`)
+      rec('POLISH', 'LAY-2', `Shelf description ${dryRun ? 'would be scaffolded' : 'scaffolded'}.`, `${part}/README.md`)
       if (!dryRun)
         await writeFile(readme, `# \`${part}/\`\n\nEmpty shelf — no ${part} yet. TODO: describe what this part holds and its status.\n`)
-    } else rec('PASS', 'LAY-2', `${part}/README.md is present.`, `${part}/README.md`)
+    } else rec('PASS', 'LAY-2', 'Shelf description is present.', `${part}/README.md`)
   }
 
   const tomlPath = join(target, '.ki-config.toml')
   if (!(await exists(tomlPath))) {
-    rec('ADVISORY', 'LAY-5', '.ki-config.toml is missing at root — author it by hand.', '.ki-config.toml')
+    rec('ADVISORY', 'LAY-5', 'KI configuration is missing at root — author it by hand.', '.ki-config.toml')
   } else {
     const toml = await readFile(tomlPath, 'utf8')
     if (hasTomlTable(toml, 'ki-harness')) rec('PASS', 'CONFIG-1', '[ki-harness] table is present.', '.ki-config.toml')
@@ -103,18 +103,18 @@ async function main(): Promise<void> {
 
   for (const file of ROOT_FILES) {
     if (!(await exists(join(target, file))))
-      rec('ADVISORY', file === 'CLAUDE.md' ? 'LAY-3' : 'LAY-4', `${file} is missing at root — author it by hand.`, file)
+      rec('ADVISORY', file === 'CLAUDE.md' ? 'LAY-3' : 'LAY-4', 'Required root document is missing — author it by hand.', file)
   }
   const packagePath = join(target, 'package.json')
   if (!(await exists(packagePath))) {
-    rec('ADVISORY', 'PKG-1', 'package.json is missing — author required script families by hand.', 'package.json')
+    rec('ADVISORY', 'PKG-1', 'Package manifest is missing — author required script families by hand.', 'package.json')
   } else {
     try {
       const pkg = JSON.parse(await readFile(packagePath, 'utf8')) as { scripts?: Record<string, unknown> }
       const missing = REQUIRED_SCRIPTS.filter((script) => !(script in (pkg.scripts ?? {})))
       if (missing.length > 0) rec('ADVISORY', 'PKG-1', `Add repo-specific scripts by hand: ${missing.join(', ')}.`, 'package.json')
     } catch {
-      rec('ADVISORY', 'PKG-1', 'package.json could not be parsed as JSON — fix it by hand.', 'package.json')
+      rec('ADVISORY', 'PKG-1', 'Package manifest could not be parsed as JSON — fix it by hand.', 'package.json')
     }
   }
   const skillsDir = join(target, 'skills')

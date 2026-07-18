@@ -55,7 +55,7 @@ Severity: **FAIL** (ship-stopper — the site can't deploy, or deploys the wrong
 
 ## Boundaries (§6)
 
-- [ ] **WCF-19** — a Worker with a `main` entry and **no** `assets` block is a **companion** (bot / ingress / API); it is **noted, not flagged**, and routes to the generic `cloudflare`/`wrangler` skills. Do not audit its bindings/crons/secrets here. (§6)
+- [ ] **WCF-19** [M] INFO — a Worker with a `main` entry and **no** `assets` block is a **companion** (bot / ingress / API); it is **noted, not flagged**, and routes to the generic `cloudflare`/`wrangler` skills. Do not audit its bindings/crons/secrets here. (§6)
 
 ## Longevity & staleness
 
@@ -66,6 +66,7 @@ Mirrors the `ki-skills` rubric's **LONG-1**.
 
 ## Reporting
 
-The checker also emits two standing cited findings: **WCF-22** [M] INFO — this is the hosting **delta** only; compose with the sibling audits (`ki-engineering`'s toolchain audit and `ki-website`'s `dist/` build) for full coverage. **WCF-23** [J] ADVISORY — the mechanical layer is applied; apply the `[J]` criteria above by reading.
+- [ ] **WCF-22** [M] INFO — this is the hosting **delta** only; compose with the sibling audits (`ki-engineering`'s toolchain audit and `ki-website`'s `dist/` build) for full coverage.
+- [ ] **WCF-23** [J] ADVISORY — the mechanical layer is applied; apply the `[J]` criteria above by reading.
 
 Produce a findings table grouped by severity, each row: `severity · file:line · what · fix`. Close with: (a) any intentional, documented divergences you chose **not** to flag (e.g. a site deliberately on `*.workers.dev` with no custom domain yet, or a companion Worker you correctly left alone), and (b) a one-line verdict (compliant / minor drift / blockers). Name the sibling audits that must also pass — `ki:engineering:audit` and `audit.ts` — for the repo to be fully clean.

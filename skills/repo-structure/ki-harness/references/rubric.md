@@ -76,7 +76,7 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS (defined in 
 
 **SKILLS-1 [M]** For each `skills/<dir>` that contains a `SKILL.md`: the directory name exactly matches the `name:` frontmatter field in that `SKILL.md`. Source: standard §Skills directory. _Severity: FAIL — name/path mismatch breaks agent skill discovery._
 
-**SKILLS-2 [J]** No two `skills/` entries share a `name:` frontmatter value. (The `ki-skills` cross-skill linter pass — COLL-1 — also checks this; don't double-report what it surfaces.) Source: Agent Skills specification; standard §Skills directory. _Severity: FAIL — duplicate names are ambiguous at selection time._
+**SKILLS-2 [M + J]** No two `skills/` entries share a `name:` frontmatter value. The checker detects local duplicates; judge whether another installed or composed surface makes an otherwise valid local name ambiguous. (The `ki-skills` cross-skill linter pass — COLL-1 — also checks this; don't double-report what it surfaces.) Source: Agent Skills specification; standard §Skills directory. _Severity: FAIL — duplicate names are ambiguous at selection time._
 
 ---
 

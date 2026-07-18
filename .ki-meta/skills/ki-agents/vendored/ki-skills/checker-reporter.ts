@@ -92,15 +92,30 @@ export type CheckerReporterParseResult = {
 export type RubricCriterion = {
   code: string
   title: string
-  types: ReadonlySet<'M' | 'J'>
+  types: Set<'M' | 'J'>
 }
 
 function normaliseCriterionTitle(value: string): string {
   return value
     .replace(/^\s*(?:\[[^\]]+\]\s*)*/, '')
+    .replace(/\s*\[[^\]]+\]/g, '')
     .replace(/^(?:FAIL|WARN|POLISH|ADVISORY|INFO|NA|PASS)\s*[—–-]\s*/i, '')
     .replace(/[`*_]/g, '')
     .trim()
+}
+
+function addCriterion(criteria: Map<string, RubricCriterion>, code: string, title: string, tags: string): void {
+  const types = new Set<'M' | 'J'>()
+  if (/\[[^\]]*\bM\b[^\]]*\]/.test(tags)) types.add('M')
+  if (/\[[^\]]*\bJ\b[^\]]*\]/.test(tags)) types.add('J')
+  if (types.size === 0) return
+
+  const existing = criteria.get(code)
+  if (existing) {
+    for (const type of types) existing.types.add(type)
+    return
+  }
+  criteria.set(code, { code, title: normaliseCriterionTitle(title), types })
 }
 
 /**
@@ -111,20 +126,26 @@ function normaliseCriterionTitle(value: string): string {
 export function rubricCriteriaFromMarkdown(markdown: string): Map<string, RubricCriterion> {
   const criteria = new Map<string, RubricCriterion>()
   for (const line of markdown.split(/\r?\n/)) {
-    const bullet = line.match(/^\s*-\s+(?:\[[ xX]\]\s+)?\*\*([^*]+)\*\*(.*)$/)
-    if (!bullet) continue
-    const [, bold, after] = bullet
+    const entry = line.match(/^\s*(?:-\s+)?(?:\[[ xX]\]\s+)?\*\*([^*]+)\*\*(.*)$/)
+    if (!entry) continue
+    const [, bold, after] = entry
     const tags = `${bold} ${after}`
-    // The code is the first bold token after an optional leading type tag. This
-    // retains established named codes such as `JUDGMENT` as well as `AREA-1`.
-    const code = bold.trim().match(/^(?:\[[^\]]+\]\s*)?([A-Z][A-Za-z0-9-]*)/)?.[1]
-    const types = new Set<'M' | 'J'>()
-    if (/\[[^\]]*\bM\b[^\]]*\]/.test(tags)) types.add('M')
-    if (/\[[^\]]*\bJ\b[^\]]*\]/.test(tags)) types.add('J')
-    if (!code || types.size === 0) continue
-    const title = normaliseCriterionTitle(after)
-    if (!title) continue
-    criteria.set(code, { code, title, types })
+
+    // Most current rubrics declare the code in the bold heading, for example
+    // `**LAY-1 [M]** ...`. Retain named codes such as `JUDGMENT` too.
+    const headingCode = bold.trim().match(/^(?:\[[^\]]+\]\s*)?([A-Z][A-Za-z0-9-]*)/)?.[1]
+    if (headingCode) {
+      const title = normaliseCriterionTitle(after)
+      if (title) addCriterion(criteria, headingCode, title, tags)
+      continue
+    }
+
+    // `ki-repo` predates that convention: it puts a short human label in bold
+    // and the stable code in a following inline-code token. Treat that label as
+    // the readable title, while still taking M/J ownership from the label tags.
+    const trailingCode = after.match(/`{1,2}\s*`?([A-Z][A-Z0-9]*-[A-Z0-9]+)`?\s*`{1,2}/)?.[1]
+    const title = normaliseCriterionTitle(bold)
+    if (trailingCode && title) addCriterion(criteria, trailingCode, title, tags)
   }
   return criteria
 }
@@ -162,7 +183,7 @@ export function validateCheckerReporterRubric(events: readonly unknown[], criter
     if (lower.startsWith(criterion.title.toLowerCase())) errors.push(`${label} message repeats its rubric title: ${code}`)
     if (lower.startsWith('[j]:')) errors.push(`${label} message repeats the judgment marker: ${code}`)
     if (file) {
-      const basename = file.split('/').at(-1) ?? file
+      const basename = file.split('/').filter(Boolean).at(-1) ?? file
       if (lower.startsWith(file.toLowerCase()) || lower.startsWith(basename.toLowerCase()))
         errors.push(`${label} message repeats its file field: ${code}`)
     }

@@ -67,13 +67,10 @@ function run(script: string, args: string[]): number {
 }
 
 const flags = dryRun ? ['--dry-run'] : []
-let failed = 0
-
 // step: run a spawned orchestration leg and record its outcome on the ladder.
 function step(script: string, args: string[], area: string, label: string): void {
   const status = run(script, args)
   if (status !== 0) {
-    failed++
     rec('FAIL', area, `${label} exited non-zero (status ${status})`, RUBRIC)
   } else {
     rec('PASS', area, label, RUBRIC)
