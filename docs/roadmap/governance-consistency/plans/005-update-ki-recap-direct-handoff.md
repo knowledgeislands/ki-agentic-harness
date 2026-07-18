@@ -23,11 +23,12 @@ This plan is provisional until the mandatory post-002 planning refresh, which wi
 
 ## Steps
 
-1. Define the minimal `ki-recap` to `ki-next` handoff: grounded outstanding work, learning routes the user has approved or is considering, and roadmap-ready Specific actions from the current session.
-2. Update the `ki-recap` procedure and help so the handoff is clearly current-session context, not a persistent transcript, memory write, or automatic durable promotion.
-3. State the receiving boundary in `ki-next`: re-read the live roadmap, distinguish a recap suggestion from current fact, and require explicit confirmation before any learning-route write, horizon promotion, or plan creation.
-4. Add focused examples or tests covering a clean recap, a deferred item already parked on the roadmap, an unapproved learning route, and a confirmed multi-step item that proceeds to plan review.
-5. Refresh the skills map and any generated composition documentation, re-vendor coverage-scoped changes, then run `bun run test` and `bun run ki:audit` sequentially.
+1. Preserve the one-way process relationship established by plan 000: `ki-recap` is an optional upstream source of context, not a hard dependency of `ki-next`, and neither `ki-recap` nor `ki-next` becomes a dependency of the `ki-project-roadmap` governance skill or the `ki-plan` lifecycle process.
+2. Define the minimal `ki-recap` to `ki-next` handoff: grounded outstanding work, learning routes the user has approved or is considering, and roadmap-ready Specific actions from the current session.
+3. Update the `ki-recap` procedure and help so it can offer `ki-next` as an explicit follow-on while keeping the handoff as current-session context rather than a persistent transcript, memory write, direct invocation requirement, or automatic durable promotion.
+4. State the receiving boundary in `ki-next`: re-read the live roadmap, distinguish a recap suggestion from current fact, and require explicit confirmation before any learning-route write, horizon promotion, or plan creation.
+5. Add focused examples or tests covering a clean recap, a roadmap-free session, a deferred item already parked on the roadmap, an unapproved learning route, and a confirmed multi-step item that proceeds through `ki-next` to plan review.
+6. Refresh the skills map and any generated composition documentation, re-vendor coverage-scoped changes, then run `bun run test` and `bun run ki:audit` sequentially.
 
 ## Files touched
 
@@ -41,7 +42,9 @@ This plan is provisional until the mandatory post-002 planning refresh, which wi
 ## Verify
 
 - A recap communicates only grounded, current-session context to `ki-next` and does not cause a write by itself.
+- `ki-recap` remains usable without a roadmap or `ki-next`, and `ki-next` remains usable without a preceding recap.
 - `ki-next` rechecks the roadmap rather than trusting recap wording as current fact.
+- No reverse dependency or invocation cycle is introduced among `ki-recap`, `ki-next`, `ki-plan`, and `ki-project-roadmap`.
 - Unapproved learning routes remain proposals; confirmed planning work stops after the generated plans are presented for review.
 - `bun run test` and `bun run ki:audit` pass sequentially.
 
