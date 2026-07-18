@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "elements": [
+    { "id": "activity-inspection", "mode": "audit", "phase": "inspect", "entry": "scripts/audit.ts", "reads": ["activities"], "writes": [] },
+    { "id": "activity-conform", "mode": "conform", "phase": "write", "entry": "scripts/conform.ts", "reads": ["activities"], "writes": ["activities"] }
+  ]
+}

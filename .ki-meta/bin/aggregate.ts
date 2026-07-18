@@ -3,9 +3,10 @@
 // sequence for the given verb — no package.json required.
 // Usage: bun .ki-meta/bin/aggregate.ts <audit|conform|educate|help> [--skill <ki-skill>] [--reporter-levels=<levels>]
 import { execFileSync, spawnSync } from 'node:child_process'
-import { existsSync, readFileSync, readdirSync } from 'node:fs'
+import { existsSync, lstatSync, readFileSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { planModeElements } from './mode-elements.ts'
 
 const verb = process.argv[2]
 if (!verb) {
@@ -215,15 +216,53 @@ if (reporter.skill) {
   }
   checkers = [reporter.skill]
 }
+const declarations = {}
 for (const skill of checkers) {
+  const declarationPath = join(checkersDir, skill, 'mode-elements.json')
+  if (!existsSync(declarationPath)) {
+    console.error('error: no vendored mode-element declaration for ' + skill)
+    process.exit(2)
+  }
+  const stat = lstatSync(declarationPath)
+  if (!stat.isFile() || stat.isSymbolicLink()) {
+    console.error('error: unsafe mode-element declaration for ' + skill)
+    process.exit(2)
+  }
+  try {
+    declarations[skill] = JSON.parse(readFileSync(declarationPath, 'utf8'))
+  } catch {
+    console.error('error: invalid mode-element JSON for ' + skill)
+    process.exit(2)
+  }
+}
+const planned = planModeElements(declarations, verb)
+if (planned.errors.length) {
+  console.error('error: invalid mode-element graph: ' + planned.errors.join('; '))
+  process.exit(2)
+}
+const entryCounts = new Map()
+for (const item of planned.order) {
+  const key = item.skill + '/' + item.element.entry
+  entryCounts.set(key, (entryCounts.get(key) || 0) + 1)
+}
+for (const { skill, element } of planned.order) {
   const dir = join(checkersDir, skill)
-  const scriptsDir = join(dir, 'scripts')
-  const script = existsSync(scriptsDir) ? readdirSync(scriptsDir).find((f) => pattern.test(f)) : undefined
-  if (!script) continue
-  const scriptPath = join(scriptsDir, script)
+  const scriptPath = join(dir, element.entry)
+  if (!existsSync(scriptPath)) {
+    failed = true
+    reportErrors.push({ skill, errors: ['declared entry is missing: ' + element.entry] })
+    continue
+  }
+  const scriptStat = lstatSync(scriptPath)
+  if (!scriptStat.isFile() || scriptStat.isSymbolicLink()) {
+    failed = true
+    reportErrors.push({ skill, errors: ['declared entry is unsafe: ' + element.entry] })
+    continue
+  }
   // The renderer consumes --reporter-levels itself. All other flags (for example
   // --dry-run) forward to every child, whose canonical JSONL stays complete.
-  const res = spawnSync('bun', [scriptPath, '.', ...reporter.childArgs], { encoding: 'utf8' })
+  const selected = entryCounts.get(skill + '/' + element.entry) > 1 ? ['--mode-element=' + element.id] : []
+  const res = spawnSync('bun', [scriptPath, '.', ...selected, ...reporter.childArgs], { encoding: 'utf8' })
   const parsed = parseJsonl(res.stdout ?? '')
   const errors = [...parsed.errors, ...validateReport(parsed.events, res.status ?? 1, verb)]
   if (res.error) errors.push('process failed to start: ' + res.error.message)
@@ -235,7 +274,7 @@ for (const skill of checkers) {
   }
   const findings = parsed.events.slice(1, -1)
   const titles = rubricTitles(dir)
-  reports.push({ skill, key: 'ki:' + skill.replace(/^ki-/, '') + ':' + verb, findings, titles, summary: parsed.events.at(-1).summary })
+  reports.push({ skill, key: 'ki:' + skill.replace(/^ki-/, '') + ':' + verb + '/' + element.id, findings, titles, summary: parsed.events.at(-1).summary })
   if ((res.status ?? 0) !== 0) failed = true
 }
 for (const report of reports) {

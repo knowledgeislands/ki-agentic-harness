@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "elements": [
+    { "id": "website-inspection", "mode": "audit", "phase": "inspect", "entry": "scripts/audit.ts", "reads": ["website"], "writes": [] },
+    { "id": "website-conform", "mode": "conform", "phase": "write", "entry": "scripts/conform.ts", "reads": ["website"], "writes": ["website"] }
+  ]
+}

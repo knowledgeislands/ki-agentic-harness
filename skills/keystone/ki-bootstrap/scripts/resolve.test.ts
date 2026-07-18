@@ -338,6 +338,13 @@ try {
   const invalidSkill = join(checkerRoot, '.ki-meta', 'checkers', 'ki-invalid', 'scripts')
   mkdirSync(invalidSkill, { recursive: true })
   writeFileSync(join(invalidSkill, 'audit.ts'), "process.stdout.write('legacy prose\\n')\n")
+  writeFileSync(
+    join(checkerRoot, '.ki-meta', 'checkers', 'ki-invalid', 'mode-elements.json'),
+    JSON.stringify({
+      version: 1,
+      elements: [{ id: 'audit', mode: 'audit', phase: 'inspect', entry: 'scripts/audit.ts', reads: ['fixture'], writes: [] }]
+    })
+  )
   const malformedAggregate = spawnSync('bun', [aggregate, 'audit'], { cwd: checkerRoot, encoding: 'utf8' })
   check(
     'aggregate → rejects malformed child output without a legacy fallback',

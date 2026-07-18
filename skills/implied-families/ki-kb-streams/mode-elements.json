@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "elements": [
+    { "id": "stream-inspection", "mode": "audit", "phase": "inspect", "entry": "scripts/audit.ts", "reads": ["streams"], "writes": [] },
+    { "id": "stream-conform", "mode": "conform", "phase": "project", "entry": "scripts/conform.ts", "reads": ["streams"], "writes": ["streams"] }
+  ]
+}

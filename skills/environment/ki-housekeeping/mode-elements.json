@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "elements": [
+    { "id": "state-inspection", "mode": "audit", "phase": "inspect", "entry": "scripts/audit.ts", "reads": ["user-agent-state"], "writes": [] },
+    { "id": "state-conform", "mode": "conform", "phase": "write", "entry": "scripts/conform.ts", "reads": ["user-agent-state"], "writes": ["user-agent-state"] }
+  ]
+}

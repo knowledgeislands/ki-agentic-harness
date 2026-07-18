@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "elements": [
+    { "id": "artifact-inspection", "mode": "audit", "phase": "inspect", "entry": "scripts/audit.ts", "reads": ["live-artifacts"], "writes": [] },
+    { "id": "artifact-conform", "mode": "conform", "phase": "write", "entry": "scripts/conform.ts", "reads": ["live-artifacts"], "writes": ["live-artifacts"] }
+  ]
+}

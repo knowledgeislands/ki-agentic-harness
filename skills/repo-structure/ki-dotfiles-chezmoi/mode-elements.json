@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "elements": [
+    { "id": "dotfiles-inspection", "mode": "audit", "phase": "inspect", "entry": "scripts/audit.ts", "reads": ["dotfiles"], "writes": [] },
+    { "id": "dotfiles-conform", "mode": "conform", "phase": "write", "entry": "scripts/conform.ts", "reads": ["dotfiles"], "writes": ["dotfiles"] }
+  ]
+}

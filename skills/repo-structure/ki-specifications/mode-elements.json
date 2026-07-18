@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "elements": [
+    { "id": "specification-inspection", "mode": "audit", "phase": "inspect", "entry": "scripts/audit.ts", "reads": ["specifications"], "writes": [] },
+    {
+      "id": "specification-conform",
+      "mode": "conform",
+      "phase": "write",
+      "entry": "scripts/conform.ts",
+      "reads": ["specifications"],
+      "writes": ["specifications"]
+    }
+  ]
+}
