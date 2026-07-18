@@ -16,10 +16,6 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 
 Rename the roadmap skill to describe its repository-level scope without implying that every non-KB repository is a conventional project. Define a safe migration for the canonical skill directory and frontmatter, references, installation/linking, generated guidance, configuration, tests, and the existing `ki-plan` composition. Until that work is delivered, use the currently installed `ki-project-roadmap` name as authoritative; do not add an alias or change existing consumers opportunistically.
 
-### Prefix plan identifiers with stable theme codes
-
-Extend the then-current roadmap skill so every theme has a stable short code and plan filenames and references use `<THEME>-<NNN>` — for example, `FND-003-enforce-checker-json-contract.md` in `foundation-tooling`. Update the standard, plan parser, generated index, dependency references, and audit/conform rules together. Decide the safe migration of existing plan ids before renaming any current plan; do not alter an in-progress plan's identity opportunistically.
-
 ### Align KB Stream focus with non-KB roadmap horizons
 
 Align the two open-work models without treating them as identical. Add a Blocking focus to Knowledge Base Streams; represent "waiting for" as explicit dependency detail within Background, from which work promotes to Active when ready; align Dormant with a new Parked roadmap horizon; and remove Settled so completed history lives in canonical documentation and git rather than either open-work structure. Preserve plan status as a separate execution lifecycle.
@@ -52,7 +48,7 @@ Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass
 
 ### Separate Knowledge Islands policy from portable governance _(candidate)_
 
-Write a compact boundary matrix separating portable contract, Knowledge Islands estate policy, and runtime binding. Do not split standards or redesign composition unless the matrix exposes a concrete ownership conflict.
+Write a compact boundary matrix separating portable contract, Knowledge Islands estate policy, and runtime binding. Use it to identify when a principle first expressed in the Harness should return to Arcadia Principal as canonical philosophy; when it should mature into a portable formal contract in KI Specifications; when it remains reusable Harness mechanics; and when it is only a runtime-specific binding. The Website publishes or routes those source-owned bodies without becoming their authority. Do not split standards or redesign composition unless the matrix exposes a concrete ownership conflict.
 
 ### Roll Feature Definitions out across the repository fleet _(candidate)_
 
