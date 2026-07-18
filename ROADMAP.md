@@ -10,7 +10,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-- [Foundation Tooling: Review harness self-installation of KI skills](docs/roadmap/foundation-tooling/ROADMAP.md#review-harness-self-installation-of-ki-skills)
 - [Governance Consistency: Prefix plan identifiers with stable theme codes](docs/roadmap/governance-consistency/ROADMAP.md#prefix-plan-identifiers-with-stable-theme-codes)
 - [Governance Consistency: Rename `ki-project-roadmap` to `ki-repo-roadmap`](docs/roadmap/governance-consistency/ROADMAP.md#rename-ki-project-roadmap-to-ki-repo-roadmap)
 - [Governance Consistency: Update `ki-recap` for the direct `ki-next` handoff](docs/roadmap/governance-consistency/ROADMAP.md#update-ki-recap-for-the-direct-ki-next-handoff)

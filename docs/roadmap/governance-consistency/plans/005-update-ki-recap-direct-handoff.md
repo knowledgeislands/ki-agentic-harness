@@ -4,7 +4,7 @@ title: Update ki-recap for the direct ki-next handoff
 status: open
 roadmap: governance-consistency/update-ki-recap-for-the-direct-ki-next-handoff
 blocks: —
-blocked-by: foundation-tooling/004
+blocked-by: —
 ---
 
 ## Context
@@ -50,6 +50,4 @@ The completed checker/educator work established a useful boundary for this hando
 
 ## Dependencies / blocks
 
-This is last in the agreed execution chain.
-
-It follows `foundation-tooling/004`, which itself follows the root `governance-consistency/000` plan through the foundation-tooling sequence.
+This is last in the agreed execution chain and may begin once the preceding foundation-tooling work is complete.
