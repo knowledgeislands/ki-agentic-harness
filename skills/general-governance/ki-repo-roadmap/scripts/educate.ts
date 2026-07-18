@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-/** Scaffold the non-KB simple project-roadmap profile without clobbering. */
+/** Scaffold the non-KB simple repository-roadmap profile without clobbering. */
 import { closeSync, existsSync, fsyncSync, linkSync, lstatSync, openSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 
@@ -15,7 +15,7 @@ const roadmap = join(target, 'ROADMAP.md')
 const thematic = join(target, 'docs', 'roadmap')
 const findings: Finding[] = []
 
-const TEMPLATE = `# Project roadmap
+const TEMPLATE = `# Repository roadmap
 
 ## Blocking
 
@@ -91,7 +91,7 @@ function emit(): never {
     na: count('NA'),
     pass: count('PASS')
   }
-  const payload = { concern: 'project-roadmap', target, generatedAt: new Date().toISOString(), summary, findings }
+  const payload = { concern: 'repo-roadmap', target, generatedAt: new Date().toISOString(), summary, findings }
   if (json) process.stdout.write(`${JSON.stringify(payload, null, 2)}\n`)
   else {
     for (const finding of findings)
@@ -111,7 +111,7 @@ if (isKb()) {
   findings.push({
     level: 'NA',
     area: 'SCOPE-1',
-    msg: 'KB repository: use ki-kb-streams; no project-roadmap artifact created',
+    msg: 'KB repository: use ki-kb-streams; no repository-roadmap artifact created',
     ref: STANDARD_REF
   })
   emit()

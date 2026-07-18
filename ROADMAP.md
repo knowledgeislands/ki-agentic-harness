@@ -1,6 +1,6 @@
-# Project roadmap
+# Repository roadmap
 
-This portfolio view is generated from the canonical theme roadmaps under `docs/roadmap/`. Edit those files, then run `ki-project-roadmap` CONFORM.
+This portfolio view is generated from the canonical theme roadmaps under `docs/roadmap/`. Edit those files, then run `ki-repo-roadmap` CONFORM.
 
 ## Blocking
 
@@ -13,7 +13,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
 - [Governance Consistency: Align KB Stream focus with non-KB roadmap horizons](docs/roadmap/governance-consistency/ROADMAP.md#align-kb-stream-focus-with-non-kb-roadmap-horizons)
-- [Governance Consistency: Rename `ki-project-roadmap` to `ki-repo-roadmap`](docs/roadmap/governance-consistency/ROADMAP.md#rename-ki-project-roadmap-to-ki-repo-roadmap)
 
 ## Soon
 

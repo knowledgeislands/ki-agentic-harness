@@ -32,7 +32,7 @@ function check(label: string, condition: boolean): void {
 }
 
 function fixture(): string {
-  return mkdtempSync(join(tmpdir(), 'ki-project-roadmap-test-'))
+  return mkdtempSync(join(tmpdir(), 'ki-repo-roadmap-test-'))
 }
 
 function run(script: string, root: string, args: string[] = []): { code: number; out: string } {
@@ -605,7 +605,7 @@ for (const section of ['Steps', 'Verify']) {
 }
 
 if (failed) {
-  console.log('\n\x1b[31mproject-roadmap.test.ts: failures\x1b[0m')
+  console.log('\n\x1b[31mrepo-roadmap.test.ts: failures\x1b[0m')
   process.exit(1)
 }
-console.log('\n\x1b[32mproject-roadmap.test.ts: all checks passed\x1b[0m')
+console.log('\n\x1b[32mrepo-roadmap.test.ts: all checks passed\x1b[0m')

@@ -32,7 +32,7 @@ The current `audit.ts` / `conform.ts` pair is therefore the initial executable b
 | `ki-decision-records` | Inspect decisions/index | Conform decision records/index | Decision writers precede authoring normalisation. |
 | `ki-feature-definitions` | Inspect feature definitions/index | Conform feature documents/index | Feature writers precede authoring normalisation. |
 | `ki-handoffs` | Inspect handoff artifacts | Conform handoff artifacts | Handoff writers precede authoring normalisation. |
-| `ki-project-roadmap` | Inspect roadmap projections | Generate roadmap projections | Must follow thematic roadmap and plan writers. |
+| `ki-repo-roadmap` | Inspect roadmap projections | Generate roadmap projections | Must follow thematic roadmap and plan writers. |
 | `ki-skills` | Inspect skill contract | Conform skill content | Skill writers precede authoring normalisation. |
 | `ki-binding-chezmoi` | Inspect chezmoi binding | Render managed binding surface | Depends on binding/domain inputs before external render. |
 | `ki-kb-activities` | Inspect activity notes/index | Append safe index entries | Domain writer before KB and roadmap projections. |
@@ -62,7 +62,7 @@ Its CONFORM path contains two elements:
 
 The first element is a preparation writer; the second is a terminal normaliser.
 
-`ki-repo` provides the earlier configuration-preparation pilot, `ki-kb-activities` supplies a domain writer, and `ki-project-roadmap` supplies a projection consumer that follows its domain writers.
+`ki-repo` provides the earlier configuration-preparation pilot, `ki-kb-activities` supplies a domain writer, and `ki-repo-roadmap` supplies a projection consumer that follows its domain writers.
 
 ## Minimum phase vocabulary
 

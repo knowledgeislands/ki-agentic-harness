@@ -182,7 +182,7 @@ const CLUSTER_ORDER = [
   'ki-plugins',
   'ki-specifications',
   'ki-handoffs',
-  'ki-project-roadmap',
+  'ki-repo-roadmap',
   'ki-feature-definitions',
   'ki-binding',
   'ki-housekeeping',

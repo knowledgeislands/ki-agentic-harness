@@ -1,5 +1,5 @@
 /**
- * Eval scenarios for `ki-project-roadmap` — the non-KB forward-work standard.
+ * Eval scenarios for `ki-repo-roadmap` — the non-KB forward-work standard.
  *
  * These target house-arbitrary rules a generic roadmap answer will miss: simple
  * repositories do not carry plans, thematic item prose has one authoritative
@@ -10,7 +10,7 @@ import type { Scenario } from '../harness.ts'
 
 export const scenarios: Scenario[] = [
   {
-    skill: 'ki-project-roadmap',
+    skill: 'ki-repo-roadmap',
     id: 'project-roadmap-simple-expands-before-plan',
     prompt:
       'This non-KB repository has only a root ROADMAP.md. A Next item has become substantial, so please add a detailed execution plan beside it without changing the roadmap layout.',
@@ -24,7 +24,7 @@ export const scenarios: Scenario[] = [
       'House fact: a non-KB repository with only root ROADMAP.md uses the simple profile, which has no plan collection. Work needing an executable plan must expand into the thematic profile first; the agent must not invent a plan while the repository is still simple. A correct answer explains that boundary and routes the item to docs/roadmap/<theme>/ROADMAP.md with its plan below that theme.'
   },
   {
-    skill: 'ki-project-roadmap',
+    skill: 'ki-repo-roadmap',
     id: 'project-roadmap-qualified-locator-theme-local-id',
     prompt:
       "Set up frontmatter and placement for a new plan for the 'replace stale links' item under the seo theme. I want the id to restart at 001 within seo and roadmap: to contain only the item title. Anything to correct?",
@@ -38,7 +38,7 @@ export const scenarios: Scenario[] = [
       'House fact: thematic plans live at docs/roadmap/<theme>/plans/<THEME>-<NNN>-<slug>.md. Their roadmap field uses the stable qualified <theme>/<item-slug> locator, not a title. Each theme declares a stable uppercase code, and plan ids use that code plus a zero-padded serial from 001; the canonical plan identifier is <THEME>-<NNN>.'
   },
   {
-    skill: 'ki-project-roadmap',
+    skill: 'ki-repo-roadmap',
     id: 'project-roadmap-one-home-exact-projection',
     prompt:
       'I have added the full security item prose under docs/roadmap/security/ROADMAP.md. For convenience I also copied it into root ROADMAP.md and shortened the root link text by hand. Is that acceptable?',
@@ -52,7 +52,7 @@ export const scenarios: Scenario[] = [
       'House fact: in the thematic profile, each item has exactly one authoritative home in its theme ROADMAP.md. Root ROADMAP.md is an exact generated linked portfolio, never a second prose home and never hand-edited. A correct answer removes the duplicate and regenerates the root projection.'
   },
   {
-    skill: 'ki-project-roadmap',
+    skill: 'ki-repo-roadmap',
     id: 'project-roadmap-blocks-graph',
     prompt:
       "Plan seo/005 cannot start until plan content/004 is finished. I've added blocked-by: 004 to seo/005 and would like to start it now in parallel. Anything wrong with that?",

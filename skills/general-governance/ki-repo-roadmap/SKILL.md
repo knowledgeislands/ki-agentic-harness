@@ -1,19 +1,19 @@
 ---
-name: ki-project-roadmap
+name: ki-repo-roadmap
 depends-on: []
 vendors: [educate, audit, conform, help]
 checker-dependencies: [ki-skills/checker-reporter]
 owns: ['ROADMAP.md', 'docs/roadmap/README.md']
 description: >
-  Governs project roadmaps and execution plans in non-KB repositories. Use for "audit the roadmap", "split this roadmap by theme", "expand the roadmap", "audit plans", roadmap horizons, thematic roadmaps, qualified roadmap locators, plan dependencies, or generated portfolio drift. Supports a simple root-only ROADMAP and a thematic docs/roadmap tree with plans. Knowledge Bases are out of scope: use ki-kb-streams, where streams and proposal checklists replace project roadmaps and plans. The ki-plan process skill drives individual plan lifecycle operations; ki-decision-records owns durable decisions.
+  Governs repository roadmaps and execution plans in non-KB repositories. Use for "audit the roadmap", "split this roadmap by theme", "expand the roadmap", "audit plans", roadmap horizons, thematic roadmaps, qualified roadmap locators, plan dependencies, or generated portfolio drift. Supports a simple root-only ROADMAP and a thematic docs/roadmap tree with plans. Knowledge Bases are out of scope: use ki-kb-streams, where streams and proposal checklists replace repository roadmaps and plans. The ki-plan process skill drives individual plan lifecycle operations; ki-decision-records owns durable decisions.
 argument-hint: 'audit <repo> | conform <repo> | expand <theme> | help | educate <repo> | refresh'
 ---
 
-# Knowledge Islands project roadmap standard
+# Knowledge Islands repository roadmap standard
 
 This governance skill owns the forward-work model for **non-KB projects**. Small projects use one root roadmap; projects needing focused workstreams use canonical thematic roadmaps and colocated plans. Knowledge Bases use the `ki-kb-streams` skill instead: a stream is the thematic roadmap, its proposals are roadmap items, and proposal checklists are plans. `ki-next` is the separate process skill that applies this skill's user-confirmed transition rules to select the next work; this governance skill has no process-skill dependency.
 
-Read [the project-roadmap standard](references/standards.md) before changing a roadmap profile or plan structure. Read [the audit rubric](references/rubric.md) for the mechanical and judgment criteria. Plan file details live in [the plan format](references/plan-format.md). Tracked methodology sources and the REFRESH cadence live in [the source list](references/sources.md).
+Read [the repository-roadmap standard](references/standards.md) before changing a roadmap profile or plan structure. Read [the audit rubric](references/rubric.md) for the mechanical and judgment criteria. Plan file details live in [the plan format](references/plan-format.md). Tracked methodology sources and the REFRESH cadence live in [the source list](references/sources.md).
 
 ## Shared model
 
@@ -30,11 +30,11 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** plus judgment-l
 
 ### Mode AUDIT
 
-Run [`scripts/audit.ts`](scripts/audit.ts) against the repository root. It detects the profile and applies the mechanical criteria in [the rubric](references/rubric.md): horizon structure and exact blurbs; theme and item identity; qualified plan linkage; frontmatter, placement, stable theme-coded ids, identifier references, and dependency integrity; exact generated projection and index. It reports KB scope as NA, or FAIL when a KB carries project-roadmap artifacts, and makes no changes.
+Run [`scripts/audit.ts`](scripts/audit.ts) against the repository root. It detects the profile and applies the mechanical criteria in [the rubric](references/rubric.md): horizon structure and exact blurbs; theme and item identity; qualified plan linkage; frontmatter, placement, stable theme-coded ids, identifier references, and dependency integrity; exact generated projection and index. It reports KB scope as NA, or FAIL when a KB carries repository-roadmap artifacts, and makes no changes.
 
 Then apply the rubric's judgment criteria by reading: item quality, horizon placement and transition readiness, plan quality, honest in-progress state, whether simple still fits, and whether theme boundaries are coherent. Iterate until mechanical findings are clean and judgment findings are resolved.
 
-After changing the scripts, run [`scripts/project-roadmap.test.ts`](scripts/project-roadmap.test.ts) for the focused profile, projection, locator, dependency, KB, and safe-write fixtures.
+After changing the scripts, run [`scripts/repo-roadmap.test.ts`](scripts/repo-roadmap.test.ts) for the focused profile, projection, locator, dependency, KB, and safe-write fixtures.
 
 ### Mode CONFORM
 
@@ -60,13 +60,13 @@ Run [`scripts/educate.ts`](scripts/educate.ts) against a non-KB repository. It c
 
 **Precondition:** REFRESH writes only the canonical skill files in `ki-agentic-harness`. If invoked from a repo where the skill is vendored, stop and redirect to that harness; route recurring base-specific pressure through the `ki-kb` IMPROVE mode.
 
-On the cadence in [the source list](references/sources.md), compare actual project-roadmap usage with [the standard](references/standards.md) and [rubric](references/rubric.md). Revisit the horizon model, simple-to-thematic threshold, locator stability, projection usefulness, and plan quality bar. Update the source review dates and explain normative changes in the commit.
+On the cadence in [the source list](references/sources.md), compare actual repository-roadmap usage with [the standard](references/standards.md) and [rubric](references/rubric.md). Revisit the horizon model, simple-to-thematic threshold, locator stability, projection usefulness, and plan quality bar. Update the source review dates and explain normative changes in the commit.
 
 ## Notes
 
 - Not every change needs a plan. A focused single-file or one-step fix can execute directly.
 - Exploration needs no plan; multi-file or multi-step implementation does.
 - A plan answers “how”; a Decision Record answers “why”. Use `ki-decision-records` for the latter.
-- The `ki-plan` process skill operates plan instances. This skill owns their standard and project-roadmap representation.
+- The `ki-plan` process skill operates plan instances. This skill owns their standard and repository-roadmap representation.
 - The `ki-next` process skill selects and promotes work through the readiness contract defined here. It gathers confirmation and invokes `ki-plan`; it does not alter this skill's ownership of horizons, profiles, or plan format.
 - Checker output uses the canonical checker reporter supplied by `ki-skills`; its locally vendored module keeps this checker standalone when installed.

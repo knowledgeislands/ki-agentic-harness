@@ -86,7 +86,7 @@ digraph skills_map {
     agents [fillcolor="#feead2", label=< <b>ki-agents</b><br/><font point-size="9">agent quality</font> >]
     decisions [fillcolor="#feead2", label=< <b>ki-decision-records</b><br/><font point-size="9">decision records</font> >]
     features [fillcolor="#feead2", label=< <b>ki-feature-definitions</b><br/><font point-size="9">feature behaviour</font> >]
-    roadmap [fillcolor="#feead2", label=< <b>ki-project-roadmap</b><br/><font point-size="9">forward work</font> >]
+    roadmap [fillcolor="#feead2", label=< <b>ki-repo-roadmap</b><br/><font point-size="9">forward work</font> >]
     handoffs [fillcolor="#feead2", label=< <b>ki-handoffs</b><br/><font point-size="9">implementation-ready handoffs</font> >]
   }
 

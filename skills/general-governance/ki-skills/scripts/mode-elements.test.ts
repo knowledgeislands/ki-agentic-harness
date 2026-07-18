@@ -39,7 +39,7 @@ const elements: Record<string, ModeElements> = {
       }
     ]
   },
-  'ki-project-roadmap': {
+  'ki-repo-roadmap': {
     version: 1,
     elements: [
       {
@@ -92,7 +92,7 @@ const planned = planModeElements(elements, 'conform')
 check('planner → returns no errors', planned.errors.length === 0)
 check(
   'planner → respects phases and explicit edges',
-  planned.order.map(({ skill }) => skill).join(',') === 'ki-repo,ki-kb-activities,ki-project-roadmap'
+  planned.order.map(({ skill }) => skill).join(',') === 'ki-repo,ki-kb-activities,ki-repo-roadmap'
 )
 const cycle = planModeElements(
   {

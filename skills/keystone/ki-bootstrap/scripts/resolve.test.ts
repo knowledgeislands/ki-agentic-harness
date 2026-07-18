@@ -133,7 +133,7 @@ const valid = fixture(`
 [ki-skills]
 [ki-agents]
 [ki-decision-records]
-[ki-project-roadmap]
+[ki-repo-roadmap]
 [ki-repo]
 [ki-authoring]
 `)

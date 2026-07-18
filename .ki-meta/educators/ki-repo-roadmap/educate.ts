@@ -1,10 +1,10 @@
 #!/usr/bin/env bun
-// Vendored by ki-bootstrap. A target-local EDUCATE launcher for ki-project-roadmap; it has no
+// Vendored by ki-bootstrap. A target-local EDUCATE launcher for ki-repo-roadmap; it has no
 // harness-relative imports and invokes the canonical bootstrap transport.
 import { spawnSync } from 'node:child_process'
 import { resolve } from 'node:path'
 
-const skill = "ki-project-roadmap"
+const skill = "ki-repo-roadmap"
 const target = resolve(process.argv[2] ?? '.')
 const args = process.argv.slice(3)
 let ref = 'main'

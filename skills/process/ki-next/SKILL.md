@@ -2,7 +2,7 @@
 name: ki-next
 depends-on: []
 description: >
-  Selects and prepares the most valuable next roadmap work in a non-KB repository: re-grounds the roadmap, optionally reviews its relevance, replenishes an empty immediate queue through user-confirmed horizon promotions, and creates review-first governed plans through `ki-plan`. A process skill (kind: process, ADR-KI-HARNESS-SKILLS-006): it applies the transition rules owned by `ki-project-roadmap`; it does not hold a separate roadmap standard. Installable globally, cross-repo — usable in any non-KB repository on the machine. Triggers: "what should we do next", "pick the next roadmap item", "plan the next work", "/ki-next". Not a session recap (`ki-recap`), a roadmap checker or horizon authority (`ki-project-roadmap`), or an individual plan lifecycle (`ki-plan`).
+  Selects and prepares the most valuable next roadmap work in a non-KB repository: re-grounds the roadmap, optionally reviews its relevance, replenishes an empty immediate queue through user-confirmed horizon promotions, and creates review-first governed plans through `ki-plan`. A process skill (kind: process, ADR-KI-HARNESS-SKILLS-006): it applies the transition rules owned by `ki-repo-roadmap`; it does not hold a separate roadmap standard. Installable globally, cross-repo — usable in any non-KB repository on the machine. Triggers: "what should we do next", "pick the next roadmap item", "plan the next work", "/ki-next". Not a session recap (`ki-recap`), a roadmap checker or horizon authority (`ki-repo-roadmap`), or an individual plan lifecycle (`ki-plan`).
 argument-hint: 'next [--review] | help'
 ---
 
@@ -26,7 +26,7 @@ ki-recap (optional, current-session context)
   └─> ki-next (portfolio selection and promotion)
         └─> ki-plan (one plan lifecycle)
 
-ki-project-roadmap governs horizon meaning, readiness, transitions, profiles, and plan format.
+ki-repo-roadmap governs horizon meaning, readiness, transitions, profiles, and plan format.
 It has no dependency back on any process skill.
 ```
 
@@ -40,5 +40,5 @@ It has no dependency back on any process skill.
 
 - No universal AUDIT/CONFORM/EDUCATE/REFRESH modes — this is a process skill (ADR-KI-HARNESS-SKILLS-001, ADR-KI-HARNESS-SKILLS-006), not a roadmap standard or checker.
 - No roadmap or plan write occurs until the user explicitly confirms the selected item, order, wording, and horizon transition. Rejected proposals leave the files untouched.
-- The transition rules belong to `ki-project-roadmap`; `ki-next` applies them consistently. `ki-plan` owns individual-plan creation, execution, and closure.
+- The transition rules belong to `ki-repo-roadmap`; `ki-next` applies them consistently. `ki-plan` owns individual-plan creation, execution, and closure.
 - Installed globally by `/harness/install`, alongside `ki-bootstrap`, `ki-recap`, `ki-plan`, and `ki-delegate`. It is never vendored or declared in a repository's `.ki-config.toml`: no `[ki-next]` table.

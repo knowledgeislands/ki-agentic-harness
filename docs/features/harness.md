@@ -50,11 +50,11 @@ _Verify:_ `audit-harness.ts` SKILLS-1 FAILs on any directory-name/`name:` mismat
 
 ## Discipline
 
-### HARN-007 — Project roadmaps hold only open work in one authoritative home
+### HARN-007 — Repository roadmaps hold only open work in one authoritative home
 
-The project roadmap MUST list only open work — no completed items, no ticked checkboxes, no `~~struck~~` entries — items being removed when done rather than checked off. In the thematic profile, each item's prose MUST live only in its canonical `docs/roadmap/<theme>/ROADMAP.md`, while the root `ROADMAP.md` MUST be the exact generated linked portfolio.
+The repository roadmap MUST list only open work — no completed items, no ticked checkboxes, no `~~struck~~` entries — items being removed when done rather than checked off. In the thematic profile, each item's prose MUST live only in its canonical `docs/roadmap/<theme>/ROADMAP.md`, while the root `ROADMAP.md` MUST be the exact generated linked portfolio.
 
-_Verify:_ `ki-project-roadmap`'s [project-roadmap standard](../../skills/general-governance/ki-project-roadmap/references/standards.md), plus its mechanical audit of the exact root projection.
+_Verify:_ `ki-repo-roadmap`'s [repository-roadmap standard](../../skills/general-governance/ki-repo-roadmap/references/standards.md), plus its mechanical audit of the exact root projection.
 
 ### HARN-008 — CLAUDE.md orientation coverage
 

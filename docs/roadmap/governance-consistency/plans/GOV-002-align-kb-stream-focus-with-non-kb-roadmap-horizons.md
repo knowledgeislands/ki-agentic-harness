@@ -4,7 +4,7 @@ title: Align KB Stream focus with non-KB roadmap horizons
 status: open
 roadmap: governance-consistency/align-kb-stream-focus-with-non-kb-roadmap-horizons
 blocks: —
-blocked-by: GOV-001
+blocked-by: —
 ---
 
 ## Context
@@ -13,7 +13,7 @@ Knowledge Base Streams and non-KB roadmaps are distinct local structures that de
 
 ## Current state
 
-Non-KB repositories use the five `ki-project-roadmap` horizons and governed plan files. Knowledge Bases use `ki-kb-streams` focus directories (`Active`, `Background`, `Dormant`, `Future`, and `Settled`) and proposal checklists. `ki-next` and `ki-plan` currently stop for KBs, while `ki-recap` has only limited local-structure routing. The existing stream lifecycle treats `Settled` as an in-tree record even though durable completed history belongs in canonical documentation and git.
+Non-KB repositories use the five `ki-repo-roadmap` horizons and governed plan files. Knowledge Bases use `ki-kb-streams` focus directories (`Active`, `Background`, `Dormant`, `Future`, and `Settled`) and proposal checklists. `ki-next` and `ki-plan` currently stop for KBs, while `ki-recap` has only limited local-structure routing. The existing stream lifecycle treats `Settled` as an in-tree record even though durable completed history belongs in canonical documentation and git.
 
 ## Steps
 

@@ -5,7 +5,7 @@ _On-demand procedure for `ki-next`. The kind, scope, and relationship map live i
 ## 1. Preflight and grounding
 
 1. Resolve the current git repository physically and read its `.ki-config.toml` when present. If `repo_type = "kb"`, stop: Knowledge Bases select work through `ki-kb-streams` proposals rather than this process.
-2. Ask `ki-project-roadmap` to identify the simple or thematic profile. Run its read-only AUDIT through the repository's declared script or its vendored checker. Stop on any FAIL or WARN; name the repair route, but do not run CONFORM or repair unrelated state.
+2. Ask `ki-repo-roadmap` to identify the simple or thematic profile. Run its read-only AUDIT through the repository's declared script or its vendored checker. Stop on any FAIL or WARN; name the repair route, but do not run CONFORM or repair unrelated state.
 3. Read the canonical source of truth: root `ROADMAP.md` for the simple profile; each `docs/roadmap/<theme>/ROADMAP.md`, plus generated `docs/roadmap/README.md` and root projection, for the thematic profile. In the thematic profile, read active plans and their dependency graph before ranking items.
 4. If the user continues from a current `ki-recap`, use only its grounded outstanding work, learning routes with their approval status, and Specific actions as context. Re-check every dynamic roadmap claim now; an unapproved route remains a proposal, and a roadmap item parked during recap is not automatically a candidate. Do not scan stored or historical transcripts. A recap is optional: without one, ground the same facts directly.
 
@@ -22,7 +22,7 @@ State the evidence, the proposed wording or placement, and the effect on selecti
 
 ## 3. Staged candidate loop
 
-Apply the readiness rules in `ki-project-roadmap`; do not invent a local substitute.
+Apply the readiness rules in `ki-repo-roadmap`; do not invent a local substitute.
 
 1. **Blocking and Next.** Gather items that are ready to start and not blocked by an active plan dependency. Reuse a valid existing plan rather than creating a duplicate. If any qualify, rank and present them; do not inspect later horizons for planning candidates.
 2. **Soon.** Only when no eligible Blocking or Next item exists, assess Soon items against the governance-owned Next entry rule: actionable scope, understood dependencies, and readiness to start. Present the viable options. After the user confirms an item, wording, and order, move it to Next as an authored roadmap edit, regenerate derived views, re-run AUDIT, and restart from Blocking and Next. Never create a plan while the item remains Soon.
