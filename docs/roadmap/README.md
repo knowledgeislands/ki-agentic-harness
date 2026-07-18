@@ -11,7 +11,13 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-No active plans.
+### [governance-consistency/001](governance-consistency/plans/001-prefix-plan-identifiers-with-theme-codes.md)
+
+- **Title:** Prefix plan identifiers with stable theme codes
+- **Theme:** `governance-consistency`
+- **Roadmap item:** `governance-consistency/prefix-plan-identifiers-with-stable-theme-codes`
+- **Status:** open
+- **Blocks:** —
 
 ## Dependency graph
 
