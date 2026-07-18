@@ -4,7 +4,7 @@ title: Review harness self-installation of KI skills
 status: open
 roadmap: foundation-tooling/review-harness-self-installation-of-ki-skills
 blocks: governance-consistency/005
-blocked-by: foundation-tooling/003
+blocked-by: —
 ---
 
 ## Context
@@ -44,7 +44,5 @@ The review must settle the intended symlink policy before changing generated run
 - Harness tests and aggregate audit pass sequentially.
 
 ## Dependencies / blocks
-
-Blocked by `foundation-tooling/003` to retain the requested delivery order.
 
 The work must preserve the existing distinction between local development linking and consumer vendoring.

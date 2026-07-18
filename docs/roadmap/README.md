@@ -11,20 +11,12 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-### [foundation-tooling/003](foundation-tooling/plans/003-make-governance-identifiers-readable.md)
-
-- **Title:** Make governance identifiers readable and navigable
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/make-governance-identifiers-readable-and-navigable`
-- **Status:** open
-- **Blocks:** foundation-tooling/004
-
 ### [foundation-tooling/004](foundation-tooling/plans/004-review-harness-self-installation.md)
 
 - **Title:** Review harness self-installation of KI skills
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/review-harness-self-installation-of-ki-skills`
-- **Status:** open (needs foundation-tooling/003)
+- **Status:** open
 - **Blocks:** governance-consistency/005
 
 ### [governance-consistency/005](governance-consistency/plans/005-update-ki-recap-direct-handoff.md)
@@ -38,6 +30,5 @@ Canonical themes and active execution plans.
 ## Dependency graph
 
 ```text
-foundation-tooling/003 ──► foundation-tooling/004
 foundation-tooling/004 ──► governance-consistency/005
 ```

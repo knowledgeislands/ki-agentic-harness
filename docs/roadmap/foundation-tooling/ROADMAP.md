@@ -8,10 +8,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Make governance identifiers readable and navigable
-
-After canonical reports land, review every requirement, rubric, and diagnostic identifier as a human-facing navigation system. Keep stable IDs where title-first presentation and links solve the readability problem; otherwise design a semantic, reorder-safe identifier scheme and a safe migration for definitions, citations, tests, and generated output. Do not rename codes merely for aesthetics or break durable references without a migration decision.
-
 ### Review harness self-installation of KI skills
 
 Review the `ki-agentic-harness` repository as the active skill-authoring environment, separately from ordinary consumer repositories. Decide and verify that its own runtime skill directories use development symlinks to the canonical `skills/` sources by default, while consumer repositories continue to receive regenerated regular-file copies. Cover every supported runtime, safe replacement of stale copies or links, and the audit/conform signal when the harness is not in its expected development-linked state.
