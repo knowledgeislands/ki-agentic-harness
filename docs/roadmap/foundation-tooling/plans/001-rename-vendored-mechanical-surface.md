@@ -4,7 +4,7 @@ title: Rename the vendored mechanical surface to .ki-meta/checkers
 status: open
 roadmap: foundation-tooling/rename-the-vendored-mechanical-surface-to-ki-meta-checkers
 blocks: foundation-tooling/002
-blocked-by: —
+blocked-by: governance-consistency/000
 ---
 
 ## Context
@@ -49,6 +49,6 @@ The harness must make the new layout self-contained and re-bootstrap every affec
 
 ## Dependencies / blocks
 
-This is first because all subsequent target-local operations need one unambiguous payload location.
+This is second in the agreed execution chain because all subsequent target-local operations need one unambiguous payload location.
 
-It blocks `foundation-tooling/002` so standalone EDUCATE is designed directly against the final checker layout.
+It follows `governance-consistency/000` and blocks `foundation-tooling/002` so standalone EDUCATE is designed directly against the final checker layout.

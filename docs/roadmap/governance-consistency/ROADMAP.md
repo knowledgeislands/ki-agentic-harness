@@ -8,6 +8,14 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
+### Create `ki-next` for roadmap-directed planning
+
+Create `ki-next` as the live-session companion to `ki-recap`: it turns current-session recap context and a fresh roadmap read into a user-confirmed planning choice, without mining historical transcripts or silently changing roadmap state. It may optionally perform a quick relevance check; when the global Blocking and Next horizons are empty, it proposes—not performs—promotion of eligible Soon work. It then presents the highest-benefit options and their rationale, asks the user to confirm the selected items and order, promotes only that confirmation, creates the corresponding governed plans through `ki-plan`, and stops for plan review before execution.
+
+### Update `ki-recap` for the direct `ki-next` handoff
+
+Make the live-session output of `ki-recap` explicitly supply its grounded outstanding work, routed learnings, and roadmap-ready specific actions to `ki-next`. The handoff remains conversational context rather than a durable transcript artefact: `ki-next` must freshly re-check the roadmap, and neither skill may write a learning route, promote an item, or create a plan without the user's confirmation.
+
 ### Rename `ki-project-roadmap` to `ki-repo-roadmap`
 
 Rename the roadmap skill to describe its repository-level scope without implying that every non-KB repository is a conventional project. Define a safe migration for the canonical skill directory and frontmatter, references, installation/linking, generated guidance, configuration, tests, and the existing `ki-plan` composition. Until that work is delivered, use the currently installed `ki-project-roadmap` name as authoritative; do not add an alias or change existing consumers opportunistically.

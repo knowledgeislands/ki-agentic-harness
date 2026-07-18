@@ -3,7 +3,7 @@ id: '004'
 title: Review harness self-installation of KI skills
 status: open
 roadmap: foundation-tooling/review-harness-self-installation-of-ki-skills
-blocks: —
+blocks: governance-consistency/005
 blocked-by: foundation-tooling/003
 ---
 
