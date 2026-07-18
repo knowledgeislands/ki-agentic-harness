@@ -16,7 +16,7 @@ Canonical themes and active execution plans.
 - **Title:** Establish user harness installation and repository bootstrap
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/establish-user-harness-installation-and-repository-bootstrap`
-- **Status:** open
+- **Status:** in-progress
 - **Blocks:** —
 
 ## Dependency graph
