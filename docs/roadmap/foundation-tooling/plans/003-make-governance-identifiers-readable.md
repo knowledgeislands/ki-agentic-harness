@@ -4,7 +4,7 @@ title: Make governance identifiers readable and navigable
 status: open
 roadmap: foundation-tooling/make-governance-identifiers-readable-and-navigable
 blocks: foundation-tooling/004
-blocked-by: foundation-tooling/002
+blocked-by: —
 ---
 
 ## Context
@@ -15,23 +15,21 @@ The canonical checker reporter now gives one shared rendering point for audit an
 
 ## Current state
 
-The reporter resolves rubric titles for some human output, but the repository has not yet defined a complete human-facing identifier and navigation policy across feature definitions, rubrics, checker findings, documentation, and tests.
+The delivered reporter and aggregate already render title-first findings such as `CAPABILITY-COMPLETE: complete local governance payloads`, while JSONL retains stable machine fields. The checker/educator split also supplies concrete naming examples: plural responsibility directories (`checkers`, `educators`), verb entrypoints (`ki-audit`, `ki-educate`), and role modules (`checker-reporter`).
 
 Existing codes are durable references and must not be renamed merely for aesthetics.
 
-This plan is provisional until the mandatory post-002 planning refresh. The checker/educator work will provide concrete naming examples and may change the files and conventions this plan should govern.
-
 ## Steps
 
-1. At the post-002 checkpoint, review this plan before execution and incorporate the delivered names and boundaries from `.ki-meta/checkers/`, `.ki-meta/educators/`, command entrypoints, modules such as `checker-reporter`, and any newly exposed naming ambiguity.
-2. Inventory governance naming surfaces separately: functional-area directories, command verbs, module and role nouns, requirement and rubric identifiers, diagnostic codes, plan references, human titles, and machine fields. Classify each by owner, scope, stability requirement, collision domain, and rendered context.
-3. Compare explicit convention candidates using worked repository examples: plural responsibility nouns for functional-area directories; singular action verbs for commands; role nouns for implementation modules; title-first rendering with a stable opaque code; owner-scoped semantic slugs; and hybrid semantic-family plus serial identifiers. Assess readability, uniqueness, reorder safety, rename pressure, citation stability, and migration cost.
-4. Decide which distinctions are normative rather than forcing one scheme across every surface. In particular, do not encode mutable execution order into durable identifiers, and do not make a path name or command verb carry ownership information that belongs in metadata.
+1. Inventory governance naming surfaces separately: functional-area directories, command verbs, module and role nouns, requirement and rubric identifiers, diagnostic codes, plan references, human titles, and machine fields. Classify each by owner, scope, stability requirement, collision domain, and rendered context.
+2. Use the delivered examples as the baseline: plural responsibility nouns for `.ki-meta` functional areas, action verbs for commands, role nouns for implementation modules, title-first terminal presentation plus a stable code, and separate JSONL fields for machine consumers.
+3. Compare the remaining identifier candidates: title-first presentation with stable codes, owner-scoped semantic slugs, and hybrid semantic-family plus serial identifiers. Assess readability, uniqueness, reorder safety, rename pressure, citation stability, and migration cost.
+4. Decide which distinctions are normative rather than forcing one scheme across every surface. Do not encode mutable execution order into durable identifiers, and do not make a path name or command verb carry ownership information that belongs in metadata.
 5. Record the selected naming and presentation contract before implementation: human output presents a readable title and stable code in one canonical order, links resolve to the owning definition, and machine JSONL retains separate stable identifier, title, owner, and finding-type fields as applicable.
 6. Identify cases where title-first presentation and navigation solve the problem, versus a genuine need for semantic, reorder-safe identifiers; write a decision record before changing any durable code or externally referenced path.
 7. Implement canonical reporter and aggregate formatter changes once, rather than teaching every checker to compose titles or duplicate wording, then update definitions, conventions, guides, and tests so emitted identifiers resolve to one readable owner and citation.
 8. Re-vendor the harness and run reporter, fleet, feature-definition, and aggregate tests; then run `bun run test` and `bun run ki:audit` sequentially.
-9. Re-bootstrap representative consumer repositories and confirm human audit/conform presentation is readable while machine streams and approved durable references remain stable and parseable.
+9. Re-bootstrap one representative consumer and confirm readable human presentation while JSONL and approved durable references remain stable and parseable. Treat unrelated consumer audit findings as separate work, not evidence against the generated-layout migration.
 
 ## Files touched
 
@@ -50,6 +48,4 @@ This plan is provisional until the mandatory post-002 planning refresh. The chec
 
 ## Dependencies / blocks
 
-Blocked by `foundation-tooling/002`. Its current content is provisional and must be refreshed from the actual checker/educator implementation before execution begins.
-
-It blocks `foundation-tooling/004` in that requested order.
+It follows the completed checker and educator layout, and blocks `foundation-tooling/004` in that requested order.

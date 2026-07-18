@@ -19,7 +19,7 @@ The two process skills are independently usable, but their relationship is impli
 
 As a result, an agent can treat a roadmap update as a separate reconstruction task instead of carrying the grounded learning from the current conversation directly into the next planning choice.
 
-This plan is provisional until the mandatory post-002 planning refresh, which will incorporate the actual execution and naming lessons from plans 001–002 before the final handoff work begins.
+The completed checker/educator work established a useful boundary for this handoff: a recap may report generated-footprint rollout evidence and unrelated consumer drift separately, but it must not treat one as proof of the other or create a durable write without the user's confirmation.
 
 ## Steps
 
@@ -27,7 +27,7 @@ This plan is provisional until the mandatory post-002 planning refresh, which wi
 2. Define the minimal `ki-recap` to `ki-next` handoff: grounded outstanding work, learning routes the user has approved or is considering, and roadmap-ready Specific actions from the current session.
 3. Update the `ki-recap` procedure and help so it can offer `ki-next` as an explicit follow-on while keeping the handoff as current-session context rather than a persistent transcript, memory write, direct invocation requirement, or automatic durable promotion.
 4. State the receiving boundary in `ki-next`: re-read the live roadmap, distinguish a recap suggestion from current fact, and require explicit confirmation before any learning-route write, horizon promotion, or plan creation.
-5. Add focused examples or tests covering a clean recap, a roadmap-free session, a deferred item already parked on the roadmap, an unapproved learning route, and a confirmed multi-step item that proceeds through `ki-next` to plan review.
+5. Add focused examples or tests covering a clean recap, a roadmap-free session, a deferred item already parked on the roadmap, an unapproved learning route, a generated-footprint rollout with unrelated consumer audit drift, and a confirmed multi-step item that proceeds through `ki-next` to plan review.
 6. Refresh the skills map and any generated composition documentation, re-vendor coverage-scoped changes, then run `bun run test` and `bun run ki:audit` sequentially.
 
 ## Files touched
@@ -52,4 +52,4 @@ This plan is provisional until the mandatory post-002 planning refresh, which wi
 
 This is last in the agreed execution chain.
 
-It follows `foundation-tooling/004`, which itself follows the root `governance-consistency/000` plan through the foundation-tooling sequence. Refresh this plan after 002 completes; do not execute the current provisional text unchanged.
+It follows `foundation-tooling/004`, which itself follows the root `governance-consistency/000` plan through the foundation-tooling sequence.

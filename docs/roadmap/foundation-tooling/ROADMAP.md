@@ -16,14 +16,6 @@ After canonical reports land, review every requirement, rubric, and diagnostic i
 
 Review the `ki-agentic-harness` repository as the active skill-authoring environment, separately from ordinary consumer repositories. Decide and verify that its own runtime skill directories use development symlinks to the canonical `skills/` sources by default, while consumer repositories continue to receive regenerated regular-file copies. Cover every supported runtime, safe replacement of stale copies or links, and the audit/conform signal when the harness is not in its expected development-linked state.
 
-### Make vendored EDUCATE operations standalone and dispatchable
-
-Replace the current bootstrap-only re-sync meaning of `ki-educate` with a dispatch surface over vendored per-skill EDUCATE operations under the sibling `.ki-meta/educators/` functional area. Each copied EDUCATE payload must be a target-local, standalone operation—not the current harness-relative seed delegator—so `./.ki-meta/bin/ki-educate <skill>` can run it without a harness checkout while the no-skill form continues to invoke the whole-set bootstrap engine. Make `ki-repo` assert that every governance skill declared through `.ki-config.toml` resolves to the complete project-local EDUCATE/AUDIT/CONFORM contract, with source shape still governed by `ki-skills` and publication integrity by `ki-bootstrap`. Resolve the present mismatch where `vendors:` declares `educate` but bootstrap deliberately omits it, then test the per-skill and whole-set paths without placing educators under checkers or retaining the retired omission as a compatibility branch.
-
-### Rename the vendored mechanical surface to `.ki-meta/checkers`
-
-Migrate the self-contained audit/conform payload from `.ki-meta/skills/` to `.ki-meta/checkers/`, making clear that it is a runtime-neutral checker surface rather than an installed agent-skill directory. Every checker and aggregate entrypoint must run deterministically without an agentic model, installed runtime skills, or a harness checkout. Keep `.ki-meta/checkers/` limited to checker responsibilities so later mechanical capabilities receive their own sibling functional areas; retain `.claude/skills` and `.agents/skills` as the separate runtime instruction surfaces. Update bootstrap, aggregate runners, manifests, audit/conform rules, documentation, tests, and generated exclusions together, with one deliberate current-state migration rather than permanent dual layouts.
-
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
