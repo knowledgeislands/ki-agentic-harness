@@ -20,7 +20,7 @@ Applicability: `[ki-homebrew-tap]` or `Formula/` activates the complete audit. W
 ## Tap structure
 
 - [ ] [M] FAIL — `TAP-FORMULA-DIR`: `Formula/` exists and carries ≥ 1 `*.rb`. No `Formula/`, or an empty one → not a tap.
-- [ ] [J] WARN — the repo is named `homebrew-<x>` (external Homebrew constraint; the skill governs shape, not name — flag only if a rename would break `brew tap`).
+- [ ] [J] WARN — `TAP-NAME`: the repo is named `homebrew-<x>` (external Homebrew constraint; the skill governs shape, not name — flag only if a rename would break `brew tap`).
 
 ## Formula shape
 
@@ -29,23 +29,23 @@ _Per `Formula/*.rb`._
 - [ ] [M] WARN — `TAP-CLASS`: contains `class <Camel> < Formula`.
 - [ ] [M] WARN — `TAP-FIELDS`: has each of `desc`, `homepage`, `url`, `sha256`, `license`, a `def install`, and a `test do` block (one warn per missing field).
 - [ ] [M] WARN — `TAP-DESC-STYLE`: `desc` value is ≤ 80 chars and does not start with "A "/"An "/"The " (Homebrew `brew style` rule, mirrored so it fires without `brew`).
-- [ ] [J] WARN — the `test do` block exercises the **installed** binary (asserts on real `--version`/`--help` output), not a placeholder `assert true` / `system "true"`.
-- [ ] [J] WARN — `def install` installs the artifact the tool actually ships (`bin.install "bin/<tool>"` matches the `tools-*` repo's `bin/`), not a guessed path.
+- [ ] [J] WARN — `TAP-TEST`: the `test do` block exercises the **installed** binary (asserts on real `--version`/`--help` output), not a placeholder `assert true` / `system "true"`.
+- [ ] [J] WARN — `TAP-INSTALL`: `def install` installs the artifact the tool actually ships (`bin.install "bin/<tool>"` matches the `tools-*` repo's `bin/`), not a guessed path.
 
 ## Sourcing
 
 - [ ] [M] WARN — `TAP-URL-VERSIONED`: `url` is a tagged-release tarball (`/archive/refs/tags/` or `/releases/download/`), not a bare branch or HEAD.
-- [ ] [J] WARN — the `sha256` matches the tarball at `url` (recompute if in doubt: `curl -sL <url> | shasum -a 256`) and the tag version matches `#{version}` used in `test do`.
+- [ ] [J] WARN — `TAP-SHA`: the `sha256` matches the tarball at `url` (recompute if in doubt: `curl -sL <url> | shasum -a 256`) and the tag version matches `#{version}` used in `test do`.
 
 ## Discoverability
 
 - [ ] [M] WARN — `TAP-README`: each formula name appears in `README.md` (the `## Formulae` table).
-- [ ] [J] WARN — the README table's description and source-repo link for each formula are present and correct (the row is not a stale placeholder).
+- [ ] [J] WARN — `TAP-README-FRESH`: the README table's description and source-repo link for each formula are present and correct (the row is not a stale placeholder).
 
 ## Homebrew's own audit (delegated)
 
 - [ ] [M] capability — `TAP-BREW`: when `brew` is on PATH, `brew style <formula>` and `brew audit --strict <formula>` run per formula; failures surface as WARN, a clean pass as INFO. When `brew` is absent, NA (the tap's `brew test-bot` CI is the backstop). A `brew` invocation error is caught and downgraded to NA, never a crash.
-- [ ] [J] WARN — if `TAP-BREW` SKIPped (no local `brew`), confirm the tap carries a `.github/workflows/` `brew test-bot` job so the deep formula checks run somewhere.
+- [ ] [J] WARN — `TAP-BREW-CI`: if `TAP-BREW` SKIPped (no local `brew`), confirm the tap carries a `.github/workflows/` `brew test-bot` job so the deep formula checks run somewhere.
 
 ## Config
 

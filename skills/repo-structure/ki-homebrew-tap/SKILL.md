@@ -2,6 +2,7 @@
 name: ki-homebrew-tap
 implies: []
 vendors: [educate, audit, conform, help]
+checker-dependencies: [ki-skills/checker-reporter]
 description: >
   Codify, audit, and scaffold the Knowledge Islands Homebrew tap — the `homebrew-<x>` distribution repo that holds `Formula/*.rb` for Knowledge Islands command-line tools. This skill WRAPS Homebrew's external standard (the Formula Cookbook + `brew audit`/`brew style`) rather than inventing a house one: it checks the tap's shape (a `Formula/` dir, one formula per tool, the README formulae table, a versioned-tarball source) and delegates formula-correctness to `brew` when it is on PATH. Use when auditing the tap, adding a formula, scaffolding a new tap, or refreshing against Homebrew's rules. Triggers: "audit the homebrew tap", "add a formula", "does the tap follow Homebrew's standard", "scaffold a homebrew tap", "is this formula valid", "refresh the homebrew-tap standard". Governs the tap **container** — the repo shape and the formula shape — not the tools themselves (for a `tools-*` CLI repo use `ki-tools`) nor the repo's GitHub settings and standard files (for those use `ki-repo`).
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
@@ -89,4 +90,4 @@ This skill **rides `ki-repo`** (the tap is first a git repo: README, LICENSE, `.
 - The standard sits on top of a **moving external spec** (Homebrew's Formula Cookbook, `brew audit`, `brew style`/rubocop). When citing a formula requirement, know whether it is **spec-driven** (traces to a Homebrew source in [the source list](references/sources.md)) or **house shape** — never present a tap-shape preference as a Homebrew "MUST". Run Mode REFRESH when in doubt.
 - The checker **degrades gracefully**: when `brew` is absent it returns **NA** for the `brew audit`/`brew style` checks (the tap's own `brew test-bot` CI is the backstop) and still runs every shape check. A `brew` invocation error is caught and downgraded to NA, never a crash.
 - Marker `[ki-homebrew-tap]` is a **keyless opt-in table**, validate-down (like `[ki-mcp]`): its presence is the whole config; any key under it is unknown and WARNed. Run the checker with `--educate` to print the default block.
-- Checker output conforms to the severity ladder, JSON shape, and exit-code contract in `ki-engineering`'s [checker-contract.md](../../foundations/ki-engineering/references/checker-contract.md).
+- Checker output is the canonical checker-reporter JSONL stream, provided by the locally vendored `ki-skills/checker-reporter` module.
