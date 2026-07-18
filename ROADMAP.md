@@ -11,7 +11,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
 - [Governance Consistency: Align KB Stream focus with non-KB roadmap horizons](docs/roadmap/governance-consistency/ROADMAP.md#align-kb-stream-focus-with-non-kb-roadmap-horizons)
-- [Governance Consistency: Prefix plan identifiers with stable theme codes](docs/roadmap/governance-consistency/ROADMAP.md#prefix-plan-identifiers-with-stable-theme-codes)
 - [Governance Consistency: Rename `ki-project-roadmap` to `ki-repo-roadmap`](docs/roadmap/governance-consistency/ROADMAP.md#rename-ki-project-roadmap-to-ki-repo-roadmap)
 
 ## Soon
