@@ -359,11 +359,11 @@ if (isDir('.ki-meta', 'checkers')) {
   for (const skill of readdirSync(metaCheckers).filter((d) => statSync(join(metaCheckers, d)).isDirectory())) {
     const suffix = skill.replace(/^ki-/, '')
     for (const mode of ['audit', 'conform'] as const) {
-      if (!existsSync(join(metaCheckers, skill, `${mode}.ts`))) continue
+      if (!existsSync(join(metaCheckers, skill, 'scripts', `${mode}.ts`))) continue
       const key = `ki:${suffix}:${mode}`
       scripts[key]
-        ? add('PASS', 'SCR-4', `${key} wired to vendored ${skill}/${mode}.ts`, STD, 'package.json')
-        : add('FAIL', 'SCR-4', `missing script "${key}" for vendored .ki-meta/checkers/${skill}/${mode}.ts`, STD, 'package.json')
+        ? add('PASS', 'SCR-4', `${key} wired to vendored ${skill}/scripts/${mode}.ts`, STD, 'package.json')
+        : add('FAIL', 'SCR-4', `missing script "${key}" for vendored .ki-meta/checkers/${skill}/scripts/${mode}.ts`, STD, 'package.json')
     }
   }
 }

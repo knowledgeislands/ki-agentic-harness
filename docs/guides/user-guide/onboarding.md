@@ -32,7 +32,7 @@ mgit -B sh -c 'curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-
 
 Bootstrap's one job is to build `.ki-meta/`. For every skill in the resolved set — every `[ki-<skill>]` table the target declares in its `.ki-config.toml` (including a bare `[ki-authoring]`, which every repo must declare itself — there is no injected baseline, per `ADR-KI-HARNESS-007`), plus their `implies:` closure — it:
 
-1. **vendors** the skill's declared mechanical unit (its `vendors:` frontmatter — a checker copied verbatim, or a generated command-wrapper) into `.ki-meta/checkers/<skill>/<verb>.ts`, and renders the skill's **HELP snapshot** to `.ki-meta/checkers/<skill>/help.md`;
+1. **vendors** the skill's declared mechanical unit (its `vendors:` frontmatter — a checker copied verbatim, or a generated command-wrapper) into `.ki-meta/checkers/<skill>/scripts/<verb>.ts`, and renders the skill's **HELP snapshot** to `.ki-meta/checkers/<skill>/help.md`;
 2. **writes** the four `package.json`-free entry points — `.ki-meta/bin/{ki-audit, ki-conform, ki-educate, ki-help}` over a `.ki-meta/bin/aggregate.ts` runner that discovers the vendored copies and fans out over them — and **stamps** the vendoring manifest (`.ki-meta/manifest.json`: the harness ref plus a hash per vendored file).
 
 It **never touches `package.json`.** A `.ki-meta/` is dot-prefixed and generated-not-authored, so it stays off the repo's own `scripts/`, and (being idempotent) re-running the bootstrap at the same ref reproduces byte-identical output. The `ki:*` convenience keys that a code repo may want — `bun run ki:audit` aliasing `./.ki-meta/bin/ki-audit` — are wired later by `ki-engineering` when it comes online for that repo, as sugar over these same bins, never by bootstrap.

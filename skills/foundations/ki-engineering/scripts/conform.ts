@@ -287,15 +287,17 @@ say(`\n${paint(C.cyan, 'package.json — aggregate entrypoints + per-skill keys'
     for (const skill of readdirSync(metaCheckers).filter((d) => statSync(join(metaCheckers, d)).isDirectory())) {
       const suffix = skill.replace(/^ki-/, '')
       for (const mode of ['audit', 'conform'] as const) {
-        if (!existsSync(join(metaCheckers, skill, `${mode}.ts`))) continue
+        if (!existsSync(join(metaCheckers, skill, 'scripts', `${mode}.ts`))) continue
         const key = `ki:${suffix}:${mode}`
-        const val = `bun .ki-meta/checkers/${skill}/${mode}.ts .`
+        const val = `bun .ki-meta/checkers/${skill}/scripts/${mode}.ts .`
         if (scripts[key] !== val) {
-          log('fix', scripts[key] ? `${key}: repointed → vendored ${skill}/${mode}.ts` : `${key}: missing → added`)
+          log('fix', scripts[key] ? `${key}: repointed → vendored ${skill}/scripts/${mode}.ts` : `${key}: missing → added`)
           rec(
             'POLISH',
             'SCR-4',
-            scripts[key] ? `${key} repointed to vendored ${skill}/${mode}.ts` : `${key} added (vendored ${skill}/${mode}.ts)`,
+            scripts[key]
+              ? `${key} repointed to vendored ${skill}/scripts/${mode}.ts`
+              : `${key} added (vendored ${skill}/scripts/${mode}.ts)`,
             STD,
             'package.json'
           )

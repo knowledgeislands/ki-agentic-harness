@@ -329,11 +329,12 @@ const reportErrors = []
 const extraArgs = process.argv.slice(3)
 for (const skill of checkers) {
   const dir = join(checkersDir, skill)
-  const script = readdirSync(dir).find((f) => pattern.test(f))
+  const scriptsDir = join(dir, 'scripts')
+  const script = existsSync(scriptsDir) ? readdirSync(scriptsDir).find((f) => pattern.test(f)) : undefined
   if (!script) continue
   const key = 'ki:' + skill.replace(/^ki-/, '') + ':' + verb
   console.log('\\n\\x1b[36m==> ' + key + '\\x1b[0m')
-  const scriptPath = join(dir, script)
+  const scriptPath = join(scriptsDir, script)
   // Flags after the verb (for example --dry-run) forward to every child. Reporting
   // is never a flag: canonical JSONL is the normal checker output.
   const res = spawnSync('bun', [scriptPath, '.', ...extraArgs], { encoding: 'utf8' })
@@ -797,12 +798,12 @@ function vendorCheckerModulePayload(
 ): VendoredFile[] {
   const copied: VendoredFile[] = []
   const vendorRoot = ownModule ? destDir : join(destDir, 'vendored', module.provider)
-  const vendorRootRel = ownModule ? join(CHECKERS_DIR, skill) : join(CHECKERS_DIR, skill, 'vendored', module.provider)
+  const vendorRootRel = ownModule ? join(CHECKERS_DIR, skill, 'scripts') : join(CHECKERS_DIR, skill, 'scripts', 'vendored', module.provider)
   const target = join(vendorRoot, payload.targetName)
   const targetRel = join(vendorRootRel, payload.targetName)
 
   mkdirSync(vendorRoot, { recursive: true })
-  if (!ownModule) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, 'vendored'))
+  if (!ownModule) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, 'scripts', 'vendored'))
   recordGenerated(journal, generationRoot, vendorRootRel)
 
   const copyTree = (source: string, destination: string, rel: string): void => {
@@ -855,11 +856,12 @@ function vendorSkill(
   // a skill still on filename-convention discovery (no `vendors:`) — both, as before.
   const scriptModes = SCRIPT_MODES.filter((m) => !declared || declared.includes(m))
   const destDir = join(generationRoot, CHECKERS_DIR, skill)
+  const scriptsDir = join(destDir, 'scripts')
   const written: VendoredFile[] = []
 
   for (const mode of scriptModes) {
     const unit = vendorUnit(skill, mode)
-    if (unit) written.push(...vendorOne(generationRoot, destDir, skill, mode, unit, dryRun, journal))
+    if (unit) written.push(...vendorOne(generationRoot, scriptsDir, skill, mode, unit, dryRun, journal))
   }
   // Nothing vendored (no audit/conform resolvable) — skip the skill entirely, matching
   // the old `if (!audit) return` guard so bare non-governance dirs are ignored.
@@ -889,21 +891,21 @@ function vendorSkill(
   for (const moduleName of checkerModulesOf(skill)) {
     const module = { provider: skill, module: moduleName }
     const payload = checkerModulePayload(module)
-    const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/${payload.targetName}`
+    const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/scripts/${payload.targetName}`
     console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (owned checker module payload)${RESET}`)
     if (!dryRun) {
       if (!journal) throw new Error('candidate generation requires a creation journal')
-      written.push(...vendorCheckerModulePayload(generationRoot, destDir, skill, module, payload, journal, true))
+      written.push(...vendorCheckerModulePayload(generationRoot, scriptsDir, skill, module, payload, journal, true))
     }
   }
 
   for (const module of checkerDependenciesOf(skill)) {
     const payload = checkerModulePayload(module)
-    const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/vendored/${module.provider}/${payload.targetName}`
+    const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/scripts/vendored/${module.provider}/${payload.targetName}`
     console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (checker module payload)${RESET}`)
     if (!dryRun) {
       if (!journal) throw new Error('candidate generation requires a creation journal')
-      written.push(...vendorCheckerModulePayload(generationRoot, destDir, skill, module, payload, journal))
+      written.push(...vendorCheckerModulePayload(generationRoot, scriptsDir, skill, module, payload, journal))
     }
   }
 
@@ -951,23 +953,29 @@ function vendorOne(
   journal?: OwnedSnapshot
 ): VendoredFile[] {
   const destFile = `${mode}.ts`
-  const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/${destFile}`
+  const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/scripts/${destFile}`
   const abs = join(destDir, destFile)
   if (unit.kind === 'file') {
     console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (file)${RESET}`)
     if (!dryRun) {
       mkdirSync(destDir, { recursive: true })
-      if (journal) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill))
+      if (journal) {
+        recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill))
+        recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, 'scripts'))
+      }
       copyRegularFile(join(skillDir(skill), unit.path), abs)
-      if (journal) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, destFile))
+      if (journal) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, 'scripts', destFile))
     }
   } else {
     console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (command wrapper)${RESET}`)
     if (!dryRun) {
       mkdirSync(destDir, { recursive: true })
-      if (journal) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill))
+      if (journal) {
+        recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill))
+        recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, 'scripts'))
+      }
       writeFileSync(abs, commandWrapper(unit.command))
-      if (journal) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, destFile))
+      if (journal) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, 'scripts', destFile))
     }
   }
   return [{ rel, abs }]

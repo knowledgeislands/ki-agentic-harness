@@ -22,7 +22,7 @@ audit_staged_governance() {
     else
       ln -s "$repo_root/node_modules" "$snapshot/node_modules" || status=1
       if [ "$status" -eq 0 ]; then
-        PATH="$snapshot/node_modules/.bin:$PATH" bun "$snapshot/.ki-meta/checkers/ki-engineering/audit.ts" "$snapshot" || status=$?
+        PATH="$snapshot/node_modules/.bin:$PATH" bun "$snapshot/.ki-meta/checkers/ki-engineering/scripts/audit.ts" "$snapshot" || status=$?
       fi
     fi
   fi

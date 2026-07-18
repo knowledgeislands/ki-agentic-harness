@@ -129,7 +129,7 @@ for (const skill of expected) {
     if (unit?.kind !== 'file') continue
     const source = join(localSkill, unit.path)
     checked += 1
-    const vendored = join(vendoredRoot, skill, `${mode}.ts`)
+    const vendored = join(vendoredRoot, skill, 'scripts', `${mode}.ts`)
     if (!existsSync(source) || !lstatSync(source).isFile()) {
       drifted.push(`${skill}/${mode}.ts (canonical source missing or not a regular file)`)
       continue

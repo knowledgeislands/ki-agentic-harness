@@ -226,7 +226,10 @@ try {
   const result = run(legacyMigration)
   check('generated legacy checker layout → re-bootstrap migrates cleanly', result.status === 0)
   check('generated legacy checker layout → retired skills directory is removed', !existsSync(join(meta, 'skills')))
-  check('generated legacy checker layout → checkers directory is published', existsSync(join(meta, 'checkers', 'ki-authoring', 'audit.ts')))
+  check(
+    'generated legacy checker layout → checkers directory is published',
+    existsSync(join(meta, 'checkers', 'ki-authoring', 'scripts', 'audit.ts'))
+  )
 } finally {
   rmSync(legacyMigration, { recursive: true, force: true })
 }
@@ -238,7 +241,7 @@ try {
   renameSync(join(meta, 'checkers'), join(meta, 'skills'))
   const manifestPath = join(meta, 'manifest.json')
   writeFileSync(manifestPath, readFileSync(manifestPath, 'utf8').replaceAll('.ki-meta/checkers/', '.ki-meta/skills/'))
-  const altered = join(meta, 'skills', 'ki-authoring', 'audit.ts')
+  const altered = join(meta, 'skills', 'ki-authoring', 'scripts', 'audit.ts')
   writeFileSync(altered, `${readFileSync(altered, 'utf8')}\n// stale legacy mutation\n`)
   check('altered legacy checker layout → bootstrap refuses', run(staleLegacy).status !== 0)
   check('altered legacy checker layout → payload is preserved', readFileSync(altered, 'utf8').includes('stale legacy mutation'))

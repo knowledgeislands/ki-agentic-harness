@@ -111,11 +111,11 @@ try {
     const p = join(gf, '.ki-meta/bin', bin)
     check(existsSync(p) && (lstatSync(p).mode & 0o111) !== 0, `wrote executable .ki-meta/bin/${bin}`)
   }
-  const repoChecker = join(gf, '.ki-meta/checkers/ki-repo/audit.ts')
+  const repoChecker = join(gf, '.ki-meta/checkers/ki-repo/scripts/audit.ts')
   check(existsSync(repoChecker), 'vendored the ki-repo checker')
   check(existsSync(repoChecker) && !lstatSync(repoChecker).isSymbolicLink(), 'vendored checker is a copy, not a symlink (SCRIPT-7)')
   check(existsSync(join(gf, '.ki-meta/checkers/ki-repo/help.md')), 'rendered the ki-repo HELP snapshot')
-  check(existsSync(join(gf, '.ki-meta/checkers/ki-mcp/audit.ts')), 'declared [ki-mcp] pulled ki-mcp into the vendored set')
+  check(existsSync(join(gf, '.ki-meta/checkers/ki-mcp/scripts/audit.ts')), 'declared [ki-mcp] pulled ki-mcp into the vendored set')
 
   // Bootstrap touches no package.json — the ki:* keys are ki-engineering's to wire.
   const pkg = JSON.parse(readFileSync(join(gf, 'package.json'), 'utf8')) as { scripts: Record<string, string> }

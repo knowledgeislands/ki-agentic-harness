@@ -178,11 +178,12 @@ const reportErrors = []
 const extraArgs = process.argv.slice(3)
 for (const skill of checkers) {
   const dir = join(checkersDir, skill)
-  const script = readdirSync(dir).find((f) => pattern.test(f))
+  const scriptsDir = join(dir, 'scripts')
+  const script = existsSync(scriptsDir) ? readdirSync(scriptsDir).find((f) => pattern.test(f)) : undefined
   if (!script) continue
   const key = 'ki:' + skill.replace(/^ki-/, '') + ':' + verb
   console.log('\n\x1b[36m==> ' + key + '\x1b[0m')
-  const scriptPath = join(dir, script)
+  const scriptPath = join(scriptsDir, script)
   // Flags after the verb (for example --dry-run) forward to every child. Reporting
   // is never a flag: canonical JSONL is the normal checker output.
   const res = spawnSync('bun', [scriptPath, '.', ...extraArgs], { encoding: 'utf8' })

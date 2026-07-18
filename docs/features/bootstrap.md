@@ -16,7 +16,7 @@ _Verify:_ bootstrap a bare fixture (`.ki-config.toml` only, no `package.json`, n
 
 EDUCATE MUST vendor each resolved skill's checker (and any `conform-*.ts`) into the target's `.ki-meta/checkers/<skill>/` as file **copies**, never symlinks, so they run with no harness beside the repo (SCRIPT-7 / [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)).
 
-_Verify:_ after bootstrap, `.ki-meta/checkers/ki-repo/audit.ts` in the target is a regular file whose contents equal the harness source, and `git check-ignore` does not ignore it.
+_Verify:_ after bootstrap, `.ki-meta/checkers/ki-repo/scripts/audit.ts` in the target is a regular file whose contents equal the harness source, and `git check-ignore` does not ignore it.
 
 ### BOOT-003 — Implied-skill closure
 
