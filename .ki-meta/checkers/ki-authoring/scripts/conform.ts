@@ -36,6 +36,14 @@ import {
 
 const argv = process.argv.slice(2)
 const dryRun = argv.includes('--dry-run')
+const elementArg = argv.find((arg) => arg.startsWith('--mode-element='))
+const modeElement = elementArg?.slice('--mode-element='.length)
+if (modeElement !== undefined && modeElement !== 'authoring-config' && modeElement !== 'markdown-normalise') {
+  console.error('error: --mode-element must be authoring-config or markdown-normalise')
+  process.exit(2)
+}
+const runsConfig = modeElement === undefined || modeElement === 'authoring-config'
+const runsMarkdown = modeElement === undefined || modeElement === 'markdown-normalise'
 const target = resolve(argv.find((arg) => !arg.startsWith('-')) ?? '.')
 const findings: CheckerFinding[] = []
 const rec = (level: CheckerLevel, code: string, message: string, ref?: string, file?: string): void =>
@@ -142,9 +150,11 @@ function syncOwned(name: string, canonical: string): void {
   if (!dryRun) writeFileSync(path, canonical)
 }
 
-syncOwned('.prettierrc.json', PRETTIER_DEFAULT)
-syncOwned('.editorconfig', EDITORCONFIG_DEFAULT)
-syncOwned('.markdownlint-cli2.jsonc', MARKDOWNLINT_DEFAULT)
+if (runsConfig) {
+  syncOwned('.prettierrc.json', PRETTIER_DEFAULT)
+  syncOwned('.editorconfig', EDITORCONFIG_DEFAULT)
+  syncOwned('.markdownlint-cli2.jsonc', MARKDOWNLINT_DEFAULT)
+}
 
 // The Markdown gate tools, run directly (ki:lint:md is retired, TOOLCHAIN-001) — write mode
 // runs --write/--fix; dry-run runs the check-mode twins and reports only.
@@ -157,21 +167,23 @@ const PRETTIER = dryRun
 const MARKDOWNLINT = dryRun ? 'bunx markdownlint-cli2' : 'bunx markdownlint-cli2 --fix'
 const cmd = `${PRETTIER} && ${MARKDOWNLINT}`
 
-try {
-  execSync(cmd, { cwd: target, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] })
-  rec(
-    'PASS',
-    'MD-mech',
-    `Markdown ${dryRun ? 'already conforms' : 'conformed'} (Prettier + markdownlint-cli2)`,
-    'references/markdown-authoring.md'
-  )
-} catch {
-  rec(
-    dryRun ? 'WARN' : 'FAIL',
-    'MD-mech',
-    `Markdown ${dryRun ? 'has findings — run without --dry-run to fix' : 'conform pass reported issues (see above)'}`,
-    'references/markdown-authoring.md'
-  )
+if (runsMarkdown) {
+  try {
+    execSync(cmd, { cwd: target, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] })
+    rec(
+      'PASS',
+      'MD-mech',
+      `Markdown ${dryRun ? 'already conforms' : 'conformed'} (Prettier + markdownlint-cli2)`,
+      'references/markdown-authoring.md'
+    )
+  } catch {
+    rec(
+      dryRun ? 'WARN' : 'FAIL',
+      'MD-mech',
+      `Markdown ${dryRun ? 'has findings — run without --dry-run to fix' : 'conform pass reported issues (see above)'}`,
+      'references/markdown-authoring.md'
+    )
+  }
 }
 
 findings.push(...judgmentFindingsFromRubric(rubricPath))

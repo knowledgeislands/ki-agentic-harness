@@ -1,5 +1,5 @@
 {
-  "ref": "d8c4354e5cea1e15c6c332015643ea37df0c1397",
+  "ref": "a6d46c7e859fabbedd67b85a6e0a9da7600e1c32",
   "files": {
     ".ki-meta/checkers/ki-agents/scripts/audit.ts": "21e3d3b0a8f7cf3818436dc6083bbc79f08bea0d7379db1d3fb5273749158858",
     ".ki-meta/checkers/ki-agents/scripts/conform.ts": "11c6f147bd83a53bcad99590b697780387cb8e7d34ebba87b6ec1965c5e0b0c2",
@@ -8,7 +8,8 @@
     ".ki-meta/checkers/ki-agents/help.md": "1e8a5617d470fab7029bf0286b0207dd5e3c4ce8d2f9bee40250ab40da30bc40",
     ".ki-meta/educators/ki-agents/educate.ts": "38103c31695c5df32dd9225e16187dbb656c339154bdacbdfbb41301dc2eb633",
     ".ki-meta/checkers/ki-authoring/scripts/audit.ts": "b83ad36783a4ab9a26d348aa0338f1fb6f613280af64de906bafa11d50382fd6",
-    ".ki-meta/checkers/ki-authoring/scripts/conform.ts": "55220a815b8cc984342fb7b79c110fab3fdff59171a6cd70c002c912665a0052",
+    ".ki-meta/checkers/ki-authoring/scripts/conform.ts": "9f6b612af943181b859dc3a1bff8fa9570adbd0686c583022e0b579bb6dfbe41",
+    ".ki-meta/checkers/ki-authoring/mode-elements.json": "dfd5f432c2940f3e51735e394104dca07e6dda92355374ddbd1e62f8d61d159d",
     ".ki-meta/checkers/ki-authoring/references/rubric.md": "3ef0af5b69dde5ca6e10ec75b8c9aa241d8ac35ceb6065dcf1980e5b62881210",
     ".ki-meta/checkers/ki-authoring/scripts/vendored/ki-skills/checker-reporter.ts": "41d95a0c1759278f87812a91d283b85cc036349be1010eb0cc53580e3ba22344",
     ".ki-meta/checkers/ki-authoring/help.md": "2eaed57639dba4200bc06850d16e8bc2b430fa2fd29180ab9c0cec96e8434fe7",

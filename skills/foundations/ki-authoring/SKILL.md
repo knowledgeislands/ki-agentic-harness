@@ -37,7 +37,7 @@ Like every governance skill it carries the universal **AUDIT · CONFORM · EDUCA
 ### Mode CONFORM — bring a document into house style
 
 1. Apply the judgment transforms in place — wide tables → footnotes (the marker series), descriptive link text, tidy TOML — per the Convention sets.
-2. Run `bun run ki:authoring:conform` (or the standalone `conform.ts`) to settle the mechanical layer (table alignment and transient `MD052`/`MD060` until references and alignment land).
+2. Run `bun run ki:authoring:conform` (or the standalone `conform.ts`) to settle the mechanical layer (table alignment and transient `MD052`/`MD060` until references and alignment land). The element contract separates early `authoring-config` scaffolding from late `markdown-normalise`; a standalone invocation runs both in that order.
 3. Re-run until `ki:authoring:audit` is clean and the judgment criteria pass.
 
 ### Mode EDUCATE — vendor the style gate, scaffold the owned files
