@@ -19,14 +19,6 @@ Canonical themes and active execution plans.
 - **Status:** in-progress
 - **Blocks:** —
 
-### [foundation-tooling/003](foundation-tooling/plans/003-enforce-checker-json-contract.md)
-
-- **Title:** Establish canonical checker reporter and enforce cited findings
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/establish-canonical-checker-reporter-and-enforce-cited-findings`
-- **Status:** in-progress
-- **Blocks:** —
-
 ## Dependency graph
 
 ```text

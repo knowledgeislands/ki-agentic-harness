@@ -11,7 +11,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
 - [Foundation Tooling: Enforce generated-code exclusions in `ki-engineering`](docs/roadmap/foundation-tooling/ROADMAP.md#enforce-generated-code-exclusions-in-ki-engineering)
-- [Foundation Tooling: Establish canonical checker reporter and enforce cited findings](docs/roadmap/foundation-tooling/ROADMAP.md#establish-canonical-checker-reporter-and-enforce-cited-findings)
 - [Foundation Tooling: Make governance identifiers readable and navigable](docs/roadmap/foundation-tooling/ROADMAP.md#make-governance-identifiers-readable-and-navigable)
 - [Foundation Tooling: Make vendored EDUCATE operations standalone and dispatchable](docs/roadmap/foundation-tooling/ROADMAP.md#make-vendored-educate-operations-standalone-and-dispatchable)
 - [Foundation Tooling: Rename the vendored mechanical surface to `.ki-meta/checkers`](docs/roadmap/foundation-tooling/ROADMAP.md#rename-the-vendored-mechanical-surface-to-ki-metacheckers)

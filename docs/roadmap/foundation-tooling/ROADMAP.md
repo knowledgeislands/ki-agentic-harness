@@ -8,10 +8,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Establish canonical checker reporter and enforce cited findings
-
-Make a versioned structured report the default output of every checker, with the aggregate solely responsible for human presentation. Each finding carries both a stable code and readable rule title, so a reader sees `CHK-004: Canonical checker report`, not an opaque identifier alone. The coverage-scoped first tranche is complete; finish the full-fleet collector, rubric/title resolution, and remaining checker migration. Include mechanical (`M`) results and judgment (`J`) review prompts in the same report; `J` findings are cited ADVISORY entries and do not affect the exit status. Have `ki-skills` prove report shape, cited rubric findings, accurate summaries, consistent exit status, and messages that do not repeat fields the renderer already displays. This is a current-state breaking migration: remove the `--json` output switch and the aggregate's prose fallback rather than carrying compatibility paths.
-
 ### Make governance identifiers readable and navigable
 
 After canonical reports land, review every requirement, rubric, and diagnostic identifier as a human-facing navigation system. Keep stable IDs where title-first presentation and links solve the readability problem; otherwise design a semantic, reorder-safe identifier scheme and a safe migration for definitions, citations, tests, and generated output. Do not rename codes merely for aesthetics or break durable references without a migration decision.
