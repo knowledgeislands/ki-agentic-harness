@@ -11,13 +11,7 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-### [foundation-tooling/002](foundation-tooling/plans/002-enforce-generated-code-exclusions.md)
-
-- **Title:** Enforce generated-code exclusions in ki-engineering
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/enforce-generated-code-exclusions-in-ki-engineering`
-- **Status:** in-progress
-- **Blocks:** —
+No active plans.
 
 ## Dependency graph
 
