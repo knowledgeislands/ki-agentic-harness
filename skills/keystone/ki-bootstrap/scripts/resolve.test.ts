@@ -31,10 +31,10 @@ import {
   SKILLS_ROOT,
   SkillResolutionError,
   skillDir
-} from './resolve.ts'
+} from './lib/resolve.ts'
 
 const SCRIPTS = dirname(fileURLToPath(import.meta.url))
-const BOOTSTRAP = join(SCRIPTS, 'bootstrap.ts')
+const BOOTSTRAP = join(SCRIPTS, 'lib', 'repo-bootstrap.ts')
 const AUDIT = join(SCRIPTS, 'audit.ts')
 
 let failed = false
@@ -346,7 +346,7 @@ const temporaryHarness = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-t
 const temporaryTarget = fixture()
 try {
   cpSync(SKILLS_ROOT, join(temporaryHarness, 'skills'), { recursive: true, dereference: true })
-  const temporaryBootstrap = join(temporaryHarness, 'skills', 'keystone', 'ki-bootstrap', 'scripts', 'bootstrap.ts')
+  const temporaryBootstrap = join(temporaryHarness, 'skills', 'keystone', 'ki-bootstrap', 'scripts', 'lib', 'repo-bootstrap.ts')
   const result = spawnSync('bun', [temporaryBootstrap, temporaryTarget, '--seed', 'ki-repo'], { encoding: 'utf8' })
   rmSync(temporaryHarness, { recursive: true, force: true })
   const copiedSkill = join(temporaryTarget, '.claude', 'skills', 'ki-repo', 'SKILL.md')
@@ -363,11 +363,14 @@ try {
 const selfBootstrappingHarness = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-self-source-')))
 try {
   cpSync(SKILLS_ROOT, join(selfBootstrappingHarness, 'skills'), { recursive: true, dereference: true })
-  const selfBootstrap = join(selfBootstrappingHarness, 'skills', 'keystone', 'ki-bootstrap', 'scripts', 'bootstrap.ts')
+  const selfBootstrap = join(selfBootstrappingHarness, 'skills', 'keystone', 'ki-bootstrap', 'scripts', 'lib', 'repo-bootstrap.ts')
   const result = spawnSync('bun', [selfBootstrap, selfBootstrappingHarness, '--seed', 'ki-repo'], { encoding: 'utf8' })
   const selfPayload = join(selfBootstrappingHarness, '.claude', 'skills', 'ki-repo')
   check('source harness bootstrap → exits cleanly', result.status === 0)
-  check('source harness bootstrap → publishes development links', lstatSync(selfPayload).isSymbolicLink())
+  check(
+    'source harness bootstrap → publishes regular runtime copies',
+    lstatSync(selfPayload).isDirectory() && !lstatSync(selfPayload).isSymbolicLink()
+  )
 } finally {
   rmSync(selfBootstrappingHarness, { recursive: true, force: true })
 }

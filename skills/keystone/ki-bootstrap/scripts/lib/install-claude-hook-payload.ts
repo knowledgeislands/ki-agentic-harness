@@ -2,7 +2,7 @@
 /**
  * Durable Claude Code hook-payload installer.
  *
- * This is deliberately separate from bootstrap.ts: its source may be a disposable
+ * This is deliberately separate from repository bootstrap: its source may be a disposable
  * GitHub tarball, while the installed hooks must survive after that tree is gone.
  */
 import { createHash } from 'node:crypto'
@@ -30,7 +30,7 @@ import { basename, dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const SELF = fileURLToPath(import.meta.url)
-const HARNESS_ROOT = resolve(dirname(SELF), '..', '..', '..', '..')
+const HARNESS_ROOT = resolve(dirname(SELF), '..', '..', '..', '..', '..')
 const NAMES = ['plan-stamp.sh', 'plan-sync.sh', 'git-lock-check.sh'] as const
 const REPOSITORY = 'knowledgeislands/ki-agentic-harness'
 const SCHEMA = 2
@@ -523,7 +523,7 @@ function writePayload(namespace: string, target: string, id: string, ref: string
 }
 
 function usage(): never {
-  console.error('usage: bun install-hooks.ts [--source <hooks-dir>] [--home <dir>] [--ref <ref>] [--dry-run|--check]')
+  console.error('usage: bun install-claude-hook-payload.ts [--source <hooks-dir>] [--home <dir>] [--ref <ref>] [--dry-run|--check]')
   process.exit(2)
 }
 

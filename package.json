@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "author": "kris@kris.me.uk",
   "bin": {
-    "ki-bootstrap": "skills/keystone/ki-bootstrap/scripts/bootstrap.ts"
+    "ki-bootstrap": "skills/keystone/ki-bootstrap/scripts/lib/repo-bootstrap.ts"
   },
   "bugs": {
     "url": "https://github.com/knowledgeislands/ki-agentic-harness/issues"
@@ -71,7 +71,6 @@
     "ki:harness:audit": "bun .ki-meta/checkers/ki-harness/scripts/audit.ts .",
     "ki:harness:conform": "bun .ki-meta/checkers/ki-harness/scripts/conform.ts .",
     "ki:help": "bun .ki-meta/bin/aggregate.ts help",
-    "ki:hooks:install": "bun skills/keystone/ki-bootstrap/scripts/install-hooks.ts",
     "ki:housekeeping:audit": "bun .ki-meta/checkers/ki-housekeeping/scripts/audit.ts .",
     "ki:housekeeping:conform": "bun .ki-meta/checkers/ki-housekeeping/scripts/conform.ts .",
     "ki:project-roadmap:audit": "bun .ki-meta/checkers/ki-project-roadmap/scripts/audit.ts .",
@@ -80,7 +79,7 @@
     "ki:repo:conform": "bun .ki-meta/checkers/ki-repo/scripts/conform.ts .",
     "ki:skills:audit": "bun .ki-meta/checkers/ki-skills/scripts/audit.ts .",
     "ki:skills:conform": "bun .ki-meta/checkers/ki-skills/scripts/conform.ts .",
-    "ki:skills:copy:project": "bun skills/keystone/ki-bootstrap/scripts/copy-skills.ts",
+    "ki:skills:copy:project": "bun skills/keystone/ki-bootstrap/scripts/lib/publish-project-skills.ts",
     "ki:skills:graph": "bun .ki-meta/bin/skill-graph.ts --tree",
     "ki:skills:help": "bun .ki-meta/bin/skill-help.ts",
     "ki:skills:link:global": "bun .ki-meta/bin/sync-skills.ts link --only ki-bootstrap,ki-recap,ki-next,ki-plan,ki-delegate",
@@ -91,7 +90,7 @@
     "ki:tokenomics:audit": "bun .ki-meta/checkers/ki-tokenomics/scripts/audit.ts .",
     "ki:tokenomics:conform": "bun .ki-meta/checkers/ki-tokenomics/scripts/conform.ts .",
     "prepare": "husky",
-    "test": "bun skills/keystone/ki-bootstrap/scripts/link-skills.test.ts && bun skills/keystone/ki-bootstrap/scripts/project-links.test.ts && bun skills/keystone/ki-bootstrap/scripts/resolve.test.ts && bun skills/keystone/ki-bootstrap/scripts/bootstrap-safety.test.ts && bun skills/keystone/ki-bootstrap/scripts/entrypoint-parity.test.ts && bun skills/keystone/ki-bootstrap/scripts/sync-skills.test.ts && bun skills/keystone/ki-bootstrap/scripts/sync-checker-modules.test.ts && bun skills/keystone/ki-repo/scripts/educate.test.ts && bun hooks/plan-stamp.test.ts && bun hooks/plan-sync.test.ts && bun hooks/git-lock-check.test.ts && bun skills/keystone/ki-bootstrap/scripts/install-hooks.test.ts && bun skills/general-governance/ki-project-roadmap/scripts/project-roadmap.test.ts && bun skills/general-governance/ki-skills/scripts/audit.test.ts && bun skills/general-governance/ki-skills/scripts/checker-reporter.test.ts && bun skills/general-governance/ki-skills/scripts/checker-fleet.test.ts && bun skills/foundations/ki-engineering/scripts/audit.test.ts && bun skills/repo-structure/ki-mcp/scripts/audit.test.ts && bun skills/repo-structure/ki-website/scripts/audit.test.ts && bun skills/repo-structure/ki-tools/scripts/audit.test.ts && bun skills/repo-structure/ki-kb/scripts/audit.test.ts && bun skills/repo-structure/ki-plugins/scripts/audit.test.ts && bun skills/repo-structure/ki-specifications/scripts/audit.test.ts && bun skills/repo-structure/ki-homebrew-tap/scripts/audit.test.ts && bun skills/repo-structure/ki-harness/scripts/audit.test.ts && bun skills/repo-structure/ki-dotfiles-chezmoi/scripts/judgment-surface.test.ts && bun skills/environment/ki-binding/scripts/audit.test.ts && bun skills/environment/ki-housekeeping/scripts/audit.test.ts && bun skills/environment/ki-tokenomics/scripts/audit.test.ts && bun evals/guide-suite.ts && bun skills/keystone/ki-bootstrap/scripts/skill-graph.test.ts && bun skills/keystone/ki-bootstrap/scripts/skill-graph.ts --check --check-doc docs/guides/user-guide/skills.md && bun skills/keystone/ki-bootstrap/scripts/skill-help.ts --check && bun skills/keystone/ki-bootstrap/scripts/audit.ts ."
+    "test": "bun skills/keystone/ki-bootstrap/scripts/link-skills.test.ts && bun skills/keystone/ki-bootstrap/scripts/project-links.test.ts && bun skills/keystone/ki-bootstrap/scripts/resolve.test.ts && bun skills/keystone/ki-bootstrap/scripts/bootstrap-safety.test.ts && bun skills/keystone/ki-bootstrap/scripts/entrypoint-parity.test.ts && bun skills/keystone/ki-bootstrap/scripts/sync-skills.test.ts && bun skills/keystone/ki-bootstrap/scripts/sync-checker-modules.test.ts && bun skills/keystone/ki-bootstrap/scripts/user-install.test.ts && bun skills/keystone/ki-repo/scripts/educate.test.ts && bun hooks/plan-stamp.test.ts && bun hooks/plan-sync.test.ts && bun hooks/git-lock-check.test.ts && bun skills/keystone/ki-bootstrap/scripts/install-hooks.test.ts && bun skills/general-governance/ki-project-roadmap/scripts/project-roadmap.test.ts && bun skills/general-governance/ki-skills/scripts/audit.test.ts && bun skills/general-governance/ki-skills/scripts/checker-reporter.test.ts && bun skills/general-governance/ki-skills/scripts/checker-fleet.test.ts && bun skills/foundations/ki-engineering/scripts/audit.test.ts && bun skills/repo-structure/ki-mcp/scripts/audit.test.ts && bun skills/repo-structure/ki-website/scripts/audit.test.ts && bun skills/repo-structure/ki-tools/scripts/audit.test.ts && bun skills/repo-structure/ki-kb/scripts/audit.test.ts && bun skills/repo-structure/ki-plugins/scripts/audit.test.ts && bun skills/repo-structure/ki-specifications/scripts/audit.test.ts && bun skills/repo-structure/ki-homebrew-tap/scripts/audit.test.ts && bun skills/repo-structure/ki-harness/scripts/audit.test.ts && bun skills/repo-structure/ki-dotfiles-chezmoi/scripts/judgment-surface.test.ts && bun skills/environment/ki-binding/scripts/audit.test.ts && bun skills/environment/ki-housekeeping/scripts/audit.test.ts && bun skills/environment/ki-tokenomics/scripts/audit.test.ts && bun evals/guide-suite.ts && bun skills/keystone/ki-bootstrap/scripts/skill-graph.test.ts && bun skills/keystone/ki-bootstrap/scripts/lib/skill-graph.ts --check --check-doc docs/guides/user-guide/skills.md && bun skills/keystone/ki-bootstrap/scripts/lib/skill-help.ts --check && bun skills/keystone/ki-bootstrap/scripts/audit.ts ."
   },
   "type": "module"
 }

@@ -31,8 +31,8 @@ import {
 } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { gitignoresPath, runtimeAgentsDir, runtimeSkillsDir, targetRuntimes } from './package-scripts.ts'
 import { assertResolvableSkills, declaredSkills, SkillResolutionError } from './resolve.ts'
+import { gitignoresPath, runtimeAgentsDir, runtimeSkillsDir, targetRuntimes } from './runtime-paths.ts'
 
 export type ProjectLinkScope = 'skills' | 'agents' | 'all'
 export type ProjectSkillPublication = 'copy' | 'development-link'
@@ -58,9 +58,9 @@ type LinkPlan = {
 const SELF = realpathFor(fileURLToPath(import.meta.url))
 const SCRIPTS = dirname(SELF)
 const SKILLS_ROOT = resolve(
-  (process.env.NODE_ENV === 'test' ? process.env.KI_PROJECT_LINKS_TEST_SKILLS_ROOT : undefined) ?? join(SCRIPTS, '..', '..', '..')
+  (process.env.NODE_ENV === 'test' ? process.env.KI_PROJECT_LINKS_TEST_SKILLS_ROOT : undefined) ?? join(SCRIPTS, '..', '..', '..', '..')
 )
-const HARNESS_ROOT = resolve(SCRIPTS, '..', '..', '..', '..')
+const HARNESS_ROOT = resolve(SCRIPTS, '..', '..', '..', '..', '..')
 const AGENTS_ROOT = join(HARNESS_ROOT, 'agents', 'governance')
 const BOOTSTRAP = 'ki-bootstrap'
 const LOCAL_GOVERNANCE_SKILL = 'ki-self'

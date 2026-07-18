@@ -7,7 +7,7 @@
 #
 # It bootstraps the current directory from the harness's `main`: fetches the
 # source tarball (GitHub codeload — generated on demand, no publish step),
-# extracts it to a temp dir, and runs the chain engine (bootstrap.ts) from that
+# extracts it to a temp dir, and runs the chain engine (`lib/repo-bootstrap.ts`) from that
 # tree. Bun is required to *run* the engine and the vendored checkers — it is the
 # mechanical layer's runtime, not the entry point's — so a missing bun fails fast
 # with the install instruction rather than being installed silently.
@@ -15,7 +15,7 @@
 # Everything after `sh -s --` ripples straight through to the engine, with two
 # defaults injected only when absent: the target (the cwd) and `--ref` (`main`).
 # So the zero-arg pipe is `<cwd> --ref main`, while `… | sh -s -- <target>
-# --ref <sha> --dry-run` all reach bootstrap.ts intact. `ki-educate` re-syncs this
+# --ref <sha> --dry-run` all reach repo-bootstrap.ts intact. `ki-educate` re-syncs this
 # way, defaulting `--ref` to `main` (latest) unless a ref is passed; the engine
 # resolves whatever ref ran to a concrete SHA and records that in the manifest.
 set -eu
@@ -24,7 +24,7 @@ REPO="knowledgeislands/ki-agentic-harness"
 
 # Ripple all args through; detect whether a target and a --ref were supplied so we
 # can inject defaults for the missing ones. A tarball extract has no .git, so the
-# engine cannot derive the ref itself — bootstrap.sh must always hand it one.
+# engine cannot derive the ref itself — repo-bootstrap.sh must always hand it one.
 ref=""
 target_seen=0
 prev=""
@@ -63,4 +63,4 @@ trap 'rm -rf "$tmp"' EXIT
 
 echo "bootstrapping from $REPO@$ref"
 curl -fsSL "https://codeload.github.com/$REPO/tar.gz/$ref" | tar -xz -C "$tmp" --strip-components=1
-bun "$tmp/skills/keystone/ki-bootstrap/scripts/bootstrap.ts" "$@"
+bun "$tmp/skills/keystone/ki-bootstrap/scripts/lib/repo-bootstrap.ts" "$@"

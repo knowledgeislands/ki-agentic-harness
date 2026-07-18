@@ -6,7 +6,7 @@
 //   bun skill-graph.ts --check --check-doc <path>  also compare a marked documentation block
 //   bun skill-graph.ts --tree                      print the Markdown dependency tree to stdout
 //
-// Canonical home is skills/keystone/ki-bootstrap/scripts/; also vendored into a governed
+// Canonical home is skills/keystone/ki-bootstrap/scripts/lib/; also vendored into a governed
 // harness-shaped target's .ki-meta/bin/ (ADR-KI-HARNESS-008). It resolves skills/
 // from the cwd (repo root). The `implies:` list in each skill's frontmatter is the
 // single declared source of the implication graph: linking a skill pulls in the

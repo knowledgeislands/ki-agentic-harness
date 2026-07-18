@@ -15,13 +15,13 @@
  * ki-help}`, and stamps `.ki-meta/manifest.json` (harness ref + per-file hashes) so
  * `ki-educate` can re-run this chain at the same ref later.
  *
- * Remote transport (ADR-KI-HARNESS-006): the sibling `bootstrap.sh` is the
+ * Remote transport (ADR-KI-HARNESS-006): the public `repo-bootstrap.sh` is the
  * zero-install `curl | sh` entry point — cd into the repo and pipe it to sh; it
  * fetches the source tarball and runs this engine from the extracted tree (Bun
  * cannot execute a module over HTTP, and the POSIX entry point does not assume
  * bun is even installed):
  *   curl -fsSL https://knowledgeislands.info/harness/install | sh
- * Everything after `sh -s --` ripples through to this engine; bootstrap.sh injects
+ * Everything after `sh -s --` ripples through to this engine; repo-bootstrap.sh injects
  * the cwd target and `--ref main` only when absent. Where bun is already installed,
  * the bunx form runs this engine as the package bin directly (pin a sha — bunx
  * caches floating git refs):
@@ -46,7 +46,7 @@
  * the aggregate runner and bin wrappers (ADR-KI-HARNESS-008). A non-harness repo
  * has no skills/ tree to operate on and never receives them.
  *
- * Usage: bun bootstrap.ts <target-repo> [--seed <skill>] [--ref <ref>] [--dry-run]
+ * Usage: bun repo-bootstrap.ts <target-repo> [--seed <skill>] [--ref <ref>] [--dry-run]
  */
 
 import { execFileSync } from 'node:child_process'
@@ -103,7 +103,7 @@ const REPO_SLUG = 'knowledgeislands/ki-agentic-harness'
 // Vendored into .ki-meta/bin/ ONLY when the resolved set includes ki-harness —
 // engine-level, not per-skill `vendors:` units (ADR-KI-HARNESS-008). Their
 // canonical home is skills/keystone/ki-bootstrap/scripts/.
-const HARNESS_BIN_SCRIPTS = ['skill-graph.ts', 'skill-help.ts', 'sync-skills.ts'] as const
+const HARNESS_BIN_SCRIPTS = ['skill-graph.ts', 'skill-help.ts'] as const
 
 // The current harness ref — recorded in the manifest so `ki-educate` can re-run the
 // chain at the same point later. Falls back to 'unknown' when not in a git
@@ -119,7 +119,7 @@ function harnessRef(): string {
     return 'unknown'
   }
 }
-const SKILLS_ROOT_FOR_REF = resolve(import.meta.dirname, '..', '..', '..', '..')
+const SKILLS_ROOT_FOR_REF = resolve(import.meta.dirname, '..', '..', '..', '..', '..')
 
 // Resolve a possibly-symbolic ref (a branch like `main`, a tag, a short SHA) to the
 // concrete 40-hex commit SHA, so the manifest always records an immutable point even
@@ -508,7 +508,7 @@ while [ $# -gt 0 ]; do
   esac
 done
 echo "re-bootstrapping $root from $REPO@$ref"
-curl -fsSL "https://raw.githubusercontent.com/$REPO/$ref/skills/keystone/ki-bootstrap/scripts/bootstrap.sh" | sh -s -- "$root" --ref "$ref"$pass
+curl -fsSL "https://raw.githubusercontent.com/$REPO/$ref/skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh" | sh -s -- "$root" --ref "$ref"$pass
 `
 }
 
@@ -546,7 +546,7 @@ if (!/^[A-Za-z0-9._/-]+$/.test(ref) || ref.includes('..')) {
   console.error('unsafe harness ref: ' + ref)
   process.exit(2)
 }
-const url = 'https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/' + ref + '/skills/keystone/ki-bootstrap/scripts/bootstrap.sh'
+const url = 'https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/' + ref + '/skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh'
 const fetched = spawnSync('curl', ['-fsSL', url], { encoding: 'utf8' })
 if (fetched.status !== 0 || !fetched.stdout) process.exit(fetched.status ?? 1)
 const result = spawnSync('sh', ['-s', '--', target, '--ref', ref, '--seed', skill, ...(dryRun ? ['--dry-run'] : [])], {
@@ -984,7 +984,7 @@ function vendorSkill(
   // covered by the manifest hash like every other vendored file.
   const helpAbs = join(destDir, 'help.md')
   const helpEnv = process.env.KI_BOOTSTRAP_TEST_HELP_PATH ? { ...process.env, PATH: process.env.KI_BOOTSTRAP_TEST_HELP_PATH } : process.env
-  const help = execFileSync('bun', [join(skillDir('ki-bootstrap'), 'scripts', 'skill-help.ts'), skill], {
+  const help = execFileSync('bun', [join(skillDir('ki-bootstrap'), 'scripts', 'lib', 'skill-help.ts'), skill], {
     cwd: join(SKILLS_ROOT, '..'),
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'ignore'],
@@ -1167,7 +1167,7 @@ function buildCandidate(
   if (set.includes('ki-harness')) {
     for (const name of HARNESS_BIN_SCRIPTS) {
       const destination = join(staging, 'bin', name)
-      copyRegularFile(join(skillDir('ki-bootstrap'), 'scripts', name), destination)
+      copyRegularFile(join(skillDir('ki-bootstrap'), 'scripts', 'lib', name), destination)
       recordGenerated(journal, staging, join('bin', name))
       manifestFiles[join(VENDOR_DIR, 'bin', name)] = hashJournalFile(journal, join('bin', name))
     }
@@ -1611,34 +1611,21 @@ function runBootstrapTransaction(target: string, targetIdentity: EntrySnapshot &
   }
 }
 
-/**
- * The source harness is the one deliberate local-author exception to the normal
- * runtime-copy contract. Its own generated runtime payloads must remain live
- * links so a bootstrap cannot silently make local skill edits invisible. A
- * consumer that happens to carry a `skills/` directory is still a consumer: only
- * the physical root that owns this bootstrap source opts into development links.
- */
-function runtimeSkillPublication(target: string): 'copy' | 'development-link' {
-  return realpathSync(target) === realpathSync(dirname(SKILLS_ROOT)) ? 'development-link' : 'copy'
-}
-
 function publishRuntimeSkillPayloads(target: string, dryRun: boolean): void {
-  const development = runtimeSkillPublication(target) === 'development-link'
-  const args = [join(import.meta.dirname, development ? 'link-skills.ts' : 'copy-skills.ts')]
-  if (development) args.push('--development')
+  const args = [join(import.meta.dirname, 'publish-project-skills.ts')]
   args.push(target)
   if (dryRun) args.push('--dry-run')
   try {
     execFileSync('bun', args, { stdio: 'inherit' })
   } catch {
-    throw new Error(`project runtime skill ${development ? 'development-link' : 'copy'} publication failed`)
+    throw new Error('project runtime skill publication failed')
   }
 }
 
 function main(): void {
   const argv = process.argv.slice(2)
   if (argv.includes('--help') || argv.includes('-h')) {
-    console.log('usage: bootstrap.ts <target-repo> [--seed <skill>] [--ref <ref>] [--dry-run]')
+    console.log('usage: repo-bootstrap.ts <target-repo> [--seed <skill>] [--ref <ref>] [--dry-run]')
     console.log('  vendors the resolved governance set into an atomic .ki-meta generation')
     return
   }
@@ -1699,9 +1686,9 @@ function main(): void {
         )
     }
   } else runBootstrapTransaction(target, boundTarget.identity, set, ref)
-  // Runtime payloads are separate from `.ki-meta/`: consumers receive complete,
-  // standalone copies. The source harness itself receives its explicit local
-  // development links, so re-bootstrap preserves live authoring behaviour.
+  // Runtime payloads are separate from `.ki-meta/`: every target receives complete,
+  // standalone copies. Deliberate local-author links are a ki-repo concern and are
+  // never selected implicitly by repository bootstrap.
   publishRuntimeSkillPayloads(target, dryRun)
   console.log(
     `${GREEN}runner${RESET} ${DIM}→ ${aggRel}, ${auditBinRel}, ${conformBinRel}, ${initBinRel}, ${helpBinRel}, ${manifestRel}${RESET}`

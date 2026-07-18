@@ -10,7 +10,7 @@ The behaviour of the bootstrap chain: how the harness brings a target repo under
 
 After the EDUCATE chain runs against a target repo, that repo MUST govern itself with `./.ki-meta/bin/ki-audit` and **zero** Knowledge Islands skills installed — and with **no `package.json` of its own** — per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md).
 
-_Verify:_ bootstrap a bare fixture (`.ki-config.toml` only, no `package.json`, no `.claude/skills/`) with `skills/keystone/ki-bootstrap/scripts/bootstrap.ts <fixture>`, then run `./.ki-meta/bin/ki-audit` in it — the vendored checkers execute and report.
+_Verify:_ bootstrap a bare fixture (`.ki-config.toml` only, no `package.json`, no `.claude/skills/`) with `skills/keystone/ki-bootstrap/scripts/lib/repo-bootstrap.ts <fixture>`, then run `./.ki-meta/bin/ki-audit` in it — the vendored checkers execute and report.
 
 ### BOOT-002 — Vendored copies, not symlinks
 
@@ -22,7 +22,7 @@ _Verify:_ after bootstrap, `.ki-meta/checkers/ki-repo/scripts/audit.ts` in the t
 
 The resolved skill set MUST be the transitive `implies:` closure of the baseline (`ki-repo`, `ki-authoring`) plus every `[ki-<skill>]` table declared in the target's `.ki-config.toml` (plus any explicit `--seed`), per [ADR-KI-HARNESS-SKILLS-006](../decisions/ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md).
 
-_Verify:_ seeding `ki-website` resolves a set that also contains `ki-website-cloudflare` (its `implies:`) and the baseline; observed in the `bootstrap.ts` dry-run output.
+_Verify:_ seeding `ki-website` resolves a set that also contains `ki-website-cloudflare` (its `implies:`) and the baseline; observed in the `repo-bootstrap.ts` dry-run output.
 
 ### BOOT-004 — Repo-wide aggregates
 
@@ -42,7 +42,7 @@ _Verify:_ after bootstrap, all four of `.ki-meta/bin/{ki-audit,ki-conform,ki-edu
 
 Every governance skill MUST own a `scripts/educate.ts` that delegates to the `ki-bootstrap` chain engine with itself as an explicit `--seed`, delegating by subprocess (composition), not by cross-skill import, per [ADR-KI-HARNESS-SKILLS-004](../decisions/ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md).
 
-_Verify:_ each `skills/*/scripts/educate.ts` execs `../../ki-bootstrap/scripts/bootstrap.ts` and passes `--seed <its own name>`.
+_Verify:_ each `skills/*/scripts/educate.ts` execs `../../ki-bootstrap/scripts/lib/repo-bootstrap.ts` and passes `--seed <its own name>`.
 
 Re-running the idempotent bootstrap chain is the single update path — there are no aggressiveness flags; a re-run brings the target up to date.
 
@@ -54,9 +54,9 @@ _Verify:_ `bun skills/keystone/ki-bootstrap/scripts/audit.ts <target>` reports P
 
 ### BOOT-008 — Remote EDUCATE transport
 
-The EDUCATE chain MUST be runnable on a machine carrying nothing but `bun` — via a POSIX-`sh` entry point (`bootstrap.sh`) that fetches the repo tarball from `codeload.github.com` and execs the engine, and via a vendored `.ki-meta/bin/ki-educate` wrapper that re-runs the same remote script — per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md).
+The EDUCATE chain MUST be runnable on a machine carrying nothing but `bun` — via the POSIX-`sh` `repo-bootstrap.sh` entry point that fetches the repo tarball from `codeload.github.com` and execs the engine, and via a vendored `.ki-meta/bin/ki-educate` wrapper that re-runs the same remote script — per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md).
 
-_Verify:_ `skills/keystone/ki-bootstrap/scripts/bootstrap.sh` line 1 is `#!/bin/sh` and its `codeload.github.com` fetch pipes into `bootstrap.ts`; a governed repo's `.ki-meta/bin/ki-educate` re-invokes that script (never `bun run <raw-url>`, which Bun cannot execute over HTTP).
+_Verify:_ `skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh` line 1 is `#!/bin/sh` and its `codeload.github.com` fetch pipes into `lib/repo-bootstrap.ts`; a governed repo's `.ki-meta/bin/ki-educate` re-invokes that script (never `bun run <raw-url>`, which Bun cannot execute over HTTP).
 
 ### BOOT-009 — `--all` links and vendors every skill
 

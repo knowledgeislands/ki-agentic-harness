@@ -12,11 +12,11 @@
  * `implies:` graph lives in the harness's SKILL.md frontmatter, not anywhere copied
  * into the target. So this check runs from the harness side, the same way
  * re-bootstrapping already does: it resolves the expected set the same way
- * `bootstrap.ts` does (baseline ∪ declared `[ki-*]` tables ∪ the transitive
+ * `lib/repo-bootstrap.ts` does (baseline ∪ declared `[ki-*]` tables ∪ the transitive
  * `implies:` closure, restricted to skills that actually carry a checker) and diffs
  * it against the target's `.ki-meta/checkers/*` directories. Any drift — stale config,
  * an upstream skill add/remove, a partial re-vendor — surfaces as a WARN rather than
- * silently going unnoticed; `bun skills/keystone/ki-bootstrap/scripts/bootstrap.ts <target>`
+ * silently going unnoticed; `bun skills/keystone/ki-bootstrap/scripts/lib/repo-bootstrap.ts <target>`
  * fixes it by re-vendoring. In a source-bearing harness, a direct source-copy mismatch is
  * a ship-blocking FAIL rather than set drift.
  *
@@ -31,7 +31,7 @@
 
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { checkerScript, resolveSet, SkillResolutionError, vendorModesOf, vendorUnit } from './resolve.ts'
+import { checkerScript, resolveSet, SkillResolutionError, vendorModesOf, vendorUnit } from './lib/resolve.ts'
 import {
   type CheckerFinding,
   type CheckerLevel,
@@ -86,7 +86,7 @@ if (!existsSync(vendoredRoot)) {
 }
 
 // Only skills with a discoverable checker are ever vendored (vendorSkill() in
-// bootstrap.ts is a no-op for skills without one), so restrict the expectation to those.
+// repo-bootstrap.ts is a no-op for skills without one), so restrict the expectation to those.
 const expected = resolved.filter((s) => checkerScript(s) !== null)
 const actual = existsSync(vendoredRoot)
   ? readdirSync(vendoredRoot, { withFileTypes: true })
@@ -173,7 +173,7 @@ if (missing.length)
   add(
     'WARN',
     'BOOT-9',
-    `missing from .ki-meta/checkers/: ${missing.join(', ')} — re-run \`bun skills/keystone/ki-bootstrap/scripts/bootstrap.ts ${target}\``,
+    `missing from .ki-meta/checkers/: ${missing.join(', ')} — re-run \`bun skills/keystone/ki-bootstrap/scripts/lib/repo-bootstrap.ts ${target}\``,
     RUBRIC,
     '.ki-meta/checkers'
   )

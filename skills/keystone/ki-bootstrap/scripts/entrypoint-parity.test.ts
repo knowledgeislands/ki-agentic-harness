@@ -19,7 +19,7 @@ import { fileURLToPath } from 'node:url'
 
 const scripts = dirname(fileURLToPath(import.meta.url))
 const root = resolve(scripts, '../../../..')
-const bootstrap = join(scripts, 'bootstrap.ts')
+const bootstrap = join(scripts, 'lib', 'repo-bootstrap.ts')
 const engineeringConform = join(root, 'skills/foundations/ki-engineering/scripts/conform.ts')
 const fixture = realpathSync(mkdtempSync(join(tmpdir(), 'ki-entrypoint-parity-')))
 let failed = false

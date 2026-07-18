@@ -19,8 +19,8 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const SCRIPTS = dirname(fileURLToPath(import.meta.url))
-const SCRIPT = join(SCRIPTS, 'install-hooks.ts')
-const ENTRYPOINT = join(SCRIPTS, 'install-hooks.sh')
+const SCRIPT = join(SCRIPTS, 'lib', 'install-claude-hook-payload.ts')
+const ENTRYPOINT = join(SCRIPTS, 'user-install.sh')
 const NAMES = ['plan-stamp.sh', 'plan-sync.sh', 'git-lock-check.sh'] as const
 
 let failures = 0
@@ -493,16 +493,16 @@ function clean(env: Fixture): void {
   }
 }
 
-// The remote entry point fetches a disposable source and does not smuggle in a
-// bootstrap or settings-binding responsibility.
+// The user installer fetches a disposable source and does not acquire a
+// settings-binding or repository-bootstrap responsibility.
 {
   const entrypoint = readFileSync(ENTRYPOINT, 'utf8')
   check('remote entry point fetches the selected GitHub ref', entrypoint.includes('codeload.github.com/$REPO/tar.gz/$ref'))
+  check('user entry point invokes the user-install implementation', entrypoint.includes('lib/user-install.ts'))
   check(
-    'remote entry point invokes only the payload installer',
-    entrypoint.includes('install-hooks.ts') && !entrypoint.includes('bootstrap.ts')
+    'user entry point never mentions Claude settings or repository bootstrap',
+    !entrypoint.includes('settings.json') && !entrypoint.includes('repo-bootstrap')
   )
-  check('remote entry point never mentions Claude settings', !entrypoint.includes('settings.json'))
 }
 
 if (failures > 0) process.exit(1)

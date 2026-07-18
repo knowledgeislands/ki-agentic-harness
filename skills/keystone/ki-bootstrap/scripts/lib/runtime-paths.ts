@@ -1,5 +1,5 @@
 /**
- * Shared `.gitignore` helpers for ki-bootstrap's linkers.
+ * Shared runtime-path and `.gitignore` helpers for ki-bootstrap's project publishers.
  *
  * The linkers create relative symlinks under `.claude/skills/` / `.claude/agents/`
  * and keep those generated paths gitignored; these helpers are the gitignore side.

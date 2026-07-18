@@ -4,7 +4,7 @@
  * payload. These are ordinary copied files, not cross-skill imports or symlinks:
  * a checker must run from its own skill and again from `.ki-meta/` unchanged.
  *
- * Usage: bun sync-checker-modules.ts [--check]
+ * Internal bootstrap command: bun sync-checker-modules.ts [--check]
  */
 import { cpSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path'

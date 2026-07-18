@@ -19,7 +19,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const LINKER = join(dirname(fileURLToPath(import.meta.url)), 'link-skills.ts')
-const COPIER = join(dirname(fileURLToPath(import.meta.url)), 'copy-skills.ts')
+const COPIER = join(dirname(fileURLToPath(import.meta.url)), 'lib', 'publish-project-skills.ts')
 
 let failed = false
 function check(label: string, cond: boolean): void {

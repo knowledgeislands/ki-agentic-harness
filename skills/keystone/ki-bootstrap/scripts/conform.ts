@@ -78,11 +78,11 @@ function step(script: string, args: string[], area: string, label: string): void
 }
 
 // 1. Publish copied skills and linked agent definitions as one guarded transaction.
-step('project-links.ts', flags, 'BOOT-1', `project links ${dryRun ? 'dry-run preview' : 'write pass'}`)
+step('lib/project-skill-publisher.ts', flags, 'BOOT-1', `project links ${dryRun ? 'dry-run preview' : 'write pass'}`)
 
 // 2. Re-run the checks to confirm (skipped on a preview — nothing changed).
 if (!dryRun) {
-  step('copy-skills.ts', ['--check'], 'BOOT-1', 'copy-skills --check confirms copied payloads')
+  step('lib/publish-project-skills.ts', ['--check'], 'BOOT-1', 'project skill publisher confirms copied payloads')
   step('link-agents.ts', ['--check'], 'BOOT-6', 'link-agents --check confirms links')
 }
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /** Explicit local-development entry point for project-local skill links. */
-import { runProjectLinks } from './project-links.ts'
+import { runProjectLinks } from './lib/project-skill-publisher.ts'
 
 const argv = process.argv.slice(2)
 if (!argv.includes('--check') && !argv.includes('--development')) {

@@ -35,4 +35,4 @@ while [ $# -gt 0 ]; do
   esac
 done
 echo "re-bootstrapping $root from $REPO@$ref"
-curl -fsSL "https://raw.githubusercontent.com/$REPO/$ref/skills/keystone/ki-bootstrap/scripts/bootstrap.sh" | sh -s -- "$root" --ref "$ref"$pass
+curl -fsSL "https://raw.githubusercontent.com/$REPO/$ref/skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh" | sh -s -- "$root" --ref "$ref"$pass
