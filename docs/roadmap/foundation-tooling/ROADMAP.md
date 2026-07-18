@@ -12,12 +12,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Establish user harness installation and repository bootstrap
-
-Define the distinct user installation, repository bootstrap, and harness-developer link journeys.
-
-Plan: [FND-001 — Establish user harness installation and repository bootstrap](plans/FND-001-user-install-and-repository-bootstrap.md).
-
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.

@@ -11,13 +11,7 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-### [FND-001](foundation-tooling/plans/FND-001-user-install-and-repository-bootstrap.md)
-
-- **Title:** Establish user harness installation and repository bootstrap
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/establish-user-harness-installation-and-repository-bootstrap`
-- **Status:** in-progress
-- **Blocks:** —
+No active plans.
 
 ## Dependency graph
 

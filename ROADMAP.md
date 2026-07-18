@@ -10,7 +10,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-- [Foundation Tooling: Establish user harness installation and repository bootstrap](docs/roadmap/foundation-tooling/ROADMAP.md#establish-user-harness-installation-and-repository-bootstrap)
 - [Governance Consistency: Align KB Stream focus with non-KB roadmap horizons](docs/roadmap/governance-consistency/ROADMAP.md#align-kb-stream-focus-with-non-kb-roadmap-horizons)
 - [Governance Consistency: Rename `ki-project-roadmap` to `ki-repo-roadmap`](docs/roadmap/governance-consistency/ROADMAP.md#rename-ki-project-roadmap-to-ki-repo-roadmap)
 
