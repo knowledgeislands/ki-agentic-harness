@@ -42,7 +42,17 @@ Repository bootstrap downloads a temporary harness source, builds that repositor
 
 It writes only inside the target repository.
 
-For pinned revisions, another target, or fleet operation, use the [bootstrap reference](onboarding.md).
+### Bootstrap a repository fleet
+
+If your repositories are registered with [`mgit`](https://github.com/knowledgeislands/tools-mgit), run the same bootstrap across the fleet from its container directory:
+
+```bash
+mgit -B sh -c 'curl -fsSL https://knowledgeislands.info/harness/bootstrap | sh'
+```
+
+`-B` runs the supplied command inside each registered repository, and `sh -c` provides the shell needed for the pipe. Review and commit each repository's generated changes separately.
+
+For pinned revisions, another target, or more fleet detail, use the [bootstrap reference](onboarding.md).
 
 ## Start using skills
 
