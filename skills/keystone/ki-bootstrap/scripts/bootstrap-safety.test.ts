@@ -263,7 +263,7 @@ try {
   rmSync(symlinkedLegacyOutside, { recursive: true, force: true })
 }
 
-for (const leaf of ['checkers', 'bin', 'manifest.json'] as const) {
+for (const leaf of ['checkers', 'educators', 'bin', 'manifest.json'] as const) {
   const root = fixture()
   const outside = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-outside-')))
   try {

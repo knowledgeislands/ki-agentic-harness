@@ -244,6 +244,22 @@ try {
     'seeded ki-repo → checker module is copied beneath its consumer',
     existsSync(join(seededRepo, '.ki-meta', 'checkers', 'ki-authoring', 'scripts', 'vendored', 'ki-skills', 'checker-reporter.ts'))
   )
+  const educator = join(seededRepo, '.ki-meta', 'educators', 'ki-repo', 'educate.ts')
+  const educatorHelp = spawnSync(join(seededRepo, '.ki-meta', 'bin', 'ki-educate'), ['ki-repo', '--help'], { encoding: 'utf8' })
+  const beforeRejectedEducator = snapshot(seededRepo)
+  const rejectedEducator = spawnSync(join(seededRepo, '.ki-meta', 'bin', 'ki-educate'), ['ki-repo/escape'], { encoding: 'utf8' })
+  check(
+    'seeded ki-repo → vendors a target-local standalone educator',
+    existsSync(educator) && !readFileSync(educator, 'utf8').includes('resolve(dirname(fileURLToPath(import.meta.url))')
+  )
+  check(
+    'seeded ki-repo → selected educator dispatches locally',
+    educatorHelp.status === 0 && educatorHelp.stdout.includes('ki-educate ki-repo')
+  )
+  check(
+    'seeded ki-repo → unsafe selected educator is rejected without writing',
+    rejectedEducator.status === 2 && snapshot(seededRepo) === beforeRejectedEducator
+  )
   check(
     'seeded ki-repo → same run publishes regular runtime skill copies',
     lstatSync(join(seededRepo, '.claude', 'skills', 'ki-repo')).isDirectory() &&

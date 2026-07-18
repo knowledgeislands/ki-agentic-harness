@@ -14,7 +14,7 @@ if (!verb) {
 }
 const binDir = dirname(fileURLToPath(import.meta.url))
 if (verb === 'educate' || verb === 'help') {
-  // educate: the local re-sync prompt (re-run the remote chain at the manifest's ref).
+  // educate: whole-set re-bootstrap or a selected target-local educator payload.
   // help: the vendored HELP snapshots. Both exec the sibling wrapper.
   execFileSync(join(binDir, verb === 'educate' ? 'ki-educate' : 'ki-help'), process.argv.slice(3), { stdio: 'inherit' })
   process.exit(0)

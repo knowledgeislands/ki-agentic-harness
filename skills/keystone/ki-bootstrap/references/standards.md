@@ -42,6 +42,10 @@ Wiring `package.json` convenience keys is no concern of the publisher — it man
 
 In a source-bearing harness target, the bootstrap audit also compares every direct file-kind audit and conform unit with the matching canonical source in that target's `skills/` tree, byte-for-byte, and requires both sides to be regular files. This is a commit gate: the harness materializes the staged Git index and audits that snapshot, so partially staged or unrelated working-tree bytes cannot hide or manufacture source-copy drift. Generated command wrappers and HELP snapshots remain governed by their render/manifest path rather than this direct-copy comparison. A bootstrapped-only repository has no canonical skill sources in its own tree, so the source-copy criterion is not applicable there.
 
+## Functional areas under `.ki-meta/`
+
+`.ki-meta/checkers/<skill>/` contains only the standalone AUDIT and CONFORM payloads, their reporter dependencies, rubric metadata, and rendered HELP. `.ki-meta/educators/<skill>/educate.ts` is a separate functional area for selected per-skill EDUCATE dispatch. It is a generated, target-local launcher: it has no harness-relative import and invokes the canonical bootstrap transport with the selected skill as its explicit seed. `./.ki-meta/bin/ki-educate` with no skill remains the whole-set re-bootstrap operation; `./.ki-meta/bin/ki-educate <skill>` runs only the matching local educator launcher. Both are mechanical, model-free operations.
+
 ## Governance agents
 
 A parallel, smaller invariant covers `agents/governance/*.md`: a repo's `.claude/agents/` should contain exactly those files, as **relative file symlinks**, when — and only when — the repo's `.ki-config.toml` carries the bare `[ki-agents]` table. Unlike skills there is no baseline: no agent is always-on, so an undeclared repo gets no agent links at all rather than a default subset. [`link-agents.ts`](../scripts/link-agents.ts) is a sibling of the skill copier, sharing the transaction and gitignore helpers; it continues to manage relative symlinks and the `.gitignore` line, so `.claude/agents/` is likewise gitignored and regenerated, never committed.

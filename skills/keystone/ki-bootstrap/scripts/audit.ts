@@ -31,7 +31,7 @@
 
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { checkerScript, resolveSet, SkillResolutionError, vendorUnit } from './resolve.ts'
+import { checkerScript, resolveSet, SkillResolutionError, vendorModesOf, vendorUnit } from './resolve.ts'
 import {
   type CheckerFinding,
   type CheckerLevel,
@@ -51,6 +51,7 @@ const RUBRIC = 'references/rubric.md'
 const argv = process.argv.slice(2)
 const target = resolve(argv.find((a) => !a.startsWith('--')) ?? '.')
 const vendoredRoot = join(target, '.ki-meta', 'checkers')
+const educatorsRoot = join(target, '.ki-meta', 'educators')
 const retiredRoot = join(target, '.ki-meta', 'skills')
 
 const emitBootstrap = (): never => {
@@ -82,16 +83,17 @@ if (existsSync(retiredRoot)) {
 
 if (!existsSync(vendoredRoot)) {
   add('NA', 'BOOT-9', 'No vendored checkers are present — nothing to check yet.', RUBRIC, '.ki-meta/checkers')
-  emitBootstrap()
 }
 
 // Only skills with a discoverable checker are ever vendored (vendorSkill() in
 // bootstrap.ts is a no-op for skills without one), so restrict the expectation to those.
 const expected = resolved.filter((s) => checkerScript(s) !== null)
-const actual = readdirSync(vendoredRoot, { withFileTypes: true })
-  .filter((e) => e.isDirectory())
-  .map((e) => e.name)
-  .sort()
+const actual = existsSync(vendoredRoot)
+  ? readdirSync(vendoredRoot, { withFileTypes: true })
+      .filter((e) => e.isDirectory())
+      .map((e) => e.name)
+      .sort()
+  : []
 
 const missing = expected.filter((s) => !actual.includes(s))
 const extra = actual.filter((s) => !expected.includes(s))
@@ -182,6 +184,56 @@ if (extra.length)
     `vendored but no longer expected: ${extra.join(', ')} — a dropped table or upstream implies change; re-bootstrap to prune`,
     RUBRIC,
     '.ki-meta/checkers'
+  )
+
+const expectedEducators = resolved.filter((skill) => vendorModesOf(skill)?.includes('educate'))
+const actualEducators = existsSync(educatorsRoot)
+  ? readdirSync(educatorsRoot, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .sort()
+  : []
+const missingEducators = expectedEducators.filter((skill) => !actualEducators.includes(skill))
+const extraEducators = actualEducators.filter((skill) => !expectedEducators.includes(skill))
+const unsafeEducators = expectedEducators.filter((skill) => {
+  const payload = join(educatorsRoot, skill, 'educate.ts')
+  if (!existsSync(payload)) return false
+  const stat = lstatSync(payload)
+  return !stat.isFile() || stat.isSymbolicLink()
+})
+
+if (missingEducators.length === 0 && extraEducators.length === 0 && unsafeEducators.length === 0) {
+  add(
+    'PASS',
+    'BOOT-12',
+    `Vendored educator set matches the expected resolved set (${expectedEducators.length} skill${expectedEducators.length === 1 ? '' : 's'}).`,
+    RUBRIC,
+    '.ki-meta/educators'
+  )
+}
+if (missingEducators.length)
+  add(
+    'WARN',
+    'BOOT-12',
+    `missing from .ki-meta/educators/: ${missingEducators.join(', ')} — re-run bootstrap to restore standalone EDUCATE payloads`,
+    RUBRIC,
+    '.ki-meta/educators'
+  )
+if (extraEducators.length)
+  add(
+    'WARN',
+    'BOOT-12',
+    `vendored educators no longer expected: ${extraEducators.join(', ')} — re-bootstrap to prune`,
+    RUBRIC,
+    '.ki-meta/educators'
+  )
+if (unsafeEducators.length)
+  add(
+    'WARN',
+    'BOOT-12',
+    `unsafe educator payload(s): ${unsafeEducators.join(', ')} — re-bootstrap to restore regular target-local launchers`,
+    RUBRIC,
+    '.ki-meta/educators'
   )
 
 // Drift here is always conformable by re-vendoring (WARN, never FAIL) — mirrors BOOT-1.
