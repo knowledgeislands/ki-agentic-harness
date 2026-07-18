@@ -5,6 +5,12 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import {
+  parseCheckerReporterJsonl,
+  rubricCriteriaFromFile,
+  validateCheckerReporterEvents,
+  validateCheckerReporterRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 const scripts = dirname(fileURLToPath(import.meta.url))
 const fixture = mkdtempSync(join(tmpdir(), 'ki-dotfiles-chezmoi-'))
@@ -18,14 +24,21 @@ function check(label: string, condition: boolean): void {
   }
 }
 
-function run(script: string, extraArgs: string[] = []): { status: number | null; findings: Array<{ area: string; level: string }> } {
-  const result = spawnSync('bun', [join(scripts, script), fixture, ...extraArgs, '--json'], { encoding: 'utf8' })
-  let findings: Array<{ area: string; level: string }> = []
-  try {
-    findings = JSON.parse(result.stdout).findings ?? []
-  } catch {
-    // The assertions below report the failed invocation and missing finding.
-  }
+function run(script: string, extraArgs: string[] = []): { status: number | null; findings: Array<{ code: string; level: string }> } {
+  const result = spawnSync('bun', [join(scripts, script), fixture, ...extraArgs], { encoding: 'utf8' })
+  const parsed = parseCheckerReporterJsonl(result.stdout)
+  const events = parsed.events
+  const rubric = rubricCriteriaFromFile(join(scripts, '..', 'references', 'rubric.md'))
+  const errors = [
+    ...parsed.errors,
+    ...validateCheckerReporterEvents(events, result.status ?? 1),
+    ...validateCheckerReporterRubric(events, rubric)
+  ]
+  if (errors.length) throw new Error(`invalid canonical checker stream: ${errors.join('; ')}`)
+  const findings = events.filter(
+    (event): event is { record: 'finding'; code: string; level: string } =>
+      typeof event === 'object' && event !== null && (event as { record?: unknown }).record === 'finding'
+  )
   return { status: result.status, findings }
 }
 
@@ -36,14 +49,14 @@ try {
   check('AUDIT exits cleanly', audit.status === 0)
   check(
     'AUDIT surfaces CONFIG-J1 exactly once',
-    audit.findings.filter((finding) => finding.area === 'CONFIG-J1' && finding.level === 'ADVISORY').length === 1
+    audit.findings.filter((finding) => finding.code === 'CONFIG-J1' && finding.level === 'ADVISORY').length === 1
   )
 
   const conform = run('conform.ts', ['--dry-run'])
   check('CONFORM dry-run exits cleanly', conform.status === 0)
   check(
     'CONFORM surfaces CONFIG-J1 exactly once',
-    conform.findings.filter((finding) => finding.area === 'CONFIG-J1' && finding.level === 'ADVISORY').length === 1
+    conform.findings.filter((finding) => finding.code === 'CONFIG-J1' && finding.level === 'ADVISORY').length === 1
   )
 } finally {
   rmSync(fixture, { recursive: true, force: true })

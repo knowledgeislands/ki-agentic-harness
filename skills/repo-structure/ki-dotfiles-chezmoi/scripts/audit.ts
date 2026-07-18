@@ -10,24 +10,43 @@
  * Judgment half: surfaces the [J] criteria from references/rubric.md as ADVISORY
  * findings. These cannot be automated — a reader must assess them.
  *
- * Output is grouped by severity; exit code is non-zero iff any FAIL. No dependencies —
- * Node/Bun builtins only; no cross-skill imports (checker-contract.md).
+ * The checker collects domain findings only. Its locally vendored canonical
+ * checker reporter emits JSONL; the aggregate owns human presentation.
  */
-import { existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from 'node:fs'
-import { basename, join } from 'node:path'
+import { existsSync, readdirSync, statSync } from 'node:fs'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 // Unified severity ladder — shared by every KI checker (checker-contract.md).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️', NA: '🚫', PASS: '✅' }
-const findings: Finding[] = []
-const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
+const findings: CheckerFinding[] = []
+const add = (level: Level, code: string, message: string, ref?: string, file?: string): void => {
+  findings.push({ type: 'M', level, code, message, ...(ref ? { ref } : {}), ...(file ? { file } : {}) })
+}
 
-const repo = process.argv[2]
-if (!repo || !existsSync(repo)) {
-  console.error('usage: audit.ts <repo-path>   (path must exist)')
-  process.exit(2)
+const repo = resolve(process.argv.find((arg, index) => index > 1 && !arg.startsWith('-')) ?? '.')
+const RUBRIC = 'references/rubric.md'
+const rubricPath = join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md')
+if (!existsSync(repo) || !statSync(repo).isDirectory()) {
+  const invalidTarget: CheckerFinding[] = [
+    {
+      type: 'M',
+      level: 'FAIL',
+      code: 'CHEZMOI-1',
+      message: 'audit target is not an existing directory',
+      ref: 'references/standards.md',
+      file: repo
+    }
+  ]
+  invalidTarget.push(...judgmentFindingsFromRubric(rubricPath, RUBRIC))
+  emitCheckerReporter({ mode: 'audit', concern: 'dotfiles-chezmoi', target: repo, findings: invalidTarget })
+  process.exit(checkerReporterExitCode(invalidTarget))
 }
 const at = (...p: string[]) => join(repo, ...p)
 const has = (...p: string[]) => existsSync(at(...p))
@@ -52,9 +71,15 @@ const SKIP_DIRS = new Set(['.git', 'node_modules', '.ki-meta', '.claude'])
 
 // ── CHEZMOI-1: .chezmoiignore present ─────────────────────────────────────────
 if (has('.chezmoiignore')) {
-  add('PASS', 'CHEZMOI-1', '.chezmoiignore present', 'references/standards.md')
+  add('PASS', 'CHEZMOI-1', 'managed ignore file is present', 'references/standards.md', '.chezmoiignore')
 } else {
-  add('FAIL', 'CHEZMOI-1', '.chezmoiignore missing — run CONFORM to scaffold an empty one', 'references/standards.md', '.chezmoiignore')
+  add(
+    'FAIL',
+    'CHEZMOI-1',
+    'managed ignore file is missing — run CONFORM to scaffold an empty one',
+    'references/standards.md',
+    '.chezmoiignore'
+  )
 }
 
 // ── CHEZMOI-2: .chezmoidata/.chezmoitemplates present iff .tmpl files exist ──
@@ -128,109 +153,6 @@ if (!has('.git')) {
   add('PASS', 'GIT-1', 'no stray .git/*.lock files', 'references/standards.md')
 }
 
-// ── judgment surface: [J] criteria from references/rubric.md ───────────
-add(
-  'ADVISORY',
-  'PATTERN-J1',
-  'for each app-mutated config file, confirm Pattern A (surgical patch) vs Pattern B (full template + ' +
-    'reverse-merge) matches the ≥90%-app-owned decision rule for that specific file.',
-  'references/standards.md'
-)
-add(
-  'ADVISORY',
-  'CONFIG-J1',
-  'for every Pattern A writer, confirm the edit API fits its declared format, absent paths are explicit, ' +
-    'unsupported input fails closed, representative fixtures preserve unrelated syntax, and a second identical run is a no-op.',
-  'references/standards.md'
-)
-add(
-  'ADVISORY',
-  'LAYER-J1',
-  'confirm CLAUDE.md-style guidance sits at the right layer — repo-local vs user-level vs persistent memory.',
-  'references/standards.md'
-)
-if (has('.chezmoiignore')) {
-  add(
-    'ADVISORY',
-    'CHEZMOI-J1',
-    'confirm any .chezmoiignore negation (!pattern) is a deliberate, documented un-ignore, not an ' + 'accidentally-too-broad ignore rule.',
-    'references/standards.md',
-    '.chezmoiignore'
-  )
-}
-add(
-  'ADVISORY',
-  'ETIQ-J1',
-  'confirm audit findings were reported as file + one-line problem + options, with no fix applied ' + 'without confirmation.',
-  'references/standards.md'
-)
-add(
-  'ADVISORY',
-  'SYNC-1',
-  'this rubric, the standard, and this script must agree; when the standard moves, all three move together (REFRESH).',
-  'references/rubric.md'
-)
-
-// ── report ────────────────────────────────────────────────────────────────────
-// Shared emit harness — copy verbatim across KI checkers (checker-contract.md).
-function emit(items: Finding[], target: string, concern: string, title: string): never {
-  const argv = process.argv.slice(2)
-  const json = argv.includes('--json')
-  const ri = argv.indexOf('--report')
-  const report = ri !== -1
-  const reportDir = report && argv[ri + 1] && !argv[ri + 1].startsWith('-') ? argv[ri + 1] : join(target, '.ki-meta', 'audits')
-
-  const n = (l: Level): number => items.filter((f) => f.level === l).length
-  const summary = {
-    fail: n('FAIL'),
-    warn: n('WARN'),
-    polish: n('POLISH'),
-    advisory: n('ADVISORY'),
-    info: n('INFO'),
-    na: n('NA'),
-    pass: n('PASS')
-  }
-  const tally = `FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na}`
-  const stamp = new Date().toISOString()
-
-  if (report) {
-    mkdirSync(reportDir, { recursive: true })
-    const body = ORDER.flatMap((l) => {
-      const rows = items.filter((f) => f.level === l)
-      return rows.length
-        ? [
-            '',
-            `## ${ICON[l]} ${l} (${rows.length})`,
-            ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
-          ]
-        : []
-    })
-    writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
-    writeFileSync(
-      join(reportDir, `${concern}.json`),
-      `${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`
-    )
-  }
-
-  if (json) {
-    process.stdout.write(`${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
-  } else {
-    console.log(`\n${title}\n${'─'.repeat(60)}`)
-    for (const l of ORDER) {
-      const rows = items.filter((f) => f.level === l)
-      if (!rows.length) continue
-      console.log(`\n${ICON[l]} ${l} (${rows.length})`)
-      for (const r of rows) console.log(`   [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
-    }
-    console.log(`\n${'─'.repeat(60)}\n${tally}`)
-    if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-dotfiles-chezmoi CONFORM   (judgment criteria: references/rubric.md)')
-    if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
-    console.log('')
-  }
-  process.exit(summary.fail ? 1 : 0)
-}
-
-add('INFO', 'SCOPE', 'chezmoi dotfiles-management conventions — filesystem mechanical gate + judgment criteria surface')
-
-emit(findings, repo, 'dotfiles-chezmoi', `Chezmoi dotfiles audit — ${basename(repo)}  (${repo})`)
+findings.push(...judgmentFindingsFromRubric(rubricPath, RUBRIC))
+emitCheckerReporter({ mode: 'audit', concern: 'dotfiles-chezmoi', target: repo, findings })
+process.exitCode = checkerReporterExitCode(findings)

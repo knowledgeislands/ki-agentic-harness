@@ -2,6 +2,7 @@
 name: ki-dotfiles-chezmoi
 implies: [ki-authoring]
 vendors: [educate, audit, conform, help]
+checker-dependencies: [ki-skills/checker-reporter]
 description: >
   Codify, audit, and conform the chezmoi dotfiles-management standard — naming-prefix semantics, edit-source-not-target discipline, shell-loader layering, the bin/ dispatcher pattern, app-mutated-config handling (surgical patch vs full-template reverse-merge), format-preserving config editor selection, single-source-to-multi-target config templating, repo-local-vs-user-level CLAUDE.md layering, and chezmoi-specific repo-shape and OS gotchas. Use when auditing or authoring a chezmoi source repo, deciding how to manage or surgically edit an app-mutated config file, structuring shell config or a bin/ directory, or checking dotfiles conventions are followed. Triggers: "chezmoi standard", "audit my chezmoi repo", "how should I manage this dotfile", "surgical patch or reverse-merge", "preserve config comments", "dotfiles conventions". Not for a specific repo's own personal tool choices (its exact scripts, taps, MCP servers) — those belong in that repo's own `CLAUDE.md`, not this skill.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
