@@ -98,7 +98,7 @@ const LATEST_DEV_VERSIONS: Record<string, string> = {
 }
 const LINT_STAGED_DEFAULT = {
   '*.{ts,tsx,js,jsx,json}': ['bunx @biomejs/biome check --write --no-errors-on-unmatched'],
-  '*.md': ['bunx prettier --write', 'bunx markdownlint-cli2']
+  '*.md': ['bunx prettier --write', 'bunx markdownlint-cli2 --no-globs']
 }
 
 const MISE_DEFAULT = `[tools]
@@ -333,7 +333,8 @@ say(`\n${paint(C.cyan, 'package.json — lint-staged')}`)
 {
   const lintStaged = pkg['lint-staged']
   const ls = lintStaged && typeof lintStaged === 'object' ? JSON.stringify(lintStaged) : ''
-  const ok = ls.includes('@biomejs/biome') && ls.includes('prettier') && ls.includes('markdownlint')
+  const ok =
+    ls.includes('@biomejs/biome') && ls.includes('prettier') && ls.includes('markdownlint') && ls.includes('markdownlint-cli2 --no-globs')
   if (ok) {
     say(`  ${paint(C.dim, 'nothing to fix')}`)
     rec('PASS', 'PKG-6', 'lint-staged block already fans out correctly', STD, 'package.json')

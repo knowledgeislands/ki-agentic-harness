@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /** Run-based regression tests for ki-engineering's runner-neutral test policy. */
 import { spawnSync } from 'node:child_process'
-import { chmodSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -59,7 +59,7 @@ function fixture(scripts: Record<string, string>, vitest?: { file: string; conte
           syncpack: 'latest',
           typescript: 'latest'
         },
-        'lint-staged': { '*.ts': '@biomejs/biome check', '*.md': ['prettier --check', 'markdownlint-cli2'] }
+        'lint-staged': { '*.ts': '@biomejs/biome check', '*.md': ['prettier --check', 'markdownlint-cli2 --no-globs'] }
       },
       null,
       2
@@ -170,7 +170,21 @@ const generatedDirs = ['.ki-meta', 'src/generated', '.claude/skills', '.claude/a
 
 withFixture({}, (findings) => {
   check('no generated surface is GEN-1 N/A', hasFinding(findings, 'GEN-1', 'NA', 'no generated or vendored surfaces'))
+  check('staged-only Markdown fan-out passes PKG-6', hasFinding(findings, 'PKG-6', 'PASS', 'staged-only'))
 })
+
+{
+  const dir = fixture({})
+  try {
+    const packagePath = join(dir, 'package.json')
+    const pkg = JSON.parse(readFileSync(packagePath, 'utf8'))
+    pkg['lint-staged']['*.md'] = ['prettier --check', 'markdownlint-cli2']
+    writeFileSync(packagePath, `${JSON.stringify(pkg, null, 2)}\n`)
+    check('config-glob Markdown fan-out warns PKG-6', hasFinding(run(dir), 'PKG-6', 'WARN', 'markdownlint-cli2 --no-globs'))
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+}
 
 withGeneratedFixture(generatedDirs, { biome: generatedBiome, knip: generatedKnip, markdownlint: generatedMarkdownlint }, (findings) => {
   check('matching exclusions pass GEN-1', hasFinding(findings, 'GEN-1', 'PASS', 'excluded across Biome, knip, and Markdown'))
