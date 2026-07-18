@@ -10,6 +10,14 @@ Checkers collect typed domain findings; they do not construct summaries or own t
 
 The adjacent copied report-builder module turns those findings into a canonical report, and the bootstrap aggregate renders the human view.
 
+The aggregate validates the complete stream before rendering it.
+
+Its human default shows only `FAIL`, `WARN`, and `POLISH`, with compact counts for the suppressed levels.
+
+`--reporter-levels=<comma-separated-levels>` selects the displayed levels; `--reporter-levels=all` restores every finding, including `ADVISORY` judgment prompts.
+
+This is terminal presentation only: checkers always collect, summarise, validate, and emit every JSONL finding, regardless of the selected levels.
+
 The builder emits a `meta` record, zero or more `finding` records, and one final `summary` record.
 
 Each record repeats the immutable run identity, so a consumer can filter, stream, or map-reduce rows without reconstructing context from earlier output.

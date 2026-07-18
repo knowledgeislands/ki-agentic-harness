@@ -87,7 +87,8 @@ const level = ok ? 'PASS' : 'FAIL'
 for (const record of [
   { ...run, record: 'meta' },
   { ...run, record: 'finding', type: 'M', level, code: 'FIX-1', message: msg, ref: 'references/rubric.md' },
-  { ...run, record: 'summary', summary: { fail: ok ? 0 : 1, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: ok ? 1 : 0 } }
+  { ...run, record: 'finding', type: 'J', level: 'ADVISORY', code: 'REVIEW-1', message: 'synthetic judgment prompt', ref: 'references/rubric.md' },
+  { ...run, record: 'summary', summary: { fail: ok ? 0 : 1, warn: 0, polish: 0, advisory: 1, info: 0, na: 0, pass: ok ? 1 : 0 } }
 ]) process.stdout.write(JSON.stringify(record) + '\\n')
 process.exit(ok ? 0 : 1)
 `
@@ -119,7 +120,7 @@ try {
   writeFileSync(join(fixtureSkill, 'conform.ts'), conformFixture)
   const fixtureRubric = join(fixture, '.ki-meta', 'checkers', 'ki-fixture', 'references')
   mkdirSync(fixtureRubric, { recursive: true })
-  writeFileSync(join(fixtureRubric, 'rubric.md'), '- **FIX-1 [M]** Fixture health check.\n')
+  writeFileSync(join(fixtureRubric, 'rubric.md'), '- **FIX-1 [M]** Fixture health check.\n- **REVIEW-1 [J]** Fixture judgment review.\n')
   chmodSync(join(fixture, '.ki-meta', 'bin', 'ki-audit'), 0o755)
   chmodSync(join(fixture, '.ki-meta', 'bin', 'ki-conform'), 0o755)
 
@@ -133,10 +134,31 @@ try {
 
   const wrapperPass = run(auditWrapper, [], nested, env)
   check('package-free audit wrapper → runs from a nested cwd', wrapperPass.status === 0)
-  check('package-free audit wrapper → renders the synthetic finding', semanticOutput(wrapperPass.stdout).includes('synthetic audit passed'))
+  check('package-free audit wrapper → suppresses passing findings by default', !wrapperPass.stdout.includes('synthetic audit passed'))
+  check('package-free audit wrapper → suppresses judgment prompts by default', !wrapperPass.stdout.includes('synthetic judgment prompt'))
+  check('package-free audit wrapper → retains compact suppressed counts', wrapperPass.stdout.includes('suppressed: ADVISORY=1'))
   check(
-    'package-free audit wrapper → renders title first with its stable code',
-    semanticOutput(wrapperPass.stdout).includes('[Fixture health check. (FIX-1)]')
+    'package-free audit wrapper → default recap names the selected levels',
+    wrapperPass.stdout.includes('no FAIL / WARN / POLISH findings')
+  )
+
+  const advisoryPass = run(auditWrapper, ['--reporter-levels=advisory'], nested, env)
+  check('package-free audit wrapper → accepts a renderer-only level override', advisoryPass.status === 0)
+  check('package-free audit wrapper → renders the selected judgment prompt', advisoryPass.stdout.includes('synthetic judgment prompt'))
+  check('package-free audit wrapper → does not render unselected passing findings', !advisoryPass.stdout.includes('synthetic audit passed'))
+
+  const allPass = run(auditWrapper, ['--reporter-levels=all'], nested, env)
+  check(
+    'package-free audit wrapper → all restores the full human report',
+    allPass.status === 0 && allPass.stdout.includes('synthetic audit passed')
+  )
+  check('package-free audit wrapper → all includes judgment prompts', allPass.stdout.includes('synthetic judgment prompt'))
+  check('package-free audit wrapper → all does not label shown levels as suppressed', allPass.stdout.includes('(all levels shown)'))
+
+  const invalidLevels = run(auditWrapper, ['--reporter-levels=broken'], nested, env)
+  check(
+    'package-free audit wrapper → rejects unknown reporter levels',
+    invalidLevels.status === 2 && invalidLevels.stderr.includes('--reporter-levels accepts')
   )
 
   const wrapperFail = run(auditWrapper, [], nested, { ...env, KI_FIXTURE_FAIL: '1' })
