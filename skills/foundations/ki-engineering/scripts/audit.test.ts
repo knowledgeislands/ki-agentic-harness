@@ -176,6 +176,29 @@ withFixture({}, (findings) => {
 {
   const dir = fixture({})
   try {
+    const checkerDir = join(dir, '.ki-meta', 'checkers', 'ki-fixture', 'scripts')
+    mkdirSync(checkerDir, { recursive: true })
+    writeFileSync(join(checkerDir, 'audit.ts'), 'process.exit(0)\n')
+    writeFileSync(join(checkerDir, 'conform.ts'), 'process.exit(0)\n')
+    const packagePath = join(dir, 'package.json')
+    const pkg = JSON.parse(readFileSync(packagePath, 'utf8')) as { scripts: Record<string, string> }
+    pkg.scripts['ki:fixture:audit'] = 'bun .ki-meta/checkers/ki-fixture/scripts/audit.ts .'
+    pkg.scripts['ki:fixture:conform'] = 'bun .ki-meta/checkers/ki-fixture/scripts/conform.ts .'
+    writeFileSync(packagePath, `${JSON.stringify(pkg, null, 2)}\n`)
+    check('direct per-skill checker commands fail SCR-4', hasFinding(run(dir), 'SCR-4', 'FAIL', 'must use'))
+
+    pkg.scripts['ki:fixture:audit'] = 'bun .ki-meta/bin/aggregate.ts audit --skill ki-fixture'
+    pkg.scripts['ki:fixture:conform'] = 'bun .ki-meta/bin/aggregate.ts conform --skill ki-fixture'
+    writeFileSync(packagePath, `${JSON.stringify(pkg, null, 2)}\n`)
+    check('scoped aggregate commands pass SCR-4', hasFinding(run(dir), 'SCR-4', 'PASS', 'aggregate reporter'))
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+}
+
+{
+  const dir = fixture({})
+  try {
     const packagePath = join(dir, 'package.json')
     const pkg = JSON.parse(readFileSync(packagePath, 'utf8'))
     pkg['lint-staged']['*.md'] = ['prettier --check', 'markdownlint-cli2']

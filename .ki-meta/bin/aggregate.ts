@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // Vendored by ki-bootstrap. Runs each vendored skill checker under ../checkers/ in
 // sequence for the given verb — no package.json required.
-// Usage: bun .ki-meta/bin/aggregate.ts <audit|conform|educate|help> [--reporter-levels=<levels>]
+// Usage: bun .ki-meta/bin/aggregate.ts <audit|conform|educate|help> [--skill <ki-skill>] [--reporter-levels=<levels>]
 import { execFileSync, spawnSync } from 'node:child_process'
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url'
 
 const verb = process.argv[2]
 if (!verb) {
-  console.error('usage: aggregate.ts <audit|conform|educate|help> [--reporter-levels=<levels>]')
+  console.error('usage: aggregate.ts <audit|conform|educate|help> [--skill <ki-skill>] [--reporter-levels=<levels>]')
   process.exit(2)
 }
 const binDir = dirname(fileURLToPath(import.meta.url))
@@ -37,7 +37,7 @@ const pattern = verb === 'audit' ? /^(audit|lint)\.ts$/ : verb === 'conform' ? /
 if (!pattern) process.exit(0)
 const checkersDir = join(binDir, '..', 'checkers')
 if (!existsSync(checkersDir)) process.exit(0)
-const checkers = readdirSync(checkersDir, { withFileTypes: true })
+let checkers = readdirSync(checkersDir, { withFileTypes: true })
   .filter((e) => e.isDirectory())
   .map((e) => e.name)
   .sort()
@@ -66,15 +66,24 @@ const verbed = verb === 'conform' ? 'conformed' : 'audited'
 // aligned across both body and recap rows.
 const SHORT = { FAIL: 'fail', WARN: 'warn', POLISH: 'pol', ADVISORY: 'adv', INFO: 'info', NA: 'na', PASS: 'pass' }
 const DEFAULT_REPORTER_LEVELS = new Set(FAILURE_LEVELS)
-const parseReporterLevels = (args) => {
+const parseReporterOptions = (args) => {
   let levels = DEFAULT_REPORTER_LEVELS
+  let skill
   const childArgs = []
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index]
     let value
     if (arg === '--reporter-levels') value = args[++index]
     else if (arg.startsWith('--reporter-levels=')) value = arg.slice('--reporter-levels='.length)
-    else {
+    else if (arg === '--skill') {
+      skill = args[++index]
+      if (!skill || !/^ki-[a-z0-9-]+$/.test(skill)) throw new Error('--skill requires one canonical ki-* skill name')
+      continue
+    } else if (arg.startsWith('--skill=')) {
+      skill = arg.slice('--skill='.length)
+      if (!/^ki-[a-z0-9-]+$/.test(skill)) throw new Error('--skill requires one canonical ki-* skill name')
+      continue
+    } else {
       childArgs.push(arg)
       continue
     }
@@ -84,7 +93,7 @@ const parseReporterLevels = (args) => {
       throw new Error('--reporter-levels accepts comma-separated values from ' + LEVELS.join(', ') + ', or all')
     levels = new Set(requested)
   }
-  return { levels, childArgs }
+  return { levels, skill, childArgs }
 }
 const rubricTitleCache = new Map()
 const rubricTitles = (skillDir) => {
@@ -194,10 +203,17 @@ const reports = []
 const reportErrors = []
 let reporter
 try {
-  reporter = parseReporterLevels(process.argv.slice(3))
+  reporter = parseReporterOptions(process.argv.slice(3))
 } catch (error) {
   console.error('error: ' + error.message)
   process.exit(2)
+}
+if (reporter.skill) {
+  if (!checkers.includes(reporter.skill)) {
+    console.error('error: no vendored checker for ' + reporter.skill)
+    process.exit(2)
+  }
+  checkers = [reporter.skill]
 }
 for (const skill of checkers) {
   const dir = join(checkersDir, skill)

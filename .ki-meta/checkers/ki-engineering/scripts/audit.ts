@@ -369,9 +369,18 @@ if (isDir('.ki-meta', 'checkers')) {
     for (const mode of ['audit', 'conform'] as const) {
       if (!existsSync(join(metaCheckers, skill, 'scripts', `${mode}.ts`))) continue
       const key = `ki:${suffix}:${mode}`
-      scripts[key]
-        ? add('PASS', 'SCR-4', `${key} wired to vendored ${skill}/scripts/${mode}.ts`, STD, 'package.json')
-        : add('FAIL', 'SCR-4', `missing script "${key}" for vendored .ki-meta/checkers/${skill}/scripts/${mode}.ts`, STD, 'package.json')
+      const expected = `bun .ki-meta/bin/aggregate.ts ${mode} --skill ${skill}`
+      scripts[key] === expected
+        ? add('PASS', 'SCR-4', `${key} renders vendored ${skill}/scripts/${mode}.ts through the aggregate reporter`, STD, 'package.json')
+        : add(
+            'FAIL',
+            'SCR-4',
+            scripts[key]
+              ? `${key} must use ${JSON.stringify(expected)} to render its vendored checker through the aggregate reporter`
+              : `missing script "${key}" for vendored .ki-meta/checkers/${skill}/scripts/${mode}.ts`,
+            STD,
+            'package.json'
+          )
     }
   }
 }

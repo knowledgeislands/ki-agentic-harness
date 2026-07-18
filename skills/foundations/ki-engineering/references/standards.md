@@ -103,7 +103,7 @@ Every governed repo exposes two aggregate entrypoints that fan out over the vend
 ```
 
 - **`ki:audit`** is the read-only gate; **`ki:conform`** is the write pass. Both use the standalone vendored entrypoint under `.ki-meta`, so the repo remains self-governing without installed skills.
-- Each vendored skill also receives derived scoped entrypoints such as `ki:engineering:audit`, `ki:engineering:conform`, `ki:authoring:audit`, and `ki:authoring:conform`. These are useful for focused work; the aggregate remains the repository gate.
+- Each vendored skill also receives derived scoped entrypoints such as `ki:engineering:audit`, `ki:engineering:conform`, `ki:authoring:audit`, and `ki:authoring:conform`. They call the same aggregate reporter with `--skill <name>`, so focused work has the same filtered human presentation as the repository gate. Direct checker invocations remain canonical JSONL for automation.
 - `clean` and `prepare` remain bare lifecycle idioms. A repo with tests exposes the complete suite through bare `test`; a compiled repo exposes bare `build`. Neither is appended to the canonical aggregate entrypoints.
 - A repo MAY add governed, repo-specific scripts (`ki:eval`, `ki:skills:*`, `ki:server:auth:*`, `ki:site:dev:css`, …). The owning skill specifies their shape.
 

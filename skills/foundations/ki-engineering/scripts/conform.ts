@@ -289,15 +289,13 @@ say(`\n${paint(C.cyan, 'package.json — aggregate entrypoints + per-skill keys'
       for (const mode of ['audit', 'conform'] as const) {
         if (!existsSync(join(metaCheckers, skill, 'scripts', `${mode}.ts`))) continue
         const key = `ki:${suffix}:${mode}`
-        const val = `bun .ki-meta/checkers/${skill}/scripts/${mode}.ts .`
+        const val = `bun .ki-meta/bin/aggregate.ts ${mode} --skill ${skill}`
         if (scripts[key] !== val) {
-          log('fix', scripts[key] ? `${key}: repointed → vendored ${skill}/scripts/${mode}.ts` : `${key}: missing → added`)
+          log('fix', scripts[key] ? `${key}: repointed → aggregate reporter for ${skill}` : `${key}: missing → added`)
           rec(
             'POLISH',
             'SCR-4',
-            scripts[key]
-              ? `${key} repointed to vendored ${skill}/scripts/${mode}.ts`
-              : `${key} added (vendored ${skill}/scripts/${mode}.ts)`,
+            scripts[key] ? `${key} repointed to the aggregate reporter for ${skill}` : `${key} added (aggregate reporter for ${skill})`,
             STD,
             'package.json'
           )

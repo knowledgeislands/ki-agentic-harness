@@ -1,5 +1,5 @@
 {
-  "ref": "cee1ff8614ae94c2facb5afdcf8f5978f86c85d2",
+  "ref": "a77fdb39795783c5d57c44ffdd30d04aeb296541",
   "files": {
     ".ki-meta/checkers/ki-agents/scripts/audit.ts": "21e3d3b0a8f7cf3818436dc6083bbc79f08bea0d7379db1d3fb5273749158858",
     ".ki-meta/checkers/ki-agents/scripts/conform.ts": "11c6f147bd83a53bcad99590b697780387cb8e7d34ebba87b6ec1965c5e0b0c2",
@@ -19,8 +19,8 @@
     ".ki-meta/checkers/ki-decision-records/scripts/vendored/ki-skills/checker-reporter.ts": "41d95a0c1759278f87812a91d283b85cc036349be1010eb0cc53580e3ba22344",
     ".ki-meta/checkers/ki-decision-records/help.md": "7c94141524dea247d6a6a2b728a48aa04565f66754f6672b45abfaca6b79220e",
     ".ki-meta/educators/ki-decision-records/educate.ts": "86b8e7af38e920f314ff7e717f424273f159ff60fd073470c66adba2aa9bf899",
-    ".ki-meta/checkers/ki-engineering/scripts/audit.ts": "e5cbebcb72fe93baed7a44c62d2d8fc1ee0422500e1b4e12da9cfa5affbfca9e",
-    ".ki-meta/checkers/ki-engineering/scripts/conform.ts": "81abdd318cc14e5776c3bd3456364966321de96602cd6b2445e8bc73c26df318",
+    ".ki-meta/checkers/ki-engineering/scripts/audit.ts": "ed453861745281c5ba36cb760d7f255ffe2cf38b6fe193e96ee199b173c38445",
+    ".ki-meta/checkers/ki-engineering/scripts/conform.ts": "99a8f8a857fb1b2cf5a3edd0dd2950b562ff782a91709db070f0948f4faa3575",
     ".ki-meta/checkers/ki-engineering/references/rubric.md": "1fa022fb35dfcc581d70f9a179cc145f4852ed5632b4dbda943c240bd73de4b0",
     ".ki-meta/checkers/ki-engineering/scripts/vendored/ki-skills/checker-reporter.ts": "41d95a0c1759278f87812a91d283b85cc036349be1010eb0cc53580e3ba22344",
     ".ki-meta/checkers/ki-engineering/help.md": "f9a3e0b5c8c720468d56fb0d024f8d0f6095a0f205a0d56a2433710db35a73fc",
@@ -73,7 +73,7 @@
     ".ki-meta/checkers/ki-tokenomics/scripts/vendored/ki-skills/checker-reporter.ts": "41d95a0c1759278f87812a91d283b85cc036349be1010eb0cc53580e3ba22344",
     ".ki-meta/checkers/ki-tokenomics/help.md": "9b84406b1f003ace49c52b811da176960ddb1ff012718c961ec277d19f97ebbf",
     ".ki-meta/educators/ki-tokenomics/educate.ts": "40866a2ff0a9d3f373d7e19c516a6ef99898640291686d6e9471709d020182a7",
-    ".ki-meta/bin/aggregate.ts": "19203f752341299807e4f3183830ab94e45bec86d62ee2fb571faef0610d9a62",
+    ".ki-meta/bin/aggregate.ts": "6c9bcdd606e38fb1b34b6751c926c8e93b75aa21d0baaedc3e999fbdaae084f6",
     ".ki-meta/bin/skill-graph.ts": "4b88e9d5191712fe8993bd97626196626e7ea026ca3d9c413212217527d5c81a",
     ".ki-meta/bin/skill-help.ts": "dbfd0f2d2df4eefbac01404e69d80b5d83e80766713f9d3862407d6fcfddf3a5"
   }

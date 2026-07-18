@@ -155,6 +155,23 @@ try {
   check('package-free audit wrapper → all includes judgment prompts', allPass.stdout.includes('synthetic judgment prompt'))
   check('package-free audit wrapper → all does not label shown levels as suppressed', allPass.stdout.includes('(all levels shown)'))
 
+  const scopedPass = run(
+    'bun',
+    [join(fixture, '.ki-meta', 'bin', 'aggregate.ts'), 'audit', '--skill', 'ki-fixture', '--reporter-levels=all'],
+    fixture,
+    env
+  )
+  check(
+    'aggregate scoped audit → renders only the selected checker through the standard reporter',
+    scopedPass.status === 0 && scopedPass.stdout.includes('synthetic audit passed') && !scopedPass.stdout.includes('ki:authoring:audit')
+  )
+
+  const unknownScope = run('bun', [join(fixture, '.ki-meta', 'bin', 'aggregate.ts'), 'audit', '--skill', 'ki-missing'], nested, env)
+  check(
+    'aggregate scoped audit → rejects a missing vendored checker',
+    unknownScope.status === 2 && unknownScope.stderr.includes('no vendored checker')
+  )
+
   const invalidLevels = run(auditWrapper, ['--reporter-levels=broken'], nested, env)
   check(
     'package-free audit wrapper → rejects unknown reporter levels',
