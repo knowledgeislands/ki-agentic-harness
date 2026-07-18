@@ -10,12 +10,12 @@
     "url": "https://github.com/knowledgeislands/ki-agentic-harness/issues"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.3",
+    "@biomejs/biome": "2.5.4",
     "@types/node": "^26.1.1",
     "husky": "^9.1.7",
-    "knip": "^6.26.0",
-    "lint-staged": "^17.0.8",
-    "markdownlint-cli2": "^0.23.0",
+    "knip": "^6.27.0",
+    "lint-staged": "^17.1.0",
+    "markdownlint-cli2": "^0.23.1",
     "prettier": "^3.9.5",
     "syncpack": "^15.3.2",
     "typescript": "^7.0.2"
