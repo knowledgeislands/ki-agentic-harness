@@ -20,6 +20,8 @@ Three legs, always in this order:
 
 The recap always closes with a **Specific actions** section: a concrete, imperative checklist of everything actionable that fell out of legs 2 and 3 (files to commit, gates to re-run, approved learning routes to apply) — or a one-line "no actions" if the tree is clean and nothing is outstanding. Prefix each action with a short, unique, uppercase hyphenated label that names the work, rather than an arbitrary sequence number (for example, `FIX-AUTHORING-AUDIT`). It is a checklist for the user, not actions taken unprompted.
 
+When a grounded Specific action needs a portfolio decision, recap may offer `CHOOSE-NEXT-WORK` as an optional handoff to `ki-next`. It carries only this current-session context: grounded outstanding work, learning routes with their approval status, and the action labels. It does not invoke `ki-next`, write a transcript or memory entry, promote a roadmap item, or turn a proposal into approval.
+
 Optionally, with `--compress`, add a further leg: write a carry-forward digest of the recapped span (Context / Decisions / Files Touched / Outstanding / Learnings-routed / Keywords). This is honestly scoped — a skill cannot rewrite its own context window; true in-context compression is the native or `PreCompact`-hook path (`ki-tokenomics`). The digest is a carry-forward artefact, not a context reduction.
 
 The recap grounds every checkable claim in current reality, not in warm context or recalled memory: before asserting a commit landed, a gate passed, or a file's state, it re-checks (`git log`, the read-only gate, a fresh read) — stale context otherwise reads as fact.

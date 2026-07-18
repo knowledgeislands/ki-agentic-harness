@@ -2,6 +2,16 @@
 
 _On-demand procedure for `ki-recap`. The kind, scope, and leg summary live in [`SKILL.md`](../SKILL.md) and are already loaded; this file is the full procedure._
 
+## Contents
+
+- [Run the grounding helper](#1-run-the-grounding-helper)
+- [Summarise](#2-summarise)
+- [Surface what is outstanding](#3-surface-what-is-outstanding)
+- [Harvest the learnings, and route each](#4-harvest-the-learnings-and-route-each)
+- [Specific actions](#5-specific-actions)
+- [Optional handoff to `ki-next`](#6-optional-handoff-to-ki-next)
+- [Compress](#7-compress-only-when---compress-is-passed)
+
 **Ground every claim in reality, not memory.** Warm in-session context, compaction summaries, and recalled memory entries are hypotheses about state, not evidence of it — concurrent sessions, background processes, and elapsed time all make them stale. Before the recap asserts a checkable fact — a commit landed, a gate passed, a file contains something, a plan is open — check it now (`git log`, re-run the read-only gate, read the file). What cannot be cheaply re-checked, state as recollection ("as of when it ran"), not as fact.
 
 ## 1. Run the grounding helper
@@ -59,10 +69,30 @@ Close the recap with a **Specific actions** section: a short, concrete, imperati
 - `PARK-DEFERRED-WORK` — Create the offered ROADMAP line or `ki-plan` for outstanding work that has no home.
 - `APPLY-LEARNING-ROUTE` — Apply an approved learning route (the `CLAUDE.md` entry, rubric criterion, hook, or memory write from step 4).
 - `RERUN-FAILING-GATE` — Re-run a gate that was left failing, or finish a mid-change thread.
+- `CHOOSE-NEXT-WORK` — Offer `ki-next` when one or more grounded actions need a roadmap priority or plan decision. Carry only their labels, the grounded outstanding work, and the approval state of any learning routes; `ki-next` re-reads the roadmap before it ranks anything.
 
 If nothing is actionable, say so in one line ("No actions — tree clean, nothing outstanding"). Do **not** perform the actions unprompted — this section is the checklist the user acts on (or asks you to act on); durable writes still require the step-4 confirmation.
 
-## 6. Compress (only when `--compress` is passed)
+## 6. Optional handoff to `ki-next`
+
+Offer this handoff only when the recap has a roadmap-directed action. It is an in-conversation invitation, not a new invocation mode, a persistent transcript, or a dependency:
+
+1. State the candidate action labels and the grounded context available to `ki-next`: outstanding work, learning routes and whether each is approved, and the Specific actions themselves.
+2. State the boundary: `ki-next` works without this recap, re-runs the current roadmap audit, and treats every dynamic claim here as a lead rather than fact.
+3. Do not create a roadmap entry, promote an item, create a plan, write a learning route, or invoke `ki-next` merely by offering the handoff. The user chooses whether to continue.
+
+Apply these scenario checks when offering it:
+
+| Situation | Required result |
+| --- | --- |
+| Clean recap | Say “No actions”; do not manufacture a `ki-next` handoff. |
+| Repository has no project roadmap | Recap still completes; do not offer `ki-next` as a selection route. |
+| Deferred work was already parked on the roadmap | Record it as what happened, not outstanding; `ki-next` will re-ground its current state if invoked. |
+| Learning route is unapproved | Label it as a proposal; neither recap nor `ki-next` writes it. |
+| Generated-footprint rollout has unrelated consumer drift | Report the rollout evidence and the unrelated drift separately; do not let either prove the other. |
+| User confirms multi-step next work | `ki-next` re-audits, confirms the exact roadmap transition, calls `ki-plan`, then stops for plan review. |
+
+## 7. Compress (only when `--compress` is passed)
 
 Write a carry-forward digest of the recapped span:
 
