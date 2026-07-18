@@ -49,3 +49,7 @@ Choose an owner for repository Git discipline, including Conventional Commit mes
 ### Inventory non-critical writers for bounded follow-up _(candidate)_
 
 After the rollout-critical filesystem work closes, inventory remaining report generators and direct conformers by mutation class. Prioritise external, user-space, or destructive writers; leave ordinary local report writers alone unless the inventory identifies a concrete risk. Opaque subprocess writers retain honest exclusions unless a separate isolation design is approved.
+
+### Review the Cloudflare agent-setup prompt for the Cloudflare skill _(candidate)_
+
+Review Cloudflare's [agent-setup prompt](https://developers.cloudflare.com/agent-setup/prompt.md) as a tracked source for the Cloudflare skill. Adopt only the parts that improve current, safe Cloudflare work in this harness; retain Knowledge Islands' ownership, conventions, and judgment rather than following the prompt wholesale.
