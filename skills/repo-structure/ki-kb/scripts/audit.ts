@@ -38,8 +38,15 @@
  * default block to stdout for the author to paste into the base's config.
  * No npm dependencies — Bun/Node built-ins only. Exit code is non-zero on any FAIL.
  */
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 // ── the structure model (keep in sync with ../SKILL.md + the reference) ──────
 // The five index-carrying zones, in canonical order.
@@ -82,25 +89,14 @@ const KI_DEFAULT = `# ${KI_SECTION} — opt-in marker: declaring this table opts
 # Pillars = "<local folder name>"
 `
 
-const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
-const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
-
-// Unified severity ladder — shared by every KI checker (enforcement-framework §2).
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-// area is the rubric code (references/rubric.md); ref its reference-doc pointer;
-// file the path a file-scoped finding concerns. ref/file ride into --json for the
-// aggregate to render (cited-finding standard).
-type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️', NA: '🚫', PASS: '✅' }
 const mk = () => {
-  const f: Finding[] = []
+  const findings: CheckerFinding[] = []
   const push =
-    (level: Level) =>
-    (area: string, msg: string, ref?: string, file?: string): void =>
-      void f.push({ level, area, msg, ref, file })
+    (level: CheckerFinding['level']) =>
+    (code: string, message: string, ref?: string, file?: string): void =>
+      void findings.push({ type: 'M', level, code, message, ref, file })
   return {
-    f,
+    findings,
     fail: push('FAIL'),
     warn: push('WARN'),
     note: push('INFO'),
@@ -179,8 +175,8 @@ function frontmatterKeys(text: string): { keys: string[]; terminated: boolean } 
 }
 const sampleList = (xs: string[], n = 10): string => xs.slice(0, n).join('; ') + (xs.length > n ? `; …+${xs.length - n} more` : '')
 
-function auditBase(base: string, ki: KiKb | null): Finding[] {
-  const { f, fail, warn, note } = mk()
+function auditBase(base: string, ki: KiKb | null): CheckerFinding[] {
+  const { findings, fail, warn, note } = mk()
   const zoneOf = (z: string): string => ki?.zones[z] ?? z
 
   // ── config table: validate this skill's own table, DOWN ──
@@ -210,7 +206,7 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
   const present = ZONES.filter((z) => isDir(join(base, zoneOf(z))))
   if (present.length === 0) {
     fail('ZONE-1', `no Knowledge Islands zone folders found at ${base} — not a KB base, or wrong path`, RUBRIC)
-    return f
+    return findings
   }
   for (const z of ZONES) {
     const folder = zoneOf(z)
@@ -235,12 +231,12 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
       if (!isDir(subPath)) {
         warn(
           'ADMIN-1',
-          `${sub}/ is absent — consider creating it when that concern becomes active (index note: ${sub}.md)`,
+          `Admin subdivision is absent — consider creating ${sub}/ when that concern becomes active (index note: ${sub}.md)`,
           RUBRIC,
           `${adminFolder}/${sub}/`
         )
       } else if (!isFile(join(subPath, `${sub}.md`))) {
-        warn('ADMIN-1', `${sub}/ exists but has no index note`, RUBRIC, `${adminFolder}/${sub}/${sub}.md`)
+        warn('ADMIN-1', `Admin subdivision exists but has no index note: ${sub}.md`, RUBRIC, `${adminFolder}/${sub}/${sub}.md`)
       }
     }
 
@@ -328,7 +324,7 @@ function auditBase(base: string, ki: KiKb | null): Finding[] {
     note('ZONE-4', `${folder}/ ${isDir(join(base, folder)) ? 'present' : 'absent'} (staging, not a zone)`, RUBRIC)
   }
 
-  return f
+  return findings
 }
 
 // ── run ──────────────────────────────────────────────────────────────────────
@@ -339,9 +335,13 @@ if (argv.includes('--educate')) {
 }
 
 const base = resolve(argv.find((a) => !a.startsWith('-')) ?? '.')
+const rubricPath = join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md')
 if (!isDir(base)) {
-  console.error(paint(C.red, `not a directory: ${base}`))
-  process.exit(2)
+  const { findings, fail } = mk()
+  fail('ZONE-1', 'target is not a directory', RUBRIC, base)
+  findings.push(...judgmentFindingsFromRubric(rubricPath, RUBRIC))
+  emitCheckerReporter({ mode: 'audit', concern: 'kb', target: base, findings })
+  process.exit(checkerReporterExitCode(findings))
 }
 
 const kiPath = join(base, KI_CONFIG)
@@ -350,79 +350,14 @@ const ki = parsedKiKb.value
 
 const hasKbStructure = ZONES.some((zone) => isDir(join(base, zone)))
 if (!ki && !parsedKiKb.malformed && !hasKbStructure) {
-  const { f, na } = mk()
+  const { findings, na } = mk()
   na('ZONE-1', 'ki-kb not applicable: no [ki-kb] declaration or canonical KB zone structural marker', RUBRIC)
-  emit(f, base, 'kb', `Knowledge base audit — ${base}`, '')
+  findings.push(...judgmentFindingsFromRubric(rubricPath, RUBRIC))
+  emitCheckerReporter({ mode: 'audit', concern: 'kb', target: base, findings })
+  process.exit(checkerReporterExitCode(findings))
 }
 
 const findings = auditBase(base, ki)
-emit(
-  findings,
-  base,
-  'kb',
-  `Knowledge base audit — ${base}`,
-  'mechanical checks only — apply the judgment criteria (note routing, whether a note needs frontmatter, memory-index accuracy) by reading.'
-)
-
-// ── report ────────────────────────────────────────────────────────────────────
-// Shared emit harness — copy verbatim across KI checkers (enforcement-framework §2/§5).
-// Renders the painted table by default, JSON on `--json`, and writes the latest
-// report under <target>/.ki-meta/audits/<concern>.{md,json} on `--report [dir]`.
-function emit(items: Finding[], target: string, concern: string, title: string, footer: string): never {
-  const argv = process.argv.slice(2)
-  const json = argv.includes('--json')
-  const ri = argv.indexOf('--report')
-  const report = ri !== -1
-  const reportDir = report && argv[ri + 1] && !argv[ri + 1].startsWith('-') ? argv[ri + 1] : join(target, '.ki-meta', 'audits')
-
-  const n = (l: Level): number => items.filter((f) => f.level === l).length
-  const summary = {
-    fail: n('FAIL'),
-    warn: n('WARN'),
-    polish: n('POLISH'),
-    advisory: n('ADVISORY'),
-    info: n('INFO'),
-    na: n('NA'),
-    pass: n('PASS')
-  }
-  const tally = `FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na}`
-  const stamp = new Date().toISOString()
-
-  if (report) {
-    mkdirSync(reportDir, { recursive: true })
-    const body = ORDER.flatMap((l) => {
-      const rows = items.filter((f) => f.level === l)
-      return rows.length
-        ? [
-            '',
-            `## ${ICON[l]} ${l} (${rows.length})`,
-            ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
-          ]
-        : []
-    })
-    writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
-    writeFileSync(
-      join(reportDir, `${concern}.json`),
-      `${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`
-    )
-  }
-
-  if (json) {
-    process.stdout.write(`${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
-  } else {
-    console.log(`\n${title}\n${'─'.repeat(60)}`)
-    for (const l of ORDER) {
-      const rows = items.filter((f) => f.level === l)
-      if (!rows.length) continue
-      console.log(`\n${ICON[l]} ${l} (${rows.length})`)
-      for (const r of rows) console.log(`   [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
-    }
-    console.log(`\n${'─'.repeat(60)}\n${tally}`)
-    if (footer) console.log(footer)
-    if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-kb CONFORM   (judgment criteria: references/rubric.md)')
-    if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
-    console.log('')
-  }
-  process.exit(summary.fail ? 1 : 0)
-}
+findings.push(...judgmentFindingsFromRubric(rubricPath, RUBRIC))
+emitCheckerReporter({ mode: 'audit', concern: 'kb', target: base, findings })
+process.exitCode = checkerReporterExitCode(findings)

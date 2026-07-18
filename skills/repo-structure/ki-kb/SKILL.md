@@ -1,5 +1,6 @@
 ---
 name: ki-kb
+checker-dependencies: [ki-skills/checker-reporter]
 implies: [ki-kb-activities, ki-kb-live-artifacts, ki-kb-streams]
 vendors: [educate, audit, conform, help]
 description: >

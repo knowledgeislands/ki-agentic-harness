@@ -13,7 +13,7 @@ Applicability: `[ki-kb]` / `[ki-kb.zones]` or any canonical zone directory activ
 - **ZONE-1 [M]** The five zones — `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, `Admin/` — are present, each **resolved through any `[ki-kb.zones]` alias** (a base mid-rename is audited at its real folder). A missing zone is a FAIL.
 - **ZONE-2 [M]** Each zone carries a **same-name index note** (`Calendar/Calendar.md`, …). A missing one is a WARN.
 - **ZONE-3 [M]** The root memory index `Admin/MEMORY.md` exists (the memory cascade reads it for the active Pillars). Missing is a FAIL.
-- **ZONE-4 [J]** `+/` (inbound) and `-/` (outbound) are **staging, not zones** — exempt from the same-name index rule; the checker reports their presence informationally only.
+- **ZONE-4 [M]** `+/` (inbound) and `-/` (outbound) are **staging, not zones** — exempt from the same-name index rule; the checker reports their presence informationally only.
 - **ZONE-5 [M]** Any note carrying `type: session-digest` or `type: handoff` in frontmatter must reside under `-/`. A file with either type found under `Calendar/`, `Streams/`, `Pillars/`, or `Resources/` is a FAIL (misrouted produced artefact).
 
 ## CONFIG — the `[ki-kb]` config table
@@ -44,7 +44,7 @@ Applicability: `[ki-kb]` / `[ki-kb.zones]` or any canonical zone directory activ
 
 → [SKILL: Mode SAVE / UPDATE](../SKILL.md)
 
-- **NOTE-1 [M, base-declared]** Where the base declares `required_frontmatter = [...]` in its `[ki-kb]` table, every note that **has** a frontmatter block carries those keys (extra keys are free). Undeclared, this is **[J]** — required keys are base-specific (resolved from the host `CLAUDE.md`), and _whether a given note should carry frontmatter at all_ stays judgment regardless.
+- **NOTE-1 [M, J]** Where the base declares `required_frontmatter = [...]` in its `[ki-kb]` table, every note that **has** a frontmatter block carries those keys (extra keys are free). Undeclared, required keys are judgment — resolve them from the host `CLAUDE.md`; whether a given note should carry frontmatter at all also stays judgment.
 - **NOTE-1a [M]** A note's `---` frontmatter fence is **well-formed** — an opening fence has a closing `---`. (base-agnostic)
 - **NOTE-1b [M]** Frontmatter **keys are snake_case** (the house convention); a non-conforming key warns. (base-agnostic)
 - **NOTE-2 [J]** Naming follows the base's convention: dated for `Calendar/`, descriptive title elsewhere, mirroring the paired sources-store path for source extracts.
