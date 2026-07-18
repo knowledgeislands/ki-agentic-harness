@@ -16,6 +16,7 @@ The second is packaging. This repository is an agentic harness: a dev-time sourc
 
 - **`ki-arcadia-principal`** is the canonical Knowledge Island — the exemplar base, the source of the KI model. The `-principal` role marker is retained, as used archipelago-wide (kit-principal, hnr-principal, and so on).
 - **`ki-agentic-harness`** is the framework's general tooling — the skills, agents, MCP wrappers, evals, and hooks any island adopts. It is framework-level (scope `KI-HARNESS`), not Arcadia-territory-scoped.
+- **`ki-specifications`** is the framework's normative portable contract layer — KIPs, KIS documents, schemas, templates, conformance rules, and reference examples. It is framework-level, not Arcadia-territory-scoped.
 - **`ki-website`** is the framework's own public site (knowledgeislands.info). It too is framework-level, not Arcadia-territory-scoped.
 
 The per-artefact grammar (the `ki-<concern>[-<technology>]` form and how names relate) is fixed in its own decision; here the point is that the single `ki-` namespace spans repositories and the artefacts alike.

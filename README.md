@@ -2,6 +2,12 @@
 
 The **agentic harness** for Knowledge Islands work — the canonical home for what an agent is equipped with here, kept in one place so the whole set can be versioned, reviewed, and installed together rather than scattered across the bases and projects that use it.
 
+## Place in the Knowledge Islands ecosystem
+
+The harness is the canonical source for reusable Knowledge Islands tooling. It generalises patterns proven in [Arcadia Principal](https://github.com/knowledgeislands/ki-arcadia-principal) into skills, agents, MCP wrappers, evals, and hooks; it does not originate the Knowledge Islands philosophy or model. Implementation evidence from the harness helps [KI Specifications](https://github.com/knowledgeislands/ki-specifications) formalise portable contracts, and applicable Active specifications constrain implementations that claim conformance.
+
+The [KI Website](https://github.com/knowledgeislands/ki-website) may vendor source-labelled harness documentation for public publication, while this repository remains canonical for the tooling and its executable artifacts. The mirrored [ecosystem decision](docs/decisions/GDR-KI-HARNESS-002-knowledge-islands-ecosystem-fundamentals.md) defines the four authorities and publication flows.
+
 A harness is **five parts** — the things an agent is given to work with:
 
 - **Skills** ([`skills/`](skills)) — reusable [Agent Skills](https://agentskills.io/specification): the most-built-out part of the harness today, all governance skills — including `ki-harness`, which governs this five-part container itself, and `ki-bootstrap`, the repository bootstrap keystone. What a skill is and the map of the set are in [Skills](docs/guides/user-guide/skills.md); the per-skill catalogue is in [Skill catalogue](docs/guides/user-guide/skill-catalogue.md).
@@ -16,10 +22,10 @@ All five parts are first-class; skills are simply the most built-out, with agent
 
 ```bash
 cd /path/to/repository-you-want-to-govern
-curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/bootstrap.sh | sh
+curl -fsSL https://knowledgeislands.info/harness/install | sh
 ```
 
-This is repository bootstrap: it creates that repository's governance machinery and does not change the rest of your user environment. [Install and get started](docs/guides/user-guide/getting-started.md) covers optional user-environment tooling and hook payloads; [Use skills](docs/guides/user-guide/using-skills.md) explains how to work with the resulting skills. Harness contributors should see [local skill linking](docs/guides/developer/linking-skills.md).
+This is repository bootstrap: it creates that repository's governance machinery and does not change the rest of your user environment. The stable Knowledge Islands URL redirects to this repository's canonical bootstrap script. [Install and get started](docs/guides/user-guide/getting-started.md) covers optional user-environment tooling and hook payloads; [Use skills](docs/guides/user-guide/using-skills.md) explains how to work with the resulting skills. Harness contributors should see [local skill linking](docs/guides/developer/linking-skills.md).
 
 ## Documentation
 

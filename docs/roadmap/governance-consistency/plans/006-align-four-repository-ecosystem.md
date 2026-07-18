@@ -17,10 +17,10 @@ The base already holds an accepted repository-boundary decision, but its origina
 
 ## Steps
 
-1. [ ] Establish mirrored GDR001 and GDR002 foundations across all four repositories, migrating the harness licensing GDR without losing it.
-2. [ ] Update the harness README and runtime-neutral guidance with its four-repository role and lightweight choreography convention.
-3. [ ] Align the website and specifications governance declarations and re-bootstrap them from the harness.
-4. [ ] Verify the four GDR002 mirrors have the same decision substance and ASCII relationship diagram.
+1. [x] Establish mirrored GDR001 and GDR002 foundations across all four repositories, migrating the harness licensing GDR without losing it.
+2. [x] Update the harness README and runtime-neutral guidance with its four-repository role and lightweight choreography convention.
+3. [x] Align the website and specifications governance declarations and re-bootstrap them from the harness.
+4. [x] Verify the four GDR002 mirrors have the same decision substance and ASCII relationship diagram.
 5. [ ] Run the harness audits and tests, then close the plan through the plan lifecycle.
 
 ## Files touched

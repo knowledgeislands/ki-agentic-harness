@@ -1,33 +1,20 @@
 # GDR-KI-HARNESS-001: Adopting Decision Records
 
-**Date:** 2026-06-23
+**Date:** 2026-07-18
 
 ## Context
 
-The harness grows over time: skills are added, tooling is adopted or declined, structural conventions are established. Without a record of why decisions were made, future contributors (and future agent sessions) must re-derive reasoning from code alone. Oral tradition does not survive context resets.
-
-Decision Records (DRs) are a lightweight, file-based mechanism for capturing decisions that are significant enough to affect how work is done but unlikely to need frequent revision. The format is proven, widely understood, and requires no tooling to read.
-
-The key question was whether to adopt a strict Nygard ADR format, a Y-statements variant, or a house adaptation. The harness's priorities — longevity, minimal tooling, and readability in a plain text editor or agent context — favour a small, stable set of sections rather than a prescriptive template with many optional fields.
+Knowledge Islands repositories make durable decisions about knowledge, governance, specifications, architecture, tooling, publication, and operations. Without a common record, later contributors and agent sessions must reconstruct the reasoning from implementation details or transient working material.
 
 ## Decision
 
-The harness adopts Decision Records (DRs) as its canonical record for significant decisions. The format used is:
+Knowledge Islands repositories adopt Decision Records (DRs) as the canonical instrument for significant standalone decisions. A DR uses the Nygard structure: Context, Decision, Consequences, and optional References. Its prefix identifies the decision type, its scope identifies the repository or domain, and its serial is monotonically increasing per prefix within that scope.
 
-- **Title** — H1 heading, `# <PREFIX>-<SCOPE>-NNN: <title>`.
-- **Date** (optional) — a bold key-value field immediately under the title.
-- **Context** — why the decision was needed; the forces at play.
-- **Decision** — what was decided, stated plainly.
-- **Consequences** — what changes as a result, including trade-offs.
-- **References** — related DRs and external sources.
-
-A Decision Record is a **living present-state record**: it states the decision as it stands now and is edited in place. There is no status lifecycle, no mutability marker, no supersession chain, and no changelog — a decision that changes edits the live record, and the reasoning history lives in git. Superseded/roadmap/forward-looking narration belongs in the ROADMAP (code) or a stream (KB), not in the record.
-
-DR files live in `docs/decisions/` and are indexed in `docs/decisions/README.md`. The naming convention and mechanical rules are governed by a skill. The format descends from Michael Nygard's 2011 "Documenting Architecture Decisions" proposal, and this adoption is the harness realisation of `GDR-KI-ARCADIA-001`, the KI-level governance decision that established Decision Records across Knowledge Islands.
+A DR is a living present-state record. When a decision changes, its record is updated in place so it remains true now; git holds the history. KB repositories place records in `Admin/Governance/Decisions/`, while non-KB repositories place them in `docs/decisions/`. Every collection has an index in reveal order.
 
 ## Consequences
 
-- Significant decisions accumulate as a searchable, version-controlled record.
-- An agent beginning a session can read the `docs/decisions/` index to understand why the harness is shaped the way it is.
-- Because records are living and edited in place, the index always reflects the current decision; the reasoning history is recovered from git, not from a status field or a supersession chain.
-- Minor decisions (implementation details, naming choices) remain in commit messages; DRs are reserved for choices that would otherwise require excavation to understand.
+- Significant decisions remain searchable, reviewable, and available to humans and agents across context resets.
+- Routine implementation details remain in commits and ordinary documentation; not every change warrants a DR.
+- A repository adopting Decision Records declares `[ki-decision-records]` in `.ki-config.toml` and carries GDR001 as its first governance decision.
+- The four primary ecosystem repositories keep GDR001 consistent in substance while using their own repository scope in the record identifier.

@@ -48,6 +48,12 @@ Worth doing, but presently blocked on an external dependency or decision. Revisi
 
 Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass (or a decision to drop them) before they're actionable.
 
+### Align KB Stream focus with non-KB roadmap horizons _(candidate)_
+
+Align the two open-work models without treating them as identical. Add a Blocking focus to Knowledge Base Streams; represent "waiting for" as explicit dependency detail within Background, from which work promotes to Active when ready; align Dormant with a new Parked roadmap horizon; and remove Settled so completed history lives in canonical documentation and git rather than either open-work structure. Preserve plan status as a separate execution lifecycle.
+
+Make the shared process layer structure-aware: `ki-recap` must route outstanding work to the local structure, `ki-next` must select and promote work in either model, and the plan/execution lifecycle must operate over either a non-KB plan or a KB Stream proposal checklist. Repository-type detection should dispatch to `ki-project-roadmap` or `ki-kb-streams` as distinct governance adapters rather than forcing both repositories into one file shape. The result should make cross-repository handoffs and everyday lifecycle commands consistent while retaining the distinct Stream and roadmap forms. Origin: the four-repository ecosystem alignment rollout; this candidate does not block that rollout.
+
 ### Separate Knowledge Islands policy from portable governance _(candidate)_
 
 Write a compact boundary matrix separating portable contract, Knowledge Islands estate policy, and runtime binding. Do not split standards or redesign composition unless the matrix exposes a concrete ownership conflict.
