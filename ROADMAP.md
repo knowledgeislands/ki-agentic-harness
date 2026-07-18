@@ -12,7 +12,6 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 
 - [Governance Consistency: Prefix plan identifiers with stable theme codes](docs/roadmap/governance-consistency/ROADMAP.md#prefix-plan-identifiers-with-stable-theme-codes)
 - [Governance Consistency: Rename `ki-project-roadmap` to `ki-repo-roadmap`](docs/roadmap/governance-consistency/ROADMAP.md#rename-ki-project-roadmap-to-ki-repo-roadmap)
-- [Governance Consistency: Update `ki-recap` for the direct `ki-next` handoff](docs/roadmap/governance-consistency/ROADMAP.md#update-ki-recap-for-the-direct-ki-next-handoff)
 
 ## Soon
 

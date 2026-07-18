@@ -11,13 +11,7 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-### [governance-consistency/005](governance-consistency/plans/005-update-ki-recap-direct-handoff.md)
-
-- **Title:** Update ki-recap for the direct ki-next handoff
-- **Theme:** `governance-consistency`
-- **Roadmap item:** `governance-consistency/update-ki-recap-for-the-direct-ki-next-handoff`
-- **Status:** open
-- **Blocks:** —
+No active plans.
 
 ## Dependency graph
 

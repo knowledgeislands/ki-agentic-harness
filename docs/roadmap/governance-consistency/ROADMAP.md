@@ -8,10 +8,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Update `ki-recap` for the direct `ki-next` handoff
-
-Make the live-session output of `ki-recap` explicitly supply its grounded outstanding work, routed learnings, and roadmap-ready specific actions to `ki-next`. The handoff remains conversational context rather than a durable transcript artefact: `ki-next` must freshly re-check the roadmap, and neither skill may write a learning route, promote an item, or create a plan without the user's confirmation.
-
 ### Rename `ki-project-roadmap` to `ki-repo-roadmap`
 
 Rename the roadmap skill to describe its repository-level scope without implying that every non-KB repository is a conventional project. Define a safe migration for the canonical skill directory and frontmatter, references, installation/linking, generated guidance, configuration, tests, and the existing `ki-plan` composition. Until that work is delivered, use the currently installed `ki-project-roadmap` name as authoritative; do not add an alias or change existing consumers opportunistically.
