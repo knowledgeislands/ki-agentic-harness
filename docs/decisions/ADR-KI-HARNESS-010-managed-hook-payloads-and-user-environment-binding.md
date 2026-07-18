@@ -4,31 +4,28 @@
 
 ## Context
 
-The harness ships three Claude Code hooks: the Plan Mode lifecycle pair and the stale Git-lock guard. They operate in a user's Claude Code environment, while the bootstrap chain exists to make an individual repository govern itself. The legacy hook linker combines these concerns: it symlinks hook scripts from a harness checkout into `~/.claude/hooks/` and directly patches `~/.claude/settings.json`.
+The harness ships three Claude Code hooks: the Plan Mode lifecycle pair and the stale Git-lock guard. They operate in a user's Claude Code environment, not inside any one repository.
 
-A checkout is movable and a remote bootstrap source is disposable, so a hook symlink is not a durable user-environment installation. Direct writes to Claude settings from bootstrap or an installer also create competing owners for a user-level file that a dotfiles manager may already govern. Repositories and skills that rely on a hook still need a way to establish and verify their preconditions without taking ownership of the user's environment.
+The former standalone hook installer and legacy hook linker obscured that boundary: one created a separate onboarding action, while the other symlinked a checkout and patched Claude settings directly.
 
 ## Decision
 
-The harness separates hook payload delivery, user-environment binding, and repository governance.
+Claude hook delivery is a component of the one-time harness user installation.
 
-- A hook payload is an owned, versioned set of executable regular files with a verifiable manifest. The installer also publishes the active payload's three stable, user-readable `current/<hook-name>` command copies inside that same private namespace. The manifest declares those exact command paths and the payload checksums they must match. Hooks are never symlinked, whether sourced from a persistent checkout or a disposable download.
-- Bootstrap installs and vendors skills for a target repository only. It neither installs hook payloads nor writes Claude settings.
-- A renderer-neutral hook-binding requirement defines the valid payload and its required Claude Code registrations. The current compliant local user-space settings manager is chezmoi: its hook binding establishes the payload before rendering the matching Claude settings entries, and it is the sole writer of those managed entries. It preserves unrelated settings according to the dotfiles-management policy.
-- A future compliant user-environment manager may satisfy the same hook-binding requirement without adopting chezmoi. Hook-consuming skills remain independent of the chosen manager.
-- Each skill that depends on a hook declares and audits the capability it needs. Its CONFORM path may repair only its repository-facing declaration or direct the user to the environment manager; it never writes global Claude settings or installs an unmanaged hook.
-
-The legacy symlink linker and direct settings writer are retired. The payload installer does not mutate legacy hook links outside its private namespace: even a link that appears to originate from a prior harness checkout may have changed ownership after recognition. It leaves all such user-space residue untouched for the user-environment manager or a deliberate manual migration, while it publishes a separate durable payload. A separate `ki-claude-hooks` governance skill is deferred until real deployments show that the renderer-neutral requirement needs its own durable standard.
+- `/harness/install` installs the durable hook payload whenever Claude Code is selected. The user installer calls an internal Claude hook-payload component; there is no separate public hook route or shell entry point.
+- The payload is an owned, versioned set of executable regular files with a verifiable manifest and stable `current/<hook-name>` command copies. Hooks are never symlinked.
+- Repository bootstrap neither installs hook payloads nor writes Claude settings.
+- A compliant user-environment manager establishes the settings binding after it verifies the installed payload. Chezmoi is the current manager and the sole writer of its managed settings entries; another manager may implement the same requirement.
+- A hook-consuming skill may audit its capability and repair only repository-facing declarations. It never installs a global hook or writes global settings.
 
 ## Consequences
 
-- Hook installation survives repository moves, worktrees, cleanup of downloaded sources, and updates because the configured command names an owned regular file rather than a checkout path.
-- A chezmoi-managed machine has one settings writer. Other managers can implement the same binding contract, so the hook consumer contract does not become chezmoi-specific.
-- The hook payload installer can be tested independently of Claude settings, while the settings binding can test its payload precondition and preservation of unrelated user configuration.
-- The payload installer owns only payload files, stable command copies, their manifest, and its active pointer. It cannot make hooks take effect in Claude Code until the environment manager binds the active payload into the user-managed settings file.
-- The hook-specific binding contract and chezmoi composition path need scoped implementation plans before they change user settings or add checks to consuming skills.
+- One user command supplies both global skills and the Claude hook payload, while hook activation remains separately and safely managed.
+- The payload survives checkout moves, worktree cleanup, and disposable downloads because its configured command is an owned regular file.
+- Re-running `/harness/install` is the hook-payload update and repair path. Existing unmanaged links are not adopted or overwritten.
+- The payload installer and the user-environment binding can be tested independently.
 
 ## References
 
-- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md) — repository bootstrap and its self-sufficiency boundary.
+- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md) — the user-install and repository-bootstrap boundary.
 - [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) — renderer-specific composition over a renderer-neutral concern.
