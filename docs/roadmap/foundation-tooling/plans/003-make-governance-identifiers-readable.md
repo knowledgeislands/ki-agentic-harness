@@ -1,7 +1,7 @@
 ---
 id: '003'
 title: Make governance identifiers readable and navigable
-status: open
+status: in-progress
 roadmap: foundation-tooling/make-governance-identifiers-readable-and-navigable
 blocks: foundation-tooling/004
 blocked-by: —
@@ -15,7 +15,7 @@ The canonical checker reporter now gives one shared rendering point for audit an
 
 ## Current state
 
-The delivered reporter and aggregate already render title-first findings such as `CAPABILITY-COMPLETE: complete local governance payloads`, while JSONL retains stable machine fields. The checker/educator split also supplies concrete naming examples: plural responsibility directories (`checkers`, `educators`), verb entrypoints (`ki-audit`, `ki-educate`), and role modules (`checker-reporter`).
+The delivered reporter and aggregate now render title-first findings as `complete local governance payloads (CAPABILITY-COMPLETE)`, while JSONL retains stable machine fields. The checker/educator split supplies concrete naming examples: plural responsibility directories (`checkers`, `educators`), verb entrypoints (`ki-audit`, `ki-educate`), and role modules (`checker-reporter`). The remaining proof is a fresh independent consumer re-bootstrap.
 
 Existing codes are durable references and must not be renamed merely for aesthetics.
 

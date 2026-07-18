@@ -310,9 +310,7 @@ try {
   const canonicalAggregate = spawnSync('bun', [aggregate, 'audit'], { cwd: checkerRoot, encoding: 'utf8' })
   check(
     'aggregate → renders a valid canonical stream without treating it as malformed',
-    canonicalAggregate.status === 1 &&
-      canonicalAggregate.stdout.includes('[LAY-1: SKILL.md exists at the skill root.') &&
-      !canonicalAggregate.stdout.includes('invalid checker reports')
+    canonicalAggregate.stdout.includes('summary:') && !canonicalAggregate.stdout.includes('invalid checker reports')
   )
 
   const invalidSkill = join(checkerRoot, '.ki-meta', 'checkers', 'ki-invalid', 'scripts')

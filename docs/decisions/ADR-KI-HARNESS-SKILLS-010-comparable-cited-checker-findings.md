@@ -11,8 +11,8 @@ The mechanical/judgment split gave every skill a checker whose findings carried 
 Extend the mechanical-checker finding model along three axes:
 
 - **Richer, mandatorily-cited findings.** A finding gains two optional structured fields on top of the required `level` / `area` / `msg`: `ref`, the reference-doc pointer the criterion carries (e.g. its `references/…` path, or `owns:` for an owned-file criterion), and `file`, the path a file-scoped finding concerns. `area` is mandatorily the criterion's code drawn from the skill's `references/rubric.md`, so that one rubric is the single source for both the code and its reference pointer.
-- **A `--json` conform mode.** Conform scripts gain a collect-then-emit `--json` mode that produces the same wrapper object audit produces, so each conform action becomes a finding on the shared ladder and the two verbs are merged identically.
-- **One shared renderer in the aggregate.** All rendering centralises in the vendored aggregate runner — the single formatter for both verbs — which renders each finding as `[code] file msg (ref)`, puts icons on the summary and totals lines, and splits the recap into real violations (FAIL / WARN / POLISH) versus the always-on judgment reminders (ADVISORY), for both audit and conform.
+- **One canonical JSONL transport.** Audit and conform scripts collect their findings then emit the same JSONL event stream on normal invocation, so consumers merge the two verbs without an output-format switch or a private terminal renderer.
+- **One shared renderer in the aggregate.** All human rendering centralises in the vendored aggregate runner — the single formatter for both verbs — which resolves the criterion title from the emitting rubric and renders `[title (code)] file msg (ref)`, puts icons on the summary and totals lines, and splits the recap into real violations (FAIL / WARN / POLISH) versus the always-on judgment reminders (ADVISORY), for both audit and conform.
 
 Because a skill may not import another skill's code — every skill must stay valid installed standalone — the shared renderer cannot live in a library the checkers import. It lives in the aggregate runner instead: a standalone checker still emits the same `code` / `ref` / `file` content in its own output, and the aggregate owns only the cross-skill chrome (icons, the violation/advisory split, uniform per-finding layout). Standalone and aggregate stay consistent on the finding content; they differ only in presentation the aggregate adds.
 
@@ -21,8 +21,8 @@ Because a skill may not import another skill's code — every skill must stay va
 - Every finding, from either verb, now points at the rubric criterion that raised it and the file it concerns — citation is uniform, not present in a handful of skills.
 - A consumer that runs audit and conform in sequence merges both on one ladder without special-casing either verb.
 - The recap surfaces real violations distinctly from the advisory reminders that fire on every run, so a non-clean result is legible at a glance.
-- The finding contract widens: `ref` and `file` join the pinned `--json` wrapper as optional fields, and `area` is now constrained to be a rubric code — checkers that emit a free-text area or omit the rubric pointer are non-conformant.
-- Conform must now collect its actions before emitting rather than printing them as it goes, to produce the wrapper in one object.
+- The finding contract carries `ref` and `file` as optional fields and uses `code` as the rubric-owned stable identifier — checkers that emit a free-text identity or omit a required rubric pointer are non-conformant.
+- Conform collects its actions before emitting the same canonical stream as audit rather than printing them as it goes.
 - Rendering logic removed from individual checkers concentrates in the aggregate runner; a skill run standalone shows the same finding content but without the aggregate's added chrome, which is the intended standalone-versus-aggregate boundary.
 
 ## References

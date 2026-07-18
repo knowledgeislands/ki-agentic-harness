@@ -70,9 +70,9 @@ An audit and conform checker MUST use the same canonical JSONL report format, di
 
 _Verify:_ the source-harness checker test validates both script families with the same parser and validator.
 
-### CHK-011 — Readable rendered identity
+### CHK-011 — Title-first rendered identity
 
-The aggregate MUST resolve each finding’s code through the emitting rubric and render its stable code followed by the readable criterion title (`CODE: title`).
+The aggregate MUST resolve each finding’s code through the emitting rubric and render the readable criterion title followed by its stable code (`title (CODE)`).
 
 _Verify:_ aggregate rendering tests assert the resolved title and code for a vendored rubric fixture.
 

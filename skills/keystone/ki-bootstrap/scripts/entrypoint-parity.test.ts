@@ -49,7 +49,7 @@ function run(command: string, args: string[], cwd: string, env: Record<string, s
 function semanticOutput(output: string): string {
   return output
     .split('\n')
-    .filter((line) => line.includes('[FIX-1]') || line.includes('summary:') || line.includes('totals:'))
+    .filter((line) => line.includes('(FIX-1)]') || line.includes('summary:') || line.includes('totals:'))
     .join('\n')
 }
 
@@ -117,6 +117,9 @@ try {
   mkdirSync(fixtureSkill, { recursive: true })
   writeFileSync(join(fixtureSkill, 'audit.ts'), auditFixture)
   writeFileSync(join(fixtureSkill, 'conform.ts'), conformFixture)
+  const fixtureRubric = join(fixture, '.ki-meta', 'checkers', 'ki-fixture', 'references')
+  mkdirSync(fixtureRubric, { recursive: true })
+  writeFileSync(join(fixtureRubric, 'rubric.md'), '- **FIX-1 [M]** Fixture health check.\n')
   chmodSync(join(fixture, '.ki-meta', 'bin', 'ki-audit'), 0o755)
   chmodSync(join(fixture, '.ki-meta', 'bin', 'ki-conform'), 0o755)
 
@@ -131,6 +134,10 @@ try {
   const wrapperPass = run(auditWrapper, [], nested, env)
   check('package-free audit wrapper → runs from a nested cwd', wrapperPass.status === 0)
   check('package-free audit wrapper → renders the synthetic finding', semanticOutput(wrapperPass.stdout).includes('synthetic audit passed'))
+  check(
+    'package-free audit wrapper → renders title first with its stable code',
+    semanticOutput(wrapperPass.stdout).includes('[Fixture health check. (FIX-1)]')
+  )
 
   const wrapperFail = run(auditWrapper, [], nested, { ...env, KI_FIXTURE_FAIL: '1' })
   check('package-free audit wrapper → propagates checker failure', wrapperFail.status === 1)
