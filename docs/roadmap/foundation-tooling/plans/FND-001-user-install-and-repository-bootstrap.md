@@ -25,25 +25,31 @@ The hook payload has a durable regular-file installer, while the five global ski
 
 Documentation and harness standards consequently disagree about whether global skills are a normal installation, whether only the keystone is global, and whether `sync-skills.ts` is product delivery or a developer utility.
 
-### Script inventory
+### Current script surface
 
-Every production script has a live caller or a live role; there is no deletion candidate before the responsibility split below.
+Every production script has a live caller or a live role, so no script is a deletion candidate before responsibilities are split.
 
-| Current surface | Observed role | Target responsibility |
-| --- | --- | --- |
-| `bootstrap.sh` / `bootstrap.ts` | Remote entry and repository chain engine | Rename to `repo-bootstrap.sh` at `scripts/` and `repo-bootstrap.ts` below `scripts/lib/` in `ki-bootstrap`. |
-| `install-hooks.sh` / `install-hooks.ts` | Durable Claude hook-payload installer | Retain as an internal `user-install` component; give its implementation a descriptive Claude-payload name if it remains separately executable. |
-| `sync-skills.ts` | Global checkout-dependent skill links | Replace with a `ki-repo` repository-local command linker that can serve `ki-self` and harness development. |
-| `link-skills.ts` / `link-agents.ts` | Project-local checkout-dependent links | Move to `ki-repo` as explicitly named repository-local development linkers. |
-| `copy-skills.ts` | Normal project-local regular-file skill publisher | Keep with `ki-bootstrap`; it is part of repository bootstrap, not development linking. |
-| `project-links.ts` / `package-scripts.ts` | Shared runtime publication, linking, config, and `.gitignore` helpers | Split along the bootstrap-copy versus repo-link boundary so neither skill imports outside its own script surface. |
-| `audit.ts` / `conform.ts` / `educate.ts` | Universal `ki-bootstrap` modes | Retain in `ki-bootstrap`. |
-| `resolve.ts` / `sync-checker-modules.ts` | Bootstrap-engine dependency and vendoring internals | Retain in `ki-bootstrap`. |
-| `skill-graph.ts` / `skill-help.ts` | Harness-gated whole-tree tooling | Retain provisionally while ADR-008 determines their durable `ki-harness` relationship; only the development linker moves in this plan. |
+`bootstrap.sh` and `bootstrap.ts` currently combine the public remote repository entry point with the repository bootstrap engine.
 
-Each existing test follows the command it covers: rename or relocate its test with its production entry point, and retain the engine tests with `ki-bootstrap`.
+`install-hooks.sh` and `install-hooks.ts` are a separate durable Claude hook-payload installer.
 
-The resulting physical shape keeps only invocable contracts at `scripts/`: `user-install.sh`, `repo-bootstrap.sh`, and the canonical mode entries `audit.ts`, `conform.ts`, and `educate.ts`. Their TypeScript implementations and private helpers live below `scripts/lib/`; the user-facing route never names that implementation path.
+`copy-skills.ts` publishes normal project-local regular-file skill copies, while `link-skills.ts`, `link-agents.ts`, and `sync-skills.ts` create checkout-dependent links.
+
+`project-links.ts` and `package-scripts.ts` mix the copy and link paths with runtime, configuration, and `.gitignore` helpers.
+
+`audit.ts`, `conform.ts`, and `educate.ts` are the universal `ki-bootstrap` mode entries. `resolve.ts` and `sync-checker-modules.ts` are bootstrap-engine internals. `skill-graph.ts` and `skill-help.ts` are harness-gated whole-tree tools.
+
+Each test follows one of those production commands and moves with its owner.
+
+### Target script surface
+
+`ki-bootstrap/scripts/` exposes only invocable contracts: `user-install.sh`, `repo-bootstrap.sh`, and the canonical governance mode entries `audit.ts`, `conform.ts`, and `educate.ts`.
+
+`ki-bootstrap/scripts/lib/` holds their TypeScript implementations and private bootstrap helpers: `user-install.ts`, `repo-bootstrap.ts`, durable hook-payload installation, resolution, normal project payload publication, vendoring, and filesystem/configuration helpers. A public route never names a `lib/` path.
+
+`ki-repo` owns deliberately linking repository-local runtime commands. Its named linker can support both a future `ki-self` surface and a harness author’s local development workflow; it replaces the current `sync-skills.ts`, `link-skills.ts`, and `link-agents.ts` responsibility. It vendors or owns every helper it needs rather than importing from `ki-bootstrap`.
+
+`ki-harness` composes the `ki-repo` linker for harness development, but owns no special link mechanism. The harness-gated graph and help tooling remains under review in ADR-008; only development linking moves in this plan.
 
 ## Steps
 
