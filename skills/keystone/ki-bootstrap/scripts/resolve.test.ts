@@ -252,6 +252,10 @@ try {
   const roots = declaredSkills(config)
   const selfCheck = spawnSync(join(seededRepo, '.ki-meta', 'bin', 'ki-audit'), ['--help'], { encoding: 'utf8' })
   check('seeded ki-repo → bootstrap exits cleanly', result.status === 0)
+  check(
+    'seeded ki-repo → default EDUCATE output is concise',
+    result.stdout.includes('EDUCATE complete') && !result.stdout.includes('\x1b[32mvendor') && !result.stdout.includes('\x1b[32mcopy')
+  )
   check('seeded ki-repo → owner scaffolds both foundation roots', JSON.stringify(roots) === JSON.stringify(['ki-authoring', 'ki-repo']))
   check(
     'seeded ki-repo → same run vendors both foundations',
@@ -395,11 +399,29 @@ try {
   const result = spawnSync('bun', [BOOTSTRAP, seededDryRun, '--seed', 'ki-repo', '--dry-run'], { encoding: 'utf8' })
   check('seeded ki-repo dry-run → exits cleanly', result.status === 0)
   check(
+    'seeded ki-repo dry-run → reports planned vendor and runtime actions',
+    result.stdout.includes('\x1b[32mvendor') &&
+      result.stdout.includes('\x1b[32mignore') &&
+      result.stdout.includes('EDUCATE dry run complete')
+  )
+  check(
     'seeded ki-repo dry-run → writes neither config nor vendored state',
     !existsSync(join(seededDryRun, '.ki-config.toml')) && !existsSync(join(seededDryRun, '.ki-meta'))
   )
 } finally {
   rmSync(seededDryRun, { recursive: true, force: true })
+}
+
+const verboseRepo = fixture('[ki-authoring]\n')
+try {
+  const result = spawnSync('bun', [BOOTSTRAP, verboseRepo, '--verbose'], { encoding: 'utf8' })
+  check('verbose EDUCATE → exits cleanly', result.status === 0)
+  check(
+    'verbose EDUCATE → reports vendor and runtime actions',
+    result.stdout.includes('\x1b[32mvendor') && result.stdout.includes('\x1b[32mcopy') && result.stdout.includes('scope: ki-authoring')
+  )
+} finally {
+  rmSync(verboseRepo, { recursive: true, force: true })
 }
 
 const auditInvalid = fixture('[ki-audit-missing.checks]\n')

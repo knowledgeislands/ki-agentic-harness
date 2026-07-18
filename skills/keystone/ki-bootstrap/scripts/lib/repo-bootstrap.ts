@@ -46,7 +46,7 @@
  * the aggregate runner and bin wrappers (ADR-KI-HARNESS-008). A non-harness repo
  * has no skills/ tree to operate on and never receives them.
  *
- * Usage: bun repo-bootstrap.ts <target-repo> [--seed <skill>] [--ref <ref>] [--dry-run]
+ * Usage: bun repo-bootstrap.ts <target-repo> [--seed <skill>] [--ref <ref>] [--dry-run] [--verbose]
  */
 
 import { execFileSync } from 'node:child_process'
@@ -89,6 +89,7 @@ import {
 } from './resolve.ts'
 
 const GREEN = '\x1b[32m'
+const YELLOW = '\x1b[33m'
 const DIM = '\x1b[2m'
 const RESET = '\x1b[0m'
 
@@ -530,14 +531,14 @@ cat "$f"
 function binKiInit(): string {
   return `#!/bin/sh
 # Vendored by ki-bootstrap — run the whole-set bootstrap chain, or one local educator.
-# Usage: ./.ki-meta/bin/ki-educate [skill] [--ref <ref>] [--dry-run] [--help]
+# Usage: ./.ki-meta/bin/ki-educate [skill] [--ref <ref>] [--dry-run] [--verbose] [--help]
 set -eu
 DEFAULT_REF="main"
 REPO="knowledgeislands/ki-agentic-harness"
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 case "\${1:-}" in
   --help|-h)
-    echo "usage: ki-educate [skill] [--ref <ref>] [--dry-run]"
+    echo "usage: ki-educate [skill] [--ref <ref>] [--dry-run] [--verbose]"
     echo "  without a skill, re-runs the whole bootstrap chain (default ref: main)."
     echo "  with a skill, dispatches only .ki-meta/educators/<skill>/educate.ts."
     exit 0
@@ -561,6 +562,7 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --ref) ref="$2"; shift 2 ;;
     --dry-run) pass="$pass --dry-run"; shift ;;
+    --verbose) pass="$pass --verbose"; shift ;;
     *) echo "unsupported whole-set ki-educate argument: $1" >&2; exit 2 ;;
   esac
 done
@@ -581,15 +583,20 @@ const target = resolve(process.argv[2] ?? '.')
 const args = process.argv.slice(3)
 let ref = 'main'
 let dryRun = false
+let verbose = false
 for (let index = 0; index < args.length; index++) {
   const arg = args[index]
   if (arg === '--help' || arg === '-h') {
-    console.log('usage: ki-educate ' + skill + ' [--ref <ref>] [--dry-run]')
+    console.log('usage: ki-educate ' + skill + ' [--ref <ref>] [--dry-run] [--verbose]')
     console.log('  runs this target-local educator via the canonical bootstrap transport.')
     process.exit(0)
   }
   if (arg === '--dry-run') {
     dryRun = true
+    continue
+  }
+  if (arg === '--verbose') {
+    verbose = true
     continue
   }
   if (arg === '--ref' && args[index + 1]) {
@@ -606,7 +613,7 @@ if (!/^[A-Za-z0-9._/-]+$/.test(ref) || ref.includes('..')) {
 const url = 'https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/' + ref + '/skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh'
 const fetched = spawnSync('curl', ['-fsSL', url], { encoding: 'utf8' })
 if (fetched.status !== 0 || !fetched.stdout) process.exit(fetched.status ?? 1)
-const result = spawnSync('sh', ['-s', '--', target, '--ref', ref, '--seed', skill, ...(dryRun ? ['--dry-run'] : [])], {
+const result = spawnSync('sh', ['-s', '--', target, '--ref', ref, '--seed', skill, ...(dryRun ? ['--dry-run'] : []), ...(verbose ? ['--verbose'] : [])], {
   input: fetched.stdout,
   stdio: ['pipe', 'inherit', 'inherit']
 })
@@ -955,7 +962,13 @@ function hashJournalFile(journal: OwnedSnapshot, rel: string): string {
 // `help` renders a snapshot below; `refresh` is harness-only and never vendored.
 const SCRIPT_MODES = ['audit', 'conform'] as const
 
-function vendorEducator(generationRoot: string, skill: string, manifestFiles: Record<string, string>, journal: OwnedSnapshot): void {
+function vendorEducator(
+  generationRoot: string,
+  skill: string,
+  manifestFiles: Record<string, string>,
+  journal: OwnedSnapshot,
+  showActions: boolean
+): void {
   const declared = vendorModesOf(skill)
   if (!declared?.includes('educate')) return
   const rel = join(EDUCATORS_DIR, skill, 'educate.ts')
@@ -966,7 +979,7 @@ function vendorEducator(generationRoot: string, skill: string, manifestFiles: Re
   writeFileSync(abs, educatorLauncher(skill))
   recordGenerated(journal, generationRoot, rel)
   manifestFiles[`${VENDOR_DIR}/${rel}`] = hashJournalFile(journal, rel)
-  console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${rel} (standalone educator launcher)${RESET}`)
+  if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${rel} (standalone educator launcher)${RESET}`)
 }
 
 function vendorSkill(
@@ -974,7 +987,8 @@ function vendorSkill(
   skill: string,
   dryRun: boolean,
   manifestFiles: Record<string, string>,
-  journal?: OwnedSnapshot
+  journal?: OwnedSnapshot,
+  showActions = false
 ): void {
   const declared = vendorModesOf(skill)
   // Which script modes to copy: the skill's declared list ∩ {audit, conform}, or — for
@@ -986,7 +1000,7 @@ function vendorSkill(
 
   for (const mode of scriptModes) {
     const unit = vendorUnit(skill, mode)
-    if (unit) written.push(...vendorOne(generationRoot, scriptsDir, skill, mode, unit, dryRun, journal))
+    if (unit) written.push(...vendorOne(generationRoot, scriptsDir, skill, mode, unit, dryRun, journal, showActions))
   }
   // Nothing vendored (no audit/conform resolvable) — skip the skill entirely, matching
   // the old `if (!audit) return` guard so bare non-governance dirs are ignored.
@@ -999,7 +1013,7 @@ function vendorSkill(
   if (existsSync(rubricSource)) {
     const rubricRel = join(CHECKERS_DIR, skill, 'references', 'rubric.md')
     const rubricAbs = join(generationRoot, rubricRel)
-    console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${rubricRel} (rubric metadata)${RESET}`)
+    if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${rubricRel} (rubric metadata)${RESET}`)
     if (!dryRun) {
       if (!journal) throw new Error('candidate generation requires a creation journal')
       mkdirSync(dirname(rubricAbs), { recursive: true })
@@ -1017,7 +1031,7 @@ function vendorSkill(
     const module = { provider: skill, module: moduleName }
     const payload = checkerModulePayload(module)
     const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/scripts/${payload.targetName}`
-    console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (owned checker module payload)${RESET}`)
+    if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (owned checker module payload)${RESET}`)
     if (!dryRun) {
       if (!journal) throw new Error('candidate generation requires a creation journal')
       written.push(...vendorCheckerModulePayload(generationRoot, scriptsDir, skill, module, payload, journal, true))
@@ -1027,7 +1041,7 @@ function vendorSkill(
   for (const module of checkerDependenciesOf(skill)) {
     const payload = checkerModulePayload(module)
     const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/scripts/vendored/${module.provider}/${payload.targetName}`
-    console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (checker module payload)${RESET}`)
+    if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (checker module payload)${RESET}`)
     if (!dryRun) {
       if (!journal) throw new Error('candidate generation requires a creation journal')
       written.push(...vendorCheckerModulePayload(generationRoot, scriptsDir, skill, module, payload, journal))
@@ -1047,7 +1061,8 @@ function vendorSkill(
     stdio: ['ignore', 'pipe', 'ignore'],
     env: helpEnv
   })
-  console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/help.md (help snapshot)${RESET}`)
+  if (showActions)
+    console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/help.md (help snapshot)${RESET}`)
   if (!dryRun) {
     mkdirSync(destDir, { recursive: true })
     if (journal) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill))
@@ -1075,13 +1090,14 @@ function vendorOne(
   mode: 'audit' | 'conform',
   unit: { kind: 'file'; path: string } | { kind: 'command'; command: string },
   dryRun: boolean,
-  journal?: OwnedSnapshot
+  journal?: OwnedSnapshot,
+  showActions = false
 ): VendoredFile[] {
   const destFile = `${mode}.ts`
   const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/scripts/${destFile}`
   const abs = join(destDir, destFile)
   if (unit.kind === 'file') {
-    console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (file)${RESET}`)
+    if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (file)${RESET}`)
     if (!dryRun) {
       mkdirSync(destDir, { recursive: true })
       if (journal) {
@@ -1092,7 +1108,7 @@ function vendorOne(
       if (journal) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, 'scripts', destFile))
     }
   } else {
-    console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (command wrapper)${RESET}`)
+    if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (command wrapper)${RESET}`)
     if (!dryRun) {
       mkdirSync(destDir, { recursive: true })
       if (journal) {
@@ -1190,7 +1206,8 @@ function buildCandidate(
   staging: string,
   set: string[],
   ref: string,
-  journal: OwnedSnapshot
+  journal: OwnedSnapshot,
+  showActions: boolean
 ): { files: Record<string, string>; tree: OwnedSnapshot } {
   const manifestFiles: Record<string, string> = {}
   mkdirSync(join(staging, CHECKERS_DIR), { mode: 0o755 })
@@ -1200,8 +1217,8 @@ function buildCandidate(
   mkdirSync(join(staging, 'bin'), { mode: 0o755 })
   recordGenerated(journal, staging, 'bin')
   for (const skill of set) {
-    vendorSkill(staging, skill, false, manifestFiles, journal)
-    vendorEducator(staging, skill, manifestFiles, journal)
+    vendorSkill(staging, skill, false, manifestFiles, journal, showActions)
+    vendorEducator(staging, skill, manifestFiles, journal, showActions)
   }
 
   const aggregate = join(staging, 'bin', 'aggregate.ts')
@@ -1228,7 +1245,8 @@ function buildCandidate(
       recordGenerated(journal, staging, join('bin', name))
       manifestFiles[join(VENDOR_DIR, 'bin', name)] = hashJournalFile(journal, join('bin', name))
     }
-    console.log(`${GREEN}bin${RESET} ${DIM}→ ${VENDOR_DIR}/bin/{${HARNESS_BIN_SCRIPTS.join(', ')}} (harness cross-skill scripts)${RESET}`)
+    if (showActions)
+      console.log(`${GREEN}bin${RESET} ${DIM}→ ${VENDOR_DIR}/bin/{${HARNESS_BIN_SCRIPTS.join(', ')}} (harness cross-skill scripts)${RESET}`)
   }
 
   writeFileSync(join(staging, 'manifest.json'), `${JSON.stringify({ ref, files: manifestFiles }, null, 2)}\n`)
@@ -1620,7 +1638,13 @@ function publishCandidate(
   finalizeTransaction(metaDir, lock, staging, quarantine)
 }
 
-function runBootstrapTransaction(target: string, targetIdentity: EntrySnapshot & { kind: 'directory' }, set: string[], ref: string): void {
+function runBootstrapTransaction(
+  target: string,
+  targetIdentity: EntrySnapshot & { kind: 'directory' },
+  set: string[],
+  ref: string,
+  showActions: boolean
+): void {
   if (process.env.NODE_ENV === 'test' && process.env.KI_BOOTSTRAP_TEST_REPLACE_BOUND_ROOT_WITH) {
     renameSync(target, process.env.KI_BOOTSTRAP_TEST_REPLACE_BOUND_ROOT_WITH)
     mkdirSync(target)
@@ -1640,7 +1664,7 @@ function runBootstrapTransaction(target: string, targetIdentity: EntrySnapshot &
     validateRetiredCheckerLayout(established.path)
     const before = snapshotOwned(established.path)
     staging = createStaging(established.path)
-    const { tree } = buildCandidate(staging.path, set, ref, buildJournal)
+    const { tree } = buildCandidate(staging.path, set, ref, buildJournal, showActions)
     maybeInjectPrePublicationReplacement(established.path)
     publishCandidate(target, targetIdentity, established.path, metaIdentity, lock, staging, before, tree)
     lock = undefined
@@ -1668,10 +1692,11 @@ function runBootstrapTransaction(target: string, targetIdentity: EntrySnapshot &
   }
 }
 
-function publishRuntimeSkillPayloads(target: string, dryRun: boolean): void {
+function publishRuntimeSkillPayloads(target: string, dryRun: boolean, showActions: boolean): void {
   const args = [join(import.meta.dirname, 'publish-project-skills.ts')]
   args.push(target)
   if (dryRun) args.push('--dry-run')
+  if (!showActions) args.push('--quiet')
   try {
     execFileSync('bun', args, { stdio: 'inherit' })
   } catch {
@@ -1682,7 +1707,7 @@ function publishRuntimeSkillPayloads(target: string, dryRun: boolean): void {
 function main(): void {
   const argv = process.argv.slice(2)
   if (argv.includes('--help') || argv.includes('-h')) {
-    console.log('usage: repo-bootstrap.ts <target-repo> [--seed <skill>] [--ref <ref>] [--dry-run]')
+    console.log('usage: repo-bootstrap.ts <target-repo> [--seed <skill>] [--ref <ref>] [--dry-run] [--verbose]')
     console.log('  vendors the resolved governance set into an atomic .ki-meta generation')
     return
   }
@@ -1706,6 +1731,7 @@ function main(): void {
   const boundTarget = physicalTarget(positional[0] ?? '.')
   const target = boundTarget.path
   const dryRun = rest.includes('--dry-run')
+  const verbose = rest.includes('--verbose')
 
   // No `package.json` is ever required or touched — a repo self-governs through the
   // vendored `.ki-meta/` runner and its `bin/` wrappers alone (dotfiles, KB, tap, or
@@ -1724,7 +1750,8 @@ function main(): void {
     set = resolvedSetOrExit(target, seeds)
   }
   assertCompleteCapabilitySetOrExit(set)
-  console.log(`${DIM}bootstrap ${target} — skills: ${set.join(', ')}${RESET}`)
+  console.log(`${DIM}EDUCATE ${target} — ${set.length} governed skill${set.length === 1 ? '' : 's'}${RESET}`)
+  if (verbose && set.length) console.log(`${DIM}scope: ${set.join(', ')}${RESET}`)
 
   const ref = resolveRef(refOverride ?? harnessRef())
   const aggRel = join(VENDOR_DIR, 'bin', 'aggregate.ts')
@@ -1736,19 +1763,26 @@ function main(): void {
   if (dryRun) {
     const manifestFiles: Record<string, string> = {}
     for (const skill of set) {
-      vendorSkill(join(target, VENDOR_DIR), skill, true, manifestFiles)
+      vendorSkill(join(target, VENDOR_DIR), skill, true, manifestFiles, undefined, true)
       if (vendorModesOf(skill)?.includes('educate'))
         console.log(
           `${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${EDUCATORS_DIR}/${skill}/educate.ts (standalone educator launcher)${RESET}`
         )
     }
-  } else runBootstrapTransaction(target, boundTarget.identity, set, ref)
+  } else runBootstrapTransaction(target, boundTarget.identity, set, ref, verbose)
   // Runtime payloads are separate from `.ki-meta/`: every target receives complete,
   // standalone copies. Deliberate local-author links are a ki-repo concern and are
   // never selected implicitly by repository bootstrap.
-  publishRuntimeSkillPayloads(target, dryRun)
+  publishRuntimeSkillPayloads(target, dryRun, dryRun || verbose)
+  if (dryRun || verbose) {
+    console.log(
+      `${GREEN}runner${RESET} ${DIM}→ ${aggRel}, ${auditBinRel}, ${conformBinRel}, ${initBinRel}, ${helpBinRel}, ${manifestRel}${RESET}`
+    )
+  }
   console.log(
-    `${GREEN}runner${RESET} ${DIM}→ ${aggRel}, ${auditBinRel}, ${conformBinRel}, ${initBinRel}, ${helpBinRel}, ${manifestRel}${RESET}`
+    dryRun
+      ? `${YELLOW}EDUCATE dry run complete — no files changed${RESET}`
+      : `${GREEN}EDUCATE complete — .ki-meta governance and runtime payloads are current${RESET}`
   )
 }
 

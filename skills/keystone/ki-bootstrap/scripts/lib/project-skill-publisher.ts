@@ -635,6 +635,7 @@ export function runProjectLinks(
 ): number {
   const dryRun = argv.includes('--dry-run')
   const checkOnly = argv.includes('--check')
+  const quiet = argv.includes('--quiet')
   const target = resolve(argv.find((arg) => !arg.startsWith('-')) ?? '.')
   try {
     if (checkOnly) return printCheck(target, scope, skillPublication)
@@ -658,9 +659,11 @@ export function runProjectLinks(
       return 0
     }
     execute(target, plan)
-    for (const item of plan.links) console.log(`${GREEN}${item.kind === 'copy' ? 'copy' : 'link'}${RESET}  ${item.label}`)
-    for (const item of plan.removes) console.log(`${YELLOW}prune${RESET} ${item.label}`)
-    if (plan.gitignore) console.log(`${GREEN}ignore${RESET} .gitignore ${DIM}(generated runtime payloads)${RESET}`)
+    if (!quiet) {
+      for (const item of plan.links) console.log(`${GREEN}${item.kind === 'copy' ? 'copy' : 'link'}${RESET}  ${item.label}`)
+      for (const item of plan.removes) console.log(`${YELLOW}prune${RESET} ${item.label}`)
+      if (plan.gitignore) console.log(`${GREEN}ignore${RESET} .gitignore ${DIM}(generated runtime payloads)${RESET}`)
+    }
     return 0
   } catch (error) {
     console.error(`${RED}FAIL${RESET}  project-link transaction: ${(error as Error).message}`)
