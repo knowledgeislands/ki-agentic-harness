@@ -11,7 +11,7 @@ blocked-by: —
 
 Using the harness has three distinct journeys that are currently blurred together: installing the harness for a user, bootstrapping one repository, and opting into live local development links while authoring the harness.
 
-An ordinary user installs the harness once to make the global keystone and process skills available to an agent runtime and to install applicable runtime-specific hook payloads.
+An ordinary user installs the harness once to make the global keystone and process skills available to an agent runtime. When Claude Code is selected, that same installation also installs its durable hook payload.
 
 The user then bootstraps each repository to make it self-governing and publish only its declared project-local skills.
 
@@ -28,8 +28,8 @@ Documentation and harness standards consequently disagree about whether global s
 ## Steps
 
 1. Record the three installation contracts in a decision record and the bootstrap standard: the one-time user-harness installer owns user-space payload copies; repository bootstrap owns only the target repository; `ki-harness` owns explicit development linking from a local checkout.
-2. Build one idempotent remote-safe user-harness installer at `/harness/install` that installs regular-file copies of the global core skill set into selected runtime discovery directories and invokes the Claude hook-payload installer when Claude Code is selected. It must use a durable managed namespace, validate its own payload, preserve unrelated user files, and never write runtime settings.
-3. Keep hook registration outside the installer: chezmoi or another compliant user-environment manager reads the installed Claude payload and manages Claude Code settings.
+2. Build one idempotent remote-safe user-harness installer at `/harness/install` that installs regular-file copies of the global core skill set into selected runtime discovery directories and, by default, installs the durable Claude hook payload when Claude Code is selected. It must use a durable managed namespace, validate its own payload, preserve unrelated user files, and never write runtime settings.
+3. Keep hook registration outside the installer: chezmoi or another compliant user-environment manager reads the payload `/harness/install` has installed and manages Claude Code settings.
 4. Move the development-link contract to `ki-harness`: its link helper, package scripts, checks, and developer guide are the explicit harness-author workflow. It must be clearly named and documented as development-only, while ordinary user installation neither creates nor relies on symlinks.
 5. Give repository bootstrap its stable remote entry point at `/harness/repo/bootstrap` and keep it strictly repository-scoped: it may create `.ki-meta/` and project-local generated skill copies, but must not install user-global skills, hooks, or settings. It remains the direct non-agentic alternative to invoking `/ki-bootstrap` after user installation.
 6. Rework the user guide into the intended order: first install the harness once for the user; then bootstrap every repository, either through `/ki-bootstrap` in an agent session or `curl -fsSL https://knowledgeislands.info/harness/repo/bootstrap | sh` for direct use. Explain runtime-specific hook binding and developer linking separately. Update the README, skill descriptions, standards, architecture records, and eval scenarios to use the same terms.
