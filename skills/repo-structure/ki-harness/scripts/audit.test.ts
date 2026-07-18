@@ -54,6 +54,7 @@ const supportingScripts = {
   'ki:skills:copy:project': 'true',
   'ki:skills:audit': 'true',
   'ki:repo:link-commands': 'true',
+  'ki:skills:link:global': 'true',
   'ki:skills:refresh-status': 'true',
   'ki:eval': 'true'
 }

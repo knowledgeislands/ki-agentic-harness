@@ -54,7 +54,7 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS (defined in 
 
 **PKG-3 (retired)** The former harness-level common-toolchain check duplicated `ki-engineering`. Aggregate entrypoints are enforced by that skill's SCR-2; internal code and authoring tools are composed underneath them. The harness checker emits no PKG-3 finding, preserving single ownership.
 
-**PKG-4 [M]** `package.json` carries the harness development / eval surface: `ki:repo:link-commands`, `ki:skills:refresh-status`, `ki:eval`. Source: standard §package.json. _Severity: WARN per missing script._
+**PKG-4 [M]** `package.json` carries the harness development / eval surface: `ki:repo:link-commands`, `ki:skills:link:global`, `ki:skills:refresh-status`, `ki:eval`. Source: standard §package.json. _Severity: WARN per missing script._
 
 **PKG-5 [J]** Docs aimed at governed repos (the user guide especially) never present a `ki:*` `package.json` key as _the_ invocation of a vendored checker: the `.ki-meta` path (`bun .ki-meta/checkers/<skill>/<mode>.ts .`, aggregate `./.ki-meta/bin/ki-audit`) is canonical and the key its harness-local alias, with the equivalence stated or linked. A bare key is acceptable only in an explicitly harness-repo-only doc. Source: standard §package.json docs invocation discipline. _Severity: WARN — a key-only instruction silently excludes every governed repo without a `package.json`._
 

@@ -84,7 +84,7 @@ function main(): void {
     const pkg = readPackageJson(pkgPath)
     check('FAIL', 'PKG-1', hasScript(pkg, 'ki:skills:copy:project'), "Must have a 'ki:skills:copy:project' script.", 'package.json')
     check('FAIL', 'PKG-2', hasScript(pkg, 'ki:skills:audit'), "Must have a 'ki:skills:audit' script.", 'package.json')
-    for (const script of ['ki:repo:link-commands', 'ki:skills:refresh-status', 'ki:eval'])
+    for (const script of ['ki:repo:link-commands', 'ki:skills:link:global', 'ki:skills:refresh-status', 'ki:eval'])
       check('WARN', 'PKG-4', hasScript(pkg, script), `Should have a '${script}' script.`, 'package.json')
     const scripts = (pkg.scripts as Record<string, string> | undefined) ?? {}
     let danglers = 0

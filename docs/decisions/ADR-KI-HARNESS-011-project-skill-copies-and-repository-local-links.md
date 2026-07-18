@@ -13,6 +13,7 @@ Earlier development links conflated those surfaces and made a harness checkout a
 The three payload surfaces remain separate and have explicit owners.
 
 - User installation publishes regular-file copies of the global core skills into selected runtime discovery directories.
+- A harness author may explicitly replace those managed global copies with local-checkout symlinks through `ki:skills:link:global`; `ki-harness` owns that fixed development workflow. It is separate from, and unavailable through, the disposable remote installer.
 - Repository bootstrap publishes regular-file copies of a repository's declared skills into its selected project-local runtime discovery directories, and writes no global payload.
 - `.ki-meta/` contains only vendored mechanical units, rendered HELP, and runners. It never contains complete runtime skills or runtime-link state.
 - `ki-repo` owns an opt-in repository-local command-link capability. It can link a future `ki-self` surface or a harness author's local development payload, but it is never invoked by ordinary user installation or repository bootstrap.
@@ -22,8 +23,8 @@ The three payload surfaces remain separate and have explicit owners.
 
 - Ordinary sessions depend on copied payloads, not a harness checkout.
 - A repository can expose deliberate local commands without turning its development topology into a fleet default.
-- `ki-harness` composes the `ki-repo` linking capability for harness development instead of owning a competing linker.
-- The former `sync-skills.ts`, `link-skills.ts`, and `link-agents.ts` responsibilities now belong to the `ki-repo` capability. Their shared helpers are split along the bootstrap-copy and repository-link boundary.
+- `ki-harness` owns its fixed global developer set; `ki-repo` continues to own the reusable repository-local command-link capability.
+- The former project-local `link-skills.ts` and `link-agents.ts` responsibilities now belong to the `ki-repo` capability. Global development-link behaviour remains a narrow harness developer workflow, separate from `ki-bootstrap`'s copy-based user payload mechanism.
 
 ## References
 

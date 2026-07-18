@@ -1,5 +1,5 @@
 {
-  "ref": "125e9d6d3f74983c34293780010cb3b531351bad",
+  "ref": "8b9e080ad85e96db8f996b8d8e9e9fec03d7d7ad",
   "files": {
     ".ki-meta/checkers/ki-agents/scripts/audit.ts": "21e3d3b0a8f7cf3818436dc6083bbc79f08bea0d7379db1d3fb5273749158858",
     ".ki-meta/checkers/ki-agents/scripts/conform.ts": "11c6f147bd83a53bcad99590b697780387cb8e7d34ebba87b6ec1965c5e0b0c2",
@@ -37,9 +37,9 @@
     ".ki-meta/checkers/ki-handoffs/scripts/vendored/ki-skills/checker-reporter.ts": "41d95a0c1759278f87812a91d283b85cc036349be1010eb0cc53580e3ba22344",
     ".ki-meta/checkers/ki-handoffs/help.md": "e4e7a549bafae8206933d8cd4ceaa7d014a0c78e4e3f4ac543df17c5bcf310c6",
     ".ki-meta/educators/ki-handoffs/educate.ts": "6a98e06b54871a5215f2fb3fd05bb3e4b5bdee639da240a199f526177495dcb3",
-    ".ki-meta/checkers/ki-harness/scripts/audit.ts": "e866d17c1faae8f164b9a5b42727d67b2587ff330f9d765c610244fd80ed43d7",
-    ".ki-meta/checkers/ki-harness/scripts/conform.ts": "aca34381e6ffdca6eac8dc097f89c66a52b5e653d5a0bc09e2f13e12c4ca0c4a",
-    ".ki-meta/checkers/ki-harness/references/rubric.md": "350afa5b7399e0072246a0b7cd277524987baad2adfdd6b437ebcaedd1bf5481",
+    ".ki-meta/checkers/ki-harness/scripts/audit.ts": "fc10b37211a30728000492f65fe8bb23353bfe8862ce46f4b33734f04417945c",
+    ".ki-meta/checkers/ki-harness/scripts/conform.ts": "9e0a9887b356f30fc57513c4d6e06f2864585b05f38475eb84a00fbfe6708df6",
+    ".ki-meta/checkers/ki-harness/references/rubric.md": "87ebc380c2b15ce2f6d56a2ca2480c38504fa1a9496e0f6bdd1d69c4649d6620",
     ".ki-meta/checkers/ki-harness/scripts/vendored/ki-skills/checker-reporter.ts": "41d95a0c1759278f87812a91d283b85cc036349be1010eb0cc53580e3ba22344",
     ".ki-meta/checkers/ki-harness/help.md": "6d28737a145d18a622dfa47d53a7449d2378f343b25cdad081b67132468dc6e6",
     ".ki-meta/educators/ki-harness/educate.ts": "bd6e391c3dda898e4c9f6b64b6c8518e09f0c9c0aa85e697c72654e111fc9904",

@@ -15,7 +15,14 @@ const STD = 'references/standards.md'
 const RUBRIC = 'references/rubric.md'
 const PARTS = ['skills', 'agents', 'mcp', 'evals', 'hooks'] as const
 const ROOT_FILES = ['CLAUDE.md', 'ROADMAP.md'] as const
-const REQUIRED_SCRIPTS = ['ki:skills:copy:project', 'ki:skills:audit', 'ki:repo:link-commands', 'ki:skills:refresh-status', 'ki:eval']
+const REQUIRED_SCRIPTS = [
+  'ki:skills:copy:project',
+  'ki:skills:audit',
+  'ki:repo:link-commands',
+  'ki:skills:link:global',
+  'ki:skills:refresh-status',
+  'ki:eval'
+]
 
 function localRubricPath(): string {
   const scriptDir = dirname(fileURLToPath(import.meta.url))

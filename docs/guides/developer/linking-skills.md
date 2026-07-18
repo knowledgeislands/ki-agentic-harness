@@ -4,7 +4,7 @@ This is a developer workflow for working on a local checkout of the harness. It 
 
 Normal bootstrap and CONFORM publish generated regular-file copies into each selected project's runtime skill directory. They are self-contained, gitignored payloads that do not depend on this harness checkout remaining available.
 
-This guide is only for harness authors who deliberately want live local edits: the explicit `ki-repo` development command replaces those generated copies with symlinks into this checkout. A consumer remains copy-based unless its author explicitly selects this mode. Re-run normal repository bootstrap to return a project to the portable default.
+This guide is only for harness authors who deliberately want live local edits. The harness has one explicit command for its small user-global development set, while `ki-repo` owns the command that links a target repository's declared skills. A consumer remains copy-based unless its author explicitly selects one of these modes.
 
 ## Normal global installation
 
@@ -15,6 +15,22 @@ curl -fsSL https://knowledgeislands.info/harness/install | sh
 ```
 
 The installer detects only two regular top-level user directories: `~/.claude/` for Claude Code and `~/.agents/` for the Agents/Codex skill surface. It installs `ki-bootstrap`, `ki-recap`, `ki-next`, `ki-plan`, and `ki-delegate` into every conformant matching user skill directory. Claude Code uses `~/.claude/skills/`; Agents/Codex uses `~/.agents/skills/`. It is re-runnable and refuses to clobber a real file or directory. Pass `--runtime claude-code` or `--runtime codex` to choose explicitly when required.
+
+## Link the global development set
+
+Harness authors can replace those five managed global copies with symlinks into this checkout:
+
+```bash
+bun run ki:skills:link:global
+```
+
+This is deliberately a local-checkout command, not a public route. It refuses a source without a local Git checkout and detects the same two runtime directories as normal installation. Pass `--runtime claude-code` or `--runtime codex` to force one runtime when needed. Check that the links still resolve to this checkout with:
+
+```bash
+bun run ki:skills:link:global -- --check
+```
+
+To restore portable regular-file copies, re-run the public install route above. Start a new agent session after changing global skill payloads.
 
 ## Link a target repository's declared skills
 
@@ -38,14 +54,6 @@ To restore portable copied payloads, run normal repository bootstrap:
 
 ```sh
 curl -fsSL https://knowledgeislands.info/harness/bootstrap | sh
-```
-
-## Remove a development link
-
-Remove only the link, never its source:
-
-```bash
-rm ~/.claude/skills/<name>
 ```
 
 Start a new agent session after adding or removing a link so the runtime re-scans its skill directories.
