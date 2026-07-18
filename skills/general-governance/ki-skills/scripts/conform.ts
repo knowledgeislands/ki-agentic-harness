@@ -82,11 +82,21 @@ function discoverSkillDirs(p: string): string[] {
   if (existsSync(join(abs, 'SKILL.md'))) return [abs]
   const root = basename(abs) === 'skills' || !existsSync(join(abs, 'skills')) ? abs : join(abs, 'skills')
   if (!existsSync(root)) return []
-  return readdirSync(root, { withFileTypes: true })
-    .filter((e) => e.isDirectory() && !e.name.startsWith('.') && e.name !== 'node_modules' && e.name !== 'scripts')
-    .map((e) => join(root, e.name))
-    .filter((d) => existsSync(join(d, 'SKILL.md')))
-    .sort()
+  const dirs: string[] = []
+  for (const entry of readdirSync(root, { withFileTypes: true })) {
+    if (!entry.isDirectory() || entry.name.startsWith('.') || entry.name === 'node_modules' || entry.name === 'scripts') continue
+    const first = join(root, entry.name)
+    if (existsSync(join(first, 'SKILL.md'))) {
+      dirs.push(first)
+      continue
+    }
+    for (const child of readdirSync(first, { withFileTypes: true })) {
+      if (!child.isDirectory()) continue
+      const second = join(first, child.name)
+      if (existsSync(join(second, 'SKILL.md'))) dirs.push(second)
+    }
+  }
+  return dirs.sort()
 }
 
 function listMarkdownFiles(dir: string): string[] {
