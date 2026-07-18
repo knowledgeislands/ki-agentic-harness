@@ -91,3 +91,5 @@ Hand off this website roadmap item: **Publish stable user and repository harness
 - `https://knowledgeislands.info/harness/bootstrap` serves or redirects to `https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh`.
 
 The website binding must preserve shell arguments, including a caller-supplied pinned ref. The raw GitHub files are implementation locations; the two `knowledgeislands.info` URLs are the stable documented interface.
+
+The receiving hand-off is `ki-website`'s Site Experience item **Publish stable harness installation entry points**. It does not block FND-001 implementation: this plan creates the scripts first, and the website binds the routes once those paths exist. Route publication does block presenting the friendly URLs as live instructions in the user guide.
