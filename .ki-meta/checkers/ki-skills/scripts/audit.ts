@@ -506,7 +506,7 @@ function lintSkill(skillDir: string): Finding[] {
     if (!fm.present.has('vendors'))
       warn(
         'SHAPE-12',
-        'frontmatter carries no `vendors:` declaration — declare the vendored modes beside `implies:` so the bootstrap engine can vendor them (ADR-KI-HARNESS-007)'
+        'frontmatter carries no `vendors:` declaration — declare the vendored modes beside `depends-on:` so the bootstrap engine can vendor them (ADR-KI-HARNESS-007)'
       )
 
     // SHAPE-15 [M]: the vendored modes are declared UNIFORMLY as the flow-list

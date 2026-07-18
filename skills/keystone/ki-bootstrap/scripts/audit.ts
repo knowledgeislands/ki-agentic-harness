@@ -8,12 +8,11 @@
  * running this; no mechanical check can decide judgment for it.
  *
  * The mechanical `.ki-meta/bin/ki-audit` self-check runs standalone (no harness, no
- * skills installed) — but it has no way to re-derive the expected set, since the
- * `implies:` graph lives in the harness's SKILL.md frontmatter, not anywhere copied
+ * skills installed) — but it has no way to validate dependency declarations, since
+ * the `depends-on:` graph lives in the harness's SKILL.md frontmatter, not anywhere copied
  * into the target. So this check runs from the harness side, the same way
- * re-bootstrapping already does: it resolves the expected set the same way
- * `lib/repo-bootstrap.ts` does (baseline ∪ declared `[ki-*]` tables ∪ the transitive
- * `implies:` closure, restricted to skills that actually carry a checker) and diffs
+ * re-bootstrapping already does: it validates the explicit declared `[ki-*]` tables
+ * and their `depends-on:` contract, then diffs the checker-bearing set
  * it against the target's `.ki-meta/checkers/*` directories. Any drift — stale config,
  * an upstream skill add/remove, a partial re-vendor — surfaces as a WARN rather than
  * silently going unnoticed; `bun skills/keystone/ki-bootstrap/scripts/lib/repo-bootstrap.ts <target>`
@@ -24,14 +23,22 @@
  *   --json   emit the shared CHK-004 finding wrapper instead of prose, so the
  *            aggregate renders BOOT-9/BOOT-10/BOOT-11 structured alongside every other checker.
  * Every repo — the harness included — vendors its own DECLARED coverage (the `.ki-config.toml`
- * `[ki-*]` tables + baseline + implies closure), so `ki:audit` fans out over exactly the
+ * `[ki-*]` tables), so `ki:audit` fans out over exactly the
  * skills that govern it. Vendoring is always coverage-scoped; `--all` is a linking concept
  * only (the harness authoring hub links every skill), never a vendoring one (ADR-KI-HARNESS-007).
  */
 
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { checkerScript, resolveSet, SkillResolutionError, vendorModesOf, vendorUnit } from './lib/resolve.ts'
+import {
+  assertExplicitDependencies,
+  checkerScript,
+  DependencyDeclarationError,
+  resolveSet,
+  SkillResolutionError,
+  vendorModesOf,
+  vendorUnit
+} from './lib/resolve.ts'
 import {
   type CheckerFinding,
   type CheckerLevel,
@@ -62,9 +69,11 @@ const emitBootstrap = (): never => {
 
 function expectedResolvedSet(): string[] {
   try {
-    return resolveSet(target, false, [])
+    const resolved = resolveSet(target, false, [])
+    assertExplicitDependencies(target, resolved)
+    return resolved
   } catch (error) {
-    if (!(error instanceof SkillResolutionError)) throw error
+    if (!(error instanceof SkillResolutionError) && !(error instanceof DependencyDeclarationError)) throw error
     add(
       'FAIL',
       'BOOT-9',
@@ -181,7 +190,7 @@ if (extra.length)
   add(
     'WARN',
     'BOOT-9',
-    `vendored but no longer expected: ${extra.join(', ')} — a dropped table or upstream implies change; re-bootstrap to prune`,
+    `vendored but no longer expected: ${extra.join(', ')} — a dropped table or upstream dependency change; re-bootstrap to prune`,
     RUBRIC,
     '.ki-meta/checkers'
   )

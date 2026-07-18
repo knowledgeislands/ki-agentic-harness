@@ -1,6 +1,6 @@
 ---
 name: ki-harness
-implies: [ki-skills, ki-agents, ki-decision-records, ki-project-roadmap]
+depends-on: [ki-skills, ki-agents, ki-decision-records, ki-project-roadmap]
 vendors: [educate, audit, conform, help]
 checker-dependencies: [ki-skills/checker-reporter]
 description: >

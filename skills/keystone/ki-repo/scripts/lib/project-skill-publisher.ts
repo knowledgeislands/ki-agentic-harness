@@ -31,7 +31,13 @@ import {
 } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { assertResolvableSkills, declaredSkills, SkillResolutionError } from './resolve.ts'
+import {
+  assertExplicitDependencies,
+  assertResolvableSkills,
+  DependencyDeclarationError,
+  declaredSkills,
+  SkillResolutionError
+} from './resolve.ts'
 import { gitignoresPath, runtimeAgentsDir, runtimeSkillsDir, targetRuntimes } from './runtime-paths.ts'
 
 export type ProjectLinkScope = 'skills' | 'agents' | 'all'
@@ -53,6 +59,7 @@ type LinkPlan = {
   directories: string[]
   guards: Array<{ path: string; before?: Entry; label: string }>
   skillOrphans: string[]
+  dependencyErrors: string[]
 }
 
 const SELF = realpathFor(fileURLToPath(import.meta.url))
@@ -296,7 +303,8 @@ function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: Pr
     removes: [],
     directories: [],
     guards: [{ path: configPath, before: configEntry, label: '.ki-config.toml' }],
-    skillOrphans: []
+    skillOrphans: [],
+    dependencyErrors: []
   }
   const runtimes = targetRuntimes(config)
 
@@ -305,9 +313,11 @@ function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: Pr
     const declared = declaredSkills(config).filter((name) => name !== BOOTSTRAP)
     try {
       assertResolvableSkills(declared)
+      assertExplicitDependencies(target, declared)
     } catch (error) {
-      if (!(error instanceof SkillResolutionError)) throw error
-      plan.skillOrphans = error.unresolved
+      if (error instanceof SkillResolutionError) plan.skillOrphans = error.unresolved
+      else if (error instanceof DependencyDeclarationError) plan.dependencyErrors = error.missing
+      else throw error
       return plan
     }
     const wanted = [...new Set(declared)].sort()
@@ -573,9 +583,11 @@ function printCheck(target: string, scope: ProjectLinkScope, skillPublication: P
     let orphans: string[] = []
     try {
       assertResolvableSkills(declared)
+      assertExplicitDependencies(target, declared)
     } catch (error) {
-      if (!(error instanceof SkillResolutionError)) throw error
-      orphans = error.unresolved
+      if (error instanceof SkillResolutionError) orphans = error.unresolved
+      else if (error instanceof DependencyDeclarationError) orphans = error.missing
+      else throw error
     }
     const wanted = new Set(declared)
     for (const runtime of runtimes) {
@@ -591,8 +603,7 @@ function printCheck(target: string, scope: ProjectLinkScope, skillPublication: P
       })
       const extra = present.filter((name) => !wanted.has(name) && !(name === LOCAL_GOVERNANCE_SKILL && localKiSelfPayload(join(dir, name))))
       const unexpectedLinks = skillPublication === 'copy' ? present.filter((name) => entry(join(dir, name))?.kind === 'link') : []
-      for (const orphan of orphans)
-        console.log(`  ${RED}FAIL${RESET}  [BOOT-1] .ki-config.toml declares [${orphan}] but no such skill exists in the harness`)
+      for (const orphan of orphans) console.log(`  ${RED}FAIL${RESET}  [BOOT-1] invalid declared skill dependency: ${orphan}`)
       if (orphans.length) failures++
       if (missing.length || extra.length || unexpectedLinks.length) {
         const expected = skillPublication === 'development-link' ? 'development-link' : 'copied-payload'
@@ -644,6 +655,11 @@ export function runProjectLinks(
         console.error(
           `${RED}FAIL${RESET}  [BOOT-1] .ki-config.toml declares [${orphan}] but no such skill exists in the harness — reconcile the table by hand before linking`
         )
+      return 1
+    }
+    if (plan.dependencyErrors.length) {
+      for (const missing of plan.dependencyErrors)
+        console.error(`${RED}FAIL${RESET}  [BOOT-1] .ki-config.toml must declare dependency ${missing} before linking`)
       return 1
     }
     if (dryRun) {

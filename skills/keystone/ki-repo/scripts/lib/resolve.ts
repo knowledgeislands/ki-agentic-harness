@@ -2,8 +2,8 @@
  * Vendored set-resolution helpers used by the repository-local command publisher.
  * vendored-set alignment checker (`audit.ts`). Pure, read-only: given a
  * target repo and the harness `skills/` root, computes which skills *should* be
- * vendored — the transitive `implies:` closure of the baseline plus whatever the
- * target's `.ki-config.toml` declares — and locates each skill's checker/conform
+ * vendored — exactly the skills a target declares in `.ki-config.toml` (plus
+ * explicit seeds) — and locates each skill's checker/conform
  * script. Kept import-only (no top-level side effects) so both callers can use it
  * without triggering the other's CLI behaviour.
  */
@@ -54,6 +54,17 @@ export class SkillResolutionError extends Error {
     super(`unresolvable skill root${sorted.length === 1 ? '' : 's'}: ${sorted.join(', ')}`)
     this.name = 'SkillResolutionError'
     this.unresolved = sorted
+  }
+}
+
+export class DependencyDeclarationError extends Error {
+  readonly missing: string[]
+
+  constructor(missing: Iterable<string>) {
+    const sorted = [...new Set(missing)].sort()
+    super(`missing explicit skill dependenc${sorted.length === 1 ? 'y' : 'ies'}: ${sorted.join(', ')}`)
+    this.name = 'DependencyDeclarationError'
+    this.missing = sorted
   }
 }
 
@@ -139,15 +150,17 @@ export function assertResolvableSkills(skills: Iterable<string>): void {
   if (unresolved.length) throw new SkillResolutionError(unresolved)
 }
 
-// The `implies:` flow list from a skill's SKILL.md frontmatter.
-export function impliesOf(skill: string): string[] {
+// The `depends-on:` flow list from a skill's SKILL.md frontmatter. Dependencies
+// express a required declared governance capability, never hidden coverage or
+// execution order.
+export function dependsOnOf(skill: string): string[] {
   const md = readText(join(skillDir(skill), 'SKILL.md'))
   const fm = md.match(/^---\r?\n([\s\S]*?)\r?\n---/)
   if (!fm) return []
-  const line = fm[1].split(/\r?\n/).find((l) => /^implies:/.test(l))
+  const line = fm[1].split(/\r?\n/).find((l) => /^depends-on:/.test(l))
   if (!line) return []
   const inner = line
-    .replace(/^implies:\s*/, '')
+    .replace(/^depends-on:\s*/, '')
     .trim()
     .replace(/^\[/, '')
     .replace(/\]$/, '')
@@ -204,7 +217,7 @@ function parseCheckerModule(value: string, field: string, skill: string): Checke
 }
 
 // A provider declares modules it publishes; a consumer declares exact provider/module
-// requirements. This is deliberately independent of `implies:`: support modules are
+// requirements. This is deliberately independent of `depends-on:`: support modules are
 // copied implementation, never a governance-coverage or mode-composition edge.
 export function checkerModulesOf(skill: string): string[] {
   return flowListFrontmatter(skill, 'checker-modules')
@@ -249,28 +262,28 @@ export function checkerModulePayload(module: CheckerModule): CheckerModulePayloa
   }
 }
 
-// Transitive closure of the declared skills (+ explicit --seed skills) over the
-// `implies:` graph. Coverage is purely what `.ki-config.toml` declares — every repo
-// declares its own foundations (`[ki-repo]`, `[ki-authoring]`), so there is no injected
-// baseline. A per-skill `scripts/educate.ts` delegator seeds itself.
+// The declared skills (+ explicit --seed skills). Coverage is purely what
+// `.ki-config.toml` declares — dependencies are validated by
+// `assertExplicitDependencies`, never silently expanded. A per-skill
+// `scripts/educate.ts` delegator seeds itself.
 export function resolveSet(target: string, all: boolean, seeds: string[]): string[] {
   const seed = all ? allSkillNames() : [...declaredSkills(readText(join(target, '.ki-config.toml'))), ...seeds]
-  const seen = new Set<string>()
-  const unresolved = new Set<string>()
-  const stack = [...seed]
-  while (stack.length) {
-    const s = stack.pop()
-    if (s === undefined || seen.has(s)) continue
-    if (!isSkill(s)) {
-      unresolved.add(s)
-      continue
+  assertResolvableSkills(seed)
+  const selected = new Set(seed)
+  selected.delete(BOOTSTRAP) // the chain-starter is not vendored into targets
+  return [...selected].sort()
+}
+
+export function assertExplicitDependencies(target: string, selected: Iterable<string>): void {
+  const declared = new Set(declaredSkills(readText(join(target, '.ki-config.toml'))))
+  const missing: string[] = []
+  for (const skill of selected) {
+    for (const dependency of dependsOnOf(skill)) {
+      if (!isSkill(dependency)) missing.push(`${skill} → ${dependency} (unknown skill)`)
+      else if (!declared.has(dependency)) missing.push(`${skill} → ${dependency}`)
     }
-    seen.add(s)
-    for (const dep of impliesOf(s)) stack.push(dep)
   }
-  if (unresolved.size) throw new SkillResolutionError(unresolved)
-  seen.delete(BOOTSTRAP) // the chain-starter is not vendored into targets
-  return [...seen].sort()
+  if (missing.length) throw new DependencyDeclarationError(missing)
 }
 
 // A checker/conform source file, excluding co-located test files (`*.test.ts`), which
@@ -298,7 +311,7 @@ export function conformScript(skill: string): string | null {
 
 // ── `vendors:` frontmatter (ADR-KI-HARNESS-007) ──────────────────────────────────
 // Per-skill declaration, central execution. Every governance skill declares the
-// universal modes it vendors as a single-line flow LIST beside `implies:`:
+// universal modes it vendors as a single-line flow LIST beside `depends-on:`:
 //
 //   vendors: [educate, audit, conform, help]
 //

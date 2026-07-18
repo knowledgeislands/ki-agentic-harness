@@ -2,7 +2,7 @@
 /**
  * ki-skills EDUCATE — the mechanical half (ADR-KI-HARNESS-SKILLS-001 / -007). A thin
  * delegator: it execs the ki-bootstrap chain engine with this skill as an explicit
- * `--seed`, so running this file bootstraps ki-skills — plus everything it `implies:`
+ * `--seed`, so running this file bootstraps ki-skills after its `depends-on:`
  * and the baseline — into the target repo, satisfying the self-sufficiency contract
  * (vendored script copies + HELP snapshots + the four `.ki-meta/bin/` wrappers;
  * no `package.json` — that is ki-engineering's). Delegating by subprocess is

@@ -1,6 +1,6 @@
 ---
 name: ki-repo
-implies: [ki-authoring]
+depends-on: [ki-authoring]
 vendors: [educate, audit, conform, help]
 checker-dependencies: [ki-skills/checker-reporter]
 owns: ['.gitignore']

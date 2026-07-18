@@ -1,6 +1,6 @@
 ---
 name: ki-dotfiles-chezmoi
-implies: [ki-authoring]
+depends-on: [ki-authoring]
 vendors: [educate, audit, conform, help]
 checker-dependencies: [ki-skills/checker-reporter]
 description: >
@@ -63,4 +63,4 @@ chezmoi's own documented behavior (naming semantics, `.chezmoiignore`, `run_onch
 
 - **A specific repo's own personal tool choices** (its exact managed dotfiles, its specific bin scripts, its specific Homebrew taps, its specific MCP/app server list) — those stay in that repo's own `CLAUDE.md`/topic files; this skill only ever generalizes.
 - **Generic repo shape** (README/LICENSE/.gitignore, GitHub settings) → the `ki-repo` skill; this skill is additive on top of it for the chezmoi-specific files (`.chezmoiignore`, `.chezmoidata/`, `.chezmoitemplates/`).
-- **Markdown/TOML authoring style** → the `ki-authoring` skill (`implies:` above).
+- **Markdown/TOML authoring style** → the `ki-authoring` skill (`depends-on:` above).

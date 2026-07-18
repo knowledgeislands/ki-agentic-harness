@@ -1,6 +1,6 @@
 ---
 name: ki-specifications
-implies: []
+depends-on: []
 vendors: [educate, audit, conform, help]
 checker-dependencies: [ki-skills/checker-reporter]
 contributes: [.ki-config.toml]

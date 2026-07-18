@@ -10,7 +10,7 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 ### Define element-level audit and conform orchestration
 
-Replace the ambiguous `implies:` relationship with an explicit skill dependency contract, provisionally named `depends-on:`, that requires every governance dependency to appear in `.ki-config.toml` and never silently expands coverage or determines execution order. Keep checker-module packaging separate.
+Define the explicit `depends-on:` skill dependency contract, requiring every governance dependency to appear in `.ki-config.toml` and never silently expanding coverage or determining execution order. Keep checker-module packaging separate.
 
 Define orchestration at the level of named AUDIT and CONFORM elements rather than whole skills. A skill may contribute several elements to different mode-specific phases, with explicit dependency edges, declared effects, and inspectable read/write scope; no skill receives one global phase. Preserve standalone per-skill AUDIT and CONFORM execution, derive aggregate ordering from the same declarations, and select the minimal phase vocabulary only after inventorying the current fleet. The first implementation must be deterministic and serial; concurrency is a later optimisation, not part of this contract.
 
@@ -62,7 +62,7 @@ Select one named repository with externally visible behaviour and an owner, then
 
 ### Review the skill dependency graph and implementation quality _(candidate)_
 
-Build one complete dependency graph for every skill relationship: declared composition and `implies:` edges, documentation and reference links, configuration ownership, subprocess or import edges, and generated or vendored runtime dependencies. Use it to review skills in dependency order from roots to dependants, covering each skill's `SKILL.md`, references, scripts, tests, and generated surfaces. Prefer executable, versioned source files inside the skill — including schemas — referenced from documentation, rather than making Markdown code blocks the only source of truth; retain short examples only where they clarify use. Record concrete repairs as separately scoped plans rather than turning this review into an unbounded rewrite.
+Build one complete dependency graph for every skill relationship: declared `depends-on:` edges, documentation and reference links, configuration ownership, subprocess or import edges, and generated or vendored runtime dependencies. Use it to review skills in dependency order from roots to dependants, covering each skill's `SKILL.md`, references, scripts, tests, and generated surfaces. Prefer executable, versioned source files inside the skill — including schemas — referenced from documentation, rather than making Markdown code blocks the only source of truth; retain short examples only where they clarify use. Record concrete repairs as separately scoped plans rather than turning this review into an unbounded rewrite.
 
 ### Add engineering change value profiles to the verb map _(candidate)_
 

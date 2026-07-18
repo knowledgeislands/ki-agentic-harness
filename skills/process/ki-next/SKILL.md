@@ -1,6 +1,6 @@
 ---
 name: ki-next
-implies: []
+depends-on: []
 description: >
   Selects and prepares the most valuable next roadmap work in a non-KB repository: re-grounds the roadmap, optionally reviews its relevance, replenishes an empty immediate queue through user-confirmed horizon promotions, and creates review-first governed plans through `ki-plan`. A process skill (kind: process, ADR-KI-HARNESS-SKILLS-006): it applies the transition rules owned by `ki-project-roadmap`; it does not hold a separate roadmap standard. Installable globally, cross-repo — usable in any non-KB repository on the machine. Triggers: "what should we do next", "pick the next roadmap item", "plan the next work", "/ki-next". Not a session recap (`ki-recap`), a roadmap checker or horizon authority (`ki-project-roadmap`), or an individual plan lifecycle (`ki-plan`).
 argument-hint: 'next [--review] | help'

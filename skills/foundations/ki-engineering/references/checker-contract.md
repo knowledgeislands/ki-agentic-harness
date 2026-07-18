@@ -48,7 +48,7 @@ It must never import across skill boundaries.
 
 The sole shared implementation exception is the declared canonical reporter module: `ki-skills` owns it locally, while each dependent checker imports its copied local payload from `scripts/vendored/ki-skills/`.
 
-Skills compose standards by running checkers in sequence; a checker-module dependency supplies implementation only and does not create an `implies:` coverage edge.
+Skills compose standards by running checkers in sequence; a checker-module dependency supplies implementation only and does not create a `depends-on:` coverage edge.
 
 ## Conform: inspect before writing
 

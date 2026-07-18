@@ -74,11 +74,14 @@ import {
 } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import {
+  assertExplicitDependencies,
   type CheckerModule,
   type CheckerModulePayload,
   checkerDependenciesOf,
   checkerModulePayload,
   checkerModulesOf,
+  DependencyDeclarationError,
+  dependsOnOf,
   resolveSet,
   SKILLS_ROOT,
   SkillResolutionError,
@@ -100,7 +103,7 @@ const RETIRED_CHECKERS_DIR = 'skills'
 const REPO_SLUG = 'knowledgeislands/ki-agentic-harness'
 
 // Cross-skill operational scripts a harness-shaped target needs to run its own
-// skills/ tree: validate/render the `implies:` graph, render HELP, install skills.
+// skills/ tree: validate/render the `depends-on:` graph, render HELP, install skills.
 // Vendored into .ki-meta/bin/ ONLY when the resolved set includes ki-harness —
 // engine-level, not per-skill `vendors:` units (ADR-KI-HARNESS-008). Their
 // canonical home is skills/keystone/ki-bootstrap/scripts/.
@@ -1187,6 +1190,16 @@ function resolvedSetOrExit(target: string, seeds: string[]): string[] {
   }
 }
 
+function assertDependenciesOrExit(target: string, set: string[]): void {
+  try {
+    assertExplicitDependencies(target, set)
+  } catch (error) {
+    if (!(error instanceof DependencyDeclarationError)) throw error
+    console.error(`${'\x1b[31m'}FAIL${RESET}  [BOOT-9] ${error.message} — declare every dependency in .ki-config.toml`)
+    process.exit(1)
+  }
+}
+
 // A configured root is a target-local governance contract, not merely a name that
 // happens to resolve in the harness index. Process skills and the bootstrap
 // chain-starter stay globally installed, so they must not appear in a project's
@@ -1753,7 +1766,7 @@ function main(): void {
   // vendored `.ki-meta/` runner and its `bin/` wrappers alone (dotfiles, KB, tap, or
   // code repo alike). The `ki:*` convenience keys are ki-engineering's to wire, as
   // sugar over these same bins. Vendoring is always coverage-scoped (`.ki-config.toml`
-  // + baseline + implies + explicit --seed) — `--all` is a linking concept only, never a
+  // + explicit dependencies + explicit --seed) — `--all` is a linking concept only, never a
   // vendoring one (ADR-KI-HARNESS-007).
   let set = resolvedSetOrExit(target, seeds)
 
@@ -1763,8 +1776,9 @@ function main(): void {
   // Bare bootstrap with no config/seed resolves no ki-repo and remains empty-set.
   if (set.includes('ki-repo')) {
     scaffoldRepoConfig(target, boundTarget.identity, dryRun)
-    set = resolvedSetOrExit(target, seeds)
+    set = dryRun ? [...new Set([...set, ...dependsOnOf('ki-repo')])].sort() : resolvedSetOrExit(target, seeds)
   }
+  if (!dryRun) assertDependenciesOrExit(target, set)
   assertCompleteCapabilitySetOrExit(set)
   console.log(`${DIM}EDUCATE ${target} — ${set.length} governed skill${set.length === 1 ? '' : 's'}${RESET}`)
   if (verbose && set.length) console.log(`${DIM}scope: ${set.join(', ')}${RESET}`)

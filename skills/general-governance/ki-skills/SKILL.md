@@ -1,6 +1,6 @@
 ---
 name: ki-skills
-implies: []
+depends-on: []
 vendors: [educate, audit, conform, help]
 checker-modules: [checker-reporter]
 description: >

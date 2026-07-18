@@ -23,6 +23,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
+  assertExplicitDependencies,
   checkerDependenciesOf,
   checkerModulePayload,
   checkerModulePayloadAt,
@@ -129,12 +130,24 @@ const valid = fixture(`
 [ki-housekeeping.zones]
 [ki-bootstrap]
 [ki-harness]
+[ki-skills]
+[ki-agents]
+[ki-decision-records]
+[ki-project-roadmap]
+[ki-repo]
+[ki-authoring]
 `)
 try {
   const set = resolveSet(valid, false, [])
   check('valid declarations → process skill remains resolvable', set.includes('ki-plan'))
   check('valid declarations → environment/global skill remains resolvable', set.includes('ki-housekeeping'))
-  check('known implication → ki-harness closure includes ki-skills', set.includes('ki-harness') && set.includes('ki-skills'))
+  let dependenciesValid = true
+  try {
+    assertExplicitDependencies(valid, set)
+  } catch {
+    dependenciesValid = false
+  }
+  check('declared dependencies → ki-harness requirements are explicitly present', set.includes('ki-harness') && dependenciesValid)
   check('bootstrap declaration → chain-starter stays excluded', !set.includes('ki-bootstrap'))
 } finally {
   rmSync(valid, { recursive: true, force: true })
@@ -332,7 +345,7 @@ try {
   rmSync(checkerRoot, { recursive: true, force: true })
 }
 
-const reporterConsumerRoot = fixture('[ki-binding]\n[ki-binding-chezmoi]\n[ki-dotfiles-chezmoi]\n')
+const reporterConsumerRoot = fixture('[ki-binding]\n[ki-binding-chezmoi]\n[ki-dotfiles-chezmoi]\n[ki-authoring]\n')
 try {
   const result = spawnSync('bun', [BOOTSTRAP, reporterConsumerRoot], { encoding: 'utf8' })
   check('reporter consumers → bootstrap exits cleanly', result.status === 0)

@@ -1,6 +1,6 @@
 ---
 name: ki-project-roadmap
-implies: []
+depends-on: []
 vendors: [educate, audit, conform, help]
 checker-dependencies: [ki-skills/checker-reporter]
 owns: ['ROADMAP.md', 'docs/roadmap/README.md']

@@ -18,11 +18,13 @@ EDUCATE MUST vendor each resolved skill's checker (and any `conform-*.ts`) into 
 
 _Verify:_ after bootstrap, `.ki-meta/checkers/ki-repo/scripts/audit.ts` in the target is a regular file whose contents equal the harness source, and `git check-ignore` does not ignore it.
 
-### BOOT-003 — Implied-skill closure
+### BOOT-003 — Explicit declared skill coverage
 
-The resolved skill set MUST be the transitive `implies:` closure of the baseline (`ki-repo`, `ki-authoring`) plus every `[ki-<skill>]` table declared in the target's `.ki-config.toml` (plus any explicit `--seed`), per [ADR-KI-HARNESS-SKILLS-006](../decisions/ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md).
+The resolved skill set MUST contain exactly the governance skills declared by `[ki-<skill>]` tables in the target's `.ki-config.toml`, plus any explicit `--seed` required to bootstrap a fresh target, per [ADR-KI-HARNESS-SKILLS-006](../decisions/ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md).
 
-_Verify:_ seeding `ki-website` resolves a set that also contains `ki-website-cloudflare` (its `implies:`) and the baseline; observed in the `repo-bootstrap.ts` dry-run output.
+Every selected skill's `depends-on:` entries MUST be declared explicitly in that same configuration; bootstrap fails before mutation when one is absent.
+
+_Verify:_ a target declaring `ki-website` also explicitly declares `ki-website-cloudflare`; a missing table fails before `repo-bootstrap.ts` writes.
 
 ### BOOT-004 — Repo-wide aggregates
 
@@ -48,7 +50,7 @@ Re-running the idempotent bootstrap chain is the single update path — there ar
 
 ### BOOT-007 — Vendored-set alignment check
 
-The harness MUST be able to verify a target's `.ki-meta/checkers/` matches the expected resolved set (baseline ∪ declared `[ki-*]` tables ∪ the transitive `implies:` closure, restricted to skills carrying a checker) — since the `implies:` graph lives only in source SKILL.md frontmatter, this check runs harness-side, not from the target's own standalone `.ki-meta/bin/ki-audit`. Drift is a WARN, never a FAIL — a re-bootstrap always reconciles it. See [BOOT-9](../../skills/keystone/ki-bootstrap/references/rubric.md).
+The harness MUST be able to verify a target's `.ki-meta/checkers/` matches the expected declared skill set (restricted to skills carrying a checker). It validates `depends-on:` declarations against source SKILL.md frontmatter harness-side, because that graph is not part of a target's standalone payload. Missing dependencies are a FAIL before bootstrap mutation; checker-set drift is a WARN, reconciled by re-bootstrap. See [BOOT-9](../../skills/keystone/ki-bootstrap/references/rubric.md).
 
 _Verify:_ `bun skills/keystone/ki-bootstrap/scripts/audit.ts <target>` reports PASS when `.ki-meta/checkers/` equals the expected set, and WARNs (listing both directions) when a checker is stray-vendored or missing.
 

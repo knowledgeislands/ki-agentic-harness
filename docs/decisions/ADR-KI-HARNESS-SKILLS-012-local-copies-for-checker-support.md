@@ -16,7 +16,7 @@ The existing composition rule correctly prevents either of those assumptions, bu
 
 It owns the canonical checker reporter and its executable modules, self-governs from its own shipped files, and has no checker-module dependency on itself.
 
-Checker modules are a narrow packaging relationship, declared separately from `implies:`.
+Checker modules are a narrow packaging relationship, declared separately from `depends-on:`.
 
 A provider declares the modules it offers with `checker-modules:`.
 
@@ -32,7 +32,7 @@ A dependent imports only its local copied module.
 
 Checker modules may use builtins and other files in their own copied local closure, but never a sibling skill path.
 
-Checker-module declarations do not add an `implies:` edge, select a skill for governance coverage, or alter composition order.
+Checker-module declarations do not add a `depends-on:` edge, select a skill for governance coverage, or alter composition order.
 
 ## Consequences
 

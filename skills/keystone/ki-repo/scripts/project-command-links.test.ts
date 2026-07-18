@@ -29,11 +29,24 @@ function check(label: string, condition: boolean): void {
   }
 }
 
+function declaredTables(tables: string[]): string[] {
+  const dependencies: Record<string, string[]> = {
+    'ki-kb': ['ki-kb-activities', 'ki-kb-live-artifacts', 'ki-kb-streams'],
+    'ki-repo': ['ki-authoring']
+  }
+  return [...new Set(tables.flatMap((table) => [table, ...(dependencies[table] ?? [])]))]
+}
+
 function fixture(runtimes = ['claude-code']): string {
   const root = realpathSync(mkdtempSync(join(tmpdir(), 'ki-project-links-')))
+  const tables = declaredTables(['ki-repo', 'ki-kb', 'ki-agents'])
   writeFileSync(
     join(root, '.ki-config.toml'),
-    `[ki-repo]\ntarget_runtimes = [${runtimes.map((runtime) => `"${runtime}"`).join(', ')}]\n\n[ki-kb]\n\n[ki-agents]\n`
+    `${tables
+      .map((table) =>
+        table === 'ki-repo' ? `[ki-repo]\ntarget_runtimes = [${runtimes.map((runtime) => `"${runtime}"`).join(', ')}]` : `[${table}]`
+      )
+      .join('\n\n')}\n`
   )
   return root
 }
@@ -59,7 +72,7 @@ function fakeSkillsRoot(): { root: string; skill: string; nested: string } {
   mkdirSync(nested, { recursive: true })
   writeFileSync(join(skill, 'SKILL.md'), '# Fake skill\n')
   writeFileSync(join(nested, 'mode-sensitive.txt'), 'payload\n')
-  for (const name of ['ki-repo', 'ki-agents']) {
+  for (const name of ['ki-repo', 'ki-authoring', 'ki-agents', 'ki-kb-activities', 'ki-kb-live-artifacts', 'ki-kb-streams']) {
     const sibling = join(root, 'cluster', name)
     mkdirSync(sibling)
     writeFileSync(join(sibling, 'SKILL.md'), `# ${name}\n`)

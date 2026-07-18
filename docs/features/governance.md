@@ -32,9 +32,11 @@ A skill MUST NOT import another skill; it composes by running a sibling's checke
 
 _Verify:_ no `skills/*/scripts/*.ts` imports from another skill's directory; cross-skill composition is by subprocess (`execFileSync`) only.
 
-### GOV-005 — Machine-readable implication graph
+### GOV-005 — Machine-readable dependency graph
 
-Each `SKILL.md` MUST declare an `implies:` frontmatter list, and the resulting graph MUST be acyclic with every edge resolving to an existing skill, per [ADR-KI-HARNESS-SKILLS-006](../decisions/ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md).
+Each `SKILL.md` MUST declare a `depends-on:` frontmatter list, and the resulting graph MUST be acyclic with every edge resolving to an existing skill, per [ADR-KI-HARNESS-SKILLS-006](../decisions/ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md).
+
+A dependency identifies a governance capability a selected skill requires; it does not select coverage or establish mode execution order. A target that declares a skill MUST explicitly declare each of its dependencies in `.ki-config.toml`.
 
 _Verify:_ `bun run ki:skills:graph:check` passes — it validates that every edge resolves and the graph is acyclic.
 

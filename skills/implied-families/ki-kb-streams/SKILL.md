@@ -1,7 +1,7 @@
 ---
 name: ki-kb-streams
 checker-dependencies: [ki-skills/checker-reporter]
-implies: []
+depends-on: []
 vendors: [educate, audit, conform, help]
 description: >
   Operate and govern the Streams zone of a Knowledge Islands base — the working copy of work in motion, run as the Enactment Process (the canonical change process: a proposal goes draft → ready → ratify → roll out → review → settle, and nothing reaches stable knowledge except through that gate). Use to start a stream, iterate a proposal, mark one ready, roll out an approved change, run a post-change review, and settle or reject a stream — and to audit a base's Streams structure (Focus lifecycle, the `Proposal` suffix, leaf/parent layout, proposal frontmatter) or conform it. Triggers: "start a stream", "create a proposal", "mark this ready", "roll out this proposal", "settle this stream", "what's the enactment process", "plan mode for my knowledge base", "does this change need a proposal", "audit my streams". For the five-zone model and note CRUD / routing use the `ki-kb` skill, which delegates the Streams zone here; for Markdown / TOML house style use `ki-authoring`.

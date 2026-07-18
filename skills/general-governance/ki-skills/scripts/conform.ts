@@ -116,11 +116,11 @@ function getLine(block: string, key: string): string | null {
   return m ? (m[0] as string) : null
 }
 
-// Insert a brand-new top-level line just after `implies:` (or `name:`, or at
+// Insert a brand-new top-level line just after `depends-on:` (or `name:`, or at
 // the very top) so a freshly-authored `vendors:` line lands in the
-// conventional name/implies/vendors/description/argument-hint order.
+// conventional name/depends-on/vendors/description/argument-hint order.
 function insertAfterAnchor(block: string, newLine: string): string {
-  for (const anchorKey of ['implies', 'name']) {
+  for (const anchorKey of ['depends-on', 'name']) {
     const anchor = getLine(block, anchorKey)
     if (anchor) return block.replace(anchor, `${anchor}\n${newLine}`)
   }

@@ -30,7 +30,7 @@ mgit -B sh -c 'curl -fsSL https://knowledgeislands.info/harness/bootstrap | sh'
 
 ## What bootstrap does
 
-Bootstrap's one job is to build `.ki-meta/`. For every skill in the resolved set — every `[ki-<skill>]` table the target declares in its `.ki-config.toml` (including a bare `[ki-authoring]`, which every repo must declare itself — there is no injected baseline, per `ADR-KI-HARNESS-007`), plus their `implies:` closure — it:
+Bootstrap's one job is to build `.ki-meta/`. For every skill in the resolved set — every `[ki-<skill>]` table the target declares in its `.ki-config.toml` (including a bare `[ki-authoring]`, which every repo must declare itself — there is no injected baseline, per `ADR-KI-HARNESS-007`) — it:
 
 1. **vendors** the skill's declared checker units (its `vendors:` frontmatter — a checker copied verbatim, or a generated command-wrapper) into `.ki-meta/checkers/<skill>/scripts/<verb>.ts`, renders the skill's **HELP snapshot** to `.ki-meta/checkers/<skill>/help.md`, and generates its target-local EDUCATE launcher at `.ki-meta/educators/<skill>/educate.ts`;
 2. **writes** the four `package.json`-free entry points — `.ki-meta/bin/{ki-audit, ki-conform, ki-educate, ki-help}` over a `.ki-meta/bin/aggregate.ts` runner that discovers the checker copies and fans out over them — and **stamps** the vendoring manifest (`.ki-meta/manifest.json`: the harness ref plus a hash per vendored file).
@@ -70,7 +70,7 @@ Then confirm it self-governs — the vendored aggregate invokes each skill's che
 cd "$TARGET" && ./.ki-meta/bin/ki-audit
 ```
 
-A single skill's EDUCATE is reachable the same way through its own `scripts/educate.ts`, which seeds that skill (plus its `implies:` closure) into the target — the mechanics and the vendored result are identical to the full chain.
+A single skill's EDUCATE is reachable the same way through its own `scripts/educate.ts`, which seeds that skill into the target — the mechanics and the vendored result are identical to the full chain once its `depends-on:` requirements are declared.
 
 ## Keeping current
 
