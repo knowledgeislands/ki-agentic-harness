@@ -51,14 +51,6 @@ Canonical themes and active execution plans.
 - **Status:** open (needs foundation-tooling/004)
 - **Blocks:** —
 
-### [governance-consistency/006](governance-consistency/plans/006-align-four-repository-ecosystem.md)
-
-- **Title:** Align the four-repository ecosystem contract
-- **Theme:** `governance-consistency`
-- **Roadmap item:** `governance-consistency/align-the-four-repository-ecosystem-contract`
-- **Status:** in-progress
-- **Blocks:** —
-
 ## Dependency graph
 
 ```text
