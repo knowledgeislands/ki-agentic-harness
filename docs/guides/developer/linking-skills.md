@@ -14,7 +14,7 @@ Normal users install the five process and keystone skills as regular-file copies
 curl -fsSL https://knowledgeislands.info/harness/install | sh
 ```
 
-This installs `ki-bootstrap`, `ki-recap`, `ki-next`, `ki-plan`, and `ki-delegate` into the selected runtime locations. Claude Code uses `~/.claude/skills/`; Codex uses `~/.agents/skills/`. It is re-runnable and refuses to clobber a real file or directory.
+The installer detects only two regular top-level user directories: `~/.claude/` for Claude Code and `~/.agents/` for the Agents/Codex skill surface. It installs `ki-bootstrap`, `ki-recap`, `ki-next`, `ki-plan`, and `ki-delegate` into every conformant matching user skill directory. Claude Code uses `~/.claude/skills/`; Agents/Codex uses `~/.agents/skills/`. It is re-runnable and refuses to clobber a real file or directory. Pass `--runtime claude-code` or `--runtime codex` to choose explicitly when required.
 
 ## Link a target repository's declared skills
 

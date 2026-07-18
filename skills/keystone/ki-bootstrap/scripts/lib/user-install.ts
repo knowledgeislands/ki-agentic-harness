@@ -31,12 +31,16 @@ const MARKER = '.ki-user-installed-skill.json'
 const SCHEMA = 1
 const SELF = fileURLToPath(import.meta.url)
 const HARNESS_ROOT = resolve(dirname(SELF), '..', '..', '..', '..', '..')
-const RUNTIME_SKILL_DIR: Record<string, string> = {
+type Runtime = 'claude-code' | 'codex'
+const RUNTIME_SKILL_DIR: Record<Runtime, string> = {
   'claude-code': join('.claude', 'skills'),
   codex: join('.agents', 'skills')
 }
 
-type Runtime = keyof typeof RUNTIME_SKILL_DIR
+const RUNTIME_HOME_DIR: Record<Runtime, string> = {
+  'claude-code': '.claude',
+  codex: '.agents'
+}
 type Options = {
   source: string
   hooksSource: string
@@ -162,7 +166,11 @@ function parse(): Options {
     } else usage()
   }
   if (dryRun && check) usage()
-  return { source, hooksSource, home, ref, runtimes: [...new Set(runtimes.length ? runtimes : ['claude-code'])], dryRun, check }
+  return { source, hooksSource, home, ref, runtimes: [...new Set(runtimes)], dryRun, check }
+}
+
+function detectedRuntimes(home: string): Runtime[] {
+  return (Object.keys(RUNTIME_HOME_DIR) as Runtime[]).filter((runtime) => regularDirectory(join(home, RUNTIME_HOME_DIR[runtime])))
 }
 
 function publishSkill(source: string, root: string, skill: string, dryRun: boolean): boolean {
@@ -233,12 +241,16 @@ function main(): number {
   if (!regularDirectory(options.home)) throw new Error(`home must be a real directory: ${options.home}`)
   const index = skillIndex(options.source)
   for (const skill of CORE_SKILLS) if (!index.has(skill)) throw new Error(`required global skill is missing from source: ${skill}`)
+  const runtimes = options.runtimes.length ? options.runtimes : detectedRuntimes(options.home)
+  if (!runtimes.length) {
+    throw new Error(`no supported runtime was detected below ${options.home}; pass --runtime claude-code or --runtime codex`)
+  }
   let ok = true
-  for (const runtime of options.runtimes) {
+  for (const runtime of runtimes) {
     const root = join(options.home, RUNTIME_SKILL_DIR[runtime])
     for (const skill of CORE_SKILLS) ok = publishSkill(index.get(skill) as string, root, skill, options.dryRun) && ok
   }
-  if (options.runtimes.includes('claude-code')) ok = installHooks(options) && ok
+  if (runtimes.includes('claude-code')) ok = installHooks(options) && ok
   return ok ? 0 : 1
 }
 

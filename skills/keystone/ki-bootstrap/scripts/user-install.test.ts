@@ -25,46 +25,74 @@ function check(label: string, condition: boolean): void {
 }
 
 function run(...args: string[]): ReturnType<typeof spawnSync> {
-  return spawnSync('bun', [installer, '--source', skills, '--hooks-source', hooks, '--home', home, '--runtime', 'codex', ...args], {
+  return runFor(home, ...args)
+}
+
+function runFor(targetHome: string, ...args: string[]): ReturnType<typeof spawnSync> {
+  return spawnSync('bun', [installer, '--source', skills, '--hooks-source', hooks, '--home', targetHome, ...args], {
     encoding: 'utf8'
   })
 }
 
+function runCodex(...args: string[]): ReturnType<typeof spawnSync> {
+  return run('--runtime', 'codex', ...args)
+}
+
 try {
   mkdirSync(home)
+  mkdirSync(join(home, '.claude'))
+  mkdirSync(join(home, '.agents'))
   const first = run()
-  const target = join(home, '.agents', 'skills')
+  const codexTarget = join(home, '.agents', 'skills')
+  const claudeTarget = join(home, '.claude', 'skills')
   check(
-    'installs the core process skill set for Codex',
-    first.status === 0 && core.every((skill) => existsSync(join(target, skill, 'SKILL.md')))
+    'installs the core process skill set for every detected runtime by default',
+    first.status === 0 && [claudeTarget, codexTarget].every((target) => core.every((skill) => existsSync(join(target, skill, 'SKILL.md'))))
   )
   check(
     'uses copied regular directories, not links',
-    core.every((skill) => {
-      const entry = lstatSync(join(target, skill))
-      return entry.isDirectory() && !entry.isSymbolicLink()
-    })
+    [claudeTarget, codexTarget].every((target) =>
+      core.every((skill) => {
+        const entry = lstatSync(join(target, skill))
+        return entry.isDirectory() && !entry.isSymbolicLink()
+      })
+    )
   )
   check(
     'writes an owned integrity marker for every copied skill',
-    core.every((skill) => {
-      const marker = JSON.parse(readFileSync(join(target, skill, '.ki-user-installed-skill.json'), 'utf8')) as Record<string, unknown>
-      return marker.schema === 1 && marker.skill === skill && typeof marker.integrity === 'string'
-    })
+    [claudeTarget, codexTarget].every((target) =>
+      core.every((skill) => {
+        const marker = JSON.parse(readFileSync(join(target, skill, '.ki-user-installed-skill.json'), 'utf8')) as Record<string, unknown>
+        return marker.schema === 1 && marker.skill === skill && typeof marker.integrity === 'string'
+      })
+    )
   )
   check('check confirms a current copied installation', run('--check').status === 0)
   check('reinstalling is idempotent', run().status === 0)
 
-  rmSync(join(target, 'ki-next'), { recursive: true, force: true })
-  symlinkSync(join(skills, 'process', 'ki-next'), join(target, 'ki-next'), 'dir')
+  const codexOnlyHome = join(fixture, 'codex-only')
+  mkdirSync(codexOnlyHome)
+  mkdirSync(join(codexOnlyHome, '.agents'))
+  check(
+    'installs only into the runtime directories detected below the user home',
+    runFor(codexOnlyHome).status === 0 &&
+      core.every((skill) => existsSync(join(codexOnlyHome, '.agents', 'skills', skill, 'SKILL.md'))) &&
+      !existsSync(join(codexOnlyHome, '.claude', 'skills'))
+  )
+  const noRuntimeHome = join(fixture, 'no-runtime')
+  mkdirSync(noRuntimeHome)
+  check('requires an explicit runtime when no supported runtime directory is present', runFor(noRuntimeHome).status !== 0)
+
+  rmSync(join(codexTarget, 'ki-next'), { recursive: true, force: true })
+  symlinkSync(join(skills, 'process', 'ki-next'), join(codexTarget, 'ki-next'), 'dir')
   check(
     'migrates a deliberate legacy development link to a copy',
-    run().status === 0 && !lstatSync(join(target, 'ki-next')).isSymbolicLink()
+    runCodex().status === 0 && !lstatSync(join(codexTarget, 'ki-next')).isSymbolicLink()
   )
 
-  rmSync(join(target, 'ki-plan'), { recursive: true, force: true })
-  writeFileSync(join(target, 'ki-plan'), 'unmanaged')
-  check('refuses to replace an unmanaged global payload', run().status !== 0)
+  rmSync(join(codexTarget, 'ki-plan'), { recursive: true, force: true })
+  writeFileSync(join(codexTarget, 'ki-plan'), 'unmanaged')
+  check('refuses to replace an unmanaged global payload', runCodex().status !== 0)
 } finally {
   rmSync(fixture, { recursive: true, force: true })
 }
