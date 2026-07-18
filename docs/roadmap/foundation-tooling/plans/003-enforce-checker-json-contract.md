@@ -29,6 +29,8 @@ Bootstrap vendors declared checker modules and rubric payloads under local, coll
 
 Focused reporter and bootstrap tests pass, followed by `bun run test` and `bun run ki:audit`. The first migration tranche covers the twelve skills selected by the current harness configuration; the broader shipped fleet remains to be migrated deliberately.
 
+The second source tranche now covers `ki-mcp`, `ki-tools`, and `ki-website`, including applicability fixtures that validate their streams against the canonical reporter. The full test and audit gates passed after that checkpoint; the remaining shipped checker fleet still requires deliberate migration before this plan can close.
+
 The source-harness collector now validates every checker that declares the canonical reporter dependency, including its rubric code/type/citation mapping, one judgment prompt per `[J]` criterion, and non-repeating messages. The remaining unconverted shipped checkers stay outside that declared fleet and require a deliberate subsequent migration before this plan can close.
 
 This is intentionally a breaking current-state migration: remove the `--json` reporting switch rather than carrying a compatibility branch.
