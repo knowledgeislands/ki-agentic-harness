@@ -58,11 +58,23 @@ try {
     missing.code !== 0 && missing.findings.some((finding) => finding.code === 'BIND-2' && finding.level === 'FAIL')
   )
 
+  const legacyAuditFlag = run('audit.ts', ['--json', '--source', validSource])
+  check(
+    'AUDIT rejects the retired --json flag',
+    legacyAuditFlag.code !== 0 && legacyAuditFlag.findings.some((finding) => finding.code === 'BIND-2')
+  )
+
   const conform = run('conform.ts', ['--dry-run'])
   check('CONFORM dry-run does not fail for pending changes', conform.code === 0)
   check(
     'CONFORM emits BIND-5 as one judgment advisory',
     conform.findings.filter((finding) => finding.code === 'BIND-5' && finding.type === 'J').length === 1
+  )
+
+  const legacyConformFlag = run('conform.ts', ['--check'])
+  check(
+    'CONFORM rejects the retired --check flag before writing',
+    legacyConformFlag.code !== 0 && legacyConformFlag.findings.some((finding) => finding.code === 'BIND-4')
   )
 } finally {
   rmSync(fixture, { recursive: true, force: true })

@@ -27,6 +27,12 @@ const opt = (name: string): string | undefined => {
   const index = argv.indexOf(name)
   return index >= 0 ? argv[index + 1] : undefined
 }
+const supportedOptions = new Set(['--dry-run', '--repo', '--marketplace', '--plugin'])
+const unsupportedOptions = argv.filter((argument) => argument.startsWith('--') && !supportedOptions.has(argument))
+const missingValueOption = ['--repo', '--marketplace', '--plugin'].find((option) => {
+  const value = opt(option)
+  return argv.includes(option) && (!value || value.startsWith('--'))
+})
 const dryRun = flag('--dry-run')
 const repo = opt('--repo') ?? 'knowledgeislands/ki-plugins'
 const marketplace = opt('--marketplace') ?? 'ki-plugins'
@@ -47,6 +53,14 @@ const finish = (): never => {
   findings.push(...judgmentFindingsFromRubric(RUBRIC))
   emitCheckerReporter({ mode: 'conform', concern: 'binding', target, findings })
   process.exit(checkerReporterExitCode(findings))
+}
+
+if (unsupportedOptions.length || missingValueOption) {
+  const message = missingValueOption
+    ? `The ${missingValueOption} option needs a value.`
+    : `Unsupported option(s): ${unsupportedOptions.join(', ')}. Use --dry-run for a non-writing CONFORM preview.`
+  add('FAIL', 'BIND-4', message, BIND_REF)
+  finish()
 }
 
 function findSettings(directory: string, depth = 0): string[] {

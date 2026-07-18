@@ -29,12 +29,16 @@ const opt = (name: string): string | undefined => {
   const index = argv.indexOf(name)
   return index >= 0 ? argv[index + 1] : undefined
 }
+const supportedOptions = new Set(['--source'])
+const unsupportedOptions = argv.filter((argument) => argument.startsWith('--') && !supportedOptions.has(argument))
+const sourceValue = opt('--source')
+const sourceMissingValue = argv.includes('--source') && (!sourceValue || sourceValue.startsWith('--'))
 const project = argv.find((argument, index) => !argument.startsWith('-') && argv[index - 1] !== '--source')
 const HOME = homedir()
 const XDG_CONFIG = process.env.XDG_CONFIG_HOME ?? join(HOME, '.config')
 const CANONICAL_SOURCE = join(XDG_CONFIG, 'ki', 'mcp-servers.yaml')
 const PROJECT_LOCAL_SOURCE = join(process.cwd(), '.ki', 'mcps.yaml')
-const sourceOverride = opt('--source') ?? process.env.KI_MCP_SOURCE
+const sourceOverride = sourceValue ?? process.env.KI_MCP_SOURCE
 const SOURCE = sourceOverride
   ? resolve(sourceOverride)
   : ([CANONICAL_SOURCE, PROJECT_LOCAL_SOURCE].find((path) => existsSync(path)) ?? CANONICAL_SOURCE)
@@ -68,6 +72,14 @@ const finish = (): never => {
   findings.push(...judgmentFindingsFromRubric(RUBRIC))
   emitCheckerReporter({ mode: 'audit', concern: 'binding', target: TARGET, findings })
   process.exit(checkerReporterExitCode(findings))
+}
+
+if (unsupportedOptions.length || sourceMissingValue) {
+  const message = sourceMissingValue
+    ? 'The --source option needs a path.'
+    : `Unsupported option(s): ${unsupportedOptions.join(', ')}. Audit always emits canonical JSONL; remove legacy flags.`
+  add('FAIL', 'BIND-2', message, BIND_REF)
+  finish()
 }
 
 function readJson(path: string): Record<string, unknown> | null {
