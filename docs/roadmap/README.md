@@ -16,7 +16,7 @@ Canonical themes and active execution plans.
 - **Title:** Rename ki-project-roadmap to ki-repo-roadmap
 - **Theme:** `governance-consistency`
 - **Roadmap item:** `governance-consistency/rename-ki-project-roadmap-to-ki-repo-roadmap`
-- **Status:** open
+- **Status:** open (needs GOV-003)
 - **Blocks:** GOV-002
 
 ### [GOV-002](governance-consistency/plans/GOV-002-align-kb-stream-focus-with-non-kb-roadmap-horizons.md)
@@ -27,8 +27,17 @@ Canonical themes and active execution plans.
 - **Status:** open (needs GOV-001)
 - **Blocks:** —
 
+### [GOV-003](governance-consistency/plans/GOV-003-define-element-level-mode-orchestration.md)
+
+- **Title:** Define element-level audit and conform orchestration
+- **Theme:** `governance-consistency`
+- **Roadmap item:** `governance-consistency/define-element-level-audit-and-conform-orchestration`
+- **Status:** open
+- **Blocks:** GOV-001
+
 ## Dependency graph
 
 ```text
 GOV-001 ──► GOV-002
+GOV-003 ──► GOV-001
 ```

@@ -4,7 +4,7 @@ title: Rename ki-project-roadmap to ki-repo-roadmap
 status: open
 roadmap: governance-consistency/rename-ki-project-roadmap-to-ki-repo-roadmap
 blocks: GOV-002
-blocked-by: —
+blocked-by: GOV-003
 ---
 
 ## Context
@@ -39,4 +39,4 @@ The canonical source skill directory, `.ki-config.toml` declaration, package scr
 
 ## Dependencies / blocks
 
-This plan is immediately executable and blocks GOV-002, whose structure-aware process design must compose the final `ki-repo-roadmap` identity rather than introduce another rename surface.
+GOV-003 blocks this plan because it changes the shared skill frontmatter and generated dependency graph that this rename must migrate only once. This plan then blocks GOV-002, whose structure-aware process design must compose the final `ki-repo-roadmap` identity rather than introduce another rename surface.

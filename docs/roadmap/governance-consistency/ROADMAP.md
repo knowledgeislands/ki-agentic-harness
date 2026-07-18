@@ -8,6 +8,12 @@ code: GOV
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
+### Define element-level audit and conform orchestration
+
+Replace the ambiguous `implies:` relationship with an explicit skill dependency contract, provisionally named `depends-on:`, that requires every governance dependency to appear in `.ki-config.toml` and never silently expands coverage or determines execution order. Keep checker-module packaging separate.
+
+Define orchestration at the level of named AUDIT and CONFORM elements rather than whole skills. A skill may contribute several elements to different mode-specific phases, with explicit dependency edges, declared effects, and inspectable read/write scope; no skill receives one global phase. Preserve standalone per-skill AUDIT and CONFORM execution, derive aggregate ordering from the same declarations, and select the minimal phase vocabulary only after inventorying the current fleet. The first implementation must be deterministic and serial; concurrency is a later optimisation, not part of this contract.
+
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
