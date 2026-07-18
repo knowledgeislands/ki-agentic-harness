@@ -41,4 +41,4 @@ It has no dependency back on any process skill.
 - No universal AUDIT/CONFORM/EDUCATE/REFRESH modes — this is a process skill (ADR-KI-HARNESS-SKILLS-001, ADR-KI-HARNESS-SKILLS-006), not a roadmap standard or checker.
 - No roadmap or plan write occurs until the user explicitly confirms the selected item, order, wording, and horizon transition. Rejected proposals leave the files untouched.
 - The transition rules belong to `ki-project-roadmap`; `ki-next` applies them consistently. `ki-plan` owns individual-plan creation, execution, and closure.
-- Installable globally (`ki:skills:link:global`), alongside `ki-bootstrap`, `ki-recap`, `ki-plan`, and `ki-delegate`. It is never vendored or declared in a repository's `.ki-config.toml`: no `[ki-next]` table.
+- Installed globally by `/harness/install`, alongside `ki-bootstrap`, `ki-recap`, `ki-plan`, and `ki-delegate`. It is never vendored or declared in a repository's `.ki-config.toml`: no `[ki-next]` table.

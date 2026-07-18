@@ -6,8 +6,8 @@ checker-dependencies: [ki-skills/checker-reporter]
 owns: ['.gitignore']
 contributes: ['.ki-config.toml']
 description: >
-  Codify, audit, and apply the Knowledge Islands repo standard to any Knowledge Islands–compliant git repo — one that carries a `.ki-config.toml` — not only the `knowledgeislands` org, which is its reference set. Covers the local files (README, LICENSE, .gitignore), GitHub settings (merge policy, branch, features, topics, visibility, description), and security (secret scanning, Dependabot, Actions). Use when checking whether repos match the standard, bringing one into line, onboarding a new repo, or refreshing the standard against GitHub's surface. Triggers: "audit the repos", "do our repos follow the standard", "apply the repo standard", "enable secret scanning / Dependabot", "refresh the repo standard". Discovers repos from a local tree (github.com-gated) or a whole org via `gh`. Governs repo configuration, not source code. Off-ramps: `ki-authoring` (Markdown/TOML style), `ki-engineering` (toolchain), `ki-harness` (bundle layout).
-argument-hint: 'audit | conform <repo> | help | educate <repo> | refresh'
+  Codify, audit, and apply the Knowledge Islands repo standard to any KI-compliant git repo carrying `.ki-config.toml`, not only the `knowledgeislands` reference org. Covers local files, GitHub settings, security, and explicit repository-local development links. Use when checking or bringing a repo into line, onboarding a repo, linking local commands while developing the harness, or refreshing the standard against GitHub's surface. Triggers: "audit the repos", "do our repos follow the standard", "apply the repo standard", "link repository commands", "enable secret scanning / Dependabot", "refresh the repo standard". Discovers repos from a local tree or an org via `gh`. Governs repo configuration, not source code. Off-ramps: `ki-authoring` (Markdown/TOML), `ki-engineering` (toolchain), `ki-harness` (bundle layout).
+argument-hint: 'audit | conform <repo> | educate <repo> | help | refresh'
 ---
 
 # Knowledge Islands repo
@@ -56,7 +56,7 @@ Onboard a repo by adding the marker file (and the other root files) so it joins 
 
 1. Add any missing root files: `README.md` / `LICENSE` / `.gitignore` (`.editorconfig` is `ki-authoring`'s).
 2. Run `bun scripts/educate.ts <target-repo>` (preview with `--dry-run`). EDUCATE owns the config write: a missing file gets one canonical `[ki-repo]` default block plus one bare `[ki-authoring]`; a partial file gets only whichever exact root marker is absent. A dotted sub-table such as `[ki-repo.checks]` does not satisfy the root marker. Existing values, comments, order, and all other bytes are preserved; repeat runs are idempotent.
-3. EDUCATE delegates into bootstrap with `--seed ki-repo`; bootstrap invokes the same owner's internal `--scaffold-config-only` leg, then re-resolves and vendors `ki-repo`, `ki-authoring`, and the self-check runners in that same run. The documented direct `bootstrap.ts <target> --seed ki-repo` route has identical behavior without embedding a TOML template in bootstrap.
+3. EDUCATE delegates into bootstrap with `--seed ki-repo`; bootstrap invokes the same owner's internal `--scaffold-config-only` leg, then re-resolves and vendors `ki-repo`, `ki-authoring`, and the self-check runners in that same run. The documented direct `repo-bootstrap.ts <target> --seed ki-repo` route has identical behavior without embedding a TOML template in bootstrap.
 4. Set `visibility` and any `[…checks]` overrides (see [the `.ki-config.toml` contract](references/config-standards.md)), commit (a direct push to `main` is fine — it's open), then run **CONFORM** for the GitHub settings.
 
 ### Mode REFRESH — re-anchor the standard to GitHub's surface
@@ -72,6 +72,8 @@ GitHub's settings surface moves (rulesets vs classic protection, new security to
 5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and refresh the `## Last review` block (what's confirmed, open watch-items). What changed goes in the commit, not a changelog. Mandatory: the source list is the skill's memory of where the standard comes from.
 
 ## Notes
+
+- **Development linking:** `bun scripts/link-repository-commands.ts <repo> --development` is the sole explicit local-author path that creates repository-local skill symlinks. Add `--agents` to link declared Claude governance agents too. Ordinary user installation and repository bootstrap always create regular copies instead. `ki-harness` composes this command for its own development workflow.
 
 - Requires the `gh` CLI authenticated with **repo-admin** scope to apply settings.
 - `main` is **open by default** — direct pushes are allowed, so local-file fixes (EDUCATE / CONFORM step 2) can land as a direct commit. A repo overrides the `branch-protection` check on (`[…checks]` `branch-protection = true`); only then does CONFORM protect that repo's `main`.

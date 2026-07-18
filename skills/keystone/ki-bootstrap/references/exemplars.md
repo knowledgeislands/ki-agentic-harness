@@ -51,7 +51,7 @@ The reproducibility contract may wire a `ki:skills:copy:project` script in `pack
 ```json
 {
   "scripts": {
-    "ki:skills:copy:project": "bun $HOME/.claude/skills/ki-bootstrap/scripts/copy-skills.ts"
+    "ki:skills:copy:project": "bun skills/keystone/ki-bootstrap/scripts/lib/publish-project-skills.ts"
   }
 }
 ```
@@ -87,7 +87,7 @@ The keystone linker self-locates the harness through its own real path — no ha
 
 The `.claude/skills/` directory is gitignored — the committed artifact is the `ki:skills:copy:project` script and a `.gitignore` line. The copied payloads are regenerated, never committed.
 
-Harness authors who deliberately want live local edits may use `ki:skills:link:project`, which passes `--development` and replaces those copies with relative links into an active harness checkout. It is not the normal reproducibility path.
+Harness authors who deliberately want live local edits may use `ki-repo`'s `link-repository-commands --development`, which replaces those copies with relative links into an active harness checkout. It is not the normal reproducibility path.
 
 ### CLAUDE.md import pattern for skills
 

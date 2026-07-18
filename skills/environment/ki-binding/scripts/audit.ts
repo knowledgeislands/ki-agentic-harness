@@ -199,11 +199,11 @@ if (coworkFiles.length === 0) {
     )
 }
 
-const bootstrap = join(SKILLS_ROOT, 'keystone', 'ki-bootstrap', 'scripts', 'link-skills.ts')
+const bootstrap = join(SKILLS_ROOT, 'keystone', 'ki-bootstrap', 'scripts', 'lib', 'publish-project-skills.ts')
 if (!project) {
   add('INFO', 'BIND-3', 'No project was given, so the project-local skill links were not audited.', BIND_REF)
 } else if (!existsSync(bootstrap)) {
-  add('INFO', 'BIND-3', 'The ki-bootstrap linker is unavailable, so project-local skill links were not audited.', BIND_REF, bootstrap)
+  add('INFO', 'BIND-3', 'The ki-bootstrap publisher is unavailable, so project-local skill copies were not audited.', BIND_REF, bootstrap)
 } else {
   const result = spawnSync('bun', [bootstrap, resolve(project), '--check'], { encoding: 'utf8' })
   if (result.status === 0) add('PASS', 'BIND-3', 'The project-local skill links are clean.', BIND_REF, resolve(project))
@@ -211,7 +211,7 @@ if (!project) {
     add(
       'WARN',
       'BIND-3',
-      `The project-local skill linker reported findings (exit ${result.status ?? 'unknown'}); run ki-bootstrap CONFORM.`,
+      `The project-local skill publisher reported findings (exit ${result.status ?? 'unknown'}); run ki-bootstrap CONFORM.`,
       BIND_REF,
       resolve(project)
     )

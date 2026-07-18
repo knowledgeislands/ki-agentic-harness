@@ -58,8 +58,8 @@ The EDUCATE chain MUST be runnable on a machine carrying nothing but `bun` — v
 
 _Verify:_ `skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh` line 1 is `#!/bin/sh` and its `codeload.github.com` fetch pipes into `lib/repo-bootstrap.ts`; a governed repo's `.ki-meta/bin/ki-educate` re-invokes that script (never `bun run <raw-url>`, which Bun cannot execute over HTTP).
 
-### BOOT-009 — `--all` links and vendors every skill
+### BOOT-009 — Normal runtime publication uses copies
 
-The bootstrap and link engines MUST accept `--all` to link and vendor every skill rather than the coverage subset, and the harness — the authoring hub — MUST use it, so `ki:skills:link:project` passes `--all`.
+Repository bootstrap MUST publish only the declared runtime skill coverage as generated regular-file copies; it MUST NOT create runtime symlinks. Deliberate local-development links are a separate `ki-repo` capability and are never required for normal user installation or repository governance.
 
-_Verify:_ `skills/keystone/ki-bootstrap/scripts/link-skills.ts` parses `--all` (feeding `expectedSet`), and `package.json`'s `ki:skills:link:project` invokes it with `--all`.
+_Verify:_ run `scripts/lib/publish-project-skills.ts` against a declared fixture and confirm each published runtime skill is a regular file. Run `ki-repo/scripts/link-repository-commands.ts <fixture> --development` separately and confirm only that explicit command creates a symlink.

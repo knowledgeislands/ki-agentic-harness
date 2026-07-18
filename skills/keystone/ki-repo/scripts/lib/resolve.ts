@@ -1,5 +1,5 @@
 /**
- * Set-resolution helpers shared by the EDUCATE chain (`repo-bootstrap.ts`) and the
+ * Vendored set-resolution helpers used by the repository-local command publisher.
  * vendored-set alignment checker (`audit.ts`). Pure, read-only: given a
  * target repo and the harness `skills/` root, computes which skills *should* be
  * vendored — the transitive `implies:` closure of the baseline plus whatever the

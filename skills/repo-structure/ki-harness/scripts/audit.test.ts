@@ -51,11 +51,9 @@ function run(script: string, dir: string, extraArgs: string[] = []): Run {
 }
 
 const supportingScripts = {
-  'ki:skills:link:project': 'true',
+  'ki:skills:copy:project': 'true',
   'ki:skills:audit': 'true',
-  'ki:skills:link:global': 'true',
-  'ki:skills:status': 'true',
-  'ki:skills:unlink': 'true',
+  'ki:repo:link-commands': 'true',
   'ki:skills:refresh-status': 'true',
   'ki:eval': 'true'
 }

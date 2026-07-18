@@ -26,7 +26,7 @@ Two lenses, deliberately separate: the **feature-coverage matrix** tracks the _n
 
 ‡ `ki-binding`'s source is a renderer-neutral `mcp-servers.yaml`; its Codex renderer (`render-codex.ts`) shells Codex's native merge-safe `codex mcp add|remove` to write `[mcp_servers.<name>]` into `~/.codex/config.toml`, verified end-to-end against codex-cli 0.144.4. Separately, `mcp/` ships no servers yet.
 
-§ Codex subagents are TOML under `~/.codex/agents/` (`name`/`description`/`developer_instructions`), a different shape from Claude Code's Markdown+YAML. `link-agents.ts` reports-and-skips Codex pending the generator; the format is spiked, not built.
+§ Codex subagents are TOML under `~/.codex/agents/` (`name`/`description`/`developer_instructions`), a different shape from Claude Code's Markdown+YAML. `ki-repo`'s explicit development linker reports-and-skips Codex pending the generator; the format is spiked, not built.
 
 ¶ `plan-stamp`/`plan-sync` ride Claude Code's native Plan Mode, which the matrix marks **None known** for Codex. Parity here likely means a KI-invented reimplementation of the capability, not a port — the way `ki-project-roadmap`/`ki-plan` are already pure KI inventions with zero runtime dependency.
 

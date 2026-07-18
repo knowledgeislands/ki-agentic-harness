@@ -40,8 +40,8 @@
  *
  * Harness-shaped targets only: when the resolved set includes `ki-harness` (the
  * target authors and operates its own skills/ tree), the engine additionally
- * vendors the three cross-skill operational scripts (skill-graph, skill-help,
- * sync-skills) into `.ki-meta/bin/`, each manifest-hashed like every other vendored
+ * vendors the two cross-skill operational scripts (skill-graph, skill-help)
+ * into `.ki-meta/bin/`, each manifest-hashed like every other vendored
  * file. These are engine-level, not per-skill `vendors:` units — the same class as
  * the aggregate runner and bin wrappers (ADR-KI-HARNESS-008). A non-harness repo
  * has no skills/ tree to operate on and never receives them.

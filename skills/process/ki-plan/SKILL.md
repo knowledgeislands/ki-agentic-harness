@@ -36,5 +36,5 @@ In a KI code repo the plan is a governed file under `docs/roadmap/<theme>/plans/
 ## Notes
 
 - No universal AUDIT/CONFORM/EDUCATE/REFRESH modes — this is a process skill (ADR-KI-HARNESS-SKILLS-001, ADR-KI-HARNESS-SKILLS-006); its modes are the lifecycle sub-commands above.
-- Installable globally (`ki:skills:link:global`), alongside `ki-bootstrap` — usable in any non-KB repository on the machine, not just this one. Like `ki-bootstrap`, never vendored or declared in a repo's `.ki-config.toml` — no `[ki-plan]` table, ever.
+- Installed globally by `/harness/install`, alongside `ki-bootstrap` — usable in any non-KB repository on the machine, not just this one. Like `ki-bootstrap`, never vendored or declared in a repo's `.ki-config.toml` — no `[ki-plan]` table, ever.
 - The thematic roadmap and file-oriented `done`, `execute`, `new`, and `status` procedures are runtime-neutral; adapt interactive prompts to the host runtime. `promote` is Claude-Code-only because it consumes Claude Code's Plan Mode hook state and session substitution.

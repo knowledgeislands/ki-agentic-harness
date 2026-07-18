@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * Run-based behavioural test for `link-skills.ts --check`.
+ * Run-based behavioural test for the explicit repository-command linker.
  *
  * ki-engineering §6 scopes unit-test coverage to `src/**` and names the harness as
  * the "run, not unit-tested" case for skill `scripts/`. So rather than a vitest suite
@@ -18,8 +18,9 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const LINKER = join(dirname(fileURLToPath(import.meta.url)), 'link-skills.ts')
-const COPIER = join(dirname(fileURLToPath(import.meta.url)), 'lib', 'publish-project-skills.ts')
+const SCRIPTS = dirname(fileURLToPath(import.meta.url))
+const LINKER = join(SCRIPTS, 'link-repository-commands.ts')
+const COPIER = join(SCRIPTS, '..', '..', 'ki-bootstrap', 'scripts', 'lib', 'publish-project-skills.ts')
 
 let failed = false
 function check(label: string, cond: boolean): void {
@@ -47,7 +48,8 @@ function fixture(tables: string[], runtimes?: string[]): string {
 }
 
 function runCheck(dir: string, development = false): { code: number; out: string } {
-  const res = spawnSync('bun', [LINKER, '--check', ...(development ? ['--development'] : []), dir], { encoding: 'utf8' })
+  const script = development ? LINKER : COPIER
+  const res = spawnSync('bun', [script, '--check', ...(development ? ['--development'] : []), dir], { encoding: 'utf8' })
   return { code: res.status ?? 1, out: `${res.stdout ?? ''}${res.stderr ?? ''}` }
 }
 
@@ -200,7 +202,7 @@ try {
 }
 
 if (failed) {
-  console.log('\n\x1b[31mlink-skills.test.ts: failures\x1b[0m')
+  console.log('\n\x1b[31mlink-repository-commands.test.ts: failures\x1b[0m')
   process.exit(1)
 }
-console.log('\n\x1b[32mlink-skills.test.ts: all checks passed\x1b[0m')
+console.log('\n\x1b[32mlink-repository-commands.test.ts: all checks passed\x1b[0m')

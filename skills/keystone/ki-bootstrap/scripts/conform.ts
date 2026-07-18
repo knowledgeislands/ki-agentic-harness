@@ -3,11 +3,10 @@
  * ki-bootstrap — CONFORM: bring a repo's project-local wiring into line.
  *
  * The mechanical half of Mode CONFORM — the verb-named counterpart to
- * `audit.ts` (AUDIT) and `educate.ts` (EDUCATE). Composes the two linkers in
- * write mode — `project-links.ts` — which creates/prunes generated copied skill
- * payloads under the declared runtime paths, keeps supported Claude agents on
- * their independent link path, and writes matching `.gitignore` lines in one
- * guarded transaction. It then re-runs the standalone compatibility checks.
+ * `audit.ts` (AUDIT) and `educate.ts` (EDUCATE). It publishes only generated
+ * copied skill payloads under the declared runtime paths and writes matching
+ * `.gitignore` lines in one guarded transaction. Development links belong to
+ * `ki-repo`'s explicit `link-repository-commands` capability.
  *
  * This script is a pure ORCHESTRATOR: it spawns the linkers and the vendored-set
  * audit rather than emitting per-criterion findings of its own. So its `--json`
@@ -30,7 +29,7 @@
  * rename/removal to reconcile by hand).
  *
  * Usage: bun conform.ts [target-repo] [--dry-run] [--json]
- *   --dry-run  preview both linkers' changes, touch nothing
+ *   --dry-run  preview generated-copy changes, touch nothing
  *   --json     emit the CHK-004 orchestration wrapper instead of prose
  *
  * Every repo — the harness included — links its declared coverage (the `.ki-config.toml`
@@ -77,13 +76,12 @@ function step(script: string, args: string[], area: string, label: string): void
   }
 }
 
-// 1. Publish copied skills and linked agent definitions as one guarded transaction.
-step('lib/project-skill-publisher.ts', flags, 'BOOT-1', `project links ${dryRun ? 'dry-run preview' : 'write pass'}`)
+// 1. Publish copied skill definitions as one guarded transaction.
+step('lib/publish-project-skills.ts', flags, 'BOOT-1', `project copies ${dryRun ? 'dry-run preview' : 'write pass'}`)
 
 // 2. Re-run the checks to confirm (skipped on a preview — nothing changed).
 if (!dryRun) {
   step('lib/publish-project-skills.ts', ['--check'], 'BOOT-1', 'project skill publisher confirms copied payloads')
-  step('link-agents.ts', ['--check'], 'BOOT-6', 'link-agents --check confirms links')
 }
 
 // 3. Advisory only — never re-vendors (ADR-KI-HARNESS-006's drift contract). The

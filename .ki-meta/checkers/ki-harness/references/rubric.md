@@ -40,7 +40,7 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS (defined in 
 
 **CLAUDE-3 [J]** `CLAUDE.md` documents working conventions for each part (which command runs it, which skill governs it, any install step). May be brief with routes to `docs/` or the relevant skill. Source: standard §CLAUDE.md §3. _Severity: POLISH — missing conventions degrade developer UX but don't break correctness._
 
-**CLAUDE-4 [J]** `CLAUDE.md` lists the key `bun run *` toolchain commands (at minimum `ki:skills:link:project` and `ki:skills:audit`). Source: standard §CLAUDE.md §4. _Severity: POLISH._
+**CLAUDE-4 [J]** `CLAUDE.md` lists the key `bun run *` toolchain commands (at minimum `ki:skills:copy:project` and `ki:skills:audit`). Source: standard §CLAUDE.md §4. _Severity: POLISH._
 
 **CLAUDE-5 [J]** `CLAUDE.md` reflects current state: skill counts, shelf statuses, and command names match the actual repo. Check against `package.json` and `skills/` directory listing. Source: standard §CLAUDE.md freshness rule. _Severity: WARN if counts or statuses are wrong; POLISH for minor drift (a deprecated command listed but present)._
 
@@ -48,13 +48,13 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS (defined in 
 
 ## PKG — package.json script families
 
-**PKG-1 [M]** `package.json` contains a `ki:skills:link:project` script (the `ki-bootstrap` delivery mechanism). Source: standard §package.json. _Severity: FAIL — the primary install mechanism is absent._
+**PKG-1 [M]** `package.json` contains a `ki:skills:copy:project` script (the normal `ki-bootstrap` project delivery mechanism). Source: standard §package.json. _Severity: FAIL — the primary install mechanism is absent._
 
 **PKG-2 [M]** `package.json` contains a `ki:skills:audit` script. Source: standard §package.json §ki:skills:audit. _Severity: FAIL — the skill quality gate is absent._
 
 **PKG-3 (retired)** The former harness-level common-toolchain check duplicated `ki-engineering`. Aggregate entrypoints are enforced by that skill's SCR-2; internal code and authoring tools are composed underneath them. The harness checker emits no PKG-3 finding, preserving single ownership.
 
-**PKG-4 [M]** `package.json` carries the harness skill-management / eval surface: `ki:skills:link:global`, `ki:skills:status`, `ki:skills:unlink`, `ki:skills:refresh-status`, `ki:eval`. Source: standard §package.json. _Severity: WARN per missing script._
+**PKG-4 [M]** `package.json` carries the harness development / eval surface: `ki:repo:link-commands`, `ki:skills:refresh-status`, `ki:eval`. Source: standard §package.json. _Severity: WARN per missing script._
 
 **PKG-5 [J]** Docs aimed at governed repos (the user guide especially) never present a `ki:*` `package.json` key as _the_ invocation of a vendored checker: the `.ki-meta` path (`bun .ki-meta/checkers/<skill>/<mode>.ts .`, aggregate `./.ki-meta/bin/ki-audit`) is canonical and the key its harness-local alias, with the equivalence stated or linked. A bare key is acceptable only in an explicitly harness-repo-only doc. Source: standard §package.json docs invocation discipline. _Severity: WARN — a key-only instruction silently excludes every governed repo without a `package.json`._
 

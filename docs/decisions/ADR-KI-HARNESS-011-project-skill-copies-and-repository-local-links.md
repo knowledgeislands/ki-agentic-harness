@@ -23,7 +23,7 @@ The three payload surfaces remain separate and have explicit owners.
 - Ordinary sessions depend on copied payloads, not a harness checkout.
 - A repository can expose deliberate local commands without turning its development topology into a fleet default.
 - `ki-harness` composes the `ki-repo` linking capability for harness development instead of owning a competing linker.
-- The former `sync-skills.ts`, `link-skills.ts`, and `link-agents.ts` responsibilities migrate to the `ki-repo` capability. Their current shared helpers split along the bootstrap-copy and repository-link boundary.
+- The former `sync-skills.ts`, `link-skills.ts`, and `link-agents.ts` responsibilities now belong to the `ki-repo` capability. Their shared helpers are split along the bootstrap-copy and repository-link boundary.
 
 ## References
 

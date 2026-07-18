@@ -73,8 +73,7 @@ const primaryBlocks = blocks.filter((b) => /bootstrap\.ts|\.ki-meta\/bin\/ki-aud
 check(primaryBlocks.length >= 2, 'guide documents the bootstrap + self-govern (ki-audit) steps')
 check(!blocks.some((b) => /--legacy|--tracking/.test(b)), 'guide carries no legacy/tracking aggressiveness flags')
 
-const retiredCommand =
-  /\bbun run ki:(?:lint(?::[a-z0-9*:_-]+)?|deps(?::[a-z0-9*:_-]+)?|knip|verify)(?=[\s`'"),.;:&|\]]|$)/i
+const retiredCommand = /\bbun run ki:(?:lint(?::[a-z0-9*:_-]+)?|deps(?::[a-z0-9*:_-]+)?|knip|verify)(?=[\s`'"),.;:&|\]]|$)/i
 check(
   retiredCommand.test(['Run bun run ', 'ki:verify; do not postpone it.'].join('')),
   'retired-command guard cannot be escaped by unrelated retirement language'
@@ -132,7 +131,7 @@ try {
 
   // Idempotency — re-running the chain at the same ref reproduces an identical manifest.
   const manifest1 = readFileSync(join(gf, '.ki-meta/manifest.json'), 'utf8')
-  run(`bun "${join(HARNESS, 'skills/keystone/ki-bootstrap/scripts/bootstrap.ts')}" "${gf}"`, HARNESS, gfEnv)
+  run(`bun "${join(HARNESS, 'skills/keystone/ki-bootstrap/scripts/lib/repo-bootstrap.ts')}" "${gf}"`, HARNESS, gfEnv)
   const manifest2 = readFileSync(join(gf, '.ki-meta/manifest.json'), 'utf8')
   check(manifest1 === manifest2, 're-running bootstrap is idempotent (identical manifest)')
 
@@ -146,7 +145,7 @@ try {
   writeFileSync(join(pf, '.ki-config.toml'), '[ki-repo]\nlicense = "MIT"\n')
   execSync('git init -q', { cwd: pf })
   const pfEnv = { ...process.env, KI_HARNESS: HARNESS, TARGET: pf }
-  run(`bun "${join(HARNESS, 'skills/keystone/ki-bootstrap/scripts/bootstrap.ts')}" "${pf}"`, HARNESS, pfEnv)
+  run(`bun "${join(HARNESS, 'skills/keystone/ki-bootstrap/scripts/lib/repo-bootstrap.ts')}" "${pf}"`, HARNESS, pfEnv)
   check(!existsSync(join(pf, 'package.json')), 'bootstrap created no package.json')
   const pfBin = join(pf, '.ki-meta/bin/ki-audit')
   check(existsSync(pfBin) && (lstatSync(pfBin).mode & 0o111) !== 0, 'wrote an executable .ki-meta/bin/ki-audit')

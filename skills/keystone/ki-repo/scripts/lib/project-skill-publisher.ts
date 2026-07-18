@@ -1,10 +1,10 @@
 #!/usr/bin/env bun
 
 /**
- * Safely publish a repository's generated project-local payloads.
+ * Safely publish a repository's generated project-local links.
  *
- * The normal copy publisher and `ki-repo`'s vendored development linker use the
- * same transaction model: it validates every repository
+ * The explicit link-repository-commands.ts command delegates here. Its
+ * write path is deliberately one transaction: it validates every repository
  * controlled destination, stages new entries in a private 0700 directory, then
  * publishes the complete link and .gitignore set or rolls it back.  A real file,
  * directory, or hostile symlink at a managed destination is a blocker; it is

@@ -32,7 +32,7 @@ When `ki-repo` is initially seeded or resolved, bootstrap subprocesses `ki-repo`
 
 - **Consumer bootstrap and CONFORM copy** each declared complete skill into the selected runtime directory. The payload contains regular files and directories, not a symlink to a harness checkout, so it remains usable after the temporary bootstrap source disappears. Its generated marker records the logical harness source and a deterministic tree-integrity digest; a later publisher accepts it for refresh only when that marker still matches the payload.
 - **Gitignored and regenerated, never committed.** The copy is a generated deployment payload, not consumer-repository source. The only committed artifact is the `.gitignore` line; a fresh clone re-runs bootstrap or CONFORM to recreate the payload. A changed or forged marker/payload combination is left untouched with a migration diagnostic rather than overwritten.
-- An explicit local-author command, `link-skills.ts --development`, may replace a generated copy with a relative symlink into the active harness checkout. `link-skills.ts --development --check` verifies that deliberate development-link state; without `--development`, the check verifies normal copied payloads. Bootstrap preserves and restores that state only when its target is the source harness itself; ordinary repository use remains copy-based.
+- Deliberate local-author links are owned by `ki-repo`'s `link-repository-commands --development` capability. Bootstrap never creates them; ordinary repository use remains copy-based.
 
 ## Reproducibility contract
 
@@ -48,4 +48,4 @@ In a source-bearing harness target, the bootstrap audit also compares every dire
 
 ## Governance agents
 
-A parallel, smaller invariant covers `agents/governance/*.md`: a repo's `.claude/agents/` should contain exactly those files, as **relative file symlinks**, when — and only when — the repo's `.ki-config.toml` carries the bare `[ki-agents]` table. Unlike skills there is no baseline: no agent is always-on, so an undeclared repo gets no agent links at all rather than a default subset. [`link-agents.ts`](../scripts/link-agents.ts) is a sibling of the skill copier, sharing the transaction and gitignore helpers; it continues to manage relative symlinks and the `.gitignore` line, so `.claude/agents/` is likewise gitignored and regenerated, never committed.
+A parallel, smaller invariant covers `agents/governance/*.md`: a repo's `.claude/agents/` may contain those files as **relative file symlinks** when — and only when — the repo's `.ki-config.toml` carries the bare `[ki-agents]` table and its author explicitly invokes `ki-repo`'s `link-repository-commands --development --agents`. Unlike skills there is no baseline: no agent is always-on, so an undeclared repo gets no agent links at all rather than a default subset. `.claude/agents/` is likewise gitignored and regenerated, never committed.

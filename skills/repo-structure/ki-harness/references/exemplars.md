@@ -65,13 +65,13 @@ _No agent definitions yet — this is an empty shelf. Add a `.md` per agent when
 
 ### Required `package.json` scripts for a harness
 
-The two harness-specific scripts (`ki:skills:link:project` and `ki:skills:audit`) are the delivery and quality mechanisms the harness concept depends on — absence of either is a FAIL. `ki:skills:link:global` installs the one globally-kept keystone (`ki-bootstrap`); skills themselves are wired project-local, not global. The `--all` flag on `ki:skills:link:project` tells the bootstrap linker to wire every skill declared in `.ki-config.toml` rather than a named subset. The aggregate read/write entrypoints and their code/Markdown toolchains are composed from `ki-engineering` and `ki-authoring`, so this harness-specific exemplar does not restate them.
+The two harness-specific scripts (`ki:skills:copy:project` and `ki:skills:audit`) are the project delivery and quality mechanisms the harness concept depends on — absence of either is a FAIL. `/harness/install` installs the globally kept keystone and process skills as regular copies; skills declared for a repository are copied project-local. `ki:repo:link-commands` is the explicit local-development path, never normal installation. The aggregate read/write entrypoints and their code/Markdown toolchains are composed from `ki-engineering` and `ki-authoring`, so this harness-specific exemplar does not restate them.
 
 ```jsonc
 {
   "scripts": {
-    "ki:skills:link:project": "bun skills/keystone/ki-bootstrap/scripts/link-skills.ts",
-    "ki:skills:link:global": "bun skills/keystone/ki-bootstrap/scripts/sync-skills.ts link --only ki-bootstrap",
+    "ki:skills:copy:project": "bun skills/keystone/ki-bootstrap/scripts/lib/publish-project-skills.ts",
+    "ki:repo:link-commands": "bun skills/keystone/ki-repo/scripts/link-repository-commands.ts --development .",
     "ki:skills:audit": "bun .ki-meta/checkers/ki-skills/scripts/audit.ts ."
   }
 }

@@ -23,13 +23,13 @@ An **agentic harness** is a single versioned git repository that co-locates the 
 
 | Directory | What it holds                                            | Install path                                                |
 | --------- | -------------------------------------------------------- | ----------------------------------------------------------- |
-| `skills/` | [Agent Skills][as-spec] — one directory per skill        | Wired into a repo's `.claude/skills/` †                     |
+| `skills/` | [Agent Skills][as-spec] — one directory per skill        | Copied into a repo's selected runtime skill directory †     |
 | `agents/` | Claude Code subagent definitions — one `.md` per agent   | Symlinked or copied by the Claude Code agent runner         |
 | `mcp/`    | Workspace MCP server packages ‡                          | Referenced by `.claude/settings.json` / `mcp_settings.json` |
 | `evals/`  | Behavioural eval scenarios — advisory signal, not a gate | Run on demand, not in CI                                    |
 | `hooks/`  | Claude Code hook scripts — advisory, no governing skill  | Wired into a repo's `.claude/settings.json`                 |
 
-† Via `bun run ki:skills:link:project` (`ki-bootstrap`).
+† Via repository bootstrap or `bun run ki:skills:copy:project` (`ki-bootstrap`).
 
 ‡ Or a shelf pointing to external `mcp-*` repos.
 
@@ -72,7 +72,7 @@ skills/
     SKILL.md                  ← name: ki-kb  ← must match
 ```
 
-**Why:** agents and the Agent Skills runtime discover a skill by its `name` — not by path. If the directory name and the frontmatter drift, the skill loads under the wrong name or fails to load at all. The `ki:skills:link:project` script (see §package.json) creates symlinks named by the directory, so the symlink target name is the one the agent actually resolves.
+**Why:** agents and the Agent Skills runtime discover a skill by its `name` — not by path. If the directory name and the frontmatter drift, the skill loads under the wrong name or fails to load at all. The `ki:skills:copy:project` script (see §package.json) publishes regular-file copies named by the directory, so the directory name is the one the agent resolves.
 
 The quality of the skill's prose, description richness, and adherence to the Agent Skills rubric are governed by `ki-skills`, not here.
 
@@ -85,7 +85,7 @@ The harness `CLAUDE.md` is the **always-loaded orientation** — every agent ses
 1. **What this harness is** — one paragraph: what the harness holds, who it's for, why it's a single repo rather than scattered files. Name all five parts.
 2. **The five parts** — a directory table (or equivalent structured block) with each of the five directories, what it holds today, and its current status (populated / empty shelf). Keep this current as shelves become populated.
 3. **Working conventions per part** — how to add, change, or audit each part: which command to run, which skill governs it, any install step. Brief; route detail to `docs/` or the relevant skill.
-4. **Toolchain** — the key `bun run *` commands: at minimum `ki:skills:link:project`, `ki:skills:audit`, `ki:audit`, and `ki:conform`. Enough to orient a contributor on day one.
+4. **Toolchain** — the key `bun run *` commands: at minimum `ki:skills:copy:project`, `ki:skills:audit`, `ki:audit`, and `ki:conform`. Enough to orient a contributor on day one.
 
 Optional but encouraged:
 
@@ -106,16 +106,16 @@ A harness carries `ROADMAP.md` as part of its root layout (LAY-4). `ki-project-r
 
 Every harness `package.json` MUST declare these harness-specific scripts:
 
-| Script                   | What it does                                                     | Why required                   |
-| ------------------------ | ---------------------------------------------------------------- | ------------------------------ |
-| `ki:skills:link:project` | Wires this repo's `.claude/skills/` from its `.ki-config.toml` § | The primary delivery mechanism |
-| `ki:skills:audit`        | Runs the `ki-skills` mechanical checker over `skills/`           | The gate for skill quality     |
+| Script                   | What it does                                           | Why required                           |
+| ------------------------ | ------------------------------------------------------ | -------------------------------------- |
+| `ki:skills:copy:project` | Publishes this repo's declared runtime skill copies §  | The primary project delivery mechanism |
+| `ki:skills:audit`        | Runs the `ki-skills` mechanical checker over `skills/` | The gate for skill quality             |
 
-§ The `ki-bootstrap` linker; the harness links its own declared coverage, like any repo (ADR-KI-HARNESS-007).
+§ The `ki-bootstrap` publisher; the harness copies its own declared coverage, like any repo (ADR-KI-HARNESS-007).
 
 The aggregate entrypoints are the public toolchain contract, but they are not harness-specific. `ki-engineering` owns their package-script shape and internal code checks (Biome, TypeScript, knip, syncpack), while `ki-authoring` owns the Markdown pass. A complete harness audit composes those skills; this standard does not duplicate their findings.
 
-The harness-specific scripts are `ki:skills:link:project` and `ki:skills:audit` — these are the delivery and quality mechanisms the harness concept depends on. Absence of either is a FAIL. The harness additionally carries the rest of its skill-management / eval surface (PKG-4, WARN): `ki:skills:link:global` (`sync-skills.ts link --only ki-bootstrap`) to install the one global keystone, `ki:skills:status` / `ki:skills:unlink` (inspect / tear down the project-local links), `ki:skills:refresh-status` (refresh the skills status block), and `ki:eval` (run the `evals/` suite). Skills are not installed wholesale into `~/.claude/skills/`; they are wired **project-local** per repo by `ki-bootstrap`, only the keystone is kept global.
+The harness-specific scripts are `ki:skills:copy:project` and `ki:skills:audit` — these are the project delivery and quality mechanisms the harness concept depends on. Absence of either is a FAIL. The harness additionally carries the development / eval surface (PKG-4, WARN): `ki:repo:link-commands` for an explicit local author, `ki:skills:refresh-status` (refresh the skills status block), and `ki:eval` (run the `evals/` suite). `/harness/install` installs the global keystone and process skills as regular copies; repository bootstrap publishes only project-local declared coverage. No normal path creates a symlink.
 
 **Docs invocation discipline.** Every `ki:<skill>:<mode>` key is convenience sugar over a vendored entry point any bootstrapped repo already has — `bun run ki:tokenomics:audit` is `bun .ki-meta/checkers/ki-tokenomics/scripts/audit.ts .`, and `./.ki-meta/bin/ki-audit` is the aggregate — so a `package.json` is never required to run the checks (ADR-KI-HARNESS-006). Harness documentation whose audience includes governed repos (the user guide especially) MUST NOT present a `package.json` key as _the_ invocation of a vendored checker: state the equivalence (or link to where it is stated) and make clear the `.ki-meta` path is the canonical form, the key the harness-local alias. A key may stand alone only in a doc that is explicitly harness-repo-only (e.g. `ki:skills:graph`).
 
