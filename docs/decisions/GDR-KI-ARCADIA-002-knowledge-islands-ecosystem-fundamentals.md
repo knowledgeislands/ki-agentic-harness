@@ -1,4 +1,4 @@
-# GDR-KI-HARNESS-002: Knowledge Islands ecosystem fundamentals
+# GDR-KI-ARCADIA-002: Knowledge Islands ecosystem fundamentals
 
 **Date:** 2026-07-18
 

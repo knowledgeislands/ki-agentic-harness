@@ -26,7 +26,7 @@ The records are living, compact, and independent. The order below is a **curated
 ## Harness construction reading order
 
 1. [GDR-KI-HARNESS-001](GDR-KI-HARNESS-001-adopting-decision-records.md) — adopting Decision Records (the format these records themselves follow).
-2. [GDR-KI-HARNESS-002](GDR-KI-HARNESS-002-knowledge-islands-ecosystem-fundamentals.md) — the four-repository ecosystem authorities, publication flows, and choreography.
+2. [GDR-KI-ARCADIA-002](GDR-KI-ARCADIA-002-knowledge-islands-ecosystem-fundamentals.md) — the four-repository ecosystem authorities, publication flows, and choreography.
 3. [SDR-KI-HARNESS-001](SDR-KI-HARNESS-001-purpose-and-scope.md) — the purpose and scope of the harness (what it is for, and not for).
 4. [ADR-KI-HARNESS-001](ADR-KI-HARNESS-001-repository-structure.md) — the repository structure (the five-part bundle layout).
 5. [ADR-KI-HARNESS-002](ADR-KI-HARNESS-002-naming-model-and-harness-as-source.md) — the `ki-` naming model and harness-as-source vs plugin-as-projection.
@@ -38,7 +38,7 @@ The records are living, compact, and independent. The order below is a **curated
 11. [ADR-KI-HARNESS-SKILLS-003](ADR-KI-HARNESS-SKILLS-003-dependency-order-composition.md) — the naming grammar and dependency order for composition.
 12. [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) — every skill must be valid standalone.
 13. [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-validate-down-ki-config-contract.md) — the validate-down `.ki-config.toml` contract, the repo-to-skill binding every skill reads.
-14. [GDR-KI-HARNESS-003](GDR-KI-HARNESS-003-public-and-declared-license.md) — public repos and a declared license, decoupled from visibility.
+14. [GDR-KI-HARNESS-002](GDR-KI-HARNESS-002-public-and-declared-license.md) — public repos and a declared license, decoupled from visibility.
 15. [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md) — the bootstrapping chain and the self-sufficiency contract.
 16. [ADR-KI-HARNESS-TOOLCHAIN-001](ADR-KI-HARNESS-TOOLCHAIN-001-standard-toolchain.md) — the Bun / Biome / knip standard toolchain.
 17. [ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling.md) — complementary tooling currently adopted.

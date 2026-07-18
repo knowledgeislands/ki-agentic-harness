@@ -6,7 +6,7 @@ The **agentic harness** for Knowledge Islands work — the canonical home for wh
 
 The harness is the canonical source for reusable Knowledge Islands tooling. It generalises patterns proven in [Arcadia Principal](https://github.com/knowledgeislands/ki-arcadia-principal) into skills, agents, MCP wrappers, evals, and hooks; it does not originate the Knowledge Islands philosophy or model. Implementation evidence from the harness helps [KI Specifications](https://github.com/knowledgeislands/ki-specifications) formalise portable contracts, and applicable Active specifications constrain implementations that claim conformance.
 
-The [KI Website](https://github.com/knowledgeislands/ki-website) may vendor source-labelled harness documentation for public publication, while this repository remains canonical for the tooling and its executable artifacts. The mirrored [ecosystem decision](docs/decisions/GDR-KI-HARNESS-002-knowledge-islands-ecosystem-fundamentals.md) defines the four authorities and publication flows.
+The [KI Website](https://github.com/knowledgeislands/ki-website) may vendor source-labelled harness documentation for public publication, while this repository remains canonical for the tooling and its executable artifacts. The mirrored [ecosystem decision](docs/decisions/GDR-KI-ARCADIA-002-knowledge-islands-ecosystem-fundamentals.md) defines the four authorities and publication flows.
 
 A harness is **five parts** — the things an agent is given to work with:
 
