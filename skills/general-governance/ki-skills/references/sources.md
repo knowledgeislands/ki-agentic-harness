@@ -8,14 +8,26 @@ Abbreviations match the `(SOURCE)` tags in [the standard](standards.md) and [rub
 
 ## Authoritative
 
-| Tag  | Source                                      | Governs                                                                 | Last reviewed |
-| ---- | ------------------------------------------- | ----------------------------------------------------------------------- | ------------- |
-| SPEC | [Agent Skills specification][spec]          | Frontmatter fields, layout, hard caps, progressive-disclosure budget    | 2026-07-04    |
-| —    | [Agent Skills home][home]                   | The standard's overview, examples, ecosystem                            | 2026-07-04    |
-| BP   | [Skill authoring best practices][bp]        | Description writing, conciseness, scripts, anti-patterns, the checklist | 2026-07-04    |
-| CC   | [Claude Code — skills][cc]                  | CC frontmatter, runtime listing/compaction budgets, commands→skills     | 2026-07-04    |
-| ENG  | [Equipping agents with Agent Skills][eng] ※ | Rationale, progressive disclosure, evaluation-first, under-triggering   | 2026-07-04    |
-| —    | [`skills-ref validate`][skills-ref]         | Mechanical baseline for frontmatter + naming (criteria B, C, D)         | 2026-07-04    |
+### Agent Skills documentation set
+
+The Agent Skills [documentation index][agentskills-index] is the inventory authority for this set. Every REFRESH fetches it first, reconciles this table with its current pages, then reviews every listed page individually. The index currently lists the nine documentation pages below; the index itself is also tracked because it detects additions and removals.
+
+| Tag | Source | Governs | Last reviewed |
+| --- | --- | --- | --- |
+| AS | [Agent Skills documentation index][agentskills-index] | Current page inventory for this source set | 2026-07-19 |
+| AS | [Agent Skills overview][home] | Overview, ecosystem, progressive-disclosure model | 2026-07-19 |
+| SPEC | [Agent Skills specification][spec] | Frontmatter fields, layout, hard caps, progressive-disclosure budget | 2026-07-19 |
+| AS | [Skill-creator quickstart][quickstart] | First-skill workflow and discovery/activation examples | 2026-07-19 |
+| AS | [Skill-creator best practices][agentskills-best-practices] | Skill-authoring practice | 2026-07-19 |
+| AS | [Optimising descriptions][optimizing-descriptions] | Description evaluation and refinement | 2026-07-19 |
+| AS | [Evaluating skills][evaluating-skills] | Evaluation design and iteration | 2026-07-19 |
+| AS | [Using scripts][using-scripts] | Script inventory, self-contained execution, `--help`, and structured output | 2026-07-19 |
+| AS | [Client showcase][clients] | Current client ecosystem | 2026-07-19 |
+| AS | [Adding skills support][adding-skills-support] | Client discovery, loading, activation, and context management | 2026-07-19 |
+| BP | [Skill authoring best practices][bp] | Description writing, conciseness, scripts, anti-patterns, the checklist | 2026-07-04 |
+| CC | [Claude Code — skills][cc] | CC frontmatter, runtime listing/compaction budgets, commands→skills | 2026-07-04 |
+| ENG | [Equipping agents with Agent Skills][eng] ※ | Rationale, progressive disclosure, evaluation-first, under-triggering | 2026-07-04 |
+| — | [`skills-ref validate`][skills-ref] | Mechanical baseline for frontmatter + naming (criteria B, C, D) | 2026-07-04 |
 
 ※ Anthropic Engineering, 2025-12-18.
 
@@ -42,7 +54,7 @@ Abbreviations match the `(SOURCE)` tags in [the standard](standards.md) and [rub
 
 ## Last review
 
-REFRESH last run **2026-07-04** against the tracked sources above. The four primary authoritative sources (SPEC, home, BP, CC) plus ENG, COMMUNITY/patterns, and the `skills-ref` baseline (re-confirmed via the SPEC page it is linked from) were re-fetched via WebFetch this run; `superpowers` (a community restatement of BP, which was re-fetched and confirmed unchanged) carries its 2026-06-18 date; the in-house README and `ki-kb` rows were not re-audited this run and keep their 2026-06-21 dates. No drift: nothing in the standard, rubric, or linter changed.
+REFRESH last run **2026-07-19** against the tracked Agent Skills documentation set and the existing sources below. It fetched [the documentation index][agentskills-index] first, which listed nine current documentation pages; this table now tracks all nine individually, plus the index itself. The skill-creator pages confirmed the existing standard's guidance on progressive disclosure, reusable scripts, script documentation and `--help`, description tuning, and evaluation-driven iteration. The client pages provide the runtime-facing counterpart: discovery at user and project scope, activation, and bounded context loading. This source-inventory change does not by itself change a rubric criterion; the script-interface and adjacent-test rules remain planned follow-up work.
 
 - **SPEC (agentskills.io/specification):** accessible. Fields and constraints unchanged: `name` (required, 1–64 chars, lowercase letters/digits/hyphens, no leading/trailing/consecutive hyphen, matches directory), `description` (required, 1–1024 chars, non-empty), `license`, `compatibility` (1–500), `metadata` (string→string map), `allowed-tools` (Experimental). Body budget restated as "< 5000 tokens recommended", "under 500 lines", references "one level deep". No new fields, no deprecations.
 - **Agent Skills home:** accessible; three-stage progressive disclosure (metadata ~100 tok / instructions < 5000 tok / resources on demand). Spec unchanged.
@@ -58,7 +70,15 @@ REFRESH last run **2026-07-04** against the tracked sources above. The four prim
 (What past reviews changed in the standard / rubric / linter — the `disallowed-tools` behavioural note in §5, the CC runtime-extension fields, MCP fully-qualified tool naming, the CC post-compaction budget row, the migration to area-scoped codes — is in git.)
 
 [spec]: https://agentskills.io/specification
+[agentskills-index]: https://agentskills.io/llms.txt
 [home]: https://agentskills.io/
+[quickstart]: https://agentskills.io/skill-creation/quickstart
+[agentskills-best-practices]: https://agentskills.io/skill-creation/best-practices
+[optimizing-descriptions]: https://agentskills.io/skill-creation/optimizing-descriptions
+[evaluating-skills]: https://agentskills.io/skill-creation/evaluating-skills
+[using-scripts]: https://agentskills.io/skill-creation/using-scripts
+[clients]: https://agentskills.io/clients
+[adding-skills-support]: https://agentskills.io/client-implementation/adding-skills-support
 [bp]: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices
 [cc]: https://code.claude.com/docs/en/skills
 [eng]: https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills

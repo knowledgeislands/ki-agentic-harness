@@ -72,7 +72,7 @@ Review a skill (or every skill in a repo) against the rubric and report.
 
 Keep the rubric current — the standard and the community move, and this is why the skill tracks its own sources. Run on its declared cadence (see `references/sources.md`), or when asked "is the skills rubric current".
 
-1. **Read [the source list](references/sources.md)** — the tracked authoritative + community sources, each with a `last reviewed` date and what it governs.
+1. **Read [the source list](references/sources.md)** — the tracked authoritative + community sources, each with a `last reviewed` date and what it governs. For Agent Skills, fetch its [documentation index](https://agentskills.io/llms.txt) first, reconcile the listed page inventory (add new pages and retire removed ones), then review every current page individually.
 2. **Re-fetch each source** (WebFetch/WebSearch) and **diff against the current [standard](references/standards.md) + [rubric](references/rubric.md)**: new required/optional frontmatter fields, changed caps (length, line, token budgets), new anti-patterns, deprecations. Note where sources disagree.
 3. **Scan our own skills** in the ki-agentic-harness repo for emergent patterns that work but aren't yet codified — promote the good ones into the standard + rubric; flag drift that contradicts them.
 4. **Propose a diff** to [the standard](references/standards.md) and [rubric](references/rubric.md) and, where relevant, [the linter](scripts/audit.ts) (a newly-mechanical check should move from judgment into the script). Confirm before writing.
