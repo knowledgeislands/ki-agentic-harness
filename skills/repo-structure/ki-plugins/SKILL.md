@@ -2,6 +2,7 @@
 name: ki-plugins
 implies: []
 vendors: [educate, audit, conform, help]
+checker-dependencies: [ki-skills/checker-reporter]
 description: >
   Audit, conform, and scaffold a Knowledge Islands **plugin-marketplace** repo — the generated Claude plugin marketplace that projects the harness's skills and agents onto the Cowork surface (`knowledgeislands/ki-plugins`, `ADR-KI-HARNESS-002`). The fifth repo-structure skill (with `ki-harness`, `ki-kb`, `ki-website`, `ki-mcp`), exactly one per repo. Governs the on-disk projection: the `marketplace.json` and `plugin.json` manifests, the verbatim `skills/` copy and flattened `agents/`, the MCP-deferred rule (no `.mcp.json`), and the generated-not-hand-edited invariant. Triggers: "audit the plugin marketplace", "is ki-plugins well-formed", "check marketplace.json", "scaffold a plugin marketplace", "refresh the plugins standard". Generation and cross-surface enablement belong to `ki-binding` (`ki:binding:build-plugin` + Cowork wiring); this skill owns only the projection's on-disk correctness. For GitHub config and LICENSE use `ki-repo`; for Markdown/TOML style use `ki-authoring`.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
@@ -42,7 +43,7 @@ Every governance skill carries the universal four **AUDIT · CONFORM · EDUCATE 
 ### Mode AUDIT
 
 1. **Identify the target.** Confirm the repo path (default: the cwd repo).
-2. **Run the mechanical checker.** `bun skills/repo-structure/ki-plugins/scripts/audit.ts <repo>` (or `node` after a build) checks the projection shape: `marketplace.json` / `plugin.json` field values and agreement, the one-plugin invariant, that each `skills/*` carries a `SKILL.md`, that `agents/*.md` are flat, that no `.mcp.json` leaked in, that the scaffold files are present, that `CLAUDE.md` carries the generated-not-hand-edited invariant, and the `[ki-plugins]` opt-in marker. Findings grade on the shared ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS); `--json` / `--report` emit machine-readable output under `.ki-meta/audits/plugins.{md,json}`.
+2. **Run the mechanical checker.** `bun skills/repo-structure/ki-plugins/scripts/audit.ts <repo>` (or `node` after a build) checks the projection shape: `marketplace.json` / `plugin.json` field values and agreement, the one-plugin invariant, that each `skills/*` carries a `SKILL.md`, that `agents/*.md` are flat, that no `.mcp.json` leaked in, that the scaffold files are present, that `CLAUDE.md` carries the generated-not-hand-edited invariant, and the `[ki-plugins]` opt-in marker. It emits canonical checker-reporter JSONL and exits non-zero only for a mechanical FAIL.
 3. **Do the semantic pass** — walk [Audit Rubric](references/rubric.md): confirm the projected skill/agent set actually matches the current harness (a **stale projection** is the common finding — regenerate), the `CLAUDE.md`/`README.md` describe the projection without drift, and the known LICENSE divergence (public-but-proprietary) is still a deliberate, documented exception rather than a silent one.
 
 ### Mode CONFORM
@@ -78,4 +79,4 @@ Re-anchor the standard to the current Claude plugin/marketplace spec:
 - The reference instance keeps a **public-but-proprietary** LICENSE (public visibility ≠ open licence), a deliberate divergence from `ki-repo`'s public-⇒-MIT default. It is documented in the repo's `.ki-config.toml`; do not silently flip it to MIT.
 - A **stale projection** (the on-disk skill/agent set lagging the harness) is the most common real finding and is never fixed by editing here — regenerate via `ki-binding`.
 - Full detail: [Plugins Standard](references/standards.md), [Audit Rubric](references/rubric.md), and the tracked [source list](references/sources.md).
-- Checker output conforms to the severity ladder, JSON shape, and exit-code contract in `ki-engineering`'s [checker-contract.md](../../foundations/ki-engineering/references/checker-contract.md).
+- Checker output conforms to the [canonical checker reporter](../../general-governance/ki-skills/references/checker-reporter.md).
