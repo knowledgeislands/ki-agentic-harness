@@ -1,178 +1,104 @@
 #!/usr/bin/env bun
 /**
- * ki-binding — conform the Cowork surface: register + toggle the KI plugin.
+ * Conform the Cowork binding by registering and enabling the KI plugin.
  *
- * Cowork is the one surface this skill writes directly (the file-editable surfaces —
- * Code / Desktop / mcporter — are conformed via chezmoi, never here). The external-edit
- * gate passed 2026-07-06: Cowork honours an external edit to cowork_settings.json on next
- * launch. This script merges two keys into every workspace's cowork_settings.json:
- *
- *   extraKnownMarketplaces["ki-plugins"] = { source: { source: "github", repo: "<repo>" } }
- *   enabledPlugins["knowledge-islands@ki-plugins"] = true
- *
- * It MERGES — every other plugin toggle and marketplace is preserved. A full Cowork
- * relaunch is required for the change to take effect.
- *
- * Usage:
- *   bun conform.ts            write the two keys into every cowork_settings.json
- *   --check / --dry-run              report only; exit non-zero if any workspace is unconformed
- *   --repo <org/repo>               marketplace github repo (default: knowledgeislands/ki-plugins)
- *   --marketplace <name>            marketplace name  (default: ki-plugins)
- *   --plugin <name>                 plugin name       (default: knowledge-islands)
- *   --json                          emit the cited-finding wrapper ({ concern, target, summary, findings })
- *
- * The bespoke human status table (status ∈ already/conformed/would-conform/unreadable) is
- * preserved for a direct run; --json swaps it for the shared wrapper so the aggregate consumes
- * each result as a finding on the unified ladder (already → PASS, conformed / would-conform →
- * POLISH, unreadable → FAIL). Every finding cites BIND-4 and the binding standard, file-scoped
- * to its cowork_settings.json — matching audit.ts's (area, ref) for the same criterion.
+ * Every invocation emits canonical checker-reporter JSONL. `--dry-run` is the
+ * only non-writing mode; it reports the pending changes without applying them.
  */
 
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
-import { join, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
+
+type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
+type Status = 'already' | 'conformed' | 'would-conform' | 'unreadable'
+type Result = { path: string; status: Status }
 
 const argv = process.argv.slice(2)
-const flag = (n: string): boolean => argv.includes(n)
-const opt = (n: string): string | undefined => {
-  const i = argv.indexOf(n)
-  return i >= 0 ? argv[i + 1] : undefined
+const flag = (name: string): boolean => argv.includes(name)
+const opt = (name: string): string | undefined => {
+  const index = argv.indexOf(name)
+  return index >= 0 ? argv[index + 1] : undefined
 }
-// `--check` and `--dry-run` are equivalent: report only, write nothing (`--dry-run` is the
-// name the cited-finding standard uses; `--check` is kept for back-compat with callers).
-const CHECK = flag('--check') || flag('--dry-run')
-const JSON_OUT = flag('--json')
-const REPO = opt('--repo') ?? 'knowledgeislands/ki-plugins'
-const MARKETPLACE = opt('--marketplace') ?? 'ki-plugins'
-const PLUGIN = opt('--plugin') ?? 'knowledge-islands'
-const PLUGIN_KEY = `${PLUGIN}@${MARKETPLACE}`
-// This conform writes the Cowork surface only — the criterion it discharges is BIND-4, and it
-// cites the same standard audit.ts does so the shared criterion carries the same (area, ref).
-const BIND_AREA = 'BIND-4'
+const dryRun = flag('--dry-run')
+const repo = opt('--repo') ?? 'knowledgeislands/ki-plugins'
+const marketplace = opt('--marketplace') ?? 'ki-plugins'
+const plugin = opt('--plugin') ?? 'knowledge-islands'
+const pluginKey = `${plugin}@${marketplace}`
+const base = join(homedir(), 'Library', 'Application Support', 'Claude', 'local-agent-mode-sessions')
+const VALUE_OPTIONS = new Set(['--repo', '--marketplace', '--plugin'])
+const positional = argv.find((argument, index) => !argument.startsWith('-') && !VALUE_OPTIONS.has(argv[index - 1] ?? ''))
+const target = positional ? resolve(positional) : base
 const BIND_REF = 'references/standards.md'
+const RUBRIC = join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md')
 
-// Collect-then-emit findings on the unified ladder, threaded for --json. The bespoke human
-// status table below is preserved (gated on !JSON_OUT); the wrapper mirrors audit.ts's shape.
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-interface Finding {
-  level: Level
-  area: string
-  msg: string
-  ref?: string
-  file?: string
+const findings: CheckerFinding[] = []
+const add = (level: Level, code: string, message: string, ref?: string, file?: string): void => {
+  findings.push({ type: 'M', level, code, message, ...(ref ? { ref } : {}), ...(file ? { file } : {}) })
 }
-const findings: Finding[] = []
-const rec = (level: Level, area: string, msg: string, ref?: string, file?: string): void =>
-  void findings.push({ level, area, msg, ref, file })
+const finish = (): never => {
+  findings.push(...judgmentFindingsFromRubric(RUBRIC))
+  emitCheckerReporter({ mode: 'conform', concern: 'binding', target, findings })
+  process.exit(checkerReporterExitCode(findings))
+}
 
-const RED = '\x1b[31m'
-const YELLOW = '\x1b[33m'
-const GREEN = '\x1b[32m'
-const DIM = '\x1b[2m'
-const RESET = '\x1b[0m'
-
-const BASE = join(homedir(), 'Library', 'Application Support', 'Claude', 'local-agent-mode-sessions')
-
-// A positional path (e.g. the aggregate passes the repo `.`) scopes the wrapper's `target`;
-// conform still discovers cowork settings under BASE regardless. Skip option-value tokens.
-const VALUE_OPTS = new Set(['--repo', '--marketplace', '--plugin'])
-const positional = argv.find((a, i) => !a.startsWith('-') && !VALUE_OPTS.has(argv[i - 1] ?? ''))
-const target = positional ? resolve(positional) : BASE
-
-// ── Discover every cowork_settings.json (one per account/workspace) ──
-function findSettings(dir: string, depth = 0): string[] {
-  if (!existsSync(dir) || depth > 4) return []
-  const out: string[] = []
-  for (const e of readdirSync(dir, { withFileTypes: true })) {
-    if (e.name === 'cowork_settings.json' && e.isFile()) out.push(join(dir, e.name))
-    else if (e.isDirectory() && e.name !== 'cowork_plugins') out.push(...findSettings(join(dir, e.name), depth + 1))
+function findSettings(directory: string, depth = 0): string[] {
+  if (!existsSync(directory) || depth > 4) return []
+  const paths: string[] = []
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    if (entry.name === 'cowork_settings.json' && entry.isFile()) paths.push(join(directory, entry.name))
+    else if (entry.isDirectory() && entry.name !== 'cowork_plugins') paths.push(...findSettings(join(directory, entry.name), depth + 1))
   }
-  return out
+  return paths
 }
 
-const files = findSettings(BASE)
-
-interface Result {
-  path: string
-  status: 'already' | 'conformed' | 'would-conform' | 'unreadable'
-}
 const results: Result[] = []
-
-for (const path of files) {
-  let cfg: Record<string, unknown>
+for (const path of findSettings(base)) {
+  let config: Record<string, unknown>
   try {
-    cfg = JSON.parse(readFileSync(path, 'utf8')) as Record<string, unknown>
+    config = JSON.parse(readFileSync(path, 'utf8')) as Record<string, unknown>
   } catch {
     results.push({ path, status: 'unreadable' })
     continue
   }
-  if (cfg.enabledPlugins == null) cfg.enabledPlugins = {}
-  if (cfg.extraKnownMarketplaces == null) cfg.extraKnownMarketplaces = {}
-  const enabled = cfg.enabledPlugins as Record<string, unknown>
-  const markets = cfg.extraKnownMarketplaces as Record<string, unknown>
 
-  const pluginOn = enabled[PLUGIN_KEY] === true
-  const marketOk = JSON.stringify((markets[MARKETPLACE] as { source?: { repo?: string } })?.source?.repo) === JSON.stringify(REPO)
-
-  if (pluginOn && marketOk) {
+  const enabled = (config.enabledPlugins ?? {}) as Record<string, unknown>
+  const marketplaces = (config.extraKnownMarketplaces ?? {}) as Record<string, unknown>
+  const pluginEnabled = enabled[pluginKey] === true
+  const marketplaceRegistered = (marketplaces[marketplace] as { source?: { repo?: string } })?.source?.repo === repo
+  if (pluginEnabled && marketplaceRegistered) {
     results.push({ path, status: 'already' })
     continue
   }
-  if (CHECK) {
+
+  if (dryRun) {
     results.push({ path, status: 'would-conform' })
     continue
   }
-  enabled[PLUGIN_KEY] = true
-  markets[MARKETPLACE] = { source: { source: 'github', repo: REPO } }
-  writeFileSync(path, `${JSON.stringify(cfg, null, 2)}\n`)
+
+  config.enabledPlugins = { ...enabled, [pluginKey]: true }
+  config.extraKnownMarketplaces = { ...marketplaces, [marketplace]: { source: { source: 'github', repo } } }
+  writeFileSync(path, `${JSON.stringify(config, null, 2)}\n`)
   results.push({ path, status: 'conformed' })
 }
 
-// ── Thread findings on the unified ladder (one per workspace result) ──
-// conformed → POLISH (a write applied), already → PASS, would-conform → POLISH (dry-run: a
-// write is pending), unreadable → FAIL. Each is file-scoped to its cowork_settings.json path.
-const STATUS_LEVEL: Record<Result['status'], Level> = {
-  conformed: 'POLISH',
-  already: 'PASS',
-  'would-conform': 'POLISH',
-  unreadable: 'FAIL'
+if (results.length === 0) {
+  add('INFO', 'BIND-4', 'No Cowork settings were found; the Cowork surface is not present on this machine.', BIND_REF, base)
 }
-const STATUS_MSG: Record<Result['status'], string> = {
-  conformed: `${PLUGIN_KEY} registered + enabled (written — relaunch Cowork)`,
-  already: `${PLUGIN_KEY} already registered + enabled`,
-  'would-conform': `${PLUGIN_KEY} not yet registered/enabled — would conform`,
-  unreadable: 'cowork_settings.json unreadable (invalid JSON)'
-}
-if (files.length === 0) rec('INFO', BIND_AREA, 'no cowork_settings.json found — Cowork surface not present on this machine', BIND_REF, BASE)
-for (const r of results) rec(STATUS_LEVEL[r.status], BIND_AREA, STATUS_MSG[r.status], BIND_REF, r.path)
-
-// ── Report ──
-if (!JSON_OUT) {
-  process.stdout.write(`\n${DIM}ki-binding — conform Cowork (${PLUGIN_KEY} → ${REPO})${RESET}\n${'─'.repeat(60)}\n`)
-  if (files.length === 0) process.stdout.write(`  ${YELLOW}no cowork_settings.json found${RESET} under ${BASE}\n`)
-  const colour: Record<Result['status'], string> = {
-    already: GREEN,
-    conformed: GREEN,
-    'would-conform': YELLOW,
-    unreadable: RED
-  }
-  for (const r of results) process.stdout.write(`  ${colour[r.status]}${r.status.padEnd(13)}${RESET} ${DIM}${r.path}${RESET}\n`)
-  process.stdout.write(`${'─'.repeat(60)}\n`)
-  if (results.some((r) => r.status === 'conformed'))
-    process.stdout.write(`  ${YELLOW}⟳ quit Cowork fully and relaunch${RESET} for the change to take effect.\n`)
-} else {
-  const n = (l: Level): number => findings.filter((f) => f.level === l).length
-  const summary = {
-    fail: n('FAIL'),
-    warn: n('WARN'),
-    polish: n('POLISH'),
-    advisory: n('ADVISORY'),
-    info: n('INFO'),
-    na: n('NA'),
-    pass: n('PASS')
-  }
-  process.stdout.write(JSON.stringify({ concern: 'binding', target, generatedAt: new Date().toISOString(), summary, findings }))
+for (const result of results) {
+  if (result.status === 'already') add('PASS', 'BIND-4', 'The Cowork plugin is already registered and enabled.', BIND_REF, result.path)
+  else if (result.status === 'conformed')
+    add('POLISH', 'BIND-4', 'The Cowork plugin was registered and enabled; relaunch Cowork to apply it.', BIND_REF, result.path)
+  else if (result.status === 'would-conform')
+    add('POLISH', 'BIND-4', 'The Cowork plugin would be registered and enabled; relaunch Cowork after applying.', BIND_REF, result.path)
+  else add('FAIL', 'BIND-4', 'Cowork settings cannot be parsed as JSON.', BIND_REF, result.path)
 }
 
-// --check/--dry-run fails if any workspace is not yet conformed.
-process.exit(CHECK && results.some((r) => r.status === 'would-conform' || r.status === 'unreadable') ? 1 : 0)
+finish()

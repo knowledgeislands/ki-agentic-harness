@@ -43,12 +43,11 @@ const JSON_OUT = flag('--json')
 
 const HOME = homedir()
 const CANONICAL_SOURCE = join(process.env.XDG_CONFIG_HOME ?? join(HOME, '.config'), 'ki', 'mcp-servers.yaml')
-const LEGACY_CHEZMOI_SOURCE = join(process.env.XDG_DATA_HOME ?? join(HOME, '.local', 'share'), 'chezmoi', '.chezmoidata', 'mcps.yaml')
 const PROJECT_LOCAL_SOURCE = join(process.cwd(), '.ki', 'mcps.yaml')
 const sourceOverride = opt('--source') ?? process.env.KI_MCP_SOURCE
 const SOURCE = sourceOverride
   ? resolve(sourceOverride)
-  : ([CANONICAL_SOURCE, LEGACY_CHEZMOI_SOURCE, PROJECT_LOCAL_SOURCE].find((p) => existsSync(p)) ?? CANONICAL_SOURCE)
+  : ([CANONICAL_SOURCE, PROJECT_LOCAL_SOURCE].find((p) => existsSync(p)) ?? CANONICAL_SOURCE)
 const CODEX_CONFIG = join(HOME, '.codex', 'config.toml')
 const REF = 'references/standards.md'
 
