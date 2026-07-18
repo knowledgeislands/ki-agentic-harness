@@ -67,3 +67,7 @@ Build one complete dependency graph for every skill relationship: declared compo
 ### Add engineering change value profiles to the verb map _(candidate)_
 
 Define a compact, evidence-backed way to compare engineering changes without collapsing them into one misleading score. The profile should cover new capability, comprehensibility, maintenance reduction from duplicated or divergent implementation, reliability and risk reduction, leverage across repositories or agents, and delivery cost and reversibility. Decide which dimensions belong on each work verb or plan, how claims become measurable evidence, and how the profile informs roadmap ordering without becoming ceremony for small fixes.
+
+### Review interpretable context methodology and current agentic practice _(candidate)_
+
+Once the harness's own governance and orchestration contracts are stable, assess [Interpretable Context Methodology: Folder Structure as Agentic Architecture](https://arxiv.org/abs/2603.16021) alongside current agent models, runtimes, and orchestration approaches. Compare its filesystem-visible stages, layered context loading, local mechanical scripts, and human review points with the harness's skills, durable artifacts, checker modules, plans, and runtime bindings. Extract only evidence-backed improvements: retain differences that serve this architecture, record any adopted principle in its owning decision or standard, and avoid changing the harness merely to mirror an external model.
