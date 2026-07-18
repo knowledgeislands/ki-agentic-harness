@@ -1611,13 +1611,27 @@ function runBootstrapTransaction(target: string, targetIdentity: EntrySnapshot &
   }
 }
 
-function publishRuntimeSkillCopies(target: string, dryRun: boolean): void {
-  const args = [join(import.meta.dirname, 'copy-skills.ts'), target]
+/**
+ * The source harness is the one deliberate local-author exception to the normal
+ * runtime-copy contract. Its own generated runtime payloads must remain live
+ * links so a bootstrap cannot silently make local skill edits invisible. A
+ * consumer that happens to carry a `skills/` directory is still a consumer: only
+ * the physical root that owns this bootstrap source opts into development links.
+ */
+function runtimeSkillPublication(target: string): 'copy' | 'development-link' {
+  return realpathSync(target) === realpathSync(dirname(SKILLS_ROOT)) ? 'development-link' : 'copy'
+}
+
+function publishRuntimeSkillPayloads(target: string, dryRun: boolean): void {
+  const development = runtimeSkillPublication(target) === 'development-link'
+  const args = [join(import.meta.dirname, development ? 'link-skills.ts' : 'copy-skills.ts')]
+  if (development) args.push('--development')
+  args.push(target)
   if (dryRun) args.push('--dry-run')
   try {
     execFileSync('bun', args, { stdio: 'inherit' })
   } catch {
-    throw new Error('project runtime skill copy publication failed')
+    throw new Error(`project runtime skill ${development ? 'development-link' : 'copy'} publication failed`)
   }
 }
 
@@ -1685,9 +1699,10 @@ function main(): void {
         )
     }
   } else runBootstrapTransaction(target, boundTarget.identity, set, ref)
-  // Runtime payloads are separate from `.ki-meta/`: normal bootstrap publishes
-  // complete generated copies for the selected runtimes, never development links.
-  publishRuntimeSkillCopies(target, dryRun)
+  // Runtime payloads are separate from `.ki-meta/`: consumers receive complete,
+  // standalone copies. The source harness itself receives its explicit local
+  // development links, so re-bootstrap preserves live authoring behaviour.
+  publishRuntimeSkillPayloads(target, dryRun)
   console.log(
     `${GREEN}runner${RESET} ${DIM}→ ${aggRel}, ${auditBinRel}, ${conformBinRel}, ${initBinRel}, ${helpBinRel}, ${manifestRel}${RESET}`
   )

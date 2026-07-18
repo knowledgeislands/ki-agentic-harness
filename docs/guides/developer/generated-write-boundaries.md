@@ -42,7 +42,7 @@ bun ~/.claude/skills/ki-bootstrap/scripts/link-skills.ts --development
 
 This is local development mode only.
 
-It is an explicit opt-in for a developer who wants local skill edits to take effect immediately; it is not a security failure and normal bootstrap never creates it.
+It is an explicit opt-in for a developer who wants local skill edits to take effect immediately; it is not a security failure. When bootstrap targets the source harness itself, it restores that managed development state. Consumer bootstrap remains copy-only.
 
 Use the normal copier to return that repository to portable copied payloads:
 

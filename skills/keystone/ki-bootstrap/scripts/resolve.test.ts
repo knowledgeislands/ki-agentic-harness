@@ -360,6 +360,18 @@ try {
   rmSync(temporaryTarget, { recursive: true, force: true })
 }
 
+const selfBootstrappingHarness = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-self-source-')))
+try {
+  cpSync(SKILLS_ROOT, join(selfBootstrappingHarness, 'skills'), { recursive: true, dereference: true })
+  const selfBootstrap = join(selfBootstrappingHarness, 'skills', 'keystone', 'ki-bootstrap', 'scripts', 'bootstrap.ts')
+  const result = spawnSync('bun', [selfBootstrap, selfBootstrappingHarness, '--seed', 'ki-repo'], { encoding: 'utf8' })
+  const selfPayload = join(selfBootstrappingHarness, '.claude', 'skills', 'ki-repo')
+  check('source harness bootstrap → exits cleanly', result.status === 0)
+  check('source harness bootstrap → publishes development links', lstatSync(selfPayload).isSymbolicLink())
+} finally {
+  rmSync(selfBootstrappingHarness, { recursive: true, force: true })
+}
+
 const partialRepoText = '# preserve this prefix\n[ki-repo]\nvisibility = "public"\n'
 const partialRepo = fixture(partialRepoText)
 try {

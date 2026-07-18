@@ -564,7 +564,7 @@ function execute(target: string, plan: LinkPlan): void {
   }
 }
 
-function printCheck(target: string, scope: ProjectLinkScope): number {
+function printCheck(target: string, scope: ProjectLinkScope, skillPublication: ProjectSkillPublication): number {
   const config = regularText(join(target, '.ki-config.toml'), '.ki-config.toml').content
   const runtimes = targetRuntimes(config)
   let failures = 0
@@ -585,15 +585,19 @@ function printCheck(target: string, scope: ProjectLinkScope): number {
       const present = entry(dir)?.kind === 'dir' ? readdirSync(dir).filter((name) => name.startsWith('ki-')) : []
       const missing = [...wanted].filter((name) => {
         const source = skillIndex().get(name)
-        return !source || !copiesSource(join(dir, name), name, source)
+        if (!source) return true
+        const destination = join(dir, name)
+        return skillPublication === 'development-link' ? !linkResolvesTo(destination, source) : !copiesSource(destination, name, source)
       })
       const extra = present.filter((name) => !wanted.has(name) && !(name === LOCAL_GOVERNANCE_SKILL && localKiSelfPayload(join(dir, name))))
-      const links = present.filter((name) => entry(join(dir, name))?.kind === 'link')
+      const unexpectedLinks = skillPublication === 'copy' ? present.filter((name) => entry(join(dir, name))?.kind === 'link') : []
       for (const orphan of orphans)
         console.log(`  ${RED}FAIL${RESET}  [BOOT-1] .ki-config.toml declares [${orphan}] but no such skill exists in the harness`)
       if (orphans.length) failures++
-      if (missing.length || extra.length || links.length)
-        console.log(`  ${YELLOW}WARN${RESET}  [BOOT-1] ${subdir} needs copied-payload reconciliation`)
+      if (missing.length || extra.length || unexpectedLinks.length) {
+        const expected = skillPublication === 'development-link' ? 'development-link' : 'copied-payload'
+        console.log(`  ${YELLOW}WARN${RESET}  [BOOT-1] ${subdir} needs ${expected} reconciliation`)
+      }
       const ignored = gitignoresPath(regularText(join(target, '.gitignore'), '.gitignore').content, subdir)
       if (!ignored) console.log(`  ${YELLOW}WARN${RESET}  [BOOT-3] ${subdir}/ is not gitignored`)
       else console.log(`  ${DIM}PASS${RESET}  [BOOT-3] ${subdir}/ is gitignored`)
@@ -633,7 +637,7 @@ export function runProjectLinks(
   const checkOnly = argv.includes('--check')
   const target = resolve(argv.find((arg) => !arg.startsWith('-')) ?? '.')
   try {
-    if (checkOnly) return printCheck(target, scope)
+    if (checkOnly) return printCheck(target, scope, skillPublication)
     const plan = buildPlan(target, scope, skillPublication)
     if (plan.skillOrphans.length) {
       for (const orphan of plan.skillOrphans)

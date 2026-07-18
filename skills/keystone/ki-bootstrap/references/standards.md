@@ -30,9 +30,9 @@ When `ki-repo` is initially seeded or resolved, bootstrap subprocesses `ki-repo`
 
 ## How project skill payloads are stored
 
-- **Normal bootstrap and CONFORM copy** each declared complete skill into the selected runtime directory. The payload contains regular files and directories, not a symlink to a harness checkout, so it remains usable after the temporary bootstrap source disappears. Its generated marker records the logical harness source and a deterministic tree-integrity digest; a later publisher accepts it for refresh only when that marker still matches the payload.
+- **Consumer bootstrap and CONFORM copy** each declared complete skill into the selected runtime directory. The payload contains regular files and directories, not a symlink to a harness checkout, so it remains usable after the temporary bootstrap source disappears. Its generated marker records the logical harness source and a deterministic tree-integrity digest; a later publisher accepts it for refresh only when that marker still matches the payload.
 - **Gitignored and regenerated, never committed.** The copy is a generated deployment payload, not consumer-repository source. The only committed artifact is the `.gitignore` line; a fresh clone re-runs bootstrap or CONFORM to recreate the payload. A changed or forged marker/payload combination is left untouched with a migration diagnostic rather than overwritten.
-- An explicit local-author command, `link-skills.ts --development`, may replace a generated copy with a relative symlink into the active harness checkout. It is never the result of normal bootstrap, CONFORM, or ordinary repository use.
+- An explicit local-author command, `link-skills.ts --development`, may replace a generated copy with a relative symlink into the active harness checkout. `link-skills.ts --development --check` verifies that deliberate development-link state; without `--development`, the check verifies normal copied payloads. Bootstrap preserves and restores that state only when its target is the source harness itself; ordinary repository use remains copy-based.
 
 ## Reproducibility contract
 

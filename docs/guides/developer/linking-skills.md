@@ -4,7 +4,7 @@ This is a developer workflow for working on a local checkout of the harness. It 
 
 Normal bootstrap and CONFORM publish generated regular-file copies into each selected project's runtime skill directory. They are self-contained, gitignored payloads that do not depend on this harness checkout remaining available.
 
-This guide is only for harness authors who deliberately want live local edits: the explicit development command replaces those generated copies with symlinks into this checkout. Re-run the normal copier to return a project to the portable default.
+This guide is only for harness authors who deliberately want live local edits: the explicit development command replaces those generated copies with symlinks into this checkout. The source harness preserves its own managed development links when it is re-bootstrapped; a consumer remains copy-based unless its author explicitly selects this mode. Re-run the normal copier to return a project to the portable default.
 
 ## Link the small global development set
 
@@ -26,6 +26,14 @@ bun ~/.claude/skills/ki-bootstrap/scripts/link-skills.ts --development
 ```
 
 On a Codex-only machine, invoke the same self-locating script from `~/.agents/skills/ki-bootstrap/` instead. Preview a change with `--dry-run`. The links are gitignored and generated; they are never committed into a target repository because they depend on the local harness checkout.
+
+Verify the selected development state with:
+
+```bash
+bun ~/.claude/skills/ki-bootstrap/scripts/link-skills.ts --development --check
+```
+
+Without `--development`, the same checker instead verifies the normal copied-payload contract.
 
 To restore portable copied payloads, run:
 

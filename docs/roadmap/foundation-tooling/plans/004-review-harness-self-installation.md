@@ -1,7 +1,7 @@
 ---
 id: '004'
 title: Review harness self-installation of KI skills
-status: open
+status: in-progress
 roadmap: foundation-tooling/review-harness-self-installation-of-ki-skills
 blocks: governance-consistency/005
 blocked-by: —
@@ -15,9 +15,9 @@ Its own installed runtime skills should support immediate local authoring feedba
 
 ## Current state
 
-Bootstrap and project-link behaviour already distinguishes copied consumer payloads from explicit development linking. The completed checker/educator rollout confirms that `.ki-meta` is a generated mechanical surface, while `.claude/skills` and `.agents/skills` remain the separate runtime instruction surfaces this plan must govern.
+Bootstrap and project-link behaviour distinguish copied consumer payloads from explicit development linking. The completed checker/educator rollout confirms that `.ki-meta` is a generated mechanical surface, while `.claude/skills` and `.agents/skills` remain separate runtime instruction surfaces.
 
-The review must settle the intended symlink policy before changing generated runtime paths or consumer behaviour.
+The selected contract is now: the source harness self-installs managed relative links for its declared skill set and verifies them with `link-skills.ts --development --check`; consumers receive copied payloads and retain their portable copy audit. Bootstrap must preserve that distinction rather than reverting harness links during a vendor refresh.
 
 ## Steps
 

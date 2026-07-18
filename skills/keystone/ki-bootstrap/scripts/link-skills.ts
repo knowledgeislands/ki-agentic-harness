@@ -11,7 +11,7 @@ if (!argv.includes('--check') && !argv.includes('--development')) {
 process.exit(
   runProjectLinks(
     'skills',
-    argv.includes('--check') ? 'copy' : 'development-link',
+    argv.includes('--development') ? 'development-link' : 'copy',
     argv.filter((arg) => arg !== '--development')
   )
 )

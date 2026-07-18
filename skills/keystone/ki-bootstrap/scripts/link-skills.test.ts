@@ -46,8 +46,8 @@ function fixture(tables: string[], runtimes?: string[]): string {
   return dir
 }
 
-function runCheck(dir: string): { code: number; out: string } {
-  const res = spawnSync('bun', [LINKER, '--check', dir], { encoding: 'utf8' })
+function runCheck(dir: string, development = false): { code: number; out: string } {
+  const res = spawnSync('bun', [LINKER, '--check', ...(development ? ['--development'] : []), dir], { encoding: 'utf8' })
   return { code: res.status ?? 1, out: `${res.stdout ?? ''}${res.stderr ?? ''}` }
 }
 
@@ -185,6 +185,13 @@ try {
   check(
     'development link → replaces generated copy with a symlink',
     lstatSync(join(development, '.claude', 'skills', 'ki-kb')).isSymbolicLink()
+  )
+  const copiedCheck = runCheck(development)
+  const developmentCheck = runCheck(development, true)
+  check('development link → ordinary copy check reports reconciliation', copiedCheck.out.includes('needs copied-payload reconciliation'))
+  check(
+    'development link → explicit development check accepts the managed symlink',
+    developmentCheck.code === 0 && !developmentCheck.out.includes('WARN')
   )
   const accidental = spawnSync('bun', [LINKER, development], { encoding: 'utf8' })
   check('legacy link entry point → refuses without explicit development intent', accidental.status !== 0)
