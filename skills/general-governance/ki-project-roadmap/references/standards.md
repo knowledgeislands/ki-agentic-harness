@@ -49,12 +49,12 @@ The canonical authored files are:
 docs/roadmap/
   README.md
   <theme>/
-    ROADMAP.md
+    ROADMAP.md             # frontmatter: code: <THEME>
     plans/                  # present only while the theme has active plans
-      <NNN>-<slug>.md
+      <THEME>-<NNN>-<slug>.md
 ```
 
-Theme names are unique lowercase kebab-case names. A theme roadmap has one H1, all five horizons, and each item is a `###` heading beneath exactly one horizon. Item prose follows its heading until the next item or horizon. A locator is `<theme>/<item-slug>`; the slug is the normalised item heading. Locators must be unique.
+Theme names are unique lowercase kebab-case names. Every theme roadmap begins with one `code: <THEME>` YAML frontmatter field: an unquoted, uppercase semantic identifier that is stable and unique across the repository. A theme roadmap has one H1, all five horizons, and each item is a `###` heading beneath exactly one horizon. Item prose follows its heading until the next item or horizon. A locator is `<theme>/<item-slug>`; the slug is the normalised item heading. Locators must be unique.
 
 A theme directory exists only while its roadmap has at least one item. An empty scaffold-only theme roadmap is drift: CONFORM removes that theme directory, including an empty `plans/` directory. It does not remove a theme holding authored prose or any unexpected content; resolve that case deliberately instead of discarding it. The thematic profile may have zero remaining themes after pruning.
 
@@ -68,6 +68,6 @@ CONFORM is narrower. It may insert a missing canonical horizon blurb and rebuild
 
 ## Plan discipline
 
-Plans are recoverable execution documents for multi-file or multi-step changes. They exist only for `Blocking` and `Next` items and use the [plan format](plan-format.md). Numeric ids form a separate sequence inside each theme, beginning at `001`; the canonical plan reference is `<theme>/<NNN>`. Dependencies use canonical plan references and are bidirectional, existent, and acyclic. No plan moves to `in-progress` while a listed blocker is not `done`.
+Plans are recoverable execution documents for multi-file or multi-step changes. They exist only for `Blocking` and `Next` items and use the [plan format](plan-format.md). Each theme's code prefixes a separate zero-padded serial sequence beginning at `001`, so a canonical plan identifier is `<THEME>-<NNN>`. Dependencies use those globally unique identifiers and are bidirectional, existent, and acyclic. No plan moves to `in-progress` while a listed blocker is not `done`.
 
 A ready plan has concrete Steps, a checkable Verify section, an honest Current state, and a minimal Files touched list. A completed plan and its roadmap item are removed together; git history is the archive.

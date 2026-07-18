@@ -5,16 +5,16 @@ Plans exist only in the thematic profile and only for `Blocking` or `Next` items
 ## Placement
 
 ```text
-docs/roadmap/<theme>/plans/<NNN>-<slug>.md
+docs/roadmap/<theme>/plans/<THEME>-<NNN>-<slug>.md
 ```
 
-`<theme>` matches the canonical roadmap directory. `<NNN>` is a quoted, zero-padded id of at least three digits, allocated within that theme from `001`; the canonical, globally unique plan reference is `<theme>/<NNN>`. `<slug>` is lowercase kebab-case and no longer than 50 characters.
+`<theme>` matches the canonical roadmap directory. `<THEME>` is that roadmap's authored uppercase `code`; `<NNN>` is a zero-padded serial of at least three digits, allocated within that code from `001`. Together they form the quoted, globally unique canonical plan identifier `<THEME>-<NNN>`. `<slug>` is lowercase kebab-case and no longer than 50 characters.
 
 ## Frontmatter
 
 ```yaml
 ---
-id: '004'
+id: 'HOK-004'
 title: Short descriptive title
 status: open
 roadmap: hooks/promote-plan-mode-plans
@@ -25,7 +25,7 @@ blocked-by: —
 
 - `status` is `open`, `in-progress`, or transient `done`.
 - `roadmap` is a qualified `<theme>/<item-slug>` locator for an item in `Blocking` or `Next`; its theme must match the plan directory.
-- `blocks` and `blocked-by` are comma-separated canonical `<theme>/<NNN>` plan references or `—`, and are reverse-consistent.
+- `blocks` and `blocked-by` are comma-separated canonical `<THEME>-<NNN>` plan identifiers or `—`, and are reverse-consistent.
 - There is no `phase` field; the canonical roadmap horizon is authoritative.
 
 ## Body

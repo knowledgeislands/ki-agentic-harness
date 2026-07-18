@@ -11,9 +11,9 @@ Non-KB repositories vary in how much forward-work structure they need. A small r
 The general-governance skill for non-KB forward work is **`ki-project-roadmap`**, replacing `ki-plans`. It governs two automatically detected profiles:
 
 - **Simple:** the root `ROADMAP.md` is the complete and only roadmap artifact. It carries the open work and has no plan collection.
-- **Thematic:** each theme owns its canonical open work in `docs/roadmap/<theme>/ROADMAP.md`, with executable plans at `docs/roadmap/<theme>/plans/<NNN>-<slug>.md`. The root `ROADMAP.md` is an exact generated portfolio linking to the theme roadmaps rather than a second home for their prose. `docs/roadmap/README.md` is the global active-plan index and dependency graph.
+- **Thematic:** each theme owns its canonical open work in `docs/roadmap/<theme>/ROADMAP.md`, with executable plans at `docs/roadmap/<theme>/plans/<THEME>-<NNN>-<slug>.md`. The root `ROADMAP.md` is an exact generated portfolio linking to the theme roadmaps rather than a second home for their prose. `docs/roadmap/README.md` is the global active-plan index and dependency graph.
 
-Each thematic roadmap item has a stable qualified locator, `<theme>/<item-slug>`. Numeric plan ids are local to their theme and start at `001`; the canonical plan reference is `<theme>/<NNN>`, which dependencies use across the repository. An item has exactly one authoritative home. Work requiring an executable plan expands into the thematic profile before the plan is created.
+Each thematic roadmap item has a stable qualified locator, `<theme>/<item-slug>`. Every theme declares a stable uppercase code, and plan ids pair it with a serial starting at `001`; the canonical plan identifier is `<THEME>-<NNN>`, which dependencies use across the repository. An item has exactly one authoritative home. Work requiring an executable plan expands into the thematic profile before the plan is created.
 
 `ki-plan` remains the process skill that drives individual plan lifecycles and composes on the `ki-project-roadmap` standard. A Knowledge Base does not use either project-roadmap profile or its artifacts: `ki-kb-streams` wholly owns its thematic forward view and execution checklists.
 

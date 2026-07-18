@@ -40,14 +40,24 @@ function run(script: string, root: string, args: string[] = []): { code: number;
   return { code: result.status ?? 1, out: `${result.stdout ?? ''}${result.stderr ?? ''}` }
 }
 
-function roadmap(title: string, items: Partial<Record<'Blocking' | 'Next' | 'Soon' | 'Waiting for' | 'Future', string[]>> = {}): string {
-  const lines = [`# ${title}`, '']
+function roadmap(
+  title: string,
+  items: Partial<Record<'Blocking' | 'Next' | 'Soon' | 'Waiting for' | 'Future', string[]>> = {},
+  code?: string
+): string {
+  const lines = code ? ['---', `code: ${code}`, '---', '', `# ${title}`, ''] : [`# ${title}`, '']
   for (const horizon of HORIZONS) {
     lines.push(`## ${horizon}`, '', HORIZON_BLURBS[horizon], '')
     for (const item of items[horizon] ?? []) lines.push(`### ${item}`, '', `${item} details.`, '')
   }
   return `${lines.join('\n').trimEnd()}\n`
 }
+
+const themeRoadmap = (
+  code: string,
+  title: string,
+  items: Partial<Record<'Blocking' | 'Next' | 'Soon' | 'Waiting for' | 'Future', string[]>> = {}
+): string => roadmap(title, items, code)
 
 function plan(id: string, title: string, locator: string, blocks = '—', blockedBy = '—', status = 'open'): string {
   return [
@@ -92,15 +102,21 @@ function plan(id: string, title: string, locator: string, blocks = '—', blocke
 function thematicFixture(): string {
   const root = fixture()
   for (const theme of ['hooks', 'runtime']) mkdirSync(join(root, 'docs', 'roadmap', theme, 'plans'), { recursive: true })
-  writeFileSync(join(root, 'docs', 'roadmap', 'hooks', 'ROADMAP.md'), roadmap('Hooks roadmap', { Blocking: ['Harden hook linking'] }))
-  writeFileSync(join(root, 'docs', 'roadmap', 'runtime', 'ROADMAP.md'), roadmap('Runtime roadmap', { Next: ['Add runtime parity'] }))
   writeFileSync(
-    join(root, 'docs', 'roadmap', 'hooks', 'plans', '001-harden-hook-linking.md'),
-    plan('001', 'Harden hook linking', 'hooks/harden-hook-linking', 'runtime/001')
+    join(root, 'docs', 'roadmap', 'hooks', 'ROADMAP.md'),
+    themeRoadmap('HOK', 'Hooks roadmap', { Blocking: ['Harden hook linking'] })
   )
   writeFileSync(
-    join(root, 'docs', 'roadmap', 'runtime', 'plans', '001-add-runtime-parity.md'),
-    plan('001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'hooks/001')
+    join(root, 'docs', 'roadmap', 'runtime', 'ROADMAP.md'),
+    themeRoadmap('RTP', 'Runtime roadmap', { Next: ['Add runtime parity'] })
+  )
+  writeFileSync(
+    join(root, 'docs', 'roadmap', 'hooks', 'plans', 'HOK-001-harden-hook-linking.md'),
+    plan('HOK-001', 'Harden hook linking', 'hooks/harden-hook-linking', 'RTP-001')
+  )
+  writeFileSync(
+    join(root, 'docs', 'roadmap', 'runtime', 'plans', 'RTP-001-add-runtime-parity.md'),
+    plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'HOK-001')
   )
   return root
 }
@@ -181,14 +197,14 @@ function thematicFixture(): string {
   }
 }
 
-// Thematic generation, theme-local ids, qualified references, and exact drift checks.
+// Thematic generation, theme-coded identifiers, dependency references, and exact drift checks.
 {
   const root = thematicFixture()
   try {
     mkdirSync(join(root, 'docs', 'roadmap', 'docs'), { recursive: true })
     writeFileSync(
       join(root, 'docs', 'roadmap', 'docs', 'ROADMAP.md'),
-      roadmap('Docs roadmap', { Soon: ['Allow `printWidth` via `.ki-config.toml`'] })
+      themeRoadmap('DOC', 'Docs roadmap', { Soon: ['Allow `printWidth` via `.ki-config.toml`'] })
     )
     const dry = run(CONFORM, root, ['--dry-run'])
     check('thematic CONFORM dry-run exits zero', dry.code === 0)
@@ -203,7 +219,7 @@ function thematicFixture(): string {
     )
     const audited = run(AUDIT, root)
     check('valid thematic profile audits cleanly', audited.code === 0 && !/FAIL \(/.test(audited.out))
-    check('theme-local plan ids may repeat across themes', audited.code === 0)
+    check('theme-coded plan ids are globally unique', audited.code === 0)
     check('theme without active plans needs no plans directory', !existsSync(join(root, 'docs', 'roadmap', 'docs', 'plans')))
     check(
       'root is a compact linked projection',
@@ -219,8 +235,8 @@ function thematicFixture(): string {
       readFileSync(join(root, 'ROADMAP.md'), 'utf8').includes('docs/ROADMAP.md#allow-printwidth-via-ki-configtoml')
     )
     const index = readFileSync(join(root, 'docs', 'roadmap', 'README.md'), 'utf8')
-    check('global index renders qualified plan references', index.includes('[hooks/001](') && index.includes('[runtime/001]('))
-    check('global index renders qualified dependency edge', index.includes('hooks/001 ──► runtime/001'))
+    check('global index renders theme-coded plan identifiers', index.includes('[HOK-001](') && index.includes('[RTP-001]('))
+    check('global index renders theme-coded dependency edge', index.includes('HOK-001 ──► RTP-001'))
     writeFileSync(join(root, 'ROADMAP.md'), '# drift\n')
     const drift = run(AUDIT, root)
     check('projection drift fails exactly', drift.code !== 0 && drift.out.includes('PROJ-1'))
@@ -252,12 +268,29 @@ function thematicFixture(): string {
   }
 }
 
+// Theme codes are required, strict, and globally unique.
+for (const [label, mutate] of [
+  ['missing theme code', (text: string) => text.replace(/^---\ncode: HOK\n---\n\n/, '')],
+  ['malformed theme code', (text: string) => text.replace('code: HOK', 'code: hook')],
+  ['duplicate theme code', (text: string) => text.replace('code: HOK', 'code: RTP')]
+] as const) {
+  const root = thematicFixture()
+  try {
+    const path = join(root, 'docs', 'roadmap', 'hooks', 'ROADMAP.md')
+    writeFileSync(path, mutate(readFileSync(path, 'utf8')))
+    const result = run(AUDIT, root)
+    check(`${label} fails THEME-2`, result.code !== 0 && result.out.includes('THEME-2'))
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+
 // Empty scaffold-only themes are pruned, while the durable index and repository README remain.
 {
   const root = fixture()
   try {
     mkdirSync(join(root, 'docs', 'roadmap', 'hooks'), { recursive: true })
-    writeFileSync(join(root, 'docs', 'roadmap', 'hooks', 'ROADMAP.md'), roadmap('Hooks roadmap'))
+    writeFileSync(join(root, 'docs', 'roadmap', 'hooks', 'ROADMAP.md'), themeRoadmap('HOK', 'Hooks roadmap'))
     writeFileSync(join(root, 'README.md'), '# Repository readme\n')
     const dry = run(CONFORM, root, ['--dry-run'])
     check('empty-theme CONFORM dry-run exits zero', dry.code === 0)
@@ -287,7 +320,7 @@ function thematicFixture(): string {
   try {
     const path = join(root, 'docs', 'roadmap', 'hooks', 'ROADMAP.md')
     mkdirSync(join(root, 'docs', 'roadmap', 'hooks'), { recursive: true })
-    writeFileSync(path, `${roadmap('Hooks roadmap')}\nKeep this authored context.\n`)
+    writeFileSync(path, `${themeRoadmap('HOK', 'Hooks roadmap')}\nKeep this authored context.\n`)
     const result = run(CONFORM, root)
     check('CONFORM refuses to prune an empty theme with authored context', result.code !== 0 && result.out.includes('SAFE-1'))
     check('CONFORM preserves authored empty-theme context', readFileSync(path, 'utf8').includes('Keep this authored context.'))
@@ -304,17 +337,17 @@ function thematicFixture(): string {
     const title = 'Require canonical horizon blurbs and restore them during CONFORM'
     const themeRoot = join(root, 'docs', 'roadmap', theme)
     mkdirSync(join(themeRoot, 'plans'), { recursive: true })
-    writeFileSync(join(themeRoot, 'ROADMAP.md'), roadmap('Project roadmap roadmap', { Next: [title] }))
+    writeFileSync(join(themeRoot, 'ROADMAP.md'), themeRoadmap('PRJ', 'Project roadmap roadmap', { Next: [title] }))
     writeFileSync(
-      join(themeRoot, 'plans', '001-canonical-horizon-blurbs.md'),
-      plan('001', title, 'project-roadmap/require-canonical-horizon-blurbs-and-restore-them-during-conform')
+      join(themeRoot, 'plans', 'PRJ-001-canonical-horizon-blurbs.md'),
+      plan('PRJ-001', title, 'project-roadmap/require-canonical-horizon-blurbs-and-restore-them-during-conform')
     )
     const conformed = run(CONFORM, root)
     const generated = readFileSync(join(root, 'docs', 'roadmap', 'README.md'), 'utf8')
     check('wide active-plan index conforms cleanly', conformed.code === 0 && run(AUDIT, root).code === 0)
     check(
       'wide active-plan index uses a linked heading and metadata list',
-      generated.includes('### [project-roadmap/001](project-roadmap/plans/001-canonical-horizon-blurbs.md)') &&
+      generated.includes('### [PRJ-001](project-roadmap/plans/PRJ-001-canonical-horizon-blurbs.md)') &&
         generated.includes(`- **Title:** ${title}`) &&
         generated.includes('- **Theme:** `project-roadmap`') &&
         generated.includes('- **Roadmap item:** `project-roadmap/require-canonical-horizon-blurbs-and-restore-them-during-conform`') &&
@@ -329,8 +362,8 @@ function thematicFixture(): string {
 {
   const root = thematicFixture()
   try {
-    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '001-add-runtime-parity.md')
-    writeFileSync(path, plan('001', 'Add runtime parity', 'hooks/missing-item', '—', 'hooks/001'))
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', 'RTP-001-add-runtime-parity.md')
+    writeFileSync(path, plan('RTP-001', 'Add runtime parity', 'hooks/missing-item', '—', 'HOK-001'))
     const result = run(AUDIT, root)
     check('unresolved cross-theme locator fails', result.code !== 0 && result.out.includes('PLAN-2'))
   } finally {
@@ -340,7 +373,10 @@ function thematicFixture(): string {
 {
   const root = thematicFixture()
   try {
-    writeFileSync(join(root, 'docs', 'roadmap', 'runtime', 'ROADMAP.md'), roadmap('Runtime roadmap', { Soon: ['Add runtime parity'] }))
+    writeFileSync(
+      join(root, 'docs', 'roadmap', 'runtime', 'ROADMAP.md'),
+      themeRoadmap('RTP', 'Runtime roadmap', { Soon: ['Add runtime parity'] })
+    )
     const result = run(AUDIT, root)
     check('plan linked outside Blocking/Next fails', result.code !== 0 && result.out.includes('plans exist only in Blocking or Next'))
   } finally {
@@ -348,18 +384,18 @@ function thematicFixture(): string {
   }
 }
 
-// Qualified plan references collide only within a theme; dependency cycles remain invalid.
+// Theme-coded plan identifiers are globally unique; dependency cycles remain invalid.
 {
   const root = thematicFixture()
   try {
     const hooksRoadmap = join(root, 'docs', 'roadmap', 'hooks', 'ROADMAP.md')
-    writeFileSync(hooksRoadmap, roadmap('Hooks roadmap', { Blocking: ['Harden hook linking', 'Audit hook installation'] }))
+    writeFileSync(hooksRoadmap, themeRoadmap('HOK', 'Hooks roadmap', { Blocking: ['Harden hook linking', 'Audit hook installation'] }))
     writeFileSync(
-      join(root, 'docs', 'roadmap', 'hooks', 'plans', '001-audit-hook-installation.md'),
-      plan('001', 'Audit hook installation', 'hooks/audit-hook-installation')
+      join(root, 'docs', 'roadmap', 'hooks', 'plans', 'HOK-001-audit-hook-installation.md'),
+      plan('HOK-001', 'Audit hook installation', 'hooks/audit-hook-installation')
     )
     const duplicate = run(AUDIT, root)
-    check('duplicate qualified plan reference fails within a theme', duplicate.code !== 0 && duplicate.out.includes('hooks/001'))
+    check('duplicate theme-coded plan identifier fails', duplicate.code !== 0 && duplicate.out.includes('HOK-001'))
   } finally {
     rmSync(root, { recursive: true, force: true })
   }
@@ -367,10 +403,10 @@ function thematicFixture(): string {
 {
   const root = thematicFixture()
   try {
-    const hooks = join(root, 'docs', 'roadmap', 'hooks', 'plans', '001-harden-hook-linking.md')
-    const runtime = join(root, 'docs', 'roadmap', 'runtime', 'plans', '001-add-runtime-parity.md')
-    writeFileSync(hooks, plan('001', 'Harden hook linking', 'hooks/harden-hook-linking', 'runtime/001', 'runtime/001'))
-    writeFileSync(runtime, plan('001', 'Add runtime parity', 'runtime/add-runtime-parity', 'hooks/001', 'hooks/001'))
+    const hooks = join(root, 'docs', 'roadmap', 'hooks', 'plans', 'HOK-001-harden-hook-linking.md')
+    const runtime = join(root, 'docs', 'roadmap', 'runtime', 'plans', 'RTP-001-add-runtime-parity.md')
+    writeFileSync(hooks, plan('HOK-001', 'Harden hook linking', 'hooks/harden-hook-linking', 'RTP-001', 'RTP-001'))
+    writeFileSync(runtime, plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', 'HOK-001', 'HOK-001'))
     const cycle = run(AUDIT, root)
     check('dependency cycle fails', cycle.code !== 0 && cycle.out.includes('dependency cycle'))
   } finally {
@@ -382,9 +418,9 @@ function thematicFixture(): string {
 {
   const root = thematicFixture()
   try {
-    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '001-add-runtime-parity.md')
-    const original = plan('001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'hooks/001')
-    writeFileSync(path, original.replace("id: '001'", 'id: 001').concat("\nid: '001'\n"))
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', 'RTP-001-add-runtime-parity.md')
+    const original = plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'HOK-001')
+    writeFileSync(path, original.replace("id: 'RTP-001'", 'id: RTP-001').concat("\nid: 'RTP-001'\n"))
     const result = run(AUDIT, root)
     check('quoted id must occur in frontmatter, not the body', result.code !== 0 && result.out.includes('id must be quoted in frontmatter'))
   } finally {
@@ -394,8 +430,8 @@ function thematicFixture(): string {
 {
   const root = thematicFixture()
   try {
-    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '001-add-runtime-parity.md')
-    const original = plan('001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'hooks/001')
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', 'RTP-001-add-runtime-parity.md')
+    const original = plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'HOK-001')
     writeFileSync(path, original.replace('title: Add runtime parity', 'title: Add runtime parity\ntitle: Duplicate title'))
     const result = run(AUDIT, root)
     check('duplicate frontmatter keys fail', result.code !== 0 && result.out.includes("duplicate frontmatter key 'title'"))
@@ -406,8 +442,8 @@ function thematicFixture(): string {
 {
   const root = thematicFixture()
   try {
-    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '001-add-runtime-parity.md')
-    const original = plan('001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'hooks/001')
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', 'RTP-001-add-runtime-parity.md')
+    const original = plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'HOK-001')
     writeFileSync(path, original.replace('status: open', 'status: open\nowner: nobody'))
     const result = run(AUDIT, root)
     check('unexpected frontmatter keys fail', result.code !== 0 && result.out.includes('frontmatter has unexpected field(s): owner'))
@@ -418,8 +454,8 @@ function thematicFixture(): string {
 for (const field of ['id', 'title', 'status', 'roadmap']) {
   const root = thematicFixture()
   try {
-    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '001-add-runtime-parity.md')
-    const original = plan('001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'hooks/001')
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', 'RTP-001-add-runtime-parity.md')
+    const original = plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'HOK-001')
     writeFileSync(path, original.replace(new RegExp(`^${field}:.*$`, 'm'), `${field}:`))
     const result = run(AUDIT, root)
     check(`empty ${field} fails`, result.code !== 0 && result.out.includes(`frontmatter field '${field}' must not be empty`))
@@ -430,12 +466,38 @@ for (const field of ['id', 'title', 'status', 'roadmap']) {
 {
   const root = thematicFixture()
   try {
-    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '001-add-runtime-parity.md')
-    writeFileSync(path, plan('001', 'Add runtime parity', 'runtime/add-runtime-parity', '001', 'hooks/001'))
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', 'RTP-001-add-runtime-parity.md')
+    writeFileSync(path, plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '001', 'HOK-001'))
+    const result = run(AUDIT, root)
+    check('bare dependency ids fail', result.code !== 0 && result.out.includes("dependency '001' is not a <THEME>-<NNN> plan identifier"))
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+{
+  const root = thematicFixture()
+  try {
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', 'RTP-001-add-runtime-parity.md')
+    writeFileSync(path, plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', 'RTP-001, RTP-001', 'HOK-001'))
     const result = run(AUDIT, root)
     check(
-      'bare dependency ids fail',
-      result.code !== 0 && result.out.includes("dependency '001' is not a qualified <theme>/<NNN> plan reference")
+      'duplicate theme-coded dependency references fail',
+      result.code !== 0 && result.out.includes('blocks contains duplicate id(s): RTP-001')
+    )
+    check('theme-coded self dependencies fail', result.code !== 0 && result.out.includes('plan RTP-001 must not depend on itself'))
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+{
+  const root = thematicFixture()
+  try {
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', 'RTP-001-add-runtime-parity.md')
+    writeFileSync(path, plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity'))
+    const result = run(AUDIT, root)
+    check(
+      'theme-coded dependency reciprocity is required',
+      result.code !== 0 && result.out.includes('blocks RTP-001, but its blocked-by omits HOK-001')
     )
   } finally {
     rmSync(root, { recursive: true, force: true })
@@ -444,37 +506,8 @@ for (const field of ['id', 'title', 'status', 'roadmap']) {
 {
   const root = thematicFixture()
   try {
-    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '001-add-runtime-parity.md')
-    writeFileSync(path, plan('001', 'Add runtime parity', 'runtime/add-runtime-parity', 'runtime/001, runtime/001', 'hooks/001'))
-    const result = run(AUDIT, root)
-    check(
-      'duplicate qualified dependency references fail',
-      result.code !== 0 && result.out.includes('blocks contains duplicate id(s): runtime/001')
-    )
-    check('qualified self dependencies fail', result.code !== 0 && result.out.includes('plan runtime/001 must not depend on itself'))
-  } finally {
-    rmSync(root, { recursive: true, force: true })
-  }
-}
-{
-  const root = thematicFixture()
-  try {
-    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '001-add-runtime-parity.md')
-    writeFileSync(path, plan('001', 'Add runtime parity', 'runtime/add-runtime-parity'))
-    const result = run(AUDIT, root)
-    check(
-      'qualified dependency reciprocity is required',
-      result.code !== 0 && result.out.includes('blocks runtime/001, but its blocked-by omits hooks/001')
-    )
-  } finally {
-    rmSync(root, { recursive: true, force: true })
-  }
-}
-{
-  const root = thematicFixture()
-  try {
-    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '001-add-runtime-parity.md')
-    const original = plan('001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'hooks/001')
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', 'RTP-001-add-runtime-parity.md')
+    const original = plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'HOK-001')
     writeFileSync(path, original.replace('## Current state', '## Verify first'))
     const result = run(AUDIT, root)
     check(
@@ -488,8 +521,8 @@ for (const field of ['id', 'title', 'status', 'roadmap']) {
 for (const section of ['Steps', 'Verify']) {
   const root = thematicFixture()
   try {
-    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '001-add-runtime-parity.md')
-    const original = plan('001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'hooks/001')
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', 'RTP-001-add-runtime-parity.md')
+    const original = plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'HOK-001')
     const next = section === 'Steps' ? 'Files touched' : 'Dependencies / blocks'
     writeFileSync(path, original.replace(new RegExp(`(## ${section})[\\s\\S]*?(?=## ${next})`), `$1\n\n`))
     const result = run(AUDIT, root)
@@ -501,9 +534,9 @@ for (const section of ['Steps', 'Verify']) {
 {
   const root = thematicFixture()
   try {
-    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', '001-add-runtime-parity.md')
-    const composed = plan('001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'hooks/001')
-      .replace('blocked-by: hooks/001', 'blocked-by: hooks/001\nhandoff: true\ntier: sonnet\nreadiness: pending')
+    const path = join(root, 'docs', 'roadmap', 'runtime', 'plans', 'RTP-001-add-runtime-parity.md')
+    const composed = plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'HOK-001')
+      .replace('blocked-by: HOK-001', 'blocked-by: HOK-001\nhandoff: true\ntier: sonnet\nreadiness: pending')
       .concat('\n## Decisions\n\nLocked: use the thematic layout.\n\nEscalate: none.\n')
     writeFileSync(path, composed)
     run(CONFORM, root)

@@ -1,7 +1,7 @@
 ---
-id: '001'
+id: 'GOV-001'
 title: Prefix plan identifiers with stable theme codes
-status: open
+status: in-progress
 roadmap: governance-consistency/prefix-plan-identifiers-with-stable-theme-codes
 blocks: —
 blocked-by: —
@@ -15,11 +15,11 @@ Each thematic roadmap needs one authored, stable, semantic code so a plan can id
 
 ## Current state
 
-The roadmap contract currently allocates a quoted numeric `id` within each theme, uses `<theme>/<NNN>` as the canonical reference, and names plan files `<NNN>-<slug>.md`.
+The roadmap contract previously allocated a quoted numeric `id` within each theme, used `<theme>/<NNN>` as the canonical reference, and named plan files `<NNN>-<slug>.md`.
 
 There are no active plans when this work begins.
 
-This plan is necessarily authored in the pre-migration form; its execution must migrate it with every other remaining plan reference, then delete it on completion rather than preserving a legacy exception.
+This plan is the first migrated artifact. Its execution must migrate every remaining plan reference, then delete this plan on completion rather than preserving a legacy exception.
 
 ## Steps
 

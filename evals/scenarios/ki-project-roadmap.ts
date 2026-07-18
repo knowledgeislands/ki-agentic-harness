@@ -35,7 +35,7 @@ export const scenarios: Scenario[] = [
       { name: 'no title-only linkage', re: /qualified|locator|not.*title|rather than.*title/i }
     ],
     rubric:
-      'House fact: thematic plans live at docs/roadmap/<theme>/plans/<NNN>-<slug>.md. Their roadmap field uses the stable qualified <theme>/<item-slug> locator, not a title. Numeric plan ids are zero-padded, local to their theme, and start at 001 in each theme; the canonical plan reference is <theme>/<NNN>.'
+      'House fact: thematic plans live at docs/roadmap/<theme>/plans/<THEME>-<NNN>-<slug>.md. Their roadmap field uses the stable qualified <theme>/<item-slug> locator, not a title. Each theme declares a stable uppercase code, and plan ids use that code plus a zero-padded serial from 001; the canonical plan identifier is <THEME>-<NNN>.'
   },
   {
     skill: 'ki-project-roadmap',
@@ -63,6 +63,6 @@ export const scenarios: Scenario[] = [
       { name: 'no in-progress before blockers done', re: /done|finish|complete|wait|before/i }
     ],
     rubric:
-      'House fact: numeric ids are theme-local, so blocks/blocked-by are bidirectional and use qualified <theme>/<NNN> plan references: seo/005 lists blocked-by: content/004, and content/004 lists blocks: seo/005. No plan may move to in-progress before its blockers are done.'
+      'House fact: theme-coded plan identifiers are globally unique, so blocks/blocked-by are bidirectional and use <THEME>-<NNN>: SEO-005 lists blocked-by: CNT-004, and CNT-004 lists blocks: SEO-005. No plan may move to in-progress before its blockers are done.'
   }
 ]
