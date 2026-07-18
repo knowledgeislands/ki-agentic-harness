@@ -19,6 +19,8 @@ The two process skills are independently usable, but their relationship is impli
 
 As a result, an agent can treat a roadmap update as a separate reconstruction task instead of carrying the grounded learning from the current conversation directly into the next planning choice.
 
+This plan is provisional until the mandatory post-002 planning refresh, which will incorporate the actual execution and naming lessons from plans 001–002 before the final handoff work begins.
+
 ## Steps
 
 1. Define the minimal `ki-recap` to `ki-next` handoff: grounded outstanding work, learning routes the user has approved or is considering, and roadmap-ready Specific actions from the current session.
@@ -47,4 +49,4 @@ As a result, an agent can treat a roadmap update as a separate reconstruction ta
 
 This is last in the agreed execution chain.
 
-It follows `foundation-tooling/004`, which itself follows the root `governance-consistency/000` plan through the foundation-tooling sequence.
+It follows `foundation-tooling/004`, which itself follows the root `governance-consistency/000` plan through the foundation-tooling sequence. Refresh this plan after 002 completes; do not execute the current provisional text unchanged.

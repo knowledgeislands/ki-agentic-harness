@@ -19,6 +19,8 @@ Bootstrap and project-link behaviour already distinguishes copied consumer paylo
 
 The review must settle the intended symlink policy before changing generated runtime paths or consumer behaviour.
 
+This plan is provisional until the mandatory post-002 planning refresh, which must reconcile it with the delivered checker and educator functional areas before execution.
+
 ## Steps
 
 1. Inventory every harness self-installation and consumer publication path: source `skills/`, `.claude/skills/`, `.agents/skills/`, global runtime links, agents, generated ignores, and existing development-link entrypoints.
@@ -45,6 +47,6 @@ The review must settle the intended symlink policy before changing generated run
 
 ## Dependencies / blocks
 
-Blocked by `foundation-tooling/003` solely to retain the requested delivery order.
+Blocked by `foundation-tooling/003` to retain the requested delivery order. Its paths and assumptions must be refreshed after 002 before 003 begins.
 
 The work must preserve the existing distinction between local development linking and consumer vendoring.

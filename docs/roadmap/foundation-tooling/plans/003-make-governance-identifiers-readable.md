@@ -19,15 +19,19 @@ The reporter resolves rubric titles for some human output, but the repository ha
 
 Existing codes are durable references and must not be renamed merely for aesthetics.
 
+This plan is provisional until the mandatory post-002 planning refresh. The checker/educator work will provide concrete naming examples and may change the files and conventions this plan should govern.
+
 ## Steps
 
-1. Inventory requirement, rubric, diagnostic, and plan identifiers; classify each by its owner, stability requirement, human-facing contexts, and current rendered form.
-2. Decide and record the presentation contract: human output presents the readable title with its stable code in one canonical order, links or citations resolve to the owning definition, and machine JSONL retains the stable code separately.
-3. Identify cases where title-first presentation and navigation solve the problem, versus any genuine need for a semantic, reorder-safe code scheme; write a decision record before changing durable identifiers.
-4. Implement the canonical reporter and aggregate formatter changes once, rather than teaching every checker to compose titles or duplicate wording.
-5. Update feature definitions, rubric conventions, guides, and checker tests so every emitted code can resolve to one readable owner title and durable citation.
-6. Re-vendor the harness and run reporter, fleet, feature-definition, and aggregate tests; then run `bun run test` and `bun run ki:audit` sequentially.
-7. Re-bootstrap representative consumer repositories and confirm their human audit/conform presentation is readable while their machine stream remains stable and parseable.
+1. At the post-002 checkpoint, review this plan before execution and incorporate the delivered names and boundaries from `.ki-meta/checkers/`, `.ki-meta/educators/`, command entrypoints, modules such as `checker-reporter`, and any newly exposed naming ambiguity.
+2. Inventory governance naming surfaces separately: functional-area directories, command verbs, module and role nouns, requirement and rubric identifiers, diagnostic codes, plan references, human titles, and machine fields. Classify each by owner, scope, stability requirement, collision domain, and rendered context.
+3. Compare explicit convention candidates using worked repository examples: plural responsibility nouns for functional-area directories; singular action verbs for commands; role nouns for implementation modules; title-first rendering with a stable opaque code; owner-scoped semantic slugs; and hybrid semantic-family plus serial identifiers. Assess readability, uniqueness, reorder safety, rename pressure, citation stability, and migration cost.
+4. Decide which distinctions are normative rather than forcing one scheme across every surface. In particular, do not encode mutable execution order into durable identifiers, and do not make a path name or command verb carry ownership information that belongs in metadata.
+5. Record the selected naming and presentation contract before implementation: human output presents a readable title and stable code in one canonical order, links resolve to the owning definition, and machine JSONL retains separate stable identifier, title, owner, and finding-type fields as applicable.
+6. Identify cases where title-first presentation and navigation solve the problem, versus a genuine need for semantic, reorder-safe identifiers; write a decision record before changing any durable code or externally referenced path.
+7. Implement canonical reporter and aggregate formatter changes once, rather than teaching every checker to compose titles or duplicate wording, then update definitions, conventions, guides, and tests so emitted identifiers resolve to one readable owner and citation.
+8. Re-vendor the harness and run reporter, fleet, feature-definition, and aggregate tests; then run `bun run test` and `bun run ki:audit` sequentially.
+9. Re-bootstrap representative consumer repositories and confirm human audit/conform presentation is readable while machine streams and approved durable references remain stable and parseable.
 
 ## Files touched
 
@@ -41,10 +45,11 @@ Existing codes are durable references and must not be renamed merely for aesthet
 - Every human-facing finding renders a readable criterion title and its stable code from one canonical metadata source.
 - JSONL consumers continue to receive stable code fields and do not parse terminal presentation.
 - No checker copies title formatting or changes durable codes without an approved decision and migration.
+- The adopted conventions explicitly distinguish functional-area directories, command verbs, implementation-role names, human titles, and durable machine identifiers, with repository examples for each.
 - Full harness tests and aggregate audit pass sequentially, followed by representative consumer checks.
 
 ## Dependencies / blocks
 
-Blocked by `foundation-tooling/002` solely to preserve the requested execution order; it does not depend on EDUCATE semantics for correctness.
+Blocked by `foundation-tooling/002`. Its current content is provisional and must be refreshed from the actual checker/educator implementation before execution begins.
 
 It blocks `foundation-tooling/004` in that requested order.
