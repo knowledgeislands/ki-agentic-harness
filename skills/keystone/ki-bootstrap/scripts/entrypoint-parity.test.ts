@@ -110,6 +110,21 @@ for (const record of [
 process.exit(ok ? 0 : 1)
 `
 
+const elementConformFixture = `#!/usr/bin/env bun
+import { appendFileSync } from 'node:fs'
+const selected = process.argv.find((arg) => arg.startsWith('--mode-element='))?.slice('--mode-element='.length)
+const valid = selected === 'prepare' || selected === 'normalise'
+if (valid) appendFileSync('mode-element-order.log', selected + '\\n')
+const run = { version: 1, runId: crypto.randomUUID(), mode: 'conform', concern: 'element-fixture', target: process.cwd(), generatedAt: new Date().toISOString() }
+const level = valid ? 'PASS' : 'FAIL'
+for (const record of [
+  { ...run, record: 'meta' },
+  { ...run, record: 'finding', type: 'M', level, code: 'FIX-1', message: valid ? 'element selected' : 'missing selected element', ref: 'references/rubric.md' },
+  { ...run, record: 'summary', summary: { fail: valid ? 0 : 1, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: valid ? 1 : 0 } }
+]) process.stdout.write(JSON.stringify(record) + '\\n')
+process.exit(valid ? 0 : 1)
+`
+
 try {
   const bootstrapped = run('bun', [bootstrap, fixture], root)
   check('bootstrap fixture → exits cleanly', bootstrapped.status === 0)
@@ -218,6 +233,36 @@ try {
       wrapper.stderr.trim() === withoutBunTransport(packageRun.stderr).trim()
     )
   }
+
+  const elementRoot = join(fixture, '.ki-meta', 'checkers', 'ki-elements')
+  mkdirSync(join(elementRoot, 'scripts'), { recursive: true })
+  mkdirSync(join(elementRoot, 'references'), { recursive: true })
+  writeFileSync(join(elementRoot, 'scripts', 'conform.ts'), elementConformFixture)
+  writeFileSync(join(elementRoot, 'references', 'rubric.md'), '- **FIX-1 [M]** Fixture health check.\n')
+  writeFileSync(
+    join(elementRoot, 'mode-elements.json'),
+    JSON.stringify({
+      version: 1,
+      elements: [
+        { id: 'prepare', mode: 'conform', phase: 'prepare', entry: 'scripts/conform.ts', reads: ['fixture'], writes: ['fixture-config'] },
+        {
+          id: 'normalise',
+          mode: 'conform',
+          phase: 'normalise',
+          entry: 'scripts/conform.ts',
+          after: ['prepare'],
+          reads: ['fixture'],
+          writes: ['fixture-output']
+        }
+      ]
+    })
+  )
+  const elementRun = run('bun', [join(fixture, '.ki-meta', 'bin', 'aggregate.ts'), 'conform', '--skill', 'ki-elements'], fixture, env)
+  check('aggregate element scheduler → selects each shared entry by element id', elementRun.status === 0)
+  check(
+    'aggregate element scheduler → runs prepare before normalise',
+    readFileSync(join(fixture, 'mode-element-order.log'), 'utf8') === 'prepare\nnormalise\n'
+  )
 } finally {
   rmSync(fixture, { recursive: true, force: true })
 }
