@@ -9,13 +9,13 @@ blocked-by: —
 
 ## Context
 
-Using the harness has three distinct journeys that are currently blurred together: installing the harness for a user, bootstrapping one repository, and opting into live local development links while authoring the harness.
+Using the harness has three distinct journeys that are currently blurred together: installing the harness for a user, bootstrapping one repository, and deliberately linking repository-local runtime commands while developing locally.
 
 An ordinary user installs the harness once to make the global keystone and process skills available to an agent runtime. When Claude Code is selected, that same installation also installs its durable hook payload.
 
 The user then bootstraps each repository to make it self-governing and publish only its declared project-local skills.
 
-Symlinks are useful only to a developer deliberately working from a local harness checkout; they are not a durable installation mechanism.
+Symlinks are useful only as an explicit repository-local development choice, including a future `ki-self` command surface; they are not a durable installation mechanism.
 
 ## Current state
 
@@ -31,35 +31,38 @@ Every production script has a live caller or a live role; there is no deletion c
 
 | Current surface | Observed role | Target responsibility |
 | --- | --- | --- |
-| `bootstrap.sh` / `bootstrap.ts` | Remote entry and repository chain engine | Rename to `repo-bootstrap.sh` / `repo-bootstrap.ts` in `ki-bootstrap`. |
+| `bootstrap.sh` / `bootstrap.ts` | Remote entry and repository chain engine | Rename to `repo-bootstrap.sh` at `scripts/` and `repo-bootstrap.ts` below `scripts/lib/` in `ki-bootstrap`. |
 | `install-hooks.sh` / `install-hooks.ts` | Durable Claude hook-payload installer | Retain as an internal `user-install` component; give its implementation a descriptive Claude-payload name if it remains separately executable. |
-| `sync-skills.ts` | Global checkout-dependent skill links | Move to `ki-harness` as an explicitly named development-global linker. |
-| `link-skills.ts` / `link-agents.ts` | Project-local checkout-dependent links | Move to `ki-harness` as explicitly named development linkers. |
+| `sync-skills.ts` | Global checkout-dependent skill links | Replace with a `ki-repo` repository-local command linker that can serve `ki-self` and harness development. |
+| `link-skills.ts` / `link-agents.ts` | Project-local checkout-dependent links | Move to `ki-repo` as explicitly named repository-local development linkers. |
 | `copy-skills.ts` | Normal project-local regular-file skill publisher | Keep with `ki-bootstrap`; it is part of repository bootstrap, not development linking. |
-| `project-links.ts` / `package-scripts.ts` | Shared runtime publication, linking, config, and `.gitignore` helpers | Split along the copy-versus-link ownership boundary so neither skill imports outside its own script surface. |
+| `project-links.ts` / `package-scripts.ts` | Shared runtime publication, linking, config, and `.gitignore` helpers | Split along the bootstrap-copy versus repo-link boundary so neither skill imports outside its own script surface. |
 | `audit.ts` / `conform.ts` / `educate.ts` | Universal `ki-bootstrap` modes | Retain in `ki-bootstrap`. |
 | `resolve.ts` / `sync-checker-modules.ts` | Bootstrap-engine dependency and vendoring internals | Retain in `ki-bootstrap`. |
 | `skill-graph.ts` / `skill-help.ts` | Harness-gated whole-tree tooling | Retain provisionally while ADR-008 determines their durable `ki-harness` relationship; only the development linker moves in this plan. |
 
 Each existing test follows the command it covers: rename or relocate its test with its production entry point, and retain the engine tests with `ki-bootstrap`.
 
+The resulting physical shape keeps only invocable contracts at `scripts/`: `user-install.sh`, `repo-bootstrap.sh`, and the canonical mode entries `audit.ts`, `conform.ts`, and `educate.ts`. Their TypeScript implementations and private helpers live below `scripts/lib/`; the user-facing route never names that implementation path.
+
 ## Steps
 
-1. Rewrite ADR-KI-HARNESS-006 in place as the foundational installation record: `/harness/install` is the one-time user installer; `/harness/repo/bootstrap` is the strictly repository-scoped mechanical chain; invoking `/ki-bootstrap` after user installation is the agentic route to that same repository operation; and neither normal user installation nor repository bootstrap creates a development symlink or writes Claude settings. Keep the record immediately after its prerequisite configuration decision in the curated reading order; do not create a duplicate ADR.
+1. Rewrite ADR-KI-HARNESS-006 in place as the foundational installation record: `/harness/install` is the one-time user installer; `/harness/repo/bootstrap` is the strictly repository-scoped mechanical chain; invoking `/ki-bootstrap` after user installation is the agentic route to that same repository operation; and neither normal user installation nor repository bootstrap creates a development symlink or writes Claude settings. `ki-repo` owns deliberate repository-local command linking, which `ki-harness` composes when needed. Keep the record immediately after its prerequisite configuration decision in the curated reading order; do not create a duplicate ADR.
 2. [x] Inventory every executable under `ki-bootstrap` and classify it as a user entry point, repository entry point, skill mode, internal helper, or harness-development tool. Delete only scripts with no live caller or purpose; do not rename private helpers simply to resemble public URLs.
-3. Align the dependent records in place: ADR-KI-HARNESS-010 defines the hook payload as an `/harness/install` component and leaves settings registration to a compliant user-environment manager; ADR-KI-HARNESS-011 distinguishes global user payloads, project-local copied payloads, and `ki-harness` development links; ADR-KI-HARNESS-008 moves only the whole-tree development-link tooling to `ki-harness`, retaining bootstrap-engine tools under `ki-bootstrap`.
-4. Update the bootstrap and harness standards, rubrics, and generated checker copies from those records before changing implementation, so each surface has one owner and the expected names are mechanically auditable.
-5. Build the idempotent remote-safe user entry points `user-install.sh` and `user-install.ts`, bound at `/harness/install`. They install regular-file copies of the global core skill set into selected runtime discovery directories and, by default, install the durable Claude hook payload when Claude Code is selected. They must use a durable managed namespace, validate their payload, preserve unrelated user files, and never write runtime settings.
+3. Align the dependent records in place: ADR-KI-HARNESS-010 defines the hook payload as an `/harness/install` component and leaves settings registration to a compliant user-environment manager; ADR-KI-HARNESS-011 distinguishes global user payloads, project-local copied payloads, and `ki-repo` repository-local command links; ADR-KI-HARNESS-008 removes the development linker from bootstrap-engine tooling and retains only the bootstrap-engine tools it actually needs.
+4. Update the bootstrap, repo, and harness standards, rubrics, and generated checker copies from those records before changing implementation, so each surface has one owner and the expected names are mechanically auditable.
+5. Build the idempotent remote-safe user entry point `scripts/user-install.sh` and its `scripts/lib/user-install.ts` implementation, bound at `/harness/install`. They install regular-file copies of the global core skill set into selected runtime discovery directories and, by default, install the durable Claude hook payload when Claude Code is selected. They must use a durable managed namespace, validate their payload, preserve unrelated user files, and never write runtime settings.
 6. Keep hook registration outside the installer: chezmoi or another compliant user-environment manager reads the payload `/harness/install` has installed and manages Claude Code settings. The existing hook installer may become an internal `user-install` component; no separate public hook route is required.
-7. Rename the repository entry points `repo-bootstrap.sh` and `repo-bootstrap.ts`, bound at `/harness/repo/bootstrap`, and keep them strictly repository-scoped: they may create `.ki-meta/` and project-local generated skill copies, but must not install user-global skills, hooks, or settings. They remain the direct non-agentic alternative to invoking `/ki-bootstrap` after user installation.
-8. Move the development-link contract to `ki-harness`: name its commands for their explicit purpose (for example, `link-development-skills`), and move or vendor every helper it needs under its own script surface. Its package scripts, checks, and developer guide are the explicit harness-author workflow. Ordinary user installation neither creates nor relies on symlinks.
-9. Rework the user guide into the intended order: first install the harness once for the user; then bootstrap every repository, either through `/ki-bootstrap` in an agent session or `curl -fsSL https://knowledgeislands.info/harness/repo/bootstrap | sh` for direct use. Explain runtime-specific hook binding and developer linking separately. Update the README, skill descriptions, standards, architecture records, and eval scenarios to use the same terms.
-10. Add isolated filesystem tests for first installation, repeat/update installation, runtime selection, unsafe or conflicting paths, hook hand-off, repository-only bootstrap, and development-link behaviour. Confirm the normal path works after the remote source is removed.
+7. Rename the repository entry point `scripts/repo-bootstrap.sh` and its `scripts/lib/repo-bootstrap.ts` implementation, bound at `/harness/repo/bootstrap`, and keep them strictly repository-scoped: they may create `.ki-meta/` and project-local generated skill copies, but must not install user-global skills, hooks, or settings. They remain the direct non-agentic alternative to invoking `/ki-bootstrap` after user installation.
+8. Move the deliberate linking contract to `ki-repo`: name its commands for their explicit purpose (for example, `link-repository-commands`), so it can serve `ki-self` and harness development without becoming a `ki-harness`-only capability. `ki-harness` composes that capability for its local workflow. Move or vendor every helper under its owning script surface. Ordinary user installation neither creates nor relies on symlinks.
+9. Reshape `ki-bootstrap/scripts/` around public and mode entry points: retain only the remote shell shims and universal mode entry files at the root; move TypeScript entry implementations and private helpers into `scripts/lib/`; keep all imports within the owning skill's script surface; and move tests with their named entry point or implementation.
+10. Rework the user guide into the intended order: first install the harness once for the user; then bootstrap every repository, either through `/ki-bootstrap` in an agent session or `curl -fsSL https://knowledgeislands.info/harness/repo/bootstrap | sh` for direct use. Explain runtime-specific hook binding and developer linking separately. Update the README, skill descriptions, standards, architecture records, and eval scenarios to use the same terms.
+11. Add isolated filesystem tests for first installation, repeat/update installation, runtime selection, unsafe or conflicting paths, hook hand-off, repository-only bootstrap, and development-link behaviour. Confirm the normal path works after the remote source is removed.
 
 ## Files touched
 
 - `skills/keystone/ki-bootstrap/scripts/` — user installer, repository bootstrap entry point, and developer-link helper.
-- `skills/keystone/ki-bootstrap/` and `skills/repo-structure/ki-harness/` — their distinct installation and developer-link contracts, references, rubrics, and tests.
+- `skills/keystone/ki-bootstrap/`, `skills/keystone/ki-repo/`, and `skills/repo-structure/ki-harness/` — their distinct installation, repository-link, and composition contracts, references, rubrics, and tests.
 - `hooks/` and `docs/decisions/` — user-environment payload and binding boundary.
 - `docs/guides/user-guide/` and `docs/guides/developer/` — the separate journeys.
 - `README.md`, `skills/repo-structure/ki-harness/`, `evals/`, and generated `.ki-meta/` checker copies where their statements or tests change.
