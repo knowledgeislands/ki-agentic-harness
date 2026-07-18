@@ -40,24 +40,29 @@
 
 import { spawnSync } from 'node:child_process'
 import { join, resolve } from 'node:path'
+import {
+  type CheckerFinding,
+  type CheckerLevel,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 const argv = process.argv.slice(2)
 const dryRun = argv.includes('--dry-run')
-const json = argv.includes('--json')
 const target = resolve(argv.find((a) => !a.startsWith('--')) ?? '.')
 
-// Shared severity ladder — a step becomes a finding on it (enforcement-framework §2).
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const findings: Finding[] = []
-const rec = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
+const findings: CheckerFinding[] = []
+const rec = (level: CheckerLevel, code: string, message: string, ref?: string, file?: string): void => {
+  findings.push({ type: 'M', level, code, message, ref, file })
+}
 
 const RUBRIC = 'references/rubric.md'
 
-// In --json mode suppress the spawned children's own prose so stdout carries only
-// the single-line wrapper; otherwise inherit it for a streaming human run.
+// A conform checker owns only its canonical JSONL stream. Child output is captured
+// as an execution result rather than leaking a second presentation into stdout.
 function run(script: string, args: string[]): number {
-  const r = spawnSync('bun', [join(import.meta.dirname, script), target, ...args], { stdio: json ? 'ignore' : 'inherit' })
+  const r = spawnSync('bun', [join(import.meta.dirname, script), target, ...args], { stdio: 'ignore' })
   return r.status ?? 1
 }
 
@@ -76,7 +81,7 @@ function step(script: string, args: string[], area: string, label: string): void
 }
 
 // 1. Publish copied skills and linked agent definitions as one guarded transaction.
-step('project-links.ts', flags, 'BOOT-1/BOOT-6', `project-links ${dryRun ? '(dry-run preview)' : 'write pass'}`)
+step('project-links.ts', flags, 'BOOT-1', `project links ${dryRun ? 'dry-run preview' : 'write pass'}`)
 
 // 2. Re-run the checks to confirm (skipped on a preview — nothing changed).
 if (!dryRun) {
@@ -88,38 +93,11 @@ if (!dryRun) {
 // vendored-set audit is always coverage-scoped (`--all` is a linking concept only —
 // vendoring follows .ki-config coverage, ADR-KI-HARNESS-007), so it is never forwarded here.
 if (run('audit.ts', []) !== 0) {
-  rec('INFO', 'BOOT-9', 'vendored-set drift detected — EDUCATE’s to repair (`./.ki-meta/bin/ki-educate`)', RUBRIC, '.ki-meta/skills/')
-  if (!json)
-    console.log(
-      'vendored-set drift is EDUCATE’s to repair — re-run `./.ki-meta/bin/ki-educate` (or `bun skills/keystone/ki-bootstrap/scripts/educate.ts <target>`)'
-    )
+  rec('INFO', 'BOOT-9', 'vendored-set drift detected; EDUCATE repairs it', RUBRIC, '.ki-meta/skills/')
 } else {
   rec('PASS', 'BOOT-9', 'vendored-set audit reports no drift', RUBRIC, '.ki-meta/skills/')
 }
 
-// BOOT-10 (ADR-KI-HARNESS-SKILLS-001's AUDIT/CONFORM contract, applied transitively):
-// re-stated here since --json suppresses the spawned audit.ts's own ADVISORY — a
-// mechanical CONFORM pass never substitutes for re-applying each governed skill's
-// [J] judgment.
-rec(
-  'ADVISORY',
-  'BOOT-10',
-  "re-apply each governed skill's [J] judgment after this CONFORM pass — a clean mechanical run is not sufficient",
-  RUBRIC
-)
-
-if (json) {
-  const n = (l: Level): number => findings.filter((f) => f.level === l).length
-  const summary = {
-    fail: n('FAIL'),
-    warn: n('WARN'),
-    polish: n('POLISH'),
-    advisory: n('ADVISORY'),
-    info: n('INFO'),
-    na: n('NA'),
-    pass: n('PASS')
-  }
-  process.stdout.write(JSON.stringify({ concern: 'bootstrap', target, generatedAt: new Date().toISOString(), summary, findings }))
-}
-
-process.exit(failed > 0 ? 1 : 0)
+const all = [...findings, ...judgmentFindingsFromRubric(join(import.meta.dirname, '..', 'references', 'rubric.md'))]
+emitCheckerReporter({ mode: 'conform', concern: 'bootstrap', target, findings: all })
+process.exit(checkerReporterExitCode(all))

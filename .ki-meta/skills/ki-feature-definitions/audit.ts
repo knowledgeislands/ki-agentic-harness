@@ -86,7 +86,6 @@ async function main(): Promise<void> {
   }
 
   if (!existsSync(candidate) && !existsSync(join(resolvedDir, INDEX_FILE))) {
-    add('SCOPE', 'NA', undefined, 'No docs/features/ — repo is not governed by feature-definitions.')
     emit(resolvedDir, findings)
   }
   try {

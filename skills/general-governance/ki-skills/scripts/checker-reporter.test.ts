@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /** Focused contract tests for the canonical checker-reporter JSONL builder. */
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
@@ -10,7 +10,9 @@ import {
   checkerReporterExitCode,
   judgmentFindingsFromRubric,
   parseCheckerReporterJsonl,
-  validateCheckerReporterEvents
+  rubricCriteriaFromMarkdown,
+  validateCheckerReporterEvents,
+  validateCheckerReporterRubric
 } from './checker-reporter.ts'
 
 let failed = false
@@ -110,10 +112,55 @@ try {
   const rubric = join(rubricFixture, 'rubric.md')
   writeFileSync(
     rubric,
-    '- **RULE-1 [M]** mechanical\n- **MD-table [J]** table judgment\n- **JUDGMENT [M + J]** review\n- **[J] DEC-1** alternate rubric ordering\n'
+    '- **RULE-1 [M]** Mechanical requirement\n- **MD-table [J]** Table judgment\n- **JUDGMENT [M + J]** Review both halves\n- **[J] DEC-1** Alternate rubric ordering\n- [ ] **WEB-2** [M] WARN — Rendered title form\n'
   )
   const judgmentCodes = judgmentFindingsFromRubric(rubric).map((finding) => finding.code)
   check('judgment prompts → accepts both rubric tag orders and named codes', judgmentCodes.join(',') === 'DEC-1,JUDGMENT,MD-table')
+
+  const criteria = rubricCriteriaFromMarkdown(readFileSync(rubric, 'utf8'))
+  check(
+    'rubric parser → resolves titles and M/J types from established bullet forms',
+    criteria.get('RULE-1')?.title === 'Mechanical requirement' &&
+      criteria.get('JUDGMENT')?.types.has('M') === true &&
+      criteria.get('JUDGMENT')?.types.has('J') === true &&
+      criteria.get('WEB-2')?.title === 'Rendered title form'
+  )
+  const rubricEvents = buildCheckerReporterEvents({
+    mode: 'audit',
+    concern: 'fixture',
+    target: '/fixture',
+    findings: [
+      { type: 'M', level: 'PASS', code: 'RULE-1', message: 'normal form is present' },
+      { type: 'M', level: 'WARN', code: 'WEB-2', message: 'required field is absent', ref: 'references/rubric.md' },
+      { type: 'J', level: 'ADVISORY', code: 'MD-table', message: 'review the authored table', ref: 'references/rubric.md' },
+      { type: 'J', level: 'ADVISORY', code: 'JUDGMENT', message: 'review the combined criterion', ref: 'references/rubric.md' },
+      { type: 'J', level: 'ADVISORY', code: 'DEC-1', message: 'review the alternate ordering', ref: 'references/rubric.md' }
+    ]
+  })
+  check(
+    'rubric validator → accepts resolved codes, types, and complete J prompts',
+    validateCheckerReporterRubric(rubricEvents, criteria).length === 0
+  )
+
+  const unknownCode = structuredClone(rubricEvents) as unknown[]
+  const unknownRecord = unknownCode.find(
+    (event) => (event as { record?: string; type?: string }).record === 'finding' && (event as { type?: string }).type === 'M'
+  ) as {
+    code: string
+  }
+  unknownRecord.code = 'UNKNOWN-1'
+  check(
+    'rubric validator → rejects an emitted code absent from the rubric',
+    validateCheckerReporterRubric(unknownCode, criteria).some((error) => error.includes('does not resolve'))
+  )
+
+  const repeatedTitle = structuredClone(rubricEvents) as unknown[]
+  const repeatedRecord = repeatedTitle.find((event) => (event as { code?: string }).code === 'WEB-2') as { message: string }
+  repeatedRecord.message = 'Rendered title form is missing'
+  check(
+    'rubric validator → rejects a message that repeats the rendered title',
+    validateCheckerReporterRubric(repeatedTitle, criteria).some((error) => error.includes('repeats its rubric title'))
+  )
 } finally {
   rmSync(rubricFixture, { recursive: true, force: true })
 }

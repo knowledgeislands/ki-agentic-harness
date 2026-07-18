@@ -36,7 +36,7 @@ Every `finding` record carries:
 - `message` — the specific result, without repeating the code, rule, or file field.
 - `ref` and `file` when the criterion or target is scoped to them.
 
-The aggregate resolves `code` against the emitting skill's vendored rubric metadata and displays the identity as `${rule} (${code})`.
+The aggregate resolves `code` against the emitting skill's vendored rubric metadata and displays the identity as `${code}: ${rule}`.
 
 Titles therefore remain in their owning rubric rather than being duplicated by every checker report.
 

@@ -69,7 +69,6 @@ if (statSync(target).isDirectory()) walk(target, files)
 else files.push(target)
 
 // ── check each opted-in artifact against the marker contract ────────────────────
-let optedIn = 0
 for (const path of files) {
   const content = readFileSync(path, 'utf8')
   const fmMatch = content.match(/^---\n([\s\S]*?)\n---/)
@@ -84,7 +83,6 @@ for (const path of files) {
         .replace(/^['"]|['"]$/g, '')
   }
   if (fm.handoff !== 'true') continue
-  optedIn++
   const rel = relative(target, path) || path
   const body = content.slice(fmMatch[0].length)
 
@@ -117,34 +115,6 @@ for (const path of files) {
       'references/standards.md',
       rel
     )
-}
-
-// ── judgment surface (ADVISORY) ─────────────────────────────────────────────────
-if (optedIn > 0) {
-  add(
-    'ADVISORY',
-    'HAND-4',
-    'locked decisions: confirm they are genuinely closed — no residual reasoning or open questions parked under "locked".',
-    'references/standards.md'
-  )
-  add(
-    'ADVISORY',
-    'HAND-6',
-    'tier fit: confirm the assigned tier matches how concrete the steps are; a unit that needs the planning tier is under-decomposed.',
-    'references/standards.md'
-  )
-  add(
-    'ADVISORY',
-    'HAND-7',
-    'readiness: confirm a cold agent at the assigned tier could execute phase 1 from the spec alone.',
-    'references/standards.md'
-  )
-} else {
-  add('INFO', 'scope', `no handoff-opted-in artifacts (handoff: true) under ${rawTarget} — nothing to check.`)
-}
-
-if (findings.every((f) => f.level === 'INFO' || f.level === 'NA')) {
-  add('PASS', 'handoffs', `${optedIn} handoff artifact(s) checked, ${rawTarget}`)
 }
 
 findings.push(...judgmentFindingsFromRubric(localRubricPath(), RUBRIC))

@@ -51,12 +51,21 @@
  */
 
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
-import { basename, extname, join, resolve } from 'node:path'
+import { basename, dirname, extname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 // ── kept in lockstep with audit.ts ──
 const INDEX_NOTE = 'Live Artifacts.md'
 const DEFAULT_ARTIFACTS_DIR = 'Admin/Operations/Live Artifacts'
 const RUBRIC = 'references/rubric.md'
+const paint = (_color: string, text: string): string => text
+const C = { dim: '', green: '', cyan: '' }
 
 const isDir = (p: string): boolean => existsSync(p) && statSync(p).isDirectory()
 const isFile = (p: string): boolean => existsSync(p) && statSync(p).isFile()
@@ -82,37 +91,30 @@ function listDir(dir: string): string[] {
   return readdirSync(dir).map((n) => join(dir, n))
 }
 
-const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
-const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
-
 const argv = process.argv.slice(2)
 const dryRun = argv.includes('--dry-run')
-const json = argv.includes('--json')
 const base = resolve(argv.find((a) => !a.startsWith('-')) ?? '.')
 
 if (!isDir(base)) {
-  console.error(paint(C.red, `error: not a directory: ${base}`))
-  process.exit(1)
+  const findings: CheckerFinding[] = [{ type: 'M', level: 'FAIL', code: 'LA-S-1', message: `Not a directory: ${base}`, ref: RUBRIC }]
+  findings.push(...judgmentFindingsFromRubric(join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md'), RUBRIC))
+  emitCheckerReporter({ mode: 'conform', concern: 'kb-live-artifacts', target: base, findings })
+  process.exit(checkerReporterExitCode(findings))
 }
 
 // Collect-then-emit harness (mirrors conform.ts of ki-authoring). Each action records a
 // finding; `say` prints the human line only when not in --json mode, so a direct run
 // streams prose while the aggregate consumes the wrapper. area is the rubric code, ref its
 // reference-doc pointer, file the path an action concerns.
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const findings: Finding[] = []
-const rec = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
-const say = (line: string): void => {
-  if (!json) console.log(line)
-}
+const findings: CheckerFinding[] = []
+const rec = (level: CheckerFinding['level'], code: string, message: string, ref?: string, file?: string) =>
+  findings.push({ type: 'M', level, code, message, ref, file })
+const say = (_line: string): void => {}
 
 const artifactsDir = join(base, DEFAULT_ARTIFACTS_DIR)
-say(paint(C.dim, `target: ${DEFAULT_ARTIFACTS_DIR}/${dryRun ? '   (dry run)' : ''}\n`))
 
 if (!isDir(artifactsDir)) {
   rec('NA', 'structure', `${DEFAULT_ARTIFACTS_DIR}/ not found — no live artifacts to conform`)
-  say(paint(C.dim, `${DEFAULT_ARTIFACTS_DIR}/ not found — no live artifacts to conform.`))
 } else {
   const entries = listDir(artifactsDir)
   const mdFiles = entries.filter((p) => extname(p) === '.md' && !p.endsWith(`/${INDEX_NOTE}`)).sort()
@@ -190,32 +192,16 @@ if (!isDir(artifactsDir)) {
     RUBRIC
   )
   say(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
-  const advisories = findings.filter((fnd) => fnd.level === 'ADVISORY' && fnd.area !== 'judgment')
+  const advisories = findings.filter((fnd) => fnd.level === 'ADVISORY' && fnd.code !== 'judgment')
   if (advisories.length === 0) {
     say(`  ${paint(C.dim, 'none')}`)
   } else {
-    for (const a of advisories) say(`  - ${a.file ? `${a.file}: ` : ''}${a.msg} (${a.area})`)
+    for (const a of advisories) say(`  - ${a.file ? `${a.file}: ` : ''}${a.message} (${a.code})`)
   }
   say(`  - LA-S-2 (unpublished .md), LA-S-3 (orphaned .html), LA-S-4 (stale pair) all need a render or a`)
   say('    confirmed delete — this skill does not render Markdown to HTML or delete files. See audit output.')
 }
 
-say(
-  `\n${paint(C.dim, 'mechanical layer applied — re-run `bun scripts/audit.ts` (or `ki:kb-live-artifacts:audit`) to confirm findings clear.')}`
-)
-
-if (json) {
-  const n = (l: Level): number => findings.filter((fnd) => fnd.level === l).length
-  const summary = {
-    fail: n('FAIL'),
-    warn: n('WARN'),
-    polish: n('POLISH'),
-    advisory: n('ADVISORY'),
-    info: n('INFO'),
-    na: n('NA'),
-    pass: n('PASS')
-  }
-  process.stdout.write(
-    JSON.stringify({ concern: 'kb-live-artifacts', target: base, generatedAt: new Date().toISOString(), summary, findings })
-  )
-}
+findings.push(...judgmentFindingsFromRubric(join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md'), RUBRIC))
+emitCheckerReporter({ mode: 'conform', concern: 'kb-live-artifacts', target: base, findings })
+process.exitCode = checkerReporterExitCode(findings)

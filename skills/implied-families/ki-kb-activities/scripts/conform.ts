@@ -46,21 +46,23 @@
  */
 
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 // ── kept in lockstep with audit.ts ──
 const KNOWN_REALIZATIONS = ['slash-command', 'scheduled-task', 'conversational', 'manual', 'workflow'] as const
 const ACTIVITIES_INDEX = 'Activities.md'
 const DEFAULT_ACTIVITIES_DIR = 'Admin/Operations/Activities'
 
-const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
-const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
-
-// Cited-finding shape, shared with audit.ts: `area` is the rubric CODE, `ref` its
-// reference-doc pointer, `file` the path an action concerns (mirrors ki-authoring conform).
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const RUBRIC = 'references/rubric.md'
+const paint = (_color: string, text: string): string => text
+const C = { dim: '', green: '', cyan: '' }
 
 const isDir = (p: string): boolean => existsSync(p) && statSync(p).isDirectory()
 const isFile = (p: string): boolean => existsSync(p) && statSync(p).isFile()
@@ -96,7 +98,6 @@ function walkMd(dir: string): string[] {
 function main(): void {
   const argv = process.argv.slice(2)
   const dryRun = argv.includes('--dry-run')
-  const json = argv.includes('--json')
   let harnessPath: string | null = null
   let basePath = '.'
   for (let i = 0; i < argv.length; i++) {
@@ -110,32 +111,18 @@ function main(): void {
   // Collect-then-emit harness (mirrors ki-authoring conform): each action records a finding;
   // `say` prints the human line only when not in --json mode, so a direct run streams prose
   // while the aggregate consumes the wrapper. `--json` still writes — only --dry-run gates writes.
-  const findings: Finding[] = []
-  const rec = (level: Level, area: string, msg: string, ref?: string, file?: string): number =>
-    findings.push({ level, area, msg, ref, file })
-  const say = (line: string): void => {
-    if (!json) console.log(line)
-  }
-  const emitJson = (): void => {
-    if (!json) return
-    const n = (l: Level): number => findings.filter((x) => x.level === l).length
-    const summary = {
-      fail: n('FAIL'),
-      warn: n('WARN'),
-      polish: n('POLISH'),
-      advisory: n('ADVISORY'),
-      info: n('INFO'),
-      na: n('NA'),
-      pass: n('PASS')
-    }
-    process.stdout.write(JSON.stringify({ concern: 'kb-activities', target, generatedAt: new Date().toISOString(), summary, findings }))
-  }
+  const findings: CheckerFinding[] = []
+  const rec = (level: CheckerFinding['level'], code: string, message: string, ref?: string, file?: string): number =>
+    findings.push({ type: 'M', level, code, message, ref, file })
+  const say = (_line: string): void => {}
 
   const base = resolve(basePath)
   const target = base
   if (!isDir(base)) {
-    console.error(paint(C.red, `not a directory: ${base}`))
-    process.exit(1)
+    rec('FAIL', 'ACT-S-2', `Not a directory: ${base}`, RUBRIC)
+    findings.push(...judgmentFindingsFromRubric(join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md'), RUBRIC))
+    emitCheckerReporter({ mode: 'conform', concern: 'kb-activities', target, findings })
+    process.exit(checkerReporterExitCode(findings))
   }
 
   const activitiesDir = join(base, DEFAULT_ACTIVITIES_DIR)
@@ -145,7 +132,9 @@ function main(): void {
   if (!isDir(activitiesDir)) {
     rec('NA', 'ACT-S-2', 'no activities directory — nothing to conform', RUBRIC, `${DEFAULT_ACTIVITIES_DIR}/`)
     say(paint(C.dim, `${DEFAULT_ACTIVITIES_DIR}/ not found — no activities to conform`))
-    emitJson()
+    findings.push(...judgmentFindingsFromRubric(join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md'), RUBRIC))
+    emitCheckerReporter({ mode: 'conform', concern: 'kb-activities', target, findings })
+    process.exitCode = checkerReporterExitCode(findings)
     return
   }
 
@@ -267,7 +256,9 @@ function main(): void {
     `\n${paint(C.dim, 'mechanical layer applied — re-run `bun scripts/audit.ts` (or `ki:kb-activities:audit`) to confirm findings clear.')}`
   )
 
-  emitJson()
+  findings.push(...judgmentFindingsFromRubric(join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md'), RUBRIC))
+  emitCheckerReporter({ mode: 'conform', concern: 'kb-activities', target, findings })
+  process.exitCode = checkerReporterExitCode(findings)
 }
 
 main()

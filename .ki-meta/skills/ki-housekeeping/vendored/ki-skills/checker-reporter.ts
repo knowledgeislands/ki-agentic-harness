@@ -89,20 +89,101 @@ export type CheckerReporterParseResult = {
   errors: string[]
 }
 
+export type RubricCriterion = {
+  code: string
+  title: string
+  types: ReadonlySet<'M' | 'J'>
+}
+
+function normaliseCriterionTitle(value: string): string {
+  return value
+    .replace(/^\s*(?:\[[^\]]+\]\s*)*/, '')
+    .replace(/^(?:FAIL|WARN|POLISH|ADVISORY|INFO|NA|PASS)\s*[—–-]\s*/i, '')
+    .replace(/[`*_]/g, '')
+    .trim()
+}
+
+/**
+ * Read the bullet form used by KI rubrics without making the reporter depend on a
+ * Markdown parser. The criterion title stays in that rubric: checkers emit only
+ * stable codes, and consumers resolve presentation and validation locally.
+ */
+export function rubricCriteriaFromMarkdown(markdown: string): Map<string, RubricCriterion> {
+  const criteria = new Map<string, RubricCriterion>()
+  for (const line of markdown.split(/\r?\n/)) {
+    const bullet = line.match(/^\s*-\s+(?:\[[ xX]\]\s+)?\*\*([^*]+)\*\*(.*)$/)
+    if (!bullet) continue
+    const [, bold, after] = bullet
+    const tags = `${bold} ${after}`
+    // The code is the first bold token after an optional leading type tag. This
+    // retains established named codes such as `JUDGMENT` as well as `AREA-1`.
+    const code = bold.trim().match(/^(?:\[[^\]]+\]\s*)?([A-Z][A-Za-z0-9-]*)/)?.[1]
+    const types = new Set<'M' | 'J'>()
+    if (/\[[^\]]*\bM\b[^\]]*\]/.test(tags)) types.add('M')
+    if (/\[[^\]]*\bJ\b[^\]]*\]/.test(tags)) types.add('J')
+    if (!code || types.size === 0) continue
+    const title = normaliseCriterionTitle(after)
+    if (!title) continue
+    criteria.set(code, { code, title, types })
+  }
+  return criteria
+}
+
+export function rubricCriteriaFromFile(rubricPath: string): Map<string, RubricCriterion> {
+  return rubricCriteriaFromMarkdown(readFileSync(rubricPath, 'utf8'))
+}
+
+/**
+ * Enforce the rubric-aware part of the contract once a caller has parsed the
+ * transport itself. This works over data, so both a source-fleet collector and
+ * a vendored aggregate can use it without importing presentation code.
+ */
+export function validateCheckerReporterRubric(events: readonly unknown[], criteria: ReadonlyMap<string, RubricCriterion>): string[] {
+  const errors: string[] = []
+  const judgmentCounts = new Map<string, number>()
+  for (const [index, event] of events.entries()) {
+    if (!isRecord(event) || event.record !== 'finding') continue
+    const label = `record ${index + 1}`
+    const code = typeof event.code === 'string' ? event.code : ''
+    const type = event.type === 'M' || event.type === 'J' ? event.type : undefined
+    const criterion = criteria.get(code)
+    if (!criterion) {
+      errors.push(`${label} code does not resolve in the emitting rubric: ${code || '(empty)'}`)
+      continue
+    }
+    if (!type || !criterion.types.has(type)) errors.push(`${label} type does not match rubric criterion: ${code}`)
+    if (type === 'J') judgmentCounts.set(code, (judgmentCounts.get(code) ?? 0) + 1)
+
+    const message = typeof event.message === 'string' ? event.message.trim() : ''
+    const file = typeof event.file === 'string' ? event.file.trim() : ''
+    const lower = message.toLowerCase()
+    if (lower.startsWith(`${code.toLowerCase()}:`) || lower.startsWith(`${code.toLowerCase()} `))
+      errors.push(`${label} message repeats its code: ${code}`)
+    if (lower.startsWith(criterion.title.toLowerCase())) errors.push(`${label} message repeats its rubric title: ${code}`)
+    if (lower.startsWith('[j]:')) errors.push(`${label} message repeats the judgment marker: ${code}`)
+    if (file) {
+      const basename = file.split('/').at(-1) ?? file
+      if (lower.startsWith(file.toLowerCase()) || lower.startsWith(basename.toLowerCase()))
+        errors.push(`${label} message repeats its file field: ${code}`)
+    }
+  }
+  for (const [code, criterion] of criteria) {
+    if (!criterion.types.has('J')) continue
+    const count = judgmentCounts.get(code) ?? 0
+    if (count !== 1) errors.push(`rubric judgment criterion must emit exactly one J finding: ${code} (found ${count})`)
+  }
+  return errors
+}
+
 /**
  * Turn the declaring skill's judgment rubric into its one-per-run review prompts.
  * The rubric remains the source of truth for codes and types; checkers only decide
  * their mechanical findings.
  */
 export function judgmentFindingsFromRubric(rubricPath: string, ref = 'references/rubric.md'): CheckerFinding[] {
-  const codes = new Set<string>()
-  const rubric = readFileSync(rubricPath, 'utf8')
-  // Both established rubric forms are accepted: `CODE [J]` and `[J] CODE`.
-  // The reporter owns this small syntax tolerance so consumer checkers do not
-  // each reimplement a rubric parser.
-  for (const match of rubric.matchAll(/^\s*-\s+\*\*([A-Z][A-Za-z0-9-]*)\s+\[([^\]]*\bJ\b[^\]]*)\]\*\*/gm)) codes.add(match[1] as string)
-  for (const match of rubric.matchAll(/^\s*-\s+\*\*\[[^\]]*\bJ\b[^\]]*\]\s+([A-Z][A-Za-z0-9-]*)\*\*/gm)) codes.add(match[1] as string)
-  return [...codes]
+  return [...rubricCriteriaFromFile(rubricPath).values()]
+    .filter((criterion) => criterion.types.has('J'))
+    .map((criterion) => criterion.code)
     .sort()
     .map((code) => ({ type: 'J', level: 'ADVISORY', code, message: 'Review this judgment criterion against the audited scope.', ref }))
 }

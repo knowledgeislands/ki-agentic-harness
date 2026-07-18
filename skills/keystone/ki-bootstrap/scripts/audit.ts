@@ -29,20 +29,22 @@
  * only (the harness authoring hub links every skill), never a vendoring one (ADR-KI-HARNESS-007).
  */
 
-import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { checkerScript, resolveSet, SkillResolutionError, vendorUnit } from './resolve.ts'
+import {
+  type CheckerFinding,
+  type CheckerLevel,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 // Unified severity ladder — shared by every KI checker (enforcement-framework §2).
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-// area is the rubric code (references/rubric.md); ref is its reference-doc
-// pointer; file names the path a file-scoped finding concerns. ref/file are optional
-// and ride into --json for the aggregate to render (CHK-004/009/010).
-type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️', NA: '🚫', PASS: '✅' }
-const findings: Finding[] = []
-const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
+const findings: CheckerFinding[] = []
+const add = (level: CheckerLevel, code: string, message: string, ref?: string, file?: string): void => {
+  findings.push({ type: 'M', level, code, message, ref, file })
+}
 
 const RUBRIC = 'references/rubric.md'
 
@@ -50,68 +52,11 @@ const argv = process.argv.slice(2)
 const target = resolve(argv.find((a) => !a.startsWith('--')) ?? '.')
 const vendoredRoot = join(target, '.ki-meta', 'skills')
 
-// ── report ────────────────────────────────────────────────────────────────────
-// Shared emit harness — copy verbatim across KI checkers (enforcement-framework §2/§5).
-function emit(items: Finding[], tgt: string, concern: string, title: string, footer: string): never {
-  const a = process.argv.slice(2)
-  const json = a.includes('--json')
-  const ri = a.indexOf('--report')
-  const report = ri !== -1
-  const reportDir = report && a[ri + 1] && !a[ri + 1].startsWith('-') ? a[ri + 1] : join(tgt, '.ki-meta', 'audits')
-
-  const n = (l: Level): number => items.filter((f) => f.level === l).length
-  const summary = {
-    fail: n('FAIL'),
-    warn: n('WARN'),
-    polish: n('POLISH'),
-    advisory: n('ADVISORY'),
-    info: n('INFO'),
-    na: n('NA'),
-    pass: n('PASS')
-  }
-  const tally = `FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na}`
-  const stamp = new Date().toISOString()
-
-  if (report) {
-    mkdirSync(reportDir, { recursive: true })
-    const body = ORDER.flatMap((l) => {
-      const rows = items.filter((f) => f.level === l)
-      return rows.length
-        ? [
-            '',
-            `## ${ICON[l]} ${l} (${rows.length})`,
-            ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
-          ]
-        : []
-    })
-    writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${tgt}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
-    writeFileSync(
-      join(reportDir, `${concern}.json`),
-      `${JSON.stringify({ concern, target: tgt, generatedAt: stamp, summary, findings: items }, null, 2)}\n`
-    )
-  }
-
-  if (json) {
-    process.stdout.write(`${JSON.stringify({ concern, target: tgt, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
-  } else {
-    console.log(`\n${title}\n${'─'.repeat(60)}`)
-    for (const l of ORDER) {
-      const rows = items.filter((f) => f.level === l)
-      if (!rows.length) continue
-      console.log(`\n${ICON[l]} ${l} (${rows.length})`)
-      for (const r of rows) console.log(`   [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
-    }
-    console.log(`\n${'─'.repeat(60)}\n${tally}`)
-    if (footer) console.log(footer)
-    if (summary.fail > 0 || summary.warn > 0)
-      console.log('→ to address: run /ki-bootstrap CONFORM   (re-vendor: bun skills/keystone/ki-bootstrap/scripts/bootstrap.ts <target>)')
-    if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
-    console.log('')
-  }
-  process.exit(summary.fail ? 1 : 0)
+const emitBootstrap = (): never => {
+  const all = [...findings, ...judgmentFindingsFromRubric(join(import.meta.dirname, '..', 'references', 'rubric.md'))]
+  emitCheckerReporter({ mode: 'audit', concern: 'bootstrap', target, findings: all })
+  process.exit(checkerReporterExitCode(all))
 }
-
-const emitBootstrap = (): never => emit(findings, target, 'bootstrap', `Bootstrap vendored-set audit  (${target})`, '')
 
 function expectedResolvedSet(): string[] {
   try {
@@ -131,7 +76,7 @@ function expectedResolvedSet(): string[] {
 const resolved = expectedResolvedSet()
 
 if (!existsSync(vendoredRoot)) {
-  add('NA', 'BOOT-9', 'no .ki-meta/skills/ — nothing to check (not yet bootstrapped)', RUBRIC, '.ki-meta/skills/')
+  add('NA', 'BOOT-9', 'No vendored skills are present — nothing to check yet.', RUBRIC, '.ki-meta/skills')
   emitBootstrap()
 }
 
@@ -150,9 +95,9 @@ if (missing.length === 0 && extra.length === 0) {
   add(
     'PASS',
     'BOOT-9',
-    `.ki-meta/skills/ matches the expected resolved set (${expected.length} skill${expected.length === 1 ? '' : 's'})`,
+    `Vendored skill set matches the expected resolved set (${expected.length} skill${expected.length === 1 ? '' : 's'}).`,
     RUBRIC,
-    '.ki-meta/skills/'
+    '.ki-meta/skills'
   )
 }
 
@@ -197,7 +142,7 @@ if (checked === 0) {
     'BOOT-11',
     'canonical skill sources are not inside the target repo; source-copy integrity is not applicable',
     RUBRIC,
-    '.ki-meta/skills/'
+    '.ki-meta/skills'
   )
 } else if (drifted.length) {
   add(
@@ -205,7 +150,7 @@ if (checked === 0) {
     'BOOT-11',
     `canonical source/vendor integrity mismatch: ${drifted.join(', ')} — restore or format sources, then re-bootstrap before committing`,
     RUBRIC,
-    '.ki-meta/skills/'
+    '.ki-meta/skills'
   )
 } else {
   add(
@@ -213,18 +158,9 @@ if (checked === 0) {
     'BOOT-11',
     `${checked} direct file-kind vendor unit${checked === 1 ? '' : 's'} match canonical source byte-for-byte`,
     RUBRIC,
-    '.ki-meta/skills/'
+    '.ki-meta/skills'
   )
 }
-
-// BOOT-10 is always-on and never mechanically decidable — a reminder handed off
-// to the agent running AUDIT, per ADR-KI-HARNESS-SKILLS-001's AUDIT contract.
-add(
-  'ADVISORY',
-  'BOOT-10',
-  `apply each governed skill's own [J] judgment across the ${actual.length} vendored skill${actual.length === 1 ? '' : 's'} (lead agent where one exists, its rubric.md otherwise) — the mechanical aggregate alone is not sufficient`,
-  RUBRIC
-)
 
 if (missing.length)
   add(
@@ -232,7 +168,7 @@ if (missing.length)
     'BOOT-9',
     `missing from .ki-meta/skills/: ${missing.join(', ')} — re-run \`bun skills/keystone/ki-bootstrap/scripts/bootstrap.ts ${target}\``,
     RUBRIC,
-    '.ki-meta/skills/'
+    '.ki-meta/skills'
   )
 if (extra.length)
   add(
@@ -240,7 +176,7 @@ if (extra.length)
     'BOOT-9',
     `vendored but no longer expected: ${extra.join(', ')} — a dropped table or upstream implies change; re-bootstrap to prune`,
     RUBRIC,
-    '.ki-meta/skills/'
+    '.ki-meta/skills'
   )
 
 // Drift here is always conformable by re-vendoring (WARN, never FAIL) — mirrors BOOT-1.

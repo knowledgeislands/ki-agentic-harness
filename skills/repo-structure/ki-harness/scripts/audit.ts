@@ -68,7 +68,7 @@ function main(): void {
 
   for (const part of PARTS) {
     const directory = join(root, part)
-    check('FAIL', 'LAY-1', existsSync(directory), `${part}/ directory must exist.`, `${part}/`)
+    check('FAIL', 'LAY-1', existsSync(directory), 'Required five-part directory is present.', `${part}/`)
     if (existsSync(directory))
       check('WARN', 'LAY-2', existsSync(join(directory, 'README.md')), 'README.md must exist.', `${part}/README.md`)
   }

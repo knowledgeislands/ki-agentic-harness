@@ -172,7 +172,6 @@ checkOwned('.prettierrc.json', PRETTIER_DEFAULT)
 checkOwned('.editorconfig', EDITORCONFIG_DEFAULT)
 checkOwned('.markdownlint-cli2.jsonc', MARKDOWNLINT_DEFAULT)
 
-add('INFO', 'SCOPE', 'authoring conventions — Markdown mechanical gate + judgment criteria surface')
 findings.push(...judgmentFindingsFromRubric(rubricPath))
 emitCheckerReporter({ mode: 'audit', concern: 'authoring', target: repo, findings })
 process.exit(checkerReporterExitCode(findings))

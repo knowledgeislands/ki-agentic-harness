@@ -18,30 +18,29 @@
  */
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
-
-const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
-const paint = (c: string, s: string): string => `${c}${s}${C.reset}`
+import {
+  type CheckerFinding,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 const argv = process.argv.slice(2)
-const json = argv.includes('--json')
 const positional = argv.find((a) => !a.startsWith('-'))
 const target = positional ? resolve(positional) : '.'
+const STD = 'references/standards.md'
+const rubricPath = new URL('../references/rubric.md', import.meta.url).pathname
 
 if (positional && !existsSync(target)) {
-  console.error(paint(C.red, `${target}: no such path`))
-  process.exit(2)
+  const findings: CheckerFinding[] = [{ type: 'M', level: 'FAIL', code: 'BINDCHEZ-1', message: `No such path: ${target}`, ref: STD }]
+  findings.push(...judgmentFindingsFromRubric(rubricPath))
+  emitCheckerReporter({ mode: 'conform', concern: 'binding-chezmoi', target, findings })
+  process.exit(checkerReporterExitCode(findings))
 }
 
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const findings: Finding[] = []
-const rec = (level: Level, area: string, msg: string, ref?: string, file?: string): void =>
-  void findings.push({ level, area, msg, ref, file })
-const say = (line: string): void => {
-  if (!json) console.log(line)
-}
-
-const STD = 'references/standards.md'
+const findings: CheckerFinding[] = []
+const rec = (level: CheckerFinding['level'], code: string, message: string, ref?: string, file?: string): void =>
+  void findings.push({ type: 'M', level, code, message, ref, file })
 
 // ── composition handoff — printed, never auto-applied ──
 // Each composed sibling owns its own write pass; the render step is a manual chezmoi apply.
@@ -57,28 +56,6 @@ const todos = [
 
 for (const [area, msg] of todos) rec('ADVISORY', area, `${msg} (manual — not auto-applied)`, STD)
 
-if (!json) {
-  say(paint(C.cyan, 'ki-binding-chezmoi — render-path CONFORM (composition; no file scaffolded)'))
-  say('')
-  say(paint(C.cyan, 'Steps (not auto-applied — see references/standards.md):'))
-  for (const [area, msg] of todos) say(`  [${area}] ${msg}`)
-}
-
-// ── report ──
-const stamp = new Date().toISOString()
-const n = (l: Level): number => findings.filter((f) => f.level === l).length
-const summary = {
-  fail: n('FAIL'),
-  warn: n('WARN'),
-  polish: n('POLISH'),
-  advisory: n('ADVISORY'),
-  info: n('INFO'),
-  na: n('NA'),
-  pass: n('PASS')
-}
-
-if (json) {
-  process.stdout.write(`${JSON.stringify({ concern: 'binding-chezmoi', target, generatedAt: stamp, summary, findings }, null, 2)}\n`)
-}
-
-process.exit(0)
+findings.push(...judgmentFindingsFromRubric(rubricPath))
+emitCheckerReporter({ mode: 'conform', concern: 'binding-chezmoi', target, findings })
+process.exit(checkerReporterExitCode(findings))

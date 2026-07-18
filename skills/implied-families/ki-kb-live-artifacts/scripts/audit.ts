@@ -20,26 +20,23 @@
  * READ-ONLY. Exit code non-zero on any FAIL.
  */
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
-import { basename, extname, join, resolve } from 'node:path'
+import { basename, dirname, extname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 const INDEX_NOTE = 'Live Artifacts.md'
 const DEFAULT_ARTIFACTS_DIR = 'Admin/Operations/Live Artifacts'
 const DEFAULT_THRESHOLD_HOURS = 24
 const RUBRIC = 'references/rubric.md'
 
-const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m' }
-const paint = (c: string, s: string) => `${c}${s}${C.reset}`
-
-// area is the rubric code (references/rubric.md); ref is its reference-doc
-// pointer; file names the path a file-scoped finding concerns. ref/file are optional
-// and ride into --json for the aggregate to render.
-type Level = 'FAIL' | 'WARN' | 'ADVISORY' | 'INFO' | 'PASS'
-type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const ORDER: Level[] = ['FAIL', 'WARN', 'ADVISORY', 'INFO', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', ADVISORY: '🧭', INFO: 'ℹ️', PASS: '✅' }
-
-const findings: Finding[] = []
-const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
+const findings: CheckerFinding[] = []
+const add = (level: CheckerFinding['level'], code: string, message: string, ref?: string, file?: string) =>
+  findings.push({ type: 'M', level, code, message, ref, file })
 
 const isDir = (p: string) => existsSync(p) && statSync(p).isDirectory()
 const isFile = (p: string) => existsSync(p) && statSync(p).isFile()
@@ -69,7 +66,6 @@ function listDir(dir: string): string[] {
 function auditLiveArtifacts(base: string, thresholdHours: number): void {
   const artifactsDir = join(base, DEFAULT_ARTIFACTS_DIR)
   if (!isDir(artifactsDir)) {
-    add('INFO', 'structure', `${DEFAULT_ARTIFACTS_DIR}/ not found — no live artifacts to audit`)
     return
   }
 
@@ -138,7 +134,6 @@ function auditLiveArtifacts(base: string, thresholdHours: number): void {
 // ── CLI ──────────────────────────────────────────────────────────────────────
 
 const args = process.argv.slice(2)
-const json = args.includes('--json')
 let basePath = '.'
 let thresholdHours = DEFAULT_THRESHOLD_HOURS
 
@@ -152,45 +147,14 @@ for (let i = 0; i < args.length; i++) {
 
 const base = resolve(basePath)
 if (!isDir(base)) {
-  console.error(`error: not a directory: ${base}`)
-  process.exit(2)
+  add('FAIL', 'LA-S-1', `Not a directory: ${base}`, RUBRIC)
+  findings.push(...judgmentFindingsFromRubric(join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md'), RUBRIC))
+  emitCheckerReporter({ mode: 'audit', concern: 'kb-live-artifacts', target: base, findings })
+  process.exit(checkerReporterExitCode(findings))
 }
 
 auditLiveArtifacts(base, thresholdHours)
 
-// Judgment handoff — the [J] criteria (LA-J-1..4) a reader assesses during AUDIT.
-add(
-  'ADVISORY',
-  'judgment',
-  'index accuracy, source authority, archive rationale, and name stability are judgment ([J]) — assess by reading',
-  RUBRIC
-)
-
-const n = (l: Level): number => findings.filter((fnd) => fnd.level === l).length
-const summary = { fail: n('FAIL'), warn: n('WARN'), advisory: n('ADVISORY'), info: n('INFO'), pass: n('PASS') }
-const stamp = new Date().toISOString()
-
-if (json) {
-  process.stdout.write(JSON.stringify({ concern: 'kb-live-artifacts', target: base, generatedAt: stamp, summary, findings }))
-} else {
-  console.log(`\nKnowledge Islands live artifacts audit — ${base}`)
-  console.log(`${'─'.repeat(60)}`)
-  const real = findings.filter((fnd) => fnd.level !== 'PASS' || summary.fail + summary.warn === 0)
-  if (real.length === 0) {
-    console.log(paint(C.green, '\n✅  PASS — no issues found'))
-  } else {
-    for (const l of ORDER) {
-      const rows = findings.filter((fnd) => fnd.level === l)
-      if (!rows.length) continue
-      console.log(`\n${ICON[l]} ${l} (${rows.length})`)
-      for (const r of rows) console.log(`   [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
-    }
-  }
-  console.log(`\n${'─'.repeat(60)}`)
-  console.log(paint(C.dim, `FAIL=${summary.fail} WARN=${summary.warn}`))
-  if (summary.fail + summary.warn > 0)
-    console.log('→ to address: run /ki-kb-live-artifacts CONFORM   (judgment criteria: references/rubric.md)')
-  console.log(paint(C.dim, 'mechanical checks only — judgment criteria in references/rubric.md'))
-}
-
-process.exit(summary.fail > 0 ? 1 : 0)
+findings.push(...judgmentFindingsFromRubric(join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md'), RUBRIC))
+emitCheckerReporter({ mode: 'audit', concern: 'kb-live-artifacts', target: base, findings })
+process.exit(checkerReporterExitCode(findings))

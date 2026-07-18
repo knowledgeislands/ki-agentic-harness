@@ -278,7 +278,7 @@ try {
   check(
     'aggregate → renders a valid canonical stream without treating it as malformed',
     canonicalAggregate.status === 1 &&
-      canonicalAggregate.stdout.includes('[LAY-1]') &&
+      canonicalAggregate.stdout.includes('[LAY-1: SKILL.md exists at the skill root.') &&
       !canonicalAggregate.stdout.includes('invalid checker reports')
   )
 
@@ -344,16 +344,27 @@ try {
 
 const auditInvalid = fixture('[ki-audit-missing.checks]\n')
 try {
-  const result = spawnSync('bun', [AUDIT, auditInvalid, '--json'], { encoding: 'utf8' })
-  const report = JSON.parse(result.stdout) as { findings?: Array<{ area?: string; level?: string; msg?: string }> }
-  const boot9 = report.findings?.find((finding) => finding.area === 'BOOT-9')
+  const result = spawnSync('bun', [AUDIT, auditInvalid], { encoding: 'utf8' })
+  const events = result.stdout
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map((line) => JSON.parse(line) as { record?: string; code?: string; level?: string; message?: string })
+  const boot9 = events.find((event) => event.record === 'finding' && event.code === 'BOOT-9')
   check('BOOT-9 invalid declaration → structured non-zero FAIL', (result.status ?? 0) !== 0 && boot9?.level === 'FAIL')
-  check('BOOT-9 invalid declaration → names dotted owner root', boot9?.msg?.includes('ki-audit-missing') === true)
+  check('BOOT-9 invalid declaration → names dotted owner root', boot9?.message?.includes('ki-audit-missing') === true)
 } finally {
   rmSync(auditInvalid, { recursive: true, force: true })
 }
 
 type AuditReport = { findings?: Array<{ area?: string; level?: string; msg?: string }> }
+const auditReport = (stdout: string): AuditReport => ({
+  findings: stdout
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map((line) => JSON.parse(line) as { record?: string; code?: string; level?: string; message?: string })
+    .filter((event) => event.record === 'finding')
+    .map((event) => ({ area: event.code, level: event.level, msg: event.message }))
+})
 
 const sourceBearing = fixture('[ki-authoring]\n')
 try {
@@ -363,8 +374,8 @@ try {
   cpSync(source, targetSource, { recursive: true })
 
   const bootstrapped = spawnSync('bun', [BOOTSTRAP, sourceBearing], { encoding: 'utf8' })
-  const freshAudit = spawnSync('bun', [AUDIT, sourceBearing, '--json'], { encoding: 'utf8' })
-  const freshReport = JSON.parse(freshAudit.stdout) as AuditReport
+  const freshAudit = spawnSync('bun', [AUDIT, sourceBearing], { encoding: 'utf8' })
+  const freshReport = auditReport(freshAudit.stdout)
   const freshBoot11 = freshReport.findings?.find((finding) => finding.area === 'BOOT-11')
   check('BOOT-11 fresh file-kind vendors → bootstrap exits cleanly', bootstrapped.status === 0)
   check('BOOT-11 fresh file-kind vendors → explicit PASS with no drift', freshAudit.status === 0 && freshBoot11?.level === 'PASS')
@@ -373,14 +384,14 @@ try {
     const vendored = join(sourceBearing, '.ki-meta', 'skills', 'ki-authoring', `${mode}.ts`)
     writeFileSync(vendored, `${readFileSync(vendored, 'utf8')}\n// injected BOOT-11 drift\n`)
 
-    const driftAudit = spawnSync('bun', [AUDIT, sourceBearing, '--json'], { encoding: 'utf8' })
-    const driftReport = JSON.parse(driftAudit.stdout) as AuditReport
+    const driftAudit = spawnSync('bun', [AUDIT, sourceBearing], { encoding: 'utf8' })
+    const driftReport = auditReport(driftAudit.stdout)
     const driftBoot11 = driftReport.findings?.find((finding) => finding.area === 'BOOT-11')
     check(`BOOT-11 mutated ${mode}.ts → ship-blocking FAIL`, (driftAudit.status ?? 0) !== 0 && driftBoot11?.level === 'FAIL')
 
     const repaired = spawnSync('bun', [BOOTSTRAP, sourceBearing], { encoding: 'utf8' })
-    const repairedAudit = spawnSync('bun', [AUDIT, sourceBearing, '--json'], { encoding: 'utf8' })
-    const repairedReport = JSON.parse(repairedAudit.stdout) as AuditReport
+    const repairedAudit = spawnSync('bun', [AUDIT, sourceBearing], { encoding: 'utf8' })
+    const repairedReport = auditReport(repairedAudit.stdout)
     const repairedBoot11 = repairedReport.findings?.find((finding) => finding.area === 'BOOT-11')
     check(
       `BOOT-11 re-bootstrap repairs ${mode}.ts drift`,
@@ -391,8 +402,8 @@ try {
   const canonicalAudit = join(targetSource, 'scripts', 'audit.ts')
   const canonicalAuditBytes = readFileSync(canonicalAudit)
   rmSync(canonicalAudit)
-  const missingSourceAudit = spawnSync('bun', [AUDIT, sourceBearing, '--json'], { encoding: 'utf8' })
-  const missingSourceReport = JSON.parse(missingSourceAudit.stdout) as AuditReport
+  const missingSourceAudit = spawnSync('bun', [AUDIT, sourceBearing], { encoding: 'utf8' })
+  const missingSourceReport = auditReport(missingSourceAudit.stdout)
   check(
     'BOOT-11 missing declared canonical source → ship-blocking FAIL',
     (missingSourceAudit.status ?? 0) !== 0 &&
@@ -404,8 +415,8 @@ try {
   const vendoredAuditBytes = readFileSync(vendoredAudit)
   rmSync(vendoredAudit)
   symlinkSync(canonicalAudit, vendoredAudit)
-  const symlinkAudit = spawnSync('bun', [AUDIT, sourceBearing, '--json'], { encoding: 'utf8' })
-  const symlinkReport = JSON.parse(symlinkAudit.stdout) as AuditReport
+  const symlinkAudit = spawnSync('bun', [AUDIT, sourceBearing], { encoding: 'utf8' })
+  const symlinkReport = auditReport(symlinkAudit.stdout)
   check(
     'BOOT-11 symlinked vendor → ship-blocking FAIL',
     (symlinkAudit.status ?? 0) !== 0 &&
@@ -420,8 +431,8 @@ try {
 const externalConsumer = fixture('[ki-authoring]\n')
 try {
   const bootstrapped = spawnSync('bun', [BOOTSTRAP, externalConsumer], { encoding: 'utf8' })
-  const audit = spawnSync('bun', [AUDIT, externalConsumer, '--json'], { encoding: 'utf8' })
-  const report = JSON.parse(audit.stdout) as AuditReport
+  const audit = spawnSync('bun', [AUDIT, externalConsumer], { encoding: 'utf8' })
+  const report = auditReport(audit.stdout)
   const boot11 = report.findings?.find((finding) => finding.area === 'BOOT-11')
   check('BOOT-11 external consumer without canonical source → bootstrap exits cleanly', bootstrapped.status === 0)
   check('BOOT-11 external consumer without canonical source → explicit NA, not failure', audit.status === 0 && boot11?.level === 'NA')

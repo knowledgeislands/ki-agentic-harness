@@ -877,7 +877,7 @@ for (const t of targets) {
   // them as NA rather than emitting a spurious access-FAIL. The offline vendor-integrity
   // findings above still count — that is the value this gate carries in CI (see ci.yml).
   if (!ghAuthed()) {
-    const note = `${t.nameWithOwner}: gh not authenticated — GitHub checks skipped (gh auth login)`
+    const note = 'gh not authenticated — GitHub checks skipped (gh auth login)'
     all.push({ level: 'NA', area: 'ACCESS-1', msg: note, ref: STD, file: t.nameWithOwner })
     for (const x of localFindings) all.push({ level: x.level, area: x.area, msg: x.msg, ref: x.ref, file: scoped(t.nameWithOwner, x) })
     continue
@@ -898,7 +898,7 @@ for (const t of targets) {
       {
         level: 'NA',
         area: 'ACCESS-1',
-        msg: `could not read ${t.nameWithOwner} via gh — GitHub checks skipped (network or insufficient scope)`,
+        msg: 'Could not read the repository via gh — GitHub checks skipped (network or insufficient scope).',
         ref: STD
       },
       ...localFindings

@@ -1,5 +1,6 @@
 ---
 name: ki-website-cloudflare
+checker-dependencies: [ki-skills/checker-reporter]
 implies: []
 vendors: [educate, audit, conform, help]
 description: >

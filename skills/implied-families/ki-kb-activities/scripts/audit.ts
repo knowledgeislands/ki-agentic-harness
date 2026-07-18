@@ -14,32 +14,28 @@
  * READ-ONLY. Exit code non-zero on any FAIL.
  */
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
 const KNOWN_REALIZATIONS = ['slash-command', 'scheduled-task', 'conversational', 'manual', 'workflow'] as const
 const ACTIVITIES_INDEX = 'Activities.md'
 const DEFAULT_ACTIVITIES_DIR = 'Admin/Operations/Activities'
 
-const C = { reset: '\x1b[0m', dim: '\x1b[2m', green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m' }
-const paint = (c: string, s: string) => `${c}${s}${C.reset}`
-
-type Level = 'FAIL' | 'WARN' | 'ADVISORY' | 'INFO' | 'PASS'
-// Findings carry the rubric CODE as `area`, a reference-doc pointer as `ref`, and the
-// path they concern as `file` (lifted out of the message) — the cited-finding shape
-// shared across KI checkers, so --json and the aggregate render uniformly (mirrors ki-authoring).
-type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const ORDER: Level[] = ['FAIL', 'WARN', 'ADVISORY', 'INFO', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', ADVISORY: '🧭', INFO: 'ℹ️', PASS: '✅' }
-
 // Every ki-kb-activities criterion is documented in the audit rubric — a single pointer.
 const RUBRIC = 'references/rubric.md'
 
 const mk = () => {
-  const f: Finding[] = []
+  const f: CheckerFinding[] = []
   const push =
-    (level: Level) =>
-    (area: string, msg: string, ref?: string, file?: string): void =>
-      void f.push({ level, area, msg, ref, file })
+    (level: CheckerFinding['level']) =>
+    (code: string, message: string, ref?: string, file?: string): void =>
+      void f.push({ type: 'M', level, code, message, ref, file })
   return { f, fail: push('FAIL'), warn: push('WARN'), advisory: push('ADVISORY'), note: push('INFO') }
 }
 
@@ -78,7 +74,6 @@ function auditActivities(base: string, harnessPath: string | null) {
 
   const activitiesDir = join(base, DEFAULT_ACTIVITIES_DIR)
   if (!isDir(activitiesDir)) {
-    note('ACT-S-2', 'directory absent — no activities to audit', RUBRIC, `${DEFAULT_ACTIVITIES_DIR}/`)
     return { f }
   }
 
@@ -160,7 +155,6 @@ function auditActivities(base: string, harnessPath: string | null) {
 // ── CLI ──────────────────────────────────────────────────────────────────────
 
 const args = process.argv.slice(2)
-const json = args.includes('--json')
 let basePath = '.'
 let harnessPath: string | null = null
 
@@ -174,51 +168,15 @@ for (let i = 0; i < args.length; i++) {
 
 const base = resolve(basePath)
 if (!isDir(base)) {
-  console.error(`error: not a directory: ${base}`)
-  process.exit(2)
+  const findings: CheckerFinding[] = [
+    { type: 'M', level: 'FAIL', code: 'ACT-S-2', message: `Not a directory: ${base}`, ref: RUBRIC },
+    ...judgmentFindingsFromRubric(join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md'), RUBRIC)
+  ]
+  emitCheckerReporter({ mode: 'audit', concern: 'kb-activities', target: base, findings })
+  process.exit(checkerReporterExitCode(findings))
 }
 
 const { f } = auditActivities(base, harnessPath)
-
-const n = (l: Level): number => f.filter((x) => x.level === l).length
-const summary = { fail: n('FAIL'), warn: n('WARN'), advisory: n('ADVISORY'), info: n('INFO'), pass: n('PASS') }
-
-// --json serializes findings verbatim (single line) for the aggregate; human mode renders the ladder.
-if (json) {
-  process.stdout.write(
-    JSON.stringify({ concern: 'kb-activities', target: base, generatedAt: new Date().toISOString(), summary, findings: f })
-  )
-  process.exit(summary.fail > 0 ? 1 : 0)
-}
-
-console.log(`\nKnowledge Islands activities audit — ${base}`)
-console.log(`${'─'.repeat(60)}\n`)
-
-if (f.length === 0) {
-  console.log(paint(C.green, `✅  PASS — no issues found`))
-  process.exit(0)
-}
-
-const byLevel: Partial<Record<Level, Finding[]>> = {}
-for (const finding of f) {
-  if (!byLevel[finding.level]) byLevel[finding.level] = []
-  byLevel[finding.level]?.push(finding)
-}
-
-for (const level of ORDER) {
-  const group = byLevel[level]
-  if (!group?.length) continue
-  console.log(paint(C.dim, `${ICON[level]}  ${level} (${group.length})\n`))
-  for (const r of group) {
-    console.log(`   [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
-  }
-  console.log()
-}
-
-const tally = `FAIL=${summary.fail} WARN=${summary.warn} ADVISORY=${summary.advisory}`
-console.log('─'.repeat(60))
-console.log(paint(C.dim, tally))
-if (summary.fail + summary.warn > 0) console.log('→ to address: run /ki-kb-activities CONFORM   (judgment criteria: references/rubric.md)')
-console.log(paint(C.dim, 'mechanical checks only — judgment criteria in references/rubric.md'))
-
-process.exit(summary.fail > 0 ? 1 : 0)
+f.push(...judgmentFindingsFromRubric(join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md'), RUBRIC))
+emitCheckerReporter({ mode: 'audit', concern: 'kb-activities', target: base, findings: f })
+process.exit(checkerReporterExitCode(f))

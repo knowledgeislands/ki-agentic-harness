@@ -2,6 +2,7 @@
 name: ki-bootstrap
 implies: [ki-repo]
 vendors: [educate, audit, conform, help]
+checker-dependencies: [ki-skills/checker-reporter]
 description: >
   Bootstraps a Knowledge Islands repo into governance two ways: it runs the EDUCATE chain that vendors each declared skill's checkers into the repo's `.ki-meta/`, so it self-governs via `./.ki-meta/bin/ki-audit` with zero skills installed and no `package.json` of its own — never touching `package.json`; and it links the repo's project-local skills (`.claude/skills/`) from its `.ki-config.toml` so the right skills load in-session. Use when bootstrapping a repo, making a repo self-govern, re-bootstrapping to bring it up to date, or setting up and auditing skill links. Triggers: "bootstrap this repo", "make this repo self-govern", "set up this repo's skills", "re-bootstrap this repo", "why aren't my skills loading in this repo". This is the install keystone — the one knowledgeislands skill kept installed globally, so any repo can self-wire from the remote source. For the `.ki-config.toml` contents, the coverage cascade, and GitHub settings use `ki-repo`; for the harness's five-part layout use `ki-harness`.
 argument-hint: 'help | educate [target] | audit [path] | conform [path] | refresh'

@@ -1,5 +1,6 @@
 ---
 name: ki-binding-chezmoi
+checker-dependencies: [ki-skills/checker-reporter]
 implies: [ki-binding, ki-dotfiles-chezmoi]
 vendors: [educate, audit, conform, help]
 description: >

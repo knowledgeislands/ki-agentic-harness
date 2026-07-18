@@ -223,7 +223,6 @@ async function main() {
   }
 
   if (!dirExists) {
-    add('DIR-1', Sev.NA, memoryDir, 'no memory/ directory for this repo yet — not a failure')
     const reporterFindings = canonicalFindings(findings)
     reporterFindings.push(...judgmentFindingsFromRubric(localRubricPath(), REF_RUBRIC))
     emitCheckerReporter({ mode: 'audit', concern: 'housekeeping', target: memoryDir, findings: reporterFindings })

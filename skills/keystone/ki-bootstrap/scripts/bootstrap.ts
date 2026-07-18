@@ -152,7 +152,7 @@ const AGGREGATE_RUNNER = `#!/usr/bin/env bun
 // sequence for the given verb — no package.json required.
 // Usage: bun .ki-meta/bin/aggregate.ts <audit|conform|educate|help>
 import { execFileSync, spawnSync } from 'node:child_process'
-import { existsSync, readdirSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -218,10 +218,34 @@ const verbed = verb === 'conform' ? 'conformed' : 'audited'
 // Icons are each two display columns (sub-width glyphs ⊘/⚠️/ℹ️ carry a trailing space),
 // so [code] lands in a constant column across both body and recap rows.
 const SHORT = { FAIL: 'fail', WARN: 'warn', POLISH: 'pol', ADVISORY: 'adv', INFO: 'info', NA: 'na', PASS: 'pass' }
-const findingLine = (icon, level, code, file, msg, ref, skill, full) =>
+const rubricTitleCache = new Map()
+const rubricTitles = (skillDir) => {
+  if (rubricTitleCache.has(skillDir)) return rubricTitleCache.get(skillDir)
+  const titles = new Map()
+  const rubric = join(skillDir, 'references', 'rubric.md')
+  if (existsSync(rubric)) {
+    for (const line of readFileSync(rubric, 'utf8').split(/\\r?\\n/)) {
+      const bullet = line.match(/^\\s*-\\s+(?:\\[[ xX]\\]\\s+)?\\*\\*([^*]+)\\*\\*(.*)$/)
+      if (!bullet) continue
+      const [, bold, after] = bullet
+      const code = bold.trim().match(/^(?:\\[[^\\]]+\\]\\s*)?([A-Z][A-Za-z0-9-]*)/)?.[1]
+      const tags = bold + ' ' + after
+      if (!code || !/\\[[^\\]]*\\b[JM]\\b[^\\]]*\\]/.test(tags)) continue
+      const title = after
+        .replace(/^\\s*(?:\\[[^\\]]+\\]\\s*)*/, '')
+        .replace(/^(?:FAIL|WARN|POLISH|ADVISORY|INFO|NA|PASS)\\s*[—–-]\\s*/i, '')
+        .replace(/[\`*_]/g, '')
+        .trim()
+      if (title) titles.set(code, title)
+    }
+  }
+  rubricTitleCache.set(skillDir, titles)
+  return titles
+}
+const findingLine = (icon, level, code, title, file, msg, ref, skill, full) =>
   '  ' + icon + ' ' + (SHORT[level] || level.toLowerCase()).padEnd(4) +
   (skill ? ' ' + skill.padEnd(20) : '') +
-  ' \\x1b[2m[' + code + ']\\x1b[0m' +
+  ' \\x1b[2m[' + code + (title ? ': ' + title : '') + ']\\x1b[0m' +
   (file ? ' \\x1b[36m' + file + '\\x1b[0m' : '') +
   ' ' + (full ? msg : String(msg).split('\\n')[0]) +
   (ref ? ' \\x1b[2m(' + ref + ')\\x1b[0m' : '')
@@ -321,14 +345,16 @@ for (const skill of skills) {
     continue
   }
   const findings = parsed.events.slice(1, -1)
+  const titles = rubricTitles(dir)
   for (const finding of findings) {
     const level = finding.level
     const code = finding.code
+    const title = titles.get(code) || ''
     const message = finding.message
     const ref = finding.ref ?? ''
     const file = finding.file ?? ''
-    console.log(findingLine(ICON[level], level, code, file, message, ref, '', true))
-    if (RECAP_LEVELS.includes(level)) recap.push({ skill, level, code, msg: message, ref, file })
+    console.log(findingLine(ICON[level], level, code, title, file, message, ref, '', true))
+    if (RECAP_LEVELS.includes(level)) recap.push({ skill, level, code, title, msg: message, ref, file })
   }
   const summary = parsed.events.at(-1).summary
   const sicon = summary.fail ? ICON.FAIL : summary.warn ? ICON.WARN : summary.polish ? ICON.POLISH : summary.advisory ? ICON.ADVISORY : ICON.PASS
@@ -344,11 +370,11 @@ if (fails.length === 0) {
   console.log('  \\x1b[1mfailures & warnings\\x1b[0m')
   for (const level of FAILURE_LEVELS)
     for (const h of fails.filter((r) => r.level === level))
-      console.log(findingLine(ICON[level], level, h.code, h.file, h.msg, h.ref, h.skill, false))
+      console.log(findingLine(ICON[level], level, h.code, h.title, h.file, h.msg, h.ref, h.skill, false))
 }
 if (reminders.length) {
   console.log('  \\x1b[1mjudgment reminders (always on — read & assess)\\x1b[0m')
-  for (const h of reminders) console.log(findingLine(ICON.ADVISORY, 'ADVISORY', h.code, h.file, h.msg, h.ref, h.skill, false))
+  for (const h of reminders) console.log(findingLine(ICON.ADVISORY, 'ADVISORY', h.code, h.title, h.file, h.msg, h.ref, h.skill, false))
 }
 const count = (l) => recap.filter((r) => r.level === l).length
 const ticon = count('FAIL') ? ICON.FAIL : count('WARN') ? ICON.WARN : count('POLISH') ? ICON.POLISH : ICON.PASS

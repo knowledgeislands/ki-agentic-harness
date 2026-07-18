@@ -68,7 +68,7 @@ function finishAudit(target: string): never {
 
 const repo = process.argv[2]
 if (!repo || !existsSync(repo)) {
-  add('FAIL', 'SCOPE', 'audit target is missing or does not exist', STD)
+  add('FAIL', 'PKG-4', 'Audit target is missing or does not exist.', STD)
   finishAudit(repo || process.cwd())
 }
 const at = (...p: string[]) => join(repo, ...p)
@@ -98,7 +98,7 @@ const read = (...p: string[]): string => {
 // rather than a wall of FAILs. Bootstrap vendors this checker into every repo via the
 // ki-repo → ki-engineering implies edge, including non-code repos (dotfiles, KB, tap).
 if (!has('package.json')) {
-  add('NA', 'scope', 'no package.json — not a TypeScript/Bun repo; the engineering standard does not apply')
+  add('NA', 'PKG-4', 'No package.json — the engineering standard does not apply.')
   finishAudit(repo)
 }
 
@@ -935,5 +935,4 @@ else if (!/^\[ki-engineering\]/m.test(ki)) {
   }
 }
 
-add('INFO', 'scope', 'engineering common layer — compose with the artifact-skill audit for full coverage')
 finishAudit(repo)
