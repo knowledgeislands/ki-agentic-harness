@@ -13,10 +13,10 @@ The [recommended tools](recommended-tools.md) guide covers optional machine-leve
 Install the small, global process-skill set once:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/user-install.sh | sh
+curl -fsSL https://knowledgeislands.info/harness/install | sh
 ```
 
-The stable public route for this command is `/harness/install`; until the website binding is published, the raw GitHub form above is the working source.
+`/harness/install` is the stable public route. Its implementation may change without changing the command you use.
 
 It copies `ki-bootstrap`, `ki-delegate`, `ki-next`, `ki-plan`, and `ki-recap` as regular files into the selected runtime's user skill directory.
 
@@ -31,10 +31,10 @@ On a chezmoi-managed machine, chezmoi reads the installed hook payload and is re
 From the repository you want to govern, either ask an installed agent to run `/ki-bootstrap`, or use the direct repository command:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh | sh
+curl -fsSL https://knowledgeislands.info/harness/bootstrap | sh
 ```
 
-The stable public route for this command is `/harness/bootstrap`; until the website binding is published, the raw GitHub form above is the working source.
+`/harness/bootstrap` is the stable public route. Its implementation may change without changing the command you use.
 
 Repository bootstrap downloads a temporary harness source, builds that repository's `.ki-meta/` governance machinery, publishes its project-local runtime skill copies, then removes the temporary source.
 
