@@ -6,6 +6,8 @@ Every **[M]** item carries a stable `PREFIX-N` code (per `ki-skills`' SHAPE-9 + 
 
 Applicability: `[ki-mcp]` or `src/mcp-server/` activates the complete audit. With neither, **`KI-CONFIG` [M]** emits exactly one `NA` and stops; a declaration or structural marker must never suppress the existing findings below. ([standard](standards.md#applicability))
 
+- **KI-CONFIG [M]** — Applicability gate: without `[ki-mcp]` or `src/mcp-server/`, emit exactly one `NA` finding and stop. ([standard](standards.md#applicability))
+
 ## Contents
 
 - [Layout & layers](#layout--layers)
@@ -126,8 +128,8 @@ Skip this whole section for the filesystem/subprocess repos.
 
 ## Docs
 
-- [ ] [M] WARN — `ROADMAP.md` present. (roadmap-md)
-- [ ] [M] WARN — `CONTRIBUTING.md` and `SECURITY.md` present; `CHANGELOG.md` present **and non-empty** (an empty stub is a finding) — the MCP-family root docs. `README`, `LICENSE`, `.gitignore`, `.editorconfig`, `.ki-config.toml`, and now `CLAUDE.md` (FAIL) are `ki-repo`'s layers, not re-checked here.
+- [ ] [M] WARN — `DOC-1`: `ROADMAP.md` present. (roadmap-md)
+- [ ] [M] WARN — `DOC-1`: `CONTRIBUTING.md` and `SECURITY.md` present; `CHANGELOG.md` present **and non-empty** (an empty stub is a finding) — the MCP-family root docs. `README`, `LICENSE`, `.gitignore`, `.editorconfig`, `.ki-config.toml`, and now `CLAUDE.md` (FAIL) are `ki-repo`'s layers, not re-checked here.
 - [ ] [J] WARN — `CLAUDE.md` is **not drifted**: every layer/path/concept it names still exists in the code (catch renamed/moved layers).
 - [ ] [J] POLISH — README install/config/client-setup steps are current.
 

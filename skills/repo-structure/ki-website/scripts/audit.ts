@@ -14,30 +14,31 @@
  * the palette, _data is the single source of structure, SEO wired into base.njk) need a read
  * of the code — see references/rubric.md.
  *
- * Each finding carries the rubric CODE (references/rubric.md WEB-N) as its area, a
- * reference-doc pointer (the standard section it verifies), and — when file-scoped — the path
- * it concerns; ref/file ride into --json for the aggregate to render (CHK-004/009/010).
+ * Each typed mechanical finding carries its rubric code, reference-doc pointer, and — when
+ * file-scoped — its path. The canonical checker reporter owns the JSONL output and summary.
  *
- * Output is grouped pass/warn/fail; exit non-zero if any FAIL. No dependencies — Node/Bun builtins only.
+ * Output is canonical checker-reporter JSONL; exit non-zero if any mechanical FAIL. No npm
+ * dependencies — only Node/Bun builtins and the local vendored reporter payload.
  */
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
-import { basename, join } from 'node:path'
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import {
+  type CheckerFinding,
+  checkerReporterExitCode,
+  emitCheckerReporter,
+  judgmentFindingsFromRubric
+} from './vendored/ki-skills/checker-reporter.ts'
 
-// Unified severity ladder — shared by every KI checker (enforcement-framework §2).
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-// area is the rubric code (references/rubric.md, WEB-N); ref is its reference-doc
-// pointer (the standard section the criterion verifies); file names the path a file-scoped
-// finding concerns. ref/file are optional and ride into --json for the aggregate (CHK-004/009/010).
-type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const ORDER: Level[] = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
-const ICON: Record<Level, string> = { FAIL: '❌', WARN: '⚠️', POLISH: '✨', ADVISORY: '🧭', INFO: 'ℹ️', NA: '🚫', PASS: '✅' }
-const findings: Finding[] = []
-const add = (level: Level, area: string, msg: string, ref?: string, file?: string) => findings.push({ level, area, msg, ref, file })
+const findings: CheckerFinding[] = []
+const add = (level: CheckerFinding['level'], code: string, message: string, ref?: string, file?: string): void =>
+  void findings.push({ type: 'M', level, code, message, ref, file })
 
 // Reference-doc pointers (the `(reference.md)` citation each finding carries).
 const STD = 'references/standards.md'
 const RUBRIC = 'references/rubric.md'
 const std = (section: string): string => `${STD} ${section}`
+const rubricPath = join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md')
 
 // `.ki-config.toml` is a shared per-repo file; this skill owns the
 // [ki-website] table. The table header is the opt-in marker and
@@ -53,10 +54,11 @@ if (process.argv.slice(2).includes('--educate')) {
   process.exit(0)
 }
 
-const repo = process.argv[2]
-if (!repo || !existsSync(repo)) {
-  console.error('usage: audit.ts <repo-path>   (path must exist)')
-  process.exit(2)
+const repo = process.argv[2] ? resolve(process.argv[2]) : ''
+if (!repo || !existsSync(repo) || !statSync(repo).isDirectory()) {
+  add('FAIL', 'WEB-6', `target path is not a directory: ${repo || '(missing)'}`, std('§2'))
+  emitCheckerReporter({ mode: 'audit', concern: 'website', target: repo || '(missing)', findings })
+  process.exit(checkerReporterExitCode(findings))
 }
 const at = (...p: string[]) => join(repo, ...p)
 const has = (...p: string[]) => existsSync(at(...p))
@@ -89,7 +91,9 @@ const declaresWebsite = kiWebsiteTable !== null
 const hasWebsiteStructure = CONFIG_NAMES.some((f) => has(f) || has('site', f))
 if (!declaresWebsite && !parsedKiWebsite.malformed && !hasWebsiteStructure) {
   add('NA', 'WEB-41', 'ki-website not applicable: no [ki-website] declaration or Eleventy config structural marker', std('§2'))
-  emit(findings, repo, 'websites', `11ty website audit — ${basename(repo)}  (${repo})`, '')
+  findings.push(...judgmentFindingsFromRubric(rubricPath, RUBRIC))
+  emitCheckerReporter({ mode: 'audit', concern: 'website', target: repo, findings })
+  process.exit(checkerReporterExitCode(findings))
 }
 
 // ── locate the site root: flat (repo root) or site/ subfolder ─────────────────
@@ -135,7 +139,6 @@ try {
 }
 const deps = { ...((pkg.dependencies as object) ?? {}), ...((pkg.devDependencies as object) ?? {}) } as Record<string, string>
 const scripts = (pkg.scripts ?? {}) as Record<string, string>
-const name = String(pkg.name ?? basename(repo))
 
 // ── stack ───────────────────────────────────────────────────────────────────
 deps['@11ty/eleventy']
@@ -367,72 +370,6 @@ if (kiWebsiteTable) {
   }
 }
 
-// ── report ────────────────────────────────────────────────────────────────────
-function emit(items: Finding[], target: string, concern: string, title: string, footer: string): never {
-  const argv = process.argv.slice(2)
-  const json = argv.includes('--json')
-  const ri = argv.indexOf('--report')
-  const report = ri !== -1
-  const reportDir = report && argv[ri + 1] && !argv[ri + 1].startsWith('-') ? argv[ri + 1] : join(target, '.ki-meta', 'audits')
-
-  const n = (l: Level): number => items.filter((f) => f.level === l).length
-  const summary = {
-    fail: n('FAIL'),
-    warn: n('WARN'),
-    polish: n('POLISH'),
-    advisory: n('ADVISORY'),
-    info: n('INFO'),
-    na: n('NA'),
-    pass: n('PASS')
-  }
-  const tally = `FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na}`
-  const stamp = new Date().toISOString()
-
-  if (report) {
-    mkdirSync(reportDir, { recursive: true })
-    const body = ORDER.flatMap((l) => {
-      const rows = items.filter((f) => f.level === l)
-      return rows.length
-        ? [
-            '',
-            `## ${ICON[l]} ${l} (${rows.length})`,
-            ...rows.map((r) => `- [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
-          ]
-        : []
-    })
-    writeFileSync(join(reportDir, `${concern}.md`), [`# ${concern} audit — ${target}`, '', `_${stamp}_`, '', tally, ...body, ''].join('\n'))
-    writeFileSync(
-      join(reportDir, `${concern}.json`),
-      `${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`
-    )
-  }
-
-  if (json) {
-    process.stdout.write(`${JSON.stringify({ concern, target, generatedAt: stamp, summary, findings: items }, null, 2)}\n`)
-  } else {
-    console.log(`\n${title}\n${'─'.repeat(60)}`)
-    for (const l of ORDER) {
-      const rows = items.filter((f) => f.level === l)
-      if (!rows.length) continue
-      console.log(`\n${ICON[l]} ${l} (${rows.length})`)
-      for (const r of rows) console.log(`   [${r.area}]${r.file ? ` ${r.file}` : ''} ${r.msg}${r.ref ? ` (${r.ref})` : ''}`)
-    }
-    console.log(`\n${'─'.repeat(60)}\n${tally}`)
-    if (footer) console.log(footer)
-    if (summary.fail + summary.warn + summary.polish > 0)
-      console.log('→ to address: run /ki-website CONFORM   (judgment criteria: references/rubric.md)')
-    if (report) console.log(`report → ${join(reportDir, `${concern}.{md,json}`)}`)
-    console.log('')
-  }
-  process.exit(summary.fail ? 1 : 0)
-}
-
-add('INFO', 'scope', 'site-build delta only — compose with audit.ts (toolchain) + audit.ts (if deployed) for full coverage', RUBRIC)
-add('ADVISORY', 'judgment', 'mechanical layer only — apply the [J] criteria in references/rubric.md by reading', RUBRIC)
-emit(
-  findings,
-  repo,
-  'websites',
-  `11ty website audit — ${name}  (${repo})`,
-  'Site-build delta only — also run audit.ts (toolchain) + audit.ts (if deployed) + the rubric judgment pass.'
-)
+findings.push(...judgmentFindingsFromRubric(rubricPath, RUBRIC))
+emitCheckerReporter({ mode: 'audit', concern: 'website', target: repo, findings })
+process.exit(checkerReporterExitCode(findings))

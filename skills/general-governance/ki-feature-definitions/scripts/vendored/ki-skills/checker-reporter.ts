@@ -127,13 +127,22 @@ export function rubricCriteriaFromMarkdown(markdown: string): Map<string, Rubric
   const criteria = new Map<string, RubricCriterion>()
   for (const line of markdown.split(/\r?\n/)) {
     const entry = line.match(/^\s*(?:-\s+)?(?:\[[ xX]\]\s+)?\*\*([^*]+)\*\*(.*)$/)
-    if (!entry) continue
+    if (!entry) {
+      // Older checklist rubrics put the M/J tag before a later inline code, for
+      // example `- [ ] [M] WARN — ... \`LAY-1\`: description`.
+      const checklistCode = line.match(/^\s*-\s+\[[ xX]\][\s\S]*`([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)?)`/)?.[1]
+      if (checklistCode) {
+        const checklistTitle = line.slice(line.indexOf(`\`${checklistCode}\``) + checklistCode.length + 2).replace(/^\s*:\s*/, '')
+        if (normaliseCriterionTitle(checklistTitle)) addCriterion(criteria, checklistCode, checklistTitle, line)
+      }
+      continue
+    }
     const [, bold, after] = entry
     const tags = `${bold} ${after}`
 
     // Most current rubrics declare the code in the bold heading, for example
     // `**LAY-1 [M]** ...`. Retain named codes such as `JUDGMENT` too.
-    const headingCode = bold.trim().match(/^(?:\[[^\]]+\]\s*)?([A-Z][A-Za-z0-9-]*)/)?.[1]
+    const headingCode = bold.trim().match(/^(?:\[[^\]]+\]\s*)?`?([A-Z][A-Za-z0-9-]*)`?/)?.[1]
     if (headingCode) {
       const title = normaliseCriterionTitle(after)
       if (title) addCriterion(criteria, headingCode, title, tags)

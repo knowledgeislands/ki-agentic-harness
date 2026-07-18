@@ -2,6 +2,7 @@
 name: ki-tools
 implies: []
 vendors: [educate, audit, conform, help]
+checker-dependencies: [ki-skills/checker-reporter]
 description: >
   Audit, conform, or scaffold a Knowledge Islands `tools-*` repo — ONE standalone command-line tool per repo, distributed by a `curl | bash` installer AND a companion Homebrew tap formula. Governs the container SHAPE language-agnostically (bash today, a future Python/Go tool fits): the `bin/<tool>` executable + its exec bit, `install.sh`, versioning + `--version` + `vX.Y.Z` tags, `CHANGELOG.md`, a CI workflow, and capability conditionals (a shell entrypoint needs shellcheck + a bats suite; a `package.json` defers to `ki-engineering`). Triggers: "audit this tool repo", "scaffold a CLI tool", "release a command-line tool", "does this tools- repo follow our standard", "check my tools- repo". Off-ramps: the Homebrew tap + its formula → `ki-homebrew-tap`; GitHub settings and standard files (README, LICENSE) → `ki-repo`; a TS/Bun toolchain (`package.json`) → `ki-engineering`. Container, not contents — it does not judge the tool's internal code quality.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
@@ -74,4 +75,4 @@ Every governance skill carries the universal four **AUDIT · CONFORM · EDUCATE 
 
 - The standard is anchored to `tools-mgit` as the reference shape and to external specs (shellcheck, bats, keep-a-changelog, semver, XDG) — the tracked [source list](references/sources.md) records them; Mode REFRESH re-fetches on the declared cadence.
 - Refer to another skill by its `name` (`ki-repo`, `ki-engineering`, `ki-homebrew-tap`), never a file path — skills are relocatable.
-- Checker output conforms to the severity ladder, JSON shape, and exit-code contract in `ki-engineering`'s [checker-contract.md](../../foundations/ki-engineering/references/checker-contract.md).
+- Checker output uses the canonical checker reporter's JSONL contract; the reporter is vendored locally so this checker remains standalone after installation.

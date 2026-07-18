@@ -1,5 +1,6 @@
 ---
 name: ki-website
+checker-dependencies: [ki-skills/checker-reporter]
 implies: [ki-website-cloudflare]
 vendors: [educate, audit, conform, help]
 description: >-
@@ -67,7 +68,7 @@ Carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH** — EDUCAT
 ### Mode AUDIT — check a site against the standard
 
 1. **Run the common layer first.** `bun ki-engineering/scripts/audit.ts <repo>` covers the shared toolchain. Don't re-derive it here.
-2. **Run the mechanical checker.** `bun <skill>/scripts/audit.ts <repo>`. It locates the site root (the `site/` workspace), then reports: the `@11ty/eleventy` dep, **no `tailwind.config.*`**, `eleventy.config.ts` present, the relative-URL transform, the `.ts` + `.json5` data extensions, the Tailwind `eleventy.before` hook, `main.css` importing `tailwindcss`, the `src/` layout dirs, the build/dev script family, the `seo-meta` partial, and `dist/` gitignored. It grades findings on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — see `ki-engineering`'s [checker-contract.md](../../foundations/ki-engineering/references/checker-contract.md)) and exits non-zero on any FAIL; with `--json` / `--report` it emits machine-readable findings and writes the latest report to the site's `.ki-meta/audits/websites.{md,json}`. Capture its output verbatim.
+2. **Run the mechanical checker.** `bun <skill>/scripts/audit.ts <repo>`. It locates the site root (the `site/` workspace), then reports: the `@11ty/eleventy` dep, **no `tailwind.config.*`**, `eleventy.config.ts` present, the relative-URL transform, the `.ts` + `.json5` data extensions, the Tailwind `eleventy.before` hook, `main.css` importing `tailwindcss`, the `src/` layout dirs, the build/dev script family, the `seo-meta` partial, and `dist/` gitignored. It emits the canonical checker reporter JSONL on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — see `ki-engineering`'s [checker-contract.md](../../foundations/ki-engineering/references/checker-contract.md)) and exits non-zero on any FAIL M finding. Capture its output verbatim.
 3. **Apply the judgment items** in [the rubric](references/rubric.md): `tokens.css` actually drives the palette (not hard-coded hexes in templates), `_data` is the single source of structure, content is Markdown with cascade data files, SEO meta is wired into `base.njk`, and a public site ships a sitemap/robots. Name the hosting audit that must also run if the site is deployed.
 4. **Report** by location → criterion → fix, grouped by severity (FAIL / WARN / POLISH). Cite `file:line`.
 

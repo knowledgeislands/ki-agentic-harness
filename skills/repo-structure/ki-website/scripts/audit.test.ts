@@ -19,21 +19,28 @@ function fixture(): string {
 }
 
 function run(root: string): { code: number; findings: Array<{ level: string }>; summary: { fail: number; na: number } } {
-  const result = spawnSync(process.execPath, [AUDIT, root, '--json'], { encoding: 'utf8' })
-  const json = JSON.parse(result.stdout) as { findings: Array<{ level: string }>; summary: { fail: number; na: number } }
-  return { code: result.status ?? 1, ...json }
+  const result = spawnSync(process.execPath, [AUDIT, root], { encoding: 'utf8' })
+  const events = result.stdout
+    .trim()
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map((line) => JSON.parse(line) as { record: string; level?: string; summary?: { fail: number; na: number } })
+  const summary = events.find((event) => event.record === 'summary')?.summary
+  const findings = events.filter((event) => event.record === 'finding' && event.level) as Array<{ level: string }>
+  if (!summary) throw new Error(`missing canonical checker summary: ${result.stdout}`)
+  return { code: result.status ?? 1, findings, summary }
 }
 
 for (const [label, arrange, assert] of [
   [
-    'absent and irrelevant reports one NA',
+    'absent and irrelevant reports NA plus judgment prompts',
     (_root: string) => {},
-    (r: ReturnType<typeof run>) => r.code === 0 && r.summary.na === 1 && r.findings.length === 1
+    (r: ReturnType<typeof run>) => r.code === 0 && r.summary.na === 1 && r.findings.length > 1
   ],
   [
-    'multiline string lookalike remains irrelevant',
+    'multiline string lookalike remains irrelevant with judgment prompts',
     (root: string) => writeFileSync(join(root, '.ki-config.toml'), '[ki-repo]\nnote = """\n[ki-website]\n"""\n'),
-    (r: ReturnType<typeof run>) => r.code === 0 && r.summary.na === 1 && r.findings.length === 1
+    (r: ReturnType<typeof run>) => r.code === 0 && r.summary.na === 1 && r.findings.length > 1
   ],
   [
     'quoted declaration but incomplete runs the full audit',
