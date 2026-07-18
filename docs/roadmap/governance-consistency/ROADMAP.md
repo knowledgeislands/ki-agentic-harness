@@ -8,10 +8,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Create `ki-next` for roadmap-directed planning
-
-Create `ki-next` as the forward-looking roadmap process companion to the optional upstream `ki-recap`: it turns current-session context and a fresh roadmap read into a user-confirmed planning choice without mining historical transcripts. Extend `ki-project-roadmap` with the governance-owned readiness rules for moving between horizons, then have `ki-next` apply them as a staged promotion loop. Evaluate eligible Blocking and Next work first; when none exists, evaluate Soon, perform the confirmed promotion to Next, and evaluate again there. When Soon also has no eligible work, minimally scope selected Future candidates, perform the confirmed promotion to Soon, evaluate them in that stage, and advance only ready work to Next. Create plans through `ki-plan` only for confirmed Blocking or Next items, then stop for plan review. Keep the relationship one-way and acyclic: `ki-recap` may hand context to `ki-next`; `ki-next` composes roadmap governance and invokes `ki-plan`; `ki-plan` owns one plan's lifecycle; the governance skill depends on none of them.
-
 ### Update `ki-recap` for the direct `ki-next` handoff
 
 Make the live-session output of `ki-recap` explicitly supply its grounded outstanding work, routed learnings, and roadmap-ready specific actions to `ki-next`. The handoff remains conversational context rather than a durable transcript artefact: `ki-next` must freshly re-check the roadmap, and neither skill may write a learning route, promote an item, or create a plan without the user's confirmation.

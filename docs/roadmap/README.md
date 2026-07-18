@@ -16,7 +16,7 @@ Canonical themes and active execution plans.
 - **Title:** Rename the vendored mechanical surface to .ki-meta/checkers
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/rename-the-vendored-mechanical-surface-to-ki-meta-checkers`
-- **Status:** open (needs governance-consistency/000)
+- **Status:** open
 - **Blocks:** foundation-tooling/002
 
 ### [foundation-tooling/002](foundation-tooling/plans/002-make-vendored-educate-standalone.md)
@@ -43,14 +43,6 @@ Canonical themes and active execution plans.
 - **Status:** open (needs foundation-tooling/003)
 - **Blocks:** governance-consistency/005
 
-### [governance-consistency/000](governance-consistency/plans/000-create-ki-next-roadmap-planning.md)
-
-- **Title:** Create ki-next for roadmap-directed planning
-- **Theme:** `governance-consistency`
-- **Roadmap item:** `governance-consistency/create-ki-next-for-roadmap-directed-planning`
-- **Status:** in-progress
-- **Blocks:** foundation-tooling/001
-
 ### [governance-consistency/005](governance-consistency/plans/005-update-ki-recap-direct-handoff.md)
 
 - **Title:** Update ki-recap for the direct ki-next handoff
@@ -66,5 +58,4 @@ foundation-tooling/001 ──► foundation-tooling/002
 foundation-tooling/002 ──► foundation-tooling/003
 foundation-tooling/003 ──► foundation-tooling/004
 foundation-tooling/004 ──► governance-consistency/005
-governance-consistency/000 ──► foundation-tooling/001
 ```

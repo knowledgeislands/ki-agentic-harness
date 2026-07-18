@@ -4,7 +4,7 @@ title: Rename the vendored mechanical surface to .ki-meta/checkers
 status: open
 roadmap: foundation-tooling/rename-the-vendored-mechanical-surface-to-ki-meta-checkers
 blocks: foundation-tooling/002
-blocked-by: governance-consistency/000
+blocked-by: —
 ---
 
 ## Context

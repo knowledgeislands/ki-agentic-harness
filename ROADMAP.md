@@ -14,7 +14,6 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 - [Foundation Tooling: Make vendored EDUCATE operations standalone and dispatchable](docs/roadmap/foundation-tooling/ROADMAP.md#make-vendored-educate-operations-standalone-and-dispatchable)
 - [Foundation Tooling: Rename the vendored mechanical surface to `.ki-meta/checkers`](docs/roadmap/foundation-tooling/ROADMAP.md#rename-the-vendored-mechanical-surface-to-ki-metacheckers)
 - [Foundation Tooling: Review harness self-installation of KI skills](docs/roadmap/foundation-tooling/ROADMAP.md#review-harness-self-installation-of-ki-skills)
-- [Governance Consistency: Create `ki-next` for roadmap-directed planning](docs/roadmap/governance-consistency/ROADMAP.md#create-ki-next-for-roadmap-directed-planning)
 - [Governance Consistency: Prefix plan identifiers with stable theme codes](docs/roadmap/governance-consistency/ROADMAP.md#prefix-plan-identifiers-with-stable-theme-codes)
 - [Governance Consistency: Rename `ki-project-roadmap` to `ki-repo-roadmap`](docs/roadmap/governance-consistency/ROADMAP.md#rename-ki-project-roadmap-to-ki-repo-roadmap)
 - [Governance Consistency: Update `ki-recap` for the direct `ki-next` handoff](docs/roadmap/governance-consistency/ROADMAP.md#update-ki-recap-for-the-direct-ki-next-handoff)
