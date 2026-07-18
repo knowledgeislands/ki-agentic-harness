@@ -57,3 +57,13 @@ _Verify:_ `ki-repo`'s `audit-repo.ts` `license` / `license-file` / `package-lice
 `ki-skills` MUST provide the canonical checker reporter from its own shipped files and MUST NOT declare a checker-module dependency on itself or another skill, per [ADR-KI-HARNESS-SKILLS-012](../decisions/ADR-KI-HARNESS-SKILLS-012-local-copies-for-checker-support.md).
 
 _Verify:_ `bun skills/general-governance/ki-skills/scripts/audit.ts skills/general-governance/ki-skills` passes ROOT-1, and `bun skills/general-governance/ki-skills/scripts/audit.test.ts` covers the missing-root declaration.
+
+### GOV-009 — Element-level mode orchestration
+
+Every governance skill MUST declare its independently schedulable AUDIT and CONFORM work in `mode-elements.json`.
+
+The declaration names stable element IDs, the canonical local script entry, its phase, read/write scopes, and any explicit ordering edges.
+
+The aggregate runner MUST validate and serially plan the selected repository-wide graph before it invokes an entry; an entry shared by several elements receives the selected element ID.
+
+_Verify:_ `bun skills/general-governance/ki-skills/scripts/mode-elements.test.ts` validates the complete governance fleet and graph failure cases; `bun run ki:conform -- --dry-run` followed by `bun run ki:audit` proves the generated runner's one-pass path.

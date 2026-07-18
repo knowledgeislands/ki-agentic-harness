@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
-import { readFileSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { basename, join, resolve } from 'node:path'
 import { type ModeElements, planModeElements, validateModeElements } from './mode-elements.ts'
 
 let failed = false
@@ -58,6 +58,29 @@ const elements: Record<string, ModeElements> = {
 check('valid declaration → no errors', validateModeElements('ki-repo', elements['ki-repo']).length === 0)
 const selfDeclaration = JSON.parse(readFileSync(join(resolve(import.meta.dirname, '..'), 'mode-elements.json'), 'utf8')) as ModeElements
 check('ki-skills declaration → conforms to the executable schema contract', validateModeElements('ki-skills', selfDeclaration).length === 0)
+
+const harnessRoot = resolve(import.meta.dirname, '../../../..')
+const skillsRoot = join(harnessRoot, 'skills')
+const governanceSkillDirs = readdirSync(skillsRoot, { withFileTypes: true })
+  .flatMap((category) => {
+    if (!category.isDirectory()) return []
+    const categoryDir = join(skillsRoot, category.name)
+    if (existsSync(join(categoryDir, 'SKILL.md'))) return [categoryDir]
+    return readdirSync(categoryDir, { withFileTypes: true })
+      .filter((skill) => skill.isDirectory() && existsSync(join(categoryDir, skill.name, 'SKILL.md')))
+      .map((skill) => join(categoryDir, skill.name))
+  })
+  .filter((dir) => !/\(kind:\s*process\b/i.test(readFileSync(join(dir, 'SKILL.md'), 'utf8')))
+const fleetDeclarations = governanceSkillDirs.map((dir) => ({
+  skill: basename(dir),
+  path: join(dir, 'mode-elements.json')
+}))
+const missingFleetDeclarations = fleetDeclarations.filter(({ path }) => !existsSync(path)).map(({ skill }) => skill)
+const invalidFleetDeclarations = fleetDeclarations
+  .filter(({ path }) => existsSync(path))
+  .flatMap(({ skill, path }) => validateModeElements(skill, JSON.parse(readFileSync(path, 'utf8'))).map((error) => `${skill}: ${error}`))
+check('fleet → every governance skill declares mode elements', missingFleetDeclarations.length === 0)
+check('fleet → every governance declaration is valid', invalidFleetDeclarations.length === 0)
 check(
   'invalid declaration → rejects missing scopes',
   validateModeElements('ki-invalid', {

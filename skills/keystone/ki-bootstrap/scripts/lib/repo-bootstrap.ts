@@ -188,10 +188,7 @@ if (verb === 'refresh') {
   )
   process.exit(3)
 }
-// Vendored copies are named by verb (audit.ts / conform.ts) — the skill dir already
-// carries the identity.
-const pattern = verb === 'audit' ? /^(audit|lint)\\.ts$/ : verb === 'conform' ? /^conform\\.ts$/ : null
-if (!pattern) process.exit(0)
+if (verb !== 'audit' && verb !== 'conform') process.exit(0)
 const checkersDir = join(binDir, '..', 'checkers')
 if (!existsSync(checkersDir)) process.exit(0)
 let checkers = readdirSync(checkersDir, { withFileTypes: true })
