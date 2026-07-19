@@ -68,17 +68,10 @@ scripts/
   conform.ts                   # safe-write command entry
   educate.ts                   # scaffold command entry
   lib/                         # deliberately vendorable modules
-    rubric/                    # generic structured-rubric module
-      index.ts                 # public module entry
-      rubric.ts                # rubric, finding, outcome, and execution types
-      catalogue.ts             # generic catalogue validation
-    checker/                    # one vendorable checker implementation closure
-      index.ts                 # public module entry
-      planner.ts               # phase and dependency planning
-      runtime.ts               # AUDIT and CONFORM execution
-      response.ts              # canonical JSONL construction and emission
-      transport.ts             # JSONL parsing and response validation
-      validation.ts            # rubric-aware result validation
+    rubric.ts                  # generic rubric model and catalogue validation
+    rubric.test.ts
+    checker.ts                 # planning, execution, response, and validation
+    checker.test.ts
   rubric/                      # private implementation for this skill
     items/
       index.ts
@@ -86,8 +79,7 @@ scripts/
     contexts/
       contexts.ts              # public context contracts and composition
       <evidence>.ts            # shared parsing or evidence builders
-    project.ts                 # deterministic rubric publication
-    render.ts                  # deterministic rubric.md renderer
+    publish.ts                 # deterministic rubric.md renderer and publisher
 assets/
   checker-response.schema.json # canonical JSONL record schema
 references/
@@ -100,7 +92,9 @@ Reusable implementation lives in `scripts/lib/`; only modules explicitly publish
 
 Another skill receives a declared module below `scripts/vendored/<provider>/` and imports only that local copy. `ki-skills` is an exception to this as it already owns the shared rubric and checker modules under `scripts/lib/`.
 
-The target shared modules are `scripts/lib/rubric/` and `scripts/lib/checker/`.
+The target shared modules are `scripts/lib/rubric.ts` and `scripts/lib/checker.ts`.
+
+Each is one self-contained vendorable file with an adjacent source test; ordinary source-code modularity does not justify making a consumer copy an internal module tree.
 
 `ki-skills` publishes them as `checker-modules: [rubric, checker]`.
 
@@ -178,6 +172,7 @@ type RubricType = 'MECHANICAL' | 'JUDGMENT'
 
 type MechanicalRubric<Context> = {
   level: ViolationLevel
+  heuristic?: boolean // presentation metadata for deterministic evidence with known limits
   audit: RubricExecution<Context, AuditOutcome>
   conform?: RubricExecution<Context, ConformOutcome>
 }
@@ -377,7 +372,7 @@ EDUCATE is a sibling universal mode, not a checker mode.
 
 AUDIT evaluates governed state and CONFORM safely remediates existing governed state; EDUCATE provisions or scaffolds the subject and its mechanical footprint so those checker modes can operate.
 
-An EDUCATE implementation may eventually consume rubric-derived templates or invoke CONFORM after establishing a minimum subject, but it does not execute through `scripts/lib/checker/` merely to reuse its orchestration.
+An EDUCATE implementation may eventually consume rubric-derived templates or invoke CONFORM after establishing a minimum subject, but it does not execute through `scripts/lib/checker.ts` merely to reuse its orchestration.
 
 For the root exemplar refactor, `scripts/educate.ts` remains unchanged and outside the checker implementation units.
 
@@ -431,7 +426,7 @@ The renderer uses family metadata and ordered item metadata to reproduce:
 
 The generated file carries a clear generated marker.
 
-A read-only parity check renders in memory and compares exact output with the tracked file; the skill-local `scripts/rubric/project.ts` writes the publication.
+A read-only parity check renders in memory and compares exact output with the tracked file; the skill-local `scripts/rubric/publish.ts` writes the publication.
 
 Runtime code using the shared checker never parses the generated Markdown back into policy.
 
@@ -475,7 +470,7 @@ Complete these units inside `ki-skills` in order, keeping each independently rev
 1. **Rubric model.** Replace the provisional shared types with the target rubric, family, execution, outcome, and definition types. Add generic catalogue validation without changing domain behaviour.
 2. **KI skills catalogue.** Wrap the existing item families in family metadata, add focused context selectors, declare violation levels and phases, and export one `KI_SKILLS_RUBRIC` definition. Preserve every existing criterion code and meaning, including hybrid items with both aspects.
 3. **Generated rubric.** Render and parity-check `references/rubric.md` from `KI_SKILLS_RUBRIC`, including its canonical-source notice. Remove Markdown parsing from runtime code only after exact parity passes.
-4. **Checker module.** Replace the monolithic reporter helper with `scripts/lib/checker/`: planning, execution, response construction, response parsing, and validation. Rename the executable schema to `assets/checker-response.schema.json` with no legacy alias.
+4. **Checker module.** Replace the monolithic reporter helper with the self-contained `scripts/lib/checker.ts`: planning, execution, response construction, response parsing, and validation. Rename the executable schema to `assets/checker-response.schema.json` with no legacy alias.
 5. **Thin wrappers.** Reduce `audit.ts` and `conform.ts` to arguments, subject loading, root-context factories, checker invocation, persistence, and exit. They contain no criterion codes or private result shape.
 6. **Module publication.** Publish `rubric` and `checker` as the two `ki-skills` checker modules, prove each declared dependency closure, and add source-level tests for the form another skill will vendor.
 7. **Root verification.** Prove direct AUDIT and CONFORM, dry-run, phase selection, generated-rubric parity, response schema and exit semantics, the absence of runtime `rubric.md` reads, and a passing audit of an educated fixture.

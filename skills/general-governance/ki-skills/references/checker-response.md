@@ -2,9 +2,7 @@
 
 The canonical checker response is the JSON Lines (JSONL) machine-readable result returned by every governance skill's `audit.ts` and `conform.ts`.
 
-The current executable schema remains [`../assets/checker-reporter.schema.json`](../assets/checker-reporter.schema.json) only until the shared checker is implemented.
-
-The atomic cutover renames it to `checker-response.schema.json`; the target keeps no legacy alias.
+Its executable record schema is [`../assets/checker-response.schema.json`](../assets/checker-response.schema.json).
 
 ## Normative language
 
@@ -88,7 +86,7 @@ It does not inspect the governed target or execute rubric callbacks.
 
 The response schema is a shipped asset of `ki-skills` for review and validation in the harness source.
 
-The target reusable implementation belongs to `ki-skills` under `scripts/lib/checker/` and consumes the generic model under `scripts/lib/rubric/`.
+The target reusable implementation belongs to `ki-skills` at `scripts/lib/checker.ts` and consumes the generic model at `scripts/lib/rubric.ts`.
 
 A dependent governance skill vendors those declared modules into `scripts/vendored/ki-skills/` and imports only its local copies.
 

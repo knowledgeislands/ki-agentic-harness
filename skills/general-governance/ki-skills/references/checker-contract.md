@@ -125,8 +125,10 @@ It does not open arbitrary files or mutate through an undeclared side channel.
 
 The reusable implementation is split into two declared modules owned by `ki-skills`:
 
-- `scripts/lib/rubric/` contains the generic rubric types and catalogue mechanics; and
-- `scripts/lib/checker/` contains planning, AUDIT and CONFORM execution, JSONL response construction, and validation.
+- `scripts/lib/rubric.ts` contains the generic rubric types and catalogue mechanics; and
+- `scripts/lib/checker.ts` contains planning, AUDIT and CONFORM execution, JSONL response construction, and validation.
+
+Each declared module is one self-contained vendorable file rather than a directory tree.
 
 A dependent governance skill vendors both modules into `scripts/vendored/ki-skills/` and imports only those local copies.
 
