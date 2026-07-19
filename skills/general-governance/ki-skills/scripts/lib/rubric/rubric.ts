@@ -1,10 +1,9 @@
 /**
  * Structured identity and execution model for the ki-skills rubric.
  *
- * This is the rubric's future source of truth. It gives a checker stable rule
+ * This is the rubric's source of truth. It gives a checker stable rule
  * identity, source attribution, and optional audit, conform, or judgment
- * behaviour. The existing Markdown rubric is only a temporary migration
- * surface until every criterion is represented here.
+ * behaviour.
  */
 
 export type RubricSource = string
@@ -19,8 +18,10 @@ export const RUBRIC_LEVELS = [
 ] as const
 export type RubricLevel = (typeof RUBRIC_LEVELS)[number]
 
+export type RubricType = 'M' | 'J'
+
 export type RubricFinding = {
-  type: 'M' | 'J'
+  type: RubricType
   level: RubricLevel
   code: string
   message: string
@@ -46,13 +47,13 @@ export const auditRubricItems = <Context>(items: readonly RubricItem<Context>[],
 export const conformRubricItems = <Context>(items: readonly RubricItem<Context>[], context: Context): ConformAction<Context>[] =>
   items.flatMap((item) => item.conform?.(context) ?? [])
 
-export const findingsFromConformActions = <Context>(actions: readonly ConformAction<Context>[], ref: string): RubricFinding[] =>
+export const findingsFromConformActions = <Context>(actions: readonly ConformAction<Context>[], reference: string): RubricFinding[] =>
   actions.map((action) => ({
     type: 'M',
     level: action.level ?? 'POLISH',
     code: action.item.code,
     message: action.message,
-    ref,
+    ref: reference,
     file: action.file
   }))
 

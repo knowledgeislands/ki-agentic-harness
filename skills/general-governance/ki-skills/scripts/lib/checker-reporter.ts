@@ -200,12 +200,18 @@ export const judgmentFindingsFromRubric = (rubricPath: string, ref = 'references
     .map((code) => ({ type: 'J', level: 'ADVISORY', code, message: 'Review this judgment criterion against the audited scope.', ref }))
 }
 
-export const judgmentFindingsFromItems = (items: readonly { code: string; judgment?: unknown }[], ref = 'references/rubric.md'): RubricFinding[] => {
+export const judgmentFindingsFromItems = (items: readonly { code: string; judgment?: unknown }[], ref?: string): RubricFinding[] => {
   return items
     .filter((item) => item.judgment)
     .map((item) => item.code)
     .sort()
-    .map((code) => ({ type: 'J', level: 'ADVISORY', code, message: 'Review this judgment criterion against the audited scope.', ref }))
+    .map((code) => ({
+      type: 'J',
+      level: 'ADVISORY',
+      code,
+      message: 'Review this judgment criterion against the audited scope.',
+      ...(ref ? { ref } : {})
+    }))
 }
 
 /** Parse JSON Lines without coupling a caller to a particular checker process. */

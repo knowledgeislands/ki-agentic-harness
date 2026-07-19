@@ -36,6 +36,7 @@ scripts/
     ...
     support/
       text.ts                   # helpers shared by rubric families only
+      contexts.ts               # named wrapper evidence facets
       skill-files.ts            # shared checker traversal helpers
 ```
 
@@ -47,7 +48,9 @@ The shared rubric layer stays deliberately small: types and genuinely cross-fami
 
 `scripts/rubrics/` is private to `ki-skills`, including `scripts/rubrics/support/`; it is copied only as part of this skill's own checker payload and never separately declared as a dependency.
 
-Until every family has moved, `references/rubric.md` remains the readable publication and compatibility check for the current reporter.
+The TypeScript families are the executable rubric source of truth.
+
+`references/rubric.md` remains a temporary human-readable publication only until a structured-rubric renderer and parity check replace it.
 
 ## Proven model
 
@@ -101,7 +104,7 @@ Do not broaden this work into a full checker migration, criterion-catalogue rede
 - The shared rubric runtime owns only cross-family types and execution mechanics, including collecting audit findings and converting conform actions into findings.
 - `scripts/rubrics/support/` holds evidence, parsing, and traversal helpers shared by rubric families or both wrappers; it contains no rule policy.
 - Support modules define the neutral data types they produce. A support module must not import a type back from the family that consumes it.
-- Keep contexts family-specific. Do not introduce one repository-wide context whose optional fields model every rubric family.
+- `KiSkillsAuditContext` and `KiSkillsConformContext` may compose named, required family contexts at the wrapper boundary. Dispatch selects the appropriate facet; a rubric family never accepts a repository-wide optional mega-context.
 - Keep a one-use expression inline unless naming it exposes a meaningful domain operation or removes repeated, error-prone mechanics.
 - Parse one artifact through one shared read model. Mutation helpers may preserve the raw representation, but audit and conform must not independently interpret the same frontmatter.
 - A conform callback receives explicit write capabilities, performs only its declared safe action, and returns a typed action; the wrapper converts actions through the shared rubric runtime.

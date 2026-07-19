@@ -33,16 +33,17 @@ import { createKiShapeContext, KI_SHAPE } from './rubrics/ki-shape.ts'
 import { LAYOUT } from './rubrics/layout.ts'
 import { NAME } from './rubrics/name.ts'
 import { frontmatterLine, insertFrontmatterLine, parseFrontmatter, replaceFrontmatterScalar } from './rubrics/support/frontmatter.ts'
+import type { KiSkillsConformContext } from './rubrics/support/contexts.ts'
 import { hintVerbs, isProcessSkill } from './rubrics/support/modes.ts'
 import { discoverSkillDirs, listMarkdownFiles } from './rubrics/support/skill-files.ts'
 
 // Each action records a typed domain finding. The canonical reporter owns transport;
 // the bootstrap aggregate is the only terminal renderer.
-const RUBRIC = 'references/rubric.md'
 const argv = process.argv.slice(2)
+const STRUCTURED_RUBRIC = 'scripts/rubrics/'
 const findings: RubricFinding[] = []
 const recordActions = <Context>(actions: readonly ConformAction<Context>[]): boolean => {
-  findings.push(...findingsFromConformActions(actions, RUBRIC))
+  findings.push(...findingsFromConformActions(actions, STRUCTURED_RUBRIC))
   return actions.some((action) => action.level !== 'ADVISORY')
 }
 
@@ -83,22 +84,18 @@ const conformSkill = (dir: string, dryRun: boolean): void => {
     scriptNames: existsSync(scriptsDir) ? readdirSync(scriptsDir) : []
   }
 
-  // Frontmatter actions share one parsed document and explicit write capabilities.
-  const nameLine = frontmatterLine(workingBlock, 'name')
-  fixedAny ||= recordActions(
-    conformRubricItems(NAME, {
-      name: frontmatter.keys.get('name'),
-      directoryName: dirName,
-      setName: (name) => {
-        if (nameLine) workingBlock = workingBlock.replace(nameLine, `name: ${name}`)
-      }
-    })
-  )
-
-  fixedAny ||= recordActions(
-    conformRubricItems(
-      KI_SHAPE,
-      createKiShapeContext({
+  const createContext = (): KiSkillsConformContext => {
+    const currentFrontmatter = parseFrontmatter(`---\n${workingBlock}\n---`)
+    const nameLine = frontmatterLine(workingBlock, 'name')
+    return {
+      name: {
+        name: currentFrontmatter.keys.get('name'),
+        directoryName: dirName,
+        setName: (name) => {
+          if (nameLine) workingBlock = workingBlock.replace(nameLine, `name: ${name}`)
+        }
+      },
+      shape: createKiShapeContext({
         skill: conformSkillEvidence(workingBlock, stableEvidence),
         setArgumentHint: (argumentHint) => {
           workingBlock = replaceFrontmatterScalar(workingBlock, 'argument-hint', argumentHint)
@@ -109,8 +106,12 @@ const conformSkill = (dir: string, dryRun: boolean): void => {
           workingBlock = line ? workingBlock.replace(line, replacement) : insertFrontmatterLine(workingBlock, replacement)
         }
       })
-    )
-  )
+    }
+  }
+
+  fixedAny = recordActions(conformRubricItems(NAME, createContext().name)) || fixedAny
+
+  fixedAny = recordActions(conformRubricItems(KI_SHAPE, createContext().shape)) || fixedAny
 
   if (fixedAny) {
     if (!dryRun) writeFileSync(skillMdPath, content.replace(block, workingBlock))
@@ -131,8 +132,8 @@ const main = (): void => {
 
   const skillDirs = discoverSkillDirs(target)
   if (skillDirs.length === 0) {
-    findings.push(...auditRubricItems(LAYOUT, { noSkillsFound: true }).map((finding) => ({ ...finding, ref: RUBRIC })))
-    findings.push(...judgmentFindingsFromItems(RUBRIC_ITEMS, RUBRIC))
+    findings.push(...auditRubricItems(LAYOUT, { noSkillsFound: true }).map((finding) => ({ ...finding, ref: STRUCTURED_RUBRIC })))
+    findings.push(...judgmentFindingsFromItems(RUBRIC_ITEMS, STRUCTURED_RUBRIC))
     emitCheckerReporter({ mode: 'conform', concern: 'skills', target: resolve(target), findings })
     process.exit(checkerReporterExitCode(findings))
     return
@@ -140,7 +141,7 @@ const main = (): void => {
 
   for (const dir of skillDirs) conformSkill(dir, dryRun)
 
-  findings.push(...judgmentFindingsFromItems(RUBRIC_ITEMS, RUBRIC))
+  findings.push(...judgmentFindingsFromItems(RUBRIC_ITEMS, STRUCTURED_RUBRIC))
   emitCheckerReporter({ mode: 'conform', concern: 'skills', target: resolve(target), findings })
   process.exit(checkerReporterExitCode(findings))
 }

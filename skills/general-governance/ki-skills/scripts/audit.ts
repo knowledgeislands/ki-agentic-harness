@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // Lint Agent Skills against the MECHANICAL criteria of the ki-skills rubric.
 //
-// This is the deterministic half of the rubric (see ../references/rubric.md). The
+// This is the deterministic half of the structured rubric. The
 // JUDGMENT half — description quality, altitude, progressive-disclosure sensibility,
 // standard-vs-extension shape — needs a model and is NOT checked here. Run this first,
 // then apply the judgment criteria by reading.
@@ -38,6 +38,7 @@ import { REFERENCES } from './rubrics/references.ts'
 import { SIZE } from './rubrics/size.ts'
 import { createFootprint, estimateTokens } from './rubrics/support/footprint.ts'
 import { frontmatterList, parseFrontmatter, type ParsedFrontmatter } from './rubrics/support/frontmatter.ts'
+import type { KiSkillsAuditContext, KiSkillsMarkdownAuditContext } from './rubrics/support/contexts.ts'
 import { createRefreshContext } from './rubrics/support/longevity.ts'
 import { endorsesRetiredExtension, extractBodyModes, extractSection, hintVerbs, isProcessSkill } from './rubrics/support/modes.ts'
 import { discoverSkillDirs, listMarkdownFiles, listScriptFiles } from './rubrics/support/skill-files.ts'
@@ -45,10 +46,12 @@ import { stripCode } from './rubrics/support/text.ts'
 import { relativeImportSpecifiers } from './rubrics/support/typescript.ts'
 
 // Every ki-skills criterion is defined in this skill's rubric — the default reference pointer.
-const RUBRIC = 'references/rubric.md'
+const STRUCTURED_RUBRIC = 'scripts/rubrics/'
+
+const citeFindings = (findings: readonly RubricFinding[]): RubricFinding[] => findings.map((finding) => ({ ...finding, ref: finding.ref ?? STRUCTURED_RUBRIC }))
 
 const appendFindings = (target: RubricFinding[], findings: readonly RubricFinding[], file?: string): void => {
-  target.push(...findings.map((finding) => ({ ...finding, ref: finding.ref ?? RUBRIC, file: file ?? finding.file })))
+  target.push(...citeFindings(findings).map((finding) => ({ ...finding, file: file ?? finding.file })))
 }
 
 const appendRubricFindings = <Context>(
@@ -132,39 +135,17 @@ const lintSkill = (skillDir: string): RubricFinding[] => {
   const supportDirectories = readdirSync(skillDir, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
-  appendRubricFindings(findings, LAYOUT, { supportDirectories })
-
-  // --- frontmatter ---
   const fm = parseFrontmatter(content)
-  appendRubricFindings(findings, FRONTMATTER, { hasBlock: fm.raw !== null, isMapping: fm.isMapping })
+  const frontmatterContext = { hasBlock: fm.raw !== null, isMapping: fm.isMapping }
   if (!fm.isMapping) {
+    appendRubricFindings(findings, LAYOUT, { supportDirectories })
+    appendRubricFindings(findings, FRONTMATTER, frontmatterContext)
     return findings
   }
   const name = fm.keys.get('name')
   const desc = fm.keys.get('description')
 
-  // Name fields
-  appendRubricFindings(findings, NAME, { name, directoryName: dirName })
-
-  // Description fields
-  appendRubricFindings(findings, DESC, { description: desc })
-
-  // Optional frontmatter: audit.ts extracts typed YAML context; each rubric
-  // callback owns the criterion-specific validation.
   const compat = fm.keys.get('compatibility')
-  appendRubricFindings(findings, OPTIONAL, {
-    compatibility: compat,
-    metadataPresent: fm.present.has('metadata'),
-    metadata: fm.values.metadata,
-    allowedToolsPresent: fm.present.has('allowed-tools'),
-    allowedTools: fm.values['allowed-tools'],
-    disallowedToolsPresent: fm.present.has('disallowed-tools'),
-    disallowedTools: fm.values['disallowed-tools'],
-    licensePresent: fm.present.has('license'),
-    license: fm.values.license
-  })
-
-  // Body measurements
   const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
 
   const scriptsDir = join(skillDir, 'scripts')
@@ -175,19 +156,41 @@ const lintSkill = (skillDir: string): RubricFinding[] => {
       resolvesInsideScripts: resolve(dirname(scriptPath), specifier).startsWith(`${scriptsDir}/`)
     }))
   )
-  appendRubricFindings(findings, KI_CHECKER, {
-    imports,
-    rootSkill: name === 'ki-skills',
-    checkerModules: frontmatterList(fm.keys.get('checker-modules')),
-    checkerDependencies: frontmatterList(fm.keys.get('checker-dependencies')),
-    reporterModuleExists: existsSync(join(scriptsDir, 'lib', 'checker-reporter.ts'))
-  })
+  const context: KiSkillsAuditContext = {
+    skillLayout: { supportDirectories },
+    frontmatter: frontmatterContext,
+    name: { name, directoryName: dirName },
+    description: { description: desc },
+    optional: {
+      compatibility: compat,
+      metadataPresent: fm.present.has('metadata'),
+      metadata: fm.values.metadata,
+      allowedToolsPresent: fm.present.has('allowed-tools'),
+      allowedTools: fm.values['allowed-tools'],
+      disallowedToolsPresent: fm.present.has('disallowed-tools'),
+      disallowedTools: fm.values['disallowed-tools'],
+      licensePresent: fm.present.has('license'),
+      license: fm.values.license
+    },
+    checker: {
+      imports,
+      rootSkill: name === 'ki-skills',
+      checkerModules: frontmatterList(fm.keys.get('checker-modules')),
+      checkerDependencies: frontmatterList(fm.keys.get('checker-dependencies')),
+      reporterModuleExists: existsSync(join(scriptsDir, 'lib', 'checker-reporter.ts'))
+    },
+    shape: createKiShapeContext({ skill: createKiShapeEvidence(skillDir, fm, desc ?? '', body) }),
+    size: { bodyLines: body.split(/\r?\n/).length, bodyTokens: estimateTokens(body) }
+  }
 
-  appendRubricFindings(findings, KI_SHAPE, {
-    ...createKiShapeContext({ skill: createKiShapeEvidence(skillDir, fm, desc ?? '', body) })
-  })
-  const bodyLines = body.split(/\r?\n/).length
-  appendRubricFindings(findings, SIZE, { bodyLines, bodyTokens: estimateTokens(body) })
+  appendRubricFindings(findings, LAYOUT, context.skillLayout)
+  appendRubricFindings(findings, FRONTMATTER, context.frontmatter)
+  appendRubricFindings(findings, NAME, context.name)
+  appendRubricFindings(findings, DESC, context.description)
+  appendRubricFindings(findings, OPTIONAL, context.optional)
+  appendRubricFindings(findings, KI_CHECKER, context.checker)
+  appendRubricFindings(findings, KI_SHAPE, context.shape)
+  appendRubricFindings(findings, SIZE, context.size)
 
   // Per-file Markdown checks
   for (const file of listMarkdownFiles(skillDir)) {
@@ -195,16 +198,21 @@ const lintSkill = (skillDir: string): RubricFinding[] => {
     const text = stripCode(md) // exclude code blocks/spans from text-pattern checks
     const rel = file.slice(skillDir.length + 1)
     const isSkillMd = basename(file) === 'SKILL.md'
-    const markdownContext = {
-      markdown: text,
-      relativeTargetExists: (target: string): boolean => existsSync(resolve(dirname(file), target))
+    const markdownContext: KiSkillsMarkdownAuditContext = {
+      layout: {
+        markdown: text
+      },
+      link: {
+        markdown: text,
+        relativeTargetExists: (target: string): boolean => existsSync(resolve(dirname(file), target))
+      },
+      ...(isSkillMd ? {} : { references: { lineCount: md.split(/\r?\n/).length, content: md } })
     }
-    appendRubricFindings(findings, LAYOUT, markdownContext, rel)
-    appendRubricFindings(findings, KI_LINK, markdownContext, rel)
+    appendRubricFindings(findings, LAYOUT, markdownContext.layout, rel)
+    appendRubricFindings(findings, KI_LINK, markdownContext.link, rel)
     // ToC on long reference files (not SKILL.md itself)
-    if (!isSkillMd) {
-      const lineCount = md.split(/\r?\n/).length
-      appendRubricFindings(findings, REFERENCES, { lineCount, content: md }, rel)
+    if (markdownContext.references) {
+      appendRubricFindings(findings, REFERENCES, markdownContext.references, rel)
     }
   }
 
@@ -253,12 +261,12 @@ const refreshStatusOut = rawArgv.includes('--refresh-status')
 const reportTarget = resolve('.')
 const all: RubricFinding[] = []
 
-const judgmentFindings = (): RubricFinding[] => judgmentFindingsFromItems(RUBRIC_ITEMS, RUBRIC)
+const judgmentFindings = (): RubricFinding[] => judgmentFindingsFromItems(RUBRIC_ITEMS, STRUCTURED_RUBRIC)
 
 if (skillDirs.length === 0) {
   const findings: RubricFinding[] = [
-    ...directTargetLayoutFindings.map((finding) => ({ ...finding, ref: RUBRIC })),
-    ...(directTargetLayoutFindings.length === 0 ? auditRubricItems(LAYOUT, { noSkillsFound: true }).map((finding) => ({ ...finding, ref: RUBRIC })) : []),
+    ...citeFindings(directTargetLayoutFindings),
+    ...(directTargetLayoutFindings.length === 0 ? citeFindings(auditRubricItems(LAYOUT, { noSkillsFound: true })) : []),
     ...judgmentFindings()
   ]
   emitCheckerReporter({ mode: 'audit', concern: 'skills', target: reportTarget, findings })
@@ -282,12 +290,14 @@ const collisionTargets = skillDirs
     name: basename(dir),
     description: parseFrontmatter(readFileSync(join(dir, 'SKILL.md'), 'utf8')).keys.get('description') ?? ''
   }))
-all.push(...auditRubricItems(COLLISION, { targets: collisionTargets }).map((finding) => ({ ...finding, ref: RUBRIC })))
+all.push(...citeFindings(auditRubricItems(COLLISION, { targets: collisionTargets })))
 all.push(
-  ...auditRubricItems(KI_SHAPE, {
-    skill: null,
-    ownershipCollisions: createOwnershipCollisions(skillDirs)
-  }).map((finding) => ({ ...finding, ref: RUBRIC }))
+  ...citeFindings(
+    auditRubricItems(KI_SHAPE, {
+      skill: null,
+      ownershipCollisions: createOwnershipCollisions(skillDirs)
+    })
+  )
 )
 
 // Per-skill footprint — opt-in, INFO only, never affects the fail/warn tally or exit code.
@@ -295,7 +305,7 @@ if (footprintOut) {
   for (const dir of skillDirs) {
     const fp = createFootprint(dir)
     all.push(
-      ...auditRubricItems(SIZE, { footprint: fp }).map((finding) => ({
+      ...citeFindings(auditRubricItems(SIZE, { footprint: fp })).map((finding) => ({
         ...finding,
         file: finding.file ? relative(reportTarget, join(dir, finding.file)) : undefined
       }))
@@ -309,7 +319,7 @@ if (refreshStatusOut) {
     const sp = join(dir, 'references', 'sources.md')
     const context = createRefreshContext(existsSync(sp) ? readFileSync(sp, 'utf8') : null)
     all.push(
-      ...auditRubricItems(LONGEVITY, { ...context, reportStatus: true }).map((finding) => ({
+      ...citeFindings(auditRubricItems(LONGEVITY, { ...context, reportStatus: true })).map((finding) => ({
         ...finding,
         file: relative(reportTarget, sp)
       }))
