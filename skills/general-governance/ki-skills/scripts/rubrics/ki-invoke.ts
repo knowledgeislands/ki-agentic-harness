@@ -1,7 +1,7 @@
 import type { RubricItem } from '../lib/rubric/rubric.ts'
 
-export const INVOKE_1: RubricItem = {
-  code: 'INVOKE-1',
+export const KI_INVOKE_1: RubricItem = {
+  code: 'KI-INVOKE-1',
   title: 'HELP is the safe bare-invocation default',
   description: 'A mode-bearing skill explains itself without side effects when invoked with help or without a recognisable mode.',
   sources: ['COMMUNITY', 'ADR-KI-HARNESS-SKILLS-001'],
@@ -11,4 +11,4 @@ export const INVOKE_1: RubricItem = {
   }
 }
 
-export const INVOCATION: readonly RubricItem[] = [INVOKE_1]
+export const KI_INVOKE: readonly RubricItem[] = [KI_INVOKE_1]

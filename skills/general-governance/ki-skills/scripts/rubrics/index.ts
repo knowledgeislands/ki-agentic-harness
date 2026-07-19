@@ -1,7 +1,7 @@
 import { BODY } from './body.ts'
 import { COLLISION } from './collision.ts'
 import { DESC } from './description.ts'
-import { INVOCATION } from './invocation.ts'
+import { KI_INVOKE } from './ki-invoke.ts'
 import { KI_SHAPE } from './ki-shape.ts'
 import { LAYOUT } from './layout.ts'
 import { LINKS } from './link.ts'
@@ -24,7 +24,7 @@ export const RUBRIC_FAMILIES = [
   LINKS,
   LAYOUT,
   KI_SHAPE,
-  INVOCATION,
+  KI_INVOKE,
   PROCESS,
   COLLISION,
   LONGEVITY

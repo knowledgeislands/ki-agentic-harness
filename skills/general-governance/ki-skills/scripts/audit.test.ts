@@ -94,6 +94,10 @@ const withReporter = "import { emitCheckerReporter } from './lib/checker-reporte
       return finding.type === 'J' && finding.level === 'ADVISORY' && finding.ref === 'references/rubric.md'
     })
   )
+  check(
+    'KI invocation family → emits the KI-INVOKE-1 judgment code',
+    parsed.events.some((event) => (event as { code?: string }).code === 'KI-INVOKE-1')
+  )
 }
 
 {
