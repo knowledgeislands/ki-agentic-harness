@@ -1,5 +1,4 @@
-import { readFileSync, writeFileSync } from 'node:fs'
-import { existsSync, lstatSync, readdirSync } from 'node:fs'
+import { existsSync, lstatSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { basename, join, resolve } from 'node:path'
 import type { ConformOutcome, RubricOutcomes } from '../../vendored/ki-skills/rubric.ts'
@@ -60,7 +59,15 @@ export type HousekeepingRubricContext = {
   alignNames: () => RubricOutcomes<ConformOutcome>
 }
 
-export const createHousekeepingContext = ({ repoRoot, memoryDir, dryRun }: { repoRoot: string; memoryDir: string; dryRun: boolean }): HousekeepingRubricContext => {
+export const createHousekeepingContext = ({
+  repoRoot,
+  memoryDir,
+  dryRun
+}: {
+  repoRoot: string
+  memoryDir: string
+  dryRun: boolean
+}): HousekeepingRubricContext => {
   const absoluteRepo = resolve(repoRoot)
   const absoluteMemory = resolve(memoryDir)
   const memoryExists = existsSync(absoluteMemory)
@@ -93,7 +100,10 @@ export const createHousekeepingContext = ({ repoRoot, memoryDir, dryRun }: { rep
     declaredRuntimes: declaredSupportedRuntimes(absoluteRepo),
     runtimePayload,
     alignNames: () => {
-      if (!memoryExists) return [{ status: 'NOT_APPLICABLE', message: 'No memory directory for this repo yet — nothing to conform.', subject: absoluteMemory }]
+      if (!memoryExists)
+        return [
+          { status: 'NOT_APPLICABLE', message: 'No memory directory for this repo yet — nothing to conform.', subject: absoluteMemory }
+        ]
       const results: ConformOutcome[] = []
       for (const memory of memoryFiles) {
         if (!memory.frontmatter) continue
@@ -101,27 +111,49 @@ export const createHousekeepingContext = ({ repoRoot, memoryDir, dryRun }: { rep
         if (memory.frontmatter.name === expected) continue
         const block = memory.content.match(/^---\n([\s\S]*?)\n---/)
         if (!block) continue
-        const replacement = typeof memory.frontmatter.name === 'string' ? block[1].replace(/^name:\s*.*$/m, `name: ${expected}`) : `name: ${expected}\n${block[1]}`
+        const replacement =
+          typeof memory.frontmatter.name === 'string'
+            ? block[1].replace(/^name:\s*.*$/m, `name: ${expected}`)
+            : `name: ${expected}\n${block[1]}`
         if (!dryRun) writeFileSync(join(absoluteMemory, memory.file), memory.content.replace(block[0], `---\n${replacement}\n---`))
         results.push({ status: 'FIXED', message: `${dryRun ? 'Would set' : 'Set'} name to '${expected}'.`, subject: memory.file })
       }
-      return results.length > 0 ? outcomes(results) : [{ status: 'PASS', message: 'No frontmatter name fields to fix.', subject: absoluteMemory }]
+      return results.length > 0
+        ? outcomes(results)
+        : [{ status: 'PASS', message: 'No frontmatter name fields to fix.', subject: absoluteMemory }]
     },
     appendUnindexed: () => {
-      if (!memoryExists) return [{ status: 'NOT_APPLICABLE', message: 'No memory directory for this repo yet — nothing to conform.', subject: absoluteMemory }]
-      if (index === null) return [{ status: 'NOT_APPLICABLE', message: 'MEMORY.md is missing; author the index manually.', subject: INDEX_FILE }]
+      if (!memoryExists)
+        return [
+          { status: 'NOT_APPLICABLE', message: 'No memory directory for this repo yet — nothing to conform.', subject: absoluteMemory }
+        ]
+      if (index === null)
+        return [{ status: 'NOT_APPLICABLE', message: 'MEMORY.md is missing; author the index manually.', subject: INDEX_FILE }]
       const indexed = new Set([...index.matchAll(/\]\(([^)]+\.md)\)/g)].map((match) => match[1] as string))
       const lines: string[] = []
       const results: ConformOutcome[] = []
       for (const memory of memoryFiles) {
         if (indexed.has(memory.file)) continue
-        const title = typeof memory.frontmatter?.name === 'string' && memory.frontmatter.name ? memory.frontmatter.name : memory.file.replace(/\.md$/, '')
-        const description = typeof memory.frontmatter?.description === 'string' && memory.frontmatter.description.trim() ? memory.frontmatter.description.trim() : '(no description — see file)'
+        const title =
+          typeof memory.frontmatter?.name === 'string' && memory.frontmatter.name
+            ? memory.frontmatter.name
+            : memory.file.replace(/\.md$/, '')
+        const description =
+          typeof memory.frontmatter?.description === 'string' && memory.frontmatter.description.trim()
+            ? memory.frontmatter.description.trim()
+            : '(no description — see file)'
         lines.push(`- [${title}](${memory.file}) — ${description}`)
-        results.push({ status: 'FIXED', message: `${dryRun ? 'Would append' : 'Appended'} index entry — ${description}`, subject: memory.file })
+        results.push({
+          status: 'FIXED',
+          message: `${dryRun ? 'Would append' : 'Appended'} index entry — ${description}`,
+          subject: memory.file
+        })
       }
-      if (lines.length > 0 && !dryRun) writeFileSync(join(absoluteMemory, INDEX_FILE), `${index.replace(/\n*$/, '\n')}${lines.join('\n')}\n`)
-      return results.length > 0 ? outcomes(results) : [{ status: 'PASS', message: 'Every memory file is already indexed.', subject: INDEX_FILE }]
+      if (lines.length > 0 && !dryRun)
+        writeFileSync(join(absoluteMemory, INDEX_FILE), `${index.replace(/\n*$/, '\n')}${lines.join('\n')}\n`)
+      return results.length > 0
+        ? outcomes(results)
+        : [{ status: 'PASS', message: 'Every memory file is already indexed.', subject: INDEX_FILE }]
     }
   }
 }

@@ -5,8 +5,8 @@ import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync 
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { parseCheckerJsonl } from './vendored/ki-skills/checker.ts'
 import { ENGINEERING_ITEMS } from './rubric/items/index.ts'
+import { parseCheckerJsonl } from './vendored/ki-skills/checker.ts'
 
 const CHECKER = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
 
@@ -303,12 +303,19 @@ withFixture({ test: 'bun scripts/checker.test.ts' }, (findings) => {
   check('runner-neutral bare test selects the non-Vitest policy', hasFinding(findings, 'TEST-1', 'INFO', 'non-vitest test runner'))
 })
 
-withFixture({ test: 'bun test' }, (findings) => {
-  check('literal bun test is rejected', hasFinding(findings, 'SCR-6', 'FAIL', 'uses "bun test"'))
+withFixture({ test: 'bun test --isolate ./scripts' }, (findings) => {
+  check("the governed test entrypoint may select Bun's runner", hasFinding(findings, 'SCR-6', 'PASS', 'no non-test script bypasses'))
+})
+
+withFixture({ test: 'bun scripts/checker.test.ts', 'ki:ci': 'bun test' }, (findings) => {
+  check(
+    'a non-test script bypassing the entrypoint is rejected',
+    hasFinding(findings, 'SCR-6', 'FAIL', 'bypasses the governed test entrypoint')
+  )
 })
 
 withFixture({ test: 'bun scripts/checker.test.ts', 'ki:ci': 'bun run test' }, (findings) => {
-  check('bun run test is not mistaken for literal bun test', hasFinding(findings, 'SCR-6', 'PASS', 'no "bun test"'))
+  check('bun run test is not mistaken for a test-entrypoint bypass', hasFinding(findings, 'SCR-6', 'PASS', 'no non-test script bypasses'))
 })
 
 withFixture(

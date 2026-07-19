@@ -2,7 +2,7 @@
 import { resolve } from 'node:path'
 import { createHandoffsContext, type HandoffsRubricContext } from './rubric/contexts/handoffs.ts'
 import { KI_HANDOFFS_RUBRIC } from './rubric/items/index.ts'
-import { runChecker, type CheckerResult } from './vendored/ki-skills/checker.ts'
+import { type CheckerResult, runChecker } from './vendored/ki-skills/checker.ts'
 import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
 import type { RubricDefinition } from './vendored/ki-skills/rubric.ts'
 

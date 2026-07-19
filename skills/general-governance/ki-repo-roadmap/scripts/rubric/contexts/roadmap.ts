@@ -1,5 +1,5 @@
 import type { AuditOutcome, ConformOutcome } from '../../vendored/ki-skills/rubric.ts'
-import { inspectRoadmap, type Finding } from './roadmap-evidence.ts'
+import { type Finding, inspectRoadmap } from './roadmap-evidence.ts'
 import { conformRoadmap } from './roadmap-writes.ts'
 
 type LegacyLevel = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
@@ -11,7 +11,8 @@ export type RoadmapContext = {
   conform: () => readonly LegacyFinding[]
 }
 
-const findings = (value: readonly Finding[]): readonly LegacyFinding[] => value.map(({ level, area, msg, file }) => ({ level, area, message: msg, ...(file ? { subject: file } : {}) }))
+const findings = (value: readonly Finding[]): readonly LegacyFinding[] =>
+  value.map(({ level, area, msg, file }) => ({ level, area, message: msg, ...(file ? { subject: file } : {}) }))
 
 export const createRoadmapContextFactory = ({ target, dryRun = false }: { target: string; dryRun?: boolean }): (() => RoadmapContext) => {
   const audited = findings(inspectRoadmap(target))
@@ -24,7 +25,14 @@ export const createRoadmapContextFactory = ({ target, dryRun = false }: { target
 }
 
 export const auditOutcome = (finding: LegacyFinding): AuditOutcome => ({
-  status: finding.level === 'FAIL' || finding.level === 'WARN' ? 'VIOLATION' : finding.level === 'NA' ? 'NOT_APPLICABLE' : finding.level === 'INFO' ? 'INFO' : 'PASS',
+  status:
+    finding.level === 'FAIL' || finding.level === 'WARN'
+      ? 'VIOLATION'
+      : finding.level === 'NA'
+        ? 'NOT_APPLICABLE'
+        : finding.level === 'INFO'
+          ? 'INFO'
+          : 'PASS',
   message: finding.message,
   ...(finding.subject ? { subject: finding.subject } : {})
 })

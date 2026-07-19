@@ -41,7 +41,8 @@ describe('ki-housekeeping structured checker', () => {
         join(memory, 'MEMORY.md'),
         '<!-- headroom:learn:start -->\n/Users/x/knowledgeislands/other-island\n<!-- headroom:learn:end -->\n'
       )
-      const result = spawnSync('bun', [audit, '/Users/x/knowledgeislands/this-island', '--memory-dir', memory], { encoding: 'utf8' })
+      const target = join(tmpdir(), 'this-island')
+      const result = spawnSync('bun', [audit, target, '--memory-dir', memory], { encoding: 'utf8' })
       expect(result.status).toBe(0)
       expect(result.stdout).toContain('"code":"IDX-6"')
       expect(result.stdout).toContain('"level":"WARN"')

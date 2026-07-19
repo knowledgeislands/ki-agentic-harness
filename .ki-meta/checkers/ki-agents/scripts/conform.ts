@@ -1,8 +1,8 @@
 #!/usr/bin/env bun
 import { resolve } from 'node:path'
-import { createAgentsContext, type AgentsRubricContext } from './rubric/contexts/agents.ts'
+import { type AgentsRubricContext, createAgentsContext } from './rubric/contexts/agents.ts'
 import { KI_AGENTS_RUBRIC } from './rubric/items/index.ts'
-import { runChecker, type CheckerResult } from './vendored/ki-skills/checker.ts'
+import { type CheckerResult, runChecker } from './vendored/ki-skills/checker.ts'
 import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
 import type { RubricDefinition } from './vendored/ki-skills/rubric.ts'
 

@@ -31,14 +31,18 @@ const parseConfig = (text: string): { value: KiKbConfig | null; malformed: boole
     const record = table as Record<string, unknown>
     const zones =
       record.zones && typeof record.zones === 'object' && !Array.isArray(record.zones)
-        ? Object.fromEntries(Object.entries(record.zones as Record<string, unknown>).filter(([, value]) => typeof value === 'string'))
+        ? Object.fromEntries<string>(
+            Object.entries(record.zones as Record<string, unknown>).filter(
+              (entry): entry is [string, string] => typeof entry[1] === 'string'
+            )
+          )
         : {}
     return {
       value: {
-        keys: Object.fromEntries(
+        keys: Object.fromEntries<string>(
           Object.entries(record)
             .filter(([key]) => !['zones', 'required_frontmatter', 'preflight'].includes(key))
-            .map(([key, value]) => [key, String(value)])
+            .map(([key, value]) => [key, String(value)] as const)
         ),
         zones,
         requiredFrontmatter: Array.isArray(record.required_frontmatter)

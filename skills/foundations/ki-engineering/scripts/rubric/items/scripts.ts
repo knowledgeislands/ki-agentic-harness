@@ -33,8 +33,8 @@ export const SCR_5 = mechanical(
 )
 export const SCR_6 = mechanical(
   'SCR-6',
-  'no direct Bun test runner',
-  'No script value contains `bun test`; use `bun run test` so the governed package script runs.',
+  'no test-entrypoint bypass',
+  'Only the bare `test` script may use `bun test`; every other script uses `bun run test` to invoke the governed entrypoint.',
   'FAIL'
 )
 export const SCR_7 = mechanical(

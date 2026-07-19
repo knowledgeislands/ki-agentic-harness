@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path'
 import type { AgentsRubricContext } from '../contexts/agents.ts'
 import { relativeLinkTargets, stripCode } from '../contexts/agents.ts'
 import { forAgents } from './common.ts'
+
 const LINK_ITEMS = [
   {
     code: 'LINK-1',

@@ -130,7 +130,7 @@ When `workspaces` is present, the checker validates that every listed directory 
 
 Install and dev use **Bun (≥ 1.3)**; the compiled `dist/` runs under **Node (≥ 22)** — that is what a consumer launches. Two standing traps:
 
-- **No `bun test`, anywhere.** `bun run test` invokes the repo's governed `test` script; bare `bun test` bypasses it and silently invokes Bun's own runner. No script value may contain the literal `bun test`. A Vitest-configured repo uses `vitest run`; another runner remains valid behind the same bare `test` idiom (§6).
+- **No test-entrypoint bypass.** `bun run test` invokes the repo's governed `test` script; a non-`test` script that calls bare `bun test` silently bypasses it and invokes Bun's own runner. The bare `test` script may deliberately select `bun test` (for example, to glob a scripts-only suite); every other script must use `bun run test`. A Vitest-configured repo uses `vitest run`; another runner remains valid behind the same bare `test` idiom (§6).
 - **`.env` parity.** Bun auto-loads `.env*`; Node does not, so a repo that loads `.env` files calls `process.loadEnvFile()` (wrapped in try/catch — Bun has no such API and throws `TypeError`). Resolve the path from the module's own location (`import.meta.url`), **not** `process.cwd()` — the compiled server is launched as `node /abs/path/dist/…` from an arbitrary cwd, so a `./`-relative path silently misses. Load `.env.local`, then `.env.${NODE_ENV}` (when set), then `.env`; `loadEnvFile` never overwrites an already-set var, so the launcher's environment wins. `NODE_ENV=development` is set **only** by dev/inspect scripts, so production ignores `.env.*` and config must come from the launcher's environment (§8).
 
 ## 4. tsconfig.json (core + profiled)
@@ -167,7 +167,7 @@ Install and dev use **Bun (≥ 1.3)**; the compiled `dist/` runs under **Node (�
 
 ## 6. Testing (capability: the repo ships tests)
 
-When a repo ships tests, it exposes the whole suite through the bare `test` script. The runner behind that idiom is repo-appropriate: Vitest is the recommended default for source-unit tests, while a scripts-only governance repo may chain standalone `bun path/to/*.test.ts` programs. Literal `bun test` remains forbidden (§3) because it bypasses the governed script.
+When a repo ships tests, it exposes the whole suite through the bare `test` script. The runner behind that idiom is repo-appropriate: Vitest is the recommended default for source-unit tests, while a scripts-only governance repo may chain standalone `bun path/to/*.test.ts` programs or deliberately use `bun test` to glob them. Other scripts must invoke the governed entrypoint with `bun run test` (§3).
 
 When a repo selects Vitest by carrying `vitest.config.*`, all of the following apply:
 

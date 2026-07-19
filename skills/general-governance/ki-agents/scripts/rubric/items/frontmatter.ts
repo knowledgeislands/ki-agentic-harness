@@ -1,6 +1,7 @@
 import type { AgentsRubricContext } from '../contexts/agents.ts'
 import { forAgents } from './common.ts'
 import { MODEL_ALIASES } from './constants.ts'
+
 const FRONTMATTER_ITEMS = [
   {
     code: 'FM-1',

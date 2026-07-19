@@ -8,6 +8,10 @@ code: FND
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
+### Show progress during checker execution
+
+Make long-running individual and aggregate AUDIT / CONFORM runs visibly advance instead of remaining silent until their complete JSONL stream is rendered. Preserve canonical JSONL on stdout for machine consumers; carry concise, runtime-neutral progress on a separate channel, default it sensibly for interactive use, and provide a quiet mode for automation. Aggregate runs must identify the active skill and completed/remaining work, while individual runs should expose meaningful rubric execution progress without reporting suppressed findings early or changing what is checked.
+
 ### Normalise skill packaging after the checker rollout
 
 After the structured checker rollout is stable, apply the accumulated mechanical packaging cleanups in one current-state migration with no compatibility aliases or dual paths:

@@ -1,6 +1,7 @@
-import type { AgentsRubricContext } from '../contexts/agents.ts'
 import type { AuditOutcome, ConformOutcome, RubricOutcomes } from '../../vendored/ki-skills/rubric.ts'
+import type { AgentsRubricContext } from '../contexts/agents.ts'
 import { forAgents, outcomes } from './common.ts'
+
 const LAYOUT_ITEMS = [
   {
     code: 'LAY-1',

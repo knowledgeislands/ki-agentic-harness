@@ -79,7 +79,7 @@ Used by every `mcp-*` repo. The universal invariants (`strict`, `nodenext`, `noE
 
 ### Aggregate/scoped entrypoints and the conditional Vitest profile
 
-Every governed repo exposes aggregate `ki:audit`/`ki:conform`; vendoring derives the skill-scoped audit/conform entrypoints. The engineering modes run Biome, TypeScript, syncpack, and knip internally, while `ki-authoring` owns the Markdown tool pass. The critical trap is the literal command `bun test`: it bypasses the governed package script and invokes Bun's own runner. Use `bun run test`; a Vitest-configured repo maps that idiom to `vitest run`, while another profile may map it to a different whole-suite command.
+Every governed repo exposes aggregate `ki:audit`/`ki:conform`; vendoring derives the skill-scoped audit/conform entrypoints. The engineering modes run Biome, TypeScript, syncpack, and knip internally, while `ki-authoring` owns the Markdown tool pass. The critical trap is a non-`test` script calling `bun test`: it bypasses the governed package script and invokes Bun's own runner. Use `bun run test` outside the bare `test` entrypoint; that entrypoint may select a runner, whether `vitest run`, `bun test`, or another whole-suite command.
 
 ```jsonc
 {
@@ -111,7 +111,7 @@ The harness's [actual package manifest](../../../../package.json) uses the same 
 }
 ```
 
-This runner-neutral profile does not opt into `test:coverage`, `test:watch`, or the Vitest threshold checks. It still must not contain the literal `bun test`.
+This runner-neutral profile does not opt into `test:coverage`, `test:watch`, or the Vitest threshold checks. Its bare `test` entrypoint may use `bun test` to glob its suite; other scripts continue to delegate through `bun run test`.
 
 ### Monorepo: workspace-scoped vitest coverage (§0, §6)
 

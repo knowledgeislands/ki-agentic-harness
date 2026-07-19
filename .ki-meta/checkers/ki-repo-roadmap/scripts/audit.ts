@@ -15,9 +15,16 @@ try {
   const parsed = parseReporterArguments(argv)
   const unknown = parsed.arguments.filter((argument) => argument.startsWith('-'))
   const targets = parsed.arguments.filter((argument) => !argument.startsWith('-'))
-  if (unknown.length || targets.length > 1) throw new Error(unknown.length ? `unknown option: ${unknown[0]}` : 'audit accepts at most one target')
+  if (unknown.length || targets.length > 1)
+    throw new Error(unknown.length ? `unknown option: ${unknown[0]}` : 'audit accepts at most one target')
   const target = resolve(targets[0] ?? '.')
-  const result = runChecker({ mode: 'audit', concern: KI_REPO_ROADMAP_RUBRIC.concern, target, rubric: KI_REPO_ROADMAP_RUBRIC, subjects: [{ familyCodes: KI_REPO_ROADMAP_FAMILY_CODES, context: createRoadmapContextFactory({ target }) }] })
+  const result = runChecker({
+    mode: 'audit',
+    concern: KI_REPO_ROADMAP_RUBRIC.concern,
+    target,
+    rubric: KI_REPO_ROADMAP_RUBRIC,
+    subjects: [{ familyCodes: KI_REPO_ROADMAP_FAMILY_CODES, context: createRoadmapContextFactory({ target }) }]
+  })
   process.stdout.write(renderCheckerResult(result, { ...parsed.options, colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR) }))
   process.exit(result.exitCode)
 } catch (error) {

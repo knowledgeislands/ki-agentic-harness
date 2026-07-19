@@ -1,5 +1,6 @@
 import type { AgentsRubricContext } from '../contexts/agents.ts'
 import { forAgents } from './common.ts'
+
 const PROMPT_ITEMS = [
   {
     code: 'PROMPT-1',

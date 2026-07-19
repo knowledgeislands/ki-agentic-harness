@@ -159,7 +159,8 @@ const AGGREGATE_RUNNER = `#!/usr/bin/env bun
 // sequence for the given verb — no package.json required.
 // Usage: bun .ki-meta/bin/aggregate.ts <audit|conform|educate|help> [--skill <ki-skill>] [--reporter-levels=<levels>]
 import { execFileSync, spawnSync } from 'node:child_process'
-import { existsSync, lstatSync, readdirSync } from 'node:fs'
+import { closeSync, existsSync, lstatSync, mkdtempSync, openSync, readFileSync, readdirSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -210,6 +211,28 @@ const RUN_KEYS = ['version', 'runId', 'record', 'mode', 'concern', 'target', 'ge
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const DEFAULT_REPORTER_LEVELS = new Set(verb === 'conform' ? ['FAIL', 'WARN', 'FIXED'] : ['FAIL', 'WARN'])
 const verbed = verb === 'conform' ? 'conformed' : 'audited'
+const runCheckerProcess = (scriptPath, childArgs) => {
+  // Bun truncates piped spawn output at roughly 700 KiB even when maxBuffer is
+  // raised. Capture through regular files so large canonical JSONL streams stay
+  // complete, then remove the private temporary directory immediately.
+  const captureDir = mkdtempSync(join(tmpdir(), 'ki-aggregate-'))
+  const stdoutPath = join(captureDir, 'stdout')
+  const stderrPath = join(captureDir, 'stderr')
+  const stdoutFd = openSync(stdoutPath, 'w', 0o600)
+  const stderrFd = openSync(stderrPath, 'w', 0o600)
+  let result
+  try {
+    result = spawnSync('bun', [scriptPath, '.', ...childArgs], { stdio: ['ignore', stdoutFd, stderrFd] })
+  } finally {
+    closeSync(stdoutFd)
+    closeSync(stderrFd)
+  }
+  try {
+    return { ...result, stdout: readFileSync(stdoutPath, 'utf8'), stderr: readFileSync(stderrPath, 'utf8') }
+  } finally {
+    rmSync(captureDir, { recursive: true, force: true })
+  }
+}
 // Render one finding row: icon status [title (code)] subject — message. full=false
 // trims the message to its first line so recap rows remain one-line.
 const SHORT = { FAIL: 'fail', WARN: 'warn', FIXED: 'fixed', INFO: 'info', NOT_APPLICABLE: 'na', PASS: 'pass' }
@@ -365,7 +388,7 @@ for (const skill of checkers) {
   }
   // The renderer consumes --reporter-levels itself. All other flags (for example
   // --dry-run) forward to every child, whose canonical JSONL stays complete.
-  const res = spawnSync('bun', [scriptPath, '.', ...reporter.childArgs], { encoding: 'utf8' })
+  const res = runCheckerProcess(scriptPath, reporter.childArgs)
   const parsed = parseJsonl(res.stdout ?? '')
   const errors = [...parsed.errors, ...validateReport(parsed.events, res.status ?? 1, verb)]
   if (res.error) errors.push('process failed to start: ' + res.error.message)

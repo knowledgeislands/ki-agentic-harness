@@ -1,4 +1,4 @@
-import type { ConformOutcome, RubricItem, RubricOutcomes } from '../../vendored/ki-skills/rubric.ts'
+import type { AuditOutcome, ConformOutcome, RubricItem, RubricOutcomes } from '../../vendored/ki-skills/rubric.ts'
 import type { WebsiteContext } from '../contexts/website.ts'
 import { inactive, judgment, mechanical } from './shared.ts'
 
@@ -14,24 +14,39 @@ const conformOptIn = (c: WebsiteContext): RubricOutcomes<ConformOutcome> => {
     }
   ]
 }
+const auditSiteWorkspace = (c: WebsiteContext): RubricOutcomes<AuditOutcome> => {
+  const stop = inactive(c)
+  if (stop) return stop
+  if (!c.cfgName)
+    return [
+      {
+        status: 'VIOLATION',
+        message: 'no eleventy.config.{ts,js,mjs,cjs} at repo root or site/ — not an Eleventy site'
+      }
+    ]
+  if (c.siteRoot)
+    return [
+      {
+        status: 'PASS',
+        message: `site/${c.cfgName} present (site/ subfolder layout)`,
+        subject: c.siteAt(c.cfgName)
+      }
+    ]
+  return [
+    {
+      status: 'VIOLATION',
+      level: 'WARN',
+      message: `${c.cfgName} present at repo root (flat layout) — standard §2 requires the site/ workspace; move it under site/`,
+      subject: c.siteAt(c.cfgName)
+    }
+  ]
+}
 export const WEB_6 = mechanical(
   'WEB-6',
   'site workspace configuration',
   'exactly one `eleventy.config.ts`, under `site/` (the workspace package — every house site is a monorepo, never flat; a flat repo-root config is WARN).',
   'FAIL',
-  (c) =>
-    inactive(c) ?? [
-      {
-        status: !c.cfgName ? 'VIOLATION' : c.siteRoot ? 'PASS' : 'VIOLATION',
-        ...(c.cfgName && !c.siteRoot ? { level: 'WARN' as const } : {}),
-        message: !c.cfgName
-          ? 'no eleventy.config.{ts,js,mjs,cjs} at repo root or site/ — not an Eleventy site'
-          : c.siteRoot
-            ? `site/${c.cfgName} present (site/ subfolder layout)`
-            : `${c.cfgName} present at repo root (flat layout) — standard §2 requires the site/ workspace; move it under site/`,
-        subject: c.cfgName ? c.siteAt(c.cfgName) : undefined
-      }
-    ]
+  auditSiteWorkspace
 )
 export const WEB_7 = mechanical(
   'WEB-7',

@@ -15,9 +15,21 @@ try {
   const parsed = parseReporterArguments(argv)
   const unknown = parsed.arguments.filter((argument) => argument.startsWith('-') && argument !== '--dry-run')
   const targets = parsed.arguments.filter((argument) => !argument.startsWith('-'))
-  if (unknown.length || targets.length > 1) throw new Error(unknown.length ? `unknown option: ${unknown[0]}` : 'conform accepts at most one target')
+  if (unknown.length || targets.length > 1)
+    throw new Error(unknown.length ? `unknown option: ${unknown[0]}` : 'conform accepts at most one target')
   const target = resolve(targets[0] ?? '.')
-  const result = runChecker({ mode: 'conform', concern: KI_REPO_ROADMAP_RUBRIC.concern, target, rubric: KI_REPO_ROADMAP_RUBRIC, subjects: [{ familyCodes: KI_REPO_ROADMAP_FAMILY_CODES, context: createRoadmapContextFactory({ target, dryRun: parsed.arguments.includes('--dry-run') }) }] })
+  const result = runChecker({
+    mode: 'conform',
+    concern: KI_REPO_ROADMAP_RUBRIC.concern,
+    target,
+    rubric: KI_REPO_ROADMAP_RUBRIC,
+    subjects: [
+      {
+        familyCodes: KI_REPO_ROADMAP_FAMILY_CODES,
+        context: createRoadmapContextFactory({ target, dryRun: parsed.arguments.includes('--dry-run') })
+      }
+    ]
+  })
   process.stdout.write(renderCheckerResult(result, { ...parsed.options, colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR) }))
   process.exit(result.exitCode)
 } catch (error) {

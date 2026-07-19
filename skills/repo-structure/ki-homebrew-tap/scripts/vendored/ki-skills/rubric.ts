@@ -29,7 +29,8 @@ export type RubricOutcome<Status extends OutcomeStatus> = Status extends 'VIOLAT
 
 export type AuditOutcome = RubricOutcome<AuditOutcomeStatus>
 export type ConformOutcome = RubricOutcome<OutcomeStatus>
-export type RubricOutcomes<Result> = NonEmptyReadonlyArray<Result>
+/** A rubric execution may emit one outcome per inspected subject, including none when there are no subjects. */
+export type RubricOutcomes<Result> = readonly Result[]
 
 export type RubricExecution<Context, Result> = {
   phase: RubricPhase

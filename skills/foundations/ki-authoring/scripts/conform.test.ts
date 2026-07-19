@@ -40,7 +40,8 @@ describe('ki-authoring CONFORM wrapper', () => {
     const unknown = spawnSync('bun', [CONFORM, '--dry-rnu'], { encoding: 'utf8' })
     expect(unknown.status).toBe(2)
     expect(unknown.stderr).toContain('unknown option: --dry-rnu')
-    const multiple = spawnSync('bun', [CONFORM, 'one', 'two'], { encoding: 'utf8' })
+    const extraTargets = ['one', 'two']
+    const multiple = spawnSync('bun', [CONFORM, ...extraTargets], { encoding: 'utf8' })
     expect(multiple.status).toBe(2)
     expect(multiple.stderr).toContain('conform accepts at most one target')
   })

@@ -57,7 +57,7 @@ Stable engineering criteria preserved from the engineering standard.
 - **SCR-3 [M] — retired script families absent** — Retired `ki:lint:*`, `ki:deps:*`, `ki:knip`, `ki:verify`, and per-skill lint keys are absent. (standards.md)
 - **SCR-4 [M] — derived checker entrypoints** — Every checker payload in `.ki-meta/checkers/<skill>/` is reachable through derived `ki:<suffix>:audit` and `ki:<suffix>:conform` keys. (standards.md)
 - **SCR-5 [M] — lifecycle clean and prepare scripts** — `clean` removes `node_modules` (and `dist` where built), and `prepare` is `husky`. (standards.md)
-- **SCR-6 [M] — no direct Bun test runner** — No script value contains `bun test`; use `bun run test` so the governed package script runs. (standards.md)
+- **SCR-6 [M] — no test-entrypoint bypass** — Only the bare `test` script may use `bun test`; every other script uses `bun run test` to invoke the governed entrypoint. (standards.md)
 - **SCR-7 [M] — runner-neutral test and build entrypoints** — Test-capable repos expose bare `test`; compiled repos expose bare `build`; neither is appended to aggregate entrypoints. (standards.md)
 - **SCR-8 [J] — repo-specific scripts retain clear ownership** — Repo-specific scripts beyond the governance surface are valid only when an owning skill governs them and they do not shadow a governed entrypoint.
   - _Review prompt:_ Do repo-specific scripts have a clear owner and avoid divergent shadows of governed entrypoints? (standards.md)

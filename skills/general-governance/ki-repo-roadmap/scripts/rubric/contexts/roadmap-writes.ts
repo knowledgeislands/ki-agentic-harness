@@ -343,192 +343,192 @@ export const conformRoadmap = (target: string, dryRun: boolean): Finding[] => {
   readme = join(roadmapDir, 'README.md')
   findings = []
   try {
-if (!existsSync(root) || !lstatSync(root).isDirectory()) {
-  findings.push({ level: 'FAIL', area: 'PROFILE-1', msg: 'repository directory does not exist', ref: STANDARD_REF })
-  emit()
-}
-if (isKb()) {
-  findings.push({
-    level: 'NA',
-    area: 'SCOPE-1',
-    msg: 'KB repository: use ki-kb-streams; no repository-roadmap files changed',
-    ref: STANDARD_REF
-  })
-  emit()
-}
-const auditResults = inspectRoadmap(root)
-const nonDerivable = auditResults.filter(
-  (finding) => finding.level === 'FAIL' && !['PROJ-1', 'INDEX-1', 'ROAD-4', 'THEME-3'].includes(finding.area)
-)
-if (nonDerivable.length) {
-  findings.push(...nonDerivable)
-  findings.push({
-    level: 'FAIL',
-    area: 'SAFE-1',
-    msg: 'refusing generation until non-derivable audit failures are resolved',
-    ref: STANDARD_REF
-  })
-  emit()
-}
-
-if (!existsSync(roadmapDir)) {
-  if (rejectUnsafe(rootRoadmap, 'ROADMAP.md')) emit()
-  const current = outputBytes(rootRoadmap)
-  if (current === null) {
-    findings.push({ level: 'FAIL', area: 'PROFILE-1', msg: 'simple profile has no ROADMAP.md', ref: STANDARD_REF, file: 'ROADMAP.md' })
-    emit()
-  }
-  const content = withHorizonBlurbs(current)
-  if (current === content)
-    findings.push({ level: 'PASS', area: 'ROAD-4', msg: 'horizon blurbs already canonical', ref: STANDARD_REF, file: 'ROADMAP.md' })
-  else if (dryRun)
-    findings.push({
-      level: 'POLISH',
-      area: 'ROAD-4',
-      msg: 'would insert missing horizon blurbs (dry-run; not written)',
-      ref: STANDARD_REF,
-      file: 'ROADMAP.md'
-    })
-  else {
-    atomicWrite(rootRoadmap, content, current)
-    findings.push({
-      level: 'POLISH',
-      area: 'ROAD-4',
-      msg: 'inserted missing horizon blurbs atomically',
-      ref: STANDARD_REF,
-      file: 'ROADMAP.md'
-    })
-  }
-  emit()
-}
-if (rejectUnsafe(rootRoadmap, 'ROADMAP.md') || rejectUnsafe(readme, 'docs/roadmap/README.md')) emit()
-
-const prunable = prunableThemes()
-const emptyThemeFiles = new Set(
-  auditResults.filter((finding) => finding.level === 'FAIL' && finding.area === 'THEME-3').map((finding) => finding.file)
-)
-const unprunable = [...emptyThemeFiles].filter((file) => !prunable.some((theme) => file === `docs/roadmap/${theme.theme}/ROADMAP.md`))
-if (unprunable.length) {
-  findings.push({
-    level: 'FAIL',
-    area: 'SAFE-1',
-    msg: `refusing to prune empty theme(s) with retained authored content or plans: ${unprunable.join(', ')}`,
-    ref: STANDARD_REF
-  })
-  emit()
-}
-
-const stagedThemes = dryRun ? [] : stagePrunableThemes(prunable)
-if (!dryRun) {
-  const postAuditResults = inspectRoadmap(root)
-  if (!postAuditResults) {
-    const conflicts = restoreStagedThemes(stagedThemes)
-    findings.push({
-      level: 'FAIL',
-      area: 'SAFE-1',
-      msg: `post-prune audit did not return valid JSON${conflicts.length ? `; restore conflicts: ${conflicts.join(', ')}` : ''}`,
-      ref: STANDARD_REF
-    })
-    emit()
-  }
-  const postPruneFailures = postAuditResults.filter(
-    (finding) => finding.level === 'FAIL' && !['PROJ-1', 'INDEX-1', 'ROAD-4'].includes(finding.area)
-  )
-  if (postPruneFailures.length) {
-    const conflicts = restoreStagedThemes(stagedThemes)
-    findings.push(...postPruneFailures)
-    findings.push({
-      level: 'FAIL',
-      area: 'SAFE-1',
-      msg: `refusing to prune an empty theme with retained authored content${conflicts.length ? `; restore conflicts: ${conflicts.join(', ')}` : ''}`,
-      ref: STANDARD_REF
-    })
-    emit()
-  }
-}
-
-const { themes, items, plans } = discover(new Set(prunable.map((theme) => theme.theme)))
-const authoredOutputs = themes.map((theme) => {
-  const path = join(roadmapDir, theme, 'ROADMAP.md')
-  return {
-    path,
-    display: `docs/roadmap/${theme}/ROADMAP.md`,
-    area: 'ROAD-4',
-    content: withHorizonBlurbs(readFileSync(path, 'utf8'))
-  }
-})
-if (authoredOutputs.some((output) => rejectUnsafe(output.path, output.display))) emit()
-const outputs = [
-  ...authoredOutputs,
-  { path: rootRoadmap, display: 'ROADMAP.md', area: 'PROJ-1', content: projection(items) },
-  { path: readme, display: 'docs/roadmap/README.md', area: 'INDEX-1', content: index(themes, plans) }
-]
-const snapshots = new Map(outputs.map((output) => [output.path, outputBytes(output.path)]))
-const written: typeof outputs = []
-try {
-  for (const output of outputs) {
-    const current = snapshots.get(output.path) ?? null
-    if (current === output.content)
-      findings.push({ level: 'PASS', area: output.area, msg: 'already canonical', ref: STANDARD_REF, file: output.display })
-    else if (dryRun)
+    if (!existsSync(root) || !lstatSync(root).isDirectory()) {
+      findings.push({ level: 'FAIL', area: 'PROFILE-1', msg: 'repository directory does not exist', ref: STANDARD_REF })
+      emit()
+    }
+    if (isKb()) {
       findings.push({
-        level: 'POLISH',
-        area: output.area,
-        msg: 'would regenerate (dry-run; not written)',
-        ref: STANDARD_REF,
-        file: output.display
+        level: 'NA',
+        area: 'SCOPE-1',
+        msg: 'KB repository: use ki-kb-streams; no repository-roadmap files changed',
+        ref: STANDARD_REF
       })
-    else {
-      atomicWrite(output.path, output.content, current)
-      written.push(output)
-      findings.push({ level: 'POLISH', area: output.area, msg: 'regenerated atomically', ref: STANDARD_REF, file: output.display })
+      emit()
     }
-  }
-} catch (error) {
-  const conflicts: string[] = []
-  for (const output of written.reverse()) {
-    const before = snapshots.get(output.path) ?? null
-    try {
-      if (outputBytes(output.path) !== output.content) {
-        conflicts.push(output.display)
-        continue
+    const auditResults = inspectRoadmap(root)
+    const nonDerivable = auditResults.filter(
+      (finding) => finding.level === 'FAIL' && !['PROJ-1', 'INDEX-1', 'ROAD-4', 'THEME-3'].includes(finding.area)
+    )
+    if (nonDerivable.length) {
+      findings.push(...nonDerivable)
+      findings.push({
+        level: 'FAIL',
+        area: 'SAFE-1',
+        msg: 'refusing generation until non-derivable audit failures are resolved',
+        ref: STANDARD_REF
+      })
+      emit()
+    }
+
+    if (!existsSync(roadmapDir)) {
+      if (rejectUnsafe(rootRoadmap, 'ROADMAP.md')) emit()
+      const current = outputBytes(rootRoadmap)
+      if (current === null) {
+        findings.push({ level: 'FAIL', area: 'PROFILE-1', msg: 'simple profile has no ROADMAP.md', ref: STANDARD_REF, file: 'ROADMAP.md' })
+        emit()
       }
-      if (before === null) unlinkSync(output.path)
-      else atomicWrite(output.path, before, output.content)
-    } catch {
-      conflicts.push(output.display)
+      const content = withHorizonBlurbs(current)
+      if (current === content)
+        findings.push({ level: 'PASS', area: 'ROAD-4', msg: 'horizon blurbs already canonical', ref: STANDARD_REF, file: 'ROADMAP.md' })
+      else if (dryRun)
+        findings.push({
+          level: 'POLISH',
+          area: 'ROAD-4',
+          msg: 'would insert missing horizon blurbs (dry-run; not written)',
+          ref: STANDARD_REF,
+          file: 'ROADMAP.md'
+        })
+      else {
+        atomicWrite(rootRoadmap, content, current)
+        findings.push({
+          level: 'POLISH',
+          area: 'ROAD-4',
+          msg: 'inserted missing horizon blurbs atomically',
+          ref: STANDARD_REF,
+          file: 'ROADMAP.md'
+        })
+      }
+      emit()
     }
-  }
-  findings.push({
-    level: 'FAIL',
-    area: 'SAFE-1',
-    msg: `generation transaction failed: ${(error as Error).message}${conflicts.length ? `; rollback conflicts: ${conflicts.join(', ')}` : ''}`,
-    ref: STANDARD_REF
-  })
-  const stagedConflicts = restoreStagedThemes(stagedThemes)
-  if (stagedConflicts.length)
-    findings.push({ level: 'FAIL', area: 'SAFE-1', msg: `prune rollback conflicts: ${stagedConflicts.join(', ')}`, ref: STANDARD_REF })
-  emit()
-}
-try {
-  if (!dryRun) discardStagedThemes(stagedThemes)
-  for (const theme of prunable)
-    findings.push({
-      level: 'POLISH',
-      area: 'THEME-3',
-      msg: dryRun ? 'would prune empty theme directory (dry-run; not written)' : 'pruned empty theme directory',
-      ref: STANDARD_REF,
-      file: `docs/roadmap/${theme.theme}`
+    if (rejectUnsafe(rootRoadmap, 'ROADMAP.md') || rejectUnsafe(readme, 'docs/roadmap/README.md')) emit()
+
+    const prunable = prunableThemes()
+    const emptyThemeFiles = new Set(
+      auditResults.filter((finding) => finding.level === 'FAIL' && finding.area === 'THEME-3').map((finding) => finding.file)
+    )
+    const unprunable = [...emptyThemeFiles].filter((file) => !prunable.some((theme) => file === `docs/roadmap/${theme.theme}/ROADMAP.md`))
+    if (unprunable.length) {
+      findings.push({
+        level: 'FAIL',
+        area: 'SAFE-1',
+        msg: `refusing to prune empty theme(s) with retained authored content or plans: ${unprunable.join(', ')}`,
+        ref: STANDARD_REF
+      })
+      emit()
+    }
+
+    const stagedThemes = dryRun ? [] : stagePrunableThemes(prunable)
+    if (!dryRun) {
+      const postAuditResults = inspectRoadmap(root)
+      if (!postAuditResults) {
+        const conflicts = restoreStagedThemes(stagedThemes)
+        findings.push({
+          level: 'FAIL',
+          area: 'SAFE-1',
+          msg: `post-prune audit did not return valid JSON${conflicts.length ? `; restore conflicts: ${conflicts.join(', ')}` : ''}`,
+          ref: STANDARD_REF
+        })
+        emit()
+      }
+      const postPruneFailures = postAuditResults.filter(
+        (finding) => finding.level === 'FAIL' && !['PROJ-1', 'INDEX-1', 'ROAD-4'].includes(finding.area)
+      )
+      if (postPruneFailures.length) {
+        const conflicts = restoreStagedThemes(stagedThemes)
+        findings.push(...postPruneFailures)
+        findings.push({
+          level: 'FAIL',
+          area: 'SAFE-1',
+          msg: `refusing to prune an empty theme with retained authored content${conflicts.length ? `; restore conflicts: ${conflicts.join(', ')}` : ''}`,
+          ref: STANDARD_REF
+        })
+        emit()
+      }
+    }
+
+    const { themes, items, plans } = discover(new Set(prunable.map((theme) => theme.theme)))
+    const authoredOutputs = themes.map((theme) => {
+      const path = join(roadmapDir, theme, 'ROADMAP.md')
+      return {
+        path,
+        display: `docs/roadmap/${theme}/ROADMAP.md`,
+        area: 'ROAD-4',
+        content: withHorizonBlurbs(readFileSync(path, 'utf8'))
+      }
     })
-} catch (error) {
-  const conflicts = restoreStagedThemes(stagedThemes)
-  findings.push({
-    level: 'FAIL',
-    area: 'SAFE-1',
-    msg: `failed to finalize empty-theme pruning: ${(error as Error).message}${conflicts.length ? `; restore conflicts: ${conflicts.join(', ')}` : ''}`,
-    ref: STANDARD_REF
-  })
-}
+    if (authoredOutputs.some((output) => rejectUnsafe(output.path, output.display))) emit()
+    const outputs = [
+      ...authoredOutputs,
+      { path: rootRoadmap, display: 'ROADMAP.md', area: 'PROJ-1', content: projection(items) },
+      { path: readme, display: 'docs/roadmap/README.md', area: 'INDEX-1', content: index(themes, plans) }
+    ]
+    const snapshots = new Map(outputs.map((output) => [output.path, outputBytes(output.path)]))
+    const written: typeof outputs = []
+    try {
+      for (const output of outputs) {
+        const current = snapshots.get(output.path) ?? null
+        if (current === output.content)
+          findings.push({ level: 'PASS', area: output.area, msg: 'already canonical', ref: STANDARD_REF, file: output.display })
+        else if (dryRun)
+          findings.push({
+            level: 'POLISH',
+            area: output.area,
+            msg: 'would regenerate (dry-run; not written)',
+            ref: STANDARD_REF,
+            file: output.display
+          })
+        else {
+          atomicWrite(output.path, output.content, current)
+          written.push(output)
+          findings.push({ level: 'POLISH', area: output.area, msg: 'regenerated atomically', ref: STANDARD_REF, file: output.display })
+        }
+      }
+    } catch (error) {
+      const conflicts: string[] = []
+      for (const output of written.reverse()) {
+        const before = snapshots.get(output.path) ?? null
+        try {
+          if (outputBytes(output.path) !== output.content) {
+            conflicts.push(output.display)
+            continue
+          }
+          if (before === null) unlinkSync(output.path)
+          else atomicWrite(output.path, before, output.content)
+        } catch {
+          conflicts.push(output.display)
+        }
+      }
+      findings.push({
+        level: 'FAIL',
+        area: 'SAFE-1',
+        msg: `generation transaction failed: ${(error as Error).message}${conflicts.length ? `; rollback conflicts: ${conflicts.join(', ')}` : ''}`,
+        ref: STANDARD_REF
+      })
+      const stagedConflicts = restoreStagedThemes(stagedThemes)
+      if (stagedConflicts.length)
+        findings.push({ level: 'FAIL', area: 'SAFE-1', msg: `prune rollback conflicts: ${stagedConflicts.join(', ')}`, ref: STANDARD_REF })
+      emit()
+    }
+    try {
+      if (!dryRun) discardStagedThemes(stagedThemes)
+      for (const theme of prunable)
+        findings.push({
+          level: 'POLISH',
+          area: 'THEME-3',
+          msg: dryRun ? 'would prune empty theme directory (dry-run; not written)' : 'pruned empty theme directory',
+          ref: STANDARD_REF,
+          file: `docs/roadmap/${theme.theme}`
+        })
+    } catch (error) {
+      const conflicts = restoreStagedThemes(stagedThemes)
+      findings.push({
+        level: 'FAIL',
+        area: 'SAFE-1',
+        msg: `failed to finalize empty-theme pruning: ${(error as Error).message}${conflicts.length ? `; restore conflicts: ${conflicts.join(', ')}` : ''}`,
+        ref: STANDARD_REF
+      })
+    }
   } catch (result) {
     if (result === findings) return findings
     throw result

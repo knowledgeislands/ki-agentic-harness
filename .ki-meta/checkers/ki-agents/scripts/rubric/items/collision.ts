@@ -1,7 +1,8 @@
-import type { AgentsRubricContext } from '../contexts/agents.ts'
 import type { AuditOutcome } from '../../vendored/ki-skills/rubric.ts'
+import type { AgentsRubricContext } from '../contexts/agents.ts'
 import { triggerPhrases } from '../contexts/agents.ts'
 import { outcomes, result } from './common.ts'
+
 const COLLISION_ITEMS = [
   {
     code: 'COLL-1',

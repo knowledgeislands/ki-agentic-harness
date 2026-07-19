@@ -1,4 +1,4 @@
-import type { AuditOutcome, ConformOutcome, RubricItem, RubricOutcomes } from '../../vendored/ki-skills/rubric.ts'
+import type { AuditOutcome, RubricItem, RubricOutcomes } from '../../vendored/ki-skills/rubric.ts'
 import type { HomebrewTapContext } from '../contexts/homebrew-tap.ts'
 
 const SOURCE = ['standards.md'] as const

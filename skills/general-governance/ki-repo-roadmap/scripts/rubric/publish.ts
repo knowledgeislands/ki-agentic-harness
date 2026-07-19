@@ -4,7 +4,10 @@ import { type RubricDefinition, type RubricItem, rubricTypes } from '../vendored
 import { KI_REPO_ROADMAP_RUBRIC } from './items/index.ts'
 
 const publicationPath = fileURLToPath(new URL('../../references/rubric.md', import.meta.url))
-const classification = (item: RubricItem<never>): string => rubricTypes(item).map((type) => (type === 'MECHANICAL' ? 'M' : 'J')).join(' + ')
+const classification = (item: RubricItem<never>): string =>
+  rubricTypes(item)
+    .map((type) => (type === 'MECHANICAL' ? 'M' : 'J'))
+    .join(' + ')
 const renderItem = (item: RubricItem<never>): string =>
   `- **${item.code} [${classification(item)}] — ${item.title}** — ${item.description} (${item.sources.join(', ')})${item.judgment ? `\n  - _Review prompt:_ ${item.judgment.prompt}` : ''}`
 

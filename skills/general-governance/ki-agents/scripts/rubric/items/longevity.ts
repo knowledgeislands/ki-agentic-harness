@@ -1,4 +1,3 @@
-
 const LONGEVITY_ITEMS = [
   {
     code: 'LONG-1',

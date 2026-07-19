@@ -1,4 +1,3 @@
-
 const LANE_ITEMS = [
   {
     code: 'LANE-1',

@@ -2,6 +2,7 @@ import type { AgentsRubricContext } from '../contexts/agents.ts'
 import { stripCode } from '../contexts/agents.ts'
 import { forAgents } from './common.ts'
 import { DESCRIPTION_MAX } from './constants.ts'
+
 const DESCRIPTION_ITEMS = [
   {
     code: 'DESC-1',

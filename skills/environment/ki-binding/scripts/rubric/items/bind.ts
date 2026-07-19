@@ -1,4 +1,4 @@
-import type { RubricItem } from '../../vendored/ki-skills/rubric.ts'
+import type { AuditOutcome, RubricItem, RubricOutcomes } from '../../vendored/ki-skills/rubric.ts'
 import { type BindingRubricContext, RECOGNISED } from '../contexts/binding.ts'
 
 export const BIND_1: RubricItem<BindingRubricContext> = {
@@ -14,7 +14,7 @@ export const BIND_1: RubricItem<BindingRubricContext> = {
         if (sourceState.kind !== 'valid')
           return [{ status: 'NOT_APPLICABLE', message: 'The source could not be read, so surfaces were not compared.' }]
         const universe = new Set(sourceState.entries.flatMap((entry) => (entry.name ? [entry.name] : [])))
-        return surfaces.flatMap(({ surface, serverKeys }) => {
+        return surfaces.flatMap<AuditOutcome>(({ surface, serverKeys }): RubricOutcomes<AuditOutcome> => {
           if (serverKeys === null)
             return [
               {
@@ -57,7 +57,7 @@ export const BIND_1: RubricItem<BindingRubricContext> = {
                 ]
               : [])
           ]
-        }) as never
+        })
       }
     }
   }

@@ -1,7 +1,8 @@
-import type { AgentsRubricContext } from '../contexts/agents.ts'
 import type { AuditOutcome } from '../../vendored/ki-skills/rubric.ts'
+import type { AgentsRubricContext } from '../contexts/agents.ts'
 import { forAgents, outcomes, result } from './common.ts'
 import { NAME_MAX, RESERVED_NAMES } from './constants.ts'
+
 const NAME_ITEMS = [
   {
     code: 'NAME-1',

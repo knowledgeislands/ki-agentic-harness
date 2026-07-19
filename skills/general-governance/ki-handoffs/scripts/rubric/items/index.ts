@@ -1,6 +1,6 @@
-import { HAND } from './hand.ts'
 import { defineRubricFamily, type RubricDefinition } from '../../vendored/ki-skills/rubric.ts'
 import type { HandoffsRubricContext } from '../contexts/handoffs.ts'
+import { HAND } from './hand.ts'
 
 const RUBRIC_FAMILIES = [
   defineRubricFamily({

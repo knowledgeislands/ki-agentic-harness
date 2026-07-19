@@ -407,134 +407,146 @@ export const inspectRoadmap = (target: string): Finding[] => {
   const rootRoadmap = join(root, 'ROADMAP.md')
   const thematicDir = join(root, 'docs', 'roadmap')
   try {
-if (!existsSync(root) || !lstatSync(root).isDirectory()) {
-  add('FAIL', 'PROFILE-1', `repository directory does not exist: ${target}`, STANDARD_REF)
-  emit()
-}
-if (isKb(root)) {
-  const artifacts = [rootRoadmap, thematicDir].filter(existsSync).map((path) => relative(root, path))
-  if (artifacts.length)
-    add('FAIL', 'SCOPE-1', `KB repositories use ki-kb-streams; remove repository-roadmap artifacts: ${artifacts.join(', ')}`, STANDARD_REF)
-  else add('NA', 'SCOPE-1', 'KB repository: streams and proposal checklists are governed by ki-kb-streams', STANDARD_REF)
-  emit()
-}
-
-if (existsSync(join(root, 'docs', 'plans'))) {
-  add('FAIL', 'PROFILE-1', 'legacy docs/plans is outside both profiles; migrate it into thematic roadmap plans', STANDARD_REF, 'docs/plans')
-}
-
-if (!existsSync(thematicDir)) {
-  if (!existsSync(rootRoadmap)) add('FAIL', 'PROFILE-1', 'non-KB repository has no root ROADMAP.md', STANDARD_REF, 'ROADMAP.md')
-  else {
-    parseRoadmap(rootRoadmap, 'ROADMAP.md')
-    add('INFO', 'PROFILE-1', 'simple profile detected', STANDARD_REF)
-  }
-} else {
-  if (lstatSync(thematicDir).isSymbolicLink() || !lstatSync(thematicDir).isDirectory()) {
-    add('FAIL', 'SAFE-1', 'docs/roadmap must be a real directory', STANDARD_REF, 'docs/roadmap')
-    emit()
-  }
-  const { themes, items, plans } = discoverThematic()
-  const locators = new Map<string, Item>()
-  for (const item of items) {
-    const locator = `${item.theme}/${item.slug}`
-    const previous = locators.get(locator)
-    if (previous) add('FAIL', 'ITEM-1', `qualified locator '${locator}' duplicates an item in ${previous.file}`, STANDARD_REF, item.file)
-    else locators.set(locator, item)
-  }
-
-  const refsSeen = new Map<string, string>()
-  const byRef = new Map<string, Plan>()
-  const planLocators = new Map<string, string>()
-  for (const plan of plans) {
-    const reference = planRef(plan)
-    if (refsSeen.has(reference))
-      add('FAIL', 'PLAN-1', `plan reference ${reference} is already used by ${refsSeen.get(reference)}`, FORMAT_REF, plan.file)
-    else {
-      refsSeen.set(reference, plan.file)
-      byRef.set(reference, plan)
+    if (!existsSync(root) || !lstatSync(root).isDirectory()) {
+      add('FAIL', 'PROFILE-1', `repository directory does not exist: ${target}`, STANDARD_REF)
+      emit()
     }
-    const item = locators.get(plan.fm.roadmap)
-    if (planLocators.has(plan.fm.roadmap)) {
+    if (isKb(root)) {
+      const artifacts = [rootRoadmap, thematicDir].filter(existsSync).map((path) => relative(root, path))
+      if (artifacts.length)
+        add(
+          'FAIL',
+          'SCOPE-1',
+          `KB repositories use ki-kb-streams; remove repository-roadmap artifacts: ${artifacts.join(', ')}`,
+          STANDARD_REF
+        )
+      else add('NA', 'SCOPE-1', 'KB repository: streams and proposal checklists are governed by ki-kb-streams', STANDARD_REF)
+      emit()
+    }
+
+    if (existsSync(join(root, 'docs', 'plans'))) {
       add(
         'FAIL',
-        'PLAN-2',
-        `roadmap locator '${plan.fm.roadmap}' already has plan ${planLocators.get(plan.fm.roadmap)}`,
-        FORMAT_REF,
-        plan.file
+        'PROFILE-1',
+        'legacy docs/plans is outside both profiles; migrate it into thematic roadmap plans',
+        STANDARD_REF,
+        'docs/plans'
       )
-    } else planLocators.set(plan.fm.roadmap, reference)
-    if (!/^[-a-z0-9]+\/[-a-z0-9]+$/.test(plan.fm.roadmap ?? ''))
-      add('FAIL', 'PLAN-2', 'roadmap must be a qualified <theme>/<item-slug> locator', FORMAT_REF, plan.file)
-    else if (!item) add('FAIL', 'PLAN-2', `roadmap locator '${plan.fm.roadmap}' does not resolve`, FORMAT_REF, plan.file)
-    else {
-      if (item.theme !== plan.theme)
-        add('FAIL', 'PLAN-2', `locator theme '${item.theme}' does not match plan theme '${plan.theme}'`, FORMAT_REF, plan.file)
-      if (!NEAR.has(item.horizon))
-        add('FAIL', 'PLAN-2', `locator resolves to ${item.horizon}; plans exist only in Blocking or Next`, FORMAT_REF, plan.file)
     }
-  }
-  for (const plan of plans) {
-    const reference = planRef(plan)
-    for (const dependency of [...plan.blocks, ...plan.blockedBy]) {
-      if (!PLAN_ID_RE.test(dependency))
-        add('FAIL', 'PLAN-3', `dependency '${dependency}' is not a <THEME>-<NNN> plan identifier`, FORMAT_REF, plan.file)
-      else if (!byRef.has(dependency)) add('FAIL', 'PLAN-3', `dependency ${dependency} does not exist`, FORMAT_REF, plan.file)
-    }
-    for (const blocked of plan.blocks) {
-      const other = byRef.get(blocked)
-      if (other && !other.blockedBy.includes(reference))
-        add('FAIL', 'PLAN-3', `blocks ${blocked}, but its blocked-by omits ${reference}`, FORMAT_REF, plan.file)
-    }
-    for (const blocker of plan.blockedBy) {
-      const other = byRef.get(blocker)
-      if (other && !other.blocks.includes(reference))
-        add('FAIL', 'PLAN-3', `blocked-by ${blocker}, but its blocks omits ${reference}`, FORMAT_REF, plan.file)
-      if (plan.fm.status === 'in-progress' && other?.fm.status !== 'done') {
-        add('FAIL', 'PLAN-3', `in-progress plan still has non-done blocker ${blocker}`, FORMAT_REF, plan.file)
+
+    if (!existsSync(thematicDir)) {
+      if (!existsSync(rootRoadmap)) add('FAIL', 'PROFILE-1', 'non-KB repository has no root ROADMAP.md', STANDARD_REF, 'ROADMAP.md')
+      else {
+        parseRoadmap(rootRoadmap, 'ROADMAP.md')
+        add('INFO', 'PROFILE-1', 'simple profile detected', STANDARD_REF)
       }
-    }
-  }
-  const state = new Map(plans.map((plan) => [planRef(plan), 0]))
-  let cycle = false
-  const visit = (reference: string, stack: string[]): void => {
-    state.set(reference, 1)
-    for (const blocker of byRef.get(reference)?.blockedBy ?? []) {
-      if (!byRef.has(blocker)) continue
-      if (state.get(blocker) === 1 && !cycle) {
-        add('FAIL', 'PLAN-3', `dependency cycle: ${[...stack, reference, blocker].join(' → ')}`, FORMAT_REF)
-        cycle = true
-      } else if (state.get(blocker) === 0) visit(blocker, [...stack, reference])
-    }
-    state.set(reference, 2)
-  }
-  for (const plan of plans) {
-    const reference = planRef(plan)
-    if (state.get(reference) === 0) visit(reference, [])
-  }
+    } else {
+      if (lstatSync(thematicDir).isSymbolicLink() || !lstatSync(thematicDir).isDirectory()) {
+        add('FAIL', 'SAFE-1', 'docs/roadmap must be a real directory', STANDARD_REF, 'docs/roadmap')
+        emit()
+      }
+      const { themes, items, plans } = discoverThematic()
+      const locators = new Map<string, Item>()
+      for (const item of items) {
+        const locator = `${item.theme}/${item.slug}`
+        const previous = locators.get(locator)
+        if (previous)
+          add('FAIL', 'ITEM-1', `qualified locator '${locator}' duplicates an item in ${previous.file}`, STANDARD_REF, item.file)
+        else locators.set(locator, item)
+      }
 
-  if (existsSync(rootRoadmap) && lstatSync(rootRoadmap).isSymbolicLink()) {
-    add('FAIL', 'SAFE-1', 'generated portfolio must not be a symlink', STANDARD_REF, 'ROADMAP.md')
-  } else if (!existsSync(rootRoadmap) || readFileSync(rootRoadmap, 'utf8') !== projection(items)) {
-    add('FAIL', 'PROJ-1', 'generated portfolio is missing or drifted; run CONFORM', STANDARD_REF, 'ROADMAP.md')
-  }
-  const readme = join(thematicDir, 'README.md')
-  if (existsSync(readme) && lstatSync(readme).isSymbolicLink()) {
-    add('FAIL', 'SAFE-1', 'generated index must not be a symlink', STANDARD_REF, 'docs/roadmap/README.md')
-  } else if (!existsSync(readme) || readFileSync(readme, 'utf8') !== planIndex(themes, plans)) {
-    add('FAIL', 'INDEX-1', 'generated theme/plan index is missing or drifted; run CONFORM', STANDARD_REF, 'docs/roadmap/README.md')
-  }
-  add(
-    'INFO',
-    'PROFILE-1',
-    `thematic profile detected: ${themes.length} theme(s), ${items.length} item(s), ${plans.length} plan(s)`,
-    STANDARD_REF
-  )
-}
+      const refsSeen = new Map<string, string>()
+      const byRef = new Map<string, Plan>()
+      const planLocators = new Map<string, string>()
+      for (const plan of plans) {
+        const reference = planRef(plan)
+        if (refsSeen.has(reference))
+          add('FAIL', 'PLAN-1', `plan reference ${reference} is already used by ${refsSeen.get(reference)}`, FORMAT_REF, plan.file)
+        else {
+          refsSeen.set(reference, plan.file)
+          byRef.set(reference, plan)
+        }
+        const item = locators.get(plan.fm.roadmap)
+        if (planLocators.has(plan.fm.roadmap)) {
+          add(
+            'FAIL',
+            'PLAN-2',
+            `roadmap locator '${plan.fm.roadmap}' already has plan ${planLocators.get(plan.fm.roadmap)}`,
+            FORMAT_REF,
+            plan.file
+          )
+        } else planLocators.set(plan.fm.roadmap, reference)
+        if (!/^[-a-z0-9]+\/[-a-z0-9]+$/.test(plan.fm.roadmap ?? ''))
+          add('FAIL', 'PLAN-2', 'roadmap must be a qualified <theme>/<item-slug> locator', FORMAT_REF, plan.file)
+        else if (!item) add('FAIL', 'PLAN-2', `roadmap locator '${plan.fm.roadmap}' does not resolve`, FORMAT_REF, plan.file)
+        else {
+          if (item.theme !== plan.theme)
+            add('FAIL', 'PLAN-2', `locator theme '${item.theme}' does not match plan theme '${plan.theme}'`, FORMAT_REF, plan.file)
+          if (!NEAR.has(item.horizon))
+            add('FAIL', 'PLAN-2', `locator resolves to ${item.horizon}; plans exist only in Blocking or Next`, FORMAT_REF, plan.file)
+        }
+      }
+      for (const plan of plans) {
+        const reference = planRef(plan)
+        for (const dependency of [...plan.blocks, ...plan.blockedBy]) {
+          if (!PLAN_ID_RE.test(dependency))
+            add('FAIL', 'PLAN-3', `dependency '${dependency}' is not a <THEME>-<NNN> plan identifier`, FORMAT_REF, plan.file)
+          else if (!byRef.has(dependency)) add('FAIL', 'PLAN-3', `dependency ${dependency} does not exist`, FORMAT_REF, plan.file)
+        }
+        for (const blocked of plan.blocks) {
+          const other = byRef.get(blocked)
+          if (other && !other.blockedBy.includes(reference))
+            add('FAIL', 'PLAN-3', `blocks ${blocked}, but its blocked-by omits ${reference}`, FORMAT_REF, plan.file)
+        }
+        for (const blocker of plan.blockedBy) {
+          const other = byRef.get(blocker)
+          if (other && !other.blocks.includes(reference))
+            add('FAIL', 'PLAN-3', `blocked-by ${blocker}, but its blocks omits ${reference}`, FORMAT_REF, plan.file)
+          if (plan.fm.status === 'in-progress' && other?.fm.status !== 'done') {
+            add('FAIL', 'PLAN-3', `in-progress plan still has non-done blocker ${blocker}`, FORMAT_REF, plan.file)
+          }
+        }
+      }
+      const state = new Map(plans.map((plan) => [planRef(plan), 0]))
+      let cycle = false
+      const visit = (reference: string, stack: string[]): void => {
+        state.set(reference, 1)
+        for (const blocker of byRef.get(reference)?.blockedBy ?? []) {
+          if (!byRef.has(blocker)) continue
+          if (state.get(blocker) === 1 && !cycle) {
+            add('FAIL', 'PLAN-3', `dependency cycle: ${[...stack, reference, blocker].join(' → ')}`, FORMAT_REF)
+            cycle = true
+          } else if (state.get(blocker) === 0) visit(blocker, [...stack, reference])
+        }
+        state.set(reference, 2)
+      }
+      for (const plan of plans) {
+        const reference = planRef(plan)
+        if (state.get(reference) === 0) visit(reference, [])
+      }
 
-if (!findings.some((finding) => ['FAIL', 'WARN', 'POLISH'].includes(finding.level))) {
-  add('PASS', 'PROFILE-1', 'repository-roadmap mechanics conform', STANDARD_REF)
-}
+      if (existsSync(rootRoadmap) && lstatSync(rootRoadmap).isSymbolicLink()) {
+        add('FAIL', 'SAFE-1', 'generated portfolio must not be a symlink', STANDARD_REF, 'ROADMAP.md')
+      } else if (!existsSync(rootRoadmap) || readFileSync(rootRoadmap, 'utf8') !== projection(items)) {
+        add('FAIL', 'PROJ-1', 'generated portfolio is missing or drifted; run CONFORM', STANDARD_REF, 'ROADMAP.md')
+      }
+      const readme = join(thematicDir, 'README.md')
+      if (existsSync(readme) && lstatSync(readme).isSymbolicLink()) {
+        add('FAIL', 'SAFE-1', 'generated index must not be a symlink', STANDARD_REF, 'docs/roadmap/README.md')
+      } else if (!existsSync(readme) || readFileSync(readme, 'utf8') !== planIndex(themes, plans)) {
+        add('FAIL', 'INDEX-1', 'generated theme/plan index is missing or drifted; run CONFORM', STANDARD_REF, 'docs/roadmap/README.md')
+      }
+      add(
+        'INFO',
+        'PROFILE-1',
+        `thematic profile detected: ${themes.length} theme(s), ${items.length} item(s), ${plans.length} plan(s)`,
+        STANDARD_REF
+      )
+    }
+
+    if (!findings.some((finding) => ['FAIL', 'WARN', 'POLISH'].includes(finding.level))) {
+      add('PASS', 'PROFILE-1', 'repository-roadmap mechanics conform', STANDARD_REF)
+    }
   } catch (result) {
     if (result === findings) return findings
     throw result
@@ -542,4 +554,6 @@ if (!findings.some((finding) => ['FAIL', 'WARN', 'POLISH'].includes(finding.leve
   return findings
 }
 
-function emit(): never { throw findings }
+function emit(): never {
+  throw findings
+}

@@ -410,11 +410,19 @@ export const collectAuditEvidence = (repo: string): readonly EngineeringEvidence
     add('NOT_APPLICABLE', 'DEPS-1', 'bun outdated unavailable — upgrade Bun to check dependency freshness', STD)
   }
 
-  // ── core: the `bun test` trap ─────────────────────────────────────────────────
-  const bunTest = Object.entries(scripts).filter(([, v]) => /\bbun test\b/.test(v))
+  // ── core: the `bun test` bypass trap ──────────────────────────────────────────
+  // The governed bare `test` entrypoint may itself choose Bun's runner. Every other
+  // script must delegate through `bun run test`, rather than bypassing that policy.
+  const bunTest = Object.entries(scripts).filter(([name, value]) => name !== 'test' && /\bbun test\b/.test(value))
   bunTest.length
-    ? add('FAIL', 'SCR-6', `uses "bun test" (Bun's runner, not vitest) in: ${bunTest.map(([k]) => k).join(', ')}`, STD, 'package.json')
-    : add('PASS', 'SCR-6', 'no "bun test" anywhere', STD, 'package.json')
+    ? add(
+        'FAIL',
+        'SCR-6',
+        `bypasses the governed test entrypoint with "bun test" in: ${bunTest.map(([name]) => name).join(', ')}`,
+        STD,
+        'package.json'
+      )
+    : add('PASS', 'SCR-6', 'no non-test script bypasses the governed test entrypoint', STD, 'package.json')
 
   // ── core: tsconfig.json (universal invariants only; richer base is profiled) ──
   // tsconfig may carry // comments (the website's does), so check by regex on text,

@@ -7,9 +7,21 @@ export const audit = (code: string, context: RoadmapContext): RubricOutcomes<Aud
   outcomes(context.audit.filter((finding) => finding.area === code).map(auditOutcome), { status: 'PASS', message: 'No violations found.' })
 
 export const conform = (code: string, context: RoadmapContext): RubricOutcomes<ConformOutcome> =>
-  outcomes(context.conform().filter((finding) => finding.area === code).map(conformOutcome), { status: 'PASS', message: 'No changes required.' })
+  outcomes(
+    context
+      .conform()
+      .filter((finding) => finding.area === code)
+      .map(conformOutcome),
+    { status: 'PASS', message: 'No changes required.' }
+  )
 
-export const mechanical = (code: string, title: string, description: string, level: 'FAIL' | 'WARN' = 'FAIL', conforming = false): RubricItem<RoadmapContext> => ({
+export const mechanical = (
+  code: string,
+  title: string,
+  description: string,
+  level: 'FAIL' | 'WARN' = 'FAIL',
+  conforming = false
+): RubricItem<RoadmapContext> => ({
   code,
   title,
   description,

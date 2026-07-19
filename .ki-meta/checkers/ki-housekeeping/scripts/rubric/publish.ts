@@ -4,9 +4,15 @@ import { type RubricDefinition, type RubricItem, rubricTypes } from '../vendored
 import { KI_HOUSEKEEPING_RUBRIC } from './items/index.ts'
 
 const publicationPath = fileURLToPath(new URL('../../references/rubric.md', import.meta.url))
-const classification = (item: RubricItem<never>): string => rubricTypes(item).map((type) => type === 'MECHANICAL' ? (item.mechanical?.heuristic ? 'M-heuristic' : 'M') : 'J').join(' + ')
-const renderItem = (item: RubricItem<never>): string => `- **${item.code} [${classification(item)}] — ${item.title}** — ${item.description} (${item.sources.join(', ')})${item.judgment ? `\n  - _Review prompt:_ ${item.judgment.prompt}` : ''}`
-export const renderRubric = <RootContext>(definition: RubricDefinition<RootContext>): string => `<!-- GENERATED FILE: edit scripts/rubric/items/, not this publication. -->
+const classification = (item: RubricItem<never>): string =>
+  rubricTypes(item)
+    .map((type) => (type === 'MECHANICAL' ? (item.mechanical?.heuristic ? 'M-heuristic' : 'M') : 'J'))
+    .join(' + ')
+const renderItem = (item: RubricItem<never>): string =>
+  `- **${item.code} [${classification(item)}] — ${item.title}** — ${item.description} (${item.sources.join(', ')})${item.judgment ? `\n  - _Review prompt:_ ${item.judgment.prompt}` : ''}`
+export const renderRubric = <RootContext>(
+  definition: RubricDefinition<RootContext>
+): string => `<!-- GENERATED FILE: edit scripts/rubric/items/, not this publication. -->
 
 # Generated rubric — ${definition.concern}
 
