@@ -11,14 +11,6 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-### [FND-001](foundation-tooling/plans/FND-001-normalise-skill-packaging-after-checker-rollout.md)
-
-- **Title:** Normalise skill packaging after the checker rollout
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/normalise-skill-packaging-after-the-checker-rollout`
-- **Status:** in-progress
-- **Blocks:** —
-
 ### [FND-002](foundation-tooling/plans/FND-002-show-progress-during-checker-execution.md)
 
 - **Title:** Show progress during checker execution

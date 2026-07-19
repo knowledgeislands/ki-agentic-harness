@@ -16,18 +16,6 @@ Make long-running individual and aggregate AUDIT / CONFORM runs visibly advance 
 
 Add a source-owned `ki-bootstrap` CLEAN operation that removes repository-generated harness state without needing a working vendored runner. Remove `.ki-meta/` and runtime skill copies only when their generated marker proves harness ownership. Preserve `.ki-config.toml`, authored or explicitly linked skills, repository agents, canonical `scripts/vendored/` source dependencies, and any unmarked `ki-*` path; never infer ownership from a name prefix alone. Make the operation safe to repeat, dry-runnable, and suitable for returning a repository to the state immediately before EDUCATE publication.
 
-### Normalise skill packaging after the checker rollout
-
-After the structured checker rollout is stable, apply the accumulated mechanical packaging cleanups in one current-state migration with no compatibility aliases or dual paths:
-
-- Reclassify `ki-skills` from `skills/general-governance/` to `skills/keystone/`: it is the self-governing root that defines and verifies the shared rubric, checker, and reporter contract rather than an optional cross-cutting instrument. Sweep source paths, tests, package commands, documentation, diagrams, and generated skill-map references without changing the rule that only `ki-bootstrap` is installed globally.
-- Move unpublished skill-private modules—currently e.g. in `ki-bootstrap` and `ki-repo`, from `scripts/lib` to `scripts/internal/`, then update their imports and focused tests.
-- Move any vendored modules from `scripts/lib/` to `scripts/shared/` for modules explicitly published for cross-skill vendoring.
-- Flag any remaining modules in `scripts/lib` as a packaging error for discussion.
-- Rename **all of** the Knowledge Islands-specific skill frontmatter keys: e.g. `depends-on` → `ki-depends-on`, `vendors` → `ki-vendors`, and `checker-dependencies` → `ki-checker-dependencies` across canonical skills, validators, dependency resolution, bootstrap publication, generated footprints, documentation, fixtures, and installed copies.
-
-Re-bootstrap and conform every governed repository after the source migration. Add further simple packaging findings to this item during rollout review; scope any broader contract redesign separately.
-
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
