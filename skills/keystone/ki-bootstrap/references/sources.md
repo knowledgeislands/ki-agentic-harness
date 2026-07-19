@@ -9,7 +9,8 @@ Provenance only: the record of _what changed_ lives in git (the REFRESH commit),
 | Tag  | Source                          | Governs                                                                     | Last reviewed |
 | ---- | ------------------------------- | --------------------------------------------------------------------------- | ------------- |
 | [KR] | `ki-repo` skill                 | The `.ki-config.toml` contract and the coverage cascade †                   | 2026-07-04    |
-| [KE] | `ki-engineering` skill          | The enforcement framework ‡; `skills:*` scripts                             | 2026-07-04    |
+| [KS] | `ki-skills` skill               | The enforcement framework ‡                                                 | 2026-07-04    |
+| [KE] | `ki-engineering` skill          | `skills:*` scripts                                                          | 2026-07-04    |
 | [KH] | `ki-harness` skill              | The five-part container and the skill-install convention §                  | 2026-07-04    |
 | [AH] | [README](../../../../README.md) | The reference implementation; the authoring hub, linked to its own coverage | 2026-07-04    |
 
@@ -32,7 +33,7 @@ Provenance only: the record of _what changed_ lives in git (the REFRESH commit),
 REFRESH last run **2026-07-07** — confirmed [CS]: an installed skill's `SKILL.md` with `argument-hint` already produces native `/ki-bootstrap audit|conform|refresh [path]` invocation; no wrapper command needed. [CP]/[CM] reviewed as the packaging contract `ki-binding` projects onto (see [sources.md](../../../environment/ki-binding/references/sources.md) for that skill's own review).
 
 - [KR] `ki-repo` — Coverage cascade: every repo declares its foundations (`[ki-repo]` bedrock marker + `[ki-authoring]`) explicitly as `[ki-*]` tables; there is no injected/cascade-exempt baseline (ADR-KI-HARNESS-007). See `config-standards.md` §44/§52.
-- [KE] `ki-engineering` — **confirmed.** enforcement-framework §2 severity ladder and checker contract unchanged.
+- [KS] `ki-skills` — **confirmed.** enforcement-framework §2 severity ladder and checker contract unchanged.
 - [KH] `ki-harness` — **confirmed.** `ki:skills:copy:project` is the normal portable project publication path. `ki-repo link-repository-commands --development` is the explicit local-author path; `/harness/install` installs the global keystone and process skills as regular copies. The harness publishes only its declared coverage like any other repo.
 - [AH] README — **confirmed.** Keystone / global-install framing intact; skill count grew to twenty (generic `[ki-*]` model needs no edit).
 

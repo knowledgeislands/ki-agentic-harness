@@ -33,7 +33,7 @@ Modes: **AUDIT · CONFORM · EDUCATE · REFRESH** (named, alphabetical). Invoked
 3. **Judge the prose the script can't.** Walk the [J]-tagged criteria in [the rubric](references/rubric.md):
    - **CLAUDE.md coverage** — does it open with a what-the-harness-is paragraph covering all five parts? Is the skill map present (if skills exist) and does it reflect current reality? Are working conventions documented for each part? Are the key `bun run *` commands listed?
    - **Freshness** — do the skill count, shelf statuses, and command names in `CLAUDE.md` still match the actual repo state?
-   - **ROADMAP.md discipline** — does it show only open work? If the repository uses the thematic profile, is the root an exact generated portfolio rather than a second home for item prose? Are continuous practices absent (they belong in the `ki-engineering` enforcement framework, not the roadmap)?
+   - **ROADMAP.md discipline** — does it show only open work? If the repository uses the thematic profile, is the root an exact generated portfolio rather than a second home for item prose? Are continuous practices absent (they belong in `ki-skills`' enforcement framework, not the roadmap)?
 4. **Report** on the unified severity ladder. A missing required file or table is a FAIL; stale content that is structurally present is a WARN; minor freshness drift (wrong count, outdated command names) is a POLISH.
 
 ### Mode CONFORM — bring a harness into line
@@ -47,7 +47,7 @@ Modes: **AUDIT · CONFORM · EDUCATE · REFRESH** (named, alphabetical). Invoked
 1. **Name the harness.** The repository name is the harness identity; agree on it before creating.
 2. **Scaffold the five parts.** Create `skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`, each with a `README.md` describing what it holds — marking any part an empty shelf if it starts unpopulated.
 3. **Write `CLAUDE.md`** using [the standard](references/standards.md) §CLAUDE.md required sections as the template: what-the-harness-is paragraph, five-part directory table with current status, working conventions per part, key `bun run *` commands.
-4. **Add `ROADMAP.md`.** Start with the known open work; mark items open-only. Note: continuous practices are not roadmap items — they belong in the `ki-engineering` enforcement framework or `CLAUDE.md`.
+4. **Add `ROADMAP.md`.** Start with the known open work; mark items open-only. Note: continuous practices are not roadmap items — they belong in `ki-skills`' enforcement framework or `CLAUDE.md`.
 5. **Scaffold `package.json`** with the harness-specific required scripts: `ki:skills:copy:project` and `ki:skills:audit`. The normal copy publisher belongs to `ki-bootstrap`; the optional `ki:repo:link-commands` development script composes `ki-repo` and is never a user-install mechanism. The cross-skill operational keys point at the generated tools `ki-bootstrap` vendors into `.ki-meta/bin/` for a harness-shaped target — `ki:skills:graph` (`bun .ki-meta/bin/skill-graph.ts --tree`) and `ki:skills:help` (`bun .ki-meta/bin/skill-help.ts`). The global user installation is `/harness/install`, not a package script. Compose `ki-engineering` and `ki-authoring` for the aggregate entrypoints and toolchain passes; this skill does not duplicate their checks.
 6. **Add `.ki-config.toml`** with at minimum `[ki-repo]`, `[ki-engineering]`, and `[ki-harness]`. Add `[ki-skills]` once `skills/` is populated.
 7. **Self-audit.** Run Mode AUDIT on the new harness before handing it off.
