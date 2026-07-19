@@ -34,20 +34,19 @@ function check(label: string, cond: boolean): void {
 
 /**
  * Build a throwaway repo whose `.ki-config.toml` holds the given `[ki-*]` tables,
- * optionally declaring `target_runtimes` (defaults to unset → the ["claude-code"]
- * fallback in package-scripts.ts's `targetRuntimes`).
+ * declaring `supported_runtimes`, which is required by the publisher.
  */
-function fixture(tables: string[], runtimes?: string[]): string {
+function fixture(tables: string[], runtimes: string[] = ['claude-code', 'codex']): string {
   // realpath: macOS aliases /tmp → /private/tmp (and /var → /private/var), so a raw
   // mkdtemp path has a different depth-to-root than its resolved one — since the
   // symlinks this creates are relative, that mismatch would make them dangle.
   const dir = realpathSync(mkdtempSync(join(tmpdir(), 'ki-boot-linktest-')))
-  const runtimeTable = runtimes ? `[ki-repo]\ntarget_runtimes = [${runtimes.map((r) => `"${r}"`).join(', ')}]\n` : ''
+  const runtimeTable = `[ki-repo]\nsupported_runtimes = [${runtimes.map((r) => `"${r}"`).join(', ')}]\n`
   const dependencies: Record<string, string[]> = {
     'ki-kb': ['ki-kb-activities', 'ki-kb-live-artifacts', 'ki-kb-streams'],
     'ki-repo': ['ki-authoring']
   }
-  const declared = [...new Set([...tables, ...(runtimes ? ['ki-repo'] : [])].flatMap((table) => [table, ...(dependencies[table] ?? [])]))]
+  const declared = [...new Set([...tables, 'ki-repo'].flatMap((table) => [table, ...(dependencies[table] ?? [])]))]
   const nonRuntimeTables = declared.filter((table) => table !== 'ki-repo')
   writeFileSync(join(dir, '.ki-config.toml'), `${runtimeTable}${nonRuntimeTables.map((table) => `[${table}]`).join('\n')}\n`)
   return dir
@@ -108,7 +107,7 @@ try {
 // ── Missing dependency: a real skill's dependency must be an explicit table ──
 const missingDependency = fixture([])
 try {
-  writeFileSync(join(missingDependency, '.ki-config.toml'), '[ki-kb]\n')
+  writeFileSync(join(missingDependency, '.ki-config.toml'), '[ki-repo]\nsupported_runtimes = ["claude-code", "codex"]\n[ki-kb]\n')
   const before = readFileSync(join(missingDependency, '.ki-config.toml'), 'utf8')
   const { code, out } = runLink(missingDependency)
   check('missing dependency → non-zero exit', code !== 0)
@@ -185,7 +184,7 @@ const quotedRuntime = fixture([])
 try {
   writeFileSync(
     join(quotedRuntime, '.ki-config.toml'),
-    '["ki-repo"]\ntarget_runtimes = ["codex"]\n["ki-authoring"]\n["ki-kb"]\n["ki-kb-activities"]\n["ki-kb-live-artifacts"]\n["ki-kb-streams"]\n'
+    '["ki-repo"]\nsupported_runtimes = ["codex"]\n["ki-authoring"]\n["ki-kb"]\n["ki-kb-activities"]\n["ki-kb-live-artifacts"]\n["ki-kb-streams"]\n'
   )
   const { code } = runLink(quotedRuntime)
   check('quoted repo/runtime table → exit 0', code === 0)
@@ -199,12 +198,12 @@ const multilineRuntime = fixture([])
 try {
   writeFileSync(
     join(multilineRuntime, '.ki-config.toml'),
-    '[ki-kb]\nnote = """\ntarget_runtimes = ["codex"]\n"""\n[ki-kb-activities]\n[ki-kb-live-artifacts]\n[ki-kb-streams]\n'
+    '[ki-repo]\n[ki-kb]\nnote = """\nsupported_runtimes = ["codex"]\n"""\n[ki-authoring]\n[ki-kb-activities]\n[ki-kb-live-artifacts]\n[ki-kb-streams]\n'
   )
   const { code } = runLink(multilineRuntime)
-  check('multiline runtime lookalike → exit 0', code === 0)
-  check('multiline runtime lookalike → ignored in favour of default', existsSync(join(multilineRuntime, '.claude', 'skills', 'ki-kb')))
-  check('multiline runtime lookalike → does not select codex path', !existsSync(join(multilineRuntime, '.agents', 'skills')))
+  check('multiline runtime lookalike → rejects missing declaration', code !== 0)
+  check('multiline runtime lookalike → does not infer a Claude path', !existsSync(join(multilineRuntime, '.claude', 'skills', 'ki-kb')))
+  check('multiline runtime lookalike → does not infer a Codex path', !existsSync(join(multilineRuntime, '.agents', 'skills')))
 } finally {
   rmSync(multilineRuntime, { recursive: true, force: true })
 }

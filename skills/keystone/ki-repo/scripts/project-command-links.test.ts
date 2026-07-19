@@ -44,7 +44,7 @@ function fixture(runtimes = ['claude-code']): string {
     join(root, '.ki-config.toml'),
     `${tables
       .map((table) =>
-        table === 'ki-repo' ? `[ki-repo]\ntarget_runtimes = [${runtimes.map((runtime) => `"${runtime}"`).join(', ')}]` : `[${table}]`
+        table === 'ki-repo' ? `[ki-repo]\nsupported_runtimes = [${runtimes.map((runtime) => `"${runtime}"`).join(', ')}]` : `[${table}]`
       )
       .join('\n\n')}\n`
   )

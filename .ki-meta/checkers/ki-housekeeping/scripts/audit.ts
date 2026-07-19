@@ -115,7 +115,7 @@ function resolveMemoryDir(repoArg: string | undefined): string {
   return join(homedir(), '.claude', 'projects', slug, 'memory')
 }
 
-function declaredTargetRuntimes(repoRoot: string): string[] | null {
+function declaredSupportedRuntimes(repoRoot: string): string[] | null {
   let config: string
   try {
     config = readFileSync(join(repoRoot, '.ki-config.toml'), 'utf8')
@@ -123,16 +123,16 @@ function declaredTargetRuntimes(repoRoot: string): string[] | null {
     return null
   }
 
-  const match = config.match(/^target_runtimes\s*=\s*\[([^\]]*)\]/m)
-  if (!match) return ['claude-code']
+  const match = config.match(/^supported_runtimes\s*=\s*\[([^\]]*)\]/m)
+  if (!match) return null
   const runtimes = [...match[1].matchAll(/["']([^"']+)["']/g)].map((entry) => entry[1])
-  return runtimes.length > 0 ? runtimes : ['claude-code']
+  return runtimes.length > 0 ? runtimes : null
 }
 
 async function auditKiSelf(repoRoot: string, add: (id: string, severity: Sev, file: string, message: string) => void): Promise<void> {
-  const runtimes = declaredTargetRuntimes(repoRoot)
+  const runtimes = declaredSupportedRuntimes(repoRoot)
   if (!runtimes) {
-    add('SELF-1', Sev.NA, '.ki-config.toml', 'no governed-repository config — repo-local ki-self companion is not applicable')
+    add('SELF-1', Sev.NA, '.ki-config.toml', 'no declared supported_runtimes — ki-repo owns the required runtime-support contract')
     return
   }
 

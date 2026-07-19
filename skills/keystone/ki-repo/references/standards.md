@@ -38,7 +38,7 @@ Every repo carries these at the root. Presence is checked **on the default branc
 
 `ROADMAP.md` is **expected but not required** — a warn, not a fail: most repos carry one, but a base that keeps its forward view elsewhere (a KB base's `Streams/Future`) may omit it.
 
-**Root orientation for a multi-runtime repo.** When a repo's declared [`target_runtimes`](config-standards.md#table-per-skill) includes a runtime other than `claude-code` (e.g. `codex`), the repo's orientation should live in a literal root `AGENTS.md` — not an `@`-import index, since a non-Claude-Code runtime can't resolve that syntax — with `CLAUDE.md` `@AGENTS.md`-importing it and staying a thin, Claude-only appendix. A repo whose `target_runtimes` is absent or `["claude-code"]` only has no reason to split: `CLAUDE.md` alone, with its own topic-file imports, is sufficient.
+**Root orientation for a multi-runtime repo.** When a repo's declared [`supported_runtimes`](config-standards.md#table-per-skill) includes a runtime other than `claude-code` (e.g. `codex`), the repo's orientation should live in a literal root `AGENTS.md` — not an `@`-import index, since a non-Claude-Code runtime can't resolve that syntax — with `CLAUDE.md` `@AGENTS.md`-importing it and staying a thin, Claude-only appendix. A repo whose `supported_runtimes` is `["claude-code"]` only has no reason to split: `CLAUDE.md` alone, with its own topic-file imports, is sufficient.
 
 ### `.ki-meta/` — the working-artifacts area
 

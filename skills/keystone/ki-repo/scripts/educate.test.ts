@@ -111,7 +111,7 @@ function auditFindings(output: string): Array<{ code?: string; level?: string; m
     .filter((event) => event.record === 'finding')
 }
 
-const incompleteCapability = fixture('[ki-repo]\n[ki-authoring]\n')
+const incompleteCapability = fixture('[ki-repo]\nsupported_runtimes = ["claude-code", "codex"]\n[ki-authoring]\n')
 try {
   execFileSync('git', ['init', '-q', incompleteCapability])
   const result = run(AUDIT, [incompleteCapability])
@@ -125,7 +125,7 @@ try {
   rmSync(incompleteCapability, { recursive: true, force: true })
 }
 
-const completeCapability = fixture('[ki-repo]\n[ki-authoring]\n')
+const completeCapability = fixture('[ki-repo]\nsupported_runtimes = ["claude-code", "codex"]\n[ki-authoring]\n')
 try {
   const bootstrapped = run(BOOTSTRAP, [completeCapability])
   execFileSync('git', ['init', '-q', completeCapability])

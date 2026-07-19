@@ -60,7 +60,10 @@ function run(memDir: string, repo = REPO): { code: number; out: string } {
 
 function localSkillRepo(runtimes: string[], payloads: Partial<Record<string, string>>): string {
   const repo = mkdtempSync(join(tmpdir(), 'ki-hk-selftest-'))
-  writeFileSync(join(repo, '.ki-config.toml'), `[ki-repo]\ntarget_runtimes = [${runtimes.map((runtime) => `"${runtime}"`).join(', ')}]\n`)
+  writeFileSync(
+    join(repo, '.ki-config.toml'),
+    `[ki-repo]\nsupported_runtimes = [${runtimes.map((runtime) => `"${runtime}"`).join(', ')}]\n`
+  )
   const paths: Record<string, string> = {
     'claude-code': join(repo, '.claude', 'skills', 'ki-self', 'SKILL.md'),
     codex: join(repo, '.agents', 'skills', 'ki-self', 'SKILL.md')

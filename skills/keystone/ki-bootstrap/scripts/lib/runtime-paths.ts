@@ -19,27 +19,34 @@ export function readText(path: string): string {
   return existsSync(path) ? readFileSync(path, 'utf8') : ''
 }
 
-// ── Multi-runtime target resolution ──────────────────────────────────────────
+// ── Multi-runtime support resolution ─────────────────────────────────────────
 // A repo declares which agent runtimes it installs skills/agents for via
-// `[ki-repo] target_runtimes = [...]` — a repo-wide fact, not a harness-structure
-// detail. Absent → the historical default ["claude-code"], so every repo predating
-// multi-runtime support is unchanged. Parsing is table-aware so a lookalike key
+// `[ki-repo] supported_runtimes = [...]` — a repo-wide fact, not a harness-structure
+// detail. It is required: a repo's support surface must be explicit, never inferred
+// from a directory that happens to exist. Parsing is table-aware so a lookalike key
 // in another table or a multiline string cannot redirect runtime installation.
 // Discovery paths differ per runtime: Claude Code reads `.claude/`, OpenAI Codex
 // CLI reads `.agents/` (the runtime feature-coverage matrix, SDR-KI-HARNESS-002).
-export function targetRuntimes(kiConfigText: string): string[] {
+const KNOWN_RUNTIMES = ['claude-code', 'codex'] as const
+
+export function supportedRuntimes(kiConfigText: string): string[] {
   let document: Record<string, unknown>
   try {
     document = TOML.parse(kiConfigText) as Record<string, unknown>
   } catch {
-    return ['claude-code']
+    throw new Error('.ki-config.toml must be valid TOML before runtime payloads can be published')
   }
   const repo = document['ki-repo']
-  if (!repo || typeof repo !== 'object' || Array.isArray(repo)) return ['claude-code']
-  const runtimes = (repo as Record<string, unknown>).target_runtimes
-  if (!Array.isArray(runtimes)) return ['claude-code']
-  const list = runtimes.filter((runtime): runtime is string => typeof runtime === 'string')
-  return list.length ? list : ['claude-code']
+  if (!repo || typeof repo !== 'object' || Array.isArray(repo)) throw new Error('[ki-repo] must declare supported_runtimes')
+  const runtimes = (repo as Record<string, unknown>).supported_runtimes
+  if (!Array.isArray(runtimes) || runtimes.length === 0 || runtimes.some((runtime) => typeof runtime !== 'string'))
+    throw new Error('[ki-repo] supported_runtimes must be a non-empty array of runtime names')
+  const list = runtimes as string[]
+  const unknown = list.filter((runtime) => !KNOWN_RUNTIMES.includes(runtime as (typeof KNOWN_RUNTIMES)[number]))
+  if (unknown.length)
+    throw new Error(`[ki-repo] supported_runtimes names unknown runtime(s): ${unknown.join(', ')} (known: ${KNOWN_RUNTIMES.join(', ')})`)
+  if (new Set(list).size !== list.length) throw new Error('[ki-repo] supported_runtimes must not repeat a runtime')
+  return list
 }
 
 // Where each runtime discovers project-local SKILLS. Unknown runtime → throw
@@ -50,7 +57,7 @@ export function runtimeSkillsDir(runtime: string): string {
     codex: join('.agents', 'skills')
   }
   const dir = map[runtime]
-  if (!dir) throw new Error(`unknown target_runtime "${runtime}" — no known skills path (expected one of: ${Object.keys(map).join(', ')})`)
+  if (!dir) throw new Error(`unsupported runtime "${runtime}" — no known skills path (expected one of: ${Object.keys(map).join(', ')})`)
   return dir
 }
 
@@ -67,7 +74,7 @@ export function runtimeAgentsDir(runtime: string): string {
   const dir = map[runtime]
   if (!dir)
     throw new Error(
-      `target_runtime "${runtime}" has no supported project-local agents path yet — Codex subagents are TOML under ~/.codex/agents/ (a generator, not a symlink), pending the format spike (SDR-KI-HARNESS-002)`
+      `supported runtime "${runtime}" has no project-local agents path yet — Codex subagents are TOML under ~/.codex/agents/ (a generator, not a symlink), pending the format spike (SDR-KI-HARNESS-002)`
     )
   return dir
 }

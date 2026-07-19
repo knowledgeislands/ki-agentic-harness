@@ -32,7 +32,7 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS (defined in 
 
 ## CLAUDE — CLAUDE.md coverage and freshness
 
-> **Split orientation (AGENTS.md).** When and why a harness splits orientation between a literal `AGENTS.md` and a thin `CLAUDE.md` is `ki-repo`'s generic convention — see [its standard](../../../keystone/ki-repo/references/standards.md#layer-1--repo-files) (gated on `target_runtimes`) and [its `RUNTIMES-J1` criterion](../../../keystone/ki-repo/references/rubric.md). Harness-specific: when a harness uses the split, apply CLAUDE-1..5 to the imported `AGENTS.md` content — the coverage they require is satisfied there, and `CLAUDE.md` need only carry the `@AGENTS.md` import plus any genuinely Claude-only notes. LAY-3 (the file exists) still applies to `CLAUDE.md` itself.
+> **Split orientation (AGENTS.md).** When and why a harness splits orientation between a literal `AGENTS.md` and a thin `CLAUDE.md` is `ki-repo`'s generic convention — see [its standard](../../../keystone/ki-repo/references/standards.md#layer-1--repo-files) (gated on `supported_runtimes`) and [its `RUNTIMES-J1` criterion](../../../keystone/ki-repo/references/rubric.md). Harness-specific: when a harness uses the split, apply CLAUDE-1..5 to the imported `AGENTS.md` content — the coverage they require is satisfied there, and `CLAUDE.md` need only carry the `@AGENTS.md` import plus any genuinely Claude-only notes. LAY-3 (the file exists) still applies to `CLAUDE.md` itself.
 
 **CLAUDE-1 [J]** `CLAUDE.md` opens with a what-the-harness-is paragraph that names all five parts (`skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`). Source: standard §CLAUDE.md §1. _Severity: WARN — a CLAUDE.md that doesn't describe the harness contract fails its orientation purpose._
 

@@ -38,7 +38,7 @@ import {
   declaredSkills,
   SkillResolutionError
 } from './resolve.ts'
-import { gitignoresPath, runtimeAgentsDir, runtimeSkillsDir, targetRuntimes } from './runtime-paths.ts'
+import { gitignoresPath, runtimeAgentsDir, runtimeSkillsDir, supportedRuntimes } from './runtime-paths.ts'
 
 export type ProjectLinkScope = 'skills' | 'agents' | 'all'
 export type ProjectSkillPublication = 'copy' | 'development-link'
@@ -306,7 +306,7 @@ function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: Pr
     skillOrphans: [],
     dependencyErrors: []
   }
-  const runtimes = targetRuntimes(config)
+  const runtimes = supportedRuntimes(config)
 
   if (scope === 'skills' || scope === 'all') {
     const index = skillIndex()
@@ -577,7 +577,7 @@ function execute(target: string, plan: LinkPlan): void {
 
 function printCheck(target: string, scope: ProjectLinkScope, skillPublication: ProjectSkillPublication): number {
   const config = regularText(join(target, '.ki-config.toml'), '.ki-config.toml').content
-  const runtimes = targetRuntimes(config)
+  const runtimes = supportedRuntimes(config)
   let failures = 0
   if (scope === 'skills' || scope === 'all') {
     const declared = declaredSkills(config).filter((name) => name !== BOOTSTRAP)

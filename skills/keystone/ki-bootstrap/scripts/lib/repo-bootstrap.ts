@@ -1795,6 +1795,17 @@ function publishRuntimeSkillPayloads(target: string, dryRun: boolean, showAction
   }
 }
 
+// A fresh `ki-repo` seed writes this required declaration. During a dry run there is
+// deliberately no `.ki-config.toml` to hand to the publisher, so preview the same
+// runtime payload plan without creating a transient target file.
+const SCAFFOLDED_SUPPORTED_RUNTIMES = ['claude-code', 'codex']
+function previewScaffoldedRuntimePayloads(set: string[]): void {
+  for (const runtime of SCAFFOLDED_SUPPORTED_RUNTIMES) {
+    for (const skill of set) console.log(`${GREEN}copy${RESET}  [${runtime}] ${skill} ${DIM}(generated runtime payload)${RESET}`)
+  }
+  console.log(`${GREEN}ignore${RESET} .gitignore ${DIM}(generated runtime payloads)${RESET}`)
+}
+
 function main(): void {
   const argv = process.argv.slice(2)
   if (argv.includes('--help') || argv.includes('-h')) {
@@ -1865,7 +1876,10 @@ function main(): void {
   // Runtime payloads are separate from `.ki-meta/`: every target receives complete,
   // standalone copies. Deliberate local-author links are a ki-repo concern and are
   // never selected implicitly by repository bootstrap.
-  publishRuntimeSkillPayloads(target, dryRun, dryRun || verbose)
+  if (set.length) {
+    if (dryRun && set.includes('ki-repo') && !existsSync(join(target, '.ki-config.toml'))) previewScaffoldedRuntimePayloads(set)
+    else publishRuntimeSkillPayloads(target, dryRun, dryRun || verbose)
+  }
   if (dryRun || verbose) {
     console.log(
       `${GREEN}runner${RESET} ${DIM}→ ${aggRel}, ${auditBinRel}, ${conformBinRel}, ${initBinRel}, ${helpBinRel}, ${manifestRel}${RESET}`

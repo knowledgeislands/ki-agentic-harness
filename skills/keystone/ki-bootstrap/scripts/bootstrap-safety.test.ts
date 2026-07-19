@@ -23,7 +23,7 @@ import { fileURLToPath } from 'node:url'
 
 const SCRIPTS = dirname(fileURLToPath(import.meta.url))
 const BOOTSTRAP = join(SCRIPTS, 'lib', 'repo-bootstrap.ts')
-const CONFIG = '[ki-authoring]\n'
+const CONFIG = '[ki-repo]\nsupported_runtimes = ["claude-code", "codex"]\n[ki-authoring]\n'
 const REF = '0000000000000000000000000000000000000000'
 
 let failed = false

@@ -305,7 +305,7 @@ try {
   rmSync(seededRepo, { recursive: true, force: true })
 }
 
-const checkerRoot = fixture('[ki-skills]\n')
+const checkerRoot = fixture('[ki-repo]\nsupported_runtimes = ["claude-code", "codex"]\n[ki-authoring]\n[ki-skills]\n')
 try {
   const result = spawnSync('bun', [BOOTSTRAP, checkerRoot], { encoding: 'utf8' })
   check('checker-module provider → bootstrap exits cleanly', result.status === 0)
@@ -358,7 +358,9 @@ try {
   rmSync(checkerRoot, { recursive: true, force: true })
 }
 
-const reporterConsumerRoot = fixture('[ki-binding]\n[ki-binding-chezmoi]\n[ki-dotfiles-chezmoi]\n[ki-authoring]\n')
+const reporterConsumerRoot = fixture(
+  '[ki-repo]\nsupported_runtimes = ["claude-code", "codex"]\n[ki-authoring]\n[ki-binding]\n[ki-binding-chezmoi]\n[ki-dotfiles-chezmoi]\n'
+)
 try {
   const result = spawnSync('bun', [BOOTSTRAP, reporterConsumerRoot], { encoding: 'utf8' })
   check('reporter consumers → bootstrap exits cleanly', result.status === 0)
@@ -405,7 +407,7 @@ try {
   rmSync(selfBootstrappingHarness, { recursive: true, force: true })
 }
 
-const partialRepoText = '# preserve this prefix\n[ki-repo]\nvisibility = "public"\n'
+const partialRepoText = '# preserve this prefix\n[ki-repo]\nvisibility = "public"\nsupported_runtimes = ["claude-code", "codex"]\n'
 const partialRepo = fixture(partialRepoText)
 try {
   const result = spawnSync('bun', [BOOTSTRAP, partialRepo], { encoding: 'utf8' })
@@ -438,7 +440,7 @@ try {
   rmSync(seededDryRun, { recursive: true, force: true })
 }
 
-const verboseRepo = fixture('[ki-authoring]\n')
+const verboseRepo = fixture('[ki-repo]\nsupported_runtimes = ["claude-code", "codex"]\n[ki-authoring]\n')
 try {
   const result = spawnSync('bun', [BOOTSTRAP, verboseRepo, '--verbose'], { encoding: 'utf8' })
   check('verbose EDUCATE → exits cleanly', result.status === 0)
@@ -474,7 +476,7 @@ const auditReport = (stdout: string): AuditReport => ({
     .map((event) => ({ area: event.code, level: event.level, msg: event.message }))
 })
 
-const sourceBearing = fixture('[ki-authoring]\n')
+const sourceBearing = fixture('[ki-repo]\nsupported_runtimes = ["claude-code", "codex"]\n[ki-authoring]\n')
 try {
   const source = skillDir('ki-authoring')
   const targetSource = join(sourceBearing, 'skills', relative(SKILLS_ROOT, source))
@@ -536,7 +538,7 @@ try {
   rmSync(sourceBearing, { recursive: true, force: true })
 }
 
-const externalConsumer = fixture('[ki-authoring]\n')
+const externalConsumer = fixture('[ki-repo]\nsupported_runtimes = ["claude-code", "codex"]\n[ki-authoring]\n')
 try {
   const bootstrapped = spawnSync('bun', [BOOTSTRAP, externalConsumer], { encoding: 'utf8' })
   const audit = spawnSync('bun', [AUDIT, externalConsumer], { encoding: 'utf8' })

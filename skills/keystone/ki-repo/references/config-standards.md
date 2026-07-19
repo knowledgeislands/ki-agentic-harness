@@ -27,7 +27,7 @@ Each skill that needs declared config owns **exactly one** TOML table, named for
 [ki-repo]
 visibility = "public"
 license = "MIT"          # SPDX id; default MIT when unset. "UNLICENSED" for proprietary.
-target_runtimes = ["claude-code"]   # agent runtimes the linkers install for; absent → ["claude-code"]
+supported_runtimes = ["claude-code", "codex"] # required agent-runtime support surface
 
 [ki-repo.checks]
 branch-protection = true
@@ -35,7 +35,7 @@ branch-protection = true
 
 `[ki-repo]` carries three declared facts the auditor checks. Two are matched against the live repo: `visibility` (`"public"` | `"private"`, matched against GitHub) and `license` (an SPDX id — default MIT when unset — matched against the live GitHub license, the `LICENSE` file, and `package.json` `"license"`). The two are **independent**: a private repo may be MIT, a public repo proprietary. Pick a license at [choosealicense.com](https://choosealicense.com/); use `"UNLICENSED"` for all-rights-reserved proprietary.
 
-The third, `target_runtimes`, is a **repo-wide** fact — the agent runtimes this repo installs its skills and agents for. It lives on `[ki-repo]` rather than `[ki-harness]` because it drives orientation, skills, agents, and MCP across the whole repo, not just the five-part harness bundle; a non-harness KI repo can target runtimes too. The bootstrap linkers loop over it, each runtime resolving to its own discovery path (Claude Code → `.claude/`, Codex → `.agents/`; see the runtime feature-coverage matrix in `SDR-KI-HARNESS-002`). It is **absent-safe**: omitting the key takes the historical default `["claude-code"]`, so every repo predating multi-runtime support is unchanged. Declared values must name runtimes the linkers recognise (`claude-code`, `codex`) and the list must be non-empty — the auditor's `RUNTIMES-1` WARNs otherwise.
+The third, `supported_runtimes`, is a **repo-wide** fact — the agent runtimes this repo supports. It lives on `[ki-repo]` rather than `[ki-harness]` because it drives orientation, skills, agents, and MCP across the whole repo, not just the five-part harness bundle; a non-harness KI repo can support runtimes too. The bootstrap linkers loop over it, each runtime resolving to its own discovery path (Claude Code → `.claude/`, Codex → `.agents/`; see the runtime feature-coverage matrix in `SDR-KI-HARNESS-002`). The key is required: support is a stable repository capability, never inferred from the directories present at a moment in time. Values must name runtimes the linkers recognise (`claude-code`, `codex`), must be non-empty, and must not repeat — the auditor's `RUNTIMES-1` FAILs otherwise.
 
 - The table name **matches the skill's `name`** exactly, so the owner is unambiguous and the file reads as a map of skill → its settings.
 - A skill reads **only its own table** and never reaches into another skill's — the table boundary is the schema ownership boundary. If two skills need the same fact, it still lives under whichever skill owns it, and the other resolves it from there. `ki-repo` owns the shared file-level contract and required foundation scaffold; each skill may conform its own table while preserving every other table.
