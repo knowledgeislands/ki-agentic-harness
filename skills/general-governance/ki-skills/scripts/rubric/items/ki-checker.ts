@@ -83,4 +83,52 @@ export const KI_CHECKER_3: RubricItem<KiCheckerRubricContext> = {
   }
 }
 
-export const KI_CHECKER = [KI_CHECKER_1, KI_CHECKER_2, KI_CHECKER_3] as const
+export const KI_CHECKER_4: RubricItem<KiCheckerRubricContext> = {
+  code: 'KI-CHECKER-4',
+  title: 'structured rubric items follow the uniform family layout',
+  description:
+    '`scripts/rubric/items/index.ts` is catalogue wiring only. Each family collection is imported from one semantic family module; that module individually exports every stable rule and one ordered family collection. Rule definitions and execution callbacks do not live in the catalogue index.',
+  sources: ['rubric-authoring.md#rubric-families-and-items'],
+  mechanical: {
+    level: 'FAIL',
+    audit: {
+      phase: 'INSPECT',
+      run: ({ structuredRubricRequired, itemsIndexExists, itemsIndexDefinesRules, familyModules }) => {
+        if (!structuredRubricRequired)
+          return [{ status: 'NOT_APPLICABLE', message: 'the skill does not declare the structured checker contract' }]
+        const violations = []
+        if (!itemsIndexExists) violations.push({ status: 'VIOLATION' as const, message: '`scripts/rubric/items/index.ts` is missing' })
+        if (itemsIndexDefinesRules)
+          violations.push({
+            status: 'VIOLATION' as const,
+            message: '`scripts/rubric/items/index.ts` defines rule execution instead of catalogue wiring only'
+          })
+        if (itemsIndexExists && familyModules.length === 0)
+          violations.push({ status: 'VIOLATION' as const, message: 'the rubric catalogue defines no imported family collections' })
+        for (const family of familyModules) {
+          if (family.source === null)
+            violations.push({
+              status: 'VIOLATION' as const,
+              message: `family collection \`${family.collection}\` is not imported from an existing local family module`
+            })
+          else {
+            if (!family.exportsOrderedCollection)
+              violations.push({
+                status: 'VIOLATION' as const,
+                message: `family module for \`${family.collection}\` does not export its ordered collection`
+              })
+            if (family.individuallyExportedRules === 0)
+              violations.push({
+                status: 'VIOLATION' as const,
+                message: `family module for \`${family.collection}\` does not individually export its rubric rules`
+              })
+          }
+        }
+        const [first, ...rest] = violations
+        return first ? [first, ...rest] : [{ status: 'PASS', message: 'structured rubric items follow the uniform family layout' }]
+      }
+    }
+  }
+}
+
+export const KI_CHECKER = [KI_CHECKER_1, KI_CHECKER_2, KI_CHECKER_3, KI_CHECKER_4] as const

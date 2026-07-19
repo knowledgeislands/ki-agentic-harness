@@ -19,5 +19,15 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const SKILL = 'ki-engineering'
+const HELP = `Usage: bun scripts/educate.ts <target-repo> [--ref <ref>] [--dry-run]
+
+Educate a repository with ki-engineering and its declared dependencies.
+`
+
+if (process.argv.includes('-h') || process.argv.includes('--help')) {
+  process.stdout.write(HELP)
+  process.exit(0)
+}
+
 const engine = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'ki-bootstrap', 'scripts', 'lib', 'repo-bootstrap.ts')
 execFileSync('bun', [engine, ...process.argv.slice(2), '--seed', SKILL], { stdio: 'inherit' })

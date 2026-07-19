@@ -391,7 +391,7 @@ export const KI_SHAPE_16: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-16',
   title: 'target files have declared ownership',
   description:
-    "_Declared file ownership, three tiers._ A skill that writes a house-standard file into a **target repo's** working tree (not `.ki-meta/`, which has its own `vendors:`/manifest.json hash mechanism — KI-SHAPE-12/15's sibling, not this one) declares that relationship in frontmatter, alongside `depends-on:`/`vendors:`, under one of three keys: `requires:` (must exist, doesn't create/control it — any number of skills may share a `requires:` filename), `contributes:` (writes/expects only its own section of a shared file — any number of skills may share a `contributes:` filename, e.g. `.ki-config.toml`, `package.json`), or `owns:` (sole author of the whole file — **exclusive**, at most one skill per filename). The linter runs three heuristic passes: (1) per-skill, any filename passed to a literal `scaffold(...)`/`syncOwned(...)` call in `scripts/conform.ts` must appear under that skill's `owns:` — WARN if scaffolded-but-undeclared; (2) per-skill, every filename declared under `owns:`/`contributes:`/`requires:` must appear literally somewhere in that skill's own `scripts/audit.ts` — WARN if declared-but-unaudited; (3) cross-skill, no filename may appear under `owns:` in more than one skill's frontmatter — WARN naming both skills (the exact shape of the `.prettierrc.json` split bug this criterion exists to catch). Heuristic: only `scaffold(`/`syncOwned(` call sites are matched, so a skill using a differently named write helper needs it renamed or the pattern extended.",
+    "_Declared file ownership, three tiers._ A skill that writes a house-standard file into a **target repo's** working tree (not `.ki-meta/`, which has its own `vendors:`/manifest.json hash mechanism — KI-SHAPE-12/15's sibling, not this one) declares that relationship in frontmatter, alongside `depends-on:`/`vendors:`, under one of three keys: `requires:` (must exist, doesn't create/control it — any number of skills may share a `requires:` filename), `contributes:` (writes/expects only its own section of a shared file — any number of skills may share a `contributes:` filename, e.g. `.ki-config.toml`, `package.json`), or `owns:` (sole author of the whole file — **exclusive**, at most one skill per filename). The linter runs three heuristic passes: (1) per-skill, any filename passed to a literal `scaffold(...)`/`syncOwned(...)` call in the skill's own CONFORM implementation must appear under that skill's `owns:` — WARN if scaffolded-but-undeclared; (2) per-skill, every filename declared under `owns:`/`contributes:`/`requires:` must appear literally somewhere in that skill's own checker implementation — WARN if declared-but-unaudited; (3) cross-skill, no filename may appear under `owns:` in more than one skill's frontmatter — WARN naming both skills (the exact shape of the `.prettierrc.json` split bug this criterion exists to catch). Thin entry points may delegate to private `scripts/rubric/` modules; vendored dependencies do not count as the skill's own implementation. Heuristic: only `scaffold(`/`syncOwned(` call sites are matched, so a skill using a differently named write helper needs it renamed or the pattern extended.",
   sources: ['KI'],
   mechanical: {
     level: 'WARN',
@@ -409,12 +409,12 @@ export const KI_SHAPE_16: RubricItem<KiShapeRubricContext> = {
                 status: 'VIOLATION',
                 message: `scaffolds \`${file}\` but does not declare it under \`owns:\` in frontmatter`
               })
-          if (skill.auditSource !== null)
+          if (skill.checkerSource !== null)
             for (const file of [...skill.owns, ...skill.contributes, ...skill.requires])
-              if (!skill.auditSource.includes(file))
+              if (!skill.checkerSource.includes(file))
                 violations.push({
                   status: 'VIOLATION',
-                  message: `declares \`${file}\` (owns/contributes/requires) but \`scripts/audit.ts\` never checks it`
+                  message: `declares \`${file}\` (owns/contributes/requires) but its checker implementation never checks it`
                 })
         }
         for (const collision of ownershipCollisions)

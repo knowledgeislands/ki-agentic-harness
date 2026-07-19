@@ -2,7 +2,7 @@
 name: ki-handoffs
 depends-on: []
 vendors: [educate, audit, conform, help]
-checker-dependencies: [ki-skills:checker-reporter]
+checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 description: >
   Govern the Knowledge Islands handoff doctrine: plan work once at the top reasoning tier, then write it as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning. Owns the reasoning-layer split, the handoff-spec quality bar (definition-of-done, decisions-locked vs escalate, ordered steps, acceptance criteria, a recommended implementer tier per unit), and the cold-model readiness test. AUDIT checks handoff-opted-in plans/proposals for the required markers; CONFORM fixes them; REFRESH revisits the doctrine. Does not own model-tier cost or selection — that is ki-tokenomics. Triggers: "is this ready to hand off", "make this delegable", "implementation-ready spec", "plan once execute cheap", "which tier should run this". Off-ramps: ki-tokenomics (tier cost/selection), ki-repo-roadmap (non-KB roadmap and plan standard), ki-kb-streams (KB proposal Checklist), ki-agents (subagent definitions).
 argument-hint: 'audit [dir] | conform [dir] | help | educate <target> | refresh'
@@ -10,7 +10,7 @@ argument-hint: 'audit [dir] | conform [dir] | help | educate <target> | refresh'
 
 # Knowledge Islands handoffs standard
 
-You are applying the **Knowledge Islands handoff doctrine** — how to split expensive reasoning from cheap execution so that work planned once at the top tier can be handed to a cheaper tier, a cold agent, or another person and executed without re-reasoning. This skill owns the _doctrine_. The normative spec — the opt-in marker contract, the quality bar in full, and the tier-assignment rules — lives in [references/standards.md](references/standards.md) as its single source of truth; the line-by-line criteria live in [references/rubric.md](references/rubric.md). Neither restates the other.
+You are applying the **Knowledge Islands handoff doctrine** — how to split expensive reasoning from cheap execution so that work planned once at the top tier can be handed to a cheaper tier, a cold agent, or another person and executed without re-reasoning. This skill owns the _doctrine_. The normative spec — the opt-in marker contract, the quality bar in full, and the tier-assignment rules — lives in [references/standards.md](references/standards.md) as its single source of truth. The structured TypeScript items under `scripts/rubric/items/` are the canonical rubric; [the published rubric](references/rubric.md) is generated from them for human review. Neither restates the other.
 
 Handoffs are a **cross-tier instrument** that rides on an existing artifact — it owns no artifact of its own. In a non-KB repository the spec is a thematic plan file, governed by `ki-repo-roadmap`; in a Knowledge Base it is a stream proposal's `## Checklist`, governed by `ki-kb-streams`. This skill adds the **delegation-readiness delta** on top of whichever host artifact carries the work. Run where there is no such artifact, it points at `ki-repo-roadmap` / `ki-kb-streams` and stops.
 
@@ -42,7 +42,7 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**. Invoked as `he
 
 Check that handoff-opted-in artifacts are delegable. **Run the host artifact's audit first, then add this delta** — `ki-repo-roadmap` AUDIT in a non-KB repository, `ki-kb-streams` AUDIT in a KB; this skill does not re-check plan/proposal structure.
 
-The mechanical half is [`scripts/audit.ts`](scripts/audit.ts) — run `bun run ki:handoffs:audit <dir>` (default `.`). It scans for `handoff: true` artifacts and checks: `tier` present and one of the semantic values; a decisions-locked-vs-escalate section present; a readiness marker present. It emits the canonical checker reporter JSONL stream and exits non-zero on any mechanical FAIL.
+The mechanical half is [`scripts/audit.ts`](scripts/audit.ts) — run `bun run ki:handoffs:audit <dir>` (default `.`). It scans for `handoff: true` artifacts and checks: `tier` present and one of the semantic values; a decisions-locked-vs-escalate section present; a readiness marker present. Its default output is canonical JSONL; add `--reporter=terminal` for the human view and `--reporter-levels=all` to include every outcome. It exits non-zero on any mechanical FAIL, and counts judgment items as unevaluated in the summary rather than emitting synthetic findings.
 
 Then apply the judgment half by reading, per [references/rubric.md](references/rubric.md): are the locked decisions genuinely closed (no residual reasoning), is the assigned tier appropriate to how concrete the steps are, and would the readiness test actually pass. Report FAILs first, then WARNs, then a one-line verdict.
 
@@ -58,7 +58,7 @@ EDUCATE scaffolds no standalone artifact — a handoff rides on an existing plan
 
 **Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
 
-Revisit the doctrine against practice: does the reasoning-layer split still match how work flows from the top tier to execution; does the quality bar need sharpening from real handoffs; is the composition boundary with `ki-tokenomics` still clean. Update this `SKILL.md` and [references/standards.md](references/standards.md); record what changed in the commit, and refresh [references/sources.md](references/sources.md).
+Revisit the doctrine against practice: does the reasoning-layer split still match how work flows from the top tier to execution; does the quality bar need sharpening from real handoffs; is the composition boundary with `ki-tokenomics` still clean. Update this `SKILL.md`, [references/standards.md](references/standards.md), and the canonical TypeScript items under `scripts/rubric/items/`; regenerate [the published rubric](references/rubric.md) with `bun scripts/rubric/publish.ts`, record what changed in the commit, and refresh [references/sources.md](references/sources.md).
 
 ## Composition
 
@@ -73,4 +73,4 @@ Revisit the doctrine against practice: does the reasoning-layer split still matc
 - **Not every plan needs handoff-governance.** Opt in (`handoff: true`) only where work will actually be executed by a different, cheaper tier or a cold agent. Work the planner will execute itself needs only the host artifact's quality bar.
 - **Semantic tiers only.** The body and specs may narrate tiers as cheap / mid / top, but the `tier:` frontmatter field must itself be one of `haiku` / `sonnet` / `opus` per the opt-in marker contract — writing `tier: cheap` trips HAND-1. Concrete model ids and prices resolve at runtime through the `claude-api` skill and are never hard-coded here.
 - **The doctrine is the point, the markers are the teeth.** The markers exist so a checker can confirm a spec is delegable; the value is the reasoning-once-execute-cheap discipline they enforce.
-- Checker output conforms to the severity ladder, JSON shape, and exit-code contract in `ki-skills`' [checker contract](../../general-governance/ki-skills/references/checker-contract.md).
+- Checker output and terminal rendering come from the self-contained canonical modules declared in `checker-dependencies` and vendored from `ki-skills`.

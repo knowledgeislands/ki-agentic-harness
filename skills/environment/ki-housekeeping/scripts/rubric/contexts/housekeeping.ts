@@ -1,4 +1,4 @@
-import { readFileSync, statSync, writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { existsSync, lstatSync, readdirSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { basename, join, resolve } from 'node:path'
@@ -31,8 +31,9 @@ export const parseFrontmatter = (content: string): MemoryFrontmatter | null => {
       continue
     }
     const nested = line.match(/^\s+([a-zA-Z_]+):\s*(.*)$/)
-    if (nested && currentKey && typeof output[currentKey] === 'object')
+    if (nested && currentKey && typeof output[currentKey] === 'object') {
       ;(output[currentKey] as Record<string, string>)[nested[1]] = nested[2].trim().replace(/^["']|["']$/g, '')
+    }
   }
   return output
 }

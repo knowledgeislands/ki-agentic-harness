@@ -1,5 +1,5 @@
-import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
-import { basename, dirname, join, resolve } from 'node:path'
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import { dirname, join, resolve } from 'node:path'
 
 const CODE_DIR = 'docs/decisions'
 const KB_DIR = 'Admin/Governance/Decisions'
@@ -192,7 +192,9 @@ export const createDecisionRecordsContextFactory = ({
         if (!indexExists) return []
         const missing = records.filter((record) => (indexCounts.get(record.id) ?? 0) === 0)
         if (!dryRun && missing.length > 0) {
-          const additions = missing.map((record) => `- [${record.id}](${record.file}) — ${record.headingTitle ?? '(title unknown — see file)'}`)
+          const additions = missing.map(
+            (record) => `- [${record.id}](${record.file}) — ${record.headingTitle ?? '(title unknown — see file)'}`
+          )
           writeFileSync(join(directory, indexFile), `${indexContent.replace(/\n*$/, '\n')}${additions.join('\n')}\n`)
         }
         return missing

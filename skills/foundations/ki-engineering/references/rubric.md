@@ -4,6 +4,24 @@
 
 > **Generated publication.** The TypeScript rubric items under `scripts/rubric/items/` are canonical; this file is generated from the in-memory catalogue.
 
+## Contents
+
+- [PKG — PKG engineering rules](#pkg--pkg-engineering-rules)
+- [MISE — MISE engineering rules](#mise--mise-engineering-rules)
+- [CI — CI engineering rules](#ci--ci-engineering-rules)
+- [SCR — SCR engineering rules](#scr--scr-engineering-rules)
+- [BUN — BUN engineering rules](#bun--bun-engineering-rules)
+- [TSC — TSC engineering rules](#tsc--tsc-engineering-rules)
+- [BIO — BIO engineering rules](#bio--bio-engineering-rules)
+- [KNIP — KNIP engineering rules](#knip--knip-engineering-rules)
+- [SYNC — SYNC engineering rules](#sync--sync-engineering-rules)
+- [DEPS — DEPS engineering rules](#deps--deps-engineering-rules)
+- [GEN — GEN engineering rules](#gen--gen-engineering-rules)
+- [TEST — TEST engineering rules](#test--test-engineering-rules)
+- [BUILD — BUILD engineering rules](#build--build-engineering-rules)
+- [ENV — ENV engineering rules](#env--env-engineering-rules)
+- [TOML — TOML engineering rules](#toml--toml-engineering-rules)
+
 ## PKG — PKG engineering rules
 
 Stable engineering criteria preserved from the engineering standard.

@@ -38,7 +38,7 @@ import {
   checkerReporterExitCode,
   emitCheckerReporter,
   judgmentFindingsFromRubric
-} from './vendored/ki-skills/checker-reporter.ts'
+} from '../../vendored/ki-skills/checker-reporter.ts'
 
 // ── token estimate ────────────────────────────────────────────────────────
 // chars/4 is the house budgeting proxy for Claude's tokenizer on English + code.

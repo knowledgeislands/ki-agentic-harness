@@ -19,5 +19,28 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const SKILL = 'ki-decision-records'
-const engine = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'ki-bootstrap', 'scripts', 'lib', 'repo-bootstrap.ts')
+if (process.argv.includes('-h') || process.argv.includes('--help')) {
+  process.stdout.write(`Usage: bun scripts/educate.ts <target-repo> [options]
+
+Educate a repository with ki-decision-records and its governance chain.
+
+Options:
+  --ref <ref>   Use a pinned harness revision.
+  --dry-run     Report generated changes without writing them.
+  -h, --help    Show this help and exit.
+`)
+  process.exit(0)
+}
+
+const engine = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  '..',
+  '..',
+  '..',
+  'keystone',
+  'ki-bootstrap',
+  'scripts',
+  'lib',
+  'repo-bootstrap.ts'
+)
 execFileSync('bun', [engine, ...process.argv.slice(2), '--seed', SKILL], { stdio: 'inherit' })

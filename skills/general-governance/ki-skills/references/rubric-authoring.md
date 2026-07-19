@@ -122,6 +122,16 @@ A family groups criteria that assess one coherent concern, such as `NAME`, `DESC
 
 The family catalogue owns its stable family code, readable title, standard section, explanatory introduction, ordered item list, and any presentation metadata needed to reproduce the readable rubric.
 
+The files under `scripts/rubric/items/` MUST have one uniform responsibility:
+
+- `index.ts` is catalogue wiring only. It imports each ordered family collection, defines family metadata and `selectContext`, and exports the complete rubric plus any catalogue-wide aggregates. It MUST NOT define rubric items, execution callbacks, evidence builders, or write capabilities.
+- Each family lives in one semantic `<family>.ts` file. Every rule in that family MUST be exported individually with its stable code expressed as an identifier, such as `NAME_1`, and the file MUST also export one ordered family collection, such as `NAME`.
+- A family file owns that family's rule policy and pure item-level helpers. Constants, helpers, and types used only by that family remain private.
+- Filesystem discovery, parsing shared by several families, target inspection, and CONFORM write capabilities belong under `scripts/rubric/contexts/`, not in an item file.
+- A family collection is imported by `index.ts`; another family file MUST NOT import it as an implicit extension mechanism.
+
+This layout is intentionally repetitive at the family boundary: it makes each rule directly testable and each concern immediately locatable while keeping the complete catalogue readable.
+
 Each rubric item owns:
 
 - a stable semantic `code`;

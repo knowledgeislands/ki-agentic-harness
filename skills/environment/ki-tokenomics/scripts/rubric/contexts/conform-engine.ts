@@ -51,7 +51,7 @@ import {
   checkerReporterExitCode,
   emitCheckerReporter,
   judgmentFindingsFromRubric
-} from './vendored/ki-skills/checker-reporter.ts'
+} from '../../vendored/ki-skills/checker-reporter.ts'
 
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 const findings: CheckerFinding[] = []

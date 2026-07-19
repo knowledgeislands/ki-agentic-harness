@@ -52,6 +52,57 @@ const listScriptFiles = (scriptsDirectory: string): string[] => {
   return scriptFiles
 }
 
+const rubricFamilyModules = (
+  scriptsDirectory: string
+): {
+  itemsIndexExists: boolean
+  itemsIndexDefinesRules: boolean
+  familyModules: readonly {
+    collection: string
+    source: string | null
+    individuallyExportedRules: number
+    exportsOrderedCollection: boolean
+  }[]
+} => {
+  const indexPath = join(scriptsDirectory, 'rubric', 'items', 'index.ts')
+  if (!existsSync(indexPath)) return { itemsIndexExists: false, itemsIndexDefinesRules: false, familyModules: [] }
+
+  const indexSource = readFileSync(indexPath, 'utf8')
+  const imports = new Map<string, string>()
+  for (const match of indexSource.matchAll(/import\s+(?:type\s+)?{([^}]*)}\s*from\s*['"](\.\/[^'"]+)['"]/g)) {
+    const specifier = match[2] as string
+    for (const imported of (match[1] as string).split(',')) {
+      const name = imported.trim().split(/\s+as\s+/)[0]
+      if (name) imports.set(name, specifier)
+    }
+  }
+
+  const collections = [...new Set([...indexSource.matchAll(/\bitems:\s*([A-Z][A-Z0-9_]*)\b/g)].map((match) => match[1] as string))]
+  const familyModules = collections.map((collection) => {
+    const specifier = imports.get(collection)
+    const modulePath = specifier ? resolve(dirname(indexPath), `${specifier.replace(/\.ts$/, '')}.ts`) : null
+    const source = modulePath && existsSync(modulePath) ? readFileSync(modulePath, 'utf8') : null
+    const collectionMatch = source?.match(new RegExp(`export\\s+const\\s+${collection}\\s*=\\s*\\[([\\s\\S]*?)]`, 'm'))
+    const members = collectionMatch
+      ? (collectionMatch[1] as string)
+          .split(',')
+          .map((member) => member.trim())
+          .filter(Boolean)
+      : []
+    const individuallyExportedRules = source
+      ? members.filter((member) => new RegExp(`export\\s+const\\s+${member}\\b`).test(source)).length
+      : 0
+    const exportsOrderedCollection = collectionMatch !== null && collectionMatch !== undefined && members.length > 0
+    return { collection, source, individuallyExportedRules, exportsOrderedCollection }
+  })
+
+  return {
+    itemsIndexExists: true,
+    itemsIndexDefinesRules: /\b(?:mechanical|judgment)\s*:|\brun\s*:/.test(indexSource),
+    familyModules
+  }
+}
+
 const extractSection = (body: string, heading: string): string | null => {
   const match = new RegExp(`^##\\s+${heading}\\s*$`, 'im').exec(body)
   if (!match) return null
@@ -118,9 +169,13 @@ export const createKiShapeEvidence = (
   const rubricItemSources = listScriptFiles(join(scriptsDirectory, 'rubric', 'items'))
     .map((file) => readFileSync(file, 'utf8'))
     .join('\n')
-  const auditPath = join(scriptsDirectory, 'audit.ts')
-  const conformPath = join(scriptsDirectory, 'conform.ts')
-  const conformSource = existsSync(conformPath) ? readFileSync(conformPath, 'utf8').replace(/\/\/.*$/gm, '') : ''
+  const checkerFiles = listScriptFiles(scriptsDirectory).filter((file) => !file.includes(`${join(scriptsDirectory, 'vendored')}/`))
+  const checkerSource = checkerFiles.map((file) => readFileSync(file, 'utf8')).join('\n')
+  const conformSource = checkerFiles
+    .filter((file) => basename(file) === 'conform.ts' || file.includes(`${join(scriptsDirectory, 'rubric')}/`))
+    .map((file) => readFileSync(file, 'utf8'))
+    .join('\n')
+    .replace(/\/\/.*$/gm, '')
   const scaffoldedFiles = [...conformSource.matchAll(/\b(?:scaffold|syncOwned)\(\s*['"]([^'"]+)['"]/g)].map((match) => match[1] as string)
   const checkers = scriptNames
     .filter(
@@ -163,7 +218,7 @@ export const createKiShapeEvidence = (
     contributes: frontmatterList(frontmatter.keys.get('contributes')),
     requires: frontmatterList(frontmatter.keys.get('requires')),
     scaffoldedFiles,
-    auditSource: existsSync(auditPath) ? readFileSync(auditPath, 'utf8') : null
+    checkerSource: checkerFiles.length > 0 ? checkerSource : null
   }
 }
 
@@ -188,6 +243,7 @@ export const createSkillRubricContext = (directory: string, capabilities: SkillW
       const description = frontmatter.keys.get('description')
       const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
       const scriptsDirectory = join(directory, 'scripts')
+      const familyEvidence = rubricFamilyModules(scriptsDirectory)
       const imports = listScriptFiles(scriptsDirectory).flatMap((scriptPath) =>
         relativeImportSpecifiers(readFileSync(scriptPath, 'utf8')).map((specifier) => ({
           entry: relative(scriptsDirectory, scriptPath),
@@ -221,7 +277,9 @@ export const createSkillRubricContext = (directory: string, capabilities: SkillW
           checkerDependencies: frontmatterList(frontmatter.keys.get('checker-dependencies')),
           rubricModuleExists: existsSync(join(scriptsDirectory, 'lib', 'rubric.ts')),
           checkerModuleExists: existsSync(join(scriptsDirectory, 'lib', 'checker.ts')),
-          reporterModuleExists: existsSync(join(scriptsDirectory, 'lib', 'reporter.ts'))
+          reporterModuleExists: existsSync(join(scriptsDirectory, 'lib', 'reporter.ts')),
+          structuredRubricRequired: name === 'ki-skills' || frontmatter.present.has('checker-dependencies'),
+          ...familyEvidence
         },
         shape: createKiShapeContext({
           skill: createKiShapeEvidence(directory, frontmatter, description ?? '', body),

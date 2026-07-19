@@ -73,6 +73,13 @@ type CheckerImport = {
   resolvesInsideScripts: boolean
 }
 
+type RubricFamilyModule = {
+  collection: string
+  source: string | null
+  individuallyExportedRules: number
+  exportsOrderedCollection: boolean
+}
+
 export type KiCheckerRubricContext = {
   imports: readonly CheckerImport[]
   rootSkill: boolean
@@ -81,6 +88,10 @@ export type KiCheckerRubricContext = {
   rubricModuleExists: boolean
   checkerModuleExists: boolean
   reporterModuleExists: boolean
+  structuredRubricRequired: boolean
+  itemsIndexExists: boolean
+  itemsIndexDefinesRules: boolean
+  familyModules: readonly RubricFamilyModule[]
 }
 
 type CollisionTarget = {
@@ -129,7 +140,7 @@ export type KiShapeSkillContext = {
   contributes: readonly string[]
   requires: readonly string[]
   scaffoldedFiles: readonly string[]
-  auditSource: string | null
+  checkerSource: string | null
 }
 
 export type KiShapeRubricContext = {
@@ -186,7 +197,7 @@ const emptyKiShapeSkill: KiShapeSkillContext = {
   contributes: [],
   requires: [],
   scaffoldedFiles: [],
-  auditSource: null
+  checkerSource: null
 }
 
 export const createKiShapeContext = ({
@@ -250,7 +261,11 @@ export const createKiSkillsRubricContext = (overrides: Partial<KiSkillsRubricCon
     checkerDependencies: [],
     rubricModuleExists: false,
     checkerModuleExists: false,
-    reporterModuleExists: false
+    reporterModuleExists: false,
+    structuredRubricRequired: false,
+    itemsIndexExists: false,
+    itemsIndexDefinesRules: false,
+    familyModules: []
   },
   link: { markdown: '', relativeTargetExists: () => true },
   shape: createKiShapeContext({ skill: null }),

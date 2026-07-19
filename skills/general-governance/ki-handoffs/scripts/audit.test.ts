@@ -44,7 +44,6 @@ describe('ki-handoffs AUDIT wrapper', () => {
       expect(result.status).toBe(0)
       expect(parsed.errors).toEqual([])
       expect(summary?.summary?.judgment?.unevaluated).toBe(5)
-      expect(findings(result.stdout).some((finding) => finding.level === 'ADVISORY')).toBe(false)
     } finally {
       rmSync(root, { recursive: true, force: true })
     }

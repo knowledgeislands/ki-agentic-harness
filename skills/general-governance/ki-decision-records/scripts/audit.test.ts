@@ -63,7 +63,10 @@ function run(script: string, root: string): { code: number; findings: Array<{ co
   const { root } = fixture('governance')
   try {
     const result = run(AUDIT, root)
-    check('matching metadata passes FM-5', result.code === 0 && !result.findings.some((finding) => finding.code === 'FM-5'))
+    check(
+      'matching metadata passes FM-5',
+      result.code === 0 && result.findings.some((finding) => finding.code === 'FM-5' && finding.level === 'PASS')
+    )
   } finally {
     rmSync(root, { recursive: true, force: true })
   }
@@ -84,9 +87,9 @@ function run(script: string, root: string): { code: number; findings: Array<{ co
     const conform = run(CONFORM, root)
     check(
       'conform leaves a classification mismatch for human resolution',
-      conform.code === 0 &&
+      conform.code !== 0 &&
         readFileSync(record, 'utf8') === before &&
-        !conform.findings.some((finding) => ['FM-4', 'FM-5'].includes(finding.code ?? ''))
+        conform.findings.some((finding) => finding.code === 'FM-5' && finding.level === 'FAIL')
     )
   } finally {
     rmSync(root, { recursive: true, force: true })

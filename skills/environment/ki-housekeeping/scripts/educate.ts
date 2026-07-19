@@ -20,4 +20,8 @@ import { fileURLToPath } from 'node:url'
 
 const SKILL = 'ki-housekeeping'
 const engine = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'ki-bootstrap', 'scripts', 'lib', 'repo-bootstrap.ts')
+if (process.argv.slice(2).some((argument) => argument === '-h' || argument === '--help')) {
+  process.stdout.write(`Usage: bun scripts/educate.ts <target-repo> [--ref <ref>] [--dry-run]\n\nBootstrap ki-housekeeping and its declared governance dependencies into a repository.\n\nOptions:\n  --ref <ref>   Pin the source revision.\n  --dry-run     Plan without writing.\n  -h, --help    Show this help and exit.\n`)
+  process.exit(0)
+}
 execFileSync('bun', [engine, ...process.argv.slice(2), '--seed', SKILL], { stdio: 'inherit' })

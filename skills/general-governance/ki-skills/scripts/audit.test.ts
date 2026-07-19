@@ -2,7 +2,7 @@
 import { describe, expect, test } from 'bun:test'
 /** Run-based contract tests for the canonical JSONL AUDIT wrapper. */
 import { spawnSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -129,6 +129,35 @@ describe('ki-skills AUDIT wrapper', () => {
             (record as { code?: unknown; level?: unknown; subject?: unknown }).code === 'SCRIPT-8' &&
             (record as { level?: unknown }).level === 'FAIL' &&
             (record as { subject?: unknown }).subject === 'scripts/audit.ts'
+        )
+      ).toBe(true)
+    } finally {
+      rmSync(base, { recursive: true, force: true })
+    }
+  })
+
+  test('returns KI-CHECKER-4 FAIL when a structured rubric defines rules in its catalogue index', () => {
+    const { base, dir } = fixture()
+    const skillPath = join(dir, 'SKILL.md')
+    writeFileSync(
+      skillPath,
+      readFileSync(skillPath, 'utf8').replace('depends-on: []', 'depends-on: []\nchecker-dependencies: [ki-skills:rubric]')
+    )
+    mkdirSync(join(dir, 'scripts', 'rubric', 'items'), { recursive: true })
+    writeFileSync(
+      join(dir, 'scripts', 'rubric', 'items', 'index.ts'),
+      "export const FIXTURE = [{ code: 'FIXTURE-1', mechanical: { audit: { run: () => [] } } }]\n"
+    )
+    try {
+      const result = run(dir)
+      const parsed = parseCheckerJsonl(result.output)
+      expect(result.status).toBe(1)
+      expect(
+        parsed.records.some(
+          (record) =>
+            (record as { code?: unknown; level?: unknown; message?: unknown }).code === 'KI-CHECKER-4' &&
+            (record as { level?: unknown }).level === 'FAIL' &&
+            String((record as { message?: unknown }).message).includes('catalogue wiring only')
         )
       ).toBe(true)
     } finally {
