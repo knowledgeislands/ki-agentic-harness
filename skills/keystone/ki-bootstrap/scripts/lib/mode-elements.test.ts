@@ -57,11 +57,11 @@ const elements: Record<string, ModeElements> = {
 
 check('valid declaration → no errors', validateModeElements('ki-repo', elements['ki-repo']).length === 0)
 const selfDeclaration = JSON.parse(
-  readFileSync(join(resolve(import.meta.dirname, '..'), '.ki-meta', 'mode-elements.json'), 'utf8')
+  readFileSync(join(resolve(import.meta.dirname, '..', '..'), '.ki-meta', 'mode-elements.json'), 'utf8')
 ) as ModeElements
 check('ki-skills declaration → conforms to the executable schema contract', validateModeElements('ki-skills', selfDeclaration).length === 0)
 
-const harnessRoot = resolve(import.meta.dirname, '../../../..')
+const harnessRoot = resolve(import.meta.dirname, '../../../../..')
 const skillsRoot = join(harnessRoot, 'skills')
 const governanceSkillDirs = readdirSync(skillsRoot, { withFileTypes: true })
   .flatMap((category) => {

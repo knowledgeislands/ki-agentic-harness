@@ -1,5 +1,5 @@
 {
-  "ref": "88f2e8d2d430825accbaa55e1d7d975d48e603ed",
+  "ref": "5516b693e55606b6e323fb3d095d1def14ba6a63",
   "files": {
     ".ki-meta/checkers/ki-agents/scripts/audit.ts": "21e3d3b0a8f7cf3818436dc6083bbc79f08bea0d7379db1d3fb5273749158858",
     ".ki-meta/checkers/ki-agents/scripts/conform.ts": "11c6f147bd83a53bcad99590b697780387cb8e7d34ebba87b6ec1965c5e0b0c2",
@@ -25,7 +25,7 @@
     ".ki-meta/checkers/ki-engineering/scripts/audit.ts": "ed453861745281c5ba36cb760d7f255ffe2cf38b6fe193e96ee199b173c38445",
     ".ki-meta/checkers/ki-engineering/scripts/conform.ts": "99a8f8a857fb1b2cf5a3edd0dd2950b562ff782a91709db070f0948f4faa3575",
     ".ki-meta/checkers/ki-engineering/.ki-meta/mode-elements.json": "bb60ae8645b57a18ef5f95e2832e5f52b54a1a31338a4a3155a7bcd6843ffeea",
-    ".ki-meta/checkers/ki-engineering/references/rubric.md": "0bd4999664f9ac1f3dd4d34835a9349060fc7b2e0f8f4826598d01f2c3df0020",
+    ".ki-meta/checkers/ki-engineering/references/rubric.md": "a3586cff93cfbb374f8e0610e175eb0a32e2147b3f2684259850a04894f56916",
     ".ki-meta/checkers/ki-engineering/scripts/vendored/ki-skills/checker-reporter.ts": "41d95a0c1759278f87812a91d283b85cc036349be1010eb0cc53580e3ba22344",
     ".ki-meta/checkers/ki-engineering/help.md": "f9a3e0b5c8c720468d56fb0d024f8d0f6095a0f205a0d56a2433710db35a73fc",
     ".ki-meta/educators/ki-engineering/educate.ts": "9334bdabd8b9800031217d760fcae45d06650fc52b5415e3d67ef13be57f8fb0",

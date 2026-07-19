@@ -1308,7 +1308,7 @@ function buildCandidate(
   }
 
   const aggregate = join(staging, 'bin', 'aggregate.ts')
-  const modeElements = join(skillDir('ki-skills'), 'scripts', 'mode-elements.ts')
+  const modeElements = join(import.meta.dirname, 'mode-elements.ts')
   const vendoredPlanner = join(staging, 'bin', 'mode-elements.ts')
   copyRegularFile(modeElements, vendoredPlanner)
   recordGenerated(journal, staging, join('bin', 'mode-elements.ts'))
