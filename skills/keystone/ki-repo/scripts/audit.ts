@@ -100,7 +100,7 @@ const REQUIRED_FILES: [id: string, paths: string[]][] = [
 ]
 
 // `note` is informational (a per-repo override in effect), never a failure.
-// Unified severity ladder — shared by every KI checker (enforcement-framework §2).
+// Unified severity ladder — shared by every KI checker (checker-contract).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 // Cited-finding shape: `area` is the rubric code (references/rubric.md), `ref` the
 // reference-doc pointer (defaults to the standard STD; the rare judgment finding overrides

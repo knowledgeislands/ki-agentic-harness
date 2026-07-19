@@ -104,7 +104,7 @@ headroom = "recommended"          # "required" | "recommended" | "off"
 `
 
 // ── findings ────────────────────────────────────────────────────────────────
-// Unified severity ladder — shared by every KI checker (enforcement-framework §2).
+// Unified severity ladder — shared by every KI checker (checker-contract).
 const RUBRIC = 'references/rubric.md'
 const findings: CheckerFinding[] = []
 const fail = (code: string, message: string, ref?: string, file?: string): void =>

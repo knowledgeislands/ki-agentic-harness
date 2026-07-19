@@ -2,7 +2,7 @@
 
 Line-by-line pass/fail items for auditing a Knowledge Islands Homebrew tap against the [Homebrew tap standard](standards.md). Run [`../scripts/audit.ts`](../scripts/audit.ts) for the mechanical items (marked **[M]**), then judge the rest by reading (**[J]**).
 
-Every **[M]** item maps to a check in the checker (SHAPE-9); the checker IDs below are the ones it emits. **[J]** items need a model — is the `test do` meaningful, does the formula install what it claims. Severity uses the shared ladder from `ki-skills`' [enforcement framework](../../../general-governance/ki-skills/references/enforcement-framework.md) §2: **FAIL** (not a tap), **WARN** (formula/shape divergence), **INFO/NA** (capability + config notes).
+Every **[M]** item maps to a check in the checker (SHAPE-9); the checker IDs below are the ones it emits. **[J]** items need a model — is the `test do` meaningful, does the formula install what it claims. Severity uses the shared ladder from `ki-skills`' [checker contract](../../../general-governance/ki-skills/references/checker-contract.md): **FAIL** (not a tap), **WARN** (formula/shape divergence), **INFO/NA** (capability + config notes).
 
 Because this skill **wraps Homebrew's external standard**, the deepest formula checks are delegated: when `brew` is on PATH the checker runs `brew audit --strict` + `brew style` and surfaces their findings (`TAP-BREW`). The rubric's own items are the tap-**shape** checks `brew` cannot make.
 

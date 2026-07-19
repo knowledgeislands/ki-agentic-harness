@@ -27,7 +27,7 @@ import {
   judgmentFindingsFromRubric
 } from './vendored/ki-skills/checker-reporter.ts'
 
-// Unified severity ladder — shared by every KI checker (enforcement-framework §2).
+// Unified severity ladder — shared by every KI checker (checker-contract).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 // area is the criterion identifier (references/rubric.md); ref is its reference-doc
 // pointer (the standard the criterion enforces); file names the path a file-scoped finding

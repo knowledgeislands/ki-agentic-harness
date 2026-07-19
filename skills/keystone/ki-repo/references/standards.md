@@ -48,7 +48,7 @@ Every repo carries these at the root. Presence is checked **on the default branc
 - `.ki-meta/audits/<concern>.{md,json}` — the latest audit report per concern (`engineering`, `skills`, `repo`, …), written by a checker run with `--report` and overwritten each run (latest-only, no history). The `.json` is the machine-readable substrate a composed audit merges; the `.md` is the human report.
 - `.ki-meta/conform/<concern>.md` — the latest record of what a CONFORM changed.
 
-Presence is **not required** — the directory appears the first time a checker is run with `--report`. What the audit checks (the `ki-meta` criterion) is that the derived subdirs are **gitignored, not committed**: `.gitignore` carries `.ki-meta/audits/` and `.ki-meta/conform/`, while the `.ki-meta/` namespace itself is left un-ignored so a future _durable_ subdir can be tracked. The convention is owned here; the `enforcement-framework` (engineering) references it and writes `.ki-meta/audits/` as the AUDIT consumer.
+Presence is **not required** — the directory appears the first time a checker is run with `--report`. What the audit checks (the `ki-meta` criterion) is that the derived subdirs are **gitignored, not committed**: `.gitignore` carries `.ki-meta/audits/` and `.ki-meta/conform/`, while the `.ki-meta/` namespace itself is left un-ignored so a future _durable_ subdir can be tracked. The convention is owned here; checker consumers write `.ki-meta/audits/` as the AUDIT working area.
 
 ## Repository-local development links
 

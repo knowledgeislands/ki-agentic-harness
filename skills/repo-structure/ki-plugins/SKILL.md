@@ -79,4 +79,4 @@ Re-anchor the standard to the current Claude plugin/marketplace spec:
 - The reference instance keeps a **public-but-proprietary** LICENSE (public visibility ≠ open licence), a deliberate divergence from `ki-repo`'s public-⇒-MIT default. It is documented in the repo's `.ki-config.toml`; do not silently flip it to MIT.
 - A **stale projection** (the on-disk skill/agent set lagging the harness) is the most common real finding and is never fixed by editing here — regenerate via `ki-binding`.
 - Full detail: [Plugins Standard](references/standards.md), [Audit Rubric](references/rubric.md), and the tracked [source list](references/sources.md).
-- Checker output conforms to the [canonical checker reporter](../../general-governance/ki-skills/references/checker-reporter.md).
+- Checker output conforms to the [canonical checker response](../../general-governance/ki-skills/references/checker-response.md).

@@ -19,7 +19,7 @@ This is a **standard, base-agnostic Process skill**. It hard-codes no single rep
 ## What this skill owns
 
 1. **The common toolchain** — the baseline every TS/Bun repo meets, plus capability conditionals that fire only when a repo opts into a capability. The full, quotable standard is [the engineering standard](references/standards.md); the line-by-line items are in [the rubric](references/rubric.md).
-2. **The governance-skill enforcement framework** — the shared mechanism for defining and checking _any_ standard (the mode shape, the mechanical-checker contract, the mechanical/judgment rubric tagging, the `sources.md` cadence, the `.ki-config.toml` validate-down contract). It is owned by `ki-skills` in [the enforcement framework](../../general-governance/ki-skills/references/enforcement-framework.md); this skill conforms to it.
+2. **The governance-skill rubric model** — the shared mechanism for turning any standard into structured criteria, focused evidence, phased audit and conform execution, and canonical checker responses. It is owned by `ki-skills` in [the rubric-authoring guide](../../general-governance/ki-skills/references/rubric-authoring.md); this skill conforms to it.
 
 **Artifact-specific rules are not here.** Anything meaningful only for one artifact type (an MCP's `bin`, `ki:server:mcp:*` scripts, coverage-exclude list, tool surface) lives in that artifact's skill. A repo is fully audited by **composing** this skill's checker with the artifact skill's — see below.
 
@@ -43,7 +43,7 @@ A repo is "clean" only when **every applicable** skill's audit passes. The `.ki-
 
 ## Operating modes
 
-Carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH** — EDUCATE scaffolds a new TS repo's toolchain. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The mode shape is defined in `ki-skills`' [enforcement framework](../../general-governance/ki-skills/references/enforcement-framework.md).
+Carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH** — EDUCATE scaffolds a new TS repo's toolchain. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The governance-skill implementation shape is defined in `ki-skills`' [rubric-authoring guide](../../general-governance/ki-skills/references/rubric-authoring.md).
 
 ### Mode AUDIT — check a repo's common toolchain
 

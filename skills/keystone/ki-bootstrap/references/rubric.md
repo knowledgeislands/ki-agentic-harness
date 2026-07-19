@@ -1,6 +1,6 @@
 # Audit Rubric — ki-bootstrap
 
-Line-by-line criteria for auditing a Knowledge Islands repo's project-local skill install against [the bootstrap standard](standards.md). Each is tagged **[M] mechanical** (the bundled checker — [`publish-project-skills.ts`](../scripts/lib/publish-project-skills.ts) `--check` decides it — capture its output, don't re-derive) or **[J] judgment** (assess by reading). Severity uses the unified ladder defined in `ki-skills`' [enforcement framework](../../../general-governance/ki-skills/references/enforcement-framework.md) §2.
+Line-by-line criteria for auditing a Knowledge Islands repo's project-local skill install against [the bootstrap standard](standards.md). Each is tagged **[M] mechanical** (the bundled checker — [`publish-project-skills.ts`](../scripts/lib/publish-project-skills.ts) `--check` decides it — capture its output, don't re-derive) or **[J] judgment** (assess by reading). Severity uses the unified ladder defined in `ki-skills`' [checker contract](../../../general-governance/ki-skills/references/checker-contract.md).
 
 ## BOOT — project-local skill install
 

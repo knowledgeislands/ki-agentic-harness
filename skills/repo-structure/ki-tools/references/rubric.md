@@ -2,7 +2,7 @@
 
 Line-by-line pass/fail items for auditing a Knowledge Islands `tools-*` repo against the [tool-repo standard](standards.md). Run [`../scripts/audit.ts`](../scripts/audit.ts) for the mechanical items (marked **[M]**), then judge the rest ( **[J]** ) by reading.
 
-Every **[M]** item corresponds to a check in the checker (per `ki-skills`' SHAPE-9 + the checker-contract). Severity uses the shared ladder, defined in `ki-skills`' [enforcement framework](../../../general-governance/ki-skills/references/enforcement-framework.md) §2: **FAIL** (ship-stopper), **WARN** (expected-but-missing / divergence), **POLISH** (consistency), **ADVISORY** (needs a human/out-of-band check), **INFO** (context).
+Every **[M]** item corresponds to a check in the checker (per `ki-skills`' SHAPE-9 + the checker contract). Severity uses the shared ladder, defined in `ki-skills`' [checker contract](../../../general-governance/ki-skills/references/checker-contract.md): **FAIL** (ship-stopper), **WARN** (expected-but-missing / divergence), **POLISH** (consistency), **ADVISORY** (needs a human/out-of-band check), **INFO** (context).
 
 Applicability: `[ki-tools]` or `bin/` activates the complete audit. With neither, **CONFIG [M]** emits exactly one `NA` and stops; either signal retains all existing findings. ([standard](standards.md#scope-container-not-contents))
 

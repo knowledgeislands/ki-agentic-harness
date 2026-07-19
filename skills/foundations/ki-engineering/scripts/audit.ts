@@ -36,7 +36,7 @@ import {
   judgmentFindingsFromRubric
 } from './vendored/ki-skills/checker-reporter.ts'
 
-// Unified severity ladder — shared by every KI checker (enforcement-framework §2).
+// Unified severity ladder — shared by every KI checker (checker-contract).
 // area is the minted rubric code (references/rubric.md); ref is its
 // reference-doc pointer; file names the path a file-scoped finding concerns.
 // ref/file are optional and ride into the canonical reporter for the aggregate to render.

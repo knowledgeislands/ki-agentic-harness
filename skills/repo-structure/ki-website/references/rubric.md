@@ -4,7 +4,7 @@ Line-by-line pass/fail items for auditing a site against the [Eleventy site stan
 
 Every criterion carries a stable **`WEB-N`** code — the identifier `audit.ts` / `conform.ts` emit as each finding's `area`, alongside a reference-doc pointer (the standard section) and, where file-scoped, the path. Codes are append-only: never renumber or reuse a retired one. The mechanical-only checks the linter performs but that had no prose bullet (package.json parse, the Tailwind CLI dependency, the `.ki-config.toml` opt-in table and its validate-down) carry codes **WEB-39..WEB-42**.
 
-Severity: **FAIL** (ship-stopper — the site won't build or `dist/` isn't portable), **WARN** (layout / config / Tailwind divergence), **POLISH** (SEO / consistency) — the shared ladder, defined in `ki-skills`' [enforcement framework](../../../general-governance/ki-skills/references/enforcement-framework.md) §2.
+Severity: **FAIL** (ship-stopper — the site won't build or `dist/` isn't portable), **WARN** (layout / config / Tailwind divergence), **POLISH** (SEO / consistency) — the shared ladder, defined in `ki-skills`' [checker contract](../../../general-governance/ki-skills/references/checker-contract.md).
 
 > **Common toolchain → `ki-engineering`.** This rubric is the **site-build delta** only. The Bun mandate, aggregate/scoped audit wiring, direct code-tool execution, `tsconfig`/`biome`, and TypeScript checking are the common engineering layer — **run `ki:engineering:audit` first**. Serving the built `dist/` is **`ki-website-cloudflare`** — run its audit too if the site is deployed. The repo is fully clean only when every applicable audit passes.
 

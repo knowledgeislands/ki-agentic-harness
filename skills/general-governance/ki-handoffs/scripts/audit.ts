@@ -27,7 +27,7 @@ import {
   judgmentFindingsFromRubric
 } from './vendored/ki-skills/checker-reporter.ts'
 
-// Unified severity ladder — shared by every KI checker (enforcement-framework §2).
+// Unified severity ladder — shared by every KI checker (checker-contract).
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 const RUBRIC = 'references/rubric.md'
 const findings: CheckerFinding[] = []
