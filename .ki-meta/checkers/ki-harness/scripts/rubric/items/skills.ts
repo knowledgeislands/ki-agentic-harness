@@ -1,6 +1,7 @@
 import type { AuditOutcome } from '../../vendored/ki-skills/rubric.ts'
 import type { HarnessRubricContext } from '../contexts/harness.ts'
 import { outcomes, result } from './common.ts'
+
 const SKILLS_ITEMS = [
   {
     code: 'SKILLS-1',

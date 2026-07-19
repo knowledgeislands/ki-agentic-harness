@@ -1,4 +1,22 @@
 import { mechanical, one } from './shared.ts'
-export const SHELL_LINT = mechanical('SHELL-LINT', 'Shell lint CI', 'Shell entrypoints have a CI shellcheck reference.', 'WARN', (c) => !c.primary || !c.shell ? one({ status: 'NOT_APPLICABLE', message: 'primary executable is not a shell entrypoint; shell checks do not apply' }) : one(/shellcheck/i.test(c.workflowText) ? { status: 'PASS', message: 'a CI workflow references shellcheck', subject: `bin/${c.primary}` } : { status: 'VIOLATION', message: 'shell entrypoint has no CI shellcheck reference', subject: `bin/${c.primary}` }))
-export const SHELL_TEST = mechanical('SHELL-TEST', 'Shell test CI', 'Shell entrypoints have a Bats suite referenced by CI.', 'WARN', (c) => !c.primary || !c.shell ? one({ status: 'NOT_APPLICABLE', message: 'primary executable is not a shell entrypoint; shell checks do not apply' }) : !c.bats ? one({ status: 'VIOLATION', message: 'shell entrypoint has no *.bats suite', subject: 'tests/' }) : one(/\bbats\b/i.test(c.workflowText) ? { status: 'PASS', message: 'a *.bats suite is referenced by CI', subject: 'tests/' } : { status: 'VIOLATION', message: '*.bats suite is not referenced by CI', subject: 'tests/' }))
+export const SHELL_LINT = mechanical('SHELL-LINT', 'Shell lint CI', 'Shell entrypoints have a CI shellcheck reference.', 'WARN', (c) =>
+  !c.primary || !c.shell
+    ? one({ status: 'NOT_APPLICABLE', message: 'primary executable is not a shell entrypoint; shell checks do not apply' })
+    : one(
+        /shellcheck/i.test(c.workflowText)
+          ? { status: 'PASS', message: 'a CI workflow references shellcheck', subject: `bin/${c.primary}` }
+          : { status: 'VIOLATION', message: 'shell entrypoint has no CI shellcheck reference', subject: `bin/${c.primary}` }
+      )
+)
+export const SHELL_TEST = mechanical('SHELL-TEST', 'Shell test CI', 'Shell entrypoints have a Bats suite referenced by CI.', 'WARN', (c) =>
+  !c.primary || !c.shell
+    ? one({ status: 'NOT_APPLICABLE', message: 'primary executable is not a shell entrypoint; shell checks do not apply' })
+    : !c.bats
+      ? one({ status: 'VIOLATION', message: 'shell entrypoint has no *.bats suite', subject: 'tests/' })
+      : one(
+          /\bbats\b/i.test(c.workflowText)
+            ? { status: 'PASS', message: 'a *.bats suite is referenced by CI', subject: 'tests/' }
+            : { status: 'VIOLATION', message: '*.bats suite is not referenced by CI', subject: 'tests/' }
+        )
+)
 export const SHELL = [SHELL_LINT, SHELL_TEST] as const

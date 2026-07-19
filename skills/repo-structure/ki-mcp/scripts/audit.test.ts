@@ -1,11 +1,11 @@
 import { expect, test } from 'bun:test'
+import { spawnSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
-import { spawnSync } from 'node:child_process'
-import { parseCheckerJsonl, validateCheckerRecords } from './vendored/ki-skills/checker.ts'
 import { createMcpContext } from './rubric/contexts/mcp.ts'
 import { KI_MCP_FAMILY_CODES, KI_MCP_RUBRIC } from './rubric/items/index.ts'
+import { parseCheckerJsonl, validateCheckerRecords } from './vendored/ki-skills/checker.ts'
 
 const audit = resolve(import.meta.dir, 'audit.ts')
 const fixture = (): string => mkdtempSync(join(tmpdir(), 'ki-mcp-audit-'))

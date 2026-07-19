@@ -1,7 +1,8 @@
+import type { AuditOutcome, ConformOutcome } from '../../vendored/ki-skills/rubric.ts'
 import type { HarnessRubricContext } from '../contexts/harness.ts'
 import { HARNESS_PARTS } from '../contexts/harness.ts'
-import type { AuditOutcome, ConformOutcome } from '../../vendored/ki-skills/rubric.ts'
 import { outcomes, result } from './common.ts'
+
 const LAYOUT_ITEMS = [
   {
     code: 'LAY-1',

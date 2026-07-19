@@ -363,10 +363,7 @@ try {
       `console.log(JSON.stringify({ ...run, record: 'summary', summary: { fail: 0, warn: 0, fixed: 0, info: 0, notApplicable: 0, pass: 5_000, judgment: { unevaluated: 0 } } }))\n`
   )
   const largeAggregate = spawnSync('bun', [aggregate, 'audit'], { cwd: checkerRoot, encoding: 'utf8' })
-  check(
-    'aggregate → captures canonical streams larger than Bun pipe limits',
-    !largeAggregate.stdout.includes('invalid checker reports')
-  )
+  check('aggregate → captures canonical streams larger than Bun pipe limits', !largeAggregate.stdout.includes('invalid checker reports'))
 
   const invalidSkill = join(checkerRoot, '.ki-meta', 'checkers', 'ki-invalid', 'scripts')
   mkdirSync(invalidSkill, { recursive: true })

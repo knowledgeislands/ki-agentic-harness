@@ -1,7 +1,7 @@
-import { LA_FRONTMATTER } from './frontmatter.ts'
-import { LA_STRUCTURE } from './structure.ts'
 import { defineRubricFamily, type RubricDefinition } from '../../vendored/ki-skills/rubric.ts'
 import type { LiveArtifactsContext } from '../contexts/live-artifacts.ts'
+import { LA_FRONTMATTER } from './frontmatter.ts'
+import { LA_STRUCTURE } from './structure.ts'
 
 export const KI_KB_LIVE_ARTIFACTS_RUBRIC: RubricDefinition<LiveArtifactsContext> = {
   name: 'ki-kb-live-artifacts',

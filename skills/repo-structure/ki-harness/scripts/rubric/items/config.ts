@@ -1,6 +1,7 @@
 import type { HarnessRubricContext } from '../contexts/harness.ts'
 import { hasTomlTable } from '../contexts/harness.ts'
 import { result } from './common.ts'
+
 const CONFIG_ITEMS = [
   {
     code: 'CONFIG-1',

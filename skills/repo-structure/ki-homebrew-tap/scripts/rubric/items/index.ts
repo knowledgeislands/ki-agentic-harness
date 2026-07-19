@@ -1,7 +1,7 @@
-import { CONFIG } from './config.ts'
-import { TAP } from './tap.ts'
 import { defineRubricFamily, type RubricDefinition } from '../../vendored/ki-skills/rubric.ts'
 import type { HomebrewTapContext } from '../contexts/homebrew-tap.ts'
+import { CONFIG } from './config.ts'
+import { TAP } from './tap.ts'
 
 export const KI_HOMEBREW_TAP_RUBRIC: RubricDefinition<HomebrewTapContext> = {
   name: 'ki-homebrew-tap',

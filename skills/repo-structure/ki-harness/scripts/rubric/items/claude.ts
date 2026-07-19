@@ -1,4 +1,3 @@
-
 const CLAUDE_ITEMS = [
   {
     code: 'CLAUDE-1',

@@ -1,4 +1,3 @@
-
 const COLLISION_ITEMS = [
   {
     code: 'COLL-1',

@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { AuditOutcome } from '../../vendored/ki-skills/rubric.ts'
 import type { McpRubricContext } from '../contexts/mcp.ts'
@@ -7,7 +7,7 @@ import { outcomes } from './common.ts'
 const registrations = (source: string): string[] => {
   const callers = new Set(['registerTool'])
   for (const match of source.matchAll(/(?:const|let)\s+(\w+)\s*=\s*(?:[\w.]+\.)?registerTool\b/g)) callers.add(match[1] as string)
-  const expression = new RegExp(`\\b(?:${[...callers].join('|')})\\(\\s*['\"]([a-z0-9_]+)['\"]`, 'g')
+  const expression = new RegExp(`\\b(?:${[...callers].join('|')})\\(\\s*['"]([a-z0-9_]+)['"]`, 'g')
   return [...source.matchAll(expression)].map((match) => match[1] as string)
 }
 
@@ -59,7 +59,7 @@ export const TOOL_1 = {
           for (const entry of readdirSync(join(context.root, 'src', 'tools'), { withFileTypes: true })) {
             const file = join(context.root, 'src', 'tools', entry.name, 'index.ts')
             if (!entry.isDirectory() || !context.exists('src', 'tools', entry.name, 'index.ts')) continue
-            const group = [...readFileSync(file, 'utf8').matchAll(/server\.registerTool\(\s*['\"]([^'\"]+)['\"]/g)].map(
+            const group = [...readFileSync(file, 'utf8').matchAll(/server\.registerTool\(\s*['"]([^'"]+)['"]/g)].map(
               (match) => match[1] as string
             )
             if (group.length > 1) {

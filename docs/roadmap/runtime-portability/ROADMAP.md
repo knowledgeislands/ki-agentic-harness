@@ -8,10 +8,6 @@ code: RTP
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
-### Add Codex transcript grounding to `ki-recap`
-
-Make the `ki-recap` grounding helper runtime-portable: retain Claude project-transcript discovery, add Codex session discovery by repository working directory, normalise both JSONL formats into the existing tool-call evidence, and default to detecting the newest matching live transcript. Preserve an explicit runtime override and safe transcript selection for concurrent sessions.
-
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.

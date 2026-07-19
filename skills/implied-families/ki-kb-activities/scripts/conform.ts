@@ -34,7 +34,6 @@ for (let index = 0; index < parsed.arguments.length; index++) {
     }
     harness = resolve(value)
   } else if (argument === '--dry-run') {
-    continue
   } else if (argument.startsWith('-')) {
     process.stderr.write(`error: unknown option: ${argument}\n`)
     process.exit(2)

@@ -12,6 +12,10 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Make long-running individual and aggregate AUDIT / CONFORM runs visibly advance instead of remaining silent until their complete JSONL stream is rendered. Preserve canonical JSONL on stdout for machine consumers; carry concise, runtime-neutral progress on a separate channel, default it sensibly for interactive use, and provide a quiet mode for automation. Aggregate runs must identify the active skill and completed/remaining work, while individual runs should expose meaningful rubric execution progress without reporting suppressed findings early or changing what is checked.
 
+### Add a safe repository clean operation
+
+Add a source-owned `ki-bootstrap` CLEAN operation that removes repository-generated harness state without needing a working vendored runner. Remove `.ki-meta/` and runtime skill copies only when their generated marker proves harness ownership. Preserve `.ki-config.toml`, authored or explicitly linked skills, repository agents, canonical `scripts/vendored/` source dependencies, and any unmarked `ki-*` path; never infer ownership from a name prefix alone. Make the operation safe to repeat, dry-runnable, and suitable for returning a repository to the state immediately before EDUCATE publication.
+
 ### Normalise skill packaging after the checker rollout
 
 After the structured checker rollout is stable, apply the accumulated mechanical packaging cleanups in one current-state migration with no compatibility aliases or dual paths:

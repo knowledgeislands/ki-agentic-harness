@@ -868,7 +868,10 @@ try {
 {
   const result = run(EDUCATE, ['--help'])
   check('EDUCATE help exits cleanly', result.code === 0)
-  check('EDUCATE help explains bootstrap invocation', result.out.includes('Usage: bun scripts/educate.ts') && result.out.includes('Bootstrap ki-repo'))
+  check(
+    'EDUCATE help explains bootstrap invocation',
+    result.out.includes('Usage: bun scripts/educate.ts') && result.out.includes('Bootstrap ki-repo')
+  )
 }
 
 if (failed) {
