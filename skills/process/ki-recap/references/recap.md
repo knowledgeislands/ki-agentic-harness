@@ -4,13 +4,15 @@ _On-demand procedure for `ki-recap`. The kind, scope, and leg summary live in [`
 
 ## Contents
 
-- [Run the grounding helper](#1-run-the-grounding-helper)
-- [Summarise](#2-summarise)
-- [Surface what is outstanding](#3-surface-what-is-outstanding)
-- [Harvest the learnings, and route each](#4-harvest-the-learnings-and-route-each)
-- [Specific actions](#5-specific-actions)
-- [Optional handoff to `ki-next`](#6-optional-handoff-to-ki-next)
-- [Compress](#7-compress-only-when---compress-is-passed)
+- [Recap procedure](#recap-procedure)
+  - [Contents](#contents)
+  - [1. Run the grounding helper](#1-run-the-grounding-helper)
+  - [2. Summarise](#2-summarise)
+  - [3. Surface what is outstanding](#3-surface-what-is-outstanding)
+  - [4. Harvest the learnings, and route each](#4-harvest-the-learnings-and-route-each)
+  - [5. Specific actions](#5-specific-actions)
+  - [6. Optional handoff to `ki-next`](#6-optional-handoff-to-ki-next)
+  - [7. Compress (only when `--compress` is passed)](#7-compress-only-when---compress-is-passed)
 
 **Ground every claim in reality, not memory.** Warm in-session context, compaction summaries, and recalled memory entries are hypotheses about state, not evidence of it — concurrent sessions, background processes, and elapsed time all make them stale. Before the recap asserts a checkable fact — a commit landed, a gate passed, a file contains something, a plan is open — check it now (`git log`, re-run the read-only gate, read the file). What cannot be cheaply re-checked, state as recollection ("as of when it ran"), not as fact.
 
@@ -86,7 +88,7 @@ Apply these scenario checks when offering it:
 | Situation | Required result |
 | --- | --- |
 | Clean recap | Say “No actions”; do not manufacture a `ki-next` handoff. |
-| Repository has no project roadmap | Recap still completes; do not offer `ki-next` as a selection route. |
+| Repository has no roadmap | Recap still completes; do not offer `ki-next` as a selection route. |
 | Deferred work was already parked on the roadmap | Record it as what happened, not outstanding; `ki-next` will re-ground its current state if invoked. |
 | Learning route is unapproved | Label it as a proposal; neither recap nor `ki-next` writes it. |
 | Generated-footprint rollout has unrelated consumer drift | Report the rollout evidence and the unrelated drift separately; do not let either prove the other. |

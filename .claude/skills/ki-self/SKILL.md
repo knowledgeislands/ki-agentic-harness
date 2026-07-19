@@ -23,7 +23,7 @@ It complements the shared skills; it does not duplicate their standards.
 
 ## Boundaries
 
-Shared standards remain owned by their named skills, including `ki-authoring`, `ki-engineering`, `ki-skills`, `ki-repo`, and `ki-project-roadmap`.
+Shared standards remain owned by their named skills, including `ki-authoring`, `ki-engineering`, `ki-skills`, `ki-repo`, and `ki-repo-roadmap`.
 
 ## Modes
 
