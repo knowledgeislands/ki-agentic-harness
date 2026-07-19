@@ -37,7 +37,7 @@ import { frontmatterLine, insertFrontmatterLine, parseFrontmatter, replaceFrontm
 import { discoverSkillDirs, listMarkdownFiles } from './rubric/contexts/skill-files.ts'
 import { hintVerbs, isProcessSkill } from './rubric/contexts/modes.ts'
 
-export const findingsFromConformActions = <Context>(actions: readonly ConformAction<Context>[]): RubricFinding[] =>
+const findingsFromConformActions = <Context>(actions: readonly ConformAction<Context>[]): RubricFinding[] =>
   actions.map((action) => ({
     type: 'M',
     level: action.level ?? 'POLISH',

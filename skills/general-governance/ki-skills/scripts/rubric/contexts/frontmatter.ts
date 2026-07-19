@@ -13,22 +13,12 @@ export const frontmatterBlock = (content: string): string | null => {
   return match ? (match[1] as string) : null
 }
 
-export const stripFrontmatterQuotes = (value: string): string => {
+const stripFrontmatterQuotes = (value: string): string => {
   const trimmed = value.trim()
   if ((trimmed.startsWith('"') && trimmed.endsWith('"')) || (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
     return trimmed.slice(1, -1)
   }
   return trimmed
-}
-
-export const frontmatterList = (value: string | undefined): string[] => {
-  if (!value) return []
-  const contents = value.trim().replace(/^\[/, '').replace(/\]$/, '')
-  if (contents.trim() === '') return []
-  return contents
-    .split(',')
-    .map(stripFrontmatterQuotes)
-    .filter((entry) => entry.length > 0)
 }
 
 export const parseFrontmatter = (content: string): ParsedFrontmatter => {
@@ -88,15 +78,6 @@ export const parseFrontmatter = (content: string): ParsedFrontmatter => {
     index++
   }
   return { keys, present, raw, values, isMapping }
-}
-
-export const isYamlMapping = (block: string): boolean => {
-  try {
-    const parsed = (globalThis as typeof globalThis & BunYamlRuntime).Bun.YAML.parse(block)
-    return Boolean(parsed && typeof parsed === 'object' && !Array.isArray(parsed))
-  } catch {
-    return false
-  }
 }
 
 export const frontmatterLine = (block: string, key: string): string | null => {

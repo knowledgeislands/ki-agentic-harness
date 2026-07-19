@@ -2,7 +2,7 @@ import type { RubricItem } from '../../lib/rubric/rubric.ts'
 import type { LongevityRubricContext } from '../contexts/contexts.ts'
 import type { RefreshContext } from '../contexts/longevity.ts'
 
-export const REFRESH_GRACE_DAYS = 14
+const REFRESH_GRACE_DAYS = 14
 
 const refreshStatus = (context: RefreshContext): string => {
   const status =

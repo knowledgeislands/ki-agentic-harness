@@ -1,4 +1,4 @@
-export type RefreshClass = 'external-spec' | 'canonical'
+type RefreshClass = 'external-spec' | 'canonical'
 
 export type RefreshContext = {
   sourcesPresent: boolean

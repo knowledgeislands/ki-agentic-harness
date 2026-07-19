@@ -1,6 +1,7 @@
 import type { RubricItem } from '../../lib/rubric/rubric.ts'
 import type { LayoutRubricContext } from '../contexts/contexts.ts'
-import { hasBackslashLink } from '../contexts/links.ts'
+
+const hasBackslashLink = (markdown: string): boolean => /\[[^\]]*\]\([^)]*\\[^)]*\)/.test(markdown)
 
 export const LAY_1: RubricItem<LayoutRubricContext> = {
   code: 'LAY-1',

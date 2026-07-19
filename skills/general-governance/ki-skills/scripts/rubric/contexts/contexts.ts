@@ -54,7 +54,7 @@ export type KiLinkRubricContext = {
   relativeTargetExists: (target: string) => boolean
 }
 
-export type CheckerImport = {
+type CheckerImport = {
   entry: string
   specifier: string
   resolvesInsideScripts: boolean
@@ -68,7 +68,7 @@ export type KiCheckerRubricContext = {
   reporterModuleExists: boolean
 }
 
-export type CollisionTarget = {
+type CollisionTarget = {
   name: string
   description: string
 }
@@ -77,12 +77,12 @@ export type CollisionRubricContext = { targets: readonly CollisionTarget[] }
 
 export type LongevityRubricContext = RefreshContext & { reportStatus?: boolean }
 
-export type CheckerContract = {
+type CheckerContract = {
   name: string
   usesReporter: boolean
 }
 
-export type OwnershipCollision = {
+type OwnershipCollision = {
   file: string
   skills: readonly string[]
 }

@@ -15,7 +15,7 @@ import { REFERENCES } from './references.ts'
 import { SCRIPTS } from './scripts.ts'
 import { SIZE } from './size.ts'
 
-export const RUBRIC_FAMILIES = [
+const RUBRIC_FAMILIES = [
   FRONTMATTER,
   NAME,
   DESC,

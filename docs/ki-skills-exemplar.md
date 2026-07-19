@@ -81,7 +81,7 @@ Do not broaden this work into a full checker migration, criterion-catalogue rede
 - [x] Codify the OPT family currently implemented by the checker.
 - [x] Codify SIZE, including the opt-in SIZE-5 measurement path.
 - [x] Codify the REF family and move its table-of-contents check.
-- [x] Codify LINK and move the shared Markdown-link helpers under `scripts/rubric/contexts/`.
+- [x] Codify LINK and keep its family-local Markdown-link helpers beside their owning items.
 - [x] Codify the judgment-only BODY, INVOKE, and PROC families.
 - [x] Codify SCRIPT, COLL, and LONG as their own family modules.
 - [x] Codify LAY, including its structural audit callbacks.
@@ -103,6 +103,7 @@ Do not broaden this work into a full checker migration, criterion-catalogue rede
 - `audit.ts` owns command arguments, target reads, evidence assembly, rubric dispatch, and final reporter invocation.
 - `conform.ts` owns command arguments, target reads, safe write callbacks, dry-run enforcement, rubric dispatch, and final reporter invocation.
 - A rubric family owns each rule's code, title, description, sources, judgment prompt, audit callback, and conform callback.
+- An export is a deliberate module contract: family modules export their rubric items and family collection, while helpers, assembly constants, and types used only within that module remain private. Only callable entries and deliberately vendorable modules widen that surface.
 - Wrappers do not reimplement a rule, invent a private finding shape, or translate severity through a second ladder.
 - The shared rubric runtime owns only cross-family types and execution mechanics, including collecting audit findings and converting conform actions into findings.
 - `scripts/rubric/contexts/` owns family input contracts, context factories, and evidence/parsing/traversal helpers shared by rubric families or both wrappers; it contains no rule policy.
@@ -122,6 +123,7 @@ Apply these checks to one later governance skill at a time, only after the root 
 - Any shared checker implementation is declared as `provider:module`, sourced only from the provider's `scripts/lib/`, and copied below the consumer's `scripts/vendored/<provider>/`.
 - Its audit and conform commands use only their local implementation modules and emit the canonical reporter JSONL with no private rendering path.
 - Its rubric remains the sole source of finding code, title, type, and level; its checker emits evidence and available action only.
+- Its exports are intentional: rubric items/families and declared shared modules are public; implementation-only helpers, constants, and types are private to their module.
 - Its focused source and vendored tests pass before the next skill is considered.
 
 - Its family-local helpers live beside the owning rubric family; helpers shared by families live under `scripts/rubric/contexts/`.
