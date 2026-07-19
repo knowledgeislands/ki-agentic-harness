@@ -110,8 +110,15 @@ process.exit(ok ? 0 : 1)
 `
 
 try {
+  writeFileSync(join(fixture, '.ki-config.toml'), '[ki-repo]\nsupported_runtimes = ["claude-code"]\n\n[ki-authoring]\n\n[ki-skills]\n')
   const bootstrapped = run('bun', [bootstrap, fixture], root)
   check('bootstrap fixture → exits cleanly', bootstrapped.status === 0)
+  check(
+    'bootstrap fixture → publishes generated runtime skill copies',
+    existsSync(join(fixture, '.claude', 'skills', 'ki-repo', 'SKILL.md'))
+  )
+  const repeatedBootstrap = run('bun', [bootstrap, fixture], root)
+  check('bootstrap fixture → re-runs without rejecting its generated runtime skill copies', repeatedBootstrap.status === 0)
 
   const checkers = join(fixture, '.ki-meta', 'checkers')
   for (const name of readdirSync(checkers)) rmSync(join(checkers, name), { recursive: true, force: true })

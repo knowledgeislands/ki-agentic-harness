@@ -122,6 +122,8 @@ try {
     'combined publication → writes one shared gitignore payload',
     ignored.includes('.claude/skills/') && ignored.includes('.agents/skills/') && ignored.includes('.claude/agents/')
   )
+  const repeated = run(normal)
+  check('combined publication → re-runs with its generated metadata intact', repeated.status === 0)
 } finally {
   rmSync(normal, { recursive: true, force: true })
 }

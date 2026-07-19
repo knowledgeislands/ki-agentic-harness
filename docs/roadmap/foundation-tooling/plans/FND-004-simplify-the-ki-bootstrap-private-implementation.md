@@ -1,7 +1,7 @@
 ---
 id: 'FND-004'
 title: Simplify the ki-bootstrap private implementation
-status: complete
+status: done
 roadmap: foundation-tooling/simplify-the-ki-bootstrap-private-implementation
 blocks: FND-003
 blocked-by: —

@@ -157,15 +157,26 @@ function linkResolvesTo(path: string, source: string): boolean {
   return current?.kind === 'link' && typeof current.link === 'string' && resolve(dirname(path), current.link) === resolve(source)
 }
 
+const generatedSkillMetadataDirectory = (path: string): boolean => {
+  const metadata = entry(path)
+  if (metadata?.kind !== 'dir') return false
+  const entries = readdirSync(path)
+  return (
+    entries.length === 0 ||
+    (entries.length === 1 && entries[0] === 'generated-runtime-skill.json' && entry(join(path, entries[0]))?.kind === 'file')
+  )
+}
+
 function skillTreeIntegrity(path: string, label: string): string {
   const root = mustEntry(path, label)
   if (root.kind !== 'dir') throw new Error(`${label} must be a directory: ${path}`)
   const rows: string[] = []
   const walk = (current: string, relativePath: string): void => {
     for (const name of readdirSync(current).sort()) {
-      if (relativePath === '.ki-meta' && join(relativePath, name) === GENERATED_SKILL_MARKER) continue
       const child = join(current, name)
       const childRelative = relativePath ? join(relativePath, name) : name
+      if (relativePath === '' && name === '.ki-meta' && generatedSkillMetadataDirectory(child)) continue
+      if (childRelative === GENERATED_SKILL_MARKER) continue
       const found = mustEntry(child, label)
       if (found.kind === 'link') throw new Error(`${label} must not contain symlinks: ${child}`)
       if (found.kind === 'other') throw new Error(`${label} must contain only regular files and directories: ${child}`)
