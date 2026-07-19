@@ -1,28 +1,33 @@
-# Live Artifacts audit rubric
+<!-- GENERATED FILE: edit scripts/rubric/items/, not this publication. -->
 
-**[M]** = mechanical (checked by `scripts/audit.ts`). **[J]** = judgment (reader applies during AUDIT).
+# Generated rubric — kb-live-artifacts
 
-## Structural
+> **Generated publication.** The TypeScript rubric items under `scripts/rubric/items/` are canonical.
 
-| ID     | Check                                                                  | Level | Type |
-| ------ | ---------------------------------------------------------------------- | ----- | ---- |
-| LA-S-1 | Index note exists when any artifact files are found                    | WARN  | [M]  |
-| LA-S-2 | Each `.md` artifact has a same-stem `.html` in the same directory      | WARN  | [M]  |
-| LA-S-3 | Each `.html` has a matching `.md` (no orphaned renders)                | WARN  | [M]  |
-| LA-S-4 | Paired `.html` is not older than `.md` beyond the sync threshold (24h) | WARN  | [M]  |
+## LA — artifact structure
 
-## Frontmatter
+→ [standard](standards.md)
 
-| ID     | Check                                            | Level | Type |
-| ------ | ------------------------------------------------ | ----- | ---- |
-| LA-F-1 | `status` present and one of `active`, `archived` | WARN  | [M]  |
-| LA-F-2 | `renders` present                                | WARN  | [M]  |
+Artifact pairing, index, freshness, and judgment prompts.
 
-## Judgment
+- **LA-S-1 [M] — artifact index** — The index note exists when artifact sources are present. (standards.md)
+- **LA-S-2 [M] — published sources** — Every Markdown artifact has a same-stem HTML render. (standards.md)
+- **LA-S-3 [M] — orphaned renders** — Every HTML render has a same-stem Markdown source. (standards.md)
+- **LA-S-4 [M] — render freshness** — Each HTML render is no older than the configured threshold behind its Markdown source. (standards.md)
+- **LA-J-1 [J] — useful index descriptions** — The index accurately lists active artifacts with useful one-line descriptions. (standards.md)
+  - _Review prompt:_ Does the index accurately list every active artifact with a useful one-line description?
+- **LA-J-2 [J] — Markdown authority** — Markdown is the authoritative source and no content exists only in HTML. (standards.md)
+  - _Review prompt:_ Is each Markdown artifact authoritative, with no essential content present only in its HTML render?
+- **LA-J-3 [J] — archive rationale** — Archived artifacts retain when-and-why context rather than disappearing silently. (standards.md)
+  - _Review prompt:_ Do archived artifacts retain a clear when-and-why rationale rather than disappearing silently?
+- **LA-J-4 [J] — stable artifact names** — Artifact names are descriptive and stable for published links. (standards.md)
+  - _Review prompt:_ Are artifact names descriptive and stable enough to preserve published links?
 
-| ID     | Check                                                                                                 | Type |
-| ------ | ----------------------------------------------------------------------------------------------------- | ---- |
-| LA-J-1 | Index note accurately lists all active artifacts with a useful one-line description                   | [J]  |
-| LA-J-2 | `.md` body is the authoritative source — no content exists only in the `.html`                        | [J]  |
-| LA-J-3 | Archived artifacts are retained with a note of when and why they were archived, not silently deleted  | [J]  |
-| LA-J-4 | Artifact names are descriptive and stable — renaming an artifact breaks its `.html` link if published | [J]  |
+## LA-F — artifact frontmatter
+
+→ [standard](standards.md)
+
+Required metadata on Markdown artifact sources.
+
+- **LA-F-1 [M] — artifact status** — Each artifact source declares `status: active` or `status: archived`. (standards.md)
+- **LA-F-2 [M] — render declaration** — Each frontmatter block declares `renders: html`. (standards.md)

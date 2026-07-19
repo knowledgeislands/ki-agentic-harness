@@ -1,52 +1,39 @@
-# Audit Rubric
+<!-- GENERATED FILE: edit scripts/rubric/items/, not this publication. -->
 
-Line-by-line pass/fail items for auditing a Knowledge Islands Homebrew tap against the [Homebrew tap standard](standards.md). Run [`../scripts/audit.ts`](../scripts/audit.ts) for the mechanical items (marked **[M]**), then judge the rest by reading (**[J]**).
+# Generated rubric — homebrew-tap
 
-Every **[M]** item maps to a check in the checker (SHAPE-9); the checker IDs below are the ones it emits. **[J]** items need a model — is the `test do` meaningful, does the formula install what it claims. Severity uses the shared ladder from `ki-skills`' [checker contract](../../../general-governance/ki-skills/references/checker-contract.md): **FAIL** (not a tap), **WARN** (formula/shape divergence), **INFO/NA** (capability + config notes).
+> **Generated publication.** The TypeScript rubric items under `scripts/rubric/items/` are canonical.
 
-Because this skill **wraps Homebrew's external standard**, the deepest formula checks are delegated: when `brew` is on PATH the checker runs `brew audit --strict` + `brew style` and surfaces their findings (`TAP-BREW`). The rubric's own items are the tap-**shape** checks `brew` cannot make.
+## TAP — tap structure
 
-Applicability: `[ki-homebrew-tap]` or `Formula/` activates the complete audit. With neither, **CONFIG [M]** emits exactly one `NA` and stops; either signal retains the tap-structure and config findings below.
+→ [standard](standards.md)
 
-## Contents
+Formula layout, local Homebrew evidence, and judgment prompts.
 
-- [Tap structure](#tap-structure)
-- [Formula shape](#formula-shape)
-- [Sourcing](#sourcing)
-- [Discoverability](#discoverability)
-- [Homebrew's own audit (delegated)](#homebrews-own-audit-delegated)
-- [Config](#config)
+- **TAP-1 [M] — formula directory** — `Formula/` exists and contains at least one Ruby formula. (standards.md)
+- **TAP-2 [M] — formula class** — Each formula has a `class <Camel> < Formula` declaration. (standards.md)
+- **TAP-3 [M] — formula fields** — Each formula has the required metadata, install method, and test block. (standards.md)
+- **TAP-4 [M] — formula description style** — Formula descriptions are no more than 80 characters and do not start with an article. (standards.md)
+- **TAP-5 [M] — versioned source URLs** — Formula URLs use a tagged-release tarball rather than a branch or HEAD. (standards.md)
+- **TAP-6 [M] — formula discoverability** — README.md lists every formula by name. (standards.md)
+- **TAP-7 [M] — Homebrew audit** — When available, Homebrew style and strict audit run for every formula. (standards.md)
+- **TAP-J1 [J] — tap naming** — The repository name follows Homebrew tap naming conventions. (standards.md)
+  - _Review prompt:_ Does the repository name follow the `homebrew-<name>` convention without an unsafe rename?
+- **TAP-J2 [J] — meaningful formula test** — Each `test do` block exercises an installed binary rather than a placeholder. (standards.md)
+  - _Review prompt:_ Does each formula test exercise its installed binary with a meaningful assertion?
+- **TAP-J3 [J] — install correctness** — Each install block installs the artefact the tool actually ships. (standards.md)
+  - _Review prompt:_ Does each `def install` block install the artefact the tool actually ships?
+- **TAP-J4 [J] — source integrity** — Checksums and release tags correspond to the declared source archive. (standards.md)
+  - _Review prompt:_ Do each source URL, version, and checksum correspond to the intended release archive?
+- **TAP-J5 [J] — fresh README entries** — README formula rows have accurate descriptions and source links. (standards.md)
+  - _Review prompt:_ Are README formula rows complete, current, and accurate?
+- **TAP-J6 [J] — CI Homebrew coverage** — Tap CI runs `brew test-bot` when local Homebrew is unavailable. (standards.md)
+  - _Review prompt:_ When local Homebrew is unavailable, does CI run the appropriate Homebrew test-bot checks?
 
-## Tap structure
+## CONFIG — configuration
 
-- [ ] [M] FAIL — `TAP-FORMULA-DIR`: `Formula/` exists and carries ≥ 1 `*.rb`. No `Formula/`, or an empty one → not a tap.
-- [ ] [J] WARN — `TAP-NAME`: the repo is named `homebrew-<x>` (external Homebrew constraint; the skill governs shape, not name — flag only if a rename would break `brew tap`).
+→ [standard](standards.md)
 
-## Formula shape
+Identity marker and keyless configuration.
 
-_Per `Formula/*.rb`._
-
-- [ ] [M] WARN — `TAP-CLASS`: contains `class <Camel> < Formula`.
-- [ ] [M] WARN — `TAP-FIELDS`: has each of `desc`, `homepage`, `url`, `sha256`, `license`, a `def install`, and a `test do` block (one warn per missing field).
-- [ ] [M] WARN — `TAP-DESC-STYLE`: `desc` value is ≤ 80 chars and does not start with "A "/"An "/"The " (Homebrew `brew style` rule, mirrored so it fires without `brew`).
-- [ ] [J] WARN — `TAP-TEST`: the `test do` block exercises the **installed** binary (asserts on real `--version`/`--help` output), not a placeholder `assert true` / `system "true"`.
-- [ ] [J] WARN — `TAP-INSTALL`: `def install` installs the artifact the tool actually ships (`bin.install "bin/<tool>"` matches the `tools-*` repo's `bin/`), not a guessed path.
-
-## Sourcing
-
-- [ ] [M] WARN — `TAP-URL-VERSIONED`: `url` is a tagged-release tarball (`/archive/refs/tags/` or `/releases/download/`), not a bare branch or HEAD.
-- [ ] [J] WARN — `TAP-SHA`: the `sha256` matches the tarball at `url` (recompute if in doubt: `curl -sL <url> | shasum -a 256`) and the tag version matches `#{version}` used in `test do`.
-
-## Discoverability
-
-- [ ] [M] WARN — `TAP-README`: each formula name appears in `README.md` (the `## Formulae` table).
-- [ ] [J] WARN — `TAP-README-FRESH`: the README table's description and source-repo link for each formula are present and correct (the row is not a stale placeholder).
-
-## Homebrew's own audit (delegated)
-
-- [ ] [M] capability — `TAP-BREW`: when `brew` is on PATH, `brew style <formula>` and `brew audit --strict <formula>` run per formula; failures surface as WARN, a clean pass as INFO. When `brew` is absent, NA (the tap's `brew test-bot` CI is the backstop). A `brew` invocation error is caught and downgraded to NA, never a crash.
-- [ ] [J] WARN — `TAP-BREW-CI`: if `TAP-BREW` SKIPped (no local `brew`), confirm the tap carries a `.github/workflows/` `brew test-bot` job so the deep formula checks run somewhere.
-
-## Config
-
-- [ ] [M] WARN — `CONFIG`: `[ki-homebrew-tap]` table present in `.ki-config.toml`; keyless, validate-down (unknown keys WARNed). `[ki-repo]` should also be present (checked by `ki-repo`, not here).
+- **CONFIG-1 [M] — identity marker** — `.ki-config.toml` contains a keyless `[ki-homebrew-tap]` marker with no unknown keys. (standards.md)

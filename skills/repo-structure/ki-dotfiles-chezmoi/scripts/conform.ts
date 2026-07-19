@@ -1,56 +1,44 @@
 #!/usr/bin/env bun
-/**
- * Mechanical CONFORM for the chezmoi dotfiles-management standard.
- *
- * It creates only the derivable `.chezmoiignore` file. The locally vendored
- * canonical checker reporter emits the result stream; the aggregate renders it.
- */
-import { existsSync, statSync, writeFileSync } from 'node:fs'
-import { dirname, join, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import {
-  type CheckerFinding,
-  checkerReporterExitCode,
-  emitCheckerReporter,
-  judgmentFindingsFromRubric
-} from './vendored/ki-skills/checker-reporter.ts'
+/** Safe-write CONFORM entry point for the structured ki-dotfiles-chezmoi rubric. */
+import { resolve } from 'node:path'
+import { createChezmoiContextFactory } from './rubric/contexts/chezmoi.ts'
+import { KI_DOTFILES_CHEZMOI_FAMILY_CODES, KI_DOTFILES_CHEZMOI_RUBRIC } from './rubric/items/index.ts'
+import { runChecker } from './vendored/ki-skills/checker.ts'
+import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
 
-const STD = 'references/standards.md'
-const RUBRIC = 'references/rubric.md'
-const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
-const rubricPath = existsSync(join(SCRIPT_DIR, 'references', 'rubric.md'))
-  ? join(SCRIPT_DIR, 'references', 'rubric.md')
-  : join(SCRIPT_DIR, '..', 'references', 'rubric.md')
-
-function main(): void {
-  const args = process.argv.slice(2)
-  const dryRun = args.includes('--dry-run')
-  const target = resolve(args.find((arg) => !arg.startsWith('-')) ?? '.')
-  const findings: CheckerFinding[] = []
-  const record = (level: CheckerFinding['level'], code: string, message: string, ref?: string, file?: string): void => {
-    findings.push({ type: 'M', level, code, message, ...(ref ? { ref } : {}), ...(file ? { file } : {}) })
-  }
-
-  if (!existsSync(target) || !statSync(target).isDirectory()) {
-    record('FAIL', 'CHEZMOI-1', 'conform target is not an existing directory', STD, target)
-  } else {
-    const chezmoiignorePath = join(target, '.chezmoiignore')
-    if (existsSync(chezmoiignorePath)) {
-      record('PASS', 'CHEZMOI-1', 'managed ignore file is already present', STD, '.chezmoiignore')
-    } else if (dryRun) {
-      record('POLISH', 'CHEZMOI-1', 'would scaffold the managed ignore file', STD, '.chezmoiignore')
-    } else {
-      writeFileSync(
-        chezmoiignorePath,
-        '# Files/directories chezmoi should never manage.\n# See references/standards.md (Repo layout & naming) in the ki-dotfiles-chezmoi skill.\n'
-      )
-      record('POLISH', 'CHEZMOI-1', 'scaffolded the managed ignore file', STD, '.chezmoiignore')
-    }
-  }
-
-  findings.push(...judgmentFindingsFromRubric(rubricPath, RUBRIC))
-  emitCheckerReporter({ mode: 'conform', concern: 'dotfiles-chezmoi', target, findings })
-  process.exitCode = checkerReporterExitCode(findings)
+const argv = process.argv.slice(2)
+if (argv.includes('-h') || argv.includes('--help')) {
+  process.stdout.write('Usage: bun scripts/conform.ts [repo-path] [--dry-run] [--reporter jsonl|terminal] [--reporter-levels levels]\n')
+  process.exit(0)
 }
 
-main()
+let parsed: ReturnType<typeof parseReporterArguments>
+try {
+  parsed = parseReporterArguments(argv)
+} catch (error) {
+  process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
+  process.exit(2)
+}
+
+const paths = parsed.arguments.filter((argument) => !argument.startsWith('-'))
+const unknown = parsed.arguments.filter((argument) => argument.startsWith('-') && argument !== '--dry-run')
+if (paths.length > 1 || unknown.length) {
+  process.stderr.write(`error: ${unknown[0] ? `unknown option: ${unknown[0]}` : 'conform accepts at most one repository path'}\n`)
+  process.exit(2)
+}
+
+const target = resolve(paths[0] ?? '.')
+const result = runChecker({
+  mode: 'conform',
+  concern: KI_DOTFILES_CHEZMOI_RUBRIC.concern,
+  target,
+  rubric: KI_DOTFILES_CHEZMOI_RUBRIC,
+  subjects: [
+    {
+      familyCodes: KI_DOTFILES_CHEZMOI_FAMILY_CODES,
+      context: createChezmoiContextFactory({ target, dryRun: parsed.arguments.includes('--dry-run') })
+    }
+  ]
+})
+process.stdout.write(renderCheckerResult(result, { ...parsed.options, colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR) }))
+process.exit(result.exitCode)

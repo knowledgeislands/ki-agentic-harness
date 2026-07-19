@@ -1,8 +1,8 @@
 ---
 name: ki-dotfiles-chezmoi
+checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 depends-on: [ki-authoring]
 vendors: [educate, audit, conform, help]
-checker-dependencies: [ki-skills:checker-reporter]
 description: >
   Codify, audit, and conform the chezmoi dotfiles-management standard — naming-prefix semantics, edit-source-not-target discipline, shell-loader layering, the bin/ dispatcher pattern, app-mutated-config handling (surgical patch vs full-template reverse-merge), format-preserving config editor selection, single-source-to-multi-target config templating, repo-local-vs-user-level CLAUDE.md layering, and chezmoi-specific repo-shape and OS gotchas. Use when auditing or authoring a chezmoi source repo, deciding how to manage or surgically edit an app-mutated config file, structuring shell config or a bin/ directory, or checking dotfiles conventions are followed. Triggers: "chezmoi standard", "audit my chezmoi repo", "how should I manage this dotfile", "surgical patch or reverse-merge", "preserve config comments", "dotfiles conventions". Not for a specific repo's own personal tool choices (its exact scripts, taps, MCP servers) — those belong in that repo's own `CLAUDE.md`, not this skill.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
@@ -34,8 +34,8 @@ Like every governance skill it carries the universal **AUDIT · CONFORM · EDUCA
 
 ### Mode AUDIT — check a chezmoi repo against the standard
 
-1. **Run the mechanical checker** — `bun scripts/audit.ts <repo-path>`. It checks the four **[M]** criteria in [the rubric](references/rubric.md) (`.chezmoiignore` presence, `.chezmoidata`/`.chezmoitemplates` presence when `.tmpl` files exist, `bin/` executable-prefix conformance, git lock-file hygiene) and surfaces every **[J]** criterion as an ADVISORY finding so it is named and visible even though it needs a reader. Exit code is non-zero on any FAIL.
-2. Apply the **judgment** (`[J]`) criteria the ADVISORY findings name — Pattern A/B correctness for a given app config, format-preserving editor selection and evidence for every surgical writer, CLAUDE.md Layer 1/2 placement quality, `.chezmoiignore` negation intent, and whether audit-reporting etiquette was actually followed.
+1. **Run the mechanical checker** — `bun scripts/audit.ts <repo-path> --reporter=terminal`. It checks the four **[M]** criteria in [the rubric](references/rubric.md) (`.chezmoiignore` presence, `.chezmoidata`/`.chezmoitemplates` presence when `.tmpl` files exist, `bin/` executable-prefix conformance, git lock-file hygiene). The default output is canonical JSONL; the terminal reporter shows actionable mechanical results. The summary counts the unevaluated **[J]** criteria, which a reader must apply separately. Exit code is non-zero on any FAIL.
+2. Apply the **judgment** (`[J]`) criteria named in [the rubric](references/rubric.md) — Pattern A/B correctness for a given app config, format-preserving editor selection and evidence for every surgical writer, CLAUDE.md Layer 1/2 placement quality, `.chezmoiignore` negation intent, and whether audit-reporting etiquette was actually followed.
 3. **Report** by location → criterion → fix; lead with FAIL findings, then judgment findings; present options, don't silently fix.
 
 ### Mode CONFORM — bring a repo into house shape

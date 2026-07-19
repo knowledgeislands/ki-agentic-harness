@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseCheckerJsonl } from './vendored/ki-skills/checker.ts'
-import { ENGINEERING_ITEMS } from './rubric/items/engineering.ts'
+import { ENGINEERING_ITEMS } from './rubric/items/index.ts'
 
 const CHECKER = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
 

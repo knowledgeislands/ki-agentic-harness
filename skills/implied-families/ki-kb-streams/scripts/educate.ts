@@ -20,4 +20,8 @@ import { fileURLToPath } from 'node:url'
 
 const SKILL = 'ki-kb-streams'
 const engine = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'ki-bootstrap', 'scripts', 'lib', 'repo-bootstrap.ts')
+if (process.argv.slice(2).some((argument) => ['-h', '--help', 'help', '?'].includes(argument))) {
+  process.stdout.write('Usage: bun scripts/educate.ts <target-repo> [--ref <ref>] [--dry-run]\n')
+  process.exit(0)
+}
 execFileSync('bun', [engine, ...process.argv.slice(2), '--seed', SKILL], { stdio: 'inherit' })

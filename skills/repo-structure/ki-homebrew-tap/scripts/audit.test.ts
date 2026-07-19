@@ -18,13 +18,24 @@ function fixture(): string {
   return mkdtempSync(join(tmpdir(), 'ki-homebrew-tap-applicability-'))
 }
 
-function run(root: string): { code: number; findings: Array<{ level: string }>; summary: { fail: number; na: number } } {
+function run(root: string): {
+  code: number
+  findings: Array<{ level: string }>
+  summary: { fail: number; notApplicable: number; judgment: { unevaluated: number } }
+} {
   const result = spawnSync(process.execPath, [AUDIT, root], { encoding: 'utf8' })
   const events = result.stdout
     .trim()
     .split(/\r?\n/)
     .filter(Boolean)
-    .map((line) => JSON.parse(line) as { record: string; level?: string; summary?: { fail: number; na: number } })
+    .map(
+      (line) =>
+        JSON.parse(line) as {
+          record: string
+          level?: string
+          summary?: { fail: number; notApplicable: number; judgment: { unevaluated: number } }
+        }
+    )
   const summary = events.find((event) => event.record === 'summary')?.summary
   const findings = events.filter((event) => event.record === 'finding' && event.level) as Array<{ level: string }>
   if (!summary) throw new Error(`missing canonical checker summary: ${result.stdout}`)
@@ -33,34 +44,36 @@ function run(root: string): { code: number; findings: Array<{ level: string }>; 
 
 for (const [label, arrange, assert] of [
   [
-    'absent and irrelevant reports NA plus judgment prompts',
+    'absent and irrelevant reports only CONFIG NA',
     (_root: string) => {},
-    (r: ReturnType<typeof run>) => r.code === 0 && r.summary.na === 1 && r.findings.length > 1
+    (r: ReturnType<typeof run>) =>
+      r.code === 0 && r.summary.notApplicable === 1 && r.findings.length === 1 && r.summary.judgment.unevaluated === 0
   ],
   [
-    'multiline string lookalike remains irrelevant with judgment prompts',
+    'multiline string lookalike remains irrelevant',
     (root: string) => writeFileSync(join(root, '.ki-config.toml'), '[ki-repo]\nnote = """\n[ki-homebrew-tap]\n"""\n'),
-    (r: ReturnType<typeof run>) => r.code === 0 && r.summary.na === 1 && r.findings.length > 1
+    (r: ReturnType<typeof run>) =>
+      r.code === 0 && r.summary.notApplicable === 1 && r.findings.length === 1 && r.summary.judgment.unevaluated === 0
   ],
   [
     'quoted declaration but incomplete runs the full audit',
     (root: string) => writeFileSync(join(root, '.ki-config.toml'), '["ki-homebrew-tap"]\n'),
-    (r: ReturnType<typeof run>) => r.code !== 0 && r.summary.fail > 0 && r.summary.na === 0
+    (r: ReturnType<typeof run>) => r.code !== 0 && r.summary.fail > 0
   ],
   [
     'malformed config fails closed into the full audit',
     (root: string) => writeFileSync(join(root, '.ki-config.toml'), '[ki-homebrew-tap\n'),
-    (r: ReturnType<typeof run>) => r.code !== 0 && r.summary.fail > 0 && r.summary.na === 0
+    (r: ReturnType<typeof run>) => r.code !== 0 && r.summary.fail > 0
   ],
   [
     'declared but incomplete runs the full audit',
     (root: string) => writeFileSync(join(root, '.ki-config.toml'), '[ki-homebrew-tap]\n'),
-    (r: ReturnType<typeof run>) => r.code !== 0 && r.summary.fail > 0 && r.summary.na === 0
+    (r: ReturnType<typeof run>) => r.code !== 0 && r.summary.fail > 0
   ],
   [
     'structural marker without declaration runs the full audit',
     (root: string) => mkdirSync(join(root, 'Formula')),
-    (r: ReturnType<typeof run>) => r.code !== 0 && r.summary.fail > 0 && r.summary.na === 0
+    (r: ReturnType<typeof run>) => r.code !== 0 && r.summary.fail > 0
   ]
 ] as const) {
   const root = fixture()

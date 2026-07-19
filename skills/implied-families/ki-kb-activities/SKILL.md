@@ -1,6 +1,6 @@
 ---
 name: ki-kb-activities
-checker-dependencies: [ki-skills:checker-reporter]
+checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 depends-on: []
 vendors: [educate, audit, conform, help]
 description: >
@@ -42,7 +42,7 @@ The `realization` field declares how this activity runs. Known types:
 | `manual`         | A human-run process — documented here for completeness.                                            |
 | `workflow`       | A multi-step automated workflow (Workflow script or equivalent).                                   |
 
-Additional realization types may be declared freely — the audit treats unrecognised values as ADVISORY rather than WARN/FAIL, so the system extends to new environments without requiring a skill update.
+Additional realization types may be declared freely — the audit reports unrecognised values as non-blocking `INFO`, so the system extends to new environments without requiring a skill update.
 
 ### Realization-specific fields
 
@@ -61,7 +61,7 @@ schedule_name: <job name> # the name as registered in the external scheduling sy
 schedule_env: cowork # or another identifier — free text, for documentation
 ```
 
-The checker cannot verify registration in an external system; it emits WARN if `schedule_name` is absent and ADVISORY noting the job should be registered in the named environment.
+The checker cannot verify registration in an external system; it emits WARN if `schedule_name` is absent and non-blocking `INFO` noting the job should be registered in the named environment.
 
 ### Activities.md index
 

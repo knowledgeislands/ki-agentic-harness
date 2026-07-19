@@ -1,207 +1,38 @@
 #!/usr/bin/env bun
-/**
- * Mechanical CONFORM for the ki-kb-live-artifacts standard — an honest
- * normalize-only conform. Most of this domain's findings are judgment (rendering
- * Markdown to HTML, choosing active-vs-archived, deleting an orphaned render),
- * so this script fixes only the two unambiguous, reversible gaps and reports the
- * rest as ADVISORY manual TODOs — never guessing a render or a deletion.
- *
- * Scope: a single base (default cwd), matching the house conform shape
- * (`bun conform.ts .` / `ki:kb-live-artifacts:conform`). The index-note name,
- * artifacts-dir default, the `.md`/`.html` pairing rule, and the frontmatter
- * parser are kept in lockstep with audit.ts (copied, not imported, so each
- * script stays valid standalone per the composition-only rule).
- *
- *   bun scripts/conform.ts [base-path]   # default: cwd
- *   --dry-run                            # print the plan, mutate nothing
- *   --json                               # emit the finding wrapper instead of prose
- *
- * Cited-finding shape (mirrors ki-authoring/scripts/conform.ts): each action
- * becomes a finding on the shared ladder — written/overwritten/appended/created/
- * fixed → POLISH, already-canonical → PASS, judgment/manual-TODO → ADVISORY —
- * carrying `area` = the rubric code, `ref` = its reference-doc pointer, and
- * `file` = the path an action concerns. `--json` governs *reporting*; `--dry-run`
- * governs *writing* — the two compose (`--json` still writes unless `--dry-run`).
- *
- * Fixes (unambiguous + reversible only):
- *   - LA-S-1 (index note absent): when artifact sources exist but the
- *     `Live Artifacts.md` index is missing, CREATES a stub index listing every
- *     source found. Each entry carries a placeholder description and a manual
- *     TODO to write the real one-line description (LA-J-1 is judgment).
- *   - LA-S-1 / LA-J-1 (unlisted source): a source `.md` present on disk but not
- *     mentioned in an EXISTING index gets an entry APPENDED to the end — existing
- *     entries and their order are never touched. A manual TODO is emitted for
- *     each appended entry so the operator can position it and write its blurb.
- *   - LA-F-2 (`renders` missing): when a source `.md` HAS a frontmatter block but
- *     no `renders` field, appends `renders: html` — the only render type in the
- *     model, derivable from the `.md`/`.html` pairing convention. Frontmatter is
- *     never created from scratch.
- *
- * Deliberately NEVER touches (judgment → ADVISORY manual TODOs):
- *   - LA-S-2 (`.md` with no `.html`), LA-S-3 (orphaned `.html`), LA-S-4 (stale
- *     pair) — each needs a render or a confirmed delete this skill does not perform.
- *   - LA-F-1 (`status` missing/invalid) — active-vs-archived is a judgment.
- *   - Frontmatter block missing entirely — authoring a whole block is judgment.
- *   - LA-J-1..4 — index accuracy, source authority, archive rationale, name
- *     stability are all reader judgment.
- *
- * Zero npm dependencies (bun + node stdlib only). Exit code is non-zero only on
- * an unrecoverable error (base path not a directory); findings/fixes never fail
- * the run.
- */
-
-import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
-import { basename, dirname, extname, join, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import {
-  type CheckerFinding,
-  checkerReporterExitCode,
-  emitCheckerReporter,
-  judgmentFindingsFromRubric
-} from './vendored/ki-skills/checker-reporter.ts'
-
-// ── kept in lockstep with audit.ts ──
-const INDEX_NOTE = 'Live Artifacts.md'
-const DEFAULT_ARTIFACTS_DIR = 'Admin/Operations/Live Artifacts'
-const RUBRIC = 'references/rubric.md'
-const paint = (_color: string, text: string): string => text
-const C = { dim: '', green: '', cyan: '' }
-
-const isDir = (p: string): boolean => existsSync(p) && statSync(p).isDirectory()
-const isFile = (p: string): boolean => existsSync(p) && statSync(p).isFile()
-
-function parseFrontmatter(text: string): Record<string, string> | null {
-  if (!text.startsWith('---')) return null
-  const end = text.indexOf('\n---', 3)
-  if (end === -1) return null
-  const block = text.slice(3, end)
-  const out: Record<string, string> = {}
-  for (const line of block.split('\n')) {
-    const colon = line.indexOf(':')
-    if (colon === -1) continue
-    const key = line.slice(0, colon).trim()
-    const val = line.slice(colon + 1).trim()
-    if (key && val) out[key] = val
-  }
-  return out
-}
-
-function listDir(dir: string): string[] {
-  if (!isDir(dir)) return []
-  return readdirSync(dir).map((n) => join(dir, n))
-}
+import { resolve } from 'node:path'
+import { createLiveArtifactsContext } from './rubric/contexts/live-artifacts.ts'
+import { KI_KB_LIVE_ARTIFACTS_FAMILY_CODES, KI_KB_LIVE_ARTIFACTS_RUBRIC } from './rubric/items/index.ts'
+import { runChecker } from './vendored/ki-skills/checker.ts'
+import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
 
 const argv = process.argv.slice(2)
-const dryRun = argv.includes('--dry-run')
-const base = resolve(argv.find((a) => !a.startsWith('-')) ?? '.')
-
-if (!isDir(base)) {
-  const findings: CheckerFinding[] = [{ type: 'M', level: 'FAIL', code: 'LA-S-1', message: `Not a directory: ${base}`, ref: RUBRIC }]
-  findings.push(...judgmentFindingsFromRubric(join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md'), RUBRIC))
-  emitCheckerReporter({ mode: 'conform', concern: 'kb-live-artifacts', target: base, findings })
-  process.exit(checkerReporterExitCode(findings))
-}
-
-// Collect-then-emit harness (mirrors conform.ts of ki-authoring). Each action records a
-// finding; `say` prints the human line only when not in --json mode, so a direct run
-// streams prose while the aggregate consumes the wrapper. area is the rubric code, ref its
-// reference-doc pointer, file the path an action concerns.
-const findings: CheckerFinding[] = []
-const rec = (level: CheckerFinding['level'], code: string, message: string, ref?: string, file?: string) =>
-  findings.push({ type: 'M', level, code, message, ref, file })
-const say = (_line: string): void => {}
-
-const artifactsDir = join(base, DEFAULT_ARTIFACTS_DIR)
-
-if (!isDir(artifactsDir)) {
-  rec('NA', 'structure', `${DEFAULT_ARTIFACTS_DIR}/ not found — no live artifacts to conform`)
-} else {
-  const entries = listDir(artifactsDir)
-  const mdFiles = entries.filter((p) => extname(p) === '.md' && !p.endsWith(`/${INDEX_NOTE}`)).sort()
-
-  // ── a) renders frontmatter repair (LA-F-2) ──
-  say(paint(C.cyan, 'renders frontmatter'))
-  let fmFixes = 0
-  for (const mdPath of mdFiles) {
-    const rel = mdPath.replace(`${base}/`, '')
-    const content = readFileSync(mdPath, 'utf8')
-    const fm = parseFrontmatter(content)
-    if (!fm) continue // no frontmatter block — authoring one is judgment, not scripted
-
-    if (!fm.renders) {
-      const fmMatch = content.match(/^---\n([\s\S]*?)\n---/)
-      if (!fmMatch) continue
-      const newBlock = `---\n${fmMatch[1]}\nrenders: html\n---`
-      const newContent = content.replace(fmMatch[0], newBlock)
-      rec('POLISH', 'LA-F-2', `${dryRun ? 'would add' : 'added'} renders: html to frontmatter`, RUBRIC, rel)
-      say(`  ${paint(C.green, 'fix')}   ${rel} — add renders: html`)
-      if (!dryRun) writeFileSync(mdPath, newContent)
-      fmFixes++
-    }
-    if (!fm.status) {
-      rec('ADVISORY', 'LA-F-1', "add 'status' (active | archived) — active-vs-archived is a human call", RUBRIC, rel)
-    }
-  }
-  if (fmFixes === 0) say(`  ${paint(C.dim, 'nothing to fix')}`)
-
-  // ── b) index note: create if absent, else append unlisted sources ──
-  say(`\n${paint(C.cyan, `index note (${INDEX_NOTE})`)}`)
-  const indexPath = join(artifactsDir, INDEX_NOTE)
-  const indexRel = `${DEFAULT_ARTIFACTS_DIR}/${INDEX_NOTE}`
-  const entryLine = (stem: string, file: string): string => `- [${stem}](${basename(file)}) — _(description — see manual TODO)_`
-
-  if (mdFiles.length === 0) {
-    say(`  ${paint(C.dim, 'no artifact sources — nothing to index')}`)
-  } else if (!isFile(indexPath)) {
-    const lines = mdFiles.map((p) => entryLine(basename(p, '.md'), p))
-    const stub = `# Live Artifacts\n\nOperational documents reflecting the current state of the island. Each row is a \`.md\`/\`.html\` pair.\n\n${lines.join('\n')}\n`
-    rec(
-      'POLISH',
-      'LA-S-1',
-      `${dryRun ? 'would create' : 'created'} index note — stub listing ${mdFiles.length} source(s)`,
-      RUBRIC,
-      indexRel
-    )
-    say(`  ${paint(C.green, 'create')} ${INDEX_NOTE} — stub listing ${mdFiles.length} source(s)`)
-    if (!dryRun) writeFileSync(indexPath, stub)
-    for (const p of mdFiles) rec('ADVISORY', 'LA-J-1', `write the one-line description for ${basename(p, '.md')}`, RUBRIC, indexRel)
-  } else {
-    const indexContent = readFileSync(indexPath, 'utf8')
-    const appendLines: string[] = []
-    for (const p of mdFiles) {
-      const stem = basename(p, '.md')
-      if (indexContent.includes(basename(p)) || indexContent.includes(stem)) continue
-      appendLines.push(entryLine(stem, p))
-      rec('POLISH', 'LA-S-1', `${dryRun ? 'would append' : 'appended'} index entry for ${stem}`, RUBRIC, indexRel)
-      rec('ADVISORY', 'LA-J-1', `position the appended entry for ${stem} and write its one-line description`, RUBRIC, indexRel)
-      say(`  ${paint(C.green, 'append')} ${stem}`)
-    }
-    if (appendLines.length === 0) {
-      rec('PASS', 'LA-S-1', 'every source already listed in the index note', RUBRIC, indexRel)
-      say(`  ${paint(C.dim, 'every source already listed')}`)
-    } else if (!dryRun) {
-      writeFileSync(indexPath, `${indexContent.replace(/\n*$/, '\n')}${appendLines.join('\n')}\n`)
-    }
-  }
-
-  // ── judgment items — never guessed, always surfaced ──
-  rec(
-    'ADVISORY',
-    'judgment',
-    'LA-S-2 (unpublished .md), LA-S-3 (orphaned .html), LA-S-4 (stale pair) each need a render or a confirmed delete — this skill does not render Markdown to HTML or delete files',
-    RUBRIC
+if (argv.includes('-h') || argv.includes('--help')) {
+  process.stdout.write(
+    'Usage: bun scripts/conform.ts [base-path] [--dry-run] [--reporter jsonl|terminal]\n\nApply safe live artifact index and render-declaration fixes.\n'
   )
-  say(`\n${paint(C.cyan, 'manual TODOs (judgment — not scripted)')}`)
-  const advisories = findings.filter((fnd) => fnd.level === 'ADVISORY' && fnd.code !== 'judgment')
-  if (advisories.length === 0) {
-    say(`  ${paint(C.dim, 'none')}`)
-  } else {
-    for (const a of advisories) say(`  - ${a.file ? `${a.file}: ` : ''}${a.message} (${a.code})`)
-  }
-  say(`  - LA-S-2 (unpublished .md), LA-S-3 (orphaned .html), LA-S-4 (stale pair) all need a render or a`)
-  say('    confirmed delete — this skill does not render Markdown to HTML or delete files. See audit output.')
+  process.exit(0)
 }
-
-findings.push(...judgmentFindingsFromRubric(join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md'), RUBRIC))
-emitCheckerReporter({ mode: 'conform', concern: 'kb-live-artifacts', target: base, findings })
-process.exitCode = checkerReporterExitCode(findings)
+let parsed: ReturnType<typeof parseReporterArguments>
+try {
+  parsed = parseReporterArguments(argv)
+} catch (error) {
+  process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
+  process.exit(2)
+}
+const unknown = parsed.arguments.find((argument) => argument.startsWith('-') && argument !== '--dry-run')
+const targets = parsed.arguments.filter((argument) => !argument.startsWith('-'))
+if (unknown || targets.length > 1) {
+  process.stderr.write(`error: ${unknown ? `unknown option: ${unknown}` : 'conform accepts at most one target'}\n`)
+  process.exit(2)
+}
+const target = resolve(targets[0] ?? '.')
+const context = createLiveArtifactsContext({ target, dryRun: parsed.arguments.includes('--dry-run') })
+const result = runChecker({
+  mode: 'conform',
+  concern: KI_KB_LIVE_ARTIFACTS_RUBRIC.concern,
+  target,
+  rubric: KI_KB_LIVE_ARTIFACTS_RUBRIC,
+  subjects: [{ familyCodes: KI_KB_LIVE_ARTIFACTS_FAMILY_CODES, context: () => context }]
+})
+process.stdout.write(renderCheckerResult(result, { ...parsed.options, colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR) }))
+process.exit(result.exitCode)

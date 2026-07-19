@@ -1,64 +1,92 @@
-# Audit Rubric — the checkable criteria
+<!-- GENERATED FILE: edit scripts/rubric/items/, not this publication. -->
 
-Line-by-line pass/fail criteria for auditing a **Knowledge Islands base** against the structure model carried in [the SKILL body](../SKILL.md) and [the reference](<Knowledge Islands KB Reference.md>). Each is tagged **[M] mechanical** (the bundled [checker](../scripts/audit.ts) enforces it) or **[J] judgment** (you assess it by reading). The **code** in bold (`ZONE-1`, `CONFIG-2`, …) is the area's short code plus its number within that area — it is what an audit should cite.
+# Generated rubric — Knowledge Islands knowledge bases
 
-A criterion's tag is a contract with the checker: an **[M]** check is run by `audit.ts` (do not eyeball it); a **[J]** check needs a model and is applied by reading in Mode AUDIT step 2. This is the kb half of the shared governance-skill shape (`<standard>` + `rubric.md` + `references/sources.md` + a checker); its standard is the zone model itself, not a separate `*standards.md`.
+> **Generated publication.** The TypeScript rubric items under `scripts/rubric/items/` are canonical; this file is generated from that catalogue.
 
-Applicability: `[ki-kb]` / `[ki-kb.zones]` or any canonical zone directory activates the complete audit. With neither, **ZONE-1 [M]** emits exactly one `NA` and stops; either signal retains the zone, config, and note checks below.
+## Contents
+
+- [ZONE — zone layout](#zone--zone-layout)
+- [CONFIG — KB configuration](#config--KB-configuration)
+- [ADMIN — Admin zone](#admin--Admin-zone)
+- [ROUTE — routing and placement](#route--routing-and-placement)
+- [NOTE — note conventions](#note--note-conventions)
+- [MEM — memory cascade](#mem--memory-cascade)
+- [LINK — base linking](#link--base-linking)
 
 ## ZONE — zone layout
 
-→ [SKILL: The Knowledge Islands structure](../SKILL.md)
+→ [standard](standards.md)
 
-- **ZONE-1 [M]** The five zones — `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, `Admin/` — are present, each **resolved through any `[ki-kb.zones]` alias** (a base mid-rename is audited at its real folder). A missing zone is a FAIL.
-- **ZONE-2 [M]** Each zone carries a **same-name index note** (`Calendar/Calendar.md`, …). A missing one is a WARN.
-- **ZONE-3 [M]** The root memory index `Admin/MEMORY.md` exists (the memory cascade reads it for the active Pillars). Missing is a FAIL.
-- **ZONE-4 [M]** `+/` (inbound) and `-/` (outbound) are **staging, not zones** — exempt from the same-name index rule; the checker reports their presence informationally only.
-- **ZONE-5 [M]** Any note carrying `type: session-digest` or `type: handoff` in frontmatter must reside under `-/`. A file with either type found under `Calendar/`, `Streams/`, `Pillars/`, or `Resources/` is a FAIL (misrouted produced artefact).
+Required zones, indexes, staging, and output placement.
 
-## CONFIG — the `[ki-kb]` config table
+- **ZONE-1 [M] — required zone layout** — Calendar/, Pillars/, Resources/, Streams/, and Admin/ are present, resolving each through a declared zone alias. (standards.md)
+- **ZONE-2 [M] — same-name zone indexes** — Each present zone has its same-name index note. (standards.md)
+- **ZONE-3 [M] — root memory index** — The resolved Admin zone carries MEMORY.md. (standards.md)
+- **ZONE-4 [M] — staging areas are not zones** — +/ and -/ are reported as staging only and are exempt from the zone-index rule. (standards.md)
+- **ZONE-5 [M] — produced outputs use outbound staging** — Notes with type session-digest or handoff reside under the resolved -/ staging area. (standards.md)
 
-→ [SKILL: Project bindings](../SKILL.md) · contract owned by `ki-repo` (validate down, ignore across)
+## CONFIG — KB configuration
 
-- **CONFIG-1 [M]** A key the table does not recognise warns. The only recognised keys are `required_frontmatter` (an array, see **NOTE-1**) directly under `[ki-kb]` and the zone aliases under `[ki-kb.zones]`; any other scalar key warns.
-- **CONFIG-2 [M]** A zone alias mapping a zone to its **own canonical name** (`Pillars = "Pillars"`) is redundant — advise dropping it.
-- **CONFIG-3 [M]** A key under `[ki-kb.zones]` that is **not a canonical zone name** (a typo, a stale entry) warns.
-- **CONFIG-4 [M]** Only this skill's own table is read; another skill's `[table]` is never inspected. (A declared alias whose folder is absent surfaces via **ZONE-1**, since zones resolve through the alias.)
-- **CONFIG-5 [M]** A recognised `preflight = [...]` array (note paths/globs to read before drafting) resolves under the base — a literal (non-glob) entry that names no existing path warns; glob entries are left to runtime.
+→ [standard](standards.md)
 
-## ADMIN — Admin-zone subdivisions
+The keyless marker and validate-down [ki-kb] configuration surface.
 
-→ [SKILL: The Admin zone](../SKILL.md)
+- **CONFIG-1 [M] — known scalar configuration keys** — Only required_frontmatter, preflight, and zones are recognised beneath [ki-kb]. (standards.md)
+- **CONFIG-2 [M] — non-redundant zone aliases** — A zone alias does not restate its canonical folder name. (standards.md)
+- **CONFIG-3 [M] — canonical zone alias keys** — Every [ki-kb.zones] key names a canonical zone or staging area. (standards.md)
+- **CONFIG-4 [M] — KB configuration boundary** — The checker reads only the ki-kb table and can append its absent opt-in marker safely. (standards.md)
+- **CONFIG-5 [M] — declared preflight paths** — Literal preflight paths resolve under the base; globs remain runtime-resolved. (standards.md)
 
-- **ADMIN-1 [M]** The canonical Admin subdivisions `Governance/` and `Operations/` are opt-in: each is checked only advisorily — an absent subdivision, or one present but missing its same-name index note, warns (create when that concern becomes active).
-- **ADMIN-2 [M]** When `Admin/Governance/` is present, it carries `Charter.md` (the base's scope, purpose, owner); absent warns.
-- **ADMIN-3 [M]** When `Admin/Governance/` is present, it carries `Conformance.md` (the active skills and their adoption date); absent warns.
+## ADMIN — Admin zone
 
-## ROUTE — routing & placement
+→ [standard](standards.md)
 
-→ [SKILL: Routing test](../SKILL.md)
+Optional Admin subdivisions and governance baseline.
 
-- **ROUTE-1 [J]** Notes sit in the zone the routing test selects — time-bound in `Calendar/`, active work in `Streams/`, settled internal knowledge in `Pillars/<Pillar>/`, external reference in `Resources/`. A misrouted note is drift.
+- **ADMIN-1 [M] — optional Admin subdivisions** — When Governance/ or Operations/ is active, it has its same-name index; absent subdivisions warn only. (standards.md)
+- **ADMIN-2 [M] — governance charter** — An active Admin/Governance/ directory carries Charter.md. (standards.md)
+- **ADMIN-3 [M] — governance conformance record** — An active Admin/Governance/ directory carries Conformance.md. (standards.md)
+
+## ROUTE — routing and placement
+
+→ [standard](standards.md)
+
+Judgment review of the knowledge-base routing test.
+
+- **ROUTE-1 [J] — notes follow the routing test** — Notes are placed in the zone selected by their time-bound, active-work, settled-knowledge, or external-reference role.
+  - _Review prompt:_ Does each sampled note sit in the zone selected by the routing test? (standards.md)
 
 ## NOTE — note conventions
 
-→ [SKILL: Mode SAVE / UPDATE](../SKILL.md)
+→ [standard](standards.md)
 
-- **NOTE-1 [M, J]** Where the base declares `required_frontmatter = [...]` in its `[ki-kb]` table, every note that **has** a frontmatter block carries those keys (extra keys are free). Undeclared, required keys are judgment — resolve them from the host `CLAUDE.md`; whether a given note should carry frontmatter at all also stays judgment.
-- **NOTE-1a [M]** A note's `---` frontmatter fence is **well-formed** — an opening fence has a closing `---`. (base-agnostic)
-- **NOTE-1b [M]** Frontmatter **keys are snake_case** (the house convention); a non-conforming key warns. (base-agnostic)
-- **NOTE-2 [J]** Naming follows the base's convention: dated for `Calendar/`, descriptive title elsewhere, mirroring the paired sources-store path for source extracts.
-- **NOTE-3 [J]** Facts are cited to a source path or reference; analysis is labelled where the base distinguishes fact from analysis.
+Frontmatter mechanics and note-authoring judgment.
 
-## MEM — memory-index accuracy
+- **NOTE-1 [M + J] — declared required frontmatter** — When required_frontmatter is declared, each note with frontmatter carries those keys; otherwise key requirements remain a judgment call.
+  - _Review prompt:_ When no required_frontmatter list is declared, are the required keys appropriate to this base and its host guidance? (standards.md)
+- **NOTE-1a [M] — well-formed frontmatter fences** — Every opening frontmatter fence closes. (standards.md)
+- **NOTE-1b [M] — snake_case frontmatter keys** — Top-level frontmatter keys use snake_case. (standards.md)
+- **NOTE-2 [J] — note naming convention** — Calendar notes are dated and other note names follow the base convention.
+  - _Review prompt:_ Do note names follow the base-specific naming convention? (standards.md)
+- **NOTE-3 [J] — source and analysis distinction** — Facts are cited to a source path or reference, and analysis is labelled where the base distinguishes it.
+  - _Review prompt:_ Are facts sourced and analysis labelled according to the base convention? (standards.md)
 
-→ [SKILL: Memory cascade](../SKILL.md)
+## MEM — memory cascade
 
-- **MEM-1 [J]** `Admin/MEMORY.md`'s active-Pillar list matches the Pillars actually present — no stale or missing entries. (Presence is **ZONE-3**; accuracy is judgment.)
-- **MEM-2 [M]** The memory cascade is **anchored in always-loaded context**: the base's root `CLAUDE.md` (or `AGENTS.md`) names the `MEMORY` index / the scope-before-work rule (or the `ki-kb` skill). Because skills load on demand, an unanchored cascade is silently skipped on a plain request. A missing anchor warns. (The Streams equivalent is `ki-kb-streams`' **GATE-1**; the general principle is **SHAPE-7** in `ki-skills`.)
+→ [standard](standards.md)
 
-## LINK — linking within a base
+Memory-index accuracy and its always-loaded anchor.
 
-→ [SKILL: Linking within a base](../SKILL.md)
+- **MEM-1 [J] — active-Pillar memory accuracy** — Admin/MEMORY.md lists the Pillars actually active in the base.
+  - _Review prompt:_ Does the memory index accurately list active Pillars? (standards.md)
+- **MEM-2 [M] — always-loaded memory cascade anchor** — Root CLAUDE.md or AGENTS.md anchors the memory cascade before substantive work. (standards.md)
 
-- **LINK-1 [J]** Note content links with Obsidian `[[wikilinks]]` (shortest unique path; a `## Contents` list uses the full path with an alias) — distinct from the relative-markdown-link convention the skill _files_ use.
+## LINK — base linking
+
+→ [standard](standards.md)
+
+Judgment review of Obsidian wikilink content.
+
+- **LINK-1 [J] — Obsidian note linking** — Base note content uses shortest-unique Obsidian wikilinks, with aliased full paths for contents lists.
+  - _Review prompt:_ Do sampled base notes use the prescribed Obsidian wikilink convention? (standards.md)

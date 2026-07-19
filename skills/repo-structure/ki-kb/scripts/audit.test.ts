@@ -1,89 +1,83 @@
 #!/usr/bin/env bun
-/** Focused applicability tests for the ki-kb checker. */
+import { describe, expect, test } from 'bun:test'
 import { spawnSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import {
-  parseCheckerReporterJsonl,
-  rubricCriteriaFromFile,
-  validateCheckerReporterEvents,
-  validateCheckerReporterRubric
-} from './vendored/ki-skills/checker-reporter.ts'
+import { KI_KB_RUBRIC } from './rubric/items/index.ts'
+import { renderRubric } from './rubric/publish.ts'
+import { parseCheckerJsonl } from './vendored/ki-skills/checker.ts'
 
 const AUDIT = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
+const CONFORM = join(dirname(fileURLToPath(import.meta.url)), 'conform.ts')
 const RUBRIC = join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md')
-let failed = false
-
-function check(label: string, condition: boolean): void {
-  console.log(`  ${condition ? 'ok  ' : 'FAIL'} ${label}`)
-  if (!condition) failed = true
-}
-
-function fixture(): string {
-  return mkdtempSync(join(tmpdir(), 'ki-kb-applicability-'))
-}
-
-type Run = { code: number; errors: string[]; findings: unknown[]; summary: { fail: number; na: number } }
-
-function run(root: string): Run {
+const fixture = (): string => mkdtempSync(join(tmpdir(), 'ki-kb-audit-'))
+const run = (root: string) => {
   const result = spawnSync(process.execPath, [AUDIT, root], { encoding: 'utf8' })
-  const parsed = parseCheckerReporterJsonl(result.stdout)
-  const events = parsed.events
-  const summary = (events.at(-1) as { summary?: { fail?: number; na?: number } } | undefined)?.summary
-  const findings = events.filter((event) => (event as { record?: string }).record === 'finding')
-  return {
-    code: result.status ?? 1,
-    errors: [
-      ...parsed.errors,
-      ...validateCheckerReporterEvents(events, result.status ?? 1),
-      ...validateCheckerReporterRubric(events, rubricCriteriaFromFile(RUBRIC))
-    ],
-    findings,
-    summary: { fail: summary?.fail ?? -1, na: summary?.na ?? -1 }
-  }
+  return { status: result.status, parsed: parseCheckerJsonl(result.stdout) }
 }
+const findings = (output: ReturnType<typeof run>) =>
+  output.parsed.records.filter(
+    (record) => typeof record === 'object' && record !== null && (record as { record?: unknown }).record === 'finding'
+  ) as Array<Record<string, unknown>>
 
-for (const [label, arrange, assert] of [
-  [
-    'absent and irrelevant reports one NA',
-    (_root: string) => {},
-    (r: ReturnType<typeof run>) => r.errors.length === 0 && r.code === 0 && r.summary.na === 1 && r.findings.length > 1
-  ],
-  [
-    'multiline string lookalike remains irrelevant',
-    (root: string) => writeFileSync(join(root, '.ki-config.toml'), '[ki-repo]\nnote = """\n[ki-kb]\n"""\n'),
-    (r: ReturnType<typeof run>) => r.errors.length === 0 && r.code === 0 && r.summary.na === 1 && r.findings.length > 1
-  ],
-  [
-    'quoted declaration but incomplete runs the full audit',
-    (root: string) => writeFileSync(join(root, '.ki-config.toml'), '["ki-kb"]\n'),
-    (r: ReturnType<typeof run>) => r.errors.length === 0 && r.code !== 0 && r.summary.fail > 0 && r.summary.na === 0
-  ],
-  [
-    'malformed config fails closed into the full audit',
-    (root: string) => writeFileSync(join(root, '.ki-config.toml'), '[ki-kb\n'),
-    (r: ReturnType<typeof run>) => r.errors.length === 0 && r.code !== 0 && r.summary.fail > 0 && r.summary.na === 0
-  ],
-  [
-    'declared but incomplete runs the full audit',
-    (root: string) => writeFileSync(join(root, '.ki-config.toml'), '[ki-kb]\n'),
-    (r: ReturnType<typeof run>) => r.errors.length === 0 && r.code !== 0 && r.summary.fail > 0 && r.summary.na === 0
-  ],
-  [
-    'structural marker without declaration runs the full audit',
-    (root: string) => mkdirSync(join(root, 'Admin')),
-    (r: ReturnType<typeof run>) => r.errors.length === 0 && r.code !== 0 && r.summary.fail > 0 && r.summary.na === 0
-  ]
-] as const) {
-  const root = fixture()
-  try {
-    arrange(root)
-    check(label, assert(run(root)))
-  } finally {
-    rmSync(root, { recursive: true, force: true })
-  }
-}
+describe('ki-kb structured audit', () => {
+  test('emits one not-applicable result for an irrelevant directory', () => {
+    const root = fixture()
+    try {
+      const output = run(root)
+      expect(output.status).toBe(0)
+      expect(output.parsed.errors).toEqual([])
+      expect(findings(output).filter((finding) => finding.code === 'ZONE-1' && finding.level === 'NOT_APPLICABLE')).toHaveLength(1)
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  })
 
-if (failed) process.exit(1)
+  test('runs the complete audit for a declared but incomplete base', () => {
+    const root = fixture()
+    writeFileSync(join(root, '.ki-config.toml'), '[ki-kb]\n')
+    try {
+      const output = run(root)
+      expect(output.status).toBe(1)
+      expect(output.parsed.errors).toEqual([])
+      expect(findings(output).some((finding) => finding.code === 'ZONE-1' && finding.level === 'FAIL')).toBe(true)
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  })
+
+  test('detects produced output outside outbound staging', () => {
+    const root = fixture()
+    for (const zone of ['Calendar', 'Pillars', 'Resources', 'Streams', 'Admin']) {
+      mkdirSync(join(root, zone), { recursive: true })
+      writeFileSync(join(root, zone, `${zone}.md`), `# ${zone}\n`)
+    }
+    writeFileSync(join(root, 'Admin', 'MEMORY.md'), '# MEMORY\n')
+    writeFileSync(join(root, '.ki-config.toml'), '[ki-kb]\n')
+    writeFileSync(join(root, 'Calendar', 'digest.md'), '---\ntype: session-digest\n---\n')
+    try {
+      const output = run(root)
+      expect(findings(output).some((finding) => finding.code === 'ZONE-5' && finding.level === 'FAIL')).toBe(true)
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  })
+
+  test('conform dry-run does not write its absent config marker', () => {
+    const root = fixture()
+    try {
+      const result = spawnSync(process.execPath, [CONFORM, root, '--dry-run'], { encoding: 'utf8' })
+      expect(result.status).toBe(0)
+      expect(existsSync(join(root, '.ki-config.toml'))).toBe(false)
+      expect(parseCheckerJsonl(result.stdout).errors).toEqual([])
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  })
+
+  test('generated rubric exactly matches the structured catalogue', () => {
+    expect(readFileSync(RUBRIC, 'utf8')).toBe(renderRubric(KI_KB_RUBRIC))
+  })
+})

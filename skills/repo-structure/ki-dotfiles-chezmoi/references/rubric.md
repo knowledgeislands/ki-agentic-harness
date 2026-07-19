@@ -1,29 +1,90 @@
-# Chezmoi dotfiles audit rubric
+<!-- GENERATED FILE: edit scripts/rubric/items/, not this publication. -->
 
-The line-by-line checkable criteria behind [the standard](standards.md). Each is tagged **[M] mechanical** (the bundled [`../scripts/audit.ts`](../scripts/audit.ts) enforces it) or **[J] judgment** (a reader assesses it). Every **[M]** item carries a stable code that the checker emits as each finding's `area`, and [`../scripts/conform.ts`](../scripts/conform.ts) uses the same code for its twin action.
+# Generated rubric — dotfiles-chezmoi
 
-A criterion's tag is a contract with the script: if you find yourself eyeballing an **[M]** check, run the auditor instead; a **[J]** check that becomes deterministic should move into the script and flip to **[M]**.
+> **Generated publication.** The TypeScript rubric items under `scripts/rubric/items/` are canonical; this file is generated from the in-memory catalogue. Edit the item definitions, then rerun `scripts/rubric/publish.ts`.
 
-## Mechanical criteria (shipped, real checks)
+Line-by-line criteria for auditing ki-dotfiles-chezmoi. Classifications are derived from item aspects: **[M]** mechanical and **[J]** judgment. Sources are cited as declared by each canonical item.
 
-- **chezmoiignore-present [M]** `` `CHEZMOI-1` `` `.chezmoiignore` exists at the repo root. FAIL if absent — there is no legitimate reason for a chezmoi source repo to lack one. (standard: Repo-shape expectations)
-- **templates-data-dir-present [M]** `` `CHEZMOI-2` `` if any `*.tmpl` file exists anywhere in the tree, at least one of `.chezmoidata/` or `.chezmoitemplates/` must also exist. WARN (not FAIL) if templating is present without either directory — it's a sign of ad hoc templating rather than the shared-data/shared-partial shape, not necessarily broken. NA if no `.tmpl` files exist at all. (standard: Repo-shape expectations)
-- **bin-executable-prefix [M]** `` `BIN-1` `` every file directly under a source `bin/` directory carries _a_ recognized chezmoi source-attribute prefix (`executable_`, `symlink_`, `private_`, `dot_`, `readonly_`, `create_`, `modify_` — not exclusively `executable_`). WARN per file with no recognized prefix — not FAIL, since a stray unmanaged helper file (e.g. a README) under `bin/` isn't necessarily wrong. (standard: bin/ executable convention)
-- **git-lock-hygiene [M]** `` `GIT-1` `` no `.git/*.lock` files (checked at `.git/index.lock`, `.git/HEAD.lock`, `.git/config.lock`, and recursively under `.git/refs/` and `.git/packed-refs.lock`) are present. FAIL if any stray lock file is found — it means all git operations on the repo are currently blocked. (standard: Git & audit hygiene)
+## Contents
 
-## Deferred mechanical criteria (not yet implemented — stated reason, not silent omission)
+- [CHEZMOI — chezmoi repository shape](#chezmoi--chezmoi-repository-shape)
+- [BIN — bin source naming](#bin--bin-source-naming)
+- [GIT — Git hygiene](#git--git-hygiene)
+- [PATTERN — app-mutated configuration](#pattern--app-mutated-configuration)
+- [CONFIG — configuration editing](#config--configuration-editing)
+- [LAYER — instruction layering](#layer--instruction-layering)
+- [ETIQ — audit etiquette](#etiq--audit-etiquette)
+- [SYNC — standard synchronisation](#sync--standard-synchronisation)
 
-These would be **[M]** in principle but are deliberately left **[J]** for now, because getting the heuristic right needs real-world tuning across more than one repo before it can fire WARN/FAIL without false positives:
+## CHEZMOI — chezmoi repository shape
 
-- **naming-prefix conformance (tree-wide)** — checking that every file under a chezmoi-managed root actually uses a recognized prefix (`dot_`/`executable_`/`private_`/`.tmpl`, or is deliberately unmanaged via `.chezmoiignore`) risks false positives on legitimate non-chezmoi files living alongside the source tree (docs, CI config, this very skill's own draft folder).
-- **rc-is-loader heuristic** — flagging a shell rc file that's grown beyond "just a loader" needs a line-count or content-shape heuristic that hasn't been validated against more than one repo's idea of "thin."
-- **pattern-b-merge-pairing** — detecting that every Pattern-B `.tmpl` has a matching reverse-merge script (and vice versa) is a best-effort grep at best; a false WARN here (flagging a legitimately merge-less `.tmpl` that's actually Pattern-A-adjacent) is worse than not checking at all until the heuristic is proven.
+→ [standard](standards.md)
 
-## Judgment criteria (not deterministic — apply by reading)
+Required repository-shape files and template support.
 
-- **pattern-choice [J]** `` `PATTERN-J1` `` for a given app-mutated config file, Pattern A (surgical patch) vs Pattern B (full template + reverse-merge) was the right call under the ≥90%-app-owned decision rule — not just "a" pattern was applied, but the _correct_ one for that file's actual key composition. (standard: App-mutated config handling)
-- **format-preserving-editor-selection [J]** `` `CONFIG-J1` `` every Pattern A writer uses an edit API appropriate to its declared input format, defines absent-file/path behavior, fails closed rather than falling back on unsupported input, and has representative evidence that unrelated concrete syntax remains stable and a second identical run is a no-op. A query or value-model tool is not accepted as a surgical writer merely because the resulting document is semantically equivalent. (standard: Selecting a surgical config editor)
-- **claude-md-layering [J]** `` `LAYER-J1` `` a given piece of CLAUDE.md-style guidance sits at the correct layer — repo-local vs user-level vs persistent memory — per the decision rule. (standard: CLAUDE.md / agent-instruction layering)
-- **chezmoiignore-negation-intent [J]** `` `CHEZMOI-J1` `` a `.chezmoiignore` negation (`!pattern`) is a deliberate, documented choice to track a specific file through an otherwise-ignored parent, not an accidentally-too-broad ignore rule that happens to have a negation carving a hole in it. (standard: Repo layout & naming)
-- **audit-etiquette [J]** `` `ETIQ-J1` `` when an audit surfaced a finding, it was reported as file + one-line problem + options, and no fix was applied without confirmation — a process criterion, not something `audit.ts` can observe about itself. (standard: Git & audit hygiene)
-- **sync [J]** `` `SYNC-1` `` this rubric, [the standard](standards.md), and the script's constants agree; when the standard moves, all three move together (Mode REFRESH).
+- **CHEZMOI-1 [M] — managed ignore file** — `.chezmoiignore` exists at the repository root. (standards.md)
+- **CHEZMOI-2 [M] — template support directory** — When `*.tmpl` files exist, `.chezmoidata/` or `.chezmoitemplates/` also exists. (standards.md)
+- **CHEZMOI-J1 [J] — chezmoiignore negation intent** — A `.chezmoiignore` negation is deliberate and documented rather than accidentally broad. (standards.md)
+  - _Review prompt:_ Are `.chezmoiignore` negations deliberate, documented exceptions to broad ignores?
+
+## BIN — bin source naming
+
+→ [standard](standards.md)
+
+Chezmoi source-attribute naming for direct bin files.
+
+- **BIN-1 [M] — bin source-attribute prefix** — Every direct file in `bin/` carries a recognised chezmoi source-attribute prefix. (standards.md)
+
+## GIT — Git hygiene
+
+→ [standard](standards.md)
+
+Stray lock files that block Git operations.
+
+- **GIT-1 [M] — Git lock hygiene** — No stray `.git/*.lock` files remain in the repository. (standards.md)
+
+## PATTERN — app-mutated configuration
+
+→ [standard](standards.md)
+
+Judgment criteria for Pattern A and Pattern B selection.
+
+- **PATTERN-J1 [J] — app-mutated config pattern choice** — Pattern A or Pattern B is chosen correctly for each app-mutated configuration file. (standards.md)
+  - _Review prompt:_ For each app-mutated configuration file, was Pattern A or Pattern B selected using the ≥90%-app-owned decision rule?
+
+## CONFIG — configuration editing
+
+→ [standard](standards.md)
+
+Judgment criteria for format-preserving Pattern A editors.
+
+- **CONFIG-J1 [J] — format-preserving editor selection** — Every Pattern A writer uses an appropriate format-preserving edit API with safe absent-file and invalid-input behaviour. (standards.md)
+  - _Review prompt:_ Do Pattern A writers use a format-appropriate edit API, define absent-file and path behaviour, fail closed, and demonstrate syntax preservation and idempotence?
+
+## LAYER — instruction layering
+
+→ [standard](standards.md)
+
+Judgment criteria for repository, user, and memory guidance.
+
+- **LAYER-J1 [J] — agent-instruction layering** — CLAUDE.md-style guidance is placed at the correct repo, user, or persistent-memory layer. (standards.md)
+  - _Review prompt:_ Does each piece of CLAUDE.md-style guidance sit at the correct repo-local, user-level, or persistent-memory layer?
+
+## ETIQ — audit etiquette
+
+→ [standard](standards.md)
+
+Judgment criteria for reporting before change.
+
+- **ETIQ-J1 [J] — audit etiquette** — Audits report a file, concise problem, and options before any change is applied. (standards.md)
+  - _Review prompt:_ Were findings reported with a file, concise problem statement, and options before a change was applied?
+
+## SYNC — standard synchronisation
+
+→ [standard](standards.md)
+
+Judgment criteria for keeping the standard and implementation aligned.
+
+- **SYNC-1 [J] — standard and rubric synchronisation** — The standard, structured rubric, and mechanical behaviour remain aligned when the standard changes. (standards.md)
+  - _Review prompt:_ Do the standard, structured rubric items, and mechanical behaviour still agree?
