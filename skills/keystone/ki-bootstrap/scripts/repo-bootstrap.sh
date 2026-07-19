@@ -63,4 +63,4 @@ trap 'rm -rf "$tmp"' EXIT
 
 echo "bootstrapping from $REPO@$ref"
 curl -fsSL "https://codeload.github.com/$REPO/tar.gz/$ref" | tar -xz -C "$tmp" --strip-components=1
-bun "$tmp/skills/keystone/ki-bootstrap/scripts/lib/repo-bootstrap.ts" "$@"
+bun "$tmp/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap.ts" "$@"

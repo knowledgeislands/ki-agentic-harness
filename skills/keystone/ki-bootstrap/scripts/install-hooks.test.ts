@@ -19,7 +19,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const SCRIPTS = dirname(fileURLToPath(import.meta.url))
-const SCRIPT = join(SCRIPTS, 'lib', 'install-claude-hook-payload.ts')
+const SCRIPT = join(SCRIPTS, 'internal', 'install-claude-hook-payload.ts')
 const ENTRYPOINT = join(SCRIPTS, 'user-install.sh')
 const NAMES = ['plan-stamp.sh', 'plan-sync.sh', 'git-lock-check.sh'] as const
 

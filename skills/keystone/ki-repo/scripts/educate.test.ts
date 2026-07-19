@@ -28,7 +28,7 @@ const SCRIPTS = dirname(fileURLToPath(import.meta.url))
 const AUDIT = join(SCRIPTS, 'audit.ts')
 const CONFORM = join(SCRIPTS, 'conform.ts')
 const EDUCATE = join(SCRIPTS, 'educate.ts')
-const BOOTSTRAP = join(SCRIPTS, '..', '..', 'ki-bootstrap', 'scripts', 'lib', 'repo-bootstrap.ts')
+const BOOTSTRAP = join(SCRIPTS, '..', '..', 'ki-bootstrap', 'scripts', 'internal', 'repo-bootstrap.ts')
 const MKFIFO = ['/usr/bin/mkfifo', '/bin/mkfifo'].find((path) => existsSync(path))
 
 let failed = false

@@ -10,7 +10,7 @@ The behaviour of the bootstrap chain: how the harness brings a target repo under
 
 After the EDUCATE chain runs against a target repo, that repo MUST govern itself with `./.ki-meta/bin/ki-audit` and **zero** Knowledge Islands skills installed — and with **no `package.json` of its own** — per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md).
 
-_Verify:_ bootstrap a bare fixture (`.ki-config.toml` only, no `package.json`, no `.claude/skills/`) with `skills/keystone/ki-bootstrap/scripts/lib/repo-bootstrap.ts <fixture>`, then run `./.ki-meta/bin/ki-audit` in it — the vendored checkers execute and report.
+_Verify:_ bootstrap a bare fixture (`.ki-config.toml` only, no `package.json`, no `.claude/skills/`) with `skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap.ts <fixture>`, then run `./.ki-meta/bin/ki-audit` in it — the vendored checkers execute and report.
 
 ### BOOT-002 — Vendored copies, not symlinks
 
@@ -44,7 +44,7 @@ _Verify:_ after bootstrap, all four of `.ki-meta/bin/{ki-audit,ki-conform,ki-edu
 
 Every governance skill MUST own a `scripts/educate.ts` that delegates to the `ki-bootstrap` chain engine with itself as an explicit `--seed`, delegating by subprocess (composition), not by cross-skill import, per [ADR-KI-HARNESS-SKILLS-004](../decisions/ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md).
 
-_Verify:_ each `skills/*/scripts/educate.ts` execs `../../ki-bootstrap/scripts/lib/repo-bootstrap.ts` and passes `--seed <its own name>`.
+_Verify:_ each `skills/*/scripts/educate.ts` execs `../../ki-bootstrap/scripts/internal/repo-bootstrap.ts` and passes `--seed <its own name>`.
 
 Re-running the idempotent bootstrap chain is the single update path — there are no aggressiveness flags; a re-run brings the target up to date.
 
@@ -64,4 +64,4 @@ _Verify:_ `skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh` line 1 is `#!
 
 Repository bootstrap MUST publish only the declared runtime skill coverage as generated regular-file copies; it MUST NOT create runtime symlinks. Deliberate local-development links are a separate `ki-repo` capability and are never required for normal user installation or repository governance.
 
-_Verify:_ run `scripts/lib/publish-project-skills.ts` against a declared fixture and confirm each published runtime skill is a regular file. Run `ki-repo/scripts/link-repository-commands.ts <fixture> --development` separately and confirm only that explicit command creates a symlink.
+_Verify:_ run `scripts/internal/publish-project-skills.ts` against a declared fixture and confirm each published runtime skill is a regular file. Run `ki-repo/scripts/link-repository-commands.ts <fixture> --development` separately and confirm only that explicit command creates a symlink.

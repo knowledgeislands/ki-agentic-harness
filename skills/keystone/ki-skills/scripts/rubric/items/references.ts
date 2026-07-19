@@ -1,4 +1,4 @@
-import type { RubricItem } from '../../lib/rubric.ts'
+import type { RubricItem } from '../../shared/rubric.ts'
 import type { ReferencesRubricContext } from '../contexts/contexts.ts'
 
 const TOC_LINE_THRESHOLD = 100

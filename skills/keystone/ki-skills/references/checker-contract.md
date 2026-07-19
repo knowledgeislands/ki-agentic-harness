@@ -125,9 +125,9 @@ It does not open arbitrary files or mutate through an undeclared side channel.
 
 The reusable implementation is split into three declared modules owned by `ki-skills`:
 
-- `scripts/lib/rubric.ts` contains the generic rubric types and catalogue mechanics; and
-- `scripts/lib/checker.ts` contains planning, AUDIT and CONFORM execution, JSONL response construction, and validation; and
-- `scripts/lib/reporter.ts` contains shared display filtering and terminal presentation.
+- `scripts/shared/rubric.ts` contains the generic rubric types and catalogue mechanics; and
+- `scripts/shared/checker.ts` contains planning, AUDIT and CONFORM execution, JSONL response construction, and validation; and
+- `scripts/shared/reporter.ts` contains shared display filtering and terminal presentation.
 
 Each declared module is one self-contained vendorable file rather than a directory tree.
 

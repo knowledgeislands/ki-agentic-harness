@@ -6,7 +6,7 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'nod
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { parseCheckerJsonl } from './lib/checker.ts'
+import { parseCheckerJsonl } from './shared/checker.ts'
 
 const AUDIT = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
 

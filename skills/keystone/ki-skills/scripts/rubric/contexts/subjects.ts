@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, statSync } from 'node:fs'
 import { basename, dirname, extname, join, relative, resolve } from 'node:path'
-import type { RubricMode } from '../../lib/rubric.ts'
+import type { RubricMode } from '../../shared/rubric.ts'
 import { type ConformDocumentState, createConformDocumentState, createSkillConformState } from './conform.ts'
 import { createKiShapeContext, createKiSkillsRubricContext, type KiSkillsRubricContext } from './contexts.ts'
 import { createFootprint } from './footprint.ts'

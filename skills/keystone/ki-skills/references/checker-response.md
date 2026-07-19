@@ -102,7 +102,7 @@ With no `--reporter`, a checker emits the complete canonical JSONL response. Rep
 
 The response schema is a shipped asset of `ki-skills` for review and validation in the harness source.
 
-The target reusable implementation belongs to `ki-skills`: `scripts/lib/checker.ts` consumes the generic model at `scripts/lib/rubric.ts`, while `scripts/lib/reporter.ts` presents its canonical result.
+The target reusable implementation belongs to `ki-skills`: `scripts/shared/checker.ts` consumes the generic model at `scripts/shared/rubric.ts`, while `scripts/shared/reporter.ts` presents its canonical result.
 
 A dependent governance skill vendors those three declared modules into `scripts/vendored/ki-skills/` and imports only its local copies.
 

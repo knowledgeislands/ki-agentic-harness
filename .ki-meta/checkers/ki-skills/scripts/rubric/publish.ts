@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
-import { type RubricDefinition, type RubricItem, rubricTypes } from '../lib/rubric.ts'
+import { type RubricDefinition, type RubricItem, rubricTypes } from '../shared/rubric.ts'
 import { KI_SKILLS_RUBRIC } from './items/index.ts'
 
 const publicationPath = fileURLToPath(new URL('../../references/rubric.md', import.meta.url))

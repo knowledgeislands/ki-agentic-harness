@@ -1,4 +1,4 @@
-import type { RubricItem } from '../../lib/rubric.ts'
+import type { RubricItem } from '../../shared/rubric.ts'
 import type { DescriptionRubricContext } from '../contexts/contexts.ts'
 import { containsXmlTag, stripCode } from '../contexts/text.ts'
 

@@ -26,7 +26,7 @@ EDUCATE and repository bootstrap create derived governance machinery plus runtim
 ## Files touched
 
 - `skills/keystone/ki-bootstrap/scripts/`
-- `skills/keystone/ki-repo/scripts/lib/project-skill-publisher.ts` where marker validation can be reused cleanly
+- `skills/keystone/ki-repo/scripts/internal/project-skill-publisher.ts` where marker validation can be reused cleanly
 - focused bootstrap and runtime-publication tests
 - user and developer lifecycle guidance
 

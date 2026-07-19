@@ -51,7 +51,7 @@ The reproducibility contract may wire a `ki:skills:copy:project` script in `pack
 ```json
 {
   "scripts": {
-    "ki:skills:copy:project": "bun skills/keystone/ki-bootstrap/scripts/lib/publish-project-skills.ts"
+    "ki:skills:copy:project": "bun skills/keystone/ki-bootstrap/scripts/internal/publish-project-skills.ts"
   }
 }
 ```

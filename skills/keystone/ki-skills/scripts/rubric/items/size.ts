@@ -1,4 +1,4 @@
-import type { RubricItem } from '../../lib/rubric.ts'
+import type { RubricItem } from '../../shared/rubric.ts'
 import type { SizeRubricContext } from '../contexts/contexts.ts'
 
 const BODY_MAX_LINES = 500

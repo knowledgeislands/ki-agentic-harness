@@ -1,4 +1,4 @@
-import type { AuditOutcome, ConformOutcome, RubricItem, RubricOutcomes } from '../../lib/rubric.ts'
+import type { AuditOutcome, ConformOutcome, RubricItem, RubricOutcomes } from '../../shared/rubric.ts'
 import type { KiShapeRubricContext } from '../contexts/contexts.ts'
 
 const UNIVERSAL_VERBS = ['AUDIT', 'CONFORM', 'HELP', 'EDUCATE', 'REFRESH'] as const

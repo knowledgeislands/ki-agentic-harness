@@ -22,7 +22,7 @@ A provider declares the modules it offers with `checker-modules:`.
 
 A dependent declares the exact `provider:module` references it needs with `ki-checker-dependencies:`.
 
-The module identifier has no extension and resolves to exactly one provider payload in `scripts/lib/`: either `scripts/lib/<module>.ts` or a self-contained `scripts/lib/<module>/` directory.
+The module identifier has no extension and resolves to exactly one provider payload in `scripts/shared/`: either `scripts/shared/<module>.ts` or a self-contained `scripts/shared/<module>/` directory.
 
 The bootstrap engine validates those declarations and materialises a shape-preserving copy under `scripts/vendored/<provider>/` in the dependent skill's source payload and in its generated `.ki-meta` checker payload.
 

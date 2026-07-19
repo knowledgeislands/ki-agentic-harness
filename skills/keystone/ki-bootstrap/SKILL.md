@@ -24,7 +24,7 @@ The two are distinct: vendored **copies** run the mechanical checks anywhere (CI
 - Skills are **regular-file copies**, **gitignored and regenerated** — the only committed artifact is the `.gitignore` lines, never generated payloads. Deliberate local-author links are `ki-repo`'s `link-repository-commands` capability, not a bootstrap concern.
 - The **harness** (`ki-agentic-harness`) copies only its own declared coverage, same as any other repo — a structural skill like `ki-mcp` or `ki-website` is exercised against a repo of its type, not loaded in the harness itself, so the harness copies what governs it, not the whole fleet.
 
-The repository engine is [`scripts/lib/repo-bootstrap.ts`](scripts/lib/repo-bootstrap.ts); the normal runtime publisher is [`scripts/lib/publish-project-skills.ts`](scripts/lib/publish-project-skills.ts). The publisher shares its transaction and `.gitignore` helpers through [`scripts/lib/project-skill-publisher.ts`](scripts/lib/project-skill-publisher.ts) and [`scripts/lib/runtime-paths.ts`](scripts/lib/runtime-paths.ts). The quotable invariant is [the standard](references/standards.md); the checkable criteria are [the rubric](references/rubric.md). This skill **composes on** `ki-repo`, which owns the config's file-level contract and foundation scaffold: bootstrap embeds no TOML template and never edits the file directly, but EDUCATE may invoke `ki-repo`'s scaffold-only leg by subprocess before re-reading the declarations.
+The repository engine is [`scripts/internal/repo-bootstrap.ts`](scripts/internal/repo-bootstrap.ts); the normal runtime publisher is [`scripts/internal/publish-project-skills.ts`](scripts/internal/publish-project-skills.ts). The publisher shares its transaction and `.gitignore` helpers through [`scripts/internal/project-skill-publisher.ts`](scripts/internal/project-skill-publisher.ts) and [`scripts/internal/runtime-paths.ts`](scripts/internal/runtime-paths.ts). The quotable invariant is [the standard](references/standards.md); the checkable criteria are [the rubric](references/rubric.md). This skill **composes on** `ki-repo`, which owns the config's file-level contract and foundation scaffold: bootstrap embeds no TOML template and never edits the file directly, but EDUCATE may invoke `ki-repo`'s scaffold-only leg by subprocess before re-reading the declarations.
 
 ## Operating modes
 
@@ -35,7 +35,7 @@ Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated H
 The mechanical half of EDUCATE, and the start of the bootstrap chain. Run it against a target repo — locally, or straight from the remote source with nothing installed:
 
 ```bash
-bun scripts/lib/repo-bootstrap.ts <target-repo> [--ref <ref>] [--dry-run] [--verbose]
+bun scripts/internal/repo-bootstrap.ts <target-repo> [--ref <ref>] [--dry-run] [--verbose]
 # remote (zero-install — cd into the repo, then curl | sh; repo-bootstrap.sh fetches the tarball and runs the engine, defaulting to cwd@main):
 # curl -fsSL https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/main/skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh | sh
 # advanced: … | sh -s -- <target> --ref <sha>   (args ripple through)   ·   bun already installed: bunx github:knowledgeislands/ki-agentic-harness#<sha> <target> --ref <sha>
@@ -63,7 +63,7 @@ Successful EDUCATE runs report only the target, resolved scope count, and comple
 The mechanical half is `scripts/conform.ts` (`bun run ki:bootstrap:conform` where wired) — it composes the steps below and finishes with the vendored-set audit, whose drift it only advises on (the repair is EDUCATE, per the drift contract). Step by step:
 
 1. Run **AUDIT** first.
-2. **Copy** the normal project-local skill set with `bun "$HOME/.claude/skills/ki-bootstrap/scripts/lib/publish-project-skills.ts" [path]`. The publisher creates/prunes generated regular-file skills and writes matching `.gitignore` lines, creating `.gitignore` if absent. Preview with `--dry-run`.
+2. **Copy** the normal project-local skill set with `bun "$HOME/.claude/skills/ki-bootstrap/scripts/internal/publish-project-skills.ts" [path]`. The publisher creates/prunes generated regular-file skills and writes matching `.gitignore` lines, creating `.gitignore` if absent. Preview with `--dry-run`.
 3. **Make it reproducible:** a repo reproduces its generated copies by re-running the repository bootstrap — no `package.json` script is required, and it scaffolds none (package.json script-key wiring is `ki-engineering`'s concern).
 4. **Aggregate judgmental sweep (BOOT-10).** Run `./.ki-meta/bin/ki-conform` (or `bun run ki:conform`) for the mechanical fixes, then re-apply the per-skill judgment prompts from AUDIT step 3 to confirm each skill's judged findings are resolved too — a clean mechanical pass is not sufficient on its own.
 5. **Re-run AUDIT** until clean.
@@ -82,5 +82,5 @@ Canonical, on-change: this skill tracks no external spec. Re-anchor when the ins
 ## Notes
 
 - **Why a keystone, not part of `ki-repo`:** the global skill is paid every turn everywhere, so it must be minimal. `repo` is heavy (GitHub settings, security, files). Splitting the bootstrap out keeps the global footprint to one tiny description; `repo` stays project-local and loads only in repos that declare or seed it.
-- **Greenfield:** a repo with no `.ki-config.toml` enters through `ki-repo`'s educate — `bun scripts/lib/repo-bootstrap.ts <target> --seed ki-repo` (or `bun skills/keystone/ki-repo/scripts/educate.ts <target>`). The owner leg writes the canonical `[ki-repo]` defaults plus bare `[ki-authoring]`; bootstrap then re-resolves and vendors both foundations and the runners in that same invocation. There is no injected baseline — bare `repo-bootstrap.ts <target>` with no config and no seed resolves to the empty set.
+- **Greenfield:** a repo with no `.ki-config.toml` enters through `ki-repo`'s educate — `bun scripts/internal/repo-bootstrap.ts <target> --seed ki-repo` (or `bun skills/keystone/ki-repo/scripts/educate.ts <target>`). The owner leg writes the canonical `[ki-repo]` defaults plus bare `[ki-authoring]`; bootstrap then re-resolves and vendors both foundations and the runners in that same invocation. There is no injected baseline — bare `repo-bootstrap.ts <target>` with no config and no seed resolves to the empty set.
 - **EDUCATE vs runtime publication:** EDUCATE vendors mechanical **copies** that run with nothing installed (CI, migration, a bare clone) and publishes generated runtime skill **copies** for interactive sessions. Explicit development linking is optional and local-author-only; it is never needed for ordinary use.

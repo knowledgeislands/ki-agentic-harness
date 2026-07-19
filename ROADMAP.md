@@ -9,6 +9,7 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 - [Foundation Tooling: Add a safe repository clean operation](docs/roadmap/foundation-tooling/ROADMAP.md#add-a-safe-repository-clean-operation)
 - [Foundation Tooling: Normalise skill packaging after the checker rollout](docs/roadmap/foundation-tooling/ROADMAP.md#normalise-skill-packaging-after-the-checker-rollout)
 - [Foundation Tooling: Show progress during checker execution](docs/roadmap/foundation-tooling/ROADMAP.md#show-progress-during-checker-execution)
+- [Runtime Portability: Detect vendor-specific assumptions in portable skill contracts](docs/roadmap/runtime-portability/ROADMAP.md#detect-vendor-specific-assumptions-in-portable-skill-contracts)
 
 ## Next
 

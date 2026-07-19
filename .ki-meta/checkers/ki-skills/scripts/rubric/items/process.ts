@@ -1,4 +1,4 @@
-import type { RubricItem } from '../../lib/rubric.ts'
+import type { RubricItem } from '../../shared/rubric.ts'
 
 export const PROC_1: RubricItem<unknown> = {
   code: 'PROC-1',

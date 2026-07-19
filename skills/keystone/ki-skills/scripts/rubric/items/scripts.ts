@@ -1,4 +1,4 @@
-import type { RubricItem } from '../../lib/rubric.ts'
+import type { RubricItem } from '../../shared/rubric.ts'
 import type { ScriptsRubricContext } from '../contexts/contexts.ts'
 
 export const SCRIPT_1: RubricItem<ScriptsRubricContext> = {
@@ -62,7 +62,7 @@ export const SCRIPT_8: RubricItem<ScriptsRubricContext> = {
   code: 'SCRIPT-8',
   title: 'top-level TypeScript scripts expose command help',
   description:
-    'Every non-test TypeScript file directly under `scripts/` is a public command entry point that exits successfully for `-h` and prints useful usage or help text. Reusable implementation modules belong under `scripts/lib/`.',
+    'Every non-test TypeScript file directly under `scripts/` is a public command entry point that exits successfully for `-h` and prints useful usage or help text. Private reusable modules belong under `scripts/internal/`; only explicitly published cross-skill modules belong under `scripts/shared/`.',
   sources: ['AS', 'KI'],
   mechanical: {
     level: 'FAIL',

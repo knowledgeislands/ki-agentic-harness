@@ -240,6 +240,7 @@ export const createSkillRubricContext = (directory: string, capabilities: SkillW
       const description = frontmatter.keys.get('description')
       const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
       const scriptsDirectory = join(directory, 'scripts')
+      const sharedDirectory = join(scriptsDirectory, 'shared')
       const familyEvidence = rubricFamilyModules(scriptsDirectory)
       const imports = listScriptFiles(scriptsDirectory).flatMap((scriptPath) =>
         relativeImportSpecifiers(readFileSync(scriptPath, 'utf8')).map((specifier) => ({
@@ -272,9 +273,16 @@ export const createSkillRubricContext = (directory: string, capabilities: SkillW
           rootSkill: name === 'ki-skills',
           checkerModules: frontmatterList(frontmatter.keys.get('checker-modules')),
           checkerDependencies: frontmatterList(frontmatter.keys.get('ki-checker-dependencies')),
-          rubricModuleExists: existsSync(join(scriptsDirectory, 'lib', 'rubric.ts')),
-          checkerModuleExists: existsSync(join(scriptsDirectory, 'lib', 'checker.ts')),
-          reporterModuleExists: existsSync(join(scriptsDirectory, 'lib', 'reporter.ts')),
+          legacyLibPresent: existsSync(join(scriptsDirectory, 'lib')),
+          sharedModules: existsSync(sharedDirectory)
+            ? readdirSync(sharedDirectory, { withFileTypes: true })
+                .filter((entry) => entry.isDirectory() || (entry.isFile() && !entry.name.endsWith('.test.ts')))
+                .map((entry) => (entry.isFile() && entry.name.endsWith('.ts') ? entry.name.slice(0, -3) : entry.name))
+                .sort()
+            : [],
+          rubricModuleExists: existsSync(join(sharedDirectory, 'rubric.ts')),
+          checkerModuleExists: existsSync(join(sharedDirectory, 'checker.ts')),
+          reporterModuleExists: existsSync(join(sharedDirectory, 'reporter.ts')),
           structuredRubricRequired: name === 'ki-skills' || frontmatter.present.has('ki-checker-dependencies'),
           ...familyEvidence
         },

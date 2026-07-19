@@ -7,11 +7,11 @@
 //   bun scripts/audit.ts skills --refresh-status
 
 import { resolve } from 'node:path'
-import { type CheckerEvaluationSubject, runChecker } from './lib/checker.ts'
-import { parseReporterArguments, renderCheckerResult } from './lib/reporter.ts'
 import type { KiSkillsRubricContext } from './rubric/contexts/contexts.ts'
 import { createKiSkillsSubjects, KI_SKILLS_SUBJECT_FAMILIES } from './rubric/contexts/subjects.ts'
 import { KI_SKILLS_RUBRIC } from './rubric/items/index.ts'
+import { type CheckerEvaluationSubject, runChecker } from './shared/checker.ts'
+import { parseReporterArguments, renderCheckerResult } from './shared/reporter.ts'
 
 const rawArgv = process.argv.slice(2)
 if (rawArgv.includes('-h') || rawArgv.includes('--help')) {

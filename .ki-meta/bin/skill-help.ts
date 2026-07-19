@@ -7,7 +7,7 @@
 //   bun skill-help.ts --check  coverage guard: every skill dir appears in the
 //                              editorial catalogue and vice-versa; exit 1 on drift
 //
-// Canonical home is skills/keystone/ki-bootstrap/scripts/lib/; also vendored into a governed
+// Canonical home is skills/keystone/ki-bootstrap/scripts/internal/; also vendored into a governed
 // harness-shaped target's .ki-meta/bin/ (ADR-KI-HARNESS-008). It resolves skills/
 // and the catalogue from the cwd (repo root). A freshly-bootstrapped harness has
 // no editorial catalogue yet, so --check SKIPS (exit 0) when it is absent rather

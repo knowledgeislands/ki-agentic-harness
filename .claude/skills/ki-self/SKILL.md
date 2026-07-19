@@ -16,7 +16,7 @@ It complements the shared skills; it does not duplicate their standards.
 ## Local working practices
 
 - Make the current contract correct, then conform existing footprints; do not retain compatibility paths unless a transition is explicitly required.
-- After changing a coverage-scoped checker, re-vendor it with `bun skills/keystone/ki-bootstrap/scripts/lib/repo-bootstrap.ts .` before verification.
+- After changing a coverage-scoped checker, re-vendor it with `bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap.ts .` before verification.
 - Run `bun run test` and `bun run ki:audit` sequentially before completing a substantive change.
 - Keep work recoverable: give concise progress updates during sustained work and commit each independently verified sensible unit with explicit paths.
 - Work directly on `main` for small, self-contained changes; use an isolated branch only when it provides a real review boundary.

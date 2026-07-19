@@ -34,4 +34,4 @@ mkdir "$source"
 echo "installing Knowledge Islands harness for this user from $REPO@$ref"
 curl -fsSL "https://codeload.github.com/$REPO/tar.gz/$ref" -o "$archive"
 tar -xzf "$archive" -C "$source" --strip-components=1
-bun "$source/skills/keystone/ki-bootstrap/scripts/lib/user-install.ts" --source "$source/skills" --hooks-source "$source/hooks" "$@"
+bun "$source/skills/keystone/ki-bootstrap/scripts/internal/user-install.ts" --source "$source/skills" --hooks-source "$source/hooks" "$@"

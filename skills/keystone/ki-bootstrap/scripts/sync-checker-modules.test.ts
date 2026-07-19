@@ -3,7 +3,7 @@
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 
-const script = new URL('./lib/sync-checker-modules.ts', import.meta.url)
+const script = new URL('./internal/sync-checker-modules.ts', import.meta.url)
 const result = spawnSync('bun', [fileURLToPath(script), '--check'], { encoding: 'utf8' })
 const output = `${result.stdout ?? ''}${result.stderr ?? ''}`
 

@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url'
 
 const scripts = dirname(fileURLToPath(import.meta.url))
 const harness = resolve(scripts, '../../../..')
-const installer = join(scripts, 'lib', 'user-install.ts')
+const installer = join(scripts, 'internal', 'user-install.ts')
 const skills = join(harness, 'skills')
 const hooks = join(harness, 'hooks')
 const core = ['ki-bootstrap', 'ki-delegate', 'ki-next', 'ki-plan', 'ki-recap']

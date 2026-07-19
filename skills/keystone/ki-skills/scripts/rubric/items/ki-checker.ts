@@ -1,4 +1,4 @@
-import type { RubricItem } from '../../lib/rubric.ts'
+import type { RubricItem } from '../../shared/rubric.ts'
 import type { KiCheckerRubricContext } from '../contexts/contexts.ts'
 
 export const KI_CHECKER_1: RubricItem<KiCheckerRubricContext> = {
@@ -41,7 +41,7 @@ export const KI_CHECKER_3: RubricItem<KiCheckerRubricContext> = {
   code: 'KI-CHECKER-3',
   title: 'ki-skills is the self-governing checker-contract root',
   description:
-    "`ki-skills` is the self-governing checker-contract root: it declares `checker-modules: [rubric, checker, reporter]`, ships its canonical rubric, checker, and reporter modules under `scripts/lib/`, and declares no `ki-checker-dependencies:` entry. Its canonical checker and direct human reporter therefore run from its own shipped files without a dependency on itself or another skill. Other skills may declare only offered checker modules, which bootstrap copies from the provider's `scripts/lib/` into their local `scripts/vendored/<provider>/` namespace; that declaration is implementation packaging, not `ki-depends-on:` or composition.",
+    "`ki-skills` is the self-governing checker-contract root: it declares `checker-modules: [rubric, checker, reporter]`, ships its canonical rubric, checker, and reporter modules under `scripts/shared/`, and declares no `ki-checker-dependencies:` entry. Its canonical checker and direct human reporter therefore run from its own shipped files without a dependency on itself or another skill. Other skills may declare only offered checker modules, which bootstrap copies from the provider's `scripts/shared/` into their local `scripts/vendored/<provider>/` namespace; that declaration is implementation packaging, not `ki-depends-on:` or composition.",
   sources: ['ADR-KI-HARNESS-SKILLS-012'],
   mechanical: {
     level: 'FAIL',
@@ -59,17 +59,17 @@ export const KI_CHECKER_3: RubricItem<KiCheckerRubricContext> = {
         if (!rubricModuleExists)
           violations.push({
             status: 'VIOLATION' as const,
-            message: '`ki-skills` must ship `scripts/lib/rubric.ts` from its own files'
+            message: '`ki-skills` must ship `scripts/shared/rubric.ts` from its own files'
           })
         if (!checkerModuleExists)
           violations.push({
             status: 'VIOLATION' as const,
-            message: '`ki-skills` must ship `scripts/lib/checker.ts` from its own files'
+            message: '`ki-skills` must ship `scripts/shared/checker.ts` from its own files'
           })
         if (!reporterModuleExists)
           violations.push({
             status: 'VIOLATION' as const,
-            message: '`ki-skills` must ship `scripts/lib/reporter.ts` from its own files'
+            message: '`ki-skills` must ship `scripts/shared/reporter.ts` from its own files'
           })
         if (checkerDependencies.length > 0)
           violations.push({
@@ -131,4 +131,32 @@ export const KI_CHECKER_4: RubricItem<KiCheckerRubricContext> = {
   }
 }
 
-export const KI_CHECKER = [KI_CHECKER_1, KI_CHECKER_2, KI_CHECKER_3, KI_CHECKER_4] as const
+export const KI_CHECKER_5: RubricItem<KiCheckerRubricContext> = {
+  code: 'KI-CHECKER-5',
+  title: 'shared and internal script packaging is explicit',
+  description:
+    'Private implementation belongs under `scripts/internal/`; cross-skill modules belong under `scripts/shared/`, whose non-test entries must exactly match `checker-modules:`.',
+  sources: ['KI'],
+  mechanical: {
+    level: 'FAIL',
+    audit: {
+      phase: 'INSPECT',
+      run: ({ checkerModules, legacyLibPresent, sharedModules }) => {
+        const violations = []
+        if (legacyLibPresent)
+          violations.push({ status: 'VIOLATION' as const, message: 'classify `scripts/lib/` contents as shared or internal' })
+        const declared = [...new Set(checkerModules)].sort()
+        const published = [...new Set(sharedModules)].sort()
+        if (declared.join('\n') !== published.join('\n'))
+          violations.push({
+            status: 'VIOLATION' as const,
+            message: `\`scripts/shared/\` must exactly publish \`checker-modules:\` (declared: ${declared.join(', ') || 'none'}; published: ${published.join(', ') || 'none'})`
+          })
+        const [first, ...rest] = violations
+        return first ? [first, ...rest] : [{ status: 'PASS', message: 'shared and internal script packaging is explicit' }]
+      }
+    }
+  }
+}
+
+export const KI_CHECKER = [KI_CHECKER_1, KI_CHECKER_2, KI_CHECKER_3, KI_CHECKER_4, KI_CHECKER_5] as const

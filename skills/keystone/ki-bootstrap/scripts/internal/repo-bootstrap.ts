@@ -974,9 +974,9 @@ function vendorCheckerModulePayload(
   journal: OwnedSnapshot,
   ownModule = false
 ): VendoredFile[] {
-  const vendorRoot = ownModule ? join(destDir, 'lib') : join(destDir, 'vendored', module.provider)
+  const vendorRoot = ownModule ? join(destDir, 'shared') : join(destDir, 'vendored', module.provider)
   const vendorRootRel = ownModule
-    ? join(CHECKERS_DIR, skill, 'scripts', 'lib')
+    ? join(CHECKERS_DIR, skill, 'scripts', 'shared')
     : join(CHECKERS_DIR, skill, 'scripts', 'vendored', module.provider)
   const target = join(vendorRoot, payload.targetName)
   const targetRel = join(vendorRootRel, payload.targetName)
@@ -1091,7 +1091,7 @@ function vendorSkill(
   for (const moduleName of checkerModulesOf(skill)) {
     const module = { provider: skill, module: moduleName }
     const payload = checkerModulePayload(module)
-    const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/scripts/lib/${payload.targetName}`
+    const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/scripts/shared/${payload.targetName}`
     if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (owned checker module payload)${RESET}`)
     if (!dryRun) {
       if (!journal) throw new Error('candidate generation requires a creation journal')
@@ -1116,7 +1116,7 @@ function vendorSkill(
   // covered by the manifest hash like every other vendored file.
   const helpAbs = join(destDir, 'help.md')
   const helpEnv = process.env.KI_BOOTSTRAP_TEST_HELP_PATH ? { ...process.env, PATH: process.env.KI_BOOTSTRAP_TEST_HELP_PATH } : process.env
-  const help = execFileSync('bun', [join(skillDir('ki-bootstrap'), 'scripts', 'lib', 'skill-help.ts'), skill], {
+  const help = execFileSync('bun', [join(skillDir('ki-bootstrap'), 'scripts', 'internal', 'skill-help.ts'), skill], {
     cwd: join(SKILLS_ROOT, '..'),
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'ignore'],
@@ -1312,7 +1312,7 @@ function buildCandidate(
   if (set.includes('ki-harness')) {
     for (const name of HARNESS_BIN_SCRIPTS) {
       const destination = join(staging, 'bin', name)
-      copyRegularFile(join(skillDir('ki-bootstrap'), 'scripts', 'lib', name), destination)
+      copyRegularFile(join(skillDir('ki-bootstrap'), 'scripts', 'internal', name), destination)
       recordGenerated(journal, staging, join('bin', name))
       manifestFiles[join(VENDOR_DIR, 'bin', name)] = hashJournalFile(journal, join('bin', name))
     }

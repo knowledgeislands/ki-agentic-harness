@@ -32,10 +32,10 @@ import {
   SKILLS_ROOT,
   SkillResolutionError,
   skillDir
-} from './lib/resolve.ts'
+} from './internal/resolve.ts'
 
 const SCRIPTS = dirname(fileURLToPath(import.meta.url))
-const BOOTSTRAP = join(SCRIPTS, 'lib', 'repo-bootstrap.ts')
+const BOOTSTRAP = join(SCRIPTS, 'internal', 'repo-bootstrap.ts')
 const AUDIT = join(SCRIPTS, 'audit.ts')
 
 let failed = false
@@ -103,7 +103,7 @@ check(
     return (
       payload.kind === 'file' &&
       payload.targetName === `${module.module}.ts` &&
-      payload.source.endsWith(`ki-skills/scripts/lib/${module.module}.ts`)
+      payload.source.endsWith(`ki-skills/scripts/shared/${module.module}.ts`)
     )
   })
 )
@@ -319,7 +319,7 @@ try {
   check(
     'checker-module provider → owns its standalone local module closure',
     ['rubric', 'checker', 'reporter'].every((module) =>
-      existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'lib', `${module}.ts`))
+      existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'shared', `${module}.ts`))
     )
   )
   const vendoredRubricItem = join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'rubric', 'items', 'index.ts')
@@ -398,7 +398,7 @@ const temporaryHarness = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-t
 const temporaryTarget = fixture()
 try {
   cpSync(SKILLS_ROOT, join(temporaryHarness, 'skills'), { recursive: true, dereference: true })
-  const temporaryBootstrap = join(temporaryHarness, 'skills', 'keystone', 'ki-bootstrap', 'scripts', 'lib', 'repo-bootstrap.ts')
+  const temporaryBootstrap = join(temporaryHarness, 'skills', 'keystone', 'ki-bootstrap', 'scripts', 'internal', 'repo-bootstrap.ts')
   const result = spawnSync('bun', [temporaryBootstrap, temporaryTarget, '--seed', 'ki-repo'], { encoding: 'utf8' })
   rmSync(temporaryHarness, { recursive: true, force: true })
   const copiedSkill = join(temporaryTarget, '.claude', 'skills', 'ki-repo', 'SKILL.md')
@@ -415,7 +415,7 @@ try {
 const selfBootstrappingHarness = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-self-source-')))
 try {
   cpSync(SKILLS_ROOT, join(selfBootstrappingHarness, 'skills'), { recursive: true, dereference: true })
-  const selfBootstrap = join(selfBootstrappingHarness, 'skills', 'keystone', 'ki-bootstrap', 'scripts', 'lib', 'repo-bootstrap.ts')
+  const selfBootstrap = join(selfBootstrappingHarness, 'skills', 'keystone', 'ki-bootstrap', 'scripts', 'internal', 'repo-bootstrap.ts')
   const result = spawnSync('bun', [selfBootstrap, selfBootstrappingHarness, '--seed', 'ki-repo'], { encoding: 'utf8' })
   const selfPayload = join(selfBootstrappingHarness, '.claude', 'skills', 'ki-repo')
   check('source harness bootstrap → exits cleanly', result.status === 0)

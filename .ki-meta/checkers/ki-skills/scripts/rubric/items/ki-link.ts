@@ -1,4 +1,4 @@
-import type { RubricItem } from '../../lib/rubric.ts'
+import type { RubricItem } from '../../shared/rubric.ts'
 import type { KiLinkRubricContext } from '../contexts/contexts.ts'
 
 const relativeLinkTargets = (markdown: string): string[] => {

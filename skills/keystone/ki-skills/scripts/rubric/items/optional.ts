@@ -1,4 +1,4 @@
-import type { RubricItem } from '../../lib/rubric.ts'
+import type { RubricItem } from '../../shared/rubric.ts'
 import type { OptionalRubricContext } from '../contexts/contexts.ts'
 
 const COMPATIBILITY_MIN_LENGTH = 1

@@ -6,7 +6,7 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'nod
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { parseCheckerJsonl } from './lib/checker.ts'
+import { parseCheckerJsonl } from './shared/checker.ts'
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
 const CONFORM = join(SCRIPT_DIR, 'conform.ts')

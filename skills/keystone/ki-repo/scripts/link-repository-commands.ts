@@ -7,7 +7,7 @@
  * replace managed payloads with symlinks into the active harness checkout.
  * `--agents` additionally links the declared Claude governance agents.
  */
-import { runProjectLinks } from './lib/project-skill-publisher.ts'
+import { runProjectLinks } from './internal/project-skill-publisher.ts'
 
 const argv = process.argv.slice(2)
 if (argv.includes('-h') || argv.includes('--help')) {

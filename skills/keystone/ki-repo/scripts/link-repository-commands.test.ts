@@ -20,7 +20,7 @@ import { fileURLToPath } from 'node:url'
 
 const SCRIPTS = dirname(fileURLToPath(import.meta.url))
 const LINKER = join(SCRIPTS, 'link-repository-commands.ts')
-const COPIER = join(SCRIPTS, '..', '..', 'ki-bootstrap', 'scripts', 'lib', 'publish-project-skills.ts')
+const COPIER = join(SCRIPTS, '..', '..', 'ki-bootstrap', 'scripts', 'internal', 'publish-project-skills.ts')
 
 let failed = false
 function check(label: string, cond: boolean): void {

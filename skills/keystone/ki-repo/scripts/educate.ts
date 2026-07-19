@@ -40,5 +40,5 @@ if (argv.includes('--scaffold-config-only')) {
   process.exit(0)
 }
 
-const engine = resolve(scripts, '..', '..', 'ki-bootstrap', 'scripts', 'lib', 'repo-bootstrap.ts')
+const engine = resolve(scripts, '..', '..', 'ki-bootstrap', 'scripts', 'internal', 'repo-bootstrap.ts')
 execFileSync('bun', [engine, ...argv, '--seed', SKILL], { stdio: 'inherit' })

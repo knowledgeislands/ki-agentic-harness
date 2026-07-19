@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const script = join(dirname(fileURLToPath(import.meta.url)), 'lib', 'skill-graph.ts')
+const script = join(dirname(fileURLToPath(import.meta.url)), 'internal', 'skill-graph.ts')
 const vendored = '.ki-meta/bin/skill-graph.ts'
 const guide = 'docs/guides/user-guide/skills.md'
 const source = readFileSync(guide, 'utf8')

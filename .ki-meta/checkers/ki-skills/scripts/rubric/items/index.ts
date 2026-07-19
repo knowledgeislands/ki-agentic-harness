@@ -1,4 +1,4 @@
-import { defineRubricFamily, type RubricDefinition } from '../../lib/rubric.ts'
+import { defineRubricFamily, type RubricDefinition } from '../../shared/rubric.ts'
 import type { KiSkillsRubricContext } from '../contexts/contexts.ts'
 import { BODY } from './body.ts'
 import { COLLISION } from './collision.ts'
