@@ -52,7 +52,7 @@ Each layer has one responsibility:
 - `sources.md` records the provenance behind the standard and when moving sources were last reviewed.
 - `standards.md` states what good looks like and why, ordered from portable requirements through established practice to Knowledge Islands conventions.
 - Structured rubric families and items make the standard assessable. They are the sole authored source for criterion identity, classification, prose, source citations, mode phasing, and executable behaviour.
-- The checker runtime plans and executes the rubric's mechanical AUDIT or CONFORM executions. It MUST NOT define criteria of its own or pretend to evaluate judgment items.
+- The checker runtime plans and executes the rubric's mechanical AUDIT or CONFORM executions. It MUST NOT define criteria of its own or pretend to evaluate judgment aspects.
 - The checker returns one canonical JSONL response containing every structured finding.
 - Reporters consume that JSONL response and turn it into terminal, Markdown, or other views without changing what was checked.
 - `rubric.md` is a deterministic human-readable publication generated from the structured rubric. It is never a second authored source of truth. It contains a statement at the start of it to make this clear to readers and agents.
@@ -128,15 +128,15 @@ Each rubric item owns:
 - a concise `title` suitable for `${code}: ${title}` presentation;
 - the complete normative `description` needed by the generated rubric;
 - its cited `sources`;
-- exactly one `MECHANICAL` or `JUDGMENT` classification;
-- for a mechanical item, its required AUDIT execution and optional safe CONFORM execution; or
-- for a judgment item, its concrete review `prompt`.
+- a `MECHANICAL` aspect with its required AUDIT execution and optional safe CONFORM execution;
+- a `JUDGMENT` aspect with its concrete review `prompt`; or
+- both aspects when one stable rule genuinely has deterministic and judgment concerns.
 
-When a written rule contains both deterministic and judgment concerns, author two independently identifiable items rather than encoding `[M + J]` or `[M-heuristic + J]` in one item.
+A hybrid rule remains one item with one stable code rather than duplicating its shared identity and prose across separate entries.
 
 A deterministic check is mechanical even when it has not yet been implemented; absence of implementation is work to finish, not a reason to relabel it as judgment.
 
-A judgment item carries a concrete review prompt for a later agent or reviewer.
+A judgment aspect carries a concrete review prompt for a later agent or reviewer.
 
 AUDIT and CONFORM MUST NOT claim to evaluate it mechanically.
 
@@ -174,15 +174,15 @@ type RubricExecution<Context, Result> = {
   run: (context: Context) => RubricOutcomes<Result>
 }
 
+type RubricType = 'MECHANICAL' | 'JUDGMENT'
+
 type MechanicalRubric<Context> = {
-  type: 'MECHANICAL'
   level: ViolationLevel
   audit: RubricExecution<Context, AuditOutcome>
   conform?: RubricExecution<Context, ConformOutcome>
 }
 
 type JudgmentRubric = {
-  type: 'JUDGMENT'
   prompt: string
 }
 
@@ -193,14 +193,15 @@ type RubricItemBase = {
   sources: readonly string[]
 }
 
-type RubricItem<Context> = RubricItemBase & (MechanicalRubric<Context> | JudgmentRubric)
+type RubricItem<Context> = RubricItemBase &
+  ({ mechanical: MechanicalRubric<Context>; judgment?: JudgmentRubric } | { mechanical?: never; judgment: JudgmentRubric })
 ```
 
-Every item is exactly one of `MECHANICAL` or `JUDGMENT`.
+Every item contains a mechanical aspect, a judgment aspect, or both; it MUST contain at least one.
 
-When a written rule contains both a deterministic assertion and a judgment question, author two independently identifiable rubric items rather than a hybrid item with two execution paths.
+Its published `RubricType` values are derived from the aspects it carries rather than repeated as authored metadata.
 
-The type and catalogue validator reject an item that is neither classification or attempts to combine both.
+The type and catalogue validator rejects an item with neither aspect.
 
 The criterion's violation level belongs to the mechanical item; callbacks do not repeat it alongside every result.
 
@@ -231,9 +232,11 @@ An execution MUST return at least one outcome: `PASS` when the criterion is met,
 
 During CONFORM, the checker uses the item's CONFORM execution when present and otherwise runs its required AUDIT execution read-only, so every mechanical item remains represented.
 
-A judgment item has no executable callback.
+A judgment aspect has no executable callback.
 
-AUDIT and CONFORM MUST NOT emit a synthetic finding for it; the checker summary reports how many judgment items remain mechanically unevaluated.
+AUDIT and CONFORM MUST NOT emit a synthetic finding for it; the checker summary reports how many selected items carry a mechanically unevaluated judgment aspect.
+
+A hybrid item executes its mechanical aspect normally and also contributes one to that judgment count.
 
 The family and definition layers carry metadata and connect each family to one focused context facet:
 
@@ -260,11 +263,11 @@ The definition is the one object passed to generic catalogue validation, checker
 
 ## Rubric execution and phasing
 
-A rubric execution is the executable side of a mechanical rubric item.
+A rubric execution is the executable side of a mechanical rubric aspect.
 
 A mechanical item always declares an AUDIT execution and may add a CONFORM execution.
 
-A judgment item declares its review prompt and has no execution or phase.
+A judgment aspect declares its review prompt and has no execution or phase.
 
 Each declared execution carries:
 
@@ -366,7 +369,7 @@ A conform callback receives only the capabilities it needs, performs its declare
 
 Judgment work is not emitted as synthetic findings or accumulated in a private TODO collection.
 
-The response summary MUST report the number of judgment items that AUDIT or CONFORM did not mechanically evaluate.
+The response summary MUST report the number of selected rubric items carrying a judgment aspect that AUDIT or CONFORM did not mechanically evaluate.
 
 ## Educate boundary
 
@@ -422,7 +425,7 @@ The renderer uses family metadata and ordered item metadata to reproduce:
 
 - family headings and introductions;
 - criterion codes, titles, full descriptions, and classification;
-- mechanical, judgment, and heuristic presentation;
+- mechanical, judgment, hybrid, and heuristic presentation;
 - source citations and standard links; and
 - stable item ordering.
 
@@ -447,7 +450,7 @@ At minimum, a structured rubric proves:
 - every mechanical execution declares a valid phase;
 - execution order is deterministic by phase and catalogue order;
 - every mechanical item has its required implementation or an explicit migration failure;
-- the response emits no judgment findings and its unevaluated-judgment count exactly matches the catalogue;
+- the response emits no judgment findings and its unevaluated-judgment count exactly matches the selected items carrying a judgment aspect;
 - audit is read-only and conform honours dry-run before persistence;
 - checker response satisfies the executable schema and exit rule;
 - generated `rubric.md` exactly matches the structured catalogue; and
@@ -470,7 +473,7 @@ The target contains no legacy aliases, compatibility adapters, dual response nam
 Complete these units inside `ki-skills` in order, keeping each independently reviewable.
 
 1. **Rubric model.** Replace the provisional shared types with the target rubric, family, execution, outcome, and definition types. Add generic catalogue validation without changing domain behaviour.
-2. **KI skills catalogue.** Wrap the existing item families in family metadata, add focused context selectors, declare violation levels and phases, and export one `KI_SKILLS_RUBRIC` definition. Preserve an existing code for its corresponding concern; when a hybrid rule is separated, retain that code for one item and assign a new semantic code to the other without losing either meaning.
+2. **KI skills catalogue.** Wrap the existing item families in family metadata, add focused context selectors, declare violation levels and phases, and export one `KI_SKILLS_RUBRIC` definition. Preserve every existing criterion code and meaning, including hybrid items with both aspects.
 3. **Generated rubric.** Render and parity-check `references/rubric.md` from `KI_SKILLS_RUBRIC`, including its canonical-source notice. Remove Markdown parsing from runtime code only after exact parity passes.
 4. **Checker module.** Replace the monolithic reporter helper with `scripts/lib/checker/`: planning, execution, response construction, response parsing, and validation. Rename the executable schema to `assets/checker-response.schema.json` with no legacy alias.
 5. **Thin wrappers.** Reduce `audit.ts` and `conform.ts` to arguments, subject loading, root-context factories, checker invocation, persistence, and exit. They contain no criterion codes or private result shape.

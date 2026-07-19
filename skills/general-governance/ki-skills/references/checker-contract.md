@@ -93,9 +93,11 @@ A mechanical item declares only `FAIL` or `WARN` as its violation level.
 
 Its callback returns `VIOLATION`, `PASS`, `NOT_APPLICABLE`, `INFO`, or — during CONFORM only — `FIXED`; the checker maps `VIOLATION` to the item's declared level and the others directly to the response level above.
 
-A judgment item has no checker execution.
+A judgment aspect has no checker execution.
 
-The checker MUST NOT emit a synthetic finding for it and MUST report the number of mechanically unevaluated judgment items in the response summary.
+The checker MUST NOT emit a synthetic finding for it and MUST report the number of selected rubric items carrying a mechanically unevaluated judgment aspect in the response summary.
+
+A hybrid item runs its mechanical aspect normally and also contributes one to that judgment count.
 
 ## Response and exit behaviour
 
@@ -136,14 +138,14 @@ A checker-module dependency supplies implementation only and does not create a `
 
 ## Relationship to rubric classification
 
-Every rubric item is exactly one of `MECHANICAL` or `JUDGMENT`.
+Every rubric item has a `MECHANICAL` aspect, a `JUDGMENT` aspect, or both, and MUST have at least one.
 
-Every mechanical criterion has an executable deterministic element for the modes in which it applies.
+Every mechanical aspect has an executable deterministic execution for the modes in which it applies.
 
-Every judgment criterion has a concrete prompt for a later agent or reviewer.
+Every judgment aspect has a concrete prompt for a later agent or reviewer.
 
 AUDIT and CONFORM MUST NOT evaluate that prompt or present it as a mechanical result.
 
-When a written rule contains both concerns, the author splits it into two independently identifiable rubric items.
+An item carrying both aspects retains one code and one shared rule identity.
 
 Mechanical work belongs in the checker rather than being deferred to a model merely because its callback has not yet been implemented.

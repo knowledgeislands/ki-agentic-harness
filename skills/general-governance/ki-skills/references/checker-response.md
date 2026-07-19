@@ -52,7 +52,7 @@ Every `finding` record carries:
 
 A finding records mechanically observed state during AUDIT and an action or resulting state during CONFORM.
 
-The checker MUST NOT emit a finding for a judgment item because it has not evaluated that item.
+The checker MUST NOT emit a finding for a judgment aspect because it has not evaluated that aspect.
 
 The code remains the stable rule identity; including the title makes each streamed finding self-contained without duplicating the full rubric catalogue.
 
@@ -60,7 +60,9 @@ The code remains the stable rule identity; including the title makes each stream
 
 The final summary has every finding-level count, including zero values, and exactly agrees with the preceding findings sharing its `runId`.
 
-It also reports `judgment.unevaluated`, the number of judgment items in the selected catalogue that the mechanical checker did not perform.
+It also reports `judgment.unevaluated`, the number of selected rubric items carrying a judgment aspect that the mechanical checker did not perform.
+
+A hybrid item can therefore contribute mechanical findings and one to this count without creating a second rubric entry.
 
 A checker exits non-zero if and only if it returns at least one `FAIL` finding.
 
