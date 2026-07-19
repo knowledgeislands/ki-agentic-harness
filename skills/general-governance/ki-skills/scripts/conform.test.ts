@@ -70,10 +70,7 @@ function writeConformableFixture(): { base: string; dir: string } {
     ].join('\n')
   )
   for (const script of ['educate.ts', 'audit.ts', 'conform.ts'])
-    writeFileSync(
-      join(dir, 'scripts', script),
-      "import { emitCheckerReporter } from './lib/checker-reporter.ts'\nemitCheckerReporter({})\n"
-    )
+    writeFileSync(join(dir, 'scripts', script), "import { emitCheckerReporter } from './lib/checker-reporter.ts'\nemitCheckerReporter({})\n")
   return { base, dir }
 }
 
@@ -87,16 +84,27 @@ function writeConformableFixture(): { base: string; dir: string } {
     check('leaves non-link backslashes untouched', skill.includes('Literal text C:\\temp remains outside a link.'))
     check('replaces legacy vendor map with the current uniform declaration', skill.includes('vendors: [educate, audit, conform, help]'))
     check('does not retain a legacy vendor map', !skill.includes('vendors: {'))
-    check(
-      'repairs HELP and missing universal verbs',
-      skill.includes("argument-hint: 'audit <target> | conform <target> | help | educate | refresh'")
-    )
+    check('repairs HELP and missing universal verbs', skill.includes("argument-hint: 'audit <target> | conform <target> | help | educate | refresh'"))
     const audited = run(AUDIT, dir)
     check('final audit has no failing mechanical finding', audited.status === 0)
-    check(
-      'final audit has no LAY-4/KI-SHAPE-11/12/15 finding',
-      !/"code":"(?:LAY-4|KI-SHAPE-11|KI-SHAPE-12|KI-SHAPE-15)"/.test(audited.output)
-    )
+    check('final audit has no LAY-4/KI-SHAPE-11/12/15 finding', !/"code":"(?:LAY-4|KI-SHAPE-11|KI-SHAPE-12|KI-SHAPE-15)"/.test(audited.output))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
+
+for (const [suffix, skillMd] of [
+  ['missing-frontmatter', '# Fixture\n'],
+  ['non-mapping-frontmatter', '---\n- not\n- a mapping\n---\n\n# Fixture\n']
+] as const) {
+  const base = mkdtempSync(join(tmpdir(), 'ki-skills-conform-'))
+  const dir = join(base, `ki-fixture-${suffix}`)
+  mkdirSync(dir)
+  writeFileSync(join(dir, 'SKILL.md'), skillMd)
+  try {
+    const result = run(CONFORM, dir)
+    check(`${suffix} → FM-1 manual advisory`, /"code":"FM-1"/.test(result.output) && result.output.includes('author by hand'))
+    check(`${suffix} → does not misreport LAY-1 or NAME-1`, !/"code":"(?:LAY-1|NAME-1)"/.test(result.output))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
@@ -110,10 +118,7 @@ function writeConformableFixture(): { base: string; dir: string } {
     writeFileSync(join(dir, 'scripts', 'audit-fixture.ts'), '// legacy checker\n')
     const result = run(CONFORM, dir)
     const skill = readFileSync(join(dir, 'SKILL.md'), 'utf8')
-    check(
-      'missing bare scripts produce a vendor advisory',
-      result.output.includes('cannot declare uniform `vendors:` until bare script(s) exist')
-    )
+    check('missing bare scripts produce a vendor advisory', result.output.includes('cannot declare uniform `vendors:` until bare script(s) exist'))
     check('missing bare scripts preserve the existing declaration', skill.includes('vendors: { audit: scripts/audit-fixture.ts }'))
   } finally {
     rmSync(base, { recursive: true, force: true })

@@ -25,6 +25,7 @@ import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromItems
 import type { RubricFinding, RubricItem } from './lib/rubric/rubric.ts'
 import { COLLISION } from './rubrics/collision.ts'
 import { DESC } from './rubrics/description.ts'
+import { FRONTMATTER } from './rubrics/frontmatter.ts'
 import { RUBRIC_ITEMS } from './rubrics/index.ts'
 import { KI_CHECKER } from './rubrics/ki-checker.ts'
 import { KI_LINK } from './rubrics/ki-link.ts'
@@ -53,29 +54,38 @@ const auditRubricItems = <Context>(items: readonly RubricItem<Context>[], contex
 // Every ki-skills criterion is defined in this skill's rubric — the default reference pointer.
 const RUBRIC = 'references/rubric.md'
 
-// --- limits (from references/standards.md §16 — keep in sync) ----------------------
+// --- limits (from references/standards.md §17 — keep in sync) ----------------------
 const FOOTPRINT_REF_NOTE_TOKENS = 1500 // a single reference this large is a candidate to split — INFO hint only, never a cap
 
 // --- frontmatter parser ----------------------------------------------------
 // Handles the scalar fields the audit reads directly. The Bun-built-in YAML
 // parser also retains top-level values for rubric callbacks that need YAML's
 // actual scalar / sequence / mapping types without re-parsing line-oriented text.
-type Frontmatter = { keys: Map<string, string>; present: Set<string>; raw: string | null; values: Record<string, unknown> }
+type Frontmatter = {
+  keys: Map<string, string>
+  present: Set<string>
+  raw: string | null
+  values: Record<string, unknown>
+  isMapping: boolean
+}
 type BunYamlRuntime = { Bun: { YAML: { parse: (source: string) => unknown } } }
 
 function parseFrontmatter(content: string): Frontmatter {
   const keys = new Map<string, string>()
   const present = new Set<string>()
   const m = content.match(/^---\r?\n([\s\S]*?)\r?\n---/)
-  if (!m) return { keys, present, raw: null, values: {} }
+  if (!m) return { keys, present, raw: null, values: {}, isMapping: false }
   const block = m[1] as string
   let values: Record<string, unknown> = {}
+  let isMapping = false
   try {
     const parsed = (globalThis as typeof globalThis & BunYamlRuntime).Bun.YAML.parse(block)
-    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) values = parsed as Record<string, unknown>
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+      values = parsed as Record<string, unknown>
+      isMapping = true
+    }
   } catch {
-    // Existing scalar checks still report what they can. OPT-2 reports an
-    // invalid `metadata` value when that key is present but YAML cannot parse it.
+    // FM-1 owns malformed YAML; dependent frontmatter checks stop before using it.
   }
   const lines = block.split(/\r?\n/)
   let i = 0
@@ -118,7 +128,7 @@ function parseFrontmatter(content: string): Frontmatter {
     keys.set(key, stripQuotes(rest))
     i++
   }
-  return { keys, present, raw: block, values }
+  return { keys, present, raw: block, values, isMapping }
 }
 
 function stripQuotes(s: string): string {
@@ -157,10 +167,7 @@ const createKiShapeContext = (skillDir: string, frontmatter: Frontmatter, descri
   const conformSource = existsSync(conformPath) ? readFileSync(conformPath, 'utf8').replace(/\/\/.*$/gm, '') : ''
   const scaffoldedFiles = [...conformSource.matchAll(/\b(?:scaffold|syncOwned)\(\s*['"]([^'"]+)['"]/g)].map((match) => match[1] as string)
   const checkers = scriptNames
-    .filter(
-      (name) =>
-        (name === 'audit.ts' || name.startsWith('audit-') || name.startsWith('lint-')) && name.endsWith('.ts') && !name.endsWith('.test.ts')
-    )
+    .filter((name) => (name === 'audit.ts' || name.startsWith('audit-') || name.startsWith('lint-')) && name.endsWith('.ts') && !name.endsWith('.test.ts'))
     .map((name) => {
       const source = readFileSync(join(scriptsDir, name), 'utf8')
       return {
@@ -180,18 +187,14 @@ const createKiShapeContext = (skillDir: string, frontmatter: Frontmatter, descri
     bodyModes: extractBodyModes(section),
     operatingModesIntro: section?.split(/^###\s+|^\s*\|/m)[0] ?? '',
     flatModeHeadings: [...stripCode(body).matchAll(/^##\s+Mode\s+(\w+)/gim)].map((match) => match[1] as string),
-    bareModeHeadings: section
-      ? [...stripCode(section).matchAll(/^###\s+(?!Mode\b)(\S[^\n]*)/gim)].map((match) => (match[1] as string).trim())
-      : [],
+    bareModeHeadings: section ? [...stripCode(section).matchAll(/^###\s+(?!Mode\b)(\S[^\n]*)/gim)].map((match) => (match[1] as string).trim()) : [],
     refreshText: `${refreshSection}${existsSync(refreshReference) ? `\n${readFileSync(refreshReference, 'utf8')}` : ''}`,
     retiredExtensionFiles: markdownFiles
       .filter((file) => endorsesRetiredExtension(basename(file) === 'SKILL.md' ? body : readFileSync(file, 'utf8')))
       .map((file) => file.slice(skillDir.length + 1)),
     strongGate: /do not edit[^.\n]*directly|go through (a )?proposal|standing directive|installing the gate/i.test(stripCode(skillText)),
     anchorMentioned: /CLAUDE\.md|AGENTS\.md|always-loaded|installing the gate|\banchor/i.test(skillText),
-    checkerReadsAnchor: scriptNames.some(
-      (name) => name.endsWith('.ts') && /CLAUDE\.md|AGENTS\.md/.test(readFileSync(join(scriptsDir, name), 'utf8'))
-    ),
+    checkerReadsAnchor: scriptNames.some((name) => name.endsWith('.ts') && /CLAUDE\.md|AGENTS\.md/.test(readFileSync(join(scriptsDir, name), 'utf8'))),
     mechanicalRubricCount: (rubric.match(/\[M\]/g) ?? []).length,
     hasChecker: scriptNames.some((name) => name.endsWith('.ts')),
     documentsMechanicalDelegation: /lint:md|toolchain (?:already )?enforces/i.test(rubric),
@@ -231,10 +234,8 @@ function footprint(skillDir: string): { rows: FootprintRow[]; total: number } {
 
 function lintSkill(skillDir: string): Finding[] {
   const f: Finding[] = []
-  const fail = (criterion: string, message: string, file?: string): void =>
-    void f.push({ severity: 'fail', criterion, message, ref: RUBRIC, file })
-  const warn = (criterion: string, message: string, file?: string): void =>
-    void f.push({ severity: 'warn', criterion, message, ref: RUBRIC, file })
+  const fail = (criterion: string, message: string, file?: string): void => void f.push({ severity: 'fail', criterion, message, ref: RUBRIC, file })
+  const warn = (criterion: string, message: string, file?: string): void => void f.push({ severity: 'warn', criterion, message, ref: RUBRIC, file })
 
   const skillMd = join(skillDir, 'SKILL.md')
   if (!existsSync(skillMd)) {
@@ -254,8 +255,10 @@ function lintSkill(skillDir: string): Finding[] {
 
   // --- frontmatter ---
   const fm = parseFrontmatter(content)
-  if (fm.raw === null) {
-    fail('LAY-1/NAME-1', 'No YAML frontmatter block (--- ... ---) at the top of SKILL.md')
+  for (const finding of auditRubricItems(FRONTMATTER, { hasBlock: fm.raw !== null, isMapping: fm.isMapping })) {
+    fail(finding.code, finding.message)
+  }
+  if (!fm.isMapping) {
     return f
   }
   const name = fm.keys.get('name')

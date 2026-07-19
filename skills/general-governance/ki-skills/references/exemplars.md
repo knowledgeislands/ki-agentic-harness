@@ -31,27 +31,33 @@ Curated illustrations of well-formed `SKILL.md` files. Use these when writing a 
 
 ### Well-formed frontmatter block
 
-The frontmatter of `ki-agents` shows all required fields plus the two most important CC-only extensions. `name` is all-lowercase with hyphens, matches the directory name exactly, and carries no generic words like `helper` or `utils`. `description` is written in the third person ("Audit, review, and write…" — never "Can audit…"), names concrete trigger phrases, and ends with off-ramp declarations so the skill does not silently absorb adjacent work. `argument-hint` lists the discrete modes a user can pass at the `/` prompt; the standard-skill modes (`audit`, `conform`, `refresh`) come last after any skill-specific modes, in alphabetical order.
+The frontmatter of `ki-agents` shows the governance-skill contract plus the most important Claude Code extensions. `name` is all-lowercase with hyphens, matches the directory name exactly, and carries no generic words like `helper` or `utils`. `depends-on: []` makes an intentionally standalone skill explicit; `vendors` declares the generated universal mode elements. `description` is written in the third person ("Audit, review, and write…" — never "Can audit…"), names concrete trigger phrases, and ends with off-ramp declarations so the skill does not silently absorb adjacent work. `argument-hint` lists the discrete modes a user can pass at the `/` prompt.
 
 ```yaml
 ---
 name: ki-agents
+depends-on: []
+vendors: [educate, audit, conform, help]
 description: >
   Audit, review, and write Claude Code subagent definitions against current best practice. Use when creating a new agent (subagent), reviewing or critiquing an agent's definition, checking an agent before it ships, asking "is this agent any good / well-scoped", or refreshing the agents rubric. Carries a checkable rubric — mechanical checks a bundled linter runs, judgment checks applied by reading — covering the name and description (the delegation signal), the system-prompt shape (role/lane, grounding, when-invoked, own-vs-defer), least-privilege tools and model choice, and cross-agent lane collisions. Triggers: "audit this agent", "review my subagent", "write a new agent", "is this agent definition good", "scaffold an agent", "refresh the agents rubric", "check the agents". Judges a subagent definition (frontmatter + system prompt) — for authoring a SKILL.md use the `ki-skills` skill instead; for harness-level layout (five-part bundle, `.ki-config.toml` compliance) use `ki-harness`.
-argument-hint: 'audit <agent-or-dir> | conform <agent> | educate <description> | refresh'
+argument-hint: 'audit <agent-or-dir> | conform <agent> | help | educate <description> | refresh'
 ---
 ```
 
-### Well-formed standard mode definition (AUDIT)
+### Well-formed operating modes
 
-Every governance skill carries the universal four — AUDIT, CONFORM, EDUCATE, REFRESH. The mode definition opens with a one-sentence statement of what the mode does, then lists numbered concrete steps. Steps name the mechanical tool first (`bun scripts/…`) so the model runs the linter before reading — never re-derive what the script checks. Judgment criteria are applied only after the linter output is captured. The rubric file is referenced by relative link from the step that applies it, not re-stated in-line.
+Every governance skill carries the universal AUDIT, CONFORM, EDUCATE, REFRESH, and HELP behaviour. Put them under `## Operating modes`, with a `### Mode <NAME>` heading for each non-generated mode (or an equivalent permitted table). HELP is generated from the declared vendors: `help`, `-h`, `?`, or no mode explains the skill and stops; an interactive no-mode invocation may offer a mode choice. A mode definition opens with a one-sentence statement of what it does, then lists numbered concrete steps. Steps invoke the repository-root checker first so the model runs the linter before reading — never re-derive what the script checks. Judgment criteria are applied only after the checker output is captured. The rubric file is referenced by relative link from the step that applies it, not re-stated in-line.
 
 ```markdown
-## Mode AUDIT — review an existing agent
+## Operating modes
+
+HELP explains this skill's purpose, invocation, modes, and off-ramps without taking action.
+
+### Mode AUDIT — review an existing agent
 
 Review an agent (or every agent in a directory) against the rubric and report.
 
-1. **Run the linter.** `bun scripts/audit.ts <path-to-agent-or-dir>` from this skill's directory. It reports the mechanical criteria on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS) and exits non-zero on any FAIL. Capture its output verbatim — do not re-derive what it found.
+1. **Run the linter.** From the repository root, run `bun run ki:agents:audit`. It reports the mechanical criteria on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS) and exits non-zero on any FAIL. Capture its output verbatim — do not re-derive what it found.
 2. **Read the agent definition** and apply the **judgment** ([J]-tagged) criteria from [the rubric](references/rubric.md) — the linter owns the [M] ones.
 3. **Report** findings by location → criterion → fix; lead with FAIL findings.
 ```
@@ -68,7 +74,7 @@ Create a well-formed agent definition from a plain-English description of the ag
 1. **Gather inputs.** If the description is missing a lane boundary (what it defers), ask for it — the own-vs-defer line is the most important judgment call and cannot be inferred from a role alone.
 2. **Read [the standard](references/standards.md)** before writing — do not generate frontmatter from memory.
 3. **Draft the frontmatter** (`name`, `description`, optional `model` / `tools`) then the system prompt (role declaration, grounding statement, own-vs-defer boundary, operating notes).
-4. **Run the linter** on the draft: `bun scripts/audit.ts <draft-path>`. Fix any FAIL findings before delivering.
+4. **Run the linter** from the repository root: `bun run ki:agents:audit`. Fix any FAIL findings before delivering.
 5. Return the complete `.md` file content, annotated with the reasoning for any non-obvious choices.
 ```
 
@@ -77,9 +83,11 @@ Create a well-formed agent definition from a plain-English description of the ag
 When a skill runs a sibling's checker in sequence, it declares the edge explicitly rather than inheriting by coupling. The declaration appears in the mode step that calls the sibling, names the sibling by its `name` (never a file path), and explains what the sibling contributes and what this skill adds on top. This is the **composition-only** principle: each skill is valid standalone; the composition is in the calling skill's prose, not a shared base.
 
 ```markdown
-## Mode AUDIT — audit the harness bundle
+## Operating modes
 
-1. **Run the engineering checker first.** Invoke the `ki-engineering` skill in AUDIT mode against this repo — it checks the toolchain, `tsconfig`, and Biome config. Capture its findings; do not re-derive them here.
-2. **Run the skills linter.** `bun run ki:skills:audit` from the harness root — it audits every SKILL.md in `skills/` against the mechanical criteria. Capture its output verbatim.
-3. **Apply harness-specific judgment** — five-part bundle completeness, `.ki-config.toml` table presence for each populated part, and cross-skill consistency (no two skills claiming the same domain). The engineering and skills passes are the delta this skill adds over the siblings it called.
+### Mode AUDIT — audit the harness bundle
+
+1. **Run the skills checker.** From the harness root, run `bun run ki:skills:audit` — it audits every `SKILL.md` in `skills/` against the mechanical criteria. Capture its output verbatim.
+2. **Compose a sibling only when its concern is in scope.** For example, invoke `ki-engineering` in AUDIT mode when the requested harness review includes the toolchain, `tsconfig`, or Biome configuration. Capture its findings; do not re-derive them here.
+3. **Apply harness-specific judgment** — five-part bundle completeness, `.ki-config.toml` table presence for each populated part, and cross-skill consistency (no two skills claiming the same domain). State the harness-specific delta separately from any sibling's findings.
 ```

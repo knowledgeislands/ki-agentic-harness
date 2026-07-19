@@ -69,7 +69,7 @@ REFRESH last run **2026-07-19** against the tracked Agent Skills documentation s
 - **No standard, rubric, or linter change this run.**
 - **Open watch-items:** (1) re-fetch `superpowers` directly next run (carried forward). (2) The canonical dependency order in `ADR-KI-HARNESS-SKILLS-003` (mirrored in SKILL.md line 27) still lists 12 skills and omits `activities`, `bootstrap`, `decision-records`, `handoffs`, `live-artifacts`, `plans` — flag for the ADR owner; SKILL.md re-mirrors once the ADR is refreshed. (3) Confirm the `skills-ref` validator source if its repo layout becomes fetchable.
 
-(What past reviews changed in the standard / rubric / linter — the `disallowed-tools` behavioural note in §5, the CC runtime-extension fields, MCP fully-qualified tool naming, the CC post-compaction budget row, the migration to area-scoped codes — is in git.)
+(What past reviews changed in the standard / rubric / linter — the `disallowed-tools` behavioural note in §6, the CC runtime-extension fields, MCP fully-qualified tool naming, the CC post-compaction budget row, the migration to area-scoped codes — is in git.)
 
 [spec]: https://agentskills.io/specification
 [agentskills-index]: https://agentskills.io/llms.txt

@@ -92,6 +92,26 @@ const withReporter = "import { emitCheckerReporter } from './lib/checker-reporte
   }
 }
 
+// ── FM-1: frontmatter is a valid YAML mapping ───────────────────────────────
+for (const [suffix, frontmatter] of [
+  ['missing-frontmatter', ['# Fixture', '', 'Body.']],
+  ['invalid-yaml', ['---', 'name: [unterminated', '---', '', '# Fixture', '', 'Body.']],
+  ['non-mapping-yaml', ['---', '- not', '- a mapping', '---', '', '# Fixture', '', 'Body.']]
+] as const) {
+  const base = mkdtempSync(join(tmpdir(), 'ki-skills-test-'))
+  const dir = join(base, `ki-fixture-${suffix}`)
+  mkdirSync(dir)
+  writeFileSync(join(dir, 'SKILL.md'), frontmatter.join('\n'))
+  try {
+    const result = runResult(dir)
+    check(`${suffix} → FM-1 fail`, result.status !== 0 && hasMechanicalFinding(result.output, 'FM-1'))
+    check(`${suffix} → stops dependent frontmatter checks`, !hasMechanicalFinding(result.output, 'NAME-1'))
+    check(`${suffix} → does not misreport missing SKILL.md`, !hasMechanicalFinding(result.output, 'LAY-1'))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
+
 {
   const base = mkdtempSync(join(tmpdir(), 'ki-skills-test-'))
   const markdown = join(base, 'standalone.md')
@@ -244,10 +264,7 @@ const withReporter = "import { emitCheckerReporter } from './lib/checker-reporte
 
 // ── Relative import climbs outside the skill's scripts → KI-CHECKER-2 FAIL ──
 {
-  const { base, dir } = fixture(
-    'ki-fixture-cross-skill-import',
-    "import { helper } from '../../ki-other-skill/scripts/helper.ts'\nhelper()\n"
-  )
+  const { base, dir } = fixture('ki-fixture-cross-skill-import', "import { helper } from '../../ki-other-skill/scripts/helper.ts'\nhelper()\n")
   try {
     const out = run(dir)
     check('cross-skill import → KI-CHECKER-2 fail', out.includes('KI-CHECKER-2'))
@@ -260,10 +277,7 @@ const withReporter = "import { emitCheckerReporter } from './lib/checker-reporte
 // ── KI-SHAPE-12 / KI-SHAPE-13 fixtures ──────────────────────────────────────────────
 
 /** Build a throwaway skill dir from full frontmatter fields + body markdown. */
-function modeFixture(
-  name: string,
-  opts: { dependsOn?: string; desc?: string; hint?: string; vendors?: string; body: string }
-): { base: string; dir: string } {
+function modeFixture(name: string, opts: { dependsOn?: string; desc?: string; hint?: string; vendors?: string; body: string }): { base: string; dir: string } {
   const base = mkdtempSync(join(tmpdir(), 'ki-skills-test-'))
   const dir = join(base, name)
   mkdirSync(join(dir, 'scripts'), { recursive: true })
@@ -285,18 +299,9 @@ function optionalFixture(name: string, fields: readonly string[]): { base: strin
   mkdirSync(join(dir, 'scripts'), { recursive: true })
   writeFileSync(
     join(dir, 'SKILL.md'),
-    [
-      '---',
-      `name: ${name}`,
-      'description: A throwaway fixture for optional frontmatter validation.',
-      ...fields,
-      '---',
-      '',
-      '# Fixture',
-      '',
-      'Body.',
-      ''
-    ].join('\n')
+    ['---', `name: ${name}`, 'description: A throwaway fixture for optional frontmatter validation.', ...fields, '---', '', '# Fixture', '', 'Body.', ''].join(
+      '\n'
+    )
   )
   writeFileSync(join(dir, 'scripts', `audit-${name}.ts`), withReporter)
   return { base, dir }
@@ -334,8 +339,8 @@ function optionalFixture(name: string, fields: readonly string[]): { base: strin
   }
 }
 
-for (const [suffix, fields] of [
-  ['malformed-tools', ['allowed-tools: [Bash']],
+for (const [suffix, fields, expectedCode] of [
+  ['malformed-tools', ['allowed-tools: [Bash'], 'FM-1'],
   ['unbalanced-tools', ['allowed-tools: Bash(git status']],
   ['empty-tools', ["disallowed-tools: ''"]],
   ['empty-tool-list-entry', ['allowed-tools: [Read, ""]']],
@@ -343,7 +348,7 @@ for (const [suffix, fields] of [
 ] as const) {
   const { base, dir } = optionalFixture(`ki-fixture-${suffix}`, fields)
   try {
-    check(`${suffix} → OPT-3 fail`, hasMechanicalFinding(run(dir), 'OPT-3'))
+    check(`${suffix} → ${expectedCode ?? 'OPT-3'} fail`, hasMechanicalFinding(run(dir), expectedCode ?? 'OPT-3'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }

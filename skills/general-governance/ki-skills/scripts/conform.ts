@@ -41,6 +41,7 @@ import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromItems
 import type { RubricFinding } from './lib/rubric/rubric.ts'
 import { RUBRIC_ITEMS } from './rubrics/index.ts'
 import { KI_SHAPE_11, KI_SHAPE_12, KI_SHAPE_15, type KiShapeRubricContext } from './rubrics/ki-shape.ts'
+import { FM_1 } from './rubrics/frontmatter.ts'
 import { LAY_4 } from './rubrics/layout.ts'
 import { NAME_1, NAME_5 } from './rubrics/name.ts'
 import { discoverSkillDirs, listMarkdownFiles } from './rubrics/support/skill-files.ts'
@@ -58,6 +59,7 @@ const rec = (level: Level, area: string, message: string, ref?: string, file?: s
   void findings.push({ type: 'M', level, code: reportCode(area), message, ref, file })
 
 const isProcessSkill = (desc: string): boolean => /\(kind:\s*process\b/i.test(desc)
+type BunYamlRuntime = { Bun: { YAML: { parse: (source: string) => unknown } } }
 
 function hintVerbs(hint: string): string[] {
   const out: string[] = []
@@ -74,6 +76,15 @@ function hintVerbs(hint: string): string[] {
 function frontmatterBlock(content: string): string | null {
   const m = content.match(/^---\r?\n([\s\S]*?)\r?\n---/)
   return m ? (m[1] as string) : null
+}
+
+function isYamlMapping(block: string): boolean {
+  try {
+    const parsed = (globalThis as typeof globalThis & BunYamlRuntime).Bun.YAML.parse(block)
+    return Boolean(parsed && typeof parsed === 'object' && !Array.isArray(parsed))
+  } catch {
+    return false
+  }
 }
 
 function getLine(block: string, key: string): string | null {
@@ -154,9 +165,10 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
   }
   const content = readFileSync(skillMdPath, 'utf8')
   const block = frontmatterBlock(content)
-  if (block === null) {
-    todos.push(`${dirName}: LAY-1/NAME-1 — no frontmatter block; author by hand`)
-    rec('ADVISORY', `${dirName}:LAY-1/NAME-1`, 'no frontmatter block; author by hand', RUBRIC, 'SKILL.md')
+  if (block === null || !isYamlMapping(block)) {
+    const issue = block === null ? 'no YAML frontmatter block' : 'YAML frontmatter is not a mapping'
+    todos.push(`${dirName}: ${FM_1.code} — ${issue}; author by hand`)
+    rec('ADVISORY', `${dirName}:${FM_1.code}`, `${issue}; author by hand`, RUBRIC, 'SKILL.md')
     return
   }
 

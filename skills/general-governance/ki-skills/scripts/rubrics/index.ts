@@ -1,6 +1,7 @@
 import { BODY } from './body.ts'
 import { COLLISION } from './collision.ts'
 import { DESC } from './description.ts'
+import { FRONTMATTER } from './frontmatter.ts'
 import { KI_CHECKER } from './ki-checker.ts'
 import { KI_INVOKE } from './ki-invoke.ts'
 import { KI_LINK } from './ki-link.ts'
@@ -15,6 +16,7 @@ import { SCRIPTS } from './scripts.ts'
 import { SIZE } from './size.ts'
 
 export const RUBRIC_FAMILIES = [
+  FRONTMATTER,
   NAME,
   DESC,
   OPTIONAL,
