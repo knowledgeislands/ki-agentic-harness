@@ -10,29 +10,13 @@
  */
 
 import { readFileSync } from 'node:fs'
+import { RUBRIC_LEVELS, type RubricFinding, type RubricLevel } from './rubric/rubric.ts'
 
-export const CHECKER_LEVELS = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS'] as const
-export type CheckerLevel = (typeof CHECKER_LEVELS)[number]
-
-export type MechanicalFinding = {
-  type: 'M'
-  level: CheckerLevel
-  code: string
-  message: string
-  ref?: string
-  file?: string
-}
-
-export type JudgmentFinding = {
-  type: 'J'
-  level: 'ADVISORY'
-  code: string
-  message: string
-  ref: string
-  file?: string
-}
-
-export type CheckerFinding = MechanicalFinding | JudgmentFinding
+// The rubric owns finding semantics. These exports keep the reporter's public
+// module surface stable while dependent checkers transition to rubric imports.
+export const CHECKER_LEVELS = RUBRIC_LEVELS
+export type CheckerLevel = RubricLevel
+export type CheckerFinding = RubricFinding
 
 export type CheckerReporterRun = {
   version: 1
@@ -48,7 +32,7 @@ export type CheckerReporterMeta = CheckerReporterRun & {
 }
 
 export type CheckerReporterFinding = CheckerReporterRun &
-  CheckerFinding & {
+  RubricFinding & {
     record: 'finding'
   }
 
@@ -63,7 +47,7 @@ export type CheckerReporterInput = {
   mode: 'audit' | 'conform'
   concern: string
   target: string
-  findings: CheckerFinding[]
+  findings: RubricFinding[]
 }
 
 const SUMMARY_KEYS = ['fail', 'warn', 'polish', 'advisory', 'info', 'na', 'pass'] as const
@@ -210,7 +194,7 @@ export function validateCheckerReporterRubric(events: readonly unknown[], criter
  * The rubric remains the source of truth for codes and types; checkers only decide
  * their mechanical findings.
  */
-export function judgmentFindingsFromRubric(rubricPath: string, ref = 'references/rubric.md'): CheckerFinding[] {
+export function judgmentFindingsFromRubric(rubricPath: string, ref = 'references/rubric.md'): RubricFinding[] {
   return [...rubricCriteriaFromFile(rubricPath).values()]
     .filter((criterion) => criterion.types.has('J'))
     .map((criterion) => criterion.code)
@@ -327,7 +311,7 @@ export function validateCheckerReporterEvents(events: readonly unknown[], exitCo
   return errors
 }
 
-function assertFinding(finding: CheckerFinding): void {
+function assertFinding(finding: RubricFinding): void {
   if (!finding.code.trim()) throw new Error('checker finding code must be non-empty')
   if (!finding.message.trim()) throw new Error('checker finding message must be non-empty')
   if (finding.type === 'J' && !finding.ref?.trim()) throw new Error('J finding must cite its judgment criterion')
@@ -364,6 +348,6 @@ export function emitCheckerReporter(input: CheckerReporterInput): CheckerReporte
   return events
 }
 
-export function checkerReporterExitCode(findings: readonly CheckerFinding[]): number {
+export function checkerReporterExitCode(findings: readonly RubricFinding[]): number {
   return findings.some((finding) => finding.type === 'M' && finding.level === 'FAIL') ? 1 : 0
 }

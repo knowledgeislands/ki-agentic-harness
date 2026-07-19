@@ -43,7 +43,8 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { type CheckerFinding, checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './lib/checker-reporter.ts'
+import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './lib/checker-reporter.ts'
+import type { RubricFinding } from './lib/rubric/rubric.ts'
 import { NAME_1, NAME_5 } from './rubrics/name.ts'
 
 // Each action records a typed domain finding. The canonical reporter owns transport;
@@ -51,7 +52,7 @@ import { NAME_1, NAME_5 } from './rubrics/name.ts'
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 const RUBRIC = 'references/rubric.md'
 const argv = process.argv.slice(2)
-const findings: CheckerFinding[] = []
+const findings: RubricFinding[] = []
 function reportCode(area: string): string {
   return area.match(/[A-Z]+-\d+/)?.[0] ?? 'SHAPE-12'
 }

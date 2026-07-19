@@ -22,7 +22,8 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { type CheckerFinding, checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './lib/checker-reporter.ts'
+import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './lib/checker-reporter.ts'
+import type { RubricFinding } from './lib/rubric/rubric.ts'
 import { NAME_1, NAME_2, NAME_3, NAME_4, NAME_5, NAME_6 } from './rubrics/name.ts'
 
 type Severity = 'fail' | 'warn'
@@ -829,9 +830,9 @@ const skillDirs = [...new Set((roots.length ? roots : ['.']).flatMap(discoverSki
 const footprintOut = rawArgv.includes('--footprint') // SIZE-5: per-skill token footprint as INFO (Mode OPTIMISE)
 const refreshStatusOut = rawArgv.includes('--refresh-status') // per-skill refresh cadence status as INFO (LONG-3/§5; the REFRESH gate reads this)
 const reportTarget = resolve('.')
-const all: CheckerFinding[] = []
+const all: RubricFinding[] = []
 
-function judgmentFindings(): CheckerFinding[] {
+function judgmentFindings(): RubricFinding[] {
   return judgmentFindingsFromRubric(localRubricPath(), RUBRIC)
 }
 
@@ -842,7 +843,7 @@ function localRubricPath(): string {
 }
 
 if (skillDirs.length === 0) {
-  const findings: CheckerFinding[] = [
+  const findings: RubricFinding[] = [
     {
       type: 'M',
       level: 'FAIL',

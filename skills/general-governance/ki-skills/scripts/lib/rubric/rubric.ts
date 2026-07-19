@@ -13,6 +13,8 @@
 
 export type RubricItemType = 'M' | 'J'
 export type RubricSource = string
+export const RUBRIC_LEVELS = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS'] as const
+export type RubricLevel = (typeof RUBRIC_LEVELS)[number]
 
 export type RubricItem = {
   code: string
@@ -23,4 +25,31 @@ export type RubricItem = {
     audit: 'implemented'
     conform?: 'safe'
   }
+}
+
+export type MechanicalRubricFinding = {
+  type: 'M'
+  level: RubricLevel
+  code: string
+  message: string
+  ref?: string
+  file?: string
+}
+
+export type JudgmentRubricFinding = {
+  type: 'J'
+  level: 'ADVISORY'
+  code: string
+  message: string
+  ref: string
+  file?: string
+}
+
+export type RubricFinding = MechanicalRubricFinding | JudgmentRubricFinding
+
+export type ConformAction = {
+  item: RubricItem
+  message: string
+  file?: string
+  applied: boolean
 }
