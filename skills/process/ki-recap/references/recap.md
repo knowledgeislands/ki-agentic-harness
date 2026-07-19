@@ -19,18 +19,20 @@ _On-demand procedure for `ki-recap`. The kind, scope, and leg summary live in [`
 ## 1. Run the grounding helper
 
 ```bash
-bun skills/process/ki-recap/scripts/recap-grounding.ts --json
+bun skills/process/ki-recap/scripts/recap-grounding.ts --json --runtime detect
 ```
 
 (From another repo, use the harness-absolute path, per the "Audit script paths" convention: `bun /path/to/ki-agentic-harness/skills/process/ki-recap/scripts/recap-grounding.ts --json`.)
 
-When more than one Claude session is active for the repository, choose the session explicitly instead of relying on newest modification time:
+When more than one eligible Claude or Codex session is active for the repository, choose the session explicitly instead of relying on newest modification time:
 
 ```bash
 bun skills/process/ki-recap/scripts/recap-grounding.ts --json --transcript <session-file>.jsonl
 ```
 
-The selector is a filename, not a path. It must name an existing regular `.jsonl` file directly inside the repository's derived Claude transcript directory; absolute paths, traversal, other extensions, and symlinks are rejected.
+`detect` is the default: it selects the newest matching transcript from both supported runtimes. Use `--runtime claude` or `--runtime codex` to force one. Claude transcripts are selected from the repository's derived Claude project directory; Codex transcripts are searched recursively below `~/.codex/sessions/` and qualify only when their `session_meta.payload.cwd` resolves to the target repository.
+
+The selector is a basename, not a path. It must name exactly one eligible regular `.jsonl` candidate; absolute paths, traversal, other extensions, symlinks, files for another repository, and ambiguous duplicate basenames are rejected.
 
 This emits `filesTouched` (git status), `diffStat`, `toolTally`, and `highCostCandidates` (repeated identical calls, large-file re-reads). It is a **helper**, not a checker — treat its output as raw signal to combine with warm in-session context, not a verdict.
 

@@ -32,9 +32,9 @@ The checker deliberately recognises `preferred_model` only to issue a migration 
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
-### Harden user harness installation and runtime skill publication
+### Codify Git workflow and commit conventions _(candidate)_
 
-After the first installer establishes the user-level contract, make runtime skill publication fail-safe, runtime-selected, and independently testable. Preserve unrelated user files and refuse unsafe parents.
+Choose an owner for repository Git discipline, including Conventional Commit messages, the allowed type and scope vocabulary, safe lock and cleanup behaviour, and consistency with repository-local instructions. Decide whether that owner should be a dedicated `ki-git` skill, including ownership of the shipped stale Git-lock guard rather than leaving it as an ungoverned hook. Add mechanical enforcement only after the standard is settled.
 
 ## Waiting for
 
@@ -44,13 +44,13 @@ Worth doing, but presently blocked on an external dependency or decision. Revisi
 
 Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass (or a decision to drop them) before they're actionable.
 
+### Harden user harness installation and runtime skill publication
+
+After the first installer establishes the user-level contract, make runtime skill publication fail-safe, runtime-selected, and independently testable. Preserve unrelated user files and refuse unsafe parents.
+
 ### Document per-skill `.ki-config.toml` ownership _(candidate)_
 
 Document the existing validate-down convention: each skill owns and validates its own table, while shared configuration stays with its owner. Use `ki-authoring.printWidth` as the worked example; do not design a central editor schema without a concrete cross-skill use case.
-
-### Codify Git workflow and commit conventions _(candidate)_
-
-Choose an owner for repository Git discipline, including Conventional Commit messages, the allowed type and scope vocabulary, safe lock and cleanup behaviour, and consistency with repository-local instructions. Decide whether that owner should be a dedicated `ki-git` skill, including ownership of the shipped stale Git-lock guard rather than leaving it as an ungoverned hook. Add mechanical enforcement only after the standard is settled.
 
 ### Inventory non-critical writers for bounded follow-up _(candidate)_
 

@@ -129,7 +129,7 @@ export const collectStreamsAudit = (target: string): readonly Finding[] => {
   for (const path of proposals) {
     const value = fm(readFileSync(path, 'utf8')),
       relative = path.slice(root.length + 1)
-    if (!value || !value.closed) {
+    if (!value?.closed) {
       malformed.push(relative)
       continue
     }

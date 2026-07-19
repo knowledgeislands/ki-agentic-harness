@@ -1,301 +1,72 @@
 #!/usr/bin/env bun
-/**
- * Mechanical CONFORM for the ki-skills rubric — fixes the subset of
- * audit.ts's findings that are unambiguous and reversible, leaving
- * everything that needs a human call as a printed manual TODO.
- *
- * Scope: every skill under a target's `skills/` dir (a single skill dir, or a
- * dir containing skills), matching the house conform shape (conform.ts,
- * conform.ts) — `bun conform.ts [path]` / `ki:skills:conform`.
- * Detection logic (hasBackslashLink, hintVerbs, isProcessSkill, discoverSkillDirs)
- * is copied from audit.ts — kept in lockstep, never imported, so this
- * script stays valid standalone per the composition-only rule.
- *
- *   bun scripts/conform.ts [path] [--dry-run]   # default target: cwd
- *
- * Every invocation emits the canonical checker reporter. `--dry-run` governs
- * writing only, so it composes with the same machine-readable report stream.
- *
- * Fixes:
- *   - NAME-5: `name:` frontmatter rewritten to match the directory name.
- *   - SHAPE-11: argument-hint missing the `help` token gets ` | help` appended.
- *   - SHAPE-12 (verbs): argument-hint missing any of audit/conform/help/educate/
- *     refresh (skipped for self-declared process skills, ADR-KI-HARNESS-SKILLS-006)
- *     gets the missing verb(s) appended as bare ` | <verb>` segments.
- *   - SHAPE-12 (vendors leg): a missing `vendors:` frontmatter line is authored
- *     from the scripts/ directory's audit-*.ts / lint-*.ts (+ conform-*.ts if
- *     present); an existing `vendors:` line that already names an audit/lint
- *     script but omits `conform:` gets that key added when a conform-*.ts
- *     script is present in scripts/. Never invents a script path that doesn't
- *     exist on disk.
- *   - LAY-4: backslash path separators inside markdown link targets are
- *     rewritten to forward slashes, across every .md file in the skill.
- *
- * Deliberately NEVER touches (judgment -> manual TODOs): DESC-1/2/3, SHAPE-13
- * (mode-heading structure), SIZE-1/2, LINK-2, SHAPE-2/7/8/9, REF-3, COLL-1,
- * LONG-3/4.
- *
- * Zero npm dependencies (bun + node stdlib only). Exit code is non-zero only
- * on an unrecoverable setup error (no skills found); findings/fixes never
- * fail the run.
- */
+/** Mechanical CONFORM entry point for the structured ki-skills rubric. */
 
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { basename, dirname, join, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { type CheckerFinding, checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './lib/checker-reporter.ts'
-import { NAME_5 } from './lib/rubric.ts'
+import { resolve } from 'node:path'
+import { type CheckerEvaluationSubject, runChecker } from './lib/checker.ts'
+import { parseReporterArguments, renderCheckerResult } from './lib/reporter.ts'
+import type { KiSkillsRubricContext } from './rubric/contexts/contexts.ts'
+import { createKiSkillsSubjects, KI_SKILLS_SUBJECT_FAMILIES } from './rubric/contexts/subjects.ts'
+import { KI_SKILLS_RUBRIC } from './rubric/items/index.ts'
 
-// Each action records a typed domain finding. The canonical reporter owns transport;
-// the bootstrap aggregate is the only terminal renderer.
-type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-const RUBRIC = 'references/rubric.md'
 const argv = process.argv.slice(2)
-const findings: CheckerFinding[] = []
-function reportCode(area: string): string {
-  return area.match(/[A-Z]+-\d+/)?.[0] ?? 'SHAPE-12'
+if (argv.includes('-h') || argv.includes('--help')) {
+  process.stdout.write(`Usage: bun scripts/conform.ts [target] [options]
+
+Apply safe mechanical fixes from the ki-skills rubric.
+
+Options:
+  --dry-run                    Report changes without writing them.
+  --reporter <reporter>        Output reporter: jsonl (default) or terminal.
+  --reporter-levels <levels>   Terminal levels: comma-separated values or all.
+  -h, --help                   Show this help and exit.
+`)
+  process.exit(0)
 }
-const rec = (level: Level, area: string, message: string, ref?: string, file?: string): void =>
-  void findings.push({ type: 'M', level, code: reportCode(area), message, ref, file })
-
-function localRubricPath(): string {
-  const scriptDir = dirname(fileURLToPath(import.meta.url))
-  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
-  return join(skillRoot, 'references', 'rubric.md')
+let parsedReporter: ReturnType<typeof parseReporterArguments>
+try {
+  parsedReporter = parseReporterArguments(argv)
+} catch (error) {
+  process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
+  process.exit(2)
 }
-
-// ── kept in lockstep with audit.ts ──
-const isProcessSkill = (desc: string): boolean => /\(kind:\s*process\b/i.test(desc)
-const UNIVERSAL_VERBS = ['audit', 'conform', 'help', 'educate', 'refresh']
-
-function hintVerbs(hint: string): string[] {
-  const out: string[] = []
-  for (const seg of hint.split('|')) {
-    const m = seg.trim().match(/^[a-zA-Z][a-zA-Z0-9-]*/)
-    if (m) out.push(m[0].toUpperCase())
-  }
-  return out
+const modeArguments = parsedReporter.arguments
+const unknownOptions = modeArguments.filter((argument) => argument.startsWith('-') && argument !== '--dry-run')
+if (unknownOptions.length > 0) {
+  process.stderr.write(`error: unknown option: ${unknownOptions[0]}\n`)
+  process.exit(2)
 }
-
-function discoverSkillDirs(p: string): string[] {
-  const abs = resolve(p)
-  if (!existsSync(abs)) return []
-  if (existsSync(join(abs, 'SKILL.md'))) return [abs]
-  const root = basename(abs) === 'skills' || !existsSync(join(abs, 'skills')) ? abs : join(abs, 'skills')
-  if (!existsSync(root)) return []
-  const dirs: string[] = []
-  for (const entry of readdirSync(root, { withFileTypes: true })) {
-    if (!entry.isDirectory() || entry.name.startsWith('.') || entry.name === 'node_modules' || entry.name === 'scripts') continue
-    const first = join(root, entry.name)
-    if (existsSync(join(first, 'SKILL.md'))) {
-      dirs.push(first)
-      continue
-    }
-    for (const child of readdirSync(first, { withFileTypes: true })) {
-      if (!child.isDirectory()) continue
-      const second = join(first, child.name)
-      if (existsSync(join(second, 'SKILL.md'))) dirs.push(second)
-    }
-  }
-  return dirs.sort()
+const targets = modeArguments.filter((argument) => !argument.startsWith('-'))
+if (targets.length > 1) {
+  process.stderr.write('error: conform accepts at most one target\n')
+  process.exit(2)
 }
+const target = targets[0] ?? '.'
+const reportTarget = resolve(target)
+const scope = createKiSkillsSubjects({
+  mode: 'conform',
+  roots: [target],
+  reportTarget,
+  dryRun: modeArguments.includes('--dry-run')
+})
+const subjects: CheckerEvaluationSubject<KiSkillsRubricContext>[] = scope.subjects.map(({ scope, context, subject }) => ({
+  familyCodes: KI_SKILLS_SUBJECT_FAMILIES[scope],
+  context,
+  ...(subject ? { subject } : {})
+}))
 
-function listMarkdownFiles(dir: string): string[] {
-  const out: string[] = []
-  const walk = (d: string): void => {
-    for (const e of readdirSync(d, { withFileTypes: true })) {
-      if (e.name.startsWith('.') || e.name === 'node_modules') continue
-      const p = join(d, e.name)
-      if (e.isDirectory()) walk(p)
-      else if (e.name.endsWith('.md')) out.push(p)
-    }
-  }
-  walk(dir)
-  return out
-}
+const result = runChecker({
+  mode: 'conform',
+  concern: 'skills',
+  target: reportTarget,
+  rubric: KI_SKILLS_RUBRIC,
+  subjects
+})
 
-// --- frontmatter block access -----------------------------------------------
-// Single-line scalar fields only (name, vendors, argument-hint) — the folded
-// `description:` block scalar is never touched here (DESC-* stays judgment).
-function frontmatterBlock(content: string): string | null {
-  const m = content.match(/^---\r?\n([\s\S]*?)\r?\n---/)
-  return m ? (m[1] as string) : null
-}
-
-function getLine(block: string, key: string): string | null {
-  const m = block.match(new RegExp(`^${key}:.*$`, 'm'))
-  return m ? (m[0] as string) : null
-}
-
-// Insert a brand-new top-level line just after `depends-on:` (or `name:`, or at
-// the very top) so a freshly-authored `vendors:` line lands in the
-// conventional name/depends-on/vendors/description/argument-hint order.
-function insertAfterAnchor(block: string, newLine: string): string {
-  for (const anchorKey of ['depends-on', 'name']) {
-    const anchor = getLine(block, anchorKey)
-    if (anchor) return block.replace(anchor, `${anchor}\n${newLine}`)
-  }
-  return `${newLine}\n${block}`
-}
-
-// --- one skill ---------------------------------------------------------------
-function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
-  const skillMdPath = join(dir, 'SKILL.md')
-  const dirName = basename(dir)
-  if (!existsSync(skillMdPath)) {
-    todos.push(`${dirName}: LAY-1 — no SKILL.md`)
-    rec('ADVISORY', `${dirName}:LAY-1`, 'no SKILL.md — author by hand', RUBRIC, 'SKILL.md')
-    return
-  }
-  const content = readFileSync(skillMdPath, 'utf8')
-  const block = frontmatterBlock(content)
-  if (block === null) {
-    todos.push(`${dirName}: LAY-1/NAME-1 — no frontmatter block; author by hand`)
-    rec('ADVISORY', `${dirName}:LAY-1/NAME-1`, 'no frontmatter block; author by hand', RUBRIC, 'SKILL.md')
-    return
-  }
-
-  let workingBlock = block
-  let fixedAny = false
-  const process = isProcessSkill(content)
-
-  // ── NAME-5 ──
-  const nameLine = getLine(workingBlock, 'name')
-  if (nameLine) {
-    const nameVal = (nameLine.match(/^name:\s*(.+)$/)?.[1] ?? '').trim()
-    if (nameVal !== dirName) {
-      workingBlock = workingBlock.replace(nameLine, `name: ${dirName}`)
-      rec('POLISH', `${dirName}:${NAME_5.code}`, `name '${nameVal}' → '${dirName}'`, RUBRIC, 'SKILL.md')
-      fixedAny = true
-    }
-  } else {
-    todos.push(`${dirName}: NAME-1 — no \`name\` field at all; author by hand`)
-    rec('ADVISORY', `${dirName}:NAME-1`, 'no `name` field at all; author by hand', RUBRIC, 'SKILL.md')
-  }
-
-  // ── SHAPE-11 (help token) + SHAPE-12 (universal verbs) ──
-  const hintLine = getLine(workingBlock, 'argument-hint')
-  if (hintLine) {
-    const hintMatch = hintLine.match(/^argument-hint:\s*(['"]?)([\s\S]*?)\1\s*$/)
-    const quote = hintMatch?.[1] || "'"
-    let hintVal = hintMatch ? (hintMatch[2] as string) : hintLine.replace(/^argument-hint:\s*/, '')
-    let hintChanged = false
-
-    if (!/(^|[|\s'"])help([|\s'"]|$)/.test(hintLine)) {
-      hintVal = `${hintVal} | help`
-      hintChanged = true
-      rec('POLISH', `${dirName}:SHAPE-11`, 'appended `help` to argument-hint', RUBRIC, 'SKILL.md')
-    }
-
-    if (!process) {
-      const verbs = hintVerbs(hintVal)
-      const missing = UNIVERSAL_VERBS.filter((v) => !verbs.includes(v.toUpperCase()))
-      if (missing.length > 0) {
-        hintVal = `${hintVal} | ${missing.join(' | ')}`
-        hintChanged = true
-        rec('POLISH', `${dirName}:SHAPE-12`, `appended missing verb(s) to argument-hint: ${missing.join(', ')}`, RUBRIC, 'SKILL.md')
-      }
-    }
-
-    if (hintChanged) {
-      workingBlock = workingBlock.replace(hintLine, `argument-hint: ${quote}${hintVal.trim()}${quote}`)
-      fixedAny = true
-    }
-  } else if (!process) {
-    todos.push(`${dirName}: SHAPE-11/SHAPE-12 — no \`argument-hint\` field at all; author one by hand`)
-    rec('ADVISORY', `${dirName}:SHAPE-11/SHAPE-12`, 'no `argument-hint` field at all; author one by hand', RUBRIC, 'SKILL.md')
-  }
-
-  // ── SHAPE-12 (vendors leg) — process skills are exempt, same as audit.ts ──
-  if (!process) {
-    const scriptsDir = join(dir, 'scripts')
-    const scriptFiles = existsSync(scriptsDir) ? readdirSync(scriptsDir) : []
-    const auditScript = scriptFiles.find((n) => /^(audit-|lint-)[a-z0-9-]+\.ts$/.test(n) && !n.endsWith('.test.ts'))
-    const conformScript = scriptFiles.find((n) => /^conform-[a-z0-9-]+\.ts$/.test(n))
-
-    const vendorsLine = getLine(workingBlock, 'vendors')
-    if (!vendorsLine || /vendors:\s*\[\s*\]/.test(vendorsLine)) {
-      if (auditScript) {
-        const parts = [`audit: scripts/${auditScript}`]
-        if (conformScript) parts.push(`conform: scripts/${conformScript}`)
-        const newLine = `vendors: { ${parts.join(', ')} }`
-        workingBlock = vendorsLine ? workingBlock.replace(vendorsLine, newLine) : insertAfterAnchor(workingBlock, newLine)
-        rec('POLISH', `${dirName}:SHAPE-12`, `authored \`${newLine}\``, RUBRIC, 'SKILL.md')
-        fixedAny = true
-      } else if (!vendorsLine) {
-        todos.push(`${dirName}: SHAPE-12 — no \`vendors:\` declaration and no scripts/audit-*.ts|lint-*.ts to point at; needs a human call`)
-        rec(
-          'ADVISORY',
-          `${dirName}:SHAPE-12`,
-          'no `vendors:` declaration and no scripts/audit-*.ts|lint-*.ts to point at; needs a human call',
-          RUBRIC,
-          'SKILL.md'
-        )
-      }
-    } else if (!/\bconform:/.test(vendorsLine) && conformScript) {
-      const newLine = vendorsLine.replace(/\}\s*$/, `, conform: scripts/${conformScript} }`)
-      workingBlock = workingBlock.replace(vendorsLine, newLine)
-      rec('POLISH', `${dirName}:SHAPE-12`, `added missing \`conform: scripts/${conformScript}\` to vendors`, RUBRIC, 'SKILL.md')
-      fixedAny = true
-    }
-  }
-
-  if (fixedAny) {
-    if (!dryRun) writeFileSync(skillMdPath, content.replace(block, workingBlock))
-  } else {
-    rec('PASS', `${dirName}:frontmatter`, 'frontmatter already canonical (nothing to fix)', RUBRIC, 'SKILL.md')
-  }
-
-  // ── LAY-4: backslash link separators, across every markdown file ──
-  let lay4Fixes = 0
-  for (const file of listMarkdownFiles(dir)) {
-    const md = readFileSync(file, 'utf8')
-    let count = 0
-    const fixed = md.replace(/\[([^\]]*)\]\(([^)]+)\)/g, (whole, text, target) => {
-      if (!(target as string).includes('\\')) return whole
-      count++
-      return `[${text}](${(target as string).replace(/\\/g, '/')})`
-    })
-    if (count > 0) {
-      lay4Fixes += count
-      const rel = file.slice(dir.length + 1)
-      rec('POLISH', `${dirName}:LAY-4`, `${count} backslash link target(s) → forward slashes`, RUBRIC, rel)
-      if (!dryRun) writeFileSync(file, fixed)
-    }
-  }
-  if (lay4Fixes === 0) {
-    rec('PASS', `${dirName}:LAY-4`, 'no backslash link separators (nothing to fix)', RUBRIC)
-  }
-}
-
-// --- entry -------------------------------------------------------------------
-function main(): void {
-  const dryRun = argv.includes('--dry-run')
-  const target = argv.find((a) => !a.startsWith('-')) ?? '.'
-
-  const skillDirs = discoverSkillDirs(target)
-  if (skillDirs.length === 0) {
-    const rubricPath = localRubricPath()
-    findings.push({
-      type: 'M',
-      level: 'FAIL',
-      code: 'LAY-1',
-      message: 'No skills were found below the requested target.',
-      ref: RUBRIC
-    })
-    findings.push(...judgmentFindingsFromRubric(rubricPath, RUBRIC))
-    emitCheckerReporter({ mode: 'conform', concern: 'skills', target: resolve(target), findings })
-    process.exit(checkerReporterExitCode(findings))
-    return
-  }
-
-  const todos: string[] = []
-  for (const dir of skillDirs) conformSkill(dir, dryRun, todos)
-
-  const rubricPath = localRubricPath()
-  findings.push(...judgmentFindingsFromRubric(rubricPath, RUBRIC))
-  emitCheckerReporter({ mode: 'conform', concern: 'skills', target: resolve(target), findings })
-  process.exit(checkerReporterExitCode(findings))
-}
-
-main()
+scope.persist()
+process.stdout.write(
+  renderCheckerResult(result, {
+    ...parsedReporter.options,
+    colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR)
+  })
+)
+process.exit(result.exitCode)

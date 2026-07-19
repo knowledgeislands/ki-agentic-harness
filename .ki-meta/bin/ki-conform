@@ -7,7 +7,7 @@ case "${1:-}" in
     echo "usage: ki-conform [--dry-run] [--reporter-levels=<levels>]"
     echo "  applies each vendored skill's mechanical fixes across .ki-meta/checkers/."
     echo "  --dry-run  report what would change without writing."
-    echo "  reporter levels default to FAIL,WARN,POLISH; use all or a comma-separated level list."
+    echo "  reporter levels default to FAIL,WARN,FIXED; use all or a comma-separated level list."
     exit 0
     ;;
 esac

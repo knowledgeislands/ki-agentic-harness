@@ -4,6 +4,7 @@ import { createStreamsContext } from './rubric/contexts/streams.ts'
 import { KI_KB_STREAMS_FAMILY_CODES, KI_KB_STREAMS_RUBRIC } from './rubric/items/index.ts'
 import { runChecker } from './vendored/ki-skills/checker.ts'
 import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
+
 const argv = process.argv.slice(2)
 if (argv.some((argument) => ['-h', '--help', 'help', '?'].includes(argument))) {
   process.stdout.write('Usage: bun scripts/conform.ts [base-path] [--dry-run] [--reporter=terminal]\n')

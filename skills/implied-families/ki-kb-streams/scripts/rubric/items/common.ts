@@ -1,5 +1,6 @@
 import type { AuditOutcome, RubricItem, RubricOutcomes } from '../../vendored/ki-skills/rubric.ts'
 import type { StreamsContext } from '../contexts/streams.ts'
+
 type Code = `${string}-${string}`
 const source = ['references/Streams Structure Reference.md'] as const
 const audit = (code: Code, context: StreamsContext): RubricOutcomes<AuditOutcome> => {

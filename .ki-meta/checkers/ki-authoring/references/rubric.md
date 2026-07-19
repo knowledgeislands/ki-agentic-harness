@@ -1,26 +1,55 @@
-# Authoring audit rubric
+<!-- GENERATED FILE: edit scripts/rubric/items/, not this publication. -->
 
-The checkable criteria behind the [Markdown authoring](standards/markdown.md) and [TOML formatting](standards/toml.md) conventions. Each is **[M] mechanical** (this skill runs Prettier + markdownlint-cli2 directly; Biome owns TS/JSON; never hand-judge what a tool checks better) or **[J] judgment** (a reader assesses it). TOML has no formatter, so every TOML criterion is `[J]`.
+# Generated rubric — authoring conventions
 
-## Markdown
+> **Generated publication.** The TypeScript rubric items under `scripts/rubric/items/` are canonical; this file is generated from the in-memory catalogue. Edit the item definitions, then rerun `scripts/rubric/publish.ts`.
 
-- **MD-mech [M]** `ki:authoring:audit` passes: prose unwrapped (one paragraph per line — `proseWrap: "never"` joins any broken lines); bullet & quote characters, heading hierarchy, single H1, spacing, table alignment (`MD060`), resolved link fragments (`MD051`) and references (`MD052`), no bare URLs (`MD034`), and descriptive link text (`MD059` — rejects "click here" / "here" / "link"). Prettier + markdownlint run directly inside that audit. (standards/markdown.md)
-- **MD-table [J]** A table with rows that would exceed `printWidth` (140 chars) is reshaped: a descriptive matrix → subheadings or a bulleted definition list; genuinely tabular data with one long column → keep the table and move that column to footnotes below it (a one-char marker in the cell). (standards/markdown.md)
-- **MD-footnote [J]** Footnotes use the marker series `† ‡ § ¶ ‖` (then doubled), reset per table; a distinct second series `※ ❡ ¤ ¥` where one table needs two. Each footnote is a separate paragraph (blank line between each). (standards/markdown.md)
-- **MD-link [J]** Link text is genuinely descriptive — the words you'd skim for, beyond the non-descriptive blocklist `MD059` already rejects (MD-mech). Links are relative markdown, **never wikilinks** — but this is _scoped_: wikilinks are correct in KB note content and in agent system prompts (`ki-kb`, `ki-agents` LINK-2), forbidden only in house files (SKILL.md, repo docs), so applicability is the judgment. Use the angle-bracket form for paths with spaces. (standards/markdown.md)
-- **MD-cell-prose [J]** Tables avoid long descriptive prose in cells — that is the footnote's job. (standards/markdown.md)
+Line-by-line criteria for auditing ki-authoring. Classifications are derived from item aspects: **[M]** mechanical and **[J]** judgment. Sources are cited as declared by each canonical item.
 
-## TOML
+## MD — Markdown authoring
 
-- **TOML-keys [J]** Keys lowercase, `snake_case` for multi-word, named for the noun the value holds (`visibility`, not `repo_visibility_setting`). (standards/toml.md)
-- **TOML-values [J]** Strings double-quoted; short lists inline `["a", "b"]`. (standards/toml.md)
-- **TOML-tables [J]** One table per skill, named for the skill, with sub-tables nested under it. The `.ki-config.toml` _contract_ behind this is `ki-repo`'s; this rubric checks only that the TOML is written that way. (standards/toml.md)
-- **TOML-comments [J]** Non-obvious keys carry a `#` line above with their _why_. (standards/toml.md)
+→ [standard](standards/markdown.md)
 
-## Owned files
+The mechanical Markdown gate and reviewer-applied Markdown conventions.
 
-- **OWNS [M]** The skill owns `.prettierrc.json`, `.editorconfig`, and `.markdownlint-cli2.jsonc` wholly (SHAPE-16 `owns:`): audit flags hash drift from the house template (WARN — conform corrects it unconditionally), conform scaffolds-if-missing and overwrites on drift. (owns:)
+- **MD-mech [M] — Markdown mechanical gate passes** — `ki:authoring:audit` passes: prose is unwrapped; bullet and quote characters, heading hierarchy, a single H1, spacing, table alignment, resolved links and references, no bare URLs, and descriptive link text satisfy Prettier and markdownlint-cli2, which run directly inside the audit. (standards/markdown.md)
+- **MD-table [J] — wide tables are reshaped** — A table with rows that would exceed `printWidth` (140 chars) is reshaped into subheadings or a bulleted definition list; genuinely tabular data with one long column keeps the table and moves that column to footnotes below it. (standards/markdown.md)
+  - _Review prompt:_ Are wide or prose-heavy tables reshaped according to the Markdown convention?
+- **MD-footnote [J] — table footnotes use the house marker series** — Footnotes use the marker series `† ‡ § ¶ ‖` (then doubled), reset per table, with a distinct second series `※ ❡ ¤ ¥` where needed; each footnote is a separate paragraph. (standards/markdown.md)
+  - _Review prompt:_ Do table footnotes use the documented marker series and paragraph layout?
+- **MD-link [J] — house-file links are descriptive and portable** — House-file links are descriptive relative Markdown links rather than wikilinks; paths with spaces use angle brackets. KB note content and agent prompts remain explicitly scoped exceptions. (standards/markdown.md)
+  - _Review prompt:_ Are the links descriptive, relative Markdown links where this convention applies?
+- **MD-cell-prose [J] — tables avoid descriptive prose in cells** — Tables avoid long descriptive prose in cells — that is the footnote’s job. (standards/markdown.md)
+  - _Review prompt:_ Do table cells avoid long descriptive prose?
 
-## Judgment / SYNC
+## OWN — owned authoring configuration
 
-- **SYNC [J]** the convention references, this rubric, and [`sources.md`](sources.md) agree; when a convention moves, all three move together (Mode REFRESH).
+→ [standard](../SKILL.md)
+
+Configuration files wholly owned by the authoring convention.
+
+- **OWN-1 [M] — owned authoring configuration matches the house templates** — The skill owns `.prettierrc.json`, `.editorconfig`, and `.markdownlint-cli2.jsonc` wholly (SHAPE-16 `owns:`): AUDIT warns on hash drift from the house templates, while CONFORM scaffolds missing files and overwrites drift. (owns:)
+
+## TOML — TOML formatting
+
+→ [standard](standards/toml.md)
+
+Reviewer-applied TOML formatting conventions.
+
+- **TOML-keys [J] — TOML keys are concise lowercase nouns** — Keys are lowercase, use `snake_case` for multiple words, and name the noun their value holds (`visibility`, not `repo_visibility_setting`). (standards/toml.md)
+  - _Review prompt:_ Are TOML keys concise lowercase nouns, using snake_case for multiple words?
+- **TOML-values [J] — TOML values use the house formatting** — Strings are double-quoted and short lists remain inline (`["a", "b"]`). (standards/toml.md)
+  - _Review prompt:_ Do TOML strings and short lists follow the house formatting?
+- **TOML-tables [J] — TOML uses one table per skill** — One table appears per skill, named for that skill, with subtables nested under it; `ki-repo` owns the `.ki-config.toml` contract behind this convention. (standards/toml.md)
+  - _Review prompt:_ Does the TOML use one table per skill with nested subtables where appropriate?
+- **TOML-comments [J] — non-obvious TOML keys explain their rationale** — Non-obvious keys carry a preceding `#` comment explaining why they exist. (standards/toml.md)
+  - _Review prompt:_ Do non-obvious TOML keys carry a preceding rationale comment?
+
+## SYNC — convention synchronisation
+
+→ [standard](sources.md)
+
+The generated publication and its convention sources remain coherent.
+
+- **SYNC-1 [J] — conventions, rubric, and source record agree** — The convention references, this rubric, and `sources.md` agree; when a convention moves, all three move together. (sources.md)
+  - _Review prompt:_ Do the convention references, rubric publication, and source record agree?

@@ -4,6 +4,7 @@ import { CONFIG } from './config.ts'
 import { ENACT } from './enactment.ts'
 import { GATE } from './gate.ts'
 import { STREAM } from './stream.ts'
+
 const context = (value: StreamsContext): StreamsContext => value
 export const KI_KB_STREAMS_RUBRIC: RubricDefinition<StreamsContext> = {
   name: 'ki-kb-streams',

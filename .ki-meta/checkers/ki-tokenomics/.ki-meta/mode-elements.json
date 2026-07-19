@@ -1,7 +1,0 @@
-{
-  "version": 1,
-  "elements": [
-    { "id": "context-inspection", "mode": "audit", "phase": "inspect", "entry": "scripts/audit.ts", "reads": ["agent-context"], "writes": [] },
-    { "id": "context-conform", "mode": "conform", "phase": "normalise", "entry": "scripts/conform.ts", "reads": ["agent-context"], "writes": ["agent-context"] }
-  ]
-}

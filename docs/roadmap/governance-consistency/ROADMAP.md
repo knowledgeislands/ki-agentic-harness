@@ -12,6 +12,10 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
+### Make the first decision record adopt Decision Records
+
+Extend `ki-decision-records` so the first decision record in a repository is always the record that adopts Decision Records. Define its required decision type, title, and index position; update the NEW guidance, exemplars, and audit rules so a new collection cannot begin with an unrelated decision. Preserve existing collections as migration cases rather than renumbering or rewriting their records automatically.
+
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
@@ -26,13 +30,13 @@ Make the shared process layer structure-aware: `ki-recap` must route outstanding
 
 Define one runtime-neutral routing reference and manual promotion loop that prevents useful knowledge becoming trapped in session or project memory: ephemeral agent memory → project guidance or an on-demand guide → shared governance or reference material → a reusable skill. For each rung, state what belongs there, the evidence that triggers promotion, the durable destination, and the reconciliation step that removes or redirects the lower-layer duplicate. Keep `AGENTS.md` as the portable orientation, reserve runtime files such as `CLAUDE.md` for runtime-specific imports and guidance, and route genuinely personal cross-project conventions to synchronized user configuration. Do not add automatic transcript mining or a new guide area by default.
 
-### Make the first decision record adopt Decision Records
-
-Extend `ki-decision-records` so the first decision record in a repository is always the record that adopts Decision Records. Define its required decision type, title, and index position; update the NEW guidance, exemplars, and audit rules so a new collection cannot begin with an unrelated decision. Preserve existing collections as migration cases rather than renumbering or rewriting their records automatically.
-
 ### Create `ki-repo-review` as a human-led process skill
 
 Create the reusable process skill from the completed `REV-001` review method: inventory a repository, gather inspectable evidence, interview material uncertainties, distinguish findings from decisions and delivery work, and link findings to plans. Compose with the then-current roadmap skill for review-record lifecycle rather than owning retention itself. Validate and forward-test the skill against the dotfiles assessment; it must guide a review rather than substitute automated judgment for one.
+
+### Review the skill dependency graph and implementation quality _(candidate)_
+
+Build one complete dependency graph for every skill relationship: declared `depends-on:` edges, documentation and reference links, configuration ownership, subprocess or import edges, and generated or vendored runtime dependencies. Use it to review skills in dependency order from roots to dependants, covering each skill's `SKILL.md`, references, scripts, tests, and generated surfaces. Prefer executable, versioned source files inside the skill — including schemas — referenced from documentation, rather than making Markdown code blocks the only source of truth; retain short examples only where they clarify use. Record concrete repairs as separately scoped plans rather than turning this review into an unbounded rewrite.
 
 ## Waiting for
 
@@ -49,10 +53,6 @@ Write a compact boundary matrix separating portable contract, Knowledge Islands 
 ### Roll Feature Definitions out across the repository fleet _(candidate)_
 
 Select one named repository with externally visible behaviour and an owner, then pilot the format there. Do not begin fleet rollout before that pilot exists.
-
-### Review the skill dependency graph and implementation quality _(candidate)_
-
-Build one complete dependency graph for every skill relationship: declared `depends-on:` edges, documentation and reference links, configuration ownership, subprocess or import edges, and generated or vendored runtime dependencies. Use it to review skills in dependency order from roots to dependants, covering each skill's `SKILL.md`, references, scripts, tests, and generated surfaces. Prefer executable, versioned source files inside the skill — including schemas — referenced from documentation, rather than making Markdown code blocks the only source of truth; retain short examples only where they clarify use. Record concrete repairs as separately scoped plans rather than turning this review into an unbounded rewrite.
 
 ### Add engineering change value profiles to the verb map _(candidate)_
 

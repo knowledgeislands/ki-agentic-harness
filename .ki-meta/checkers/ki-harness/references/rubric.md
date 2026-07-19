@@ -1,91 +1,96 @@
-# Harness Audit Rubric
+<!-- GENERATED FILE: edit scripts/rubric/items/, not this publication. -->
 
-Line-by-line criteria for auditing a Knowledge Islands agentic harness. Each criterion is tagged **[M]** (mechanical — the checker [`scripts/audit.ts`](../scripts/audit.ts) enforces it deterministically) or **[J]** (judgment — a reader/model assesses it). Each cites its standard section.
+# Generated rubric — Knowledge Islands agentic harnesses
 
-Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS (defined in `ki-skills`' enforcement framework §2)
+> **Generated publication.** The TypeScript rubric items under `scripts/rubric/items/` are canonical. Edit those definitions, then rerun `scripts/rubric/publish.ts`.
 
 ## Contents
 
-- [LAY — Directory layout and file presence](#lay--directory-layout-and-file-presence)
-- [CLAUDE — CLAUDE.md coverage and freshness](#claude--claudemd-coverage-and-freshness)
-- [PKG — package.json script families](#pkg--packagejson-script-families)
-- [CONFIG — .ki-config.toml declarations](#config--ki-configtoml-declarations)
-- [SKILLS — skills/ directory convention](#skills--skills-directory-convention)
-- [LONG — Longevity and refresh path](#long--longevity-and-refresh-path)
+- [LAY — Directory layout and files](#lay--directory-layout-and-files)
+- [CLAUDE — Root orientation](#claude--root-orientation)
+- [PKG — Package script families](#pkg--package-script-families)
+- [CONFIG — Harness configuration](#config--harness-configuration)
+- [SKILLS — Skill directory convention](#skills--skill-directory-convention)
+- [LONG — Longevity](#long--longevity)
 - [COLL — Collision and boundary](#coll--collision-and-boundary)
 
----
+## LAY — Directory layout and files
 
-## LAY — Directory layout and file presence
+→ [standard](standards.md#layout)
 
-**LAY-1 [M]** `skills/`, `agents/`, `mcp/`, `evals/`, `hooks/` all exist as directories at the repo root. Source: standard §Layout. _Severity: FAIL — missing directory breaks the five-part contract._
+The five-part harness container and required root files.
 
-**LAY-2 [M]** Each of the five directories contains a `README.md`. Source: standard §Layout. _Severity: WARN — README.md absent means no shelf/status declaration._
+- **LAY-1 [M] — Five-part directory layout** — skills/, agents/, mcp/, evals/, and hooks/ all exist at the harness root. (standards.md#layout)
+- **LAY-2 [M] — Shelf descriptions** — Each five-part directory contains a README.md declaring its purpose and status. (standards.md#layout)
+- **LAY-3 [M] — Root Claude orientation** — CLAUDE.md exists at the harness root. (standards.md#claudemd)
+- **LAY-4 [M] — Root roadmap** — ROADMAP.md exists at the harness root. (standards.md#roadmapmd)
+- **LAY-5 [M] — Root Knowledge Islands configuration** — .ki-config.toml exists at the harness root. (standards.md#ki-configtoml)
 
-**LAY-3 [M]** `CLAUDE.md` exists at the repo root. Source: standard §CLAUDE.md. _Severity: FAIL — CLAUDE.md is the always-loaded orientation; its absence means agents navigate blind._
+## CLAUDE — Root orientation
 
-**LAY-4 [M]** `ROADMAP.md` exists at the repo root. Source: standard §ROADMAP.md. _Severity: WARN — harnesses without a roadmap lose the open-work signal._
+→ [standard](standards.md#claudemd)
 
-**LAY-5 [M]** `.ki-config.toml` exists at the repo root. Source: standard §.ki-config.toml. _Severity: FAIL — no config means no KI compliance declaration._
+Coverage and freshness of the effective root orientation.
 
----
+- **CLAUDE-1 [J] — Harness introduction** — The root orientation opens by explaining the harness and naming all five parts. (standards.md#claudemd)
+  - _Review prompt:_ Read the effective root orientation and assess whether its introduction explains the harness and names all five parts.
+- **CLAUDE-2 [J] — Five-part status** — The root orientation gives a current status for every harness part. (standards.md#claudemd)
+  - _Review prompt:_ Compare the orientation status table or equivalent block with the five actual harness directories.
+- **CLAUDE-3 [J] — Working conventions** — The root orientation routes working conventions for every harness part. (standards.md#claudemd)
+  - _Review prompt:_ Assess whether each harness part has concise, usable working guidance or a route to its governing skill.
+- **CLAUDE-4 [J] — Toolchain commands** — The root orientation lists the key harness toolchain commands. (standards.md#claudemd)
+  - _Review prompt:_ Verify that the documented commands cover the current project-copy and skill-audit entry points.
+- **CLAUDE-5 [J] — Orientation freshness** — Counts, shelf statuses, and command names in the orientation match the repository. (standards.md#claudemd)
+  - _Review prompt:_ Compare orientation claims with package.json, skills/, and the five harness shelves for stale facts.
 
-## CLAUDE — CLAUDE.md coverage and freshness
+## PKG — Package script families
 
-> **Split orientation (AGENTS.md).** When and why a harness splits orientation between a literal `AGENTS.md` and a thin `CLAUDE.md` is `ki-repo`'s generic convention — see [its standard](../../../keystone/ki-repo/references/standards.md#layer-1--repo-files) (gated on `supported_runtimes`) and [its `RUNTIMES-J1` criterion](../../../keystone/ki-repo/references/rubric.md). Harness-specific: when a harness uses the split, apply CLAUDE-1..5 to the imported `AGENTS.md` content — the coverage they require is satisfied there, and `CLAUDE.md` need only carry the `@AGENTS.md` import plus any genuinely Claude-only notes. LAY-3 (the file exists) still applies to `CLAUDE.md` itself.
+→ [standard](standards.md#packagejson)
 
-**CLAUDE-1 [J]** `CLAUDE.md` opens with a what-the-harness-is paragraph that names all five parts (`skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`). Source: standard §CLAUDE.md §1. _Severity: WARN — a CLAUDE.md that doesn't describe the harness contract fails its orientation purpose._
+Harness-owned package scripts and their target integrity.
 
-**CLAUDE-2 [J]** `CLAUDE.md` has a five-part directory table (or equivalent block) with current status for each part (populated / empty shelf). Source: standard §CLAUDE.md §2. _Severity: WARN._
+- **PKG-1 [M] — Project skill delivery script** — package.json contains the normal ki:skills:copy:project delivery entry. (standards.md#packagejson)
+- **PKG-2 [M] — Skill audit script** — package.json contains the ki:skills:audit quality gate. (standards.md#packagejson)
+- **PKG-4 [M] — Harness development and evaluation scripts** — package.json carries the repository linking, global linking, refresh-status, and evaluation entries. (standards.md#packagejson)
+- **PKG-5 [J] — Checker invocation documentation** — Governed-repository documentation uses .ki-meta checker entry points rather than harness-only package aliases. (standards.md#packagejson)
+  - _Review prompt:_ Review user-facing documentation and ensure vendored checker invocations are canonical outside harness-only guidance.
+- **PKG-6 [M] — Package script target integrity** — Every ki:* bun or bunx script target names a file that exists below the harness root. (standards.md#packagejson)
 
-**CLAUDE-3 [J]** `CLAUDE.md` documents working conventions for each part (which command runs it, which skill governs it, any install step). May be brief with routes to `docs/` or the relevant skill. Source: standard §CLAUDE.md §3. _Severity: POLISH — missing conventions degrade developer UX but don't break correctness._
+## CONFIG — Harness configuration
 
-**CLAUDE-4 [J]** `CLAUDE.md` lists the key `bun run *` toolchain commands (at minimum `ki:skills:copy:project` and `ki:skills:audit`). Source: standard §CLAUDE.md §4. _Severity: POLISH._
+→ [standard](standards.md#ki-configtoml)
 
-**CLAUDE-5 [J]** `CLAUDE.md` reflects current state: skill counts, shelf statuses, and command names match the actual repo. Check against `package.json` and `skills/` directory listing. Source: standard §CLAUDE.md freshness rule. _Severity: WARN if counts or statuses are wrong; POLISH for minor drift (a deprecated command listed but present)._
+Knowledge Islands governance declarations.
 
----
+- **CONFIG-1 [M] — Harness declaration** — .ki-config.toml contains a ki-harness root table. (standards.md#ki-configtoml)
+- **CONFIG-2 [M] — Repository governance declaration** — .ki-config.toml contains a ki-repo root table. (standards.md#ki-configtoml)
+- **CONFIG-3 [J] — Skill governance declaration** — A populated skills/ directory is declared through ki-skills. (standards.md#ki-configtoml)
+  - _Review prompt:_ When skills/ is populated, verify that .ki-config.toml declares the ki-skills governance root.
 
-## PKG — package.json script families
+## SKILLS — Skill directory convention
 
-**PKG-1 [M]** `package.json` contains a `ki:skills:copy:project` script (the normal `ki-bootstrap` project delivery mechanism). Source: standard §package.json. _Severity: FAIL — the primary install mechanism is absent._
+→ [standard](standards.md#skills-directory)
 
-**PKG-2 [M]** `package.json` contains a `ki:skills:audit` script. Source: standard §package.json §ki:skills:audit. _Severity: FAIL — the skill quality gate is absent._
+Direct skill-name integrity within the harness.
 
-**PKG-3 (retired)** The former harness-level common-toolchain check duplicated `ki-engineering`. Aggregate entrypoints are enforced by that skill's SCR-2; internal code and authoring tools are composed underneath them. The harness checker emits no PKG-3 finding, preserving single ownership.
+- **SKILLS-1 [M] — Skill directory and name alignment** — Each direct skills/ entry with a SKILL.md matches its name frontmatter. (standards.md#skills-directory)
+- **SKILLS-2 [M + J] — Unique skill names** — No two local skill entries share a frontmatter name, and composed surfaces remain unambiguous. (standards.md#skills-directory)
+  - _Review prompt:_ Assess whether another installed or composed surface makes an otherwise unique local skill name ambiguous.
 
-**PKG-4 [M]** `package.json` carries the harness development / eval surface: `ki:repo:link-commands`, `ki:skills:link:global`, `ki:skills:refresh-status`, `ki:eval`. Source: standard §package.json. _Severity: WARN per missing script._
+## LONG — Longevity
 
-**PKG-5 [J]** Docs aimed at governed repos (the user guide especially) never present a `ki:*` `package.json` key as _the_ invocation of a vendored checker: the `.ki-meta` path (`bun .ki-meta/checkers/<skill>/<mode>.ts .`, aggregate `./.ki-meta/bin/ki-audit`) is canonical and the key its harness-local alias, with the equivalence stated or linked. A bare key is acceptable only in an explicitly harness-repo-only doc. Source: standard §package.json docs invocation discipline. _Severity: WARN — a key-only instruction silently excludes every governed repo without a `package.json`._
+→ [standard](standards.md)
 
-**PKG-6 [M]** Every `ki:*` script whose command shells `bun <path>` / `bunx <path>` references a file that exists under the repo root (`bun run <key>` delegations and non-path args are ignored; a path is a token ending `.ts`/`.js`/`.sh`/… or under `.ki-meta/`). A dangling target means the key is dead on arrival — most often a `.ki-meta/bin/*` script the target was never bootstrapped to receive (ADR-KI-HARNESS-008), or a script referenced after a move. Source: standard §package.json. _Severity: WARN per dangling target — the key silently fails at first use._
+Refresh discipline for the harness standard.
 
----
-
-## CONFIG — .ki-config.toml declarations
-
-**CONFIG-1 [M]** `.ki-config.toml` contains a `[ki-harness]` table. Source: standard §.ki-config.toml. _Severity: FAIL — the harness compliance marker is absent; `ki-repo`'s coverage cascade will WARN on this._
-
-**CONFIG-2 [M]** `.ki-config.toml` contains a `[ki-repo]` table. Source: standard §.ki-config.toml. _Severity: WARN — the repo opted into KI governance at all._
-
-**CONFIG-3 [J]** If `skills/` is populated, `.ki-config.toml` contains `[ki-skills]`. Source: `ki-repo`'s coverage cascade. _Severity: WARN — detected artifact without opt-in._
-
----
-
-## SKILLS — skills/ directory convention
-
-**SKILLS-1 [M]** For each `skills/<dir>` that contains a `SKILL.md`: the directory name exactly matches the `name:` frontmatter field in that `SKILL.md`. Source: standard §Skills directory. _Severity: FAIL — name/path mismatch breaks agent skill discovery._
-
-**SKILLS-2 [M + J]** No two `skills/` entries share a `name:` frontmatter value. The checker detects local duplicates; judge whether another installed or composed surface makes an otherwise valid local name ambiguous. (The `ki-skills` cross-skill linter pass — COLL-1 — also checks this; don't double-report what it surfaces.) Source: Agent Skills specification; standard §Skills directory. _Severity: FAIL — duplicate names are ambiguous at selection time._
-
----
-
-## LONG — Longevity and refresh path
-
-**LONG-1 [J]** This skill itself has a REFRESH mode and a `references/sources.md` with a `## Last review` block and `last reviewed` dates. Source: `ki-skills` rubric LONG-1/LONG-2; `ki-skills` enforcement framework. _Severity: WARN on the skill, not the harness under audit — report separately._
-
----
+- **LONG-1 [J] — Refresh path** — The ki-harness skill carries REFRESH and a dated source review record. (standards.md)
+  - _Review prompt:_ Review the ki-harness REFRESH procedure and sources.md cadence for a usable current refresh path.
 
 ## COLL — Collision and boundary
 
-**COLL-1 [J]** The harness AUDIT mode names each sibling skill it composes on, and the harness `SKILL.md` description names the off-ramps for the contents-governing skills (`ki-skills`, `ki-agents`, `ki-repo-roadmap`, `ki-mcp`, `ki-engineering`, `ki-repo`). Source: `ki-skills` rubric COLL-2. _Severity: WARN on the skill — check this when auditing the skill itself via `ki:skills:audit`._
+→ [standard](standards.md)
+
+Composition and off-ramp clarity.
+
+- **COLL-1 [J] — Composition boundary** — AUDIT names its composed sibling checks and the description provides contents-governing off-ramps. (standards.md)
+  - _Review prompt:_ Review the AUDIT composition list and description off-ramps for complete, non-overlapping ownership.
