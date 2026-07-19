@@ -8,14 +8,6 @@ code: FND
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
-### Show progress during checker execution
-
-Make long-running individual and aggregate AUDIT / CONFORM runs visibly advance instead of remaining silent until their complete JSONL stream is rendered. Preserve canonical JSONL on stdout for machine consumers; carry concise, runtime-neutral progress on a separate channel, default it sensibly for interactive use, and provide a quiet mode for automation. Aggregate runs must identify the active skill and completed/remaining work, while individual runs should expose meaningful rubric execution progress without reporting suppressed findings early or changing what is checked.
-
-### Simplify the `ki-bootstrap` private implementation
-
-Analyse and refactor the private `ki-bootstrap` implementation now that user installation and repository bootstrap have separate internal roots. Make ownership, orchestration, resolution, generation, publication, and transaction boundaries comprehensible; remove only proven duplication or dead code; and retain one durable repository-local bootstrap engine and source catalogue so normal whole-set and per-skill EDUCATE execution is mechanical and offline. Keep `/harness/bootstrap` as the explicit acquisition route, never an implicit fallback, and preserve the existing publication safety guarantees.
-
 ### Add a safe repository clean operation
 
 Add a source-owned `ki-bootstrap` CLEAN operation that removes repository-generated harness state without needing a working vendored runner. Remove `.ki-meta/` and runtime skill copies only when their generated marker proves harness ownership. Preserve `.ki-config.toml`, authored or explicitly linked skills, repository agents, canonical `scripts/vendored/` source dependencies, and any unmarked `ki-*` path; never infer ownership from a name prefix alone. Make the operation safe to repeat, dry-runnable, and suitable for returning a repository to the state immediately before EDUCATE publication.
