@@ -31,13 +31,13 @@ Curated illustrations of well-formed `SKILL.md` files. Use these when writing a 
 
 ### Well-formed frontmatter block
 
-The frontmatter of `ki-agents` shows the governance-skill contract plus the most important Claude Code extensions. `name` is all-lowercase with hyphens, matches the directory name exactly, and carries no generic words like `helper` or `utils`. `depends-on: []` makes an intentionally standalone skill explicit; `vendors` declares the universal generated command payloads. `description` is written in the third person ("Audit, review, and write…" — never "Can audit…"), names concrete trigger phrases, and ends with off-ramp declarations so the skill does not silently absorb adjacent work. `argument-hint` lists the discrete modes a user can pass at the `/` prompt.
+The frontmatter of `ki-agents` shows the governance-skill contract plus the most important Claude Code extensions. `name` is all-lowercase with hyphens, matches the directory name exactly, and carries no generic words like `helper` or `utils`. `ki-depends-on: []` makes an intentionally standalone skill explicit; `ki-vendors` declares the universal generated command payloads. `description` is written in the third person ("Audit, review, and write…" — never "Can audit…"), names concrete trigger phrases, and ends with off-ramp declarations so the skill does not silently absorb adjacent work. `argument-hint` lists the discrete modes a user can pass at the `/` prompt.
 
 ```yaml
 ---
 name: ki-agents
-depends-on: []
-vendors: [educate, audit, conform, help]
+ki-depends-on: []
+ki-vendors: [educate, audit, conform, help]
 description: >
   Audit, review, and write Claude Code subagent definitions against current best practice. Use when creating a new agent (subagent), reviewing or critiquing an agent's definition, checking an agent before it ships, asking "is this agent any good / well-scoped", or refreshing the agents rubric. Carries a checkable rubric — mechanical checks a bundled linter runs, judgment checks applied by reading — covering the name and description (the delegation signal), the system-prompt shape (role/lane, grounding, when-invoked, own-vs-defer), least-privilege tools and model choice, and cross-agent lane collisions. Triggers: "audit this agent", "review my subagent", "write a new agent", "is this agent definition good", "scaffold an agent", "refresh the agents rubric", "check the agents". Judges a subagent definition (frontmatter + system prompt) — for authoring a SKILL.md use the `ki-skills` skill instead; for harness-level layout (five-part bundle, `.ki-config.toml` compliance) use `ki-harness`.
 argument-hint: 'audit <agent-or-dir> | conform <agent> | help | educate <description> | refresh'
@@ -46,7 +46,7 @@ argument-hint: 'audit <agent-or-dir> | conform <agent> | help | educate <descrip
 
 ### Well-formed operating modes
 
-Every governance skill carries the universal AUDIT, CONFORM, EDUCATE, REFRESH, and HELP behaviour. Put them under `## Operating modes`, with a `### Mode <NAME>` heading for each non-generated mode (or an equivalent permitted table). HELP is generated from the declared vendors: `help`, `-h`, `?`, or no mode explains the skill and stops; an interactive no-mode invocation may offer a mode choice. A mode definition opens with a one-sentence statement of what it does, then lists numbered concrete steps. Steps invoke the repository-root checker first so the model runs the linter before reading — never re-derive what the script checks. Judgment criteria are applied only after the checker output is captured. The rubric file is referenced by relative link from the step that applies it, not re-stated in-line.
+Every governance skill carries the universal AUDIT, CONFORM, EDUCATE, REFRESH, and HELP behaviour. Put them under `## Operating modes`, with a `### Mode <NAME>` heading for each non-generated mode (or an equivalent permitted table). HELP is generated from the declared ki-vendors: `help`, `-h`, `?`, or no mode explains the skill and stops; an interactive no-mode invocation may offer a mode choice. A mode definition opens with a one-sentence statement of what it does, then lists numbered concrete steps. Steps invoke the repository-root checker first so the model runs the linter before reading — never re-derive what the script checks. Judgment criteria are applied only after the checker output is captured. The rubric file is referenced by relative link from the step that applies it, not re-stated in-line.
 
 ```markdown
 ## Operating modes

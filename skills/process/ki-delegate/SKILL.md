@@ -1,6 +1,6 @@
 ---
 name: ki-delegate
-depends-on: []
+ki-depends-on: []
 description: >
   Decomposes a multi-task effort and fans it out across agent and model tiers in four legs — classify each task as judgment / mechanical / research, assign it to an agent type and a per-spawn model tier (the cheapest that suffices; judgment to a standard-encoding specialist or a stronger model), sequence the work into rounds (blockers and citation-targets first, then a parallel fan-out of the independents), and gate every result (review each cheap-tier diff before commit; adversarially safety-review any auto-executing hook or script). A process skill (kind: process, ADR-KI-HARNESS-SKILLS-006): it drives an action, it does not hold a standard. Installable globally, cross-repo — usable in any repo on the machine, not just this one. Triggers: "delegate this", "fan this out", "split this across agents", "how should I parallelise this work", "/ki-delegate". Not the model-tier cost/selection policy itself (that is `ki-tokenomics`), nor the plan lifecycle it often runs on top of (that is `ki-plan`).
 argument-hint: 'delegate [plan-or-task-list] | help'

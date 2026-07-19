@@ -1,8 +1,8 @@
 ---
 name: ki-harness
-depends-on: [ki-skills, ki-agents, ki-decision-records, ki-repo-roadmap]
-vendors: [educate, audit, conform, help]
-checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
+ki-depends-on: [ki-skills, ki-agents, ki-decision-records, ki-repo-roadmap]
+ki-vendors: [educate, audit, conform, help]
+ki-checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 description: >
   Audit, conform, and scaffold Knowledge Islands agentic harnesses — repos that bundle skills, agents, MCP servers, evals, and hooks together for versioned, co-installed deployment. Use when creating a new harness, checking an existing harness's five-part layout (`skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`), verifying its CLAUDE.md covers required orientation sections, checking its package.json script families, or auditing its `.ki-config.toml` harness table. Triggers: "audit the harness", "scaffold a new harness", "does this repo follow the harness standard", "refresh the harness standard", "is this a valid harness". Governs the **container** (directory structure, CLAUDE.md, package.json script families, installation conventions, `.ki-config.toml` table) — not the **contents**: skill quality → `ki-skills`; agent quality → `ki-agents`; repository roadmap → `ki-repo-roadmap`; MCP server code → `ki-mcp`; engineering toolchain → `ki-engineering`; GitHub repo settings → `ki-repo`.
 argument-hint: 'audit [path] | conform [path] | help | educate <name> | refresh'

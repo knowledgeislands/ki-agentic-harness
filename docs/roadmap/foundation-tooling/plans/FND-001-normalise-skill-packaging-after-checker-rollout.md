@@ -1,7 +1,7 @@
 ---
 id: 'FND-001'
 title: Normalise skill packaging after the checker rollout
-status: open
+status: in-progress
 roadmap: foundation-tooling/normalise-skill-packaging-after-the-checker-rollout
 blocks: —
 blocked-by: —
@@ -17,8 +17,8 @@ Knowledge Islands-specific frontmatter keys are not namespaced; `scripts/lib/` m
 
 ## Steps
 
-1. Confirm every shipped governance checker passes its focused tests and the live `ki-skills` audit, then inventory every affected frontmatter key, parser, validator, source path, generated path, internal module, documentation reference, fixture, and installed footprint.
-2. Rename `depends-on`, `vendors`, and `checker-dependencies` to their agreed `ki-`-prefixed forms everywhere in one current-state change; update resolution, validation, publication, tests, documentation, and generated projections without accepting an old spelling.
+1. ✓ Confirm every shipped governance checker passes its focused tests and the live `ki-skills` audit, then inventory every affected frontmatter key, parser, validator, source path, generated path, internal module, documentation reference, fixture, and installed footprint.
+2. ✓ Rename `depends-on`, `vendors`, and `checker-dependencies` to their agreed `ki-`-prefixed forms everywhere in one current-state change; update resolution, validation, publication, tests, documentation, and generated projections without accepting an old spelling.
 3. Move `ki-skills` to `skills/keystone/ki-skills`, update all source and documentation references plus generated skill maps, and retain `ki-bootstrap` as the only globally installed governance skill.
 4. Retire the ambiguous `scripts/lib/` location: move explicitly published cross-skill modules to `scripts/shared/`, move unpublished `ki-bootstrap` and `ki-repo` support to `scripts/internal/`, update imports and focused tests, and add mechanical guards for both boundaries. Report every remaining `scripts/lib/` module as a packaging error requiring explicit disposition; do not close the plan while any remain.
 5. Re-vendor `.ki-meta/`, run the serial repository gates, and conform every governed repository to the new source contract; verify that no legacy key, old `ki-skills` path, or misplaced private library remains.

@@ -106,6 +106,6 @@ The target reusable implementation belongs to `ki-skills`: `scripts/lib/checker.
 
 A dependent governance skill vendors those three declared modules into `scripts/vendored/ki-skills/` and imports only its local copies.
 
-Checker-module dependencies supply implementation; they do not create a `depends-on:` governance-coverage edge.
+Checker-module dependencies supply implementation; they do not create a `ki-depends-on:` governance-coverage edge.
 
 Each vendored checker remains standalone, uses builtins only, and never imports across skill boundaries at runtime.

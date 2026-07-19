@@ -1,8 +1,8 @@
 ---
 name: ki-authoring
-depends-on: []
-vendors: [educate, audit, conform, help]
-checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
+ki-depends-on: []
+ki-vendors: [educate, audit, conform, help]
+ki-checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 owns: ['.prettierrc.json', '.editorconfig', '.markdownlint-cli2.jsonc']
 description: >
   The foundational authoring and formatting conventions shared across every Knowledge Islands skill, repo, and base — the common style layer the others build on rather than restate. Currently covers Markdown authoring (wide tables → footnotes, link style) and TOML formatting style (for the shared `.ki-config.toml`). Use when writing or editing Markdown or TOML, bringing a document, README, table, or config to house style (conform), checking one against the conventions (audit), or refreshing them against their sources. Triggers: "format this to our style", "fix this markdown", "tidy this README", "audit this doc's formatting", "does this follow house style", "what's our convention for tables / links / footnotes". For KB note-writing use the `ki-kb` skill; for a repo's configuration and the `.ki-config.toml` contract use `ki-repo`; to judge a SKILL.md use `ki-skills`; for the build/lint/test toolchain use `ki-engineering`.
@@ -42,7 +42,7 @@ Like every governance skill it carries the universal **AUDIT · CONFORM · EDUCA
 
 ### Mode EDUCATE — vendor the style gate, scaffold the owned files
 
-EDUCATE vendors this skill's declared mechanical unit (the frontmatter `vendors:` declaration) into the target's `.ki-meta/` via the central bootstrap chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator into the `ki-bootstrap` engine. The `.prettierrc.json`/`.editorconfig` scaffold-or-correct itself lives in CONFORM (mirroring `ki-engineering`'s EDUCATE/CONFORM split — EDUCATE wires the checker in, CONFORM does the actual file write), so a fresh target only gets both files on its first `ki:authoring:conform` run.
+EDUCATE vendors this skill's declared mechanical unit (the frontmatter `ki-vendors:` declaration) into the target's `.ki-meta/` via the central bootstrap chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator into the `ki-bootstrap` engine. The `.prettierrc.json`/`.editorconfig` scaffold-or-correct itself lives in CONFORM (mirroring `ki-engineering`'s EDUCATE/CONFORM split — EDUCATE wires the checker in, CONFORM does the actual file write), so a fresh target only gets both files on its first `ki:authoring:conform` run.
 
 ### Mode REFRESH — re-anchor the conventions to their sources
 

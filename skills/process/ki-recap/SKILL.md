@@ -1,6 +1,6 @@
 ---
 name: ki-recap
-depends-on: []
+ki-depends-on: []
 description: >
   Recaps a live session in three legs — summarise what happened (changes, decisions, files touched), surface what is outstanding (unfinished threads, deferred fixes, work that belongs on ROADMAP or a `ki-plan`), and harvest the learnings (dead-ends, workarounds, conventions), routing each to its proper home. Optionally compresses the recapped span into a compact carry-forward digest. A process skill (kind: process, ADR-KI-HARNESS-SKILLS-006): it drives an action, it does not hold a standard. Installable globally, cross-repo — usable in any repo on the machine, not just this one. Triggers: "recap this session", "summarise what happened", "what's outstanding", "harvest what we learned", "/ki-recap". Not the offline, mechanical mining of historical transcripts after the fact — that is a separate ROADMAP candidate sharing this skill's grounding substrate.
 argument-hint: 'recap [--compress] [--runtime detect|claude|codex] [--transcript <session-file>] | help'

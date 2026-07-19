@@ -103,7 +103,7 @@ Each is one self-contained vendorable file with an adjacent source test; ordinar
 
 `ki-skills` publishes them as `checker-modules: [rubric, checker, reporter]`.
 
-A dependent governance skill declares `checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]`; relative imports between those modules remain inside the copied `scripts/vendored/ki-skills/` namespace.
+A dependent governance skill declares `ki-checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]`; relative imports between those modules remain inside the copied `scripts/vendored/ki-skills/` namespace.
 
 The rubric module owns the generic domain model and catalogue mechanics.
 

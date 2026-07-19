@@ -34,11 +34,11 @@ The skills sit in **six clusters**, by the role each plays in the set:
 3. **Repo-structure** — `ki-harness`, `ki-kb`, `ki-website`, `ki-mcp`, `ki-plugins`, `ki-specifications`, `ki-tools`, `ki-homebrew-tap`, `ki-dotfiles-chezmoi`: exactly one applies per repo, fixing that repo's shape.
 4. **General governance** — `ki-skills`, `ki-agents`, `ki-decision-records`, `ki-feature-definitions`, `ki-repo-roadmap`, `ki-handoffs`: cross-cutting instruments a repo may adopt; `ki-repo-roadmap` applies only to non-KB repositories.
 5. **Dependent families** — the members a parent repo-structure skill requires: `ki-kb-streams`, `ki-kb-activities`, `ki-kb-live-artifacts` under `ki-kb`; `ki-website-cloudflare` under `ki-website`.
-6. **Environment** — `ki-binding`, `ki-binding-chezmoi`, `ki-housekeeping`, `ki-tokenomics`: govern the machine and the workspace, not any one repo. `ki-binding-chezmoi` is a composition skill (it `depends-on:` `ki-binding` + `ki-dotfiles-chezmoi`) supplying the chezmoi render path that the renderer-neutral `ki-binding` deliberately omits — installed only by chezmoi users (ADR-KI-HARNESS-SKILLS-004).
+6. **Environment** — `ki-binding`, `ki-binding-chezmoi`, `ki-housekeeping`, `ki-tokenomics`: govern the machine and the workspace, not any one repo. `ki-binding-chezmoi` is a composition skill (it `ki-depends-on:` `ki-binding` + `ki-dotfiles-chezmoi`) supplying the chezmoi render path that the renderer-neutral `ki-binding` deliberately omits — installed only by chezmoi users (ADR-KI-HARNESS-SKILLS-004).
 
 ## Interdependencies
 
-The clusters group the skills by role. A second relationship runs across them: which governance capability each skill requires. Because skills compose rather than fork, a skill declares its requirements in `depends-on:` frontmatter. A repository explicitly declares both a selected skill and each dependency; the graph validates and explains those requirements rather than expanding coverage. It is rendered as a tree by `bun run ki:skills:graph --tree` (each root has no dependency; its children are its `depends-on:` entries):
+The clusters group the skills by role. A second relationship runs across them: which governance capability each skill requires. Because skills compose rather than fork, a skill declares its requirements in `ki-depends-on:` frontmatter. A repository explicitly declares both a selected skill and each dependency; the graph validates and explains those requirements rather than expanding coverage. It is rendered as a tree by `bun run ki:skills:graph --tree` (each root has no dependency; its children are its `ki-depends-on:` entries):
 
 <!-- BEGIN GENERATED SKILL GRAPH -->
 

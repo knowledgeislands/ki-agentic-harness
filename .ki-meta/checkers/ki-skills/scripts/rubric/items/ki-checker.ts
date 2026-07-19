@@ -41,7 +41,7 @@ export const KI_CHECKER_3: RubricItem<KiCheckerRubricContext> = {
   code: 'KI-CHECKER-3',
   title: 'ki-skills is the self-governing checker-contract root',
   description:
-    "`ki-skills` is the self-governing checker-contract root: it declares `checker-modules: [rubric, checker, reporter]`, ships its canonical rubric, checker, and reporter modules under `scripts/lib/`, and declares no `checker-dependencies:` entry. Its canonical checker and direct human reporter therefore run from its own shipped files without a dependency on itself or another skill. Other skills may declare only offered checker modules, which bootstrap copies from the provider's `scripts/lib/` into their local `scripts/vendored/<provider>/` namespace; that declaration is implementation packaging, not `depends-on:` or composition.",
+    "`ki-skills` is the self-governing checker-contract root: it declares `checker-modules: [rubric, checker, reporter]`, ships its canonical rubric, checker, and reporter modules under `scripts/lib/`, and declares no `ki-checker-dependencies:` entry. Its canonical checker and direct human reporter therefore run from its own shipped files without a dependency on itself or another skill. Other skills may declare only offered checker modules, which bootstrap copies from the provider's `scripts/lib/` into their local `scripts/vendored/<provider>/` namespace; that declaration is implementation packaging, not `ki-depends-on:` or composition.",
   sources: ['ADR-KI-HARNESS-SKILLS-012'],
   mechanical: {
     level: 'FAIL',
@@ -74,7 +74,7 @@ export const KI_CHECKER_3: RubricItem<KiCheckerRubricContext> = {
         if (checkerDependencies.length > 0)
           violations.push({
             status: 'VIOLATION' as const,
-            message: '`ki-skills` is the checker-contract root and must not declare `checker-dependencies:`'
+            message: '`ki-skills` is the checker-contract root and must not declare `ki-checker-dependencies:`'
           })
         const [first, ...rest] = violations
         return first ? [first, ...rest] : [{ status: 'PASS', message: 'ki-skills is the self-governing checker-contract root' }]

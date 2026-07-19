@@ -164,8 +164,8 @@ export const createKiShapeFrontmatterEvidence = ({
     governanceSkill: !isProcessSkill(description),
     argumentHint,
     hintVerbs: hintVerbs(argumentHint ?? ''),
-    vendorsPresent: frontmatter.present.has('vendors'),
-    vendors: (frontmatter.keys.get('vendors') ?? '').trim(),
+    vendorsPresent: frontmatter.present.has('ki-vendors'),
+    vendors: (frontmatter.keys.get('ki-vendors') ?? '').trim(),
     scriptNames
   }
 }

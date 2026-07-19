@@ -24,7 +24,7 @@ The one deliberate exception is a valid repo-local `ki-self` directory. It is co
 
 ## EDUCATE resolution and owner composition
 
-EDUCATE resolves the root owners from exact and dotted `[ki-*]` tables plus explicit `--seed` values. Every declaration, seed, and `depends-on:` requirement must resolve, and every selected dependency must have its own explicit `[ki-*]` table, before `.ki-meta/` is touched. `ki-bootstrap` itself may be declared or seeded, but as the global chain-starter it is excluded from the vendored set. Bare bootstrap against a missing or empty config with no seed therefore resolves the empty set.
+EDUCATE resolves the root owners from exact and dotted `[ki-*]` tables plus explicit `--seed` values. Every declaration, seed, and `ki-depends-on:` requirement must resolve, and every selected dependency must have its own explicit `[ki-*]` table, before `.ki-meta/` is touched. `ki-bootstrap` itself may be declared or seeded, but as the global chain-starter it is excluded from the vendored set. Bare bootstrap against a missing or empty config with no seed therefore resolves the empty set.
 
 When `ki-repo` is initially seeded or resolved, bootstrap subprocesses `ki-repo`'s scaffold-only EDUCATE leg before vendoring, forwarding dry-run state. This is composition through the owner, not shared ownership: bootstrap embeds no TOML template and never writes `.ki-config.toml` directly. The owner creates a missing file with canonical `[ki-repo]` defaults plus bare `[ki-authoring]`, or append-only repairs whichever exact root marker is missing while preserving all existing bytes. Bootstrap then re-resolves so those declared foundations and their self-check units are vendored in the same run.
 

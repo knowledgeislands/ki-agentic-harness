@@ -132,7 +132,7 @@ Governs the **cross-surface binding** — enabling the KI MCP servers, skills, a
 
 ### `ki-binding-chezmoi`
 
-The **chezmoi render path** for the cross-surface binding — a composition skill (`depends-on:` `ki-binding` + `ki-dotfiles-chezmoi`) that supplies what the renderer-neutral `ki-binding` deliberately omits: rendering the canonical `mcp-servers.yaml` source through chezmoi templates + `chezmoi apply` so the file-editable surfaces are generated from the single source. Its AUDIT runs the `ki-dotfiles-chezmoi` and `ki-binding` checkers in sequence, then adds the render-wiring delta. Installed only by chezmoi users; a non-chezmoi setup uses `ki-binding` alone. The composition-not-fork shape follows `ADR-KI-HARNESS-SKILLS-004`.
+The **chezmoi render path** for the cross-surface binding — a composition skill (`ki-depends-on:` `ki-binding` + `ki-dotfiles-chezmoi`) that supplies what the renderer-neutral `ki-binding` deliberately omits: rendering the canonical `mcp-servers.yaml` source through chezmoi templates + `chezmoi apply` so the file-editable surfaces are generated from the single source. Its AUDIT runs the `ki-dotfiles-chezmoi` and `ki-binding` checkers in sequence, then adds the render-wiring delta. Installed only by chezmoi users; a non-chezmoi setup uses `ki-binding` alone. The composition-not-fork shape follows `ADR-KI-HARNESS-SKILLS-004`.
 
 ### `ki-housekeeping`
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// skill-graph.ts — read the `depends-on:` frontmatter graph across every SKILL.md
+// skill-graph.ts — read the `ki-depends-on:` frontmatter graph across every SKILL.md
 // and (a) validate it, (b) render the dependency tree.
 //
 //   bun skill-graph.ts --check                     validate the graph; exit 1 on error
@@ -8,7 +8,7 @@
 //
 // Canonical home is skills/keystone/ki-bootstrap/scripts/lib/; also vendored into a governed
 // harness-shaped target's .ki-meta/bin/ (ADR-KI-HARNESS-008). It resolves skills/
-// from the cwd (repo root). The `depends-on:` list in each skill's frontmatter is the
+// from the cwd (repo root). The `ki-depends-on:` list in each skill's frontmatter is the
 // single declared source of the dependency graph. It validates the declared
 // requirements and renders them for inspection; it never expands repository coverage.
 // A broken edge (e.g. an un-updated name after a rename) fails
@@ -46,13 +46,13 @@ function skillPaths(): Map<string, string> {
 
 type Graph = Map<string, string[]>
 
-/** Parse the `depends-on:` flow list from a SKILL.md frontmatter block. */
+/** Parse the `ki-depends-on:` flow list from a SKILL.md frontmatter block. */
 function parseDependsOn(skillMd: string): string[] | null {
   const fm = skillMd.match(/^---\r?\n([\s\S]*?)\r?\n---/)
   if (!fm) return null
-  const line = fm[1].split(/\r?\n/).find((l) => /^depends-on:/.test(l))
+  const line = fm[1].split(/\r?\n/).find((l) => /^ki-depends-on:/.test(l))
   if (line === undefined) return null
-  const body = line.replace(/^depends-on:\s*/, '').trim()
+  const body = line.replace(/^ki-depends-on:\s*/, '').trim()
   const inner = body.replace(/^\[/, '').replace(/\]$/, '').trim()
   if (inner === '') return []
   return inner
@@ -139,7 +139,7 @@ function checkDocument(path: string, expectedTree: string, errors: string[]): vo
 function graphErrors(graph: Graph, unannotated: string[]): string[] {
   const errors: string[] = []
   for (const skill of unannotated) {
-    errors.push(`${skill}: SKILL.md has no \`depends-on:\` frontmatter key (every skill must declare one, even if empty)`)
+    errors.push(`${skill}: SKILL.md has no \`ki-depends-on:\` frontmatter key (every skill must declare one, even if empty)`)
   }
   for (const [skill, dependencies] of graph) {
     for (const target of dependencies) {

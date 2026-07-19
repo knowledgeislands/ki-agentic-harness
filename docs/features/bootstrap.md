@@ -22,7 +22,7 @@ _Verify:_ after bootstrap, `.ki-meta/checkers/ki-repo/scripts/audit.ts` in the t
 
 The resolved skill set MUST contain exactly the governance skills declared by `[ki-<skill>]` tables in the target's `.ki-config.toml`, plus any explicit `--seed` required to bootstrap a fresh target, per [ADR-KI-HARNESS-SKILLS-006](../decisions/ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md).
 
-Every selected skill's `depends-on:` entries MUST be declared explicitly in that same configuration; bootstrap fails before mutation when one is absent.
+Every selected skill's `ki-depends-on:` entries MUST be declared explicitly in that same configuration; bootstrap fails before mutation when one is absent.
 
 _Verify:_ a target declaring `ki-website` also explicitly declares `ki-website-cloudflare`; a missing table fails before `repo-bootstrap.ts` writes.
 
@@ -50,7 +50,7 @@ Re-running the idempotent bootstrap chain is the single update path — there ar
 
 ### BOOT-007 — Vendored-set alignment check
 
-The harness MUST be able to verify a target's `.ki-meta/checkers/` matches the expected declared skill set (restricted to skills carrying a checker). It validates `depends-on:` declarations against source SKILL.md frontmatter harness-side, because that graph is not part of a target's standalone payload. Missing dependencies are a FAIL before bootstrap mutation; checker-set drift is a WARN, reconciled by re-bootstrap. See [BOOT-9](../../skills/keystone/ki-bootstrap/references/rubric.md).
+The harness MUST be able to verify a target's `.ki-meta/checkers/` matches the expected declared skill set (restricted to skills carrying a checker). It validates `ki-depends-on:` declarations against source SKILL.md frontmatter harness-side, because that graph is not part of a target's standalone payload. Missing dependencies are a FAIL before bootstrap mutation; checker-set drift is a WARN, reconciled by re-bootstrap. See [BOOT-9](../../skills/keystone/ki-bootstrap/references/rubric.md).
 
 _Verify:_ `bun skills/keystone/ki-bootstrap/scripts/audit.ts <target>` reports PASS when `.ki-meta/checkers/` equals the expected set, and WARNs (listing both directions) when a checker is stray-vendored or missing.
 

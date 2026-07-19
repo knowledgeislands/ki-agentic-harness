@@ -34,8 +34,8 @@ const fixture = (): { base: string; dir: string } => {
     [
       '---',
       'name: ki-fixture-conform',
-      'depends-on: []',
-      'vendors: { audit: scripts/audit-fixture.ts }',
+      'ki-depends-on: []',
+      'ki-vendors: { audit: scripts/audit-fixture.ts }',
       'description: Audits fixture skills against a local standard.',
       "argument-hint: 'audit <target> | conform <target>'",
       '---',
@@ -118,7 +118,7 @@ describe('ki-skills CONFORM wrapper', () => {
       })
       expect(repaired).toContain('[safe link](references/standards.md)')
       expect(repaired).toContain('Literal text C:\\temp remains outside a link.')
-      expect(repaired).toContain('vendors: [educate, audit, conform, help]')
+      expect(repaired).toContain('ki-vendors: [educate, audit, conform, help]')
       expect(run(AUDIT, dir).status).toBe(0)
     } finally {
       rmSync(base, { recursive: true, force: true })

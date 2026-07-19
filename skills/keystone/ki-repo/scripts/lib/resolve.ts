@@ -150,17 +150,17 @@ export function assertResolvableSkills(skills: Iterable<string>): void {
   if (unresolved.length) throw new SkillResolutionError(unresolved)
 }
 
-// The `depends-on:` flow list from a skill's SKILL.md frontmatter. Dependencies
+// The `ki-depends-on:` flow list from a skill's SKILL.md frontmatter. Dependencies
 // express a required declared governance capability, never hidden coverage or
 // execution order.
 export function dependsOnOf(skill: string): string[] {
   const md = readText(join(skillDir(skill), 'SKILL.md'))
   const fm = md.match(/^---\r?\n([\s\S]*?)\r?\n---/)
   if (!fm) return []
-  const line = fm[1].split(/\r?\n/).find((l) => /^depends-on:/.test(l))
+  const line = fm[1].split(/\r?\n/).find((l) => /^ki-depends-on:/.test(l))
   if (!line) return []
   const inner = line
-    .replace(/^depends-on:\s*/, '')
+    .replace(/^ki-depends-on:\s*/, '')
     .trim()
     .replace(/^\[/, '')
     .replace(/\]$/, '')
@@ -217,14 +217,14 @@ function parseCheckerModule(value: string, field: string, skill: string): Checke
 }
 
 // A provider declares modules it publishes; a consumer declares exact provider/module
-// requirements. This is deliberately independent of `depends-on:`: support modules are
+// requirements. This is deliberately independent of `ki-depends-on:`: support modules are
 // copied implementation, never a governance-coverage or mode-composition edge.
 export function checkerModulesOf(skill: string): string[] {
   return flowListFrontmatter(skill, 'checker-modules')
 }
 
 export function checkerDependenciesOf(skill: string): CheckerModule[] {
-  return flowListFrontmatter(skill, 'checker-dependencies').map((value) => parseCheckerModule(value, 'checker-dependencies', skill))
+  return flowListFrontmatter(skill, 'ki-checker-dependencies').map((value) => parseCheckerModule(value, 'ki-checker-dependencies', skill))
 }
 
 function assertSafeCheckerModuleTree(path: string): void {
@@ -293,7 +293,7 @@ export const isSource = (f: string): boolean => !/\.test\.ts$/.test(f)
 
 // A skill's single legacy checker script (audit-*.ts / lint-*.ts / bare audit.ts) —
 // discovered, not templated. Migration fallback only: the primary source is the
-// `vendors:` frontmatter declaration below.
+// `ki-vendors:` frontmatter declaration below.
 export function checkerScript(skill: string): { verb: 'audit'; file: string } | null {
   const dir = join(skillDir(skill), 'scripts')
   if (!existsSync(dir)) return null
@@ -309,36 +309,36 @@ export function conformScript(skill: string): string | null {
   return m.length === 1 ? m[0] : null
 }
 
-// ── `vendors:` frontmatter (ADR-KI-HARNESS-007) ──────────────────────────────────
+// ── `ki-vendors:` frontmatter (ADR-KI-HARNESS-007) ──────────────────────────────────
 // Per-skill declaration, central execution. Every governance skill declares the
-// universal modes it vendors as a single-line flow LIST beside `depends-on:`:
+// universal modes it vendors as a single-line flow LIST beside `ki-depends-on:`:
 //
-//   vendors: [educate, audit, conform, help]
+//   ki-vendors: [educate, audit, conform, help]
 //
 // Mode → artifact is DERIVED (no override):
 //   educate / audit / conform → scripts/<mode>.ts, vendored as a copied file
 //   help                   → a rendered SKILL.md snapshot (no script; see repo-bootstrap.ts)
 // `refresh` is never vendored (harness-only). During migration two legacy forms are
-// still parsed with a WARN: the map form `vendors: { audit: scripts/x.ts, conform:
+// still parsed with a WARN: the map form `ki-vendors: { audit: scripts/x.ts, conform:
 // scripts/y.ts }` (a bare path is a FILE; a quoted `"cmd: ..."` is a COMMAND), and
-// filename-convention discovery when a skill has no `vendors:` line at all.
+// filename-convention discovery when a skill has no `ki-vendors:` line at all.
 export const VENDOR_MODES = ['educate', 'audit', 'conform', 'help'] as const
 export type VendorMode = (typeof VENDOR_MODES)[number]
 export type VendorUnit = { kind: 'file'; path: string } | { kind: 'command'; command: string }
 
-// The raw `vendors:` line's inner text, or null when there is no such line.
+// The raw `ki-vendors:` line's inner text, or null when there is no such line.
 function vendorsInner(skill: string): string | null {
   const md = readText(join(skillDir(skill), 'SKILL.md'))
   const fm = md.match(/^---\r?\n([\s\S]*?)\r?\n---/)
   if (!fm) return null
-  const line = fm[1].split(/\r?\n/).find((l) => /^vendors:/.test(l))
+  const line = fm[1].split(/\r?\n/).find((l) => /^ki-vendors:/.test(l))
   if (!line) return null
-  const inner = line.replace(/^vendors:\s*/, '').trim()
+  const inner = line.replace(/^ki-vendors:\s*/, '').trim()
   return inner || null
 }
 
 // The declared mode list. Handles the new flow-list form directly, and derives the
-// list from a legacy map form's keys. null when there is no `vendors:` line.
+// list from a legacy map form's keys. null when there is no `ki-vendors:` line.
 export function vendorModesOf(skill: string): VendorMode[] | null {
   const inner = vendorsInner(skill)
   if (inner === null) return null
@@ -405,7 +405,7 @@ export function vendorUnit(skill: string, mode: 'educate' | 'audit' | 'conform')
   const mapped = legacyMapUnit(skill, mode)
   if (mapped) {
     console.error(
-      `${'\x1b[33m'}WARN${'\x1b[0m'}  ${skill} uses the legacy \`vendors: { … }\` map — migrate to \`vendors: [educate, audit, conform, help]\` with bare scripts/${mode}.ts.`
+      `${'\x1b[33m'}WARN${'\x1b[0m'}  ${skill} uses the legacy \`ki-vendors: { … }\` map — migrate to \`ki-vendors: [educate, audit, conform, help]\` with bare scripts/${mode}.ts.`
     )
     return mapped
   }
@@ -414,7 +414,7 @@ export function vendorUnit(skill: string, mode: 'educate' | 'audit' | 'conform')
   const legacy = mode === 'audit' ? checkerScript(skill)?.file : conformScript(skill)
   if (!legacy) return null
   console.error(
-    `${'\x1b[33m'}WARN${'\x1b[0m'}  ${skill} has no \`vendors:\` declaration for ${mode} — falling back to filename-convention discovery (scripts/${legacy}). Add \`vendors: [educate, audit, conform, help]\` and rename to scripts/${mode}.ts.`
+    `${'\x1b[33m'}WARN${'\x1b[0m'}  ${skill} has no \`ki-vendors:\` declaration for ${mode} — falling back to filename-convention discovery (scripts/${legacy}). Add \`ki-vendors: [educate, audit, conform, help]\` and rename to scripts/${mode}.ts.`
   )
   return { kind: 'file', path: `scripts/${legacy}` }
 }

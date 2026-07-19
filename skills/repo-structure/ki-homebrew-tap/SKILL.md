@@ -1,8 +1,8 @@
 ---
 name: ki-homebrew-tap
-depends-on: []
-vendors: [educate, audit, conform, help]
-checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
+ki-depends-on: []
+ki-vendors: [educate, audit, conform, help]
+ki-checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 description: >
   Codify, audit, and scaffold the Knowledge Islands Homebrew tap — the `homebrew-<x>` distribution repo that holds `Formula/*.rb` for Knowledge Islands command-line tools. This skill WRAPS Homebrew's external standard (the Formula Cookbook + `brew audit`/`brew style`) rather than inventing a house one: it checks the tap's shape (a `Formula/` dir, one formula per tool, the README formulae table, a versioned-tarball source) and delegates formula-correctness to `brew` when it is on PATH. Use when auditing the tap, adding a formula, scaffolding a new tap, or refreshing against Homebrew's rules. Triggers: "audit the homebrew tap", "add a formula", "does the tap follow Homebrew's standard", "scaffold a homebrew tap", "is this formula valid", "refresh the homebrew-tap standard". Governs the tap **container** — the repo shape and the formula shape — not the tools themselves (for a `tools-*` CLI repo use `ki-tools`) nor the repo's GitHub settings and standard files (for those use `ki-repo`).
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
@@ -80,7 +80,7 @@ Every governance skill carries the universal four **AUDIT · CONFORM · EDUCATE 
 
 ## Composition — what this skill rides and what it defers
 
-This skill **rides `ki-repo`** (the tap is first a git repo: README, LICENSE, `.gitignore`, GitHub settings, security — all `ki-repo`'s) and declares that edge, but it does **not** ride `ki-engineering`: a tap has no `package.json`/TypeScript toolchain, so a bare `[ki-repo]` + `[ki-homebrew-tap]` config is complete (the `ki-plugins` precedent). It declares `depends-on: []`.
+This skill **rides `ki-repo`** (the tap is first a git repo: README, LICENSE, `.gitignore`, GitHub settings, security — all `ki-repo`'s) and declares that edge, but it does **not** ride `ki-engineering`: a tap has no `package.json`/TypeScript toolchain, so a bare `[ki-repo]` + `[ki-homebrew-tap]` config is complete (the `ki-plugins` precedent). It declares `ki-depends-on: []`.
 
 - The **tools** whose formulae live here — the `tools-*` CLI repos, their `bin/<exe>`, installer, versioning, and releases — are `ki-tools`'. This skill checks that a formula _exists and is well-formed_; whether the tool it installs is a conformant `tools-*` repo is `ki-tools`' audit.
 - A tap **repo's** GitHub configuration and standard files (merge policy, topics, secret scanning, README/LICENSE presence) are `ki-repo`'s. This skill checks the tap-specific delta on top.

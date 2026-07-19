@@ -54,8 +54,8 @@ export const createSkillConformState = (directory: string, dryRun: boolean): Ski
       },
       setVendors: (vendors) => {
         updateFrontmatter((block) => {
-          const line = frontmatterLine(block, 'vendors')
-          const replacement = `vendors: ${vendors}`
+          const line = frontmatterLine(block, 'ki-vendors')
+          const replacement = `ki-vendors: ${vendors}`
           return line ? block.replace(line, replacement) : insertFrontmatterLine(block, replacement)
         })
       }

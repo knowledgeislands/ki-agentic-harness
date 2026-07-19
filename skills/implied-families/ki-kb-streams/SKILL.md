@@ -1,8 +1,8 @@
 ---
 name: ki-kb-streams
-checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
-depends-on: []
-vendors: [educate, audit, conform, help]
+ki-checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
+ki-depends-on: []
+ki-vendors: [educate, audit, conform, help]
 description: >
   Operate and govern the Streams zone of a Knowledge Islands base — the working copy of work in motion, run as the Enactment Process (the canonical change process: a proposal goes draft → ready → ratify → roll out → review → settle, and nothing reaches stable knowledge except through that gate). Use to start a stream, iterate a proposal, mark one ready, roll out an approved change, run a post-change review, and settle or reject a stream — and to audit a base's Streams structure (Focus lifecycle, the `Proposal` suffix, leaf/parent layout, proposal frontmatter) or conform it. Triggers: "start a stream", "create a proposal", "mark this ready", "roll out this proposal", "settle this stream", "what's the enactment process", "plan mode for my knowledge base", "does this change need a proposal", "audit my streams". For the five-zone model and note CRUD / routing use the `ki-kb` skill, which delegates the Streams zone here; for Markdown / TOML house style use `ki-authoring`.
 argument-hint: 'audit | conform | help | educate | iterate | propose | ready | refresh | reject | review | rollout | settle'
@@ -82,7 +82,7 @@ Almost everything is fixed above. Only these come from the host base — take de
 
 ## Operating modes
 
-Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The shared model above — the zone-at-a-glance, the status lifecycle, the proposal anatomy, the bindings, Step 1, and the **Working rules** and **Enactment gate** below — is what every mode needs and stays loaded; each mode's _procedure_ lives in its own on-demand file, so read only the one the request selects. This carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** — EDUCATE scaffolds no standalone artifact here: it vendors the skill's declared mechanical unit (the frontmatter `vendors:` declaration) into the target's `.ki-meta/` via the central bootstrap chain, [`scripts/educate.ts`](scripts/educate.ts) being a thin delegator into the `ki-bootstrap` engine. Its enactment-lifecycle modes are **ITERATE · PROPOSE · READY · REJECT · REVIEW · ROLLOUT · SETTLE**. Modes are named and alphabetical.
+Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The shared model above — the zone-at-a-glance, the status lifecycle, the proposal anatomy, the bindings, Step 1, and the **Working rules** and **Enactment gate** below — is what every mode needs and stays loaded; each mode's _procedure_ lives in its own on-demand file, so read only the one the request selects. This carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** — EDUCATE scaffolds no standalone artifact here: it vendors the skill's declared mechanical unit (the frontmatter `ki-vendors:` declaration) into the target's `.ki-meta/` via the central bootstrap chain, [`scripts/educate.ts`](scripts/educate.ts) being a thin delegator into the `ki-bootstrap` engine. Its enactment-lifecycle modes are **ITERATE · PROPOSE · READY · REJECT · REVIEW · ROLLOUT · SETTLE**. Modes are named and alphabetical.
 
 | Mode    | Fires on                                                       | Read before acting                                        |
 | ------- | -------------------------------------------------------------- | --------------------------------------------------------- |

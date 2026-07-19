@@ -1,8 +1,8 @@
 ---
 name: ki-engineering
-depends-on: []
-vendors: [educate, audit, conform, help]
-checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
+ki-depends-on: []
+ki-vendors: [educate, audit, conform, help]
+ki-checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 owns: [mise.toml, tsconfig.json, biome.json, knip.json]
 contributes: ['.ki-config.toml', package.json]
 description: >

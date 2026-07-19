@@ -34,7 +34,7 @@ _Verify:_ no `skills/*/scripts/**/*.ts` relative import resolves outside its own
 
 ### GOV-005 — Machine-readable dependency graph
 
-Each `SKILL.md` MUST declare a `depends-on:` frontmatter list, and the resulting graph MUST be acyclic with every edge resolving to an existing skill, per [ADR-KI-HARNESS-SKILLS-006](../decisions/ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md).
+Each `SKILL.md` MUST declare a `ki-depends-on:` frontmatter list, and the resulting graph MUST be acyclic with every edge resolving to an existing skill, per [ADR-KI-HARNESS-SKILLS-006](../decisions/ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md).
 
 A dependency identifies a governance capability a selected skill requires; it does not select coverage or establish mode execution order. A target that declares a skill MUST explicitly declare each of its dependencies in `.ki-config.toml`.
 

@@ -16,11 +16,11 @@ The existing composition rule correctly prevents either of those assumptions, bu
 
 It owns the canonical checker reporter and its executable modules, self-governs from its own shipped files, and has no checker-module dependency on itself.
 
-Checker modules are a narrow packaging relationship, declared separately from `depends-on:`.
+Checker modules are a narrow packaging relationship, declared separately from `ki-depends-on:`.
 
 A provider declares the modules it offers with `checker-modules:`.
 
-A dependent declares the exact `provider:module` references it needs with `checker-dependencies:`.
+A dependent declares the exact `provider:module` references it needs with `ki-checker-dependencies:`.
 
 The module identifier has no extension and resolves to exactly one provider payload in `scripts/lib/`: either `scripts/lib/<module>.ts` or a self-contained `scripts/lib/<module>/` directory.
 
@@ -32,7 +32,7 @@ A dependent imports only its local copied module.
 
 Checker modules may use builtins and other files in their own copied local closure, but never a sibling skill path.
 
-Checker-module declarations do not add a `depends-on:` edge, select a skill for governance coverage, or alter composition order.
+Checker-module declarations do not add a `ki-depends-on:` edge, select a skill for governance coverage, or alter composition order.
 
 ## Consequences
 

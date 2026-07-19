@@ -86,7 +86,7 @@ export const frontmatterLine = (block: string, key: string): string | null => {
 }
 
 export const insertFrontmatterLine = (block: string, newLine: string): string => {
-  for (const anchorKey of ['depends-on', 'name']) {
+  for (const anchorKey of ['ki-depends-on', 'name']) {
     const anchor = frontmatterLine(block, anchorKey)
     if (anchor) return block.replace(anchor, `${anchor}\n${newLine}`)
   }

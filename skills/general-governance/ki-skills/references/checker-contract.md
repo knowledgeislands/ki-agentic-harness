@@ -137,7 +137,7 @@ The dependent supplies its domain rubric items, contexts, generated rubric publi
 
 The shared modules use builtins only, contain their complete declared dependency closure, and never import from another skill at runtime.
 
-A checker-module dependency supplies implementation only and does not create a `depends-on:` governance-coverage edge.
+A checker-module dependency supplies implementation only and does not create a `ki-depends-on:` governance-coverage edge.
 
 ## Relationship to rubric classification
 
