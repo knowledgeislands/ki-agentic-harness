@@ -23,10 +23,12 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, dirname, join, relative, resolve } from 'node:path'
 import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromItems } from './lib/checker-reporter.ts'
 import type { RubricFinding, RubricItem } from './lib/rubric/rubric.ts'
+import { COLLISION } from './rubrics/collision.ts'
 import { DESC } from './rubrics/description.ts'
 import { RUBRIC_ITEMS } from './rubrics/index.ts'
 import { LAYOUT } from './rubrics/layout.ts'
 import { LINKS } from './rubrics/link.ts'
+import { auditLongevity, CADENCE_DAYS, REFRESH_GRACE_DAYS } from './rubrics/longevity.ts'
 import { NAME } from './rubrics/name.ts'
 import { OPTIONAL } from './rubrics/optional.ts'
 import { REFERENCES } from './rubrics/references.ts'
@@ -47,8 +49,6 @@ const auditRubricItems = <Context>(items: readonly RubricItem<Context>[], contex
 const RUBRIC = 'references/rubric.md'
 
 // --- limits (from references/standards.md §16 — keep in sync) ----------------------
-const REFRESH_GRACE_DAYS = 14 // grace added once past a skill's declared cadence window before LONG-3 WARNs
-const CADENCE_DAYS: Record<string, number> = { weekly: 7, monthly: 30, quarterly: 90 } // 'on-change' = no clock; '<N>d' parsed inline
 const FOOTPRINT_REF_NOTE_TOKENS = 1500 // a single reference this large is a candidate to split — INFO hint only, never a cap
 
 // --- frontmatter parser ----------------------------------------------------
@@ -674,68 +674,10 @@ function lintSkill(skillDir: string): Finding[] {
   // (LONG-1 leaves runtime-resolved skills without one).
   const sourcesPath = join(skillDir, 'references', 'sources.md')
   if (existsSync(sourcesPath)) {
-    const info = computeRefreshStatus(readFileSync(sourcesPath, 'utf8'))
-    if (info.status === 'unmarked') {
-      warn('LONG-4', 'references/sources.md has no parseable `**Refresh:** <class> · <cadence>` marker near the top (LONG-4a)')
-    } else {
-      if (info.cls === 'external-spec' && info.cadence === 'on-change')
-        warn(
-          'LONG-4',
-          '`**Refresh:**` marks this external-spec but cadence is `on-change` — an external-spec tracker needs a clock cadence (LONG-4b)'
-        )
-      if (info.status === 'overdue')
-        warn(
-          'LONG-3',
-          info.lastReviewed
-            ? `references/sources.md last reviewed ${info.lastReviewed} (${info.ageDays} days ago), past its ${info.cadence} REFRESH cadence + ${REFRESH_GRACE_DAYS}d grace — run Mode REFRESH`
-            : `references/sources.md declares a ${info.cadence} cadence but has no \`Last reviewed\` date — run Mode REFRESH`
-        )
-    }
+    for (const finding of auditLongevity(readFileSync(sourcesPath, 'utf8'))) warn(finding.code, finding.message)
   }
 
   return f
-}
-
-// --- cross-skill collision (COLL-1 mechanical) -----------------------------
-// A description's "triggers" are its quoted phrases. Two skills declaring the
-// SAME trigger compete at selection time — WARN (an off-ramp in the prose, which
-// the model judges per COLL-2, can make it acceptable, so never FAIL). Only runs
-// when >= 2 skills are in scope; point the linter at the repo to get the set.
-function triggerPhrases(desc: string): string[] {
-  const out = new Set<string>()
-  const re = /"([^"]{2,})"/g
-  let m: RegExpExecArray | null
-  // biome-ignore lint/suspicious/noAssignInExpressions: standard regex-exec loop
-  while ((m = re.exec(desc)) !== null) {
-    const t = (m[1] as string).toLowerCase().replace(/\s+/g, ' ').trim()
-    if (t) out.add(t)
-  }
-  return [...out]
-}
-
-function collisionFindings(dirs: string[]): Finding[] {
-  if (dirs.length < 2) return []
-  const byPhrase = new Map<string, Set<string>>()
-  for (const dir of dirs) {
-    const skillMd = join(dir, 'SKILL.md')
-    if (!existsSync(skillMd)) continue
-    const desc = parseFrontmatter(readFileSync(skillMd, 'utf8')).keys.get('description') ?? ''
-    for (const phrase of triggerPhrases(desc)) {
-      if (!byPhrase.has(phrase)) byPhrase.set(phrase, new Set())
-      byPhrase.get(phrase)?.add(basename(dir))
-    }
-  }
-  const out: Finding[] = []
-  for (const [phrase, skills] of byPhrase) {
-    if (skills.size > 1)
-      out.push({
-        severity: 'warn',
-        criterion: 'COLL-1',
-        message: `trigger "${phrase}" is shared by ${[...skills].sort().join(', ')} — confirm each names the other as an off-ramp (COLL-2)`,
-        ref: RUBRIC
-      })
-  }
-  return out.sort((a, b) => a.message.localeCompare(b.message))
 }
 
 // SHAPE-16 collision leg: `owns:` is exclusive — two skills both claiming `owns:`
@@ -808,8 +750,15 @@ for (const dir of skillDirs) {
 }
 
 // cross-skill pass: collision between sibling descriptions (COLL-1)
-const collisions = [...collisionFindings(skillDirs), ...ownsCollisions(skillDirs)]
-for (const x of collisions) all.push({ type: 'M', level: 'WARN', code: x.criterion, message: x.message, ref: x.ref ?? RUBRIC })
+const collisionTargets = skillDirs
+  .filter((dir) => existsSync(join(dir, 'SKILL.md')))
+  .map((dir) => ({
+    name: basename(dir),
+    description: parseFrontmatter(readFileSync(join(dir, 'SKILL.md'), 'utf8')).keys.get('description') ?? ''
+  }))
+all.push(...auditRubricItems(COLLISION, { targets: collisionTargets }).map((finding) => ({ ...finding, ref: RUBRIC })))
+for (const finding of ownsCollisions(skillDirs))
+  all.push({ type: 'M', level: 'WARN', code: finding.criterion, message: finding.message, ref: finding.ref ?? RUBRIC })
 
 // per-skill footprint (SIZE-5) — opt-in, INFO only, never affects the fail/warn tally or exit code
 if (footprintOut) {
