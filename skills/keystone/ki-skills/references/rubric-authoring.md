@@ -488,7 +488,7 @@ At minimum, a structured rubric proves:
 
 ## Review boundary
 
-The root exemplar refactor changes only `skills/general-governance/ki-skills/`.
+The root exemplar refactor changes only `skills/keystone/ki-skills/`.
 
 It includes the shared rubric, checker, and reporter modules, the `ki-skills` domain catalogue and contexts, its command wrappers, its generated rubric publication, and its focused tests.
 

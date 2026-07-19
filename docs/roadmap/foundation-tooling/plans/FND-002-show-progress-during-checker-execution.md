@@ -25,7 +25,7 @@ The checker contract separates result collection from final reporting, but it do
 
 ## Files touched
 
-- `skills/general-governance/ki-skills/scripts/lib/{checker,reporter}.ts`
+- `skills/keystone/ki-skills/scripts/lib/{checker,reporter}.ts`
 - governance skill AUDIT and CONFORM entry points where progress callbacks are wired
 - `skills/keystone/ki-bootstrap/scripts/lib/repo-bootstrap.ts`
 - generated `.ki-meta/` aggregate and checker payloads

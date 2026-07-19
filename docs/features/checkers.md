@@ -12,7 +12,7 @@ Part of the Feature Definitions corpus; see [index.md](index.md).
 
 A checker MUST grade findings on the unified FAIL / WARN / FIXED / INFO / NOT_APPLICABLE / PASS ladder, emitting the subset its domain warrants. `FIXED` is valid only during CONFORM.
 
-_Verify:_ [checker-contract.md](../../skills/general-governance/ki-skills/references/checker-contract.md) and the shared checker tests enumerate and enforce the six levels.
+_Verify:_ [checker-contract.md](../../skills/keystone/ki-skills/references/checker-contract.md) and the shared checker tests enumerate and enforce the six levels.
 
 ### CHK-002 — Exit non-zero iff a FAIL exists
 

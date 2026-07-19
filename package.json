@@ -84,7 +84,7 @@
     "ki:skills:graph": "bun .ki-meta/bin/skill-graph.ts --tree",
     "ki:skills:help": "bun .ki-meta/bin/skill-help.ts",
     "ki:skills:link:global": "bun skills/repo-structure/ki-harness/scripts/link-global-skills.ts",
-    "ki:skills:refresh-status": "bun skills/general-governance/ki-skills/scripts/audit.ts skills --refresh-status",
+    "ki:skills:refresh-status": "bun skills/keystone/ki-skills/scripts/audit.ts skills --refresh-status",
     "ki:tokenomics:audit": "bun .ki-meta/bin/aggregate.ts audit --skill ki-tokenomics",
     "ki:tokenomics:conform": "bun .ki-meta/bin/aggregate.ts conform --skill ki-tokenomics",
     "prepare": "husky",

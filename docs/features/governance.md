@@ -56,7 +56,7 @@ _Verify:_ `ki-repo`'s `audit-repo.ts` `license` / `license-file` / `package-lice
 
 `ki-skills` MUST provide the canonical rubric, checker, and reporter modules from its own shipped files and MUST NOT declare a checker-module dependency on itself or another skill, per [ADR-KI-HARNESS-SKILLS-012](../decisions/ADR-KI-HARNESS-SKILLS-012-local-copies-for-checker-support.md).
 
-_Verify:_ `bun skills/general-governance/ki-skills/scripts/audit.ts skills/general-governance/ki-skills` passes KI-CHECKER-3, and the focused checker tests cover missing or invalid root-module declarations.
+_Verify:_ `bun skills/keystone/ki-skills/scripts/audit.ts skills/keystone/ki-skills` passes KI-CHECKER-3, and the focused checker tests cover missing or invalid root-module declarations.
 
 ### GOV-009 — Structured rubric orchestration
 
