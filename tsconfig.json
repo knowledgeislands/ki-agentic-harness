@@ -7,7 +7,7 @@
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "moduleDetection": "force",
-    "types": ["node"],
+    "types": ["node", "bun"],
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "noEmit": true,
