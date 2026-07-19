@@ -19,14 +19,6 @@ Canonical themes and active execution plans.
 - **Status:** open
 - **Blocks:** —
 
-### [GOV-003](governance-consistency/plans/GOV-003-define-element-level-mode-orchestration.md)
-
-- **Title:** Define element-level audit and conform orchestration
-- **Theme:** `governance-consistency`
-- **Roadmap item:** `governance-consistency/define-element-level-audit-and-conform-orchestration`
-- **Status:** open
-- **Blocks:** —
-
 ## Dependency graph
 
 ```text
