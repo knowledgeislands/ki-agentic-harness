@@ -16,7 +16,7 @@ Canonical themes and active execution plans.
 - **Title:** Establish a rubric-driven checker reference
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/establish-a-rubric-driven-checker-reference`
-- **Status:** open
+- **Status:** in-progress
 - **Blocks:** —
 
 ## Dependency graph
