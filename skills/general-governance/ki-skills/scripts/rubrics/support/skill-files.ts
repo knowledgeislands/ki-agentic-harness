@@ -1,9 +1,10 @@
-import { existsSync, readdirSync } from 'node:fs'
+import { existsSync, readdirSync, statSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
 
 export const discoverSkillDirs = (path: string): string[] => {
   const absolutePath = resolve(path)
   if (!existsSync(absolutePath)) return []
+  if (!statSync(absolutePath).isDirectory()) return []
   if (existsSync(join(absolutePath, 'SKILL.md'))) return [absolutePath]
 
   const root =

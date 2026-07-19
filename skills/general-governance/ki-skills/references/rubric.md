@@ -17,7 +17,7 @@ Checker output follows the canonical checker reporter and exit-code contract in 
 - [BODY — Body content quality](#body--body-content-quality)
 - [SCRIPT — Scripts & executable code](#script--scripts--executable-code)
 - [KI-CHECKER — Knowledge Islands checker contract](#ki-checker--knowledge-islands-checker-contract)
-- [LINK — Linking & portability](#link--linking--portability)
+- [KI-LINK — Knowledge Islands linking & portability](#ki-link--knowledge-islands-linking--portability)
 - [KI-SHAPE — Knowledge Islands skill shape](#ki-shape--knowledge-islands-skill-shape)
 - [KI-INVOKE — Invocation protocol](#ki-invoke--invocation-protocol)
 - [PROC — Process / meta](#proc--process--meta)
@@ -126,14 +126,14 @@ Checker output follows the canonical checker reporter and exit-code contract in 
 - **KI-CHECKER-2 [M]** A skill's `scripts/**/*.ts` files contain no static `from`, dynamic `import()`, or CommonJS `require()` relative import that resolves outside that skill's own `scripts/` directory. `ki-bootstrap` vendors a skill's mechanical unit as a standalone payload into every governed repo's `.ki-meta/checkers/<skill>/` ([ADR-KI-HARNESS-006](../../../../docs/decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)); no sibling skill directory or other source file is implicitly available. The payload may only import files packaged within its own `scripts/` directory. (KI)
 - **KI-CHECKER-3 [M]** `ki-skills` is the self-governing checker-contract root: it declares `checker-modules: [checker-reporter]`, ships `scripts/lib/checker-reporter.ts`, and declares no `checker-dependencies:` entry. Its canonical checker reporter therefore runs from its own shipped files without a dependency on itself or another skill. Other skills may declare only offered checker modules, which bootstrap copies from the provider's `scripts/lib/` into their local `scripts/vendored/<provider>/` namespace; that declaration is implementation packaging, not `depends-on:` or composition. (ADR-KI-HARNESS-SKILLS-012)
 
-## LINK — Linking & portability
+## KI-LINK — Knowledge Islands linking & portability
 
-→ [standard §10](standards.md#10-linking--portability)
+→ [standard §10](standards.md#10-knowledge-islands-linking--portability)
 
-- **LINK-1 [M]** Internal links are **standard relative markdown links**, not wikilinks. (ki-agentic-harness README)
-- **LINK-2 [M]** Links resolve — every relative target exists (angle-bracket form for paths with spaces). (ki-agentic-harness README)
-- **LINK-3 [J]** Other skills are referenced by `name`, never by file path. (ki-agentic-harness README)
-- **LINK-4 [J]** The house toolchain passes: Biome (TS/JSON), Prettier + markdownlint-cli2 (markdown). (ki-agentic-harness README)
+- **KI-LINK-1 [M]** Internal links are **standard relative markdown links**, not wikilinks. (ki-agentic-harness README)
+- **KI-LINK-2 [M]** Links resolve — every relative target exists (angle-bracket form for paths with spaces). (ki-agentic-harness README)
+- **KI-LINK-3 [J]** Other skills are referenced by `name`, never by file path. (ki-agentic-harness README)
+- **KI-LINK-4 [J]** The house toolchain passes: Biome (TS/JSON), Prettier + markdownlint-cli2 (markdown). (ki-agentic-harness README)
 
 ## KI-SHAPE — Knowledge Islands skill shape
 

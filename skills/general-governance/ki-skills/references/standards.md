@@ -15,7 +15,7 @@ A skill is a directory with a `SKILL.md` (YAML frontmatter + markdown body) per 
 7. [Progressive disclosure](#7-progressive-disclosure)
 8. [Body content quality](#8-body-content-quality)
 9. [Scripts](#9-scripts)
-10. [Linking & portability](#10-linking--portability)
+10. [Knowledge Islands linking & portability](#10-knowledge-islands-linking--portability)
 11. [Knowledge Islands skill shape](#11-knowledge-islands-skill-shape)
 12. [Process / evaluation](#12-process--evaluation)
 13. [Cross-skill collision](#13-cross-skill-collision)
@@ -70,7 +70,7 @@ Match **degrees of freedom to task fragility**: prose + judgment for open-ended 
 
 Scripts solve problems rather than punt back to Claude — they handle expected errors (missing file, permissions) explicitly. Every config value is justified in a comment (no unexplained magic numbers). Required packages are listed and verified for the target runtime (the Claude API has no network/runtime install); when a skill invokes MCP tools, use fully-qualified `ServerName:tool_name` names so Claude can locate the tool when multiple MCP servers are loaded. Deterministic, frequently-reused logic is pre-written as a script rather than regenerated each run. Validation scripts are verbose — error messages name the problem and the valid options. For batch/destructive operations, follow plan-validate-execute: produce a verifiable intermediate artifact, validate it, then act. When adding a regex- or text-based mechanical check, run it against the checker's own test files before considering it complete: adversarial fixture strings often resemble real violations, so the scan must target the production files the rule actually governs (for example, exclude `*.test.ts` when tests are not vendored) rather than matching fixture data as source. (BP, COMMUNITY, KI)
 
-## 10. Linking & portability
+## 10. Knowledge Islands linking & portability
 
 These are Knowledge Islands house rules so a skill survives relocation and symlinking. Internal links are **standard relative markdown links, not Obsidian wikilinks**, and every relative target resolves on disk (use the CommonMark angle-bracket form for paths with spaces). Reference **another skill by its `name`** ("the `ki-kb` skill"), never by file path — a skill's on-disk location is not stable. The house toolchain passes: Biome (TS/JSON), Prettier + markdownlint-cli2 (markdown). (ki-agentic-harness README)
 

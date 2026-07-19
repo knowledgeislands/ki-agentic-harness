@@ -3,9 +3,9 @@ import { COLLISION } from './collision.ts'
 import { DESC } from './description.ts'
 import { KI_CHECKER } from './ki-checker.ts'
 import { KI_INVOKE } from './ki-invoke.ts'
+import { KI_LINK } from './ki-link.ts'
 import { KI_SHAPE } from './ki-shape.ts'
 import { LAYOUT } from './layout.ts'
-import { LINKS } from './link.ts'
 import { LONGEVITY } from './longevity.ts'
 import { NAME } from './name.ts'
 import { OPTIONAL } from './optional.ts'
@@ -23,7 +23,7 @@ export const RUBRIC_FAMILIES = [
   BODY,
   SCRIPTS,
   KI_CHECKER,
-  LINKS,
+  KI_LINK,
   LAYOUT,
   KI_SHAPE,
   KI_INVOKE,

@@ -31,7 +31,7 @@
  *     rewritten to forward slashes, across every .md file in the skill.
  *
  * Deliberately NEVER touches (judgment -> manual TODOs): DESC-1/2/3, KI-SHAPE-13
- * (mode-heading structure), SIZE-1/2, LINK-2, KI-SHAPE-2/7/8/9, REF-3, COLL-1,
+ * (mode-heading structure), SIZE-1/2, KI-LINK-2, KI-SHAPE-2/7/8/9, REF-3, COLL-1,
  * LONG-3/4.
  *
  * Zero npm dependencies (bun + node stdlib only). Exit code is non-zero only

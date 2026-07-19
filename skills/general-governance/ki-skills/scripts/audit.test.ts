@@ -78,6 +78,56 @@ function hasMechanicalFinding(output: string, code: string): boolean {
 
 const withReporter = "import { emitCheckerReporter } from './lib/checker-reporter.ts'\nemitCheckerReporter({})\n"
 
+// ── LAY-1 / LAY-2 / LAY-3: direct-target and support-directory layout ──────
+{
+  const base = mkdtempSync(join(tmpdir(), 'ki-skills-test-'))
+  const dir = join(base, 'missing-skill')
+  mkdirSync(dir)
+  try {
+    const result = runResult(dir)
+    check('missing direct skill directory → LAY-1 fail', result.status !== 0 && hasMechanicalFinding(result.output, 'LAY-1'))
+    check('missing direct skill directory → names missing SKILL.md', result.output.includes('SKILL.md is missing at the skill root'))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
+
+{
+  const base = mkdtempSync(join(tmpdir(), 'ki-skills-test-'))
+  const markdown = join(base, 'standalone.md')
+  writeFileSync(markdown, '# Not a skill\n')
+  try {
+    const result = runResult(markdown)
+    check('standalone Markdown target → LAY-2 fail', result.status !== 0 && hasMechanicalFinding(result.output, 'LAY-2'))
+    check('standalone Markdown target → not generic no-skills LAY-1', !hasMechanicalFinding(result.output, 'LAY-1'))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
+
+{
+  const { base, dir } = fixture('ki-fixture-layout-clean', withReporter)
+  try {
+    const out = run(dir)
+    check('standard skill directory → no LAY-1/2/3 findings', !['LAY-1', 'LAY-2', 'LAY-3'].some((code) => hasMechanicalFinding(out, code)))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
+
+{
+  const { base, dir } = fixture('ki-fixture-extra-support', withReporter)
+  mkdirSync(join(dir, 'examples'))
+  writeFileSync(join(dir, 'notes.txt'), 'Arbitrary root files are allowed.\n')
+  try {
+    const out = run(dir)
+    check('non-standard support directory → LAY-3 fail', hasMechanicalFinding(out, 'LAY-3'))
+    check('arbitrary root file → does not add a second LAY-3 finding', out.match(/"code":"LAY-3"/g)?.length === 1)
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
+
 // ── KI-CHECKER-3: ki-skills owns the contract without a self-dependency ──────
 {
   const result = runResult(SKILL_ROOT)

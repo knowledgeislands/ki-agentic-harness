@@ -19,17 +19,17 @@
 // With >= 2 skills in scope it also runs a cross-skill collision pass (COLL-1):
 // two descriptions declaring the same quoted trigger phrase are WARNed.
 
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
-import { basename, dirname, join, relative, resolve } from 'node:path'
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { basename, dirname, extname, join, relative, resolve } from 'node:path'
 import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromItems } from './lib/checker-reporter.ts'
 import type { RubricFinding, RubricItem } from './lib/rubric/rubric.ts'
 import { COLLISION } from './rubrics/collision.ts'
 import { DESC } from './rubrics/description.ts'
 import { RUBRIC_ITEMS } from './rubrics/index.ts'
 import { KI_CHECKER } from './rubrics/ki-checker.ts'
+import { KI_LINK } from './rubrics/ki-link.ts'
 import { KI_SHAPE, type KiShapeSkillContext } from './rubrics/ki-shape.ts'
 import { LAYOUT } from './rubrics/layout.ts'
-import { LINKS } from './rubrics/link.ts'
 import { LONGEVITY, REFRESH_GRACE_DAYS } from './rubrics/longevity.ts'
 import { NAME } from './rubrics/name.ts'
 import { OPTIONAL } from './rubrics/optional.ts'
@@ -238,11 +238,19 @@ function lintSkill(skillDir: string): Finding[] {
 
   const skillMd = join(skillDir, 'SKILL.md')
   if (!existsSync(skillMd)) {
-    fail('LAY-1', 'SKILL.md is missing')
+    for (const finding of auditRubricItems(LAYOUT, { missingSkillRoot: true })) fail(finding.code, finding.message)
     return f
   }
   const content = readFileSync(skillMd, 'utf8')
   const dirName = basename(skillDir)
+
+  const supportDirectories = readdirSync(skillDir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+  for (const finding of auditRubricItems(LAYOUT, { supportDirectories })) {
+    if (finding.level === 'FAIL') fail(finding.code, finding.message)
+    else warn(finding.code, finding.message)
+  }
 
   // --- frontmatter ---
   const fm = parseFrontmatter(content)
@@ -311,7 +319,7 @@ function lintSkill(skillDir: string): Finding[] {
     else warn(finding.code, finding.message)
   }
 
-  // --- per-file checks across all markdown (LAY-4, LINK-1, LINK-2, REF-3) ---
+  // --- per-file checks across all markdown (LAY-4, KI-LINK-1, KI-LINK-2, REF-3) ---
   for (const file of listMarkdownFiles(skillDir)) {
     const md = readFileSync(file, 'utf8')
     const text = stripCode(md) // exclude code blocks/spans from text-pattern checks
@@ -325,7 +333,7 @@ function lintSkill(skillDir: string): Finding[] {
       if (finding.level === 'FAIL') fail(finding.code, finding.message, rel)
       else warn(finding.code, finding.message, rel)
     }
-    for (const finding of auditRubricItems(LINKS, markdownContext)) {
+    for (const finding of auditRubricItems(KI_LINK, markdownContext)) {
       if (finding.level === 'FAIL') fail(finding.code, finding.message, rel)
       else warn(finding.code, finding.message, rel)
     }
@@ -374,6 +382,16 @@ const createOwnershipCollisions = (dirs: string[]): { file: string; skills: stri
 const rawArgv = process.argv.slice(2)
 const roots = rawArgv.filter((arg) => !arg.startsWith('-'))
 const skillDirs = [...new Set((roots.length ? roots : ['.']).flatMap(discoverSkillDirs))].sort()
+const directTargetLayoutFindings = roots.flatMap((root) => {
+  const target = resolve(root)
+  if (!existsSync(target)) return []
+  const stat = statSync(target)
+  const discovered = discoverSkillDirs(target)
+  return auditRubricItems(LAYOUT, {
+    missingSkillRoot: stat.isDirectory() && discovered.length === 0 && !existsSync(join(target, 'SKILL.md')),
+    standaloneMarkdownFile: stat.isFile() && extname(target).toLowerCase() === '.md'
+  })
+})
 const footprintOut = rawArgv.includes('--footprint') // SIZE-5: per-skill token footprint as INFO (Mode OPTIMISE)
 const refreshStatusOut = rawArgv.includes('--refresh-status') // per-skill refresh cadence status as INFO (LONG-3/§5; the REFRESH gate reads this)
 const reportTarget = resolve('.')
@@ -385,13 +403,18 @@ function judgmentFindings(): RubricFinding[] {
 
 if (skillDirs.length === 0) {
   const findings: RubricFinding[] = [
-    {
-      type: 'M',
-      level: 'FAIL',
-      code: 'LAY-1',
-      message: 'No skills were found below the requested target.',
-      ref: RUBRIC
-    },
+    ...directTargetLayoutFindings.map((finding) => ({ ...finding, ref: RUBRIC })),
+    ...(directTargetLayoutFindings.length === 0
+      ? [
+          {
+            type: 'M' as const,
+            level: 'FAIL' as const,
+            code: 'LAY-1',
+            message: 'No skills were found below the requested target.',
+            ref: RUBRIC
+          }
+        ]
+      : []),
     ...judgmentFindings()
   ]
   emitCheckerReporter({ mode: 'audit', concern: 'skills', target: reportTarget, findings })
