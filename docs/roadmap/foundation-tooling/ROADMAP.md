@@ -14,7 +14,7 @@ Make long-running individual and aggregate AUDIT / CONFORM runs visibly advance 
 
 ### Simplify the `ki-bootstrap` private implementation
 
-Analyse and refactor the private `ki-bootstrap` implementation now that user installation and repository bootstrap have separate internal roots. Make ownership, orchestration, resolution, generation, publication, and transaction boundaries comprehensible; remove only proven duplication or dead code; and extract the minimum self-contained shared bootstrap capability needed by repository-local EDUCATE entrypoints. Preserve the public install/bootstrap behaviour and existing safety guarantees rather than redesigning the lifecycle during the structural cleanup.
+Analyse and refactor the private `ki-bootstrap` implementation now that user installation and repository bootstrap have separate internal roots. Make ownership, orchestration, resolution, generation, publication, and transaction boundaries comprehensible; remove only proven duplication or dead code; and retain one durable repository-local bootstrap engine and source catalogue so normal whole-set and per-skill EDUCATE execution is mechanical and offline. Keep `/harness/bootstrap` as the explicit acquisition route, never an implicit fallback, and preserve the existing publication safety guarantees.
 
 ### Add a safe repository clean operation
 
