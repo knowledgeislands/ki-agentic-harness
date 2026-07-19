@@ -26,25 +26,15 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
 import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromItems } from './lib/checker-reporter.ts'
-import { auditRubricItems, conformRubricItems, type ConformAction, type RubricFinding } from './lib/rubric/rubric.ts'
+import { auditRubricItems, conformRubricItems, findingsFromConformActions, type ConformAction, type RubricFinding } from './lib/rubric/rubric.ts'
 import { RUBRIC_ITEMS } from './rubric/items/index.ts'
 import { FRONTMATTER } from './rubric/items/frontmatter.ts'
 import { KI_SHAPE } from './rubric/items/ki-shape.ts'
 import { LAYOUT } from './rubric/items/layout.ts'
 import { NAME } from './rubric/items/name.ts'
-import { createKiShapeContext, type KiSkillsConformContext } from './rubric/contexts/contexts.ts'
+import { createKiShapeContext, createKiShapeFrontmatterEvidence, type KiSkillsConformContext } from './rubric/contexts/contexts.ts'
 import { frontmatterLine, insertFrontmatterLine, parseFrontmatter, replaceFrontmatterScalar } from './rubric/contexts/frontmatter.ts'
 import { discoverSkillDirs, listMarkdownFiles } from './rubric/contexts/skill-files.ts'
-import { hintVerbs, isProcessSkill } from './rubric/contexts/modes.ts'
-
-const findingsFromConformActions = <Context>(actions: readonly ConformAction<Context>[]): RubricFinding[] =>
-  actions.map((action) => ({
-    type: 'M',
-    level: action.level ?? 'POLISH',
-    code: action.item.code,
-    message: action.message,
-    subject: action.subject
-  }))
 
 // Each action records a typed domain finding. The canonical reporter owns transport;
 // the bootstrap aggregate is the only terminal renderer.
@@ -53,18 +43,6 @@ const findings: RubricFinding[] = []
 const recordActions = <Context>(actions: readonly ConformAction<Context>[]): boolean => {
   findings.push(...findingsFromConformActions(actions))
   return actions.some((action) => action.level !== 'ADVISORY')
-}
-
-const conformSkillEvidence = (block: string, stableEvidence: { governanceSkill: boolean; scriptNames: string[] }) => {
-  const frontmatter = parseFrontmatter(`---\n${block}\n---`)
-  const argumentHint = frontmatter.keys.get('argument-hint')
-  return {
-    ...stableEvidence,
-    argumentHint,
-    hintVerbs: hintVerbs(argumentHint ?? ''),
-    vendorsPresent: frontmatter.present.has('vendors'),
-    vendors: frontmatter.keys.get('vendors')?.trim() ?? ''
-  }
 }
 
 // --- one skill ---------------------------------------------------------------
@@ -85,12 +63,8 @@ const conformSkill = (dir: string, dryRun: boolean): void => {
 
   let workingBlock = block
   let fixedAny = false
-  const process = isProcessSkill(content)
   const scriptsDir = join(dir, 'scripts')
-  const stableEvidence = {
-    governanceSkill: !process,
-    scriptNames: existsSync(scriptsDir) ? readdirSync(scriptsDir) : []
-  }
+  const scriptNames = existsSync(scriptsDir) ? readdirSync(scriptsDir) : []
 
   const createContext = (): KiSkillsConformContext => {
     const currentFrontmatter = parseFrontmatter(`---\n${workingBlock}\n---`)
@@ -104,7 +78,11 @@ const conformSkill = (dir: string, dryRun: boolean): void => {
         }
       },
       shape: createKiShapeContext({
-        skill: conformSkillEvidence(workingBlock, stableEvidence),
+        skill: createKiShapeFrontmatterEvidence({
+          frontmatter: currentFrontmatter,
+          description: currentFrontmatter.keys.get('description') ?? '',
+          scriptNames
+        }),
         setArgumentHint: (argumentHint) => {
           workingBlock = replaceFrontmatterScalar(workingBlock, 'argument-hint', argumentHint)
         },
