@@ -18,7 +18,7 @@ It owns the canonical checker reporter and its executable modules, self-governs 
 
 Checker modules are a narrow packaging relationship, declared separately from `ki-depends-on:`.
 
-A provider declares the modules it offers with `checker-modules:`.
+A provider declares the modules it offers with `ki-checker-modules:`.
 
 A dependent declares the exact `provider:module` references it needs with `ki-checker-dependencies:`.
 

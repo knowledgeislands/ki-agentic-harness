@@ -91,7 +91,7 @@ references/
 
 Top-level non-test files in `scripts/` are callable commands.
 
-Private reusable implementation lives in `scripts/internal/`. Only modules explicitly published through `checker-modules` live in `scripts/shared/` and form a cross-skill contract for checkers.
+Private reusable implementation lives in `scripts/internal/`. Only modules explicitly published through `ki-checker-modules` live in `scripts/shared/` and form a cross-skill contract for checkers.
 
 Another skill receives a declared module below `scripts/vendored/<provider>/` and imports only that local copy. `ki-skills` is an exception to this as it already owns the shared rubric, checker, and reporter modules under `scripts/shared/`.
 
@@ -101,7 +101,7 @@ The target shared modules are `scripts/shared/rubric.ts`, `scripts/shared/checke
 
 Each is one self-contained vendorable file with an adjacent source test; ordinary source-code modularity does not justify making a consumer copy an internal module tree.
 
-`ki-skills` publishes them as `checker-modules: [rubric, checker, reporter]`.
+`ki-skills` publishes them as `ki-checker-modules: [rubric, checker, reporter]`.
 
 A dependent governance skill declares `ki-checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]`; relative imports between those modules remain inside the copied `scripts/vendored/ki-skills/` namespace.
 

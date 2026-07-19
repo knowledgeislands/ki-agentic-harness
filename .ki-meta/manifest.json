@@ -1,5 +1,5 @@
 {
-  "ref": "6aea66bdb0345bd6fd1bb88d7a4b435153588a0e",
+  "ref": "227aeef331b977174c2a61900d5edc3992f509c7",
   "files": {
     ".ki-meta/checkers/ki-agents/scripts/audit.ts": "4ba2c172f0c3f63fe0156eb98331c25bd579ec1d97176e47461ad4fa4e3f4614",
     ".ki-meta/checkers/ki-agents/scripts/conform.ts": "6733480578b008128fac702b8b979fadaa5609058c8cb1f59e66089a5c9b1278",
@@ -231,7 +231,7 @@
     ".ki-meta/checkers/ki-skills/scripts/rubric/contexts/modes.ts": "6206f27a34d8a390b3055139b06df470249d57c2f9506685696b17d30d91126a",
     ".ki-meta/checkers/ki-skills/scripts/rubric/contexts/scripts.ts": "1e844b03da3ab9db8c414c264d256e52b794e7bbd13cc0ff49d4e88648774e79",
     ".ki-meta/checkers/ki-skills/scripts/rubric/contexts/skill-files.ts": "3eafed61eed1a00c5dc4f04d53827e4504c5efaa19070a899fd07a10d9ccb610",
-    ".ki-meta/checkers/ki-skills/scripts/rubric/contexts/skill.ts": "725311483d704c559b93f867545f384737d6ba040ba1a4cab0d7d75ac87686ba",
+    ".ki-meta/checkers/ki-skills/scripts/rubric/contexts/skill.ts": "bbf2e7624c123e030b1d553f9b15698d95d65b7bfc62299e46c2d503e32a830b",
     ".ki-meta/checkers/ki-skills/scripts/rubric/contexts/subjects.ts": "b41fbafe182e5fb433ffe51f348efbce30e73148403226f8739b181d2fa175bd",
     ".ki-meta/checkers/ki-skills/scripts/rubric/contexts/text.ts": "3d91525bf270cee398e0afe309054c5e9659934aaf1f72ebf67fca5ad32cbddb",
     ".ki-meta/checkers/ki-skills/scripts/rubric/items/body.ts": "fa2f478fff90f66a110c20786488956d1004515abe4e3a4b6c11869310f5cb7f",
@@ -239,7 +239,7 @@
     ".ki-meta/checkers/ki-skills/scripts/rubric/items/description.ts": "71aa5a8f858d5f6928a03eadaf3a737e9e3de3a408b4254b3d7795bb674ed13d",
     ".ki-meta/checkers/ki-skills/scripts/rubric/items/frontmatter.ts": "567c388e47bf0edb09e0e90ef74f44cdbba749ed2f76dbed9114a481baf48a9c",
     ".ki-meta/checkers/ki-skills/scripts/rubric/items/index.ts": "d31a4e86e4779f7c1de098f01db8bdade825f2863860e5241fa7ba38c499409b",
-    ".ki-meta/checkers/ki-skills/scripts/rubric/items/ki-checker.ts": "9a3b63362889d547efa4c812b2b3817bcb69bd9b694724c444386f60f772e0f7",
+    ".ki-meta/checkers/ki-skills/scripts/rubric/items/ki-checker.ts": "68f5c94b0037ff49d48ebc2aeff617e7be290daf07fdc39283401f51454bb6db",
     ".ki-meta/checkers/ki-skills/scripts/rubric/items/ki-invoke.ts": "809c1eed9d52bce6a9cadd176dec31bde0b08acbdb217bc44cea2d4a9121534b",
     ".ki-meta/checkers/ki-skills/scripts/rubric/items/ki-link.ts": "1214baea68994aba0c7e5cbb9d85293b90217a6c668b05a7212c8705f5f78273",
     ".ki-meta/checkers/ki-skills/scripts/rubric/items/ki-shape.ts": "2635abade3eab466a501a97205ca47f3616c9c16c23b2a1682927c54c2bbd128",
@@ -253,7 +253,7 @@
     ".ki-meta/checkers/ki-skills/scripts/rubric/items/size.ts": "47c13f20ba917dabad8d9119bf33725133c437bed310b0d79637175714266c55",
     ".ki-meta/checkers/ki-skills/scripts/rubric/publish.test.ts": "b7757b6f34255c7a90486bd51d531d83fcf27d07aca43128f878800523017d11",
     ".ki-meta/checkers/ki-skills/scripts/rubric/publish.ts": "ff7a2e4a540ca2d196aa800214bcbf29063eab94c677ce45e04d18f3cee3ad2a",
-    ".ki-meta/checkers/ki-skills/references/rubric.md": "8e43d057d17cb1a026d0073b5651fb005d7c2ff6ed7ae5ddc28a0dc40869c0ed",
+    ".ki-meta/checkers/ki-skills/references/rubric.md": "de51ca1c8e919e42c15513a5b14b1205b97257a079aebd793ba228c4e0770fd2",
     ".ki-meta/checkers/ki-skills/scripts/shared/rubric.ts": "866be831e218e647e9e6b36aa0fd9655b023a6b2b343a3535d55e05dd793cee6",
     ".ki-meta/checkers/ki-skills/scripts/shared/checker.ts": "ac28ee56730e291030a988ffc1dfcf32fa54dce0ac9972f3b46364aa2a9d4bad",
     ".ki-meta/checkers/ki-skills/scripts/shared/reporter.ts": "734cce4c4a5c0c5454e71fd2479ce0835f0a540be6337ac446fbba81c333c40f",

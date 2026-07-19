@@ -498,7 +498,7 @@ function clean(env: Fixture): void {
 {
   const entrypoint = readFileSync(ENTRYPOINT, 'utf8')
   check('remote entry point fetches the selected GitHub ref', entrypoint.includes('codeload.github.com/$REPO/tar.gz/$ref'))
-  check('user entry point invokes the user-install implementation', entrypoint.includes('lib/user-install.ts'))
+  check('user entry point invokes the user-install implementation', entrypoint.includes('internal/user-install.ts'))
   check(
     'user entry point never mentions Claude settings or repository bootstrap',
     !entrypoint.includes('settings.json') && !entrypoint.includes('repo-bootstrap')

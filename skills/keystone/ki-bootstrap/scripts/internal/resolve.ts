@@ -220,7 +220,7 @@ function parseCheckerModule(value: string, field: string, skill: string): Checke
 // requirements. This is deliberately independent of `ki-depends-on:`: support modules are
 // copied implementation, never a governance-coverage or mode-composition edge.
 export function checkerModulesOf(skill: string): string[] {
-  return flowListFrontmatter(skill, 'checker-modules')
+  return flowListFrontmatter(skill, 'ki-checker-modules')
 }
 
 export function checkerDependenciesOf(skill: string): CheckerModule[] {

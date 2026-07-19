@@ -271,7 +271,7 @@ export const createSkillRubricContext = (directory: string, capabilities: SkillW
         checker: {
           imports,
           rootSkill: name === 'ki-skills',
-          checkerModules: frontmatterList(frontmatter.keys.get('checker-modules')),
+          checkerModules: frontmatterList(frontmatter.keys.get('ki-checker-modules')),
           checkerDependencies: frontmatterList(frontmatter.keys.get('ki-checker-dependencies')),
           legacyLibPresent: existsSync(join(scriptsDirectory, 'lib')),
           sharedModules: existsSync(sharedDirectory)
