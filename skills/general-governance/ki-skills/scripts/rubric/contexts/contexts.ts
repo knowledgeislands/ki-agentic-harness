@@ -1,6 +1,6 @@
 import type { FootprintRow } from './footprint.ts'
 import type { ParsedFrontmatter } from './frontmatter.ts'
-import type { RefreshContext } from './longevity.ts'
+import { createRefreshContext, type RefreshContext } from './longevity.ts'
 import { hintVerbs, isProcessSkill } from './modes.ts'
 
 export type DescriptionRubricContext = {
@@ -67,7 +67,8 @@ export type KiCheckerRubricContext = {
   rootSkill: boolean
   checkerModules: readonly string[]
   checkerDependencies: readonly string[]
-  reporterModuleExists: boolean
+  rubricModuleExists: boolean
+  checkerModuleExists: boolean
 }
 
 type CollisionTarget = {
@@ -81,7 +82,7 @@ export type LongevityRubricContext = RefreshContext & { reportStatus?: boolean }
 
 type CheckerContract = {
   name: string
-  usesReporter: boolean
+  usesCanonicalChecker: boolean
 }
 
 type OwnershipCollision = {
@@ -193,27 +194,52 @@ export const createKiShapeContext = ({
   setVendors
 })
 
-/** Evidence assembled by `audit.ts` for one valid skill. */
-export type KiSkillsAuditContext = {
-  skillLayout: LayoutRubricContext
+/** Complete root context from which each rubric family selects its focused evidence. */
+export type KiSkillsRubricContext = {
+  layout: LayoutRubricContext
   frontmatter: FrontmatterRubricContext
   name: NameRubricContext
   description: DescriptionRubricContext
   optional: OptionalRubricContext
-  checker: KiCheckerRubricContext
-  shape: KiShapeRubricContext
   size: SizeRubricContext
-}
-
-/** Evidence assembled for one Markdown file during audit. */
-export type KiSkillsMarkdownAuditContext = {
-  layout: LayoutRubricContext
+  references: ReferencesRubricContext
+  checker: KiCheckerRubricContext
   link: KiLinkRubricContext
-  references?: ReferencesRubricContext
+  shape: KiShapeRubricContext
+  collision: CollisionRubricContext
+  longevity: LongevityRubricContext
 }
 
-/** Capabilities and current evidence assembled by `conform.ts` for one skill. */
-export type KiSkillsConformContext = {
-  name: NameRubricContext
-  shape: KiShapeRubricContext
-}
+/** Build one complete root context while keeping each family facet focused and required. */
+export const createKiSkillsRubricContext = (overrides: Partial<KiSkillsRubricContext> = {}): KiSkillsRubricContext => ({
+  layout: {},
+  frontmatter: { hasBlock: false, isMapping: false },
+  name: { name: undefined, directoryName: '' },
+  description: { description: undefined },
+  optional: {
+    compatibility: undefined,
+    metadataPresent: false,
+    metadata: undefined,
+    allowedToolsPresent: false,
+    allowedTools: undefined,
+    disallowedToolsPresent: false,
+    disallowedTools: undefined,
+    licensePresent: false,
+    license: undefined
+  },
+  size: {},
+  references: { lineCount: 0, content: '' },
+  checker: {
+    imports: [],
+    rootSkill: false,
+    checkerModules: [],
+    checkerDependencies: [],
+    rubricModuleExists: false,
+    checkerModuleExists: false
+  },
+  link: { markdown: '', relativeTargetExists: () => true },
+  shape: createKiShapeContext({ skill: null }),
+  collision: { targets: [] },
+  longevity: createRefreshContext(null),
+  ...overrides
+})

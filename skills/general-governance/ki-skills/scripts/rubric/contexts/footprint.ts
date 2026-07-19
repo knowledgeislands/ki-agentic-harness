@@ -13,7 +13,10 @@ const frontmatterDescription = (frontmatter: string | null): string => {
   if (!frontmatter) return ''
   try {
     const parsed = (globalThis as typeof globalThis & BunYamlRuntime).Bun.YAML.parse(frontmatter)
-    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) && typeof (parsed as Record<string, unknown>).description === 'string'
+    return parsed &&
+      typeof parsed === 'object' &&
+      !Array.isArray(parsed) &&
+      typeof (parsed as Record<string, unknown>).description === 'string'
       ? ((parsed as Record<string, unknown>).description as string)
       : ''
   } catch {

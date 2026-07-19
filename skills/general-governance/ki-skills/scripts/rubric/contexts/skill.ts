@@ -1,0 +1,230 @@
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { basename, dirname, join, relative, resolve } from 'node:path'
+import {
+  createKiShapeContext,
+  createKiShapeFrontmatterEvidence,
+  createKiSkillsRubricContext,
+  type KiShapeSkillContext,
+  type KiSkillsRubricContext
+} from './contexts.ts'
+import { estimateTokens } from './footprint.ts'
+import { type ParsedFrontmatter, parseFrontmatter } from './frontmatter.ts'
+import { listMarkdownFiles } from './skill-files.ts'
+import { stripCode } from './text.ts'
+
+export const frontmatterList = (value: string | undefined): string[] => {
+  if (!value) return []
+  const contents = value.trim().replace(/^\[/, '').replace(/\]$/, '')
+  if (!contents.trim()) return []
+  return contents
+    .split(',')
+    .map((entry) => entry.trim().replace(/^(?:"([\s\S]*)"|'([\s\S]*)')$/, '$1$2'))
+    .filter(Boolean)
+}
+
+export type SkillWritableCapabilities = {
+  readContent?: () => string
+  setName?: (name: string) => void
+  setArgumentHint?: (argumentHint: string) => void
+  setVendors?: (vendors: string) => void
+}
+
+export type SkillRubricContext = {
+  context: () => KiSkillsRubricContext
+  validFrontmatter: boolean
+}
+
+const relativeImportSpecifiers = (source: string): string[] =>
+  [...source.matchAll(/\b(?:from\s+|import\s*\(\s*|require\s*\(\s*)['"](\.\.?\/[^'"]+)['"]/g)].map((match) => match[1] as string)
+
+const listScriptFiles = (scriptsDirectory: string): string[] => {
+  if (!existsSync(scriptsDirectory)) return []
+  const scriptFiles: string[] = []
+  const walk = (path: string): void => {
+    for (const entry of readdirSync(path, { withFileTypes: true })) {
+      const entryPath = join(path, entry.name)
+      if (entry.isDirectory()) walk(entryPath)
+      else if (entry.isFile() && entry.name.endsWith('.ts') && !entry.name.endsWith('.test.ts')) scriptFiles.push(entryPath)
+    }
+  }
+  walk(scriptsDirectory)
+  return scriptFiles
+}
+
+const extractSection = (body: string, heading: string): string | null => {
+  const match = new RegExp(`^##\\s+${heading}\\s*$`, 'im').exec(body)
+  if (!match) return null
+  const rest = body.slice((match.index ?? 0) + match[0].length)
+  const next = rest.search(/^##\s+/m)
+  return next === -1 ? rest : rest.slice(0, next)
+}
+
+const extractBodyModes = (section: string | null): Set<string> => {
+  const modes = new Set<string>()
+  if (!section) return modes
+  for (const match of section.matchAll(/^###\s+Mode\s+(\w+)/gim)) modes.add((match[1] as string).toUpperCase())
+  let headerSeen = false
+  for (const rawLine of section.split(/\r?\n/)) {
+    const line = rawLine.trim()
+    if (!line.startsWith('|')) {
+      headerSeen = false
+      continue
+    }
+    const cells = line
+      .split('|')
+      .slice(1, -1)
+      .map((cell) => cell.trim())
+    if (!headerSeen) {
+      if (/^mode$/i.test(cells[0] ?? '')) headerSeen = true
+      continue
+    }
+    const mode = (cells[0] ?? '').replace(/`/g, '').trim()
+    if (!/^:?-+:?$/.test(mode) && mode) modes.add(mode.toUpperCase())
+  }
+  return modes
+}
+
+const ENDORSE_EXTENSION_RES = [
+  /\bprefer that (extension )?skill\b/i,
+  /delegat\w*[^.\n]*\bmodes?\b[^.\n]*\bback\b/i,
+  /\bextends this one\b/i
+]
+const DISAVOWAL_CUE = /retir|never|forbid|\bflag|heurist|anti-pattern|disavow|must not|do not/i
+
+const endorsesRetiredExtension = (markdown: string): boolean => {
+  const stripped = stripCode(markdown).replace(/"[^"\n]*"/g, '')
+  return stripped.split(/\r?\n/).some((line) => !DISAVOWAL_CUE.test(line) && ENDORSE_EXTENSION_RES.some((pattern) => pattern.test(line)))
+}
+
+/** Build the complete KI shape evidence used by both AUDIT and CONFORM fallback checks. */
+export const createKiShapeEvidence = (
+  skillDirectory: string,
+  frontmatter: ParsedFrontmatter,
+  description: string,
+  body: string
+): KiShapeSkillContext => {
+  const section = extractSection(body, 'Operating modes')
+  const markdownFiles = listMarkdownFiles(skillDirectory)
+  const referenceText = markdownFiles
+    .filter((file) => basename(file) !== 'SKILL.md')
+    .map((file) => readFileSync(file, 'utf8'))
+    .join('\n')
+  const skillText = `${body}\n${referenceText}`
+  const scriptsDirectory = join(skillDirectory, 'scripts')
+  const scriptNames = existsSync(scriptsDirectory) ? readdirSync(scriptsDirectory) : []
+  const refreshReference = join(skillDirectory, 'references', 'mode-refresh.md')
+  const refreshSection = section?.match(/^###\s+Mode\s+REFRESH\b[\s\S]*?(?=^###\s+Mode\s+|$(?![\s\S]))/im)?.[0] ?? ''
+  const rubricItemSources = listScriptFiles(join(scriptsDirectory, 'rubric', 'items'))
+    .map((file) => readFileSync(file, 'utf8'))
+    .join('\n')
+  const auditPath = join(scriptsDirectory, 'audit.ts')
+  const conformPath = join(scriptsDirectory, 'conform.ts')
+  const conformSource = existsSync(conformPath) ? readFileSync(conformPath, 'utf8').replace(/\/\/.*$/gm, '') : ''
+  const scaffoldedFiles = [...conformSource.matchAll(/\b(?:scaffold|syncOwned)\(\s*['"]([^'"]+)['"]/g)].map((match) => match[1] as string)
+  const checkers = scriptNames
+    .filter(
+      (name) =>
+        (name === 'audit.ts' || name.startsWith('audit-') || name.startsWith('lint-')) && name.endsWith('.ts') && !name.endsWith('.test.ts')
+    )
+    .map((name) => {
+      const source = readFileSync(join(scriptsDirectory, name), 'utf8')
+      return {
+        name,
+        usesCanonicalChecker: /from\s+['"][^'"]*checker\.ts['"]/.test(source) && /\brunChecker\b/.test(source)
+      }
+    })
+
+  return {
+    ...createKiShapeFrontmatterEvidence({ frontmatter, description, scriptNames }),
+    operatingModesSection: section,
+    bodyModes: extractBodyModes(section),
+    operatingModesIntro: section?.split(/^###\s+|^\s*\|/m)[0] ?? '',
+    flatModeHeadings: [...stripCode(body).matchAll(/^##\s+Mode\s+(\w+)/gim)].map((match) => match[1] as string),
+    bareModeHeadings: section
+      ? [...stripCode(section).matchAll(/^###\s+(?!Mode\b)(\S[^\n]*)/gim)].map((match) => (match[1] as string).trim())
+      : [],
+    refreshText: `${refreshSection}${existsSync(refreshReference) ? `\n${readFileSync(refreshReference, 'utf8')}` : ''}`,
+    retiredExtensionFiles: markdownFiles
+      .filter((file) => endorsesRetiredExtension(basename(file) === 'SKILL.md' ? body : readFileSync(file, 'utf8')))
+      .map((file) => file.slice(skillDirectory.length + 1)),
+    strongGate: /do not edit[^.\n]*directly|go through (a )?proposal|standing directive|installing the gate/i.test(stripCode(skillText)),
+    anchorMentioned: /CLAUDE\.md|AGENTS\.md|always-loaded|installing the gate|\banchor/i.test(skillText),
+    checkerReadsAnchor: scriptNames.some(
+      (name) => name.endsWith('.ts') && /CLAUDE\.md|AGENTS\.md/.test(readFileSync(join(scriptsDirectory, name), 'utf8'))
+    ),
+    mechanicalRubricCount: (rubricItemSources.match(/\bmechanical\s*:/g) ?? []).length,
+    hasChecker: scriptNames.some((name) => name.endsWith('.ts')),
+    documentsMechanicalDelegation: /lint:md|toolchain (?:already )?enforces/i.test(skillText),
+    checkers,
+    dependsOnPresent: frontmatter.present.has('depends-on'),
+    dependsOn: (frontmatter.keys.get('depends-on') ?? '').trim(),
+    owns: frontmatterList(frontmatter.keys.get('owns')),
+    contributes: frontmatterList(frontmatter.keys.get('contributes')),
+    requires: frontmatterList(frontmatter.keys.get('requires')),
+    scaffoldedFiles,
+    auditSource: existsSync(auditPath) ? readFileSync(auditPath, 'utf8') : null
+  }
+}
+
+/** Build the same complete per-skill evidence for AUDIT and CONFORM. */
+export const createSkillRubricContext = (directory: string, capabilities: SkillWritableCapabilities = {}): SkillRubricContext => {
+  const readContent = capabilities.readContent ?? (() => readFileSync(join(directory, 'SKILL.md'), 'utf8'))
+  const initial = parseFrontmatter(readContent())
+
+  return {
+    validFrontmatter: initial.raw !== null && initial.isMapping,
+    context: () => {
+      const content = readContent()
+      const frontmatter = parseFrontmatter(content)
+      const supportDirectories = readdirSync(directory, { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => entry.name)
+      const frontmatterContext = { hasBlock: frontmatter.raw !== null, isMapping: frontmatter.isMapping }
+      if (!frontmatter.isMapping) return createKiSkillsRubricContext({ layout: { supportDirectories }, frontmatter: frontmatterContext })
+
+      const name = frontmatter.keys.get('name')
+      const description = frontmatter.keys.get('description')
+      const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
+      const scriptsDirectory = join(directory, 'scripts')
+      const imports = listScriptFiles(scriptsDirectory).flatMap((scriptPath) =>
+        relativeImportSpecifiers(readFileSync(scriptPath, 'utf8')).map((specifier) => ({
+          entry: relative(scriptsDirectory, scriptPath),
+          specifier,
+          resolvesInsideScripts: resolve(dirname(scriptPath), specifier).startsWith(`${scriptsDirectory}/`)
+        }))
+      )
+
+      return createKiSkillsRubricContext({
+        layout: { supportDirectories },
+        frontmatter: frontmatterContext,
+        name: { name, directoryName: basename(directory), setName: capabilities.setName },
+        description: { description },
+        optional: {
+          compatibility: frontmatter.keys.get('compatibility'),
+          metadataPresent: frontmatter.present.has('metadata'),
+          metadata: frontmatter.values.metadata,
+          allowedToolsPresent: frontmatter.present.has('allowed-tools'),
+          allowedTools: frontmatter.values['allowed-tools'],
+          disallowedToolsPresent: frontmatter.present.has('disallowed-tools'),
+          disallowedTools: frontmatter.values['disallowed-tools'],
+          licensePresent: frontmatter.present.has('license'),
+          license: frontmatter.values.license
+        },
+        checker: {
+          imports,
+          rootSkill: name === 'ki-skills',
+          checkerModules: frontmatterList(frontmatter.keys.get('checker-modules')),
+          checkerDependencies: frontmatterList(frontmatter.keys.get('checker-dependencies')),
+          rubricModuleExists: existsSync(join(scriptsDirectory, 'lib', 'rubric.ts')),
+          checkerModuleExists: existsSync(join(scriptsDirectory, 'lib', 'checker.ts'))
+        },
+        shape: createKiShapeContext({
+          skill: createKiShapeEvidence(directory, frontmatter, description ?? '', body),
+          setArgumentHint: capabilities.setArgumentHint,
+          setVendors: capabilities.setVendors
+        }),
+        size: { bodyLines: body.split(/\r?\n/).length, bodyTokens: estimateTokens(body) }
+      })
+    }
+  }
+}

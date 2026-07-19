@@ -82,7 +82,7 @@ export const LAY_4: RubricItem<LayoutRubricContext> = {
       }
     },
     conform: {
-      phase: 'PRIMARY',
+      phase: 'PREPARE',
       run: ({ markdown, subject, writeMarkdown }) => {
         if (markdown === undefined) return [{ status: 'NOT_APPLICABLE', message: 'Markdown is unavailable for link inspection', subject }]
         if (!hasBackslashLink(markdown)) return [{ status: 'PASS', message: 'file references use forward slashes', subject }]

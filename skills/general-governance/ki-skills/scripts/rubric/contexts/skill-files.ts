@@ -7,7 +7,8 @@ export const discoverSkillDirs = (path: string): string[] => {
   if (!statSync(absolutePath).isDirectory()) return []
   if (existsSync(join(absolutePath, 'SKILL.md'))) return [absolutePath]
 
-  const root = basename(absolutePath) === 'skills' || !existsSync(join(absolutePath, 'skills')) ? absolutePath : join(absolutePath, 'skills')
+  const root =
+    basename(absolutePath) === 'skills' || !existsSync(join(absolutePath, 'skills')) ? absolutePath : join(absolutePath, 'skills')
   if (!existsSync(root)) return []
 
   const skillDirs: string[] = []

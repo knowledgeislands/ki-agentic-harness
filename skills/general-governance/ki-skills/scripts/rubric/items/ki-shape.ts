@@ -106,10 +106,10 @@ export const KI_SHAPE_7: RubricItem<KiShapeRubricContext> = {
 
 export const KI_SHAPE_8: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-8',
-  title: 'governance checkers use the canonical reporter',
+  title: 'governance checkers emit the canonical checker response',
   description:
     "_Governance-skill checker contract._ A governance skill's audit and conform scripts emit the canonical checker response as their only direct output. A checker imports its local `rubric` and `checker` modules—owned locally by `ki-skills`, or copied under `scripts/vendored/ki-skills/` for a dependent skill—and has no terminal renderer, `--json` switch, report-file output, or cross-skill import. Exit code is non-zero if and only if a mechanical finding is `FAIL`; `WARN`, `FIXED`, `INFO`, `NOT_APPLICABLE`, and `PASS` all exit 0. Judgment aspects emit no synthetic findings; the summary reports their unevaluated count, including hybrid items. Findings use the canonical levels defined in [the checker contract](checker-contract.md). The linter mechanically **[M]** verifies the local checker imports and response emission; the source-harness checker test verifies stream shape, summary agreement, judgment-count coverage, and exit-code behaviour.",
-  sources: ['[Rubric authoring](rubric-authoring.md)'],
+  sources: ['checker-contract.md', 'checker-response.md'],
   mechanical: {
     level: 'WARN',
     audit: {
@@ -118,13 +118,13 @@ export const KI_SHAPE_8: RubricItem<KiShapeRubricContext> = {
         if (!skill || skill.checkers.length === 0)
           return [{ status: 'NOT_APPLICABLE', message: 'the skill has no checker available for canonical-response inspection' }]
         const violations = skill.checkers
-          .filter((checker) => !checker.usesReporter)
+          .filter((checker) => !checker.usesCanonicalChecker)
           .map((checker) => ({
             status: 'VIOLATION' as const,
             message: `checker ${checker.name} does not import and return its local canonical checker response — required by checker-response.md`
           }))
         const [first, ...rest] = violations
-        return first ? [first, ...rest] : [{ status: 'PASS', message: 'governance checkers use the canonical reporter' }]
+        return first ? [first, ...rest] : [{ status: 'PASS', message: 'governance checkers emit the canonical checker response' }]
       }
     }
   },
@@ -136,7 +136,7 @@ export const KI_SHAPE_9: RubricItem<KiShapeRubricContext> = {
   title: 'mechanical work belongs in the checker',
   description:
     '_Mechanical work belongs in the checker, not in tokens._ A criterion a script can decide deterministically — no judgment, no AI benefit — is tagged **[M]** and **implemented in the checker**; a **[J]** tag is earned by the judgment a criterion genuinely needs, never by "no checker written yet". The reader\'s context is spent only on the **[J]** items, so a mechanical criterion left to prose, or a **[J]** the checker already decides, is drift — it **moves into the checker and flips to [M]**. The linter surfaces the mechanical heuristic — a rubric carrying **[M]** criteria but shipping no `scripts/` checker (nor a documented toolchain delegation to a skill-scoped audit) — as a WARN; the **[J]** gate is whether each remaining **[J]** genuinely needs a reader rather than a script.',
-  sources: ['standards.md §14'],
+  sources: ['[Rubric authoring](rubric-authoring.md)'],
   mechanical: {
     level: 'WARN',
     heuristic: true,
@@ -164,7 +164,7 @@ export const KI_SHAPE_10: RubricItem<KiShapeRubricContext> = {
   title: 'skills do not assume private user configuration',
   description:
     "_A skill must not assume personal `CLAUDE.md` content._ A Knowledge Islands skill is installed by any contributor, not only its author. It must not assume the user has any particular content in their personal `~/.claude/CLAUDE.md` (or imported topic files) — plan-mode gates, house style rules, footnote conventions, workflow preferences. Any behaviour a skill requires beyond what the open spec guarantees must be **anchored in always-loaded repo context** (`CLAUDE.md`, `AGENTS.md`, or a KI-SHAPE-7-style companion hook) — not in the author's private config. Where a skill cross-checks a convention that _might_ live in personal config, it must degrade gracefully rather than silently rely on that content being present.",
-  sources: ['ADR-KI-HARNESS-SKILLS-001', 'ADR-KI-HARNESS-SKILLS-006', 'ADR-KI-HARNESS-007'],
+  sources: ['standards.md §14'],
   judgment: { prompt: 'Does the skill avoid assuming private personal configuration?' }
 }
 
@@ -226,7 +226,7 @@ export const KI_SHAPE_12: RubricItem<KiShapeRubricContext> = {
   title: 'governance mode vocabulary is canonical and complete',
   description:
     "_Mode vocabulary is canonical and complete._ A governance skill exposes **AUDIT**, **CONFORM**, **EDUCATE**, **REFRESH** and **HELP** spelled exactly so — a governance skill missing any universal verb from its `argument-hint` (EDUCATE is the common gap) **WARNs**; `NEW`, `OPTIMISE`, and operational verbs are additive, never substitutes for a universal mode (a collection skill exposes both EDUCATE and NEW). The vendoring leg: a governance skill's frontmatter **declares its vendorable modes** under `vendors:`, beside `depends-on:`, so the central bootstrap engine can vendor them into a target's `.ki-meta/`; a missing declaration **WARNs**, while KI-SHAPE-15 validates its exact uniform form. Process skills are exempt throughout.",
-  sources: ['ADR-KI-HARNESS-SKILLS-001'],
+  sources: ['ADR-KI-HARNESS-SKILLS-001', 'ADR-KI-HARNESS-SKILLS-006', 'ADR-KI-HARNESS-007'],
   mechanical: {
     level: 'WARN',
     audit: { phase: 'INSPECT', run: auditKiShape12 },
@@ -266,7 +266,7 @@ export const KI_SHAPE_13: RubricItem<KiShapeRubricContext> = {
   title: 'mode headings have a canonical structure',
   description:
     '_Mode-heading structure._ A governance skill presents its modes under a **single `## Operating modes` H2** (the home for the shared no-mode/HELP intro), with each mode as a **`### Mode <NAME>` H3** or — for router skills with many operational verbs — a **`| Mode | … |` dispatch table** inside that section. The linter WARNs on a flat `## Mode X` H2, a bare `### X` heading missing the `Mode` prefix, and any `argument-hint` verb absent from the Operating-modes body (hint ⊆ body). Process skills are exempt.',
-  sources: ['ADR-KI-HARNESS-SKILLS-001', 'ADR-KI-HARNESS-SKILLS-006'],
+  sources: ['ADR-KI-HARNESS-SKILLS-001'],
   mechanical: {
     level: 'WARN',
     audit: {
@@ -310,7 +310,7 @@ export const KI_SHAPE_14: RubricItem<KiShapeRubricContext> = {
   title: 'REFRESH states its harness-only precondition',
   description:
     "_REFRESH states its harness-only precondition._ REFRESH's write target is always the skill's own canonical files under `skills/<name>/` in `ki-agentic-harness` — a governance skill's `### Mode REFRESH` section (or, per REF-5, its `references/mode-refresh.md`) must name `ki-agentic-harness` as the only place it writes, and instruct the agent to stop and redirect when invoked from a repo where the skill is merely vendored (to the harness, or — for a pattern recurring across bases — to `ki-kb`'s IMPROVE mode). Missing either half **WARNs**. Process skills (KI-SHAPE-3) are exempt; a skill with no REFRESH section at all is already caught by KI-SHAPE-12.",
-  sources: ['standards.md §14', 'ADR-KI-HARNESS-007'],
+  sources: ['ADR-KI-HARNESS-SKILLS-001', 'ADR-KI-HARNESS-SKILLS-006'],
   mechanical: {
     level: 'WARN',
     audit: {
@@ -364,7 +364,7 @@ export const KI_SHAPE_15: RubricItem<KiShapeRubricContext> = {
   title: 'vendored modes have a uniform shape',
   description:
     '_Uniform vendored-mode shape._ Every governance skill declares exactly `vendors: [educate, audit, conform, help]` and provides the corresponding bare `scripts/educate.ts`, `scripts/audit.ts`, and `scripts/conform.ts`; mode names derive their script filenames, so map/override declarations and redundant skill-name suffixes such as `audit-<skill>.ts`, `lint-<skill>.ts`, and `conform-<skill>.ts` **FAIL**. REFRESH is harness-only and is never vendored. Process skills are exempt.',
-  sources: ['KI'],
+  sources: ['standards.md §14', 'ADR-KI-HARNESS-007'],
   mechanical: {
     level: 'FAIL',
     audit: { phase: 'INSPECT', run: auditKiShape15 },

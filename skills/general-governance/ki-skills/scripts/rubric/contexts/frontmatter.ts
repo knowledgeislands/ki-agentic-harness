@@ -94,13 +94,13 @@ export const insertFrontmatterLine = (block: string, newLine: string): string =>
 }
 
 export const frontmatterScalar = (line: string, key: string): string => {
-  const match = line.match(new RegExp(`^${key}:\\s*(['\"]?)([\\s\\S]*?)\\1\\s*$`))
+  const match = line.match(new RegExp(`^${key}:\\s*(['"]?)([\\s\\S]*?)\\1\\s*$`))
   return match ? (match[2] as string) : line.replace(new RegExp(`^${key}:\\s*`), '')
 }
 
 export const replaceFrontmatterScalar = (block: string, key: string, value: string): string => {
   const line = frontmatterLine(block, key)
   if (!line) return block
-  const quote = line.match(new RegExp(`^${key}:\\s*(['\"]?)`))?.[1] || "'"
+  const quote = line.match(new RegExp(`^${key}:\\s*(['"]?)`))?.[1] || "'"
   return block.replace(line, `${key}: ${quote}${value.trim()}${quote}`)
 }
