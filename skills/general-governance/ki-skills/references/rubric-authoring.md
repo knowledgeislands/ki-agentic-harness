@@ -33,7 +33,7 @@ Each layer has one responsibility:
 
 The [checker contract](checker-contract.md) owns deterministic execution and exit behaviour.
 
-The current [canonical checker response](checker-reporter.md) reference defines the JSONL transport emitted by a checker; its filename changes with the implementation refactor because it is a response contract, not a reporter.
+The [canonical checker response](checker-response.md) defines the JSONL transport returned by a checker.
 
 ## Target layout
 
@@ -78,7 +78,7 @@ The checker module consumes that model and owns planning, execution, and the JSO
 
 Together they contain the reusable dependency closure and must not reach into the provider's private `scripts/rubric/` tree.
 
-The [checker contract](checker-contract.md) and current [checker-response reference](checker-reporter.md) are the guidance references for that implementation: the former defines checker behaviour, while the latter defines its JSONL boundary.
+The [checker contract](checker-contract.md) and [canonical checker response](checker-response.md) are the guidance references for that implementation: the former defines checker behaviour, while the latter defines its JSONL boundary.
 
 Their internal files may change without changing those conceptual contracts or the declared vendorable modules.
 

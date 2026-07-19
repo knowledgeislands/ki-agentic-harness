@@ -94,7 +94,7 @@ export const KI_SHAPE_8: RubricItem<KiShapeRubricContext> = {
         type: 'M',
         level: 'WARN',
         code: KI_SHAPE_8.code,
-        message: `checker ${checker.name} does not import and emit its local canonical checker reporter — required by checker-reporter.md`
+        message: `checker ${checker.name} does not import and return its local canonical checker response — required by checker-response.md`
       }))
 }
 
