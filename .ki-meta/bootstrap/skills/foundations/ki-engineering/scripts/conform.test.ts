@@ -18,13 +18,17 @@ const check = (label: string, condition: boolean): void => {
   }
 }
 
-const fixture = (): string => {
+const fixture = ({ biomeRepair = false }: { biomeRepair?: boolean } = {}): string => {
   const dir = mkdtempSync(join(tmpdir(), 'ki-engineering-conform-'))
   const bin = join(dir, '.fake-bin')
   mkdirSync(bin)
   for (const command of ['bun', 'bunx']) {
     const path = join(bin, command)
-    writeFileSync(path, '#!/bin/sh\nexit 0\n')
+    const body =
+      command === 'bunx' && biomeRepair
+        ? '#!/bin/sh\nif [ "$1" = "@biomejs/biome" ] && [ "$2" = "check" ] && [ "$3" != "--write" ]; then exit 1; fi\nif [ "$1" = "@biomejs/biome" ] && [ "$2" = "check" ] && [ "$3" = "--write" ]; then printf "fixed\\n" > "$PWD/biome-fixed.txt"; fi\nexit 0\n'
+        : '#!/bin/sh\nexit 0\n'
+    writeFileSync(path, body)
     chmodSync(path, 0o755)
   }
   writeFileSync(join(dir, 'package.json'), '{"name":"fixture","version":"0.0.0","scripts":{},"devDependencies":{}}\n')
@@ -86,6 +90,25 @@ const run = (dir: string, args: readonly string[] = []) =>
     check(
       'second conform is idempotent for package bytes',
       readFileSync(join(dir, 'package.json'), 'utf8') === packageAfterFirst && (second.status === 0 || second.status === 1)
+    )
+    check('second conform does not claim clean write tools fixed files', !(second.stdout ?? '').includes('changed target files'))
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+}
+
+{
+  const dir = fixture({ biomeRepair: true })
+  try {
+    const result = run(dir)
+    check(
+      'a write tool that changes a target is reported FIXED',
+      (result.stdout ?? '').includes('biome check --write changed target files')
+    )
+    check('the reported write-tool change exists', readFileSync(join(dir, 'biome-fixed.txt'), 'utf8') === 'fixed\n')
+    check(
+      'a successful no-op write tool is reported PASS',
+      (result.stdout ?? '').includes('biome format --write completed without target changes')
     )
   } finally {
     rmSync(dir, { recursive: true, force: true })

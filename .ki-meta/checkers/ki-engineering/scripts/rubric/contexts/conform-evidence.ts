@@ -54,8 +54,10 @@
  * findings/fixes never fail the run.
  */
 import { execSync } from 'node:child_process'
-import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { createHash } from 'node:crypto'
+import { existsSync, readdirSync, readFileSync, readlinkSync, statSync, writeFileSync } from 'node:fs'
+import { join, relative, resolve } from 'node:path'
+import type { EngineeringEvidenceFinding } from './audit-evidence.ts'
 
 // ── kept in lockstep with audit.ts ──
 const REQUIRED_DEV = ['@biomejs/biome', 'knip', 'prettier', 'husky', 'lint-staged', 'markdownlint-cli2', 'syncpack', 'typescript']
@@ -149,8 +151,40 @@ export type EngineeringConformFinding = {
   subject?: string
 }
 
+const IGNORED_SNAPSHOT_DIRECTORIES = new Set(['.git', '.ki-meta', 'node_modules'])
+
+const fingerprintTarget = (target: string): string | undefined => {
+  try {
+    const hash = createHash('sha256')
+    const visit = (directory: string): void => {
+      for (const entry of readdirSync(directory, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name))) {
+        if (entry.isDirectory() && IGNORED_SNAPSHOT_DIRECTORIES.has(entry.name)) continue
+        const path = join(directory, entry.name)
+        const subject = relative(target, path)
+        if (entry.isDirectory()) {
+          hash.update(`directory:${subject}\n`)
+          visit(path)
+        } else if (entry.isFile()) {
+          hash.update(`file:${subject}:${statSync(path).mode}\n`)
+          hash.update(readFileSync(path))
+        } else if (entry.isSymbolicLink()) {
+          hash.update(`symlink:${subject}:${readlinkSync(path)}\n`)
+        }
+      }
+    }
+    visit(target)
+    return hash.digest('hex')
+  } catch {
+    return undefined
+  }
+}
+
 // ── entry ──
-export const collectConformEvidence = (targetInput: string, dryRun = false): readonly EngineeringConformFinding[] => {
+export const collectConformEvidence = (
+  targetInput: string,
+  dryRun: boolean,
+  auditFindings: readonly EngineeringEvidenceFinding[]
+): readonly EngineeringConformFinding[] => {
   const target = resolve(targetInput)
   const findings: EngineeringConformFinding[] = []
   const rec = (status: EngineeringConformFinding['status'], code: string, message: string, subject?: string): void =>
@@ -334,21 +368,28 @@ export const collectConformEvidence = (targetInput: string, dryRun = false): rea
   // exiting non-zero (e.g. residual manual lint) is reported, never fatal. Each step cites
   // its OWN criterion code, not a single section code (rubric: BIO-1 / SYNC-1 / KNIP-2 / DEPS-1).
   {
-    const steps: Array<[string, string, string]> = [
-      ['biome check --write', 'bunx @biomejs/biome check --write --unsafe', 'BIO-1'],
-      ['biome format --write', 'bunx @biomejs/biome format --write', 'BIO-1'],
-      ['syncpack format', 'bunx syncpack format', 'SYNC-1'],
-      ['knip --fix', 'bunx knip --fix --no-config-hints', 'KNIP-2'],
-      ['bun update --latest', 'bun update --latest', 'DEPS-1']
-    ]
-    for (const [label, cmd, code] of steps) {
+    const repairNeeded = (code: string): boolean =>
+      auditFindings.some((finding) => finding.code === code && (finding.level === 'FAIL' || finding.level === 'INFO'))
+    const runWriteTool = (label: string, cmd: string, code: string): void => {
+      if (!repairNeeded(code)) {
+        rec('PASS', code, `${label} not needed — audit already passes`)
+        return
+      }
       if (dryRun) {
         rec('INFO', code, `${label} would run (dry run — no writes)`)
-        continue
+        return
       }
+      const before = fingerprintTarget(target)
       try {
         execSync(cmd, { cwd: target, stdio: 'pipe' })
-        rec('FIXED', code, `${label} ran`)
+        const after = fingerprintTarget(target)
+        if (before === undefined || after === undefined) {
+          rec('INFO', code, `${label} ran, but target changes could not be verified`)
+        } else if (before === after) {
+          rec('PASS', code, `${label} completed without target changes`)
+        } else {
+          rec('FIXED', code, `${label} changed target files`)
+        }
       } catch (err) {
         const detail = err instanceof Error && 'stderr' in err ? String((err as { stderr?: Buffer }).stderr ?? '').trim() : ''
         rec(
@@ -358,23 +399,19 @@ export const collectConformEvidence = (targetInput: string, dryRun = false): rea
         )
       }
     }
+    const steps: Array<[string, string, string]> = [
+      ['biome check --write', 'bunx @biomejs/biome check --write --unsafe', 'BIO-1'],
+      ['biome format --write', 'bunx @biomejs/biome format --write', 'BIO-1'],
+      ['syncpack format', 'bunx syncpack format', 'SYNC-1'],
+      ['knip --fix', 'bunx knip --fix --no-config-hints', 'KNIP-2'],
+      ['bun update --latest', 'bun update --latest', 'DEPS-1']
+    ]
+    for (const [label, cmd, code] of steps) {
+      runWriteTool(label, cmd, code)
+    }
     // 'bun update --latest' can exit non-zero partway through, leaving bun.lock with
     // unresolved "latest" placeholders — always follow with a plain install to reconcile.
-    if (dryRun) {
-      rec('INFO', 'DEPS-1', 'bun install (lockfile reconcile) would run (dry run — no writes)')
-    } else {
-      try {
-        execSync('bun install', { cwd: target, stdio: 'pipe' })
-        rec('FIXED', 'DEPS-1', 'bun install (lockfile reconcile) ran')
-      } catch (err) {
-        const detail = err instanceof Error && 'stderr' in err ? String((err as { stderr?: Buffer }).stderr ?? '').trim() : ''
-        rec(
-          'FAIL',
-          'DEPS-1',
-          `bun install (lockfile reconcile) exited non-zero — residual manual work; re-run ki:engineering:audit${detail ? ` (${detail.split('\n')[0]})` : ''}`
-        )
-      }
-    }
+    runWriteTool('bun install (lockfile reconcile)', 'bun install', 'DEPS-1')
   }
 
   // ── judgment items — never guessed, always surfaced ──

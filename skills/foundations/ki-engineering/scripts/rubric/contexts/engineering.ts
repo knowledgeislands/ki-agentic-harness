@@ -24,6 +24,6 @@ export const createEngineeringContextFactory = ({
     target: absoluteTarget,
     dryRun,
     auditFindings,
-    conformFindings: () => (conformFindings ??= collectConformEvidence(absoluteTarget, dryRun))
+    conformFindings: () => (conformFindings ??= collectConformEvidence(absoluteTarget, dryRun, auditFindings))
   })
 }
