@@ -19,6 +19,14 @@ Canonical themes and active execution plans.
 - **Status:** open
 - **Blocks:** —
 
+### [RTP-001](runtime-portability/plans/RTP-001-add-codex-transcript-grounding-to-ki-recap.md)
+
+- **Title:** Add Codex transcript grounding to ki-recap
+- **Theme:** `runtime-portability`
+- **Roadmap item:** `runtime-portability/add-codex-transcript-grounding-to-ki-recap`
+- **Status:** open
+- **Blocks:** —
+
 ## Dependency graph
 
 ```text
