@@ -25,10 +25,14 @@ import { fileURLToPath } from 'node:url'
 import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './lib/checker-reporter.ts'
 import type { RubricFinding, RubricItem } from './lib/rubric/rubric.ts'
 import { DESC } from './rubrics/description.ts'
+import { LAYOUT } from './rubrics/layout.ts'
+import { LINKS } from './rubrics/link.ts'
 import { NAME } from './rubrics/name.ts'
 import { OPTIONAL } from './rubrics/optional.ts'
+import { REFERENCES } from './rubrics/references.ts'
 import { SIZE } from './rubrics/size.ts'
-import { stripCode } from './rubrics/lib/text.ts'
+import { discoverSkillDirs, listMarkdownFiles } from './rubrics/support/skill-files.ts'
+import { stripCode } from './rubrics/support/text.ts'
 
 type Severity = 'fail' | 'warn'
 // area = the rubric code (criterion); ref = the reference-doc pointer the criterion cites
@@ -43,7 +47,6 @@ const auditRubricItems = <Context>(items: readonly RubricItem<Context>[], contex
 const RUBRIC = 'references/rubric.md'
 
 // --- limits (from references/standards.md §16 — keep in sync) ----------------------
-const TOC_LINE_THRESHOLD = 100
 const REFRESH_GRACE_DAYS = 14 // grace added once past a skill's declared cadence window before LONG-3 WARNs
 const CADENCE_DAYS: Record<string, number> = { weekly: 7, monthly: 30, quarterly: 90 } // 'on-change' = no clock; '<N>d' parsed inline
 const FOOTPRINT_REF_NOTE_TOKENS = 1500 // a single reference this large is a candidate to split — INFO hint only, never a cap
@@ -152,28 +155,6 @@ function endorsesRetiredExtension(md: string): boolean {
   return stripped.split(/\r?\n/).some((line) => !DISAVOWAL_CUE.test(line) && ENDORSE_EXTENSION_RES.some((re) => re.test(line)))
 }
 
-// --- markdown link extraction ----------------------------------------------
-// Returns relative link targets (skips http/https/mailto/# anchors). Strips the
-// CommonMark angle-bracket form and any #anchor suffix.
-function relativeLinkTargets(md: string): string[] {
-  const out: string[] = []
-  const re = /\[[^\]]*\]\(([^)]+)\)/g
-  let m: RegExpExecArray | null
-  // biome-ignore lint/suspicious/noAssignInExpressions: standard regex-exec loop
-  while ((m = re.exec(md)) !== null) {
-    let target = (m[1] as string).trim()
-    if (target.startsWith('<') && target.endsWith('>')) target = target.slice(1, -1).trim()
-    if (/^[a-z]+:\/\//i.test(target) || target.startsWith('mailto:') || target.startsWith('#')) continue
-    const hash = target.indexOf('#')
-    if (hash !== -1) target = target.slice(0, hash)
-    if (target) out.push(target)
-  }
-  return out
-}
-
-const hasWikilink = (md: string): boolean => /\[\[[^\]]+\]\]/.test(md)
-const hasBackslashLink = (md: string): boolean => /\[[^\]]*\]\([^)]*\\[^)]*\)/.test(md)
-
 // --- process vs governance (SHAPE-3 / ADR-KI-HARNESS-SKILLS-006) -----------
 // A process skill self-declares in its description: "(kind: process, ADR-...)".
 // Everything else in the fleet is a governance skill for the purposes of the
@@ -232,27 +213,6 @@ function hintVerbs(hint: string): string[] {
     if (m) out.push(m[0].toUpperCase())
   }
   return out
-}
-
-function listMarkdownFiles(dir: string): string[] {
-  const out: string[] = []
-  const walk = (d: string): void => {
-    for (const e of readdirSync(d, { withFileTypes: true })) {
-      if (e.name.startsWith('.') || e.name === 'node_modules') continue
-      const p = join(d, e.name)
-      if (e.isDirectory()) walk(p)
-      else if (e.name.endsWith('.md')) out.push(p)
-    }
-  }
-  walk(dir)
-  return out
-}
-
-function hasTableOfContents(md: string): boolean {
-  const head = md.split(/\r?\n/).slice(0, 40).join('\n').toLowerCase()
-  if (/^#{1,3}\s+(table of )?contents\b/m.test(head)) return true
-  const linkListItems = (head.match(/^\s*[-*]\s+\[[^\]]+\]\(/gm) || []).length
-  return linkListItems >= 3
 }
 
 // --- footprint (SIZE-5, INFO under --footprint) -----------------------------
@@ -608,17 +568,25 @@ function lintSkill(skillDir: string): Finding[] {
     const text = stripCode(md) // exclude code blocks/spans from text-pattern checks
     const rel = file.slice(skillDir.length + 1)
     const isSkillMd = basename(file) === 'SKILL.md'
-    if (hasWikilink(text)) fail('LINK-1', 'uses Obsidian wikilinks ([[...]]) — use relative markdown links', rel)
-    if (hasBackslashLink(text)) fail('LAY-4', 'a link target uses backslashes — use forward slashes', rel)
-    for (const target of relativeLinkTargets(text)) {
-      const resolved = resolve(dirname(file), target)
-      if (!existsSync(resolved)) fail('LINK-2', `broken relative link → "${target}"`, rel)
+    const markdownContext = {
+      markdown: text,
+      relativeTargetExists: (target: string): boolean => existsSync(resolve(dirname(file), target))
+    }
+    for (const finding of auditRubricItems(LAYOUT, markdownContext)) {
+      if (finding.level === 'FAIL') fail(finding.code, finding.message, rel)
+      else warn(finding.code, finding.message, rel)
+    }
+    for (const finding of auditRubricItems(LINKS, markdownContext)) {
+      if (finding.level === 'FAIL') fail(finding.code, finding.message, rel)
+      else warn(finding.code, finding.message, rel)
     }
     // ToC on long reference files (not SKILL.md itself)
     if (!isSkillMd) {
       const lineCount = md.split(/\r?\n/).length
-      if (lineCount > TOC_LINE_THRESHOLD && !hasTableOfContents(md))
-        warn('REF-3', `${lineCount} lines but no table of contents near the top`, rel)
+      for (const finding of auditRubricItems(REFERENCES, { lineCount, content: md })) {
+        if (finding.level === 'FAIL') fail(finding.code, finding.message, rel)
+        else warn(finding.code, finding.message, rel)
+      }
     }
     // SHAPE-2: endorsement of the retired extension pattern, in the SKILL.md body OR any
     // reference file (a standard's prose can drift even when the SKILL.md body is clean).
@@ -796,32 +764,6 @@ function ownsCollisions(dirs: string[]): Finding[] {
         ref: RUBRIC
       })
   return out.sort((a, b) => a.message.localeCompare(b.message))
-}
-
-// --- discovery -------------------------------------------------------------
-function discoverSkillDirs(p: string): string[] {
-  const abs = resolve(p)
-  if (!existsSync(abs)) return []
-  if (existsSync(join(abs, 'SKILL.md'))) return [abs]
-  // Given a repo root (rather than a skills dir itself), prefer its skills/
-  // subdir — a bare repo root has no SKILL.md among its immediate children.
-  const root = basename(abs) === 'skills' || !existsSync(join(abs, 'skills')) ? abs : join(abs, 'skills')
-  const dirs: string[] = []
-  for (const e of readdirSync(root, { withFileTypes: true })) {
-    if (!e.isDirectory() || e.name.startsWith('.') || e.name === 'node_modules' || e.name === 'scripts') continue
-    const p1 = join(root, e.name)
-    if (existsSync(join(p1, 'SKILL.md'))) {
-      dirs.push(p1) // flat: skills/<name>
-      continue
-    }
-    // clustered: skills/<cluster>/<name>
-    for (const sub of readdirSync(p1, { withFileTypes: true })) {
-      if (!sub.isDirectory()) continue
-      const p2 = join(p1, sub.name)
-      if (existsSync(join(p2, 'SKILL.md'))) dirs.push(p2)
-    }
-  }
-  return dirs.sort()
 }
 
 // --- main ------------------------------------------------------------------

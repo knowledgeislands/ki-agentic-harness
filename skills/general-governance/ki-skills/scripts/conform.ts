@@ -7,9 +7,8 @@
  * Scope: every skill under a target's `skills/` dir (a single skill dir, or a
  * dir containing skills), matching the house conform shape (conform.ts,
  * conform.ts) — `bun conform.ts [path]` / `ki:skills:conform`.
- * Detection logic (hasBackslashLink, hintVerbs, isProcessSkill, discoverSkillDirs)
- * is copied from audit.ts — kept in lockstep, never imported, so this
- * script stays valid standalone per the composition-only rule.
+ * Shared file discovery lives in `scripts/rubrics/support/skill-files.ts`, which is
+ * private to this skill's rubric implementation rather than a vendorable module.
  *
  *   bun scripts/conform.ts [path] [--dry-run]   # default target: cwd
  *
@@ -46,6 +45,7 @@ import { fileURLToPath } from 'node:url'
 import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './lib/checker-reporter.ts'
 import type { RubricFinding } from './lib/rubric/rubric.ts'
 import { NAME_1, NAME_5 } from './rubrics/name.ts'
+import { discoverSkillDirs, listMarkdownFiles } from './rubrics/support/skill-files.ts'
 
 // Each action records a typed domain finding. The canonical reporter owns transport;
 // the bootstrap aggregate is the only terminal renderer.
@@ -75,43 +75,6 @@ function hintVerbs(hint: string): string[] {
     const m = seg.trim().match(/^[a-zA-Z][a-zA-Z0-9-]*/)
     if (m) out.push(m[0].toUpperCase())
   }
-  return out
-}
-
-function discoverSkillDirs(p: string): string[] {
-  const abs = resolve(p)
-  if (!existsSync(abs)) return []
-  if (existsSync(join(abs, 'SKILL.md'))) return [abs]
-  const root = basename(abs) === 'skills' || !existsSync(join(abs, 'skills')) ? abs : join(abs, 'skills')
-  if (!existsSync(root)) return []
-  const dirs: string[] = []
-  for (const entry of readdirSync(root, { withFileTypes: true })) {
-    if (!entry.isDirectory() || entry.name.startsWith('.') || entry.name === 'node_modules' || entry.name === 'scripts') continue
-    const first = join(root, entry.name)
-    if (existsSync(join(first, 'SKILL.md'))) {
-      dirs.push(first)
-      continue
-    }
-    for (const child of readdirSync(first, { withFileTypes: true })) {
-      if (!child.isDirectory()) continue
-      const second = join(first, child.name)
-      if (existsSync(join(second, 'SKILL.md'))) dirs.push(second)
-    }
-  }
-  return dirs.sort()
-}
-
-function listMarkdownFiles(dir: string): string[] {
-  const out: string[] = []
-  const walk = (d: string): void => {
-    for (const e of readdirSync(d, { withFileTypes: true })) {
-      if (e.name.startsWith('.') || e.name === 'node_modules') continue
-      const p = join(d, e.name)
-      if (e.isDirectory()) walk(p)
-      else if (e.name.endsWith('.md')) out.push(p)
-    }
-  }
-  walk(dir)
   return out
 }
 

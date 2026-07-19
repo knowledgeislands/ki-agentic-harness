@@ -1,5 +1,5 @@
 import type { RubricItem } from '../lib/rubric/rubric.ts'
-import { containsXmlTag, stripCode } from './lib/text.ts'
+import { containsXmlTag, stripCode } from './support/text.ts'
 
 const DESCRIPTION_MAX_LENGTH = 1024
 

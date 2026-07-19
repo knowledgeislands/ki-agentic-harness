@@ -16,6 +16,39 @@ Make `ki-skills` the unambiguous root of the governance-skill system: its rubric
 
 Use `ki-engineering` only as the first dependent proof after the root model is stable.
 
+## Target layout
+
+```text
+scripts/
+  audit.ts                    # callable command
+  conform.ts                  # callable command
+  lib/                        # vendorable modules for other skills
+    checker-reporter.ts
+    rubric/
+      rubric.ts               # minimal shared rubric types
+  rubrics/
+    # ki-skills-local rubric implementation; never vendored as a dependency
+    name.ts                   # one file per rubric family
+    description.ts
+    optional.ts
+    size.ts
+    references.ts
+    ...
+    support/
+      text.ts                   # helpers shared by rubric families only
+      skill-files.ts            # shared checker traversal helpers
+```
+
+Each family owns its rule code, title, description, sources, judgment prompt, and any helper used only by that family.
+
+The shared rubric layer stays deliberately small: types and genuinely cross-family behaviour only.
+
+`scripts/lib/` is the vendorable module surface: another skill may declare and receive only a module from there.
+
+`scripts/rubrics/` is private to `ki-skills`, including `scripts/rubrics/support/`; it is copied only as part of this skill's own checker payload and never separately declared as a dependency.
+
+Until every family has moved, `references/rubric.md` remains the readable publication and compatibility check for the current reporter.
+
 ## Proven model
 
 ```text
@@ -32,10 +65,24 @@ later skill-by-skill rollout
 
 Do not broaden this work into a full checker migration, criterion-catalogue redesign, or lifecycle work from GOV-002.
 
-## Todo List
+## To-do list
 
-- review common code
-- make the rubric into code and tests
+- [x] Extract the minimal shared rubric types.
+- [x] Extract shared skill discovery and Markdown-file traversal into `scripts/rubrics/support/skill-files.ts`.
+- [x] Move shared text helpers to `scripts/rubrics/support/text.ts`.
+- [x] Codify the NAME family.
+- [x] Codify the DESC family.
+- [x] Codify the OPT family currently implemented by the checker.
+- [x] Codify SIZE-1 through SIZE-4; retain SIZE-5 until its opt-in measurement path moves.
+- [x] Codify the REF family and move its table-of-contents check.
+- [x] Codify LINK and move the shared Markdown-link helpers under `scripts/rubrics/support/`.
+- [x] Codify the judgment-only BODY, INVOKE, and PROC families.
+- [x] Codify SCRIPT, COLL, and LONG as their own family modules.
+- [ ] Finish LAY: LAY-4 is codified; LAY-1 through LAY-3 still need their structural audit callbacks.
+- [x] Codify SHAPE; move its existing mechanical callbacks next, including the root-contract rule.
+- [ ] Move existing SCRIPT, COLL, and LONG mechanical callbacks into their family implementations.
+- [ ] Replace Markdown-derived judgment reporting only after structured family coverage is complete.
+- [ ] Retire `references/rubric.md` only after the structured rubric renders an equivalent readable reference and passes parity verification.
 
 ## Decision List
 
@@ -54,3 +101,5 @@ Apply these checks to one later governance skill at a time, only after the root 
 - Its audit and conform commands use only their local implementation modules and emit the canonical reporter JSONL with no private rendering path.
 - Its rubric remains the sole source of finding code, title, type, and level; its checker emits evidence and available action only.
 - Its focused source and vendored tests pass before the next skill is considered.
+
+- Its family-local helpers live beside the owning rubric family, under `scripts/rubrics/lib/` only when another family genuinely shares them.

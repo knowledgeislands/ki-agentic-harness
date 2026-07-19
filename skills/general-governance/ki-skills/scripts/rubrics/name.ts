@@ -1,5 +1,5 @@
 import type { RubricFinding, RubricItem } from '../lib/rubric/rubric.ts'
-import { containsXmlTag } from './lib/text.ts'
+import { containsXmlTag } from './support/text.ts'
 
 const NAME_MAX_LENGTH = 64
 const RESERVED_WORDS = ['anthropic', 'claude']
