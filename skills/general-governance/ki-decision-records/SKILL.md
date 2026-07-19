@@ -68,4 +68,4 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**, plus **NEW** (
 - **Not every proposal needs a DR** — routine content additions, typo fixes, and minor configuration changes do not warrant one. Reserve DRs for decisions with standalone standing.
 - **KB repos** use `Admin/Governance/Decisions/` and require frontmatter (`type`, `decision_type`, `status`, `author`). **Code repos** use `docs/decisions/` and frontmatter is optional.
 - The KI-wide frontmatter standard (universal fields and the `type` taxonomy) lives in `ki-kb`'s [standards.md](../../repo-structure/ki-kb/references/standards.md).
-- Checker output conforms to the severity ladder, JSON shape, and exit-code contract in `ki-engineering`'s [checker-contract.md](../../general-governance/ki-skills/references/checker-contract.md).
+- Checker output conforms to the severity ladder, JSON shape, and exit-code contract in `ki-skills`' [checker contract](../../general-governance/ki-skills/references/checker-contract.md).

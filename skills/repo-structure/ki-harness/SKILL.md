@@ -22,7 +22,7 @@ Modes: **AUDIT · CONFORM · EDUCATE · REFRESH** (named, alphabetical). Invoked
 
 ### Mode AUDIT — check a harness against the standard
 
-1. **Run the mechanical checker.** `bun scripts/audit.ts [path]` from this skill's directory (or `bun run ki:harness:audit` at the harness root, if wired). It checks: the five-part directory presence, each directory's `README.md`, root `CLAUDE.md` / `ROADMAP.md`, `package.json` script families, `.ki-config.toml` `[ki-harness]` table presence, and each `skills/<dir>` name matching its `SKILL.md` `name:` frontmatter. Reports on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — defined in `ki-engineering`'s enforcement-framework §2).
+1. **Run the mechanical checker.** `bun scripts/audit.ts [path]` from this skill's directory (or `bun run ki:harness:audit` at the harness root, if wired). It checks: the five-part directory presence, each directory's `README.md`, root `CLAUDE.md` / `ROADMAP.md`, `package.json` script families, `.ki-config.toml` `[ki-harness]` table presence, and each `skills/<dir>` name matching its `SKILL.md` `name:` frontmatter. Reports on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — defined in `ki-skills`' enforcement framework §2).
 2. **Compose on sibling skills via subagent isolation** ([ADR-KI-HARNESS-AGENTS-001](../../../docs/decisions/ADR-KI-HARNESS-AGENTS-001-subagent-isolation.md)). A harness audit is layered — fan out one `agent()` per concern in `parallel()` after the COLL checks:
    - `ki-repo` — GitHub settings and the `.ki-config.toml` contract
    - `ki-engineering` — aggregate entrypoints and internal code toolchain (package.json, tsconfig, biome)

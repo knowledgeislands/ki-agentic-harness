@@ -31,7 +31,7 @@ Like every governance skill it carries the universal four **AUDIT · CONFORM · 
 
 Review an agent (or every agent in a directory) against the rubric and report.
 
-**Auditing a whole directory? Bound the context** (the set-audit discipline in `ki-engineering`'s enforcement-framework §5): run the linter's set-level pass once (COLL-1 lane collisions + `name` uniqueness over the directory), then review the agents **one at a time** — they are peers, so the order is free — loading and releasing each definition before the next rather than holding the whole set in context at once.
+**Auditing a whole directory? Bound the context** (the set-audit discipline in `ki-skills`' enforcement framework §5): run the linter's set-level pass once (COLL-1 lane collisions + `name` uniqueness over the directory), then review the agents **one at a time** — they are peers, so the order is free — loading and releasing each definition before the next rather than holding the whole set in context at once.
 
 1. **Run the linter.** `bun scripts/audit.ts <path-to-agent-or-dir>` from this skill's directory. It emits the canonical machine-readable report on the unified severity ladder and exits non-zero on any FAIL. Capture its output verbatim — do not re-derive what it found. Point it at the **agents directory** (e.g. a repo's `agents/`), not a lone file, so the cross-agent collision pass (COLL-1) and the `name`-uniqueness check have the siblings to compare.
 2. **Read the agent definition** and apply the **judgment** ([J]-tagged) criteria from [the rubric](references/rubric.md) — the linter owns the [M] ones. Focus on:

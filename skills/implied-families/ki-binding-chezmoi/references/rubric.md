@@ -1,6 +1,6 @@
 # Audit rubric — ki-binding-chezmoi
 
-Line-by-line criteria for auditing the chezmoi render path for the KI MCP binding, against [the standard](standards.md). Each is tagged **[M] mechanical** (the bundled [checker](../scripts/audit.ts) enforces it — capture its output, don't re-derive) or **[J] judgment** (assess by reading). Severity uses the unified ladder in `ki-engineering`'s [`enforcement-framework.md`](../../../general-governance/ki-skills/references/enforcement-framework.md) §2. Every **[M]** criterion is implemented in [`../scripts/audit.ts`](../scripts/audit.ts) (SHAPE-9).
+Line-by-line criteria for auditing the chezmoi render path for the KI MCP binding, against [the standard](standards.md). Each is tagged **[M] mechanical** (the bundled [checker](../scripts/audit.ts) enforces it — capture its output, don't re-derive) or **[J] judgment** (assess by reading). Severity uses the unified ladder in `ki-skills`' [enforcement framework](../../../general-governance/ki-skills/references/enforcement-framework.md) §2. Every **[M]** criterion is implemented in [`../scripts/audit.ts`](../scripts/audit.ts) (SHAPE-9).
 
 This is a **composition** checker: BINDCHEZ-1 and BINDCHEZ-2 are the two composed siblings run in sequence as subprocesses; BINDCHEZ-3–5 are this skill's own render-path delta. It does not fork or re-implement the sibling criteria.
 

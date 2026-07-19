@@ -10,7 +10,7 @@ The behaviour of the governance model the harness applies to itself and to the r
 
 Every governance skill MUST carry the universal modes EDUCATE · AUDIT · CONFORM · REFRESH (plus any skill-specific modes), per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
 
-_Verify:_ `ki-engineering`'s enforcement-framework §5 lists the four modes, and each `skills/*/SKILL.md` exposes them; `ki:skills:audit` passes.
+_Verify:_ `ki-skills`' enforcement framework §5 lists the four modes, and each `skills/*/SKILL.md` exposes them; `ki:skills:audit` passes.
 
 ### GOV-002 — Mechanical-first, LLM-optional
 
@@ -24,7 +24,7 @@ _Verify:_ every artifact skill ships a `scripts/audit-*.ts` (or `lint-*.ts`) tha
 
 A checker's findings MUST grade on the unified ladder FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS, and the process MUST exit non-zero only when a FAIL is present.
 
-_Verify:_ each checker imports the same `Sev` enum shape from `ki-engineering`'s checker-contract, and `audit-*.ts` exits `1` iff a FAIL is emitted.
+_Verify:_ each checker imports the same `Sev` enum shape from `ki-skills`' checker contract, and `audit-*.ts` exits `1` iff a FAIL is emitted.
 
 ### GOV-004 — Composition, not extension
 
