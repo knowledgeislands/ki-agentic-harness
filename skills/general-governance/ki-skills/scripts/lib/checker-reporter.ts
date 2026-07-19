@@ -279,7 +279,6 @@ export const validateCheckerReporterEvents = (events: readonly unknown[], exitCo
     const type = event.type
     const level = event.level
     if (type !== 'M' && type !== 'J') errors.push(`${label} type must be M or J`)
-    if (typeof level !== 'string' || !CHECKER_LEVELS.includes(level as CheckerLevel)) errors.push(`${label} level is not recognised`)
     if (!nonEmptyString(event.code)) errors.push(`${label} code must be non-empty`)
     if (!nonEmptyString(event.message)) errors.push(`${label} message must be non-empty`)
     if (event.ref !== undefined && !nonEmptyString(event.ref)) errors.push(`${label} ref must be non-empty when present`)
@@ -288,7 +287,7 @@ export const validateCheckerReporterEvents = (events: readonly unknown[], exitCo
     if (type === 'J' && !nonEmptyString(event.ref)) errors.push(`${label} J finding must cite its criterion`)
     if (type === 'M' && (level === 'FAIL' || level === 'WARN' || level === 'POLISH') && !nonEmptyString(event.ref))
       errors.push(`${label} ${level} M finding must cite its criterion`)
-    if (typeof level === 'string' && CHECKER_LEVELS.includes(level as CheckerLevel)) {
+    if (typeof level === 'string' && RUBRIC_LEVELS.includes(level as RubricLevel)) {
       counts[level.toLowerCase() as Lowercase<CheckerLevel>]++
       if (type === 'M' && level === 'FAIL') mechanicalFailure = true
     }
