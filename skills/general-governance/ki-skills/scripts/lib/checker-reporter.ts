@@ -10,7 +10,7 @@
  */
 
 import { readFileSync } from 'node:fs'
-import { RUBRIC_LEVELS, type RubricFinding, type RubricLevel } from './rubric/rubric.ts'
+import { RUBRIC_LEVELS, type RubricFinding, type RubricItem, type RubricLevel } from './rubric/rubric.ts'
 
 // The rubric owns finding semantics. These exports keep the reporter's public
 // module surface stable while dependent checkers transition to rubric imports.
@@ -198,6 +198,17 @@ export function judgmentFindingsFromRubric(rubricPath: string, ref = 'references
   return [...rubricCriteriaFromFile(rubricPath).values()]
     .filter((criterion) => criterion.types.has('J'))
     .map((criterion) => criterion.code)
+    .sort()
+    .map((code) => ({ type: 'J', level: 'ADVISORY', code, message: 'Review this judgment criterion against the audited scope.', ref }))
+}
+
+export function judgmentFindingsFromItems(
+  items: readonly Pick<RubricItem, 'code' | 'judgment'>[],
+  ref = 'references/rubric.md'
+): RubricFinding[] {
+  return items
+    .filter((item) => item.judgment)
+    .map((item) => item.code)
     .sort()
     .map((code) => ({ type: 'J', level: 'ADVISORY', code, message: 'Review this judgment criterion against the audited scope.', ref }))
 }

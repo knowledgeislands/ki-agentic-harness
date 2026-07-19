@@ -40,10 +40,10 @@
  */
 
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { basename, dirname, join, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './lib/checker-reporter.ts'
+import { basename, join, resolve } from 'node:path'
+import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromItems } from './lib/checker-reporter.ts'
 import type { RubricFinding } from './lib/rubric/rubric.ts'
+import { RUBRIC_ITEMS } from './rubrics/index.ts'
 import { NAME_1, NAME_5 } from './rubrics/name.ts'
 import { discoverSkillDirs, listMarkdownFiles } from './rubrics/support/skill-files.ts'
 
@@ -58,12 +58,6 @@ function reportCode(area: string): string {
 }
 const rec = (level: Level, area: string, message: string, ref?: string, file?: string): void =>
   void findings.push({ type: 'M', level, code: reportCode(area), message, ref, file })
-
-function localRubricPath(): string {
-  const scriptDir = dirname(fileURLToPath(import.meta.url))
-  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
-  return join(skillRoot, 'references', 'rubric.md')
-}
 
 // ── kept in lockstep with audit.ts ──
 const isProcessSkill = (desc: string): boolean => /\(kind:\s*process\b/i.test(desc)
@@ -245,7 +239,6 @@ function main(): void {
 
   const skillDirs = discoverSkillDirs(target)
   if (skillDirs.length === 0) {
-    const rubricPath = localRubricPath()
     findings.push({
       type: 'M',
       level: 'FAIL',
@@ -253,7 +246,7 @@ function main(): void {
       message: 'No skills were found below the requested target.',
       ref: RUBRIC
     })
-    findings.push(...judgmentFindingsFromRubric(rubricPath, RUBRIC))
+    findings.push(...judgmentFindingsFromItems(RUBRIC_ITEMS, RUBRIC))
     emitCheckerReporter({ mode: 'conform', concern: 'skills', target: resolve(target), findings })
     process.exit(checkerReporterExitCode(findings))
     return
@@ -262,8 +255,7 @@ function main(): void {
   const todos: string[] = []
   for (const dir of skillDirs) conformSkill(dir, dryRun, todos)
 
-  const rubricPath = localRubricPath()
-  findings.push(...judgmentFindingsFromRubric(rubricPath, RUBRIC))
+  findings.push(...judgmentFindingsFromItems(RUBRIC_ITEMS, RUBRIC))
   emitCheckerReporter({ mode: 'conform', concern: 'skills', target: resolve(target), findings })
   process.exit(checkerReporterExitCode(findings))
 }

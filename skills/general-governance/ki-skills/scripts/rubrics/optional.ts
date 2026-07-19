@@ -41,4 +41,42 @@ export const OPT_2: RubricItem<OptionalRubricContext> = {
   }
 }
 
-export const OPTIONAL: readonly RubricItem<OptionalRubricContext>[] = [OPT_1, OPT_2]
+export const OPT_3: RubricItem<OptionalRubricContext> = {
+  code: 'OPT-3',
+  title: 'tool declarations use valid tool specifications',
+  description: 'Optional allowed-tools and disallowed-tools declarations use valid tool specifications.',
+  sources: ['SPEC', 'CC']
+}
+
+export const OPT_4: RubricItem<OptionalRubricContext> = {
+  code: 'OPT-4',
+  title: 'license declarations are short names or bundled-file references',
+  description: 'An optional license declaration is a short license name or references a bundled file.',
+  sources: ['SPEC']
+}
+
+export const OPT_5: RubricItem<OptionalRubricContext> = {
+  code: 'OPT-5',
+  title: 'runtime-specific fields are flagged where portability matters',
+  description: 'A skill identifies runtime-specific fields when cross-platform portability matters.',
+  sources: ['CC'],
+  judgment: { prompt: 'Where cross-platform portability matters, are runtime-specific fields clearly identified?' }
+}
+
+export const OPT_6: RubricItem<OptionalRubricContext> = {
+  code: 'OPT-6',
+  title: 'manually timed side effects disable model invocation',
+  description: 'Side-effecting or manually timed workflows set disable-model-invocation appropriately.',
+  sources: ['CC'],
+  judgment: { prompt: 'Do side-effecting or manually timed workflows set disable-model-invocation: true where appropriate?' }
+}
+
+export const OPT_7: RubricItem<OptionalRubricContext> = {
+  code: 'OPT-7',
+  title: 'discrete modes have an ordered argument hint',
+  description: 'A skill with discrete modes declares named, alphabetically ordered modes in argument-hint.',
+  sources: ['CC', 'COMMUNITY'],
+  judgment: { prompt: 'Where the skill has discrete modes, are they named and alphabetically ordered in argument-hint?' }
+}
+
+export const OPTIONAL: readonly RubricItem<OptionalRubricContext>[] = [OPT_1, OPT_2, OPT_3, OPT_4, OPT_5, OPT_6, OPT_7]

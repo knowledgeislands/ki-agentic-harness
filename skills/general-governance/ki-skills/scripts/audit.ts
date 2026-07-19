@@ -21,10 +21,10 @@
 
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, dirname, join, relative, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './lib/checker-reporter.ts'
+import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromItems } from './lib/checker-reporter.ts'
 import type { RubricFinding, RubricItem } from './lib/rubric/rubric.ts'
 import { DESC } from './rubrics/description.ts'
+import { RUBRIC_ITEMS } from './rubrics/index.ts'
 import { LAYOUT } from './rubrics/layout.ts'
 import { LINKS } from './rubrics/link.ts'
 import { NAME } from './rubrics/name.ts'
@@ -776,13 +776,7 @@ const reportTarget = resolve('.')
 const all: RubricFinding[] = []
 
 function judgmentFindings(): RubricFinding[] {
-  return judgmentFindingsFromRubric(localRubricPath(), RUBRIC)
-}
-
-function localRubricPath(): string {
-  const scriptDir = dirname(fileURLToPath(import.meta.url))
-  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
-  return join(skillRoot, 'references', 'rubric.md')
+  return judgmentFindingsFromItems(RUBRIC_ITEMS, RUBRIC)
 }
 
 if (skillDirs.length === 0) {

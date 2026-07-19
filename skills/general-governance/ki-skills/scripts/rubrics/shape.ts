@@ -47,13 +47,15 @@ export const SHAPE: readonly RubricItem[] = [
     code: 'SHAPE-7',
     title: 'behaviour-changing skills define and check their anchor',
     description: 'A default-behaviour change is anchored in always-loaded context and checked by the skill.',
-    sources: ['KI']
+    sources: ['KI'],
+    judgment: { prompt: 'Does a behaviour-changing skill have an appropriate always-loaded anchor that its checker verifies?' }
   },
   {
     code: 'SHAPE-8',
     title: 'governance checkers use the canonical reporter',
     description: 'A checker emits canonical reporter output from a local payload without a private renderer.',
-    sources: ['KI']
+    sources: ['KI'],
+    judgment: { prompt: 'Does the checker fully follow the canonical reporter contract beyond the mechanical checks?' }
   },
   {
     code: 'SHAPE-9',
