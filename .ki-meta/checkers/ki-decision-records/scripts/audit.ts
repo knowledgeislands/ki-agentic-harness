@@ -62,8 +62,6 @@ const PREFIX_TO_TYPE: Record<string, string> = {
   KDR: 'knowledge'
 }
 
-const VALID_DECISION_TYPES = new Set(Object.values(PREFIX_TO_TYPE))
-
 const DR_FILENAME_RE = /^(SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-([A-Z][A-Z0-9]*(?:-[A-Z][A-Z0-9]*)*)(-(\d{3,}))(-[a-z0-9-]+)?\.md$/
 
 async function findKiConfig(startDir: string): Promise<string | null> {
@@ -217,38 +215,21 @@ async function main() {
         } else {
           const dtValue = dtMatch[1].trim()
 
-          // FM-5: valid value
-          if (!VALID_DECISION_TYPES.has(dtValue)) {
-            add(
-              'FM-5',
-              Sev.FAIL,
-              file,
-              `invalid decision_type '${dtValue}' — must be one of: ${[...VALID_DECISION_TYPES].sort().join(', ')}`
-            )
-          } else {
-            // PREFIX-TYPE-1: prefix must match decision_type
-            if (dtValue !== expectedType) {
-              add(
-                'PREFIX-TYPE-1',
-                Sev.FAIL,
-                file,
-                `prefix ${prefix}- implies decision_type '${expectedType}' but frontmatter declares '${dtValue}'`
-              )
-            }
+          // FM-5: the duplicate KB metadata must match the type encoded by the
+          // already-valid filename prefix. The checker cannot decide whether the
+          // prefix itself fits the decision; TYPE-FIT-1 is a human judgement.
+          if (dtValue !== expectedType) {
+            add('FM-5', Sev.FAIL, file, `filename prefix ${prefix}- encodes decision_type '${expectedType}', got '${dtValue}'`)
           }
         }
       } else if (!kbMode) {
-        // Code repo with frontmatter: still check prefix-type consistency if decision_type is present
+        // Code repos may omit frontmatter. When they carry decision_type metadata,
+        // keep it internally consistent with the canonical filename prefix.
         const dtMatch = fm.match(/^decision_type:\s*(.+)$/m)
         if (dtMatch) {
           const dtValue = dtMatch[1].trim()
-          if (VALID_DECISION_TYPES.has(dtValue) && dtValue !== expectedType) {
-            add(
-              'PREFIX-TYPE-1',
-              Sev.WARN,
-              file,
-              `prefix ${prefix}- implies decision_type '${expectedType}' but frontmatter declares '${dtValue}'`
-            )
+          if (dtValue !== expectedType) {
+            add('FM-5', Sev.WARN, file, `filename prefix ${prefix}- encodes decision_type '${expectedType}', got '${dtValue}'`)
           }
         }
       }

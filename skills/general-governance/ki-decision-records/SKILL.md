@@ -34,7 +34,7 @@ You are applying the **Knowledge Islands Decision Records standard** — how Dec
 5. **The index rule** — `Decisions.md` (code: `README.md` or `Decisions.md`) must contain an ordered list, one item per DR, in reveal order.
 6. **The placement rule** — `repo_type = "kb"` in `.ki-config.toml` → `Admin/Governance/Decisions/`; all others → `docs/decisions/`. Pass the actual path to the checker.
 7. **The Enactment Process integration** — a DR is the formal artifact for an Enactment Process proposal whose `Decision` output warrants a standalone record.
-8. **The mechanical checker** — [`scripts/audit.ts`](scripts/audit.ts) validates filenames, prefix–type agreement, required sections, an optional `**Date:**` field, `type`/`decision_type` fields (KB mode), serial uniqueness, index completeness, and reveal-order serial ascension within each prefix. Detects KB vs code mode automatically from `.ki-config.toml`.
+8. **The mechanical checker** — [`scripts/audit.ts`](scripts/audit.ts) validates filenames, required sections, an optional `**Date:**` field, and the required KB `type`/`decision_type` metadata against the filename's canonical type. It does not infer whether the prefix is semantically right; that remains a judgment check. It also validates serial uniqueness, index completeness, and reveal-order serial ascension within each prefix. Detects KB vs code mode automatically from `.ki-config.toml`.
 
 ## Operating modes
 

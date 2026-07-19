@@ -13,9 +13,8 @@ Used by Mode AUDIT. Each criterion is tagged **[M]** (mechanical — the checker
 - **[M] FM-0** — YAML frontmatter block present (required for KB repos; optional for code repos)
 - **[M] FM-3** — `type` field is `admin/governance/decision`
 - **[M] FM-4** — `decision_type` field is present
-- **[M] FM-5** — `decision_type` is one of the nine valid values: `strategy`, `product`, `architecture`, `data`, `security`, `operations`, `governance`, `research`, `knowledge`
-- **[M] PREFIX-TYPE-1** — prefix in filename matches `decision_type` in frontmatter (e.g. `GDR-` ↔ `governance`, `ADR-` ↔ `architecture`)
-- **[J] FM-6** — `decision_type` correctly categorises the decision (not a stretch fit; the body makes the type obvious)
+- **[M] FM-5** — `decision_type` exactly matches the canonical value encoded by the filename prefix (for example, `GDR-` ↔ `governance`, `ADR-` ↔ `architecture`). This makes the required KB metadata internally consistent; it does not prove the prefix is the right semantic classification.
+- **[J] TYPE-FIT-1** — the filename prefix accurately categorises the decision itself (not a stretch fit; the body makes the type obvious). Resolve a mismatch by choosing the correct canonical record ID or metadata with a human, never by mechanically overwriting either side.
 
 ## Body structure checks
 
@@ -42,8 +41,8 @@ A DR is a **living present-state record**: it states the decision as it stands n
 
 ## Severity mapping
 
-| Criterion                                                                                    | Severity |
-| -------------------------------------------------------------------------------------------- | -------- |
-| FILENAME-1, FM-0, FM-3, FM-4, FM-5, PREFIX-TYPE-1, BODY-1, BODY-4, INDEX-1, INDEX-2, INDEX-3 | FAIL     |
-| FILENAME-2, FILENAME-3, BODY-3, INDEX-6, INDEX-8, BODY-5, BODY-6, BODY-7                     | WARN     |
-| FM-6, BODY-8, BODY-9, BODY-10, INDEX-7                                                       | POLISH   |
+| Criterion                                                                     | Severity |
+| ----------------------------------------------------------------------------- | -------- |
+| FILENAME-1, FM-0, FM-3, FM-4, FM-5, BODY-1, BODY-4, INDEX-1, INDEX-2, INDEX-3 | FAIL     |
+| FILENAME-2, FILENAME-3, BODY-3, INDEX-6, INDEX-8, BODY-5, BODY-6, BODY-7      | WARN     |
+| TYPE-FIT-1, BODY-8, BODY-9, BODY-10, INDEX-7                                  | POLISH   |

@@ -30,7 +30,7 @@ Examples: `GDR-KI-ARCADIA-001-adopting-decision-records`, `SDR-KI-ARCADIA-001-kn
 
 ## Prefix table
 
-Each `decision_type` maps to a fixed prefix. The prefix and `decision_type` must agree in KB repos (FAIL check).
+Each `decision_type` maps to a fixed prefix. In a KB record, the required `decision_type` metadata must duplicate the canonical value encoded by its valid filename prefix (FAIL check). Whether that prefix actually fits the decision is a human judgement, not a value the checker can derive.
 
 | Prefix | `decision_type` | Covers                                          |
 | ------ | --------------- | ----------------------------------------------- |
@@ -72,8 +72,8 @@ decision_depends_on: []
 ```
 
 - `type` must be exactly `admin/governance/decision` (per the KI-wide frontmatter standard in `ki-kb`).
-- `decision_type` must be one of the nine values in the prefix table above.
-- The prefix in the filename must match the `decision_type` value.
+- `decision_type` must exactly match the canonical value encoded by the filename prefix in the table above.
+- Choose the prefix by what the decision is actually about. If the filename and metadata disagree, a human resolves whether the canonical ID or the metadata is wrong; CONFORM never chooses by overwriting either side.
 - `status` tracks the note's maintenance state (draft/current/outdated/archive) per the KI-wide frontmatter standard — the note's freshness, not a decision lifecycle (DRs have none; a DR that exists is in effect).
 - `decision_depends_on` is an optional YAML list of full DR codes that this decision logically depends on (e.g. `["GDR-KI-ARCADIA-001"]`). Cross-scope (cross-repo) references are permitted. Body prose cites only backward — no forward references to higher-numbered DRs of the same type. Omit the field when there are no dependencies.
 

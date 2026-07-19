@@ -7,9 +7,9 @@
  * Scope: a single target repo (default cwd), matching the house conform shape
  * (conform.ts, conform.ts) — `bun conform.ts .` / `ki:decision-records:conform`.
  * KB-vs-code detection, decisions-dir resolution, index-file resolution, the DR
- * filename regex, and the prefix→decision_type map are kept in lockstep with
- * audit.ts (same source of truth, copied rather than imported so each script
- * stays valid standalone per the composition-only rule).
+ * filename regex are kept in lockstep with audit.ts (same source of truth,
+ * copied rather than imported so each script stays valid standalone per the
+ * composition-only rule).
  *
  *   bun scripts/conform.ts [path]   # default: cwd
  *   --dry-run                       # report the pending writes, mutate nothing
@@ -19,20 +19,16 @@
  * governs writing only.
  *
  * Fixes:
- *   - `decision_type` frontmatter: when the field is missing, invalid, or
- *     inconsistent with what the filename prefix implies (FM-4 / FM-5 /
- *     PREFIX-TYPE-1), and frontmatter already exists, sets it to the value the
- *     prefix→type map derives. Frontmatter is never created from scratch (that's
- *     FM-0 — see below).
  *   - Index entries (INDEX-2): a DR file present on disk with no entry in the
  *     index (README.md in a code repo, Decisions.md in a KB) gets one APPENDED
  *     to the end of the index — existing entries and their order are never
  *     touched. The operator then decides its correct reading-order position.
  *
  * Deliberately NEVER touches (judgment):
- *   - FM-0 (frontmatter block missing entirely) — authoring a whole frontmatter
- *     block (title, tags, etc., not just decision_type) is judgment, not a
- *     mechanical fill-in.
+ *   - FM-0 / FM-4 / FM-5 and TYPE-FIT-1 — frontmatter and filename classification
+ *     need a human decision. A mismatched decision_type might mean that metadata
+ *     is wrong or that the canonical record ID needs renaming; this script must
+ *     not choose by overwriting either side.
  *   - FM-3 (`type` field wrong/missing), BODY-1/3/4 (heading, date, required
  *     sections), FILENAME-2 (serial collisions), INDEX-3 (dangling index entry),
  *     INDEX-8 (out-of-order serials) — all prose/authoring or reordering
@@ -54,18 +50,6 @@ import {
   judgmentFindingsFromRubric
 } from './vendored/ki-skills/checker-reporter.ts'
 
-// ── kept in lockstep with audit.ts ──
-const PREFIX_TO_TYPE: Record<string, string> = {
-  SDR: 'strategy',
-  PDR: 'product',
-  ADR: 'architecture',
-  DDR: 'data',
-  XDR: 'security',
-  ODR: 'operations',
-  GDR: 'governance',
-  RDR: 'research',
-  KDR: 'knowledge'
-}
 const DR_FILENAME_RE = /^(SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-([A-Z][A-Z0-9]*(?:-[A-Z][A-Z0-9]*)*)(-(\d{3,}))(-[a-z0-9-]+)?\.md$/
 const ID_IN_ITEM = /^\s*(?:\d+\.|[-*])\s+.*?([A-Z]+DR-[A-Z][A-Z0-9-]+-\d{3,})/
 const CODE_DIR = 'docs/decisions'
@@ -156,48 +140,7 @@ async function main() {
     if (idMatch) indexedIds.add(idMatch[1])
   }
 
-  // ── a) decision_type frontmatter repair ──
-  let fmFixes = 0
-  for (const file of drFiles) {
-    const match = DR_FILENAME_RE.exec(file)
-    if (!match) continue
-    const prefix = match[1] as string
-    const expectedType = PREFIX_TO_TYPE[prefix]
-    if (!expectedType) continue
-
-    const filePath = join(resolvedDir, file)
-    const content = await readFile(filePath, 'utf8')
-    const fmMatch = content.match(/^---\n([\s\S]*?)\n---/)
-    if (!fmMatch) {
-      rec('ADVISORY', 'FM-0', 'no frontmatter block; author one by hand (not just decision_type)', file)
-      continue
-    }
-
-    const fm = fmMatch[1] as string
-    const dtMatch = fm.match(/^decision_type:\s*(.+)$/m)
-    if (!dtMatch) {
-      const newFm = `${fm}\ndecision_type: ${expectedType}`
-      const newContent = content.replace(fmMatch[0], `---\n${newFm}\n---`)
-      rec('POLISH', 'FM-4', `${dryRun ? 'would add' : 'added'} decision_type: ${expectedType}`, file)
-      if (!dryRun) await writeFile(filePath, newContent)
-      fmFixes++
-      continue
-    }
-
-    const currentValue = dtMatch[1].trim()
-    if (currentValue !== expectedType) {
-      const newFm = fm.replace(/^decision_type:\s*.+$/m, `decision_type: ${expectedType}`)
-      const newContent = content.replace(fmMatch[0], `---\n${newFm}\n---`)
-      rec('POLISH', 'PREFIX-TYPE-1', `${dryRun ? 'would set' : 'set'} decision_type '${currentValue}' → '${expectedType}'`, file)
-      if (!dryRun) await writeFile(filePath, newContent)
-      fmFixes++
-    }
-  }
-  if (fmFixes === 0) {
-    rec('PASS', 'FM-4', 'decision_type frontmatter already conforms', indexFile)
-  }
-
-  // ── b) append missing index entries ──
+  // ── append missing index entries ──
   if (!hasIndex) {
     rec('ADVISORY', 'INDEX-1', 'index file missing entirely; author it by hand', indexFile)
   } else {
