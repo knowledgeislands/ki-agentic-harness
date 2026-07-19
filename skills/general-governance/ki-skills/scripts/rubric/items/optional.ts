@@ -1,19 +1,8 @@
-import type { RubricItem } from '../lib/rubric/rubric.ts'
+import type { RubricItem } from '../../lib/rubric/rubric.ts'
+import type { OptionalRubricContext } from '../contexts/contexts.ts'
 
 const COMPATIBILITY_MIN_LENGTH = 1
 const COMPATIBILITY_MAX_LENGTH = 500
-
-export type OptionalRubricContext = {
-  compatibility: string | undefined
-  metadataPresent: boolean
-  metadata: unknown
-  allowedToolsPresent: boolean
-  allowedTools: unknown
-  disallowedToolsPresent: boolean
-  disallowedTools: unknown
-  licensePresent: boolean
-  license: unknown
-}
 
 export const OPT_1: RubricItem<OptionalRubricContext> = {
   code: 'OPT-1',

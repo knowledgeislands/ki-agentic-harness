@@ -46,11 +46,7 @@ export const hintVerbs = (hint: string): string[] =>
     )
     .filter((verb): verb is string => verb !== undefined)
 
-const ENDORSE_EXTENSION_RES = [
-  /\bprefer that (extension )?skill\b/i,
-  /delegat\w*[^.\n]*\bmodes?\b[^.\n]*\bback\b/i,
-  /\bextends this one\b/i
-]
+const ENDORSE_EXTENSION_RES = [/\bprefer that (extension )?skill\b/i, /delegat\w*[^.\n]*\bmodes?\b[^.\n]*\bback\b/i, /\bextends this one\b/i]
 const DISAVOWAL_CUE = /retir|never|forbid|\bflag|heurist|anti-pattern|disavow|must not|do not/i
 
 export const endorsesRetiredExtension = (markdown: string): boolean => {

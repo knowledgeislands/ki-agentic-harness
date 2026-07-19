@@ -1,4 +1,4 @@
-import type { RubricItem } from '../lib/rubric/rubric.ts'
+import type { RubricItem } from '../../lib/rubric/rubric.ts'
 
 export const KI_INVOKE_1: RubricItem = {
   code: 'KI-INVOKE-1',
@@ -6,8 +6,7 @@ export const KI_INVOKE_1: RubricItem = {
   description: 'A mode-bearing skill explains itself without side effects when invoked with help or without a recognisable mode.',
   sources: ['COMMUNITY', 'ADR-KI-HARNESS-SKILLS-001'],
   judgment: {
-    prompt:
-      'Does explicit help stop after a generated HELP explanation, while an unclear interactive invocation explains the skill before asking for a mode?'
+    prompt: 'Does explicit help stop after a generated HELP explanation, while an unclear interactive invocation explains the skill before asking for a mode?'
   }
 }
 

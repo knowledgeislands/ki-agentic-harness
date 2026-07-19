@@ -26,17 +26,18 @@ scripts/
     checker-reporter.ts
     rubric/
       rubric.ts               # minimal shared rubric types
-  rubrics/
+  rubric/
     # ki-skills-local rubric implementation; never vendored as a dependency
-    name.ts                   # one file per rubric family
-    description.ts
-    optional.ts
-    size.ts
-    references.ts
-    ...
-    support/
+    items/
+      name.ts                   # one file per rubric family
+      description.ts
+      optional.ts
+      size.ts
+      references.ts
+      ...
+    contexts/
+      contexts.ts               # family contracts and named wrapper evidence facets
       text.ts                   # helpers shared by rubric families only
-      contexts.ts               # named wrapper evidence facets
       skill-files.ts            # shared checker traversal helpers
 ```
 
@@ -46,7 +47,9 @@ The shared rubric layer stays deliberately small: types and genuinely cross-fami
 
 `scripts/lib/` is the vendorable module surface: another skill may declare and receive only a module from there.
 
-`scripts/rubrics/` is private to `ki-skills`, including `scripts/rubrics/support/`; it is copied only as part of this skill's own checker payload and never separately declared as a dependency.
+`scripts/rubric/` is private to `ki-skills`: `items/` holds the criteria and `contexts/` holds evidence, parsing, and traversal support.
+
+It is copied only as part of this skill's own checker payload and never separately declared as a dependency.
 
 The TypeScript families are the executable rubric source of truth.
 
@@ -71,14 +74,14 @@ Do not broaden this work into a full checker migration, criterion-catalogue rede
 ## To-do list
 
 - [x] Extract the minimal shared rubric types.
-- [x] Extract shared skill discovery and Markdown-file traversal into `scripts/rubrics/support/skill-files.ts`.
-- [x] Move shared text helpers to `scripts/rubrics/support/text.ts`.
+- [x] Extract shared skill discovery and Markdown-file traversal into `scripts/rubric/contexts/skill-files.ts`.
+- [x] Move shared text helpers to `scripts/rubric/contexts/text.ts`.
 - [x] Codify the NAME family.
 - [x] Codify the DESC family.
 - [x] Codify the OPT family currently implemented by the checker.
 - [x] Codify SIZE, including the opt-in SIZE-5 measurement path.
 - [x] Codify the REF family and move its table-of-contents check.
-- [x] Codify LINK and move the shared Markdown-link helpers under `scripts/rubrics/support/`.
+- [x] Codify LINK and move the shared Markdown-link helpers under `scripts/rubric/contexts/`.
 - [x] Codify the judgment-only BODY, INVOKE, and PROC families.
 - [x] Codify SCRIPT, COLL, and LONG as their own family modules.
 - [x] Codify LAY, including its structural audit callbacks.
@@ -102,7 +105,7 @@ Do not broaden this work into a full checker migration, criterion-catalogue rede
 - A rubric family owns each rule's code, title, description, sources, judgment prompt, audit callback, and conform callback.
 - Wrappers do not reimplement a rule, invent a private finding shape, or translate severity through a second ladder.
 - The shared rubric runtime owns only cross-family types and execution mechanics, including collecting audit findings and converting conform actions into findings.
-- `scripts/rubrics/support/` holds evidence, parsing, and traversal helpers shared by rubric families or both wrappers; it contains no rule policy.
+- `scripts/rubric/contexts/` owns family input contracts, context factories, and evidence/parsing/traversal helpers shared by rubric families or both wrappers; it contains no rule policy.
 - Support modules define the neutral data types they produce. A support module must not import a type back from the family that consumes it.
 - `KiSkillsAuditContext` and `KiSkillsConformContext` may compose named, required family contexts at the wrapper boundary. Dispatch selects the appropriate facet; a rubric family never accepts a repository-wide optional mega-context.
 - Keep a one-use expression inline unless naming it exposes a meaningful domain operation or removes repeated, error-prone mechanics.
@@ -121,4 +124,4 @@ Apply these checks to one later governance skill at a time, only after the root 
 - Its rubric remains the sole source of finding code, title, type, and level; its checker emits evidence and available action only.
 - Its focused source and vendored tests pass before the next skill is considered.
 
-- Its family-local helpers live beside the owning rubric family; helpers shared by families live under `scripts/rubrics/support/`.
+- Its family-local helpers live beside the owning rubric family; helpers shared by families live under `scripts/rubric/contexts/`.

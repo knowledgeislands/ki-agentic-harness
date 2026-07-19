@@ -7,7 +7,7 @@
  * Scope: every skill under a target's `skills/` dir (a single skill dir, or a
  * dir containing skills), matching the house conform shape (conform.ts,
  * conform.ts) — `bun conform.ts [path]` / `ki:skills:conform`.
- * Shared file discovery lives in `scripts/rubrics/support/skill-files.ts`, which is
+ * Shared file discovery lives in `scripts/rubric/contexts/skill-files.ts`, which is
  * private to this skill's rubric implementation rather than a vendorable module.
  *
  *   bun scripts/conform.ts [path] [--dry-run]   # default target: cwd
@@ -27,20 +27,20 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
 import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromItems } from './lib/checker-reporter.ts'
 import { auditRubricItems, conformRubricItems, type ConformAction, findingsFromConformActions, type RubricFinding } from './lib/rubric/rubric.ts'
-import { RUBRIC_ITEMS } from './rubrics/index.ts'
-import { FRONTMATTER } from './rubrics/frontmatter.ts'
-import { createKiShapeContext, KI_SHAPE } from './rubrics/ki-shape.ts'
-import { LAYOUT } from './rubrics/layout.ts'
-import { NAME } from './rubrics/name.ts'
-import { frontmatterLine, insertFrontmatterLine, parseFrontmatter, replaceFrontmatterScalar } from './rubrics/support/frontmatter.ts'
-import type { KiSkillsConformContext } from './rubrics/support/contexts.ts'
-import { hintVerbs, isProcessSkill } from './rubrics/support/modes.ts'
-import { discoverSkillDirs, listMarkdownFiles } from './rubrics/support/skill-files.ts'
+import { RUBRIC_ITEMS } from './rubric/items/index.ts'
+import { FRONTMATTER } from './rubric/items/frontmatter.ts'
+import { KI_SHAPE } from './rubric/items/ki-shape.ts'
+import { LAYOUT } from './rubric/items/layout.ts'
+import { NAME } from './rubric/items/name.ts'
+import { createKiShapeContext, type KiSkillsConformContext } from './rubric/contexts/contexts.ts'
+import { frontmatterLine, insertFrontmatterLine, parseFrontmatter, replaceFrontmatterScalar } from './rubric/contexts/frontmatter.ts'
+import { hintVerbs, isProcessSkill } from './rubric/contexts/modes.ts'
+import { discoverSkillDirs, listMarkdownFiles } from './rubric/contexts/skill-files.ts'
 
 // Each action records a typed domain finding. The canonical reporter owns transport;
 // the bootstrap aggregate is the only terminal renderer.
 const argv = process.argv.slice(2)
-const STRUCTURED_RUBRIC = 'scripts/rubrics/'
+const STRUCTURED_RUBRIC = 'scripts/rubric/'
 const findings: RubricFinding[] = []
 const recordActions = <Context>(actions: readonly ConformAction<Context>[]): boolean => {
   findings.push(...findingsFromConformActions(actions, STRUCTURED_RUBRIC))

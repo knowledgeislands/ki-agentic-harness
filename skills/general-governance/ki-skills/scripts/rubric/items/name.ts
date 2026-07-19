@@ -1,14 +1,9 @@
-import type { RubricFinding, RubricItem } from '../lib/rubric/rubric.ts'
-import { containsXmlTag } from './support/text.ts'
+import type { RubricFinding, RubricItem } from '../../lib/rubric/rubric.ts'
+import type { NameRubricContext } from '../contexts/contexts.ts'
+import { containsXmlTag } from '../contexts/text.ts'
 
 const NAME_MAX_LENGTH = 64
 const RESERVED_WORDS = ['anthropic', 'claude']
-
-export type NameRubricContext = {
-  name: string | undefined
-  directoryName: string
-  setName?: (name: string) => void
-}
 
 export const NAME_1: RubricItem<NameRubricContext> = {
   code: 'NAME-1',

@@ -1,4 +1,4 @@
-import type { RubricItem } from '../lib/rubric/rubric.ts'
+import type { RubricItem } from '../../lib/rubric/rubric.ts'
 
 export const BODY_1: RubricItem = {
   code: 'BODY-1',

@@ -1,11 +1,8 @@
-import type { RubricItem } from '../lib/rubric/rubric.ts'
-import { containsXmlTag, stripCode } from './support/text.ts'
+import type { RubricItem } from '../../lib/rubric/rubric.ts'
+import type { DescriptionRubricContext } from '../contexts/contexts.ts'
+import { containsXmlTag, stripCode } from '../contexts/text.ts'
 
 const DESCRIPTION_MAX_LENGTH = 1024
-
-export type DescriptionRubricContext = {
-  description: string | undefined
-}
 
 export const DESC_1: RubricItem<DescriptionRubricContext> = {
   code: 'DESC-1',
@@ -13,9 +10,7 @@ export const DESC_1: RubricItem<DescriptionRubricContext> = {
   description: 'The skill frontmatter declares a non-empty `description` value.',
   sources: ['SPEC', 'CC'],
   audit: ({ description }) =>
-    !description || description.trim() === ''
-      ? [{ type: 'M', level: 'FAIL', code: DESC_1.code, message: '`description` is missing or empty' }]
-      : []
+    !description || description.trim() === '' ? [{ type: 'M', level: 'FAIL', code: DESC_1.code, message: '`description` is missing or empty' }] : []
 }
 
 export const DESC_2: RubricItem<DescriptionRubricContext> = {
@@ -42,9 +37,7 @@ export const DESC_3: RubricItem<DescriptionRubricContext> = {
   description: 'The skill description contains no XML tags outside inline-code placeholders.',
   sources: ['BP'],
   audit: ({ description }) =>
-    description && containsXmlTag(stripCode(description))
-      ? [{ type: 'M', level: 'FAIL', code: DESC_3.code, message: '`description` contains an XML tag' }]
-      : []
+    description && containsXmlTag(stripCode(description)) ? [{ type: 'M', level: 'FAIL', code: DESC_3.code, message: '`description` contains an XML tag' }] : []
 }
 
 export const DESC_4: RubricItem<DescriptionRubricContext> = {
@@ -95,14 +88,4 @@ export const DESC_9: RubricItem<DescriptionRubricContext> = {
   judgment: { prompt: 'Where skill-selection collision is likely, would explicit non-triggers improve routing?' }
 }
 
-export const DESC: readonly RubricItem<DescriptionRubricContext>[] = [
-  DESC_1,
-  DESC_2,
-  DESC_3,
-  DESC_4,
-  DESC_5,
-  DESC_6,
-  DESC_7,
-  DESC_8,
-  DESC_9
-]
+export const DESC: readonly RubricItem<DescriptionRubricContext>[] = [DESC_1, DESC_2, DESC_3, DESC_4, DESC_5, DESC_6, DESC_7, DESC_8, DESC_9]

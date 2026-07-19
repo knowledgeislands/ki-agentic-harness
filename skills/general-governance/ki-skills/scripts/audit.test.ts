@@ -161,7 +161,7 @@ for (const [suffix, frontmatter] of [
     'checker-contract root → emits cited structured J review prompts',
     parsed.events.some((event) => {
       const finding = event as { type?: string; level?: string; ref?: string }
-      return finding.type === 'J' && finding.level === 'ADVISORY' && finding.ref === 'scripts/rubrics/'
+      return finding.type === 'J' && finding.level === 'ADVISORY' && finding.ref === 'scripts/rubric/'
     })
   )
   check(

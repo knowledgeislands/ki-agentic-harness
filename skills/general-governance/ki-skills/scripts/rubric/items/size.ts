@@ -1,15 +1,9 @@
-import type { RubricItem } from '../lib/rubric/rubric.ts'
-import type { FootprintRow } from './support/footprint.ts'
+import type { RubricItem } from '../../lib/rubric/rubric.ts'
+import type { SizeRubricContext } from '../contexts/contexts.ts'
 
 const BODY_MAX_LINES = 500
 const BODY_MAX_TOKENS = 5000
 const FOOTPRINT_REFERENCE_NOTE_TOKENS = 1500
-
-export type SizeRubricContext = {
-  bodyLines?: number
-  bodyTokens?: number
-  footprint?: { total: number; rows: readonly FootprintRow[] }
-}
 
 export const SIZE_1: RubricItem<SizeRubricContext> = {
   code: 'SIZE-1',

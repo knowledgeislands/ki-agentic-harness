@@ -1,4 +1,4 @@
-import type { RubricItem } from '../lib/rubric/rubric.ts'
+import type { RubricItem } from '../../lib/rubric/rubric.ts'
 
 export const PROC_1: RubricItem = {
   code: 'PROC-1',

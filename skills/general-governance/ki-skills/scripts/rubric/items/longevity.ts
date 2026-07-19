@@ -1,9 +1,8 @@
-import type { RubricItem } from '../lib/rubric/rubric.ts'
-import type { RefreshContext } from './support/longevity.ts'
+import type { RubricItem } from '../../lib/rubric/rubric.ts'
+import type { LongevityRubricContext } from '../contexts/contexts.ts'
+import type { RefreshContext } from '../contexts/longevity.ts'
 
 export const REFRESH_GRACE_DAYS = 14
-
-export type LongevityRubricContext = RefreshContext & { reportStatus?: boolean }
 
 const refreshStatus = (context: RefreshContext): string => {
   const status =

@@ -1,18 +1,5 @@
-import type { RubricItem } from '../lib/rubric/rubric.ts'
-
-export type CheckerImport = {
-  entry: string
-  specifier: string
-  resolvesInsideScripts: boolean
-}
-
-export type KiCheckerRubricContext = {
-  imports: readonly CheckerImport[]
-  rootSkill: boolean
-  checkerModules: readonly string[]
-  checkerDependencies: readonly string[]
-  reporterModuleExists: boolean
-}
+import type { RubricItem } from '../../lib/rubric/rubric.ts'
+import type { KiCheckerRubricContext } from '../contexts/contexts.ts'
 
 export const KI_CHECKER_1: RubricItem<KiCheckerRubricContext> = {
   code: 'KI-CHECKER-1',

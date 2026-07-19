@@ -1,10 +1,6 @@
-import type { RubricItem } from '../lib/rubric/rubric.ts'
-import { hasWikilink, relativeLinkTargets } from './support/links.ts'
-
-export type KiLinkRubricContext = {
-  markdown: string
-  relativeTargetExists: (target: string) => boolean
-}
+import type { RubricItem } from '../../lib/rubric/rubric.ts'
+import type { KiLinkRubricContext } from '../contexts/contexts.ts'
+import { hasWikilink, relativeLinkTargets } from '../contexts/links.ts'
 
 export const KI_LINK_1: RubricItem<KiLinkRubricContext> = {
   code: 'KI-LINK-1',

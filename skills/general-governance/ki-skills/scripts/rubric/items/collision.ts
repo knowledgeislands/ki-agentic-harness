@@ -1,11 +1,5 @@
-import type { RubricItem } from '../lib/rubric/rubric.ts'
-
-export type CollisionTarget = {
-  name: string
-  description: string
-}
-
-export type CollisionRubricContext = { targets: readonly CollisionTarget[] }
+import type { RubricItem } from '../../lib/rubric/rubric.ts'
+import type { CollisionRubricContext } from '../contexts/contexts.ts'
 
 const triggerPhrases = (description: string): string[] => {
   const phrases = new Set<string>()

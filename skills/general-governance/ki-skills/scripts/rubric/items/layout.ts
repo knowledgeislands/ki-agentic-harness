@@ -1,15 +1,6 @@
-import type { RubricItem } from '../lib/rubric/rubric.ts'
-import { hasBackslashLink } from './support/links.ts'
-
-export type LayoutRubricContext = {
-  markdown?: string
-  file?: string
-  writeMarkdown?: (markdown: string) => void
-  missingSkillRoot?: boolean
-  noSkillsFound?: boolean
-  standaloneMarkdownFile?: boolean
-  supportDirectories?: readonly string[]
-}
+import type { RubricItem } from '../../lib/rubric/rubric.ts'
+import type { LayoutRubricContext } from '../contexts/contexts.ts'
+import { hasBackslashLink } from '../contexts/links.ts'
 
 export const LAY_1: RubricItem<LayoutRubricContext> = {
   code: 'LAY-1',

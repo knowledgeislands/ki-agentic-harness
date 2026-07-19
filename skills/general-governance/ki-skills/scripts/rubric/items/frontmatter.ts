@@ -1,9 +1,5 @@
-import type { RubricItem } from '../lib/rubric/rubric.ts'
-
-export type FrontmatterRubricContext = {
-  hasBlock: boolean
-  isMapping: boolean
-}
+import type { RubricItem } from '../../lib/rubric/rubric.ts'
+import type { FrontmatterRubricContext } from '../contexts/contexts.ts'
 
 export const FM_1: RubricItem<FrontmatterRubricContext> = {
   code: 'FM-1',

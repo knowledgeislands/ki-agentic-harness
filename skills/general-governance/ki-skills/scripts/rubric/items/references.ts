@@ -1,11 +1,7 @@
-import type { RubricItem } from '../lib/rubric/rubric.ts'
+import type { RubricItem } from '../../lib/rubric/rubric.ts'
+import type { ReferencesRubricContext } from '../contexts/contexts.ts'
 
 const TOC_LINE_THRESHOLD = 100
-
-export type ReferencesRubricContext = {
-  lineCount: number
-  content: string
-}
 
 const hasTableOfContents = (markdown: string): boolean => {
   const head = markdown.split(/\r?\n/).slice(0, 40).join('\n').toLowerCase()
@@ -58,8 +54,7 @@ export const REF_4: RubricItem<ReferencesRubricContext> = {
 export const REF_5: RubricItem<ReferencesRubricContext> = {
   code: 'REF-5',
   title: 'many-moded skills route independently invoked procedures',
-  description:
-    'A skill with many independent modes retains its shared model and dispatch in SKILL.md, routing procedures to flat mode files.',
+  description: 'A skill with many independent modes retains its shared model and dispatch in SKILL.md, routing procedures to flat mode files.',
   sources: ['BP', 'SPEC'],
   judgment: {
     prompt:
