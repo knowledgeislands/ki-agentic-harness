@@ -3,7 +3,7 @@ import { resolve } from 'node:path'
 import { createToolsContext } from './rubric/contexts/tools.ts'
 import { KI_TOOLS_FAMILY_CODES, KI_TOOLS_RUBRIC } from './rubric/items/index.ts'
 import { runChecker } from './vendored/ki-skills/checker.ts'
-import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
+import { createTerminalStatusTracker, parseCheckerArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
 
 const argv = process.argv.slice(2)
 if (argv.includes('-h') || argv.includes('--help')) {
@@ -16,9 +16,9 @@ if (argv.includes('--educate')) {
   process.stdout.write('# ki-tools — opt-in marker for the tools repository standard\n[ki-tools]\n')
   process.exit(0)
 }
-let parsed: ReturnType<typeof parseReporterArguments>
+let parsed: ReturnType<typeof parseCheckerArguments>
 try {
-  parsed = parseReporterArguments(argv)
+  parsed = parseCheckerArguments(argv)
 } catch (error) {
   process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
   process.exit(2)
@@ -37,7 +37,12 @@ const result = runChecker({
   concern: KI_TOOLS_RUBRIC.concern,
   target,
   rubric: KI_TOOLS_RUBRIC,
-  subjects: [{ familyCodes, context: () => context }]
+  subjects: [{ familyCodes, context: () => context }],
+  statusTracker: createTerminalStatusTracker({
+    mode: parsed.progress,
+    interactive: Boolean(process.stderr.isTTY),
+    write: (line) => process.stderr.write(line)
+  })
 })
 process.stdout.write(renderCheckerResult(result, { ...parsed.options, colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR) }))
 process.exit(result.exitCode)

@@ -2,8 +2,8 @@
 import { resolve } from 'node:path'
 import { createHarnessContext, type HarnessRubricContext } from './rubric/contexts/harness.ts'
 import { KI_HARNESS_RUBRIC } from './rubric/items/index.ts'
-import { type CheckerResult, runChecker } from './vendored/ki-skills/checker.ts'
-import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
+import { type CheckerResult, type CheckerStatusTracker, runChecker } from './vendored/ki-skills/checker.ts'
+import { createTerminalStatusTracker, parseCheckerArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
 import type { RubricDefinition } from './vendored/ki-skills/rubric.ts'
 
 const usage = `Usage: bun scripts/conform.ts [harness-path] [--dry-run] [--reporter=terminal] [--reporter-levels=all]
@@ -19,14 +19,16 @@ export const runHarnessConform = (
   target: string,
   dryRun: boolean,
   rubric: RubricDefinition<HarnessRubricContext> = KI_HARNESS_RUBRIC,
-  contextFactory: HarnessContextFactory = createHarnessContext
+  contextFactory: HarnessContextFactory = createHarnessContext,
+  statusTracker?: CheckerStatusTracker
 ): CheckerResult =>
   runChecker({
     mode: 'conform',
     concern: rubric.concern,
     target,
     rubric,
-    subjects: [{ familyCodes: rubric.families.map((family) => family.code), context: () => contextFactory(target, dryRun) }]
+    subjects: [{ familyCodes: rubric.families.map((family) => family.code), context: () => contextFactory(target, dryRun) }],
+    statusTracker
   })
 
 const main = (): never => {
@@ -36,9 +38,9 @@ const main = (): never => {
     process.exit(0)
   }
 
-  let parsed: ReturnType<typeof parseReporterArguments>
+  let parsed: ReturnType<typeof parseCheckerArguments>
   try {
-    parsed = parseReporterArguments(rawArguments)
+    parsed = parseCheckerArguments(rawArguments)
   } catch (error) {
     process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
     process.exit(2)
@@ -56,7 +58,17 @@ const main = (): never => {
   }
 
   const target = resolve(targets[0] ?? '.')
-  const result = runHarnessConform(target, parsed.arguments.includes('--dry-run'))
+  const result = runHarnessConform(
+    target,
+    parsed.arguments.includes('--dry-run'),
+    KI_HARNESS_RUBRIC,
+    createHarnessContext,
+    createTerminalStatusTracker({
+      mode: parsed.progress,
+      interactive: Boolean(process.stderr.isTTY),
+      write: (line) => process.stderr.write(line)
+    })
+  )
   process.stdout.write(renderCheckerResult(result, { ...parsed.options, colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR) }))
   process.exit(result.exitCode)
 }

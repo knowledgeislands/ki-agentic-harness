@@ -21,12 +21,45 @@ export type CheckerEvaluationSubject<RootContext> = {
   subject?: string
 }
 
+export type CheckerStatusEvent =
+  | {
+      type: 'start'
+      mode: RubricMode
+      completed: 0
+      total: number
+    }
+  | {
+      type: 'item-complete'
+      mode: RubricMode
+      completed: number
+      total: number
+      code: string
+      title: string
+      phase: RubricPhase
+      subject?: string
+    }
+  | {
+      type: 'complete'
+      mode: RubricMode
+      completed: number
+      total: number
+    }
+  | {
+      type: 'failed'
+      mode: RubricMode
+      completed: number
+      total: number
+    }
+
+export type CheckerStatusTracker = (event: CheckerStatusEvent) => void
+
 export type CheckerInput<RootContext> = {
   mode: RubricMode
   concern: string
   target: string
   rubric: RubricDefinition<RootContext>
   subjects: readonly CheckerEvaluationSubject<RootContext>[]
+  statusTracker?: CheckerStatusTracker
 }
 
 export type CheckerRunIdentity = {
@@ -227,10 +260,22 @@ const findingLevel = (item: RubricItem<never>, outcome: ExecutionOutcome): Check
   return outcome.status
 }
 
-const executeRubric = <RootContext>(input: CheckerInput<RootContext>): CheckerFinding[] => {
+const emitStatus = (tracker: CheckerStatusTracker | undefined, event: CheckerStatusEvent): void => {
+  try {
+    tracker?.(event)
+  } catch {
+    // Status presentation is auxiliary, so a broken writer cannot change checking.
+  }
+}
+
+const executeRubric = <RootContext>(
+  input: CheckerInput<RootContext>,
+  plannedExecutions: readonly PlannedExecution<RootContext>[],
+  onItemComplete: (planned: PlannedExecution<RootContext>) => void
+): CheckerFinding[] => {
   const findings: CheckerFinding[] = []
   const auditContexts = new Map<number, RootContext>()
-  for (const planned of planExecutions(input)) {
+  for (const planned of plannedExecutions) {
     if (input.mode === 'audit' && !auditContexts.has(planned.subjectIndex))
       auditContexts.set(planned.subjectIndex, planned.subject.context())
     const rootContext = input.mode === 'audit' ? (auditContexts.get(planned.subjectIndex) as RootContext) : planned.subject.context()
@@ -246,6 +291,8 @@ const executeRubric = <RootContext>(input: CheckerInput<RootContext>): CheckerFi
         ...(subject ? { subject } : {})
       })
     }
+
+    onItemComplete(planned)
   }
   return findings
 }
@@ -254,24 +301,47 @@ export const runChecker = <RootContext>(input: CheckerInput<RootContext>): Check
   if (!input.concern.trim()) throw new Error('checker concern must be non-empty')
   if (!input.target.trim()) throw new Error('checker target must be non-empty')
 
-  const findings = executeRubric(input)
-  const summary = emptySummary(selectedJudgmentCount(input.rubric, input.subjects))
-  for (const finding of findings) summary[LEVEL_SUMMARY_KEYS[finding.level]]++
+  const plannedExecutions = planExecutions(input)
+  let completed = 0
+  emitStatus(input.statusTracker, { type: 'start', mode: input.mode, completed: 0, total: plannedExecutions.length })
 
-  const identity: CheckerRunIdentity = {
-    version: 1,
-    runId: crypto.randomUUID(),
-    mode: input.mode,
-    concern: input.concern,
-    target: input.target,
-    generatedAt: new Date().toISOString()
+  try {
+    const findings = executeRubric(input, plannedExecutions, (planned) => {
+      completed++
+      emitStatus(input.statusTracker, {
+        type: 'item-complete',
+        mode: input.mode,
+        completed,
+        total: plannedExecutions.length,
+        code: planned.item.code,
+        title: planned.item.title,
+        phase: planned.phase,
+        ...(planned.subject.subject ? { subject: planned.subject.subject } : {})
+      })
+    })
+    const summary = emptySummary(selectedJudgmentCount(input.rubric, input.subjects))
+    for (const finding of findings) summary[LEVEL_SUMMARY_KEYS[finding.level]]++
+
+    const identity: CheckerRunIdentity = {
+      version: 1,
+      runId: crypto.randomUUID(),
+      mode: input.mode,
+      concern: input.concern,
+      target: input.target,
+      generatedAt: new Date().toISOString()
+    }
+    const records: CheckerRecord[] = [
+      { ...identity, record: 'meta' },
+      ...findings.map((finding) => ({ ...identity, record: 'finding' as const, ...finding })),
+      { ...identity, record: 'summary', summary }
+    ]
+    const result = { records, findings, summary, exitCode: findings.some((finding) => finding.level === 'FAIL') ? 1 : 0 } as const
+    emitStatus(input.statusTracker, { type: 'complete', mode: input.mode, completed, total: plannedExecutions.length })
+    return result
+  } catch (error) {
+    emitStatus(input.statusTracker, { type: 'failed', mode: input.mode, completed, total: plannedExecutions.length })
+    throw error
   }
-  const records: CheckerRecord[] = [
-    { ...identity, record: 'meta' },
-    ...findings.map((finding) => ({ ...identity, record: 'finding' as const, ...finding })),
-    { ...identity, record: 'summary', summary }
-  ]
-  return { records, findings, summary, exitCode: findings.some((finding) => finding.level === 'FAIL') ? 1 : 0 }
 }
 
 export const checkerJsonl = (records: readonly CheckerRecord[]): string => `${records.map((record) => JSON.stringify(record)).join('\n')}\n`

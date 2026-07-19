@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 import { describe, expect, test } from 'bun:test'
-import { createTerminalStatusTracker, parseProgressArguments, parseReporterArguments } from './reporter.ts'
+import { createTerminalStatusTracker, parseCheckerArguments, parseProgressArguments, parseReporterArguments } from './reporter.ts'
 
 describe('checker reporter arguments', () => {
   test('defaults to JSONL and preserves checker arguments', () => {
@@ -38,6 +38,14 @@ describe('checker reporter arguments', () => {
       mode: 'always'
     })
     expect(() => parseProgressArguments(['--progress=soon'])).toThrow('--progress accepts auto, always, never')
+  })
+
+  test('composes progress and reporter options for checker commands', () => {
+    expect(parseCheckerArguments(['--progress=always', '--reporter=terminal', '--reporter-levels=warn', 'target'])).toEqual({
+      arguments: ['target'],
+      options: { reporter: 'terminal', levels: ['WARN'] },
+      progress: 'always'
+    })
   })
 
   test('renders progress on its separate status channel', () => {

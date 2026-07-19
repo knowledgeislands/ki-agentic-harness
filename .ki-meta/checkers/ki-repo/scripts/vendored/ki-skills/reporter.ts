@@ -30,6 +30,10 @@ export type ParsedProgressArguments = {
   mode: ProgressMode
 }
 
+export type ParsedCheckerArguments = ParsedReporterArguments & {
+  progress: ProgressMode
+}
+
 type TextStyle = (text: string) => string
 
 const plain: TextStyle = (text) => text
@@ -141,6 +145,11 @@ export const parseProgressArguments = (argv: readonly string[]): ParsedProgressA
     mode = value as ProgressMode
   }
   return { arguments: arguments_, mode }
+}
+
+export const parseCheckerArguments = (argv: readonly string[]): ParsedCheckerArguments => {
+  const progress = parseProgressArguments(argv)
+  return { ...parseReporterArguments(progress.arguments), progress: progress.mode }
 }
 
 const progressBar = (completed: number, total: number): string => {

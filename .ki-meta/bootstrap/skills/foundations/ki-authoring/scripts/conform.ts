@@ -5,7 +5,7 @@ import { resolve } from 'node:path'
 import { createAuthoringContextFactory } from './rubric/contexts/authoring.ts'
 import { KI_AUTHORING_RUBRIC } from './rubric/items/index.ts'
 import { runChecker } from './vendored/ki-skills/checker.ts'
-import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
+import { createTerminalStatusTracker, parseCheckerArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
 
 const argv = process.argv.slice(2)
 if (argv.includes('-h') || argv.includes('--help')) {
@@ -22,15 +22,15 @@ Options:
   process.exit(0)
 }
 
-let parsedReporter: ReturnType<typeof parseReporterArguments>
+let parsed: ReturnType<typeof parseCheckerArguments>
 try {
-  parsedReporter = parseReporterArguments(argv)
+  parsed = parseCheckerArguments(argv)
 } catch (error) {
   process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
   process.exit(2)
 }
-const unknown = parsedReporter.arguments.filter((argument) => argument.startsWith('-') && argument !== '--dry-run')
-const targets = parsedReporter.arguments.filter((argument) => !argument.startsWith('-'))
+const unknown = parsed.arguments.filter((argument) => argument.startsWith('-') && argument !== '--dry-run')
+const targets = parsed.arguments.filter((argument) => !argument.startsWith('-'))
 if (unknown.length > 0) {
   process.stderr.write(`error: unknown option: ${unknown[0]}\n`)
   process.exit(2)
@@ -48,11 +48,14 @@ const result = runChecker({
   subjects: [
     {
       familyCodes: ['MD', 'OWN', 'TOML', 'SYNC'],
-      context: createAuthoringContextFactory({ target, dryRun: parsedReporter.arguments.includes('--dry-run') })
+      context: createAuthoringContextFactory({ target, dryRun: parsed.arguments.includes('--dry-run') })
     }
-  ]
+  ],
+  statusTracker: createTerminalStatusTracker({
+    mode: parsed.progress,
+    interactive: Boolean(process.stderr.isTTY),
+    write: (line) => process.stderr.write(line)
+  })
 })
-process.stdout.write(
-  renderCheckerResult(result, { ...parsedReporter.options, colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR) })
-)
+process.stdout.write(renderCheckerResult(result, { ...parsed.options, colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR) }))
 process.exit(result.exitCode)

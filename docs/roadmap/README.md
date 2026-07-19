@@ -16,7 +16,7 @@ Canonical themes and active execution plans.
 - **Title:** Show progress during checker execution
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/show-progress-during-checker-execution`
-- **Status:** in-progress
+- **Status:** done
 - **Blocks:** —
 
 ### [FND-003](foundation-tooling/plans/FND-003-add-a-safe-repository-clean-operation.md)

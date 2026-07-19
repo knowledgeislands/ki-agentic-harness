@@ -5,7 +5,7 @@ import { resolve } from 'node:path'
 import { createBootstrapContextFactory } from './rubric/contexts/bootstrap.ts'
 import { KI_BOOTSTRAP_RUBRIC } from './rubric/items/index.ts'
 import { runChecker } from './vendored/ki-skills/checker.ts'
-import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
+import { createTerminalStatusTracker, parseCheckerArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
 
 const argv = process.argv.slice(2)
 if (argv.includes('-h') || argv.includes('--help')) {
@@ -21,16 +21,16 @@ Options:
   process.exit(0)
 }
 
-let parsedReporter: ReturnType<typeof parseReporterArguments>
+let parsed: ReturnType<typeof parseCheckerArguments>
 try {
-  parsedReporter = parseReporterArguments(argv)
+  parsed = parseCheckerArguments(argv)
 } catch (error) {
   process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
   process.exit(2)
 }
 
-const unknown = parsedReporter.arguments.filter((argument) => argument.startsWith('-'))
-const targets = parsedReporter.arguments.filter((argument) => !argument.startsWith('-'))
+const unknown = parsed.arguments.filter((argument) => argument.startsWith('-'))
+const targets = parsed.arguments.filter((argument) => !argument.startsWith('-'))
 if (unknown.length > 0) {
   process.stderr.write(`error: unknown option: ${unknown[0]}\n`)
   process.exit(2)
@@ -46,12 +46,17 @@ const result = runChecker({
   concern: KI_BOOTSTRAP_RUBRIC.concern,
   target,
   rubric: KI_BOOTSTRAP_RUBRIC,
-  subjects: [{ familyCodes: ['BOOT'], context: createBootstrapContextFactory({ target }) }]
+  subjects: [{ familyCodes: ['BOOT'], context: createBootstrapContextFactory({ target }) }],
+  statusTracker: createTerminalStatusTracker({
+    mode: parsed.progress,
+    interactive: Boolean(process.stderr.isTTY),
+    write: (line) => process.stderr.write(line)
+  })
 })
 
 process.stdout.write(
   renderCheckerResult(result, {
-    ...parsedReporter.options,
+    ...parsed.options,
     colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR)
   })
 )

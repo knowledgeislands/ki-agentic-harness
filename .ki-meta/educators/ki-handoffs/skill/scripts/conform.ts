@@ -2,8 +2,8 @@
 import { resolve } from 'node:path'
 import { createHandoffsContext, type HandoffsRubricContext } from './rubric/contexts/handoffs.ts'
 import { KI_HANDOFFS_RUBRIC } from './rubric/items/index.ts'
-import { type CheckerResult, runChecker } from './vendored/ki-skills/checker.ts'
-import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
+import { type CheckerResult, type CheckerStatusTracker, runChecker } from './vendored/ki-skills/checker.ts'
+import { createTerminalStatusTracker, parseCheckerArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
 import type { RubricDefinition } from './vendored/ki-skills/rubric.ts'
 
 const usage = `Usage: bun scripts/conform.ts [directory-or-file] [options]
@@ -24,14 +24,16 @@ export const runHandoffsConform = (
   target: string,
   dryRun: boolean,
   rubric: RubricDefinition<HandoffsRubricContext> = KI_HANDOFFS_RUBRIC,
-  contextFactory: HandoffsContextFactory = createHandoffsContext
+  contextFactory: HandoffsContextFactory = createHandoffsContext,
+  statusTracker?: CheckerStatusTracker
 ): CheckerResult =>
   runChecker({
     mode: 'conform',
     concern: rubric.concern,
     target: resolve(target),
     rubric,
-    subjects: [{ familyCodes: rubric.families.map((family) => family.code), context: () => contextFactory(target, dryRun) }]
+    subjects: [{ familyCodes: rubric.families.map((family) => family.code), context: () => contextFactory(target, dryRun) }],
+    statusTracker
   })
 
 const main = (): never => {
@@ -41,9 +43,9 @@ const main = (): never => {
     process.exit(0)
   }
 
-  let parsed: ReturnType<typeof parseReporterArguments>
+  let parsed: ReturnType<typeof parseCheckerArguments>
   try {
-    parsed = parseReporterArguments(arguments_)
+    parsed = parseCheckerArguments(arguments_)
   } catch (error) {
     process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
     process.exit(2)
@@ -60,7 +62,17 @@ const main = (): never => {
   }
 
   const target = targets[0] ?? '.'
-  const result = runHandoffsConform(target, parsed.arguments.includes('--dry-run'))
+  const result = runHandoffsConform(
+    target,
+    parsed.arguments.includes('--dry-run'),
+    KI_HANDOFFS_RUBRIC,
+    createHandoffsContext,
+    createTerminalStatusTracker({
+      mode: parsed.progress,
+      interactive: Boolean(process.stderr.isTTY),
+      write: (line) => process.stderr.write(line)
+    })
+  )
   process.stdout.write(renderCheckerResult(result, { ...parsed.options, colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR) }))
   process.exit(result.exitCode)
 }

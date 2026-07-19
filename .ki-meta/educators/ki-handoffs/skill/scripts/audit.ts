@@ -3,7 +3,7 @@ import { resolve } from 'node:path'
 import { createHandoffsContext } from './rubric/contexts/handoffs.ts'
 import { KI_HANDOFFS_FAMILY_CODES, KI_HANDOFFS_RUBRIC } from './rubric/items/index.ts'
 import { runChecker } from './vendored/ki-skills/checker.ts'
-import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
+import { createTerminalStatusTracker, parseCheckerArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
 
 const usage = `Usage: bun scripts/audit.ts [directory-or-file] [options]
 
@@ -22,9 +22,9 @@ const main = (): never => {
     process.exit(0)
   }
 
-  let parsed: ReturnType<typeof parseReporterArguments>
+  let parsed: ReturnType<typeof parseCheckerArguments>
   try {
-    parsed = parseReporterArguments(arguments_)
+    parsed = parseCheckerArguments(arguments_)
   } catch (error) {
     process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
     process.exit(2)
@@ -46,7 +46,12 @@ const main = (): never => {
     concern: KI_HANDOFFS_RUBRIC.concern,
     target,
     rubric: KI_HANDOFFS_RUBRIC,
-    subjects: [{ familyCodes: KI_HANDOFFS_FAMILY_CODES, context: () => createHandoffsContext(targetArgument, true) }]
+    subjects: [{ familyCodes: KI_HANDOFFS_FAMILY_CODES, context: () => createHandoffsContext(targetArgument, true) }],
+    statusTracker: createTerminalStatusTracker({
+      mode: parsed.progress,
+      interactive: Boolean(process.stderr.isTTY),
+      write: (line) => process.stderr.write(line)
+    })
   })
   process.stdout.write(renderCheckerResult(result, { ...parsed.options, colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR) }))
   process.exit(result.exitCode)

@@ -1,7 +1,7 @@
 ---
 id: 'FND-002'
 title: Show progress during checker execution
-status: in-progress
+status: done
 roadmap: foundation-tooling/show-progress-during-checker-execution
 blocks: —
 blocked-by: —
@@ -19,9 +19,9 @@ The checker contract separates result collection from final reporting, but it do
 
 1. ✓ Define one small progress event shape and `auto`, `always`, and `never` behaviour in the canonical checker contract, with stdout reserved for result JSONL and progress directed to stderr or an explicitly supplied callback.
 2. ✓ Add a status-tracker callback at stable checker boundaries—run start, each planned mechanical rubric-item completion, and run completion—without coupling rubric items to terminal rendering.
-3. Make individual AUDIT and CONFORM entry points render concise progress in interactive use and remain machine-clean when progress is disabled or stderr is not interactive.
+3. ✓ Make individual AUDIT and CONFORM entry points render concise progress in interactive use and remain machine-clean when progress is disabled or stderr is not interactive.
 4. ✓ Make the aggregate runner surface the active skill plus completed and remaining skills while preserving each child's full result stream for final validation and reporting.
-5. Add focused tests for progress visibility, quiet automation, uncontaminated JSONL, failure handling, and aggregate sequencing; then re-vendor and run the serial repository gates.
+5. ✓ Add focused tests for progress visibility, quiet automation, uncontaminated JSONL, failure handling, and aggregate sequencing; then re-vendor and run the serial repository gates.
 
 ## Files touched
 

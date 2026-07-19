@@ -2,8 +2,8 @@
 import { resolve } from 'node:path'
 import { type AgentsRubricContext, createAgentsContext } from './rubric/contexts/agents.ts'
 import { KI_AGENTS_RUBRIC } from './rubric/items/index.ts'
-import { type CheckerResult, runChecker } from './vendored/ki-skills/checker.ts'
-import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
+import { type CheckerResult, type CheckerStatusTracker, runChecker } from './vendored/ki-skills/checker.ts'
+import { createTerminalStatusTracker, parseCheckerArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
 import type { RubricDefinition } from './vendored/ki-skills/rubric.ts'
 
 const usage = `Usage: bun scripts/conform.ts [agent-or-directory] [options]
@@ -24,14 +24,16 @@ export const runAgentsConform = (
   target: string,
   dryRun: boolean,
   rubric: RubricDefinition<AgentsRubricContext> = KI_AGENTS_RUBRIC,
-  contextFactory: AgentsContextFactory = createAgentsContext
+  contextFactory: AgentsContextFactory = createAgentsContext,
+  statusTracker?: CheckerStatusTracker
 ): CheckerResult =>
   runChecker({
     mode: 'conform',
     concern: rubric.concern,
     target: resolve(target),
     rubric,
-    subjects: [{ familyCodes: rubric.families.map((family) => family.code), context: () => contextFactory([target], dryRun) }]
+    subjects: [{ familyCodes: rubric.families.map((family) => family.code), context: () => contextFactory([target], dryRun) }],
+    statusTracker
   })
 
 const main = (): never => {
@@ -41,9 +43,9 @@ const main = (): never => {
     process.exit(0)
   }
 
-  let parsed: ReturnType<typeof parseReporterArguments>
+  let parsed: ReturnType<typeof parseCheckerArguments>
   try {
-    parsed = parseReporterArguments(arguments_)
+    parsed = parseCheckerArguments(arguments_)
   } catch (error) {
     process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
     process.exit(2)
@@ -60,7 +62,17 @@ const main = (): never => {
   }
 
   const target = targets[0] ?? 'agents'
-  const result = runAgentsConform(target, parsed.arguments.includes('--dry-run'))
+  const result = runAgentsConform(
+    target,
+    parsed.arguments.includes('--dry-run'),
+    KI_AGENTS_RUBRIC,
+    createAgentsContext,
+    createTerminalStatusTracker({
+      mode: parsed.progress,
+      interactive: Boolean(process.stderr.isTTY),
+      write: (line) => process.stderr.write(line)
+    })
+  )
   process.stdout.write(renderCheckerResult(result, { ...parsed.options, colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR) }))
   process.exit(result.exitCode)
 }

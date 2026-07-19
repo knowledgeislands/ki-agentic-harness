@@ -3,7 +3,7 @@ import { resolve } from 'node:path'
 import { createHarnessContext } from './rubric/contexts/harness.ts'
 import { KI_HARNESS_FAMILY_CODES, KI_HARNESS_RUBRIC } from './rubric/items/index.ts'
 import { runChecker } from './vendored/ki-skills/checker.ts'
-import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
+import { createTerminalStatusTracker, parseCheckerArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
 
 const usage = `Usage: bun scripts/audit.ts [harness-path] [--reporter=terminal] [--reporter-levels=all]
 
@@ -18,9 +18,9 @@ const main = (): never => {
     process.exit(0)
   }
 
-  let parsed: ReturnType<typeof parseReporterArguments>
+  let parsed: ReturnType<typeof parseCheckerArguments>
   try {
-    parsed = parseReporterArguments(rawArguments)
+    parsed = parseCheckerArguments(rawArguments)
   } catch (error) {
     process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
     process.exit(2)
@@ -42,7 +42,12 @@ const main = (): never => {
     concern: KI_HARNESS_RUBRIC.concern,
     target,
     rubric: KI_HARNESS_RUBRIC,
-    subjects: [{ familyCodes: KI_HARNESS_FAMILY_CODES, context: () => createHarnessContext(target, true) }]
+    subjects: [{ familyCodes: KI_HARNESS_FAMILY_CODES, context: () => createHarnessContext(target, true) }],
+    statusTracker: createTerminalStatusTracker({
+      mode: parsed.progress,
+      interactive: Boolean(process.stderr.isTTY),
+      write: (line) => process.stderr.write(line)
+    })
   })
 
   process.stdout.write(renderCheckerResult(result, { ...parsed.options, colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR) }))

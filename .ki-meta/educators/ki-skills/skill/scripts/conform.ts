@@ -6,7 +6,7 @@ import type { KiSkillsRubricContext } from './rubric/contexts/contexts.ts'
 import { createKiSkillsSubjects, KI_SKILLS_SUBJECT_FAMILIES } from './rubric/contexts/subjects.ts'
 import { KI_SKILLS_RUBRIC } from './rubric/items/index.ts'
 import { type CheckerEvaluationSubject, runChecker } from './shared/checker.ts'
-import { createTerminalStatusTracker, parseProgressArguments, parseReporterArguments, renderCheckerResult } from './shared/reporter.ts'
+import { createTerminalStatusTracker, parseCheckerArguments, renderCheckerResult } from './shared/reporter.ts'
 
 const argv = process.argv.slice(2)
 if (argv.includes('-h') || argv.includes('--help')) {
@@ -23,16 +23,14 @@ Options:
 `)
   process.exit(0)
 }
-let parsedProgress: ReturnType<typeof parseProgressArguments>
-let parsedReporter: ReturnType<typeof parseReporterArguments>
+let parsed: ReturnType<typeof parseCheckerArguments>
 try {
-  parsedProgress = parseProgressArguments(argv)
-  parsedReporter = parseReporterArguments(parsedProgress.arguments)
+  parsed = parseCheckerArguments(argv)
 } catch (error) {
   process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
   process.exit(2)
 }
-const modeArguments = parsedReporter.arguments
+const modeArguments = parsed.arguments
 const unknownOptions = modeArguments.filter((argument) => argument.startsWith('-') && argument !== '--dry-run')
 if (unknownOptions.length > 0) {
   process.stderr.write(`error: unknown option: ${unknownOptions[0]}\n`)
@@ -64,7 +62,7 @@ const result = runChecker({
   rubric: KI_SKILLS_RUBRIC,
   subjects,
   statusTracker: createTerminalStatusTracker({
-    mode: parsedProgress.mode,
+    mode: parsed.progress,
     interactive: Boolean(process.stderr.isTTY),
     write: (line) => process.stderr.write(line)
   })
@@ -73,7 +71,7 @@ const result = runChecker({
 scope.persist()
 process.stdout.write(
   renderCheckerResult(result, {
-    ...parsedReporter.options,
+    ...parsed.options,
     colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR)
   })
 )
