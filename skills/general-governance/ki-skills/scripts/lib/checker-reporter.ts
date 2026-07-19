@@ -10,11 +10,13 @@
  */
 
 import { readFileSync } from 'node:fs'
-import { type RubricFinding, type RubricLevel } from './rubric/rubric.ts'
+import { RUBRIC_LEVELS, type RubricFinding, type RubricLevel } from './rubric/rubric.ts'
 
 // The rubric owns finding identity and severity. The reporter owns only the
 // JSONL transport and keeps these aliases for its existing public surface.
+export const CHECKER_LEVELS = RUBRIC_LEVELS
 export type CheckerLevel = RubricLevel
+export type CheckerFinding = RubricFinding
 
 export type CheckerReporterRun = {
   version: 1
@@ -277,6 +279,7 @@ export const validateCheckerReporterEvents = (events: readonly unknown[], exitCo
     const type = event.type
     const level = event.level
     if (type !== 'M' && type !== 'J') errors.push(`${label} type must be M or J`)
+    if (typeof level !== 'string' || !CHECKER_LEVELS.includes(level as CheckerLevel)) errors.push(`${label} level is not recognised`)
     if (!nonEmptyString(event.code)) errors.push(`${label} code must be non-empty`)
     if (!nonEmptyString(event.message)) errors.push(`${label} message must be non-empty`)
     if (event.ref !== undefined && !nonEmptyString(event.ref)) errors.push(`${label} ref must be non-empty when present`)
@@ -285,6 +288,7 @@ export const validateCheckerReporterEvents = (events: readonly unknown[], exitCo
     if (type === 'J' && !nonEmptyString(event.ref)) errors.push(`${label} J finding must cite its criterion`)
     if (type === 'M' && (level === 'FAIL' || level === 'WARN' || level === 'POLISH') && !nonEmptyString(event.ref))
       errors.push(`${label} ${level} M finding must cite its criterion`)
+    if (typeof level === 'string' && CHECKER_LEVELS.includes(level as CheckerLevel)) {
       counts[level.toLowerCase() as Lowercase<CheckerLevel>]++
       if (type === 'M' && level === 'FAIL') mechanicalFailure = true
     }

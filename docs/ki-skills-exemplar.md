@@ -73,14 +73,14 @@ Do not broaden this work into a full checker migration, criterion-catalogue rede
 - [x] Codify the NAME family.
 - [x] Codify the DESC family.
 - [x] Codify the OPT family currently implemented by the checker.
-- [x] Codify SIZE-1 through SIZE-4; retain SIZE-5 until its opt-in measurement path moves.
+- [x] Codify SIZE, including the opt-in SIZE-5 measurement path.
 - [x] Codify the REF family and move its table-of-contents check.
 - [x] Codify LINK and move the shared Markdown-link helpers under `scripts/rubrics/support/`.
 - [x] Codify the judgment-only BODY, INVOKE, and PROC families.
 - [x] Codify SCRIPT, COLL, and LONG as their own family modules.
-- [ ] Finish LAY: LAY-4 is codified; LAY-1 through LAY-3 still need their structural audit callbacks.
+- [x] Codify LAY, including its structural audit callbacks.
 - [x] Codify SHAPE; move its existing mechanical callbacks next, including the root-contract rule.
-- [ ] Move existing SCRIPT, COLL, and LONG mechanical callbacks into their family implementations.
+- [x] Move existing COLL and LONG mechanical callbacks into their family implementations; SCRIPT remains judgment-only.
 - [ ] Replace Markdown-derived judgment reporting only after structured family coverage is complete.
 - [ ] Retire `references/rubric.md` only after the structured rubric renders an equivalent readable reference and passes parity verification.
 
@@ -92,6 +92,22 @@ Do not broaden this work into a full checker migration, criterion-catalogue rede
 - `ki-skills` validates its root contract, direct JSONL output, module resolution, and vendored consumer copies through focused tests.
 - `ki-engineering` proves the dependent model without no-op narration or a second presentation path.
 
+## Exemplar rules
+
+- `audit.ts` owns command arguments, target reads, evidence assembly, rubric dispatch, and final reporter invocation.
+- `conform.ts` owns command arguments, target reads, safe write callbacks, dry-run enforcement, rubric dispatch, and final reporter invocation.
+- A rubric family owns each rule's code, title, description, sources, judgment prompt, audit callback, and conform callback.
+- Wrappers do not reimplement a rule, invent a private finding shape, or translate severity through a second ladder.
+- The shared rubric runtime owns only cross-family types and execution mechanics, including collecting audit findings and converting conform actions into findings.
+- `scripts/rubrics/support/` holds evidence, parsing, and traversal helpers shared by rubric families or both wrappers; it contains no rule policy.
+- Support modules define the neutral data types they produce. A support module must not import a type back from the family that consumes it.
+- Keep contexts family-specific. Do not introduce one repository-wide context whose optional fields model every rubric family.
+- Keep a one-use expression inline unless naming it exposes a meaningful domain operation or removes repeated, error-prone mechanics.
+- Parse one artifact through one shared read model. Mutation helpers may preserve the raw representation, but audit and conform must not independently interpret the same frontmatter.
+- A conform callback receives explicit write capabilities, performs only its declared safe action, and returns a typed action; the wrapper converts actions through the shared rubric runtime.
+- Manual or judgment work is a canonical ADVISORY finding, not a parallel TODO collection or private output stream.
+- Tests sit beside the file or command they cover and prove both the source command and its dry-run or vendored boundary where applicable.
+
 ## Rollout
 
 Apply these checks to one later governance skill at a time, only after the root exemplar is complete.
@@ -102,4 +118,4 @@ Apply these checks to one later governance skill at a time, only after the root 
 - Its rubric remains the sole source of finding code, title, type, and level; its checker emits evidence and available action only.
 - Its focused source and vendored tests pass before the next skill is considered.
 
-- Its family-local helpers live beside the owning rubric family, under `scripts/rubrics/lib/` only when another family genuinely shares them.
+- Its family-local helpers live beside the owning rubric family; helpers shared by families live under `scripts/rubrics/support/`.

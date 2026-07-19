@@ -19,7 +19,9 @@ export const LAY_1: RubricItem<LayoutRubricContext> = {
   audit: ({ missingSkillRoot, noSkillsFound }) => {
     if (noSkillsFound) return [{ type: 'M', level: 'FAIL', code: LAY_1.code, message: 'No skills were found below the requested target.' }]
     return missingSkillRoot ? [{ type: 'M', level: 'FAIL', code: LAY_1.code, message: 'SKILL.md is missing at the skill root' }] : []
-  }
+  },
+  conform: ({ missingSkillRoot, noSkillsFound }) =>
+    missingSkillRoot || noSkillsFound ? [{ item: LAY_1, level: 'ADVISORY', message: 'SKILL.md is missing; author it by hand', file: 'SKILL.md' }] : []
 }
 
 export const LAY_2: RubricItem<LayoutRubricContext> = {

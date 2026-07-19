@@ -15,7 +15,8 @@ export const NAME_1: RubricItem<NameRubricContext> = {
   title: 'name is present',
   description: 'The skill frontmatter declares a non-empty `name` value.',
   sources: ['SPEC', 'CC'],
-  audit: ({ name }) => (!name ? [{ type: 'M', level: 'FAIL', code: NAME_1.code, message: '`name` is missing from frontmatter' }] : [])
+  audit: ({ name }) => (!name ? [{ type: 'M', level: 'FAIL', code: NAME_1.code, message: '`name` is missing from frontmatter' }] : []),
+  conform: ({ name }) => (!name ? [{ item: NAME_1, level: 'ADVISORY', message: '`name` is missing; author it by hand', file: 'SKILL.md' }] : [])
 }
 
 export const NAME_2: RubricItem<NameRubricContext> = {
@@ -82,12 +83,9 @@ export const NAME_6: RubricItem<NameRubricContext> = {
   sources: ['BP'],
   audit: ({ name }) => {
     if (!name) return []
-    const findings: RubricFinding[] = containsXmlTag(name)
-      ? [{ type: 'M', level: 'FAIL', code: NAME_6.code, message: '`name` contains an XML tag' }]
-      : []
+    const findings: RubricFinding[] = containsXmlTag(name) ? [{ type: 'M', level: 'FAIL', code: NAME_6.code, message: '`name` contains an XML tag' }] : []
     for (const word of RESERVED_WORDS)
-      if (name.includes(word))
-        findings.push({ type: 'M', level: 'FAIL', code: NAME_6.code, message: `\`name\` contains the reserved word "${word}"` })
+      if (name.includes(word)) findings.push({ type: 'M', level: 'FAIL', code: NAME_6.code, message: `\`name\` contains the reserved word "${word}"` })
     return findings
   }
 }

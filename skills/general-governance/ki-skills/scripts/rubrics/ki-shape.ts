@@ -235,7 +235,8 @@ export const KI_SHAPE_11: RubricItem<KiShapeRubricContext> = {
         ]
       : [],
   conform: ({ skill, setArgumentHint }) => {
-    if (!skill?.argumentHint || skill.hintVerbs.includes('HELP')) return []
+    if (!skill?.governanceSkill || skill.hintVerbs.includes('HELP')) return []
+    if (!skill.argumentHint) return [{ item: KI_SHAPE_11, level: 'ADVISORY', message: '`argument-hint` is missing; author it by hand', file: 'SKILL.md' }]
     if (!setArgumentHint) throw new Error('KI-SHAPE-11 conform requires the setArgumentHint capability')
     setArgumentHint(`${skill.argumentHint} | help`)
     return [{ item: KI_SHAPE_11, message: 'appended `help` to argument-hint', file: 'SKILL.md' }]
@@ -269,7 +270,16 @@ export const KI_SHAPE_12: RubricItem<KiShapeRubricContext> = {
     return findings
   },
   conform: ({ skill, setArgumentHint }) => {
-    if (!skill?.governanceSkill || !skill.argumentHint) return []
+    if (!skill?.governanceSkill) return []
+    if (!skill.argumentHint)
+      return [
+        {
+          item: KI_SHAPE_12,
+          level: 'ADVISORY',
+          message: '`argument-hint` is missing, so the universal mode vocabulary must be authored by hand',
+          file: 'SKILL.md'
+        }
+      ]
     const missing = UNIVERSAL_VERBS.filter((verb) => !skill.hintVerbs.includes(verb))
     if (missing.length === 0) return []
     if (!setArgumentHint) throw new Error('KI-SHAPE-12 conform requires the setArgumentHint capability')
