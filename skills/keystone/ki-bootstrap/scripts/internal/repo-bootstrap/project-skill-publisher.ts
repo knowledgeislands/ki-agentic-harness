@@ -36,7 +36,10 @@ import {
   assertResolvableSkills,
   DependencyDeclarationError,
   declaredSkills,
-  SkillResolutionError
+  isSkill,
+  SKILLS_ROOT,
+  SkillResolutionError,
+  skillDir
 } from './resolve.ts'
 import { gitignoresPath, runtimeAgentsDir, runtimeSkillsDir, supportedRuntimes } from './runtime-paths.ts'
 
@@ -72,10 +75,6 @@ type LinkPlan = {
 
 const SELF = realpathFor(fileURLToPath(import.meta.url))
 const SCRIPTS = dirname(SELF)
-const SKILLS_ROOT = resolve(
-  (process.env.NODE_ENV === 'test' ? process.env.KI_PROJECT_LINKS_TEST_SKILLS_ROOT : undefined) ??
-    join(SCRIPTS, '..', '..', '..', '..', '..')
-)
 const HARNESS_ROOT = resolve(SCRIPTS, '..', '..', '..', '..', '..', '..')
 const AGENTS_ROOT = join(HARNESS_ROOT, 'agents', 'governance')
 const BOOTSTRAP = 'ki-bootstrap'
@@ -248,27 +247,6 @@ function localKiSelfPayload(path: string): boolean {
   return skill?.kind === 'file' && /^name:\s*ki-self\s*$/m.test(skill.bytes?.toString('utf8') ?? '')
 }
 
-let skills: Map<string, string> | undefined
-function skillIndex(): Map<string, string> {
-  if (skills) return skills
-  const index = new Map<string, string>()
-  for (const cluster of readdirSync(SKILLS_ROOT, { withFileTypes: true })) {
-    if (!cluster.isDirectory()) continue
-    const clusterPath = join(SKILLS_ROOT, cluster.name)
-    if (entry(join(clusterPath, 'SKILL.md'))?.kind === 'file') {
-      index.set(cluster.name, clusterPath)
-      continue
-    }
-    for (const skill of readdirSync(clusterPath, { withFileTypes: true })) {
-      if (!skill.isDirectory()) continue
-      const skillPath = join(clusterPath, skill.name)
-      if (entry(join(skillPath, 'SKILL.md'))?.kind === 'file') index.set(skill.name, skillPath)
-    }
-  }
-  skills = index
-  return index
-}
-
 function discoverAgents(): string[] {
   const root = entry(AGENTS_ROOT)
   if (root?.kind !== 'dir') return []
@@ -318,7 +296,6 @@ function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: Pr
   const runtimes = supportedRuntimes(config)
 
   if (scope === 'skills' || scope === 'all') {
-    const index = skillIndex()
     const declared = declaredSkills(config).filter((name) => name !== BOOTSTRAP)
     try {
       assertResolvableSkills(declared)
@@ -337,8 +314,8 @@ function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: Pr
       checkExistingDirectory(target, subdir)
       const desired = new Set(wanted)
       for (const name of wanted) {
-        const source = index.get(name)
-        if (!source || entry(source)?.kind !== 'dir') throw new Error(`skill source is unavailable: ${name}`)
+        const source = skillDir(name)
+        if (entry(source)?.kind !== 'dir') throw new Error(`skill source is unavailable: ${name}`)
         skillTreeIntegrity(source, `skill source ${name}`)
         const destination = join(dir, name)
         const found = entry(destination)
@@ -362,7 +339,7 @@ function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: Pr
           const destination = join(dir, name)
           const found = entry(destination)
           if (!found || desired.has(name)) continue
-          const source = index.get(name)
+          const source = isSkill(name) ? skillDir(name) : undefined
           const managed = source && managedSkillPayload(destination, name, source)
           if (name.startsWith('ki-') && !managed && !(name === LOCAL_GOVERNANCE_SKILL && localKiSelfPayload(destination))) {
             throw new Error(`refusing to remove unfamiliar project skill payload at ${destination}`)
@@ -610,8 +587,8 @@ export function inspectProjectLinks(
       const dir = join(target, subdir)
       const present = entry(dir)?.kind === 'dir' ? readdirSync(dir).filter((name) => name.startsWith('ki-')) : []
       const missing = [...wanted].filter((name) => {
-        const source = skillIndex().get(name)
-        if (!source) return true
+        if (!isSkill(name)) return true
+        const source = skillDir(name)
         const destination = join(dir, name)
         return skillPublication === 'development-link' ? !linkResolvesTo(destination, source) : !copiesSource(destination, name, source)
       })
