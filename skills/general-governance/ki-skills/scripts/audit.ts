@@ -36,11 +36,16 @@ import { NAME } from './rubric/items/name.ts'
 import { OPTIONAL } from './rubric/items/optional.ts'
 import { REFERENCES } from './rubric/items/references.ts'
 import { SIZE } from './rubric/items/size.ts'
-import { createKiShapeContext, type KiShapeSkillContext, type KiSkillsAuditContext, type KiSkillsMarkdownAuditContext } from './rubric/contexts/contexts.ts'
+import {
+  createKiShapeContext,
+  createKiShapeFrontmatterEvidence,
+  type KiShapeSkillContext,
+  type KiSkillsAuditContext,
+  type KiSkillsMarkdownAuditContext
+} from './rubric/contexts/contexts.ts'
 import { createFootprint, estimateTokens } from './rubric/contexts/footprint.ts'
 import { parseFrontmatter, type ParsedFrontmatter } from './rubric/contexts/frontmatter.ts'
 import { createRefreshContext } from './rubric/contexts/longevity.ts'
-import { hintVerbs, isProcessSkill } from './rubric/contexts/modes.ts'
 import { discoverSkillDirs, listMarkdownFiles } from './rubric/contexts/skill-files.ts'
 import { stripCode } from './rubric/contexts/text.ts'
 
@@ -124,7 +129,6 @@ const appendRubricFindings = <Context>(
 ): void => appendFindings(target, auditRubricItems(items, context), subject)
 
 const createKiShapeEvidence = (skillDir: string, frontmatter: ParsedFrontmatter, description: string, body: string): KiShapeSkillContext => {
-  const argumentHint = frontmatter.keys.get('argument-hint')
   const section = extractSection(body, 'Operating modes')
   const markdownFiles = listMarkdownFiles(skillDir)
   const referenceFiles = markdownFiles.filter((file) => basename(file) !== 'SKILL.md')
@@ -151,12 +155,7 @@ const createKiShapeEvidence = (skillDir: string, frontmatter: ParsedFrontmatter,
     })
 
   return {
-    governanceSkill: !isProcessSkill(description),
-    argumentHint,
-    hintVerbs: hintVerbs(argumentHint ?? ''),
-    vendorsPresent: frontmatter.present.has('vendors'),
-    vendors: (frontmatter.keys.get('vendors') ?? '').trim(),
-    scriptNames,
+    ...createKiShapeFrontmatterEvidence({ frontmatter, description, scriptNames }),
     operatingModesSection: section,
     bodyModes: extractBodyModes(section),
     operatingModesIntro: section?.split(/^###\s+|^\s*\|/m)[0] ?? '',

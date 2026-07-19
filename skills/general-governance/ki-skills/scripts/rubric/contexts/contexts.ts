@@ -1,5 +1,7 @@
 import type { FootprintRow } from './footprint.ts'
+import type { ParsedFrontmatter } from './frontmatter.ts'
 import type { RefreshContext } from './longevity.ts'
+import { hintVerbs, isProcessSkill } from './modes.ts'
 
 export type DescriptionRubricContext = {
   description: string | undefined
@@ -122,6 +124,26 @@ export type KiShapeRubricContext = {
   ownershipCollisions: readonly OwnershipCollision[]
   setArgumentHint?: (argumentHint: string) => void
   setVendors?: (vendors: string) => void
+}
+
+export const createKiShapeFrontmatterEvidence = ({
+  frontmatter,
+  description,
+  scriptNames
+}: {
+  frontmatter: ParsedFrontmatter
+  description: string
+  scriptNames: readonly string[]
+}): Pick<KiShapeSkillContext, 'governanceSkill' | 'argumentHint' | 'hintVerbs' | 'vendorsPresent' | 'vendors' | 'scriptNames'> => {
+  const argumentHint = frontmatter.keys.get('argument-hint')
+  return {
+    governanceSkill: !isProcessSkill(description),
+    argumentHint,
+    hintVerbs: hintVerbs(argumentHint ?? ''),
+    vendorsPresent: frontmatter.present.has('vendors'),
+    vendors: (frontmatter.keys.get('vendors') ?? '').trim(),
+    scriptNames
+  }
 }
 
 const emptyKiShapeSkill: KiShapeSkillContext = {
