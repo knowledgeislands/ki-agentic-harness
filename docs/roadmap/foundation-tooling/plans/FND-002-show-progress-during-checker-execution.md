@@ -1,7 +1,7 @@
 ---
 id: 'FND-002'
 title: Show progress during checker execution
-status: open
+status: in-progress
 roadmap: foundation-tooling/show-progress-during-checker-execution
 blocks: —
 blocked-by: —
