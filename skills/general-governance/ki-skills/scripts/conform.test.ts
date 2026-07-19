@@ -66,6 +66,14 @@ const fixture = (): { base: string; dir: string } => {
 }
 
 describe('ki-skills CONFORM wrapper', () => {
+  test('shows help without running the checker', () => {
+    const result = spawnSync('bun', [CONFORM, '--help'], { encoding: 'utf8' })
+    expect(result.status).toBe(0)
+    expect(result.stdout).toContain('Usage: bun scripts/conform.ts')
+    expect(result.stdout).toContain('--dry-run')
+    expect(result.stdout).not.toContain('"record"')
+  })
+
   test('repairs safe drift and leaves no failing audit finding', () => {
     const { base, dir } = fixture()
     try {

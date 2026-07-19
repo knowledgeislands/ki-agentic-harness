@@ -37,6 +37,14 @@ const fixture = (): { base: string; dir: string } => {
 }
 
 describe('ki-skills AUDIT wrapper', () => {
+  test('shows help without running the checker', () => {
+    const result = spawnSync('bun', [AUDIT, '-h'], { encoding: 'utf8' })
+    expect(result.status).toBe(0)
+    expect(result.stdout).toContain('Usage: bun scripts/audit.ts')
+    expect(result.stdout).toContain('--footprint')
+    expect(result.stdout).not.toContain('"record"')
+  })
+
   test('emits the canonical JSONL contract for a valid skill', () => {
     const { base, dir } = fixture()
     try {

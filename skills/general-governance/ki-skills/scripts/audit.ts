@@ -13,6 +13,18 @@ import { createKiSkillsSubjects } from './rubric/contexts/subjects.ts'
 import { KI_SKILLS_RUBRIC, KI_SKILLS_SUBJECT_FAMILIES } from './rubric/items/index.ts'
 
 const rawArgv = process.argv.slice(2)
+if (rawArgv.includes('-h') || rawArgv.includes('--help')) {
+  process.stdout.write(`Usage: bun scripts/audit.ts [target ...] [options]
+
+Audit Agent Skills against the mechanical aspects of the ki-skills rubric.
+
+Options:
+  --footprint       Include the optional token-footprint measurements.
+  --refresh-status  Report source-refresh status.
+  -h, --help        Show this help and exit.
+`)
+  process.exit(0)
+}
 const roots = rawArgv.filter((argument) => !argument.startsWith('-'))
 const reportTarget = resolve('.')
 const scope = createKiSkillsSubjects({

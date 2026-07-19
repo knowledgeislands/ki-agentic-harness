@@ -8,6 +8,17 @@ import { createKiSkillsSubjects } from './rubric/contexts/subjects.ts'
 import { KI_SKILLS_RUBRIC, KI_SKILLS_SUBJECT_FAMILIES } from './rubric/items/index.ts'
 
 const argv = process.argv.slice(2)
+if (argv.includes('-h') || argv.includes('--help')) {
+  process.stdout.write(`Usage: bun scripts/conform.ts [target] [options]
+
+Apply safe mechanical fixes from the ki-skills rubric.
+
+Options:
+  --dry-run   Report the changes without writing them.
+  -h, --help  Show this help and exit.
+`)
+  process.exit(0)
+}
 const target = argv.find((argument) => !argument.startsWith('-')) ?? '.'
 const reportTarget = resolve(target)
 const scope = createKiSkillsSubjects({
