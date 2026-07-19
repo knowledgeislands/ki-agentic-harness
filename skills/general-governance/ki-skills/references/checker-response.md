@@ -2,7 +2,9 @@
 
 The canonical checker response is the JSON Lines (JSONL) machine-readable result returned by every governance skill's `audit.ts` and `conform.ts`.
 
-The executable source of truth is the current [`../assets/checker-reporter.schema.json`](../assets/checker-reporter.schema.json); its filename will align with this response terminology when the shared checker implementation is refactored.
+The current executable schema remains [`../assets/checker-reporter.schema.json`](../assets/checker-reporter.schema.json) only until the shared checker is implemented.
+
+The atomic cutover renames it to `checker-response.schema.json`; the target keeps no legacy alias.
 
 ## Purpose
 
@@ -48,7 +50,7 @@ An applicable J criterion appears once as a `J` / `ADVISORY` finding.
 
 It tells the reviewer what needs judgment without pretending the checker can decide it and never changes process exit status.
 
-The code is sufficient to identify the rule; a reporter resolves its readable title from the structured rubric catalogue.
+The code is sufficient to identify the rule; a reporter resolves its readable title from the generated `.ki-meta/rubric.json` projection of the structured catalogue.
 
 ## Summary and exit status
 

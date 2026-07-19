@@ -26,7 +26,8 @@ A checker receives:
 
 - the requested mode, `audit` or `conform`;
 - the ordered structured rubric catalogue;
-- prepared contexts and explicit capabilities for the target; and
+- a root-context factory exposing prepared evidence and explicit capabilities for the target;
+- an optional generated mode-element selector; and
 - immutable run identity such as concern and target.
 
 Rubric items own criterion codes, titles, descriptions, sources, classification, mode phasing, and callbacks.
@@ -49,7 +50,9 @@ The shared phase order is:
 prepare → inspect → write → project → normalise
 ```
 
-The checker plans only elements for the requested mode.
+`prepare` establishes prerequisites, `inspect` evaluates evidence, `write` mutates primary artifacts, `project` rebuilds derived artifacts, and `normalise` applies final formatting or canonical ordering.
+
+The checker plans only elements for the requested mode and optional selected command group.
 
 It rejects an unknown phase, dependency cycle, phase reversal, or write collision without an explicit ordering edge.
 
@@ -57,9 +60,15 @@ The plan is deterministic: phase first, declared dependencies second, and stable
 
 AUDIT elements are read-only and declare no write scope.
 
-CONFORM elements receive only their explicit safe capabilities and return typed actions or resulting findings.
+CONFORM elements receive only their explicit safe capabilities and return typed outcomes.
 
-Any `.ki-meta/mode-elements.json` used by repository-wide orchestration is a generated projection of the structured rubric rather than a second authored execution plan.
+The checker asks the root-context factory for current evidence before each CONFORM element, so an ordered element observes mutations made by an earlier one.
+
+Any `.ki-meta/mode-elements.json` used by repository-wide orchestration is a generated command-level projection of the structured rubric rather than a second authored execution plan.
+
+It groups item executions by mode, phase, and entry.
+
+When several projected groups share an entry, `--mode-element=<id>` selects exactly one group; the command is never rerun ambiguously.
 
 ## Severity ladder
 
@@ -89,11 +98,11 @@ Malformed planning, execution, or response data is a checker failure.
 
 The checker does not render a terminal table, write report files, or carry a presentation-format flag.
 
-A downstream reporter validates the response before resolving titles, filtering displayed levels, or rendering a human view.
+A downstream reporter validates the response before resolving titles from the generated `.ki-meta/rubric.json`, filtering displayed levels, or rendering a human view.
 
 ## Conform safety
 
-CONFORM inspects before writing.
+Every CONFORM element inspects its own declared target before writing, including a `prepare` element that establishes prerequisites ahead of the shared inspect phase.
 
 An element writes only when its target actually drifts, records PASS when already conformant, and honours dry-run without persistence.
 
@@ -110,7 +119,7 @@ The reusable implementation is split into two declared modules owned by `ki-skil
 
 A dependent governance skill vendors both modules into `scripts/vendored/ki-skills/` and imports only those local copies.
 
-The dependent supplies its domain rubric items, contexts, and thin command wrappers.
+The dependent supplies its domain rubric items, contexts, generated rubric projections, and thin command wrappers.
 
 The shared modules use builtins only, contain their complete declared dependency closure, and never import from another skill at runtime.
 
