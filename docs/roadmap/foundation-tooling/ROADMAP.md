@@ -14,7 +14,7 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 
 ### Establish a rubric-driven checker reference
 
-Reduce duplicated checker and reporting logic by proving one small, current-state root implementation in `ki-skills`, then one dependent proof in `ki-engineering`. Make the rubric the canonical source for a finding's identifier, title, kind, and level; make the checker collect evidence and actions for those declared criteria; and keep JSONL transport separate from human rendering. The evolving contract and concise rollout checklist live in the [KI skills exemplar](../../ki-skills-exemplar.md). Do not redesign every checker, rename the whole criterion catalogue, or retain compatibility paths while this reference is established.
+Reduce duplicated checker and reporting logic by proving one small, current-state root implementation in `ki-skills`, then one dependent proof in `ki-engineering`. Make the rubric the canonical source for a finding's identifier, title, kind, and level; make the checker collect evidence and actions for those declared criteria; and keep JSONL transport separate from human rendering. The durable target and rollout checklist live in the [`ki-skills` rubric-authoring guide](../../../skills/general-governance/ki-skills/references/rubric-authoring.md). Do not redesign every checker, rename the whole criterion catalogue, or retain compatibility paths while this reference is established.
 
 ## Soon
 

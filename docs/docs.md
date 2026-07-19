@@ -40,5 +40,3 @@ This is the map of `docs/` and the guiding principles that govern everything in 
 A temporary working document may sit directly under `docs/` when a small design needs to converge through implementation before it can honestly become a decision, definition, guide, or plan.
 
 It must name its temporary status and promote settled material into the appropriate durable source rather than becoming a parallel documentation system.
-
-The current example is [KI skills exemplar](ki-skills-exemplar.md).

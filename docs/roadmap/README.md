@@ -13,7 +13,7 @@ Canonical themes and active execution plans.
 
 No active implementation plans.
 
-The current Foundation Tooling exemplar work is tracked as a temporary [working document](../ki-skills-exemplar.md), rather than an execution plan.
+The current Foundation Tooling reference work is documented in `ki-skills`' durable rubric-authoring guide rather than a temporary execution plan.
 
 ## Dependency graph
 
