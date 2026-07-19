@@ -1,4 +1,4 @@
-import type { RubricItem } from '../../lib/rubric/rubric.ts'
+import type { RubricItem } from '../../lib/rubric.ts'
 import type { CollisionRubricContext } from '../contexts/contexts.ts'
 
 const triggerPhrases = (description: string): string[] => {
@@ -16,35 +16,46 @@ const triggerPhrases = (description: string): string[] => {
 export const COLL_1: RubricItem<CollisionRubricContext> = {
   code: 'COLL-1',
   title: 'quoted trigger phrases are not shared across skills',
-  description: 'A set of skills does not declare the same quoted trigger phrase in more than one description.',
-  sources: ['COMMUNITY', 'KI'],
-  audit: ({ targets }) => {
-    const byPhrase = new Map<string, Set<string>>()
-    for (const target of targets)
-      for (const phrase of triggerPhrases(target.description)) {
-        if (!byPhrase.has(phrase)) byPhrase.set(phrase, new Set())
-        byPhrase.get(phrase)?.add(target.name)
+  description:
+    '_Shared triggers._ Within a set of ≥ 2 skills, no two `description`s declare the **same quoted trigger phrase** (WARN — a shared trigger signals scopes that overlap and need separating).',
+  sources: ['COMMUNITY', 'ki-agentic-harness README'],
+  mechanical: {
+    level: 'WARN',
+    audit: {
+      phase: 'INSPECT',
+      run: ({ targets }) => {
+        if (targets.length < 2) return [{ status: 'NOT_APPLICABLE', message: 'fewer than two skill descriptions to compare' }]
+        const byPhrase = new Map<string, Set<string>>()
+        for (const target of targets)
+          for (const phrase of triggerPhrases(target.description)) {
+            if (!byPhrase.has(phrase)) byPhrase.set(phrase, new Set())
+            byPhrase.get(phrase)?.add(target.name)
+          }
+        const violations = [...byPhrase]
+          .filter(([, skills]) => skills.size > 1)
+          .map(([phrase, skills]) => ({
+            status: 'VIOLATION' as const,
+            message: `trigger "${phrase}" is shared by ${[...skills].sort().join(', ')} — confirm each names the other as an off-ramp (COLL-2)`
+          }))
+          .sort((left, right) => left.message.localeCompare(right.message))
+        const [firstViolation, ...remainingViolations] = violations
+        return firstViolation
+          ? [firstViolation, ...remainingViolations]
+          : [{ status: 'PASS', message: 'no quoted trigger phrases are shared across skills' }]
       }
-    return [...byPhrase]
-      .filter(([, skills]) => skills.size > 1)
-      .map(([phrase, skills]) => ({
-        type: 'M' as const,
-        level: 'WARN' as const,
-        code: COLL_1.code,
-        message: `trigger "${phrase}" is shared by ${[...skills].sort().join(', ')} — confirm each names the other as an off-ramp (COLL-2)`
-      }))
-      .sort((left, right) => left.message.localeCompare(right.message))
+    }
   }
 }
 
-export const COLL_2: RubricItem = {
+export const COLL_2: RubricItem<CollisionRubricContext> = {
   code: 'COLL-2',
   title: 'adjacent skills have non-overlapping scope and reciprocal off-ramps',
-  description: 'Adjacent skills are designed not to compete and name reciprocal off-ramps where adjacency remains.',
-  sources: ['COMMUNITY', 'KI'],
+  description:
+    "_Non-overlapping scope by design, with a reciprocal off-ramp where adjacency remains._ The first guard is **design**: skills are scoped so they don't compete for the same request, and each `description` is primarily **self-scoped** (what it does, and briefly what it doesn't). Where two skills are nonetheless genuinely adjacent, **each** description names the other as the off-ramp — the reciprocal pattern (`ki-mcp` ↔ `ki-skills`); a one-directional guard is a half-fix. A COLL-1 hit means the scopes overlap and the **design** needs fixing first, before any off-ramp papers over it.",
+  sources: ['standard §15', 'ki-agentic-harness README'],
   judgment: {
     prompt: 'Do adjacent skills have non-overlapping scopes and reciprocal off-ramps where their requests are genuinely adjacent?'
   }
 }
 
-export const COLLISION: readonly RubricItem<CollisionRubricContext>[] = [COLL_1, COLL_2]
+export const COLLISION = [COLL_1, COLL_2] as const

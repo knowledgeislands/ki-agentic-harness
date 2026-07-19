@@ -1,4 +1,4 @@
-import type { RubricItem } from '../../lib/rubric/rubric.ts'
+import type { RubricItem } from '../../lib/rubric.ts'
 import type { LongevityRubricContext } from '../contexts/contexts.ts'
 import type { RefreshContext } from '../contexts/longevity.ts'
 
@@ -18,18 +18,20 @@ const refreshStatus = (context: RefreshContext): string => {
   return `${context.refreshClass ?? 'unmarked'} · ${context.cadence ?? '—'} · last ${context.lastReviewed ?? '—'} · age ${context.ageDays ?? '—'}d · ${status}`
 }
 
-export const LONG_1: RubricItem = {
+export const LONG_1: RubricItem<unknown> = {
   code: 'LONG-1',
   title: 'volatile facts have a refresh path',
-  description: 'A skill with time-sensitive facts resolves them at runtime or records sources and a refresh path.',
+  description:
+    '_Volatile facts & a refresh path._ A skill hard-coding facts that drift (model IDs, versions, tool names, dated spec numbers, URLs) must either resolve them at runtime **or** carry a tracked source list with `last reviewed` dates **and** a REFRESH mode that re-anchors them and names what to re-fetch.',
   sources: ['BP', 'COMMUNITY'],
   judgment: { prompt: 'Do volatile facts resolve at runtime or have a tracked source list and refresh path?' }
 }
 
-export const LONG_2: RubricItem = {
+export const LONG_2: RubricItem<unknown> = {
   code: 'LONG-2',
   title: 'the refresh path has a cadence',
-  description: 'A skill that has a refresh path declares an appropriate cadence and schedules it when supported.',
+  description:
+    "_A cadence, not just a capability._ A skill that ships a refresh path also **declares a cadence** in its `sources.md` `**Refresh:**` marker (`<class> · <cadence>`) and, where supported, registers a scheduled run; a refresh capability with no declared cadence is a half-measure. The cadence has runtime teeth in both directions: overdue → LONG-3 WARN; too-soon → the REFRESH mode's confirm-before-force gate (enforcement framework §5).",
   sources: ['COMMUNITY'],
   judgment: { prompt: 'Does the refresh path have an appropriate declared cadence and scheduled execution where supported?' }
 }
@@ -37,60 +39,69 @@ export const LONG_2: RubricItem = {
 export const LONG_3: RubricItem<LongevityRubricContext> = {
   code: 'LONG-3',
   title: 'the declared refresh cadence is being met',
-  description: 'A skill source list remains within its declared review cadence and grace period.',
+  description:
+    "_The cadence is actually being met._ Where a skill carries `references/sources.md`, its most recent `Last reviewed` date (read from that table column, so dates quoted in prose don't count) is within the skill's **declared per-skill cadence** plus grace; an overdue source list WARNs so AUDIT and the scheduled refresh routine surface it. A `canonical · on-change` skill carries no clock and is exempt — it refreshes when the model changes, not on a calendar. Never a FAIL — staleness is elapsed time, not a defect in the change under review.",
   sources: ['COMMUNITY'],
-  audit: (context) => {
-    if (context.reportStatus)
-      return [
-        {
-          type: 'M',
-          level: 'INFO',
-          code: LONG_3.code,
-          message: `Refresh status: ${context.sourcesPresent ? refreshStatus(context) : 'no sources.md'}`
-        }
-      ]
-    if (!context.sourcesPresent || context.cadence === null || context.windowDays === null) return []
-    if (context.ageDays !== null && context.ageDays <= context.windowDays + REFRESH_GRACE_DAYS) return []
-    return [
-      {
-        type: 'M',
-        level: 'WARN',
-        code: LONG_3.code,
-        message: context.lastReviewed
-          ? `references/sources.md last reviewed ${context.lastReviewed} (${context.ageDays} days ago), past its ${context.cadence} REFRESH cadence + ${REFRESH_GRACE_DAYS}d grace — run Mode REFRESH`
-          : `references/sources.md declares a ${context.cadence} cadence but has no \`Last reviewed\` date — run Mode REFRESH`
+  mechanical: {
+    level: 'WARN',
+    audit: {
+      phase: 'INSPECT',
+      run: (context) => {
+        if (context.reportStatus)
+          return [
+            {
+              status: 'INFO',
+              message: `Refresh status: ${context.sourcesPresent ? refreshStatus(context) : 'no sources.md'}`
+            }
+          ]
+        if (!context.sourcesPresent || context.cadence === null || context.windowDays === null)
+          return [{ status: 'NOT_APPLICABLE', message: 'no declared refresh cadence to assess' }]
+        if (context.ageDays !== null && context.ageDays <= context.windowDays + REFRESH_GRACE_DAYS)
+          return [{ status: 'PASS', message: 'the declared refresh cadence is being met' }]
+        return [
+          {
+            status: 'VIOLATION',
+            message: context.lastReviewed
+              ? `references/sources.md last reviewed ${context.lastReviewed} (${context.ageDays} days ago), past its ${context.cadence} REFRESH cadence + ${REFRESH_GRACE_DAYS}d grace — run Mode REFRESH`
+              : `references/sources.md declares a ${context.cadence} cadence but has no \`Last reviewed\` date — run Mode REFRESH`
+          }
+        ]
       }
-    ]
+    }
   }
 }
 
 export const LONG_4: RubricItem<LongevityRubricContext> = {
   code: 'LONG-4',
   title: 'the refresh marker is present and coherent',
-  description: 'A sources file has a parseable and coherent refresh class and cadence marker.',
+  description:
+    '_The refresh marker is present and coherent._ Each `sources.md` carries a parseable `**Refresh:** <class> · <cadence>` line (§4 of the enforcement framework) — a missing or malformed marker WARNs (**4a**). An `external-spec` skill must declare a clock cadence, not `on-change` (**4b**, soft WARN). Class is **not** mechanically tied to `## Last review`-block presence — a `canonical` skill may keep a block as a hand-curated practice note (`ki-kb-streams` does), so block-presence stays a `[J]` read, not a checker rule.',
   sources: ['COMMUNITY'],
-  audit: (context) => {
-    if (!context.sourcesPresent) return []
-    if (context.refreshClass === null || context.cadence === null)
-      return [
-        {
-          type: 'M',
-          level: 'WARN',
-          code: LONG_4.code,
-          message: 'references/sources.md has no parseable `**Refresh:** <class> · <cadence>` marker near the top (LONG-4a)'
-        }
-      ]
-    return context.refreshClass === 'external-spec' && context.cadence === 'on-change'
-      ? [
-          {
-            type: 'M',
-            level: 'WARN',
-            code: LONG_4.code,
-            message: '`**Refresh:**` marks this external-spec but cadence is `on-change` — an external-spec tracker needs a clock cadence (LONG-4b)'
-          }
+  mechanical: {
+    level: 'WARN',
+    audit: {
+      phase: 'INSPECT',
+      run: (context) => {
+        if (!context.sourcesPresent) return [{ status: 'NOT_APPLICABLE', message: 'no sources.md' }]
+        if (context.refreshClass === null || context.cadence === null)
+          return [
+            {
+              status: 'VIOLATION',
+              message: 'references/sources.md has no parseable `**Refresh:** <class> · <cadence>` marker near the top (LONG-4a)'
+            }
+          ]
+        return [
+          context.refreshClass === 'external-spec' && context.cadence === 'on-change'
+            ? {
+                status: 'VIOLATION',
+                message:
+                  '`**Refresh:**` marks this external-spec but cadence is `on-change` — an external-spec tracker needs a clock cadence (LONG-4b)'
+              }
+            : { status: 'PASS', message: 'the refresh marker is present and coherent' }
         ]
-      : []
+      }
+    }
   }
 }
 
-export const LONGEVITY: readonly RubricItem<LongevityRubricContext>[] = [LONG_1, LONG_2, LONG_3, LONG_4]
+export const LONGEVITY = [LONG_1, LONG_2, LONG_3, LONG_4] as const

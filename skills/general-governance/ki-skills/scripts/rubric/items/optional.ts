@@ -1,4 +1,4 @@
-import type { RubricItem } from '../../lib/rubric/rubric.ts'
+import type { RubricItem } from '../../lib/rubric.ts'
 import type { OptionalRubricContext } from '../contexts/contexts.ts'
 
 const COMPATIBILITY_MIN_LENGTH = 1
@@ -7,70 +7,101 @@ const COMPATIBILITY_MAX_LENGTH = 500
 export const OPT_1: RubricItem<OptionalRubricContext> = {
   code: 'OPT-1',
   title: 'compatibility is between 1 and 500 characters when present',
-  description: 'An optional compatibility declaration is between 1 and 500 characters long.',
+  description: '`compatibility`, if present, is 1–500 chars.',
   sources: ['SPEC'],
-  audit: ({ compatibility }) =>
-    compatibility !== undefined && (compatibility.length < COMPATIBILITY_MIN_LENGTH || compatibility.length > COMPATIBILITY_MAX_LENGTH)
-      ? [
-          {
-            type: 'M',
-            level: 'FAIL',
-            code: OPT_1.code,
-            message: `\`compatibility\` is ${compatibility.length} chars (must be ${COMPATIBILITY_MIN_LENGTH}–${COMPATIBILITY_MAX_LENGTH})`
-          }
-        ]
-      : []
+  mechanical: {
+    level: 'FAIL',
+    audit: {
+      phase: 'INSPECT',
+      run: ({ compatibility }) => {
+        if (compatibility === undefined) return [{ status: 'NOT_APPLICABLE', message: 'compatibility is not present' }]
+        return compatibility.length < COMPATIBILITY_MIN_LENGTH || compatibility.length > COMPATIBILITY_MAX_LENGTH
+          ? [
+              {
+                status: 'VIOLATION',
+                message: `\`compatibility\` is ${compatibility.length} chars (must be ${COMPATIBILITY_MIN_LENGTH}–${COMPATIBILITY_MAX_LENGTH})`
+              }
+            ]
+          : [{ status: 'PASS', message: 'compatibility is between 1 and 500 characters when present' }]
+      }
+    }
+  }
 }
 
 export const OPT_2: RubricItem<OptionalRubricContext> = {
   code: 'OPT-2',
   title: 'metadata is a string-to-string map when present',
-  description: 'An optional metadata declaration is a map whose keys and values are strings.',
+  description: '`metadata`, if present, is a string→string map.',
   sources: ['SPEC'],
-  audit: ({ metadataPresent, metadata }) => {
-    if (!metadataPresent) return []
-    if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata))
-      return [{ type: 'M', level: 'FAIL', code: OPT_2.code, message: '`metadata` must be a string-to-string map' }]
-    const invalid = Object.entries(metadata as Record<string, unknown>).find(([, value]) => typeof value !== 'string')
-    return invalid ? [{ type: 'M', level: 'FAIL', code: OPT_2.code, message: `\`metadata.${invalid[0]}\` must be a string` }] : []
+  mechanical: {
+    level: 'FAIL',
+    audit: {
+      phase: 'INSPECT',
+      run: ({ metadataPresent, metadata }) => {
+        if (!metadataPresent) return [{ status: 'NOT_APPLICABLE', message: 'metadata is not present' }]
+        if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata))
+          return [{ status: 'VIOLATION', message: '`metadata` must be a string-to-string map' }]
+        const invalid = Object.entries(metadata as Record<string, unknown>).find(([, value]) => typeof value !== 'string')
+        return invalid
+          ? [{ status: 'VIOLATION', message: `\`metadata.${invalid[0]}\` must be a string` }]
+          : [{ status: 'PASS', message: 'metadata is a string-to-string map when present' }]
+      }
+    }
   }
 }
 
 export const OPT_3: RubricItem<OptionalRubricContext> = {
   code: 'OPT-3',
   title: 'tool declarations use valid tool specifications',
-  description: 'Optional allowed-tools and disallowed-tools declarations use valid tool specifications.',
+  description: '`allowed-tools` / `disallowed-tools`, if present, are valid tool specs (`allowed-tools` is **experimental**).',
   sources: ['SPEC', 'CC'],
-  audit: ({ allowedToolsPresent, allowedTools, disallowedToolsPresent, disallowedTools }) => [
-    ...(allowedToolsPresent ? toolDeclarationFindings('allowed-tools', allowedTools) : []),
-    ...(disallowedToolsPresent ? toolDeclarationFindings('disallowed-tools', disallowedTools) : [])
-  ]
+  mechanical: {
+    level: 'FAIL',
+    audit: {
+      phase: 'INSPECT',
+      run: ({ allowedToolsPresent, allowedTools, disallowedToolsPresent, disallowedTools }) => {
+        if (!allowedToolsPresent && !disallowedToolsPresent)
+          return [{ status: 'NOT_APPLICABLE', message: 'tool declarations are not present' }]
+        const violations = [
+          ...(allowedToolsPresent ? toolDeclarationFindings('allowed-tools', allowedTools) : []),
+          ...(disallowedToolsPresent ? toolDeclarationFindings('disallowed-tools', disallowedTools) : [])
+        ]
+        return violations.length > 0
+          ? [violations[0] as (typeof violations)[number], ...violations.slice(1)]
+          : [{ status: 'PASS', message: 'tool declarations use valid tool specifications' }]
+      }
+    }
+  }
 }
 
 export const OPT_4: RubricItem<OptionalRubricContext> = {
   code: 'OPT-4',
   title: 'license declarations are non-empty YAML string scalars',
-  description: 'An optional license declaration is a non-empty YAML string scalar.',
+  description: '`license`, if present, is a non-empty YAML string scalar. Prefer a short name or bundled-file reference.',
   sources: ['SPEC'],
-  audit: ({ licensePresent, license }) =>
-    licensePresent && (typeof license !== 'string' || license.trim() === '')
-      ? [{ type: 'M', level: 'FAIL', code: OPT_4.code, message: '`license` must be a non-empty YAML string scalar' }]
-      : []
+  mechanical: {
+    level: 'FAIL',
+    audit: {
+      phase: 'INSPECT',
+      run: ({ licensePresent, license }) => {
+        if (!licensePresent) return [{ status: 'NOT_APPLICABLE', message: 'license is not present' }]
+        return typeof license !== 'string' || license.trim() === ''
+          ? [{ status: 'VIOLATION', message: '`license` must be a non-empty YAML string scalar' }]
+          : [{ status: 'PASS', message: 'license declarations are non-empty YAML string scalars' }]
+      }
+    }
+  }
 }
 
 const toolDeclarationFindings = (field: 'allowed-tools' | 'disallowed-tools', value: unknown) => {
   if (typeof value === 'string') {
     const rules = splitToolRules(value)
-    return validToolRules(rules)
-      ? []
-      : [{ type: 'M' as const, level: 'FAIL' as const, code: OPT_3.code, message: `\`${field}\` must contain non-empty valid tool rules` }]
+    return validToolRules(rules) ? [] : [{ status: 'VIOLATION' as const, message: `\`${field}\` must contain non-empty valid tool rules` }]
   }
   if (Array.isArray(value) && value.every((rule) => typeof rule === 'string' && validToolRule(rule))) return []
   return [
     {
-      type: 'M' as const,
-      level: 'FAIL' as const,
-      code: OPT_3.code,
+      status: 'VIOLATION' as const,
       message: `\`${field}\` must be a non-empty YAML string scalar or sequence of non-empty valid tool rules`
     }
   ]
@@ -97,9 +128,7 @@ const splitToolRules = (value: string): string[] | null => {
   return rules
 }
 
-const validToolRules = (rules: string[] | null): boolean => {
-  return rules !== null && rules.length > 0 && rules.every(validToolRule)
-}
+const validToolRules = (rules: string[] | null): boolean => rules !== null && rules.length > 0 && rules.every(validToolRule)
 
 /** A rule is `Tool` or `Tool(specifier)`; specifier text may contain balanced nested parentheses. */
 const validToolRule = (rule: string): boolean => {
@@ -120,7 +149,7 @@ const validToolRule = (rule: string): boolean => {
 export const OPT_5: RubricItem<OptionalRubricContext> = {
   code: 'OPT-5',
   title: 'runtime-specific fields are flagged where portability matters',
-  description: 'A skill identifies runtime-specific fields when cross-platform portability matters.',
+  description: 'CC-only fields are flagged when cross-platform portability matters (see ※3).',
   sources: ['CC'],
   judgment: { prompt: 'Where cross-platform portability matters, are runtime-specific fields clearly identified?' }
 }
@@ -128,7 +157,7 @@ export const OPT_5: RubricItem<OptionalRubricContext> = {
 export const OPT_6: RubricItem<OptionalRubricContext> = {
   code: 'OPT-6',
   title: 'manually timed side effects disable model invocation',
-  description: 'Side-effecting or manually timed workflows set disable-model-invocation appropriately.',
+  description: 'Side-effecting / manually-timed workflows set `disable-model-invocation: true` (contrast `user-invocable: false`).',
   sources: ['CC'],
   judgment: { prompt: 'Do side-effecting or manually timed workflows set disable-model-invocation: true where appropriate?' }
 }
@@ -136,9 +165,9 @@ export const OPT_6: RubricItem<OptionalRubricContext> = {
 export const OPT_7: RubricItem<OptionalRubricContext> = {
   code: 'OPT-7',
   title: 'discrete modes have an ordered argument hint',
-  description: 'A skill with discrete modes declares named, alphabetically ordered modes in argument-hint.',
+  description: 'A skill with discrete modes sets `argument-hint`; modes are **named** (not lettered) and **alphabetically ordered**.',
   sources: ['CC', 'COMMUNITY'],
   judgment: { prompt: 'Where the skill has discrete modes, are they named and alphabetically ordered in argument-hint?' }
 }
 
-export const OPTIONAL: readonly RubricItem<OptionalRubricContext>[] = [OPT_1, OPT_2, OPT_3, OPT_4, OPT_5, OPT_6, OPT_7]
+export const OPTIONAL = [OPT_1, OPT_2, OPT_3, OPT_4, OPT_5, OPT_6, OPT_7] as const

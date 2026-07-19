@@ -1,36 +1,22 @@
-import type { RubricItem } from '../../lib/rubric/rubric.ts'
+import type { RubricItem } from '../../lib/rubric.ts'
 import type { FrontmatterRubricContext } from '../contexts/contexts.ts'
 
 export const FM_1: RubricItem<FrontmatterRubricContext> = {
   code: 'FM-1',
   title: 'SKILL.md begins with a valid YAML frontmatter mapping',
-  description: 'A skill starts with a fenced YAML frontmatter block that parses to a mapping.',
+  description:
+    '`SKILL.md` begins with a fenced YAML frontmatter block that parses to a mapping. Without it, dependent frontmatter checks do not run.',
   sources: ['SPEC', 'CC'],
-  audit: ({ hasBlock, isMapping }) => {
-    if (!hasBlock)
-      return [
-        {
-          type: 'M' as const,
-          level: 'FAIL' as const,
-          code: FM_1.code,
-          message: 'SKILL.md must begin with a YAML frontmatter block (--- ... ---)'
-        }
-      ]
-    if (!isMapping)
-      return [
-        {
-          type: 'M' as const,
-          level: 'FAIL' as const,
-          code: FM_1.code,
-          message: 'YAML frontmatter must parse to a mapping'
-        }
-      ]
-    return []
-  },
-  conform: ({ hasBlock, isMapping }) => {
-    if (hasBlock && isMapping) return []
-    const issue = hasBlock ? 'YAML frontmatter is not a mapping' : 'SKILL.md has no YAML frontmatter block'
-    return [{ item: FM_1, level: 'ADVISORY', message: `${issue}; author by hand`, subject: 'SKILL.md' }]
+  mechanical: {
+    level: 'FAIL',
+    audit: {
+      phase: 'INSPECT',
+      run: ({ hasBlock, isMapping }) => {
+        if (!hasBlock) return [{ status: 'VIOLATION', message: 'SKILL.md must begin with a YAML frontmatter block (--- ... ---)' }]
+        if (!isMapping) return [{ status: 'VIOLATION', message: 'YAML frontmatter must parse to a mapping' }]
+        return [{ status: 'PASS', message: 'SKILL.md begins with a valid YAML frontmatter mapping' }]
+      }
+    }
   }
 }
 

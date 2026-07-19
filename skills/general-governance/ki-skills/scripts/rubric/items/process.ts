@@ -1,19 +1,19 @@
-import type { RubricItem } from '../../lib/rubric/rubric.ts'
+import type { RubricItem } from '../../lib/rubric.ts'
 
-export const PROC_1: RubricItem = {
+export const PROC_1: RubricItem<unknown> = {
   code: 'PROC-1',
   title: 'the skill was built evaluation-first',
-  description: 'The skill has evaluation scenarios against a no-skill baseline before extensive documentation.',
+  description: 'Built evaluation-first — ≥ 3 evaluation scenarios against a no-skill baseline before extensive docs.',
   sources: ['BP', 'ENG'],
   judgment: { prompt: 'Was this skill built evaluation-first with meaningful scenarios against a no-skill baseline?' }
 }
 
-export const PROC_2: RubricItem = {
+export const PROC_2: RubricItem<unknown> = {
   code: 'PROC-2',
   title: 'the skill has been tested across intended models and real use',
-  description: 'The skill has evidence of cross-model and real-usage testing appropriate to its intended scope.',
+  description: 'Tested across the models it will run on (Haiku/Sonnet/Opus) and with real usage.',
   sources: ['BP'],
   judgment: { prompt: 'Has the skill been tested across its intended models and through real usage?' }
 }
 
-export const PROCESS: readonly RubricItem[] = [PROC_1, PROC_2]
+export const PROCESS = [PROC_1, PROC_2] as const

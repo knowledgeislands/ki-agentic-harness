@@ -1,4 +1,4 @@
-import type { RubricItem } from '../../lib/rubric/rubric.ts'
+import type { RubricItem } from '../../lib/rubric.ts'
 import type { KiLinkRubricContext } from '../contexts/contexts.ts'
 
 const relativeLinkTargets = (markdown: string): string[] => {
@@ -22,44 +22,54 @@ const hasWikilink = (markdown: string): boolean => /\[\[[^\]]+\]\]/.test(markdow
 export const KI_LINK_1: RubricItem<KiLinkRubricContext> = {
   code: 'KI-LINK-1',
   title: 'internal links use standard relative Markdown links',
-  description: 'Internal links use standard relative Markdown syntax rather than wikilinks.',
-  sources: ['KI'],
-  audit: ({ markdown }) =>
-    hasWikilink(markdown)
-      ? [{ type: 'M', level: 'FAIL', code: KI_LINK_1.code, message: 'uses Obsidian wikilinks ([[...]]) — use relative markdown links' }]
-      : []
+  description: 'Internal links are **standard relative markdown links**, not wikilinks.',
+  sources: ['ki-agentic-harness README'],
+  mechanical: {
+    level: 'FAIL',
+    audit: {
+      phase: 'INSPECT',
+      run: ({ markdown }) =>
+        hasWikilink(markdown)
+          ? [{ status: 'VIOLATION', message: 'uses Obsidian wikilinks ([[...]]) — use relative markdown links' }]
+          : [{ status: 'PASS', message: 'internal links use standard relative Markdown links' }]
+    }
+  }
 }
 
 export const KI_LINK_2: RubricItem<KiLinkRubricContext> = {
   code: 'KI-LINK-2',
   title: 'relative link targets resolve',
-  description: 'Every relative Markdown link target resolves to an existing file.',
-  sources: ['KI'],
-  audit: ({ markdown, relativeTargetExists }) =>
-    relativeLinkTargets(markdown)
-      .filter((target) => !relativeTargetExists(target))
-      .map((target) => ({
-        type: 'M' as const,
-        level: 'FAIL' as const,
-        code: KI_LINK_2.code,
-        message: `broken relative link → "${target}"`
-      }))
+  description: 'Links resolve — every relative target exists (angle-bracket form for paths with spaces).',
+  sources: ['ki-agentic-harness README'],
+  mechanical: {
+    level: 'FAIL',
+    audit: {
+      phase: 'INSPECT',
+      run: ({ markdown, relativeTargetExists }) => {
+        const violations = relativeLinkTargets(markdown)
+          .filter((target) => !relativeTargetExists(target))
+          .map((target) => ({ status: 'VIOLATION' as const, message: `broken relative link → "${target}"` }))
+        const [first, ...rest] = violations
+        return first ? [first, ...rest] : [{ status: 'PASS', message: 'relative link targets resolve' }]
+      }
+    }
+  }
 }
 
 export const KI_LINK_3: RubricItem<KiLinkRubricContext> = {
   code: 'KI-LINK-3',
   title: 'other skills are referred to by name',
-  description: 'References to other skills use their public name rather than a source-file path.',
-  sources: ['KI'],
+  description: 'Other skills are referenced by `name`, never by file path.',
+  sources: ['ki-agentic-harness README'],
   judgment: { prompt: 'Are other skills referred to by their public name rather than by a file path?' }
 }
 
 export const KI_LINK_4: RubricItem<KiLinkRubricContext> = {
   code: 'KI-LINK-4',
   title: 'the house toolchain passes',
-  description: 'The skill’s repository passes its configured code and Markdown toolchain.',
-  sources: ['KI'],
+  description: 'The house toolchain passes: Biome (TS/JSON), Prettier + markdownlint-cli2 (markdown).',
+  sources: ['ki-agentic-harness README'],
   judgment: { prompt: 'Does the repository pass its configured Biome, Prettier, and markdownlint toolchain?' }
 }
 
-export const KI_LINK: readonly RubricItem<KiLinkRubricContext>[] = [KI_LINK_1, KI_LINK_2, KI_LINK_3, KI_LINK_4]
+export const KI_LINK = [KI_LINK_1, KI_LINK_2, KI_LINK_3, KI_LINK_4] as const
