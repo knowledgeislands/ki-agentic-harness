@@ -24,11 +24,19 @@ Canonical themes and active execution plans.
 - **Title:** Add a safe repository clean operation
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/add-a-safe-repository-clean-operation`
-- **Status:** open
+- **Status:** open (needs FND-004)
 - **Blocks:** —
+
+### [FND-004](foundation-tooling/plans/FND-004-simplify-the-ki-bootstrap-private-implementation.md)
+
+- **Title:** Simplify the ki-bootstrap private implementation
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/simplify-the-ki-bootstrap-private-implementation`
+- **Status:** open
+- **Blocks:** FND-003
 
 ## Dependency graph
 
 ```text
-No dependencies.
+FND-004 ──► FND-003
 ```
