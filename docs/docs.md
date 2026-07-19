@@ -1,6 +1,6 @@
 # Documentation
 
-This is the map of `docs/` and the guiding principles that govern everything in it. The harness's documentation is split into four sources, each answering a different question and each held to its own standard. Read this page to know where a given thing belongs and how it is expected to be written.
+This is the map of `docs/` and the guiding principles that govern everything in it. The harness's documentation is split into four durable sources, each answering a different question and each held to its own standard. Read this page to know where a given thing belongs and how it is expected to be written.
 
 ## Guiding principles
 
@@ -34,3 +34,11 @@ This is the map of `docs/` and the guiding principles that govern everything in 
 ### Repository roadmaps — the _when_
 
 [`roadmap/`](roadmap) holds this non-KB repository's canonical thematic roadmaps and their near-horizon implementation plans. The root [`ROADMAP.md`](../ROADMAP.md) is the generated portfolio view; `ki-repo-roadmap` governs both layers. Knowledge Bases use `ki-kb-streams` instead of this repository-roadmap layout.
+
+## Temporary working documents
+
+A temporary working document may sit directly under `docs/` when a small design needs to converge through implementation before it can honestly become a decision, definition, guide, or plan.
+
+It must name its temporary status and promote settled material into the appropriate durable source rather than becoming a parallel documentation system.
+
+The current example is [KI skills exemplar](ki-skills-exemplar.md).

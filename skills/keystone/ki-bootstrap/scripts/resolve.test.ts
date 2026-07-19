@@ -98,7 +98,7 @@ check(
     return (
       payload.kind === 'file' &&
       payload.targetName === 'checker-reporter.ts' &&
-      payload.source.endsWith('ki-skills/scripts/checker-reporter.ts')
+      payload.source.endsWith('ki-skills/scripts/lib/checker-reporter.ts')
     )
   })()
 )
@@ -311,7 +311,7 @@ try {
   check('checker-module provider → bootstrap exits cleanly', result.status === 0)
   check(
     'checker-module provider → owns a standalone local payload',
-    existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'checker-reporter.ts'))
+    existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'lib', 'checker-reporter.ts'))
   )
   check(
     'checker-module provider → carries rubric metadata beside its runnable payload',

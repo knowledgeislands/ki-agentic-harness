@@ -14,7 +14,7 @@ import {
   validateCheckerReporterRubric
 } from './checker-reporter.ts'
 
-const SKILLS_ROOT = resolve(import.meta.dirname, '..', '..', '..')
+const SKILLS_ROOT = resolve(import.meta.dirname, '..', '..', '..', '..')
 let failed = false
 
 function check(label: string, errors: string[]): void {
@@ -43,7 +43,7 @@ function skillDirectories(): string[] {
 
 function usesCanonicalReporter(skillDir: string): boolean {
   const frontmatter = readFileSync(join(skillDir, 'SKILL.md'), 'utf8').match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? ''
-  return /^checker-dependencies:\s*\[[^\]]*ki-skills\/checker-reporter[^\]]*\]/m.test(frontmatter)
+  return /^checker-dependencies:\s*\[[^\]]*ki-skills:checker-reporter[^\]]*\]/m.test(frontmatter)
 }
 
 for (const skillDir of skillDirectories().filter(usesCanonicalReporter)) {

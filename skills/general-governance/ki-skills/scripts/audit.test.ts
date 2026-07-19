@@ -20,7 +20,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { parseCheckerReporterJsonl, validateCheckerReporterEvents } from './checker-reporter.ts'
+import { parseCheckerReporterJsonl, validateCheckerReporterEvents } from './lib/checker-reporter.ts'
 
 const LINTER = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
 const SKILL_ROOT = dirname(LINTER)
@@ -76,7 +76,7 @@ function hasMechanicalFinding(output: string, code: string): boolean {
   })
 }
 
-const withReporter = "import { emitCheckerReporter } from './checker-reporter.ts'\nemitCheckerReporter({})\n"
+const withReporter = "import { emitCheckerReporter } from './lib/checker-reporter.ts'\nemitCheckerReporter({})\n"
 
 // ── ROOT-1: ki-skills owns the checker contract without a self-dependency ─────
 {

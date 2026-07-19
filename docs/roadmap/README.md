@@ -11,13 +11,9 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-### [FND-001](foundation-tooling/plans/FND-001-establish-rubric-driven-checker-reference.md)
+No active implementation plans.
 
-- **Title:** Establish a rubric-driven checker reference
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/establish-a-rubric-driven-checker-reference`
-- **Status:** in-progress
-- **Blocks:** —
+The current Foundation Tooling exemplar work is tracked as a temporary [working document](../ki-skills-exemplar.md), rather than an execution plan.
 
 ## Dependency graph
 

@@ -199,16 +199,16 @@ export type CheckerModule = {
 }
 
 // A module name is an extension-free logical identifier. Its provider can publish
-// either the conventional `scripts/<module>.ts` file or a
-// `scripts/<module>/` directory containing a self-contained local closure. The
-// consumer preserves that shape below `scripts/vendored/<provider>/`.
+// either `scripts/lib/<module>.ts` or a `scripts/lib/<module>/` directory
+// containing a self-contained local closure. The consumer preserves that shape
+// below `scripts/vendored/<provider>/`.
 export type CheckerModulePayload = {
   source: string
   kind: 'file' | 'directory'
   targetName: string
 }
 
-const CHECKER_MODULE = /^(ki-[A-Za-z0-9_-]+)\/([A-Za-z0-9_-]+)$/
+const CHECKER_MODULE = /^(ki-[A-Za-z0-9_-]+):([A-Za-z0-9_-]+)$/
 
 function parseCheckerModule(value: string, field: string, skill: string): CheckerModule {
   const match = value.match(CHECKER_MODULE)
@@ -216,7 +216,7 @@ function parseCheckerModule(value: string, field: string, skill: string): Checke
   return { provider: match[1] as string, module: match[2] as string }
 }
 
-// A provider declares modules it publishes; a consumer declares exact provider/module
+// A provider declares modules it publishes; a consumer declares exact provider:module
 // requirements. This is deliberately independent of `depends-on:`: support modules are
 // copied implementation, never a governance-coverage or mode-composition edge.
 export function checkerModulesOf(skill: string): string[] {
@@ -237,9 +237,9 @@ function assertSafeCheckerModuleTree(path: string): void {
 
 // Exported for focused fixture tests. It deliberately resolves only the physical
 // shape; `checkerModulePayload` below owns the provider declaration check.
-export function checkerModulePayloadAt(module: string, scriptsDir: string): CheckerModulePayload {
-  const file = join(scriptsDir, `${module}.ts`)
-  const directory = join(scriptsDir, module)
+export function checkerModulePayloadAt(module: string, modulesDir: string): CheckerModulePayload {
+  const file = join(modulesDir, `${module}.ts`)
+  const directory = join(modulesDir, module)
   const filePresent = existsSync(file)
   const directoryPresent = existsSync(directory)
   if (filePresent === directoryPresent) {
@@ -256,9 +256,9 @@ export function checkerModulePayload(module: CheckerModule): CheckerModulePayloa
   const modules = checkerModulesOf(module.provider)
   if (!modules.includes(module.module)) throw new Error(`${module.provider} does not declare checker module: ${module.module}`)
   try {
-    return checkerModulePayloadAt(module.module, join(skillDir(module.provider), 'scripts'))
+    return checkerModulePayloadAt(module.module, join(skillDir(module.provider), 'scripts', 'lib'))
   } catch (error) {
-    throw new Error(`checker module payload is missing or unsafe: ${module.provider}/${module.module}`, { cause: error })
+    throw new Error(`checker module payload is missing or unsafe: ${module.provider}:${module.module}`, { cause: error })
   }
 }
 

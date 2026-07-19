@@ -43,7 +43,7 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { type CheckerFinding, checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './checker-reporter.ts'
+import { type CheckerFinding, checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './lib/checker-reporter.ts'
 
 // Each action records a typed domain finding. The canonical reporter owns transport;
 // the bootstrap aggregate is the only terminal renderer.

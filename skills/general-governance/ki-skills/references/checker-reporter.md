@@ -66,9 +66,9 @@ The schema is a shipped asset of `ki-skills` for review and validation in the ha
 
 The canonical checker-reporter source belongs to `ki-skills`, whose frontmatter publishes it as `checker-modules: [checker-reporter]`.
 
-A dependent governance skill declares the exact implementation dependency as `checker-dependencies: [ki-skills/checker-reporter]`; this declaration is not a `depends-on:` edge.
+A dependent governance skill declares the exact implementation dependency as `checker-dependencies: [ki-skills:checker-reporter]`; this declaration is not a `depends-on:` edge.
 
-The module name is extension-free and identifies one local payload: either the conventional provider file `scripts/<module>.ts` or a directory `scripts/<module>/` containing its own local closure.
+The module name is extension-free and identifies one local payload in the provider's `scripts/lib/`: either `scripts/lib/<module>.ts` or a directory `scripts/lib/<module>/` containing its own local closure.
 
 The harness preserves that shape under `scripts/vendored/<provider>/`: a file becomes `<module>.ts`; a directory becomes `<module>/` with its contents copied recursively.
 

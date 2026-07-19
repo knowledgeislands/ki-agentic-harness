@@ -22,7 +22,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { type CheckerFinding, checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './checker-reporter.ts'
+import { type CheckerFinding, checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './lib/checker-reporter.ts'
 
 type Severity = 'fail' | 'warn'
 // area = the rubric code (criterion); ref = the reference-doc pointer the criterion cites
@@ -412,8 +412,8 @@ function lintSkill(skillDir: string): Finding[] {
     const modules = parseListValue(fm.keys.get('checker-modules'))
     const dependencies = parseListValue(fm.keys.get('checker-dependencies'))
     if (!modules.includes('checker-reporter')) fail('ROOT-1', '`ki-skills` must expose `checker-reporter` under `checker-modules:`')
-    if (!existsSync(join(skillDir, 'scripts', 'checker-reporter.ts')))
-      fail('ROOT-1', '`ki-skills` must ship `scripts/checker-reporter.ts` from its own files')
+    if (!existsSync(join(skillDir, 'scripts', 'lib', 'checker-reporter.ts')))
+      fail('ROOT-1', '`ki-skills` must ship `scripts/lib/checker-reporter.ts` from its own files')
     if (dependencies.length > 0) fail('ROOT-1', '`ki-skills` is the checker-contract root and must not declare `checker-dependencies:`')
   }
 

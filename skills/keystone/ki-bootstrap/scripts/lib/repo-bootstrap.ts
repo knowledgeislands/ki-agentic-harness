@@ -970,8 +970,8 @@ function vendorCheckerModulePayload(
   ownModule = false
 ): VendoredFile[] {
   const copied: VendoredFile[] = []
-  const vendorRoot = ownModule ? destDir : join(destDir, 'vendored', module.provider)
-  const vendorRootRel = ownModule ? join(CHECKERS_DIR, skill, 'scripts') : join(CHECKERS_DIR, skill, 'scripts', 'vendored', module.provider)
+  const vendorRoot = ownModule ? join(destDir, 'lib') : join(destDir, 'vendored', module.provider)
+  const vendorRootRel = ownModule ? join(CHECKERS_DIR, skill, 'scripts', 'lib') : join(CHECKERS_DIR, skill, 'scripts', 'vendored', module.provider)
   const target = join(vendorRoot, payload.targetName)
   const targetRel = join(vendorRootRel, payload.targetName)
 
@@ -1106,7 +1106,7 @@ function vendorSkill(
   for (const moduleName of checkerModulesOf(skill)) {
     const module = { provider: skill, module: moduleName }
     const payload = checkerModulePayload(module)
-    const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/scripts/${payload.targetName}`
+    const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/scripts/lib/${payload.targetName}`
     if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (owned checker module payload)${RESET}`)
     if (!dryRun) {
       if (!journal) throw new Error('candidate generation requires a creation journal')
