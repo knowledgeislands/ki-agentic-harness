@@ -72,7 +72,7 @@ import {
   unlinkSync,
   writeFileSync
 } from 'node:fs'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, join, relative, resolve } from 'node:path'
 import {
   assertExplicitDependencies,
   DependencyDeclarationError,
@@ -99,6 +99,7 @@ const RESET = '\x1b[0m'
 const VENDOR_DIR = '.ki-meta' // relative to the target repo root (dot-prefixed, generated-not-authored)
 const CHECKERS_DIR = 'checkers'
 const EDUCATORS_DIR = 'educators'
+const BOOTSTRAP_DIR = 'bootstrap'
 const RETIRED_CHECKERS_DIR = 'skills'
 const REPO_SLUG = 'knowledgeislands/ki-agentic-harness'
 
@@ -133,6 +134,7 @@ const SKILLS_ROOT_FOR_REF = resolve(import.meta.dirname, '..', '..', '..', '..',
 // SHA passes through untouched, and any failure (git absent, offline) falls back to the
 // ref as given — offline-safe, never fatal, matching harnessRef().
 function resolveRef(ref: string): string {
+  if (process.env.KI_BOOTSTRAP_OFFLINE === '1') return ref
   if (/^[0-9a-f]{40}$/.test(ref) || ref === 'unknown') return ref
   try {
     const out = execFileSync('git', ['ls-remote', `https://github.com/${REPO_SLUG}.git`, ref], {
@@ -559,19 +561,23 @@ cat "$f"
 // bootstrap chain at `main`; with one safe skill name it runs exactly that local
 // educator payload. The payload is generated below rather than copied from a skill's
 // source delegator, because source delegators resolve the harness-relative engine.
-function binKiInit(): string {
+function shellLiteral(value: string): string {
+  return `'${value.replaceAll("'", "'\\''")}'`
+}
+
+function binKiInit(ref: string): string {
   return `#!/bin/sh
-# Vendored by ki-bootstrap — run the whole-set bootstrap chain, or one local educator.
-# Usage: ./.ki-meta/bin/ki-educate [skill] [--ref <ref>] [--dry-run] [--verbose] [--help]
+# Vendored by ki-bootstrap — run the local whole-set coordinator, or one local educator.
+# Usage: ./.ki-meta/bin/ki-educate [skill] [--dry-run] [--verbose] [--help]
 set -eu
-DEFAULT_REF="main"
-REPO="knowledgeislands/ki-agentic-harness"
 root="$(cd "$(dirname "$0")/../.." && pwd)"
+ref=${shellLiteral(ref)}
 case "\${1:-}" in
   --help|-h)
-    echo "usage: ki-educate [skill] [--ref <ref>] [--dry-run] [--verbose]"
-    echo "  without a skill, re-runs the whole bootstrap chain (default ref: main)."
-    echo "  with a skill, dispatches only .ki-meta/educators/<skill>/educate.ts."
+    echo "usage: ki-educate [skill] [--dry-run] [--verbose]"
+    echo "  without a skill, refreshes the current governed set from local bootstrap material."
+    echo "  with a skill, refreshes only that skill's local checker and educator payloads."
+    echo "  use https://knowledgeislands.info/harness/bootstrap to acquire a newer harness revision."
     exit 0
     ;;
 esac
@@ -580,75 +586,29 @@ if [ $# -gt 0 ] && [ "\${1#-}" = "$1" ]; then
   shift
   case "$skill" in ki-*) ;; *) echo "unsafe educator skill name: $skill" >&2; exit 2 ;; esac
   case "$skill" in *[!a-z0-9_-]*) echo "unsafe educator skill name: $skill" >&2; exit 2 ;; esac
-  educator="$root/.ki-meta/educators/$skill/educate.ts"
+  educator="$root/.ki-meta/educators/$skill/scripts/educate.ts"
   if [ ! -f "$educator" ] || [ -L "$educator" ]; then
-    echo "no safe educator vendored for '$skill' — re-run whole-set ki-educate" >&2
+    echo "no safe educator vendored for '$skill' — run https://knowledgeislands.info/harness/bootstrap to repair the local harness" >&2
     exit 1
   fi
   exec bun "$educator" "$root" "$@"
 fi
-ref="$DEFAULT_REF"
-pass=""
-while [ $# -gt 0 ]; do
-  case "$1" in
-    --ref) ref="$2"; shift 2 ;;
-    --dry-run) pass="$pass --dry-run"; shift ;;
-    --verbose) pass="$pass --verbose"; shift ;;
-    *) echo "unsupported whole-set ki-educate argument: $1" >&2; exit 2 ;;
+engine="$root/.ki-meta/bootstrap/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts"
+if [ ! -f "$engine" ] || [ -L "$engine" ]; then
+  echo "local bootstrap material is missing or unsafe — run https://knowledgeislands.info/harness/bootstrap to repair it" >&2
+  exit 1
+fi
+for argument in "$@"; do
+  case "$argument" in
+    --ref|--ref=*)
+      echo "a harness revision is acquired only through https://knowledgeislands.info/harness/bootstrap" >&2
+      exit 2
+      ;;
+    --dry-run|--verbose) ;;
+    *) echo "unsupported whole-set ki-educate argument: $argument" >&2; exit 2 ;;
   esac
 done
-echo "re-bootstrapping $root from $REPO@$ref"
-curl -fsSL "https://raw.githubusercontent.com/$REPO/$ref/skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh" | sh -s -- "$root" --ref "$ref"$pass
-`
-}
-
-function educatorLauncher(skill: string): string {
-  return `#!/usr/bin/env bun
-// Vendored by ki-bootstrap. A target-local EDUCATE launcher for ${skill}; it has no
-// harness-relative imports and invokes the canonical bootstrap transport.
-import { spawnSync } from 'node:child_process'
-import { resolve } from 'node:path'
-
-const skill = ${JSON.stringify(skill)}
-const target = resolve(process.argv[2] ?? '.')
-const args = process.argv.slice(3)
-let ref = 'main'
-let dryRun = false
-let verbose = false
-for (let index = 0; index < args.length; index++) {
-  const arg = args[index]
-  if (arg === '--help' || arg === '-h') {
-    console.log('usage: ki-educate ' + skill + ' [--ref <ref>] [--dry-run] [--verbose]')
-    console.log('  runs this target-local educator via the canonical bootstrap transport.')
-    process.exit(0)
-  }
-  if (arg === '--dry-run') {
-    dryRun = true
-    continue
-  }
-  if (arg === '--verbose') {
-    verbose = true
-    continue
-  }
-  if (arg === '--ref' && args[index + 1]) {
-    ref = args[++index] as string
-    continue
-  }
-  console.error('unsupported educator argument: ' + arg)
-  process.exit(2)
-}
-if (!/^[A-Za-z0-9._/-]+$/.test(ref) || ref.includes('..')) {
-  console.error('unsafe harness ref: ' + ref)
-  process.exit(2)
-}
-const url = 'https://raw.githubusercontent.com/knowledgeislands/ki-agentic-harness/' + ref + '/skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh'
-const fetched = spawnSync('curl', ['-fsSL', url], { encoding: 'utf8' })
-if (fetched.status !== 0 || !fetched.stdout) process.exit(fetched.status ?? 1)
-const result = spawnSync('sh', ['-s', '--', target, '--ref', ref, '--seed', skill, ...(dryRun ? ['--dry-run'] : []), ...(verbose ? ['--verbose'] : [])], {
-  input: fetched.stdout,
-  stdio: ['pipe', 'inherit', 'inherit']
-})
-process.exit(result.status ?? 1)
+exec env KI_BOOTSTRAP_OFFLINE=1 bun "$engine" "$root" --ref "$ref" "$@"
 `
 }
 
@@ -717,7 +677,7 @@ function snapshotTree(metaDir: string, rel: string, out: OwnedSnapshot): void {
 
 function snapshotOwned(metaDir: string): OwnedSnapshot {
   const out: OwnedSnapshot = new Map()
-  for (const rel of [CHECKERS_DIR, EDUCATORS_DIR, RETIRED_CHECKERS_DIR, 'bin', 'manifest.json']) {
+  for (const rel of [CHECKERS_DIR, EDUCATORS_DIR, BOOTSTRAP_DIR, RETIRED_CHECKERS_DIR, 'bin', 'manifest.json']) {
     if (lstatOrNull(join(metaDir, rel))) snapshotTree(metaDir, rel, out)
   }
   return out
@@ -886,11 +846,11 @@ function createStaging(metaDir: string): { path: string; identity: EntrySnapshot
 
 function validateGeneration(staging: string, journal: OwnedSnapshot, manifestFiles: Record<string, string>): OwnedSnapshot {
   const topLevel = readdirSync(staging).sort()
-  if (JSON.stringify(topLevel) !== JSON.stringify(['bin', CHECKERS_DIR, EDUCATORS_DIR, 'manifest.json'].sort())) {
+  if (JSON.stringify(topLevel) !== JSON.stringify(['bin', BOOTSTRAP_DIR, CHECKERS_DIR, EDUCATORS_DIR, 'manifest.json'].sort())) {
     throw new Error(`candidate generation has unexpected top-level entries: ${topLevel.join(', ')}`)
   }
   const tree = new Map<string, EntrySnapshot>()
-  for (const rel of [CHECKERS_DIR, EDUCATORS_DIR, 'bin', 'manifest.json']) {
+  for (const rel of [CHECKERS_DIR, EDUCATORS_DIR, BOOTSTRAP_DIR, 'bin', 'manifest.json']) {
     if (!lstatOrNull(join(staging, rel))) throw new Error(`candidate generation is missing ${rel}`)
     snapshotTree(staging, rel, tree)
   }
@@ -1016,15 +976,105 @@ function vendorEducator(
 ): void {
   const declared = vendorModesOf(skill)
   if (!declared?.includes('educate')) return
-  const rel = join(EDUCATORS_DIR, skill, 'educate.ts')
+  const rel = join(EDUCATORS_DIR, skill)
   const abs = join(generationRoot, rel)
-  mkdirSync(dirname(abs), { recursive: true })
   recordGenerated(journal, generationRoot, EDUCATORS_DIR)
-  recordGenerated(journal, generationRoot, join(EDUCATORS_DIR, skill))
-  writeFileSync(abs, educatorLauncher(skill))
-  recordGenerated(journal, generationRoot, rel)
-  manifestFiles[`${VENDOR_DIR}/${rel}`] = hashJournalFile(journal, rel)
-  if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${rel} (standalone educator launcher)${RESET}`)
+  const written = copyRegularTree(generationRoot, skillDir(skill), abs, rel, journal)
+  for (const file of written) manifestFiles[file.rel] = hashJournalFile(journal, file.rel.slice(VENDOR_DIR.length + 1))
+  if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${rel} (self-contained educator payload)${RESET}`)
+}
+
+function ensureCandidateDirectory(staging: string, rel: string, journal: OwnedSnapshot): void {
+  const path = join(staging, rel)
+  if (!existsSync(path)) mkdirSync(path)
+  recordGenerated(journal, staging, rel)
+}
+
+function manifestCopiedFiles(manifestFiles: Record<string, string>, journal: OwnedSnapshot, files: readonly VendoredFile[]): void {
+  for (const file of files) manifestFiles[file.rel] = hashJournalFile(journal, file.rel.slice(VENDOR_DIR.length + 1))
+}
+
+function bootstrapCatalogueSkills(set: readonly string[]): string[] {
+  const retained = new Set(set)
+  const pending = [...retained]
+  while (pending.length > 0) {
+    const skill = pending.pop()
+    if (!skill) continue
+    for (const { provider } of sharedDependenciesOf(skill)) {
+      if (retained.has(provider)) continue
+      retained.add(provider)
+      pending.push(provider)
+    }
+  }
+  return [...retained].sort()
+}
+
+function vendorBootstrapPayload(
+  generationRoot: string,
+  set: readonly string[],
+  manifestFiles: Record<string, string>,
+  journal: OwnedSnapshot,
+  showActions: boolean
+): void {
+  ensureCandidateDirectory(generationRoot, BOOTSTRAP_DIR, journal)
+  ensureCandidateDirectory(generationRoot, join(BOOTSTRAP_DIR, 'skills'), journal)
+  ensureCandidateDirectory(generationRoot, join(BOOTSTRAP_DIR, 'skills', 'keystone'), journal)
+
+  const bootstrapSource = skillDir('ki-bootstrap')
+  const bootstrapDestination = join(BOOTSTRAP_DIR, 'skills', 'keystone', 'ki-bootstrap')
+  ensureCandidateDirectory(generationRoot, bootstrapDestination, journal)
+  const bootstrapSkill = join(bootstrapDestination, 'SKILL.md')
+  copyRegularFile(join(bootstrapSource, 'SKILL.md'), join(generationRoot, bootstrapSkill))
+  recordGenerated(journal, generationRoot, bootstrapSkill)
+  manifestFiles[join(VENDOR_DIR, bootstrapSkill)] = hashJournalFile(journal, bootstrapSkill)
+  ensureCandidateDirectory(generationRoot, join(bootstrapDestination, 'scripts'), journal)
+  ensureCandidateDirectory(generationRoot, join(bootstrapDestination, 'scripts', 'internal'), journal)
+  manifestCopiedFiles(
+    manifestFiles,
+    journal,
+    copyRegularTree(
+      generationRoot,
+      join(bootstrapSource, 'scripts', 'internal', 'repo-bootstrap'),
+      join(generationRoot, bootstrapDestination, 'scripts', 'internal', 'repo-bootstrap'),
+      join(bootstrapDestination, 'scripts', 'internal', 'repo-bootstrap'),
+      journal
+    )
+  )
+
+  for (const skill of bootstrapCatalogueSkills(set)) {
+    if (skill === 'ki-bootstrap') continue
+    const source = skillDir(skill)
+    const sourceRel = relative(SKILLS_ROOT, source)
+    const destination = join(BOOTSTRAP_DIR, 'skills', sourceRel)
+    const cluster = dirname(sourceRel)
+    ensureCandidateDirectory(generationRoot, join(BOOTSTRAP_DIR, 'skills', cluster), journal)
+    manifestCopiedFiles(
+      manifestFiles,
+      journal,
+      copyRegularTree(generationRoot, source, join(generationRoot, destination), destination, journal)
+    )
+  }
+
+  if (set.includes('ki-agents')) {
+    ensureCandidateDirectory(generationRoot, join(BOOTSTRAP_DIR, 'agents'), journal)
+    const agentsSource = join(SKILLS_ROOT, '..', 'agents', 'governance')
+    manifestCopiedFiles(
+      manifestFiles,
+      journal,
+      copyRegularTree(
+        generationRoot,
+        agentsSource,
+        join(generationRoot, BOOTSTRAP_DIR, 'agents', 'governance'),
+        join(BOOTSTRAP_DIR, 'agents', 'governance'),
+        journal
+      )
+    )
+  }
+
+  if (showActions)
+    console.log(
+      `${GREEN}vendor${RESET} bootstrap ${DIM}→ ${VENDOR_DIR}/${BOOTSTRAP_DIR} (local whole-set coordinator and source catalogue)${RESET}`
+    )
 }
 
 function vendorSkill(
@@ -1291,6 +1341,7 @@ function buildCandidate(
     vendorSkill(staging, skill, false, manifestFiles, journal, showActions)
     vendorEducator(staging, skill, manifestFiles, journal, showActions)
   }
+  vendorBootstrapPayload(staging, set, manifestFiles, journal, showActions)
 
   const aggregate = join(staging, 'bin', 'aggregate.ts')
   writeFileSync(aggregate, AGGREGATE_RUNNER)
@@ -1301,7 +1352,7 @@ function buildCandidate(
   writeFileSync(join(staging, 'bin', 'ki-conform'), BIN_KI_CONFORM)
   chmodSync(join(staging, 'bin', 'ki-conform'), 0o755)
   recordGenerated(journal, staging, join('bin', 'ki-conform'))
-  writeFileSync(join(staging, 'bin', 'ki-educate'), binKiInit())
+  writeFileSync(join(staging, 'bin', 'ki-educate'), binKiInit(ref))
   chmodSync(join(staging, 'bin', 'ki-educate'), 0o755)
   recordGenerated(journal, staging, join('bin', 'ki-educate'))
   writeFileSync(join(staging, 'bin', 'ki-help'), BIN_KI_HELP)
@@ -1600,6 +1651,7 @@ function publishCandidate(
           entry.kind === 'file' &&
           (rel.startsWith(`${CHECKERS_DIR}/`) ||
             rel.startsWith(`${EDUCATORS_DIR}/`) ||
+            rel.startsWith(`${BOOTSTRAP_DIR}/`) ||
             rel.startsWith(`${RETIRED_CHECKERS_DIR}/`) ||
             rel.startsWith('bin/')) &&
           !candidate.has(rel)
@@ -1616,10 +1668,12 @@ function publishCandidate(
           entry.kind === 'directory' &&
           (rel === CHECKERS_DIR ||
             rel === EDUCATORS_DIR ||
+            rel === BOOTSTRAP_DIR ||
             rel === RETIRED_CHECKERS_DIR ||
             rel === 'bin' ||
             rel.startsWith(`${CHECKERS_DIR}/`) ||
             rel.startsWith(`${EDUCATORS_DIR}/`) ||
+            rel.startsWith(`${BOOTSTRAP_DIR}/`) ||
             rel.startsWith(`${RETIRED_CHECKERS_DIR}/`) ||
             rel.startsWith('bin/')) &&
           !candidate.has(rel)
@@ -1848,9 +1902,12 @@ export const educateRepository = (argv: string[] = process.argv.slice(2)): void 
       vendorSkill(join(target, VENDOR_DIR), skill, true, manifestFiles, undefined, true)
       if (vendorModesOf(skill)?.includes('educate'))
         console.log(
-          `${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${EDUCATORS_DIR}/${skill}/educate.ts (standalone educator launcher)${RESET}`
+          `${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${EDUCATORS_DIR}/${skill} (self-contained educator payload)${RESET}`
         )
     }
+    console.log(
+      `${GREEN}vendor${RESET} bootstrap ${DIM}→ ${VENDOR_DIR}/${BOOTSTRAP_DIR} (local whole-set coordinator and source catalogue)${RESET}`
+    )
   } else runBootstrapTransaction(target, boundTarget.identity, set, ref, verbose)
   // Runtime payloads are separate from `.ki-meta/`: every target receives complete,
   // standalone copies. Deliberate local-author links are a ki-repo concern and are

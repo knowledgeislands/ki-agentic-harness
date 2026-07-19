@@ -285,17 +285,38 @@ try {
       existsSync(join(seededRepo, '.ki-meta', 'checkers', 'ki-authoring', 'scripts', 'vendored', 'ki-skills', `${module}.ts`))
     )
   )
-  const educator = join(seededRepo, '.ki-meta', 'educators', 'ki-repo', 'educate.ts')
+  const educator = join(seededRepo, '.ki-meta', 'educators', 'ki-repo', 'scripts', 'educate.ts')
+  const localEngine = join(
+    seededRepo,
+    '.ki-meta',
+    'bootstrap',
+    'skills',
+    'keystone',
+    'ki-bootstrap',
+    'scripts',
+    'internal',
+    'repo-bootstrap',
+    'repo-bootstrap.ts'
+  )
   const educatorHelp = spawnSync(join(seededRepo, '.ki-meta', 'bin', 'ki-educate'), ['ki-repo', '--help'], { encoding: 'utf8' })
+  const localWholeSet = spawnSync(join(seededRepo, '.ki-meta', 'bin', 'ki-educate'), ['--dry-run'], { encoding: 'utf8' })
   const beforeRejectedEducator = snapshot(seededRepo)
   const rejectedEducator = spawnSync(join(seededRepo, '.ki-meta', 'bin', 'ki-educate'), ['ki-repo/escape'], { encoding: 'utf8' })
   check(
-    'seeded ki-repo → vendors a target-local standalone educator',
-    existsSync(educator) && !readFileSync(educator, 'utf8').includes('resolve(dirname(fileURLToPath(import.meta.url))')
+    'seeded ki-repo → vendors a self-contained target-local educator',
+    existsSync(educator) && !readFileSync(educator, 'utf8').includes('curl')
   )
   check(
     'seeded ki-repo → selected educator dispatches locally',
-    educatorHelp.status === 0 && educatorHelp.stdout.includes('ki-educate ki-repo')
+    educatorHelp.status === 0 && educatorHelp.stdout.includes('Bootstrap ki-repo into a target repository')
+  )
+  check(
+    'seeded ki-repo → retains a local whole-set bootstrap coordinator',
+    existsSync(localEngine) && !readFileSync(join(seededRepo, '.ki-meta', 'bin', 'ki-educate'), 'utf8').includes('curl')
+  )
+  check(
+    'seeded ki-repo → whole-set EDUCATE runs from local material',
+    localWholeSet.status === 0 && localWholeSet.stdout.includes('EDUCATE dry run complete')
   )
   check(
     'seeded ki-repo → unsafe selected educator is rejected without writing',
