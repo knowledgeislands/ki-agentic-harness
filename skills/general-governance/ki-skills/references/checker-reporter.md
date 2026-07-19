@@ -41,18 +41,18 @@ Every `finding` record carries:
 - `type` — `M` for a deterministic mechanical result or `J` for a judgment-review prompt.
 - `level` — one value from the shared severity ladder.
 - `code` — the stable rubric criterion identifier.
-- `message` — the specific result, without repeating the code, rule, or file field.
-- `ref` and `file` when the criterion or target is scoped to them.
+- `message` — the specific result, without repeating the code, rule, or subject field.
+- `subject` when the affected artifact or path adds useful context.
 
 The aggregate resolves `code` against the emitting skill's vendored rubric metadata and displays the identity as `${code}: ${rule}`.
 
 Titles therefore remain in their owning rubric rather than being duplicated by every checker report.
 
-An applicable `[J]` rubric criterion appears once as a `J` finding at `ADVISORY` level with a citation.
+An applicable `[J]` rubric criterion appears once as a `J` finding at `ADVISORY` level.
 
 It tells the reviewer what needs judgment without pretending the checker can decide it, and never changes the process exit status.
 
-FAIL, WARN, and POLISH M findings also require a citation.
+The `code` is sufficient to identify the applicable rule.
 
 ## Exit status and summary
 

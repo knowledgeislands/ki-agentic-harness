@@ -158,10 +158,10 @@ for (const [suffix, frontmatter] of [
     parsed.errors.length === 0 && validateCheckerReporterEvents(parsed.events, result.status ?? 1).length === 0
   )
   check(
-    'checker-contract root → emits cited structured J review prompts',
+    'checker-contract root → emits J review prompts identified by code',
     parsed.events.some((event) => {
-      const finding = event as { type?: string; level?: string; ref?: string }
-      return finding.type === 'J' && finding.level === 'ADVISORY' && finding.ref === 'scripts/rubric/'
+      const finding = event as { type?: string; level?: string; code?: string }
+      return finding.type === 'J' && finding.level === 'ADVISORY' && finding.code === 'DESC-4'
     })
   )
   check(

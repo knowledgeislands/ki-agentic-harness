@@ -25,9 +25,9 @@ const check = (label: string, condition: boolean): void => {
 }
 
 const findings: CheckerFinding[] = [
-  { type: 'M', level: 'FAIL', code: 'RULE-1', message: 'required file is absent', ref: 'references/rubric.md', file: 'README.md' },
+  { type: 'M', level: 'FAIL', code: 'RULE-1', message: 'required file is absent', subject: 'README.md' },
   { type: 'M', level: 'PASS', code: 'RULE-2', message: 'normal form is present' },
-  { type: 'J', level: 'ADVISORY', code: 'RULE-3', message: 'review the authored explanation', ref: 'references/rubric.md' }
+  { type: 'J', level: 'ADVISORY', code: 'RULE-3', message: 'review the authored explanation' }
 ]
 
 const events = buildCheckerReporterEvents({ mode: 'audit', concern: 'fixture', target: '/fixture', findings })
@@ -70,14 +70,6 @@ check(
   validateCheckerReporterEvents(badJudgment, 1).some((error) => error.includes('J finding must be ADVISORY'))
 )
 
-const missingCitation = structuredClone(events) as unknown[]
-const failRecord = missingCitation.find((event) => (event as { level?: string }).level === 'FAIL') as { ref?: string }
-delete failRecord.ref
-check(
-  'validator → rejects a failure without a criterion citation',
-  validateCheckerReporterEvents(missingCitation, 1).some((error) => error.includes('FAIL M finding must cite'))
-)
-
 let rejectedEmptyCode = false
 try {
   buildCheckerReporterEvents({
@@ -90,19 +82,6 @@ try {
   rejectedEmptyCode = true
 }
 check('validation → empty finding code is rejected', rejectedEmptyCode)
-
-let rejectedMissingCitation = false
-try {
-  buildCheckerReporterEvents({
-    mode: 'audit',
-    concern: 'fixture',
-    target: '/fixture',
-    findings: [{ type: 'M', level: 'WARN', code: 'RULE-4', message: 'missing citation' }]
-  })
-} catch {
-  rejectedMissingCitation = true
-}
-check('validation → non-passing mechanical findings require citations', rejectedMissingCitation)
 
 const rubricFixture = mkdtempSync(join(tmpdir(), 'ki-checker-rubric-'))
 try {
@@ -130,10 +109,10 @@ try {
     target: '/fixture',
     findings: [
       { type: 'M', level: 'PASS', code: 'RULE-1', message: 'normal form is present' },
-      { type: 'M', level: 'WARN', code: 'WEB-2', message: 'required field is absent', ref: 'references/rubric.md' },
-      { type: 'J', level: 'ADVISORY', code: 'MD-table', message: 'review the authored table', ref: 'references/rubric.md' },
-      { type: 'J', level: 'ADVISORY', code: 'JUDGMENT', message: 'review the combined criterion', ref: 'references/rubric.md' },
-      { type: 'J', level: 'ADVISORY', code: 'DEC-1', message: 'review the alternate ordering', ref: 'references/rubric.md' }
+      { type: 'M', level: 'WARN', code: 'WEB-2', message: 'required field is absent' },
+      { type: 'J', level: 'ADVISORY', code: 'MD-table', message: 'review the authored table' },
+      { type: 'J', level: 'ADVISORY', code: 'JUDGMENT', message: 'review the combined criterion' },
+      { type: 'J', level: 'ADVISORY', code: 'DEC-1', message: 'review the alternate ordering' }
     ]
   })
   check('rubric validator → accepts resolved codes, types, and complete J prompts', validateCheckerReporterRubric(rubricEvents, criteria).length === 0)

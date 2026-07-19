@@ -45,13 +45,8 @@ import { discoverSkillDirs, listMarkdownFiles, listScriptFiles } from './rubric/
 import { stripCode } from './rubric/contexts/text.ts'
 import { relativeImportSpecifiers } from './rubric/contexts/typescript.ts'
 
-// Every ki-skills criterion is defined in this skill's rubric — the default reference pointer.
-const STRUCTURED_RUBRIC = 'scripts/rubric/'
-
-const citeFindings = (findings: readonly RubricFinding[]): RubricFinding[] => findings.map((finding) => ({ ...finding, ref: finding.ref ?? STRUCTURED_RUBRIC }))
-
 const appendFindings = (target: RubricFinding[], findings: readonly RubricFinding[], file?: string): void => {
-  target.push(...citeFindings(findings).map((finding) => ({ ...finding, file: file ?? finding.file })))
+  target.push(...findings.map((finding) => ({ ...finding, file: file ?? finding.file })))
 }
 
 const appendRubricFindings = <Context>(
@@ -261,12 +256,12 @@ const refreshStatusOut = rawArgv.includes('--refresh-status')
 const reportTarget = resolve('.')
 const all: RubricFinding[] = []
 
-const judgmentFindings = (): RubricFinding[] => judgmentFindingsFromItems(RUBRIC_ITEMS, STRUCTURED_RUBRIC)
+const judgmentFindings = (): RubricFinding[] => judgmentFindingsFromItems(RUBRIC_ITEMS)
 
 if (skillDirs.length === 0) {
   const findings: RubricFinding[] = [
-    ...citeFindings(directTargetLayoutFindings),
-    ...(directTargetLayoutFindings.length === 0 ? citeFindings(auditRubricItems(LAYOUT, { noSkillsFound: true })) : []),
+    ...directTargetLayoutFindings,
+    ...(directTargetLayoutFindings.length === 0 ? auditRubricItems(LAYOUT, { noSkillsFound: true }) : []),
     ...judgmentFindings()
   ]
   emitCheckerReporter({ mode: 'audit', concern: 'skills', target: reportTarget, findings })
@@ -290,14 +285,12 @@ const collisionTargets = skillDirs
     name: basename(dir),
     description: parseFrontmatter(readFileSync(join(dir, 'SKILL.md'), 'utf8')).keys.get('description') ?? ''
   }))
-all.push(...citeFindings(auditRubricItems(COLLISION, { targets: collisionTargets })))
+all.push(...auditRubricItems(COLLISION, { targets: collisionTargets }))
 all.push(
-  ...citeFindings(
-    auditRubricItems(KI_SHAPE, {
-      skill: null,
-      ownershipCollisions: createOwnershipCollisions(skillDirs)
-    })
-  )
+  ...auditRubricItems(KI_SHAPE, {
+    skill: null,
+    ownershipCollisions: createOwnershipCollisions(skillDirs)
+  })
 )
 
 // Per-skill footprint — opt-in, INFO only, never affects the fail/warn tally or exit code.
@@ -305,7 +298,7 @@ if (footprintOut) {
   for (const dir of skillDirs) {
     const fp = createFootprint(dir)
     all.push(
-      ...citeFindings(auditRubricItems(SIZE, { footprint: fp })).map((finding) => ({
+      ...auditRubricItems(SIZE, { footprint: fp }).map((finding) => ({
         ...finding,
         file: finding.file ? relative(reportTarget, join(dir, finding.file)) : undefined
       }))
@@ -319,7 +312,7 @@ if (refreshStatusOut) {
     const sp = join(dir, 'references', 'sources.md')
     const context = createRefreshContext(existsSync(sp) ? readFileSync(sp, 'utf8') : null)
     all.push(
-      ...citeFindings(auditRubricItems(LONGEVITY, { ...context, reportStatus: true })).map((finding) => ({
+      ...auditRubricItems(LONGEVITY, { ...context, reportStatus: true }).map((finding) => ({
         ...finding,
         file: relative(reportTarget, sp)
       }))

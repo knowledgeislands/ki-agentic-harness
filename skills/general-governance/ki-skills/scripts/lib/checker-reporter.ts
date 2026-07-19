@@ -169,14 +169,15 @@ export const validateCheckerReporterRubric = (events: readonly unknown[], criter
     if (type === 'J') judgmentCounts.set(code, (judgmentCounts.get(code) ?? 0) + 1)
 
     const message = typeof event.message === 'string' ? event.message.trim() : ''
-    const file = typeof event.file === 'string' ? event.file.trim() : ''
+    const subject = typeof event.subject === 'string' ? event.subject.trim() : ''
     const lower = message.toLowerCase()
     if (lower.startsWith(`${code.toLowerCase()}:`) || lower.startsWith(`${code.toLowerCase()} `)) errors.push(`${label} message repeats its code: ${code}`)
     if (lower.startsWith(criterion.title.toLowerCase())) errors.push(`${label} message repeats its rubric title: ${code}`)
     if (lower.startsWith('[j]:')) errors.push(`${label} message repeats the judgment marker: ${code}`)
-    if (file) {
-      const basename = file.split('/').filter(Boolean).at(-1) ?? file
-      if (lower.startsWith(file.toLowerCase()) || lower.startsWith(basename.toLowerCase())) errors.push(`${label} message repeats its file field: ${code}`)
+    if (subject) {
+      const basename = subject.split('/').filter(Boolean).at(-1) ?? subject
+      if (lower.startsWith(subject.toLowerCase()) || lower.startsWith(basename.toLowerCase()))
+        errors.push(`${label} message repeats its subject field: ${code}`)
     }
   }
   for (const [code, criterion] of criteria) {
@@ -192,26 +193,20 @@ export const validateCheckerReporterRubric = (events: readonly unknown[], criter
  * The rubric remains the source of truth for codes and types; checkers only decide
  * their mechanical findings.
  */
-export const judgmentFindingsFromRubric = (rubricPath: string, ref = 'references/rubric.md'): RubricFinding[] => {
+export const judgmentFindingsFromRubric = (rubricPath: string): RubricFinding[] => {
   return [...rubricCriteriaFromFile(rubricPath).values()]
     .filter((criterion) => criterion.types.has('J'))
     .map((criterion) => criterion.code)
     .sort()
-    .map((code) => ({ type: 'J', level: 'ADVISORY', code, message: 'Review this judgment criterion against the audited scope.', ref }))
+    .map((code) => ({ type: 'J', level: 'ADVISORY', code, message: 'Review this judgment criterion against the audited scope.' }))
 }
 
-export const judgmentFindingsFromItems = (items: readonly { code: string; judgment?: unknown }[], ref?: string): RubricFinding[] => {
+export const judgmentFindingsFromItems = (items: readonly { code: string; judgment?: unknown }[]): RubricFinding[] => {
   return items
     .filter((item) => item.judgment)
     .map((item) => item.code)
     .sort()
-    .map((code) => ({
-      type: 'J',
-      level: 'ADVISORY',
-      code,
-      message: 'Review this judgment criterion against the audited scope.',
-      ...(ref ? { ref } : {})
-    }))
+    .map((code) => ({ type: 'J', level: 'ADVISORY', code, message: 'Review this judgment criterion against the audited scope.' }))
 }
 
 /** Parse JSON Lines without coupling a caller to a particular checker process. */
@@ -271,7 +266,7 @@ export const validateCheckerReporterEvents = (events: readonly unknown[], exitCo
     }
     if (index > 0 && index < events.length - 1 && record !== 'finding') errors.push(`${label} must be a finding record`)
     const permitted =
-      record === 'meta' ? RUN_KEYS : record === 'finding' ? [...RUN_KEYS, 'type', 'level', 'code', 'message', 'ref', 'file'] : [...RUN_KEYS, 'summary']
+      record === 'meta' ? RUN_KEYS : record === 'finding' ? [...RUN_KEYS, 'type', 'level', 'code', 'message', 'subject'] : [...RUN_KEYS, 'summary']
     for (const key of Object.keys(event)) if (!(permitted as readonly string[]).includes(key)) errors.push(`${label} has unknown field: ${key}`)
     for (const [field, expected] of Object.entries({ version: 1, runId, mode, concern, target, generatedAt })) {
       if (field === 'version') {
@@ -287,12 +282,8 @@ export const validateCheckerReporterEvents = (events: readonly unknown[], exitCo
     if (type !== 'M' && type !== 'J') errors.push(`${label} type must be M or J`)
     if (!nonEmptyString(event.code)) errors.push(`${label} code must be non-empty`)
     if (!nonEmptyString(event.message)) errors.push(`${label} message must be non-empty`)
-    if (event.ref !== undefined && !nonEmptyString(event.ref)) errors.push(`${label} ref must be non-empty when present`)
-    if (event.file !== undefined && !nonEmptyString(event.file)) errors.push(`${label} file must be non-empty when present`)
+    if (event.subject !== undefined && !nonEmptyString(event.subject)) errors.push(`${label} subject must be non-empty when present`)
     if (type === 'J' && level !== 'ADVISORY') errors.push(`${label} J finding must be ADVISORY`)
-    if (type === 'J' && !nonEmptyString(event.ref)) errors.push(`${label} J finding must cite its criterion`)
-    if (type === 'M' && (level === 'FAIL' || level === 'WARN' || level === 'POLISH') && !nonEmptyString(event.ref))
-      errors.push(`${label} ${level} M finding must cite its criterion`)
     if (typeof level === 'string' && RUBRIC_LEVELS.includes(level as RubricLevel)) {
       counts[level.toLowerCase() as Lowercase<CheckerLevel>]++
       if (type === 'M' && level === 'FAIL') mechanicalFailure = true
@@ -319,9 +310,6 @@ export const validateCheckerReporterEvents = (events: readonly unknown[], exitCo
 const assertFinding = (finding: RubricFinding): void => {
   if (!finding.code.trim()) throw new Error('checker finding code must be non-empty')
   if (!finding.message.trim()) throw new Error('checker finding message must be non-empty')
-  if (finding.type === 'J' && !finding.ref?.trim()) throw new Error('J finding must cite its judgment criterion')
-  if (finding.type === 'M' && ['FAIL', 'WARN', 'POLISH'].includes(finding.level) && !finding.ref?.trim())
-    throw new Error(`${finding.level} M finding must cite its criterion`)
 }
 
 export const buildCheckerReporterEvents = (input: CheckerReporterInput): CheckerReporterEvent[] => {

@@ -18,8 +18,7 @@
     "level": { "enum": ["FAIL", "WARN", "POLISH", "ADVISORY", "INFO", "NA", "PASS"] },
     "code": { "type": "string", "minLength": 1 },
     "message": { "type": "string", "minLength": 1 },
-    "ref": { "type": "string", "minLength": 1 },
-    "file": { "type": "string", "minLength": 1 },
+    "subject": { "type": "string", "minLength": 1 },
     "summary": {
       "type": "object",
       "additionalProperties": false,
@@ -38,17 +37,13 @@
   "oneOf": [
     {
       "properties": { "record": { "const": "meta" } },
-      "not": { "anyOf": [{ "required": ["type"] }, { "required": ["level"] }, { "required": ["code"] }, { "required": ["message"] }, { "required": ["summary"] }] }
+      "not": {
+        "anyOf": [{ "required": ["type"] }, { "required": ["level"] }, { "required": ["code"] }, { "required": ["message"] }, { "required": ["summary"] }]
+      }
     },
     {
       "required": ["type", "level", "code", "message"],
-      "properties": { "record": { "const": "finding" } },
-      "allOf": [
-        {
-          "if": { "properties": { "type": { "const": "J" } } },
-          "then": { "properties": { "level": { "const": "ADVISORY" } }, "required": ["ref"] }
-        }
-      ]
+      "properties": { "record": { "const": "finding" } }
     },
     {
       "required": ["summary"],

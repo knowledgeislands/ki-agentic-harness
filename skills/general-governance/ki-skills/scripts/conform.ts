@@ -34,8 +34,8 @@ import { LAYOUT } from './rubric/items/layout.ts'
 import { NAME } from './rubric/items/name.ts'
 import { createKiShapeContext, type KiSkillsConformContext } from './rubric/contexts/contexts.ts'
 import { frontmatterLine, insertFrontmatterLine, parseFrontmatter, replaceFrontmatterScalar } from './rubric/contexts/frontmatter.ts'
-import { hintVerbs, isProcessSkill } from './rubric/contexts/modes.ts'
 import { discoverSkillDirs, listMarkdownFiles } from './rubric/contexts/skill-files.ts'
+import { hintVerbs, isProcessSkill } from './rubric/contexts/modes.ts'
 
 export const findingsFromConformActions = <Context>(actions: readonly ConformAction<Context>[]): RubricFinding[] =>
   actions.map((action) => ({
@@ -49,10 +49,9 @@ export const findingsFromConformActions = <Context>(actions: readonly ConformAct
 // Each action records a typed domain finding. The canonical reporter owns transport;
 // the bootstrap aggregate is the only terminal renderer.
 const argv = process.argv.slice(2)
-const STRUCTURED_RUBRIC = 'scripts/rubric/'
 const findings: RubricFinding[] = []
 const recordActions = <Context>(actions: readonly ConformAction<Context>[]): boolean => {
-  findings.push(...findingsFromConformActions(actions, STRUCTURED_RUBRIC))
+  findings.push(...findingsFromConformActions(actions))
   return actions.some((action) => action.level !== 'ADVISORY')
 }
 
@@ -141,8 +140,8 @@ const main = (): void => {
 
   const skillDirs = discoverSkillDirs(target)
   if (skillDirs.length === 0) {
-    findings.push(...auditRubricItems(LAYOUT, { noSkillsFound: true }).map((finding) => ({ ...finding, ref: STRUCTURED_RUBRIC })))
-    findings.push(...judgmentFindingsFromItems(RUBRIC_ITEMS, STRUCTURED_RUBRIC))
+    findings.push(...auditRubricItems(LAYOUT, { noSkillsFound: true }))
+    findings.push(...judgmentFindingsFromItems(RUBRIC_ITEMS))
     emitCheckerReporter({ mode: 'conform', concern: 'skills', target: resolve(target), findings })
     process.exit(checkerReporterExitCode(findings))
     return
@@ -150,7 +149,7 @@ const main = (): void => {
 
   for (const dir of skillDirs) conformSkill(dir, dryRun)
 
-  findings.push(...judgmentFindingsFromItems(RUBRIC_ITEMS, STRUCTURED_RUBRIC))
+  findings.push(...judgmentFindingsFromItems(RUBRIC_ITEMS))
   emitCheckerReporter({ mode: 'conform', concern: 'skills', target: resolve(target), findings })
   process.exit(checkerReporterExitCode(findings))
 }

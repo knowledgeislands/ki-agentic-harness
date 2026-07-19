@@ -25,7 +25,6 @@ export type RubricFinding = {
   level: RubricLevel
   code: string
   message: string
-  ref?: string
   file?: string
 }
 
