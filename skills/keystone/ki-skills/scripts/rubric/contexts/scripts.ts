@@ -8,10 +8,7 @@ export const scriptHelpEvidence = (skillDirectory: string): readonly ScriptHelpE
   if (!existsSync(scriptsDirectory)) return []
 
   return readdirSync(scriptsDirectory, { withFileTypes: true })
-    .filter(
-      (entry) =>
-        entry.isFile() && (entry.name.endsWith('.ts') || entry.name.endsWith('.sh')) && !entry.name.endsWith('.test.ts')
-    )
+    .filter((entry) => entry.isFile() && (entry.name.endsWith('.ts') || entry.name.endsWith('.sh')) && !entry.name.endsWith('.test.ts'))
     .sort((left, right) => left.name.localeCompare(right.name))
     .map((entry) => {
       const source = readFileSync(join(scriptsDirectory, entry.name), 'utf8')
