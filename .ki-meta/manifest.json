@@ -1,5 +1,5 @@
 {
-  "ref": "5bcd679ce63a8a621932b9bb27f5fa52fa440293",
+  "ref": "5ec20499151b7561f0adf957adce1fc790266d54",
   "files": {
     ".ki-meta/checkers/ki-agents/scripts/audit.ts": "4ba2c172f0c3f63fe0156eb98331c25bd579ec1d97176e47461ad4fa4e3f4614",
     ".ki-meta/checkers/ki-agents/scripts/conform.ts": "6733480578b008128fac702b8b979fadaa5609058c8cb1f59e66089a5c9b1278",
@@ -453,7 +453,7 @@
     ".ki-meta/educators/ki-repo/skill/scripts/audit.ts": "2621cc025f4b8391a211a1cd13e0032fd4ccf98551d80cdfd0e7b1742c0ba788",
     ".ki-meta/educators/ki-repo/skill/scripts/conform.test.ts": "ec53e3004a318d53e98a47be013a3360737f4254d38211a78320be995525afaf",
     ".ki-meta/educators/ki-repo/skill/scripts/conform.ts": "7c16df5f78ccebc403898a9922e8e0c2f160d63b8469d89d3dec9405cddd63bf",
-    ".ki-meta/educators/ki-repo/skill/scripts/educate.test.ts": "4362233150e9b2fad186a05f23cb474f22a0796c19e290658030356cfaba94ce",
+    ".ki-meta/educators/ki-repo/skill/scripts/educate.test.ts": "2658ba1d1e02129ffe9ca3890759b0c07ae29733a9fd529a7eaa94d992ff16b0",
     ".ki-meta/educators/ki-repo/skill/scripts/educate.ts": "ae63829802af5242e6025d97f616139db291e233fcf86e2bc72b3cd84c49cbf3",
     ".ki-meta/educators/ki-repo/skill/scripts/internal/project-skill-publisher.test.ts": "1c0b5bc6eac68e69f2a513864df1a51a711df2aee7939b38bc81215e4b06799f",
     ".ki-meta/educators/ki-repo/skill/scripts/internal/project-skill-publisher.ts": "c66807248fa5d91a775284a78d6e987d33ada23eb763af05a0a85a3c4f4c9f6e",
@@ -953,7 +953,7 @@
     ".ki-meta/bootstrap/skills/keystone/ki-repo/scripts/audit.ts": "2621cc025f4b8391a211a1cd13e0032fd4ccf98551d80cdfd0e7b1742c0ba788",
     ".ki-meta/bootstrap/skills/keystone/ki-repo/scripts/conform.test.ts": "ec53e3004a318d53e98a47be013a3360737f4254d38211a78320be995525afaf",
     ".ki-meta/bootstrap/skills/keystone/ki-repo/scripts/conform.ts": "7c16df5f78ccebc403898a9922e8e0c2f160d63b8469d89d3dec9405cddd63bf",
-    ".ki-meta/bootstrap/skills/keystone/ki-repo/scripts/educate.test.ts": "4362233150e9b2fad186a05f23cb474f22a0796c19e290658030356cfaba94ce",
+    ".ki-meta/bootstrap/skills/keystone/ki-repo/scripts/educate.test.ts": "2658ba1d1e02129ffe9ca3890759b0c07ae29733a9fd529a7eaa94d992ff16b0",
     ".ki-meta/bootstrap/skills/keystone/ki-repo/scripts/educate.ts": "ae63829802af5242e6025d97f616139db291e233fcf86e2bc72b3cd84c49cbf3",
     ".ki-meta/bootstrap/skills/keystone/ki-repo/scripts/internal/project-skill-publisher.test.ts": "1c0b5bc6eac68e69f2a513864df1a51a711df2aee7939b38bc81215e4b06799f",
     ".ki-meta/bootstrap/skills/keystone/ki-repo/scripts/internal/project-skill-publisher.ts": "c66807248fa5d91a775284a78d6e987d33ada23eb763af05a0a85a3c4f4c9f6e",
