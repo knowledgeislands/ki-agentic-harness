@@ -10,13 +10,11 @@
  */
 
 import { readFileSync } from 'node:fs'
-import { RUBRIC_LEVELS, type RubricFinding, type RubricLevel } from './rubric/rubric.ts'
+import { type RubricFinding, type RubricLevel } from './rubric/rubric.ts'
 
 // The rubric owns finding identity and severity. The reporter owns only the
 // JSONL transport and keeps these aliases for its existing public surface.
-export const CHECKER_LEVELS = RUBRIC_LEVELS
 export type CheckerLevel = RubricLevel
-export type CheckerFinding = RubricFinding
 
 export type CheckerReporterRun = {
   version: 1
@@ -32,7 +30,7 @@ export type CheckerReporterMeta = CheckerReporterRun & {
 }
 
 export type CheckerReporterFinding = CheckerReporterRun &
-  CheckerFinding & {
+  RubricFinding & {
     record: 'finding'
   }
 
@@ -47,7 +45,7 @@ export type CheckerReporterInput = {
   mode: 'audit' | 'conform'
   concern: string
   target: string
-  findings: CheckerFinding[]
+  findings: RubricFinding[]
 }
 
 const SUMMARY_KEYS = ['fail', 'warn', 'polish', 'advisory', 'info', 'na', 'pass'] as const
@@ -192,7 +190,7 @@ export const validateCheckerReporterRubric = (events: readonly unknown[], criter
  * The rubric remains the source of truth for codes and types; checkers only decide
  * their mechanical findings.
  */
-export const judgmentFindingsFromRubric = (rubricPath: string, ref = 'references/rubric.md'): CheckerFinding[] => {
+export const judgmentFindingsFromRubric = (rubricPath: string, ref = 'references/rubric.md'): RubricFinding[] => {
   return [...rubricCriteriaFromFile(rubricPath).values()]
     .filter((criterion) => criterion.types.has('J'))
     .map((criterion) => criterion.code)
@@ -200,7 +198,7 @@ export const judgmentFindingsFromRubric = (rubricPath: string, ref = 'references
     .map((code) => ({ type: 'J', level: 'ADVISORY', code, message: 'Review this judgment criterion against the audited scope.', ref }))
 }
 
-export const judgmentFindingsFromItems = (items: readonly { code: string; judgment?: unknown }[], ref = 'references/rubric.md'): CheckerFinding[] => {
+export const judgmentFindingsFromItems = (items: readonly { code: string; judgment?: unknown }[], ref = 'references/rubric.md'): RubricFinding[] => {
   return items
     .filter((item) => item.judgment)
     .map((item) => item.code)
@@ -279,7 +277,6 @@ export const validateCheckerReporterEvents = (events: readonly unknown[], exitCo
     const type = event.type
     const level = event.level
     if (type !== 'M' && type !== 'J') errors.push(`${label} type must be M or J`)
-    if (typeof level !== 'string' || !CHECKER_LEVELS.includes(level as CheckerLevel)) errors.push(`${label} level is not recognised`)
     if (!nonEmptyString(event.code)) errors.push(`${label} code must be non-empty`)
     if (!nonEmptyString(event.message)) errors.push(`${label} message must be non-empty`)
     if (event.ref !== undefined && !nonEmptyString(event.ref)) errors.push(`${label} ref must be non-empty when present`)
@@ -288,7 +285,6 @@ export const validateCheckerReporterEvents = (events: readonly unknown[], exitCo
     if (type === 'J' && !nonEmptyString(event.ref)) errors.push(`${label} J finding must cite its criterion`)
     if (type === 'M' && (level === 'FAIL' || level === 'WARN' || level === 'POLISH') && !nonEmptyString(event.ref))
       errors.push(`${label} ${level} M finding must cite its criterion`)
-    if (typeof level === 'string' && CHECKER_LEVELS.includes(level as CheckerLevel)) {
       counts[level.toLowerCase() as Lowercase<CheckerLevel>]++
       if (type === 'M' && level === 'FAIL') mechanicalFailure = true
     }
@@ -311,7 +307,7 @@ export const validateCheckerReporterEvents = (events: readonly unknown[], exitCo
   return errors
 }
 
-const assertFinding = (finding: CheckerFinding): void => {
+const assertFinding = (finding: RubricFinding): void => {
   if (!finding.code.trim()) throw new Error('checker finding code must be non-empty')
   if (!finding.message.trim()) throw new Error('checker finding message must be non-empty')
   if (finding.type === 'J' && !finding.ref?.trim()) throw new Error('J finding must cite its judgment criterion')
@@ -348,6 +344,6 @@ export const emitCheckerReporter = (input: CheckerReporterInput): CheckerReporte
   return events
 }
 
-export const checkerReporterExitCode = (findings: readonly CheckerFinding[]): number => {
+export const checkerReporterExitCode = (findings: readonly RubricFinding[]): number => {
   return findings.some((finding) => finding.type === 'M' && finding.level === 'FAIL') ? 1 : 0
 }

@@ -19,8 +19,8 @@ const check = (label: string, condition: boolean): void => {
   }
 }
 
-const run = (script: string, target: string): { output: string; status: number | null } => {
-  const result = spawnSync('bun', [script, target], { encoding: 'utf8' })
+const run = (script: string, target: string, ...args: string[]): { output: string; status: number | null } => {
+  const result = spawnSync('bun', [script, target, ...args], { encoding: 'utf8' })
   return { output: `${result.stdout ?? ''}${result.stderr ?? ''}`, status: result.status }
 }
 
@@ -88,6 +88,20 @@ const writeConformableFixture = (): { base: string; dir: string } => {
     const audited = run(AUDIT, dir)
     check('final audit has no failing mechanical finding', audited.status === 0)
     check('final audit has no LAY-4/KI-SHAPE-11/12/15 finding', !/"code":"(?:LAY-4|KI-SHAPE-11|KI-SHAPE-12|KI-SHAPE-15)"/.test(audited.output))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
+
+{
+  const { base, dir } = writeConformableFixture()
+  try {
+    const before = readFileSync(join(dir, 'SKILL.md'), 'utf8')
+    const result = run(CONFORM, dir, '--dry-run')
+    const after = readFileSync(join(dir, 'SKILL.md'), 'utf8')
+    check('dry-run completes successfully', result.status === 0)
+    check('dry-run emits planned repairs', /"code":"(?:LAY-4|KI-SHAPE-15)"/.test(result.output))
+    check('dry-run preserves SKILL.md', after === before)
   } finally {
     rmSync(base, { recursive: true, force: true })
   }

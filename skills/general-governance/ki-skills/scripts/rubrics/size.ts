@@ -1,10 +1,9 @@
 import type { RubricItem } from '../lib/rubric/rubric.ts'
+import type { FootprintRow } from './support/footprint.ts'
 
 const BODY_MAX_LINES = 500
 const BODY_MAX_TOKENS = 5000
 const FOOTPRINT_REFERENCE_NOTE_TOKENS = 1500
-
-export type FootprintRow = { kind: 'description' | 'body' | 'reference'; path: string; tokens: number }
 
 export type SizeRubricContext = {
   bodyLines?: number

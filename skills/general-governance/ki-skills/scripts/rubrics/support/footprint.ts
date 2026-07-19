@@ -1,10 +1,11 @@
 import { readFileSync } from 'node:fs'
 import { basename, join } from 'node:path'
-import type { FootprintRow } from '../size.ts'
 import { frontmatterBlock, frontmatterLine, frontmatterScalar } from './frontmatter.ts'
 import { listMarkdownFiles } from './skill-files.ts'
 
 type BunYamlRuntime = { Bun: { YAML: { parse: (source: string) => unknown } } }
+
+export type FootprintRow = { kind: 'description' | 'body' | 'reference'; path: string; tokens: number }
 
 export const estimateTokens = (source: string): number => Math.round(source.length / 4)
 
