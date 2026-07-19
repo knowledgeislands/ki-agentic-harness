@@ -136,6 +136,7 @@ try {
   const fixtureRubric = join(fixture, '.ki-meta', 'checkers', 'ki-fixture', 'references')
   mkdirSync(fixtureRubric, { recursive: true })
   writeFileSync(join(fixtureRubric, 'rubric.md'), '- **FIX-1 [M]** Fixture health check.\n- **REVIEW-1 [J]** Fixture judgment review.\n')
+  mkdirSync(join(fixture, '.ki-meta', 'checkers', 'ki-fixture', '.ki-meta'), { recursive: true })
   writeFileSync(
     join(fixture, '.ki-meta', 'checkers', 'ki-fixture', '.ki-meta', 'mode-elements.json'),
     JSON.stringify({
@@ -237,6 +238,7 @@ try {
   const elementRoot = join(fixture, '.ki-meta', 'checkers', 'ki-elements')
   mkdirSync(join(elementRoot, 'scripts'), { recursive: true })
   mkdirSync(join(elementRoot, 'references'), { recursive: true })
+  mkdirSync(join(elementRoot, '.ki-meta'), { recursive: true })
   writeFileSync(join(elementRoot, 'scripts', 'conform.ts'), elementConformFixture)
   writeFileSync(join(elementRoot, 'references', 'rubric.md'), '- **FIX-1 [M]** Fixture health check.\n')
   writeFileSync(

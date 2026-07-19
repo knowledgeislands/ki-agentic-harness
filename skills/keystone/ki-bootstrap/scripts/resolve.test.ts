@@ -338,6 +338,7 @@ try {
   const invalidSkill = join(checkerRoot, '.ki-meta', 'checkers', 'ki-invalid', 'scripts')
   mkdirSync(invalidSkill, { recursive: true })
   writeFileSync(join(invalidSkill, 'audit.ts'), "process.stdout.write('legacy prose\\n')\n")
+  mkdirSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-invalid', '.ki-meta'), { recursive: true })
   writeFileSync(
     join(checkerRoot, '.ki-meta', 'checkers', 'ki-invalid', '.ki-meta', 'mode-elements.json'),
     JSON.stringify({

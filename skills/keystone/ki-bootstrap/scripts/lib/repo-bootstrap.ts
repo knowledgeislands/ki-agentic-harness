@@ -1075,6 +1075,7 @@ function vendorSkill(
       if (!journal) throw new Error('candidate generation requires a creation journal')
       mkdirSync(dirname(modeElementsAbs), { recursive: true })
       recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill))
+      recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, '.ki-meta'))
       copyRegularFile(modeElementsSource, modeElementsAbs)
       recordGenerated(journal, generationRoot, modeElementsRel)
       written.push({ rel: `${VENDOR_DIR}/${modeElementsRel}`, abs: modeElementsAbs })

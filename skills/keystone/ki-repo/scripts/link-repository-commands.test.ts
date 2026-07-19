@@ -140,6 +140,11 @@ try {
     lstatSync(join(codexOnly, '.agents', 'skills', 'ki-kb')).isDirectory() &&
       !lstatSync(join(codexOnly, '.agents', 'skills', 'ki-kb')).isSymbolicLink()
   )
+  check(
+    'codex-only → generated ownership marker is private skill metadata',
+    existsSync(join(codexOnly, '.agents', 'skills', 'ki-kb', '.ki-meta', 'generated-runtime-skill.json')) &&
+      !existsSync(join(codexOnly, '.agents', 'skills', 'ki-kb', '.ki-generated-runtime-skill'))
+  )
   check('codex-only → nothing under .claude/skills', !existsSync(join(codexOnly, '.claude', 'skills')))
   const gitignore = readFileSync(join(codexOnly, '.gitignore'), 'utf8')
   check('codex-only → .gitignore contains .agents/skills/', /^\.agents\/skills\/?$/m.test(gitignore))
