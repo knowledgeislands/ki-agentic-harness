@@ -32,6 +32,10 @@ Downstream consumers validate that stream before producing a human or system-spe
 
 This separation lets one checker result feed a terminal reporter, Markdown report, dashboard, or another machine without rerunning the checks.
 
+Execution progress is not a JSONL record.
+
+The optional AUDIT / CONFORM progress tracker uses a separate callback and, for a direct CLI invocation, stderr; stdout remains solely the complete response or the final explicitly selected terminal report.
+
 ## Envelope
 
 The response begins with one `meta` record, contains zero or more `finding` records, and ends with one `summary` record.
@@ -85,6 +89,8 @@ A reporter accepts a canonical checker result and presents it without changing i
 ```bash
 bun scripts/audit.ts <target> --reporter=terminal --reporter-levels=all
 ```
+
+Use `--progress=auto|always|never` to control the separate status tracker.
 
 The default terminal view shows `FAIL` and `WARN`, plus `FIXED` during CONFORM, with compact counts for suppressed levels and the unevaluated-judgment total.
 

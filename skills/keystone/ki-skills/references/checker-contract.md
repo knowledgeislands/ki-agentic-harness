@@ -16,6 +16,7 @@ It does not own a domain standard or a human presentation.
 - [Inputs and ownership](#inputs-and-ownership)
 - [Execution planning](#execution-planning)
 - [Finding levels](#finding-levels)
+- [Progress](#progress)
 - [Response and exit behaviour](#response-and-exit-behaviour)
 - [Conform safety](#conform-safety)
 - [Portability and vendoring](#portability-and-vendoring)
@@ -99,9 +100,33 @@ The checker MUST NOT emit a synthetic finding for it and MUST report the number 
 
 A hybrid item runs its mechanical aspect normally and also contributes one to that judgment count.
 
+## Progress
+
+Progress is execution status, not a finding and not a second response transport.
+
+An AUDIT or CONFORM checker MAY receive a tracker callback.
+
+It emits a `start` event before any selected mechanical execution, one `item-complete` event after each planned mechanical execution, and a `complete` event after a successful run.
+
+If an execution fails after it has started, it emits a final `failed` event before rethrowing the error.
+
+Each event carries the requested mode and a stable `completed` / `total` counter; an item event also carries that rubric item's code, title, phase, and subject when present.
+
+The tracker MUST NOT add, remove, reorder, or reinterpret executions or findings.
+
+A tracker error MUST NOT change checker execution, canonical response, or exit status.
+
+Direct AUDIT and CONFORM commands accept `--progress=auto|always|never`.
+
+`auto` is the default and shows a compact status line only when stderr is interactive; `always` writes one status line per event to stderr; `never` suppresses all progress output.
+
+The terminal tracker redraws one line while interactive, so detailed findings still arrive only in the final reporter output.
+
 ## Response and exit behaviour
 
 The checker returns one complete canonical JSONL response containing every finding, regardless of how a later reporter will filter its display.
+
+Progress uses its separate tracker callback and, for CLI invocation, stderr; it MUST NOT appear in the JSONL response or stdout.
 
 It exits non-zero if and only if the response contains at least one `FAIL` finding.
 

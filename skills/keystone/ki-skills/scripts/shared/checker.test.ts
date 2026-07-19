@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 import { expect, test } from 'bun:test'
-import { checkerJsonl, parseCheckerJsonl, runChecker, validateCheckerRecords } from './checker.ts'
+import { type CheckerStatusEvent, checkerJsonl, parseCheckerJsonl, runChecker, validateCheckerRecords } from './checker.ts'
 import { defineRubricFamily, type RubricDefinition, type RubricItem } from './rubric.ts'
 
 type TestContext = {
@@ -141,6 +141,42 @@ runChecker({ mode: 'audit', concern: 'fixture', target: '/fixture', rubric, subj
 const auditContextGeneration = contextGeneration
 test('audit contexts → each immutable subject context is created once', () => expect(auditContextGeneration).toBe(2))
 
+test('status tracker → counts every planned mechanical item without changing the result', () => {
+  const statusEvents: CheckerStatusEvent[] = []
+  const result = runChecker({
+    mode: 'audit',
+    concern: 'fixture',
+    target: '/fixture',
+    rubric,
+    subjects: [subject()],
+    statusTracker: (event) => statusEvents.push(event)
+  })
+  expect(result.summary.pass).toBe(3)
+  expect(statusEvents).toEqual([
+    { type: 'start', mode: 'audit', completed: 0, total: 4 },
+    expect.objectContaining({ type: 'item-complete', code: 'ALPHA-1', completed: 1, total: 4 }),
+    expect.objectContaining({ type: 'item-complete', code: 'ALPHA-2', completed: 2, total: 4 }),
+    expect.objectContaining({ type: 'item-complete', code: 'ALPHA-3', completed: 3, total: 4 }),
+    expect.objectContaining({ type: 'item-complete', code: 'ALPHA-4', completed: 4, total: 4 }),
+    { type: 'complete', mode: 'audit', completed: 4, total: 4 }
+  ])
+})
+
+test('status tracker → ignores a broken presentation callback', () => {
+  expect(() =>
+    runChecker({
+      mode: 'audit',
+      concern: 'fixture',
+      target: '/fixture',
+      rubric,
+      subjects: [subject()],
+      statusTracker: () => {
+        throw new Error('broken tracker')
+      }
+    })
+  ).not.toThrow()
+})
+
 const jsonl = checkerJsonl(conform.records)
 const parsed = parseCheckerJsonl(jsonl)
 test('JSONL → one parseable object per record', () => {
@@ -217,6 +253,21 @@ const rejects = (candidate: RubricDefinition<TestContext>, fragment: string, can
     return error instanceof Error && error.message.includes(fragment)
   }
 }
+
+test('status tracker → terminates when an execution fails', () => {
+  const events: CheckerStatusEvent[] = []
+  expect(() =>
+    runChecker({
+      mode: 'audit',
+      concern: 'fixture',
+      target: '/fixture',
+      rubric: malformedRubric([], 'INSPECT'),
+      subjects: [subject()],
+      statusTracker: (event) => events.push(event)
+    })
+  ).toThrow('returned no outcome')
+  expect(events.at(-1)).toEqual({ type: 'failed', mode: 'audit', completed: 0, total: 1 })
+})
 
 test('planning → rejects catalogue issues and unknown phases', () => {
   expect(
