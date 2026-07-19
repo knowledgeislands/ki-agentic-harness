@@ -10,8 +10,8 @@ import { parseCheckerJsonl } from './lib/checker.ts'
 
 const AUDIT = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
 
-const run = (target: string): { output: string; status: number | null } => {
-  const result = spawnSync('bun', [AUDIT, target], { encoding: 'utf8' })
+const run = (target: string, ...args: string[]): { output: string; status: number | null } => {
+  const result = spawnSync('bun', [AUDIT, target, ...args], { encoding: 'utf8' })
   return { output: `${result.stdout ?? ''}${result.stderr ?? ''}`, status: result.status }
 }
 
@@ -34,7 +34,7 @@ const fixture = (): { base: string; dir: string } => {
   )
   writeFileSync(
     join(dir, 'scripts', 'audit.ts'),
-    "if (process.argv.includes('-h')) process.stdout.write('Usage: bun scripts/audit.ts <target>\\n')\n"
+    "if (process.argv.includes('-h') || process.argv.includes('--help')) process.stdout.write('Usage: bun scripts/audit.ts <target>\\n')\n"
   )
   return { base, dir }
 }
@@ -45,7 +45,28 @@ describe('ki-skills AUDIT wrapper', () => {
     expect(result.status).toBe(0)
     expect(result.stdout).toContain('Usage: bun scripts/audit.ts')
     expect(result.stdout).toContain('--footprint')
+    expect(result.stdout).toContain('--reporter <reporter>')
+    expect(result.stdout).toContain('--reporter-levels <levels>')
     expect(result.stdout).not.toContain('"record"')
+  })
+
+  test('renders a direct terminal report without changing checker execution', () => {
+    const { base, dir } = fixture()
+    try {
+      const result = run(dir, '--reporter=terminal', '--reporter-levels=all')
+      expect(result.output).toContain('PASS')
+      expect(result.output).toContain('SKILL.md exists at the skill root (LAY-1)')
+      expect(result.output).toContain('Summary: FAIL=')
+      expect(result.output).not.toContain('"record"')
+    } finally {
+      rmSync(base, { recursive: true, force: true })
+    }
+  })
+
+  test('rejects reporter levels without a terminal reporter', () => {
+    const result = spawnSync('bun', [AUDIT, '--reporter-levels=all'], { encoding: 'utf8' })
+    expect(result.status).toBe(2)
+    expect(result.stderr).toContain('--reporter-levels requires --reporter=terminal')
   })
 
   test('emits the canonical JSONL contract for a valid skill', () => {

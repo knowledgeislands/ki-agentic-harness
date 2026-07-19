@@ -11,9 +11,7 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-No active implementation plans.
-
-The current Foundation Tooling reference work is documented in `ki-skills`' durable rubric-authoring guide rather than a temporary execution plan.
+No active plans.
 
 ## Dependency graph
 

@@ -2,7 +2,8 @@
 /** Mechanical CONFORM entry point for the structured ki-skills rubric. */
 
 import { resolve } from 'node:path'
-import { type CheckerEvaluationSubject, checkerJsonl, runChecker } from './lib/checker.ts'
+import { type CheckerEvaluationSubject, runChecker } from './lib/checker.ts'
+import { parseReporterArguments, renderCheckerResult } from './lib/reporter.ts'
 import type { KiSkillsRubricContext } from './rubric/contexts/contexts.ts'
 import { createKiSkillsSubjects } from './rubric/contexts/subjects.ts'
 import { KI_SKILLS_RUBRIC, KI_SKILLS_SUBJECT_FAMILIES } from './rubric/items/index.ts'
@@ -14,18 +15,28 @@ if (argv.includes('-h') || argv.includes('--help')) {
 Apply safe mechanical fixes from the ki-skills rubric.
 
 Options:
-  --dry-run   Report the changes without writing them.
-  -h, --help  Show this help and exit.
+  --dry-run                    Report changes without writing them.
+  --reporter <reporter>        Output reporter: jsonl (default) or terminal.
+  --reporter-levels <levels>   Terminal levels: comma-separated values or all.
+  -h, --help                   Show this help and exit.
 `)
   process.exit(0)
 }
-const target = argv.find((argument) => !argument.startsWith('-')) ?? '.'
+let parsedReporter: ReturnType<typeof parseReporterArguments>
+try {
+  parsedReporter = parseReporterArguments(argv)
+} catch (error) {
+  process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
+  process.exit(2)
+}
+const modeArguments = parsedReporter.arguments
+const target = modeArguments.find((argument) => !argument.startsWith('-')) ?? '.'
 const reportTarget = resolve(target)
 const scope = createKiSkillsSubjects({
   mode: 'conform',
   roots: [target],
   reportTarget,
-  dryRun: argv.includes('--dry-run')
+  dryRun: modeArguments.includes('--dry-run')
 })
 const subjects: CheckerEvaluationSubject<KiSkillsRubricContext>[] = scope.subjects.map(({ scope, context, subject }) => ({
   familyCodes: KI_SKILLS_SUBJECT_FAMILIES[scope],
@@ -42,5 +53,10 @@ const result = runChecker({
 })
 
 scope.persist()
-process.stdout.write(checkerJsonl(result.records))
+process.stdout.write(
+  renderCheckerResult(result, {
+    ...parsedReporter.options,
+    colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR)
+  })
+)
 process.exit(result.exitCode)

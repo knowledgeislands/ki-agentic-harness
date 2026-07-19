@@ -7,7 +7,8 @@
 //   bun scripts/audit.ts skills --refresh-status
 
 import { resolve } from 'node:path'
-import { type CheckerEvaluationSubject, checkerJsonl, runChecker } from './lib/checker.ts'
+import { type CheckerEvaluationSubject, runChecker } from './lib/checker.ts'
+import { parseReporterArguments, renderCheckerResult } from './lib/reporter.ts'
 import type { KiSkillsRubricContext } from './rubric/contexts/contexts.ts'
 import { createKiSkillsSubjects } from './rubric/contexts/subjects.ts'
 import { KI_SKILLS_RUBRIC, KI_SKILLS_SUBJECT_FAMILIES } from './rubric/items/index.ts'
@@ -19,20 +20,30 @@ if (rawArgv.includes('-h') || rawArgv.includes('--help')) {
 Audit Agent Skills against the mechanical aspects of the ki-skills rubric.
 
 Options:
-  --footprint       Include the optional token-footprint measurements.
-  --refresh-status  Report source-refresh status.
-  -h, --help        Show this help and exit.
+  --footprint                  Include optional token-footprint measurements.
+  --refresh-status             Report source-refresh status.
+  --reporter <reporter>        Output reporter: jsonl (default) or terminal.
+  --reporter-levels <levels>   Terminal levels: comma-separated values or all.
+  -h, --help                   Show this help and exit.
 `)
   process.exit(0)
 }
-const roots = rawArgv.filter((argument) => !argument.startsWith('-'))
+let parsedReporter: ReturnType<typeof parseReporterArguments>
+try {
+  parsedReporter = parseReporterArguments(rawArgv)
+} catch (error) {
+  process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
+  process.exit(2)
+}
+const argv = parsedReporter.arguments
+const roots = argv.filter((argument) => !argument.startsWith('-'))
 const reportTarget = resolve('.')
 const scope = createKiSkillsSubjects({
   mode: 'audit',
   roots,
   reportTarget,
-  footprint: rawArgv.includes('--footprint'),
-  refreshStatus: rawArgv.includes('--refresh-status')
+  footprint: argv.includes('--footprint'),
+  refreshStatus: argv.includes('--refresh-status')
 })
 const subjects: CheckerEvaluationSubject<KiSkillsRubricContext>[] = scope.subjects.map(({ scope, context, subject }) => ({
   familyCodes: KI_SKILLS_SUBJECT_FAMILIES[scope],
@@ -48,5 +59,10 @@ const result = runChecker({
   subjects
 })
 
-process.stdout.write(checkerJsonl(result.records))
+process.stdout.write(
+  renderCheckerResult(result, {
+    ...parsedReporter.options,
+    colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR)
+  })
+)
 process.exit(result.exitCode)

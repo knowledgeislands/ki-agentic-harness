@@ -63,7 +63,7 @@ const fixture = (): { base: string; dir: string } => {
   for (const name of ['educate.ts', 'audit.ts', 'conform.ts'])
     writeFileSync(
       join(dir, 'scripts', name),
-      `if (process.argv.includes('-h')) process.stdout.write('Usage: bun scripts/${name} <target>\\n')\n`
+      `if (process.argv.includes('-h') || process.argv.includes('--help')) process.stdout.write('Usage: bun scripts/${name} <target>\\n')\n`
     )
   return { base, dir }
 }
@@ -74,7 +74,22 @@ describe('ki-skills CONFORM wrapper', () => {
     expect(result.status).toBe(0)
     expect(result.stdout).toContain('Usage: bun scripts/conform.ts')
     expect(result.stdout).toContain('--dry-run')
+    expect(result.stdout).toContain('--reporter <reporter>')
+    expect(result.stdout).toContain('--reporter-levels <levels>')
     expect(result.stdout).not.toContain('"record"')
+  })
+
+  test('renders FIXED outcomes for a direct terminal report', () => {
+    const { base, dir } = fixture()
+    try {
+      const result = run(CONFORM, dir, '--reporter=terminal')
+      expect(result.status).toBe(0)
+      expect(result.output).toContain('FIXED')
+      expect(result.output).toContain('Summary: FAIL=0')
+      expect(result.output).not.toContain('"record"')
+    } finally {
+      rmSync(base, { recursive: true, force: true })
+    }
   })
 
   test('repairs safe drift and leaves no failing audit finding', () => {

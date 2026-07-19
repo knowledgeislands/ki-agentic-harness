@@ -1,10 +1,9 @@
-import { spawnSync } from 'node:child_process'
-import { existsSync, readdirSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import type { ScriptHelpProbe } from './contexts.ts'
+import type { ScriptHelpEvidence } from './contexts.ts'
 
-/** Probe the public Bun entry points without asking rubric items to execute processes. */
-export const probeScriptHelp = (skillDirectory: string): readonly ScriptHelpProbe[] => {
+/** Collect read-only evidence that public Bun entry points declare useful help. */
+export const scriptHelpEvidence = (skillDirectory: string): readonly ScriptHelpEvidence[] => {
   const scriptsDirectory = join(skillDirectory, 'scripts')
   if (!existsSync(scriptsDirectory)) return []
 
@@ -12,14 +11,12 @@ export const probeScriptHelp = (skillDirectory: string): readonly ScriptHelpProb
     .filter((entry) => entry.isFile() && entry.name.endsWith('.ts') && !entry.name.endsWith('.test.ts'))
     .sort((left, right) => left.name.localeCompare(right.name))
     .map((entry) => {
-      const result = spawnSync('bun', [join(scriptsDirectory, entry.name), '-h'], {
-        encoding: 'utf8',
-        timeout: 5_000
-      })
+      const source = readFileSync(join(scriptsDirectory, entry.name), 'utf8')
       return {
         subject: `scripts/${entry.name}`,
-        status: result.status,
-        output: `${result.stdout ?? ''}${result.stderr ?? ''}`
+        declaresShortHelp: /['"]-h['"]/.test(source),
+        declaresLongHelp: /['"]--help['"]/.test(source),
+        declaresUsageText: /\busage\s*:/i.test(source)
       }
     })
 }

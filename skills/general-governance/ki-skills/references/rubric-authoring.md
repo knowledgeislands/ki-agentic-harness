@@ -72,6 +72,7 @@ scripts/
     rubric.test.ts
     checker.ts                 # planning, execution, response, and validation
     checker.test.ts
+    reporter.ts                # semantic filtering and terminal presentation
   rubric/                      # private implementation for this skill
     items/
       index.ts
@@ -396,13 +397,13 @@ JSONL parsing and response validation are separate from response construction.
 
 Rubric-aware validation is also separate: it resolves finding codes against the structured catalogue, checks level compatibility, and verifies the unevaluated-judgment count in the summary.
 
-A reporter starts with a validated JSONL response.
+A reporter starts with a validated checker result. A direct `audit.ts` or `conform.ts` invocation selects terminal presentation with `--reporter=terminal`; otherwise the command emits canonical JSONL. Shared filtering and presentation live in `scripts/lib/reporter.ts`, not in a separate command entry.
 
 It may filter displayed levels, render `${code}: ${title}`, write Markdown, or feed another system, but it never reruns or suppresses a check.
 
 The checker obtains criterion titles from its in-memory catalogue and includes them in the canonical response, so a reporter does not need to parse `references/rubric.md` or load a second policy file.
 
-The aggregate command owns the default human reporter and reporter-level filtering.
+An aggregate command invokes checkers without a reporter, consumes their complete JSONL streams, and owns aggregate presentation. Direct and aggregate presentation reuse the same semantics rather than defining separate contracts.
 
 Filtering never changes which findings a checker collects or emits.
 

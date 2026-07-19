@@ -66,15 +66,18 @@ export const SCRIPT_8: RubricItem<ScriptsRubricContext> = {
   sources: ['AS', 'KI'],
   mechanical: {
     level: 'FAIL',
+    heuristic: true,
     audit: {
       phase: 'INSPECT',
-      run: ({ helpProbes }) => {
-        if (helpProbes.length === 0) return [{ status: 'NOT_APPLICABLE', message: 'the skill has no top-level TypeScript scripts' }]
-        const violations = helpProbes
-          .filter(({ status, output }) => status !== 0 || !/\b(?:usage|help|options)\b/i.test(output))
-          .map(({ subject, status }) => ({
+      run: ({ helpEvidence }) => {
+        if (helpEvidence.length === 0) return [{ status: 'NOT_APPLICABLE', message: 'the skill has no top-level TypeScript scripts' }]
+        const violations = helpEvidence
+          .filter(
+            ({ declaresShortHelp, declaresLongHelp, declaresUsageText }) => !declaresShortHelp || !declaresLongHelp || !declaresUsageText
+          )
+          .map(({ subject }) => ({
             status: 'VIOLATION' as const,
-            message: status === 0 ? '`-h` produced no useful help text' : `\`-h\` exited with status ${status ?? 'unknown'}`,
+            message: 'source must declare `-h`, `--help`, and useful `Usage:` text',
             subject
           }))
         return violations.length > 0
@@ -82,7 +85,8 @@ export const SCRIPT_8: RubricItem<ScriptsRubricContext> = {
           : [{ status: 'PASS', message: 'top-level TypeScript scripts expose command help' }]
       }
     }
-  }
+  },
+  judgment: { prompt: 'Does each top-level command stop and show useful help for `-h` and `--help` without causing side effects?' }
 }
 
 export const SCRIPTS = [SCRIPT_1, SCRIPT_2, SCRIPT_3, SCRIPT_4, SCRIPT_5, SCRIPT_6, SCRIPT_7, SCRIPT_8] as const

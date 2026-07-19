@@ -70,9 +70,13 @@ Malformed JSONL is a checker failure, not a reason for a reporter to fall back t
 
 ## Downstream reporters
 
-A reporter accepts a validated canonical response and presents it without changing its meaning.
+A reporter accepts a validated canonical response and presents it without changing its meaning. A direct checker invocation selects terminal presentation explicitly:
 
-The default aggregate reporter shows `FAIL` and `WARN`, plus `FIXED` during CONFORM, with compact counts for suppressed levels and the unevaluated-judgment total.
+```bash
+bun scripts/audit.ts <target> --reporter=terminal --reporter-levels=all
+```
+
+The default reporter shows `FAIL` and `WARN`, plus `FIXED` during CONFORM, with compact counts for suppressed levels and the unevaluated-judgment total.
 
 `--reporter-levels=<comma-separated-levels>` selects displayed levels; `--reporter-levels=all` shows every mechanical finding.
 
@@ -80,7 +84,9 @@ Display filtering never changes which rubric elements run or which findings appe
 
 A reporter may render `${code}: ${title}`, add subject and message detail, write a Markdown report, or export telemetry.
 
-It does not inspect the governed target or execute rubric callbacks.
+It does not inspect the governed target or execute rubric callbacks. The checker retains its own exit status after rendering.
+
+With no `--reporter`, a checker emits the complete canonical JSONL response. Repository aggregates rely on that default and apply their own reporter after collecting one or more checker streams.
 
 ## Portability
 

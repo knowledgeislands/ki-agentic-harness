@@ -41,14 +41,15 @@ export type ReferencesRubricContext = {
   content: string
 }
 
-export type ScriptHelpProbe = {
+export type ScriptHelpEvidence = {
   subject: string
-  status: number | null
-  output: string
+  declaresShortHelp: boolean
+  declaresLongHelp: boolean
+  declaresUsageText: boolean
 }
 
 export type ScriptsRubricContext = {
-  helpProbes: readonly ScriptHelpProbe[]
+  helpEvidence: readonly ScriptHelpEvidence[]
 }
 
 export type LayoutRubricContext = {
@@ -240,7 +241,7 @@ export const createKiSkillsRubricContext = (overrides: Partial<KiSkillsRubricCon
   },
   size: {},
   references: { lineCount: 0, content: '' },
-  scripts: { helpProbes: [] },
+  scripts: { helpEvidence: [] },
   checker: {
     imports: [],
     rootSkill: false,
