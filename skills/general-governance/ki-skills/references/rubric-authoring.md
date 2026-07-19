@@ -6,6 +6,19 @@ This is the target model for turning a governance standard into an executable ru
 
 Use this guide when creating or refactoring a governance skill's rubric, audit, conform, or checker implementation.
 
+## Contents
+
+- [The knowledge chain](#the-knowledge-chain)
+- [Target layout](#target-layout)
+- [Rubric families and items](#rubric-families-and-items)
+- [Mode elements and phasing](#mode-elements-and-phasing)
+- [Context and evidence](#context-and-evidence)
+- [Audit and conform wrappers](#audit-and-conform-wrappers)
+- [Checker response and reporters](#checker-response-and-reporters)
+- [Generated rubric publication](#generated-rubric-publication)
+- [Verification](#verification)
+- [Rollout checklist](#rollout-checklist)
+
 ## The knowledge chain
 
 ```text

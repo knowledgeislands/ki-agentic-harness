@@ -10,6 +10,16 @@ The checker selects, plans, and executes those elements for one requested mode, 
 
 It does not own a domain standard or a human presentation.
 
+## Contents
+
+- [Inputs and ownership](#inputs-and-ownership)
+- [Mode planning](#mode-planning)
+- [Severity ladder](#severity-ladder)
+- [Response and exit behaviour](#response-and-exit-behaviour)
+- [Conform safety](#conform-safety)
+- [Portability and vendoring](#portability-and-vendoring)
+- [Relationship to rubric classification](#relationship-to-rubric-classification)
+
 ## Inputs and ownership
 
 A checker receives:

@@ -1,4 +1,8 @@
-# Audit Rubric — the checkable criteria
+<!-- DEPRECATED: do not author new policy here; generate this publication from the structured rubric, then remove it as a runtime input. -->
+
+# Deprecated audit-rubric publication — the checkable criteria
+
+> **Deprecated:** structured TypeScript rubric families are the authored source of truth. This file remains a temporary readable publication and legacy judgment input until the renderer and exact parity gate land. Do not add or change criteria here independently; remove the legacy-input role once generation is complete.
 
 Line-by-line pass/fail criteria for auditing an Agent Skill against the [Agent Skills Standard](standards.md). Each is tagged **[M] mechanical** (the bundled [linter](../scripts/audit.ts) checks it) or **[J] judgment** (you assess it by reading). The **code** in bold (`NAME-1`, `DESC-2`, …) is the area's short code plus its number _within that area_ — it's what the linter prints and what an audit should cite. Numbering restarts at 1 per area, so inserting a criterion only renumbers its own area. Source abbreviations resolve in [the source list](sources.md); the **full rationale, the "Disagreements & moving targets" notes (`※1`–`※5`), and the exact-numbers table live in the [standard](standards.md)** — each area below maps to the like-named standard section.
 
