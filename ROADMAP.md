@@ -45,6 +45,7 @@ Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass
 - [Foundation Tooling: Review the Cloudflare agent-setup prompt for the Cloudflare skill _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#review-the-cloudflare-agent-setup-prompt-for-the-cloudflare-skill-candidate)
 - [Governance Consistency: Add engineering change value profiles to the verb map _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#add-engineering-change-value-profiles-to-the-verb-map-candidate)
 - [Governance Consistency: Review interpretable context methodology and current agentic practice _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#review-interpretable-context-methodology-and-current-agentic-practice-candidate)
+- [Governance Consistency: Review language-model evaluation frameworks _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#review-language-model-evaluation-frameworks-candidate)
 - [Governance Consistency: Roll Feature Definitions out across the repository fleet _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#roll-feature-definitions-out-across-the-repository-fleet-candidate)
 - [Governance Consistency: Separate Knowledge Islands policy from portable governance _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#separate-knowledge-islands-policy-from-portable-governance-candidate)
 - [Operations: Define opt-in repository observability via OTLP _(candidate)_](docs/roadmap/operations/ROADMAP.md#define-opt-in-repository-observability-via-otlp-candidate)
