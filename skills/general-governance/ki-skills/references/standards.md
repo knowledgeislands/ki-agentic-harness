@@ -138,7 +138,7 @@ Most conventions audit one `SKILL.md` in isolation; these check it against its *
 - **※4 Commands → skills.** In Claude Code, `.claude/commands/*.md` and `.claude/skills/<name>/SKILL.md` both yield `/<name>`; skills are the recommended form. Suggest migrating old command files.
 - **※5 Budgets are soft.** "< 500 lines" and "< 5,000 tokens" are performance recommendations, not enforced — the linter reports them as WARN, never FAIL. The reference validator (`skills-ref validate`) checks frontmatter/naming only.
 
-### 17. Exact numbers
+## 17. Exact numbers
 
 | Item                               | Value               | Hard/Soft | Source     |
 | ---------------------------------- | ------------------- | --------- | ---------- |

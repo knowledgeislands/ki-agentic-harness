@@ -43,18 +43,20 @@ import { createRefreshContext } from './rubric/contexts/longevity.ts'
 import { endorsesRetiredExtension, extractBodyModes, extractSection, hintVerbs, isProcessSkill } from './rubric/contexts/modes.ts'
 import { discoverSkillDirs, listMarkdownFiles, listScriptFiles } from './rubric/contexts/skill-files.ts'
 import { stripCode } from './rubric/contexts/text.ts'
-import { relativeImportSpecifiers } from './rubric/contexts/typescript.ts'
 
-const appendFindings = (target: RubricFinding[], findings: readonly RubricFinding[], file?: string): void => {
-  target.push(...findings.map((finding) => ({ ...finding, file: file ?? finding.file })))
+const appendFindings = (target: RubricFinding[], findings: readonly RubricFinding[], subject?: string): void => {
+  target.push(...findings.map((finding) => ({ ...finding, subject: subject ?? finding.subject })))
 }
+
+export const relativeImportSpecifiers = (source: string): string[] =>
+  [...source.matchAll(/\b(?:from\s+|import\s*\(\s*|require\s*\(\s*)['"](\.\.?\/[^'"]+)['"]/g)].map((match) => match[1] as string)
 
 const appendRubricFindings = <Context>(
   target: RubricFinding[],
   items: Parameters<typeof auditRubricItems<Context>>[0],
   context: Context,
-  file?: string
-): void => appendFindings(target, auditRubricItems(items, context), file)
+  subject?: string
+): void => appendFindings(target, auditRubricItems(items, context), subject)
 
 const createKiShapeEvidence = (skillDir: string, frontmatter: ParsedFrontmatter, description: string, body: string): KiShapeSkillContext => {
   const argumentHint = frontmatter.keys.get('argument-hint')
@@ -273,7 +275,7 @@ for (const dir of skillDirs) {
     all,
     lintSkill(dir).map((finding) => ({
       ...finding,
-      file: finding.file ? relative(reportTarget, join(dir, finding.file)) : undefined
+      subject: finding.subject ? relative(reportTarget, join(dir, finding.subject)) : undefined
     }))
   )
 }
@@ -300,7 +302,7 @@ if (footprintOut) {
     all.push(
       ...auditRubricItems(SIZE, { footprint: fp }).map((finding) => ({
         ...finding,
-        file: finding.file ? relative(reportTarget, join(dir, finding.file)) : undefined
+        subject: finding.subject ? relative(reportTarget, join(dir, finding.subject)) : undefined
       }))
     )
   }
@@ -314,7 +316,7 @@ if (refreshStatusOut) {
     all.push(
       ...auditRubricItems(LONGEVITY, { ...context, reportStatus: true }).map((finding) => ({
         ...finding,
-        file: relative(reportTarget, sp)
+        subject: relative(reportTarget, sp)
       }))
     )
   }

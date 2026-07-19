@@ -12,7 +12,7 @@ export const LAY_1: RubricItem<LayoutRubricContext> = {
     return missingSkillRoot ? [{ type: 'M', level: 'FAIL', code: LAY_1.code, message: 'SKILL.md is missing at the skill root' }] : []
   },
   conform: ({ missingSkillRoot, noSkillsFound }) =>
-    missingSkillRoot || noSkillsFound ? [{ item: LAY_1, level: 'ADVISORY', message: 'SKILL.md is missing; author it by hand', file: 'SKILL.md' }] : []
+    missingSkillRoot || noSkillsFound ? [{ item: LAY_1, level: 'ADVISORY', message: 'SKILL.md is missing; author it by hand', subject: 'SKILL.md' }] : []
 }
 
 export const LAY_2: RubricItem<LayoutRubricContext> = {
@@ -58,7 +58,7 @@ export const LAY_4: RubricItem<LayoutRubricContext> = {
     markdown !== undefined && hasBackslashLink(markdown)
       ? [{ type: 'M', level: 'FAIL', code: LAY_4.code, message: 'a link target uses backslashes — use forward slashes' }]
       : [],
-  conform: ({ markdown, file, writeMarkdown }) => {
+  conform: ({ markdown, subject, writeMarkdown }) => {
     if (markdown === undefined || !hasBackslashLink(markdown)) return []
     if (!writeMarkdown) throw new Error('LAY-4 conform requires the writeMarkdown capability')
     let count = 0
@@ -72,7 +72,7 @@ export const LAY_4: RubricItem<LayoutRubricContext> = {
       {
         item: LAY_4,
         message: `${count} backslash link target(s) → forward slashes`,
-        file
+        subject
       }
     ]
   }

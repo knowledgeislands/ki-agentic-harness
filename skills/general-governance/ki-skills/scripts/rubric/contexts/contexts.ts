@@ -41,7 +41,7 @@ export type ReferencesRubricContext = {
 
 export type LayoutRubricContext = {
   markdown?: string
-  file?: string
+  subject?: string
   writeMarkdown?: (markdown: string) => void
   missingSkillRoot?: boolean
   noSkillsFound?: boolean

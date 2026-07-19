@@ -77,7 +77,7 @@ export const SIZE_5: RubricItem<SizeRubricContext> = {
         level: 'INFO' as const,
         code: SIZE_5.code,
         message: `Estimated ${row.kind} footprint is ${row.tokens} tokens${row.kind === 'reference' && row.tokens > FOOTPRINT_REFERENCE_NOTE_TOKENS ? '; consider splitting or trimming it' : '.'}`,
-        file: row.path
+        subject: row.path
       }))
     ]
   }

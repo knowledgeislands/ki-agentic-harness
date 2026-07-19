@@ -25,7 +25,7 @@ export const KI_SHAPE_2: RubricItem<KiShapeRubricContext> = {
       code: KI_SHAPE_2.code,
       message:
         'endorses the retired base-coupled extension pattern (ship/"prefer" an extension skill, "delegates the modes back", "extends this one") — relationships are composition only; declare base differences in .ki-config / CLAUDE.md, per KI-SHAPE-2',
-      file
+      subject: file
     }))
 }
 
@@ -143,10 +143,10 @@ export const KI_SHAPE_11: RubricItem<KiShapeRubricContext> = {
       : [],
   conform: ({ skill, setArgumentHint }) => {
     if (!skill?.governanceSkill || skill.hintVerbs.includes('HELP')) return []
-    if (!skill.argumentHint) return [{ item: KI_SHAPE_11, level: 'ADVISORY', message: '`argument-hint` is missing; author it by hand', file: 'SKILL.md' }]
+    if (!skill.argumentHint) return [{ item: KI_SHAPE_11, level: 'ADVISORY', message: '`argument-hint` is missing; author it by hand', subject: 'SKILL.md' }]
     if (!setArgumentHint) throw new Error('KI-SHAPE-11 conform requires the setArgumentHint capability')
     setArgumentHint(`${skill.argumentHint} | help`)
-    return [{ item: KI_SHAPE_11, message: 'appended `help` to argument-hint', file: 'SKILL.md' }]
+    return [{ item: KI_SHAPE_11, message: 'appended `help` to argument-hint', subject: 'SKILL.md' }]
   }
 }
 
@@ -184,7 +184,7 @@ export const KI_SHAPE_12: RubricItem<KiShapeRubricContext> = {
           item: KI_SHAPE_12,
           level: 'ADVISORY',
           message: '`argument-hint` is missing, so the universal mode vocabulary must be authored by hand',
-          file: 'SKILL.md'
+          subject: 'SKILL.md'
         }
       ]
     const missing = UNIVERSAL_VERBS.filter((verb) => !skill.hintVerbs.includes(verb))
@@ -195,7 +195,7 @@ export const KI_SHAPE_12: RubricItem<KiShapeRubricContext> = {
       {
         item: KI_SHAPE_12,
         message: `appended missing verb(s) to argument-hint: ${missing.map((verb) => verb.toLowerCase()).join(', ')}`,
-        file: 'SKILL.md'
+        subject: 'SKILL.md'
       }
     ]
   }
@@ -310,12 +310,12 @@ export const KI_SHAPE_15: RubricItem<KiShapeRubricContext> = {
           item: KI_SHAPE_15,
           level: 'ADVISORY',
           message: `cannot declare uniform \`vendors:\` until bare script(s) exist: ${missingScripts.map((mode) => `scripts/${mode}.ts`).join(', ')}`,
-          file: 'SKILL.md'
+          subject: 'SKILL.md'
         }
       ]
     if (!setVendors) throw new Error('KI-SHAPE-15 conform requires the setVendors capability')
     setVendors(UNIFORM_VENDORS)
-    return [{ item: KI_SHAPE_15, message: `set \`vendors:\` to \`${UNIFORM_VENDORS}\``, file: 'SKILL.md' }]
+    return [{ item: KI_SHAPE_15, message: `set \`vendors:\` to \`${UNIFORM_VENDORS}\``, subject: 'SKILL.md' }]
   }
 }
 

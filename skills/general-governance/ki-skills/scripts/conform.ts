@@ -43,7 +43,7 @@ export const findingsFromConformActions = <Context>(actions: readonly ConformAct
     level: action.level ?? 'POLISH',
     code: action.item.code,
     message: action.message,
-    file: action.file
+    subject: action.subject
   }))
 
 // Each action records a typed domain finding. The canonical reporter owns transport;
@@ -129,7 +129,7 @@ const conformSkill = (dir: string, dryRun: boolean): void => {
   for (const file of listMarkdownFiles(dir)) {
     const md = readFileSync(file, 'utf8')
     const rel = file.slice(dir.length + 1)
-    recordActions(conformRubricItems(LAYOUT, { markdown: md, file: rel, writeMarkdown: (fixed) => !dryRun && writeFileSync(file, fixed) }))
+    recordActions(conformRubricItems(LAYOUT, { markdown: md, subject: rel, writeMarkdown: (fixed) => !dryRun && writeFileSync(file, fixed) }))
   }
 }
 

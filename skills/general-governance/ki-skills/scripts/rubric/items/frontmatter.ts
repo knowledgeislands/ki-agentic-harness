@@ -30,7 +30,7 @@ export const FM_1: RubricItem<FrontmatterRubricContext> = {
   conform: ({ hasBlock, isMapping }) => {
     if (hasBlock && isMapping) return []
     const issue = hasBlock ? 'YAML frontmatter is not a mapping' : 'SKILL.md has no YAML frontmatter block'
-    return [{ item: FM_1, level: 'ADVISORY', message: `${issue}; author by hand`, file: 'SKILL.md' }]
+    return [{ item: FM_1, level: 'ADVISORY', message: `${issue}; author by hand`, subject: 'SKILL.md' }]
   }
 }
 

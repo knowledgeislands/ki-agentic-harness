@@ -11,7 +11,7 @@ export const NAME_1: RubricItem<NameRubricContext> = {
   description: 'The skill frontmatter declares a non-empty `name` value.',
   sources: ['SPEC', 'CC'],
   audit: ({ name }) => (!name ? [{ type: 'M', level: 'FAIL', code: NAME_1.code, message: '`name` is missing from frontmatter' }] : []),
-  conform: ({ name }) => (!name ? [{ item: NAME_1, level: 'ADVISORY', message: '`name` is missing; author it by hand', file: 'SKILL.md' }] : [])
+  conform: ({ name }) => (!name ? [{ item: NAME_1, level: 'ADVISORY', message: '`name` is missing; author it by hand', subject: 'SKILL.md' }] : [])
 }
 
 export const NAME_2: RubricItem<NameRubricContext> = {
@@ -67,7 +67,7 @@ export const NAME_5: RubricItem<NameRubricContext> = {
     if (!name || name === directoryName) return []
     if (!setName) throw new Error('NAME-5 conform requires the setName capability')
     setName(directoryName)
-    return [{ item: NAME_5, message: `name '${name}' → '${directoryName}'`, file: 'SKILL.md' }]
+    return [{ item: NAME_5, message: `name '${name}' → '${directoryName}'`, subject: 'SKILL.md' }]
   }
 }
 

@@ -25,7 +25,7 @@ export type RubricFinding = {
   level: RubricLevel
   code: string
   message: string
-  file?: string
+  subject?: string
 }
 
 export type RubricItem<Context = unknown> = {
@@ -49,6 +49,6 @@ export const conformRubricItems = <Context>(items: readonly RubricItem<Context>[
 export type ConformAction<Context = unknown> = {
   item: RubricItem<Context>
   message: string
-  file?: string
+  subject?: string
   level?: Extract<RubricLevel, 'POLISH' | 'ADVISORY'>
 }
