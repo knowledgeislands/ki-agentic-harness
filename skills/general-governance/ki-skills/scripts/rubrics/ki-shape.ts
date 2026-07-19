@@ -46,6 +46,8 @@ export type KiShapeSkillContext = {
 export type KiShapeRubricContext = {
   skill: KiShapeSkillContext | null
   ownershipCollisions: readonly OwnershipCollision[]
+  setArgumentHint?: (argumentHint: string) => void
+  setVendors?: (vendors: string) => void
 }
 
 export const KI_SHAPE_1: RubricItem<KiShapeRubricContext> = {
@@ -184,7 +186,13 @@ export const KI_SHAPE_11: RubricItem<KiShapeRubricContext> = {
             message: '`argument-hint` does not expose the universal `help` mode (ADR-KI-HARNESS-SKILLS-001)'
           }
         ]
-      : []
+      : [],
+  conform: ({ skill, setArgumentHint }) => {
+    if (!skill?.argumentHint || skill.hintVerbs.includes('HELP')) return []
+    if (!setArgumentHint) throw new Error('KI-SHAPE-11 conform requires the setArgumentHint capability')
+    setArgumentHint(`${skill.argumentHint} | help`)
+    return [{ item: KI_SHAPE_11, message: 'appended `help` to argument-hint', file: 'SKILL.md' }]
+  }
 }
 
 export const KI_SHAPE_12: RubricItem<KiShapeRubricContext> = {
@@ -212,6 +220,20 @@ export const KI_SHAPE_12: RubricItem<KiShapeRubricContext> = {
           'frontmatter carries no `vendors:` declaration — declare the vendored modes beside `depends-on:` so the bootstrap engine can vendor them (ADR-KI-HARNESS-007)'
       })
     return findings
+  },
+  conform: ({ skill, setArgumentHint }) => {
+    if (!skill?.governanceSkill || !skill.argumentHint) return []
+    const missing = UNIVERSAL_VERBS.filter((verb) => !skill.hintVerbs.includes(verb))
+    if (missing.length === 0) return []
+    if (!setArgumentHint) throw new Error('KI-SHAPE-12 conform requires the setArgumentHint capability')
+    setArgumentHint(`${skill.argumentHint} | ${missing.map((verb) => verb.toLowerCase()).join(' | ')}`)
+    return [
+      {
+        item: KI_SHAPE_12,
+        message: `appended missing verb(s) to argument-hint: ${missing.map((verb) => verb.toLowerCase()).join(', ')}`,
+        file: 'SKILL.md'
+      }
+    ]
   }
 }
 
@@ -314,6 +336,22 @@ export const KI_SHAPE_15: RubricItem<KiShapeRubricContext> = {
           message: `\`scripts/${script}\` uses the redundant skill-name suffix — rename to bare \`audit.ts\`/\`conform.ts\``
         })
     return findings
+  },
+  conform: ({ skill, setVendors }) => {
+    if (!skill?.governanceSkill || skill.vendors === UNIFORM_VENDORS) return []
+    const missingScripts = ['educate', 'audit', 'conform'].filter((mode) => !skill.scriptNames.includes(`${mode}.ts`))
+    if (missingScripts.length > 0)
+      return [
+        {
+          item: KI_SHAPE_15,
+          level: 'ADVISORY',
+          message: `cannot declare uniform \`vendors:\` until bare script(s) exist: ${missingScripts.map((mode) => `scripts/${mode}.ts`).join(', ')}`,
+          file: 'SKILL.md'
+        }
+      ]
+    if (!setVendors) throw new Error('KI-SHAPE-15 conform requires the setVendors capability')
+    setVendors(UNIFORM_VENDORS)
+    return [{ item: KI_SHAPE_15, message: `set \`vendors:\` to \`${UNIFORM_VENDORS}\``, file: 'SKILL.md' }]
   }
 }
 

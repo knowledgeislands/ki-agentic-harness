@@ -31,4 +31,5 @@ export type ConformAction<Context = unknown> = {
   item: RubricItem<Context>
   message: string
   file?: string
+  level?: Extract<RubricLevel, 'POLISH' | 'ADVISORY'>
 }

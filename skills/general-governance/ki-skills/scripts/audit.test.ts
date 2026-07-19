@@ -278,6 +278,89 @@ function modeFixture(
   return { base, dir }
 }
 
+/** Build a fixture with arbitrary optional-frontmatter lines. */
+function optionalFixture(name: string, fields: readonly string[]): { base: string; dir: string } {
+  const base = mkdtempSync(join(tmpdir(), 'ki-skills-test-'))
+  const dir = join(base, name)
+  mkdirSync(join(dir, 'scripts'), { recursive: true })
+  writeFileSync(
+    join(dir, 'SKILL.md'),
+    [
+      '---',
+      `name: ${name}`,
+      'description: A throwaway fixture for optional frontmatter validation.',
+      ...fields,
+      '---',
+      '',
+      '# Fixture',
+      '',
+      'Body.',
+      ''
+    ].join('\n')
+  )
+  writeFileSync(join(dir, 'scripts', `audit-${name}.ts`), withReporter)
+  return { base, dir }
+}
+
+// ── OPT-3 / OPT-4: typed YAML optional frontmatter ─────────────────────────
+{
+  const { base, dir } = optionalFixture('ki-fixture-valid-tool-forms', [
+    'allowed-tools: Bash(git status), Read Write',
+    'disallowed-tools:',
+    '  - AskUserQuestion',
+    '  - Bash(git commit -m "message")',
+    'license: Apache-2.0'
+  ])
+  try {
+    const out = run(dir)
+    check('scalar and sequence tool forms → no OPT-3 fail', !hasMechanicalFinding(out, 'OPT-3'))
+    check('non-empty license scalar → no OPT-4 fail', !hasMechanicalFinding(out, 'OPT-4'))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
+
+{
+  const { base, dir } = optionalFixture('ki-fixture-valid-reversed-tool-forms', [
+    'allowed-tools:',
+    '  - Read',
+    '  - Bash(git status)',
+    'disallowed-tools: AskUserQuestion Bash(git commit)'
+  ])
+  try {
+    check('each tool field accepts scalar and sequence forms → no OPT-3 fail', !hasMechanicalFinding(run(dir), 'OPT-3'))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
+
+for (const [suffix, fields] of [
+  ['malformed-tools', ['allowed-tools: [Bash']],
+  ['unbalanced-tools', ['allowed-tools: Bash(git status']],
+  ['empty-tools', ["disallowed-tools: ''"]],
+  ['empty-tool-list-entry', ['allowed-tools: [Read, ""]']],
+  ['mapping-tools', ['allowed-tools:', '  Bash: git status']]
+] as const) {
+  const { base, dir } = optionalFixture(`ki-fixture-${suffix}`, fields)
+  try {
+    check(`${suffix} → OPT-3 fail`, hasMechanicalFinding(run(dir), 'OPT-3'))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
+
+for (const [suffix, fields] of [
+  ['empty-license', ["license: ''"]],
+  ['non-string-license', ['license: 2']]
+] as const) {
+  const { base, dir } = optionalFixture(`ki-fixture-${suffix}`, fields)
+  try {
+    check(`${suffix} → OPT-4 fail`, hasMechanicalFinding(run(dir), 'OPT-4'))
+  } finally {
+    rmSync(base, { recursive: true, force: true })
+  }
+}
+
 const FULL_HINT = 'audit <target> | conform <target> | help | educate <target> | refresh'
 const VENDORS = (name: string) => `{ audit: scripts/audit-${name}.ts }`
 const CONFORMANT_BODY = [

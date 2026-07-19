@@ -68,7 +68,7 @@ Checker output follows the canonical checker reporter and exit-code contract in 
 - **OPT-1 [M]** `compatibility`, if present, is 1–500 chars. (SPEC)
 - **OPT-2 [M]** `metadata`, if present, is a string→string map. (SPEC)
 - **OPT-3 [M]** `allowed-tools` / `disallowed-tools`, if present, are valid tool specs (`allowed-tools` is **experimental**). (SPEC, CC)
-- **OPT-4 [M]** `license`, if present, is a short license name or bundled-file reference. (SPEC)
+- **OPT-4 [M]** `license`, if present, is a non-empty YAML string scalar. Prefer a short name or bundled-file reference. (SPEC)
 - **OPT-5 [J]** CC-only fields are flagged when cross-platform portability matters (see ※3). (CC)
 - **OPT-6 [J]** Side-effecting / manually-timed workflows set `disable-model-invocation: true` (contrast `user-invocable: false`). (CC)
 - **OPT-7 [J]** A skill with discrete modes sets `argument-hint`; modes are **named** (not lettered) and **alphabetically ordered**. (CC, COMMUNITY)

@@ -3,6 +3,8 @@ import { hasBackslashLink } from './support/links.ts'
 
 export type LayoutRubricContext = {
   markdown?: string
+  file?: string
+  writeMarkdown?: (markdown: string) => void
   missingSkillRoot?: boolean
   standaloneMarkdownFile?: boolean
   supportDirectories?: readonly string[]
@@ -59,7 +61,25 @@ export const LAY_4: RubricItem<LayoutRubricContext> = {
   audit: ({ markdown }) =>
     markdown !== undefined && hasBackslashLink(markdown)
       ? [{ type: 'M', level: 'FAIL', code: LAY_4.code, message: 'a link target uses backslashes — use forward slashes' }]
-      : []
+      : [],
+  conform: ({ markdown, file, writeMarkdown }) => {
+    if (markdown === undefined || !hasBackslashLink(markdown)) return []
+    if (!writeMarkdown) throw new Error('LAY-4 conform requires the writeMarkdown capability')
+    let count = 0
+    const fixed = markdown.replace(/\[([^\]]*)\]\(([^)]+)\)/g, (whole, text, target) => {
+      if (!(target as string).includes('\\')) return whole
+      count++
+      return `[${text}](${(target as string).replace(/\\/g, '/')})`
+    })
+    writeMarkdown(fixed)
+    return [
+      {
+        item: LAY_4,
+        message: `${count} backslash link target(s) → forward slashes`,
+        file
+      }
+    ]
+  }
 }
 
 export const LAY_5: RubricItem<LayoutRubricContext> = {

@@ -21,12 +21,8 @@
  *   - KI-SHAPE-12 (verbs): argument-hint missing any of audit/conform/help/educate/
  *     refresh (skipped for self-declared process skills, ADR-KI-HARNESS-SKILLS-006)
  *     gets the missing verb(s) appended as bare ` | <verb>` segments.
- *   - KI-SHAPE-12 (vendors leg): a missing `vendors:` frontmatter line is authored
- *     from the scripts/ directory's audit-*.ts / lint-*.ts (+ conform-*.ts if
- *     present); an existing `vendors:` line that already names an audit/lint
- *     script but omits `conform:` gets that key added when a conform-*.ts
- *     script is present in scripts/. Never invents a script path that doesn't
- *     exist on disk.
+ *   - KI-SHAPE-15: `vendors:` is set to its uniform current-contract list only
+ *     when all three required bare entry scripts already exist.
  *   - LAY-4: backslash path separators inside markdown link targets are
  *     rewritten to forward slashes, across every .md file in the skill.
  *
@@ -44,6 +40,8 @@ import { basename, join, resolve } from 'node:path'
 import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromItems } from './lib/checker-reporter.ts'
 import type { RubricFinding } from './lib/rubric/rubric.ts'
 import { RUBRIC_ITEMS } from './rubrics/index.ts'
+import { KI_SHAPE_11, KI_SHAPE_12, KI_SHAPE_15, type KiShapeRubricContext } from './rubrics/ki-shape.ts'
+import { LAY_4 } from './rubrics/layout.ts'
 import { NAME_1, NAME_5 } from './rubrics/name.ts'
 import { discoverSkillDirs, listMarkdownFiles } from './rubrics/support/skill-files.ts'
 
@@ -59,9 +57,7 @@ function reportCode(area: string): string {
 const rec = (level: Level, area: string, message: string, ref?: string, file?: string): void =>
   void findings.push({ type: 'M', level, code: reportCode(area), message, ref, file })
 
-// ── kept in lockstep with audit.ts ──
 const isProcessSkill = (desc: string): boolean => /\(kind:\s*process\b/i.test(desc)
-const UNIVERSAL_VERBS = ['audit', 'conform', 'help', 'educate', 'refresh']
 
 function hintVerbs(hint: string): string[] {
   const out: string[] = []
@@ -94,6 +90,57 @@ function insertAfterAnchor(block: string, newLine: string): string {
     if (anchor) return block.replace(anchor, `${anchor}\n${newLine}`)
   }
   return `${newLine}\n${block}`
+}
+
+function argumentHintValue(line: string): string {
+  const match = line.match(/^argument-hint:\s*(['"]?)([\s\S]*?)\1\s*$/)
+  return match ? (match[2] as string) : line.replace(/^argument-hint:\s*/, '')
+}
+
+function withArgumentHint(block: string, argumentHint: string): string {
+  const line = getLine(block, 'argument-hint')
+  if (!line) return block
+  const quote = line.match(/^argument-hint:\s*(['"]?)/)?.[1] || "'"
+  return block.replace(line, `argument-hint: ${quote}${argumentHint.trim()}${quote}`)
+}
+
+function kiShapeContext(dir: string, block: string, content: string): KiShapeRubricContext {
+  const argumentHintLine = getLine(block, 'argument-hint')
+  const argumentHint = argumentHintLine ? argumentHintValue(argumentHintLine) : undefined
+  const scriptsDir = join(dir, 'scripts')
+  const scriptNames = existsSync(scriptsDir) ? readdirSync(scriptsDir) : []
+  return {
+    skill: {
+      governanceSkill: !isProcessSkill(content),
+      argumentHint,
+      hintVerbs: hintVerbs(argumentHint ?? ''),
+      vendorsPresent: getLine(block, 'vendors') !== null,
+      vendors: (getLine(block, 'vendors') ?? '').replace(/^vendors:\s*/, '').trim(),
+      scriptNames,
+      operatingModesSection: null,
+      bodyModes: new Set(),
+      operatingModesIntro: '',
+      flatModeHeadings: [],
+      bareModeHeadings: [],
+      refreshText: '',
+      retiredExtensionFiles: [],
+      strongGate: false,
+      anchorMentioned: false,
+      checkerReadsAnchor: false,
+      mechanicalRubricCount: 0,
+      hasChecker: false,
+      documentsMechanicalDelegation: false,
+      checkers: [],
+      dependsOnPresent: false,
+      dependsOn: '',
+      owns: [],
+      contributes: [],
+      requires: [],
+      scaffoldedFiles: [],
+      auditSource: null
+    },
+    ownershipCollisions: []
+  }
 }
 
 // --- one skill ---------------------------------------------------------------
@@ -140,70 +187,35 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
   // ── KI-SHAPE-11 (help token) + KI-SHAPE-12 (universal verbs) ──
   const hintLine = getLine(workingBlock, 'argument-hint')
   if (hintLine) {
-    const hintMatch = hintLine.match(/^argument-hint:\s*(['"]?)([\s\S]*?)\1\s*$/)
-    const quote = hintMatch?.[1] || "'"
-    let hintVal = hintMatch ? (hintMatch[2] as string) : hintLine.replace(/^argument-hint:\s*/, '')
-    let hintChanged = false
-
-    if (!/(^|[|\s'"])help([|\s'"]|$)/.test(hintLine)) {
-      hintVal = `${hintVal} | help`
-      hintChanged = true
-      rec('POLISH', `${dirName}:KI-SHAPE-11`, 'appended `help` to argument-hint', RUBRIC, 'SKILL.md')
-    }
-
-    if (!process) {
-      const verbs = hintVerbs(hintVal)
-      const missing = UNIVERSAL_VERBS.filter((v) => !verbs.includes(v.toUpperCase()))
-      if (missing.length > 0) {
-        hintVal = `${hintVal} | ${missing.join(' | ')}`
-        hintChanged = true
-        rec('POLISH', `${dirName}:KI-SHAPE-12`, `appended missing verb(s) to argument-hint: ${missing.join(', ')}`, RUBRIC, 'SKILL.md')
+    for (const item of [KI_SHAPE_11, KI_SHAPE_12]) {
+      const actions = item.conform?.({
+        ...kiShapeContext(dir, workingBlock, content),
+        setArgumentHint: (argumentHint) => {
+          workingBlock = withArgumentHint(workingBlock, argumentHint)
+        }
+      })
+      for (const action of actions ?? []) {
+        rec(action.level ?? 'POLISH', `${dirName}:${action.item.code}`, action.message, RUBRIC, action.file)
+        fixedAny ||= action.level !== 'ADVISORY'
       }
-    }
-
-    if (hintChanged) {
-      workingBlock = workingBlock.replace(hintLine, `argument-hint: ${quote}${hintVal.trim()}${quote}`)
-      fixedAny = true
     }
   } else if (!process) {
     todos.push(`${dirName}: KI-SHAPE-11/KI-SHAPE-12 — no \`argument-hint\` field at all; author one by hand`)
     rec('ADVISORY', `${dirName}:KI-SHAPE-11/KI-SHAPE-12`, 'no `argument-hint` field at all; author one by hand', RUBRIC, 'SKILL.md')
   }
 
-  // ── KI-SHAPE-12 (vendors leg) — process skills are exempt, same as audit.ts ──
-  if (!process) {
-    const scriptsDir = join(dir, 'scripts')
-    const scriptFiles = existsSync(scriptsDir) ? readdirSync(scriptsDir) : []
-    const auditScript = scriptFiles.find((n) => /^(audit-|lint-)[a-z0-9-]+\.ts$/.test(n) && !n.endsWith('.test.ts'))
-    const conformScript = scriptFiles.find((n) => /^conform-[a-z0-9-]+\.ts$/.test(n))
-
-    const vendorsLine = getLine(workingBlock, 'vendors')
-    if (!vendorsLine || /vendors:\s*\[\s*\]/.test(vendorsLine)) {
-      if (auditScript) {
-        const parts = [`audit: scripts/${auditScript}`]
-        if (conformScript) parts.push(`conform: scripts/${conformScript}`)
-        const newLine = `vendors: { ${parts.join(', ')} }`
-        workingBlock = vendorsLine ? workingBlock.replace(vendorsLine, newLine) : insertAfterAnchor(workingBlock, newLine)
-        rec('POLISH', `${dirName}:KI-SHAPE-12`, `authored \`${newLine}\``, RUBRIC, 'SKILL.md')
-        fixedAny = true
-      } else if (!vendorsLine) {
-        todos.push(
-          `${dirName}: KI-SHAPE-12 — no \`vendors:\` declaration and no scripts/audit-*.ts|lint-*.ts to point at; needs a human call`
-        )
-        rec(
-          'ADVISORY',
-          `${dirName}:KI-SHAPE-12`,
-          'no `vendors:` declaration and no scripts/audit-*.ts|lint-*.ts to point at; needs a human call',
-          RUBRIC,
-          'SKILL.md'
-        )
-      }
-    } else if (!/\bconform:/.test(vendorsLine) && conformScript) {
-      const newLine = vendorsLine.replace(/\}\s*$/, `, conform: scripts/${conformScript} }`)
-      workingBlock = workingBlock.replace(vendorsLine, newLine)
-      rec('POLISH', `${dirName}:KI-SHAPE-12`, `added missing \`conform: scripts/${conformScript}\` to vendors`, RUBRIC, 'SKILL.md')
-      fixedAny = true
+  // ── KI-SHAPE-15 (uniform vendors) ──
+  for (const action of KI_SHAPE_15.conform?.({
+    ...kiShapeContext(dir, workingBlock, content),
+    setVendors: (vendors) => {
+      const line = getLine(workingBlock, 'vendors')
+      const replacement = `vendors: ${vendors}`
+      workingBlock = line ? workingBlock.replace(line, replacement) : insertAfterAnchor(workingBlock, replacement)
     }
+  }) ?? []) {
+    rec(action.level ?? 'POLISH', `${dirName}:${action.item.code}`, action.message, RUBRIC, action.file)
+    if (action.level === 'ADVISORY') todos.push(`${dirName}: ${action.item.code} — ${action.message}`)
+    else fixedAny = true
   }
 
   if (fixedAny) {
@@ -216,17 +228,11 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
   let lay4Fixes = 0
   for (const file of listMarkdownFiles(dir)) {
     const md = readFileSync(file, 'utf8')
-    let count = 0
-    const fixed = md.replace(/\[([^\]]*)\]\(([^)]+)\)/g, (whole, text, target) => {
-      if (!(target as string).includes('\\')) return whole
-      count++
-      return `[${text}](${(target as string).replace(/\\/g, '/')})`
-    })
-    if (count > 0) {
-      lay4Fixes += count
-      const rel = file.slice(dir.length + 1)
-      rec('POLISH', `${dirName}:LAY-4`, `${count} backslash link target(s) → forward slashes`, RUBRIC, rel)
-      if (!dryRun) writeFileSync(file, fixed)
+    const rel = file.slice(dir.length + 1)
+    const actions = LAY_4.conform?.({ markdown: md, file: rel, writeMarkdown: (fixed) => !dryRun && writeFileSync(file, fixed) })
+    for (const action of actions ?? []) {
+      lay4Fixes++
+      rec(action.level ?? 'POLISH', `${dirName}:${action.item.code}`, action.message, RUBRIC, action.file)
     }
   }
   if (lay4Fixes === 0) {

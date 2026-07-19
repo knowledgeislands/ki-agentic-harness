@@ -58,21 +58,21 @@ const FOOTPRINT_REF_NOTE_TOKENS = 1500 // a single reference this large is a can
 
 // --- frontmatter parser ----------------------------------------------------
 // Handles the scalar fields the audit reads directly. The Bun-built-in YAML
-// parser supplies `metadata`'s real value so OPT-2 can inspect its types without
-// adding a package dependency.
-type Frontmatter = { keys: Map<string, string>; present: Set<string>; raw: string | null; metadata: unknown }
+// parser also retains top-level values for rubric callbacks that need YAML's
+// actual scalar / sequence / mapping types without re-parsing line-oriented text.
+type Frontmatter = { keys: Map<string, string>; present: Set<string>; raw: string | null; values: Record<string, unknown> }
 type BunYamlRuntime = { Bun: { YAML: { parse: (source: string) => unknown } } }
 
 function parseFrontmatter(content: string): Frontmatter {
   const keys = new Map<string, string>()
   const present = new Set<string>()
   const m = content.match(/^---\r?\n([\s\S]*?)\r?\n---/)
-  if (!m) return { keys, present, raw: null, metadata: undefined }
+  if (!m) return { keys, present, raw: null, values: {} }
   const block = m[1] as string
-  let metadata: unknown
+  let values: Record<string, unknown> = {}
   try {
     const parsed = (globalThis as typeof globalThis & BunYamlRuntime).Bun.YAML.parse(block)
-    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) metadata = (parsed as Record<string, unknown>).metadata
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) values = parsed as Record<string, unknown>
   } catch {
     // Existing scalar checks still report what they can. OPT-2 reports an
     // invalid `metadata` value when that key is present but YAML cannot parse it.
@@ -118,7 +118,7 @@ function parseFrontmatter(content: string): Frontmatter {
     keys.set(key, stripQuotes(rest))
     i++
   }
-  return { keys, present, raw: block, metadata }
+  return { keys, present, raw: block, values }
 }
 
 function stripQuotes(s: string): string {
@@ -273,12 +273,19 @@ function lintSkill(skillDir: string): Finding[] {
     else warn(finding.code, finding.message)
   }
 
-  // optional frontmatter (OPT-1 / OPT-2 mechanical)
+  // Optional frontmatter: audit.ts extracts typed YAML context; each rubric
+  // callback owns the criterion-specific validation.
   const compat = fm.keys.get('compatibility')
   for (const finding of auditRubricItems(OPTIONAL, {
     compatibility: compat,
     metadataPresent: fm.present.has('metadata'),
-    metadata: fm.metadata
+    metadata: fm.values.metadata,
+    allowedToolsPresent: fm.present.has('allowed-tools'),
+    allowedTools: fm.values['allowed-tools'],
+    disallowedToolsPresent: fm.present.has('disallowed-tools'),
+    disallowedTools: fm.values['disallowed-tools'],
+    licensePresent: fm.present.has('license'),
+    license: fm.values.license
   })) {
     if (finding.level === 'FAIL') fail(finding.code, finding.message)
     else warn(finding.code, finding.message)

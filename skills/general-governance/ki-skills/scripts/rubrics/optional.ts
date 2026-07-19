@@ -7,6 +7,12 @@ export type OptionalRubricContext = {
   compatibility: string | undefined
   metadataPresent: boolean
   metadata: unknown
+  allowedToolsPresent: boolean
+  allowedTools: unknown
+  disallowedToolsPresent: boolean
+  disallowedTools: unknown
+  licensePresent: boolean
+  license: unknown
 }
 
 export const OPT_1: RubricItem<OptionalRubricContext> = {
@@ -45,14 +51,81 @@ export const OPT_3: RubricItem<OptionalRubricContext> = {
   code: 'OPT-3',
   title: 'tool declarations use valid tool specifications',
   description: 'Optional allowed-tools and disallowed-tools declarations use valid tool specifications.',
-  sources: ['SPEC', 'CC']
+  sources: ['SPEC', 'CC'],
+  audit: ({ allowedToolsPresent, allowedTools, disallowedToolsPresent, disallowedTools }) => [
+    ...(allowedToolsPresent ? toolDeclarationFindings('allowed-tools', allowedTools) : []),
+    ...(disallowedToolsPresent ? toolDeclarationFindings('disallowed-tools', disallowedTools) : [])
+  ]
 }
 
 export const OPT_4: RubricItem<OptionalRubricContext> = {
   code: 'OPT-4',
-  title: 'license declarations are short names or bundled-file references',
-  description: 'An optional license declaration is a short license name or references a bundled file.',
-  sources: ['SPEC']
+  title: 'license declarations are non-empty YAML string scalars',
+  description: 'An optional license declaration is a non-empty YAML string scalar.',
+  sources: ['SPEC'],
+  audit: ({ licensePresent, license }) =>
+    licensePresent && (typeof license !== 'string' || license.trim() === '')
+      ? [{ type: 'M', level: 'FAIL', code: OPT_4.code, message: '`license` must be a non-empty YAML string scalar' }]
+      : []
+}
+
+function toolDeclarationFindings(field: 'allowed-tools' | 'disallowed-tools', value: unknown) {
+  if (typeof value === 'string') {
+    const rules = splitToolRules(value)
+    return validToolRules(rules)
+      ? []
+      : [{ type: 'M' as const, level: 'FAIL' as const, code: OPT_3.code, message: `\`${field}\` must contain non-empty valid tool rules` }]
+  }
+  if (Array.isArray(value) && value.every((rule) => typeof rule === 'string' && validToolRule(rule))) return []
+  return [
+    {
+      type: 'M' as const,
+      level: 'FAIL' as const,
+      code: OPT_3.code,
+      message: `\`${field}\` must be a non-empty YAML string scalar or sequence of non-empty valid tool rules`
+    }
+  ]
+}
+
+/** Split comma- or whitespace-separated rules, preserving text inside balanced parentheses. */
+function splitToolRules(value: string): string[] | null {
+  const rules: string[] = []
+  let rule = ''
+  let depth = 0
+  for (const character of value) {
+    if (character === '(') depth++
+    if (character === ')') depth--
+    if (depth < 0) return null
+    if (depth === 0 && (character === ',' || /\s/.test(character))) {
+      if (rule.trim() !== '') rules.push(rule.trim())
+      rule = ''
+      continue
+    }
+    rule += character
+  }
+  if (depth !== 0 || rule.trim() === '') return null
+  rules.push(rule.trim())
+  return rules
+}
+
+function validToolRules(rules: string[] | null): boolean {
+  return rules !== null && rules.length > 0 && rules.every(validToolRule)
+}
+
+/** A rule is `Tool` or `Tool(specifier)`; specifier text may contain balanced nested parentheses. */
+function validToolRule(rule: string): boolean {
+  if (rule.trim() === '') return false
+  const opening = rule.indexOf('(')
+  if (opening === -1) return !/[(),\s]/.test(rule)
+  if (opening === 0 || !rule.endsWith(')') || /[(),\s]/.test(rule.slice(0, opening))) return false
+  let depth = 0
+  for (let index = opening; index < rule.length; index++) {
+    const character = rule[index] as string
+    if (character === '(') depth++
+    if (character === ')') depth--
+    if (depth < 0 || (depth === 0 && index !== rule.length - 1)) return false
+  }
+  return depth === 0 && rule.slice(opening + 1, -1).trim() !== ''
 }
 
 export const OPT_5: RubricItem<OptionalRubricContext> = {
