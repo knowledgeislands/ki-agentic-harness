@@ -36,7 +36,7 @@ import {
 
 const SCRIPTS = dirname(fileURLToPath(import.meta.url))
 const BOOTSTRAP = join(SCRIPTS, 'repo-bootstrap.ts')
-const AUDIT = join(SCRIPTS, '..', 'audit.ts')
+const AUDIT = join(SCRIPTS, '..', '..', 'audit.ts')
 
 let failed = false
 function check(label: string, condition: boolean): void {
@@ -398,7 +398,16 @@ const temporaryHarness = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-t
 const temporaryTarget = fixture()
 try {
   cpSync(SKILLS_ROOT, join(temporaryHarness, 'skills'), { recursive: true, dereference: true })
-  const temporaryBootstrap = join(temporaryHarness, 'skills', 'keystone', 'ki-bootstrap', 'scripts', 'internal', 'repo-bootstrap.ts')
+  const temporaryBootstrap = join(
+    temporaryHarness,
+    'skills',
+    'keystone',
+    'ki-bootstrap',
+    'scripts',
+    'internal',
+    'repo-bootstrap',
+    'repo-bootstrap.ts'
+  )
   const result = spawnSync('bun', [temporaryBootstrap, temporaryTarget, '--seed', 'ki-repo'], { encoding: 'utf8' })
   rmSync(temporaryHarness, { recursive: true, force: true })
   const copiedSkill = join(temporaryTarget, '.claude', 'skills', 'ki-repo', 'SKILL.md')
@@ -415,7 +424,16 @@ try {
 const selfBootstrappingHarness = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-self-source-')))
 try {
   cpSync(SKILLS_ROOT, join(selfBootstrappingHarness, 'skills'), { recursive: true, dereference: true })
-  const selfBootstrap = join(selfBootstrappingHarness, 'skills', 'keystone', 'ki-bootstrap', 'scripts', 'internal', 'repo-bootstrap.ts')
+  const selfBootstrap = join(
+    selfBootstrappingHarness,
+    'skills',
+    'keystone',
+    'ki-bootstrap',
+    'scripts',
+    'internal',
+    'repo-bootstrap',
+    'repo-bootstrap.ts'
+  )
   const result = spawnSync('bun', [selfBootstrap, selfBootstrappingHarness, '--seed', 'ki-repo'], { encoding: 'utf8' })
   const selfPayload = join(selfBootstrappingHarness, '.claude', 'skills', 'ki-repo')
   check('source harness bootstrap → exits cleanly', result.status === 0)

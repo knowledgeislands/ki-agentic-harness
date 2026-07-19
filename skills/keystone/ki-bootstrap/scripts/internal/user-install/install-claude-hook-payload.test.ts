@@ -20,7 +20,7 @@ import { fileURLToPath } from 'node:url'
 
 const SCRIPTS = dirname(fileURLToPath(import.meta.url))
 const SCRIPT = join(SCRIPTS, 'install-claude-hook-payload.ts')
-const ENTRYPOINT = join(SCRIPTS, '..', 'user-install.sh')
+const ENTRYPOINT = join(SCRIPTS, '..', '..', 'user-install.sh')
 const NAMES = ['plan-stamp.sh', 'plan-sync.sh', 'git-lock-check.sh'] as const
 
 let failures = 0
@@ -498,7 +498,7 @@ function clean(env: Fixture): void {
 {
   const entrypoint = readFileSync(ENTRYPOINT, 'utf8')
   check('remote entry point fetches the selected GitHub ref', entrypoint.includes('codeload.github.com/$REPO/tar.gz/$ref'))
-  check('user entry point invokes the user-install implementation', entrypoint.includes('internal/user-install.ts'))
+  check('user entry point invokes the user-install implementation', entrypoint.includes('internal/user-install/user-install.ts'))
   check(
     'user entry point never mentions Claude settings or repository bootstrap',
     !entrypoint.includes('settings.json') && !entrypoint.includes('repo-bootstrap')

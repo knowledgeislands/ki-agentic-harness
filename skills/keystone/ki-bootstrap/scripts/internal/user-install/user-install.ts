@@ -30,7 +30,7 @@ const CORE_SKILLS = ['ki-bootstrap', 'ki-delegate', 'ki-next', 'ki-plan', 'ki-re
 const MARKER = '.ki-user-installed-skill.json'
 const SCHEMA = 1
 const SELF = fileURLToPath(import.meta.url)
-const HARNESS_ROOT = resolve(dirname(SELF), '..', '..', '..', '..', '..')
+const HARNESS_ROOT = resolve(dirname(SELF), '..', '..', '..', '..', '..', '..')
 type Runtime = 'claude-code' | 'codex'
 const RUNTIME_SKILL_DIR: Record<Runtime, string> = {
   'claude-code': join('.claude', 'skills'),

@@ -7,7 +7,7 @@
 #
 # It bootstraps the current directory from the harness's `main`: fetches the
 # source tarball (GitHub codeload — generated on demand, no publish step),
-# extracts it to a temp dir, and runs the chain engine (`internal/repo-bootstrap.ts`) from that
+# extracts it to a temp dir, and runs the chain engine (`internal/repo-bootstrap/repo-bootstrap.ts`) from that
 # tree. Bun is required to *run* the engine and the vendored checkers — it is the
 # mechanical layer's runtime, not the entry point's — so a missing bun fails fast
 # with the install instruction rather than being installed silently.
@@ -85,4 +85,4 @@ trap 'rm -rf "$tmp"' EXIT
 
 echo "bootstrapping from $REPO@$ref"
 curl -fsSL "https://codeload.github.com/$REPO/tar.gz/$ref" | tar -xz -C "$tmp" --strip-components=1
-bun "$tmp/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap.ts" "$@"
+bun "$tmp/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts" "$@"

@@ -7,7 +7,7 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const scripts = dirname(fileURLToPath(import.meta.url))
-const harness = resolve(scripts, '../../../../..')
+const harness = resolve(scripts, '../../../../../..')
 const installer = join(scripts, 'user-install.ts')
 const skills = join(harness, 'skills')
 const hooks = join(harness, 'hooks')

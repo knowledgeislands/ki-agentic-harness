@@ -19,7 +19,7 @@ export const BOOTSTRAP = 'ki-bootstrap'
 // working tree three levels up from this file (scripts/ → ki-bootstrap/ → keystone/
 // → skills/). (Remote-URL sourcing is a documented follow-on; the vendored output
 // is identical either way.)
-export const SKILLS_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..')
+export const SKILLS_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..', '..')
 
 // Skills live two levels under SKILLS_ROOT (skills/<cluster>/<name>/SKILL.md) —
 // built once and memoized so every by-name lookup below stays O(1) after the

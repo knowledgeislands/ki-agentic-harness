@@ -18,7 +18,7 @@ import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const scripts = dirname(fileURLToPath(import.meta.url))
-const root = resolve(scripts, '../../../../..')
+const root = resolve(scripts, '../../../../../..')
 const bootstrap = join(scripts, 'repo-bootstrap.ts')
 const packageJson = join(root, 'package.json')
 const fixture = realpathSync(mkdtempSync(join(tmpdir(), 'ki-entrypoint-parity-')))

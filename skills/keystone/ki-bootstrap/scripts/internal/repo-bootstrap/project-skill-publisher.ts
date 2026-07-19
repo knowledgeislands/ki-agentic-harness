@@ -73,9 +73,9 @@ type LinkPlan = {
 const SELF = realpathFor(fileURLToPath(import.meta.url))
 const SCRIPTS = dirname(SELF)
 const SKILLS_ROOT = resolve(
-  (process.env.NODE_ENV === 'test' ? process.env.KI_PROJECT_LINKS_TEST_SKILLS_ROOT : undefined) ?? join(SCRIPTS, '..', '..', '..', '..')
+  (process.env.NODE_ENV === 'test' ? process.env.KI_PROJECT_LINKS_TEST_SKILLS_ROOT : undefined) ?? join(SCRIPTS, '..', '..', '..', '..', '..')
 )
-const HARNESS_ROOT = resolve(SCRIPTS, '..', '..', '..', '..', '..')
+const HARNESS_ROOT = resolve(SCRIPTS, '..', '..', '..', '..', '..', '..')
 const AGENTS_ROOT = join(HARNESS_ROOT, 'agents', 'governance')
 const BOOTSTRAP = 'ki-bootstrap'
 const LOCAL_GOVERNANCE_SKILL = 'ki-self'

@@ -20,7 +20,7 @@
  * fetches the source tarball and runs this engine from the extracted tree (Bun
  * cannot execute a module over HTTP, and the POSIX entry point does not assume
  * bun is even installed):
- *   curl -fsSL https://knowledgeislands.info/harness/install | sh
+ *   curl -fsSL https://knowledgeislands.info/harness/bootstrap | sh
  * Everything after `sh -s --` ripples through to this engine; repo-bootstrap.sh injects
  * the cwd target and `--ref main` only when absent. Where bun is already installed,
  * the bunx form runs this engine as the package bin directly (pin a sha — bunx
@@ -123,7 +123,7 @@ function harnessRef(): string {
     return 'unknown'
   }
 }
-const SKILLS_ROOT_FOR_REF = resolve(import.meta.dirname, '..', '..', '..', '..', '..')
+const SKILLS_ROOT_FOR_REF = resolve(import.meta.dirname, '..', '..', '..', '..', '..', '..')
 
 // Resolve a possibly-symbolic ref (a branch like `main`, a tag, a short SHA) to the
 // concrete 40-hex commit SHA, so the manifest always records an immutable point even
@@ -1116,7 +1116,7 @@ function vendorSkill(
   // covered by the manifest hash like every other vendored file.
   const helpAbs = join(destDir, 'help.md')
   const helpEnv = process.env.KI_BOOTSTRAP_TEST_HELP_PATH ? { ...process.env, PATH: process.env.KI_BOOTSTRAP_TEST_HELP_PATH } : process.env
-  const help = execFileSync('bun', [join(skillDir('ki-bootstrap'), 'scripts', 'internal', 'skill-help.ts'), skill], {
+  const help = execFileSync('bun', [join(skillDir('ki-bootstrap'), 'scripts', 'internal', 'repo-bootstrap', 'skill-help.ts'), skill], {
     cwd: join(SKILLS_ROOT, '..'),
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'ignore'],
@@ -1312,7 +1312,7 @@ function buildCandidate(
   if (set.includes('ki-harness')) {
     for (const name of HARNESS_BIN_SCRIPTS) {
       const destination = join(staging, 'bin', name)
-      copyRegularFile(join(skillDir('ki-bootstrap'), 'scripts', 'internal', name), destination)
+      copyRegularFile(join(skillDir('ki-bootstrap'), 'scripts', 'internal', 'repo-bootstrap', name), destination)
       recordGenerated(journal, staging, join('bin', name))
       manifestFiles[join(VENDOR_DIR, 'bin', name)] = hashJournalFile(journal, join('bin', name))
     }

@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process'
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { inspectProjectLinks, type ProjectLinkCheck } from '../../internal/project-skill-publisher.ts'
+import { inspectProjectLinks, type ProjectLinkCheck } from '../../internal/repo-bootstrap/project-skill-publisher.ts'
 import {
   assertExplicitDependencies,
   checkerScript,
@@ -11,7 +11,7 @@ import {
   SkillResolutionError,
   vendorModesOf,
   vendorUnit
-} from '../../internal/resolve.ts'
+} from '../../internal/repo-bootstrap/resolve.ts'
 
 export type BootstrapPublication = {
   status: number
@@ -41,7 +41,7 @@ export type BootstrapRubricContext = {
   vendor: BootstrapVendorEvidence
 }
 
-const PUBLISHER = fileURLToPath(new URL('../../internal/project-skill-publisher.ts', import.meta.url))
+const PUBLISHER = fileURLToPath(new URL('../../internal/repo-bootstrap/project-skill-publisher.ts', import.meta.url))
 
 const inspectProject = (target: string): { checks: ProjectLinkCheck[]; error?: string } => {
   try {

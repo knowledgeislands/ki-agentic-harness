@@ -30,7 +30,7 @@ import { basename, dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const SELF = fileURLToPath(import.meta.url)
-const HARNESS_ROOT = resolve(dirname(SELF), '..', '..', '..', '..', '..')
+const HARNESS_ROOT = resolve(dirname(SELF), '..', '..', '..', '..', '..', '..')
 const NAMES = ['plan-stamp.sh', 'plan-sync.sh', 'git-lock-check.sh'] as const
 const REPOSITORY = 'knowledgeislands/ki-agentic-harness'
 const SCHEMA = 2
