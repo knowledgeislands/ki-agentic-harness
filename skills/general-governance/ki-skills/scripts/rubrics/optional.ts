@@ -69,7 +69,7 @@ export const OPT_4: RubricItem<OptionalRubricContext> = {
       : []
 }
 
-function toolDeclarationFindings(field: 'allowed-tools' | 'disallowed-tools', value: unknown) {
+const toolDeclarationFindings = (field: 'allowed-tools' | 'disallowed-tools', value: unknown) => {
   if (typeof value === 'string') {
     const rules = splitToolRules(value)
     return validToolRules(rules)
@@ -88,7 +88,7 @@ function toolDeclarationFindings(field: 'allowed-tools' | 'disallowed-tools', va
 }
 
 /** Split comma- or whitespace-separated rules, preserving text inside balanced parentheses. */
-function splitToolRules(value: string): string[] | null {
+const splitToolRules = (value: string): string[] | null => {
   const rules: string[] = []
   let rule = ''
   let depth = 0
@@ -108,12 +108,12 @@ function splitToolRules(value: string): string[] | null {
   return rules
 }
 
-function validToolRules(rules: string[] | null): boolean {
+const validToolRules = (rules: string[] | null): boolean => {
   return rules !== null && rules.length > 0 && rules.every(validToolRule)
 }
 
 /** A rule is `Tool` or `Tool(specifier)`; specifier text may contain balanced nested parentheses. */
-function validToolRule(rule: string): boolean {
+const validToolRule = (rule: string): boolean => {
   if (rule.trim() === '') return false
   const opening = rule.indexOf('(')
   if (opening === -1) return !/[(),\s]/.test(rule)

@@ -6,32 +6,44 @@ The authoritative and community sources behind [the standard](standards.md) and 
 
 Abbreviations match the `(SOURCE)` tags in [the standard](standards.md) and [rubric](rubric.md).
 
-## Authoritative
+## Contents
+
+- [Portable Agent Skills contract](#portable-agent-skills-contract)
+- [Established authoring practice](#established-authoring-practice)
+- [Knowledge Islands house standard](#knowledge-islands-house-standard)
+- [Runtime overlay: Claude Code](#runtime-overlay-claude-code)
+- [Last review](#last-review)
+
+## Portable Agent Skills contract
+
+| Tag  | Source                               | Scope                  | Last reviewed |
+| ---- | ------------------------------------ | ---------------------- | ------------- |
+| SPEC | [Agent Skills specification][spec]   | Format and constraints | 2026-07-19    |
+| —    | [`skills-ref validate`][skills-ref]‡ | Validator baseline     | 2026-07-04    |
+
+‡ Mechanical baseline for frontmatter and naming criteria B, C, and D; subordinate to the specification it implements.
+
+## Established authoring practice
 
 ### Agent Skills documentation set
 
 The Agent Skills [documentation index][agentskills-index] is the inventory authority for this set. Every REFRESH fetches it first, reconciles this table with its current pages, then reviews every listed page individually. The index currently lists the nine documentation pages below; the index itself is also tracked because it detects additions and removals.
 
-| Tag  | Source                                                     | Scope                  | Last reviewed |
-| ---- | ---------------------------------------------------------- | ---------------------- | ------------- |
-| AS   | [Agent Skills documentation index][agentskills-index]      | Page inventory         | 2026-07-19    |
-| AS   | [Agent Skills overview][home]                              | Conceptual overview    | 2026-07-19    |
-| SPEC | [Agent Skills specification][spec]                         | Format and constraints | 2026-07-19    |
-| AS   | [Skill-creator quickstart][quickstart]                     | First-skill workflow   | 2026-07-19    |
-| AS   | [Skill-creator best practices][agentskills-best-practices] | Authoring guidance     | 2026-07-19    |
-| AS   | [Optimising descriptions][optimizing-descriptions]         | Description quality    | 2026-07-19    |
-| AS   | [Evaluating skills][evaluating-skills]                     | Evaluation practice    | 2026-07-19    |
-| AS   | [Using scripts][using-scripts]                             | Script execution       | 2026-07-19    |
-| AS   | [Client showcase][clients]                                 | Client inventory       | 2026-07-19    |
-| AS   | [Adding skills support][adding-skills-support]             | Client implementation  | 2026-07-19    |
-| BP   | [Skill authoring best practices][bp]                       | Authoring checklist    | 2026-07-04    |
-| CC   | [Claude Code — skills][cc]                                 | Claude runtime         | 2026-07-04    |
-| ENG  | [Equipping agents with Agent Skills][eng]†                 | Design rationale       | 2026-07-04    |
-| —    | [`skills-ref validate`][skills-ref]‡                       | Validator baseline     | 2026-07-04    |
+| Tag | Source                                                     | Scope                 | Last reviewed |
+| --- | ---------------------------------------------------------- | --------------------- | ------------- |
+| AS  | [Agent Skills documentation index][agentskills-index]      | Page inventory        | 2026-07-19    |
+| AS  | [Agent Skills overview][home]                              | Conceptual overview   | 2026-07-19    |
+| AS  | [Skill-creator quickstart][quickstart]                     | First-skill workflow  | 2026-07-19    |
+| AS  | [Skill-creator best practices][agentskills-best-practices] | Authoring guidance    | 2026-07-19    |
+| AS  | [Optimising descriptions][optimizing-descriptions]         | Description quality   | 2026-07-19    |
+| AS  | [Evaluating skills][evaluating-skills]                     | Evaluation practice   | 2026-07-19    |
+| AS  | [Using scripts][using-scripts]                             | Script execution      | 2026-07-19    |
+| AS  | [Client showcase][clients]                                 | Client inventory      | 2026-07-19    |
+| AS  | [Adding skills support][adding-skills-support]             | Client implementation | 2026-07-19    |
+| BP  | [Skill authoring best practices][bp]                       | Authoring checklist   | 2026-07-04    |
+| ENG | [Equipping agents with Agent Skills][eng]†                 | Design rationale      | 2026-07-04    |
 
 † Anthropic Engineering, 2025-12-18.
-
-‡ Mechanical baseline for frontmatter and naming criteria B, C, and D.
 
 ## Community
 
@@ -43,7 +55,7 @@ The Agent Skills [documentation index][agentskills-index] is the inventory autho
 
 † Community restatement of the best-practices document.
 
-## In-house
+## Knowledge Islands house standard
 
 | Tag                       | Source                       | Scope            | Last reviewed |
 | ------------------------- | ---------------------------- | ---------------- | ------------- |
@@ -54,6 +66,14 @@ The Agent Skills [documentation index][agentskills-index] is the inventory autho
 
 ‡ Worked example of a trigger-rich description and the standard-skill shape.
 
+## Runtime overlay: Claude Code
+
+| Tag | Source                     | Scope                   | Last reviewed |
+| --- | -------------------------- | ----------------------- | ------------- |
+| CC  | [Claude Code — skills][cc] | Claude runtime overlay† | 2026-07-04    |
+
+† Claude Code extensions and runtime behaviour. This overlay may qualify a portable or Knowledge Islands rule for Claude Code, but never weakens the portable contract.
+
 ## Last review
 
 REFRESH last run **2026-07-19** against the tracked Agent Skills documentation set and the existing sources below. It fetched [the documentation index][agentskills-index] first, which listed nine current documentation pages; this table now tracks all nine individually, plus the index itself. The skill-creator pages confirmed the existing standard's guidance on progressive disclosure, reusable scripts, script documentation and `--help`, description tuning, and evaluation-driven iteration. The client pages provide the runtime-facing counterpart: discovery at user and project scope, activation, and bounded context loading. This source-inventory change does not by itself change a rubric criterion; the script-interface and adjacent-test rules remain planned follow-up work.
@@ -61,7 +81,7 @@ REFRESH last run **2026-07-19** against the tracked Agent Skills documentation s
 - **SPEC (agentskills.io/specification):** accessible. Fields and constraints unchanged: `name` (required, 1–64 chars, lowercase letters/digits/hyphens, no leading/trailing/consecutive hyphen, matches directory), `description` (required, 1–1024 chars, non-empty), `license`, `compatibility` (1–500), `metadata` (string→string map), `allowed-tools` (Experimental). Body budget restated as "< 5000 tokens recommended", "under 500 lines", references "one level deep". No new fields, no deprecations.
 - **Agent Skills home:** accessible; three-stage progressive disclosure (metadata ~100 tok / instructions < 5000 tok / resources on demand). Spec unchanged.
 - **BP (Anthropic platform best-practices):** accessible; full page fetched. No new guidance beyond the standard — confirms third-person description, gerund naming, < 500-line body, progressive disclosure, ToC > 100 lines, ≥ 3 evaluations, Haiku/Sonnet/Opus testing, forward-slash paths, one-default-with-escape-hatch, fully-qualified `ServerName:tool_name`, plan-validate-execute, justified constants, and the authoring checklist.
-- **CC (Claude Code skills docs):** accessible; full frontmatter table confirms every CC-only field the standard lists. Confirms the 1,536-char `description`+`when_to_use` listing cap (~1% of context, configurable via `skillListingBudgetFraction` / `SLASH_COMMAND_TOOL_CHAR_BUDGET`; the per-skill desc-char cap is now documented as **`skillListingMaxDescChars`** — last run named it `maxSkillDescriptionChars`; the standard does not pin the setting name, so no standard drift), the post-compaction 5,000-tok-per-skill / 25,000-tok combined budgets, and the commands→skills merge. New since last run is runtime/settings, not authoring standard: `disable-model-invocation: true` now also blocks scheduled-task firing and subagent preload (v2.1.196), and `skillOverrides` gained an `"off"` state (v2.1.199) — neither changes a rubric criterion.
+- **CC runtime overlay (Claude Code skills docs):** accessible; full frontmatter table confirms every CC-only field the standard lists. Confirms the 1,536-char `description`+`when_to_use` listing cap (~1% of context, configurable via `skillListingBudgetFraction` / `SLASH_COMMAND_TOOL_CHAR_BUDGET`; the per-skill desc-char cap is now documented as **`skillListingMaxDescChars`** — last run named it `maxSkillDescriptionChars`; the standard does not pin the setting name, so no standard drift), the post-compaction 5,000-tok-per-skill / 25,000-tok combined budgets, and the commands→skills merge. New since last run is runtime/settings, not authoring standard: `disable-model-invocation: true` now also blocks scheduled-task firing and subagent preload (v2.1.196), and `skillOverrides` gained an `"off"` state (v2.1.199) — neither changes a rubric criterion.
 - **ENG (Anthropic Engineering blog):** accessible. Confirms the two required fields, three-level progressive-disclosure model, evaluation-first authoring, and name/description as the trigger signal. No numeric caps — cited for rationale only.
 - **COMMUNITY (generativeprogrammer.com Skill Authoring Patterns):** accessible; page dated 2026-04-19, unchanged since last run. 14 named patterns incl. Known Gotchas, Autonomy Calibration, Exclusion Clause; confirms the 1024 / 1536 caps, < 500 lines, third-person "pushy" descriptions. Repeats the soft ~300-line split trigger — compatible with (and below) our 500-line WARN; still not adopted as a separate cap.
 - **`skills-ref` validator:** `validate` CLI documented but internals not fetchable; the frontmatter + naming rules it enforces are fully specified on the SPEC page (which links skills-ref as the validator), so the mechanical baseline (NAME / DESC / OPT) is confirmed there.

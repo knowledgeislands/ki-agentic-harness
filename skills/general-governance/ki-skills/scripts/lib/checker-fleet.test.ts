@@ -7,17 +7,12 @@
 import { spawnSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import {
-  parseCheckerReporterJsonl,
-  rubricCriteriaFromFile,
-  validateCheckerReporterEvents,
-  validateCheckerReporterRubric
-} from './checker-reporter.ts'
+import { parseCheckerReporterJsonl, rubricCriteriaFromFile, validateCheckerReporterEvents, validateCheckerReporterRubric } from './checker-reporter.ts'
 
 const SKILLS_ROOT = resolve(import.meta.dirname, '..', '..', '..', '..')
 let failed = false
 
-function check(label: string, errors: string[]): void {
+const check = (label: string, errors: string[]): void => {
   if (errors.length === 0) {
     console.log(`  \x1b[32mok\x1b[0m   ${label}`)
     return
@@ -28,7 +23,7 @@ function check(label: string, errors: string[]): void {
   if (errors.length > 3) console.log(`       … ${errors.length - 3} more`)
 }
 
-function skillDirectories(): string[] {
+const skillDirectories = (): string[] => {
   const result: string[] = []
   for (const cluster of readdirSync(SKILLS_ROOT, { withFileTypes: true })) {
     if (!cluster.isDirectory()) continue
@@ -41,7 +36,7 @@ function skillDirectories(): string[] {
   return result.sort()
 }
 
-function usesCanonicalReporter(skillDir: string): boolean {
+const usesCanonicalReporter = (skillDir: string): boolean => {
   const frontmatter = readFileSync(join(skillDir, 'SKILL.md'), 'utf8').match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? ''
   return /^checker-dependencies:\s*\[[^\]]*ki-skills:checker-reporter[^\]]*\]/m.test(frontmatter)
 }
@@ -63,10 +58,7 @@ for (const skillDir of skillDirectories().filter(usesCanonicalReporter)) {
   const transportErrors = [...parsed.errors, ...validateCheckerReporterEvents(parsed.events, result.status ?? 1)]
   check(`${skill} → canonical audit transport`, transportErrors)
   if (transportErrors.length === 0)
-    check(
-      `${skill} → rubric codes, types, prompts, and non-repeating messages`,
-      validateCheckerReporterRubric(parsed.events, rubricCriteriaFromFile(rubric))
-    )
+    check(`${skill} → rubric codes, types, prompts, and non-repeating messages`, validateCheckerReporterRubric(parsed.events, rubricCriteriaFromFile(rubric)))
   if ((result.stderr ?? '').trim()) check(`${skill} → writes no stderr`, [`${result.stderr.trim().split('\n')[0]}`])
 }
 

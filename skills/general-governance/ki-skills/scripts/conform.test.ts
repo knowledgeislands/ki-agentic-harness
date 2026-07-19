@@ -11,7 +11,7 @@ const CONFORM = join(SCRIPT_DIR, 'conform.ts')
 const AUDIT = join(SCRIPT_DIR, 'audit.ts')
 let failed = false
 
-function check(label: string, condition: boolean): void {
+const check = (label: string, condition: boolean): void => {
   if (condition) console.log(`  \x1b[32mok\x1b[0m   ${label}`)
   else {
     failed = true
@@ -19,12 +19,12 @@ function check(label: string, condition: boolean): void {
   }
 }
 
-function run(script: string, target: string): { output: string; status: number | null } {
+const run = (script: string, target: string): { output: string; status: number | null } => {
   const result = spawnSync('bun', [script, target], { encoding: 'utf8' })
   return { output: `${result.stdout ?? ''}${result.stderr ?? ''}`, status: result.status }
 }
 
-function writeConformableFixture(): { base: string; dir: string } {
+const writeConformableFixture = (): { base: string; dir: string } => {
   const base = mkdtempSync(join(tmpdir(), 'ki-skills-conform-'))
   const dir = join(base, 'ki-fixture-conform')
   mkdirSync(join(dir, 'references'), { recursive: true })

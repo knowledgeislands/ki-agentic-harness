@@ -26,7 +26,7 @@ const LINTER = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
 const SKILL_ROOT = dirname(LINTER)
 
 let failed = false
-function check(label: string, cond: boolean): void {
+const check = (label: string, cond: boolean): void => {
   if (cond) {
     console.log(`  \x1b[32mok\x1b[0m   ${label}`)
   } else {
@@ -36,7 +36,7 @@ function check(label: string, cond: boolean): void {
 }
 
 /** Build a throwaway skill dir named `name`, holding a checker whose source is `checkerSrc`. */
-function fixture(name: string, checkerSrc: string): { base: string; dir: string } {
+const fixture = (name: string, checkerSrc: string): { base: string; dir: string } => {
   const base = mkdtempSync(join(tmpdir(), 'ki-skills-test-'))
   const dir = join(base, name)
   mkdirSync(join(dir, 'scripts'), { recursive: true })
@@ -56,16 +56,16 @@ function fixture(name: string, checkerSrc: string): { base: string; dir: string 
   return { base, dir }
 }
 
-function runResult(dir: string): { output: string; status: number | null } {
+const runResult = (dir: string): { output: string; status: number | null } => {
   const res = spawnSync('bun', [LINTER, dir], { encoding: 'utf8' })
   return { output: `${res.stdout ?? ''}${res.stderr ?? ''}`, status: res.status }
 }
 
-function run(dir: string): string {
+const run = (dir: string): string => {
   return runResult(dir).output
 }
 
-function hasMechanicalFinding(output: string, code: string): boolean {
+const hasMechanicalFinding = (output: string, code: string): boolean => {
   return output.split(/\r?\n/).some((line) => {
     try {
       const event = JSON.parse(line) as { type?: string; code?: string }
@@ -277,7 +277,10 @@ for (const [suffix, frontmatter] of [
 // ── KI-SHAPE-12 / KI-SHAPE-13 fixtures ──────────────────────────────────────────────
 
 /** Build a throwaway skill dir from full frontmatter fields + body markdown. */
-function modeFixture(name: string, opts: { dependsOn?: string; desc?: string; hint?: string; vendors?: string; body: string }): { base: string; dir: string } {
+const modeFixture = (
+  name: string,
+  opts: { dependsOn?: string; desc?: string; hint?: string; vendors?: string; body: string }
+): { base: string; dir: string } => {
   const base = mkdtempSync(join(tmpdir(), 'ki-skills-test-'))
   const dir = join(base, name)
   mkdirSync(join(dir, 'scripts'), { recursive: true })
@@ -293,7 +296,7 @@ function modeFixture(name: string, opts: { dependsOn?: string; desc?: string; hi
 }
 
 /** Build a fixture with arbitrary optional-frontmatter lines. */
-function optionalFixture(name: string, fields: readonly string[]): { base: string; dir: string } {
+const optionalFixture = (name: string, fields: readonly string[]): { base: string; dir: string } => {
   const base = mkdtempSync(join(tmpdir(), 'ki-skills-test-'))
   const dir = join(base, name)
   mkdirSync(join(dir, 'scripts'), { recursive: true })

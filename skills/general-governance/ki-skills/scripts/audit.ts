@@ -8,15 +8,15 @@
 //
 // Usage:
 //   bun scripts/audit.ts [path ...]            # a skill dir, or a dir containing skills
-//   bun scripts/audit.ts <skill> --footprint   # + per-skill token footprint (SIZE-5, INFO) for Mode OPTIMISE
-//   bun scripts/audit.ts skills --refresh-status # + per-skill refresh class/cadence/status (LONG-3/§5, INFO)
+//   bun scripts/audit.ts <skill> --footprint   # include per-skill token measurements for optimisation
+//   bun scripts/audit.ts skills --refresh-status # include per-skill refresh class/cadence/status
 //   bun run ki:skills:audit                              # (from the ki-agentic-harness repo root)
 //
 // A path containing SKILL.md is treated as one skill; otherwise its immediate
 // subdirectories that contain a SKILL.md are each linted. Defaults to the current dir.
 // Exits non-zero if any FAIL is reported (WARN never fails the run).
 //
-// With >= 2 skills in scope it also runs a cross-skill collision pass (COLL-1):
+// With >= 2 skills in scope it also runs a cross-skill collision pass:
 // two descriptions declaring the same quoted trigger phrase are WARNed.
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
@@ -29,13 +29,14 @@ import { FRONTMATTER } from './rubrics/frontmatter.ts'
 import { RUBRIC_ITEMS } from './rubrics/index.ts'
 import { KI_CHECKER } from './rubrics/ki-checker.ts'
 import { KI_LINK } from './rubrics/ki-link.ts'
-import { KI_SHAPE, type KiShapeSkillContext } from './rubrics/ki-shape.ts'
+import { createKiShapeContext, KI_SHAPE, type KiShapeSkillContext } from './rubrics/ki-shape.ts'
 import { LAYOUT } from './rubrics/layout.ts'
-import { LONGEVITY, REFRESH_GRACE_DAYS } from './rubrics/longevity.ts'
+import { LONGEVITY } from './rubrics/longevity.ts'
 import { NAME } from './rubrics/name.ts'
 import { OPTIONAL } from './rubrics/optional.ts'
 import { REFERENCES } from './rubrics/references.ts'
 import { SIZE } from './rubrics/size.ts'
+import { createFootprint, estimateTokens } from './rubrics/support/footprint.ts'
 import { createRefreshContext } from './rubrics/support/longevity.ts'
 import { endorsesRetiredExtension, extractBodyModes, extractSection, hintVerbs, isProcessSkill } from './rubrics/support/modes.ts'
 import { discoverSkillDirs, listMarkdownFiles, listScriptFiles } from './rubrics/support/skill-files.ts'
@@ -54,9 +55,6 @@ const auditRubricItems = <Context>(items: readonly RubricItem<Context>[], contex
 // Every ki-skills criterion is defined in this skill's rubric — the default reference pointer.
 const RUBRIC = 'references/rubric.md'
 
-// --- limits (from references/standards.md §17 — keep in sync) ----------------------
-const FOOTPRINT_REF_NOTE_TOKENS = 1500 // a single reference this large is a candidate to split — INFO hint only, never a cap
-
 // --- frontmatter parser ----------------------------------------------------
 // Handles the scalar fields the audit reads directly. The Bun-built-in YAML
 // parser also retains top-level values for rubric callbacks that need YAML's
@@ -70,7 +68,7 @@ type Frontmatter = {
 }
 type BunYamlRuntime = { Bun: { YAML: { parse: (source: string) => unknown } } }
 
-function parseFrontmatter(content: string): Frontmatter {
+const parseFrontmatter = (content: string): Frontmatter => {
   const keys = new Map<string, string>()
   const present = new Set<string>()
   const m = content.match(/^---\r?\n([\s\S]*?)\r?\n---/)
@@ -85,7 +83,7 @@ function parseFrontmatter(content: string): Frontmatter {
       isMapping = true
     }
   } catch {
-    // FM-1 owns malformed YAML; dependent frontmatter checks stop before using it.
+    // Malformed YAML is reported before dependent frontmatter fields are read.
   }
   const lines = block.split(/\r?\n/)
   let i = 0
@@ -131,7 +129,7 @@ function parseFrontmatter(content: string): Frontmatter {
   return { keys, present, raw: block, values, isMapping }
 }
 
-function stripQuotes(s: string): string {
+const stripQuotes = (s: string): string => {
   const t = s.trim()
   if ((t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'"))) return t.slice(1, -1)
   return t
@@ -139,7 +137,7 @@ function stripQuotes(s: string): string {
 
 // Parses a flow-list frontmatter value (`owns: ['.gitignore', 'x.json']` or
 // `contributes: [.ki-config.toml]`) into its bare filenames. Empty/absent → [].
-function parseListValue(raw: string | undefined): string[] {
+const parseListValue = (raw: string | undefined): string[] => {
   if (!raw) return []
   const inner = raw.trim().replace(/^\[/, '').replace(/\]$/, '')
   if (inner.trim() === '') return []
@@ -149,7 +147,7 @@ function parseListValue(raw: string | undefined): string[] {
     .filter((s) => s.length > 0)
 }
 
-const createKiShapeContext = (skillDir: string, frontmatter: Frontmatter, description: string, body: string): KiShapeSkillContext => {
+const createKiShapeEvidence = (skillDir: string, frontmatter: Frontmatter, description: string, body: string): KiShapeSkillContext => {
   const argumentHint = frontmatter.keys.get('argument-hint')
   const section = extractSection(body, 'Operating modes')
   const markdownFiles = listMarkdownFiles(skillDir)
@@ -209,30 +207,7 @@ const createKiShapeContext = (skillDir: string, frontmatter: Frontmatter, descri
   }
 }
 
-// --- footprint (SIZE-5, INFO under --footprint) -----------------------------
-// Per-skill token estimate of everything the skill adds to context: the description
-// (standing cost — paid every turn in the selection surface), the SKILL.md body
-// (loaded when the skill fires), and each references/ file (loaded on demand). Same
-// chars/4 method as SIZE-2; never a cap — measurement for Mode OPTIMISE. The
-// environment-level aggregate of all descriptions is ki-tokenomics'.
-const estTok = (s: string): number => Math.round(s.length / 4)
-type FootprintRow = { kind: 'description' | 'body' | 'reference'; path: string; tokens: number }
-function footprint(skillDir: string): { rows: FootprintRow[]; total: number } {
-  const content = readFileSync(join(skillDir, 'SKILL.md'), 'utf8')
-  const desc = parseFrontmatter(content).keys.get('description') ?? ''
-  const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
-  const rows: FootprintRow[] = [
-    { kind: 'description', path: 'SKILL.md:description', tokens: estTok(desc) },
-    { kind: 'body', path: 'SKILL.md:body', tokens: estTok(body) }
-  ]
-  for (const file of listMarkdownFiles(skillDir)) {
-    if (basename(file) === 'SKILL.md') continue
-    rows.push({ kind: 'reference', path: file.slice(skillDir.length + 1), tokens: estTok(readFileSync(file, 'utf8')) })
-  }
-  return { rows, total: rows.reduce((n, r) => n + r.tokens, 0) }
-}
-
-function lintSkill(skillDir: string): Finding[] {
+const lintSkill = (skillDir: string): Finding[] => {
   const f: Finding[] = []
   const fail = (criterion: string, message: string, file?: string): void => void f.push({ severity: 'fail', criterion, message, ref: RUBRIC, file })
   const warn = (criterion: string, message: string, file?: string): void => void f.push({ severity: 'warn', criterion, message, ref: RUBRIC, file })
@@ -264,13 +239,13 @@ function lintSkill(skillDir: string): Finding[] {
   const name = fm.keys.get('name')
   const desc = fm.keys.get('description')
 
-  // name (NAME-1–NAME-7 mechanical)
+  // Name fields
   for (const finding of auditRubricItems(NAME, { name, directoryName: dirName })) {
     if (finding.level === 'FAIL') fail(finding.code, finding.message)
     else warn(finding.code, finding.message)
   }
 
-  // description (DESC-1–DESC-3 mechanical)
+  // Description fields
   for (const finding of auditRubricItems(DESC, { description: desc })) {
     if (finding.level === 'FAIL') fail(finding.code, finding.message)
     else warn(finding.code, finding.message)
@@ -294,7 +269,7 @@ function lintSkill(skillDir: string): Finding[] {
     else warn(finding.code, finding.message)
   }
 
-  // --- body size (SIZE-1/SIZE-2 soft → WARN) ---
+  // Body measurements
   const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
 
   const scriptsDir = join(skillDir, 'scripts')
@@ -317,19 +292,18 @@ function lintSkill(skillDir: string): Finding[] {
   }
 
   for (const finding of auditRubricItems(KI_SHAPE, {
-    skill: createKiShapeContext(skillDir, fm, desc ?? '', body),
-    ownershipCollisions: []
+    ...createKiShapeContext({ skill: createKiShapeEvidence(skillDir, fm, desc ?? '', body) })
   })) {
     if (finding.level === 'FAIL') fail(finding.code, finding.message, finding.file)
     else warn(finding.code, finding.message, finding.file)
   }
   const bodyLines = body.split(/\r?\n/).length
-  for (const finding of auditRubricItems(SIZE, { bodyLines, bodyTokens: estTok(body) })) {
+  for (const finding of auditRubricItems(SIZE, { bodyLines, bodyTokens: estimateTokens(body) })) {
     if (finding.level === 'FAIL') fail(finding.code, finding.message)
     else warn(finding.code, finding.message)
   }
 
-  // --- per-file checks across all markdown (LAY-4, KI-LINK-1, KI-LINK-2, REF-3) ---
+  // Per-file Markdown checks
   for (const file of listMarkdownFiles(skillDir)) {
     const md = readFileSync(file, 'utf8')
     const text = stripCode(md) // exclude code blocks/spans from text-pattern checks
@@ -357,12 +331,7 @@ function lintSkill(skillDir: string): Finding[] {
     }
   }
 
-  // --- LONG-3 / LONG-4: the declared refresh cadence ---
-  // One `**Refresh:**` marker drives both. LONG-4 checks the marker is present &
-  // coherent; LONG-3 WARNs when overdue against the skill's OWN cadence. WARN-only —
-  // staleness is elapsed time, not a defect in the commit; a canonical · on-change
-  // skill carries no clock and is exempt. Only fires where a source list exists
-  // (LONG-1 leaves runtime-resolved skills without one).
+  // Refresh-cadence checks apply only where a source list exists.
   const sourcesPath = join(skillDir, 'references', 'sources.md')
   if (existsSync(sourcesPath)) {
     const context = createRefreshContext(readFileSync(sourcesPath, 'utf8'))
@@ -402,29 +371,17 @@ const directTargetLayoutFindings = roots.flatMap((root) => {
     standaloneMarkdownFile: stat.isFile() && extname(target).toLowerCase() === '.md'
   })
 })
-const footprintOut = rawArgv.includes('--footprint') // SIZE-5: per-skill token footprint as INFO (Mode OPTIMISE)
-const refreshStatusOut = rawArgv.includes('--refresh-status') // per-skill refresh cadence status as INFO (LONG-3/§5; the REFRESH gate reads this)
+const footprintOut = rawArgv.includes('--footprint')
+const refreshStatusOut = rawArgv.includes('--refresh-status')
 const reportTarget = resolve('.')
 const all: RubricFinding[] = []
 
-function judgmentFindings(): RubricFinding[] {
-  return judgmentFindingsFromItems(RUBRIC_ITEMS, RUBRIC)
-}
+const judgmentFindings = (): RubricFinding[] => judgmentFindingsFromItems(RUBRIC_ITEMS, RUBRIC)
 
 if (skillDirs.length === 0) {
   const findings: RubricFinding[] = [
     ...directTargetLayoutFindings.map((finding) => ({ ...finding, ref: RUBRIC })),
-    ...(directTargetLayoutFindings.length === 0
-      ? [
-          {
-            type: 'M' as const,
-            level: 'FAIL' as const,
-            code: 'LAY-1',
-            message: 'No skills were found below the requested target.',
-            ref: RUBRIC
-          }
-        ]
-      : []),
+    ...(directTargetLayoutFindings.length === 0 ? auditRubricItems(LAYOUT, { noSkillsFound: true }).map((finding) => ({ ...finding, ref: RUBRIC })) : []),
     ...judgmentFindings()
   ]
   emitCheckerReporter({ mode: 'audit', concern: 'skills', target: reportTarget, findings })
@@ -444,7 +401,7 @@ for (const dir of skillDirs) {
     })
 }
 
-// cross-skill pass: collision between sibling descriptions (COLL-1)
+// Cross-skill description checks
 const collisionTargets = skillDirs
   .filter((dir) => existsSync(join(dir, 'SKILL.md')))
   .map((dir) => ({
@@ -459,52 +416,30 @@ all.push(
   }).map((finding) => ({ ...finding, ref: RUBRIC }))
 )
 
-// per-skill footprint (SIZE-5) — opt-in, INFO only, never affects the fail/warn tally or exit code
+// Per-skill footprint — opt-in, INFO only, never affects the fail/warn tally or exit code.
 if (footprintOut) {
   for (const dir of skillDirs) {
-    const fp = footprint(dir)
-    const refs = fp.rows.filter((r) => r.kind === 'reference').length
-    all.push({
-      type: 'M',
-      level: 'INFO',
-      code: 'SIZE-5',
-      message: `Estimated footprint is ${fp.total} tokens across description, body, and ${refs} reference file(s).`
-    })
-    for (const r of fp.rows) {
-      const big = r.kind === 'reference' && r.tokens > FOOTPRINT_REF_NOTE_TOKENS
-      all.push({
-        type: 'M',
-        level: 'INFO',
-        code: 'SIZE-5',
-        message: `Estimated ${r.kind} footprint is ${r.tokens} tokens${big ? '; consider splitting or trimming it' : '.'}`,
-        file: relative(reportTarget, join(dir, r.path))
-      })
-    }
+    const fp = createFootprint(dir)
+    all.push(
+      ...auditRubricItems(SIZE, { footprint: fp }).map((finding) => ({
+        ...finding,
+        file: finding.file ? relative(reportTarget, join(dir, finding.file)) : undefined
+      }))
+    )
   }
 }
 
-// per-skill refresh status (LONG-3/§5) — opt-in, INFO only, never affects the fail/warn tally or exit code.
-// The REFRESH mode's too-soon gate reads this (within-window → confirm before forcing / skip on a scheduled run).
+// Per-skill refresh status — opt-in, INFO only, never affects the fail/warn tally or exit code.
 if (refreshStatusOut) {
   for (const dir of skillDirs) {
     const sp = join(dir, 'references', 'sources.md')
-    const line = existsSync(sp)
-      ? (() => {
-          const context = createRefreshContext(readFileSync(sp, 'utf8'))
-          const status =
-            context.refreshClass === null || context.cadence === null
-              ? 'UNMARKED'
-              : context.windowDays === null
-                ? 'NO-CLOCK'
-                : context.ageDays === null || context.ageDays > context.windowDays + REFRESH_GRACE_DAYS
-                  ? 'OVERDUE'
-                  : context.ageDays < context.windowDays
-                    ? 'WITHIN-WINDOW'
-                    : 'DUE'
-          return `${context.refreshClass ?? 'unmarked'} · ${context.cadence ?? '—'} · last ${context.lastReviewed ?? '—'} · age ${context.ageDays ?? '—'}d · ${status}`
-        })()
-      : 'no sources.md'
-    all.push({ type: 'M', level: 'INFO', code: 'LONG-3', message: `Refresh status: ${line}`, file: relative(reportTarget, sp) })
+    const context = createRefreshContext(existsSync(sp) ? readFileSync(sp, 'utf8') : null)
+    all.push(
+      ...auditRubricItems(LONGEVITY, { ...context, reportStatus: true }).map((finding) => ({
+        ...finding,
+        file: relative(reportTarget, sp)
+      }))
+    )
   }
 }
 

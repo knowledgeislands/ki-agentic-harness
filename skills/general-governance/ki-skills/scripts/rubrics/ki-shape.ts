@@ -50,6 +50,53 @@ export type KiShapeRubricContext = {
   setVendors?: (vendors: string) => void
 }
 
+const emptyKiShapeSkill: KiShapeSkillContext = {
+  governanceSkill: false,
+  argumentHint: undefined,
+  hintVerbs: [],
+  vendorsPresent: false,
+  vendors: '',
+  scriptNames: [],
+  operatingModesSection: null,
+  bodyModes: new Set(),
+  operatingModesIntro: '',
+  flatModeHeadings: [],
+  bareModeHeadings: [],
+  refreshText: '',
+  retiredExtensionFiles: [],
+  strongGate: false,
+  anchorMentioned: false,
+  checkerReadsAnchor: false,
+  mechanicalRubricCount: 0,
+  hasChecker: false,
+  documentsMechanicalDelegation: false,
+  checkers: [],
+  dependsOnPresent: false,
+  dependsOn: '',
+  owns: [],
+  contributes: [],
+  requires: [],
+  scaffoldedFiles: [],
+  auditSource: null
+}
+
+export const createKiShapeContext = ({
+  skill,
+  ownershipCollisions = [],
+  setArgumentHint,
+  setVendors
+}: {
+  skill: Partial<KiShapeSkillContext> | null
+  ownershipCollisions?: readonly OwnershipCollision[]
+  setArgumentHint?: (argumentHint: string) => void
+  setVendors?: (vendors: string) => void
+}): KiShapeRubricContext => ({
+  skill: skill === null ? null : { ...emptyKiShapeSkill, ...skill },
+  ownershipCollisions,
+  setArgumentHint,
+  setVendors
+})
+
 export const KI_SHAPE_1: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-1',
   title: 'standard skills resolve base bindings at runtime',
@@ -405,8 +452,7 @@ export const KI_SHAPE_17: RubricItem<KiShapeRubricContext> = {
           type: 'M',
           level: 'FAIL',
           code: KI_SHAPE_17.code,
-          message:
-            'frontmatter carries no `depends-on:` declaration — declare `depends-on: []` when the skill has no governance dependencies'
+          message: 'frontmatter carries no `depends-on:` declaration — declare `depends-on: []` when the skill has no governance dependencies'
         }
       ]
     return /^\[[^\]]*\]$/.test(skill.dependsOn)

@@ -10,19 +10,13 @@
  */
 
 import { readFileSync } from 'node:fs'
+import { RUBRIC_LEVELS, type RubricFinding, type RubricLevel } from './rubric/rubric.ts'
 
-// Keep the vendorable reporter module self-contained. The rubric module reuses
-// these transport types while adding item execution and conform actions.
-export const CHECKER_LEVELS = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS'] as const
-export type CheckerLevel = (typeof CHECKER_LEVELS)[number]
-export type CheckerFinding = {
-  type: 'M' | 'J'
-  level: CheckerLevel
-  code: string
-  message: string
-  ref?: string
-  file?: string
-}
+// The rubric owns finding identity and severity. The reporter owns only the
+// JSONL transport and keeps these aliases for its existing public surface.
+export const CHECKER_LEVELS = RUBRIC_LEVELS
+export type CheckerLevel = RubricLevel
+export type CheckerFinding = RubricFinding
 
 export type CheckerReporterRun = {
   version: 1
@@ -62,15 +56,15 @@ const RUN_KEYS = ['version', 'runId', 'record', 'mode', 'concern', 'target', 'ge
 
 type UnknownRecord = Record<string, unknown>
 
-function isRecord(value: unknown): value is UnknownRecord {
+const isRecord = (value: unknown): value is UnknownRecord => {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
-function nonEmptyString(value: unknown): value is string {
+const nonEmptyString = (value: unknown): value is string => {
   return typeof value === 'string' && value.trim().length > 0
 }
 
-function sameRunValue(left: unknown, right: unknown): boolean {
+const sameRunValue = (left: unknown, right: unknown): boolean => {
   return typeof left === 'string' && left === right
 }
 
@@ -85,7 +79,7 @@ export type RubricCriterion = {
   types: Set<'M' | 'J'>
 }
 
-function normaliseCriterionTitle(value: string): string {
+const normaliseCriterionTitle = (value: string): string => {
   return value
     .replace(/^\s*(?:\[[^\]]+\]\s*)*/, '')
     .replace(/\s*\[[^\]]+\]/g, '')
@@ -94,7 +88,7 @@ function normaliseCriterionTitle(value: string): string {
     .trim()
 }
 
-function addCriterion(criteria: Map<string, RubricCriterion>, code: string, title: string, tags: string): void {
+const addCriterion = (criteria: Map<string, RubricCriterion>, code: string, title: string, tags: string): void => {
   const types = new Set<'M' | 'J'>()
   if (/\[[^\]]*\bM\b[^\]]*\]/.test(tags)) types.add('M')
   if (/\[[^\]]*\bJ\b[^\]]*\]/.test(tags)) types.add('J')
@@ -113,7 +107,7 @@ function addCriterion(criteria: Map<string, RubricCriterion>, code: string, titl
  * Markdown parser. The criterion title stays in that rubric: checkers emit only
  * stable codes, and consumers resolve presentation and validation locally.
  */
-export function rubricCriteriaFromMarkdown(markdown: string): Map<string, RubricCriterion> {
+export const rubricCriteriaFromMarkdown = (markdown: string): Map<string, RubricCriterion> => {
   const criteria = new Map<string, RubricCriterion>()
   for (const line of markdown.split(/\r?\n/)) {
     const entry = line.match(/^\s*(?:-\s+)?(?:\[[ xX]\]\s+)?\*\*([^*]+)\*\*(.*)$/)
@@ -149,7 +143,7 @@ export function rubricCriteriaFromMarkdown(markdown: string): Map<string, Rubric
   return criteria
 }
 
-export function rubricCriteriaFromFile(rubricPath: string): Map<string, RubricCriterion> {
+export const rubricCriteriaFromFile = (rubricPath: string): Map<string, RubricCriterion> => {
   return rubricCriteriaFromMarkdown(readFileSync(rubricPath, 'utf8'))
 }
 
@@ -158,7 +152,7 @@ export function rubricCriteriaFromFile(rubricPath: string): Map<string, RubricCr
  * transport itself. This works over data, so both a source-fleet collector and
  * a vendored aggregate can use it without importing presentation code.
  */
-export function validateCheckerReporterRubric(events: readonly unknown[], criteria: ReadonlyMap<string, RubricCriterion>): string[] {
+export const validateCheckerReporterRubric = (events: readonly unknown[], criteria: ReadonlyMap<string, RubricCriterion>): string[] => {
   const errors: string[] = []
   const judgmentCounts = new Map<string, number>()
   for (const [index, event] of events.entries()) {
@@ -177,14 +171,12 @@ export function validateCheckerReporterRubric(events: readonly unknown[], criter
     const message = typeof event.message === 'string' ? event.message.trim() : ''
     const file = typeof event.file === 'string' ? event.file.trim() : ''
     const lower = message.toLowerCase()
-    if (lower.startsWith(`${code.toLowerCase()}:`) || lower.startsWith(`${code.toLowerCase()} `))
-      errors.push(`${label} message repeats its code: ${code}`)
+    if (lower.startsWith(`${code.toLowerCase()}:`) || lower.startsWith(`${code.toLowerCase()} `)) errors.push(`${label} message repeats its code: ${code}`)
     if (lower.startsWith(criterion.title.toLowerCase())) errors.push(`${label} message repeats its rubric title: ${code}`)
     if (lower.startsWith('[j]:')) errors.push(`${label} message repeats the judgment marker: ${code}`)
     if (file) {
       const basename = file.split('/').filter(Boolean).at(-1) ?? file
-      if (lower.startsWith(file.toLowerCase()) || lower.startsWith(basename.toLowerCase()))
-        errors.push(`${label} message repeats its file field: ${code}`)
+      if (lower.startsWith(file.toLowerCase()) || lower.startsWith(basename.toLowerCase())) errors.push(`${label} message repeats its file field: ${code}`)
     }
   }
   for (const [code, criterion] of criteria) {
@@ -200,7 +192,7 @@ export function validateCheckerReporterRubric(events: readonly unknown[], criter
  * The rubric remains the source of truth for codes and types; checkers only decide
  * their mechanical findings.
  */
-export function judgmentFindingsFromRubric(rubricPath: string, ref = 'references/rubric.md'): CheckerFinding[] {
+export const judgmentFindingsFromRubric = (rubricPath: string, ref = 'references/rubric.md'): CheckerFinding[] => {
   return [...rubricCriteriaFromFile(rubricPath).values()]
     .filter((criterion) => criterion.types.has('J'))
     .map((criterion) => criterion.code)
@@ -208,10 +200,7 @@ export function judgmentFindingsFromRubric(rubricPath: string, ref = 'references
     .map((code) => ({ type: 'J', level: 'ADVISORY', code, message: 'Review this judgment criterion against the audited scope.', ref }))
 }
 
-export function judgmentFindingsFromItems(
-  items: readonly { code: string; judgment?: unknown }[],
-  ref = 'references/rubric.md'
-): CheckerFinding[] {
+export const judgmentFindingsFromItems = (items: readonly { code: string; judgment?: unknown }[], ref = 'references/rubric.md'): CheckerFinding[] => {
   return items
     .filter((item) => item.judgment)
     .map((item) => item.code)
@@ -220,7 +209,7 @@ export function judgmentFindingsFromItems(
 }
 
 /** Parse JSON Lines without coupling a caller to a particular checker process. */
-export function parseCheckerReporterJsonl(output: string): CheckerReporterParseResult {
+export const parseCheckerReporterJsonl = (output: string): CheckerReporterParseResult => {
   const events: unknown[] = []
   const errors: string[] = []
   for (const [index, raw] of output.split(/\r?\n/).entries()) {
@@ -240,7 +229,7 @@ export function parseCheckerReporterJsonl(output: string): CheckerReporterParseR
  * source-harness fleet collector and the bootstrap aggregate can share the
  * exact contract without importing a renderer.
  */
-export function validateCheckerReporterEvents(events: readonly unknown[], exitCode?: number): string[] {
+export const validateCheckerReporterEvents = (events: readonly unknown[], exitCode?: number): string[] => {
   const errors: string[] = []
   if (events.length < 2) return ['a checker report must contain a meta and summary record']
 
@@ -276,13 +265,8 @@ export function validateCheckerReporterEvents(events: readonly unknown[], exitCo
     }
     if (index > 0 && index < events.length - 1 && record !== 'finding') errors.push(`${label} must be a finding record`)
     const permitted =
-      record === 'meta'
-        ? RUN_KEYS
-        : record === 'finding'
-          ? [...RUN_KEYS, 'type', 'level', 'code', 'message', 'ref', 'file']
-          : [...RUN_KEYS, 'summary']
-    for (const key of Object.keys(event))
-      if (!(permitted as readonly string[]).includes(key)) errors.push(`${label} has unknown field: ${key}`)
+      record === 'meta' ? RUN_KEYS : record === 'finding' ? [...RUN_KEYS, 'type', 'level', 'code', 'message', 'ref', 'file'] : [...RUN_KEYS, 'summary']
+    for (const key of Object.keys(event)) if (!(permitted as readonly string[]).includes(key)) errors.push(`${label} has unknown field: ${key}`)
     for (const [field, expected] of Object.entries({ version: 1, runId, mode, concern, target, generatedAt })) {
       if (field === 'version') {
         if (event[field] !== expected) errors.push(`${label} version must be 1`)
@@ -319,8 +303,7 @@ export function validateCheckerReporterEvents(events: readonly unknown[], exitCo
         if (!Number.isInteger(summary[key]) || (summary[key] as number) < 0) errors.push(`summary ${key} must be a non-negative integer`)
         else if (summary[key] !== counts[key]) errors.push(`summary ${key} does not match findings`)
       }
-      for (const key of Object.keys(summary))
-        if (!SUMMARY_KEYS.includes(key as (typeof SUMMARY_KEYS)[number])) errors.push(`summary has unknown key: ${key}`)
+      for (const key of Object.keys(summary)) if (!SUMMARY_KEYS.includes(key as (typeof SUMMARY_KEYS)[number])) errors.push(`summary has unknown key: ${key}`)
     }
   }
   if (exitCode !== undefined && (exitCode !== 0) !== mechanicalFailure)
@@ -328,7 +311,7 @@ export function validateCheckerReporterEvents(events: readonly unknown[], exitCo
   return errors
 }
 
-function assertFinding(finding: CheckerFinding): void {
+const assertFinding = (finding: CheckerFinding): void => {
   if (!finding.code.trim()) throw new Error('checker finding code must be non-empty')
   if (!finding.message.trim()) throw new Error('checker finding message must be non-empty')
   if (finding.type === 'J' && !finding.ref?.trim()) throw new Error('J finding must cite its judgment criterion')
@@ -336,7 +319,7 @@ function assertFinding(finding: CheckerFinding): void {
     throw new Error(`${finding.level} M finding must cite its criterion`)
 }
 
-export function buildCheckerReporterEvents(input: CheckerReporterInput): CheckerReporterEvent[] {
+export const buildCheckerReporterEvents = (input: CheckerReporterInput): CheckerReporterEvent[] => {
   if (!input.concern.trim()) throw new Error('checker reporter concern must be non-empty')
   if (!input.target.trim()) throw new Error('checker reporter target must be non-empty')
   for (const finding of input.findings) assertFinding(finding)
@@ -359,12 +342,12 @@ export function buildCheckerReporterEvents(input: CheckerReporterInput): Checker
   ]
 }
 
-export function emitCheckerReporter(input: CheckerReporterInput): CheckerReporterEvent[] {
+export const emitCheckerReporter = (input: CheckerReporterInput): CheckerReporterEvent[] => {
   const events = buildCheckerReporterEvents(input)
   for (const event of events) process.stdout.write(`${JSON.stringify(event)}\n`)
   return events
 }
 
-export function checkerReporterExitCode(findings: readonly CheckerFinding[]): number {
+export const checkerReporterExitCode = (findings: readonly CheckerFinding[]): number => {
   return findings.some((finding) => finding.type === 'M' && finding.level === 'FAIL') ? 1 : 0
 }

@@ -16,7 +16,7 @@ import {
 } from './checker-reporter.ts'
 
 let failed = false
-function check(label: string, condition: boolean): void {
+const check = (label: string, condition: boolean): void => {
   if (condition) console.log(`  \x1b[32mok\x1b[0m   ${label}`)
   else {
     failed = true
@@ -40,10 +40,7 @@ check(
   'run identity → every record shares the same UUID',
   events.every((event) => event.runId === meta?.runId && /^[0-9a-f-]{36}$/i.test(event.runId))
 )
-check(
-  'summary → every ladder level is present',
-  summary?.record === 'summary' && CHECKER_LEVELS.every((level) => level.toLowerCase() in summary.summary)
-)
+check('summary → every ladder level is present', summary?.record === 'summary' && CHECKER_LEVELS.every((level) => level.toLowerCase() in summary.summary))
 check(
   'summary → counts the typed findings exactly',
   summary?.record === 'summary' && summary.summary.fail === 1 && summary.summary.pass === 1 && summary.summary.advisory === 1
@@ -139,10 +136,7 @@ try {
       { type: 'J', level: 'ADVISORY', code: 'DEC-1', message: 'review the alternate ordering', ref: 'references/rubric.md' }
     ]
   })
-  check(
-    'rubric validator → accepts resolved codes, types, and complete J prompts',
-    validateCheckerReporterRubric(rubricEvents, criteria).length === 0
-  )
+  check('rubric validator → accepts resolved codes, types, and complete J prompts', validateCheckerReporterRubric(rubricEvents, criteria).length === 0)
 
   const unknownCode = structuredClone(rubricEvents) as unknown[]
   const unknownRecord = unknownCode.find(

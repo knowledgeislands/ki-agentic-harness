@@ -6,6 +6,7 @@ export type LayoutRubricContext = {
   file?: string
   writeMarkdown?: (markdown: string) => void
   missingSkillRoot?: boolean
+  noSkillsFound?: boolean
   standaloneMarkdownFile?: boolean
   supportDirectories?: readonly string[]
 }
@@ -15,8 +16,10 @@ export const LAY_1: RubricItem<LayoutRubricContext> = {
   title: 'SKILL.md exists at the skill root',
   description: 'A skill has a SKILL.md file at its root.',
   sources: ['SPEC', 'CC'],
-  audit: ({ missingSkillRoot }) =>
-    missingSkillRoot ? [{ type: 'M', level: 'FAIL', code: LAY_1.code, message: 'SKILL.md is missing at the skill root' }] : []
+  audit: ({ missingSkillRoot, noSkillsFound }) => {
+    if (noSkillsFound) return [{ type: 'M', level: 'FAIL', code: LAY_1.code, message: 'No skills were found below the requested target.' }]
+    return missingSkillRoot ? [{ type: 'M', level: 'FAIL', code: LAY_1.code, message: 'SKILL.md is missing at the skill root' }] : []
+  }
 }
 
 export const LAY_2: RubricItem<LayoutRubricContext> = {
@@ -44,12 +47,12 @@ export const LAY_3: RubricItem<LayoutRubricContext> = {
   sources: ['SPEC'],
   audit: ({ supportDirectories = [] }) =>
     supportDirectories
-      .filter((directory) => !['references', 'scripts', 'assets'].includes(directory))
+      .filter((directory) => !['references', 'scripts', 'assets', '.ki-meta'].includes(directory))
       .map((directory) => ({
         type: 'M' as const,
         level: 'FAIL' as const,
         code: LAY_3.code,
-        message: `support directory "${directory}" must be named references, scripts, or assets`
+        message: `support directory "${directory}" must be named references, scripts, assets, or .ki-meta`
       }))
 }
 

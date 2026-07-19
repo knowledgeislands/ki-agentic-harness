@@ -26,11 +26,11 @@ Read this standard from the most portable authority to the most local:
 8. [Progressive disclosure](#8-progressive-disclosure)
 9. [Body content quality](#9-body-content-quality)
 10. [Scripts](#10-scripts)
-11. [Knowledge Islands linking & portability](#11-knowledge-islands-linking--portability)
-12. [Knowledge Islands skill shape](#12-knowledge-islands-skill-shape)
-13. [Process / evaluation](#13-process--evaluation)
-14. [Cross-skill collision](#14-cross-skill-collision)
-15. [Longevity](#15-longevity)
+11. [Process / evaluation](#11-process--evaluation)
+12. [Longevity](#12-longevity)
+13. [Knowledge Islands linking & portability](#13-knowledge-islands-linking--portability)
+14. [Knowledge Islands skill shape](#14-knowledge-islands-skill-shape)
+15. [Cross-skill collision](#15-cross-skill-collision)
 16. [Disagreements & moving targets](#16-disagreements--moving-targets)
 17. [Exact numbers](#17-exact-numbers)
 
@@ -89,11 +89,24 @@ Match **degrees of freedom to task fragility**: prose + judgment for open-ended 
 
 Scripts solve problems rather than punt back to Claude — they handle expected errors (missing file, permissions) explicitly. Every config value is justified in a comment (no unexplained magic numbers). Required packages are listed and verified for the target runtime (the Claude API has no network/runtime install); when a skill invokes MCP tools, use fully-qualified `ServerName:tool_name` names so Claude can locate the tool when multiple MCP servers are loaded. Deterministic, frequently-reused logic is pre-written as a script rather than regenerated each run. Validation scripts are verbose — error messages name the problem and the valid options. For batch/destructive operations, follow plan-validate-execute: produce a verifiable intermediate artifact, validate it, then act. When adding a regex- or text-based mechanical check, run it against the checker's own test files before considering it complete: adversarial fixture strings often resemble real violations, so the scan must target the production files the rule actually governs (for example, exclude `*.test.ts` when tests are not vendored) rather than matching fixture data as source. (BP, COMMUNITY, KI)
 
-## 11. Knowledge Islands linking & portability
+### 11. Process / evaluation
+
+These are not checkable from the files alone. A good skill is built **evaluation-first** — at least three evaluation scenarios against a no-skill baseline before extensive docs — and is **tested across the models it will run on** (Haiku/Sonnet/Opus) with real usage. (BP, ENG)
+
+### 12. Longevity
+
+These check the skill against **time** — they matter most once it ships into a shared or cloud catalogue, long-lived and far from its author.
+
+- **Volatile facts need a refresh path.** A skill that hard-codes facts that drift — model IDs/prices, API/SDK versions, tool/MCP-server names, CLI flags, dated spec numbers, third-party URLs — rots silently. It must either **(a)** resolve the volatile fact at runtime, or **(b)** carry a tracked source list with `last reviewed` dates **and** a REFRESH mode that re-anchors it (as `ki-skills` and `ki-mcp` do). The refresh path must name what to re-fetch and how to tell it has gone stale. This extends "no time-sensitive content in the body" from prose hygiene to a durability guarantee.
+- **A cadence, not just a capability.** A REFRESH mode nobody runs decays as surely as no refresh. A skill that ships a refresh path should also state a **cadence** (periodic, or a clear "run when X" trigger) and, where the host supports it, register a scheduled run (in Claude Code, a `/schedule` routine that invokes REFRESH). Treat the schedule as a recommendation, but a refresh capability with no stated cadence is a half-measure. (BP, COMMUNITY)
+
+## Knowledge Islands house standard
+
+### 13. Knowledge Islands linking & portability
 
 These are Knowledge Islands house rules so a skill survives relocation and symlinking. Internal links are **standard relative markdown links, not Obsidian wikilinks**, and every relative target resolves on disk (use the CommonMark angle-bracket form for paths with spaces). Reference **another skill by its `name`** ("the `ki-kb` skill"), never by file path — a skill's on-disk location is not stable. The house toolchain passes: Biome (TS/JSON), Prettier + markdownlint-cli2 (markdown). (ki-agentic-harness README)
 
-## 12. Knowledge Islands skill shape
+### 14. Knowledge Islands skill shape
 
 A **standard** Knowledge Islands skill carries reusable mode logic and resolves base-level bindings (store aliases, scope, writing standards) at runtime — base-specific **data** from the host repo's `.ki-config.toml` table, base-specific **prose** from its `CLAUDE.md` and memory index — so it hard-codes **no single base**. The skill declares its **kind** (Knowledge Islands / process / scoped) clearly enough that a reader can place it. (ki-agentic-harness README, `ki-kb`)
 
@@ -109,22 +122,15 @@ A **governance skill** — one that holds a house standard — exposes a common 
 
 Within a **Knowledge Islands repo** (one carrying a `.ki-config.toml`), a governance skill also takes a shared **file shape** so a reader — or a new such skill — moves between them without relearning: its primary normative reference is `references/standards.md`; its pass/fail criteria are `references/rubric.md`; and its tracked provenance is `references/sources.md`. Use `references/exemplars.md` for optional worked examples and `references/mode-<verb>.md` for independently invoked mode procedures, co-locating tightly coupled modes. A skill with a genuinely separate secondary normative topic gives only that file a descriptive `<topic>-standards.md` name (for example, `config-standards.md`); distinct contracts, formats, frameworks, and guides remain descriptively named. Universal governance executables are bare `scripts/educate.ts`, `scripts/audit.ts`, and `scripts/conform.ts`; domain-specific helpers stay descriptive. This is a convention of the `ki-*` set rather than a requirement on every Agent Skill, so a governance skill outside such a repo is exempt for now (rubric **KI-SHAPE-6**). (ki-agentic-harness README)
 
-## 13. Process / evaluation
+When a KI-governed skill needs durable, generated local state that is neither a source script nor a reference, it stores it in a root `.ki-meta/` directory. This is the one KI-specific addition to the portable `references/` / `scripts/` / `assets/` support-directory vocabulary; it remains local implementation state, not a second skill root. (rubric **LAY-3**)
 
-These are not checkable from the files alone. A good skill is built **evaluation-first** — at least three evaluation scenarios against a no-skill baseline before extensive docs — and is **tested across the models it will run on** (Haiku/Sonnet/Opus) with real usage. (BP, ENG)
-
-## 14. Cross-skill collision
+### 15. Cross-skill collision
 
 Most conventions audit one `SKILL.md` in isolation; these check it against its **siblings** (so an audit runs the linter over the whole set, not one skill). No two descriptions in a set should declare the **same quoted trigger phrase** — two skills firing on the identical phrase compete at selection time. Beyond exact strings, where two skills could plausibly fire on one request, **each** description names the other as the off-ramp — the reciprocal `ki-mcp` ↔ `ki-skills` pattern; a one-directional guard is a half-fix. This promotes the per-skill _option_ of naming non-triggers into a **set-level requirement** wherever real overlap exists. (COMMUNITY, ki-agentic-harness README)
 
-## 15. Longevity
+## Runtime overlay: Claude Code
 
-These check the skill against **time** — they matter most once it ships into a shared or cloud catalogue, long-lived and far from its author.
-
-- **Volatile facts need a refresh path.** A skill that hard-codes facts that drift — model IDs/prices, API/SDK versions, tool/MCP-server names, CLI flags, dated spec numbers, third-party URLs — rots silently. It must either **(a)** resolve the volatile fact at runtime, or **(b)** carry a tracked source list with `last reviewed` dates **and** a REFRESH mode that re-anchors it (as `ki-skills` and `ki-mcp` do). The refresh path must name what to re-fetch and how to tell it has gone stale. This extends "no time-sensitive content in the body" from prose hygiene to a durability guarantee.
-- **A cadence, not just a capability.** A REFRESH mode nobody runs decays as surely as no refresh. A skill that ships a refresh path should also state a **cadence** (periodic, or a clear "run when X" trigger) and, where the host supports it, register a scheduled run (in Claude Code, a `/schedule` routine that invokes REFRESH). Treat the schedule as a recommendation, but a refresh capability with no stated cadence is a half-measure. (BP, COMMUNITY)
-
-## 16. Disagreements & moving targets
+### 16. Disagreements & moving targets
 
 - **※1 `name` required vs optional.** Open spec: required, must match the directory. Claude Code: optional (defaults to directory name). For portable skills, always state it and match the directory.
 - **※2 Description length.** Authoring cap is **1024 chars** (spec, BP). Claude Code's _runtime_ listing truncates `description` + `when_to_use` at **1,536 chars** (configurable; budget scales ~1% of context). Author to 1024; the larger number is a display limit, not an authoring target.
@@ -132,7 +138,7 @@ These check the skill against **time** — they matter most once it ships into a
 - **※4 Commands → skills.** In Claude Code, `.claude/commands/*.md` and `.claude/skills/<name>/SKILL.md` both yield `/<name>`; skills are the recommended form. Suggest migrating old command files.
 - **※5 Budgets are soft.** "< 500 lines" and "< 5,000 tokens" are performance recommendations, not enforced — the linter reports them as WARN, never FAIL. The reference validator (`skills-ref validate`) checks frontmatter/naming only.
 
-## 17. Exact numbers
+### 17. Exact numbers
 
 | Item                               | Value               | Hard/Soft | Source     |
 | ---------------------------------- | ------------------- | --------- | ---------- |
