@@ -12,7 +12,7 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-- [Foundation Tooling: Establish a rubric-driven checker reference](docs/roadmap/foundation-tooling/ROADMAP.md#establish-a-rubric-driven-checker-reference)
+- [Foundation Tooling: Remove the legacy `preferred_model` migration bridge in `ki-tokenomics`](docs/roadmap/foundation-tooling/ROADMAP.md#remove-the-legacy-preferredmodel-migration-bridge-in-ki-tokenomics)
 
 ## Soon
 
@@ -29,7 +29,6 @@ Understood and roughly scoped but not yet started — worth doing once the **Nex
 
 Worth doing, but presently blocked on an external dependency or decision. Revisit when its named condition changes rather than treating it as dormant local work.
 
-- [Foundation Tooling: Remove the legacy `preferred_model` migration bridge in `ki-tokenomics`](docs/roadmap/foundation-tooling/ROADMAP.md#remove-the-legacy-preferredmodel-migration-bridge-in-ki-tokenomics)
 - [Operations: Complete the approved Claude-state cleanup](docs/roadmap/operations/ROADMAP.md#complete-the-approved-claude-state-cleanup)
 - [Operations: Reconcile the three memory-store defects](docs/roadmap/operations/ROADMAP.md#reconcile-the-three-memory-store-defects)
 - [Runtime Portability: Make KI MCP servers reachable from Cowork](docs/roadmap/runtime-portability/ROADMAP.md#make-ki-mcp-servers-reachable-from-cowork)

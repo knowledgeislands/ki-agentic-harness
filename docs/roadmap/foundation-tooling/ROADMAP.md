@@ -24,9 +24,9 @@ Re-bootstrap and conform every governed repository after the source migration. A
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Establish a rubric-driven checker reference
+### Remove the legacy `preferred_model` migration bridge in `ki-tokenomics`
 
-Reduce duplicated checker and reporting logic by proving one small, current-state root implementation in `ki-skills`, then one dependent proof in `ki-engineering`. Make the rubric the canonical source for a finding's identifier, title, kind, and level; make the checker collect evidence and actions for those declared criteria; and keep JSONL transport separate from human rendering. The durable target and rollout checklist live in the [`ki-skills` rubric-authoring guide](../../../skills/general-governance/ki-skills/references/rubric-authoring.md). Do not redesign every checker, rename the whole criterion catalogue, or retain compatibility paths while this reference is established.
+The checker deliberately recognises `preferred_model` only to issue a migration failure. Remove that parsing and its alias mapping when a fleet-wide search confirms that no sibling `.ki-config.toml` still uses the legacy key.
 
 ## Soon
 
@@ -39,10 +39,6 @@ After the first installer establishes the user-level contract, make runtime skil
 ## Waiting for
 
 Worth doing, but presently blocked on an external dependency or decision. Revisit when its named condition changes rather than treating it as dormant local work.
-
-### Remove the legacy `preferred_model` migration bridge in `ki-tokenomics`
-
-The checker deliberately recognises `preferred_model` only to issue a migration failure. Remove that parsing and its alias mapping when a fleet-wide search confirms that no sibling `.ki-config.toml` still uses the legacy key.
 
 ## Future
 
