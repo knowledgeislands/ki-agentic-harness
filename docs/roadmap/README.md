@@ -11,7 +11,13 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-No active plans.
+### [FND-001](foundation-tooling/plans/FND-001-normalise-skill-packaging-after-checker-rollout.md)
+
+- **Title:** Normalise skill packaging after the checker rollout
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/normalise-skill-packaging-after-the-checker-rollout`
+- **Status:** open
+- **Blocks:** —
 
 ## Dependency graph
 
