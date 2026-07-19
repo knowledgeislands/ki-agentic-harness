@@ -1,4 +1,4 @@
-# Project roadmap audit rubric
+# Repo roadmap audit rubric
 
 The checker applies `[M]` criteria. A reviewer applies `[J]` criteria after the checker.
 

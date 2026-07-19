@@ -337,7 +337,7 @@ for (const [label, mutate] of [
     const title = 'Require canonical horizon blurbs and restore them during CONFORM'
     const themeRoot = join(root, 'docs', 'roadmap', theme)
     mkdirSync(join(themeRoot, 'plans'), { recursive: true })
-    writeFileSync(join(themeRoot, 'ROADMAP.md'), themeRoadmap('PRJ', 'Project roadmap roadmap', { Next: [title] }))
+    writeFileSync(join(themeRoot, 'ROADMAP.md'), themeRoadmap('PRJ', 'Repo roadmap roadmap', { Next: [title] }))
     writeFileSync(
       join(themeRoot, 'plans', 'PRJ-001-canonical-horizon-blurbs.md'),
       plan('PRJ-001', title, 'project-roadmap/require-canonical-horizon-blurbs-and-restore-them-during-conform')
