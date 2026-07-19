@@ -1,29 +1,21 @@
 #!/usr/bin/env bun
-/**
- * ki-bootstrap EDUCATE — thin delegator, kept for shape uniformity with every other
- * skill's `scripts/educate.ts` (ADR-KI-HARNESS-006). ki-bootstrap *is* the chain
- * engine (`scripts/internal/repo-bootstrap/repo-bootstrap.ts`), so this simply execs it in place with itself as
- * an explicit `--seed` — every skill exposes the same `scripts/educate.ts <target>`
- * entry, even the one whose mechanical half also serves as the engine the other
- * delegators call. (The engine excludes the chain-starter from the vendored set —
- * `resolve.ts`'s `resolveSet` deletes `BOOTSTRAP` before returning.)
- *
- *   bun scripts/educate.ts <target-repo> [--ref <ref>] [--dry-run]
- */
-import { execFileSync } from 'node:child_process'
-import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { educateRepository } from './internal/repo-bootstrap/repo-bootstrap.ts'
 
-const SKILL = 'ki-bootstrap'
-const HELP = `Usage: bun scripts/educate.ts <target-repo> [--ref <ref>] [--dry-run]
+const argv = process.argv.slice(2)
 
-Educate a repository with ki-bootstrap and its declared dependencies.
-`
+if (argv.includes('-h') || argv.includes('--help')) {
+  process.stdout.write(`Usage: bun scripts/educate.ts [target-repo] [--ref <ref>] [--dry-run] [--verbose]
 
-if (process.argv.includes('-h') || process.argv.includes('--help')) {
-  process.stdout.write(HELP)
+Rebuild the repository's complete governed skill set, aggregate runners,
+manifest, and runtime payloads from this ki-bootstrap source.
+
+Options:
+  --ref <ref>  Record the harness revision being applied.
+  --dry-run    Report the complete bootstrap plan without writing it.
+  --verbose    Report per-payload activity.
+  -h, --help   Show this help and exit.
+`)
   process.exit(0)
 }
 
-const engine = resolve(dirname(fileURLToPath(import.meta.url)), 'internal', 'repo-bootstrap', 'repo-bootstrap.ts')
-execFileSync('bun', [engine, ...process.argv.slice(2), '--seed', SKILL], { stdio: 'inherit' })
+educateRepository(argv)

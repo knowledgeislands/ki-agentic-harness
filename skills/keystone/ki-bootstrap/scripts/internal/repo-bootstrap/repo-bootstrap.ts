@@ -1786,8 +1786,7 @@ function previewScaffoldedRuntimePayloads(set: string[]): void {
   console.log(`${GREEN}ignore${RESET} .gitignore ${DIM}(generated runtime payloads)${RESET}`)
 }
 
-function main(): void {
-  const argv = process.argv.slice(2)
+export const educateRepository = (argv: string[] = process.argv.slice(2)): void => {
   if (argv.includes('--help') || argv.includes('-h')) {
     console.log('usage: repo-bootstrap.ts <target-repo> [--seed <skill>] [--ref <ref>] [--dry-run] [--verbose]')
     console.log('  vendors the resolved governance set into an atomic .ki-meta generation')
@@ -1872,4 +1871,4 @@ function main(): void {
   )
 }
 
-main()
+if (import.meta.main) educateRepository()
