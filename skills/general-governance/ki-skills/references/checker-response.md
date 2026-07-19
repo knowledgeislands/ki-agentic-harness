@@ -6,9 +6,15 @@ The current executable schema remains [`../assets/checker-reporter.schema.json`]
 
 The atomic cutover renames it to `checker-response.schema.json`; the target keeps no legacy alias.
 
+## Normative language
+
+Uppercase normative terms such as `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, and `MAY` use the BCP 14 meanings defined by [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) and [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174).
+
+Lowercase forms are ordinary prose.
+
 ## Purpose
 
-The checker executes structured rubric elements and returns typed findings.
+The checker runs structured mechanical rubric executions and returns typed findings.
 
 It does not own terminal formatting or report files.
 
@@ -38,27 +44,27 @@ AUDIT and CONFORM use the same envelope.
 
 Every `finding` record carries:
 
-- `type` — `M` for a deterministic mechanical result or `J` for a judgment-review prompt;
-- `level` — one value from the shared severity ladder;
+- `level` — `FAIL`, `WARN`, `FIXED`, `INFO`, `NOT_APPLICABLE`, or `PASS`;
 - `code` — the stable rubric criterion identifier;
+- `title` — the concise rubric criterion title;
 - `message` — the specific result, without repeating the code, title, or subject; and
 - `subject` when the affected artifact or path adds useful context.
 
-An M finding records observed mechanical state during AUDIT and an action or resulting state during CONFORM.
+A finding records mechanically observed state during AUDIT and an action or resulting state during CONFORM.
 
-An applicable J criterion appears once as a `J` / `ADVISORY` finding.
+The checker MUST NOT emit a finding for a judgment item because it has not evaluated that item.
 
-It tells the reviewer what needs judgment without pretending the checker can decide it and never changes process exit status.
-
-The code is sufficient to identify the rule; a reporter resolves its readable title from the generated `.ki-meta/rubric.json` projection of the structured catalogue.
+The code remains the stable rule identity; including the title makes each streamed finding self-contained without duplicating the full rubric catalogue.
 
 ## Summary and exit status
 
-The final summary has every lower-case severity key, including zero values, and exactly agrees with the preceding findings sharing its `runId`.
+The final summary has every finding-level count, including zero values, and exactly agrees with the preceding findings sharing its `runId`.
 
-A checker exits non-zero if and only if it returns at least one `M` / `FAIL` finding.
+It also reports `judgment.unevaluated`, the number of judgment items in the selected catalogue that the mechanical checker did not perform.
 
-Response validation covers record order, repeated identity, schema shape, summary agreement, code resolution, finding classification, and required judgment coverage.
+A checker exits non-zero if and only if it returns at least one `FAIL` finding.
+
+Response validation covers record order, repeated identity, schema shape, summary agreement, code resolution, level compatibility, and the unevaluated-judgment count.
 
 Malformed JSONL is a checker failure, not a reason for a reporter to fall back to a private presentation path.
 
@@ -66,13 +72,13 @@ Malformed JSONL is a checker failure, not a reason for a reporter to fall back t
 
 A reporter accepts a validated canonical response and presents it without changing its meaning.
 
-The default aggregate reporter shows `FAIL`, `WARN`, and `POLISH`, with compact counts for suppressed levels.
+The default aggregate reporter shows `FAIL` and `WARN`, plus `FIXED` during CONFORM, with compact counts for suppressed levels and the unevaluated-judgment total.
 
-`--reporter-levels=<comma-separated-levels>` selects displayed levels; `--reporter-levels=all` shows every finding, including judgment advisories.
+`--reporter-levels=<comma-separated-levels>` selects displayed levels; `--reporter-levels=all` shows every mechanical finding.
 
 Display filtering never changes which rubric elements run or which findings appear in the JSONL response.
 
-A reporter may resolve `${code}: ${title}`, add subject and message detail, write a Markdown report, or export telemetry.
+A reporter may render `${code}: ${title}`, add subject and message detail, write a Markdown report, or export telemetry.
 
 It does not inspect the governed target or execute rubric callbacks.
 

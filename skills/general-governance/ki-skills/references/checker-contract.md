@@ -4,21 +4,28 @@ ADR: [ADR-KI-HARNESS-SKILLS-002](../../../../docs/decisions/ADR-KI-HARNESS-SKILL
 
 A checker is the reusable execution engine for a structured governance rubric.
 
-The rubric supplies the rules, their meaning, and their AUDIT and CONFORM mode elements.
+The rubric supplies the rules, their meaning, and their AUDIT and CONFORM executions.
 
-The checker selects, plans, and executes those elements for one requested mode, then returns the [canonical checker response](checker-response.md).
+The checker selects, plans, and runs those executions for one requested mode, then returns the [canonical checker response](checker-response.md).
 
 It does not own a domain standard or a human presentation.
 
 ## Contents
 
+- [Normative language](#normative-language)
 - [Inputs and ownership](#inputs-and-ownership)
-- [Mode planning](#mode-planning)
-- [Severity ladder](#severity-ladder)
+- [Execution planning](#execution-planning)
+- [Finding levels](#finding-levels)
 - [Response and exit behaviour](#response-and-exit-behaviour)
 - [Conform safety](#conform-safety)
 - [Portability and vendoring](#portability-and-vendoring)
 - [Relationship to rubric classification](#relationship-to-rubric-classification)
+
+## Normative language
+
+Uppercase normative terms such as `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, and `MAY` use the BCP 14 meanings defined by [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) and [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174).
+
+Lowercase forms are ordinary prose.
 
 ## Inputs and ownership
 
@@ -27,7 +34,6 @@ A checker receives:
 - the requested mode, `audit` or `conform`;
 - the ordered structured rubric catalogue;
 - a root-context factory exposing prepared evidence and explicit capabilities for the target;
-- an optional generated mode-element selector; and
 - immutable run identity such as concern and target.
 
 Rubric items own criterion codes, titles, descriptions, sources, classification, mode phasing, and callbacks.
@@ -38,73 +44,76 @@ The command wrapper owns arguments, target discovery, subject reads, context con
 
 The checker owns generic planning, execution, typed findings, response construction, and exit status.
 
-## Mode planning
+## Execution planning
 
-Each executable rubric item declares an AUDIT element, a CONFORM element, or both.
+Each mechanical rubric item declares an AUDIT execution and MAY declare a CONFORM execution.
 
-An element states its phase, optional ordering edges, read scopes, write scopes, and callback.
+An execution states its phase and callback.
 
 The shared phase order is:
 
 ```text
-prepare → inspect → write → project → normalise
+PREPARE → INSPECT → PRIMARY → DERIVED → NORMALISE
 ```
 
-`prepare` establishes prerequisites, `inspect` evaluates evidence, `write` mutates primary artifacts, `project` rebuilds derived artifacts, and `normalise` applies final formatting or canonical ordering.
+`PREPARE` establishes prerequisites, `INSPECT` evaluates evidence, `PRIMARY` changes primary governed artifacts, `DERIVED` rebuilds artifacts derived from primary state, and `NORMALISE` applies final formatting or canonical ordering.
 
-The checker plans only elements for the requested mode and optional selected command group.
+The checker plans only mechanical executions for the requested mode.
 
-It rejects an unknown phase, dependency cycle, phase reversal, or write collision without an explicit ordering edge.
+It rejects an unknown phase.
 
-The plan is deterministic: phase first, declared dependencies second, and stable rubric order as the final tie-breaker.
+The plan is deterministic: phase first, then stable family and item order.
 
-AUDIT elements are read-only and declare no write scope.
+AUDIT executions are read-only.
 
-CONFORM elements receive only their explicit safe capabilities and return typed outcomes.
+CONFORM executions receive only their explicit safe capabilities and return typed outcomes.
 
-The checker asks the root-context factory for current evidence before each CONFORM element, so an ordered element observes mutations made by an earlier one.
+When a mechanical item has no CONFORM execution, CONFORM MUST run its required AUDIT execution read-only so the item remains represented in the response.
 
-Any `.ki-meta/mode-elements.json` used by repository-wide orchestration is a generated command-level projection of the structured rubric rather than a second authored execution plan.
+Every execution MUST return at least one outcome rather than using an empty result to imply PASS.
 
-It groups item executions by mode, phase, and entry.
+The checker asks the root-context factory for current evidence before each CONFORM execution, so a later execution observes mutations made by an earlier one.
 
-When several projected groups share an entry, `--mode-element=<id>` selects exactly one group; the command is never rerun ambiguously.
+If repository-wide orchestration later requires a static checker schedule or dependency metadata, that integration MUST define and justify its generated projection without turning it into a second authored execution plan.
 
-## Severity ladder
+## Finding levels
 
-One ladder applies to both modes.
+One response vocabulary applies to both modes.
 
-| Level        | Group     | Blocks? | Meaning                                                                   |
-| ------------ | --------- | ------- | ------------------------------------------------------------------------- |
-| **FAIL**     | violation | yes     | A required criterion is violated — a ship-stopper.                        |
-| **WARN**     | violation | no      | A recommended criterion is violated — should fix, can ship with a reason. |
-| **POLISH**   | violation | no      | A minor or cosmetic divergence.                                           |
-| **ADVISORY** | deferred  | no      | Judgment or manual work is needed; the checker does not decide it.        |
-| **INFO**     | context   | no      | Neutral context, not a verdict against a criterion.                       |
-| **NA**       | context   | no      | A criterion was considered but does not apply to this target.             |
-| **PASS**     | met       | no      | A criterion was checked and is satisfied.                                 |
+| Level              | Source     | Blocks? | Meaning                                                                   |
+| ------------------ | ---------- | ------- | ------------------------------------------------------------------------- |
+| **FAIL**           | mechanical | yes     | A required criterion is violated — a ship-stopper.                        |
+| **WARN**           | mechanical | no      | A recommended criterion is violated — should fix, can ship with a reason. |
+| **FIXED**          | mechanical | no      | CONFORM changed the subject and satisfied the criterion.                  |
+| **INFO**           | mechanical | no      | Neutral context, not a verdict against a criterion.                       |
+| **NOT_APPLICABLE** | mechanical | no      | A criterion was considered but does not apply to this target.             |
+| **PASS**           | mechanical | no      | A criterion was checked and is satisfied.                                 |
 
-An M finding records deterministic observed state during AUDIT and an action or resulting state during CONFORM.
+A mechanical item declares only `FAIL` or `WARN` as its violation level.
 
-An applicable J criterion becomes one `J` / `ADVISORY` finding and never changes process exit status.
+Its callback returns `VIOLATION`, `PASS`, `NOT_APPLICABLE`, `INFO`, or — during CONFORM only — `FIXED`; the checker maps `VIOLATION` to the item's declared level and the others directly to the response level above.
+
+A judgment item has no checker execution.
+
+The checker MUST NOT emit a synthetic finding for it and MUST report the number of mechanically unevaluated judgment items in the response summary.
 
 ## Response and exit behaviour
 
 The checker returns one complete canonical JSONL response containing every finding, regardless of how a later reporter will filter its display.
 
-It exits non-zero if and only if the response contains at least one `M` / `FAIL` finding.
+It exits non-zero if and only if the response contains at least one `FAIL` finding.
 
 Malformed planning, execution, or response data is a checker failure.
 
 The checker does not render a terminal table, write report files, or carry a presentation-format flag.
 
-A downstream reporter validates the response before resolving titles from the generated `.ki-meta/rubric.json`, filtering displayed levels, or rendering a human view.
+A downstream reporter validates the self-contained response before filtering displayed levels or rendering a human view.
 
 ## Conform safety
 
-Every CONFORM element inspects its own declared target before writing, including a `prepare` element that establishes prerequisites ahead of the shared inspect phase.
+Every CONFORM execution inspects its own declared target before writing, including a `PREPARE` execution that establishes prerequisites ahead of the shared `INSPECT` phase.
 
-An element writes only when its target actually drifts, records PASS when already conformant, and honours dry-run without persistence.
+An execution writes only when its target actually drifts, records PASS when already conformant, and honours dry-run without persistence.
 
 A callback receives the smallest capability surface that permits its declared action.
 
@@ -119,7 +128,7 @@ The reusable implementation is split into two declared modules owned by `ki-skil
 
 A dependent governance skill vendors both modules into `scripts/vendored/ki-skills/` and imports only those local copies.
 
-The dependent supplies its domain rubric items, contexts, generated rubric projections, and thin command wrappers.
+The dependent supplies its domain rubric items, contexts, generated rubric publication, and thin command wrappers.
 
 The shared modules use builtins only, contain their complete declared dependency closure, and never import from another skill at runtime.
 
@@ -127,10 +136,14 @@ A checker-module dependency supplies implementation only and does not create a `
 
 ## Relationship to rubric classification
 
+Every rubric item is exactly one of `MECHANICAL` or `JUDGMENT`.
+
 Every mechanical criterion has an executable deterministic element for the modes in which it applies.
 
-Every judgment criterion has a concrete prompt and produces one advisory when applicable.
+Every judgment criterion has a concrete prompt for a later agent or reviewer.
 
-A criterion may declare both parts when it genuinely combines deterministic evidence with a judgment decision.
+AUDIT and CONFORM MUST NOT evaluate that prompt or present it as a mechanical result.
+
+When a written rule contains both concerns, the author splits it into two independently identifiable rubric items.
 
 Mechanical work belongs in the checker rather than being deferred to a model merely because its callback has not yet been implemented.
