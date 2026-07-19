@@ -26,7 +26,7 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
 import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromItems } from './lib/checker-reporter.ts'
-import type { RubricFinding, RubricItem } from './lib/rubric/rubric.ts'
+import { auditRubricItems, type RubricFinding } from './lib/rubric/rubric.ts'
 import { RUBRIC_ITEMS } from './rubrics/index.ts'
 import { createKiShapeContext, KI_SHAPE_11, KI_SHAPE_12, KI_SHAPE_15 } from './rubrics/ki-shape.ts'
 import { FM_1 } from './rubrics/frontmatter.ts'
@@ -49,8 +49,6 @@ type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 const RUBRIC = 'references/rubric.md'
 const argv = process.argv.slice(2)
 const findings: RubricFinding[] = []
-const auditRubricItems = <Context>(items: readonly RubricItem<Context>[], context: Context): RubricFinding[] =>
-  items.flatMap((item) => item.audit?.(context) ?? [])
 const rec = (level: Level, code: string, message: string, ref?: string, file?: string): void =>
   void findings.push({ type: 'M', level, code, message, ref, file })
 

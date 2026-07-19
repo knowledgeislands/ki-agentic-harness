@@ -22,7 +22,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { basename, dirname, extname, join, relative, resolve } from 'node:path'
 import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromItems } from './lib/checker-reporter.ts'
-import type { RubricFinding, RubricItem } from './lib/rubric/rubric.ts'
+import { auditRubricItems, type RubricFinding } from './lib/rubric/rubric.ts'
 import { COLLISION } from './rubrics/collision.ts'
 import { DESC } from './rubrics/description.ts'
 import { FRONTMATTER } from './rubrics/frontmatter.ts'
@@ -37,117 +37,28 @@ import { OPTIONAL } from './rubrics/optional.ts'
 import { REFERENCES } from './rubrics/references.ts'
 import { SIZE } from './rubrics/size.ts'
 import { createFootprint, estimateTokens } from './rubrics/support/footprint.ts'
+import { frontmatterList, parseFrontmatter, type ParsedFrontmatter } from './rubrics/support/frontmatter.ts'
 import { createRefreshContext } from './rubrics/support/longevity.ts'
 import { endorsesRetiredExtension, extractBodyModes, extractSection, hintVerbs, isProcessSkill } from './rubrics/support/modes.ts'
 import { discoverSkillDirs, listMarkdownFiles, listScriptFiles } from './rubrics/support/skill-files.ts'
 import { stripCode } from './rubrics/support/text.ts'
 import { relativeImportSpecifiers } from './rubrics/support/typescript.ts'
 
-type Severity = 'fail' | 'warn'
-// area = the rubric code (criterion); ref = the reference-doc pointer the criterion cites
-// (this skill's rubric); file = the path a file-scoped finding concerns. The canonical
-// reporter transports both separately from the aggregate's eventual presentation.
-type Finding = { severity: Severity; criterion: string; message: string; ref?: string; file?: string }
-
-const auditRubricItems = <Context>(items: readonly RubricItem<Context>[], context: Context): RubricFinding[] =>
-  items.flatMap((item) => item.audit?.(context) ?? [])
-
 // Every ki-skills criterion is defined in this skill's rubric — the default reference pointer.
 const RUBRIC = 'references/rubric.md'
 
-// --- frontmatter parser ----------------------------------------------------
-// Handles the scalar fields the audit reads directly. The Bun-built-in YAML
-// parser also retains top-level values for rubric callbacks that need YAML's
-// actual scalar / sequence / mapping types without re-parsing line-oriented text.
-type Frontmatter = {
-  keys: Map<string, string>
-  present: Set<string>
-  raw: string | null
-  values: Record<string, unknown>
-  isMapping: boolean
-}
-type BunYamlRuntime = { Bun: { YAML: { parse: (source: string) => unknown } } }
-
-const parseFrontmatter = (content: string): Frontmatter => {
-  const keys = new Map<string, string>()
-  const present = new Set<string>()
-  const m = content.match(/^---\r?\n([\s\S]*?)\r?\n---/)
-  if (!m) return { keys, present, raw: null, values: {}, isMapping: false }
-  const block = m[1] as string
-  let values: Record<string, unknown> = {}
-  let isMapping = false
-  try {
-    const parsed = (globalThis as typeof globalThis & BunYamlRuntime).Bun.YAML.parse(block)
-    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-      values = parsed as Record<string, unknown>
-      isMapping = true
-    }
-  } catch {
-    // Malformed YAML is reported before dependent frontmatter fields are read.
-  }
-  const lines = block.split(/\r?\n/)
-  let i = 0
-  while (i < lines.length) {
-    const line = lines[i] as string
-    if (line.trim() === '' || line.trimStart().startsWith('#')) {
-      i++
-      continue
-    }
-    const kv = line.match(/^([A-Za-z0-9_-]+):(.*)$/) // column-0 top-level key
-    if (!kv) {
-      i++
-      continue
-    }
-    const key = kv[1] as string
-    const rest = (kv[2] as string).trim()
-    present.add(key)
-    if (rest === '>' || rest === '|' || rest.startsWith('> ') || rest.startsWith('| ') || /^[>|][-+]?\d*\s*$/.test(rest)) {
-      const folded = rest[0] === '>'
-      const collected: string[] = []
-      i++
-      // Block body = subsequent indented lines (blank lines belong to it too).
-      // Stops at the next column-0 key.
-      while (i < lines.length) {
-        const l = lines[i] as string
-        if (l.trim() !== '' && !/^\s/.test(l)) break
-        if (l.trim() !== '') collected.push(l.trim())
-        i++
-      }
-      keys.set(key, folded ? collected.join(' ') : collected.join('\n'))
-      continue
-    }
-    if (rest === '') {
-      // bare key — could head a nested map; skip its indented children
-      i++
-      while (i < lines.length && /^\s+\S/.test(lines[i] as string)) i++
-      keys.set(key, '')
-      continue
-    }
-    keys.set(key, stripQuotes(rest))
-    i++
-  }
-  return { keys, present, raw: block, values, isMapping }
+const appendFindings = (target: RubricFinding[], findings: readonly RubricFinding[], file?: string): void => {
+  target.push(...findings.map((finding) => ({ ...finding, ref: finding.ref ?? RUBRIC, file: file ?? finding.file })))
 }
 
-const stripQuotes = (s: string): string => {
-  const t = s.trim()
-  if ((t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'"))) return t.slice(1, -1)
-  return t
-}
+const appendRubricFindings = <Context>(
+  target: RubricFinding[],
+  items: Parameters<typeof auditRubricItems<Context>>[0],
+  context: Context,
+  file?: string
+): void => appendFindings(target, auditRubricItems(items, context), file)
 
-// Parses a flow-list frontmatter value (`owns: ['.gitignore', 'x.json']` or
-// `contributes: [.ki-config.toml]`) into its bare filenames. Empty/absent → [].
-const parseListValue = (raw: string | undefined): string[] => {
-  if (!raw) return []
-  const inner = raw.trim().replace(/^\[/, '').replace(/\]$/, '')
-  if (inner.trim() === '') return []
-  return inner
-    .split(',')
-    .map((s) => stripQuotes(s))
-    .filter((s) => s.length > 0)
-}
-
-const createKiShapeEvidence = (skillDir: string, frontmatter: Frontmatter, description: string, body: string): KiShapeSkillContext => {
+const createKiShapeEvidence = (skillDir: string, frontmatter: ParsedFrontmatter, description: string, body: string): KiShapeSkillContext => {
   const argumentHint = frontmatter.keys.get('argument-hint')
   const section = extractSection(body, 'Operating modes')
   const markdownFiles = listMarkdownFiles(skillDir)
@@ -199,23 +110,21 @@ const createKiShapeEvidence = (skillDir: string, frontmatter: Frontmatter, descr
     checkers,
     dependsOnPresent: frontmatter.present.has('depends-on'),
     dependsOn: (frontmatter.keys.get('depends-on') ?? '').trim(),
-    owns: parseListValue(frontmatter.keys.get('owns')),
-    contributes: parseListValue(frontmatter.keys.get('contributes')),
-    requires: parseListValue(frontmatter.keys.get('requires')),
+    owns: frontmatterList(frontmatter.keys.get('owns')),
+    contributes: frontmatterList(frontmatter.keys.get('contributes')),
+    requires: frontmatterList(frontmatter.keys.get('requires')),
     scaffoldedFiles,
     auditSource: existsSync(auditPath) ? readFileSync(auditPath, 'utf8') : null
   }
 }
 
-const lintSkill = (skillDir: string): Finding[] => {
-  const f: Finding[] = []
-  const fail = (criterion: string, message: string, file?: string): void => void f.push({ severity: 'fail', criterion, message, ref: RUBRIC, file })
-  const warn = (criterion: string, message: string, file?: string): void => void f.push({ severity: 'warn', criterion, message, ref: RUBRIC, file })
+const lintSkill = (skillDir: string): RubricFinding[] => {
+  const findings: RubricFinding[] = []
 
   const skillMd = join(skillDir, 'SKILL.md')
   if (!existsSync(skillMd)) {
-    for (const finding of auditRubricItems(LAYOUT, { missingSkillRoot: true })) fail(finding.code, finding.message)
-    return f
+    appendRubricFindings(findings, LAYOUT, { missingSkillRoot: true })
+    return findings
   }
   const content = readFileSync(skillMd, 'utf8')
   const dirName = basename(skillDir)
@@ -223,38 +132,27 @@ const lintSkill = (skillDir: string): Finding[] => {
   const supportDirectories = readdirSync(skillDir, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
-  for (const finding of auditRubricItems(LAYOUT, { supportDirectories })) {
-    if (finding.level === 'FAIL') fail(finding.code, finding.message)
-    else warn(finding.code, finding.message)
-  }
+  appendRubricFindings(findings, LAYOUT, { supportDirectories })
 
   // --- frontmatter ---
   const fm = parseFrontmatter(content)
-  for (const finding of auditRubricItems(FRONTMATTER, { hasBlock: fm.raw !== null, isMapping: fm.isMapping })) {
-    fail(finding.code, finding.message)
-  }
+  appendRubricFindings(findings, FRONTMATTER, { hasBlock: fm.raw !== null, isMapping: fm.isMapping })
   if (!fm.isMapping) {
-    return f
+    return findings
   }
   const name = fm.keys.get('name')
   const desc = fm.keys.get('description')
 
   // Name fields
-  for (const finding of auditRubricItems(NAME, { name, directoryName: dirName })) {
-    if (finding.level === 'FAIL') fail(finding.code, finding.message)
-    else warn(finding.code, finding.message)
-  }
+  appendRubricFindings(findings, NAME, { name, directoryName: dirName })
 
   // Description fields
-  for (const finding of auditRubricItems(DESC, { description: desc })) {
-    if (finding.level === 'FAIL') fail(finding.code, finding.message)
-    else warn(finding.code, finding.message)
-  }
+  appendRubricFindings(findings, DESC, { description: desc })
 
   // Optional frontmatter: audit.ts extracts typed YAML context; each rubric
   // callback owns the criterion-specific validation.
   const compat = fm.keys.get('compatibility')
-  for (const finding of auditRubricItems(OPTIONAL, {
+  appendRubricFindings(findings, OPTIONAL, {
     compatibility: compat,
     metadataPresent: fm.present.has('metadata'),
     metadata: fm.values.metadata,
@@ -264,10 +162,7 @@ const lintSkill = (skillDir: string): Finding[] => {
     disallowedTools: fm.values['disallowed-tools'],
     licensePresent: fm.present.has('license'),
     license: fm.values.license
-  })) {
-    if (finding.level === 'FAIL') fail(finding.code, finding.message)
-    else warn(finding.code, finding.message)
-  }
+  })
 
   // Body measurements
   const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
@@ -280,28 +175,19 @@ const lintSkill = (skillDir: string): Finding[] => {
       resolvesInsideScripts: resolve(dirname(scriptPath), specifier).startsWith(`${scriptsDir}/`)
     }))
   )
-  for (const finding of auditRubricItems(KI_CHECKER, {
+  appendRubricFindings(findings, KI_CHECKER, {
     imports,
     rootSkill: name === 'ki-skills',
-    checkerModules: parseListValue(fm.keys.get('checker-modules')),
-    checkerDependencies: parseListValue(fm.keys.get('checker-dependencies')),
+    checkerModules: frontmatterList(fm.keys.get('checker-modules')),
+    checkerDependencies: frontmatterList(fm.keys.get('checker-dependencies')),
     reporterModuleExists: existsSync(join(scriptsDir, 'lib', 'checker-reporter.ts'))
-  })) {
-    if (finding.level === 'FAIL') fail(finding.code, finding.message)
-    else warn(finding.code, finding.message)
-  }
+  })
 
-  for (const finding of auditRubricItems(KI_SHAPE, {
+  appendRubricFindings(findings, KI_SHAPE, {
     ...createKiShapeContext({ skill: createKiShapeEvidence(skillDir, fm, desc ?? '', body) })
-  })) {
-    if (finding.level === 'FAIL') fail(finding.code, finding.message, finding.file)
-    else warn(finding.code, finding.message, finding.file)
-  }
+  })
   const bodyLines = body.split(/\r?\n/).length
-  for (const finding of auditRubricItems(SIZE, { bodyLines, bodyTokens: estimateTokens(body) })) {
-    if (finding.level === 'FAIL') fail(finding.code, finding.message)
-    else warn(finding.code, finding.message)
-  }
+  appendRubricFindings(findings, SIZE, { bodyLines, bodyTokens: estimateTokens(body) })
 
   // Per-file Markdown checks
   for (const file of listMarkdownFiles(skillDir)) {
@@ -313,21 +199,12 @@ const lintSkill = (skillDir: string): Finding[] => {
       markdown: text,
       relativeTargetExists: (target: string): boolean => existsSync(resolve(dirname(file), target))
     }
-    for (const finding of auditRubricItems(LAYOUT, markdownContext)) {
-      if (finding.level === 'FAIL') fail(finding.code, finding.message, rel)
-      else warn(finding.code, finding.message, rel)
-    }
-    for (const finding of auditRubricItems(KI_LINK, markdownContext)) {
-      if (finding.level === 'FAIL') fail(finding.code, finding.message, rel)
-      else warn(finding.code, finding.message, rel)
-    }
+    appendRubricFindings(findings, LAYOUT, markdownContext, rel)
+    appendRubricFindings(findings, KI_LINK, markdownContext, rel)
     // ToC on long reference files (not SKILL.md itself)
     if (!isSkillMd) {
       const lineCount = md.split(/\r?\n/).length
-      for (const finding of auditRubricItems(REFERENCES, { lineCount, content: md })) {
-        if (finding.level === 'FAIL') fail(finding.code, finding.message, rel)
-        else warn(finding.code, finding.message, rel)
-      }
+      appendRubricFindings(findings, REFERENCES, { lineCount, content: md }, rel)
     }
   }
 
@@ -335,10 +212,10 @@ const lintSkill = (skillDir: string): Finding[] => {
   const sourcesPath = join(skillDir, 'references', 'sources.md')
   if (existsSync(sourcesPath)) {
     const context = createRefreshContext(readFileSync(sourcesPath, 'utf8'))
-    for (const finding of auditRubricItems(LONGEVITY, context)) warn(finding.code, finding.message)
+    appendRubricFindings(findings, LONGEVITY, context)
   }
 
-  return f
+  return findings
 }
 
 const createOwnershipCollisions = (dirs: string[]): { file: string; skills: string[] }[] => {
@@ -346,7 +223,7 @@ const createOwnershipCollisions = (dirs: string[]): { file: string; skills: stri
   for (const dir of dirs) {
     const skillMd = join(dir, 'SKILL.md')
     if (!existsSync(skillMd)) continue
-    const owns = parseListValue(parseFrontmatter(readFileSync(skillMd, 'utf8')).keys.get('owns'))
+    const owns = frontmatterList(parseFrontmatter(readFileSync(skillMd, 'utf8')).keys.get('owns'))
     for (const file of owns) {
       if (!byFile.has(file)) byFile.set(file, new Set())
       byFile.get(file)?.add(basename(dir))
@@ -389,16 +266,13 @@ if (skillDirs.length === 0) {
 }
 
 for (const dir of skillDirs) {
-  const findings = lintSkill(dir)
-  for (const x of findings)
-    all.push({
-      type: 'M',
-      level: x.severity === 'fail' ? 'FAIL' : 'WARN',
-      code: x.criterion,
-      message: x.message,
-      ref: x.ref ?? RUBRIC,
-      file: x.file ? relative(reportTarget, join(dir, x.file)) : undefined
-    })
+  appendFindings(
+    all,
+    lintSkill(dir).map((finding) => ({
+      ...finding,
+      file: finding.file ? relative(reportTarget, join(dir, finding.file)) : undefined
+    }))
+  )
 }
 
 // Cross-skill description checks

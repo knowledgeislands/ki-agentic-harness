@@ -40,6 +40,9 @@ export type RubricItem<Context = unknown> = {
   conform?: (context: Context) => ConformAction<Context>[]
 }
 
+export const auditRubricItems = <Context>(items: readonly RubricItem<Context>[], context: Context): RubricFinding[] =>
+  items.flatMap((item) => item.audit?.(context) ?? [])
+
 export type ConformAction<Context = unknown> = {
   item: RubricItem<Context>
   message: string

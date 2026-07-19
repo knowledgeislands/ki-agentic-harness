@@ -1,8 +1,93 @@
 type BunYamlRuntime = { Bun: { YAML: { parse: (source: string) => unknown } } }
 
+export type ParsedFrontmatter = {
+  keys: Map<string, string>
+  present: Set<string>
+  raw: string | null
+  values: Record<string, unknown>
+  isMapping: boolean
+}
+
 export const frontmatterBlock = (content: string): string | null => {
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/)
   return match ? (match[1] as string) : null
+}
+
+export const stripFrontmatterQuotes = (value: string): string => {
+  const trimmed = value.trim()
+  if ((trimmed.startsWith('"') && trimmed.endsWith('"')) || (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
+    return trimmed.slice(1, -1)
+  }
+  return trimmed
+}
+
+export const frontmatterList = (value: string | undefined): string[] => {
+  if (!value) return []
+  const contents = value.trim().replace(/^\[/, '').replace(/\]$/, '')
+  if (contents.trim() === '') return []
+  return contents
+    .split(',')
+    .map(stripFrontmatterQuotes)
+    .filter((entry) => entry.length > 0)
+}
+
+export const parseFrontmatter = (content: string): ParsedFrontmatter => {
+  const keys = new Map<string, string>()
+  const present = new Set<string>()
+  const raw = frontmatterBlock(content)
+  if (raw === null) return { keys, present, raw, values: {}, isMapping: false }
+
+  let values: Record<string, unknown> = {}
+  let isMapping = false
+  try {
+    const parsed = (globalThis as typeof globalThis & BunYamlRuntime).Bun.YAML.parse(raw)
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+      values = parsed as Record<string, unknown>
+      isMapping = true
+    }
+  } catch {
+    // The frontmatter rubric reports malformed YAML before dependent fields are read.
+  }
+
+  const lines = raw.split(/\r?\n/)
+  let index = 0
+  while (index < lines.length) {
+    const line = lines[index] as string
+    if (line.trim() === '' || line.trimStart().startsWith('#')) {
+      index++
+      continue
+    }
+    const keyValue = line.match(/^([A-Za-z0-9_-]+):(.*)$/)
+    if (!keyValue) {
+      index++
+      continue
+    }
+    const key = keyValue[1] as string
+    const value = (keyValue[2] as string).trim()
+    present.add(key)
+    if (value === '>' || value === '|' || value.startsWith('> ') || value.startsWith('| ') || /^[>|][-+]?\d*\s*$/.test(value)) {
+      const folded = value[0] === '>'
+      const collected: string[] = []
+      index++
+      while (index < lines.length) {
+        const nextLine = lines[index] as string
+        if (nextLine.trim() !== '' && !/^\s/.test(nextLine)) break
+        if (nextLine.trim() !== '') collected.push(nextLine.trim())
+        index++
+      }
+      keys.set(key, folded ? collected.join(' ') : collected.join('\n'))
+      continue
+    }
+    if (value === '') {
+      index++
+      while (index < lines.length && /^\s+\S/.test(lines[index] as string)) index++
+      keys.set(key, '')
+      continue
+    }
+    keys.set(key, stripFrontmatterQuotes(value))
+    index++
+  }
+  return { keys, present, raw, values, isMapping }
 }
 
 export const isYamlMapping = (block: string): boolean => {
