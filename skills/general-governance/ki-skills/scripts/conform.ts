@@ -26,7 +26,7 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
 import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromItems } from './lib/checker-reporter.ts'
-import { auditRubricItems, conformRubricItems, type ConformAction, findingsFromConformActions, type RubricFinding } from './lib/rubric/rubric.ts'
+import { auditRubricItems, conformRubricItems, type ConformAction, type RubricFinding } from './lib/rubric/rubric.ts'
 import { RUBRIC_ITEMS } from './rubric/items/index.ts'
 import { FRONTMATTER } from './rubric/items/frontmatter.ts'
 import { KI_SHAPE } from './rubric/items/ki-shape.ts'
@@ -36,6 +36,15 @@ import { createKiShapeContext, type KiSkillsConformContext } from './rubric/cont
 import { frontmatterLine, insertFrontmatterLine, parseFrontmatter, replaceFrontmatterScalar } from './rubric/contexts/frontmatter.ts'
 import { hintVerbs, isProcessSkill } from './rubric/contexts/modes.ts'
 import { discoverSkillDirs, listMarkdownFiles } from './rubric/contexts/skill-files.ts'
+
+export const findingsFromConformActions = <Context>(actions: readonly ConformAction<Context>[]): RubricFinding[] =>
+  actions.map((action) => ({
+    type: 'M',
+    level: action.level ?? 'POLISH',
+    code: action.item.code,
+    message: action.message,
+    file: action.file
+  }))
 
 // Each action records a typed domain finding. The canonical reporter owns transport;
 // the bootstrap aggregate is the only terminal renderer.
