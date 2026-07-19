@@ -1,17 +1,10 @@
 #!/usr/bin/env bun
 /** Mechanical auditor for the non-KB repository-roadmap standard. */
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
-import { dirname, join, relative, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import {
-  type CheckerFinding,
-  checkerReporterExitCode,
-  emitCheckerReporter,
-  judgmentFindingsFromRubric
-} from './vendored/ki-skills/checker-reporter.ts'
+import { join, relative, resolve } from 'node:path'
 
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
-type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
+export type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 type Horizon = (typeof HORIZONS)[number]
 type Item = { theme: string; title: string; slug: string; anchor: string; horizon: Horizon; file: string }
 type Plan = {
@@ -54,14 +47,12 @@ const STANDARD_REF = 'references/standards.md'
 const FORMAT_REF = 'references/plan-format.md'
 const RUBRIC_REF = 'references/rubric.md'
 const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
-const findings: Finding[] = []
+let findings: Finding[] = []
 const add = (level: Level, area: string, msg: string, ref = RUBRIC_REF, file?: string): void => {
   findings.push({ level, area, msg, ref, file })
 }
 
-const argv = process.argv.slice(2)
-const positional = argv.find((arg) => !arg.startsWith('-')) ?? '.'
-const root = resolve(positional)
+let root = ''
 
 function isKb(repo: string): boolean {
   const config = join(repo, '.ki-config.toml')
@@ -410,10 +401,14 @@ function discoverThematic(): { themes: string[]; items: Item[]; plans: Plan[] } 
   return { themes: themes.sort(), items, plans }
 }
 
-const rootRoadmap = join(root, 'ROADMAP.md')
-const thematicDir = join(root, 'docs', 'roadmap')
+export const inspectRoadmap = (target: string): Finding[] => {
+  root = resolve(target)
+  findings = []
+  const rootRoadmap = join(root, 'ROADMAP.md')
+  const thematicDir = join(root, 'docs', 'roadmap')
+  try {
 if (!existsSync(root) || !lstatSync(root).isDirectory()) {
-  add('FAIL', 'PROFILE-1', `repository directory does not exist: ${positional}`, STANDARD_REF)
+  add('FAIL', 'PROFILE-1', `repository directory does not exist: ${target}`, STANDARD_REF)
   emit()
 }
 if (isKb(root)) {
@@ -540,20 +535,11 @@ if (!existsSync(thematicDir)) {
 if (!findings.some((finding) => ['FAIL', 'WARN', 'POLISH'].includes(finding.level))) {
   add('PASS', 'PROFILE-1', 'repository-roadmap mechanics conform', STANDARD_REF)
 }
-emit()
-
-function emit(): never {
-  const scriptDir = dirname(fileURLToPath(import.meta.url))
-  const skillRoot = resolve(scriptDir, '../../..')
-  const canonical: CheckerFinding[] = findings.map((finding) => ({
-    type: 'M',
-    level: finding.level,
-    code: finding.area,
-    message: finding.msg,
-    ref: finding.ref,
-    file: finding.file
-  }))
-  canonical.push(...judgmentFindingsFromRubric(join(skillRoot, 'references', 'rubric.md'), RUBRIC_REF))
-  emitCheckerReporter({ mode: 'audit', concern: 'repo-roadmap', target: root, findings: canonical })
-  process.exit(checkerReporterExitCode(canonical))
+  } catch (result) {
+    if (result === findings) return findings
+    throw result
+  }
+  return findings
 }
+
+function emit(): never { throw findings }

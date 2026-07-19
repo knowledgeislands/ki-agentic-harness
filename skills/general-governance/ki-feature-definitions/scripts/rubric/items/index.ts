@@ -1,22 +1,15 @@
 import { defineRubricFamily, type RubricDefinition } from '../../vendored/ki-skills/rubric.ts'
 import type { FeatureDefinitionsContext } from '../contexts/feature-definitions.ts'
-import {
-  AREA_1,
-  AREA_2,
-  AREA_FIT_1,
-  AS_BUILT_1,
-  BEHAVIOUR_1,
-  DR_LINK_1,
-  ID_1,
-  ID_2,
-  ID_3,
-  INDEX_1,
-  INDEX_2,
-  REQ_1,
-  SPLIT_1,
-  VERIFY_1,
-  VERIFY_2
-} from './feature-definitions.ts'
+import { AREA } from './area.ts'
+import { AREA_FIT } from './area-fit.ts'
+import { AS_BUILT } from './as-built.ts'
+import { BEHAVIOUR } from './behaviour.ts'
+import { DR_LINK } from './decision-link.ts'
+import { ID } from './identity.ts'
+import { INDEX } from './index-family.ts'
+import { REQ } from './requirement.ts'
+import { SPLIT } from './split.ts'
+import { VERIFY } from './verification.ts'
 
 const context = (value: FeatureDefinitionsContext): FeatureDefinitionsContext => value
 
@@ -30,7 +23,7 @@ export const KI_FEATURE_DEFINITIONS_RUBRIC: RubricDefinition<FeatureDefinitionsC
       description: 'The corpus has a populated registry that maps prefixes to area files.',
       standard: 'feature-format.md',
       selectContext: context,
-      items: [INDEX_1, INDEX_2]
+      items: INDEX
     }),
     defineRubricFamily({
       code: 'AREA',
@@ -38,7 +31,7 @@ export const KI_FEATURE_DEFINITIONS_RUBRIC: RubricDefinition<FeatureDefinitionsC
       description: 'Area-table files and corpus files agree.',
       standard: 'feature-format.md',
       selectContext: context,
-      items: [AREA_1, AREA_2]
+      items: AREA
     }),
     defineRubricFamily({
       code: 'ID',
@@ -46,7 +39,7 @@ export const KI_FEATURE_DEFINITIONS_RUBRIC: RubricDefinition<FeatureDefinitionsC
       description: 'Requirement headings, prefixes, and append-only IDs form a coherent registry.',
       standard: 'feature-format.md',
       selectContext: context,
-      items: [ID_1, ID_2, ID_3]
+      items: ID
     }),
     defineRubricFamily({
       code: 'REQ',
@@ -54,7 +47,7 @@ export const KI_FEATURE_DEFINITIONS_RUBRIC: RubricDefinition<FeatureDefinitionsC
       description: 'Active requirements state normative behaviour.',
       standard: 'feature-format.md',
       selectContext: context,
-      items: [REQ_1]
+      items: REQ
     }),
     defineRubricFamily({
       code: 'VERIFY',
@@ -62,7 +55,7 @@ export const KI_FEATURE_DEFINITIONS_RUBRIC: RubricDefinition<FeatureDefinitionsC
       description: 'Active requirements carry a verification hook whose quality is reviewed.',
       standard: 'feature-format.md',
       selectContext: context,
-      items: [VERIFY_1, VERIFY_2]
+      items: VERIFY
     }),
     defineRubricFamily({
       code: 'BEHAVIOUR',
@@ -70,7 +63,7 @@ export const KI_FEATURE_DEFINITIONS_RUBRIC: RubricDefinition<FeatureDefinitionsC
       description: 'Requirements specify behaviour rather than rationale or procedure.',
       standard: 'feature-format.md',
       selectContext: context,
-      items: [BEHAVIOUR_1]
+      items: BEHAVIOUR
     }),
     defineRubricFamily({
       code: 'AS-BUILT',
@@ -78,7 +71,7 @@ export const KI_FEATURE_DEFINITIONS_RUBRIC: RubricDefinition<FeatureDefinitionsC
       description: 'The numbered contract describes current system behaviour.',
       standard: 'feature-format.md',
       selectContext: context,
-      items: [AS_BUILT_1]
+      items: AS_BUILT
     }),
     defineRubricFamily({
       code: 'SPLIT',
@@ -86,7 +79,7 @@ export const KI_FEATURE_DEFINITIONS_RUBRIC: RubricDefinition<FeatureDefinitionsC
       description: 'Independently verifiable behaviours have independent IDs.',
       standard: 'feature-format.md',
       selectContext: context,
-      items: [SPLIT_1]
+      items: SPLIT
     }),
     defineRubricFamily({
       code: 'DR-LINK',
@@ -94,7 +87,7 @@ export const KI_FEATURE_DEFINITIONS_RUBRIC: RubricDefinition<FeatureDefinitionsC
       description: 'Governed behaviours preserve their link from why to what.',
       standard: 'feature-format.md',
       selectContext: context,
-      items: [DR_LINK_1]
+      items: DR_LINK
     }),
     defineRubricFamily({
       code: 'AREA-FIT',
@@ -102,7 +95,7 @@ export const KI_FEATURE_DEFINITIONS_RUBRIC: RubricDefinition<FeatureDefinitionsC
       description: 'Requirements remain in the area their behaviour belongs to.',
       standard: 'feature-format.md',
       selectContext: context,
-      items: [AREA_FIT_1]
+      items: AREA_FIT
     })
   ]
 }

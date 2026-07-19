@@ -61,8 +61,7 @@ const RUBRIC = 'references/rubric.md'
 
 function localRubricPath(): string {
   const scriptDir = dirname(fileURLToPath(import.meta.url))
-  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
-  return join(skillRoot, 'references', 'rubric.md')
+  return join(scriptDir, '..', '..', '..', 'references', 'rubric.md')
 }
 
 // ── kept in lockstep with audit.ts ──

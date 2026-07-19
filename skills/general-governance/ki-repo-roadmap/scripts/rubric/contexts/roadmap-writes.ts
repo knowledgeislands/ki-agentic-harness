@@ -1,6 +1,5 @@
 #!/usr/bin/env bun
 /** Normalize only derivable repository-roadmap projections. */
-import { spawnSync } from 'node:child_process'
 import {
   closeSync,
   existsSync,
@@ -17,15 +16,7 @@ import {
   writeFileSync
 } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import {
-  type CheckerFinding,
-  checkerReporterExitCode,
-  emitCheckerReporter,
-  judgmentFindingsFromRubric,
-  parseCheckerReporterJsonl,
-  validateCheckerReporterEvents
-} from './vendored/ki-skills/checker-reporter.ts'
+import { inspectRoadmap } from './roadmap-evidence.ts'
 
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
@@ -47,14 +38,11 @@ const HORIZON_BLURBS: Record<Horizon, string> = {
 const STANDARD_REF = 'references/standards.md'
 const THEME_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
-const findings: Finding[] = []
-const argv = process.argv.slice(2)
-const dryRun = argv.includes('--dry-run')
-const positional = argv.find((arg) => !arg.startsWith('-')) ?? '.'
-const root = resolve(positional)
-const roadmapDir = join(root, 'docs', 'roadmap')
-const rootRoadmap = join(root, 'ROADMAP.md')
-const readme = join(roadmapDir, 'README.md')
+let findings: Finding[] = []
+let root = ''
+let roadmapDir = ''
+let rootRoadmap = ''
+let readme = ''
 
 function isKb(): boolean {
   const config = join(root, '.ki-config.toml')
@@ -348,48 +336,13 @@ function atomicWrite(path: string, content: string, expected: string | null): vo
   }
 }
 
-function localRubricPath(): string {
-  const scriptDir = dirname(fileURLToPath(import.meta.url))
-  const skillRoot = resolve(scriptDir, '../../..')
-  return join(skillRoot, 'references', 'rubric.md')
-}
-
-function emit(): never {
-  const canonical: CheckerFinding[] = findings.map((finding) => ({
-    type: 'M',
-    level: finding.level,
-    code: finding.area,
-    message: finding.msg,
-    ref: finding.ref,
-    file: finding.file
-  }))
-  canonical.push(...judgmentFindingsFromRubric(localRubricPath()))
-  emitCheckerReporter({ mode: 'conform', concern: 'repo-roadmap', target: root, findings: canonical })
-  process.exit(checkerReporterExitCode(canonical))
-}
-
-function auditFindings(result: ReturnType<typeof spawnSync>): Finding[] | null {
-  if (result.error) return null
-  const stdout = typeof result.stdout === 'string' ? result.stdout : ''
-  const parsed = parseCheckerReporterJsonl(stdout)
-  const errors = [...parsed.errors, ...validateCheckerReporterEvents(parsed.events, result.status ?? undefined)]
-  if (errors.length) return null
-  return parsed.events.flatMap((event) => {
-    if (typeof event !== 'object' || event === null || Array.isArray(event)) return []
-    const record = event as Record<string, unknown>
-    if (record.record !== 'finding') return []
-    return [
-      {
-        level: record.level as Level,
-        area: record.code as string,
-        msg: record.message as string,
-        ref: record.ref as string | undefined,
-        file: record.file as string | undefined
-      }
-    ]
-  })
-}
-
+export const conformRoadmap = (target: string, dryRun: boolean): Finding[] => {
+  root = resolve(target)
+  roadmapDir = join(root, 'docs', 'roadmap')
+  rootRoadmap = join(root, 'ROADMAP.md')
+  readme = join(roadmapDir, 'README.md')
+  findings = []
+  try {
 if (!existsSync(root) || !lstatSync(root).isDirectory()) {
   findings.push({ level: 'FAIL', area: 'PROFILE-1', msg: 'repository directory does not exist', ref: STANDARD_REF })
   emit()
@@ -403,18 +356,7 @@ if (isKb()) {
   })
   emit()
 }
-const audit = join(dirname(fileURLToPath(import.meta.url)), 'legacy-audit.ts')
-const checked = spawnSync(process.execPath, [audit, root], { encoding: 'utf8' })
-const auditResults = auditFindings(checked)
-if (!auditResults) {
-  findings.push({
-    level: 'FAIL',
-    area: 'SAFE-1',
-    msg: 'preflight audit did not return a valid canonical checker report',
-    ref: STANDARD_REF
-  })
-  emit()
-}
+const auditResults = inspectRoadmap(root)
 const nonDerivable = auditResults.filter(
   (finding) => finding.level === 'FAIL' && !['PROJ-1', 'INDEX-1', 'ROAD-4', 'THEME-3'].includes(finding.area)
 )
@@ -478,8 +420,7 @@ if (unprunable.length) {
 
 const stagedThemes = dryRun ? [] : stagePrunableThemes(prunable)
 if (!dryRun) {
-  const postPrune = spawnSync(process.execPath, [audit, root], { encoding: 'utf8' })
-  const postAuditResults = auditFindings(postPrune)
+  const postAuditResults = inspectRoadmap(root)
   if (!postAuditResults) {
     const conflicts = restoreStagedThemes(stagedThemes)
     findings.push({
@@ -588,4 +529,13 @@ try {
     ref: STANDARD_REF
   })
 }
-emit()
+  } catch (result) {
+    if (result === findings) return findings
+    throw result
+  }
+  return findings
+}
+
+function emit(): never {
+  throw findings
+}

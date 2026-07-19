@@ -1,18 +1,9 @@
 import { defineRubricFamily, type RubricDefinition } from '../../vendored/ki-skills/rubric.ts'
 import type { AuthoringRubricContext } from '../contexts/authoring.ts'
-import {
-  MD_CELL_PROSE,
-  MD_FOOTNOTE,
-  MD_LINK,
-  MD_MECH,
-  MD_TABLE,
-  OWN_1,
-  SYNC_1,
-  TOML_COMMENTS,
-  TOML_KEYS,
-  TOML_TABLES,
-  TOML_VALUES
-} from './authoring.ts'
+import { MARKDOWN } from './markdown.ts'
+import { OWNED } from './owned.ts'
+import { SYNC } from './sync.ts'
+import { TOML } from './toml.ts'
 
 export const KI_AUTHORING_RUBRIC: RubricDefinition<AuthoringRubricContext> = {
   name: 'ki-authoring',
@@ -24,7 +15,7 @@ export const KI_AUTHORING_RUBRIC: RubricDefinition<AuthoringRubricContext> = {
       description: 'The mechanical Markdown gate and reviewer-applied Markdown conventions.',
       standard: 'standards/markdown.md',
       selectContext: (context: AuthoringRubricContext) => context,
-      items: [MD_MECH, MD_TABLE, MD_FOOTNOTE, MD_LINK, MD_CELL_PROSE]
+      items: MARKDOWN
     }),
     defineRubricFamily({
       code: 'OWN',
@@ -32,7 +23,7 @@ export const KI_AUTHORING_RUBRIC: RubricDefinition<AuthoringRubricContext> = {
       description: 'Configuration files wholly owned by the authoring convention.',
       standard: '../SKILL.md',
       selectContext: (context: AuthoringRubricContext) => context,
-      items: [OWN_1]
+      items: OWNED
     }),
     defineRubricFamily({
       code: 'TOML',
@@ -40,7 +31,7 @@ export const KI_AUTHORING_RUBRIC: RubricDefinition<AuthoringRubricContext> = {
       description: 'Reviewer-applied TOML formatting conventions.',
       standard: 'standards/toml.md',
       selectContext: (context: AuthoringRubricContext) => context,
-      items: [TOML_KEYS, TOML_VALUES, TOML_TABLES, TOML_COMMENTS]
+      items: TOML
     }),
     defineRubricFamily({
       code: 'SYNC',
@@ -48,7 +39,7 @@ export const KI_AUTHORING_RUBRIC: RubricDefinition<AuthoringRubricContext> = {
       description: 'The generated publication and its convention sources remain coherent.',
       standard: 'sources.md',
       selectContext: (context: AuthoringRubricContext) => context,
-      items: [SYNC_1]
+      items: SYNC
     })
   ]
 }

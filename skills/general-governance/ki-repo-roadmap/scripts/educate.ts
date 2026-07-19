@@ -8,6 +8,17 @@ type Finding = { level: Level; area: string; msg: string; ref?: string; file?: s
 const STANDARD_REF = 'references/standards.md'
 const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
 const argv = process.argv.slice(2)
+if (argv.includes('-h') || argv.includes('--help')) {
+  process.stdout.write(`Usage: bun scripts/educate.ts [repo] [--dry-run]
+
+Create the non-KB simple repository-roadmap profile when no roadmap artifacts exist.
+
+Options:
+  --dry-run   Report the scaffold without writing it.
+  -h, --help  Show this help and exit.
+`)
+  process.exit(0)
+}
 const dryRun = argv.includes('--dry-run')
 const json = argv.includes('--json')
 const target = resolve(argv.find((arg) => !arg.startsWith('-')) ?? '.')

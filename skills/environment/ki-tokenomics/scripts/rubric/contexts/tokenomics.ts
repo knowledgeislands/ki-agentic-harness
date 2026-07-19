@@ -23,11 +23,14 @@ const collect = (source: string): ReadonlyMap<string, readonly LegacyFinding[]> 
 }
 
 /** Evidence and safe-write boundary; policy stays in the rubric item modules. */
-export const createTokenomicsContext = ({ target, noUser, userDir, dryRun }: { target: string; noUser: boolean; userDir?: string; dryRun: boolean }): TokenomicsRubricContext => {
+export const createTokenomicsContext = ({ target, noUser, userDir, dryRun, mode }: { target: string; noUser: boolean; userDir?: string; dryRun: boolean; mode: 'audit' | 'conform' }): TokenomicsRubricContext => {
   const args = [resolve(target), ...(noUser ? ['--no-user'] : []), ...(userDir ? ['--user', resolve(userDir)] : [])]
-  const audit = spawnSync('bun', [engine('audit-engine.ts'), ...args], { encoding: 'utf8' })
+  if (mode === 'audit') {
+    const audit = spawnSync('bun', [engine('audit-engine.ts'), ...args], { encoding: 'utf8' })
+    return { audit: collect(`${audit.stdout ?? ''}`), conform: new Map() }
+  }
   const conform = spawnSync('bun', [engine('conform-engine.ts'), ...args, ...(dryRun ? ['--dry-run'] : [])], { encoding: 'utf8' })
-  return { audit: collect(`${audit.stdout ?? ''}`), conform: collect(`${conform.stdout ?? ''}`) }
+  return { audit: new Map(), conform: collect(`${conform.stdout ?? ''}`) }
 }
 
 const asOutcomes = <Outcome extends AuditOutcome | ConformOutcome>(findings: readonly LegacyFinding[] | undefined, conform: boolean): RubricOutcomes<Outcome> => {

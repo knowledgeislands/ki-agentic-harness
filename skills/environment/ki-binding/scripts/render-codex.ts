@@ -33,6 +33,19 @@ declare const Bun: { YAML: { parse(input: string): unknown }; TOML: { parse(inpu
 
 // ── Args ──
 const argv = process.argv.slice(2)
+if (argv.includes('-h') || argv.includes('--help')) {
+  process.stdout.write(`Usage: bun scripts/render-codex.ts [options]
+
+Render KI-governed MCP servers into the Codex CLI surface.
+
+Options:
+  --check, --dry-run  Report planned Codex changes without writing them.
+  --source <path>     Use an explicit mcp-servers.yaml source.
+  --json              Emit findings as JSON.
+  -h, --help          Show this help and exit.
+`)
+  process.exit(0)
+}
 const flag = (name: string): boolean => argv.includes(name)
 const opt = (name: string): string | undefined => {
   const i = argv.indexOf(name)

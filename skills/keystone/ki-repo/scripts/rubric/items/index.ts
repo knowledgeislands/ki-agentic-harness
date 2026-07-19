@@ -1,232 +1,39 @@
-import type {
-  AuditOutcome,
-  ConformOutcome,
-  RubricDefinition,
-  RubricItem,
-  RubricOutcomes,
-  ViolationLevel
-} from '../../vendored/ki-skills/rubric.ts'
+import { ACCESS } from './access.ts'
+import { ACT } from './actions.ts'
+import { BP } from './branch-protection.ts'
+import { CAPABILITY } from './capability.ts'
+import { CHECKS } from './checks.ts'
+import { COV } from './coverage.ts'
+import { DEP } from './dependencies.ts'
+import { DESCFIT } from './description-fit.ts'
+import { FILES } from './files.ts'
+import { GH } from './gh.ts'
+import { LINK } from './link.ts'
+import { MERGE } from './merge.ts'
+import { OVR } from './overrides.ts'
+import { PKG } from './pkg.ts'
+import { RUNTIMES } from './runtimes.ts'
+import { SEC } from './secrets.ts'
+import { STRUCT } from './structure.ts'
+import { SYNC } from './sync.ts'
+import { TOGGLE } from './toggle.ts'
+import { TOPICS } from './topics.ts'
+import { VENDOR } from './vendor.ts'
+import { VIS } from './visibility.ts'
+import { defineRubricFamily, type RubricDefinition } from '../../vendored/ki-skills/rubric.ts'
 import type { RepoRubricContext } from '../contexts/contexts.ts'
 
-const STANDARD = 'standards.md'
-
-const mechanicalItem = (
-  code: string,
-  title: string,
-  description: string,
-  level: ViolationLevel = 'FAIL',
-  overrideLevels: readonly ViolationLevel[] = []
-): RubricItem<RepoRubricContext> => ({
-  code,
-  title,
-  description,
-  sources: [STANDARD],
-  mechanical: {
-    level,
-    ...(overrideLevels.length > 0 ? { overrideLevels } : {}),
-    audit: {
-      phase: 'INSPECT',
-      run: (context) => context.outcomes(code) as RubricOutcomes<AuditOutcome>
-    },
-    conform: {
-      phase: 'PRIMARY',
-      run: (context) => context.outcomes(code) as RubricOutcomes<ConformOutcome>
-    }
-  }
-})
-
-const judgmentItem = (code: string, title: string, description: string, prompt: string): RubricItem<RepoRubricContext> => ({
-  code,
-  title,
-  description,
-  sources: [STANDARD],
-  judgment: { prompt }
-})
-
-const ITEMS = [
-  mechanicalItem(
-    'FILES-1',
-    'Required repository files',
-    'README, license, gitignore, editor configuration, Claude orientation, and the exact ki-repo config marker are present.'
-  ),
-  mechanicalItem(
-    'FILES-2',
-    'Derived metadata is ignored',
-    'Derived .ki-meta audit and conform artifacts are ignored rather than committed.',
-    'WARN'
-  ),
-  mechanicalItem(
-    'FILES-3',
-    'Authoring baseline and self-check',
-    'A governed repository declares ki-authoring and carries a repository-local self-check runner.'
-  ),
-  judgmentItem(
-    'FILES-J1',
-    'Repository document content',
-    'README and license content is accurate and current.',
-    'Read the README and license and assess whether they accurately describe and license this repository.'
-  ),
-  mechanicalItem('GH-1', 'Default branch', 'The default branch is main.'),
-  mechanicalItem('GH-2', 'Declared license alignment', 'The declared license agrees with GitHub and package.json.'),
-  mechanicalItem(
-    'GH-3',
-    'Description presence and synchronisation',
-    'The GitHub description is non-empty and matches package.json when that source exists.'
-  ),
-  mechanicalItem(
-    'PKG-1',
-    'Package identity metadata',
-    'package.json carries coherent identity and repository metadata when present.',
-    'FAIL',
-    ['WARN']
-  ),
-  mechanicalItem('MERGE-1', 'Merge policy', 'The repository permits squash merges only and deletes merged head branches.'),
-  mechanicalItem(
-    'TOGGLE-1',
-    'Repository feature toggles',
-    'Issues are enabled and Wiki and Projects are disabled unless explicitly overridden.'
-  ),
-  mechanicalItem('VIS-1', 'Declared visibility', 'Live GitHub visibility matches the valid visibility declared in .ki-config.toml.'),
-  mechanicalItem(
-    'TOPICS-1',
-    'Public repository topics',
-    'A public repository carries the standard topic set unless explicitly overridden.'
-  ),
-  mechanicalItem(
-    'BP-1',
-    'Branch protection',
-    'Main has the configured branch-protection posture, including required PR, build check, and linear history when enabled.'
-  ),
-  mechanicalItem(
-    'DEP-1',
-    'Dependabot and branch freshness',
-    'Dependabot alerts and updates are enabled and pull-request branches may be updated.',
-    'FAIL',
-    ['WARN']
-  ),
-  mechanicalItem(
-    'SEC-1',
-    'Secret scanning protection',
-    'Public repositories enable secret scanning and push protection unless explicitly overridden.',
-    'FAIL',
-    ['WARN']
-  ),
-  mechanicalItem(
-    'ACT-1',
-    'Actions policy',
-    'GitHub Actions allowed_actions is all; tighter deliberate policies are reported as warnings.',
-    'WARN',
-    ['FAIL']
-  ),
-  mechanicalItem('CHECKS-1', 'Override keys', 'Every ki-repo checks override names a supported overridable concern.', 'WARN'),
-  mechanicalItem(
-    'COV-1',
-    'Governance coverage cascade',
-    'Detected governance applicability and declared opt-in tables agree, subject to explicit coverage overrides.',
-    'WARN'
-  ),
-  mechanicalItem('STRUCT-1', 'Single repository structure', 'A repository declares at most one repo-structure governance table.'),
-  mechanicalItem(
-    'STRUCT-2',
-    'Repository structure presence',
-    'A repository normally declares one repo-structure table unless explicitly exempted.',
-    'WARN'
-  ),
-  mechanicalItem(
-    'VENDOR-1',
-    'Vendored payload integrity',
-    'Manifest-listed .ki-meta payloads exist and match their recorded hashes.',
-    'FAIL',
-    ['WARN']
-  ),
-  mechanicalItem(
-    'CAPABILITY-COMPLETE',
-    'Governance capability completeness',
-    'Every declared governance root has regular manifest-listed EDUCATE, AUDIT, and CONFORM payloads.'
-  ),
-  mechanicalItem(
-    'ACCESS-1',
-    'GitHub access and archive state',
-    'GitHub reachability is reported without manufacturing drift when offline, and archived repositories are skipped.',
-    'WARN',
-    ['FAIL']
-  ),
-  mechanicalItem(
-    'RUNTIMES-1',
-    'Supported runtime declaration',
-    'ki-repo declares a non-empty, duplicate-free list containing only supported runtimes.'
-  ),
-  judgmentItem(
-    'RUNTIMES-J1',
-    'Runtime orientation split',
-    'Multi-runtime repositories use a shared AGENTS.md orientation with a thin Claude import unless a justified exception applies.',
-    'Review whether orientation is shared cleanly across the declared runtimes without duplicated or Claude-only instructions.'
-  ),
-  judgmentItem(
-    'LINK-1',
-    'Development command links',
-    'Repository-local symlinks are an explicit development-only action owned by the self-contained ki-repo linker.',
-    'Review local command linking for deliberate development-only use, regular-copy defaults, and no imports outside ki-repo.'
-  ),
-  judgmentItem(
-    'DESCFIT-1',
-    'Description fit',
-    'The repository description accurately and concisely describes its purpose.',
-    'Read the repository and judge whether its one-sentence description fits its actual purpose.'
-  ),
-  judgmentItem(
-    'OVR-J1',
-    'Override rationale',
-    'Every checks override represents a warranted repository-specific decision.',
-    'Review each configured override and confirm that it records a real exception rather than hiding drift.'
-  ),
-  judgmentItem(
-    'SYNC-1',
-    'Standard synchronisation',
-    'The standard, structured rubric, and executable behaviour remain aligned.',
-    'Compare the standard, generated rubric, and checker behaviour for semantic drift.'
-  )
+/** Imported semantic collections, kept explicit for the catalogue contract. */
+export const KI_REPO_FAMILY_COLLECTIONS = [
+  { items: ACCESS }, { items: ACT }, { items: BP }, { items: CAPABILITY }, { items: CHECKS }, { items: COV },
+  { items: DEP }, { items: DESCFIT }, { items: FILES }, { items: GH }, { items: LINK }, { items: MERGE },
+  { items: OVR }, { items: PKG }, { items: RUNTIMES }, { items: SEC }, { items: STRUCT }, { items: SYNC },
+  { items: TOGGLE }, { items: TOPICS }, { items: VENDOR }, { items: VIS }
 ] as const
 
-const FAMILY_METADATA: Record<string, { title: string; description: string }> = {
-  FILES: { title: 'Repository files', description: 'Required local files and repository document quality.' },
-  GH: { title: 'Core GitHub settings', description: 'Default branch, licensing, and repository description.' },
-  PKG: { title: 'Package metadata', description: 'Package identity and repository metadata.' },
-  MERGE: { title: 'Merge policy', description: 'GitHub merge and branch-cleanup behaviour.' },
-  TOGGLE: { title: 'Repository features', description: 'Issues, Wiki, and Projects settings.' },
-  VIS: { title: 'Visibility', description: 'Declared and live repository visibility.' },
-  TOPICS: { title: 'Topics', description: 'Public repository topic conventions.' },
-  BP: { title: 'Branch protection', description: 'Optional main-branch protection.' },
-  DEP: { title: 'Dependency security', description: 'Dependabot and branch freshness.' },
-  SEC: { title: 'Secret protection', description: 'Secret scanning and push protection.' },
-  ACT: { title: 'Actions policy', description: 'GitHub Actions permissions.' },
-  CHECKS: { title: 'Check overrides', description: 'Per-repository override schema.' },
-  COV: { title: 'Governance coverage', description: 'Detected and declared governance coverage.' },
-  STRUCT: { title: 'Repository structure', description: 'Structural governance identity.' },
-  VENDOR: { title: 'Vendor integrity', description: 'Generated payload manifest integrity.' },
-  CAPABILITY: { title: 'Capability publication', description: 'Complete local governance capabilities.' },
-  ACCESS: { title: 'Repository access', description: 'GitHub reachability and archive state.' },
-  RUNTIMES: { title: 'Runtime support', description: 'Declared agent-runtime support and orientation.' },
-  LINK: { title: 'Development links', description: 'Explicit repository-local development linking.' },
-  DESCFIT: { title: 'Description fitness', description: 'Human assessment of repository purpose.' },
-  OVR: { title: 'Override rationale', description: 'Human assessment of exceptions.' },
-  SYNC: { title: 'Standard synchronisation', description: 'Alignment across the knowledge chain.' }
-}
-
-const familyCode = (code: string): string => code.split('-')[0] as string
-const familyCodes = [...new Set(ITEMS.map((item) => familyCode(item.code)))]
-
-export const KI_REPO_RUBRIC: RubricDefinition<RepoRubricContext> = {
-  name: 'ki-repo',
-  concern: 'Knowledge Islands repositories',
-  families: familyCodes.map((code) => ({
-    code,
-    title: FAMILY_METADATA[code]?.title ?? code,
-    description: FAMILY_METADATA[code]?.description ?? 'Repository governance criteria.',
-    standard: 'standards.md',
-    selectContext: (context: RepoRubricContext) => context,
-    items: ITEMS.filter((item) => familyCode(item.code) === code) as [RubricItem<RepoRubricContext>, ...RubricItem<RepoRubricContext>[]]
-  })) as unknown as RubricDefinition<RepoRubricContext>['families']
-}
-
-export const KI_REPO_FAMILY_CODES = familyCodes
+const family = (code: string, title: string, description: string, items: readonly unknown[]) => defineRubricFamily({ code, title, description, standard: 'standards.md', selectContext: (context: RepoRubricContext) => context, items: items as never })
+/** Catalogue wiring only; semantic family modules own each ordered rule collection. */
+export const KI_REPO_RUBRIC: RubricDefinition<RepoRubricContext> = { name: 'ki-repo', concern: 'Knowledge Islands repositories', families: [
+  family('FILES', 'Repository files', 'Required local files and repository document quality.', FILES), family('GH', 'Core GitHub settings', 'Default branch, licensing, and repository description.', GH), family('PKG', 'Package metadata', 'Package identity and repository metadata.', PKG), family('MERGE', 'Merge policy', 'GitHub merge and branch-cleanup behaviour.', MERGE), family('TOGGLE', 'Repository features', 'Issues, Wiki, and Projects settings.', TOGGLE), family('VIS', 'Visibility', 'Declared and live repository visibility.', VIS), family('TOPICS', 'Topics', 'Public repository topic conventions.', TOPICS), family('BP', 'Branch protection', 'Optional main-branch protection.', BP), family('DEP', 'Dependency security', 'Dependabot and branch freshness.', DEP), family('SEC', 'Secret protection', 'Secret scanning and push protection.', SEC), family('ACT', 'Actions policy', 'GitHub Actions permissions.', ACT), family('CHECKS', 'Check overrides', 'Per-repository override schema.', CHECKS), family('COV', 'Governance coverage', 'Detected and declared governance coverage.', COV), family('STRUCT', 'Repository structure', 'Structural governance identity.', STRUCT), family('VENDOR', 'Vendor integrity', 'Generated payload manifest integrity.', VENDOR), family('CAPABILITY', 'Capability publication', 'Complete local governance capabilities.', CAPABILITY), family('ACCESS', 'Repository access', 'GitHub reachability and archive state.', ACCESS), family('RUNTIMES', 'Runtime support', 'Declared agent-runtime support and orientation.', RUNTIMES), family('LINK', 'Development links', 'Explicit repository-local development linking.', LINK), family('DESCFIT', 'Description fitness', 'Human assessment of repository purpose.', DESCFIT), family('OVR', 'Override rationale', 'Human assessment of exceptions.', OVR), family('SYNC', 'Standard synchronisation', 'Alignment across the knowledge chain.', SYNC)
+] }
+export const KI_REPO_FAMILY_CODES = KI_REPO_RUBRIC.families.map((family) => family.code)

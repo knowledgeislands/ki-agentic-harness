@@ -35,6 +35,19 @@ const AGENTS_DIR = join(HARNESS_ROOT, 'agents', 'governance')
 
 // ── Args ──
 const argv = process.argv.slice(2)
+if (argv.includes('-h') || argv.includes('--help')) {
+  process.stdout.write(`Usage: bun scripts/build-plugin.ts [out-dir] [options]
+
+Generate the KI Cowork plugin marketplace projection.
+
+Options:
+  --marketplace <name>  Marketplace name (default: ki-plugins).
+  --plugin <name>       Plugin name and directory (default: knowledge-islands).
+  --json                Emit the generation summary as JSON.
+  -h, --help            Show this help and exit.
+`)
+  process.exit(0)
+}
 const opt = (name: string): string | undefined => {
   const i = argv.indexOf(name)
   return i >= 0 ? argv[i + 1] : undefined

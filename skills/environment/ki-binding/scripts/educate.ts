@@ -19,5 +19,18 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const SKILL = 'ki-binding'
+const argv = process.argv.slice(2)
+if (argv.includes('-h') || argv.includes('--help')) {
+  process.stdout.write(`Usage: bun scripts/educate.ts <target-repo> [options]
+
+Bootstrap ki-binding and its declared dependencies into a repository.
+
+Options:
+  --ref <ref>  Bootstrap from a specific harness revision.
+  --dry-run    Report the changes without writing them.
+  -h, --help   Show this help and exit.
+`)
+  process.exit(0)
+}
 const engine = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'ki-bootstrap', 'scripts', 'lib', 'repo-bootstrap.ts')
-execFileSync('bun', [engine, ...process.argv.slice(2), '--seed', SKILL], { stdio: 'inherit' })
+execFileSync('bun', [engine, ...argv, '--seed', SKILL], { stdio: 'inherit' })

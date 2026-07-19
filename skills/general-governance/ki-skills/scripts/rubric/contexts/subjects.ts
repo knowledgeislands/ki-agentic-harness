@@ -33,6 +33,20 @@ export type KiSkillsSubjects = {
   persist: () => void
 }
 
+/** Applicable rubric families for each kind of evidence subject. */
+export const KI_SKILLS_SUBJECT_FAMILIES = {
+  target: ['LAY'],
+  invalidSkill: ['LAY', 'FM'],
+  skill: ['LAY', 'FM', 'NAME', 'DESC', 'OPT', 'SIZE', 'BODY', 'SCRIPT', 'KI-CHECKER', 'KI-SHAPE', 'KI-INVOKE', 'PROC'],
+  markdown: ['LAY', 'KI-LINK'],
+  reference: ['LAY', 'KI-LINK', 'REF'],
+  longevity: ['LONG'],
+  collision: ['COLL'],
+  ownership: ['KI-SHAPE'],
+  footprint: ['SIZE'],
+  refreshStatus: ['LONG']
+} as const satisfies Record<KiSkillsSubjectScope, readonly string[]>
+
 const markdownSubject = ({
   file,
   mode,

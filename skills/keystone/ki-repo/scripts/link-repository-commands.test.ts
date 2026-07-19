@@ -231,6 +231,12 @@ try {
   rmSync(development, { recursive: true, force: true })
 }
 
+{
+  const result = spawnSync('bun', [LINKER, '--help'], { encoding: 'utf8' })
+  check('link command help exits cleanly', result.status === 0)
+  check('link command help explains explicit development mode', (result.stdout ?? '').includes('--development'))
+}
+
 if (failed) {
   console.log('\n\x1b[31mlink-repository-commands.test.ts: failures\x1b[0m')
   process.exit(1)

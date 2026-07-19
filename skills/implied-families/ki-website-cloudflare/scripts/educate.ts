@@ -19,5 +19,10 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const SKILL = 'ki-website-cloudflare'
+const argv = process.argv.slice(2)
+if (argv.includes('-h') || argv.includes('--help')) {
+  process.stdout.write('Usage: bun scripts/educate.ts <target-repo> [--ref <ref>] [--dry-run]\n')
+  process.exit(0)
+}
 const engine = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'ki-bootstrap', 'scripts', 'lib', 'repo-bootstrap.ts')
-execFileSync('bun', [engine, ...process.argv.slice(2), '--seed', SKILL], { stdio: 'inherit' })
+execFileSync('bun', [engine, ...argv, '--seed', SKILL], { stdio: 'inherit' })

@@ -23,6 +23,15 @@ const SKILL = 'ki-repo'
 const argv = process.argv.slice(2)
 const scripts = dirname(fileURLToPath(import.meta.url))
 
+if (argv.includes('-h') || argv.includes('--help')) {
+  process.stdout.write(`Usage: bun scripts/educate.ts <target-repo> [--ref <ref>] [--dry-run]
+       bun scripts/educate.ts <target-repo> --scaffold-config-only [--dry-run]
+
+Bootstrap ki-repo into a target repository, or scaffold only its configuration.
+`)
+  process.exit(0)
+}
+
 if (argv.includes('--scaffold-config-only')) {
   // CONFORM owns the one self-contained, vendorable local-file transaction. EDUCATE
   // delegates its config-only internal leg there so the builtins-only safety

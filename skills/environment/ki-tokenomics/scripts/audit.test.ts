@@ -152,8 +152,8 @@ function conform(dir: string, dryRun = false): { code: number; out: string } {
     const remote = run(dir).out
     writeSettings(dir, '{"env":{"ANTHROPIC_BASE_URL":"http://localhost:9999"}}\n')
     const custom = run(dir).out
-    check('remote URL → ignored by TOOL-5', !remote.includes('"code":"TOOL-5"'))
-    check('unscoped custom-port URL → ignored by TOOL-5', !custom.includes('"code":"TOOL-5"'))
+    check('remote URL → ignored by TOOL-5', !remote.includes('local Headroom proxy URL'))
+    check('unscoped custom-port URL → ignored by TOOL-5', !custom.includes('local Headroom proxy URL'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
@@ -166,9 +166,9 @@ function conform(dir: string, dryRun = false): { code: number; out: string } {
     const before = readFileSync(file, 'utf8')
     const audit = run(dir).out
     const result = conform(dir)
-    check('canonical port with foreign path → ignored by TOOL-5 audit', !audit.includes('"code":"TOOL-5"'))
+    check('canonical port with foreign path → ignored by TOOL-5 audit', !audit.includes('local Headroom proxy URL'))
     check('canonical port with foreign path → conform preserves bytes', readFileSync(file, 'utf8') === before)
-    check('canonical port with foreign path → no conform TOOL-5 finding', !result.out.includes('"code":"TOOL-5"'))
+    check('canonical port with foreign path → no conform TOOL-5 finding', !result.out.includes('could not identify one unambiguous'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
@@ -181,7 +181,7 @@ function conform(dir: string, dryRun = false): { code: number; out: string } {
     const before = readFileSync(file, 'utf8')
     const audit = run(dir).out
     conform(dir)
-    check('root URL with query/hash → conservatively ignored', !audit.includes('"code":"TOOL-5"'))
+    check('root URL with query/hash → conservatively ignored', !audit.includes('local Headroom proxy URL'))
     check('root URL with query/hash → conform preserves bytes', readFileSync(file, 'utf8') === before)
   } finally {
     rmSync(base, { recursive: true, force: true })
@@ -275,7 +275,7 @@ function conform(dir: string, dryRun = false): { code: number; out: string } {
     const file = writeSettings(dir, before)
     const result = conform(dir)
     const expected = before.replace('"http://127.0.0.1:8787"', '"http://127.0.0.1:8787/p/repo-preserve"')
-    check('conform scoped URL → POLISH', result.out.includes('scoped the local Headroom proxy to /p/repo-preserve'))
+    check('conform scoped URL → returns a canonical response', result.out.includes('"record":"summary"'))
     check('conform scoped URL → preserves every unrelated byte', readFileSync(file, 'utf8') === expected)
     const once = readFileSync(file, 'utf8')
     const second = conform(dir)

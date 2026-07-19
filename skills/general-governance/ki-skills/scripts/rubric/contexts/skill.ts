@@ -84,10 +84,7 @@ const rubricFamilyModules = (
     const source = modulePath && existsSync(modulePath) ? readFileSync(modulePath, 'utf8') : null
     const collectionMatch = source?.match(new RegExp(`export\\s+const\\s+${collection}\\s*=\\s*\\[([\\s\\S]*?)]`, 'm'))
     const members = collectionMatch
-      ? (collectionMatch[1] as string)
-          .split(',')
-          .map((member) => member.trim())
-          .filter(Boolean)
+      ? [...new Set([...(collectionMatch[1] as string).matchAll(/\b([A-Z][A-Z0-9_]+)\b/g)].map((match) => match[1] as string))]
       : []
     const individuallyExportedRules = source
       ? members.filter((member) => new RegExp(`export\\s+const\\s+${member}\\b`).test(source)).length

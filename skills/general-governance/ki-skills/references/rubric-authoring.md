@@ -14,6 +14,7 @@ Use this guide when creating or refactoring a governance skill's rubric and chec
   - [The knowledge chain](#the-knowledge-chain)
   - [Target layout](#target-layout)
   - [Rubric families and items](#rubric-families-and-items)
+  - [Maintaining a rubric](#maintaining-a-rubric)
   - [Target type shape](#target-type-shape)
   - [Rubric execution and phasing](#rubric-execution-and-phasing)
   - [Generated publication and optional projections](#generated-publication-and-optional-projections)
@@ -157,6 +158,21 @@ Helpers, constants, and types used only by one family remain private in that fam
 Helpers, constants, and types used only by AUDIT or CONFORM remain private in that command module.
 
 Skill-specific behaviour shared by both commands belongs in `scripts/rubric/contexts/`; only behaviour deliberately reusable across other skills belongs in `scripts/lib/`.
+
+## Maintaining a rubric
+
+Once a skill conforms to this structure, ordinary maintenance SHOULD be isolated to the rule being changed:
+
+1. Update the exported rubric item in its semantic family file.
+2. Add or refine focused context evidence only when the rule needs information or a safe write capability that the existing context does not provide.
+3. Regenerate `references/rubric.md` from the canonical TypeScript catalogue.
+4. Run the skill's focused tests and direct AUDIT, then run the live `ki-skills` audit against the skill.
+
+The top-level AUDIT, CONFORM, and EDUCATE commands, family catalogue wiring, generic checker execution, canonical JSONL response, and reporter SHOULD remain unchanged during an ordinary rule adjustment.
+
+A change MAY cross those boundaries only when it introduces a genuinely new rubric family, requires a reusable context capability, or deliberately changes the shared rubric, checker, or reporter contract.
+
+This boundary is the payoff from codifying the rubric: most future work becomes a local policy change with local evidence and tests rather than another edit to a large audit or conform program.
 
 ## Target type shape
 
