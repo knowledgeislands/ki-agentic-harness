@@ -220,7 +220,8 @@ export const createSkillRubricContext = (directory: string, capabilities: SkillW
           checkerModules: frontmatterList(frontmatter.keys.get('checker-modules')),
           checkerDependencies: frontmatterList(frontmatter.keys.get('checker-dependencies')),
           rubricModuleExists: existsSync(join(scriptsDirectory, 'lib', 'rubric.ts')),
-          checkerModuleExists: existsSync(join(scriptsDirectory, 'lib', 'checker.ts'))
+          checkerModuleExists: existsSync(join(scriptsDirectory, 'lib', 'checker.ts')),
+          reporterModuleExists: existsSync(join(scriptsDirectory, 'lib', 'reporter.ts'))
         },
         shape: createKiShapeContext({
           skill: createKiShapeEvidence(directory, frontmatter, description ?? '', body),

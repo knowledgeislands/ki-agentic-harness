@@ -1,116 +1,75 @@
 #!/usr/bin/env bun
-/**
- * Mechanical CONFORM for the ki-agents rubric.
- *
- * This mode only auto-fixes LAY-3: an agent file's `name:` frontmatter does
- * not match its filename stem. Other mechanics and every judgment criterion
- * stay for AUDIT and human review. Every invocation emits canonical JSONL;
- * `--dry-run` controls writing only.
- */
+import { resolve } from 'node:path'
+import { createAgentsContext, type AgentsRubricContext } from './rubric/contexts/agents.ts'
+import { KI_AGENTS_RUBRIC } from './rubric/items/index.ts'
+import { runChecker, type CheckerResult } from './vendored/ki-skills/checker.ts'
+import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
+import type { RubricDefinition } from './vendored/ki-skills/rubric.ts'
 
-import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
-import { basename, dirname, join, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import {
-  type CheckerFinding,
-  checkerReporterExitCode,
-  emitCheckerReporter,
-  judgmentFindingsFromRubric
-} from './vendored/ki-skills/checker-reporter.ts'
+const usage = `Usage: bun scripts/conform.ts [agent-or-directory] [options]
 
-const RUBRIC = 'references/rubric.md'
-const findings: CheckerFinding[] = []
+Apply the safe mechanical name-alignment fix to one agent definition or agent set.
 
-function localRubricPath(): string {
-  const scriptDir = dirname(fileURLToPath(import.meta.url))
-  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
-  return join(skillRoot, 'references', 'rubric.md')
-}
+Options:
+  --dry-run                    Report changes without writing them.
+  --reporter <reporter>        Output reporter: jsonl (default) or terminal.
+  --reporter-levels <levels>   Terminal levels: comma-separated values or all.
+  -h, --help                   Show this help and exit.
+`
 
-function rec(level: 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS', code: string, message: string, file?: string): void {
-  findings.push({ type: 'M', level, code, message, ref: RUBRIC, file })
-}
+type AgentsContextFactory = (roots: readonly string[], dryRun: boolean) => AgentsRubricContext
 
-// Kept in lockstep with audit.ts for the field this script mutates.
-function findName(content: string): { value: string } | null {
-  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/)
-  if (!match) return null
-  for (const line of (match[1] as string).split(/\r?\n/)) {
-    const keyValue = line.match(/^name:(.*)$/)
-    if (!keyValue) continue
-    let value = (keyValue[1] as string).trim()
-    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) value = value.slice(1, -1)
-    return { value }
+/** The checker validates the complete catalogue and execution plan before invoking this context factory. */
+export const runAgentsConform = (
+  target: string,
+  dryRun: boolean,
+  rubric: RubricDefinition<AgentsRubricContext> = KI_AGENTS_RUBRIC,
+  contextFactory: AgentsContextFactory = createAgentsContext
+): CheckerResult =>
+  runChecker({
+    mode: 'conform',
+    concern: rubric.concern,
+    target: resolve(target),
+    rubric,
+    subjects: [{ familyCodes: rubric.families.map((family) => family.code), context: () => contextFactory([target], dryRun) }]
+  })
+
+const main = (): never => {
+  const arguments_ = process.argv.slice(2)
+  if (arguments_.some((argument) => argument === '-h' || argument === '--help')) {
+    process.stdout.write(usage)
+    process.exit(0)
   }
-  return null
-}
 
-function agentsRoot(abs: string): string {
-  if (basename(abs) === 'agents') return abs
-  const candidate = join(abs, 'agents')
-  return existsSync(candidate) && statSync(candidate).isDirectory() ? candidate : abs
-}
-
-function discoverAgentFiles(path: string): string[] {
-  const abs = resolve(path)
-  if (!existsSync(abs)) return []
-  if (statSync(abs).isFile()) return abs.endsWith('.md') ? [abs] : []
-  const out: string[] = []
-  const walk = (directory: string): void => {
-    for (const entry of readdirSync(directory, { withFileTypes: true })) {
-      if (entry.name.startsWith('.') || entry.name === 'node_modules') continue
-      const file = join(directory, entry.name)
-      if (entry.isDirectory() || entry.isSymbolicLink()) {
-        try {
-          if (statSync(file).isDirectory()) walk(file)
-        } catch {
-          // Ignore dangling links.
-        }
-      } else if (entry.name.endsWith('.md') && entry.name !== 'README.md') {
-        out.push(file)
-      }
-    }
+  let parsed: ReturnType<typeof parseReporterArguments>
+  try {
+    parsed = parseReporterArguments(arguments_)
+  } catch (error) {
+    process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
+    process.exit(2)
   }
-  walk(agentsRoot(abs))
-  return out.sort()
+  const unknownOption = parsed.arguments.find((argument) => argument.startsWith('-') && argument !== '--dry-run')
+  if (unknownOption) {
+    process.stderr.write(`error: unknown option: ${unknownOption}\n`)
+    process.exit(2)
+  }
+  const targets = parsed.arguments.filter((argument) => !argument.startsWith('-'))
+  if (targets.length > 1) {
+    process.stderr.write('error: conform accepts at most one target\n')
+    process.exit(2)
+  }
+
+  const target = targets[0] ?? 'agents'
+  const result = runAgentsConform(target, parsed.arguments.includes('--dry-run'))
+  process.stdout.write(renderCheckerResult(result, { ...parsed.options, colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR) }))
+  process.exit(result.exitCode)
 }
 
-const rawArgs = process.argv.slice(2)
-const dryRun = rawArgs.includes('--dry-run')
-const target = rawArgs.find((arg) => !arg.startsWith('-')) ?? 'agents'
-const abs = resolve(target)
-
-if (!existsSync(abs)) {
-  rec('FAIL', 'LAY-1', 'The requested conform path does not exist.')
-} else {
-  for (const file of discoverAgentFiles(abs)) {
-    const content = readFileSync(file, 'utf8')
-    const stem = basename(file).replace(/\.md$/, '')
-    const found = findName(content)
-    if (!found) {
-      rec('ADVISORY', 'NAME-1', 'No name field is available for the LAY-3 fix.', file)
-      continue
-    }
-    if (found.value === stem) {
-      rec('PASS', 'LAY-3', 'Filename stem already matches name.', file)
-      continue
-    }
-    if (dryRun) {
-      rec('POLISH', 'LAY-3', `Would rewrite name to ${stem}.`, file)
-      continue
-    }
-    const lines = content.split(/\r?\n/)
-    const nameLine = lines.findIndex((line) => /^name:/.test(line))
-    if (nameLine === -1) {
-      rec('ADVISORY', 'NAME-1', 'No name field is available for the LAY-3 fix.', file)
-      continue
-    }
-    lines[nameLine] = `name: ${stem}`
-    writeFileSync(file, lines.join('\n'))
-    rec('POLISH', 'LAY-3', `Rewrote name to ${stem}.`, file)
+if (import.meta.main) {
+  try {
+    main()
+  } catch (error) {
+    process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
+    process.exit(2)
   }
 }
-
-findings.push(...judgmentFindingsFromRubric(localRubricPath(), RUBRIC))
-emitCheckerReporter({ mode: 'conform', concern: 'agents', target: abs, findings })
-process.exit(checkerReporterExitCode(findings))

@@ -80,6 +80,7 @@ export type KiCheckerRubricContext = {
   checkerDependencies: readonly string[]
   rubricModuleExists: boolean
   checkerModuleExists: boolean
+  reporterModuleExists: boolean
 }
 
 type CollisionTarget = {
@@ -248,7 +249,8 @@ export const createKiSkillsRubricContext = (overrides: Partial<KiSkillsRubricCon
     checkerModules: [],
     checkerDependencies: [],
     rubricModuleExists: false,
-    checkerModuleExists: false
+    checkerModuleExists: false,
+    reporterModuleExists: false
   },
   link: { markdown: '', relativeTargetExists: () => true },
   shape: createKiShapeContext({ skill: null }),

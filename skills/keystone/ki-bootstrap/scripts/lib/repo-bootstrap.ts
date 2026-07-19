@@ -159,10 +159,9 @@ const AGGREGATE_RUNNER = `#!/usr/bin/env bun
 // sequence for the given verb — no package.json required.
 // Usage: bun .ki-meta/bin/aggregate.ts <audit|conform|educate|help> [--skill <ki-skill>] [--reporter-levels=<levels>]
 import { execFileSync, spawnSync } from 'node:child_process'
-import { existsSync, lstatSync, readFileSync, readdirSync } from 'node:fs'
+import { existsSync, lstatSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { planModeElements } from './mode-elements.ts'
 
 const verb = process.argv[2]
 if (!verb) {
@@ -203,23 +202,17 @@ let checkers = readdirSync(checkersDir, { withFileTypes: true })
 // Emoji_Presentation=Yes glyphs (genuinely 2 cols everywhere); ⚠️/ℹ️ have narrow base
 // chars that VS16 does NOT widen under wcwidth-style terminals (VS Code/xterm.js counts
 // them 1 col), so they carry an explicit trailing space to make up the second column.
-// NA uses 🚫 (a 2-col circle-slash) in place of the 1-col ⊘.
-const ICON = { FAIL: '\\u274c', WARN: '\\u26a0\\ufe0f ', POLISH: '\\u2728', ADVISORY: '\\ud83e\\udded', INFO: '\\u2139\\ufe0f ', NA: '\\ud83d\\udeab', PASS: '\\u2705' }
-const LEVELS = ['FAIL', 'WARN', 'POLISH', 'ADVISORY', 'INFO', 'NA', 'PASS']
-const SUMMARY_KEYS = ['fail', 'warn', 'polish', 'advisory', 'info', 'na', 'pass']
+// NOT_APPLICABLE uses 🚫 (a 2-col circle-slash) in place of the 1-col ⊘.
+const ICON = { FAIL: '\\u274c', WARN: '\\u26a0\\ufe0f ', FIXED: '\\u2705', INFO: '\\u2139\\ufe0f ', NOT_APPLICABLE: '\\ud83d\\udeab', PASS: '\\u2705' }
+const LEVELS = ['FAIL', 'WARN', 'FIXED', 'INFO', 'NOT_APPLICABLE', 'PASS']
+const SUMMARY_KEYS = ['fail', 'warn', 'fixed', 'info', 'notApplicable', 'pass']
 const RUN_KEYS = ['version', 'runId', 'record', 'mode', 'concern', 'target', 'generatedAt']
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
-const FAILURE_LEVELS = ['FAIL', 'WARN', 'POLISH']
+const DEFAULT_REPORTER_LEVELS = new Set(verb === 'conform' ? ['FAIL', 'WARN', 'FIXED'] : ['FAIL', 'WARN'])
 const verbed = verb === 'conform' ? 'conformed' : 'audited'
-// Render one finding row: icon status [readable title (code)] file msg (ref). file/ref shown only when
-// the finding carries them (structured fields — most checkers only populate them once
-// swept). full=false trims msg to its first line (recap rows stay one-line).
-// Fixed-width short level tags (fail/warn/pol/adv/info/na/pass) keep the identity column
-// aligned at a tight 4-wide field — without them "advisory" would force an 8-wide pad.
-// Icons are each two display columns (sub-width glyphs ⊘/⚠️/ℹ️ carry a trailing space),
-// aligned across both body and recap rows.
-const SHORT = { FAIL: 'fail', WARN: 'warn', POLISH: 'pol', ADVISORY: 'adv', INFO: 'info', NA: 'na', PASS: 'pass' }
-const DEFAULT_REPORTER_LEVELS = new Set(FAILURE_LEVELS)
+// Render one finding row: icon status [title (code)] subject — message. full=false
+// trims the message to its first line so recap rows remain one-line.
+const SHORT = { FAIL: 'fail', WARN: 'warn', FIXED: 'fixed', INFO: 'info', NOT_APPLICABLE: 'na', PASS: 'pass' }
 const parseReporterOptions = (args) => {
   let levels = DEFAULT_REPORTER_LEVELS
   let skill
@@ -249,37 +242,12 @@ const parseReporterOptions = (args) => {
   }
   return { levels, skill, childArgs }
 }
-const rubricTitleCache = new Map()
-const rubricTitles = (skillDir) => {
-  if (rubricTitleCache.has(skillDir)) return rubricTitleCache.get(skillDir)
-  const titles = new Map()
-  const rubric = join(skillDir, 'references', 'rubric.md')
-  if (existsSync(rubric)) {
-    for (const line of readFileSync(rubric, 'utf8').split(/\\r?\\n/)) {
-      const bullet = line.match(/^\\s*-\\s+(?:\\[[ xX]\\]\\s+)?\\*\\*([^*]+)\\*\\*(.*)$/)
-      if (!bullet) continue
-      const [, bold, after] = bullet
-      const code = bold.trim().match(/^(?:\\[[^\\]]+\\]\\s*)?([A-Z][A-Za-z0-9-]*)/)?.[1]
-      const tags = bold + ' ' + after
-      if (!code || !/\\[[^\\]]*\\b[JM]\\b[^\\]]*\\]/.test(tags)) continue
-      const title = after
-        .replace(/^\\s*(?:\\[[^\\]]+\\]\\s*)*/, '')
-        .replace(/^(?:FAIL|WARN|POLISH|ADVISORY|INFO|NA|PASS)\\s*[—–-]\\s*/i, '')
-        .replace(/[\`*_]/g, '')
-        .trim()
-      if (title) titles.set(code, title)
-    }
-  }
-  rubricTitleCache.set(skillDir, titles)
-  return titles
-}
-const findingLine = (icon, level, code, title, file, msg, ref, skill, full) =>
+const findingLine = (icon, level, code, title, subject, msg, skill, full) =>
   '  ' + icon + ' ' + (SHORT[level] || level.toLowerCase()).padEnd(4) +
   (skill ? ' ' + skill.padEnd(20) : '') +
-  ' \\x1b[2m[' + (title ? title + ' (' + code + ')' : code) + ']\\x1b[0m' +
-  (file ? ' \\x1b[36m' + file + '\\x1b[0m' : '') +
-  ' ' + (full ? msg : String(msg).split('\\n')[0]) +
-  (ref ? ' \\x1b[2m(' + ref + ')\\x1b[0m' : '')
+  ' \\x1b[2m[' + title + ' (' + code + ')]\\x1b[0m' +
+  (subject ? ' \\x1b[36m' + subject + '\\x1b[0m' : '') +
+  ' — ' + (full ? msg : String(msg).split('\\n')[0])
 
 const isRecord = (value) => typeof value === 'object' && value !== null && !Array.isArray(value)
 const nonEmptyString = (value) => typeof value === 'string' && value.trim().length > 0
@@ -310,8 +278,8 @@ const validateReport = (events, exitCode, expectedMode) => {
   if (meta.mode !== expectedMode) errors.push('meta mode must be ' + expectedMode)
   if (!nonEmptyString(meta.concern) || !nonEmptyString(meta.target)) errors.push('meta concern and target must be non-empty')
   if (!nonEmptyString(meta.generatedAt) || Number.isNaN(Date.parse(meta.generatedAt))) errors.push('meta generatedAt must be an ISO timestamp')
-  const counts = { fail: 0, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: 0 }
-  let mechanicalFailure = false
+  const counts = { fail: 0, warn: 0, fixed: 0, info: 0, notApplicable: 0, pass: 0 }
+  let hasFailure = false
   for (const [index, event] of events.entries()) {
     const label = 'record ' + (index + 1)
     if (!isRecord(event)) {
@@ -323,7 +291,8 @@ const validateReport = (events, exitCode, expectedMode) => {
       errors.push(label + ' has an invalid record kind')
       continue
     }
-    const permitted = record === 'meta' ? RUN_KEYS : record === 'finding' ? [...RUN_KEYS, 'type', 'level', 'code', 'message', 'ref', 'file'] : [...RUN_KEYS, 'summary']
+    const permitted =
+      record === 'meta' ? RUN_KEYS : record === 'finding' ? [...RUN_KEYS, 'level', 'code', 'title', 'message', 'subject'] : [...RUN_KEYS, 'summary']
     for (const key of Object.keys(event)) if (!permitted.includes(key)) errors.push(label + ' has unknown field: ' + key)
     if (event.version !== 1 || event.runId !== meta.runId || event.mode !== meta.mode || event.concern !== meta.concern || event.target !== meta.target || event.generatedAt !== meta.generatedAt)
       errors.push(label + ' must carry the meta run identity')
@@ -332,23 +301,33 @@ const validateReport = (events, exitCode, expectedMode) => {
       continue
     }
     if (record !== 'finding') continue
-    if ((event.type !== 'M' && event.type !== 'J') || !LEVELS.includes(event.level)) errors.push(label + ' has an invalid finding type or level')
-    if (!nonEmptyString(event.code) || !nonEmptyString(event.message)) errors.push(label + ' must carry a code and message')
-    if (event.ref !== undefined && !nonEmptyString(event.ref)) errors.push(label + ' ref must be non-empty when present')
-    if (event.file !== undefined && !nonEmptyString(event.file)) errors.push(label + ' file must be non-empty when present')
-    if (event.type === 'J' && (event.level !== 'ADVISORY' || !nonEmptyString(event.ref))) errors.push(label + ' J findings must be cited ADVISORY records')
-    if (event.type === 'M' && ['FAIL', 'WARN', 'POLISH'].includes(event.level) && !nonEmptyString(event.ref)) errors.push(label + ' non-passing M findings must cite their criterion')
-    if (LEVELS.includes(event.level)) counts[event.level.toLowerCase()]++
-    if (event.type === 'M' && event.level === 'FAIL') mechanicalFailure = true
+    if (!LEVELS.includes(event.level)) errors.push(label + ' has an invalid finding level')
+    if (expectedMode === 'audit' && event.level === 'FIXED') errors.push(label + ' audit finding cannot be FIXED')
+    if (!nonEmptyString(event.code) || !nonEmptyString(event.title) || !nonEmptyString(event.message))
+      errors.push(label + ' must carry a code, title, and message')
+    if (event.subject !== undefined && !nonEmptyString(event.subject)) errors.push(label + ' subject must be non-empty when present')
+    if (LEVELS.includes(event.level)) {
+      const key = event.level === 'NOT_APPLICABLE' ? 'notApplicable' : event.level.toLowerCase()
+      counts[key]++
+    }
+    if (event.level === 'FAIL') hasFailure = true
   }
   if (isRecord(summary) && summary.record === 'summary') {
     if (!isRecord(summary.summary)) errors.push('summary record must carry a summary object')
-    else for (const key of SUMMARY_KEYS) {
-      if (!Number.isInteger(summary.summary[key]) || summary.summary[key] < 0 || summary.summary[key] !== counts[key]) errors.push('summary ' + key + ' does not match findings')
+    else {
+      for (const key of SUMMARY_KEYS) {
+        if (!Number.isInteger(summary.summary[key]) || summary.summary[key] < 0 || summary.summary[key] !== counts[key])
+          errors.push('summary ' + key + ' does not match findings')
+      }
+      const judgment = summary.summary.judgment
+      if (!isRecord(judgment) || !Number.isInteger(judgment.unevaluated) || judgment.unevaluated < 0)
+        errors.push('summary judgment.unevaluated must be a non-negative integer')
+      else for (const key of Object.keys(judgment)) if (key !== 'unevaluated') errors.push('summary judgment has unknown key: ' + key)
+      for (const key of Object.keys(summary.summary))
+        if (![...SUMMARY_KEYS, 'judgment'].includes(key)) errors.push('summary has unknown key: ' + key)
     }
-    for (const key of Object.keys(summary.summary || {})) if (!SUMMARY_KEYS.includes(key)) errors.push('summary has unknown key: ' + key)
   }
-  if ((exitCode !== 0) !== mechanicalFailure) errors.push('exit status must be non-zero if and only if an M FAIL finding exists')
+  if ((exitCode !== 0) !== hasFailure) errors.push('exit status must be non-zero if and only if a FAIL finding exists')
   return errors
 }
 
@@ -369,53 +348,24 @@ if (reporter.skill) {
   }
   checkers = [reporter.skill]
 }
-const declarations = {}
 for (const skill of checkers) {
-  const declarationPath = join(checkersDir, skill, '.ki-meta', 'mode-elements.json')
-  if (!existsSync(declarationPath)) {
-    console.error('error: no vendored mode-element declaration for ' + skill)
-    process.exit(2)
-  }
-  const stat = lstatSync(declarationPath)
-  if (!stat.isFile() || stat.isSymbolicLink()) {
-    console.error('error: unsafe mode-element declaration for ' + skill)
-    process.exit(2)
-  }
-  try {
-    declarations[skill] = JSON.parse(readFileSync(declarationPath, 'utf8'))
-  } catch {
-    console.error('error: invalid mode-element JSON for ' + skill)
-    process.exit(2)
-  }
-}
-const planned = planModeElements(declarations, verb)
-if (planned.errors.length) {
-  console.error('error: invalid mode-element graph: ' + planned.errors.join('; '))
-  process.exit(2)
-}
-const entryCounts = new Map()
-for (const item of planned.order) {
-  const key = item.skill + '/' + item.element.entry
-  entryCounts.set(key, (entryCounts.get(key) || 0) + 1)
-}
-for (const { skill, element } of planned.order) {
   const dir = join(checkersDir, skill)
-  const scriptPath = join(dir, element.entry)
+  const entry = 'scripts/' + verb + '.ts'
+  const scriptPath = join(dir, entry)
   if (!existsSync(scriptPath)) {
     failed = true
-    reportErrors.push({ skill, errors: ['declared entry is missing: ' + element.entry] })
+    reportErrors.push({ skill, errors: ['checker entry is missing: ' + entry] })
     continue
   }
   const scriptStat = lstatSync(scriptPath)
   if (!scriptStat.isFile() || scriptStat.isSymbolicLink()) {
     failed = true
-    reportErrors.push({ skill, errors: ['declared entry is unsafe: ' + element.entry] })
+    reportErrors.push({ skill, errors: ['checker entry is unsafe: ' + entry] })
     continue
   }
   // The renderer consumes --reporter-levels itself. All other flags (for example
   // --dry-run) forward to every child, whose canonical JSONL stays complete.
-  const selected = entryCounts.get(skill + '/' + element.entry) > 1 ? ['--mode-element=' + element.id] : []
-  const res = spawnSync('bun', [scriptPath, '.', ...selected, ...reporter.childArgs], { encoding: 'utf8' })
+  const res = spawnSync('bun', [scriptPath, '.', ...reporter.childArgs], { encoding: 'utf8' })
   const parsed = parseJsonl(res.stdout ?? '')
   const errors = [...parsed.errors, ...validateReport(parsed.events, res.status ?? 1, verb)]
   if (res.error) errors.push('process failed to start: ' + res.error.message)
@@ -426,8 +376,7 @@ for (const { skill, element } of planned.order) {
     continue
   }
   const findings = parsed.events.slice(1, -1)
-  const titles = rubricTitles(dir)
-  reports.push({ skill, key: 'ki:' + skill.replace(/^ki-/, '') + ':' + verb + '/' + element.id, findings, titles, summary: parsed.events.at(-1).summary })
+  reports.push({ skill, key: 'ki:' + skill.replace(/^ki-/, '') + ':' + verb, findings, summary: parsed.events.at(-1).summary })
   if ((res.status ?? 0) !== 0) failed = true
 }
 for (const report of reports) {
@@ -441,18 +390,20 @@ for (const report of reports) {
         ICON[level],
         level,
         finding.code,
-        report.titles.get(finding.code) || '',
-        finding.file ?? '',
+        finding.title,
+        finding.subject ?? '',
         finding.message,
-        finding.ref ?? '',
         '',
         true
       )
     )
   }
   const summary = report.summary
-  const sicon = summary.fail ? ICON.FAIL : summary.warn ? ICON.WARN : summary.polish ? ICON.POLISH : ICON.PASS
-  console.log('  ' + sicon + ' \\x1b[2msummary: FAIL=' + summary.fail + ' WARN=' + summary.warn + ' POLISH=' + summary.polish + '\\x1b[0m')
+  const sicon = summary.fail ? ICON.FAIL : summary.warn ? ICON.WARN : ICON.PASS
+  console.log(
+    '  ' + sicon + ' \\x1b[2msummary: FAIL=' + summary.fail + ' WARN=' + summary.warn + ' FIXED=' + summary.fixed +
+    ' JUDGMENT_UNEVALUATED=' + summary.judgment.unevaluated + '\\x1b[0m'
+  )
 }
 console.log('\\n\\x1b[36m==> recap\\x1b[0m')
 const allFindings = reports.flatMap((report) =>
@@ -460,10 +411,9 @@ const allFindings = reports.flatMap((report) =>
     skill: report.skill,
     level: finding.level,
     code: finding.code,
-    title: report.titles.get(finding.code) || '',
+    title: finding.title,
     msg: finding.message,
-    ref: finding.ref ?? '',
-    file: finding.file ?? ''
+    subject: finding.subject ?? ''
   }))
 )
 const recap = allFindings.filter((finding) => reporter.levels.has(finding.level))
@@ -473,12 +423,13 @@ if (recap.length === 0) {
   console.log('  \\x1b[1mselected findings\\x1b[0m')
   for (const level of LEVELS)
     for (const h of recap.filter((finding) => finding.level === level))
-      console.log(findingLine(ICON[level], level, h.code, h.title, h.file, h.msg, h.ref, h.skill, false))
+      console.log(findingLine(ICON[level], level, h.code, h.title, h.subject, h.msg, h.skill, false))
 }
 const count = (level) => allFindings.filter((finding) => finding.level === level).length
-const ticon = count('FAIL') ? ICON.FAIL : count('WARN') ? ICON.WARN : count('POLISH') ? ICON.POLISH : ICON.PASS
+const ticon = count('FAIL') ? ICON.FAIL : count('WARN') ? ICON.WARN : ICON.PASS
 const suppressed = LEVELS.filter((level) => !reporter.levels.has(level))
 const suppressedCounts = suppressed.map((level) => level + '=' + count(level)).join(' ')
+const judgmentUnevaluated = reports.reduce((total, report) => total + report.summary.judgment.unevaluated, 0)
 console.log(
   '  ' +
     ticon +
@@ -486,8 +437,10 @@ console.log(
     count('FAIL') +
     ' WARN=' +
     count('WARN') +
-    ' POLISH=' +
-    count('POLISH') +
+    ' FIXED=' +
+    count('FIXED') +
+    ' JUDGMENT_UNEVALUATED=' +
+    judgmentUnevaluated +
     (suppressed.length ? ' (suppressed: ' + suppressedCounts + ')' : ' (all levels shown)') +
     '\\x1b[0m'
 )
@@ -514,7 +467,7 @@ case "\${1:-}" in
   -h|--help)
     echo "usage: ki-audit [audit|conform|educate|help] [--dry-run ...] [--reporter-levels=<levels>]"
     echo "  runs each vendored skill checker under .ki-meta/checkers/ for the given verb."
-    echo "  reporter levels default to FAIL,WARN,POLISH; use all or a comma-separated level list."
+    echo "  reporter levels default to FAIL,WARN; use all or a comma-separated level list."
     echo "  audit    read-only self-check (the default verb)"
     echo "  conform  apply the mechanical fixes (same as ./.ki-meta/bin/ki-conform)"
     echo "  educate     run whole-set re-bootstrap or one vendored educator (same as ./.ki-meta/bin/ki-educate)"
@@ -546,7 +499,7 @@ case "\${1:-}" in
     echo "usage: ki-conform [--dry-run] [--reporter-levels=<levels>]"
     echo "  applies each vendored skill's mechanical fixes across .ki-meta/checkers/."
     echo "  --dry-run  report what would change without writing."
-    echo "  reporter levels default to FAIL,WARN,POLISH; use all or a comma-separated level list."
+    echo "  reporter levels default to FAIL,WARN,FIXED; use all or a comma-separated level list."
     exit 0
     ;;
 esac
@@ -960,6 +913,35 @@ function copyRegularFile(source: string, destination: string): void {
   if (after.kind !== 'file' || !before.bytes.equals(after.bytes)) throw new Error(`copied source changed during read: ${source}`)
 }
 
+function copyRegularTree(
+  generationRoot: string,
+  source: string,
+  destination: string,
+  destinationRel: string,
+  journal: OwnedSnapshot
+): VendoredFile[] {
+  const copied: VendoredFile[] = []
+
+  const copyEntry = (sourcePath: string, destinationPath: string, rel: string): void => {
+    const stat = lstatSync(sourcePath)
+    if (stat.isSymbolicLink() || (!stat.isFile() && !stat.isDirectory())) throw new Error(`unsafe vendored payload entry: ${sourcePath}`)
+    if (stat.isFile()) {
+      copyRegularFile(sourcePath, destinationPath)
+      recordGenerated(journal, generationRoot, rel)
+      copied.push({ rel: `${VENDOR_DIR}/${rel}`, abs: destinationPath })
+      return
+    }
+    mkdirSync(destinationPath)
+    recordGenerated(journal, generationRoot, rel)
+    for (const name of readdirSync(sourcePath).sort()) {
+      copyEntry(join(sourcePath, name), join(destinationPath, name), join(rel, name))
+    }
+  }
+
+  copyEntry(source, destination, destinationRel)
+  return copied
+}
+
 function vendorCheckerModulePayload(
   generationRoot: string,
   destDir: string,
@@ -969,7 +951,6 @@ function vendorCheckerModulePayload(
   journal: OwnedSnapshot,
   ownModule = false
 ): VendoredFile[] {
-  const copied: VendoredFile[] = []
   const vendorRoot = ownModule ? join(destDir, 'lib') : join(destDir, 'vendored', module.provider)
   const vendorRootRel = ownModule
     ? join(CHECKERS_DIR, skill, 'scripts', 'lib')
@@ -980,23 +961,7 @@ function vendorCheckerModulePayload(
   mkdirSync(vendorRoot, { recursive: true })
   if (!ownModule) recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, 'scripts', 'vendored'))
   recordGenerated(journal, generationRoot, vendorRootRel)
-
-  const copyTree = (source: string, destination: string, rel: string): void => {
-    const stat = lstatSync(source)
-    if (stat.isSymbolicLink() || (!stat.isFile() && !stat.isDirectory())) throw new Error(`unsafe checker module payload entry: ${source}`)
-    if (stat.isFile()) {
-      copyRegularFile(source, destination)
-      recordGenerated(journal, generationRoot, rel)
-      copied.push({ rel: `${VENDOR_DIR}/${rel}`, abs: destination })
-      return
-    }
-    mkdirSync(destination)
-    recordGenerated(journal, generationRoot, rel)
-    for (const name of readdirSync(source).sort()) copyTree(join(source, name), join(destination, name), join(rel, name))
-  }
-
-  copyTree(payload.source, target, targetRel)
-  return copied
+  return copyRegularTree(generationRoot, payload.source, target, targetRel, journal)
 }
 
 function recordGenerated(journal: OwnedSnapshot, staging: string, rel: string): void {
@@ -1063,24 +1028,19 @@ function vendorSkill(
   // the old `if (!audit) return` guard so bare non-governance dirs are ignored.
   if (written.length === 0) return
 
-  // Mode elements are data, not generated code: copy the skill-local declaration
-  // beside its runnable payload so a target can build the same aggregate graph
-  // without reaching back to the harness source. A declaration is optional until
-  // the fleet migration in GOV-003 is complete; once present it is always a
-  // regular file, never a link.
-  const modeElementsSource = join(skillDir(skill), '.ki-meta', 'mode-elements.json')
-  if (existsSync(modeElementsSource)) {
-    const modeElementsRel = join(CHECKERS_DIR, skill, '.ki-meta', 'mode-elements.json')
-    const modeElementsAbs = join(generationRoot, modeElementsRel)
-    if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${modeElementsRel} (mode elements)${RESET}`)
+  // A structured checker keeps its skill-specific catalogue, contexts, and
+  // publication logic beneath scripts/rubric/. Copy that tree beside the mode
+  // entry points: the shared rubric/checker/reporter modules alone cannot make
+  // an audit standalone when audit.ts imports its own rubric implementation.
+  const internalRubricSource = join(skillDir(skill), 'scripts', 'rubric')
+  if (existsSync(internalRubricSource)) {
+    const internalRubricRel = join(CHECKERS_DIR, skill, 'scripts', 'rubric')
+    const internalRubricAbs = join(generationRoot, internalRubricRel)
+    if (showActions)
+      console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${internalRubricRel} (internal rubric payload)${RESET}`)
     if (!dryRun) {
       if (!journal) throw new Error('candidate generation requires a creation journal')
-      mkdirSync(dirname(modeElementsAbs), { recursive: true })
-      recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill))
-      recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, '.ki-meta'))
-      copyRegularFile(modeElementsSource, modeElementsAbs)
-      recordGenerated(journal, generationRoot, modeElementsRel)
-      written.push({ rel: `${VENDOR_DIR}/${modeElementsRel}`, abs: modeElementsAbs })
+      written.push(...copyRegularTree(generationRoot, internalRubricSource, internalRubricAbs, internalRubricRel, journal))
     }
   }
 
@@ -1310,11 +1270,6 @@ function buildCandidate(
   }
 
   const aggregate = join(staging, 'bin', 'aggregate.ts')
-  const modeElements = join(import.meta.dirname, 'mode-elements.ts')
-  const vendoredPlanner = join(staging, 'bin', 'mode-elements.ts')
-  copyRegularFile(modeElements, vendoredPlanner)
-  recordGenerated(journal, staging, join('bin', 'mode-elements.ts'))
-  manifestFiles[join(VENDOR_DIR, 'bin', 'mode-elements.ts')] = hashJournalFile(journal, join('bin', 'mode-elements.ts'))
   writeFileSync(aggregate, AGGREGATE_RUNNER)
   recordGenerated(journal, staging, join('bin', 'aggregate.ts'))
   writeFileSync(join(staging, 'bin', 'ki-audit'), BIN_KI_AUDIT)

@@ -4,6 +4,16 @@ The canonical checker response is the JSON Lines (JSONL) machine-readable result
 
 Its executable record schema is [`../assets/checker-response.schema.json`](../assets/checker-response.schema.json).
 
+## Contents
+
+- [Normative language](#normative-language)
+- [Purpose](#purpose)
+- [Envelope](#envelope)
+- [Findings](#findings)
+- [Summary and exit status](#summary-and-exit-status)
+- [Downstream reporters](#downstream-reporters)
+- [Portability](#portability)
+
 ## Normative language
 
 Uppercase normative terms such as `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, and `MAY` use the BCP 14 meanings defined by [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) and [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174).
@@ -18,7 +28,7 @@ It does not own terminal formatting or report files.
 
 The response builder turns the complete finding set into a canonical JSONL stream.
 
-Downstream reporters validate and consume that stream to produce a human or system-specific view.
+Downstream consumers validate that stream before producing a human or system-specific view.
 
 This separation lets one checker result feed a terminal reporter, Markdown report, dashboard, or another machine without rerunning the checks.
 
@@ -70,13 +80,13 @@ Malformed JSONL is a checker failure, not a reason for a reporter to fall back t
 
 ## Downstream reporters
 
-A reporter accepts a validated canonical response and presents it without changing its meaning. A direct checker invocation selects terminal presentation explicitly:
+A reporter accepts a canonical checker result and presents it without changing its meaning. A direct checker invocation selects terminal presentation explicitly:
 
 ```bash
 bun scripts/audit.ts <target> --reporter=terminal --reporter-levels=all
 ```
 
-The default reporter shows `FAIL` and `WARN`, plus `FIXED` during CONFORM, with compact counts for suppressed levels and the unevaluated-judgment total.
+The default terminal view shows `FAIL` and `WARN`, plus `FIXED` during CONFORM, with compact counts for suppressed levels and the unevaluated-judgment total.
 
 `--reporter-levels=<comma-separated-levels>` selects displayed levels; `--reporter-levels=all` shows every mechanical finding.
 
@@ -92,9 +102,9 @@ With no `--reporter`, a checker emits the complete canonical JSONL response. Rep
 
 The response schema is a shipped asset of `ki-skills` for review and validation in the harness source.
 
-The target reusable implementation belongs to `ki-skills` at `scripts/lib/checker.ts` and consumes the generic model at `scripts/lib/rubric.ts`.
+The target reusable implementation belongs to `ki-skills`: `scripts/lib/checker.ts` consumes the generic model at `scripts/lib/rubric.ts`, while `scripts/lib/reporter.ts` presents its canonical result.
 
-A dependent governance skill vendors those declared modules into `scripts/vendored/ki-skills/` and imports only its local copies.
+A dependent governance skill vendors those three declared modules into `scripts/vendored/ki-skills/` and imports only its local copies.
 
 Checker-module dependencies supply implementation; they do not create a `depends-on:` governance-coverage edge.
 

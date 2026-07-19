@@ -2,7 +2,7 @@
 name: ki-bootstrap
 depends-on: [ki-repo]
 vendors: [educate, audit, conform, help]
-checker-dependencies: [ki-skills:checker-reporter]
+checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 description: >
   Bootstraps a Knowledge Islands repo into governance: the EDUCATE chain vendors declared checkers and local educator launchers into responsibility-specific `.ki-meta/` areas, so it self-governs via `./.ki-meta/bin/ki-audit` with zero skills installed and never changes `package.json`; it also links project-local skills from `.ki-config.toml` so the right instructions load in-session. Use when bootstrapping or re-bootstrapping a repo, making it self-govern, or setting up and auditing skill links. Triggers: "bootstrap this repo", "make this repo self-govern", "set up this repo's skills", "re-bootstrap this repo", "why aren't my skills loading in this repo". This is the install keystone — the one Knowledge Islands skill kept installed globally — so any repo can self-wire from the remote source. For `.ki-config.toml` coverage and GitHub settings use `ki-repo`; for the harness layout use `ki-harness`.
 argument-hint: 'help | educate [target] | audit [path] | conform [path] | refresh'
@@ -53,11 +53,10 @@ Successful EDUCATE runs report only the target, resolved scope count, and comple
 
 ### Mode AUDIT — check a repo's project-local skills and agents
 
-1. **Run the payload checker.** `bun "$HOME/.claude/skills/ki-bootstrap/scripts/lib/publish-project-skills.ts" [path] --check` (or the matching wired key) reports on the unified severity ladder (`ki-skills` enforcement framework §2): **BOOT-1** selected runtime skill directories match the copied-payload contract, and an exact or dotted `[ki-*]` declaration whose root resolves to no harness skill is a FAIL to reconcile by hand; **BOOT-3** runtime skill directories are gitignored. The same unresolved-root validation gates publisher write and dry-run modes before mutation. Package.json script-key wiring is out of scope for this publisher — it is `ki-engineering`'s concern, sugar over the vendored `.ki-meta/bin/*` wrappers — so there is no BOOT-2/5/7.
-2. **Run the vendor audit.** `bun skills/keystone/ki-bootstrap/scripts/audit.ts [path]` (or `bun run ki:bootstrap:audit` in the harness) checks **BOOT-9**, the resolved vendored skill set. When the target carries matching canonical skill sources in its own `skills/` tree it also checks **BOOT-11**, requiring every direct file-kind audit and conform copy to match its source byte-for-byte; re-bootstrap before committing any drift. A bootstrapped-only target reports BOOT-11 as NA because it carries no canonical skill sources to compare.
-3. **Judge the [J] criterion (BOOT-4) by reading** — is the repo's _declared_ coverage actually right (does it opt into the skills it uses)? That is `ki-repo`'s coverage cascade, not this skill's; name it as the off-ramp rather than re-deciding it here.
-4. **Report** by criterion. A missing, symlinked, or source-drifted runtime payload or absent gitignore entry is a WARN. CONFORM refreshes only a generated payload whose marker and tree digest validate; it leaves unfamiliar or altered material untouched with a migration diagnostic. Source-copy drift in `.ki-meta/` is a FAIL because committing it would publish a stale checker.
-5. **Aggregate judgmental sweep (BOOT-10).** Run the mechanical aggregate — `./.ki-meta/bin/ki-audit` (or `bun run ki:audit`) — and capture its per-skill findings verbatim; do not re-derive them. Then, for each governed skill it reports on, apply that skill's `[J]` judgment criteria from its own `rubric.md` — delegating to `agents/governance/<skill>-lead` where a lead agent exists, reading the rubric directly where none does. Report each skill's judgment result as an **ADVISORY** finding alongside the mechanical output, so the repo's governance is judged end to end, not just its wiring.
+1. **Run the structured checker.** `bun scripts/audit.ts [path]` from this skill directory (or `bun run ki:bootstrap:audit` in the harness) evaluates the codified rubric. With no reporter it emits canonical JSONL; add `--reporter=terminal` for the filtered human view. It checks runtime payload copies and gitignore entries (**BOOT-1/3**), governance agent wiring (**BOOT-6/8**), the resolved checker and educator sets (**BOOT-9/12**), and direct canonical-source parity when the target carries matching sources (**BOOT-11**).
+2. **Judge BOOT-4 by reading** — is the repo's declared coverage actually right? That is `ki-repo`'s coverage cascade; name it as the off-ramp rather than re-deciding it here.
+3. **Apply the aggregate judgmental sweep (BOOT-10).** Run `./.ki-meta/bin/ki-audit` (or `bun run ki:audit`) and capture the mechanical output verbatim. Then apply each governed skill's judgment prompts, using its governance lead when one exists and its generated readable rubric otherwise. The mechanical response summary counts judgment items that remain unevaluated; it does not emit synthetic judgment findings.
+4. **Report** by criterion. Missing, symlinked, or source-drifted runtime payloads and absent gitignore entries are WARN. Unresolvable declarations and direct source-copy drift are FAIL because they cannot be repaired safely by guessing.
 
 ### Mode CONFORM — wire a repo
 
@@ -66,7 +65,7 @@ The mechanical half is `scripts/conform.ts` (`bun run ki:bootstrap:conform` wher
 1. Run **AUDIT** first.
 2. **Copy** the normal project-local skill set with `bun "$HOME/.claude/skills/ki-bootstrap/scripts/lib/publish-project-skills.ts" [path]`. The publisher creates/prunes generated regular-file skills and writes matching `.gitignore` lines, creating `.gitignore` if absent. Preview with `--dry-run`.
 3. **Make it reproducible:** a repo reproduces its generated copies by re-running the repository bootstrap — no `package.json` script is required, and it scaffolds none (package.json script-key wiring is `ki-engineering`'s concern).
-4. **Aggregate judgmental sweep (BOOT-10).** Run `./.ki-meta/bin/ki-conform` (or `bun run ki:conform`) for the mechanical fixes, then re-apply the per-skill `[J]` judgment from AUDIT step 4 to confirm each skill's judged findings are resolved too — a clean mechanical pass is not sufficient on its own.
+4. **Aggregate judgmental sweep (BOOT-10).** Run `./.ki-meta/bin/ki-conform` (or `bun run ki:conform`) for the mechanical fixes, then re-apply the per-skill judgment prompts from AUDIT step 3 to confirm each skill's judged findings are resolved too — a clean mechanical pass is not sufficient on its own.
 5. **Re-run AUDIT** until clean.
 
 ### Mode REFRESH — re-anchor

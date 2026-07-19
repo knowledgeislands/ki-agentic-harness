@@ -2,7 +2,7 @@
 name: ki-decision-records
 depends-on: []
 vendors: [educate, audit, conform, help]
-checker-dependencies: [ki-skills:checker-reporter]
+checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 description: >
   Codify, audit, and maintain Decision Records in any Knowledge Islands repo — the unified instrument replacing ki-adrs and ki-kdrs. Each decision_type has its own prefix: GDR- (governance), ADR- (architecture), KDR- (knowledge), SDR- (strategy), PDR- (product), DDR- (data), XDR- (security), ODR- (operations), RDR- (research). Serials are per-prefix within scope. Governs the Nygard five-section format, status lifecycle, and placement: docs/decisions/ for code repos, Admin/Governance/Decisions/ for KB repos. In KB repos DRs carry type: admin/governance/decision plus decision_type, per the KI-wide frontmatter standard in ki-kb. Use when writing, auditing, or conforming decision records. Triggers: "write a DR", "create a decision record", "document this decision", "audit the DRs". Off-ramps: ki-kb (island structure and frontmatter standard), ki-kb-streams (Enactment Process).
 argument-hint: 'audit [dir] | conform [dir] | help | educate [dir] | new <scope> "<title>" | refresh'
@@ -68,4 +68,4 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**, plus **NEW** (
 - **Not every proposal needs a DR** — routine content additions, typo fixes, and minor configuration changes do not warrant one. Reserve DRs for decisions with standalone standing.
 - **KB repos** use `Admin/Governance/Decisions/` and require frontmatter (`type`, `decision_type`, `status`, `author`). **Code repos** use `docs/decisions/` and frontmatter is optional.
 - The KI-wide frontmatter standard (universal fields and the `type` taxonomy) lives in `ki-kb`'s [standards.md](../../repo-structure/ki-kb/references/standards.md).
-- Checker output conforms to the severity ladder, JSON shape, and exit-code contract in `ki-skills`' [checker contract](../../general-governance/ki-skills/references/checker-contract.md).
+- Checker output conforms to the canonical JSONL response and reporter contract owned by `ki-skills`; judgment aspects are counted as unevaluated rather than emitted as synthetic findings.

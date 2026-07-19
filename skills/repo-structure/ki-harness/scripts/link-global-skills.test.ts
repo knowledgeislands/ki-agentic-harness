@@ -27,6 +27,12 @@ function run(args: string[]): { status: number; stdout: string; stderr: string }
 
 const home = mkdtempSync(join(tmpdir(), 'ki-global-links-'))
 try {
+  const help = run(['--help'])
+  check(
+    'help exits cleanly and describes the command',
+    help.status === 0 && help.stdout.includes('Usage: bun scripts/link-global-skills.ts')
+  )
+
   mkdirSync(join(home, '.claude', 'skills'), { recursive: true })
   for (const skill of SKILLS) {
     const destination = join(home, '.claude', 'skills', skill)

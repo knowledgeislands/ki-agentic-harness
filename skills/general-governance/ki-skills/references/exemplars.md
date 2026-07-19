@@ -31,7 +31,7 @@ Curated illustrations of well-formed `SKILL.md` files. Use these when writing a 
 
 ### Well-formed frontmatter block
 
-The frontmatter of `ki-agents` shows the governance-skill contract plus the most important Claude Code extensions. `name` is all-lowercase with hyphens, matches the directory name exactly, and carries no generic words like `helper` or `utils`. `depends-on: []` makes an intentionally standalone skill explicit; `vendors` declares the generated universal mode elements. `description` is written in the third person ("Audit, review, and write…" — never "Can audit…"), names concrete trigger phrases, and ends with off-ramp declarations so the skill does not silently absorb adjacent work. `argument-hint` lists the discrete modes a user can pass at the `/` prompt.
+The frontmatter of `ki-agents` shows the governance-skill contract plus the most important Claude Code extensions. `name` is all-lowercase with hyphens, matches the directory name exactly, and carries no generic words like `helper` or `utils`. `depends-on: []` makes an intentionally standalone skill explicit; `vendors` declares the universal generated command payloads. `description` is written in the third person ("Audit, review, and write…" — never "Can audit…"), names concrete trigger phrases, and ends with off-ramp declarations so the skill does not silently absorb adjacent work. `argument-hint` lists the discrete modes a user can pass at the `/` prompt.
 
 ```yaml
 ---
@@ -57,7 +57,7 @@ HELP explains this skill's purpose, invocation, modes, and off-ramps without tak
 
 Review an agent (or every agent in a directory) against the rubric and report.
 
-1. **Run the linter.** From the repository root, run `bun run ki:agents:audit`. It reports the mechanical criteria on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS) and exits non-zero on any FAIL. Capture its output verbatim — do not re-derive what it found.
+1. **Run the linter.** From the repository root, run `bun run ki:agents:audit`. It reports mechanical findings with `FAIL`, `WARN`, `FIXED`, `INFO`, `NOT_APPLICABLE`, and `PASS`, and exits non-zero on any FAIL. Capture its output verbatim — do not re-derive what it found.
 2. **Read the agent definition** and apply the **judgment** ([J]-tagged) criteria from [the rubric](references/rubric.md) — the linter owns the [M] ones.
 3. **Report** findings by location → criterion → fix; lead with FAIL findings.
 ```
@@ -67,7 +67,7 @@ Review an agent (or every agent in a directory) against the rubric and report.
 EDUCATE is one of the universal four (its mechanical half a per-skill `scripts/educate.ts` that scaffolds a new artifact — or brings an off-standard one onto the floor from scratch); a skill-specific mode (e.g. an operational note-op, or OPTIMISE) follows the same definition shape, sitting alongside the four, named and alphabetical in the body. A mode definition states what kind of artifact it produces, the inputs it needs, what it reads before writing, and the output format. Do not name a skill-specific mode AUDIT, CONFORM, EDUCATE, or REFRESH — those are reserved for the universal four.
 
 ```markdown
-## Mode EDUCATE — write a new agent definition
+### Mode EDUCATE — write a new agent definition
 
 Create a well-formed agent definition from a plain-English description of the agent's role.
 

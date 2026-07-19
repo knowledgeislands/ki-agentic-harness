@@ -5,10 +5,8 @@ import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync 
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import {
-  parseCheckerReporterJsonl,
-  validateCheckerReporterEvents
-} from '../../../general-governance/ki-skills/scripts/lib/checker-reporter.ts'
+import { parseCheckerJsonl } from './vendored/ki-skills/checker.ts'
+import { ENGINEERING_ITEMS } from './rubric/items/engineering.ts'
 
 const CHECKER = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
 
@@ -22,6 +20,78 @@ function check(label: string, condition: boolean): void {
     console.log(`  \x1b[31mFAIL\x1b[0m ${label}`)
   }
 }
+
+const expectedRubricCodes = new Set([
+  'PKG-1',
+  'PKG-2',
+  'PKG-3',
+  'PKG-4',
+  'PKG-5',
+  'PKG-6',
+  'MISE-1',
+  'MISE-2',
+  'MISE-3',
+  'CI-1',
+  'CI-2',
+  'SCR-1',
+  'SCR-2',
+  'SCR-3',
+  'SCR-4',
+  'SCR-5',
+  'SCR-6',
+  'SCR-7',
+  'SCR-8',
+  'BUN-1',
+  'TSC-1',
+  'TSC-2',
+  'TSC-3',
+  'BIO-1',
+  'BIO-2',
+  'KNIP-1',
+  'KNIP-2',
+  'SYNC-1',
+  'DEPS-1',
+  'GEN-1',
+  'TEST-1',
+  'TEST-2',
+  'TEST-3',
+  'TEST-4',
+  'TEST-5',
+  'TEST-6',
+  'BUILD-1',
+  'BUILD-2',
+  'BUILD-3',
+  'BUILD-4',
+  'ENV-1',
+  'ENV-2',
+  'ENV-3',
+  'ENV-4',
+  'TOML-1',
+  'TOML-2'
+])
+check(
+  'structured rubric preserves every former criterion code',
+  ENGINEERING_ITEMS.length === expectedRubricCodes.size && ENGINEERING_ITEMS.every((item) => expectedRubricCodes.has(item.code))
+)
+check(
+  'structured rubric carries faithful metadata rather than placeholders',
+  ENGINEERING_ITEMS.every(
+    (item) => item.title !== 'engineering mechanical rule' && item.description.length > 10 && item.sources.includes('standards.md')
+  )
+)
+const hybridMechanicalCodes = new Set(['PKG-6', 'CI-2', 'SCR-5', 'BIO-2', 'TEST-1', 'BUILD-4'])
+check(
+  'structured rubric preserves explicit mixed-severity allowances',
+  ENGINEERING_ITEMS.filter((item) => hybridMechanicalCodes.has(item.code)).every((item) =>
+    item.mechanical?.overrideLevels?.includes(item.mechanical.level === 'FAIL' ? 'WARN' : 'FAIL')
+  )
+)
+check(
+  'structured rubric preserves judgment-only criteria',
+  ENGINEERING_ITEMS.filter((item) => ['SCR-8', 'BUN-1', 'TSC-3', 'TEST-6', 'ENV-3', 'ENV-4'].includes(item.code)).every(
+    (item) => Boolean(item.judgment) && !item.mechanical
+  )
+)
 
 function fixture(scripts: Record<string, string>, vitest?: { file: string; content: string }, ci?: string): string {
   const dir = mkdtempSync(join(tmpdir(), 'ki-engineering-test-'))
@@ -93,10 +163,10 @@ function run(dir: string): Finding[] {
     encoding: 'utf8',
     env: { ...process.env, PATH: `${fakeBin}:${process.env.PATH ?? ''}` }
   })
-  const parsed = parseCheckerReporterJsonl(result.stdout ?? '')
-  const errors = [...parsed.errors, ...validateCheckerReporterEvents(parsed.events, result.status ?? undefined)]
+  const parsed = parseCheckerJsonl(result.stdout ?? '')
+  const errors = parsed.errors
   if (errors.length) throw new Error(`checker produced an invalid canonical stream: ${errors.join('; ')}`)
-  return parsed.events.flatMap((event) => {
+  return parsed.records.flatMap((event) => {
     if (typeof event !== 'object' || event === null || Array.isArray(event)) return []
     const record = event as Record<string, unknown>
     if (
@@ -172,7 +242,7 @@ const generatedMarkdownlint = `{
 const generatedDirs = ['.ki-meta', 'src/generated', '.claude/skills', '.claude/agents', '.agents/skills']
 
 withFixture({}, (findings) => {
-  check('no generated surface is GEN-1 N/A', hasFinding(findings, 'GEN-1', 'NA', 'no generated or vendored surfaces'))
+  check('no generated surface is GEN-1 N/A', hasFinding(findings, 'GEN-1', 'NOT_APPLICABLE', 'no generated or vendored surfaces'))
   check('staged-only Markdown fan-out passes PKG-6', hasFinding(findings, 'PKG-6', 'PASS', 'staged-only'))
 })
 

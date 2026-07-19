@@ -19,5 +19,13 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const SKILL = 'ki-feature-definitions'
+const args = process.argv.slice(2)
+if (args.includes('-h') || args.includes('--help')) {
+  process.stdout.write(`Usage: bun scripts/educate.ts <target-repo> [--ref <ref>] [--dry-run] [--verbose]
+
+Bootstrap the Feature Definitions governance skill into a repository.
+`)
+  process.exit(0)
+}
 const engine = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'ki-bootstrap', 'scripts', 'lib', 'repo-bootstrap.ts')
-execFileSync('bun', [engine, ...process.argv.slice(2), '--seed', SKILL], { stdio: 'inherit' })
+execFileSync('bun', [engine, ...args, '--seed', SKILL], { stdio: 'inherit' })

@@ -89,6 +89,21 @@ interface Arguments {
   transcriptSelector: string | undefined
 }
 
+const printHelp = (): void => {
+  console.log(`Usage: recap-grounding.ts [repo-path] [--json] [--transcripts-dir <dir>] [--transcript <session-file>]
+
+Ground a live ki-recap with current repository and Claude transcript data.
+
+Arguments:
+  repo-path                  Repository to inspect (default: current directory)
+
+Options:
+  --json                     Emit machine-readable JSON
+  --transcripts-dir <dir>    Override the Claude transcript directory
+  --transcript <file>        Select one .jsonl transcript from that directory
+  -h, --help, ?              Show this help and exit`)
+}
+
 function parseArguments(args: string[]): Arguments {
   let jsonMode = false
   let repoArg: string | undefined
@@ -176,7 +191,13 @@ function findHighCostCandidates(calls: ToolCall[]): string[] {
 }
 
 function main() {
-  const { jsonMode, repoArg, transcriptsDir, transcriptSelector } = parseArguments(process.argv.slice(2))
+  const args = process.argv.slice(2)
+  if (args.some((argument) => ['-h', '--help', '?'].includes(argument))) {
+    printHelp()
+    return
+  }
+
+  const { jsonMode, repoArg, transcriptsDir, transcriptSelector } = parseArguments(args)
 
   const repoAbs = resolve(repoArg ?? process.cwd())
   const projectDir = transcriptsDir ? resolve(transcriptsDir) : resolveProjectDir(repoArg)

@@ -1,115 +1,56 @@
 #!/usr/bin/env bun
-/** Mechanical, normalize-only CONFORM for Feature Definitions. Emits canonical JSONL only. */
+/** Safe-write CONFORM entry point for the structured Feature Definitions rubric. */
 
-import { readdir, readFile, stat, writeFile } from 'node:fs/promises'
-import { basename, dirname, join, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import {
-  type CheckerFinding,
-  checkerReporterExitCode,
-  emitCheckerReporter,
-  judgmentFindingsFromRubric
-} from './vendored/ki-skills/checker-reporter.ts'
+import { resolve } from 'node:path'
+import { createFeatureDefinitionsContextFactory } from './rubric/contexts/feature-definitions.ts'
+import { FEATURE_DEFINITIONS_FAMILY_CODES, KI_FEATURE_DEFINITIONS_RUBRIC } from './rubric/items/index.ts'
+import { runChecker } from './vendored/ki-skills/checker.ts'
+import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
 
-const INDEX_FILE = 'index.md'
-const DEFAULT_SUBDIR = 'docs/features'
-const RUBRIC = 'references/rubric.md'
-const REQ_HEADING_RE = /^###\s+([A-Z][A-Z0-9]*(?:-[A-Z][A-Z0-9]*)*)-(\d{3,})\s+—\s+(.+?)\s*$/
-const H3_RE = /^###\s+(.+?)\s*$/
-const NEAR_MISS_HEADING_RE = /^###\s+([A-Z][A-Z0-9]*(?:-[A-Z][A-Z0-9]*)*-\d{3,})\s*(?:[–—-]{1,2})\s*(\S.*?)\s*$/
+const argv = process.argv.slice(2)
+if (argv.includes('-h') || argv.includes('--help')) {
+  process.stdout.write(`Usage: bun scripts/conform.ts [target] [options]
 
-function localRubricPath(): string {
-  const scriptDir = dirname(fileURLToPath(import.meta.url))
-  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
-  return join(skillRoot, 'references', 'rubric.md')
+Apply safe Feature Definition normalisation.
+
+Options:
+  --dry-run                    Report changes without writing them.
+  --reporter <reporter>        Output reporter: jsonl (default) or terminal.
+  --reporter-levels <levels>   Terminal levels: comma-separated values or all.
+  -h, --help                   Show this help and exit.
+`)
+  process.exit(0)
 }
 
-async function resolveFeaturesDir(target: string): Promise<string> {
-  const nested = join(target, DEFAULT_SUBDIR)
-  try {
-    await stat(nested)
-    return nested
-  } catch {
-    return target
-  }
+let parsed: ReturnType<typeof parseReporterArguments>
+try {
+  parsed = parseReporterArguments(argv)
+} catch (error) {
+  process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
+  process.exit(2)
 }
-
-function emit(target: string, findings: CheckerFinding[]): never {
-  findings.push(...judgmentFindingsFromRubric(localRubricPath(), RUBRIC))
-  emitCheckerReporter({ mode: 'conform', concern: 'feature-definitions', target, findings })
-  process.exit(checkerReporterExitCode(findings))
+const unknown = parsed.arguments.filter((argument) => argument.startsWith('-') && argument !== '--dry-run')
+const targets = parsed.arguments.filter((argument) => !argument.startsWith('-'))
+if (unknown.length > 0) {
+  process.stderr.write(`error: unknown option: ${unknown[0]}\n`)
+  process.exit(2)
 }
-
-async function main(): Promise<void> {
-  const args = process.argv.slice(2)
-  const dryRun = args.includes('--dry-run')
-  const target = resolve(args.find((value) => !value.startsWith('-')) ?? '.')
-  const resolvedDir = await resolveFeaturesDir(target)
-  const findings: CheckerFinding[] = []
-  const rec = (
-    level: 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS',
-    code: string,
-    message: string,
-    file?: string
-  ): void => {
-    findings.push({ type: 'M', level, code, message, ref: RUBRIC, ...(file ? { file } : {}) })
-  }
-
-  try {
-    await stat(resolvedDir)
-  } catch {
-    rec('FAIL', 'SCOPE', `Features directory not found: ${resolvedDir}.`, resolvedDir)
-    emit(resolvedDir, findings)
-  }
-
-  const entries = await readdir(resolvedDir)
-  const areaFiles = entries.filter((file) => file.endsWith('.md') && file !== INDEX_FILE).sort()
-  let headingFixes = 0
-  for (const file of areaFiles) {
-    const filePath = join(resolvedDir, file)
-    const content = await readFile(filePath, 'utf8')
-    const lines = content.split('\n')
-    let changed = false
-    let inGaps = false
-    for (const [index, line] of lines.entries()) {
-      const h2 = line.match(/^##\s+(.+?)\s*$/)
-      if (h2) {
-        inGaps = /^gaps\b/i.test((h2[1] as string).trim())
-        continue
-      }
-      if (inGaps || !H3_RE.test(line) || REQ_HEADING_RE.test(line)) continue
-      const near = line.match(NEAR_MISS_HEADING_RE)
-      if (!near) continue
-      const id = near[1] as string
-      const canonical = `### ${id} — ${near[2] as string}`
-      if (canonical === line) continue
-      rec('POLISH', 'ID-1', `${id}: separator normalized to “ — ”${dryRun ? ' (dry run — not written)' : ''}.`, file)
-      lines[index] = canonical
-      changed = true
-      headingFixes++
+if (targets.length > 1) {
+  process.stderr.write('error: conform accepts at most one target\n')
+  process.exit(2)
+}
+const target = resolve(targets[0] ?? '.')
+const result = runChecker({
+  mode: 'conform',
+  concern: KI_FEATURE_DEFINITIONS_RUBRIC.concern,
+  target,
+  rubric: KI_FEATURE_DEFINITIONS_RUBRIC,
+  subjects: [
+    {
+      familyCodes: FEATURE_DEFINITIONS_FAMILY_CODES,
+      context: createFeatureDefinitionsContextFactory({ target, dryRun: parsed.arguments.includes('--dry-run') })
     }
-    if (changed && !dryRun) await writeFile(filePath, lines.join('\n'))
-  }
-  if (headingFixes === 0) rec('PASS', 'ID-1', 'Requirement-heading separators are already canonical.')
-
-  for (const [code, message] of [
-    ['INDEX-1', 'Author a missing docs/features/index.md registry by hand.'],
-    ['INDEX-2', 'Author a missing Prefix and File areas table by hand.'],
-    ['AREA-1', 'Create a file listed by an areas table or remove its row.'],
-    ['AREA-2', 'Register an unlisted area file in the areas table.'],
-    ['ID-1', 'Author a malformed requirement heading by hand.'],
-    ['ID-2', 'Reconcile an unregistered or mis-owned prefix in the areas table.'],
-    ['ID-3', 'Renumber a duplicate ID by hand using the next free serial.'],
-    ['REQ-1', 'Write a normative RFC-2119 requirement statement by hand.'],
-    ['VERIFY-1', 'Add a concrete _Verify:_ hook by hand.']
-  ])
-    rec('ADVISORY', code, message)
-  emit(resolvedDir, findings)
-}
-
-main().catch((error) => {
-  const findings: CheckerFinding[] = [
-    { type: 'M', level: 'FAIL', code: 'RUNTIME', message: `Checker failed: ${String(error)}.`, ref: RUBRIC }
   ]
-  emit(resolve('.'), findings)
 })
+process.stdout.write(renderCheckerResult(result, { ...parsed.options, colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR) }))
+process.exit(result.exitCode)

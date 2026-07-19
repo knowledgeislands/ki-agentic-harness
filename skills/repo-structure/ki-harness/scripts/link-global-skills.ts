@@ -23,9 +23,21 @@ const self = fileURLToPath(import.meta.url)
 const harnessRoot = resolve(dirname(self), '..', '..', '..', '..')
 const skillsRoot = join(harnessRoot, 'skills')
 
-function usage(): never {
-  console.error('usage: bun link-global-skills.ts [--runtime <claude-code|codex>]... [--home <dir>] [--check|--dry-run]')
-  process.exit(2)
+function usage(exitCode: 0 | 2): never {
+  const output = `Usage: bun scripts/link-global-skills.ts [options]
+
+Link the harness's user-global process skills to this local checkout for development.
+
+Options:
+  --runtime <claude-code|codex>  Link one runtime; repeat to select both.
+  --home <dir>                   Override the user home used for runtime detection.
+  --check                        Verify existing links without writing.
+  --dry-run                      Report link changes without writing.
+  -h, --help                     Show this help and exit.
+`
+  const stream = exitCode === 0 ? process.stdout : process.stderr
+  stream.write(output)
+  process.exit(exitCode)
 }
 
 function regularDirectory(path: string): boolean {
@@ -77,17 +89,18 @@ function parse(): Options {
   const args = process.argv.slice(2)
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index]
-    if (arg === '--check') check = true
+    if (arg === '-h' || arg === '--help') usage(0)
+    else if (arg === '--check') check = true
     else if (arg === '--dry-run') dryRun = true
     else if (arg === '--home' || arg === '--runtime') {
       const value = args[++index]
-      if (!value) usage()
+      if (!value) usage(2)
       if (arg === '--home') home = resolve(value)
       else if (value in RUNTIMES) runtimes.push(value as Runtime)
-      else usage()
-    } else usage()
+      else usage(2)
+    } else usage(2)
   }
-  if (check && dryRun) usage()
+  if (check && dryRun) usage(2)
   return { home, runtimes: [...new Set(runtimes)], check, dryRun }
 }
 

@@ -10,19 +10,19 @@ Part of the Feature Definitions corpus; see [index.md](index.md).
 
 ### CHK-001 — The severity ladder
 
-A checker MUST grade findings on the unified FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS ladder, emitting the subset its domain warrants.
+A checker MUST grade findings on the unified FAIL / WARN / FIXED / INFO / NOT_APPLICABLE / PASS ladder, emitting the subset its domain warrants. `FIXED` is valid only during CONFORM.
 
-_Verify:_ [checker-contract.md](../../skills/general-governance/ki-skills/references/checker-contract.md) enumerates the seven levels.
+_Verify:_ [checker-contract.md](../../skills/general-governance/ki-skills/references/checker-contract.md) and the shared checker tests enumerate and enforce the six levels.
 
-### CHK-002 — Exit non-zero iff an M/FAIL exists
+### CHK-002 — Exit non-zero iff a FAIL exists
 
-A checker MUST exit non-zero if and only if at least one M/FAIL finding is present; every other level, including J/ADVISORY, exits zero.
+A checker MUST exit non-zero if and only if at least one FAIL finding is present; every other level exits zero. Judgment aspects are not mechanical findings and cannot affect checker exit status.
 
 _Verify:_ the canonical reporter contract and its focused tests compare findings with process status.
 
 ### CHK-003 — Normal invocation is machine-readable
 
-A checker MUST take its target path, read only that target, and emit canonical JSONL on its normal invocation; it MUST NOT retain an output-format flag, native terminal renderer, or report-file output.
+A checker MUST take its target path, read only that target during AUDIT, and emit canonical JSONL on its normal invocation. It MAY explicitly select a shared reporter such as `--reporter=terminal`; this changes presentation only, never execution, findings, or exit status.
 
 _Verify:_ the `ki-skills` source-harness checker test invokes each checker without a format flag and validates its output.
 
@@ -36,15 +36,15 @@ _Verify:_ the canonical reporter validator accepts the stream and rejects invali
 
 ### CHK-005 — Exact complete summary
 
-The final summary record MUST contain every lowercased severity key, including zeros, and its values MUST exactly count the preceding finding records.
+The final summary record MUST contain every lowercased finding-level key, including zeros, and its values MUST exactly count the preceding finding records. It MUST also contain the exact `judgment.unevaluated` count for selected rubric items whose judgment aspect was not mechanically performed.
 
 _Verify:_ the canonical reporter validator rejects missing, extra, non-integral, or inaccurate summary values.
 
-### CHK-006 — Judgment prompts are first-class findings
+### CHK-006 — Judgment remains explicitly unevaluated
 
-Every declared `[J]` criterion MUST appear once as a cited J/ADVISORY finding; it MUST NOT alter exit status.
+The checker MUST NOT emit a synthetic finding for a judgment aspect it did not evaluate. Every selected judgment aspect MUST contribute once to `summary.judgment.unevaluated`; a hybrid item contributes mechanical outcomes and one unevaluated judgment count under the same stable code.
 
-_Verify:_ the source-harness checker test resolves emitted codes and types against the emitting rubric.
+_Verify:_ the shared checker tests cover judgment-only and hybrid items, prevent synthetic findings, and validate the summary count.
 
 ### CHK-007 — Standalone local dependencies
 
@@ -52,17 +52,17 @@ A checker MUST use only builtins and its own files after vendoring; its only per
 
 _Verify:_ `ki-skills` rejects script imports that escape a skill’s scripts tree, and bootstrap verifies declared module payloads.
 
-### CHK-008 — Aggregate-only presentation
+### CHK-008 — Shared presentation
 
-The bootstrap aggregate MUST be the sole terminal renderer of checker findings and MUST reject malformed checker output rather than fall back to native text.
+Direct commands and the bootstrap aggregate MUST use the same semantic reporter rules. The aggregate MUST reject malformed checker output rather than fall back to native text; direct terminal output MUST be explicitly selected from the same complete checker result.
 
 _Verify:_ aggregate tests run valid canonical streams and malformed-stream fixtures.
 
 ### CHK-009 — Citation completeness
 
-Every FAIL, WARN, POLISH, or J finding MUST resolve to its own rubric code and carry a non-empty citation; a file-scoped finding MUST carry its file.
+Every finding MUST resolve to one selected rubric item and carry its stable `code`, current `title`, and non-empty `message`. It MAY carry a `subject` when an affected artifact or path adds useful context. Sources remain canonical rubric metadata rather than being repeated on each outcome.
 
-_Verify:_ the canonical reporter validator and source-harness checker test reject missing citations, files, or unresolved codes.
+_Verify:_ the checker validator rejects unknown codes, title drift, malformed messages, invalid subjects, and summary disagreement.
 
 ### CHK-010 — Conform uses the same stream
 
@@ -72,12 +72,12 @@ _Verify:_ the source-harness checker test validates both script families with th
 
 ### CHK-011 — Title-first rendered identity
 
-The aggregate MUST resolve each finding’s code through the emitting rubric and render the readable criterion title followed by its stable code (`title (CODE)`).
+The reporter MUST render the finding's self-contained title followed by its stable code (`title (CODE)`).
 
-_Verify:_ aggregate rendering tests assert the resolved title and code for a vendored rubric fixture.
+_Verify:_ shared reporter and aggregate parity tests assert the title and code from a canonical checker result.
 
 ### CHK-012 — Non-repeating messages
 
-A finding message MUST NOT begin with its own code, resolved rule title, file path or basename, or a `[J]:` marker.
+A finding message MUST NOT repeat its own code, title, or subject as a synthetic prefix.
 
-_Verify:_ source-harness checker tests reject synthetic reports that repeat those rendered fields.
+_Verify:_ focused checker tests reject malformed response records and reporter tests prove presentation adds identity separately.

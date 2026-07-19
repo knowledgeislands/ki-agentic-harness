@@ -16,21 +16,21 @@ _Verify:_ `ki-skills`' enforcement framework §5 lists the four modes, and each 
 
 Each skill's mechanical criteria MUST be executable as a CLI checker with no LLM, exiting non-zero on any FAIL, per [ADR-KI-HARNESS-003](../decisions/ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md).
 
-_Verify:_ every artifact skill ships a `scripts/audit-*.ts` (or `lint-*.ts`) that runs standalone under `bun` and returns a non-zero exit on FAIL-severity findings.
+_Verify:_ every governance skill ships a `scripts/audit.ts` that runs standalone under `bun`, emits the canonical JSONL checker response by default, and returns a non-zero exit on FAIL findings.
 
 ## Contracts
 
 ### GOV-003 — Severity ladder
 
-A checker's findings MUST grade on the unified ladder FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS, and the process MUST exit non-zero only when a FAIL is present.
+A checker's findings MUST use the unified response levels FAIL / WARN / FIXED / INFO / NOT_APPLICABLE / PASS, and the process MUST exit non-zero only when a FAIL is present. `FIXED` is valid only for CONFORM. Judgment aspects are counted as unevaluated in the summary rather than emitted as synthetic findings.
 
-_Verify:_ each checker imports the same `Sev` enum shape from `ki-skills`' checker contract, and `audit-*.ts` exits `1` iff a FAIL is emitted.
+_Verify:_ each checker vendors the canonical `ki-skills` rubric, checker, and reporter modules; their shared response validator enforces the level and exit contracts.
 
 ### GOV-004 — Composition, not extension
 
-A skill MUST NOT import another skill; it composes by running a sibling's checker or mode in sequence and declaring the edge, per [ADR-KI-HARNESS-004](../decisions/ADR-KI-HARNESS-004-composition-over-extension.md).
+A skill MUST NOT import another skill's source tree; it composes by running a sibling's checker or mode in sequence and declaring the edge, per [ADR-KI-HARNESS-004](../decisions/ADR-KI-HARNESS-004-composition-over-extension.md). The narrow implementation exception is a declared checker-module dependency that bootstrap copies into the consumer's own `scripts/vendored/<provider>/` namespace before execution.
 
-_Verify:_ no `skills/*/scripts/*.ts` imports from another skill's directory; cross-skill composition is by subprocess (`execFileSync`) only.
+_Verify:_ no `skills/*/scripts/**/*.ts` relative import resolves outside its own `scripts/` directory; checker dependencies resolve only to safe declared provider modules and execute from local copies.
 
 ### GOV-005 — Machine-readable dependency graph
 
@@ -54,16 +54,16 @@ _Verify:_ `ki-repo`'s `audit-repo.ts` `license` / `license-file` / `package-lice
 
 ### GOV-008 — Self-governing checker-contract root
 
-`ki-skills` MUST provide the canonical checker reporter from its own shipped files and MUST NOT declare a checker-module dependency on itself or another skill, per [ADR-KI-HARNESS-SKILLS-012](../decisions/ADR-KI-HARNESS-SKILLS-012-local-copies-for-checker-support.md).
+`ki-skills` MUST provide the canonical rubric, checker, and reporter modules from its own shipped files and MUST NOT declare a checker-module dependency on itself or another skill, per [ADR-KI-HARNESS-SKILLS-012](../decisions/ADR-KI-HARNESS-SKILLS-012-local-copies-for-checker-support.md).
 
-_Verify:_ `bun skills/general-governance/ki-skills/scripts/audit.ts skills/general-governance/ki-skills` passes ROOT-1, and `bun skills/general-governance/ki-skills/scripts/audit.test.ts` covers the missing-root declaration.
+_Verify:_ `bun skills/general-governance/ki-skills/scripts/audit.ts skills/general-governance/ki-skills` passes KI-CHECKER-3, and the focused checker tests cover missing or invalid root-module declarations.
 
-### GOV-009 — Element-level mode orchestration
+### GOV-009 — Structured rubric orchestration
 
-Every governance skill MUST declare its independently schedulable AUDIT and CONFORM work in `.ki-meta/mode-elements.json`.
+Every mechanical rubric aspect MUST declare its execution phase inside the canonical structured rubric item.
 
-The declaration names stable element IDs, the canonical local script entry, its phase, read/write scopes, and any explicit ordering edges.
+The checker MUST validate the complete catalogue and selected execution plan before a CONFORM context can write. It orders executions by phase, then family, item, and subject; AUDIT and fallback executions remain read-only.
 
-The aggregate runner MUST validate and serially plan the selected repository-wide graph before it invokes an entry; an entry shared by several elements receives the selected element ID.
+The repository aggregate MUST invoke each selected skill's standalone `scripts/audit.ts` or `scripts/conform.ts` exactly once and validate its canonical response. Cross-skill ordering comes from the resolved governance set; skill-local phase ordering comes from that skill's checker.
 
-_Verify:_ `bun skills/general-governance/ki-skills/scripts/mode-elements.test.ts` validates the complete governance fleet and graph failure cases; `bun run ki:conform -- --dry-run` followed by `bun run ki:audit` proves the generated runner's one-pass path.
+_Verify:_ the `ki-skills` checker tests cover phase ordering and invalid plans; `ki-bootstrap`'s resolve and entrypoint-parity tests prove standalone vendoring, one invocation per skill, strict response validation, and aggregate parity.

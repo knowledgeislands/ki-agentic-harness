@@ -92,6 +92,16 @@ describe('ki-skills CONFORM wrapper', () => {
     }
   })
 
+  test('rejects unknown options and multiple targets before writing', () => {
+    const unknown = spawnSync('bun', [CONFORM, '--dry-rnu'], { encoding: 'utf8' })
+    expect(unknown.status).toBe(2)
+    expect(unknown.stderr).toContain('unknown option: --dry-rnu')
+
+    const multiple = spawnSync('bun', [CONFORM, 'one', 'two'], { encoding: 'utf8' })
+    expect(multiple.status).toBe(2)
+    expect(multiple.stderr).toContain('conform accepts at most one target')
+  })
+
   test('repairs safe drift and leaves no failing audit finding', () => {
     const { base, dir } = fixture()
     try {

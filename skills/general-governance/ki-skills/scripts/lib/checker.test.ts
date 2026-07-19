@@ -135,6 +135,12 @@ test('hybrid judgment → selected judgment codes are counted once across subjec
 test('no judgment findings → only mechanical items emit findings', () =>
   expect(conform.findings.every((finding) => finding.code !== 'ALPHA-5')).toBe(true))
 
+contextGeneration = 0
+executionLog.length = 0
+runChecker({ mode: 'audit', concern: 'fixture', target: '/fixture', rubric, subjects: [subject(), subject()] })
+const auditContextGeneration = contextGeneration
+test('audit contexts → each immutable subject context is created once', () => expect(auditContextGeneration).toBe(2))
+
 const jsonl = checkerJsonl(conform.records)
 const parsed = parseCheckerJsonl(jsonl)
 test('JSONL → one parseable object per record', () => {
@@ -171,7 +177,11 @@ test('validation → rejects unknown judgment summary fields', () =>
     )
   ).toBe(true))
 
-const malformedRubric = (outcomes: unknown, phase: unknown = 'INSPECT'): RubricDefinition<TestContext> =>
+const malformedRubric = (
+  outcomes: unknown,
+  phase: unknown = 'INSPECT',
+  overrideLevels: readonly ('FAIL' | 'WARN')[] = []
+): RubricDefinition<TestContext> =>
   ({
     name: 'malformed-rubric',
     concern: 'test',
@@ -190,6 +200,7 @@ const malformedRubric = (outcomes: unknown, phase: unknown = 'INSPECT'): RubricD
             sources: ['TEST'],
             mechanical: {
               level: 'FAIL',
+              ...(overrideLevels.length > 0 ? { overrideLevels } : {}),
               audit: { phase, run: () => outcomes } as never
             }
           }
@@ -225,11 +236,38 @@ test('execution → rejects malformed callback outcomes', () => {
     [[], 'returned no outcome'],
     [[{ status: 'UNKNOWN', message: 'bad status' }], 'unknown status'],
     [[{ status: 'FIXED', message: 'invalid audit fix' }], 'cannot be FIXED in audit mode'],
+    [[{ status: 'PASS', level: 'WARN', message: 'invalid pass level' }], 'invalid violation level'],
+    [[{ status: 'VIOLATION', level: 'INFO', message: 'invalid violation level' }], 'invalid violation level'],
     [[{ status: 'PASS', message: ' ' }], 'message must be non-empty'],
     [[{ status: 'PASS', message: 'ok', subject: ' ' }], 'subject must be non-empty when present']
   ])
     expect(rejects(malformedRubric(outcomes), fragment as string)).toBe(true)
 })
+
+test('execution → a violation may override its item default level', () => {
+  const result = runChecker({
+    mode: 'audit',
+    concern: 'fixture',
+    target: '/fixture',
+    rubric: malformedRubric([{ status: 'VIOLATION', level: 'WARN', message: 'warning variant' }], 'INSPECT', ['WARN']),
+    subjects: [subject()]
+  })
+  expect({ exitCode: result.exitCode, fail: result.summary.fail, warn: result.summary.warn }).toEqual({ exitCode: 0, fail: 0, warn: 1 })
+  expect(
+    validateCheckerRecords({ records: result.records, rubric: malformedRubric([], 'INSPECT', ['WARN']), subjects: [subject()] })
+  ).toEqual([])
+})
+
+test('execution → an undeclared violation-level override is rejected', () =>
+  expect(() =>
+    runChecker({
+      mode: 'audit',
+      concern: 'fixture',
+      target: '/fixture',
+      rubric: malformedRubric([{ status: 'VIOLATION', level: 'WARN', message: 'silent downgrade' }]),
+      subjects: [subject()]
+    })
+  ).toThrow('uses an undeclared violation level'))
 
 test('planning → rejects a blank present subject', () =>
   expect(rejects(rubric, 'subject 1 must be non-empty', { ...subject(), subject: ' ' })).toBe(true))

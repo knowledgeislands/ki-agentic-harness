@@ -2,7 +2,7 @@
 name: ki-harness
 depends-on: [ki-skills, ki-agents, ki-decision-records, ki-repo-roadmap]
 vendors: [educate, audit, conform, help]
-checker-dependencies: [ki-skills:checker-reporter]
+checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 description: >
   Audit, conform, and scaffold Knowledge Islands agentic harnesses — repos that bundle skills, agents, MCP servers, evals, and hooks together for versioned, co-installed deployment. Use when creating a new harness, checking an existing harness's five-part layout (`skills/`, `agents/`, `mcp/`, `evals/`, `hooks/`), verifying its CLAUDE.md covers required orientation sections, checking its package.json script families, or auditing its `.ki-config.toml` harness table. Triggers: "audit the harness", "scaffold a new harness", "does this repo follow the harness standard", "refresh the harness standard", "is this a valid harness". Governs the **container** (directory structure, CLAUDE.md, package.json script families, installation conventions, `.ki-config.toml` table) — not the **contents**: skill quality → `ki-skills`; agent quality → `ki-agents`; repository roadmap → `ki-repo-roadmap`; MCP server code → `ki-mcp`; engineering toolchain → `ki-engineering`; GitHub repo settings → `ki-repo`.
 argument-hint: 'audit [path] | conform [path] | help | educate <name> | refresh'
@@ -14,7 +14,7 @@ You are helping audit, conform, or scaffold a **Knowledge Islands agentic harnes
 
 This skill governs the **container** — the harness's directory layout, its `CLAUDE.md` orientation, its `package.json` script families, and its `.ki-config.toml` compliance table. It does not govern the _contents_: skill quality routes to `ki-skills`, agent definitions to `ki-agents`, roadmap content to `ki-repo-roadmap`, MCP server code to `ki-mcp`, the engineering toolchain to `ki-engineering`, and GitHub-side settings to `ki-repo`. The harness is the bridge into those skills — it tells you _what the container must look like_ so the contents are findable, installable, and auditable; the sibling skills each tell you _what quality looks like_ inside their part.
 
-The full canonical standard — what each part must contain and why — lives in [the harness standard](references/standards.md). The line-by-line checkable criteria live in [the rubric](references/rubric.md). A mechanical checker is [`scripts/audit.ts`](scripts/audit.ts). Load those when you need detail; this file is the operating procedure.
+The full canonical standard — what each part must contain and why — lives in [the harness standard](references/standards.md). The structured TypeScript items under `scripts/rubric/items/` are the canonical rubric; [the published rubric](references/rubric.md) is generated from them for human review. The thin [`scripts/audit.ts`](scripts/audit.ts) and [`scripts/conform.ts`](scripts/conform.ts) entry points run those items through the vendored canonical checker and reporter. Load the standard and published rubric when you need detail; this file is the operating procedure.
 
 ## Operating modes
 
@@ -22,7 +22,7 @@ Modes: **AUDIT · CONFORM · EDUCATE · REFRESH** (named, alphabetical). Invoked
 
 ### Mode AUDIT — check a harness against the standard
 
-1. **Run the mechanical checker.** `bun scripts/audit.ts [path]` from this skill's directory (or `bun run ki:harness:audit` at the harness root, if wired). It checks: the five-part directory presence, each directory's `README.md`, root `CLAUDE.md` / `ROADMAP.md`, `package.json` script families, `.ki-config.toml` `[ki-harness]` table presence, and each `skills/<dir>` name matching its `SKILL.md` `name:` frontmatter. Reports on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — defined in `ki-skills`' enforcement framework §2).
+1. **Run the mechanical checker.** `bun scripts/audit.ts [path]` from this skill's directory (or `bun run ki:harness:audit` at the harness root, if wired). It checks: the five-part directory presence, each directory's `README.md`, root `CLAUDE.md` / `ROADMAP.md`, `package.json` script families, `.ki-config.toml` `[ki-harness]` table presence, and each `skills/<dir>` name matching its `SKILL.md` `name:` frontmatter. Its default output is canonical JSONL. Add `--reporter=terminal` for the human view; the terminal reporter shows FAIL and WARN by default, while `--reporter-levels=all` includes every outcome. Judgment items are counted as unevaluated in the summary rather than emitted as synthetic findings.
 2. **Compose on sibling skills via subagent isolation** ([ADR-KI-HARNESS-AGENTS-001](../../../docs/decisions/ADR-KI-HARNESS-AGENTS-001-subagent-isolation.md)). A harness audit is layered — fan out one `agent()` per concern in `parallel()` after the COLL checks:
    - `ki-repo` — GitHub settings and the `.ki-config.toml` contract
    - `ki-engineering` — aggregate entrypoints and internal code toolchain (package.json, tsconfig, biome)
@@ -34,7 +34,7 @@ Modes: **AUDIT · CONFORM · EDUCATE · REFRESH** (named, alphabetical). Invoked
    - **CLAUDE.md coverage** — does it open with a what-the-harness-is paragraph covering all five parts? Is the skill map present (if skills exist) and does it reflect current reality? Are working conventions documented for each part? Are the key `bun run *` commands listed?
    - **Freshness** — do the skill count, shelf statuses, and command names in `CLAUDE.md` still match the actual repo state?
    - **ROADMAP.md discipline** — does it show only open work? If the repository uses the thematic profile, is the root an exact generated portfolio rather than a second home for item prose? Are continuous practices absent (they belong in `ki-skills`' enforcement framework, not the roadmap)?
-4. **Report** on the unified severity ladder. A missing required file or table is a FAIL; stale content that is structurally present is a WARN; minor freshness drift (wrong count, outdated command names) is a POLISH.
+4. **Report** through the canonical checker reporter. Mechanical violations are FAIL or WARN; successful CONFORM actions are FIXED; non-violations are INFO, NOT_APPLICABLE, or PASS. Judgment findings come from the human/model review, not the mechanical JSONL run.
 
 ### Mode CONFORM — bring a harness into line
 
@@ -61,7 +61,7 @@ The harness standard is a KI architectural convention, not an external spec — 
 1. **Read [the source list](references/sources.md)** — tracked sources, each with a `last reviewed` date.
 2. **Re-fetch external sources** (Agent Skills specification, Claude Code subagent docs) and diff against [the standard](references/standards.md): new required SKILL.md fields, changed skill-install conventions, new subagent format requirements.
 3. **Check the reference implementation** — read [ki-agentic-harness](../../../README.md) and its `CLAUDE.md`; does the standard still match current practice? Promote uncodified patterns that work well; flag any drift between the standard and the reference.
-4. **Propose a diff** to [the standard](references/standards.md) and [the rubric](references/rubric.md). Confirm before writing.
+4. **Propose a diff** to [the standard](references/standards.md) and the canonical TypeScript items under `scripts/rubric/items/`. Confirm before writing, then regenerate [the published rubric](references/rubric.md) with `bun scripts/rubric/publish.ts`.
 5. **Update [the source list](references/sources.md)** — bump `last reviewed` dates and refresh the `## Last review` block (what's confirmed, open watch-items). The record of _what changed_ is the commit, not a changelog here.
 
 Run REFRESH on this skill's declared cadence (the `**Refresh:**` marker in [`references/sources.md`](references/sources.md) — `external-spec · monthly`). If it's invoked while still within that window, confirm before forcing (interactive) or skip (scheduled), per the enforcement framework's REFRESH gate.

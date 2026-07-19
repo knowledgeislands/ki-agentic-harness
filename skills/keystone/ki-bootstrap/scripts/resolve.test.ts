@@ -86,21 +86,26 @@ check(
   JSON.stringify(parsed) === JSON.stringify(['ki-bootstrap', 'ki-housekeeping', 'ki-plan'])
 )
 
-const authoringModule = checkerDependenciesOf('ki-authoring')
+const bootstrapModules = checkerDependenciesOf('ki-bootstrap')
 check(
-  'checker module → consumer declares the canonical reporter',
-  JSON.stringify(authoringModule) === JSON.stringify([{ provider: 'ki-skills', module: 'checker-reporter' }])
+  'checker module → migrated consumer declares the canonical module closure',
+  JSON.stringify(bootstrapModules) ===
+    JSON.stringify([
+      { provider: 'ki-skills', module: 'rubric' },
+      { provider: 'ki-skills', module: 'checker' },
+      { provider: 'ki-skills', module: 'reporter' }
+    ])
 )
 check(
-  'checker module → declared dependency resolves a provider file payload',
-  (() => {
-    const payload = checkerModulePayload(authoringModule[0] as { provider: string; module: string })
+  'checker module → every declared dependency resolves a provider file payload',
+  bootstrapModules.every((module) => {
+    const payload = checkerModulePayload(module)
     return (
       payload.kind === 'file' &&
-      payload.targetName === 'checker-reporter.ts' &&
-      payload.source.endsWith('ki-skills/scripts/lib/checker-reporter.ts')
+      payload.targetName === `${module.module}.ts` &&
+      payload.source.endsWith(`ki-skills/scripts/lib/${module.module}.ts`)
     )
-  })()
+  })
 )
 
 const modulePayloadFixture = fixture()
@@ -275,8 +280,10 @@ try {
     existsSync(join(seededRepo, '.ki-meta', 'checkers', 'ki-repo')) && existsSync(join(seededRepo, '.ki-meta', 'checkers', 'ki-authoring'))
   )
   check(
-    'seeded ki-repo → checker module is copied beneath its consumer',
-    existsSync(join(seededRepo, '.ki-meta', 'checkers', 'ki-authoring', 'scripts', 'vendored', 'ki-skills', 'checker-reporter.ts'))
+    'seeded ki-repo → checker module closure is copied beneath its consumer',
+    ['rubric', 'checker', 'reporter'].every((module) =>
+      existsSync(join(seededRepo, '.ki-meta', 'checkers', 'ki-authoring', 'scripts', 'vendored', 'ki-skills', `${module}.ts`))
+    )
   )
   const educator = join(seededRepo, '.ki-meta', 'educators', 'ki-repo', 'educate.ts')
   const educatorHelp = spawnSync(join(seededRepo, '.ki-meta', 'bin', 'ki-educate'), ['ki-repo', '--help'], { encoding: 'utf8' })
@@ -310,17 +317,28 @@ try {
   const result = spawnSync('bun', [BOOTSTRAP, checkerRoot], { encoding: 'utf8' })
   check('checker-module provider → bootstrap exits cleanly', result.status === 0)
   check(
-    'checker-module provider → owns a standalone local payload',
-    existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'lib', 'checker-reporter.ts'))
+    'checker-module provider → owns its standalone local module closure',
+    ['rubric', 'checker', 'reporter'].every((module) =>
+      existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'lib', `${module}.ts`))
+    )
+  )
+  const vendoredRubricItem = join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'rubric', 'items', 'index.ts')
+  const vendoredRubricContext = join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'rubric', 'contexts', 'subjects.ts')
+  check(
+    'checker-module provider → carries its regular internal rubric payload',
+    existsSync(vendoredRubricItem) &&
+      !lstatSync(vendoredRubricItem).isSymbolicLink() &&
+      existsSync(vendoredRubricContext) &&
+      !lstatSync(vendoredRubricContext).isSymbolicLink()
   )
   check(
     'checker-module provider → carries rubric metadata beside its runnable payload',
     existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'references', 'rubric.md'))
   )
   check(
-    'mode-element declaration → bootstrap copies the regular declaration under checker metadata',
-    existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', '.ki-meta', 'mode-elements.json')) &&
-      !lstatSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', '.ki-meta', 'mode-elements.json')).isSymbolicLink()
+    'aggregate → retired mode-element implementation is not vendored',
+    !existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', '.ki-meta', 'mode-elements.json')) &&
+      !existsSync(join(checkerRoot, '.ki-meta', 'bin', 'mode-elements.ts'))
   )
   const vendoredAudit = spawnSync('bun', [join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'audit.ts'), SKILLS_ROOT], {
     encoding: 'utf8'
@@ -338,14 +356,6 @@ try {
   const invalidSkill = join(checkerRoot, '.ki-meta', 'checkers', 'ki-invalid', 'scripts')
   mkdirSync(invalidSkill, { recursive: true })
   writeFileSync(join(invalidSkill, 'audit.ts'), "process.stdout.write('legacy prose\\n')\n")
-  mkdirSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-invalid', '.ki-meta'), { recursive: true })
-  writeFileSync(
-    join(checkerRoot, '.ki-meta', 'checkers', 'ki-invalid', '.ki-meta', 'mode-elements.json'),
-    JSON.stringify({
-      version: 1,
-      elements: [{ id: 'audit', mode: 'audit', phase: 'inspect', entry: 'scripts/audit.ts', reads: ['fixture'], writes: [] }]
-    })
-  )
   const malformedAggregate = spawnSync('bun', [aggregate, 'audit'], { cwd: checkerRoot, encoding: 'utf8' })
   check(
     'aggregate → rejects malformed child output without a legacy fallback',
@@ -358,17 +368,15 @@ try {
   rmSync(checkerRoot, { recursive: true, force: true })
 }
 
-const reporterConsumerRoot = fixture(
-  '[ki-repo]\nsupported_runtimes = ["claude-code", "codex"]\n[ki-authoring]\n[ki-binding]\n[ki-binding-chezmoi]\n[ki-dotfiles-chezmoi]\n'
-)
+const reporterConsumerRoot = fixture('[ki-repo]\nsupported_runtimes = ["claude-code", "codex"]\n[ki-authoring]\n')
 try {
   const result = spawnSync('bun', [BOOTSTRAP, reporterConsumerRoot], { encoding: 'utf8' })
   check('reporter consumers → bootstrap exits cleanly', result.status === 0)
   const aggregate = join(reporterConsumerRoot, '.ki-meta', 'bin', 'aggregate.ts')
-  const consumerAggregate = spawnSync('bun', [aggregate, 'audit'], { cwd: reporterConsumerRoot, encoding: 'utf8' })
+  const consumerAggregate = spawnSync('bun', [aggregate, 'audit', '--reporter-levels=all'], { cwd: reporterConsumerRoot, encoding: 'utf8' })
   check(
     'reporter consumers → vendored aggregate has no malformed checker output',
-    consumerAggregate.stdout.includes('ki-binding') && !consumerAggregate.stdout.includes('invalid checker reports')
+    consumerAggregate.stdout.includes('ki-authoring') && !consumerAggregate.stdout.includes('invalid checker reports')
   )
 } finally {
   rmSync(reporterConsumerRoot, { recursive: true, force: true })
@@ -545,7 +553,10 @@ try {
   const report = auditReport(audit.stdout)
   const boot11 = report.findings?.find((finding) => finding.area === 'BOOT-11')
   check('BOOT-11 external consumer without canonical source → bootstrap exits cleanly', bootstrapped.status === 0)
-  check('BOOT-11 external consumer without canonical source → explicit NA, not failure', audit.status === 0 && boot11?.level === 'NA')
+  check(
+    'BOOT-11 external consumer without canonical source → explicit NOT_APPLICABLE, not failure',
+    audit.status === 0 && boot11?.level === 'NOT_APPLICABLE'
+  )
 } finally {
   rmSync(externalConsumer, { recursive: true, force: true })
 }

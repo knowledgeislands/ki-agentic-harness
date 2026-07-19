@@ -20,7 +20,7 @@ import { fileURLToPath } from 'node:url'
 const scripts = dirname(fileURLToPath(import.meta.url))
 const root = resolve(scripts, '../../../..')
 const bootstrap = join(scripts, 'lib', 'repo-bootstrap.ts')
-const engineeringConform = join(root, 'skills/foundations/ki-engineering/scripts/conform.ts')
+const packageJson = join(root, 'package.json')
 const fixture = realpathSync(mkdtempSync(join(tmpdir(), 'ki-entrypoint-parity-')))
 let failed = false
 
@@ -35,10 +35,9 @@ function check(label: string, condition: boolean): void {
 }
 
 function canonicalScript(key: 'ki:audit' | 'ki:conform'): string {
-  const source = readFileSync(engineeringConform, 'utf8')
-  const match = source.match(new RegExp(`'${key.replace(':', '\\:')}': '([^']+)'`))
-  if (!match?.[1]) throw new Error(`could not read canonical ${key} command from ${engineeringConform}`)
-  return match[1]
+  const scripts = JSON.parse(readFileSync(packageJson, 'utf8')).scripts as Record<string, string>
+  if (!scripts[key]) throw new Error(`could not read canonical ${key} command from ${packageJson}`)
+  return scripts[key]
 }
 
 function run(command: string, args: string[], cwd: string, env: Record<string, string> = {}): Run {
@@ -86,9 +85,9 @@ const run = { version: 1, runId: crypto.randomUUID(), mode: 'audit', concern: 'f
 const level = ok ? 'PASS' : 'FAIL'
 for (const record of [
   { ...run, record: 'meta' },
-  { ...run, record: 'finding', type: 'M', level, code: 'FIX-1', message: msg, ref: 'references/rubric.md' },
-  { ...run, record: 'finding', type: 'J', level: 'ADVISORY', code: 'REVIEW-1', message: 'synthetic judgment prompt', ref: 'references/rubric.md' },
-  { ...run, record: 'summary', summary: { fail: ok ? 0 : 1, warn: 0, polish: 0, advisory: 1, info: 0, na: 0, pass: ok ? 1 : 0 } }
+  { ...run, record: 'finding', level, code: 'FIX-1', title: 'Fixture health check', message: msg },
+  { ...run, record: 'finding', level: 'INFO', code: 'FIX-2', title: 'Fixture information', message: 'synthetic information' },
+  { ...run, record: 'summary', summary: { fail: ok ? 0 : 1, warn: 0, fixed: 0, info: 1, notApplicable: 0, pass: ok ? 1 : 0, judgment: { unevaluated: 1 } } }
 ]) process.stdout.write(JSON.stringify(record) + '\\n')
 process.exit(ok ? 0 : 1)
 `
@@ -104,49 +103,25 @@ const run = { version: 1, runId: crypto.randomUUID(), mode: 'conform', concern: 
 const level = ok ? 'PASS' : 'FAIL'
 for (const record of [
   { ...run, record: 'meta' },
-  { ...run, record: 'finding', type: 'M', level, code: 'FIX-1', message: msg, ref: 'references/rubric.md' },
-  { ...run, record: 'summary', summary: { fail: ok ? 0 : 1, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: ok ? 1 : 0 } }
+  { ...run, record: 'finding', level, code: 'FIX-1', title: 'Fixture health check', message: msg },
+  { ...run, record: 'summary', summary: { fail: ok ? 0 : 1, warn: 0, fixed: 0, info: 0, notApplicable: 0, pass: ok ? 1 : 0, judgment: { unevaluated: 0 } } }
 ]) process.stdout.write(JSON.stringify(record) + '\\n')
 process.exit(ok ? 0 : 1)
-`
-
-const elementConformFixture = `#!/usr/bin/env bun
-import { appendFileSync } from 'node:fs'
-const selected = process.argv.find((arg) => arg.startsWith('--mode-element='))?.slice('--mode-element='.length)
-const valid = selected === 'prepare' || selected === 'normalise'
-if (valid) appendFileSync('mode-element-order.log', selected + '\\n')
-const run = { version: 1, runId: crypto.randomUUID(), mode: 'conform', concern: 'element-fixture', target: process.cwd(), generatedAt: new Date().toISOString() }
-const level = valid ? 'PASS' : 'FAIL'
-for (const record of [
-  { ...run, record: 'meta' },
-  { ...run, record: 'finding', type: 'M', level, code: 'FIX-1', message: valid ? 'element selected' : 'missing selected element', ref: 'references/rubric.md' },
-  { ...run, record: 'summary', summary: { fail: valid ? 0 : 1, warn: 0, polish: 0, advisory: 0, info: 0, na: 0, pass: valid ? 1 : 0 } }
-]) process.stdout.write(JSON.stringify(record) + '\\n')
-process.exit(valid ? 0 : 1)
 `
 
 try {
   const bootstrapped = run('bun', [bootstrap, fixture], root)
   check('bootstrap fixture → exits cleanly', bootstrapped.status === 0)
 
-  const fixtureSkill = join(fixture, '.ki-meta', 'checkers', 'ki-fixture', 'scripts')
+  const checkers = join(fixture, '.ki-meta', 'checkers')
+  for (const name of readdirSync(checkers)) rmSync(join(checkers, name), { recursive: true, force: true })
+  const fixtureSkill = join(checkers, 'ki-fixture', 'scripts')
   mkdirSync(fixtureSkill, { recursive: true })
   writeFileSync(join(fixtureSkill, 'audit.ts'), auditFixture)
   writeFileSync(join(fixtureSkill, 'conform.ts'), conformFixture)
   const fixtureRubric = join(fixture, '.ki-meta', 'checkers', 'ki-fixture', 'references')
   mkdirSync(fixtureRubric, { recursive: true })
   writeFileSync(join(fixtureRubric, 'rubric.md'), '- **FIX-1 [M]** Fixture health check.\n- **REVIEW-1 [J]** Fixture judgment review.\n')
-  mkdirSync(join(fixture, '.ki-meta', 'checkers', 'ki-fixture', '.ki-meta'), { recursive: true })
-  writeFileSync(
-    join(fixture, '.ki-meta', 'checkers', 'ki-fixture', '.ki-meta', 'mode-elements.json'),
-    JSON.stringify({
-      version: 1,
-      elements: [
-        { id: 'audit', mode: 'audit', phase: 'inspect', entry: 'scripts/audit.ts', reads: ['fixture'], writes: [] },
-        { id: 'conform', mode: 'conform', phase: 'write', entry: 'scripts/conform.ts', reads: ['fixture'], writes: ['fixture'] }
-      ]
-    })
-  )
   chmodSync(join(fixture, '.ki-meta', 'bin', 'ki-audit'), 0o755)
   chmodSync(join(fixture, '.ki-meta', 'bin', 'ki-conform'), 0o755)
 
@@ -161,24 +136,24 @@ try {
   const wrapperPass = run(auditWrapper, [], nested, env)
   check('package-free audit wrapper → runs from a nested cwd', wrapperPass.status === 0)
   check('package-free audit wrapper → suppresses passing findings by default', !wrapperPass.stdout.includes('synthetic audit passed'))
-  check('package-free audit wrapper → suppresses judgment prompts by default', !wrapperPass.stdout.includes('synthetic judgment prompt'))
-  check('package-free audit wrapper → retains compact suppressed counts', wrapperPass.stdout.includes('suppressed: ADVISORY=1'))
   check(
-    'package-free audit wrapper → default recap names the selected levels',
-    wrapperPass.stdout.includes('no FAIL / WARN / POLISH findings')
+    'package-free audit wrapper → reports unevaluated judgment only in the summary',
+    wrapperPass.stdout.includes('JUDGMENT_UNEVALUATED=1')
   )
+  check('package-free audit wrapper → retains compact suppressed counts', wrapperPass.stdout.includes('suppressed: FIXED=0 INFO=1'))
+  check('package-free audit wrapper → default recap names the selected levels', wrapperPass.stdout.includes('no FAIL / WARN findings'))
 
-  const advisoryPass = run(auditWrapper, ['--reporter-levels=advisory'], nested, env)
-  check('package-free audit wrapper → accepts a renderer-only level override', advisoryPass.status === 0)
-  check('package-free audit wrapper → renders the selected judgment prompt', advisoryPass.stdout.includes('synthetic judgment prompt'))
-  check('package-free audit wrapper → does not render unselected passing findings', !advisoryPass.stdout.includes('synthetic audit passed'))
+  const infoPass = run(auditWrapper, ['--reporter-levels=info'], nested, env)
+  check('package-free audit wrapper → accepts a renderer-only level override', infoPass.status === 0)
+  check('package-free audit wrapper → renders selected information', infoPass.stdout.includes('synthetic information'))
+  check('package-free audit wrapper → does not render unselected passing findings', !infoPass.stdout.includes('synthetic audit passed'))
 
   const allPass = run(auditWrapper, ['--reporter-levels=all'], nested, env)
   check(
     'package-free audit wrapper → all restores the full human report',
     allPass.status === 0 && allPass.stdout.includes('synthetic audit passed')
   )
-  check('package-free audit wrapper → all includes judgment prompts', allPass.stdout.includes('synthetic judgment prompt'))
+  check('package-free audit wrapper → all includes informational findings', allPass.stdout.includes('synthetic information'))
   check('package-free audit wrapper → all does not label shown levels as suppressed', allPass.stdout.includes('(all levels shown)'))
 
   const scopedPass = run(
@@ -234,37 +209,6 @@ try {
       wrapper.stderr.trim() === withoutBunTransport(packageRun.stderr).trim()
     )
   }
-
-  const elementRoot = join(fixture, '.ki-meta', 'checkers', 'ki-elements')
-  mkdirSync(join(elementRoot, 'scripts'), { recursive: true })
-  mkdirSync(join(elementRoot, 'references'), { recursive: true })
-  mkdirSync(join(elementRoot, '.ki-meta'), { recursive: true })
-  writeFileSync(join(elementRoot, 'scripts', 'conform.ts'), elementConformFixture)
-  writeFileSync(join(elementRoot, 'references', 'rubric.md'), '- **FIX-1 [M]** Fixture health check.\n')
-  writeFileSync(
-    join(elementRoot, '.ki-meta', 'mode-elements.json'),
-    JSON.stringify({
-      version: 1,
-      elements: [
-        { id: 'prepare', mode: 'conform', phase: 'prepare', entry: 'scripts/conform.ts', reads: ['fixture'], writes: ['fixture-config'] },
-        {
-          id: 'normalise',
-          mode: 'conform',
-          phase: 'normalise',
-          entry: 'scripts/conform.ts',
-          after: ['prepare'],
-          reads: ['fixture'],
-          writes: ['fixture-output']
-        }
-      ]
-    })
-  )
-  const elementRun = run('bun', [join(fixture, '.ki-meta', 'bin', 'aggregate.ts'), 'conform', '--skill', 'ki-elements'], fixture, env)
-  check('aggregate element scheduler → selects each shared entry by element id', elementRun.status === 0)
-  check(
-    'aggregate element scheduler → runs prepare before normalise',
-    readFileSync(join(fixture, 'mode-element-order.log'), 'utf8') === 'prepare\nnormalise\n'
-  )
 } finally {
   rmSync(fixture, { recursive: true, force: true })
 }

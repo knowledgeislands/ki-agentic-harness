@@ -16,7 +16,7 @@ Read this standard from the most portable authority to the most local:
 
 ## Contents
 
-1. [Two-layer model](#1-two-layer-model)
+1. [Two-aspect model](#1-two-aspect-model)
 2. [Layout](#2-layout)
 3. [Frontmatter document](#3-frontmatter-document)
 4. [Frontmatter: name](#4-frontmatter-name)
@@ -34,14 +34,14 @@ Read this standard from the most portable authority to the most local:
 16. [Disagreements & moving targets](#16-disagreements--moving-targets)
 17. [Exact numbers](#17-exact-numbers)
 
-## 1. Two-layer model
+## 1. Two-aspect model
 
-Every convention is one of two kinds, and the distinction is a contract with the [linter](../scripts/audit.ts):
+Every rubric criterion carries one or both of two aspects, and the distinction is a contract with the [linter](../scripts/audit.ts):
 
 - **Mechanical** — deterministically checkable (a file exists, frontmatter parses, a length cap holds, a link resolves). The bundled linter owns these; never eyeball what it checks better.
 - **Judgment** — needs a model reading the skill (is the description trigger-rich, is the body at the right altitude, is detail correctly deferred). The linter cannot assess these.
 
-The rubric tags each criterion `[M]` or `[J]` accordingly. If a `[J]` check ever becomes mechanically enforceable, it moves into the linter and its tag flips.
+The rubric tags each criterion `[M]`, `[J]`, or `[M + J]` accordingly. If part of a judgment criterion becomes mechanically enforceable, that aspect moves into the linter; any remaining judgment stays on the same stable criterion code.
 
 ## Portable Agent Skills contract
 
@@ -112,7 +112,7 @@ A **standard** Knowledge Islands skill carries reusable mode logic and resolves 
 
 **Inter-skill relationships are composition, only.** A skill builds on another by **running that skill's checker/mode in sequence and adding its own delta** — never by importing it, so each stays valid installed standalone (`ki-mcp` runs `ki-engineering`'s toolchain audit, then audits the MCP delta). The composing skill **declares the edge**: it names the sibling and the run order in its AUDIT mode, and the relationship is drawn once in the ki-agentic-harness README map. **Delegation between two standards** — `ki-kb` handing the `Streams` zone to `ki-kb-streams` — is the same mechanism at sub-scope, not a separate kind. There is **no base-coupled extension skill**: a base never ships a `<base>-kb`-style skill that takes the shared modes by name. What a base needs differently is **declared, not forked** — data in its own `.ki-config.toml` table (read validate-down by the standard), prose guidance in its `CLAUDE.md` — so base-specificity stays auditable rather than hidden in a drift-prone coupled skill. A genuinely base-specific _behaviour_ that no declaration can express is a signal to **generalise it into the standard** (a REFRESH candidate), not to fork a skill. (ki-agentic-harness README, `ki-kb`)
 
-**Checker modules are the narrow implementation exception.** A provider exposes copied modules with `checker-modules:`; a dependent names each exact `provider:module` reference with `checker-dependencies:`. The extension-free module name resolves to one safe provider file at `scripts/lib/<module>.ts`, which bootstrap preserves under the dependent's `scripts/vendored/<provider>/` namespace before the checker runs. The dependent imports only that local payload, never a sibling skill path (`KI-CHECKER-2`); the declaration creates no governance coverage or composition edge. `ki-skills` is the checker-contract root: it provides the canonical `rubric` and `checker` modules from its own shipped files and never declares `checker-dependencies:` (`KI-CHECKER-3`). (ADR-KI-HARNESS-SKILLS-012)
+**Checker modules are the narrow implementation exception.** A provider exposes copied modules with `checker-modules:`; a dependent names each exact `provider:module` reference with `checker-dependencies:`. The extension-free module name resolves to one safe provider file at `scripts/lib/<module>.ts`, which bootstrap preserves under the dependent's `scripts/vendored/<provider>/` namespace before the checker runs. Bootstrap separately copies the dependent's private `scripts/rubric/` tree beside its checker entry points so the checker is standalone; that private tree is not a module contract and no sibling imports it. The dependent imports only its local payload, never a sibling skill path (`KI-CHECKER-2`); the declaration creates no governance coverage or composition edge. `ki-skills` is the checker-contract root: it provides the canonical `rubric`, `checker`, and `reporter` modules from its own shipped files and never declares `checker-dependencies:` (`KI-CHECKER-3`). (ADR-KI-HARNESS-SKILLS-012)
 
 A skill that reads declared repo config does so through the shared **`.ki-config.toml`** — the file whose presence marks a Knowledge Islands–compliant repo, whose contract is defined by `ki-repo` — and only through **its own `[<skill-name>]` table**. It **validates that table**: it warns on a key it doesn't recognise (a typo or stale option should surface, not silently do nothing) and advises dropping one that merely restates a default, while leaving every other skill's table untouched, even keys it can't interpret. Validate down, ignore across. (`ki-repo` is the reference implementation.)
 

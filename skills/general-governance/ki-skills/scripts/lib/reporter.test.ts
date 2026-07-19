@@ -24,4 +24,11 @@ describe('checker reporter arguments', () => {
   test('rejects an unknown reporter', () => {
     expect(() => parseReporterArguments(['--reporter=markdown'])).toThrow('--reporter accepts jsonl or terminal')
   })
+
+  test('rejects missing reporter argument values', () => {
+    expect(() => parseReporterArguments(['--reporter'])).toThrow('--reporter requires a value')
+    expect(() => parseReporterArguments(['--reporter='])).toThrow('--reporter requires a value')
+    expect(() => parseReporterArguments(['--reporter-levels'])).toThrow('--reporter-levels requires a value')
+    expect(() => parseReporterArguments(['--reporter-levels='])).toThrow('--reporter-levels requires a value')
+  })
 })

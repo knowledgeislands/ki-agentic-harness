@@ -2,7 +2,7 @@
 name: ki-feature-definitions
 depends-on: []
 vendors: [educate, audit, conform, help]
-checker-dependencies: [ki-skills:checker-reporter]
+checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 description: >
   Codify, audit, and maintain Feature Definitions — the behaviour-level specification of what a system does — in any Knowledge Islands repo. Definitions live in `docs/features/`, flat one-file-per-area, with an `index.md` that defines the ID scheme and the areas table. Each requirement is a `### <PREFIX>-NNN — title` heading carrying one RFC-2119 (MUST / SHOULD / MAY) statement and a `_Verify:_` test hook; IDs are append-only and never reused; an unnumbered `## Gaps` section holds the backlog. Decisions capture the why (`ki-decision-records`), features capture the what, guides capture the how. Use when writing, auditing, or conforming a feature spec, or seeding one for a repo. Triggers: "write a feature definition", "spec this behaviour", "audit the features", "add a requirement", "what does the system do". Off-ramps: ki-decision-records (the governing decisions a requirement cites), ki-authoring (Markdown/TOML style).
 argument-hint: 'audit [dir] | conform [dir] | help | educate [dir] | new <area> "<title>" | refresh'
@@ -52,4 +52,4 @@ Carries the universal **EDUCATE · AUDIT · CONFORM · REFRESH**, plus **NEW** (
 - **As-built, not aspirational** — the numbered contract describes what the system **does** today; anything not yet true belongs in `## Gaps` until it is built. This keeps the spec a baseline a test suite can hold the system to.
 - **One normative clause per requirement, ideally** — a requirement may carry a `MUST` and a paired `MUST NOT`, but a heading that bundles several unrelated behaviours should split into separate IDs so each verifies independently.
 - **Serials are per prefix** — `AUTH-001` and `SITE-001` are both valid; a serial is unique within its prefix. Never reuse a retired number.
-- Checker output conforms to the severity ladder, JSON shape, and exit-code contract in `ki-skills`' [checker contract](../../general-governance/ki-skills/references/checker-contract.md).
+- Checker output conforms to the canonical JSONL response and reporter contract owned by `ki-skills`; judgment aspects are counted as unevaluated rather than emitted as synthetic findings.

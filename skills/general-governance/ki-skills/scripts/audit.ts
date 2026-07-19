@@ -36,6 +36,11 @@ try {
   process.exit(2)
 }
 const argv = parsedReporter.arguments
+const unknownOptions = argv.filter((argument) => argument.startsWith('-') && argument !== '--footprint' && argument !== '--refresh-status')
+if (unknownOptions.length > 0) {
+  process.stderr.write(`error: unknown option: ${unknownOptions[0]}\n`)
+  process.exit(2)
+}
 const roots = argv.filter((argument) => !argument.startsWith('-'))
 const reportTarget = resolve('.')
 const scope = createKiSkillsSubjects({

@@ -33,7 +33,7 @@ A checker receives:
 
 - the requested mode, `audit` or `conform`;
 - the ordered structured rubric catalogue;
-- a root-context factory exposing prepared evidence and explicit capabilities for the target;
+- ordered evaluation subjects, each with selected rubric families and a context factory exposing prepared evidence and explicit capabilities;
 - immutable run identity such as concern and target.
 
 Rubric items own criterion codes, titles, descriptions, sources, classification, mode phasing, and callbacks.
@@ -72,7 +72,7 @@ When a mechanical item has no CONFORM execution, CONFORM MUST run its required A
 
 Every execution MUST return at least one outcome rather than using an empty result to imply PASS.
 
-The checker asks the root-context factory for current evidence before each CONFORM execution, so a later execution observes mutations made by an earlier one.
+The checker caches each subject's immutable AUDIT context for the run. It asks the relevant subject-context factory for current evidence before each CONFORM execution, so a later execution observes mutations made by an earlier one.
 
 If repository-wide orchestration later requires a static checker schedule or dependency metadata, that integration MUST define and justify its generated projection without turning it into a second authored execution plan.
 
@@ -89,9 +89,9 @@ One response vocabulary applies to both modes.
 | **NOT_APPLICABLE** | mechanical | no      | A criterion was considered but does not apply to this target.             |
 | **PASS**           | mechanical | no      | A criterion was checked and is satisfied.                                 |
 
-A mechanical item declares only `FAIL` or `WARN` as its violation level.
+A mechanical item declares `FAIL` or `WARN` as its default violation level.
 
-Its callback returns `VIOLATION`, `PASS`, `NOT_APPLICABLE`, `INFO`, or — during CONFORM only — `FIXED`; the checker maps `VIOLATION` to the item's declared level and the others directly to the response level above.
+Its callback returns `VIOLATION`, `PASS`, `NOT_APPLICABLE`, `INFO`, or — during CONFORM only — `FIXED`; the checker maps `VIOLATION` to the item's declared default unless that outcome selects an alternative the item explicitly permits through `overrideLevels`, and maps the others directly to the response level above.
 
 A judgment aspect has no checker execution.
 
@@ -123,16 +123,17 @@ It does not open arbitrary files or mutate through an undeclared side channel.
 
 ## Portability and vendoring
 
-The reusable implementation is split into two declared modules owned by `ki-skills`:
+The reusable implementation is split into three declared modules owned by `ki-skills`:
 
 - `scripts/lib/rubric.ts` contains the generic rubric types and catalogue mechanics; and
-- `scripts/lib/checker.ts` contains planning, AUDIT and CONFORM execution, JSONL response construction, and validation.
+- `scripts/lib/checker.ts` contains planning, AUDIT and CONFORM execution, JSONL response construction, and validation; and
+- `scripts/lib/reporter.ts` contains shared display filtering and terminal presentation.
 
 Each declared module is one self-contained vendorable file rather than a directory tree.
 
-A dependent governance skill vendors both modules into `scripts/vendored/ki-skills/` and imports only those local copies.
+A dependent governance skill vendors all three modules into `scripts/vendored/ki-skills/` and imports only those local copies.
 
-The dependent supplies its domain rubric items, contexts, generated rubric publication, and thin command wrappers.
+The dependent supplies its domain rubric items, contexts, generated rubric publication, and thin command wrappers. Repository bootstrap copies that private `scripts/rubric/` tree beside the wrappers so the vendored checker remains standalone; the tree is not a declared module and no sibling skill may import it.
 
 The shared modules use builtins only, contain their complete declared dependency closure, and never import from another skill at runtime.
 

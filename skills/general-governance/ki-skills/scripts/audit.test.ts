@@ -69,6 +69,12 @@ describe('ki-skills AUDIT wrapper', () => {
     expect(result.stderr).toContain('--reporter-levels requires --reporter=terminal')
   })
 
+  test('rejects unknown options', () => {
+    const result = spawnSync('bun', [AUDIT, '--footprit'], { encoding: 'utf8' })
+    expect(result.status).toBe(2)
+    expect(result.stderr).toContain('unknown option: --footprit')
+  })
+
   test('emits the canonical JSONL contract for a valid skill', () => {
     const { base, dir } = fixture()
     try {

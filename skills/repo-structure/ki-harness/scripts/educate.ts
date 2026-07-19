@@ -20,4 +20,19 @@ import { fileURLToPath } from 'node:url'
 
 const SKILL = 'ki-harness'
 const engine = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'ki-bootstrap', 'scripts', 'lib', 'repo-bootstrap.ts')
-execFileSync('bun', [engine, ...process.argv.slice(2), '--seed', SKILL], { stdio: 'inherit' })
+const arguments_ = process.argv.slice(2)
+
+if (arguments_.some((argument) => argument === '-h' || argument === '--help')) {
+  process.stdout.write(`Usage: bun scripts/educate.ts [target-repo] [options]
+
+Bootstrap ki-harness and its declared governance dependencies into a repository.
+
+Options:
+  --ref <ref>    Resolve harness sources at a specific Git ref.
+  --dry-run      Report changes without writing them.
+  -h, --help     Show this help and exit.
+`)
+  process.exit(0)
+}
+
+execFileSync('bun', [engine, ...arguments_, '--seed', SKILL], { stdio: 'inherit' })

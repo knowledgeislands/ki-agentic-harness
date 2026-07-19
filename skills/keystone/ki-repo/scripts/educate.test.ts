@@ -132,7 +132,7 @@ try {
   const result = run(AUDIT, [completeCapability])
   const finding = auditFindings(result.out).find((event) => event.code === 'CAPABILITY-COMPLETE')
   check('CAPABILITY-COMPLETE bootstrapped governance roots → bootstrap exits cleanly', bootstrapped.code === 0)
-  check('CAPABILITY-COMPLETE bootstrapped governance roots → emits no failure', finding === undefined && result.code === 0)
+  check('CAPABILITY-COMPLETE bootstrapped governance roots → passes', finding?.level === 'PASS' && result.code === 0)
 } finally {
   rmSync(completeCapability, { recursive: true, force: true })
 }

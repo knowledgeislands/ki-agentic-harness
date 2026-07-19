@@ -42,6 +42,14 @@ import { gitignoresPath, runtimeAgentsDir, runtimeSkillsDir, supportedRuntimes }
 
 export type ProjectLinkScope = 'skills' | 'agents' | 'all'
 export type ProjectSkillPublication = 'copy' | 'development-link'
+export type ProjectLinkCheckLevel = 'FAIL' | 'WARN' | 'PASS'
+export type ProjectLinkCheck = {
+  code: 'BOOT-1' | 'BOOT-3' | 'BOOT-6' | 'BOOT-8'
+  level: ProjectLinkCheckLevel
+  message: string
+  subject: string
+  runtime: string
+}
 
 type Kind = 'file' | 'dir' | 'link' | 'other'
 type Entry = { kind: Kind; dev: number; ino: number; uid: number; mode: number; link?: string; bytes?: Buffer }
@@ -575,10 +583,15 @@ function execute(target: string, plan: LinkPlan): void {
   }
 }
 
-function printCheck(target: string, scope: ProjectLinkScope, skillPublication: ProjectSkillPublication): number {
+/** Inspect the generated runtime payload contract without rendering or mutation. */
+export function inspectProjectLinks(
+  target: string,
+  scope: ProjectLinkScope,
+  skillPublication: ProjectSkillPublication = 'copy'
+): ProjectLinkCheck[] {
   const config = regularText(join(target, '.ki-config.toml'), '.ki-config.toml').content
   const runtimes = supportedRuntimes(config)
-  let failures = 0
+  const checks: ProjectLinkCheck[] = []
   if (scope === 'skills' || scope === 'all') {
     const declared = declaredSkills(config).filter((name) => name !== BOOTSTRAP)
     let orphans: string[] = []
@@ -593,7 +606,6 @@ function printCheck(target: string, scope: ProjectLinkScope, skillPublication: P
     const wanted = new Set(declared)
     for (const runtime of runtimes) {
       const subdir = runtimeSkillsDir(runtime)
-      console.log(`  ${DIM}[${runtime}]${RESET}`)
       const dir = join(target, subdir)
       const present = entry(dir)?.kind === 'dir' ? readdirSync(dir).filter((name) => name.startsWith('ki-')) : []
       const missing = [...wanted].filter((name) => {
@@ -604,15 +616,32 @@ function printCheck(target: string, scope: ProjectLinkScope, skillPublication: P
       })
       const extra = present.filter((name) => !wanted.has(name) && !(name === LOCAL_GOVERNANCE_SKILL && localKiSelfPayload(join(dir, name))))
       const unexpectedLinks = skillPublication === 'copy' ? present.filter((name) => entry(join(dir, name))?.kind === 'link') : []
-      for (const orphan of orphans) console.log(`  ${RED}FAIL${RESET}  [BOOT-1] invalid declared skill dependency: ${orphan}`)
-      if (orphans.length) failures++
+      for (const orphan of orphans)
+        checks.push({
+          code: 'BOOT-1',
+          level: 'FAIL',
+          message: `invalid declared skill dependency: ${orphan}`,
+          subject: '.ki-config.toml',
+          runtime
+        })
       if (missing.length || extra.length || unexpectedLinks.length) {
         const expected = skillPublication === 'development-link' ? 'development-link' : 'copied-payload'
-        console.log(`  ${YELLOW}WARN${RESET}  [BOOT-1] ${subdir} needs ${expected} reconciliation`)
+        checks.push({
+          code: 'BOOT-1',
+          level: 'WARN',
+          message: `${subdir} needs ${expected} reconciliation`,
+          subject: subdir,
+          runtime
+        })
       }
       const ignored = gitignoresPath(regularText(join(target, '.gitignore'), '.gitignore').content, subdir)
-      if (!ignored) console.log(`  ${YELLOW}WARN${RESET}  [BOOT-3] ${subdir}/ is not gitignored`)
-      else console.log(`  ${DIM}PASS${RESET}  [BOOT-3] ${subdir}/ is gitignored`)
+      checks.push({
+        code: 'BOOT-3',
+        level: ignored ? 'PASS' : 'WARN',
+        message: `${subdir}/ is ${ignored ? '' : 'not '}gitignored`,
+        subject: '.gitignore',
+        runtime
+      })
     }
   }
   if (scope === 'agents' || scope === 'all') {
@@ -621,23 +650,57 @@ function printCheck(target: string, scope: ProjectLinkScope, skillPublication: P
       let subdir: string
       try {
         subdir = runtimeAgentsDir(runtime)
-      } catch (error) {
-        console.log(`  ${YELLOW}skip  [${runtime}]${RESET} ${DIM}(${(error as Error).message})${RESET}`)
+      } catch {
         continue
       }
-      console.log(`  ${DIM}[${runtime}]${RESET}`)
       const dir = join(target, subdir)
       const present = entry(dir)?.kind === 'dir' ? readdirSync(dir).filter((name) => entry(join(dir, name))?.kind === 'link') : []
       const missing = [...wanted].filter((name) => !present.includes(name))
       const extra = present.filter((name) => !wanted.has(name))
       const broken = present.filter((name) => !existsSync(join(dir, name)))
-      if (missing.length || extra.length || broken.length) console.log(`  ${YELLOW}WARN${RESET}  [BOOT-6] ${subdir} needs reconciliation`)
+      if (missing.length || extra.length || broken.length)
+        checks.push({
+          code: 'BOOT-6',
+          level: 'WARN',
+          message: `${subdir} needs reconciliation`,
+          subject: subdir,
+          runtime
+        })
       const ignored = gitignoresPath(regularText(join(target, '.gitignore'), '.gitignore').content, subdir)
-      if (!ignored) console.log(`  ${YELLOW}WARN${RESET}  [BOOT-8] ${subdir}/ is not gitignored`)
-      else console.log(`  ${DIM}PASS${RESET}  [BOOT-8] ${subdir}/ is gitignored`)
+      checks.push({
+        code: 'BOOT-8',
+        level: ignored ? 'PASS' : 'WARN',
+        message: `${subdir}/ is ${ignored ? '' : 'not '}gitignored`,
+        subject: '.gitignore',
+        runtime
+      })
     }
   }
-  return failures ? 1 : 0
+  return checks
+}
+
+function printCheck(target: string, scope: ProjectLinkScope, skillPublication: ProjectSkillPublication): number {
+  const checks = inspectProjectLinks(target, scope, skillPublication)
+  let runtime = ''
+  for (const check of checks) {
+    if (check.runtime !== runtime) {
+      runtime = check.runtime
+      console.log(`  ${DIM}[${runtime}]${RESET}`)
+    }
+    const colour = check.level === 'FAIL' ? RED : check.level === 'WARN' ? YELLOW : DIM
+    console.log(`  ${colour}${check.level}${RESET}  [${check.code}] ${check.message}`)
+  }
+  if (scope === 'agents' || scope === 'all') {
+    const config = regularText(join(target, '.ki-config.toml'), '.ki-config.toml').content
+    for (const runtime of supportedRuntimes(config)) {
+      try {
+        runtimeAgentsDir(runtime)
+      } catch (error) {
+        console.log(`  ${YELLOW}skip  [${runtime}]${RESET} ${DIM}(${(error as Error).message})${RESET}`)
+      }
+    }
+  }
+  return checks.some((check) => check.level === 'FAIL') ? 1 : 0
 }
 
 export function runProjectLinks(

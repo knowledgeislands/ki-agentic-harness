@@ -30,7 +30,17 @@ try {
   process.exit(2)
 }
 const modeArguments = parsedReporter.arguments
-const target = modeArguments.find((argument) => !argument.startsWith('-')) ?? '.'
+const unknownOptions = modeArguments.filter((argument) => argument.startsWith('-') && argument !== '--dry-run')
+if (unknownOptions.length > 0) {
+  process.stderr.write(`error: unknown option: ${unknownOptions[0]}\n`)
+  process.exit(2)
+}
+const targets = modeArguments.filter((argument) => !argument.startsWith('-'))
+if (targets.length > 1) {
+  process.stderr.write('error: conform accepts at most one target\n')
+  process.exit(2)
+}
+const target = targets[0] ?? '.'
 const reportTarget = resolve(target)
 const scope = createKiSkillsSubjects({
   mode: 'conform',

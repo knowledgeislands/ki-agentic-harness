@@ -108,7 +108,7 @@ export const KI_SHAPE_8: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-8',
   title: 'governance checkers emit the canonical checker response',
   description:
-    "_Governance-skill checker contract._ A governance skill's audit and conform scripts emit the canonical checker response as their only direct output. A checker imports its local `rubric` and `checker` modules—owned locally by `ki-skills`, or copied under `scripts/vendored/ki-skills/` for a dependent skill—and has no terminal renderer, `--json` switch, report-file output, or cross-skill import. Exit code is non-zero if and only if a mechanical finding is `FAIL`; `WARN`, `FIXED`, `INFO`, `NOT_APPLICABLE`, and `PASS` all exit 0. Judgment aspects emit no synthetic findings; the summary reports their unevaluated count, including hybrid items. Findings use the canonical levels defined in [the checker contract](checker-contract.md). The linter mechanically **[M]** verifies the local checker imports and response emission; the source-harness checker test verifies stream shape, summary agreement, judgment-count coverage, and exit-code behaviour.",
+    "_Governance-skill checker contract._ With no reporter selected, a governance skill's audit and conform scripts emit the complete canonical checker response as JSONL. A direct human invocation may explicitly select the shared local `reporter` module, which filters presentation without suppressing checks or changing exit status. The wrapper imports its local `rubric`, `checker`, and `reporter` modules—owned locally by `ki-skills`, or copied under `scripts/vendored/ki-skills/` for a dependent skill—and has no private terminal renderer, `--json` switch, report-file output, or cross-skill import. Exit code is non-zero if and only if a mechanical finding is `FAIL`; `WARN`, `FIXED`, `INFO`, `NOT_APPLICABLE`, and `PASS` all exit 0. Judgment aspects emit no synthetic findings; the summary reports their unevaluated count, including hybrid items. Findings use the canonical levels defined in [the checker contract](checker-contract.md). The linter mechanically **[M]** verifies the local checker imports and response emission; the source-harness checker test verifies stream shape, summary agreement, judgment-count coverage, and exit-code behaviour.",
   sources: ['checker-contract.md', 'checker-response.md'],
   mechanical: {
     level: 'WARN',
@@ -128,7 +128,7 @@ export const KI_SHAPE_8: RubricItem<KiShapeRubricContext> = {
       }
     }
   },
-  judgment: { prompt: 'Does the checker fully follow the canonical reporter contract beyond the mechanical checks?' }
+  judgment: { prompt: 'Does the checker fully follow the canonical checker and response contracts beyond the mechanical checks?' }
 }
 
 export const KI_SHAPE_9: RubricItem<KiShapeRubricContext> = {

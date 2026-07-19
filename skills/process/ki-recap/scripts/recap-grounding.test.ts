@@ -62,6 +62,13 @@ function run(...args: string[]): { code: number; out: string } {
 }
 
 try {
+  const help = spawnSync('bun', [HELPER, '--help'], { encoding: 'utf8' })
+  check('help exits 0', help.status === 0)
+  check('help declares usage', (help.stdout ?? '').includes('Usage:'))
+  const mixedHelp = spawnSync('bun', [HELPER, '--json', '-h'], { encoding: 'utf8' })
+  check('mixed help exits 0', mixedHelp.status === 0)
+  check('mixed help stops before JSON output', (mixedHelp.stdout ?? '').startsWith('Usage:'))
+
   const { code, out } = run()
   check('exits 0', code === 0)
   const parsed = JSON.parse(out)

@@ -1,127 +1,75 @@
 #!/usr/bin/env bun
-/**
- * Normalize the unambiguous handoff marker only: missing readiness becomes
- * `readiness: pending`. Every run emits canonical checker-reporter JSONL;
- * `--dry-run` controls writes, never output shape.
- */
+import { resolve } from 'node:path'
+import { createHandoffsContext, type HandoffsRubricContext } from './rubric/contexts/handoffs.ts'
+import { KI_HANDOFFS_RUBRIC } from './rubric/items/index.ts'
+import { runChecker, type CheckerResult } from './vendored/ki-skills/checker.ts'
+import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
+import type { RubricDefinition } from './vendored/ki-skills/rubric.ts'
 
-import { readdir, readFile, stat, writeFile } from 'node:fs/promises'
-import { basename, dirname, join, relative, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import {
-  type CheckerFinding,
-  checkerReporterExitCode,
-  emitCheckerReporter,
-  judgmentFindingsFromRubric
-} from './vendored/ki-skills/checker-reporter.ts'
+const usage = `Usage: bun scripts/conform.ts [directory-or-file] [options]
 
-const VALID_TIERS = new Set(['haiku', 'sonnet', 'opus'])
-const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.ki-meta', '.attic', '.claude'])
-const RUBRIC = 'references/rubric.md'
-const STANDARD = 'references/standards.md'
-const findings: CheckerFinding[] = []
+Add the safe readiness: pending marker to opted-in handoff artifacts that lack one.
 
-function rec(level: 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS', code: string, message: string, file?: string): void {
-  findings.push({ type: 'M', level, code, message, ref: STANDARD, file })
-}
+Options:
+  --dry-run                    Report changes without writing them.
+  --reporter <reporter>        Output reporter: jsonl (default) or terminal.
+  --reporter-levels <levels>   Terminal levels: comma-separated values or all.
+  -h, --help                   Show this help and exit.
+`
 
-function localRubricPath(): string {
-  const scriptDir = dirname(fileURLToPath(import.meta.url))
-  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
-  return join(skillRoot, 'references', 'rubric.md')
-}
+type HandoffsContextFactory = (target: string, dryRun: boolean) => HandoffsRubricContext
 
-async function walk(directory: string, output: string[]): Promise<void> {
-  for (const entry of await readdir(directory, { withFileTypes: true })) {
-    const path = join(directory, entry.name)
-    if (entry.isDirectory() && !SKIP_DIRS.has(entry.name)) await walk(path, output)
-    else if (entry.isFile() && entry.name.endsWith('.md')) output.push(path)
-  }
-}
-
-function parseFrontmatter(body: string): Record<string, string> {
-  const frontmatter: Record<string, string> = {}
-  for (const line of body.split('\n')) {
-    const match = line.match(/^([a-zA-Z-]+):\s*(.*)$/)
-    if (!match) continue
-    frontmatter[match[1]] = match[2]
-      .trim()
-      .replace(/\s+#.*$/, '')
-      .replace(/^['"]|['"]$/g, '')
-  }
-  return frontmatter
-}
-
-async function main(): Promise<void> {
-  const args = process.argv.slice(2)
-  const dryRun = args.includes('--dry-run')
-  const target = resolve(args.find((arg) => !arg.startsWith('-')) ?? '.')
-
-  try {
-    await stat(target)
-  } catch {
-    rec('FAIL', 'HAND-1', `Requested conform path does not exist: ${target}`)
-    findings.push(...judgmentFindingsFromRubric(localRubricPath(), RUBRIC))
-    emitCheckerReporter({ mode: 'conform', concern: 'handoffs', target, findings })
-    process.exitCode = checkerReporterExitCode(findings)
-    return
-  }
-
-  const files: string[] = []
-  if ((await stat(target)).isDirectory()) await walk(target, files)
-  else files.push(target)
-  files.sort()
-
-  let optedIn = 0
-  let readinessFixes = 0
-  for (const path of files) {
-    const content = await readFile(path, 'utf8')
-    const match = content.match(/^---\n([\s\S]*?)\n---/)
-    if (!match) continue
-    const frontmatter = parseFrontmatter(match[1])
-    if (frontmatter.handoff !== 'true') continue
-    optedIn++
-    const file = relative(target, path) || path
-    const body = content.slice(match[0].length)
-
-    if (!frontmatter.tier) {
-      rec('ADVISORY', 'HAND-1', 'Add tier: haiku, sonnet, or opus — choose the cheapest tier the specification makes safe.', file)
-    } else if (!VALID_TIERS.has(frontmatter.tier)) {
-      rec('ADVISORY', 'HAND-1', `Set tier '${frontmatter.tier}' to haiku, sonnet, or opus.`, file)
-    }
-
-    const hasDecisions = /^#{2,}\s+.*decisions/im.test(body)
-    const hasLocked = /locked/i.test(body)
-    const hasEscalate = /escalate/i.test(body)
-    if (!hasDecisions) {
-      rec('ADVISORY', 'HAND-2', 'Add a Decisions section that separates locked decisions from escalations.', file)
-    } else if (!(hasLocked && hasEscalate)) {
-      rec('ADVISORY', 'HAND-2', "Name both 'locked' and 'escalate' in the Decisions section.", file)
-    }
-
-    const hasReadiness = 'readiness' in frontmatter || /^#{2,}\s+readiness/im.test(body) || /\[[ xX]\]\s*readiness test/i.test(body)
-    if (!hasReadiness) {
-      rec('POLISH', 'HAND-3', 'Added readiness: pending (the cold-agent test is not yet recorded).', file)
-      if (!dryRun) await writeFile(path, content.replace(match[0], `---\n${match[1]}\nreadiness: pending\n---`))
-      readinessFixes++
-    }
-  }
-
-  if (optedIn === 0) rec('INFO', 'scope', 'No handoff-opted-in artifacts (handoff: true) — nothing to conform.')
-  else if (readinessFixes === 0) rec('PASS', 'HAND-3', 'Readiness markers already present — nothing to fix.')
-
-  findings.push(...judgmentFindingsFromRubric(localRubricPath(), RUBRIC))
-  emitCheckerReporter({ mode: 'conform', concern: 'handoffs', target, findings })
-  process.exitCode = checkerReporterExitCode(findings)
-}
-
-main().catch((error) => {
-  const target = resolve(process.argv.slice(2).find((arg) => !arg.startsWith('-')) ?? '.')
-  emitCheckerReporter({
+/** The checker validates the complete catalogue and execution plan before invoking this context factory. */
+export const runHandoffsConform = (
+  target: string,
+  dryRun: boolean,
+  rubric: RubricDefinition<HandoffsRubricContext> = KI_HANDOFFS_RUBRIC,
+  contextFactory: HandoffsContextFactory = createHandoffsContext
+): CheckerResult =>
+  runChecker({
     mode: 'conform',
-    concern: 'handoffs',
-    target,
-    findings: [{ type: 'M', level: 'FAIL', code: 'HAND-1', message: `Conform failed: ${String(error)}`, ref: STANDARD }]
+    concern: rubric.concern,
+    target: resolve(target),
+    rubric,
+    subjects: [{ familyCodes: rubric.families.map((family) => family.code), context: () => contextFactory(target, dryRun) }]
   })
-  process.exitCode = 1
-})
+
+const main = (): never => {
+  const arguments_ = process.argv.slice(2)
+  if (arguments_.some((argument) => argument === '-h' || argument === '--help')) {
+    process.stdout.write(usage)
+    process.exit(0)
+  }
+
+  let parsed: ReturnType<typeof parseReporterArguments>
+  try {
+    parsed = parseReporterArguments(arguments_)
+  } catch (error) {
+    process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
+    process.exit(2)
+  }
+  const unknownOption = parsed.arguments.find((argument) => argument.startsWith('-') && argument !== '--dry-run')
+  if (unknownOption) {
+    process.stderr.write(`error: unknown option: ${unknownOption}\n`)
+    process.exit(2)
+  }
+  const targets = parsed.arguments.filter((argument) => !argument.startsWith('-'))
+  if (targets.length > 1) {
+    process.stderr.write('error: conform accepts at most one target\n')
+    process.exit(2)
+  }
+
+  const target = targets[0] ?? '.'
+  const result = runHandoffsConform(target, parsed.arguments.includes('--dry-run'))
+  process.stdout.write(renderCheckerResult(result, { ...parsed.options, colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR) }))
+  process.exit(result.exitCode)
+}
+
+if (import.meta.main) {
+  try {
+    main()
+  } catch (error) {
+    process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
+    process.exit(2)
+  }
+}

@@ -73,6 +73,7 @@ scripts/
     checker.ts                 # planning, execution, response, and validation
     checker.test.ts
     reporter.ts                # semantic filtering and terminal presentation
+    reporter.test.ts
   rubric/                      # private implementation for this skill
     items/
       index.ts
@@ -91,21 +92,25 @@ Top-level non-test files in `scripts/` are callable commands.
 
 Reusable implementation lives in `scripts/lib/`; only modules explicitly published through `checker-modules` form a cross-skill contract for checkers.
 
-Another skill receives a declared module below `scripts/vendored/<provider>/` and imports only that local copy. `ki-skills` is an exception to this as it already owns the shared rubric and checker modules under `scripts/lib/`.
+Another skill receives a declared module below `scripts/vendored/<provider>/` and imports only that local copy. `ki-skills` is an exception to this as it already owns the shared rubric, checker, and reporter modules under `scripts/lib/`.
 
-The target shared modules are `scripts/lib/rubric.ts` and `scripts/lib/checker.ts`.
+Repository bootstrap also copies the consumer's private `scripts/rubric/` tree beside its AUDIT and CONFORM entry points. That tree is part of the consumer's standalone checker payload, not a cross-skill module contract; other skills MUST NOT import it.
+
+The target shared modules are `scripts/lib/rubric.ts`, `scripts/lib/checker.ts`, and `scripts/lib/reporter.ts`.
 
 Each is one self-contained vendorable file with an adjacent source test; ordinary source-code modularity does not justify making a consumer copy an internal module tree.
 
-`ki-skills` publishes them as `checker-modules: [rubric, checker]`.
+`ki-skills` publishes them as `checker-modules: [rubric, checker, reporter]`.
 
-A dependent skill declares `checker-dependencies: [ki-skills:rubric, ki-skills:checker]`; the checker module's relative import of the sibling rubric module remains inside the copied `scripts/vendored/ki-skills/` namespace.
+A dependent governance skill declares `checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]`; relative imports between those modules remain inside the copied `scripts/vendored/ki-skills/` namespace.
 
 The rubric module owns the generic domain model and catalogue mechanics.
 
 The checker module consumes that model and owns planning, execution, and the JSONL boundary.
 
-Together they contain the reusable dependency closure and must not reach into the provider's private `scripts/rubric/` tree.
+The reporter module consumes the checker result and owns semantic display filtering and terminal presentation; it never changes what ran or the checker exit status.
+
+Together the three modules contain the reusable dependency closure and must not reach into the provider's private `scripts/rubric/` tree.
 
 `checker-contract.md` and `checker-response.md` are the guidance references for that implementation: the former defines checker behaviour, while the latter defines its JSONL boundary.
 
@@ -172,7 +177,8 @@ type RubricExecution<Context, Result> = {
 type RubricType = 'MECHANICAL' | 'JUDGMENT'
 
 type MechanicalRubric<Context> = {
-  level: ViolationLevel
+  level: ViolationLevel // default for VIOLATION outcomes
+  overrideLevels?: readonly ViolationLevel[] // exceptional alternatives this item explicitly permits
   heuristic?: boolean // presentation metadata for deterministic evidence with known limits
   audit: RubricExecution<Context, AuditOutcome>
   conform?: RubricExecution<Context, ConformOutcome>
@@ -199,7 +205,9 @@ Its published `RubricType` values are derived from the aspects it carries rather
 
 The type and catalogue validator rejects an item with neither aspect.
 
-The criterion's violation level belongs to the mechanical item; callbacks do not repeat it alongside every result.
+The criterion's default violation level belongs to the mechanical item; callbacks do not repeat it alongside every result.
+
+When one stable criterion intentionally distinguishes an exceptional violation from its ordinary severity, its mechanical aspect MAY declare the alternative in `overrideLevels`, and that `VIOLATION` outcome MAY select it. An undeclared override is invalid. Use this only to preserve one rule's established meaning; it is not a substitute for splitting unrelated rules.
 
 Both modes return one common outcome shape.
 
@@ -208,17 +216,15 @@ AUDIT permits the common read-only subset, while CONFORM additionally permits `F
 ```ts
 type OutcomeStatus = 'PASS' | 'VIOLATION' | 'NOT_APPLICABLE' | 'INFO' | 'FIXED'
 
-type RubricOutcome<Status extends OutcomeStatus> = {
-  status: Status
-  message: string
-  subject?: string
-}
+type RubricOutcome<Status extends OutcomeStatus> = { status: Status; message: string; subject?: string } & (Status extends 'VIOLATION'
+  ? { level?: ViolationLevel }
+  : { level?: never })
 
 type AuditOutcome = RubricOutcome<Exclude<OutcomeStatus, 'FIXED'>>
 type ConformOutcome = RubricOutcome<OutcomeStatus>
 ```
 
-`VIOLATION` means the criterion remains unmet; the checker maps it to the item's declared `ViolationLevel` in the canonical response.
+`VIOLATION` means the criterion remains unmet; the checker maps it to the outcome override or the item's default `ViolationLevel` in the canonical response.
 
 The other mechanical outcomes map directly to `PASS`, `NOT_APPLICABLE`, `INFO`, or `FIXED`.
 
@@ -329,11 +335,11 @@ Support modules define the neutral data types they produce and never import type
 
 Parse each immutable artifact once.
 
-Audit may cache its read-only contexts for the whole run.
+Audit caches each subject's read-only context for the whole run.
 
 Conform retains one mutable working model and any raw form needed for faithful persistence.
 
-The checker requests a fresh root context before each conform element so an ordered element sees changes made by an earlier one; context builders may reuse immutable parsed evidence behind that factory.
+The checker requests fresh context from the relevant subject before each conform element so an ordered element sees changes made by an earlier one; context builders may reuse immutable parsed evidence behind that factory.
 
 Name an extracted function when it exposes a domain operation, defines a useful boundary, or removes repeated error-prone mechanics.
 
@@ -346,7 +352,7 @@ Both commands should read as a short orchestration sequence:
 ```text
 parse arguments
   → discover and load subjects
-  → create the root-context factory
+  → create each subject-context factory
   → ask the checker runtime to plan and execute the mode
   → return the canonical JSONL response
 ```
@@ -397,13 +403,15 @@ JSONL parsing and response validation are separate from response construction.
 
 Rubric-aware validation is also separate: it resolves finding codes against the structured catalogue, checks level compatibility, and verifies the unevaluated-judgment count in the summary.
 
-A reporter starts with a validated checker result. A direct `audit.ts` or `conform.ts` invocation selects terminal presentation with `--reporter=terminal`; otherwise the command emits canonical JSONL. Shared filtering and presentation live in `scripts/lib/reporter.ts`, not in a separate command entry.
+A reporter starts with a canonical in-memory checker result. A direct `audit.ts` or `conform.ts` invocation selects terminal presentation with `--reporter=terminal`; otherwise the command serialises that result as canonical JSONL. Shared filtering and presentation live in `scripts/lib/reporter.ts`, not in a separate command entry.
+
+An out-of-process consumer parses and validates a checker JSONL stream before passing the equivalent typed result to presentation. Malformed transport never falls back to a private renderer.
 
 It may filter displayed levels, render `${code}: ${title}`, write Markdown, or feed another system, but it never reruns or suppresses a check.
 
 The checker obtains criterion titles from its in-memory catalogue and includes them in the canonical response, so a reporter does not need to parse `references/rubric.md` or load a second policy file.
 
-An aggregate command invokes checkers without a reporter, consumes their complete JSONL streams, and owns aggregate presentation. Direct and aggregate presentation reuse the same semantics rather than defining separate contracts.
+An aggregate command invokes checkers without a reporter, consumes their complete JSONL streams, and owns aggregate presentation. Direct and aggregate presentation reuse the shared reporter semantics rather than defining separate level vocabularies or filters.
 
 Filtering never changes which findings a checker collects or emits.
 
@@ -450,13 +458,13 @@ At minimum, a structured rubric proves:
 - audit is read-only and conform honours dry-run before persistence;
 - checker response satisfies the executable schema and exit rule;
 - generated `rubric.md` exactly matches the structured catalogue; and
-- a vendored checker module behaves the same as its source module.
+- each declared vendored rubric, checker, and reporter module behaves the same as its source module.
 
 ## Review boundary
 
 The root exemplar refactor changes only `skills/general-governance/ki-skills/`.
 
-It includes the shared rubric and checker modules, the `ki-skills` domain catalogue and contexts, its command wrappers, its generated rubric publication, and its focused tests.
+It includes the shared rubric, checker, and reporter modules, the `ki-skills` domain catalogue and contexts, its command wrappers, its generated rubric publication, and its focused tests.
 
 It does not change another skill, bootstrap copying, the generated repository aggregate, fleet declarations, or installed footprints.
 
@@ -472,13 +480,11 @@ Complete these units inside `ki-skills` in order, keeping each independently rev
 2. **KI skills catalogue.** Wrap the existing item families in family metadata, add focused context selectors, declare violation levels and phases, and export one `KI_SKILLS_RUBRIC` definition. Preserve every existing criterion code and meaning, including hybrid items with both aspects.
 3. **Generated rubric.** Render and parity-check `references/rubric.md` from `KI_SKILLS_RUBRIC`, including its canonical-source notice. Remove Markdown parsing from runtime code only after exact parity passes.
 4. **Checker module.** Replace the monolithic reporter helper with the self-contained `scripts/lib/checker.ts`: planning, execution, response construction, response parsing, and validation. Rename the executable schema to `assets/checker-response.schema.json` with no legacy alias.
-5. **Thin wrappers.** Reduce `audit.ts` and `conform.ts` to arguments, subject loading, root-context factories, checker invocation, persistence, and exit. They contain no criterion codes or private result shape.
-6. **Module publication.** Publish `rubric` and `checker` as the two `ki-skills` checker modules, prove each declared dependency closure, and add source-level tests for the form another skill will vendor.
+5. **Thin wrappers.** Reduce `audit.ts` and `conform.ts` to arguments, subject loading, subject-context factories, checker invocation, persistence, and exit. They contain no criterion codes or private result shape.
+6. **Module publication.** Publish `rubric`, `checker`, and `reporter` as the three `ki-skills` checker modules, prove the declared dependency closure, and add source-level tests for the exact form another skill will vendor.
 7. **Root verification.** Prove direct AUDIT and CONFORM, dry-run, phase selection, generated-rubric parity, response schema and exit semantics, the absence of runtime `rubric.md` reads, and a passing audit of an educated fixture.
 
-Repository bootstrap changes that copy a consumer's private `scripts/rubric/` tree and both shared modules are a later integration unit outside this focused `ki-skills` refactor.
-
-That later integration MAY add generated rubric metadata or a checker schedule when a decoupled reporter or repository aggregate demonstrates the need and settles the responsibility-based name.
+Repository bootstrap copies a consumer's private `scripts/rubric/` tree and the three declared shared modules into its standalone checker payload. Generated rubric metadata or a checker schedule is added only when a concrete consumer demonstrates the need and settles the responsibility-based name.
 
 Do not migrate another skill until these seven units pass review as the root exemplar.
 
@@ -492,8 +498,13 @@ Apply the model to one governance skill at a time after `ki-skills` proves it.
 - Add the family metadata needed to render the readable rubric exactly.
 - Build subject snapshots and focused contexts; keep policy in item modules.
 - Reduce audit and conform to thin orchestration wrappers over the shared checker runtime.
+- Declare the complete shared module closure: `rubric`, `checker`, and `reporter`; migrate retired reporter dependencies rather than retaining aliases.
+- Verify repository bootstrap copies the skill's private `scripts/rubric/` tree beside its entry points without exposing that tree as a cross-skill dependency.
 - Separate checker response construction, response validation, rubric-aware validation, and downstream reporting.
 - Generate `rubric.md` and add an exact parity gate before retiring Markdown as an authored input.
 - Add machine-readable rubric metadata or a checker schedule only for a concrete consumer, generated from the same catalogue with an exact parity gate.
-- Verify source commands, dry-run behaviour, JSONL schema and exit status, and any declared vendored module.
+- Test the source command against one explicit skill target: terminal output for a human and unfiltered JSONL when no reporter is selected.
+- Verify that display filtering changes neither executed items nor exit status; use all levels only for diagnosis.
+- Verify source commands, dry-run behaviour, JSONL schema and exit status before re-vendoring, then verify source-to-vendored parity for every declared module.
+- Migrate one skill atomically; do not mix a structured catalogue with a Markdown-policy fallback or a private reporter.
 - Record any reusable improvement in this guide before moving to the next skill.

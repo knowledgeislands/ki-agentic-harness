@@ -1,151 +1,71 @@
 #!/usr/bin/env bun
-/** Mechanical, normalize-only CONFORM for a Knowledge Islands harness. Emits canonical JSONL only. */
+import { resolve } from 'node:path'
+import { createHarnessContext, type HarnessRubricContext } from './rubric/contexts/harness.ts'
+import { KI_HARNESS_RUBRIC } from './rubric/items/index.ts'
+import { runChecker, type CheckerResult } from './vendored/ki-skills/checker.ts'
+import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
+import type { RubricDefinition } from './vendored/ki-skills/rubric.ts'
 
-import { mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises'
-import { basename, dirname, join, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import {
-  type CheckerFinding,
-  checkerReporterExitCode,
-  emitCheckerReporter,
-  judgmentFindingsFromRubric
-} from './vendored/ki-skills/checker-reporter.ts'
+const usage = `Usage: bun scripts/conform.ts [harness-path] [--dry-run] [--reporter=terminal] [--reporter-levels=all]
 
-const STD = 'references/standards.md'
-const RUBRIC = 'references/rubric.md'
-const PARTS = ['skills', 'agents', 'mcp', 'evals', 'hooks'] as const
-const ROOT_FILES = ['CLAUDE.md', 'ROADMAP.md'] as const
-const REQUIRED_SCRIPTS = [
-  'ki:skills:copy:project',
-  'ki:skills:audit',
-  'ki:repo:link-commands',
-  'ki:skills:link:global',
-  'ki:skills:refresh-status',
-  'ki:eval'
-]
+Apply safe mechanical remediation to one Knowledge Islands agentic harness.
+With no reporter the command emits the canonical JSONL checker response.
+`
 
-function localRubricPath(): string {
-  const scriptDir = dirname(fileURLToPath(import.meta.url))
-  const skillRoot = basename(scriptDir) === 'scripts' ? dirname(scriptDir) : scriptDir
-  return join(skillRoot, 'references', 'rubric.md')
-}
+type HarnessContextFactory = (target: string, dryRun: boolean) => HarnessRubricContext
 
-function hasTomlTable(toml: string, table: string): boolean {
-  return new RegExp(`^\\[${table.replace(/-/g, '\\-')}\\]`, 'm').test(toml)
-}
+/** The checker validates the complete catalogue and execution plan before invoking this context factory. */
+export const runHarnessConform = (
+  target: string,
+  dryRun: boolean,
+  rubric: RubricDefinition<HarnessRubricContext> = KI_HARNESS_RUBRIC,
+  contextFactory: HarnessContextFactory = createHarnessContext
+): CheckerResult =>
+  runChecker({
+    mode: 'conform',
+    concern: rubric.concern,
+    target,
+    rubric,
+    subjects: [{ familyCodes: rubric.families.map((family) => family.code), context: () => contextFactory(target, dryRun) }]
+  })
 
-function parseFrontmatterName(content: string): string | null {
-  const match = content.match(/^---\s*\n([\s\S]*?)\n---/)
-  const nameMatch = match?.[1]?.match(/^name:\s*(.+)$/m)
-  return nameMatch ? (nameMatch[1] as string).trim() : null
-}
+const main = (): never => {
+  const rawArguments = process.argv.slice(2)
+  if (rawArguments.some((argument) => ['-h', '--help', 'help', '?'].includes(argument))) {
+    process.stdout.write(usage)
+    process.exit(0)
+  }
 
-async function exists(path: string): Promise<boolean> {
+  let parsed: ReturnType<typeof parseReporterArguments>
   try {
-    await stat(path)
-    return true
-  } catch {
-    return false
+    parsed = parseReporterArguments(rawArguments)
+  } catch (error) {
+    process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
+    process.exit(2)
   }
+
+  const unknownOption = parsed.arguments.find((argument) => argument.startsWith('-') && argument !== '--dry-run')
+  if (unknownOption) {
+    process.stderr.write(`error: unknown option: ${unknownOption}\n`)
+    process.exit(2)
+  }
+  const targets = parsed.arguments.filter((argument) => !argument.startsWith('-'))
+  if (targets.length > 1) {
+    process.stderr.write('error: conform accepts at most one target\n')
+    process.exit(2)
+  }
+
+  const target = resolve(targets[0] ?? '.')
+  const result = runHarnessConform(target, parsed.arguments.includes('--dry-run'))
+  process.stdout.write(renderCheckerResult(result, { ...parsed.options, colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR) }))
+  process.exit(result.exitCode)
 }
 
-function emit(target: string, findings: CheckerFinding[]): never {
-  findings.push(...judgmentFindingsFromRubric(localRubricPath(), RUBRIC))
-  emitCheckerReporter({ mode: 'conform', concern: 'harness', target, findings })
-  process.exit(checkerReporterExitCode(findings))
+if (import.meta.main) {
+  try {
+    main()
+  } catch (error) {
+    process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
+    process.exit(2)
+  }
 }
-
-async function main(): Promise<void> {
-  const args = process.argv.slice(2)
-  const dryRun = args.includes('--dry-run')
-  const target = resolve(args.find((value) => !value.startsWith('-')) ?? '.')
-  const findings: CheckerFinding[] = []
-  const rec = (
-    level: 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS',
-    code: string,
-    message: string,
-    file?: string
-  ): void => {
-    findings.push({ type: 'M', level, code, message, ref: STD, ...(file ? { file } : {}) })
-  }
-  if (!(await exists(target))) {
-    rec('FAIL', 'LAY-1', `Harness root not found: ${target}.`, target)
-    emit(target, findings)
-  }
-
-  for (const part of PARTS) {
-    const directory = join(target, part)
-    if (!(await exists(directory))) {
-      rec('POLISH', 'LAY-1', `${part}/ ${dryRun ? 'would be created' : 'created'}.`, `${part}/`)
-      if (!dryRun) await mkdir(directory, { recursive: true })
-    } else rec('PASS', 'LAY-1', `${part}/ is present.`, `${part}/`)
-    const readme = join(directory, 'README.md')
-    if (!(await exists(readme))) {
-      rec('POLISH', 'LAY-2', `Shelf description ${dryRun ? 'would be scaffolded' : 'scaffolded'}.`, `${part}/README.md`)
-      if (!dryRun)
-        await writeFile(readme, `# \`${part}/\`\n\nEmpty shelf — no ${part} yet. TODO: describe what this part holds and its status.\n`)
-    } else rec('PASS', 'LAY-2', 'Shelf description is present.', `${part}/README.md`)
-  }
-
-  const tomlPath = join(target, '.ki-config.toml')
-  if (!(await exists(tomlPath))) {
-    rec('ADVISORY', 'LAY-5', 'KI configuration is missing at root — author it by hand.', '.ki-config.toml')
-  } else {
-    const toml = await readFile(tomlPath, 'utf8')
-    if (hasTomlTable(toml, 'ki-harness')) rec('PASS', 'CONFIG-1', '[ki-harness] table is present.', '.ki-config.toml')
-    else {
-      rec('POLISH', 'CONFIG-1', `Keyless [ki-harness] table ${dryRun ? 'would be appended' : 'appended'}.`, '.ki-config.toml')
-      if (!dryRun) await writeFile(tomlPath, `${toml.replace(/\n*$/, '\n')}\n[ki-harness]\n`)
-    }
-    if (!hasTomlTable(toml, 'ki-repo')) rec('ADVISORY', 'CONFIG-2', 'No [ki-repo] table; add it by hand.', '.ki-config.toml')
-  }
-
-  for (const file of ROOT_FILES) {
-    if (!(await exists(join(target, file))))
-      rec('ADVISORY', file === 'CLAUDE.md' ? 'LAY-3' : 'LAY-4', 'Required root document is missing — author it by hand.', file)
-  }
-  const packagePath = join(target, 'package.json')
-  if (!(await exists(packagePath))) {
-    rec('ADVISORY', 'PKG-1', 'Package manifest is missing — author required script families by hand.', 'package.json')
-  } else {
-    try {
-      const pkg = JSON.parse(await readFile(packagePath, 'utf8')) as { scripts?: Record<string, unknown> }
-      const missing = REQUIRED_SCRIPTS.filter((script) => !(script in (pkg.scripts ?? {})))
-      if (missing.length > 0) rec('ADVISORY', 'PKG-1', `Add repo-specific scripts by hand: ${missing.join(', ')}.`, 'package.json')
-    } catch {
-      rec('ADVISORY', 'PKG-1', 'Package manifest could not be parsed as JSON — fix it by hand.', 'package.json')
-    }
-  }
-  const skillsDir = join(target, 'skills')
-  if (await exists(skillsDir)) {
-    const names = new Map<string, string[]>()
-    for (const entry of await readdir(skillsDir)) {
-      const skillPath = join(skillsDir, entry, 'SKILL.md')
-      if (!(await exists(skillPath))) continue
-      const declaredName = parseFrontmatterName(await readFile(skillPath, 'utf8'))
-      if (!declaredName) rec('ADVISORY', 'SKILLS-1', 'No parseable name: frontmatter.', `skills/${entry}/SKILL.md`)
-      else {
-        if (declaredName !== entry)
-          rec(
-            'ADVISORY',
-            'SKILLS-1',
-            `name: '${declaredName}' differs from directory '${entry}' — choose the correction.`,
-            `skills/${entry}`
-          )
-        const entries = names.get(declaredName) ?? []
-        entries.push(entry)
-        names.set(declaredName, entries)
-      }
-    }
-    for (const [name, entries] of names) {
-      if (entries.length > 1)
-        rec('ADVISORY', 'SKILLS-2', `Duplicate name '${name}' in ${entries.map((entry) => `skills/${entry}`).join(', ')}.`, 'skills/')
-    }
-  }
-  emit(target, findings)
-}
-
-main().catch((error) => {
-  const findings: CheckerFinding[] = [{ type: 'M', level: 'FAIL', code: 'RUNTIME', message: `Checker failed: ${String(error)}.`, ref: STD }]
-  emit(resolve('.'), findings)
-})
