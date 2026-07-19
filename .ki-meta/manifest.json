@@ -1,5 +1,5 @@
 {
-  "ref": "4bc0af9e76ea4ca707dbfc80cf6a56fead178eb5",
+  "ref": "2434607cb03508e3d0ce4f7851435534849fed73",
   "files": {
     ".ki-meta/checkers/ki-agents/scripts/audit.ts": "4ba2c172f0c3f63fe0156eb98331c25bd579ec1d97176e47461ad4fa4e3f4614",
     ".ki-meta/checkers/ki-agents/scripts/conform.ts": "6733480578b008128fac702b8b979fadaa5609058c8cb1f59e66089a5c9b1278",
@@ -69,7 +69,7 @@
     ".ki-meta/checkers/ki-engineering/scripts/rubric/items/bun.ts": "9fb3727bd197d253b6e4af36efc54f0e8c5b649e1f5f6cda4c4ad7705ae57a65",
     ".ki-meta/checkers/ki-engineering/scripts/rubric/items/ci.ts": "d7e1d7e23d7dab9cc30f2c91a17a89aa5074ccaebcc0bdf5edc61fc5b84f4524",
     ".ki-meta/checkers/ki-engineering/scripts/rubric/items/common.ts": "94a2b7c0b26c495787d69f2abfed8e1d725d97bf708e2f43407ebc8ffb816ed8",
-    ".ki-meta/checkers/ki-engineering/scripts/rubric/items/dependencies.ts": "15ed2172958415e4857dd2af83c087d399ba603da942f3fd5a9f1d4dc786c7e6",
+    ".ki-meta/checkers/ki-engineering/scripts/rubric/items/dependencies.ts": "18c89b12becf94d29ed79ab42b85ce6430e3dce2b75ec7b7db2a454f5b6fcf0f",
     ".ki-meta/checkers/ki-engineering/scripts/rubric/items/environment.ts": "dc734e9cceb0aa38279fe2140b42ba752439e02130c5567eeaf615ea8d448e4b",
     ".ki-meta/checkers/ki-engineering/scripts/rubric/items/generated.ts": "b8bd3d2711f6cda984e0325a6561af4193248562906b5a1d31a236a30ecbeb6a",
     ".ki-meta/checkers/ki-engineering/scripts/rubric/items/index.ts": "6e05c3fb84ad54cc2ea46ce94044a74acadec1ef9fd8dada1f19a02fa8a974e3",
