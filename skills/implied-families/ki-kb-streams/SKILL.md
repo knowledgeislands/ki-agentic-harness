@@ -1,6 +1,6 @@
 ---
 name: ki-kb-streams
-ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator]
 ki-depends-on: []
 ki-vendors: [educate, audit, conform, help]
 description: >

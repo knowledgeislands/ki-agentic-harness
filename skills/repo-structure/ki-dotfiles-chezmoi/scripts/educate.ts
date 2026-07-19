@@ -1,14 +1,5 @@
 #!/usr/bin/env bun
-import { execFileSync } from 'node:child_process'
-import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { resolve } from 'node:path'
+import { runSkillEducator } from './vendored/ki-bootstrap/educator.ts'
 
-const help =
-  'Usage: bun scripts/educate.ts <target-repo> [--ref <ref>] [--dry-run]\n\nEducate a repository with ki-dotfiles-chezmoi and its declared dependencies.\n'
-if (process.argv.includes('-h') || process.argv.includes('--help')) {
-  process.stdout.write(help)
-  process.exit(0)
-}
-
-const engine = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'ki-bootstrap', 'scripts', 'lib', 'repo-bootstrap.ts')
-execFileSync('bun', [engine, ...process.argv.slice(2), '--seed', 'ki-dotfiles-chezmoi'], { stdio: 'inherit' })
+runSkillEducator({ skill: 'ki-dotfiles-chezmoi', source: resolve(import.meta.dirname, '..') })

@@ -16,7 +16,10 @@ export const scriptHelpEvidence = (skillDirectory: string): readonly ScriptHelpE
         subject: `scripts/${entry.name}`,
         declaresShortHelp: /['"]-h['"]|(^|[|(\s])-h(?=[|)\s])/m.test(source),
         declaresLongHelp: /['"]--help['"]|(^|[|(\s])--help(?=[|)\s])/m.test(source),
-        declaresUsageText: /\busage\s*:/i.test(source)
+        declaresUsageText: /\busage\s*:/i.test(source),
+        delegatesSharedEducator:
+          /import\s*\{\s*runSkillEducator\s*\}\s*from\s*['"]\.\/vendored\/ki-bootstrap\/educator\.ts['"]/.test(source) &&
+          /\brunSkillEducator\s*\(/.test(source)
       }
     })
 }

@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledgeislands.info/schemas/checker-response/v1.json",
+  "title": "Knowledge Islands canonical checker response record",
+  "description": "One JSONL record from a governance skill AUDIT or CONFORM run.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "runId", "record", "mode", "concern", "target", "generatedAt"],
+  "properties": {
+    "version": { "const": 1 },
+    "runId": { "type": "string", "format": "uuid" },
+    "record": { "enum": ["meta", "finding", "summary"] },
+    "mode": { "enum": ["audit", "conform"] },
+    "concern": { "type": "string", "minLength": 1 },
+    "target": { "type": "string", "minLength": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "level": { "enum": ["FAIL", "WARN", "FIXED", "INFO", "NOT_APPLICABLE", "PASS"] },
+    "code": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "message": { "type": "string", "minLength": 1 },
+    "subject": { "type": "string", "minLength": 1 },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fail", "warn", "fixed", "info", "notApplicable", "pass", "judgment"],
+      "properties": {
+        "fail": { "type": "integer", "minimum": 0 },
+        "warn": { "type": "integer", "minimum": 0 },
+        "fixed": { "type": "integer", "minimum": 0 },
+        "info": { "type": "integer", "minimum": 0 },
+        "notApplicable": { "type": "integer", "minimum": 0 },
+        "pass": { "type": "integer", "minimum": 0 },
+        "judgment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["unevaluated"],
+          "properties": {
+            "unevaluated": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "properties": { "record": { "const": "meta" } },
+      "not": {
+        "anyOf": [
+          { "required": ["level"] },
+          { "required": ["code"] },
+          { "required": ["title"] },
+          { "required": ["message"] },
+          { "required": ["summary"] }
+        ]
+      }
+    },
+    {
+      "required": ["level", "code", "title", "message"],
+      "properties": { "record": { "const": "finding" } },
+      "not": { "required": ["summary"] }
+    },
+    {
+      "required": ["summary"],
+      "properties": { "record": { "const": "summary" } },
+      "not": {
+        "anyOf": [{ "required": ["level"] }, { "required": ["code"] }, { "required": ["title"] }, { "required": ["message"] }]
+      }
+    }
+  ]
+}

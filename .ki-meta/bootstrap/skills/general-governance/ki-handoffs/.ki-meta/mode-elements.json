@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "elements": [
+    { "id": "handoff-inspection", "mode": "audit", "phase": "inspect", "entry": "scripts/audit.ts", "reads": ["handoffs"], "writes": [] },
+    { "id": "handoff-conform", "mode": "conform", "phase": "write", "entry": "scripts/conform.ts", "reads": ["handoffs"], "writes": ["handoffs"] }
+  ]
+}

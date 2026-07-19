@@ -9,7 +9,8 @@ import {
   readFileSync,
   realpathSync,
   renameSync,
-  rmSync
+  rmSync,
+  writeFileSync
 } from 'node:fs'
 import { isAbsolute, join, relative, resolve, sep } from 'node:path'
 
@@ -26,8 +27,9 @@ export type SkillEducationRequest = {
 export type SkillEducationUnit = {
   owner: 'checker' | 'educator'
   kind: 'file' | 'directory'
-  source: string
   destination: string
+  source?: string
+  content?: string
 }
 
 export type SkillEducationPlan = {
@@ -72,6 +74,16 @@ const copyPayload = (source: string, destination: string): void => {
   for (const name of readdirSync(source).sort()) copyPayload(join(source, name), join(destination, name))
 }
 
+const writePayload = (unit: SkillEducationUnit, destination: string): void => {
+  if (unit.content !== undefined) {
+    mkdirSync(resolve(destination, '..'), { recursive: true })
+    writeFileSync(destination, unit.content)
+    return
+  }
+  if (!unit.source) throw new Error(`skill education unit has no source: ${unit.destination}`)
+  copyPayload(unit.source, destination)
+}
+
 const escapes = (root: string, path: string): boolean => {
   const rel = relative(root, path)
   return rel === '..' || rel.startsWith(`..${sep}`) || isAbsolute(rel)
@@ -96,6 +108,74 @@ const checkerUnit = (source: string, destination: string, relativePath: string):
   }
 }
 
+const educatorModuleSource = (): string => join(import.meta.dirname, 'educator.ts')
+
+const unquote = (value: string): string => {
+  const singleQuoted = value.startsWith("'") && value.endsWith("'")
+  const doubleQuoted = value.startsWith('"') && value.endsWith('"')
+  return singleQuoted || doubleQuoted ? value.slice(1, -1) : value
+}
+
+const frontmatterValue = (frontmatter: string, key: string): string | null => {
+  const lines = frontmatter.split(/\r?\n/)
+  const index = lines.findIndex((line) => new RegExp(`^${key}:`).test(line))
+  if (index === -1) return null
+  const value = lines[index].replace(new RegExp(`^${key}:\\s*`), '')
+  if (!['>', '|', '>-', '|-', ''].includes(value.trim())) return unquote(value.trim())
+  const linesAfter: string[] = []
+  for (let cursor = index + 1; cursor < lines.length && !/^\S/.test(lines[cursor]); cursor += 1) linesAfter.push(lines[cursor].trim())
+  return linesAfter.join(' ').replace(/\s+/g, ' ').trim()
+}
+
+const firstSentence = (value: string): string => {
+  const sentence = value.match(/^(.*?[.!?])(?:\s|$)/)
+  return (sentence ? sentence[1] : value).trim()
+}
+
+const helpModes = (body: string, argumentHint: string | null): readonly { name: string; gloss: string }[] => {
+  const modes = [...body.matchAll(/^#{2,3}\s+Mode\s+([A-Z][A-Z]+)\b\s*(?:[—-]\s*(.*))?$/gm)].map((match) => ({
+    name: match[1],
+    gloss: (match[2] ?? '').trim()
+  }))
+  if (modes.length === 0 && argumentHint) {
+    for (const token of argumentHint.split(/[\s|]+/)) {
+      if (/^[a-z][a-z-]+$/.test(token)) modes.push({ name: token.toUpperCase(), gloss: '' })
+    }
+  }
+  if (!modes.some((mode) => mode.name === 'HELP')) modes.push({ name: 'HELP', gloss: 'explain this skill and stop' })
+  return modes.sort((left, right) => left.name.localeCompare(right.name))
+}
+
+/** Render a standalone HELP snapshot from the source skill, without a bootstrap-private dependency. */
+const helpSnapshot = (source: string): string => {
+  const markdown = readFileSync(join(source, 'SKILL.md'), 'utf8')
+  const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---/)
+  if (!match) throw new Error(`SKILL.md has no frontmatter: ${join(source, 'SKILL.md')}`)
+  const name = frontmatterValue(match[1], 'name') ?? declaredName(source)
+  const description = frontmatterValue(match[1], 'description') ?? ''
+  const argumentHint = frontmatterValue(match[1], 'argument-hint')
+  const body = markdown.slice(markdown.indexOf('\n---', 3))
+  const output = [`# ${name}`, '', firstSentence(description), '']
+  if (argumentHint) output.push(`**Invoke:** \`${name} ${argumentHint}\``, '')
+  output.push('**Modes:**', '')
+  for (const mode of helpModes(body, argumentHint)) output.push(`- \`${mode.name}\`${mode.gloss ? ` — ${mode.gloss}` : ''}`)
+  return `${output.join('\n').trimEnd()}\n`
+}
+
+const helpSnapshotUnit = (source: string, destination: string): SkillEducationUnit => ({
+  owner: 'checker',
+  kind: 'file',
+  content: helpSnapshot(source),
+  destination: join(destination, 'help.md')
+})
+
+export const educatorLauncher = (skill: string): string => `#!/usr/bin/env bun
+import { resolve } from 'node:path'
+import { runSkillEducator } from './educator.ts'
+
+runSkillEducator({ skill: ${JSON.stringify(skill)}, source: resolve(import.meta.dirname, 'skill') })
+`
+
 export const createSkillEducationPlan = (request: SkillEducationRequest): SkillEducationPlan => {
   if (!/^ki-[a-z0-9][a-z0-9-]*$/.test(request.skill)) throw new Error(`invalid skill name: ${request.skill}`)
   const source = physicalDirectory(request.source, 'skill source')
@@ -114,9 +194,22 @@ export const createSkillEducationPlan = (request: SkillEducationRequest): SkillE
       owner: 'educator',
       kind: 'directory',
       source,
-      destination: educator
+      destination: join(educator, 'skill')
+    },
+    {
+      owner: 'educator',
+      kind: 'file',
+      source: educatorModuleSource(),
+      destination: join(educator, 'educator.ts')
+    },
+    {
+      owner: 'educator',
+      kind: 'file',
+      content: educatorLauncher(request.skill),
+      destination: join(educator, 'educate.ts')
     },
     checkerUnit(source, checker, 'SKILL.md'),
+    helpSnapshotUnit(source, checker),
     ...REQUIRED_MODE_SCRIPTS.filter((script) => script !== 'educate.ts').map((script) =>
       checkerUnit(source, checker, join('scripts', script))
     ),
@@ -170,7 +263,7 @@ export const publishSkillEducation = (plan: SkillEducationPlan): void => {
       const rel = relative(plan.target, unit.destination)
       if (escapes(plan.target, unit.destination))
         throw new Error(`skill education destination escapes the target repository: ${unit.destination}`)
-      copyPayload(unit.source, join(candidateRoot, rel))
+      writePayload(unit, join(candidateRoot, rel))
     }
 
     mkdirSync(backupRoot)
@@ -206,4 +299,45 @@ export const educateSkill = (request: SkillEducationRequest): SkillEducationPlan
   const plan = createSkillEducationPlan(request)
   publishSkillEducation(plan)
   return plan
+}
+
+export const runSkillEducator = ({
+  skill,
+  source,
+  argv = process.argv.slice(2)
+}: {
+  skill: string
+  source: string
+  argv?: readonly string[]
+}): void => {
+  if (argv.includes('-h') || argv.includes('--help')) {
+    process.stdout.write(`Usage: bun scripts/educate.ts [target-repo] [--dry-run] [--verbose]
+
+Refresh only ${skill} under the target repository's .ki-meta/checkers and
+.ki-meta/educators directories. Aggregate runners remain owned by ki-bootstrap.
+
+Options:
+  --dry-run   Report the planned payload without writing it.
+  --verbose   List each copied payload unit.
+  -h, --help  Show this help and exit.
+`)
+    return
+  }
+
+  let targetArgument: string | undefined
+  let dryRun = false
+  let verbose = false
+  for (const argument of argv) {
+    if (argument === '--dry-run') dryRun = true
+    else if (argument === '--verbose') verbose = true
+    else if (argument.startsWith('-')) throw new Error(`unsupported option: ${argument}`)
+    else if (targetArgument) throw new Error(`unexpected argument: ${argument}`)
+    else targetArgument = argument
+  }
+
+  const plan = educateSkill({ skill, source, target: resolve(targetArgument ?? '.'), dryRun })
+  if (verbose) {
+    for (const unit of plan.units) process.stdout.write(`${dryRun ? 'would copy' : 'copied'} ${relative(plan.target, unit.destination)}\n`)
+  }
+  process.stdout.write(`${dryRun ? 'EDUCATE dry run' : 'EDUCATE complete'} — ${skill}\n`)
 }

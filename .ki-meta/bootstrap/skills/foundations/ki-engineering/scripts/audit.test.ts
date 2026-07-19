@@ -1,0 +1,474 @@
+#!/usr/bin/env bun
+/** Run-based regression tests for ki-engineering's runner-neutral test policy. */
+import { spawnSync } from 'node:child_process'
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { ENGINEERING_ITEMS } from './rubric/items/index.ts'
+import { parseCheckerJsonl } from './vendored/ki-skills/checker.ts'
+
+const CHECKER = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
+
+type Finding = { level: string; code: string; message: string }
+
+let failed = false
+function check(label: string, condition: boolean): void {
+  if (condition) console.log(`  \x1b[32mok\x1b[0m   ${label}`)
+  else {
+    failed = true
+    console.log(`  \x1b[31mFAIL\x1b[0m ${label}`)
+  }
+}
+
+const expectedRubricCodes = new Set([
+  'PKG-1',
+  'PKG-2',
+  'PKG-3',
+  'PKG-4',
+  'PKG-5',
+  'PKG-6',
+  'MISE-1',
+  'MISE-2',
+  'MISE-3',
+  'CI-1',
+  'CI-2',
+  'SCR-1',
+  'SCR-2',
+  'SCR-3',
+  'SCR-4',
+  'SCR-5',
+  'SCR-6',
+  'SCR-7',
+  'SCR-8',
+  'BUN-1',
+  'TSC-1',
+  'TSC-2',
+  'TSC-3',
+  'BIO-1',
+  'BIO-2',
+  'KNIP-1',
+  'KNIP-2',
+  'SYNC-1',
+  'DEPS-1',
+  'GEN-1',
+  'TEST-1',
+  'TEST-2',
+  'TEST-3',
+  'TEST-4',
+  'TEST-5',
+  'TEST-6',
+  'BUILD-1',
+  'BUILD-2',
+  'BUILD-3',
+  'BUILD-4',
+  'ENV-1',
+  'ENV-2',
+  'ENV-3',
+  'ENV-4',
+  'TOML-1',
+  'TOML-2'
+])
+check(
+  'structured rubric preserves every former criterion code',
+  ENGINEERING_ITEMS.length === expectedRubricCodes.size && ENGINEERING_ITEMS.every((item) => expectedRubricCodes.has(item.code))
+)
+check(
+  'structured rubric carries faithful metadata rather than placeholders',
+  ENGINEERING_ITEMS.every(
+    (item) => item.title !== 'engineering mechanical rule' && item.description.length > 10 && item.sources.includes('standards.md')
+  )
+)
+const hybridMechanicalCodes = new Set(['PKG-6', 'CI-2', 'SCR-5', 'BIO-2', 'TEST-1', 'BUILD-4'])
+check(
+  'structured rubric preserves explicit mixed-severity allowances',
+  ENGINEERING_ITEMS.filter((item) => hybridMechanicalCodes.has(item.code)).every((item) =>
+    item.mechanical?.overrideLevels?.includes(item.mechanical.level === 'FAIL' ? 'WARN' : 'FAIL')
+  )
+)
+check(
+  'structured rubric preserves judgment-only criteria',
+  ENGINEERING_ITEMS.filter((item) => ['SCR-8', 'BUN-1', 'TSC-3', 'TEST-6', 'ENV-3', 'ENV-4'].includes(item.code)).every(
+    (item) => Boolean(item.judgment) && !item.mechanical
+  )
+)
+
+function fixture(scripts: Record<string, string>, vitest?: { file: string; content: string }, ci?: string): string {
+  const dir = mkdtempSync(join(tmpdir(), 'ki-engineering-test-'))
+  const fakeBin = join(dir, '.fake-bin')
+  mkdirSync(fakeBin)
+  for (const command of ['bun', 'bunx', 'tsc']) {
+    const path = join(fakeBin, command)
+    writeFileSync(path, '#!/bin/sh\nexit 0\n')
+    chmodSync(path, 0o755)
+  }
+  writeFileSync(
+    join(dir, 'package.json'),
+    `${JSON.stringify(
+      {
+        name: 'test-fixture',
+        version: '0.0.0',
+        description: 'fixture',
+        author: 'Knowledge Islands',
+        license: 'MIT',
+        private: true,
+        type: 'module',
+        packageManager: 'bun@1.3.6',
+        engines: { node: '>=22' },
+        scripts: {
+          'ki:audit': 'true',
+          'ki:conform': 'true',
+          clean: 'rm -rf node_modules',
+          prepare: 'husky',
+          ...scripts
+        },
+        devDependencies: {
+          '@biomejs/biome': 'latest',
+          knip: 'latest',
+          prettier: 'latest',
+          husky: 'latest',
+          'lint-staged': 'latest',
+          'markdownlint-cli2': 'latest',
+          syncpack: 'latest',
+          typescript: 'latest'
+        },
+        'lint-staged': { '*.ts': '@biomejs/biome check', '*.md': ['prettier --check', 'markdownlint-cli2 --no-globs'] }
+      },
+      null,
+      2
+    )}\n`
+  )
+  writeFileSync(join(dir, 'mise.toml'), '[tools]\nnode = "24"\nbun = "1.3.6"\n')
+  writeFileSync(
+    join(dir, 'tsconfig.json'),
+    '{"compilerOptions":{"strict":true,"module":"nodenext","moduleResolution":"nodenext","noEmit":true,"isolatedModules":true,"esModuleInterop":true,"skipLibCheck":true}}\n'
+  )
+  writeFileSync(
+    join(dir, 'biome.json'),
+    '{"formatter":{"lineWidth":140,"indentWidth":2},"javascript":{"formatter":{"quoteStyle":"single","semicolons":"asNeeded","trailingCommas":"none"}},"linter":{"rules":{"recommended":true,"suspicious":{"noExplicitAny":"off"}}},"assist":{"actions":{"source":{"organizeImports":"on"}}}}\n'
+  )
+  writeFileSync(join(dir, 'knip.json'), '{}\n')
+  writeFileSync(join(dir, '.ki-config.toml'), '[ki-engineering]\n')
+  if (vitest) writeFileSync(join(dir, vitest.file), vitest.content)
+  if (ci) {
+    mkdirSync(join(dir, '.github', 'workflows'), { recursive: true })
+    writeFileSync(join(dir, '.github', 'workflows', 'ci.yml'), ci)
+  }
+  return dir
+}
+
+function run(dir: string): Finding[] {
+  const fakeBin = join(dir, '.fake-bin')
+  const result = spawnSync(process.execPath, [CHECKER, dir], {
+    encoding: 'utf8',
+    env: { ...process.env, PATH: `${fakeBin}:${process.env.PATH ?? ''}` }
+  })
+  const parsed = parseCheckerJsonl(result.stdout ?? '')
+  const errors = parsed.errors
+  if (errors.length) throw new Error(`checker produced an invalid canonical stream: ${errors.join('; ')}`)
+  return parsed.records.flatMap((event) => {
+    if (typeof event !== 'object' || event === null || Array.isArray(event)) return []
+    const record = event as Record<string, unknown>
+    if (
+      record.record !== 'finding' ||
+      typeof record.level !== 'string' ||
+      typeof record.code !== 'string' ||
+      typeof record.message !== 'string'
+    )
+      return []
+    return [{ level: record.level, code: record.code, message: record.message }]
+  })
+}
+
+function hasFinding(findings: Finding[], area: string, level: string, message: string): boolean {
+  return findings.some((finding) => finding.code === area && finding.level === level && finding.message.includes(message))
+}
+
+function withFixture(
+  scripts: Record<string, string>,
+  assertion: (findings: Finding[]) => void,
+  vitest?: { file: string; content: string },
+  ci?: string
+): void {
+  const dir = fixture(scripts, vitest, ci)
+  try {
+    assertion(run(dir))
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+}
+
+function withGeneratedFixture(
+  dirs: string[],
+  configs: { biome?: string; knip?: string; markdownlint?: string },
+  assertion: (findings: Finding[]) => void
+): void {
+  const dir = fixture({})
+  try {
+    for (const path of dirs) mkdirSync(join(dir, path), { recursive: true })
+    if (configs.biome) writeFileSync(join(dir, 'biome.json'), configs.biome)
+    if (configs.knip) writeFileSync(join(dir, 'knip.json'), configs.knip)
+    if (configs.markdownlint) writeFileSync(join(dir, '.markdownlint-cli2.jsonc'), configs.markdownlint)
+    assertion(run(dir))
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+}
+
+const generatedBiome = `{
+  "files": {
+    "includes": [
+      "src/**",
+      "*.ts",
+      "*.json",
+      "!.ki-meta/**",
+      "!src/generated/**",
+      "!.claude/skills/**",
+      "!.claude/agents/**",
+      "!.agents/skills/**"
+    ]
+  },
+  "formatter": { "lineWidth": 140, "indentWidth": 2 },
+  "javascript": { "formatter": { "quoteStyle": "single", "semicolons": "asNeeded", "trailingCommas": "none" } },
+  "linter": { "rules": { "recommended": true, "suspicious": { "noExplicitAny": "off" } } },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } }
+}\n`
+const generatedKnip = `{
+  "ignore": [".ki-meta/**", "src/generated/**", ".claude/skills/**", ".claude/agents/**", ".agents/skills/**"]
+}\n`
+const generatedMarkdownlint = `{
+  "ignores": [".ki-meta/**", "src/generated/**", ".claude/**", ".agents/**"]
+}\n`
+const generatedDirs = ['.ki-meta', 'src/generated', '.claude/skills', '.claude/agents', '.agents/skills']
+
+withFixture({}, (findings) => {
+  check('no generated surface is GEN-1 N/A', hasFinding(findings, 'GEN-1', 'NOT_APPLICABLE', 'no generated or vendored surfaces'))
+  check('staged-only Markdown fan-out passes PKG-6', hasFinding(findings, 'PKG-6', 'PASS', 'staged-only'))
+})
+
+{
+  const dir = fixture({})
+  try {
+    const checkerDir = join(dir, '.ki-meta', 'checkers', 'ki-fixture', 'scripts')
+    mkdirSync(checkerDir, { recursive: true })
+    writeFileSync(join(checkerDir, 'audit.ts'), 'process.exit(0)\n')
+    writeFileSync(join(checkerDir, 'conform.ts'), 'process.exit(0)\n')
+    const packagePath = join(dir, 'package.json')
+    const pkg = JSON.parse(readFileSync(packagePath, 'utf8')) as { scripts: Record<string, string> }
+    pkg.scripts['ki:fixture:audit'] = 'bun .ki-meta/checkers/ki-fixture/scripts/audit.ts .'
+    pkg.scripts['ki:fixture:conform'] = 'bun .ki-meta/checkers/ki-fixture/scripts/conform.ts .'
+    writeFileSync(packagePath, `${JSON.stringify(pkg, null, 2)}\n`)
+    check('direct per-skill checker commands fail SCR-4', hasFinding(run(dir), 'SCR-4', 'FAIL', 'must use'))
+
+    pkg.scripts['ki:fixture:audit'] = 'bun .ki-meta/bin/aggregate.ts audit --skill ki-fixture'
+    pkg.scripts['ki:fixture:conform'] = 'bun .ki-meta/bin/aggregate.ts conform --skill ki-fixture'
+    writeFileSync(packagePath, `${JSON.stringify(pkg, null, 2)}\n`)
+    check('scoped aggregate commands pass SCR-4', hasFinding(run(dir), 'SCR-4', 'PASS', 'aggregate reporter'))
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+}
+
+{
+  const dir = fixture({})
+  try {
+    const packagePath = join(dir, 'package.json')
+    const pkg = JSON.parse(readFileSync(packagePath, 'utf8'))
+    pkg['lint-staged']['*.md'] = ['prettier --check', 'markdownlint-cli2']
+    writeFileSync(packagePath, `${JSON.stringify(pkg, null, 2)}\n`)
+    check('config-glob Markdown fan-out warns PKG-6', hasFinding(run(dir), 'PKG-6', 'WARN', 'markdownlint-cli2 --no-globs'))
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+}
+
+withGeneratedFixture(generatedDirs, { biome: generatedBiome, knip: generatedKnip, markdownlint: generatedMarkdownlint }, (findings) => {
+  check('matching exclusions pass GEN-1', hasFinding(findings, 'GEN-1', 'PASS', 'excluded across Biome, knip, and Markdown'))
+})
+
+withGeneratedFixture(
+  generatedDirs,
+  {
+    biome: generatedBiome,
+    knip: generatedKnip.replace(', ".agents/skills/**"', ''),
+    markdownlint: generatedMarkdownlint
+  },
+  (findings) => {
+    check('partial exclusions fail GEN-1', hasFinding(findings, 'GEN-1', 'FAIL', 'knip.json → .agents/skills/'))
+  }
+)
+
+withFixture({ test: 'bun scripts/checker.test.ts' }, (findings) => {
+  check('runner-neutral bare test satisfies SCR-7', hasFinding(findings, 'SCR-7', 'PASS', 'bare "test" idiom present'))
+  check('runner-neutral bare test selects the non-Vitest policy', hasFinding(findings, 'TEST-1', 'INFO', 'non-vitest test runner'))
+})
+
+withFixture({ test: 'bun test --isolate ./scripts' }, (findings) => {
+  check("the governed test entrypoint may select Bun's runner", hasFinding(findings, 'SCR-6', 'PASS', 'no non-test script bypasses'))
+})
+
+withFixture({ test: 'bun scripts/checker.test.ts', 'ki:ci': 'bun test' }, (findings) => {
+  check(
+    'a non-test script bypassing the entrypoint is rejected',
+    hasFinding(findings, 'SCR-6', 'FAIL', 'bypasses the governed test entrypoint')
+  )
+})
+
+withFixture({ test: 'bun scripts/checker.test.ts', 'ki:ci': 'bun run test' }, (findings) => {
+  check('bun run test is not mistaken for a test-entrypoint bypass', hasFinding(findings, 'SCR-6', 'PASS', 'no non-test script bypasses'))
+})
+
+withFixture(
+  { test: 'bun scripts/checker.test.ts' },
+  (findings) => {
+    check('CI without the self-test command fails CI-2', hasFinding(findings, 'CI-2', 'FAIL', 'exact command'))
+  },
+  undefined,
+  'steps:\n  - uses: jdx/mise-action@v3\n  - run: bun run ki:audit\n'
+)
+
+withFixture(
+  { test: 'bun scripts/checker.test.ts' },
+  (findings) => {
+    check('CI with aggregate audit and self-tests passes CI-2', hasFinding(findings, 'CI-2', 'PASS', 'self-test suite'))
+  },
+  undefined,
+  'steps:\n  - uses: jdx/mise-action@v3\n  - run: bun run ki:audit\n  - run: bun run test\n'
+)
+
+withFixture(
+  { test: 'bun scripts/checker.test.ts' },
+  (findings) => {
+    check('CI rejects test:coverage as the bare self-test command', hasFinding(findings, 'CI-2', 'FAIL', 'exact command'))
+  },
+  undefined,
+  'steps:\n  - uses: jdx/mise-action@v3\n  - run: bun run ki:audit\n  - run: bun run test:coverage\n'
+)
+
+withFixture(
+  { test: 'bun scripts/checker.test.ts' },
+  (findings) => {
+    check('CI rejects self-tests before the aggregate audit', hasFinding(findings, 'CI-2', 'FAIL', 'before "bun run test"'))
+  },
+  undefined,
+  'steps:\n  - uses: jdx/mise-action@v3\n  - run: bun run test\n  - run: bun run ki:audit\n'
+)
+
+const exactThresholds = `
+export default {
+  test: {
+    coverage: {
+      exclude: ['src/**/*.test.ts'],
+      thresholds: {
+        "lines": 100,
+        'branches': 100,
+        functions: 100,
+        statements: 100,
+      },
+    },
+  },
+}
+`
+
+withFixture(
+  { test: 'vitest run', 'test:coverage': 'vitest run --coverage', 'test:watch': 'vitest' },
+  (findings) => {
+    check('vitest.config.cts activates the Vitest profile', hasFinding(findings, 'TEST-1', 'PASS', 'test = "vitest run"'))
+    check(
+      'exact Vitest script profile passes',
+      findings.filter((finding) => finding.code === 'TEST-1' && finding.level === 'PASS').length === 3
+    )
+    check('quoted exact 100 thresholds pass', hasFinding(findings, 'TEST-2', 'PASS', 'coverage thresholds 100%'))
+  },
+  { file: 'vitest.config.cts', content: exactThresholds }
+)
+
+withFixture(
+  { test: 'vitest', 'test:coverage': 'vitest run --coverage', 'test:watch': 'vitest' },
+  (findings) => {
+    check('non-canonical Vitest test script fails exact match', hasFinding(findings, 'TEST-1', 'FAIL', 'test should be "vitest run"'))
+  },
+  { file: 'vitest.config.ts', content: exactThresholds }
+)
+
+withFixture(
+  { 'test:coverage': 'vitest run --coverage', 'test:watch': 'vitest' },
+  (findings) => {
+    check('Vitest config without bare test fails SCR-7', hasFinding(findings, 'SCR-7', 'FAIL', 'no bare "test" script'))
+    check('Vitest profile reports the missing exact test script', hasFinding(findings, 'TEST-1', 'WARN', 'script "test" missing'))
+  },
+  { file: 'vitest.config.ts', content: exactThresholds }
+)
+
+withFixture(
+  { test: 'vitest run', 'test:coverage': 'vitest run --coverage', 'test:watch': 'vitest' },
+  (findings) => {
+    check('1000 does not satisfy an exact 100 threshold', hasFinding(findings, 'TEST-2', 'FAIL', 'must be 100/100/100/100'))
+  },
+  { file: 'vitest.config.ts', content: exactThresholds.replace('"lines": 100', '"lines": 1000') }
+)
+
+withFixture(
+  { test: 'vitest run', 'test:coverage': 'vitest run --coverage', 'test:watch': 'vitest' },
+  (findings) => {
+    check(
+      'threshold-looking keys outside coverage do not satisfy TEST-2',
+      hasFinding(findings, 'TEST-2', 'FAIL', 'must be 100/100/100/100')
+    )
+  },
+  {
+    file: 'vitest.config.ts',
+    content: `
+const decoy = { test: { coverage: { thresholds: { lines: 100, branches: 100, functions: 100, statements: 100 } } } }
+export default { test: { coverage: { thresholds: { lines: 99, branches: 99, functions: 99, statements: 99 } } } }
+void decoy
+`
+  }
+)
+
+withFixture(
+  { test: 'vitest run', 'test:coverage': 'vitest run --coverage', 'test:watch': 'vitest' },
+  (findings) => {
+    check('nested config-shaped decoy does not satisfy TEST-2', hasFinding(findings, 'TEST-2', 'FAIL', 'must be 100/100/100/100'))
+  },
+  {
+    file: 'vitest.config.ts',
+    content: `
+export default {
+  metadata: { test: { coverage: { thresholds: { lines: 100, branches: 100, functions: 100, statements: 100 } } } },
+  test: { coverage: { thresholds: { lines: 99, branches: 99, functions: 99, statements: 99 } } },
+}
+`
+  }
+)
+
+withFixture(
+  { test: 'vitest run', 'test:coverage': 'vitest run --coverage', 'test:watch': 'vitest' },
+  (findings) => {
+    check('nested metric decoys do not satisfy direct threshold metrics', hasFinding(findings, 'TEST-2', 'FAIL', 'must be 100/100/100/100'))
+  },
+  {
+    file: 'vitest.config.ts',
+    content: `
+export default {
+  test: {
+    coverage: {
+      thresholds: {
+        nested: { lines: 100, branches: 100, functions: 100, statements: 100 },
+        lines: 99,
+        branches: 99,
+        functions: 99,
+        statements: 99,
+      },
+    },
+  },
+}
+`
+  }
+)
+
+if (failed) {
+  console.log('\n\x1b[31maudit.test.ts: failures\x1b[0m')
+  process.exit(1)
+}
+console.log('\n\x1b[32maudit.test.ts: all checks passed\x1b[0m')

@@ -14,7 +14,10 @@ const fixture = (): { source: string; target: string } => {
   mkdirSync(join(source, 'scripts', 'rubric'), { recursive: true })
   mkdirSync(join(source, 'scripts', 'vendored', 'ki-bootstrap'), { recursive: true })
   mkdirSync(target)
-  writeFileSync(join(source, 'SKILL.md'), '---\nname: ki-example\n---\n\n# Example\n')
+  writeFileSync(
+    join(source, 'SKILL.md'),
+    "---\nname: ki-example\ndescription: An example skill for EDUCATE tests.\nargument-hint: 'audit | help'\n---\n\n# Example\n\n## Mode AUDIT — inspect the target\n"
+  )
   for (const script of ['audit.ts', 'conform.ts', 'educate.ts']) writeFileSync(join(source, 'scripts', script), 'export {}\n')
   writeFileSync(join(source, 'scripts', 'rubric', 'index.ts'), 'export {}\n')
   writeFileSync(join(source, 'scripts', 'vendored', 'ki-bootstrap', 'educator.ts'), 'export {}\n')
@@ -31,8 +34,11 @@ test('plans one offline educator snapshot and one checker projection for a skill
 
   expect(plan).toMatchObject({ skill: 'ki-example', source, target, dryRun: true })
   expect(plan.units.map(({ owner, destination }) => [owner, destination])).toEqual([
-    ['educator', join(target, '.ki-meta', 'educators', 'ki-example')],
+    ['educator', join(target, '.ki-meta', 'educators', 'ki-example', 'skill')],
+    ['educator', join(target, '.ki-meta', 'educators', 'ki-example', 'educator.ts')],
+    ['educator', join(target, '.ki-meta', 'educators', 'ki-example', 'educate.ts')],
     ['checker', join(target, '.ki-meta', 'checkers', 'ki-example', 'SKILL.md')],
+    ['checker', join(target, '.ki-meta', 'checkers', 'ki-example', 'help.md')],
     ['checker', join(target, '.ki-meta', 'checkers', 'ki-example', 'scripts', 'audit.ts')],
     ['checker', join(target, '.ki-meta', 'checkers', 'ki-example', 'scripts', 'conform.ts')],
     ['checker', join(target, '.ki-meta', 'checkers', 'ki-example', 'scripts', 'rubric')],
@@ -59,7 +65,12 @@ test('publishes only the selected skill checker and educator directories', () =>
   educateSkill({ skill: 'ki-example', source, target })
 
   expect(readFileSync(join(target, '.ki-meta', 'checkers', 'ki-example', 'scripts', 'audit.ts'), 'utf8')).toBe('export {}\n')
-  expect(readFileSync(join(target, '.ki-meta', 'educators', 'ki-example', 'scripts', 'educate.ts'), 'utf8')).toBe('export {}\n')
+  const help = readFileSync(join(target, '.ki-meta', 'checkers', 'ki-example', 'help.md'), 'utf8')
+  expect(help).toContain('# ki-example')
+  expect(help).toContain('An example skill for EDUCATE tests.')
+  expect(help).not.toStartWith('---')
+  expect(readFileSync(join(target, '.ki-meta', 'educators', 'ki-example', 'skill', 'scripts', 'educate.ts'), 'utf8')).toBe('export {}\n')
+  expect(readFileSync(join(target, '.ki-meta', 'educators', 'ki-example', 'educate.ts'), 'utf8')).toContain('skill: "ki-example"')
   expect(readFileSync(join(target, '.ki-meta', 'checkers', 'ki-other', 'keep'), 'utf8')).toBe('keep\n')
 })
 

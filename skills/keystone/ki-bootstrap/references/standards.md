@@ -44,7 +44,7 @@ In a source-bearing harness target, the bootstrap audit also compares every dire
 
 ## Functional areas under `.ki-meta/`
 
-`.ki-meta/checkers/<skill>/` contains only the standalone AUDIT and CONFORM payloads, their reporter dependencies, rubric metadata, and rendered HELP. `.ki-meta/educators/<skill>/educate.ts` is a separate functional area for selected per-skill EDUCATE dispatch. It is a generated, target-local launcher: it has no harness-relative import and invokes the canonical bootstrap transport with the selected skill as its explicit seed. `./.ki-meta/bin/ki-educate` with no skill remains the whole-set re-bootstrap operation; `./.ki-meta/bin/ki-educate <skill>` runs only the matching local educator launcher. Both are mechanical, model-free operations.
+`.ki-meta/checkers/<skill>/` contains only the standalone AUDIT and CONFORM payloads, their reporter dependencies, rubric metadata, and a HELP snapshot. `.ki-meta/educators/<skill>/` is a separate functional area for selected per-skill EDUCATE dispatch: `educate.ts` calls its colocated `educator.ts` module against its copied `skill/` source snapshot. It has no harness-relative import or network operation. `.ki-meta/bootstrap/` retains the local whole-set coordinator and its selected source catalogue. `./.ki-meta/bin/ki-educate` with no skill refreshes only that retained current governed set; `./.ki-meta/bin/ki-educate <skill>` runs only the matching local educator. Both are mechanical, model-free operations; `/harness/bootstrap` is the explicit acquisition route for a missing or newer harness revision.
 
 ## Governance agents
 
