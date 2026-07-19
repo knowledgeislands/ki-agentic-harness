@@ -164,9 +164,15 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
   const nameLine = getLine(workingBlock, 'name')
   if (nameLine) {
     const nameVal = (nameLine.match(/^name:\s*(.+)$/)?.[1] ?? '').trim()
-    if (nameVal !== dirName) {
-      workingBlock = workingBlock.replace(nameLine, `name: ${dirName}`)
-      rec('POLISH', `${dirName}:${NAME_5.code}`, `name '${nameVal}' → '${dirName}'`, RUBRIC, 'SKILL.md')
+    const actions = NAME_5.conform?.({
+      name: nameVal,
+      directoryName: dirName,
+      setName: (name) => {
+        workingBlock = workingBlock.replace(nameLine, `name: ${name}`)
+      }
+    })
+    for (const action of actions ?? []) {
+      rec('POLISH', `${dirName}:${action.item.code}`, action.message, RUBRIC, action.file)
       fixedAny = true
     }
   } else {

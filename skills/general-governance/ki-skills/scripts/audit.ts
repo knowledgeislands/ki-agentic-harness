@@ -23,8 +23,12 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './lib/checker-reporter.ts'
-import type { RubricFinding } from './lib/rubric/rubric.ts'
-import { NAME_1, NAME_2, NAME_3, NAME_4, NAME_5, NAME_6 } from './rubrics/name.ts'
+import type { RubricFinding, RubricItem } from './lib/rubric/rubric.ts'
+import { DESC } from './rubrics/description.ts'
+import { NAME } from './rubrics/name.ts'
+import { OPTIONAL } from './rubrics/optional.ts'
+import { SIZE } from './rubrics/size.ts'
+import { stripCode } from './rubrics/lib/text.ts'
 
 type Severity = 'fail' | 'warn'
 // area = the rubric code (criterion); ref = the reference-doc pointer the criterion cites
@@ -32,34 +36,39 @@ type Severity = 'fail' | 'warn'
 // reporter transports both separately from the aggregate's eventual presentation.
 type Finding = { severity: Severity; criterion: string; message: string; ref?: string; file?: string }
 
+const auditRubricItems = <Context>(items: readonly RubricItem<Context>[], context: Context): RubricFinding[] =>
+  items.flatMap((item) => item.audit?.(context) ?? [])
+
 // Every ki-skills criterion is defined in this skill's rubric — the default reference pointer.
 const RUBRIC = 'references/rubric.md'
 
 // --- limits (from references/standards.md §16 — keep in sync) ----------------------
-const NAME_MAX = 64
-const DESC_MAX = 1024
-const COMPAT_MIN = 1
-const COMPAT_MAX = 500
-const BODY_MAX_LINES = 500
-const BODY_MAX_TOKENS = 5000 // estimated as chars/4
 const TOC_LINE_THRESHOLD = 100
 const REFRESH_GRACE_DAYS = 14 // grace added once past a skill's declared cadence window before LONG-3 WARNs
 const CADENCE_DAYS: Record<string, number> = { weekly: 7, monthly: 30, quarterly: 90 } // 'on-change' = no clock; '<N>d' parsed inline
 const FOOTPRINT_REF_NOTE_TOKENS = 1500 // a single reference this large is a candidate to split — INFO hint only, never a cap
-const RESERVED = ['anthropic', 'claude']
 
-// --- minimal frontmatter parser --------------------------------------------
-// Handles top-level scalar keys and `>`/`|` block scalars. Nested maps (e.g.
-// `metadata:`) are recorded as present with an empty value; that is all the
-// mechanical checks need. Avoids a YAML dependency so the script stays portable.
-type Frontmatter = { keys: Map<string, string>; present: Set<string>; raw: string | null }
+// --- frontmatter parser ----------------------------------------------------
+// Handles the scalar fields the audit reads directly. The Bun-built-in YAML
+// parser supplies `metadata`'s real value so OPT-2 can inspect its types without
+// adding a package dependency.
+type Frontmatter = { keys: Map<string, string>; present: Set<string>; raw: string | null; metadata: unknown }
+type BunYamlRuntime = { Bun: { YAML: { parse: (source: string) => unknown } } }
 
 function parseFrontmatter(content: string): Frontmatter {
   const keys = new Map<string, string>()
   const present = new Set<string>()
   const m = content.match(/^---\r?\n([\s\S]*?)\r?\n---/)
-  if (!m) return { keys, present, raw: null }
+  if (!m) return { keys, present, raw: null, metadata: undefined }
   const block = m[1] as string
+  let metadata: unknown
+  try {
+    const parsed = (globalThis as typeof globalThis & BunYamlRuntime).Bun.YAML.parse(block)
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) metadata = (parsed as Record<string, unknown>).metadata
+  } catch {
+    // Existing scalar checks still report what they can. OPT-2 reports an
+    // invalid `metadata` value when that key is present but YAML cannot parse it.
+  }
   const lines = block.split(/\r?\n/)
   let i = 0
   while (i < lines.length) {
@@ -101,7 +110,7 @@ function parseFrontmatter(content: string): Frontmatter {
     keys.set(key, stripQuotes(rest))
     i++
   }
-  return { keys, present, raw: block }
+  return { keys, present, raw: block, metadata }
 }
 
 function stripQuotes(s: string): string {
@@ -109,8 +118,6 @@ function stripQuotes(s: string): string {
   if ((t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'"))) return t.slice(1, -1)
   return t
 }
-
-const hasXmlTag = (s: string): boolean => /<\/?[a-zA-Z][^>]*>/.test(s)
 
 // Parses a flow-list frontmatter value (`owns: ['.gitignore', 'x.json']` or
 // `contributes: [.ki-config.toml]`) into its bare filenames. Empty/absent → [].
@@ -123,11 +130,6 @@ function parseListValue(raw: string | undefined): string[] {
     .map((s) => stripQuotes(s))
     .filter((s) => s.length > 0)
 }
-
-// Remove fenced code blocks and inline code spans, so text-pattern checks don't
-// fire on documentation/examples (e.g. a description that names `<app>` as a
-// placeholder, or a rubric that quotes `[[wikilink]]` syntax to forbid it).
-const stripCode = (md: string): string => md.replace(/```[\s\S]*?```/g, '').replace(/`[^`\n]*`/g, '')
 
 // --- SHAPE-2 endorsement detection (composition-only) -----------------------
 // Composition is the sole sanctioned inter-skill relationship; the base-coupled
@@ -375,28 +377,27 @@ function lintSkill(skillDir: string): Finding[] {
   const desc = fm.keys.get('description')
 
   // name (NAME-1–NAME-7 mechanical)
-  if (!name) fail(NAME_1.code, '`name` is missing from frontmatter')
-  else {
-    if (name.length > NAME_MAX) fail(NAME_2.code, `\`name\` is ${name.length} chars (max ${NAME_MAX})`)
-    if (!/^[a-z0-9-]+$/.test(name)) fail(NAME_3.code, `\`name\` "${name}" must be lowercase letters, digits, and hyphens only`)
-    if (name.startsWith('-') || name.endsWith('-') || name.includes('--'))
-      fail(NAME_4.code, `\`name\` "${name}" must not start/end with a hyphen or contain "--"`)
-    if (name !== dirName) fail(NAME_5.code, `\`name\` "${name}" does not match the directory name "${dirName}"`)
-    if (hasXmlTag(name)) fail(NAME_6.code, '`name` contains an XML tag')
-    for (const r of RESERVED) if (name.includes(r)) fail(NAME_6.code, `\`name\` contains the reserved word "${r}"`)
+  for (const finding of auditRubricItems(NAME, { name, directoryName: dirName })) {
+    if (finding.level === 'FAIL') fail(finding.code, finding.message)
+    else warn(finding.code, finding.message)
   }
 
   // description (DESC-1–DESC-3 mechanical)
-  if (!desc || desc.trim() === '') fail('DESC-1', '`description` is missing or empty')
-  else {
-    if (desc.length > DESC_MAX) fail('DESC-2', `\`description\` is ${desc.length} chars (max ${DESC_MAX})`)
-    if (hasXmlTag(stripCode(desc))) fail('DESC-3', '`description` contains an XML tag')
+  for (const finding of auditRubricItems(DESC, { description: desc })) {
+    if (finding.level === 'FAIL') fail(finding.code, finding.message)
+    else warn(finding.code, finding.message)
   }
 
-  // compatibility (OPT-1 mechanical)
+  // optional frontmatter (OPT-1 / OPT-2 mechanical)
   const compat = fm.keys.get('compatibility')
-  if (compat !== undefined && (compat.length < COMPAT_MIN || compat.length > COMPAT_MAX))
-    fail('OPT-1', `\`compatibility\` is ${compat.length} chars (must be ${COMPAT_MIN}–${COMPAT_MAX})`)
+  for (const finding of auditRubricItems(OPTIONAL, {
+    compatibility: compat,
+    metadataPresent: fm.present.has('metadata'),
+    metadata: fm.metadata
+  })) {
+    if (finding.level === 'FAIL') fail(finding.code, finding.message)
+    else warn(finding.code, finding.message)
+  }
 
   // universal HELP mode (SHAPE-10 mechanical; ADR-KI-HARNESS-SKILLS-001). Every
   // governance skill exposes HELP — the no-mode default and the `help`/`-h`/`?`
@@ -596,10 +597,10 @@ function lintSkill(skillDir: string): Finding[] {
       fail('SHAPE-17', `\`depends-on:\` must be a single-line flow list (got \`${dependencyLine}\`)`)
   }
   const bodyLines = body.split(/\r?\n/).length
-  if (bodyLines > BODY_MAX_LINES)
-    warn('SIZE-1', `SKILL.md body is ${bodyLines} lines (recommended < ${BODY_MAX_LINES}) — split into references/`)
-  const estTokens = Math.round(body.length / 4)
-  if (estTokens > BODY_MAX_TOKENS) warn('SIZE-2', `SKILL.md body is ~${estTokens} tokens (recommended < ${BODY_MAX_TOKENS})`)
+  for (const finding of auditRubricItems(SIZE, { bodyLines, bodyTokens: estTok(body) })) {
+    if (finding.level === 'FAIL') fail(finding.code, finding.message)
+    else warn(finding.code, finding.message)
+  }
 
   // --- per-file checks across all markdown (LAY-4, LINK-1, LINK-2, REF-3, SHAPE-2) ---
   for (const file of listMarkdownFiles(skillDir)) {
