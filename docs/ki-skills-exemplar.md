@@ -25,33 +25,32 @@ ki-skills
   ├─ checker-module declaration and vendoring contract
   └─ root self-governance
        ↓
-one dependent exemplar: ki-engineering
+dependent exemplars: ki-engineering, ???
        ↓
 later skill-by-skill rollout
 ```
 
+Do not broaden this work into a full checker migration, criterion-catalogue redesign, or lifecycle work from GOV-002.
+
 ## Todo List
+
+- review common code
+- make the rubric into code and tests
 
 ## Decision List
 
-- [x] Top-level non-test `scripts/*.ts` files are directly callable command entries; support code lives in `scripts/lib/` with adjacent tests.
-- [x] Declared checker modules are sourced only from the named provider's `scripts/lib/` and copied into each consumer's `scripts/vendored/<provider>/` namespace.
-- [x] Checker dependency declarations use the unambiguous `provider:module` form, with no legacy separator or lookup path.
-- [x] `ki-skills` validates its root contract, direct JSONL output, module resolution, and vendored consumer copies through focused tests.
-- [ ] `ki-engineering` proves the dependent model without no-op narration or a second presentation path.
+- Top-level non-test `scripts/*.ts` files are directly callable command entries; support code lives in `scripts/lib/` with adjacent tests.
+- Declared checker modules are sourced only from the named provider's `scripts/lib/` and copied into each consumer's `scripts/vendored/<provider>/` namespace.
+- Checker dependency declarations use the unambiguous `provider:module` form, with no legacy separator or lookup path.
+- `ki-skills` validates its root contract, direct JSONL output, module resolution, and vendored consumer copies through focused tests.
+- `ki-engineering` proves the dependent model without no-op narration or a second presentation path.
 
 ## Rollout
 
 Apply these checks to one later governance skill at a time, only after the root exemplar is complete.
 
-- [ ] Its top-level non-test `scripts/*.ts` files are directly callable commands; support code and adjacent tests live under `scripts/lib/`.
-- [ ] Any shared checker implementation is declared as `provider:module`, sourced only from the provider's `scripts/lib/`, and copied below the consumer's `scripts/vendored/<provider>/`.
-- [ ] Its audit and conform commands use only their local implementation modules and emit the canonical reporter JSONL with no private rendering path.
-- [ ] Its rubric remains the sole source of finding code, title, type, and level; its checker emits evidence and available action only.
-- [ ] Its focused source and vendored tests pass before the next skill is considered.
-
-## Current focus
-
-Establish the script-entry and checker-module layout in `ki-skills` and `ki-bootstrap`, then prove it through the focused source and vendored checks.
-
-Do not broaden this work into a full checker migration, criterion-catalogue redesign, or lifecycle work from GOV-002.
+- Its top-level non-test `scripts/*.ts` files are directly callable commands; support code and adjacent tests live under `scripts/lib/`.
+- Any shared checker implementation is declared as `provider:module`, sourced only from the provider's `scripts/lib/`, and copied below the consumer's `scripts/vendored/<provider>/`.
+- Its audit and conform commands use only their local implementation modules and emit the canonical reporter JSONL with no private rendering path.
+- Its rubric remains the sole source of finding code, title, type, and level; its checker emits evidence and available action only.
+- Its focused source and vendored tests pass before the next skill is considered.
