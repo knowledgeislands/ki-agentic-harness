@@ -175,6 +175,7 @@ The quality and autonomy of executable skill support.
   - _Review prompt:_ Do batch or destructive operations plan and validate before execution?
 - **SCRIPT-7 [J] — target-repository scripts are copied** — Scripts installed into a target repo's `scripts/` directory are **copies**, not symlinks or out-of-repo references — the target repo must be autonomous. (BP)
   - _Review prompt:_ Are target-repository scripts copied rather than symlinked or referenced outside the repository?
+- **SCRIPT-8 [M] — top-level TypeScript scripts expose command help** — Every non-test TypeScript file directly under `scripts/` is a public command entry point that exits successfully for `-h` and prints useful usage or help text. Reusable implementation modules belong under `scripts/lib/`. (AS, KI)
 
 ## KI-CHECKER — Knowledge Islands checker contract
 

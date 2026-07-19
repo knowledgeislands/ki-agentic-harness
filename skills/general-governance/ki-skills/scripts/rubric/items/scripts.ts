@@ -1,6 +1,7 @@
 import type { RubricItem } from '../../lib/rubric.ts'
+import type { ScriptsRubricContext } from '../contexts/contexts.ts'
 
-export const SCRIPT_1: RubricItem<unknown> = {
+export const SCRIPT_1: RubricItem<ScriptsRubricContext> = {
   code: 'SCRIPT-1',
   title: 'scripts handle expected errors',
   description: 'Scripts handle expected errors (missing file, permissions) rather than punt to Claude.',
@@ -8,7 +9,7 @@ export const SCRIPT_1: RubricItem<unknown> = {
   judgment: { prompt: 'Do scripts handle expected errors rather than punting them to an agent?' }
 }
 
-export const SCRIPT_2: RubricItem<unknown> = {
+export const SCRIPT_2: RubricItem<ScriptsRubricContext> = {
   code: 'SCRIPT-2',
   title: 'scripts explain configuration values',
   description: 'No unexplained magic numbers — every config value is justified.',
@@ -16,7 +17,7 @@ export const SCRIPT_2: RubricItem<unknown> = {
   judgment: { prompt: 'Are configuration values justified rather than unexplained magic numbers?' }
 }
 
-export const SCRIPT_3: RubricItem<unknown> = {
+export const SCRIPT_3: RubricItem<ScriptsRubricContext> = {
   code: 'SCRIPT-3',
   title: 'runtime dependencies and MCP tools are explicit',
   description: 'Required packages are listed/verified for the runtime; MCP tools use fully-qualified `ServerName:tool_name`.',
@@ -24,7 +25,7 @@ export const SCRIPT_3: RubricItem<unknown> = {
   judgment: { prompt: 'Are runtime dependencies verified and MCP tools fully qualified?' }
 }
 
-export const SCRIPT_4: RubricItem<unknown> = {
+export const SCRIPT_4: RubricItem<ScriptsRubricContext> = {
   code: 'SCRIPT-4',
   title: 'deterministic reusable logic is pre-written',
   description: 'Deterministic, frequently-reused logic is pre-written, not regenerated each run.',
@@ -32,7 +33,7 @@ export const SCRIPT_4: RubricItem<unknown> = {
   judgment: { prompt: 'Is deterministic, frequently reused logic pre-written rather than regenerated each run?' }
 }
 
-export const SCRIPT_5: RubricItem<unknown> = {
+export const SCRIPT_5: RubricItem<ScriptsRubricContext> = {
   code: 'SCRIPT-5',
   title: 'validation errors are actionable',
   description: 'Validation scripts are verbose — errors name the problem and the valid options.',
@@ -40,7 +41,7 @@ export const SCRIPT_5: RubricItem<unknown> = {
   judgment: { prompt: 'Do validation errors name the problem and valid options?' }
 }
 
-export const SCRIPT_6: RubricItem<unknown> = {
+export const SCRIPT_6: RubricItem<ScriptsRubricContext> = {
   code: 'SCRIPT-6',
   title: 'batch and destructive work is planned and validated first',
   description: 'Plan-validate-execute for batch/destructive ops.',
@@ -48,7 +49,7 @@ export const SCRIPT_6: RubricItem<unknown> = {
   judgment: { prompt: 'Do batch or destructive operations plan and validate before execution?' }
 }
 
-export const SCRIPT_7: RubricItem<unknown> = {
+export const SCRIPT_7: RubricItem<ScriptsRubricContext> = {
   code: 'SCRIPT-7',
   title: 'target-repository scripts are copied',
   description:
@@ -57,4 +58,31 @@ export const SCRIPT_7: RubricItem<unknown> = {
   judgment: { prompt: 'Are target-repository scripts copied rather than symlinked or referenced outside the repository?' }
 }
 
-export const SCRIPTS = [SCRIPT_1, SCRIPT_2, SCRIPT_3, SCRIPT_4, SCRIPT_5, SCRIPT_6, SCRIPT_7] as const
+export const SCRIPT_8: RubricItem<ScriptsRubricContext> = {
+  code: 'SCRIPT-8',
+  title: 'top-level TypeScript scripts expose command help',
+  description:
+    'Every non-test TypeScript file directly under `scripts/` is a public command entry point that exits successfully for `-h` and prints useful usage or help text. Reusable implementation modules belong under `scripts/lib/`.',
+  sources: ['AS', 'KI'],
+  mechanical: {
+    level: 'FAIL',
+    audit: {
+      phase: 'INSPECT',
+      run: ({ helpProbes }) => {
+        if (helpProbes.length === 0) return [{ status: 'NOT_APPLICABLE', message: 'the skill has no top-level TypeScript scripts' }]
+        const violations = helpProbes
+          .filter(({ status, output }) => status !== 0 || !/\b(?:usage|help|options)\b/i.test(output))
+          .map(({ subject, status }) => ({
+            status: 'VIOLATION' as const,
+            message: status === 0 ? '`-h` produced no useful help text' : `\`-h\` exited with status ${status ?? 'unknown'}`,
+            subject
+          }))
+        return violations.length > 0
+          ? [violations[0] as (typeof violations)[number], ...violations.slice(1)]
+          : [{ status: 'PASS', message: 'top-level TypeScript scripts expose command help' }]
+      }
+    }
+  }
+}
+
+export const SCRIPTS = [SCRIPT_1, SCRIPT_2, SCRIPT_3, SCRIPT_4, SCRIPT_5, SCRIPT_6, SCRIPT_7, SCRIPT_8] as const

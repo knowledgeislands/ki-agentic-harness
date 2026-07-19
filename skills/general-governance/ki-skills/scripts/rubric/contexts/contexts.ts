@@ -41,6 +41,16 @@ export type ReferencesRubricContext = {
   content: string
 }
 
+export type ScriptHelpProbe = {
+  subject: string
+  status: number | null
+  output: string
+}
+
+export type ScriptsRubricContext = {
+  helpProbes: readonly ScriptHelpProbe[]
+}
+
 export type LayoutRubricContext = {
   markdown?: string
   subject?: string
@@ -203,6 +213,7 @@ export type KiSkillsRubricContext = {
   optional: OptionalRubricContext
   size: SizeRubricContext
   references: ReferencesRubricContext
+  scripts: ScriptsRubricContext
   checker: KiCheckerRubricContext
   link: KiLinkRubricContext
   shape: KiShapeRubricContext
@@ -229,6 +240,7 @@ export const createKiSkillsRubricContext = (overrides: Partial<KiSkillsRubricCon
   },
   size: {},
   references: { lineCount: 0, content: '' },
+  scripts: { helpProbes: [] },
   checker: {
     imports: [],
     rootSkill: false,

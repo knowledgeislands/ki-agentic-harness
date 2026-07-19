@@ -87,7 +87,7 @@ const RUBRIC_FAMILIES = [
     title: 'Scripts & executable code',
     description: 'The quality and autonomy of executable skill support.',
     standard: 'standards.md#10-scripts',
-    selectContext: (context: KiSkillsRubricContext) => context,
+    selectContext: (context: KiSkillsRubricContext) => context.scripts,
     items: SCRIPTS
   }),
   defineRubricFamily({

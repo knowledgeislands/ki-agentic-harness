@@ -9,6 +9,7 @@ import {
 } from './contexts.ts'
 import { estimateTokens } from './footprint.ts'
 import { type ParsedFrontmatter, parseFrontmatter } from './frontmatter.ts'
+import { probeScriptHelp } from './scripts.ts'
 import { listMarkdownFiles } from './skill-files.ts'
 import { stripCode } from './text.ts'
 
@@ -170,6 +171,7 @@ export const createKiShapeEvidence = (
 export const createSkillRubricContext = (directory: string, capabilities: SkillWritableCapabilities = {}): SkillRubricContext => {
   const readContent = capabilities.readContent ?? (() => readFileSync(join(directory, 'SKILL.md'), 'utf8'))
   const initial = parseFrontmatter(readContent())
+  let helpProbes: ReturnType<typeof probeScriptHelp> | undefined
 
   return {
     validFrontmatter: initial.raw !== null && initial.isMapping,
@@ -193,6 +195,7 @@ export const createSkillRubricContext = (directory: string, capabilities: SkillW
           resolvesInsideScripts: resolve(dirname(scriptPath), specifier).startsWith(`${scriptsDirectory}/`)
         }))
       )
+      if (!helpProbes) helpProbes = probeScriptHelp(directory)
 
       return createKiSkillsRubricContext({
         layout: { supportDirectories },
@@ -210,6 +213,7 @@ export const createSkillRubricContext = (directory: string, capabilities: SkillW
           licensePresent: frontmatter.present.has('license'),
           license: frontmatter.values.license
         },
+        scripts: { helpProbes },
         checker: {
           imports,
           rootSkill: name === 'ki-skills',

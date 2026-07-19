@@ -61,7 +61,10 @@ const fixture = (): { base: string; dir: string } => {
     ].join('\n')
   )
   for (const name of ['educate.ts', 'audit.ts', 'conform.ts'])
-    writeFileSync(join(dir, 'scripts', name), "import { runChecker } from './lib/checker.ts'\nvoid runChecker\n")
+    writeFileSync(
+      join(dir, 'scripts', name),
+      `if (process.argv.includes('-h')) process.stdout.write('Usage: bun scripts/${name} <target>\\n')\n`
+    )
   return { base, dir }
 }
 

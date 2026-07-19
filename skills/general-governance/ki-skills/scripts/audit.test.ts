@@ -32,7 +32,10 @@ const fixture = (): { base: string; dir: string } => {
       ''
     ].join('\n')
   )
-  writeFileSync(join(dir, 'scripts', 'audit.ts'), "import { runChecker } from './lib/checker.ts'\nvoid runChecker\n")
+  writeFileSync(
+    join(dir, 'scripts', 'audit.ts'),
+    "if (process.argv.includes('-h')) process.stdout.write('Usage: bun scripts/audit.ts <target>\\n')\n"
+  )
   return { base, dir }
 }
 
@@ -79,6 +82,26 @@ describe('ki-skills AUDIT wrapper', () => {
       expect(
         parsed.records.some(
           (record) => (record as { code?: unknown; level?: unknown }).code === 'LAY-1' && (record as { level?: unknown }).level === 'FAIL'
+        )
+      ).toBe(true)
+    } finally {
+      rmSync(base, { recursive: true, force: true })
+    }
+  })
+
+  test('returns SCRIPT-8 FAIL when a top-level script has no useful help', () => {
+    const { base, dir } = fixture()
+    writeFileSync(join(dir, 'scripts', 'audit.ts'), 'void 0\n')
+    try {
+      const result = run(dir)
+      const parsed = parseCheckerJsonl(result.output)
+      expect(result.status).toBe(1)
+      expect(
+        parsed.records.some(
+          (record) =>
+            (record as { code?: unknown; level?: unknown; subject?: unknown }).code === 'SCRIPT-8' &&
+            (record as { level?: unknown }).level === 'FAIL' &&
+            (record as { subject?: unknown }).subject === 'scripts/audit.ts'
         )
       ).toBe(true)
     } finally {
