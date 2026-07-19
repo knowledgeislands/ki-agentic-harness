@@ -12,45 +12,47 @@ Abbreviations match the `(SOURCE)` tags in [the standard](standards.md) and [rub
 
 The Agent Skills [documentation index][agentskills-index] is the inventory authority for this set. Every REFRESH fetches it first, reconciles this table with its current pages, then reviews every listed page individually. The index currently lists the nine documentation pages below; the index itself is also tracked because it detects additions and removals.
 
-| Tag | Source | Governs | Last reviewed |
-| --- | --- | --- | --- |
-| AS | [Agent Skills documentation index][agentskills-index] | Current page inventory for this source set | 2026-07-19 |
-| AS | [Agent Skills overview][home] | Overview, ecosystem, progressive-disclosure model | 2026-07-19 |
-| SPEC | [Agent Skills specification][spec] | Frontmatter fields, layout, hard caps, progressive-disclosure budget | 2026-07-19 |
-| AS | [Skill-creator quickstart][quickstart] | First-skill workflow and discovery/activation examples | 2026-07-19 |
-| AS | [Skill-creator best practices][agentskills-best-practices] | Skill-authoring practice | 2026-07-19 |
-| AS | [Optimising descriptions][optimizing-descriptions] | Description evaluation and refinement | 2026-07-19 |
-| AS | [Evaluating skills][evaluating-skills] | Evaluation design and iteration | 2026-07-19 |
-| AS | [Using scripts][using-scripts] | Script inventory, self-contained execution, `--help`, and structured output | 2026-07-19 |
-| AS | [Client showcase][clients] | Current client ecosystem | 2026-07-19 |
-| AS | [Adding skills support][adding-skills-support] | Client discovery, loading, activation, and context management | 2026-07-19 |
-| BP | [Skill authoring best practices][bp] | Description writing, conciseness, scripts, anti-patterns, the checklist | 2026-07-04 |
-| CC | [Claude Code — skills][cc] | CC frontmatter, runtime listing/compaction budgets, commands→skills | 2026-07-04 |
-| ENG | [Equipping agents with Agent Skills][eng] ※ | Rationale, progressive disclosure, evaluation-first, under-triggering | 2026-07-04 |
-| — | [`skills-ref validate`][skills-ref] | Mechanical baseline for frontmatter + naming (criteria B, C, D) | 2026-07-04 |
+| Tag  | Source                                                     | Scope                  | Last reviewed |
+| ---- | ---------------------------------------------------------- | ---------------------- | ------------- |
+| AS   | [Agent Skills documentation index][agentskills-index]      | Page inventory         | 2026-07-19    |
+| AS   | [Agent Skills overview][home]                              | Conceptual overview    | 2026-07-19    |
+| SPEC | [Agent Skills specification][spec]                         | Format and constraints | 2026-07-19    |
+| AS   | [Skill-creator quickstart][quickstart]                     | First-skill workflow   | 2026-07-19    |
+| AS   | [Skill-creator best practices][agentskills-best-practices] | Authoring guidance     | 2026-07-19    |
+| AS   | [Optimising descriptions][optimizing-descriptions]         | Description quality    | 2026-07-19    |
+| AS   | [Evaluating skills][evaluating-skills]                     | Evaluation practice    | 2026-07-19    |
+| AS   | [Using scripts][using-scripts]                             | Script execution       | 2026-07-19    |
+| AS   | [Client showcase][clients]                                 | Client inventory       | 2026-07-19    |
+| AS   | [Adding skills support][adding-skills-support]             | Client implementation  | 2026-07-19    |
+| BP   | [Skill authoring best practices][bp]                       | Authoring checklist    | 2026-07-04    |
+| CC   | [Claude Code — skills][cc]                                 | Claude runtime         | 2026-07-04    |
+| ENG  | [Equipping agents with Agent Skills][eng]†                 | Design rationale       | 2026-07-04    |
+| —    | [`skills-ref validate`][skills-ref]‡                       | Validator baseline     | 2026-07-04    |
 
-※ Anthropic Engineering, 2025-12-18.
+† Anthropic Engineering, 2025-12-18.
+
+‡ Mechanical baseline for frontmatter and naming criteria B, C, and D.
 
 ## Community
 
-| Tag | Source | Governs | Last reviewed |
-| --- | --- | --- | --- |
-| COMMUNITY | [Skill Authoring Patterns][patterns] | Distilled patterns: terminology, feedback loops, gotchas sections | 2026-07-04 |
-| COMMUNITY | [obra/superpowers writing-skills][superpowers] | Community restatement ※ | 2026-06-18 |
-| COMMUNITY | [skills.sh — Open Agent Skills Ecosystem][skills-sh] | Cross-agent skill registry: discovery, install convention, security-audit signals, ecosystem trends | 2026-07-04 |
+| Tag       | Source                                               | Scope                  | Last reviewed |
+| --------- | ---------------------------------------------------- | ---------------------- | ------------- |
+| COMMUNITY | [Skill Authoring Patterns][patterns]                 | Patterns and feedback  | 2026-07-04    |
+| COMMUNITY | [obra/superpowers writing-skills][superpowers]†      | Convergent conventions | 2026-06-18    |
+| COMMUNITY | [skills.sh — Open Agent Skills Ecosystem][skills-sh] | Registry and security  | 2026-07-04    |
 
-※ Community restatement of the best-practices doc; convergent conventions.
+† Community restatement of the best-practices document.
 
 ## In-house
 
-| Tag                       | Source                       | Governs          | Last reviewed |
+| Tag                       | Source                       | Scope            | Last reviewed |
 | ------------------------- | ---------------------------- | ---------------- | ------------- |
-| ki-agentic-harness README | The repo's own `README.md`   | †                | 2026-06-21    |
-| `ki-kb`                   | The reference standard skill | Worked example ※ | 2026-06-21    |
+| ki-agentic-harness README | The repo's own `README.md`   | House structure† | 2026-06-21    |
+| `ki-kb`                   | The reference standard skill | Worked example‡  | 2026-06-21    |
 
 † Linking convention (no wikilinks), standard vs base-coupled-extension, the house toolchain, Knowledge Islands structure.
 
-※ Worked example of a trigger-rich description and the standard-skill shape.
+‡ Worked example of a trigger-rich description and the standard-skill shape.
 
 ## Last review
 
