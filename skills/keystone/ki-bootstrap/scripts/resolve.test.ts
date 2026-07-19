@@ -318,9 +318,9 @@ try {
     existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'references', 'rubric.md'))
   )
   check(
-    'mode-element declaration → bootstrap copies the regular declaration beside the checker payload',
-    existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'mode-elements.json')) &&
-      !lstatSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'mode-elements.json')).isSymbolicLink()
+    'mode-element declaration → bootstrap copies the regular declaration under checker metadata',
+    existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', '.ki-meta', 'mode-elements.json')) &&
+      !lstatSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', '.ki-meta', 'mode-elements.json')).isSymbolicLink()
   )
   const vendoredAudit = spawnSync('bun', [join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'audit.ts'), SKILLS_ROOT], {
     encoding: 'utf8'
@@ -339,7 +339,7 @@ try {
   mkdirSync(invalidSkill, { recursive: true })
   writeFileSync(join(invalidSkill, 'audit.ts'), "process.stdout.write('legacy prose\\n')\n")
   writeFileSync(
-    join(checkerRoot, '.ki-meta', 'checkers', 'ki-invalid', 'mode-elements.json'),
+    join(checkerRoot, '.ki-meta', 'checkers', 'ki-invalid', '.ki-meta', 'mode-elements.json'),
     JSON.stringify({
       version: 1,
       elements: [{ id: 'audit', mode: 'audit', phase: 'inspect', entry: 'scripts/audit.ts', reads: ['fixture'], writes: [] }]

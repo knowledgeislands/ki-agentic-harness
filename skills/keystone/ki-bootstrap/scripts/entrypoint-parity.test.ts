@@ -137,7 +137,7 @@ try {
   mkdirSync(fixtureRubric, { recursive: true })
   writeFileSync(join(fixtureRubric, 'rubric.md'), '- **FIX-1 [M]** Fixture health check.\n- **REVIEW-1 [J]** Fixture judgment review.\n')
   writeFileSync(
-    join(fixture, '.ki-meta', 'checkers', 'ki-fixture', 'mode-elements.json'),
+    join(fixture, '.ki-meta', 'checkers', 'ki-fixture', '.ki-meta', 'mode-elements.json'),
     JSON.stringify({
       version: 1,
       elements: [
@@ -240,7 +240,7 @@ try {
   writeFileSync(join(elementRoot, 'scripts', 'conform.ts'), elementConformFixture)
   writeFileSync(join(elementRoot, 'references', 'rubric.md'), '- **FIX-1 [M]** Fixture health check.\n')
   writeFileSync(
-    join(elementRoot, 'mode-elements.json'),
+    join(elementRoot, '.ki-meta', 'mode-elements.json'),
     JSON.stringify({
       version: 1,
       elements: [

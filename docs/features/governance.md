@@ -60,7 +60,7 @@ _Verify:_ `bun skills/general-governance/ki-skills/scripts/audit.ts skills/gener
 
 ### GOV-009 — Element-level mode orchestration
 
-Every governance skill MUST declare its independently schedulable AUDIT and CONFORM work in `mode-elements.json`.
+Every governance skill MUST declare its independently schedulable AUDIT and CONFORM work in `.ki-meta/mode-elements.json`.
 
 The declaration names stable element IDs, the canonical local script entry, its phase, read/write scopes, and any explicit ordering edges.
 

@@ -71,7 +71,7 @@ const HARNESS_ROOT = resolve(SCRIPTS, '..', '..', '..', '..', '..')
 const AGENTS_ROOT = join(HARNESS_ROOT, 'agents', 'governance')
 const BOOTSTRAP = 'ki-bootstrap'
 const LOCAL_GOVERNANCE_SKILL = 'ki-self'
-const GENERATED_SKILL_MARKER = '.ki-generated-runtime-skill'
+const GENERATED_SKILL_MARKER = join('.ki-meta', 'generated-runtime-skill.json')
 type SkillMarker = { schema: 1; skill: string; source: string; integrity: string }
 
 const RED = '\x1b[31m'
@@ -155,7 +155,7 @@ function skillTreeIntegrity(path: string, label: string): string {
   const rows: string[] = []
   const walk = (current: string, relativePath: string): void => {
     for (const name of readdirSync(current).sort()) {
-      if (current === path && name === GENERATED_SKILL_MARKER) continue
+      if (relativePath === '.ki-meta' && join(relativePath, name) === GENERATED_SKILL_MARKER) continue
       const child = join(current, name)
       const childRelative = relativePath ? join(relativePath, name) : name
       const found = mustEntry(child, label)
@@ -485,6 +485,7 @@ function stagePlan(transaction: string, plan: LinkPlan): Array<{ destination: st
         throw new Error(`staged skill payload differs from its validated source: ${item.label}`)
       }
       const marker: SkillMarker = { schema: 1, skill, source: sourceIdentity(item.source), integrity }
+      mkdirSync(dirname(join(stage, GENERATED_SKILL_MARKER)), { recursive: true, mode: 0o700 })
       writeFileSync(join(stage, GENERATED_SKILL_MARKER), `${JSON.stringify(marker, null, 2)}\n`, { mode: 0o600 })
     } else {
       symlinkSync(relative(dirname(item.destination), item.source), stage, item.kind)

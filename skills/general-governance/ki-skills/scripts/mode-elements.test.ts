@@ -56,7 +56,9 @@ const elements: Record<string, ModeElements> = {
 }
 
 check('valid declaration → no errors', validateModeElements('ki-repo', elements['ki-repo']).length === 0)
-const selfDeclaration = JSON.parse(readFileSync(join(resolve(import.meta.dirname, '..'), 'mode-elements.json'), 'utf8')) as ModeElements
+const selfDeclaration = JSON.parse(
+  readFileSync(join(resolve(import.meta.dirname, '..'), '.ki-meta', 'mode-elements.json'), 'utf8')
+) as ModeElements
 check('ki-skills declaration → conforms to the executable schema contract', validateModeElements('ki-skills', selfDeclaration).length === 0)
 
 const harnessRoot = resolve(import.meta.dirname, '../../../..')
@@ -73,7 +75,7 @@ const governanceSkillDirs = readdirSync(skillsRoot, { withFileTypes: true })
   .filter((dir) => !/\(kind:\s*process\b/i.test(readFileSync(join(dir, 'SKILL.md'), 'utf8')))
 const fleetDeclarations = governanceSkillDirs.map((dir) => ({
   skill: basename(dir),
-  path: join(dir, 'mode-elements.json')
+  path: join(dir, '.ki-meta', 'mode-elements.json')
 }))
 const missingFleetDeclarations = fleetDeclarations.filter(({ path }) => !existsSync(path)).map(({ skill }) => skill)
 const invalidFleetDeclarations = fleetDeclarations

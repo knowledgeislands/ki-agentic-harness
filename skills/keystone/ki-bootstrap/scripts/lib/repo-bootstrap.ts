@@ -371,7 +371,7 @@ if (reporter.skill) {
 }
 const declarations = {}
 for (const skill of checkers) {
-  const declarationPath = join(checkersDir, skill, 'mode-elements.json')
+  const declarationPath = join(checkersDir, skill, '.ki-meta', 'mode-elements.json')
   if (!existsSync(declarationPath)) {
     console.error('error: no vendored mode-element declaration for ' + skill)
     process.exit(2)
@@ -1066,9 +1066,9 @@ function vendorSkill(
   // without reaching back to the harness source. A declaration is optional until
   // the fleet migration in GOV-003 is complete; once present it is always a
   // regular file, never a link.
-  const modeElementsSource = join(skillDir(skill), 'mode-elements.json')
+  const modeElementsSource = join(skillDir(skill), '.ki-meta', 'mode-elements.json')
   if (existsSync(modeElementsSource)) {
-    const modeElementsRel = join(CHECKERS_DIR, skill, 'mode-elements.json')
+    const modeElementsRel = join(CHECKERS_DIR, skill, '.ki-meta', 'mode-elements.json')
     const modeElementsAbs = join(generationRoot, modeElementsRel)
     if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${modeElementsRel} (mode elements)${RESET}`)
     if (!dryRun) {
