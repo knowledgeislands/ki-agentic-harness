@@ -40,3 +40,17 @@ export const listMarkdownFiles = (directory: string): string[] => {
   walk(directory)
   return markdownFiles
 }
+
+export const listScriptFiles = (scriptsDirectory: string): string[] => {
+  if (!existsSync(scriptsDirectory)) return []
+  const scriptFiles: string[] = []
+  const walk = (path: string): void => {
+    for (const entry of readdirSync(path, { withFileTypes: true })) {
+      const entryPath = join(path, entry.name)
+      if (entry.isDirectory()) walk(entryPath)
+      else if (entry.isFile() && entry.name.endsWith('.ts') && !entry.name.endsWith('.test.ts')) scriptFiles.push(entryPath)
+    }
+  }
+  walk(scriptsDirectory)
+  return scriptFiles
+}

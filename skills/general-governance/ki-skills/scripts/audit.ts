@@ -28,13 +28,18 @@ import { DESC } from './rubrics/description.ts'
 import { RUBRIC_ITEMS } from './rubrics/index.ts'
 import { LAYOUT } from './rubrics/layout.ts'
 import { LINKS } from './rubrics/link.ts'
-import { auditLongevity, CADENCE_DAYS, REFRESH_GRACE_DAYS } from './rubrics/longevity.ts'
+import { LONGEVITY, REFRESH_GRACE_DAYS } from './rubrics/longevity.ts'
 import { NAME } from './rubrics/name.ts'
 import { OPTIONAL } from './rubrics/optional.ts'
 import { REFERENCES } from './rubrics/references.ts'
+import { SCRIPTS } from './rubrics/scripts.ts'
+import { SHAPE, type ShapeSkillContext } from './rubrics/shape.ts'
 import { SIZE } from './rubrics/size.ts'
-import { discoverSkillDirs, listMarkdownFiles } from './rubrics/support/skill-files.ts'
+import { createRefreshContext } from './rubrics/support/longevity.ts'
+import { endorsesRetiredExtension, extractBodyModes, extractSection, hintVerbs, isProcessSkill } from './rubrics/support/modes.ts'
+import { discoverSkillDirs, listMarkdownFiles, listScriptFiles } from './rubrics/support/skill-files.ts'
 import { stripCode } from './rubrics/support/text.ts'
+import { relativeImportSpecifiers } from './rubrics/support/typescript.ts'
 
 type Severity = 'fail' | 'warn'
 // area = the rubric code (criterion); ref = the reference-doc pointer the criterion cites
@@ -134,85 +139,71 @@ function parseListValue(raw: string | undefined): string[] {
     .filter((s) => s.length > 0)
 }
 
-// --- SHAPE-2 endorsement detection (composition-only) -----------------------
-// Composition is the sole sanctioned inter-skill relationship; the base-coupled
-// extension pattern is retired (a base declares differences in .ki-config / CLAUDE.md,
-// it does not ship a <base>-kb skill that takes the shared modes). Keyed on ENDORSEMENT
-// phrasing, not the bare word "extension" — the meta-skills must name the retired
-// pattern in order to forbid it. Runs over the SKILL.md body AND each reference file.
-// Citation ≠ assertion: the rubric/standard QUOTE the forbidden phrases to forbid them,
-// so before testing we strip code + double-quoted spans and skip any line that disavows
-// (retired / never / forbid / flag / heuristic / anti-pattern). What remains and still
-// matches is a bare assertion of the pattern. WARN for the [J] reviewer to confirm.
-const ENDORSE_EXTENSION_RES = [
-  /\bprefer that (extension )?skill\b/i,
-  /delegat\w*[^.\n]*\bmodes?\b[^.\n]*\bback\b/i,
-  /\bextends this one\b/i
-]
-const DISAVOWAL_CUE = /retir|never|forbid|\bflag|heurist|anti-pattern|disavow|must not|do not/i
-function endorsesRetiredExtension(md: string): boolean {
-  const stripped = stripCode(md).replace(/"[^"\n]*"/g, '')
-  return stripped.split(/\r?\n/).some((line) => !DISAVOWAL_CUE.test(line) && ENDORSE_EXTENSION_RES.some((re) => re.test(line)))
-}
-
-// --- process vs governance (SHAPE-3 / ADR-KI-HARNESS-SKILLS-006) -----------
-// A process skill self-declares in its description: "(kind: process, ADR-...)".
-// Everything else in the fleet is a governance skill for the purposes of the
-// universal-mode checks (SHAPE-11/12/13).
-const isProcessSkill = (desc: string): boolean => /\(kind:\s*process\b/i.test(desc)
-
-// --- SHAPE-12/13: mode vocabulary + heading structure -----------------------
-// The `## Operating modes` H2 is the home for the shared no-mode/HELP intro plus
-// each mode as a `### Mode <NAME>` H3 (or a `| Mode | … |` dispatch table for
-// router skills with many operational verbs). extractBodyModes reads whichever
-// form is present, scoped to that section only, so a stray "### X" elsewhere in
-// the body (an example, a reference aside) is never mistaken for a mode heading.
-function extractSection(body: string, heading: string): string | null {
-  const re = new RegExp(`^##\\s+${heading}\\s*$`, 'im')
-  const m = re.exec(body)
-  if (!m) return null
-  const start = (m.index ?? 0) + m[0].length
-  const rest = body.slice(start)
-  const next = rest.search(/^##\s+/m)
-  return next === -1 ? rest : rest.slice(0, next)
-}
-
-function extractBodyModes(body: string): Set<string> {
-  const modes = new Set<string>()
+const createShapeContext = (skillDir: string, frontmatter: Frontmatter, description: string, body: string): ShapeSkillContext => {
+  const argumentHint = frontmatter.keys.get('argument-hint')
   const section = extractSection(body, 'Operating modes')
-  if (!section) return modes
-  for (const m of section.matchAll(/^###\s+Mode\s+(\w+)/gim)) modes.add((m[1] as string).toUpperCase())
-  let headerSeen = false
-  for (const rawLine of section.split(/\r?\n/)) {
-    const line = rawLine.trim()
-    if (!line.startsWith('|')) {
-      headerSeen = false
-      continue
-    }
-    const cells = line
-      .split('|')
-      .slice(1, -1)
-      .map((c) => c.trim())
-    if (!headerSeen) {
-      if (/^mode$/i.test(cells[0] ?? '')) headerSeen = true
-      continue
-    }
-    const first = (cells[0] ?? '').replace(/`/g, '').trim()
-    if (/^:?-+:?$/.test(first)) continue // separator row
-    if (first) modes.add(first.toUpperCase())
-  }
-  return modes
-}
+  const markdownFiles = listMarkdownFiles(skillDir)
+  const referenceFiles = markdownFiles.filter((file) => basename(file) !== 'SKILL.md')
+  const referenceText = referenceFiles.map((file) => readFileSync(file, 'utf8')).join('\n')
+  const skillText = `${body}\n${referenceText}`
+  const scriptsDir = join(skillDir, 'scripts')
+  const scriptNames = existsSync(scriptsDir) ? readdirSync(scriptsDir) : []
+  const refreshReference = join(skillDir, 'references', 'mode-refresh.md')
+  const refreshSection = section?.match(/^###\s+Mode\s+REFRESH\b[\s\S]*?(?=^###\s+Mode\s+|$(?![\s\S]))/im)?.[0] ?? ''
+  const rubricPath = join(skillDir, 'references', 'rubric.md')
+  const rubric = existsSync(rubricPath) ? readFileSync(rubricPath, 'utf8') : ''
+  const auditPath = join(scriptsDir, 'audit.ts')
+  const conformPath = join(scriptsDir, 'conform.ts')
+  const conformSource = existsSync(conformPath) ? readFileSync(conformPath, 'utf8').replace(/\/\/.*$/gm, '') : ''
+  const scaffoldedFiles = [...conformSource.matchAll(/\b(?:scaffold|syncOwned)\(\s*['"]([^'"]+)['"]/g)].map((match) => match[1] as string)
+  const checkers = scriptNames
+    .filter(
+      (name) =>
+        (name === 'audit.ts' || name.startsWith('audit-') || name.startsWith('lint-')) && name.endsWith('.ts') && !name.endsWith('.test.ts')
+    )
+    .map((name) => {
+      const source = readFileSync(join(scriptsDir, name), 'utf8')
+      return {
+        name,
+        usesReporter: /from\s+['"][^'"]*checker-reporter\.ts['"]/.test(source) && /\bemitCheckerReporter\b/.test(source)
+      }
+    })
 
-// First word of each `|`-separated segment of an argument-hint, e.g.
-// `'audit | conform <target> | help'` → ['AUDIT', 'CONFORM', 'HELP'].
-function hintVerbs(hint: string): string[] {
-  const out: string[] = []
-  for (const seg of hint.split('|')) {
-    const m = seg.trim().match(/^[a-zA-Z][a-zA-Z0-9-]*/)
-    if (m) out.push(m[0].toUpperCase())
+  return {
+    governanceSkill: !isProcessSkill(description),
+    argumentHint,
+    hintVerbs: hintVerbs(argumentHint ?? ''),
+    vendorsPresent: frontmatter.present.has('vendors'),
+    vendors: (frontmatter.keys.get('vendors') ?? '').trim(),
+    scriptNames,
+    operatingModesSection: section,
+    bodyModes: extractBodyModes(section),
+    operatingModesIntro: section?.split(/^###\s+|^\s*\|/m)[0] ?? '',
+    flatModeHeadings: [...stripCode(body).matchAll(/^##\s+Mode\s+(\w+)/gim)].map((match) => match[1] as string),
+    bareModeHeadings: section
+      ? [...stripCode(section).matchAll(/^###\s+(?!Mode\b)(\S[^\n]*)/gim)].map((match) => (match[1] as string).trim())
+      : [],
+    refreshText: `${refreshSection}${existsSync(refreshReference) ? `\n${readFileSync(refreshReference, 'utf8')}` : ''}`,
+    retiredExtensionFiles: markdownFiles
+      .filter((file) => endorsesRetiredExtension(basename(file) === 'SKILL.md' ? body : readFileSync(file, 'utf8')))
+      .map((file) => file.slice(skillDir.length + 1)),
+    strongGate: /do not edit[^.\n]*directly|go through (a )?proposal|standing directive|installing the gate/i.test(stripCode(skillText)),
+    anchorMentioned: /CLAUDE\.md|AGENTS\.md|always-loaded|installing the gate|\banchor/i.test(skillText),
+    checkerReadsAnchor: scriptNames.some(
+      (name) => name.endsWith('.ts') && /CLAUDE\.md|AGENTS\.md/.test(readFileSync(join(scriptsDir, name), 'utf8'))
+    ),
+    mechanicalRubricCount: (rubric.match(/\[M\]/g) ?? []).length,
+    hasChecker: scriptNames.some((name) => name.endsWith('.ts')),
+    documentsMechanicalDelegation: /lint:md|toolchain (?:already )?enforces/i.test(rubric),
+    checkers,
+    dependsOnPresent: frontmatter.present.has('depends-on'),
+    dependsOn: (frontmatter.keys.get('depends-on') ?? '').trim(),
+    owns: parseListValue(frontmatter.keys.get('owns')),
+    contributes: parseListValue(frontmatter.keys.get('contributes')),
+    requires: parseListValue(frontmatter.keys.get('requires')),
+    scaffoldedFiles,
+    auditSource: existsSync(auditPath) ? readFileSync(auditPath, 'utf8') : null
   }
-  return out
 }
 
 // --- footprint (SIZE-5, INFO under --footprint) -----------------------------
@@ -236,80 +227,6 @@ function footprint(skillDir: string): { rows: FootprintRow[]; total: number } {
     rows.push({ kind: 'reference', path: file.slice(skillDir.length + 1), tokens: estTok(readFileSync(file, 'utf8')) })
   }
   return { rows, total: rows.reduce((n, r) => n + r.tokens, 0) }
-}
-
-// --- the lint --------------------------------------------------------------
-// Latest date in the "Last reviewed" column of a sources.md, or null. Reads the
-// column by its header so forward-looking dates quoted in prose (e.g. a spec's
-// release date in the "## Last review" block) are never mistaken for a review date.
-function latestReviewDate(text: string): string | null {
-  let col = -1
-  let latest: string | null = null
-  for (const line of text.split(/\r?\n/)) {
-    if (!line.trimStart().startsWith('|')) {
-      col = -1
-      continue
-    }
-    const cells = line
-      .split('|')
-      .slice(1, -1)
-      .map((c) => c.trim())
-    const header = cells.findIndex((c) => /^last reviewed$/i.test(c))
-    if (header >= 0) {
-      col = header
-      continue
-    }
-    if (col < 0) continue
-    const m = (cells[col] ?? '').match(/\d{4}-\d{2}-\d{2}/)
-    if (m && (latest === null || m[0] > latest)) latest = m[0]
-  }
-  return latest
-}
-
-// --- refresh cadence (enforcement framework §4/§5) ----------------------------
-// One `**Refresh:** <class> · <cadence>` marker per sources.md drives both LONG-3
-// (overdue WARN) and the REFRESH too-soon gate, via one status computation.
-type RefreshClass = 'external-spec' | 'canonical'
-type RefreshStatus = 'due' | 'within-window' | 'overdue' | 'no-clock' | 'unmarked'
-interface RefreshInfo {
-  cls: RefreshClass | null
-  cadence: string | null // raw token: weekly | monthly | quarterly | on-change | <N>d
-  windowDays: number | null // null = no clock (on-change)
-  lastReviewed: string | null
-  ageDays: number | null
-  status: RefreshStatus
-}
-
-// Parse the marker from the top of a sources.md. Returns null when absent/malformed
-// (including a non-positive `<N>d`). 'on-change' yields windowDays = null (no clock).
-function parseRefreshMarker(text: string): { cls: RefreshClass; cadence: string; windowDays: number | null } | null {
-  const m = text.match(/^\*\*Refresh:\*\*\s*(external-spec|canonical)\s*·\s*(weekly|monthly|quarterly|on-change|\d+d)\s*$/m)
-  if (!m) return null
-  const cls = m[1] as RefreshClass
-  const cadence = m[2] as string
-  let windowDays: number | null
-  if (cadence === 'on-change') windowDays = null
-  else if (/^\d+d$/.test(cadence)) {
-    const n = Number.parseInt(cadence, 10)
-    if (n <= 0) return null // 0d is malformed → treat as unmarked
-    windowDays = n
-  } else windowDays = CADENCE_DAYS[cadence] ?? null
-  return { cls, cadence, windowDays }
-}
-
-function computeRefreshStatus(sourcesText: string): RefreshInfo {
-  const marker = parseRefreshMarker(sourcesText)
-  const lastReviewed = latestReviewDate(sourcesText)
-  const ageDays = lastReviewed ? Math.floor((Date.now() - Date.parse(`${lastReviewed}T00:00:00Z`)) / 86_400_000) : null
-  if (!marker) return { cls: null, cadence: null, windowDays: null, lastReviewed, ageDays, status: 'unmarked' }
-  const { cls, cadence, windowDays } = marker
-  if (windowDays === null) return { cls, cadence, windowDays, lastReviewed, ageDays, status: 'no-clock' }
-  if (ageDays === null) return { cls, cadence, windowDays, lastReviewed, ageDays, status: 'overdue' } // clock declared, no date
-  let status: RefreshStatus
-  if (ageDays > windowDays + REFRESH_GRACE_DAYS) status = 'overdue'
-  else if (ageDays < windowDays) status = 'within-window'
-  else status = 'due'
-  return { cls, cadence, windowDays, lastReviewed, ageDays, status }
 }
 
 function lintSkill(skillDir: string): Finding[] {
@@ -359,202 +276,34 @@ function lintSkill(skillDir: string): Finding[] {
     else warn(finding.code, finding.message)
   }
 
-  // universal HELP mode (SHAPE-10 mechanical; ADR-KI-HARNESS-SKILLS-001). Every
-  // governance skill exposes HELP — the no-mode default and the `help`/`-h`/`?`
-  // pure-explain form — so its `argument-hint` must list a `help` verb. The
-  // HELP block itself is generated (skills/keystone/ki-bootstrap/scripts/skill-help.ts); this only checks the
-  // one-token footprint. The prose HELP semantics are a [J] criterion.
-  const hint = fm.keys.get('argument-hint')
-  if (hint !== undefined && !/(^|[|\s'"])help([|\s'"]|$)/.test(hint))
-    fail('SHAPE-11', '`argument-hint` does not expose the universal `help` mode (ADR-KI-HARNESS-SKILLS-001)')
-
-  // ROOT-1 [M]: ki-skills is the checker-contract root. It provides the reporter
-  // builder from its own shipped files, and never requires a copied support module
-  // from itself or another skill.
-  if (name === 'ki-skills') {
-    const modules = parseListValue(fm.keys.get('checker-modules'))
-    const dependencies = parseListValue(fm.keys.get('checker-dependencies'))
-    if (!modules.includes('checker-reporter')) fail('ROOT-1', '`ki-skills` must expose `checker-reporter` under `checker-modules:`')
-    if (!existsSync(join(skillDir, 'scripts', 'lib', 'checker-reporter.ts')))
-      fail('ROOT-1', '`ki-skills` must ship `scripts/lib/checker-reporter.ts` from its own files')
-    if (dependencies.length > 0) fail('ROOT-1', '`ki-skills` is the checker-contract root and must not declare `checker-dependencies:`')
-  }
-
   // --- body size (SIZE-1/SIZE-2 soft → WARN) ---
   const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
 
-  // SHAPE-16 [M]: declared file ownership. A skill that scaffolds a house-standard
-  // file into a target repo (`scaffold(...)` / `syncOwned(...)` with a literal
-  // filename) must declare that filename under `owns:`; every filename declared
-  // under `owns:`/`contributes:`/`requires:` must also appear literally in the
-  // skill's own audit.ts, since that's where the corresponding check lives. This
-  // covers house-standard files in the *target repo's* working tree — not
-  // `.ki-meta/`, which has its own vendoring/hash mechanism (`vendors:`, SHAPE-12/15).
-  // Applies to every skill (not gated on process-vs-governance kind, unlike SHAPE-12/13).
-  {
-    const owns = parseListValue(fm.keys.get('owns'))
-    const contributes = parseListValue(fm.keys.get('contributes'))
-    const requires = parseListValue(fm.keys.get('requires'))
-    const conformPath = join(skillDir, 'scripts', 'conform.ts')
-    const auditPath = join(skillDir, 'scripts', 'audit.ts')
-    if (existsSync(conformPath)) {
-      // This greps conform SOURCE for scaffold(...)/syncOwned(...) calls, so the scaffolded
-      // filename MUST be the first string literal of the call. Line comments are stripped
-      // first so prose that merely mentions the pattern is not mis-detected as a scaffold —
-      // that false positive bit twice during the cited-findings sweep (ADR-KI-HARNESS-SKILLS-010).
-      const conformSrc = readFileSync(conformPath, 'utf8').replace(/\/\/.*$/gm, '')
-      const scaffolded = new Set<string>()
-      for (const m of conformSrc.matchAll(/\b(?:scaffold|syncOwned)\(\s*['"]([^'"]+)['"]/g)) scaffolded.add(m[1] as string)
-      for (const file of scaffolded)
-        if (!owns.includes(file)) warn('SHAPE-16', `scaffolds \`${file}\` but does not declare it under \`owns:\` in frontmatter`)
-    }
-    if (existsSync(auditPath)) {
-      const auditSrc = readFileSync(auditPath, 'utf8')
-      for (const file of [...owns, ...contributes, ...requires])
-        if (!auditSrc.includes(file))
-          warn('SHAPE-16', `declares \`${file}\` (owns/contributes/requires) but \`scripts/audit.ts\` never checks it`)
-    }
+  const scriptsDir = join(skillDir, 'scripts')
+  const imports = listScriptFiles(scriptsDir).flatMap((scriptPath) =>
+    relativeImportSpecifiers(readFileSync(scriptPath, 'utf8')).map((specifier) => ({
+      entry: relative(scriptsDir, scriptPath),
+      specifier,
+      resolvesInsideScripts: resolve(dirname(scriptPath), specifier).startsWith(`${scriptsDir}/`)
+    }))
+  )
+  for (const finding of auditRubricItems(SCRIPTS, {
+    imports,
+    rootSkill: name === 'ki-skills',
+    checkerModules: parseListValue(fm.keys.get('checker-modules')),
+    checkerDependencies: parseListValue(fm.keys.get('checker-dependencies')),
+    reporterModuleExists: existsSync(join(scriptsDir, 'lib', 'checker-reporter.ts'))
+  })) {
+    if (finding.level === 'FAIL') fail(finding.code, finding.message)
+    else warn(finding.code, finding.message)
   }
 
-  // SCRIPT-9 [M]: no relative import may escape scripts/. `ki-bootstrap` vendors a
-  // skill's scripts payload into every governed repo's .ki-meta/checkers/<skill>/ — no
-  // sibling skill directory or non-script source file is implicitly available. Imports
-  // must be satisfied within the local scripts directory, never by a path that happens
-  // to work in this harness checkout.
-  {
-    const scriptsDir = join(skillDir, 'scripts')
-    if (existsSync(scriptsDir)) {
-      const scriptPaths: string[] = []
-      const collect = (dir: string): void => {
-        for (const entry of readdirSync(dir, { withFileTypes: true })) {
-          const path = join(dir, entry.name)
-          if (entry.isDirectory()) collect(path)
-          else if (entry.isFile() && entry.name.endsWith('.ts') && !entry.name.endsWith('.test.ts')) scriptPaths.push(path)
-        }
-      }
-      collect(scriptsDir)
-      for (const scriptPath of scriptPaths) {
-        // Only vendorable units are in scope — test files are never vendored (SCRIPT-9's
-        // premise), and a *.test.ts routinely embeds import-shaped strings as fixture data.
-        const entry = relative(scriptsDir, scriptPath)
-        const src = readFileSync(scriptPath, 'utf8')
-        for (const m of src.matchAll(/\b(?:from\s+|import\s*\(\s*|require\s*\(\s*)['"](\.\.?\/[^'"]+)['"]/g)) {
-          const spec = m[1] as string
-          const resolved = resolve(dirname(scriptPath), spec)
-          if (!resolved.startsWith(`${scriptsDir}/`))
-            fail(
-              'SCRIPT-9',
-              `\`scripts/${entry}\` imports \`${spec}\`, which resolves outside its own scripts directory — package the required module locally before importing it`
-            )
-        }
-      }
-    }
-  }
-
-  // --- SHAPE-12/13: universal-mode vocabulary + mode-heading structure ---
-  // Both gate on kind: a process skill (self-declared "(kind: process" in its
-  // description, per SHAPE-3) is fully exempt — its mode count follows its own
-  // lifecycle. Everything else is a governance skill and must carry the canonical
-  // vocabulary (SHAPE-12) and the `## Operating modes` structure (SHAPE-13).
-  if (!isProcessSkill(desc ?? '')) {
-    // SHAPE-12: argument-hint exposes every universal verb (EDUCATE is the common gap).
-    const verbs = hintVerbs(hint ?? '')
-    const missing = ['audit', 'conform', 'help', 'educate', 'refresh'].filter((v) => !verbs.includes(v.toUpperCase()))
-    if (missing.length > 0)
-      warn(
-        'SHAPE-12',
-        `\`argument-hint\` is missing the universal verb(s) ${missing.join(', ')} — a governance skill exposes AUDIT, CONFORM, EDUCATE, REFRESH and HELP (ADR-KI-HARNESS-SKILLS-001)`
-      )
-    // SHAPE-12 vendoring leg: the frontmatter declares the vendorable mechanical unit.
-    if (!fm.present.has('vendors'))
-      warn(
-        'SHAPE-12',
-        'frontmatter carries no `vendors:` declaration — declare the vendored modes beside `depends-on:` so the bootstrap engine can vendor them (ADR-KI-HARNESS-007)'
-      )
-
-    // SHAPE-15 [M]: the vendored modes are declared UNIFORMLY as the flow-list
-    // `[educate, audit, conform, help]` (modes derive their scripts by name — no map form,
-    // no override), and the bare mode scripts exist. `refresh` is harness-only and never
-    // vendored. Redundant skill-name-suffixed scripts (audit-<skill>.ts) are the
-    // pre-migration form (ADR-KI-HARNESS-007).
-    if (fm.present.has('vendors')) {
-      const vendorsLine = (fm.keys.get('vendors') ?? '').trim()
-      if (vendorsLine !== '[educate, audit, conform, help]')
-        fail(
-          'SHAPE-15',
-          `\`vendors:\` must be the uniform list \`[educate, audit, conform, help]\` (got \`${vendorsLine}\`) — modes derive their scripts by name; the map/override form is retired (ADR-KI-HARNESS-007)`
-        )
-      const sdir = join(skillDir, 'scripts')
-      for (const mode of ['educate', 'audit', 'conform'])
-        if (!existsSync(join(sdir, `${mode}.ts`)))
-          fail('SHAPE-15', `\`scripts/${mode}.ts\` missing — a governance skill vendors bare \`educate.ts\`/\`audit.ts\`/\`conform.ts\``)
-      if (existsSync(sdir))
-        for (const n of readdirSync(sdir))
-          if (/^(audit|lint|conform)-[a-z0-9-]+\.ts$/.test(n) && !n.endsWith('.test.ts'))
-            fail('SHAPE-15', `\`scripts/${n}\` uses the redundant skill-name suffix — rename to bare \`audit.ts\`/\`conform.ts\``)
-    }
-
-    // SHAPE-13: single `## Operating modes` H2 wrapper; modes as `### Mode <NAME>`
-    // H3s or a `| Mode | … |` dispatch table inside it; hint ⊆ body.
-    const section = extractSection(body, 'Operating modes')
-    if (section === null) warn('SHAPE-13', 'no `## Operating modes` H2 — modes live under a single wrapper H2 (ADR-KI-HARNESS-SKILLS-001)')
-    const flatModeH2s = [...stripCode(body).matchAll(/^##\s+Mode\s+(\w+)/gim)].map((m) => m[1] as string)
-    for (const flat of flatModeH2s)
-      warn('SHAPE-13', `flat \`## Mode ${flat}\` H2 — demote to \`### Mode ${flat}\` inside the \`## Operating modes\` wrapper`)
-    if (section !== null) {
-      for (const h3 of stripCode(section).matchAll(/^###\s+(?!Mode\b)(\S[^\n]*)/gim))
-        warn(
-          'SHAPE-13',
-          `bare \`### ${(h3[1] as string).trim()}\` inside \`## Operating modes\` — mode headings carry the \`Mode \` prefix`
-        )
-      // hint ⊆ body: every argument-hint verb appears as a mode in the section
-      // (a `### Mode X` H3 and a `| Mode |` table row count equally). `help` may
-      // instead be satisfied by the no-mode intro (the prose before the first H3
-      // or table) mentioning help — the HELP block itself is generated (SHAPE-11).
-      const bodyModes = extractBodyModes(body)
-      const intro = section.split(/^###\s+|^\s*\|/m)[0] ?? ''
-      for (const v of hintVerbs(hint ?? '')) {
-        if (bodyModes.has(v)) continue
-        if (v === 'HELP' && /\bhelp\b/i.test(intro)) continue
-        warn('SHAPE-13', `\`argument-hint\` verb \`${v.toLowerCase()}\` has no mode in the \`## Operating modes\` section (hint ⊆ body)`)
-      }
-    }
-
-    // SHAPE-14: REFRESH states its harness-only precondition. Its write target is
-    // always this skill's own canonical files in ki-agentic-harness — invoked from a
-    // repo where the skill is merely vendored, it must stop and redirect there (or to
-    // ki-kb's IMPROVE mode). A missing REFRESH section entirely is already SHAPE-12's
-    // job; this only checks the precondition text once a REFRESH mode is present.
-    if (section !== null) {
-      const refreshMatch = /^###\s+Mode\s+REFRESH\b[\s\S]*?(?=^###\s+Mode\s+|$(?![\s\S]))/im.exec(section)
-      let refreshText = refreshMatch ? refreshMatch[0] : ''
-      const refreshRefPath = join(skillDir, 'references', 'mode-refresh.md')
-      if (existsSync(refreshRefPath)) refreshText += `\n${readFileSync(refreshRefPath, 'utf8')}`
-      if (refreshText) {
-        const namesHarness = /ki-agentic-harness/.test(refreshText)
-        const stopsAndRedirects = /\bstop(s)?\b[\s\S]{0,160}\b(redirect|names?|route)/i.test(refreshText)
-        if (!namesHarness || !stopsAndRedirects)
-          warn(
-            'SHAPE-14',
-            'REFRESH section does not state the harness-only precondition — it should name `ki-agentic-harness` as the only place it writes and instruct stopping/redirecting when invoked from a vendored install'
-          )
-      }
-    }
-  }
-
-  // SHAPE-17: every skill declares its dependency intent explicitly. An empty
-  // flow list is meaningful: it proves the author considered dependencies and
-  // chose none. Bootstrap validates the referenced skill names and a target's
-  // matching .ki-config.toml declarations when the skill is selected.
-  if (!fm.present.has('depends-on')) {
-    fail(
-      'SHAPE-17',
-      'frontmatter carries no `depends-on:` declaration — declare `depends-on: []` when the skill has no governance dependencies'
-    )
-  } else {
-    const dependencyLine = (fm.keys.get('depends-on') ?? '').trim()
-    if (!/^\[[^\]]*\]$/.test(dependencyLine))
-      fail('SHAPE-17', `\`depends-on:\` must be a single-line flow list (got \`${dependencyLine}\`)`)
+  for (const finding of auditRubricItems(SHAPE, {
+    skill: createShapeContext(skillDir, fm, desc ?? '', body),
+    ownershipCollisions: []
+  })) {
+    if (finding.level === 'FAIL') fail(finding.code, finding.message, finding.file)
+    else warn(finding.code, finding.message, finding.file)
   }
   const bodyLines = body.split(/\r?\n/).length
   for (const finding of auditRubricItems(SIZE, { bodyLines, bodyTokens: estTok(body) })) {
@@ -562,7 +311,7 @@ function lintSkill(skillDir: string): Finding[] {
     else warn(finding.code, finding.message)
   }
 
-  // --- per-file checks across all markdown (LAY-4, LINK-1, LINK-2, REF-3, SHAPE-2) ---
+  // --- per-file checks across all markdown (LAY-4, LINK-1, LINK-2, REF-3) ---
   for (const file of listMarkdownFiles(skillDir)) {
     const md = readFileSync(file, 'utf8')
     const text = stripCode(md) // exclude code blocks/spans from text-pattern checks
@@ -588,82 +337,6 @@ function lintSkill(skillDir: string): Finding[] {
         else warn(finding.code, finding.message, rel)
       }
     }
-    // SHAPE-2: endorsement of the retired extension pattern, in the SKILL.md body OR any
-    // reference file (a standard's prose can drift even when the SKILL.md body is clean).
-    if (endorsesRetiredExtension(isSkillMd ? body : md))
-      warn(
-        'SHAPE-2',
-        'endorses the retired base-coupled extension pattern (ship/"prefer" an extension skill, "delegates the modes back", "extends this one") — relationships are composition only; declare base differences in .ki-config / CLAUDE.md, per SHAPE-2',
-        rel
-      )
-  }
-
-  // --- behaviour-changing skills must anchor their gate (SHAPE-7 heuristic) ---
-  // A skill that installs a gate / standing rule can't rely on its own description
-  // to fire (skills load on demand). Strong gate phrasing — in the body OR a mode /
-  // reference file, since mode-routing (REF-5) lifts procedures out of the body —
-  // without an always-on anchor (CLAUDE.md/AGENTS.md) AND a checker that verifies it,
-  // is a candidate gap. Evaluated over body + references as ONE unit: the gate phrasing
-  // and its anchor may legitimately live in different files. WARN for the [J] reviewer.
-  const refsText = listMarkdownFiles(skillDir)
-    .filter((file) => basename(file) !== 'SKILL.md')
-    .map((file) => readFileSync(file, 'utf8'))
-    .join('\n')
-  const skillText = `${body}\n${refsText}`
-  const strongGate = /do not edit[^.\n]*directly|go through (a )?proposal|standing directive|installing the gate/i.test(
-    stripCode(skillText)
-  )
-  if (strongGate) {
-    const anchored = /CLAUDE\.md|AGENTS\.md|always-loaded|installing the gate|\banchor/i.test(skillText)
-    const scriptsDir = join(skillDir, 'scripts')
-    const checkerAnchors =
-      existsSync(scriptsDir) &&
-      readdirSync(scriptsDir).some((n) => n.endsWith('.ts') && /CLAUDE\.md|AGENTS\.md/.test(readFileSync(join(scriptsDir, n), 'utf8')))
-    if (!(anchored && checkerAnchors))
-      warn(
-        'SHAPE-7',
-        'reads as behaviour-changing (a gate / standing rule) but does not evidence an always-on anchor verified by its checker — anchor it in CLAUDE.md/AGENTS.md and check the anchor, per SHAPE-7'
-      )
-  }
-
-  // --- mechanical work belongs in the checker, not in tokens (SHAPE-9 heuristic) ---
-  // A rubric that tags criteria [M] (mechanical) must ship a scripts/ checker that
-  // implements them — or document delegation to another skill-scoped audit.
-  // [M] criteria left to prose make the reader re-derive deterministic checks in tokens.
-  const rubricFile = join(skillDir, 'references', 'rubric.md')
-  if (existsSync(rubricFile)) {
-    const rubric = readFileSync(rubricFile, 'utf8')
-    const mechanical = (rubric.match(/\[M\]/g) ?? []).length
-    if (mechanical > 0) {
-      const rubricScriptsDir = join(skillDir, 'scripts')
-      const hasChecker = existsSync(rubricScriptsDir) && readdirSync(rubricScriptsDir).some((n) => n.endsWith('.ts'))
-      const documentsDelegation = /lint:md|toolchain (?:already )?enforces/i.test(rubric)
-      if (!hasChecker && !documentsDelegation)
-        warn(
-          'SHAPE-9',
-          `rubric tags ${mechanical} criteria [M] but the skill ships no scripts/ checker (nor a documented toolchain delegation) — mechanical work belongs in the checker, not in tokens, per SHAPE-9`
-        )
-    }
-  }
-
-  // --- SHAPE-8 mechanical: every checker uses its local canonical reporter ---
-  // A governed checker is standalone after vendoring, so it must import and call its
-  // local reporter module rather than retain a terminal renderer or an output-format
-  // switch. The source-harness contract test validates the resulting JSONL stream.
-  const contractScriptsDir = join(skillDir, 'scripts')
-  if (existsSync(contractScriptsDir)) {
-    const checkers = readdirSync(contractScriptsDir).filter(
-      (n) => (n === 'audit.ts' || n.startsWith('audit-') || n.startsWith('lint-')) && n.endsWith('.ts') && !n.endsWith('.test.ts')
-    )
-    for (const checker of checkers) {
-      const src = readFileSync(join(contractScriptsDir, checker), 'utf8')
-      const usesReporter = /from\s+['"][^'"]*checker-reporter\.ts['"]/.test(src) && /\bemitCheckerReporter\b/.test(src)
-      if (!usesReporter)
-        warn(
-          'SHAPE-8',
-          `checker ${checker} does not import and emit its local canonical checker reporter — required by checker-reporter.md`
-        )
-    }
   }
 
   // --- LONG-3 / LONG-4: the declared refresh cadence ---
@@ -674,18 +347,14 @@ function lintSkill(skillDir: string): Finding[] {
   // (LONG-1 leaves runtime-resolved skills without one).
   const sourcesPath = join(skillDir, 'references', 'sources.md')
   if (existsSync(sourcesPath)) {
-    for (const finding of auditLongevity(readFileSync(sourcesPath, 'utf8'))) warn(finding.code, finding.message)
+    const context = createRefreshContext(readFileSync(sourcesPath, 'utf8'))
+    for (const finding of auditRubricItems(LONGEVITY, context)) warn(finding.code, finding.message)
   }
 
   return f
 }
 
-// SHAPE-16 collision leg: `owns:` is exclusive — two skills both claiming `owns:`
-// on the same filename is a real conflict (the exact shape of the .prettierrc.json
-// bug this criterion exists to catch). `contributes:`/`requires:` are exempt —
-// multiple skills sharing those on one filename is the normal, expected case.
-function ownsCollisions(dirs: string[]): Finding[] {
-  if (dirs.length < 2) return []
+const createOwnershipCollisions = (dirs: string[]): { file: string; skills: string[] }[] => {
   const byFile = new Map<string, Set<string>>()
   for (const dir of dirs) {
     const skillMd = join(dir, 'SKILL.md')
@@ -696,16 +365,9 @@ function ownsCollisions(dirs: string[]): Finding[] {
       byFile.get(file)?.add(basename(dir))
     }
   }
-  const out: Finding[] = []
-  for (const [file, skills] of byFile)
-    if (skills.size > 1)
-      out.push({
-        severity: 'warn',
-        criterion: 'SHAPE-16',
-        message: `\`owns: ${file}\` is declared by ${[...skills].sort().join(', ')} — owns: is exclusive; split into a single owner plus contributes:/requires: on the rest`,
-        ref: RUBRIC
-      })
-  return out.sort((a, b) => a.message.localeCompare(b.message))
+  const collisions: { file: string; skills: string[] }[] = []
+  for (const [file, skills] of byFile) if (skills.size > 1) collisions.push({ file, skills: [...skills] })
+  return collisions
 }
 
 // --- main ------------------------------------------------------------------
@@ -757,8 +419,12 @@ const collisionTargets = skillDirs
     description: parseFrontmatter(readFileSync(join(dir, 'SKILL.md'), 'utf8')).keys.get('description') ?? ''
   }))
 all.push(...auditRubricItems(COLLISION, { targets: collisionTargets }).map((finding) => ({ ...finding, ref: RUBRIC })))
-for (const finding of ownsCollisions(skillDirs))
-  all.push({ type: 'M', level: 'WARN', code: finding.criterion, message: finding.message, ref: finding.ref ?? RUBRIC })
+all.push(
+  ...auditRubricItems(SHAPE, {
+    skill: null,
+    ownershipCollisions: createOwnershipCollisions(skillDirs)
+  }).map((finding) => ({ ...finding, ref: RUBRIC }))
+)
 
 // per-skill footprint (SIZE-5) — opt-in, INFO only, never affects the fail/warn tally or exit code
 if (footprintOut) {
@@ -791,8 +457,18 @@ if (refreshStatusOut) {
     const sp = join(dir, 'references', 'sources.md')
     const line = existsSync(sp)
       ? (() => {
-          const i = computeRefreshStatus(readFileSync(sp, 'utf8'))
-          return `${i.cls ?? 'unmarked'} · ${i.cadence ?? '—'} · last ${i.lastReviewed ?? '—'} · age ${i.ageDays ?? '—'}d · ${i.status.toUpperCase()}`
+          const context = createRefreshContext(readFileSync(sp, 'utf8'))
+          const status =
+            context.refreshClass === null || context.cadence === null
+              ? 'UNMARKED'
+              : context.windowDays === null
+                ? 'NO-CLOCK'
+                : context.ageDays === null || context.ageDays > context.windowDays + REFRESH_GRACE_DAYS
+                  ? 'OVERDUE'
+                  : context.ageDays < context.windowDays
+                    ? 'WITHIN-WINDOW'
+                    : 'DUE'
+          return `${context.refreshClass ?? 'unmarked'} · ${context.cadence ?? '—'} · last ${context.lastReviewed ?? '—'} · age ${context.ageDays ?? '—'}d · ${status}`
         })()
       : 'no sources.md'
     all.push({ type: 'M', level: 'INFO', code: 'LONG-3', message: `Refresh status: ${line}`, file: relative(reportTarget, sp) })

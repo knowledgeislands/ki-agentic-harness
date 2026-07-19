@@ -7,17 +7,11 @@
  * surface until every criterion is represented here.
  */
 
+import { CHECKER_LEVELS, type CheckerFinding, type CheckerLevel } from '../checker-reporter.ts'
+
 export type RubricSource = string
-export const RUBRIC_LEVELS = [
-  'FAIL', // Required criterion violated; blocks completion.
-  'WARN', // Recommended criterion violated; should be fixed, but may ship with a reason.
-  'POLISH', // Minor or cosmetic divergence, including a safe conform change applied.
-  'ADVISORY', // Judgment the checker cannot decide; handed to the reader.
-  'INFO', // Neutral context rather than a verdict.
-  'NA', // Criterion checked but not applicable to this target.
-  'PASS' // Criterion is met.
-] as const
-export type RubricLevel = (typeof RUBRIC_LEVELS)[number]
+export const RUBRIC_LEVELS = CHECKER_LEVELS
+export type RubricLevel = CheckerLevel
 
 export type RubricItem<Context = unknown> = {
   code: string
@@ -31,14 +25,7 @@ export type RubricItem<Context = unknown> = {
   conform?: (context: Context) => ConformAction<Context>[]
 }
 
-export type RubricFinding = {
-  type: 'M' | 'J'
-  level: RubricLevel
-  code: string
-  message: string
-  ref?: string
-  file?: string
-}
+export type RubricFinding = CheckerFinding
 
 export type ConformAction<Context = unknown> = {
   item: RubricItem<Context>
