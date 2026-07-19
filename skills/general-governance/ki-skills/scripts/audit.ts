@@ -23,6 +23,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { type CheckerFinding, checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './lib/checker-reporter.ts'
+import { NAME_1, NAME_2, NAME_3, NAME_4, NAME_5, NAME_6 } from './rubrics/name.ts'
 
 type Severity = 'fail' | 'warn'
 // area = the rubric code (criterion); ref = the reference-doc pointer the criterion cites
@@ -373,15 +374,15 @@ function lintSkill(skillDir: string): Finding[] {
   const desc = fm.keys.get('description')
 
   // name (NAME-1–NAME-7 mechanical)
-  if (!name) fail('NAME-1', '`name` is missing from frontmatter')
+  if (!name) fail(NAME_1.code, '`name` is missing from frontmatter')
   else {
-    if (name.length > NAME_MAX) fail('NAME-2', `\`name\` is ${name.length} chars (max ${NAME_MAX})`)
-    if (!/^[a-z0-9-]+$/.test(name)) fail('NAME-3', `\`name\` "${name}" must be lowercase letters, digits, and hyphens only`)
+    if (name.length > NAME_MAX) fail(NAME_2.code, `\`name\` is ${name.length} chars (max ${NAME_MAX})`)
+    if (!/^[a-z0-9-]+$/.test(name)) fail(NAME_3.code, `\`name\` "${name}" must be lowercase letters, digits, and hyphens only`)
     if (name.startsWith('-') || name.endsWith('-') || name.includes('--'))
-      fail('NAME-4', `\`name\` "${name}" must not start/end with a hyphen or contain "--"`)
-    if (name !== dirName) fail('NAME-5', `\`name\` "${name}" does not match the directory name "${dirName}"`)
-    if (hasXmlTag(name)) fail('NAME-6', '`name` contains an XML tag')
-    for (const r of RESERVED) if (name.includes(r)) fail('NAME-6', `\`name\` contains the reserved word "${r}"`)
+      fail(NAME_4.code, `\`name\` "${name}" must not start/end with a hyphen or contain "--"`)
+    if (name !== dirName) fail(NAME_5.code, `\`name\` "${name}" does not match the directory name "${dirName}"`)
+    if (hasXmlTag(name)) fail(NAME_6.code, '`name` contains an XML tag')
+    for (const r of RESERVED) if (name.includes(r)) fail(NAME_6.code, `\`name\` contains the reserved word "${r}"`)
   }
 
   // description (DESC-1–DESC-3 mechanical)

@@ -44,6 +44,7 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { type CheckerFinding, checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './lib/checker-reporter.ts'
+import { NAME_1, NAME_5 } from './rubrics/name.ts'
 
 // Each action records a typed domain finding. The canonical reporter owns transport;
 // the bootstrap aggregate is the only terminal renderer.
@@ -164,12 +165,12 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
     const nameVal = (nameLine.match(/^name:\s*(.+)$/)?.[1] ?? '').trim()
     if (nameVal !== dirName) {
       workingBlock = workingBlock.replace(nameLine, `name: ${dirName}`)
-      rec('POLISH', `${dirName}:NAME-5`, `name '${nameVal}' → '${dirName}'`, RUBRIC, 'SKILL.md')
+      rec('POLISH', `${dirName}:${NAME_5.code}`, `name '${nameVal}' → '${dirName}'`, RUBRIC, 'SKILL.md')
       fixedAny = true
     }
   } else {
-    todos.push(`${dirName}: NAME-1 — no \`name\` field at all; author by hand`)
-    rec('ADVISORY', `${dirName}:NAME-1`, 'no `name` field at all; author by hand', RUBRIC, 'SKILL.md')
+    todos.push(`${dirName}: ${NAME_1.code} — no \`name\` field at all; author by hand`)
+    rec('ADVISORY', `${dirName}:${NAME_1.code}`, 'no `name` field at all; author by hand', RUBRIC, 'SKILL.md')
   }
 
   // ── SHAPE-11 (help token) + SHAPE-12 (universal verbs) ──

@@ -1,5 +1,5 @@
 {
-  "ref": "0a5950f05442d758014fa65c1960057612f7190d",
+  "ref": "bbff695996f3bbae330ba5fbb59fa5c1a6a8a53c",
   "files": {
     ".ki-meta/checkers/ki-agents/scripts/audit.ts": "21e3d3b0a8f7cf3818436dc6083bbc79f08bea0d7379db1d3fb5273749158858",
     ".ki-meta/checkers/ki-agents/scripts/conform.ts": "11c6f147bd83a53bcad99590b697780387cb8e7d34ebba87b6ec1965c5e0b0c2",
@@ -71,11 +71,12 @@
     ".ki-meta/checkers/ki-repo-roadmap/scripts/vendored/ki-skills/checker-reporter.ts": "41d95a0c1759278f87812a91d283b85cc036349be1010eb0cc53580e3ba22344",
     ".ki-meta/checkers/ki-repo-roadmap/help.md": "04a0468fa20aef768ee27c040f26d7e004ccdd2b694285853160b406894955b9",
     ".ki-meta/educators/ki-repo-roadmap/educate.ts": "7935801a2830e5a6511a47463b26c2ce12ff2003585eaecbd42896e38aaf71e5",
-    ".ki-meta/checkers/ki-skills/scripts/audit.ts": "3e2f9559b1851f2dc043b172e192a11317d99a22e5a3eefc5fe7861cb229b1c2",
-    ".ki-meta/checkers/ki-skills/scripts/conform.ts": "c3545bcf8f60bf6223ec94facc32d227d2f6ce29ea719db9b78d3a2c483bbbce",
+    ".ki-meta/checkers/ki-skills/scripts/audit.ts": "48bb0e2c9ec963a851f4627d7fcb50d1194669a01eabedc2957424664008a893",
+    ".ki-meta/checkers/ki-skills/scripts/conform.ts": "f48298167a59c4d0f51283cd75933d3b50444bec3c8d634847553e0b739482ff",
     ".ki-meta/checkers/ki-skills/.ki-meta/mode-elements.json": "5940b9a23b52d753eff97432bb7bfeae4568278f8325eab1074173f63d662651",
     ".ki-meta/checkers/ki-skills/references/rubric.md": "7e8d2b81bb5cb517eaa994d05f48bcea156eaa040b67d6fbe533eda7f5ea4757",
     ".ki-meta/checkers/ki-skills/scripts/lib/checker-reporter.ts": "41d95a0c1759278f87812a91d283b85cc036349be1010eb0cc53580e3ba22344",
+    ".ki-meta/checkers/ki-skills/scripts/lib/rubric.ts": "ac218ee9ecff375b7e716e406a3d28afad42641f2888151ce4ec36cf8e0b9531",
     ".ki-meta/checkers/ki-skills/help.md": "b3a9fbf1da1746e3d0eb5ad17d8b95b6b79e7fc81e93f7dfb3c91bc27cca00e5",
     ".ki-meta/educators/ki-skills/educate.ts": "3f9263c23abd090ab89311476ba35678d27957dd07aa201e6e7ad82322a841fa",
     ".ki-meta/checkers/ki-tokenomics/scripts/audit.ts": "7080386d0af961a412d69a9ee556dc84081f7a099034e7d5fa008e9b68d88171",

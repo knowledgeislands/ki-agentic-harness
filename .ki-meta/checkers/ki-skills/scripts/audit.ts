@@ -23,6 +23,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { basename, dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { type CheckerFinding, checkerReporterExitCode, emitCheckerReporter, judgmentFindingsFromRubric } from './lib/checker-reporter.ts'
+import { NAME_5 } from './lib/rubric.ts'
 
 type Severity = 'fail' | 'warn'
 // area = the rubric code (criterion); ref = the reference-doc pointer the criterion cites
@@ -379,7 +380,7 @@ function lintSkill(skillDir: string): Finding[] {
     if (!/^[a-z0-9-]+$/.test(name)) fail('NAME-3', `\`name\` "${name}" must be lowercase letters, digits, and hyphens only`)
     if (name.startsWith('-') || name.endsWith('-') || name.includes('--'))
       fail('NAME-4', `\`name\` "${name}" must not start/end with a hyphen or contain "--"`)
-    if (name !== dirName) fail('NAME-5', `\`name\` "${name}" does not match the directory name "${dirName}"`)
+    if (name !== dirName) fail(NAME_5.code, `\`name\` "${name}" does not match the directory name "${dirName}"`)
     if (hasXmlTag(name)) fail('NAME-6', '`name` contains an XML tag')
     for (const r of RESERVED) if (name.includes(r)) fail('NAME-6', `\`name\` contains the reserved word "${r}"`)
   }
