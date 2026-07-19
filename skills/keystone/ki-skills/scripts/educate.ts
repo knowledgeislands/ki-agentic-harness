@@ -1,45 +1,43 @@
 #!/usr/bin/env bun
-/**
- * ki-skills EDUCATE — the mechanical half (ADR-KI-HARNESS-SKILLS-001 / -007). A thin
- * delegator: it execs the ki-bootstrap chain engine with this skill as an explicit
- * `--seed`, so running this file bootstraps ki-skills after its `ki-depends-on:`
- * and the baseline — into the target repo, satisfying the self-sufficiency contract
- * (vendored script copies + HELP snapshots + the four `.ki-meta/bin/` wrappers;
- * no `package.json` — that is ki-engineering's). Delegating by subprocess is
- * composition — running a sibling in sequence — not a cross-skill import, so the
- * skill stays valid standalone (ADR-KI-HARNESS-SKILLS-004).
- *
- *   bun scripts/educate.ts <target-repo> [--ref <ref>] [--dry-run]
- *
- * Remote transport (documented follow-on, per ki-bootstrap's engine): the same run
- * reached from a raw GitHub URL, pinned to a ref.
- */
-import { execFileSync } from 'node:child_process'
-import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { relative, resolve } from 'node:path'
+import { educateSkill } from './vendored/ki-bootstrap/educator.ts'
 
 const SKILL = 'ki-skills'
 const argv = process.argv.slice(2)
-if (argv.includes('-h') || argv.includes('--help')) {
-  process.stdout.write(`Usage: bun scripts/educate.ts <target-repo> [options]
 
-Bootstrap ki-skills and its declared dependencies into a repository.
+if (argv.includes('-h') || argv.includes('--help')) {
+  process.stdout.write(`Usage: bun scripts/educate.ts [target-repo] [--dry-run] [--verbose]
+
+Refresh only ki-skills under the target repository's .ki-meta/checkers and
+.ki-meta/educators directories. Aggregate runners remain owned by ki-bootstrap.
 
 Options:
-  --ref <ref>  Bootstrap from a specific harness revision.
-  --dry-run    Report the changes without writing them.
-  -h, --help   Show this help and exit.
+  --dry-run   Report the planned payload without writing it.
+  --verbose   List each copied payload unit.
+  -h, --help  Show this help and exit.
 `)
   process.exit(0)
 }
-const engine = resolve(
-  dirname(fileURLToPath(import.meta.url)),
-  '..',
-  '..',
-  'ki-bootstrap',
-  'scripts',
-  'internal',
-  'repo-bootstrap',
-  'repo-bootstrap.ts'
-)
-execFileSync('bun', [engine, ...argv, '--seed', SKILL], { stdio: 'inherit' })
+
+let targetArgument: string | undefined
+let dryRun = false
+let verbose = false
+for (const argument of argv) {
+  if (argument === '--dry-run') dryRun = true
+  else if (argument === '--verbose') verbose = true
+  else if (argument.startsWith('-')) throw new Error(`unsupported option: ${argument}`)
+  else if (targetArgument) throw new Error(`unexpected argument: ${argument}`)
+  else targetArgument = argument
+}
+
+const plan = educateSkill({
+  skill: SKILL,
+  source: resolve(import.meta.dirname, '..'),
+  target: resolve(targetArgument ?? '.'),
+  dryRun
+})
+
+if (verbose) {
+  for (const unit of plan.units) process.stdout.write(`${dryRun ? 'would copy' : 'copied'} ${relative(plan.target, unit.destination)}\n`)
+}
+process.stdout.write(`${dryRun ? 'EDUCATE dry run' : 'EDUCATE complete'} — ${SKILL}\n`)

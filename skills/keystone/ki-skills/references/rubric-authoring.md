@@ -93,7 +93,7 @@ Top-level non-test files in `scripts/` are callable commands.
 
 Private reusable implementation lives in `scripts/internal/`. Only modules explicitly published through `ki-shared-modules` live in `scripts/shared/` and form a cross-skill contract for checkers.
 
-Another skill receives a declared module below `scripts/vendored/<provider>/` and imports only that local copy. `ki-skills` is an exception to this as it already owns the shared rubric, checker, and reporter modules under `scripts/shared/`.
+Another skill receives a declared module below `scripts/vendored/<provider>/` and imports only that local copy. `ki-skills` uses its owned rubric, checker, and reporter modules directly from `scripts/shared/`; it may consume a separately owned lifecycle module, but never vendors its own modules back into itself.
 
 Repository bootstrap also copies the consumer's private `scripts/rubric/` tree beside its AUDIT and CONFORM entry points. That tree is part of the consumer's standalone checker payload, not a cross-skill module contract; other skills MUST NOT import it.
 

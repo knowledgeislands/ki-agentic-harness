@@ -1,8 +1,8 @@
 import { afterEach, expect, test } from 'bun:test'
-import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { createSkillEducationPlan } from './educator.ts'
+import { createSkillEducationPlan, educateSkill } from './educator.ts'
 
 const temporaryDirectories: string[] = []
 
@@ -49,4 +49,24 @@ test('rejects a skill without all three mechanical mode entrypoints', () => {
   const { source, target } = fixture()
   rmSync(join(source, 'scripts', 'educate.ts'))
   expect(() => createSkillEducationPlan({ skill: 'ki-example', source, target })).toThrow('does not provide scripts/educate.ts')
+})
+
+test('publishes only the selected skill checker and educator directories', () => {
+  const { source, target } = fixture()
+  mkdirSync(join(target, '.ki-meta', 'checkers', 'ki-other'), { recursive: true })
+  writeFileSync(join(target, '.ki-meta', 'checkers', 'ki-other', 'keep'), 'keep\n')
+
+  educateSkill({ skill: 'ki-example', source, target })
+
+  expect(readFileSync(join(target, '.ki-meta', 'checkers', 'ki-example', 'scripts', 'audit.ts'), 'utf8')).toBe('export {}\n')
+  expect(readFileSync(join(target, '.ki-meta', 'educators', 'ki-example', 'scripts', 'educate.ts'), 'utf8')).toBe('export {}\n')
+  expect(readFileSync(join(target, '.ki-meta', 'checkers', 'ki-other', 'keep'), 'utf8')).toBe('keep\n')
+})
+
+test('dry-run plans without creating governance directories', () => {
+  const { source, target } = fixture()
+
+  educateSkill({ skill: 'ki-example', source, target, dryRun: true })
+
+  expect(existsSync(join(target, '.ki-meta'))).toBe(false)
 })
