@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'bun:test'
+import { spawnSync } from 'node:child_process'
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
-import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { parseCheckerJsonl } from './vendored/ki-skills/checker.ts'
 
@@ -29,18 +29,25 @@ describe('ki-housekeeping structured checker', () => {
       expect(parsed.errors).toEqual([])
       expect(parsed.records.some((record) => (record as { code?: string }).code === 'DOC-1')).toBe(false)
       expect(summary.summary?.judgment?.unevaluated).toBe(7)
-    } finally { rmSync(memory, { recursive: true, force: true }) }
+    } finally {
+      rmSync(memory, { recursive: true, force: true })
+    }
   })
 
   test('reports foreign learned paths as IDX-6 WARN', () => {
     const memory = mkdtempSync(join(tmpdir(), 'ki-housekeeping-foreign-'))
     try {
-      writeFileSync(join(memory, 'MEMORY.md'), '<!-- headroom:learn:start -->\n/Users/x/knowledgeislands/other-island\n<!-- headroom:learn:end -->\n')
+      writeFileSync(
+        join(memory, 'MEMORY.md'),
+        '<!-- headroom:learn:start -->\n/Users/x/knowledgeislands/other-island\n<!-- headroom:learn:end -->\n'
+      )
       const result = spawnSync('bun', [audit, '/Users/x/knowledgeislands/this-island', '--memory-dir', memory], { encoding: 'utf8' })
       expect(result.status).toBe(0)
       expect(result.stdout).toContain('"code":"IDX-6"')
       expect(result.stdout).toContain('"level":"WARN"')
-    } finally { rmSync(memory, { recursive: true, force: true }) }
+    } finally {
+      rmSync(memory, { recursive: true, force: true })
+    }
   })
 
   test('conform dry-run plans safe name and index repairs without writing', () => {
@@ -54,6 +61,8 @@ describe('ki-housekeeping structured checker', () => {
       expect(result.stdout).toContain('"code":"FM-2"')
       expect(result.stdout).toContain('"level":"FIXED"')
       expect(result.stdout).not.toContain('name: sample')
-    } finally { rmSync(memory, { recursive: true, force: true }) }
+    } finally {
+      rmSync(memory, { recursive: true, force: true })
+    }
   })
 })
