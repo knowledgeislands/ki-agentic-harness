@@ -20,7 +20,7 @@ The house authoring conventions the other skills build on — Markdown (wide tab
 
 ### `ki-engineering`
 
-The shared **engineering toolchain** every TS/Bun repo builds on — aggregate/scoped governance entrypoints, direct code-tool execution, `tsconfig`/`biome`, the Bun-install / Node-run split, a runner-neutral bare `test` entrypoint, the config-gated Vitest profile with 100% coverage, and the build/cli-chmod rule — plus the **enforcement framework** (the mode shape, mechanical-checker contract, rubric tagging, `sources.md` cadence, `.ki-config.toml` contract) the other governance skills conform to. The toolchain twin of `ki-authoring`; artifact skills (e.g. `ki-mcp`) **compose** their delta on top of its common layer.
+The shared **engineering toolchain** every TS/Bun repo builds on — aggregate/scoped governance entrypoints, direct code-tool execution, `tsconfig`/`biome`, the Bun-install / Node-run split, a runner-neutral bare `test` entrypoint, the config-gated Vitest profile with 100% coverage, and the build/cli-chmod rule. The toolchain twin of `ki-authoring`; artifact skills (e.g. `ki-mcp`) **compose** their delta on top of its common layer. The shared mode and checker rules are owned separately by `ki-skills`.
 
 ## Repo-structure
 
@@ -64,7 +64,7 @@ Codifies, audits, and conforms the **chezmoi dotfiles-management standard** — 
 
 ### `ki-skills`
 
-Audits, writes, and conforms Agent Skills against a checkable rubric — mechanical checks plus judgment ones applied by reading, and a tracked source list it revisits.
+Audits, writes, and conforms Agent Skills against a checkable rubric — mechanical checks plus judgment ones applied by reading, and a tracked source list it revisits. It also owns the shared enforcement framework and checker contract used by governance skills.
 
 ### `ki-agents`
 

@@ -55,7 +55,7 @@ digraph skills_map {
     style="rounded,filled"
     fillcolor="#f6f0fc"
     authoring [fillcolor="#eee3fb", label=< <b>ki-authoring</b><br/><font point-size="9">writing conventions</font> >, tooltip="Markdown and TOML authoring conventions"]
-    engineering [fillcolor="#eee3fb", label=< <b>ki-engineering</b><br/><font point-size="9">toolchain · checker contract</font> >, tooltip="Engineering toolchain and enforcement framework"]
+    engineering [fillcolor="#eee3fb", label=< <b>ki-engineering</b><br/><font point-size="9">toolchain · tests</font> >, tooltip="Engineering toolchain and tests"]
   }
 
   subgraph cluster_structure {
@@ -82,7 +82,7 @@ digraph skills_map {
     label="General governance"
     style="rounded,filled"
     fillcolor="#fff7ed"
-    skills [fillcolor="#feead2", label=< <b>ki-skills</b><br/><font point-size="9">skill quality</font> >]
+    skills [fillcolor="#feead2", label=< <b>ki-skills</b><br/><font point-size="9">skill quality · checker contract</font> >]
     agents [fillcolor="#feead2", label=< <b>ki-agents</b><br/><font point-size="9">agent quality</font> >]
     decisions [fillcolor="#feead2", label=< <b>ki-decision-records</b><br/><font point-size="9">decision records</font> >]
     features [fillcolor="#feead2", label=< <b>ki-feature-definitions</b><br/><font point-size="9">feature behaviour</font> >]

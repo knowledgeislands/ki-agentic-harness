@@ -99,7 +99,7 @@ ki-tools
 
 ## The governance-skill shape
 
-All skills share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in `ki-engineering`'s enforcement framework:
+All skills share one layout, so a reader (or a new such skill) can move between them — the layout and modes are themselves codified in `ki-skills`' enforcement framework:
 
 - **`<domain>standards.md`** (or the contract / conventions reference it holds) — the normative, quotable reference: what good looks like, and why.
 - **`rubric.md`** — the line-by-line checkable criteria, each tagged **mechanical** (a checker enforces it) or **judgment** (a reader assesses it), each citing the standard section it verifies.
