@@ -2,7 +2,7 @@
 
 The shared **mechanism** every governance skill in this repository uses, so a standard is defined, audited, conformed, and refreshed the same way no matter what it governs. This is the formal home of what ki-agentic-harness `docs/skills.md` calls "the governance-skill shape"; that doc points here for the detail rather than restating it.
 
-A **governance skill** holds a house standard and ships the universal modes over it, backed by a tracked source list. `ki-engineering` owns this framework because it is the cross-cutting "how we engineer" layer; every other governance skill in the set conforms to it.
+A **governance skill** holds a house standard and ships the universal modes over it, backed by a tracked source list. `ki-skills` owns this framework because it is the self-governing root of the governance-skill system; every other governance skill in the set conforms to it.
 
 ## Contents
 

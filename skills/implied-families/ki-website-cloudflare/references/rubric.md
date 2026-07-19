@@ -2,7 +2,7 @@
 
 Line-by-line pass/fail items for auditing a site's hosting against the [Cloudflare hosting standard](standards.md). Run [`../scripts/audit.ts`](../scripts/audit.ts) for the mechanical items (marked **[M]**), then judge the rest by reading. Each item carries a stable code (`WCF-N`) — the `area` a finding reports under, so audit, conform, and this rubric line up — and cites the standard section it verifies.
 
-Severity: **FAIL** (ship-stopper — the site can't deploy, or deploys the wrong way), **WARN** (config / script divergence), **POLISH** (domains / CI / consistency) — the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](../../../foundations/ki-engineering/references/enforcement-framework.md) §2.
+Severity: **FAIL** (ship-stopper — the site can't deploy, or deploys the wrong way), **WARN** (config / script divergence), **POLISH** (domains / CI / consistency) — the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](../../../general-governance/ki-skills/references/enforcement-framework.md) §2.
 
 > **Compose with the siblings.** This rubric is the **hosting delta** only. The toolchain is `ki-engineering` (`ki:engineering:audit`); building the `dist/` this serves is `ki-website` (`audit.ts`). Run both first. Any Worker that is not the static-site server is out of scope — it routes to the generic `cloudflare`/`wrangler` skills. The repo is fully clean only when every applicable audit passes.
 

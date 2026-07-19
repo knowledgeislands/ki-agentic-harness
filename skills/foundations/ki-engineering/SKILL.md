@@ -12,14 +12,14 @@ argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
 
 # Knowledge Islands engineering standard
 
-You are applying the **Knowledge Islands engineering standard** — the shared software-engineering toolchain every TypeScript/Bun repo in this work builds on, and the **enforcement framework** every governance skill uses to define and check its own standard. It is the build/test twin of `ki-authoring`: that skill owns _how we write_ (Markdown/TOML style); this one owns _how we build, lint, and test_, and _how a standard is enforced_.
+You are applying the **Knowledge Islands engineering standard** — the shared software-engineering toolchain every TypeScript/Bun repo in this work builds on. It is the build/test twin of `ki-authoring`: that skill owns _how we write_ (Markdown/TOML style); this one owns _how we build, lint, and test_. `ki-skills` owns the governance-skill enforcement framework that this skill follows.
 
 This is a **standard, base-agnostic Process skill**. It hard-codes no single repo; it applies to any repo carrying a `[ki-engineering]` table in its `.ki-config.toml` (today the 10 TS/Bun repos under `knowledgeislands/` — the seven `mcp-*` servers plus `ki-agentic-harness`, `ki-arcadia-principal`, `ki-website`). How it sits alongside the other skills, and where it must not overlap them, is documented once in the ki-agentic-harness `README.md`.
 
 ## What this skill owns
 
 1. **The common toolchain** — the baseline every TS/Bun repo meets, plus capability conditionals that fire only when a repo opts into a capability. The full, quotable standard is [the engineering standard](references/standards.md); the line-by-line items are in [the rubric](references/rubric.md).
-2. **The enforcement framework** — the shared mechanism for defining and checking _any_ standard (the mode shape, the mechanical-checker contract, the mechanical/judgment rubric tagging, the `sources.md` cadence, the `.ki-config.toml` validate-down contract). It lives in [the enforcement framework](references/enforcement-framework.md); the other governance skills conform to it.
+2. **The governance-skill enforcement framework** — the shared mechanism for defining and checking _any_ standard (the mode shape, the mechanical-checker contract, the mechanical/judgment rubric tagging, the `sources.md` cadence, the `.ki-config.toml` validate-down contract). It is owned by `ki-skills` in [the enforcement framework](../../general-governance/ki-skills/references/enforcement-framework.md); this skill conforms to it.
 
 **Artifact-specific rules are not here.** Anything meaningful only for one artifact type (an MCP's `bin`, `ki:server:mcp:*` scripts, coverage-exclude list, tool surface) lives in that artifact's skill. A repo is fully audited by **composing** this skill's checker with the artifact skill's — see below.
 
@@ -43,11 +43,11 @@ A repo is "clean" only when **every applicable** skill's audit passes. The `.ki-
 
 ## Operating modes
 
-Carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH** — EDUCATE scaffolds a new TS repo's toolchain. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The mode shape itself is defined in [the enforcement framework](references/enforcement-framework.md).
+Carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH** — EDUCATE scaffolds a new TS repo's toolchain. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows. The mode shape is defined in `ki-skills`' [enforcement framework](../../general-governance/ki-skills/references/enforcement-framework.md).
 
 ### Mode AUDIT — check a repo's common toolchain
 
-1. **Run the mechanical checker**: `bun <skill>/scripts/audit.ts <repo>` (or `node` after a build). It reports the package.json metadata + aggregate/scoped script surface, runs the code-tool checks, checks the `bun test` trap, `tsconfig`/`biome`, and capability conditionals (tests / compiled build + cli-chmod / env), and validates-down the `[ki-engineering]` table. It emits the canonical JSONL checker stream on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — see [checker-contract.md](references/checker-contract.md)) and exits non-zero on any mechanical FAIL. Capture its output; don't re-derive the mechanical items.
+1. **Run the mechanical checker**: `bun <skill>/scripts/audit.ts <repo>` (or `node` after a build). It reports the package.json metadata + aggregate/scoped script surface, runs the code-tool checks, checks the `bun test` trap, `tsconfig`/`biome`, and capability conditionals (tests / compiled build + cli-chmod / env), and validates-down the `[ki-engineering]` table. It emits the canonical JSONL checker stream on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — see `ki-skills`' [checker contract](../../general-governance/ki-skills/references/checker-contract.md)) and exits non-zero on any mechanical FAIL. Capture its output; don't re-derive the mechanical items.
 2. **Apply the judgment items** in [the rubric](references/rubric.md): no per-repo loosening of `strict`/the `noImplicit*` family, the Node `.env` parity call where env is loaded, Vitest-configured source tests actually reaching the 100% bar, and repo-specific scripts not shadowing governed entrypoints.
 3. **Name the artifact-skill audit that must also run** for the repo to be fully clean (e.g. `audit.ts` for an MCP repo), and **report** by location → criterion → fix, grouped by severity-ladder level (FAIL first).
 

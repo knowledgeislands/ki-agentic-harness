@@ -2,7 +2,7 @@
 
 Pass/fail items for auditing a Knowledge Islands plugin-marketplace repo against the [Plugins Standard](standards.md). Run [`../scripts/audit.ts`](../scripts/audit.ts) for the mechanical items (marked **[M]**), then judge the rest **[J]** by reading.
 
-Severity: **FAIL** (malformed manifest or broken projection contract — ship-stopper), **WARN** (shape divergence or a deferred artifact leaking in), **POLISH** (formatting / consistency) — the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](../../../foundations/ki-engineering/references/enforcement-framework.md) §2.
+Severity: **FAIL** (malformed manifest or broken projection contract — ship-stopper), **WARN** (shape divergence or a deferred artifact leaking in), **POLISH** (formatting / consistency) — the shared ladder, defined in `ki-engineering`'s [`enforcement-framework.md`](../../../general-governance/ki-skills/references/enforcement-framework.md) §2.
 
 Each criterion carries a stable code (`PLUG-N`) the checker emits as the finding `area`; **[M]** codes are enforced by `audit.ts`, **[J]** codes are judged by reading. The reference pointer in parentheses is the finding `ref` the cited-finding output attaches — the standard section a reader consults ([`standards.md`](standards.md)), or this rubric for judgment-only codes.
 

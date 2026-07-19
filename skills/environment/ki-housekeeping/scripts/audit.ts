@@ -7,7 +7,7 @@
  * Resolves the Claude Code auto-memory directory for a repo
  * (~/.claude/projects/<slug>/memory, slug = repo's absolute path with "/" and "." -> "-")
  * and checks index/frontmatter agreement per skills/environment/ki-housekeeping/references/rubric.md.
- * See skills/foundations/ki-engineering/references/checker-contract.md for the severity ladder,
+ * See skills/general-governance/ki-skills/references/checker-contract.md for the severity ladder,
  * exit-code, and flag contract every checker in this repo follows.
  */
 

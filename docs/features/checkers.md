@@ -12,7 +12,7 @@ Part of the Feature Definitions corpus; see [index.md](index.md).
 
 A checker MUST grade findings on the unified FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS ladder, emitting the subset its domain warrants.
 
-_Verify:_ [checker-contract.md](../../skills/foundations/ki-engineering/references/checker-contract.md) enumerates the seven levels.
+_Verify:_ [checker-contract.md](../../skills/general-governance/ki-skills/references/checker-contract.md) enumerates the seven levels.
 
 ### CHK-002 — Exit non-zero iff an M/FAIL exists
 
