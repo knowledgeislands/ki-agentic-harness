@@ -1,15 +1,28 @@
-# KI Specifications structure audit rubric
+<!-- GENERATED FILE: edit scripts/rubric/items/, not this publication. -->
 
-The mechanical criteria are enforced by [`../scripts/audit.ts`](../scripts/audit.ts). Judgment criteria remain reader-assessed.
+# Generated rubric — specifications
 
-## Mechanical criteria
+> **Generated publication.** The TypeScript rubric items under `scripts/rubric/items/` are canonical.
 
-- **marker [M]** `` `SPEC-1` `` `.ki-config.toml` declares a keyless `[ki-specifications]` table. Unknown keys WARN because the marker has no options yet. (standard: repository identity)
-- **authority areas [M]** `` `SPEC-2` `` `proposals/`, `specifications/`, and `schemas/` exist as directories. Their absence FAILs because they are the core deliberative, normative, and machine-readable authority seams. (standard: top-level areas)
-- **supporting areas [M]** `` `SPEC-3` `` `templates/`, `examples/`, `docs/`, and `tooling/` exist as directories. Their absence WARNs because the repository can remain usable while an early supporting area is being introduced. (standard: top-level areas)
+## SPEC — repository structure
 
-## Judgment criteria
+→ [standard](standards.md)
 
-- **minimal floor [J]** `` `SPEC-J1` `` every asserted structure has proved stable enough to govern across time; emerging KIP/KIS process detail remains in the canonical Specifications repository until that threshold is met. (standard: intentionally small scope)
-- **authority boundary [J]** `` `SPEC-J2` `` the skill checks repository shape without claiming canonical ownership of normative specification meaning. (standard: composition boundary)
-- **sync [J]** `` `SYNC-1` `` the standard, rubric, checker, tests, and source review agree.
+Repository identity and stable top-level seams.
+
+- **SPEC-1 [M] — repository identity marker** — `.ki-config.toml` declares a keyless `[ki-specifications]` table. Unknown keys WARN because the marker has no options yet. (standards.md)
+- **SPEC-2 [M] — authority areas** — `proposals/`, `specifications/`, and `schemas/` exist as directories. Their absence FAILs. (standards.md)
+- **SPEC-3 [M] — supporting areas** — `templates/`, `examples/`, `docs/`, and `tooling/` exist as directories. Their absence WARNs. (standards.md)
+- **SPEC-J1 [J] — minimal floor** — Every asserted structure has proved stable enough to govern across time. (standards.md)
+  - _Review prompt:_ Has every asserted structure proved stable enough to govern across time?
+- **SPEC-J2 [J] — authority boundary** — The skill checks repository shape without claiming canonical ownership of normative specification meaning. (standards.md)
+  - _Review prompt:_ Does the skill preserve the authority boundary around normative specification meaning?
+
+## SYNC — standard synchronisation
+
+→ [standard](standards.md)
+
+Alignment across the knowledge chain.
+
+- **SYNC-1 [J] — knowledge-chain synchronisation** — The standard, rubric, checker, tests, and source review agree. (standards.md)
+  - _Review prompt:_ Do the standard, rubric, checker, tests, and source review agree?

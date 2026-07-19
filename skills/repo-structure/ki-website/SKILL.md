@@ -1,6 +1,6 @@
 ---
 name: ki-website
-checker-dependencies: [ki-skills:checker-reporter]
+checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 depends-on: [ki-website-cloudflare]
 vendors: [educate, audit, conform, help]
 description: >-

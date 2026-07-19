@@ -1,26 +1,23 @@
 #!/usr/bin/env bun
+import { afterEach, expect, test } from 'bun:test'
 import { spawnSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, rmdirSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, rmSync, rmdirSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const script = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
+const educate = join(dirname(fileURLToPath(import.meta.url)), 'educate.ts')
+const fixtures: string[] = []
 const fixture = (): string => {
   const root = mkdtempSync(join(tmpdir(), 'ki-specifications-'))
+  fixtures.push(root)
   writeFileSync(join(root, '.ki-config.toml'), '[ki-repo]\n\n[ki-specifications]\n')
   for (const path of ['proposals', 'specifications', 'schemas', 'templates', 'examples', 'docs', 'tooling']) mkdirSync(join(root, path))
   return root
 }
 
-const root = fixture()
-const clean = spawnSync('bun', [script, root], { encoding: 'utf8' })
-if (clean.status !== 0 || !clean.stdout.includes('"level":"PASS"'))
-  throw new Error(`clean fixture failed:\n${clean.stdout}\n${clean.stderr}`)
-
-const incomplete = fixture()
-rmdirSync(join(incomplete, 'schemas'))
-const failed = spawnSync('bun', [script, incomplete], { encoding: 'utf8' })
-if (failed.status === 0 || !failed.stdout.includes('"code":"SPEC-2"')) throw new Error(`missing core area did not fail:\n${failed.stdout}`)
-
-process.stdout.write('PASS ki-specifications audit fixtures\n')
+afterEach(() => { for (const root of fixtures.splice(0)) rmSync(root, { recursive: true, force: true }) })
+test('clean structure emits canonical passing JSONL', () => { const result = spawnSync('bun', [script, fixture()], { encoding: 'utf8' }); expect(result.status).toBe(0); expect(result.stdout).toContain('"record":"summary"'); expect(result.stdout).toContain('"level":"PASS"') })
+test('missing core area fails SPEC-2', () => { const root = fixture(); rmdirSync(join(root, 'schemas')); const result = spawnSync('bun', [script, root], { encoding: 'utf8' }); expect(result.status).toBe(1); expect(result.stdout).toContain('"code":"SPEC-2"') })
+test('public commands expose help without action', () => { for (const command of [script, educate]) { const result = spawnSync('bun', [command, '--help'], { encoding: 'utf8' }); expect(result.status).toBe(0); expect(result.stdout).toContain('Usage:') } })

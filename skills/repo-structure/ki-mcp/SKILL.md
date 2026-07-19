@@ -1,6 +1,6 @@
 ---
 name: ki-mcp
-checker-dependencies: [ki-skills:checker-reporter]
+checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 depends-on: []
 vendors: [educate, audit, conform, help]
 description: >

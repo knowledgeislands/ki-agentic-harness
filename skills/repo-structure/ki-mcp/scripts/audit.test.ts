@@ -1,95 +1,78 @@
-#!/usr/bin/env bun
-/** Focused applicability tests for the ki-mcp checker. */
-import { spawnSync } from 'node:child_process'
+import { expect, test } from 'bun:test'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import {
-  parseCheckerReporterJsonl,
-  rubricCriteriaFromFile,
-  validateCheckerReporterEvents,
-  validateCheckerReporterRubric
-} from './vendored/ki-skills/checker-reporter.ts'
+import { join, resolve } from 'node:path'
+import { spawnSync } from 'node:child_process'
+import { parseCheckerJsonl, validateCheckerRecords } from './vendored/ki-skills/checker.ts'
+import { createMcpContext } from './rubric/contexts/mcp.ts'
+import { KI_MCP_FAMILY_CODES, KI_MCP_RUBRIC } from './rubric/items/index.ts'
 
-const AUDIT = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
-let failed = false
-
-function check(label: string, condition: boolean): void {
-  console.log(`  ${condition ? 'ok  ' : 'FAIL'} ${label}`)
-  if (!condition) failed = true
+const audit = resolve(import.meta.dir, 'audit.ts')
+const fixture = (): string => mkdtempSync(join(tmpdir(), 'ki-mcp-audit-'))
+const run = (root: string) => {
+  const process = spawnSync('bun', [audit, root], { encoding: 'utf8' })
+  const parsed = parseCheckerJsonl(process.stdout)
+  const context = createMcpContext(root, true)
+  const families = context.applicable || !context.rootExists ? KI_MCP_FAMILY_CODES : ['KI']
+  expect(parsed.errors).toEqual([])
+  expect(
+    validateCheckerRecords({
+      records: parsed.records,
+      rubric: KI_MCP_RUBRIC,
+      subjects: [{ familyCodes: families, context: () => context }],
+      exitCode: process.status ?? 1
+    })
+  ).toEqual([])
+  return { process, records: parsed.records }
 }
-
-function fixture(): string {
-  return mkdtempSync(join(tmpdir(), 'ki-mcp-applicability-'))
-}
-
-function run(root: string): { code: number; findings: Array<{ level: string; code: string }>; summary: { fail: number; na: number } } {
-  const result = spawnSync(process.execPath, [AUDIT, root], { encoding: 'utf8' })
-  const parsed = parseCheckerReporterJsonl(result.stdout)
-  const events = parsed.events
-  const rubric = rubricCriteriaFromFile(join(dirname(AUDIT), '..', 'references', 'rubric.md'))
-  const errors = [
-    ...parsed.errors,
-    ...validateCheckerReporterEvents(events, result.status ?? 1),
-    ...validateCheckerReporterRubric(events, rubric)
-  ]
-  if (errors.length) throw new Error(`invalid canonical checker stream: ${errors.join('; ')}`)
-  const findings = events.filter(
-    (event): event is { record: 'finding'; level: string; code: string } =>
-      typeof event === 'object' && event !== null && (event as { record?: unknown }).record === 'finding'
+const findings = (records: readonly unknown[]) =>
+  records.filter(
+    (record): record is { record: 'finding'; code: string; level: string } =>
+      typeof record === 'object' && record !== null && (record as { record?: unknown }).record === 'finding'
   )
-  const summary = events.at(-1) as { summary: { fail: number; na: number } }
-  return { code: result.status ?? 1, findings, summary: summary.summary }
-}
 
-for (const [label, arrange, assert] of [
-  [
-    'absent and irrelevant reports one NA',
-    (_root: string) => {},
-    (r: ReturnType<typeof run>) => r.code === 0 && r.summary.na === 1 && r.findings.length === 1
-  ],
-  [
-    'multiline string lookalike remains irrelevant',
-    (root: string) => writeFileSync(join(root, '.ki-config.toml'), '[ki-repo]\nnote = """\n[ki-mcp]\n"""\n'),
-    (r: ReturnType<typeof run>) => r.code === 0 && r.summary.na === 1 && r.findings.length === 1
-  ],
-  [
-    'quoted declaration but incomplete runs the full audit',
-    (root: string) => writeFileSync(join(root, '.ki-config.toml'), '["ki-mcp"]\n'),
-    (r: ReturnType<typeof run>) => r.code !== 0 && r.summary.fail > 0 && r.summary.na === 0
-  ],
-  [
-    'malformed config fails closed into the full audit',
-    (root: string) => writeFileSync(join(root, '.ki-config.toml'), '[ki-mcp\n'),
-    (r: ReturnType<typeof run>) => r.code !== 0 && r.summary.fail > 0 && r.summary.na === 0
-  ],
-  [
-    'declared but incomplete runs the full audit',
-    (root: string) => writeFileSync(join(root, '.ki-config.toml'), '[ki-mcp]\n'),
-    (r: ReturnType<typeof run>) => r.code !== 0 && r.summary.fail > 0 && r.summary.na === 0
-  ],
-  [
-    'structural marker without declaration runs the full audit',
-    (root: string) => mkdirSync(join(root, 'src', 'mcp-server'), { recursive: true }),
-    (r: ReturnType<typeof run>) => r.code !== 0 && r.summary.fail > 0 && r.summary.na === 0
-  ],
-  [
-    'vitest.config.cjs activates the MCP coverage delta',
-    (root: string) => {
-      writeFileSync(join(root, '.ki-config.toml'), '[ki-mcp]\n')
-      writeFileSync(join(root, 'vitest.config.cjs'), 'module.exports = {}\n')
-    },
-    (r: ReturnType<typeof run>) => r.findings.some((finding) => finding.code === 'TEST-1' && finding.level === 'WARN')
-  ]
-] as const) {
+test('shows command help without running the checker', () => {
+  const result = spawnSync('bun', [audit, '--help'], { encoding: 'utf8' })
+  expect(result.status).toBe(0)
+  expect(result.stdout).toContain('Usage: bun scripts/audit.ts')
+  expect(result.stdout).not.toContain('"record"')
+})
+
+test('absent and irrelevant reports exactly one not-applicable result', () => {
   const root = fixture()
   try {
-    arrange(root)
-    check(label, assert(run(root)))
+    const result = run(root)
+    expect(result.process.status).toBe(0)
+    expect(findings(result.records)).toEqual([expect.objectContaining({ code: 'KI-CONFIG', level: 'NOT_APPLICABLE' })])
   } finally {
     rmSync(root, { recursive: true, force: true })
   }
-}
+})
 
-if (failed) process.exit(1)
+test('declaration and structural markers activate the full audit', () => {
+  for (const arrange of [
+    (root: string) => writeFileSync(join(root, '.ki-config.toml'), '[ki-mcp]\n'),
+    (root: string) => mkdirSync(join(root, 'src', 'mcp-server'), { recursive: true })
+  ]) {
+    const root = fixture()
+    try {
+      arrange(root)
+      const result = run(root)
+      expect(result.process.status).toBe(1)
+      expect(findings(result.records).some((finding) => finding.code === 'LAY-1' && finding.level === 'FAIL')).toBe(true)
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  }
+})
+
+test('vitest config activates the MCP coverage delta', () => {
+  const root = fixture()
+  try {
+    writeFileSync(join(root, '.ki-config.toml'), '[ki-mcp]\n')
+    writeFileSync(join(root, 'vitest.config.cjs'), 'module.exports = {}\n')
+    expect(findings(run(root).records).some((finding) => finding.code === 'TEST-1' && finding.level === 'WARN')).toBe(true)
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})

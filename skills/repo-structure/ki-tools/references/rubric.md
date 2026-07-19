@@ -1,51 +1,62 @@
-# Audit Rubric
+<!-- GENERATED FILE: edit scripts/rubric/items/, not this publication. -->
 
-Line-by-line pass/fail items for auditing a Knowledge Islands `tools-*` repo against the [tool-repo standard](standards.md). Run [`../scripts/audit.ts`](../scripts/audit.ts) for the mechanical items (marked **[M]**), then judge the rest ( **[J]** ) by reading.
+# Generated rubric — tools
 
-Every **[M]** item corresponds to a check in the checker (per `ki-skills`' SHAPE-9 + the checker contract). Severity uses the shared ladder, defined in `ki-skills`' [checker contract](../../../general-governance/ki-skills/references/checker-contract.md): **FAIL** (ship-stopper), **WARN** (expected-but-missing / divergence), **POLISH** (consistency), **ADVISORY** (needs a human/out-of-band check), **INFO** (context).
+> **Generated publication.** The TypeScript rubric items under `scripts/rubric/items/` are canonical.
 
-Applicability: `[ki-tools]` or `bin/` activates the complete audit. With neither, **CONFIG [M]** emits exactly one `NA` and stops; either signal retains all existing findings. ([standard](standards.md#scope-container-not-contents))
+## TOOL — tool repository
 
-## Contents
+→ [standard](standards.md)
 
-- [Layout & executable](#layout--executable)
-- [Distribution & versioning](#distribution--versioning)
-- [Capability conditionals](#capability-conditionals)
-- [Config table](#config-table)
-- [Releases](#releases)
+Layout, executable, distribution, versioning, and judgment criteria.
 
-## Layout & executable
+- **TOOL-BIN [M] — Tool executable** — `bin/` exists and holds at least one file. (standards.md)
+- **TOOL-EXEC [M] — Executable bit** — Every `bin/<file>` carries the executable bit. (standards.md)
+- **TOOL-SCOPE [J] — One command** — The repository contains genuinely one tool rather than distinct commands. (standards.md)
+  - _Review prompt:_ The repository contains genuinely one tool rather than distinct commands.
+- **TOOL-XDG [J] — XDG storage** — The tool follows the XDG Base Directory specification for config, state, and cache. (standards.md)
+  - _Review prompt:_ The tool follows the XDG Base Directory specification for config, state, and cache.
+- **TOOL-INSTALL [M] — Installer executable** — `install.sh` is present and executable. (standards.md)
+- **TOOL-INSTALL-QUALITY [J] — Installer quality** — The installer is POSIX-ish, honours overrides, verifies downloads, and is idempotent. (standards.md)
+  - _Review prompt:_ The installer is POSIX-ish, honours overrides, verifies downloads, and is idempotent.
+- **TOOL-VERSION [M] — Version flag** — The primary executable contains `--version` handling. (standards.md)
+- **TOOL-VERSION-SOURCE [J] — Version source** — The version marker has one source of truth aligned with the latest tag and changelog. (standards.md)
+  - _Review prompt:_ The version marker has one source of truth aligned with the latest tag and changelog.
+- **TOOL-CHANGELOG [M] — Changelog presence** — `CHANGELOG.md` is present. (standards.md)
+- **TOOL-CHANGELOG-FORMAT [J] — Changelog format** — The changelog follows Keep a Changelog and semantic versioning. (standards.md)
+  - _Review prompt:_ The changelog follows Keep a Changelog and semantic versioning.
+- **TOOL-CI [M] — CI workflow** — At least one workflow YAML file is present. (standards.md)
+- **TOOL-TAP [J] — Companion formula** — A companion Homebrew formula exists in the governed tap. (standards.md)
+  - _Review prompt:_ A companion Homebrew formula exists in the governed tap.
+- **TOOL-TESTS [M] — Test directory** — A `tests/` directory is present. (standards.md)
+- **TOOL-ENGINEERING [J] — Engineering declaration** — A package.json-bearing repository declares ki-engineering. (standards.md)
+  - _Review prompt:_ A package.json-bearing repository declares ki-engineering.
+- **TOOL-LANGUAGE [J] — Other-language toolchain** — A non-shell, non-JavaScript tool wires its own lint and test toolchain into CI. (standards.md)
+  - _Review prompt:_ A non-shell, non-JavaScript tool wires its own lint and test toolchain into CI.
+- **TOOL-RELEASE-CHECK [J] — Release alignment** — Version markers, tags, releases, and changelog entries agree. (standards.md)
+  - _Review prompt:_ Version markers, tags, releases, and changelog entries agree.
 
-- [ ] **TOOL-BIN [M]** Tool executable — `bin/` exists and holds ≥1 file. Absent ⇒ FAIL (no tool). (references/standards.md#repository-layout)
-- [ ] **TOOL-EXEC [M]** Executable bit — every `bin/<file>` carries the executable bit (`statSync(mode) & 0o111`). Git tracks the exec bit; a bin file without it breaks the installer and formula. (references/standards.md#the-executable--bintool)
-- [ ] **TOOL-SCOPE [J]** One command — the tool is genuinely **one** tool; a repo shipping two distinct commands is two repos.
-- [ ] **TOOL-XDG [J]** XDG storage — the tool follows the XDG Base Directory spec for any config/state/cache it writes (no stray `$HOME` dotfiles).
+## SHELL — shell capabilities
 
-## Distribution & versioning
+→ [standard](standards.md)
 
-- [ ] **TOOL-INSTALL [M]** Installer executable — `install.sh` is present at the repo root and executable (the `curl | bash` contract). (references/standards.md#the-distribution-contract)
-- [ ] **TOOL-INSTALL-QUALITY [J]** Installer quality — `install.sh` is POSIX-ish, honours env overrides (target dir + version/ref), verifies the download, and is idempotent.
-- [ ] **TOOL-VERSION [M]** Version flag — the primary bin file contains `--version` handling (grep). ADVISORY when the file can't be read. (references/standards.md#versioning--releases)
-- [ ] **TOOL-VERSION-SOURCE [J]** Version source — the version marker is a single literal (one source of truth) that `--version` prints; it agrees with the latest tag and CHANGELOG entry.
-- [ ] **TOOL-CHANGELOG [M]** Changelog presence — `CHANGELOG.md` is present. (README / LICENSE are `ki-repo`'s — not checked here.) (references/standards.md#versioning--releases)
-- [ ] **TOOL-CHANGELOG-FORMAT [J]** Changelog format — `CHANGELOG.md` follows keep-a-changelog + semver (an `## [Unreleased]` head, dated `## [X.Y.Z]` sections, Added/Changed/Fixed/Removed groups).
-- [ ] **TOOL-CI [M]** CI workflow — at least one `.github/workflows/*.yml` is present. (references/standards.md#repository-layout)
-- [ ] **TOOL-TAP [J]** Companion formula — a companion Homebrew formula exists in the tap (`Formula/<name>.rb`) as the second delivery channel. The tap itself is `ki-homebrew-tap`'s to audit.
+Shell-specific CI requirements.
 
-## Capability conditionals
+- **SHELL-LINT [M] — Shell lint CI** — Shell entrypoints have a CI shellcheck reference. (standards.md)
+- **SHELL-TEST [M] — Shell test CI** — Shell entrypoints have a Bats suite referenced by CI. (standards.md)
 
-- [ ] **TOOL-TESTS [M]** Test directory — a `tests/` directory is present (the executable test suite). (references/standards.md#repository-layout)
-- [ ] **SHELL-LINT [M]** Shell lint CI — **if** the primary bin has a `bash`/`sh` shebang, a CI workflow references `shellcheck`. (references/standards.md#capability-conditionals)
-- [ ] **SHELL-TEST [M]** Shell test CI — **if** shell, `tests/` holds a `*.bats` file **and** a CI workflow references `bats`. (references/standards.md#capability-conditionals)
-- [ ] **LANG-DEFER [M]** JavaScript toolchain deferral — **if** a `package.json` is present, the repo is a TS/Bun tool — it defers lint/test to `ki-engineering` and MUST also declare `[ki-engineering]`. (references/standards.md#capability-conditionals)
-- [ ] **TOOL-ENGINEERING [J]** Engineering declaration — a `package.json`-bearing repo actually declares `[ki-engineering]` (the checker notes the requirement; confirm the table is there).
-- [ ] **TOOL-LANGUAGE [J]** Other-language toolchain — a non-shell, non-JS tool (Python, Go, …) wires its own language toolchain into CI (lint + test).
+## LANG — language capabilities
 
-## Config table
+→ [standard](standards.md)
 
-- [ ] **CONFIG [M]** Opt-in marker — a `[ki-tools]` table is present in `.ki-config.toml` (the opt-in marker). Missing file or table ⇒ WARN. (references/standards.md#the-ki-tools-marker)
-- [ ] **CONFIG [M]** Config keys — validate-down — any key inside `[ki-tools]` is unknown today and WARNs. (references/standards.md#the-ki-tools-marker)
+Language toolchain deferral.
 
-## Releases
+- **LANG-DEFER [M] — JavaScript toolchain deferral** — A package.json-bearing tool defers lint and test to ki-engineering. (standards.md)
 
-- [ ] **TOOL-RELEASE-CHECK [J]** Release alignment — releases are `vX.Y.Z` git tags, each with a GitHub release; the marker, tag, and CHANGELOG top entry agree. Not checkable from a path — verify tags/releases by hand (`git tag`, `gh release list`). (references/standards.md#versioning--releases)
+## CONFIG — configuration
+
+→ [standard](standards.md)
+
+Applicability marker and validate-down keys.
+
+- **CONFIG-1 [M] — Opt-in marker and keys** — A keyless `[ki-tools]` marker is present and validated down. (standards.md)

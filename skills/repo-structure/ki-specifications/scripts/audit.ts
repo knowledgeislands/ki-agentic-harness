@@ -1,65 +1,15 @@
 #!/usr/bin/env bun
-import { existsSync, readFileSync, statSync } from 'node:fs'
-import { dirname, join, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import {
-  type CheckerFinding,
-  checkerReporterExitCode,
-  emitCheckerReporter,
-  judgmentFindingsFromRubric
-} from './vendored/ki-skills/checker-reporter.ts'
-
-const SECTION = 'ki-specifications'
-const STD = 'references/standards.md'
-const RUBRIC = 'references/rubric.md'
-const localRubric = join(dirname(fileURLToPath(import.meta.url)), '..', 'references', 'rubric.md')
-const target = resolve(process.argv.slice(2).find((argument) => !argument.startsWith('-')) ?? '.')
-const findings: CheckerFinding[] = []
-const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
-const add = (level: CheckerFinding['level'], code: string, message: string, file?: string): void => {
-  findings.push({ type: 'M', level, code, message, ref: STD, ...(file ? { file } : {}) })
-}
-const isDirectory = (path: string): boolean => existsSync(path) && statSync(path).isDirectory()
-
-if (!isDirectory(target)) {
-  add('FAIL', 'SPEC-2', 'Audit target must be an existing directory.')
-} else {
-  const at = (path: string): string => join(target, path)
-  const configPath = at('.ki-config.toml')
-  const hasStructuralMarker = ['proposals', 'specifications', 'schemas'].some((path) => isDirectory(at(path)))
-  let table: Record<string, unknown> | null = null
-  let malformed = false
-  if (existsSync(configPath)) {
-    try {
-      const parsed = TOML.parse(readFileSync(configPath, 'utf8')) as Record<string, unknown>
-      const candidate = parsed[SECTION]
-      if (candidate && typeof candidate === 'object' && !Array.isArray(candidate)) table = candidate as Record<string, unknown>
-    } catch {
-      malformed = true
-    }
-  }
-
-  if (!table && !malformed && !hasStructuralMarker) {
-    add('NA', 'SPEC-1', 'ki-specifications is not applicable: no declaration or core structural marker is present.')
-  } else {
-    if (malformed) add('WARN', 'SPEC-1', '.ki-config.toml is malformed.', '.ki-config.toml')
-    else if (!table) add('WARN', 'SPEC-1', '[ki-specifications] is absent from .ki-config.toml.', '.ki-config.toml')
-    else {
-      const keys = Object.keys(table)
-      keys.length === 0
-        ? add('PASS', 'SPEC-1', 'The keyless [ki-specifications] marker is present.', '.ki-config.toml')
-        : add('WARN', 'SPEC-1', `The keyless marker contains unknown keys: ${keys.join(', ')}.`, '.ki-config.toml')
-    }
-
-    for (const path of ['proposals', 'specifications', 'schemas']) {
-      isDirectory(at(path)) ? add('PASS', 'SPEC-2', `${path}/ is present.`, path) : add('FAIL', 'SPEC-2', `${path}/ is absent.`, path)
-    }
-    for (const path of ['templates', 'examples', 'docs', 'tooling']) {
-      isDirectory(at(path)) ? add('PASS', 'SPEC-3', `${path}/ is present.`, path) : add('WARN', 'SPEC-3', `${path}/ is absent.`, path)
-    }
-  }
-}
-
-findings.push(...judgmentFindingsFromRubric(localRubric, RUBRIC))
-emitCheckerReporter({ mode: 'audit', concern: 'specifications', target, findings })
-process.exitCode = checkerReporterExitCode(findings)
+import { resolve } from 'node:path'
+import { createSpecificationsContext } from './rubric/contexts/specifications.ts'
+import { KI_SPECIFICATIONS_FAMILY_CODES, KI_SPECIFICATIONS_RUBRIC } from './rubric/items/index.ts'
+import { runChecker } from './vendored/ki-skills/checker.ts'
+import { parseReporterArguments, renderCheckerResult } from './vendored/ki-skills/reporter.ts'
+const argv = process.argv.slice(2)
+if (argv.includes('-h') || argv.includes('--help')) { process.stdout.write('Usage: bun scripts/audit.ts [target] [--reporter jsonl|terminal]\n\nAudit a KI Specifications repository structure.\n'); process.exit(0) }
+let parsed: ReturnType<typeof parseReporterArguments>
+try { parsed = parseReporterArguments(argv) } catch (error) { process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`); process.exit(2) }
+const unknown = parsed.arguments.find((argument) => argument.startsWith('-')); const targets = parsed.arguments.filter((argument) => !argument.startsWith('-'))
+if (unknown || targets.length > 1) { process.stderr.write(`error: ${unknown ? `unknown option: ${unknown}` : 'audit accepts at most one target'}\n`); process.exit(2) }
+const target = resolve(targets[0] ?? '.')
+const result = runChecker({ mode: 'audit', concern: KI_SPECIFICATIONS_RUBRIC.concern, target, rubric: KI_SPECIFICATIONS_RUBRIC, subjects: [{ familyCodes: KI_SPECIFICATIONS_FAMILY_CODES, context: () => createSpecificationsContext({ target, dryRun: true }) }] })
+process.stdout.write(renderCheckerResult(result, { ...parsed.options, colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR) })); process.exit(result.exitCode)

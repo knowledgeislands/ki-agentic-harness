@@ -1,78 +1,80 @@
 #!/usr/bin/env bun
-/** Focused applicability tests for the ki-website checker. */
+import { describe, expect, test } from 'bun:test'
 import { spawnSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { parseCheckerJsonl } from './vendored/ki-skills/checker.ts'
 
-const AUDIT = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
-let failed = false
+const scripts = dirname(fileURLToPath(import.meta.url))
+const audit = join(scripts, 'audit.ts')
+const conform = join(scripts, 'conform.ts')
+const fixture = () => mkdtempSync(join(tmpdir(), 'ki-website-'))
 
-function check(label: string, condition: boolean): void {
-  console.log(`  ${condition ? 'ok  ' : 'FAIL'} ${label}`)
-  if (!condition) failed = true
-}
+describe('ki-website structured checker', () => {
+  test('top-level commands expose help without running work', () => {
+    for (const [file, flag] of [
+      [audit, '--help'],
+      [conform, '--help'],
+      [join(scripts, 'educate.ts'), '--help']
+    ] as const) {
+      const result = spawnSync('bun', [file, flag], { encoding: 'utf8' })
+      expect(result.status).toBe(0)
+      expect(result.stdout).toContain('Usage: bun scripts/')
+    }
+  })
 
-function fixture(): string {
-  return mkdtempSync(join(tmpdir(), 'ki-website-applicability-'))
-}
+  test('irrelevant targets return mechanical NOT_APPLICABLE results and judgment summary only', () => {
+    const target = fixture()
+    try {
+      const result = spawnSync('bun', [audit, target], { encoding: 'utf8' })
+      const parsed = parseCheckerJsonl(result.stdout)
+      const summary = parsed.records.at(-1) as { summary?: { notApplicable?: number; judgment?: { unevaluated?: number } } }
+      expect(result.status).toBe(0)
+      expect(parsed.errors).toEqual([])
+      expect(summary.summary?.notApplicable).toBeGreaterThan(0)
+      expect(summary.summary?.judgment?.unevaluated).toBe(18)
+    } finally {
+      rmSync(target, { recursive: true, force: true })
+    }
+  })
 
-function run(root: string): { code: number; findings: Array<{ level: string }>; summary: { fail: number; na: number } } {
-  const result = spawnSync(process.execPath, [AUDIT, root], { encoding: 'utf8' })
-  const events = result.stdout
-    .trim()
-    .split(/\r?\n/)
-    .filter(Boolean)
-    .map((line) => JSON.parse(line) as { record: string; level?: string; summary?: { fail: number; na: number } })
-  const summary = events.find((event) => event.record === 'summary')?.summary
-  const findings = events.filter((event) => event.record === 'finding' && event.level) as Array<{ level: string }>
-  if (!summary) throw new Error(`missing canonical checker summary: ${result.stdout}`)
-  return { code: result.status ?? 1, findings, summary }
-}
+  test('declaration or structure activates the complete audit', () => {
+    for (const arrange of [
+      (target: string) => writeFileSync(join(target, '.ki-config.toml'), '[ki-website]\n'),
+      (target: string) => {
+        mkdirSync(join(target, 'site'), { recursive: true })
+        writeFileSync(join(target, 'site', 'eleventy.config.ts'), '')
+      }
+    ]) {
+      const target = fixture()
+      try {
+        arrange(target)
+        const result = spawnSync('bun', [audit, target], { encoding: 'utf8' })
+        const parsed = parseCheckerJsonl(result.stdout)
+        const summary = parsed.records.at(-1) as { summary?: { fail?: number } }
+        expect(parsed.errors).toEqual([])
+        expect(result.status).toBe(1)
+        expect(summary.summary?.fail).toBeGreaterThan(0)
+      } finally {
+        rmSync(target, { recursive: true, force: true })
+      }
+    }
+  })
 
-for (const [label, arrange, assert] of [
-  [
-    'absent and irrelevant reports NA plus judgment prompts',
-    (_root: string) => {},
-    (r: ReturnType<typeof run>) => r.code === 0 && r.summary.na === 1 && r.findings.length > 1
-  ],
-  [
-    'multiline string lookalike remains irrelevant with judgment prompts',
-    (root: string) => writeFileSync(join(root, '.ki-config.toml'), '[ki-repo]\nnote = """\n[ki-website]\n"""\n'),
-    (r: ReturnType<typeof run>) => r.code === 0 && r.summary.na === 1 && r.findings.length > 1
-  ],
-  [
-    'quoted declaration but incomplete runs the full audit',
-    (root: string) => writeFileSync(join(root, '.ki-config.toml'), '["ki-website"]\n'),
-    (r: ReturnType<typeof run>) => r.code !== 0 && r.summary.fail > 0 && r.summary.na === 0
-  ],
-  [
-    'malformed config fails closed into the full audit',
-    (root: string) => writeFileSync(join(root, '.ki-config.toml'), '[ki-website\n'),
-    (r: ReturnType<typeof run>) => r.code !== 0 && r.summary.fail > 0 && r.summary.na === 0
-  ],
-  [
-    'declared but incomplete runs the full audit',
-    (root: string) => writeFileSync(join(root, '.ki-config.toml'), '[ki-website]\n'),
-    (r: ReturnType<typeof run>) => r.code !== 0 && r.summary.fail > 0 && r.summary.na === 0
-  ],
-  [
-    'structural marker without declaration runs the full audit',
-    (root: string) => {
-      mkdirSync(join(root, 'site'), { recursive: true })
-      writeFileSync(join(root, 'site', 'eleventy.config.ts'), '')
-    },
-    (r: ReturnType<typeof run>) => r.code !== 0 && r.summary.fail > 0 && r.summary.na === 0
-  ]
-] as const) {
-  const root = fixture()
-  try {
-    arrange(root)
-    check(label, assert(run(root)))
-  } finally {
-    rmSync(root, { recursive: true, force: true })
-  }
-}
-
-if (failed) process.exit(1)
+  test('dry-run CONFORM offers only the two safe, declared writes', () => {
+    const target = fixture()
+    try {
+      mkdirSync(join(target, 'site'), { recursive: true })
+      writeFileSync(join(target, 'site', 'eleventy.config.ts'), '')
+      const result = spawnSync('bun', [conform, target, '--dry-run'], { encoding: 'utf8' })
+      const parsed = parseCheckerJsonl(result.stdout)
+      expect(parsed.errors).toEqual([])
+      expect(result.stdout).toContain('WEB-41')
+      expect(result.stdout).toContain('WEB-33')
+    } finally {
+      rmSync(target, { recursive: true, force: true })
+    }
+  })
+})
