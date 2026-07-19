@@ -20,6 +20,8 @@ bun run ./skills/keystone/ki-skills/scripts/audit.ts \
 
 The terminal reporter shows `FAIL` and `WARN` findings by default, followed by complete summary counts. Add `--reporter-levels=all` when investigating every mechanical outcome.
 
+Use `--progress=always` to show execution status when stderr is not interactive; the default `auto` shows it only on an interactive terminal, and `never` suppresses it. Progress uses stderr and does not alter the reporter output or canonical JSONL on stdout.
+
 Omit `--reporter=terminal` when a script or test needs the canonical JSONL response. The checker still runs every selected rubric item; reporter levels filter presentation only.
 
 Always pass the skill path when isolating one skill. With no target, the checker discovers skills from the current directory and may audit the whole harness. Use that repository-wide form when validating cross-skill criteria such as collisions.
