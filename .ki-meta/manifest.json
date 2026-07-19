@@ -1,5 +1,5 @@
 {
-  "ref": "5516b693e55606b6e323fb3d095d1def14ba6a63",
+  "ref": "0a5950f05442d758014fa65c1960057612f7190d",
   "files": {
     ".ki-meta/checkers/ki-agents/scripts/audit.ts": "21e3d3b0a8f7cf3818436dc6083bbc79f08bea0d7379db1d3fb5273749158858",
     ".ki-meta/checkers/ki-agents/scripts/conform.ts": "11c6f147bd83a53bcad99590b697780387cb8e7d34ebba87b6ec1965c5e0b0c2",
@@ -71,11 +71,11 @@
     ".ki-meta/checkers/ki-repo-roadmap/scripts/vendored/ki-skills/checker-reporter.ts": "41d95a0c1759278f87812a91d283b85cc036349be1010eb0cc53580e3ba22344",
     ".ki-meta/checkers/ki-repo-roadmap/help.md": "04a0468fa20aef768ee27c040f26d7e004ccdd2b694285853160b406894955b9",
     ".ki-meta/educators/ki-repo-roadmap/educate.ts": "7935801a2830e5a6511a47463b26c2ce12ff2003585eaecbd42896e38aaf71e5",
-    ".ki-meta/checkers/ki-skills/scripts/audit.ts": "74b9994bdd1534af40d3d30acb46f69e9d3e54fed09b664468af8fcef75d623f",
-    ".ki-meta/checkers/ki-skills/scripts/conform.ts": "5e913192628a2593f2d07682d201d84aa11d0ba3d6314f28deb02cad5745ecfd",
+    ".ki-meta/checkers/ki-skills/scripts/audit.ts": "3e2f9559b1851f2dc043b172e192a11317d99a22e5a3eefc5fe7861cb229b1c2",
+    ".ki-meta/checkers/ki-skills/scripts/conform.ts": "c3545bcf8f60bf6223ec94facc32d227d2f6ce29ea719db9b78d3a2c483bbbce",
     ".ki-meta/checkers/ki-skills/.ki-meta/mode-elements.json": "5940b9a23b52d753eff97432bb7bfeae4568278f8325eab1074173f63d662651",
-    ".ki-meta/checkers/ki-skills/references/rubric.md": "916123c868c711973815932a7a61ed3ca40f2eb9596ac2dea053e16d8c1a487a",
-    ".ki-meta/checkers/ki-skills/scripts/checker-reporter.ts": "41d95a0c1759278f87812a91d283b85cc036349be1010eb0cc53580e3ba22344",
+    ".ki-meta/checkers/ki-skills/references/rubric.md": "7e8d2b81bb5cb517eaa994d05f48bcea156eaa040b67d6fbe533eda7f5ea4757",
+    ".ki-meta/checkers/ki-skills/scripts/lib/checker-reporter.ts": "41d95a0c1759278f87812a91d283b85cc036349be1010eb0cc53580e3ba22344",
     ".ki-meta/checkers/ki-skills/help.md": "b3a9fbf1da1746e3d0eb5ad17d8b95b6b79e7fc81e93f7dfb3c91bc27cca00e5",
     ".ki-meta/educators/ki-skills/educate.ts": "3f9263c23abd090ab89311476ba35678d27957dd07aa201e6e7ad82322a841fa",
     ".ki-meta/checkers/ki-tokenomics/scripts/audit.ts": "7080386d0af961a412d69a9ee556dc84081f7a099034e7d5fa008e9b68d88171",

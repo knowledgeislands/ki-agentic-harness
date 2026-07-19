@@ -30,19 +30,21 @@ one dependent exemplar: ki-engineering
 later skill-by-skill rollout
 ```
 
-## To do
+## Todo List
 
-- [ ] `scripts/*.ts` contains only directly callable command entries; support code lives in `scripts/lib/` with adjacent tests.
-- [ ] Declared checker modules are sourced only from the named provider's `scripts/lib/` and copied into each consumer's `scripts/vendored/<provider>/` namespace.
-- [ ] Checker dependency declarations use the unambiguous `provider:module` form, with no legacy separator or lookup path.
-- [ ] `ki-skills` validates its root contract, direct JSONL output, module resolution, and vendored consumer copies through focused tests.
+## Decision List
+
+- [x] Top-level non-test `scripts/*.ts` files are directly callable command entries; support code lives in `scripts/lib/` with adjacent tests.
+- [x] Declared checker modules are sourced only from the named provider's `scripts/lib/` and copied into each consumer's `scripts/vendored/<provider>/` namespace.
+- [x] Checker dependency declarations use the unambiguous `provider:module` form, with no legacy separator or lookup path.
+- [x] `ki-skills` validates its root contract, direct JSONL output, module resolution, and vendored consumer copies through focused tests.
 - [ ] `ki-engineering` proves the dependent model without no-op narration or a second presentation path.
 
 ## Rollout
 
 Apply these checks to one later governance skill at a time, only after the root exemplar is complete.
 
-- [ ] Its top-level `scripts/*.ts` files are directly callable commands; support code and adjacent tests live under `scripts/lib/`.
+- [ ] Its top-level non-test `scripts/*.ts` files are directly callable commands; support code and adjacent tests live under `scripts/lib/`.
 - [ ] Any shared checker implementation is declared as `provider:module`, sourced only from the provider's `scripts/lib/`, and copied below the consumer's `scripts/vendored/<provider>/`.
 - [ ] Its audit and conform commands use only their local implementation modules and emit the canonical reporter JSONL with no private rendering path.
 - [ ] Its rubric remains the sole source of finding code, title, type, and level; its checker emits evidence and available action only.

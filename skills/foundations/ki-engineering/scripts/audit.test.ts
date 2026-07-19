@@ -5,7 +5,10 @@ import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync 
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { parseCheckerReporterJsonl, validateCheckerReporterEvents } from '../../../general-governance/ki-skills/scripts/checker-reporter.ts'
+import {
+  parseCheckerReporterJsonl,
+  validateCheckerReporterEvents
+} from '../../../general-governance/ki-skills/scripts/lib/checker-reporter.ts'
 
 const CHECKER = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
 

@@ -971,7 +971,9 @@ function vendorCheckerModulePayload(
 ): VendoredFile[] {
   const copied: VendoredFile[] = []
   const vendorRoot = ownModule ? join(destDir, 'lib') : join(destDir, 'vendored', module.provider)
-  const vendorRootRel = ownModule ? join(CHECKERS_DIR, skill, 'scripts', 'lib') : join(CHECKERS_DIR, skill, 'scripts', 'vendored', module.provider)
+  const vendorRootRel = ownModule
+    ? join(CHECKERS_DIR, skill, 'scripts', 'lib')
+    : join(CHECKERS_DIR, skill, 'scripts', 'vendored', module.provider)
   const target = join(vendorRoot, payload.targetName)
   const targetRel = join(vendorRootRel, payload.targetName)
 
