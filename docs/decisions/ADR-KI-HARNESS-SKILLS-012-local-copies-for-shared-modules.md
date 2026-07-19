@@ -1,4 +1,4 @@
-# ADR-KI-HARNESS-SKILLS-012: Local copies for checker modules
+# ADR-KI-HARNESS-SKILLS-012: Local copies for shared modules
 
 **Date:** 2026-07-17
 
@@ -14,13 +14,13 @@ The existing composition rule correctly prevents either of those assumptions, bu
 
 `ki-skills` is the root of the **checker-contract system**.
 
-It owns the canonical checker reporter and its executable modules, self-governs from its own shipped files, and has no checker-module dependency on itself.
+It owns the canonical checker reporter and its executable modules, self-governs from its own shipped files, and has no shared-module dependency on itself.
 
-Checker modules are a narrow packaging relationship, declared separately from `ki-depends-on:`.
+Shared modules are a narrow packaging relationship, declared separately from `ki-depends-on:`.
 
-A provider declares the modules it offers with `ki-checker-modules:`.
+A provider declares the modules it offers with `ki-shared-modules:`.
 
-A dependent declares the exact `provider:module` references it needs with `ki-checker-dependencies:`.
+A dependent declares the exact `provider:module` references it needs with `ki-shared-dependencies:`.
 
 The module identifier has no extension and resolves to exactly one provider payload in `scripts/shared/`: either `scripts/shared/<module>.ts` or a self-contained `scripts/shared/<module>/` directory.
 
@@ -30,9 +30,9 @@ The source payload and every entry in a directory payload must be regular, non-s
 
 A dependent imports only its local copied module.
 
-Checker modules may use builtins and other files in their own copied local closure, but never a sibling skill path.
+Shared modules may use builtins and other files in their own copied local closure, but never a sibling skill path.
 
-Checker-module declarations do not add a `ki-depends-on:` edge, select a skill for governance coverage, or alter composition order.
+Shared-module declarations do not add a `ki-depends-on:` edge, select a skill for governance coverage, or alter composition order.
 
 ## Consequences
 
@@ -42,7 +42,7 @@ The source and generated payloads gain an explicit, attributable copied subtree 
 
 The `ki-skills` checker can mechanically reject a direct or escaping import while allowing the declared local copy.
 
-Bootstrap must resolve, copy, test, and audit the full declared checker-module closure before a dependent checker uses it.
+Bootstrap must resolve, copy, test, and audit the full declared shared-module closure before a dependent checker uses it.
 
 This is deliberately narrower than a shared runtime library or a general skill-dependency system: policy relationships remain composition only.
 

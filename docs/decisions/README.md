@@ -58,7 +58,7 @@ The records are living, compact, and independent. The order below is a **curated
 31. [ADR-KI-HARNESS-009](ADR-KI-HARNESS-009-portable-model-types.md) — portable model _types_ (`frontier`/`reasoning`/`standard`/`fast`) not vendor model names in governance config; the `preferred_model_type` rename and `model_tier_bindings` sub-table.
 32. [ADR-KI-HARNESS-010](ADR-KI-HARNESS-010-managed-hook-payloads-and-user-environment-binding.md) — durable hook payloads, user-environment settings binding, and the repository-bootstrap boundary.
 33. [ADR-KI-HARNESS-011](ADR-KI-HARNESS-011-project-skill-copies-and-repository-local-links.md) — complete runtime-skill copies by default and explicit repository-local links.
-34. [ADR-KI-HARNESS-SKILLS-012](ADR-KI-HARNESS-SKILLS-012-local-copies-for-checker-support.md) — local copied checker modules without cross-skill imports.
+34. [ADR-KI-HARNESS-SKILLS-012](ADR-KI-HARNESS-SKILLS-012-local-copies-for-shared-modules.md) — local copied shared modules without cross-skill imports.
 35. [ADR-KI-HARNESS-SKILLS-013](ADR-KI-HARNESS-SKILLS-013-readable-identifier-presentation.md) — title-first human presentation with stable machine identifiers.
 
 ## Template

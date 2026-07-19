@@ -2,7 +2,7 @@
 name: ki-repo
 ki-depends-on: [ki-authoring]
 ki-vendors: [educate, audit, conform, help]
-ki-checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 owns: ['.gitignore']
 contributes: ['.ki-config.toml']
 description: >

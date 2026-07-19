@@ -27,4 +27,4 @@ Existing code families remain valid. A future request to replace opaque identifi
 ## References
 
 - [ADR-KI-HARNESS-SKILLS-010](ADR-KI-HARNESS-SKILLS-010-comparable-cited-checker-findings.md) — comparable cited checker findings and the aggregate rendering boundary.
-- [ADR-KI-HARNESS-SKILLS-012](ADR-KI-HARNESS-SKILLS-012-local-copies-for-checker-support.md) — local checker modules and their portable ownership boundary.
+- [ADR-KI-HARNESS-SKILLS-012](ADR-KI-HARNESS-SKILLS-012-local-copies-for-shared-modules.md) — local shared modules and their portable ownership boundary.

@@ -28,9 +28,9 @@ _Verify:_ each checker vendors the canonical `ki-skills` rubric, checker, and re
 
 ### GOV-004 — Composition, not extension
 
-A skill MUST NOT import another skill's source tree; it composes by running a sibling's checker or mode in sequence and declaring the edge, per [ADR-KI-HARNESS-004](../decisions/ADR-KI-HARNESS-004-composition-over-extension.md). The narrow implementation exception is a declared checker-module dependency that bootstrap copies into the consumer's own `scripts/vendored/<provider>/` namespace before execution.
+A skill MUST NOT import another skill's source tree; it composes by running a sibling's checker or mode in sequence and declaring the edge, per [ADR-KI-HARNESS-004](../decisions/ADR-KI-HARNESS-004-composition-over-extension.md). The narrow implementation exception is a declared shared-module dependency that bootstrap copies into the consumer's own `scripts/vendored/<provider>/` namespace before execution.
 
-_Verify:_ no `skills/*/scripts/**/*.ts` relative import resolves outside its own `scripts/` directory; checker dependencies resolve only to safe declared provider modules and execute from local copies.
+_Verify:_ no `skills/*/scripts/**/*.ts` relative import resolves outside its own `scripts/` directory; shared dependencies resolve only to safe declared provider modules and execute from local copies.
 
 ### GOV-005 — Machine-readable dependency graph
 
@@ -54,7 +54,7 @@ _Verify:_ `ki-repo`'s `audit-repo.ts` `license` / `license-file` / `package-lice
 
 ### GOV-008 — Self-governing checker-contract root
 
-`ki-skills` MUST provide the canonical rubric, checker, and reporter modules from its own shipped files and MUST NOT declare a checker-module dependency on itself or another skill, per [ADR-KI-HARNESS-SKILLS-012](../decisions/ADR-KI-HARNESS-SKILLS-012-local-copies-for-checker-support.md).
+`ki-skills` MUST provide the canonical rubric, checker, and reporter modules from its own shipped files and MUST NOT declare a shared-module dependency on itself or another skill, per [ADR-KI-HARNESS-SKILLS-012](../decisions/ADR-KI-HARNESS-SKILLS-012-local-copies-for-shared-modules.md).
 
 _Verify:_ `bun skills/keystone/ki-skills/scripts/audit.ts skills/keystone/ki-skills` passes KI-CHECKER-3, and the focused checker tests cover missing or invalid root-module declarations.
 

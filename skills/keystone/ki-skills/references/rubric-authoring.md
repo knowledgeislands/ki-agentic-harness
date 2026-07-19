@@ -91,7 +91,7 @@ references/
 
 Top-level non-test files in `scripts/` are callable commands.
 
-Private reusable implementation lives in `scripts/internal/`. Only modules explicitly published through `ki-checker-modules` live in `scripts/shared/` and form a cross-skill contract for checkers.
+Private reusable implementation lives in `scripts/internal/`. Only modules explicitly published through `ki-shared-modules` live in `scripts/shared/` and form a cross-skill contract for checkers.
 
 Another skill receives a declared module below `scripts/vendored/<provider>/` and imports only that local copy. `ki-skills` is an exception to this as it already owns the shared rubric, checker, and reporter modules under `scripts/shared/`.
 
@@ -101,13 +101,13 @@ The target shared modules are `scripts/shared/rubric.ts`, `scripts/shared/checke
 
 Each is one self-contained vendorable file with an adjacent source test; ordinary source-code modularity does not justify making a consumer copy an internal module tree.
 
-`ki-skills` publishes them as `ki-checker-modules: [rubric, checker, reporter]`.
+`ki-skills` publishes them as `ki-shared-modules: [rubric, checker, reporter]`.
 
-A dependent governance skill declares `ki-checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]`; relative imports between those modules remain inside the copied `scripts/vendored/ki-skills/` namespace.
+A dependent governance skill declares `ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]`; relative imports between those modules remain inside the copied `scripts/vendored/ki-skills/` namespace.
 
 The rubric module owns the generic domain model and catalogue mechanics.
 
-The checker module consumes that model and owns planning, execution, and the JSONL boundary.
+The shared module consumes that model and owns planning, execution, and the JSONL boundary.
 
 The reporter module consumes the checker result and owns semantic display filtering and terminal presentation; it never changes what ran or the checker exit status.
 
@@ -505,9 +505,9 @@ Complete these units inside `ki-skills` in order, keeping each independently rev
 1. **Rubric model.** Replace the provisional shared types with the target rubric, family, execution, outcome, and definition types. Add generic catalogue validation without changing domain behaviour.
 2. **KI skills catalogue.** Wrap the existing item families in family metadata, add focused context selectors, declare violation levels and phases, and export one `KI_SKILLS_RUBRIC` definition. Preserve every existing criterion code and meaning, including hybrid items with both aspects.
 3. **Generated rubric.** Render and parity-check `references/rubric.md` from `KI_SKILLS_RUBRIC`, including its canonical-source notice. Remove Markdown parsing from runtime code only after exact parity passes.
-4. **Checker module.** Replace the monolithic reporter helper with the self-contained `scripts/shared/checker.ts`: planning, execution, response construction, response parsing, and validation. Rename the executable schema to `assets/checker-response.schema.json` with no legacy alias.
+4. **Shared module.** Replace the monolithic reporter helper with the self-contained `scripts/shared/checker.ts`: planning, execution, response construction, response parsing, and validation. Rename the executable schema to `assets/checker-response.schema.json` with no legacy alias.
 5. **Thin wrappers.** Reduce `audit.ts` and `conform.ts` to arguments, subject loading, subject-context factories, checker invocation, persistence, and exit. They contain no criterion codes or private result shape.
-6. **Module publication.** Publish `rubric`, `checker`, and `reporter` as the three `ki-skills` checker modules, prove the declared dependency closure, and add source-level tests for the exact form another skill will vendor.
+6. **Module publication.** Publish `rubric`, `checker`, and `reporter` as the three `ki-skills` shared modules, prove the declared dependency closure, and add source-level tests for the exact form another skill will vendor.
 7. **Root verification.** Prove direct AUDIT and CONFORM, dry-run, phase selection, generated-rubric parity, response schema and exit semantics, the absence of runtime `rubric.md` reads, and a passing audit of an educated fixture.
 
 Repository bootstrap copies a consumer's private `scripts/rubric/` tree and the three declared shared modules into its standalone checker payload. Generated rubric metadata or a checker schedule is added only when a concrete consumer demonstrates the need and settles the responsibility-based name.

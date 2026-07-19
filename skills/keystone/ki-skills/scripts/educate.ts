@@ -32,5 +32,14 @@ Options:
 `)
   process.exit(0)
 }
-const engine = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'ki-bootstrap', 'scripts', 'internal', 'repo-bootstrap.ts')
+const engine = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  '..',
+  '..',
+  'ki-bootstrap',
+  'scripts',
+  'internal',
+  'repo-bootstrap',
+  'repo-bootstrap.ts'
+)
 execFileSync('bun', [engine, ...argv, '--seed', SKILL], { stdio: 'inherit' })

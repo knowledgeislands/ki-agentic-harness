@@ -271,10 +271,10 @@ export const createSkillRubricContext = (directory: string, capabilities: SkillW
         checker: {
           imports,
           rootSkill: name === 'ki-skills',
-          checkerModules: frontmatterList(frontmatter.keys.get('ki-checker-modules')),
-          checkerDependencies: frontmatterList(frontmatter.keys.get('ki-checker-dependencies')),
+          declaredSharedModules: frontmatterList(frontmatter.keys.get('ki-shared-modules')),
+          sharedDependencies: frontmatterList(frontmatter.keys.get('ki-shared-dependencies')),
           legacyLibPresent: existsSync(join(scriptsDirectory, 'lib')),
-          sharedModules: existsSync(sharedDirectory)
+          publishedSharedModules: existsSync(sharedDirectory)
             ? readdirSync(sharedDirectory, { withFileTypes: true })
                 .filter((entry) => entry.isDirectory() || (entry.isFile() && !entry.name.endsWith('.test.ts')))
                 .map((entry) => (entry.isFile() && entry.name.endsWith('.ts') ? entry.name.slice(0, -3) : entry.name))
@@ -283,7 +283,7 @@ export const createSkillRubricContext = (directory: string, capabilities: SkillW
           rubricModuleExists: existsSync(join(sharedDirectory, 'rubric.ts')),
           checkerModuleExists: existsSync(join(sharedDirectory, 'checker.ts')),
           reporterModuleExists: existsSync(join(sharedDirectory, 'reporter.ts')),
-          structuredRubricRequired: name === 'ki-skills' || frontmatter.present.has('ki-checker-dependencies'),
+          structuredRubricRequired: name === 'ki-skills' || frontmatter.present.has('ki-shared-dependencies'),
           ...familyEvidence
         },
         shape: createKiShapeContext({

@@ -70,7 +70,7 @@ The two harness-specific scripts (`ki:skills:copy:project` and `ki:skills:audit`
 ```jsonc
 {
   "scripts": {
-    "ki:skills:copy:project": "bun skills/keystone/ki-bootstrap/scripts/internal/publish-project-skills.ts",
+    "ki:skills:copy:project": "bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/publish-project-skills.ts",
     "ki:repo:link-commands": "bun skills/keystone/ki-repo/scripts/link-repository-commands.ts --development .",
     "ki:skills:link:global": "bun skills/repo-structure/ki-harness/scripts/link-global-skills.ts",
     "ki:skills:audit": "bun .ki-meta/checkers/ki-skills/scripts/audit.ts ."

@@ -2,7 +2,7 @@
 name: ki-homebrew-tap
 ki-depends-on: []
 ki-vendors: [educate, audit, conform, help]
-ki-checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 description: >
   Codify, audit, and scaffold the Knowledge Islands Homebrew tap — the `homebrew-<x>` distribution repo that holds `Formula/*.rb` for Knowledge Islands command-line tools. This skill WRAPS Homebrew's external standard (the Formula Cookbook + `brew audit`/`brew style`) rather than inventing a house one: it checks the tap's shape (a `Formula/` dir, one formula per tool, the README formulae table, a versioned-tarball source) and delegates formula-correctness to `brew` when it is on PATH. Use when auditing the tap, adding a formula, scaffolding a new tap, or refreshing against Homebrew's rules. Triggers: "audit the homebrew tap", "add a formula", "does the tap follow Homebrew's standard", "scaffold a homebrew tap", "is this formula valid", "refresh the homebrew-tap standard". Governs the tap **container** — the repo shape and the formula shape — not the tools themselves (for a `tools-*` CLI repo use `ki-tools`) nor the repo's GitHub settings and standard files (for those use `ki-repo`).
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'

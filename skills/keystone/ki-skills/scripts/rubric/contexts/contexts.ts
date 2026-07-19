@@ -83,10 +83,10 @@ type RubricFamilyModule = {
 export type KiCheckerRubricContext = {
   imports: readonly CheckerImport[]
   rootSkill: boolean
-  checkerModules: readonly string[]
-  checkerDependencies: readonly string[]
+  declaredSharedModules: readonly string[]
+  sharedDependencies: readonly string[]
   legacyLibPresent: boolean
-  sharedModules: readonly string[]
+  publishedSharedModules: readonly string[]
   rubricModuleExists: boolean
   checkerModuleExists: boolean
   reporterModuleExists: boolean
@@ -259,10 +259,10 @@ export const createKiSkillsRubricContext = (overrides: Partial<KiSkillsRubricCon
   checker: {
     imports: [],
     rootSkill: false,
-    checkerModules: [],
-    checkerDependencies: [],
+    declaredSharedModules: [],
+    sharedDependencies: [],
     legacyLibPresent: false,
-    sharedModules: [],
+    publishedSharedModules: [],
     rubricModuleExists: false,
     checkerModuleExists: false,
     reporterModuleExists: false,

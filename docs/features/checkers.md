@@ -48,7 +48,7 @@ _Verify:_ the shared checker tests cover judgment-only and hybrid items, prevent
 
 ### CHK-007 — Standalone local dependencies
 
-A checker MUST use only builtins and its own files after vendoring; its only permitted shared implementation dependency is a declared checker module copied under its local `scripts/vendored/<provider>/` namespace.
+A checker MUST use only builtins and its own files after vendoring; its only permitted shared implementation dependency is a declared shared module copied under its local `scripts/vendored/<provider>/` namespace.
 
 _Verify:_ `ki-skills` rejects script imports that escape a skill’s scripts tree, and bootstrap verifies declared module payloads.
 

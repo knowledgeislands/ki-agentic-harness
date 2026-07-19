@@ -1,6 +1,6 @@
 ---
 name: ki-binding-chezmoi
-ki-checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 ki-depends-on: [ki-binding, ki-dotfiles-chezmoi]
 ki-vendors: [educate, audit, conform, help]
 description: >

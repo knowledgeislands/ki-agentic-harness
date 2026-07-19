@@ -106,7 +106,7 @@ The harness's [actual package manifest](../../../../package.json) uses the same 
 ```jsonc
 {
   "scripts": {
-    "test": "bun hooks/plan-stamp.test.ts && bun hooks/plan-sync.test.ts && bun skills/keystone/ki-bootstrap/scripts/internal/resolve.test.ts"
+    "test": "bun hooks/plan-stamp.test.ts && bun hooks/plan-sync.test.ts && bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/resolve.test.ts"
   }
 }
 ```

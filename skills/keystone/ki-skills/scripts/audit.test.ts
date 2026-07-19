@@ -161,7 +161,7 @@ describe('ki-skills AUDIT wrapper', () => {
     const skillPath = join(dir, 'SKILL.md')
     writeFileSync(
       skillPath,
-      readFileSync(skillPath, 'utf8').replace('ki-depends-on: []', 'ki-depends-on: []\nki-checker-dependencies: [ki-skills:rubric]')
+      readFileSync(skillPath, 'utf8').replace('ki-depends-on: []', 'ki-depends-on: []\nki-shared-dependencies: [ki-skills:rubric]')
     )
     mkdirSync(join(dir, 'scripts', 'rubric', 'items'), { recursive: true })
     writeFileSync(

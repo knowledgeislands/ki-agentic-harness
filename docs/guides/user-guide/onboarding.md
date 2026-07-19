@@ -61,7 +61,7 @@ export KI_HARNESS="${KI_HARNESS:-$(pwd)}"
 A new repo needs a `.ki-config.toml` declaring `[ki-repo]` and a bare `[ki-authoring]` — every repo declares both itself; nothing is injected. Bootstrap it:
 
 ```bash
-bun "$KI_HARNESS/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap.ts" "$TARGET"
+bun "$KI_HARNESS/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts" "$TARGET"
 ```
 
 Then confirm it self-governs — the vendored aggregate invokes each skill's checker in sequence, with nothing installed in `.claude/skills/`:

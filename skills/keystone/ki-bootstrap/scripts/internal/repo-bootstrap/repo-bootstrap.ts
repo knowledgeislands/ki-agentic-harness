@@ -75,16 +75,16 @@ import {
 import { dirname, join, resolve } from 'node:path'
 import {
   assertExplicitDependencies,
-  type CheckerModule,
-  type CheckerModulePayload,
-  checkerDependenciesOf,
-  checkerModulePayload,
-  checkerModulesOf,
   DependencyDeclarationError,
   dependsOnOf,
   resolveSet,
+  type SharedModule,
+  type SharedModulePayload,
   SKILLS_ROOT,
   SkillResolutionError,
+  sharedDependenciesOf,
+  sharedModulePayload,
+  sharedModulesOf,
   skillDir,
   VENDOR_MODES,
   vendorModesOf,
@@ -965,12 +965,12 @@ function copyRegularTree(
   return copied
 }
 
-function vendorCheckerModulePayload(
+function vendorSharedModulePayload(
   generationRoot: string,
   destDir: string,
   skill: string,
-  module: CheckerModule,
-  payload: CheckerModulePayload,
+  module: SharedModule,
+  payload: SharedModulePayload,
   journal: OwnedSnapshot,
   ownModule = false
 ): VendoredFile[] {
@@ -1088,24 +1088,24 @@ function vendorSkill(
   // A provider's own checker imports its module locally, not through a declared
   // self-dependency. Copy that payload beside its audit/conform copies so the root
   // remains self-governing after vendoring.
-  for (const moduleName of checkerModulesOf(skill)) {
+  for (const moduleName of sharedModulesOf(skill)) {
     const module = { provider: skill, module: moduleName }
-    const payload = checkerModulePayload(module)
+    const payload = sharedModulePayload(module)
     const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/scripts/shared/${payload.targetName}`
-    if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (owned checker module payload)${RESET}`)
+    if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (owned shared module payload)${RESET}`)
     if (!dryRun) {
       if (!journal) throw new Error('candidate generation requires a creation journal')
-      written.push(...vendorCheckerModulePayload(generationRoot, scriptsDir, skill, module, payload, journal, true))
+      written.push(...vendorSharedModulePayload(generationRoot, scriptsDir, skill, module, payload, journal, true))
     }
   }
 
-  for (const module of checkerDependenciesOf(skill)) {
-    const payload = checkerModulePayload(module)
+  for (const module of sharedDependenciesOf(skill)) {
+    const payload = sharedModulePayload(module)
     const rel = `${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/scripts/vendored/${module.provider}/${payload.targetName}`
-    if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (checker module payload)${RESET}`)
+    if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${rel} (shared module payload)${RESET}`)
     if (!dryRun) {
       if (!journal) throw new Error('candidate generation requires a creation journal')
-      written.push(...vendorCheckerModulePayload(generationRoot, scriptsDir, skill, module, payload, journal))
+      written.push(...vendorSharedModulePayload(generationRoot, scriptsDir, skill, module, payload, journal))
     }
   }
 

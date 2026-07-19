@@ -1,19 +1,19 @@
 #!/usr/bin/env bun
 /**
- * Materialise declared checker modules in each consumer's local source
+ * Materialise declared shared modules in each consumer's local source
  * payload. These are ordinary copied files, not cross-skill imports or symlinks:
  * a checker must run from its own skill and again from `.ki-meta/` unchanged.
  *
- * Internal bootstrap command: bun sync-checker-modules.ts [--check]
+ * Internal bootstrap command: bun sync-shared-modules.ts [--check]
  */
 import { cpSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import {
   allSkillNames,
-  type CheckerModule,
-  type CheckerModulePayload,
-  checkerDependenciesOf,
-  checkerModulePayload,
+  type SharedModule,
+  type SharedModulePayload,
+  sharedDependenciesOf,
+  sharedModulePayload,
   skillDir
 } from './resolve.ts'
 
@@ -27,14 +27,14 @@ function lstatOrNull(path: string): ReturnType<typeof lstatSync> | null {
   }
 }
 
-function destination(skill: string, module: CheckerModule, payload: CheckerModulePayload): string {
+function destination(skill: string, module: SharedModule, payload: SharedModulePayload): string {
   return join(skillDir(skill), 'scripts', 'vendored', module.provider, payload.targetName)
 }
 
 function safeEntry(path: string): ReturnType<typeof lstatSync> | null {
   const stat = lstatOrNull(path)
   if (!stat) return null
-  if (stat.isSymbolicLink() || (!stat.isFile() && !stat.isDirectory())) throw new Error(`unsafe checker module entry: ${path}`)
+  if (stat.isSymbolicLink() || (!stat.isFile() && !stat.isDirectory())) throw new Error(`unsafe shared module entry: ${path}`)
   return stat
 }
 
@@ -50,19 +50,19 @@ function samePayload(left: string, right: string): boolean {
   )
 }
 
-function replacePayload(source: CheckerModulePayload, target: string, label: string): void {
+function replacePayload(source: SharedModulePayload, target: string, label: string): void {
   const existing = safeEntry(target)
   if (existing) rmSync(target, { recursive: existing.isDirectory() })
   mkdirSync(join(target, '..'), { recursive: true })
   cpSync(source.source, target, { recursive: source.kind === 'directory' })
-  if (!samePayload(source.source, target)) throw new Error(`checker module copy failed verification: ${label}`)
+  if (!samePayload(source.source, target)) throw new Error(`shared module copy failed verification: ${label}`)
 }
 
 const drift: string[] = []
 for (const skill of allSkillNames()) {
-  for (const module of checkerDependenciesOf(skill)) {
-    if (module.provider === skill) throw new Error(`${skill} cannot depend on its own checker module`)
-    const payload = checkerModulePayload(module)
+  for (const module of sharedDependenciesOf(skill)) {
+    if (module.provider === skill) throw new Error(`${skill} cannot depend on its own shared module`)
+    const payload = sharedModulePayload(module)
     const target = destination(skill, module, payload)
     if (samePayload(payload.source, target)) continue
     const label = `${skill}/scripts/vendored/${module.provider}/${payload.targetName}`
@@ -76,8 +76,8 @@ for (const skill of allSkillNames()) {
 }
 
 if (drift.length) {
-  console.error(`checker-module drift: ${drift.join(', ')} — run sync-checker-modules.ts`)
+  console.error(`shared-module drift: ${drift.join(', ')} — run sync-shared-modules.ts`)
   process.exit(1)
 }
 
-console.log(checkOnly ? 'checker module payloads are current' : 'checker module payloads synchronized')
+console.log(checkOnly ? 'shared module payloads are current' : 'shared module payloads synchronized')

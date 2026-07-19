@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "author": "kris@kris.me.uk",
   "bin": {
-    "ki-bootstrap": "skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap.ts"
+    "ki-bootstrap": "skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts"
   },
   "bugs": {
     "url": "https://github.com/knowledgeislands/ki-agentic-harness/issues"
@@ -80,7 +80,7 @@
     "ki:repo:link-commands": "bun skills/keystone/ki-repo/scripts/link-repository-commands.ts --development .",
     "ki:skills:audit": "bun .ki-meta/bin/aggregate.ts audit --skill ki-skills",
     "ki:skills:conform": "bun .ki-meta/bin/aggregate.ts conform --skill ki-skills",
-    "ki:skills:copy:project": "bun skills/keystone/ki-bootstrap/scripts/internal/publish-project-skills.ts",
+    "ki:skills:copy:project": "bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/publish-project-skills.ts",
     "ki:skills:graph": "bun .ki-meta/bin/skill-graph.ts --tree",
     "ki:skills:help": "bun .ki-meta/bin/skill-help.ts",
     "ki:skills:link:global": "bun skills/repo-structure/ki-harness/scripts/link-global-skills.ts",
@@ -88,7 +88,7 @@
     "ki:tokenomics:audit": "bun .ki-meta/bin/aggregate.ts audit --skill ki-tokenomics",
     "ki:tokenomics:conform": "bun .ki-meta/bin/aggregate.ts conform --skill ki-tokenomics",
     "prepare": "husky",
-    "test": "bun test --isolate --max-concurrency=1 ./skills ./hooks && bun evals/guide-suite.ts && bun skills/keystone/ki-bootstrap/scripts/internal/skill-graph.ts --check --check-doc docs/guides/user-guide/skills.md && bun skills/keystone/ki-bootstrap/scripts/internal/skill-help.ts --check && bun skills/keystone/ki-bootstrap/scripts/audit.ts ."
+    "test": "bun test --isolate --max-concurrency=1 ./skills ./hooks && bun evals/guide-suite.ts && bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/skill-graph.ts --check --check-doc docs/guides/user-guide/skills.md && bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/skill-help.ts --check && bun skills/keystone/ki-bootstrap/scripts/audit.ts ."
   },
   "type": "module"
 }

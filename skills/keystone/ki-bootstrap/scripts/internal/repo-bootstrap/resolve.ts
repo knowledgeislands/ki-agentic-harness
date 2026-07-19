@@ -193,7 +193,7 @@ function flowListFrontmatter(skill: string, key: string): string[] {
     : []
 }
 
-export type CheckerModule = {
+export type SharedModule = {
   provider: string
   module: string
 }
@@ -202,16 +202,16 @@ export type CheckerModule = {
 // either `scripts/shared/<module>.ts` or a `scripts/shared/<module>/` directory
 // containing a self-contained local closure. The consumer preserves that shape
 // below `scripts/vendored/<provider>/`.
-export type CheckerModulePayload = {
+export type SharedModulePayload = {
   source: string
   kind: 'file' | 'directory'
   targetName: string
 }
 
-const CHECKER_MODULE = /^(ki-[A-Za-z0-9_-]+):([A-Za-z0-9_-]+)$/
+const SHARED_MODULE = /^(ki-[A-Za-z0-9_-]+):([A-Za-z0-9_-]+)$/
 
-function parseCheckerModule(value: string, field: string, skill: string): CheckerModule {
-  const match = value.match(CHECKER_MODULE)
+function parseSharedModule(value: string, field: string, skill: string): SharedModule {
+  const match = value.match(SHARED_MODULE)
   if (!match) throw new Error(`${skill} declares invalid ${field} entry: ${value}`)
   return { provider: match[1] as string, module: match[2] as string }
 }
@@ -219,46 +219,46 @@ function parseCheckerModule(value: string, field: string, skill: string): Checke
 // A provider declares modules it publishes; a consumer declares exact provider:module
 // requirements. This is deliberately independent of `ki-depends-on:`: support modules are
 // copied implementation, never a governance-coverage or mode-composition edge.
-export function checkerModulesOf(skill: string): string[] {
-  return flowListFrontmatter(skill, 'ki-checker-modules')
+export function sharedModulesOf(skill: string): string[] {
+  return flowListFrontmatter(skill, 'ki-shared-modules')
 }
 
-export function checkerDependenciesOf(skill: string): CheckerModule[] {
-  return flowListFrontmatter(skill, 'ki-checker-dependencies').map((value) => parseCheckerModule(value, 'ki-checker-dependencies', skill))
+export function sharedDependenciesOf(skill: string): SharedModule[] {
+  return flowListFrontmatter(skill, 'ki-shared-dependencies').map((value) => parseSharedModule(value, 'ki-shared-dependencies', skill))
 }
 
-function assertSafeCheckerModuleTree(path: string): void {
+function assertSafeSharedModuleTree(path: string): void {
   const stat = lstatSync(path)
-  if (stat.isSymbolicLink()) throw new Error(`checker module payload contains symlink: ${path}`)
+  if (stat.isSymbolicLink()) throw new Error(`shared module payload contains symlink: ${path}`)
   if (stat.isFile()) return
-  if (!stat.isDirectory()) throw new Error(`checker module payload contains unsafe entry: ${path}`)
-  for (const entry of readdirSync(path)) assertSafeCheckerModuleTree(join(path, entry))
+  if (!stat.isDirectory()) throw new Error(`shared module payload contains unsafe entry: ${path}`)
+  for (const entry of readdirSync(path)) assertSafeSharedModuleTree(join(path, entry))
 }
 
 // Exported for focused fixture tests. It deliberately resolves only the physical
-// shape; `checkerModulePayload` below owns the provider declaration check.
-export function checkerModulePayloadAt(module: string, modulesDir: string): CheckerModulePayload {
+// shape; `sharedModulePayload` below owns the provider declaration check.
+export function sharedModulePayloadAt(module: string, modulesDir: string): SharedModulePayload {
   const file = join(modulesDir, `${module}.ts`)
   const directory = join(modulesDir, module)
   const filePresent = existsSync(file)
   const directoryPresent = existsSync(directory)
   if (filePresent === directoryPresent) {
     const state = filePresent ? 'ambiguous (both file and directory exist)' : 'missing'
-    throw new Error(`checker module payload is ${state}: ${module}`)
+    throw new Error(`shared module payload is ${state}: ${module}`)
   }
   const source = filePresent ? file : directory
-  assertSafeCheckerModuleTree(source)
+  assertSafeSharedModuleTree(source)
   const kind = filePresent ? 'file' : 'directory'
   return { source, kind, targetName: filePresent ? `${module}.ts` : module }
 }
 
-export function checkerModulePayload(module: CheckerModule): CheckerModulePayload {
-  const modules = checkerModulesOf(module.provider)
-  if (!modules.includes(module.module)) throw new Error(`${module.provider} does not declare checker module: ${module.module}`)
+export function sharedModulePayload(module: SharedModule): SharedModulePayload {
+  const modules = sharedModulesOf(module.provider)
+  if (!modules.includes(module.module)) throw new Error(`${module.provider} does not declare shared module: ${module.module}`)
   try {
-    return checkerModulePayloadAt(module.module, join(skillDir(module.provider), 'scripts', 'shared'))
+    return sharedModulePayloadAt(module.module, join(skillDir(module.provider), 'scripts', 'shared'))
   } catch (error) {
-    throw new Error(`checker module payload is missing or unsafe: ${module.provider}:${module.module}`, { cause: error })
+    throw new Error(`shared module payload is missing or unsafe: ${module.provider}:${module.module}`, { cause: error })
   }
 }
 

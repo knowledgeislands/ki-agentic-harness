@@ -2,7 +2,7 @@
 name: ki-handoffs
 ki-depends-on: []
 ki-vendors: [educate, audit, conform, help]
-ki-checker-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 description: >
   Govern the Knowledge Islands handoff doctrine: plan work once at the top reasoning tier, then write it as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning. Owns the reasoning-layer split, the handoff-spec quality bar (definition-of-done, decisions-locked vs escalate, ordered steps, acceptance criteria, a recommended implementer tier per unit), and the cold-model readiness test. AUDIT checks handoff-opted-in plans/proposals for the required markers; CONFORM fixes them; REFRESH revisits the doctrine. Does not own model-tier cost or selection — that is ki-tokenomics. Triggers: "is this ready to hand off", "make this delegable", "implementation-ready spec", "plan once execute cheap", "which tier should run this". Off-ramps: ki-tokenomics (tier cost/selection), ki-repo-roadmap (non-KB roadmap and plan standard), ki-kb-streams (KB proposal Checklist), ki-agents (subagent definitions).
 argument-hint: 'audit [dir] | conform [dir] | help | educate <target> | refresh'
@@ -73,4 +73,4 @@ Revisit the doctrine against practice: does the reasoning-layer split still matc
 - **Not every plan needs handoff-governance.** Opt in (`handoff: true`) only where work will actually be executed by a different, cheaper tier or a cold agent. Work the planner will execute itself needs only the host artifact's quality bar.
 - **Semantic tiers only.** The body and specs may narrate tiers as cheap / mid / top, but the `tier:` frontmatter field must itself be one of `haiku` / `sonnet` / `opus` per the opt-in marker contract — writing `tier: cheap` trips HAND-1. Concrete model ids and prices resolve at runtime through the `claude-api` skill and are never hard-coded here.
 - **The doctrine is the point, the markers are the teeth.** The markers exist so a checker can confirm a spec is delegable; the value is the reasoning-once-execute-cheap discipline they enforce.
-- Checker output and terminal rendering come from the self-contained canonical modules declared in `ki-checker-dependencies` and vendored from `ki-skills`.
+- Checker output and terminal rendering come from the self-contained canonical modules declared in `ki-shared-dependencies` and vendored from `ki-skills`.

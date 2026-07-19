@@ -41,20 +41,20 @@ export const KI_CHECKER_3: RubricItem<KiCheckerRubricContext> = {
   code: 'KI-CHECKER-3',
   title: 'ki-skills is the self-governing checker-contract root',
   description:
-    "`ki-skills` is the self-governing checker-contract root: it declares `ki-checker-modules: [rubric, checker, reporter]`, ships its canonical rubric, checker, and reporter modules under `scripts/shared/`, and declares no `ki-checker-dependencies:` entry. Its canonical checker and direct human reporter therefore run from its own shipped files without a dependency on itself or another skill. Other skills may declare only offered checker modules, which bootstrap copies from the provider's `scripts/shared/` into their local `scripts/vendored/<provider>/` namespace; that declaration is implementation packaging, not `ki-depends-on:` or composition.",
+    "`ki-skills` is the self-governing checker-contract root: it declares `ki-shared-modules: [rubric, checker, reporter]`, ships its canonical rubric, checker, and reporter modules under `scripts/shared/`, and declares no `ki-shared-dependencies:` entry. Its canonical checker and direct human reporter therefore run from its own shipped files without a dependency on itself or another skill. Other skills may declare only offered shared modules, which bootstrap copies from the provider's `scripts/shared/` into their local `scripts/vendored/<provider>/` namespace; that declaration is implementation packaging, not `ki-depends-on:` or composition.",
   sources: ['ADR-KI-HARNESS-SKILLS-012'],
   mechanical: {
     level: 'FAIL',
     audit: {
       phase: 'INSPECT',
-      run: ({ rootSkill, checkerModules, checkerDependencies, rubricModuleExists, checkerModuleExists, reporterModuleExists }) => {
+      run: ({ rootSkill, declaredSharedModules, sharedDependencies, rubricModuleExists, checkerModuleExists, reporterModuleExists }) => {
         if (!rootSkill) return [{ status: 'NOT_APPLICABLE', message: 'the audited skill is not the checker-contract root' }]
         const violations = []
         for (const module of ['rubric', 'checker', 'reporter'])
-          if (!checkerModules.includes(module))
+          if (!declaredSharedModules.includes(module))
             violations.push({
               status: 'VIOLATION' as const,
-              message: `\`ki-skills\` must expose \`${module}\` under \`ki-checker-modules:\``
+              message: `\`ki-skills\` must expose \`${module}\` under \`ki-shared-modules:\``
             })
         if (!rubricModuleExists)
           violations.push({
@@ -71,10 +71,10 @@ export const KI_CHECKER_3: RubricItem<KiCheckerRubricContext> = {
             status: 'VIOLATION' as const,
             message: '`ki-skills` must ship `scripts/shared/reporter.ts` from its own files'
           })
-        if (checkerDependencies.length > 0)
+        if (sharedDependencies.length > 0)
           violations.push({
             status: 'VIOLATION' as const,
-            message: '`ki-skills` is the checker-contract root and must not declare `ki-checker-dependencies:`'
+            message: '`ki-skills` is the checker-contract root and must not declare `ki-shared-dependencies:`'
           })
         const [first, ...rest] = violations
         return first ? [first, ...rest] : [{ status: 'PASS', message: 'ki-skills is the self-governing checker-contract root' }]
@@ -135,22 +135,22 @@ export const KI_CHECKER_5: RubricItem<KiCheckerRubricContext> = {
   code: 'KI-CHECKER-5',
   title: 'shared and internal script packaging is explicit',
   description:
-    'Private implementation belongs under `scripts/internal/`; cross-skill modules belong under `scripts/shared/`, whose non-test entries must exactly match `ki-checker-modules:`.',
+    'Private implementation belongs under `scripts/internal/`; cross-skill modules belong under `scripts/shared/`, whose non-test entries must exactly match `ki-shared-modules:`.',
   sources: ['KI'],
   mechanical: {
     level: 'FAIL',
     audit: {
       phase: 'INSPECT',
-      run: ({ checkerModules, legacyLibPresent, sharedModules }) => {
+      run: ({ declaredSharedModules, legacyLibPresent, publishedSharedModules }) => {
         const violations = []
         if (legacyLibPresent)
           violations.push({ status: 'VIOLATION' as const, message: 'classify `scripts/lib/` contents as shared or internal' })
-        const declared = [...new Set(checkerModules)].sort()
-        const published = [...new Set(sharedModules)].sort()
+        const declared = [...new Set(declaredSharedModules)].sort()
+        const published = [...new Set(publishedSharedModules)].sort()
         if (declared.join('\n') !== published.join('\n'))
           violations.push({
             status: 'VIOLATION' as const,
-            message: `\`scripts/shared/\` must exactly publish \`ki-checker-modules:\` (declared: ${declared.join(', ') || 'none'}; published: ${published.join(', ') || 'none'})`
+            message: `\`scripts/shared/\` must exactly publish \`ki-shared-modules:\` (declared: ${declared.join(', ') || 'none'}; published: ${published.join(', ') || 'none'})`
           })
         const [first, ...rest] = violations
         return first ? [first, ...rest] : [{ status: 'PASS', message: 'shared and internal script packaging is explicit' }]

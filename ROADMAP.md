@@ -16,7 +16,6 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 
 - [Foundation Tooling: Remove the legacy `preferred_model` migration bridge in `ki-tokenomics`](docs/roadmap/foundation-tooling/ROADMAP.md#remove-the-legacy-preferredmodel-migration-bridge-in-ki-tokenomics)
 - [Governance Consistency: Make the first decision record adopt Decision Records](docs/roadmap/governance-consistency/ROADMAP.md#make-the-first-decision-record-adopt-decision-records)
-- [Governance Consistency: Review the skill dependency graph and implementation quality](docs/roadmap/governance-consistency/ROADMAP.md#review-the-skill-dependency-graph-and-implementation-quality-candidate)
 
 ## Soon
 
@@ -26,6 +25,7 @@ Understood and roughly scoped but not yet started — worth doing once the **Nex
 - [Governance Consistency: Align KB Stream focus with non-KB roadmap horizons](docs/roadmap/governance-consistency/ROADMAP.md#align-kb-stream-focus-with-non-kb-roadmap-horizons)
 - [Governance Consistency: Codify convention placement and the knowledge-promotion loop](docs/roadmap/governance-consistency/ROADMAP.md#codify-convention-placement-and-the-knowledge-promotion-loop)
 - [Governance Consistency: Create `ki-repo-review` as a human-led process skill](docs/roadmap/governance-consistency/ROADMAP.md#create-ki-repo-review-as-a-human-led-process-skill)
+- [Governance Consistency: Review the skill dependency graph and implementation quality _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#review-the-skill-dependency-graph-and-implementation-quality-candidate)
 
 ## Waiting for
 

@@ -24,13 +24,13 @@ import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
   assertExplicitDependencies,
-  checkerDependenciesOf,
-  checkerModulePayload,
-  checkerModulePayloadAt,
   declaredSkills,
   resolveSet,
   SKILLS_ROOT,
   SkillResolutionError,
+  sharedDependenciesOf,
+  sharedModulePayload,
+  sharedModulePayloadAt,
   skillDir
 } from './resolve.ts'
 
@@ -86,9 +86,9 @@ check(
   JSON.stringify(parsed) === JSON.stringify(['ki-bootstrap', 'ki-housekeeping', 'ki-plan'])
 )
 
-const bootstrapModules = checkerDependenciesOf('ki-bootstrap')
+const bootstrapModules = sharedDependenciesOf('ki-bootstrap')
 check(
-  'checker module → migrated consumer declares the canonical module closure',
+  'shared module → migrated consumer declares the canonical module closure',
   JSON.stringify(bootstrapModules) ===
     JSON.stringify([
       { provider: 'ki-skills', module: 'rubric' },
@@ -97,9 +97,9 @@ check(
     ])
 )
 check(
-  'checker module → every declared dependency resolves a provider file payload',
+  'shared module → every declared dependency resolves a provider file payload',
   bootstrapModules.every((module) => {
-    const payload = checkerModulePayload(module)
+    const payload = sharedModulePayload(module)
     return (
       payload.kind === 'file' &&
       payload.targetName === `${module.module}.ts` &&
@@ -113,19 +113,19 @@ try {
   const scripts = join(modulePayloadFixture, 'scripts')
   mkdirSync(join(scripts, 'directory-module'), { recursive: true })
   writeFileSync(join(scripts, 'directory-module', 'index.ts'), 'export const payload = true\n')
-  const payload = checkerModulePayloadAt('directory-module', scripts)
+  const payload = sharedModulePayloadAt('directory-module', scripts)
   check(
-    'checker module → extension-free declaration resolves a directory payload',
+    'shared module → extension-free declaration resolves a directory payload',
     payload.kind === 'directory' && payload.targetName === 'directory-module' && payload.source === join(scripts, 'directory-module')
   )
   writeFileSync(join(scripts, 'directory-module.ts'), 'export const conflict = true\n')
   let rejectedAmbiguous = false
   try {
-    checkerModulePayloadAt('directory-module', scripts)
+    sharedModulePayloadAt('directory-module', scripts)
   } catch {
     rejectedAmbiguous = true
   }
-  check('checker module → ambiguous file and directory payload is rejected', rejectedAmbiguous)
+  check('shared module → ambiguous file and directory payload is rejected', rejectedAmbiguous)
 } finally {
   rmSync(modulePayloadFixture, { recursive: true, force: true })
 }
@@ -280,7 +280,7 @@ try {
     existsSync(join(seededRepo, '.ki-meta', 'checkers', 'ki-repo')) && existsSync(join(seededRepo, '.ki-meta', 'checkers', 'ki-authoring'))
   )
   check(
-    'seeded ki-repo → checker module closure is copied beneath its consumer',
+    'seeded ki-repo → shared module closure is copied beneath its consumer',
     ['rubric', 'checker', 'reporter'].every((module) =>
       existsSync(join(seededRepo, '.ki-meta', 'checkers', 'ki-authoring', 'scripts', 'vendored', 'ki-skills', `${module}.ts`))
     )
@@ -315,9 +315,9 @@ try {
 const checkerRoot = fixture('[ki-repo]\nsupported_runtimes = ["claude-code", "codex"]\n[ki-authoring]\n[ki-skills]\n')
 try {
   const result = spawnSync('bun', [BOOTSTRAP, checkerRoot], { encoding: 'utf8' })
-  check('checker-module provider → bootstrap exits cleanly', result.status === 0)
+  check('shared-module provider → bootstrap exits cleanly', result.status === 0)
   check(
-    'checker-module provider → owns its standalone local module closure',
+    'shared-module provider → owns its standalone local module closure',
     ['rubric', 'checker', 'reporter'].every((module) =>
       existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'shared', `${module}.ts`))
     )
@@ -325,14 +325,14 @@ try {
   const vendoredRubricItem = join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'rubric', 'items', 'index.ts')
   const vendoredRubricContext = join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'rubric', 'contexts', 'subjects.ts')
   check(
-    'checker-module provider → carries its regular internal rubric payload',
+    'shared-module provider → carries its regular internal rubric payload',
     existsSync(vendoredRubricItem) &&
       !lstatSync(vendoredRubricItem).isSymbolicLink() &&
       existsSync(vendoredRubricContext) &&
       !lstatSync(vendoredRubricContext).isSymbolicLink()
   )
   check(
-    'checker-module provider → carries rubric metadata beside its runnable payload',
+    'shared-module provider → carries rubric metadata beside its runnable payload',
     existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'references', 'rubric.md'))
   )
   check(
@@ -344,7 +344,7 @@ try {
     encoding: 'utf8'
   })
   const firstRecord = vendoredAudit.stdout.split(/\r?\n/, 1)[0]
-  check('checker-module provider → standalone audit emits a canonical stream', JSON.parse(firstRecord).record === 'meta')
+  check('shared-module provider → standalone audit emits a canonical stream', JSON.parse(firstRecord).record === 'meta')
 
   const aggregate = join(checkerRoot, '.ki-meta', 'bin', 'aggregate.ts')
   const canonicalAggregate = spawnSync('bun', [aggregate, 'audit'], { cwd: checkerRoot, encoding: 'utf8' })
