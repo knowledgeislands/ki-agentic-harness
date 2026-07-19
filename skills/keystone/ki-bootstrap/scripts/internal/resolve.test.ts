@@ -32,11 +32,11 @@ import {
   SKILLS_ROOT,
   SkillResolutionError,
   skillDir
-} from './internal/resolve.ts'
+} from './resolve.ts'
 
 const SCRIPTS = dirname(fileURLToPath(import.meta.url))
-const BOOTSTRAP = join(SCRIPTS, 'internal', 'repo-bootstrap.ts')
-const AUDIT = join(SCRIPTS, 'audit.ts')
+const BOOTSTRAP = join(SCRIPTS, 'repo-bootstrap.ts')
+const AUDIT = join(SCRIPTS, '..', 'audit.ts')
 
 let failed = false
 function check(label: string, condition: boolean): void {

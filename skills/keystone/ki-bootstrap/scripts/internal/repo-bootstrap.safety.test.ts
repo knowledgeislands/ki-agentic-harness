@@ -22,7 +22,7 @@ import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const SCRIPTS = dirname(fileURLToPath(import.meta.url))
-const BOOTSTRAP = join(SCRIPTS, 'internal', 'repo-bootstrap.ts')
+const BOOTSTRAP = join(SCRIPTS, 'repo-bootstrap.ts')
 const CONFIG = '[ki-repo]\nsupported_runtimes = ["claude-code", "codex"]\n[ki-authoring]\n'
 const REF = '0000000000000000000000000000000000000000'
 
@@ -466,4 +466,4 @@ try {
 }
 
 if (failed) process.exit(1)
-console.log('\n\x1b[32mbootstrap-safety.test.ts: all checks passed\x1b[0m')
+console.log('\n\x1b[32mrepo-bootstrap.safety.test.ts: all checks passed\x1b[0m')

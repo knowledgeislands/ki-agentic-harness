@@ -136,6 +136,26 @@ describe('ki-skills AUDIT wrapper', () => {
     }
   })
 
+  test('returns SCRIPT-8 FAIL when a top-level shell command has no useful help', () => {
+    const { base, dir } = fixture()
+    writeFileSync(join(dir, 'scripts', 'publish.sh'), '#!/bin/sh\nexit 0\n')
+    try {
+      const result = run(dir)
+      const parsed = parseCheckerJsonl(result.output)
+      expect(result.status).toBe(1)
+      expect(
+        parsed.records.some(
+          (record) =>
+            (record as { code?: unknown; level?: unknown; subject?: unknown }).code === 'SCRIPT-8' &&
+            (record as { level?: unknown }).level === 'FAIL' &&
+            (record as { subject?: unknown }).subject === 'scripts/publish.sh'
+        )
+      ).toBe(true)
+    } finally {
+      rmSync(base, { recursive: true, force: true })
+    }
+  })
+
   test('returns KI-CHECKER-4 FAIL when a structured rubric defines rules in its catalogue index', () => {
     const { base, dir } = fixture()
     const skillPath = join(dir, 'SKILL.md')

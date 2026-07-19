@@ -66,13 +66,13 @@ _Verify:_ `ki-harness`'s rubric CLAUDE-1 and CLAUDE-2 ([`skills/repo-structure/k
 
 The harness MUST ship `hooks/plan-stamp.sh` and `hooks/plan-sync.sh` as a Claude-Code-specific lifecycle pair and expose `ki:hooks:install` to install the complete hook payload as manifest-verified executable regular files under an owned content-addressed `~/.claude/hooks/knowledgeislands/ki-agentic-harness/` namespace. Its active manifest MUST declare stable regular `current/<hook-name>` command copies, each matching the manifest checksum, for a user-environment manager to register without embedding a payload hash. It MUST NOT write Claude settings or create hook symlinks.
 
-_Verify:_ `bun hooks/plan-stamp.test.ts && bun hooks/plan-sync.test.ts` exercises the pair; `bun skills/keystone/ki-bootstrap/scripts/install-hooks.test.ts` exercises payload ownership, durability, and settings non-mutation.
+_Verify:_ `bun hooks/plan-stamp.test.ts && bun hooks/plan-sync.test.ts` exercises the pair; `bun skills/keystone/ki-bootstrap/scripts/internal/install-claude-hook-payload.test.ts` exercises payload ownership, durability, and settings non-mutation.
 
 ### HARN-010 — Claude Code stale Git-lock guard
 
 The harness MUST ship `hooks/git-lock-check.sh` as a Claude-Code-specific `Stop(*)` hook that removes stale lock files only from the current worktree's physical Git directory and only when no relevant Git process is active. The payload installer MUST carry it with the lifecycle pair and provide an active, manifest-verified payload for a separate user-environment binding to register.
 
-_Verify:_ `bun hooks/git-lock-check.test.ts` exercises repository, process, path, and symlink safety; `bun skills/keystone/ki-bootstrap/scripts/install-hooks.test.ts` exercises the payload installer.
+_Verify:_ `bun hooks/git-lock-check.test.ts` exercises repository, process, path, and symlink safety; `bun skills/keystone/ki-bootstrap/scripts/internal/install-claude-hook-payload.test.ts` exercises the payload installer.
 
 ## Gaps
 

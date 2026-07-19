@@ -60,9 +60,9 @@ export const SCRIPT_7: RubricItem<ScriptsRubricContext> = {
 
 export const SCRIPT_8: RubricItem<ScriptsRubricContext> = {
   code: 'SCRIPT-8',
-  title: 'top-level TypeScript scripts expose command help',
+  title: 'top-level scripts expose command help',
   description:
-    'Every non-test TypeScript file directly under `scripts/` is a public command entry point that exits successfully for `-h` and prints useful usage or help text. Private reusable modules belong under `scripts/internal/`; only explicitly published cross-skill modules belong under `scripts/shared/`.',
+    'Every supported non-test script directly under `scripts/` is a public command entry point that exits successfully for `-h` and `--help` and prints useful usage or help text. Private reusable modules belong under `scripts/internal/`; only explicitly published cross-skill modules belong under `scripts/shared/`.',
   sources: ['AS', 'KI'],
   mechanical: {
     level: 'FAIL',
@@ -70,7 +70,7 @@ export const SCRIPT_8: RubricItem<ScriptsRubricContext> = {
     audit: {
       phase: 'INSPECT',
       run: ({ helpEvidence }) => {
-        if (helpEvidence.length === 0) return [{ status: 'NOT_APPLICABLE', message: 'the skill has no top-level TypeScript scripts' }]
+        if (helpEvidence.length === 0) return [{ status: 'NOT_APPLICABLE', message: 'the skill has no top-level scripts' }]
         const violations = helpEvidence
           .filter(
             ({ declaresShortHelp, declaresLongHelp, declaresUsageText }) => !declaresShortHelp || !declaresLongHelp || !declaresUsageText
@@ -82,7 +82,7 @@ export const SCRIPT_8: RubricItem<ScriptsRubricContext> = {
           }))
         return violations.length > 0
           ? [violations[0] as (typeof violations)[number], ...violations.slice(1)]
-          : [{ status: 'PASS', message: 'top-level TypeScript scripts expose command help' }]
+          : [{ status: 'PASS', message: 'top-level scripts expose command help' }]
       }
     }
   },

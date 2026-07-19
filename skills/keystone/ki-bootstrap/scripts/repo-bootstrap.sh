@@ -7,7 +7,7 @@
 #
 # It bootstraps the current directory from the harness's `main`: fetches the
 # source tarball (GitHub codeload — generated on demand, no publish step),
-# extracts it to a temp dir, and runs the chain engine (`lib/repo-bootstrap.ts`) from that
+# extracts it to a temp dir, and runs the chain engine (`internal/repo-bootstrap.ts`) from that
 # tree. Bun is required to *run* the engine and the vendored checkers — it is the
 # mechanical layer's runtime, not the entry point's — so a missing bun fails fast
 # with the install instruction rather than being installed silently.
@@ -21,6 +21,28 @@
 set -eu
 
 REPO="knowledgeislands/ki-agentic-harness"
+
+usage() {
+  printf '%s\n' \
+    'Usage: repo-bootstrap.sh [target] [options]' \
+    '' \
+    'Bootstrap one repository from the Knowledge Islands harness.' \
+    '' \
+    'Options:' \
+    '  --ref <ref>   Harness Git ref to use (default: main).' \
+    '  --dry-run     Report planned changes without writing.' \
+    '  --verbose     Report per-file bootstrap activity.' \
+    '  -h, --help    Show this help and exit.'
+}
+
+for argument in "$@"; do
+  case "$argument" in
+    -h|--help)
+      usage
+      exit 0
+      ;;
+  esac
+done
 
 # Ripple all args through; detect whether a target and a --ref were supplied so we
 # can inject defaults for the missing ones. A tarball extract has no .git, so the

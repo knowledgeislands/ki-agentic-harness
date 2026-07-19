@@ -18,8 +18,8 @@ import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const scripts = dirname(fileURLToPath(import.meta.url))
-const root = resolve(scripts, '../../../..')
-const bootstrap = join(scripts, 'internal', 'repo-bootstrap.ts')
+const root = resolve(scripts, '../../../../..')
+const bootstrap = join(scripts, 'repo-bootstrap.ts')
 const packageJson = join(root, 'package.json')
 const fixture = realpathSync(mkdtempSync(join(tmpdir(), 'ki-entrypoint-parity-')))
 let failed = false
@@ -214,4 +214,4 @@ try {
 }
 
 if (failed) process.exit(1)
-console.log('\n\x1b[32mentrypoint-parity.test.ts: all checks passed\x1b[0m')
+console.log('\n\x1b[32mrepo-bootstrap.parity.test.ts: all checks passed\x1b[0m')

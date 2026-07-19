@@ -7,6 +7,30 @@
 set -eu
 
 REPO="knowledgeislands/ki-agentic-harness"
+
+usage() {
+  printf '%s\n' \
+    'Usage: user-install.sh [options]' \
+    '' \
+    'Install the Knowledge Islands user-level harness skills and hook payload.' \
+    '' \
+    'Options:' \
+    '  --ref <ref>                 Harness Git ref to use (default: main).' \
+    '  --runtime <claude-code|codex>  Select a runtime explicitly; repeat as needed.' \
+    '  --dry-run                   Report planned changes without writing.' \
+    '  --check                     Verify the current installation without writing.' \
+    '  -h, --help                  Show this help and exit.'
+}
+
+for argument in "$@"; do
+  case "$argument" in
+    -h|--help)
+      usage
+      exit 0
+      ;;
+  esac
+done
+
 ref="main"
 previous=""
 for argument in "$@"; do
