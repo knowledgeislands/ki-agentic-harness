@@ -161,7 +161,7 @@ function resolveRef(ref: string): string {
 const AGGREGATE_RUNNER = `#!/usr/bin/env bun
 // Vendored by ki-bootstrap. Runs each vendored skill checker under ../checkers/ in
 // sequence for the given verb — no package.json required.
-// Usage: bun .ki-meta/bin/aggregate.ts <audit|conform|educate|help> [--skill <ki-skill>] [--reporter-levels=<levels>]
+// Usage: bun .ki-meta/bin/aggregate.ts <audit|conform|educate|help> [--skill <ki-skill>] [--progress=<auto|always|never>] [--reporter-levels=<levels>]
 import { execFileSync, spawnSync } from 'node:child_process'
 import { closeSync, existsSync, lstatSync, mkdtempSync, openSync, readFileSync, readdirSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -170,7 +170,7 @@ import { fileURLToPath } from 'node:url'
 
 const verb = process.argv[2]
 if (!verb) {
-  console.error('usage: aggregate.ts <audit|conform|educate|help> [--skill <ki-skill>] [--reporter-levels=<levels>]')
+  console.error('usage: aggregate.ts <audit|conform|educate|help> [--skill <ki-skill>] [--progress=<auto|always|never>] [--reporter-levels=<levels>]')
   process.exit(2)
 }
 const binDir = dirname(fileURLToPath(import.meta.url))
@@ -210,6 +210,7 @@ let checkers = readdirSync(checkersDir, { withFileTypes: true })
 // NOT_APPLICABLE uses 🚫 (a 2-col circle-slash) in place of the 1-col ⊘.
 const ICON = { FAIL: '\\u274c', WARN: '\\u26a0\\ufe0f ', FIXED: '\\u2705', INFO: '\\u2139\\ufe0f ', NOT_APPLICABLE: '\\ud83d\\udeab', PASS: '\\u2705' }
 const LEVELS = ['FAIL', 'WARN', 'FIXED', 'INFO', 'NOT_APPLICABLE', 'PASS']
+const PROGRESS_MODES = ['auto', 'always', 'never']
 const SUMMARY_KEYS = ['fail', 'warn', 'fixed', 'info', 'notApplicable', 'pass']
 const RUN_KEYS = ['version', 'runId', 'record', 'mode', 'concern', 'target', 'generatedAt']
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
@@ -243,12 +244,22 @@ const SHORT = { FAIL: 'fail', WARN: 'warn', FIXED: 'fixed', INFO: 'info', NOT_AP
 const parseReporterOptions = (args) => {
   let levels = DEFAULT_REPORTER_LEVELS
   let skill
+  let progress = 'auto'
   const childArgs = []
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index]
     let value
     if (arg === '--reporter-levels') value = args[++index]
     else if (arg.startsWith('--reporter-levels=')) value = arg.slice('--reporter-levels='.length)
+    else if (arg === '--progress') {
+      progress = args[++index]
+      if (!PROGRESS_MODES.includes(progress)) throw new Error('--progress accepts ' + PROGRESS_MODES.join(', '))
+      continue
+    } else if (arg.startsWith('--progress=')) {
+      progress = arg.slice('--progress='.length)
+      if (!PROGRESS_MODES.includes(progress)) throw new Error('--progress accepts ' + PROGRESS_MODES.join(', '))
+      continue
+    }
     else if (arg === '--skill') {
       skill = args[++index]
       if (!skill || !/^ki-[a-z0-9-]+$/.test(skill)) throw new Error('--skill requires one canonical ki-* skill name')
@@ -267,7 +278,24 @@ const parseReporterOptions = (args) => {
       throw new Error('--reporter-levels accepts comma-separated values from ' + LEVELS.join(', ') + ', or all')
     levels = new Set(requested)
   }
-  return { levels, skill, childArgs }
+  return { levels, skill, progress, childArgs }
+}
+const progressBar = (completed, total) => {
+  const width = 12
+  if (total <= 0) return '[' + '.'.repeat(width) + ']'
+  const clamped = Math.max(0, Math.min(completed, total))
+  const filled = clamped === total ? width : Math.floor((clamped / total) * width)
+  return '[' + '#'.repeat(filled) + '.'.repeat(width - filled) + ']'
+}
+const createProgressTracker = (mode, total) => {
+  const interactive = Boolean(process.stderr.isTTY)
+  if (mode === 'never' || (mode === 'auto' && !interactive)) return { start: () => {}, active: () => {}, complete: () => {} }
+  const write = (completed, state, skill) => {
+    const prefix = verb.toUpperCase() + ' ' + progressBar(completed, total) + ' ' + completed + '/' + total
+    const detail = state === 'start' ? 'starting' : state === 'complete' ? 'complete' : skill + ' (' + (total - completed) + ' remaining)'
+    process.stderr.write((interactive ? '\\r\\x1b[2K' : '') + prefix + ' ' + detail + (interactive && state !== 'complete' ? '' : '\\n'))
+  }
+  return { start: () => write(0, 'start'), active: (completed, skill) => write(completed, 'active', skill), complete: () => write(total, 'complete') }
 }
 const findingLine = (icon, level, code, title, subject, msg, skill, full) =>
   '  ' + icon + ' ' + (SHORT[level] || level.toLowerCase()).padEnd(4) +
@@ -375,19 +403,25 @@ if (reporter.skill) {
   }
   checkers = [reporter.skill]
 }
+const progress = createProgressTracker(reporter.progress, checkers.length)
+progress.start()
+let completed = 0
 for (const skill of checkers) {
+  progress.active(completed, skill)
   const dir = join(checkersDir, skill)
   const entry = 'scripts/' + verb + '.ts'
   const scriptPath = join(dir, entry)
   if (!existsSync(scriptPath)) {
     failed = true
     reportErrors.push({ skill, errors: ['checker entry is missing: ' + entry] })
+    completed += 1
     continue
   }
   const scriptStat = lstatSync(scriptPath)
   if (!scriptStat.isFile() || scriptStat.isSymbolicLink()) {
     failed = true
     reportErrors.push({ skill, errors: ['checker entry is unsafe: ' + entry] })
+    completed += 1
     continue
   }
   // The renderer consumes --reporter-levels itself. All other flags (for example
@@ -400,12 +434,15 @@ for (const skill of checkers) {
   if (errors.length) {
     failed = true
     reportErrors.push({ skill, errors })
+    completed += 1
     continue
   }
   const findings = parsed.events.slice(1, -1)
   reports.push({ skill, key: 'ki:' + skill.replace(/^ki-/, '') + ':' + verb, findings, summary: parsed.events.at(-1).summary })
   if ((res.status ?? 0) !== 0) failed = true
+  completed += 1
 }
+progress.complete()
 for (const report of reports) {
   const visible = report.findings.filter((finding) => reporter.levels.has(finding.level))
   if (!visible.length) continue
@@ -485,15 +522,16 @@ process.exit(failed ? 1 : 0)
 // The package.json-free entry point vendored into every target: a tiny wrapper that
 // cd's to the repo root and runs the vendored aggregate. It lives under .ki-meta/bin/ so
 // the whole generated surface is dot-prefixed — off the repo's own bin/ and auto-ignored
-// by dotfile managers (chezmoi). Usage: ./.ki-meta/bin/ki-audit [verb] [--reporter-levels=<levels>].
+// by dotfile managers (chezmoi). Usage: ./.ki-meta/bin/ki-audit [verb] [--progress=<mode>] [--reporter-levels=<levels>].
 const BIN_KI_AUDIT = `#!/bin/sh
 # Vendored by ki-bootstrap — the package.json-free entry to a repo's self-check.
-# Usage: ./.ki-meta/bin/ki-audit [audit|conform|educate|help] [--dry-run ...] [--reporter-levels=<levels>]
+# Usage: ./.ki-meta/bin/ki-audit [audit|conform|educate|help] [--dry-run ...] [--progress=<auto|always|never>] [--reporter-levels=<levels>]
 set -eu
 case "\${1:-}" in
   -h|--help)
-    echo "usage: ki-audit [audit|conform|educate|help] [--dry-run ...] [--reporter-levels=<levels>]"
+    echo "usage: ki-audit [audit|conform|educate|help] [--dry-run ...] [--progress=<auto|always|never>] [--reporter-levels=<levels>]"
     echo "  runs each vendored skill checker under .ki-meta/checkers/ for the given verb."
+    echo "  progress defaults to auto; it applies only to audit and conform."
     echo "  reporter levels default to FAIL,WARN; use all or a comma-separated level list."
     echo "  audit    read-only self-check (the default verb)"
     echo "  conform  apply the mechanical fixes (same as ./.ki-meta/bin/ki-conform)"
@@ -519,13 +557,14 @@ exec bun ".ki-meta/bin/aggregate.ts" "$verb" "$@"
 // forward through — the verb is pinned, not the whole argument list.
 const BIN_KI_CONFORM = `#!/bin/sh
 # Vendored by ki-bootstrap — apply the mechanical fixes across the vendored set.
-# Usage: ./.ki-meta/bin/ki-conform [--dry-run] [--reporter-levels=<levels>]
+# Usage: ./.ki-meta/bin/ki-conform [--dry-run] [--progress=<auto|always|never>] [--reporter-levels=<levels>]
 set -eu
 case "\${1:-}" in
   -h|--help)
-    echo "usage: ki-conform [--dry-run] [--reporter-levels=<levels>]"
+    echo "usage: ki-conform [--dry-run] [--progress=<auto|always|never>] [--reporter-levels=<levels>]"
     echo "  applies each vendored skill's mechanical fixes across .ki-meta/checkers/."
     echo "  --dry-run  report what would change without writing."
+    echo "  progress defaults to auto; use always or never to override terminal detection."
     echo "  reporter levels default to FAIL,WARN,FIXED; use all or a comma-separated level list."
     exit 0
     ;;

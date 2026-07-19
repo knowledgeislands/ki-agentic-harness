@@ -11,7 +11,7 @@ import type { KiSkillsRubricContext } from './rubric/contexts/contexts.ts'
 import { createKiSkillsSubjects, KI_SKILLS_SUBJECT_FAMILIES } from './rubric/contexts/subjects.ts'
 import { KI_SKILLS_RUBRIC } from './rubric/items/index.ts'
 import { type CheckerEvaluationSubject, runChecker } from './shared/checker.ts'
-import { parseReporterArguments, renderCheckerResult } from './shared/reporter.ts'
+import { createTerminalStatusTracker, parseProgressArguments, parseReporterArguments, renderCheckerResult } from './shared/reporter.ts'
 
 const rawArgv = process.argv.slice(2)
 if (rawArgv.includes('-h') || rawArgv.includes('--help')) {
@@ -22,15 +22,18 @@ Audit Agent Skills against the mechanical aspects of the ki-skills rubric.
 Options:
   --footprint                  Include optional token-footprint measurements.
   --refresh-status             Report source-refresh status.
+  --progress <mode>            Progress: auto (default), always, or never.
   --reporter <reporter>        Output reporter: jsonl (default) or terminal.
   --reporter-levels <levels>   Terminal levels: comma-separated values or all.
   -h, --help                   Show this help and exit.
 `)
   process.exit(0)
 }
+let parsedProgress: ReturnType<typeof parseProgressArguments>
 let parsedReporter: ReturnType<typeof parseReporterArguments>
 try {
-  parsedReporter = parseReporterArguments(rawArgv)
+  parsedProgress = parseProgressArguments(rawArgv)
+  parsedReporter = parseReporterArguments(parsedProgress.arguments)
 } catch (error) {
   process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
   process.exit(2)
@@ -61,7 +64,12 @@ const result = runChecker({
   concern: 'skills',
   target: reportTarget,
   rubric: KI_SKILLS_RUBRIC,
-  subjects
+  subjects,
+  statusTracker: createTerminalStatusTracker({
+    mode: parsedProgress.mode,
+    interactive: Boolean(process.stderr.isTTY),
+    write: (line) => process.stderr.write(line)
+  })
 })
 
 process.stdout.write(

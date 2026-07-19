@@ -145,7 +145,9 @@ export const parseProgressArguments = (argv: readonly string[]): ParsedProgressA
 
 const progressBar = (completed: number, total: number): string => {
   const width = 12
-  const filled = total === 0 ? width : Math.min(width, Math.round((completed / total) * width))
+  if (total <= 0) return `[${'.'.repeat(width)}]`
+  const clamped = Math.max(0, Math.min(completed, total))
+  const filled = clamped === total ? width : Math.floor((clamped / total) * width)
   return `[${'#'.repeat(filled)}${'.'.repeat(width - filled)}]`
 }
 
@@ -154,7 +156,7 @@ const progressLine = (event: CheckerStatusEvent): string => {
   if (event.type === 'start') return `${prefix} starting`
   if (event.type === 'complete') return `${prefix} complete`
   if (event.type === 'failed') return `${prefix} failed`
-  return `${prefix} ${event.code}: ${event.title}${event.subject ? ` (${event.subject})` : ''}`
+  return `${prefix} ${event.code}`
 }
 
 export const createTerminalStatusTracker = ({

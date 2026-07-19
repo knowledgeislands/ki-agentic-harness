@@ -1,7 +1,18 @@
-import { CHECKER_LEVELS, type CheckerFinding, type CheckerLevel, type CheckerResult, type CheckerSummary, checkerJsonl } from './checker.ts'
+import {
+  CHECKER_LEVELS,
+  type CheckerFinding,
+  type CheckerLevel,
+  type CheckerResult,
+  type CheckerStatusEvent,
+  type CheckerStatusTracker,
+  type CheckerSummary,
+  checkerJsonl
+} from './checker.ts'
 
 export const REPORTERS = ['jsonl', 'terminal'] as const
 export type Reporter = (typeof REPORTERS)[number]
+export const PROGRESS_MODES = ['auto', 'always', 'never'] as const
+export type ProgressMode = (typeof PROGRESS_MODES)[number]
 
 export type ReporterOptions = {
   reporter: Reporter
@@ -12,6 +23,11 @@ export type ReporterOptions = {
 export type ParsedReporterArguments = {
   arguments: readonly string[]
   options: ReporterOptions
+}
+
+export type ParsedProgressArguments = {
+  arguments: readonly string[]
+  mode: ProgressMode
 }
 
 type TextStyle = (text: string) => string
@@ -108,6 +124,55 @@ export const parseReporterArguments = (argv: readonly string[]): ParsedReporterA
       ...(levels ? { levels } : {})
     }
   }
+}
+
+export const parseProgressArguments = (argv: readonly string[]): ParsedProgressArguments => {
+  const arguments_: string[] = []
+  let mode: ProgressMode = 'auto'
+  for (let index = 0; index < argv.length; index++) {
+    const argument = argv[index] as string
+    if (argument !== '--progress' && !argument.startsWith('--progress=')) {
+      arguments_.push(argument)
+      continue
+    }
+    const value = argument === '--progress' ? argv[++index] : argument.slice('--progress='.length)
+    if (!value || value.startsWith('-')) throw new Error('--progress requires a value')
+    if (!PROGRESS_MODES.includes(value as ProgressMode)) throw new Error(`--progress accepts ${PROGRESS_MODES.join(', ')}`)
+    mode = value as ProgressMode
+  }
+  return { arguments: arguments_, mode }
+}
+
+const progressBar = (completed: number, total: number): string => {
+  const width = 12
+  if (total <= 0) return `[${'.'.repeat(width)}]`
+  const clamped = Math.max(0, Math.min(completed, total))
+  const filled = clamped === total ? width : Math.floor((clamped / total) * width)
+  return `[${'#'.repeat(filled)}${'.'.repeat(width - filled)}]`
+}
+
+const progressLine = (event: CheckerStatusEvent): string => {
+  const prefix = `${event.mode.toUpperCase()} ${progressBar(event.completed, event.total)} ${event.completed}/${event.total}`
+  if (event.type === 'start') return `${prefix} starting`
+  if (event.type === 'complete') return `${prefix} complete`
+  if (event.type === 'failed') return `${prefix} failed`
+  return `${prefix} ${event.code}`
+}
+
+export const createTerminalStatusTracker = ({
+  mode,
+  interactive,
+  write
+}: {
+  mode: ProgressMode
+  interactive: boolean
+  write: (line: string) => void
+}): CheckerStatusTracker | undefined => {
+  if (mode === 'never' || (mode === 'auto' && !interactive)) return undefined
+  return (event: CheckerStatusEvent): void =>
+    write(
+      `${interactive ? '\r\x1b[2K' : ''}${progressLine(event)}${event.type === 'complete' || event.type === 'failed' || !interactive ? '\n' : ''}`
+    )
 }
 
 export const renderCheckerResult = (result: CheckerResult, options: ReporterOptions): string => {

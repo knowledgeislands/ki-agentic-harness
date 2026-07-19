@@ -48,7 +48,7 @@ describe('checker reporter arguments', () => {
     tracker?.({ type: 'complete', mode: 'audit', completed: 2, total: 2 })
     expect(lines).toEqual([
       'AUDIT [............] 0/2 starting\n',
-      'AUDIT [######......] 1/2 NAME-1: name matches\n',
+      'AUDIT [######......] 1/2 NAME-1\n',
       'AUDIT [############] 2/2 complete\n'
     ])
   })
@@ -63,5 +63,13 @@ describe('checker reporter arguments', () => {
     const tracker = createTerminalStatusTracker({ mode: 'auto', interactive: true, write: (line) => lines.push(line) })
     tracker?.({ type: 'failed', mode: 'conform', completed: 2, total: 4 })
     expect(lines).toEqual(['\r\x1b[2KCONFORM [######......] 2/4 failed\n'])
+  })
+
+  test('does not display a complete bar before the last item or for no planned work', () => {
+    const lines: string[] = []
+    const tracker = createTerminalStatusTracker({ mode: 'always', interactive: false, write: (line) => lines.push(line) })
+    tracker?.({ type: 'item-complete', mode: 'audit', completed: 2, total: 3, code: 'SHAPE-2', title: 'unused', phase: 'INSPECT' })
+    tracker?.({ type: 'complete', mode: 'audit', completed: 0, total: 0 })
+    expect(lines).toEqual(['AUDIT [########....] 2/3 SHAPE-2\n', 'AUDIT [............] 0/0 complete\n'])
   })
 })

@@ -6,7 +6,7 @@ import type { KiSkillsRubricContext } from './rubric/contexts/contexts.ts'
 import { createKiSkillsSubjects, KI_SKILLS_SUBJECT_FAMILIES } from './rubric/contexts/subjects.ts'
 import { KI_SKILLS_RUBRIC } from './rubric/items/index.ts'
 import { type CheckerEvaluationSubject, runChecker } from './shared/checker.ts'
-import { parseReporterArguments, renderCheckerResult } from './shared/reporter.ts'
+import { createTerminalStatusTracker, parseProgressArguments, parseReporterArguments, renderCheckerResult } from './shared/reporter.ts'
 
 const argv = process.argv.slice(2)
 if (argv.includes('-h') || argv.includes('--help')) {
@@ -16,15 +16,18 @@ Apply safe mechanical fixes from the ki-skills rubric.
 
 Options:
   --dry-run                    Report changes without writing them.
+  --progress <mode>            Progress: auto (default), always, or never.
   --reporter <reporter>        Output reporter: jsonl (default) or terminal.
   --reporter-levels <levels>   Terminal levels: comma-separated values or all.
   -h, --help                   Show this help and exit.
 `)
   process.exit(0)
 }
+let parsedProgress: ReturnType<typeof parseProgressArguments>
 let parsedReporter: ReturnType<typeof parseReporterArguments>
 try {
-  parsedReporter = parseReporterArguments(argv)
+  parsedProgress = parseProgressArguments(argv)
+  parsedReporter = parseReporterArguments(parsedProgress.arguments)
 } catch (error) {
   process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
   process.exit(2)
@@ -59,7 +62,12 @@ const result = runChecker({
   concern: 'skills',
   target: reportTarget,
   rubric: KI_SKILLS_RUBRIC,
-  subjects
+  subjects,
+  statusTracker: createTerminalStatusTracker({
+    mode: parsedProgress.mode,
+    interactive: Boolean(process.stderr.isTTY),
+    write: (line) => process.stderr.write(line)
+  })
 })
 
 scope.persist()

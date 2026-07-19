@@ -12,9 +12,9 @@ const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
 const CONFORM = join(SCRIPT_DIR, 'conform.ts')
 const AUDIT = join(SCRIPT_DIR, 'audit.ts')
 
-const run = (script: string, target: string, ...args: string[]): { output: string; status: number | null } => {
+const run = (script: string, target: string, ...args: string[]): { stdout: string; stderr: string; status: number | null } => {
   const result = spawnSync('bun', [script, target, ...args], { encoding: 'utf8' })
-  return { output: `${result.stdout ?? ''}${result.stderr ?? ''}`, status: result.status }
+  return { stdout: result.stdout ?? '', stderr: result.stderr ?? '', status: result.status }
 }
 
 const findings = (output: string): readonly Record<string, unknown>[] =>
@@ -74,6 +74,7 @@ describe('ki-skills CONFORM wrapper', () => {
     expect(result.status).toBe(0)
     expect(result.stdout).toContain('Usage: bun scripts/conform.ts')
     expect(result.stdout).toContain('--dry-run')
+    expect(result.stdout).toContain('--progress <mode>')
     expect(result.stdout).toContain('--reporter <reporter>')
     expect(result.stdout).toContain('--reporter-levels <levels>')
     expect(result.stdout).not.toContain('"record"')
@@ -84,9 +85,21 @@ describe('ki-skills CONFORM wrapper', () => {
     try {
       const result = run(CONFORM, dir, '--reporter=terminal')
       expect(result.status).toBe(0)
-      expect(result.output).toContain('FIXED')
-      expect(result.output).toContain('Summary: FAIL=0')
-      expect(result.output).not.toContain('"record"')
+      expect(result.stdout).toContain('FIXED')
+      expect(result.stdout).toContain('Summary: FAIL=0')
+      expect(result.stdout).not.toContain('"record"')
+    } finally {
+      rmSync(base, { recursive: true, force: true })
+    }
+  })
+
+  test('reports rubric progress on stderr without contaminating canonical stdout', () => {
+    const { base, dir } = fixture()
+    try {
+      const result = run(CONFORM, dir, '--progress=always')
+      expect(parseCheckerJsonl(result.stdout).errors).toEqual([])
+      expect(result.stderr).toContain('CONFORM [')
+      expect(result.stderr).toContain(' complete\n')
     } finally {
       rmSync(base, { recursive: true, force: true })
     }
@@ -108,9 +121,9 @@ describe('ki-skills CONFORM wrapper', () => {
     try {
       const result = run(CONFORM, dir)
       const repaired = readFileSync(join(dir, 'SKILL.md'), 'utf8')
-      const conformFindings = findings(result.output)
+      const conformFindings = findings(result.stdout)
 
-      expect(parseCheckerJsonl(result.output).errors).toEqual([])
+      expect(parseCheckerJsonl(result.stdout).errors).toEqual([])
       expect(conformFindings.some((finding) => finding.level === 'FIXED')).toBe(true)
       expect({ status: result.status, failures: conformFindings.filter((finding) => finding.level === 'FAIL') }).toEqual({
         status: 0,
@@ -130,9 +143,9 @@ describe('ki-skills CONFORM wrapper', () => {
     try {
       const before = readFileSync(join(dir, 'SKILL.md'), 'utf8')
       const result = run(CONFORM, dir, '--dry-run')
-      expect(findings(result.output).some((finding) => finding.level === 'FIXED')).toBe(true)
+      expect(findings(result.stdout).some((finding) => finding.level === 'FIXED')).toBe(true)
       expect(readFileSync(join(dir, 'SKILL.md'), 'utf8')).toBe(before)
-      expect({ status: result.status, failures: findings(result.output).filter((finding) => finding.level === 'FAIL') }).toEqual({
+      expect({ status: result.status, failures: findings(result.stdout).filter((finding) => finding.level === 'FAIL') }).toEqual({
         status: 0,
         failures: []
       })
@@ -152,7 +165,7 @@ describe('ki-skills CONFORM wrapper', () => {
       writeFileSync(join(dir, 'SKILL.md'), skillMd)
       try {
         const result = run(CONFORM, dir)
-        const output = findings(result.output)
+        const output = findings(result.stdout)
         expect(result.status).toBe(1)
         expect(output.some((finding) => finding.code === 'FM-1' && finding.level === 'FAIL')).toBe(true)
         expect(output.some((finding) => finding.code === 'NAME-1')).toBe(false)

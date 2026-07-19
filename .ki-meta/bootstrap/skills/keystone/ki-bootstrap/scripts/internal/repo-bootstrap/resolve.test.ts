@@ -81,10 +81,7 @@ description = """
 # [ki-commented-out]
 coverage-extra = "[ki-value-only]"
 `)
-check(
-  'parser → exact/dotted roots are deduplicated and sorted',
-  JSON.stringify(parsed) === JSON.stringify(['ki-bootstrap', 'ki-housekeeping', 'ki-plan'])
-)
+check('parser → exact/dotted roots are deduplicated and sorted', JSON.stringify(parsed) === JSON.stringify(['ki-bootstrap', 'ki-housekeeping', 'ki-plan']))
 
 const bootstrapModules = sharedDependenciesOf('ki-bootstrap')
 check(
@@ -100,11 +97,7 @@ check(
   'shared module → every declared dependency resolves a provider file payload',
   bootstrapModules.every((module) => {
     const payload = sharedModulePayload(module)
-    return (
-      payload.kind === 'file' &&
-      payload.targetName === `${module.module}.ts` &&
-      payload.source.endsWith(`ki-skills/scripts/shared/${module.module}.ts`)
-    )
+    return payload.kind === 'file' && payload.targetName === `${module.module}.ts` && payload.source.endsWith(`ki-skills/scripts/shared/${module.module}.ts`)
   })
 )
 
@@ -303,14 +296,8 @@ try {
   const localWholeSet = spawnSync(join(seededRepo, '.ki-meta', 'bin', 'ki-educate'), ['--dry-run'], { encoding: 'utf8' })
   const beforeRejectedEducator = snapshot(seededRepo)
   const rejectedEducator = spawnSync(join(seededRepo, '.ki-meta', 'bin', 'ki-educate'), ['ki-repo/escape'], { encoding: 'utf8' })
-  check(
-    'seeded ki-repo → vendors a self-contained target-local educator',
-    existsSync(educator) && !readFileSync(educator, 'utf8').includes('curl')
-  )
-  check(
-    'seeded ki-repo → selected educator dispatches locally',
-    educatorHelp.status === 0 && educatorHelp.stdout.includes('Refresh only ki-repo')
-  )
+  check('seeded ki-repo → vendors a self-contained target-local educator', existsSync(educator) && !readFileSync(educator, 'utf8').includes('curl'))
+  check('seeded ki-repo → selected educator dispatches locally', educatorHelp.status === 0 && educatorHelp.stdout.includes('Refresh only ki-repo'))
   check(
     'seeded ki-repo → single-skill EDUCATE refreshes only local skill payloads',
     singleSkillEducate.status === 0 && singleSkillEducate.stdout.includes('EDUCATE complete — ki-repo')
@@ -319,10 +306,7 @@ try {
     'seeded ki-repo → retains a local whole-set bootstrap coordinator',
     existsSync(localEngine) && !readFileSync(join(seededRepo, '.ki-meta', 'bin', 'ki-educate'), 'utf8').includes('curl')
   )
-  check(
-    'seeded ki-repo → whole-set EDUCATE runs from local material',
-    localWholeSet.status === 0 && localWholeSet.stdout.includes('EDUCATE dry run complete')
-  )
+  check('seeded ki-repo → whole-set EDUCATE runs from local material', localWholeSet.status === 0 && localWholeSet.stdout.includes('EDUCATE dry run complete'))
   check(
     'seeded ki-repo → unsafe selected educator is rejected without writing',
     rejectedEducator.status === 2 && snapshot(seededRepo) === beforeRejectedEducator
@@ -344,9 +328,7 @@ try {
   check('shared-module provider → bootstrap exits cleanly', result.status === 0)
   check(
     'shared-module provider → owns its standalone local module closure',
-    ['rubric', 'checker', 'reporter'].every((module) =>
-      existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'shared', `${module}.ts`))
-    )
+    ['rubric', 'checker', 'reporter'].every((module) => existsSync(join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'shared', `${module}.ts`)))
   )
   const vendoredRubricItem = join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'rubric', 'items', 'index.ts')
   const vendoredRubricContext = join(checkerRoot, '.ki-meta', 'checkers', 'ki-skills', 'scripts', 'rubric', 'contexts', 'subjects.ts')
@@ -378,6 +360,23 @@ try {
     'aggregate → renders a valid canonical stream without treating it as malformed',
     canonicalAggregate.stdout.includes('summary:') && !canonicalAggregate.stdout.includes('invalid checker reports')
   )
+
+  const progressAggregate = spawnSync('bun', [aggregate, 'audit', '--skill', 'ki-skills', '--progress=always'], {
+    cwd: checkerRoot,
+    encoding: 'utf8'
+  })
+  check(
+    'aggregate → reports its active skill on stderr without contaminating final output',
+    progressAggregate.stderr.includes('AUDIT [') &&
+      progressAggregate.stderr.includes('ki-skills') &&
+      !progressAggregate.stdout.includes('AUDIT [') &&
+      !progressAggregate.stdout.includes('checker wrote to stderr')
+  )
+  const quietAggregate = spawnSync('bun', [aggregate, 'audit', '--skill', 'ki-skills', '--progress=never'], {
+    cwd: checkerRoot,
+    encoding: 'utf8'
+  })
+  check('aggregate → suppresses progress explicitly', quietAggregate.stderr === '' && !quietAggregate.stdout.includes('checker wrote to stderr'))
 
   const largeSkill = join(checkerRoot, '.ki-meta', 'checkers', 'ki-large', 'scripts')
   mkdirSync(largeSkill, { recursive: true })
@@ -424,16 +423,7 @@ const temporaryHarness = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-t
 const temporaryTarget = fixture()
 try {
   cpSync(SKILLS_ROOT, join(temporaryHarness, 'skills'), { recursive: true, dereference: true })
-  const temporaryBootstrap = join(
-    temporaryHarness,
-    'skills',
-    'keystone',
-    'ki-bootstrap',
-    'scripts',
-    'internal',
-    'repo-bootstrap',
-    'repo-bootstrap.ts'
-  )
+  const temporaryBootstrap = join(temporaryHarness, 'skills', 'keystone', 'ki-bootstrap', 'scripts', 'internal', 'repo-bootstrap', 'repo-bootstrap.ts')
   const result = spawnSync('bun', [temporaryBootstrap, temporaryTarget, '--seed', 'ki-repo'], { encoding: 'utf8' })
   rmSync(temporaryHarness, { recursive: true, force: true })
   const copiedSkill = join(temporaryTarget, '.claude', 'skills', 'ki-repo', 'SKILL.md')
@@ -450,23 +440,11 @@ try {
 const selfBootstrappingHarness = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-self-source-')))
 try {
   cpSync(SKILLS_ROOT, join(selfBootstrappingHarness, 'skills'), { recursive: true, dereference: true })
-  const selfBootstrap = join(
-    selfBootstrappingHarness,
-    'skills',
-    'keystone',
-    'ki-bootstrap',
-    'scripts',
-    'internal',
-    'repo-bootstrap',
-    'repo-bootstrap.ts'
-  )
+  const selfBootstrap = join(selfBootstrappingHarness, 'skills', 'keystone', 'ki-bootstrap', 'scripts', 'internal', 'repo-bootstrap', 'repo-bootstrap.ts')
   const result = spawnSync('bun', [selfBootstrap, selfBootstrappingHarness, '--seed', 'ki-repo'], { encoding: 'utf8' })
   const selfPayload = join(selfBootstrappingHarness, '.claude', 'skills', 'ki-repo')
   check('source harness bootstrap → exits cleanly', result.status === 0)
-  check(
-    'source harness bootstrap → publishes regular runtime copies',
-    lstatSync(selfPayload).isDirectory() && !lstatSync(selfPayload).isSymbolicLink()
-  )
+  check('source harness bootstrap → publishes regular runtime copies', lstatSync(selfPayload).isDirectory() && !lstatSync(selfPayload).isSymbolicLink())
 } finally {
   rmSync(selfBootstrappingHarness, { recursive: true, force: true })
 }
@@ -492,9 +470,7 @@ try {
   check('seeded ki-repo dry-run → exits cleanly', result.status === 0)
   check(
     'seeded ki-repo dry-run → reports planned vendor and runtime actions',
-    result.stdout.includes('\x1b[32mvendor') &&
-      result.stdout.includes('\x1b[32mignore') &&
-      result.stdout.includes('EDUCATE dry run complete')
+    result.stdout.includes('\x1b[32mvendor') && result.stdout.includes('\x1b[32mignore') && result.stdout.includes('EDUCATE dry run complete')
   )
   check(
     'seeded ki-repo dry-run → writes neither config nor vendored state',
@@ -567,10 +543,7 @@ try {
     const repairedAudit = spawnSync('bun', [AUDIT, sourceBearing], { encoding: 'utf8' })
     const repairedReport = auditReport(repairedAudit.stdout)
     const repairedBoot11 = repairedReport.findings?.find((finding) => finding.area === 'BOOT-11')
-    check(
-      `BOOT-11 re-bootstrap repairs ${mode}.ts drift`,
-      repaired.status === 0 && repairedAudit.status === 0 && repairedBoot11?.level === 'PASS'
-    )
+    check(`BOOT-11 re-bootstrap repairs ${mode}.ts drift`, repaired.status === 0 && repairedAudit.status === 0 && repairedBoot11?.level === 'PASS')
   }
 
   const canonicalAudit = join(targetSource, 'scripts', 'audit.ts')
@@ -580,8 +553,7 @@ try {
   const missingSourceReport = auditReport(missingSourceAudit.stdout)
   check(
     'BOOT-11 missing declared canonical source → ship-blocking FAIL',
-    (missingSourceAudit.status ?? 0) !== 0 &&
-      missingSourceReport.findings?.some((finding) => finding.area === 'BOOT-11' && finding.level === 'FAIL') === true
+    (missingSourceAudit.status ?? 0) !== 0 && missingSourceReport.findings?.some((finding) => finding.area === 'BOOT-11' && finding.level === 'FAIL') === true
   )
   writeFileSync(canonicalAudit, canonicalAuditBytes)
 
@@ -593,8 +565,7 @@ try {
   const symlinkReport = auditReport(symlinkAudit.stdout)
   check(
     'BOOT-11 symlinked vendor → ship-blocking FAIL',
-    (symlinkAudit.status ?? 0) !== 0 &&
-      symlinkReport.findings?.some((finding) => finding.area === 'BOOT-11' && finding.level === 'FAIL') === true
+    (symlinkAudit.status ?? 0) !== 0 && symlinkReport.findings?.some((finding) => finding.area === 'BOOT-11' && finding.level === 'FAIL') === true
   )
   rmSync(vendoredAudit)
   writeFileSync(vendoredAudit, vendoredAuditBytes)
@@ -609,10 +580,7 @@ try {
   const report = auditReport(audit.stdout)
   const boot11 = report.findings?.find((finding) => finding.area === 'BOOT-11')
   check('BOOT-11 external consumer without canonical source → bootstrap exits cleanly', bootstrapped.status === 0)
-  check(
-    'BOOT-11 external consumer without canonical source → explicit NOT_APPLICABLE, not failure',
-    audit.status === 0 && boot11?.level === 'NOT_APPLICABLE'
-  )
+  check('BOOT-11 external consumer without canonical source → explicit NOT_APPLICABLE, not failure', audit.status === 0 && boot11?.level === 'NOT_APPLICABLE')
 } finally {
   rmSync(externalConsumer, { recursive: true, force: true })
 }

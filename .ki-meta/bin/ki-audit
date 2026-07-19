@@ -1,11 +1,12 @@
 #!/bin/sh
 # Vendored by ki-bootstrap — the package.json-free entry to a repo's self-check.
-# Usage: ./.ki-meta/bin/ki-audit [audit|conform|educate|help] [--dry-run ...] [--reporter-levels=<levels>]
+# Usage: ./.ki-meta/bin/ki-audit [audit|conform|educate|help] [--dry-run ...] [--progress=<auto|always|never>] [--reporter-levels=<levels>]
 set -eu
 case "${1:-}" in
   -h|--help)
-    echo "usage: ki-audit [audit|conform|educate|help] [--dry-run ...] [--reporter-levels=<levels>]"
+    echo "usage: ki-audit [audit|conform|educate|help] [--dry-run ...] [--progress=<auto|always|never>] [--reporter-levels=<levels>]"
     echo "  runs each vendored skill checker under .ki-meta/checkers/ for the given verb."
+    echo "  progress defaults to auto; it applies only to audit and conform."
     echo "  reporter levels default to FAIL,WARN; use all or a comma-separated level list."
     echo "  audit    read-only self-check (the default verb)"
     echo "  conform  apply the mechanical fixes (same as ./.ki-meta/bin/ki-conform)"

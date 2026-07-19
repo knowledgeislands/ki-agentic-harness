@@ -10,9 +10,9 @@ import { parseCheckerJsonl } from './shared/checker.ts'
 
 const AUDIT = join(dirname(fileURLToPath(import.meta.url)), 'audit.ts')
 
-const run = (target: string, ...args: string[]): { output: string; status: number | null } => {
+const run = (target: string, ...args: string[]): { stdout: string; stderr: string; status: number | null } => {
   const result = spawnSync('bun', [AUDIT, target, ...args], { encoding: 'utf8' })
-  return { output: `${result.stdout ?? ''}${result.stderr ?? ''}`, status: result.status }
+  return { stdout: result.stdout ?? '', stderr: result.stderr ?? '', status: result.status }
 }
 
 const fixture = (): { base: string; dir: string } => {
@@ -45,6 +45,7 @@ describe('ki-skills AUDIT wrapper', () => {
     expect(result.status).toBe(0)
     expect(result.stdout).toContain('Usage: bun scripts/audit.ts')
     expect(result.stdout).toContain('--footprint')
+    expect(result.stdout).toContain('--progress <mode>')
     expect(result.stdout).toContain('--reporter <reporter>')
     expect(result.stdout).toContain('--reporter-levels <levels>')
     expect(result.stdout).not.toContain('"record"')
@@ -54,10 +55,10 @@ describe('ki-skills AUDIT wrapper', () => {
     const { base, dir } = fixture()
     try {
       const result = run(dir, '--reporter=terminal', '--reporter-levels=all')
-      expect(result.output).toContain('PASS')
-      expect(result.output).toContain('SKILL.md exists at the skill root (LAY-1)')
-      expect(result.output).toContain('Summary: FAIL=')
-      expect(result.output).not.toContain('"record"')
+      expect(result.stdout).toContain('PASS')
+      expect(result.stdout).toContain('SKILL.md exists at the skill root (LAY-1)')
+      expect(result.stdout).toContain('Summary: FAIL=')
+      expect(result.stdout).not.toContain('"record"')
     } finally {
       rmSync(base, { recursive: true, force: true })
     }
@@ -79,7 +80,7 @@ describe('ki-skills AUDIT wrapper', () => {
     const { base, dir } = fixture()
     try {
       const result = run(dir)
-      const parsed = parseCheckerJsonl(result.output)
+      const parsed = parseCheckerJsonl(result.stdout)
       const findings = parsed.records.filter(
         (record): record is Record<string, unknown> =>
           typeof record === 'object' && record !== null && (record as { record?: unknown }).record === 'finding'
@@ -98,13 +99,25 @@ describe('ki-skills AUDIT wrapper', () => {
     }
   })
 
+  test('reports rubric progress on stderr without contaminating canonical stdout', () => {
+    const { base, dir } = fixture()
+    try {
+      const result = run(dir, '--progress=always')
+      expect(parseCheckerJsonl(result.stdout).errors).toEqual([])
+      expect(result.stderr).toContain('AUDIT [')
+      expect(result.stderr).toContain(' complete\n')
+    } finally {
+      rmSync(base, { recursive: true, force: true })
+    }
+  })
+
   test('returns LAY-1 FAIL when SKILL.md is missing', () => {
     const base = mkdtempSync(join(tmpdir(), 'ki-skills-audit-'))
     const dir = join(base, 'missing-skill')
     mkdirSync(dir)
     try {
       const result = run(dir)
-      const parsed = parseCheckerJsonl(result.output)
+      const parsed = parseCheckerJsonl(result.stdout)
       expect(result.status).toBe(1)
       expect(
         parsed.records.some(
@@ -121,7 +134,7 @@ describe('ki-skills AUDIT wrapper', () => {
     writeFileSync(join(dir, 'scripts', 'audit.ts'), 'void 0\n')
     try {
       const result = run(dir)
-      const parsed = parseCheckerJsonl(result.output)
+      const parsed = parseCheckerJsonl(result.stdout)
       expect(result.status).toBe(1)
       expect(
         parsed.records.some(
@@ -141,7 +154,7 @@ describe('ki-skills AUDIT wrapper', () => {
     writeFileSync(join(dir, 'scripts', 'publish.sh'), '#!/bin/sh\nexit 0\n')
     try {
       const result = run(dir)
-      const parsed = parseCheckerJsonl(result.output)
+      const parsed = parseCheckerJsonl(result.stdout)
       expect(result.status).toBe(1)
       expect(
         parsed.records.some(
@@ -170,7 +183,7 @@ describe('ki-skills AUDIT wrapper', () => {
     )
     try {
       const result = run(dir)
-      const parsed = parseCheckerJsonl(result.output)
+      const parsed = parseCheckerJsonl(result.stdout)
       expect(result.status).toBe(0)
       expect(
         parsed.records.some(
@@ -196,7 +209,7 @@ describe('ki-skills AUDIT wrapper', () => {
     )
     try {
       const result = run(dir)
-      const parsed = parseCheckerJsonl(result.output)
+      const parsed = parseCheckerJsonl(result.stdout)
       expect(result.status).toBe(1)
       expect(
         parsed.records.some(

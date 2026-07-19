@@ -518,6 +518,8 @@ Do not migrate another skill until these seven units pass review as the root exe
 
 Apply the model to one governance skill at a time after `ki-skills` proves it.
 
+Use an exemplar-first rollout: prove the root skill, then migrate exactly one dependent skill as the end-to-end contract proof, including its vendored modules and generated footprint. Gate that consumer before mechanically applying the established shape to further compatible skills. Do not generalise an unproved root contract across the fleet.
+
 - Confirm the standard and source list are current enough to serve as inputs.
 - Codify every criterion into ordered families without changing its meaning or stable code.
 - Declare each mechanical item's AUDIT and optional CONFORM executions and phases in the same catalogue.

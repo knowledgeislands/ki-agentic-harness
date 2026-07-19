@@ -379,6 +379,26 @@ try {
     canonicalAggregate.stdout.includes('summary:') && !canonicalAggregate.stdout.includes('invalid checker reports')
   )
 
+  const progressAggregate = spawnSync('bun', [aggregate, 'audit', '--skill', 'ki-skills', '--progress=always'], {
+    cwd: checkerRoot,
+    encoding: 'utf8'
+  })
+  check(
+    'aggregate → reports its active skill on stderr without contaminating final output',
+    progressAggregate.stderr.includes('AUDIT [') &&
+      progressAggregate.stderr.includes('ki-skills') &&
+      !progressAggregate.stdout.includes('AUDIT [') &&
+      !progressAggregate.stdout.includes('checker wrote to stderr')
+  )
+  const quietAggregate = spawnSync('bun', [aggregate, 'audit', '--skill', 'ki-skills', '--progress=never'], {
+    cwd: checkerRoot,
+    encoding: 'utf8'
+  })
+  check(
+    'aggregate → suppresses progress explicitly',
+    quietAggregate.stderr === '' && !quietAggregate.stdout.includes('checker wrote to stderr')
+  )
+
   const largeSkill = join(checkerRoot, '.ki-meta', 'checkers', 'ki-large', 'scripts')
   mkdirSync(largeSkill, { recursive: true })
   writeFileSync(

@@ -1,12 +1,13 @@
 #!/bin/sh
 # Vendored by ki-bootstrap — apply the mechanical fixes across the vendored set.
-# Usage: ./.ki-meta/bin/ki-conform [--dry-run] [--reporter-levels=<levels>]
+# Usage: ./.ki-meta/bin/ki-conform [--dry-run] [--progress=<auto|always|never>] [--reporter-levels=<levels>]
 set -eu
 case "${1:-}" in
   -h|--help)
-    echo "usage: ki-conform [--dry-run] [--reporter-levels=<levels>]"
+    echo "usage: ki-conform [--dry-run] [--progress=<auto|always|never>] [--reporter-levels=<levels>]"
     echo "  applies each vendored skill's mechanical fixes across .ki-meta/checkers/."
     echo "  --dry-run  report what would change without writing."
+    echo "  progress defaults to auto; use always or never to override terminal detection."
     echo "  reporter levels default to FAIL,WARN,FIXED; use all or a comma-separated level list."
     exit 0
     ;;
