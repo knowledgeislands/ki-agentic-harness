@@ -5,7 +5,15 @@ import { KI_KB_STREAMS_RUBRIC } from './items/index.ts'
 
 const destination = fileURLToPath(new URL('../../references/rubric.md', import.meta.url))
 export const renderRubric = <Context>(rubric: RubricDefinition<Context>): string =>
-  `<!-- GENERATED FILE: edit scripts/rubric/items/, not this publication. -->\n\n# Generated rubric — ${rubric.concern}\n\n> **Generated publication.** The TypeScript rubric items under \`scripts/rubric/items/\` are canonical.\n\n## Contents\n\n${rubric.families.map((family) => `- [${family.code} — ${family.title}](#${family.code.toLowerCase()}--${family.title.replaceAll(' ', '-')})`).join('\n')}\n\n${rubric.families
+  `<!-- GENERATED FILE: edit scripts/rubric/items/, not this publication. -->\n\n# Generated rubric — ${rubric.concern}\n\n> **Generated publication.** The TypeScript rubric items under \`scripts/rubric/items/\` are canonical.\n\n## Contents\n\n${rubric.families
+    .map(
+      (family) =>
+        `- [${family.code} — ${family.title}](#${family.code.toLowerCase()}--${family.title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '')})`
+    )
+    .join('\n')}\n\n${rubric.families
     .map(
       (family) =>
         `## ${family.code} — ${family.title}\n\n${family.description}\n\n${family.items

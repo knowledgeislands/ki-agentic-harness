@@ -18,7 +18,15 @@ export const renderRubric = <Context>(
 
 ## Contents
 
-${rubric.families.map((family) => `- [${family.code} — ${family.title}](#${family.code.toLowerCase()}--${family.title.replaceAll(' ', '-')})`).join('\n')}
+${rubric.families
+  .map(
+    (family) =>
+      `- [${family.code} — ${family.title}](#${family.code.toLowerCase()}--${family.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')})`
+  )
+  .join('\n')}
 
 ${rubric.families.map((family) => `## ${family.code} — ${family.title}\n\n→ [standard](${family.standard})\n\n${family.description}\n\n${family.items.map((item) => `- **${item.code} [${classification(item)}] — ${item.title}** — ${item.description}${item.judgment ? `\n  - _Review prompt:_ ${item.judgment.prompt}` : ''} (${item.sources.join(', ')})`).join('\n')}`).join('\n\n')}
 `

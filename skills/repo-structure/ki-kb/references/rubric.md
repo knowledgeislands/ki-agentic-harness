@@ -7,8 +7,8 @@
 ## Contents
 
 - [ZONE — zone layout](#zone--zone-layout)
-- [CONFIG — KB configuration](#config--KB-configuration)
-- [ADMIN — Admin zone](#admin--Admin-zone)
+- [CONFIG — KB configuration](#config--kb-configuration)
+- [ADMIN — Admin zone](#admin--admin-zone)
 - [ROUTE — routing and placement](#route--routing-and-placement)
 - [NOTE — note conventions](#note--note-conventions)
 - [MEM — memory cascade](#mem--memory-cascade)

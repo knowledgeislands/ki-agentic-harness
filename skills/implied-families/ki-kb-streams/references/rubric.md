@@ -6,10 +6,10 @@
 
 ## Contents
 
-- [STREAM — Streams structure](#stream--Streams-structure)
-- [ENACT — Enactment Process](#enact--Enactment-Process)
+- [STREAM — Streams structure](#stream--streams-structure)
+- [ENACT — Enactment Process](#enact--enactment-process)
 - [GATE — always-loaded gate](#gate--always-loaded-gate)
-- [CONFIG — Streams configuration](#config--Streams-configuration)
+- [CONFIG — Streams configuration](#config--streams-configuration)
 
 ## STREAM — Streams structure
 

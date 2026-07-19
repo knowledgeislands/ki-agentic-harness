@@ -6,16 +6,16 @@
 
 ## Contents
 
-- [SCOPE — scope](#scope-scope)
-- [PROFILE — profile](#profile-profile)
-- [ROAD — roadmaps](#road-roadmaps)
-- [THEME — themes](#theme-themes)
-- [ITEM — items](#item-items)
-- [PROJ — portfolio projection](#proj-portfolio-projection)
-- [PLAN — plans](#plan-plans)
-- [INDEX — index](#index-index)
-- [SAFE — safe mechanics](#safe-safe-mechanics)
-- [EXPAND — expansion](#expand-expansion)
+- [SCOPE — scope](#scope--scope)
+- [PROFILE — profile](#profile--profile)
+- [ROAD — roadmaps](#road--roadmaps)
+- [THEME — themes](#theme--themes)
+- [ITEM — items](#item--items)
+- [PROJ — portfolio projection](#proj--portfolio-projection)
+- [PLAN — plans](#plan--plans)
+- [INDEX — index](#index--index)
+- [SAFE — safe mechanics](#safe--safe-mechanics)
+- [EXPAND — expansion](#expand--expansion)
 
 ## SCOPE — scope
 

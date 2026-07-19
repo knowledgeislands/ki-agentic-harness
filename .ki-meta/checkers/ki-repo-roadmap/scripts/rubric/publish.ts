@@ -20,7 +20,15 @@ export const renderRubric = <RootContext>(definition: RubricDefinition<RootConte
 
 ## Contents
 
-${definition.families.map((family) => `- [${family.code} — ${family.title}](#${family.code.toLowerCase()}-${family.title.replace(/[^a-z0-9]+/gi, '-')})`).join('\n')}
+${definition.families
+  .map(
+    (family) =>
+      `- [${family.code} — ${family.title}](#${family.code.toLowerCase()}--${family.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')})`
+  )
+  .join('\n')}
 
 ${definition.families.map((family) => `## ${family.code} — ${family.title}\n\n→ [standard](${family.standard})\n\n${family.description}\n\n${family.items.map(renderItem).join('\n')}`).join('\n\n')}
 `
