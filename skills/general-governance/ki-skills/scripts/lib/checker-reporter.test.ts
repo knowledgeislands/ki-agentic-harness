@@ -112,7 +112,7 @@ try {
   const rubric = join(rubricFixture, 'rubric.md')
   writeFileSync(
     rubric,
-    '- **RULE-1 [M]** Mechanical requirement\n- **MD-table [J]** Table judgment\n- **JUDGMENT [M + J]** Review both halves\n- **[J] DEC-1** Alternate rubric ordering\n- [ ] **WEB-2** [M] WARN — Rendered title form\n- **legacy label [M]** `` `LEGACY-1` `` Legacy rubric form\n'
+    '- **RULE-1 [M]** Mechanical requirement\n- **MD-table [J]** Table judgment\n- **JUDGMENT [M + J]** Review both halves\n- **[J] DEC-1** Alternate rubric ordering\n- [ ] **WEB-2** [M] WARN — Rendered title form\n- [ ] [M] WARN — `KI-SHAPE-12`: Multi-segment code form\n- **legacy label [M]** `` `LEGACY-1` `` Legacy rubric form\n'
   )
   const judgmentCodes = judgmentFindingsFromRubric(rubric).map((finding) => finding.code)
   check('judgment prompts → accepts both rubric tag orders and named codes', judgmentCodes.join(',') === 'DEC-1,JUDGMENT,MD-table')
@@ -124,6 +124,7 @@ try {
       criteria.get('JUDGMENT')?.types.has('M') === true &&
       criteria.get('JUDGMENT')?.types.has('J') === true &&
       criteria.get('WEB-2')?.title === 'Rendered title form' &&
+      criteria.get('KI-SHAPE-12')?.title === 'Multi-segment code form' &&
       criteria.get('LEGACY-1')?.title === 'legacy label'
   )
   const rubricEvents = buildCheckerReporterEvents({

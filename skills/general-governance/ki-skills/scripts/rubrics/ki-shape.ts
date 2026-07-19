@@ -13,7 +13,7 @@ export type OwnershipCollision = {
   skills: readonly string[]
 }
 
-export type ShapeSkillContext = {
+export type KiShapeSkillContext = {
   governanceSkill: boolean
   argumentHint: string | undefined
   hintVerbs: readonly string[]
@@ -43,21 +43,21 @@ export type ShapeSkillContext = {
   auditSource: string | null
 }
 
-export type ShapeRubricContext = {
-  skill: ShapeSkillContext | null
+export type KiShapeRubricContext = {
+  skill: KiShapeSkillContext | null
   ownershipCollisions: readonly OwnershipCollision[]
 }
 
-export const SHAPE_1: RubricItem<ShapeRubricContext> = {
-  code: 'SHAPE-1',
+export const KI_SHAPE_1: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-1',
   title: 'standard skills resolve base bindings at runtime',
   description: 'A standard KI skill hard-codes no single base binding.',
   sources: ['KI'],
   judgment: { prompt: 'Does this standard skill resolve base bindings at runtime without hard-coding one base?' }
 }
 
-export const SHAPE_2: RubricItem<ShapeRubricContext> = {
-  code: 'SHAPE-2',
+export const KI_SHAPE_2: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-2',
   title: 'skills compose rather than extend',
   description: 'Inter-skill relationships are declared sequential composition, never base-coupled extension.',
   sources: ['KI'],
@@ -66,47 +66,47 @@ export const SHAPE_2: RubricItem<ShapeRubricContext> = {
     (skill?.retiredExtensionFiles ?? []).map((file) => ({
       type: 'M',
       level: 'WARN',
-      code: SHAPE_2.code,
+      code: KI_SHAPE_2.code,
       message:
-        'endorses the retired base-coupled extension pattern (ship/"prefer" an extension skill, "delegates the modes back", "extends this one") — relationships are composition only; declare base differences in .ki-config / CLAUDE.md, per SHAPE-2',
+        'endorses the retired base-coupled extension pattern (ship/"prefer" an extension skill, "delegates the modes back", "extends this one") — relationships are composition only; declare base differences in .ki-config / CLAUDE.md, per KI-SHAPE-2',
       file
     }))
 }
 
-export const SHAPE_3: RubricItem<ShapeRubricContext> = {
-  code: 'SHAPE-3',
+export const KI_SHAPE_3: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-3',
   title: 'the skill declares its kind',
   description: 'A skill clearly declares whether it is governance or process.',
   sources: ['ADR-KI-HARNESS-SKILLS-006'],
   judgment: { prompt: 'Does the skill correctly and clearly declare its governance or process kind?' }
 }
 
-export const SHAPE_4: RubricItem<ShapeRubricContext> = {
-  code: 'SHAPE-4',
+export const KI_SHAPE_4: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-4',
   title: 'a skill validates only its own configuration table',
   description: 'A configuration-reading skill validates its own table and ignores unrelated ones.',
   sources: ['KI'],
   judgment: { prompt: 'Does this skill validate only its own configuration table and ignore unrelated tables?' }
 }
 
-export const SHAPE_5: RubricItem<ShapeRubricContext> = {
-  code: 'SHAPE-5',
+export const KI_SHAPE_5: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-5',
   title: 'governance skills expose universal modes',
   description: 'Governance skills expose AUDIT, CONFORM, EDUCATE, REFRESH, and HELP.',
   sources: ['KI'],
   judgment: { prompt: 'Does this governance skill expose the universal modes with appropriate additional modes only?' }
 }
 
-export const SHAPE_6: RubricItem<ShapeRubricContext> = {
-  code: 'SHAPE-6',
+export const KI_SHAPE_6: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-6',
   title: 'governance skills use the KI file shape',
   description: 'A KI governance skill uses the shared reference and executable names.',
   sources: ['KI'],
   judgment: { prompt: 'Does this KI governance skill use the required reference and executable file shape?' }
 }
 
-export const SHAPE_7: RubricItem<ShapeRubricContext> = {
-  code: 'SHAPE-7',
+export const KI_SHAPE_7: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-7',
   title: 'behaviour-changing skills define and check their anchor',
   description: 'A default-behaviour change is anchored in always-loaded context and checked by the skill.',
   sources: ['KI'],
@@ -117,16 +117,16 @@ export const SHAPE_7: RubricItem<ShapeRubricContext> = {
           {
             type: 'M',
             level: 'WARN',
-            code: SHAPE_7.code,
+            code: KI_SHAPE_7.code,
             message:
-              'reads as behaviour-changing (a gate / standing rule) but does not evidence an always-on anchor verified by its checker — anchor it in CLAUDE.md/AGENTS.md and check the anchor, per SHAPE-7'
+              'reads as behaviour-changing (a gate / standing rule) but does not evidence an always-on anchor verified by its checker — anchor it in CLAUDE.md/AGENTS.md and check the anchor, per KI-SHAPE-7'
           }
         ]
       : []
 }
 
-export const SHAPE_8: RubricItem<ShapeRubricContext> = {
-  code: 'SHAPE-8',
+export const KI_SHAPE_8: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-8',
   title: 'governance checkers use the canonical reporter',
   description: 'A checker emits canonical reporter output from a local payload without a private renderer.',
   sources: ['KI'],
@@ -137,13 +137,13 @@ export const SHAPE_8: RubricItem<ShapeRubricContext> = {
       .map((checker) => ({
         type: 'M',
         level: 'WARN',
-        code: SHAPE_8.code,
+        code: KI_SHAPE_8.code,
         message: `checker ${checker.name} does not import and emit its local canonical checker reporter — required by checker-reporter.md`
       }))
 }
 
-export const SHAPE_9: RubricItem<ShapeRubricContext> = {
-  code: 'SHAPE-9',
+export const KI_SHAPE_9: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-9',
   title: 'mechanical work belongs in the checker',
   description: 'Deterministic criteria are implemented mechanically and judgment criteria genuinely require review.',
   sources: ['KI'],
@@ -154,23 +154,23 @@ export const SHAPE_9: RubricItem<ShapeRubricContext> = {
           {
             type: 'M',
             level: 'WARN',
-            code: SHAPE_9.code,
-            message: `rubric tags ${skill.mechanicalRubricCount} criteria [M] but the skill ships no scripts/ checker (nor a documented toolchain delegation) — mechanical work belongs in the checker, not in tokens, per SHAPE-9`
+            code: KI_SHAPE_9.code,
+            message: `rubric tags ${skill.mechanicalRubricCount} criteria [M] but the skill ships no scripts/ checker (nor a documented toolchain delegation) — mechanical work belongs in the checker, not in tokens, per KI-SHAPE-9`
           }
         ]
       : []
 }
 
-export const SHAPE_10: RubricItem<ShapeRubricContext> = {
-  code: 'SHAPE-10',
+export const KI_SHAPE_10: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-10',
   title: 'skills do not assume private user configuration',
   description: 'A skill relies only on public runtime guarantees or always-loaded repository context.',
   sources: ['KI'],
   judgment: { prompt: 'Does the skill avoid assuming private personal configuration?' }
 }
 
-export const SHAPE_11: RubricItem<ShapeRubricContext> = {
-  code: 'SHAPE-11',
+export const KI_SHAPE_11: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-11',
   title: 'governance skills expose HELP',
   description: 'A governance skill advertises the universal help verb in its argument hint.',
   sources: ['ADR-KI-HARNESS-SKILLS-001'],
@@ -180,15 +180,15 @@ export const SHAPE_11: RubricItem<ShapeRubricContext> = {
           {
             type: 'M',
             level: 'FAIL',
-            code: SHAPE_11.code,
+            code: KI_SHAPE_11.code,
             message: '`argument-hint` does not expose the universal `help` mode (ADR-KI-HARNESS-SKILLS-001)'
           }
         ]
       : []
 }
 
-export const SHAPE_12: RubricItem<ShapeRubricContext> = {
-  code: 'SHAPE-12',
+export const KI_SHAPE_12: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-12',
   title: 'governance mode vocabulary is canonical and complete',
   description: 'A governance skill declares and provides its canonical vendorable modes.',
   sources: ['KI'],
@@ -200,14 +200,14 @@ export const SHAPE_12: RubricItem<ShapeRubricContext> = {
       findings.push({
         type: 'M',
         level: 'WARN',
-        code: SHAPE_12.code,
+        code: KI_SHAPE_12.code,
         message: `\`argument-hint\` is missing the universal verb(s) ${missing.map((verb) => verb.toLowerCase()).join(', ')} — a governance skill exposes AUDIT, CONFORM, EDUCATE, REFRESH and HELP (ADR-KI-HARNESS-SKILLS-001)`
       })
     if (!skill.vendorsPresent)
       findings.push({
         type: 'M',
         level: 'WARN',
-        code: SHAPE_12.code,
+        code: KI_SHAPE_12.code,
         message:
           'frontmatter carries no `vendors:` declaration — declare the vendored modes beside `depends-on:` so the bootstrap engine can vendor them (ADR-KI-HARNESS-007)'
       })
@@ -215,8 +215,8 @@ export const SHAPE_12: RubricItem<ShapeRubricContext> = {
   }
 }
 
-export const SHAPE_13: RubricItem<ShapeRubricContext> = {
-  code: 'SHAPE-13',
+export const KI_SHAPE_13: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-13',
   title: 'mode headings have a canonical structure',
   description: 'Governance modes appear under one Operating modes section with matching declared verbs.',
   sources: ['KI'],
@@ -227,21 +227,21 @@ export const SHAPE_13: RubricItem<ShapeRubricContext> = {
       findings.push({
         type: 'M',
         level: 'WARN',
-        code: SHAPE_13.code,
+        code: KI_SHAPE_13.code,
         message: 'no `## Operating modes` H2 — modes live under a single wrapper H2 (ADR-KI-HARNESS-SKILLS-001)'
       })
     for (const heading of skill.flatModeHeadings)
       findings.push({
         type: 'M',
         level: 'WARN',
-        code: SHAPE_13.code,
+        code: KI_SHAPE_13.code,
         message: `flat \`## Mode ${heading}\` H2 — demote to \`### Mode ${heading}\` inside the \`## Operating modes\` wrapper`
       })
     for (const heading of skill.bareModeHeadings)
       findings.push({
         type: 'M',
         level: 'WARN',
-        code: SHAPE_13.code,
+        code: KI_SHAPE_13.code,
         message: `bare \`### ${heading}\` inside \`## Operating modes\` — mode headings carry the \`Mode \` prefix`
       })
     if (skill.operatingModesSection !== null)
@@ -251,7 +251,7 @@ export const SHAPE_13: RubricItem<ShapeRubricContext> = {
         findings.push({
           type: 'M',
           level: 'WARN',
-          code: SHAPE_13.code,
+          code: KI_SHAPE_13.code,
           message: `\`argument-hint\` verb \`${verb.toLowerCase()}\` has no mode in the \`## Operating modes\` section (hint ⊆ body)`
         })
       }
@@ -259,8 +259,8 @@ export const SHAPE_13: RubricItem<ShapeRubricContext> = {
   }
 }
 
-export const SHAPE_14: RubricItem<ShapeRubricContext> = {
-  code: 'SHAPE-14',
+export const KI_SHAPE_14: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-14',
   title: 'REFRESH states its harness-only precondition',
   description: 'REFRESH writes only canonical harness files and redirects from vendored use.',
   sources: ['KI'],
@@ -274,7 +274,7 @@ export const SHAPE_14: RubricItem<ShapeRubricContext> = {
           {
             type: 'M',
             level: 'WARN',
-            code: SHAPE_14.code,
+            code: KI_SHAPE_14.code,
             message:
               'REFRESH section does not state the harness-only precondition — it should name `ki-agentic-harness` as the only place it writes and instruct stopping/redirecting when invoked from a vendored install'
           }
@@ -282,8 +282,8 @@ export const SHAPE_14: RubricItem<ShapeRubricContext> = {
   }
 }
 
-export const SHAPE_15: RubricItem<ShapeRubricContext> = {
-  code: 'SHAPE-15',
+export const KI_SHAPE_15: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-15',
   title: 'vendored modes have a uniform shape',
   description: 'A governance skill declares uniform vendorable modes and their bare entry scripts.',
   sources: ['KI'],
@@ -294,7 +294,7 @@ export const SHAPE_15: RubricItem<ShapeRubricContext> = {
       findings.push({
         type: 'M',
         level: 'FAIL',
-        code: SHAPE_15.code,
+        code: KI_SHAPE_15.code,
         message: `\`vendors:\` must be the uniform list \`${UNIFORM_VENDORS}\` (got \`${skill.vendors}\`) — modes derive their scripts by name; the map/override form is retired (ADR-KI-HARNESS-007)`
       })
     for (const mode of ['educate', 'audit', 'conform'])
@@ -302,7 +302,7 @@ export const SHAPE_15: RubricItem<ShapeRubricContext> = {
         findings.push({
           type: 'M',
           level: 'FAIL',
-          code: SHAPE_15.code,
+          code: KI_SHAPE_15.code,
           message: `\`scripts/${mode}.ts\` missing — a governance skill vendors bare \`educate.ts\`/\`audit.ts\`/\`conform.ts\``
         })
     for (const script of skill.scriptNames)
@@ -310,15 +310,15 @@ export const SHAPE_15: RubricItem<ShapeRubricContext> = {
         findings.push({
           type: 'M',
           level: 'FAIL',
-          code: SHAPE_15.code,
+          code: KI_SHAPE_15.code,
           message: `\`scripts/${script}\` uses the redundant skill-name suffix — rename to bare \`audit.ts\`/\`conform.ts\``
         })
     return findings
   }
 }
 
-export const SHAPE_16: RubricItem<ShapeRubricContext> = {
-  code: 'SHAPE-16',
+export const KI_SHAPE_16: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-16',
   title: 'target files have declared ownership',
   description: 'A skill declares target-file ownership, contribution, or requirement consistently with its checker.',
   sources: ['KI'],
@@ -330,7 +330,7 @@ export const SHAPE_16: RubricItem<ShapeRubricContext> = {
           findings.push({
             type: 'M',
             level: 'WARN',
-            code: SHAPE_16.code,
+            code: KI_SHAPE_16.code,
             message: `scaffolds \`${file}\` but does not declare it under \`owns:\` in frontmatter`
           })
       if (skill.auditSource !== null)
@@ -339,7 +339,7 @@ export const SHAPE_16: RubricItem<ShapeRubricContext> = {
             findings.push({
               type: 'M',
               level: 'WARN',
-              code: SHAPE_16.code,
+              code: KI_SHAPE_16.code,
               message: `declares \`${file}\` (owns/contributes/requires) but \`scripts/audit.ts\` never checks it`
             })
     }
@@ -347,15 +347,15 @@ export const SHAPE_16: RubricItem<ShapeRubricContext> = {
       findings.push({
         type: 'M',
         level: 'WARN',
-        code: SHAPE_16.code,
+        code: KI_SHAPE_16.code,
         message: `\`owns: ${collision.file}\` is declared by ${[...collision.skills].sort().join(', ')} — owns: is exclusive; split into a single owner plus contributes:/requires: on the rest`
       })
     return findings.sort((left, right) => left.message.localeCompare(right.message))
   }
 }
 
-export const SHAPE_17: RubricItem<ShapeRubricContext> = {
-  code: 'SHAPE-17',
+export const KI_SHAPE_17: RubricItem<KiShapeRubricContext> = {
+  code: 'KI-SHAPE-17',
   title: 'dependencies are declared explicitly',
   description: 'Every skill has an explicit single-line dependency declaration.',
   sources: ['ADR-KI-HARNESS-SKILLS-006'],
@@ -366,7 +366,7 @@ export const SHAPE_17: RubricItem<ShapeRubricContext> = {
         {
           type: 'M',
           level: 'FAIL',
-          code: SHAPE_17.code,
+          code: KI_SHAPE_17.code,
           message:
             'frontmatter carries no `depends-on:` declaration — declare `depends-on: []` when the skill has no governance dependencies'
         }
@@ -377,29 +377,29 @@ export const SHAPE_17: RubricItem<ShapeRubricContext> = {
           {
             type: 'M',
             level: 'FAIL',
-            code: SHAPE_17.code,
+            code: KI_SHAPE_17.code,
             message: `\`depends-on:\` must be a single-line flow list (got \`${skill.dependsOn}\`)`
           }
         ]
   }
 }
 
-export const SHAPE: readonly RubricItem<ShapeRubricContext>[] = [
-  SHAPE_1,
-  SHAPE_2,
-  SHAPE_3,
-  SHAPE_4,
-  SHAPE_5,
-  SHAPE_6,
-  SHAPE_7,
-  SHAPE_8,
-  SHAPE_9,
-  SHAPE_10,
-  SHAPE_11,
-  SHAPE_12,
-  SHAPE_13,
-  SHAPE_14,
-  SHAPE_15,
-  SHAPE_16,
-  SHAPE_17
+export const KI_SHAPE: readonly RubricItem<KiShapeRubricContext>[] = [
+  KI_SHAPE_1,
+  KI_SHAPE_2,
+  KI_SHAPE_3,
+  KI_SHAPE_4,
+  KI_SHAPE_5,
+  KI_SHAPE_6,
+  KI_SHAPE_7,
+  KI_SHAPE_8,
+  KI_SHAPE_9,
+  KI_SHAPE_10,
+  KI_SHAPE_11,
+  KI_SHAPE_12,
+  KI_SHAPE_13,
+  KI_SHAPE_14,
+  KI_SHAPE_15,
+  KI_SHAPE_16,
+  KI_SHAPE_17
 ]

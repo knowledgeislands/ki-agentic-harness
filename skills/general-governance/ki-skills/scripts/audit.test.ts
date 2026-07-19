@@ -7,11 +7,11 @@
  * against throwaway skill directories and asserts on its output — matching the
  * convention `link-skills.test.ts` set.
  *
- * Covers the SHAPE-8 mechanical reporter check: a checker that does not import
+ * Covers the KI-SHAPE-8 mechanical reporter check: a checker that does not import
  * and emit its local canonical reporter must WARN.
  *
- * Also covers SHAPE-12 (universal mode vocabulary in `argument-hint` + the
- * `vendors:` frontmatter declaration) and SHAPE-13 (the `## Operating modes`
+ * Also covers KI-SHAPE-12 (universal mode vocabulary in `argument-hint` + the
+ * `vendors:` frontmatter declaration) and KI-SHAPE-13 (the `## Operating modes`
  * wrapper, `### Mode <NAME>` headings / `| Mode |` dispatch table, hint ⊆ body),
  * including the process-skill exemption.
  */
@@ -43,7 +43,7 @@ function fixture(name: string, checkerSrc: string): { base: string; dir: string 
   const skillMd = [
     '---',
     `name: ${name}`,
-    'description: A throwaway fixture skill used only to exercise the SHAPE-8 reporter check in the linter.',
+    'description: A throwaway fixture skill used only to exercise the KI-SHAPE-8 reporter check in the linter.',
     '---',
     '',
     '# Fixture',
@@ -105,34 +105,34 @@ const withReporter = "import { emitCheckerReporter } from './lib/checker-reporte
   }
 }
 
-// ── Checker imports and emits its local reporter → no SHAPE-8 warn ──
+// ── Checker imports and emits its local reporter → no KI-SHAPE-8 warn ──
 {
   const { base, dir } = fixture('ki-fixture-good', withReporter)
   try {
-    check('local reporter → no SHAPE-8 warn', !hasMechanicalFinding(run(dir), 'SHAPE-8'))
+    check('local reporter → no KI-SHAPE-8 warn', !hasMechanicalFinding(run(dir), 'KI-SHAPE-8'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
 }
 
-// ── Checker ships no reporter → SHAPE-8 WARN ──
+// ── Checker ships no reporter → KI-SHAPE-8 WARN ──
 {
   const { base, dir } = fixture('ki-fixture-noreporter', "console.log('done')\n")
   try {
     const out = run(dir)
-    check('missing reporter → SHAPE-8 warn', hasMechanicalFinding(out, 'SHAPE-8'))
+    check('missing reporter → KI-SHAPE-8 warn', hasMechanicalFinding(out, 'KI-SHAPE-8'))
     check('missing reporter → names the gap', out.includes('does not import and emit its local canonical checker reporter'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
 }
 
-// ── Legacy terminal output is not a reporter → SHAPE-8 WARN ──
+// ── Legacy terminal output is not a reporter → KI-SHAPE-8 WARN ──
 {
   const { base, dir } = fixture('ki-fixture-legacy-output', "console.log('legacy terminal output')\n")
   try {
     const out = run(dir)
-    check('legacy output → SHAPE-8 warn', hasMechanicalFinding(out, 'SHAPE-8'))
+    check('legacy output → KI-SHAPE-8 warn', hasMechanicalFinding(out, 'KI-SHAPE-8'))
     check('legacy output → flags the missing reporter', out.includes('canonical checker reporter'))
   } finally {
     rmSync(base, { recursive: true, force: true })
@@ -199,7 +199,7 @@ const withReporter = "import { emitCheckerReporter } from './lib/checker-reporte
   }
 }
 
-// ── SHAPE-12 / SHAPE-13 fixtures ──────────────────────────────────────────────
+// ── KI-SHAPE-12 / KI-SHAPE-13 fixtures ──────────────────────────────────────────────
 
 /** Build a throwaway skill dir from full frontmatter fields + body markdown. */
 function modeFixture(
@@ -212,7 +212,7 @@ function modeFixture(
   const fm = ['---', `name: ${name}`]
   if (opts.dependsOn !== undefined) fm.push(`depends-on: ${opts.dependsOn}`)
   if (opts.vendors) fm.push(`vendors: ${opts.vendors}`)
-  fm.push(`description: ${opts.desc ?? 'A throwaway fixture skill used only to exercise the SHAPE-12/13 mode checks in the linter.'}`)
+  fm.push(`description: ${opts.desc ?? 'A throwaway fixture skill used only to exercise the KI-SHAPE-12/13 mode checks in the linter.'}`)
   if (opts.hint) fm.push(`argument-hint: '${opts.hint}'`)
   fm.push('---', '', `# Fixture`, '', opts.body, '')
   writeFileSync(join(dir, 'SKILL.md'), fm.join('\n'))
@@ -244,7 +244,7 @@ const CONFORMANT_BODY = [
   'Re-anchor the standard.'
 ].join('\n')
 
-// ── SHAPE-17: every skill has an explicit dependency declaration ─────────────
+// ── KI-SHAPE-17: every skill has an explicit dependency declaration ─────────────
 {
   const { base, dir } = modeFixture('ki-fixture-missing-dependencies', {
     hint: FULL_HINT,
@@ -253,7 +253,7 @@ const CONFORMANT_BODY = [
   })
   try {
     const result = runResult(dir)
-    check('missing depends-on → SHAPE-17 FAIL', result.status !== 0 && hasMechanicalFinding(result.output, 'SHAPE-17'))
+    check('missing depends-on → KI-SHAPE-17 FAIL', result.status !== 0 && hasMechanicalFinding(result.output, 'KI-SHAPE-17'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
@@ -268,26 +268,26 @@ const CONFORMANT_BODY = [
   })
   try {
     const result = runResult(dir)
-    check('non-list depends-on → SHAPE-17 FAIL', result.status !== 0 && hasMechanicalFinding(result.output, 'SHAPE-17'))
+    check('non-list depends-on → KI-SHAPE-17 FAIL', result.status !== 0 && hasMechanicalFinding(result.output, 'KI-SHAPE-17'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
 }
 
-// ── Conformant wrapper + `### Mode` H3s → no SHAPE-12/13 warns ──
+// ── Conformant wrapper + `### Mode` H3s → no KI-SHAPE-12/13 warns ──
 {
   const name = 'ki-fixture-conformant'
   const { base, dir } = modeFixture(name, { hint: FULL_HINT, vendors: VENDORS(name), body: CONFORMANT_BODY })
   try {
     const out = run(dir)
-    check('conformant wrapper + H3s → no SHAPE-12', !out.includes('SHAPE-12'))
-    check('conformant wrapper + H3s → no SHAPE-13', !out.includes('SHAPE-13'))
+    check('conformant wrapper + H3s → no KI-SHAPE-12', !out.includes('KI-SHAPE-12'))
+    check('conformant wrapper + H3s → no KI-SHAPE-13', !out.includes('KI-SHAPE-13'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
 }
 
-// ── Conformant `| Mode |` dispatch table → no SHAPE-12/13 warns ──
+// ── Conformant `| Mode |` dispatch table → no KI-SHAPE-12/13 warns ──
 {
   const name = 'ki-fixture-table'
   const tableBody = [
@@ -305,14 +305,14 @@ const CONFORMANT_BODY = [
   const { base, dir } = modeFixture(name, { hint: FULL_HINT, vendors: VENDORS(name), body: tableBody })
   try {
     const out = run(dir)
-    check('conformant dispatch table → no SHAPE-12', !out.includes('SHAPE-12'))
-    check('conformant dispatch table → no SHAPE-13', !out.includes('SHAPE-13'))
+    check('conformant dispatch table → no KI-SHAPE-12', !out.includes('KI-SHAPE-12'))
+    check('conformant dispatch table → no KI-SHAPE-13', !out.includes('KI-SHAPE-13'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
 }
 
-// ── Missing `educate` verb in argument-hint → SHAPE-12 WARN ──
+// ── Missing `educate` verb in argument-hint → KI-SHAPE-12 WARN ──
 {
   const name = 'ki-fixture-noinit'
   const { base, dir } = modeFixture(name, {
@@ -322,53 +322,53 @@ const CONFORMANT_BODY = [
   })
   try {
     const out = run(dir)
-    check('missing educate verb → SHAPE-12 warn', out.includes('SHAPE-12'))
-    check('missing educate verb → names educate', /SHAPE-12[^\n]*educate/.test(out))
+    check('missing educate verb → KI-SHAPE-12 warn', out.includes('KI-SHAPE-12'))
+    check('missing educate verb → names educate', /KI-SHAPE-12[^\n]*educate/.test(out))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
 }
 
-// ── Missing `vendors:` declaration → SHAPE-12 WARN ──
+// ── Missing `vendors:` declaration → KI-SHAPE-12 WARN ──
 {
   const name = 'ki-fixture-novendors'
   const { base, dir } = modeFixture(name, { hint: FULL_HINT, body: CONFORMANT_BODY })
   try {
     const out = run(dir)
-    check('missing vendors: → SHAPE-12 warn', /SHAPE-12[^\n]*vendors/.test(out))
+    check('missing vendors: → KI-SHAPE-12 warn', /KI-SHAPE-12[^\n]*vendors/.test(out))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
 }
 
-// ── Flat `## Mode X` H2 (no wrapper) → SHAPE-13 WARN ──
+// ── Flat `## Mode X` H2 (no wrapper) → KI-SHAPE-13 WARN ──
 {
   const name = 'ki-fixture-flath2'
   const flatBody = ['## Mode AUDIT', '', 'Check.', '', '## Mode CONFORM', '', 'Fix.'].join('\n')
   const { base, dir } = modeFixture(name, { hint: FULL_HINT, vendors: VENDORS(name), body: flatBody })
   try {
     const out = run(dir)
-    check('flat ## Mode X → SHAPE-13 warn', out.includes('SHAPE-13'))
+    check('flat ## Mode X → KI-SHAPE-13 warn', out.includes('KI-SHAPE-13'))
     check('flat ## Mode X → says demote', out.includes('demote'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
 }
 
-// ── Bare `### X` inside the wrapper → SHAPE-13 WARN ──
+// ── Bare `### X` inside the wrapper → KI-SHAPE-13 WARN ──
 {
   const name = 'ki-fixture-bareh3'
   const bareBody = CONFORMANT_BODY.replace('### Mode AUDIT', '### AUDIT')
   const { base, dir } = modeFixture(name, { hint: FULL_HINT, vendors: VENDORS(name), body: bareBody })
   try {
     const out = run(dir)
-    check('bare ### X → SHAPE-13 warn', /SHAPE-13[^\n]*Mode/.test(out))
+    check('bare ### X → KI-SHAPE-13 warn', /KI-SHAPE-13[^\n]*Mode/.test(out))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
 }
 
-// ── Hint verb absent from the Operating-modes body → SHAPE-13 WARN ──
+// ── Hint verb absent from the Operating-modes body → KI-SHAPE-13 WARN ──
 {
   const name = 'ki-fixture-hintsubset'
   const { base, dir } = modeFixture(name, {
@@ -378,13 +378,13 @@ const CONFORMANT_BODY = [
   })
   try {
     const out = run(dir)
-    check('hint verb absent from body → SHAPE-13 warn', /SHAPE-13[^\n]*optimise/.test(out))
+    check('hint verb absent from body → KI-SHAPE-13 warn', /KI-SHAPE-13[^\n]*optimise/.test(out))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
 }
 
-// ── Process skill (kind: process) → exempt from SHAPE-12/13 ──
+// ── Process skill (kind: process) → exempt from KI-SHAPE-12/13 ──
 {
   const name = 'ki-fixture-process'
   const { base, dir } = modeFixture(name, {
@@ -394,8 +394,8 @@ const CONFORMANT_BODY = [
   })
   try {
     const out = run(dir)
-    check('process skill → no SHAPE-12', !out.includes('SHAPE-12'))
-    check('process skill → no SHAPE-13', !out.includes('SHAPE-13'))
+    check('process skill → no KI-SHAPE-12', !out.includes('KI-SHAPE-12'))
+    check('process skill → no KI-SHAPE-13', !out.includes('KI-SHAPE-13'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }

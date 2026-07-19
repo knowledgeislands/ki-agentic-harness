@@ -17,11 +17,11 @@
  *
  * Fixes:
  *   - NAME-5: `name:` frontmatter rewritten to match the directory name.
- *   - SHAPE-11: argument-hint missing the `help` token gets ` | help` appended.
- *   - SHAPE-12 (verbs): argument-hint missing any of audit/conform/help/educate/
+ *   - KI-SHAPE-11: argument-hint missing the `help` token gets ` | help` appended.
+ *   - KI-SHAPE-12 (verbs): argument-hint missing any of audit/conform/help/educate/
  *     refresh (skipped for self-declared process skills, ADR-KI-HARNESS-SKILLS-006)
  *     gets the missing verb(s) appended as bare ` | <verb>` segments.
- *   - SHAPE-12 (vendors leg): a missing `vendors:` frontmatter line is authored
+ *   - KI-SHAPE-12 (vendors leg): a missing `vendors:` frontmatter line is authored
  *     from the scripts/ directory's audit-*.ts / lint-*.ts (+ conform-*.ts if
  *     present); an existing `vendors:` line that already names an audit/lint
  *     script but omits `conform:` gets that key added when a conform-*.ts
@@ -30,8 +30,8 @@
  *   - LAY-4: backslash path separators inside markdown link targets are
  *     rewritten to forward slashes, across every .md file in the skill.
  *
- * Deliberately NEVER touches (judgment -> manual TODOs): DESC-1/2/3, SHAPE-13
- * (mode-heading structure), SIZE-1/2, LINK-2, SHAPE-2/7/8/9, REF-3, COLL-1,
+ * Deliberately NEVER touches (judgment -> manual TODOs): DESC-1/2/3, KI-SHAPE-13
+ * (mode-heading structure), SIZE-1/2, LINK-2, KI-SHAPE-2/7/8/9, REF-3, COLL-1,
  * LONG-3/4.
  *
  * Zero npm dependencies (bun + node stdlib only). Exit code is non-zero only
@@ -54,7 +54,7 @@ const RUBRIC = 'references/rubric.md'
 const argv = process.argv.slice(2)
 const findings: RubricFinding[] = []
 function reportCode(area: string): string {
-  return area.match(/[A-Z]+-\d+/)?.[0] ?? 'SHAPE-12'
+  return area.match(/[A-Z][A-Z0-9]*(?:-[A-Z][A-Z0-9]*)*-\d+/)?.[0] ?? 'KI-SHAPE-12'
 }
 const rec = (level: Level, area: string, message: string, ref?: string, file?: string): void =>
   void findings.push({ type: 'M', level, code: reportCode(area), message, ref, file })
@@ -137,7 +137,7 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
     rec('ADVISORY', `${dirName}:${NAME_1.code}`, 'no `name` field at all; author by hand', RUBRIC, 'SKILL.md')
   }
 
-  // ── SHAPE-11 (help token) + SHAPE-12 (universal verbs) ──
+  // ── KI-SHAPE-11 (help token) + KI-SHAPE-12 (universal verbs) ──
   const hintLine = getLine(workingBlock, 'argument-hint')
   if (hintLine) {
     const hintMatch = hintLine.match(/^argument-hint:\s*(['"]?)([\s\S]*?)\1\s*$/)
@@ -148,7 +148,7 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
     if (!/(^|[|\s'"])help([|\s'"]|$)/.test(hintLine)) {
       hintVal = `${hintVal} | help`
       hintChanged = true
-      rec('POLISH', `${dirName}:SHAPE-11`, 'appended `help` to argument-hint', RUBRIC, 'SKILL.md')
+      rec('POLISH', `${dirName}:KI-SHAPE-11`, 'appended `help` to argument-hint', RUBRIC, 'SKILL.md')
     }
 
     if (!process) {
@@ -157,7 +157,7 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
       if (missing.length > 0) {
         hintVal = `${hintVal} | ${missing.join(' | ')}`
         hintChanged = true
-        rec('POLISH', `${dirName}:SHAPE-12`, `appended missing verb(s) to argument-hint: ${missing.join(', ')}`, RUBRIC, 'SKILL.md')
+        rec('POLISH', `${dirName}:KI-SHAPE-12`, `appended missing verb(s) to argument-hint: ${missing.join(', ')}`, RUBRIC, 'SKILL.md')
       }
     }
 
@@ -166,11 +166,11 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
       fixedAny = true
     }
   } else if (!process) {
-    todos.push(`${dirName}: SHAPE-11/SHAPE-12 — no \`argument-hint\` field at all; author one by hand`)
-    rec('ADVISORY', `${dirName}:SHAPE-11/SHAPE-12`, 'no `argument-hint` field at all; author one by hand', RUBRIC, 'SKILL.md')
+    todos.push(`${dirName}: KI-SHAPE-11/KI-SHAPE-12 — no \`argument-hint\` field at all; author one by hand`)
+    rec('ADVISORY', `${dirName}:KI-SHAPE-11/KI-SHAPE-12`, 'no `argument-hint` field at all; author one by hand', RUBRIC, 'SKILL.md')
   }
 
-  // ── SHAPE-12 (vendors leg) — process skills are exempt, same as audit.ts ──
+  // ── KI-SHAPE-12 (vendors leg) — process skills are exempt, same as audit.ts ──
   if (!process) {
     const scriptsDir = join(dir, 'scripts')
     const scriptFiles = existsSync(scriptsDir) ? readdirSync(scriptsDir) : []
@@ -184,13 +184,15 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
         if (conformScript) parts.push(`conform: scripts/${conformScript}`)
         const newLine = `vendors: { ${parts.join(', ')} }`
         workingBlock = vendorsLine ? workingBlock.replace(vendorsLine, newLine) : insertAfterAnchor(workingBlock, newLine)
-        rec('POLISH', `${dirName}:SHAPE-12`, `authored \`${newLine}\``, RUBRIC, 'SKILL.md')
+        rec('POLISH', `${dirName}:KI-SHAPE-12`, `authored \`${newLine}\``, RUBRIC, 'SKILL.md')
         fixedAny = true
       } else if (!vendorsLine) {
-        todos.push(`${dirName}: SHAPE-12 — no \`vendors:\` declaration and no scripts/audit-*.ts|lint-*.ts to point at; needs a human call`)
+        todos.push(
+          `${dirName}: KI-SHAPE-12 — no \`vendors:\` declaration and no scripts/audit-*.ts|lint-*.ts to point at; needs a human call`
+        )
         rec(
           'ADVISORY',
-          `${dirName}:SHAPE-12`,
+          `${dirName}:KI-SHAPE-12`,
           'no `vendors:` declaration and no scripts/audit-*.ts|lint-*.ts to point at; needs a human call',
           RUBRIC,
           'SKILL.md'
@@ -199,7 +201,7 @@ function conformSkill(dir: string, dryRun: boolean, todos: string[]): void {
     } else if (!/\bconform:/.test(vendorsLine) && conformScript) {
       const newLine = vendorsLine.replace(/\}\s*$/, `, conform: scripts/${conformScript} }`)
       workingBlock = workingBlock.replace(vendorsLine, newLine)
-      rec('POLISH', `${dirName}:SHAPE-12`, `added missing \`conform: scripts/${conformScript}\` to vendors`, RUBRIC, 'SKILL.md')
+      rec('POLISH', `${dirName}:KI-SHAPE-12`, `added missing \`conform: scripts/${conformScript}\` to vendors`, RUBRIC, 'SKILL.md')
       fixedAny = true
     }
   }

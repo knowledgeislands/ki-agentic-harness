@@ -26,6 +26,7 @@ import type { RubricFinding, RubricItem } from './lib/rubric/rubric.ts'
 import { COLLISION } from './rubrics/collision.ts'
 import { DESC } from './rubrics/description.ts'
 import { RUBRIC_ITEMS } from './rubrics/index.ts'
+import { KI_SHAPE, type KiShapeSkillContext } from './rubrics/ki-shape.ts'
 import { LAYOUT } from './rubrics/layout.ts'
 import { LINKS } from './rubrics/link.ts'
 import { LONGEVITY, REFRESH_GRACE_DAYS } from './rubrics/longevity.ts'
@@ -33,7 +34,6 @@ import { NAME } from './rubrics/name.ts'
 import { OPTIONAL } from './rubrics/optional.ts'
 import { REFERENCES } from './rubrics/references.ts'
 import { SCRIPTS } from './rubrics/scripts.ts'
-import { SHAPE, type ShapeSkillContext } from './rubrics/shape.ts'
 import { SIZE } from './rubrics/size.ts'
 import { createRefreshContext } from './rubrics/support/longevity.ts'
 import { endorsesRetiredExtension, extractBodyModes, extractSection, hintVerbs, isProcessSkill } from './rubrics/support/modes.ts'
@@ -139,7 +139,7 @@ function parseListValue(raw: string | undefined): string[] {
     .filter((s) => s.length > 0)
 }
 
-const createShapeContext = (skillDir: string, frontmatter: Frontmatter, description: string, body: string): ShapeSkillContext => {
+const createKiShapeContext = (skillDir: string, frontmatter: Frontmatter, description: string, body: string): KiShapeSkillContext => {
   const argumentHint = frontmatter.keys.get('argument-hint')
   const section = extractSection(body, 'Operating modes')
   const markdownFiles = listMarkdownFiles(skillDir)
@@ -298,8 +298,8 @@ function lintSkill(skillDir: string): Finding[] {
     else warn(finding.code, finding.message)
   }
 
-  for (const finding of auditRubricItems(SHAPE, {
-    skill: createShapeContext(skillDir, fm, desc ?? '', body),
+  for (const finding of auditRubricItems(KI_SHAPE, {
+    skill: createKiShapeContext(skillDir, fm, desc ?? '', body),
     ownershipCollisions: []
   })) {
     if (finding.level === 'FAIL') fail(finding.code, finding.message, finding.file)
@@ -420,7 +420,7 @@ const collisionTargets = skillDirs
   }))
 all.push(...auditRubricItems(COLLISION, { targets: collisionTargets }).map((finding) => ({ ...finding, ref: RUBRIC })))
 all.push(
-  ...auditRubricItems(SHAPE, {
+  ...auditRubricItems(KI_SHAPE, {
     skill: null,
     ownershipCollisions: createOwnershipCollisions(skillDirs)
   }).map((finding) => ({ ...finding, ref: RUBRIC }))

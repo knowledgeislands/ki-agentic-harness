@@ -120,7 +120,7 @@ export function rubricCriteriaFromMarkdown(markdown: string): Map<string, Rubric
     if (!entry) {
       // Older checklist rubrics put the M/J tag before a later inline code, for
       // example `- [ ] [M] WARN — ... \`LAY-1\`: description`.
-      const checklistCode = line.match(/^\s*-\s+\[[ xX]\][\s\S]*`([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)?)`/)?.[1]
+      const checklistCode = line.match(/^\s*-\s+\[[ xX]\][\s\S]*`([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*)`/)?.[1]
       if (checklistCode) {
         const checklistTitle = line.slice(line.indexOf(`\`${checklistCode}\``) + checklistCode.length + 2).replace(/^\s*:\s*/, '')
         if (normaliseCriterionTitle(checklistTitle)) addCriterion(criteria, checklistCode, checklistTitle, line)
@@ -142,7 +142,7 @@ export function rubricCriteriaFromMarkdown(markdown: string): Map<string, Rubric
     // `ki-repo` predates that convention: it puts a short human label in bold
     // and the stable code in a following inline-code token. Treat that label as
     // the readable title, while still taking M/J ownership from the label tags.
-    const trailingCode = after.match(/`{1,2}\s*`?([A-Z][A-Z0-9]*-[A-Z0-9]+)`?\s*`{1,2}/)?.[1]
+    const trailingCode = after.match(/`{1,2}\s*`?([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+)`?\s*`{1,2}/)?.[1]
     const title = normaliseCriterionTitle(bold)
     if (trailingCode && title) addCriterion(criteria, trailingCode, title, tags)
   }
