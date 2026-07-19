@@ -16,6 +16,7 @@ Checker output follows the canonical checker reporter and exit-code contract in 
 - [REF — Progressive disclosure & references](#ref--progressive-disclosure--references)
 - [BODY — Body content quality](#body--body-content-quality)
 - [SCRIPT — Scripts & executable code](#script--scripts--executable-code)
+- [KI-CHECKER — Knowledge Islands checker contract](#ki-checker--knowledge-islands-checker-contract)
 - [LINK — Linking & portability](#link--linking--portability)
 - [KI-SHAPE — Knowledge Islands skill shape](#ki-shape--knowledge-islands-skill-shape)
 - [KI-INVOKE — Invocation protocol](#ki-invoke--invocation-protocol)
@@ -116,9 +117,14 @@ Checker output follows the canonical checker reporter and exit-code contract in 
 - **SCRIPT-5 [J]** Validation scripts are verbose — errors name the problem and the valid options. (BP)
 - **SCRIPT-6 [J]** Plan-validate-execute for batch/destructive ops. (BP, COMMUNITY)
 - **SCRIPT-7 [J]** Scripts installed into a target repo's `scripts/` directory are **copies**, not symlinks or out-of-repo references — the target repo must be autonomous. (BP)
-- **SCRIPT-8 [J]** A governance `audit`/`conform` is invoked with the **repo root** (`bun .ki-meta/checkers/<skill>/scripts/audit.ts .`), not its own content sub-directory. It must therefore **resolve its own scope under the arg** (`docs/features`, `docs/roadmap`, `docs/decisions`, `memory/`, …) and emit a single `NA` + stop when that scope is absent — rather than treating the arg as its sub-directory (which scans the whole repo and flags unrelated files, e.g. `ROADMAP.md`) or scanning the root and vacuously passing on zero files. Mirrors `ki-engineering` (no `package.json` → NA) and `ki-website-cloudflare` (no `wrangler` → NA). This is what makes the coverage-scoped aggregate `ki:audit` (ADR-KI-HARNESS-007) a clean gate. (KI)
-- **SCRIPT-9 [M]** A skill's `scripts/**/*.ts` files contain no static `from`, dynamic `import()`, or CommonJS `require()` relative import that resolves outside that skill's own `scripts/` directory. `ki-bootstrap` vendors a skill's mechanical unit as a standalone payload into every governed repo's `.ki-meta/checkers/<skill>/` ([ADR-KI-HARNESS-006](../../../../docs/decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)); no sibling skill directory or other source file is implicitly available. The payload may only import files packaged within its own `scripts/` directory. (KI)
-- **ROOT-1 [M]** `ki-skills` is the self-governing checker-contract root: it declares `checker-modules: [checker-reporter]`, ships `scripts/lib/checker-reporter.ts`, and declares no `checker-dependencies:` entry. Its canonical checker reporter therefore runs from its own shipped files without a dependency on itself or another skill. Other skills may declare only offered checker modules, which bootstrap copies from the provider's `scripts/lib/` into their local `scripts/vendored/<provider>/` namespace; that declaration is implementation packaging, not `depends-on:` or composition. (ADR-KI-HARNESS-SKILLS-012)
+
+## KI-CHECKER — Knowledge Islands checker contract
+
+→ [checker contract](checker-contract.md)
+
+- **KI-CHECKER-1 [J]** A governance `audit`/`conform` is invoked with the **repo root** (`bun .ki-meta/checkers/<skill>/scripts/audit.ts .`), not its own content sub-directory. It must therefore **resolve its own scope under the arg** (`docs/features`, `docs/roadmap`, `docs/decisions`, `memory/`, …) and emit a single `NA` + stop when that scope is absent — rather than treating the arg as its sub-directory (which scans the whole repo and flags unrelated files, e.g. `ROADMAP.md`) or scanning the root and vacuously passing on zero files. Mirrors `ki-engineering` (no `package.json` → NA) and `ki-website-cloudflare` (no `wrangler` → NA). This is what makes the coverage-scoped aggregate `ki:audit` (ADR-KI-HARNESS-007) a clean gate. (KI)
+- **KI-CHECKER-2 [M]** A skill's `scripts/**/*.ts` files contain no static `from`, dynamic `import()`, or CommonJS `require()` relative import that resolves outside that skill's own `scripts/` directory. `ki-bootstrap` vendors a skill's mechanical unit as a standalone payload into every governed repo's `.ki-meta/checkers/<skill>/` ([ADR-KI-HARNESS-006](../../../../docs/decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)); no sibling skill directory or other source file is implicitly available. The payload may only import files packaged within its own `scripts/` directory. (KI)
+- **KI-CHECKER-3 [M]** `ki-skills` is the self-governing checker-contract root: it declares `checker-modules: [checker-reporter]`, ships `scripts/lib/checker-reporter.ts`, and declares no `checker-dependencies:` entry. Its canonical checker reporter therefore runs from its own shipped files without a dependency on itself or another skill. Other skills may declare only offered checker modules, which bootstrap copies from the provider's `scripts/lib/` into their local `scripts/vendored/<provider>/` namespace; that declaration is implementation packaging, not `depends-on:` or composition. (ADR-KI-HARNESS-SKILLS-012)
 
 ## LINK — Linking & portability
 

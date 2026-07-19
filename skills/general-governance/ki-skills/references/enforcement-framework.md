@@ -27,6 +27,8 @@ Each governance skill is a directory of this shape (loaded on demand — keep `S
 
 → Full protocol: [references/checker-contract.md](checker-contract.md) — the severity ladder, flag definitions (`--json`, `--report`), exit-code rule, self-containment and composition constraints, and the relationship between checker output levels and `[M]`/`[J]` rubric tags all live there.
 
+The rubric's `KI-CHECKER` family applies that protocol to the Knowledge Islands harness: repository-root scoping is `KI-CHECKER-1`, payload containment is `KI-CHECKER-2`, and ownership of the self-governing checker root is `KI-CHECKER-3`.
+
 Summary of constraints for quick reference: a checker takes a target path, emits findings on the severity ladder, exits non-zero iff any FAIL, supports `--json` and `--report`, uses no npm dependencies, and is self-contained (no cross-skill imports). Checkers compose by being run in sequence (§5).
 
 ## 3. The rubric format

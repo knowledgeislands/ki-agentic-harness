@@ -1,6 +1,7 @@
 import { BODY } from './body.ts'
 import { COLLISION } from './collision.ts'
 import { DESC } from './description.ts'
+import { KI_CHECKER } from './ki-checker.ts'
 import { KI_INVOKE } from './ki-invoke.ts'
 import { KI_SHAPE } from './ki-shape.ts'
 import { LAYOUT } from './layout.ts'
@@ -21,6 +22,7 @@ export const RUBRIC_FAMILIES = [
   REFERENCES,
   BODY,
   SCRIPTS,
+  KI_CHECKER,
   LINKS,
   LAYOUT,
   KI_SHAPE,

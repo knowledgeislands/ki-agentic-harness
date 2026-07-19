@@ -26,6 +26,7 @@ import type { RubricFinding, RubricItem } from './lib/rubric/rubric.ts'
 import { COLLISION } from './rubrics/collision.ts'
 import { DESC } from './rubrics/description.ts'
 import { RUBRIC_ITEMS } from './rubrics/index.ts'
+import { KI_CHECKER } from './rubrics/ki-checker.ts'
 import { KI_SHAPE, type KiShapeSkillContext } from './rubrics/ki-shape.ts'
 import { LAYOUT } from './rubrics/layout.ts'
 import { LINKS } from './rubrics/link.ts'
@@ -33,7 +34,6 @@ import { LONGEVITY, REFRESH_GRACE_DAYS } from './rubrics/longevity.ts'
 import { NAME } from './rubrics/name.ts'
 import { OPTIONAL } from './rubrics/optional.ts'
 import { REFERENCES } from './rubrics/references.ts'
-import { SCRIPTS } from './rubrics/scripts.ts'
 import { SIZE } from './rubrics/size.ts'
 import { createRefreshContext } from './rubrics/support/longevity.ts'
 import { endorsesRetiredExtension, extractBodyModes, extractSection, hintVerbs, isProcessSkill } from './rubrics/support/modes.ts'
@@ -287,7 +287,7 @@ function lintSkill(skillDir: string): Finding[] {
       resolvesInsideScripts: resolve(dirname(scriptPath), specifier).startsWith(`${scriptsDir}/`)
     }))
   )
-  for (const finding of auditRubricItems(SCRIPTS, {
+  for (const finding of auditRubricItems(KI_CHECKER, {
     imports,
     rootSkill: name === 'ki-skills',
     checkerModules: parseListValue(fm.keys.get('checker-modules')),

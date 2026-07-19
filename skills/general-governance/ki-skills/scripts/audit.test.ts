@@ -78,11 +78,11 @@ function hasMechanicalFinding(output: string, code: string): boolean {
 
 const withReporter = "import { emitCheckerReporter } from './lib/checker-reporter.ts'\nemitCheckerReporter({})\n"
 
-// ── ROOT-1: ki-skills owns the checker contract without a self-dependency ─────
+// ── KI-CHECKER-3: ki-skills owns the contract without a self-dependency ──────
 {
   const result = runResult(SKILL_ROOT)
   const parsed = parseCheckerReporterJsonl(result.output)
-  check('checker-contract root → no ROOT-1 fail', !result.output.includes('ROOT-1'))
+  check('checker-contract root → no KI-CHECKER-3 fail', !result.output.includes('KI-CHECKER-3'))
   check(
     'checker-contract root → emits one valid canonical JSONL run',
     parsed.errors.length === 0 && validateCheckerReporterEvents(parsed.events, result.status ?? 1).length === 0
@@ -98,12 +98,16 @@ const withReporter = "import { emitCheckerReporter } from './lib/checker-reporte
     'KI invocation family → emits the KI-INVOKE-1 judgment code',
     parsed.events.some((event) => (event as { code?: string }).code === 'KI-INVOKE-1')
   )
+  check(
+    'KI checker family → emits the KI-CHECKER-1 judgment code',
+    parsed.events.some((event) => (event as { code?: string }).code === 'KI-CHECKER-1')
+  )
 }
 
 {
   const { base, dir } = fixture('ki-skills', withReporter)
   try {
-    check('missing checker-contract root declaration → ROOT-1 fail', run(dir).includes('ROOT-1'))
+    check('missing checker-contract root declaration → KI-CHECKER-3 fail', run(dir).includes('KI-CHECKER-3'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
@@ -143,52 +147,52 @@ const withReporter = "import { emitCheckerReporter } from './lib/checker-reporte
   }
 }
 
-// ── SCRIPT-9: cross-skill relative imports in scripts/*.ts ─────────────────────
+// ── KI-CHECKER-2: cross-skill relative imports in scripts/*.ts ────────────────
 
-// ── Same-directory import stays inside scripts/ → no SCRIPT-9 fail ──
+// ── Same-directory import stays inside scripts/ → no KI-CHECKER-2 fail ──
 {
   const { base, dir } = fixture('ki-fixture-samedir-import', "import { helper } from './helper.ts'\nhelper()\n")
   try {
-    check('same-directory import → no SCRIPT-9 fail', !run(dir).includes('SCRIPT-9'))
+    check('same-directory import → no KI-CHECKER-2 fail', !run(dir).includes('KI-CHECKER-2'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
 }
 
-// ── Dynamic import climbing out of scripts/ → SCRIPT-9 FAIL ──
+// ── Dynamic import climbing out of scripts/ → KI-CHECKER-2 FAIL ──
 {
   const { base, dir } = fixture('ki-fixture-dynamic-cross-skill-import', "await import('../references/helper.ts')\n")
   try {
-    check('dynamic cross-scripts import → SCRIPT-9 fail', run(dir).includes('SCRIPT-9'))
+    check('dynamic cross-scripts import → KI-CHECKER-2 fail', run(dir).includes('KI-CHECKER-2'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
 }
 
-// ── CommonJS require climbing out of scripts/ → SCRIPT-9 FAIL ──
+// ── CommonJS require climbing out of scripts/ → KI-CHECKER-2 FAIL ──
 {
   const { base, dir } = fixture('ki-fixture-require-cross-skill-import', "require('../references/helper.ts')\n")
   try {
-    check('require cross-scripts import → SCRIPT-9 fail', run(dir).includes('SCRIPT-9'))
+    check('require cross-scripts import → KI-CHECKER-2 fail', run(dir).includes('KI-CHECKER-2'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
 }
 
-// ── A nested script module is subject to the same boundary → SCRIPT-9 FAIL ──
+// ── A nested script module is subject to the same boundary → KI-CHECKER-2 FAIL ──
 {
   const { base, dir } = fixture('ki-fixture-vendored-cross-skill-import', withReporter)
   try {
     const supportDir = join(dir, 'scripts', 'vendored', 'ki-skills')
     mkdirSync(supportDir, { recursive: true })
     writeFileSync(join(supportDir, 'checker-reporter.ts'), "import { helper } from '../../../../../other-skill/scripts/helper.ts'\n")
-    check('nested script escape → SCRIPT-9 fail', run(dir).includes('SCRIPT-9'))
+    check('nested script escape → KI-CHECKER-2 fail', run(dir).includes('KI-CHECKER-2'))
   } finally {
     rmSync(base, { recursive: true, force: true })
   }
 }
 
-// ── Relative import climbs out of the skill's own directory → SCRIPT-9 FAIL ──
+// ── Relative import climbs outside the skill's scripts → KI-CHECKER-2 FAIL ──
 {
   const { base, dir } = fixture(
     'ki-fixture-cross-skill-import',
@@ -196,7 +200,7 @@ const withReporter = "import { emitCheckerReporter } from './lib/checker-reporte
   )
   try {
     const out = run(dir)
-    check('cross-skill import → SCRIPT-9 fail', out.includes('SCRIPT-9'))
+    check('cross-skill import → KI-CHECKER-2 fail', out.includes('KI-CHECKER-2'))
     check('cross-skill import → names the offending import', out.includes('ki-other-skill'))
   } finally {
     rmSync(base, { recursive: true, force: true })
