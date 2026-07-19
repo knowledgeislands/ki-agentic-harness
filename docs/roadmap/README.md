@@ -32,7 +32,7 @@ Canonical themes and active execution plans.
 - **Title:** Simplify the ki-bootstrap private implementation
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/simplify-the-ki-bootstrap-private-implementation`
-- **Status:** open
+- **Status:** in-progress
 - **Blocks:** FND-003
 
 ## Dependency graph
