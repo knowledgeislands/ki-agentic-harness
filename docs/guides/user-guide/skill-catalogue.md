@@ -80,7 +80,7 @@ Governs **Feature Definitions** — the behaviour-level "what" of a system, the 
 
 ### `ki-repo-roadmap`
 
-Governs **forward work in non-KB repositories** through two automatically detected profiles. A simple repository keeps its complete open view in root `ROADMAP.md`. A thematic repository keeps canonical work in `docs/roadmap/<theme>/ROADMAP.md`, plans for Blocking/Next items beside it under `plans/`, a global plan index and dependency graph in `docs/roadmap/README.md`, and an exact generated root portfolio. Qualified `<theme>/<item-slug>` locators bind plans to one authoritative item home. It owns the readiness rules for authored horizon transitions; the `ki-next` process applies those rules to select and promote work, while `ki-plan` drives individual plan lifecycles. Knowledge Bases use `ki-kb-streams` instead; project-roadmap artifacts do not apply there.
+Governs **forward work in non-KB repositories** through two automatically detected profiles. A simple repository keeps its complete open view in root `ROADMAP.md`. A thematic repository keeps canonical work in `docs/roadmap/<theme>/ROADMAP.md`, plans for Blocking/Next items beside it under `plans/`, a global plan index and dependency graph in `docs/roadmap/README.md`, and an exact generated root portfolio. Qualified `<theme>/<item-slug>` locators bind plans to one authoritative item home. It owns the readiness rules for authored horizon transitions; the `ki-next` process applies those rules to select and promote work, while `ki-plan` drives individual plan lifecycles. Knowledge Bases use `ki-kb-streams` instead; repo-roadmap artifacts do not apply there.
 
 ### `ki-handoffs`
 

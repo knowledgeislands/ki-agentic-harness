@@ -45,7 +45,7 @@ Aim for **3+ per skill**, and test your **house-specific** names, paths, and rul
 
 ## Where it stands
 
-Nearly every skill has scenarios — `agents`, `authoring`, `engineering`, `kb`, `mcp`, `repo`, `skills`, `streams`, `tokenomics`, `website`, `website-cloudflare`, `bootstrap`, `binding`, plus `decision-records`, `feature-definitions`, `handoffs`, `project-roadmap`, `kb-activities`, `kb-live-artifacts`, and `housekeeping`. The matrix run across Haiku, Sonnet, and Opus covered the original set, and the result in one line was: **on house-specific facts, loading a skill reliably takes the model from "I don't know" to the right answer — on every model.** That's the whole point, confirmed. The newer sets are not yet in a matrix run — re-run `bun run ki:eval` to regenerate `evals/results/`.
+Nearly every skill has scenarios — `agents`, `authoring`, `engineering`, `kb`, `mcp`, `repo`, `skills`, `streams`, `tokenomics`, `website`, `website-cloudflare`, `bootstrap`, `binding`, plus `decision-records`, `feature-definitions`, `handoffs`, `repo-roadmap`, `kb-activities`, `kb-live-artifacts`, and `housekeeping`. The matrix run across Haiku, Sonnet, and Opus covered the original set, and the result in one line was: **on house-specific facts, loading a skill reliably takes the model from "I don't know" to the right answer — on every model.** That's the whole point, confirmed. The newer sets are not yet in a matrix run — re-run `bun run ki:eval` to regenerate `evals/results/`.
 
 ## The user-guide suite (a deterministic gate)
 

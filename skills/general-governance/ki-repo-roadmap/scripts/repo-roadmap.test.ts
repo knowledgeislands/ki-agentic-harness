@@ -333,24 +333,24 @@ for (const [label, mutate] of [
 {
   const root = thematicFixture()
   try {
-    const theme = 'project-roadmap'
+    const theme = 'repo-roadmap'
     const title = 'Require canonical horizon blurbs and restore them during CONFORM'
     const themeRoot = join(root, 'docs', 'roadmap', theme)
     mkdirSync(join(themeRoot, 'plans'), { recursive: true })
     writeFileSync(join(themeRoot, 'ROADMAP.md'), themeRoadmap('PRJ', 'Repo roadmap roadmap', { Next: [title] }))
     writeFileSync(
       join(themeRoot, 'plans', 'PRJ-001-canonical-horizon-blurbs.md'),
-      plan('PRJ-001', title, 'project-roadmap/require-canonical-horizon-blurbs-and-restore-them-during-conform')
+      plan('PRJ-001', title, 'repo-roadmap/require-canonical-horizon-blurbs-and-restore-them-during-conform')
     )
     const conformed = run(CONFORM, root)
     const generated = readFileSync(join(root, 'docs', 'roadmap', 'README.md'), 'utf8')
     check('wide active-plan index conforms cleanly', conformed.code === 0 && run(AUDIT, root).code === 0)
     check(
       'wide active-plan index uses a linked heading and metadata list',
-      generated.includes('### [PRJ-001](project-roadmap/plans/PRJ-001-canonical-horizon-blurbs.md)') &&
+      generated.includes('### [PRJ-001](repo-roadmap/plans/PRJ-001-canonical-horizon-blurbs.md)') &&
         generated.includes(`- **Title:** ${title}`) &&
-        generated.includes('- **Theme:** `project-roadmap`') &&
-        generated.includes('- **Roadmap item:** `project-roadmap/require-canonical-horizon-blurbs-and-restore-them-during-conform`') &&
+        generated.includes('- **Theme:** `repo-roadmap`') &&
+        generated.includes('- **Roadmap item:** `repo-roadmap/require-canonical-horizon-blurbs-and-restore-them-during-conform`') &&
         !generated.includes('| Plan |')
     )
   } finally {

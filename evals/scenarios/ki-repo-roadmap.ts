@@ -11,7 +11,7 @@ import type { Scenario } from '../harness.ts'
 export const scenarios: Scenario[] = [
   {
     skill: 'ki-repo-roadmap',
-    id: 'project-roadmap-simple-expands-before-plan',
+    id: 'repo-roadmap-simple-expands-before-plan',
     prompt:
       'This non-KB repository has only a root ROADMAP.md. A Next item has become substantial, so please add a detailed execution plan beside it without changing the roadmap layout.',
     assertions: [
@@ -25,7 +25,7 @@ export const scenarios: Scenario[] = [
   },
   {
     skill: 'ki-repo-roadmap',
-    id: 'project-roadmap-qualified-locator-theme-local-id',
+    id: 'repo-roadmap-qualified-locator-theme-local-id',
     prompt:
       "Set up frontmatter and placement for a new plan for the 'replace stale links' item under the seo theme. I want the id to restart at 001 within seo and roadmap: to contain only the item title. Anything to correct?",
     assertions: [
@@ -39,7 +39,7 @@ export const scenarios: Scenario[] = [
   },
   {
     skill: 'ki-repo-roadmap',
-    id: 'project-roadmap-one-home-exact-projection',
+    id: 'repo-roadmap-one-home-exact-projection',
     prompt:
       'I have added the full security item prose under docs/roadmap/security/ROADMAP.md. For convenience I also copied it into root ROADMAP.md and shortened the root link text by hand. Is that acceptable?',
     assertions: [
@@ -53,7 +53,7 @@ export const scenarios: Scenario[] = [
   },
   {
     skill: 'ki-repo-roadmap',
-    id: 'project-roadmap-blocks-graph',
+    id: 'repo-roadmap-blocks-graph',
     prompt:
       "Plan seo/005 cannot start until plan content/004 is finished. I've added blocked-by: 004 to seo/005 and would like to start it now in parallel. Anything wrong with that?",
     assertions: [
