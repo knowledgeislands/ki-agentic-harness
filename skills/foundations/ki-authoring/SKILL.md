@@ -59,8 +59,8 @@ The house conventions sit on top of external tools and specs (CommonMark, Pretti
 
 Each set is a self-contained reference, loaded on demand. Read the one relevant to what you are writing.
 
-- **[Markdown authoring](references/markdown-authoring.md)** — wide tables → footnotes (with the marker series), link style, and what to leave to the linter. The footnote-marker series, in order, is `†` `‡` `§` `¶` `‖` (then doubled: `††` `‡‡` `§§` `¶¶` `‖‖`), reset per table — omitting `*`, which collides with markdown emphasis; where one table needs two footnote categories, a visually distinct second series `※` `❡` `¤` `¥` separates them. (Stated here so it is reachable without opening the reference; the worked example, gotchas, and rationale stay in the reference.)
-- **[TOML formatting](references/toml-config.md)** — key case, quoting, and comments for the shared `.ki-config.toml` (its _contract_ is `ki-repo`'s).
+- **[Markdown authoring](references/standards/markdown.md)** — wide tables → footnotes (with the marker series), link style, and what to leave to the linter. The footnote-marker series, in order, is `†` `‡` `§` `¶` `‖` (then doubled: `††` `‡‡` `§§` `¶¶` `‖‖`), reset per table — omitting `*`, which collides with markdown emphasis; where one table needs two footnote categories, a visually distinct second series `※` `❡` `¤` `¥` separates them. (Stated here so it is reachable without opening the reference; the worked example, gotchas, and rationale stay in the reference.)
+- **[TOML formatting](references/standards/toml.md)** — key case, quoting, and comments for the shared `.ki-config.toml` (its _contract_ is `ki-repo`'s).
 - **[Worked exemplars](references/exemplars.md)** — annotated illustrations of the conventions in practice: the footnote-marker series and table spill, relative-link style, and a well-formed `.ki-config.toml` table. Reach for these when a rule's application is a judgment call.
 
 Out of scope by design, with their natural homes:

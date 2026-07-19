@@ -44,7 +44,7 @@ const rubricPath = localRubricPath()
 const repoArg = process.argv[2]
 const repo = resolve(repoArg ?? '.')
 if (!repoArg || !existsSync(repo)) {
-  add('FAIL', 'MD-mech', 'audit target is missing or does not exist', 'references/markdown-authoring.md', repo)
+  add('FAIL', 'MD-mech', 'audit target is missing or does not exist', 'references/standards/markdown.md', repo)
   findings.push(...judgmentFindingsFromRubric(rubricPath))
   emitCheckerReporter({ mode: 'audit', concern: 'authoring', target: repo, findings })
   process.exit(checkerReporterExitCode(findings))
@@ -69,7 +69,7 @@ const MD_CHECK_CMD =
 
 try {
   execSync(MD_CHECK_CMD, { cwd: repo, stdio: ['pipe', 'pipe', 'pipe'], encoding: 'utf8' })
-  add('PASS', 'MD-mech', 'Prettier + markdownlint clean', 'references/markdown-authoring.md')
+  add('PASS', 'MD-mech', 'Prettier + markdownlint clean', 'references/standards/markdown.md')
 } catch (err) {
   const out = (err as { stdout?: string; stderr?: string }).stdout ?? ''
   const detail = out.trim().split('\n').slice(0, 8).join('\n    ')
@@ -77,7 +77,7 @@ try {
     'FAIL',
     'MD-mech',
     `Markdown mechanical check failed — run "bun run ki:authoring:conform" to fix\n    ${detail}`,
-    'references/markdown-authoring.md'
+    'references/standards/markdown.md'
   )
 }
 

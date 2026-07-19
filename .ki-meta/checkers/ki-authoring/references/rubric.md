@@ -1,6 +1,6 @@
 # Authoring audit rubric
 
-The checkable criteria behind the [Markdown authoring](markdown-authoring.md) and [TOML formatting](toml-config.md) conventions. Each is **[M] mechanical** (this skill runs Prettier + markdownlint-cli2 directly; Biome owns TS/JSON; never hand-judge what a tool checks better) or **[J] judgment** (a reader assesses it). TOML has no formatter, so every TOML criterion is `[J]`.
+The checkable criteria behind the [Markdown authoring](standards/markdown.md) and [TOML formatting](standards/toml.md) conventions. Each is **[M] mechanical** (this skill runs Prettier + markdownlint-cli2 directly; Biome owns TS/JSON; never hand-judge what a tool checks better) or **[J] judgment** (a reader assesses it). TOML has no formatter, so every TOML criterion is `[J]`.
 
 ## Markdown
 

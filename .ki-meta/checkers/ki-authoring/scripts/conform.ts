@@ -13,7 +13,7 @@
  * shells out to the exact same Prettier + markdownlint-cli2 the Markdown gate
  * write pass runs (conform = lint WITH fixing) — no bespoke fixers, no
  * reinvented invocation. TOML has no formatter in the toolchain
- * (references/toml-config.md is judgment-only), so there is nothing mechanical
+ * (references/standards/toml.md is judgment-only), so there is nothing mechanical
  * to conform there; the judgment layer (wide tables, link text, TOML style)
  * is out of scope for this script — see SKILL.md Mode CONFORM step 1, which
  * is a human/model task, not a mechanical one.
@@ -57,7 +57,7 @@ function localRubricPath(): string {
 const rubricPath = localRubricPath()
 
 if (!existsSync(target)) {
-  rec('FAIL', 'MD-mech', 'conform target does not exist', 'references/markdown-authoring.md', target)
+  rec('FAIL', 'MD-mech', 'conform target does not exist', 'references/standards/markdown.md', target)
   findings.push(...judgmentFindingsFromRubric(rubricPath))
   emitCheckerReporter({ mode: 'conform', concern: 'authoring', target, findings })
   process.exit(checkerReporterExitCode(findings))
@@ -174,14 +174,14 @@ if (runsMarkdown) {
       'PASS',
       'MD-mech',
       `Markdown ${dryRun ? 'already conforms' : 'conformed'} (Prettier + markdownlint-cli2)`,
-      'references/markdown-authoring.md'
+      'references/standards/markdown.md'
     )
   } catch {
     rec(
       dryRun ? 'WARN' : 'FAIL',
       'MD-mech',
       `Markdown ${dryRun ? 'has findings — run without --dry-run to fix' : 'conform pass reported issues (see above)'}`,
-      'references/markdown-authoring.md'
+      'references/standards/markdown.md'
     )
   }
 }

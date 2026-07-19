@@ -2,7 +2,7 @@
 
 Line-by-line criteria for auditing a Knowledge Islands agentic harness. Each criterion is tagged **[M]** (mechanical — the checker [`scripts/audit.ts`](../scripts/audit.ts) enforces it deterministically) or **[J]** (judgment — a reader/model assesses it). Each cites its standard section.
 
-Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS (defined in `ki-engineering`'s enforcement-framework §2)
+Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS (defined in `ki-skills`' enforcement framework §2)
 
 ## Contents
 
@@ -82,7 +82,7 @@ Severity ladder: FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS (defined in 
 
 ## LONG — Longevity and refresh path
 
-**LONG-1 [J]** This skill itself has a REFRESH mode and a `references/sources.md` with a `## Last review` block and `last reviewed` dates. Source: `ki-skills` rubric LONG-1/LONG-2; `ki-engineering` enforcement-framework. _Severity: WARN on the skill, not the harness under audit — report separately._
+**LONG-1 [J]** This skill itself has a REFRESH mode and a `references/sources.md` with a `## Last review` block and `last reviewed` dates. Source: `ki-skills` rubric LONG-1/LONG-2; `ki-skills` enforcement framework. _Severity: WARN on the skill, not the harness under audit — report separately._
 
 ---
 

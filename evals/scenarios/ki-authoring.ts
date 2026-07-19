@@ -17,7 +17,7 @@ export const scenarios: Scenario[] = [
   {
     // FINDING (3-model matrix, --runs 3) → RESOLVED: treatment originally scored
     // ~0/5 on every model — the marker SERIES lived only in
-    // references/markdown-authoring.md, which a headless one-shot agent doesn't
+    // references/standards/markdown.md, which a headless one-shot agent doesn't
     // open even with --add-dir (a real progressive-disclosure limit). The
     // skill-design call was made: the series is now stated inline in the
     // ki-authoring SKILL.md body (a judgment convention, which the
