@@ -12,6 +12,10 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
+### Establish a rubric-driven checker reference
+
+Reduce duplicated checker and reporting logic by proving one small, current-state reference implementation in `ki-engineering`. Make the rubric the canonical source for a finding's identifier, title, kind, and level; make the checker collect evidence and actions for those declared criteria; and keep JSONL transport separate from human rendering. Remove obsolete no-op narration from the engineering conformer, test the direct reporter stream and aggregate rendering boundary, and record the resulting reference checklist for subsequent skill-by-skill rollout. Do not redesign every checker, rename the whole criterion catalogue, or retain compatibility paths while this reference is established.
+
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.

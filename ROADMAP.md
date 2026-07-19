@@ -10,13 +10,14 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-- [Governance Consistency: Align KB Stream focus with non-KB roadmap horizons](docs/roadmap/governance-consistency/ROADMAP.md#align-kb-stream-focus-with-non-kb-roadmap-horizons)
+- [Foundation Tooling: Establish a rubric-driven checker reference](docs/roadmap/foundation-tooling/ROADMAP.md#establish-a-rubric-driven-checker-reference)
 
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
 - [Foundation Tooling: Harden user harness installation and runtime skill publication](docs/roadmap/foundation-tooling/ROADMAP.md#harden-user-harness-installation-and-runtime-skill-publication)
+- [Governance Consistency: Align KB Stream focus with non-KB roadmap horizons](docs/roadmap/governance-consistency/ROADMAP.md#align-kb-stream-focus-with-non-kb-roadmap-horizons)
 - [Governance Consistency: Codify convention placement and the knowledge-promotion loop](docs/roadmap/governance-consistency/ROADMAP.md#codify-convention-placement-and-the-knowledge-promotion-loop)
 - [Governance Consistency: Create `ki-repo-review` as a human-led process skill](docs/roadmap/governance-consistency/ROADMAP.md#create-ki-repo-review-as-a-human-led-process-skill)
 - [Governance Consistency: Make the first decision record adopt Decision Records](docs/roadmap/governance-consistency/ROADMAP.md#make-the-first-decision-record-adopt-decision-records)

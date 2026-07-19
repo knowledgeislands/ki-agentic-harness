@@ -11,11 +11,11 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-### [GOV-002](governance-consistency/plans/GOV-002-align-kb-stream-focus-with-non-kb-roadmap-horizons.md)
+### [FND-001](foundation-tooling/plans/FND-001-establish-rubric-driven-checker-reference.md)
 
-- **Title:** Align KB Stream focus with non-KB roadmap horizons
-- **Theme:** `governance-consistency`
-- **Roadmap item:** `governance-consistency/align-kb-stream-focus-with-non-kb-roadmap-horizons`
+- **Title:** Establish a rubric-driven checker reference
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/establish-a-rubric-driven-checker-reference`
 - **Status:** open
 - **Blocks:** —
 
