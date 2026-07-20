@@ -1,7 +1,7 @@
 ---
 id: 'FND-010'
 title: Improve CONFORM progress feedback
-status: acceptance
+status: done
 roadmap: foundation-tooling/improve-conform-progress-feedback
 blocks: —
 blocked-by: —
@@ -87,3 +87,7 @@ None.
 ### Mini recap
 
 Progress planning must be mechanically read-only: CONFORM preflight carries `--dry-run` even though it only wants a checker item count. The portable aggregate remains self-contained, so it mirrors the small layout helper rather than importing from a source skill.
+
+## Done
+
+Completed after explicit user acceptance. The fixed-width layout, truthful startup states, and direct-checker progress are complete. Aggregate continuous single-bar progress and optional multi-bar presentation now belong to [Add safe multiprogress aggregate execution](../ROADMAP.md#add-safe-multiprogress-aggregate-execution), which will add structured child progress rather than infer progress from checker completion boundaries.
