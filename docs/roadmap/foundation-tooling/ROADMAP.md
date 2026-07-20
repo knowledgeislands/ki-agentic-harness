@@ -30,6 +30,12 @@ Design `kisle`, the stable end-user and automation entrypoint for Knowledge Isla
 
 Audit every shipped skill against the established exemplar implementations for structural consistency: checker decomposition, shared-module boundaries, script and test layout, mode wiring, safe-write patterns, generated payload treatment, and documentation-to-code ownership. Identify discrepancies in implementation shape and unnecessary divergence without demanding line-by-line uniformity or erasing legitimate concern-specific differences. Categorise the findings, settle the intended common patterns, and create focused follow-up work for each material inconsistency.
 
+### Add a manual plan acceptance gate
+
+Add an explicit `acceptance` state before a governed plan can close. `ki-plan accept` must present the delivered outputs, verification evidence, outstanding concerns, and a compact per-plan recap of learnings; it then stops for the user's manual acceptance. `done` may remove the plan and roadmap item only after that explicit confirmation. The review records objective acceptance evidence but does not silently promote lessons into durable guidance.
+
+**Plan:** [FND-009](plans/FND-009-add-a-manual-plan-acceptance-gate.md)
+
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.

@@ -19,6 +19,14 @@ Canonical themes and active execution plans.
 - **Status:** in-progress
 - **Blocks:** —
 
+### [FND-009](foundation-tooling/plans/FND-009-add-a-manual-plan-acceptance-gate.md)
+
+- **Title:** Add a manual plan acceptance gate
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/add-a-manual-plan-acceptance-gate`
+- **Status:** open
+- **Blocks:** —
+
 ### [RTP-001](runtime-portability/plans/RTP-001-detect-vendor-specific-portable-contracts.md)
 
 - **Title:** Detect vendor-specific assumptions in portable skill contracts
