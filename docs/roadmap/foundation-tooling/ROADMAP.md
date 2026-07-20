@@ -8,6 +8,12 @@ code: FND
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
+### Add a safe repository CLEAN operation
+
+Add a source-owned CLEAN operation that removes only manifest-proven `.ki-meta/` output and unchanged marker-owned runtime skill copies. It must preserve repository configuration, canonical skill sources, explicit development links, agents, tampered or unmarked content, and every path it cannot prove is generated. Support dry-run, repeat safety, fail-closed handling of symlinks and concurrent mutation, and CLEAN followed by EDUCATE recovery.
+
+**Plan:** [FND-003](plans/FND-003-add-a-safe-repository-clean-operation.md)
+
 ### Make plan-to-roadmap linkage explicit
 
 Make an active plan visible from the canonical item it executes, not only from the plan's `roadmap:` frontmatter and the generated global index. Define one derivable, local plan-reference form beneath a `Blocking` or `Next` item; have AUDIT detect an absent, stale, or ambiguous reference and CONFORM repair it without rewriting the item's authored prose. Ensure `ki-plan new`, `promote`, `execute`, and `done` include the canonical theme roadmap in their existing safe transactions so plan creation, lifecycle changes, and closure cannot leave the local inverse link stale.
