@@ -161,7 +161,7 @@ function resolveRef(ref: string): string {
 const AGGREGATE_RUNNER = `#!/usr/bin/env bun
 // Vendored by ki-bootstrap. Runs each vendored skill checker under ../checkers/ in
 // sequence for the given verb — no package.json required.
-// Usage: bun .ki-meta/bin/aggregate.ts <audit|conform|educate|help> [--skill <ki-skill>] [--progress=<auto|always|never>] [--reporter-levels=<levels>]
+// Usage: bun .ki-meta/bin/aggregate.ts <audit|conform|educate|help> [options]
 import { execFileSync, spawnSync } from 'node:child_process'
 import { closeSync, existsSync, lstatSync, mkdtempSync, openSync, readFileSync, readdirSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -170,8 +170,29 @@ import { fileURLToPath } from 'node:url'
 
 const verb = process.argv[2]
 if (!verb) {
-  console.error('usage: aggregate.ts <audit|conform|educate|help> [--skill <ki-skill>] [--progress=<auto|always|never>] [--reporter-levels=<levels>]')
+  console.error('Usage: bun .ki-meta/bin/aggregate.ts <audit|conform|educate|help> [options]')
   process.exit(2)
+}
+const helpRequested = process.argv.slice(3).some((argument) => argument === '-h' || argument === '--help')
+if (helpRequested && (verb === 'audit' || verb === 'conform')) {
+  const isConform = verb === 'conform'
+  process.stdout.write(
+    [
+      'Usage: bun .ki-meta/bin/aggregate.ts ' + verb + ' [options]',
+      '',
+      isConform
+        ? 'Apply each vendored skill checker\\'s safe mechanical fixes.'
+        : 'Audit each vendored skill checker and render one combined report.',
+      '',
+      'Options:',
+      '  --skill <ki-skill>        Run one vendored skill checker.',
+      '  --progress <mode>          Progress display: auto, always, or never (default: auto).',
+      '  --reporter-levels <levels> Render comma-separated levels or all.',
+      ...(isConform ? ['  --dry-run                 Report changes without writing them.'] : []),
+      '  -h, --help                Show this help and exit.'
+    ].join('\\n') + '\\n'
+  )
+  process.exit(0)
 }
 const binDir = dirname(fileURLToPath(import.meta.url))
 if (verb === 'educate' || verb === 'help') {

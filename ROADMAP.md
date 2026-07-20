@@ -8,7 +8,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 - [Foundation Tooling: Add a safe repository clean operation](docs/roadmap/foundation-tooling/ROADMAP.md#add-a-safe-repository-clean-operation)
 - [Foundation Tooling: Define a linked development footprint for the harness](docs/roadmap/foundation-tooling/ROADMAP.md#define-a-linked-development-footprint-for-the-harness)
-- [Foundation Tooling: Make audit and conform command help conventional](docs/roadmap/foundation-tooling/ROADMAP.md#make-audit-and-conform-command-help-conventional)
 - [Foundation Tooling: Make CONFORM audit-gated per rubric item](docs/roadmap/foundation-tooling/ROADMAP.md#make-conform-audit-gated-per-rubric-item)
 - [Foundation Tooling: Make plan-to-roadmap linkage explicit](docs/roadmap/foundation-tooling/ROADMAP.md#make-plan-to-roadmap-linkage-explicit)
 - [Runtime Portability: Detect vendor-specific assumptions in portable skill contracts](docs/roadmap/runtime-portability/ROADMAP.md#detect-vendor-specific-assumptions-in-portable-skill-contracts)

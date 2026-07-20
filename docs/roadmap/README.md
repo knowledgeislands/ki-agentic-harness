@@ -43,14 +43,6 @@ Canonical themes and active execution plans.
 - **Status:** open
 - **Blocks:** —
 
-### [FND-007](foundation-tooling/plans/FND-007-make-audit-and-conform-command-help-conventional.md)
-
-- **Title:** Make audit and conform command help conventional
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/make-audit-and-conform-command-help-conventional`
-- **Status:** open
-- **Blocks:** —
-
 ### [RTP-001](runtime-portability/plans/RTP-001-detect-vendor-specific-portable-contracts.md)
 
 - **Title:** Detect vendor-specific assumptions in portable skill contracts

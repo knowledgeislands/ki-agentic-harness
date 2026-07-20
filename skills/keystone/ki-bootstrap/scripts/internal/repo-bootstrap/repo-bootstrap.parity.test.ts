@@ -77,6 +77,9 @@ function snapshot(base: string): string {
 }
 
 const auditFixture = `#!/usr/bin/env bun
+import { writeFileSync } from 'node:fs'
+
+if (process.env.KI_FIXTURE_CHECKER_SENTINEL) writeFileSync(process.env.KI_FIXTURE_CHECKER_SENTINEL, 'checker ran\\n')
 const rootOk = process.cwd() === process.env.KI_EXPECT_ROOT && process.argv[2] === '.'
 const forcedFailure = process.env.KI_FIXTURE_FAIL === '1'
 const ok = rootOk && !forcedFailure
@@ -137,8 +140,23 @@ try {
   const env = { KI_EXPECT_ROOT: fixture, KI_FIXTURE_FAIL: '0' }
   const auditWrapper = join(fixture, '.ki-meta', 'bin', 'ki-audit')
   const conformWrapper = join(fixture, '.ki-meta', 'bin', 'ki-conform')
+  const aggregate = join(fixture, '.ki-meta', 'bin', 'aggregate.ts')
 
   check('package-free fixture → package.json remains absent', !existsSync(join(fixture, 'package.json')))
+
+  for (const scenario of [
+    { label: 'aggregate audit', command: 'bun', args: [aggregate, 'audit', '--help'], expected: 'Audit each vendored skill checker' },
+    { label: 'aggregate conform', command: 'bun', args: [aggregate, 'conform', '-h'], expected: 'Apply each vendored skill checker' },
+    { label: 'ki-audit alias', command: auditWrapper, args: ['--help'], expected: 'usage: ki-audit' },
+    { label: 'ki-conform alias', command: conformWrapper, args: ['-h'], expected: 'usage: ki-conform' }
+  ]) {
+    const sentinel = join(fixture, `${scenario.label.replaceAll(' ', '-')}-checker-ran`)
+    const result = run(scenario.command, scenario.args, nested, { ...env, KI_FIXTURE_CHECKER_SENTINEL: sentinel })
+    check(`${scenario.label} help → exits successfully`, result.status === 0)
+    check(`${scenario.label} help → renders conventional help`, result.stdout.includes('Usage:') || result.stdout.includes('usage:'))
+    check(`${scenario.label} help → describes the command`, result.stdout.includes(scenario.expected))
+    check(`${scenario.label} help → does not invoke a checker`, !existsSync(sentinel))
+  }
 
   const wrapperPass = run(auditWrapper, [], nested, env)
   check('package-free audit wrapper → runs from a nested cwd', wrapperPass.status === 0)
