@@ -1,7 +1,7 @@
 ---
 id: 'FND-020'
 title: Align the repository-local ki-self governance contract
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/align-the-repository-local-ki-self-governance-contract
 blocks: FND-015, FND-016, FND-017, FND-018, FND-019, RTP-001
 blocked-by: —
@@ -45,3 +45,31 @@ The local skill's working guidance is valuable and was followed during FND-015: 
 ## Dependencies / blocks
 
 This plan is the immediate priority before every other open or in-progress plan. It resolves the repository-local rule layer those plans rely on; FND-003 remains in acceptance and FND-013 remains done, so neither is blocked.
+
+## Acceptance
+
+### Delivered
+
+The committed `.ki/self/skill/` source now follows the meaningful local governance shape, and `ki-skills` recognises only that exact path as the local-source exception.
+
+### Summary of changes
+
+- Added explicit dependencies, the universal mode hint, canonical operating-mode headings, and local REFRESH ownership guidance to `ki-self`.
+- Made the local exception narrow and read-only: it permits `name: ki-self`, omits `ki-vendors:`, and uses local REFRESH ownership only at `.ki/self/skill/`; ordinary same-named skills and path lookalikes remain nonconforming.
+- Added focused valid and invalid-fixture coverage, regenerated the human-readable rubric, aligned bootstrap/current-state guidance, and refreshed bootstrap provenance.
+
+### Verification
+
+- `bun test skills/keystone/ki-skills/scripts/rubric/contexts/skill.test.ts skills/keystone/ki-skills/scripts/rubric/publish.test.ts`
+- `bun run ki:bootstrap:audit`
+- `bun run ki:skills:audit`
+- Direct `govern.ts audit .ki/self/skill` — zero FAIL/WARN findings.
+- Serial `bun run test`, then `bun run ki:audit` — both passed.
+
+### Outstanding concerns
+
+None. `ADR-KI-HARNESS-011` retains its historic `.ki-self/` wording as a historical decision record; active standards and guides now name `.ki/self/skill/`.
+
+### Mini recap
+
+FND-013's source links remove unnecessary copying, but not every `.ki/` file is live. The durable rule is therefore precise: source-link changes use bootstrap parity/audit; run bootstrap when an affected generated surface needs regeneration.
