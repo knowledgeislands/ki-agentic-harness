@@ -32,7 +32,7 @@ Canonical themes and active execution plans.
 - **Title:** Improve CONFORM progress feedback
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/improve-conform-progress-feedback`
-- **Status:** open
+- **Status:** in-progress
 - **Blocks:** —
 
 ### [FND-011](foundation-tooling/plans/FND-011-preserve-committed-completion-records.md)

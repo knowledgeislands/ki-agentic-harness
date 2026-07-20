@@ -1,7 +1,7 @@
 ---
 id: 'FND-010'
 title: Improve CONFORM progress feedback
-status: open
+status: in-progress
 roadmap: foundation-tooling/improve-conform-progress-feedback
 blocks: —
 blocked-by: —
