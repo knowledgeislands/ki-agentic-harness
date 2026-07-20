@@ -1,7 +1,7 @@
 ---
 id: 'FND-003'
 title: Add a safe repository clean operation
-status: open
+status: in-progress
 roadmap: foundation-tooling/add-a-safe-repository-clean-operation
 blocks: —
 blocked-by: —
@@ -26,7 +26,7 @@ EDUCATE and repository bootstrap create derived governance machinery plus runtim
 ## Files touched
 
 - `skills/keystone/ki-bootstrap/scripts/`
-- `skills/keystone/ki-repo/scripts/internal/project-skill-publisher.ts` where marker validation can be reused cleanly
+- `skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/project-skill-publisher.ts` where marker validation can be reused cleanly
 - focused bootstrap and runtime-publication tests
 - user and developer lifecycle guidance
 

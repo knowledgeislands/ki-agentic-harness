@@ -16,7 +16,7 @@ Canonical themes and active execution plans.
 - **Title:** Add a safe repository clean operation
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/add-a-safe-repository-clean-operation`
-- **Status:** open
+- **Status:** in-progress
 - **Blocks:** —
 
 ### [FND-004](foundation-tooling/plans/FND-004-make-plan-to-roadmap-linkage-explicit.md)
