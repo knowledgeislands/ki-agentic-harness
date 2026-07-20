@@ -44,6 +44,8 @@ Extend aggregate AUDIT and CONFORM with structured child progress so the default
 
 For a source-bearing `ki-harness`, ensure every declared dependency that resolves to a canonical skill or shared module in that same harness checkout is projected through a contained relative symlink rather than an unnecessary local copy. Cover both runtime discovery projections and a skill's source-tree `scripts/vendored/` dependencies, with one clear harness-owned activation rule and bootstrap-owned safe publication and synchronisation mechanics. Make the boundary with generated `.ki-meta/` checker and educator snapshots explicit: retain their portable manifest-owned copies unless a harness-only linking exception can be proven safe for standalone operation, CLEAN, integrity checks, and release packaging. Audit and test the complete contract, including stale regular files, invalid links, consumer copy dereferencing, and a source edit propagating through every intended harness-local reference.
 
+**Plan:** [FND-013](plans/FND-013-complete-harness-local-skill-dependency-linking.md)
+
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.

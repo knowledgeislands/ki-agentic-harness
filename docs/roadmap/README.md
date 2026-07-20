@@ -27,6 +27,14 @@ Canonical themes, active execution plans, and completed plan records.
 - **Status:** acceptance
 - **Blocks:** —
 
+### [FND-013](foundation-tooling/plans/FND-013-complete-harness-local-skill-dependency-linking.md)
+
+- **Title:** Complete harness-local skill dependency linking
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/complete-harness-local-skill-dependency-linking`
+- **Status:** open
+- **Blocks:** —
+
 ### [RTP-001](runtime-portability/plans/RTP-001-detect-vendor-specific-portable-contracts.md)
 
 - **Title:** Detect vendor-specific assumptions in portable skill contracts
