@@ -6,7 +6,8 @@ import { join, relative, resolve } from 'node:path'
 type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 export type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 type Horizon = (typeof HORIZONS)[number]
-type Item = { theme: string; title: string; slug: string; anchor: string; horizon: Horizon; file: string }
+type LocalPlanReference = { id: string | null; path: string | null; line: number; final: boolean }
+type Item = { theme: string; title: string; slug: string; anchor: string; horizon: Horizon; file: string; references: LocalPlanReference[] }
 type Plan = {
   id: string
   theme: string
@@ -40,6 +41,7 @@ const THEME_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const THEME_CODE_RE = /^[A-Z][A-Z0-9]{1,7}$/
 const PLAN_ID_RE = /^[A-Z][A-Z0-9]{1,7}-\d{3,}$/
 const PLAN_RE = /^([A-Z][A-Z0-9]{1,7}-\d{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/
+const PLAN_LINE_RE = /^\*\*Plan:\*\* \[([A-Z][A-Z0-9]{1,7}-\d{3,})\]\((plans\/[A-Z][A-Z0-9]{1,7}-\d{3,}-[a-z0-9]+(?:-[a-z0-9]+)*\.md)\)$/
 const REQUIRED = ['id', 'title', 'status', 'roadmap', 'blocks', 'blocked-by']
 const OPTIONAL = ['handoff', 'tier', 'readiness']
 const VALID_STATUS = new Set(['open', 'in-progress', 'done'])
@@ -132,22 +134,53 @@ function parseRoadmap(path: string, display: string, theme?: string): Item[] {
 
   const items: Item[] = []
   let horizon: Horizon | null = null
-  for (const heading of headings) {
-    if (heading.level === 2) {
-      horizon = HORIZONS.includes(heading.title as Horizon) ? (heading.title as Horizon) : null
+  let current: Item | null = null
+  let currentReference: LocalPlanReference | null = null
+  let fence: '`' | '~' | null = null
+  for (const [index, line] of lines.entries()) {
+    const fenceMatch = line.match(/^\s*(`{3,}|~{3,})/)
+    if (fenceMatch) {
+      const kind = fenceMatch[1][0] as '`' | '~'
+      fence = fence === null ? kind : fence === kind ? null : fence
       continue
     }
-    if (heading.level !== 3) continue
-    if (!horizon) {
-      add('FAIL', 'THEME-1', `item heading on line ${heading.line} is not beneath a canonical horizon`, STANDARD_REF, display)
-      continue
+    if (fence) continue
+    const heading = line.match(/^(#{1,6})\s+(.+?)\s*#*\s*$/)
+    if (heading) {
+      if (heading[1].length === 2) {
+        horizon = HORIZONS.includes(heading[2].trim() as Horizon) ? (heading[2].trim() as Horizon) : null
+        current = null
+        currentReference = null
+        continue
+      }
+      if (heading[1].length === 3) {
+        currentReference = null
+        if (!horizon) {
+          add('FAIL', 'THEME-1', `item heading on line ${index + 1} is not beneath a canonical horizon`, STANDARD_REF, display)
+          current = null
+          continue
+        }
+        const title = heading[2].trim()
+        const slug = itemSlug(title)
+        if (!slug) {
+          add('FAIL', 'ITEM-1', `item heading on line ${index + 1} has no usable locator slug`, STANDARD_REF, display)
+          current = null
+          continue
+        }
+        current = { theme, title, slug, anchor: headingAnchor(title), horizon, file: display, references: [] }
+        items.push(current)
+        continue
+      }
     }
-    const slug = itemSlug(heading.title)
-    if (!slug) {
-      add('FAIL', 'ITEM-1', `item heading on line ${heading.line} has no usable locator slug`, STANDARD_REF, display)
-      continue
+    if (!current) continue
+    if (line.trim()) {
+      if (currentReference) currentReference.final = false
+      if (line.startsWith('**Plan:**')) {
+        const match = PLAN_LINE_RE.exec(line)
+        currentReference = { id: match?.[1] ?? null, path: match?.[2] ?? null, line: index + 1, final: true }
+        current.references.push(currentReference)
+      }
     }
-    items.push({ theme, title: heading.title, slug, anchor: headingAnchor(heading.title), horizon, file: display })
   }
   return items
 }
@@ -485,6 +518,65 @@ export const inspectRoadmap = (target: string): Finding[] => {
           if (!NEAR.has(item.horizon))
             add('FAIL', 'PLAN-2', `locator resolves to ${item.horizon}; plans exist only in Blocking or Next`, FORMAT_REF, plan.file)
         }
+      }
+      const plansByLocator = new Map(plans.map((plan) => [plan.fm.roadmap, plan]))
+      const referencedPlans = new Map<string, Item[]>()
+      for (const item of items) {
+        const locator = `${item.theme}/${item.slug}`
+        for (const reference of item.references) {
+          if (!reference.id || !reference.path)
+            add(
+              'FAIL',
+              'PLAN-2',
+              `local plan reference on line ${reference.line} must use the canonical **Plan:** [<ID>](plans/<file>.md) form`,
+              FORMAT_REF,
+              item.file
+            )
+          if (!reference.final)
+            add('FAIL', 'PLAN-2', `local plan reference on line ${reference.line} must be the final item line`, FORMAT_REF, item.file)
+          if (!reference.id || !reference.path) continue
+          const plan = byRef.get(reference.id)
+          if (!plan) {
+            add('FAIL', 'PLAN-2', `local plan reference ${reference.id} does not resolve to an active plan`, FORMAT_REF, item.file)
+            continue
+          }
+          const expectedPath = `plans/${plan.name}`
+          if (reference.path !== expectedPath)
+            add('FAIL', 'PLAN-2', `local plan reference ${reference.id} must link to ${expectedPath}`, FORMAT_REF, item.file)
+          if (plan.fm.roadmap !== locator)
+            add(
+              'FAIL',
+              'PLAN-2',
+              `local plan reference ${reference.id} belongs to ${plan.fm.roadmap}, not ${locator}`,
+              FORMAT_REF,
+              item.file
+            )
+          const owners = referencedPlans.get(reference.id) ?? []
+          owners.push(item)
+          referencedPlans.set(reference.id, owners)
+        }
+        const plan = plansByLocator.get(locator)
+        if (!plan && item.references.length)
+          add('FAIL', 'PLAN-2', `item ${locator} has a local plan reference but no active plan`, FORMAT_REF, item.file)
+        if (plan && item.references.length !== 1)
+          add(
+            'FAIL',
+            'PLAN-2',
+            `item ${locator} must contain exactly one local reference to ${planRef(plan)}; found ${item.references.length}`,
+            FORMAT_REF,
+            item.file
+          )
+      }
+      for (const plan of plans) {
+        const owners = referencedPlans.get(planRef(plan)) ?? []
+        if (owners.length !== 1)
+          add(
+            'FAIL',
+            'PLAN-2',
+            `plan ${planRef(plan)} must have exactly one local roadmap reference; found ${owners.length}`,
+            FORMAT_REF,
+            plan.file
+          )
       }
       for (const plan of plans) {
         const reference = planRef(plan)

@@ -99,16 +99,30 @@ function plan(id: string, title: string, locator: string, blocks = '—', blocke
   ].join('\n')
 }
 
+function withPlanReference(text: string, item: string, id: string, name: string): string {
+  return text.replace(`${item} details.`, `${item} details.\n\n**Plan:** [${id}](plans/${name})`)
+}
+
 function thematicFixture(): string {
   const root = fixture()
   for (const theme of ['hooks', 'runtime']) mkdirSync(join(root, 'docs', 'roadmap', theme, 'plans'), { recursive: true })
   writeFileSync(
     join(root, 'docs', 'roadmap', 'hooks', 'ROADMAP.md'),
-    themeRoadmap('HOK', 'Hooks roadmap', { Blocking: ['Harden hook linking'] })
+    withPlanReference(
+      themeRoadmap('HOK', 'Hooks roadmap', { Blocking: ['Harden hook linking'] }),
+      'Harden hook linking',
+      'HOK-001',
+      'HOK-001-harden-hook-linking.md'
+    )
   )
   writeFileSync(
     join(root, 'docs', 'roadmap', 'runtime', 'ROADMAP.md'),
-    themeRoadmap('RTP', 'Runtime roadmap', { Next: ['Add runtime parity'] })
+    withPlanReference(
+      themeRoadmap('RTP', 'Runtime roadmap', { Next: ['Add runtime parity'] }),
+      'Add runtime parity',
+      'RTP-001',
+      'RTP-001-add-runtime-parity.md'
+    )
   )
   writeFileSync(
     join(root, 'docs', 'roadmap', 'hooks', 'plans', 'HOK-001-harden-hook-linking.md'),
@@ -337,7 +351,15 @@ for (const [label, mutate] of [
     const title = 'Require canonical horizon blurbs and restore them during CONFORM'
     const themeRoot = join(root, 'docs', 'roadmap', theme)
     mkdirSync(join(themeRoot, 'plans'), { recursive: true })
-    writeFileSync(join(themeRoot, 'ROADMAP.md'), themeRoadmap('PRJ', 'Repo roadmap roadmap', { Next: [title] }))
+    writeFileSync(
+      join(themeRoot, 'ROADMAP.md'),
+      withPlanReference(
+        themeRoadmap('PRJ', 'Repo roadmap roadmap', { Next: [title] }),
+        title,
+        'PRJ-001',
+        'PRJ-001-canonical-horizon-blurbs.md'
+      )
+    )
     writeFileSync(
       join(themeRoot, 'plans', 'PRJ-001-canonical-horizon-blurbs.md'),
       plan('PRJ-001', title, 'repo-roadmap/require-canonical-horizon-blurbs-and-restore-them-during-conform')
@@ -366,6 +388,39 @@ for (const [label, mutate] of [
     writeFileSync(path, plan('RTP-001', 'Add runtime parity', 'hooks/missing-item', '—', 'HOK-001'))
     const result = run(AUDIT, root)
     check('unresolved cross-theme locator fails', result.code !== 0 && result.out.includes('PLAN-2'))
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+
+// Local plan references are exact, singular, and final within the roadmap item.
+for (const [label, mutate] of [
+  ['missing local plan reference', (text: string) => text.replace(/\n\*\*Plan:\*\*.*\n/, '\n')],
+  ['stale local plan reference', (text: string) => text.replace('HOK-001', 'HOK-999')],
+  ['wrong local plan path', (text: string) => text.replace('HOK-001-harden-hook-linking.md', 'HOK-001-other.md')],
+  [
+    'non-final local plan reference',
+    (text: string) =>
+      text.replace(
+        '**Plan:** [HOK-001](plans/HOK-001-harden-hook-linking.md)',
+        '**Plan:** [HOK-001](plans/HOK-001-harden-hook-linking.md)\n\nMore authored detail.'
+      )
+  ],
+  [
+    'duplicate local plan references',
+    (text: string) =>
+      text.replace(
+        '**Plan:** [HOK-001](plans/HOK-001-harden-hook-linking.md)',
+        '**Plan:** [HOK-001](plans/HOK-001-harden-hook-linking.md)\n\n**Plan:** [HOK-001](plans/HOK-001-harden-hook-linking.md)'
+      )
+  ]
+] as const) {
+  const root = thematicFixture()
+  try {
+    const path = join(root, 'docs', 'roadmap', 'hooks', 'ROADMAP.md')
+    writeFileSync(path, mutate(readFileSync(path, 'utf8')))
+    const result = run(AUDIT, root)
+    check(`${label} fails PLAN-2`, result.code !== 0 && result.out.includes('PLAN-2'))
   } finally {
     rmSync(root, { recursive: true, force: true })
   }
