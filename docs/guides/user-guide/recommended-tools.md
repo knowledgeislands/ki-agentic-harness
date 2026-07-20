@@ -12,6 +12,19 @@ chezmoi init <your-dotfiles-repo>
 chezmoi apply
 ```
 
+### Quick reference: re-add a Claude Desktop configuration
+
+Use this only to bring an app-edited configuration back into chezmoi source state. Quit Claude Desktop first. The KI-managed MCP server list belongs in its canonical source, not in the rendered Desktop file.
+
+```bash
+chezmoi re-add --dry-run "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+chezmoi re-add "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+chezmoi diff
+chezmoi apply -v
+```
+
+`re-add` preserves an existing chezmoi template; review `chezmoi diff` before applying. Use this path for settings outside the template-owned MCP server block.
+
 ## headroom-ai
 
 headroom-ai provides context compaction management (`PreCompact` hook) and shell-output compression via its bundled RTK component.
@@ -58,11 +71,37 @@ Check a claimed route with `headroom perf --hours 1 --format json` or the local 
 
 The `skills` command-line tool can install third-party skills into a user's Codex skill directory. These are personal, user-scope additions: they do not become part of a governed repository or alter its declared KI skill set. Review a skill's source and behaviour before adding it, especially if it installs hooks or changes agent instructions.
 
-To try [caveman](https://github.com/JuliusBrussee/caveman) in Codex:
+### Caveman in Codex
+
+[Caveman](https://github.com/JuliusBrussee/caveman) is an optional agent-local response-compression skill, not a model-traffic proxy or a KI harness dependency.
+
+Use it as a narrow Codex trial first:
 
 ```bash
 npx skills add JuliusBrussee/caveman -a codex
 ```
+
+Start a new Codex session after installation, then activate it explicitly with `/caveman lite` for ordinary work.
+
+Use `/caveman full` only when terse output remains clear for the task.
+
+Use `normal mode` or `stop caveman` to return to normal output.
+
+The documented integration is Codex CLI.
+
+For ChatGPT or Codex Desktop, treat availability in a fresh session as an acceptance test rather than assuming the installed Codex skill transfers to that surface.
+
+Keep Headroom as the only request proxy.
+
+Caveman does not route model requests through Headroom, and it cannot make ChatGPT or Codex Desktop traffic appear in Headroom's coverage.
+
+Continue to prove a Headroom route with its proxy statistics or logs as described in [Coverage by runtime](#coverage-by-runtime).
+
+Do not add a Caveman-to-Headroom proxy chain, `caveman-shrink`, Cavemem, or Caveman Code as part of this trial.
+
+No chezmoi change is required for an individual trial.
+
+If the skill proves useful enough to standardise across machines, add a narrow, reviewable chezmoi profile with an explicit version, target runtime, and removal path; do not capture generated Codex state or install it for every runtime.
 
 To add the `find-skills` discovery skill:
 
