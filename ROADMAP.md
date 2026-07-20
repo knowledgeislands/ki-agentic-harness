@@ -9,6 +9,7 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 - [Foundation Tooling: Add a safe repository CLEAN operation](docs/roadmap/foundation-tooling/ROADMAP.md#add-a-safe-repository-clean-operation)
 - [Foundation Tooling: Add safe multiprogress aggregate execution](docs/roadmap/foundation-tooling/ROADMAP.md#add-safe-multiprogress-aggregate-execution)
 - [Foundation Tooling: Add scoped read-only bootstrap doctor operations](docs/roadmap/foundation-tooling/ROADMAP.md#add-scoped-read-only-bootstrap-doctor-operations)
+- [Foundation Tooling: Complete harness-local skill dependency linking](docs/roadmap/foundation-tooling/ROADMAP.md#complete-harness-local-skill-dependency-linking)
 - [Foundation Tooling: Define a canonical cross-runtime `ki-self` footprint](docs/roadmap/foundation-tooling/ROADMAP.md#define-a-canonical-cross-runtime-ki-self-footprint)
 - [Foundation Tooling: Establish the installable `kisle` command-line interface](docs/roadmap/foundation-tooling/ROADMAP.md#establish-the-installable-kisle-command-line-interface)
 - [Foundation Tooling: Implement scoped lifecycle operations](docs/roadmap/foundation-tooling/ROADMAP.md#implement-scoped-lifecycle-operations)
