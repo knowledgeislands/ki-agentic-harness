@@ -12,6 +12,12 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Add a source-owned `ki-bootstrap` CLEAN operation that removes repository-generated harness state without needing a working vendored runner. Remove `.ki-meta/` and runtime skill copies only when their generated marker proves harness ownership. Preserve `.ki-config.toml`, authored or explicitly linked skills, repository agents, canonical `scripts/vendored/` source dependencies, and any unmarked `ki-*` path; never infer ownership from a name prefix alone. Make the operation safe to repeat, dry-runnable, and suitable for returning a repository to the state immediately before EDUCATE publication.
 
+### Make plan-to-roadmap linkage explicit
+
+Make an active plan visible from the canonical item it executes, not only from the plan's `roadmap:` frontmatter and the generated global index. Define one derivable, local plan-reference form beneath a `Blocking` or `Next` item; have AUDIT detect an absent, stale, or ambiguous reference and CONFORM repair it without rewriting the item's authored prose. Ensure `ki-plan new`, `promote`, `execute`, and `done` include the canonical theme roadmap in their existing safe transactions so plan creation, lifecycle changes, and closure cannot leave the local inverse link stale.
+
+**Plan:** [FND-004](plans/FND-004-make-plan-to-roadmap-linkage-explicit.md)
+
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.

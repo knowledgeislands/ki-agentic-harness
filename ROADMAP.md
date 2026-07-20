@@ -7,6 +7,7 @@ This portfolio view is generated from the canonical theme roadmaps under `docs/r
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
 - [Foundation Tooling: Add a safe repository clean operation](docs/roadmap/foundation-tooling/ROADMAP.md#add-a-safe-repository-clean-operation)
+- [Foundation Tooling: Make plan-to-roadmap linkage explicit](docs/roadmap/foundation-tooling/ROADMAP.md#make-plan-to-roadmap-linkage-explicit)
 - [Runtime Portability: Detect vendor-specific assumptions in portable skill contracts](docs/roadmap/runtime-portability/ROADMAP.md#detect-vendor-specific-assumptions-in-portable-skill-contracts)
 
 ## Next

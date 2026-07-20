@@ -19,6 +19,14 @@ Canonical themes and active execution plans.
 - **Status:** open
 - **Blocks:** —
 
+### [FND-004](foundation-tooling/plans/FND-004-make-plan-to-roadmap-linkage-explicit.md)
+
+- **Title:** Make plan-to-roadmap linkage explicit
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/make-plan-to-roadmap-linkage-explicit`
+- **Status:** open
+- **Blocks:** —
+
 ## Dependency graph
 
 ```text
