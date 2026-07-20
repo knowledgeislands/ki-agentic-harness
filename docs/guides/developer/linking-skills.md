@@ -4,7 +4,7 @@ This is a developer workflow for working on a local checkout of the harness. It 
 
 Normal bootstrap and CONFORM publish generated regular-file copies into each selected project's runtime skill directory. They are self-contained, gitignored payloads that do not depend on this harness checkout remaining available.
 
-This guide is only for harness authors who deliberately want live local edits. The harness has one explicit command for its small user-global development set, while `ki-repo` owns the command that links a target repository's declared skills. A consumer remains copy-based unless its author explicitly selects one of these modes.
+This guide is only for harness authors who deliberately want live local edits. The harness has explicit commands for its source-checkout project and small user-global development sets. A consumer remains copy-based.
 
 ## Normal global installation
 
@@ -32,28 +32,26 @@ bun run ki:skills:link:global -- --check
 
 To restore portable regular-file copies, re-run the public install route above. Start a new agent session after changing global skill payloads.
 
-## Link a target repository's declared skills
+## Link this harness's declared project skills
 
-The explicit development linker mirrors the skills declared in a target repository's `.ki-config.toml` into its runtime-local skills directory:
+The explicit development linker replaces this harness's marker-proven generated runtime skill copies with links to its canonical sources:
 
 ```bash
-bun /path/to/ki-agentic-harness/skills/keystone/ki-repo/scripts/link-repository-commands.ts /path/to/target-repo --development
+bun run ki:skills:link:project
 ```
 
-The command must run from an active harness checkout so its links have a stable source. Preview a change with `--dry-run`. The links are gitignored and generated; they are never committed into a target repository because they depend on the local harness checkout. Add `--agents` only when deliberately linking the declared Claude Code governance agents as well.
+The command operates only on its source harness checkout, so it accepts no target. Preview a change with `--dry-run`. The links are gitignored and generated; they are never committed because they depend on the local harness checkout. It deliberately leaves runtime agents and `.ki-meta/` untouched.
 
 Verify the selected development state with:
 
 ```bash
-bun /path/to/ki-agentic-harness/skills/keystone/ki-repo/scripts/link-repository-commands.ts /path/to/target-repo --development --check
+bun run ki:skills:link:project -- --check
 ```
 
-Without `--development`, the same checker instead verifies the normal copied-payload contract.
-
-To restore portable copied payloads, run normal repository bootstrap:
+To restore portable copied payloads, run normal EDUCATE:
 
 ```sh
-curl -fsSL https://knowledgeislands.info/harness/bootstrap | sh
+bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts .
 ```
 
 Start a new agent session after adding or removing a link so the runtime re-scans its skill directories.

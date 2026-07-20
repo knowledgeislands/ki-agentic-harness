@@ -6,7 +6,7 @@
 
 The harness has three distinct payload surfaces: global core skills installed for a user, copied runtime skills in a governed repository, and the mechanical self-governance units in `.ki-meta/`.
 
-Earlier development links conflated those surfaces and made a harness checkout appear to be an ordinary runtime dependency. A future `ki-self` surface also needs an explicit way to link a repository-local command without making that mechanism harness-specific.
+Earlier development links conflated those surfaces and made a harness checkout appear to be an ordinary runtime dependency.
 
 ## Decision
 
@@ -16,15 +16,15 @@ The three payload surfaces remain separate and have explicit owners.
 - A harness author may explicitly replace those managed global copies with local-checkout symlinks through `ki:skills:link:global`; `ki-harness` owns that fixed development workflow. It is separate from, and unavailable through, the disposable remote installer.
 - Repository bootstrap publishes regular-file copies of a repository's declared skills into its selected project-local runtime discovery directories, and writes no global payload.
 - `.ki-meta/` contains only vendored mechanical units, rendered HELP, and runners. It never contains complete runtime skills or runtime-link state.
-- `ki-repo` owns an opt-in repository-local command-link capability. It can link a future `ki-self` surface or a harness author's local development payload, but it is never invoked by ordinary user installation or repository bootstrap.
-- A linking implementation owns or vendors every helper it needs below its own script surface. It does not import a relative path from another skill's scripts directory.
+- `ki-harness` owns an opt-in source-harness-only project-link operation. It accepts no target and replaces only marker-proven runtime skill copies in its own checkout; it never links agents or `.ki-meta/`.
+- The project linker reuses the bootstrap publisher's transactional, marker, containment, conflict, dry-run, and idempotence checks rather than duplicating them in another skill.
 
 ## Consequences
 
 - Ordinary sessions depend on copied payloads, not a harness checkout.
-- A repository can expose deliberate local commands without turning its development topology into a fleet default.
-- `ki-harness` owns its fixed global developer set; `ki-repo` continues to own the reusable repository-local command-link capability.
-- The former project-local `link-skills.ts` and `link-agents.ts` responsibilities now belong to the `ki-repo` capability. Global development-link behaviour remains a narrow harness developer workflow, separate from `ki-bootstrap`'s copy-based user payload mechanism.
+- A consumer repository cannot acquire a checkout-dependent project link by accident or through the public bootstrap path.
+- `ki-harness` owns both its fixed global developer set and source-harness project-link operation.
+- Global and source-harness project links remain narrow developer workflows, separate from `ki-bootstrap`'s copy-based user payload mechanism.
 
 ## References
 

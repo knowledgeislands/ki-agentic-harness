@@ -62,6 +62,6 @@ _Verify:_ `skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh` line 1 is `#!
 
 ### BOOT-009 — Normal runtime publication uses copies
 
-Repository bootstrap MUST publish only the declared runtime skill coverage as generated regular-file copies; it MUST NOT create runtime symlinks. Deliberate local-development links are a separate `ki-repo` capability and are never required for normal user installation or repository governance.
+Repository bootstrap MUST publish only the declared runtime skill coverage as generated regular-file copies; it MUST NOT create runtime symlinks. Deliberate local-development links are a separate source-harness-only `ki-harness` operation and are never required for normal user installation or repository governance.
 
-_Verify:_ run `scripts/internal/repo-bootstrap/publish-project-skills.ts` against a declared fixture and confirm each published runtime skill is a regular file. Run `ki-repo/scripts/link-repository-commands.ts <fixture> --development` separately and confirm only that explicit command creates a symlink.
+_Verify:_ run `scripts/internal/repo-bootstrap/publish-project-skills.ts` against a declared fixture and confirm each published runtime skill is a regular file. Run `ki-harness/scripts/link-project-skills.ts` from the source harness separately and confirm only that explicit command creates a symlink in the harness footprint.
