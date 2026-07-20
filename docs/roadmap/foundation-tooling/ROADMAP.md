@@ -40,9 +40,13 @@ Audit every shipped skill against the established exemplar implementations for s
 
 Make direct and aggregate CONFORM progress useful in a terminal: detect the active TTY width when available, size the bar from that width with a safe fallback and a maximum of 100 columns, and append the completed percentage to the existing count. Preserve canonical JSONL and non-interactive output, never let presentation width alter item accounting, and cover narrow, wide, unavailable-TTY, and capped-width cases.
 
+**Plan:** [FND-010](plans/FND-010-improve-conform-progress-feedback.md)
+
 ### Preserve committed completion records before plan removal
 
 Refine the `ki-plan` closing lifecycle so a completed plan first gains a `## Done` outcome, moves to `status: done`, and is committed with its still-visible roadmap and index record. A later explicit closing transaction and separate commit then removes the plan, its canonical roadmap item and local reference, and its generated index/projection entries. Keep both transitions guarded, auditable, and recoverable; do not infer the removal from the status change alone.
+
+**Plan:** [FND-011](plans/FND-011-preserve-committed-completion-records.md)
 
 ## Next
 

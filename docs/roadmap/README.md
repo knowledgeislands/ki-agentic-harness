@@ -27,6 +27,22 @@ Canonical themes and active execution plans.
 - **Status:** acceptance
 - **Blocks:** —
 
+### [FND-010](foundation-tooling/plans/FND-010-improve-conform-progress-feedback.md)
+
+- **Title:** Improve CONFORM progress feedback
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/improve-conform-progress-feedback`
+- **Status:** open
+- **Blocks:** —
+
+### [FND-011](foundation-tooling/plans/FND-011-preserve-committed-completion-records.md)
+
+- **Title:** Preserve committed completion records before plan removal
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/preserve-committed-completion-records-before-plan-removal`
+- **Status:** open
+- **Blocks:** —
+
 ### [RTP-001](runtime-portability/plans/RTP-001-detect-vendor-specific-portable-contracts.md)
 
 - **Title:** Detect vendor-specific assumptions in portable skill contracts
