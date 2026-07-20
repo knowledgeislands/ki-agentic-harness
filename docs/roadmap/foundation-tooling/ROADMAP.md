@@ -38,13 +38,13 @@ Audit every shipped skill against the established exemplar implementations for s
 
 ### Improve CONFORM progress feedback
 
-Make direct and aggregate CONFORM progress useful in a terminal: detect the active TTY width when available, size the bar from that width with a safe fallback and a maximum of 100 columns, and append the completed percentage to the existing count. Preserve canonical JSONL and non-interactive output, never let presentation width alter item accounting, and cover narrow, wide, unavailable-TTY, and capped-width cases.
+Make direct and aggregate CONFORM progress useful in a terminal: at every redraw, detect the active `stderr` TTY width when available and allocate it between a left label, centre bar, and right-side counter, percentage, and status. Size the bar from the remaining width with a safe fallback and a maximum of 100 columns; use a compact non-wrapping form when there is no room for a bar. Preserve canonical JSONL and non-interactive output, never let presentation width alter item accounting, and cover resize, narrow, wide, unavailable-TTY, and capped-width cases.
 
 **Plan:** [FND-010](plans/FND-010-improve-conform-progress-feedback.md)
 
 ### Preserve committed completion records before plan removal
 
-Refine the `ki-plan` closing lifecycle so a completed plan first gains a `## Done` outcome, moves to `status: done`, and is committed with its still-visible roadmap and index record. A later explicit closing transaction and separate commit then removes the plan, its canonical roadmap item and local reference, and its generated index/projection entries. Keep both transitions guarded, auditable, and recoverable; do not infer the removal from the status change alone.
+Refine the `ki-plan` closing lifecycle so `done` first gains a `## Done` outcome, moves to `status: done`, and commits the still-visible roadmap and index record without deleting it. Add an explicit `prune` operation that later removes every eligible done plan in a requested scope as one guarded, auditable batch, including each canonical roadmap item and local reference and all generated index/projection entries. Keep both transitions recoverable; do not infer pruning from the done status alone.
 
 **Plan:** [FND-011](plans/FND-011-preserve-committed-completion-records.md)
 
