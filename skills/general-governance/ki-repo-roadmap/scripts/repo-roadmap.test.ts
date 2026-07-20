@@ -100,10 +100,25 @@ function plan(id: string, title: string, locator: string, blocks = '—', blocke
           '',
           '## Acceptance',
           '',
-          '- **Delivered:** Completed work.',
-          '- **Verification:** Focused checks passed.',
-          '- **Outstanding concerns:** None.',
-          '- **Mini recap:** No learning route proposed.'
+          '### Delivered',
+          '',
+          'Completed work.',
+          '',
+          '### Summary of changes',
+          '',
+          '- Updated the governed output.',
+          '',
+          '### Verification',
+          '',
+          '- Focused checks passed at `abc1234`.',
+          '',
+          '### Outstanding concerns',
+          '',
+          'None.',
+          '',
+          '### Mini recap',
+          '',
+          'No learning route proposed.'
         ]
       : []),
     ''
@@ -287,6 +302,18 @@ function thematicFixture(): string {
     check(
       'acceptance plan without a packet fails',
       invalid.code !== 0 && invalid.out.includes("acceptance status requires one non-empty 'Acceptance' H2")
+    )
+    writeFileSync(
+      runtime,
+      plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'HOK-001', 'acceptance', true).replace(
+        '### Summary of changes',
+        '### Changes'
+      )
+    )
+    const malformed = run(AUDIT, root)
+    check(
+      'acceptance plan with malformed packet fails',
+      malformed.code !== 0 && malformed.out.includes('acceptance packet must contain these H3 sections once and in order')
     )
   } finally {
     rmSync(root, { recursive: true, force: true })

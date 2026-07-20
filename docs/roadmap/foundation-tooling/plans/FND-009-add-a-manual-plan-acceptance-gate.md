@@ -50,7 +50,25 @@ FND-008 provides the first real acceptance candidate but does not block the life
 
 ## Acceptance
 
-- **Delivered:** The `accept` lifecycle, `acceptance` status, packet validation, explicit `done` gate, roadmap representation, focused test coverage, and a per-plan mini-recap boundary; FND-008 is the first plan presented through the new state.
-- **Verification:** `bun skills/general-governance/ki-repo-roadmap/scripts/repo-roadmap.test.ts`, `bun run test`, and `bun run ki:audit` all passed on 2026-07-20.
-- **Outstanding concerns:** None.
-- **Mini recap:** A plan-local acceptance record makes the review evidence visible without prematurely turning a learning into a standard. No additional durable learning route is proposed.
+### Delivered
+
+Plans now pause in a manual `acceptance` state with a review packet before they can be removed from the roadmap.
+
+### Summary of changes
+
+- Added the `accept` lifecycle, `acceptance` status, an explicit current-conversation `done` gate, and active-plan index support.
+- Added packet validation, focused roadmap coverage, and the boundary that a plan-local recap proposes learning routes without silently publishing them.
+- Presented FND-008, then FND-003 through FND-005, as real review candidates to exercise the lifecycle rather than treating the contract as theoretical.
+
+### Verification
+
+- `bun skills/general-governance/ki-repo-roadmap/scripts/repo-roadmap.test.ts`, `bun run test`, and `bun run ki:audit` passed on 2026-07-20.
+- Code-evidence baseline: `339a17b5`; the acceptance lifecycle implementation has not changed since that review state.
+
+### Outstanding concerns
+
+The packet was initially terse, which made it harder to find the actual changes or conduct deeper acceptance analysis. This follow-up strengthens the packet shape with expandable headings and revisioned evidence. The manual decision boundary itself remains unchanged: acceptance of a plan does not by itself approve a proposed learning route.
+
+### Mini recap
+
+A plan-local acceptance record makes review evidence visible without prematurely turning a learning into a standard. The approved learning from this review is to record revisioned verification and avoid redundant full gates after prose-only packet refinements.

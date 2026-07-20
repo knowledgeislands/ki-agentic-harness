@@ -58,7 +58,25 @@ It is deliberately separate from FND-004: one establishes the roadmap/plan relat
 
 ## Acceptance
 
-- **Delivered:** Shared per-item audit-gated CONFORM, terminal-only reporter outcomes, consistent progress accounting, the `ki-engineering` migration, and focused coverage.
-- **Verification:** The focused checker and engineering coverage, `bun run test`, and `bun run ki:audit` passed against this restored review state on 2026-07-20.
-- **Outstanding concerns:** None known.
-- **Mini recap:** Moving the repair contract into the shared checker avoided another skill-specific workaround. No additional durable learning route is proposed.
+### Delivered
+
+CONFORM now reports repairs only when the corresponding audit rubric item is genuinely satisfied after the write.
+
+### Summary of changes
+
+- Moved the per-rubric-item audit-gating contract into the shared `ki-skills` checker and rubric machinery, rather than adding another checker-specific workaround.
+- Kept terminal-only reporter outcomes and aggregate progress accounting consistent with the new repair evidence.
+- Migrated `ki-engineering` and added focused checker and engineering regression coverage for the shared semantics.
+
+### Verification
+
+- Focused checker and engineering coverage, `bun run test`, and `bun run ki:audit` passed on 2026-07-20.
+- Code-evidence baseline: `339a17b5`; the shared CONFORM implementation has not changed since that restored review state.
+
+### Outstanding concerns
+
+None known. The acceptance question is chiefly whether the distinction between a mechanical write and a satisfied rubric item is visible enough in reporter output and progress totals; the shared implementation prevents individual skills from silently drifting on that semantic.
+
+### Mini recap
+
+Moving the repair contract into the shared checker avoided another skill-specific workaround. No additional durable learning route is proposed.

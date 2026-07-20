@@ -68,6 +68,32 @@ A pass/fail command or assertion.
 Narrative dependency context.
 ```
 
-During execution, mark completed steps without deleting their instructions. Before closing completed work, append one non-empty `## Acceptance` section after the six core sections. It records **Delivered**, **Verification**, **Outstanding concerns**, and a **Mini recap** whose learning routes remain proposals until the user approves them separately. Delete the plan when it lands; do not retain done plans in the index.
+During execution, mark completed steps without deleting their instructions. Before closing completed work, append one non-empty `## Acceptance` section after the six core sections using these H3 subsections, once and in order:
+
+```markdown
+## Acceptance
+
+### Delivered
+
+The material outcome in reviewable terms.
+
+### Summary of changes
+
+- The meaningful implementation or documentation changes, with primary paths where useful.
+
+### Verification
+
+- The concrete commands and outcomes, plus the checked commit or other evidence revision.
+
+### Outstanding concerns
+
+Open questions, limitations, and proposed acceptance analysis; write `None` when there are none.
+
+### Mini recap
+
+What was learned and any proposed route. The route remains a proposal until the user approves it separately.
+```
+
+Re-run a plan's implementation checks when entering acceptance and after any material implementation, verification, or environment change. An editorial refinement to the acceptance packet instead runs the relevant documentation and roadmap checks; it retains the earlier evidence revision rather than needlessly repeating unrelated full gates. Delete the plan when it lands; do not retain done plans in the index.
 
 Composed governance may add `handoff`, `tier`, or `readiness` frontmatter and additional H2 sections, but it must preserve the six core sections exactly once and in the order above.

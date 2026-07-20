@@ -241,7 +241,8 @@ function themeCode(text: string, display: string): string | null {
 function validatePlanBody(body: string, display: string, status: string | undefined): void {
   const requiredSections = ['Context', 'Current state', 'Steps', 'Files touched', 'Verify', 'Dependencies / blocks']
   const bodyLines = body.split(/\r?\n/)
-  const sections = markdownHeadings(body).filter((heading) => heading.level === 2)
+  const headings = markdownHeadings(body)
+  const sections = headings.filter((heading) => heading.level === 2)
   const names = sections.map((section) => section.title)
   const core = names.filter((name) => requiredSections.includes(name))
   if (JSON.stringify(core) !== JSON.stringify(requiredSections)) {
@@ -274,6 +275,33 @@ function validatePlanBody(body: string, display: string, status: string | undefi
     const end = index + 1 < sections.length ? sections[index + 1].line - 1 : bodyLines.length
     if (!bodyLines.slice(start, end).join('\n').trim())
       add('FAIL', 'PLAN-1', "body section 'Acceptance' must not be empty", FORMAT_REF, display)
+    const expectedAcceptanceSections = ['Delivered', 'Summary of changes', 'Verification', 'Outstanding concerns', 'Mini recap']
+    const nextH2 = sections[index + 1]
+    const acceptanceSections = headings.filter(
+      (heading) => heading.level === 3 && heading.line > acceptance[0].line && (!nextH2 || heading.line < nextH2.line)
+    )
+    const acceptanceNames = acceptanceSections.map((section) => section.title)
+    if (JSON.stringify(acceptanceNames) !== JSON.stringify(expectedAcceptanceSections)) {
+      add(
+        'FAIL',
+        'PLAN-1',
+        `acceptance packet must contain these H3 sections once and in order: ${expectedAcceptanceSections.join(' → ')}; found ${acceptanceNames.join(' → ') || 'none'}`,
+        FORMAT_REF,
+        display
+      )
+      return
+    }
+    for (let sectionIndex = 0; sectionIndex < acceptanceSections.length; sectionIndex += 1) {
+      const section = acceptanceSections[sectionIndex]
+      const end =
+        sectionIndex + 1 < acceptanceSections.length
+          ? acceptanceSections[sectionIndex + 1].line - 1
+          : nextH2
+            ? nextH2.line - 1
+            : bodyLines.length
+      if (!bodyLines.slice(section.line, end).join('\n').trim())
+        add('FAIL', 'PLAN-1', `acceptance subsection '${section.title}' must not be empty`, FORMAT_REF, display)
+    }
   }
 }
 

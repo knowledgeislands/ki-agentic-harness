@@ -56,7 +56,25 @@ It landed before broader plan-lifecycle refinements so thematic roadmaps remain 
 
 ## Acceptance
 
-- **Delivered:** Canonical local plan references, audit and conform behaviour, lifecycle transaction ownership, and focused regression coverage.
-- **Verification:** The focused roadmap coverage, `bun run test`, and `bun run ki:audit` passed against this restored review state on 2026-07-20.
-- **Outstanding concerns:** None known.
-- **Mini recap:** The inverse reference proved that the canonical roadmap is a better local execution view when it is maintained as derived state. No additional durable learning route is proposed.
+### Delivered
+
+Every active plan is now visible from the canonical roadmap item it executes, as well as from its own frontmatter and the global index.
+
+### Summary of changes
+
+- Added the derived `**Plan:**` reference to canonical `Blocking` and `Next` items and made it part of roadmap audit, conform, and safe lifecycle transactions.
+- Updated the plan lifecycle so creation, progress, promotion, and closure cannot leave the item-to-plan inverse link stale.
+- Added regression coverage for absent, stale, ambiguous, and correctly generated local references.
+
+### Verification
+
+- Focused `ki-repo-roadmap` coverage, `bun run test`, and `bun run ki:audit` passed on 2026-07-20.
+- Code-evidence baseline: `339a17b5`; the linkage implementation has not changed since that restored review state.
+
+### Outstanding concerns
+
+None known. The reference is intentionally derived rather than authored prose, so CONFORM and the plan lifecycle own its exact placement and removal. Acceptance analysis can therefore focus on whether the local roadmap view is sufficient for human navigation, rather than on maintaining a second source of truth.
+
+### Mini recap
+
+The inverse reference proved that the canonical roadmap is a better local execution view when it is maintained as derived state. No additional durable learning route is proposed.

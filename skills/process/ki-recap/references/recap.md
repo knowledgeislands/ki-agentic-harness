@@ -67,7 +67,7 @@ Use `highCostCandidates` from the grounding helper as a starting list, not the f
 
 ### Per-plan acceptance mini recap
 
-When `ki-plan accept` requests a plan-scoped recap, do not run or imply a full-session recap. Ground only the plan's delivered outputs and verification evidence, then record four concise parts in that plan's `## Acceptance` section: **Delivered**, **Verification**, **Outstanding concerns**, and **Mini recap**. The mini recap may name a learning and its proposed route, but it must say that the route is unapproved. User acceptance of the plan closes the plan only; it does not approve a guide, rubric, agent, hook, memory, or other durable learning write.
+When `ki-plan accept` requests a plan-scoped recap, do not run or imply a full-session recap. Ground only the plan's delivered outputs and verification evidence, then record these H3 parts in its `## Acceptance` section: **Delivered**, **Summary of changes**, **Verification**, **Outstanding concerns**, and **Mini recap**. The summary names the material changes and useful primary paths; verification records concrete commands, outcomes, and the checked evidence revision; concerns hold open questions and further acceptance analysis. The mini recap may name a learning and its proposed route, but it must say that the route is unapproved. User acceptance of the plan closes the plan only; it does not approve a guide, rubric, agent, hook, memory, or other durable learning write.
 
 ## 5. Specific actions
 

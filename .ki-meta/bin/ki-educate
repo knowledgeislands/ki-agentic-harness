@@ -3,7 +3,7 @@
 # Usage: ./.ki-meta/bin/ki-educate [skill] [--dry-run] [--verbose] [--help]
 set -eu
 root="$(cd "$(dirname "$0")/../.." && pwd)"
-ref='9d1d21cffa43fbd966b901c212bef734c5bb0bed'
+ref='339a17b568b22b8edb8ff6b39abd1a47e15801b4'
 case "${1:-}" in
   --help|-h)
     echo "usage: ki-educate [skill] [--dry-run] [--verbose]"

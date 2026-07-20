@@ -49,7 +49,25 @@ This plan has no external dependency. It establishes the repository-side CLEAN b
 
 ## Acceptance
 
-- **Delivered:** Source-owned repository CLEAN with manifest and marker ownership checks, dry-run and repeat safety, fail-closed handling of unfamiliar or concurrent state, and CLEAN-then-EDUCATE recovery.
-- **Verification:** Focused CLEAN coverage, `bun run test`, and `bun run ki:audit` passed against this restored review state on 2026-07-20.
-- **Outstanding concerns:** The later scoped CLEAN / DOCTOR / UNINSTALL roadmap item intentionally broadens the end-user lifecycle; it does not invalidate this repository CLEAN boundary.
-- **Mini recap:** Defining CLEAN by proven generated ownership—not names or broad directories—keeps re-vendoring recoverable without erasing authored state. No additional durable learning route is proposed.
+### Delivered
+
+Repository CLEAN removes only proven generated state, leaving governance intent and authored repository state intact.
+
+### Summary of changes
+
+- Added the source-owned `ki-bootstrap` CLEAN entry point in `scripts/clean.ts` and the ownership-aware implementation in `scripts/internal/repo-bootstrap/repo-clean.ts`.
+- CLEAN removes manifest-proven `.ki-meta/` output and unchanged marker-owned runtime skill copies; dry-run, repeat, tamper, symlink, concurrent-mutation, and CLEAN-then-EDUCATE cases are covered in `repo-clean.test.ts`.
+- Updated the bootstrap contract and lifecycle guidance so cleanup can succeed after it removes the vendored runner.
+
+### Verification
+
+- `bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-clean.test.ts`, `bun run test`, and `bun run ki:audit` passed on 2026-07-20.
+- Code-evidence baseline: `339a17b5`; no CLEAN implementation has changed since that review state.
+
+### Outstanding concerns
+
+The later scoped CLEAN / DOCTOR / UNINSTALL item intentionally broadens the end-user lifecycle. In particular, repository CLEAN is not an uninstall: it does not remove user-level installation, repository intent, configuration, authored sources, development links, agents, or unproven content. That broader contract needs separate design and acceptance analysis; it does not invalidate this conservative generated-output boundary.
+
+### Mini recap
+
+Defining CLEAN by proven generated ownership—not names or broad directories—keeps re-vendoring recoverable without erasing authored state. No additional durable learning route is proposed.

@@ -53,7 +53,25 @@ This plan is independent of FND-006: harness source links must preserve `ki-self
 
 ## Acceptance
 
-- **Delivered:** One committed `.ki-self/SKILL.md` source, generated relative `.agents/skills/ki-self` and `.claude/skills/ki-self` projections, guarded migration and CLEAN behaviour, focused coverage, and the associated user and developer documentation.
-- **Verification:** `bun run test` and `bun run ki:audit` both passed on 2026-07-20 after the acceptance lifecycle change landed.
-- **Outstanding concerns:** None.
-- **Mini recap:** Replacing a tracked runtime copy with a generated symlink can complicate Git staging while the link is present. Proposed learning route: document the safe migration sequence only if we see the pattern recur; no durable learning write is approved yet.
+### Delivered
+
+`ki-self` now has one committed repository-local source and generated projections for both supported agent runtimes.
+
+### Summary of changes
+
+- Moved the canonical guidance to `.ki-self/SKILL.md` and projected it through relative `.agents/skills/ki-self` and `.claude/skills/ki-self` links.
+- Added guarded migration, publication, and CLEAN behaviour in the bootstrap publisher so legacy copies become safe projections without treating authored state as generated output.
+- Added focused coverage and updated user and developer guidance for the source/projection model.
+
+### Verification
+
+- `bun run test` and `bun run ki:audit` passed on 2026-07-20 after the acceptance lifecycle change landed.
+- Code-evidence baseline: `339a17b5`; the canonical `ki-self` footprint implementation has not changed since that review state.
+
+### Outstanding concerns
+
+No implementation concern is known. Replacing a tracked runtime copy with a generated symlink can complicate Git staging while the link is present; acceptance analysis should confirm that the documented migration sequence makes this expected Git behaviour clear. If the pattern recurs outside this harness, document the safe sequence as a reusable learning rather than adding a compatibility path prematurely.
+
+### Mini recap
+
+Proposed learning route: document the safe migration sequence only if the Git-staging pattern recurs; no durable learning write is approved yet.
