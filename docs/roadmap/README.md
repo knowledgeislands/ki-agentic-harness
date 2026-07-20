@@ -16,7 +16,7 @@ Canonical themes and active execution plans.
 - **Title:** Define a canonical cross-runtime ki-self footprint
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/define-a-canonical-cross-runtime-ki-self-footprint`
-- **Status:** open
+- **Status:** in-progress
 - **Blocks:** —
 
 ### [RTP-001](runtime-portability/plans/RTP-001-detect-vendor-specific-portable-contracts.md)
