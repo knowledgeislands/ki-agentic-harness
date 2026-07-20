@@ -19,36 +19,12 @@ Canonical themes and active execution plans.
 - **Status:** acceptance
 - **Blocks:** —
 
-### [FND-004](foundation-tooling/plans/FND-004-make-plan-to-roadmap-linkage-explicit.md)
-
-- **Title:** Make plan-to-roadmap linkage explicit
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/make-plan-to-roadmap-linkage-explicit`
-- **Status:** done
-- **Blocks:** —
-
-### [FND-005](foundation-tooling/plans/FND-005-make-conform-audit-gated-per-rubric-item.md)
-
-- **Title:** Make CONFORM audit-gated per rubric item
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/make-conform-audit-gated-per-rubric-item`
-- **Status:** done
-- **Blocks:** —
-
 ### [FND-008](foundation-tooling/plans/FND-008-define-a-canonical-cross-runtime-ki-self-footprint.md)
 
 - **Title:** Define a canonical cross-runtime ki-self footprint
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/define-a-canonical-cross-runtime-ki-self-footprint`
 - **Status:** acceptance
-- **Blocks:** —
-
-### [FND-009](foundation-tooling/plans/FND-009-add-a-manual-plan-acceptance-gate.md)
-
-- **Title:** Add a manual plan acceptance gate
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/add-a-manual-plan-acceptance-gate`
-- **Status:** done
 - **Blocks:** —
 
 ### [RTP-001](runtime-portability/plans/RTP-001-detect-vendor-specific-portable-contracts.md)
