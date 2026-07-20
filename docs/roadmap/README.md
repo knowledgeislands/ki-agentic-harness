@@ -27,14 +27,6 @@ Canonical themes, active execution plans, and completed plan records.
 - **Status:** acceptance
 - **Blocks:** —
 
-### [FND-014](foundation-tooling/plans/FND-014-unify-repository-local-ki-state.md)
-
-- **Title:** Unify repository-local KI state under .ki
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/unify-repository-local-ki-state-under-ki`
-- **Status:** acceptance
-- **Blocks:** FND-016
-
 ### [FND-015](foundation-tooling/plans/FND-015-add-safe-multiprogress-aggregate-execution.md)
 
 - **Title:** Add safe in-process multiprogress aggregate execution
@@ -48,7 +40,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Implement scoped lifecycle operations
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/implement-scoped-lifecycle-operations`
-- **Status:** open (needs FND-003+FND-014)
+- **Status:** open (needs FND-003)
 - **Blocks:** FND-017, FND-018
 
 ### [FND-017](foundation-tooling/plans/FND-017-add-scoped-read-only-bootstrap-doctor-operations.md)
@@ -90,6 +82,13 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Define a canonical cross-runtime ki-self footprint
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/define-a-canonical-cross-runtime-ki-self-footprint`
+- **Status:** done
+
+### [FND-014](foundation-tooling/plans/FND-014-unify-repository-local-ki-state.md)
+
+- **Title:** Unify repository-local KI state under .ki
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/unify-repository-local-ki-state-under-ki`
 - **Status:** done
 
 ## Dependency graph

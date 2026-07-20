@@ -1,7 +1,7 @@
 ---
 id: 'FND-014'
 title: Unify repository-local KI state under .ki
-status: acceptance
+status: done
 roadmap: foundation-tooling/unify-repository-local-ki-state-under-ki
 blocks: FND-016
 blocked-by: —
@@ -130,3 +130,11 @@ The separate `kisle` CLI, DOCTOR, and cross-repository lifecycle work remain roa
 The migration is safest when it treats authored local governance and generated state as separate children of one root, not as exceptions to one generated tree.
 
 The manifest remains the proof boundary for generated state, while the local source and its runtime links stay intentionally outside CLEAN ownership.
+
+## Done
+
+Completed the unified repository-local KI state migration: `.ki/` now contains the authored `ki-self` source and the manifest-proven generated bootstrap footprint.
+
+Residual concern: none.
+
+Follow-up: retain this completion record until the related foundation-tooling plan tranche is ready for an explicit batch prune.
