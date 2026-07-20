@@ -1,7 +1,7 @@
 ---
 id: 'FND-015'
 title: Add safe in-process multiprogress aggregate execution
-status: open
+status: ready
 roadmap: foundation-tooling/add-safe-multiprogress-aggregate-execution
 blocks: —
 blocked-by: —
