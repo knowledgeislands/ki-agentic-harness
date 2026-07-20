@@ -256,6 +256,33 @@ export const BOOT_12: RubricItem<BootstrapRubricContext> = {
   }
 }
 
+export const BOOT_13: RubricItem<BootstrapRubricContext> = {
+  code: 'BOOT-13',
+  title: 'source harness shared payloads are declared canonical links',
+  description:
+    'A source harness has no copied or undeclared payload beneath canonical `skills/**/scripts/vendored/`: every payload is declared by `ki-shared-dependencies` and resolves as a link to its provider. This source-only rule never applies to deliberately self-contained `.ki-meta/` copies or ordinary repository payloads.',
+  sources: ['[AH]', '[ADR-KI-HARNESS-006]'],
+  mechanical: {
+    level: 'FAIL',
+    audit: {
+      phase: 'INSPECT',
+      run: ({ sourceSharedModules }) => {
+        if (!sourceSharedModules.applicable)
+          return [{ status: 'NOT_APPLICABLE', message: 'target is not a source harness with canonical skills' }]
+        if (sourceSharedModules.error)
+          return [
+            {
+              status: 'VIOLATION',
+              message: `${sourceSharedModules.error} — reconcile source-vendored payloads through their shared-module declarations`,
+              subject: 'skills'
+            }
+          ]
+        return [{ status: 'PASS', message: 'source-vendored shared payloads are declared canonical links', subject: 'skills' }]
+      }
+    }
+  }
+}
+
 export const BOOT_10: RubricItem<BootstrapRubricContext> = {
   code: 'BOOT-10',
   title: "aggregate governance includes each governed skill's judgment criteria",
@@ -267,4 +294,4 @@ export const BOOT_10: RubricItem<BootstrapRubricContext> = {
   }
 }
 
-export const BOOT = [BOOT_1, BOOT_3, BOOT_4, BOOT_6, BOOT_8, BOOT_9, BOOT_11, BOOT_12, BOOT_10] as const
+export const BOOT = [BOOT_1, BOOT_3, BOOT_4, BOOT_6, BOOT_8, BOOT_9, BOOT_11, BOOT_12, BOOT_13, BOOT_10] as const

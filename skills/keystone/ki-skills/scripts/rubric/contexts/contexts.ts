@@ -91,6 +91,7 @@ export type KiCheckerRubricContext = {
   rubricModuleExists: boolean
   checkerModuleExists: boolean
   reporterModuleExists: boolean
+  checkerReporterModuleExists: boolean
   structuredRubricRequired: boolean
   itemsIndexExists: boolean
   itemsIndexDefinesRules: boolean
@@ -267,6 +268,7 @@ export const createKiSkillsRubricContext = (overrides: Partial<KiSkillsRubricCon
     rubricModuleExists: false,
     checkerModuleExists: false,
     reporterModuleExists: false,
+    checkerReporterModuleExists: false,
     structuredRubricRequired: false,
     itemsIndexExists: false,
     itemsIndexDefinesRules: false,

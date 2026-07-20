@@ -33,15 +33,22 @@ export type BootstrapVendorEvidence = {
   unsafeEducators: readonly string[]
 }
 
+export type SourceSharedModuleEvidence = {
+  applicable: boolean
+  error?: string
+}
+
 export type BootstrapRubricContext = {
   target: string
   projectChecks: readonly ProjectLinkCheck[]
   projectInspectionError?: string
   publishProjectSkills: () => BootstrapPublication
   vendor: BootstrapVendorEvidence
+  sourceSharedModules: SourceSharedModuleEvidence
 }
 
 const PUBLISHER = fileURLToPath(new URL('../../internal/repo-bootstrap/project-skill-publisher.ts', import.meta.url))
+const SHARED_MODULE_SYNC = fileURLToPath(new URL('../../internal/repo-bootstrap/sync-shared-modules.ts', import.meta.url))
 
 const inspectProject = (target: string): { checks: ProjectLinkCheck[]; error?: string } => {
   try {
@@ -138,6 +145,17 @@ const vendorEvidence = (target: string): BootstrapVendorEvidence => {
   }
 }
 
+const sourceSharedModuleEvidence = (target: string): SourceSharedModuleEvidence => {
+  const config = join(target, '.ki-config.toml')
+  const skills = join(target, 'skills')
+  if (!existsSync(config) || !existsSync(skills) || !/^\[ki-harness\][ \t]*$/m.test(readFileSync(config, 'utf8')))
+    return { applicable: false }
+  const result = spawnSync('bun', [SHARED_MODULE_SYNC, target, '--check', '--quiet'], { encoding: 'utf8' })
+  if (result.status === 0) return { applicable: true }
+  const error = `${result.stderr ?? ''}${result.stdout ?? ''}`.trim().split('\n')[0]
+  return { applicable: true, error: error || 'source shared-module check failed' }
+}
+
 export const createBootstrapContextFactory = ({
   target,
   dryRun = false
@@ -170,7 +188,8 @@ export const createBootstrapContextFactory = ({
       projectChecks: project.checks,
       ...(project.error ? { projectInspectionError: project.error } : {}),
       publishProjectSkills,
-      vendor: vendorEvidence(absoluteTarget)
+      vendor: vendorEvidence(absoluteTarget),
+      sourceSharedModules: sourceSharedModuleEvidence(absoluteTarget)
     }
   }
 }

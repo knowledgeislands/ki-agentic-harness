@@ -41,16 +41,24 @@ export const KI_CHECKER_3: RubricItem<KiCheckerRubricContext> = {
   code: 'KI-CHECKER-3',
   title: 'ki-skills is the self-governing checker-contract root',
   description:
-    '`ki-skills` is the self-governing checker-contract root: it declares `ki-shared-modules: [rubric, checker, reporter]` and ships those canonical modules under `scripts/shared/`. Its checker must use those owned files directly and must not vendor a `ki-skills:*` dependency back into itself. Separately owned lifecycle modules may be declared and copied under `scripts/vendored/<provider>/`; shared-module declarations are implementation packaging, not `ki-depends-on:` or composition.',
+    '`ki-skills` is the self-governing checker-contract root: it declares `ki-shared-modules: [rubric, checker, reporter, checker-reporter]` and ships those canonical modules under `scripts/shared/`. Its checker must use those owned files directly and must not vendor a `ki-skills:*` dependency back into itself. Separately owned lifecycle modules may be declared and copied under `scripts/vendored/<provider>/`; shared-module declarations are implementation packaging, not `ki-depends-on:` or composition.',
   sources: ['ADR-KI-HARNESS-SKILLS-012'],
   mechanical: {
     level: 'FAIL',
     audit: {
       phase: 'INSPECT',
-      run: ({ rootSkill, declaredSharedModules, sharedDependencies, rubricModuleExists, checkerModuleExists, reporterModuleExists }) => {
+      run: ({
+        rootSkill,
+        declaredSharedModules,
+        sharedDependencies,
+        rubricModuleExists,
+        checkerModuleExists,
+        reporterModuleExists,
+        checkerReporterModuleExists
+      }) => {
         if (!rootSkill) return [{ status: 'NOT_APPLICABLE', message: 'the audited skill is not the checker-contract root' }]
         const violations = []
-        for (const module of ['rubric', 'checker', 'reporter'])
+        for (const module of ['rubric', 'checker', 'reporter', 'checker-reporter'])
           if (!declaredSharedModules.includes(module))
             violations.push({
               status: 'VIOLATION' as const,
@@ -70,6 +78,11 @@ export const KI_CHECKER_3: RubricItem<KiCheckerRubricContext> = {
           violations.push({
             status: 'VIOLATION' as const,
             message: '`ki-skills` must ship `scripts/shared/reporter.ts` from its own files'
+          })
+        if (!checkerReporterModuleExists)
+          violations.push({
+            status: 'VIOLATION' as const,
+            message: '`ki-skills` must ship `scripts/shared/checker-reporter.ts` from its own files'
           })
         const selfDependencies = sharedDependencies.filter((dependency) => dependency.startsWith('ki-skills:'))
         if (selfDependencies.length > 0)

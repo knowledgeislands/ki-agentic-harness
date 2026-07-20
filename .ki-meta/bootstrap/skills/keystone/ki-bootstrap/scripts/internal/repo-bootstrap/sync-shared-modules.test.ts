@@ -71,6 +71,24 @@ try {
     console.error(`${linked.stdout ?? ''}${linked.stderr ?? ''}`)
     throw new Error('harness source synchronisation must create a canonical link')
   }
+
+  rmSync(fixturePayload)
+  writeFileSync(fixturePayload, readFileSync(fixtureProvider))
+  const regularDeclared = spawnSync('bun', [scriptPath, fixture, '--check'], { encoding: 'utf8' })
+  if (regularDeclared.status === 0 || !`${regularDeclared.stdout ?? ''}${regularDeclared.stderr ?? ''}`.includes('ki-repo/scripts/vendored/ki-skills/checker.ts'))
+    throw new Error('harness source check must reject a regular declared payload')
+
+  const restored = spawnSync('bun', [scriptPath, fixture], { encoding: 'utf8' })
+  if (restored.status !== 0 || !lstatSync(fixturePayload).isSymbolicLink()) {
+    console.error(`${restored.stdout ?? ''}${restored.stderr ?? ''}`)
+    throw new Error('harness source synchronisation must restore a regular declared payload to a link')
+  }
+
+  const stray = join(fixture, 'skills', 'keystone', 'ki-repo', 'scripts', 'vendored', 'ki-skills', 'stray.ts')
+  writeFileSync(stray, 'export const stray = true\n')
+  const undeclared = spawnSync('bun', [scriptPath, fixture, '--check'], { encoding: 'utf8' })
+  if (undeclared.status === 0 || !`${undeclared.stdout ?? ''}${undeclared.stderr ?? ''}`.includes('undeclared source-vendored payload'))
+    throw new Error('harness source check must reject an undeclared vendored payload')
 } finally {
   rmSync(fixture, { recursive: true, force: true })
 }

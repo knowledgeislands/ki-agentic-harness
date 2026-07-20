@@ -283,6 +283,7 @@ export const createSkillRubricContext = (directory: string, capabilities: SkillW
           rubricModuleExists: existsSync(join(sharedDirectory, 'rubric.ts')),
           checkerModuleExists: existsSync(join(sharedDirectory, 'checker.ts')),
           reporterModuleExists: existsSync(join(sharedDirectory, 'reporter.ts')),
+          checkerReporterModuleExists: existsSync(join(sharedDirectory, 'checker-reporter.ts')),
           structuredRubricRequired: name === 'ki-skills' || frontmatter.present.has('ki-shared-dependencies'),
           ...familyEvidence
         },

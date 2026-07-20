@@ -187,14 +187,46 @@ function replacePayload(
   if (!samePayload(source.source, destination)) throw new Error(`shared module copy failed verification: ${destination}`)
 }
 
+function undeclaredSourcePayloads(
+  skills: ReadonlyMap<string, string>,
+  expected: ReadonlyMap<string, SharedModulePayload>
+): string[] {
+  const violations: string[] = []
+  for (const [skill, directory] of skills) {
+    const vendored = join(directory, 'scripts', 'vendored')
+    const vendoredStat = lstatOrNull(vendored)
+    if (!vendoredStat) continue
+    if (!vendoredStat.isDirectory() || vendoredStat.isSymbolicLink()) {
+      violations.push(`${skill}/scripts/vendored (must be a regular directory)`)
+      continue
+    }
+    for (const provider of readdirSync(vendored)) {
+      const providerPath = join(vendored, provider)
+      const providerStat = lstatOrNull(providerPath)
+      const label = `${skill}/scripts/vendored/${provider}`
+      if (!providerStat?.isDirectory() || providerStat.isSymbolicLink()) {
+        violations.push(`${label} (must be a regular provider directory)`)
+        continue
+      }
+      for (const payloadName of readdirSync(providerPath)) {
+        const payloadPath = join(providerPath, payloadName)
+        if (!expected.has(payloadPath)) violations.push(`${label}/${payloadName} (undeclared source-vendored payload)`)
+      }
+    }
+  }
+  return violations
+}
+
 const skills = skillDirectories()
 const link = sourceHarness()
 const drift: string[] = []
+const expectedPayloads = new Map<string, SharedModulePayload>()
 for (const [skill, directory] of skills) {
   for (const module of sharedDependencies(directory)) {
     if (module.provider === skill) throw new Error(`${skill} cannot depend on its own shared module`)
     const source = payload(module.provider, module.module, skills)
     const destination = join(directory, 'scripts', 'vendored', module.provider, source.targetName)
+    expectedPayloads.set(destination, source)
     const current = link ? linkResolvesTo(destination, source.source) : samePayload(source.source, destination)
     if (current) continue
     const label = `${skill}/scripts/vendored/${module.provider}/${source.targetName}`
@@ -210,6 +242,8 @@ for (const [skill, directory] of skills) {
     if (!quiet) console.log(`${link ? 'link' : 'copy'} ${label}`)
   }
 }
+
+if (link) drift.push(...undeclaredSourcePayloads(skills, expectedPayloads))
 
 if (drift.length) {
   console.error(`shared-module drift: ${drift.join(', ')} — run sync-shared-modules.ts ${target}`)
