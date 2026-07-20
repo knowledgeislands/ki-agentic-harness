@@ -48,7 +48,7 @@ Canonical themes and active execution plans.
 - **Title:** Complete source-vendored dependency linking
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/complete-source-vendored-dependency-linking`
-- **Status:** in-progress
+- **Status:** acceptance
 - **Blocks:** —
 
 ### [RTP-001](runtime-portability/plans/RTP-001-detect-vendor-specific-portable-contracts.md)

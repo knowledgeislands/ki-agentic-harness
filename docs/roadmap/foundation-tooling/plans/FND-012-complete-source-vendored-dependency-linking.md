@@ -1,7 +1,7 @@
 ---
 id: 'FND-012'
 title: Complete source-vendored dependency linking
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/complete-source-vendored-dependency-linking
 blocks: —
 blocked-by: —
@@ -21,11 +21,11 @@ The source-harness linking engine verifies the links it derives from `ki-shared-
 
 ## Steps
 
-1. Establish `checker-reporter` as the canonical `ki-skills` shared module under `scripts/shared/`, preserving its public exports and the standalone checker behaviour of its consumers. Extend `ki-skills`' shared-module declaration, checker-contract rubric, and focused tests so the published module list remains exact and self-governing.
-2. Declare `ki-skills:checker-reporter` in `ki-repo-roadmap` and `ki-tokenomics`, then replace each local source-vendored copy with the relative symlink maintained by the existing harness linker. Preserve the consumers' import paths and prove both links resolve to the new canonical module.
-3. Tighten the source-harness validation: enumerate every `scripts/vendored/` payload in canonical `skills/` sources, reject undeclared entries, regular files, dangling links, and links to a provider other than the declared shared-module payload. Keep directory-valued payloads valid where the declaration resolves to a directory, and do not apply this rule to `.ki-meta/` materialisation.
-4. Add focused bootstrap/linking tests covering `checker-reporter` resolution and publication, source regular-file and undeclared-payload failures, incorrect/dangling targets, valid file and directory module links, and proof that generated `.ki-meta/` copies remain regular and self-contained.
-5. Re-bootstrap this harness to refresh every generated checker, educator, manifest, and source-link footprint. Update only documentation whose contract wording changes, then run the serial repository gates.
+1. [x] Establish `checker-reporter` as the canonical `ki-skills` shared module under `scripts/shared/`, preserving its public exports and the standalone checker behaviour of its consumers. Extend `ki-skills`' shared-module declaration, checker-contract rubric, and focused tests so the published module list remains exact and self-governing.
+2. [x] Declare `ki-skills:checker-reporter` in `ki-repo-roadmap` and `ki-tokenomics`, then replace each local source-vendored copy with the relative symlink maintained by the existing harness linker. Preserve the consumers' import paths and prove both links resolve to the new canonical module.
+3. [x] Tighten the source-harness validation: enumerate every `scripts/vendored/` payload in canonical `skills/` sources, reject undeclared entries, regular files, dangling links, and links to a provider other than the declared shared-module payload. Keep directory-valued payloads valid where the declaration resolves to a directory, and do not apply this rule to `.ki-meta/` materialisation.
+4. [x] Add focused bootstrap/linking tests covering `checker-reporter` resolution and publication, source regular-file and undeclared-payload failures, incorrect/dangling targets, valid file and directory module links, and proof that generated `.ki-meta/` copies remain regular and self-contained.
+5. [x] Re-bootstrap this harness to refresh every generated checker, educator, manifest, and source-link footprint. Update only documentation whose contract wording changes, then run the serial repository gates.
 
 ## Files touched
 
@@ -51,3 +51,32 @@ The source-harness linking engine verifies the links it derives from `ki-shared-
 ## Dependencies / blocks
 
 This is a harness-internal completion of FND-006's linking contract. It does not alter ordinary repository vendoring, user installation, or the CLEAN, DOCTOR, UNINSTALL, and `kisle` lifecycle work.
+
+## Acceptance
+
+### Delivered
+
+`checker-reporter` now has one canonical `ki-skills` source. Both former source copies are declared, resolving symlinks, and a source-harness bootstrap audit fails if a source-vendored payload is copied, undeclared, dangling, or misdirected.
+
+### Summary of changes
+
+- Added `skills/keystone/ki-skills/scripts/shared/checker-reporter.ts` and declared it in `ki-skills`' published shared-module list.
+- Declared `ki-skills:checker-reporter` for `ki-repo-roadmap` and `ki-tokenomics`; their existing local import paths now resolve through generated relative symlinks.
+- Extended the source shared-module synchroniser and `BOOT-13` to enforce the declared-link inventory on source harnesses only.
+- Added regression coverage for a regular declared payload and an undeclared source-vendored payload, then refreshed the generated checker, educator, manifest, and rubric surfaces.
+
+### Verification
+
+- `bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/sync-shared-modules.test.ts` passed.
+- `bun run test` passed.
+- `bun run ki:audit` passed with zero FAIL and WARN findings.
+- Verified source `scripts/vendored/` contains 105 symlinks and no regular payload files; generated `.ki-meta/` payloads remain regular copies.
+- Implementation commit: `dfe3d779` (`feat(bootstrap): complete source payload linking`).
+
+### Outstanding concerns
+
+The source-link invariant is `BOOT-13` in `ki-bootstrap`, rather than a `ki-harness` container criterion: bootstrap owns declared shared-module publication and is the aggregate layer that audits generated governance. It deliberately excludes ordinary repository and `.ki-meta/` payloads.
+
+### Mini recap
+
+The existing shared-module declaration already provides the complete source-link inventory; the missing safeguard was validating that no extra source-vendored payload survived outside that declaration. Maintaining the check beside the synchroniser avoids a duplicate allowlist and preserves portable generated copies.
