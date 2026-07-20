@@ -19,6 +19,8 @@ It complements the shared skills; it does not duplicate their standards.
 - After changing a coverage-scoped checker, re-vendor it with `bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts .` before verification.
 - Run `bun run test` and `bun run ki:audit` sequentially before completing a substantive change.
 - Keep work recoverable: give concise progress updates during sustained work and commit each independently verified sensible unit with explicit paths.
+- For a repository-footprint migration, search executable hooks, CI, and package entrypoints as well as source and guides; do not leave a legacy path in a staged-only execution route.
+- When a migration removes a top-level path, stage that deletion explicitly and confirm it is absent from both the working tree and the committed tree after the commit.
 - Work directly on `main` for small, self-contained changes; use an isolated branch only when it provides a real review boundary.
 
 ## Boundaries
