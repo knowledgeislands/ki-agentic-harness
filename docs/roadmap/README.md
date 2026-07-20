@@ -19,14 +19,6 @@ Canonical themes, active execution plans, and completed plan records.
 - **Status:** acceptance
 - **Blocks:** —
 
-### [FND-008](foundation-tooling/plans/FND-008-define-a-canonical-cross-runtime-ki-self-footprint.md)
-
-- **Title:** Define a canonical cross-runtime ki-self footprint
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/define-a-canonical-cross-runtime-ki-self-footprint`
-- **Status:** acceptance
-- **Blocks:** —
-
 ### [FND-013](foundation-tooling/plans/FND-013-complete-harness-local-skill-dependency-linking.md)
 
 - **Title:** Complete harness-local skill dependency linking
@@ -45,7 +37,12 @@ Canonical themes, active execution plans, and completed plan records.
 
 ## Completed plans
 
-No completed plans.
+### [FND-008](foundation-tooling/plans/FND-008-define-a-canonical-cross-runtime-ki-self-footprint.md)
+
+- **Title:** Define a canonical cross-runtime ki-self footprint
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/define-a-canonical-cross-runtime-ki-self-footprint`
+- **Status:** done
 
 ## Dependency graph
 

@@ -1,7 +1,7 @@
 ---
 id: 'FND-008'
 title: Define a canonical cross-runtime ki-self footprint
-status: acceptance
+status: done
 roadmap: foundation-tooling/define-a-canonical-cross-runtime-ki-self-footprint
 blocks: —
 blocked-by: —
@@ -77,3 +77,11 @@ No implementation concern is known. Replacing a tracked runtime copy with a gene
 ### Mini recap
 
 Proposed learning route: document the safe migration sequence only if the Git-staging pattern recurs; no durable learning write is approved yet.
+
+## Done
+
+Completed the canonical repository-local `ki-self` footprint: `.ki-self/SKILL.md` is committed authored state and each declared runtime projects it through a relative link.
+
+Residual concern: none for this accepted design.
+
+Follow-up: FND-014 will evaluate a separate, deliberate migration to a unified `.kisle/` repository root; it does not revise this completed footprint in place.
