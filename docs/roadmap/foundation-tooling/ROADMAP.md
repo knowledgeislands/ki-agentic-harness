@@ -24,12 +24,6 @@ Make mechanical CONFORM a per-rubric-item pipeline rather than a complete AUDIT 
 
 **Plan:** [FND-005](plans/FND-005-make-conform-audit-gated-per-rubric-item.md)
 
-### Define a linked development footprint for the harness
-
-Define a harness-local `ki-harness` development operation that runs after normal EDUCATE publication and replaces provenance-proven generated runtime skill copies and frontmatter-declared intra-skill `scripts/vendored/` payloads with symlinks to their canonical authored sources. Keep ordinary repository footprints as regular copied files and retain the self-contained `.ki-meta/` implementation required for zero-install governance. Limit it to the source harness's supported runtime roots and declared inter-skill payloads, including `ki-shared-dependencies` and `ki-bootstrap:educator`; preserve `.ki-meta/`, runtime agents, authored paths, and every unproven payload. The operation must be reversible: normal EDUCATE and inter-skill payload synchronisation restore regular copies, and a later development-link run safely restores links.
-
-**Plan:** [FND-006](plans/FND-006-define-a-linked-development-footprint.md)
-
 ### Define a canonical cross-runtime `ki-self` footprint
 
 Define one repository-owned, committed source for `ki-self`, then project that same content into every supported runtime's skill-discovery directory. The source must be runtime-neutral and remain independent of generated runtime payloads, so `.agents/skills/ki-self` and `.claude/skills/ki-self` never diverge or make a repository's local governance depend on a harness checkout. Settle source location, projection ownership, link safety, EDUCATE and CLEAN behaviour, and migration of existing repository-local `ki-self` directories without overwriting authored content.
