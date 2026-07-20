@@ -23,7 +23,7 @@ Four legs, always in this order:
 
 ## Invocation
 
-`help` / `-h` / `?` explains this skill and stops, taking no action. With no argument, run the four legs over the current task list or the active `ki-plan`. Given a plan file or an explicit task list, classify and sequence that.
+`help` / `-h` / `?` explains this skill and stops, taking no action. With no argument, run the four legs over the current task list or the active `ki-plan`. Given a plan file or an explicit task list, classify and sequence that. Before dispatching a governed plan, ensure its `## Delegation` section records the planned rounds, worker/file boundaries, and gates; refine the plan first when it does not.
 
 ## Notes
 

@@ -56,3 +56,11 @@ Current shared dependencies identify only `skill:module`. A future explicit prov
 This is independent of the separate `ki-self` footprint and CLEAN lifecycle plans.
 
 It may identify a future explicit cross-harness development-link workflow or `repository-id:skill:module` dependency contract, but both are intentionally out of scope unless the current portable-copy boundary cannot meet a concrete supported use case.
+
+## Delegation
+
+- Round 1 — research: trace `sync-shared-modules` source-tree provenance, root discovery, and its focused fixtures; files: read-only `repo-bootstrap/` synchroniser and test scope; gate: evidence for the nearest-root resolution contract.
+- Round 1 — research: trace `project-skill-publisher` development-link eligibility and runtime-copy tests; files: read-only publisher and test scope; gate: evidence for the shared eligibility boundary and non-overlapping implementation surfaces.
+- Round 2 — judgment: settle the smallest same-harness provenance contract from both investigations; files: plan, applicable `ki-harness` / `ki-bootstrap` guidance, and ADR only if materially needed; gate: explicit ownership and copy-versus-link boundary before implementation.
+- Round 3 — mechanical: apply the settled resolver, publisher, synchroniser, fixture, and generated-output changes; files: one exclusive writer owns `repo-bootstrap/` and its focused tests; gate: focused tests, required re-vendoring, and contained-link inspection.
+- Orchestrator: review every worker diff, adversarially review changed scripts, run serial repository tests and aggregate audit, then commit only gated work.
