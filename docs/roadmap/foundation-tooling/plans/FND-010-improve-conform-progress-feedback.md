@@ -1,7 +1,7 @@
 ---
 id: 'FND-010'
 title: Improve CONFORM progress feedback
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/improve-conform-progress-feedback
 blocks: —
 blocked-by: —
@@ -54,3 +54,33 @@ Progress mode already distinguishes `auto`, `always`, and `never`, with `auto` u
 ## Dependencies / blocks
 
 This plan is independent of the completion-record lifecycle work. It improves terminal observability only; it does not change CONFORM repair semantics, rubrics, or aggregate accounting.
+
+## Acceptance
+
+### Delivered
+
+Aggregate and direct checker progress now use a terminal-width-aware three-zone layout, with truthful startup feedback before the aggregate knows its work total.
+
+### Summary of changes
+
+- Added immediate `initialising` and `reading checker plans <completed>/<count>` states to the generated aggregate runner before normal checker execution.
+- Replaced the fixed 12-column bars with redraw-time layout allocation in the aggregate and `ki-skills` shared reporter; bars cap at 100 columns and disappear before key state text is shortened.
+- Added `completed/total`, rounded percentage, deterministic zero-total completion, ANSI-aware display measurement, and ellipsis-based compact rendering; removed the remaining-item count.
+- Added direct-reporter resize/narrow/zero-total coverage and aggregate startup/discovery assertions, then regenerated the portable bootstrap, checker, and educator payloads.
+
+### Verification
+
+- `bun test skills/keystone/ki-skills/scripts/shared/reporter.test.ts` passed (13 tests).
+- `bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/resolve.test.ts` passed, including startup/discovery and `--progress=never` aggregate checks.
+- A 30-column pseudo-terminal run showed each redraw stay compact without wrapping, omitting the bar before truncating phase text.
+- `bun run test` passed.
+- `bun run ki:audit` passed with zero FAIL and WARN findings.
+- Implementation commit: `aca903a6` (`feat(bootstrap): improve conform progress feedback`).
+
+### Outstanding concerns
+
+None.
+
+### Mini recap
+
+Terminal width is read at each render rather than managed through a resize handler, which naturally handles resizes between redraws while leaving progress accounting and JSONL untouched. The portable aggregate remains self-contained, so it mirrors the small layout helper rather than importing from a source skill.
