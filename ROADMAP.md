@@ -9,12 +9,10 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 - [Foundation Tooling: Add a safe repository CLEAN operation](docs/roadmap/foundation-tooling/ROADMAP.md#add-a-safe-repository-clean-operation)
 - [Foundation Tooling: Add safe multiprogress aggregate execution](docs/roadmap/foundation-tooling/ROADMAP.md#add-safe-multiprogress-aggregate-execution)
 - [Foundation Tooling: Add scoped read-only bootstrap doctor operations](docs/roadmap/foundation-tooling/ROADMAP.md#add-scoped-read-only-bootstrap-doctor-operations)
-- [Foundation Tooling: Define a canonical cross-runtime `ki-self` footprint](docs/roadmap/foundation-tooling/ROADMAP.md#define-a-canonical-cross-runtime-ki-self-footprint)
 - [Foundation Tooling: Establish the installable `kisle` command-line interface](docs/roadmap/foundation-tooling/ROADMAP.md#establish-the-installable-kisle-command-line-interface)
 - [Foundation Tooling: Implement scoped lifecycle operations](docs/roadmap/foundation-tooling/ROADMAP.md#implement-scoped-lifecycle-operations)
 - [Foundation Tooling: Link source-harness bootstrap payloads](docs/roadmap/foundation-tooling/ROADMAP.md#link-source-harness-bootstrap-payloads)
 - [Foundation Tooling: Review structural consistency across shipped skills](docs/roadmap/foundation-tooling/ROADMAP.md#review-structural-consistency-across-shipped-skills)
-- [Foundation Tooling: Unify repository-local KI state under `.ki/`](docs/roadmap/foundation-tooling/ROADMAP.md#unify-repository-local-ki-state-under-ki)
 - [Runtime Portability: Detect vendor-specific assumptions in portable skill contracts](docs/roadmap/runtime-portability/ROADMAP.md#detect-vendor-specific-assumptions-in-portable-skill-contracts)
 
 ## Next

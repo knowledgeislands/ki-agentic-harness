@@ -20,12 +20,6 @@ Add a source-owned CLEAN operation that removes only manifest-proven generated `
 
 **Plan:** [FND-003](plans/FND-003-add-a-safe-repository-clean-operation.md)
 
-### Define a canonical cross-runtime `ki-self` footprint
-
-Define one repository-owned, committed source for `ki-self`, then project that same content into every supported runtime's skill-discovery directory. The source must be runtime-neutral and remain independent of generated runtime payloads, so `.agents/skills/ki-self` and `.claude/skills/ki-self` never diverge or make a repository's local governance depend on a harness checkout. Settle source location, projection ownership, link safety, EDUCATE and CLEAN behaviour, and migration of existing repository-local `ki-self` directories without overwriting authored content.
-
-**Plan:** [FND-008](plans/FND-008-define-a-canonical-cross-runtime-ki-self-footprint.md)
-
 ### Implement scoped lifecycle operations
 
 Implement the lifecycle boundary in `ODR-KI-HARNESS-001`: repository CLEAN removes only proven generated duplication and leaves the declaration ready for EDUCATE; repository and user DOCTOR are read-only; and repository and user UNINSTALL remove KI-owned traces only at their explicit scope. Provide zero-install repository launchers that run from temporary source without changing user state. This boundary must land before the doctor and `kisle` command surfaces it defines.
@@ -55,12 +49,6 @@ Audit every shipped skill against the established exemplar implementations for s
 Replace aggregate AUDIT and CONFORM's process-per-checker transport with direct, in-process calls to local vendored checker entry points. Reuse the shared checker's structured status events so the default single bar advances continuously without a child-progress protocol, temporary capture files, stdout reparsing, or a Bun launch for each checker. Add an opt-in multiprogress display: one stable, labelled row per selected checker, such as `AUDIT [ki-skills]`. Preserve direct checker JSONL, deterministic aggregate reporting, exit semantics, `--progress`, FND-010 terminal behaviour, and sequential AUDIT/CONFORM execution. Concurrency is explicitly out of scope until a separate independence and cancellation contract exists.
 
 **Plan:** [FND-015](plans/FND-015-add-safe-multiprogress-aggregate-execution.md)
-
-### Unify repository-local KI state under `.ki/`
-
-Replace the split top-level `.ki-self/` and `.ki-meta/` footprint with one clearly owned `.ki/` root: `.ki/self/skill/` is the committed, authored source projected as the runtime `ki-self` skill, while `.ki/{bin,bootstrap,manifest.json}` is generated, manifest-owned bootstrap state. Preserve the existing runtime skill name and portable consumer contract while making the authored/generated distinction visible inside the established KI repository namespace. Provide a safe current-state migration for source, runtime links, generated bootstrap output, CLEAN, recovery, documentation, and repository Git state; remove the old footprint and its dead paths once each is proven migrated, never retain dual-path compatibility or delete unproven content.
-
-**Plan:** [FND-014](plans/FND-014-unify-repository-local-ki-state.md)
 
 ## Next
 

@@ -77,25 +77,12 @@ Canonical themes, active execution plans, and completed plan records.
 
 ## Completed plans
 
-### [FND-008](foundation-tooling/plans/FND-008-define-a-canonical-cross-runtime-ki-self-footprint.md)
-
-- **Title:** Define a canonical cross-runtime ki-self footprint
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/define-a-canonical-cross-runtime-ki-self-footprint`
-- **Status:** done
-
-### [FND-014](foundation-tooling/plans/FND-014-unify-repository-local-ki-state.md)
-
-- **Title:** Unify repository-local KI state under .ki
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/unify-repository-local-ki-state-under-ki`
-- **Status:** done
+No completed plans.
 
 ## Dependency graph
 
 ```text
 FND-003 ──► FND-016
-FND-014 ──► FND-016
 FND-016 ──► FND-017
 FND-016 ──► FND-018
 ```
