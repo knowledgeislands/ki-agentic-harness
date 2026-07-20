@@ -35,14 +35,6 @@ Canonical themes, active execution plans, and completed plan records.
 - **Status:** acceptance
 - **Blocks:** —
 
-### [FND-011](foundation-tooling/plans/FND-011-preserve-committed-completion-records.md)
-
-- **Title:** Preserve committed completion records before plan removal
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/preserve-committed-completion-records-before-plan-removal`
-- **Status:** acceptance
-- **Blocks:** —
-
 ### [RTP-001](runtime-portability/plans/RTP-001-detect-vendor-specific-portable-contracts.md)
 
 - **Title:** Detect vendor-specific assumptions in portable skill contracts
@@ -53,7 +45,12 @@ Canonical themes, active execution plans, and completed plan records.
 
 ## Completed plans
 
-No completed plans.
+### [FND-011](foundation-tooling/plans/FND-011-preserve-committed-completion-records.md)
+
+- **Title:** Preserve committed completion records before plan removal
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/preserve-committed-completion-records-before-plan-removal`
+- **Status:** done
 
 ## Dependency graph
 

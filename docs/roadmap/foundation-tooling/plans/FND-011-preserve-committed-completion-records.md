@@ -1,7 +1,7 @@
 ---
 id: 'FND-011'
 title: Preserve committed completion records before plan removal
-status: acceptance
+status: done
 roadmap: foundation-tooling/preserve-committed-completion-records-before-plan-removal
 blocks: —
 blocked-by: —
@@ -83,3 +83,7 @@ This plan formalises the explicit ready-to-start gate and the committed completi
 ### Mini recap
 
 Keeping `done` distinct from destructive pruning preserves reviewable completion evidence while still allowing a related tranche of work to be removed together later.
+
+## Done
+
+Completed after explicit user acceptance. The ready gate, retained completion record, guarded batch prune procedure, completion banner, checker coverage, and generated index are in place. No residual concern; later related plans can remain visible as `done` until the user requests a separate prune batch. Implementation: `ee094bd6`; acceptance record: `90836a1b`.
