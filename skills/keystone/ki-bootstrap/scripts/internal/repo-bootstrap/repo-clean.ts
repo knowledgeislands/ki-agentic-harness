@@ -1,13 +1,13 @@
 #!/usr/bin/env bun
 /** Safely remove only manifest-proven repository bootstrap output. */
 import { createHash } from 'node:crypto'
-import { lstatSync, readdirSync, readFileSync, realpathSync, rmdirSync, unlinkSync, writeFileSync } from 'node:fs'
-import { basename, dirname, join, relative, resolve } from 'node:path'
+import { lstatSync, readdirSync, readFileSync, readlinkSync, realpathSync, rmdirSync, unlinkSync, writeFileSync } from 'node:fs'
+import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path'
 import { isGeneratedRuntimeSkillCopy } from './project-skill-publisher.ts'
 import { runtimeSkillsDir, supportedRuntimes } from './runtime-paths.ts'
 
-type Kind = 'directory' | 'file'
-type Snapshot = { path: string; kind: Kind; dev: number; ino: number; bytes?: Buffer }
+type Kind = 'directory' | 'file' | 'link'
+type Snapshot = { path: string; kind: Kind; dev: number; ino: number; bytes?: Buffer; target?: string }
 type Removal = { path: string; label: string; tree: Snapshot[] }
 
 const KI = '.ki'
@@ -16,13 +16,14 @@ const GENERATED_ROOTS = ['bin', 'bootstrap'] as const
 
 function snapshot(path: string): Snapshot {
   const stat = lstatSync(path)
-  if (stat.isSymbolicLink() || (!stat.isDirectory() && !stat.isFile())) throw new Error(`unsafe generated path: ${path}`)
+  if (!stat.isSymbolicLink() && !stat.isDirectory() && !stat.isFile()) throw new Error(`unsafe generated path: ${path}`)
   return {
     path,
-    kind: stat.isDirectory() ? 'directory' : 'file',
+    kind: stat.isSymbolicLink() ? 'link' : stat.isDirectory() ? 'directory' : 'file',
     dev: stat.dev,
     ino: stat.ino,
-    ...(stat.isFile() ? { bytes: readFileSync(path) } : {})
+    ...(stat.isFile() ? { bytes: readFileSync(path) } : {}),
+    ...(stat.isSymbolicLink() ? { target: readlinkSync(path) } : {})
   }
 }
 
@@ -33,8 +34,31 @@ function same(expected: Snapshot, path = expected.path): boolean {
       actual.kind === expected.kind &&
       actual.dev === expected.dev &&
       actual.ino === expected.ino &&
-      (expected.bytes === undefined || actual.bytes?.equals(expected.bytes) === true)
+      (expected.bytes === undefined || actual.bytes?.equals(expected.bytes) === true) &&
+      (expected.target === undefined || actual.target === expected.target)
     )
+  } catch {
+    return false
+  }
+}
+
+function contained(root: string, path: string): boolean {
+  const rel = relative(root, path)
+  return rel === '' || (rel !== '..' && !rel.startsWith('../') && !rel.startsWith('..\\'))
+}
+
+function sourceHarnessLink(target: string, path: string, value: string): boolean {
+  if (!value || isAbsolute(value)) return false
+  try {
+    const resolved = realpathSync(resolve(dirname(path), value))
+    const root = realpathSync(target)
+    return [join(root, 'skills'), join(root, 'agents')].some((sourceRoot) => {
+      try {
+        return contained(realpathSync(sourceRoot), resolved)
+      } catch {
+        return false
+      }
+    })
   } catch {
     return false
   }
@@ -84,15 +108,20 @@ function ownedGeneratedState(target: string): Removal[] {
     }
   }
   let files: Record<string, string>
+  let links: Record<string, string>
   try {
-    const parsed = JSON.parse(regularText(manifest, `${KI}/${MANIFEST}`)) as { ref?: unknown; files?: unknown }
+    const parsed = JSON.parse(regularText(manifest, `${KI}/${MANIFEST}`)) as { ref?: unknown; files?: unknown; links?: unknown }
     if (typeof parsed.ref !== 'string' || !parsed.files || typeof parsed.files !== 'object' || Array.isArray(parsed.files))
       throw new Error('invalid manifest shape')
     files = parsed.files as Record<string, string>
+    if (parsed.links !== undefined && (typeof parsed.links !== 'object' || parsed.links === null || Array.isArray(parsed.links)))
+      throw new Error('invalid manifest links')
+    links = (parsed.links ?? {}) as Record<string, string>
   } catch (error) {
     throw new Error(`cannot prove ${KI} generated ownership: ${(error as Error).message}`)
   }
   const expectedFiles = new Map<string, string>()
+  const expectedLinks = new Map<string, string>()
   const expectedDirectories = new Set<string>()
   for (const [path, hash] of Object.entries(files)) {
     if (!path.startsWith(`${KI}/`) || path === `${KI}/${MANIFEST}` || !/^[a-f0-9]{64}$/.test(hash))
@@ -101,6 +130,21 @@ function ownedGeneratedState(target: string): Removal[] {
     if (!GENERATED_ROOTS.some((root) => relativePath === root || relativePath.startsWith(`${root}/`)))
       throw new Error(`cannot prove ${KI} generated ownership: manifest entry escapes generated roots ${path}`)
     expectedFiles.set(relativePath, hash)
+    let parent = dirname(relativePath)
+    while (parent !== '.') {
+      expectedDirectories.add(parent)
+      parent = dirname(parent)
+    }
+  }
+  for (const [path, value] of Object.entries(links)) {
+    if (!path.startsWith(`${KI}/`) || !value || typeof value !== 'string')
+      throw new Error(`cannot prove ${KI} generated ownership: unsafe link entry ${path}`)
+    const relativePath = path.slice(KI.length + 1)
+    if (!GENERATED_ROOTS.some((root) => relativePath === root || relativePath.startsWith(`${root}/`)))
+      throw new Error(`cannot prove ${KI} generated ownership: link escapes generated roots ${path}`)
+    if (expectedFiles.has(relativePath) || expectedLinks.has(relativePath))
+      throw new Error(`cannot prove ${KI} generated ownership: duplicate manifest entry ${path}`)
+    expectedLinks.set(relativePath, value)
     let parent = dirname(relativePath)
     while (parent !== '.') {
       expectedDirectories.add(parent)
@@ -117,6 +161,7 @@ function ownedGeneratedState(target: string): Removal[] {
     }
   })
   const actualFiles = new Set<string>()
+  const actualLinks = new Set<string>()
   for (const item of tree) {
     const rel = relative(ki, item.path)
     if (item.kind === 'file') {
@@ -132,9 +177,21 @@ function ownedGeneratedState(target: string): Removal[] {
       actualFiles.add(rel)
       continue
     }
+    if (item.kind === 'link') {
+      const expected = expectedLinks.get(rel)
+      if (!expected || item.target !== expected || !sourceHarnessLink(target, item.path, expected))
+        throw new Error(`cannot prove ${KI} generated ownership: unexpected or unsafe link ${join(KI, rel)}`)
+      actualLinks.add(rel)
+      continue
+    }
     if (!expectedDirectories.has(rel)) throw new Error(`cannot prove ${KI} generated ownership: unexpected directory ${join(KI, rel)}`)
   }
-  if (actualFiles.size !== expectedFiles.size || [...expectedFiles].some(([path]) => !actualFiles.has(path)))
+  if (
+    actualFiles.size !== expectedFiles.size ||
+    [...expectedFiles].some(([path]) => !actualFiles.has(path)) ||
+    actualLinks.size !== expectedLinks.size ||
+    [...expectedLinks].some(([path]) => !actualLinks.has(path))
+  )
     throw new Error(`cannot prove ${KI} generated ownership: manifest payload is incomplete`)
   return [
     ...GENERATED_ROOTS.filter((root) => tree.some((item) => relative(ki, item.path) === root)).map((root) => ({
@@ -181,7 +238,7 @@ function removeTree(removal: Removal): void {
   assertUnchanged(removal)
   for (const item of [...removal.tree].sort((a, b) => b.path.length - a.path.length)) {
     if (!same(item)) throw new Error(`${removal.label} changed during CLEAN`)
-    if (item.kind === 'file') unlinkSync(item.path)
+    if (item.kind === 'file' || item.kind === 'link') unlinkSync(item.path)
     else rmdirSync(item.path)
   }
 }

@@ -138,7 +138,7 @@ const ITEMS = [
   mechanicalItem(
     'CAPABILITY-COMPLETE',
     'Governance capability completeness',
-    'Every declared governance root has regular manifest-listed EDUCATE, AUDIT, and CONFORM payloads.'
+    'Every declared governance root has manifest-proven EDUCATE, AUDIT, and CONFORM payloads: regular files for consumers or contained canonical links for a source harness.'
   ),
   mechanicalItem(
     'ACCESS-1',

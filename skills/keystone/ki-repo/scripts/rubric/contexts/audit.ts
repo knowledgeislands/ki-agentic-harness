@@ -46,8 +46,8 @@
  */
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { existsSync, lstatSync, readdirSync, readFileSync, readlinkSync, realpathSync } from 'node:fs'
+import { dirname, isAbsolute, join, relative, resolve } from 'node:path'
 
 // ── the standard (keep in sync with references/standards.md) ──────
 const DEFAULT_BRANCH = 'main'
@@ -755,6 +755,20 @@ function isRegularNonLink(path: string): boolean {
   }
 }
 
+function isManifestSourceLink(root: string, path: string, expected: string | undefined): boolean {
+  if (!expected || isAbsolute(expected)) return false
+  try {
+    const entry = lstatSync(path)
+    if (!entry.isSymbolicLink() || readlinkSync(path) !== expected) return false
+    const source = realpathSync(join(root, 'skills'))
+    const resolved = realpathSync(resolve(dirname(path), expected))
+    const rel = relative(source, resolved)
+    return rel === '' || (rel !== '..' && !rel.startsWith('../') && !rel.startsWith('..\\'))
+  } catch {
+    return false
+  }
+}
+
 function localCapabilityFindings(dir: string): Finding[] {
   const { f, fail } = mk()
   const cfgPath = join(dir, KI_CONFIG)
@@ -771,8 +785,11 @@ function localCapabilityFindings(dir: string): Finding[] {
 
   const manifestPath = join(dir, VENDOR_DIR, 'manifest.json')
   let files: Record<string, string> = {}
+  let links: Record<string, string> = {}
   try {
-    files = (JSON.parse(readFileSync(manifestPath, 'utf8')) as { files?: Record<string, string> }).files ?? {}
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf8')) as { files?: Record<string, string>; links?: Record<string, string> }
+    files = manifest.files ?? {}
+    links = manifest.links ?? {}
   } catch {
     fail(
       'CAPABILITY-COMPLETE',
@@ -785,7 +802,10 @@ function localCapabilityFindings(dir: string): Finding[] {
   const missing: string[] = []
   for (const skill of roots) {
     for (const rel of capabilityPayloads(skill)) {
-      if (!files[rel] || !isRegularNonLink(join(dir, rel))) missing.push(rel)
+      const payload = join(dir, rel)
+      if (!files[rel] || !isRegularNonLink(payload)) {
+        if (!isManifestSourceLink(dir, payload, links[rel])) missing.push(rel)
+      }
     }
   }
   if (missing.length)

@@ -1,7 +1,8 @@
 import { spawnSync } from 'node:child_process'
-import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { existsSync, lstatSync, readdirSync, readFileSync, readlinkSync, realpathSync } from 'node:fs'
+import { dirname, isAbsolute, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { type HarnessSource, resolveHarnessSource } from '../../internal/repo-bootstrap/harness-source.ts'
 import { inspectProjectLinks, type ProjectLinkCheck } from '../../internal/repo-bootstrap/project-skill-publisher.ts'
 import {
   assertExplicitDependencies,
@@ -79,6 +80,39 @@ const directoryNames = (path: string): string[] =>
         .sort()
     : []
 
+const isHarnessConfig = (target: string): boolean => {
+  const config = join(target, '.ki-config.toml')
+  const stat = existsSync(config) ? lstatSync(config) : undefined
+  return Boolean(stat?.isFile() && !stat.isSymbolicLink() && /^\[ki-harness\][ \t]*$/m.test(readFileSync(config, 'utf8')))
+}
+
+const manifestLinkTarget = (target: string, path: string): string | undefined => {
+  const manifest = join(target, '.ki', 'manifest.json')
+  const stat = existsSync(manifest) ? lstatSync(manifest) : undefined
+  if (!stat?.isFile() || stat.isSymbolicLink()) return undefined
+  try {
+    const parsed = JSON.parse(readFileSync(manifest, 'utf8')) as { links?: unknown }
+    if (!parsed.links || typeof parsed.links !== 'object' || Array.isArray(parsed.links)) return undefined
+    const value = (parsed.links as Record<string, unknown>)[path]
+    return typeof value === 'string' ? value : undefined
+  } catch {
+    return undefined
+  }
+}
+
+const canonicalSourceLink = (target: string, source: string, vendored: string, manifestPath: string): boolean => {
+  const expectedTarget = manifestLinkTarget(target, manifestPath)
+  const stat = existsSync(vendored) ? lstatSync(vendored) : undefined
+  if (!expectedTarget || !stat?.isSymbolicLink()) return false
+  const actualTarget = readlinkSync(vendored)
+  if (isAbsolute(actualTarget) || actualTarget !== expectedTarget) return false
+  try {
+    return realpathSync(resolve(dirname(vendored), actualTarget)) === realpathSync(source)
+  } catch {
+    return false
+  }
+}
+
 const vendorEvidence = (target: string): BootstrapVendorEvidence => {
   const checkersRoot = join(target, '.ki', 'bootstrap', 'checkers')
   const educatorsRoot = join(target, '.ki', 'bootstrap', 'educators')
@@ -107,22 +141,37 @@ const vendorEvidence = (target: string): BootstrapVendorEvidence => {
 
   const expectedCheckers = resolved.filter((skill) => checkerScript(skill) !== null)
   const driftedSourceCopies: string[] = []
+  let harness: HarnessSource | undefined
+  if (isHarnessConfig(target)) {
+    try {
+      harness = resolveHarnessSource(target)
+    } catch (error) {
+      driftedSourceCopies.push(`source harness is invalid (${error instanceof Error ? error.message : String(error)})`)
+    }
+  }
   let checkedSourceCopies = 0
   for (const skill of expectedCheckers) {
-    const localSkill = targetSkillDir(target, skill)
+    const localSkill = harness?.skills.get(skill) ?? targetSkillDir(target, skill)
     if (!localSkill) continue
     for (const mode of ['audit', 'conform'] as const) {
       const unit = vendorUnit(skill, mode)
       if (unit?.kind !== 'file') continue
       const source = join(localSkill, unit.path)
       const vendored = join(checkersRoot, skill, 'scripts', `${mode}.ts`)
+      const manifestPath = join('.ki', 'bootstrap', 'checkers', skill, 'scripts', `${mode}.ts`)
       checkedSourceCopies += 1
       if (!existsSync(source) || !lstatSync(source).isFile()) {
         driftedSourceCopies.push(`${skill}/${mode}.ts (canonical source missing or not a regular file)`)
-      } else if (!existsSync(vendored) || !lstatSync(vendored).isFile()) {
-        driftedSourceCopies.push(`${skill}/${mode}.ts (vendored copy missing or not a regular file)`)
-      } else if (!readFileSync(source).equals(readFileSync(vendored))) {
-        driftedSourceCopies.push(`${skill}/${mode}.ts`)
+      } else if (!harness || !canonicalSourceLink(target, source, vendored, manifestPath)) {
+        if (!existsSync(vendored) || !lstatSync(vendored).isFile()) {
+          driftedSourceCopies.push(
+            `${skill}/${mode}.ts (${harness ? 'source-harness link missing or not manifest-proven' : 'vendored copy missing or not a regular file'})`
+          )
+        } else if (harness) {
+          driftedSourceCopies.push(`${skill}/${mode}.ts (source harness requires a manifest-proven canonical link)`)
+        } else if (!readFileSync(source).equals(readFileSync(vendored))) {
+          driftedSourceCopies.push(`${skill}/${mode}.ts`)
+        }
       }
     }
   }

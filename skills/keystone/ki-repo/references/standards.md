@@ -43,7 +43,7 @@ Every repo carries these at the root. Presence is checked **on the default branc
 
 `.ki/` is the working area for Knowledge Islands governance tooling — the artifacts-_out_ counterpart to `.ki-config.toml`'s config-_in_. It is an **extensible namespace**: subdirs are added as tooling grows, each declaring whether it is **derived** (regenerated, gitignored) or **durable** (kept, tracked). Defined subdirs today:
 
-- `.ki/bootstrap/checkers/<skill>/scripts/audit.ts` + `.ki/bin/aggregate.ts` — **durable** (tracked): the vendored checker copies and the runner that `ki-bootstrap`'s EDUCATE writes so the repo self-governs with zero skills installed ([ADR-KI-HARNESS-006](../../../../docs/decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)). The paired `.ki/bin/ki-audit` wrapper is the `package.json`-free entry point.
+- `.ki/bootstrap/checkers/<skill>/scripts/audit.ts` + `.ki/bin/aggregate.ts` — **durable** (tracked): ordinary consumers receive vendored checker copies; a physical source harness receives manifest-proven contained links to its canonical source. `ki-bootstrap` EDUCATE writes the runner so the repo self-governs with zero skills installed ([ADR-KI-HARNESS-006](../../../../docs/decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)). The paired `.ki/bin/ki-audit` wrapper is the `package.json`-free entry point.
 - `.ki/audits/<concern>.{md,json}` — the latest audit report per concern (`engineering`, `skills`, `repo`, …), written by a checker run with `--report` and overwritten each run (latest-only, no history). The `.json` is the machine-readable substrate a composed audit merges; the `.md` is the human report.
 - `.ki/conform/<concern>.md` — the latest record of what a CONFORM changed.
 

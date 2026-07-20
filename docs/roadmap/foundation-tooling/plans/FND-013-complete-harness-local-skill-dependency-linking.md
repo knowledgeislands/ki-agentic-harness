@@ -1,7 +1,7 @@
 ---
 id: 'FND-013'
 title: Link source-harness bootstrap payloads
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/link-source-harness-bootstrap-payloads
 blocks: —
 blocked-by: —
@@ -29,22 +29,22 @@ The bootstrap manifest and CLEAN implementation currently prove only regular gen
 
 ## Steps
 
-1. Trace every `.ki/bootstrap/` payload by ownership and execution role: agents, retained skill catalogue, checker scripts/references/shared dependencies/HELP, educator launcher/module/source snapshot, and bootstrap coordinator material. Identify the canonical same-harness source for each copied source payload and the genuinely generated glue that must remain regular. Confirm that `.ki/bin/` and `.ki/manifest.json` remain generated regular files.
+1. [x] Trace every `.ki/bootstrap/` payload by ownership and execution role: agents, retained skill catalogue, checker scripts/references/shared dependencies/HELP, educator launcher/module/source snapshot, and bootstrap coordinator material. Identify the canonical same-harness source for each copied source payload and the genuinely generated glue that must remain regular. Confirm that `.ki/bin/` and `.ki/manifest.json` remain generated regular files.
 
-2. Settle the source-harness bootstrap-link contract. It applies only when the physical target is the nearest regular `[ki-harness]` root and every source resolves beneath that same root's canonical `skills/` or `agents/` tree. Each link is relative, contained, and preflight-validated; no external checkout, installed payload, ordinary repository, archive, or release package receives one. Replace copied source material with links; retain only generated HELP/launcher/runner glue where no canonical source exists. Record how manifest ownership, AUDIT, CLEAN, rebuild, and release packaging prove and handle the links without a legacy fallback.
+2. [x] Settle the source-harness bootstrap-link contract. It applies only when the physical target is the nearest regular `[ki-harness]` root and every source resolves beneath that same root's canonical `skills/` or `agents/` tree. Each link is relative, contained, and preflight-validated; no external checkout, installed payload, ordinary repository, archive, or release package receives one. Replace copied source material with links; retain only generated HELP/launcher/runner glue where no canonical source exists. Record how manifest ownership, AUDIT, CLEAN, rebuild, and release packaging prove and handle the links without a legacy fallback.
 
-3. Implement the smallest bootstrap publication and manifest changes for that contract. Generate contained links in the harness-local `.ki/bootstrap/` surface, make aggregate AUDIT/CONFORM/EDUCATE resolve them normally, and preserve fully copied, standalone output for non-harness targets. Extend guarded replacement and rollback to reject stale regular files, dangling or escaping links, unsafe parents, and concurrent changes without overwriting unproven content.
+3. [x] Implement the smallest bootstrap publication and manifest changes for that contract. Generate contained links in the harness-local `.ki/bootstrap/` surface, make aggregate AUDIT/CONFORM/EDUCATE resolve them normally, and preserve fully copied, standalone output for non-harness targets. Extend guarded replacement and rollback to reject stale regular files, dangling or escaping links, unsafe parents, and concurrent changes without overwriting unproven content.
 
-4. Extend manifest, AUDIT, and CLEAN for the dual owned forms. Manifest-prove regular generated glue by hash and source-harness links by their relative target plus canonical-source identity; CLEAN removes only exactly proven generated links or regular files and never follows them. A re-bootstrap can replace a proven former copy with its canonical link, but ambiguous, altered, or foreign material fails closed for manual recovery.
+4. [x] Extend manifest, AUDIT, and CLEAN for the dual owned forms. Manifest-prove regular generated glue by hash and source-harness links by their relative target plus canonical-source identity; CLEAN removes only exactly proven generated links or regular files and never follows them. A re-bootstrap can replace a proven former copy with its canonical link, but ambiguous, altered, or foreign material fails closed for manual recovery.
 
-5. Add focused fixtures for the current harness, a minimal same-checkout harness, an ordinary consumer, a separate harness checkout, and a packaged or source-absent target. Prove that source edits are visible through every intended `.ki/bootstrap/` link without re-vendoring; ordinary and external targets remain regular standalone copies; CHECKER/EDUCATE/HELP execution, CLEAN then EDUCATE recovery, dry-run, repeat, rollback, and release packaging remain correct.
+5. [x] Add focused fixtures for the current harness, a minimal same-checkout harness, an ordinary consumer, a separate harness checkout, and a packaged or source-absent target. Prove that source edits are visible through every intended `.ki/bootstrap/` link without re-vendoring; ordinary and external targets remain regular standalone copies; CHECKER/EDUCATE/HELP execution, CLEAN then EDUCATE recovery, dry-run, repeat, rollback, and release packaging remain correct.
 
-6. Update `ki-bootstrap`, `ki-harness`, source-harness parity checks, user/developer guidance, and generated payloads. Re-vendor this harness, inspect that copied source material no longer produces a second generated diff, then run focused tests, `bun run test`, and `bun run ki:audit` serially.
+6. [x] Update `ki-bootstrap`, `ki-harness`, source-harness parity checks, user/developer guidance, and generated payloads. Re-vendor this harness, inspect that copied source material no longer produces a second generated diff, then run focused tests, `bun run test`, and `bun run ki:audit` serially.
 
 ## Files touched
 
 - `skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/` — source-harness detection, bootstrap publication, manifesting, CLEAN, aggregate-path safety, and fixtures.
-- `skills/keystone/ki-bootstrap/` and `skills/repo-structure/ki-harness/` — copy-versus-link contract, audit criteria, and developer guidance.
+- `skills/keystone/ki-bootstrap/` and `skills/keystone/ki-repo/` — copy-versus-link contract, capability audit criteria, and developer guidance.
 - `.ki/bootstrap/` — regenerated harness-local links and minimal regular generated glue.
 - `.gitignore`, package scripts, and documentation only where the established generated/link boundary changes.
 
@@ -66,3 +66,35 @@ FND-014 is complete and supplies the direct `.ki/` ownership boundary.
 This revises FND-013's earlier accepted assumption that generated bootstrap payloads must always be copied.
 
 FND-003's retained CLEAN acceptance record supplies the existing fail-closed baseline; this plan extends that proof model for same-checkout links without changing CLEAN's repository scope.
+
+## Acceptance
+
+### Delivered
+
+This harness now links its own canonical `skills/` and `agents/` payloads beneath `.ki/bootstrap/`.
+
+Checker entry points and educator source payloads are relative links; HELP snapshots, educator launchers, `.ki/bin/`, and `.ki/manifest.json` remain generated regular files.
+
+Ordinary repositories retain the existing self-contained copied payload model.
+
+### Summary of changes
+
+The manifest records links separately from file hashes.
+
+Re-bootstrap, aggregate execution, capability audit, and CLEAN accept only manifest-proven links that resolve within the same harness's canonical `skills/` or `agents/` tree.
+
+CLEAN unlinks proven generated links without following them; altered, dangling, escaping, or foreign links fail closed.
+
+### Verification
+
+The focused CLEAN/bootstrap fixtures cover ordinary consumers and an isolated source-harness checkout, including live source visibility, `ki-educate`, and CLEAN recovery.
+
+`bun run test` and `bun run ki:audit` both pass after re-vendoring this harness.
+
+### Outstanding concerns
+
+Confirm that the intentionally small regular bootstrap surface — HELP snapshots, thin launchers, bins, and manifest — is the right ongoing development boundary.
+
+### Mini recap
+
+Separating canonical source material from generated glue removes the repeated source-copy diff while retaining ordinary-repository portability and fail-closed cleanup.

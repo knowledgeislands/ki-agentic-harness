@@ -57,7 +57,7 @@ So **what an absent table means is per-skill**, and that is exactly what _Covera
 | any other marker skill's table | not opted into that standard — a coverage WARN _if_ the repo shows that skill's artifacts  |
 | `ki-authoring`                 | a bare `[ki-authoring]` marker — declared like any coverage, not assumed (FAIL if missing) |
 
-Every declared governance root also commits the repository to a complete **local capability**: the generated manifest must contain regular EDUCATE, AUDIT, and CONFORM payloads for it. `ki-repo` checks this mechanically and offline as `CAPABILITY-COMPLETE`, reading table presence only. Process skills (`ki-next`, `ki-plan`, and `ki-recap`) and the `ki-bootstrap` chain-starter are global process tooling, not target-local governance contracts; do not declare them in `.ki-config.toml`.
+Every declared governance root also commits the repository to a complete **local capability**: the generated manifest must contain EDUCATE, AUDIT, and CONFORM payloads for it — regular files for an ordinary consumer, or contained canonical links for a source harness. `ki-repo` checks this mechanically and offline as `CAPABILITY-COMPLETE`, reading table presence only. Process skills (`ki-next`, `ki-plan`, and `ki-recap`) and the `ki-bootstrap` chain-starter are global process tooling, not target-local governance contracts; do not declare them in `.ki-config.toml`.
 
 ## Validate your own table
 

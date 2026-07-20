@@ -161,7 +161,7 @@ Generated payload manifest integrity.
 
 Complete local governance capabilities.
 
-- **CAPABILITY-COMPLETE [M] — Governance capability completeness** — Every declared governance root has regular manifest-listed EDUCATE, AUDIT, and CONFORM payloads. (standards.md)
+- **CAPABILITY-COMPLETE [M] — Governance capability completeness** — Every declared governance root has manifest-proven EDUCATE, AUDIT, and CONFORM payloads: regular files for consumers or contained canonical links for a source harness. (standards.md)
 
 ## ACCESS — Repository access
 

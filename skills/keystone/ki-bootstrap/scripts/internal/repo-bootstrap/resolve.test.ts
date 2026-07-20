@@ -549,6 +549,11 @@ try {
       realpathSync(selfSharedPayload) ===
         join(selfBootstrappingHarness, 'skills', 'keystone', 'ki-skills', 'scripts', 'shared', 'checker.ts')
   )
+  const sourceHarnessAudit = spawnSync('bun', [AUDIT, selfBootstrappingHarness], { encoding: 'utf8' })
+  check(
+    'source harness bootstrap → BOOT-11 accepts manifest-proven canonical checker links',
+    sourceHarnessAudit.status === 0 && sourceHarnessAudit.stdout.includes('"level":"PASS","code":"BOOT-11"')
+  )
 } finally {
   rmSync(selfBootstrappingHarness, { recursive: true, force: true })
 }

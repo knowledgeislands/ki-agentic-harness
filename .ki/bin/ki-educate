@@ -3,7 +3,7 @@
 # Usage: ./.ki/bin/ki-educate [skill] [--dry-run] [--verbose] [--help]
 set -eu
 root="$(cd "$(dirname "$0")/../.." && pwd)"
-ref='10109b60af37c3746e9ca430c02e5c28eb2f49aa'
+ref='ee20d63ff8496e16b59834f54b03777ca307fa64'
 case "${1:-}" in
   --help|-h)
     echo "usage: ki-educate [skill] [--dry-run] [--verbose]"
@@ -26,9 +26,19 @@ if [ $# -gt 0 ] && [ "${1#-}" = "$1" ]; then
   exec bun "$educator" "$root" "$@"
 fi
 engine="$root/.ki/bootstrap/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts"
-if [ ! -f "$engine" ] || [ -L "$engine" ]; then
+if [ ! -f "$engine" ]; then
   echo "local bootstrap material is missing or unsafe — run https://knowledgeislands.info/harness/bootstrap to repair it" >&2
   exit 1
+fi
+if [ -L "$engine" ]; then
+  engine_dir="$(cd -P "$(dirname "$engine")" 2>/dev/null && pwd)" || {
+    echo "local bootstrap material is missing or unsafe — run https://knowledgeislands.info/harness/bootstrap to repair it" >&2
+    exit 1
+  }
+  case "$engine_dir" in
+    "$root"/skills/*) ;;
+    *) echo "local bootstrap material is missing or unsafe — run https://knowledgeislands.info/harness/bootstrap to repair it" >&2; exit 1 ;;
+  esac
 fi
 for argument in "$@"; do
   case "$argument" in

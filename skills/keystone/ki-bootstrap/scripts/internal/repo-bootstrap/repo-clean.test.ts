@@ -2,6 +2,7 @@
 /** Focused lifecycle and safety checks for source-owned repository CLEAN. */
 import { spawnSync } from 'node:child_process'
 import {
+  cpSync,
   existsSync,
   lstatSync,
   mkdirSync,
@@ -14,10 +15,11 @@ import {
   writeFileSync
 } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { dirname, join, relative } from 'node:path'
+import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const scripts = dirname(fileURLToPath(import.meta.url))
+const harnessSource = resolve(scripts, '../../../../../..')
 const bootstrap = join(scripts, 'repo-bootstrap.ts')
 const clean = join(scripts, '..', '..', 'clean.ts')
 const config = '[ki-repo]\nsupported_runtimes = ["claude-code", "codex"]\n[ki-authoring]\n'
@@ -34,6 +36,14 @@ function check(label: string, condition: boolean): void {
 function fixture(): string {
   const root = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-clean-')))
   writeFileSync(join(root, '.ki-config.toml'), config)
+  return root
+}
+
+function harnessFixture(): string {
+  const root = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-source-harness-')))
+  cpSync(join(harnessSource, 'skills'), join(root, 'skills'), { recursive: true })
+  cpSync(join(harnessSource, 'agents'), join(root, 'agents'), { recursive: true })
+  writeFileSync(join(root, '.ki-config.toml'), readFileSync(join(harnessSource, '.ki-config.toml'), 'utf8'))
   return root
 }
 
@@ -115,6 +125,35 @@ try {
   check('CLEAN still removes separately proven .ki output', !existsSync(join(altered, '.ki', 'bootstrap')))
 } finally {
   rmSync(altered, { recursive: true, force: true })
+}
+
+const sourceHarness = harnessFixture()
+try {
+  check('source harness EDUCATE succeeds', educate(sourceHarness).status === 0)
+  const bootstrapSkills = join(sourceHarness, '.ki', 'bootstrap', 'skills')
+  const checker = join(sourceHarness, '.ki', 'bootstrap', 'checkers', 'ki-skills', 'scripts', 'audit.ts')
+  const educatorSkill = join(sourceHarness, '.ki', 'bootstrap', 'educators', 'ki-skills', 'skill')
+  check(
+    'source harness links canonical bootstrap material',
+    lstatSync(bootstrapSkills).isSymbolicLink() && lstatSync(checker).isSymbolicLink() && lstatSync(educatorSkill).isSymbolicLink()
+  )
+  const canonical = join(sourceHarness, 'skills', 'keystone', 'ki-skills', 'SKILL.md')
+  writeFileSync(canonical, `${readFileSync(canonical, 'utf8')}\nsource-harness sentinel\n`)
+  check(
+    'source harness links expose live canonical edits',
+    readFileSync(join(bootstrapSkills, 'keystone', 'ki-skills', 'SKILL.md'), 'utf8').includes('source-harness sentinel')
+  )
+  const sourceHarnessRefresh = run(join(sourceHarness, '.ki', 'bin', 'ki-educate'), ['--dry-run'], sourceHarness)
+  check('source harness ki-educate remains runnable', sourceHarnessRefresh.status === 0)
+  check(
+    'CLEAN removes only source-harness links and generated glue',
+    runClean(sourceHarness).status === 0 &&
+      !existsSync(join(sourceHarness, '.ki', 'bootstrap')) &&
+      existsSync(canonical) &&
+      readFileSync(canonical, 'utf8').includes('source-harness sentinel')
+  )
+} finally {
+  rmSync(sourceHarness, { recursive: true, force: true })
 }
 
 const localSelf = fixture()

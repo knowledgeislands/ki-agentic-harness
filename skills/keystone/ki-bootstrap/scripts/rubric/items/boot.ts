@@ -180,7 +180,7 @@ export const BOOT_11: RubricItem<BootstrapRubricContext> = {
   code: 'BOOT-11',
   title: 'direct vendored checker units match canonical source bytes',
   description:
-    'When the target carries matching canonical skill sources, every direct file-kind AUDIT and CONFORM unit in `.ki/bootstrap/checkers/` is a regular file matching its canonical source byte-for-byte. Drift is a commit-blocking FAIL repaired by restoring source and re-running EDUCATE; a bootstrapped-only target reports NOT_APPLICABLE.',
+    'When the target carries matching canonical skill sources, every direct file-kind AUDIT and CONFORM unit in `.ki/bootstrap/checkers/` is either a regular file matching its canonical source byte-for-byte or, for a source harness, a manifest-proven contained link to that exact canonical source. Drift is a commit-blocking FAIL repaired by restoring source and re-running EDUCATE; a bootstrapped-only target reports NOT_APPLICABLE.',
   sources: ['[AH]', '[ADR-KI-HARNESS-006]'],
   mechanical: {
     level: 'FAIL',
@@ -202,7 +202,7 @@ export const BOOT_11: RubricItem<BootstrapRubricContext> = {
         return [
           {
             status: 'PASS',
-            message: `${vendor.checkedSourceCopies} direct file-kind vendor units match canonical source byte-for-byte`,
+            message: `${vendor.checkedSourceCopies} direct file-kind vendor units match their canonical source`,
             subject: '.ki/bootstrap/checkers'
           }
         ]

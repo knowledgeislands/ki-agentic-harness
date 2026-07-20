@@ -32,7 +32,7 @@ mgit -B sh -c 'curl -fsSL https://knowledgeislands.info/harness/bootstrap | sh'
 
 Bootstrap's one job is to build `.ki/`. For every skill in the resolved set — every `[ki-<skill>]` table the target declares in its `.ki-config.toml` (including a bare `[ki-authoring]`, which every repo must declare itself — there is no injected baseline, per `ADR-KI-HARNESS-007`) — it:
 
-1. **vendors** the skill's declared checker units (its `ki-vendors:` frontmatter — a checker copied verbatim, or a generated command-wrapper) into `.ki/bootstrap/checkers/<skill>/scripts/<verb>.ts`, renders the skill's **HELP snapshot** to `.ki/bootstrap/checkers/<skill>/help.md`, and generates its target-local EDUCATE launcher at `.ki/bootstrap/educators/<skill>/educate.ts`;
+1. **vendors** the skill's declared checker units (its `ki-vendors:` frontmatter — a checker copied verbatim, or a generated command-wrapper) into `.ki/bootstrap/checkers/<skill>/scripts/<verb>.ts`, renders the skill's **HELP snapshot** to `.ki/bootstrap/checkers/<skill>/help.md`, and generates its target-local EDUCATE launcher at `.ki/bootstrap/educators/<skill>/educate.ts`; a physical source harness links its own canonical `skills/` and `agents/` source material instead, while its HELP snapshots, launchers, bins, and manifest remain regular generated files;
 2. **writes** the four `package.json`-free entry points — `.ki/bin/{ki-audit, ki-conform, ki-educate, ki-help}` over a `.ki/bin/aggregate.ts` runner that discovers the checker copies and fans out over them — and **stamps** the vendoring manifest (`.ki/manifest.json`: the harness ref plus a hash per vendored file).
 
 It **never touches `package.json`.** A `.ki/` is dot-prefixed and generated-not-authored, so it stays off the repo's own `scripts/`, and (being idempotent) re-running the bootstrap at the same ref reproduces byte-identical output. The `ki:*` convenience keys that a code repo may want — `bun run ki:audit` aliasing `./.ki/bin/ki-audit` — are wired later by `ki-engineering` when it comes online for that repo, as sugar over these same bins, never by bootstrap.
@@ -76,7 +76,7 @@ A single skill's EDUCATE is reachable the same way through its own `scripts/educ
 
 Re-running the bootstrap **is** the update path. When a standard's REFRESH changes a checker, the repair on a governed target is an idempotent re-run of the chain — `./.ki/bin/ki-educate` (or the remote one-liner) — which re-vendors at the recorded ref and re-stamps the manifest.
 
-Drift in the vendored copies is caught mechanically: the audit checks the copies against the manifest — offline integrity against the per-file hashes, staleness against the recorded ref when the source is reachable — and conform only prints the advisory ("stale — re-run EDUCATE"), never re-syncs (in a bootstrapped-only repo the local copies are the only source present, so re-syncing from them would be circular). The repair is always the `ki-educate` re-run.
+Drift in the vendored copies is caught mechanically: the audit checks ordinary copies against manifest hashes; a later bootstrap or CLEAN validates source-harness links against their manifest-recorded relative targets. A stale, altered, dangling, or escaping link fails closed. Conform only prints the advisory ("stale — re-run EDUCATE"), never re-syncs (in a bootstrapped-only repo the local copies are the only source present, so re-syncing from them would be circular). The repair is always the `ki-educate` re-run.
 
 ## Clean generated state
 

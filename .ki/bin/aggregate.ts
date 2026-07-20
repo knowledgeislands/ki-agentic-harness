@@ -3,9 +3,9 @@
 // sequence for the given verb — no package.json required.
 // Usage: bun .ki/bin/aggregate.ts <audit|conform|educate|help> [options]
 import { execFileSync, spawnSync } from 'node:child_process'
-import { closeSync, existsSync, lstatSync, mkdtempSync, openSync, readFileSync, readdirSync, rmSync } from 'node:fs'
+import { closeSync, existsSync, lstatSync, mkdtempSync, openSync, readFileSync, readlinkSync, readdirSync, realpathSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { dirname, join } from 'node:path'
+import { dirname, isAbsolute, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const verb = process.argv[2]
@@ -35,6 +35,27 @@ if (helpRequested && (verb === 'audit' || verb === 'conform')) {
   process.exit(0)
 }
 const binDir = dirname(fileURLToPath(import.meta.url))
+const repositoryRoot = resolve(binDir, '..', '..')
+const contained = (root, path) => {
+  const rel = relative(root, path)
+  return rel === '' || (rel !== '..' && !rel.startsWith('../') && !rel.startsWith('..\\'))
+}
+const safeSourceLink = (path) => {
+  try {
+    const target = readlinkSync(path)
+    if (!target || isAbsolute(target)) return false
+    const resolved = realpathSync(resolve(dirname(path), target))
+    const sourceRoot = realpathSync(join(repositoryRoot, 'skills'))
+    return contained(sourceRoot, resolved)
+  } catch {
+    return false
+  }
+}
+const safeCheckerFile = (path) => {
+  if (!existsSync(path)) return false
+  const stat = lstatSync(path)
+  return (stat.isFile() || stat.isSymbolicLink()) && (!stat.isSymbolicLink() || safeSourceLink(path))
+}
 if (verb === 'educate' || verb === 'help') {
   // educate: whole-set re-bootstrap or a selected target-local educator payload.
   // help: the vendored HELP snapshots. Both exec the sibling wrapper.
@@ -334,7 +355,7 @@ progress.initialise()
 const plannedItemsBySkill = new Map()
 for (const [index, skill] of checkers.entries()) {
   const scriptPath = join(checkersDir, skill, 'scripts', verb + '.ts')
-  if (!existsSync(scriptPath) || !lstatSync(scriptPath).isFile() || lstatSync(scriptPath).isSymbolicLink()) {
+  if (!safeCheckerFile(scriptPath)) {
     plannedItemsBySkill.set(skill, 1)
     progress.discover(index + 1, checkers.length)
     continue
@@ -372,8 +393,7 @@ for (const skill of checkers) {
     completed = progress.advance(completed, plannedItemsBySkill.get(skill) ?? 1, skill)
     continue
   }
-  const scriptStat = lstatSync(scriptPath)
-  if (!scriptStat.isFile() || scriptStat.isSymbolicLink()) {
+  if (!safeCheckerFile(scriptPath)) {
     failed = true
     reportErrors.push({ skill, errors: ['checker entry is unsafe: ' + entry] })
     completed = progress.advance(completed, plannedItemsBySkill.get(skill) ?? 1, skill)

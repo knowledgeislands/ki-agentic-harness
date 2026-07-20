@@ -66,15 +66,18 @@ import {
   openSync,
   readdirSync,
   readFileSync,
+  readlinkSync,
   realpathSync,
   renameSync,
   rmdirSync,
   rmSync,
+  symlinkSync,
   unlinkSync,
   writeFileSync
 } from 'node:fs'
 import { basename, dirname, join, relative, resolve } from 'node:path'
 import { educatorLauncher } from '../../shared/educator.ts'
+import { type HarnessSource, resolveHarnessSource, sourceHarnessSkill } from './harness-source.ts'
 import {
   assertExplicitDependencies,
   DependencyDeclarationError,
@@ -163,9 +166,9 @@ const AGGREGATE_RUNNER = `#!/usr/bin/env bun
 // sequence for the given verb — no package.json required.
 // Usage: bun .ki/bin/aggregate.ts <audit|conform|educate|help> [options]
 import { execFileSync, spawnSync } from 'node:child_process'
-import { closeSync, existsSync, lstatSync, mkdtempSync, openSync, readFileSync, readdirSync, rmSync } from 'node:fs'
+import { closeSync, existsSync, lstatSync, mkdtempSync, openSync, readFileSync, readlinkSync, readdirSync, realpathSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { dirname, join } from 'node:path'
+import { dirname, isAbsolute, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const verb = process.argv[2]
@@ -195,6 +198,27 @@ if (helpRequested && (verb === 'audit' || verb === 'conform')) {
   process.exit(0)
 }
 const binDir = dirname(fileURLToPath(import.meta.url))
+const repositoryRoot = resolve(binDir, '..', '..')
+const contained = (root, path) => {
+  const rel = relative(root, path)
+  return rel === '' || (rel !== '..' && !rel.startsWith('../') && !rel.startsWith('..\\\\'))
+}
+const safeSourceLink = (path) => {
+  try {
+    const target = readlinkSync(path)
+    if (!target || isAbsolute(target)) return false
+    const resolved = realpathSync(resolve(dirname(path), target))
+    const sourceRoot = realpathSync(join(repositoryRoot, 'skills'))
+    return contained(sourceRoot, resolved)
+  } catch {
+    return false
+  }
+}
+const safeCheckerFile = (path) => {
+  if (!existsSync(path)) return false
+  const stat = lstatSync(path)
+  return (stat.isFile() || stat.isSymbolicLink()) && (!stat.isSymbolicLink() || safeSourceLink(path))
+}
 if (verb === 'educate' || verb === 'help') {
   // educate: whole-set re-bootstrap or a selected target-local educator payload.
   // help: the vendored HELP snapshots. Both exec the sibling wrapper.
@@ -494,7 +518,7 @@ progress.initialise()
 const plannedItemsBySkill = new Map()
 for (const [index, skill] of checkers.entries()) {
   const scriptPath = join(checkersDir, skill, 'scripts', verb + '.ts')
-  if (!existsSync(scriptPath) || !lstatSync(scriptPath).isFile() || lstatSync(scriptPath).isSymbolicLink()) {
+  if (!safeCheckerFile(scriptPath)) {
     plannedItemsBySkill.set(skill, 1)
     progress.discover(index + 1, checkers.length)
     continue
@@ -532,8 +556,7 @@ for (const skill of checkers) {
     completed = progress.advance(completed, plannedItemsBySkill.get(skill) ?? 1, skill)
     continue
   }
-  const scriptStat = lstatSync(scriptPath)
-  if (!scriptStat.isFile() || scriptStat.isSymbolicLink()) {
+  if (!safeCheckerFile(scriptPath)) {
     failed = true
     reportErrors.push({ skill, errors: ['checker entry is unsafe: ' + entry] })
     completed = progress.advance(completed, plannedItemsBySkill.get(skill) ?? 1, skill)
@@ -763,9 +786,19 @@ if [ $# -gt 0 ] && [ "\${1#-}" = "$1" ]; then
   exec bun "$educator" "$root" "$@"
 fi
 engine="$root/.ki/bootstrap/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts"
-if [ ! -f "$engine" ] || [ -L "$engine" ]; then
+if [ ! -f "$engine" ]; then
   echo "local bootstrap material is missing or unsafe — run https://knowledgeislands.info/harness/bootstrap to repair it" >&2
   exit 1
+fi
+if [ -L "$engine" ]; then
+  engine_dir="$(cd -P "$(dirname "$engine")" 2>/dev/null && pwd)" || {
+    echo "local bootstrap material is missing or unsafe — run https://knowledgeislands.info/harness/bootstrap to repair it" >&2
+    exit 1
+  }
+  case "$engine_dir" in
+    "$root"/skills/*) ;;
+    *) echo "local bootstrap material is missing or unsafe — run https://knowledgeislands.info/harness/bootstrap to repair it" >&2; exit 1 ;;
+  esac
 fi
 for argument in "$@"; do
   case "$argument" in
@@ -789,6 +822,7 @@ interface VendoredFile {
 type EntrySnapshot =
   | { kind: 'directory'; dev: number; ino: number; mode: number; uid: number }
   | { kind: 'file'; dev: number; ino: number; mode: number; uid: number; bytes: Buffer }
+  | { kind: 'link'; dev: number; ino: number; mode: number; uid: number; target: string }
 
 type OwnedSnapshot = Map<string, EntrySnapshot>
 
@@ -824,7 +858,7 @@ function lstatOrNull(path: string): ReturnType<typeof lstatSync> | null {
 function snapshotEntry(path: string): EntrySnapshot {
   const stat = lstatSync(path)
   const common = { dev: stat.dev, ino: stat.ino, mode: stat.mode & 0o777, uid: stat.uid }
-  if (stat.isSymbolicLink()) throw new Error(`unsafe symlink entry: ${path}`)
+  if (stat.isSymbolicLink()) return { kind: 'link', ...common, target: readlinkSync(path) }
   if (stat.isDirectory()) return { kind: 'directory', ...common }
   if (stat.isFile()) return { kind: 'file', ...common, bytes: readFileSync(path) }
   throw new Error(`unsafe non-file entry: ${path}`)
@@ -833,7 +867,9 @@ function snapshotEntry(path: string): EntrySnapshot {
 function sameSnapshot(a: EntrySnapshot | undefined, b: EntrySnapshot | undefined, identity = true): boolean {
   if (!a || !b || a.kind !== b.kind || a.mode !== b.mode || a.uid !== b.uid) return a === b
   if (identity && (a.dev !== b.dev || a.ino !== b.ino)) return false
-  return a.kind === 'directory' || (b.kind === 'file' && a.bytes.equals(b.bytes))
+  if (a.kind === 'directory') return true
+  if (a.kind === 'link') return b.kind === 'link' && a.target === b.target
+  return b.kind === 'file' && a.bytes.equals(b.bytes)
 }
 
 function snapshotTree(metaDir: string, rel: string, out: OwnedSnapshot): void {
@@ -850,6 +886,45 @@ function snapshotOwned(metaDir: string): OwnedSnapshot {
     if (lstatOrNull(join(metaDir, rel))) snapshotTree(metaDir, rel, out)
   }
   return out
+}
+
+function contained(root: string, path: string): boolean {
+  const rel = relative(root, path)
+  return rel === '' || (rel !== '..' && !rel.startsWith('../') && !rel.startsWith('..\\'))
+}
+
+function validateExistingSourceLinks(target: string, metaDir: string, owned: OwnedSnapshot): void {
+  const links = [...owned.entries()].filter(([, entry]) => entry.kind === 'link') as [string, EntrySnapshot & { kind: 'link' }][]
+  if (links.length === 0) return
+  const manifest = owned.get('manifest.json')
+  if (manifest?.kind !== 'file') throw new Error(`cannot prove ${VENDOR_DIR} source links: manifest.json is missing or unsafe`)
+  let declared: Record<string, string>
+  try {
+    const parsed = JSON.parse(manifest.bytes.toString('utf8')) as { links?: unknown }
+    if (!parsed.links || typeof parsed.links !== 'object' || Array.isArray(parsed.links)) throw new Error('manifest links is invalid')
+    declared = parsed.links as Record<string, string>
+  } catch (error) {
+    throw new Error(`cannot prove ${VENDOR_DIR} source links: ${(error as Error).message}`)
+  }
+  const sourceRoots = [join(target, 'skills'), join(target, 'agents')]
+    .filter((path) => {
+      const entry = lstatOrNull(path)
+      return entry?.isDirectory() && !entry.isSymbolicLink()
+    })
+    .map((path) => realpathSync(path))
+  for (const [rel, entry] of links) {
+    const declaredTarget = declared[join(VENDOR_DIR, rel)]
+    if (!declaredTarget || entry.target !== declaredTarget || declaredTarget.startsWith('/'))
+      throw new Error(`cannot prove ${VENDOR_DIR} source link: ${join(VENDOR_DIR, rel)}`)
+    let resolved: string
+    try {
+      resolved = realpathSync(resolve(dirname(join(metaDir, rel)), declaredTarget))
+    } catch {
+      throw new Error(`cannot prove ${VENDOR_DIR} source link target: ${join(VENDOR_DIR, rel)}`)
+    }
+    if (!sourceRoots.some((root) => contained(root, resolved)))
+      throw new Error(`source link escapes this harness: ${join(VENDOR_DIR, rel)}`)
+  }
 }
 
 // A pre-checker-layout `.ki/skills/` tree is removed only when the manifest
@@ -1076,7 +1151,12 @@ function createStaging(metaDir: string): { path: string; identity: EntrySnapshot
   return { path, identity }
 }
 
-function validateGeneration(staging: string, journal: OwnedSnapshot, manifestFiles: Record<string, string>): OwnedSnapshot {
+function validateGeneration(
+  staging: string,
+  journal: OwnedSnapshot,
+  manifestFiles: Record<string, string>,
+  manifestLinks: ManifestLinks = {}
+): OwnedSnapshot {
   const topLevel = readdirSync(staging).sort()
   if (JSON.stringify(topLevel) !== JSON.stringify(['bin', BOOTSTRAP_DIR, 'manifest.json'].sort())) {
     throw new Error(`candidate generation has unexpected top-level entries: ${topLevel.join(', ')}`)
@@ -1093,6 +1173,11 @@ function validateGeneration(staging: string, journal: OwnedSnapshot, manifestFil
     if (entry?.kind !== 'file' || createHash('sha256').update(entry.bytes).digest('hex') !== expectedHash) {
       throw new Error(`candidate generation hash mismatch: ${manifestRel}`)
     }
+  }
+  for (const [manifestRel, target] of Object.entries(manifestLinks)) {
+    const rel = manifestRel.startsWith(`${VENDOR_DIR}/`) ? manifestRel.slice(VENDOR_DIR.length + 1) : manifestRel
+    const entry = tree.get(rel)
+    if (entry?.kind !== 'link' || entry.target !== target) throw new Error(`candidate generation link mismatch: ${manifestRel}`)
   }
   return tree
 }
@@ -1213,6 +1298,27 @@ function hashJournalFile(journal: OwnedSnapshot, rel: string): string {
   return createHash('sha256').update(entry.bytes).digest('hex')
 }
 
+type ManifestLinks = Record<string, string>
+
+function relativeSourceLink(
+  targetRoot: string,
+  generationRoot: string,
+  rel: string,
+  source: string,
+  journal: OwnedSnapshot,
+  manifestLinks: ManifestLinks
+): void {
+  const destination = join(generationRoot, rel)
+  const target = relative(dirname(join(targetRoot, VENDOR_DIR, rel)), source)
+  if (!target || target === '.' || target.startsWith('/')) {
+    throw new Error(`unsafe source-harness link target for ${join(VENDOR_DIR, rel)}`)
+  }
+  mkdirSync(dirname(destination), { recursive: true })
+  symlinkSync(target, destination)
+  recordGenerated(journal, generationRoot, rel)
+  manifestLinks[join(VENDOR_DIR, rel)] = target
+}
+
 // The universal modes that vendor a COPIED per-skill script. `educate` is NOT here: its
 // per-skill `scripts/educate.ts` is a harness-relative seed delegator (it resolves the
 // engine via ../../ki-bootstrap) so a verbatim copy into a target's generated .ki tree would be
@@ -1221,11 +1327,14 @@ function hashJournalFile(journal: OwnedSnapshot, rel: string): string {
 const SCRIPT_MODES = ['audit', 'conform'] as const
 
 function vendorEducator(
+  targetRoot: string,
   generationRoot: string,
   skill: string,
   manifestFiles: Record<string, string>,
+  manifestLinks: ManifestLinks,
   journal: OwnedSnapshot,
-  showActions: boolean
+  showActions: boolean,
+  harness?: HarnessSource
 ): void {
   const declared = vendorModesOf(skill)
   if (!declared?.includes('educate')) return
@@ -1234,26 +1343,39 @@ function vendorEducator(
   recordGenerated(journal, generationRoot, EDUCATORS_DIR)
   mkdirSync(abs)
   recordGenerated(journal, generationRoot, rel)
-  const written = copyRegularTree(
-    generationRoot,
-    skillDir(skill),
-    join(abs, 'skill'),
-    join(rel, 'skill'),
-    journal,
-    declaredSharedLinks(skill)
-  )
+  const written: VendoredFile[] = []
+  if (harness)
+    relativeSourceLink(targetRoot, generationRoot, join(rel, 'skill'), sourceHarnessSkill(harness, skill), journal, manifestLinks)
+  else
+    written.push(
+      ...copyRegularTree(generationRoot, skillDir(skill), join(abs, 'skill'), join(rel, 'skill'), journal, declaredSharedLinks(skill))
+    )
   const moduleRel = join(rel, 'educator.ts')
   const moduleAbs = join(generationRoot, moduleRel)
-  copyRegularFile(join(skillDir('ki-bootstrap'), 'scripts', 'shared', 'educator.ts'), moduleAbs)
-  recordGenerated(journal, generationRoot, moduleRel)
-  written.push({ rel: `${VENDOR_DIR}/${moduleRel}`, abs: moduleAbs })
+  if (harness) {
+    relativeSourceLink(
+      targetRoot,
+      generationRoot,
+      moduleRel,
+      join(sourceHarnessSkill(harness, 'ki-bootstrap'), 'scripts', 'shared', 'educator.ts'),
+      journal,
+      manifestLinks
+    )
+  } else {
+    copyRegularFile(join(skillDir('ki-bootstrap'), 'scripts', 'shared', 'educator.ts'), moduleAbs)
+    recordGenerated(journal, generationRoot, moduleRel)
+    written.push({ rel: `${VENDOR_DIR}/${moduleRel}`, abs: moduleAbs })
+  }
   const launcherRel = join(rel, 'educate.ts')
   const launcherAbs = join(generationRoot, launcherRel)
   writeFileSync(launcherAbs, educatorLauncher(skill))
   recordGenerated(journal, generationRoot, launcherRel)
   written.push({ rel: `${VENDOR_DIR}/${launcherRel}`, abs: launcherAbs })
   for (const file of written) manifestFiles[file.rel] = hashJournalFile(journal, file.rel.slice(VENDOR_DIR.length + 1))
-  if (showActions) console.log(`${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${rel} (self-contained educator payload)${RESET}`)
+  if (showActions)
+    console.log(
+      `${harness ? `${GREEN}link` : `${GREEN}vendor`}${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${rel} (${harness ? 'same-harness source payload' : 'self-contained educator payload'})${RESET}`
+    )
 }
 
 function ensureCandidateDirectory(staging: string, rel: string, journal: OwnedSnapshot): void {
@@ -1282,13 +1404,30 @@ function bootstrapCatalogueSkills(set: readonly string[]): string[] {
 }
 
 function vendorBootstrapPayload(
+  targetRoot: string,
   generationRoot: string,
   set: readonly string[],
   manifestFiles: Record<string, string>,
+  manifestLinks: ManifestLinks,
   journal: OwnedSnapshot,
-  showActions: boolean
+  showActions: boolean,
+  harness?: HarnessSource
 ): void {
   ensureCandidateDirectory(generationRoot, BOOTSTRAP_DIR, journal)
+  if (harness) {
+    relativeSourceLink(targetRoot, generationRoot, join(BOOTSTRAP_DIR, 'skills'), harness.skillsRoot, journal, manifestLinks)
+    if (set.includes('ki-agents')) {
+      const agents = join(harness.root, 'agents')
+      const stat = lstatOrNull(agents)
+      if (!stat?.isDirectory() || stat.isSymbolicLink()) throw new Error(`source harness agents must be a regular directory: ${agents}`)
+      relativeSourceLink(targetRoot, generationRoot, join(BOOTSTRAP_DIR, 'agents'), agents, journal, manifestLinks)
+    }
+    if (showActions)
+      console.log(
+        `${GREEN}link${RESET}   bootstrap ${DIM}→ ${VENDOR_DIR}/${BOOTSTRAP_DIR} (same-harness canonical source catalogue)${RESET}`
+      )
+    return
+  }
   ensureCandidateDirectory(generationRoot, join(BOOTSTRAP_DIR, 'skills'), journal)
   ensureCandidateDirectory(generationRoot, join(BOOTSTRAP_DIR, 'skills', 'keystone'), journal)
 
@@ -1355,12 +1494,15 @@ function vendorBootstrapPayload(
 }
 
 function vendorSkill(
+  targetRoot: string,
   generationRoot: string,
   skill: string,
   dryRun: boolean,
   manifestFiles: Record<string, string>,
+  manifestLinks: ManifestLinks,
   journal?: OwnedSnapshot,
-  showActions = false
+  showActions = false,
+  harness?: HarnessSource
 ): void {
   const declared = vendorModesOf(skill)
   // Which script modes to copy: the skill's declared list ∩ {audit, conform}, or — for
@@ -1372,11 +1514,44 @@ function vendorSkill(
 
   for (const mode of scriptModes) {
     const unit = vendorUnit(skill, mode)
-    if (unit) written.push(...vendorOne(generationRoot, scriptsDir, skill, mode, unit, dryRun, journal, showActions))
+    if (unit && harness && unit.kind === 'file') {
+      if (showActions)
+        console.log(
+          `${GREEN}link${RESET}   ${skill} ${DIM}→ ${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/scripts/${mode}.ts (same-harness source)${RESET}`
+        )
+      if (dryRun) continue
+      if (!journal) throw new Error('candidate generation requires a creation journal')
+      ensureCandidateDirectory(generationRoot, join(CHECKERS_DIR, skill), journal)
+      ensureCandidateDirectory(generationRoot, join(CHECKERS_DIR, skill, 'scripts'), journal)
+      const source = join(sourceHarnessSkill(harness, skill), unit.path)
+      const sourceEntry = snapshotEntry(source)
+      if (sourceEntry.kind !== 'file') throw new Error(`canonical checker source must be a regular file: ${source}`)
+      relativeSourceLink(targetRoot, generationRoot, join(CHECKERS_DIR, skill, 'scripts', `${mode}.ts`), source, journal, manifestLinks)
+    } else if (unit) written.push(...vendorOne(generationRoot, scriptsDir, skill, mode, unit, dryRun, journal, showActions))
   }
   // Nothing vendored (no audit/conform resolvable) — skip the skill entirely, matching
   // the old `if (!audit) return` guard so bare non-governance dirs are ignored.
-  if (written.length === 0) return
+  if (written.length === 0 && !(harness && scriptModes.some((mode) => vendorUnit(skill, mode)?.kind === 'file'))) return
+
+  if (harness) {
+    const helpAbs = join(destDir, 'help.md')
+    const helpEnv = process.env.KI_BOOTSTRAP_TEST_HELP_PATH
+      ? { ...process.env, PATH: process.env.KI_BOOTSTRAP_TEST_HELP_PATH }
+      : process.env
+    const help = execFileSync('bun', [join(skillDir('ki-bootstrap'), 'scripts', 'internal', 'repo-bootstrap', 'skill-help.ts'), skill], {
+      cwd: join(SKILLS_ROOT, '..'),
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+      env: helpEnv
+    })
+    if (!dryRun) {
+      if (!journal) throw new Error('candidate generation requires a creation journal')
+      writeFileSync(helpAbs, help)
+      recordGenerated(journal, generationRoot, join(CHECKERS_DIR, skill, 'help.md'))
+      manifestFiles[`${VENDOR_DIR}/${CHECKERS_DIR}/${skill}/help.md`] = hashJournalFile(journal, join(CHECKERS_DIR, skill, 'help.md'))
+    }
+    return
+  }
 
   // A structured checker keeps its skill-specific catalogue, contexts, and
   // publication logic beneath scripts/rubric/. Copy that tree beside the mode
@@ -1601,13 +1776,16 @@ function assertCompleteCapabilitySetOrExit(set: string[]): void {
 }
 
 function buildCandidate(
+  targetRoot: string,
   staging: string,
   set: string[],
   ref: string,
   journal: OwnedSnapshot,
-  showActions: boolean
+  showActions: boolean,
+  harness?: HarnessSource
 ): { files: Record<string, string>; tree: OwnedSnapshot } {
   const manifestFiles: Record<string, string> = {}
+  const manifestLinks: ManifestLinks = {}
   mkdirSync(join(staging, BOOTSTRAP_DIR), { mode: 0o755 })
   recordGenerated(journal, staging, BOOTSTRAP_DIR)
   mkdirSync(join(staging, CHECKERS_DIR), { mode: 0o755 })
@@ -1617,10 +1795,10 @@ function buildCandidate(
   mkdirSync(join(staging, 'bin'), { mode: 0o755 })
   recordGenerated(journal, staging, 'bin')
   for (const skill of set) {
-    vendorSkill(staging, skill, false, manifestFiles, journal, showActions)
-    vendorEducator(staging, skill, manifestFiles, journal, showActions)
+    vendorSkill(targetRoot, staging, skill, false, manifestFiles, manifestLinks, journal, showActions, harness)
+    vendorEducator(targetRoot, staging, skill, manifestFiles, manifestLinks, journal, showActions, harness)
   }
-  vendorBootstrapPayload(staging, set, manifestFiles, journal, showActions)
+  vendorBootstrapPayload(targetRoot, staging, set, manifestFiles, manifestLinks, journal, showActions, harness)
 
   const aggregate = join(staging, 'bin', 'aggregate.ts')
   writeFileSync(aggregate, AGGREGATE_RUNNER)
@@ -1653,10 +1831,10 @@ function buildCandidate(
       console.log(`${GREEN}bin${RESET} ${DIM}→ ${VENDOR_DIR}/bin/{${HARNESS_BIN_SCRIPTS.join(', ')}} (harness cross-skill scripts)${RESET}`)
   }
 
-  writeFileSync(join(staging, 'manifest.json'), `${JSON.stringify({ ref, files: manifestFiles }, null, 2)}\n`)
+  writeFileSync(join(staging, 'manifest.json'), `${JSON.stringify({ ref, files: manifestFiles, links: manifestLinks }, null, 2)}\n`)
   recordGenerated(journal, staging, 'manifest.json')
   maybeInjectStagedMutation(staging)
-  return { files: manifestFiles, tree: validateGeneration(staging, journal, manifestFiles) }
+  return { files: manifestFiles, tree: validateGeneration(staging, journal, manifestFiles, manifestLinks) }
 }
 
 function validateTransactionParents(
@@ -1837,6 +2015,10 @@ function restoreQuarantined(metaDir: string, entry: QuarantinedEntry): void {
     linkSync(entry.path, destination)
     return
   }
+  if (entry.expected.kind === 'link') {
+    symlinkSync(entry.expected.target, destination)
+    return
+  }
   mkdirSync(destination, { mode: entry.expected.mode })
   chmodSync(destination, entry.expected.mode)
 }
@@ -1888,6 +2070,20 @@ function publishCandidate(
     validateTransactionParents(target, targetIdentity, metaDir, metaIdentity, lock.path, lock.identity)
     if (!sameOwnedSnapshot(before, snapshotOwned(metaDir))) throw new Error('owned bootstrap destinations changed before publication')
 
+    // A source-harness link may replace a previously copied directory. Remove its
+    // proven children first, deepest first, so the empty direct entry can still be
+    // quarantined and restored atomically with the rest of the transaction.
+    const candidateLinkPaths = [...candidate.entries()]
+      .filter(([, entry]) => entry.kind === 'link')
+      .map(([rel]) => rel)
+      .sort((left, right) => left.localeCompare(right))
+    for (const linkRel of candidateLinkPaths) {
+      const obsoleteChildren = [...before.entries()]
+        .filter(([rel]) => rel.startsWith(`${linkRel}/`) && !candidate.has(rel))
+        .sort(([left], [right]) => right.split('/').length - left.split('/').length || right.localeCompare(left))
+      for (const [rel, entry] of obsoleteChildren) displaced.push(quarantineExisting(metaDir, rel, entry, quarantine))
+    }
+
     const candidateDirectories = [...candidate.entries()]
       .filter(([, entry]) => entry.kind === 'directory')
       .sort(([a], [b]) => a.split('/').length - b.split('/').length || a.localeCompare(b))
@@ -1927,15 +2123,36 @@ function publishCandidate(
       maybeInjectPublicationFailure(++publicationCount)
     }
 
+    const candidateLinks = [...candidate.entries()]
+      .filter(([rel, entry]) => entry.kind === 'link' && rel !== 'manifest.json')
+      .sort(([left], [right]) => left.localeCompare(right)) as [string, EntrySnapshot & { kind: 'link' }][]
+    for (const [rel, next] of candidateLinks) {
+      const old = before.get(rel)
+      assertCurrent(metaDir, rel, old)
+      if (old?.kind === 'link' && sameSnapshot(old, next, false)) continue
+      let quarantined: QuarantinedEntry | undefined
+      if (old) {
+        quarantined = quarantineExisting(metaDir, rel, old, quarantine)
+        displaced.push(quarantined)
+      }
+      maybeInjectPostQuarantineRecreation(metaDir, rel)
+      symlinkSync(next.target, join(metaDir, rel))
+      const publishedLink = snapshotEntry(join(metaDir, rel))
+      if (!sameSnapshot(next, publishedLink, false)) throw new Error(`published source link differs at ${join(VENDOR_DIR, rel)}`)
+      published.push({ rel, before: quarantined, after: publishedLink })
+      maybeInjectPublicationFailure(++publicationCount)
+    }
+
     const obsoleteFiles = [...before.entries()]
       .filter(
         ([rel, entry]) =>
-          entry.kind === 'file' &&
+          (entry.kind === 'file' || entry.kind === 'link') &&
           (rel.startsWith(`${CHECKERS_DIR}/`) ||
             rel.startsWith(`${EDUCATORS_DIR}/`) ||
             rel.startsWith(`${BOOTSTRAP_DIR}/`) ||
             rel.startsWith(`${RETIRED_CHECKERS_DIR}/`) ||
             rel.startsWith('bin/')) &&
+          !displaced.some((item) => item.rel === rel) &&
           !candidate.has(rel)
       )
       .sort(([a], [b]) => a.localeCompare(b))
@@ -1958,6 +2175,7 @@ function publishCandidate(
             rel.startsWith(`${BOOTSTRAP_DIR}/`) ||
             rel.startsWith(`${RETIRED_CHECKERS_DIR}/`) ||
             rel.startsWith('bin/')) &&
+          !displaced.some((item) => item.rel === rel) &&
           !candidate.has(rel)
       )
       .sort(([a], [b]) => b.split('/').length - a.split('/').length || b.localeCompare(a))
@@ -2050,7 +2268,8 @@ function runBootstrapTransaction(
   targetIdentity: EntrySnapshot & { kind: 'directory' },
   set: string[],
   ref: string,
-  showActions: boolean
+  showActions: boolean,
+  harness?: HarnessSource
 ): void {
   if (process.env.NODE_ENV === 'test' && process.env.KI_BOOTSTRAP_TEST_REPLACE_BOUND_ROOT_WITH) {
     renameSync(target, process.env.KI_BOOTSTRAP_TEST_REPLACE_BOUND_ROOT_WITH)
@@ -2070,8 +2289,10 @@ function runBootstrapTransaction(
     lock = acquireLock(established.path)
     validateRetiredCheckerLayout(established.path)
     const before = snapshotOwned(established.path)
+    if (before.get('manifest.json')?.kind === 'link') throw new Error(`${VENDOR_DIR}/manifest.json must be a regular file`)
+    validateExistingSourceLinks(target, established.path, before)
     staging = createStaging(established.path)
-    const { tree } = buildCandidate(staging.path, set, ref, buildJournal, showActions)
+    const { tree } = buildCandidate(target, staging.path, set, ref, buildJournal, showActions, harness)
     maybeInjectPrePublicationReplacement(established.path)
     publishCandidate(target, targetIdentity, established.path, metaIdentity, lock, staging, before, tree)
     lock = undefined
@@ -2120,6 +2341,13 @@ function synchroniseHarnessSharedModules(target: string, dryRun: boolean, showAc
   } catch {
     throw new Error('harness shared-module publication failed')
   }
+}
+
+function localHarnessSource(target: string): HarnessSource | undefined {
+  const config = join(target, '.ki-config.toml')
+  const entry = lstatOrNull(config)
+  if (!entry?.isFile() || entry.isSymbolicLink()) return undefined
+  return /^\[ki-harness\][ \t]*$/m.test(readFileSync(config, 'utf8')) ? resolveHarnessSource(target) : undefined
 }
 
 // A fresh `ki-repo` seed writes this required declaration. During a dry run there is
@@ -2179,6 +2407,8 @@ export const educateRepository = (argv: string[] = process.argv.slice(2)): void 
   }
   if (!dryRun) assertDependenciesOrExit(target, set)
   assertCompleteCapabilitySetOrExit(set)
+  const harness = localHarnessSource(target)
+  if (harness) for (const skill of set) sourceHarnessSkill(harness, skill)
   console.log(`${DIM}EDUCATE ${target} — ${set.length} governed skill${set.length === 1 ? '' : 's'}${RESET}`)
   if (verbose && set.length) console.log(`${DIM}scope: ${set.join(', ')}${RESET}`)
 
@@ -2191,8 +2421,9 @@ export const educateRepository = (argv: string[] = process.argv.slice(2)): void 
   const manifestRel = join(VENDOR_DIR, 'manifest.json')
   if (dryRun) {
     const manifestFiles: Record<string, string> = {}
+    const manifestLinks: ManifestLinks = {}
     for (const skill of set) {
-      vendorSkill(join(target, VENDOR_DIR), skill, true, manifestFiles, undefined, true)
+      vendorSkill(target, join(target, VENDOR_DIR), skill, true, manifestFiles, manifestLinks, undefined, true, harness)
       if (vendorModesOf(skill)?.includes('educate'))
         console.log(
           `${GREEN}vendor${RESET} ${skill} ${DIM}→ ${VENDOR_DIR}/${EDUCATORS_DIR}/${skill} (self-contained educator payload)${RESET}`
@@ -2201,7 +2432,7 @@ export const educateRepository = (argv: string[] = process.argv.slice(2)): void 
     console.log(
       `${GREEN}vendor${RESET} bootstrap ${DIM}→ ${VENDOR_DIR}/${BOOTSTRAP_DIR} (local whole-set coordinator and source catalogue)${RESET}`
     )
-  } else runBootstrapTransaction(target, boundTarget.identity, set, ref, verbose)
+  } else runBootstrapTransaction(target, boundTarget.identity, set, ref, verbose, harness)
   // Runtime payloads are separate from `.ki/`: ordinary targets receive complete,
   // standalone copies, while a harness links its own canonical source skills.
   if (set.length) {
