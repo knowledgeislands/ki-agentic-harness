@@ -95,3 +95,7 @@ After the rollout-critical filesystem work closes, inventory remaining report ge
 ### Review the Cloudflare agent-setup prompt for the Cloudflare skill _(candidate)_
 
 Review Cloudflare's [agent-setup prompt](https://developers.cloudflare.com/agent-setup/prompt.md) as a tracked source for the Cloudflare skill. Adopt only the parts that improve current, safe Cloudflare work in this harness; retain Knowledge Islands' ownership, conventions, and judgment rather than following the prompt wholesale.
+
+### Define cross-repository skill vendor provenance _(candidate)_
+
+Define how one KI harness can declare and receive a shared module from another harness without relying on a nearby checkout or an ambient filesystem path. Assess an explicit `repository-id:skill:module` dependency identity, such as `ki-agentic-harness:ki-skills:reporter`, alongside repository identifiers, version or revision pinning, integrity, acquisition, missing-provider and conflict handling, and release packaging. Keep the rule that only a provider in the same physical harness checkout may be symlinked; an external provider must arrive through an explicit portable vendor or installation contract. Do not change the current local `skill:module` parser until that contract is designed and adopted.
