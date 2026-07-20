@@ -1,7 +1,7 @@
 ---
 id: 'FND-011'
 title: Preserve committed completion records before plan removal
-status: open
+status: in-progress
 roadmap: foundation-tooling/preserve-committed-completion-records-before-plan-removal
 blocks: —
 blocked-by: —
