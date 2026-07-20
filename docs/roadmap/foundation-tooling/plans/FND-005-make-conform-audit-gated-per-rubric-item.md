@@ -1,7 +1,7 @@
 ---
 id: 'FND-005'
 title: Make CONFORM audit-gated per rubric item
-status: open
+status: in-progress
 roadmap: foundation-tooling/make-conform-audit-gated-per-rubric-item
 blocks: —
 blocked-by: —
