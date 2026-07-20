@@ -82,7 +82,7 @@ Drift in the vendored copies is caught mechanically: the audit checks the copies
 
 Use CLEAN when you need to remove a repository's generated governance state and rebuild it from scratch — for example, before diagnosing a bootstrap problem. It is intentionally source-owned rather than a command inside `.ki-meta/`, because a successful clean removes that directory.
 
-> **Coming soon:** Read-only DOCTOR and scope-explicit UNINSTALL operations will distinguish repository and user state; the `kisle` command-line interface will present those operations consistently. They are not available commands yet.
+> **Coming soon:** The `kisle` command-line interface will provide one interface for the current install, bootstrap, educate, audit, conform, clean, and help operations. Read-only DOCTOR and scope-explicit UNINSTALL will join it later to distinguish repository and user state. None of these `kisle` commands are available yet.
 
 Start with a dry run from the repository root. Use the path matching the runtime where you installed the harness:
 
