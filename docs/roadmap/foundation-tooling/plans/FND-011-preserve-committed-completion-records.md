@@ -1,7 +1,7 @@
 ---
 id: 'FND-011'
 title: Preserve committed completion records before plan removal
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/preserve-committed-completion-records-before-plan-removal
 blocks: —
 blocked-by: —
@@ -56,3 +56,30 @@ The roadmap validator accepts `done` but does not require a `## Done` outcome. T
 ## Dependencies / blocks
 
 This plan formalises the explicit ready-to-start gate and the committed completion-record workflow exercised manually for FND-004, FND-005, and FND-009. It is independent of FND-010's terminal-progress presentation work.
+
+## Acceptance
+
+### Delivered
+
+`ki-plan` now has the visible `open` → `ready` → `in-progress` → `acceptance` → `done` lifecycle, with retained completion records and a separate guarded `prune` operation.
+
+### Summary of changes
+
+- Added ready, done-record, and prune procedures to `ki-plan`, including the completion banner at acceptance.
+- Extended the roadmap checker and generated index for ready and retained done records.
+- Added ready/dependency and done/outcome fixtures, refreshed vendored payloads, and updated user and runtime-neutral guidance.
+
+### Verification
+
+- `bun skills/general-governance/ki-repo-roadmap/scripts/repo-roadmap.test.ts` — passed.
+- `bun run test` — passed.
+- `bun run ki:audit` — passed.
+- Implementation evidence: `ee094bd6`.
+
+### Outstanding concerns
+
+`prune` is deliberately a guarded runtime-neutral process operation, rather than a separate local executable. Its required candidate review, commit boundary, no-clobber transaction, and rollback rules are now part of the lifecycle contract.
+
+### Mini recap
+
+Keeping `done` distinct from destructive pruning preserves reviewable completion evidence while still allowing a related tranche of work to be removed together later.

@@ -40,7 +40,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Preserve committed completion records before plan removal
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/preserve-committed-completion-records-before-plan-removal`
-- **Status:** in-progress
+- **Status:** acceptance
 - **Blocks:** —
 
 ### [RTP-001](runtime-portability/plans/RTP-001-detect-vendor-specific-portable-contracts.md)
