@@ -32,7 +32,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Unify repository-local KI state under .ki
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/unify-repository-local-ki-state-under-ki`
-- **Status:** ready
+- **Status:** in-progress
 - **Blocks:** FND-016
 
 ### [FND-015](foundation-tooling/plans/FND-015-add-safe-multiprogress-aggregate-execution.md)
