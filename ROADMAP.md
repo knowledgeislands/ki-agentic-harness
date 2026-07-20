@@ -11,6 +11,8 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 - [Foundation Tooling: Define a canonical cross-runtime `ki-self` footprint](docs/roadmap/foundation-tooling/ROADMAP.md#define-a-canonical-cross-runtime-ki-self-footprint)
 - [Foundation Tooling: Establish the installable `kisle` command-line interface](docs/roadmap/foundation-tooling/ROADMAP.md#establish-the-installable-kisle-command-line-interface)
 - [Foundation Tooling: Implement scoped lifecycle operations](docs/roadmap/foundation-tooling/ROADMAP.md#implement-scoped-lifecycle-operations)
+- [Foundation Tooling: Make CONFORM audit-gated per rubric item](docs/roadmap/foundation-tooling/ROADMAP.md#make-conform-audit-gated-per-rubric-item)
+- [Foundation Tooling: Make plan-to-roadmap linkage explicit](docs/roadmap/foundation-tooling/ROADMAP.md#make-plan-to-roadmap-linkage-explicit)
 - [Foundation Tooling: Review structural consistency across shipped skills](docs/roadmap/foundation-tooling/ROADMAP.md#review-structural-consistency-across-shipped-skills)
 - [Runtime Portability: Detect vendor-specific assumptions in portable skill contracts](docs/roadmap/runtime-portability/ROADMAP.md#detect-vendor-specific-assumptions-in-portable-skill-contracts)
 

@@ -8,6 +8,18 @@ code: FND
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
+### Make plan-to-roadmap linkage explicit
+
+Make an active plan visible from the canonical item it executes, not only from the plan's `roadmap:` frontmatter and the generated global index. Define one derivable, local plan-reference form beneath a `Blocking` or `Next` item; have AUDIT detect an absent, stale, or ambiguous reference and CONFORM repair it without rewriting the item's authored prose. Ensure `ki-plan new`, `promote`, `execute`, and `done` include the canonical theme roadmap in their existing safe transactions so plan creation, lifecycle changes, and closure cannot leave the local inverse link stale.
+
+**Plan:** [FND-004](plans/FND-004-make-plan-to-roadmap-linkage-explicit.md)
+
+### Make CONFORM audit-gated per rubric item
+
+Make mechanical CONFORM a per-rubric-item pipeline rather than a complete AUDIT pass followed by a complete CONFORM pass. Each item must audit immediately before a potential repair, skip repair when its audit already passes or is not applicable, and re-audit immediately afterward. An item may repair an `INFO` outcome only when it declares that explicitly; ordinary informational findings remain non-mutating. Report `FIXED` only when a repair caused a persistent change and the post-repair audit passes. Preserve judgment as unevaluated work and canonical JSONL as final outcomes only. Direct and aggregate progress must both count the actual mechanical rubric-item executions, never merely the number of governed skills.
+
+**Plan:** [FND-005](plans/FND-005-make-conform-audit-gated-per-rubric-item.md)
+
 ### Define a canonical cross-runtime `ki-self` footprint
 
 Define one repository-owned, committed source for `ki-self`, then project that same content into every supported runtime's skill-discovery directory. The source must be runtime-neutral and remain independent of generated runtime payloads, so `.agents/skills/ki-self` and `.claude/skills/ki-self` never diverge or make a repository's local governance depend on a harness checkout. Settle source location, projection ownership, link safety, EDUCATE and CLEAN behaviour, and migration of existing repository-local `ki-self` directories without overwriting authored content.
