@@ -48,6 +48,10 @@ Refine the `ki-plan` closing lifecycle so `done` first gains a `## Done` outcome
 
 **Plan:** [FND-011](plans/FND-011-preserve-committed-completion-records.md)
 
+### Add safe multiprogress aggregate execution
+
+Extend aggregate AUDIT and CONFORM with an opt-in multiprogress display: one stable, labelled row per selected checker, such as `AUDIT [ki-skills]`, rather than one aggregate bar. Separate presentation from execution: preserve deterministic checker ordering, JSONL, exit, and `--progress` semantics while evaluating bounded concurrent execution only for independent read-only audits. CONFORM remains sequential unless an explicit write-ownership and conflict contract proves a set of checkers safe to run together. Cover row allocation, narrow terminals, completion and failure, non-TTY output, cancellation, ordered final reporting, and concurrency limits without treating parallel rendering as permission to parallelise writes.
+
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
