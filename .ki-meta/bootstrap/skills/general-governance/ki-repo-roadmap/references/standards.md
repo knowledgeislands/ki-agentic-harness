@@ -71,3 +71,13 @@ CONFORM is narrower. It may insert a missing canonical horizon blurb and rebuild
 Plans are recoverable execution documents for multi-file or multi-step changes. They exist only for `Blocking` and `Next` items and use the [plan format](plan-format.md). Each theme's code prefixes a separate zero-padded serial sequence beginning at `001`, so a canonical plan identifier is `<THEME>-<NNN>`. Dependencies use those globally unique identifiers and are bidirectional, existent, and acyclic. No plan moves to `in-progress` while a listed blocker is not `done`.
 
 A ready plan has concrete Steps, a checkable Verify section, an honest Current state, and a minimal Files touched list. A completed plan and its roadmap item are removed together; git history is the archive.
+
+### Local plan references
+
+An active plan has one inverse reference in the canonical item named by its `roadmap:` locator. The reference is the final, standalone line in that item's content, immediately before the next item or horizon:
+
+```markdown
+**Plan:** [HOK-004](plans/HOK-004-short-description.md)
+```
+
+The identifier and relative path must resolve to that plan file. The line is derived state, not authored item prose: `ki-repo-roadmap` CONFORM repairs it from the active plan set, and `ki-plan` creates, maintains, or removes it in the same transaction as the plan. An item with no active plan has no such line. No other `**Plan:**` line is permitted in a canonical theme roadmap.

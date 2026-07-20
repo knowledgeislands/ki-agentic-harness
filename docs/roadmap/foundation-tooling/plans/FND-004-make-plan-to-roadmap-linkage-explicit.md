@@ -25,7 +25,7 @@ The current audit rejects two plans for the same locator, and CONFORM regenerate
 
 ## Steps
 
-1. Define the canonical local plan-reference syntax, placement, and ownership in the repository-roadmap standard and plan format, keeping one active plan per qualified roadmap locator.
+1. ✓ Define the canonical local plan-reference syntax, placement, and ownership in the repository-roadmap standard and plan format, keeping one active plan per qualified roadmap locator.
 2. Extend the roadmap evidence model and rubric so AUDIT detects missing, stale, duplicate, or mismatched local plan references without treating authored item prose as generated content.
 3. Extend CONFORM to derive and safely repair only the local reference line, preserving the surrounding authored item prose, then cover it with focused thematic fixtures.
 4. Update `ki-plan` lifecycle transactions so `new`, `promote`, `execute`, and `done` atomically create, maintain, or remove the local reference alongside the plan and generated index.

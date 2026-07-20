@@ -28,6 +28,16 @@ blocked-by: —
 - `blocks` and `blocked-by` are comma-separated canonical `<THEME>-<NNN>` plan identifiers or `—`, and are reverse-consistent.
 - There is no `phase` field; the canonical roadmap horizon is authoritative.
 
+## Local roadmap reference
+
+The plan's canonical roadmap item carries this final, standalone derived line after its authored prose:
+
+```markdown
+**Plan:** [HOK-004](plans/HOK-004-short-description.md)
+```
+
+`HOK-004` is the plan's `id`; the relative link names its own file below that theme's `plans/` directory. The line is owned by `ki-repo-roadmap` CONFORM and the `ki-plan` lifecycle, not by the item's prose. It is absent when no active plan resolves to the item.
+
 ## Body
 
 Use these sections in order:
