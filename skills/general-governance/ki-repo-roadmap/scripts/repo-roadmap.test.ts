@@ -425,6 +425,37 @@ for (const [label, mutate] of [
     rmSync(root, { recursive: true, force: true })
   }
 }
+
+// CONFORM repairs only derived local plan-reference lines and preserves surrounding item prose.
+{
+  const root = thematicFixture()
+  try {
+    const path = join(root, 'docs', 'roadmap', 'hooks', 'ROADMAP.md')
+    const original = readFileSync(path, 'utf8').replace(
+      '**Plan:** [HOK-001](plans/HOK-001-harden-hook-linking.md)',
+      '**Plan:** [HOK-999](plans/HOK-999-stale.md)\n\nKeep this authored detail.'
+    )
+    writeFileSync(path, original)
+    const invalid = run(AUDIT, root)
+    check('stale local plan reference fails before CONFORM', invalid.code !== 0 && invalid.out.includes('PLAN-2'))
+    const dry = run(CONFORM, root, ['--dry-run'])
+    check('local plan-reference CONFORM dry-run exits zero', dry.code === 0)
+    check('local plan-reference CONFORM dry-run preserves bytes', readFileSync(path, 'utf8') === original)
+    const conformed = run(CONFORM, root)
+    const repaired = readFileSync(path, 'utf8')
+    check(
+      'local plan-reference CONFORM restores the canonical final reference',
+      conformed.code === 0 && repaired.includes('Keep this authored detail.\n\n**Plan:** [HOK-001](plans/HOK-001-harden-hook-linking.md)')
+    )
+    check('local plan-reference CONFORM removes stale derived content', !repaired.includes('HOK-999'))
+    check('local plan-reference CONFORM preserves authored item prose', repaired.includes('Harden hook linking details.'))
+    check('local plan-reference CONFORM audits cleanly', run(AUDIT, root).code === 0)
+    run(CONFORM, root)
+    check('local plan-reference CONFORM is idempotent', readFileSync(path, 'utf8') === repaired)
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
 {
   const root = thematicFixture()
   try {

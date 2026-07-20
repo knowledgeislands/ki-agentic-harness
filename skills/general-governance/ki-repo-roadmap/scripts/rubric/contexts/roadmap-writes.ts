@@ -59,10 +59,10 @@ function isKb(): boolean {
   }
 }
 
-function headings(text: string): Array<{ level: number; title: string }> {
-  const result: Array<{ level: number; title: string }> = []
+function headings(text: string): Array<{ level: number; title: string; line: number }> {
+  const result: Array<{ level: number; title: string; line: number }> = []
   let fence: '`' | '~' | null = null
-  for (const line of text.split(/\r?\n/)) {
+  for (const [index, line] of text.split(/\r?\n/).entries()) {
     const fm = line.match(/^\s*(`{3,}|~{3,})/)
     if (fm) {
       const kind = fm[1][0] as '`' | '~'
@@ -71,7 +71,7 @@ function headings(text: string): Array<{ level: number; title: string }> {
     }
     if (fence) continue
     const match = line.match(/^(#{1,6})\s+(.+?)\s*#*\s*$/)
-    if (match) result.push({ level: match[1].length, title: match[2].trim() })
+    if (match) result.push({ level: match[1].length, title: match[2].trim(), line: index + 1 })
   }
   return result
 }
@@ -193,6 +193,60 @@ function withHorizonBlurbs(text: string): string {
     }
   }
   return `${lines.join(eol)}${trailingEol ? eol : ''}`
+}
+
+function withLocalPlanReferences(text: string, theme: string, plans: Plan[]): string {
+  const eol = text.includes('\r\n') ? '\r\n' : '\n'
+  const lines = text.split(/\r?\n/)
+  const plansByLocator = new Map(plans.filter((plan) => plan.theme === theme).map((plan) => [plan.fm.roadmap, plan]))
+  const items: Array<{ line: number; locator: string }> = []
+  let horizon: Horizon | null = null
+  for (const heading of headings(text)) {
+    if (heading.level === 2) {
+      horizon = HORIZONS.includes(heading.title as Horizon) ? (heading.title as Horizon) : null
+    } else if (heading.level === 3 && horizon) {
+      items.push({ line: heading.line, locator: `${theme}/${slug(heading.title)}` })
+    }
+  }
+  const boundaries = headings(text)
+    .filter((heading) => heading.level <= 3)
+    .map((heading) => heading.line)
+  const output: string[] = []
+  let cursor = 0
+  for (const item of items) {
+    const start = item.line - 1
+    const end = (boundaries.find((line) => line > item.line) ?? lines.length + 1) - 1
+    output.push(...lines.slice(cursor, start))
+    const segment = lines.slice(start, end)
+    let fence: '`' | '~' | null = null
+    const withoutReferences = segment.filter((line) => {
+      const fenceMatch = line.match(/^\s*(`{3,}|~{3,})/)
+      if (fenceMatch) {
+        const kind = fenceMatch[1][0] as '`' | '~'
+        fence = fence === null ? kind : fence === kind ? null : fence
+        return true
+      }
+      return Boolean(fence) || !line.startsWith('**Plan:**')
+    })
+    const plan = plansByLocator.get(item.locator)
+    if (!plan) output.push(...withoutReferences)
+    else {
+      while (withoutReferences.at(-1) === '') withoutReferences.pop()
+      output.push(...withoutReferences, '', `**Plan:** [${plan.id}](plans/${plan.name})`, '')
+    }
+    cursor = end
+  }
+  output.push(...lines.slice(cursor))
+  return output.join(eol)
+}
+
+function isDerivablePlanReferenceFailure(finding: Finding): boolean {
+  return (
+    finding.area === 'PLAN-2' &&
+    /local plan reference|has a local plan reference|must contain exactly one local reference|must have exactly one local roadmap reference/.test(
+      finding.msg
+    )
+  )
 }
 
 function index(themes: string[], plans: Plan[]): string {
@@ -358,7 +412,10 @@ export const conformRoadmap = (target: string, dryRun: boolean): Finding[] => {
     }
     const auditResults = inspectRoadmap(root)
     const nonDerivable = auditResults.filter(
-      (finding) => finding.level === 'FAIL' && !['PROJ-1', 'INDEX-1', 'ROAD-4', 'THEME-3'].includes(finding.area)
+      (finding) =>
+        finding.level === 'FAIL' &&
+        !['PROJ-1', 'INDEX-1', 'ROAD-4', 'THEME-3'].includes(finding.area) &&
+        !isDerivablePlanReferenceFailure(finding)
     )
     if (nonDerivable.length) {
       findings.push(...nonDerivable)
@@ -432,7 +489,8 @@ export const conformRoadmap = (target: string, dryRun: boolean): Finding[] => {
         emit()
       }
       const postPruneFailures = postAuditResults.filter(
-        (finding) => finding.level === 'FAIL' && !['PROJ-1', 'INDEX-1', 'ROAD-4'].includes(finding.area)
+        (finding) =>
+          finding.level === 'FAIL' && !['PROJ-1', 'INDEX-1', 'ROAD-4'].includes(finding.area) && !isDerivablePlanReferenceFailure(finding)
       )
       if (postPruneFailures.length) {
         const conflicts = restoreStagedThemes(stagedThemes)
@@ -450,38 +508,48 @@ export const conformRoadmap = (target: string, dryRun: boolean): Finding[] => {
     const { themes, items, plans } = discover(new Set(prunable.map((theme) => theme.theme)))
     const authoredOutputs = themes.map((theme) => {
       const path = join(roadmapDir, theme, 'ROADMAP.md')
+      const original = readFileSync(path, 'utf8')
+      const withBlurbs = withHorizonBlurbs(original)
+      const content = withLocalPlanReferences(withBlurbs, theme, plans)
       return {
         path,
         display: `docs/roadmap/${theme}/ROADMAP.md`,
-        area: 'ROAD-4',
-        content: withHorizonBlurbs(readFileSync(path, 'utf8'))
+        areas: [
+          ...(original === withBlurbs ? [] : ['ROAD-4']),
+          ...(withBlurbs === content ? [] : ['PLAN-2']),
+          ...(original === content ? ['ROAD-4'] : [])
+        ],
+        content
       }
     })
     if (authoredOutputs.some((output) => rejectUnsafe(output.path, output.display))) emit()
     const outputs = [
       ...authoredOutputs,
-      { path: rootRoadmap, display: 'ROADMAP.md', area: 'PROJ-1', content: projection(items) },
-      { path: readme, display: 'docs/roadmap/README.md', area: 'INDEX-1', content: index(themes, plans) }
+      { path: rootRoadmap, display: 'ROADMAP.md', areas: ['PROJ-1'], content: projection(items) },
+      { path: readme, display: 'docs/roadmap/README.md', areas: ['INDEX-1'], content: index(themes, plans) }
     ]
     const snapshots = new Map(outputs.map((output) => [output.path, outputBytes(output.path)]))
     const written: typeof outputs = []
     try {
       for (const output of outputs) {
         const current = snapshots.get(output.path) ?? null
-        if (current === output.content)
-          findings.push({ level: 'PASS', area: output.area, msg: 'already canonical', ref: STANDARD_REF, file: output.display })
-        else if (dryRun)
-          findings.push({
-            level: 'POLISH',
-            area: output.area,
-            msg: 'would regenerate (dry-run; not written)',
-            ref: STANDARD_REF,
-            file: output.display
-          })
-        else {
+        if (current === output.content) {
+          for (const area of output.areas)
+            findings.push({ level: 'PASS', area, msg: 'already canonical', ref: STANDARD_REF, file: output.display })
+        } else if (dryRun) {
+          for (const area of output.areas)
+            findings.push({
+              level: 'POLISH',
+              area,
+              msg: 'would regenerate (dry-run; not written)',
+              ref: STANDARD_REF,
+              file: output.display
+            })
+        } else {
           atomicWrite(output.path, output.content, current)
           written.push(output)
-          findings.push({ level: 'POLISH', area: output.area, msg: 'regenerated atomically', ref: STANDARD_REF, file: output.display })
+          for (const area of output.areas)
+            findings.push({ level: 'POLISH', area, msg: 'regenerated atomically', ref: STANDARD_REF, file: output.display })
         }
       }
     } catch (error) {

@@ -10,7 +10,9 @@ export const PLAN_1 = mechanical(
 export const PLAN_2 = mechanical(
   'PLAN-2',
   'plan roadmap linkage',
-  '`roadmap:` is a qualified locator in the same theme and resolves to a Blocking or Next item; that item carries exactly one matching local plan reference.'
+  '`roadmap:` is a qualified locator in the same theme and resolves to a Blocking or Next item; that item carries exactly one matching local plan reference.',
+  'FAIL',
+  true
 )
 export const PLAN_3 = mechanical(
   'PLAN-3',
