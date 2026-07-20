@@ -1,7 +1,0 @@
-{
-  "version": 1,
-  "elements": [
-    { "id": "tap-inspection", "mode": "audit", "phase": "inspect", "entry": "scripts/audit.ts", "reads": ["homebrew-tap"], "writes": [] },
-    { "id": "tap-conform", "mode": "conform", "phase": "write", "entry": "scripts/conform.ts", "reads": ["homebrew-tap"], "writes": ["homebrew-tap"] }
-  ]
-}

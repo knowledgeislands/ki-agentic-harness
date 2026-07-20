@@ -70,6 +70,21 @@ function snapshot(root: string): string {
   return rows.join('\n')
 }
 
+function namedFiles(root: string, filename: string): string[] {
+  const matches: string[] = []
+  function walk(directory: string): void {
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+      const path = join(directory, entry.name)
+      if (entry.isDirectory()) walk(path)
+      else if (entry.isFile() && entry.name === filename) matches.push(path)
+    }
+  }
+  walk(root)
+  return matches
+}
+
+check('skill sources → retire the mode-elements metadata model', namedFiles(SKILLS_ROOT, 'mode-elements.json').length === 0)
+
 const parsed = declaredSkills(`
 [ki-plan] # exact with a comment
 [ki-plan.checks]

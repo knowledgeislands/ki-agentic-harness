@@ -1,7 +1,0 @@
-{
-  "version": 1,
-  "elements": [
-    { "id": "kb-inspection", "mode": "audit", "phase": "inspect", "entry": "scripts/audit.ts", "reads": ["knowledge-base"], "writes": [] },
-    { "id": "kb-conform", "mode": "conform", "phase": "project", "entry": "scripts/conform.ts", "reads": ["knowledge-base"], "writes": ["knowledge-base"] }
-  ]
-}

@@ -1,7 +1,0 @@
-{
-  "version": 1,
-  "elements": [
-    { "id": "cloudflare-inspection", "mode": "audit", "phase": "inspect", "entry": "scripts/audit.ts", "reads": ["cloudflare"], "writes": [] },
-    { "id": "cloudflare-conform", "mode": "conform", "phase": "project", "entry": "scripts/conform.ts", "reads": ["cloudflare"], "writes": ["cloudflare"] }
-  ]
-}

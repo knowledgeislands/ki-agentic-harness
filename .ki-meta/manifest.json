@@ -1,5 +1,5 @@
 {
-  "ref": "0aa29e4072131ec3c9eb93f17cb2dfa7a4efe079",
+  "ref": "a77c4958b734360e551e27ea6f8a0fd91048acfb",
   "files": {
     ".ki-meta/checkers/ki-agents/scripts/audit.ts": "9ab69b835e772cc7bfda2da0f53cd5b1c1cdee3d1df6828a0fe9167014cb8782",
     ".ki-meta/checkers/ki-agents/scripts/conform.ts": "f70458df34a8dd71aa79b8fcda2748bc4ce146e73e67e6f337ea1c39c7512183",
@@ -688,7 +688,7 @@
     ".ki-meta/bootstrap/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts": "45ffd0580e455d7940fe47e3978b1f67e65e95e827d2a068eb2adb929f6d28f9",
     ".ki-meta/bootstrap/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-clean.test.ts": "7f7461b9dc09eed6e4e254a920c3b581901f4d55ff01b993e516cc46971c8d73",
     ".ki-meta/bootstrap/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-clean.ts": "8feeda4bac7583c677bf0d969b5b8fbc4aeaba38d9a37d425c44b3248fed4636",
-    ".ki-meta/bootstrap/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/resolve.test.ts": "5ba28d201eab22a87cc6d0945b079f5a061de7773226f4cb9fcee598e3921930",
+    ".ki-meta/bootstrap/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/resolve.test.ts": "618a2c2d5639c9f772ad6aef1e644107e860a06db63f324f939c7c06fbe3481f",
     ".ki-meta/bootstrap/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/resolve.ts": "0b8806d9b2f925f6ef1da1263dd80db40f3785b3bbfc5e5550d19ab047da9a8f",
     ".ki-meta/bootstrap/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/runtime-paths.ts": "35e4e64ef4995a2f19482b4b25371a61c78729a3e1e3c1b9a470fb5443ff4a1a",
     ".ki-meta/bootstrap/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/skill-graph.test.ts": "740c6aa18e031a9ba0a88ba5053b460eff54293d60c6058302e32524fca78cf0",
@@ -1083,7 +1083,7 @@
     ".ki-meta/bin/aggregate.ts": "80e014d3ac5646ec66cfed38da74c2626a174c2b770480f59400bbcf0ff99b59",
     ".ki-meta/bin/ki-audit": "df0008810442f234c193bd05e8a0ff01723340194d52e734fe03b33b91226343",
     ".ki-meta/bin/ki-conform": "18c140089776ac07938663b3db6c70c1dab48905fad12b260ce9e987ca75e93a",
-    ".ki-meta/bin/ki-educate": "bd89ddce5a183e5f4eb04c557717484f4b55b6d8a7cc015c153f94f23f8086a1",
+    ".ki-meta/bin/ki-educate": "9f774ede1e19348abf512d24b39bb1eae7130305cdbb424c2a566096e4d0429f",
     ".ki-meta/bin/ki-help": "3d406bb871c120cbf44b54a300a7607ed92b642b21c25c9052c5406f063bac95",
     ".ki-meta/bin/skill-graph.ts": "b4595f217671a58c709b1b56714cb0c41978d68a1da1878dd103362562d6e185",
     ".ki-meta/bin/skill-help.ts": "1bcd189e9029746557332495b9428420cf6eef00d1fc3e7aa5f1ba31e05ea7ff"
