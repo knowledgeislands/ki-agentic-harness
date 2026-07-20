@@ -21,12 +21,12 @@ The local skill's working guidance is valuable and was followed during FND-015: 
 
 ## Steps
 
-1. Establish the current local-skill boundary from the bootstrap standard, publisher, cleaner, and runtime-link tests. Confirm the precise distinction between a harness's live source links and an ordinary repository's copied vendored payload.
-2. Update `.ki/self/skill/SKILL.md` so its guidance states the linked-payload verification rule accurately: re-bootstrap when generated bootstrap material changes; otherwise use the appropriate bootstrap parity/audit gate for live source links. Retain the existing current-state, serial-gate, atomic-commit, and explicit-removal rules.
-3. Give the local skill the lightweight governance metadata and mode documentation that remain meaningful locally, while preserving its intentional exemption from shared vendoring and the indexed-directory naming shape.
-4. Teach the `ki-skills` rubric/context about the single proven `.ki/self/skill/` exception. It must remain narrow, read-only in detection, and never exempt ordinary misplaced or unindexed `ki-*` skills. Republish the generated readable rubric and add focused fixtures for both the valid exception and invalid lookalikes.
-5. Reconcile current user/developer/bootstrap guidance with `.ki/self/skill/`. Update only current-state documentation; preserve historical decision records unless they actively prescribe the retired location.
-6. Run the relevant focused bootstrap, skills, and documentation gates; then run serial `bun run test` and `bun run ki:audit`. Present the updated local contract for acceptance before marking the plan done.
+1. ✓ Establish the current local-skill boundary from the bootstrap standard, publisher, cleaner, and runtime-link tests. Confirm the precise distinction between a harness's live source links and an ordinary repository's copied vendored payload.
+2. ✓ Update `.ki/self/skill/SKILL.md` so its guidance states the linked-payload verification rule accurately: re-bootstrap when generated bootstrap material changes; otherwise use the appropriate bootstrap parity/audit gate for live source links. Retain the existing current-state, serial-gate, atomic-commit, and explicit-removal rules.
+3. ✓ Give the local skill the lightweight governance metadata and mode documentation that remain meaningful locally, while preserving its intentional exemption from shared vendoring and the indexed-directory naming shape.
+4. ✓ Teach the `ki-skills` rubric/context about the single proven `.ki/self/skill/` exception. It must remain narrow, read-only in detection, and never exempt ordinary misplaced or unindexed `ki-*` skills. Republish the generated readable rubric and add focused fixtures for both the valid exception and invalid lookalikes.
+5. ✓ Reconcile current user/developer/bootstrap guidance with `.ki/self/skill/`. Update only current-state documentation; preserve historical decision records unless they actively prescribe the retired location.
+6. ✓ Run the relevant focused bootstrap, skills, and documentation gates; then run serial `bun run test` and `bun run ki:audit`. Present the updated local contract for acceptance before marking the plan done.
 
 ## Files touched
 

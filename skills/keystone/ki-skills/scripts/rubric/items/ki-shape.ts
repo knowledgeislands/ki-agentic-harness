@@ -211,7 +211,7 @@ const auditKiShape12 = ({ skill }: KiShapeRubricContext): RubricOutcomes<AuditOu
       status: 'VIOLATION',
       message: `\`argument-hint\` is missing the universal verb(s) ${missing.map((verb) => verb.toLowerCase()).join(', ')} — a governance skill exposes AUDIT, CONFORM, EDUCATE, REFRESH and HELP (ADR-KI-HARNESS-SKILLS-001)`
     })
-  if (!skill.vendorsPresent)
+  if (!skill.vendorsPresent && !skill.localGovernanceSource)
     violations.push({
       status: 'VIOLATION',
       message:
@@ -225,7 +225,7 @@ export const KI_SHAPE_12: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-12',
   title: 'governance mode vocabulary is canonical and complete',
   description:
-    "_Mode vocabulary is canonical and complete._ A governance skill exposes **AUDIT**, **CONFORM**, **EDUCATE**, **REFRESH** and **HELP** spelled exactly so — a governance skill missing any universal verb from its `argument-hint` (EDUCATE is the common gap) **WARNs**; `NEW`, `OPTIMISE`, and operational verbs are additive, never substitutes for a universal mode (a collection skill exposes both EDUCATE and NEW). The vendoring leg: a governance skill's frontmatter **declares its vendorable modes** under `ki-vendors:`, beside `ki-depends-on:`, so the central bootstrap engine can vendor them into a target's `.ki/bootstrap/`; a missing declaration **WARNs**, while KI-SHAPE-15 validates its exact uniform form. Process skills are exempt throughout.",
+    "_Mode vocabulary is canonical and complete._ A governance skill exposes **AUDIT**, **CONFORM**, **EDUCATE**, **REFRESH** and **HELP** spelled exactly so — a governance skill missing any universal verb from its `argument-hint` (EDUCATE is the common gap) **WARNs**; `NEW`, `OPTIMISE`, and operational verbs are additive, never substitutes for a universal mode (a collection skill exposes both EDUCATE and NEW). The vendoring leg: a governance skill's frontmatter **declares its vendorable modes** under `ki-vendors:`, beside `ki-depends-on:`, so the central bootstrap engine can vendor them into a target's `.ki/bootstrap/`; a missing declaration **WARNs**, while KI-SHAPE-15 validates its exact uniform form. The one committed repository-local source at `.ki/self/skill/` is never vendored and is exempt only from that declaration. Process skills are exempt throughout.",
   sources: ['ADR-KI-HARNESS-SKILLS-001', 'ADR-KI-HARNESS-SKILLS-006', 'ADR-KI-HARNESS-007'],
   mechanical: {
     level: 'WARN',
@@ -248,7 +248,7 @@ export const KI_SHAPE_12: RubricItem<KiShapeRubricContext> = {
             subject: 'SKILL.md'
           }
         ]
-        if (!skill.vendorsPresent)
+        if (!skill.vendorsPresent && !skill.localGovernanceSource)
           outcomes.push({
             status: 'VIOLATION',
             message:
@@ -307,9 +307,9 @@ export const KI_SHAPE_13: RubricItem<KiShapeRubricContext> = {
 
 export const KI_SHAPE_14: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-14',
-  title: 'REFRESH states its harness-only precondition',
+  title: 'REFRESH states its ownership precondition',
   description:
-    "_REFRESH states its harness-only precondition._ REFRESH's write target is always the skill's own canonical files under `skills/<name>/` in `ki-agentic-harness` — a governance skill's `### Mode REFRESH` section (or, per REF-5, its `references/mode-refresh.md`) must name `ki-agentic-harness` as the only place it writes, and instruct the agent to stop and redirect when invoked from a repo where the skill is merely vendored (to the harness, or — for a pattern recurring across bases — to `ki-kb`'s IMPROVE mode). Missing either half **WARNs**. Process skills (KI-SHAPE-3) are exempt; a skill with no REFRESH section at all is already caught by KI-SHAPE-12.",
+    "_REFRESH states its ownership precondition._ REFRESH's write target is normally the skill's own canonical files under `skills/<name>/` in `ki-agentic-harness` — a governance skill's `### Mode REFRESH` section (or, per REF-5, its `references/mode-refresh.md`) must name `ki-agentic-harness` as the only place it writes, and instruct the agent to stop and redirect when invoked from a repo where the skill is merely vendored (to the harness, or — for a pattern recurring across bases — to `ki-kb`'s IMPROVE mode). The one committed repository-local source at `.ki/self/skill/` instead names that local source and stops to promote reusable rules to their shared owner. Missing either half **WARNs**. Process skills (KI-SHAPE-3) are exempt; a skill with no REFRESH section at all is already caught by KI-SHAPE-12.",
   sources: ['ADR-KI-HARNESS-SKILLS-001', 'ADR-KI-HARNESS-SKILLS-006'],
   mechanical: {
     level: 'WARN',
@@ -318,15 +318,27 @@ export const KI_SHAPE_14: RubricItem<KiShapeRubricContext> = {
       run: ({ skill }) => {
         if (!skill?.governanceSkill || !skill.refreshText)
           return [{ status: 'NOT_APPLICABLE', message: 'the target has no governance REFRESH procedure to inspect' }]
-        const namesHarness = /ki-agentic-harness/.test(skill.refreshText)
-        const stopsAndRedirects = /\bstop(s)?\b[\s\S]{0,160}\b(redirect|names?|route)/i.test(skill.refreshText)
-        return namesHarness && stopsAndRedirects
-          ? [{ status: 'PASS', message: 'REFRESH states its harness-only precondition' }]
+        const namesOwner = skill.localGovernanceSource
+          ? /\.ki\/self\/skill/.test(skill.refreshText)
+          : /ki-agentic-harness/.test(skill.refreshText)
+        const stopsAndRedirects = skill.localGovernanceSource
+          ? /\bstop(s)?\b[\s\S]{0,160}\bpromot\w*/i.test(skill.refreshText)
+          : /\bstop(s)?\b[\s\S]{0,160}\b(redirect|names?|route)/i.test(skill.refreshText)
+        return namesOwner && stopsAndRedirects
+          ? [
+              {
+                status: 'PASS',
+                message: skill.localGovernanceSource
+                  ? 'REFRESH states the repository-local ownership precondition'
+                  : 'REFRESH states its harness-only precondition'
+              }
+            ]
           : [
               {
                 status: 'VIOLATION',
-                message:
-                  'REFRESH section does not state the harness-only precondition — it should name `ki-agentic-harness` as the only place it writes and instruct stopping/redirecting when invoked from a vendored install'
+                message: skill.localGovernanceSource
+                  ? 'REFRESH section does not state the repository-local ownership precondition — it should name `.ki/self/skill/` and instruct stopping to promote reusable rules to their shared owner'
+                  : 'REFRESH section does not state the harness-only precondition — it should name `ki-agentic-harness` as the only place it writes and instruct stopping/redirecting when invoked from a vendored install'
               }
             ]
       }
@@ -363,7 +375,7 @@ export const KI_SHAPE_15: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-15',
   title: 'vendored modes have a uniform shape',
   description:
-    '_Uniform vendored-mode shape._ Every governance skill declares exactly `ki-vendors: [educate, audit, conform, help]` and provides the corresponding bare `scripts/educate.ts`, `scripts/audit.ts`, and `scripts/conform.ts`; mode names derive their script filenames, so map/override declarations and redundant skill-name suffixes such as `audit-<skill>.ts`, `lint-<skill>.ts`, and `conform-<skill>.ts` **FAIL**. REFRESH is harness-only and is never vendored. Process skills are exempt.',
+    '_Uniform vendored-mode shape._ Every governance skill except the committed repository-local `.ki/self/skill/` source declares exactly `ki-vendors: [educate, audit, conform, help]` and provides the corresponding bare `scripts/educate.ts`, `scripts/audit.ts`, and `scripts/conform.ts`; mode names derive their script filenames, so map/override declarations and redundant skill-name suffixes such as `audit-<skill>.ts`, `lint-<skill>.ts`, and `conform-<skill>.ts` **FAIL**. REFRESH is harness-only and is never vendored. Process skills are exempt.',
   sources: ['standards.md §14', 'ADR-KI-HARNESS-007'],
   mechanical: {
     level: 'FAIL',

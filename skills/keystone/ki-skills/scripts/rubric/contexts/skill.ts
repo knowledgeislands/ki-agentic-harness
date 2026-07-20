@@ -35,6 +35,9 @@ export type SkillRubricContext = {
   validFrontmatter: boolean
 }
 
+const isLocalGovernanceSource = (directory: string): boolean =>
+  basename(directory) === 'skill' && basename(dirname(directory)) === 'self' && basename(dirname(dirname(directory))) === '.ki'
+
 const relativeImportSpecifiers = (source: string): string[] =>
   [...source.matchAll(/\b(?:from\s+|import\s*\(\s*|require\s*\(\s*)['"](\.\.?\/[^'"]+)['"]/g)].map((match) => match[1] as string)
 
@@ -152,6 +155,7 @@ export const createKiShapeEvidence = (
   description: string,
   body: string
 ): KiShapeSkillContext => {
+  const localGovernanceSource = isLocalGovernanceSource(skillDirectory)
   const section = extractSection(body, 'Operating modes')
   const markdownFiles = listMarkdownFiles(skillDirectory)
   const referenceText = markdownFiles
@@ -189,7 +193,7 @@ export const createKiShapeEvidence = (
     })
 
   return {
-    ...createKiShapeFrontmatterEvidence({ frontmatter, description, scriptNames }),
+    ...createKiShapeFrontmatterEvidence({ frontmatter, description, scriptNames, localGovernanceSource }),
     operatingModesSection: section,
     bodyModes: extractBodyModes(section),
     operatingModesIntro: section?.split(/^###\s+|^\s*\|/m)[0] ?? '',
@@ -239,6 +243,7 @@ export const createSkillRubricContext = (directory: string, capabilities: SkillW
 
       const name = frontmatter.keys.get('name')
       const description = frontmatter.keys.get('description')
+      const localGovernanceSource = isLocalGovernanceSource(directory)
       const body = content.slice((content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/) || [''])[0].length)
       const scriptsDirectory = join(directory, 'scripts')
       const sharedDirectory = join(scriptsDirectory, 'shared')
@@ -255,7 +260,12 @@ export const createSkillRubricContext = (directory: string, capabilities: SkillW
       return createKiSkillsRubricContext({
         layout: { supportDirectories },
         frontmatter: frontmatterContext,
-        name: { name, directoryName: basename(directory), setName: capabilities.setName },
+        name: {
+          name,
+          directoryName: localGovernanceSource ? 'ki-self' : basename(directory),
+          localGovernanceSource,
+          setName: capabilities.setName
+        },
         description: { description },
         optional: {
           compatibility: frontmatter.keys.get('compatibility'),

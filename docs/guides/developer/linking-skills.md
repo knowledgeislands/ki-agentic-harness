@@ -42,7 +42,7 @@ bun run ki:educate
 
 The links are gitignored and generated; they are never committed because they depend on the local harness checkout. Bootstrap also links the harness's frontmatter-declared `scripts/vendored/` support payloads to their canonical providers. Ordinary repository bootstrap remains copy-based.
 
-`ki-self` is different from both generated runtime payloads and harness development links: author its one committed source at `.ki-self/SKILL.md`. Bootstrap projects relative links to that source in every declared runtime; do not create or commit a separate runtime copy.
+`ki-self` is different from both generated runtime payloads and harness development links: author its one committed source at `.ki/self/skill/SKILL.md`. Bootstrap projects relative links to that source in every declared runtime; do not create or commit a separate runtime copy.
 
 Verify the selected development state with:
 

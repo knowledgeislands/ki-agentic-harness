@@ -35,4 +35,4 @@ bun run ./skills/keystone/ki-skills/scripts/conform.ts \
   --reporter=terminal
 ```
 
-These commands exercise authored source. Package aliases such as `bun run ki:skills:audit` exercise the repository's vendored `.ki/` checker through the aggregate reporter; re-vendor before using them to verify a source change.
+These commands exercise authored source. Package aliases such as `bun run ki:skills:audit` exercise the repository's vendored `.ki/` checker through the aggregate reporter. In an ordinary repository, re-vendor before using them to verify a source change; in this source harness, direct checker links are live, so run `bun run ki:bootstrap:audit` and re-bootstrap only when generated bootstrap material changes.

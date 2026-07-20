@@ -80,25 +80,41 @@ export const NAME_4: RubricItem<NameRubricContext> = {
 export const NAME_5: RubricItem<NameRubricContext> = {
   code: 'NAME-5',
   title: 'name matches the parent directory name exactly',
-  description: '`name` matches the parent directory name exactly.',
+  description:
+    '`name` matches the parent directory name exactly. The one local-source exception is the committed `.ki/self/skill/` source, whose required name is `ki-self`.',
   sources: ['SPEC'],
   mechanical: {
     level: 'FAIL',
     audit: {
       phase: 'INSPECT',
-      run: ({ name, directoryName }) =>
+      run: ({ name, directoryName, localGovernanceSource }) =>
         !name
           ? [{ status: 'NOT_APPLICABLE', message: 'name is not present' }]
           : name !== directoryName
             ? [{ status: 'VIOLATION', message: `\`name\` "${name}" does not match the directory name "${directoryName}"` }]
-            : [{ status: 'PASS', message: 'name matches the parent directory name exactly' }]
+            : [
+                {
+                  status: 'PASS',
+                  message: localGovernanceSource
+                    ? 'name matches the canonical repository-local `.ki/self/skill/` source name'
+                    : 'name matches the parent directory name exactly'
+                }
+              ]
     },
     conform: {
       phase: 'PRIMARY',
-      run: ({ name, directoryName, setName }) => {
+      run: ({ name, directoryName, localGovernanceSource, setName }) => {
         if (!name) return [{ status: 'NOT_APPLICABLE', message: 'name is absent', subject: 'SKILL.md' }]
         if (name === directoryName)
-          return [{ status: 'PASS', message: 'name matches the parent directory name exactly', subject: 'SKILL.md' }]
+          return [
+            {
+              status: 'PASS',
+              message: localGovernanceSource
+                ? 'name matches the canonical repository-local `.ki/self/skill/` source name'
+                : 'name matches the parent directory name exactly',
+              subject: 'SKILL.md'
+            }
+          ]
         if (!setName) throw new Error('NAME-5 conform requires the setName capability')
         setName(directoryName)
         return [{ status: 'FIXED', message: `name '${name}' → '${directoryName}'`, subject: 'SKILL.md' }]

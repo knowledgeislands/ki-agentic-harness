@@ -15,6 +15,7 @@ export type FrontmatterRubricContext = {
 export type NameRubricContext = {
   name: string | undefined
   directoryName: string
+  localGovernanceSource: boolean
   setName?: (name: string) => void
 }
 
@@ -120,6 +121,7 @@ type OwnershipCollision = {
 
 export type KiShapeSkillContext = {
   governanceSkill: boolean
+  localGovernanceSource: boolean
   argumentHint: string | undefined
   hintVerbs: readonly string[]
   vendorsPresent: boolean
@@ -158,15 +160,21 @@ export type KiShapeRubricContext = {
 export const createKiShapeFrontmatterEvidence = ({
   frontmatter,
   description,
-  scriptNames
+  scriptNames,
+  localGovernanceSource = false
 }: {
   frontmatter: ParsedFrontmatter
   description: string
   scriptNames: readonly string[]
-}): Pick<KiShapeSkillContext, 'governanceSkill' | 'argumentHint' | 'hintVerbs' | 'vendorsPresent' | 'vendors' | 'scriptNames'> => {
+  localGovernanceSource?: boolean
+}): Pick<
+  KiShapeSkillContext,
+  'governanceSkill' | 'localGovernanceSource' | 'argumentHint' | 'hintVerbs' | 'vendorsPresent' | 'vendors' | 'scriptNames'
+> => {
   const argumentHint = frontmatter.keys.get('argument-hint')
   return {
     governanceSkill: !isProcessSkill(description),
+    localGovernanceSource,
     argumentHint,
     hintVerbs: hintVerbs(argumentHint ?? ''),
     vendorsPresent: frontmatter.present.has('ki-vendors'),
@@ -177,6 +185,7 @@ export const createKiShapeFrontmatterEvidence = ({
 
 const emptyKiShapeSkill: KiShapeSkillContext = {
   governanceSkill: false,
+  localGovernanceSource: false,
   argumentHint: undefined,
   hintVerbs: [],
   vendorsPresent: false,
@@ -243,7 +252,7 @@ export type KiSkillsRubricContext = {
 export const createKiSkillsRubricContext = (overrides: Partial<KiSkillsRubricContext> = {}): KiSkillsRubricContext => ({
   layout: {},
   frontmatter: { hasBlock: false, isMapping: false },
-  name: { name: undefined, directoryName: '' },
+  name: { name: undefined, directoryName: '', localGovernanceSource: false },
   description: { description: undefined },
   optional: {
     compatibility: undefined,

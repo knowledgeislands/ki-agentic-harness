@@ -41,8 +41,8 @@ When `ki-repo` is initially seeded or resolved, bootstrap subprocesses `ki-repo`
 `ki-harness` owns the eligibility rule: links are permitted only when the target is the same physical harness root that owns the canonical source tree. `ki-bootstrap` owns the physical source resolution and its guarded publication transaction.
 
 - Resolve a source only from the canonical `skills/` tree under that same root, and only when the exact named descendant contains `SKILL.md`.
-- A source harness may link its runtime payloads and declared `scripts/vendored/` shared-module payloads from those canonical sources. A nested harness, an external harness, or another repository never lends a source.
-- Ordinary runtime payloads are dereferenced, regular-file copies. Every `.ki/bootstrap/` payload is also a dereferenced, regular-file copy, including material reached through a source-harness `scripts/vendored/` link.
+- A source harness may link its runtime payloads, declared `scripts/vendored/` shared-module payloads, canonical `skills/` and `agents/` bootstrap roots, educator sources, and direct checker AUDIT/CONFORM units from those canonical sources. A nested harness, an external harness, or another repository never lends a source.
+- Ordinary runtime and `.ki/bootstrap/` payloads are dereferenced, regular-file copies. In a source harness, only manifest-proven contained links to the canonical material named above may remain; rendered HELP, launchers, aggregate bins, and the manifest stay regular generated files.
 - Never create a development link across checkouts. A bootstrap run therefore remains portable after its acquisition source disappears, except for the source harness's deliberately local runtime links.
 
 ## Reproducibility contract
