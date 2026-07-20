@@ -1,7 +1,7 @@
 ---
 id: 'FND-004'
 title: Make plan-to-roadmap linkage explicit
-status: acceptance
+status: done
 roadmap: foundation-tooling/make-plan-to-roadmap-linkage-explicit
 blocks: —
 blocked-by: —
@@ -78,3 +78,7 @@ None known. The reference is intentionally derived rather than authored prose, s
 ### Mini recap
 
 The inverse reference proved that the canonical roadmap is a better local execution view when it is maintained as derived state. No additional durable learning route is proposed.
+
+## Done
+
+Accepted on 2026-07-20. Everything is in good order: active plans are visible from exactly one canonical roadmap item, while the generated reference remains separate from authored roadmap prose. This committed completion record precedes the separate deletion of the plan and its completed roadmap item.

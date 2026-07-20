@@ -66,7 +66,7 @@ Repository CLEAN removes only proven generated state, leaving governance intent 
 
 ### Outstanding concerns
 
-The later scoped CLEAN / DOCTOR / UNINSTALL item intentionally broadens the end-user lifecycle. In particular, repository CLEAN is not an uninstall: it does not remove user-level installation, repository intent, configuration, authored sources, development links, agents, or unproven content. That broader contract needs separate design and acceptance analysis; it does not invalidate this conservative generated-output boundary.
+The defined follow-up is [Implement scoped lifecycle operations](../ROADMAP.md#implement-scoped-lifecycle-operations), which covers repository CLEAN alongside scoped repository/user DOCTOR and UNINSTALL. In particular, repository CLEAN is not an uninstall: it does not remove user-level installation, repository intent, configuration, authored sources, development links, agents, or unproven content. That broader contract needs separate design and acceptance analysis; it does not invalidate this conservative generated-output boundary.
 
 ### Mini recap
 

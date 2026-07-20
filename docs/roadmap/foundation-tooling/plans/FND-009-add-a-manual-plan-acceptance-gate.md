@@ -1,7 +1,7 @@
 ---
 id: 'FND-009'
 title: Add a manual plan acceptance gate
-status: acceptance
+status: done
 roadmap: foundation-tooling/add-a-manual-plan-acceptance-gate
 blocks: —
 blocked-by: —
@@ -72,3 +72,7 @@ The packet was initially terse, which made it harder to find the actual changes 
 ### Mini recap
 
 A plan-local acceptance record makes review evidence visible without prematurely turning a learning into a standard. The approved learning from this review is to record revisioned verification and avoid redundant full gates after prose-only packet refinements.
+
+## Done
+
+Accepted on 2026-07-20. The manual acceptance gate is proving useful already: the restored FND-003 through FND-008 reviews exercised its packet, evidence, and explicit-user-decision boundary. The follow-up [Preserve committed completion records before plan removal](../ROADMAP.md#preserve-committed-completion-records-before-plan-removal) will make this interim done record and its subsequent deletion the formal lifecycle rather than a one-off transition.

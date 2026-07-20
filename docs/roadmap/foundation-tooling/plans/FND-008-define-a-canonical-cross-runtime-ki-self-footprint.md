@@ -22,11 +22,11 @@ The source location, generated-versus-authored boundary, migration rules, and re
 ## Steps
 
 1. ✓ Inventory existing `ki-self` locations, runtime discovery roots, bootstrap preservation logic, and CLEAN expectations; classify canonical authored state, generated projections, and legacy footprints.
-2. Decide and document the canonical repository-owned source location and the projection owner, ensuring the source is runtime-neutral and works in repositories that do not contain a harness `skills/` tree.
-3. Define the safety contract: supported-runtime selection, source validation, physical containment, relative-link construction, conflict handling, dry-run, idempotence, migration boundaries, and preservation of unproven local content.
-4. Implement source creation or validation plus projections into `.agents/skills/ki-self` and `.claude/skills/ki-self` for each declared supported runtime, without changing ordinary harness-distributed runtime payload semantics.
-5. Align bootstrap AUDIT, CONFORM, EDUCATE, and the planned CLEAN operation so they recognise the canonical source and projections without treating them as generated skill copies.
-6. Add focused fixtures for each runtime, one-source/two-projection behaviour, absent and altered sources, unsafe parents, conflicts, dry-run, repeat, migration, and recovery; document the repository-author workflow.
+2. ✓ Decide and document the canonical repository-owned source location and the projection owner, ensuring the source is runtime-neutral and works in repositories that do not contain a harness `skills/` tree.
+3. ✓ Define the safety contract: supported-runtime selection, source validation, physical containment, relative-link construction, conflict handling, dry-run, idempotence, migration boundaries, and preservation of unproven local content.
+4. ✓ Implement source creation or validation plus projections into `.agents/skills/ki-self` and `.claude/skills/ki-self` for each declared supported runtime, without changing ordinary harness-distributed runtime payload semantics.
+5. ✓ Align bootstrap AUDIT, CONFORM, EDUCATE, and the planned CLEAN operation so they recognise the canonical source and projections without treating them as generated skill copies.
+6. ✓ Add focused fixtures for each runtime, one-source/two-projection behaviour, absent and altered sources, unsafe parents, conflicts, dry-run, repeat, migration, and recovery; document the repository-author workflow.
 
 ## Files touched
 

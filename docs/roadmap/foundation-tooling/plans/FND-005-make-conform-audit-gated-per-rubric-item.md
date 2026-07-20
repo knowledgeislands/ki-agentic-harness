@@ -1,7 +1,7 @@
 ---
 id: 'FND-005'
 title: Make CONFORM audit-gated per rubric item
-status: acceptance
+status: done
 roadmap: foundation-tooling/make-conform-audit-gated-per-rubric-item
 blocks: —
 blocked-by: —
@@ -80,3 +80,7 @@ None known. The acceptance question is chiefly whether the distinction between a
 ### Mini recap
 
 Moving the repair contract into the shared checker avoided another skill-specific workaround. No additional durable learning route is proposed.
+
+## Done
+
+Accepted on 2026-07-20. The per-rubric-item CONFORM contract is fully rolled out through the shared checker, reporter, aggregate accounting, and migrated engineering implementation. The follow-up [Improve CONFORM progress feedback](../ROADMAP.md#improve-conform-progress-feedback) will make its terminal presentation materially easier to read without changing the repair semantics or counts.
