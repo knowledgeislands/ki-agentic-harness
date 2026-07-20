@@ -1,7 +1,7 @@
 ---
 id: 'FND-013'
 title: Complete harness-local skill dependency linking
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/complete-harness-local-skill-dependency-linking
 blocks: —
 blocked-by: —
@@ -64,3 +64,32 @@ It may identify a future explicit cross-harness development-link workflow or `re
 - Round 2 — judgment: settle the smallest same-harness provenance contract from both investigations; files: plan, applicable `ki-harness` / `ki-bootstrap` guidance, and ADR only if materially needed; gate: explicit ownership and copy-versus-link boundary before implementation.
 - Round 3 — mechanical: apply the settled resolver, publisher, synchroniser, fixture, and generated-output changes; files: one exclusive writer owns `repo-bootstrap/` and its focused tests; gate: focused tests, required re-vendoring, and contained-link inspection.
 - Orchestrator: review every worker diff, adversarially review changed scripts, run serial repository tests and aggregate audit, then commit only gated work.
+
+## Acceptance
+
+### Delivered
+
+Harness-local runtime skills and declared source-vendored modules now resolve only within the nearest physical `[ki-harness]` repository root.
+
+Ordinary repositories and all `.ki-meta/` payloads remain dereferenced regular copies, and no cross-checkout development link is introduced.
+
+### Summary of changes
+
+- Added a physical harness-source resolver and focused provenance tests under `skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/`.
+- Routed runtime publication and source-vendored module synchronisation through the same-root resolver, with full preflight before mutation and local-only declaration validation.
+- Recorded the eligibility/transaction boundary in `ki-bootstrap` and `ki-harness` standards, then refreshed generated bootstrap and educator payloads.
+
+### Verification
+
+- `bun run test` — passed at `c2736b12`.
+- `bun run ki:audit` — passed at `c2736b12`.
+- `bun run ki:repo-roadmap:audit` — passed at `c2736b12`.
+- Focused harness-source, shared-module synchronisation, and project-skill publisher fixtures passed, including nested roots, hostile parents, no-partial-mutation failures, external-harness refusal, local-only skills, and copy/link boundaries.
+
+### Outstanding concerns
+
+None. The future `repository-id:skill:module` identity extension remains deliberately out of scope and must not authorise cross-checkout links.
+
+### Mini recap
+
+The initial analysis showed two independent linkers with incompatible provenance assumptions. A shared physical resolver gives both the same fail-closed boundary, while preserving portable copies outside a source harness. The proposed future route is an explicit cross-repository dependency-identity plan if a concrete workflow needs it.

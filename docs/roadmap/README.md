@@ -24,7 +24,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Complete harness-local skill dependency linking
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/complete-harness-local-skill-dependency-linking`
-- **Status:** in-progress
+- **Status:** acceptance
 - **Blocks:** —
 
 ### [FND-014](foundation-tooling/plans/FND-014-unify-repository-local-ki-state.md)
