@@ -39,6 +39,8 @@ import {
   isSkill,
   SKILLS_ROOT,
   SkillResolutionError,
+  sharedDependenciesOf,
+  sharedModulePayload,
   skillDir
 } from './resolve.ts'
 import { gitignoresPath, runtimeAgentsDir, runtimeSkillsDir, supportedRuntimes } from './runtime-paths.ts'
@@ -167,7 +169,16 @@ const generatedSkillMetadataDirectory = (path: string): boolean => {
   )
 }
 
-function skillTreeIntegrity(path: string, label: string): string {
+function declaredSharedLinks(skill: string): Map<string, string> {
+  const links = new Map<string, string>()
+  for (const module of sharedDependenciesOf(skill)) {
+    const payload = sharedModulePayload(module)
+    links.set(join(skillDir(skill), 'scripts', 'vendored', module.provider, payload.targetName), payload.source)
+  }
+  return links
+}
+
+function skillTreeIntegrity(path: string, label: string, allowedLinks = new Map<string, string>()): string {
   const root = mustEntry(path, label)
   if (root.kind !== 'dir') throw new Error(`${label} must be a directory: ${path}`)
   const rows: string[] = []
@@ -178,7 +189,24 @@ function skillTreeIntegrity(path: string, label: string): string {
       if (relativePath === '' && name === '.ki-meta' && generatedSkillMetadataDirectory(child)) continue
       if (childRelative === GENERATED_SKILL_MARKER) continue
       const found = mustEntry(child, label)
-      if (found.kind === 'link') throw new Error(`${label} must not contain symlinks: ${child}`)
+      if (found.kind === 'link') {
+        const source = allowedLinks.get(child)
+        if (!source || realpathFor(child) !== realpathFor(source)) throw new Error(`${label} must not contain symlinks: ${child}`)
+        const sourceEntry = mustEntry(source, label)
+        if (sourceEntry.kind === 'dir') {
+          rows.push(`d ${childRelative} ${sourceEntry.mode & 0o7777}`)
+          walk(source, childRelative)
+        } else if (sourceEntry.kind === 'file') {
+          rows.push(
+            `f ${childRelative} ${sourceEntry.mode & 0o7777} ${createHash('sha256')
+              .update(sourceEntry.bytes ?? Buffer.alloc(0))
+              .digest('hex')}`
+          )
+        } else {
+          throw new Error(`${label} shared module source is unsafe: ${source}`)
+        }
+        continue
+      }
       if (found.kind === 'other') throw new Error(`${label} must contain only regular files and directories: ${child}`)
       if (found.kind === 'dir') {
         rows.push(`d ${childRelative} ${found.mode & 0o7777}`)
@@ -236,7 +264,7 @@ function copiesSource(destination: string, skill: string, source: string): boole
   try {
     return (
       marker.integrity === skillTreeIntegrity(destination, 'generated skill payload') &&
-      marker.integrity === skillTreeIntegrity(source, 'skill source')
+      marker.integrity === skillTreeIntegrity(source, 'skill source', declaredSharedLinks(skill))
     )
   } catch {
     return false
@@ -355,7 +383,7 @@ function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: Pr
       for (const name of wanted) {
         const source = sourceFor(target, name, skillPublication)
         if (entry(source)?.kind !== 'dir') throw new Error(`skill source is unavailable: ${name}`)
-        skillTreeIntegrity(source, `skill source ${name}`)
+        if (skillPublication === 'copy') skillTreeIntegrity(source, `skill source ${name}`, declaredSharedLinks(name))
         const destination = join(dir, name)
         const found = entry(destination)
         if (skillPublication === 'copy') {
@@ -504,8 +532,8 @@ function stagePlan(transaction: string, plan: LinkPlan): Array<{ destination: st
     if (item.kind === 'copy') {
       const skill = item.skill
       if (!skill) throw new Error(`copied skill payload is missing its identity: ${item.label}`)
-      const integrity = skillTreeIntegrity(item.source, `skill source ${skill}`)
-      cpSync(item.source, stage, { recursive: true, dereference: false, preserveTimestamps: true })
+      const integrity = skillTreeIntegrity(item.source, `skill source ${skill}`, declaredSharedLinks(skill))
+      cpSync(item.source, stage, { recursive: true, dereference: true, preserveTimestamps: true })
       if (skillTreeIntegrity(stage, `staged skill payload ${item.label}`) !== integrity) {
         throw new Error(`staged skill payload differs from its validated source: ${item.label}`)
       }

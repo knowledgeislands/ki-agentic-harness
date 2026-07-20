@@ -333,7 +333,7 @@ try {
       !lstatSync(join(seededRepo, '.claude', 'skills', 'ki-repo')).isSymbolicLink() &&
       existsSync(join(seededRepo, '.claude', 'skills', 'ki-repo', 'SKILL.md'))
   )
-  check('seeded ki-repo → self-check entry point is runnable', selfCheck.status === 0 && selfCheck.stdout.includes('usage: ki-audit'))
+  check('seeded ki-repo → self-check entry point is runnable', selfCheck.status === 0 && selfCheck.stdout.includes('Usage: ki-audit'))
 } finally {
   rmSync(seededRepo, { recursive: true, force: true })
 }
@@ -484,12 +484,28 @@ try {
   )
   const result = spawnSync('bun', [selfBootstrap, selfBootstrappingHarness], { encoding: 'utf8' })
   const selfPayload = join(selfBootstrappingHarness, '.claude', 'skills', 'ki-repo')
+  const selfSharedPayload = join(
+    selfBootstrappingHarness,
+    'skills',
+    'keystone',
+    'ki-repo',
+    'scripts',
+    'vendored',
+    'ki-skills',
+    'checker.ts'
+  )
   check('source harness bootstrap → exits cleanly', result.status === 0)
   check(
     'source harness bootstrap → links canonical runtime skills',
     existsSync(selfPayload) &&
       lstatSync(selfPayload).isSymbolicLink() &&
       realpathSync(selfPayload) === join(selfBootstrappingHarness, 'skills', 'keystone', 'ki-repo')
+  )
+  check(
+    'source harness bootstrap → links declared shared modules',
+    lstatSync(selfSharedPayload).isSymbolicLink() &&
+      realpathSync(selfSharedPayload) ===
+        join(selfBootstrappingHarness, 'skills', 'keystone', 'ki-skills', 'scripts', 'shared', 'checker.ts')
   )
 } finally {
   rmSync(selfBootstrappingHarness, { recursive: true, force: true })

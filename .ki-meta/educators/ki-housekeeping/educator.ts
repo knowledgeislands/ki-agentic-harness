@@ -62,7 +62,16 @@ const entryKind = (path: string): SkillEducationUnit['kind'] => {
   throw new Error(`skill education payload must contain only regular files and directories: ${path}`)
 }
 
-const copyPayload = (source: string, destination: string): void => {
+const copyPayload = (source: string, destination: string, sourceRoot = source): void => {
+  const stat = lstatSync(source)
+  if (stat.isSymbolicLink()) {
+    const localPath = relative(sourceRoot, source)
+    if (!localPath.startsWith(`scripts${sep}vendored${sep}`)) {
+      throw new Error(`skill education payload contains an unsafe symlink: ${source}`)
+    }
+    copyPayload(realpathSync(source), destination)
+    return
+  }
   const kind = entryKind(source)
   if (kind === 'file') {
     mkdirSync(resolve(destination, '..'), { recursive: true })
@@ -71,17 +80,17 @@ const copyPayload = (source: string, destination: string): void => {
     return
   }
   mkdirSync(destination, { recursive: true })
-  for (const name of readdirSync(source).sort()) copyPayload(join(source, name), join(destination, name))
+  for (const name of readdirSync(source).sort()) copyPayload(join(source, name), join(destination, name), sourceRoot)
 }
 
-const writePayload = (unit: SkillEducationUnit, destination: string): void => {
+const writePayload = (unit: SkillEducationUnit, destination: string, sourceRoot: string): void => {
   if (unit.content !== undefined) {
     mkdirSync(resolve(destination, '..'), { recursive: true })
     writeFileSync(destination, unit.content)
     return
   }
   if (!unit.source) throw new Error(`skill education unit has no source: ${unit.destination}`)
-  copyPayload(unit.source, destination)
+  copyPayload(unit.source, destination, sourceRoot)
 }
 
 const escapes = (root: string, path: string): boolean => {
@@ -263,7 +272,7 @@ export const publishSkillEducation = (plan: SkillEducationPlan): void => {
       const rel = relative(plan.target, unit.destination)
       if (escapes(plan.target, unit.destination))
         throw new Error(`skill education destination escapes the target repository: ${unit.destination}`)
-      writePayload(unit, join(candidateRoot, rel))
+      writePayload(unit, join(candidateRoot, rel), plan.source)
     }
 
     mkdirSync(backupRoot)

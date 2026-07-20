@@ -40,7 +40,7 @@ When EDUCATE runs in a harness, bootstrap maintains links from its runtime skill
 bun run ki:educate
 ```
 
-The links are gitignored and generated; they are never committed because they depend on the local harness checkout. Ordinary repository bootstrap remains copy-based.
+The links are gitignored and generated; they are never committed because they depend on the local harness checkout. Bootstrap also links the harness's frontmatter-declared `scripts/vendored/` support payloads to their canonical providers. Ordinary repository bootstrap remains copy-based.
 
 Verify the selected development state with:
 

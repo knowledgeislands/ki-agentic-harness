@@ -976,13 +976,22 @@ function copyRegularTree(
   source: string,
   destination: string,
   destinationRel: string,
-  journal: OwnedSnapshot
+  journal: OwnedSnapshot,
+  declaredLinks = new Map<string, string>()
 ): VendoredFile[] {
   const copied: VendoredFile[] = []
 
   const copyEntry = (sourcePath: string, destinationPath: string, rel: string): void => {
     const stat = lstatSync(sourcePath)
-    if (stat.isSymbolicLink() || (!stat.isFile() && !stat.isDirectory())) throw new Error(`unsafe vendored payload entry: ${sourcePath}`)
+    if (stat.isSymbolicLink()) {
+      const expected = declaredLinks.get(sourcePath)
+      if (!expected || realpathSync(sourcePath) !== realpathSync(expected)) {
+        throw new Error(`unsafe vendored payload link: ${sourcePath}`)
+      }
+      copyEntry(expected, destinationPath, rel)
+      return
+    }
+    if (!stat.isFile() && !stat.isDirectory()) throw new Error(`unsafe vendored payload entry: ${sourcePath}`)
     if (stat.isFile()) {
       copyRegularFile(sourcePath, destinationPath)
       recordGenerated(journal, generationRoot, rel)
@@ -998,6 +1007,15 @@ function copyRegularTree(
 
   copyEntry(source, destination, destinationRel)
   return copied
+}
+
+function declaredSharedLinks(skill: string): Map<string, string> {
+  const links = new Map<string, string>()
+  for (const module of sharedDependenciesOf(skill)) {
+    const payload = sharedModulePayload(module)
+    links.set(join(skillDir(skill), 'scripts', 'vendored', module.provider, payload.targetName), payload.source)
+  }
+  return links
 }
 
 function vendorSharedModulePayload(
@@ -1056,7 +1074,14 @@ function vendorEducator(
   recordGenerated(journal, generationRoot, EDUCATORS_DIR)
   mkdirSync(abs)
   recordGenerated(journal, generationRoot, rel)
-  const written = copyRegularTree(generationRoot, skillDir(skill), join(abs, 'skill'), join(rel, 'skill'), journal)
+  const written = copyRegularTree(
+    generationRoot,
+    skillDir(skill),
+    join(abs, 'skill'),
+    join(rel, 'skill'),
+    journal,
+    declaredSharedLinks(skill)
+  )
   const moduleRel = join(rel, 'educator.ts')
   const moduleAbs = join(generationRoot, moduleRel)
   copyRegularFile(join(skillDir('ki-bootstrap'), 'scripts', 'shared', 'educator.ts'), moduleAbs)
@@ -1143,7 +1168,7 @@ function vendorBootstrapPayload(
     manifestCopiedFiles(
       manifestFiles,
       journal,
-      copyRegularTree(generationRoot, source, join(generationRoot, destination), destination, journal)
+      copyRegularTree(generationRoot, source, join(generationRoot, destination), destination, journal, declaredSharedLinks(skill))
     )
   }
 
@@ -1921,6 +1946,17 @@ function publishRuntimeSkillPayloads(target: string, dryRun: boolean, showAction
   }
 }
 
+function synchroniseHarnessSharedModules(target: string, dryRun: boolean, showActions: boolean): void {
+  const args = [join(import.meta.dirname, 'sync-shared-modules.ts'), target]
+  if (dryRun) args.push('--dry-run')
+  if (!showActions) args.push('--quiet')
+  try {
+    execFileSync('bun', args, { stdio: 'inherit' })
+  } catch {
+    throw new Error('harness shared-module publication failed')
+  }
+}
+
 // A fresh `ki-repo` seed writes this required declaration. During a dry run there is
 // deliberately no `.ki-config.toml` to hand to the publisher, so preview the same
 // runtime payload plan without creating a transient target file.
@@ -2007,6 +2043,7 @@ export const educateRepository = (argv: string[] = process.argv.slice(2)): void 
     if (dryRun && set.includes('ki-repo') && !existsSync(join(target, '.ki-config.toml'))) previewScaffoldedRuntimePayloads(set)
     else publishRuntimeSkillPayloads(target, dryRun, dryRun || verbose)
   }
+  if (set.includes('ki-harness')) synchroniseHarnessSharedModules(target, dryRun, dryRun || verbose)
   if (dryRun || verbose) {
     console.log(
       `${GREEN}runner${RESET} ${DIM}→ ${aggRel}, ${auditBinRel}, ${conformBinRel}, ${initBinRel}, ${helpBinRel}, ${manifestRel}${RESET}`
