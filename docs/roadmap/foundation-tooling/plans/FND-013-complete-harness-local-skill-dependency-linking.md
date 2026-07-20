@@ -1,7 +1,7 @@
 ---
 id: 'FND-013'
 title: Link source-harness bootstrap payloads
-status: open
+status: ready
 roadmap: foundation-tooling/link-source-harness-bootstrap-payloads
 blocks: —
 blocked-by: —
