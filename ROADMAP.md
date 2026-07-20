@@ -15,6 +15,8 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
+- [Foundation Tooling: Add a read-only bootstrap doctor operation](docs/roadmap/foundation-tooling/ROADMAP.md#add-a-read-only-bootstrap-doctor-operation)
+- [Foundation Tooling: Establish an installable Knowledge Islands command-line interface](docs/roadmap/foundation-tooling/ROADMAP.md#establish-an-installable-knowledge-islands-command-line-interface)
 - [Foundation Tooling: Remove the legacy `preferred_model` migration bridge in `ki-tokenomics`](docs/roadmap/foundation-tooling/ROADMAP.md#remove-the-legacy-preferredmodel-migration-bridge-in-ki-tokenomics)
 - [Governance Consistency: Make the first decision record adopt Decision Records](docs/roadmap/governance-consistency/ROADMAP.md#make-the-first-decision-record-adopt-decision-records)
 
@@ -22,7 +24,6 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
-- [Foundation Tooling: Add a read-only bootstrap doctor operation](docs/roadmap/foundation-tooling/ROADMAP.md#add-a-read-only-bootstrap-doctor-operation)
 - [Foundation Tooling: Codify Git workflow and commit conventions _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#codify-git-workflow-and-commit-conventions-candidate)
 - [Foundation Tooling: Review `ki-bootstrap` for further simplification](docs/roadmap/foundation-tooling/ROADMAP.md#review-ki-bootstrap-for-further-simplification)
 - [Governance Consistency: Align KB Stream focus with non-KB roadmap horizons](docs/roadmap/governance-consistency/ROADMAP.md#align-kb-stream-focus-with-non-kb-roadmap-horizons)
@@ -43,7 +44,6 @@ Worth doing, but presently blocked on an external dependency or decision. Revisi
 Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass (or a decision to drop them) before they're actionable.
 
 - [Foundation Tooling: Document per-skill `.ki-config.toml` ownership _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#document-per-skill-ki-configtoml-ownership-candidate)
-- [Foundation Tooling: Establish an installable Knowledge Islands command-line interface _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#establish-an-installable-knowledge-islands-command-line-interface-candidate)
 - [Foundation Tooling: Harden user harness installation and runtime skill publication](docs/roadmap/foundation-tooling/ROADMAP.md#harden-user-harness-installation-and-runtime-skill-publication)
 - [Foundation Tooling: Inventory non-critical writers for bounded follow-up _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#inventory-non-critical-writers-for-bounded-follow-up-candidate)
 - [Foundation Tooling: Review the Cloudflare agent-setup prompt for the Cloudflare skill _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#review-the-cloudflare-agent-setup-prompt-for-the-cloudflare-skill-candidate)

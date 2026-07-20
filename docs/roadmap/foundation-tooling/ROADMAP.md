@@ -30,6 +30,14 @@ Define one repository-owned, committed source for `ki-self`, then project that s
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
+### Add a read-only bootstrap doctor operation
+
+Add a source-owned `ki-bootstrap` DOCTOR operation that inspects a target's configuration, supported runtimes, runtime payload ownership, `.ki-meta/` manifest state, and available recovery routes without writing. It should distinguish a healthy footprint, recoverable generated drift, preserved user-owned state, and an unsafe or incomplete target; report the exact next action such as EDUCATE, CLEAN, or manual reconciliation. Keep it runnable without a working vendored runner, dry-run equivalent by design, and suitable for both humans and automation.
+
+### Establish an installable Knowledge Islands command-line interface
+
+Design and ship one installable command-line interface that provides the stable human and automation entrypoints for Knowledge Islands operations, including bootstrap, audit, conform, educate, clean, and doctor. Do not claim the bare `ki` command: it is already published as Kotlin's Interactive Shell through Homebrew. Settle a collision-free executable name, distribution channels, shell completion, versioning, runtime independence, error/reporting contract, and its relationship to installed skills and repository-local vendored commands before implementation.
+
 ### Remove the legacy `preferred_model` migration bridge in `ki-tokenomics`
 
 The checker deliberately recognises `preferred_model` only to issue a migration failure. Remove that parsing and its alias mapping when a fleet-wide search confirms that no sibling `.ki-config.toml` still uses the legacy key.
@@ -37,10 +45,6 @@ The checker deliberately recognises `preferred_model` only to issue a migration 
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
-
-### Add a read-only bootstrap doctor operation
-
-Add a source-owned `ki-bootstrap` DOCTOR operation that inspects a target's configuration, supported runtimes, runtime payload ownership, `.ki-meta/` manifest state, and available recovery routes without writing. It should distinguish a healthy footprint, recoverable generated drift, preserved user-owned state, and an unsafe or incomplete target; report the exact next action such as EDUCATE, CLEAN, or manual reconciliation. Keep it runnable without a working vendored runner, dry-run equivalent by design, and suitable for both humans and automation.
 
 ### Review `ki-bootstrap` for further simplification
 
@@ -57,10 +61,6 @@ Worth doing, but presently blocked on an external dependency or decision. Revisi
 ## Future
 
 Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass (or a decision to drop them) before they're actionable.
-
-### Establish an installable Knowledge Islands command-line interface _(candidate)_
-
-Design and ship one installable command-line interface that provides the stable human and automation entrypoints for Knowledge Islands operations, including bootstrap, audit, conform, educate, clean, and doctor. Do not claim the bare `ki` command: it is already published as Kotlin's Interactive Shell through Homebrew. Settle a collision-free executable name, distribution channels, shell completion, versioning, runtime independence, error/reporting contract, and its relationship to installed skills and repository-local vendored commands before implementation.
 
 ### Harden user harness installation and runtime skill publication
 
