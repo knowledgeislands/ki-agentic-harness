@@ -1,7 +1,7 @@
 ---
 id: 'FND-013'
 title: Complete harness-local skill dependency linking
-status: open
+status: ready
 roadmap: foundation-tooling/complete-harness-local-skill-dependency-linking
 blocks: —
 blocked-by: —
