@@ -31,5 +31,5 @@ test('ki-bootstrap EDUCATE invokes its owned repository educator directly', () =
   expect(result.stdout).toContain('EDUCATE ')
   expect(result.stdout).toContain('0 governed skills')
   expect(result.stdout).toContain('runner')
-  expect(existsSync(join(target, '.ki-meta'))).toBe(false)
+  expect(existsSync(join(target, '.ki'))).toBe(false)
 })

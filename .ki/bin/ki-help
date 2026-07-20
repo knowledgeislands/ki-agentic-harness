@@ -1,0 +1,20 @@
+#!/bin/sh
+# Vendored by ki-bootstrap — each governed skill's HELP snapshot, materialised from
+# its SKILL.md at vendor time (re-synced by ki-educate).
+# Usage: ./.ki/bin/ki-help [skill]    (no argument: list the governed skills)
+set -eu
+meta="$(cd "$(dirname "$0")/.." && pwd)"
+if [ $# -eq 0 ]; then
+  echo "governed skills (./.ki/bin/ki-help <skill>):"
+  for d in "$meta"/bootstrap/checkers/*/; do
+    s="$(basename "$d")"
+    [ -f "$d/help.md" ] && echo "  $s"
+  done
+  exit 0
+fi
+f="$meta/bootstrap/checkers/$1/help.md"
+if [ ! -f "$f" ]; then
+  echo "no help vendored for '$1'" >&2
+  exit 1
+fi
+cat "$f"

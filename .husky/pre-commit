@@ -22,7 +22,7 @@ audit_staged_governance() {
     else
       ln -s "$repo_root/node_modules" "$snapshot/node_modules" || status=1
       if [ "$status" -eq 0 ]; then
-        PATH="$snapshot/node_modules/.bin:$PATH" bun "$snapshot/.ki-meta/checkers/ki-engineering/scripts/audit.ts" "$snapshot" || status=$?
+        PATH="$snapshot/node_modules/.bin:$PATH" bun "$snapshot/.ki/bootstrap/checkers/ki-engineering/scripts/audit.ts" "$snapshot" || status=$?
       fi
     fi
   fi
@@ -41,7 +41,7 @@ if matches_staged '^agents/'; then bun run ki:agents:audit || exit 1; fi
 engineering_scope=0
 bootstrap_scope=0
 if matches_staged '^skills/.*\.ts$'; then engineering_scope=1; fi
-if matches_staged '^(skills/|\.ki-meta/checkers/)'; then bootstrap_scope=1; fi
+if matches_staged '^(skills/|\.ki/bootstrap/checkers/)'; then bootstrap_scope=1; fi
 if [ "$engineering_scope" -eq 1 ] || [ "$bootstrap_scope" -eq 1 ]; then
   audit_staged_governance "$engineering_scope" "$bootstrap_scope" || exit 1
 fi

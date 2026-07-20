@@ -8,15 +8,15 @@ The behaviour of the bootstrap chain: how the harness brings a target repo under
 
 ### BOOT-001 — Self-governing after EDUCATE
 
-After the EDUCATE chain runs against a target repo, that repo MUST govern itself with `./.ki-meta/bin/ki-audit` and **zero** Knowledge Islands skills installed — and with **no `package.json` of its own** — per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md).
+After the EDUCATE chain runs against a target repo, that repo MUST govern itself with `./.ki/bin/ki-audit` and **zero** Knowledge Islands skills installed — and with **no `package.json` of its own** — per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md).
 
-_Verify:_ bootstrap a bare fixture (`.ki-config.toml` only, no `package.json`, no `.claude/skills/`) with `skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts <fixture>`, then run `./.ki-meta/bin/ki-audit` in it — the vendored checkers execute and report.
+_Verify:_ bootstrap a bare fixture (`.ki-config.toml` only, no `package.json`, no `.claude/skills/`) with `skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts <fixture>`, then run `./.ki/bin/ki-audit` in it — the vendored checkers execute and report.
 
 ### BOOT-002 — Vendored copies, not symlinks
 
-EDUCATE MUST vendor each resolved skill's checker (and any `conform-*.ts`) into the target's `.ki-meta/checkers/<skill>/` as file **copies**, never symlinks, so they run with no harness beside the repo (SCRIPT-7 / [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)).
+EDUCATE MUST vendor each resolved skill's checker (and any `conform-*.ts`) into the target's `.ki/bootstrap/checkers/<skill>/` as file **copies**, never symlinks, so they run with no harness beside the repo (SCRIPT-7 / [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)).
 
-_Verify:_ after bootstrap, `.ki-meta/checkers/ki-repo/scripts/audit.ts` in the target is a regular file whose contents equal the harness source, and `git check-ignore` does not ignore it.
+_Verify:_ after bootstrap, `.ki/bootstrap/checkers/ki-repo/scripts/audit.ts` in the target is a regular file whose contents equal the harness source, and `git check-ignore` does not ignore it.
 
 ### BOOT-003 — Explicit declared skill coverage
 
@@ -28,15 +28,15 @@ _Verify:_ a target declaring `ki-website` also explicitly declares `ki-website-c
 
 ### BOOT-004 — Repo-wide aggregates
 
-EDUCATE MUST vendor a `.ki-meta/bin/aggregate.ts` runner that discovers the vendored checkers on the filesystem (no `package.json` read) and fans out over them for a given verb, so the aggregate stays correct as skills are vendored in or out. It validates every canonical JSONL finding, then defaults its human output to FAIL/WARN/POLISH; `--reporter-levels=<levels>` changes only that presentation. The `package.json` convenience keys are explicitly OUT of `ki-bootstrap`'s scope — `ki-engineering` wires them later as sugar over this runner.
+EDUCATE MUST vendor a `.ki/bin/aggregate.ts` runner that discovers the vendored checkers on the filesystem (no `package.json` read) and fans out over them for a given verb, so the aggregate stays correct as skills are vendored in or out. It validates every canonical JSONL finding, then defaults its human output to FAIL/WARN/POLISH; `--reporter-levels=<levels>` changes only that presentation. The `package.json` convenience keys are explicitly OUT of `ki-bootstrap`'s scope — `ki-engineering` wires them later as sugar over this runner.
 
-_Verify:_ a bootstrapped repo has `.ki-meta/bin/aggregate.ts`; running `bun .ki-meta/bin/aggregate.ts audit` invokes every vendored `ki:<skill>:audit` in sequence.
+_Verify:_ a bootstrapped repo has `.ki/bin/aggregate.ts`; running `bun .ki/bin/aggregate.ts audit` invokes every vendored `ki:<skill>:audit` in sequence.
 
 ### BOOT-005 — package.json-free entry point
 
-EDUCATE MUST write four executable wrappers `.ki-meta/bin/{ki-audit,ki-conform,ki-educate,ki-help}` (each mode `0755`) over the vendored aggregate, so a repo with no `package.json` (dotfiles, KB, tap) governs itself through `./.ki-meta/bin/ki-audit`, `./.ki-meta/bin/ki-conform`, `./.ki-meta/bin/ki-educate`, and `./.ki-meta/bin/ki-help <skill>` alone, per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md). `ki-help` is pure bash over the vendored `help.md` snapshots, so it runs with no `bun`.
+EDUCATE MUST write four executable wrappers `.ki/bin/{ki-audit,ki-conform,ki-educate,ki-help}` (each mode `0755`) over the vendored aggregate, so a repo with no `package.json` (dotfiles, KB, tap) governs itself through `./.ki/bin/ki-audit`, `./.ki/bin/ki-conform`, `./.ki/bin/ki-educate`, and `./.ki/bin/ki-help <skill>` alone, per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md). `ki-help` is pure bash over the vendored `help.md` snapshots, so it runs with no `bun`.
 
-_Verify:_ after bootstrap, all four of `.ki-meta/bin/{ki-audit,ki-conform,ki-educate,ki-help}` exist and are executable (mode `0755`), and `./.ki-meta/bin/ki-help <skill>` prints its snapshot with `bun` off `PATH`.
+_Verify:_ after bootstrap, all four of `.ki/bin/{ki-audit,ki-conform,ki-educate,ki-help}` exist and are executable (mode `0755`), and `./.ki/bin/ki-help <skill>` prints its snapshot with `bun` off `PATH`.
 
 ## The chain
 
@@ -50,24 +50,24 @@ Re-running the idempotent bootstrap chain is the single update path — there ar
 
 ### BOOT-007 — Vendored-set alignment check
 
-The harness MUST be able to verify a target's `.ki-meta/checkers/` matches the expected declared skill set (restricted to skills carrying a checker). It validates `ki-depends-on:` declarations against source SKILL.md frontmatter harness-side, because that graph is not part of a target's standalone payload. Missing dependencies are a FAIL before bootstrap mutation; checker-set drift is a WARN, reconciled by re-bootstrap. See [BOOT-9](../../skills/keystone/ki-bootstrap/references/rubric.md).
+The harness MUST be able to verify a target's `.ki/bootstrap/checkers/` matches the expected declared skill set (restricted to skills carrying a checker). It validates `ki-depends-on:` declarations against source SKILL.md frontmatter harness-side, because that graph is not part of a target's standalone payload. Missing dependencies are a FAIL before bootstrap mutation; checker-set drift is a WARN, reconciled by re-bootstrap. See [BOOT-9](../../skills/keystone/ki-bootstrap/references/rubric.md).
 
-_Verify:_ `bun skills/keystone/ki-bootstrap/scripts/audit.ts <target>` reports PASS when `.ki-meta/checkers/` equals the expected set, and WARNs (listing both directions) when a checker is stray-vendored or missing.
+_Verify:_ `bun skills/keystone/ki-bootstrap/scripts/audit.ts <target>` reports PASS when `.ki/bootstrap/checkers/` equals the expected set, and WARNs (listing both directions) when a checker is stray-vendored or missing.
 
 ### BOOT-008 — Remote EDUCATE transport
 
-The EDUCATE chain MUST be runnable on a machine carrying nothing but `bun` — via the POSIX-`sh` `repo-bootstrap.sh` entry point that fetches the repo tarball from `codeload.github.com` and execs the engine, and via a vendored `.ki-meta/bin/ki-educate` wrapper that re-runs the same remote script — per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md).
+The EDUCATE chain MUST be runnable on a machine carrying nothing but `bun` — via the POSIX-`sh` `repo-bootstrap.sh` entry point that fetches the repo tarball from `codeload.github.com` and execs the engine, and via a vendored `.ki/bin/ki-educate` wrapper that re-runs the same remote script — per [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md).
 
-_Verify:_ `skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh` line 1 is `#!/bin/sh` and its `codeload.github.com` fetch pipes into `lib/repo-bootstrap.ts`; a governed repo's `.ki-meta/bin/ki-educate` re-invokes that script (never `bun run <raw-url>`, which Bun cannot execute over HTTP).
+_Verify:_ `skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh` line 1 is `#!/bin/sh` and its `codeload.github.com` fetch pipes into `lib/repo-bootstrap.ts`; a governed repo's `.ki/bin/ki-educate` re-invokes that script (never `bun run <raw-url>`, which Bun cannot execute over HTTP).
 
 ### BOOT-009 — Runtime publication follows the target type
 
-Repository bootstrap MUST publish only declared runtime skill coverage. Ordinary repositories receive generated regular-file copies; a harness receives links from runtime skill locations to its own canonical source skills. A harness also links frontmatter-declared local `scripts/vendored/` payloads to their canonical providers. Vendored `.ki-meta/` payloads always remain regular files.
+Repository bootstrap MUST publish only declared runtime skill coverage. Ordinary repositories receive generated regular-file copies; a harness receives links from runtime skill locations to its own canonical source skills. A harness also links frontmatter-declared local `scripts/vendored/` payloads to their canonical providers. Vendored `.ki/` payloads always remain regular files.
 
 _Verify:_ run `scripts/internal/repo-bootstrap/publish-project-skills.ts` against a declared ordinary-repository fixture and confirm each published runtime skill is a regular file. Run it against a harness fixture and confirm each declared runtime skill is a source link.
 
 ### BOOT-010 — CLEAN removes only proven generated state
 
-The source-owned CLEAN entrypoint MUST remove `.ki-meta/` only when its complete regular-file tree matches the hashed generation manifest, and remove only unchanged marker-owned regular runtime skill copies. It MUST preserve configuration, authored source, runtime links, agents, altered or unmarked payloads, and every unsafe or concurrent-mutated path.
+The source-owned CLEAN entrypoint MUST remove `.ki/` only when its complete regular-file tree matches the hashed generation manifest, and remove only unchanged marker-owned regular runtime skill copies. It MUST preserve configuration, authored source, runtime links, agents, altered or unmarked payloads, and every unsafe or concurrent-mutated path.
 
 _Verify:_ bootstrap a fixture, preview `scripts/clean.ts --dry-run`, run CLEAN, confirm generated metadata and ordinary runtime copies disappear, then re-run EDUCATE. Fixtures with altered payloads, explicit links, unfamiliar metadata, or an injected concurrent mutation remain preserved.

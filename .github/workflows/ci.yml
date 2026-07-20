@@ -18,7 +18,7 @@ jobs:
       - run: bun install --frozen-lockfile
 
       # The aggregate read-only gate: fans out over every vendored per-skill audit in
-      # .ki-meta (engineering runs the code toolchain — biome + tsc + knip + syncpack;
+      # .ki/bootstrap (engineering runs the code toolchain — biome + tsc + knip + syncpack;
       # authoring runs the Markdown gate; the governance skills run their standards).
       # The composed verify gate is retired — ki:audit IS the gate (ADR-KI-HARNESS-TOOLCHAIN-001).
       - name: Audit

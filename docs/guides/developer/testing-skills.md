@@ -1,6 +1,6 @@
 # Testing an individual skill
 
-Use the source checker while developing one skill so its mechanical result is isolated from the repository's vendored `.ki-meta/` state and from unrelated skills.
+Use the source checker while developing one skill so its mechanical result is isolated from the repository's vendored `.ki/` state and from unrelated skills.
 
 From the harness repository root, run:
 
@@ -35,4 +35,4 @@ bun run ./skills/keystone/ki-skills/scripts/conform.ts \
   --reporter=terminal
 ```
 
-These commands exercise authored source. Package aliases such as `bun run ki:skills:audit` exercise the repository's vendored `.ki-meta/` checker through the aggregate reporter; re-vendor before using them to verify a source change.
+These commands exercise authored source. Package aliases such as `bun run ki:skills:audit` exercise the repository's vendored `.ki/` checker through the aggregate reporter; re-vendor before using them to verify a source change.

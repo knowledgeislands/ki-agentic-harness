@@ -18,9 +18,9 @@ Each requirement is a level-3 heading `### <PREFIX>-NNN — <title>`, one RFC-21
 
     ### BOOT-001 — Self-governing after EDUCATE
 
-    After the EDUCATE chain runs, a target repo MUST pass `./.ki-meta/bin/ki-audit` with zero skills installed.
+    After the EDUCATE chain runs, a target repo MUST pass `./.ki/bin/ki-audit` with zero skills installed.
 
-    _Verify:_ bootstrap a bare fixture and run `./.ki-meta/bin/ki-audit`; it executes the vendored checkers.
+    _Verify:_ bootstrap a bare fixture and run `./.ki/bin/ki-audit`; it executes the vendored checkers.
 
 RFC-2119 keywords (`MUST` / `MUST NOT` / `SHOULD` / `SHOULD NOT` / `MAY`) are normative and uppercase. `_Verify:_` names the concrete check. A requirement governed by a recorded decision cites its DR.
 

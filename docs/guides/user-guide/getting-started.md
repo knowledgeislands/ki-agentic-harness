@@ -38,7 +38,7 @@ curl -fsSL https://knowledgeislands.info/harness/bootstrap | sh
 
 `/harness/bootstrap` is the stable public route. Its implementation may change without changing the command you use.
 
-Repository bootstrap downloads a temporary harness source, builds that repository's `.ki-meta/` governance machinery, publishes its project-local runtime skill copies, then removes the temporary source.
+Repository bootstrap downloads a temporary harness source, builds that repository's `.ki/` governance machinery, publishes its project-local runtime skill copies, then removes the temporary source.
 
 It writes only inside the target repository.
 
@@ -60,4 +60,4 @@ Once a repository is governed, describe what you need in plain language or use a
 
 [Use skills](using-skills.md) explains both approaches.
 
-For the detailed repository-bootstrap model, what `.ki-meta/` contains, and how to keep a repository current, continue to the [bootstrap reference](onboarding.md).
+For the detailed repository-bootstrap model, what `.ki/` contains, and how to keep a repository current, continue to the [bootstrap reference](onboarding.md).

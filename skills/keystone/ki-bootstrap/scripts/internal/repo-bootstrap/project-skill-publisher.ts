@@ -82,8 +82,10 @@ const HARNESS_ROOT = resolve(SCRIPTS, '..', '..', '..', '..', '..', '..')
 const AGENTS_ROOT = join(HARNESS_ROOT, 'agents', 'governance')
 const BOOTSTRAP = 'ki-bootstrap'
 const LOCAL_GOVERNANCE_SKILL = 'ki-self'
-const LOCAL_GOVERNANCE_SOURCE = '.ki-self'
-const GENERATED_SKILL_MARKER = join('.ki-meta', 'generated-runtime-skill.json')
+const LOCAL_GOVERNANCE_SOURCE = join('.ki', 'self', 'skill')
+const LEGACY_LOCAL_GOVERNANCE_SOURCE = '.ki-self'
+const GENERATED_SKILL_MARKER = '.ki-generated-runtime-skill.json'
+const LEGACY_GENERATED_SKILL_MARKER = join('.ki-meta', 'generated-runtime-skill.json')
 type SkillMarker = { schema: 1; skill: string; source: string; integrity: string }
 
 const RED = '\x1b[31m'
@@ -171,6 +173,10 @@ const generatedSkillMetadataDirectory = (path: string): boolean => {
   )
 }
 
+function emptyDirectory(path: string): boolean {
+  return entry(path)?.kind === 'dir' && readdirSync(path).length === 0
+}
+
 function declaredSharedLinks(skill: string): Map<string, string> {
   const links = new Map<string, string>()
   for (const module of sharedDependenciesOf(skill)) {
@@ -189,7 +195,7 @@ function skillTreeIntegrity(path: string, label: string, allowedLinks = new Map<
       const child = join(current, name)
       const childRelative = relativePath ? join(relativePath, name) : name
       if (relativePath === '' && name === '.ki-meta' && generatedSkillMetadataDirectory(child)) continue
-      if (childRelative === GENERATED_SKILL_MARKER) continue
+      if (childRelative === GENERATED_SKILL_MARKER || childRelative === LEGACY_GENERATED_SKILL_MARKER) continue
       const found = mustEntry(child, label)
       if (found.kind === 'link') {
         const source = allowedLinks.get(child)
@@ -233,7 +239,7 @@ function sourceIdentity(source: string): string {
 function readGeneratedSkillMarker(path: string): SkillMarker | undefined {
   const root = entry(path)
   if (root?.kind !== 'dir') return undefined
-  const marker = entry(join(path, GENERATED_SKILL_MARKER))
+  const marker = entry(join(path, GENERATED_SKILL_MARKER)) ?? entry(join(path, LEGACY_GENERATED_SKILL_MARKER))
   if (marker?.kind !== 'file' || !marker.bytes) return undefined
   try {
     const candidate = JSON.parse(marker.bytes.toString('utf8')) as Partial<SkillMarker>
@@ -300,14 +306,31 @@ function localKiSelfPayload(path: string): boolean {
   }
 }
 
-type LocalKiSelf = { source: string; integrity: string; migrateFrom?: string }
+type LocalKiSelf = { source: string; integrity: string; migrateFrom?: string; removeLegacy?: string }
 
 function resolveLocalKiSelf(target: string, runtimes: readonly string[]): LocalKiSelf | undefined {
   const source = join(target, LOCAL_GOVERNANCE_SOURCE)
   const canonical = entry(source)
   if (canonical) {
     if (!localKiSelfPayload(source)) throw new Error(`${LOCAL_GOVERNANCE_SOURCE} must be a regular, self-contained ki-self skill directory`)
-    return { source, integrity: skillTreeIntegrity(source, 'repository-local ki-self source') }
+    const integrity = skillTreeIntegrity(source, 'repository-local ki-self source')
+    const legacySource = join(target, LEGACY_LOCAL_GOVERNANCE_SOURCE)
+    if (!entry(legacySource)) return { source, integrity }
+    if (emptyDirectory(legacySource)) return { source, integrity, removeLegacy: legacySource }
+    if (!localKiSelfPayload(legacySource))
+      throw new Error(`${LEGACY_LOCAL_GOVERNANCE_SOURCE} must be a regular, self-contained ki-self skill directory`)
+    if (skillTreeIntegrity(legacySource, 'legacy ki-self source') !== integrity)
+      throw new Error(
+        `cannot migrate ${LOCAL_GOVERNANCE_SKILL}: ${LOCAL_GOVERNANCE_SOURCE} and ${LEGACY_LOCAL_GOVERNANCE_SOURCE} differ; reconcile them by hand first`
+      )
+    return { source, integrity, removeLegacy: legacySource }
+  }
+
+  const legacySource = join(target, LEGACY_LOCAL_GOVERNANCE_SOURCE)
+  if (entry(legacySource)) {
+    if (!localKiSelfPayload(legacySource))
+      throw new Error(`${LEGACY_LOCAL_GOVERNANCE_SOURCE} must be a regular, self-contained ki-self skill directory`)
+    return { source, integrity: skillTreeIntegrity(legacySource, 'repository-local ki-self source'), migrateFrom: legacySource }
   }
 
   const legacy = runtimes.map((runtime) => join(target, runtimeSkillsDir(runtime), LOCAL_GOVERNANCE_SKILL)).filter((path) => entry(path))
@@ -327,6 +350,15 @@ function localKiSelfProjection(path: string, source: string, integrity: string):
   if (linkResolvesTo(path, source)) return true
   try {
     return localKiSelfPayload(path) && skillTreeIntegrity(path, 'ki-self projection') === integrity
+  } catch {
+    return false
+  }
+}
+
+function legacyLocalKiSelfProjection(target: string, path: string, integrity: string): boolean {
+  const source = join(target, LEGACY_LOCAL_GOVERNANCE_SOURCE)
+  try {
+    return localKiSelfPayload(source) && skillTreeIntegrity(source, 'legacy ki-self source') === integrity && linkResolvesTo(path, source)
   } catch {
     return false
   }
@@ -419,6 +451,7 @@ function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: Pr
       return plan
     }
     const wanted = [...new Set(declared)].sort()
+    if (localKiSelf?.migrateFrom) plan.directories.push(dirname(LOCAL_GOVERNANCE_SOURCE))
     for (const runtime of runtimes) {
       const subdir = runtimeSkillsDir(runtime)
       const dir = join(target, subdir)
@@ -473,13 +506,27 @@ function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: Pr
           before: undefined
         })
         plan.guards.push({ path: localKiSelf.source, before: undefined, label: LOCAL_GOVERNANCE_SOURCE })
+        const legacy = entry(localKiSelf.migrateFrom)
+        if (!legacy) throw new Error(`${LEGACY_LOCAL_GOVERNANCE_SOURCE} disappeared during migration planning`)
+        plan.removes.push({ destination: localKiSelf.migrateFrom, label: LEGACY_LOCAL_GOVERNANCE_SOURCE, before: legacy })
+        plan.guards.push({ path: localKiSelf.migrateFrom, before: legacy, label: LEGACY_LOCAL_GOVERNANCE_SOURCE })
+      }
+      if (localKiSelf.removeLegacy) {
+        const legacy = entry(localKiSelf.removeLegacy)
+        if (!legacy) throw new Error(`${LEGACY_LOCAL_GOVERNANCE_SOURCE} disappeared during migration planning`)
+        plan.removes.push({ destination: localKiSelf.removeLegacy, label: LEGACY_LOCAL_GOVERNANCE_SOURCE, before: legacy })
+        plan.guards.push({ path: localKiSelf.removeLegacy, before: legacy, label: LEGACY_LOCAL_GOVERNANCE_SOURCE })
       }
       for (const runtime of runtimes) {
         const subdir = runtimeSkillsDir(runtime)
         const destination = join(target, subdir, LOCAL_GOVERNANCE_SKILL)
         const found = entry(destination)
         if (linkResolvesTo(destination, localKiSelf.source)) continue
-        if (found && !localKiSelfProjection(destination, localKiSelf.source, localKiSelf.integrity))
+        if (
+          found &&
+          !localKiSelfProjection(destination, localKiSelf.source, localKiSelf.integrity) &&
+          !legacyLocalKiSelfProjection(target, destination, localKiSelf.integrity)
+        )
           throw new Error(`refusing to replace unfamiliar ${LOCAL_GOVERNANCE_SKILL} projection at ${destination}`)
         plan.links.push({
           destination,

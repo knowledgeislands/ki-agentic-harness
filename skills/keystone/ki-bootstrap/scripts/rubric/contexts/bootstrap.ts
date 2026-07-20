@@ -80,10 +80,10 @@ const directoryNames = (path: string): string[] =>
     : []
 
 const vendorEvidence = (target: string): BootstrapVendorEvidence => {
-  const checkersRoot = join(target, '.ki-meta', 'checkers')
-  const educatorsRoot = join(target, '.ki-meta', 'educators')
+  const checkersRoot = join(target, '.ki', 'bootstrap', 'checkers')
+  const educatorsRoot = join(target, '.ki', 'bootstrap', 'educators')
   const base = {
-    retiredPayload: existsSync(join(target, '.ki-meta', 'skills')),
+    retiredPayload: false,
     actualCheckers: directoryNames(checkersRoot),
     actualEducators: directoryNames(educatorsRoot)
   }

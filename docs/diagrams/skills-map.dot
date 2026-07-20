@@ -147,7 +147,7 @@ digraph skills_map {
     style="rounded,filled"
     fillcolor="#f7f9fb"
     checkers [fillcolor="#edf1f5", label=< <b>checkers</b><br/><font point-size="9">audit · conform · tests</font> >, shape=component]
-    meta [fillcolor="#edf1f5", label=< <b>.ki-meta</b><br/><font point-size="9">vendored checkers and runners</font> >, shape=folder]
+    meta [fillcolor="#edf1f5", label=< <b>.ki</b><br/><font point-size="9">vendored checkers and runners</font> >, shape=folder]
     mcp_housekeeping [fillcolor="#edf1f5", label=< <b>mcp-claude-housekeeping</b><br/><font point-size="9">access-gated machine tools</font> >, shape=component]
     hooks [fillcolor="#edf1f5", label=< <b>hooks</b><br/><font point-size="9">runtime payloads</font> >, shape=component]
   }

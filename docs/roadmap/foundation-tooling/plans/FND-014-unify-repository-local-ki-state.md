@@ -1,7 +1,7 @@
 ---
 id: 'FND-014'
 title: Unify repository-local KI state under .ki
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/unify-repository-local-ki-state-under-ki
 blocks: FND-016
 blocked-by: —
@@ -62,15 +62,15 @@ Bootstrap, CLEAN, checkers, tests, package scripts, documentation, fixtures, and
 
 1. ✓ Inventory every read, write, manifest entry, runtime projection, guide, fixture, and Git rule that refers to `.ki-self` or `.ki-meta`. Confirm the target tree above: `.ki/self/skill/` is committed authored content; `.ki/manifest.json`, `.ki/bin/`, and `.ki/bootstrap/` are generated content; no `.ki/meta/` layer or other `.ki/` child gains implicit ownership. Decide the two marked follow-ups before implementation.
 
-2. Design the one-way current-state migration. It must relocate a proven canonical `.ki-self/` source and rebase its runtime links, generate or safely reconcile the direct `.ki/` generated children, preserve unproven, altered, or unsafe old paths for manual resolution, and remove old paths only after the new footprint is validated. Do not retain runtime fallbacks, dual discovery paths, or an alternate legacy configuration after migration.
+2. ✓ Design the one-way current-state migration. It relocates a proven canonical `.ki-self/` source and rebases its runtime links, generates or safely reconciles the direct `.ki/` generated children, preserves unproven, altered, or unsafe old paths for manual resolution, and removes old paths only after the new footprint is validated. There is no runtime fallback, dual discovery path, or alternate legacy configuration after migration.
 
-3. Update bootstrap publication, manifesting, audit, EDUCATE, CONFORM, CLEAN, recovery, and zero-install launchers to use the new tree consistently. Keep generated output regular and manifest-owned; keep local `ki-self` projections relative, contained links; preserve normal consumer copies and harness-local dependency-link rules.
+3. ✓ Update bootstrap publication, manifesting, audit, EDUCATE, CONFORM, CLEAN, recovery, and zero-install launchers to use the new tree consistently. Generated output remains regular and manifest-owned; local `ki-self` projections remain relative, contained links; normal consumer copies and harness-local dependency-link rules remain intact.
 
-4. Update all source and generated references: package scripts, checker/educator layouts, documentation, examples, safety checks, fixtures, and Git ignore behaviour. Re-vendor affected coverage-scoped payloads, remove obsolete `.ki-self` / `.ki-meta` paths and dead migration code, and make the repository itself conform to the final layout.
+4. ✓ Update all source and generated references: package scripts, checker/educator layouts, documentation, examples, safety checks, fixtures, and Git ignore behaviour. Re-vendor affected coverage-scoped payloads, remove obsolete `.ki-self` / `.ki-meta` paths and dead migration code, and make the repository itself conform to the final layout.
 
-5. Add focused migration and safety coverage: clean current migration, absent source, altered source, unsafe or symlinked old paths, stale runtime links, repeat and dry-run behaviour, CLEAN then EDUCATE recovery, old-path removal only after proof, and a repository without a harness `skills/` tree. Confirm that no case deletes or overwrites unproven content.
+5. ✓ Add focused migration and safety coverage: clean current migration, absent source, altered source, unsafe or symlinked old paths, stale runtime links, repeat and dry-run behaviour, CLEAN then EDUCATE recovery, old-path removal only after proof, and a repository without a harness `skills/` tree. No case deletes or overwrites unproven content.
 
-6. Run the serial repository gates and a manual lifecycle walkthrough from an old footprint through migration, audit, CLEAN, and EDUCATE. Record any cross-repository or user-level implications as a separate `kisle` CLI follow-up rather than expanding this repository-layout migration.
+6. ✓ Run the serial repository gates and a manual lifecycle walkthrough from an old footprint through migration, audit, CLEAN, and EDUCATE. Cross-repository and user-level implications remain separate `kisle` CLI follow-up work.
 
 ## Files touched
 
@@ -95,3 +95,38 @@ Bootstrap, CLEAN, checkers, tests, package scripts, documentation, fixtures, and
 FND-008 is complete and supplies the one-source/runtime-projection model this migration relocates.
 
 Coordinate with the existing CLEAN and `kisle` CLI work, but do not block this plan on their separate lifecycle or distribution decisions.
+
+## Acceptance
+
+### Delivered
+
+Repository-local Knowledge Islands state now has one root: `.ki/`.
+
+The authored `ki-self` source is `.ki/self/skill/`; generated bootstrap state is limited to `.ki/manifest.json`, `.ki/bin/`, and `.ki/bootstrap/`.
+
+### Summary of changes
+
+- Migrated this harness from `.ki-self/` and `.ki-meta/` to the direct `.ki/` tree, including relative runtime `ki-self` links and regenerated zero-install commands.
+- Updated bootstrap publication, manifest ownership, CLEAN, package scripts, runtime publication, checks, fixtures, git-ignore rules, and governed documentation to use the new layout.
+- Added guarded one-way migration coverage for manifest-proven legacy output, unsafe or altered legacy output, matching duplicate `ki-self` sources, CLEAN recovery, and repeat/dry-run behaviour.
+- Retained `.ki-meta` only where it denotes source-skill-local generated implementation state or explicit legacy-migration evidence; it is not a repository-local runtime path or fallback.
+
+### Verification
+
+- Re-vendoring succeeded with `bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts .`.
+- Focused bootstrap migration, CLEAN, educator, and EDUCATE tests passed.
+- `bun run test` passed.
+- `bun run ki:audit` passed after the test suite.
+- Manual walkthrough confirmed `./.ki/bin/ki-audit --help`, `./.ki/bin/ki-help`, and `bun .ki/bin/aggregate.ts audit --help`; no legacy `.ki-self/` or `.ki-meta/` footprint remains in this harness.
+
+### Outstanding concerns
+
+None for the repository-layout migration.
+
+The separate `kisle` CLI, DOCTOR, and cross-repository lifecycle work remain roadmap items and do not extend this plan's ownership boundary.
+
+### Mini recap
+
+The migration is safest when it treats authored local governance and generated state as separate children of one root, not as exceptions to one generated tree.
+
+The manifest remains the proof boundary for generated state, while the local source and its runtime links stay intentionally outside CLEAN ownership.

@@ -46,7 +46,7 @@ Like every governance skill it carries the universal **AUDIT · CONFORM · EDUCA
 
 ### Mode EDUCATE — vendor the checker into a target repo
 
-EDUCATE vendors this skill's declared mechanical unit (the frontmatter `ki-vendors:` declaration) into the target's `.ki-meta/` via the central `ki-bootstrap` chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator into that engine, matching every other governance skill's EDUCATE.
+EDUCATE vendors this skill's declared mechanical unit (the frontmatter `ki-vendors:` declaration) into the target's `.ki/bootstrap/` via the central `ki-bootstrap` chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator into that engine, matching every other governance skill's EDUCATE.
 
 ### Mode REFRESH — re-anchor the standard to its sources
 

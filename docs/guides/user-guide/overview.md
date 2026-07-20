@@ -17,7 +17,7 @@ The harness turns loose conventions into something an agent can apply and check 
 
 Each skill ships a **mechanical checker** — a script that decides the clear-cut cases deterministically, so an agent review only spends attention on the parts that genuinely need it. The result: standards live in one place as skills, and the checkers keep every repository honest against them over time, rather than the standard living in someone's head and eroding.
 
-This reflects the harness's central working principle: it serves **two kinds of agent — human and LLM** — and its work splits into **mechanical** (a script can decide it) and **judgemental** (an agent must weigh it). The mechanical layer always stands alone: every governed repository, whatever its kind, carries a way to run its own checks (`./.ki-meta/bin/ki-audit`) with no model and no skills installed. Agent judgment — from either kind of agent — is a layer added on top of that baseline, never a requirement for it. The full statement is `ADR-KI-HARNESS-003`.
+This reflects the harness's central working principle: it serves **two kinds of agent — human and LLM** — and its work splits into **mechanical** (a script can decide it) and **judgemental** (an agent must weigh it). The mechanical layer always stands alone: every governed repository, whatever its kind, carries a way to run its own checks (`./.ki/bin/ki-audit`) with no model and no skills installed. Agent judgment — from either kind of agent — is a layer added on top of that baseline, never a requirement for it. The full statement is `ADR-KI-HARNESS-003`.
 
 That matters because a harness does more than make agents faster. It gives people and AI systems access to accumulated knowledge, practical methods, and boundaries that help them use powerful tools well. A hammer can build a home or cause harm; the tool matters, but the education, judgment, and conditions around its use matter just as much. Used thoughtlessly, AI can deskill us and amplify poor decisions. Used deliberately, with shared knowledge and guardrails, it can help more people do capable, constructive work — and improve the quality of what we make together.
 
@@ -39,7 +39,7 @@ When a repository genuinely needs something different from the shared standard, 
 
 ## Repository and user environment
 
-The harness works at two deliberately separate scopes. **Repository bootstrap** gives one repository the checks and guidance it needs to govern itself; it creates the repository's durable `.ki-meta/` machinery and does not change a person's wider machine setup. **User-environment installation** is optional and affects a person's home directory instead — for example, a durable Claude Code hook payload that a chezmoi-managed environment can register in Claude settings. Keeping the two scopes separate makes it clear what a command will change.
+The harness works at two deliberately separate scopes. **Repository bootstrap** gives one repository the checks and guidance it needs to govern itself; it creates the repository's durable `.ki/` machinery and does not change a person's wider machine setup. **User-environment installation** is optional and affects a person's home directory instead — for example, a durable Claude Code hook payload that a chezmoi-managed environment can register in Claude settings. Keeping the two scopes separate makes it clear what a command will change.
 
 ## What "Knowledge Islands" means
 

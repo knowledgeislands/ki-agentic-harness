@@ -1,0 +1,22 @@
+#!/bin/sh
+# Vendored by ki-bootstrap — apply the mechanical fixes across the vendored set.
+# Usage: ./.ki/bin/ki-conform [--dry-run] [--progress=<auto|always|never>] [--reporter-levels=<levels>]
+set -eu
+case "${1:-}" in
+  -h|--help)
+    echo "Usage: ki-conform [options]"
+    echo
+    echo "Apply each vendored skill's safe mechanical fixes."
+    echo
+    echo "Options:"
+    echo "  --skill <ki-skill>        Run one vendored skill checker."
+    echo "  --dry-run                 Report changes without writing them."
+    echo "  --progress <mode>         Progress display: auto, always, or never (default: auto)."
+    echo "  --reporter-levels <levels> Render comma-separated levels or all."
+    echo "  -h, --help                Show this help and exit."
+    exit 0
+    ;;
+esac
+root="$(cd "$(dirname "$0")/../.." && pwd)"
+cd "$root"
+exec bun ".ki/bin/aggregate.ts" conform "$@"

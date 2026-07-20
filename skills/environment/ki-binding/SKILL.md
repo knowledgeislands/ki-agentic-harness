@@ -45,7 +45,7 @@ Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated H
 
 ### Mode EDUCATE — vendor the binding checks
 
-EDUCATE scaffolds no standalone artifact — the single source (`mcp-servers.yaml`) lives at the canonical source path, never in a target repo. It vendors this skill's declared mechanical unit (the frontmatter `ki-vendors:` declaration — the checker and the Cowork conformer) into the target's `.ki-meta/` via the central bootstrap chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator that execs the `ki-bootstrap` engine with this skill as an explicit seed.
+EDUCATE scaffolds no standalone artifact — the single source (`mcp-servers.yaml`) lives at the canonical source path, never in a target repo. It vendors this skill's declared mechanical unit (the frontmatter `ki-vendors:` declaration — the checker and the Cowork conformer) into the target's `.ki/bootstrap/` via the central bootstrap chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator that execs the `ki-bootstrap` engine with this skill as an explicit seed.
 
 ### Mode REFRESH — re-anchor
 

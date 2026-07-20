@@ -215,7 +215,7 @@
         ['ki-self', 'local', 'Repository-local governance: AUDIT, CONFORM, EDUCATE, REFRESH, plus local diagnostic commands.'],
         ['local concerns', 'local', 'Ledger, focused audits, and repository-specific maintenance.'],
         ['checkers', 'mechanical', 'Audit, conform, and test mechanical arms.'],
-        ['.ki-meta', 'mechanical', 'Vendored checkers and runners.'],
+        ['.ki', 'mechanical', 'Vendored checkers and runners.'],
         ['mcp-claude-housekeeping', 'mechanical', 'Access-gated machine-state tools.'],
         ['hooks', 'mechanical', 'Runtime hook payloads.']
       ].map(([id, group, description]) => ({ id, group, description }))
@@ -240,7 +240,7 @@
         ['ki-self', 'local concerns', 'audits'],
         ['ki-self', 'ki-skills', 'promotes patterns into'],
         ['ki-skills', 'checkers', 'governs'],
-        ['checkers', '.ki-meta', 'vendored into'],
+        ['checkers', '.ki', 'vendored into'],
         ['ki-binding', 'hooks', 'binds runtime']
       ].map(([source, target, label]) => ({ source, target, label }))
       const byId = new Map(nodes.map((node) => [node.id, node]))

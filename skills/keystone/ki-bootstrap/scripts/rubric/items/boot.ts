@@ -120,7 +120,7 @@ export const BOOT_9: RubricItem<BootstrapRubricContext> = {
   code: 'BOOT-9',
   title: 'vendored checker set matches the resolved governance set',
   description:
-    '`.ki-meta/checkers/` mirrors the explicitly declared, resolvable checker-bearing governance set with no injected baseline. Missing or extra generated checkers and a retired `.ki-meta/skills/` tree are WARN; missing dependencies or unresolvable declarations are FAIL and are never guessed or renamed mechanically.',
+    '`.ki/bootstrap/checkers/` mirrors the explicitly declared, resolvable checker-bearing governance set with no injected baseline. Missing or extra generated checkers and a retired `.ki/skills/` tree are WARN; missing dependencies or unresolvable declarations are FAIL and are never guessed or renamed mechanically.',
   sources: ['[KR]', '[AH]', '[ADR-KI-HARNESS-006]'],
   mechanical: {
     level: 'WARN',
@@ -141,8 +141,8 @@ export const BOOT_9: RubricItem<BootstrapRubricContext> = {
         if (vendor.retiredPayload)
           outcomes.push({
             status: 'VIOLATION',
-            message: 'retired `.ki-meta/skills/` payload is present — re-run EDUCATE to migrate it safely',
-            subject: '.ki-meta/skills'
+            message: 'retired `.ki/skills/` payload is present — re-run EDUCATE to migrate it safely',
+            subject: '.ki/skills'
           })
         const missing = vendor.expectedCheckers.filter((skill) => !vendor.actualCheckers.includes(skill))
         const extra = vendor.actualCheckers.filter((skill) => !vendor.expectedCheckers.includes(skill))
@@ -150,13 +150,13 @@ export const BOOT_9: RubricItem<BootstrapRubricContext> = {
           outcomes.push({
             status: 'VIOLATION',
             message: `missing checker payloads: ${missing.join(', ')} — re-run EDUCATE`,
-            subject: '.ki-meta/checkers'
+            subject: '.ki/bootstrap/checkers'
           })
         if (extra.length)
           outcomes.push({
             status: 'VIOLATION',
             message: `checker payloads are no longer expected: ${extra.join(', ')} — re-run EDUCATE to prune them`,
-            subject: '.ki-meta/checkers'
+            subject: '.ki/bootstrap/checkers'
           })
         if (outcomes.length === 0) {
           if (vendor.expectedCheckers.length === 0 && vendor.actualCheckers.length === 0)
@@ -165,7 +165,7 @@ export const BOOT_9: RubricItem<BootstrapRubricContext> = {
             {
               status: 'PASS',
               message: `vendored checker set matches the resolved set (${vendor.expectedCheckers.length} skills)`,
-              subject: '.ki-meta/checkers'
+              subject: '.ki/bootstrap/checkers'
             }
           ]
         }
@@ -180,7 +180,7 @@ export const BOOT_11: RubricItem<BootstrapRubricContext> = {
   code: 'BOOT-11',
   title: 'direct vendored checker units match canonical source bytes',
   description:
-    'When the target carries matching canonical skill sources, every direct file-kind AUDIT and CONFORM unit in `.ki-meta/checkers/` is a regular file matching its canonical source byte-for-byte. Drift is a commit-blocking FAIL repaired by restoring source and re-running EDUCATE; a bootstrapped-only target reports NOT_APPLICABLE.',
+    'When the target carries matching canonical skill sources, every direct file-kind AUDIT and CONFORM unit in `.ki/bootstrap/checkers/` is a regular file matching its canonical source byte-for-byte. Drift is a commit-blocking FAIL repaired by restoring source and re-running EDUCATE; a bootstrapped-only target reports NOT_APPLICABLE.',
   sources: ['[AH]', '[ADR-KI-HARNESS-006]'],
   mechanical: {
     level: 'FAIL',
@@ -196,14 +196,14 @@ export const BOOT_11: RubricItem<BootstrapRubricContext> = {
             {
               status: 'VIOLATION',
               message: `canonical source/vendor mismatch: ${vendor.driftedSourceCopies.join(', ')}`,
-              subject: '.ki-meta/checkers'
+              subject: '.ki/bootstrap/checkers'
             }
           ]
         return [
           {
             status: 'PASS',
             message: `${vendor.checkedSourceCopies} direct file-kind vendor units match canonical source byte-for-byte`,
-            subject: '.ki-meta/checkers'
+            subject: '.ki/bootstrap/checkers'
           }
         ]
       }
@@ -215,7 +215,7 @@ export const BOOT_12: RubricItem<BootstrapRubricContext> = {
   code: 'BOOT-12',
   title: 'educator payloads match the resolved governance set',
   description:
-    '`.ki-meta/educators/` contains one regular, non-symlinked target-local EDUCATE launcher for every resolved skill declaring `educate`, with no missing, extra, or unsafe payloads. EDUCATE restores or prunes this generated surface.',
+    '`.ki/bootstrap/educators/` contains one regular, non-symlinked target-local EDUCATE launcher for every resolved skill declaring `educate`, with no missing, extra, or unsafe payloads. EDUCATE restores or prunes this generated surface.',
   sources: ['[AH]', '[ADR-KI-HARNESS-006]'],
   mechanical: {
     level: 'WARN',
@@ -228,25 +228,29 @@ export const BOOT_12: RubricItem<BootstrapRubricContext> = {
         const extra = vendor.actualEducators.filter((skill) => !vendor.expectedEducators.includes(skill))
         const outcomes: AuditOutcome[] = []
         if (missing.length)
-          outcomes.push({ status: 'VIOLATION', message: `missing educator payloads: ${missing.join(', ')}`, subject: '.ki-meta/educators' })
+          outcomes.push({
+            status: 'VIOLATION',
+            message: `missing educator payloads: ${missing.join(', ')}`,
+            subject: '.ki/bootstrap/educators'
+          })
         if (extra.length)
           outcomes.push({
             status: 'VIOLATION',
             message: `educator payloads are no longer expected: ${extra.join(', ')}`,
-            subject: '.ki-meta/educators'
+            subject: '.ki/bootstrap/educators'
           })
         if (vendor.unsafeEducators.length)
           outcomes.push({
             status: 'VIOLATION',
             message: `unsafe educator payloads: ${vendor.unsafeEducators.join(', ')}`,
-            subject: '.ki-meta/educators'
+            subject: '.ki/bootstrap/educators'
           })
         if (outcomes.length === 0)
           return [
             {
               status: 'PASS',
               message: `educator payload set matches the resolved set (${vendor.expectedEducators.length} skills)`,
-              subject: '.ki-meta/educators'
+              subject: '.ki/bootstrap/educators'
             }
           ]
         const [first, ...rest] = outcomes
@@ -260,7 +264,7 @@ export const BOOT_13: RubricItem<BootstrapRubricContext> = {
   code: 'BOOT-13',
   title: 'source harness shared payloads are declared canonical links',
   description:
-    'A source harness has no copied or undeclared payload beneath canonical `skills/**/scripts/vendored/`: every payload is declared by `ki-shared-dependencies` and resolves as a link to its provider. This source-only rule never applies to deliberately self-contained `.ki-meta/` copies or ordinary repository payloads.',
+    'A source harness has no copied or undeclared payload beneath canonical `skills/**/scripts/vendored/`: every payload is declared by `ki-shared-dependencies` and resolves as a link to its provider. This source-only rule never applies to deliberately self-contained `.ki/bootstrap/` copies or ordinary repository payloads.',
   sources: ['[AH]', '[ADR-KI-HARNESS-006]'],
   mechanical: {
     level: 'FAIL',

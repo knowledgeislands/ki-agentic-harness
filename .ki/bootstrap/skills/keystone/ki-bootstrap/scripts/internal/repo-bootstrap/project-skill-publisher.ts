@@ -1,0 +1,928 @@
+#!/usr/bin/env bun
+
+/**
+ * Safely publish a repository's generated project-local payloads.
+ *
+ * The normal copy publisher and harness source links use the same transaction
+ * model: it validates every repository
+ * controlled destination, stages new entries in a private 0700 directory, then
+ * publishes the complete link and .gitignore set or rolls it back.  A real file,
+ * directory, or hostile symlink at a managed destination is a blocker; it is
+ * never overwritten or followed.
+ */
+
+import { createHash } from 'node:crypto'
+import {
+  chmodSync,
+  cpSync,
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  readlinkSync,
+  realpathSync,
+  renameSync,
+  rmdirSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync
+} from 'node:fs'
+import { dirname, join, relative, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { resolveHarnessSource, sourceHarnessSkill, validateHarnessSkillDeclarations } from './harness-source.ts'
+import {
+  assertExplicitDependencies,
+  assertResolvableSkills,
+  DependencyDeclarationError,
+  declaredSkills,
+  isSkill,
+  SKILLS_ROOT,
+  SkillResolutionError,
+  sharedDependenciesOf,
+  sharedModulePayload,
+  skillDir
+} from './resolve.ts'
+import { gitignoresPath, runtimeAgentsDir, runtimeSkillsDir, supportedRuntimes } from './runtime-paths.ts'
+
+export type ProjectLinkScope = 'skills' | 'agents' | 'all'
+export type ProjectSkillPublication = 'copy' | 'development-link'
+export type ProjectLinkCheckLevel = 'FAIL' | 'WARN' | 'PASS'
+export type ProjectLinkCheck = {
+  code: 'BOOT-1' | 'BOOT-3' | 'BOOT-6' | 'BOOT-8'
+  level: ProjectLinkCheckLevel
+  message: string
+  subject: string
+  runtime: string
+}
+
+type Kind = 'file' | 'dir' | 'link' | 'other'
+type Entry = { kind: Kind; dev: number; ino: number; uid: number; mode: number; link?: string; bytes?: Buffer }
+type LinkKind = 'file' | 'dir' | 'copy' | 'local-copy'
+type PlannedLink = { destination: string; source: string; kind: LinkKind; label: string; skill?: string; before?: Entry }
+type PlannedRemove = { destination: string; label: string; before: Entry }
+type PlannedFile = { destination: string; content: string; label: string; before?: Entry }
+type Published = { destination: string; before?: Entry; after?: Entry; backup?: string; stage: string }
+type Directory = { path: string; entry: Entry; created: boolean }
+type LinkPlan = {
+  root: Entry
+  links: PlannedLink[]
+  removes: PlannedRemove[]
+  gitignore?: PlannedFile
+  directories: string[]
+  guards: Array<{ path: string; before?: Entry; label: string }>
+  skillOrphans: string[]
+  dependencyErrors: string[]
+}
+
+const SELF = realpathFor(fileURLToPath(import.meta.url))
+const SCRIPTS = dirname(SELF)
+const HARNESS_ROOT = resolve(SCRIPTS, '..', '..', '..', '..', '..', '..')
+const AGENTS_ROOT = join(HARNESS_ROOT, 'agents', 'governance')
+const BOOTSTRAP = 'ki-bootstrap'
+const LOCAL_GOVERNANCE_SKILL = 'ki-self'
+const LOCAL_GOVERNANCE_SOURCE = join('.ki', 'self', 'skill')
+const LEGACY_LOCAL_GOVERNANCE_SOURCE = '.ki-self'
+const GENERATED_SKILL_MARKER = '.ki-generated-runtime-skill.json'
+const LEGACY_GENERATED_SKILL_MARKER = join('.ki-meta', 'generated-runtime-skill.json')
+type SkillMarker = { schema: 1; skill: string; source: string; integrity: string }
+
+const RED = '\x1b[31m'
+const YELLOW = '\x1b[33m'
+const GREEN = '\x1b[32m'
+const DIM = '\x1b[2m'
+const RESET = '\x1b[0m'
+
+function realpathFor(path: string): string {
+  try {
+    return realpathSync(path)
+  } catch {
+    return path
+  }
+}
+
+function entry(path: string): Entry | undefined {
+  try {
+    const stat = lstatSync(path)
+    const kind: Kind = stat.isSymbolicLink() ? 'link' : stat.isDirectory() ? 'dir' : stat.isFile() ? 'file' : 'other'
+    return {
+      kind,
+      dev: stat.dev,
+      ino: stat.ino,
+      uid: stat.uid,
+      mode: stat.mode,
+      ...(kind === 'link' ? { link: readlinkSync(path) } : {}),
+      ...(kind === 'file' ? { bytes: readFileSync(path) } : {})
+    }
+  } catch {
+    return undefined
+  }
+}
+
+function sameEntry(expected: Entry | undefined, actual: Entry | undefined): boolean {
+  if (!expected || !actual) return expected === actual
+  return (
+    expected.kind === actual.kind &&
+    expected.dev === actual.dev &&
+    expected.ino === actual.ino &&
+    expected.uid === actual.uid &&
+    expected.mode === actual.mode &&
+    expected.link === actual.link &&
+    (expected.bytes === undefined || actual.bytes?.equals(expected.bytes) === true)
+  )
+}
+
+function mustEntry(path: string, label: string): Entry {
+  const found = entry(path)
+  if (!found) throw new Error(`${label} disappeared: ${path}`)
+  return found
+}
+
+function assertEntry(path: string, expected: Entry | undefined, label: string): void {
+  if (!sameEntry(expected, entry(path))) throw new Error(`${label} changed while project links were being prepared: ${path}`)
+}
+
+function regularText(path: string, label: string): { content: string; current?: Entry } {
+  const current = entry(path)
+  if (!current) return { content: '' }
+  if (current.kind !== 'file') throw new Error(`${label} must be a regular file, not a ${current.kind}: ${path}`)
+  const bytes = current.bytes
+  if (!bytes) throw new Error(`${label} could not be read: ${path}`)
+  return { content: bytes.toString('utf8'), current }
+}
+
+function assertDirectory(path: string, label: string): Entry {
+  const current = mustEntry(path, label)
+  if (current.kind !== 'dir') throw new Error(`${label} must be a directory, not a ${current.kind}: ${path}`)
+  return current
+}
+
+function linkResolvesTo(path: string, source: string): boolean {
+  const current = entry(path)
+  return current?.kind === 'link' && typeof current.link === 'string' && resolve(dirname(path), current.link) === resolve(source)
+}
+
+const generatedSkillMetadataDirectory = (path: string): boolean => {
+  const metadata = entry(path)
+  if (metadata?.kind !== 'dir') return false
+  const entries = readdirSync(path)
+  return (
+    entries.length === 0 ||
+    (entries.length === 1 && entries[0] === 'generated-runtime-skill.json' && entry(join(path, entries[0]))?.kind === 'file')
+  )
+}
+
+function emptyDirectory(path: string): boolean {
+  return entry(path)?.kind === 'dir' && readdirSync(path).length === 0
+}
+
+function declaredSharedLinks(skill: string): Map<string, string> {
+  const links = new Map<string, string>()
+  for (const module of sharedDependenciesOf(skill)) {
+    const payload = sharedModulePayload(module)
+    links.set(join(skillDir(skill), 'scripts', 'vendored', module.provider, payload.targetName), payload.source)
+  }
+  return links
+}
+
+function skillTreeIntegrity(path: string, label: string, allowedLinks = new Map<string, string>()): string {
+  const root = mustEntry(path, label)
+  if (root.kind !== 'dir') throw new Error(`${label} must be a directory: ${path}`)
+  const rows: string[] = []
+  const walk = (current: string, relativePath: string): void => {
+    for (const name of readdirSync(current).sort()) {
+      const child = join(current, name)
+      const childRelative = relativePath ? join(relativePath, name) : name
+      if (relativePath === '' && name === '.ki-meta' && generatedSkillMetadataDirectory(child)) continue
+      if (childRelative === GENERATED_SKILL_MARKER || childRelative === LEGACY_GENERATED_SKILL_MARKER) continue
+      const found = mustEntry(child, label)
+      if (found.kind === 'link') {
+        const source = allowedLinks.get(child)
+        if (!source || realpathFor(child) !== realpathFor(source)) throw new Error(`${label} must not contain symlinks: ${child}`)
+        const sourceEntry = mustEntry(source, label)
+        if (sourceEntry.kind === 'dir') {
+          rows.push(`d ${childRelative} ${sourceEntry.mode & 0o7777}`)
+          walk(source, childRelative)
+        } else if (sourceEntry.kind === 'file') {
+          rows.push(
+            `f ${childRelative} ${sourceEntry.mode & 0o7777} ${createHash('sha256')
+              .update(sourceEntry.bytes ?? Buffer.alloc(0))
+              .digest('hex')}`
+          )
+        } else {
+          throw new Error(`${label} shared module source is unsafe: ${source}`)
+        }
+        continue
+      }
+      if (found.kind === 'other') throw new Error(`${label} must contain only regular files and directories: ${child}`)
+      if (found.kind === 'dir') {
+        rows.push(`d ${childRelative} ${found.mode & 0o7777}`)
+        walk(child, childRelative)
+      } else {
+        rows.push(
+          `f ${childRelative} ${found.mode & 0o7777} ${createHash('sha256')
+            .update(found.bytes ?? Buffer.alloc(0))
+            .digest('hex')}`
+        )
+      }
+    }
+  }
+  walk(path, '')
+  return createHash('sha256').update(rows.join('\n')).digest('hex')
+}
+
+function sourceIdentity(source: string): string {
+  return relative(SKILLS_ROOT, source)
+}
+
+function readGeneratedSkillMarker(path: string): SkillMarker | undefined {
+  const root = entry(path)
+  if (root?.kind !== 'dir') return undefined
+  const marker = entry(join(path, GENERATED_SKILL_MARKER)) ?? entry(join(path, LEGACY_GENERATED_SKILL_MARKER))
+  if (marker?.kind !== 'file' || !marker.bytes) return undefined
+  try {
+    const candidate = JSON.parse(marker.bytes.toString('utf8')) as Partial<SkillMarker>
+    if (
+      candidate.schema !== 1 ||
+      typeof candidate.skill !== 'string' ||
+      typeof candidate.source !== 'string' ||
+      !/^[a-f0-9]{64}$/.test(candidate.integrity ?? '')
+    )
+      return undefined
+    return candidate as SkillMarker
+  } catch {
+    return undefined
+  }
+}
+
+function generatedSkillCopy(path: string, skill: string, source: string): boolean {
+  const marker = readGeneratedSkillMarker(path)
+  if (!marker || marker.skill !== skill || marker.source !== sourceIdentity(source)) return false
+  try {
+    return marker.integrity === skillTreeIntegrity(path, `generated skill payload ${skill}`)
+  } catch {
+    return false
+  }
+}
+
+/** Whether a regular runtime payload still carries a valid marker for its canonical skill. */
+export function isGeneratedRuntimeSkillCopy(path: string, skill: string): boolean {
+  if (!isSkill(skill)) return false
+  return generatedSkillCopy(path, skill, skillDir(skill))
+}
+
+function copiesSource(destination: string, skill: string, source: string): boolean {
+  const marker = readGeneratedSkillMarker(destination)
+  if (!marker || marker.skill !== skill || marker.source !== sourceIdentity(source)) return false
+  try {
+    return (
+      marker.integrity === skillTreeIntegrity(destination, 'generated skill payload') &&
+      marker.integrity === skillTreeIntegrity(source, 'skill source', declaredSharedLinks(skill))
+    )
+  } catch {
+    return false
+  }
+}
+
+function managedSkillPayload(path: string, skill: string, source: string): boolean {
+  return linkResolvesTo(path, source) || generatedSkillCopy(path, skill, source)
+}
+
+// ki-self is the one deliberately committed project-local governance skill. It is
+// not part of the harness index or declared coverage, so the publisher must leave
+// a valid local payload alone while retaining its fail-closed behaviour for every
+// other unfamiliar ki-* entry.
+function localKiSelfPayload(path: string): boolean {
+  const root = entry(path)
+  if (root?.kind !== 'dir') return false
+  const skill = entry(join(path, 'SKILL.md'))
+  if (skill?.kind !== 'file' || !/^name:\s*ki-self\s*$/m.test(skill.bytes?.toString('utf8') ?? '')) return false
+  try {
+    skillTreeIntegrity(path, 'repository-local ki-self source')
+    return true
+  } catch {
+    return false
+  }
+}
+
+type LocalKiSelf = { source: string; integrity: string; migrateFrom?: string; removeLegacy?: string }
+
+function resolveLocalKiSelf(target: string, runtimes: readonly string[]): LocalKiSelf | undefined {
+  const source = join(target, LOCAL_GOVERNANCE_SOURCE)
+  const canonical = entry(source)
+  if (canonical) {
+    if (!localKiSelfPayload(source)) throw new Error(`${LOCAL_GOVERNANCE_SOURCE} must be a regular, self-contained ki-self skill directory`)
+    const integrity = skillTreeIntegrity(source, 'repository-local ki-self source')
+    const legacySource = join(target, LEGACY_LOCAL_GOVERNANCE_SOURCE)
+    if (!entry(legacySource)) return { source, integrity }
+    if (emptyDirectory(legacySource)) return { source, integrity, removeLegacy: legacySource }
+    if (!localKiSelfPayload(legacySource))
+      throw new Error(`${LEGACY_LOCAL_GOVERNANCE_SOURCE} must be a regular, self-contained ki-self skill directory`)
+    if (skillTreeIntegrity(legacySource, 'legacy ki-self source') !== integrity)
+      throw new Error(`cannot migrate ${LOCAL_GOVERNANCE_SKILL}: ${LOCAL_GOVERNANCE_SOURCE} and ${LEGACY_LOCAL_GOVERNANCE_SOURCE} differ; reconcile them by hand first`)
+    return { source, integrity, removeLegacy: legacySource }
+  }
+
+  const legacySource = join(target, LEGACY_LOCAL_GOVERNANCE_SOURCE)
+  if (entry(legacySource)) {
+    if (!localKiSelfPayload(legacySource))
+      throw new Error(`${LEGACY_LOCAL_GOVERNANCE_SOURCE} must be a regular, self-contained ki-self skill directory`)
+    return { source, integrity: skillTreeIntegrity(legacySource, 'repository-local ki-self source'), migrateFrom: legacySource }
+  }
+
+  const legacy = runtimes.map((runtime) => join(target, runtimeSkillsDir(runtime), LOCAL_GOVERNANCE_SKILL)).filter((path) => entry(path))
+  if (legacy.length === 0) return undefined
+  if (legacy.some((path) => !localKiSelfPayload(path)))
+    throw new Error(
+      `cannot migrate ${LOCAL_GOVERNANCE_SKILL}: every existing runtime payload must be a regular, self-contained ki-self skill`
+    )
+  const first = legacy[0] as string
+  const integrity = skillTreeIntegrity(first, 'legacy ki-self source')
+  if (legacy.some((path) => skillTreeIntegrity(path, 'legacy ki-self source') !== integrity))
+    throw new Error(`cannot migrate ${LOCAL_GOVERNANCE_SKILL}: runtime payloads differ; preserve and reconcile them by hand first`)
+  return { source, integrity, migrateFrom: first }
+}
+
+function localKiSelfProjection(path: string, source: string, integrity: string): boolean {
+  if (linkResolvesTo(path, source)) return true
+  try {
+    return localKiSelfPayload(path) && skillTreeIntegrity(path, 'ki-self projection') === integrity
+  } catch {
+    return false
+  }
+}
+
+function legacyLocalKiSelfProjection(target: string, path: string, integrity: string): boolean {
+  const source = join(target, LEGACY_LOCAL_GOVERNANCE_SOURCE)
+  try {
+    return localKiSelfPayload(source) && skillTreeIntegrity(source, 'legacy ki-self source') === integrity && linkResolvesTo(path, source)
+  } catch {
+    return false
+  }
+}
+
+function discoverAgents(): string[] {
+  const root = entry(AGENTS_ROOT)
+  if (root?.kind !== 'dir') return []
+  return readdirSync(AGENTS_ROOT)
+    .filter((name) => name.endsWith('.md') && entry(join(AGENTS_ROOT, name))?.kind === 'file')
+    .sort()
+}
+
+function hasAgentsTable(config: string): boolean {
+  return /^\[ki-agents\][ \t]*$/m.test(config)
+}
+
+function managedAgentLink(name: string, link: Entry, desired: Set<string>, path: string): boolean {
+  return link.kind === 'link' && (!existsSync(path) || !desired.has(name))
+}
+
+function checkExistingDirectory(target: string, subdir: string): void {
+  let current = target
+  for (const part of subdir.split('/')) {
+    current = join(current, part)
+    const found = entry(current)
+    if (found && found.kind !== 'dir') throw new Error(`managed parent must be a directory, not a ${found.kind}: ${current}`)
+  }
+}
+
+function appendGitignore(existing: string, paths: string[]): string {
+  const missing = paths.filter((path) => !gitignoresPath(existing, path))
+  if (!missing.length) return existing
+  const lead = existing === '' ? '' : existing.endsWith('\n') ? '\n' : '\n\n'
+  return `${existing}${lead}# Generated project-local runtime payloads (ki-bootstrap) — never committed\n${missing.map((path) => `${path}/`).join('\n')}\n`
+}
+
+function publicationFor(target: string, requested?: ProjectSkillPublication): ProjectSkillPublication {
+  const config = regularText(join(target, '.ki-config.toml'), '.ki-config.toml').content
+  const isHarness = /^\[ki-harness\][ \t]*$/m.test(config)
+  if (requested === 'development-link' && !isHarness)
+    throw new Error('development-link is only valid for a same-root physical [ki-harness] source')
+  if (!isHarness) return 'copy'
+  // This is intentionally an assertion rather than a convenient fallback: once
+  // a target claims to be a harness it must expose one safe canonical tree.
+  resolveHarnessSource(target)
+  return 'development-link'
+}
+
+function sourceFor(target: string, name: string, publication: ProjectSkillPublication): string {
+  return publication === 'development-link' ? sourceHarnessSkill(resolveHarnessSource(target), name) : skillDir(name)
+}
+
+function assertDeclaredSkills(target: string, declared: string[], publication: ProjectSkillPublication): void {
+  if (publication === 'copy') {
+    assertResolvableSkills(declared)
+    assertExplicitDependencies(target, declared)
+    return
+  }
+  const validation = validateHarnessSkillDeclarations(resolveHarnessSource(target), declared)
+  if (validation.unresolved.length) throw new SkillResolutionError(validation.unresolved)
+  if (validation.missingDependencies.length) throw new DependencyDeclarationError(validation.missingDependencies)
+}
+
+function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: ProjectSkillPublication): LinkPlan {
+  const root = assertDirectory(target, 'target repository')
+  if (root.kind !== 'dir') throw new Error('unreachable')
+  const configPath = join(target, '.ki-config.toml')
+  const { content: config, current: configEntry } = regularText(configPath, '.ki-config.toml')
+  const plan: LinkPlan = {
+    root,
+    links: [],
+    removes: [],
+    directories: [],
+    guards: [{ path: configPath, before: configEntry, label: '.ki-config.toml' }],
+    skillOrphans: [],
+    dependencyErrors: []
+  }
+  const runtimes = supportedRuntimes(config)
+  const localKiSelf = scope === 'skills' || scope === 'all' ? resolveLocalKiSelf(target, runtimes) : undefined
+
+  if (scope === 'skills' || scope === 'all') {
+    const declared = declaredSkills(config).filter((name) => name !== BOOTSTRAP)
+    try {
+      assertDeclaredSkills(target, declared, skillPublication)
+    } catch (error) {
+      if (error instanceof SkillResolutionError) plan.skillOrphans = error.unresolved
+      else if (error instanceof DependencyDeclarationError) plan.dependencyErrors = error.missing
+      else throw error
+      return plan
+    }
+    const wanted = [...new Set(declared)].sort()
+    if (localKiSelf?.migrateFrom) plan.directories.push(dirname(LOCAL_GOVERNANCE_SOURCE))
+    for (const runtime of runtimes) {
+      const subdir = runtimeSkillsDir(runtime)
+      const dir = join(target, subdir)
+      plan.directories.push(subdir)
+      checkExistingDirectory(target, subdir)
+      const desired = new Set(localKiSelf ? [...wanted, LOCAL_GOVERNANCE_SKILL] : wanted)
+      for (const name of wanted) {
+        const source = sourceFor(target, name, skillPublication)
+        if (entry(source)?.kind !== 'dir') throw new Error(`skill source is unavailable: ${name}`)
+        if (skillPublication === 'copy') skillTreeIntegrity(source, `skill source ${name}`, declaredSharedLinks(name))
+        const destination = join(dir, name)
+        const found = entry(destination)
+        if (skillPublication === 'copy') {
+          if (copiesSource(destination, name, source)) continue
+          if (found && !managedSkillPayload(destination, name, source)) {
+            throw new Error(`refusing to replace unfamiliar project skill payload at ${destination}`)
+          }
+          plan.links.push({ destination, source, kind: 'copy', label: `${subdir}/${name}`, skill: name, before: found })
+        } else {
+          if (linkResolvesTo(destination, source)) continue
+          if (found && !managedSkillPayload(destination, name, source)) {
+            throw new Error(`refusing to replace unfamiliar project skill payload at ${destination}`)
+          }
+          plan.links.push({ destination, source, kind: 'dir', label: `${subdir}/${name}`, before: found })
+        }
+        plan.guards.push({ path: destination, before: found, label: `${subdir}/${name}` })
+      }
+      if (entry(dir)?.kind === 'dir') {
+        for (const name of readdirSync(dir)) {
+          const destination = join(dir, name)
+          const found = entry(destination)
+          if (!found || desired.has(name)) continue
+          const source = isSkill(name) ? skillDir(name) : undefined
+          const managed = source && managedSkillPayload(destination, name, source)
+          if (name.startsWith('ki-') && !managed && !(name === LOCAL_GOVERNANCE_SKILL && localKiSelfPayload(destination))) {
+            throw new Error(`refusing to remove unfamiliar project skill payload at ${destination}`)
+          }
+          if (managed && !plan.links.some((item) => item.destination === destination)) {
+            plan.removes.push({ destination, label: `${subdir}/${name}`, before: found })
+            plan.guards.push({ path: destination, before: found, label: `${subdir}/${name}` })
+          }
+        }
+      }
+    }
+    if (localKiSelf) {
+      if (localKiSelf.migrateFrom) {
+        plan.links.push({
+          destination: localKiSelf.source,
+          source: localKiSelf.migrateFrom,
+          kind: 'local-copy',
+          label: LOCAL_GOVERNANCE_SOURCE,
+          before: undefined
+        })
+        plan.guards.push({ path: localKiSelf.source, before: undefined, label: LOCAL_GOVERNANCE_SOURCE })
+        const legacy = entry(localKiSelf.migrateFrom)
+        if (!legacy) throw new Error(`${LEGACY_LOCAL_GOVERNANCE_SOURCE} disappeared during migration planning`)
+        plan.removes.push({ destination: localKiSelf.migrateFrom, label: LEGACY_LOCAL_GOVERNANCE_SOURCE, before: legacy })
+        plan.guards.push({ path: localKiSelf.migrateFrom, before: legacy, label: LEGACY_LOCAL_GOVERNANCE_SOURCE })
+      }
+      if (localKiSelf.removeLegacy) {
+        const legacy = entry(localKiSelf.removeLegacy)
+        if (!legacy) throw new Error(`${LEGACY_LOCAL_GOVERNANCE_SOURCE} disappeared during migration planning`)
+        plan.removes.push({ destination: localKiSelf.removeLegacy, label: LEGACY_LOCAL_GOVERNANCE_SOURCE, before: legacy })
+        plan.guards.push({ path: localKiSelf.removeLegacy, before: legacy, label: LEGACY_LOCAL_GOVERNANCE_SOURCE })
+      }
+      for (const runtime of runtimes) {
+        const subdir = runtimeSkillsDir(runtime)
+        const destination = join(target, subdir, LOCAL_GOVERNANCE_SKILL)
+        const found = entry(destination)
+        if (linkResolvesTo(destination, localKiSelf.source)) continue
+        if (
+          found &&
+          !localKiSelfProjection(destination, localKiSelf.source, localKiSelf.integrity) &&
+          !legacyLocalKiSelfProjection(target, destination, localKiSelf.integrity)
+        )
+          throw new Error(`refusing to replace unfamiliar ${LOCAL_GOVERNANCE_SKILL} projection at ${destination}`)
+        plan.links.push({
+          destination,
+          source: localKiSelf.source,
+          kind: 'dir',
+          label: `${subdir}/${LOCAL_GOVERNANCE_SKILL}`,
+          before: found
+        })
+        plan.guards.push({ path: destination, before: found, label: `${subdir}/${LOCAL_GOVERNANCE_SKILL}` })
+      }
+    }
+  }
+
+  if (scope === 'agents' || scope === 'all') {
+    const wanted = hasAgentsTable(config) ? discoverAgents() : []
+    const desired = new Set(wanted)
+    for (const runtime of runtimes) {
+      let subdir: string
+      try {
+        subdir = runtimeAgentsDir(runtime)
+      } catch (error) {
+        console.log(`  ${YELLOW}skip  [${runtime}]${RESET} ${DIM}(${(error as Error).message})${RESET}`)
+        continue
+      }
+      if (wanted.length) plan.directories.push(subdir)
+      const dir = join(target, subdir)
+      checkExistingDirectory(target, subdir)
+      for (const name of wanted) {
+        const source = join(AGENTS_ROOT, name)
+        if (entry(source)?.kind !== 'file') throw new Error(`agent source is unavailable: ${name}`)
+        const destination = join(dir, name)
+        const found = entry(destination)
+        if (linkResolvesTo(destination, source)) continue
+        if (found && found.kind !== 'link') throw new Error(`refusing to replace real blocker at ${destination}`)
+        plan.links.push({ destination, source, kind: 'file', label: `${subdir}/${name}`, before: found })
+        plan.guards.push({ path: destination, before: found, label: `${subdir}/${name}` })
+      }
+      if (entry(dir)?.kind === 'dir') {
+        for (const name of readdirSync(dir)) {
+          const destination = join(dir, name)
+          const found = entry(destination)
+          if (
+            found &&
+            managedAgentLink(name, found, desired, destination) &&
+            !plan.links.some((item) => item.destination === destination)
+          ) {
+            plan.removes.push({ destination, label: `${subdir}/${name}`, before: found })
+            plan.guards.push({ path: destination, before: found, label: `${subdir}/${name}` })
+          }
+        }
+      }
+    }
+  }
+
+  const ignored = new Set<string>()
+  if (scope === 'skills' || scope === 'all') {
+    for (const runtime of runtimes) ignored.add(runtimeSkillsDir(runtime))
+  }
+  if (scope === 'agents' || scope === 'all') {
+    if (hasAgentsTable(config) && discoverAgents().length) {
+      for (const runtime of runtimes) {
+        try {
+          ignored.add(runtimeAgentsDir(runtime))
+        } catch {
+          // The explicit runtime skip above is the user-facing report.
+        }
+      }
+    }
+  }
+  const gitignorePath = join(target, '.gitignore')
+  const { content: gitignore, current: gitignoreEntry } = regularText(gitignorePath, '.gitignore')
+  const nextGitignore = appendGitignore(gitignore, [...ignored].sort())
+  if (nextGitignore !== gitignore) {
+    plan.gitignore = { destination: gitignorePath, content: nextGitignore, label: '.gitignore', before: gitignoreEntry }
+    plan.guards.push({ path: gitignorePath, before: gitignoreEntry, label: '.gitignore' })
+  }
+  return plan
+}
+
+function createDirectories(target: string, subdirs: string[], root: Entry): Directory[] {
+  const directories: Directory[] = []
+  for (const subdir of [...new Set(subdirs)].sort()) {
+    let path = target
+    for (const part of subdir.split('/')) {
+      assertEntry(target, root, 'target repository')
+      path = join(path, part)
+      const current = entry(path)
+      if (current) {
+        if (current.kind !== 'dir') throw new Error(`managed parent must be a directory, not a ${current.kind}: ${path}`)
+        if (!directories.some((item) => item.path === path)) directories.push({ path, entry: current, created: false })
+        continue
+      }
+      mkdirSync(path)
+      const made = assertDirectory(path, 'new managed directory')
+      if (!directories.some((item) => item.path === path)) directories.push({ path, entry: made, created: true })
+    }
+  }
+  return directories
+}
+
+function assertDirectories(directories: Directory[]): void {
+  for (const directory of directories) assertEntry(directory.path, directory.entry, 'managed parent directory')
+}
+
+function cleanupDirectories(directories: Directory[]): void {
+  for (const directory of [...directories].reverse()) {
+    if (!directory.created || !sameEntry(directory.entry, entry(directory.path))) continue
+    try {
+      if (readdirSync(directory.path).length === 0) rmdirSync(directory.path)
+    } catch {
+      // A concurrent writer owns a non-empty or changed directory; leave it intact.
+    }
+  }
+}
+
+function stagePlan(transaction: string, plan: LinkPlan): Array<{ destination: string; stage: string; before?: Entry; label: string }> {
+  const staging = join(transaction, 'staging')
+  mkdirSync(staging, { mode: 0o700 })
+  const staged: Array<{ destination: string; stage: string; before?: Entry; label: string }> = []
+  let sequence = 0
+  for (const item of plan.links) {
+    const stage = join(staging, `${String(sequence++).padStart(4, '0')}-link`)
+    if (item.kind === 'copy') {
+      const skill = item.skill
+      if (!skill) throw new Error(`copied skill payload is missing its identity: ${item.label}`)
+      const integrity = skillTreeIntegrity(item.source, `skill source ${skill}`, declaredSharedLinks(skill))
+      cpSync(item.source, stage, { recursive: true, dereference: true, preserveTimestamps: true })
+      if (skillTreeIntegrity(stage, `staged skill payload ${item.label}`) !== integrity) {
+        throw new Error(`staged skill payload differs from its validated source: ${item.label}`)
+      }
+      const marker: SkillMarker = { schema: 1, skill, source: sourceIdentity(item.source), integrity }
+      mkdirSync(dirname(join(stage, GENERATED_SKILL_MARKER)), { recursive: true, mode: 0o700 })
+      writeFileSync(join(stage, GENERATED_SKILL_MARKER), `${JSON.stringify(marker, null, 2)}\n`, { mode: 0o600 })
+    } else if (item.kind === 'local-copy') {
+      const integrity = skillTreeIntegrity(item.source, 'legacy ki-self source')
+      cpSync(item.source, stage, { recursive: true, dereference: false, preserveTimestamps: true })
+      if (skillTreeIntegrity(stage, `staged local skill ${item.label}`) !== integrity)
+        throw new Error(`staged local skill differs from its validated source: ${item.label}`)
+    } else {
+      symlinkSync(relative(dirname(item.destination), item.source), stage, item.kind)
+    }
+    staged.push({ destination: item.destination, stage, before: item.before, label: item.label })
+  }
+  for (const item of plan.removes) staged.push({ destination: item.destination, stage: '', before: item.before, label: item.label })
+  if (plan.gitignore) {
+    const stage = join(staging, `${String(sequence++).padStart(4, '0')}-gitignore`)
+    writeFileSync(stage, plan.gitignore.content, { mode: 0o600 })
+    staged.push({ destination: plan.gitignore.destination, stage, before: plan.gitignore.before, label: plan.gitignore.label })
+  }
+  return staged
+}
+
+function publish(target: string, root: Entry, transaction: string, plan: LinkPlan, directories: Directory[]): void {
+  const quarantine = join(transaction, 'quarantine')
+  mkdirSync(quarantine, { mode: 0o700 })
+  assertEntry(target, root, 'target repository')
+  for (const guard of plan.guards) assertEntry(guard.path, guard.before, guard.label)
+  const testMutation = process.env.KI_PROJECT_LINKS_TEST_MUTATE_AFTER_PLAN
+  if (testMutation) writeFileSync(testMutation, 'third-party change\n')
+  const staged = stagePlan(transaction, plan)
+  const published: Published[] = []
+  try {
+    for (const [index, item] of staged.entries()) {
+      assertEntry(target, root, 'target repository')
+      assertDirectories(directories)
+      assertEntry(item.destination, item.before, `managed destination ${item.label}`)
+      const backup = item.before ? join(quarantine, `${String(index).padStart(4, '0')}-prior`) : undefined
+      const after = item.stage ? mustEntry(item.stage, `staged destination ${item.label}`) : undefined
+      if (backup) renameSync(item.destination, backup)
+      // Record the moved destination before publishing its replacement. If the
+      // second rename fails, rollback still knows where the old entry lives.
+      published.push({ destination: item.destination, before: item.before, after, backup, stage: item.stage })
+      if (process.env.KI_PROJECT_LINKS_TEST_FAIL_AFTER_QUARANTINE === String(index + 1)) {
+        throw new Error('test-injected failure after destination quarantine')
+      }
+      if (item.stage) renameSync(item.stage, item.destination)
+      if (after) assertEntry(item.destination, after, `published destination ${item.label}`)
+      if (process.env.KI_PROJECT_LINKS_TEST_FAIL_AFTER === String(index + 1)) throw new Error('test-injected publication failure')
+    }
+  } catch (error) {
+    const conflicts: string[] = []
+    for (const item of [...published].reverse()) {
+      try {
+        if (item.stage) {
+          const current = entry(item.destination)
+          if (current) {
+            assertEntry(item.destination, item.after, `published destination during rollback ${item.destination}`)
+            rmSync(item.destination, { recursive: item.after?.kind === 'dir', force: false })
+          }
+        } else if (entry(item.destination)) {
+          throw new Error('pruned destination was recreated')
+        }
+        if (item.backup) renameSync(item.backup, item.destination)
+      } catch {
+        conflicts.push(item.destination)
+      }
+    }
+    if (conflicts.length)
+      throw new Error(`${(error as Error).message}; rollback preserved private transaction after conflicts: ${conflicts.join(', ')}`)
+    throw error
+  }
+}
+
+function execute(target: string, plan: LinkPlan): void {
+  assertEntry(target, plan.root, 'target repository')
+  const root = plan.root
+  const transaction = mkdtempSync(join(target, '.ki-project-links-'))
+  chmodSync(transaction, 0o700)
+  const privateDir = assertDirectory(transaction, 'private project-link transaction')
+  if ((privateDir.mode & 0o777) !== 0o700) throw new Error(`private project-link transaction must be mode 0700: ${transaction}`)
+  if (typeof process.getuid === 'function' && privateDir.uid !== process.getuid()) {
+    throw new Error(`private project-link transaction must be owned by the current user: ${transaction}`)
+  }
+  let directories: Directory[] = []
+  try {
+    assertEntry(target, root, 'target repository')
+    directories = createDirectories(target, plan.directories, root)
+    publish(target, root, transaction, plan, directories)
+  } catch (error) {
+    cleanupDirectories(directories)
+    throw error
+  } finally {
+    if (sameEntry(root, entry(target)) && sameEntry(privateDir, entry(transaction))) rmSync(transaction, { recursive: true, force: true })
+  }
+}
+
+/** Inspect the generated runtime payload contract without rendering or mutation. */
+export function inspectProjectLinks(
+  target: string,
+  scope: ProjectLinkScope,
+  requestedPublication?: ProjectSkillPublication
+): ProjectLinkCheck[] {
+  const skillPublication = publicationFor(target, requestedPublication)
+  const config = regularText(join(target, '.ki-config.toml'), '.ki-config.toml').content
+  const runtimes = supportedRuntimes(config)
+  const localKiSelf = scope === 'skills' || scope === 'all' ? resolveLocalKiSelf(target, runtimes) : undefined
+  const checks: ProjectLinkCheck[] = []
+  if (scope === 'skills' || scope === 'all') {
+    const declared = declaredSkills(config).filter((name) => name !== BOOTSTRAP)
+    let orphans: string[] = []
+    try {
+      assertDeclaredSkills(target, declared, skillPublication)
+    } catch (error) {
+      if (error instanceof SkillResolutionError) orphans = error.unresolved
+      else if (error instanceof DependencyDeclarationError) orphans = error.missing
+      else throw error
+    }
+    const wanted = new Set(declared)
+    for (const runtime of runtimes) {
+      const subdir = runtimeSkillsDir(runtime)
+      const dir = join(target, subdir)
+      const present = entry(dir)?.kind === 'dir' ? readdirSync(dir).filter((name) => name.startsWith('ki-')) : []
+      const missing = [...wanted].filter((name) => {
+        if (skillPublication === 'copy' && !isSkill(name)) return true
+        const source = sourceFor(target, name, skillPublication)
+        const destination = join(dir, name)
+        return skillPublication === 'development-link' ? !linkResolvesTo(destination, source) : !copiesSource(destination, name, source)
+      })
+      const selfMissing = localKiSelf && !linkResolvesTo(join(dir, LOCAL_GOVERNANCE_SKILL), localKiSelf.source)
+      const extra = present.filter((name) => !wanted.has(name) && name !== LOCAL_GOVERNANCE_SKILL)
+      const unexpectedLinks =
+        skillPublication === 'copy'
+          ? present.filter((name) => name !== LOCAL_GOVERNANCE_SKILL && entry(join(dir, name))?.kind === 'link')
+          : []
+      for (const orphan of orphans)
+        checks.push({
+          code: 'BOOT-1',
+          level: 'FAIL',
+          message: `invalid declared skill dependency: ${orphan}`,
+          subject: '.ki-config.toml',
+          runtime
+        })
+      if (missing.length || extra.length || unexpectedLinks.length || selfMissing) {
+        const expected = skillPublication === 'development-link' ? 'development-link' : 'copied-payload'
+        checks.push({
+          code: 'BOOT-1',
+          level: 'WARN',
+          message: `${subdir} needs ${expected} reconciliation`,
+          subject: subdir,
+          runtime
+        })
+      }
+      const ignored = gitignoresPath(regularText(join(target, '.gitignore'), '.gitignore').content, subdir)
+      checks.push({
+        code: 'BOOT-3',
+        level: ignored ? 'PASS' : 'WARN',
+        message: `${subdir}/ is ${ignored ? '' : 'not '}gitignored`,
+        subject: '.gitignore',
+        runtime
+      })
+    }
+  }
+  if (scope === 'agents' || scope === 'all') {
+    const wanted = new Set(hasAgentsTable(config) ? discoverAgents() : [])
+    for (const runtime of runtimes) {
+      let subdir: string
+      try {
+        subdir = runtimeAgentsDir(runtime)
+      } catch {
+        continue
+      }
+      const dir = join(target, subdir)
+      const present = entry(dir)?.kind === 'dir' ? readdirSync(dir).filter((name) => entry(join(dir, name))?.kind === 'link') : []
+      const missing = [...wanted].filter((name) => !present.includes(name))
+      const extra = present.filter((name) => !wanted.has(name))
+      const broken = present.filter((name) => !existsSync(join(dir, name)))
+      if (missing.length || extra.length || broken.length)
+        checks.push({
+          code: 'BOOT-6',
+          level: 'WARN',
+          message: `${subdir} needs reconciliation`,
+          subject: subdir,
+          runtime
+        })
+      const ignored = gitignoresPath(regularText(join(target, '.gitignore'), '.gitignore').content, subdir)
+      checks.push({
+        code: 'BOOT-8',
+        level: ignored ? 'PASS' : 'WARN',
+        message: `${subdir}/ is ${ignored ? '' : 'not '}gitignored`,
+        subject: '.gitignore',
+        runtime
+      })
+    }
+  }
+  return checks
+}
+
+function printCheck(target: string, scope: ProjectLinkScope, skillPublication?: ProjectSkillPublication): number {
+  const checks = inspectProjectLinks(target, scope, skillPublication)
+  let runtime = ''
+  for (const check of checks) {
+    if (check.runtime !== runtime) {
+      runtime = check.runtime
+      console.log(`  ${DIM}[${runtime}]${RESET}`)
+    }
+    const colour = check.level === 'FAIL' ? RED : check.level === 'WARN' ? YELLOW : DIM
+    console.log(`  ${colour}${check.level}${RESET}  [${check.code}] ${check.message}`)
+  }
+  if (scope === 'agents' || scope === 'all') {
+    const config = regularText(join(target, '.ki-config.toml'), '.ki-config.toml').content
+    for (const runtime of supportedRuntimes(config)) {
+      try {
+        runtimeAgentsDir(runtime)
+      } catch (error) {
+        console.log(`  ${YELLOW}skip  [${runtime}]${RESET} ${DIM}(${(error as Error).message})${RESET}`)
+      }
+    }
+  }
+  return checks.some((check) => check.level === 'FAIL') ? 1 : 0
+}
+
+export function runProjectLinks(
+  scope: ProjectLinkScope,
+  requestedPublication?: ProjectSkillPublication,
+  argv = process.argv.slice(2)
+): number {
+  const dryRun = argv.includes('--dry-run')
+  const checkOnly = argv.includes('--check')
+  const quiet = argv.includes('--quiet')
+  const target = resolve(argv.find((arg) => !arg.startsWith('-')) ?? '.')
+  try {
+    const skillPublication = publicationFor(target, requestedPublication)
+    if (checkOnly) return printCheck(target, scope, skillPublication)
+    const plan = buildPlan(target, scope, skillPublication)
+    if (plan.skillOrphans.length) {
+      for (const orphan of plan.skillOrphans)
+        console.error(
+          `${RED}FAIL${RESET}  [BOOT-1] .ki-config.toml declares [${orphan}] but no such skill exists in the harness — reconcile the table by hand before linking`
+        )
+      return 1
+    }
+    if (plan.dependencyErrors.length) {
+      for (const missing of plan.dependencyErrors)
+        console.error(`${RED}FAIL${RESET}  [BOOT-1] .ki-config.toml must declare dependency ${missing} before linking`)
+      return 1
+    }
+    if (dryRun) {
+      for (const item of plan.links) {
+        const action = item.kind === 'copy' ? 'copy' : 'link'
+        const detail = item.kind === 'copy' ? item.source : relative(dirname(item.destination), item.source)
+        console.log(`${GREEN}${action}${RESET}  ${item.label} -> ${DIM}${detail}${RESET}`)
+      }
+      for (const item of plan.removes) console.log(`${YELLOW}prune${RESET} ${item.label}`)
+      if (plan.gitignore) console.log(`${GREEN}ignore${RESET} .gitignore ${DIM}(generated runtime payloads)${RESET}`)
+      console.log(`\n  ${YELLOW}(dry run — nothing changed)${RESET}`)
+      return 0
+    }
+    execute(target, plan)
+    if (!quiet) {
+      for (const item of plan.links) console.log(`${GREEN}${item.kind === 'copy' ? 'copy' : 'link'}${RESET}  ${item.label}`)
+      for (const item of plan.removes) console.log(`${YELLOW}prune${RESET} ${item.label}`)
+      if (plan.gitignore) console.log(`${GREEN}ignore${RESET} .gitignore ${DIM}(generated runtime payloads)${RESET}`)
+    }
+    return 0
+  } catch (error) {
+    console.error(`${RED}FAIL${RESET}  project-link transaction: ${(error as Error).message}`)
+    return 1
+  }
+}
+
+if (import.meta.main) process.exit(runProjectLinks('all'))

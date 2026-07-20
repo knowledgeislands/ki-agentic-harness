@@ -10,7 +10,7 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 ### Add a safe repository CLEAN operation
 
-Add a source-owned CLEAN operation that removes only manifest-proven `.ki-meta/` output and unchanged marker-owned runtime skill copies. It must preserve repository configuration, canonical skill sources, explicit development links, agents, tampered or unmarked content, and every path it cannot prove is generated. Support dry-run, repeat safety, fail-closed handling of symlinks and concurrent mutation, and CLEAN followed by EDUCATE recovery.
+Add a source-owned CLEAN operation that removes only manifest-proven generated `.ki/{bin,bootstrap,manifest.json}` state and unchanged marker-owned runtime skill copies. It must preserve repository configuration, canonical skill sources, explicit development links, agents, tampered or unmarked content, and every path it cannot prove is generated. Support dry-run, repeat safety, fail-closed handling of symlinks and concurrent mutation, and CLEAN followed by EDUCATE recovery.
 
 **Plan:** [FND-003](plans/FND-003-add-a-safe-repository-clean-operation.md)
 
@@ -28,7 +28,7 @@ Implement the lifecycle boundary in `ODR-KI-HARNESS-001`: repository CLEAN remov
 
 ### Add scoped read-only bootstrap doctor operations
 
-Add source-owned DOCTOR operations for explicit repository and user scopes. Repository DOCTOR inspects configuration, supported runtimes, runtime payload ownership, `.ki-meta/` manifest state, and recovery routes; user DOCTOR inspects only KI-owned user-level installation state. Both distinguish healthy, recoverable generated drift, preserved user-owned state, and unsafe or incomplete state; report the exact next action such as EDUCATE, CLEAN, UNINSTALL, or manual reconciliation without writing. Keep them runnable without a working vendored runner, dry-run equivalent by design, and suitable for humans and automation.
+Add source-owned DOCTOR operations for explicit repository and user scopes. Repository DOCTOR inspects configuration, supported runtimes, runtime payload ownership, generated `.ki/` manifest state, and recovery routes; user DOCTOR inspects only KI-owned user-level installation state. Both distinguish healthy, recoverable generated drift, preserved user-owned state, and unsafe or incomplete state; report the exact next action such as EDUCATE, CLEAN, UNINSTALL, or manual reconciliation without writing. Keep them runnable without a working vendored runner, dry-run equivalent by design, and suitable for humans and automation.
 
 **Plan:** [FND-017](plans/FND-017-add-scoped-read-only-bootstrap-doctor-operations.md)
 
@@ -52,13 +52,13 @@ Replace aggregate AUDIT and CONFORM's process-per-checker transport with direct,
 
 ### Complete harness-local skill dependency linking
 
-For a source-bearing `ki-harness`, ensure every declared dependency that resolves to a canonical skill or shared module in that same harness checkout is projected through a contained relative symlink rather than an unnecessary local copy. Cover both runtime discovery projections and a skill's source-tree `scripts/vendored/` dependencies, with one clear harness-owned activation rule and bootstrap-owned safe publication and synchronisation mechanics. Make the boundary with generated `.ki-meta/` checker and educator snapshots explicit: retain their portable manifest-owned copies unless a harness-only linking exception can be proven safe for standalone operation, CLEAN, integrity checks, and release packaging. Audit and test the complete contract, including stale regular files, invalid links, consumer copy dereferencing, and a source edit propagating through every intended harness-local reference.
+For a source-bearing `ki-harness`, ensure every declared dependency that resolves to a canonical skill or shared module in that same harness checkout is projected through a contained relative symlink rather than an unnecessary local copy. Cover both runtime discovery projections and a skill's source-tree `scripts/vendored/` dependencies, with one clear harness-owned activation rule and bootstrap-owned safe publication and synchronisation mechanics. Make the boundary with generated `.ki/bootstrap/` checker and educator snapshots explicit: retain their portable manifest-owned copies unless a harness-only linking exception can be proven safe for standalone operation, CLEAN, integrity checks, and release packaging. Audit and test the complete contract, including stale regular files, invalid links, consumer copy dereferencing, and a source edit propagating through every intended harness-local reference.
 
 **Plan:** [FND-013](plans/FND-013-complete-harness-local-skill-dependency-linking.md)
 
 ### Unify repository-local KI state under `.ki/`
 
-Replace the split top-level `.ki-self/` and `.ki-meta/` footprint with one clearly owned `.ki/` root: `.ki/self/skill/` is the committed, authored source projected as the runtime `ki-self` skill, and `.ki/meta/` is generated, manifest-owned bootstrap state. Preserve the existing runtime skill name and portable consumer contract while making the authored/generated distinction visible inside the established KI repository namespace. Provide a safe current-state migration for source, runtime links, generated bootstrap output, CLEAN, recovery, documentation, and repository Git state; remove the old footprint and its dead paths once each is proven migrated, never retain dual-path compatibility or delete unproven content.
+Replace the split top-level `.ki-self/` and `.ki-meta/` footprint with one clearly owned `.ki/` root: `.ki/self/skill/` is the committed, authored source projected as the runtime `ki-self` skill, while `.ki/{bin,bootstrap,manifest.json}` is generated, manifest-owned bootstrap state. Preserve the existing runtime skill name and portable consumer contract while making the authored/generated distinction visible inside the established KI repository namespace. Provide a safe current-state migration for source, runtime links, generated bootstrap output, CLEAN, recovery, documentation, and repository Git state; remove the old footprint and its dead paths once each is proven migrated, never retain dual-path compatibility or delete unproven content.
 
 **Plan:** [FND-014](plans/FND-014-unify-repository-local-ki-state.md)
 

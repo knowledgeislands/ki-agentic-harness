@@ -34,15 +34,15 @@ test('plans one offline educator snapshot and one checker projection for a skill
 
   expect(plan).toMatchObject({ skill: 'ki-example', source, target, dryRun: true })
   expect(plan.units.map(({ owner, destination }) => [owner, destination])).toEqual([
-    ['educator', join(target, '.ki-meta', 'educators', 'ki-example', 'skill')],
-    ['educator', join(target, '.ki-meta', 'educators', 'ki-example', 'educator.ts')],
-    ['educator', join(target, '.ki-meta', 'educators', 'ki-example', 'educate.ts')],
-    ['checker', join(target, '.ki-meta', 'checkers', 'ki-example', 'SKILL.md')],
-    ['checker', join(target, '.ki-meta', 'checkers', 'ki-example', 'help.md')],
-    ['checker', join(target, '.ki-meta', 'checkers', 'ki-example', 'scripts', 'audit.ts')],
-    ['checker', join(target, '.ki-meta', 'checkers', 'ki-example', 'scripts', 'conform.ts')],
-    ['checker', join(target, '.ki-meta', 'checkers', 'ki-example', 'scripts', 'rubric')],
-    ['checker', join(target, '.ki-meta', 'checkers', 'ki-example', 'scripts', 'vendored')]
+    ['educator', join(target, '.ki', 'bootstrap', 'educators', 'ki-example', 'skill')],
+    ['educator', join(target, '.ki', 'bootstrap', 'educators', 'ki-example', 'educator.ts')],
+    ['educator', join(target, '.ki', 'bootstrap', 'educators', 'ki-example', 'educate.ts')],
+    ['checker', join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'SKILL.md')],
+    ['checker', join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'help.md')],
+    ['checker', join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'scripts', 'audit.ts')],
+    ['checker', join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'scripts', 'conform.ts')],
+    ['checker', join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'scripts', 'rubric')],
+    ['checker', join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'scripts', 'vendored')]
   ])
 })
 
@@ -59,19 +59,21 @@ test('rejects a skill without all three mechanical mode entrypoints', () => {
 
 test('publishes only the selected skill checker and educator directories', () => {
   const { source, target } = fixture()
-  mkdirSync(join(target, '.ki-meta', 'checkers', 'ki-other'), { recursive: true })
-  writeFileSync(join(target, '.ki-meta', 'checkers', 'ki-other', 'keep'), 'keep\n')
+  mkdirSync(join(target, '.ki', 'bootstrap', 'checkers', 'ki-other'), { recursive: true })
+  writeFileSync(join(target, '.ki', 'bootstrap', 'checkers', 'ki-other', 'keep'), 'keep\n')
 
   educateSkill({ skill: 'ki-example', source, target })
 
-  expect(readFileSync(join(target, '.ki-meta', 'checkers', 'ki-example', 'scripts', 'audit.ts'), 'utf8')).toBe('export {}\n')
-  const help = readFileSync(join(target, '.ki-meta', 'checkers', 'ki-example', 'help.md'), 'utf8')
+  expect(readFileSync(join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'scripts', 'audit.ts'), 'utf8')).toBe('export {}\n')
+  const help = readFileSync(join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'help.md'), 'utf8')
   expect(help).toContain('# ki-example')
   expect(help).toContain('An example skill for EDUCATE tests.')
   expect(help).not.toStartWith('---')
-  expect(readFileSync(join(target, '.ki-meta', 'educators', 'ki-example', 'skill', 'scripts', 'educate.ts'), 'utf8')).toBe('export {}\n')
-  expect(readFileSync(join(target, '.ki-meta', 'educators', 'ki-example', 'educate.ts'), 'utf8')).toContain('skill: "ki-example"')
-  expect(readFileSync(join(target, '.ki-meta', 'checkers', 'ki-other', 'keep'), 'utf8')).toBe('keep\n')
+  expect(readFileSync(join(target, '.ki', 'bootstrap', 'educators', 'ki-example', 'skill', 'scripts', 'educate.ts'), 'utf8')).toBe(
+    'export {}\n'
+  )
+  expect(readFileSync(join(target, '.ki', 'bootstrap', 'educators', 'ki-example', 'educate.ts'), 'utf8')).toContain('skill: "ki-example"')
+  expect(readFileSync(join(target, '.ki', 'bootstrap', 'checkers', 'ki-other', 'keep'), 'utf8')).toBe('keep\n')
 })
 
 test('dry-run plans without creating governance directories', () => {
@@ -79,5 +81,5 @@ test('dry-run plans without creating governance directories', () => {
 
   educateSkill({ skill: 'ki-example', source, target, dryRun: true })
 
-  expect(existsSync(join(target, '.ki-meta'))).toBe(false)
+  expect(existsSync(join(target, '.ki'))).toBe(false)
 })

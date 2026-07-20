@@ -1,8 +1,8 @@
 # Bootstrap a repository
 
-This is the detailed reference for bringing a repository under Knowledge Islands governance so it **governs itself** — running `./.ki-meta/bin/ki-audit` with **zero skills installed** and **no `package.json` required**. First install the harness for your user account, then use this repository-scoped step; start with [Install and get started](getting-started.md).
+This is the detailed reference for bringing a repository under Knowledge Islands governance so it **governs itself** — running `./.ki/bin/ki-audit` with **zero skills installed** and **no `package.json` required**. First install the harness for your user account, then use this repository-scoped step; start with [Install and get started](getting-started.md).
 
-Bootstrap is a repository action: it builds that repository's `.ki-meta/` directory and does not configure the user's wider environment. Re-running it is also how a repository stays current — there is no separate migration mode. This guide is the operating manual for the bootstrap chain (ADR-KI-HARNESS-006); its fenced `bash` blocks are executable and are exercised by the harness's own test suite, so they cannot drift from what actually works.
+Bootstrap is a repository action: it builds that repository's `.ki/` directory and does not configure the user's wider environment. Re-running it is also how a repository stays current — there is no separate migration mode. This guide is the operating manual for the bootstrap chain (ADR-KI-HARNESS-006); its fenced `bash` blocks are executable and are exercised by the harness's own test suite, so they cannot drift from what actually works.
 
 If you maintain the harness itself, [Generated write boundaries](../developer/generated-write-boundaries.md) explains which surfaces are committed, copied, linked, or user-environment-managed and how to recover each safely.
 
@@ -30,12 +30,12 @@ mgit -B sh -c 'curl -fsSL https://knowledgeislands.info/harness/bootstrap | sh'
 
 ## What bootstrap does
 
-Bootstrap's one job is to build `.ki-meta/`. For every skill in the resolved set — every `[ki-<skill>]` table the target declares in its `.ki-config.toml` (including a bare `[ki-authoring]`, which every repo must declare itself — there is no injected baseline, per `ADR-KI-HARNESS-007`) — it:
+Bootstrap's one job is to build `.ki/`. For every skill in the resolved set — every `[ki-<skill>]` table the target declares in its `.ki-config.toml` (including a bare `[ki-authoring]`, which every repo must declare itself — there is no injected baseline, per `ADR-KI-HARNESS-007`) — it:
 
-1. **vendors** the skill's declared checker units (its `ki-vendors:` frontmatter — a checker copied verbatim, or a generated command-wrapper) into `.ki-meta/checkers/<skill>/scripts/<verb>.ts`, renders the skill's **HELP snapshot** to `.ki-meta/checkers/<skill>/help.md`, and generates its target-local EDUCATE launcher at `.ki-meta/educators/<skill>/educate.ts`;
-2. **writes** the four `package.json`-free entry points — `.ki-meta/bin/{ki-audit, ki-conform, ki-educate, ki-help}` over a `.ki-meta/bin/aggregate.ts` runner that discovers the checker copies and fans out over them — and **stamps** the vendoring manifest (`.ki-meta/manifest.json`: the harness ref plus a hash per vendored file).
+1. **vendors** the skill's declared checker units (its `ki-vendors:` frontmatter — a checker copied verbatim, or a generated command-wrapper) into `.ki/bootstrap/checkers/<skill>/scripts/<verb>.ts`, renders the skill's **HELP snapshot** to `.ki/bootstrap/checkers/<skill>/help.md`, and generates its target-local EDUCATE launcher at `.ki/bootstrap/educators/<skill>/educate.ts`;
+2. **writes** the four `package.json`-free entry points — `.ki/bin/{ki-audit, ki-conform, ki-educate, ki-help}` over a `.ki/bin/aggregate.ts` runner that discovers the checker copies and fans out over them — and **stamps** the vendoring manifest (`.ki/manifest.json`: the harness ref plus a hash per vendored file).
 
-It **never touches `package.json`.** A `.ki-meta/` is dot-prefixed and generated-not-authored, so it stays off the repo's own `scripts/`, and (being idempotent) re-running the bootstrap at the same ref reproduces byte-identical output. The `ki:*` convenience keys that a code repo may want — `bun run ki:audit` aliasing `./.ki-meta/bin/ki-audit` — are wired later by `ki-engineering` when it comes online for that repo, as sugar over these same bins, never by bootstrap.
+It **never touches `package.json`.** A `.ki/` is dot-prefixed and generated-not-authored, so it stays off the repo's own `scripts/`, and (being idempotent) re-running the bootstrap at the same ref reproduces byte-identical output. The `ki:*` convenience keys that a code repo may want — `bun run ki:audit` aliasing `./.ki/bin/ki-audit` — are wired later by `ki-engineering` when it comes online for that repo, as sugar over these same bins, never by bootstrap.
 
 Repository bootstrap does not install or configure user-global hooks. The optional Claude Code hook payload is a separate user-environment action, documented in [Install and get started](getting-started.md); do not add it to a per-repository or `mgit` bootstrap run.
 
@@ -43,12 +43,12 @@ Repository bootstrap does not install or configure user-global hooks. The option
 
 After EDUCATE the repo governs itself with no skills installed and no `package.json`:
 
-| Command | Mode | What it does |
-| --- | --- | --- |
-| `./.ki-meta/bin/ki-audit` | AUDIT | Report drift across every governed skill, on the severity ladder. Read-only. |
-| `./.ki-meta/bin/ki-conform` | CONFORM | Apply the mechanical fixes across the vendored set. |
-| `./.ki-meta/bin/ki-help [skill]` | HELP | Print a skill's HELP block from its vendored snapshot — **pure bash, no bun needed**. |
-| `./.ki-meta/bin/ki-educate [skill] [--ref R]` | EDUCATE | Without a skill, re-run the whole chain at `R`; with one, dispatch only its vendored local educator. |
+| Command                                  | Mode    | What it does                                                                                         |
+| ---------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------- |
+| `./.ki/bin/ki-audit`                     | AUDIT   | Report drift across every governed skill, on the severity ladder. Read-only.                         |
+| `./.ki/bin/ki-conform`                   | CONFORM | Apply the mechanical fixes across the vendored set.                                                  |
+| `./.ki/bin/ki-help [skill]`              | HELP    | Print a skill's HELP block from its vendored snapshot — **pure bash, no bun needed**.                |
+| `./.ki/bin/ki-educate [skill] [--ref R]` | EDUCATE | Without a skill, re-run the whole chain at `R`; with one, dispatch only its vendored local educator. |
 
 ## Running it locally
 
@@ -67,20 +67,20 @@ bun "$KI_HARNESS/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/re
 Then confirm it self-governs — the vendored aggregate invokes each skill's checker in sequence, with nothing installed in `.claude/skills/`:
 
 ```bash
-cd "$TARGET" && ./.ki-meta/bin/ki-audit
+cd "$TARGET" && ./.ki/bin/ki-audit
 ```
 
 A single skill's EDUCATE is reachable the same way through its own `scripts/educate.ts`, which seeds that skill into the target — the mechanics and the vendored result are identical to the full chain once its `ki-depends-on:` requirements are declared.
 
 ## Keeping current
 
-Re-running the bootstrap **is** the update path. When a standard's REFRESH changes a checker, the repair on a governed target is an idempotent re-run of the chain — `./.ki-meta/bin/ki-educate` (or the remote one-liner) — which re-vendors at the recorded ref and re-stamps the manifest.
+Re-running the bootstrap **is** the update path. When a standard's REFRESH changes a checker, the repair on a governed target is an idempotent re-run of the chain — `./.ki/bin/ki-educate` (or the remote one-liner) — which re-vendors at the recorded ref and re-stamps the manifest.
 
 Drift in the vendored copies is caught mechanically: the audit checks the copies against the manifest — offline integrity against the per-file hashes, staleness against the recorded ref when the source is reachable — and conform only prints the advisory ("stale — re-run EDUCATE"), never re-syncs (in a bootstrapped-only repo the local copies are the only source present, so re-syncing from them would be circular). The repair is always the `ki-educate` re-run.
 
 ## Clean generated state
 
-Use CLEAN when you need to remove a repository's generated governance state and rebuild it from scratch — for example, before diagnosing a bootstrap problem. It is intentionally source-owned rather than a command inside `.ki-meta/`, because a successful clean removes that directory.
+Use CLEAN when you need to remove a repository's generated governance state and rebuild it from scratch — for example, before diagnosing a bootstrap problem. It is intentionally source-owned rather than a command inside `.ki/`, because a successful clean removes that directory.
 
 > **Coming soon:** The `kisle` command-line interface will provide one interface for the current install, bootstrap, educate, audit, conform, clean, and help operations. Read-only DOCTOR and scope-explicit UNINSTALL will join it later to distinguish repository and user state. None of these `kisle` commands are available yet.
 
@@ -94,6 +94,6 @@ bun ~/.claude/skills/ki-bootstrap/scripts/clean.ts . --dry-run
 bun ~/.agents/skills/ki-bootstrap/scripts/clean.ts . --dry-run
 ```
 
-Review the reported paths, then rerun the same command without `--dry-run` to remove them. CLEAN removes only an intact manifest-owned `.ki-meta/` tree and unchanged generated runtime skill copies. It is repository-scoped cleanup, not an uninstall: it preserves `.ki-config.toml`, `.gitignore`, agents, `.ki-self/`, its runtime projection links, altered payloads, unfamiliar files, and every user-level KI installation. Unsafe or changed metadata causes it to stop rather than guess. Run bootstrap again afterwards to reconstruct the governed footprint.
+Review the reported paths, then rerun the same command without `--dry-run` to remove them. CLEAN removes only an intact manifest-owned `.ki/` tree and unchanged generated runtime skill copies. It is repository-scoped cleanup, not an uninstall: it preserves `.ki-config.toml`, `.gitignore`, agents, `.ki-self/`, its runtime projection links, altered payloads, unfamiliar files, and every user-level KI installation. Unsafe or changed metadata causes it to stop rather than guess. Run bootstrap again afterwards to reconstruct the governed footprint.
 
-If `ki-bootstrap` is not installed for either runtime, use the same `scripts/clean.ts` path from a local harness checkout instead. Do not manually delete `.ki-meta/` or `ki-*` directories to work around a CLEAN refusal; inspect and resolve the preserved state first.
+If `ki-bootstrap` is not installed for either runtime, use the same `scripts/clean.ts` path from a local harness checkout instead. Do not manually delete `.ki/` or `ki-*` directories to work around a CLEAN refusal; inspect and resolve the preserved state first.

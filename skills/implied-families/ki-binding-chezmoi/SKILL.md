@@ -42,7 +42,7 @@ The AUDIT is a **composition**, declared here and run in sequence — it does no
 
 ### Mode EDUCATE — vendor the render-path checks
 
-EDUCATE scaffolds no standalone artifact. It vendors this skill's declared mechanical unit (the frontmatter `ki-vendors:` declaration) into the target's `.ki-meta/` via the central bootstrap chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator that execs the `ki-bootstrap` engine with this skill as an explicit seed after the target declares its `ki-depends-on:` requirements (`ki-binding`, `ki-dotfiles-chezmoi`).
+EDUCATE scaffolds no standalone artifact. It vendors this skill's declared mechanical unit (the frontmatter `ki-vendors:` declaration) into the target's `.ki/bootstrap/` via the central bootstrap chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator that execs the `ki-bootstrap` engine with this skill as an explicit seed after the target declares its `ki-depends-on:` requirements (`ki-binding`, `ki-dotfiles-chezmoi`).
 
 ### Mode REFRESH — re-anchor the render contract
 

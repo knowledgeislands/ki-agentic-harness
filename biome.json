@@ -6,7 +6,17 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**/scripts/**", "*.ts", "*.json", "!.ki-meta", "!src/generated", "!.claude/skills", "!.claude/agents", "!.agents/skills"],
+    "includes": [
+      "**/scripts/**",
+      "*.ts",
+      "*.json",
+      "!.ki/bootstrap",
+      "!.ki/bin",
+      "!src/generated",
+      "!.claude/skills",
+      "!.claude/agents",
+      "!.agents/skills"
+    ],
     "ignoreUnknown": true
   },
   "formatter": {
