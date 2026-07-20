@@ -61,22 +61,11 @@ Canonical themes, active execution plans, and completed plan records.
 
 ## Completed plans
 
-### [FND-020](foundation-tooling/plans/FND-020-align-repository-local-ki-self-governance.md)
-
-- **Title:** Align the repository-local ki-self governance contract
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/align-the-repository-local-ki-self-governance-contract`
-- **Status:** done
+No completed plans.
 
 ## Dependency graph
 
 ```text
 FND-016 ──► FND-017
 FND-016 ──► FND-018
-FND-020 ──► FND-015
-FND-020 ──► FND-016
-FND-020 ──► FND-017
-FND-020 ──► FND-018
-FND-020 ──► FND-019
-FND-020 ──► RTP-001
 ```

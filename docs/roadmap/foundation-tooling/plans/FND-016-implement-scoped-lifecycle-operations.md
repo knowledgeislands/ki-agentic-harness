@@ -4,7 +4,7 @@ title: Implement scoped lifecycle operations
 status: open
 roadmap: foundation-tooling/implement-scoped-lifecycle-operations
 blocks: FND-017, FND-018
-blocked-by: FND-020
+blocked-by: —
 ---
 
 ## Context

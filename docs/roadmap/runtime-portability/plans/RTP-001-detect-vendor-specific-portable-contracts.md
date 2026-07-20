@@ -4,7 +4,7 @@ title: Detect vendor-specific assumptions in portable skill contracts
 status: open
 roadmap: runtime-portability/detect-vendor-specific-assumptions-in-portable-skill-contracts
 blocks: —
-blocked-by: FND-020
+blocked-by: —
 ---
 
 ## Context

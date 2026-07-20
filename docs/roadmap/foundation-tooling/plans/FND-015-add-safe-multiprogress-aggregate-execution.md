@@ -4,7 +4,7 @@ title: Unify governed entrypoints and in-process aggregate execution
 status: open
 roadmap: foundation-tooling/add-safe-multiprogress-aggregate-execution
 blocks: —
-blocked-by: FND-020
+blocked-by: —
 ---
 
 ## Context
@@ -62,7 +62,7 @@ FND-010 remains complete: it owns the stable single-row layout that this plan re
 
 The bootstrap-internal, tokenomics-engine, and user-installer local-process candidates found by this review need separately scoped follow-ups; this plan changes no external-tool or test/evaluation process boundary.
 
-The `ki-self` review performed during this work is retained as FND-020. It now takes priority before this plan resumes, reconciling the source-harness linked-payload rule, the deliberately local `.ki/self/skill/` exception in the generic skill checker, and stale `.ki-self/` documentation.
+The completed `ki-self` review reconciled the source-harness linked-payload rule, the deliberately local `.ki/self/skill/` exception in the generic skill checker, and stale `.ki-self/` documentation. This plan may now resume.
 
 ## Delegation
 
