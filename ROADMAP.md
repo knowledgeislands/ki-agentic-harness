@@ -7,6 +7,7 @@ This portfolio view is generated from the canonical theme roadmaps under `docs/r
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
 - [Foundation Tooling: Add a safe repository clean operation](docs/roadmap/foundation-tooling/ROADMAP.md#add-a-safe-repository-clean-operation)
+- [Foundation Tooling: Define a canonical cross-runtime `ki-self` footprint](docs/roadmap/foundation-tooling/ROADMAP.md#define-a-canonical-cross-runtime-ki-self-footprint)
 - [Foundation Tooling: Define a linked development footprint for the harness](docs/roadmap/foundation-tooling/ROADMAP.md#define-a-linked-development-footprint-for-the-harness)
 - [Foundation Tooling: Make CONFORM audit-gated per rubric item](docs/roadmap/foundation-tooling/ROADMAP.md#make-conform-audit-gated-per-rubric-item)
 - [Foundation Tooling: Make plan-to-roadmap linkage explicit](docs/roadmap/foundation-tooling/ROADMAP.md#make-plan-to-roadmap-linkage-explicit)

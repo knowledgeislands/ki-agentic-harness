@@ -40,6 +40,14 @@ Canonical themes and active execution plans.
 - **Title:** Define a linked development footprint for the harness
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/define-a-linked-development-footprint-for-the-harness`
+- **Status:** in-progress
+- **Blocks:** —
+
+### [FND-008](foundation-tooling/plans/FND-008-define-a-canonical-cross-runtime-ki-self-footprint.md)
+
+- **Title:** Define a canonical cross-runtime ki-self footprint
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/define-a-canonical-cross-runtime-ki-self-footprint`
 - **Status:** open
 - **Blocks:** —
 
