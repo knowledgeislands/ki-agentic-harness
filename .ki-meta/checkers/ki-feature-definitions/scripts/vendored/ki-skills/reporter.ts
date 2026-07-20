@@ -152,35 +152,96 @@ export const parseCheckerArguments = (argv: readonly string[]): ParsedCheckerArg
   return { ...parseReporterArguments(progress.arguments), progress: progress.mode }
 }
 
-const progressBar = (completed: number, total: number): string => {
-  const width = 12
-  if (total <= 0) return `[${'.'.repeat(width)}]`
-  const clamped = Math.max(0, Math.min(completed, total))
-  const filled = clamped === total ? width : Math.floor((clamped / total) * width)
-  return `[${'#'.repeat(filled)}${'.'.repeat(width - filled)}]`
+const FALLBACK_TERMINAL_COLUMNS = 80
+const ANSI_ESCAPE = new RegExp(`${String.fromCharCode(27)}\\[[0-?]*[ -/]*[@-~]`, 'gu')
+
+const displayWidth = (text: string): number =>
+  Array.from(text.replace(ANSI_ESCAPE, '')).reduce((width, character) => {
+    const point = character.codePointAt(0) ?? 0
+    if (point === 0 || (point >= 0x300 && point <= 0x36f)) return width
+    return width + (point >= 0x1100 ? 2 : 1)
+  }, 0)
+
+const truncate = (text: string, width: number): string => {
+  const plainText = text.replace(ANSI_ESCAPE, '')
+  if (displayWidth(plainText) <= width) return plainText
+  if (width <= 0) return ''
+  if (width === 1) return '…'
+  let result = ''
+  for (const character of Array.from(plainText)) {
+    if (displayWidth(result) + displayWidth(character) > width - 1) break
+    result += character
+  }
+  return `${result}…`
 }
 
-const progressLine = (event: CheckerStatusEvent): string => {
-  const prefix = `${event.mode.toUpperCase()} ${progressBar(event.completed, event.total)} ${event.completed}/${event.total}`
-  if (event.type === 'start') return `${prefix} starting`
-  if (event.type === 'complete') return `${prefix} complete`
-  if (event.type === 'failed') return `${prefix} failed`
-  return `${prefix} ${event.code}`
+const progressBar = (width: number, completed?: number, total?: number): string => {
+  const innerWidth = width - 2
+  if (completed === undefined || total === undefined) return `[>${'.'.repeat(Math.max(0, innerWidth - 1))}]`
+  if (total <= 0) return `[${'#'.repeat(innerWidth)}]`
+  const clamped = Math.max(0, Math.min(completed, total))
+  const filled = clamped === total ? innerWidth : Math.floor((clamped / total) * innerWidth)
+  return `[${'#'.repeat(filled)}${'.'.repeat(innerWidth - filled)}]`
+}
+
+const progressLine = ({
+  left,
+  right,
+  completed,
+  total,
+  columns
+}: {
+  left: string
+  right: string
+  completed?: number
+  total?: number
+  columns: number
+}): string => {
+  const terminalWidth = Number.isFinite(columns) && columns > 0 ? Math.floor(columns) : FALLBACK_TERMINAL_COLUMNS
+  const barWidth = Math.min(100, terminalWidth - displayWidth(left) - displayWidth(right) - 2)
+  if (barWidth >= 3) return `${left} ${progressBar(barWidth, completed, total)} ${right}`
+
+  const leftWidth = terminalWidth - displayWidth(right) - 1
+  if (leftWidth > 0) return `${truncate(left, leftWidth)} ${right}`
+  return truncate(right, terminalWidth)
+}
+
+const statusText = (event: CheckerStatusEvent): string => {
+  if (event.type === 'start') return 'starting'
+  if (event.type === 'complete') return 'complete'
+  if (event.type === 'failed') return 'failed'
+  return event.code
+}
+
+const progressFor = (event: CheckerStatusEvent, columns: number): string => {
+  const completed = Math.max(0, Math.min(event.completed, event.total))
+  const percentage = event.total <= 0 ? 100 : Math.round((completed / event.total) * 100)
+  return progressLine({
+    left: event.mode.toUpperCase(),
+    right: `${completed}/${event.total} ${percentage}% ${statusText(event)}`,
+    completed,
+    total: event.total,
+    columns
+  })
 }
 
 export const createTerminalStatusTracker = ({
   mode,
   interactive,
+  columns = () => process.stderr.columns,
   write
 }: {
   mode: ProgressMode
   interactive: boolean
+  columns?: () => number | undefined
   write: (line: string) => void
 }): CheckerStatusTracker | undefined => {
   if (mode === 'never' || (mode === 'auto' && !interactive)) return undefined
   return (event: CheckerStatusEvent): void =>
     write(
-      `${interactive ? '\r\x1b[2K' : ''}${progressLine(event)}${event.type === 'complete' || event.type === 'failed' || !interactive ? '\n' : ''}`
+      `${interactive ? '\r\x1b[2K' : ''}${progressFor(event, interactive ? (columns() ?? FALLBACK_TERMINAL_COLUMNS) : FALLBACK_TERMINAL_COLUMNS)}${
+        event.type === 'complete' || event.type === 'failed' || !interactive ? '\n' : ''
+      }`
     )
 }
 

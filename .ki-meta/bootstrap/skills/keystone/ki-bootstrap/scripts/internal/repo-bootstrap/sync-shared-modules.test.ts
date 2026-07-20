@@ -75,7 +75,10 @@ try {
   rmSync(fixturePayload)
   writeFileSync(fixturePayload, readFileSync(fixtureProvider))
   const regularDeclared = spawnSync('bun', [scriptPath, fixture, '--check'], { encoding: 'utf8' })
-  if (regularDeclared.status === 0 || !`${regularDeclared.stdout ?? ''}${regularDeclared.stderr ?? ''}`.includes('ki-repo/scripts/vendored/ki-skills/checker.ts'))
+  if (
+    regularDeclared.status === 0 ||
+    !`${regularDeclared.stdout ?? ''}${regularDeclared.stderr ?? ''}`.includes('ki-repo/scripts/vendored/ki-skills/checker.ts')
+  )
     throw new Error('harness source check must reject a regular declared payload')
 
   const restored = spawnSync('bun', [scriptPath, fixture], { encoding: 'utf8' })

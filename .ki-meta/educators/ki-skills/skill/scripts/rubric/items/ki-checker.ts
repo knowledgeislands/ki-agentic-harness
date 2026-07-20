@@ -47,7 +47,15 @@ export const KI_CHECKER_3: RubricItem<KiCheckerRubricContext> = {
     level: 'FAIL',
     audit: {
       phase: 'INSPECT',
-      run: ({ rootSkill, declaredSharedModules, sharedDependencies, rubricModuleExists, checkerModuleExists, reporterModuleExists, checkerReporterModuleExists }) => {
+      run: ({
+        rootSkill,
+        declaredSharedModules,
+        sharedDependencies,
+        rubricModuleExists,
+        checkerModuleExists,
+        reporterModuleExists,
+        checkerReporterModuleExists
+      }) => {
         if (!rootSkill) return [{ status: 'NOT_APPLICABLE', message: 'the audited skill is not the checker-contract root' }]
         const violations = []
         for (const module of ['rubric', 'checker', 'reporter', 'checker-reporter'])

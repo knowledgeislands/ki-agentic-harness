@@ -301,22 +301,76 @@ const parseReporterOptions = (args) => {
   }
   return { levels, skill, progress, childArgs }
 }
-const progressBar = (completed, total) => {
-  const width = 12
-  if (total <= 0) return '[' + '.'.repeat(width) + ']'
-  const clamped = Math.max(0, Math.min(completed, total))
-  const filled = clamped === total ? width : Math.floor((clamped / total) * width)
-  return '[' + '#'.repeat(filled) + '.'.repeat(width - filled) + ']'
+const FALLBACK_TERMINAL_COLUMNS = 80
+const ANSI_ESCAPE = /\\x1b\\[[0-?]*[ -/]*[@-~]/gu
+const displayWidth = (text) =>
+  Array.from(text.replace(ANSI_ESCAPE, '')).reduce((width, character) => {
+    const point = character.codePointAt(0) || 0
+    if (point === 0 || (point >= 0x300 && point <= 0x36f)) return width
+    return width + (point >= 0x1100 ? 2 : 1)
+  }, 0)
+const truncate = (text, width) => {
+  const plainText = text.replace(ANSI_ESCAPE, '')
+  if (displayWidth(plainText) <= width) return plainText
+  if (width <= 0) return ''
+  if (width === 1) return '…'
+  let result = ''
+  for (const character of Array.from(plainText)) {
+    if (displayWidth(result) + displayWidth(character) > width - 1) break
+    result += character
+  }
+  return result + '…'
 }
-const createProgressTracker = (mode, total) => {
+const progressBar = (width, completed, total) => {
+  const innerWidth = width - 2
+  if (completed === undefined || total === undefined) return '[>' + '.'.repeat(Math.max(0, innerWidth - 1)) + ']'
+  if (total <= 0) return '[' + '#'.repeat(innerWidth) + ']'
+  const clamped = Math.max(0, Math.min(completed, total))
+  const filled = clamped === total ? innerWidth : Math.floor((clamped / total) * innerWidth)
+  return '[' + '#'.repeat(filled) + '.'.repeat(innerWidth - filled) + ']'
+}
+const progressLine = (left, right, completed, total) => {
+  const columns = process.stderr.isTTY && Number.isFinite(process.stderr.columns) && process.stderr.columns > 0
+    ? Math.floor(process.stderr.columns)
+    : FALLBACK_TERMINAL_COLUMNS
+  const barWidth = Math.min(100, columns - displayWidth(left) - displayWidth(right) - 2)
+  if (barWidth >= 3) return left + ' ' + progressBar(barWidth, completed, total) + ' ' + right
+  const leftWidth = columns - displayWidth(right) - 1
+  if (leftWidth > 0) return truncate(left, leftWidth) + ' ' + right
+  return truncate(right, columns)
+}
+const createProgressTracker = (mode) => {
   const interactive = Boolean(process.stderr.isTTY)
-  if (mode === 'never' || (mode === 'auto' && !interactive)) return { start: () => {}, active: () => {}, advance: (completed, count) => completed + count, complete: () => {} }
+  if (mode === 'never' || (mode === 'auto' && !interactive))
+    return { initialise: () => {}, discover: () => {}, planned: () => {}, start: () => {}, active: () => {}, advance: (completed, count) => completed + count, complete: () => {} }
+  let total
   const write = (completed, state, skill) => {
-    const prefix = verb.toUpperCase() + ' ' + progressBar(completed, total) + ' ' + completed + '/' + total
-    const detail = state === 'start' ? 'starting' : state === 'complete' ? 'complete' : skill + ' (' + (total - completed) + ' remaining)'
-    process.stderr.write((interactive ? '\\r\\x1b[2K' : '') + prefix + ' ' + detail + (interactive && state !== 'complete' ? '' : '\\n'))
+    const detail =
+      state === 'initialising'
+        ? 'initialising'
+        : state.startsWith('discover:')
+          ? 'reading checker plans ' + state.slice('discover:'.length)
+          : total === undefined
+            ? state
+            : Math.max(0, Math.min(completed, total)) +
+              '/' +
+              total +
+              ' ' +
+              (total <= 0 ? 100 : Math.round((Math.max(0, Math.min(completed, total)) / total) * 100)) +
+              '% ' +
+              (state === 'start' ? 'starting' : state === 'complete' ? 'complete' : skill)
+    process.stderr.write(
+      (interactive ? '\\r\\x1b[2K' : '') +
+        progressLine(verb.toUpperCase(), detail, total === undefined ? undefined : completed, total) +
+        (interactive && state !== 'complete' ? '' : '\\n')
+    )
   }
   return {
+    initialise: () => write(0, 'initialising'),
+    discover: (completed, count) => write(0, 'discover:' + completed + '/' + count),
+    planned: (nextTotal) => {
+      total = nextTotal
+    },
     start: () => write(0, 'start'),
     active: (completed, skill) => write(completed, 'active', skill),
     advance: (completed, count, skill) => {
@@ -432,11 +486,14 @@ if (reporter.skill) {
   }
   checkers = [reporter.skill]
 }
+const progress = createProgressTracker(reporter.progress)
+progress.initialise()
 const plannedItemsBySkill = new Map()
-for (const skill of checkers) {
+for (const [index, skill] of checkers.entries()) {
   const scriptPath = join(checkersDir, skill, 'scripts', verb + '.ts')
   if (!existsSync(scriptPath) || !lstatSync(scriptPath).isFile() || lstatSync(scriptPath).isSymbolicLink()) {
     plannedItemsBySkill.set(skill, 1)
+    progress.discover(index + 1, checkers.length)
     continue
   }
   const preflight = runCheckerProcess(scriptPath, [], { ...process.env, KI_CHECKER_PLAN: '1' })
@@ -447,15 +504,18 @@ for (const skill of checkers) {
     // A legacy or malformed child must still take the normal validation path
     // below, where its actual output is diagnosed. Count it conservatively.
     plannedItemsBySkill.set(skill, 1)
+    progress.discover(index + 1, checkers.length)
     continue
   }
   if (preflight.status !== 0 || (preflight.stderr ?? '').trim() || !isRecord(plan) || plan.version !== 1 || plan.record !== 'plan' || !Number.isInteger(plan.items) || plan.items < 0) {
     plannedItemsBySkill.set(skill, 1)
+    progress.discover(index + 1, checkers.length)
     continue
   }
   plannedItemsBySkill.set(skill, plan.items)
+  progress.discover(index + 1, checkers.length)
 }
-const progress = createProgressTracker(reporter.progress, [...plannedItemsBySkill.values()].reduce((total, items) => total + items, 0))
+progress.planned([...plannedItemsBySkill.values()].reduce((total, items) => total + items, 0))
 progress.start()
 let completed = 0
 for (const skill of checkers) {

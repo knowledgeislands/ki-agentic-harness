@@ -187,10 +187,7 @@ function replacePayload(
   if (!samePayload(source.source, destination)) throw new Error(`shared module copy failed verification: ${destination}`)
 }
 
-function undeclaredSourcePayloads(
-  skills: ReadonlyMap<string, string>,
-  expected: ReadonlyMap<string, SharedModulePayload>
-): string[] {
+function undeclaredSourcePayloads(skills: ReadonlyMap<string, string>, expected: ReadonlyMap<string, SharedModulePayload>): string[] {
   const violations: string[] = []
   for (const [skill, directory] of skills) {
     const vendored = join(directory, 'scripts', 'vendored')

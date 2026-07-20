@@ -399,9 +399,13 @@ try {
     encoding: 'utf8'
   })
   check(
-    'aggregate → reports its active skill on stderr without contaminating final output',
+    'aggregate → reports startup, checker-plan discovery, and its active skill without contaminating final output',
     progressAggregate.stderr.includes('AUDIT [') &&
+      progressAggregate.stderr.includes('initialising') &&
+      progressAggregate.stderr.includes('reading checker plans 1/1') &&
       progressAggregate.stderr.includes('ki-skills') &&
+      progressAggregate.stderr.includes('0% starting') &&
+      !progressAggregate.stderr.includes('remaining') &&
       !progressAggregate.stdout.includes('AUDIT [') &&
       !progressAggregate.stdout.includes('checker wrote to stderr')
   )
