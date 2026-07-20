@@ -73,7 +73,7 @@ import {
   unlinkSync,
   writeFileSync
 } from 'node:fs'
-import { dirname, join, relative, resolve } from 'node:path'
+import { basename, dirname, join, relative, resolve } from 'node:path'
 import { educatorLauncher } from '../../shared/educator.ts'
 import {
   assertExplicitDependencies,
@@ -982,6 +982,9 @@ function copyRegularTree(
   const copied: VendoredFile[] = []
 
   const copyEntry = (sourcePath: string, destinationPath: string, rel: string): void => {
+    // Source skills may have their own ignored generated bootstrap state. It is
+    // neither authored skill content nor a valid part of a target's copied payload.
+    if (basename(sourcePath) === '.ki-meta') return
     const stat = lstatSync(sourcePath)
     if (stat.isSymbolicLink()) {
       const expected = declaredLinks.get(sourcePath)
@@ -1476,6 +1479,9 @@ function buildCandidate(
   chmodSync(join(staging, 'bin', 'ki-help'), 0o755)
   recordGenerated(journal, staging, join('bin', 'ki-help'))
   manifestFiles[join(VENDOR_DIR, 'bin', 'aggregate.ts')] = hashJournalFile(journal, join('bin', 'aggregate.ts'))
+  for (const name of ['ki-audit', 'ki-conform', 'ki-educate', 'ki-help']) {
+    manifestFiles[join(VENDOR_DIR, 'bin', name)] = hashJournalFile(journal, join('bin', name))
+  }
 
   if (set.includes('ki-harness')) {
     for (const name of HARNESS_BIN_SCRIPTS) {

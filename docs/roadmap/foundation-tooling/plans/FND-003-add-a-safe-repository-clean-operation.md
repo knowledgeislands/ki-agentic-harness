@@ -17,11 +17,11 @@ EDUCATE and repository bootstrap create derived governance machinery plus runtim
 
 ## Steps
 
-1. Define CLEAN as removal of generated repository state, not removal of governance intent: preserve `.ki-config.toml`, authored source, explicit development links, agents, and repository configuration.
-2. Add a source-owned `ki-bootstrap` repository clean entrypoint with `--dry-run` and explicit target handling; it must not depend on `.ki-meta/` because successful cleanup removes that runner.
-3. Remove `.ki-meta/` through the same identity, symlink, race, and conflict-safety principles used by repository bootstrap.
-4. Discover supported runtime roots from `.ki-config.toml` and remove only regular runtime skill directories whose generated marker and integrity prove ownership. Preserve markerless directories, symlinks, changed payloads, and every path selected only by a `ki-*` name.
-5. Add focused clean, repeat-clean, dry-run, tamper, symlink, concurrent-mutation, and CLEAN-then-EDUCATE tests; document the lifecycle and run the serial repository gates.
+1. ✓ Define CLEAN as removal of generated repository state, not removal of governance intent: preserve `.ki-config.toml`, authored source, explicit development links, agents, and repository configuration.
+2. ✓ Add a source-owned `ki-bootstrap` repository clean entrypoint with `--dry-run` and explicit target handling; it must not depend on `.ki-meta/` because successful cleanup removes that runner.
+3. ✓ Remove `.ki-meta/` through the same identity, symlink, race, and conflict-safety principles used by repository bootstrap.
+4. ✓ Discover supported runtime roots from `.ki-config.toml` and remove only regular runtime skill directories whose generated marker and integrity prove ownership. Preserve markerless directories, symlinks, changed payloads, and every path selected only by a `ki-*` name.
+5. ✓ Add focused clean, repeat-clean, dry-run, tamper, symlink, concurrent-mutation, and CLEAN-then-EDUCATE tests; document the lifecycle and run the serial repository gates.
 
 ## Files touched
 

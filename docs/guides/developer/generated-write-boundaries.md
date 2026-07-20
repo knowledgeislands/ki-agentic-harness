@@ -53,6 +53,8 @@ The publishers refuse unsafe parents and preserve unfamiliar, altered, or invali
 
 Treat that result as a migration diagnostic, not an invitation to force-delete files:
 
+For a source-owned reset of only proven generated state, run `bun skills/keystone/ki-bootstrap/scripts/clean.ts <target> --dry-run` first. CLEAN removes an exact manifest-owned `.ki-meta/` tree and unchanged marker-owned regular runtime copies; it preserves every unproven path and refuses unsafe metadata.
+
 1. Inspect the local material and decide whether it is an intentional development link or user-owned content.
 2. Preserve or move user-owned material deliberately.
 3. Re-run the appropriate normal publisher only after the destination is known to be generated state.

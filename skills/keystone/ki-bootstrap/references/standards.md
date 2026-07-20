@@ -46,6 +46,10 @@ In a source-bearing harness target, the bootstrap audit also compares every dire
 
 `.ki-meta/checkers/<skill>/` contains only the standalone AUDIT and CONFORM payloads, their reporter dependencies, rubric metadata, and a HELP snapshot. `.ki-meta/educators/<skill>/` is a separate functional area for selected per-skill EDUCATE dispatch: `educate.ts` calls its colocated `educator.ts` module against its copied `skill/` source snapshot. It has no harness-relative import or network operation. `.ki-meta/bootstrap/` retains the local whole-set coordinator and its selected source catalogue. `./.ki-meta/bin/ki-educate` with no skill refreshes only that retained current governed set; `./.ki-meta/bin/ki-educate <skill>` runs only the matching local educator. Both are mechanical, model-free operations; `/harness/bootstrap` is the explicit acquisition route for a missing or newer harness revision.
 
+## CLEAN recovery
+
+CLEAN is the inverse of publication, not a broad repository clean. Its source-owned entrypoint may remove an entire `.ki-meta/` only when its regular, non-symlinked tree exactly matches the manifest's hashed generated files; incomplete, altered, private-transaction, or unfamiliar content is preserved by failing closed. It removes a runtime skill only when it is a regular directory carrying a valid generated marker and matching integrity. It never follows or removes a source link, `ki-self`, an altered payload, an agent, `.ki-config.toml`, `.gitignore`, canonical source, or an unmarked `ki-*` path. It validates the complete selected set before removal and refuses if it changes before deletion. `--dry-run` is byte-stable; a subsequent EDUCATE restores the normal generated footprint.
+
 ## Governance agents
 
 A parallel, smaller invariant covers `agents/governance/*.md`: a repo's `.claude/agents/` may contain those files as **relative file symlinks** when the repo's `.ki-config.toml` carries the bare `[ki-agents]` table. Unlike skills there is no baseline: no agent is always-on, so an undeclared repo gets no agent links at all rather than a default subset. `.claude/agents/` is likewise gitignored and regenerated, never committed.

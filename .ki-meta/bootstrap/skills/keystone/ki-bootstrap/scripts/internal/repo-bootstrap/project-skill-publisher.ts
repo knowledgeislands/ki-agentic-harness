@@ -258,6 +258,12 @@ function generatedSkillCopy(path: string, skill: string, source: string): boolea
   }
 }
 
+/** Whether a regular runtime payload still carries a valid marker for its canonical skill. */
+export function isGeneratedRuntimeSkillCopy(path: string, skill: string): boolean {
+  if (!isSkill(skill)) return false
+  return generatedSkillCopy(path, skill, skillDir(skill))
+}
+
 function copiesSource(destination: string, skill: string, source: string): boolean {
   const marker = readGeneratedSkillMarker(destination)
   if (!marker || marker.skill !== skill || marker.source !== sourceIdentity(source)) return false

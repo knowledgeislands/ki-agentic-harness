@@ -65,3 +65,9 @@ _Verify:_ `skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh` line 1 is `#!
 Repository bootstrap MUST publish only declared runtime skill coverage. Ordinary repositories receive generated regular-file copies; a harness receives links from runtime skill locations to its own canonical source skills. A harness also links frontmatter-declared local `scripts/vendored/` payloads to their canonical providers. Vendored `.ki-meta/` payloads always remain regular files.
 
 _Verify:_ run `scripts/internal/repo-bootstrap/publish-project-skills.ts` against a declared ordinary-repository fixture and confirm each published runtime skill is a regular file. Run it against a harness fixture and confirm each declared runtime skill is a source link.
+
+### BOOT-010 — CLEAN removes only proven generated state
+
+The source-owned CLEAN entrypoint MUST remove `.ki-meta/` only when its complete regular-file tree matches the hashed generation manifest, and remove only unchanged marker-owned regular runtime skill copies. It MUST preserve configuration, authored source, runtime links, agents, altered or unmarked payloads, and every unsafe or concurrent-mutated path.
+
+_Verify:_ bootstrap a fixture, preview `scripts/clean.ts --dry-run`, run CLEAN, confirm generated metadata and ordinary runtime copies disappear, then re-run EDUCATE. Fixtures with altered payloads, explicit links, unfamiliar metadata, or an injected concurrent mutation remain preserved.

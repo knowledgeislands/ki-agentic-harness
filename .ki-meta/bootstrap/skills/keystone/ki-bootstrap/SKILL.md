@@ -6,7 +6,7 @@ ki-shared-modules: [educator]
 ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter]
 description: >
   Bootstraps a Knowledge Islands repo into governance: the EDUCATE chain vendors declared checkers and local educator launchers into responsibility-specific `.ki-meta/` areas, so it self-governs via `./.ki-meta/bin/ki-audit` with zero skills installed and never changes `package.json`; it also links project-local skills from `.ki-config.toml` so the right instructions load in-session. Use when bootstrapping or re-bootstrapping a repo, making it self-govern, or setting up and auditing skill links. Triggers: "bootstrap this repo", "make this repo self-govern", "set up this repo's skills", "re-bootstrap this repo", "why aren't my skills loading in this repo". This is the install keystone — the one Knowledge Islands skill kept installed globally — so any repo can self-wire from the remote source. For `.ki-config.toml` coverage and GitHub settings use `ki-repo`; for the harness layout use `ki-harness`.
-argument-hint: 'help | educate [target] | audit [path] | conform [path] | refresh'
+argument-hint: 'help | educate [target] | clean [target] | audit [path] | conform [path] | refresh'
 ---
 
 # Knowledge Islands Bootstrap
@@ -68,6 +68,16 @@ The mechanical half is `scripts/conform.ts` (`bun run ki:bootstrap:conform` wher
 3. **Make it reproducible:** a repo reproduces its generated copies by re-running the repository bootstrap — no `package.json` script is required, and it scaffolds none (package.json script-key wiring is `ki-engineering`'s concern).
 4. **Aggregate judgmental sweep (BOOT-10).** Run `./.ki-meta/bin/ki-conform` (or `bun run ki:conform`) for the mechanical fixes, then re-apply the per-skill judgment prompts from AUDIT step 3 to confirm each skill's judged findings are resolved too — a clean mechanical pass is not sufficient on its own.
 5. **Re-run AUDIT** until clean.
+
+### Mode CLEAN — remove proven generated repository state
+
+CLEAN is a source-owned recovery operation, run from an installed or harness-local `ki-bootstrap`, never from a target's `.ki-meta/` runner:
+
+```bash
+bun scripts/clean.ts <target-repo> [--dry-run]
+```
+
+It removes `.ki-meta/` only when its manifest accounts for the complete regular-file tree, and removes only regular runtime skill directories whose generated marker and integrity still prove ownership. It preserves `.ki-config.toml`, `.gitignore`, agents, canonical source, source links, `ki-self`, altered payloads, and every unmarked path. An unfamiliar, changed, symlinked, or concurrent `.ki-meta/` state is a fail-closed refusal; `--dry-run` reports the proven removal set without writing. Re-running CLEAN after a successful pass is safe, and EDUCATE reconstructs the normal governed footprint.
 
 ### Mode REFRESH — re-anchor
 
