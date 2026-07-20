@@ -33,7 +33,7 @@ Portable skill layout and supporting-file structure.
 
 - **LAY-1 [M] — SKILL.md exists at the skill root** — `SKILL.md` exists at the skill root. (SPEC, CC)
 - **LAY-2 [M] — the skill is a directory named after the skill** — The skill is a **directory** named after the skill, with `SKILL.md` inside — not a bare `.md`. (SPEC, CC)
-- **LAY-3 [M] — optional directories use standard names** — Optional subdirs use the standard names `references/`, `scripts/`, `assets/`; KI-governed skills may additionally use `.ki/bootstrap/` for their local generated state. (SPEC, KI)
+- **LAY-3 [M] — optional directories use standard names** — Optional subdirs use the standard names `references/`, `scripts/`, `assets/`; KI-governed skills may additionally use `.ki-meta/` for their local generated state. (SPEC, KI)
 - **LAY-4 [M] — file references use forward slashes** — File references use forward slashes, never backslashes. (BP)
 - **LAY-5 [J] — reference chains are shallow** — Reference files are **one level deep** from `SKILL.md` — no nested chains (SKILL → a → b → c). (BP, SPEC)
   - _Review prompt:_ Are supporting files one level deep from SKILL.md, without nested reference chains?
@@ -175,7 +175,7 @@ The quality and autonomy of executable skill support.
   - _Review prompt:_ Do batch or destructive operations plan and validate before execution?
 - **SCRIPT-7 [J] — target-repository scripts are copied** — Scripts installed into a target repo's `scripts/` directory are **copies**, not symlinks or out-of-repo references — the target repo must be autonomous. (BP)
   - _Review prompt:_ Are target-repository scripts copied rather than symlinked or referenced outside the repository?
-- **SCRIPT-8 [M-heuristic + J] — top-level scripts expose command help** — Every supported non-test script directly under `scripts/` is a public command entry point that exits successfully for `-h` and `--help` and prints useful usage or help text. A local entrypoint may delegate that behaviour through the declared, vendored `ki-bootstrap:educator` module. Private reusable modules belong under `scripts/internal/`; only explicitly published cross-skill modules belong under `scripts/shared/`. (AS, KI)
+- **SCRIPT-8 [M-heuristic + J] — top-level scripts expose command help** — Every supported non-test script directly under `scripts/` is a public command entry point that exits successfully for `-h` and `--help` and prints useful usage or help text. A local entrypoint may delegate that behaviour through the declared, vendored `ki-bootstrap:educator` module or the local `govern.ts` command dispatcher. Private reusable modules belong under `scripts/internal/`; only explicitly published cross-skill modules belong under `scripts/shared/`. (AS, KI)
   - _Review prompt:_ Does each top-level command stop and show useful help for `-h` and `--help` without causing side effects?
 
 ## KI-CHECKER — Knowledge Islands checker contract

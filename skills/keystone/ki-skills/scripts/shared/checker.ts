@@ -117,6 +117,23 @@ export type CheckerResult = {
   plannedItems: number
 }
 
+/**
+ * The side-effect-free aggregate preflight result.
+ *
+ * Aggregate callers use this rather than the legacy process environment switch,
+ * so planning never depends on a CLI transport or produces report records.
+ */
+export type CheckerPlan = {
+  plannedItems: number
+}
+
+/** Options shared by a governed entrypoint and the whole-set aggregate. */
+export type CheckerExecutionOptions = {
+  target: string
+  dryRun: boolean
+  statusTracker?: CheckerStatusTracker
+}
+
 export type CheckerParseResult = {
   records: readonly unknown[]
   errors: readonly string[]
@@ -374,19 +391,19 @@ const executeRubric = <RootContext>(
   return findings
 }
 
-export const runChecker = <RootContext>(input: CheckerInput<RootContext>): CheckerResult => {
+const validateCheckerInput = <RootContext>(input: CheckerInput<RootContext>): void => {
   if (!input.concern.trim()) throw new Error('checker concern must be non-empty')
   if (!input.target.trim()) throw new Error('checker target must be non-empty')
+}
 
+export const planChecker = <RootContext>(input: CheckerInput<RootContext>): CheckerPlan => {
+  validateCheckerInput(input)
+  return { plannedItems: planItems(input).length }
+}
+
+export const runChecker = <RootContext>(input: CheckerInput<RootContext>): CheckerResult => {
+  validateCheckerInput(input)
   const plannedItems = planItems(input)
-  if (process.env.KI_CHECKER_PLAN === '1')
-    return {
-      records: [],
-      findings: [],
-      summary: emptySummary(selectedJudgmentCount(input.rubric, input.subjects)),
-      exitCode: 0,
-      plannedItems: plannedItems.length
-    }
   let completed = 0
   emitStatus(input.statusTracker, { type: 'start', mode: input.mode, completed: 0, total: plannedItems.length })
 

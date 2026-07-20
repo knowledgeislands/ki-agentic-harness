@@ -175,9 +175,10 @@ export const createKiShapeEvidence = (
     .replace(/\/\/.*$/gm, '')
   const scaffoldedFiles = [...conformSource.matchAll(/\b(?:scaffold|syncOwned)\(\s*['"]([^'"]+)['"]/g)].map((match) => match[1] as string)
   const checkers = scriptNames
-    .filter(
-      (name) =>
-        (name === 'audit.ts' || name.startsWith('audit-') || name.startsWith('lint-')) && name.endsWith('.ts') && !name.endsWith('.test.ts')
+    .filter((name) =>
+      scriptNames.includes('govern.ts')
+        ? name === 'govern.ts'
+        : name === 'audit.ts' || name.startsWith('audit-') || name.startsWith('lint-')
     )
     .map((name) => {
       const source = readFileSync(join(scriptsDirectory, name), 'utf8')

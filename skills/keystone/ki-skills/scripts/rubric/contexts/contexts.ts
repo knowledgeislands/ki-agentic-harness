@@ -47,6 +47,7 @@ export type ScriptHelpEvidence = {
   declaresLongHelp: boolean
   declaresUsageText: boolean
   delegatesSharedEducator: boolean
+  delegatesGovern: boolean
 }
 
 export type ScriptsRubricContext = {

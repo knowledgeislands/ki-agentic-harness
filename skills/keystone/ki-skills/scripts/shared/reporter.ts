@@ -249,7 +249,6 @@ export const createTerminalStatusTracker = ({
 }
 
 export const renderCheckerResult = (result: CheckerResult, options: ReporterOptions): string => {
-  if (process.env.KI_CHECKER_PLAN === '1') return `${JSON.stringify({ version: 1, record: 'plan', items: result.plannedItems })}\n`
   if (options.reporter === 'jsonl') return checkerJsonl(result.records)
 
   const meta = result.records[0]

@@ -62,7 +62,7 @@ export const SCRIPT_8: RubricItem<ScriptsRubricContext> = {
   code: 'SCRIPT-8',
   title: 'top-level scripts expose command help',
   description:
-    'Every supported non-test script directly under `scripts/` is a public command entry point that exits successfully for `-h` and `--help` and prints useful usage or help text. A local entrypoint may delegate that behaviour through the declared, vendored `ki-bootstrap:educator` module. Private reusable modules belong under `scripts/internal/`; only explicitly published cross-skill modules belong under `scripts/shared/`.',
+    'Every supported non-test script directly under `scripts/` is a public command entry point that exits successfully for `-h` and `--help` and prints useful usage or help text. A local entrypoint may delegate that behaviour through the declared, vendored `ki-bootstrap:educator` module or the local `govern.ts` command dispatcher. Private reusable modules belong under `scripts/internal/`; only explicitly published cross-skill modules belong under `scripts/shared/`.',
   sources: ['AS', 'KI'],
   mechanical: {
     level: 'FAIL',
@@ -73,12 +73,13 @@ export const SCRIPT_8: RubricItem<ScriptsRubricContext> = {
         if (helpEvidence.length === 0) return [{ status: 'NOT_APPLICABLE', message: 'the skill has no top-level scripts' }]
         const violations = helpEvidence
           .filter(
-            ({ declaresShortHelp, declaresLongHelp, declaresUsageText, delegatesSharedEducator }) =>
-              !delegatesSharedEducator && (!declaresShortHelp || !declaresLongHelp || !declaresUsageText)
+            ({ declaresShortHelp, declaresLongHelp, declaresUsageText, delegatesSharedEducator, delegatesGovern }) =>
+              !delegatesSharedEducator && !delegatesGovern && (!declaresShortHelp || !declaresLongHelp || !declaresUsageText)
           )
           .map(({ subject }) => ({
             status: 'VIOLATION' as const,
-            message: 'source must declare `-h`, `--help`, and useful `Usage:` text, or delegate to the local vendored educator',
+            message:
+              'source must declare `-h`, `--help`, and useful `Usage:` text, or delegate to the local govern dispatcher or vendored educator',
             subject
           }))
         return violations.length > 0
