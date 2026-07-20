@@ -1,7 +1,7 @@
 ---
 id: 'FND-015'
 title: Unify governed entrypoints and in-process aggregate execution
-status: ready
+status: in-progress
 roadmap: foundation-tooling/add-safe-multiprogress-aggregate-execution
 blocks: —
 blocked-by: —
