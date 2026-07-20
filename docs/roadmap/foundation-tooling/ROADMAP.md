@@ -36,18 +36,6 @@ Design `kisle`, the stable end-user and automation entrypoint for Knowledge Isla
 
 Audit every shipped skill against the established exemplar implementations for structural consistency: checker decomposition, shared-module boundaries, script and test layout, mode wiring, safe-write patterns, generated payload treatment, and documentation-to-code ownership. Identify discrepancies in implementation shape and unnecessary divergence without demanding line-by-line uniformity or erasing legitimate concern-specific differences. Categorise the findings, settle the intended common patterns, and create focused follow-up work for each material inconsistency.
 
-### Improve CONFORM progress feedback
-
-Make direct and aggregate CONFORM progress useful in a terminal: immediately report startup and checker-plan discovery while the aggregate derives its total, then at every redraw detect the active `stderr` TTY width when available and allocate it between a left label, centre bar, and right-side counter, percentage, and status—not a redundant remaining-item count. Size the bar from the remaining width with a safe fallback and a maximum of 100 columns; use a compact non-wrapping form when there is no room for a bar. Preserve canonical JSONL and non-interactive output, never let presentation width alter item accounting, and cover startup, resize, narrow, wide, unavailable-TTY, and capped-width cases.
-
-**Plan:** [FND-010](plans/FND-010-improve-conform-progress-feedback.md)
-
-### Preserve committed completion records before plan removal
-
-Refine the `ki-plan` closing lifecycle so `done` first gains a `## Done` outcome, moves to `status: done`, and commits the still-visible roadmap and index record without deleting it. Add an explicit `prune` operation that later removes every eligible done plan in a requested scope as one guarded, auditable batch, including each canonical roadmap item and local reference and all generated index/projection entries. Keep both transitions recoverable; do not infer pruning from the done status alone.
-
-**Plan:** [FND-011](plans/FND-011-preserve-committed-completion-records.md)
-
 ### Add safe multiprogress aggregate execution
 
 Extend aggregate AUDIT and CONFORM with structured child progress so the default single bar advances continuously within each checker rather than only at checker-completion boundaries. Add an opt-in multiprogress display: one stable, labelled row per selected checker, such as `AUDIT [ki-skills]`. Both displays consume the same machine-readable child progress stream, never parsed terminal text. Separate presentation from execution: preserve deterministic checker ordering, JSONL, exit, and `--progress` semantics while evaluating bounded concurrent execution only for independent read-only audits. CONFORM remains sequential unless an explicit write-ownership and conflict contract proves a set of checkers safe to run together. Cover single- and multi-row allocation, narrow terminals, completion and failure, non-TTY output, cancellation, ordered final reporting, and concurrency limits without treating parallel rendering as permission to parallelise writes.

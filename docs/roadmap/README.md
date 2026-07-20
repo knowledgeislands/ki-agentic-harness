@@ -37,19 +37,7 @@ Canonical themes, active execution plans, and completed plan records.
 
 ## Completed plans
 
-### [FND-010](foundation-tooling/plans/FND-010-improve-conform-progress-feedback.md)
-
-- **Title:** Improve CONFORM progress feedback
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/improve-conform-progress-feedback`
-- **Status:** done
-
-### [FND-011](foundation-tooling/plans/FND-011-preserve-committed-completion-records.md)
-
-- **Title:** Preserve committed completion records before plan removal
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/preserve-committed-completion-records-before-plan-removal`
-- **Status:** done
+No completed plans.
 
 ## Dependency graph
 
