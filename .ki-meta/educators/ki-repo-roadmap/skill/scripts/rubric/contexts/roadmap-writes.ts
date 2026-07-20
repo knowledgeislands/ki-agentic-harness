@@ -250,10 +250,19 @@ function isDerivablePlanReferenceFailure(finding: Finding): boolean {
 }
 
 function index(themes: string[], plans: Plan[]): string {
-  const lines = ['# Repository roadmap index', '', 'Canonical themes and active execution plans.', '', '## Themes', '']
+  const lines = [
+    '# Repository roadmap index',
+    '',
+    'Canonical themes, active execution plans, and completed plan records.',
+    '',
+    '## Themes',
+    ''
+  ]
   for (const theme of themes) lines.push(`- [${theme}](${theme}/ROADMAP.md)`)
   lines.push('', '## Active plans', '')
-  for (const plan of [...plans].sort((a, b) => planRef(a).localeCompare(planRef(b)))) {
+  const active = plans.filter((plan) => plan.fm.status !== 'done')
+  const completed = plans.filter((plan) => plan.fm.status === 'done')
+  for (const plan of [...active].sort((a, b) => planRef(a).localeCompare(planRef(b)))) {
     const blockers = plan.blockedBy.filter((reference) => plans.find((candidate) => planRef(candidate) === reference)?.fm.status !== 'done')
     const status = blockers.length ? `${plan.fm.status} (needs ${blockers.join('+')})` : plan.fm.status
     lines.push(
@@ -267,7 +276,20 @@ function index(themes: string[], plans: Plan[]): string {
       ''
     )
   }
-  if (!plans.length) lines.push('No active plans.', '')
+  if (!active.length) lines.push('No active plans.', '')
+  lines.push('## Completed plans', '')
+  for (const plan of [...completed].sort((a, b) => planRef(a).localeCompare(planRef(b)))) {
+    lines.push(
+      `### [${planRef(plan)}](${plan.theme}/plans/${plan.name})`,
+      '',
+      `- **Title:** ${plan.fm.title}`,
+      `- **Theme:** \`${plan.theme}\``,
+      `- **Roadmap item:** \`${plan.fm.roadmap}\``,
+      '- **Status:** done',
+      ''
+    )
+  }
+  if (!completed.length) lines.push('No completed plans.', '')
   lines.push('## Dependency graph', '', '```text')
   const edges = plans.flatMap((plan) => plan.blocks.map((blocked) => `${planRef(plan)} ──► ${blocked}`)).sort()
   lines.push(...(edges.length ? edges : ['No dependencies.']), '```', '')

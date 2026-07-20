@@ -2,8 +2,8 @@
 name: ki-plan
 ki-depends-on: []
 description: >
-  Drives the lifecycle of an individual governed plan in a non-KB repository — execute / accept / done / new / promote / status — as an installable process skill (kind: process, ADR-KI-HARNESS-SKILLS-006). It creates and executes plans in a thematic repository roadmap, presents completed work for a manual acceptance gate before closure, closes accepted plans with canonical theme and generated-root sync, and can deliberately promote the current Claude Code Plan Mode scratch plan. The profiles, format, and methodology belong to the governance skill `ki-repo-roadmap`, which this skill composes on and never restates. Triggers: "accept this plan", "close this plan", "execute plan", "new plan", "promote this Plan Mode plan", "plan status", "/ki-plan". Not for Knowledge Islands KB repos (`repo_type = "kb"`), where planning is a `ki-kb-streams` proposal Checklist.
-argument-hint: 'execute <theme>/<id> | accept <theme>/<id> | done <theme>/<id> | new <theme> <title> | promote | status [theme] | help'
+  Drives the lifecycle of an individual governed plan in a non-KB repository — ready / execute / accept / done / prune / new / promote / status — as an installable process skill (kind: process, ADR-KI-HARNESS-SKILLS-006). It creates plans in a thematic repository roadmap, records explicit start approval, presents completed work for a manual acceptance gate, retains accepted completion records until an explicit batch prune, and can deliberately promote the current Claude Code Plan Mode scratch plan. The profiles, format, and methodology belong to the governance skill `ki-repo-roadmap`, which this skill composes on and never restates. Triggers: "ready this plan", "accept this plan", "close this plan", "prune done plans", "execute plan", "new plan", "promote this Plan Mode plan", "plan status", "/ki-plan". Not for Knowledge Islands KB repos (`repo_type = "kb"`), where planning is a `ki-kb-streams` proposal Checklist.
+argument-hint: 'ready <theme>/<id> | execute <theme>/<id> | accept <theme>/<id> | done <theme>/<id> | prune [theme] | new <theme> <title> | promote | status [theme] | help'
 ---
 
 # ki-plan
@@ -12,7 +12,7 @@ argument-hint: 'execute <theme>/<id> | accept <theme>/<id> | done <theme>/<id> |
 
 ## What this skill does
 
-Runs the individual-plan lifecycle for a **non-KB repository**: `execute` (work its Steps), `accept` (prepare a manual review packet and stop), `done` (close an explicitly accepted plan, remove its canonical theme item, and regenerate the root projection), `new` (write a plan file), `promote` (turn the current Claude Code Plan Mode scratch plan into a governed plan), and `status` (show all active plans or one theme's focused view). It is the process counterpart to `ki-repo-roadmap`. It reads the plan format and quality bar from that governance skill rather than restating them.
+Runs the individual-plan lifecycle for a **non-KB repository**: `ready` (record explicit approval to start), `execute` (work a ready plan's Steps), `accept` (prepare a manual review packet and stop), `done` (record an explicitly accepted plan's completion without deleting it), `prune` (separately remove a user-confirmed batch of committed done records and canonical items), `new` (write a plan file), `promote` (turn the current Claude Code Plan Mode scratch plan into a governed plan), and `status` (show active plans and retained records). It is the process counterpart to `ki-repo-roadmap`. It reads the plan format and quality bar from that governance skill rather than restating them.
 
 `ki-plan` operates only on the **thematic profile**. The simple profile deliberately has no plan collection. `new` and `promote` in a simple repository stop without writing and give the concrete expansion route `/ki-repo-roadmap expand <theme>`; the user runs `ki-plan` again after expansion.
 
@@ -22,7 +22,7 @@ In a KI code repo the plan is a governed file under `docs/roadmap/<theme>/plans/
 
 ## Invocation
 
-`help` / `-h` / `?` explains this skill and stops, taking no action. With no argument, present the six lifecycle verbs in the order above using the runtime's available interactive choice mechanism; in a non-interactive session, print the same choices and stop. Otherwise dispatch on the first token of the argument per [references/lifecycle.md](references/lifecycle.md).
+`help` / `-h` / `?` explains this skill and stops, taking no action. With no argument, present the eight lifecycle verbs in the order above using the runtime's available interactive choice mechanism; in a non-interactive session, print the same choices and stop. Otherwise dispatch on the first token of the argument per [references/lifecycle.md](references/lifecycle.md).
 
 **Claude Code session token for `promote`:** `${CLAUDE_SESSION_ID}`. Claude Code resolves this always-loaded value before the skill reaches the model. `promote` binds that resolved value as the current session id and fails closed if it remains unresolved or is not filename-safe; do not move this placeholder into the on-demand lifecycle reference. Other lifecycle verbs do not depend on it.
 
@@ -30,11 +30,11 @@ In a KI code repo the plan is a governed file under `docs/roadmap/<theme>/plans/
 
 1. Run `git rev-parse --show-toplevel` to find the git root, then physically resolve it.
 2. If `.ki-config.toml` at the git root has `repo_type = "kb"`: **stop** — in a KB, planning is a stream proposal's `## Checklist`, governed by `ki-kb-streams`. This skill creates no KB artifact.
-3. Ask `ki-repo-roadmap` to identify and validate the repository profile. In the simple profile, `status` reports that profile from the root `ROADMAP.md`; `execute`, `accept`, and `done` report that no governed plan collection exists; `new` and `promote` stop with `/ki-repo-roadmap expand <theme>`. In the thematic profile, use only `docs/roadmap/README.md`, `docs/roadmap/<theme>/ROADMAP.md`, and `docs/roadmap/<theme>/plans/`.
+3. Ask `ki-repo-roadmap` to identify and validate the repository profile. In the simple profile, `status` reports that profile from the root `ROADMAP.md`; `ready`, `execute`, `accept`, `done`, and `prune` report that no governed plan collection exists; `new` and `promote` stop with `/ki-repo-roadmap expand <theme>`. In the thematic profile, use only `docs/roadmap/README.md`, `docs/roadmap/<theme>/ROADMAP.md`, and `docs/roadmap/<theme>/plans/`.
 4. Resolve and validate every existing path component physically before reading or writing it. Never follow a symlink outside the physical git root, infer an alternative plan tree, or repair governance state as a side effect of a lifecycle command.
 
 ## Notes
 
 - No universal AUDIT/CONFORM/EDUCATE/REFRESH modes — this is a process skill (ADR-KI-HARNESS-SKILLS-001, ADR-KI-HARNESS-SKILLS-006); its modes are the lifecycle sub-commands above.
 - Installed globally by `/harness/install`, alongside `ki-bootstrap` — usable in any non-KB repository on the machine, not just this one. Like `ki-bootstrap`, never vendored or declared in a repo's `.ki-config.toml` — no `[ki-plan]` table, ever.
-- The thematic roadmap and file-oriented `execute`, `accept`, `done`, `new`, and `status` procedures are runtime-neutral; adapt interactive prompts to the host runtime. `promote` is Claude-Code-only because it consumes Claude Code's Plan Mode hook state and session substitution.
+- The thematic roadmap and file-oriented `ready`, `execute`, `accept`, `done`, `prune`, `new`, and `status` procedures are runtime-neutral; adapt interactive prompts to the host runtime. `promote` is Claude-Code-only because it consumes Claude Code's Plan Mode hook state and session substitution.

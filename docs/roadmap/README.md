@@ -1,6 +1,6 @@
 # Repository roadmap index
 
-Canonical themes and active execution plans.
+Canonical themes, active execution plans, and completed plan records.
 
 ## Themes
 
@@ -50,6 +50,10 @@ Canonical themes and active execution plans.
 - **Roadmap item:** `runtime-portability/detect-vendor-specific-assumptions-in-portable-skill-contracts`
 - **Status:** open
 - **Blocks:** —
+
+## Completed plans
+
+No completed plans.
 
 ## Dependency graph
 

@@ -44,7 +44,7 @@ const PLAN_RE = /^([A-Z][A-Z0-9]{1,7}-\d{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/
 const PLAN_LINE_RE = /^\*\*Plan:\*\* \[([A-Z][A-Z0-9]{1,7}-\d{3,})\]\((plans\/[A-Z][A-Z0-9]{1,7}-\d{3,}-[a-z0-9]+(?:-[a-z0-9]+)*\.md)\)$/
 const REQUIRED = ['id', 'title', 'status', 'roadmap', 'blocks', 'blocked-by']
 const OPTIONAL = ['handoff', 'tier', 'readiness']
-const VALID_STATUS = new Set(['open', 'in-progress', 'acceptance', 'done'])
+const VALID_STATUS = new Set(['open', 'ready', 'in-progress', 'acceptance', 'done'])
 const STANDARD_REF = 'references/standards.md'
 const FORMAT_REF = 'references/plan-format.md'
 const RUBRIC_REF = 'references/rubric.md'
@@ -264,10 +264,10 @@ function validatePlanBody(body: string, display: string, status: string | undefi
     }
   }
   const acceptance = sections.filter((section) => section.title === 'Acceptance')
-  if (status === 'acceptance') {
+  if (status === 'acceptance' || status === 'done') {
     const dependencies = sections.find((section) => section.title === 'Dependencies / blocks')
     if (acceptance.length !== 1 || !dependencies || acceptance[0].line <= dependencies.line) {
-      add('FAIL', 'PLAN-1', "acceptance status requires one non-empty 'Acceptance' H2 after 'Dependencies / blocks'", FORMAT_REF, display)
+      add('FAIL', 'PLAN-1', `${status} status requires one non-empty 'Acceptance' H2 after 'Dependencies / blocks'`, FORMAT_REF, display)
       return
     }
     const index = sections.indexOf(acceptance[0])
@@ -302,6 +302,16 @@ function validatePlanBody(body: string, display: string, status: string | undefi
       if (!bodyLines.slice(section.line, end).join('\n').trim())
         add('FAIL', 'PLAN-1', `acceptance subsection '${section.title}' must not be empty`, FORMAT_REF, display)
     }
+    if (status === 'done') {
+      const done = sections.filter((section) => section.title === 'Done')
+      const last = sections.at(-1)
+      if (done.length !== 1 || done[0].line <= acceptance[0].line || last !== done[0]) {
+        add('FAIL', 'PLAN-1', "done status requires one terminal non-empty 'Done' H2 after 'Acceptance'", FORMAT_REF, display)
+        return
+      }
+      if (!bodyLines.slice(done[0].line).join('\n').trim())
+        add('FAIL', 'PLAN-1', "body section 'Done' must not be empty", FORMAT_REF, display)
+    }
   }
 }
 
@@ -332,10 +342,19 @@ function projection(items: Item[]): string {
 }
 
 function planIndex(themes: string[], plans: Plan[]): string {
-  const lines = ['# Repository roadmap index', '', 'Canonical themes and active execution plans.', '', '## Themes', '']
+  const lines = [
+    '# Repository roadmap index',
+    '',
+    'Canonical themes, active execution plans, and completed plan records.',
+    '',
+    '## Themes',
+    ''
+  ]
   for (const theme of themes) lines.push(`- [${theme}](${theme}/ROADMAP.md)`)
   lines.push('', '## Active plans', '')
-  for (const plan of [...plans].sort((a, b) => planRef(a).localeCompare(planRef(b)))) {
+  const active = plans.filter((plan) => plan.fm.status !== 'done')
+  const completed = plans.filter((plan) => plan.fm.status === 'done')
+  for (const plan of [...active].sort((a, b) => planRef(a).localeCompare(planRef(b)))) {
     const blockers = plan.blockedBy.filter((reference) => plans.find((candidate) => planRef(candidate) === reference)?.fm.status !== 'done')
     const status = blockers.length ? `${plan.fm.status} (needs ${blockers.join('+')})` : plan.fm.status
     lines.push(
@@ -349,7 +368,20 @@ function planIndex(themes: string[], plans: Plan[]): string {
       ''
     )
   }
-  if (!plans.length) lines.push('No active plans.', '')
+  if (!active.length) lines.push('No active plans.', '')
+  lines.push('## Completed plans', '')
+  for (const plan of [...completed].sort((a, b) => planRef(a).localeCompare(planRef(b)))) {
+    lines.push(
+      `### [${planRef(plan)}](${plan.theme}/plans/${plan.name})`,
+      '',
+      `- **Title:** ${plan.fm.title}`,
+      `- **Theme:** \`${plan.theme}\``,
+      `- **Roadmap item:** \`${plan.fm.roadmap}\``,
+      '- **Status:** done',
+      ''
+    )
+  }
+  if (!completed.length) lines.push('No completed plans.', '')
   lines.push('## Dependency graph', '', '```text')
   const edges = plans.flatMap((plan) => plan.blocks.map((blocked) => `${planRef(plan)} ──► ${blocked}`)).sort()
   lines.push(...(edges.length ? edges : ['No dependencies.']), '```', '')
@@ -635,7 +667,7 @@ export const inspectRoadmap = (target: string): Finding[] => {
           const other = byRef.get(blocker)
           if (other && !other.blocks.includes(reference))
             add('FAIL', 'PLAN-3', `blocked-by ${blocker}, but its blocks omits ${reference}`, FORMAT_REF, plan.file)
-          if (['in-progress', 'acceptance'].includes(plan.fm.status) && other?.fm.status !== 'done') {
+          if (['ready', 'in-progress', 'acceptance'].includes(plan.fm.status) && other?.fm.status !== 'done') {
             add('FAIL', 'PLAN-3', `${plan.fm.status} plan still has non-done blocker ${blocker}`, FORMAT_REF, plan.file)
           }
         }

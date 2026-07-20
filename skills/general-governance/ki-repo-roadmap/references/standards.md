@@ -50,7 +50,7 @@ docs/roadmap/
   README.md
   <theme>/
     ROADMAP.md             # frontmatter: code: <THEME>
-    plans/                  # present only while the theme has active plans
+    plans/                  # present while the theme has active plans or retained done records
       <THEME>-<NNN>-<slug>.md
 ```
 
@@ -58,7 +58,7 @@ Theme names are unique lowercase kebab-case names. Every theme roadmap begins wi
 
 A theme directory exists only while its roadmap has at least one item. An empty scaffold-only theme roadmap is drift: CONFORM removes that theme directory, including an empty `plans/` directory. It does not remove a theme holding authored prose or any unexpected content; resolve that case deliberately instead of discarding it. The thematic profile may have zero remaining themes after pruning.
 
-Root `ROADMAP.md` is generated in this profile. It links every canonical item under its horizon but repeats none of its prose. `docs/roadmap/README.md` is also generated: it links themes, indexes every active plan as a short subsection with a metadata list, and renders the global dependency graph. The plan index never uses a Markdown table because its long links and locators are difficult to scan in columns. `docs/roadmap/README.md` is retained even when no themes or plans remain; CONFORM never deletes it or the repository's top-level `README.md`. Edit canonical theme roadmaps or plan files, then run CONFORM; never hand-edit either projection.
+Root `ROADMAP.md` is generated in this profile. It links every canonical item under its horizon but repeats none of its prose. `docs/roadmap/README.md` is also generated: it links themes, indexes active plans and retained done records as short subsections, and renders the global dependency graph. The plan index never uses a Markdown table because its long links and locators are difficult to scan in columns. `docs/roadmap/README.md` is retained even when no themes or plans remain; CONFORM never deletes it or the repository's top-level `README.md`. Edit canonical theme roadmaps or plan files, then run CONFORM; never hand-edit either projection.
 
 ## Expansion boundary
 
@@ -68,16 +68,16 @@ CONFORM is narrower. It may insert a missing canonical horizon blurb and rebuild
 
 ## Plan discipline
 
-Plans are recoverable execution documents for multi-file or multi-step changes. They exist only for `Blocking` and `Next` items and use the [plan format](plan-format.md). Each theme's code prefixes a separate zero-padded serial sequence beginning at `001`, so a canonical plan identifier is `<THEME>-<NNN>`. Dependencies use those globally unique identifiers and are bidirectional, existent, and acyclic. No plan moves to `in-progress` or `acceptance` while a listed blocker is not `done`.
+Plans are recoverable execution documents for multi-file or multi-step changes. They exist only for `Blocking` and `Next` items and use the [plan format](plan-format.md). Each theme's code prefixes a separate zero-padded serial sequence beginning at `001`, so a canonical plan identifier is `<THEME>-<NNN>`. Dependencies use those globally unique identifiers and are bidirectional, existent, and acyclic. No plan moves to `ready`, `in-progress`, or `acceptance` while a listed blocker is not `done`.
 
-A ready plan has concrete Steps, a checkable Verify section, an honest Current state, and a minimal Files touched list. The lifecycle is `open` → `in-progress` → `acceptance` → transient `done`: acceptance records a compact review packet and waits for explicit user approval; it does not silently route a learning into another durable artifact. A completed plan and its roadmap item are removed together only after that approval; git history is the archive.
+A ready plan has concrete Steps, a checkable Verify section, an honest Current state, and a minimal Files touched list. The lifecycle is `open` → `ready` → `in-progress` → `acceptance` → `done`: `open` awaits an explicit start decision, `ready` records that approved and unblocked decision, and acceptance records a compact review packet and waits for explicit user approval; it does not silently route a learning into another durable artifact. `done` retains a committed outcome record beside its still-visible canonical item. An explicit later prune, not the done transition, removes a selected completed batch and its canonical items.
 
 ### Local plan references
 
-An active plan has one inverse reference in the canonical item named by its `roadmap:` locator. The reference is the final, standalone line in that item's content, immediately before the next item or horizon:
+An active or retained done plan has one inverse reference in the canonical item named by its `roadmap:` locator. The reference is the final, standalone line in that item's content, immediately before the next item or horizon:
 
 ```markdown
 **Plan:** [HOK-004](plans/HOK-004-short-description.md)
 ```
 
-The identifier and relative path must resolve to that plan file. The line is derived state, not authored item prose: `ki-repo-roadmap` CONFORM repairs it from the active plan set, and `ki-plan` creates, maintains, or removes it in the same transaction as the plan. An item with no active plan has no such line. No other `**Plan:**` line is permitted in a canonical theme roadmap.
+The identifier and relative path must resolve to that plan file. The line is derived state, not authored item prose: `ki-repo-roadmap` CONFORM repairs it from the plan-record set, and `ki-plan` creates, maintains, or removes it in the same transaction as the plan. An item with no active or retained done plan has no such line. No other `**Plan:**` line is permitted in a canonical theme roadmap.

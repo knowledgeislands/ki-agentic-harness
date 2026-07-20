@@ -23,7 +23,7 @@ blocked-by: —
 ---
 ```
 
-- `status` is `open`, `in-progress`, `acceptance`, or transient `done`. `acceptance` means planned work and verification are complete and the plan awaits the user's explicit acceptance.
+- `status` is `open`, `ready`, `in-progress`, `acceptance`, or `done`. `open` awaits explicit approval to start; `ready` is approved and unblocked; `acceptance` means planned work and verification are complete and the plan awaits the user's explicit acceptance; `done` is a retained completion record awaiting an explicit later prune.
 - `roadmap` is a qualified `<theme>/<item-slug>` locator for an item in `Blocking` or `Next`; its theme must match the plan directory.
 - `blocks` and `blocked-by` are comma-separated canonical `<THEME>-<NNN>` plan identifiers or `—`, and are reverse-consistent.
 - There is no `phase` field; the canonical roadmap horizon is authoritative.
@@ -68,7 +68,7 @@ A pass/fail command or assertion.
 Narrative dependency context.
 ```
 
-During execution, mark completed steps without deleting their instructions. Before closing completed work, append one non-empty `## Acceptance` section after the six core sections using these H3 subsections, once and in order:
+During execution, mark completed steps without deleting their instructions. Before acceptance, append one non-empty `## Acceptance` section after the six core sections using these H3 subsections, once and in order:
 
 ```markdown
 ## Acceptance
@@ -94,6 +94,6 @@ Open questions, limitations, and proposed acceptance analysis; write `None` when
 What was learned and any proposed route. The route remains a proposal until the user approves it separately.
 ```
 
-Re-run a plan's implementation checks when entering acceptance and after any material implementation, verification, or environment change. An editorial refinement to the acceptance packet instead runs the relevant documentation and roadmap checks; it retains the earlier evidence revision rather than needlessly repeating unrelated full gates. Delete the plan when it lands; do not retain done plans in the index.
+After explicit acceptance, retain the packet and append one non-empty terminal `## Done` H2 recording the outcome. Re-run a plan's implementation checks when entering acceptance and after any material implementation, verification, or environment change. An editorial refinement to the acceptance packet instead runs the relevant documentation and roadmap checks; it retains the earlier evidence revision rather than needlessly repeating unrelated full gates. `done` plans remain visible in the completed-plan index until an explicit `ki-plan prune` removes a selected committed batch.
 
 Composed governance may add `handoff`, `tier`, or `readiness` frontmatter and additional H2 sections, but it must preserve the six core sections exactly once and in the order above.

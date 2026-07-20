@@ -59,7 +59,16 @@ const themeRoadmap = (
   items: Partial<Record<'Blocking' | 'Next' | 'Soon' | 'Waiting for' | 'Future', string[]>> = {}
 ): string => roadmap(title, items, code)
 
-function plan(id: string, title: string, locator: string, blocks = '—', blockedBy = '—', status = 'open', acceptance = false): string {
+function plan(
+  id: string,
+  title: string,
+  locator: string,
+  blocks = '—',
+  blockedBy = '—',
+  status = 'open',
+  acceptance = false,
+  done = false
+): string {
   return [
     '---',
     `id: '${id}'`,
@@ -121,6 +130,7 @@ function plan(id: string, title: string, locator: string, blocks = '—', blocke
           'No learning route proposed.'
         ]
       : []),
+    ...(done ? ['', '## Done', '', 'Completed and retained for a later explicit prune.'] : []),
     ''
   ].join('\n')
 }
@@ -285,18 +295,19 @@ function thematicFixture(): string {
   }
 }
 
-// Acceptance is an active, reviewable status with a dedicated packet.
+// Ready, acceptance, and done are visible lifecycle records with guarded shape.
 {
   const root = thematicFixture()
   try {
     const hooks = join(root, 'docs', 'roadmap', 'hooks', 'plans', 'HOK-001-harden-hook-linking.md')
     const runtime = join(root, 'docs', 'roadmap', 'runtime', 'plans', 'RTP-001-add-runtime-parity.md')
-    writeFileSync(hooks, plan('HOK-001', 'Harden hook linking', 'hooks/harden-hook-linking', 'RTP-001', '—', 'done'))
+    writeFileSync(hooks, plan('HOK-001', 'Harden hook linking', 'hooks/harden-hook-linking', 'RTP-001', '—', 'done', true, true))
     writeFileSync(runtime, plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'HOK-001', 'acceptance', true))
     const conformed = run(CONFORM, root)
     const index = readFileSync(join(root, 'docs', 'roadmap', 'README.md'), 'utf8')
     check('acceptance plan with packet audits cleanly', conformed.code === 0 && run(AUDIT, root).code === 0)
     check('global index renders acceptance status', index.includes('- **Status:** acceptance'))
+    check('global index retains done record separately', index.includes('## Completed plans') && index.includes('### [HOK-001]'))
     writeFileSync(runtime, plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'HOK-001', 'acceptance'))
     const invalid = run(AUDIT, root)
     check(
@@ -315,6 +326,34 @@ function thematicFixture(): string {
       'acceptance plan with malformed packet fails',
       malformed.code !== 0 && malformed.out.includes('acceptance packet must contain these H3 sections once and in order')
     )
+    writeFileSync(runtime, plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'HOK-001', 'done', true))
+    const missingDone = run(AUDIT, root)
+    check(
+      'done plan without terminal outcome fails',
+      missingDone.code !== 0 && missingDone.out.includes("done status requires one terminal non-empty 'Done' H2 after 'Acceptance'")
+    )
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+
+// Ready records approval to start and cannot bypass an unresolved blocker.
+{
+  const root = thematicFixture()
+  try {
+    const hooks = join(root, 'docs', 'roadmap', 'hooks', 'plans', 'HOK-001-harden-hook-linking.md')
+    const runtime = join(root, 'docs', 'roadmap', 'runtime', 'plans', 'RTP-001-add-runtime-parity.md')
+    writeFileSync(runtime, plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'HOK-001', 'ready'))
+    const blocked = run(AUDIT, root)
+    check(
+      'ready plan with non-done blocker fails',
+      blocked.code !== 0 && blocked.out.includes('ready plan still has non-done blocker HOK-001')
+    )
+    writeFileSync(hooks, plan('HOK-001', 'Harden hook linking', 'hooks/harden-hook-linking', 'RTP-001', '—', 'done', true, true))
+    const conformed = run(CONFORM, root)
+    const index = readFileSync(join(root, 'docs', 'roadmap', 'README.md'), 'utf8')
+    check('ready plan with done blocker audits cleanly', conformed.code === 0 && run(AUDIT, root).code === 0)
+    check('global index renders ready status', index.includes('- **Status:** ready'))
   } finally {
     rmSync(root, { recursive: true, force: true })
   }
@@ -382,7 +421,8 @@ for (const [label, mutate] of [
     check('repository README survives empty-theme pruning', readFileSync(join(root, 'README.md'), 'utf8') === '# Repository readme\n')
     check(
       'zero-plan index avoids a placeholder table',
-      generated.includes('## Active plans\n\nNo active plans.\n\n## Dependency graph') && !generated.includes('| Plan |')
+      generated.includes('## Active plans\n\nNo active plans.\n\n## Completed plans\n\nNo completed plans.\n\n## Dependency graph') &&
+        !generated.includes('| Plan |')
     )
   } finally {
     rmSync(root, { recursive: true, force: true })

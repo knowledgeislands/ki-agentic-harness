@@ -2,35 +2,70 @@
 
 _On-demand procedure for `ki-plan`'s sub-commands. The preflight, invocation, and composition-on-`ki-repo-roadmap` model live in [`SKILL.md`](../SKILL.md) and are already loaded; this file is the sub-command procedure only._
 
-Split the argument on the first space to get **sub-command** and **rest**. The lifecycle verbs are `execute`, `accept`, `done`, `new`, `promote`, and `status`, in that order.
+Split the argument on the first space to get **sub-command** and **rest**. The lifecycle verbs are `ready`, `execute`, `accept`, `done`, `prune`, `new`, `promote`, and `status`.
+
+## Contents
+
+- [`accept <THEME>-<NNN>`](#accept-theme-nnn)
+- [`done <THEME>-<NNN>`](#done-theme-nnn)
+- [`ready <THEME>-<NNN>`](#ready-theme-nnn)
+- [`prune [theme]`](#prune-theme)
+- [`execute <THEME>-<NNN>`](#execute-theme-nnn)
+- [`new <theme> <title>`](#new-theme-title)
+- [`promote`](#promote)
+- [`status [theme]`](#status-theme)
+- [Mandate](#mandate)
 
 ## `accept <THEME>-<NNN>`
 
 1. Require the thematic profile. Parse the plan identifier as an uppercase theme code plus a zero-padded numeric serial, `<THEME>-<NNN>`. Locate the one `<THEME>-<NNN>-*.md` under the corresponding theme's `plans/` directory; stop on zero or multiple matches. Require `status: in-progress`; a plan already in `acceptance` is shown as pending review, and an open plan must first be executed.
 2. Run the read-only `ki-repo-roadmap` audit and continue only with zero FAIL and zero WARN. Require every `## Steps` item to be marked complete. Re-run the plan's `## Verify` checks now and retain each concrete command, result, and the checked commit or other evidence revision; stop if any check fails or cannot be evidenced. Confirm that every qualified `blocked-by` plan is done.
 3. Append one non-empty `## Acceptance` section after `## Dependencies / blocks`, then set `status: acceptance` and regenerate the global index in the same guarded transaction used for execution progress. Use H3 subsections, once and in this order: `Delivered`, `Summary of changes`, `Verification`, `Outstanding concerns`, and `Mini recap`. The summary names material changes and useful primary paths; verification records step 2's commands, outcomes, and evidence revision; concerns record open questions or `None`; the mini recap records learning plus any proposed route. The mini recap is plan-scoped review evidence, not approval to write its learning anywhere else.
-4. Run the read-only roadmap audit again. Present the packet to the user and stop. Do not close the plan, remove its roadmap item, infer acceptance from silence, or promote a proposed learning into a guide, rubric, agent, hook, memory, or another durable home.
+4. Run the read-only roadmap audit again. Present the packet to the user, then emit this shared completion banner and stop. Do not close the plan, remove its roadmap item, infer acceptance from silence, or promote a proposed learning into a guide, rubric, agent, hook, memory, or another durable home.
+
+   ```text
+   +------------------------------+
+   | COMPLETE! \o/                |
+   | Ready for acceptance review. |
+   +------------------------------+
+   ```
 
 If acceptance analysis later changes only the packet's prose, run the applicable documentation and roadmap checks and retain the recorded implementation evidence. Re-run the plan's full Verify checks only when the implementation, verification scope, or relevant environment has materially changed, or when the user explicitly asks for fresh full verification.
 
 ## `done <THEME>-<NNN>`
 
-1. Require the thematic profile. Parse the plan identifier as an uppercase theme code plus a zero-padded numeric serial, `<THEME>-<NNN>`. Locate the one `<THEME>-<NNN>-*.md` under the corresponding theme's `plans/` directory; stop on zero or multiple matches. Require `status: acceptance` and an existing non-empty `## Acceptance` section.
-2. Require the user's explicit acceptance in the current conversation. Never infer it from the plan's status, verification results, elapsed time, or a missing objection. If the user asks for a change or declines acceptance, return the plan to `in-progress` through the guarded transaction and retain the acceptance evidence for the next review.
+1. Require the thematic profile. Parse the plan identifier as an uppercase theme code plus a zero-padded numeric serial, `<THEME>-<NNN>`. Locate the one `<THEME>-<NNN>-*.md` under the corresponding theme's `plans/` directory; stop on zero or multiple matches. Require `status: acceptance` and a valid non-empty `## Acceptance` packet.
+2. Require the user's explicit acceptance in the current conversation. Never infer it from the plan's status, verification results, elapsed time, or a missing objection. If the user asks for a change or declines acceptance, return the materially revised plan to `open` through the guarded transaction. Retain and refresh its one acceptance packet only when it next reaches acceptance.
 3. Run the read-only `ki-repo-roadmap` audit and continue only with zero FAIL and zero WARN. Read the plan and resolve its qualified `roadmap: <theme>/<item-slug>` locator to exactly one `Blocking` or `Next` item in `docs/roadmap/<theme>/ROADMAP.md`; stop on any mismatch or ambiguity.
-4. Prepare, without writing, the canonical theme roadmap with that item and its derived local plan reference removed, every affected plan with `<THEME>-<NNN>` removed from `blocks` / `blocked-by`, the regenerated root `ROADMAP.md` projection, and `docs/roadmap/README.md` with the plan row and every dependency edge referencing `<THEME>-<NNN>` removed. Treat the closing plan's deletion as part of the same transaction; `status: done` is transient and need not be published separately.
-5. Snapshot the exact bytes of the closing plan, every affected plan, the canonical theme roadmap, root projection, and global index. Immediately before committing, re-resolve every path component, rerun the clean read-only audit, and require every snapshot to remain byte-for-byte unchanged.
-6. Materialise all replacement files as regular same-directory temporary files. Replace the affected plans, theme roadmap, root projection, and global index only while their current bytes still match their snapshots, then remove the closing plan only while its bytes still match its snapshot. Run the read-only audit again; success requires zero FAIL and zero WARN, no remaining canonical item or plan/index/dependency reference, and an exact generated root projection.
-7. If any publication or the post-write audit fails, restore only transaction-owned changes and only when each current artifact still equals the bytes written by this transaction. Restore the closing plan with an exclusive create and restore each replaced file from its exact snapshot. If concurrent change prevents safe rollback, stop and report the exact conflict instead of overwriting it.
-8. Report: "Plan `<THEME>-<NNN>` closed after manual acceptance."
+4. Prepare, without writing, the plan with `status: done` and one non-empty terminal `## Done` H2 after its acceptance packet. The outcome says what completed, records any residual concern or `None`, and names any intended follow-up. Keep its canonical item, local reference, dependency edges, root portfolio, and generated index; regenerate only the derived index status and completed-plan section.
+5. Snapshot the exact bytes of the plan, canonical theme roadmap, root projection, and global index. Immediately before writing, re-resolve every path component, rerun the clean read-only audit, and require every snapshot to remain byte-for-byte unchanged.
+6. Materialise only the plan and regenerated index as regular same-directory temporary files. Replace them only while their current bytes still match their snapshots. Run the read-only audit again; success requires zero FAIL and zero WARN, the retained canonical item and local reference, a valid terminal done outcome, and an exact generated root projection.
+7. If publication or the post-write audit fails, restore only transaction-owned changes and only while each current artifact still equals the bytes written by this transaction. If concurrent change prevents safe rollback, stop and report the exact conflict instead of overwriting it.
+8. Commit the done record and regenerated index as one explicit-path commit, then report: "Plan `<THEME>-<NNN>` recorded done after manual acceptance; prune later when the work tranche is complete."
+
+## `ready <THEME>-<NNN>`
+
+1. Require the thematic profile. Parse and locate the one `<THEME>-<NNN>-*.md`; stop on zero or multiple matches. Require `status: open`. A `ready`, `in-progress`, `acceptance`, or `done` plan is reported at its current gate and is not silently moved.
+2. Require the user's explicit approval to start this plan in the current conversation. Approval to create, edit, or inspect a plan is not readiness approval. Run the read-only `ki-repo-roadmap` audit and continue only with zero FAIL and zero WARN. Confirm every qualified `blocked-by` plan is done.
+3. Snapshot the exact plan, its canonical theme-roadmap local reference, and `docs/roadmap/README.md` bytes. Prepare only `status: ready` and the regenerated index; retain the plan body, canonical item, local reference, root projection, and dependencies unchanged. Revalidate the clean audit and every snapshot immediately before writing, then publish through same-directory temporary files. On failure, restore only transaction-owned bytes and stop rather than overwrite a concurrent change.
+4. Run the audit again, commit the ready transition with its index, and report that `execute` is now eligible.
+
+## `prune [theme]`
+
+1. Require the thematic profile. With a theme argument, require lowercase kebab-case and one existing canonical theme; with no argument, scope the full thematic set. Run the read-only `ki-repo-roadmap` audit and continue only with zero FAIL and zero WARN.
+2. Discover only in-scope plans with `status: done`, each with a valid terminal `## Done` outcome, a canonical local reference, and a matching `Blocking` or `Next` item. Require every candidate to be tracked, clean against `HEAD`, and have a committed history entry. Do not repair malformed state, infer a candidate, or include an open, ready, in-progress, or acceptance plan. Report every eligible `<THEME>-<NNN>` and its roadmap locator, plus every excluded plan with its exact diagnostic; stop without writing if no candidate is eligible.
+3. Present the candidate list and stop for the user's explicit current-conversation confirmation of precisely that list. Never prune from a bare command, silence, or a changed candidate set. On confirmation, rerun discovery and require the same list and exact snapshots; otherwise stop and show the changed or unsafe paths.
+4. Prepare one transaction: remove each selected plan and its canonical item plus local reference; remove every selected identifier from remaining `blocks` / `blocked-by`; regenerate root `ROADMAP.md` and `docs/roadmap/README.md`; retain non-selected plans and all authored item prose. If any selected item, dependency, path component, plan record, or snapshot is malformed or concurrently changed, leave it untouched and stop with that exact diagnostic.
+5. Materialise regular same-directory temporary files. Replace only byte-unchanged affected roadmaps, plans, projections, and index; remove a selected plan only while its bytes match its snapshot. Run the read-only audit again; success requires zero FAIL and zero WARN, no selected canonical item/reference/index/dependency edge, and exact generated projections.
+6. On any failure, restore only transaction-owned files while their current bytes still match the bytes this transaction wrote. Restore a removed plan only with an exclusive create. If safe rollback cannot proceed, stop and report the conflict. Commit the successful prune batch separately from every done transition.
 
 ## `execute <THEME>-<NNN>`
 
-1. Require the thematic profile. Parse the plan identifier as an uppercase theme code plus a zero-padded numeric serial, `<THEME>-<NNN>`. Locate the one `<THEME>-<NNN>-*.md` under the corresponding theme's `plans/` directory.
+1. Require the thematic profile. Parse the plan identifier as an uppercase theme code plus a zero-padded numeric serial, `<THEME>-<NNN>`. Locate the one `<THEME>-<NNN>-*.md` under the corresponding theme's `plans/` directory. Require `status: ready`; an open plan must first receive `ready` approval.
 2. Run the read-only `ki-repo-roadmap` audit and continue only with zero FAIL and zero WARN. Read the plan and verify that every qualified `blocked-by` plan reference has cleared the active repository-wide index.
 3. For each plan edit — the initial `status: in-progress` and every completed Step marker — snapshot the exact plan, its canonical theme-roadmap local reference, and `docs/roadmap/README.md` bytes. Prepare the plan and regenerated index replacements, revalidate the clean audit and every snapshot immediately before writing, and require the local reference to remain exactly matched to the plan. Publish through same-directory temporary files; run the audit again. On failure, restore only transaction-owned bytes and only while the current files still equal the bytes this transaction wrote. Stop rather than overwrite a concurrent change.
 4. Work `## Steps` sequentially; after each completes, prefix that line with `✓` (or check its `- [x]` box). Commit progress as you go — the plan file and regenerated index travel with the code they describe.
-5. When all steps are done and the plan's Verify checks pass, run `accept <THEME>-<NNN>`. Stop after presenting its packet; only a later explicit user acceptance permits `done <THEME>-<NNN>` to close the plan and its canonical roadmap item.
+5. When all steps are done and the plan's Verify checks pass, run `accept <THEME>-<NNN>`. Stop after presenting its packet; only a later explicit user acceptance permits `done <THEME>-<NNN>` to record its retained completion outcome. A separate later `prune` removes selected done records and canonical items.
 
 ## `new <theme> <title>`
 
@@ -89,8 +124,8 @@ Report the new plan path and leave implementation to `execute`.
 
 In the simple profile, print the root `ROADMAP.md` and report that the repository has no governed plan collection. In the thematic profile:
 
-- With no theme, print `docs/roadmap/README.md` as-is — the flat active index and dependency graph. If it has no plan rows, report "No active plans."
-- With a safe kebab-case theme, print that theme's canonical `docs/roadmap/<theme>/ROADMAP.md` followed by only the global-index rows and dependency edges involving plans in that theme. Stop if the theme does not exist; do not silently fall back to the global view.
+- With no theme, print `docs/roadmap/README.md` as-is — active plans, retained completed records, and the dependency graph. If both plan sections are empty, report "No plans."
+- With a safe kebab-case theme, print that theme's canonical `docs/roadmap/<theme>/ROADMAP.md` followed by only the global-index rows and dependency edges involving plans in that theme, including retained done records. Stop if the theme does not exist; do not silently fall back to the global view.
 
 ## Mandate
 
