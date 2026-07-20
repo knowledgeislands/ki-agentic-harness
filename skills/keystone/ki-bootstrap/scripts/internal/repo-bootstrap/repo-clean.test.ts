@@ -1,7 +1,18 @@
 #!/usr/bin/env bun
 /** Focused lifecycle and safety checks for source-owned repository CLEAN. */
 import { spawnSync } from 'node:child_process'
-import { existsSync, lstatSync, mkdtempSync, readdirSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import {
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -24,6 +35,13 @@ function fixture(): string {
   const root = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-clean-')))
   writeFileSync(join(root, '.ki-config.toml'), config)
   return root
+}
+
+function writeLocalKiSelf(root: string): string {
+  const source = join(root, '.ki-self', 'SKILL.md')
+  mkdirSync(dirname(source), { recursive: true })
+  writeFileSync(source, ['---', 'name: ki-self', 'description: Local concerns.', '---', '', '# KI Self', ''].join('\n'))
+  return source
 }
 
 function run(command: string, args: string[], root: string, env: Record<string, string> = {}): ReturnType<typeof spawnSync> {
@@ -95,6 +113,27 @@ try {
   check('CLEAN still removes separately proven .ki-meta output', !existsSync(join(altered, '.ki-meta')))
 } finally {
   rmSync(altered, { recursive: true, force: true })
+}
+
+const localSelf = fixture()
+try {
+  const source = writeLocalKiSelf(localSelf)
+  check('local ki-self fixture EDUCATE succeeds', educate(localSelf).status === 0)
+  const claudeProjection = join(localSelf, '.claude', 'skills', 'ki-self')
+  const codexProjection = join(localSelf, '.agents', 'skills', 'ki-self')
+  check(
+    'CLEAN fixture projects local ki-self into both runtimes',
+    lstatSync(claudeProjection).isSymbolicLink() && lstatSync(codexProjection).isSymbolicLink()
+  )
+  check(
+    'CLEAN preserves local ki-self source and projections',
+    runClean(localSelf).status === 0 &&
+      existsSync(source) &&
+      lstatSync(claudeProjection).isSymbolicLink() &&
+      lstatSync(codexProjection).isSymbolicLink()
+  )
+} finally {
+  rmSync(localSelf, { recursive: true, force: true })
 }
 
 const linked = fixture()

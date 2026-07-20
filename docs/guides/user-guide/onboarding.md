@@ -94,6 +94,6 @@ bun ~/.claude/skills/ki-bootstrap/scripts/clean.ts . --dry-run
 bun ~/.agents/skills/ki-bootstrap/scripts/clean.ts . --dry-run
 ```
 
-Review the reported paths, then rerun the same command without `--dry-run` to remove them. CLEAN removes only an intact manifest-owned `.ki-meta/` tree and unchanged generated runtime skill copies. It is repository-scoped cleanup, not an uninstall: it preserves `.ki-config.toml`, `.gitignore`, agents, `ki-self`, source links, altered payloads, unfamiliar files, and every user-level KI installation. Unsafe or changed metadata causes it to stop rather than guess. Run bootstrap again afterwards to reconstruct the governed footprint.
+Review the reported paths, then rerun the same command without `--dry-run` to remove them. CLEAN removes only an intact manifest-owned `.ki-meta/` tree and unchanged generated runtime skill copies. It is repository-scoped cleanup, not an uninstall: it preserves `.ki-config.toml`, `.gitignore`, agents, `.ki-self/`, its runtime projection links, altered payloads, unfamiliar files, and every user-level KI installation. Unsafe or changed metadata causes it to stop rather than guess. Run bootstrap again afterwards to reconstruct the governed footprint.
 
 If `ki-bootstrap` is not installed for either runtime, use the same `scripts/clean.ts` path from a local harness checkout instead. Do not manually delete `.ki-meta/` or `ki-*` directories to work around a CLEAN refusal; inspect and resolve the preserved state first.

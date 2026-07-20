@@ -2,7 +2,6 @@
 /** Hostile-path and transaction regressions for the combined project link writer. */
 import { spawnSync } from 'node:child_process'
 import {
-  chmodSync,
   existsSync,
   lstatSync,
   mkdirSync,
@@ -19,7 +18,17 @@ import { tmpdir } from 'node:os'
 import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const LINKER = join(dirname(fileURLToPath(import.meta.url)), 'project-skill-publisher.ts')
+const LINKER = join(
+  dirname(fileURLToPath(import.meta.url)),
+  '..',
+  '..',
+  '..',
+  'ki-bootstrap',
+  'scripts',
+  'internal',
+  'repo-bootstrap',
+  'project-skill-publisher.ts'
+)
 let failed = false
 function check(label: string, condition: boolean): void {
   if (condition) console.log(`  \x1b[32mok\x1b[0m   ${label}`)
@@ -54,7 +63,7 @@ function fixture(runtimes = ['claude-code']): string {
 function run(root: string, env: Record<string, string> = {}, args: string[] = []): ReturnType<typeof spawnSync> {
   return spawnSync('bun', [LINKER, ...args, root], {
     encoding: 'utf8',
-    env: { ...process.env, ...env, ...(env.KI_PROJECT_LINKS_TEST_SKILLS_ROOT ? { NODE_ENV: 'test' } : {}) }
+    env: { ...process.env, ...env }
   })
 }
 
@@ -65,19 +74,11 @@ function writeLocalKiSelf(root: string, runtime: 'claude-code' | 'codex'): strin
   return path
 }
 
-function fakeSkillsRoot(): { root: string; skill: string; nested: string } {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), 'ki-project-links-skills-')))
-  const skill = join(root, 'cluster', 'ki-kb')
-  const nested = join(skill, 'nested')
-  mkdirSync(nested, { recursive: true })
-  writeFileSync(join(skill, 'SKILL.md'), '# Fake skill\n')
-  writeFileSync(join(nested, 'mode-sensitive.txt'), 'payload\n')
-  for (const name of ['ki-repo', 'ki-authoring', 'ki-agents', 'ki-kb-activities', 'ki-kb-live-artifacts', 'ki-kb-streams']) {
-    const sibling = join(root, 'cluster', name)
-    mkdirSync(sibling)
-    writeFileSync(join(sibling, 'SKILL.md'), `# ${name}\n`)
-  }
-  return { root, skill, nested }
+function writeCanonicalKiSelf(root: string, description = 'Local concerns.'): string {
+  const path = join(root, '.ki-self', 'SKILL.md')
+  mkdirSync(dirname(path), { recursive: true })
+  writeFileSync(path, ['---', 'name: ki-self', `description: ${description}`, '---', '', '# KI Self', ''].join('\n'))
+  return path
 }
 
 function snapshot(root: string): string {
@@ -131,25 +132,59 @@ try {
 const localSelf = fixture(['claude-code', 'codex'])
 try {
   const claudeSelf = writeLocalKiSelf(localSelf, 'claude-code')
-  const codexSelf = writeLocalKiSelf(localSelf, 'codex')
-  writeFileSync(
-    join(localSelf, '.gitignore'),
-    '.claude/skills/*\n!.claude/skills/ki-self/\n!.claude/skills/ki-self/**\n.agents/skills/*\n!.agents/skills/ki-self/\n!.agents/skills/ki-self/**\n'
-  )
+  writeFileSync(join(localSelf, '.gitignore'), '.claude/skills/*\n.agents/skills/*\n')
+  const beforeDryRun = snapshot(localSelf)
+  const preview = run(localSelf, {}, ['--dry-run'])
+  check('legacy local ki-self → dry-run plans migration without writing', preview.status === 0 && snapshot(localSelf) === beforeDryRun)
   const result = run(localSelf)
-  check('valid local ki-self → publication succeeds', result.status === 0)
-  check('valid local ki-self → both regular payloads are preserved', lstatSync(claudeSelf).isFile() && lstatSync(codexSelf).isFile())
+  const source = join(localSelf, '.ki-self', 'SKILL.md')
+  const codexSelf = join(localSelf, '.agents', 'skills', 'ki-self')
+  check('legacy local ki-self → publication succeeds', result.status === 0)
+  check('legacy local ki-self → moves the sole source outside runtime directories', lstatSync(source).isFile())
+  check(
+    'legacy local ki-self → projects both runtime directories to the canonical source',
+    lstatSync(dirname(claudeSelf)).isSymbolicLink() &&
+      lstatSync(codexSelf).isSymbolicLink() &&
+      realpathSync(dirname(claudeSelf)) === realpathSync(dirname(source)) &&
+      realpathSync(codexSelf) === realpathSync(dirname(source))
+  )
   const checked = run(localSelf, {}, ['--check'])
   check(
-    'valid local ki-self → generated-coverage check accepts the exception',
+    'canonical local ki-self → generated-coverage check accepts the projection',
     checked.status === 0 && !checked.stdout.includes('[BOOT-1]')
   )
   check(
-    'valid local ki-self → wildcard ignores are accepted without rewriting',
+    'canonical local ki-self → wildcard ignores are accepted without rewriting',
     !/^(?:\.claude|\.agents)\/skills\/?$/m.test(readFileSync(join(localSelf, '.gitignore'), 'utf8'))
   )
 } finally {
   rmSync(localSelf, { recursive: true, force: true })
+}
+
+const divergentLocalSelf = fixture(['claude-code'])
+try {
+  writeCanonicalKiSelf(divergentLocalSelf, 'Canonical local concerns.')
+  writeLocalKiSelf(divergentLocalSelf, 'claude-code')
+  const before = snapshot(divergentLocalSelf)
+  check('divergent local ki-self → transaction refuses replacement', run(divergentLocalSelf).status !== 0)
+  check('divergent local ki-self → preserves both authored versions', snapshot(divergentLocalSelf) === before)
+} finally {
+  rmSync(divergentLocalSelf, { recursive: true, force: true })
+}
+
+const unsafeLocalSelf = fixture(['claude-code'])
+const unsafeLocalSelfOutside = realpathSync(mkdtempSync(join(tmpdir(), 'ki-project-links-self-outside-')))
+try {
+  writeFileSync(join(unsafeLocalSelfOutside, 'sentinel'), 'outside\n')
+  symlinkSync(unsafeLocalSelfOutside, join(unsafeLocalSelf, '.ki-self'))
+  check('unsafe canonical ki-self → transaction refuses the source link', run(unsafeLocalSelf).status !== 0)
+  check(
+    'unsafe canonical ki-self → never follows the source link',
+    readFileSync(join(unsafeLocalSelfOutside, 'sentinel'), 'utf8') === 'outside\n'
+  )
+} finally {
+  rmSync(unsafeLocalSelf, { recursive: true, force: true })
+  rmSync(unsafeLocalSelfOutside, { recursive: true, force: true })
 }
 
 const blocker = fixture()
@@ -288,48 +323,6 @@ try {
   )
 } finally {
   rmSync(codexOnly, { recursive: true, force: true })
-}
-
-const sourceSymlink = fixture()
-const sourceSymlinkRoot = fakeSkillsRoot()
-try {
-  const outside = join(sourceSymlinkRoot.root, 'outside')
-  writeFileSync(outside, 'must not follow\n')
-  symlinkSync(outside, join(sourceSymlinkRoot.skill, 'nested', 'escaped'))
-  const before = snapshot(sourceSymlink)
-  check(
-    'symlinked source-tree entry → transaction refuses before publication',
-    run(sourceSymlink, { KI_PROJECT_LINKS_TEST_SKILLS_ROOT: sourceSymlinkRoot.root }).status !== 0
-  )
-  check('symlinked source-tree entry → repository remains unchanged', snapshot(sourceSymlink) === before)
-} finally {
-  rmSync(sourceSymlink, { recursive: true, force: true })
-  rmSync(sourceSymlinkRoot.root, { recursive: true, force: true })
-}
-
-const sourceModes = fixture()
-const sourceModesRoot = fakeSkillsRoot()
-try {
-  const sourceFile = join(sourceModesRoot.nested, 'mode-sensitive.txt')
-  chmodSync(sourceFile, 0o751)
-  const result = run(sourceModes, { KI_PROJECT_LINKS_TEST_SKILLS_ROOT: sourceModesRoot.root })
-  const copied = join(sourceModes, '.claude', 'skills', 'ki-kb', 'nested', 'mode-sensitive.txt')
-  if (result.status !== 0) console.log(`${result.stdout ?? ''}${result.stderr ?? ''}`)
-  check('regular source tree → transaction copies the payload', result.status === 0 && existsSync(copied))
-  check(
-    'copied regular file → preserves source mode',
-    existsSync(copied) && (lstatSync(copied).mode & 0o7777) === (lstatSync(sourceFile).mode & 0o7777)
-  )
-  chmodSync(copied, 0o600)
-  const before = snapshot(sourceModes)
-  check(
-    'mode-drifted copied payload → refuses replacement',
-    run(sourceModes, { KI_PROJECT_LINKS_TEST_SKILLS_ROOT: sourceModesRoot.root }).status !== 0
-  )
-  check('mode-drifted copied payload → preserves the local payload', snapshot(sourceModes) === before)
-} finally {
-  rmSync(sourceModes, { recursive: true, force: true })
-  rmSync(sourceModesRoot.root, { recursive: true, force: true })
 }
 
 const forgedMarker = fixture()

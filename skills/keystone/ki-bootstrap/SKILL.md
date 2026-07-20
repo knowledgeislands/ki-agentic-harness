@@ -77,7 +77,7 @@ CLEAN is a source-owned recovery operation, run from an installed or harness-loc
 bun scripts/clean.ts <target-repo> [--dry-run]
 ```
 
-It removes `.ki-meta/` only when its manifest accounts for the complete regular-file tree, and removes only regular runtime skill directories whose generated marker and integrity still prove ownership. It preserves `.ki-config.toml`, `.gitignore`, agents, canonical source, source links, `ki-self`, altered payloads, and every unmarked path. An unfamiliar, changed, symlinked, or concurrent `.ki-meta/` state is a fail-closed refusal; `--dry-run` reports the proven removal set without writing. Re-running CLEAN after a successful pass is safe, and EDUCATE reconstructs the normal governed footprint.
+It removes `.ki-meta/` only when its manifest accounts for the complete regular-file tree, and removes only regular runtime skill directories whose generated marker and integrity still prove ownership. It preserves `.ki-config.toml`, `.gitignore`, agents, canonical source, source links, `.ki-self/` and its runtime projections, altered payloads, and every unmarked path. An unfamiliar, changed, symlinked, or concurrent `.ki-meta/` state is a fail-closed refusal; `--dry-run` reports the proven removal set without writing. Re-running CLEAN after a successful pass is safe, and EDUCATE reconstructs the normal governed footprint.
 
 ### Mode REFRESH — re-anchor
 

@@ -58,7 +58,7 @@ export type ProjectLinkCheck = {
 
 type Kind = 'file' | 'dir' | 'link' | 'other'
 type Entry = { kind: Kind; dev: number; ino: number; uid: number; mode: number; link?: string; bytes?: Buffer }
-type LinkKind = 'file' | 'dir' | 'copy'
+type LinkKind = 'file' | 'dir' | 'copy' | 'local-copy'
 type PlannedLink = { destination: string; source: string; kind: LinkKind; label: string; skill?: string; before?: Entry }
 type PlannedRemove = { destination: string; label: string; before: Entry }
 type PlannedFile = { destination: string; content: string; label: string; before?: Entry }
@@ -81,6 +81,7 @@ const HARNESS_ROOT = resolve(SCRIPTS, '..', '..', '..', '..', '..', '..')
 const AGENTS_ROOT = join(HARNESS_ROOT, 'agents', 'governance')
 const BOOTSTRAP = 'ki-bootstrap'
 const LOCAL_GOVERNANCE_SKILL = 'ki-self'
+const LOCAL_GOVERNANCE_SOURCE = '.ki-self'
 const GENERATED_SKILL_MARKER = join('.ki-meta', 'generated-runtime-skill.json')
 type SkillMarker = { schema: 1; skill: string; source: string; integrity: string }
 
@@ -289,7 +290,45 @@ function localKiSelfPayload(path: string): boolean {
   const root = entry(path)
   if (root?.kind !== 'dir') return false
   const skill = entry(join(path, 'SKILL.md'))
-  return skill?.kind === 'file' && /^name:\s*ki-self\s*$/m.test(skill.bytes?.toString('utf8') ?? '')
+  if (skill?.kind !== 'file' || !/^name:\s*ki-self\s*$/m.test(skill.bytes?.toString('utf8') ?? '')) return false
+  try {
+    skillTreeIntegrity(path, 'repository-local ki-self source')
+    return true
+  } catch {
+    return false
+  }
+}
+
+type LocalKiSelf = { source: string; integrity: string; migrateFrom?: string }
+
+function resolveLocalKiSelf(target: string, runtimes: readonly string[]): LocalKiSelf | undefined {
+  const source = join(target, LOCAL_GOVERNANCE_SOURCE)
+  const canonical = entry(source)
+  if (canonical) {
+    if (!localKiSelfPayload(source)) throw new Error(`${LOCAL_GOVERNANCE_SOURCE} must be a regular, self-contained ki-self skill directory`)
+    return { source, integrity: skillTreeIntegrity(source, 'repository-local ki-self source') }
+  }
+
+  const legacy = runtimes.map((runtime) => join(target, runtimeSkillsDir(runtime), LOCAL_GOVERNANCE_SKILL)).filter((path) => entry(path))
+  if (legacy.length === 0) return undefined
+  if (legacy.some((path) => !localKiSelfPayload(path)))
+    throw new Error(
+      `cannot migrate ${LOCAL_GOVERNANCE_SKILL}: every existing runtime payload must be a regular, self-contained ki-self skill`
+    )
+  const first = legacy[0] as string
+  const integrity = skillTreeIntegrity(first, 'legacy ki-self source')
+  if (legacy.some((path) => skillTreeIntegrity(path, 'legacy ki-self source') !== integrity))
+    throw new Error(`cannot migrate ${LOCAL_GOVERNANCE_SKILL}: runtime payloads differ; preserve and reconcile them by hand first`)
+  return { source, integrity, migrateFrom: first }
+}
+
+function localKiSelfProjection(path: string, source: string, integrity: string): boolean {
+  if (linkResolvesTo(path, source)) return true
+  try {
+    return localKiSelfPayload(path) && skillTreeIntegrity(path, 'ki-self projection') === integrity
+  } catch {
+    return false
+  }
 }
 
 function discoverAgents(): string[] {
@@ -367,6 +406,7 @@ function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: Pr
     dependencyErrors: []
   }
   const runtimes = supportedRuntimes(config)
+  const localKiSelf = scope === 'skills' || scope === 'all' ? resolveLocalKiSelf(target, runtimes) : undefined
 
   if (scope === 'skills' || scope === 'all') {
     const declared = declaredSkills(config).filter((name) => name !== BOOTSTRAP)
@@ -385,7 +425,7 @@ function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: Pr
       const dir = join(target, subdir)
       plan.directories.push(subdir)
       checkExistingDirectory(target, subdir)
-      const desired = new Set(wanted)
+      const desired = new Set(localKiSelf ? [...wanted, LOCAL_GOVERNANCE_SKILL] : wanted)
       for (const name of wanted) {
         const source = sourceFor(target, name, skillPublication)
         if (entry(source)?.kind !== 'dir') throw new Error(`skill source is unavailable: ${name}`)
@@ -422,6 +462,34 @@ function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: Pr
             plan.guards.push({ path: destination, before: found, label: `${subdir}/${name}` })
           }
         }
+      }
+    }
+    if (localKiSelf) {
+      if (localKiSelf.migrateFrom) {
+        plan.links.push({
+          destination: localKiSelf.source,
+          source: localKiSelf.migrateFrom,
+          kind: 'local-copy',
+          label: LOCAL_GOVERNANCE_SOURCE,
+          before: undefined
+        })
+        plan.guards.push({ path: localKiSelf.source, before: undefined, label: LOCAL_GOVERNANCE_SOURCE })
+      }
+      for (const runtime of runtimes) {
+        const subdir = runtimeSkillsDir(runtime)
+        const destination = join(target, subdir, LOCAL_GOVERNANCE_SKILL)
+        const found = entry(destination)
+        if (linkResolvesTo(destination, localKiSelf.source)) continue
+        if (found && !localKiSelfProjection(destination, localKiSelf.source, localKiSelf.integrity))
+          throw new Error(`refusing to replace unfamiliar ${LOCAL_GOVERNANCE_SKILL} projection at ${destination}`)
+        plan.links.push({
+          destination,
+          source: localKiSelf.source,
+          kind: 'dir',
+          label: `${subdir}/${LOCAL_GOVERNANCE_SKILL}`,
+          before: found
+        })
+        plan.guards.push({ path: destination, before: found, label: `${subdir}/${LOCAL_GOVERNANCE_SKILL}` })
       }
     }
   }
@@ -546,6 +614,11 @@ function stagePlan(transaction: string, plan: LinkPlan): Array<{ destination: st
       const marker: SkillMarker = { schema: 1, skill, source: sourceIdentity(item.source), integrity }
       mkdirSync(dirname(join(stage, GENERATED_SKILL_MARKER)), { recursive: true, mode: 0o700 })
       writeFileSync(join(stage, GENERATED_SKILL_MARKER), `${JSON.stringify(marker, null, 2)}\n`, { mode: 0o600 })
+    } else if (item.kind === 'local-copy') {
+      const integrity = skillTreeIntegrity(item.source, 'legacy ki-self source')
+      cpSync(item.source, stage, { recursive: true, dereference: false, preserveTimestamps: true })
+      if (skillTreeIntegrity(stage, `staged local skill ${item.label}`) !== integrity)
+        throw new Error(`staged local skill differs from its validated source: ${item.label}`)
     } else {
       symlinkSync(relative(dirname(item.destination), item.source), stage, item.kind)
     }
@@ -643,6 +716,7 @@ export function inspectProjectLinks(
   const skillPublication = publicationFor(target, requestedPublication)
   const config = regularText(join(target, '.ki-config.toml'), '.ki-config.toml').content
   const runtimes = supportedRuntimes(config)
+  const localKiSelf = scope === 'skills' || scope === 'all' ? resolveLocalKiSelf(target, runtimes) : undefined
   const checks: ProjectLinkCheck[] = []
   if (scope === 'skills' || scope === 'all') {
     const declared = declaredSkills(config).filter((name) => name !== BOOTSTRAP)
@@ -666,8 +740,12 @@ export function inspectProjectLinks(
         const destination = join(dir, name)
         return skillPublication === 'development-link' ? !linkResolvesTo(destination, source) : !copiesSource(destination, name, source)
       })
-      const extra = present.filter((name) => !wanted.has(name) && !(name === LOCAL_GOVERNANCE_SKILL && localKiSelfPayload(join(dir, name))))
-      const unexpectedLinks = skillPublication === 'copy' ? present.filter((name) => entry(join(dir, name))?.kind === 'link') : []
+      const selfMissing = localKiSelf && !linkResolvesTo(join(dir, LOCAL_GOVERNANCE_SKILL), localKiSelf.source)
+      const extra = present.filter((name) => !wanted.has(name) && name !== LOCAL_GOVERNANCE_SKILL)
+      const unexpectedLinks =
+        skillPublication === 'copy'
+          ? present.filter((name) => name !== LOCAL_GOVERNANCE_SKILL && entry(join(dir, name))?.kind === 'link')
+          : []
       for (const orphan of orphans)
         checks.push({
           code: 'BOOT-1',
@@ -676,7 +754,7 @@ export function inspectProjectLinks(
           subject: '.ki-config.toml',
           runtime
         })
-      if (missing.length || extra.length || unexpectedLinks.length) {
+      if (missing.length || extra.length || unexpectedLinks.length || selfMissing) {
         const expected = skillPublication === 'development-link' ? 'development-link' : 'copied-payload'
         checks.push({
           code: 'BOOT-1',

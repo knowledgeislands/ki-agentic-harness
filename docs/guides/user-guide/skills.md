@@ -14,7 +14,7 @@ The Agent Skills standard is more general than this, though. A skill need not go
 
 ## `ki-self`: local governance for local concerns
 
-Every governed repository is expected to carry a repo-local `ki-self` skill for concerns that are real in that repository but do not yet belong to a shared Knowledge Islands skill. It is a **governance skill**, not a process wrapper: it holds the repository's local standard for repeatable checks, semi-regular housekeeping, and repository-specific maintenance. It is special only in placement and scope: it stays in the repository, is never installed into a user-wide skills directory, and is deliberately absent from the harness's shared implication graph and catalogue.
+Every governed repository may carry a repo-local `ki-self` skill for concerns that are real in that repository but do not yet belong to a shared Knowledge Islands skill. It is a **governance skill**, not a process wrapper: it holds the repository's local standard for repeatable checks, semi-regular housekeeping, and repository-specific maintenance. Author it once at `.ki-self/SKILL.md`, commit it with the repository, and let bootstrap project relative links into each declared runtime's skill directory. It is never installed into a user-wide skills directory and is deliberately absent from the harness's shared implication graph and catalogue.
 
 Its universal modes apply at local scale:
 
