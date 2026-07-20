@@ -11,14 +11,6 @@ Canonical themes and active execution plans.
 
 ## Active plans
 
-### [FND-005](foundation-tooling/plans/FND-005-make-conform-audit-gated-per-rubric-item.md)
-
-- **Title:** Make CONFORM audit-gated per rubric item
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/make-conform-audit-gated-per-rubric-item`
-- **Status:** in-progress
-- **Blocks:** —
-
 ### [FND-008](foundation-tooling/plans/FND-008-define-a-canonical-cross-runtime-ki-self-footprint.md)
 
 - **Title:** Define a canonical cross-runtime ki-self footprint
