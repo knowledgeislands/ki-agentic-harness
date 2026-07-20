@@ -1,7 +1,7 @@
 ---
 id: 'FND-012'
 title: Complete source-vendored dependency linking
-status: open
+status: in-progress
 roadmap: foundation-tooling/complete-source-vendored-dependency-linking
 blocks: —
 blocked-by: —
