@@ -24,7 +24,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Link source-harness bootstrap payloads
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/link-source-harness-bootstrap-payloads`
-- **Status:** ready
+- **Status:** in-progress
 - **Blocks:** —
 
 ### [FND-015](foundation-tooling/plans/FND-015-add-safe-multiprogress-aggregate-execution.md)
