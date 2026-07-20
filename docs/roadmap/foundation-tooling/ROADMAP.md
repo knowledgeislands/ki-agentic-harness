@@ -48,12 +48,6 @@ Refine the `ki-plan` closing lifecycle so `done` first gains a `## Done` outcome
 
 **Plan:** [FND-011](plans/FND-011-preserve-committed-completion-records.md)
 
-### Complete source-vendored dependency linking
-
-Finish the harness-only source-linking model by making the duplicated `checker-reporter.ts` an explicitly declared `ki-skills` shared module and linking both consumers to it. Tighten the harness audit so every source `scripts/vendored/` payload is both declared and a resolving link to its canonical provider, while preserving the deliberately regular, self-contained `.ki-meta/` copies required by consumer repositories and CI.
-
-**Plan:** [FND-012](plans/FND-012-complete-source-vendored-dependency-linking.md)
-
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.

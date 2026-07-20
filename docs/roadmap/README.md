@@ -43,14 +43,6 @@ Canonical themes and active execution plans.
 - **Status:** open
 - **Blocks:** —
 
-### [FND-012](foundation-tooling/plans/FND-012-complete-source-vendored-dependency-linking.md)
-
-- **Title:** Complete source-vendored dependency linking
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/complete-source-vendored-dependency-linking`
-- **Status:** acceptance
-- **Blocks:** —
-
 ### [RTP-001](runtime-portability/plans/RTP-001-detect-vendor-specific-portable-contracts.md)
 
 - **Title:** Detect vendor-specific assumptions in portable skill contracts
