@@ -16,7 +16,7 @@ Canonical themes and active execution plans.
 - **Title:** Make plan-to-roadmap linkage explicit
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/make-plan-to-roadmap-linkage-explicit`
-- **Status:** open
+- **Status:** in-progress
 - **Blocks:** —
 
 ### [FND-005](foundation-tooling/plans/FND-005-make-conform-audit-gated-per-rubric-item.md)

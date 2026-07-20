@@ -1,7 +1,7 @@
 ---
 id: 'FND-004'
 title: Make plan-to-roadmap linkage explicit
-status: open
+status: in-progress
 roadmap: foundation-tooling/make-plan-to-roadmap-linkage-explicit
 blocks: —
 blocked-by: —
