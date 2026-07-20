@@ -69,24 +69,11 @@ Canonical themes, active execution plans, and completed plan records.
 
 ## Completed plans
 
-### [FND-003](foundation-tooling/plans/FND-003-add-a-safe-repository-clean-operation.md)
-
-- **Title:** Add a safe repository clean operation
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/add-a-safe-repository-clean-operation`
-- **Status:** done
-
-### [FND-013](foundation-tooling/plans/FND-013-complete-harness-local-skill-dependency-linking.md)
-
-- **Title:** Link source-harness bootstrap payloads
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/link-source-harness-bootstrap-payloads`
-- **Status:** done
+No completed plans.
 
 ## Dependency graph
 
 ```text
-FND-003 ──► FND-016
 FND-016 ──► FND-017
 FND-016 ──► FND-018
 FND-020 ──► FND-015

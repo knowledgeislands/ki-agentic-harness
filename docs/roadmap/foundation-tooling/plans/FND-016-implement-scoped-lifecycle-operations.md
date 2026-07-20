@@ -4,7 +4,7 @@ title: Implement scoped lifecycle operations
 status: open
 roadmap: foundation-tooling/implement-scoped-lifecycle-operations
 blocks: FND-017, FND-018
-blocked-by: FND-003, FND-020
+blocked-by: FND-020
 ---
 
 ## Context
@@ -47,6 +47,6 @@ There is no scoped UNINSTALL operation, no common ownership classifier spanning 
 
 ## Dependencies / blocks
 
-FND-003 supplies the accepted CLEAN baseline and must complete first; the `.ki/` footprint is already established.
+The completed CLEAN baseline supplies the conservative generated-output boundary; the `.ki/` footprint is already established.
 
 This plan blocks FND-017 DOCTOR and FND-018 `kisle`, which consume its operation and scope contract.

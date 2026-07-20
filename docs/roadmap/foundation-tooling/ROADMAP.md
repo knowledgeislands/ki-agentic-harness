@@ -8,18 +8,6 @@ code: FND
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
-### Link source-harness bootstrap payloads
-
-For a source-bearing `ki-harness`, replace copied source material beneath `.ki/bootstrap/` with contained relative symlinks to the same checkout's canonical skills and agents. Keep only genuinely generated glue, `.ki/bin/`, and `.ki/manifest.json` as regular files; preserve portable copied payloads for every ordinary repository, external harness, archive, and release package. Extend manifest proof, AUDIT, CLEAN, rollback, and packaging tests so only exact same-harness links are accepted and no unproven content is followed or removed. This clears the generated-change noise that currently obscures harness development work.
-
-**Plan:** [FND-013](plans/FND-013-complete-harness-local-skill-dependency-linking.md)
-
-### Add a safe repository CLEAN operation
-
-Add a source-owned CLEAN operation that removes only manifest-proven generated `.ki/{bin,bootstrap,manifest.json}` state and unchanged marker-owned runtime skill copies. It must preserve repository configuration, canonical skill sources, explicit development links, agents, tampered or unmarked content, and every path it cannot prove is generated. Support dry-run, repeat safety, fail-closed handling of symlinks and concurrent mutation, and CLEAN followed by EDUCATE recovery.
-
-**Plan:** [FND-003](plans/FND-003-add-a-safe-repository-clean-operation.md)
-
 ### Implement scoped lifecycle operations
 
 Implement the lifecycle boundary in `ODR-KI-HARNESS-001`: repository CLEAN removes only proven generated duplication and leaves the declaration ready for EDUCATE; repository and user DOCTOR are read-only; and repository and user UNINSTALL remove KI-owned traces only at their explicit scope. Provide zero-install repository launchers that run from temporary source without changing user state. This boundary must land before the doctor and `kisle` command surfaces it defines.

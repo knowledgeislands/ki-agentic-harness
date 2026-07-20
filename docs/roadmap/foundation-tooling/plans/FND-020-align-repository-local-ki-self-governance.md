@@ -11,7 +11,7 @@ blocked-by: —
 
 The FND-015 governed-entrypoint prototype prompted a direct review of this repository's local `ki-self` guidance.
 
-That review found three connected sources of drift: FND-013's same-harness source links make unconditional re-vendoring unnecessary for linked checker payloads; `ki-skills` evaluates the deliberately local `.ki/self/skill/` source as an ordinary indexed governance skill; and some guidance still names the retired `.ki-self/` location.
+That review found three connected sources of drift: same-harness source links make unconditional re-vendoring unnecessary for linked checker payloads; `ki-skills` evaluates the deliberately local `.ki/self/skill/` source as an ordinary indexed governance skill; and some guidance still names the retired `.ki-self/` location.
 
 ## Current state
 
@@ -44,7 +44,7 @@ The local skill's working guidance is valuable and was followed during FND-015: 
 
 ## Dependencies / blocks
 
-This plan is the immediate priority before every other open or in-progress plan. It resolves the repository-local rule layer those plans rely on; FND-003 remains in acceptance and FND-013 remains done, so neither is blocked.
+This plan is the immediate priority before every other open or in-progress plan. It resolves the repository-local rule layer those plans rely on.
 
 ## Acceptance
 
@@ -72,4 +72,4 @@ None. `ADR-KI-HARNESS-011` retains its historic `.ki-self/` wording as a histori
 
 ### Mini recap
 
-FND-013's source links remove unnecessary copying, but not every `.ki/` file is live. The durable rule is therefore precise: source-link changes use bootstrap parity/audit; run bootstrap when an affected generated surface needs regeneration.
+Source links remove unnecessary copying, but not every `.ki/` file is live. The durable rule is therefore precise: source-link changes use bootstrap parity/audit; run bootstrap when an affected generated surface needs regeneration.
