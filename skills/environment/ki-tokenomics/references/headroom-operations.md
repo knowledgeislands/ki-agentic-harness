@@ -4,6 +4,16 @@ The reset contract below is verified against the installed Headroom 0.31.0 CLI a
 
 Headroom derives most state from `HEADROOM_WORKSPACE_DIR` (default `~/.headroom`) and also permits `HEADROOM_SAVINGS_EVENTS_PATH` and `HEADROOM_SAVINGS_PATH` to override the two savings files independently. Resolve the active paths before a reset; never infer one store's location from another.
 
+## Coverage boundary
+
+This procedure maintains Headroom's stores; it does not establish that every installed agent routes its model traffic through the proxy.
+
+A healthy proxy or installed Headroom MCP server is not coverage evidence.
+
+Count a runtime as covered only when its requests appear in the proxy logs or live statistics.
+
+The user-guide [coverage map](../../../../docs/guides/user-guide/recommended-tools.md#coverage-by-runtime) records the current distinction between Claude Code, Claude Desktop, Codex Desktop, and explicitly configured API clients.
+
 ## The statistics surfaces are independent
 
 Headroom exposes several related views, but they do not share one reset:
