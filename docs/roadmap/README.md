@@ -27,6 +27,14 @@ Canonical themes, active execution plans, and completed plan records.
 - **Status:** open
 - **Blocks:** —
 
+### [FND-014](foundation-tooling/plans/FND-014-unify-repository-local-ki-state.md)
+
+- **Title:** Unify repository-local KI state under .kisle
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/unify-repository-local-ki-state-under-kisle`
+- **Status:** open
+- **Blocks:** —
+
 ### [RTP-001](runtime-portability/plans/RTP-001-detect-vendor-specific-portable-contracts.md)
 
 - **Title:** Detect vendor-specific assumptions in portable skill contracts

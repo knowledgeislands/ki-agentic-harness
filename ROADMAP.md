@@ -14,6 +14,7 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 - [Foundation Tooling: Establish the installable `kisle` command-line interface](docs/roadmap/foundation-tooling/ROADMAP.md#establish-the-installable-kisle-command-line-interface)
 - [Foundation Tooling: Implement scoped lifecycle operations](docs/roadmap/foundation-tooling/ROADMAP.md#implement-scoped-lifecycle-operations)
 - [Foundation Tooling: Review structural consistency across shipped skills](docs/roadmap/foundation-tooling/ROADMAP.md#review-structural-consistency-across-shipped-skills)
+- [Foundation Tooling: Unify repository-local KI state under `.kisle/`](docs/roadmap/foundation-tooling/ROADMAP.md#unify-repository-local-ki-state-under-kisle)
 - [Runtime Portability: Detect vendor-specific assumptions in portable skill contracts](docs/roadmap/runtime-portability/ROADMAP.md#detect-vendor-specific-assumptions-in-portable-skill-contracts)
 
 ## Next
