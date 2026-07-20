@@ -8,6 +8,10 @@ code: FND
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
+### Make audit and conform command help conventional
+
+Make the shared audit and conform command entrypoints recognise `-h` and `--help` before they invoke governed checkers. Render conventional usage, summary, and options text for the aggregate command and its generated aliases, and prove that help is side-effect-free. Keep the existing direct checker help as the command-specific detail rather than duplicating it in every wrapper.
+
 ### Add a safe repository clean operation
 
 Add a source-owned `ki-bootstrap` CLEAN operation that removes repository-generated harness state without needing a working vendored runner. Remove `.ki-meta/` and runtime skill copies only when their generated marker proves harness ownership. Preserve `.ki-config.toml`, authored or explicitly linked skills, repository agents, canonical `scripts/vendored/` source dependencies, and any unmarked `ki-*` path; never infer ownership from a name prefix alone. Make the operation safe to repeat, dry-runnable, and suitable for returning a repository to the state immediately before EDUCATE publication.
