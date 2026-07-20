@@ -21,10 +21,10 @@ Canonical themes, active execution plans, and completed plan records.
 
 ### [FND-013](foundation-tooling/plans/FND-013-complete-harness-local-skill-dependency-linking.md)
 
-- **Title:** Complete harness-local skill dependency linking
+- **Title:** Link source-harness bootstrap payloads
 - **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/complete-harness-local-skill-dependency-linking`
-- **Status:** acceptance
+- **Roadmap item:** `foundation-tooling/link-source-harness-bootstrap-payloads`
+- **Status:** open
 - **Blocks:** —
 
 ### [FND-015](foundation-tooling/plans/FND-015-add-safe-multiprogress-aggregate-execution.md)

@@ -1,95 +1,68 @@
 ---
 id: 'FND-013'
-title: Complete harness-local skill dependency linking
-status: acceptance
-roadmap: foundation-tooling/complete-harness-local-skill-dependency-linking
+title: Link source-harness bootstrap payloads
+status: open
+roadmap: foundation-tooling/link-source-harness-bootstrap-payloads
 blocks: —
 blocked-by: —
 ---
 
 ## Context
 
-Harness-local links avoid duplicate source modules and let a skill use the canonical implementation authored beside it.
+`ki-agentic-harness` is both the author of its skills and a governed harness that re-vendors them beneath `.ki/bootstrap/`.
 
-That convenience must not turn into an implicit dependency on another checkout: an ordinary repository, an installed harness payload, and a different harness repository need portable copied content.
+Portable consumer repositories must retain regular, self-contained vendored payloads, but repeatedly copying the harness's own source material into its local bootstrap tree creates a large noisy diff on every source change.
 
-The existing implementation already has related mechanisms in the runtime project publisher and the shared-module synchroniser, while `.ki-meta/` deliberately remains a manifest-owned portable copy surface.
+For a same-checkout source harness, bootstrap should project the source material it owns through contained relative symlinks instead of copying it.
 
-This plan makes the provenance boundary explicit, verifies the complete current-harness behaviour, and repairs only the gaps found.
+This makes local checker, educator, catalogue, and agent changes live during harness development while preserving the portable copied model everywhere else.
 
 ## Current state
 
-`project-skill-publisher.ts` selects development links for a target declaring `[ki-harness]` and resolves their sources from that target's own `skills/` tree.
+FND-013 established a physical same-harness resolver and uses it for runtime skills and declared source-tree shared modules.
 
-`sync-shared-modules.ts` similarly links declared `ki-shared-dependencies` only when its target is a source harness; other targets receive copies. Both currently receive that target directly rather than deriving it from an individual consumer-skill path.
+It deliberately retained `.ki/bootstrap/` checker and educator payloads as regular manifest-hashed copies.
 
-The contract is distributed between `ki-harness`, `ki-bootstrap`, and tests, and it has not yet been audited as one provenance model covering same-checkout, external-harness, consumer, runtime, source-vendored, and generated snapshot cases.
+After FND-014, those copies now live beneath `.ki/bootstrap/{agents,skills,checkers,educators}/`; a source change therefore produces a large generated diff alongside the authored change.
 
-Current shared dependencies identify only `skill:module`. A future explicit provenance form could be `repository-id:skill:module`, for example `ki-agentic-harness:ki-skills:reporter`; it is not yet parsed or resolved.
+The bootstrap manifest and CLEAN implementation currently prove only regular generated files, and the source-harness parity checks reject generated symlinks.
 
 ## Steps
 
-1. ✓ Trace every link and copy path used for runtime skill publication and source-tree shared modules, then define the minimal provenance rule. From a consumer skill's physical directory, walk upward to the nearest regular `.ki-config.toml`, require its root to declare `[ki-harness]`, and require both consumer and provider to resolve beneath that root's physical `skills/` tree. Find the provider only by its declared name and an exact descendant `SKILL.md` identity beneath that tree; reject duplicate, missing, escaping, or symlinked canonical sources. Never discover or link to a separate repository merely because it declares `[ki-harness]` or is locally reachable.
-2. ✓ Reconcile the `ki-harness` workflow contract with `ki-bootstrap`'s publication, synchronisation, CLEAN, and manifest contracts. State which owner decides eligibility, which owner performs the guarded filesystem transaction, and why `.ki-meta/` checker and educator snapshots and ordinary consumer payloads remain copied. Record `repository-id:skill:module` as a future dependency-identity extension, not a compatibility parser in this change: its repository id identifies intended provenance but never authorises a cross-checkout link. Update an ADR only if the settled boundary differs materially from ADR-KI-HARNESS-008.
-3. ✓ Make the smallest implementation changes required to enforce that rule consistently for runtime projections and declared `scripts/vendored/` modules. Preserve relative, contained links; fail closed for stale regular files, dangling or escaping links, changed payloads, unsafe parents, and a consumer path that cannot prove its harness root; do not add cross-checkout discovery or a compatibility path.
-4. ✓ Add focused fixtures for a source harness whose provider and consumer are in the same checkout, an ordinary consumer repository, and two separate harness checkouts. Start resolution from a nested consumer-skill directory and prove it selects only its nearest physical harness root; prove that only same-root dependencies receive links, that runtime copies are dereferenced and remain usable after their temporary source disappears, that source edits reach every intended same-harness reference, and that generated `.ki-meta/` files remain regular manifest-verified copies.
-5. ✓ Re-vendor any affected coverage-scoped checker payloads, regenerate derived references, and run focused bootstrap/harness tests followed by serial repository tests and aggregate audit. Record any non-implementable cross-repository development workflow as a distinct follow-up rather than weakening the portable default.
+1. Trace every `.ki/bootstrap/` payload by ownership and execution role: agents, retained skill catalogue, checker scripts/references/shared dependencies/HELP, educator launcher/module/source snapshot, and bootstrap coordinator material. Identify the canonical same-harness source for each copied source payload and the genuinely generated glue that must remain regular. Confirm that `.ki/bin/` and `.ki/manifest.json` remain generated regular files.
+
+2. Settle the source-harness bootstrap-link contract. It applies only when the physical target is the nearest regular `[ki-harness]` root and every source resolves beneath that same root's canonical `skills/` or `agents/` tree. Each link is relative, contained, and preflight-validated; no external checkout, installed payload, ordinary repository, archive, or release package receives one. Replace copied source material with links; retain only generated HELP/launcher/runner glue where no canonical source exists. Record how manifest ownership, AUDIT, CLEAN, rebuild, and release packaging prove and handle the links without a legacy fallback.
+
+3. Implement the smallest bootstrap publication and manifest changes for that contract. Generate contained links in the harness-local `.ki/bootstrap/` surface, make aggregate AUDIT/CONFORM/EDUCATE resolve them normally, and preserve fully copied, standalone output for non-harness targets. Extend guarded replacement and rollback to reject stale regular files, dangling or escaping links, unsafe parents, and concurrent changes without overwriting unproven content.
+
+4. Extend manifest, AUDIT, and CLEAN for the dual owned forms. Manifest-prove regular generated glue by hash and source-harness links by their relative target plus canonical-source identity; CLEAN removes only exactly proven generated links or regular files and never follows them. A re-bootstrap can replace a proven former copy with its canonical link, but ambiguous, altered, or foreign material fails closed for manual recovery.
+
+5. Add focused fixtures for the current harness, a minimal same-checkout harness, an ordinary consumer, a separate harness checkout, and a packaged or source-absent target. Prove that source edits are visible through every intended `.ki/bootstrap/` link without re-vendoring; ordinary and external targets remain regular standalone copies; CHECKER/EDUCATE/HELP execution, CLEAN then EDUCATE recovery, dry-run, repeat, rollback, and release packaging remain correct.
+
+6. Update `ki-bootstrap`, `ki-harness`, source-harness parity checks, user/developer guidance, and generated payloads. Re-vendor this harness, inspect that copied source material no longer produces a second generated diff, then run focused tests, `bun run test`, and `bun run ki:audit` serially.
 
 ## Files touched
 
-- `skills/repo-structure/ki-harness/` — harness-local developer workflow, rubric, and focused tests if its eligibility contract changes.
-- `skills/keystone/ki-bootstrap/references/` — publication, copy, CLEAN, and generated-snapshot boundary.
-- `skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/` — project publisher, shared-module synchroniser, resolver, and focused fixtures.
-- `docs/decisions/ADR-KI-HARNESS-008-vendored-cross-skill-scripts.md` — only if the settled ownership boundary changes.
-- `.ki-meta/` generated bootstrap/checker/educator payloads — refreshed only when their coverage-scoped sources change.
+- `skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/` — source-harness detection, bootstrap publication, manifesting, CLEAN, aggregate-path safety, and fixtures.
+- `skills/keystone/ki-bootstrap/` and `skills/repo-structure/ki-harness/` — copy-versus-link contract, audit criteria, and developer guidance.
+- `.ki/bootstrap/` — regenerated harness-local links and minimal regular generated glue.
+- `.gitignore`, package scripts, and documentation only where the established generated/link boundary changes.
 
 ## Verify
 
-1. Focused `project-skill-publisher`, `sync-shared-modules`, `resolve`, and bootstrap parity/safety tests pass, including nearest-root discovery from a nested skill, same-checkout, external-checkout, ordinary-copy, source-edit, and generated-copy fixtures.
-2. `bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts .` succeeds after any coverage-scoped source change and leaves required generated output current.
-3. `bun run test` passes.
-4. `bun run ki:audit` passes after the test suite completes.
-5. Manual inspection confirms source-harness runtime and `scripts/vendored/` links are relative and contained, while `.ki-meta/` snapshots are regular files.
+1. A same-checkout source harness has contained relative links for every `.ki/bootstrap/` source payload, while `.ki/bin/`, `.ki/manifest.json`, and genuinely generated glue remain regular files.
+2. Editing a canonical source changes the effective harness-local checker, educator, catalogue, or agent payload immediately without a generated duplicate diff.
+3. Ordinary repositories, separate harness checkouts, archives, and release-package fixtures receive dereferenced regular copies and run without the source harness.
+4. Manifest validation, AUDIT, CLEAN, dry-run, repeat, rollback, and re-bootstrap accept only the exact known link or regular-file form and preserve unproven content.
+5. Focused bootstrap, harness-source, manifest/CLEAN, aggregate, and packaging tests pass.
+6. `bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts .` succeeds after source changes.
+7. `bun run test` passes.
+8. `bun run ki:audit` passes after the test suite completes.
 
 ## Dependencies / blocks
 
-This is independent of the separate `ki-self` footprint and CLEAN lifecycle plans.
+FND-014 is complete and supplies the direct `.ki/` ownership boundary.
 
-It may identify a future explicit cross-harness development-link workflow or `repository-id:skill:module` dependency contract, but both are intentionally out of scope unless the current portable-copy boundary cannot meet a concrete supported use case.
+This revises FND-013's earlier accepted assumption that generated bootstrap payloads must always be copied.
 
-## Delegation
-
-- Round 1 — research: trace `sync-shared-modules` source-tree provenance, root discovery, and its focused fixtures; files: read-only `repo-bootstrap/` synchroniser and test scope; gate: evidence for the nearest-root resolution contract.
-- Round 1 — research: trace `project-skill-publisher` development-link eligibility and runtime-copy tests; files: read-only publisher and test scope; gate: evidence for the shared eligibility boundary and non-overlapping implementation surfaces.
-- Round 2 — judgment: settle the smallest same-harness provenance contract from both investigations; files: plan, applicable `ki-harness` / `ki-bootstrap` guidance, and ADR only if materially needed; gate: explicit ownership and copy-versus-link boundary before implementation.
-- Round 3 — mechanical: apply the settled resolver, publisher, synchroniser, fixture, and generated-output changes; files: one exclusive writer owns `repo-bootstrap/` and its focused tests; gate: focused tests, required re-vendoring, and contained-link inspection.
-- Orchestrator: review every worker diff, adversarially review changed scripts, run serial repository tests and aggregate audit, then commit only gated work.
-
-## Acceptance
-
-### Delivered
-
-Harness-local runtime skills and declared source-vendored modules now resolve only within the nearest physical `[ki-harness]` repository root.
-
-Ordinary repositories and all `.ki-meta/` payloads remain dereferenced regular copies, and no cross-checkout development link is introduced.
-
-### Summary of changes
-
-- Added a physical harness-source resolver and focused provenance tests under `skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/`.
-- Routed runtime publication and source-vendored module synchronisation through the same-root resolver, with full preflight before mutation and local-only declaration validation.
-- Recorded the eligibility/transaction boundary in `ki-bootstrap` and `ki-harness` standards, then refreshed generated bootstrap and educator payloads.
-
-### Verification
-
-- `bun run test` — passed at `c2736b12`.
-- `bun run ki:audit` — passed at `c2736b12`.
-- `bun run ki:repo-roadmap:audit` — passed at `c2736b12`.
-- Focused harness-source, shared-module synchronisation, and project-skill publisher fixtures passed, including nested roots, hostile parents, no-partial-mutation failures, external-harness refusal, local-only skills, and copy/link boundaries.
-
-### Outstanding concerns
-
-None. The future `repository-id:skill:module` identity extension remains deliberately out of scope and must not authorise cross-checkout links.
-
-### Mini recap
-
-The initial analysis showed two independent linkers with incompatible provenance assumptions. A shared physical resolver gives both the same fail-closed boundary, while preserving portable copies outside a source harness. The proposed future route is an explicit cross-repository dependency-identity plan if a concrete workflow needs it.
+FND-003's retained CLEAN acceptance record supplies the existing fail-closed baseline; this plan extends that proof model for same-checkout links without changing CLEAN's repository scope.

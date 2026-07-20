@@ -8,6 +8,12 @@ code: FND
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
+### Link source-harness bootstrap payloads
+
+For a source-bearing `ki-harness`, replace copied source material beneath `.ki/bootstrap/` with contained relative symlinks to the same checkout's canonical skills and agents. Keep only genuinely generated glue, `.ki/bin/`, and `.ki/manifest.json` as regular files; preserve portable copied payloads for every ordinary repository, external harness, archive, and release package. Extend manifest proof, AUDIT, CLEAN, rollback, and packaging tests so only exact same-harness links are accepted and no unproven content is followed or removed. This clears the generated-change noise that currently obscures harness development work.
+
+**Plan:** [FND-013](plans/FND-013-complete-harness-local-skill-dependency-linking.md)
+
 ### Add a safe repository CLEAN operation
 
 Add a source-owned CLEAN operation that removes only manifest-proven generated `.ki/{bin,bootstrap,manifest.json}` state and unchanged marker-owned runtime skill copies. It must preserve repository configuration, canonical skill sources, explicit development links, agents, tampered or unmarked content, and every path it cannot prove is generated. Support dry-run, repeat safety, fail-closed handling of symlinks and concurrent mutation, and CLEAN followed by EDUCATE recovery.
@@ -49,12 +55,6 @@ Audit every shipped skill against the established exemplar implementations for s
 Replace aggregate AUDIT and CONFORM's process-per-checker transport with direct, in-process calls to local vendored checker entry points. Reuse the shared checker's structured status events so the default single bar advances continuously without a child-progress protocol, temporary capture files, stdout reparsing, or a Bun launch for each checker. Add an opt-in multiprogress display: one stable, labelled row per selected checker, such as `AUDIT [ki-skills]`. Preserve direct checker JSONL, deterministic aggregate reporting, exit semantics, `--progress`, FND-010 terminal behaviour, and sequential AUDIT/CONFORM execution. Concurrency is explicitly out of scope until a separate independence and cancellation contract exists.
 
 **Plan:** [FND-015](plans/FND-015-add-safe-multiprogress-aggregate-execution.md)
-
-### Complete harness-local skill dependency linking
-
-For a source-bearing `ki-harness`, ensure every declared dependency that resolves to a canonical skill or shared module in that same harness checkout is projected through a contained relative symlink rather than an unnecessary local copy. Cover both runtime discovery projections and a skill's source-tree `scripts/vendored/` dependencies, with one clear harness-owned activation rule and bootstrap-owned safe publication and synchronisation mechanics. Make the boundary with generated `.ki/bootstrap/` checker and educator snapshots explicit: retain their portable manifest-owned copies unless a harness-only linking exception can be proven safe for standalone operation, CLEAN, integrity checks, and release packaging. Audit and test the complete contract, including stale regular files, invalid links, consumer copy dereferencing, and a source edit propagating through every intended harness-local reference.
-
-**Plan:** [FND-013](plans/FND-013-complete-harness-local-skill-dependency-linking.md)
 
 ### Unify repository-local KI state under `.ki/`
 
