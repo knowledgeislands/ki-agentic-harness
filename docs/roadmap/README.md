@@ -64,7 +64,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Align the repository-local ki-self governance contract
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/align-the-repository-local-ki-self-governance-contract`
-- **Status:** open
+- **Status:** ready
 - **Blocks:** FND-015, FND-016, FND-017, FND-018, FND-019, RTP-001
 
 ### [RTP-001](runtime-portability/plans/RTP-001-detect-vendor-specific-portable-contracts.md)
