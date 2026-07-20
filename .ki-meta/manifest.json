@@ -1,5 +1,5 @@
 {
-  "ref": "2c1ce58c54b7245ae764ef6024766495265691d2",
+  "ref": "f1adb3428f97671fe433c63eabf6bed4c823205d",
   "files": {
     ".ki-meta/checkers/ki-agents/scripts/audit.ts": "9ab69b835e772cc7bfda2da0f53cd5b1c1cdee3d1df6828a0fe9167014cb8782",
     ".ki-meta/checkers/ki-agents/scripts/conform.ts": "f70458df34a8dd71aa79b8fcda2748bc4ce146e73e67e6f337ea1c39c7512183",
@@ -1088,7 +1088,7 @@
     ".ki-meta/bin/aggregate.ts": "b3aba0d5374a171433b03a617dde2128615842c0f2bba19a1f7b9bce0177398a",
     ".ki-meta/bin/ki-audit": "df0008810442f234c193bd05e8a0ff01723340194d52e734fe03b33b91226343",
     ".ki-meta/bin/ki-conform": "18c140089776ac07938663b3db6c70c1dab48905fad12b260ce9e987ca75e93a",
-    ".ki-meta/bin/ki-educate": "a7a9b06566da96f2c71ac139256b3fd059640beb811fb6787b8a9256fb2ee13d",
+    ".ki-meta/bin/ki-educate": "06dfef9a6dd032361e9188cefab539234bb617fc85ccaf1efcb936bf578fae6f",
     ".ki-meta/bin/ki-help": "3d406bb871c120cbf44b54a300a7607ed92b642b21c25c9052c5406f063bac95",
     ".ki-meta/bin/skill-graph.ts": "b4595f217671a58c709b1b56714cb0c41978d68a1da1878dd103362562d6e185",
     ".ki-meta/bin/skill-help.ts": "1bcd189e9029746557332495b9428420cf6eef00d1fc3e7aa5f1ba31e05ea7ff"

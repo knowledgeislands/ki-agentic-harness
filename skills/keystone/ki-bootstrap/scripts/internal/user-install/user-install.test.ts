@@ -59,6 +59,13 @@ try {
     )
   )
   check(
+    'dereferences source-owned shared-module links into regular copied files',
+    [claudeTarget, codexTarget].every((target) => {
+      const entry = lstatSync(join(target, 'ki-bootstrap', 'scripts', 'vendored', 'ki-skills', 'checker.ts'))
+      return entry.isFile() && !entry.isSymbolicLink()
+    })
+  )
+  check(
     'writes an owned integrity marker for every copied skill',
     [claudeTarget, codexTarget].every((target) =>
       core.every((skill) => {

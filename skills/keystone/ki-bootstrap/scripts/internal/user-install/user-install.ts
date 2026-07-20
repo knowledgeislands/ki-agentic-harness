@@ -18,8 +18,10 @@ import {
   mkdtempSync,
   readdirSync,
   readFileSync,
+  realpathSync,
   renameSync,
   rmSync,
+  statSync,
   writeFileSync
 } from 'node:fs'
 import { homedir } from 'node:os'
@@ -96,18 +98,25 @@ function skillIndex(source: string): Map<string, string> {
 
 function treeHash(path: string): string {
   const rows: string[] = []
-  const walk = (current: string, prefix: string): void => {
+  const walk = (current: string, prefix: string, ancestors = new Set<string>()): void => {
+    const physical = realpathSync(current)
+    if (ancestors.has(physical)) throw new Error(`skill payload contains a symlink cycle: ${current}`)
+    const nextAncestors = new Set(ancestors).add(physical)
     for (const name of readdirSync(current).sort()) {
       if (name === MARKER && current === path) continue
       const absolute = join(current, name)
       const relative = prefix ? join(prefix, name) : name
-      const stat = lstatSync(absolute)
-      if (stat.isSymbolicLink()) throw new Error(`skill payload must not contain symlinks: ${absolute}`)
+      const link = lstatSync(absolute)
+      // Copying deliberately dereferences source links. Hash the resulting regular
+      // payload shape too, so a harness source can link an internal shared module
+      // without making the installed copy appear corrupt.
+      const resolved = link.isSymbolicLink() ? realpathSync(absolute) : absolute
+      const stat = link.isSymbolicLink() ? statSync(resolved) : link
       if (stat.isDirectory()) {
         rows.push(`d ${relative} ${stat.mode & 0o7777}`)
-        walk(absolute, relative)
+        walk(resolved, relative, nextAncestors)
       } else if (stat.isFile()) {
-        rows.push(`f ${relative} ${stat.mode & 0o7777} ${createHash('sha256').update(readFileSync(absolute)).digest('hex')}`)
+        rows.push(`f ${relative} ${stat.mode & 0o7777} ${createHash('sha256').update(readFileSync(resolved)).digest('hex')}`)
       } else throw new Error(`skill payload has unsafe entry: ${absolute}`)
     }
   }
