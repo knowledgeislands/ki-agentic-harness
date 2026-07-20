@@ -26,7 +26,7 @@ const fixture = ({ biomeRepair = false }: { biomeRepair?: boolean } = {}): strin
     const path = join(bin, command)
     const body =
       command === 'bunx' && biomeRepair
-        ? '#!/bin/sh\nif [ "$1" = "@biomejs/biome" ] && [ "$2" = "check" ] && [ "$3" != "--write" ]; then exit 1; fi\nif [ "$1" = "@biomejs/biome" ] && [ "$2" = "check" ] && [ "$3" = "--write" ]; then printf "fixed\\n" > "$PWD/biome-fixed.txt"; fi\nexit 0\n'
+        ? '#!/bin/sh\nif [ "$1" = "@biomejs/biome" ] && [ "$2" = "check" ] && [ "$3" != "--write" ]; then test -f "$PWD/biome-fixed.txt" && exit 0 || exit 1; fi\nif [ "$1" = "@biomejs/biome" ] && [ "$2" = "check" ] && [ "$3" = "--write" ]; then printf "fixed\\n" > "$PWD/biome-fixed.txt"; fi\nexit 0\n'
         : '#!/bin/sh\nexit 0\n'
     writeFileSync(path, body)
     chmodSync(path, 0o755)
@@ -62,7 +62,7 @@ const run = (dir: string, args: readonly string[] = []) =>
     const before = readFileSync(join(dir, 'package.json'), 'utf8')
     const result = run(dir, ['--dry-run'])
     check('dry-run may report residual findings without writing', result.status === 0 || result.status === 1)
-    check('dry-run reports planned fixes', (result.stdout ?? '').includes('"level":"FIXED"'))
+    check('dry-run does not claim persistent fixes', !(result.stdout ?? '').includes('"level":"FIXED"'))
     check(
       'dry-run preserves package bytes and avoids scaffolds',
       readFileSync(join(dir, 'package.json'), 'utf8') === before && !existsSync(join(dir, 'mise.toml'))
@@ -102,13 +102,13 @@ const run = (dir: string, args: readonly string[] = []) =>
   try {
     const result = run(dir)
     check(
-      'a write tool that changes a target is reported FIXED',
-      (result.stdout ?? '').includes('biome check --write changed target files')
+      'a write tool that changes a target is reported FIXED after its post-audit passes',
+      (result.stdout ?? '').includes('"level":"FIXED"')
     )
     check('the reported write-tool change exists', readFileSync(join(dir, 'biome-fixed.txt'), 'utf8') === 'fixed\n')
     check(
-      'a successful no-op write tool is reported PASS',
-      (result.stdout ?? '').includes('biome format --write completed without target changes')
+      'the terminal output contains only the verified item result',
+      !(result.stdout ?? '').includes('biome format --write completed without target changes')
     )
   } finally {
     rmSync(dir, { recursive: true, force: true })

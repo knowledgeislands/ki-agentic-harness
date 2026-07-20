@@ -1,12 +1,12 @@
 import { resolve } from 'node:path'
 import { collectAuditEvidence, type EngineeringEvidenceFinding } from './audit-evidence.ts'
-import { collectConformEvidence, type EngineeringConformFinding } from './conform-evidence.ts'
+import { repairEngineeringItem } from './conform-evidence.ts'
 
 export type EngineeringRubricContext = {
   target: string
   dryRun: boolean
-  auditFindings: readonly EngineeringEvidenceFinding[]
-  conformFindings: () => readonly EngineeringConformFinding[]
+  audit: (code: string) => readonly EngineeringEvidenceFinding[]
+  repair: (code: string) => { changed: boolean; message: string; subject?: string }
 }
 
 /** Immutable evidence is prepared once per AUDIT run and shared by item executions. */
@@ -18,12 +18,10 @@ export const createEngineeringContextFactory = ({
   dryRun?: boolean
 }): (() => EngineeringRubricContext) => {
   const absoluteTarget = resolve(target)
-  const auditFindings = collectAuditEvidence(absoluteTarget)
-  let conformFindings: readonly EngineeringConformFinding[] | undefined
   return () => ({
     target: absoluteTarget,
     dryRun,
-    auditFindings,
-    conformFindings: () => (conformFindings ??= collectConformEvidence(absoluteTarget, dryRun, auditFindings))
+    audit: (code) => collectAuditEvidence(absoluteTarget, code),
+    repair: (code) => repairEngineeringItem({ target: absoluteTarget, dryRun, code })
   })
 }

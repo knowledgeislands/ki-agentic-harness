@@ -1,8 +1,6 @@
 #!/usr/bin/env bun
 /**
- * Mechanical CONFORM for the ki-engineering standard — fixes the subset of
- * audit.ts's findings that are unambiguous and reversible, leaving
- * everything that needs a human call as a printed manual TODO.
+ * Safe mechanical repair actions for the ki-engineering standard.
  *
  * Scope: a single target repo (default cwd), matching the house conform shape
  * (conform.ts, conform.ts) — `bun conform.ts .` /
@@ -14,12 +12,9 @@
  *   bun scripts/conform.ts [path]   # default: cwd
  *   --dry-run                                    # report the planned actions, mutate nothing
  *
- * each action becomes a typed structured outcome — changed work is FIXED, an already-canonical
- * target is PASS, a tool failure is a violation, and manual follow-up is INFO. A single audit area
- * fans into several sections, and the toolchain write pass bundles biome + syncpack +
- * knip + deps — each emitted line cites ITS OWN criterion code (BIO-1 / SYNC-1 / KNIP-2 /
- * DEPS-1), regardless of the section where it originates. `--dry-run` governs
- * *writing* only.
+ * An invocation receives exactly one already-audited criterion code. It reports
+ * an observed target change; the shared checker performs the post-audit and is
+ * solely responsible for emitting a terminal `FIXED` outcome.
  *
  * Fixes:
  *   - package.json: `type`, `packageManager`, `engines.node`, the exact
@@ -57,7 +52,6 @@ import { execSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { existsSync, readdirSync, readFileSync, readlinkSync, statSync, writeFileSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
-import type { EngineeringEvidenceFinding } from './audit-evidence.ts'
 
 // ── kept in lockstep with audit.ts ──
 const REQUIRED_DEV = ['@biomejs/biome', 'knip', 'prettier', 'husky', 'lint-staged', 'markdownlint-cli2', 'syncpack', 'typescript']
@@ -180,15 +174,13 @@ const fingerprintTarget = (target: string): string | undefined => {
 }
 
 // ── entry ──
-export const collectConformEvidence = (
-  targetInput: string,
-  dryRun: boolean,
-  auditFindings: readonly EngineeringEvidenceFinding[]
-): readonly EngineeringConformFinding[] => {
+export const collectConformEvidence = (targetInput: string, dryRun: boolean, onlyCode?: string): readonly EngineeringConformFinding[] => {
   const target = resolve(targetInput)
   const findings: EngineeringConformFinding[] = []
-  const rec = (status: EngineeringConformFinding['status'], code: string, message: string, subject?: string): void =>
-    void findings.push({ status, code, message, ...(subject ? { subject } : {}) })
+  const selected = (code: string): boolean => !onlyCode || onlyCode === code
+  const rec = (status: EngineeringConformFinding['status'], code: string, message: string, subject?: string): void => {
+    if (selected(code)) findings.push({ status, code, message, ...(subject ? { subject } : {}) })
+  }
 
   if (!existsSync(target)) {
     rec('FAIL', 'PKG-4', 'conform target does not exist', target)
@@ -213,13 +205,13 @@ export const collectConformEvidence = (
   // ── package.json: core metadata fields ──
   {
     let any = false
-    if (pkg.type !== 'module') {
+    if (selected('PKG-1') && pkg.type !== 'module') {
       rec('FIXED', 'PKG-1', `type set to "module"`, 'package.json')
       pkg.type = 'module'
       pkgChanged = true
       any = true
     }
-    if (!String(pkg.packageManager ?? '').startsWith('bun@')) {
+    if (selected('PKG-2') && !String(pkg.packageManager ?? '').startsWith('bun@')) {
       rec('FIXED', 'PKG-2', `packageManager set to "bun@1.3.0"`, 'package.json')
       pkg.packageManager = 'bun@1.3.0'
       pkgChanged = true
@@ -227,13 +219,13 @@ export const collectConformEvidence = (
     }
     const engines = (pkg.engines ?? {}) as Record<string, string>
     const nodeOk = /^\s*>=\s*(\d+)/.test(engines.node ?? '') && Number((engines.node ?? '').match(/>=\s*(\d+)/)?.[1]) >= 22
-    if (!nodeOk) {
+    if (selected('PKG-3') && !nodeOk) {
       rec('FIXED', 'PKG-3', `engines.node set to ">=22"`, 'package.json')
       pkg.engines = { ...engines, node: '>=22' }
       pkgChanged = true
       any = true
     }
-    if (!any) {
+    if (!any && selected('PKG-1')) {
       rec('PASS', 'PKG-1', 'package.json metadata already conforms (type, packageManager, engines.node)', 'package.json')
     }
   }
@@ -242,7 +234,9 @@ export const collectConformEvidence = (
   {
     const devDeps = (pkg.devDependencies ?? {}) as Record<string, string>
     const missing = REQUIRED_DEV.filter((d) => !(d in devDeps))
-    if (!missing.length) {
+    if (!selected('PKG-5')) {
+      // Another item owns this invocation.
+    } else if (!missing.length) {
       rec('PASS', 'PKG-5', 'toolchain devDependencies already present', 'package.json')
     } else {
       for (const d of missing) {
@@ -260,6 +254,7 @@ export const collectConformEvidence = (
     const scripts = (pkg.scripts ?? {}) as Record<string, string>
     let any = false
     for (const [k, v] of Object.entries(CANON)) {
+      if (!selected('SCR-2')) continue
       if (scripts[k] !== v) {
         rec('FIXED', 'SCR-2', scripts[k] ? `${k} reset to canonical entrypoint` : `${k} added (aggregate entrypoint)`, 'package.json')
         scripts[k] = v
@@ -267,14 +262,14 @@ export const collectConformEvidence = (
       }
     }
     // Strip retired keys (ki:lint:* / ki:deps:* / ki:knip / ki:verify / ki:<skill>:lint).
-    for (const k of Object.keys(scripts).filter(RETIRED_KEY)) {
+    for (const k of selected('SCR-3') ? Object.keys(scripts).filter(RETIRED_KEY) : []) {
       rec('FIXED', 'SCR-3', `retired key ${k} removed (folded into ki:engineering:audit/conform + ki-authoring)`, 'package.json')
       delete scripts[k]
       any = true
     }
     // Derived per-skill keys for every vendored skill in .ki-meta (offline-safe).
     const metaCheckers = join(target, '.ki-meta', 'checkers')
-    if (existsSync(metaCheckers)) {
+    if (selected('SCR-4') && existsSync(metaCheckers)) {
       for (const skill of readdirSync(metaCheckers).filter((d) => statSync(join(metaCheckers, d)).isDirectory())) {
         const suffix = skill.replace(/^ki-/, '')
         for (const mode of ['audit', 'conform'] as const) {
@@ -294,12 +289,12 @@ export const collectConformEvidence = (
         }
       }
     }
-    if (!scripts.clean?.includes('node_modules')) {
+    if (selected('SCR-5') && !scripts.clean?.includes('node_modules')) {
       rec('FIXED', 'SCR-5', `clean set to "rm -rf dist node_modules"`, 'package.json')
       scripts.clean = 'rm -rf dist node_modules'
       any = true
     }
-    if (scripts.prepare !== 'husky') {
+    if (selected('SCR-5') && scripts.prepare !== 'husky') {
       rec('FIXED', 'SCR-5', `prepare set to "husky"`, 'package.json')
       scripts.prepare = 'husky'
       any = true
@@ -307,7 +302,7 @@ export const collectConformEvidence = (
     if (any) {
       pkg.scripts = scripts
       pkgChanged = true
-    } else {
+    } else if (selected('SCR-2')) {
       rec('PASS', 'SCR-2', 'aggregate entrypoints, per-skill keys, clean & prepare already conform', 'package.json')
     }
   }
@@ -318,7 +313,9 @@ export const collectConformEvidence = (
     const ls = lintStaged && typeof lintStaged === 'object' ? JSON.stringify(lintStaged) : ''
     const ok =
       ls.includes('@biomejs/biome') && ls.includes('prettier') && ls.includes('markdownlint') && ls.includes('markdownlint-cli2 --no-globs')
-    if (ok) {
+    if (!selected('PKG-6')) {
+      // Another item owns this invocation.
+    } else if (ok) {
       rec('PASS', 'PKG-6', 'lint-staged block already fans out correctly', 'package.json')
     } else {
       rec('FIXED', 'PKG-6', lintStaged ? 'lint-staged reset to standard fan-out' : 'lint-staged added (standard fan-out)', 'package.json')
@@ -340,19 +337,21 @@ export const collectConformEvidence = (
     rec('FIXED', code, `${name} scaffolded (known-good default)`, name)
     if (!dryRun) writeFileSync(path, content)
   }
-  scaffold('mise.toml', join(target, 'mise.toml'), MISE_DEFAULT, 'MISE-1')
-  scaffold('tsconfig.json', join(target, 'tsconfig.json'), TSCONFIG_DEFAULT, 'TSC-2')
-  scaffold('biome.json', join(target, 'biome.json'), BIOME_DEFAULT, 'BIO-2')
+  if (selected('MISE-1')) scaffold('mise.toml', join(target, 'mise.toml'), MISE_DEFAULT, 'MISE-1')
+  if (selected('TSC-2')) scaffold('tsconfig.json', join(target, 'tsconfig.json'), TSCONFIG_DEFAULT, 'TSC-2')
+  if (selected('BIO-2')) scaffold('biome.json', join(target, 'biome.json'), BIOME_DEFAULT, 'BIO-2')
   const hasKnip = existsSync(join(target, 'knip.json')) || existsSync(join(target, 'knip.jsonc')) || existsSync(join(target, 'knip.ts'))
-  if (hasKnip) {
+  if (selected('KNIP-1') && hasKnip) {
     rec('PASS', 'KNIP-1', 'knip config already present', 'knip.json')
-  } else scaffold('knip.json', join(target, 'knip.json'), KNIP_DEFAULT, 'KNIP-1')
+  } else if (selected('KNIP-1')) scaffold('knip.json', join(target, 'knip.json'), KNIP_DEFAULT, 'KNIP-1')
 
   // ── .ki-config.toml [ki-engineering] marker ──
   {
     const kiPath = join(target, KI_CONFIG)
     const kiText = existsSync(kiPath) ? readFileSync(kiPath, 'utf8') : ''
-    if (/^\[ki-engineering\]/m.test(kiText)) {
+    if (!selected('TOML-1')) {
+      // Another item owns this invocation.
+    } else if (/^\[ki-engineering\]/m.test(kiText)) {
       rec('PASS', 'TOML-1', '[ki-engineering] table already present', KI_CONFIG)
     } else {
       rec('FIXED', 'TOML-1', `${KI_CONFIG} [ki-engineering] marker table appended`, KI_CONFIG)
@@ -368,13 +367,7 @@ export const collectConformEvidence = (
   // exiting non-zero (e.g. residual manual lint) is reported, never fatal. Each step cites
   // its OWN criterion code, not a single section code (rubric: BIO-1 / SYNC-1 / KNIP-2 / DEPS-1).
   {
-    const repairNeeded = (code: string): boolean =>
-      auditFindings.some((finding) => finding.code === code && (finding.level === 'FAIL' || finding.level === 'INFO'))
     const runWriteTool = (label: string, cmd: string, code: string): void => {
-      if (!repairNeeded(code)) {
-        rec('PASS', code, `${label} not needed — audit already passes`)
-        return
-      }
       if (dryRun) {
         rec('INFO', code, `${label} would run (dry run — no writes)`)
         return
@@ -407,11 +400,12 @@ export const collectConformEvidence = (
       ['bun update --latest', 'bun update --latest', 'DEPS-1']
     ]
     for (const [label, cmd, code] of steps) {
+      if (!selected(code)) continue
       runWriteTool(label, cmd, code)
     }
     // 'bun update --latest' can exit non-zero partway through, leaving bun.lock with
     // unresolved "latest" placeholders — always follow with a plain install to reconcile.
-    runWriteTool('bun install (lockfile reconcile)', 'bun install', 'DEPS-1')
+    if (selected('DEPS-1')) runWriteTool('bun install (lockfile reconcile)', 'bun install', 'DEPS-1')
   }
 
   // ── judgment items — never guessed, always surfaced ──
@@ -462,8 +456,29 @@ export const collectConformEvidence = (
     code: 'TSC-2',
     msg: 'field-level repairs inside an EXISTING tsconfig.json / biome.json / knip.json — only scaffolded when the file was missing entirely; existing-file drift is judgment'
   })
-  for (const todo of manualTodos) {
+  for (const todo of onlyCode ? [] : manualTodos) {
     rec('INFO', todo.code, todo.msg)
   }
   return findings
+}
+
+/** Run the safe action for one already-audited engineering rubric item. */
+export const repairEngineeringItem = ({
+  target,
+  dryRun,
+  code
+}: {
+  target: string
+  dryRun: boolean
+  code: string
+}): { changed: boolean; message: string; subject?: string } => {
+  const before = fingerprintTarget(target)
+  const findings = collectConformEvidence(target, dryRun, code)
+  const after = fingerprintTarget(target)
+  const finding = findings[0]
+  return {
+    changed: !dryRun && before !== undefined && after !== undefined && before !== after,
+    message: finding?.message ?? `${code} has no declared safe repair`,
+    ...(finding?.subject ? { subject: finding.subject } : {})
+  }
 }

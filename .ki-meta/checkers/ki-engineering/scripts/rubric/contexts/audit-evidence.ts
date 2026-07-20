@@ -41,21 +41,24 @@ export type EngineeringEvidenceFinding = {
 }
 type Level = EngineeringEvidenceFinding['level']
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
-const findings: Finding[] = []
-const add = (level: Level, area: string, msg: string, ref?: string, file?: string): void =>
-  void findings.push({ level, area, msg, ref, file })
 
 // Reference-doc pointers — the substantive standard (cited by every minted code) and
 // the rubric that maps code↔criterion (cited by the judgment/scope handoff).
 const STD = 'references/standards.md'
 
-export const collectAuditEvidence = (repo: string): readonly EngineeringEvidenceFinding[] => {
+/** Collect evidence for one rubric item; no other code's tool checks are invoked. */
+export const collectAuditEvidence = (repo: string, onlyCode?: string): readonly EngineeringEvidenceFinding[] => {
+  const findings: Finding[] = []
+  const add = (level: Level, area: string, msg: string, ref?: string, file?: string): void => {
+    if (!onlyCode || area === onlyCode) findings.push({ level, area, msg, ref, file })
+  }
   if (!repo || !existsSync(repo)) {
     add('FAIL', 'PKG-4', 'Audit target is missing or does not exist.', STD)
     return findings.map(({ level, area, msg, file }) => ({ level, code: area, message: msg, ...(file ? { subject: file } : {}) }))
   }
   const at = (...p: string[]) => join(repo, ...p)
   function runCheck(area: string, label: string, cmd: string, ref?: string, file?: string) {
+    if (onlyCode && area !== onlyCode) return
     try {
       execSync(cmd, { cwd: repo, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] })
       add('PASS', area, `${label} exits 0`, ref, file)

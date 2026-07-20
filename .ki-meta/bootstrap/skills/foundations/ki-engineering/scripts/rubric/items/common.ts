@@ -1,12 +1,33 @@
-import type { AuditOutcome, ConformOutcome, RubricItem, RubricOutcomes } from '../../vendored/ki-skills/rubric.ts'
+import type { AuditOutcome, RubricItem, RubricOutcomes } from '../../vendored/ki-skills/rubric.ts'
 import type { EngineeringRubricContext } from '../contexts/engineering.ts'
 
 type Code = `${string}-${number}`
 type MechanicalLevel = 'FAIL' | 'WARN'
 const SOURCE = ['standards.md'] as const
+const SAFE_REPAIRS = new Set<Code>([
+  'PKG-1',
+  'PKG-2',
+  'PKG-3',
+  'PKG-5',
+  'PKG-6',
+  'MISE-1',
+  'SCR-2',
+  'SCR-3',
+  'SCR-4',
+  'SCR-5',
+  'TSC-2',
+  'BIO-1',
+  'BIO-2',
+  'KNIP-1',
+  'KNIP-2',
+  'SYNC-1',
+  'DEPS-1',
+  'TOML-1'
+])
 
 const audit = (code: Code, context: EngineeringRubricContext): RubricOutcomes<AuditOutcome> => {
-  const outcomes = context.auditFindings
+  const outcomes = context
+    .audit(code)
     .filter((finding) => finding.code === code)
     .map((finding) => ({
       status:
@@ -26,30 +47,6 @@ const audit = (code: Code, context: EngineeringRubricContext): RubricOutcomes<Au
     : [{ status: 'NOT_APPLICABLE', message: `${code} did not apply to this target` }]
 }
 
-const conform = (code: Code, context: EngineeringRubricContext): RubricOutcomes<ConformOutcome> => {
-  const outcomes = context
-    .conformFindings()
-    .filter((finding) => finding.code === code)
-    .map((finding) => ({
-      status:
-        finding.status === 'FAIL' || finding.status === 'WARN'
-          ? ('VIOLATION' as const)
-          : finding.status === 'FIXED'
-            ? ('FIXED' as const)
-            : finding.status === 'NOT_APPLICABLE'
-              ? ('NOT_APPLICABLE' as const)
-              : finding.status === 'PASS'
-                ? ('PASS' as const)
-                : ('INFO' as const),
-      ...(finding.status === 'FAIL' || finding.status === 'WARN' ? { level: finding.status } : {}),
-      message: finding.message,
-      ...(finding.subject ? { subject: finding.subject } : {})
-    }))
-  return outcomes.length
-    ? (outcomes as unknown as RubricOutcomes<ConformOutcome>)
-    : [{ status: 'NOT_APPLICABLE', message: `${code} has no safe conform action` }]
-}
-
 export const mechanical = (
   code: Code,
   title: string,
@@ -65,7 +62,9 @@ export const mechanical = (
     level,
     ...(overrideLevels ? { overrideLevels } : {}),
     audit: { phase: 'INSPECT', run: (context) => audit(code, context) },
-    conform: { phase: 'PRIMARY', run: (context) => conform(code, context) }
+    ...(SAFE_REPAIRS.has(code)
+      ? { repair: { phase: 'PRIMARY' as const, run: (context: EngineeringRubricContext) => [context.repair(code)] } }
+      : {})
   }
 })
 
