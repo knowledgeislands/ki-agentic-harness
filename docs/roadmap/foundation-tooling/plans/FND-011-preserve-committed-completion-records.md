@@ -26,7 +26,7 @@ The roadmap validator accepts `done` but does not require a `## Done` outcome. T
 3. Extend the plan format and roadmap validator with `ready`, including dependency rules that prevent a ready, in-progress, or acceptance plan from bypassing a non-done blocker. Keep `done` as a visible terminal record, not an implicit pruning request.
 4. Define the durable closing operations: `done` transitions an accepted plan to a committed record without deletion and with one non-empty terminal `## Done` H2 after its acceptance packet; explicit `prune` later discovers and removes eligible `done` plans in the requested scope.
 5. Specify `prune` scope and safety: list candidate plan identifiers and canonical items before writing; accept an optional theme scope or the full thematic set; require the done records to be committed; and leave non-done, blocked, malformed, or concurrently changed plans untouched with an exact diagnostic.
-6. Update `ki-plan` lifecycle guidance and user-facing help for the three guarded transitions: `ready` records start approval, `done` records closure and commits, and `prune` removes the selected plans, canonical items/references, dependency edges, and projections through one separate no-clobber transaction and commit.
+6. Update `ki-plan` lifecycle guidance and user-facing help for the three guarded transitions: `ready` records start approval, `done` records closure and commits, and `prune` removes the selected plans, canonical items/references, dependency edges, and projections through one separate no-clobber transaction and commit. On reaching `acceptance`, emit the shared completion banner to show that implementation is complete and explicit acceptance is next; this applies to direct plan work as well as delegated work.
 7. Add focused fixtures for invalid ready transitions, status visibility, revised-plan re-review, dependency blocking, missing or malformed done outcomes, correct done-record index visibility, full and theme-scoped batch pruning, dependency cleanup, repeated requests, uncommitted records, concurrent mutation, and rollback boundaries.
 8. Refresh vendored roadmap payloads and generated projections, document the distinct ready, done, and prune commit boundaries, and run focused and serial repository gates.
 
@@ -34,6 +34,7 @@ The roadmap validator accepts `done` but does not require a `## Done` outcome. T
 
 - `skills/process/ki-plan/references/lifecycle.md`
 - `skills/process/ki-plan/SKILL.md` and generated HELP surface
+- `skills/process/ki-delegate/references/delegation.md`
 - `skills/general-governance/ki-repo-roadmap/references/plan-format.md`
 - roadmap evidence, writes, and focused fixtures
 - generated `ki-repo-roadmap` checker and educator payloads
@@ -43,6 +44,7 @@ The roadmap validator accepts `done` but does not require a `## Done` outcome. T
 
 - A newly created or materially revised plan is `open`; only explicit user approval moves it to `ready`, and only a ready plan may begin execution.
 - `ready` is visible in plan status and the generated index, preserves the canonical item and plan contents, and cannot bypass an unresolved dependency.
+- A verified plan entering `acceptance` emits the completion banner and names acceptance as the next action, whether or not execution was delegated.
 - `done` turns an accepted plan into a valid, indexed `done` plan only with a non-empty `## Done` outcome and does not delete it.
 - A later `prune` can remove multiple eligible done plans together, either repository-wide or within one theme, while preserving unrelated active plans and authored roadmap prose.
 - Prune rejects uncommitted done records, malformed plans, non-done plans, unsafe paths, and concurrent changes without partial publication.

@@ -58,12 +58,13 @@ For a repository-wide audit, run the repository's aggregate `ki:audit` entrypoin
    next: <checkpoint>; blocker/change: <none or concise detail>
    ```
 
-8. **Mark a genuinely completed delegated unit.** Once the work has passed its stated verification gate and the plan or task is recorded Done, end the caller-facing completion update with this compact banner. Use it once per completed unit, never for an intermediate round, an unverified diff, or a task merely handed to another agent.
+8. **Mark verified implementation complete.** Once the work has passed its stated verification gate and reaches manual acceptance (or is recorded Done where no acceptance gate applies), end the caller-facing completion update with this compact banner. It means the implementation is complete and the next step is acceptance, not that the plan has already been closed. Use it once per completed unit, never for an intermediate round, an unverified diff, or a task merely handed to another agent.
 
    ```text
-   +----------------+
-   | COMPLETE! \o/  |
-   +----------------+
+   +------------------------------+
+   | COMPLETE! \o/                |
+   | Ready for acceptance review. |
+   +------------------------------+
    ```
 
 For file-mutating work that would otherwise contend, isolate each agent in its own worktree `(CC: isolation: worktree)` — but only when the contention is real, as the isolation carries setup cost.
