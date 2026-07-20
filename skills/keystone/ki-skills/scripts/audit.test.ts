@@ -104,8 +104,8 @@ describe('ki-skills AUDIT wrapper', () => {
     try {
       const result = run(dir, '--progress=always')
       expect(parseCheckerJsonl(result.stdout).errors).toEqual([])
-      expect(result.stderr).toContain('AUDIT [')
-      expect(result.stderr).toContain(' complete\n')
+      expect(result.stderr).toContain('AUDIT      [')
+      expect(result.stderr).toMatch(/ complete\s*\n/)
     } finally {
       rmSync(base, { recursive: true, force: true })
     }

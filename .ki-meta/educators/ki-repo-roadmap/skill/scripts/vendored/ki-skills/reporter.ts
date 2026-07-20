@@ -153,6 +153,7 @@ export const parseCheckerArguments = (argv: readonly string[]): ParsedCheckerArg
 }
 
 const FALLBACK_TERMINAL_COLUMNS = 80
+const COMMAND_COLUMN_WIDTH = 10
 const ANSI_ESCAPE = new RegExp(`${String.fromCharCode(27)}\\[[0-?]*[ -/]*[@-~]`, 'gu')
 
 const displayWidth = (text: string): number =>
@@ -166,13 +167,13 @@ const truncate = (text: string, width: number): string => {
   const plainText = text.replace(ANSI_ESCAPE, '')
   if (displayWidth(plainText) <= width) return plainText
   if (width <= 0) return ''
-  if (width === 1) return '…'
+  if (width <= 3) return '.'.repeat(width)
   let result = ''
   for (const character of Array.from(plainText)) {
-    if (displayWidth(result) + displayWidth(character) > width - 1) break
+    if (displayWidth(result) + displayWidth(character) > width - 3) break
     result += character
   }
-  return `${result}…`
+  return `${result}...`
 }
 
 const progressBar = (width: number, completed?: number, total?: number): string => {
@@ -198,11 +199,13 @@ const progressLine = ({
   columns: number
 }): string => {
   const terminalWidth = Number.isFinite(columns) && columns > 0 ? Math.floor(columns) : FALLBACK_TERMINAL_COLUMNS
-  const barWidth = Math.min(100, terminalWidth - displayWidth(left) - displayWidth(right) - 2)
-  if (barWidth >= 3) return `${left} ${progressBar(barWidth, completed, total)} ${right}`
+  const leftWidth = Math.min(COMMAND_COLUMN_WIDTH, terminalWidth)
+  const remainingWidth = terminalWidth - leftWidth - 2
+  const barWidth = Math.min(100, Math.floor(remainingWidth / 2))
+  const rightWidth = remainingWidth - barWidth
+  if (barWidth >= 3 && rightWidth > 0)
+    return `${truncate(left, leftWidth).padEnd(leftWidth)} ${progressBar(barWidth, completed, total)} ${truncate(right, rightWidth).padEnd(rightWidth)}`
 
-  const leftWidth = terminalWidth - displayWidth(right) - 1
-  if (leftWidth > 0) return `${truncate(left, leftWidth)} ${right}`
   return truncate(right, terminalWidth)
 }
 

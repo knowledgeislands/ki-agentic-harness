@@ -398,15 +398,23 @@ try {
     cwd: checkerRoot,
     encoding: 'utf8'
   })
+  const progressLines = progressAggregate.stderr
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => line.trimEnd())
   check(
-    'aggregate → reports startup, checker-plan discovery, and its active skill without contaminating final output',
-    progressAggregate.stderr.includes('AUDIT [') &&
+    'aggregate → reports stable startup, checker-plan discovery, and active skill without contaminating final output',
+    progressAggregate.stderr.includes('AUDIT      [') &&
       progressAggregate.stderr.includes('initialising') &&
       progressAggregate.stderr.includes('reading checker plans 1/1') &&
       progressAggregate.stderr.includes('ki-skills') &&
       progressAggregate.stderr.includes('0% starting') &&
+      progressLines.length >= 4 &&
+      progressLines.every(
+        (line) => line.indexOf('[') === 11 && line.match(/\[[#.>]+\]/)?.[0].length === 34 && line.indexOf(']') + 2 === 46
+      ) &&
       !progressAggregate.stderr.includes('remaining') &&
-      !progressAggregate.stdout.includes('AUDIT [') &&
+      !progressAggregate.stdout.includes('AUDIT      [') &&
       !progressAggregate.stdout.includes('checker wrote to stderr')
   )
   const quietAggregate = spawnSync('bun', [aggregate, 'audit', '--skill', 'ki-skills', '--progress=never'], {

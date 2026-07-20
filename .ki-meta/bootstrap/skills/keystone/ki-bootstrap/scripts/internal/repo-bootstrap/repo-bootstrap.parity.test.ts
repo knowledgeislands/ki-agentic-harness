@@ -76,6 +76,13 @@ function snapshot(base: string): string {
   return rows.join('\n')
 }
 
+function changedSnapshotPaths(before: string, after: string): string[] {
+  const byPath = (snapshot: string): Map<string, string> => new Map(snapshot.split('\n').map((row) => [row.split(':', 3)[1] ?? '', row]))
+  const beforePaths = byPath(before)
+  const afterPaths = byPath(after)
+  return [...new Set([...beforePaths.keys(), ...afterPaths.keys()])].filter((path) => beforePaths.get(path) !== afterPaths.get(path)).sort()
+}
+
 const auditFixture = `#!/usr/bin/env bun
 import { writeFileSync } from 'node:fs'
 
@@ -211,8 +218,11 @@ try {
 
   const beforeDryRun = snapshot(fixture)
   const wrapperConform = run(conformWrapper, ['--dry-run'], nested, env)
+  const afterDryRun = snapshot(fixture)
+  const dryRunChanges = changedSnapshotPaths(beforeDryRun, afterDryRun)
   check('package-free conform wrapper → forwards --dry-run', wrapperConform.status === 0)
-  check('package-free conform wrapper → dry-run is byte-stable', snapshot(fixture) === beforeDryRun)
+  check('package-free conform wrapper → dry-run is byte-stable', dryRunChanges.length === 0)
+  if (dryRunChanges.length) console.log(`      changed: ${dryRunChanges.join(', ')}`)
   check('package-free wrappers → package.json remains absent after execution', !existsSync(join(fixture, 'package.json')))
 
   const packageScripts = {

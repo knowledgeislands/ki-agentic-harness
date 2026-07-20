@@ -302,6 +302,7 @@ const parseReporterOptions = (args) => {
   return { levels, skill, progress, childArgs }
 }
 const FALLBACK_TERMINAL_COLUMNS = 80
+const COMMAND_COLUMN_WIDTH = 10
 const ANSI_ESCAPE = /\\x1b\\[[0-?]*[ -/]*[@-~]/gu
 const displayWidth = (text) =>
   Array.from(text.replace(ANSI_ESCAPE, '')).reduce((width, character) => {
@@ -313,13 +314,13 @@ const truncate = (text, width) => {
   const plainText = text.replace(ANSI_ESCAPE, '')
   if (displayWidth(plainText) <= width) return plainText
   if (width <= 0) return ''
-  if (width === 1) return '…'
+  if (width <= 3) return '.'.repeat(width)
   let result = ''
   for (const character of Array.from(plainText)) {
-    if (displayWidth(result) + displayWidth(character) > width - 1) break
+    if (displayWidth(result) + displayWidth(character) > width - 3) break
     result += character
   }
-  return result + '…'
+  return result + '...'
 }
 const progressBar = (width, completed, total) => {
   const innerWidth = width - 2
@@ -333,10 +334,12 @@ const progressLine = (left, right, completed, total) => {
   const columns = process.stderr.isTTY && Number.isFinite(process.stderr.columns) && process.stderr.columns > 0
     ? Math.floor(process.stderr.columns)
     : FALLBACK_TERMINAL_COLUMNS
-  const barWidth = Math.min(100, columns - displayWidth(left) - displayWidth(right) - 2)
-  if (barWidth >= 3) return left + ' ' + progressBar(barWidth, completed, total) + ' ' + right
-  const leftWidth = columns - displayWidth(right) - 1
-  if (leftWidth > 0) return truncate(left, leftWidth) + ' ' + right
+  const leftWidth = Math.min(COMMAND_COLUMN_WIDTH, columns)
+  const remainingWidth = columns - leftWidth - 2
+  const barWidth = Math.min(100, Math.floor(remainingWidth / 2))
+  const rightWidth = remainingWidth - barWidth
+  if (barWidth >= 3 && rightWidth > 0)
+    return truncate(left, leftWidth).padEnd(leftWidth) + ' ' + progressBar(barWidth, completed, total) + ' ' + truncate(right, rightWidth).padEnd(rightWidth)
   return truncate(right, columns)
 }
 const createProgressTracker = (mode) => {
@@ -496,7 +499,7 @@ for (const [index, skill] of checkers.entries()) {
     progress.discover(index + 1, checkers.length)
     continue
   }
-  const preflight = runCheckerProcess(scriptPath, [], { ...process.env, KI_CHECKER_PLAN: '1' })
+  const preflight = runCheckerProcess(scriptPath, verb === 'conform' ? ['--dry-run'] : [], { ...process.env, KI_CHECKER_PLAN: '1' })
   let plan
   try {
     plan = JSON.parse((preflight.stdout ?? '').trim())

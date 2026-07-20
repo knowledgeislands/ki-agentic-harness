@@ -55,7 +55,7 @@ describe('checker reporter arguments', () => {
     tracker?.({ type: 'item-complete', mode: 'audit', completed: 1, total: 2, code: 'NAME-1', title: 'name matches', phase: 'INSPECT' })
     tracker?.({ type: 'complete', mode: 'audit', completed: 2, total: 2 })
     expect(lines).toHaveLength(3)
-    expect(lines[0]).toContain('AUDIT [')
+    expect(lines[0]).toContain('AUDIT      [')
     expect(lines[0]).toContain('0/2 0% starting')
     expect(lines[1]).toContain('1/2 50% NAME-1')
     expect(lines[2]).toContain('2/2 100% complete')
@@ -71,7 +71,7 @@ describe('checker reporter arguments', () => {
     const lines: string[] = []
     const tracker = createTerminalStatusTracker({ mode: 'auto', interactive: true, write: (line) => lines.push(line) })
     tracker?.({ type: 'failed', mode: 'conform', completed: 2, total: 4 })
-    expect(lines).toEqual(['\r\x1b[2KCONFORM [###########################............................] 2/4 50% failed\n'])
+    expect(lines).toEqual(['\r\x1b[2KCONFORM    [################................] 2/4 50% failed                    \n'])
   })
 
   test('does not display a complete bar before the last item or for no planned work', () => {
@@ -84,7 +84,30 @@ describe('checker reporter arguments', () => {
     expect(lines[1]).toContain('0/0 100% complete')
   })
 
-  test('recalculates the three-zone layout at each interactive redraw', () => {
+  test('keeps command, bar, and detail columns stable until terminal resize', () => {
+    const lines: string[] = []
+    const tracker = createTerminalStatusTracker({
+      mode: 'always',
+      interactive: false,
+      columns: () => 80,
+      write: (line) => lines.push(line)
+    })
+    tracker?.({ type: 'start', mode: 'audit', completed: 0, total: 10 })
+    tracker?.({ type: 'item-complete', mode: 'audit', completed: 5, total: 10, code: 'SHAPE-2', title: 'unused', phase: 'INSPECT' })
+    tracker?.({ type: 'complete', mode: 'audit', completed: 10, total: 10 })
+    const rendered = lines.map((line) => line.trimEnd())
+    const barStarts = rendered.map((line) => line.indexOf('['))
+    const barWidths = rendered.map((line) => line.match(/\[[#.>]+\]/)?.[0].length)
+    const detailStarts = rendered.map((line) => line.indexOf(']') + 2)
+    expect(barStarts).toEqual([11, 11, 11])
+    expect(barWidths).toEqual([34, 34, 34])
+    expect(detailStarts).toEqual([46, 46, 46])
+    expect(rendered[0]).toContain('0/10 0% starting')
+    expect(rendered[1]).toContain('5/10 50% SHAPE-2')
+    expect(rendered[2]).toContain('10/10 100% complete')
+  })
+
+  test('recalculates the stable three-zone layout after terminal resize', () => {
     const lines: string[] = []
     let columns = 32
     const tracker = createTerminalStatusTracker({
@@ -96,9 +119,11 @@ describe('checker reporter arguments', () => {
     tracker?.({ type: 'start', mode: 'conform', completed: 0, total: 10 })
     columns = 120
     tracker?.({ type: 'item-complete', mode: 'conform', completed: 5, total: 10, code: 'SHAPE-2', title: 'unused', phase: 'INSPECT' })
-    expect(lines[0]).toContain('CONFORM [')
-    expect(lines[0]).toContain('0/10 0% starting')
+    expect(lines[0]).toContain('CONFORM    [')
+    expect(lines[0]).toContain('0/10 0%...')
     expect(lines[1]).toContain('5/10 50% SHAPE-2')
+    expect(lines[0].match(/\[[#.>]+\]/)?.[0]).toHaveLength(10)
+    expect(lines[1].match(/\[[#.>]+\]/)?.[0]).toHaveLength(54)
     expect(lines.every((line, index) => line.slice('\r\x1b[2K'.length).length <= (index === 0 ? 32 : 120))).toBe(true)
   })
 
@@ -106,6 +131,6 @@ describe('checker reporter arguments', () => {
     const lines: string[] = []
     const tracker = createTerminalStatusTracker({ mode: 'always', interactive: true, columns: () => 14, write: (line) => lines.push(line) })
     tracker?.({ type: 'failed', mode: 'conform', completed: 5, total: 10 })
-    expect(lines).toEqual(['\r\x1b[2K5/10 50% fail…\n'])
+    expect(lines).toEqual(['\r\x1b[2K5/10 50% fa...\n'])
   })
 })

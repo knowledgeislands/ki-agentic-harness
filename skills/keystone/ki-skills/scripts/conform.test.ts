@@ -98,8 +98,8 @@ describe('ki-skills CONFORM wrapper', () => {
     try {
       const result = run(CONFORM, dir, '--progress=always')
       expect(parseCheckerJsonl(result.stdout).errors).toEqual([])
-      expect(result.stderr).toContain('CONFORM [')
-      expect(result.stderr).toContain(' complete\n')
+      expect(result.stderr).toContain('CONFORM    [')
+      expect(result.stderr).toMatch(/ complete\s*\n/)
     } finally {
       rmSync(base, { recursive: true, force: true })
     }
