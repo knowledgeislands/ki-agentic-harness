@@ -65,6 +65,10 @@ For each dead-end, workaround, or convention discovered this session, route it t
 
 Use `highCostCandidates` from the grounding helper as a starting list, not the full set — warm context surfaces things the helper cannot see (a design dead-end, a rejected approach).
 
+### Per-plan acceptance mini recap
+
+When `ki-plan accept` requests a plan-scoped recap, do not run or imply a full-session recap. Ground only the plan's delivered outputs and verification evidence, then record four concise parts in that plan's `## Acceptance` section: **Delivered**, **Verification**, **Outstanding concerns**, and **Mini recap**. The mini recap may name a learning and its proposed route, but it must say that the route is unapproved. User acceptance of the plan closes the plan only; it does not approve a guide, rubric, agent, hook, memory, or other durable learning write.
+
 ## 5. Specific actions
 
 Close the recap with a **Specific actions** section: a short, concrete, imperative list of everything actionable that emerged from steps 3 and 4 — each item something that could be done right now, with the exact command, file, or artefact named. Prefix each item with a short, unique, uppercase hyphenated label that names its work (usually two to four words), so the user can respond in chat by label ("do `COMMIT-DOCS` and `FIX-AUTHORING-AUDIT`") instead of restating the action. Do not use arbitrary sequence labels such as `A1`, `A2`, or `A3`; labels are ephemeral recap handles, not roadmap identifiers. Typical entries:

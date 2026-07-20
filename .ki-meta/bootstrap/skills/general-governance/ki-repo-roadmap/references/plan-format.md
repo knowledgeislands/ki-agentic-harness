@@ -23,7 +23,7 @@ blocked-by: —
 ---
 ```
 
-- `status` is `open`, `in-progress`, or transient `done`.
+- `status` is `open`, `in-progress`, `acceptance`, or transient `done`. `acceptance` means planned work and verification are complete and the plan awaits the user's explicit acceptance.
 - `roadmap` is a qualified `<theme>/<item-slug>` locator for an item in `Blocking` or `Next`; its theme must match the plan directory.
 - `blocks` and `blocked-by` are comma-separated canonical `<THEME>-<NNN>` plan identifiers or `—`, and are reverse-consistent.
 - There is no `phase` field; the canonical roadmap horizon is authoritative.
@@ -68,6 +68,6 @@ A pass/fail command or assertion.
 Narrative dependency context.
 ```
 
-During execution, mark completed steps without deleting their instructions. Delete the plan when it lands; do not retain done plans in the index.
+During execution, mark completed steps without deleting their instructions. Before closing completed work, append one non-empty `## Acceptance` section after the six core sections. It records **Delivered**, **Verification**, **Outstanding concerns**, and a **Mini recap** whose learning routes remain proposals until the user approves them separately. Delete the plan when it lands; do not retain done plans in the index.
 
 Composed governance may add `handoff`, `tier`, or `readiness` frontmatter and additional H2 sections, but it must preserve the six core sections exactly once and in the order above.

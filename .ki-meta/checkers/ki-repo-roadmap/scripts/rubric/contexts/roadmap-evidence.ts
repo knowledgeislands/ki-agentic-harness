@@ -44,7 +44,7 @@ const PLAN_RE = /^([A-Z][A-Z0-9]{1,7}-\d{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/
 const PLAN_LINE_RE = /^\*\*Plan:\*\* \[([A-Z][A-Z0-9]{1,7}-\d{3,})\]\((plans\/[A-Z][A-Z0-9]{1,7}-\d{3,}-[a-z0-9]+(?:-[a-z0-9]+)*\.md)\)$/
 const REQUIRED = ['id', 'title', 'status', 'roadmap', 'blocks', 'blocked-by']
 const OPTIONAL = ['handoff', 'tier', 'readiness']
-const VALID_STATUS = new Set(['open', 'in-progress', 'done'])
+const VALID_STATUS = new Set(['open', 'in-progress', 'acceptance', 'done'])
 const STANDARD_REF = 'references/standards.md'
 const FORMAT_REF = 'references/plan-format.md'
 const RUBRIC_REF = 'references/rubric.md'
@@ -238,7 +238,7 @@ function themeCode(text: string, display: string): string | null {
   return parsed.values.code
 }
 
-function validatePlanBody(body: string, display: string): void {
+function validatePlanBody(body: string, display: string, status: string | undefined): void {
   const requiredSections = ['Context', 'Current state', 'Steps', 'Files touched', 'Verify', 'Dependencies / blocks']
   const bodyLines = body.split(/\r?\n/)
   const sections = markdownHeadings(body).filter((heading) => heading.level === 2)
@@ -261,6 +261,19 @@ function validatePlanBody(body: string, display: string): void {
     if (!bodyLines.slice(start, end).join('\n').trim()) {
       add('FAIL', 'PLAN-1', `body section '${required}' must not be empty`, FORMAT_REF, display)
     }
+  }
+  const acceptance = sections.filter((section) => section.title === 'Acceptance')
+  if (status === 'acceptance') {
+    const dependencies = sections.find((section) => section.title === 'Dependencies / blocks')
+    if (acceptance.length !== 1 || !dependencies || acceptance[0].line <= dependencies.line) {
+      add('FAIL', 'PLAN-1', "acceptance status requires one non-empty 'Acceptance' H2 after 'Dependencies / blocks'", FORMAT_REF, display)
+      return
+    }
+    const index = sections.indexOf(acceptance[0])
+    const start = acceptance[0].line
+    const end = index + 1 < sections.length ? sections[index + 1].line - 1 : bodyLines.length
+    if (!bodyLines.slice(start, end).join('\n').trim())
+      add('FAIL', 'PLAN-1', "body section 'Acceptance' must not be empty", FORMAT_REF, display)
   }
 }
 
@@ -414,7 +427,7 @@ function discoverThematic(): { themes: string[]; items: Item[]; plans: Plan[] } 
         add('FAIL', 'PLAN-1', `id '${fm.id}' does not use theme code '${code}'`, FORMAT_REF, display)
       if (fm.status && !VALID_STATUS.has(fm.status)) add('FAIL', 'PLAN-1', `invalid status '${fm.status}'`, FORMAT_REF, display)
       if (match[2].length > 50) add('FAIL', 'PLAN-1', `filename slug is ${match[2].length} characters; maximum is 50`, FORMAT_REF, display)
-      validatePlanBody(parsed.body, display)
+      validatePlanBody(parsed.body, display, fm.status)
       const blocks = ids(fm.blocks)
       const blockedBy = ids(fm['blocked-by'])
       for (const [field, dependencies] of [
@@ -594,8 +607,8 @@ export const inspectRoadmap = (target: string): Finding[] => {
           const other = byRef.get(blocker)
           if (other && !other.blocks.includes(reference))
             add('FAIL', 'PLAN-3', `blocked-by ${blocker}, but its blocks omits ${reference}`, FORMAT_REF, plan.file)
-          if (plan.fm.status === 'in-progress' && other?.fm.status !== 'done') {
-            add('FAIL', 'PLAN-3', `in-progress plan still has non-done blocker ${blocker}`, FORMAT_REF, plan.file)
+          if (['in-progress', 'acceptance'].includes(plan.fm.status) && other?.fm.status !== 'done') {
+            add('FAIL', 'PLAN-3', `${plan.fm.status} plan still has non-done blocker ${blocker}`, FORMAT_REF, plan.file)
           }
         }
       }

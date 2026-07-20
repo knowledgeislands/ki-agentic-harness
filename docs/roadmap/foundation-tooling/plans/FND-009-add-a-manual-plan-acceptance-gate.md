@@ -1,7 +1,7 @@
 ---
 id: 'FND-009'
 title: Add a manual plan acceptance gate
-status: open
+status: in-progress
 roadmap: foundation-tooling/add-a-manual-plan-acceptance-gate
 blocks: —
 blocked-by: —

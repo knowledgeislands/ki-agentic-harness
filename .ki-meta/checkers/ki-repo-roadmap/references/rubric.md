@@ -86,11 +86,11 @@ Plan identity, linkage, and dependencies.
 
 - **PLAN-1 [M] — plan placement and shape** — Plans use the canonical thematic path, stable theme code and serial, required frontmatter, and matching filename and ID. (plan-format.md)
 - **PLAN-2 [M] — plan roadmap linkage** — `roadmap:` is a qualified locator in the same theme and resolves to a Blocking or Next item; that item carries exactly one matching local plan reference. (plan-format.md)
-- **PLAN-3 [M] — plan dependencies** — Dependencies use canonical plan identifiers, exist, are reverse-consistent, and acyclic; an in-progress plan has no non-done blocker. (plan-format.md)
-- **PLAN-4 [J] — ready plan content** — In-progress plans have concrete Steps, checkable Verify, honest Current state, and minimal Files touched. (standards.md)
+- **PLAN-3 [M] — plan dependencies** — Dependencies use canonical plan identifiers, exist, are reverse-consistent, and acyclic; an in-progress or acceptance plan has no non-done blocker. (plan-format.md)
+- **PLAN-4 [J] — ready plan content** — In-progress and acceptance plans have concrete Steps, checkable Verify, honest Current state, and minimal Files touched. (standards.md)
   - _Review prompt:_ Review active plan content for concrete, checkable execution detail.
-- **PLAN-5 [J] — honest plan status** — In-progress status reflects live work; stale plans are advanced, returned to open, or removed. (standards.md)
-  - _Review prompt:_ Review whether in-progress plan status reflects live work.
+- **PLAN-5 [J] — honest plan status** — In-progress status reflects live work; acceptance status reflects verified work awaiting explicit user acceptance. (standards.md)
+  - _Review prompt:_ Review whether the active plan status honestly reflects live work or manual acceptance.
 
 ## INDEX — index
 

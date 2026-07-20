@@ -17,20 +17,20 @@ export const PLAN_2 = mechanical(
 export const PLAN_3 = mechanical(
   'PLAN-3',
   'plan dependencies',
-  'Dependencies use canonical plan identifiers, exist, are reverse-consistent, and acyclic; an in-progress plan has no non-done blocker.'
+  'Dependencies use canonical plan identifiers, exist, are reverse-consistent, and acyclic; an in-progress or acceptance plan has no non-done blocker.'
 )
 export const PLAN_4: RubricItem<RoadmapContext> = {
   code: 'PLAN-4',
   title: 'ready plan content',
-  description: 'In-progress plans have concrete Steps, checkable Verify, honest Current state, and minimal Files touched.',
+  description: 'In-progress and acceptance plans have concrete Steps, checkable Verify, honest Current state, and minimal Files touched.',
   sources: ['standards.md'],
   judgment: { prompt: 'Review active plan content for concrete, checkable execution detail.' }
 }
 export const PLAN_5: RubricItem<RoadmapContext> = {
   code: 'PLAN-5',
   title: 'honest plan status',
-  description: 'In-progress status reflects live work; stale plans are advanced, returned to open, or removed.',
+  description: 'In-progress status reflects live work; acceptance status reflects verified work awaiting explicit user acceptance.',
   sources: ['standards.md'],
-  judgment: { prompt: 'Review whether in-progress plan status reflects live work.' }
+  judgment: { prompt: 'Review whether the active plan status honestly reflects live work or manual acceptance.' }
 }
 export const PLAN = [PLAN_1, PLAN_2, PLAN_3, PLAN_4, PLAN_5] as const

@@ -59,7 +59,7 @@ const themeRoadmap = (
   items: Partial<Record<'Blocking' | 'Next' | 'Soon' | 'Waiting for' | 'Future', string[]>> = {}
 ): string => roadmap(title, items, code)
 
-function plan(id: string, title: string, locator: string, blocks = '—', blockedBy = '—', status = 'open'): string {
+function plan(id: string, title: string, locator: string, blocks = '—', blockedBy = '—', status = 'open', acceptance = false): string {
   return [
     '---',
     `id: '${id}'`,
@@ -95,6 +95,17 @@ function plan(id: string, title: string, locator: string, blocks = '—', blocke
     '## Dependencies / blocks',
     '',
     'As declared.',
+    ...(acceptance
+      ? [
+          '',
+          '## Acceptance',
+          '',
+          '- **Delivered:** Completed work.',
+          '- **Verification:** Focused checks passed.',
+          '- **Outstanding concerns:** None.',
+          '- **Mini recap:** No learning route proposed.'
+        ]
+      : []),
     ''
   ].join('\n')
 }
@@ -254,6 +265,26 @@ function thematicFixture(): string {
     writeFileSync(join(root, 'ROADMAP.md'), '# drift\n')
     const drift = run(AUDIT, root)
     check('projection drift fails exactly', drift.code !== 0 && drift.out.includes('PROJ-1'))
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+
+// Acceptance is an active, reviewable status with a dedicated packet.
+{
+  const root = thematicFixture()
+  try {
+    const hooks = join(root, 'docs', 'roadmap', 'hooks', 'plans', 'HOK-001-harden-hook-linking.md')
+    const runtime = join(root, 'docs', 'roadmap', 'runtime', 'plans', 'RTP-001-add-runtime-parity.md')
+    writeFileSync(hooks, plan('HOK-001', 'Harden hook linking', 'hooks/harden-hook-linking', 'RTP-001', '—', 'done'))
+    writeFileSync(runtime, plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'HOK-001', 'acceptance', true))
+    const conformed = run(CONFORM, root)
+    const index = readFileSync(join(root, 'docs', 'roadmap', 'README.md'), 'utf8')
+    check('acceptance plan with packet audits cleanly', conformed.code === 0 && run(AUDIT, root).code === 0)
+    check('global index renders acceptance status', index.includes('- **Status:** acceptance'))
+    writeFileSync(runtime, plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'HOK-001', 'acceptance'))
+    const invalid = run(AUDIT, root)
+    check('acceptance plan without a packet fails', invalid.code !== 0 && invalid.out.includes("acceptance status requires one non-empty 'Acceptance' H2"))
   } finally {
     rmSync(root, { recursive: true, force: true })
   }
