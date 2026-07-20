@@ -15,7 +15,7 @@ argument-hint: 'delegate [plan-or-task-list] | help'
 Four legs, always in this order:
 
 1. **Classify** — sort each task into **judgment** (wrong framing is expensive to unwind), **mechanical** (precise spec, low ambiguity), or **research** (an unknown that gates later work).
-2. **Assign** — map each task to an agent type and a **per-spawn model tier**: mechanical → the cheapest model that suffices; judgment → the standard-encoding specialist agent (or a stronger model); research → a general-purpose agent. Agents declare `model: inherit`, so the tier is the caller's dial per spawn, not baked into the agent.
+2. **Assign** — map each task to an agent type and an explicit **per-spawn model**. Choose the **minimum viable model**: the least capable available model that can safely meet the task's judgment, reliability, and verification needs. Mechanical → the cheapest sufficient model; judgment → the standard-encoding specialist agent (or a stronger model); research → a general-purpose agent. Agents declare `model: inherit`, so the model is the caller's dial per spawn, not baked into the agent.
 3. **Sequence** — order into **rounds**: blockers and citation-targets first, then fan out mutually-independent tasks in parallel. Name any write-contention so two agents never edit one file at once.
 4. **Gate** — the orchestrator reviews **every** cheap-tier diff before it commits; any auto-executing hook or script gets a dedicated adversarial safety-review pass, regardless of which tier produced it.
 
@@ -23,7 +23,7 @@ Four legs, always in this order:
 
 ## Invocation
 
-`help` / `-h` / `?` explains this skill and stops, taking no action. With no argument, run the four legs over the current task list or the active `ki-plan`. Given a plan file or an explicit task list, classify and sequence that. Before dispatching a governed plan, ensure its `## Delegation` section records the planned rounds, worker/file boundaries, and gates; refine the plan first when it does not.
+`help` / `-h` / `?` explains this skill and stops, taking no action. With no argument, run the four legs over the current task list or the active `ki-plan`. Given a plan file or an explicit task list, classify and sequence that. Before dispatching a governed plan, ensure its `## Delegation` section records the planned rounds, each worker's explicit minimum-viable model choice, file boundaries, and gates; refine the plan first when it does not.
 
 ## Notes
 

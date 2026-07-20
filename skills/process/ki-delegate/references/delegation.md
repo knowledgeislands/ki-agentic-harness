@@ -19,13 +19,13 @@ Two guards:
 
 ## 2. Assign
 
-Map each task to an agent and a **per-spawn model tier**. The governing rule is `ADR-KI-HARNESS-003`'s mechanical-first tenet as `ki-tokenomics` operationalises it: **the cheapest tier that suffices, judgment to the strongest.** Do not re-derive the cost policy here — cite `ki-tokenomics`.
+Map each task to an agent and an explicit **per-spawn model**. The governing rule is `ADR-KI-HARNESS-003`'s mechanical-first tenet as `ki-tokenomics` operationalises it: choose the **minimum viable model** — the least capable available model that can safely meet the task's judgment, reliability, and verification needs. In other words: **the cheapest tier that suffices, judgment to the strongest.** Do not re-derive the cost policy here — cite `ki-tokenomics`.
 
 - **Judgment** → the domain **specialist** agent whose prompt already encodes the relevant house standard (e.g. `ki-decision-author`, `ki-skills-lead`, `ki-engineering-lead`), or the orchestrator itself, on a **strong** model tier (e.g. Opus). The specialist grounds itself in the standard; the strong tier is where wrong framing is cheapest to avoid.
 - **Mechanical** → a general worker agent given the exact spec, on the **cheapest sufficient** tier (e.g. Sonnet). Precise spec plus low ambiguity means the cheap tier lands it, and the orchestrator reviews the diff (§4).
 - **Research** → a `general-purpose` agent, web-enabled, on a **mid / cheapest sufficient** tier. Breadth-first fact-finding, not judgment; verify claims against primary sources in the brief.
 
-**Model-agnostic agents `(CC)`.** Agents declare `model: inherit` in their frontmatter, so they carry no pinned tier — the caller chooses the model **per spawn** via the Agent tool's `model` override. This means the _same_ specialist runs on the cheap tier for lighter judgment and the strong tier for the hardest calls; the agent encodes the standard, the model tier is a dial the orchestrator turns. An agent that hard-pins a tier defeats this and should be treated as a defect, the model-tier analogue of a skill that hardcodes a runtime.
+**Record and choose the minimum viable model `(CC)`.** The delegation brief and governed plan name the exact model selected for every worker, with a short reason when it is not self-evident. Do not leave a spawn on an ambient default or choose a stronger model merely from habit. Agents declare `model: inherit` in their frontmatter, so they carry no pinned tier — the caller chooses the model **per spawn** via the Agent tool's `model` override. This means the _same_ specialist runs on the cheap tier for lighter judgment and the strong tier for the hardest calls; the agent encodes the standard, the model is a dial the orchestrator turns. An agent that hard-pins a tier defeats this and should be treated as a defect, the model-tier analogue of a skill that hardcodes a runtime.
 
 Subagent-type selection `(CC)`: use `Explore` for read-only search, `Plan` for design-only passes, `general-purpose` for research and mechanical edits, and the named governance specialists for judgment in their domain.
 
