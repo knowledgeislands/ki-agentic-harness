@@ -17,6 +17,7 @@ import {
 import { tmpdir } from 'node:os'
 import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { runProjectLinks } from '../../../ki-bootstrap/scripts/internal/repo-bootstrap/project-skill-publisher.ts'
 
 const LINKER = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -58,6 +59,38 @@ function fixture(runtimes = ['claude-code']): string {
       .join('\n\n')}\n`
   )
   return root
+}
+
+function sourceHarnessFixture(): { root: string; repo: string } {
+  const root = realpathSync(mkdtempSync(join(tmpdir(), 'ki-project-links-harness-')))
+  const names = [
+    'ki-repo',
+    'ki-authoring',
+    'ki-harness',
+    'ki-skills',
+    'ki-agents',
+    'ki-decision-records',
+    'ki-repo-roadmap',
+    'ki-local',
+    'ki-local-support'
+  ]
+  writeFileSync(
+    join(root, '.ki-config.toml'),
+    `[ki-repo]\nsupported_runtimes = ["claude-code"]\n\n${names
+      .filter((name) => name !== 'ki-repo')
+      .map((name) => `[${name}]`)
+      .join('\n\n')}\n`
+  )
+  for (const name of names) {
+    const directory = join(root, 'skills', name)
+    mkdirSync(directory, { recursive: true })
+    writeFileSync(
+      join(directory, 'SKILL.md'),
+      `---\nname: ${name}${name === 'ki-local' ? '\nki-depends-on: [ki-local-support]' : ''}\ndescription: fixture.\n---\n`
+    )
+  }
+  const repo = join(root, 'skills', 'ki-repo')
+  return { root, repo }
 }
 
 function run(root: string, env: Record<string, string> = {}, args: string[] = []): ReturnType<typeof spawnSync> {
@@ -127,6 +160,47 @@ try {
   check('combined publication → re-runs with its generated metadata intact', repeated.status === 0)
 } finally {
   rmSync(normal, { recursive: true, force: true })
+}
+
+const sourceHarness = sourceHarnessFixture()
+try {
+  const result = run(sourceHarness.root)
+  const runtime = join(sourceHarness.root, '.claude', 'skills', 'ki-repo')
+  const linked = result.status === 0 && existsSync(runtime) && lstatSync(runtime).isSymbolicLink()
+  check('source harness → runtime skill is a same-root link', linked)
+  check('source harness → runtime link resolves to canonical source', linked && realpathSync(runtime) === realpathSync(sourceHarness.repo))
+  check(
+    'source harness → local-only declared dependency resolves without the global catalogue',
+    lstatSync(join(sourceHarness.root, '.claude', 'skills', 'ki-local')).isSymbolicLink()
+  )
+  const checked = run(sourceHarness.root, {}, ['--check'])
+  check(
+    'source harness → check accepts local-only runtime links without BOOT-1 drift',
+    checked.status === 0 && !checked.stdout.includes('[BOOT-1]')
+  )
+  writeFileSync(join(sourceHarness.repo, 'live.ts'), 'export const live = true\n')
+  check('source harness → canonical edit is live through runtime link', linked && existsSync(join(runtime, 'live.ts')))
+  check(
+    'source harness → requested copy does not escape the same-root link contract',
+    runProjectLinks('skills', 'copy', [sourceHarness.root]) === 0 && lstatSync(runtime).isSymbolicLink()
+  )
+} finally {
+  rmSync(sourceHarness.root, { recursive: true, force: true })
+}
+
+const linkAssertion = fixture()
+try {
+  const originalError = console.error
+  let refused = false
+  try {
+    console.error = () => undefined
+    refused = runProjectLinks('skills', 'development-link', [linkAssertion]) !== 0
+  } finally {
+    console.error = originalError
+  }
+  check('development-link assertion → ordinary repository is refused without a global fallback', refused)
+} finally {
+  rmSync(linkAssertion, { recursive: true, force: true })
 }
 
 const localSelf = fixture(['claude-code', 'codex'])

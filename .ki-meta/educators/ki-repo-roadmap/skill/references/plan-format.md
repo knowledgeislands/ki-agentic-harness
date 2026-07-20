@@ -1,5 +1,12 @@
 # Plan format
 
+## Contents
+
+- [Placement](#placement)
+- [Frontmatter](#frontmatter)
+- [Local roadmap reference](#local-roadmap-reference)
+- [Body](#body)
+
 Plans exist only in the thematic profile and only for `Blocking` or `Next` items.
 
 ## Placement
@@ -68,7 +75,17 @@ A pass/fail command or assertion.
 Narrative dependency context.
 ```
 
-During execution, mark completed steps without deleting their instructions. Before acceptance, append one non-empty `## Acceptance` section after the six core sections using these H3 subsections, once and in order:
+When the plan intends to use delegated workers, append one `## Delegation` section after `## Dependencies / blocks` and before acceptance. It is not required for work the plan's orchestrator will complete directly. State the planned rounds, classify each worker task as judgment, mechanical, or research, name each worker's bounded deliverable and exclusive file boundary, and name the gate between rounds. State the orchestrator's final review and verification responsibility; call out an adversarial review when a worker changes a hook, script, or other automatically executing artefact.
+
+```markdown
+## Delegation
+
+- Round 1 — research: resolve <unknown>; files: <read-only scope>; gate: <evidence needed before Round 2>.
+- Round 2 — mechanical: apply <settled change>; files: <exclusive write scope>; gate: <focused verification>.
+- Orchestrator: review every worker diff, run final verification, and commit only gated work.
+```
+
+During execution, mark completed steps without deleting their instructions. Before acceptance, append one non-empty `## Acceptance` section after the optional `## Delegation` section, or after `## Dependencies / blocks` when delegation is absent, using these H3 subsections, once and in order:
 
 ```markdown
 ## Acceptance

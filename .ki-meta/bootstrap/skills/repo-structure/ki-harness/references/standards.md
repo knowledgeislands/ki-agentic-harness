@@ -9,6 +9,7 @@ The rubric ([`rubric.md`](rubric.md)) is the line-by-line checkable form of this
 - [What a harness is](#what-a-harness-is)
 - [§Layout — the five-part directory requirement](#layout--the-five-part-directory-requirement)
 - [§Skills directory — the naming convention](#skills-directory--the-naming-convention)
+- [§Harness-local source links](#harness-local-source-links)
 - [§CLAUDE.md required sections](#claudemd-required-sections)
 - [§ROADMAP.md](#roadmapmd)
 - [§package.json required scripts](#packagejson-required-scripts)
@@ -75,6 +76,18 @@ skills/
 **Why:** agents and the Agent Skills runtime discover a skill by its `name` — not by path. If the directory name and the frontmatter drift, the skill loads under the wrong name or fails to load at all. The `ki:skills:copy:project` script (see §package.json) publishes regular-file copies named by the directory, so the directory name is the one the agent resolves.
 
 The quality of the skill's prose, description richness, and adherence to the Agent Skills rubric are governed by `ki-skills`, not here.
+
+---
+
+## §Harness-local source links
+
+`ki-harness` owns whether source linking is eligible: only this harness's own physical repository root may use its canonical `skills/` tree as a link source. A nested harness, an external harness, or another repository is never a source, even where skill names match.
+
+When eligible, a source harness may link its runtime skill payloads and its declared `scripts/vendored/` shared-module payloads to the canonical skill tree under that same root. `ki-bootstrap` owns the physical resolution and guarded transaction. It must resolve only a named canonical descendant carrying `SKILL.md`.
+
+All ordinary runtime payloads and every `.ki-meta/` payload remain dereferenced regular-file copies. Development links never cross checkouts, so a consumer remains usable after its bootstrap acquisition source disappears.
+
+**Why:** a harness benefits from live, local authoring feedback without making a consumer checkout depend on an unrelated working tree. The boundary preserves both that convenience and the standalone self-sufficiency contract.
 
 ---
 

@@ -34,7 +34,16 @@ When `ki-repo` is initially seeded or resolved, bootstrap subprocesses `ki-repo`
 
 - **Consumer bootstrap and CONFORM copy** each declared complete skill into the selected runtime directory. The payload contains regular files and directories, not a symlink to a harness checkout, so it remains usable after the temporary bootstrap source disappears. Its generated marker records the logical harness source and a deterministic tree-integrity digest; a later publisher accepts it for refresh only when that marker still matches the payload.
 - **Gitignored and regenerated, never committed.** The copy is a generated deployment payload, not consumer-repository source. The only committed artifact is the `.gitignore` line; a fresh clone re-runs bootstrap or CONFORM to recreate the payload. A changed or forged marker/payload combination is left untouched with a migration diagnostic rather than overwritten.
-- Bootstrap detects a harness target and links its declared runtime skills to the harness's canonical sources. Ordinary repository use remains copy-based.
+- A source harness links its declared runtime skills to its own canonical sources; ordinary repository use remains copy-based. The narrower eligibility and physical-resolution rules are below.
+
+## Harness-local source links
+
+`ki-harness` owns the eligibility rule: links are permitted only when the target is the same physical harness root that owns the canonical source tree. `ki-bootstrap` owns the physical source resolution and its guarded publication transaction.
+
+- Resolve a source only from the canonical `skills/` tree under that same root, and only when the exact named descendant contains `SKILL.md`.
+- A source harness may link its runtime payloads and declared `scripts/vendored/` shared-module payloads from those canonical sources. A nested harness, an external harness, or another repository never lends a source.
+- Ordinary runtime payloads are dereferenced, regular-file copies. Every `.ki-meta/` payload is also a dereferenced, regular-file copy, including material reached through a source-harness `scripts/vendored/` link.
+- Never create a development link across checkouts. A bootstrap run therefore remains portable after its acquisition source disappears, except for the source harness's deliberately local runtime links.
 
 ## Reproducibility contract
 

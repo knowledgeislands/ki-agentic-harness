@@ -1,24 +1,37 @@
 #!/usr/bin/env bun
 /**
- * Materialise frontmatter-declared shared modules in a harness's source skills.
- * Harnesses link their local payloads to canonical providers; all vendored
- * `.ki-meta/` payloads remain regular-file copies.
+ * Materialise frontmatter-declared shared modules in source skills scoped by a
+ * command target.  A same-harness consumer links its provider; ordinary source
+ * trees copy their own provider payloads.  Vendored `.ki-meta/` remains copies.
  *
  * Internal bootstrap command: bun sync-shared-modules.ts [target] [--check|--dry-run] [--quiet]
  */
-import { cpSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, readlinkSync, rmSync, symlinkSync } from 'node:fs'
+import {
+  cpSync,
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  readlinkSync,
+  realpathSync,
+  rmSync,
+  symlinkSync
+} from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
+import { type HarnessSource, nearestHarnessSource, sourceHarnessSkill } from './harness-source.ts'
 import { SKILLS_ROOT } from './resolve.ts'
 
 type SharedModule = { provider: string; module: string }
 type SharedModulePayload = { source: string; kind: 'file' | 'directory'; targetName: string }
+type SourceSkill = { directory: string; name: string; harness?: HarnessSource; ordinaryRoot?: string }
+type SyncOperation = { source: SharedModulePayload; destination: string; consumer: SourceSkill; module: SharedModule; link: boolean }
 
 const args = process.argv.slice(2)
 const checkOnly = args.includes('--check')
 const dryRun = args.includes('--dry-run')
 const quiet = args.includes('--quiet')
-const target = resolve(args.find((argument) => !argument.startsWith('-')) ?? dirname(SKILLS_ROOT))
-const HARNESS_MARKER = /^\[ki-harness\][ \t]*$/m
+const requestedTarget = resolve(args.find((argument) => !argument.startsWith('-')) ?? dirname(SKILLS_ROOT))
 const SHARED_MODULE = /^(ki-[A-Za-z0-9_-]+):([A-Za-z0-9_-]+)$/
 
 if (checkOnly && dryRun) throw new Error('--check and --dry-run cannot be combined')
@@ -34,13 +47,22 @@ function lstatOrNull(path: string): ReturnType<typeof lstatSync> | null {
   }
 }
 
-function sourceHarness(): boolean {
-  try {
-    return HARNESS_MARKER.test(readFileSync(join(target, '.ki-config.toml'), 'utf8'))
-  } catch {
-    return false
-  }
+function regularConfig(path: string): string | undefined {
+  const config = join(path, '.ki-config.toml')
+  const stat = lstatOrNull(config)
+  if (!stat) return undefined
+  if (!stat.isFile() || stat.isSymbolicLink()) throw new Error(`repository configuration must be a regular file: ${config}`)
+  return readFileSync(config, 'utf8')
 }
+
+function isHarnessConfig(config: string | undefined): boolean {
+  return /^\[ki-harness\][ \t]*$/m.test(config ?? '')
+}
+
+const targetStat = lstatOrNull(requestedTarget)
+if (!targetStat?.isDirectory() || targetStat.isSymbolicLink())
+  throw new Error(`command target must be a regular directory: ${requestedTarget}`)
+const target = realpathSync(requestedTarget)
 
 function flowList(content: string, key: string): string[] {
   const frontmatter = content.match(/^---\s*\n([\s\S]*?)\n---/)
@@ -60,28 +82,48 @@ function flowList(content: string, key: string): string[] {
     : []
 }
 
-function skillDirectories(): Map<string, string> {
+function skillName(directory: string): string | undefined {
+  const path = join(directory, 'SKILL.md')
+  const skill = lstatOrNull(path)
+  if (!skill) return undefined
+  if (!skill.isFile() || skill.isSymbolicLink()) throw new Error(`canonical SKILL.md must be a regular file: ${path}`)
+  const name =
+    flowList(readFileSync(path, 'utf8'), 'name')[0] ??
+    readFileSync(path, 'utf8')
+      .match(/^name:\s*(.+)$/m)?.[1]
+      ?.trim()
+  if (!name?.match(/^ki-[A-Za-z0-9_-]+$/)) throw new Error(`canonical SKILL.md must declare an exact ki-* name: ${path}`)
+  return name
+}
+
+/** Discover only regular source skill directories below this command's scope. */
+function skillDirectories(): SourceSkill[] {
   const root = join(target, 'skills')
-  if (lstatOrNull(root)?.isDirectory() !== true) throw new Error(`harness source skills are unavailable: ${root}`)
-  const skills = new Map<string, string>()
-  const candidates = [root]
-  for (const category of readdirSync(root)) {
-    const path = join(root, category)
-    if (lstatOrNull(path)?.isDirectory()) candidates.push(...readdirSync(path).map((name) => join(path, name)))
+  const rootStat = lstatOrNull(root)
+  if (!rootStat?.isDirectory() || rootStat.isSymbolicLink()) throw new Error(`source skills are unavailable: ${root}`)
+  const skills: SourceSkill[] = []
+  const visitScoped = (directory: string): void => {
+    const stat = lstatOrNull(directory)
+    if (!stat?.isDirectory() || stat.isSymbolicLink()) return
+    if (directory !== root) {
+      const config = regularConfig(directory)
+      if (config !== undefined) {
+        // A nested ordinary repository is out of this command's source scope.
+        // A nested harness is separately scoped: visit only its physical skills.
+        if (isHarnessConfig(config)) visitScoped(join(directory, 'skills'))
+        return
+      }
+    }
+    const name = skillName(directory)
+    if (name) {
+      const harness = nearestHarnessSource(directory)
+      skills.push({ directory, name, harness, ...(harness ? {} : { ordinaryRoot: target }) })
+    }
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+      if (entry.isDirectory()) visitScoped(join(directory, entry.name))
+    }
   }
-  for (const directory of candidates) {
-    if (lstatOrNull(directory)?.isDirectory() !== true) continue
-    const skill = join(directory, 'SKILL.md')
-    if (lstatOrNull(skill)?.isFile() !== true) continue
-    const name =
-      flowList(readFileSync(skill, 'utf8'), 'name')[0] ??
-      readFileSync(skill, 'utf8')
-        .match(/^name:\s*(.+)$/m)?.[1]
-        ?.trim()
-    if (!name?.startsWith('ki-')) continue
-    if (skills.has(name)) throw new Error(`harness source defines duplicate skill: ${name}`)
-    skills.set(name, directory)
-  }
+  visitScoped(root)
   return skills
 }
 
@@ -103,9 +145,19 @@ function assertSafeTree(path: string): void {
   if (stat.isDirectory()) for (const entry of readdirSync(path)) assertSafeTree(join(path, entry))
 }
 
-function payload(provider: string, module: string, skills: ReadonlyMap<string, string>): SharedModulePayload {
-  const providerDirectory = skills.get(provider)
-  if (!providerDirectory) throw new Error(`shared module provider is absent from the harness source: ${provider}`)
+function providerDirectory(consumer: SourceSkill, provider: string, skills: readonly SourceSkill[]): string {
+  if (consumer.harness) return sourceHarnessSkill(consumer.harness, provider)
+  const candidates = skills.filter((skill) => skill.name === provider && skill.ordinaryRoot === consumer.ordinaryRoot)
+  if (candidates.length !== 1) {
+    const state = candidates.length === 0 ? 'absent' : 'ambiguous'
+    throw new Error(`shared module provider is ${state} from the ordinary source scope: ${provider}`)
+  }
+  const candidate = candidates[0]
+  if (!candidate) throw new Error(`shared module provider is absent from the ordinary source scope: ${provider}`)
+  return candidate.directory
+}
+
+function payload(providerDirectory: string, provider: string, module: string): SharedModulePayload {
   if (!sharedModules(providerDirectory).includes(module)) throw new Error(`${provider} does not declare shared module: ${module}`)
   const modules = join(providerDirectory, 'scripts', 'shared')
   const file = join(modules, `${module}.ts`)
@@ -146,10 +198,11 @@ function samePayload(left: string, right: string): boolean {
   )
 }
 
-function ensureTargetParent(skill: string, module: SharedModule, skills: ReadonlyMap<string, string>): void {
-  const skillDirectory = skills.get(skill)
-  if (!skillDirectory) throw new Error(`harness source skill is absent: ${skill}`)
-  let current = join(skillDirectory, 'scripts')
+function ensureTargetParent(directory: string, module: SharedModule): void {
+  let current = join(directory, 'scripts')
+  const scripts = lstatOrNull(current)
+  if (!scripts) mkdirSync(current)
+  else if (!scripts.isDirectory() || scripts.isSymbolicLink()) throw new Error(`unsafe shared module parent: ${current}`)
   for (const part of ['vendored', module.provider]) {
     current = join(current, part)
     const existing = lstatOrNull(current)
@@ -161,14 +214,19 @@ function ensureTargetParent(skill: string, module: SharedModule, skills: Readonl
   }
 }
 
-function replacePayload(
-  source: SharedModulePayload,
-  destination: string,
-  skill: string,
-  module: SharedModule,
-  link: boolean,
-  skills: ReadonlyMap<string, string>
-): void {
+function assertSafeDestinationParents(directory: string, module: SharedModule): void {
+  const skill = lstatOrNull(directory)
+  if (!skill?.isDirectory() || skill.isSymbolicLink()) throw new Error(`unsafe source skill directory: ${directory}`)
+  let current = directory
+  for (const part of ['scripts', 'vendored', module.provider]) {
+    current = join(current, part)
+    const entry = lstatOrNull(current)
+    if (entry && (!entry.isDirectory() || entry.isSymbolicLink())) throw new Error(`unsafe shared module parent: ${current}`)
+  }
+}
+
+function assertReplacementEligible(operation: SyncOperation): void {
+  const { source, destination } = operation
   const existing = lstatOrNull(destination)
   if (existing?.isSymbolicLink() && !linkResolvesTo(destination, source.source)) {
     throw new Error(`refusing to replace unfamiliar shared module link: ${destination}`)
@@ -176,8 +234,22 @@ function replacePayload(
   if (existing && !existing.isSymbolicLink() && !samePayload(source.source, destination)) {
     throw new Error(`refusing to replace changed shared module payload: ${destination}`)
   }
+}
+
+function preflightOperation(operation: SyncOperation): void {
+  assertSafeDestinationParents(operation.consumer.directory, operation.module)
+  assertReplacementEligible(operation)
+}
+
+function replacePayload(operation: SyncOperation): void {
+  const { source, destination, consumer, module, link } = operation
+  // Parent validation/creation deliberately precedes removal.  The full static
+  // plan has already passed this check; concurrent filesystem replacement still
+  // needs directory-FD guards for a complete TOCTOU guarantee.
+  ensureTargetParent(consumer.directory, module)
+  assertReplacementEligible(operation)
+  const existing = lstatOrNull(destination)
   if (existing) rmSync(destination, { recursive: existing.isDirectory() && !existing.isSymbolicLink() })
-  ensureTargetParent(skill, module, skills)
   if (link) {
     symlinkSync(relative(dirname(destination), source.source), destination, source.kind === 'directory' ? 'dir' : 'file')
     if (!linkResolvesTo(destination, source.source)) throw new Error(`shared module link failed verification: ${destination}`)
@@ -187,20 +259,20 @@ function replacePayload(
   if (!samePayload(source.source, destination)) throw new Error(`shared module copy failed verification: ${destination}`)
 }
 
-function undeclaredSourcePayloads(skills: ReadonlyMap<string, string>, expected: ReadonlyMap<string, SharedModulePayload>): string[] {
+function undeclaredSourcePayloads(skills: readonly SourceSkill[], expected: ReadonlyMap<string, SharedModulePayload>): string[] {
   const violations: string[] = []
-  for (const [skill, directory] of skills) {
-    const vendored = join(directory, 'scripts', 'vendored')
+  for (const skill of skills.filter((candidate) => candidate.harness)) {
+    const vendored = join(skill.directory, 'scripts', 'vendored')
     const vendoredStat = lstatOrNull(vendored)
     if (!vendoredStat) continue
     if (!vendoredStat.isDirectory() || vendoredStat.isSymbolicLink()) {
-      violations.push(`${skill}/scripts/vendored (must be a regular directory)`)
+      violations.push(`${skill.name}/scripts/vendored (must be a regular directory)`)
       continue
     }
     for (const provider of readdirSync(vendored)) {
       const providerPath = join(vendored, provider)
       const providerStat = lstatOrNull(providerPath)
-      const label = `${skill}/scripts/vendored/${provider}`
+      const label = `${skill.name}/scripts/vendored/${provider}`
       if (!providerStat?.isDirectory() || providerStat.isSymbolicLink()) {
         violations.push(`${label} (must be a regular provider directory)`)
         continue
@@ -215,32 +287,46 @@ function undeclaredSourcePayloads(skills: ReadonlyMap<string, string>, expected:
 }
 
 const skills = skillDirectories()
-const link = sourceHarness()
-const drift: string[] = []
+const operations: SyncOperation[] = []
 const expectedPayloads = new Map<string, SharedModulePayload>()
-for (const [skill, directory] of skills) {
-  for (const module of sharedDependencies(directory)) {
-    if (module.provider === skill) throw new Error(`${skill} cannot depend on its own shared module`)
-    const source = payload(module.provider, module.module, skills)
-    const destination = join(directory, 'scripts', 'vendored', module.provider, source.targetName)
+
+// Resolve the entire closure before modifying any payload.  In particular, a
+// nested/external harness can never fall back to this command's target tree.
+for (const consumer of skills) {
+  for (const module of sharedDependencies(consumer.directory)) {
+    if (module.provider === consumer.name) throw new Error(`${consumer.name} cannot depend on its own shared module`)
+    const source = payload(providerDirectory(consumer, module.provider, skills), module.provider, module.module)
+    const destination = join(consumer.directory, 'scripts', 'vendored', module.provider, source.targetName)
     expectedPayloads.set(destination, source)
-    const current = link ? linkResolvesTo(destination, source.source) : samePayload(source.source, destination)
-    if (current) continue
-    const label = `${skill}/scripts/vendored/${module.provider}/${source.targetName}`
-    if (checkOnly) {
-      drift.push(label)
-      continue
-    }
-    if (dryRun) {
-      if (!quiet) console.log(`${link ? 'link' : 'copy'} ${label}`)
-      continue
-    }
-    replacePayload(source, destination, skill, module, link, skills)
-    if (!quiet) console.log(`${link ? 'link' : 'copy'} ${label}`)
+    operations.push({ source, destination, consumer, module, link: consumer.harness !== undefined })
   }
 }
 
-if (link) drift.push(...undeclaredSourcePayloads(skills, expectedPayloads))
+// Every target and parent is proven safe before the first mkdir, unlink, copy,
+// or symlink.  A later hostile destination therefore leaves earlier consumers
+// byte-for-byte unchanged.
+for (const operation of operations) preflightOperation(operation)
+
+const drift: string[] = []
+for (const operation of operations) {
+  const current = operation.link
+    ? linkResolvesTo(operation.destination, operation.source.source)
+    : samePayload(operation.source.source, operation.destination)
+  if (current) continue
+  const label = `${operation.consumer.name}/scripts/vendored/${operation.module.provider}/${operation.source.targetName}`
+  if (checkOnly) {
+    drift.push(label)
+    continue
+  }
+  if (dryRun) {
+    if (!quiet) console.log(`${operation.link ? 'link' : 'copy'} ${label}`)
+    continue
+  }
+  replacePayload(operation)
+  if (!quiet) console.log(`${operation.link ? 'link' : 'copy'} ${label}`)
+}
+
+drift.push(...undeclaredSourcePayloads(skills, expectedPayloads))
 
 if (drift.length) {
   console.error(`shared-module drift: ${drift.join(', ')} — run sync-shared-modules.ts ${target}`)
@@ -248,4 +334,8 @@ if (drift.length) {
 }
 
 if (!quiet)
-  console.log(checkOnly ? 'shared module payloads are current' : `shared module payloads synchronized (${link ? 'links' : 'copies'})`)
+  console.log(
+    checkOnly
+      ? 'shared module payloads are current'
+      : `shared module payloads synchronized (${operations.filter((item) => item.link).length ? 'links and copies' : 'copies'})`
+  )

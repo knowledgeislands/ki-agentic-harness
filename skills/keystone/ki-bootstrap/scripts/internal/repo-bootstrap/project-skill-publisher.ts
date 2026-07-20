@@ -31,6 +31,7 @@ import {
 } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { resolveHarnessSource, sourceHarnessSkill, validateHarnessSkillDeclarations } from './harness-source.ts'
 import {
   assertExplicitDependencies,
   assertResolvableSkills,
@@ -363,32 +364,31 @@ function appendGitignore(existing: string, paths: string[]): string {
   return `${existing}${lead}# Generated project-local runtime payloads (ki-bootstrap) — never committed\n${missing.map((path) => `${path}/`).join('\n')}\n`
 }
 
-function harnessTarget(config: string): boolean {
-  return /^\[ki-harness\][ \t]*$/m.test(config)
-}
-
-function sourceHarnessSkillDir(target: string, name: string): string {
-  const skillsRoot = join(target, 'skills')
-  if (entry(skillsRoot)?.kind !== 'dir') throw new Error(`harness source skills are unavailable: ${skillsRoot}`)
-  const candidates = [join(skillsRoot, name)]
-  for (const category of readdirSync(skillsRoot)) {
-    if (entry(join(skillsRoot, category))?.kind === 'dir') candidates.push(join(skillsRoot, category, name))
-  }
-  const matches = candidates.filter((candidate) => {
-    const skill = entry(join(candidate, 'SKILL.md'))
-    return skill?.kind === 'file' && new RegExp(`^name:\\s*${name}\\s*$`, 'm').test(skill.bytes?.toString('utf8') ?? '')
-  })
-  if (matches.length !== 1) throw new Error(`harness source must define exactly one canonical skill named ${name}`)
-  return matches[0] as string
-}
-
 function publicationFor(target: string, requested?: ProjectSkillPublication): ProjectSkillPublication {
-  if (requested) return requested
-  return harnessTarget(regularText(join(target, '.ki-config.toml'), '.ki-config.toml').content) ? 'development-link' : 'copy'
+  const config = regularText(join(target, '.ki-config.toml'), '.ki-config.toml').content
+  const isHarness = /^\[ki-harness\][ \t]*$/m.test(config)
+  if (requested === 'development-link' && !isHarness)
+    throw new Error('development-link is only valid for a same-root physical [ki-harness] source')
+  if (!isHarness) return 'copy'
+  // This is intentionally an assertion rather than a convenient fallback: once
+  // a target claims to be a harness it must expose one safe canonical tree.
+  resolveHarnessSource(target)
+  return 'development-link'
 }
 
 function sourceFor(target: string, name: string, publication: ProjectSkillPublication): string {
-  return publication === 'development-link' ? sourceHarnessSkillDir(target, name) : skillDir(name)
+  return publication === 'development-link' ? sourceHarnessSkill(resolveHarnessSource(target), name) : skillDir(name)
+}
+
+function assertDeclaredSkills(target: string, declared: string[], publication: ProjectSkillPublication): void {
+  if (publication === 'copy') {
+    assertResolvableSkills(declared)
+    assertExplicitDependencies(target, declared)
+    return
+  }
+  const validation = validateHarnessSkillDeclarations(resolveHarnessSource(target), declared)
+  if (validation.unresolved.length) throw new SkillResolutionError(validation.unresolved)
+  if (validation.missingDependencies.length) throw new DependencyDeclarationError(validation.missingDependencies)
 }
 
 function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: ProjectSkillPublication): LinkPlan {
@@ -411,8 +411,7 @@ function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: Pr
   if (scope === 'skills' || scope === 'all') {
     const declared = declaredSkills(config).filter((name) => name !== BOOTSTRAP)
     try {
-      assertResolvableSkills(declared)
-      assertExplicitDependencies(target, declared)
+      assertDeclaredSkills(target, declared, skillPublication)
     } catch (error) {
       if (error instanceof SkillResolutionError) plan.skillOrphans = error.unresolved
       else if (error instanceof DependencyDeclarationError) plan.dependencyErrors = error.missing
@@ -722,8 +721,7 @@ export function inspectProjectLinks(
     const declared = declaredSkills(config).filter((name) => name !== BOOTSTRAP)
     let orphans: string[] = []
     try {
-      assertResolvableSkills(declared)
-      assertExplicitDependencies(target, declared)
+      assertDeclaredSkills(target, declared, skillPublication)
     } catch (error) {
       if (error instanceof SkillResolutionError) orphans = error.unresolved
       else if (error instanceof DependencyDeclarationError) orphans = error.missing
@@ -735,7 +733,7 @@ export function inspectProjectLinks(
       const dir = join(target, subdir)
       const present = entry(dir)?.kind === 'dir' ? readdirSync(dir).filter((name) => name.startsWith('ki-')) : []
       const missing = [...wanted].filter((name) => {
-        if (!isSkill(name)) return true
+        if (skillPublication === 'copy' && !isSkill(name)) return true
         const source = sourceFor(target, name, skillPublication)
         const destination = join(dir, name)
         return skillPublication === 'development-link' ? !linkResolvesTo(destination, source) : !copiesSource(destination, name, source)
