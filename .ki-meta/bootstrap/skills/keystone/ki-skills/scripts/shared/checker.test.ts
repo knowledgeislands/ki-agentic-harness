@@ -213,6 +213,105 @@ test('validation → rejects unknown judgment summary fields', () =>
     )
   ).toBe(true))
 
+type RepairState = { outcome: 'PASS' | 'VIOLATION' | 'INFO'; observedChange: boolean; resolves: boolean; calls: number }
+
+const repairResult = ({
+  outcome,
+  repairOn = [],
+  observedChange = true,
+  resolves = true
+}: {
+  outcome: RepairState['outcome']
+  repairOn?: readonly 'INFO'[]
+  observedChange?: boolean
+  resolves?: boolean
+}): { result: ReturnType<typeof runChecker>; state: RepairState; events: CheckerStatusEvent[] } => {
+  const state: RepairState = { outcome, observedChange, resolves, calls: 0 }
+  const item: RubricItem<RepairState> = {
+    code: 'REPAIR-1',
+    title: 'audit-gated repair',
+    description: 'A focused shared-checker repair fixture.',
+    sources: ['TEST'],
+    mechanical: {
+      level: 'FAIL',
+      audit: {
+        phase: 'INSPECT',
+        run: (context) => [
+          context.outcome === 'PASS'
+            ? { status: 'PASS' as const, message: 'clean' }
+            : context.outcome === 'INFO'
+              ? { status: 'INFO' as const, message: 'informational repair candidate' }
+              : { status: 'VIOLATION' as const, message: 'repair required' }
+        ]
+      },
+      repair: {
+        phase: 'PRIMARY',
+        run: (context) => {
+          context.calls++
+          if (context.resolves) context.outcome = 'PASS'
+          return [{ changed: context.observedChange, message: 'repair wrote the target' }]
+        }
+      },
+      ...(repairOn.length ? { repairOn } : {})
+    }
+  }
+  const family = defineRubricFamily<RepairState, RepairState>({
+    code: 'REPAIR',
+    title: 'Repair',
+    description: 'Repair transaction fixture.',
+    standard: 'test',
+    selectContext: (context) => context,
+    items: [item]
+  })
+  const events: CheckerStatusEvent[] = []
+  const result = runChecker({
+    mode: 'conform',
+    concern: 'fixture',
+    target: '/fixture',
+    rubric: { name: 'repair-fixture', concern: 'fixture', families: [family] },
+    subjects: [{ familyCodes: ['REPAIR'], context: () => state }],
+    statusTracker: (event) => events.push(event)
+  })
+  return { result, state, events }
+}
+
+test('audit-gated repair → a clean item skips its repair action', () => {
+  const { result, state } = repairResult({ outcome: 'PASS' })
+  expect(state.calls).toBe(0)
+  expect(result.findings).toEqual([expect.objectContaining({ level: 'PASS', code: 'REPAIR-1' })])
+})
+
+test('audit-gated repair → a changed, repaired violation reports FIXED after post-audit', () => {
+  const { result, state, events } = repairResult({ outcome: 'VIOLATION' })
+  expect(state.calls).toBe(1)
+  expect(result.findings).toEqual([expect.objectContaining({ level: 'FIXED', code: 'REPAIR-1' })])
+  expect(events.filter((event) => event.type === 'item-complete')).toHaveLength(1)
+})
+
+test('audit-gated repair → INFO is not mutable without an explicit opt-in', () => {
+  const { result, state } = repairResult({ outcome: 'INFO' })
+  expect(state.calls).toBe(0)
+  expect(result.findings).toEqual([expect.objectContaining({ level: 'INFO' })])
+})
+
+test('audit-gated repair → an opted-in INFO repair is verified like a violation', () => {
+  const { result, state } = repairResult({ outcome: 'INFO', repairOn: ['INFO'] })
+  expect(state.calls).toBe(1)
+  expect(result.findings).toEqual([expect.objectContaining({ level: 'FIXED' })])
+})
+
+test('audit-gated repair → a no-op observation never claims FIXED', () => {
+  const { result, state } = repairResult({ outcome: 'VIOLATION', observedChange: false })
+  expect(state.calls).toBe(1)
+  expect(result.findings).toEqual([expect.objectContaining({ level: 'PASS' })])
+  expect(result.summary.fixed).toBe(0)
+})
+
+test('audit-gated repair → a failed post-audit remains terminally failing', () => {
+  const { result } = repairResult({ outcome: 'VIOLATION', resolves: false })
+  expect(result.findings).toEqual([expect.objectContaining({ level: 'FAIL' })])
+})
+
 const malformedRubric = (
   outcomes: unknown,
   phase: unknown = 'INSPECT',

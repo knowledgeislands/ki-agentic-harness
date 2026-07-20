@@ -37,11 +37,36 @@ export type RubricExecution<Context, Result> = {
   run: (context: Context) => RubricOutcomes<Result>
 }
 
+/** A safe mutation requested only after this item's AUDIT outcome makes it eligible. */
+export type RubricRepairOutcome = {
+  /** True only when this invocation observed a persistent target change. */
+  changed: boolean
+  message: string
+  subject?: string
+}
+
+export type RubricRepairExecution<Context> = {
+  phase: RubricPhase
+  run: (context: Context) => RubricOutcomes<RubricRepairOutcome>
+}
+
 export type MechanicalRubric<Context> = {
   level: ViolationLevel
   overrideLevels?: readonly ViolationLevel[]
   heuristic?: boolean
   audit: RubricExecution<Context, AuditOutcome>
+  /**
+   * The canonical CONFORM action. The checker runs AUDIT, conditionally runs
+   * this action, then immediately runs AUDIT again before emitting a finding.
+   */
+  repair?: RubricRepairExecution<Context>
+  /** Additional neutral outcomes that this repair may safely address. */
+  repairOn?: readonly Extract<AuditOutcomeStatus, 'INFO'>[]
+  /**
+   * Transitional direct-CONFORM callback for already-vendored catalogues.
+   * New items must declare `repair`; the rollout removes this once every
+   * consumer has moved to the audit-gated contract.
+   */
   conform?: RubricExecution<Context, ConformOutcome>
 }
 

@@ -47,9 +47,9 @@ The checker owns generic planning, execution, typed findings, response construct
 
 ## Execution planning
 
-Each mechanical rubric item declares an AUDIT execution and MAY declare a CONFORM execution.
+Each mechanical rubric item declares an AUDIT execution and MAY declare a safe repair action.
 
-An execution states its phase and callback.
+An execution or repair action states its phase and callback.
 
 The shared phase order is:
 
@@ -59,7 +59,19 @@ PREPARE → INSPECT → PRIMARY → DERIVED → NORMALISE
 
 `PREPARE` establishes prerequisites, `INSPECT` evaluates evidence, `PRIMARY` changes primary governed artifacts, `DERIVED` rebuilds artifacts derived from primary state, and `NORMALISE` applies final formatting or canonical ordering.
 
-The checker plans only mechanical executions for the requested mode.
+The checker plans one progress unit for every selected mechanical rubric item.
+
+During CONFORM, an item with a repair action runs an immediate transaction: AUDIT, conditional repair, then AUDIT again.
+
+`VIOLATION` makes repair eligible by default.
+
+`INFO` is eligible only when that item explicitly declares `repairOn: ['INFO']`.
+
+The final response contains only the terminal post-audit outcomes, never the preliminary audit or action outcome.
+
+The checker emits `FIXED` only when the repair observed a persistent change and the post-audit satisfies the repair eligibility condition.
+
+An item without a repair action runs AUDIT read-only during CONFORM so it remains represented in the response.
 
 It rejects an unknown phase.
 
@@ -67,13 +79,13 @@ The plan is deterministic: phase first, then stable family and item order.
 
 AUDIT executions are read-only.
 
-CONFORM executions receive only their explicit safe capabilities and return typed outcomes.
-
-When a mechanical item has no CONFORM execution, CONFORM MUST run its required AUDIT execution read-only so the item remains represented in the response.
+Repair actions receive only their explicit safe capabilities and return whether they observed a persistent change.
 
 Every execution MUST return at least one outcome rather than using an empty result to imply PASS.
 
-The checker caches each subject's immutable AUDIT context for the run. It asks the relevant subject-context factory for current evidence before each CONFORM execution, so a later execution observes mutations made by an earlier one.
+The checker caches each subject's immutable AUDIT context for the run.
+
+For one CONFORM transaction it asks the relevant subject-context factory before the pre-audit, repair, and post-audit, preserving safe mutable state while observing fresh evidence after a write.
 
 If repository-wide orchestration later requires a static checker schedule or dependency metadata, that integration MUST define and justify its generated projection without turning it into a second authored execution plan.
 
@@ -92,7 +104,9 @@ One response vocabulary applies to both modes.
 
 A mechanical item declares `FAIL` or `WARN` as its default violation level.
 
-Its callback returns `VIOLATION`, `PASS`, `NOT_APPLICABLE`, `INFO`, or — during CONFORM only — `FIXED`; the checker maps `VIOLATION` to the item's declared default unless that outcome selects an alternative the item explicitly permits through `overrideLevels`, and maps the others directly to the response level above.
+Its AUDIT callback returns `VIOLATION`, `PASS`, `NOT_APPLICABLE`, or `INFO`; the checker maps `VIOLATION` to the item's declared default unless that outcome selects an alternative the item explicitly permits through `overrideLevels`, and maps the others directly to the response level above.
+
+The checker alone derives `FIXED` from a verified repair transaction.
 
 A judgment aspect has no checker execution.
 
@@ -106,7 +120,7 @@ Progress is execution status, not a finding and not a second response transport.
 
 An AUDIT or CONFORM checker MAY receive a tracker callback.
 
-It emits a `start` event before any selected mechanical execution, one `item-complete` event after each planned mechanical execution, and a `complete` event after a successful run.
+It emits a `start` event before any selected mechanical item, one `item-complete` event after each complete item transaction, and a `complete` event after a successful run.
 
 If an execution fails after it has started, it emits a final `failed` event before rethrowing the error.
 
@@ -138,9 +152,11 @@ A downstream reporter validates the self-contained response before filtering dis
 
 ## Conform safety
 
-Every CONFORM execution inspects its own declared target before writing, including a `PREPARE` execution that establishes prerequisites ahead of the shared `INSPECT` phase.
+Every CONFORM repair is gated by its own immediate AUDIT outcome before writing, including a `PREPARE` action that establishes prerequisites ahead of the shared `INSPECT` phase.
 
-An execution writes only when its target actually drifts, records PASS when already conformant, and honours dry-run without persistence.
+A repair writes only when its target actually drifts and honours dry-run without persistence.
+
+A dry run and a no-op repair never produce `FIXED` because they cannot observe a persistent change.
 
 A callback receives the smallest capability surface that permits its declared action.
 

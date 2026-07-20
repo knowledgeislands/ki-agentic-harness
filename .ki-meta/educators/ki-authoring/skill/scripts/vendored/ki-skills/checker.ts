@@ -7,6 +7,7 @@ import {
   type RubricItem,
   type RubricMode,
   type RubricPhase,
+  type RubricRepairOutcome,
   VIOLATION_LEVELS,
   type ViolationLevel,
   validateRubricCatalogue
@@ -128,7 +129,7 @@ type ErasedExecution = {
   run: (context: unknown) => unknown
 }
 
-type PlannedExecution<RootContext> = {
+type PlannedItem<RootContext> = {
   phase: RubricPhase
   subjectIndex: number
   familyIndex: number
@@ -136,7 +137,13 @@ type PlannedExecution<RootContext> = {
   subject: CheckerEvaluationSubject<RootContext>
   selectContext: (root: RootContext) => unknown
   item: RubricItem<never>
-  execution: ErasedExecution
+  audit: ErasedExecution
+  repair?: {
+    phase: RubricPhase
+    run: (context: unknown) => unknown
+    repairOn: ReadonlySet<'VIOLATION' | 'INFO'>
+  }
+  legacyConform?: ErasedExecution
 }
 
 const LEVEL_SUMMARY_KEYS = {
@@ -183,13 +190,13 @@ const selectedJudgmentCount = <RootContext>(
   return itemCodes.size
 }
 
-const planExecutions = <RootContext>(input: CheckerInput<RootContext>): PlannedExecution<RootContext>[] => {
+const planItems = <RootContext>(input: CheckerInput<RootContext>): PlannedItem<RootContext>[] => {
   const catalogueIssues = validateRubricCatalogue(input.rubric)
   if (catalogueIssues.length > 0)
     throw new Error(`invalid rubric catalogue: ${catalogueIssues.map((issue) => `${issue.path} ${issue.message}`).join('; ')}`)
 
   const knownFamilyCodes = new Set(input.rubric.families.map((family) => family.code))
-  const planned: PlannedExecution<RootContext>[] = []
+  const planned: PlannedItem<RootContext>[] = []
 
   for (const [subjectIndex, subject] of input.subjects.entries()) {
     if (subject.subject !== undefined && !isNonEmptyString(subject.subject))
@@ -202,23 +209,46 @@ const planExecutions = <RootContext>(input: CheckerInput<RootContext>): PlannedE
       if (!requested.has(family.code)) continue
       for (const [itemIndex, item] of family.items.entries()) {
         if (!item.mechanical) continue
-        const execution = input.mode === 'conform' && item.mechanical.conform ? item.mechanical.conform : item.mechanical.audit
-        if (!isRubricPhase(execution.phase)) throw new Error(`rubric execution has unknown phase: ${item.code}`)
+        const audit = item.mechanical.audit
+        if (!isRubricPhase(audit.phase)) throw new Error(`rubric execution has unknown phase: ${item.code}`)
+        const repair = item.mechanical.repair
+        const legacyConform = item.mechanical.conform
+        if (repair && !isRubricPhase(repair.phase)) throw new Error(`rubric repair has unknown phase: ${item.code}`)
+        if (legacyConform && !isRubricPhase(legacyConform.phase)) throw new Error(`rubric execution has unknown phase: ${item.code}`)
         // Families have heterogeneous contexts. Erasure is confined to the plan;
         // each family still creates the context consumed by its own typed item.
         planned.push({
-          phase: execution.phase,
+          phase:
+            input.mode === 'conform' && repair
+              ? repair.phase
+              : input.mode === 'conform' && legacyConform
+                ? legacyConform.phase
+                : audit.phase,
           subjectIndex,
           familyIndex,
           itemIndex,
           subject,
           selectContext: family.selectContext,
           item,
-          execution: {
-            phase: execution.phase,
-            mode: input.mode === 'conform' && item.mechanical.conform ? 'conform' : 'audit',
-            run: execution.run as (context: unknown) => unknown
-          }
+          audit: { phase: audit.phase, mode: 'audit', run: audit.run as (context: unknown) => unknown },
+          ...(repair
+            ? {
+                repair: {
+                  phase: repair.phase,
+                  run: repair.run as (context: unknown) => unknown,
+                  repairOn: new Set(['VIOLATION', ...(item.mechanical.repairOn ?? [])])
+                }
+              }
+            : {}),
+          ...(legacyConform
+            ? {
+                legacyConform: {
+                  phase: legacyConform.phase,
+                  mode: 'conform' as const,
+                  run: legacyConform.run as (context: unknown) => unknown
+                }
+              }
+            : {})
         })
       }
     }
@@ -233,20 +263,33 @@ const planExecutions = <RootContext>(input: CheckerInput<RootContext>): PlannedE
   )
 }
 
-const checkedOutcomes = (planned: PlannedExecution<unknown>, value: unknown): readonly ExecutionOutcome[] => {
+const checkedOutcomes = (planned: PlannedItem<unknown>, execution: ErasedExecution, value: unknown): readonly ExecutionOutcome[] => {
   if (!Array.isArray(value) || value.length === 0) throw new Error(`rubric execution returned no outcome: ${planned.item.code}`)
   return value.map((outcome, index) => {
     const label = `rubric outcome ${planned.item.code}[${index}]`
     if (!isRecord(outcome)) throw new Error(`${label} must be an object`)
     if (typeof outcome.status !== 'string' || !OUTCOME_STATUSES.includes(outcome.status as ExecutionOutcome['status']))
       throw new Error(`${label} has unknown status`)
-    if (planned.execution.mode === 'audit' && outcome.status === 'FIXED') throw new Error(`${label} cannot be FIXED in audit mode`)
+    if (execution.mode === 'audit' && outcome.status === 'FIXED') throw new Error(`${label} cannot be FIXED in audit mode`)
     if (outcome.level !== undefined && (outcome.status !== 'VIOLATION' || !isViolationLevel(outcome.level)))
       throw new Error(`${label} has an invalid violation level`)
     if (!isNonEmptyString(outcome.message)) throw new Error(`${label} message must be non-empty`)
     if (outcome.subject !== undefined && !isNonEmptyString(outcome.subject))
       throw new Error(`${label} subject must be non-empty when present`)
     return outcome as ExecutionOutcome
+  })
+}
+
+const checkedRepairOutcomes = (planned: PlannedItem<unknown>, value: unknown): readonly RubricRepairOutcome[] => {
+  if (!Array.isArray(value) || value.length === 0) throw new Error(`rubric repair returned no outcome: ${planned.item.code}`)
+  return value.map((outcome, index) => {
+    const label = `rubric repair ${planned.item.code}[${index}]`
+    if (!isRecord(outcome)) throw new Error(`${label} must be an object`)
+    if (typeof outcome.changed !== 'boolean') throw new Error(`${label} changed must be boolean`)
+    if (!isNonEmptyString(outcome.message)) throw new Error(`${label} message must be non-empty`)
+    if (outcome.subject !== undefined && !isNonEmptyString(outcome.subject))
+      throw new Error(`${label} subject must be non-empty when present`)
+    return outcome as RubricRepairOutcome
   })
 }
 
@@ -270,17 +313,49 @@ const emitStatus = (tracker: CheckerStatusTracker | undefined, event: CheckerSta
 
 const executeRubric = <RootContext>(
   input: CheckerInput<RootContext>,
-  plannedExecutions: readonly PlannedExecution<RootContext>[],
-  onItemComplete: (planned: PlannedExecution<RootContext>) => void
+  plannedItems: readonly PlannedItem<RootContext>[],
+  onItemComplete: (planned: PlannedItem<RootContext>) => void
 ): CheckerFinding[] => {
   const findings: CheckerFinding[] = []
   const auditContexts = new Map<number, RootContext>()
-  for (const planned of plannedExecutions) {
+  for (const planned of plannedItems) {
     if (input.mode === 'audit' && !auditContexts.has(planned.subjectIndex))
       auditContexts.set(planned.subjectIndex, planned.subject.context())
-    const rootContext = input.mode === 'audit' ? (auditContexts.get(planned.subjectIndex) as RootContext) : planned.subject.context()
-    const context = planned.selectContext(rootContext)
-    const outcomes = checkedOutcomes(planned as PlannedExecution<unknown>, planned.execution.run(context))
+    const contextFor = (): unknown => {
+      const rootContext = input.mode === 'audit' ? (auditContexts.get(planned.subjectIndex) as RootContext) : planned.subject.context()
+      return planned.selectContext(rootContext)
+    }
+    const usesLegacyConform = input.mode === 'conform' && !planned.repair && planned.legacyConform
+    const preAudit = usesLegacyConform
+      ? undefined
+      : checkedOutcomes(planned as PlannedItem<unknown>, planned.audit, planned.audit.run(contextFor()))
+    let outcomes: readonly ExecutionOutcome[] = preAudit ?? []
+    if (input.mode === 'conform' && planned.repair && preAudit) {
+      const eligible = preAudit.some((outcome) => planned.repair?.repairOn.has(outcome.status as 'VIOLATION' | 'INFO'))
+      if (eligible) {
+        const repairs = checkedRepairOutcomes(planned as PlannedItem<unknown>, planned.repair.run(contextFor()))
+        const postAudit = checkedOutcomes(planned as PlannedItem<unknown>, planned.audit, planned.audit.run(contextFor()))
+        const changed = repairs.some((repair) => repair.changed)
+        const postClean = postAudit.every((outcome) => !planned.repair?.repairOn.has(outcome.status as 'VIOLATION' | 'INFO'))
+        outcomes =
+          changed && postClean
+            ? postAudit.map((outcome) =>
+                outcome.status === 'PASS'
+                  ? {
+                      ...outcome,
+                      status: 'FIXED' as const,
+                      message: `${repairs
+                        .filter((repair) => repair.changed)
+                        .map((repair) => repair.message)
+                        .join('; ')}; verified: ${outcome.message}`
+                    }
+                  : outcome
+              )
+            : postAudit
+      }
+    } else if (usesLegacyConform && planned.legacyConform) {
+      outcomes = checkedOutcomes(planned as PlannedItem<unknown>, planned.legacyConform, planned.legacyConform.run(contextFor()))
+    }
     for (const outcome of outcomes) {
       const subject = outcome.subject ?? planned.subject.subject
       findings.push({
@@ -301,18 +376,18 @@ export const runChecker = <RootContext>(input: CheckerInput<RootContext>): Check
   if (!input.concern.trim()) throw new Error('checker concern must be non-empty')
   if (!input.target.trim()) throw new Error('checker target must be non-empty')
 
-  const plannedExecutions = planExecutions(input)
+  const plannedItems = planItems(input)
   let completed = 0
-  emitStatus(input.statusTracker, { type: 'start', mode: input.mode, completed: 0, total: plannedExecutions.length })
+  emitStatus(input.statusTracker, { type: 'start', mode: input.mode, completed: 0, total: plannedItems.length })
 
   try {
-    const findings = executeRubric(input, plannedExecutions, (planned) => {
+    const findings = executeRubric(input, plannedItems, (planned) => {
       completed++
       emitStatus(input.statusTracker, {
         type: 'item-complete',
         mode: input.mode,
         completed,
-        total: plannedExecutions.length,
+        total: plannedItems.length,
         code: planned.item.code,
         title: planned.item.title,
         phase: planned.phase,
@@ -336,10 +411,10 @@ export const runChecker = <RootContext>(input: CheckerInput<RootContext>): Check
       { ...identity, record: 'summary', summary }
     ]
     const result = { records, findings, summary, exitCode: findings.some((finding) => finding.level === 'FAIL') ? 1 : 0 } as const
-    emitStatus(input.statusTracker, { type: 'complete', mode: input.mode, completed, total: plannedExecutions.length })
+    emitStatus(input.statusTracker, { type: 'complete', mode: input.mode, completed, total: plannedItems.length })
     return result
   } catch (error) {
-    emitStatus(input.statusTracker, { type: 'failed', mode: input.mode, completed, total: plannedExecutions.length })
+    emitStatus(input.statusTracker, { type: 'failed', mode: input.mode, completed, total: plannedItems.length })
     throw error
   }
 }

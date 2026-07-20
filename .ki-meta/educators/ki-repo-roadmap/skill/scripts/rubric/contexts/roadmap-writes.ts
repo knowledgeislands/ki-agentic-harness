@@ -208,7 +208,9 @@ function withLocalPlanReferences(text: string, theme: string, plans: Plan[]): st
       items.push({ line: heading.line, locator: `${theme}/${slug(heading.title)}` })
     }
   }
-  const boundaries = headings(text).filter((heading) => heading.level <= 3).map((heading) => heading.line)
+  const boundaries = headings(text)
+    .filter((heading) => heading.level <= 3)
+    .map((heading) => heading.line)
   const output: string[] = []
   let cursor = 0
   for (const item of items) {
@@ -488,9 +490,7 @@ export const conformRoadmap = (target: string, dryRun: boolean): Finding[] => {
       }
       const postPruneFailures = postAuditResults.filter(
         (finding) =>
-          finding.level === 'FAIL' &&
-          !['PROJ-1', 'INDEX-1', 'ROAD-4'].includes(finding.area) &&
-          !isDerivablePlanReferenceFailure(finding)
+          finding.level === 'FAIL' && !['PROJ-1', 'INDEX-1', 'ROAD-4'].includes(finding.area) && !isDerivablePlanReferenceFailure(finding)
       )
       if (postPruneFailures.length) {
         const conflicts = restoreStagedThemes(stagedThemes)
@@ -538,9 +538,14 @@ export const conformRoadmap = (target: string, dryRun: boolean): Finding[] => {
             findings.push({ level: 'PASS', area, msg: 'already canonical', ref: STANDARD_REF, file: output.display })
         } else if (dryRun) {
           for (const area of output.areas)
-            findings.push({ level: 'POLISH', area, msg: 'would regenerate (dry-run; not written)', ref: STANDARD_REF, file: output.display })
-        }
-        else {
+            findings.push({
+              level: 'POLISH',
+              area,
+              msg: 'would regenerate (dry-run; not written)',
+              ref: STANDARD_REF,
+              file: output.display
+            })
+        } else {
           atomicWrite(output.path, output.content, current)
           written.push(output)
           for (const area of output.areas)

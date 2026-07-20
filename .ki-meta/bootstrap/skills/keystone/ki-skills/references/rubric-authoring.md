@@ -53,7 +53,7 @@ Each layer has one responsibility:
 - `sources.md` records the provenance behind the standard and when moving sources were last reviewed.
 - `standards.md` states what good looks like and why, ordered from portable requirements through established practice to Knowledge Islands conventions.
 - Structured rubric families and items make the standard assessable. They are the sole authored source for criterion identity, classification, prose, source citations, mode phasing, and executable behaviour.
-- The checker runtime plans and executes the rubric's mechanical AUDIT or CONFORM executions. It MUST NOT define criteria of its own or pretend to evaluate judgment aspects.
+- The checker runtime plans and executes the rubric's mechanical AUDIT or audit-gated CONFORM transactions. It MUST NOT define criteria of its own or pretend to evaluate judgment aspects.
 - The checker returns one canonical JSONL response containing every structured finding.
 - Reporters consume that JSONL response and turn it into terminal, Markdown, or other views without changing what was checked.
 - `rubric.md` is a deterministic human-readable publication generated from the structured rubric. It is never a second authored source of truth. It contains a statement at the start of it to make this clear to readers and agents.
@@ -139,7 +139,7 @@ Each rubric item owns:
 - a concise `title` suitable for `${code}: ${title}` presentation;
 - the complete normative `description` needed by the generated rubric;
 - its cited `sources`;
-- a `MECHANICAL` aspect with its required AUDIT execution and optional safe CONFORM execution;
+- a `MECHANICAL` aspect with its required AUDIT execution and optional safe repair action;
 - a `JUDGMENT` aspect with its concrete review `prompt`; or
 - both aspects when one stable rule genuinely has deterministic and judgment concerns.
 
@@ -207,7 +207,8 @@ type MechanicalRubric<Context> = {
   overrideLevels?: readonly ViolationLevel[] // exceptional alternatives this item explicitly permits
   heuristic?: boolean // presentation metadata for deterministic evidence with known limits
   audit: RubricExecution<Context, AuditOutcome>
-  conform?: RubricExecution<Context, ConformOutcome>
+  repair?: RubricRepairExecution<Context>
+  repairOn?: readonly 'INFO'[]
 }
 
 type JudgmentRubric = {
@@ -237,7 +238,7 @@ When one stable criterion intentionally distinguishes an exceptional violation f
 
 Both modes return one common outcome shape.
 
-AUDIT permits the common read-only subset, while CONFORM additionally permits `FIXED`:
+AUDIT outcomes are always read-only; the checker derives `FIXED` from a verified repair rather than accepting it from a rubric callback:
 
 ```ts
 type OutcomeStatus = 'PASS' | 'VIOLATION' | 'NOT_APPLICABLE' | 'INFO' | 'FIXED'
@@ -247,18 +248,24 @@ type RubricOutcome<Status extends OutcomeStatus> = { status: Status; message: st
   : { level?: never })
 
 type AuditOutcome = RubricOutcome<Exclude<OutcomeStatus, 'FIXED'>>
-type ConformOutcome = RubricOutcome<OutcomeStatus>
+type RubricRepairOutcome = { changed: boolean; message: string; subject?: string }
 ```
 
 `VIOLATION` means the criterion remains unmet; the checker maps it to the outcome override or the item's default `ViolationLevel` in the canonical response.
 
-The other mechanical outcomes map directly to `PASS`, `NOT_APPLICABLE`, `INFO`, or `FIXED`.
+The other mechanical outcomes map directly to `PASS`, `NOT_APPLICABLE`, or `INFO`.
 
 `INFO` is neutral context rather than a violation, so it does not belong in `ViolationLevel`.
 
 An execution MUST return at least one outcome: `PASS` when the criterion is met, `NOT_APPLICABLE` when it cannot apply, or the appropriate substantive result.
 
-During CONFORM, the checker uses the item's CONFORM execution when present and otherwise runs its required AUDIT execution read-only, so every mechanical item remains represented.
+During CONFORM, an item with a repair action runs AUDIT, a conditional safe repair, and AUDIT again as one indivisible progress unit.
+
+`VIOLATION` makes a repair eligible by default; `INFO` does so only when the item explicitly declares `repairOn: ['INFO']`.
+
+The repair reports whether it observed a persistent change, while the checker alone emits `FIXED` after a clean post-audit.
+
+An item with no repair action runs its required AUDIT execution read-only, so every mechanical item remains represented.
 
 A judgment aspect has no executable callback.
 
@@ -293,7 +300,7 @@ The definition is the one object passed to generic catalogue validation, checker
 
 A rubric execution is the executable side of a mechanical rubric aspect.
 
-A mechanical item always declares an AUDIT execution and may add a CONFORM execution.
+A mechanical item always declares an AUDIT execution and may add a repair action.
 
 A judgment aspect declares its review prompt and has no execution or phase.
 
@@ -313,9 +320,9 @@ The shared phase order is `PREPARE → INSPECT → PRIMARY → DERIVED → NORMA
 
 AUDIT executions normally inspect, but the phase remains explicit so composed work has one planning model.
 
-CONFORM executions declare where their safe action belongs rather than relying on wrapper order or incidental source order.
+Repair actions declare where their safe action belongs rather than relying on wrapper order or incidental source order.
 
-The checker runtime selects the executions for the requested mode and runs them deterministically by phase, then by stable family and item order.
+The checker runtime selects item transactions for the requested mode and runs them deterministically by phase, then by stable family and item order.
 
 Criterion codes remain finding identity; execution identity is derived from the criterion and mode rather than maintained as a second unrelated name.
 
@@ -365,7 +372,7 @@ Audit caches each subject's read-only context for the whole run.
 
 Conform retains one mutable working model and any raw form needed for faithful persistence.
 
-The checker requests fresh context from the relevant subject before each conform element so an ordered element sees changes made by an earlier one; context builders may reuse immutable parsed evidence behind that factory.
+The checker requests fresh context before each item's pre-audit, repair, and post-audit so the verification observes a persistent write; context builders may reuse immutable parsed evidence behind that factory.
 
 Name an extracted function when it exposes a domain operation, defines a useful boundary, or removes repeated error-prone mechanics.
 
@@ -393,7 +400,7 @@ It contains no criterion codes or duplicate rule logic.
 
 An audit callback returns typed outcomes.
 
-A conform callback receives only the capabilities it needs, performs its declared safe action, and returns a typed action; shared rubric execution converts that action into a finding.
+A repair callback receives only the capabilities it needs, performs its declared safe action, and returns whether it observed a persistent change; shared rubric execution derives the final finding from the post-audit.
 
 Judgment work is not emitted as synthetic findings or accumulated in a private TODO collection.
 
@@ -522,7 +529,7 @@ Use an exemplar-first rollout: prove the root skill, then migrate exactly one de
 
 - Confirm the standard and source list are current enough to serve as inputs.
 - Codify every criterion into ordered families without changing its meaning or stable code.
-- Declare each mechanical item's AUDIT and optional CONFORM executions and phases in the same catalogue.
+- Declare each mechanical item's AUDIT and optional repair action with their phases in the same catalogue.
 - Add the family metadata needed to render the readable rubric exactly.
 - Build subject snapshots and focused contexts; keep policy in item modules.
 - Reduce audit and conform to thin orchestration wrappers over the shared checker runtime.
