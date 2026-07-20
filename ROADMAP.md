@@ -51,6 +51,7 @@ Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass
 - [Foundation Tooling: Document per-skill `.ki-config.toml` ownership _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#document-per-skill-ki-configtoml-ownership-candidate)
 - [Foundation Tooling: Harden user harness installation and runtime skill publication](docs/roadmap/foundation-tooling/ROADMAP.md#harden-user-harness-installation-and-runtime-skill-publication)
 - [Foundation Tooling: Inventory non-critical writers for bounded follow-up _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#inventory-non-critical-writers-for-bounded-follow-up-candidate)
+- [Foundation Tooling: Replace local tokenomics engine subprocesses _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#replace-local-tokenomics-engine-subprocesses-candidate)
 - [Foundation Tooling: Review the Cloudflare agent-setup prompt for the Cloudflare skill _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#review-the-cloudflare-agent-setup-prompt-for-the-cloudflare-skill-candidate)
 - [Governance Consistency: Add engineering change value profiles to the verb map _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#add-engineering-change-value-profiles-to-the-verb-map-candidate)
 - [Governance Consistency: Review interpretable context methodology and current agentic practice _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#review-interpretable-context-methodology-and-current-agentic-practice-candidate)

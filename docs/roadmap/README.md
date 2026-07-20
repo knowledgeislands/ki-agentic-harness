@@ -37,7 +37,7 @@ Canonical themes, active execution plans, and completed plan records.
 
 ### [FND-015](foundation-tooling/plans/FND-015-add-safe-multiprogress-aggregate-execution.md)
 
-- **Title:** Add safe multiprogress aggregate execution
+- **Title:** Add safe in-process multiprogress aggregate execution
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/add-safe-multiprogress-aggregate-execution`
 - **Status:** open

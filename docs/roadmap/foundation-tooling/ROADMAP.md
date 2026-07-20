@@ -46,7 +46,7 @@ Audit every shipped skill against the established exemplar implementations for s
 
 ### Add safe multiprogress aggregate execution
 
-Extend aggregate AUDIT and CONFORM with structured child progress so the default single bar advances continuously within each checker rather than only at checker-completion boundaries. Add an opt-in multiprogress display: one stable, labelled row per selected checker, such as `AUDIT [ki-skills]`. Both displays consume the same machine-readable child progress stream, never parsed terminal text. Separate presentation from execution: preserve deterministic checker ordering, JSONL, exit, and `--progress` semantics while evaluating bounded concurrent execution only for independent read-only audits. CONFORM remains sequential unless an explicit write-ownership and conflict contract proves a set of checkers safe to run together. Cover single- and multi-row allocation, narrow terminals, completion and failure, non-TTY output, cancellation, ordered final reporting, and concurrency limits without treating parallel rendering as permission to parallelise writes.
+Replace aggregate AUDIT and CONFORM's process-per-checker transport with direct, in-process calls to local vendored checker entry points. Reuse the shared checker's structured status events so the default single bar advances continuously without a child-progress protocol, temporary capture files, stdout reparsing, or a Bun launch for each checker. Add an opt-in multiprogress display: one stable, labelled row per selected checker, such as `AUDIT [ki-skills]`. Preserve direct checker JSONL, deterministic aggregate reporting, exit semantics, `--progress`, FND-010 terminal behaviour, and sequential AUDIT/CONFORM execution. Concurrency is explicitly out of scope until a separate independence and cancellation contract exists.
 
 **Plan:** [FND-015](plans/FND-015-add-safe-multiprogress-aggregate-execution.md)
 
@@ -76,7 +76,7 @@ Understood and roughly scoped but not yet started — worth doing once the **Nex
 
 ### Review `ki-bootstrap` for further simplification
 
-After the current boundary refactor settles, review the complete `ki-bootstrap` implementation for residual complexity across user installation, repository bootstrap, shared transport, generation, publication, rubric contexts, and tests. Remove unnecessary layers and genuine duplication without weakening safety invariants, merging distinct write transactions, or reopening the public lifecycle contract.
+After the current boundary refactor settles, review the complete `ki-bootstrap` implementation for residual complexity across user installation, repository bootstrap, shared transport, generation, publication, rubric contexts, and tests. Start with local process launches between bootstrap-owned publisher, synchroniser, HELP, and scaffold modules; replace them only after each has an import-safe entry point and preserves its guarded transaction. Keep external commands and user-install failure isolation where those are real boundaries.
 
 ### Codify Git workflow and commit conventions _(candidate)_
 
@@ -92,7 +92,11 @@ Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass
 
 ### Harden user harness installation and runtime skill publication
 
-After the first installer establishes the user-level contract, make runtime skill publication fail-safe, runtime-selected, and independently testable. Preserve unrelated user files and refuse unsafe parents.
+After the first installer establishes the user-level contract, make runtime skill publication fail-safe, runtime-selected, and independently testable. Assess whether the installer’s local hook-installer subprocess can become an import-safe direct call without weakening user-space failure isolation. Preserve unrelated user files and refuse unsafe parents.
+
+### Replace local tokenomics engine subprocesses _(candidate)_
+
+Extract a pure evidence and findings API from tokenomics’ local audit and conform engines so its checker can invoke them without launching Bun for adjacent source modules. Preserve the engine’s direct CLI behaviour, JSONL/reporting contracts, and external Git boundary; do not couple this migration to aggregate rendering.
 
 ### Document per-skill `.ki-config.toml` ownership _(candidate)_
 
