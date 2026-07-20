@@ -60,6 +60,7 @@ The records are living, compact, and independent. The order below is a **curated
 33. [ADR-KI-HARNESS-011](ADR-KI-HARNESS-011-project-skill-copies-and-repository-local-links.md) — complete runtime-skill copies by default and explicit repository-local links.
 34. [ADR-KI-HARNESS-SKILLS-012](ADR-KI-HARNESS-SKILLS-012-local-copies-for-shared-modules.md) — local copied shared modules without cross-skill imports.
 35. [ADR-KI-HARNESS-SKILLS-013](ADR-KI-HARNESS-SKILLS-013-readable-identifier-presentation.md) — title-first human presentation with stable machine identifiers.
+36. [ODR-KI-HARNESS-001](ODR-KI-HARNESS-001-scoped-lifecycle-operations.md) — separate repository and user lifecycle operations.
 
 ## Template
 

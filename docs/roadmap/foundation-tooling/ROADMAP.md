@@ -26,17 +26,21 @@ Define one repository-owned, committed source for `ki-self`, then project that s
 
 **Plan:** [FND-008](plans/FND-008-define-a-canonical-cross-runtime-ki-self-footprint.md)
 
+### Implement scoped lifecycle operations
+
+Implement the lifecycle boundary in `ODR-KI-HARNESS-001`: repository CLEAN removes only proven generated duplication and leaves the declaration ready for EDUCATE; repository and user DOCTOR are read-only; and repository and user UNINSTALL remove KI-owned traces only at their explicit scope. Provide zero-install repository launchers that run from temporary source without changing user state. This boundary must land before the doctor and `kisle` command surfaces it defines.
+
+### Add scoped read-only bootstrap doctor operations
+
+Add source-owned DOCTOR operations for explicit repository and user scopes. Repository DOCTOR inspects configuration, supported runtimes, runtime payload ownership, `.ki-meta/` manifest state, and recovery routes; user DOCTOR inspects only KI-owned user-level installation state. Both distinguish healthy, recoverable generated drift, preserved user-owned state, and unsafe or incomplete state; report the exact next action such as EDUCATE, CLEAN, UNINSTALL, or manual reconciliation without writing. Keep them runnable without a working vendored runner, dry-run equivalent by design, and suitable for humans and automation.
+
+### Establish the installable `kisle` command-line interface
+
+Design `kisle`, the stable human and automation entrypoint for Knowledge Islands operations, then hand its implementation to a zero-dependency `tools-kisle` repository and its release to `homebrew-tap`, following the established `mgit` delivery shape. It must expose the lifecycle contract without alternate meanings: `clean` is repository-only, while `doctor` and `uninstall` require explicit `repo` or `user` scope. Settle shell completion, versioning, runtime independence, error/reporting contract, and its relationship to installed skills, public launchers, and repository-local vendored commands before implementation. Do not claim the bare `ki` command: it is already published as Kotlin's Interactive Shell through Homebrew.
+
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
-
-### Add a read-only bootstrap doctor operation
-
-Add a source-owned `ki-bootstrap` DOCTOR operation that inspects a target's configuration, supported runtimes, runtime payload ownership, `.ki-meta/` manifest state, and available recovery routes without writing. It should distinguish a healthy footprint, recoverable generated drift, preserved user-owned state, and an unsafe or incomplete target; report the exact next action such as EDUCATE, CLEAN, or manual reconciliation. Keep it runnable without a working vendored runner, dry-run equivalent by design, and suitable for both humans and automation.
-
-### Establish an installable Knowledge Islands command-line interface
-
-Design and ship one installable command-line interface that provides the stable human and automation entrypoints for Knowledge Islands operations, including bootstrap, audit, conform, educate, clean, and doctor. Do not claim the bare `ki` command: it is already published as Kotlin's Interactive Shell through Homebrew. Settle a collision-free executable name, distribution channels, shell completion, versioning, runtime independence, error/reporting contract, and its relationship to installed skills and repository-local vendored commands before implementation.
 
 ### Remove the legacy `preferred_model` migration bridge in `ki-tokenomics`
 

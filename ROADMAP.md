@@ -6,7 +6,10 @@ This portfolio view is generated from the canonical theme roadmaps under `docs/r
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
+- [Foundation Tooling: Add scoped read-only bootstrap doctor operations](docs/roadmap/foundation-tooling/ROADMAP.md#add-scoped-read-only-bootstrap-doctor-operations)
 - [Foundation Tooling: Define a canonical cross-runtime `ki-self` footprint](docs/roadmap/foundation-tooling/ROADMAP.md#define-a-canonical-cross-runtime-ki-self-footprint)
+- [Foundation Tooling: Establish the installable `kisle` command-line interface](docs/roadmap/foundation-tooling/ROADMAP.md#establish-the-installable-kisle-command-line-interface)
+- [Foundation Tooling: Implement scoped lifecycle operations](docs/roadmap/foundation-tooling/ROADMAP.md#implement-scoped-lifecycle-operations)
 - [Foundation Tooling: Make CONFORM audit-gated per rubric item](docs/roadmap/foundation-tooling/ROADMAP.md#make-conform-audit-gated-per-rubric-item)
 - [Foundation Tooling: Make plan-to-roadmap linkage explicit](docs/roadmap/foundation-tooling/ROADMAP.md#make-plan-to-roadmap-linkage-explicit)
 - [Runtime Portability: Detect vendor-specific assumptions in portable skill contracts](docs/roadmap/runtime-portability/ROADMAP.md#detect-vendor-specific-assumptions-in-portable-skill-contracts)
@@ -15,8 +18,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-- [Foundation Tooling: Add a read-only bootstrap doctor operation](docs/roadmap/foundation-tooling/ROADMAP.md#add-a-read-only-bootstrap-doctor-operation)
-- [Foundation Tooling: Establish an installable Knowledge Islands command-line interface](docs/roadmap/foundation-tooling/ROADMAP.md#establish-an-installable-knowledge-islands-command-line-interface)
 - [Foundation Tooling: Remove the legacy `preferred_model` migration bridge in `ki-tokenomics`](docs/roadmap/foundation-tooling/ROADMAP.md#remove-the-legacy-preferredmodel-migration-bridge-in-ki-tokenomics)
 - [Governance Consistency: Make the first decision record adopt Decision Records](docs/roadmap/governance-consistency/ROADMAP.md#make-the-first-decision-record-adopt-decision-records)
 

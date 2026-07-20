@@ -82,6 +82,8 @@ Drift in the vendored copies is caught mechanically: the audit checks the copies
 
 Use CLEAN when you need to remove a repository's generated governance state and rebuild it from scratch — for example, before diagnosing a bootstrap problem. It is intentionally source-owned rather than a command inside `.ki-meta/`, because a successful clean removes that directory.
 
+> **Coming soon:** Read-only DOCTOR and scope-explicit UNINSTALL operations will distinguish repository and user state; the `kisle` command-line interface will present those operations consistently. They are not available commands yet.
+
 Start with a dry run from the repository root. Use the path matching the runtime where you installed the harness:
 
 ```bash
@@ -92,6 +94,6 @@ bun ~/.claude/skills/ki-bootstrap/scripts/clean.ts . --dry-run
 bun ~/.agents/skills/ki-bootstrap/scripts/clean.ts . --dry-run
 ```
 
-Review the reported paths, then rerun the same command without `--dry-run` to remove them. CLEAN removes only an intact manifest-owned `.ki-meta/` tree and unchanged generated runtime skill copies. It preserves `.ki-config.toml`, `.gitignore`, agents, `ki-self`, source links, altered payloads, and unfamiliar files; unsafe or changed metadata causes it to stop rather than guess. Run bootstrap again afterwards to reconstruct the governed footprint.
+Review the reported paths, then rerun the same command without `--dry-run` to remove them. CLEAN removes only an intact manifest-owned `.ki-meta/` tree and unchanged generated runtime skill copies. It is repository-scoped cleanup, not an uninstall: it preserves `.ki-config.toml`, `.gitignore`, agents, `ki-self`, source links, altered payloads, unfamiliar files, and every user-level KI installation. Unsafe or changed metadata causes it to stop rather than guess. Run bootstrap again afterwards to reconstruct the governed footprint.
 
 If `ki-bootstrap` is not installed for either runtime, use the same `scripts/clean.ts` path from a local harness checkout instead. Do not manually delete `.ki-meta/` or `ki-*` directories to work around a CLEAN refusal; inspect and resolve the preserved state first.
