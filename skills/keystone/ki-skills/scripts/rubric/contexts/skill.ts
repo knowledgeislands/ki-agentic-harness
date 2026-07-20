@@ -188,7 +188,9 @@ export const createKiShapeEvidence = (
       const source = readFileSync(join(scriptsDirectory, name), 'utf8')
       return {
         name,
-        usesCanonicalChecker: /from\s+['"][^'"]*checker\.ts['"]/.test(source) && /\brunChecker\b/.test(source)
+        usesCanonicalChecker:
+          (/from\s+['"][^'"]*checker\.ts['"]/.test(source) && /\brunChecker\b/.test(source)) ||
+          (/from\s+['"][^'"]*govern\.ts['"]/.test(source) && /\bdefineGovernedChecker\b/.test(source))
       }
     })
 

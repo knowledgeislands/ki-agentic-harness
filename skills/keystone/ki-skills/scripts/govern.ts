@@ -5,15 +5,8 @@ import { resolve } from 'node:path'
 import type { KiSkillsRubricContext } from './rubric/contexts/contexts.ts'
 import { createKiSkillsSubjects, KI_SKILLS_SUBJECT_FAMILIES } from './rubric/contexts/subjects.ts'
 import { KI_SKILLS_RUBRIC } from './rubric/items/index.ts'
-import {
-  type CheckerEvaluationSubject,
-  type CheckerExecutionOptions,
-  type CheckerPlan,
-  type CheckerResult,
-  planChecker,
-  runChecker
-} from './shared/checker.ts'
-import { createTerminalStatusTracker, parseCheckerArguments, renderCheckerResult } from './shared/reporter.ts'
+import type { CheckerEvaluationSubject, CheckerExecutionOptions, CheckerPlan, CheckerResult } from './shared/checker.ts'
+import { defineGovernedChecker, runGovernedCli } from './shared/govern.ts'
 import { runSkillEducator } from './vendored/ki-bootstrap/educator.ts'
 
 export type GovernCheckMode = 'audit' | 'conform'
@@ -109,104 +102,46 @@ const conformInput = ({ target, dryRun, statusTracker }: GovernCheckOptions) => 
   }
 }
 
+const governed = defineGovernedChecker<GovernCheckOptions>({
+  audit: auditInput,
+  conform: conformInput
+})
+
 /** Build the no-side-effect work count used by direct and aggregate progress renderers. */
-export const plan = (mode: GovernCheckMode, options: GovernCheckOptions): CheckerPlan => {
-  if (mode === 'audit') {
-    if (options.dryRun) throw new Error('audit does not accept --dry-run')
-    return planChecker(auditInput(options))
-  }
-  return planChecker(conformInput(options).input)
-}
+export const plan = (mode: GovernCheckMode, options: GovernCheckOptions): CheckerPlan => governed.plan(mode, options)
 
 /** Execute the structured checker for direct use or an in-process aggregate call. */
-export const check = (mode: GovernCheckMode, options: GovernCheckOptions): CheckerResult => {
-  if (mode === 'audit') {
-    if (options.dryRun) throw new Error('audit does not accept --dry-run')
-    return runChecker(auditInput(options))
-  }
-  const checker = conformInput(options)
-  const result = runChecker(checker.input)
-  checker.persist()
-  return result
-}
+export const check = (mode: GovernCheckMode, options: GovernCheckOptions): CheckerResult => governed.check(mode, options)
 
-const writeResult = (result: CheckerResult, parsed: ReturnType<typeof parseCheckerArguments>): void => {
-  process.stdout.write(
-    renderCheckerResult(result, {
-      ...parsed.options,
-      colour: Boolean(process.stdout.isTTY && !process.env.NO_COLOR)
-    })
-  )
-  process.exitCode = result.exitCode
-}
-
-const audit = (argv: readonly string[]): void => {
-  const parsed = parseCheckerArguments(argv)
-  const unknownOptions = parsed.arguments.filter(
-    (argument) => argument.startsWith('-') && argument !== '--footprint' && argument !== '--refresh-status'
-  )
+const options = (mode: GovernCheckMode, arguments_: readonly string[]): GovernCheckOptions => {
+  const allowed = mode === 'audit' ? ['--footprint', '--refresh-status'] : ['--dry-run']
+  const unknownOptions = arguments_.filter((argument) => argument.startsWith('-') && !allowed.includes(argument))
   if (unknownOptions.length > 0) throw new Error(`unknown option: ${unknownOptions[0]}`)
-  const roots = parsed.arguments.filter((argument) => !argument.startsWith('-'))
-  writeResult(
-    check('audit', {
+  const targets = arguments_.filter((argument) => !argument.startsWith('-'))
+  if (mode === 'audit')
+    return {
       target: resolve('.'),
-      roots,
+      roots: targets,
       dryRun: false,
-      footprint: argv.includes('--footprint'),
-      refreshStatus: argv.includes('--refresh-status'),
-      statusTracker: createTerminalStatusTracker({
-        mode: parsed.progress,
-        interactive: Boolean(process.stderr.isTTY),
-        write: (line) => process.stderr.write(line)
-      })
-    }),
-    parsed
-  )
-}
-
-const conform = (argv: readonly string[]): void => {
-  const parsed = parseCheckerArguments(argv)
-  const unknownOptions = parsed.arguments.filter((argument) => argument.startsWith('-') && argument !== '--dry-run')
-  if (unknownOptions.length > 0) throw new Error(`unknown option: ${unknownOptions[0]}`)
-  const targets = parsed.arguments.filter((argument) => !argument.startsWith('-'))
+      footprint: arguments_.includes('--footprint'),
+      refreshStatus: arguments_.includes('--refresh-status')
+    }
   if (targets.length > 1) throw new Error('conform accepts at most one target')
-  writeResult(
-    check('conform', {
-      target: targets[0] ?? '.',
-      dryRun: parsed.arguments.includes('--dry-run'),
-      statusTracker: createTerminalStatusTracker({
-        mode: parsed.progress,
-        interactive: Boolean(process.stderr.isTTY),
-        write: (line) => process.stderr.write(line)
-      })
-    }),
-    parsed
-  )
+  return { target: targets[0] ?? '.', dryRun: arguments_.includes('--dry-run') }
 }
 
 export const main = (argv: readonly string[] = process.argv.slice(2)): void => {
-  const [command, ...arguments_] = argv
-  if (!command || ['-h', '--help', 'help', '?'].includes(command)) {
-    process.stdout.write(usage)
-    return
-  }
-  if (command === 'audit' && arguments_.some((argument) => argument === '-h' || argument === '--help')) {
-    process.stdout.write(auditUsage)
-    return
-  }
-  if (command === 'conform' && arguments_.some((argument) => argument === '-h' || argument === '--help')) {
-    process.stdout.write(conformUsage)
-    return
-  }
-  try {
-    if (command === 'audit') audit(arguments_)
-    else if (command === 'conform') conform(arguments_)
-    else if (command === 'educate') runSkillEducator({ skill: 'ki-skills', source: resolve(import.meta.dirname, '..'), argv: arguments_ })
-    else throw new Error(`unknown command: ${command}`)
-  } catch (error) {
-    process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
-    process.exitCode = 2
-  }
+  runGovernedCli(
+    {
+      usage,
+      auditUsage,
+      conformUsage,
+      checker: governed,
+      options,
+      educate: (arguments_) => runSkillEducator({ skill: 'ki-skills', source: resolve(import.meta.dirname, '..'), argv: arguments_ })
+    },
+    argv
+  )
 }
 
 if (import.meta.main) main()
