@@ -1,7 +1,7 @@
 ---
 id: 'FND-010'
 title: Improve CONFORM progress feedback
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/improve-conform-progress-feedback
 blocks: —
 blocked-by: —
@@ -29,7 +29,7 @@ The first implementation sizes its bar from the changing right-side detail width
 4. ✓ Apply the startup and stable-layout contracts to both aggregate renderer and shared checker reporter, preserving carriage-return behaviour and non-interactive output semantics.
 5. ✓ Add a completed percentage beside the existing `completed/total` count, with deterministic rounding and zero-total handling.
 6. ✓ Add focused tests for startup-before-total, checker-plan discovery updates, stable same-width redraws with changing detail, narrow, ordinary, wide, resize-between-redraws, capped, unavailable-TTY, zero-total, `auto`, `always`, and `never` cases; prove that display width and startup reporting do not change progress accounting or structured output.
-7. Refresh every affected generated checker payload and HELP/documentation surface, then run serial repository gates.
+7. ✓ Refresh every affected generated checker payload and HELP/documentation surface, then run serial repository gates.
 
 ## Files touched
 
@@ -61,28 +61,29 @@ This plan is independent of the completion-record lifecycle work. It improves te
 
 ### Delivered
 
-Aggregate and direct checker progress now use a terminal-width-aware three-zone layout, with truthful startup feedback before the aggregate knows its work total.
+Aggregate and direct checker progress now keep their command, bar, and detail areas stable for each terminal width, while retaining truthful startup feedback before the aggregate knows its work total.
 
 ### Summary of changes
 
 - Added immediate `initialising` and `reading checker plans <completed>/<count>` states to the generated aggregate runner before normal checker execution.
-- Replaced the fixed 12-column bars with redraw-time layout allocation in the aggregate and `ki-skills` shared reporter; bars cap at 100 columns and disappear before key state text is shortened.
-- Added `completed/total`, rounded percentage, deterministic zero-total completion, ANSI-aware display measurement, and ellipsis-based compact rendering; removed the remaining-item count.
-- Added direct-reporter resize/narrow/zero-total coverage and aggregate startup/discovery assertions, then regenerated the portable bootstrap, checker, and educator payloads.
+- Reserved a padded 10-column command area, then split remaining terminal width between bar and detail area. A stable-width terminal keeps bar size and detail start position stable; resize recomputes all areas. Bars cap at 100 columns.
+- Truncated overlong detail with ASCII `...`, retained `completed/total` and rounded percentage, and removed the remaining-item count.
+- Made CONFORM's checker-plan preflight pass `--dry-run`, preventing status discovery from applying a checker change.
+- Added direct-reporter stable-layout/resize/narrow coverage and aggregate startup/discovery stability assertions, then regenerated portable bootstrap, checker, and educator payloads.
 
 ### Verification
 
-- `bun test skills/keystone/ki-skills/scripts/shared/reporter.test.ts` passed (13 tests).
-- `bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/resolve.test.ts` passed, including startup/discovery and `--progress=never` aggregate checks.
-- A 30-column pseudo-terminal run showed each redraw stay compact without wrapping, omitting the bar before truncating phase text.
-- `bun run test` passed.
+- `bun test skills/keystone/ki-skills/scripts/shared/reporter.test.ts skills/keystone/ki-skills/scripts/audit.test.ts skills/keystone/ki-skills/scripts/conform.test.ts` passed (33 tests).
+- `bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/resolve.test.ts` and `repo-bootstrap.parity.test.ts` passed, including fixed aggregate columns and read-only CONFORM discovery.
+- `bun skills/keystone/ki-bootstrap/scripts/internal/user-install/user-install.test.ts` passed, including dereferenced source-link installation.
+- `bun run test` passed with exit 0.
 - `bun run ki:audit` passed with zero FAIL and WARN findings.
-- Implementation commit: `aca903a6` (`feat(bootstrap): improve conform progress feedback`).
+- Implementation commit: `f1adb342` (`fix(bootstrap): stabilise aggregate progress layout`); linked-payload installer repair: `793c15f0`.
 
 ### Outstanding concerns
 
-Acceptance feedback identified unstable bar sizing when right-side detail changed. This reopened implementation supersedes the layout claims above; keep the packet as evidence of the initial delivery and replace it after the remedial work is verified.
+None.
 
 ### Mini recap
 
-Terminal width is read at each render rather than managed through a resize handler, which naturally handles resizes between redraws while leaving progress accounting and JSONL untouched. The portable aggregate remains self-contained, so it mirrors the small layout helper rather than importing from a source skill.
+Progress planning must be mechanically read-only: CONFORM preflight carries `--dry-run` even though it only wants a checker item count. The portable aggregate remains self-contained, so it mirrors the small layout helper rather than importing from a source skill.
