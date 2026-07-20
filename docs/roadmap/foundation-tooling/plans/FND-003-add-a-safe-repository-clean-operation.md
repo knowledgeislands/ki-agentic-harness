@@ -1,7 +1,7 @@
 ---
 id: 'FND-003'
 title: Add a safe repository clean operation
-status: acceptance
+status: done
 roadmap: foundation-tooling/add-a-safe-repository-clean-operation
 blocks: FND-016
 blocked-by: —
@@ -71,3 +71,11 @@ The defined follow-up is [Implement scoped lifecycle operations](../ROADMAP.md#i
 ### Mini recap
 
 Defining CLEAN by proven generated ownership—not names or broad directories—keeps re-vendoring recoverable without erasing authored state. No additional durable learning route is proposed.
+
+## Done
+
+FND-003 completed the conservative repository CLEAN baseline: it removes only proven generated duplication and leaves the repository declaration and authored state ready for EDUCATE.
+
+Residual concern: None.
+
+Intended follow-up: FND-016 owns the broader scoped lifecycle contract, including repository and user UNINSTALL plus the basis for FND-017 DOCTOR and FND-018 `kisle`; it builds on this completed CLEAN boundary without broadening CLEAN itself.

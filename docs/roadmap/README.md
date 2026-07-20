@@ -11,14 +11,6 @@ Canonical themes, active execution plans, and completed plan records.
 
 ## Active plans
 
-### [FND-003](foundation-tooling/plans/FND-003-add-a-safe-repository-clean-operation.md)
-
-- **Title:** Add a safe repository clean operation
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/add-a-safe-repository-clean-operation`
-- **Status:** acceptance
-- **Blocks:** FND-016
-
 ### [FND-015](foundation-tooling/plans/FND-015-add-safe-multiprogress-aggregate-execution.md)
 
 - **Title:** Unify governed entrypoints and in-process aggregate execution
@@ -32,7 +24,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Implement scoped lifecycle operations
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/implement-scoped-lifecycle-operations`
-- **Status:** open (needs FND-003+FND-020)
+- **Status:** open (needs FND-020)
 - **Blocks:** FND-017, FND-018
 
 ### [FND-017](foundation-tooling/plans/FND-017-add-scoped-read-only-bootstrap-doctor-operations.md)
@@ -64,7 +56,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Align the repository-local ki-self governance contract
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/align-the-repository-local-ki-self-governance-contract`
-- **Status:** in-progress
+- **Status:** acceptance
 - **Blocks:** FND-015, FND-016, FND-017, FND-018, FND-019, RTP-001
 
 ### [RTP-001](runtime-portability/plans/RTP-001-detect-vendor-specific-portable-contracts.md)
@@ -76,6 +68,13 @@ Canonical themes, active execution plans, and completed plan records.
 - **Blocks:** —
 
 ## Completed plans
+
+### [FND-003](foundation-tooling/plans/FND-003-add-a-safe-repository-clean-operation.md)
+
+- **Title:** Add a safe repository clean operation
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/add-a-safe-repository-clean-operation`
+- **Status:** done
 
 ### [FND-013](foundation-tooling/plans/FND-013-complete-harness-local-skill-dependency-linking.md)
 
