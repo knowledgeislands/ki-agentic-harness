@@ -35,6 +35,14 @@ Canonical themes, active execution plans, and completed plan records.
 - **Status:** open
 - **Blocks:** —
 
+### [FND-015](foundation-tooling/plans/FND-015-add-safe-multiprogress-aggregate-execution.md)
+
+- **Title:** Add safe multiprogress aggregate execution
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/add-safe-multiprogress-aggregate-execution`
+- **Status:** open
+- **Blocks:** —
+
 ### [RTP-001](runtime-portability/plans/RTP-001-detect-vendor-specific-portable-contracts.md)
 
 - **Title:** Detect vendor-specific assumptions in portable skill contracts
