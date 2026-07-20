@@ -38,7 +38,7 @@ Audit every shipped skill against the established exemplar implementations for s
 
 ### Improve CONFORM progress feedback
 
-Make direct and aggregate CONFORM progress useful in a terminal: at every redraw, detect the active `stderr` TTY width when available and allocate it between a left label, centre bar, and right-side counter, percentage, and status. Size the bar from the remaining width with a safe fallback and a maximum of 100 columns; use a compact non-wrapping form when there is no room for a bar. Preserve canonical JSONL and non-interactive output, never let presentation width alter item accounting, and cover resize, narrow, wide, unavailable-TTY, and capped-width cases.
+Make direct and aggregate CONFORM progress useful in a terminal: immediately report startup and checker-plan discovery while the aggregate derives its total, then at every redraw detect the active `stderr` TTY width when available and allocate it between a left label, centre bar, and right-side counter, percentage, and status. Size the bar from the remaining width with a safe fallback and a maximum of 100 columns; use a compact non-wrapping form when there is no room for a bar. Preserve canonical JSONL and non-interactive output, never let presentation width alter item accounting, and cover startup, resize, narrow, wide, unavailable-TTY, and capped-width cases.
 
 **Plan:** [FND-010](plans/FND-010-improve-conform-progress-feedback.md)
 
