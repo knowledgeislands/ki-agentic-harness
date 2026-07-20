@@ -1,7 +1,7 @@
 ---
 id: 'FND-020'
 title: Align the repository-local ki-self governance contract
-status: acceptance
+status: done
 roadmap: foundation-tooling/align-the-repository-local-ki-self-governance-contract
 blocks: FND-015, FND-016, FND-017, FND-018, FND-019, RTP-001
 blocked-by: —
@@ -73,3 +73,11 @@ None. `ADR-KI-HARNESS-011` retains its historic `.ki-self/` wording as a histori
 ### Mini recap
 
 Source links remove unnecessary copying, but not every `.ki/` file is live. The durable rule is therefore precise: source-link changes use bootstrap parity/audit; run bootstrap when an affected generated surface needs regeneration.
+
+## Done
+
+FND-020 aligned the repository-local `ki-self` contract with the harness's source-link model, the generic skill checker, and current user/developer guidance.
+
+Residual concern: None.
+
+Intended follow-up: FND-015 may now resume its governed-entrypoint and in-process aggregate execution work; the lifecycle and structural-consistency plans retain their independent scopes.
