@@ -87,7 +87,7 @@ The keystone linker self-locates the harness through its own real path — no ha
 
 The `.claude/skills/` directory is gitignored — the committed artifact is the `ki:skills:copy:project` script and a `.gitignore` line. The copied payloads are regenerated, never committed.
 
-Harness authors who deliberately want live local edits may use `ki-repo`'s `link-repository-commands --development`, which replaces those copies with relative links into an active harness checkout. It is not the normal reproducibility path.
+Bootstrap publishes a harness's declared runtime skills as relative links to that harness's canonical source skills. Ordinary repositories continue to receive regular-file copies.
 
 ### CLAUDE.md import pattern for skills
 

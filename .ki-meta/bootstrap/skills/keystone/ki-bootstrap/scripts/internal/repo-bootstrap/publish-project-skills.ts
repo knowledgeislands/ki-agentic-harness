@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-/** Publish generated regular-file project skill copies for normal repository use. */
+/** Publish runtime skills as copies, except a harness's own source skills are linked. */
 import { runProjectLinks } from './project-skill-publisher.ts'
 
 process.exit(runProjectLinks('skills'))

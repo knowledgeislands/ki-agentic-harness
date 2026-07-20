@@ -6,7 +6,7 @@ ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter
 owns: ['.gitignore']
 contributes: ['.ki-config.toml']
 description: >
-  Codify, audit, and apply the Knowledge Islands repo standard to any KI-compliant git repo carrying `.ki-config.toml`, not only the `knowledgeislands` reference org. Covers local files, GitHub settings, security, and explicit repository-local development links. Use when checking or bringing a repo into line, onboarding a repo, linking local commands while developing the harness, or refreshing the standard against GitHub's surface. Triggers: "audit the repos", "do our repos follow the standard", "apply the repo standard", "link repository commands", "enable secret scanning / Dependabot", "refresh the repo standard". Discovers repos from a local tree or an org via `gh`. Governs repo configuration, not source code. Off-ramps: `ki-authoring` (Markdown/TOML), `ki-engineering` (toolchain), `ki-harness` (bundle layout).
+  Codify, audit, and apply the Knowledge Islands repo standard to any KI-compliant git repo carrying `.ki-config.toml`, not only the `knowledgeislands` reference org. Covers local files, GitHub settings, and security. Use when checking or bringing a repo into line, onboarding a repo, or refreshing the standard against GitHub's surface. Triggers: "audit the repos", "do our repos follow the standard", "apply the repo standard", "enable secret scanning / Dependabot", "refresh the repo standard". Discovers repos from a local tree or an org via `gh`. Governs repo configuration, not source code. Off-ramps: `ki-authoring` (Markdown/TOML), `ki-engineering` (toolchain), `ki-harness` (bundle layout).
 argument-hint: 'audit | conform <repo> | educate <repo> | help | refresh'
 ---
 
@@ -47,7 +47,7 @@ The rubric's mechanical findings are scripted: `bun scripts/conform.ts [path]` (
 
 1. Run **AUDIT** first, so you change against a known gap list.
 2. Run `conform.ts` for the mechanical layer (or apply the `gh` commands in [the standard](references/standards.md) by hand).
-3. Resolve the judgment items yourself — document content, description fit, runtime orientation, development links, override rationale, and standard synchronisation.
+3. Resolve the judgment items yourself — document content, description fit, runtime orientation, override rationale, and standard synchronisation.
 4. **Re-audit** to confirm convergence.
 
 ### Mode EDUCATE — make a repo Knowledge Islands–compliant
@@ -72,8 +72,6 @@ GitHub's settings surface moves (rulesets vs classic protection, new security to
 5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and refresh the `## Last review` block (what's confirmed, open watch-items). What changed goes in the commit, not a changelog. Mandatory: the source list is the skill's memory of where the standard comes from.
 
 ## Notes
-
-- **Development linking:** `bun scripts/link-repository-commands.ts <repo> --development` is the sole explicit local-author path that creates repository-local skill symlinks. Add `--agents` to link declared Claude governance agents too. Ordinary user installation and repository bootstrap always create regular copies instead. `ki-harness` composes this command for its own development workflow.
 
 - Requires the `gh` CLI authenticated with **repo-admin** scope to apply settings.
 - `main` is **open by default** — direct pushes are allowed, so local-file fixes (EDUCATE / CONFORM step 2) can land as a direct commit. A repo overrides the `branch-protection` check on (`[…checks]` `branch-protection = true`); only then does CONFORM protect that repo's `main`.

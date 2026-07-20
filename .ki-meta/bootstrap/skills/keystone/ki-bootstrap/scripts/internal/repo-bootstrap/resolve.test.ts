@@ -470,6 +470,8 @@ try {
 const selfBootstrappingHarness = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-self-source-')))
 try {
   cpSync(SKILLS_ROOT, join(selfBootstrappingHarness, 'skills'), { recursive: true, dereference: true })
+  cpSync(join(dirname(SKILLS_ROOT), 'agents'), join(selfBootstrappingHarness, 'agents'), { recursive: true, dereference: true })
+  writeFileSync(join(selfBootstrappingHarness, '.ki-config.toml'), readFileSync(join(dirname(SKILLS_ROOT), '.ki-config.toml')))
   const selfBootstrap = join(
     selfBootstrappingHarness,
     'skills',
@@ -480,12 +482,14 @@ try {
     'repo-bootstrap',
     'repo-bootstrap.ts'
   )
-  const result = spawnSync('bun', [selfBootstrap, selfBootstrappingHarness, '--seed', 'ki-repo'], { encoding: 'utf8' })
+  const result = spawnSync('bun', [selfBootstrap, selfBootstrappingHarness], { encoding: 'utf8' })
   const selfPayload = join(selfBootstrappingHarness, '.claude', 'skills', 'ki-repo')
   check('source harness bootstrap → exits cleanly', result.status === 0)
   check(
-    'source harness bootstrap → publishes regular runtime copies',
-    lstatSync(selfPayload).isDirectory() && !lstatSync(selfPayload).isSymbolicLink()
+    'source harness bootstrap → links canonical runtime skills',
+    existsSync(selfPayload) &&
+      lstatSync(selfPayload).isSymbolicLink() &&
+      realpathSync(selfPayload) === join(selfBootstrappingHarness, 'skills', 'keystone', 'ki-repo')
   )
 } finally {
   rmSync(selfBootstrappingHarness, { recursive: true, force: true })

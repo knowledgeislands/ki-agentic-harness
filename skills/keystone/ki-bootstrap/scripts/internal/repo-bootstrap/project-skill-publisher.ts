@@ -3,8 +3,8 @@
 /**
  * Safely publish a repository's generated project-local payloads.
  *
- * The normal copy publisher and `ki-repo`'s vendored development linker use the
- * same transaction model: it validates every repository
+ * The normal copy publisher and harness source links use the same transaction
+ * model: it validates every repository
  * controlled destination, stages new entries in a private 0700 directory, then
  * publishes the complete link and .gitignore set or rolls it back.  A real file,
  * directory, or hostile symlink at a managed destination is a blocker; it is
@@ -290,6 +290,34 @@ function appendGitignore(existing: string, paths: string[]): string {
   return `${existing}${lead}# Generated project-local runtime payloads (ki-bootstrap) — never committed\n${missing.map((path) => `${path}/`).join('\n')}\n`
 }
 
+function harnessTarget(config: string): boolean {
+  return /^\[ki-harness\][ \t]*$/m.test(config)
+}
+
+function sourceHarnessSkillDir(target: string, name: string): string {
+  const skillsRoot = join(target, 'skills')
+  if (entry(skillsRoot)?.kind !== 'dir') throw new Error(`harness source skills are unavailable: ${skillsRoot}`)
+  const candidates = [join(skillsRoot, name)]
+  for (const category of readdirSync(skillsRoot)) {
+    if (entry(join(skillsRoot, category))?.kind === 'dir') candidates.push(join(skillsRoot, category, name))
+  }
+  const matches = candidates.filter((candidate) => {
+    const skill = entry(join(candidate, 'SKILL.md'))
+    return skill?.kind === 'file' && new RegExp(`^name:\\s*${name}\\s*$`, 'm').test(skill.bytes?.toString('utf8') ?? '')
+  })
+  if (matches.length !== 1) throw new Error(`harness source must define exactly one canonical skill named ${name}`)
+  return matches[0] as string
+}
+
+function publicationFor(target: string, requested?: ProjectSkillPublication): ProjectSkillPublication {
+  if (requested) return requested
+  return harnessTarget(regularText(join(target, '.ki-config.toml'), '.ki-config.toml').content) ? 'development-link' : 'copy'
+}
+
+function sourceFor(target: string, name: string, publication: ProjectSkillPublication): string {
+  return publication === 'development-link' ? sourceHarnessSkillDir(target, name) : skillDir(name)
+}
+
 function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: ProjectSkillPublication): LinkPlan {
   const root = assertDirectory(target, 'target repository')
   if (root.kind !== 'dir') throw new Error('unreachable')
@@ -325,7 +353,7 @@ function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: Pr
       checkExistingDirectory(target, subdir)
       const desired = new Set(wanted)
       for (const name of wanted) {
-        const source = skillDir(name)
+        const source = sourceFor(target, name, skillPublication)
         if (entry(source)?.kind !== 'dir') throw new Error(`skill source is unavailable: ${name}`)
         skillTreeIntegrity(source, `skill source ${name}`)
         const destination = join(dir, name)
@@ -576,8 +604,9 @@ function execute(target: string, plan: LinkPlan): void {
 export function inspectProjectLinks(
   target: string,
   scope: ProjectLinkScope,
-  skillPublication: ProjectSkillPublication = 'copy'
+  requestedPublication?: ProjectSkillPublication
 ): ProjectLinkCheck[] {
+  const skillPublication = publicationFor(target, requestedPublication)
   const config = regularText(join(target, '.ki-config.toml'), '.ki-config.toml').content
   const runtimes = supportedRuntimes(config)
   const checks: ProjectLinkCheck[] = []
@@ -599,7 +628,7 @@ export function inspectProjectLinks(
       const present = entry(dir)?.kind === 'dir' ? readdirSync(dir).filter((name) => name.startsWith('ki-')) : []
       const missing = [...wanted].filter((name) => {
         if (!isSkill(name)) return true
-        const source = skillDir(name)
+        const source = sourceFor(target, name, skillPublication)
         const destination = join(dir, name)
         return skillPublication === 'development-link' ? !linkResolvesTo(destination, source) : !copiesSource(destination, name, source)
       })
@@ -668,7 +697,7 @@ export function inspectProjectLinks(
   return checks
 }
 
-function printCheck(target: string, scope: ProjectLinkScope, skillPublication: ProjectSkillPublication): number {
+function printCheck(target: string, scope: ProjectLinkScope, skillPublication?: ProjectSkillPublication): number {
   const checks = inspectProjectLinks(target, scope, skillPublication)
   let runtime = ''
   for (const check of checks) {
@@ -694,7 +723,7 @@ function printCheck(target: string, scope: ProjectLinkScope, skillPublication: P
 
 export function runProjectLinks(
   scope: ProjectLinkScope,
-  skillPublication: ProjectSkillPublication = 'copy',
+  requestedPublication?: ProjectSkillPublication,
   argv = process.argv.slice(2)
 ): number {
   const dryRun = argv.includes('--dry-run')
@@ -702,6 +731,7 @@ export function runProjectLinks(
   const quiet = argv.includes('--quiet')
   const target = resolve(argv.find((arg) => !arg.startsWith('-')) ?? '.')
   try {
+    const skillPublication = publicationFor(target, requestedPublication)
     if (checkOnly) return printCheck(target, scope, skillPublication)
     const plan = buildPlan(target, scope, skillPublication)
     if (plan.skillOrphans.length) {

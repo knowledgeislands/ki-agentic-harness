@@ -54,9 +54,9 @@ const projectConform = (
 
 export const BOOT_1: RubricItem<BootstrapRubricContext> = {
   code: 'BOOT-1',
-  title: 'runtime skill directories mirror declared coverage as generated copies',
+  title: 'runtime skill directories mirror declared coverage',
   description:
-    "For each declared runtime, the project-local skills directory mirrors the repository's declared coverage as complete generated regular-file copies. Missing, extra, symlinked, or source-drifted payloads are WARN; an unresolvable declaration or dependency is FAIL and must be reconciled by hand. A valid committed `ki-self` skill is preserved as the local-governance exception.",
+    "For each declared runtime, the project-local skills directory mirrors the repository's declared coverage. Ordinary repositories receive complete generated regular-file copies; a harness links its own canonical source skills. Missing, extra, invalidly linked, or source-drifted payloads are WARN; an unresolvable declaration or dependency is FAIL and must be reconciled by hand. A valid committed `ki-self` skill is preserved as the local-governance exception.",
   sources: ['[KR]', '[AH]', '[ADR-KI-HARNESS-007]'],
   mechanical: {
     level: 'WARN',
@@ -70,7 +70,7 @@ export const BOOT_3: RubricItem<BootstrapRubricContext> = {
   code: 'BOOT-3',
   title: 'runtime skill directories are gitignored',
   description:
-    "Each declared runtime's project-local skills directory is gitignored because the copied payloads are generated and never committed. CONFORM writes the recognised trailing-slash entry and creates `.gitignore` when needed.",
+    "Each declared runtime's project-local skills directory is gitignored because its published payloads are generated and never committed. CONFORM writes the recognised trailing-slash entry and creates `.gitignore` when needed.",
   sources: ['[KR]', '[KH]'],
   mechanical: {
     level: 'WARN',

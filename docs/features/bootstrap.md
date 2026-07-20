@@ -60,8 +60,8 @@ The EDUCATE chain MUST be runnable on a machine carrying nothing but `bun` — v
 
 _Verify:_ `skills/keystone/ki-bootstrap/scripts/repo-bootstrap.sh` line 1 is `#!/bin/sh` and its `codeload.github.com` fetch pipes into `lib/repo-bootstrap.ts`; a governed repo's `.ki-meta/bin/ki-educate` re-invokes that script (never `bun run <raw-url>`, which Bun cannot execute over HTTP).
 
-### BOOT-009 — Normal runtime publication uses copies
+### BOOT-009 — Runtime publication follows the target type
 
-Repository bootstrap MUST publish only the declared runtime skill coverage as generated regular-file copies; it MUST NOT create runtime symlinks. Deliberate local-development links are a separate source-harness-only `ki-harness` operation and are never required for normal user installation or repository governance.
+Repository bootstrap MUST publish only declared runtime skill coverage. Ordinary repositories receive generated regular-file copies; a harness receives links from runtime skill locations to its own canonical source skills. Vendored `.ki-meta/` payloads always remain regular files.
 
-_Verify:_ run `scripts/internal/repo-bootstrap/publish-project-skills.ts` against a declared fixture and confirm each published runtime skill is a regular file. Run `ki-harness/scripts/link-project-skills.ts` from the source harness separately and confirm only that explicit command creates a symlink in the harness footprint.
+_Verify:_ run `scripts/internal/repo-bootstrap/publish-project-skills.ts` against a declared ordinary-repository fixture and confirm each published runtime skill is a regular file. Run it against a harness fixture and confirm each declared runtime skill is a source link.

@@ -34,7 +34,7 @@ REFRESH last run **2026-07-07** — confirmed [CS]: an installed skill's `SKILL.
 
 - [KR] `ki-repo` — Coverage cascade: every repo declares its foundations (`[ki-repo]` bedrock marker + `[ki-authoring]`) explicitly as `[ki-*]` tables; there is no injected/cascade-exempt baseline (ADR-KI-HARNESS-007). See `config-standards.md` §44/§52.
 - [KS] `ki-skills` — **confirmed.** Checker-contract severity ladder and behaviour unchanged.
-- [KH] `ki-harness` — **confirmed.** `ki:skills:copy:project` is the normal portable project publication path. `ki-repo link-repository-commands --development` is the explicit local-author path; `/harness/install` installs the global keystone and process skills as regular copies. The harness publishes only its declared coverage like any other repo.
+- [KH] `ki-harness` — **confirmed.** `ki:skills:copy:project` is the normal portable project publication path. Bootstrap recognises a harness target and links its own declared runtime skills to canonical sources; `/harness/install` installs the global keystone and process skills as regular copies. The harness publishes only its declared coverage like any other repo.
 - [AH] README — **confirmed.** Keystone / global-install framing intact; skill count grew to twenty (generic `[ki-*]` model needs no edit).
 
 ### Open watch-items
@@ -43,4 +43,4 @@ REFRESH last run **2026-07-07** — confirmed [CS]: an installed skill's `SKILL.
 - **Codex CLI skill discovery** — `.agents/skills/` project-local and `~/.agents/skills/` global, declared via `[ki-repo] supported_runtimes` (`SDR-KI-HARNESS-002`). Codex subagent (`[ki-agents]`) install is not wired yet — TOML under `~/.codex/agents/` needs a generator, not a symlink, pending the format spike. Re-anchor `runtimeSkillsDir`/`runtimeAgentsDir` in `package-scripts.ts` if Codex's own discovery paths or precedence change upstream.
 - **The coverage cascade [KR]** — if `ki-repo` changes the `[ki-*]` table contract or adds cascade-exempt universals beyond `authoring`, update the baseline/publication-set rule in the standard and `publish-project-skills.ts`.
 - **New sibling skills** — the harness skill set grew (e.g. `ki-handoffs`, 2026-06-21). The standard is generic over the set so needs no per-skill edit, but a harness `.claude/skills/` can lag behind newly added skills (BOOT-1 WARN); re-run `ki:skills:copy:project`.
-- **The `[ki-agents]` gate** — if agent discovery locations (`.claude/agents/`) or precedence change, re-anchor `ki-repo`'s `link-repository-commands.ts --agents` alongside [CS].
+- **The `[ki-agents]` gate** — if agent discovery locations (`.claude/agents/`) or precedence change, re-anchor the project publisher's agent-link behaviour alongside [CS].

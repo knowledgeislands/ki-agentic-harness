@@ -24,7 +24,6 @@
 - [CAPABILITY — Capability publication](#capability--capability-publication)
 - [ACCESS — Repository access](#access--repository-access)
 - [RUNTIMES — Runtime support](#runtimes--runtime-support)
-- [LINK — Development links](#link--development-links)
 - [DESCFIT — Description fitness](#descfit--description-fitness)
 - [OVR — Override rationale](#ovr--override-rationale)
 - [SYNC — Standard synchronisation](#sync--standard-synchronisation)
@@ -181,15 +180,6 @@ Declared agent-runtime support and orientation.
 - **RUNTIMES-1 [M] — Supported runtime declaration** — ki-repo declares a non-empty, duplicate-free list containing only supported runtimes. (standards.md)
 - **RUNTIMES-J1 [J] — Runtime orientation split** — Multi-runtime repositories use a shared AGENTS.md orientation with a thin Claude import unless a justified exception applies. (standards.md)
   - _Review prompt:_ Review whether orientation is shared cleanly across the declared runtimes without duplicated or Claude-only instructions.
-
-## LINK — Development links
-
-→ [standard](standards.md)
-
-Explicit repository-local development linking.
-
-- **LINK-1 [J] — Development command links** — Repository-local symlinks are an explicit development-only action owned by the self-contained ki-repo linker. (standards.md)
-  - _Review prompt:_ Review local command linking for deliberate development-only use, regular-copy defaults, and no imports outside ki-repo.
 
 ## DESCFIT — Description fitness
 

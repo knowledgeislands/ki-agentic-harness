@@ -8,7 +8,6 @@ The canonical configuration a Knowledge Islands repo should carry, so repos pres
 - [Layer 2 — core GitHub settings](#layer-2--core-github-settings)
 - [Layer 3 — deeper GitHub](#layer-3--deeper-github)
 - [Visibility](#visibility)
-- [Repository-local development links](#repository-local-development-links)
 - [Per-repo overrides](#per-repo-overrides)
 - [Coverage cascade](#coverage-cascade)
 - [Applying it](#applying-it)
@@ -49,12 +48,6 @@ Every repo carries these at the root. Presence is checked **on the default branc
 - `.ki-meta/conform/<concern>.md` — the latest record of what a CONFORM changed.
 
 Presence is **not required** — the directory appears the first time a checker is run with `--report`. What the audit checks (the `ki-meta` criterion) is that the derived subdirs are **gitignored, not committed**: `.gitignore` carries `.ki-meta/audits/` and `.ki-meta/conform/`, while the `.ki-meta/` namespace itself is left un-ignored so a future _durable_ subdir can be tracked. The convention is owned here; checker consumers write `.ki-meta/audits/` as the AUDIT working area.
-
-## Repository-local development links
-
-Normal user installation and repository bootstrap publish regular files, never symlinks. A harness author who deliberately needs live source edits may run `ki-repo`'s `link-repository-commands.ts <target> --development` from an active harness checkout; `--agents` additionally links the declared Claude Code governance agents.
-
-This is a local-development capability, not an installation path: it is opt-in, gitignored, checkout-dependent, and restored to portable copies by repository bootstrap. The command owns or vendors every helper it uses under `ki-repo/scripts/`; it must not import across a sibling skill's script boundary. `ki-harness` composes this capability for harness development but does not own a separate linker.
 
 ## Layer 2 — core GitHub settings
 

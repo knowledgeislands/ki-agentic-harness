@@ -10,7 +10,6 @@ import { DEP } from './dependencies.ts'
 import { DESCFIT } from './description-fit.ts'
 import { FILES } from './files.ts'
 import { GH } from './gh.ts'
-import { LINK } from './link.ts'
 import { MERGE } from './merge.ts'
 import { OVR } from './overrides.ts'
 import { PKG } from './pkg.ts'
@@ -35,7 +34,6 @@ export const KI_REPO_FAMILY_COLLECTIONS = [
   { items: DESCFIT },
   { items: FILES },
   { items: GH },
-  { items: LINK },
   { items: MERGE },
   { items: OVR },
   { items: PKG },
@@ -81,7 +79,6 @@ export const KI_REPO_RUBRIC: RubricDefinition<RepoRubricContext> = {
     family('CAPABILITY', 'Capability publication', 'Complete local governance capabilities.', CAPABILITY),
     family('ACCESS', 'Repository access', 'GitHub reachability and archive state.', ACCESS),
     family('RUNTIMES', 'Runtime support', 'Declared agent-runtime support and orientation.', RUNTIMES),
-    family('LINK', 'Development links', 'Explicit repository-local development linking.', LINK),
     family('DESCFIT', 'Description fitness', 'Human assessment of repository purpose.', DESCFIT),
     family('OVR', 'Override rationale', 'Human assessment of exceptions.', OVR),
     family('SYNC', 'Standard synchronisation', 'Alignment across the knowledge chain.', SYNC)

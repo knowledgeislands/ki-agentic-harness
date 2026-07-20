@@ -8,7 +8,6 @@ export type HarnessPart = (typeof HARNESS_PARTS)[number]
 export const REQUIRED_HARNESS_SCRIPTS = [
   'ki:skills:copy:project',
   'ki:skills:audit',
-  'ki:repo:link-commands',
   'ki:skills:link:global',
   'ki:skills:refresh-status',
   'ki:eval'

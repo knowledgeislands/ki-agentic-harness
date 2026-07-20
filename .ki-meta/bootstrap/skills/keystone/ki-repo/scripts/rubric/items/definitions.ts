@@ -163,12 +163,6 @@ const ITEMS = [
     'Review whether orientation is shared cleanly across the declared runtimes without duplicated or Claude-only instructions.'
   ),
   judgmentItem(
-    'LINK-1',
-    'Development command links',
-    'Repository-local symlinks are an explicit development-only action owned by the self-contained ki-repo linker.',
-    'Review local command linking for deliberate development-only use, regular-copy defaults, and no imports outside ki-repo.'
-  ),
-  judgmentItem(
     'DESCFIT-1',
     'Description fit',
     'The repository description accurately and concisely describes its purpose.',
@@ -214,10 +208,9 @@ export const CAPABILITY_COMPLETE = ITEMS[21]
 export const ACCESS_1 = ITEMS[22]
 export const RUNTIMES_1 = ITEMS[23]
 export const RUNTIMES_J1 = ITEMS[24]
-export const LINK_1 = ITEMS[25]
-export const DESCFIT_1 = ITEMS[26]
-export const OVR_J1 = ITEMS[27]
-export const SYNC_1 = ITEMS[28]
+export const DESCFIT_1 = ITEMS[25]
+export const OVR_J1 = ITEMS[26]
+export const SYNC_1 = ITEMS[27]
 
 const FAMILY_METADATA: Record<string, { title: string; description: string }> = {
   FILES: { title: 'Repository files', description: 'Required local files and repository document quality.' },
@@ -238,7 +231,6 @@ const FAMILY_METADATA: Record<string, { title: string; description: string }> = 
   CAPABILITY: { title: 'Capability publication', description: 'Complete local governance capabilities.' },
   ACCESS: { title: 'Repository access', description: 'GitHub reachability and archive state.' },
   RUNTIMES: { title: 'Runtime support', description: 'Declared agent-runtime support and orientation.' },
-  LINK: { title: 'Development links', description: 'Explicit repository-local development linking.' },
   DESCFIT: { title: 'Description fitness', description: 'Human assessment of repository purpose.' },
   OVR: { title: 'Override rationale', description: 'Human assessment of exceptions.' },
   SYNC: { title: 'Standard synchronisation', description: 'Alignment across the knowledge chain.' }

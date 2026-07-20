@@ -2001,9 +2001,8 @@ export const educateRepository = (argv: string[] = process.argv.slice(2)): void 
       `${GREEN}vendor${RESET} bootstrap ${DIM}→ ${VENDOR_DIR}/${BOOTSTRAP_DIR} (local whole-set coordinator and source catalogue)${RESET}`
     )
   } else runBootstrapTransaction(target, boundTarget.identity, set, ref, verbose)
-  // Runtime payloads are separate from `.ki-meta/`: every target receives complete,
-  // standalone copies. Deliberate local-author links are a ki-repo concern and are
-  // never selected implicitly by repository bootstrap.
+  // Runtime payloads are separate from `.ki-meta/`: ordinary targets receive complete,
+  // standalone copies, while a harness links its own canonical source skills.
   if (set.length) {
     if (dryRun && set.includes('ki-repo') && !existsSync(join(target, '.ki-config.toml'))) previewScaffoldedRuntimePayloads(set)
     else publishRuntimeSkillPayloads(target, dryRun, dryRun || verbose)
