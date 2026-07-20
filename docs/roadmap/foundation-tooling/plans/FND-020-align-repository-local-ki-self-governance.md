@@ -1,7 +1,7 @@
 ---
 id: 'FND-020'
 title: Align the repository-local ki-self governance contract
-status: ready
+status: in-progress
 roadmap: foundation-tooling/align-the-repository-local-ki-self-governance-contract
 blocks: FND-015, FND-016, FND-017, FND-018, FND-019, RTP-001
 blocked-by: —
