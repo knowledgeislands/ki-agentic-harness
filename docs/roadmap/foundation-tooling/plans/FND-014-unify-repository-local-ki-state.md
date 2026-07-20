@@ -1,7 +1,7 @@
 ---
 id: 'FND-014'
 title: Unify repository-local KI state under .ki
-status: open
+status: ready
 roadmap: foundation-tooling/unify-repository-local-ki-state-under-ki
 blocks: FND-016
 blocked-by: —
