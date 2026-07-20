@@ -20,9 +20,15 @@ Make an active plan visible from the canonical item it executes, not only from t
 
 ### Make CONFORM audit-gated per rubric item
 
-Make mechanical CONFORM a per-rubric-item pipeline rather than a complete AUDIT pass followed by a complete CONFORM pass. Each item must audit immediately before a potential repair, skip repair when its audit already passes or is not applicable, and re-audit immediately afterward. An item may repair an `INFO` outcome only when it declares that explicitly; ordinary informational findings remain non-mutating. Report `FIXED` only when a repair caused a persistent change and the post-repair audit passes. Preserve judgment as unevaluated work, canonical JSONL as final outcomes only, and the existing single progress unit per completed rubric item.
+Make mechanical CONFORM a per-rubric-item pipeline rather than a complete AUDIT pass followed by a complete CONFORM pass. Each item must audit immediately before a potential repair, skip repair when its audit already passes or is not applicable, and re-audit immediately afterward. An item may repair an `INFO` outcome only when it declares that explicitly; ordinary informational findings remain non-mutating. Report `FIXED` only when a repair caused a persistent change and the post-repair audit passes. Preserve judgment as unevaluated work and canonical JSONL as final outcomes only. Direct and aggregate progress must both count the actual mechanical rubric-item executions, never merely the number of governed skills.
 
 **Plan:** [FND-005](plans/FND-005-make-conform-audit-gated-per-rubric-item.md)
+
+### Define a linked development footprint for the harness
+
+Define a harness-local development operation that runs after normal EDUCATE publication and replaces only provenance-proven generated runtime skill copies with symlinks to the canonical authored skills. Keep ordinary repository footprints as regular copied files and retain the self-contained `.ki-meta/` implementation required for zero-install governance. Settle the smallest safe scope, supported runtimes, marker and containment checks, re-EDUCATE behaviour, and whether the operation is a `ki-bootstrap` development mode or a `ki-repo` concern. The operation must be reversible: standard EDUCATE restores regular copies, and a later development-link run may safely restore links.
+
+**Plan:** [FND-006](plans/FND-006-define-a-linked-development-footprint.md)
 
 ## Next
 

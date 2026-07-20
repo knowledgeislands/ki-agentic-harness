@@ -35,6 +35,14 @@ Canonical themes and active execution plans.
 - **Status:** open
 - **Blocks:** —
 
+### [FND-006](foundation-tooling/plans/FND-006-define-a-linked-development-footprint.md)
+
+- **Title:** Define a linked development footprint for the harness
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/define-a-linked-development-footprint-for-the-harness`
+- **Status:** open
+- **Blocks:** —
+
 ## Dependency graph
 
 ```text

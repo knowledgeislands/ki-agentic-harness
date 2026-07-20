@@ -27,8 +27,9 @@ As a result, a CONFORM callback can run without the item's immediate audit evide
 2. Refactor the vendorable checker and rubric types so an item can declare a repair action and, where needed, explicit repair-on-`INFO` eligibility without treating all informational outcomes as mutable defects.
 3. Preserve safe mutable contexts across a single item's pre-audit, repair, and verification while allowing a fresh evidence view after a write; do not turn context construction into a hidden whole-checker audit.
 4. Make the reporter emit only each item's terminal outcome on JSONL, retain concise progress on stderr, and ensure `FIXED` requires both an observed persistent change and a passing post-repair audit.
-5. Migrate `ki-engineering` from its local selective-audit workaround as the first proof, then cover clean skips, repairable violations, declared repairable `INFO`, non-repairable `INFO`, dry runs, no-op writes, and failed post-repair audits.
-6. Use the resulting contract to identify the next small rollout set without changing unrelated skills in this plan.
+5. Make direct and aggregate progress use the same flattened total of mechanical rubric-item executions; the aggregate may name the active skill, but must not advance only once per skill.
+6. Migrate `ki-engineering` from its local selective-audit workaround as the first proof, then cover clean skips, repairable violations, declared repairable `INFO`, non-repairable `INFO`, dry runs, no-op writes, failed post-repair audits, and direct/aggregate per-item progress.
+7. Use the resulting contract to identify the next small rollout set without changing unrelated skills in this plan.
 
 ## Files touched
 
@@ -45,6 +46,7 @@ As a result, a CONFORM callback can run without the item's immediate audit evide
 - An ordinary `INFO` remains non-mutating; only an item that explicitly opts in may repair an `INFO` outcome.
 - Judgment items remain counted as unevaluated and are never mechanically repaired.
 - Canonical JSONL contains terminal findings only; progress remains visible without contaminating it.
+- Direct and aggregate output advance against the same mechanical rubric-item total, not a skill count.
 - `bun skills/keystone/ki-skills/scripts/shared/checker.test.ts`
 - `bun skills/foundations/ki-engineering/scripts/conform.test.ts`
 - `bun run test`
