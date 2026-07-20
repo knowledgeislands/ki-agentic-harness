@@ -147,14 +147,15 @@ try {
   for (const scenario of [
     { label: 'aggregate audit', command: 'bun', args: [aggregate, 'audit', '--help'], expected: 'Audit each vendored skill checker' },
     { label: 'aggregate conform', command: 'bun', args: [aggregate, 'conform', '-h'], expected: 'Apply each vendored skill checker' },
-    { label: 'ki-audit alias', command: auditWrapper, args: ['--help'], expected: 'usage: ki-audit' },
-    { label: 'ki-conform alias', command: conformWrapper, args: ['-h'], expected: 'usage: ki-conform' }
+    { label: 'ki-audit alias', command: auditWrapper, args: ['--help'], expected: 'Run vendored skill checks', section: 'Commands:' },
+    { label: 'ki-conform alias', command: conformWrapper, args: ['-h'], expected: 'Apply each vendored skill', section: 'Options:' }
   ]) {
     const sentinel = join(fixture, `${scenario.label.replaceAll(' ', '-')}-checker-ran`)
     const result = run(scenario.command, scenario.args, nested, { ...env, KI_FIXTURE_CHECKER_SENTINEL: sentinel })
     check(`${scenario.label} help → exits successfully`, result.status === 0)
     check(`${scenario.label} help → renders conventional help`, result.stdout.includes('Usage:') || result.stdout.includes('usage:'))
     check(`${scenario.label} help → describes the command`, result.stdout.includes(scenario.expected))
+    if (scenario.section !== undefined) check(`${scenario.label} help → groups command details`, result.stdout.includes(scenario.section))
     check(`${scenario.label} help → does not invoke a checker`, !existsSync(sentinel))
   }
 
