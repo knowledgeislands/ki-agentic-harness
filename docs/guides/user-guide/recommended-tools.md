@@ -1,6 +1,6 @@
 # Recommended tools
 
-Optional system-level tools that affect a person's machine rather than a governed repository. Skills, MCP servers, and day-to-day sessions can benefit from them, but none is required merely to read or audit the harness. [Install and get started](getting-started.md) explains when repository bootstrap or optional user-environment setup is appropriate.
+Optional user- and system-level tools that affect a person's machine rather than a governed repository. Skills, MCP servers, and day-to-day sessions can benefit from them, but none is required merely to read or audit the harness. [Install and get started](getting-started.md) explains when repository bootstrap or optional user-environment setup is appropriate.
 
 ## chezmoi (dotfile and machine-config management)
 
@@ -71,6 +71,21 @@ npx skills add vercel-labs/skills@find-skills
 ```
 
 Start a new Codex turn after installation so the newly installed skills are available for selection.
+
+## Future tooling under observation
+
+These are research leads, not harness dependencies or recommendations. Before adopting any candidate, assess its supply-chain provenance, permission model, runtime fit, maintenance, and claimed token or cost effects in a contained evaluation.
+
+The current watch areas are model routing and identity, MCP aggregation and discovery, context compression, and multi-runtime harnesses or working methods.
+
+### Watch sources — 2026-07-20
+
+- **Model routing and identity:** [Claude Code Router releases](https://github.com/musistudio/claude-code-router/releases), [routectl releases](https://github.com/meepolabs/routectl/releases), and [9router](https://github.com/decolua/9router).
+- **MCP aggregation and gateways:** [MCPorter change log](https://github.com/openclaw/mcporter/blob/main/CHANGELOG.md) and [AIRIS MCP Gateway](https://github.com/agiletec-inc/airis-mcp-gateway).
+- **Context compression:** [RTK releases](https://github.com/rtk-ai/rtk/releases), [Headroom releases](https://github.com/chopratejas/headroom/releases), and [LeanCTX](https://github.com/yvgude/lean-ctx).
+- **Harnesses and working methods:** [Superpowers](https://github.com/obra/superpowers), [OpenClaw 2026.7.1](https://github.com/openclaw/openclaw/releases/tag/v2026.7.1), [Pi releases](https://github.com/earendil-works/pi/releases), [caveman releases](https://github.com/JuliusBrussee/caveman/releases), [Odysseus](https://github.com/pewdiepie-archdaemon/odysseus), [Omnigent](https://github.com/omnigent-ai/omnigent), and [Claurst](https://github.com/Kuberwastaken/claurst).
+
+The list records where future evaluation can begin. It does not establish that a project is secure, active, compatible, or suitable for Knowledge Islands use.
 
 ## mcporter (MCP proxy daemon)
 
