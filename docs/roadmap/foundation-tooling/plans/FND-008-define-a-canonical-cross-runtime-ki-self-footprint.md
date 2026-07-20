@@ -1,7 +1,7 @@
 ---
 id: 'FND-008'
 title: Define a canonical cross-runtime ki-self footprint
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/define-a-canonical-cross-runtime-ki-self-footprint
 blocks: —
 blocked-by: —
@@ -50,3 +50,10 @@ The source location, generated-versus-authored boundary, migration rules, and re
 ## Dependencies / blocks
 
 This plan is independent of FND-006: harness source links must preserve `ki-self`, while this plan establishes how any repository authors and projects it.
+
+## Acceptance
+
+- **Delivered:** One committed `.ki-self/SKILL.md` source, generated relative `.agents/skills/ki-self` and `.claude/skills/ki-self` projections, guarded migration and CLEAN behaviour, focused coverage, and the associated user and developer documentation.
+- **Verification:** `bun run test` and `bun run ki:audit` both passed on 2026-07-20 after the acceptance lifecycle change landed.
+- **Outstanding concerns:** None.
+- **Mini recap:** Replacing a tracked runtime copy with a generated symlink can complicate Git staging while the link is present. Proposed learning route: document the safe migration sequence only if we see the pattern recur; no durable learning write is approved yet.

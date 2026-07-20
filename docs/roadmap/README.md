@@ -16,7 +16,7 @@ Canonical themes and active execution plans.
 - **Title:** Define a canonical cross-runtime ki-self footprint
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/define-a-canonical-cross-runtime-ki-self-footprint`
-- **Status:** in-progress
+- **Status:** acceptance
 - **Blocks:** —
 
 ### [FND-009](foundation-tooling/plans/FND-009-add-a-manual-plan-acceptance-gate.md)
