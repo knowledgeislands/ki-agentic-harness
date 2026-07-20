@@ -1,7 +1,7 @@
 ---
 id: 'FND-013'
 title: Link source-harness bootstrap payloads
-status: acceptance
+status: done
 roadmap: foundation-tooling/link-source-harness-bootstrap-payloads
 blocks: —
 blocked-by: —
@@ -98,3 +98,11 @@ Confirm that the intentionally small regular bootstrap surface — HELP snapshot
 ### Mini recap
 
 Separating canonical source material from generated glue removes the repeated source-copy diff while retaining ordinary-repository portability and fail-closed cleanup.
+
+## Done
+
+FND-013 completed the source-harness bootstrap-link boundary: canonical source material is linked live, while intentionally generated HELP snapshots, launchers, bins, and manifest state remain regular generated files.
+
+Residual concern: None. A content-hash inventory confirmed that the remaining small regular bootstrap files are generated or derived rather than redundant copies suitable for linking.
+
+Intended follow-up: None. Retain this completion record until a later explicit plan-prune batch.
