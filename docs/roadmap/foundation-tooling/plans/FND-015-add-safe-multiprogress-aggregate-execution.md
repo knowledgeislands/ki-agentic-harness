@@ -1,10 +1,10 @@
 ---
 id: 'FND-015'
 title: Unify governed entrypoints and in-process aggregate execution
-status: in-progress
+status: open
 roadmap: foundation-tooling/add-safe-multiprogress-aggregate-execution
 blocks: —
-blocked-by: —
+blocked-by: FND-020
 ---
 
 ## Context
@@ -61,6 +61,8 @@ The review also found other avoidable local process boundaries: bootstrap's loca
 FND-010 remains complete: it owns the stable single-row layout that this plan reuses rather than revises.
 
 The bootstrap-internal, tokenomics-engine, and user-installer local-process candidates found by this review need separately scoped follow-ups; this plan changes no external-tool or test/evaluation process boundary.
+
+The `ki-self` review performed during this work is retained as FND-020. It now takes priority before this plan resumes, reconciling the source-harness linked-payload rule, the deliberately local `.ki/self/skill/` exception in the generic skill checker, and stale `.ki-self/` documentation.
 
 ## Delegation
 

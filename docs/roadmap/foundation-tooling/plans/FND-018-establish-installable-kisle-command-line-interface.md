@@ -4,7 +4,7 @@ title: Establish the installable kisle command-line interface
 status: open
 roadmap: foundation-tooling/establish-the-installable-kisle-command-line-interface
 blocks: —
-blocked-by: FND-016
+blocked-by: FND-016, FND-020
 ---
 
 ## Context

@@ -21,10 +21,10 @@ Canonical themes, active execution plans, and completed plan records.
 
 ### [FND-015](foundation-tooling/plans/FND-015-add-safe-multiprogress-aggregate-execution.md)
 
-- **Title:** Add safe in-process multiprogress aggregate execution
+- **Title:** Unify governed entrypoints and in-process aggregate execution
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/add-safe-multiprogress-aggregate-execution`
-- **Status:** in-progress
+- **Status:** open (needs FND-020)
 - **Blocks:** —
 
 ### [FND-016](foundation-tooling/plans/FND-016-implement-scoped-lifecycle-operations.md)
@@ -32,7 +32,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Implement scoped lifecycle operations
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/implement-scoped-lifecycle-operations`
-- **Status:** open (needs FND-003)
+- **Status:** open (needs FND-003+FND-020)
 - **Blocks:** FND-017, FND-018
 
 ### [FND-017](foundation-tooling/plans/FND-017-add-scoped-read-only-bootstrap-doctor-operations.md)
@@ -40,7 +40,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Add scoped read-only bootstrap doctor operations
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/add-scoped-read-only-bootstrap-doctor-operations`
-- **Status:** open (needs FND-016)
+- **Status:** open (needs FND-016+FND-020)
 - **Blocks:** —
 
 ### [FND-018](foundation-tooling/plans/FND-018-establish-installable-kisle-command-line-interface.md)
@@ -48,7 +48,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Establish the installable kisle command-line interface
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/establish-the-installable-kisle-command-line-interface`
-- **Status:** open (needs FND-016)
+- **Status:** open (needs FND-016+FND-020)
 - **Blocks:** —
 
 ### [FND-019](foundation-tooling/plans/FND-019-review-shipped-skill-structural-consistency.md)
@@ -56,15 +56,23 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Review structural consistency across shipped skills
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/review-structural-consistency-across-shipped-skills`
-- **Status:** open
+- **Status:** open (needs FND-020)
 - **Blocks:** —
+
+### [FND-020](foundation-tooling/plans/FND-020-align-repository-local-ki-self-governance.md)
+
+- **Title:** Align the repository-local ki-self governance contract
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/align-the-repository-local-ki-self-governance-contract`
+- **Status:** open
+- **Blocks:** FND-015, FND-016, FND-017, FND-018, FND-019, RTP-001
 
 ### [RTP-001](runtime-portability/plans/RTP-001-detect-vendor-specific-portable-contracts.md)
 
 - **Title:** Detect vendor-specific assumptions in portable skill contracts
 - **Theme:** `runtime-portability`
 - **Roadmap item:** `runtime-portability/detect-vendor-specific-assumptions-in-portable-skill-contracts`
-- **Status:** open
+- **Status:** open (needs FND-020)
 - **Blocks:** —
 
 ## Completed plans
@@ -82,4 +90,10 @@ Canonical themes, active execution plans, and completed plan records.
 FND-003 ──► FND-016
 FND-016 ──► FND-017
 FND-016 ──► FND-018
+FND-020 ──► FND-015
+FND-020 ──► FND-016
+FND-020 ──► FND-017
+FND-020 ──► FND-018
+FND-020 ──► FND-019
+FND-020 ──► RTP-001
 ```

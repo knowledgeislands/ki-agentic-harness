@@ -4,7 +4,7 @@ title: Review structural consistency across shipped skills
 status: open
 roadmap: foundation-tooling/review-structural-consistency-across-shipped-skills
 blocks: —
-blocked-by: —
+blocked-by: FND-020
 ---
 
 ## Context

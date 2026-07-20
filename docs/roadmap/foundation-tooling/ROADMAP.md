@@ -50,6 +50,12 @@ Replace aggregate AUDIT and CONFORM's process-per-checker transport with direct,
 
 **Plan:** [FND-015](plans/FND-015-add-safe-multiprogress-aggregate-execution.md)
 
+### Align the repository-local `ki-self` governance contract
+
+Reconcile the repository-local `ki-self` exception with current harness practice: source-harness linked payloads, generic skill auditing, and the canonical `.ki/self/skill/` location. Keep the local skill intentionally outside vendored shared-governance coverage while ensuring its own rule set is current, its narrowly defined exceptions are auditable, and user/developer guidance does not retain the stale `.ki-self/` location.
+
+**Plan:** [FND-020](plans/FND-020-align-repository-local-ki-self-governance.md)
+
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.

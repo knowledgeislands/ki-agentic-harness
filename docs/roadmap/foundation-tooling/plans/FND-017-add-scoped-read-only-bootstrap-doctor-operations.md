@@ -4,7 +4,7 @@ title: Add scoped read-only bootstrap doctor operations
 status: open
 roadmap: foundation-tooling/add-scoped-read-only-bootstrap-doctor-operations
 blocks: —
-blocked-by: FND-016
+blocked-by: FND-016, FND-020
 ---
 
 ## Context
