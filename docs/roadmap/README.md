@@ -17,7 +17,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/add-a-safe-repository-clean-operation`
 - **Status:** acceptance
-- **Blocks:** —
+- **Blocks:** FND-016
 
 ### [FND-013](foundation-tooling/plans/FND-013-complete-harness-local-skill-dependency-linking.md)
 
@@ -33,13 +33,45 @@ Canonical themes, active execution plans, and completed plan records.
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/unify-repository-local-ki-state-under-ki`
 - **Status:** open
-- **Blocks:** —
+- **Blocks:** FND-016
 
 ### [FND-015](foundation-tooling/plans/FND-015-add-safe-multiprogress-aggregate-execution.md)
 
 - **Title:** Add safe multiprogress aggregate execution
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/add-safe-multiprogress-aggregate-execution`
+- **Status:** open
+- **Blocks:** —
+
+### [FND-016](foundation-tooling/plans/FND-016-implement-scoped-lifecycle-operations.md)
+
+- **Title:** Implement scoped lifecycle operations
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/implement-scoped-lifecycle-operations`
+- **Status:** open (needs FND-003+FND-014)
+- **Blocks:** FND-017, FND-018
+
+### [FND-017](foundation-tooling/plans/FND-017-add-scoped-read-only-bootstrap-doctor-operations.md)
+
+- **Title:** Add scoped read-only bootstrap doctor operations
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/add-scoped-read-only-bootstrap-doctor-operations`
+- **Status:** open (needs FND-016)
+- **Blocks:** —
+
+### [FND-018](foundation-tooling/plans/FND-018-establish-installable-kisle-command-line-interface.md)
+
+- **Title:** Establish the installable kisle command-line interface
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/establish-the-installable-kisle-command-line-interface`
+- **Status:** open (needs FND-016)
+- **Blocks:** —
+
+### [FND-019](foundation-tooling/plans/FND-019-review-shipped-skill-structural-consistency.md)
+
+- **Title:** Review structural consistency across shipped skills
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/review-structural-consistency-across-shipped-skills`
 - **Status:** open
 - **Blocks:** —
 
@@ -63,5 +95,8 @@ Canonical themes, active execution plans, and completed plan records.
 ## Dependency graph
 
 ```text
-No dependencies.
+FND-003 ──► FND-016
+FND-014 ──► FND-016
+FND-016 ──► FND-017
+FND-016 ──► FND-018
 ```

@@ -3,7 +3,7 @@ id: 'FND-003'
 title: Add a safe repository clean operation
 status: acceptance
 roadmap: foundation-tooling/add-a-safe-repository-clean-operation
-blocks: —
+blocks: FND-016
 blocked-by: —
 ---
 
