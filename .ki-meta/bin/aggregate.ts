@@ -77,7 +77,7 @@ const RUN_KEYS = ['version', 'runId', 'record', 'mode', 'concern', 'target', 'ge
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const DEFAULT_REPORTER_LEVELS = new Set(verb === 'conform' ? ['FAIL', 'WARN', 'FIXED'] : ['FAIL', 'WARN'])
 const verbed = verb === 'conform' ? 'conformed' : 'audited'
-const runCheckerProcess = (scriptPath, childArgs) => {
+const runCheckerProcess = (scriptPath, childArgs, env = process.env) => {
   // Bun truncates piped spawn output at roughly 700 KiB even when maxBuffer is
   // raised. Capture through regular files so large canonical JSONL streams stay
   // complete, then remove the private temporary directory immediately.
@@ -88,7 +88,7 @@ const runCheckerProcess = (scriptPath, childArgs) => {
   const stderrFd = openSync(stderrPath, 'w', 0o600)
   let result
   try {
-    result = spawnSync('bun', [scriptPath, '.', ...childArgs], { stdio: ['ignore', stdoutFd, stderrFd] })
+    result = spawnSync('bun', [scriptPath, '.', ...childArgs], { stdio: ['ignore', stdoutFd, stderrFd], env })
   } finally {
     closeSync(stdoutFd)
     closeSync(stderrFd)
@@ -150,13 +150,21 @@ const progressBar = (completed, total) => {
 }
 const createProgressTracker = (mode, total) => {
   const interactive = Boolean(process.stderr.isTTY)
-  if (mode === 'never' || (mode === 'auto' && !interactive)) return { start: () => {}, active: () => {}, complete: () => {} }
+  if (mode === 'never' || (mode === 'auto' && !interactive)) return { start: () => {}, active: () => {}, advance: (completed, count) => completed + count, complete: () => {} }
   const write = (completed, state, skill) => {
     const prefix = verb.toUpperCase() + ' ' + progressBar(completed, total) + ' ' + completed + '/' + total
     const detail = state === 'start' ? 'starting' : state === 'complete' ? 'complete' : skill + ' (' + (total - completed) + ' remaining)'
     process.stderr.write((interactive ? '\r\x1b[2K' : '') + prefix + ' ' + detail + (interactive && state !== 'complete' ? '' : '\n'))
   }
-  return { start: () => write(0, 'start'), active: (completed, skill) => write(completed, 'active', skill), complete: () => write(total, 'complete') }
+  return {
+    start: () => write(0, 'start'),
+    active: (completed, skill) => write(completed, 'active', skill),
+    advance: (completed, count, skill) => {
+      write(completed + count, 'active', skill)
+      return completed + count
+    },
+    complete: () => write(total, 'complete')
+  }
 }
 const findingLine = (icon, level, code, title, subject, msg, skill, full) =>
   '  ' + icon + ' ' + (SHORT[level] || level.toLowerCase()).padEnd(4) +
@@ -264,7 +272,30 @@ if (reporter.skill) {
   }
   checkers = [reporter.skill]
 }
-const progress = createProgressTracker(reporter.progress, checkers.length)
+const plannedItemsBySkill = new Map()
+for (const skill of checkers) {
+  const scriptPath = join(checkersDir, skill, 'scripts', verb + '.ts')
+  if (!existsSync(scriptPath) || !lstatSync(scriptPath).isFile() || lstatSync(scriptPath).isSymbolicLink()) {
+    plannedItemsBySkill.set(skill, 1)
+    continue
+  }
+  const preflight = runCheckerProcess(scriptPath, [], { ...process.env, KI_CHECKER_PLAN: '1' })
+  let plan
+  try {
+    plan = JSON.parse((preflight.stdout ?? '').trim())
+  } catch {
+    // A legacy or malformed child must still take the normal validation path
+    // below, where its actual output is diagnosed. Count it conservatively.
+    plannedItemsBySkill.set(skill, 1)
+    continue
+  }
+  if (preflight.status !== 0 || (preflight.stderr ?? '').trim() || !isRecord(plan) || plan.version !== 1 || plan.record !== 'plan' || !Number.isInteger(plan.items) || plan.items < 0) {
+    plannedItemsBySkill.set(skill, 1)
+    continue
+  }
+  plannedItemsBySkill.set(skill, plan.items)
+}
+const progress = createProgressTracker(reporter.progress, [...plannedItemsBySkill.values()].reduce((total, items) => total + items, 0))
 progress.start()
 let completed = 0
 for (const skill of checkers) {
@@ -275,14 +306,14 @@ for (const skill of checkers) {
   if (!existsSync(scriptPath)) {
     failed = true
     reportErrors.push({ skill, errors: ['checker entry is missing: ' + entry] })
-    completed += 1
+    completed = progress.advance(completed, plannedItemsBySkill.get(skill) ?? 1, skill)
     continue
   }
   const scriptStat = lstatSync(scriptPath)
   if (!scriptStat.isFile() || scriptStat.isSymbolicLink()) {
     failed = true
     reportErrors.push({ skill, errors: ['checker entry is unsafe: ' + entry] })
-    completed += 1
+    completed = progress.advance(completed, plannedItemsBySkill.get(skill) ?? 1, skill)
     continue
   }
   // The renderer consumes --reporter-levels itself. All other flags (for example
@@ -295,13 +326,13 @@ for (const skill of checkers) {
   if (errors.length) {
     failed = true
     reportErrors.push({ skill, errors })
-    completed += 1
+    completed = progress.advance(completed, plannedItemsBySkill.get(skill) ?? 1, skill)
     continue
   }
   const findings = parsed.events.slice(1, -1)
   reports.push({ skill, key: 'ki:' + skill.replace(/^ki-/, '') + ':' + verb, findings, summary: parsed.events.at(-1).summary })
   if ((res.status ?? 0) !== 0) failed = true
-  completed += 1
+  completed = progress.advance(completed, plannedItemsBySkill.get(skill) ?? 1, skill)
 }
 progress.complete()
 for (const report of reports) {

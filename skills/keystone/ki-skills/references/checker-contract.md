@@ -136,6 +136,8 @@ Direct AUDIT and CONFORM commands accept `--progress=auto|always|never`.
 
 The terminal tracker redraws one line while interactive, so detailed findings still arrive only in the final reporter output.
 
+The aggregate runner first performs a private, no-write preflight (`KI_CHECKER_PLAN=1`) to collect each selected checker's planned item count before it starts CONFORM work. That preflight does not build subject contexts or run rubric callbacks, and returns only a private plan record; it is not part of the checker CLI or canonical JSONL contract. Aggregate progress advances by those flattened item counts, while its terminal reporter may coalesce them into one useful update for the active skill.
+
 ## Response and exit behaviour
 
 The checker returns one complete canonical JSONL response containing every finding, regardless of how a later reporter will filter its display.

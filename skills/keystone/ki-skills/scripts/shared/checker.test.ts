@@ -135,6 +135,23 @@ test('hybrid judgment → selected judgment codes are counted once across subjec
 test('no judgment findings → only mechanical items emit findings', () =>
   expect(conform.findings.every((finding) => finding.code !== 'ALPHA-5')).toBe(true))
 
+test('aggregate preflight → counts planned items without executing contexts or callbacks', () => {
+  const original = process.env.KI_CHECKER_PLAN
+  process.env.KI_CHECKER_PLAN = '1'
+  contextGeneration = 0
+  executionLog.length = 0
+  try {
+    const plan = runChecker({ mode: 'conform', concern: 'fixture', target: '/fixture', rubric, subjects: [subject(), subject()] })
+    expect(plan.plannedItems).toBe(8)
+    expect(plan.findings).toEqual([])
+    expect(contextGeneration).toBe(0)
+    expect(executionLog).toEqual([])
+  } finally {
+    if (original === undefined) delete process.env.KI_CHECKER_PLAN
+    else process.env.KI_CHECKER_PLAN = original
+  }
+})
+
 contextGeneration = 0
 executionLog.length = 0
 runChecker({ mode: 'audit', concern: 'fixture', target: '/fixture', rubric, subjects: [subject(), subject()] })

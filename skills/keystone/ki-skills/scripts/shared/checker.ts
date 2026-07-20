@@ -113,6 +113,8 @@ export type CheckerResult = {
   findings: readonly CheckerFinding[]
   summary: CheckerSummary
   exitCode: 0 | 1
+  /** Internal preflight metadata; never part of canonical checker JSONL. */
+  plannedItems: number
 }
 
 export type CheckerParseResult = {
@@ -377,6 +379,14 @@ export const runChecker = <RootContext>(input: CheckerInput<RootContext>): Check
   if (!input.target.trim()) throw new Error('checker target must be non-empty')
 
   const plannedItems = planItems(input)
+  if (process.env.KI_CHECKER_PLAN === '1')
+    return {
+      records: [],
+      findings: [],
+      summary: emptySummary(selectedJudgmentCount(input.rubric, input.subjects)),
+      exitCode: 0,
+      plannedItems: plannedItems.length
+    }
   let completed = 0
   emitStatus(input.statusTracker, { type: 'start', mode: input.mode, completed: 0, total: plannedItems.length })
 
@@ -410,7 +420,13 @@ export const runChecker = <RootContext>(input: CheckerInput<RootContext>): Check
       ...findings.map((finding) => ({ ...identity, record: 'finding' as const, ...finding })),
       { ...identity, record: 'summary', summary }
     ]
-    const result = { records, findings, summary, exitCode: findings.some((finding) => finding.level === 'FAIL') ? 1 : 0 } as const
+    const result = {
+      records,
+      findings,
+      summary,
+      exitCode: findings.some((finding) => finding.level === 'FAIL') ? 1 : 0,
+      plannedItems: plannedItems.length
+    } as const
     emitStatus(input.statusTracker, { type: 'complete', mode: input.mode, completed, total: plannedItems.length })
     return result
   } catch (error) {
