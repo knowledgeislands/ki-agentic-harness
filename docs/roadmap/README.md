@@ -29,9 +29,9 @@ Canonical themes, active execution plans, and completed plan records.
 
 ### [FND-014](foundation-tooling/plans/FND-014-unify-repository-local-ki-state.md)
 
-- **Title:** Unify repository-local KI state under .kisle
+- **Title:** Unify repository-local KI state under .ki
 - **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/unify-repository-local-ki-state-under-kisle`
+- **Roadmap item:** `foundation-tooling/unify-repository-local-ki-state-under-ki`
 - **Status:** open
 - **Blocks:** —
 

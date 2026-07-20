@@ -46,9 +46,9 @@ For a source-bearing `ki-harness`, ensure every declared dependency that resolve
 
 **Plan:** [FND-013](plans/FND-013-complete-harness-local-skill-dependency-linking.md)
 
-### Unify repository-local KI state under `.kisle/`
+### Unify repository-local KI state under `.ki/`
 
-Replace the split top-level `.ki-self/` and `.ki-meta/` footprint with one clearly owned `.kisle/` root: `.kisle/self/skill/` is the committed, authored source projected as the runtime `ki-self` skill, and `.kisle/meta/` is generated, manifest-owned bootstrap state. Preserve the existing runtime skill name and portable consumer contract while making the authored/generated distinction visible inside one KI-named repository folder. Provide a safe current-state migration for source, runtime links, generated bootstrap output, CLEAN, recovery, documentation, and repository Git state; remove the old footprint and its dead paths once each is proven migrated, never retain dual-path compatibility or delete unproven content.
+Replace the split top-level `.ki-self/` and `.ki-meta/` footprint with one clearly owned `.ki/` root: `.ki/self/skill/` is the committed, authored source projected as the runtime `ki-self` skill, and `.ki/meta/` is generated, manifest-owned bootstrap state. Preserve the existing runtime skill name and portable consumer contract while making the authored/generated distinction visible inside the established KI repository namespace. Provide a safe current-state migration for source, runtime links, generated bootstrap output, CLEAN, recovery, documentation, and repository Git state; remove the old footprint and its dead paths once each is proven migrated, never retain dual-path compatibility or delete unproven content.
 
 **Plan:** [FND-014](plans/FND-014-unify-repository-local-ki-state.md)
 
