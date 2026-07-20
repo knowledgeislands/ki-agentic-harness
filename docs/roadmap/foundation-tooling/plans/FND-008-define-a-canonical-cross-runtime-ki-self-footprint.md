@@ -70,6 +70,8 @@ This plan is independent of FND-006: harness source links must preserve `ki-self
 
 ### Outstanding concerns
 
+Keep `.ki-self/` as the canonical name and location. It communicates repository-authored, repository-local governance, whereas `.ki-meta/` is manifest-proven generated and vendored state that CLEAN may remove. Locating the source at `.ki-meta/self` would blur that ownership boundary and require a special CLEAN/bootstrap exception, weakening recovery semantics. Reconsider only if a future design gives `.ki-meta/` a separately owned persistent-authored subtree; none is proposed.
+
 No implementation concern is known. Replacing a tracked runtime copy with a generated symlink can complicate Git staging while the link is present; acceptance analysis should confirm that the documented migration sequence makes this expected Git behaviour clear. If the pattern recurs outside this harness, document the safe sequence as a reusable learning rather than adding a compatibility path prematurely.
 
 ### Mini recap
