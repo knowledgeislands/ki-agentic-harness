@@ -45,6 +45,14 @@ For a repository-wide audit, run the repository's aggregate `ki:audit` entrypoin
 6. **Drain background work before compaction `(CC)`.** Do not invoke `/compact` while an Agent spawn is outstanding: wait for every background task with `TaskOutput` / `Monitor`, capture its result, and gate any persisted diff first. If compaction happens with a task outstanding, do not trust the compacted summary's claim that the old handle is still live. Query the original handle again; if it is active, wait for it or use `TaskStop`, then confirm terminal / stopped / not-active status. When an in-session handle is no longer recognised, enumerate through the in-session `Monitor`; reserve `claude agents --json` for work originally launched through agent view or `claude --background`. Inspect the target files and `git status`, and re-dispatch a fresh, self-contained prompt only after the relevant surface positively confirms quiescence and only when no usable output persisted. If no relevant surface can confirm termination, do not re-dispatch into the same worktree.
 7. **Make progress visible.** Before dispatching a job likely to outlast a normal interactive turn, tell the caller its expected next checkpoint. The orchestrator owns that communication; workers report their state to the orchestrator, rather than independently sending user-facing updates. Report on phase completion and material blockers. If the caller has not set a cadence, send a brief update at least every five minutes: **completed** / **current** / **next checkpoint** / **blocker or changed estimate**. A no-change update is useful only when it names the active phase and the next expected check-in; do not send empty “still working” chatter. Host-level guidance may require a tighter cadence.
 
+8. **Mark a genuinely completed delegated unit.** Once the work has passed its stated verification gate and the plan or task is recorded Done, end the caller-facing completion update with this compact banner. Use it once per completed unit, never for an intermediate round, an unverified diff, or a task merely handed to another agent.
+
+   ```text
+   +----------------+
+   | COMPLETE! \o/  |
+   +----------------+
+   ```
+
 For file-mutating work that would otherwise contend, isolate each agent in its own worktree `(CC: isolation: worktree)` — but only when the contention is real, as the isolation carries setup cost.
 
 ## 4. Gate
