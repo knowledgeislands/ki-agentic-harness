@@ -18,6 +18,12 @@ Make an active plan visible from the canonical item it executes, not only from t
 
 **Plan:** [FND-004](plans/FND-004-make-plan-to-roadmap-linkage-explicit.md)
 
+### Make CONFORM audit-gated per rubric item
+
+Make mechanical CONFORM a per-rubric-item pipeline rather than a complete AUDIT pass followed by a complete CONFORM pass. Each item must audit immediately before a potential repair, skip repair when its audit already passes or is not applicable, and re-audit immediately afterward. An item may repair an `INFO` outcome only when it declares that explicitly; ordinary informational findings remain non-mutating. Report `FIXED` only when a repair caused a persistent change and the post-repair audit passes. Preserve judgment as unevaluated work, canonical JSONL as final outcomes only, and the existing single progress unit per completed rubric item.
+
+**Plan:** [FND-005](plans/FND-005-make-conform-audit-gated-per-rubric-item.md)
+
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
