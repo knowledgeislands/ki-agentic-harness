@@ -54,6 +54,24 @@ Verify every other client separately; coverage never carries over from another r
 
 Check a claimed route with `headroom perf --hours 1 --format json` or the local `/stats` endpoint, and confirm the relevant client appears in the result before relying on it for token savings.
 
+## Codex skill discovery and experiments
+
+The `skills` command-line tool can install third-party skills into a user's Codex skill directory. These are personal, user-scope additions: they do not become part of a governed repository or alter its declared KI skill set. Review a skill's source and behaviour before adding it, especially if it installs hooks or changes agent instructions.
+
+To try [caveman](https://github.com/JuliusBrussee/caveman) in Codex:
+
+```bash
+npx skills add JuliusBrussee/caveman -a codex
+```
+
+To add the `find-skills` discovery skill:
+
+```bash
+npx skills add vercel-labs/skills@find-skills
+```
+
+Start a new Codex turn after installation so the newly installed skills are available for selection.
+
 ## mcporter (MCP proxy daemon)
 
 mcporter consolidates all KI-owned MCP servers behind a single keep-alive daemon and exposes them through a single HTTP MCP endpoint, reducing the `~/.claude.json` `mcpServers` block from many stdio entries to one URL entry.
