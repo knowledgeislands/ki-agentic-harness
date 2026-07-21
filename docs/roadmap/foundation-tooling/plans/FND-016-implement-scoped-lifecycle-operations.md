@@ -1,7 +1,7 @@
 ---
 id: 'FND-016'
 title: Implement scoped lifecycle operations
-status: ready
+status: in-progress
 roadmap: foundation-tooling/implement-scoped-lifecycle-operations
 blocks: FND-017, FND-018
 blocked-by: —

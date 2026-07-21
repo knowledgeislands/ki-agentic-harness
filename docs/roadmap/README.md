@@ -16,7 +16,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Implement scoped lifecycle operations
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/implement-scoped-lifecycle-operations`
-- **Status:** ready
+- **Status:** in-progress
 - **Blocks:** FND-017, FND-018
 
 ### [FND-017](foundation-tooling/plans/FND-017-add-scoped-read-only-bootstrap-doctor-operations.md)
