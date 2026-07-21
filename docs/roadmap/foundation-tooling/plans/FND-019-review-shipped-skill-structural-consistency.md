@@ -1,7 +1,7 @@
 ---
 id: 'FND-019'
 title: Review structural consistency across shipped skills
-status: open
+status: ready
 roadmap: foundation-tooling/review-structural-consistency-across-shipped-skills
 blocks: —
 blocked-by: —
