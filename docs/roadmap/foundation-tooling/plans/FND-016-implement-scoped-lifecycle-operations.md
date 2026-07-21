@@ -3,7 +3,7 @@ id: 'FND-016'
 title: Implement scoped lifecycle operations
 status: in-progress
 roadmap: foundation-tooling/implement-scoped-lifecycle-operations
-blocks: FND-017, FND-018
+blocks: —
 blocked-by: —
 ---
 
@@ -26,8 +26,8 @@ There is no scoped UNINSTALL operation, no common ownership classifier spanning 
 1. ✓ Reconcile `ODR-KI-HARNESS-001`, the completed CLEAN contract, and the established `.ki/` layout into an explicit ownership matrix: repository declaration, authored source, generated repository state, runtime projections, user installation, hooks, and unrelated files. Define selected-scope inputs, allowed effects, recovery paths, and refusal conditions for CLEAN and both UNINSTALL scopes.
 2. ✓ Implement or extract narrow source-owned ownership-proof and safe-transaction primitives. Repository UNINSTALL may remove only proven KI declarations and repository footprint; user UNINSTALL may remove only proven KI-managed user installation material. Neither operation may cross its selected scope, follow an unsafe link, delete altered or unfamiliar content, or infer an omitted scope.
 3. ✓ Provide repository operations through zero-install launchers that obtain temporary source without installing or mutating user state. Keep source, launcher, help, exit, dry-run, report, and error contracts explicit and usable when the repository's generated runner has been removed.
-4. Align CLEAN, UNINSTALL, bootstrap/EDUCATE recovery, `.ki/` manifests, generated runtime payloads, user-managed payloads, documentation, and help so each operation names its effect accurately. Remove superseded paths and dead lifecycle code once current state conforms.
-5. Add focused repository and user fixtures for healthy, absent, altered, unmarked, linked, concurrent-change, repeat, dry-run, partial-state, and scope-isolation cases. Verify that CLEAN followed by EDUCATE restores generated state while UNINSTALL intentionally ends adoption at only its chosen scope.
+4. ✓ Align CLEAN, UNINSTALL, bootstrap/EDUCATE recovery, `.ki/` manifests, generated runtime payloads, user-managed payloads, documentation, and help so each operation names its effect accurately. Remove superseded paths and dead lifecycle code once current state conforms.
+5. ✓ Add focused repository and user fixtures for healthy, absent, altered, unmarked, linked, concurrent-change, repeat, dry-run, partial-state, and scope-isolation cases. Verify that CLEAN followed by EDUCATE restores generated state while UNINSTALL intentionally ends adoption at only its chosen scope.
 6. Re-vendor affected payloads and run focused lifecycle tests followed by serial repository gates. Leave DOCTOR implementation and `kisle` dispatch to their dependent plans, exposing only the stable operations they require.
 
 ## Files touched
@@ -49,7 +49,7 @@ There is no scoped UNINSTALL operation, no common ownership classifier spanning 
 
 The completed CLEAN baseline supplies the conservative generated-output boundary; the `.ki/` footprint is already established.
 
-This plan blocks FND-017 DOCTOR and FND-018 `kisle`, which consume its operation and scope contract.
+The committed operation and scope contract enables FND-017 DOCTOR and FND-018 `kisle` implementation in parallel. FND-016 acceptance remains a review dependency, not an execution gate for those plans.
 
 ## Delegation
 
