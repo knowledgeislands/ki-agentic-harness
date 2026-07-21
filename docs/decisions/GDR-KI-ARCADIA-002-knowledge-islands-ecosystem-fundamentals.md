@@ -1,5 +1,5 @@
 ---
-id: GDR-KI-ARCADIA-001
+id: GDR-KI-ARCADIA-002
 title: 'Knowledge Islands ecosystem fundamentals'
 date: 2026-07-18
 status: current
@@ -8,7 +8,7 @@ type_url: https://knowledgeislands.info/specifications/decision-records/gdr
 decision_type: governance
 ---
 
-# GDR-KI-ARCADIA-001: Knowledge Islands ecosystem fundamentals
+# GDR-KI-ARCADIA-002: Knowledge Islands ecosystem fundamentals
 
 ## Context
 
@@ -39,7 +39,7 @@ ki-specifications
 `-- publishes through -> ki-website
 ```
 
-GDR-KI-ARCADIA-001 is mutually mirrored across all four repositories. Any proposed modification must consider its effect on Arcadia Principal, the Agentic Harness, Specifications, and the Website, and must update all four mirrors coherently. Temporary drift is permitted only during a choreographed rollout that identifies the outstanding mirrors explicitly.
+This file is copied verbatim into `ki-arcadia-principal`, `ki-agentic-harness`, `ki-specifications`, and `ki-website`; the four paths are one shared record, not repository-specific variants. Any proposed modification must consider its effect on all four repositories and update every copy coherently. Temporary drift is permitted only during a choreographed rollout that identifies the outstanding copies explicitly.
 
 Cross-repository work is choreographed rather than centrally orchestrated. Each repository owns its priorities, plans, workspace, verification, and commits. A repository may place a concrete handoff in another repository's Stream or roadmap, naming its origin and whether it blocks or is blocked by the local item. Work should remain non-blocking and independently executable unless a genuine prerequisite requires otherwise.
 
@@ -49,5 +49,5 @@ Cross-repository work is choreographed rather than centrally orchestrated. Each 
 - Reusable tooling realisations begin in the harness after the underlying pattern is established.
 - Specifications receive conceptual input from Arcadia and implementation evidence from the harness; applicable Active specifications then constrain conforming implementations.
 - The website can publish all three source repositories while remaining independently deployable and non-authoritative.
-- The Website owns stable public routes such as `https://knowledgeislands.info/harness/install`; the Harness owns the bootstrap artifact to which that route resolves.
+- The Website owns the stable public routes `https://knowledgeislands.info/harness/install` for user installation and `https://knowledgeislands.info/harness/bootstrap` for repository bootstrap; the Harness owns the executable artifacts to which those routes resolve.
 - Every primary repository states its place in this ecosystem near the top of its README and carries the shared progress, commit, and choreography conventions in runtime-neutral guidance.
