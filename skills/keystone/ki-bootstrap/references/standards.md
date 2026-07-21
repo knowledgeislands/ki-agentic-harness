@@ -61,6 +61,10 @@ In a source-bearing harness target, the bootstrap audit also compares every dire
 
 CLEAN is the inverse of publication, not a broad repository clean. Its source-owned entrypoint may remove only manifest-proven generated `.ki/{bin,bootstrap,manifest.json}` state; incomplete, altered, private-transaction, or unfamiliar content is preserved by failing closed. It removes a runtime skill only when it is a regular directory carrying a valid generated marker and matching integrity. It never follows or removes `.ki/self/skill/`, its runtime projection links, an altered payload, an agent, `.ki-config.toml`, `.gitignore`, canonical source, or an unmarked `ki-*` path. It validates the complete selected set before removal and refuses if it changes before deletion. `--dry-run` is byte-stable; a subsequent EDUCATE restores the normal generated footprint.
 
+## Scoped UNINSTALL
+
+UNINSTALL ends Knowledge Islands adoption only at the caller's explicit `repo` or `user` scope. Repository UNINSTALL removes manifest-proven generated state, proven generated runtime payloads, proven `ki-self` projections, and a regular `.ki-config.toml` only when it contains exclusively KI configuration. It preserves `.ki/self/skill/`, `.gitignore`, agents, canonical sources, unmarked payloads, and all user state. User UNINSTALL removes only current integrity-marked global process skills and a wholly validated dedicated Knowledge Islands Claude hook namespace; it preserves user settings, other skills, and other hook namespaces. Each operation snapshots and rechecks the complete selected removal set, refuses unsafe or changed state, and offers `--dry-run`. CLEAN is recoverable through EDUCATE; UNINSTALL deliberately is not.
+
 ## Governance agents
 
 A parallel, smaller invariant covers `agents/governance/*.md`: a repo's `.claude/agents/` may contain those files as **relative file symlinks** when the repo's `.ki-config.toml` carries the bare `[ki-agents]` table. Unlike skills there is no baseline: no agent is always-on, so an undeclared repo gets no agent links at all rather than a default subset. `.claude/agents/` is likewise gitignored and regenerated, never committed.

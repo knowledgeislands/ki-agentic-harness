@@ -5,7 +5,7 @@ ki-shared-modules: [educator]
 ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-skills:govern]
 description: >
   Bootstraps a Knowledge Islands repo into governance: the EDUCATE chain vendors declared checkers and local educator launchers under `.ki/bootstrap/`, so it self-governs via `./.ki/bin/ki-audit` with zero skills installed and never changes `package.json`; it also links project-local skills from `.ki-config.toml` so the right instructions load in-session. Use when bootstrapping or re-bootstrapping a repo, making it self-govern, or setting up and auditing skill links. Triggers: "bootstrap this repo", "make this repo self-govern", "set up this repo's skills", "re-bootstrap this repo", "why aren't my skills loading in this repo". This is the install keystone — the one Knowledge Islands skill kept installed globally — so any repo can self-wire from the remote source. For `.ki-config.toml` coverage and GitHub settings use `ki-repo`; for the harness layout use `ki-harness`.
-argument-hint: 'help | educate [target] | clean [target] | audit [path] | conform [path] | refresh'
+argument-hint: 'help | educate [target] | clean [target] | uninstall [scope] [target] | audit [path] | conform [path] | refresh'
 ---
 
 # Knowledge Islands Bootstrap
@@ -77,6 +77,20 @@ bun scripts/clean.ts <target-repo> [--dry-run]
 ```
 
 It removes only manifest-proven generated `.ki/{bin,bootstrap,manifest.json}` state, and removes only regular runtime skill directories whose generated marker and integrity still prove ownership. It preserves `.ki/self/skill/` and its runtime projections, `.ki-config.toml`, `.gitignore`, agents, canonical source, source links, altered payloads, and every unmarked path. An unfamiliar, changed, symlinked, or concurrent generated `.ki/` state is a fail-closed refusal; `--dry-run` reports the proven removal set without writing. Re-running CLEAN after a successful pass is safe, and EDUCATE reconstructs the normal governed footprint.
+
+### Mode UNINSTALL — end adoption at one explicit boundary
+
+UNINSTALL is separate from CLEAN and is source-owned, so it remains available when a repository's generated runner has already gone. Choose exactly one scope:
+
+```bash
+# Repository only — removes only proven generated state and a sole-purpose KI declaration.
+bun scripts/repo-uninstall.ts <target-repo> [--dry-run]
+
+# User only — removes only integrity-proven global KI process skills and the dedicated KI Claude hook namespace.
+bun scripts/user-uninstall.ts [--runtime <claude-code|codex>]... [--dry-run]
+```
+
+Repository UNINSTALL never reads or changes user state. User UNINSTALL never reads or changes a repository, and preserves runtime settings, other skills, and other hook namespaces. Both validate their complete selected removal set before writing, refuse altered, linked, partial, unfamiliar, or concurrent state, and support `--dry-run`. A repository can also use the zero-install `repo-operation.sh <clean|uninstall> [target]` launcher, which fetches temporary source but never installs user material.
 
 ### Mode REFRESH — re-anchor
 

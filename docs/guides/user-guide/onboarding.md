@@ -83,7 +83,7 @@ Drift in the vendored copies is caught mechanically: the audit checks ordinary c
 
 Use CLEAN when you need to remove a repository's generated governance state and rebuild it from scratch — for example, before diagnosing a bootstrap problem. It is intentionally source-owned rather than a command inside `.ki/`, because a successful clean removes that directory.
 
-> **Coming soon:** The `kisle` command-line interface will provide one interface for the current install, bootstrap, educate, audit, conform, clean, and help operations. Read-only DOCTOR and scope-explicit UNINSTALL will join it later to distinguish repository and user state. None of these `kisle` commands are available yet.
+> **Coming soon:** `kisle` will provide the end-user command-line façade for install, bootstrap, educate, audit, conform, clean, help, DOCTOR, and scope-explicit UNINSTALL. It is not available yet; the source-owned operations below are the current interface.
 
 Start with a dry run from the repository root. Use the path matching the runtime where you installed the harness:
 
@@ -98,3 +98,17 @@ bun ~/.agents/skills/ki-bootstrap/scripts/clean.ts . --dry-run
 Review the reported paths, then rerun the same command without `--dry-run` to remove them. CLEAN removes only an intact manifest-owned `.ki/` tree and unchanged generated runtime skill copies. It is repository-scoped cleanup, not an uninstall: it preserves `.ki-config.toml`, `.gitignore`, agents, `.ki/self/skill/`, its runtime projection links, altered payloads, unfamiliar files, and every user-level KI installation. Unsafe or changed metadata causes it to stop rather than guess. Run bootstrap again afterwards to reconstruct the governed footprint.
 
 If `ki-bootstrap` is not installed for either runtime, use the same `scripts/clean.ts` path from a local harness checkout instead. Do not manually delete `.ki/` or `ki-*` directories to work around a CLEAN refusal; inspect and resolve the preserved state first.
+
+### Uninstall one scope deliberately
+
+UNINSTALL ends Knowledge Islands adoption at one explicit scope; it is not a stronger form of CLEAN.
+
+```bash
+# Repository only: remove proven generated state and a sole-purpose KI declaration.
+bun ~/.claude/skills/ki-bootstrap/scripts/repo-uninstall.ts . --dry-run
+
+# User only: remove integrity-proven global KI skills and the dedicated KI hook namespace.
+bun ~/.claude/skills/ki-bootstrap/scripts/user-uninstall.ts --dry-run
+```
+
+Use the equivalent `~/.agents/skills/ki-bootstrap/` path when `ki-bootstrap` is installed for Codex only. Review the dry-run output before rerunning without `--dry-run`. Repository UNINSTALL never touches user state; user UNINSTALL preserves runtime settings, other skills, and other hook namespaces. Both refuse altered, linked, partial, unfamiliar, or concurrently changed managed material rather than guessing.
