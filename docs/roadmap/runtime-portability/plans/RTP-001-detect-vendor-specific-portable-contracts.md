@@ -1,7 +1,7 @@
 ---
 id: 'RTP-001'
 title: Detect vendor-specific assumptions in portable skill contracts
-status: in-progress
+status: acceptance
 roadmap: runtime-portability/detect-vendor-specific-assumptions-in-portable-skill-contracts
 blocks: —
 blocked-by: —
@@ -49,3 +49,29 @@ Runtime-specific material is legitimate in dedicated binding skills, explicitly 
 This plan has no external dependency.
 
 It makes the portable contract explicit before further multi-runtime rollout work depends on those contracts.
+
+## Acceptance
+
+### Delivered
+
+Added PORT-1 and made the shipped skill set conform to the new runtime-portability boundary.
+
+### Summary of changes
+
+`ki-skills` now scans each Markdown contract with a file-and-line diagnostic, uses explicit runtime-binding declarations or sections for legitimate binding material, and accepts attributed source material and genuine multi-runtime comparisons. The structured rubric, generated publication, focused tests, and affected wording are all updated.
+
+### Verification
+
+Implementation evidence: `067be004`.
+
+- `bun test` — pass.
+- `bun run ki:audit` — zero FAIL; three pre-existing WARN findings remain (one decision-record serial gap and two KI-SHAPE-7 advisories).
+- `bun run ki:bootstrap:audit` — pass with zero WARN before the implementation commit.
+
+### Outstanding concerns
+
+The dedicated `ki-runtime-binding: true` declaration is intentionally narrow and visible, but its use should be reviewed when a future runtime is added to ensure the stated responsibility remains accurate.
+
+### Mini recap
+
+The first whole-set scan exposed that runtime-specific content is concentrated in a small set of genuinely binding skills. Explicit structural boundaries are more durable than a word allowlist; future portable wording should use the same boundary rather than suppressing a finding.
