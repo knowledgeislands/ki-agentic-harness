@@ -53,12 +53,7 @@ Canonical themes, active execution plans, and completed plan records.
 
 ## Completed plans
 
-### [FND-015](foundation-tooling/plans/FND-015-add-safe-multiprogress-aggregate-execution.md)
-
-- **Title:** Unify governed entrypoints and in-process aggregate execution
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/add-safe-multiprogress-aggregate-execution`
-- **Status:** done
+No completed plans.
 
 ## Dependency graph
 

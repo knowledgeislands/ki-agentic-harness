@@ -32,12 +32,6 @@ Audit every shipped skill against the established exemplar implementations for s
 
 **Plan:** [FND-019](plans/FND-019-review-shipped-skill-structural-consistency.md)
 
-### Add safe multiprogress aggregate execution
-
-Replace aggregate AUDIT and CONFORM's process-per-checker transport with direct, in-process calls to local vendored checker entry points. Reuse the shared checker's structured status events so the default single bar advances continuously without a child-progress protocol, temporary capture files, stdout reparsing, or a Bun launch for each checker. Add an opt-in multiprogress display: one stable, labelled row per selected checker, such as `AUDIT [ki-skills]`. Preserve direct checker JSONL, deterministic aggregate reporting, exit semantics, `--progress`, FND-010 terminal behaviour, and sequential AUDIT/CONFORM execution. Concurrency is explicitly out of scope until a separate independence and cancellation contract exists.
-
-**Plan:** [FND-015](plans/FND-015-add-safe-multiprogress-aggregate-execution.md)
-
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.

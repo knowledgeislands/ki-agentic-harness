@@ -6,7 +6,6 @@ This portfolio view is generated from the canonical theme roadmaps under `docs/r
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
-- [Foundation Tooling: Add safe multiprogress aggregate execution](docs/roadmap/foundation-tooling/ROADMAP.md#add-safe-multiprogress-aggregate-execution)
 - [Foundation Tooling: Add scoped read-only bootstrap doctor operations](docs/roadmap/foundation-tooling/ROADMAP.md#add-scoped-read-only-bootstrap-doctor-operations)
 - [Foundation Tooling: Establish the installable `kisle` command-line interface](docs/roadmap/foundation-tooling/ROADMAP.md#establish-the-installable-kisle-command-line-interface)
 - [Foundation Tooling: Implement scoped lifecycle operations](docs/roadmap/foundation-tooling/ROADMAP.md#implement-scoped-lifecycle-operations)
