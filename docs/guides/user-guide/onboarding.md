@@ -83,7 +83,7 @@ Drift in the vendored copies is caught mechanically: the audit checks ordinary c
 
 Use CLEAN when you need to remove a repository's generated governance state and rebuild it from scratch — for example, before diagnosing a bootstrap problem. It is intentionally source-owned rather than a command inside `.ki/`, because a successful clean removes that directory.
 
-> **Coming soon:** `kisle` will provide the end-user command-line façade for install, bootstrap, educate, audit, conform, clean, help, DOCTOR, and scope-explicit UNINSTALL. It is not available yet; the source-owned operations below are the current interface.
+> **Coming soon:** `kisle` will provide the end-user command-line façade. Its first release will offer `user install`, `repo bootstrap`, `repo educate`, `repo audit`, `repo conform`, `repo clean`, HELP, version, and completion. Scope-explicit DOCTOR and UNINSTALL are reserved for later releases; unscoped forms will never be valid. `kisle` is not available yet, so the source-owned operations below are the current interface.
 
 Start with a dry run from the repository root. Use the path matching the runtime where you installed the harness:
 
@@ -112,3 +112,28 @@ bun ~/.claude/skills/ki-bootstrap/scripts/user-uninstall.ts --dry-run
 ```
 
 Use the equivalent `~/.agents/skills/ki-bootstrap/` path when `ki-bootstrap` is installed for Codex only. Review the dry-run output before rerunning without `--dry-run`. Repository UNINSTALL never touches user state; user UNINSTALL preserves runtime settings, other skills, and other hook namespaces. Both refuse altered, linked, partial, unfamiliar, or concurrently changed managed material rather than guessing.
+
+## Diagnose one lifecycle scope
+
+DOCTOR is a read-only, source-owned diagnosis command. It requires an explicit `repo` or `user` scope and changes neither the selected scope nor the other one.
+
+```bash
+# Repository diagnosis from the repository root.
+bun ~/.claude/skills/ki-bootstrap/scripts/doctor.ts repo .
+
+# A machine-readable repository report.
+bun ~/.claude/skills/ki-bootstrap/scripts/doctor.ts repo . --format json
+
+# User-managed KI skills and hook namespace only.
+bun ~/.claude/skills/ki-bootstrap/scripts/doctor.ts user
+```
+
+Use the equivalent `~/.agents/skills/ki-bootstrap/` path when `ki-bootstrap` is installed for Codex only. The report has four statuses: `healthy`, `absent`, `recoverable`, and `unsafe`. Healthy and absent reports exit `0`; recoverable and unsafe reports exit `1`; invalid invocation exits `2`. A recoverable report names one next action, but DOCTOR never performs it. An unsafe report requires manual reconciliation rather than guessing.
+
+When no global installation is available, run the same `scripts/doctor.ts` from a local harness checkout. The checkout also provides the zero-install-shaped repository launcher for a temporary-source diagnostic:
+
+```bash
+sh "$KI_HARNESS/skills/keystone/ki-bootstrap/scripts/repo-operation.sh" doctor . --format json
+```
+
+This launcher downloads temporary source and creates no file in the target repository. The public Website route for that launcher is still pending, so do not substitute an unannounced `curl | sh` URL.

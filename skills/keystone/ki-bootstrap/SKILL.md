@@ -5,7 +5,7 @@ ki-shared-modules: [educator]
 ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-skills:govern]
 description: >
   Bootstraps a Knowledge Islands repo into governance: the EDUCATE chain vendors declared checkers and local educator launchers under `.ki/bootstrap/`, so it self-governs via `./.ki/bin/ki-audit` with zero skills installed and never changes `package.json`; it also links project-local skills from `.ki-config.toml` so the right instructions load in-session. Use when bootstrapping or re-bootstrapping a repo, making it self-govern, or setting up and auditing skill links. Triggers: "bootstrap this repo", "make this repo self-govern", "set up this repo's skills", "re-bootstrap this repo", "why aren't my skills loading in this repo". This is the install keystone — the one Knowledge Islands skill kept installed globally — so any repo can self-wire from the remote source. For `.ki-config.toml` coverage and GitHub settings use `ki-repo`; for the harness layout use `ki-harness`.
-argument-hint: 'help | educate [target] | clean [target] | uninstall [scope] [target] | audit [path] | conform [path] | refresh'
+argument-hint: 'help | educate [target] | clean [target] | doctor <scope> [target] | uninstall [scope] [target] | audit [path] | conform [path] | refresh'
 ---
 
 # Knowledge Islands Bootstrap
@@ -90,7 +90,21 @@ bun scripts/repo-uninstall.ts <target-repo> [--dry-run]
 bun scripts/user-uninstall.ts [--runtime <claude-code|codex>]... [--dry-run]
 ```
 
-Repository UNINSTALL never reads or changes user state. User UNINSTALL never reads or changes a repository, and preserves runtime settings, other skills, and other hook namespaces. Both validate their complete selected removal set before writing, refuse altered, linked, partial, unfamiliar, or concurrent state, and support `--dry-run`. A repository can also use the zero-install `repo-operation.sh <clean|uninstall> [target]` launcher, which fetches temporary source but never installs user material.
+Repository UNINSTALL never reads or changes user state. User UNINSTALL never reads or changes a repository, and preserves runtime settings, other skills, and other hook namespaces. Both validate their complete selected removal set before writing, refuse altered, linked, partial, unfamiliar, or concurrent state, and support `--dry-run`. A repository can also use the zero-install `repo-operation.sh <clean|uninstall|doctor> [target]` launcher, which fetches temporary source but never installs user material.
+
+### Mode DOCTOR — inspect one lifecycle scope without writing
+
+DOCTOR is a source-owned, dry-run-equivalent diagnostic. It requires exactly one scope, produces the same schema-`1` report in terminal or JSON form, and never discovers, changes, or recommends work outside that scope:
+
+```bash
+# Repository state — accepts one optional target and --format terminal|json.
+bun scripts/doctor.ts repo [target] [--format terminal|json]
+
+# User-managed installation and hooks — accepts only explicit runtime filters and a testable home.
+bun scripts/doctor.ts user [--runtime claude-code|codex]... [--format terminal|json]
+```
+
+Healthy or absent state exits `0`; recoverable or unsafe state exits `1`; invalid command syntax exits `2`. A recoverable report identifies exactly one next action (`educate`, `clean`, or scoped `user-uninstall`); unsafe state asks for manual reconciliation. DOCTOR never runs that action. A repository can also invoke the zero-install `repo-operation.sh doctor [target] [--format terminal|json]` launcher, which fetches only temporary source and leaves the target unchanged.
 
 ### Mode REFRESH — re-anchor
 
