@@ -1,7 +1,7 @@
 ---
 id: 'FND-017'
 title: Add scoped read-only bootstrap doctor operations
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/add-scoped-read-only-bootstrap-doctor-operations
 blocks: —
 blocked-by: —
@@ -31,7 +31,7 @@ Bootstrap checks individual repository surfaces during AUDIT. A source-owned DOC
 3. ✓ Implement user DOCTOR from the managed user-install contract. Inspect only KI-owned global installation, launcher, and managed payload state; never scan or report unrelated user configuration, repositories, or runtime content.
 4. ✓ Make DOCTOR runnable from source and zero-install repository paths without a working generated runner. Guarantee no writes, including marker refreshes, temporary state in the target, or implicit installation; document its dry-run-equivalent nature.
 5. ✓ Add fixtures for healthy, absent, stale, altered, unsafe-link, incomplete, conflicting, and mixed-scope states. Assert the exact recommended routes—EDUCATE, CLEAN, scoped UNINSTALL, or manual reconciliation—and verify no filesystem bytes change.
-6. Re-vendor affected payloads, update HELP and user guidance, and run focused diagnostics plus serial repository gates.
+6. ✓ Re-vendor affected payloads, update HELP and user guidance, and run focused diagnostics plus serial repository gates.
 
 ## Files touched
 
@@ -55,3 +55,29 @@ FND-016 supplies the lifecycle ownership and scope contract this diagnostic repo
 - Round 1 — judgment: a `gpt-5.6-sol` worker defines the versioned DOCTOR report and classification contract against FND-016's committed ownership matrix; files: this plan and a proposed bounded implementation surface; gate: reviewable report schema, status/exit semantics, and no-write invariants.
 - Round 2 — mechanical: a `gpt-5.6-terra` worker may implement the settled read-only classifiers and fixtures in exclusive source files; gate: byte-stability fixtures and focused diagnostics.
 - Orchestrator: resolves contract questions, adversarially reviews every script, runs final verification, and commits only gated work.
+
+## Acceptance
+
+### Delivered
+
+Source-owned DOCTOR now diagnoses exactly one explicit repository or user lifecycle scope without writing, then reports a stable terminal or JSON result and one recovery route.
+
+### Summary of changes
+
+- Added [`doctor.ts`](../../../../skills/keystone/ki-bootstrap/scripts/doctor.ts) and its repository, user, and report classifiers with schema `1`, stable status classes, exact action semantics, and exit handling.
+- Added `repo-operation.sh doctor` as a temporary-source repository diagnostic path and documented the source command in [`onboarding.md`](../../../guides/user-guide/onboarding.md).
+- Added 20 focused command, no-write, recovery, altered-state, and runtime-parent-symlink checks; the adversarial review resulted in the same physical-parent refusal rule used by UNINSTALL.
+
+### Verification
+
+- `bun test skills/keystone/ki-bootstrap/scripts/repo-operation.test.ts skills/keystone/ki-bootstrap/scripts/internal/doctor/doctor.test.ts` passed at `ba4fa822`.
+- `bun run ki:bootstrap:audit`, `bun run ki:skills:audit`, `bun run ki:handoffs:audit`, `bun run ki:repo-roadmap:audit`, and `bun run ki:authoring:audit` passed with no new FAIL or WARN findings.
+- `bun run test` passed at `41807e30`; `bun run ki:audit` then passed with zero FAIL and only the two existing KI-SHAPE-7 judgement advisories.
+
+### Outstanding concerns
+
+The source and temporary-source launchers are available now. A stable public Website route for the temporary-source repository-operation launcher remains an FND-018 external prerequisite; DOCTOR does not invent an unannounced `curl | sh` route.
+
+### Mini recap
+
+Read-only diagnostics must enforce the same physical boundary as destructive operations: merely avoiding writes is not sufficient if a classifier follows a symlink outside the declared scope. The regression fixture now preserves that invariant; no new follow-up is proposed.

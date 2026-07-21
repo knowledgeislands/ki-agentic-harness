@@ -16,7 +16,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Implement scoped lifecycle operations
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/implement-scoped-lifecycle-operations`
-- **Status:** in-progress
+- **Status:** acceptance
 - **Blocks:** —
 
 ### [FND-017](foundation-tooling/plans/FND-017-add-scoped-read-only-bootstrap-doctor-operations.md)
@@ -24,7 +24,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Add scoped read-only bootstrap doctor operations
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/add-scoped-read-only-bootstrap-doctor-operations`
-- **Status:** in-progress
+- **Status:** acceptance
 - **Blocks:** —
 
 ### [FND-018](foundation-tooling/plans/FND-018-establish-installable-kisle-command-line-interface.md)
@@ -32,7 +32,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Establish the installable kisle command-line interface
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/establish-the-installable-kisle-command-line-interface`
-- **Status:** in-progress
+- **Status:** acceptance
 - **Blocks:** —
 
 ### [FND-019](foundation-tooling/plans/FND-019-review-shipped-skill-structural-consistency.md)

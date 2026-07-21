@@ -1,7 +1,7 @@
 ---
 id: 'FND-016'
 title: Implement scoped lifecycle operations
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/implement-scoped-lifecycle-operations
 blocks: —
 blocked-by: —
@@ -28,7 +28,7 @@ There is no scoped UNINSTALL operation, no common ownership classifier spanning 
 3. ✓ Provide repository operations through zero-install launchers that obtain temporary source without installing or mutating user state. Keep source, launcher, help, exit, dry-run, report, and error contracts explicit and usable when the repository's generated runner has been removed.
 4. ✓ Align CLEAN, UNINSTALL, bootstrap/EDUCATE recovery, `.ki/` manifests, generated runtime payloads, user-managed payloads, documentation, and help so each operation names its effect accurately. Remove superseded paths and dead lifecycle code once current state conforms.
 5. ✓ Add focused repository and user fixtures for healthy, absent, altered, unmarked, linked, concurrent-change, repeat, dry-run, partial-state, and scope-isolation cases. Verify that CLEAN followed by EDUCATE restores generated state while UNINSTALL intentionally ends adoption at only its chosen scope.
-6. Re-vendor affected payloads and run focused lifecycle tests followed by serial repository gates. Leave DOCTOR implementation and `kisle` dispatch to their dependent plans, exposing only the stable operations they require.
+6. ✓ Re-vendor affected payloads and run focused lifecycle tests followed by serial repository gates. Leave DOCTOR implementation and `kisle` dispatch to their dependent plans, exposing only the stable operations they require.
 
 ## Files touched
 
@@ -56,3 +56,30 @@ The committed operation and scope contract enables FND-017 DOCTOR and FND-018 `k
 - Round 1 — safety review: a `gpt-5.6-terra` worker adversarially reviews the repository and user UNINSTALL scripts plus their fixtures; files: read-only lifecycle implementation and tests; gate: concrete findings or an explicit clean review before final verification.
 - Round 2 — mechanical: the orchestrator addresses any accepted safety findings, refreshes generated material only when the bootstrap gate requires it, and runs the final serial repository gates; files: lifecycle implementation, docs, and generated surfaces; gate: focused tests, then `bun run test` and `bun run ki:audit`.
 - Orchestrator: reviews every worker result, owns all commits, and presents the final acceptance packet.
+
+## Acceptance
+
+### Delivered
+
+Repository CLEAN, repository UNINSTALL, and user UNINSTALL now have separate source-owned operations with explicit, non-crossing ownership boundaries and a temporary-source repository launcher.
+
+### Summary of changes
+
+- Added the ownership matrix and lifecycle guidance, repository and user UNINSTALL entrypoints, and `repo-operation.sh` for repository CLEAN/UNINSTALL.
+- Hardened the deletion transactions in [`repo-clean.ts`](../../../../skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-clean.ts) and [`user-uninstall.ts`](../../../../skills/keystone/ki-bootstrap/scripts/user-uninstall.ts): every selected item is revalidated, symlinked parents are refused, directory mutation is detected, and unknown options fail before any deletion.
+- Added regression fixtures covering dry runs, altered state, scope isolation, links, repeated operations, configuration ambiguity, and concurrent changes.
+
+### Verification
+
+- Focused repository and user lifecycle fixtures passed after `debb6566`.
+- `bun run test` passed at `41807e30` with the completed lifecycle suite.
+- `bun run ki:audit` passed at `41807e30` with zero FAIL; it retained the two pre-existing KI-SHAPE-7 judgement advisories.
+- `bun run ki:bootstrap:audit` confirmed source-harness parity; no generated payload refresh was required because the affected source harness units are manifest-proven live links or source-owned operation scripts.
+
+### Outstanding concerns
+
+None for the scoped CLEAN and UNINSTALL contract. The two existing KI-SHAPE-7 advisories remain separate judgement work and do not concern lifecycle safety.
+
+### Mini recap
+
+Deletion safety needs proof both before selection and immediately before removal: a valid marker alone is insufficient when parents can be links or directories can change. This finding is captured in the implementation and tests; no additional roadmap item is proposed.

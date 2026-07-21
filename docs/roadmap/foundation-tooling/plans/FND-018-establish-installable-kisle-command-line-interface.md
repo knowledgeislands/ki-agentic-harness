@@ -1,7 +1,7 @@
 ---
 id: 'FND-018'
 title: Establish the installable kisle command-line interface
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/establish-the-installable-kisle-command-line-interface
 blocks: —
 blocked-by: —
@@ -68,3 +68,29 @@ On 2026-07-21, the source harness temporary-repository fixtures passed the boots
 - Round 1 — judgment: a `gpt-5.6-sol` worker derives the initial `kisle` grammar and a receiving-repository handoff from the committed FND-016 lifecycle contract; files: this plan and the proposed handoff artifact only; gate: every command has a scope, source boundary, dry-run, output, and exit contract.
 - Round 2 — mechanical: a `gpt-5.6-terra` worker may align independent harness documentation after the grammar is approved; gate: documentation and roadmap checks.
 - Orchestrator: reviews the handoff for cross-repository ownership, preserves the prohibition on external publication, and runs final verification.
+
+## Acceptance
+
+### Delivered
+
+The harness now supplies a versioned, implementation-ready `kisle` command contract and bounded receiving-repository briefs, without creating or releasing an external CLI.
+
+### Summary of changes
+
+- Added the harness-owned [`kisle` command contract](../../../handoffs/kisle/command-contract.md): initial grammar, scope rules, temporary-source and vendored dispatch boundaries, stream/exit semantics, pinning, completion, and compatibility rules.
+- Added executable handoffs for [`tools-kisle`](../../../handoffs/kisle/tools-kisle.md) and [`homebrew-tap`](../../../handoffs/kisle/homebrew-tap.md), including platform, security, test, release, and formula requirements.
+- Updated the onboarding callout so unavailable `kisle` commands are clearly coming soon and scope-explicit DOCTOR/UNINSTALL remain reserved rather than implied installed commands.
+
+### Verification
+
+- `bun test` passed at `41807e30`, including public bootstrap, package-free aggregate AUDIT/CONFORM parity, and CLEAN recovery fixtures named by the command contract.
+- `bun run ki:handoffs:audit`, `bun run ki:repo-roadmap:audit`, and `bun run ki:authoring:audit` passed before the handoff commit `41807e30`.
+- `bun run ki:audit` passed at `41807e30` with zero FAIL and only the two existing KI-SHAPE-7 judgement advisories.
+
+### Outstanding concerns
+
+The Website must publish and stability-test the public repository-operation route before `tools-kisle` can dispatch CLEAN. `tools-kisle` and `homebrew-tap` implementation and release are explicitly external receiving work; no CLI binary or formula has been created here.
+
+### Mini recap
+
+An end-user CLI should dispatch public, scoped contracts rather than copy lifecycle logic. The cold-agent-ready handoff keeps that distinction testable and leaves only the Website endpoint and receiving-repository delivery outside this plan.
