@@ -43,6 +43,7 @@ Worth doing, but presently blocked on an external dependency or decision. Revisi
 
 Speculative or not yet scoped — items marked _(candidate)_ need a scoping pass (or a decision to drop them) before they're actionable.
 
+- [Foundation Tooling: Codify context-aware delegation policy _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#codify-context-aware-delegation-policy-candidate)
 - [Foundation Tooling: Define cross-repository skill vendor provenance _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#define-cross-repository-skill-vendor-provenance-candidate)
 - [Foundation Tooling: Document per-skill `.ki-config.toml` ownership _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#document-per-skill-ki-configtoml-ownership-candidate)
 - [Foundation Tooling: Harden user harness installation and runtime skill publication](docs/roadmap/foundation-tooling/ROADMAP.md#harden-user-harness-installation-and-runtime-skill-publication)

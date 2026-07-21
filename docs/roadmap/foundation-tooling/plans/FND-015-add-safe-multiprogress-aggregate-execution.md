@@ -1,7 +1,7 @@
 ---
 id: 'FND-015'
 title: Unify governed entrypoints and in-process aggregate execution
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/add-safe-multiprogress-aggregate-execution
 blocks: —
 blocked-by: —
@@ -27,13 +27,13 @@ The review also found other avoidable local process boundaries: bootstrap's loca
 
 ## Steps
 
-1. Replace the `ki-vendors:` contract with one governed-entrypoint convention: a configured governance skill owns `scripts/govern.ts`; process skills do not. The module exposes side-effect-free `plan` and `check` operations for AUDIT and CONFORM, with injected status tracking, and its guarded CLI dispatches `audit`, `conform`, `educate`, and `help`. Remove `KI_CHECKER_PLAN` and the legacy mode-entrypoint fallback from the bootstrap resolver, skills rubric, decision record, and documentation; do not retain compatibility parsing.
-2. Move each configured skill's audit/conform construction and direct CLI parsing behind its `govern.ts` entrypoint. Preserve its existing direct arguments, canonical JSONL, terminal reporter, safe conform behaviour, and targeted testing. The thin legacy `audit.ts`/`conform.ts` entrypoints are removed once package keys and any direct references use `govern.ts <verb>`.
-3. Change bootstrap to identify governed payloads through `scripts/govern.ts`, vendor or source-link that one entrypoint with its existing rubric/shared-module closure, and generate HELP snapshots from the standard governed contract. Retire `SCRIPT_MODES`, `vendorModesOf`, `vendorUnit`, and the generated `ki-audit`/`ki-conform` wrappers. Keep the retained whole-set EDUCATE coordinator under review as a separate boundary while `govern educate` routes through the same validated local mechanism.
-4. Extract the generated aggregate runner from the `repo-bootstrap.ts` template into canonical `aggregate.ts`, copied and manifest-hashed into `.ki/bin/aggregate.ts`. Give it the same verb grammar as per-skill `govern.ts`; `audit` and `conform` own `--skill`, `--dry-run`, `--progress`, and `--reporter-levels`, while `educate` and `help` reject those irrelevant options. Rename the public generated command to `govern.ts` only if its package-free invocation remains clear; otherwise retain `aggregate.ts` as the generated whole-set name and reserve `govern.ts` for the per-skill contract.
-5. Replace per-checker Bun launches, stdout/stderr capture files, JSONL reparsing, and child-progress transport with sequential in-process `plan`/`check` calls. Validate returned checker results and preserve selected-checker order, report order, exit semantics, failure isolation, and canonical direct-checker JSONL. No aggregate child process is permitted for a local governed checker.
-6. Define the aggregate display contract: retain `--progress=auto|always|never`; add an explicit opt-in single versus multi-row style selector. Map the active checker's direct status events into global progress continuously. Multi-row display gives each selected checker a stable `AUDIT [ki-skills]`-style row with pending, active, completed, and failed states; terminal width, resize, non-TTY, narrow, and final-newline behaviour remain compatible with FND-010.
-7. Add focused contract, migration, renderer, and integration fixtures: a large active checker, zero-item and no-finding checkers, selected subsets, returned-error and thrown-error handling, narrow/wide/resize/non-TTY output, `auto`/`always`/`never`, direct `govern.ts` modes, source-harness links, ordinary copied payloads, deterministic final reports, and the assertion that aggregate execution makes no Bun child launch. Re-vendor affected payloads, update HELP, decisions, and user guidance, then run serial repository gates.
+1. ✓ Replace the `ki-vendors:` contract with one governed-entrypoint convention: a configured governance skill owns `scripts/govern.ts`; process skills do not. The module exposes side-effect-free `plan` and `check` operations for AUDIT and CONFORM, with injected status tracking, and its guarded CLI dispatches `audit`, `conform`, `educate`, and `help`. Remove `KI_CHECKER_PLAN` and the legacy mode-entrypoint fallback from the bootstrap resolver, skills rubric, decision record, and documentation; do not retain compatibility parsing.
+2. ✓ Move each configured skill's audit/conform construction and direct CLI parsing behind its `govern.ts` entrypoint. Preserve its existing direct arguments, canonical JSONL, terminal reporter, safe conform behaviour, and targeted testing. The thin legacy `audit.ts`/`conform.ts` entrypoints are removed once package keys and any direct references use `govern.ts <verb>`.
+3. ✓ Change bootstrap to identify governed payloads through `scripts/govern.ts`, vendor or source-link that one entrypoint with its existing rubric/shared-module closure, and generate HELP snapshots from the standard governed contract. Retire `SCRIPT_MODES`, `vendorModesOf`, `vendorUnit`, and the generated `ki-audit`/`ki-conform` wrappers. Keep the retained whole-set EDUCATE coordinator under review as a separate boundary while `govern educate` routes through the same validated local mechanism.
+4. ✓ Extract the generated aggregate runner from the `repo-bootstrap.ts` template into canonical `aggregate.ts`, copied and manifest-hashed into `.ki/bin/aggregate.ts`. Give it the same verb grammar as per-skill `govern.ts`; `audit` and `conform` own `--skill`, `--dry-run`, `--progress`, and `--reporter-levels`, while `educate` and `help` reject those irrelevant options. Rename the public generated command to `govern.ts` only if its package-free invocation remains clear; otherwise retain `aggregate.ts` as the generated whole-set name and reserve `govern.ts` for the per-skill contract.
+5. ✓ Replace per-checker Bun launches, stdout/stderr capture files, JSONL reparsing, and child-progress transport with sequential in-process `plan`/`check` calls. Validate returned checker results and preserve selected-checker order, report order, exit semantics, failure isolation, and canonical direct-checker JSONL. No aggregate child process is permitted for a local governed checker.
+6. ✓ Define the aggregate display contract: retain `--progress=auto|always|never`; add an explicit opt-in single versus multi-row style selector. Map the active checker's direct status events into global progress continuously. Multi-row display gives each selected checker a stable `AUDIT [ki-skills]`-style row with pending, active, completed, and failed states; terminal width, resize, non-TTY, narrow, and final-newline behaviour remain compatible with FND-010.
+7. ✓ Add focused contract, migration, renderer, and integration fixtures: a large active checker, zero-item and no-finding checkers, selected subsets, returned-error and thrown-error handling, narrow/wide/resize/non-TTY output, `auto`/`always`/`never`, direct `govern.ts` modes, source-harness links, ordinary copied payloads, deterministic final reports, and the assertion that aggregate execution makes no Bun child launch. Re-vendor affected payloads, update HELP, decisions, and user guidance, then run serial repository gates.
 
 ## Files touched
 
@@ -70,3 +70,39 @@ The completed `ki-self` review reconciled the source-harness linked-payload rule
 - Round 1 — research: ✓ inventoried production child-process calls and classified external-tool, CLI/test, and avoidable local-module boundaries; files: read-only source scope; gate: evidence-backed refactor candidates.
 - Round 2 — judgment: revise this plan around the settled direct-call architecture and separately scoped follow-ups; files: this plan and any affected roadmap items; gate: user review before implementation.
 - Orchestrator: reconcile worker findings, review every proposal against process isolation and standalone-vendored constraints, and commit only the revised planning record.
+
+## Acceptance
+
+### Delivered
+
+FND-015 is implemented and ready for manual acceptance review.
+
+### Summary of changes
+
+Configured governance skills now expose a single `scripts/govern.ts` entrypoint and no longer declare or retain per-mode checker launchers.
+
+Bootstrap vendors or live-links that standard entrypoint, and the canonical aggregate at `skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/aggregate.ts` imports it directly for AUDIT and CONFORM instead of launching Bun child processes or reparsing JSONL.
+
+The aggregate retains the FND-010 single progress bar and adds `--progress-style=single|multi`; multi mode redraws stable per-skill rows in a TTY and writes only initial/final snapshots outside one.
+
+Documentation, rubrics, generated `.ki/` payloads, HELP, decisions, and user guidance now describe the governed-entrypoint contract.
+
+### Verification
+
+- `bunx tsc --noEmit --pretty false` — passed.
+- `bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts .` — passed; regenerated source-harness payloads.
+- `./.ki/bin/ki-audit audit --skill ki-skills --progress=always --progress-style=multi --reporter-levels=FAIL,WARN` — passed; confirmed multi-row snapshots and the existing two `KI-SHAPE-7` warnings only.
+- `bun run test` — passed.
+- `bun run ki:audit` — passed with no FAIL; it reports the same two existing `KI-SHAPE-7` warnings.
+
+Implementation evidence: `ba46272f` and `ffe23326`, with the contract/documentation and this acceptance record committed alongside this packet.
+
+### Outstanding concerns
+
+The two `KI-SHAPE-7` warnings pre-date this work and are outside this plan's contract migration.
+
+### Mini recap
+
+The initial partial aggregate refactor clarified the correct seam: governed checkers should provide callable `plan`/`check` operations, while the aggregate owns orchestration and presentation.
+
+The migration took longer than expected because a broad generated-vendor surface, runtime hooks, package references, tests, and source-link declarations all had to change atomically. Future migrations should inventory and stage those surfaces before beginning a first implementation pass, then commit a complete exemplar skill before scaling out.
