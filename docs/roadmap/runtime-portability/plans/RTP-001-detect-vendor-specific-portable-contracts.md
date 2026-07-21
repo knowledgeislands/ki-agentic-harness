@@ -1,7 +1,7 @@
 ---
 id: 'RTP-001'
 title: Detect vendor-specific assumptions in portable skill contracts
-status: acceptance
+status: done
 roadmap: runtime-portability/detect-vendor-specific-assumptions-in-portable-skill-contracts
 blocks: —
 blocked-by: —
@@ -75,3 +75,7 @@ The dedicated `ki-runtime-binding: true` declaration is intentionally narrow and
 ### Mini recap
 
 The first whole-set scan exposed that runtime-specific content is concentrated in a small set of genuinely binding skills. Explicit structural boundaries are more durable than a word allowlist; future portable wording should use the same boundary rather than suppressing a finding.
+
+## Done
+
+PORT-1 now makes runtime-specific assumptions visible and actionable across the shipped skills. Residual concerns are limited to reviewing declared runtime-binding responsibilities when a new runtime is introduced; no immediate follow-up is required.
