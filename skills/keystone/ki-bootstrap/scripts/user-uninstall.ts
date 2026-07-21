@@ -7,7 +7,7 @@ import { isManagedClaudeHookNamespace } from './internal/user-install/install-cl
 import { CORE_USER_SKILLS, isCurrentUserInstalledSkill } from './internal/user-install/user-install.ts'
 
 type Runtime = 'claude-code' | 'codex'
-type Snapshot = { path: string; kind: 'directory' | 'file'; dev: number | bigint; ino: number | bigint; bytes?: Buffer }
+type Snapshot = { path: string; kind: 'directory' | 'file'; dev: number | bigint; ino: number | bigint; bytes?: Buffer; entries?: string[] }
 type Removal = { path: string; label: string; tree: Snapshot[] }
 
 const RUNTIME_SKILL_DIR: Record<Runtime, string> = {
@@ -33,7 +33,8 @@ function snapshot(path: string): Snapshot {
     kind: current.isDirectory() ? 'directory' : 'file',
     dev: current.dev,
     ino: current.ino,
-    ...(current.isFile() ? { bytes: readFileSync(path) } : {})
+    ...(current.isFile() ? { bytes: readFileSync(path) } : {}),
+    ...(current.isDirectory() ? { entries: readdirSync(path).sort() } : {})
   }
 }
 
@@ -44,8 +45,18 @@ function same(expected: Snapshot): boolean {
       actual.kind === expected.kind &&
       actual.dev === expected.dev &&
       actual.ino === expected.ino &&
-      (expected.bytes?.equals(actual.bytes ?? Buffer.alloc(0)) ?? true)
+      (expected.bytes?.equals(actual.bytes ?? Buffer.alloc(0)) ?? true) &&
+      (expected.entries === undefined || JSON.stringify(actual.entries) === JSON.stringify(expected.entries))
     )
+  } catch {
+    return false
+  }
+}
+
+function sameIdentity(expected: Snapshot): boolean {
+  try {
+    const actual = snapshot(expected.path)
+    return actual.kind === expected.kind && actual.dev === expected.dev && actual.ino === expected.ino
   } catch {
     return false
   }
@@ -65,7 +76,7 @@ function walk(path: string): Snapshot[] {
 function remove(removal: Removal): void {
   if (!removal.tree.every(same)) throw new Error(`${removal.label} changed while user UNINSTALL was preparing`)
   for (const item of [...removal.tree].sort((left, right) => right.path.length - left.path.length)) {
-    if (!same(item)) throw new Error(`${removal.label} changed during user UNINSTALL`)
+    if (item.kind === 'directory' ? !sameIdentity(item) : !same(item)) throw new Error(`${removal.label} changed during user UNINSTALL`)
     if (item.kind === 'file') unlinkSync(item.path)
     else rmdirSync(item.path)
   }
@@ -74,6 +85,17 @@ function remove(removal: Removal): void {
 function usage(): void {
   console.log('Usage: user-uninstall.ts [--home <dir>] [--runtime <claude-code|codex>]... [--dry-run]')
   console.log('\nRemove only integrity-proven KI global skills and the dedicated KI Claude hook namespace.')
+}
+
+function realDirectoryBelow(home: string, relativePath: string): string | undefined {
+  let current = home
+  for (const part of relativePath.split('/')) {
+    current = join(current, part)
+    const found = entry(current)
+    if (!found) return undefined
+    if (found.isSymbolicLink() || !found.isDirectory()) throw new Error(`managed user path must be a real directory: ${current}`)
+  }
+  return current
 }
 
 function main(argv = process.argv.slice(2)): number {
@@ -107,11 +129,8 @@ function main(argv = process.argv.slice(2)): number {
   ]
   const removals: Removal[] = []
   for (const runtime of runtimes) {
-    const root = join(home, RUNTIME_SKILL_DIR[runtime])
-    const rootEntry = entry(root)
-    if (!rootEntry) continue
-    if (rootEntry.isSymbolicLink() || !rootEntry.isDirectory())
-      throw new Error(`user runtime skill directory must be a real directory: ${root}`)
+    const root = realDirectoryBelow(home, RUNTIME_SKILL_DIR[runtime])
+    if (!root) continue
     for (const skill of CORE_USER_SKILLS) {
       const path = join(root, skill)
       if (!entry(path)) continue
@@ -122,10 +141,12 @@ function main(argv = process.argv.slice(2)): number {
   if (runtimes.includes('claude-code')) {
     const namespace = join(home, '.claude', 'hooks', 'knowledgeislands', 'ki-agentic-harness')
     if (entry(namespace)) {
+      realDirectoryBelow(home, join('.claude', 'hooks', 'knowledgeislands', 'ki-agentic-harness'))
       if (!isManagedClaudeHookNamespace(namespace)) throw new Error(`cannot prove Claude hook namespace ownership: ${namespace}`)
       removals.push({ path: namespace, label: '.claude/hooks/knowledgeislands/ki-agentic-harness', tree: walk(namespace) })
     }
   }
+  if (!removals.every((removal) => removal.tree.every(same))) throw new Error('managed user paths changed while UNINSTALL was preparing')
   if (dryRun) {
     for (const removal of removals) console.log(`remove  ${removal.label}`)
     console.log('dry run — nothing changed')

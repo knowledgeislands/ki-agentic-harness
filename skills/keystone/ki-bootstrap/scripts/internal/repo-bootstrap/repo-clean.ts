@@ -9,7 +9,7 @@ import { declaredSkills } from './resolve.ts'
 import { runtimeSkillsDir, supportedRuntimes } from './runtime-paths.ts'
 
 type Kind = 'directory' | 'file' | 'link'
-type Snapshot = { path: string; kind: Kind; dev: number; ino: number; bytes?: Buffer; target?: string }
+type Snapshot = { path: string; kind: Kind; dev: number; ino: number; bytes?: Buffer; target?: string; entries?: string[] }
 type Removal = { path: string; label: string; tree: Snapshot[] }
 
 const KI = '.ki'
@@ -25,7 +25,8 @@ function snapshot(path: string): Snapshot {
     dev: stat.dev,
     ino: stat.ino,
     ...(stat.isFile() ? { bytes: readFileSync(path) } : {}),
-    ...(stat.isSymbolicLink() ? { target: readlinkSync(path) } : {})
+    ...(stat.isSymbolicLink() ? { target: readlinkSync(path) } : {}),
+    ...(stat.isDirectory() ? { entries: readdirSync(path).sort() } : {})
   }
 }
 
@@ -37,8 +38,18 @@ function same(expected: Snapshot, path = expected.path): boolean {
       actual.dev === expected.dev &&
       actual.ino === expected.ino &&
       (expected.bytes === undefined || actual.bytes?.equals(expected.bytes) === true) &&
-      (expected.target === undefined || actual.target === expected.target)
+      (expected.target === undefined || actual.target === expected.target) &&
+      (expected.entries === undefined || JSON.stringify(actual.entries) === JSON.stringify(expected.entries))
     )
+  } catch {
+    return false
+  }
+}
+
+function sameIdentity(expected: Snapshot): boolean {
+  try {
+    const actual = snapshot(expected.path)
+    return actual.kind === expected.kind && actual.dev === expected.dev && actual.ino === expected.ino
   } catch {
     return false
   }
@@ -205,20 +216,30 @@ function ownedGeneratedState(target: string): Removal[] {
   ]
 }
 
+function runtimeRoot(target: string, runtime: string): string | undefined {
+  let current = target
+  for (const part of runtimeSkillsDir(runtime).split('/')) {
+    current = join(current, part)
+    try {
+      if (snapshot(current).kind !== 'directory') throw new Error(`managed runtime path must be a real directory: ${current}`)
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') return undefined
+      throw error
+    }
+  }
+  return current
+}
+
 function runtimeRemovals(target: string, config: string, strict = false): Removal[] {
   const removals: Removal[] = []
   const expected = new Set(declaredSkills(config).filter((skill) => skill !== 'ki-bootstrap'))
   const localKiSelfSource = join(target, KI, 'self', 'skill')
   const harness = /^\[ki-harness\][ \t]*$/m.test(config) ? resolveHarnessSource(target) : undefined
   for (const runtime of supportedRuntimes(config)) {
-    const root = join(target, runtimeSkillsDir(runtime))
+    const root = runtimeRoot(target, runtime)
+    if (!root) continue
     let names: string[]
-    try {
-      names = readdirSync(root).sort()
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code === 'ENOENT') continue
-      throw error
-    }
+    names = readdirSync(root).sort()
     for (const name of names) {
       const path = join(root, name)
       let entry: Snapshot
@@ -252,7 +273,12 @@ function uninstallConfigRemoval(target: string, config: string): Removal {
   } catch {
     throw new Error('cannot prove repository declaration ownership: .ki-config.toml is not valid TOML')
   }
-  if (!Object.keys(parsed).length || Object.keys(parsed).some((key) => !/^ki-[A-Za-z0-9_-]+$/.test(key)))
+  if (
+    !Object.keys(parsed).length ||
+    Object.entries(parsed).some(
+      ([key, value]) => !/^ki-[A-Za-z0-9_-]+$/.test(key) || typeof value !== 'object' || value === null || Array.isArray(value)
+    )
+  )
     throw new Error('cannot prove repository declaration ownership: .ki-config.toml contains non-KI configuration')
   const path = join(target, '.ki-config.toml')
   return { path, label: '.ki-config.toml', tree: [snapshot(path)] }
@@ -265,7 +291,7 @@ function assertUnchanged(removal: Removal): void {
 function removeTree(removal: Removal): void {
   assertUnchanged(removal)
   for (const item of [...removal.tree].sort((a, b) => b.path.length - a.path.length)) {
-    if (!same(item)) throw new Error(`${removal.label} changed during CLEAN`)
+    if (item.kind === 'directory' ? !sameIdentity(item) : !same(item)) throw new Error(`${removal.label} changed during CLEAN`)
     if (item.kind === 'file' || item.kind === 'link') unlinkSync(item.path)
     else rmdirSync(item.path)
   }
@@ -284,15 +310,26 @@ function usage(): void {
   console.log('\nRemove only manifest-proven .ki generated output and unchanged generated runtime skill copies.')
 }
 
+function repositoryOptions(argv: string[], operation: string): { dryRun: boolean; target: string } {
+  let dryRun = false
+  let target: string | undefined
+  for (const value of argv) {
+    if (value === '--dry-run') {
+      if (dryRun) throw new Error(`${operation} accepts --dry-run at most once`)
+      dryRun = true
+    } else if (value.startsWith('-')) throw new Error(`${operation} does not recognise option: ${value}`)
+    else if (target) throw new Error(`${operation} accepts at most one target`)
+    else target = value
+  }
+  return { dryRun, target: targetRoot(target ?? '.') }
+}
+
 export function runRepositoryClean(argv = process.argv.slice(2)): number {
   if (argv.includes('--help') || argv.includes('-h')) {
     usage()
     return 0
   }
-  const dryRun = argv.includes('--dry-run')
-  const values = argv.filter((value) => !value.startsWith('-'))
-  if (values.length > 1) throw new Error('CLEAN accepts at most one target')
-  const target = targetRoot(values[0] ?? '.')
+  const { dryRun, target } = repositoryOptions(argv, 'CLEAN')
   const config = regularText(join(target, '.ki-config.toml'), '.ki-config.toml')
   const generated = ownedGeneratedState(target)
   const removals = [...generated, ...runtimeRemovals(target, config)]
@@ -316,10 +353,7 @@ export function runRepositoryUninstall(argv = process.argv.slice(2)): number {
     console.log('\nEnd repository adoption by removing only proven KI-generated state and a sole-purpose KI declaration.')
     return 0
   }
-  const dryRun = argv.includes('--dry-run')
-  const values = argv.filter((value) => !value.startsWith('-'))
-  if (values.length > 1) throw new Error('repository UNINSTALL accepts at most one target')
-  const target = targetRoot(values[0] ?? '.')
+  const { dryRun, target } = repositoryOptions(argv, 'repository UNINSTALL')
   const config = regularText(join(target, '.ki-config.toml'), '.ki-config.toml')
   const removals = [...ownedGeneratedState(target), ...runtimeRemovals(target, config, true), uninstallConfigRemoval(target, config)]
   for (const removal of removals) assertUnchanged(removal)

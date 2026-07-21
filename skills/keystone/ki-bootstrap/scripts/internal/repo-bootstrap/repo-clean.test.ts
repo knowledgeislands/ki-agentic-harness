@@ -136,7 +136,7 @@ try {
       !existsSync(join(uninstallable, '.claude', 'skills', 'ki-repo'))
   )
   check('repository UNINSTALL never mutates user state', readFileSync(join(userState, 'sentinel'), 'utf8') === 'preserve user state\n')
-  check('repository UNINSTALL is repeat-safe after a successful removal', runUninstall(uninstallable).status !== 0)
+  check('repository UNINSTALL refuses a repeated request without a remaining declaration', runUninstall(uninstallable).status !== 0)
 } finally {
   rmSync(uninstallable, { recursive: true, force: true })
   rmSync(userState, { recursive: true, force: true })
@@ -276,6 +276,46 @@ try {
   check('repository UNINSTALL refusal leaves every repository path unchanged', snapshot(uninstallAltered) === before)
 } finally {
   rmSync(uninstallAltered, { recursive: true, force: true })
+}
+
+const uninstallUnsafe = fixture()
+const uninstallOutside = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-uninstall-outside-')))
+try {
+  check('unsafe repository UNINSTALL fixture EDUCATE succeeds', educate(uninstallUnsafe).status === 0)
+  writeFileSync(join(uninstallOutside, 'sentinel'), 'outside\n')
+  const runtimeRoot = join(uninstallUnsafe, '.claude', 'skills')
+  rmSync(runtimeRoot, { recursive: true })
+  symlinkSync(uninstallOutside, runtimeRoot)
+  check('repository UNINSTALL refuses a symlinked runtime root', runUninstall(uninstallUnsafe).status !== 0)
+  check(
+    'repository UNINSTALL never traverses a symlinked runtime root',
+    readFileSync(join(uninstallOutside, 'sentinel'), 'utf8') === 'outside\n'
+  )
+} finally {
+  rmSync(uninstallUnsafe, { recursive: true, force: true })
+  rmSync(uninstallOutside, { recursive: true, force: true })
+}
+
+const uninstallMixedConfig = fixture()
+try {
+  check('mixed-config repository UNINSTALL fixture EDUCATE succeeds', educate(uninstallMixedConfig).status === 0)
+  const configPath = join(uninstallMixedConfig, '.ki-config.toml')
+  writeFileSync(configPath, `ki-private = "preserve"\n${readFileSync(configPath, 'utf8')}`)
+  const before = snapshot(uninstallMixedConfig)
+  check('repository UNINSTALL refuses a KI-prefixed root scalar', runUninstall(uninstallMixedConfig).status !== 0)
+  check('repository UNINSTALL preserves a mixed declaration unchanged', snapshot(uninstallMixedConfig) === before)
+} finally {
+  rmSync(uninstallMixedConfig, { recursive: true, force: true })
+}
+
+const uninstallUnknownOption = fixture()
+try {
+  check('unknown-option repository UNINSTALL fixture EDUCATE succeeds', educate(uninstallUnknownOption).status === 0)
+  const before = snapshot(uninstallUnknownOption)
+  check('repository UNINSTALL rejects an unknown option before deletion', runUninstall(uninstallUnknownOption, ['--typo']).status !== 0)
+  check('unknown-option refusal leaves every repository path unchanged', snapshot(uninstallUnknownOption) === before)
+} finally {
+  rmSync(uninstallUnknownOption, { recursive: true, force: true })
 }
 
 if (failed) process.exit(1)

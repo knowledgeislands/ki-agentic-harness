@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import { spawnSync } from 'node:child_process'
 /** Focused safety checks for user-scoped Knowledge Islands UNINSTALL. */
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -78,6 +78,20 @@ try {
   )
 } finally {
   rmSync(altered, { recursive: true, force: true })
+}
+
+const linked = homeFixture()
+const outside = mkdtempSync(join(tmpdir(), 'ki-user-uninstall-outside-'))
+try {
+  check('linked user UNINSTALL fixture install succeeds', run(install, linked).status === 0)
+  writeFileSync(join(outside, 'sentinel'), 'outside\n')
+  rmSync(join(linked, '.agents'), { recursive: true, force: true })
+  symlinkSync(outside, join(linked, '.agents'))
+  check('user UNINSTALL refuses a symlinked runtime parent', run(uninstall, linked, ['--runtime', 'codex']).status !== 0)
+  check('user UNINSTALL never traverses a symlinked runtime parent', readFileSync(join(outside, 'sentinel'), 'utf8') === 'outside\n')
+} finally {
+  rmSync(linked, { recursive: true, force: true })
+  rmSync(outside, { recursive: true, force: true })
 }
 
 if (failed) process.exit(1)
