@@ -1,7 +1,7 @@
 ---
 id: 'RTP-001'
 title: Detect vendor-specific assumptions in portable skill contracts
-status: open
+status: ready
 roadmap: runtime-portability/detect-vendor-specific-assumptions-in-portable-skill-contracts
 blocks: —
 blocked-by: —
