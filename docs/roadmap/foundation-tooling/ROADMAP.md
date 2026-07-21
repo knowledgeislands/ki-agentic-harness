@@ -10,7 +10,7 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 ### Implement scoped lifecycle operations
 
-Implement the lifecycle boundary in `ODR-KI-HARNESS-001`: repository CLEAN removes only proven generated duplication and leaves the declaration ready for EDUCATE; repository and user DOCTOR are read-only; and repository and user UNINSTALL remove KI-owned traces only at their explicit scope. Provide zero-install repository launchers that run from temporary source without changing user state. This boundary must land before the doctor and `kisle` command surfaces it defines.
+Implement the lifecycle boundary in `ODR-KI-HARNESS-001`: repository CLEAN removes only proven generated duplication and leaves the declaration ready for EDUCATE; repository and user DOCTOR are read-only; and repository and user UNINSTALL remove KI-owned traces only at their explicit scope. Provide zero-install repository launchers that run from temporary source without changing user state. This boundary must land before the doctor and `ki` command surfaces it defines.
 
 **Plan:** [FND-016](plans/FND-016-implement-scoped-lifecycle-operations.md)
 
@@ -20,11 +20,11 @@ Add source-owned DOCTOR operations for explicit repository and user scopes. Repo
 
 **Plan:** [FND-017](plans/FND-017-add-scoped-read-only-bootstrap-doctor-operations.md)
 
-### Establish the installable `kisle` command-line interface
+### Establish the Knowledge Islands command-line interface (CLI)
 
-Design `kisle`, the stable end-user and automation entrypoint for Knowledge Islands operations, then hand its implementation to a zero-dependency `tools-kisle` repository and its release to `homebrew-tap`, following the established `mgit` delivery shape. Its initial surface covers `user install`, repository `bootstrap`, `educate`, `audit`, `conform`, and `clean`, plus HELP; it must expose the lifecycle contract without alternate meanings or harness-maintainer utilities. `clean` is repository-only, while `doctor` and `uninstall` require explicit `repo` or `user` scope when they arrive. Settle shell completion, versioning, runtime independence, error/reporting contract, and its relationship to installed skills, public launchers, and repository-local vendored commands before implementation. Do not claim the bare `ki` command: it is already published as Kotlin's Interactive Shell through Homebrew.
+Design `ki`, the Knowledge Islands command-line interface (CLI) and stable end-user/automation entrypoint, then hand its implementation to a zero-dependency `tools-ki` repository and its release to `homebrew-tap`, following the established `mgit` delivery shape. Its initial surface covers `user install`, repository `bootstrap`, `educate`, `audit`, `conform`, and `clean`, plus HELP; it must expose the lifecycle contract without alternate meanings or harness-maintainer utilities. `clean` is repository-only, while `doctor` and `uninstall` require explicit `repo` or `user` scope when they arrive. Settle shell completion, versioning, runtime independence, error/reporting contract, and its relationship to installed skills, public launchers, and repository-local vendored commands before implementation.
 
-**Plan:** [FND-018](plans/FND-018-establish-installable-kisle-command-line-interface.md)
+**Plan:** [FND-018](plans/FND-018-establish-knowledge-islands-command-line-interface.md)
 
 ### Review structural consistency across shipped skills
 

@@ -7,7 +7,7 @@ This portfolio view is generated from the canonical theme roadmaps under `docs/r
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
 - [Foundation Tooling: Add scoped read-only bootstrap doctor operations](docs/roadmap/foundation-tooling/ROADMAP.md#add-scoped-read-only-bootstrap-doctor-operations)
-- [Foundation Tooling: Establish the installable `kisle` command-line interface](docs/roadmap/foundation-tooling/ROADMAP.md#establish-the-installable-kisle-command-line-interface)
+- [Foundation Tooling: Establish the Knowledge Islands command-line interface (CLI)](docs/roadmap/foundation-tooling/ROADMAP.md#establish-the-knowledge-islands-command-line-interface-cli)
 - [Foundation Tooling: Implement scoped lifecycle operations](docs/roadmap/foundation-tooling/ROADMAP.md#implement-scoped-lifecycle-operations)
 - [Foundation Tooling: Review structural consistency across shipped skills](docs/roadmap/foundation-tooling/ROADMAP.md#review-structural-consistency-across-shipped-skills)
 - [Runtime Portability: Detect vendor-specific assumptions in portable skill contracts](docs/roadmap/runtime-portability/ROADMAP.md#detect-vendor-specific-assumptions-in-portable-skill-contracts)
