@@ -204,6 +204,8 @@ const parseOptions = (mode: CheckMode, argv: readonly string[]) => {
 }
 
 const ANSI_ESCAPE = new RegExp(`${String.fromCharCode(27)}\\[[0-?]*[ -/]*[@-~]`, 'gu')
+const FALLBACK_TERMINAL_COLUMNS = 80
+const COMMAND_COLUMN_WIDTH = 10
 
 const displayWidth = (value: string): number =>
   Array.from(value.replace(ANSI_ESCAPE, '')).reduce((width, char) => {
@@ -222,45 +224,103 @@ const truncate = (value: string, width: number): string => {
   return `${output}...`
 }
 
-const progressLine = (mode: CheckMode, completed: number, total: number, detail: string): string => {
-  const columns = process.stderr.isTTY && process.stderr.columns > 0 ? process.stderr.columns : 80
-  const left = mode.toUpperCase()
-  const summary = `${completed}/${total} ${total === 0 ? 100 : Math.round((completed / total) * 100)}% ${detail}`
-  const available = columns - left.length - summary.length - 4
-  if (available < 8) return truncate(summary, columns)
-  const filled = total === 0 ? available : Math.min(available, Math.floor((completed / total) * available))
-  return `${left} [${'#'.repeat(filled)}${'.'.repeat(available - filled)}] ${summary}`
+const progressBar = (width: number, completed?: number, total?: number): string => {
+  const innerWidth = width - 2
+  if (completed === undefined || total === undefined) return `[>${'.'.repeat(Math.max(0, innerWidth - 1))}]`
+  if (total <= 0) return `[${'#'.repeat(innerWidth)}]`
+  const clamped = Math.max(0, Math.min(completed, total))
+  const filled = clamped === total ? innerWidth : Math.floor((clamped / total) * innerWidth)
+  return `[${'#'.repeat(filled)}${'.'.repeat(innerWidth - filled)}]`
 }
 
-const createProgress = (mode: CheckMode, progress: ProgressMode, style: ProgressStyle, total: number, skills: readonly string[]) => {
-  const enabled = progress === 'always' || (progress === 'auto' && Boolean(process.stderr.isTTY))
-  const states = new Map(skills.map((skill) => [skill, 'pending']))
+type ProgressTerminal = {
+  interactive: boolean
+  columns: () => number
+  write: (line: string) => void
+}
+
+const terminal = (): ProgressTerminal => ({
+  interactive: Boolean(process.stderr.isTTY),
+  columns: () =>
+    process.stderr.isTTY && Number.isFinite(process.stderr.columns) && process.stderr.columns > 0
+      ? Math.floor(process.stderr.columns)
+      : FALLBACK_TERMINAL_COLUMNS,
+  write: (line) => process.stderr.write(line)
+})
+
+const progressLine = (left: string, right: string, completed: number | undefined, total: number | undefined, columns: number): string => {
+  const leftWidth = Math.min(COMMAND_COLUMN_WIDTH, columns)
+  const remainingWidth = columns - leftWidth - 2
+  const barWidth = Math.min(100, Math.floor(remainingWidth / 2))
+  const rightWidth = remainingWidth - barWidth
+  if (barWidth >= 3 && rightWidth > 0)
+    return `${truncate(left, leftWidth).padEnd(leftWidth)} ${progressBar(barWidth, completed, total)} ${truncate(right, rightWidth).padEnd(rightWidth)}`
+  return truncate(right, columns)
+}
+
+type MultiProgress = { completed?: number; total?: number; state: string }
+
+export const createAggregateProgress = (
+  mode: CheckMode,
+  progress: ProgressMode,
+  style: ProgressStyle,
+  skills: readonly string[],
+  output: ProgressTerminal = terminal()
+) => {
+  const enabled = progress === 'always' || (progress === 'auto' && output.interactive)
+  const states = new Map<string, MultiProgress>(skills.map((skill) => [skill, { state: 'pending' }]))
+  let total: number | undefined
   let multiRendered = false
   const renderMulti = (final = false): void => {
     if (!enabled) return
     // A terminal can redraw the stable rows in place. In redirected output,
     // emit one snapshot at the start and one at completion instead of a line
     // for every checker event.
-    if (!process.stderr.isTTY && multiRendered && !final) return
-    const lines = skills.map((skill) => `${mode.toUpperCase()} [${skill}] ${states.get(skill) ?? 'pending'}`)
-    if (process.stderr.isTTY && multiRendered) process.stderr.write(`\x1b[${lines.length}A`)
-    process.stderr.write(`${lines.map((line) => `\r\x1b[2K${line}\n`).join('')}`)
+    if (!output.interactive && multiRendered && !final) return
+    const lines = skills.map((skill) => {
+      const state = states.get(skill) ?? { state: 'pending' }
+      return progressLine(mode.toUpperCase(), `[${skill}] ${state.state}`, state.completed, state.total, output.columns())
+    })
+    if (output.interactive && multiRendered) output.write(`\x1b[${lines.length}A`)
+    output.write(`${lines.map((line) => `${output.interactive ? '\r\x1b[2K' : ''}${line}\n`).join('')}`)
     multiRendered = true
   }
-  const write = (completed: number, detail: string, final = false): void => {
+  const detail = (completed: number, state: string): string =>
+    total === undefined
+      ? state
+      : `${Math.max(0, Math.min(completed, total))}/${total} ${total === 0 ? 100 : Math.round((Math.max(0, Math.min(completed, total)) / total) * 100)}% ${state}`
+  const writeSingle = (completed: number, state: string, final = false): void => {
     if (!enabled) return
-    if (style === 'multi') {
-      const skill = skills.find((candidate) => detail === candidate || detail.startsWith(`${candidate}:`))
-      if (skill) states.set(skill, final ? 'complete' : detail.replace(`${skill}:`, '').trim() || 'active')
-      if (final) for (const candidate of skills) if (states.get(candidate) === 'pending') states.set(candidate, 'complete')
-      renderMulti(final)
-      return
-    }
-    process.stderr.write(
-      `${process.stderr.isTTY ? '\r\x1b[2K' : ''}${progressLine(mode, completed, total, detail)}${final || !process.stderr.isTTY ? '\n' : ''}`
+    output.write(
+      `${output.interactive ? '\r\x1b[2K' : ''}${progressLine(mode.toUpperCase(), detail(completed, state), total === undefined ? undefined : completed, total, output.columns())}${final || !output.interactive ? '\n' : ''}`
     )
   }
-  return { write, complete: () => write(total, 'complete', true) }
+  const write = (completed: number, state: string, entry?: { skill: string; completed?: number; total?: number }, final = false): void => {
+    if (style !== 'multi' || total === undefined) {
+      writeSingle(completed, state, final)
+      return
+    }
+    if (entry) states.set(entry.skill, { completed: entry.completed, total: entry.total, state })
+    if (final) {
+      for (const [skill, current] of states) if (current.state === 'pending') states.set(skill, { ...current, state: 'complete' })
+    }
+    renderMulti(final)
+  }
+  return {
+    initialise: () => writeSingle(0, 'initialising'),
+    discover: (completed: number, count: number) => writeSingle(0, `reading checker plans ${completed}/${count}`),
+    planned: (nextTotal: number, planned: ReadonlyMap<string, number>) => {
+      total = nextTotal
+      for (const skill of skills) states.set(skill, { total: planned.get(skill), completed: 0, state: 'pending' })
+      if (style === 'multi') renderMulti()
+    },
+    start: () => write(0, 'starting'),
+    active: (completed: number, skill: string, localCompleted: number, localTotal: number, state: string) =>
+      write(completed, state, { skill, completed: localCompleted, total: localTotal }),
+    failed: (completed: number, skill: string, localCompleted: number, localTotal: number) =>
+      write(completed, 'failed', { skill, completed: localCompleted, total: localTotal }),
+    complete: () => write(total ?? 0, 'complete', undefined, true)
+  }
 }
 
 const findingLine = (finding: Finding, skill?: string, full = true): string =>
@@ -319,7 +379,9 @@ const run = async (mode: CheckMode, argv: readonly string[]): Promise<number> =>
   const modules = new Map<string, GovernedModule>()
   const plans = new Map<string, number>()
   const errors: string[] = []
-  for (const skill of skills) {
+  const progress = createAggregateProgress(mode, options.progress, options.progressStyle, skills)
+  progress.initialise()
+  for (const [index, skill] of skills.entries()) {
     try {
       const governed = await importGoverned(skill)
       modules.set(skill, governed)
@@ -330,17 +392,19 @@ const run = async (mode: CheckMode, argv: readonly string[]): Promise<number> =>
       errors.push(`${skill}: ${error instanceof Error ? error.message : String(error)}`)
       plans.set(skill, 1)
     }
+    progress.discover(index + 1, skills.length)
   }
   const total = [...plans.values()].reduce((sum, value) => sum + value, 0)
-  const progress = createProgress(mode, options.progress, options.progressStyle, total, skills)
+  progress.planned(total, plans)
   const reports: AggregateReport[] = []
   let completed = 0
+  progress.start()
   for (const skill of skills) {
     const governed = modules.get(skill)
     const planned = plans.get(skill) ?? 1
-    progress.write(completed, skill)
+    progress.active(completed, skill, 0, planned, `starting ${skill}`)
     if (!governed) {
-      progress.write(Math.min(total, completed + planned), `${skill}: failed`)
+      progress.failed(Math.min(total, completed + planned), skill, planned, planned)
       completed += planned
       continue
     }
@@ -349,17 +413,23 @@ const run = async (mode: CheckMode, argv: readonly string[]): Promise<number> =>
         mode,
         checkerOptions(governed, mode, options.dryRun, (event) => {
           if (event.type === 'item-complete' || event.type === 'complete' || event.type === 'failed')
-            progress.write(Math.min(total, completed + event.completed), `${skill}: ${event.code ?? event.type}`)
+            progress.active(
+              Math.min(total, completed + event.completed),
+              skill,
+              event.completed,
+              event.total,
+              event.type === 'failed' ? 'failed' : event.code ?? event.type
+            )
         })
       )
       reports.push({ skill, findings: result.findings, summary: result.summary })
       if (result.exitCode !== 0) {
         errors.push(`${skill}: checker reported failures`)
-        progress.write(Math.min(total, completed + planned), `${skill}: failed`)
+        progress.failed(Math.min(total, completed + planned), skill, planned, planned)
       }
     } catch (error) {
       errors.push(`${skill}: ${error instanceof Error ? error.message : String(error)}`)
-      progress.write(Math.min(total, completed + planned), `${skill}: failed`)
+      progress.failed(Math.min(total, completed + planned), skill, planned, planned)
     }
     completed += planned
   }
@@ -387,9 +457,11 @@ const main = async (): Promise<void> => {
   process.exitCode = await run(verb, argv)
 }
 
-try {
-  await main()
-} catch (error) {
-  process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
-  process.exitCode = 2
+if (import.meta.main) {
+  try {
+    await main()
+  } catch (error) {
+    process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`)
+    process.exitCode = 2
+  }
 }

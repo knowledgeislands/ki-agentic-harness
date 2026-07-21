@@ -419,9 +419,17 @@ try {
     .filter(Boolean)
     .map((line) => line.trimEnd())
   check(
-    'aggregate → reports direct checker progress without contaminating final output',
-    progressAggregate.stderr.length > 0 &&
-      progressLines.length >= 1 &&
+    'aggregate → restores stable startup, plan discovery, and active progress without contaminating final output',
+    progressAggregate.stderr.includes('AUDIT      [') &&
+      progressAggregate.stderr.includes('initialising') &&
+      progressAggregate.stderr.includes('reading checker plans 1/1') &&
+      progressAggregate.stderr.includes('0% starting') &&
+      progressAggregate.stderr.includes('ki-skills') &&
+      progressLines.length >= 4 &&
+      progressLines.every(
+        (line) => line.indexOf('[') === 11 && line.match(/\[[#.>]+\]/u)?.[0].length === 34 && line.indexOf(']') + 2 === 46
+      ) &&
+      !progressAggregate.stderr.includes('remaining') &&
       !progressAggregate.stdout.includes('AUDIT      [') &&
       !progressAggregate.stdout.includes('invalid checker reports')
   )
@@ -434,9 +442,15 @@ try {
     quietAggregate.stderr === '' && !quietAggregate.stdout.includes('checker wrote to stderr')
   )
 
+  const aggregateSource = readFileSync(aggregate, 'utf8')
+  const auditConformSource = aggregateSource.slice(
+    aggregateSource.indexOf('const importGoverned ='),
+    aggregateSource.indexOf('const main =')
+  )
   check(
-    'aggregate → has no subprocess capture or child-report fallback path',
-    !readFileSync(aggregate, 'utf8').includes('spawnSync') && !readFileSync(aggregate, 'utf8').includes('parseJsonl')
+    'aggregate → AUDIT and CONFORM directly import governed modules without a checker subprocess or transport fallback',
+    auditConformSource.includes('await import(') &&
+      !/\b(?:execFileSync|spawnSync|spawn|Bun\.spawn|KI_CHECKER_PLAN|parseJsonl)\b/u.test(auditConformSource)
   )
 } finally {
   rmSync(checkerRoot, { recursive: true, force: true })
