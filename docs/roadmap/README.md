@@ -11,14 +11,6 @@ Canonical themes, active execution plans, and completed plan records.
 
 ## Active plans
 
-### [FND-015](foundation-tooling/plans/FND-015-add-safe-multiprogress-aggregate-execution.md)
-
-- **Title:** Unify governed entrypoints and in-process aggregate execution
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/add-safe-multiprogress-aggregate-execution`
-- **Status:** acceptance
-- **Blocks:** —
-
 ### [FND-016](foundation-tooling/plans/FND-016-implement-scoped-lifecycle-operations.md)
 
 - **Title:** Implement scoped lifecycle operations
@@ -61,7 +53,12 @@ Canonical themes, active execution plans, and completed plan records.
 
 ## Completed plans
 
-No completed plans.
+### [FND-015](foundation-tooling/plans/FND-015-add-safe-multiprogress-aggregate-execution.md)
+
+- **Title:** Unify governed entrypoints and in-process aggregate execution
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/add-safe-multiprogress-aggregate-execution`
+- **Status:** done
 
 ## Dependency graph
 

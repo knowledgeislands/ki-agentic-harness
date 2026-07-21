@@ -1,7 +1,7 @@
 ---
 id: 'FND-015'
 title: Unify governed entrypoints and in-process aggregate execution
-status: acceptance
+status: done
 roadmap: foundation-tooling/add-safe-multiprogress-aggregate-execution
 blocks: —
 blocked-by: —
@@ -103,3 +103,9 @@ The two existing `KI-SHAPE-7` warnings are unrelated to this plan. The aggregate
 ### Mini recap
 
 The in-process migration and the progress contract are separable concerns. Moving orchestration from child-process output to direct `plan`/`check` calls must preserve the presentation lifecycle explicitly: initialise, discover work, begin, advance, and complete. Exporting the renderer behind a terminal adapter made that contract directly testable, including resize simulation, without weakening the standalone vendored runner.
+
+## Done
+
+Completed after explicit user acceptance. FND-015 now uses one import-safe governed entrypoint per configured governance skill, executes aggregate AUDIT and CONFORM through direct in-process `plan`/`check` calls, and retains FND-010's stable terminal presentation contract.
+
+Residual concern: none. The separately discussed idea of showing an item-start status before a slow check completes was not adopted as part of this plan and needs a separately scoped decision before implementation.
