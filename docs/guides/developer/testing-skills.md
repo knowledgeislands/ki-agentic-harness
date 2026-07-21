@@ -5,7 +5,7 @@ Use the source checker while developing one skill so its mechanical result is is
 From the harness repository root, run:
 
 ```bash
-bun run ./skills/keystone/ki-skills/scripts/audit.ts \
+bun run ./skills/keystone/ki-skills/scripts/govern.ts audit \
   ./skills/<area>/<skill> \
   --reporter=terminal
 ```
@@ -13,7 +13,7 @@ bun run ./skills/keystone/ki-skills/scripts/audit.ts \
 For example, to test `ki-skills` itself:
 
 ```bash
-bun run ./skills/keystone/ki-skills/scripts/audit.ts \
+bun run ./skills/keystone/ki-skills/scripts/govern.ts audit \
   ./skills/keystone/ki-skills \
   --reporter=terminal
 ```
@@ -29,7 +29,7 @@ Always pass the skill path when isolating one skill. With no target, the checker
 Preview the same skill's safe mechanical repairs with:
 
 ```bash
-bun run ./skills/keystone/ki-skills/scripts/conform.ts \
+bun run ./skills/keystone/ki-skills/scripts/govern.ts conform \
   ./skills/<area>/<skill> \
   --dry-run \
   --reporter=terminal

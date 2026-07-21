@@ -76,7 +76,7 @@ There is deliberately **no `ki-shell` skill**: shell is the reference language, 
 
 ## The `[ki-tools]` marker
 
-A `tools-*` repo opts in by declaring a **keyless** `[ki-tools]` table in its `.ki-config.toml` — a bare marker whose _presence_ is the whole contract, exactly like `[ki-mcp]`. It is validated **down**: the checker reads only this table and warns on any unknown key inside it (there are none today), never reading another skill's table. `bun scripts/audit.ts --educate` prints the default block.
+A `tools-*` repo opts in by declaring a **keyless** `[ki-tools]` table in its `.ki-config.toml` — a bare marker whose _presence_ is the whole contract, exactly like `[ki-mcp]`. It is validated **down**: the checker reads only this table and warns on any unknown key inside it (there are none today), never reading another skill's table. `bun scripts/govern.ts --educate` prints the default block.
 
 A language conditional is declared as its **own** table, not a key here: a TS/Bun tool carries both `[ki-tools]` and `[ki-engineering]`.
 

@@ -1,6 +1,6 @@
 # The tokenomics standard — what a lean, well-composed context budget looks like
 
-The normative, quotable reference behind [the rubric](rubric.md) and [`../scripts/audit.ts`](../scripts/audit.ts). It governs the **tokenomics** of a Claude Code working environment: the cost of the context the model carries, paid on every turn, as produced by the **composition** of the user-wide and project-local configuration layers over any base in play. It deliberately holds **no** volatile reference numbers (model ids, prices, cache TTLs, context-window sizes) — those live in the `claude-api` skill and are resolved at runtime; this standard governs the _shape_ of the budget, not the figures of the day.
+The normative, quotable reference behind [the rubric](rubric.md) and [`../scripts/govern.ts`](../scripts/govern.ts). It governs the **tokenomics** of a Claude Code working environment: the cost of the context the model carries, paid on every turn, as produced by the **composition** of the user-wide and project-local configuration layers over any base in play. It deliberately holds **no** volatile reference numbers (model ids, prices, cache TTLs, context-window sizes) — those live in the `claude-api` skill and are resolved at runtime; this standard governs the _shape_ of the budget, not the figures of the day.
 
 ## Contents
 

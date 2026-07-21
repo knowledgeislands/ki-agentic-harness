@@ -26,7 +26,7 @@ _Verify:_ each governance `SKILL.md`'s `## Mode CONFORM` describes the audit →
 
 ### MODE-004 — EDUCATE is mandatory even when thin
 
-Every governance skill MUST carry an EDUCATE — a `scripts/educate.ts` delegating into the `ki-bootstrap` chain — even when it scaffolds no standalone artifact, in which case EDUCATE's job is to vendor the skill's declared `ki-vendors:` unit into the target's `.ki/`, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+Every governance skill MUST carry an EDUCATE — a `scripts/educate.ts` delegating into the `ki-bootstrap` chain — even when it scaffolds no standalone artifact, in which case EDUCATE's job is to vendor the skill's `scripts/govern.ts` entrypoint into the target's `.ki/`, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
 
 _Verify:_ every `skills/*/scripts/educate.ts` exists and execs the chain engine; `lint-skills.ts` SHAPE checks the EDUCATE mode and delegator.
 

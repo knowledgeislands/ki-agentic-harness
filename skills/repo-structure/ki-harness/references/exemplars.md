@@ -72,7 +72,7 @@ The two harness-specific scripts (`ki:skills:copy:project` and `ki:skills:audit`
   "scripts": {
     "ki:skills:copy:project": "bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/publish-project-skills.ts",
     "ki:skills:link:global": "bun skills/repo-structure/ki-harness/scripts/link-global-skills.ts",
-    "ki:skills:audit": "bun .ki/bootstrap/checkers/ki-skills/scripts/audit.ts ."
+    "ki:skills:audit": "bun .ki/bootstrap/checkers/ki-skills/scripts/govern.ts ."
   }
 }
 ```

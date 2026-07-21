@@ -13,7 +13,7 @@
 
 **Contents:** [Naming convention](#naming-convention) · [Prefix table](#prefix-table) · [Placement](#placement) · [Frontmatter](#frontmatter) · [Sections](#sections) · [Templates](#templates) · [Index](#index) · [Writing guidance](#writing-guidance)
 
-The quotable standard behind [the rubric](rubric.md) and [`../scripts/audit.ts`](../scripts/audit.ts). Grounded in Michael Nygard's original 2011 ADR format (see [sources](sources.md)) with house additions: type-specific prefixes, a `decision_type` frontmatter field (KB repos), and `## References`. Unified from the former `ki-adrs` and `ki-kdrs` instruments. A DR is a **living present-state record** — it states the decision as it stands now and is edited in place; it carries no status lifecycle, mutability marker, supersession chain, or changelog (see [Writing guidance](#writing-guidance)). Mode REFRESH re-reads the sources and proposes diffs here.
+The quotable standard behind [the rubric](rubric.md) and [`../scripts/govern.ts`](../scripts/govern.ts). Grounded in Michael Nygard's original 2011 ADR format (see [sources](sources.md)) with house additions: type-specific prefixes, a `decision_type` frontmatter field (KB repos), and `## References`. Unified from the former `ki-adrs` and `ki-kdrs` instruments. A DR is a **living present-state record** — it states the decision as it stands now and is edited in place; it carries no status lifecycle, mutability marker, supersession chain, or changelog (see [Writing guidance](#writing-guidance)). Mode REFRESH re-reads the sources and proposes diffs here.
 
 ## Naming convention
 

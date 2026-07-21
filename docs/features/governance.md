@@ -16,7 +16,7 @@ _Verify:_ `ki-skills`' enforcement framework §5 lists the four modes, and each 
 
 Each skill's mechanical criteria MUST be executable as a CLI checker with no LLM, exiting non-zero on any FAIL, per [ADR-KI-HARNESS-003](../decisions/ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md).
 
-_Verify:_ every governance skill ships a `scripts/audit.ts` that runs standalone under `bun`, emits the canonical JSONL checker response by default, and returns a non-zero exit on FAIL findings.
+_Verify:_ every governance skill ships a `scripts/govern.ts` that runs standalone under `bun`; its `audit` command emits the canonical JSONL checker response by default and returns a non-zero exit on FAIL findings.
 
 ## Contracts
 
@@ -56,7 +56,7 @@ _Verify:_ `ki-repo`'s `audit-repo.ts` `license` / `license-file` / `package-lice
 
 `ki-skills` MUST provide the canonical rubric, checker, and reporter modules from its own shipped files and MUST NOT declare a shared-module dependency on itself or another skill, per [ADR-KI-HARNESS-SKILLS-012](../decisions/ADR-KI-HARNESS-SKILLS-012-local-copies-for-shared-modules.md).
 
-_Verify:_ `bun skills/keystone/ki-skills/scripts/audit.ts skills/keystone/ki-skills` passes KI-CHECKER-3, and the focused checker tests cover missing or invalid root-module declarations.
+_Verify:_ `bun skills/keystone/ki-skills/scripts/govern.ts audit skills/keystone/ki-skills` passes KI-CHECKER-3, and the focused checker tests cover missing or invalid root-module declarations.
 
 ### GOV-009 — Structured rubric orchestration
 
@@ -64,6 +64,6 @@ Every mechanical rubric aspect MUST declare its execution phase inside the canon
 
 The checker MUST validate the complete catalogue and selected execution plan before a CONFORM context can write. It orders executions by phase, then family, item, and subject; AUDIT and fallback executions remain read-only.
 
-The repository aggregate MUST invoke each selected skill's standalone `scripts/audit.ts` or `scripts/conform.ts` exactly once and validate its canonical response. Cross-skill ordering comes from the resolved governance set; skill-local phase ordering comes from that skill's checker.
+The repository aggregate MUST import each selected skill's standalone `scripts/govern.ts` exactly once and call its programmatic check operation. Cross-skill ordering comes from the resolved governance set; skill-local phase ordering comes from that skill's checker.
 
 _Verify:_ the `ki-skills` checker tests cover phase ordering and invalid plans; `ki-bootstrap`'s resolve and entrypoint-parity tests prove standalone vendoring, one invocation per skill, strict response validation, and aggregate parity.

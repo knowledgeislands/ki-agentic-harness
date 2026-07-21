@@ -28,7 +28,7 @@ Provenance only: the record of _what changed_ lives in git (the REFRESH commit),
 
 - **The Cowork external-edit gate — RESOLVED (PASSED) 2026-07-06.** `local-agent-mode-sessions/<account>/<workspace>/cowork_settings.json` (`enabledPlugins`, `extraKnownMarketplaces`). Verified: Cowork honours an external edit on next launch ([DR] Verification log). What remains for Cowork is the plugin/marketplace packaging (plan 007 step 6), not the enablement mechanism.
 - **Claude plugin-marketplace format** — the packaging the Cowork surface toggles. Re-anchor when the `enabledPlugins` schema or marketplace registration changes.
-- **New surfaces / `clients` tokens** — if a renderer adds a rendered surface, extend `RECOGNISED` and `SURFACES` in [the checker](../scripts/audit.ts) and the recognised-surfaces table in the standard.
+- **New surfaces / `clients` tokens** — if a renderer adds a rendered surface, extend `RECOGNISED` and `SURFACES` in [the checker](../scripts/govern.ts) and the recognised-surfaces table in the standard.
 - **Codex CLI surface** — the one surface this skill renders itself (not a chezmoi template): `~/.codex/config.toml` `[mcp_servers.*]` via `codex mcp add|remove`, in [`render-codex.ts`](../scripts/render-codex.ts). Re-anchor if the Codex CLI's `codex mcp` writer shape changes (binary-verified against codex-cli 0.144.4, 2026-07-14).
 - **Source location** — this skill is renderer-neutral (canonical source `~/.config/ki/mcp-servers.yaml`; an explicit `--source`, `$KI_MCP_SOURCE`, or project-local `.ki/mcps.yaml` may scope an invocation). The chezmoi render mechanism now lives in `ki-binding-chezmoi`; re-anchor there when the chezmoi template/apply contract changes.
 

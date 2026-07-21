@@ -1,6 +1,6 @@
 # The chezmoi dotfiles-management standard
 
-The rationale behind [the audit rubric](rubric.md) and [`../scripts/audit.ts`](../scripts/audit.ts). Grounded in chezmoi's own documented behavior plus one anonymized real-repo case study — see [sources](sources.md) for provenance and the honesty note on what's tool-behavior versus house convention.
+The rationale behind [the audit rubric](rubric.md) and [`../scripts/govern.ts`](../scripts/govern.ts). Grounded in chezmoi's own documented behavior plus one anonymized real-repo case study — see [sources](sources.md) for provenance and the honesty note on what's tool-behavior versus house convention.
 
 ## Contents
 

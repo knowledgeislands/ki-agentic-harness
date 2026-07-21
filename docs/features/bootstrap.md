@@ -16,7 +16,7 @@ _Verify:_ bootstrap a bare fixture (`.ki-config.toml` only, no `package.json`, n
 
 EDUCATE MUST vendor each resolved skill's checker (and any `conform-*.ts`) into the target's `.ki/bootstrap/checkers/<skill>/` as file **copies**, never symlinks, so they run with no harness beside the repo (SCRIPT-7 / [ADR-KI-HARNESS-006](../decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)).
 
-_Verify:_ after bootstrap, `.ki/bootstrap/checkers/ki-repo/scripts/audit.ts` in the target is a regular file whose contents equal the harness source, and `git check-ignore` does not ignore it.
+_Verify:_ after bootstrap, `.ki/bootstrap/checkers/ki-repo/scripts/govern.ts` in the target is a regular file whose contents equal the harness source, and `git check-ignore` does not ignore it.
 
 ### BOOT-003 — Explicit declared skill coverage
 
@@ -52,7 +52,7 @@ Re-running the idempotent bootstrap chain is the single update path — there ar
 
 The harness MUST be able to verify a target's `.ki/bootstrap/checkers/` matches the expected declared skill set (restricted to skills carrying a checker). It validates `ki-depends-on:` declarations against source SKILL.md frontmatter harness-side, because that graph is not part of a target's standalone payload. Missing dependencies are a FAIL before bootstrap mutation; checker-set drift is a WARN, reconciled by re-bootstrap. See [BOOT-9](../../skills/keystone/ki-bootstrap/references/rubric.md).
 
-_Verify:_ `bun skills/keystone/ki-bootstrap/scripts/audit.ts <target>` reports PASS when `.ki/bootstrap/checkers/` equals the expected set, and WARNs (listing both directions) when a checker is stray-vendored or missing.
+_Verify:_ `bun skills/keystone/ki-bootstrap/scripts/govern.ts audit <target>` reports PASS when `.ki/bootstrap/checkers/` equals the expected set, and WARNs (listing both directions) when a checker is stray-vendored or missing.
 
 ### BOOT-008 — Remote EDUCATE transport
 

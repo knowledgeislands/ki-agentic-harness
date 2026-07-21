@@ -32,7 +32,7 @@ mgit -B sh -c 'curl -fsSL https://knowledgeislands.info/harness/bootstrap | sh'
 
 Bootstrap's one job is to build `.ki/`. For every skill in the resolved set — every `[ki-<skill>]` table the target declares in its `.ki-config.toml` (including a bare `[ki-authoring]`, which every repo must declare itself — there is no injected baseline, per `ADR-KI-HARNESS-007`) — it:
 
-1. **vendors** the skill's declared checker units (its `ki-vendors:` frontmatter — a checker copied verbatim, or a generated command-wrapper) into `.ki/bootstrap/checkers/<skill>/scripts/<verb>.ts`, renders the skill's **HELP snapshot** to `.ki/bootstrap/checkers/<skill>/help.md`, and generates its target-local EDUCATE launcher at `.ki/bootstrap/educators/<skill>/educate.ts`; a physical source harness links its own canonical `skills/` and `agents/` source material instead, while its HELP snapshots, launchers, bins, and manifest remain regular generated files;
+1. **vendors** each governed skill's `scripts/govern.ts` entrypoint into `.ki/bootstrap/checkers/<skill>/scripts/govern.ts`, renders the skill's **HELP snapshot** to `.ki/bootstrap/checkers/<skill>/help.md`, and generates its target-local EDUCATE launcher at `.ki/bootstrap/educators/<skill>/educate.ts`; a physical source harness links its own canonical `skills/` and `agents/` source material instead, while its HELP snapshots, launchers, bins, and manifest remain regular generated files;
 2. **writes** the four `package.json`-free entry points — `.ki/bin/{ki-audit, ki-conform, ki-educate, ki-help}` over a `.ki/bin/aggregate.ts` runner that discovers the checker copies and fans out over them — and **stamps** the vendoring manifest (`.ki/manifest.json`: the harness ref plus a hash per vendored file).
 
 It **never touches `package.json`.** A `.ki/` is dot-prefixed and generated-not-authored, so it stays off the repo's own `scripts/`, and (being idempotent) re-running the bootstrap at the same ref reproduces byte-identical output. The `ki:*` convenience keys that a code repo may want — `bun run ki:audit` aliasing `./.ki/bin/ki-audit` — are wired later by `ki-engineering` when it comes online for that repo, as sugar over these same bins, never by bootstrap.
@@ -64,10 +64,11 @@ A new repo needs a `.ki-config.toml` declaring `[ki-repo]` and a bare `[ki-autho
 bun "$KI_HARNESS/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts" "$TARGET"
 ```
 
-Then confirm it self-governs — the vendored aggregate invokes each skill's checker in sequence, with nothing installed in `.claude/skills/`:
+Then confirm it self-governs — the vendored aggregate invokes each skill's checker in sequence, with nothing installed in `.claude/skills/`. Its default progress display is one resize-aware row; pass `--progress-style=multi` with `--progress=always` to show stable per-skill rows in an interactive terminal:
 
 ```bash
 cd "$TARGET" && ./.ki/bin/ki-audit
+cd "$TARGET" && ./.ki/bin/ki-audit audit --progress=always --progress-style=multi
 ```
 
 A single skill's EDUCATE is reachable the same way through its own `scripts/educate.ts`, which seeds that skill into the target — the mechanics and the vendored result are identical to the full chain once its `ki-depends-on:` requirements are declared.

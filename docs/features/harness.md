@@ -38,7 +38,7 @@ _Verify:_ `audit-harness.ts` CONFIG-1 (`[ki-harness]`, FAIL if absent) and CONFI
 
 `package.json` MUST expose the normal `ki-bootstrap` project delivery script `ki:skills:copy:project` and the skill quality gate `ki:skills:audit`. Aggregate toolchain entrypoints belong separately to `ki-engineering` rather than being duplicated in the harness contract.
 
-_Verify:_ `bun skills/repo-structure/ki-harness/scripts/audit.ts .` — PKG-1 / PKG-2 FAIL when the two harness-specific scripts are missing and emit no duplicate PKG-3 toolchain finding.
+_Verify:_ `bun skills/repo-structure/ki-harness/scripts/govern.ts audit .` — PKG-1 / PKG-2 FAIL when the two harness-specific scripts are missing and emit no duplicate PKG-3 toolchain finding.
 
 ## Skills convention
 

@@ -2,7 +2,7 @@
 
 **Refresh:** external-spec · quarterly
 
-The authoritative sources behind the [Plugins Standard](standards.md) and [Audit Rubric](rubric.md). Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + rubric + [`scripts/audit.ts`](../scripts/audit.ts), then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below (what changed is recorded in the commit, not a changelog). This is the skill's memory of where the standard comes from — keep it current.
+The authoritative sources behind the [Plugins Standard](standards.md) and [Audit Rubric](rubric.md). Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + rubric + [`scripts/govern.ts`](../scripts/govern.ts), then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below (what changed is recorded in the commit, not a changelog). This is the skill's memory of where the standard comes from — keep it current.
 
 Two layers feed the standard: the **Claude plugin / marketplace manifest spec** (what every conformant marketplace and plugin must do) and the **in-house projection convention** (the opinionated shape the harness projects — one plugin, `agents/governance` flattening, MCP deferred). A finding is only "spec-driven" if it traces to the Authoritative table; everything else is a house projection choice and should be labelled as such.
 

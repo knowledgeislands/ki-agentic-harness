@@ -1,6 +1,6 @@
 # The chezmoi render path for the KI MCP binding
 
-The normative standard behind [the rubric](rubric.md) and [the checker](../scripts/audit.ts). It governs one thing only: **rendering the canonical MCP single source through chezmoi** so the file-editable surfaces are generated from it, never hand-maintained.
+The normative standard behind [the rubric](rubric.md) and [the checker](../scripts/govern.ts). It governs one thing only: **rendering the canonical MCP single source through chezmoi** so the file-editable surfaces are generated from it, never hand-maintained.
 
 This is a **governance skill**, and a **composition skill** in the sense of `ADR-KI-HARNESS-SKILLS-004` (skills relate by composition, never a base-coupled fork; the composition-for-backends corollary of that decision explains why a render path is its own skill rather than a fork of `ki-binding` or a `--backend` flag on it). It composes two siblings and adds a delta over them; it does not re-implement either.
 

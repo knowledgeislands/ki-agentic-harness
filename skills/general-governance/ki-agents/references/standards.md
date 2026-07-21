@@ -1,6 +1,6 @@
 # Agent Definitions Standard
 
-The normative reference behind `ki-agents`: what a _good_ Claude Code subagent definition looks like, and why. The [Audit Rubric](rubric.md) is the line-by-line checklist derived from this — each rubric criterion (`NAME-1`, `DESC-2`, …) verifies a convention stated here. Read the standard to understand or quote a convention; run the rubric (and its [linter](../scripts/audit.ts)) to check an agent against it.
+The normative reference behind `ki-agents`: what a _good_ Claude Code subagent definition looks like, and why. The [Audit Rubric](rubric.md) is the line-by-line checklist derived from this — each rubric criterion (`NAME-1`, `DESC-2`, …) verifies a convention stated here. Read the standard to understand or quote a convention; run the rubric (and its [linter](../scripts/govern.ts)) to check an agent against it.
 
 A subagent is a single Markdown file — YAML frontmatter + a system-prompt body — installed into a Claude agents directory (`~/.claude/agents` or a project's `.claude/agents`). Source abbreviations (CC, HOUSE, BP) resolve in [the source list](sources.md).
 
@@ -22,7 +22,7 @@ A subagent is a single Markdown file — YAML frontmatter + a system-prompt body
 
 ## 1. Two-layer model
 
-Every convention is one of two kinds, and the distinction is a contract with the [linter](../scripts/audit.ts):
+Every convention is one of two kinds, and the distinction is a contract with the [linter](../scripts/govern.ts):
 
 - **Mechanical** — deterministically checkable (frontmatter parses, a name is unique, a length cap holds, a link resolves). The bundled linter owns these.
 - **Judgment** — needs a model reading the agent (is the description a strong delegation signal, is the prompt a focused role, is the lane clear). The linter cannot assess these.

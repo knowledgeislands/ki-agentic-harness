@@ -1,6 +1,6 @@
 # Knowledge Islands repo standard
 
-The canonical configuration a Knowledge Islands repo should carry, so repos present and behave consistently and that consistency is _checkable_ rather than folklore. A Knowledge Islands repo is a git repo that carries a `.ki-config.toml` (its presence is the compliance marker); the standard applies to any such repo — the [`knowledgeislands`](https://github.com/knowledgeislands) org is the reference set it was derived from, not its boundary. Three layers — local files, core GitHub settings, deeper GitHub (security & Actions). Derived and applied 2026-05-31 from an audit of all 10 `knowledgeislands` repos. The mechanical checker is [`../scripts/audit.ts`](../scripts/audit.ts); keep this doc and the script's constants in sync.
+The canonical configuration a Knowledge Islands repo should carry, so repos present and behave consistently and that consistency is _checkable_ rather than folklore. A Knowledge Islands repo is a git repo that carries a `.ki-config.toml` (its presence is the compliance marker); the standard applies to any such repo — the [`knowledgeislands`](https://github.com/knowledgeislands) org is the reference set it was derived from, not its boundary. Three layers — local files, core GitHub settings, deeper GitHub (security & Actions). Derived and applied 2026-05-31 from an audit of all 10 `knowledgeislands` repos. The mechanical checker is [`../scripts/govern.ts`](../scripts/govern.ts); keep this doc and the script's constants in sync.
 
 ## Contents
 
@@ -43,7 +43,7 @@ Every repo carries these at the root. Presence is checked **on the default branc
 
 `.ki/` is the working area for Knowledge Islands governance tooling — the artifacts-_out_ counterpart to `.ki-config.toml`'s config-_in_. It is an **extensible namespace**: subdirs are added as tooling grows, each declaring whether it is **derived** (regenerated, gitignored) or **durable** (kept, tracked). Defined subdirs today:
 
-- `.ki/bootstrap/checkers/<skill>/scripts/audit.ts` + `.ki/bin/aggregate.ts` — **durable** (tracked): ordinary consumers receive vendored checker copies; a physical source harness receives manifest-proven contained links to its canonical source. `ki-bootstrap` EDUCATE writes the runner so the repo self-governs with zero skills installed ([ADR-KI-HARNESS-006](../../../../docs/decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)). The paired `.ki/bin/ki-audit` wrapper is the `package.json`-free entry point.
+- `.ki/bootstrap/checkers/<skill>/scripts/govern.ts` + `.ki/bin/aggregate.ts` — **durable** (tracked): ordinary consumers receive vendored checker copies; a physical source harness receives manifest-proven contained links to its canonical source. `ki-bootstrap` EDUCATE writes the runner so the repo self-governs with zero skills installed ([ADR-KI-HARNESS-006](../../../../docs/decisions/ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md)). The paired `.ki/bin/ki-audit` wrapper is the `package.json`-free entry point.
 - `.ki/audits/<concern>.{md,json}` — the latest audit report per concern (`engineering`, `skills`, `repo`, …), written by a checker run with `--report` and overwritten each run (latest-only, no history). The `.json` is the machine-readable substrate a composed audit merges; the `.md` is the human report.
 - `.ki/conform/<concern>.md` — the latest record of what a CONFORM changed.
 
@@ -208,8 +208,8 @@ Layer 1 files are added with a normal commit, pushed straight to `main` (it is u
 ## Verifying it
 
 ```zsh
-bun ../scripts/audit.ts ~/kis/knowledgeislands      # enumerate from a local tree (origins)
-bun ../scripts/audit.ts --org knowledgeislands      # enumerate the whole org
+bun ../scripts/govern.ts ~/kis/knowledgeislands      # enumerate from a local tree (origins)
+bun ../scripts/govern.ts --org knowledgeislands      # enumerate the whole org
 ```
 
 Both check every layer against GitHub; the path / `--org` only decides which repos.

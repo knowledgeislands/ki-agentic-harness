@@ -2,7 +2,7 @@
 
 This is the current-state inventory for GOV-003.
 
-Every governance skill currently exposes one standalone `scripts/audit.ts` and one standalone `scripts/conform.ts`.
+Every governance skill currently exposes one standalone `scripts/govern.ts`, with `audit` and `conform` commands.
 
 Those scripts remain independently runnable, but the aggregate runner currently treats each as an indivisible whole and orders them alphabetically.
 

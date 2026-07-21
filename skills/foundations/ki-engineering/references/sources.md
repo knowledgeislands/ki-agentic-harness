@@ -2,7 +2,7 @@
 
 **Refresh:** external-spec · monthly
 
-The toolchain pins and conventions behind [the engineering standard](standards.md). Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + rubric + [`../scripts/audit.ts`](../scripts/audit.ts), then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below. Provenance only — what changed goes in the REFRESH commit, not a changelog here.
+The toolchain pins and conventions behind [the engineering standard](standards.md). Mode REFRESH reads this file, re-fetches each source, diffs it against the standard + rubric + [`../scripts/govern.ts`](../scripts/govern.ts), then **bumps the `last reviewed` dates** and refreshes the `## Last review` block below. Provenance only — what changed goes in the REFRESH commit, not a changelog here.
 
 Two layers feed the standard: the **upstream tools** (what they require / their current versions) and the **in-house convention** (the opinionated shape the sibling repos share on top). A pin is only "upstream-driven" if it traces to a tool's release; everything else is house style.
 

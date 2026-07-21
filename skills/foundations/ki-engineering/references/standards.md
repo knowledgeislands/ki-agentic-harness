@@ -4,7 +4,7 @@ ADR: [ADR-KI-HARNESS-TOOLCHAIN-001](../../../../docs/decisions/ADR-KI-HARNESS-TO
 
 The shared **engineering toolchain** every Knowledge Islands TypeScript/Bun repo conforms to — the common layer the artifact-type skills (`ki-mcp`, and future ones) build on rather than restate. It is the build/test twin of `ki-authoring` (which owns _how we write_); this owns _how we build, lint, and test_.
 
-This file is the **normative, quotable** standard. The checkable items live in [the rubric](rubric.md); the mechanical checks are in [`../scripts/audit.ts`](../scripts/audit.ts); the model for turning this (or any) standard into an executable rubric is `ki-skills`' [rubric-authoring guide](../../../keystone/ki-skills/references/rubric-authoring.md).
+This file is the **normative, quotable** standard. The checkable items live in [the rubric](rubric.md); the mechanical checks are in [`../scripts/govern.ts`](../scripts/govern.ts); the model for turning this (or any) standard into an executable rubric is `ki-skills`' [rubric-authoring guide](../../../keystone/ki-skills/references/rubric-authoring.md).
 
 ## Contents
 

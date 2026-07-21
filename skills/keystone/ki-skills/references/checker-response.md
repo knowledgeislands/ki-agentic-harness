@@ -87,7 +87,7 @@ Malformed JSONL is a checker failure, not a reason for a reporter to fall back t
 A reporter accepts a canonical checker result and presents it without changing its meaning. A direct checker invocation selects terminal presentation explicitly:
 
 ```bash
-bun scripts/audit.ts <target> --reporter=terminal --reporter-levels=all
+bun scripts/govern.ts <target> --reporter=terminal --reporter-levels=all
 ```
 
 Use `--progress=auto|always|never` to control the separate status tracker.
