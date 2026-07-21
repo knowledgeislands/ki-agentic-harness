@@ -42,3 +42,9 @@ Bootstrap checks individual repository surfaces during AUDIT, but users lack a s
 ## Dependencies / blocks
 
 FND-016 supplies the lifecycle ownership and scope contract this diagnostic reports on.
+
+## Delegation
+
+- Round 1 — judgment: a `gpt-5.6-sol` worker defines the versioned DOCTOR report and classification contract against FND-016's committed ownership matrix; files: this plan and a proposed bounded implementation surface; gate: reviewable report schema, status/exit semantics, and no-write invariants.
+- Round 2 — mechanical: a `gpt-5.6-terra` worker may implement the settled read-only classifiers and fixtures in exclusive source files; gate: byte-stability fixtures and focused diagnostics.
+- Orchestrator: resolves contract questions, adversarially reviews every script, runs final verification, and commits only gated work.

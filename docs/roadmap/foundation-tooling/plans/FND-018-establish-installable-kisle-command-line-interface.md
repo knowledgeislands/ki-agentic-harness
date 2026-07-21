@@ -45,3 +45,9 @@ The public bootstrap path, source-owned repository operations, and user installa
 FND-016 supplies the stable lifecycle operation boundary that `kisle` exposes.
 
 FND-017 DOCTOR and later UNINSTALL work may extend the CLI only after their own scoped contracts are complete.
+
+## Delegation
+
+- Round 1 — judgment: a `gpt-5.6-sol` worker derives the initial `kisle` grammar and a receiving-repository handoff from the committed FND-016 lifecycle contract; files: this plan and the proposed handoff artifact only; gate: every command has a scope, source boundary, dry-run, output, and exit contract.
+- Round 2 — mechanical: a `gpt-5.6-terra` worker may align independent harness documentation after the grammar is approved; gate: documentation and roadmap checks.
+- Orchestrator: reviews the handoff for cross-repository ownership, preserves the prohibition on external publication, and runs final verification.

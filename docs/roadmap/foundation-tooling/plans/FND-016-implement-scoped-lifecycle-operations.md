@@ -50,3 +50,9 @@ There is no scoped UNINSTALL operation, no common ownership classifier spanning 
 The completed CLEAN baseline supplies the conservative generated-output boundary; the `.ki/` footprint is already established.
 
 This plan blocks FND-017 DOCTOR and FND-018 `kisle`, which consume its operation and scope contract.
+
+## Delegation
+
+- Round 1 — safety review: a `gpt-5.6-terra` worker adversarially reviews the repository and user UNINSTALL scripts plus their fixtures; files: read-only lifecycle implementation and tests; gate: concrete findings or an explicit clean review before final verification.
+- Round 2 — mechanical: the orchestrator addresses any accepted safety findings, refreshes generated material only when the bootstrap gate requires it, and runs the final serial repository gates; files: lifecycle implementation, docs, and generated surfaces; gate: focused tests, then `bun run test` and `bun run ki:audit`.
+- Orchestrator: reviews every worker result, owns all commits, and presents the final acceptance packet.
