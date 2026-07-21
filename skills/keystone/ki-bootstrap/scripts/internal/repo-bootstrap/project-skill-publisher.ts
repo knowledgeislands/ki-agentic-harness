@@ -289,6 +289,11 @@ function managedSkillPayload(path: string, skill: string, source: string): boole
   return linkResolvesTo(path, source) || generatedSkillCopy(path, skill, source)
 }
 
+/** Whether a runtime entry is the exact development link to a canonical source. */
+export function isRuntimeSkillLinkToSource(path: string, source: string): boolean {
+  return linkResolvesTo(path, source)
+}
+
 // ki-self is the one deliberately committed project-local governance skill. It is
 // not part of the harness index or declared coverage, so the publisher must leave
 // a valid local payload alone while retaining its fail-closed behaviour for every
@@ -350,6 +355,15 @@ function localKiSelfProjection(path: string, source: string, integrity: string):
   if (linkResolvesTo(path, source)) return true
   try {
     return localKiSelfPayload(path) && skillTreeIntegrity(path, 'ki-self projection') === integrity
+  } catch {
+    return false
+  }
+}
+
+/** Whether a runtime `ki-self` payload is an unchanged projection of its local source. */
+export function isLocalKiSelfRuntimeProjection(path: string, source: string): boolean {
+  try {
+    return localKiSelfPayload(source) && localKiSelfProjection(path, source, skillTreeIntegrity(source, 'repository-local ki-self source'))
   } catch {
     return false
   }

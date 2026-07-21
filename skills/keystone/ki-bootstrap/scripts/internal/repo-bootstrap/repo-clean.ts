@@ -3,7 +3,9 @@
 import { createHash } from 'node:crypto'
 import { lstatSync, readdirSync, readFileSync, readlinkSync, realpathSync, rmdirSync, unlinkSync, writeFileSync } from 'node:fs'
 import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path'
-import { isGeneratedRuntimeSkillCopy } from './project-skill-publisher.ts'
+import { resolveHarnessSource, sourceHarnessSkill } from './harness-source.ts'
+import { isGeneratedRuntimeSkillCopy, isLocalKiSelfRuntimeProjection, isRuntimeSkillLinkToSource } from './project-skill-publisher.ts'
+import { declaredSkills } from './resolve.ts'
 import { runtimeSkillsDir, supportedRuntimes } from './runtime-paths.ts'
 
 type Kind = 'directory' | 'file' | 'link'
@@ -203,8 +205,11 @@ function ownedGeneratedState(target: string): Removal[] {
   ]
 }
 
-function runtimeRemovals(target: string, config: string): Removal[] {
+function runtimeRemovals(target: string, config: string, strict = false): Removal[] {
   const removals: Removal[] = []
+  const expected = new Set(declaredSkills(config).filter((skill) => skill !== 'ki-bootstrap'))
+  const localKiSelfSource = join(target, KI, 'self', 'skill')
+  const harness = /^\[ki-harness\][ \t]*$/m.test(config) ? resolveHarnessSource(target) : undefined
   for (const runtime of supportedRuntimes(config)) {
     const root = join(target, runtimeSkillsDir(runtime))
     let names: string[]
@@ -223,11 +228,34 @@ function runtimeRemovals(target: string, config: string): Removal[] {
         console.log(`skip    ${runtimeSkillsDir(runtime)}/${name} (not a regular generated payload)`)
         continue
       }
-      if (entry.kind !== 'directory' || !isGeneratedRuntimeSkillCopy(path, name)) continue
-      removals.push({ path, label: `${runtimeSkillsDir(runtime)}/${name}`, tree: walk(path) })
+      const generated = entry.kind === 'directory' && isGeneratedRuntimeSkillCopy(path, name)
+      const sourceLink = Boolean(harness?.skills.has(name) && isRuntimeSkillLinkToSource(path, sourceHarnessSkill(harness, name)))
+      const localProjection = name === 'ki-self' && isLocalKiSelfRuntimeProjection(path, localKiSelfSource)
+      if (generated || (strict && (sourceLink || localProjection))) {
+        removals.push({ path, label: `${runtimeSkillsDir(runtime)}/${name}`, tree: walk(path) })
+        continue
+      }
+      if (strict && (expected.has(name) || name === 'ki-self'))
+        throw new Error(`cannot prove repository runtime payload ownership: ${runtimeSkillsDir(runtime)}/${name}`)
     }
   }
   return removals
+}
+
+function uninstallConfigRemoval(target: string, config: string): Removal {
+  let parsed: Record<string, unknown>
+  try {
+    parsed = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML.parse(config) as Record<
+      string,
+      unknown
+    >
+  } catch {
+    throw new Error('cannot prove repository declaration ownership: .ki-config.toml is not valid TOML')
+  }
+  if (!Object.keys(parsed).length || Object.keys(parsed).some((key) => !/^ki-[A-Za-z0-9_-]+$/.test(key)))
+    throw new Error('cannot prove repository declaration ownership: .ki-config.toml contains non-KI configuration')
+  const path = join(target, '.ki-config.toml')
+  return { path, label: '.ki-config.toml', tree: [snapshot(path)] }
 }
 
 function assertUnchanged(removal: Removal): void {
@@ -279,6 +307,29 @@ export function runRepositoryClean(argv = process.argv.slice(2)): number {
   }
   for (const removal of removals) removeTree(removal)
   console.log(`CLEAN complete — removed ${removals.length} generated path${removals.length === 1 ? '' : 's'}`)
+  return 0
+}
+
+export function runRepositoryUninstall(argv = process.argv.slice(2)): number {
+  if (argv.includes('--help') || argv.includes('-h')) {
+    console.log('Usage: repo-uninstall.ts [target] [--dry-run]')
+    console.log('\nEnd repository adoption by removing only proven KI-generated state and a sole-purpose KI declaration.')
+    return 0
+  }
+  const dryRun = argv.includes('--dry-run')
+  const values = argv.filter((value) => !value.startsWith('-'))
+  if (values.length > 1) throw new Error('repository UNINSTALL accepts at most one target')
+  const target = targetRoot(values[0] ?? '.')
+  const config = regularText(join(target, '.ki-config.toml'), '.ki-config.toml')
+  const removals = [...ownedGeneratedState(target), ...runtimeRemovals(target, config, true), uninstallConfigRemoval(target, config)]
+  for (const removal of removals) assertUnchanged(removal)
+  if (dryRun) {
+    for (const removal of removals) console.log(`remove  ${removal.label}`)
+    console.log('dry run — nothing changed')
+    return 0
+  }
+  for (const removal of removals) removeTree(removal)
+  console.log(`repository UNINSTALL complete — removed ${removals.length} KI-owned path${removals.length === 1 ? '' : 's'}`)
   return 0
 }
 

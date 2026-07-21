@@ -22,6 +22,7 @@ const scripts = dirname(fileURLToPath(import.meta.url))
 const harnessSource = resolve(scripts, '../../../../../..')
 const bootstrap = join(scripts, 'repo-bootstrap.ts')
 const clean = join(scripts, '..', '..', 'clean.ts')
+const uninstall = join(scripts, '..', '..', 'repo-uninstall.ts')
 const config = '[ki-repo]\nsupported_runtimes = ["claude-code", "codex"]\n[ki-authoring]\n'
 
 let failed = false
@@ -64,6 +65,10 @@ function educate(root: string): ReturnType<typeof spawnSync> {
 
 function runClean(root: string, args: string[] = [], env: Record<string, string> = {}): ReturnType<typeof spawnSync> {
   return run('bun', [clean, root, ...args], root, env)
+}
+
+function runUninstall(root: string, args: string[] = []): ReturnType<typeof spawnSync> {
+  return run('bun', [uninstall, root, ...args], root)
 }
 
 function snapshot(root: string): string {
@@ -111,6 +116,30 @@ try {
   )
 } finally {
   rmSync(ordinary, { recursive: true, force: true })
+}
+
+const uninstallable = fixture()
+const userState = realpathSync(mkdtempSync(join(tmpdir(), 'ki-bootstrap-user-state-')))
+try {
+  check('repository UNINSTALL fixture EDUCATE succeeds', educate(uninstallable).status === 0)
+  writeFileSync(join(userState, 'sentinel'), 'preserve user state\n')
+  const beforeDryRun = snapshot(uninstallable)
+  check(
+    'repository UNINSTALL dry-run reports the declaration and leaves the repository unchanged',
+    runUninstall(uninstallable, ['--dry-run']).status === 0 && snapshot(uninstallable) === beforeDryRun
+  )
+  check(
+    'repository UNINSTALL removes only proven repository adoption state',
+    runUninstall(uninstallable).status === 0 &&
+      !existsSync(join(uninstallable, '.ki-config.toml')) &&
+      !existsSync(join(uninstallable, '.ki', 'manifest.json')) &&
+      !existsSync(join(uninstallable, '.claude', 'skills', 'ki-repo'))
+  )
+  check('repository UNINSTALL never mutates user state', readFileSync(join(userState, 'sentinel'), 'utf8') === 'preserve user state\n')
+  check('repository UNINSTALL is repeat-safe after a successful removal', runUninstall(uninstallable).status !== 0)
+} finally {
+  rmSync(uninstallable, { recursive: true, force: true })
+  rmSync(userState, { recursive: true, force: true })
 }
 
 const altered = fixture()
@@ -175,6 +204,14 @@ try {
       lstatSync(claudeProjection).isSymbolicLink() &&
       lstatSync(codexProjection).isSymbolicLink()
   )
+  check(
+    'repository UNINSTALL removes proven ki-self projections but preserves the authored source',
+    runUninstall(localSelf).status === 0 &&
+      existsSync(source) &&
+      !existsSync(claudeProjection) &&
+      !existsSync(codexProjection) &&
+      !existsSync(join(localSelf, '.ki-config.toml'))
+  )
 } finally {
   rmSync(localSelf, { recursive: true, force: true })
 }
@@ -227,6 +264,18 @@ try {
   check('CLEAN preserves runtime copies when a concurrent mutation is detected', existsSync(join(raced, '.claude', 'skills', 'ki-repo')))
 } finally {
   rmSync(raced, { recursive: true, force: true })
+}
+
+const uninstallAltered = fixture()
+try {
+  check('altered repository UNINSTALL fixture EDUCATE succeeds', educate(uninstallAltered).status === 0)
+  const payload = join(uninstallAltered, '.claude', 'skills', 'ki-repo', 'SKILL.md')
+  writeFileSync(payload, `${readFileSync(payload, 'utf8')}\nlocal change\n`)
+  const before = snapshot(uninstallAltered)
+  check('repository UNINSTALL refuses an altered declared runtime payload', runUninstall(uninstallAltered).status !== 0)
+  check('repository UNINSTALL refusal leaves every repository path unchanged', snapshot(uninstallAltered) === before)
+} finally {
+  rmSync(uninstallAltered, { recursive: true, force: true })
 }
 
 if (failed) process.exit(1)
