@@ -1,8 +1,7 @@
 ---
 name: ki-website-cloudflare
-ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator, ki-skills:govern]
 ki-depends-on: []
-ki-vendors: [educate, audit, conform, help]
 description: >
   Codify, audit, conform, and scaffold the Knowledge Islands house convention for serving a built static site on Cloudflare — Workers + Static Assets (not Pages), one `wrangler.jsonc` pointing `assets.directory` at the site's `dist/`, custom-domain routes, observability, and the `ki:site:deploy` script family. Use when deploying a site to Cloudflare, wiring or auditing its `wrangler.jsonc`, bringing hosting up to standard, or scaffolding it. Triggers: "deploy this site to Cloudflare", "audit the Cloudflare hosting", "set up wrangler for the site", "host the dist on Cloudflare", "configure Workers Static Assets", "why won't the site deploy", "conform the hosting". Builds on `ki-website` (which produces the `dist/` it serves — the seam) and `ki-engineering` (the toolchain). For any Worker that is not the static-site server (bots, ingress receivers, APIs, Durable Objects) and general Cloudflare/Workers/wrangler usage, use the `cloudflare` and `wrangler` skills.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
@@ -16,7 +15,7 @@ This is a **standard, base-agnostic Process skill**. It hard-codes no single rep
 
 This skill owns the **deploy/serve delta for the site Worker** only — the one Worker that serves `dist/`. It **builds on** two siblings and restates neither: `ki-website` produces the `dist/` (the seam, below); `ki-engineering` owns the toolchain. **Any Worker that is not the static-site server** — bots, ingress receivers, APIs, Durable Objects, crons — is **out of scope** and routes to the generic `cloudflare` / `wrangler` skills.
 
-The full, quotable standard is [the Cloudflare hosting standard](references/standards.md); the line-by-line items are in [the audit rubric](references/rubric.md); the tracked provenance is [the source list](references/sources.md). A mechanical checker is [`scripts/audit.ts`](scripts/audit.ts). Read those for detail; this file is the operating procedure.
+The full, quotable standard is [the Cloudflare hosting standard](references/standards.md); the line-by-line items are in [the audit rubric](references/rubric.md); the tracked provenance is [the source list](references/sources.md). A mechanical checker is [`scripts/govern.ts`](scripts/govern.ts). Read those for detail; this file is the operating procedure.
 
 ## The model at a glance
 
@@ -61,21 +60,21 @@ Carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH** — EDUCAT
 ### Mode AUDIT — check a site's hosting against the standard
 
 1. **Run the upstream layers first.** `ki:engineering:audit` (toolchain) and `audit.ts` (the site build that produces `dist/`). The hosting audit assumes a buildable site.
-2. **Run the mechanical checker.** `bun <skill>/scripts/audit.ts <repo>`. It finds the **site** `wrangler.jsonc` (the one with an `assets` block), then reports: present at the site root, `assets.directory` set and pointing at `dist/`, `name` + `compatibility_date`, `observability.enabled`, a `wrangler deploy` script, **not** `wrangler pages deploy`, and `dist/` + `.wrangler/` gitignored. It also reads this skill's `[ki-website-cloudflare]` table: the opt-in marker, plus the one declarable key `site-root` (validate-down warns on any other key, and on a `site-root` that holds no `wrangler.jsonc`). It notes (does not flag) any companion Worker. Every normal run emits the canonical JSONL checker report and exits non-zero only on a FAIL mechanical finding. Capture its output verbatim.
+2. **Run the mechanical checker.** `bun <skill>/scripts/govern.ts <repo>`. It finds the **site** `wrangler.jsonc` (the one with an `assets` block), then reports: present at the site root, `assets.directory` set and pointing at `dist/`, `name` + `compatibility_date`, `observability.enabled`, a `wrangler deploy` script, **not** `wrangler pages deploy`, and `dist/` + `.wrangler/` gitignored. It also reads this skill's `[ki-website-cloudflare]` table: the opt-in marker, plus the one declarable key `site-root` (validate-down warns on any other key, and on a `site-root` that holds no `wrangler.jsonc`). It notes (does not flag) any companion Worker. Every normal run emits the canonical JSONL checker report and exits non-zero only on a FAIL mechanical finding. Capture its output verbatim.
 3. **Apply the judgment items** in [the rubric](references/rubric.md): the custom-domain routes are correct (apex + www), the build runs before deploy, and CI (Cloudflare Workers Builds or an Action) is wired. Confirm the `dist/` path matches what `audit.ts` reported.
 4. **Report** by location → criterion → fix, grouped by severity (FAIL / WARN / POLISH). The classic finding: a site Worker with **no** `wrangler.jsonc` (so `ki:site:deploy` fails).
 
 ### Mode CONFORM — bring a site's hosting up to standard
 
 1. Run **AUDIT** first, so you change against a known gap list.
-2. Fix the gaps in place — use the canonical shape from [the standard](references/standards.md): the `wrangler.jsonc` shape (`assets.directory`, `routes`, `observability`) and the `site:{deploy,preview,clean}` scripts. Adapt name, domains, and the `dist/` relative path to the layout. Add the `[ki-website-cloudflare]` table if missing (`bun scripts/audit.ts --educate >> .ki-config.toml`, then set `site-root`). If a `wrangler pages deploy` is found, migrate it to Workers + Static Assets.
+2. Fix the gaps in place — use the canonical shape from [the standard](references/standards.md): the `wrangler.jsonc` shape (`assets.directory`, `routes`, `observability`) and the `site:{deploy,preview,clean}` scripts. Adapt name, domains, and the `dist/` relative path to the layout. Add the `[ki-website-cloudflare]` table if missing (`bun scripts/govern.ts --educate >> .ki-config.toml`, then set `site-root`). If a `wrangler pages deploy` is found, migrate it to Workers + Static Assets.
 3. Re-run the checker; `bunx wrangler deploy --dry-run` from the site root should read the assets directory cleanly.
 
 ### Mode EDUCATE — scaffold a site's hosting
 
 Follow **[the setup guide](references/setup-guide.md)** — it is the step-by-step walkthrough of every action below. Summary:
 
-**Use the `wrangler.jsonc` shape from [the standard](references/standards.md)** and the `ki:site:deploy`/`ki:site:preview` scripts; adapt `name`, `compatibility_date`, the `assets.directory` relative path (`./dist` flat, `../dist` from `site/`), and the custom-domain routes. Add the `[ki-website-cloudflare]` table to `.ki-config.toml` (`bun scripts/audit.ts --educate >> .ki-config.toml`, then set `site-root`). Update `.gitignore` (`dist/`, `.wrangler/`). Then run the checker and `bunx wrangler deploy --dry-run` from the site root to confirm the assets directory resolves. Wire the custom domain and `www` redirect rule in the dashboard, then set up Cloudflare Workers Builds for CI/CD (see the guide's §7–§9).
+**Use the `wrangler.jsonc` shape from [the standard](references/standards.md)** and the `ki:site:deploy`/`ki:site:preview` scripts; adapt `name`, `compatibility_date`, the `assets.directory` relative path (`./dist` flat, `../dist` from `site/`), and the custom-domain routes. Add the `[ki-website-cloudflare]` table to `.ki-config.toml` (`bun scripts/govern.ts --educate >> .ki-config.toml`, then set `site-root`). Update `.gitignore` (`dist/`, `.wrangler/`). Then run the checker and `bunx wrangler deploy --dry-run` from the site root to confirm the assets directory resolves. Wire the custom domain and `www` redirect rule in the dashboard, then set up Cloudflare Workers Builds for CI/CD (see the guide's §7–§9).
 
 ### Mode REFRESH — re-anchor the standard to its sources
 
@@ -84,7 +83,7 @@ Follow **[the setup guide](references/setup-guide.md)** — it is the step-by-st
 The standard pins volatile facts (the wrangler version, Static-Assets config keys, the Pages-deprecation status). Run on its declared cadence (see `references/sources.md`), or when asked "is the hosting standard current".
 
 1. **Read [the source list](references/sources.md)** — each source with its `last reviewed` date.
-2. **Re-fetch each** (WebFetch / WebSearch) and diff against the standard + rubric + [`scripts/audit.ts`](scripts/audit.ts): new/changed `assets` keys (`html_handling`, `not_found_handling`, `run_worker_first`), `compatibility_date` guidance, and whether Pages' deprecation status for static sites has moved.
+2. **Re-fetch each** (WebFetch / WebSearch) and diff against the standard + rubric + [`scripts/govern.ts`](scripts/govern.ts): new/changed `assets` keys (`html_handling`, `not_found_handling`, `run_worker_first`), `compatibility_date` guidance, and whether Pages' deprecation status for static sites has moved.
 3. **Scan the canonical deployed site** for emergent patterns not yet codified; promote the good ones, flag drift.
 4. **Propose a diff**; confirm before writing. Then **update [the source list](references/sources.md)** — bump each `last reviewed` date and the `## Last review` block. What changed goes in the commit.
 

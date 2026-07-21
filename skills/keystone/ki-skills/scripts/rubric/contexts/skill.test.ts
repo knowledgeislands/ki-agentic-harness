@@ -76,10 +76,10 @@ describe('repository-local ki-self source', () => {
   test.each([
     { relativeDirectory: 'ki-self', nameStatus: 'PASS' },
     { relativeDirectory: '.ki/self/not-skill', nameStatus: 'VIOLATION' }
-  ])('does not exempt the invalid lookalike $relativeDirectory', ({ relativeDirectory, nameStatus }) => {
+  ])('does not treat an invalid lookalike as a local-source exception', ({ relativeDirectory, nameStatus }) => {
     const result = audit(createSkill(relativeDirectory))
 
     expect(result.name?.status).toBe(nameStatus)
-    expect(result.vocabulary?.status).toBe('VIOLATION')
+    expect(result.vocabulary?.status).toBe('PASS')
   })
 })

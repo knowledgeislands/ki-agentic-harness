@@ -2,10 +2,10 @@
 
 // Mechanical auditor for the Knowledge Islands tokenomics standard.
 //
-//   bun scripts/audit.ts [target]    # default: cwd — a project or a KB base
-//   bun scripts/audit.ts --no-user    # audit the project layer alone
-//   bun scripts/audit.ts --user <dir> # point the user layer elsewhere (testing)
-//   bun scripts/audit.ts --educate       # print the .ki-config.toml table block
+//   bun scripts/govern.ts audit [target]    # default: cwd — a project or a KB base
+//   bun scripts/govern.ts audit --no-user   # audit the project layer alone
+//   bun scripts/govern.ts audit --user <dir> # point the user layer elsewhere (testing)
+//   bun scripts/govern.ts audit --educate   # print the .ki-config.toml table block
 //
 // Tokenomics is the cost of the context the model carries on EVERY turn, and
 // that cost is a COMPOSITION of two configuration layers, not one file:

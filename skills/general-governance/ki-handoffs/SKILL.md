@@ -1,8 +1,7 @@
 ---
 name: ki-handoffs
 ki-depends-on: []
-ki-vendors: [educate, audit, conform, help]
-ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator, ki-skills:govern]
 description: >
   Govern the Knowledge Islands handoff doctrine: plan work once at the top reasoning tier, then write it as an implementation-ready spec a cheaper tier or a cold agent can execute without re-reasoning. Owns the reasoning-layer split, the handoff-spec quality bar (definition-of-done, decisions-locked vs escalate, ordered steps, acceptance criteria, a recommended implementer tier per unit), and the cold-model readiness test. AUDIT checks handoff-opted-in plans/proposals for the required markers; CONFORM fixes them; REFRESH revisits the doctrine. Does not own model-tier cost or selection — that is ki-tokenomics. Triggers: "is this ready to hand off", "make this delegable", "implementation-ready spec", "plan once execute cheap", "which tier should run this". Off-ramps: ki-tokenomics (tier cost/selection), ki-repo-roadmap (non-KB roadmap and plan standard), ki-kb-streams (KB proposal Checklist), ki-agents (subagent definitions).
 argument-hint: 'audit [dir] | conform [dir] | help | educate <target> | refresh'
@@ -42,7 +41,7 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**. Invoked as `he
 
 Check that handoff-opted-in artifacts are delegable. **Run the host artifact's audit first, then add this delta** — `ki-repo-roadmap` AUDIT in a non-KB repository, `ki-kb-streams` AUDIT in a KB; this skill does not re-check plan/proposal structure.
 
-The mechanical half is [`scripts/audit.ts`](scripts/audit.ts) — run `bun run ki:handoffs:audit <dir>` (default `.`). It scans for `handoff: true` artifacts and checks: `tier` present and one of the semantic values; a decisions-locked-vs-escalate section present; a readiness marker present. Its default output is canonical JSONL; add `--reporter=terminal` for the human view and `--reporter-levels=all` to include every outcome. It exits non-zero on any mechanical FAIL, and counts judgment items as unevaluated in the summary rather than emitting synthetic findings.
+The mechanical half is [`scripts/govern.ts`](scripts/govern.ts) — run `bun run ki:handoffs:audit <dir>` (default `.`). It scans for `handoff: true` artifacts and checks: `tier` present and one of the semantic values; a decisions-locked-vs-escalate section present; a readiness marker present. Its default output is canonical JSONL; add `--reporter=terminal` for the human view and `--reporter-levels=all` to include every outcome. It exits non-zero on any mechanical FAIL, and counts judgment items as unevaluated in the summary rather than emitting synthetic findings.
 
 Then apply the judgment half by reading, per [references/rubric.md](references/rubric.md): are the locked decisions genuinely closed (no residual reasoning), is the assigned tier appropriate to how concrete the steps are, and would the readiness test actually pass. Report FAILs first, then WARNs, then a one-line verdict.
 
@@ -52,7 +51,7 @@ Fix what AUDIT found, in place: add a missing `tier`, split an open question int
 
 ### Mode EDUCATE
 
-EDUCATE scaffolds no standalone artifact — a handoff rides on an existing plan or proposal, never a document of its own. It vendors this skill's declared mechanical unit (the frontmatter `ki-vendors:` declaration) into the target's `.ki/bootstrap/` via the central bootstrap chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator into the `ki-bootstrap` engine.
+EDUCATE scaffolds no standalone artifact — a handoff rides on an existing plan or proposal, never a document of its own. It vendors this skill's `scripts/govern.ts` entrypoint into the target's `.ki/bootstrap/` via the central bootstrap chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator into the `ki-bootstrap` engine.
 
 ### Mode REFRESH
 

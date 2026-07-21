@@ -22,12 +22,12 @@ audit_staged_governance() {
     else
       ln -s "$repo_root/node_modules" "$snapshot/node_modules" || status=1
       if [ "$status" -eq 0 ]; then
-        PATH="$snapshot/node_modules/.bin:$PATH" bun "$snapshot/.ki/bootstrap/checkers/ki-engineering/scripts/audit.ts" "$snapshot" || status=$?
+        PATH="$snapshot/node_modules/.bin:$PATH" bun "$snapshot/.ki/bootstrap/checkers/ki-engineering/scripts/govern.ts" audit "$snapshot" || status=$?
       fi
     fi
   fi
   if [ "$status" -eq 0 ] && [ "$2" -eq 1 ]; then
-    bun "$snapshot/skills/keystone/ki-bootstrap/scripts/audit.ts" "$snapshot" || status=$?
+    bun "$snapshot/skills/keystone/ki-bootstrap/scripts/govern.ts" audit "$snapshot" || status=$?
   fi
   rm -rf "$snapshot"
   trap - EXIT HUP INT TERM

@@ -32,7 +32,7 @@ test('ki-skills EDUCATE refreshes only its own local payloads', () => {
 
   expect(result.status).toBe(0)
   expect(result.stdout).toContain('EDUCATE complete — ki-skills')
-  expect(existsSync(join(target, '.ki', 'bootstrap', 'checkers', 'ki-skills', 'scripts', 'audit.ts'))).toBe(true)
+  expect(existsSync(join(target, '.ki', 'bootstrap', 'checkers', 'ki-skills', 'scripts', 'govern.ts'))).toBe(true)
   expect(existsSync(join(target, '.ki', 'bootstrap', 'educators', 'ki-skills', 'educate.ts'))).toBe(true)
   expect(existsSync(join(target, '.ki', 'bootstrap', 'educators', 'ki-skills', 'skill', 'scripts', 'educate.ts'))).toBe(true)
   expect(existsSync(join(target, '.ki', 'bin'))).toBe(false)

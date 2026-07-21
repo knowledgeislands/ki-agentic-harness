@@ -1,8 +1,7 @@
 ---
 name: ki-repo-roadmap
 ki-depends-on: []
-ki-vendors: [educate, audit, conform, help]
-ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-skills:checker-reporter]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-skills:checker-reporter, ki-skills:govern]
 owns: ['ROADMAP.md', 'docs/roadmap/README.md']
 description: >
   Governs repository roadmaps and execution plans in non-KB repositories. Use for "audit the roadmap", "split this roadmap by theme", "expand the roadmap", "audit plans", roadmap horizons, thematic roadmaps, qualified roadmap locators, plan dependencies, or generated portfolio drift. Supports a simple root-only ROADMAP and a thematic docs/roadmap tree with plans. Knowledge Bases are out of scope: use ki-kb-streams, where streams and proposal checklists replace repository roadmaps and plans. The ki-plan process skill drives individual plan lifecycle operations; ki-decision-records owns durable decisions.
@@ -30,7 +29,7 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** plus judgment-l
 
 ### Mode AUDIT
 
-Run [`scripts/audit.ts`](scripts/audit.ts) against the repository root. It detects the profile and applies the mechanical criteria in [the rubric](references/rubric.md): horizon structure and exact blurbs; theme and item identity; qualified plan linkage; frontmatter, placement, stable theme-coded ids, identifier references, and dependency integrity; exact generated projection and index. It reports KB scope as NA, or FAIL when a KB carries repository-roadmap artifacts, and makes no changes.
+Run [`scripts/govern.ts`](scripts/govern.ts) against the repository root. It detects the profile and applies the mechanical criteria in [the rubric](references/rubric.md): horizon structure and exact blurbs; theme and item identity; qualified plan linkage; frontmatter, placement, stable theme-coded ids, identifier references, and dependency integrity; exact generated projection and index. It reports KB scope as NA, or FAIL when a KB carries repository-roadmap artifacts, and makes no changes.
 
 Then apply the rubric's judgment criteria by reading: item quality, horizon placement and transition readiness, plan quality, honest in-progress state, whether simple still fits, and whether theme boundaries are coherent. Iterate until mechanical findings are clean and judgment findings are resolved.
 
@@ -38,7 +37,7 @@ After changing the scripts, run [`scripts/repo-roadmap.test.ts`](scripts/repo-ro
 
 ### Mode CONFORM
 
-Run [`scripts/conform.ts`](scripts/conform.ts) against the repository root. In either profile it inserts any missing canonical horizon blurb immediately beneath its heading, preserving all existing authored content. In a valid thematic profile it also rebuilds the derivable root projection and global index/graph. Every write uses guarded atomic local-file replacement. It never invents themes, moves horizons, removes or rewrites authored prose, repairs ambiguous locators, or changes plan content. Use `--dry-run` to inspect the intended writes. Re-run AUDIT afterward.
+Run [`scripts/govern.ts`](scripts/govern.ts) against the repository root. In either profile it inserts any missing canonical horizon blurb immediately beneath its heading, preserving all existing authored content. In a valid thematic profile it also rebuilds the derivable root projection and global index/graph. Every write uses guarded atomic local-file replacement. It never invents themes, moves horizons, removes or rewrites authored prose, repairs ambiguous locators, or changes plan content. Use `--dry-run` to inspect the intended writes. Re-run AUDIT afterward.
 
 ### Mode EXPAND
 

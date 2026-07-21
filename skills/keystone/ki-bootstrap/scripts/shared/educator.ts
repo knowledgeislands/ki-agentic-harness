@@ -14,7 +14,7 @@ import {
 } from 'node:fs'
 import { isAbsolute, join, relative, resolve, sep } from 'node:path'
 
-const REQUIRED_MODE_SCRIPTS = ['audit.ts', 'conform.ts', 'educate.ts'] as const
+const REQUIRED_MODE_SCRIPTS = ['govern.ts', 'educate.ts'] as const
 const CHECKER_SUPPORT_PATHS = ['scripts/rubric', 'scripts/shared', 'scripts/vendored', 'references/rubric.md'] as const
 
 export type SkillEducationRequest = {

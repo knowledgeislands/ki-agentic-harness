@@ -1,8 +1,7 @@
 ---
 name: ki-engineering
 ki-depends-on: []
-ki-vendors: [educate, audit, conform, help]
-ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator, ki-skills:govern]
 owns: [mise.toml, tsconfig.json, biome.json, knip.json]
 contributes: ['.ki-config.toml', package.json]
 description: >
@@ -47,7 +46,7 @@ Carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH** — EDUCAT
 
 ### Mode AUDIT — check a repo's common toolchain
 
-1. **Run the mechanical checker**: `bun <skill>/scripts/audit.ts <repo>` (or `node` after a build). It reports the package.json metadata + aggregate/scoped script surface, runs the code-tool checks, checks the `bun test` trap, `tsconfig`/`biome`, and capability conditionals (tests / compiled build + cli-chmod / env), and validates-down the `[ki-engineering]` table. It emits the canonical JSONL checker stream on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — see `ki-skills`' [checker contract](../../keystone/ki-skills/references/checker-contract.md)) and exits non-zero on any mechanical FAIL. Capture its output; don't re-derive the mechanical items.
+1. **Run the mechanical checker**: `bun <skill>/scripts/govern.ts <repo>` (or `node` after a build). It reports the package.json metadata + aggregate/scoped script surface, runs the code-tool checks, checks the `bun test` trap, `tsconfig`/`biome`, and capability conditionals (tests / compiled build + cli-chmod / env), and validates-down the `[ki-engineering]` table. It emits the canonical JSONL checker stream on the unified severity ladder (FAIL / WARN / POLISH / ADVISORY / INFO / NA / PASS — see `ki-skills`' [checker contract](../../keystone/ki-skills/references/checker-contract.md)) and exits non-zero on any mechanical FAIL. Capture its output; don't re-derive the mechanical items.
 2. **Apply the judgment items** in [the rubric](references/rubric.md): no per-repo loosening of `strict`/the `noImplicit*` family, the Node `.env` parity call where env is loaded, Vitest-configured source tests actually reaching the 100% bar, and repo-specific scripts not shadowing governed entrypoints.
 3. **Name the artifact-skill audit that must also run** for the repo to be fully clean (e.g. `audit.ts` for an MCP repo), and **report** by location → criterion → fix, grouped by severity-ladder level (FAIL first).
 
@@ -68,7 +67,7 @@ Copy the aggregate/scoped `package.json` entrypoints, `tsconfig.json`/`biome.jso
 The standard pins volatile versions (Bun, Node, Biome, TypeScript, vitest, syncpack, markdownlint). Run on its declared cadence (see `references/sources.md`), or when asked "are the engineering standards current".
 
 1. **Read [the source list](references/sources.md)** — each pin with its `last reviewed` date.
-2. **Re-fetch each** (WebFetch / WebSearch) and diff against the standard + rubric + [`scripts/audit.ts`](scripts/audit.ts): a bumped Bun or Biome line, a TypeScript option deprecation, a changed default.
+2. **Re-fetch each** (WebFetch / WebSearch) and diff against the standard + rubric + [`scripts/govern.ts`](scripts/govern.ts): a bumped Bun or Biome line, a TypeScript option deprecation, a changed default.
 3. **Propose a diff**; confirm before writing.
 4. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and the `## Last review` block. What changed goes in the commit.
 

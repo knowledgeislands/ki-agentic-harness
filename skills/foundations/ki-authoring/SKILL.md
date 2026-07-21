@@ -1,8 +1,7 @@
 ---
 name: ki-authoring
 ki-depends-on: []
-ki-vendors: [educate, audit, conform, help]
-ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator, ki-skills:govern]
 owns: ['.prettierrc.json', '.editorconfig', '.markdownlint-cli2.jsonc']
 description: >
   The foundational authoring and formatting conventions shared across every Knowledge Islands skill, repo, and base — the common style layer the others build on rather than restate. Currently covers Markdown authoring (wide tables → footnotes, link style) and TOML formatting style (for the shared `.ki-config.toml`). Use when writing or editing Markdown or TOML, bringing a document, README, table, or config to house style (conform), checking one against the conventions (audit), or refreshing them against their sources. Triggers: "format this to our style", "fix this markdown", "tidy this README", "audit this doc's formatting", "does this follow house style", "what's our convention for tables / links / footnotes". For KB note-writing use the `ki-kb` skill; for a repo's configuration and the `.ki-config.toml` contract use `ki-repo`; to judge a SKILL.md use `ki-skills`; for the build/lint/test toolchain use `ki-engineering`.
@@ -30,7 +29,7 @@ Like every governance skill it carries the universal **AUDIT · CONFORM · EDUCA
 
 ### Mode AUDIT — check a document against house style
 
-1. **Run the structured checker** — `bun scripts/audit.ts <repo-path>` (or `bun run ki:authoring:audit <repo-path>` at the harness root). It runs Prettier + markdownlint directly, so the check is self-sufficient in any repo, with or without `ki-engineering`/`package.json`. With no reporter it emits canonical JSONL; add `--reporter=terminal` for the filtered human view. Exit code is non-zero on any FAIL.
+1. **Run the structured checker** — `bun scripts/govern.ts <repo-path>` (or `bun run ki:authoring:audit <repo-path>` at the harness root). It runs Prettier + markdownlint directly, so the check is self-sufficient in any repo, with or without `ki-engineering`/`package.json`. With no reporter it emits canonical JSONL; add `--reporter=terminal` for the filtered human view. Exit code is non-zero on any FAIL.
 2. Apply the **judgment** (`[J]`) criteria from [the rubric](references/rubric.md) — the response summary counts them as unevaluated but does not manufacture findings for work a reviewer has not performed. Wide tables that should spill to footnotes, non-descriptive link text, a `.ki-config.toml` that reads poorly. TOML has no mechanical pass — the rubric is all of it.
 3. **Report** by location → criterion → fix; lead with FAIL findings, then judgment findings.
 
@@ -42,7 +41,7 @@ Like every governance skill it carries the universal **AUDIT · CONFORM · EDUCA
 
 ### Mode EDUCATE — vendor the style gate, scaffold the owned files
 
-EDUCATE vendors this skill's declared mechanical unit (the frontmatter `ki-vendors:` declaration) into the target's `.ki/bootstrap/` via the central bootstrap chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator into the `ki-bootstrap` engine. The `.prettierrc.json`/`.editorconfig` scaffold-or-correct itself lives in CONFORM (mirroring `ki-engineering`'s EDUCATE/CONFORM split — EDUCATE wires the checker in, CONFORM does the actual file write), so a fresh target only gets both files on its first `ki:authoring:conform` run.
+EDUCATE vendors this skill's `scripts/govern.ts` entrypoint into the target's `.ki/bootstrap/` via the central bootstrap chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator into the `ki-bootstrap` engine. The `.prettierrc.json`/`.editorconfig` scaffold-or-correct itself lives in CONFORM (mirroring `ki-engineering`'s EDUCATE/CONFORM split — EDUCATE wires the checker in, CONFORM does the actual file write), so a fresh target only gets both files on its first `ki:authoring:conform` run.
 
 ### Mode REFRESH — re-anchor the conventions to their sources
 

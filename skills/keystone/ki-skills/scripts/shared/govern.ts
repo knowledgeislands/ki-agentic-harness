@@ -6,6 +6,7 @@
  * that skill-specific configuration or its safe CONFORM persistence.
  */
 
+import { resolve } from 'node:path'
 import {
   type CheckerExecutionOptions,
   type CheckerInput,
@@ -15,10 +16,28 @@ import {
   runChecker
 } from './checker.ts'
 import { createTerminalStatusTracker, parseCheckerArguments, renderCheckerResult } from './reporter.ts'
+import type { RubricDefinition } from './rubric.ts'
 
 export type GovernCheckMode = 'audit' | 'conform'
 
 export type GovernedCheckOptions = CheckerExecutionOptions
+
+export type SingleTargetOptions = GovernedCheckOptions
+
+/** Parse the standard one-target AUDIT/CONFORM argument shape. */
+export const parseSingleTargetOptions = (
+  mode: GovernCheckMode,
+  arguments_: readonly string[],
+  { required = false }: { required?: boolean } = {}
+): SingleTargetOptions => {
+  const allowed = mode === 'conform' ? ['--dry-run'] : []
+  const unknown = arguments_.find((argument) => argument.startsWith('-') && !allowed.includes(argument))
+  if (unknown) throw new Error(`unknown option: ${unknown}`)
+  const targets = arguments_.filter((argument) => !argument.startsWith('-'))
+  if (targets.length > 1 || (required && targets.length === 0))
+    throw new Error(required ? `${mode} requires one target path` : `${mode} accepts at most one target`)
+  return { target: resolve(targets[0] ?? '.'), dryRun: mode === 'conform' && arguments_.includes('--dry-run') }
+}
 
 export type GovernedConformOperation = {
   input: CheckerInput<any>
@@ -70,6 +89,50 @@ export const defineGovernedChecker = <Options extends GovernedCheckOptions>(
     return result
   }
 })
+
+/**
+ * Define the usual one-context structured checker without repeating the
+ * mode-to-checker-input plumbing in every governed skill.
+ */
+export const defineStructuredGovernedChecker = <RootContext, Options extends GovernedCheckOptions>(config: {
+  concern: string
+  rubric: RubricDefinition<RootContext>
+  familyCodes: readonly string[] | ((mode: GovernCheckMode, options: any) => readonly string[])
+  context: (mode: GovernCheckMode, options: any) => () => RootContext
+  target?: (mode: GovernCheckMode, options: any) => string
+  persist?: (mode: GovernCheckMode, options: Options) => void
+}) =>
+  defineGovernedChecker<Options>({
+    audit: (options) => ({
+      mode: 'audit',
+      concern: config.concern,
+      target: config.target?.('audit', options) ?? options.target,
+      rubric: config.rubric,
+      subjects: [
+        {
+          familyCodes: typeof config.familyCodes === 'function' ? config.familyCodes('audit', options) : config.familyCodes,
+          context: config.context('audit', options)
+        }
+      ],
+      statusTracker: options.statusTracker
+    }),
+    conform: (options) => ({
+      input: {
+        mode: 'conform',
+        concern: config.concern,
+        target: config.target?.('conform', options) ?? options.target,
+        rubric: config.rubric,
+        subjects: [
+          {
+            familyCodes: typeof config.familyCodes === 'function' ? config.familyCodes('conform', options) : config.familyCodes,
+            context: config.context('conform', options)
+          }
+        ],
+        statusTracker: options.statusTracker
+      },
+      persist: config.persist ? () => config.persist?.('conform', options) : undefined
+    })
+  })
 
 /** Run the standard per-skill command grammar around a skill-owned checker definition. */
 export const runGovernedCli = <Options extends GovernedCheckOptions>(

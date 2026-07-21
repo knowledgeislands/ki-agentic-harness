@@ -1,1 +1,0 @@
-../../../../../skills/foundations/ki-authoring/scripts/audit.ts

@@ -1,8 +1,7 @@
 ---
 name: ki-plugins
 ki-depends-on: []
-ki-vendors: [educate, audit, conform, help]
-ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator, ki-skills:govern]
 description: >
   Audit, conform, and scaffold a Knowledge Islands **plugin-marketplace** repo — the generated Claude plugin marketplace that projects the harness's skills and agents onto the Cowork surface (`knowledgeislands/ki-plugins`, `ADR-KI-HARNESS-002`). The fifth repo-structure skill (with `ki-harness`, `ki-kb`, `ki-website`, `ki-mcp`), exactly one per repo. Governs the on-disk projection: the `marketplace.json` and `plugin.json` manifests, the verbatim `skills/` copy and flattened `agents/`, the MCP-deferred rule (no `.mcp.json`), and the generated-not-hand-edited invariant. Triggers: "audit the plugin marketplace", "is ki-plugins well-formed", "check marketplace.json", "scaffold a plugin marketplace", "refresh the plugins standard". Generation and cross-surface enablement belong to `ki-binding` (`ki:binding:build-plugin` + Cowork wiring); this skill owns only the projection's on-disk correctness. For GitHub config and LICENSE use `ki-repo`; for Markdown/TOML style use `ki-authoring`.
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
@@ -14,7 +13,7 @@ You are helping audit, conform, or scaffold a **plugin-marketplace repo** — a 
 
 The repo is a **lossy, per-surface projection** of the `ki-agentic-harness` (`ADR-KI-HARNESS-002`): the harness `skills/` and `agents/governance/` are the single source of truth, and the marketplace is generated from them — **never hand-maintained**. This skill audits the **on-disk projection shape**. Generating the projection and enabling it on each surface are `ki-binding`'s job; the repo's GitHub configuration, LICENSE, and standard files are `ki-repo`'s; Markdown/TOML house style is `ki-authoring`'s.
 
-The full, quotable standard lives in [Plugins Standard](references/standards.md); the pass/fail items live in [Audit Rubric](references/rubric.md). A mechanical structural checker is [`scripts/audit.ts`](scripts/audit.ts). Read those when you need detail; this file is the operating procedure.
+The full, quotable standard lives in [Plugins Standard](references/standards.md); the pass/fail items live in [Audit Rubric](references/rubric.md). A mechanical structural checker is [`scripts/govern.ts`](scripts/govern.ts). Read those when you need detail; this file is the operating procedure.
 
 ## The canonical shape at a glance
 
@@ -43,7 +42,7 @@ Every governance skill carries the universal four **AUDIT · CONFORM · EDUCATE 
 ### Mode AUDIT
 
 1. **Identify the target.** Confirm the repo path (default: the cwd repo).
-2. **Run the mechanical checker.** `bun skills/repo-structure/ki-plugins/scripts/audit.ts <repo>` (or `node` after a build) checks the projection shape: `marketplace.json` / `plugin.json` field values and agreement, the one-plugin invariant, that each `skills/*` carries a `SKILL.md`, that `agents/*.md` are flat, that no `.mcp.json` leaked in, that the scaffold files are present, that `CLAUDE.md` carries the generated-not-hand-edited invariant, and the `[ki-plugins]` opt-in marker. It emits canonical checker-reporter JSONL and exits non-zero only for a mechanical FAIL.
+2. **Run the mechanical checker.** `bun skills/repo-structure/ki-plugins/scripts/govern.ts <repo>` (or `node` after a build) checks the projection shape: `marketplace.json` / `plugin.json` field values and agreement, the one-plugin invariant, that each `skills/*` carries a `SKILL.md`, that `agents/*.md` are flat, that no `.mcp.json` leaked in, that the scaffold files are present, that `CLAUDE.md` carries the generated-not-hand-edited invariant, and the `[ki-plugins]` opt-in marker. It emits canonical checker-reporter JSONL and exits non-zero only for a mechanical FAIL.
 3. **Do the semantic pass** — walk [Audit Rubric](references/rubric.md): confirm the projected skill/agent set actually matches the current harness (a **stale projection** is the common finding — regenerate), the `CLAUDE.md`/`README.md` describe the projection without drift, and the known LICENSE divergence (public-but-proprietary) is still a deliberate, documented exception rather than a silent one.
 
 ### Mode CONFORM
@@ -69,7 +68,7 @@ Scaffold a new marketplace repo:
 Re-anchor the standard to the current Claude plugin/marketplace spec:
 
 1. **Read [the source list](references/sources.md)** — the authoritative Claude plugin + marketplace manifest spec, each with a `last reviewed` date.
-2. **Re-fetch each source** and diff it against the [standard](references/standards.md) + [rubric](references/rubric.md) + [`scripts/audit.ts`](scripts/audit.ts): changed `marketplace.json` / `plugin.json` fields, new plugin capabilities (e.g. `.mcp.json` becoming viable in the sandbox), changed source/owner semantics.
+2. **Re-fetch each source** and diff it against the [standard](references/standards.md) + [rubric](references/rubric.md) + [`scripts/govern.ts`](scripts/govern.ts): changed `marketplace.json` / `plugin.json` fields, new plugin capabilities (e.g. `.mcp.json` becoming viable in the sandbox), changed source/owner semantics.
 3. **Separate spec-driven from house style** — a change is a new requirement only if it traces to the authoritative source; the one-plugin shape, `agents/governance` flattening, and MCP-deferred rule are house projection choices.
 4. **Propose a diff** to the standard, rubric, and (where a check became mechanical) the checker; confirm before writing. **Bump the `last reviewed` dates** in the source list.
 

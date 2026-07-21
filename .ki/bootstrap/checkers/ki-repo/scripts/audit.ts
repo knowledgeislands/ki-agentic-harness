@@ -1,1 +1,0 @@
-../../../../../skills/keystone/ki-repo/scripts/audit.ts

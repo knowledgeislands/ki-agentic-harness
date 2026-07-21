@@ -8,7 +8,7 @@
  * `ki:repo:conform` (`bun .../conform.ts .`) — not an org sweep like
  * audit.ts's `--org`, since conforming mutates and should be reviewed per-repo.
  *
- *   bun scripts/conform.ts [path]      # default: cwd
+ *   bun scripts/govern.ts conform [path]      # default: cwd
  *   --dry-run                                # report the plan, run nothing
  *
  * Each action records a cited finding on the shared ladder — written/enabled/set → FIXED,

@@ -5,7 +5,7 @@ import { runSkillEducator } from './vendored/ki-bootstrap/educator.ts'
 
 const argv = process.argv.slice(2)
 if (argv.includes('--scaffold-config-only')) {
-  execFileSync('bun', [resolve(import.meta.dirname, 'conform.ts'), ...argv], { stdio: 'inherit' })
+  execFileSync('bun', [resolve(import.meta.dirname, 'govern.ts'), 'conform', ...argv], { stdio: 'inherit' })
 } else {
   runSkillEducator({ skill: 'ki-repo', source: resolve(import.meta.dirname, '..'), argv })
 }

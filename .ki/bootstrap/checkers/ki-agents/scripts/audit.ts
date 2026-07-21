@@ -1,1 +1,0 @@
-../../../../../skills/general-governance/ki-agents/scripts/audit.ts

@@ -1,0 +1,1 @@
+../../../../ki-skills/scripts/shared/govern.ts

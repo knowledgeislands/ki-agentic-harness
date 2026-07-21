@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { frontmatterLine, insertFrontmatterLine, parseFrontmatter, replaceFrontmatterScalar } from './frontmatter.ts'
+import { frontmatterLine, parseFrontmatter, replaceFrontmatterScalar } from './frontmatter.ts'
 import type { SkillWritableCapabilities } from './skill.ts'
 
 export type ConformDocumentState = {
@@ -51,13 +51,6 @@ export const createSkillConformState = (directory: string, dryRun: boolean): Ski
       },
       setArgumentHint: (argumentHint) => {
         updateFrontmatter((block) => replaceFrontmatterScalar(block, 'argument-hint', argumentHint))
-      },
-      setVendors: (vendors) => {
-        updateFrontmatter((block) => {
-          const line = frontmatterLine(block, 'ki-vendors')
-          const replacement = `ki-vendors: ${vendors}`
-          return line ? block.replace(line, replacement) : insertFrontmatterLine(block, replacement)
-        })
       }
     },
     persist: document.persist

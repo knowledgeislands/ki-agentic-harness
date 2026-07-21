@@ -1,8 +1,7 @@
 ---
 name: ki-binding-chezmoi
-ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator, ki-skills:govern]
 ki-depends-on: [ki-binding, ki-dotfiles-chezmoi]
-ki-vendors: [educate, audit, conform, help]
 description: >
   Codify, audit, and conform the chezmoi render path for the KI MCP binding — rendering the canonical `mcp-servers.yaml` single source into the file-editable surfaces (Claude Code, Desktop, mcporter) through chezmoi: the `mcp-servers-json` template, `.chezmoidata` wiring, and `chezmoi apply`. A composition skill — its AUDIT runs `ki-dotfiles-chezmoi` then `ki-binding` in sequence, then adds its delta: the chezmoi repo carries the MCP data and render template, and an apply reproduces the surfaces `ki-binding` audits. Use when rendering the MCP source through chezmoi, wiring the render template, or checking an apply reproduces the audited surfaces. Triggers: "render the mcp source through chezmoi", "chezmoi apply the mcp config", "wire the mcp-servers-json template", "the rendered mcp surfaces are stale". Not the renderer-neutral surface audit (`ki-binding`) or the generic chezmoi repo standard (`ki-dotfiles-chezmoi`) — only the MCP render contract tying them (ADR-KI-HARNESS-SKILLS-004).
 argument-hint: 'audit <target> | conform <target> | help | educate <target> | refresh'
@@ -27,7 +26,7 @@ Like every governance skill it carries the universal **AUDIT · CONFORM · EDUCA
 
 The AUDIT is a **composition**, declared here and run in sequence — it does not fork or re-implement the sibling criteria:
 
-1. **Run the checker** — `bun scripts/audit.ts [chezmoi-repo] [--source <path>]`. It composes, as subprocesses (never imports):
+1. **Run the checker** — `bun scripts/govern.ts [chezmoi-repo] [--source <path>]`. It composes, as subprocesses (never imports):
    - **`ki-dotfiles-chezmoi` AUDIT** on the chezmoi repo — the source repo is conventional (`BINDCHEZ-1`);
    - **`ki-binding` AUDIT** — each surface agrees with the single source (`BINDCHEZ-2`); then adds its own **render-path delta**: the chezmoi repo carries the MCP source data (`BINDCHEZ-3`), the `mcp-servers-json` render template exists (`BINDCHEZ-4`), and at least one target `.tmpl` is wired through it (`BINDCHEZ-5`). A composed sibling FAIL folds up as a FAIL here.
 2. **Judge the [J] criteria by reading** — render parity (`BINDCHEZ-6`): would a `chezmoi apply`, previewed with `chezmoi diff`, reproduce exactly the surfaces `ki-binding` audits? Name it; do not guess it.
@@ -37,12 +36,12 @@ The AUDIT is a **composition**, declared here and run in sequence — it does no
 
 1. Run **AUDIT** first.
 2. **Compose the sibling write passes.** Run `ki-dotfiles-chezmoi` CONFORM on the chezmoi repo, then `ki-binding` CONFORM for the surfaces — in sequence, never forked.
-3. **Render** — edit the MCP source (`.chezmoidata` / the canonical file), preview with `chezmoi diff`, then `chezmoi apply`. The render path regenerates a surface from the source; it never blesses a hand-edited rendered config, which would diverge from the source. `scripts/conform.ts` scaffolds no target-repo file — it prints these steps as TODOs.
+3. **Render** — edit the MCP source (`.chezmoidata` / the canonical file), preview with `chezmoi diff`, then `chezmoi apply`. The render path regenerates a surface from the source; it never blesses a hand-edited rendered config, which would diverge from the source. `scripts/govern.ts` scaffolds no target-repo file — it prints these steps as TODOs.
 4. **Re-run AUDIT** until clean.
 
 ### Mode EDUCATE — vendor the render-path checks
 
-EDUCATE scaffolds no standalone artifact. It vendors this skill's declared mechanical unit (the frontmatter `ki-vendors:` declaration) into the target's `.ki/bootstrap/` via the central bootstrap chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator that execs the `ki-bootstrap` engine with this skill as an explicit seed after the target declares its `ki-depends-on:` requirements (`ki-binding`, `ki-dotfiles-chezmoi`).
+EDUCATE scaffolds no standalone artifact. It vendors this skill's `scripts/govern.ts` entrypoint into the target's `.ki/bootstrap/` via the central bootstrap chain: [`scripts/educate.ts`](scripts/educate.ts) is a thin delegator that execs the `ki-bootstrap` engine with this skill as an explicit seed after the target declares its `ki-depends-on:` requirements (`ki-binding`, `ki-dotfiles-chezmoi`).
 
 ### Mode REFRESH — re-anchor the render contract
 

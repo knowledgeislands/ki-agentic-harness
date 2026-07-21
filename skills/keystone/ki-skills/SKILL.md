@@ -1,7 +1,6 @@
 ---
 name: ki-skills
 ki-depends-on: []
-ki-vendors: [educate, audit, conform, help]
 ki-shared-modules: [rubric, checker, reporter, checker-reporter, govern]
 ki-shared-dependencies: [ki-bootstrap:educator]
 description: >

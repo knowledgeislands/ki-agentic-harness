@@ -6,12 +6,11 @@ import { type HarnessSource, resolveHarnessSource } from '../../internal/repo-bo
 import { inspectProjectLinks, type ProjectLinkCheck } from '../../internal/repo-bootstrap/project-skill-publisher.ts'
 import {
   assertExplicitDependencies,
-  checkerScript,
   DependencyDeclarationError,
+  educatorScript,
+  governScript,
   resolveSet,
-  SkillResolutionError,
-  vendorModesOf,
-  vendorUnit
+  SkillResolutionError
 } from '../../internal/repo-bootstrap/resolve.ts'
 
 export type BootstrapPublication = {
@@ -139,7 +138,7 @@ const vendorEvidence = (target: string): BootstrapVendorEvidence => {
     }
   }
 
-  const expectedCheckers = resolved.filter((skill) => checkerScript(skill) !== null)
+  const expectedCheckers = resolved.filter((skill) => governScript(skill) !== null)
   const driftedSourceCopies: string[] = []
   let harness: HarnessSource | undefined
   if (isHarnessConfig(target)) {
@@ -153,30 +152,26 @@ const vendorEvidence = (target: string): BootstrapVendorEvidence => {
   for (const skill of expectedCheckers) {
     const localSkill = harness?.skills.get(skill) ?? targetSkillDir(target, skill)
     if (!localSkill) continue
-    for (const mode of ['audit', 'conform'] as const) {
-      const unit = vendorUnit(skill, mode)
-      if (unit?.kind !== 'file') continue
-      const source = join(localSkill, unit.path)
-      const vendored = join(checkersRoot, skill, 'scripts', `${mode}.ts`)
-      const manifestPath = join('.ki', 'bootstrap', 'checkers', skill, 'scripts', `${mode}.ts`)
-      checkedSourceCopies += 1
-      if (!existsSync(source) || !lstatSync(source).isFile()) {
-        driftedSourceCopies.push(`${skill}/${mode}.ts (canonical source missing or not a regular file)`)
-      } else if (!harness || !canonicalSourceLink(target, source, vendored, manifestPath)) {
-        if (!existsSync(vendored) || !lstatSync(vendored).isFile()) {
-          driftedSourceCopies.push(
-            `${skill}/${mode}.ts (${harness ? 'source-harness link missing or not manifest-proven' : 'vendored copy missing or not a regular file'})`
-          )
-        } else if (harness) {
-          driftedSourceCopies.push(`${skill}/${mode}.ts (source harness requires a manifest-proven canonical link)`)
-        } else if (!readFileSync(source).equals(readFileSync(vendored))) {
-          driftedSourceCopies.push(`${skill}/${mode}.ts`)
-        }
+    const source = join(localSkill, 'scripts', 'govern.ts')
+    const vendored = join(checkersRoot, skill, 'scripts', 'govern.ts')
+    const manifestPath = join('.ki', 'bootstrap', 'checkers', skill, 'scripts', 'govern.ts')
+    checkedSourceCopies += 1
+    if (!existsSync(source) || !lstatSync(source).isFile()) {
+      driftedSourceCopies.push(`${skill}/govern.ts (canonical source missing or not a regular file)`)
+    } else if (!harness || !canonicalSourceLink(target, source, vendored, manifestPath)) {
+      if (!existsSync(vendored) || !lstatSync(vendored).isFile()) {
+        driftedSourceCopies.push(
+          `${skill}/govern.ts (${harness ? 'source-harness link missing or not manifest-proven' : 'vendored copy missing or not a regular file'})`
+        )
+      } else if (harness) {
+        driftedSourceCopies.push(`${skill}/govern.ts (source harness requires a manifest-proven canonical link)`)
+      } else if (!readFileSync(source).equals(readFileSync(vendored))) {
+        driftedSourceCopies.push(`${skill}/govern.ts`)
       }
     }
   }
 
-  const expectedEducators = resolved.filter((skill) => vendorModesOf(skill)?.includes('educate'))
+  const expectedEducators = resolved.filter((skill) => educatorScript(skill) !== null)
   const unsafeEducators = expectedEducators.filter((skill) => {
     const payload = join(educatorsRoot, skill, 'educate.ts')
     if (!existsSync(payload)) return false

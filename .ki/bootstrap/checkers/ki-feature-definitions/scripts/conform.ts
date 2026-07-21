@@ -1,1 +1,0 @@
-../../../../../skills/general-governance/ki-feature-definitions/scripts/conform.ts

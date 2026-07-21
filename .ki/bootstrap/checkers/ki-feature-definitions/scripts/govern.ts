@@ -1,0 +1,1 @@
+../../../../../skills/general-governance/ki-feature-definitions/scripts/govern.ts

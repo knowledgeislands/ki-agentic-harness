@@ -506,10 +506,14 @@ function buildPlan(target: string, scope: ProjectLinkScope, skillPublication: Pr
           before: undefined
         })
         plan.guards.push({ path: localKiSelf.source, before: undefined, label: LOCAL_GOVERNANCE_SOURCE })
-        const legacy = entry(localKiSelf.migrateFrom)
-        if (!legacy) throw new Error(`${LEGACY_LOCAL_GOVERNANCE_SOURCE} disappeared during migration planning`)
-        plan.removes.push({ destination: localKiSelf.migrateFrom, label: LEGACY_LOCAL_GOVERNANCE_SOURCE, before: legacy })
-        plan.guards.push({ path: localKiSelf.migrateFrom, before: legacy, label: LEGACY_LOCAL_GOVERNANCE_SOURCE })
+        // A legacy runtime copy is replaced in place by its projection below.
+        // Only the retired standalone `.ki-self` source needs a separate removal.
+        if (localKiSelf.migrateFrom === join(target, LEGACY_LOCAL_GOVERNANCE_SOURCE)) {
+          const legacy = entry(localKiSelf.migrateFrom)
+          if (!legacy) throw new Error(`${LEGACY_LOCAL_GOVERNANCE_SOURCE} disappeared during migration planning`)
+          plan.removes.push({ destination: localKiSelf.migrateFrom, label: LEGACY_LOCAL_GOVERNANCE_SOURCE, before: legacy })
+          plan.guards.push({ path: localKiSelf.migrateFrom, before: legacy, label: LEGACY_LOCAL_GOVERNANCE_SOURCE })
+        }
       }
       if (localKiSelf.removeLegacy) {
         const legacy = entry(localKiSelf.removeLegacy)

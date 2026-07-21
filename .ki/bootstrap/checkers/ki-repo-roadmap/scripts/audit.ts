@@ -1,1 +1,0 @@
-../../../../../skills/general-governance/ki-repo-roadmap/scripts/audit.ts

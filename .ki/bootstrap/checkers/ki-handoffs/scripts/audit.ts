@@ -1,1 +1,0 @@
-../../../../../skills/general-governance/ki-handoffs/scripts/audit.ts

@@ -2,7 +2,6 @@ import type { AuditOutcome, ConformOutcome, RubricItem, RubricOutcomes } from '.
 import type { KiShapeRubricContext } from '../contexts/contexts.ts'
 
 const UNIVERSAL_VERBS = ['AUDIT', 'CONFORM', 'HELP', 'EDUCATE', 'REFRESH'] as const
-const UNIFORM_VENDORS = '[educate, audit, conform, help]'
 
 export const KI_SHAPE_1: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-1',
@@ -70,7 +69,7 @@ export const KI_SHAPE_6: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-6',
   title: 'governance skills use the KI file shape',
   description:
-    '_Governance-skill file shape — Knowledge Islands repos only, for now._ A governance skill **shipped in a Knowledge Islands repo** (one carrying a `.ki-config.toml`) uses the shared names **`references/standards.md`** for its primary normative reference, **`references/rubric.md`** for pass/fail criteria tagged **[M]**/**[J]**, and **`references/sources.md`** for provenance with `last reviewed` dates (see **LONG-1**). Optional worked examples use `exemplars.md`; independently invoked procedures use `mode-<verb>.md`, co-locating tightly coupled modes. A genuinely separate secondary normative topic alone retains a descriptive `<topic>-standards.md` filename; contracts, formats, frameworks, and guides remain descriptively named. Universal governance executables are bare `scripts/educate.ts`, `scripts/audit.ts`, and `scripts/conform.ts`; domain-specific helpers remain descriptive. A skill tracking a moving external spec also keeps a current-state **`## Last review`** block (pinned revision, confirmations, open watch-items), overwritten each refresh. A governance skill outside a Knowledge Islands repo is exempt until the convention is generalised.',
+    '_Governance-skill file shape — Knowledge Islands repos only, for now._ A governance skill **shipped in a Knowledge Islands repo** (one carrying a `.ki-config.toml`) uses the shared names **`references/standards.md`** for its primary normative reference, **`references/rubric.md`** for pass/fail criteria tagged **[M]**/**[J]**, and **`references/sources.md`** for provenance with `last reviewed` dates (see **LONG-1**). Optional worked examples use `exemplars.md`; independently invoked procedures use `mode-<verb>.md`, co-locating tightly coupled modes. A genuinely separate secondary normative topic alone retains a descriptive `<topic>-standards.md` filename; contracts, formats, frameworks, and guides remain descriptively named. Universal governance executables are bare `scripts/govern.ts` and `scripts/educate.ts`; domain-specific helpers remain descriptive. A skill tracking a moving external spec also keeps a current-state **`## Last review`** block (pinned revision, confirmations, open watch-items), overwritten each refresh. A governance skill outside a Knowledge Islands repo is exempt until the convention is generalised.',
   sources: ['ki-agentic-harness README'],
   judgment: { prompt: 'Does this KI governance skill use the required reference and executable file shape?' }
 }
@@ -211,12 +210,6 @@ const auditKiShape12 = ({ skill }: KiShapeRubricContext): RubricOutcomes<AuditOu
       status: 'VIOLATION',
       message: `\`argument-hint\` is missing the universal verb(s) ${missing.map((verb) => verb.toLowerCase()).join(', ')} — a governance skill exposes AUDIT, CONFORM, EDUCATE, REFRESH and HELP (ADR-KI-HARNESS-SKILLS-001)`
     })
-  if (!skill.vendorsPresent && !skill.localGovernanceSource)
-    violations.push({
-      status: 'VIOLATION',
-      message:
-        'frontmatter carries no `ki-vendors:` declaration — declare the vendored modes beside `ki-depends-on:` so the bootstrap engine can vendor them (ADR-KI-HARNESS-007)'
-    })
   const [first, ...rest] = violations
   return first ? [first, ...rest] : [{ status: 'PASS', message: 'governance mode vocabulary is canonical and complete' }]
 }
@@ -225,7 +218,7 @@ export const KI_SHAPE_12: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-12',
   title: 'governance mode vocabulary is canonical and complete',
   description:
-    "_Mode vocabulary is canonical and complete._ A governance skill exposes **AUDIT**, **CONFORM**, **EDUCATE**, **REFRESH** and **HELP** spelled exactly so — a governance skill missing any universal verb from its `argument-hint` (EDUCATE is the common gap) **WARNs**; `NEW`, `OPTIMISE`, and operational verbs are additive, never substitutes for a universal mode (a collection skill exposes both EDUCATE and NEW). The vendoring leg: a governance skill's frontmatter **declares its vendorable modes** under `ki-vendors:`, beside `ki-depends-on:`, so the central bootstrap engine can vendor them into a target's `.ki/bootstrap/`; a missing declaration **WARNs**, while KI-SHAPE-15 validates its exact uniform form. The one committed repository-local source at `.ki/self/skill/` is never vendored and is exempt only from that declaration. Process skills are exempt throughout.",
+    '_Mode vocabulary is canonical and complete._ A governance skill exposes **AUDIT**, **CONFORM**, **EDUCATE**, **REFRESH** and **HELP** spelled exactly so — a governance skill missing any universal verb from its `argument-hint` (EDUCATE is the common gap) **WARNs**; `NEW`, `OPTIMISE`, and operational verbs are additive, never substitutes for a universal mode (a collection skill exposes both EDUCATE and NEW). The bootstrap leg is defined by the single `scripts/govern.ts` entrypoint, validated by KI-SHAPE-15. Process skills are exempt throughout.',
   sources: ['ADR-KI-HARNESS-SKILLS-001', 'ADR-KI-HARNESS-SKILLS-006', 'ADR-KI-HARNESS-007'],
   mechanical: {
     level: 'WARN',
@@ -248,12 +241,6 @@ export const KI_SHAPE_12: RubricItem<KiShapeRubricContext> = {
             subject: 'SKILL.md'
           }
         ]
-        if (!skill.vendorsPresent && !skill.localGovernanceSource)
-          outcomes.push({
-            status: 'VIOLATION',
-            message:
-              'frontmatter carries no `ki-vendors:` declaration — declare the vendored modes beside `ki-depends-on:` so the bootstrap engine can vendor them (ADR-KI-HARNESS-007)'
-          })
         const [first, ...rest] = outcomes
         return [first as ConformOutcome, ...rest]
       }
@@ -347,55 +334,35 @@ export const KI_SHAPE_14: RubricItem<KiShapeRubricContext> = {
 }
 
 const auditKiShape15 = ({ skill }: KiShapeRubricContext): RubricOutcomes<AuditOutcome> => {
-  if (!skill?.governanceSkill || !skill.vendorsPresent)
-    return [{ status: 'NOT_APPLICABLE', message: 'the target has no governance `ki-vendors:` declaration to inspect' }]
+  if (!skill?.governanceSkill || skill.localGovernanceSource)
+    return [{ status: 'NOT_APPLICABLE', message: 'the target is not a vendored governance capability' }]
   const violations: AuditOutcome[] = []
-  if (skill.vendors !== UNIFORM_VENDORS)
-    violations.push({
-      status: 'VIOLATION',
-      message: `\`ki-vendors:\` must be the uniform list \`${UNIFORM_VENDORS}\` (got \`${skill.vendors}\`) — modes derive their scripts by name; the map/override form is retired (ADR-KI-HARNESS-007)`
-    })
-  for (const mode of ['educate', 'audit', 'conform'])
-    if (!skill.scriptNames.includes(`${mode}.ts`))
+  for (const script of ['govern.ts', 'educate.ts'])
+    if (!skill.scriptNames.includes(script))
       violations.push({
         status: 'VIOLATION',
-        message: `\`scripts/${mode}.ts\` missing — a governance skill vendors bare \`educate.ts\`/\`audit.ts\`/\`conform.ts\``
+        message: `\`scripts/${script}\` missing — governance capabilities publish one governed entrypoint and one educator`
       })
-  for (const script of skill.scriptNames)
-    if (/^(audit|lint|conform)-[a-z0-9-]+\.ts$/.test(script) && !script.endsWith('.test.ts'))
+  for (const script of ['audit.ts', 'conform.ts'])
+    if (skill.scriptNames.includes(script))
       violations.push({
         status: 'VIOLATION',
-        message: `\`scripts/${script}\` uses the redundant skill-name suffix — rename to bare \`audit.ts\`/\`conform.ts\``
+        message: `\`scripts/${script}\` is retired — use the imported \`plan\`/\`check\` exports from \`govern.ts\``
       })
   const [first, ...rest] = violations
-  return first ? [first, ...rest] : [{ status: 'PASS', message: 'vendored modes have a uniform shape' }]
+  return first ? [first, ...rest] : [{ status: 'PASS', message: 'governed entrypoints have a uniform shape' }]
 }
 
 export const KI_SHAPE_15: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-15',
-  title: 'vendored modes have a uniform shape',
+  title: 'governed entrypoints have a uniform shape',
   description:
-    '_Uniform vendored-mode shape._ Every governance skill except the committed repository-local `.ki/self/skill/` source declares exactly `ki-vendors: [educate, audit, conform, help]` and provides the corresponding bare `scripts/educate.ts`, `scripts/audit.ts`, and `scripts/conform.ts`; mode names derive their script filenames, so map/override declarations and redundant skill-name suffixes such as `audit-<skill>.ts`, `lint-<skill>.ts`, and `conform-<skill>.ts` **FAIL**. REFRESH is harness-only and is never vendored. Process skills are exempt.',
+    '_Uniform governed-entrypoint shape._ Every vendored governance skill provides `scripts/govern.ts`, exporting programmatic `plan` and `check` functions and its CLI `main`, plus `scripts/educate.ts` for the bootstrap payload. The aggregate imports `govern.ts` directly; separate `audit.ts` and `conform.ts` entrypoints are retired. REFRESH is harness-only. Process skills and the committed repository-local `.ki/self/skill/` source are exempt.',
   sources: ['standards.md §14', 'ADR-KI-HARNESS-007'],
   mechanical: {
     level: 'FAIL',
     audit: { phase: 'INSPECT', run: auditKiShape15 },
-    conform: {
-      phase: 'PRIMARY',
-      run: (context) => {
-        const { skill, setVendors } = context
-        if (!skill?.governanceSkill)
-          return [{ status: 'NOT_APPLICABLE', message: 'the target is not a governance skill', subject: 'SKILL.md' }]
-        if (skill.vendors === UNIFORM_VENDORS) return auditKiShape15(context)
-        const missingScripts = ['educate', 'audit', 'conform'].filter((mode) => !skill.scriptNames.includes(`${mode}.ts`))
-        if (missingScripts.length > 0) return auditKiShape15(context)
-        if (!setVendors) throw new Error('KI-SHAPE-15 conform requires the setVendors capability')
-        setVendors(UNIFORM_VENDORS)
-        const after = auditKiShape15({ ...context, skill: { ...skill, vendorsPresent: true, vendors: UNIFORM_VENDORS } })
-        const remaining = after.filter((outcome) => outcome.status === 'VIOLATION')
-        return [{ status: 'FIXED', message: `set \`ki-vendors:\` to \`${UNIFORM_VENDORS}\``, subject: 'SKILL.md' }, ...remaining]
-      }
-    }
+    conform: { phase: 'PRIMARY', run: auditKiShape15 }
   }
 }
 
@@ -403,7 +370,7 @@ export const KI_SHAPE_16: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-16',
   title: 'target files have declared ownership',
   description:
-    "_Declared file ownership, three tiers._ A skill that writes a house-standard file into a **target repo's** working tree (not `.ki/bootstrap/`, which has its own `ki-vendors:`/manifest.json hash mechanism — KI-SHAPE-12/15's sibling, not this one) declares that relationship in frontmatter, alongside `ki-depends-on:`/`ki-vendors:`, under one of three keys: `requires:` (must exist, doesn't create/control it — any number of skills may share a `requires:` filename), `contributes:` (writes/expects only its own section of a shared file — any number of skills may share a `contributes:` filename, e.g. `.ki-config.toml`, `package.json`), or `owns:` (sole author of the whole file — **exclusive**, at most one skill per filename). The linter runs three heuristic passes: (1) per-skill, any filename passed to a literal `scaffold(...)`/`syncOwned(...)` call in the skill's own CONFORM implementation must appear under that skill's `owns:` — WARN if scaffolded-but-undeclared; (2) per-skill, every filename declared under `owns:`/`contributes:`/`requires:` must appear literally somewhere in that skill's own checker implementation — WARN if declared-but-unaudited; (3) cross-skill, no filename may appear under `owns:` in more than one skill's frontmatter — WARN naming both skills (the exact shape of the `.prettierrc.json` split bug this criterion exists to catch). Thin entry points may delegate to private `scripts/rubric/` modules; vendored dependencies do not count as the skill's own implementation. Heuristic: only `scaffold(`/`syncOwned(` call sites are matched, so a skill using a differently named write helper needs it renamed or the pattern extended.",
+    "_Declared file ownership, three tiers._ A skill that writes a house-standard file into a **target repo's** working tree (not `.ki/bootstrap/`, which has its own manifest hash mechanism) declares that relationship in frontmatter, alongside `ki-depends-on:`, under one of three keys: `requires:` (must exist, doesn't create/control it — any number of skills may share a `requires:` filename), `contributes:` (writes/expects only its own section of a shared file — any number of skills may share a `contributes:` filename, e.g. `.ki-config.toml`, `package.json`), or `owns:` (sole author of the whole file — **exclusive**, at most one skill per filename). The linter runs three heuristic passes: (1) per-skill, any filename passed to a literal `scaffold(...)`/`syncOwned(...)` call in the skill's own CONFORM implementation must appear under that skill's `owns:` — WARN if scaffolded-but-undeclared; (2) per-skill, every filename declared under `owns:`/`contributes:`/`requires:` must appear literally somewhere in that skill's own checker implementation — WARN if declared-but-unaudited; (3) cross-skill, no filename may appear under `owns:` in more than one skill's frontmatter — WARN naming both skills. Thin entry points may delegate to private `scripts/rubric/` modules; vendored dependencies do not count as the skill's own implementation. Heuristic: only `scaffold(`/`syncOwned(` call sites are matched, so a skill using a differently named write helper needs it renamed or the pattern extended.",
   sources: ['KI'],
   mechanical: {
     level: 'WARN',

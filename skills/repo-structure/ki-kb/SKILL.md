@@ -1,8 +1,7 @@
 ---
 name: ki-kb
-ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator, ki-skills:govern]
 ki-depends-on: [ki-kb-activities, ki-kb-live-artifacts, ki-kb-streams]
-ki-vendors: [educate, audit, conform, help]
 description: >
   Interact with a Knowledge Islands knowledge base: save AI outputs as notes, update existing notes, query the base, distil a conversation into notes, or write a session digest — and audit a base against the structure model, bring it into line, or scaffold a new one. Targets the Knowledge Islands structure (Calendar / Pillars / Resources / Streams, plus inbound `+` and outbound `-`), so it assumes the zone model rather than asking for it; only a few store-level bindings come from the host project. Triggers: "save to my notes", "save to the knowledge base", "add to the KB", "what do my notes say about", "search my notes", "update the note on", "capture this", "write a session digest", "audit my knowledge base", "is my base structured right", "set up a new knowledge base". For the `Streams` zone (proposals, the Enactment Process) use the `ki-kb-streams` skill it delegates to; for general Markdown or TOML house style (not note content) use `ki-authoring`.
 argument-hint: 'audit | conform | digest | extract | help | improve | educate | query <question> | refresh | save | update <note>'
@@ -131,6 +130,6 @@ The memory cascade and the canonical-zone Enactment gate are part of the shared 
 - This skill assumes the Knowledge Islands structure. If a base does not follow it, or a binding cannot be resolved and no default fits, ask the user rather than guess.
 - A base supplies its specifics by **declaration**, not a coupled skill: structured data (zone aliases, required frontmatter, pre-flight reads) in its `.ki-config.toml` `[ki-kb]` table, narrative bindings (store alias, scope, writing standards) in its `CLAUDE.md`. There is no `<base>-kb` extension skill; relationships to sibling skills are composition (e.g. the `Streams` zone delegates to `ki-kb-streams`).
 
-Reference detail: [Knowledge Islands KB Reference](<references/Knowledge Islands KB Reference.md>). Checkable criteria: [the audit rubric](references/rubric.md), enforced mechanically by [`scripts/audit.ts`](scripts/audit.ts).
+Reference detail: [Knowledge Islands KB Reference](<references/Knowledge Islands KB Reference.md>). Checkable criteria: [the audit rubric](references/rubric.md), enforced mechanically by [`scripts/govern.ts`](scripts/govern.ts).
 
 KI-wide frontmatter standard (universal fields and the `type` taxonomy): [standards.md](references/standards.md).

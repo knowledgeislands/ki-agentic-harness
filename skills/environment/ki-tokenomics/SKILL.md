@@ -1,8 +1,7 @@
 ---
 name: ki-tokenomics
 ki-depends-on: []
-ki-vendors: [educate, audit, conform, help]
-ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-skills:checker-reporter, ki-bootstrap:educator]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-skills:checker-reporter, ki-bootstrap:educator, ki-skills:govern]
 description: >
   Audit, codify, and optimise the tokenomics of a Claude Code environment — the standing context surface paid on every turn, composed across the user-wide (`~/.claude`) and project-local layers and any Knowledge Islands base, plus the runtime levers (caching, model tier, compaction, sub-agent fan-out, verbosity). Measures each layer's CLAUDE.md (+`@imports`), memory, installed-skill descriptions, MCP tool definitions, and settings against budgets, and checks context-compression tooling such as Headroom is set up optimally. Use when context feels heavy or token costs climb. Triggers: "audit my token usage", "why is my context so big", "reduce my token costs", "trim my context", "too many MCP tools", "is Headroom set up right". For the volatile numbers (model ids, prices, cache TTLs, window sizes) use `claude-api`; for a base's structure/content use `ki-kb`; for one skill's quality use `ki-skills`; for an MCP server's code use `ki-mcp`.
 argument-hint: 'audit | conform | help | educate | refresh'
@@ -12,7 +11,7 @@ argument-hint: 'audit | conform | help | educate | refresh'
 
 You are helping hold a Claude Code working environment to one budget for its **tokenomics** — the cost of the context the model carries, paid not once but on **every turn**, and re-paid by every sub-agent. The premise of this skill is that this cost is rarely one file's fault: it is the **composition** of two configuration layers — the **user-wide** `~/.claude` and the **project-local** `.claude` / `CLAUDE.md` — over any **Knowledge Islands base** in play. You measure that composed surface, attribute it to its layers, hold it to a budget, and tune the runtime levers that multiply it.
 
-This is a **standard, base-agnostic Process skill**: it hard-codes no single environment, resolving the user layer from `~/.claude` at runtime and taking the project or base as its target. Its quotable standard is [the standard](references/standards.md); the line-by-line criteria (each tagged mechanical/judgment) are [the rubric](references/rubric.md); the mechanical checker is [`scripts/audit.ts`](scripts/audit.ts). How it sits beside the other skills is documented once in the ki-agentic-harness `README.md`, not repeated here.
+This is a **standard, base-agnostic Process skill**: it hard-codes no single environment, resolving the user layer from `~/.claude` at runtime and taking the project or base as its target. Its quotable standard is [the standard](references/standards.md); the line-by-line criteria (each tagged mechanical/judgment) are [the rubric](references/rubric.md); the mechanical checker is [`scripts/govern.ts`](scripts/govern.ts). How it sits beside the other skills is documented once in the ki-agentic-harness `README.md`, not repeated here.
 
 ## What it governs — two halves
 

@@ -1,8 +1,7 @@
 ---
 name: ki-mcp
-ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator, ki-skills:govern]
 ki-depends-on: []
-ki-vendors: [educate, audit, conform, help]
 description: >
   Codify and audit Knowledge Islands MCP servers against the canonical "workspace MCP" standard. Use when scaffolding a new MCP server, bringing an existing one up to standard, or reviewing one for compliance: project layout, config injection (no module-level singleton), the `<app>_<resource>_<action>` tool-naming scheme, the annotation-driven access-level gate, audit logging, the security invariants, the common build/lint/test toolchain (now `ki-engineering`'s, which this builds on). Also refreshes the standard itself against the latest published MCP specification. Triggers: "audit this MCP", "does this MCP follow our standards", "scaffold a new MCP", "bring this MCP up to standard", "review the MCP layout / tool surface / package.json", "refresh the MCP standard", "is our MCP standard up to date". Operates on the sibling `mcp-*` repos under `knowledgeislands/`. Audits MCP **server code** — not a repo's GitHub configuration, nor a `SKILL.md`'s prose (for that, use `ki-skills`).
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
@@ -14,7 +13,7 @@ You are helping audit, conform, or scaffold a **workspace MCP server** — one o
 
 This skill audits the **server code** — `src/` layout, config injection, tool surface, security invariants, tooling. A repo's GitHub configuration and standard files, and a `SKILL.md`'s prose, are out of scope (other skills own those). How the skills divide the work is documented once in the ki-agentic-harness `README.md`.
 
-The full, quotable standard lives in [Workspace MCP Standard](references/standards.md); the line-by-line pass/fail items live in [Audit Rubric](references/rubric.md). A mechanical structural checker is [`scripts/audit.ts`](scripts/audit.ts). Read those when you need detail; this file is the operating procedure.
+The full, quotable standard lives in [Workspace MCP Standard](references/standards.md); the line-by-line pass/fail items live in [Audit Rubric](references/rubric.md). A mechanical structural checker is [`scripts/govern.ts`](scripts/govern.ts). Read those when you need detail; this file is the operating procedure.
 
 ## The canonical shape at a glance
 

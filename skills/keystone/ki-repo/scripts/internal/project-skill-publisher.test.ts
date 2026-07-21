@@ -108,7 +108,7 @@ function writeLocalKiSelf(root: string, runtime: 'claude-code' | 'codex'): strin
 }
 
 function writeCanonicalKiSelf(root: string, description = 'Local concerns.'): string {
-  const path = join(root, '.ki-self', 'SKILL.md')
+  const path = join(root, '.ki', 'self', 'skill', 'SKILL.md')
   mkdirSync(dirname(path), { recursive: true })
   writeFileSync(path, ['---', 'name: ki-self', `description: ${description}`, '---', '', '# KI Self', ''].join('\n'))
   return path
@@ -211,7 +211,7 @@ try {
   const preview = run(localSelf, {}, ['--dry-run'])
   check('legacy local ki-self → dry-run plans migration without writing', preview.status === 0 && snapshot(localSelf) === beforeDryRun)
   const result = run(localSelf)
-  const source = join(localSelf, '.ki-self', 'SKILL.md')
+  const source = join(localSelf, '.ki', 'self', 'skill', 'SKILL.md')
   const codexSelf = join(localSelf, '.agents', 'skills', 'ki-self')
   check('legacy local ki-self → publication succeeds', result.status === 0)
   check('legacy local ki-self → moves the sole source outside runtime directories', lstatSync(source).isFile())
@@ -250,7 +250,8 @@ const unsafeLocalSelf = fixture(['claude-code'])
 const unsafeLocalSelfOutside = realpathSync(mkdtempSync(join(tmpdir(), 'ki-project-links-self-outside-')))
 try {
   writeFileSync(join(unsafeLocalSelfOutside, 'sentinel'), 'outside\n')
-  symlinkSync(unsafeLocalSelfOutside, join(unsafeLocalSelf, '.ki-self'))
+  mkdirSync(join(unsafeLocalSelf, '.ki', 'self'), { recursive: true })
+  symlinkSync(unsafeLocalSelfOutside, join(unsafeLocalSelf, '.ki', 'self', 'skill'))
   check('unsafe canonical ki-self → transaction refuses the source link', run(unsafeLocalSelf).status !== 0)
   check(
     'unsafe canonical ki-self → never follows the source link',

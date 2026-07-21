@@ -124,8 +124,6 @@ export type KiShapeSkillContext = {
   localGovernanceSource: boolean
   argumentHint: string | undefined
   hintVerbs: readonly string[]
-  vendorsPresent: boolean
-  vendors: string
   scriptNames: readonly string[]
   operatingModesSection: string | null
   bodyModes: ReadonlySet<string>
@@ -154,7 +152,6 @@ export type KiShapeRubricContext = {
   skill: KiShapeSkillContext | null
   ownershipCollisions: readonly OwnershipCollision[]
   setArgumentHint?: (argumentHint: string) => void
-  setVendors?: (vendors: string) => void
 }
 
 export const createKiShapeFrontmatterEvidence = ({
@@ -167,18 +164,13 @@ export const createKiShapeFrontmatterEvidence = ({
   description: string
   scriptNames: readonly string[]
   localGovernanceSource?: boolean
-}): Pick<
-  KiShapeSkillContext,
-  'governanceSkill' | 'localGovernanceSource' | 'argumentHint' | 'hintVerbs' | 'vendorsPresent' | 'vendors' | 'scriptNames'
-> => {
+}): Pick<KiShapeSkillContext, 'governanceSkill' | 'localGovernanceSource' | 'argumentHint' | 'hintVerbs' | 'scriptNames'> => {
   const argumentHint = frontmatter.keys.get('argument-hint')
   return {
     governanceSkill: !isProcessSkill(description),
     localGovernanceSource,
     argumentHint,
     hintVerbs: hintVerbs(argumentHint ?? ''),
-    vendorsPresent: frontmatter.present.has('ki-vendors'),
-    vendors: (frontmatter.keys.get('ki-vendors') ?? '').trim(),
     scriptNames
   }
 }
@@ -188,8 +180,6 @@ const emptyKiShapeSkill: KiShapeSkillContext = {
   localGovernanceSource: false,
   argumentHint: undefined,
   hintVerbs: [],
-  vendorsPresent: false,
-  vendors: '',
   scriptNames: [],
   operatingModesSection: null,
   bodyModes: new Set(),
@@ -217,18 +207,15 @@ const emptyKiShapeSkill: KiShapeSkillContext = {
 export const createKiShapeContext = ({
   skill,
   ownershipCollisions = [],
-  setArgumentHint,
-  setVendors
+  setArgumentHint
 }: {
   skill: Partial<KiShapeSkillContext> | null
   ownershipCollisions?: readonly OwnershipCollision[]
   setArgumentHint?: (argumentHint: string) => void
-  setVendors?: (vendors: string) => void
 }): KiShapeRubricContext => ({
   skill: skill === null ? null : { ...emptyKiShapeSkill, ...skill },
   ownershipCollisions,
-  setArgumentHint,
-  setVendors
+  setArgumentHint
 })
 
 /** Complete root context from which each rubric family selects its focused evidence. */

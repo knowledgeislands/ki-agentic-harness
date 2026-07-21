@@ -21,8 +21,9 @@ export const scriptHelpEvidence = (skillDirectory: string): readonly ScriptHelpE
           /import\s*\{\s*runSkillEducator\s*\}\s*from\s*['"]\.\/vendored\/ki-bootstrap\/educator\.ts['"]/.test(source) &&
           /\brunSkillEducator\s*\(/.test(source),
         delegatesGovern:
-          /import\s*\{\s*main\s*\}\s*from\s*['"]\.\/govern\.ts['"]/.test(source) &&
-          /\bmain\s*\(\s*\[\s*['"](?:audit|conform|educate|help)['"]\s*,\s*\.\.\.process\.argv\.slice\(2\)\s*\]\s*\)/.test(source)
+          (/from\s+['"][^'"]*govern\.ts['"]/.test(source) && /\brunGovernedCli\s*\(/.test(source)) ||
+          (/import\s*\{\s*main\s*\}\s*from\s*['"]\.\/govern\.ts['"]/.test(source) &&
+            /\bmain\s*\(\s*\[\s*['"](?:audit|conform|educate|help)['"]\s*,\s*\.\.\.process\.argv\.slice\(2\)\s*\]\s*\)/.test(source))
       }
     })
 }

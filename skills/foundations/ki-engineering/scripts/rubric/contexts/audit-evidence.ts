@@ -3,7 +3,7 @@
  * Mechanical auditor for the COMMON engineering layer of a Knowledge Islands
  * TypeScript/Bun repo.
  *
- *   bun scripts/audit.ts <repo-path>      # or: node after a build
+ *   bun scripts/govern.ts audit <repo-path>  # or: node after a build
  *
  * Checks the shared toolchain the `ki-engineering` skill codifies —
  * package.json metadata, the mise.toml toolchain pin (node + bun, bun matched to

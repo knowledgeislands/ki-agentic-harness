@@ -1,1 +1,0 @@
-../../../../../skills/foundations/ki-engineering/scripts/conform.ts

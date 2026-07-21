@@ -131,7 +131,7 @@ const sourceHarness = harnessFixture()
 try {
   check('source harness EDUCATE succeeds', educate(sourceHarness).status === 0)
   const bootstrapSkills = join(sourceHarness, '.ki', 'bootstrap', 'skills')
-  const checker = join(sourceHarness, '.ki', 'bootstrap', 'checkers', 'ki-skills', 'scripts', 'audit.ts')
+  const checker = join(sourceHarness, '.ki', 'bootstrap', 'checkers', 'ki-skills', 'scripts', 'govern.ts')
   const educatorSkill = join(sourceHarness, '.ki', 'bootstrap', 'educators', 'ki-skills', 'skill')
   check(
     'source harness links canonical bootstrap material',

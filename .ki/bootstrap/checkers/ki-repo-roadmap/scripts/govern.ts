@@ -1,0 +1,1 @@
+../../../../../skills/general-governance/ki-repo-roadmap/scripts/govern.ts

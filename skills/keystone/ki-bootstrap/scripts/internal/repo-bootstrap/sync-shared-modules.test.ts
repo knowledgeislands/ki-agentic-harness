@@ -40,16 +40,27 @@ for (const skill of allSkillNames()) {
   }
 }
 
-function assertNoLinks(path: string): void {
+const harnessRoot = dirname(SKILLS_ROOT)
+const declaredBootstrapLinks =
+  (
+    JSON.parse(readFileSync(join(harnessRoot, '.ki', 'manifest.json'), 'utf8')) as {
+      links?: Record<string, string>
+    }
+  ).links ?? {}
+
+function assertNoUndeclaredLinks(path: string): void {
   for (const entry of readdirSync(path)) {
     const child = join(path, entry)
     const stat = lstatSync(child)
-    if (stat.isSymbolicLink()) throw new Error(`vendored governance must not contain a symlink: ${child}`)
-    if (stat.isDirectory()) assertNoLinks(child)
+    if (stat.isSymbolicLink()) {
+      const rel = relative(harnessRoot, child)
+      if (declaredBootstrapLinks[rel] !== readlinkSync(child)) throw new Error(`vendored governance contains an undeclared link: ${child}`)
+    }
+    if (stat.isDirectory()) assertNoUndeclaredLinks(child)
   }
 }
 
-assertNoLinks(join(dirname(SKILLS_ROOT), '.ki'))
+assertNoUndeclaredLinks(join(harnessRoot, '.ki'))
 
 const fixture = mkdtempSync(join(tmpdir(), 'ki-shared-module-links-'))
 try {

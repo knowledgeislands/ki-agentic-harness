@@ -1,8 +1,7 @@
 ---
 name: ki-specifications
 ki-depends-on: []
-ki-vendors: [educate, audit, conform, help]
-ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator, ki-skills:govern]
 contributes: [.ki-config.toml]
 description: >-
   Audits, conforms, and scaffolds the deliberately minimal repository structure for KI Specifications: a keyless `[ki-specifications]` marker plus the top-level proposals, specifications, schemas, templates, examples, docs, and tooling areas. Use when bootstrapping KI Specifications, checking its repository shape, or evolving that shape as the specification system matures. Triggers: "audit KI Specifications", "bootstrap the specifications repo", "check the KIP/KIS repository structure", "conform the specifications repository". It adds only the specifications-specific structural delta; use `ki-repo` for universal repository files and GitHub settings, `ki-decision-records` for decisions, and `ki-repo-roadmap` for planning.
@@ -15,7 +14,7 @@ Apply the intentionally small repository-structure standard for KI Specification
 
 The current floor is deliberately sparse. Detailed KIP/KIS content rules, numbering, lifecycle, conformance semantics, and publication formats remain canonical in the Specifications repository itself and should be promoted into this skill only after they prove stable and reusable.
 
-Read [the standard](references/standards.md) for the current floor, [the rubric](references/rubric.md) for checkable criteria, and [the source list](references/sources.md) when refreshing it. The mechanical checker is [`scripts/audit.ts`](scripts/audit.ts).
+Read [the standard](references/standards.md) for the current floor, [the rubric](references/rubric.md) for checkable criteria, and [the source list](references/sources.md) when refreshing it. The mechanical checker is [`scripts/govern.ts`](scripts/govern.ts).
 
 ## Canonical shape
 
@@ -35,14 +34,14 @@ ki-specifications/
 
 ### Mode AUDIT
 
-1. Run `bun scripts/audit.ts <repo>` and capture its canonical findings.
+1. Run `bun scripts/govern.ts <repo>` and capture its canonical findings.
 2. Confirm the repository declares `[ki-specifications]` and retains the seven top-level areas without judging their evolving internal contents.
 3. Apply the judgment criteria in [the rubric](references/rubric.md), especially whether a proposed new invariant is mature enough to belong here.
 
 ### Mode CONFORM
 
 1. Run AUDIT first.
-2. Run `bun scripts/conform.ts <repo>` to add the keyless marker when `.ki-config.toml` exists.
+2. Run `bun scripts/govern.ts <repo>` to add the keyless marker when `.ki-config.toml` exists.
 3. Create a missing top-level area only after confirming its intended contents; an empty directory cannot be governed by git, so the conformer does not manufacture placeholders.
 4. Re-run AUDIT.
 

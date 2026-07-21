@@ -17,7 +17,7 @@
  * imported, per the composition-only rule — kept in lockstep) to turn each finding
  * category into a concrete, actionable manual TODO, then points back at AUDIT.
  *
- *   bun scripts/conform.ts [path]   # default: cwd (a project or a KB base)
+ *   bun scripts/govern.ts conform [path] # default: cwd (a project or a KB base)
  *   --dry-run                       # report the Headroom URL edit without writing
  *
  * Every other finding it surfaces is a manual/judgment TODO — level ADVISORY on

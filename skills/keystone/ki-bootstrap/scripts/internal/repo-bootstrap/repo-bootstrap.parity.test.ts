@@ -83,40 +83,22 @@ function changedSnapshotPaths(before: string, after: string): string[] {
   return [...new Set([...beforePaths.keys(), ...afterPaths.keys()])].filter((path) => beforePaths.get(path) !== afterPaths.get(path)).sort()
 }
 
-const auditFixture = `#!/usr/bin/env bun
+const governedFixture = `#!/usr/bin/env bun
 import { writeFileSync } from 'node:fs'
 
-if (process.env.KI_FIXTURE_CHECKER_SENTINEL) writeFileSync(process.env.KI_FIXTURE_CHECKER_SENTINEL, 'checker ran\\n')
-const rootOk = process.cwd() === process.env.KI_EXPECT_ROOT && process.argv[2] === '.'
-const forcedFailure = process.env.KI_FIXTURE_FAIL === '1'
-const ok = rootOk && !forcedFailure
-const msg = !rootOk ? 'aggregate did not run at the repo root' : forcedFailure ? 'synthetic failure' : 'synthetic audit passed'
-const run = { version: 1, runId: crypto.randomUUID(), mode: 'audit', concern: 'fixture', target: process.cwd(), generatedAt: new Date().toISOString() }
-const level = ok ? 'PASS' : 'FAIL'
-for (const record of [
-  { ...run, record: 'meta' },
-  { ...run, record: 'finding', level, code: 'FIX-1', title: 'Fixture health check', message: msg },
-  { ...run, record: 'finding', level: 'INFO', code: 'FIX-2', title: 'Fixture information', message: 'synthetic information' },
-  { ...run, record: 'summary', summary: { fail: ok ? 0 : 1, warn: 0, fixed: 0, info: 1, notApplicable: 0, pass: ok ? 1 : 0, judgment: { unevaluated: 1 } } }
-]) process.stdout.write(JSON.stringify(record) + '\\n')
-process.exit(ok ? 0 : 1)
-`
-
-const conformFixture = `#!/usr/bin/env bun
-import { writeFileSync } from 'node:fs'
-const rootOk = process.cwd() === process.env.KI_EXPECT_ROOT && process.argv[2] === '.'
-const dryRun = process.argv.includes('--dry-run')
-if (!dryRun) writeFileSync('unexpected-conform-write', 'write occurred\\n')
-const ok = rootOk && dryRun
-const msg = !rootOk ? 'aggregate did not run at the repo root' : dryRun ? 'synthetic conform dry-run passed' : 'dry-run was not forwarded'
-const run = { version: 1, runId: crypto.randomUUID(), mode: 'conform', concern: 'fixture', target: process.cwd(), generatedAt: new Date().toISOString() }
-const level = ok ? 'PASS' : 'FAIL'
-for (const record of [
-  { ...run, record: 'meta' },
-  { ...run, record: 'finding', level, code: 'FIX-1', title: 'Fixture health check', message: msg },
-  { ...run, record: 'summary', summary: { fail: ok ? 0 : 1, warn: 0, fixed: 0, info: 0, notApplicable: 0, pass: ok ? 1 : 0, judgment: { unevaluated: 0 } } }
-]) process.stdout.write(JSON.stringify(record) + '\\n')
-process.exit(ok ? 0 : 1)
+export const plan = () => ({ plannedItems: 1 })
+export const check = (mode, options) => {
+  if (process.env.KI_FIXTURE_CHECKER_SENTINEL) writeFileSync(process.env.KI_FIXTURE_CHECKER_SENTINEL, 'checker ran\\n')
+  const rootOk = options.target === process.env.KI_EXPECT_ROOT
+  const forcedFailure = process.env.KI_FIXTURE_FAIL === '1'
+  const dryRun = mode !== 'conform' || options.dryRun
+  if (mode === 'conform' && !options.dryRun) writeFileSync('unexpected-conform-write', 'write occurred\\n')
+  const ok = rootOk && !forcedFailure && dryRun
+  const message = !rootOk ? 'aggregate did not run at the repo root' : forcedFailure ? 'synthetic failure' : mode === 'conform' ? 'synthetic conform dry-run passed' : 'synthetic audit passed'
+  const level = ok ? 'PASS' : 'FAIL'
+  const findings = [{ level, code: 'FIX-1', title: 'Fixture health check', message }, ...(mode === 'audit' ? [{ level: 'INFO', code: 'FIX-2', title: 'Fixture information', message: 'synthetic information' }] : [])]
+  return { findings, summary: { fail: ok ? 0 : 1, warn: 0, fixed: 0, info: mode === 'audit' ? 1 : 0, notApplicable: 0, pass: ok ? 1 : 0, judgment: { unevaluated: mode === 'audit' ? 1 : 0 } }, exitCode: ok ? 0 : 1, plannedItems: 1 }
+}
 `
 
 try {
@@ -134,8 +116,7 @@ try {
   for (const name of readdirSync(checkers)) rmSync(join(checkers, name), { recursive: true, force: true })
   const fixtureSkill = join(checkers, 'ki-fixture', 'scripts')
   mkdirSync(fixtureSkill, { recursive: true })
-  writeFileSync(join(fixtureSkill, 'audit.ts'), auditFixture)
-  writeFileSync(join(fixtureSkill, 'conform.ts'), conformFixture)
+  writeFileSync(join(fixtureSkill, 'govern.ts'), governedFixture)
   const fixtureRubric = join(fixture, '.ki', 'bootstrap', 'checkers', 'ki-fixture', 'references')
   mkdirSync(fixtureRubric, { recursive: true })
   writeFileSync(join(fixtureRubric, 'rubric.md'), '- **FIX-1 [M]** Fixture health check.\n- **REVIEW-1 [J]** Fixture judgment review.\n')
@@ -152,8 +133,8 @@ try {
   check('package-free fixture → package.json remains absent', !existsSync(join(fixture, 'package.json')))
 
   for (const scenario of [
-    { label: 'aggregate audit', command: 'bun', args: [aggregate, 'audit', '--help'], expected: 'Audit each vendored skill checker' },
-    { label: 'aggregate conform', command: 'bun', args: [aggregate, 'conform', '-h'], expected: 'Apply each vendored skill checker' },
+    { label: 'aggregate audit', command: 'bun', args: [aggregate, 'audit', '--help'], expected: 'Audit each vendored governed checker' },
+    { label: 'aggregate conform', command: 'bun', args: [aggregate, 'conform', '-h'], expected: "Apply each vendored governed checker's" },
     { label: 'ki-audit alias', command: auditWrapper, args: ['--help'], expected: 'Run vendored skill checks', section: 'Commands:' },
     { label: 'ki-conform alias', command: conformWrapper, args: ['-h'], expected: 'Apply each vendored skill', section: 'Options:' }
   ]) {
@@ -173,7 +154,7 @@ try {
     'package-free audit wrapper → reports unevaluated judgment only in the summary',
     wrapperPass.stdout.includes('JUDGMENT_UNEVALUATED=1')
   )
-  check('package-free audit wrapper → retains compact suppressed counts', wrapperPass.stdout.includes('suppressed: FIXED=0 INFO=1'))
+  check('package-free audit wrapper → retains aggregate totals', wrapperPass.stdout.includes('totals: FAIL=0 WARN=0 FIXED=0'))
   check('package-free audit wrapper → default recap names the selected levels', wrapperPass.stdout.includes('no FAIL / WARN findings'))
 
   const infoPass = run(auditWrapper, ['--reporter-levels=info'], nested, env)
@@ -187,7 +168,7 @@ try {
     allPass.status === 0 && allPass.stdout.includes('synthetic audit passed')
   )
   check('package-free audit wrapper → all includes informational findings', allPass.stdout.includes('synthetic information'))
-  check('package-free audit wrapper → all does not label shown levels as suppressed', allPass.stdout.includes('(all levels shown)'))
+  check('package-free audit wrapper → all retains aggregate totals', allPass.stdout.includes('totals: FAIL=0 WARN=0 FIXED=0'))
 
   const scopedPass = run(
     'bun',

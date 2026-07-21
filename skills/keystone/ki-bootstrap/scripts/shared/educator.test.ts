@@ -18,7 +18,7 @@ const fixture = (): { source: string; target: string } => {
     join(source, 'SKILL.md'),
     "---\nname: ki-example\ndescription: An example skill for EDUCATE tests.\nargument-hint: 'audit | help'\n---\n\n# Example\n\n## Mode AUDIT — inspect the target\n"
   )
-  for (const script of ['audit.ts', 'conform.ts', 'educate.ts']) writeFileSync(join(source, 'scripts', script), 'export {}\n')
+  for (const script of ['govern.ts', 'educate.ts']) writeFileSync(join(source, 'scripts', script), 'export {}\n')
   writeFileSync(join(source, 'scripts', 'rubric', 'index.ts'), 'export {}\n')
   writeFileSync(join(source, 'scripts', 'vendored', 'ki-bootstrap', 'educator.ts'), 'export {}\n')
   return { source, target }
@@ -39,8 +39,7 @@ test('plans one offline educator snapshot and one checker projection for a skill
     ['educator', join(target, '.ki', 'bootstrap', 'educators', 'ki-example', 'educate.ts')],
     ['checker', join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'SKILL.md')],
     ['checker', join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'help.md')],
-    ['checker', join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'scripts', 'audit.ts')],
-    ['checker', join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'scripts', 'conform.ts')],
+    ['checker', join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'scripts', 'govern.ts')],
     ['checker', join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'scripts', 'rubric')],
     ['checker', join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'scripts', 'vendored')]
   ])
@@ -51,7 +50,7 @@ test('rejects a source whose declared skill name differs', () => {
   expect(() => createSkillEducationPlan({ skill: 'ki-other', source, target })).toThrow('does not declare ki-other')
 })
 
-test('rejects a skill without all three mechanical mode entrypoints', () => {
+test('rejects a skill without its educator entrypoint', () => {
   const { source, target } = fixture()
   rmSync(join(source, 'scripts', 'educate.ts'))
   expect(() => createSkillEducationPlan({ skill: 'ki-example', source, target })).toThrow('does not provide scripts/educate.ts')
@@ -64,7 +63,7 @@ test('publishes only the selected skill checker and educator directories', () =>
 
   educateSkill({ skill: 'ki-example', source, target })
 
-  expect(readFileSync(join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'scripts', 'audit.ts'), 'utf8')).toBe('export {}\n')
+  expect(readFileSync(join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'scripts', 'govern.ts'), 'utf8')).toBe('export {}\n')
   const help = readFileSync(join(target, '.ki', 'bootstrap', 'checkers', 'ki-example', 'help.md'), 'utf8')
   expect(help).toContain('# ki-example')
   expect(help).toContain('An example skill for EDUCATE tests.')

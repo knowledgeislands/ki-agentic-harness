@@ -1,8 +1,7 @@
 ---
 name: ki-repo
 ki-depends-on: [ki-authoring]
-ki-vendors: [educate, audit, conform, help]
-ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator, ki-skills:govern]
 owns: ['.gitignore']
 contributes: ['.ki-config.toml']
 description: >
@@ -12,7 +11,7 @@ argument-hint: 'audit | conform <repo> | educate <repo> | help | refresh'
 
 # Knowledge Islands repo
 
-You are helping hold git repos to one **Knowledge Islands repo standard** — how a repo is _set up_, not what its code does. A **Knowledge Islands repo is a git repo that carries a `.ki-config.toml`** — that file's presence is the compliance marker; the standard applies to any such repo, and the [`knowledgeislands`](https://github.com/knowledgeislands) org is its reference set, not its boundary. The standard has three layers (local files, GitHub settings, deeper GitHub). Its full, quotable form with rationale and the per-repo override model lives in [the standard](references/standards.md); the generated [rubric](references/rubric.md) publishes the canonical structured items under `scripts/rubric/`; the mechanical checker is [`scripts/audit.ts`](scripts/audit.ts). The cross-cutting **`.ki-config.toml` contract** — what its presence means and how every skill reads its own table — lives in [the contract](references/config-standards.md).
+You are helping hold git repos to one **Knowledge Islands repo standard** — how a repo is _set up_, not what its code does. A **Knowledge Islands repo is a git repo that carries a `.ki-config.toml`** — that file's presence is the compliance marker; the standard applies to any such repo, and the [`knowledgeislands`](https://github.com/knowledgeislands) org is its reference set, not its boundary. The standard has three layers (local files, GitHub settings, deeper GitHub). Its full, quotable form with rationale and the per-repo override model lives in [the standard](references/standards.md); the generated [rubric](references/rubric.md) publishes the canonical structured items under `scripts/rubric/`; the mechanical checker is [`scripts/govern.ts`](scripts/govern.ts). The cross-cutting **`.ki-config.toml` contract** — what its presence means and how every skill reads its own table — lives in [the contract](references/config-standards.md).
 
 This skill governs a repo's **configuration and Knowledge Islands compliance** — how a repo is set up, not its source code. It is a **standard, base-agnostic Process skill**: it hard-codes no single repo or org and discovers its targets at runtime (a local tree, or a whole org via `gh`). How it sits alongside the other skills in this repo (where they complement and where they must not overlap) is documented once in the ki-agentic-harness `README.md`, not repeated here.
 
@@ -35,7 +34,7 @@ Every governance skill carries the universal four **AUDIT · CONFORM · EDUCATE 
 Auditing a whole tree or org is a set audit — **bound the context** (the set-audit discipline in `ki-skills`' enforcement framework §5): take the checker's one set-level run over every repo, then do the per-repo judgment pass **one repo at a time**, fully (its composed `engineering` / artifact-skill audits included) before moving to the next; repos are independent, so the order is free.
 
 1. Confirm `gh` is authenticated against the org (`gh auth status`).
-2. **Run the mechanical checker**: `bun scripts/audit.ts <tree-path>` (local repos, github.com-gated) or `--org <org>` (the whole org, including repos not cloned locally). With no reporter it emits the complete canonical JSONL response; add `--reporter=terminal` for the filtered human view and `--reporter-levels=all` only when diagnosing every outcome. The response uses FAIL / WARN / FIXED / INFO / NOT_APPLICABLE / PASS and exits non-zero on any mechanical FAIL. Capture its output rather than re-deriving the result.
+2. **Run the mechanical checker**: `bun scripts/govern.ts <tree-path>` (local repos, github.com-gated) or `--org <org>` (the whole org, including repos not cloned locally). With no reporter it emits the complete canonical JSONL response; add `--reporter=terminal` for the filtered human view and `--reporter-levels=all` only when diagnosing every outcome. The response uses FAIL / WARN / FIXED / INFO / NOT_APPLICABLE / PASS and exits non-zero on any mechanical FAIL. Capture its output rather than re-deriving the result.
 3. **Do the judgment pass the script can't** — the `[J]` items in [the rubric](references/rubric.md): does each description actually _match the repo's purpose_ (the script now checks non-emptiness and `package.json` sync mechanically — `description` / `description-sync` — but not fit); is each per-repo override (a `note` in the output) a warranted decision rather than waved-off drift.
 4. **Report** by `repo · check · fix`, lead with FAILs, surface any **coverage** WARNs (a detected standard with no opt-in table), and call out the overrides (`note`s) you judged warranted.
 
@@ -43,7 +42,7 @@ Auditing a whole tree or org is a set audit — **bound the context** (the set-a
 
 Outward-facing: it changes live GitHub settings and may open PRs. Show the diff and confirm before mutating.
 
-The rubric's mechanical findings are scripted: `bun scripts/conform.ts [path]` (`--dry-run` to preview) first repairs the local `.gitignore` and required config root markers, then applies every mechanical `gh` call in [the standard](references/standards.md#applying-it) directly — merge methods, auto-delete-branch, Wiki/Projects/Issues, topics, branch protection (only when `[ki-repo.checks]` opts it in), Dependabot alerts/updates, `allow_update_branch`, secret scanning + push protection (public), Actions permissions. Local repair is deliberately first, so it still converges when the repo has no GitHub remote or `gh` is unauthenticated. A missing config receives the canonical `[ki-repo]` defaults plus bare `[ki-authoring]`; a partial config receives only its missing exact root marker. Existing bytes remain an exact prefix, a second run is byte-identical, and `--dry-run` writes nothing. CONFORM does not pretend to evaluate judgment items; its summary reports how many remain for a human review.
+The rubric's mechanical findings are scripted: `bun scripts/govern.ts [path]` (`--dry-run` to preview) first repairs the local `.gitignore` and required config root markers, then applies every mechanical `gh` call in [the standard](references/standards.md#applying-it) directly — merge methods, auto-delete-branch, Wiki/Projects/Issues, topics, branch protection (only when `[ki-repo.checks]` opts it in), Dependabot alerts/updates, `allow_update_branch`, secret scanning + push protection (public), Actions permissions. Local repair is deliberately first, so it still converges when the repo has no GitHub remote or `gh` is unauthenticated. A missing config receives the canonical `[ki-repo]` defaults plus bare `[ki-authoring]`; a partial config receives only its missing exact root marker. Existing bytes remain an exact prefix, a second run is byte-identical, and `--dry-run` writes nothing. CONFORM does not pretend to evaluate judgment items; its summary reports how many remain for a human review.
 
 1. Run **AUDIT** first, so you change against a known gap list.
 2. Run `conform.ts` for the mechanical layer (or apply the `gh` commands in [the standard](references/standards.md) by hand).
@@ -66,7 +65,7 @@ Onboard a repo by adding the marker file (and the other root files) so it joins 
 GitHub's settings surface moves (rulesets vs classic protection, new security toggles, Actions policy). Run on its declared cadence (see `references/sources.md`), or when asked "is the repo standard current".
 
 1. **Read [the source list](references/sources.md)** — the tracked GitHub REST API / `gh` / rulesets / security-features sources, each with a `last reviewed` date.
-2. **Re-fetch each** (WebFetch; fall back to WebSearch if a host is blocked or returns non-200) and **diff** against [the standard](references/standards.md) and [`scripts/audit.ts`](scripts/audit.ts): new or renamed settings, changed defaults, protection moving to rulesets, new security toggles.
+2. **Re-fetch each** (WebFetch; fall back to WebSearch if a host is blocked or returns non-200) and **diff** against [the standard](references/standards.md) and [`scripts/govern.ts`](scripts/govern.ts): new or renamed settings, changed defaults, protection moving to rulesets, new security toggles.
 3. **Scan the org** for emergent patterns the standard hasn't captured.
 4. **Propose a diff** to the standard, the script, and this file; confirm before writing.
 5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date and refresh the `## Last review` block (what's confirmed, open watch-items). What changed goes in the commit, not a changelog. Mandatory: the source list is the skill's memory of where the standard comes from.

@@ -1,8 +1,7 @@
 ---
 name: ki-decision-records
 ki-depends-on: []
-ki-vendors: [educate, audit, conform, help]
-ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator, ki-skills:govern]
 description: >
   Codify, audit, and maintain Decision Records in any Knowledge Islands repo — the unified instrument replacing ki-adrs and ki-kdrs. Each decision_type has its own prefix: GDR- (governance), ADR- (architecture), KDR- (knowledge), SDR- (strategy), PDR- (product), DDR- (data), XDR- (security), ODR- (operations), RDR- (research). Serials are per-prefix within scope. Governs the Nygard five-section format, status lifecycle, and placement: docs/decisions/ for code repos, Admin/Governance/Decisions/ for KB repos. In KB repos DRs carry type: admin/governance/decision plus decision_type, per the KI-wide frontmatter standard in ki-kb. Use when writing, auditing, or conforming decision records. Triggers: "write a DR", "create a decision record", "document this decision", "audit the DRs". Off-ramps: ki-kb (island structure and frontmatter standard), ki-kb-streams (Enactment Process).
 argument-hint: 'audit [dir] | conform [dir] | help | educate [dir] | new <scope> "<title>" | refresh'
@@ -34,7 +33,7 @@ You are applying the **Knowledge Islands Decision Records standard** — how Dec
 5. **The index rule** — `Decisions.md` (code: `README.md` or `Decisions.md`) must contain an ordered list, one item per DR, in reveal order.
 6. **The placement rule** — `repo_type = "kb"` in `.ki-config.toml` → `Admin/Governance/Decisions/`; all others → `docs/decisions/`. Pass the actual path to the checker.
 7. **The Enactment Process integration** — a DR is the formal artifact for an Enactment Process proposal whose `Decision` output warrants a standalone record.
-8. **The mechanical checker** — [`scripts/audit.ts`](scripts/audit.ts) validates filenames, required sections, an optional `**Date:**` field, and the required KB `type`/`decision_type` metadata against the filename's canonical type. It does not infer whether the prefix is semantically right; that remains a judgment check. It also validates serial uniqueness, index completeness, and reveal-order serial ascension within each prefix. Detects KB vs code mode automatically from `.ki-config.toml`.
+8. **The mechanical checker** — [`scripts/govern.ts`](scripts/govern.ts) validates filenames, required sections, an optional `**Date:**` field, and the required KB `type`/`decision_type` metadata against the filename's canonical type. It does not infer whether the prefix is semantically right; that remains a judgment check. It also validates serial uniqueness, index completeness, and reveal-order serial ascension within each prefix. Detects KB vs code mode automatically from `.ki-config.toml`.
 
 ## Operating modes
 

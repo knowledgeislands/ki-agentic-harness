@@ -7,8 +7,9 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
-const AUDIT = join(HERE, 'audit.ts')
-const CONFORM = join(HERE, 'conform.ts')
+const GOVERN = join(HERE, 'govern.ts')
+const AUDIT = 'audit'
+const CONFORM = 'conform'
 const EDUCATE = join(HERE, 'educate.ts')
 const HORIZONS = ['Blocking', 'Next', 'Soon', 'Waiting for', 'Future'] as const
 const HORIZON_BLURBS = {
@@ -35,8 +36,9 @@ function fixture(): string {
   return mkdtempSync(join(tmpdir(), 'ki-repo-roadmap-test-'))
 }
 
-function run(script: string, root: string, args: string[] = []): { code: number; out: string } {
-  const result = spawnSync(process.execPath, [script, root, ...args], { encoding: 'utf8' })
+function run(mode: string, root: string, args: string[] = []): { code: number; out: string } {
+  const command = mode === 'audit' || mode === 'conform' ? [GOVERN, mode] : [mode]
+  const result = spawnSync(process.execPath, [...command, root, ...args], { encoding: 'utf8' })
   return { code: result.status ?? 1, out: `${result.stdout ?? ''}${result.stderr ?? ''}` }
 }
 

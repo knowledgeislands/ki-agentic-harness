@@ -27,7 +27,6 @@ export type SkillWritableCapabilities = {
   readContent?: () => string
   setName?: (name: string) => void
   setArgumentHint?: (argumentHint: string) => void
-  setVendors?: (vendors: string) => void
 }
 
 export type SkillRubricContext = {
@@ -189,8 +188,8 @@ export const createKiShapeEvidence = (
       return {
         name,
         usesCanonicalChecker:
-          (/from\s+['"][^'"]*checker\.ts['"]/.test(source) && /\brunChecker\b/.test(source)) ||
-          (/from\s+['"][^'"]*govern\.ts['"]/.test(source) && /\bdefineGovernedChecker\b/.test(source))
+          (/from\s+['"][^'"]*checker\.ts['"]/.test(source) && /\b(?:runChecker|planChecker)\b/.test(source)) ||
+          (/from\s+['"][^'"]*govern\.ts['"]/.test(source) && /\bdefine(?:Structured)?GovernedChecker\b/.test(source))
       }
     })
 
@@ -302,8 +301,7 @@ export const createSkillRubricContext = (directory: string, capabilities: SkillW
         },
         shape: createKiShapeContext({
           skill: createKiShapeEvidence(directory, frontmatter, description ?? '', body),
-          setArgumentHint: capabilities.setArgumentHint,
-          setVendors: capabilities.setVendors
+          setArgumentHint: capabilities.setArgumentHint
         }),
         size: { bodyLines: body.split(/\r?\n/).length, bodyTokens: estimateTokens(body) }
       })

@@ -1,1 +1,0 @@
-../../../../../skills/environment/ki-housekeeping/scripts/audit.ts

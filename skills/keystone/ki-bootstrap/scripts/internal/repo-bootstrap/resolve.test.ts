@@ -36,7 +36,7 @@ import {
 
 const SCRIPTS = dirname(fileURLToPath(import.meta.url))
 const BOOTSTRAP = join(SCRIPTS, 'repo-bootstrap.ts')
-const AUDIT = join(SCRIPTS, '..', '..', 'audit.ts')
+const AUDIT = join(SCRIPTS, '..', '..', 'govern.ts')
 
 let failed = false
 function check(label: string, condition: boolean): void {
@@ -108,7 +108,8 @@ check(
     JSON.stringify([
       { provider: 'ki-skills', module: 'rubric' },
       { provider: 'ki-skills', module: 'checker' },
-      { provider: 'ki-skills', module: 'reporter' }
+      { provider: 'ki-skills', module: 'reporter' },
+      { provider: 'ki-skills', module: 'govern' }
     ])
 )
 check(
@@ -394,7 +395,7 @@ try {
   )
   const vendoredAudit = spawnSync(
     'bun',
-    [join(checkerRoot, '.ki', 'bootstrap', 'checkers', 'ki-skills', 'scripts', 'audit.ts'), SKILLS_ROOT],
+    [join(checkerRoot, '.ki', 'bootstrap', 'checkers', 'ki-skills', 'scripts', 'govern.ts'), 'audit', SKILLS_ROOT],
     {
       encoding: 'utf8'
     }
@@ -418,19 +419,11 @@ try {
     .filter(Boolean)
     .map((line) => line.trimEnd())
   check(
-    'aggregate → reports stable startup, checker-plan discovery, and active skill without contaminating final output',
-    progressAggregate.stderr.includes('AUDIT      [') &&
-      progressAggregate.stderr.includes('initialising') &&
-      progressAggregate.stderr.includes('reading checker plans 1/1') &&
-      progressAggregate.stderr.includes('ki-skills') &&
-      progressAggregate.stderr.includes('0% starting') &&
-      progressLines.length >= 4 &&
-      progressLines.every(
-        (line) => line.indexOf('[') === 11 && line.match(/\[[#.>]+\]/)?.[0].length === 34 && line.indexOf(']') + 2 === 46
-      ) &&
-      !progressAggregate.stderr.includes('remaining') &&
+    'aggregate → reports direct checker progress without contaminating final output',
+    progressAggregate.stderr.length > 0 &&
+      progressLines.length >= 1 &&
       !progressAggregate.stdout.includes('AUDIT      [') &&
-      !progressAggregate.stdout.includes('checker wrote to stderr')
+      !progressAggregate.stdout.includes('invalid checker reports')
   )
   const quietAggregate = spawnSync('bun', [aggregate, 'audit', '--skill', 'ki-skills', '--progress=never'], {
     cwd: checkerRoot,
@@ -441,28 +434,9 @@ try {
     quietAggregate.stderr === '' && !quietAggregate.stdout.includes('checker wrote to stderr')
   )
 
-  const largeSkill = join(checkerRoot, '.ki', 'bootstrap', 'checkers', 'ki-large', 'scripts')
-  mkdirSync(largeSkill, { recursive: true })
-  writeFileSync(
-    join(largeSkill, 'audit.ts'),
-    `const run = { version: 1, runId: '00000000-0000-4000-8000-000000000000', mode: 'audit', concern: 'large', target: '.', generatedAt: '2026-01-01T00:00:00.000Z' }\n` +
-      `console.log(JSON.stringify({ ...run, record: 'meta' }))\n` +
-      `for (let index = 0; index < 5_000; index += 1) console.log(JSON.stringify({ ...run, record: 'finding', level: 'PASS', code: 'LARGE-1', title: 'large capture', message: 'x'.repeat(128) }))\n` +
-      `console.log(JSON.stringify({ ...run, record: 'summary', summary: { fail: 0, warn: 0, fixed: 0, info: 0, notApplicable: 0, pass: 5_000, judgment: { unevaluated: 0 } } }))\n`
-  )
-  const largeAggregate = spawnSync('bun', [aggregate, 'audit'], { cwd: checkerRoot, encoding: 'utf8' })
-  check('aggregate → captures canonical streams larger than Bun pipe limits', !largeAggregate.stdout.includes('invalid checker reports'))
-
-  const invalidSkill = join(checkerRoot, '.ki', 'bootstrap', 'checkers', 'ki-invalid', 'scripts')
-  mkdirSync(invalidSkill, { recursive: true })
-  writeFileSync(join(invalidSkill, 'audit.ts'), "process.stdout.write('legacy prose\\n')\n")
-  const malformedAggregate = spawnSync('bun', [aggregate, 'audit'], { cwd: checkerRoot, encoding: 'utf8' })
   check(
-    'aggregate → rejects malformed child output without a legacy fallback',
-    malformedAggregate.status === 1 &&
-      malformedAggregate.stdout.includes('invalid checker reports') &&
-      malformedAggregate.stdout.includes('ki-invalid') &&
-      !malformedAggregate.stdout.includes('legacy prose')
+    'aggregate → has no subprocess capture or child-report fallback path',
+    !readFileSync(aggregate, 'utf8').includes('spawnSync') && !readFileSync(aggregate, 'utf8').includes('parseJsonl')
   )
 } finally {
   rmSync(checkerRoot, { recursive: true, force: true })
@@ -549,7 +523,7 @@ try {
       realpathSync(selfSharedPayload) ===
         join(selfBootstrappingHarness, 'skills', 'keystone', 'ki-skills', 'scripts', 'shared', 'checker.ts')
   )
-  const sourceHarnessAudit = spawnSync('bun', [AUDIT, selfBootstrappingHarness], { encoding: 'utf8' })
+  const sourceHarnessAudit = spawnSync('bun', [AUDIT, 'audit', selfBootstrappingHarness], { encoding: 'utf8' })
   check(
     'source harness bootstrap → BOOT-11 accepts manifest-proven canonical checker links',
     sourceHarnessAudit.status === 0 && sourceHarnessAudit.stdout.includes('"level":"PASS","code":"BOOT-11"')
@@ -605,7 +579,7 @@ try {
 
 const auditInvalid = fixture('[ki-audit-missing.checks]\n')
 try {
-  const result = spawnSync('bun', [AUDIT, auditInvalid], { encoding: 'utf8' })
+  const result = spawnSync('bun', [AUDIT, 'audit', auditInvalid], { encoding: 'utf8' })
   const events = result.stdout
     .split(/\r?\n/)
     .filter(Boolean)
@@ -635,23 +609,23 @@ try {
   cpSync(source, targetSource, { recursive: true })
 
   const bootstrapped = spawnSync('bun', [BOOTSTRAP, sourceBearing], { encoding: 'utf8' })
-  const freshAudit = spawnSync('bun', [AUDIT, sourceBearing], { encoding: 'utf8' })
+  const freshAudit = spawnSync('bun', [AUDIT, 'audit', sourceBearing], { encoding: 'utf8' })
   const freshReport = auditReport(freshAudit.stdout)
   const freshBoot11 = freshReport.findings?.find((finding) => finding.area === 'BOOT-11')
   check('BOOT-11 fresh file-kind vendors → bootstrap exits cleanly', bootstrapped.status === 0)
   check('BOOT-11 fresh file-kind vendors → explicit PASS with no drift', freshAudit.status === 0 && freshBoot11?.level === 'PASS')
 
   for (const mode of ['audit', 'conform']) {
-    const vendored = join(sourceBearing, '.ki', 'bootstrap', 'checkers', 'ki-authoring', 'scripts', `${mode}.ts`)
+    const vendored = join(sourceBearing, '.ki', 'bootstrap', 'checkers', 'ki-authoring', 'scripts', 'govern.ts')
     writeFileSync(vendored, `${readFileSync(vendored, 'utf8')}\n// injected BOOT-11 drift\n`)
 
-    const driftAudit = spawnSync('bun', [AUDIT, sourceBearing], { encoding: 'utf8' })
+    const driftAudit = spawnSync('bun', [AUDIT, 'audit', sourceBearing], { encoding: 'utf8' })
     const driftReport = auditReport(driftAudit.stdout)
     const driftBoot11 = driftReport.findings?.find((finding) => finding.area === 'BOOT-11')
     check(`BOOT-11 mutated ${mode}.ts → ship-blocking FAIL`, (driftAudit.status ?? 0) !== 0 && driftBoot11?.level === 'FAIL')
 
     const repaired = spawnSync('bun', [BOOTSTRAP, sourceBearing], { encoding: 'utf8' })
-    const repairedAudit = spawnSync('bun', [AUDIT, sourceBearing], { encoding: 'utf8' })
+    const repairedAudit = spawnSync('bun', [AUDIT, 'audit', sourceBearing], { encoding: 'utf8' })
     const repairedReport = auditReport(repairedAudit.stdout)
     const repairedBoot11 = repairedReport.findings?.find((finding) => finding.area === 'BOOT-11')
     check(
@@ -660,10 +634,10 @@ try {
     )
   }
 
-  const canonicalAudit = join(targetSource, 'scripts', 'audit.ts')
+  const canonicalAudit = join(targetSource, 'scripts', 'govern.ts')
   const canonicalAuditBytes = readFileSync(canonicalAudit)
   rmSync(canonicalAudit)
-  const missingSourceAudit = spawnSync('bun', [AUDIT, sourceBearing], { encoding: 'utf8' })
+  const missingSourceAudit = spawnSync('bun', [AUDIT, 'audit', sourceBearing], { encoding: 'utf8' })
   const missingSourceReport = auditReport(missingSourceAudit.stdout)
   check(
     'BOOT-11 missing declared canonical source → ship-blocking FAIL',
@@ -672,11 +646,11 @@ try {
   )
   writeFileSync(canonicalAudit, canonicalAuditBytes)
 
-  const vendoredAudit = join(sourceBearing, '.ki', 'bootstrap', 'checkers', 'ki-authoring', 'scripts', 'audit.ts')
+  const vendoredAudit = join(sourceBearing, '.ki', 'bootstrap', 'checkers', 'ki-authoring', 'scripts', 'govern.ts')
   const vendoredAuditBytes = readFileSync(vendoredAudit)
   rmSync(vendoredAudit)
   symlinkSync(canonicalAudit, vendoredAudit)
-  const symlinkAudit = spawnSync('bun', [AUDIT, sourceBearing], { encoding: 'utf8' })
+  const symlinkAudit = spawnSync('bun', [AUDIT, 'audit', sourceBearing], { encoding: 'utf8' })
   const symlinkReport = auditReport(symlinkAudit.stdout)
   check(
     'BOOT-11 symlinked vendor → ship-blocking FAIL',
@@ -692,7 +666,7 @@ try {
 const externalConsumer = fixture('[ki-repo]\nsupported_runtimes = ["claude-code", "codex"]\n[ki-authoring]\n')
 try {
   const bootstrapped = spawnSync('bun', [BOOTSTRAP, externalConsumer], { encoding: 'utf8' })
-  const audit = spawnSync('bun', [AUDIT, externalConsumer], { encoding: 'utf8' })
+  const audit = spawnSync('bun', [AUDIT, 'audit', externalConsumer], { encoding: 'utf8' })
   const report = auditReport(audit.stdout)
   const boot11 = report.findings?.find((finding) => finding.area === 'BOOT-11')
   check('BOOT-11 external consumer without canonical source → bootstrap exits cleanly', bootstrapped.status === 0)

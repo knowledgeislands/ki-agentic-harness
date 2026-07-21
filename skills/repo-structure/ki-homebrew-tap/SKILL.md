@@ -1,8 +1,7 @@
 ---
 name: ki-homebrew-tap
 ki-depends-on: []
-ki-vendors: [educate, audit, conform, help]
-ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator]
+ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator, ki-skills:govern]
 description: >
   Codify, audit, and scaffold the Knowledge Islands Homebrew tap — the `homebrew-<x>` distribution repo that holds `Formula/*.rb` for Knowledge Islands command-line tools. This skill WRAPS Homebrew's external standard (the Formula Cookbook + `brew audit`/`brew style`) rather than inventing a house one: it checks the tap's shape (a `Formula/` dir, one formula per tool, the README formulae table, a versioned-tarball source) and delegates formula-correctness to `brew` when it is on PATH. Use when auditing the tap, adding a formula, scaffolding a new tap, or refreshing against Homebrew's rules. Triggers: "audit the homebrew tap", "add a formula", "does the tap follow Homebrew's standard", "scaffold a homebrew tap", "is this formula valid", "refresh the homebrew-tap standard". Governs the tap **container** — the repo shape and the formula shape — not the tools themselves (for a `tools-*` CLI repo use `ki-tools`) nor the repo's GitHub settings and standard files (for those use `ki-repo`).
 argument-hint: 'audit <repo> | conform <repo> | help | educate <repo> | refresh'
@@ -14,7 +13,7 @@ You are helping audit, conform, or scaffold the **Homebrew tap** repo — `homeb
 
 This skill **wraps an external standard.** Homebrew already defines what a valid tap and formula are (the Formula Cookbook, `brew audit`, `brew style`); this skill does not re-invent that. It checks the tap's **shape** — the things a tap needs beyond a single valid formula — and, where `brew` is installed, hands formula-correctness straight to `brew audit --strict` / `brew style`. So a finding is either **shape** (this skill's house convention for the tap: a `Formula/` dir, a README formulae table, a versioned-tarball source) or **spec** (Homebrew's own rule, surfaced by `brew`). Never present a shape preference as a Homebrew "MUST"; when unsure which a rule is, run Mode REFRESH against the Cookbook.
 
-The full, quotable standard lives in [Homebrew tap standard](references/standards.md); the line-by-line pass/fail items in [Audit Rubric](references/rubric.md). The mechanical checker is [`scripts/audit.ts`](scripts/audit.ts). Read those when you need detail; this file is the operating procedure.
+The full, quotable standard lives in [Homebrew tap standard](references/standards.md); the line-by-line pass/fail items in [Audit Rubric](references/rubric.md). The mechanical checker is [`scripts/govern.ts`](scripts/govern.ts). Read those when you need detail; this file is the operating procedure.
 
 ## The canonical shape at a glance
 

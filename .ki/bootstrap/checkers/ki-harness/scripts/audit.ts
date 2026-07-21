@@ -1,1 +1,0 @@
-../../../../../skills/repo-structure/ki-harness/scripts/audit.ts

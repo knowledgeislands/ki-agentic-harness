@@ -1,0 +1,1 @@
+../../../../../skills/foundations/ki-authoring/scripts/govern.ts

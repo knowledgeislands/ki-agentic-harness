@@ -143,7 +143,7 @@ export const PLUG_7 = mechanical(
       {
         status: fixed.length ? 'FIXED' : 'PASS',
         message: fixed.length ? `repaired plugin ${fixed.join(' and ')}` : 'plugin version and description agree',
-        subject: c.pluginFile
+        subject: c.pluginFile || c.marketplaceFile
       }
     ]
   }

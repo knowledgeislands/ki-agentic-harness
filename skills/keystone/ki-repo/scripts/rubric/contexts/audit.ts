@@ -2,8 +2,8 @@
 /**
  * Mechanical auditor for the Knowledge Islands repo standard.
  *
- *   bun scripts/audit.ts [tree-path]   # default: cwd — enumerate repos from a tree
- *   bun scripts/audit.ts --org <org>   # enumerate every repo in a GitHub org
+ *   bun scripts/govern.ts audit [tree-path]   # default: cwd — enumerate repos from a tree
+ *   bun scripts/govern.ts audit --org <org>   # enumerate every repo in a GitHub org
  *
  * Everything is checked **against GitHub** (no working checkout needed): file
  * presence via the git-tree API, settings via `gh repo view`, security/Actions via
@@ -741,8 +741,7 @@ function localIntegrityFindings(dir: string): Finding[] {
 // It reads table *names* only (never another skill's keys), and treats the manifest
 // as the authoritative generated inventory. Hash integrity remains VENDOR-1's job.
 const capabilityPayloads = (skill: string): string[] => [
-  `${VENDOR_DIR}/bootstrap/checkers/${skill}/scripts/audit.ts`,
-  `${VENDOR_DIR}/bootstrap/checkers/${skill}/scripts/conform.ts`,
+  `${VENDOR_DIR}/bootstrap/checkers/${skill}/scripts/govern.ts`,
   `${VENDOR_DIR}/bootstrap/educators/${skill}/educate.ts`
 ]
 
@@ -793,7 +792,7 @@ function localCapabilityFindings(dir: string): Finding[] {
   } catch {
     fail(
       'CAPABILITY-COMPLETE',
-      `declared governance roots have no readable generated manifest — run ./.ki/bin/ki-educate to publish their local EDUCATE / AUDIT / CONFORM payloads`,
+      `declared governance roots have no readable generated manifest — run ./.ki/bin/ki-educate to publish their local EDUCATE and governed checker payloads`,
       KI_CONFIG
     )
     return f
@@ -811,7 +810,7 @@ function localCapabilityFindings(dir: string): Finding[] {
   if (missing.length)
     fail(
       'CAPABILITY-COMPLETE',
-      `declared governance root(s) lack complete local EDUCATE / AUDIT / CONFORM payloads: ${missing.join(', ')} — remove process/global-only tables, or repair the governance skill and re-run ./.ki/bin/ki-educate`,
+      `declared governance root(s) lack complete local EDUCATE and governed checker payloads: ${missing.join(', ')} — remove process/global-only tables, or repair the governance skill and re-run ./.ki/bin/ki-educate`,
       KI_CONFIG
     )
   return f

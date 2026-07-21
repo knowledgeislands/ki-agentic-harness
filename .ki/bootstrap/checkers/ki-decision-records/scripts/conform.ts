@@ -1,1 +1,0 @@
-../../../../../skills/general-governance/ki-decision-records/scripts/conform.ts

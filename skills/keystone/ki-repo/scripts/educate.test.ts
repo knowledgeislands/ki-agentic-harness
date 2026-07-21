@@ -25,8 +25,9 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const SCRIPTS = dirname(fileURLToPath(import.meta.url))
-const AUDIT = join(SCRIPTS, 'audit.ts')
-const CONFORM = join(SCRIPTS, 'conform.ts')
+const GOVERN = join(SCRIPTS, 'govern.ts')
+const AUDIT = 'audit'
+const CONFORM = 'conform'
 const EDUCATE = join(SCRIPTS, 'educate.ts')
 const BOOTSTRAP = join(SCRIPTS, '..', '..', 'ki-bootstrap', 'scripts', 'internal', 'repo-bootstrap', 'repo-bootstrap.ts')
 const MKFIFO = ['/usr/bin/mkfifo', '/bin/mkfifo'].find((path) => existsSync(path))
@@ -47,7 +48,8 @@ function fixture(initial: string | null): string {
 }
 
 function run(script: string, args: string[], env: NodeJS.ProcessEnv = process.env): { code: number; out: string } {
-  const result = spawnSync(process.execPath, [script, ...args], { encoding: 'utf8', env })
+  const command = script === AUDIT || script === CONFORM ? [GOVERN, script] : [script]
+  const result = spawnSync(process.execPath, [...command, ...args], { encoding: 'utf8', env })
   return { code: result.status ?? 1, out: `${result.stdout ?? ''}${result.stderr ?? ''}` }
 }
 

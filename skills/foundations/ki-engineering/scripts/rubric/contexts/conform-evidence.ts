@@ -9,7 +9,7 @@
  * audit.ts rather than imported, so each script stays valid
  * standalone per the composition-only rule.
  *
- *   bun scripts/conform.ts [path]   # default: cwd
+ *   bun scripts/govern.ts conform [path] # default: cwd
  *   --dry-run                                    # report the planned actions, mutate nothing
  *
  * An invocation receives exactly one already-audited criterion code. It reports

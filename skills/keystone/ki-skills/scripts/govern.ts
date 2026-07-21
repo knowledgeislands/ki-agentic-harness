@@ -113,7 +113,7 @@ export const plan = (mode: GovernCheckMode, options: GovernCheckOptions): Checke
 /** Execute the structured checker for direct use or an in-process aggregate call. */
 export const check = (mode: GovernCheckMode, options: GovernCheckOptions): CheckerResult => governed.check(mode, options)
 
-const options = (mode: GovernCheckMode, arguments_: readonly string[]): GovernCheckOptions => {
+export const options = (mode: GovernCheckMode, arguments_: readonly string[]): GovernCheckOptions => {
   const allowed = mode === 'audit' ? ['--footprint', '--refresh-status'] : ['--dry-run']
   const unknownOptions = arguments_.filter((argument) => argument.startsWith('-') && !allowed.includes(argument))
   if (unknownOptions.length > 0) throw new Error(`unknown option: ${unknownOptions[0]}`)

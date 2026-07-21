@@ -1,0 +1,1 @@
+../../../../../skills/repo-structure/ki-harness/scripts/govern.ts
