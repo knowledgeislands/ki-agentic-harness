@@ -14,6 +14,7 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
 - [Foundation Tooling: Remove the legacy `preferred_model` migration bridge in `ki-tokenomics`](docs/roadmap/foundation-tooling/ROADMAP.md#remove-the-legacy-preferredmodel-migration-bridge-in-ki-tokenomics)
+- [Governance Consistency: Consolidate Knowledge Islands notes and chats into the knowledge base](docs/roadmap/governance-consistency/ROADMAP.md#consolidate-knowledge-islands-notes-and-chats-into-the-knowledge-base)
 - [Governance Consistency: Make the first decision record adopt Decision Records](docs/roadmap/governance-consistency/ROADMAP.md#make-the-first-decision-record-adopt-decision-records)
 
 ## Soon

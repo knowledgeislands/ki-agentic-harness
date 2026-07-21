@@ -12,6 +12,10 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
+### Consolidate Knowledge Islands notes and chats into the knowledge base
+
+Collect and reconcile the Knowledge Islands notes, chats, and other session material into the canonical knowledge base. Use that grounded corpus to make one coordinated forward roadmap spanning the newly surfaced aspects, while preserving the current Blocking work as the watershed for remedial and critical delivery rather than mixing it into the go-forward structure.
+
 ### Make the first decision record adopt Decision Records
 
 Extend `ki-decision-records` so the first decision record in a repository is always the record that adopts Decision Records. Define its required decision type, title, and index position; update the NEW guidance, exemplars, and audit rules so a new collection cannot begin with an unrelated decision. Preserve existing collections as migration cases rather than renumbering or rewriting their records automatically.
