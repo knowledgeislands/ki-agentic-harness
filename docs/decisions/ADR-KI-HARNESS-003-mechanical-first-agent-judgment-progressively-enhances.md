@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-003: Mechanical-first — agent judgment progressively enhances
+---
+id: ADR-KI-HARNESS-003
+title: 'Mechanical-first — agent judgment progressively enhances'
+date: 2026-07-09
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-09
+# ADR-KI-HARNESS-003: Mechanical-first — agent judgment progressively enhances
 
 ## Context
 

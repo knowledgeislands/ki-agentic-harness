@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-AGENTS-001: Subagent isolation for multi-skill invocation
+---
+id: ADR-KI-HARNESS-AGENTS-001
+title: 'Subagent isolation for multi-skill invocation'
+date: 2026-06-23
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-06-23
+# ADR-KI-HARNESS-AGENTS-001: Subagent isolation for multi-skill invocation
 
 ## Context
 
@@ -29,4 +37,4 @@ This is a method, not a tracked runtime workflow. Each host uses its available d
 
 ## References
 
-- [ADR-KI-HARNESS-SKILLS-003](ADR-KI-HARNESS-SKILLS-003-dependency-order-composition.md) — the dependency order that governs synthesis ranking.
+- [ADR-KI-HARNESS-SKILLS-003](ADR-KI-HARNESS-SKILLS-003-dependency-order-for-multi-skill-composition.md) — the dependency order that governs synthesis ranking.

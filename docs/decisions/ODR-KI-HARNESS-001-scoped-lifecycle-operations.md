@@ -1,6 +1,14 @@
-# ODR-KI-HARNESS-001: Scoped lifecycle operations
+---
+id: ODR-KI-HARNESS-001
+title: 'Scoped lifecycle operations'
+date: 2026-07-20
+status: current
+type: Operations Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/odr
+decision_type: operations
+---
 
-**Date:** 2026-07-20
+# ODR-KI-HARNESS-001: Scoped lifecycle operations
 
 ## Context
 
@@ -49,6 +57,6 @@ CLEAN is idempotent once its proven generated footprint is gone, and EDUCATE rec
 
 ## References
 
-- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md) — repository bootstrap and self-sufficiency boundary.
+- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-user-installation-repository-bootstrap-and-self-sufficiency.md) — repository bootstrap and self-sufficiency boundary.
 - [ADR-KI-HARNESS-010](ADR-KI-HARNESS-010-managed-hook-payloads-and-user-environment-binding.md) — managed user-level payload and binding boundary.
 - [ADR-KI-HARNESS-011](ADR-KI-HARNESS-011-project-skill-copies-and-repository-local-links.md) — generated runtime payload ownership.

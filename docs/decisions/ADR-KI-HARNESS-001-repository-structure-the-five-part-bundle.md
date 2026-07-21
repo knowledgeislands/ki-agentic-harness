@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-001: Repository structure — the five-part bundle
+---
+id: ADR-KI-HARNESS-001
+title: 'Repository structure — the five-part bundle'
+date: 2026-06-23
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-06-23
+# ADR-KI-HARNESS-001: Repository structure — the five-part bundle
 
 ## Context
 
@@ -33,4 +41,4 @@ Each directory carries a `README.md` describing what it holds. An unpopulated di
 
 ## References
 
-- [SDR-KI-HARNESS-001](SDR-KI-HARNESS-001-purpose-and-scope.md) — the purpose and scope of the harness this structure realises.
+- [SDR-KI-HARNESS-001](SDR-KI-HARNESS-001-purpose-and-scope-of-the-agentic-harness.md) — the purpose and scope of the harness this structure realises.

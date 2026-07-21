@@ -1,13 +1,21 @@
-# ADR-KI-HARNESS-007: Uniform skill modes, bare mode scripts, and a coverage-scoped aggregate gate
+---
+id: ADR-KI-HARNESS-007
+title: 'Uniform skill modes, bare mode scripts, and a coverage-scoped aggregate gate'
+date: 2026-07-12
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-12
+# ADR-KI-HARNESS-007: Uniform skill modes, bare mode scripts, and a coverage-scoped aggregate gate
 
 ## Context
 
-[ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md) established that bootstrap vendors each skill's mechanical unit into `.ki-meta/` and fans out over the four `ki-{audit,conform,educate,help}` bins. It left the per-skill surface under-specified, and the fleet drifted:
+[ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-user-installation-repository-bootstrap-and-self-sufficiency.md) established that bootstrap vendors each skill's mechanical unit into `.ki-meta/` and fans out over the four `ki-{audit,conform,educate,help}` bins. It left the per-skill surface under-specified, and the fleet drifted:
 
 - Mode-script filenames redundantly repeated the skill name (`lint-agents.ts`, `audit-drs.ts`, `conform-cowork.ts`), and the `ki-vendors:` frontmatter took an ad-hoc `{ audit: …, conform: … }` map that let each skill diverge.
-- The `package.json` key a checker mapped to was unenforced convention that had drifted (`ki:agents:lint` vs `ki:repo:audit`), and a whole toolchain namespace (`ki:lint:*`, `ki:deps:*`, `ki:knip`, the non-namespaced `ki:lint:md`) sat outside any per-skill mapping — the twin CANON family that [ADR-KI-HARNESS-TOOLCHAIN-001](ADR-KI-HARNESS-TOOLCHAIN-001-standard-toolchain.md) required byte-for-byte.
+- The `package.json` key a checker mapped to was unenforced convention that had drifted (`ki:agents:lint` vs `ki:repo:audit`), and a whole toolchain namespace (`ki:lint:*`, `ki:deps:*`, `ki:knip`, the non-namespaced `ki:lint:md`) sat outside any per-skill mapping — the twin CANON family that [ADR-KI-HARNESS-TOOLCHAIN-001](ADR-KI-HARNESS-TOOLCHAIN-001-bun-biome-and-knip-standard-toolchain.md) required byte-for-byte.
 - Only about half the fleet shipped a `conform`, and `ki:audit` (the aggregate) was never a clean gate — the harness vendored **every** skill (`--all`), so the aggregate ran `ki-mcp` / `ki-website` / `ki-tools` audits against a repo that is none of those, producing a wall of non-applicable FAILs. The real gate was a hand-curated `ki:verify`.
 
 ## Decision
@@ -25,4 +33,4 @@ Every **governance** skill exposes exactly the four universal modes that map to 
 - The per-skill surface is uniform and mechanically checkable end to end: one `govern.ts`, one educator, and derived package keys, all cross-checked by SHAPE-15 and the engineering key audit. Adding a governance skill means providing `govern.ts` and `educate.ts`; the bins follow by derivation.
 - `package.json` is focused on the **vendored** set, not the symlinked one. The harness's keys track its 12-skill coverage, not the 24 skills it links for authoring.
 - An audit must NA-skip when pointed at a repo it doesn't govern. `ki-engineering` (no `package.json`), `ki-website-cloudflare` (no `wrangler`), `ki-feature-definitions` (no `docs/features`), and `ki-repo-roadmap` (Knowledge Base `repo_type`) do; the remaining artifact audits (`ki-mcp`, `ki-website`, `ki-tools`, `ki-kb`, `ki-plugins`, `ki-homebrew-tap`) still FAIL on a mismatch. Coverage-scoping hides that on repos that don't declare them, but making every audit NA-skip on its own applicability signal — so `ki:audit` is a genuine universal gate, not merely a coverage-filtered one — is tracked on the ROADMAP.
-- This amends [ADR-KI-HARNESS-TOOLCHAIN-001](ADR-KI-HARNESS-TOOLCHAIN-001-standard-toolchain.md): the required-toolchain contract stands, but its interface is `ki-engineering`'s audit/conform, not the retired `ki:lint:*` / `ki:deps:*` key families. Generated/vendored trees stay excluded from the linters ([ADR-KI-HARNESS-TOOLCHAIN-005](ADR-KI-HARNESS-TOOLCHAIN-005-generated-code-excluded-from-lint-and-knip.md)); this migration extends that exclusion to markdownlint (`.ki-meta/**`, `.claude/**`).
+- This amends [ADR-KI-HARNESS-TOOLCHAIN-001](ADR-KI-HARNESS-TOOLCHAIN-001-bun-biome-and-knip-standard-toolchain.md): the required-toolchain contract stands, but its interface is `ki-engineering`'s audit/conform, not the retired `ki:lint:*` / `ki:deps:*` key families. Generated/vendored trees stay excluded from the linters ([ADR-KI-HARNESS-TOOLCHAIN-005](ADR-KI-HARNESS-TOOLCHAIN-005-generated-and-vendored-code-is-excluded-from-linting-and-knip.md)); this migration extends that exclusion to markdownlint (`.ki-meta/**`, `.claude/**`).

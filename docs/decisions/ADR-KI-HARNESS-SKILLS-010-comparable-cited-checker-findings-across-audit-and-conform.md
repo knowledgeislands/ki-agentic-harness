@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-SKILLS-010: Comparable, cited checker findings across audit and conform
+---
+id: ADR-KI-HARNESS-SKILLS-010
+title: 'Comparable, cited checker findings across audit and conform'
+date: 2026-07-12
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-12
+# ADR-KI-HARNESS-SKILLS-010: Comparable, cited checker findings across audit and conform
 
 ## Context
 
@@ -27,6 +35,6 @@ Because a skill may not import another skill's code — every skill must stay va
 
 ## References
 
-- [ADR-KI-HARNESS-SKILLS-002](ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md) — the mechanical/judgment checker split this record extends: the finding model, the severity ladder, and the pinned JSON wrapper it enriches.
+- [ADR-KI-HARNESS-SKILLS-002](ADR-KI-HARNESS-SKILLS-002-mechanical-and-judgment-checker-split.md) — the mechanical/judgment checker split this record extends: the finding model, the severity ladder, and the pinned JSON wrapper it enriches.
 - [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-composition-over-extension.md) — composition over extension, the principle that forces the shared renderer into the aggregate rather than a library the checkers import.
-- [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) — every skill valid standalone, the constraint that a checker cannot import shared render code.
+- [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-must-be-valid-standalone.md) — every skill valid standalone, the constraint that a checker cannot import shared render code.

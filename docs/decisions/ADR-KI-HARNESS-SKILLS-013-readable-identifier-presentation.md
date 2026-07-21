@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-SKILLS-013: Readable identifier presentation
+---
+id: ADR-KI-HARNESS-SKILLS-013
+title: 'Readable identifier presentation'
+date: 2026-07-18
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-18
+# ADR-KI-HARNESS-SKILLS-013: Readable identifier presentation
 
 ## Context
 
@@ -26,5 +34,5 @@ Existing code families remain valid. A future request to replace opaque identifi
 
 ## References
 
-- [ADR-KI-HARNESS-SKILLS-010](ADR-KI-HARNESS-SKILLS-010-comparable-cited-checker-findings.md) — comparable cited checker findings and the aggregate rendering boundary.
+- [ADR-KI-HARNESS-SKILLS-010](ADR-KI-HARNESS-SKILLS-010-comparable-cited-checker-findings-across-audit-and-conform.md) — comparable cited checker findings and the aggregate rendering boundary.
 - [ADR-KI-HARNESS-SKILLS-012](ADR-KI-HARNESS-SKILLS-012-local-copies-for-shared-modules.md) — local shared modules and their portable ownership boundary.

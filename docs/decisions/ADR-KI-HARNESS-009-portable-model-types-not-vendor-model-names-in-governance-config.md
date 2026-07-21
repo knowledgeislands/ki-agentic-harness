@@ -1,12 +1,20 @@
-# ADR-KI-HARNESS-009: Portable model types, not vendor model names, in governance config
+---
+id: ADR-KI-HARNESS-009
+title: 'Portable model types, not vendor model names, in governance config'
+date: 2026-07-13
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-13
+# ADR-KI-HARNESS-009: Portable model types, not vendor model names, in governance config
 
 ## Context
 
 The harness governed "which model to use" through `preferred_model` in the `[ki-tokenomics]` table of a repo's `.ki-config.toml`, validated mechanically against a closed set `['opus', 'sonnet', 'haiku', 'fable']` in `ki-tokenomics`' `audit.ts`/`conform.ts`, documented across `standards.md` and rubric codes `CFG-4`/`RUN-2`. `ki-agents`' `FM-2` mirrored the same closed alias list for an individual agent's `model:` frontmatter pin.
 
-Every one of those aliases is a **Claude Code-specific model family name**. That is backwards for a harness whose own [SDR-KI-HARNESS-002](SDR-KI-HARNESS-002-runtime-portable-contracts.md) commits to runtime-portable contracts (Claude Code today; Hermes, Pi, Codex tomorrow) and whose best-tool-for-the-job tenet treats model independence as _capability_ independence — the cheapest sufficient tier for mechanical work, frontier reasoning only where judgment is load-bearing. A config key that can only ever hold `"opus"` states a vendor's product name, not a purpose.
+Every one of those aliases is a **Claude Code-specific model family name**. That is backwards for a harness whose own [SDR-KI-HARNESS-002](SDR-KI-HARNESS-002-runtime-portable-contracts-and-executor-positioning.md) commits to runtime-portable contracts (Claude Code today; Hermes, Pi, Codex tomorrow) and whose best-tool-for-the-job tenet treats model independence as _capability_ independence — the cheapest sufficient tier for mechanical work, frontier reasoning only where judgment is load-bearing. A config key that can only ever hold `"opus"` states a vendor's product name, not a purpose.
 
 The two runtimes in scope draw their tiers differently. Claude Code exposes **four model families** (Fable 5 > Opus 4.8 > Sonnet 5 > Haiku 4.5) crossed with a reasoning-effort axis. OpenAI's Codex CLI (GPT-5.6, limited preview 2026-07) exposes **three families** — Sol / Terra / Luna — crossed with its own effort/mode axis (Light → Extra High, plus Max and Ultra). The shapes differ (4 vs 3 families), but both separate **model** from **effort** as two independent levers — the same split the harness's own `Workflow` tool already exposes as `opts.model` / `opts.effort`, and the same split both vendors' real pickers show. A portable contract must name the axis both share.
 
@@ -38,8 +46,8 @@ This operationalises SDR-KI-HARNESS-002: the type is the portable contract the h
 
 ## References
 
-- [SDR-KI-HARNESS-002](SDR-KI-HARNESS-002-runtime-portable-contracts.md) — runtime-portable contracts; the strategic decision this operationalises.
-- [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md) — mechanical-first: keys checked mechanically, appropriateness left to judgment.
+- [SDR-KI-HARNESS-002](SDR-KI-HARNESS-002-runtime-portable-contracts-and-executor-positioning.md) — runtime-portable contracts; the strategic decision this operationalises.
+- [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-mechanical-first-agent-judgment-progressively-enhances.md) — mechanical-first: keys checked mechanically, appropriateness left to judgment.
 - `ki-tokenomics` — the standard, rubric (`CFG-4`, `CFG-5`, `RUN-2`), and checker that own the config contract.
 - `ki-agents` — `FM-2`, the per-agent `model:` pin that cites the taxonomy.
 - [docs/guides/prompting/](../guides/prompting/README.md) — the type → model resolution per runtime.

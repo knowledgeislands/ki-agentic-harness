@@ -8,7 +8,7 @@ export const FILENAME_1: RubricItem<DecisionRecordsContext> = {
   code: 'FILENAME-1',
   title: 'Canonical decision-record filename',
   description:
-    'Filename matches `^(SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z][A-Z0-9]*(-[A-Z][A-Z0-9]*)*-(XXX|\\d{3,})(-[a-z0-9-]+)?\\.md$` (`XXX` is the reserved serial for a pending DR not yet assigned a real number).',
+    'Filename is `<ID>-<title-slug>.md`: the canonical uppercase record ID, a dash, then the title lowercased with each non-alphanumeric run replaced by one dash and leading or trailing dashes removed.',
   sources: [SOURCE],
   mechanical: {
     level: 'FAIL',
@@ -19,11 +19,11 @@ export const FILENAME_1: RubricItem<DecisionRecordsContext> = {
           context.invalidFilenames.map(
             (file): AuditOutcome => ({
               status: 'VIOLATION',
-              message: 'Filename does not match the canonical decision-record pattern.',
+              message: 'Filename is not the canonical ID followed by the slugified title.',
               subject: file
             })
           ),
-          'Every decision-record filename matches the canonical pattern.'
+          'Every decision-record filename is the canonical ID followed by the slugified title.'
         )
     }
   }

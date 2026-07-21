@@ -22,13 +22,13 @@ Modes: **AUDIT · CONFORM · EDUCATE · REFRESH** (named, alphabetical). Invoked
 ### Mode AUDIT — check a harness against the standard
 
 1. **Run the mechanical checker.** `bun scripts/govern.ts [path]` from this skill's directory (or `bun run ki:harness:audit` at the harness root, if wired). It checks: the five-part directory presence, each directory's `README.md`, root `CLAUDE.md` / `ROADMAP.md`, `package.json` script families, `.ki-config.toml` `[ki-harness]` table presence, and each `skills/<dir>` name matching its `SKILL.md` `name:` frontmatter. Its default output is canonical JSONL. Add `--reporter=terminal` for the human view; the terminal reporter shows FAIL and WARN by default, while `--reporter-levels=all` includes every outcome. Judgment items are counted as unevaluated in the summary rather than emitted as synthetic findings.
-2. **Compose on sibling skills via subagent isolation** ([ADR-KI-HARNESS-AGENTS-001](../../../docs/decisions/ADR-KI-HARNESS-AGENTS-001-subagent-isolation.md)). A harness audit is layered — fan out one `agent()` per concern in `parallel()` after the COLL checks:
+2. **Compose on sibling skills via subagent isolation** ([ADR-KI-HARNESS-AGENTS-001](../../../docs/decisions/ADR-KI-HARNESS-AGENTS-001-subagent-isolation-for-multi-skill-invocation.md)). A harness audit is layered — fan out one `agent()` per concern in `parallel()` after the COLL checks:
    - `ki-repo` — GitHub settings and the `.ki-config.toml` contract
    - `ki-engineering` — aggregate entrypoints and internal code toolchain (package.json, tsconfig, biome)
    - `ki-repo-roadmap` — non-KB roadmap profile, content discipline, and thematic projections
    - `ki-skills` linter (`bun run ki:skills:audit`) — if `skills/` is populated
    - `ki-agents` linter — if `agents/` is populated
-   - `ki-mcp` audit — if `mcp/` has server code. For a large judgment review, `ki-delegate` may fan out independent concerns after the aggregate mechanical result is captured; see [ADR-KI-HARNESS-AGENTS-001](../../../docs/decisions/ADR-KI-HARNESS-AGENTS-001-subagent-isolation.md).
+   - `ki-mcp` audit — if `mcp/` has server code. For a large judgment review, `ki-delegate` may fan out independent concerns after the aggregate mechanical result is captured; see [ADR-KI-HARNESS-AGENTS-001](../../../docs/decisions/ADR-KI-HARNESS-AGENTS-001-subagent-isolation-for-multi-skill-invocation.md).
 3. **Judge the prose the script can't.** Walk the [J]-tagged criteria in [the rubric](references/rubric.md):
    - **CLAUDE.md coverage** — does it open with a what-the-harness-is paragraph covering all five parts? Is the skill map present (if skills exist) and does it reflect current reality? Are working conventions documented for each part? Are the key `bun run *` commands listed?
    - **Freshness** — do the skill count, shelf statuses, and command names in `CLAUDE.md` still match the actual repo state?

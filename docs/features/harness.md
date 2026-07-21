@@ -8,7 +8,7 @@ The behaviour of the harness as a repository: the five-part bundle and the conta
 
 ### HARN-001 — Five part-directories exist
 
-The repo root MUST contain `skills/`, `agents/`, `mcp/`, `evals/`, and `hooks/` as directories, per [ADR-KI-HARNESS-001](../decisions/ADR-KI-HARNESS-001-repository-structure.md).
+The repo root MUST contain `skills/`, `agents/`, `mcp/`, `evals/`, and `hooks/` as directories, per [ADR-KI-HARNESS-001](../decisions/ADR-KI-HARNESS-001-repository-structure-the-five-part-bundle.md).
 
 _Verify:_ `bun skills/repo-structure/ki-harness/scripts/audit-harness.ts .` — LAY-1 PASSes only when all five directories are present (a missing one is a FAIL).
 
@@ -22,13 +22,13 @@ _Verify:_ `audit-harness.ts` LAY-2 checks a `README.md` in each of `skills/`, `a
 
 ### HARN-003 — Root orientation and config files
 
-The repo root MUST carry `CLAUDE.md` (always-loaded orientation), `.ki-config.toml` (the KI compliance declaration), and SHOULD carry `ROADMAP.md` (the open-work signal), per [ADR-KI-HARNESS-001](../decisions/ADR-KI-HARNESS-001-repository-structure.md).
+The repo root MUST carry `CLAUDE.md` (always-loaded orientation), `.ki-config.toml` (the KI compliance declaration), and SHOULD carry `ROADMAP.md` (the open-work signal), per [ADR-KI-HARNESS-001](../decisions/ADR-KI-HARNESS-001-repository-structure-the-five-part-bundle.md).
 
 _Verify:_ `audit-harness.ts` LAY-3 (`CLAUDE.md`) and LAY-5 (`.ki-config.toml`) FAIL when absent; LAY-4 (`ROADMAP.md`) WARNs.
 
 ### HARN-004 — Harness compliance table
 
-`.ki-config.toml` MUST contain a `[ki-harness]` table marking the repo as a harness, and MUST contain a `[ki-repo]` table opting into KI governance, per [ADR-KI-HARNESS-005](../decisions/ADR-KI-HARNESS-005-validate-down-ki-config-contract.md).
+`.ki-config.toml` MUST contain a `[ki-harness]` table marking the repo as a harness, and MUST contain a `[ki-repo]` table opting into KI governance, per [ADR-KI-HARNESS-005](../decisions/ADR-KI-HARNESS-005-validate-down-ki-config-toml-contract.md).
 
 _Verify:_ `audit-harness.ts` CONFIG-1 (`[ki-harness]`, FAIL if absent) and CONFIG-2 (`[ki-repo]`, WARN if absent).
 

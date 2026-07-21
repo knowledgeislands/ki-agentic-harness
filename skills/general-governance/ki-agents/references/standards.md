@@ -65,7 +65,7 @@ When-to-use guidance for the fields the house has not yet codified in most agent
 
 ### Portable core (provisional)
 
-The harness intends to become multi-runtime (Claude Code today; OpenAI Codex CLI a stated direction — see [SDR-KI-HARNESS-002](../../../../docs/decisions/SDR-KI-HARNESS-002-runtime-portable-contracts.md)). As a **first hypothesis**, the fields any runtime's agent concept plausibly shares — the **provisional portable core** — are:
+The harness intends to become multi-runtime (Claude Code today; OpenAI Codex CLI a stated direction — see [SDR-KI-HARNESS-002](../../../../docs/decisions/SDR-KI-HARNESS-002-runtime-portable-contracts-and-executor-positioning.md)). As a **first hypothesis**, the fields any runtime's agent concept plausibly shares — the **provisional portable core** — are:
 
 - **`name`** — a stable identifier for the agent.
 - **`description`** — the delegation signal an orchestrator reads to route to the agent (§4).

@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-TOOLCHAIN-005: Generated and vendored code is excluded from linting and knip
+---
+id: ADR-KI-HARNESS-TOOLCHAIN-005
+title: 'Generated and vendored code is excluded from linting and knip'
+date: 2026-07-11
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-11
+# ADR-KI-HARNESS-TOOLCHAIN-005: Generated and vendored code is excluded from linting and knip
 
 ## Context
 
@@ -22,5 +30,5 @@ Generated and vendored code is excluded from the conformance toolchain — it is
 
 ## References
 
-- [ADR-KI-HARNESS-TOOLCHAIN-001](ADR-KI-HARNESS-TOOLCHAIN-001-standard-toolchain.md) — the Biome / knip toolchain these exclusions configure.
-- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md) — the self-sufficiency contract that vendors the checkers this rule protects.
+- [ADR-KI-HARNESS-TOOLCHAIN-001](ADR-KI-HARNESS-TOOLCHAIN-001-bun-biome-and-knip-standard-toolchain.md) — the Biome / knip toolchain these exclusions configure.
+- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-user-installation-repository-bootstrap-and-self-sufficiency.md) — the self-sufficiency contract that vendors the checkers this rule protects.

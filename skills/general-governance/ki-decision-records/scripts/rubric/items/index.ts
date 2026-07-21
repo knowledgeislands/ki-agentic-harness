@@ -21,7 +21,7 @@ export const KI_DECISION_RECORDS_RUBRIC: RubricDefinition<DecisionRecordsContext
     defineRubricFamily({
       code: 'FM',
       title: 'frontmatter checks',
-      description: 'Required knowledge-base decision metadata.',
+      description: 'Required universal decision metadata.',
       standard: 'dr-format.md',
       selectContext: (context: DecisionRecordsContext) => context,
       items: FM

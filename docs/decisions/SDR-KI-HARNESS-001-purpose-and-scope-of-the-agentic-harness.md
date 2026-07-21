@@ -1,6 +1,14 @@
-# SDR-KI-HARNESS-001: Purpose and scope of the agentic harness
+---
+id: SDR-KI-HARNESS-001
+title: 'Purpose and scope of the agentic harness'
+date: 2026-06-23
+status: current
+type: Strategy Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/sdr
+decision_type: strategy
+---
 
-**Date:** 2026-06-23
+# SDR-KI-HARNESS-001: Purpose and scope of the agentic harness
 
 ## Context
 

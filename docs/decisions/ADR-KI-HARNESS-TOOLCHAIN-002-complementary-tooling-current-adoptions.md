@@ -1,10 +1,18 @@
-# ADR-KI-HARNESS-TOOLCHAIN-002: Complementary tooling — current adoptions
+---
+id: ADR-KI-HARNESS-TOOLCHAIN-002
+title: 'Complementary tooling — current adoptions'
+date: 2026-06-29
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-06-29
+# ADR-KI-HARNESS-TOOLCHAIN-002: Complementary tooling — current adoptions
 
 ## Context
 
-As a session grows and the MCP surface expands, token cost per turn rises and the ergonomics of managing many servers, understanding what is loaded, and scripting against them become friction points. Tools from the [extraheadroom.com/reduce-claude-code-costs](https://extraheadroom.com/reduce-claude-code-costs) survey and adjacent sources are assessed against four criteria: (a) complementarity with the KI skills paradigm, (b) maturity, (c) absence of paradigm conflict — chiefly with the composition-only model ([ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-composition-over-extension.md)), the validate-down config contract ([ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-validate-down-ki-config-contract.md)), and the file-based `memory/` + `MEMORY.md` convention — and (d) whether adoption needs a harness artifact or is satisfied by a personal/dev install. This record states the current disposition of each tool.
+As a session grows and the MCP surface expands, token cost per turn rises and the ergonomics of managing many servers, understanding what is loaded, and scripting against them become friction points. Tools from the [extraheadroom.com/reduce-claude-code-costs](https://extraheadroom.com/reduce-claude-code-costs) survey and adjacent sources are assessed against four criteria: (a) complementarity with the KI skills paradigm, (b) maturity, (c) absence of paradigm conflict — chiefly with the composition-only model ([ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-composition-over-extension.md)), the validate-down config contract ([ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-validate-down-ki-config-toml-contract.md)), and the file-based `memory/` + `MEMORY.md` convention — and (d) whether adoption needs a harness artifact or is satisfied by a personal/dev install. This record states the current disposition of each tool.
 
 ## Decision
 
@@ -24,7 +32,7 @@ As a session grows and the MCP surface expands, token cost per turn rises and th
 
 ### Declined
 
-- **superpowers** — a structured SDLC methodology shipped as auto-triggering skills under a monolithic `~/.claude/skills` install; conflicts with the validate-down `.ki-config.toml` contract and the standalone-valid skill requirement ([ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md)). How a methodology is applied is the KI harness's own domain.
+- **superpowers** — a structured SDLC methodology shipped as auto-triggering skills under a monolithic `~/.claude/skills` install; conflicts with the validate-down `.ki-config.toml` contract and the standalone-valid skill requirement ([ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-must-be-valid-standalone.md)). How a methodology is applied is the KI harness's own domain.
 - **gstack** — a competing monolithic slash-command skill collection outside the KI governance layer; adopting it would create two parallel skill systems with no shared standard. Individual ideas (e.g. OWASP/STRIDE threat modelling) are candidates for KI skills in their own right.
 - **Engram** — a cross-session persistent-memory MCP over SQLite/vector stores. It targets the slot the harness fills with its file-based `memory/` + `MEMORY.md` convention, which is deliberately plain-file, git-trackable, and reconciled into `CLAUDE.md` where it is visible in review; an opaque store would be a second, invisible memory system. The file-based convention is the single persistent-memory mechanism.
 - **[Caveman](https://caveman.so/)** — a token-efficiency toolkit spanning a proxy/gateway (input/prompt compression, not just output), a persistent memory layer ("Cavemem"), a terminal coding agent ("Caveman Code"), and a chat-interface browser extension. It duplicates ground the harness already owns through separate, deliberate mechanisms — headroom-ai at the proxy layer, the file-based `memory/` convention in place of Cavemem — as one monolithic third-party stack outside the KI governance layer.
@@ -48,8 +56,8 @@ house-mcp-manager is a CLI that toggles MCP servers and saves named profiles by 
 ## References
 
 - [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-composition-over-extension.md) — Composition over extension (the paradigm the declines protect).
-- [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-validate-down-ki-config-contract.md) — Validate-down `.ki-config.toml` contract.
-- [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) — the standalone-valid skill requirement the declines protect.
+- [ADR-KI-HARNESS-005](ADR-KI-HARNESS-005-validate-down-ki-config-toml-contract.md) — Validate-down `.ki-config.toml` contract.
+- [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-must-be-valid-standalone.md) — the standalone-valid skill requirement the declines protect.
 
 - [extraheadroom.com/reduce-claude-code-costs](https://extraheadroom.com/reduce-claude-code-costs) — the source survey.
 - [headroom-ai](https://headroom.ai/) — context compaction and session management layer (bundles RTK).

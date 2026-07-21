@@ -19,7 +19,7 @@ The tier pick — how to trade cost against capability — is governed by the `k
 
 ### Portable model types — one vocabulary across runtimes
 
-The harness declares work by a portable **model type** (purpose), not a vendor's model name; each runtime resolves the type to a concrete model ([ADR-KI-HARNESS-009](../../decisions/ADR-KI-HARNESS-009-portable-model-types.md), governed by `ki-tokenomics`). The type is the stable thing; the columns below are the volatile resolution.
+The harness declares work by a portable **model type** (purpose), not a vendor's model name; each runtime resolves the type to a concrete model ([ADR-KI-HARNESS-009](../../decisions/ADR-KI-HARNESS-009-portable-model-types-not-vendor-model-names-in-governance-config.md), governed by `ki-tokenomics`). The type is the stable thing; the columns below are the volatile resolution.
 
 | Type | Purpose | Claude Code | Codex (GPT-5.6) |
 | --- | --- | --- | --- |

@@ -1,6 +1,6 @@
 # Checker contract
 
-ADR: [ADR-KI-HARNESS-SKILLS-002](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-002-mechanical-judgment-checker-split.md)
+ADR: [ADR-KI-HARNESS-SKILLS-002](../../../../docs/decisions/ADR-KI-HARNESS-SKILLS-002-mechanical-and-judgment-checker-split.md)
 
 A checker is the reusable execution engine for a structured governance rubric.
 

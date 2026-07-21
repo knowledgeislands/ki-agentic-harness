@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-TOOLCHAIN-001: Bun, Biome, and knip standard toolchain
+---
+id: ADR-KI-HARNESS-TOOLCHAIN-001
+title: 'Bun, Biome, and knip standard toolchain'
+date: 2026-06-28
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-06-28
+# ADR-KI-HARNESS-TOOLCHAIN-001: Bun, Biome, and knip standard toolchain
 
 ## Context
 

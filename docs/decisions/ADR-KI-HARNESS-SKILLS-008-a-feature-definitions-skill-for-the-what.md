@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-SKILLS-008: A Feature Definitions skill for the "what"
+---
+id: ADR-KI-HARNESS-SKILLS-008
+title: 'A Feature Definitions skill for the "what"'
+date: 2026-07-09
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-09
+# ADR-KI-HARNESS-SKILLS-008: A Feature Definitions skill for the "what"
 
 ## Context
 
@@ -18,11 +26,11 @@ Introduce **`ki-feature-definitions`**, a general-governance skill that codifies
 ## Consequences
 
 - The harness dogfoods the skill: it declares `[ki-feature-definitions]` and ships its own `docs/features/` (areas `BOOT` and `GOV`) describing the bootstrap chain and the governance model, audited green by `ki:feature-definitions:audit`.
-- The skill sits in the general-governance cluster ([ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md)) — declared opt-in per repo (like `ki-decision-records`/`ki-repo-roadmap`), has `ki-depends-on: []`, and is not artifact-detected in `ki-repo`'s coverage cascade.
+- The skill sits in the general-governance cluster ([ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-six-cluster-skill-taxonomy-and-the-implication-graph.md)) — declared opt-in per repo (like `ki-decision-records`/`ki-repo-roadmap`), has `ki-depends-on: []`, and is not artifact-detected in `ki-repo`'s coverage cascade.
 - RFC 2119 (BCP 14) becomes a tracked source: it is the authority for the normative keyword set the checker recognises.
 - The corpus it generalizes from (`vallearmonia-website/docs/spec/`) is a tracked reference, not a governed sibling — divergence there is a REFRESH signal, reconciled deliberately.
 
 ## References
 
-- [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md) — the taxonomy that places this skill in the general-governance cluster.
-- [ADR-KI-HARNESS-SKILLS-001](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) — the universal modes this skill carries.
+- [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-six-cluster-skill-taxonomy-and-the-implication-graph.md) — the taxonomy that places this skill in the general-governance cluster.
+- [ADR-KI-HARNESS-SKILLS-001](ADR-KI-HARNESS-SKILLS-001-audit-conform-educate-refresh-canonical-modes-help.md) — the universal modes this skill carries.

@@ -1,6 +1,14 @@
-# SDR-KI-HARNESS-002: Runtime-portable contracts and executor positioning
+---
+id: SDR-KI-HARNESS-002
+title: 'Runtime-portable contracts and executor positioning'
+date: 2026-07-11
+status: current
+type: Strategy Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/sdr
+decision_type: strategy
+---
 
-**Date:** 2026-07-11
+# SDR-KI-HARNESS-002: Runtime-portable contracts and executor positioning
 
 ## Context
 
@@ -25,8 +33,8 @@ So the "portable contract" claim is strongest for `skills/`, which has an extern
 
 ## References
 
-- [SDR-KI-HARNESS-001](SDR-KI-HARNESS-001-purpose-and-scope.md) — the purpose and scope of the harness whose positioning this record sets.
-- [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md) — the mechanical-first paradigm this strategy generalises.
+- [SDR-KI-HARNESS-001](SDR-KI-HARNESS-001-purpose-and-scope-of-the-agentic-harness.md) — the purpose and scope of the harness whose positioning this record sets.
+- [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-mechanical-first-agent-judgment-progressively-enhances.md) — the mechanical-first paradigm this strategy generalises.
 - [Hermes Agent](https://github.com/NousResearch/hermes-agent) — the batteries-included persistent runtime.
 - [pi.dev](https://pi.dev) — the minimal TypeScript runtime.
 - [OpenClaw](https://docs.openclaw.ai) — the multi-channel gateway runtime.

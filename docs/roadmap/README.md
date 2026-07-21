@@ -35,6 +35,14 @@ Canonical themes, active execution plans, and completed plan records.
 - **Status:** open
 - **Blocks:** —
 
+### [GOV-001](governance-consistency/plans/GOV-001-make-decision-record-metadata-explicit.md)
+
+- **Title:** Make decision-record metadata and filenames explicit
+- **Theme:** `governance-consistency`
+- **Roadmap item:** `governance-consistency/make-decision-record-metadata-and-filenames-explicit`
+- **Status:** acceptance
+- **Blocks:** —
+
 ### [RTP-001](runtime-portability/plans/RTP-001-detect-vendor-specific-portable-contracts.md)
 
 - **Title:** Detect vendor-specific assumptions in portable skill contracts

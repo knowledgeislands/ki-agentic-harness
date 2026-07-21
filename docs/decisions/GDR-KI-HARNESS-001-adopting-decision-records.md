@@ -1,6 +1,14 @@
-# GDR-KI-HARNESS-001: Adopting Decision Records
+---
+id: GDR-KI-HARNESS-001
+title: 'Adopting Decision Records'
+date: 2026-07-18
+status: current
+type: Governance Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/gdr
+decision_type: governance
+---
 
-**Date:** 2026-07-18
+# GDR-KI-HARNESS-001: Adopting Decision Records
 
 ## Context
 

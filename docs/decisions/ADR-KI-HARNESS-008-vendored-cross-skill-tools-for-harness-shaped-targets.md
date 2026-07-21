@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-008: Vendored cross-skill tools for harness-shaped targets
+---
+id: ADR-KI-HARNESS-008
+title: 'Vendored cross-skill tools for harness-shaped targets'
+date: 2026-07-13
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-13
+# ADR-KI-HARNESS-008: Vendored cross-skill tools for harness-shaped targets
 
 ## Context
 
@@ -28,5 +36,5 @@ The engine vendors neither a user installer nor a runtime linker. `ki-harness` o
 
 ## References
 
-- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md) — the repository bootstrap and self-sufficiency boundary.
-- [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-uniform-skill-modes-and-coverage-scoped-audit.md) — coverage-scoped vendoring.
+- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-user-installation-repository-bootstrap-and-self-sufficiency.md) — the repository bootstrap and self-sufficiency boundary.
+- [ADR-KI-HARNESS-007](ADR-KI-HARNESS-007-uniform-skill-modes-bare-mode-scripts-and-a-coverage-scoped-aggregate-gate.md) — coverage-scoped vendoring.

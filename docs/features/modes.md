@@ -8,31 +8,31 @@ The behavioural contract of the operating vocabulary every governance skill expo
 
 ### MODE-001 — Governance skills carry the four modes
 
-Every governance skill MUST expose AUDIT, CONFORM, EDUCATE, and REFRESH under those exact names, presented under a single `## Operating modes` H2, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+Every governance skill MUST expose AUDIT, CONFORM, EDUCATE, and REFRESH under those exact names, presented under a single `## Operating modes` H2, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-audit-conform-educate-refresh-canonical-modes-help.md).
 
 _Verify:_ `bun skills/keystone/ki-skills/scripts/lint-skills.ts skills` — the SHAPE mode-coverage check FAILs a governance `SKILL.md` missing any of the four.
 
 ### MODE-002 — AUDIT reports, does not fix
 
-AUDIT MUST run the mechanical checker, capture its output, then apply the judgment criteria, reporting by location → criterion → fix, and MUST NOT modify the audited target, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+AUDIT MUST run the mechanical checker, capture its output, then apply the judgment criteria, reporting by location → criterion → fix, and MUST NOT modify the audited target, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-audit-conform-educate-refresh-canonical-modes-help.md).
 
 _Verify:_ each skill's `## Mode AUDIT` section routes to its checker read-only; the shared checker contract (checker-contract.md) pins `--json` / `--report` as read-only with respect to audited content.
 
 ### MODE-003 — CONFORM fixes then re-audits
 
-CONFORM MUST run AUDIT to obtain the fix list, apply the fixes in place, then re-run AUDIT until clean, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+CONFORM MUST run AUDIT to obtain the fix list, apply the fixes in place, then re-run AUDIT until clean, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-audit-conform-educate-refresh-canonical-modes-help.md).
 
 _Verify:_ each governance `SKILL.md`'s `## Mode CONFORM` describes the audit → fix → re-audit loop; `lint-skills.ts` checks the mode's presence.
 
 ### MODE-004 — EDUCATE is mandatory even when thin
 
-Every governance skill MUST carry an EDUCATE — a `scripts/educate.ts` delegating into the `ki-bootstrap` chain — even when it scaffolds no standalone artifact, in which case EDUCATE's job is to vendor the skill's `scripts/govern.ts` entrypoint into the target's `.ki/`, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+Every governance skill MUST carry an EDUCATE — a `scripts/educate.ts` delegating into the `ki-bootstrap` chain — even when it scaffolds no standalone artifact, in which case EDUCATE's job is to vendor the skill's `scripts/govern.ts` entrypoint into the target's `.ki/`, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-audit-conform-educate-refresh-canonical-modes-help.md).
 
 _Verify:_ every `skills/*/scripts/educate.ts` exists and execs the chain engine; `lint-skills.ts` SHAPE checks the EDUCATE mode and delegator.
 
 ### MODE-005 — REFRESH runs only in the harness
 
-REFRESH MUST write only to the skill's canonical files under `skills/<name>/` in `ki-agentic-harness`, and when invoked from a repo where the skill is merely vendored it MUST stop and name the harness as where to run it, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+REFRESH MUST write only to the skill's canonical files under `skills/<name>/` in `ki-agentic-harness`, and when invoked from a repo where the skill is merely vendored it MUST stop and name the harness as where to run it, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-audit-conform-educate-refresh-canonical-modes-help.md).
 
 _Verify:_ each `## Mode REFRESH` section declares the harness-only write target and the vendored-repo stop behaviour.
 
@@ -40,7 +40,7 @@ _Verify:_ each `## Mode REFRESH` section declares the harness-only write target 
 
 ### MODE-006 — HELP explains and stops
 
-Every governance skill MUST expose HELP — invoked as `help` / `-h` / `?` — which surfaces the skill's name, one-line purpose, invocation, mode list, and off-ramps from what the `SKILL.md` already declares, and takes no action, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+Every governance skill MUST expose HELP — invoked as `help` / `-h` / `?` — which surfaces the skill's name, one-line purpose, invocation, mode list, and off-ramps from what the `SKILL.md` already declares, and takes no action, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-audit-conform-educate-refresh-canonical-modes-help.md).
 
 _Verify:_ `bun run ki:skills:help <name>` renders the generated block via `skills/keystone/ki-bootstrap/scripts/skill-help.ts` with no per-skill authored prose; the block is non-acting.
 
@@ -48,7 +48,7 @@ _Verify:_ `bun run ki:skills:help <name>` renders the generated block via `skill
 
 ### MODE-007 — Process skills are exempt
 
-A process skill (one that drives a lifecycle rather than holding a standard) MUST NOT be required to carry the universal four modes; the skills rubric gates the four-mode and HELP requirements on "governance skill", per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+A process skill (one that drives a lifecycle rather than holding a standard) MUST NOT be required to carry the universal four modes; the skills rubric gates the four-mode and HELP requirements on "governance skill", per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-audit-conform-educate-refresh-canonical-modes-help.md).
 
 _Verify:_ `lint-skills.ts` SHAPE-5 / SHAPE-11 pass a process skill (e.g. `ki-recap`, `ki-plan`) that carries only its own lifecycle modes.
 
@@ -56,13 +56,13 @@ _Verify:_ `lint-skills.ts` SHAPE-5 / SHAPE-11 pass a process skill (e.g. `ki-rec
 
 ### MODE-008 — NEW authors one instance
 
-A collection governance skill that exposes NEW MUST use it to author exactly one new instance into the collection it governs, presupposing EDUCATE has established the collection and never substituting for EDUCATE, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+A collection governance skill that exposes NEW MUST use it to author exactly one new instance into the collection it governs, presupposing EDUCATE has established the collection and never substituting for EDUCATE, per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-audit-conform-educate-refresh-canonical-modes-help.md).
 
 _Verify:_ the collection skills exposing `### Mode NEW` (`ki-decision-records`, `ki-feature-definitions`, `ki-kb-activities`, `ki-kb-live-artifacts`) each also expose EDUCATE; the fixed meaning is pinned in [`skills/keystone/ki-skills/references/standards.md`](../../skills/keystone/ki-skills/references/standards.md).
 
 ### MODE-009 — OPTIMISE pushes toward excellent
 
-A skill that exposes OPTIMISE MUST use it only to push an already-compliant artifact from the standard floor toward excellent, never to bring an off-standard one onto the floor (that is EDUCATE/CONFORM), per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+A skill that exposes OPTIMISE MUST use it only to push an already-compliant artifact from the standard floor toward excellent, never to bring an off-standard one onto the floor (that is EDUCATE/CONFORM), per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-audit-conform-educate-refresh-canonical-modes-help.md).
 
 _Verify:_ `ki-skills`'s `### Mode OPTIMISE`; the fixed meaning is pinned in [`skills/keystone/ki-skills/references/standards.md`](../../skills/keystone/ki-skills/references/standards.md).
 
@@ -70,6 +70,6 @@ _Verify:_ `ki-skills`'s `### Mode OPTIMISE`; the fixed meaning is pinned in [`sk
 
 ### MODE-010 — No mode resolves to HELP, then routes
 
-Invoked with no mode, a governance skill MUST emit the same HELP explanation, then — in an interactive session only — offer the mode choice via `AskUserQuestion`; the pure `help` / `-h` / `?` form MUST take no further action (the headless-safe form), per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-canonical-modes.md).
+Invoked with no mode, a governance skill MUST emit the same HELP explanation, then — in an interactive session only — offer the mode choice via `AskUserQuestion`; the pure `help` / `-h` / `?` form MUST take no further action (the headless-safe form), per [ADR-KI-HARNESS-SKILLS-001](../decisions/ADR-KI-HARNESS-SKILLS-001-audit-conform-educate-refresh-canonical-modes-help.md).
 
 _Verify:_ every governance `SKILL.md`'s `## Operating modes` section carries the no-mode/`AskUserQuestion` sentence; `bun run ki:skills:help:check` guards HELP-block coverage.

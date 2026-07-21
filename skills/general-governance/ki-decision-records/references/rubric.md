@@ -20,7 +20,7 @@ Line-by-line criteria for auditing ki-decision-records. Classifications are deri
 
 Canonical decision-record filenames and serial namespaces.
 
-- **FILENAME-1 [M] — Canonical decision-record filename** — Filename matches `^(SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z][A-Z0-9]*(-[A-Z][A-Z0-9]*)*-(XXX|\d{3,})(-[a-z0-9-]+)?\.md$` (`XXX` is the reserved serial for a pending DR not yet assigned a real number). (dr-format.md)
+- **FILENAME-1 [M] — Canonical decision-record filename** — Filename is `<ID>-<title-slug>.md`: the canonical uppercase record ID, a dash, then the title lowercased with each non-alphanumeric run replaced by one dash and leading or trailing dashes removed. (dr-format.md)
 - **FILENAME-2 [M] — Unique serial within prefix and scope** — NNN is unique per prefix within its `<SCOPE>` namespace; two files may share the same integer if they carry different prefixes; no two files share the same prefix+scope+serial combination. `XXX` files are exempt from uniqueness. (dr-format.md)
 - **FILENAME-3 [M] — Contiguous serial series** — Within each prefix+scope series the serials start at `001` and are contiguous. A gap is fixed by renumbering the series and sweeping every citation of shifted codes in the same change. `XXX` pending files are exempt. (dr-format.md)
 
@@ -28,12 +28,13 @@ Canonical decision-record filenames and serial namespaces.
 
 → [standard](dr-format.md)
 
-Required knowledge-base decision metadata.
+Required universal decision metadata.
 
-- **FM-0 [M] — Knowledge-base frontmatter** — YAML frontmatter block is present in KB repositories; it is optional in code repositories. (dr-format.md)
-- **FM-3 [M] — Decision document type** — `type` field is `admin/governance/decision`. (dr-format.md)
+- **FM-0 [M] — Decision-record frontmatter** — YAML frontmatter block is present on every decision record. (dr-format.md)
+- **FM-3 [M] — Human-readable record type** — `type` is the canonical human-readable record type for the filename prefix. (dr-format.md)
 - **FM-4 [M] — Decision type metadata** — `decision_type` field is present. (dr-format.md)
 - **FM-5 [M] — Prefix and decision type alignment** — `decision_type` exactly matches the canonical value encoded by the filename prefix. This makes required KB metadata internally consistent; it does not prove that the prefix is the right semantic classification. (dr-format.md)
+- **FM-6 [M] — Core decision metadata** — `id`, `title`, `date`, `status`, and `type_url` are present; ID and title compose the H1, date uses YYYY-MM-DD, and the URL matches the record prefix. (dr-format.md)
 
 ## TYPE-FIT — decision classification
 
@@ -51,7 +52,7 @@ Semantic alignment between a decision and its canonical prefix.
 Present-state decision-record structure and writing quality.
 
 - **BODY-1 [M] — Canonical heading** — Heading matches `# <PREFIX>-<SCOPE>-NNN: <title>`; the ID prefix is present and matches the filename. (dr-format.md)
-- **BODY-3 [M] — Optional date format** — A `**Date:**` line is optional; if present it must be `YYYY-MM-DD`. (dr-format.md)
+- **BODY-3 [M] — No legacy date line** — A decision record does not carry a legacy bold `**Date:**` line; its date belongs in frontmatter. (dr-format.md)
 - **BODY-4 [M] — Required decision sections** — `## Context`, `## Decision`, and `## Consequences` sections are all present. (dr-format.md)
 - **BODY-5 [J] — Value-neutral context** — Context is value-neutral forces, not advocacy ("the island currently…" not "we need to…"). (dr-format.md)
   - _Review prompt:_ Assess whether Context states value-neutral forces rather than advocacy.

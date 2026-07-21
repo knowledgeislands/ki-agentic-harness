@@ -38,8 +38,8 @@ export const BODY_1: RubricItem<DecisionRecordsContext> = {
 
 export const BODY_3: RubricItem<DecisionRecordsContext> = {
   code: 'BODY-3',
-  title: 'Optional date format',
-  description: 'A `**Date:**` line is optional; if present it must be `YYYY-MM-DD`.',
+  title: 'No legacy date line',
+  description: 'A decision record does not carry a legacy bold `**Date:**` line; its date belongs in frontmatter.',
   sources: [SOURCE],
   mechanical: {
     level: 'WARN',
@@ -48,9 +48,15 @@ export const BODY_3: RubricItem<DecisionRecordsContext> = {
       run: (context: DecisionRecordsContext) =>
         outcomes(
           context.records
-            .filter((record) => record.date && !/^\d{4}-\d{2}-\d{2}$/.test(record.date))
-            .map((record): AuditOutcome => ({ status: 'VIOLATION', message: 'Date must use YYYY-MM-DD.', subject: record.file })),
-          'Every present decision-record date uses YYYY-MM-DD.'
+            .filter((record) => /^\*\*Date:\*\*/m.test(record.body))
+            .map(
+              (record): AuditOutcome => ({
+                status: 'VIOLATION',
+                message: 'Move the legacy `**Date:**` line into frontmatter.',
+                subject: record.file
+              })
+            ),
+          'Every decision-record date is represented only in frontmatter.'
         )
     }
   }

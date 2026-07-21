@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-006: User installation, repository bootstrap, and self-sufficiency
+---
+id: ADR-KI-HARNESS-006
+title: 'User installation, repository bootstrap, and self-sufficiency'
+date: 2026-07-09
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-09
+# ADR-KI-HARNESS-006: User installation, repository bootstrap, and self-sufficiency
 
 ## Context
 
@@ -33,5 +41,5 @@ Re-running either installation contract is the idempotent update path for its ow
 
 ## References
 
-- [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md) — the mechanical-first stance that makes repository self-sufficiency possible.
-- [ADR-KI-HARNESS-SKILLS-001](ADR-KI-HARNESS-SKILLS-001-canonical-modes.md) — the governance modes whose mechanical entries repository bootstrap vendors.
+- [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-mechanical-first-agent-judgment-progressively-enhances.md) — the mechanical-first stance that makes repository self-sufficiency possible.
+- [ADR-KI-HARNESS-SKILLS-001](ADR-KI-HARNESS-SKILLS-001-audit-conform-educate-refresh-canonical-modes-help.md) — the governance modes whose mechanical entries repository bootstrap vendors.

@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-SKILLS-011: Repository roadmaps for non-KB repositories
+---
+id: ADR-KI-HARNESS-SKILLS-011
+title: 'Repository roadmaps for non-KB repositories'
+date: 2026-07-16
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-16
+# ADR-KI-HARNESS-SKILLS-011: Repository roadmaps for non-KB repositories
 
 ## Context
 
@@ -29,5 +37,5 @@ The replacement is direct. There is no `ki-plans` alias, configuration or script
 
 ## References
 
-- [ADR-KI-HARNESS-SKILLS-003](ADR-KI-HARNESS-SKILLS-003-dependency-order-composition.md) — the skill naming grammar and dependency-order model this name participates in.
-- [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md) — the governance/process distinction and cluster taxonomy that place ki-repo-roadmap beside ki-plan.
+- [ADR-KI-HARNESS-SKILLS-003](ADR-KI-HARNESS-SKILLS-003-dependency-order-for-multi-skill-composition.md) — the skill naming grammar and dependency-order model this name participates in.
+- [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-six-cluster-skill-taxonomy-and-the-implication-graph.md) — the governance/process distinction and cluster taxonomy that place ki-repo-roadmap beside ki-plan.

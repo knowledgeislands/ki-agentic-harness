@@ -26,7 +26,7 @@ When destructive housekeeping access is available, refresh the live inventory, r
 
 ### Reconcile the three memory-store defects
 
-When the project memory store is writable, update `project-harness-runtime-strategy.md` to cite `SDR-KI-HARNESS-002-runtime-portable-contracts.md`, then delete `feedback-explicit-git-staging.md` and `complete-the-merge-loop.md` because their guidance has already been promoted. Verify the three changes in the canonical project-memory directory and avoid speculative backend redesign unless a reproducible inconsistency remains.
+When the project memory store is writable, update `project-harness-runtime-strategy.md` to cite `SDR-KI-HARNESS-002-runtime-portable-contracts-and-executor-positioning.md`, then delete `feedback-explicit-git-staging.md` and `complete-the-merge-loop.md` because their guidance has already been promoted. Verify the three changes in the canonical project-memory directory and avoid speculative backend redesign unless a reproducible inconsistency remains.
 
 ## Future
 

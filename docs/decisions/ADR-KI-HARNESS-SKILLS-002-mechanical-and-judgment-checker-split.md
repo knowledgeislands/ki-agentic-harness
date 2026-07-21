@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-SKILLS-002: Mechanical and judgment checker split
+---
+id: ADR-KI-HARNESS-SKILLS-002
+title: 'Mechanical and judgment checker split'
+date: 2026-06-23
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-06-23
+# ADR-KI-HARNESS-SKILLS-002: Mechanical and judgment checker split
 
 ## Context
 
@@ -25,4 +33,4 @@ A criterion starts in the checker unless it genuinely requires judgment. A crite
 
 ## References
 
-- [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-mechanical-first-progressive-enhancement.md) — the mechanical-first, progressive-enhancement foundation this per-skill split realises.
+- [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-mechanical-first-agent-judgment-progressively-enhances.md) — the mechanical-first, progressive-enhancement foundation this per-skill split realises.

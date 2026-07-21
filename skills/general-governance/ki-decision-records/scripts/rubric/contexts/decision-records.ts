@@ -3,18 +3,50 @@ import { dirname, join, resolve } from 'node:path'
 
 const CODE_DIR = 'docs/decisions'
 const KB_DIR = 'Admin/Governance/Decisions'
-const PREFIX_TO_TYPE: Record<string, string> = {
-  SDR: 'strategy',
-  PDR: 'product',
-  ADR: 'architecture',
-  DDR: 'data',
-  XDR: 'security',
-  ODR: 'operations',
-  GDR: 'governance',
-  RDR: 'research',
-  KDR: 'knowledge'
+const PREFIX_TO_TYPE: Record<string, { decisionType: string; type: string; typeUrl: string }> = {
+  SDR: {
+    decisionType: 'strategy',
+    type: 'Strategy Decision Record',
+    typeUrl: 'https://knowledgeislands.info/specifications/decision-records/sdr'
+  },
+  PDR: {
+    decisionType: 'product',
+    type: 'Product Decision Record',
+    typeUrl: 'https://knowledgeislands.info/specifications/decision-records/pdr'
+  },
+  ADR: {
+    decisionType: 'architecture',
+    type: 'Architecture Decision Record',
+    typeUrl: 'https://knowledgeislands.info/specifications/decision-records/adr'
+  },
+  DDR: { decisionType: 'data', type: 'Data Decision Record', typeUrl: 'https://knowledgeislands.info/specifications/decision-records/ddr' },
+  XDR: {
+    decisionType: 'security',
+    type: 'Security Decision Record',
+    typeUrl: 'https://knowledgeislands.info/specifications/decision-records/xdr'
+  },
+  ODR: {
+    decisionType: 'operations',
+    type: 'Operations Decision Record',
+    typeUrl: 'https://knowledgeislands.info/specifications/decision-records/odr'
+  },
+  GDR: {
+    decisionType: 'governance',
+    type: 'Governance Decision Record',
+    typeUrl: 'https://knowledgeislands.info/specifications/decision-records/gdr'
+  },
+  RDR: {
+    decisionType: 'research',
+    type: 'Research Decision Record',
+    typeUrl: 'https://knowledgeislands.info/specifications/decision-records/rdr'
+  },
+  KDR: {
+    decisionType: 'knowledge',
+    type: 'Knowledge Decision Record',
+    typeUrl: 'https://knowledgeislands.info/specifications/decision-records/kdr'
+  }
 }
-const FILENAME = /^(SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-([A-Z][A-Z0-9]*(?:-[A-Z][A-Z0-9]*)*)-(XXX|\d{3,})(-[a-z0-9-]+)?\.md$/
+const ID = /^(SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-([A-Z][A-Z0-9]*(?:-[A-Z][A-Z0-9]*)*)-(XXX|\d{3,})$/
 const INDEX_ID = /^\s*(?:\d+\.|[-*])\s+.*?((?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z][A-Z0-9-]+-(?:XXX|\d{3,}))/
 const HEADING = /^#\s+((?:SDR|PDR|ADR|DDR|XDR|ODR|GDR|RDR|KDR)-[A-Z][A-Z0-9-]+-(?:XXX|\d{3,})):\s+(.+)$/m
 
@@ -24,15 +56,22 @@ export type DecisionRecord = {
   prefix: string
   scope: string
   serial: string
+  expectedDecisionType: string
   expectedType: string
+  expectedTypeUrl: string
+  expectedFilename: string
   content: string
   body: string
   frontmatter?: string
+  frontmatterId?: string
+  title?: string
+  date?: string
+  status?: string
   type?: string
+  typeUrl?: string
   decisionType?: string
   headingId?: string
   headingTitle?: string
-  date?: string
   missingSections: readonly string[]
 }
 
@@ -52,6 +91,12 @@ export type DecisionRecordsContext = {
   outOfOrderIds: readonly { id: string; previous: number }[]
   appendMissingIndexEntries: () => readonly DecisionRecord[]
 }
+
+const slugify = (value: string): string =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
 
 const findKiConfig = (start: string): string | undefined => {
   let directory = resolve(start)
@@ -82,14 +127,25 @@ const resolveDirectory = (target: string, kbMode: boolean): string => {
   if (
     isDirectory(absolute) &&
     (['README.md', 'Decisions.md'].some((name) => existsSync(join(absolute, name))) ||
-      readdirSync(absolute).some((name) => FILENAME.test(name)))
+      readdirSync(absolute).some((name) => name.endsWith('.md')))
   )
     return absolute
   return join(absolute, kbMode ? KB_DIR : CODE_DIR)
 }
 
-const frontmatterValue = (frontmatter: string | undefined, key: string): string | undefined =>
-  frontmatter?.match(new RegExp(`^${key}:\\s*(.+)$`, 'm'))?.[1]?.trim()
+const frontmatterValue = (frontmatter: string | undefined, key: string): string | undefined => {
+  const value = frontmatter?.match(new RegExp(`^${key}:\\s*(.+)$`, 'm'))?.[1]?.trim()
+  if (!value) return undefined
+  if (value.startsWith('"')) {
+    try {
+      return JSON.parse(value) as string
+    } catch {
+      return value
+    }
+  }
+  const quoted = value.match(/^(['"])(.*)\1$/)
+  return quoted?.[2] ?? value
+}
 
 export const createDecisionRecordsContextFactory = ({
   target,
@@ -113,38 +169,47 @@ export const createDecisionRecordsContextFactory = ({
     const indexCounts = new Map<string, number>()
     for (const id of indexIds) indexCounts.set(id, (indexCounts.get(id) ?? 0) + 1)
     const markdownFiles = entries.filter((file) => file.endsWith('.md') && file !== indexFile)
-    const invalidFilenames = markdownFiles.filter((file) => !FILENAME.test(file))
     const records: DecisionRecord[] = []
 
     for (const file of markdownFiles) {
-      const filename = file.match(FILENAME)
-      if (!filename) continue
-      const [, prefix, scope, serial] = filename
-      const id = `${prefix}-${scope}-${serial}`
       const content = readFileSync(join(directory, file), 'utf8')
       const frontmatter = content.match(/^---\n([\s\S]*?)\n---/)?.[1]
       const body = content.replace(/^---\n[\s\S]*?\n---\n?/, '')
       const heading = body.match(HEADING)
-      const date = body.match(/^\*\*Date:\*\*\s+(.+)$/m)?.[1]?.trim()
+      const identity = heading?.[1]?.match(ID)
+      if (!identity || !heading?.[2]) continue
+      const [, prefix, scope, serial] = identity
+      const id = `${prefix}-${scope}-${serial}`
+      const headingTitle = heading[2].trim()
+      const expectedFilename = `${id}-${slugify(headingTitle)}.md`
+      const expected = PREFIX_TO_TYPE[prefix] as { decisionType: string; type: string; typeUrl: string }
       records.push({
         file,
         id,
         prefix,
         scope,
         serial,
-        expectedType: PREFIX_TO_TYPE[prefix] as string,
+        expectedDecisionType: expected.decisionType,
+        expectedType: expected.type,
+        expectedTypeUrl: expected.typeUrl,
+        expectedFilename,
         content,
         body,
         ...(frontmatter ? { frontmatter } : {}),
+        ...(frontmatterValue(frontmatter, 'id') ? { frontmatterId: frontmatterValue(frontmatter, 'id') } : {}),
+        ...(frontmatterValue(frontmatter, 'title') ? { title: frontmatterValue(frontmatter, 'title') } : {}),
+        ...(frontmatterValue(frontmatter, 'date') ? { date: frontmatterValue(frontmatter, 'date') } : {}),
+        ...(frontmatterValue(frontmatter, 'status') ? { status: frontmatterValue(frontmatter, 'status') } : {}),
         ...(frontmatterValue(frontmatter, 'type') ? { type: frontmatterValue(frontmatter, 'type') } : {}),
+        ...(frontmatterValue(frontmatter, 'type_url') ? { typeUrl: frontmatterValue(frontmatter, 'type_url') } : {}),
         ...(frontmatterValue(frontmatter, 'decision_type') ? { decisionType: frontmatterValue(frontmatter, 'decision_type') } : {}),
-        ...(heading?.[1] ? { headingId: heading[1] } : {}),
-        ...(heading?.[2] ? { headingTitle: heading[2].trim() } : {}),
-        ...(date ? { date } : {}),
+        headingId: id,
+        headingTitle,
         missingSections: ['## Context', '## Decision', '## Consequences'].filter((section) => !body.includes(section))
       })
     }
 
+    const invalidFilenames = records.filter((record) => record.file !== record.expectedFilename).map((record) => record.file)
     const idsToFiles = new Map<string, string[]>()
     const serialsBySeries = new Map<string, number[]>()
     for (const record of records) {

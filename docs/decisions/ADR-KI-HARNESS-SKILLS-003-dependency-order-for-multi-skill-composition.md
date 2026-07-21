@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-SKILLS-003: Dependency order for multi-skill composition
+---
+id: ADR-KI-HARNESS-SKILLS-003
+title: 'Dependency order for multi-skill composition'
+date: 2026-06-23
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-06-23
+# ADR-KI-HARNESS-SKILLS-003: Dependency order for multi-skill composition
 
 ## Context
 

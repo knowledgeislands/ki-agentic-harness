@@ -1,10 +1,18 @@
-# ADR-KI-HARNESS-SKILLS-009: Two repo-structure skills for standalone tools and their Homebrew tap
+---
+id: ADR-KI-HARNESS-SKILLS-009
+title: 'Two repo-structure skills for standalone tools and their Homebrew tap'
+date: 2026-07-09
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-09
+# ADR-KI-HARNESS-SKILLS-009: Two repo-structure skills for standalone tools and their Homebrew tap
 
 ## Context
 
-Releasing the `mgit` CLI produced two repos that no existing repo-structure skill governs: `tools-mgit` (a standalone command-line tool — a bash script, no `package.json`, no TypeScript) and `homebrew-tap` (the Homebrew distribution repo carrying `Formula/*.rb`). Neither matches the existing repo-structure shapes in [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md) (`ki-harness`, `ki-kb`, `ki-website`, `ki-mcp`, `ki-plugins`), so both were published with no `.ki-config.toml` and fell outside governance.
+Releasing the `mgit` CLI produced two repos that no existing repo-structure skill governs: `tools-mgit` (a standalone command-line tool — a bash script, no `package.json`, no TypeScript) and `homebrew-tap` (the Homebrew distribution repo carrying `Formula/*.rb`). Neither matches the existing repo-structure shapes in [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-six-cluster-skill-taxonomy-and-the-implication-graph.md) (`ki-harness`, `ki-kb`, `ki-website`, `ki-mcp`, `ki-plugins`), so both were published with no `.ki-config.toml` and fell outside governance.
 
 Per [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-composition-over-extension.md), a genuinely new _repo shape_ warrants a new repo-structure skill; a _variation_ of an existing shape is declared in `.ki-config.toml` + `CLAUDE.md`, never forked. A standalone CLI tool and a package-manager tap are each a genuinely new shape. Two precedents make this low-friction: `ki-kb` is a repo-structure skill whose checker uses only Bun/Node built-ins and never rides the `ki-engineering` TS toolchain; `ki-plugins` is a governed repo with no `package.json` that deliberately omits `[ki-engineering]` and is still compliant (a bare `[ki-repo]` marker is a complete config).
 
@@ -26,6 +34,6 @@ Add two repo-structure skills — **`ki-tools`** and **`ki-homebrew-tap`** — t
 
 ## References
 
-- [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md) — the taxonomy this extends (the repo-structure cluster).
+- [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-six-cluster-skill-taxonomy-and-the-implication-graph.md) — the taxonomy this extends (the repo-structure cluster).
 - [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-composition-over-extension.md) — composition over extension: new shape → new skill, variation → declaration.
-- [ADR-KI-HARNESS-SKILLS-008](ADR-KI-HARNESS-SKILLS-008-feature-definitions-skill.md) — the precedent for adding a skill against the ADR-006 taxonomy.
+- [ADR-KI-HARNESS-SKILLS-008](ADR-KI-HARNESS-SKILLS-008-a-feature-definitions-skill-for-the-what.md) — the precedent for adding a skill against the ADR-006 taxonomy.

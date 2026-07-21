@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-010: Managed hook payloads and user-environment binding
+---
+id: ADR-KI-HARNESS-010
+title: 'Managed hook payloads and user-environment binding'
+date: 2026-07-16
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-16
+# ADR-KI-HARNESS-010: Managed hook payloads and user-environment binding
 
 ## Context
 
@@ -27,5 +35,5 @@ Claude hook delivery is a component of the one-time harness user installation.
 
 ## References
 
-- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md) — the user-install and repository-bootstrap boundary.
-- [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) — renderer-specific composition over a renderer-neutral concern.
+- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-user-installation-repository-bootstrap-and-self-sufficiency.md) — the user-install and repository-bootstrap boundary.
+- [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-must-be-valid-standalone.md) — renderer-specific composition over a renderer-neutral concern.

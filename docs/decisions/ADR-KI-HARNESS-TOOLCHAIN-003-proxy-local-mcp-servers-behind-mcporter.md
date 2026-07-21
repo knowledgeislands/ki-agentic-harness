@@ -1,10 +1,18 @@
-# ADR-KI-HARNESS-TOOLCHAIN-003: Proxy local MCP servers behind mcporter
+---
+id: ADR-KI-HARNESS-TOOLCHAIN-003
+title: 'Proxy local MCP servers behind mcporter'
+date: 2026-06-24
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-06-24
+# ADR-KI-HARNESS-TOOLCHAIN-003: Proxy local MCP servers behind mcporter
 
 ## Context
 
-Claude Code keeps only a small number of MCP servers simultaneously active (around five) before the tool-list cost becomes significant. Knowledge Islands owns 19 local stdio MCP servers, alongside third-party servers a session may use. Each server is a distinct, intentionally-separate capability — the `ki-tokenomics` checks confirm the KB-FS-adjacent servers are not redundant duplicates — so the answer is not to cut the server set but to stop each one consuming a Claude Code slot of its own. mcporter is adopted as the MCP proxy daemon ([ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling.md)); this record states the governing principle.
+Claude Code keeps only a small number of MCP servers simultaneously active (around five) before the tool-list cost becomes significant. Knowledge Islands owns 19 local stdio MCP servers, alongside third-party servers a session may use. Each server is a distinct, intentionally-separate capability — the `ki-tokenomics` checks confirm the KB-FS-adjacent servers are not redundant duplicates — so the answer is not to cut the server set but to stop each one consuming a Claude Code slot of its own. mcporter is adopted as the MCP proxy daemon ([ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling-current-adoptions.md)); this record states the governing principle.
 
 ## Decision
 
@@ -24,6 +32,6 @@ KI-owned local stdio MCP servers are proxied behind mcporter and consume a singl
 
 ## References
 
-- [ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling.md) — adopts mcporter as the MCP proxy daemon and typed-client generator.
+- [ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling-current-adoptions.md) — adopts mcporter as the MCP proxy daemon and typed-client generator.
 - [mcporter](https://github.com/steipete/mcporter) — MCP proxy daemon and typed-client toolkit.
 - [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir/latest/) — governs the canonical source's location (`$XDG_CONFIG_HOME/ki/mcp-servers.yaml`) and the `ki-binding-chezmoi` legacy fallback path (`$XDG_DATA_HOME/chezmoi/.chezmoidata/mcps.yaml`).

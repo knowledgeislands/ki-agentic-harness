@@ -1,6 +1,6 @@
 # Runtime parity scorecard — Claude Code vs Codex CLI
 
-Reference companion to [SDR-KI-HARNESS-002](../SDR-KI-HARNESS-002-runtime-portable-contracts.md) and its sibling [runtime feature-coverage matrix](runtime-feature-coverage.md). This is a **reference doc, not a decision record** — it carries no decision, needs no Decisions-index entry, and is edited freely as the gap moves.
+Reference companion to [SDR-KI-HARNESS-002](../SDR-KI-HARNESS-002-runtime-portable-contracts-and-executor-positioning.md) and its sibling [runtime feature-coverage matrix](runtime-feature-coverage.md). This is a **reference doc, not a decision record** — it carries no decision, needs no Decisions-index entry, and is edited freely as the gap moves.
 
 Two lenses, deliberately separate: the **feature-coverage matrix** tracks the _native runtime primitives_ (Plan Mode, hooks, subagents, MCP, memory …) and whether each runtime has them. This **scorecard** tracks the _harness's own bundle parts_ — where each stands on Claude Code vs Codex, and what it takes to close the gap. Read the matrix to know whether a mechanism ports at all; read this to know how far the harness itself has been carried across.
 

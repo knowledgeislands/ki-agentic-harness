@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-TOOLCHAIN-004: Checker remediation footer and learn-block context check
+---
+id: ADR-KI-HARNESS-TOOLCHAIN-004
+title: 'Checker remediation footer and learn-block context check'
+date: 2026-07-10
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-10
+# ADR-KI-HARNESS-TOOLCHAIN-004: Checker remediation footer and learn-block context check
 
 ## Context
 
@@ -22,4 +30,4 @@ Separately, Headroom's `headroom --learn` writes learned command/error-recovery 
 
 ## References
 
-- [ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling.md) — adopts Headroom (whose `--learn` writes the block this check governs).
+- [ADR-KI-HARNESS-TOOLCHAIN-002](ADR-KI-HARNESS-TOOLCHAIN-002-complementary-tooling-current-adoptions.md) — adopts Headroom (whose `--learn` writes the block this check governs).

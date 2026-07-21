@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-004: Composition over extension
+---
+id: ADR-KI-HARNESS-004
+title: 'Composition over extension'
+date: 2026-06-23
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-06-23
+# ADR-KI-HARNESS-004: Composition over extension
 
 ## Context
 

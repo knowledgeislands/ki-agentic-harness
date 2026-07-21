@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-002: The ki- naming model and harness-as-source vs plugin-as-projection
+---
+id: ADR-KI-HARNESS-002
+title: 'The ki- naming model and harness-as-source vs plugin-as-projection'
+date: 2026-07-07
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-07
+# ADR-KI-HARNESS-002: The ki- naming model and harness-as-source vs plugin-as-projection
 
 ## Context
 
@@ -32,4 +40,4 @@ The per-artefact grammar (the `ki-<concern>[-<technology>]` form and how names r
 
 ## References
 
-- [ADR-KI-HARNESS-001](ADR-KI-HARNESS-001-repository-structure.md) — the five-part bundle layout that is the source this decision projects.
+- [ADR-KI-HARNESS-001](ADR-KI-HARNESS-001-repository-structure-the-five-part-bundle.md) — the five-part bundle layout that is the source this decision projects.

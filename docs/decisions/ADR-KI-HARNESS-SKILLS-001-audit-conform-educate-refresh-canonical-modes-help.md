@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-SKILLS-001: AUDIT/CONFORM/EDUCATE/REFRESH canonical modes (+ HELP)
+---
+id: ADR-KI-HARNESS-SKILLS-001
+title: 'AUDIT/CONFORM/EDUCATE/REFRESH canonical modes (+ HELP)'
+date: 2026-06-23
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-06-23
+# ADR-KI-HARNESS-SKILLS-001: AUDIT/CONFORM/EDUCATE/REFRESH canonical modes (+ HELP)
 
 ## Context
 
@@ -34,7 +42,7 @@ A mode name means the same thing in every skill that carries it — the contract
 
 **Heading standard.** Each governance skill presents its modes under a single `## Operating modes` H2 — the home for the shared no-mode/HELP intro — with each mode as a `### Mode <NAME>` H3, or, for router skills with many operational verbs, a `| Mode | … |` dispatch table inside that section. Every verb in the skill's `argument-hint` appears in that body section.
 
-**Process skills are exempt.** This decision scopes the universal four modes to **governance skills** (those that hold a standard). A **process skill** — one that drives an action or lifecycle rather than holding a standard (the taxonomy in [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md), later in the reading order) — does **not** carry AUDIT/CONFORM/EDUCATE/REFRESH; its modes follow its own lifecycle (e.g. `ki-plan`'s `ready`/`execute`/`accept`/`done`/`prune`/`status`, or `ki-recap`'s single mode). It exposes **HELP** only optionally. The skills rubric gates the four-mode and HELP requirements on "governance skill" accordingly, so a process skill passes with no relaxation of the checker.
+**Process skills are exempt.** This decision scopes the universal four modes to **governance skills** (those that hold a standard). A **process skill** — one that drives an action or lifecycle rather than holding a standard (the taxonomy in [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-six-cluster-skill-taxonomy-and-the-implication-graph.md), later in the reading order) — does **not** carry AUDIT/CONFORM/EDUCATE/REFRESH; its modes follow its own lifecycle (e.g. `ki-plan`'s `ready`/`execute`/`accept`/`done`/`prune`/`status`, or `ki-recap`'s single mode). It exposes **HELP** only optionally. The skills rubric gates the four-mode and HELP requirements on "governance skill" accordingly, so a process skill passes with no relaxation of the checker.
 
 The skills rubric enforces that every governance skill exposes this shape.
 

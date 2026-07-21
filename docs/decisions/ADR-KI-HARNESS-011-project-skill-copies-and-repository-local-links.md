@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-011: Project skill copies and repository-local links
+---
+id: ADR-KI-HARNESS-011
+title: 'Project skill copies and repository-local links'
+date: 2026-07-16
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-16
+# ADR-KI-HARNESS-011: Project skill copies and repository-local links
 
 ## Context
 
@@ -30,6 +38,6 @@ The three payload surfaces remain separate and have explicit owners.
 
 ## References
 
-- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md) — the user-install, repository-bootstrap, and self-sufficiency contracts.
-- [ADR-KI-HARNESS-008](ADR-KI-HARNESS-008-vendored-cross-skill-scripts.md) — harness-gated whole-tree tooling.
-- [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) — standalone skill validity and composition.
+- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-user-installation-repository-bootstrap-and-self-sufficiency.md) — the user-install, repository-bootstrap, and self-sufficiency contracts.
+- [ADR-KI-HARNESS-008](ADR-KI-HARNESS-008-vendored-cross-skill-tools-for-harness-shaped-targets.md) — harness-gated whole-tree tooling.
+- [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-must-be-valid-standalone.md) — standalone skill validity and composition.

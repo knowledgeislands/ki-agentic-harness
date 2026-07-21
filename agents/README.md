@@ -1,6 +1,6 @@
 # agents
 
-Knowledge Islands agent definitions live here, grouped by domain. Today these are **Claude Code subagents** — one `.md` file per agent — which is the current, validated shape. Whether other runtimes' subagent formats (e.g. OpenAI Codex CLI) share that shape is a provisional, open question pending a research spike; see [SDR-KI-HARNESS-002](../docs/decisions/SDR-KI-HARNESS-002-runtime-portable-contracts.md) for the multi-runtime intent and `ki-agents` (its portable-core framing) for what is expected to carry across.
+Knowledge Islands agent definitions live here, grouped by domain. Today these are **Claude Code subagents** — one `.md` file per agent — which is the current, validated shape. Whether other runtimes' subagent formats (e.g. OpenAI Codex CLI) share that shape is a provisional, open question pending a research spike; see [SDR-KI-HARNESS-002](../docs/decisions/SDR-KI-HARNESS-002-runtime-portable-contracts-and-executor-positioning.md) for the multi-runtime intent and `ki-agents` (its portable-core framing) for what is expected to carry across.
 
 ## Convention
 

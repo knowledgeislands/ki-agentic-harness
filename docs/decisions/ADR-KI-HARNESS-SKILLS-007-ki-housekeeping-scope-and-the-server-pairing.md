@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-SKILLS-007: ki-housekeeping scope and the server pairing
+---
+id: ADR-KI-HARNESS-SKILLS-007
+title: 'ki-housekeeping scope and the server pairing'
+date: 2026-07-09
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-09
+# ADR-KI-HARNESS-SKILLS-007: ki-housekeeping scope and the server pairing
 
 ## Context
 
@@ -8,7 +16,7 @@ The former `ki-memory` skill governed one narrow thing: the Claude Code auto-mem
 
 ## Decision
 
-`ki-memory` broadens into **`ki-housekeeping`**: the standard-and-judgment governor of the hygiene of accumulated Claude state, across all its areas, sitting in the Environment cluster ([ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md)). It pairs with the `mcp-claude-housekeeping` server on one principle: **the skill is the standard and the judgment; the server is the tools.**
+`ki-memory` broadens into **`ki-housekeeping`**: the standard-and-judgment governor of the hygiene of accumulated Claude state, across all its areas, sitting in the Environment cluster ([ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-six-cluster-skill-taxonomy-and-the-implication-graph.md)). It pairs with the `mcp-claude-housekeeping` server on one principle: **the skill is the standard and the judgment; the server is the tools.**
 
 - **Memory** stays governed locally in full — a file convention the skill fully specifies and checks with its own `audit-memory.ts`.
 - **Every other area** is audited and cleaned through the server's codified audits and access-gated read/`destructive` tools; the skill reads the findings and decides, and never re-implements the tools.
@@ -22,4 +30,4 @@ The former `ki-memory` skill governed one narrow thing: the Claude Code auto-mem
 
 ## References
 
-- [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-skill-taxonomy-and-implication-graph.md) — the taxonomy that places ki-housekeeping in the Environment cluster.
+- [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-six-cluster-skill-taxonomy-and-the-implication-graph.md) — the taxonomy that places ki-housekeeping in the Environment cluster.

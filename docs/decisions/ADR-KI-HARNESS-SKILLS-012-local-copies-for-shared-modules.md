@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-SKILLS-012: Local copies for shared modules
+---
+id: ADR-KI-HARNESS-SKILLS-012
+title: 'Local copies for shared modules'
+date: 2026-07-17
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-17
+# ADR-KI-HARNESS-SKILLS-012: Local copies for shared modules
 
 ## Context
 
@@ -48,6 +56,6 @@ This is deliberately narrower than a shared runtime library or a general skill-d
 
 ## References
 
-- [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) — standalone skill constraint.
-- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-bootstrapping-and-self-sufficiency.md) — durable vendored payloads.
-- [ADR-KI-HARNESS-SKILLS-010](ADR-KI-HARNESS-SKILLS-010-comparable-cited-checker-findings.md) — shared finding model and aggregate rendering boundary.
+- [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-must-be-valid-standalone.md) — standalone skill constraint.
+- [ADR-KI-HARNESS-006](ADR-KI-HARNESS-006-user-installation-repository-bootstrap-and-self-sufficiency.md) — durable vendored payloads.
+- [ADR-KI-HARNESS-SKILLS-010](ADR-KI-HARNESS-SKILLS-010-comparable-cited-checker-findings-across-audit-and-conform.md) — shared finding model and aggregate rendering boundary.

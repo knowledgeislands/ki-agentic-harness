@@ -1,6 +1,14 @@
-# GDR-KI-ARCADIA-001: Knowledge Islands ecosystem fundamentals
+---
+id: GDR-KI-ARCADIA-001
+title: 'Knowledge Islands ecosystem fundamentals'
+date: 2026-07-18
+status: current
+type: Governance Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/gdr
+decision_type: governance
+---
 
-**Date:** 2026-07-18
+# GDR-KI-ARCADIA-001: Knowledge Islands ecosystem fundamentals
 
 ## Context
 

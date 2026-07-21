@@ -1,6 +1,14 @@
-# ADR-KI-HARNESS-SKILLS-005: The handoff doctrine is its own skill
+---
+id: ADR-KI-HARNESS-SKILLS-005
+title: 'The handoff doctrine is its own skill'
+date: 2026-07-02
+status: current
+type: Architecture Decision Record
+type_url: https://knowledgeislands.info/specifications/decision-records/adr
+decision_type: architecture
+---
 
-**Date:** 2026-07-02
+# ADR-KI-HARNESS-SKILLS-005: The handoff doctrine is its own skill
 
 ## Context
 
@@ -19,5 +27,5 @@ The handoff doctrine is a **new, composition-shaped governance skill, `ki-handof
 
 ## References
 
-- [ADR-KI-HARNESS-SKILLS-003](ADR-KI-HARNESS-SKILLS-003-dependency-order-composition.md) — composition by run-in-sequence and the canonical dependency order.
-- [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-valid-standalone.md) — standalone validity.
+- [ADR-KI-HARNESS-SKILLS-003](ADR-KI-HARNESS-SKILLS-003-dependency-order-for-multi-skill-composition.md) — composition by run-in-sequence and the canonical dependency order.
+- [ADR-KI-HARNESS-SKILLS-004](ADR-KI-HARNESS-SKILLS-004-skills-must-be-valid-standalone.md) — standalone validity.
