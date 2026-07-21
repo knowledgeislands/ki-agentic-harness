@@ -15,6 +15,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 type CheckMode = 'audit' | 'conform'
 type CheckerLevel = 'FAIL' | 'WARN' | 'FIXED' | 'INFO' | 'NOT_APPLICABLE' | 'PASS'
 type ProgressMode = 'auto' | 'always' | 'never'
+type ProgressStyle = 'single' | 'multi'
 
 type Finding = {
   level: CheckerLevel
@@ -100,6 +101,7 @@ const usage = (): string =>
     '  --skill <ki-skill>        Run one vendored governed checker.',
     '  --dry-run                 Report conform changes without writing them.',
     '  --progress <mode>         Progress: auto, always, or never (default: auto).',
+    '  --progress-style <style>  Progress: single (default) or multi.',
     '  --reporter-levels <list>  Render levels, or all (default: FAIL,WARN).',
     '  -h, --help                Show this help and exit.'
   ].join('\n')}\n`
@@ -116,6 +118,7 @@ const modeUsage = (mode: CheckMode): string =>
     '  --skill <ki-skill>        Run one vendored governed checker.',
     ...(mode === 'conform' ? ['  --dry-run                 Report changes without writing them.'] : []),
     '  --progress <mode>         Progress: auto, always, or never (default: auto).',
+    '  --progress-style <style>  Progress: single (default) or multi.',
     '  --reporter-levels <list>  Render levels, or all (default: FAIL,WARN).',
     '  -h, --help                Show this help and exit.'
   ].join('\n')}\n`
@@ -167,6 +170,7 @@ const parseLevels = (value: string): readonly CheckerLevel[] => {
 const parseOptions = (mode: CheckMode, argv: readonly string[]) => {
   let skill: string | undefined
   let progress: ProgressMode = 'auto'
+  let progressStyle: ProgressStyle = 'single'
   let levels = DEFAULT_LEVELS[mode]
   let dryRun = false
   for (let index = 0; index < argv.length; index += 1) {
@@ -184,6 +188,10 @@ const parseOptions = (mode: CheckMode, argv: readonly string[]) => {
       if (!(['auto', 'always', 'never'] as const).includes(value as ProgressMode))
         throw new Error('--progress accepts auto, always, or never')
       progress = value as ProgressMode
+    } else if (argument === '--progress-style' || argument.startsWith('--progress-style=')) {
+      const value = readValue('--progress-style')
+      if (value !== 'single' && value !== 'multi') throw new Error('--progress-style accepts single or multi')
+      progressStyle = value
     } else if (argument === '--reporter-levels' || argument.startsWith('--reporter-levels=')) {
       levels = parseLevels(readValue('--reporter-levels'))
     } else if (argument === '--dry-run' && mode === 'conform') {
@@ -192,7 +200,7 @@ const parseOptions = (mode: CheckMode, argv: readonly string[]) => {
       throw new Error(`unknown option: ${argument}`)
     }
   }
-  return { skill, progress, levels, dryRun }
+  return { skill, progress, progressStyle, levels, dryRun }
 }
 
 const ANSI_ESCAPE = new RegExp(`${String.fromCharCode(27)}\\[[0-?]*[ -/]*[@-~]`, 'gu')
@@ -224,10 +232,30 @@ const progressLine = (mode: CheckMode, completed: number, total: number, detail:
   return `${left} [${'#'.repeat(filled)}${'.'.repeat(available - filled)}] ${summary}`
 }
 
-const createProgress = (mode: CheckMode, progress: ProgressMode, total: number) => {
+const createProgress = (mode: CheckMode, progress: ProgressMode, style: ProgressStyle, total: number, skills: readonly string[]) => {
   const enabled = progress === 'always' || (progress === 'auto' && Boolean(process.stderr.isTTY))
+  const states = new Map(skills.map((skill) => [skill, 'pending']))
+  let multiRendered = false
+  const renderMulti = (final = false): void => {
+    if (!enabled) return
+    // A terminal can redraw the stable rows in place. In redirected output,
+    // emit one snapshot at the start and one at completion instead of a line
+    // for every checker event.
+    if (!process.stderr.isTTY && multiRendered && !final) return
+    const lines = skills.map((skill) => `${mode.toUpperCase()} [${skill}] ${states.get(skill) ?? 'pending'}`)
+    if (process.stderr.isTTY && multiRendered) process.stderr.write(`\x1b[${lines.length}A`)
+    process.stderr.write(`${lines.map((line) => `\r\x1b[2K${line}\n`).join('')}`)
+    multiRendered = true
+  }
   const write = (completed: number, detail: string, final = false): void => {
     if (!enabled) return
+    if (style === 'multi') {
+      const skill = skills.find((candidate) => detail === candidate || detail.startsWith(`${candidate}:`))
+      if (skill) states.set(skill, final ? 'complete' : detail.replace(`${skill}:`, '').trim() || 'active')
+      if (final) for (const candidate of skills) if (states.get(candidate) === 'pending') states.set(candidate, 'complete')
+      renderMulti(final)
+      return
+    }
     process.stderr.write(
       `${process.stderr.isTTY ? '\r\x1b[2K' : ''}${progressLine(mode, completed, total, detail)}${final || !process.stderr.isTTY ? '\n' : ''}`
     )
@@ -304,7 +332,7 @@ const run = async (mode: CheckMode, argv: readonly string[]): Promise<number> =>
     }
   }
   const total = [...plans.values()].reduce((sum, value) => sum + value, 0)
-  const progress = createProgress(mode, options.progress, total)
+  const progress = createProgress(mode, options.progress, options.progressStyle, total, skills)
   const reports: AggregateReport[] = []
   let completed = 0
   for (const skill of skills) {
@@ -312,6 +340,7 @@ const run = async (mode: CheckMode, argv: readonly string[]): Promise<number> =>
     const planned = plans.get(skill) ?? 1
     progress.write(completed, skill)
     if (!governed) {
+      progress.write(Math.min(total, completed + planned), `${skill}: failed`)
       completed += planned
       continue
     }
@@ -324,9 +353,13 @@ const run = async (mode: CheckMode, argv: readonly string[]): Promise<number> =>
         })
       )
       reports.push({ skill, findings: result.findings, summary: result.summary })
-      if (result.exitCode !== 0) errors.push(`${skill}: checker reported failures`)
+      if (result.exitCode !== 0) {
+        errors.push(`${skill}: checker reported failures`)
+        progress.write(Math.min(total, completed + planned), `${skill}: failed`)
+      }
     } catch (error) {
       errors.push(`${skill}: ${error instanceof Error ? error.message : String(error)}`)
+      progress.write(Math.min(total, completed + planned), `${skill}: failed`)
     }
     completed += planned
   }
