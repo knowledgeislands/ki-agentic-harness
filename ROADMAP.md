@@ -6,9 +6,6 @@ This portfolio view is generated from the canonical theme roadmaps under `docs/r
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
-- [Foundation Tooling: Add scoped read-only bootstrap doctor operations](docs/roadmap/foundation-tooling/ROADMAP.md#add-scoped-read-only-bootstrap-doctor-operations)
-- [Foundation Tooling: Establish the Knowledge Islands command-line interface (CLI)](docs/roadmap/foundation-tooling/ROADMAP.md#establish-the-knowledge-islands-command-line-interface-cli)
-- [Foundation Tooling: Implement scoped lifecycle operations](docs/roadmap/foundation-tooling/ROADMAP.md#implement-scoped-lifecycle-operations)
 - [Foundation Tooling: Review structural consistency across shipped skills](docs/roadmap/foundation-tooling/ROADMAP.md#review-structural-consistency-across-shipped-skills)
 - [Runtime Portability: Detect vendor-specific assumptions in portable skill contracts](docs/roadmap/runtime-portability/ROADMAP.md#detect-vendor-specific-assumptions-in-portable-skill-contracts)
 
@@ -17,7 +14,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
 - [Foundation Tooling: Remove the legacy `preferred_model` migration bridge in `ki-tokenomics`](docs/roadmap/foundation-tooling/ROADMAP.md#remove-the-legacy-preferredmodel-migration-bridge-in-ki-tokenomics)
-- [Governance Consistency: Make decision-record metadata and filenames explicit](docs/roadmap/governance-consistency/ROADMAP.md#make-decision-record-metadata-and-filenames-explicit)
 - [Governance Consistency: Make the first decision record adopt Decision Records](docs/roadmap/governance-consistency/ROADMAP.md#make-the-first-decision-record-adopt-decision-records)
 
 ## Soon

@@ -29,33 +29,7 @@ Canonical themes, active execution plans, and completed plan records.
 
 ## Completed plans
 
-### [FND-016](foundation-tooling/plans/FND-016-implement-scoped-lifecycle-operations.md)
-
-- **Title:** Implement scoped lifecycle operations
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/implement-scoped-lifecycle-operations`
-- **Status:** done
-
-### [FND-017](foundation-tooling/plans/FND-017-add-scoped-read-only-bootstrap-doctor-operations.md)
-
-- **Title:** Add scoped read-only bootstrap doctor operations
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/add-scoped-read-only-bootstrap-doctor-operations`
-- **Status:** done
-
-### [FND-018](foundation-tooling/plans/FND-018-establish-knowledge-islands-command-line-interface.md)
-
-- **Title:** Establish the Knowledge Islands command-line interface (CLI)
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/establish-the-knowledge-islands-command-line-interface-cli`
-- **Status:** done
-
-### [GOV-001](governance-consistency/plans/GOV-001-make-decision-record-metadata-explicit.md)
-
-- **Title:** Make decision-record metadata and filenames explicit
-- **Theme:** `governance-consistency`
-- **Roadmap item:** `governance-consistency/make-decision-record-metadata-and-filenames-explicit`
-- **Status:** done
+No completed plans.
 
 ## Dependency graph
 

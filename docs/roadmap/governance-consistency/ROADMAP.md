@@ -12,12 +12,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Make decision-record metadata and filenames explicit
-
-Require every Decision Record to carry YAML frontmatter with its ID, title, date, maintenance status, human-readable record type, durable public type URL, and canonical machine decision type. Make the filename its uppercase ID followed by the slugified title, update the checker and authoring templates, and migrate existing records and every inbound link atomically. Preserve the living-record model: status describes document currency, not decision lifecycle.
-
-**Plan:** [GOV-001](plans/GOV-001-make-decision-record-metadata-explicit.md)
-
 ### Make the first decision record adopt Decision Records
 
 Extend `ki-decision-records` so the first decision record in a repository is always the record that adopts Decision Records. Define its required decision type, title, and index position; update the NEW guidance, exemplars, and audit rules so a new collection cannot begin with an unrelated decision. Preserve existing collections as migration cases rather than renumbering or rewriting their records automatically.
