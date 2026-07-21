@@ -338,6 +338,26 @@ function publishedPayload(namespace: string): { id: string; files: Map<string, B
   return undefined
 }
 
+/** Whether the complete dedicated KI hook namespace is still installer-owned. */
+export function isManagedClaudeHookNamespace(namespace: string): boolean {
+  try {
+    const before = snapshot(namespace)
+    const root = lstat(namespace)
+    if (!before || !root || root.isSymbolicLink() || !root.isDirectory() || permissions(root) !== 0o700) return false
+    const entries = readdirSync(namespace).sort()
+    if (!entries.includes('active.json') || !entries.includes('current')) return false
+    if (entries.some((name) => !['active.json', 'current'].includes(name) && !/^[a-f0-9]{64}$/.test(name))) return false
+    const active = publishedPayload(namespace)
+    if (!active || !currentSnapshot(namespace, active.files)) return false
+    const payloads = entries.filter((name) => /^[a-f0-9]{64}$/.test(name))
+    if (!payloads.length || payloads.some((id) => !storedPayload(join(namespace, id), id) && !storedPayload(join(namespace, id), id, 1)))
+      return false
+    return sameSnapshot(namespace, before)
+  } catch {
+    return false
+  }
+}
+
 function publishActive(namespace: string, id: string): void {
   const path = join(namespace, 'active.json')
   const existing = lstat(path)
@@ -583,9 +603,11 @@ function main(): number {
   return 0
 }
 
-try {
-  process.exit(main())
-} catch (error) {
-  console.error(`error: ${(error as Error).message}`)
-  process.exit(1)
+if (import.meta.main) {
+  try {
+    process.exit(main())
+  } catch (error) {
+    console.error(`error: ${(error as Error).message}`)
+    process.exit(1)
+  }
 }

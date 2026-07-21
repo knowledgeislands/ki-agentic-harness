@@ -28,7 +28,7 @@ import { homedir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const CORE_SKILLS = ['ki-bootstrap', 'ki-delegate', 'ki-next', 'ki-plan', 'ki-recap'] as const
+export const CORE_USER_SKILLS = ['ki-bootstrap', 'ki-delegate', 'ki-next', 'ki-plan', 'ki-recap'] as const
 const MARKER = '.ki-user-installed-skill.json'
 const SCHEMA = 1
 const SELF = fileURLToPath(import.meta.url)
@@ -96,7 +96,7 @@ function skillIndex(source: string): Map<string, string> {
   return index
 }
 
-function treeHash(path: string): string {
+function treeHash(path: string, allowLinks = true): string {
   const rows: string[] = []
   const walk = (current: string, prefix: string, ancestors = new Set<string>()): void => {
     const physical = realpathSync(current)
@@ -110,6 +110,7 @@ function treeHash(path: string): string {
       // Copying deliberately dereferences source links. Hash the resulting regular
       // payload shape too, so a harness source can link an internal shared module
       // without making the installed copy appear corrupt.
+      if (link.isSymbolicLink() && !allowLinks) throw new Error(`skill payload contains a symlink: ${absolute}`)
       const resolved = link.isSymbolicLink() ? realpathSync(absolute) : absolute
       const stat = link.isSymbolicLink() ? statSync(resolved) : link
       if (stat.isDirectory()) {
@@ -132,7 +133,7 @@ function markerMatches(destination: string, skill: string, sourceHash: string): 
       marker.skill === skill &&
       marker.source_hash === sourceHash &&
       typeof marker.integrity === 'string' &&
-      marker.integrity === treeHash(destination)
+      marker.integrity === treeHash(destination, false)
     )
   } catch {
     return false
@@ -143,6 +144,24 @@ function ownedSkill(destination: string, skill: string): boolean {
   try {
     const marker = JSON.parse(readFileSync(join(destination, MARKER), 'utf8')) as Record<string, unknown>
     return marker.schema === SCHEMA && marker.skill === skill
+  } catch {
+    return false
+  }
+}
+
+/** Whether a global skill directory remains exactly owned by the user installer. */
+export function isCurrentUserInstalledSkill(destination: string, skill: string): boolean {
+  if (!regularDirectory(destination)) return false
+  try {
+    const marker = JSON.parse(readFileSync(join(destination, MARKER), 'utf8')) as Record<string, unknown>
+    return (
+      marker.schema === SCHEMA &&
+      marker.skill === skill &&
+      typeof marker.source_hash === 'string' &&
+      /^[a-f0-9]{64}$/.test(marker.source_hash) &&
+      typeof marker.integrity === 'string' &&
+      marker.integrity === treeHash(destination, false)
+    )
   } catch {
     return false
   }
@@ -249,7 +268,7 @@ function main(): number {
   if (!regularDirectory(options.source)) throw new Error(`skills source must be a real directory: ${options.source}`)
   if (!regularDirectory(options.home)) throw new Error(`home must be a real directory: ${options.home}`)
   const index = skillIndex(options.source)
-  for (const skill of CORE_SKILLS) if (!index.has(skill)) throw new Error(`required global skill is missing from source: ${skill}`)
+  for (const skill of CORE_USER_SKILLS) if (!index.has(skill)) throw new Error(`required global skill is missing from source: ${skill}`)
   const runtimes = options.runtimes.length ? options.runtimes : detectedRuntimes(options.home)
   if (!runtimes.length) {
     throw new Error(`no supported runtime was detected below ${options.home}; pass --runtime claude-code or --runtime codex`)
@@ -257,15 +276,17 @@ function main(): number {
   let ok = true
   for (const runtime of runtimes) {
     const root = join(options.home, RUNTIME_SKILL_DIR[runtime])
-    for (const skill of CORE_SKILLS) ok = publishSkill(index.get(skill) as string, root, skill, options.dryRun) && ok
+    for (const skill of CORE_USER_SKILLS) ok = publishSkill(index.get(skill) as string, root, skill, options.dryRun) && ok
   }
   if (runtimes.includes('claude-code')) ok = installHooks(options) && ok
   return ok ? 0 : 1
 }
 
-try {
-  process.exit(main())
-} catch (error) {
-  console.error(`error: ${(error as Error).message}`)
-  process.exit(1)
+if (import.meta.main) {
+  try {
+    process.exit(main())
+  } catch (error) {
+    console.error(`error: ${(error as Error).message}`)
+    process.exit(1)
+  }
 }
