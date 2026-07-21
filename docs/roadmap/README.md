@@ -27,14 +27,6 @@ Canonical themes, active execution plans, and completed plan records.
 - **Status:** acceptance
 - **Blocks:** —
 
-### [FND-018](foundation-tooling/plans/FND-018-establish-knowledge-islands-command-line-interface.md)
-
-- **Title:** Establish the Knowledge Islands command-line interface (CLI)
-- **Theme:** `foundation-tooling`
-- **Roadmap item:** `foundation-tooling/establish-the-knowledge-islands-command-line-interface-cli`
-- **Status:** acceptance
-- **Blocks:** —
-
 ### [FND-019](foundation-tooling/plans/FND-019-review-shipped-skill-structural-consistency.md)
 
 - **Title:** Review structural consistency across shipped skills
@@ -53,7 +45,12 @@ Canonical themes, active execution plans, and completed plan records.
 
 ## Completed plans
 
-No completed plans.
+### [FND-018](foundation-tooling/plans/FND-018-establish-knowledge-islands-command-line-interface.md)
+
+- **Title:** Establish the Knowledge Islands command-line interface (CLI)
+- **Theme:** `foundation-tooling`
+- **Roadmap item:** `foundation-tooling/establish-the-knowledge-islands-command-line-interface-cli`
+- **Status:** done
 
 ## Dependency graph
 

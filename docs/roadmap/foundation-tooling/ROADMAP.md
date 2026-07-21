@@ -52,6 +52,10 @@ After the current boundary refactor settles, review the complete `ki-bootstrap` 
 
 Choose an owner for repository Git discipline, including Conventional Commit messages, the allowed type and scope vocabulary, safe lock and cleanup behaviour, and consistency with repository-local instructions. Decide whether that owner should be a dedicated `ki-git` skill, including ownership of the shipped stale Git-lock guard rather than leaving it as an ungoverned hook. Add mechanical enforcement only after the standard is settled.
 
+### Build and deepen the Knowledge Islands command-line interface (CLI)
+
+Turn the accepted `ki` command contract into a released, zero-dependency end-user CLI in `tools-ki`, with `homebrew-tap` delivery. First incorporate the remaining command-surface ideas into the contract and settle any changes with the owning harness lifecycle semantics; then implement, test, package, and document the installed command without duplicating repository-local or harness-maintainer entrypoints.
+
 ## Waiting for
 
 Worth doing, but presently blocked on an external dependency or decision. Revisit when its named condition changes rather than treating it as dormant local work.

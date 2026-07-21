@@ -1,7 +1,7 @@
 ---
 id: 'FND-018'
 title: Establish the Knowledge Islands command-line interface (CLI)
-status: acceptance
+status: done
 roadmap: foundation-tooling/establish-the-knowledge-islands-command-line-interface-cli
 blocks: —
 blocked-by: —
@@ -94,3 +94,7 @@ The Website must still publish and stability-test the public repository-operatio
 ### Mini recap
 
 The command name is a contract boundary, not a cosmetic label: its repository, formula, environment-variable namespace, help text, and roadmap locator must move together. The renamed handoff now gives a cold executor one consistent `ki` identity; no additional follow-up is proposed.
+
+## Done
+
+The `ki` CLI contract, implementation handoff, and release brief are complete and accepted as specification work. No executable CLI was created in this plan. Further command ideas and the actual `tools-ki` implementation are retained as a separate Foundation Tooling roadmap item.

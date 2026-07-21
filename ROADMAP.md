@@ -23,6 +23,7 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
+- [Foundation Tooling: Build and deepen the Knowledge Islands command-line interface (CLI)](docs/roadmap/foundation-tooling/ROADMAP.md#build-and-deepen-the-knowledge-islands-command-line-interface-cli)
 - [Foundation Tooling: Codify Git workflow and commit conventions _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#codify-git-workflow-and-commit-conventions-candidate)
 - [Foundation Tooling: Review `ki-bootstrap` for further simplification](docs/roadmap/foundation-tooling/ROADMAP.md#review-ki-bootstrap-for-further-simplification)
 - [Governance Consistency: Align KB Stream focus with non-KB roadmap horizons](docs/roadmap/governance-consistency/ROADMAP.md#align-kb-stream-focus-with-non-kb-roadmap-horizons)
