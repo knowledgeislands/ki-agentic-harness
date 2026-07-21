@@ -16,7 +16,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Unify governed entrypoints and in-process aggregate execution
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/add-safe-multiprogress-aggregate-execution`
-- **Status:** acceptance
+- **Status:** in-progress
 - **Blocks:** —
 
 ### [FND-016](foundation-tooling/plans/FND-016-implement-scoped-lifecycle-operations.md)
