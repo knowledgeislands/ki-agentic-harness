@@ -1,6 +1,7 @@
 ---
 name: ki-bootstrap
 ki-depends-on: [ki-repo]
+ki-runtime-binding: true
 ki-shared-modules: [educator]
 ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-skills:govern]
 description: >

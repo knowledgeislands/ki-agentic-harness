@@ -12,7 +12,7 @@ Split the argument on the first space to get **sub-command** and **rest**. The l
 - [`prune [theme]`](#prune-theme)
 - [`execute <THEME>-<NNN>`](#execute-theme-nnn)
 - [`new <theme> <title>`](#new-theme-title)
-- [`promote`](#promote)
+- [`promote`](#runtime-binding-promote)
 - [`status [theme]`](#status-theme)
 - [Mandate](#mandate)
 
@@ -78,7 +78,7 @@ Enter the host runtime's non-writing planning/review surface if it has one; othe
 5. Immediately recheck the audit baseline and id allocation, publish the absent destination with an exclusive create, and update the byte-unchanged selected theme roadmap without clobbering concurrent changes. Run the read-only audit again; on failure, roll back only transaction-owned bytes and a transaction-created empty `plans/` directory.
 6. Tell the user the plan is written; exit the host planning surface. Do **not** begin implementation — that is `execute`.
 
-## `promote`
+## Runtime binding: `promote`
 
 `promote` is deliberate and Claude-Code-only. It consumes the current session token already substituted into `SKILL.md` and the v1 state written by `hooks/plan-stamp.sh`; it never searches for a recent plan, trusts scratch frontmatter as provenance, or falls back to another session. The governed repository plan is the canonical result; the authenticated scratch plan remains an untouched draft source throughout.
 

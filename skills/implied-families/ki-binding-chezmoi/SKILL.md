@@ -1,5 +1,6 @@
 ---
 name: ki-binding-chezmoi
+ki-runtime-binding: true
 ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-bootstrap:educator, ki-skills:govern]
 ki-depends-on: [ki-binding, ki-dotfiles-chezmoi]
 description: >

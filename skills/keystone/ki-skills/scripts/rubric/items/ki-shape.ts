@@ -162,7 +162,7 @@ export const KI_SHAPE_10: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-10',
   title: 'skills do not assume private user configuration',
   description:
-    "_A skill must not assume personal `CLAUDE.md` content._ A Knowledge Islands skill is installed by any contributor, not only its author. It must not assume the user has any particular content in their personal `~/.claude/CLAUDE.md` (or imported topic files) — plan-mode gates, house style rules, footnote conventions, workflow preferences. Any behaviour a skill requires beyond what the open spec guarantees must be **anchored in always-loaded repo context** (`CLAUDE.md`, `AGENTS.md`, or a KI-SHAPE-7-style companion hook) — not in the author's private config. Where a skill cross-checks a convention that _might_ live in personal config, it must degrade gracefully rather than silently rely on that content being present.",
+    "_A skill must not assume personal runtime configuration._ A Knowledge Islands skill is installed by any contributor, not only its author. It must not assume the user has any particular private configuration or imported topic files — plan-mode gates, house style rules, footnote conventions, workflow preferences. Any behaviour a skill requires beyond what the open spec guarantees must be **anchored in always-loaded repo context** (`CLAUDE.md`, `AGENTS.md`, or a KI-SHAPE-7-style companion hook) — not in the author's private config. Where a skill cross-checks a convention that _might_ live in personal config, it must degrade gracefully rather than silently rely on that content being present.",
   sources: ['standards.md §14'],
   judgment: { prompt: 'Does the skill avoid assuming private personal configuration?' }
 }

@@ -29,7 +29,7 @@ Curated illustrations of well-formed `SKILL.md` files. Use these when writing a 
 
 ## Selected patterns
 
-### Well-formed frontmatter block
+### Runtime binding: well-formed frontmatter block
 
 The frontmatter of `ki-agents` shows the governance-skill contract plus the most important Claude Code extensions. `name` is all-lowercase with hyphens, matches the directory name exactly, and carries no generic words like `helper` or `utils`. `ki-depends-on: []` makes an intentionally standalone skill explicit. `description` is written in the third person ("Audit, review, and write…" — never "Can audit…"), names concrete trigger phrases, and ends with off-ramp declarations so the skill does not silently absorb adjacent work. `argument-hint` lists the discrete modes a user can pass at the `/` prompt.
 

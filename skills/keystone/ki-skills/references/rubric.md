@@ -19,6 +19,7 @@ Line-by-line criteria for auditing ki-skills. Classifications are derived from i
 - [SCRIPT — Scripts & executable code](#script--scripts--executable-code)
 - [KI-CHECKER — Knowledge Islands checker contract](#ki-checker--knowledge-islands-checker-contract)
 - [KI-LINK — Knowledge Islands linking & portability](#ki-link--knowledge-islands-linking--portability)
+- [PORT — Runtime portability](#port--runtime-portability)
 - [KI-SHAPE — Knowledge Islands skill shape](#ki-shape--knowledge-islands-skill-shape)
 - [KI-INVOKE — Invocation protocol](#ki-invoke--invocation-protocol)
 - [PROC — Process / meta](#proc--process--meta)
@@ -110,7 +111,7 @@ The progressive-disclosure budget for a skill body.
 
 - **SIZE-1 [M] — body is under 500 lines** — `SKILL.md` body is under **500 lines**. (SPEC, BP, CC)
 - **SIZE-2 [M] — body stays below approximately 5,000 tokens** — Body instructions stay under **~5,000 tokens**. (SPEC)
-- **SIZE-3 [J] — body omits knowledge the agent already has** — No token spent on what a competent Claude already knows. (BP)
+- **SIZE-3 [J] — body omits knowledge the agent already has** — No token spent on what a competent agent already knows. (BP)
   - _Review prompt:_ Does the body avoid spending tokens on knowledge a competent agent already has?
 - **SIZE-4 [J] — body is an overview that routes to detail** — `SKILL.md` reads as an **overview that routes to detail**, not all detail inlined. (BP, SPEC, CC)
   - _Review prompt:_ Does the body work as an overview that routes rarely used detail into supporting files?
@@ -161,7 +162,7 @@ The quality and usability of the skill instructions.
 
 The quality and autonomy of executable skill support.
 
-- **SCRIPT-1 [J] — scripts handle expected errors** — Scripts handle expected errors (missing file, permissions) rather than punt to Claude. (BP)
+- **SCRIPT-1 [J] — scripts handle expected errors** — Scripts handle expected errors (missing file, permissions) rather than punt to the agent. (BP)
   - _Review prompt:_ Do scripts handle expected errors rather than punting them to an agent?
 - **SCRIPT-2 [J] — scripts explain configuration values** — No unexplained magic numbers — every config value is justified. (BP)
   - _Review prompt:_ Are configuration values justified rather than unexplained magic numbers?
@@ -204,6 +205,14 @@ Knowledge Islands link and toolchain portability.
 - **KI-LINK-4 [J] — the house toolchain passes** — The house toolchain passes: Biome (TS/JSON), Prettier + markdownlint-cli2 (markdown). (ki-agentic-harness README)
   - _Review prompt:_ Does the repository pass its configured Biome, Prettier, and markdownlint toolchain?
 
+## PORT — Runtime portability
+
+→ [standard](standards.md#16-runtime-portability)
+
+Portable contracts make runtime-specific boundaries explicit.
+
+- **PORT-1 [M] — portable contracts make runtime assumptions explicit** — Portable guidance has no unqualified vendor, runtime, or runtime-home reference. Declare a dedicated runtime-binding skill, use a `Runtime binding` section, attribute source material, or compare multiple runtimes explicitly. (KI)
+
 ## KI-SHAPE — Knowledge Islands skill shape
 
 → [standard](standards.md#14-knowledge-islands-skill-shape)
@@ -228,7 +237,7 @@ The common shape of a Knowledge Islands governance skill.
   - _Review prompt:_ Does the checker fully follow the canonical checker and response contracts beyond the mechanical checks?
 - **KI-SHAPE-9 [M-heuristic + J] — mechanical work belongs in the checker** — _Mechanical work belongs in the checker, not in tokens._ A criterion a script can decide deterministically — no judgment, no AI benefit — is tagged **[M]** and **implemented in the checker**; a **[J]** tag is earned by the judgment a criterion genuinely needs, never by "no checker written yet". The reader's context is spent only on the **[J]** items, so a mechanical criterion left to prose, or a **[J]** the checker already decides, is drift — it **moves into the checker and flips to [M]**. The linter surfaces the mechanical heuristic — a rubric carrying **[M]** criteria but shipping no `scripts/` checker (nor a documented toolchain delegation to a skill-scoped audit) — as a WARN; the **[J]** gate is whether each remaining **[J]** genuinely needs a reader rather than a script. ([Rubric authoring](rubric-authoring.md))
   - _Review prompt:_ Do remaining judgment criteria genuinely require review rather than deterministic checking?
-- **KI-SHAPE-10 [J] — skills do not assume private user configuration** — _A skill must not assume personal `CLAUDE.md` content._ A Knowledge Islands skill is installed by any contributor, not only its author. It must not assume the user has any particular content in their personal `~/.claude/CLAUDE.md` (or imported topic files) — plan-mode gates, house style rules, footnote conventions, workflow preferences. Any behaviour a skill requires beyond what the open spec guarantees must be **anchored in always-loaded repo context** (`CLAUDE.md`, `AGENTS.md`, or a KI-SHAPE-7-style companion hook) — not in the author's private config. Where a skill cross-checks a convention that _might_ live in personal config, it must degrade gracefully rather than silently rely on that content being present. (standards.md §14)
+- **KI-SHAPE-10 [J] — skills do not assume private user configuration** — _A skill must not assume personal runtime configuration._ A Knowledge Islands skill is installed by any contributor, not only its author. It must not assume the user has any particular private configuration or imported topic files — plan-mode gates, house style rules, footnote conventions, workflow preferences. Any behaviour a skill requires beyond what the open spec guarantees must be **anchored in always-loaded repo context** (`CLAUDE.md`, `AGENTS.md`, or a KI-SHAPE-7-style companion hook) — not in the author's private config. Where a skill cross-checks a convention that _might_ live in personal config, it must degrade gracefully rather than silently rely on that content being present. (standards.md §14)
   - _Review prompt:_ Does the skill avoid assuming private personal configuration?
 - **KI-SHAPE-11 [M] — governance skills expose HELP** — _Exposes the universal HELP mode._ Every governance skill's `argument-hint` lists a `help` verb, so the no-mode default and the `help` / `-h` / `?` pure-explain form are discoverable (ADR-KI-HARNESS-SKILLS-001). The HELP block itself is **generated, not authored** — the shared renderer (`skills/keystone/ki-bootstrap/scripts/skill-help.ts`, surfaced as `ki:skills:help <name>`) reads what the `SKILL.md` already declares and injects HELP into every skill's mode list — so a skill's only footprint is this one token plus the KI-INVOKE-1 prose. The linter verifies the `help` token; the prose HELP semantics are KI-INVOKE-1 **[J]**. (ADR-KI-HARNESS-SKILLS-001)
 - **KI-SHAPE-12 [M] — governance mode vocabulary is canonical and complete** — _Mode vocabulary is canonical and complete._ A governance skill exposes **AUDIT**, **CONFORM**, **EDUCATE**, **REFRESH** and **HELP** spelled exactly so — a governance skill missing any universal verb from its `argument-hint` (EDUCATE is the common gap) **WARNs**; `NEW`, `OPTIMISE`, and operational verbs are additive, never substitutes for a universal mode (a collection skill exposes both EDUCATE and NEW). The bootstrap leg is defined by the single `scripts/govern.ts` entrypoint, validated by KI-SHAPE-15. Process skills are exempt throughout. (ADR-KI-HARNESS-SKILLS-001, ADR-KI-HARNESS-SKILLS-006, ADR-KI-HARNESS-007)

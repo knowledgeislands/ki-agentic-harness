@@ -51,7 +51,7 @@ export const SIZE_2: RubricItem<SizeRubricContext> = {
 export const SIZE_3: RubricItem<SizeRubricContext> = {
   code: 'SIZE-3',
   title: 'body omits knowledge the agent already has',
-  description: 'No token spent on what a competent Claude already knows.',
+  description: 'No token spent on what a competent agent already knows.',
   sources: ['BP'],
   judgment: { prompt: 'Does the body avoid spending tokens on knowledge a competent agent already has?' }
 }

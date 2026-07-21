@@ -1,7 +1,7 @@
 ---
 id: 'RTP-001'
 title: Detect vendor-specific assumptions in portable skill contracts
-status: ready
+status: in-progress
 roadmap: runtime-portability/detect-vendor-specific-assumptions-in-portable-skill-contracts
 blocks: —
 blocked-by: —
@@ -21,11 +21,11 @@ Runtime-specific material is legitimate in dedicated binding skills, explicitly 
 
 ## Steps
 
-1. Define the portable-contract boundary, prohibited unqualified vendor/runtime assumptions, and the narrow structural exceptions for runtime-binding responsibility, attribution, and intentional comparisons.
-2. Add a named `ki-skills` rubric criterion and checker implementation that reports actionable locations without treating the exception cases as accidental drift.
-3. Add focused fixtures for prohibited language, each exception class, mixed portable/runtime-specific skills, and stable diagnostic output.
-4. Apply the criterion across shipped portable contracts and rewrite every genuine finding in runtime-neutral terms rather than retaining an accidental-wording allowlist.
-5. Re-vendor any coverage-scoped checker changes, regenerate affected derived documentation, and run the serial repository gates.
+1. ✓ Define the portable-contract boundary, prohibited unqualified vendor/runtime assumptions, and the narrow structural exceptions for runtime-binding responsibility, attribution, and intentional comparisons.
+2. ✓ Add a named `ki-skills` rubric criterion and checker implementation that reports actionable locations without treating the exception cases as accidental drift.
+3. ✓ Add focused fixtures for prohibited language, each exception class, mixed portable/runtime-specific skills, and stable diagnostic output.
+4. ✓ Apply the criterion across shipped portable contracts and rewrite every genuine finding in runtime-neutral terms rather than retaining an accidental-wording allowlist.
+5. ✓ Re-vendor any coverage-scoped checker changes, regenerate affected derived documentation, and run the serial repository gates.
 
 ## Files touched
 

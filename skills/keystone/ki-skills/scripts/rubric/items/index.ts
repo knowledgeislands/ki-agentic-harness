@@ -12,6 +12,7 @@ import { LAYOUT } from './layout.ts'
 import { LONGEVITY } from './longevity.ts'
 import { NAME } from './name.ts'
 import { OPTIONAL } from './optional.ts'
+import { PORTABILITY } from './portability.ts'
 import { PROCESS } from './process.ts'
 import { REFERENCES } from './references.ts'
 import { SCRIPTS } from './scripts.ts'
@@ -105,6 +106,14 @@ const RUBRIC_FAMILIES = [
     standard: 'standards.md#13-knowledge-islands-linking--portability',
     selectContext: (context: KiSkillsRubricContext) => context.link,
     items: KI_LINK
+  }),
+  defineRubricFamily({
+    code: 'PORT',
+    title: 'Runtime portability',
+    description: 'Portable contracts make runtime-specific boundaries explicit.',
+    standard: 'standards.md#16-runtime-portability',
+    selectContext: (context: KiSkillsRubricContext) => context.portability,
+    items: PORTABILITY
   }),
   defineRubricFamily({
     code: 'KI-SHAPE',

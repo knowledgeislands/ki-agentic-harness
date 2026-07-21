@@ -27,11 +27,11 @@ tags:
   - card/note
   - topic/knowledge-islands
 status: draft - May 2026
-author: Written with Claude
+author: AI-assisted
 ---
 ```
 
-Key points: `tags` is a YAML list, never an inline string; the `status` field uses a freeform date suffix so the age of a status assessment is visible without opening the note body; `author` distinguishes human-authored, AI-authored, and collaborative notes (`Written with Claude` / `Manual` / `Mixed`).
+Key points: `tags` is a YAML list, never an inline string; the `status` field uses a freeform date suffix so the age of a status assessment is visible without opening the note body; `author` distinguishes human-authored, AI-authored, and collaborative notes (`AI-assisted` / `Manual` / `Mixed`).
 
 ### Folder-note structure (zone root)
 

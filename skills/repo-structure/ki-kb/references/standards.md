@@ -20,7 +20,7 @@ The authoritative definition of frontmatter fields for all notes in a Knowledge 
 | `created`  | Optional            | Timestamp set once on creation; never changed                                                                      |
 | `status`   | Type-specific       | Set by the note's `type` where it has a lifecycle/state, not universal†                                            |
 | `tags`     | Optional            | Topical / temporal / source labels (`topic/*`, `date/*`, `source/*`) — retained, but never the **kind** classifier |
-| `author`   | Recommended         | `Written with Claude` / `Manual` / `Mixed`                                                                         |
+| `author`   | Recommended         | `AI-assisted` / `Manual` / `Mixed`                                                                                 |
 
 † For example, `ki-kb-activities` uses `active` / `inactive`.
 

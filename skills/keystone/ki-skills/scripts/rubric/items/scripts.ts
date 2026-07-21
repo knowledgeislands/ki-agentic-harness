@@ -4,7 +4,7 @@ import type { ScriptsRubricContext } from '../contexts/contexts.ts'
 export const SCRIPT_1: RubricItem<ScriptsRubricContext> = {
   code: 'SCRIPT-1',
   title: 'scripts handle expected errors',
-  description: 'Scripts handle expected errors (missing file, permissions) rather than punt to Claude.',
+  description: 'Scripts handle expected errors (missing file, permissions) rather than punt to the agent.',
   sources: ['BP'],
   judgment: { prompt: 'Do scripts handle expected errors rather than punting them to an agent?' }
 }

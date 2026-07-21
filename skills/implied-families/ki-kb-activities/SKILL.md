@@ -33,13 +33,13 @@ The `tags` and `date` fields follow the base's general frontmatter standard (gov
 
 The `realization` field declares how this activity runs. Known types:
 
-| Value            | Meaning                                                                                            |
-| ---------------- | -------------------------------------------------------------------------------------------------- |
-| `slash-command`  | A Claude Code skill (SKILL.md). The skill name must be declared in `skill` (see below).            |
-| `scheduled-task` | A Cowork or other external scheduled job. The job name is declared in `schedule_name` (see below). |
-| `conversational` | A recurring conversational pattern — no external artefact, invoked by the user.                    |
-| `manual`         | A human-run process — documented here for completeness.                                            |
-| `workflow`       | A multi-step automated workflow (Workflow script or equivalent).                                   |
+| Value            | Meaning                                                                                      |
+| ---------------- | -------------------------------------------------------------------------------------------- |
+| `slash-command`  | A declared runtime skill (SKILL.md). The skill name must be declared in `skill` (see below). |
+| `scheduled-task` | An external scheduled job. The job name is declared in `schedule_name` (see below).          |
+| `conversational` | A recurring conversational pattern — no external artefact, invoked by the user.              |
+| `manual`         | A human-run process — documented here for completeness.                                      |
+| `workflow`       | A multi-step automated workflow (Workflow script or equivalent).                             |
 
 Additional realization types may be declared freely — the audit reports unrecognised values as non-blocking `INFO`, so the system extends to new environments without requiring a skill update.
 

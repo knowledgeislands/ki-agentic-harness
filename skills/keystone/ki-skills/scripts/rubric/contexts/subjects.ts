@@ -16,6 +16,7 @@ export type KiSkillsSubjectScope =
   | 'skill'
   | 'markdown'
   | 'reference'
+  | 'portability'
   | 'longevity'
   | 'collision'
   | 'ownership'
@@ -40,6 +41,7 @@ export const KI_SKILLS_SUBJECT_FAMILIES = {
   skill: ['LAY', 'FM', 'NAME', 'DESC', 'OPT', 'SIZE', 'BODY', 'SCRIPT', 'KI-CHECKER', 'KI-SHAPE', 'KI-INVOKE', 'PROC'],
   markdown: ['LAY', 'KI-LINK'],
   reference: ['LAY', 'KI-LINK', 'REF'],
+  portability: ['PORT'],
   longevity: ['LONG'],
   collision: ['COLL'],
   ownership: ['KI-SHAPE'],
@@ -147,6 +149,8 @@ export const createKiSkillsSubjects = ({
     if (conform) persist.push(conform.persist)
     if (!skill.validFrontmatter) continue
 
+    const runtimeBinding = parseFrontmatter(readFileSync(join(skillDirectory, 'SKILL.md'), 'utf8')).values['ki-runtime-binding'] === true
+
     for (const file of listMarkdownFiles(skillDirectory)) {
       const document =
         mode === 'conform'
@@ -156,6 +160,20 @@ export const createKiSkillsSubjects = ({
           : undefined
       if (document && document !== conform?.document) persist.push(document.persist)
       subjects.push(markdownSubject({ file, mode, reportTarget, skillDirectory, document }))
+      const subject = relative(reportTarget, file)
+      subjects.push({
+        scope: 'portability',
+        subject,
+        context: () =>
+          createKiSkillsRubricContext({
+            portability: {
+              markdown: document?.read() ?? readFileSync(file, 'utf8'),
+              subject,
+              runtimeBinding,
+              attributedSourceMaterial: basename(file) === 'sources.md'
+            }
+          })
+      })
     }
 
     const sourcesPath = join(skillDirectory, 'references', 'sources.md')

@@ -70,6 +70,13 @@ export type KiLinkRubricContext = {
   relativeTargetExists: (target: string) => boolean
 }
 
+export type PortabilityRubricContext = {
+  markdown: string
+  subject: string
+  runtimeBinding: boolean
+  attributedSourceMaterial: boolean
+}
+
 type CheckerImport = {
   entry: string
   specifier: string
@@ -230,6 +237,7 @@ export type KiSkillsRubricContext = {
   scripts: ScriptsRubricContext
   checker: KiCheckerRubricContext
   link: KiLinkRubricContext
+  portability: PortabilityRubricContext
   shape: KiShapeRubricContext
   collision: CollisionRubricContext
   longevity: LongevityRubricContext
@@ -272,6 +280,7 @@ export const createKiSkillsRubricContext = (overrides: Partial<KiSkillsRubricCon
     familyModules: []
   },
   link: { markdown: '', relativeTargetExists: () => true },
+  portability: { markdown: '', subject: '', runtimeBinding: false, attributedSourceMaterial: false },
   shape: createKiShapeContext({ skill: null }),
   collision: { targets: [] },
   longevity: createRefreshContext(null),
