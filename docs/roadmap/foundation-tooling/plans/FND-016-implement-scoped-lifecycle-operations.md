@@ -1,7 +1,7 @@
 ---
 id: 'FND-016'
 title: Implement scoped lifecycle operations
-status: acceptance
+status: done
 roadmap: foundation-tooling/implement-scoped-lifecycle-operations
 blocks: —
 blocked-by: —
@@ -83,3 +83,7 @@ None for the scoped CLEAN and UNINSTALL contract. The two existing KI-SHAPE-7 ad
 ### Mini recap
 
 Deletion safety needs proof both before selection and immediately before removal: a valid marker alone is insufficient when parents can be links or directories can change. This finding is captured in the implementation and tests; no additional roadmap item is proposed.
+
+## Done
+
+The scoped CLEAN and UNINSTALL lifecycle contract is complete and accepted. No residual safety concern remains; FND-017's completed read-only DOCTOR capability and the separately planned `ki` implementation build on this foundation.

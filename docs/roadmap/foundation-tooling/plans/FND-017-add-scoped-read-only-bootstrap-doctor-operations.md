@@ -1,7 +1,7 @@
 ---
 id: 'FND-017'
 title: Add scoped read-only bootstrap doctor operations
-status: acceptance
+status: done
 roadmap: foundation-tooling/add-scoped-read-only-bootstrap-doctor-operations
 blocks: —
 blocked-by: —
@@ -81,3 +81,7 @@ The source and temporary-source launchers are available now. A stable public Web
 ### Mini recap
 
 Read-only diagnostics must enforce the same physical boundary as destructive operations: merely avoiding writes is not sufficient if a classifier follows a symlink outside the declared scope. The regression fixture now preserves that invariant; no new follow-up is proposed.
+
+## Done
+
+The source-owned, explicit-scope DOCTOR contract is complete and accepted. The absent public Website launcher remains external delivery work and does not block the diagnostic implementation.

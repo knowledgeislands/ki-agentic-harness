@@ -1,7 +1,7 @@
 ---
 id: 'GOV-001'
 title: Make decision-record metadata and filenames explicit
-status: acceptance
+status: done
 roadmap: governance-consistency/make-decision-record-metadata-and-filenames-explicit
 blocks: —
 blocked-by: —
@@ -63,3 +63,7 @@ None. The public specification URLs are intentionally introduced before their co
 ### Mini recap
 
 Separating `id` and `title` makes each value directly discoverable while keeping readable filenames. The uppercase ID is an identity boundary, and only the independent title component is slugified; this avoids encoding presentation details into the identifier and makes case-safe migrations explicit.
+
+## Done
+
+The universal Decision Records metadata and canonical ID-plus-title-slug filename contract is complete and accepted. The public type URLs can be published later without another record migration.
