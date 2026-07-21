@@ -341,53 +341,6 @@ function projection(items: Item[]): string {
   return `${lines.join('\n').trimEnd()}\n`
 }
 
-function planIndex(themes: string[], plans: Plan[]): string {
-  const lines = [
-    '# Repository roadmap index',
-    '',
-    'Canonical themes, active execution plans, and completed plan records.',
-    '',
-    '## Themes',
-    ''
-  ]
-  for (const theme of themes) lines.push(`- [${theme}](${theme}/ROADMAP.md)`)
-  lines.push('', '## Active plans', '')
-  const active = plans.filter((plan) => plan.fm.status !== 'done')
-  const completed = plans.filter((plan) => plan.fm.status === 'done')
-  for (const plan of [...active].sort((a, b) => planRef(a).localeCompare(planRef(b)))) {
-    const blockers = plan.blockedBy.filter((reference) => plans.find((candidate) => planRef(candidate) === reference)?.fm.status !== 'done')
-    const status = blockers.length ? `${plan.fm.status} (needs ${blockers.join('+')})` : plan.fm.status
-    lines.push(
-      `### [${planRef(plan)}](${plan.theme}/plans/${plan.name})`,
-      '',
-      `- **Title:** ${plan.fm.title}`,
-      `- **Theme:** \`${plan.theme}\``,
-      `- **Roadmap item:** \`${plan.fm.roadmap}\``,
-      `- **Status:** ${status}`,
-      `- **Blocks:** ${plan.fm.blocks || '—'}`,
-      ''
-    )
-  }
-  if (!active.length) lines.push('No active plans.', '')
-  lines.push('## Completed plans', '')
-  for (const plan of [...completed].sort((a, b) => planRef(a).localeCompare(planRef(b)))) {
-    lines.push(
-      `### [${planRef(plan)}](${plan.theme}/plans/${plan.name})`,
-      '',
-      `- **Title:** ${plan.fm.title}`,
-      `- **Theme:** \`${plan.theme}\``,
-      `- **Roadmap item:** \`${plan.fm.roadmap}\``,
-      '- **Status:** done',
-      ''
-    )
-  }
-  if (!completed.length) lines.push('No completed plans.', '')
-  lines.push('## Dependency graph', '', '```text')
-  const edges = plans.flatMap((plan) => plan.blocks.map((blocked) => `${planRef(plan)} ──► ${blocked}`)).sort()
-  lines.push(...(edges.length ? edges : ['No dependencies.']), '```', '')
-  return lines.join('\n')
-}
-
 function discoverThematic(): { themes: string[]; items: Item[]; plans: Plan[] } {
   const roadmapDir = join(root, 'docs', 'roadmap')
   const themes: string[] = []
@@ -396,12 +349,11 @@ function discoverThematic(): { themes: string[]; items: Item[]; plans: Plan[] } 
   const codes = new Map<string, string>()
   const entries = readdirSync(roadmapDir, { withFileTypes: true })
   for (const entry of entries) {
-    if (entry.name === 'README.md') continue
     if (!entry.isDirectory()) {
       add(
         'FAIL',
         'THEME-1',
-        'only README.md and theme directories belong directly under docs/roadmap',
+        'only theme directories belong directly under docs/roadmap; remove the legacy README.md index',
         STANDARD_REF,
         `docs/roadmap/${entry.name}`
       )
@@ -427,8 +379,7 @@ function discoverThematic(): { themes: string[]; items: Item[]; plans: Plan[] } 
       else codes.set(code, displayRoadmap)
     }
     const themeItems = parseRoadmap(roadmap, displayRoadmap, theme)
-    if (!themeItems.length)
-      add('FAIL', 'THEME-3', 'empty theme roadmap must be pruned; retain only docs/roadmap/README.md', STANDARD_REF, displayRoadmap)
+    if (!themeItems.length) add('FAIL', 'THEME-3', 'empty theme roadmap must be pruned', STANDARD_REF, displayRoadmap)
     items.push(...themeItems)
     const allowed = new Set(['ROADMAP.md', 'plans'])
     for (const child of readdirSync(themeRoot)) {
@@ -694,12 +645,6 @@ export const inspectRoadmap = (target: string): Finding[] => {
         add('FAIL', 'SAFE-1', 'generated portfolio must not be a symlink', STANDARD_REF, 'ROADMAP.md')
       } else if (!existsSync(rootRoadmap) || readFileSync(rootRoadmap, 'utf8') !== projection(items)) {
         add('FAIL', 'PROJ-1', 'generated portfolio is missing or drifted; run CONFORM', STANDARD_REF, 'ROADMAP.md')
-      }
-      const readme = join(thematicDir, 'README.md')
-      if (existsSync(readme) && lstatSync(readme).isSymbolicLink()) {
-        add('FAIL', 'SAFE-1', 'generated index must not be a symlink', STANDARD_REF, 'docs/roadmap/README.md')
-      } else if (!existsSync(readme) || readFileSync(readme, 'utf8') !== planIndex(themes, plans)) {
-        add('FAIL', 'INDEX-1', 'generated theme/plan index is missing or drifted; run CONFORM', STANDARD_REF, 'docs/roadmap/README.md')
       }
       add(
         'INFO',

@@ -13,7 +13,6 @@
 - [ITEM — items](#item--items)
 - [PROJ — portfolio projection](#proj--portfolio-projection)
 - [PLAN — plans](#plan--plans)
-- [INDEX — index](#index--index)
 - [SAFE — safe mechanics](#safe--safe-mechanics)
 - [EXPAND — expansion](#expand--expansion)
 
@@ -91,14 +90,6 @@ Plan identity, linkage, and dependencies.
   - _Review prompt:_ Review active plan content for concrete, checkable execution detail.
 - **PLAN-5 [J] — honest plan status** — Open awaits readiness approval; ready awaits execution; in-progress reflects live work; acceptance awaits explicit user acceptance; done is a retained closure record. (standards.md)
   - _Review prompt:_ Review whether the plan status honestly reflects its lifecycle gate or retained completion record.
-
-## INDEX — index
-
-→ [standard](standards.md)
-
-Generated thematic index.
-
-- **INDEX-1 [M] — thematic index projection** — `docs/roadmap/README.md` exactly matches the generated theme index, list-based active-plan sections, and dependency graph. (standards.md)
 
 ## SAFE — safe mechanics
 

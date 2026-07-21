@@ -42,7 +42,6 @@ let findings: Finding[] = []
 let root = ''
 let roadmapDir = ''
 let rootRoadmap = ''
-let readme = ''
 
 function isKb(): boolean {
   const config = join(root, '.ki-config.toml')
@@ -114,8 +113,6 @@ const ids = (value: string | undefined): string[] =>
         .split(',')
         .map((part) => part.trim())
         .filter(Boolean)
-
-const planRef = (plan: Pick<Plan, 'id'>): string => plan.id
 
 function discover(excludedThemes = new Set<string>()): { themes: string[]; items: Item[]; plans: Plan[] } {
   const themes = readdirSync(roadmapDir, { withFileTypes: true })
@@ -249,53 +246,6 @@ function isDerivablePlanReferenceFailure(finding: Finding): boolean {
   )
 }
 
-function index(themes: string[], plans: Plan[]): string {
-  const lines = [
-    '# Repository roadmap index',
-    '',
-    'Canonical themes, active execution plans, and completed plan records.',
-    '',
-    '## Themes',
-    ''
-  ]
-  for (const theme of themes) lines.push(`- [${theme}](${theme}/ROADMAP.md)`)
-  lines.push('', '## Active plans', '')
-  const active = plans.filter((plan) => plan.fm.status !== 'done')
-  const completed = plans.filter((plan) => plan.fm.status === 'done')
-  for (const plan of [...active].sort((a, b) => planRef(a).localeCompare(planRef(b)))) {
-    const blockers = plan.blockedBy.filter((reference) => plans.find((candidate) => planRef(candidate) === reference)?.fm.status !== 'done')
-    const status = blockers.length ? `${plan.fm.status} (needs ${blockers.join('+')})` : plan.fm.status
-    lines.push(
-      `### [${planRef(plan)}](${plan.theme}/plans/${plan.name})`,
-      '',
-      `- **Title:** ${plan.fm.title}`,
-      `- **Theme:** \`${plan.theme}\``,
-      `- **Roadmap item:** \`${plan.fm.roadmap}\``,
-      `- **Status:** ${status}`,
-      `- **Blocks:** ${plan.fm.blocks || '—'}`,
-      ''
-    )
-  }
-  if (!active.length) lines.push('No active plans.', '')
-  lines.push('## Completed plans', '')
-  for (const plan of [...completed].sort((a, b) => planRef(a).localeCompare(planRef(b)))) {
-    lines.push(
-      `### [${planRef(plan)}](${plan.theme}/plans/${plan.name})`,
-      '',
-      `- **Title:** ${plan.fm.title}`,
-      `- **Theme:** \`${plan.theme}\``,
-      `- **Roadmap item:** \`${plan.fm.roadmap}\``,
-      '- **Status:** done',
-      ''
-    )
-  }
-  if (!completed.length) lines.push('No completed plans.', '')
-  lines.push('## Dependency graph', '', '```text')
-  const edges = plans.flatMap((plan) => plan.blocks.map((blocked) => `${planRef(plan)} ──► ${blocked}`)).sort()
-  lines.push(...(edges.length ? edges : ['No dependencies.']), '```', '')
-  return lines.join('\n')
-}
-
 type PrunableTheme = { theme: string; original: string; hasPlans: boolean }
 type StagedTheme = PrunableTheme & { staged: string }
 
@@ -416,7 +366,6 @@ export const conformRoadmap = (target: string, dryRun: boolean): Finding[] => {
   root = resolve(target)
   roadmapDir = join(root, 'docs', 'roadmap')
   rootRoadmap = join(root, 'ROADMAP.md')
-  readme = join(roadmapDir, 'README.md')
   findings = []
   try {
     if (!existsSync(root) || !lstatSync(root).isDirectory()) {
@@ -435,9 +384,7 @@ export const conformRoadmap = (target: string, dryRun: boolean): Finding[] => {
     const auditResults = inspectRoadmap(root)
     const nonDerivable = auditResults.filter(
       (finding) =>
-        finding.level === 'FAIL' &&
-        !['PROJ-1', 'INDEX-1', 'ROAD-4', 'THEME-3'].includes(finding.area) &&
-        !isDerivablePlanReferenceFailure(finding)
+        finding.level === 'FAIL' && !['PROJ-1', 'ROAD-4', 'THEME-3'].includes(finding.area) && !isDerivablePlanReferenceFailure(finding)
     )
     if (nonDerivable.length) {
       findings.push(...nonDerivable)
@@ -480,7 +427,7 @@ export const conformRoadmap = (target: string, dryRun: boolean): Finding[] => {
       }
       emit()
     }
-    if (rejectUnsafe(rootRoadmap, 'ROADMAP.md') || rejectUnsafe(readme, 'docs/roadmap/README.md')) emit()
+    if (rejectUnsafe(rootRoadmap, 'ROADMAP.md')) emit()
 
     const prunable = prunableThemes()
     const emptyThemeFiles = new Set(
@@ -511,8 +458,7 @@ export const conformRoadmap = (target: string, dryRun: boolean): Finding[] => {
         emit()
       }
       const postPruneFailures = postAuditResults.filter(
-        (finding) =>
-          finding.level === 'FAIL' && !['PROJ-1', 'INDEX-1', 'ROAD-4'].includes(finding.area) && !isDerivablePlanReferenceFailure(finding)
+        (finding) => finding.level === 'FAIL' && !['PROJ-1', 'ROAD-4'].includes(finding.area) && !isDerivablePlanReferenceFailure(finding)
       )
       if (postPruneFailures.length) {
         const conflicts = restoreStagedThemes(stagedThemes)
@@ -545,11 +491,7 @@ export const conformRoadmap = (target: string, dryRun: boolean): Finding[] => {
       }
     })
     if (authoredOutputs.some((output) => rejectUnsafe(output.path, output.display))) emit()
-    const outputs = [
-      ...authoredOutputs,
-      { path: rootRoadmap, display: 'ROADMAP.md', areas: ['PROJ-1'], content: projection(items) },
-      { path: readme, display: 'docs/roadmap/README.md', areas: ['INDEX-1'], content: index(themes, plans) }
-    ]
+    const outputs = [...authoredOutputs, { path: rootRoadmap, display: 'ROADMAP.md', areas: ['PROJ-1'], content: projection(items) }]
     const snapshots = new Map(outputs.map((output) => [output.path, outputBytes(output.path)]))
     const written: typeof outputs = []
     try {

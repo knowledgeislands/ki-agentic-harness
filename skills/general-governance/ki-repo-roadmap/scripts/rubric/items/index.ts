@@ -1,7 +1,6 @@
 import { defineRubricFamily, type RubricDefinition } from '../../vendored/ki-skills/rubric.ts'
 import type { RoadmapContext } from '../contexts/roadmap.ts'
 import { EXPAND } from './expand.ts'
-import { INDEX } from './indexes.ts'
 import { ITEM } from './item.ts'
 import { PLAN } from './plans.ts'
 import { PROFILE } from './profile.ts'
@@ -72,14 +71,6 @@ export const KI_REPO_ROADMAP_RUBRIC: RubricDefinition<RoadmapContext> = {
       standard: 'plan-format.md',
       selectContext: context,
       items: PLAN
-    }),
-    defineRubricFamily({
-      code: 'INDEX',
-      title: 'index',
-      description: 'Generated thematic index.',
-      standard: 'standards.md',
-      selectContext: context,
-      items: INDEX
     }),
     defineRubricFamily({
       code: 'SAFE',

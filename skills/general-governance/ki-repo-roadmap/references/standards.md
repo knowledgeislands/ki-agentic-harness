@@ -47,7 +47,6 @@ The canonical authored files are:
 
 ```text
 docs/roadmap/
-  README.md
   <theme>/
     ROADMAP.md             # frontmatter: code: <THEME>
     plans/                  # present while the theme has active plans or retained done records
@@ -58,7 +57,7 @@ Theme names are unique lowercase kebab-case names. Every theme roadmap begins wi
 
 A theme directory exists only while its roadmap has at least one item. An empty scaffold-only theme roadmap is drift: CONFORM removes that theme directory, including an empty `plans/` directory. It does not remove a theme holding authored prose or any unexpected content; resolve that case deliberately instead of discarding it. The thematic profile may have zero remaining themes after pruning.
 
-Root `ROADMAP.md` is generated in this profile. It links every canonical item under its horizon but repeats none of its prose. `docs/roadmap/README.md` is also generated: it links themes, indexes active plans and retained done records as short subsections, and renders the global dependency graph. The plan index never uses a Markdown table because its long links and locators are difficult to scan in columns. `docs/roadmap/README.md` is retained even when no themes or plans remain; CONFORM never deletes it or the repository's top-level `README.md`. Edit canonical theme roadmaps or plan files, then run CONFORM; never hand-edit either projection.
+Root `ROADMAP.md` is generated in this profile. It links every canonical item under its horizon but repeats none of its prose. Plan state and dependencies are derived directly from plan frontmatter and canonical local plan references; there is no generated global plan index. `docs/roadmap/README.md` is a retired artifact and must be deleted during migration. Edit canonical theme roadmaps or plan files, then run CONFORM; never hand-edit the root projection.
 
 ## Expansion boundary
 

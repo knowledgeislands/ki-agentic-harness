@@ -30,7 +30,7 @@ In a KI code repo the plan is a governed file under `docs/roadmap/<theme>/plans/
 
 1. Run `git rev-parse --show-toplevel` to find the git root, then physically resolve it.
 2. If `.ki-config.toml` at the git root has `repo_type = "kb"`: **stop** — in a KB, planning is a stream proposal's `## Checklist`, governed by `ki-kb-streams`. This skill creates no KB artifact.
-3. Ask `ki-repo-roadmap` to identify and validate the repository profile. In the simple profile, `status` reports that profile from the root `ROADMAP.md`; `ready`, `execute`, `accept`, `done`, and `prune` report that no governed plan collection exists; `new` and `promote` stop with `/ki-repo-roadmap expand <theme>`. In the thematic profile, use only `docs/roadmap/README.md`, `docs/roadmap/<theme>/ROADMAP.md`, and `docs/roadmap/<theme>/plans/`.
+3. Ask `ki-repo-roadmap` to identify and validate the repository profile. In the simple profile, `status` reports that profile from the root `ROADMAP.md`; `ready`, `execute`, `accept`, `done`, and `prune` report that no governed plan collection exists; `new` and `promote` stop with `/ki-repo-roadmap expand <theme>`. In the thematic profile, use only `docs/roadmap/<theme>/ROADMAP.md` and `docs/roadmap/<theme>/plans/`.
 4. Resolve and validate every existing path component physically before reading or writing it. Never follow a symlink outside the physical git root, infer an alternative plan tree, or repair governance state as a side effect of a lifecycle command.
 
 ## Notes

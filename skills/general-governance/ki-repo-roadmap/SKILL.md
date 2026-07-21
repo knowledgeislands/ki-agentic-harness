@@ -2,7 +2,7 @@
 name: ki-repo-roadmap
 ki-depends-on: []
 ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-skills:checker-reporter, ki-skills:govern]
-owns: ['ROADMAP.md', 'docs/roadmap/README.md']
+owns: ['ROADMAP.md']
 description: >
   Governs repository roadmaps and execution plans in non-KB repositories. Use for "audit the roadmap", "split this roadmap by theme", "expand the roadmap", "audit plans", roadmap horizons, thematic roadmaps, qualified roadmap locators, plan dependencies, or generated portfolio drift. Supports a simple root-only ROADMAP and a thematic docs/roadmap tree with plans. Knowledge Bases are out of scope: use ki-kb-streams, where streams and proposal checklists replace repository roadmaps and plans. The ki-plan process skill drives individual plan lifecycle operations; ki-decision-records owns durable decisions.
 argument-hint: 'audit <repo> | conform <repo> | expand <theme> | help | educate <repo> | refresh'
@@ -19,7 +19,7 @@ Read [the repository-roadmap standard](references/standards.md) before changing 
 The standard has two profiles, detected from repository shape:
 
 - **Simple** — root `ROADMAP.md` is canonical and carries the five horizons. It has no plan files. A substantial item that needs a plan first moves to the thematic profile through EXPAND.
-- **Thematic** — each `docs/roadmap/<theme>/ROADMAP.md` is canonical. Its active plans live in `docs/roadmap/<theme>/plans/`; `docs/roadmap/README.md` is the global plan index and dependency graph; root `ROADMAP.md` is an exact generated portfolio projection.
+- **Thematic** — each `docs/roadmap/<theme>/ROADMAP.md` is canonical. Its active and retained done plans live in `docs/roadmap/<theme>/plans/`; root `ROADMAP.md` is an exact generated portfolio projection.
 
 An item has one authoritative home. Every roadmap carries the standard's exact explanatory blurb immediately beneath each horizon heading so its placement model is understandable in the file itself. In the thematic profile an item's stable locator is `<theme>/<item-slug>`, where the slug derives from the item heading. Every theme declares a stable uppercase code, and plan ids use that code plus a serial from `001`: `<THEME>-<NNN>`. That globally unique identifier is also used by dependencies. Plans exist only for `Blocking` and `Next` items.
 
@@ -29,7 +29,7 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** plus judgment-l
 
 ### Mode AUDIT
 
-Run [`scripts/govern.ts`](scripts/govern.ts) against the repository root. It detects the profile and applies the mechanical criteria in [the rubric](references/rubric.md): horizon structure and exact blurbs; theme and item identity; qualified plan linkage; frontmatter, placement, stable theme-coded ids, identifier references, and dependency integrity; exact generated projection and index. It reports KB scope as NA, or FAIL when a KB carries repository-roadmap artifacts, and makes no changes.
+Run [`scripts/govern.ts`](scripts/govern.ts) against the repository root. It detects the profile and applies the mechanical criteria in [the rubric](references/rubric.md): horizon structure and exact blurbs; theme and item identity; qualified plan linkage; frontmatter, placement, stable theme-coded ids, identifier references, and dependency integrity; and the exact generated root projection. It reports KB scope as NA, or FAIL when a KB carries repository-roadmap artifacts, and makes no changes.
 
 Then apply the rubric's judgment criteria by reading: item quality, horizon placement and transition readiness, plan quality, honest in-progress state, whether simple still fits, and whether theme boundaries are coherent. Iterate until mechanical findings are clean and judgment findings are resolved.
 
@@ -37,7 +37,7 @@ After changing the scripts, run [`scripts/repo-roadmap.test.ts`](scripts/repo-ro
 
 ### Mode CONFORM
 
-Run [`scripts/govern.ts`](scripts/govern.ts) against the repository root. In either profile it inserts any missing canonical horizon blurb immediately beneath its heading, preserving all existing authored content. In a valid thematic profile it also rebuilds the derivable root projection and global index/graph. Every write uses guarded atomic local-file replacement. It never invents themes, moves horizons, removes or rewrites authored prose, repairs ambiguous locators, or changes plan content. Use `--dry-run` to inspect the intended writes. Re-run AUDIT afterward.
+Run [`scripts/govern.ts`](scripts/govern.ts) against the repository root. In either profile it inserts any missing canonical horizon blurb immediately beneath its heading, preserving all existing authored content. In a valid thematic profile it also rebuilds the derivable root projection. Delete the retired `docs/roadmap/README.md` explicitly during migration; CONFORM will not remove it because it is an unsafe unexpected file. Every write uses guarded atomic local-file replacement. It never invents themes, moves horizons, removes or rewrites authored prose, repairs ambiguous locators, or changes plan content. Use `--dry-run` to inspect the intended writes. Re-run AUDIT afterward.
 
 ### Mode EXPAND
 
@@ -46,7 +46,7 @@ EXPAND is judgment-led because selecting coherent themes and moving prose cannot
 1. Read the simple `ROADMAP.md`; choose one kebab-case theme and identify whole items that belong to it without splitting their prose.
 2. Create `docs/roadmap/<theme>/ROADMAP.md` with all five horizons and move those items, preserving horizon, heading, and prose byte-for-byte where practical.
 3. Repeat until every open item has exactly one thematic home. Create no plan unless a `Blocking` or `Next` item needs multi-file or multi-step execution.
-4. Run CONFORM to generate `docs/roadmap/README.md` and replace root `ROADMAP.md` with the portfolio projection.
+4. Delete the legacy generated `docs/roadmap/README.md`, then run CONFORM to replace root `ROADMAP.md` with the portfolio projection.
 5. Run AUDIT; confirm no item was lost or duplicated. Commit the migration as one reviewable change.
 
 There is no automatic collapse operation: merging themes back into one authored roadmap requires the same content judgment and is a deliberate migration.

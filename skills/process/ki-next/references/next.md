@@ -6,7 +6,7 @@ _On-demand procedure for `ki-next`. The kind, scope, and relationship map live i
 
 1. Resolve the current git repository physically and read its `.ki-config.toml` when present. If `repo_type = "kb"`, stop: Knowledge Bases select work through `ki-kb-streams` proposals rather than this process.
 2. Ask `ki-repo-roadmap` to identify the simple or thematic profile. Run its read-only AUDIT through the repository's declared script or its vendored checker. Stop on any FAIL or WARN; name the repair route, but do not run CONFORM or repair unrelated state.
-3. Read the canonical source of truth: root `ROADMAP.md` for the simple profile; each `docs/roadmap/<theme>/ROADMAP.md`, plus generated `docs/roadmap/README.md` and root projection, for the thematic profile. In the thematic profile, read active plans and their dependency graph before ranking items.
+3. Read the canonical source of truth: root `ROADMAP.md` for the simple profile; each `docs/roadmap/<theme>/ROADMAP.md` and its `plans/` directory, plus the generated root projection, for the thematic profile. In the thematic profile, derive active plans and dependencies from plan frontmatter before ranking items.
 4. If the user continues from a current `ki-recap`, use only its grounded outstanding work, learning routes with their approval status, and Specific actions as context. Re-check every dynamic roadmap claim now; an unapproved route remains a proposal, and a roadmap item parked during recap is not automatically a candidate. Do not scan stored or historical transcripts. A recap is optional: without one, ground the same facts directly.
 
 ## 2. Optional relevance review

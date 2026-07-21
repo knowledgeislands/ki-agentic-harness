@@ -260,15 +260,9 @@ function thematicFixture(): string {
     )
     const dry = run(CONFORM, root, ['--dry-run'])
     check('thematic CONFORM dry-run exits zero', dry.code === 0)
-    check(
-      'thematic CONFORM dry-run writes no projections',
-      !existsSync(join(root, 'ROADMAP.md')) && !existsSync(join(root, 'docs', 'roadmap', 'README.md'))
-    )
+    check('thematic CONFORM dry-run writes no projections', !existsSync(join(root, 'ROADMAP.md')))
     const conformed = run(CONFORM, root)
-    check(
-      'thematic CONFORM generates both projections',
-      conformed.code === 0 && existsSync(join(root, 'ROADMAP.md')) && existsSync(join(root, 'docs', 'roadmap', 'README.md'))
-    )
+    check('thematic CONFORM generates the root portfolio', conformed.code === 0 && existsSync(join(root, 'ROADMAP.md')))
     const audited = run(AUDIT, root)
     check('valid thematic profile audits cleanly', audited.code === 0 && !/FAIL \(/.test(audited.out))
     check('theme-coded plan ids are globally unique', audited.code === 0)
@@ -286,9 +280,6 @@ function thematicFixture(): string {
       'root links use rendered Markdown heading anchors',
       readFileSync(join(root, 'ROADMAP.md'), 'utf8').includes('docs/ROADMAP.md#allow-printwidth-via-ki-configtoml')
     )
-    const index = readFileSync(join(root, 'docs', 'roadmap', 'README.md'), 'utf8')
-    check('global index renders theme-coded plan identifiers', index.includes('[HOK-001](') && index.includes('[RTP-001]('))
-    check('global index renders theme-coded dependency edge', index.includes('HOK-001 ──► RTP-001'))
     writeFileSync(join(root, 'ROADMAP.md'), '# drift\n')
     const drift = run(AUDIT, root)
     check('projection drift fails exactly', drift.code !== 0 && drift.out.includes('PROJ-1'))
@@ -306,10 +297,7 @@ function thematicFixture(): string {
     writeFileSync(hooks, plan('HOK-001', 'Harden hook linking', 'hooks/harden-hook-linking', 'RTP-001', '—', 'done', true, true))
     writeFileSync(runtime, plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'HOK-001', 'acceptance', true))
     const conformed = run(CONFORM, root)
-    const index = readFileSync(join(root, 'docs', 'roadmap', 'README.md'), 'utf8')
     check('acceptance plan with packet audits cleanly', conformed.code === 0 && run(AUDIT, root).code === 0)
-    check('global index renders acceptance status', index.includes('- **Status:** acceptance'))
-    check('global index retains done record separately', index.includes('## Completed plans') && index.includes('### [HOK-001]'))
     writeFileSync(runtime, plan('RTP-001', 'Add runtime parity', 'runtime/add-runtime-parity', '—', 'HOK-001', 'acceptance'))
     const invalid = run(AUDIT, root)
     check(
@@ -339,6 +327,23 @@ function thematicFixture(): string {
   }
 }
 
+// A retired global index is never silently retained or regenerated.
+{
+  const root = thematicFixture()
+  try {
+    writeFileSync(join(root, 'docs', 'roadmap', 'README.md'), '# Retired roadmap index\n')
+    const audit = run(AUDIT, root)
+    const conform = run(CONFORM, root)
+    check('legacy roadmap index fails the thematic layout audit', audit.code !== 0 && audit.out.includes('THEME-1'))
+    check(
+      'CONFORM does not retain or rewrite the legacy roadmap index',
+      conform.code !== 0 && readFileSync(join(root, 'docs', 'roadmap', 'README.md'), 'utf8') === '# Retired roadmap index\n'
+    )
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+}
+
 // Ready records approval to start and cannot bypass an unresolved blocker.
 {
   const root = thematicFixture()
@@ -353,9 +358,7 @@ function thematicFixture(): string {
     )
     writeFileSync(hooks, plan('HOK-001', 'Harden hook linking', 'hooks/harden-hook-linking', 'RTP-001', '—', 'done', true, true))
     const conformed = run(CONFORM, root)
-    const index = readFileSync(join(root, 'docs', 'roadmap', 'README.md'), 'utf8')
     check('ready plan with done blocker audits cleanly', conformed.code === 0 && run(AUDIT, root).code === 0)
-    check('global index renders ready status', index.includes('- **Status:** ready'))
   } finally {
     rmSync(root, { recursive: true, force: true })
   }
@@ -401,7 +404,7 @@ for (const [label, mutate] of [
   }
 }
 
-// Empty scaffold-only themes are pruned, while the durable index and repository README remain.
+// Empty scaffold-only themes are pruned while the repository README remains.
 {
   const root = fixture()
   try {
@@ -410,22 +413,11 @@ for (const [label, mutate] of [
     writeFileSync(join(root, 'README.md'), '# Repository readme\n')
     const dry = run(CONFORM, root, ['--dry-run'])
     check('empty-theme CONFORM dry-run exits zero', dry.code === 0)
-    check(
-      'empty-theme CONFORM dry-run preserves the theme and writes no index',
-      existsSync(join(root, 'docs', 'roadmap', 'hooks')) && !existsSync(join(root, 'docs', 'roadmap', 'README.md'))
-    )
+    check('empty-theme CONFORM dry-run preserves the theme', existsSync(join(root, 'docs', 'roadmap', 'hooks')))
     const conformed = run(CONFORM, root)
-    const indexPath = join(root, 'docs', 'roadmap', 'README.md')
-    const generated = existsSync(indexPath) ? readFileSync(indexPath, 'utf8') : ''
     check('empty scaffold-only theme is pruned', conformed.code === 0 && !existsSync(join(root, 'docs', 'roadmap', 'hooks')))
     check('zero-plan thematic profile conforms cleanly', run(AUDIT, root).code === 0)
-    check('global index survives empty-theme pruning', existsSync(join(root, 'docs', 'roadmap', 'README.md')))
     check('repository README survives empty-theme pruning', readFileSync(join(root, 'README.md'), 'utf8') === '# Repository readme\n')
-    check(
-      'zero-plan index avoids a placeholder table',
-      generated.includes('## Active plans\n\nNo active plans.\n\n## Completed plans\n\nNo completed plans.\n\n## Dependency graph') &&
-        !generated.includes('| Plan |')
-    )
   } finally {
     rmSync(root, { recursive: true, force: true })
   }
@@ -446,7 +438,7 @@ for (const [label, mutate] of [
   }
 }
 
-// Long plan metadata remains readable because each plan is rendered as a subsection.
+// Long plan metadata remains valid without a duplicate global rendering.
 {
   const root = thematicFixture()
   try {
@@ -468,16 +460,7 @@ for (const [label, mutate] of [
       plan('PRJ-001', title, 'repo-roadmap/require-canonical-horizon-blurbs-and-restore-them-during-conform')
     )
     const conformed = run(CONFORM, root)
-    const generated = readFileSync(join(root, 'docs', 'roadmap', 'README.md'), 'utf8')
-    check('wide active-plan index conforms cleanly', conformed.code === 0 && run(AUDIT, root).code === 0)
-    check(
-      'wide active-plan index uses a linked heading and metadata list',
-      generated.includes('### [PRJ-001](repo-roadmap/plans/PRJ-001-canonical-horizon-blurbs.md)') &&
-        generated.includes(`- **Title:** ${title}`) &&
-        generated.includes('- **Theme:** `repo-roadmap`') &&
-        generated.includes('- **Roadmap item:** `repo-roadmap/require-canonical-horizon-blurbs-and-restore-them-during-conform`') &&
-        !generated.includes('| Plan |')
-    )
+    check('long plan metadata conforms cleanly', conformed.code === 0 && run(AUDIT, root).code === 0)
   } finally {
     rmSync(root, { recursive: true, force: true })
   }
@@ -773,21 +756,6 @@ for (const section of ['Steps', 'Verify']) {
     const result = run(CONFORM, root)
     check('CONFORM refuses a dangling root projection symlink', result.code !== 0 && result.out.includes('SAFE-1'))
     check('CONFORM leaves a dangling root projection symlink in place', lstatSync(path).isSymbolicLink())
-  } finally {
-    rmSync(root, { recursive: true, force: true })
-  }
-}
-{
-  const root = thematicFixture()
-  try {
-    const initial = run(CONFORM, root)
-    const path = join(root, 'docs', 'roadmap', 'README.md')
-    rmSync(path)
-    symlinkSync(join(root, 'missing-index'), path)
-    const result = run(CONFORM, root)
-    check('CONFORM dangling-index fixture starts canonical', initial.code === 0)
-    check('CONFORM refuses a dangling generated-index symlink', result.code !== 0 && result.out.includes('SAFE-1'))
-    check('CONFORM leaves a dangling generated-index symlink in place', lstatSync(path).isSymbolicLink())
   } finally {
     rmSync(root, { recursive: true, force: true })
   }
