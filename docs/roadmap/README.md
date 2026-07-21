@@ -32,7 +32,7 @@ Canonical themes, active execution plans, and completed plan records.
 - **Title:** Establish the Knowledge Islands command-line interface (CLI)
 - **Theme:** `foundation-tooling`
 - **Roadmap item:** `foundation-tooling/establish-the-knowledge-islands-command-line-interface-cli`
-- **Status:** in-progress
+- **Status:** acceptance
 - **Blocks:** —
 
 ### [FND-019](foundation-tooling/plans/FND-019-review-shipped-skill-structural-consistency.md)

@@ -1,7 +1,7 @@
 ---
 id: 'FND-018'
 title: Establish the Knowledge Islands command-line interface (CLI)
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/establish-the-knowledge-islands-command-line-interface-cli
 blocks: —
 blocked-by: —
@@ -29,7 +29,7 @@ The public bootstrap path, source-owned repository operations, and user installa
 3. ✓ Write an implementation-ready cross-repository handoff for `tools-ki`: zero-dependency constraints, command parser, platform assumptions, sourcing and pinning policy, integrity/error handling, shell completion, semantic versioning, test matrix, and compatibility contract. Add the corresponding `homebrew-tap` formula/release handoff requirements.
 4. ✓ Align this harness's public help, onboarding, zero-install examples, and future `.ki/` layout language with the agreed command surface. Keep unavailable commands visibly coming soon rather than implying a local harness script is the installed CLI.
 5. ✓ Validate the handoff against concrete bootstrap, clean, audit, and conform invocations in a temporary repository. Create only agreed external-roadmap or handoff artifacts; do not create, publish, install, or release `tools-ki` or a Homebrew formula from this repository plan.
-6. Rename the provisional command identity to `ki` consistently across the command contract, handoff paths, receiving repository, formula, roadmap locator, decision record, and guides. Re-run documentation and roadmap checks before renewed acceptance.
+6. ✓ Rename the provisional command identity to `ki` consistently across the command contract, handoff paths, receiving repository, formula, roadmap locator, decision record, and guides. Re-run documentation and roadmap checks before renewed acceptance.
 
 ## Files touched
 
@@ -67,3 +67,30 @@ On 2026-07-21, source-harness temporary-repository fixtures passed the bootstrap
 - Round 1 — judgment: a `gpt-5.6-sol` worker derives the `ki` grammar and receiving-repository handoff from the committed FND-016 lifecycle contract; files: this plan and handoff artifacts only; gate: each command has a scope, source boundary, dry-run, output, and exit contract.
 - Round 2 — mechanical: a `gpt-5.6-terra` worker may align independent harness documentation after the grammar is approved; gate: documentation and roadmap checks.
 - Orchestrator: reviews the handoff for cross-repository ownership, preserves the prohibition on external publication, and runs final verification.
+
+## Acceptance
+
+### Delivered
+
+The installable Knowledge Islands command-line interface (CLI) is now canonically named `ki`, with matching harness contract, receiving repository, Homebrew formula, handoff paths, roadmap identity, and user guidance.
+
+### Summary of changes
+
+- Replaced the provisional identity with the [`ki` CLI contract](../../../handoffs/ki/command-contract.md), retaining the established lifecycle grammar and scoped dispatch boundary.
+- Renamed receiving artifacts to [`tools-ki`](../../../handoffs/ki/tools-ki.md), `bin/ki`, and [`Formula/ki.rb`](../../../handoffs/ki/homebrew-tap.md), with `Ki` as the formula class.
+- Updated `ODR-KI-HARNESS-001`, the Foundation Tooling roadmap, generated portfolio/index links, user onboarding, and the related FND-016 language.
+
+### Verification
+
+- `bun run ki:repo-roadmap:conform`, `bun run ki:repo-roadmap:audit`, `bun run ki:handoffs:audit`, and `bun run ki:authoring:audit` passed for the renamed contract and paths at `c73b1b4e`.
+- A repository-wide legacy-name search returned no remaining references outside this plan's historical description, which was then removed before acceptance.
+- `bun run test` passed at `c73b1b4e`.
+- `bun run ki:audit` passed at `c73b1b4e` with zero FAIL and only the two existing KI-SHAPE-7 judgement advisories.
+
+### Outstanding concerns
+
+The Website must still publish and stability-test the public repository-operation route before `tools-ki` can dispatch CLEAN. The `tools-ki` repository and `homebrew-tap` formula remain external receiving work; no executable or release has been created here.
+
+### Mini recap
+
+The command name is a contract boundary, not a cosmetic label: its repository, formula, environment-variable namespace, help text, and roadmap locator must move together. The renamed handoff now gives a cold executor one consistent `ki` identity; no additional follow-up is proposed.
