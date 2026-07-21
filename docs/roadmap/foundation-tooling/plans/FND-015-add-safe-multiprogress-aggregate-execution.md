@@ -1,7 +1,7 @@
 ---
 id: 'FND-015'
 title: Unify governed entrypoints and in-process aggregate execution
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/add-safe-multiprogress-aggregate-execution
 blocks: —
 blocked-by: —
@@ -70,3 +70,36 @@ The completed `ki-self` review reconciled the source-harness linked-payload rule
 - Round 1 — research: ✓ inventoried production child-process calls and classified external-tool, CLI/test, and avoidable local-module boundaries; files: read-only source scope; gate: evidence-backed refactor candidates.
 - Round 2 — judgment: revise this plan around the settled direct-call architecture and separately scoped follow-ups; files: this plan and any affected roadmap items; gate: user review before implementation.
 - Orchestrator: reconcile worker findings, review every proposal against process isolation and standalone-vendored constraints, and commit only the revised planning record.
+
+## Acceptance
+
+### Delivered
+
+FND-015 now retains both halves of its contract: governed AUDIT and CONFORM run selected local checkers in-process, and aggregate presentation retains FND-010's stable, truthful terminal behaviour.
+
+### Summary of changes
+
+- Restored the aggregate's fixed three-zone renderer in `aggregate.ts`: a padded command column, a capped centre bar, and a fixed right-side detail column. Each redraw reads the current terminal width, so a resize recalculates the layout without a signal handler.
+- Restored immediate `initialising` and `reading checker plans <completed>/<count>` states before the in-process plan total is known. The centre bar is indeterminate during those states and does not fabricate a percentage.
+- Made the multi-row display use the same width-safe renderer. Interactive terminals redraw stable rows; redirected output retains only initial and final snapshots.
+- Added direct renderer coverage for stable, resize, narrow, multi-row, and disabled progress behaviour. The bootstrap integration test now proves the vendored aggregate restores startup/layout behaviour and that its AUDIT/CONFORM body has no checker subprocess, capture, or JSONL-transport fallback.
+- Re-vendored the generated aggregate and manifest.
+
+### Verification
+
+- `bunx tsc --noEmit --pretty false` — passed.
+- `bun test skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/aggregate.test.ts` — passed: 3 tests / 20 assertions for stable, resize, narrow, multi-row, and disabled progress rendering.
+- `bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/resolve.test.ts` — passed, including the generated-runner startup/layout and direct-import/no-subprocess assertions.
+- `bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts .` followed by `bun run ki:bootstrap:audit` — passed; refreshed generated aggregate parity.
+- `bun run test` — passed.
+- `bun run ki:audit` — passed with zero FAIL; it retains the two pre-existing `KI-SHAPE-7` warnings.
+
+Implementation evidence: `ba46272f`, `ffe23326`, and the presentation-contract repair `84d69df5`.
+
+### Outstanding concerns
+
+The two existing `KI-SHAPE-7` warnings are unrelated to this plan. The aggregate retains an explicit local process invocation only for the separately scoped whole-set EDUCATE and HELP launchers; AUDIT and CONFORM have no local checker subprocess boundary.
+
+### Mini recap
+
+The in-process migration and the progress contract are separable concerns. Moving orchestration from child-process output to direct `plan`/`check` calls must preserve the presentation lifecycle explicitly: initialise, discover work, begin, advance, and complete. Exporting the renderer behind a terminal adapter made that contract directly testable, including resize simulation, without weakening the standalone vendored runner.
