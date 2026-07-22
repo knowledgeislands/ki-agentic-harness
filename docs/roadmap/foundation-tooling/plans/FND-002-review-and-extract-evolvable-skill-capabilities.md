@@ -1,7 +1,7 @@
 ---
 id: 'FND-002'
 title: Review and extract evolvable skill capabilities
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/review-and-extract-evolvable-skill-capabilities
 blocks: —
 blocked-by: —
@@ -46,3 +46,29 @@ Both modes require explicit targets and, for history, explicit selected inputs; 
 ## Dependencies / blocks
 
 This is independent of the CLI implementation, but it blocks further near-term work because it defines the governed route by which the harness identifies and evolves reusable capabilities.
+
+## Acceptance
+
+### Delivered
+
+`ki-skills` now has distinct REVIEW and EXTRACT modes that convert skill-evolution observations into evidence-backed, user-confirmed roadmap proposals.
+
+### Summary of changes
+
+- Added routed REVIEW and EXTRACT procedures, the candidate-finding format, and explicit no-write / explicit-history boundaries.
+- Added a read-only candidate-contract validator for structured handoffs, including allowed dispositions, roadmap treatments, amendment locators, and exact-title reconciliation prompts.
+- Added focused contract tests, updated generated HELP, and documented the modes in the user catalogue.
+
+### Verification
+
+- Passed `bun test skills/keystone/ki-skills/scripts/candidate-contract.test.ts`, `bun run ki:skills:audit`, `bun run ki:bootstrap:audit`, `bun run test`, and `bun run ki:audit` serially.
+- The skills audit retains two existing `KI-SHAPE-7` warnings; the aggregate audit retains the known runtime-link bootstrap warnings. Neither concerns this feature.
+- Implementation evidence: `a107566c` (`feat(skills): add review and extract modes`).
+
+### Outstanding concerns
+
+Exact normalised-title matching only surfaces a possible existing roadmap item. Semantic duplication and priority remain explicit human judgment, as do any durable writes.
+
+### Mini recap
+
+Discovery belongs in the skill that owns skill quality, but it must be a proposal layer. A compact mechanical contract makes handoffs checkable without pretending that candidate selection or roadmap priority is deterministic.
