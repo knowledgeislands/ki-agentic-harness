@@ -27,7 +27,7 @@ Each area is reviewed across comparable skills, beginning with the strongest rel
 
 1. **Governed entrypoints and mode wiring** — `govern.ts`/`educate.ts` ownership, aggregate contract, local hand-offs, and retired entrypoints. **Completed:** one `ki-repo-roadmap` subprocess repair.
 2. **Rubric structure and publication** — organisation of `rubric/` contexts, item catalogues, index modules, generated `references/rubric.md`, context factories, and the boundary between a checker-contract provider and a dependent skill. **Completed:** one publisher repair and a bounded parity follow-up.
-3. **Checker decomposition and shared modules** — what stays skill-local, what is safely vendored, and whether imports point in the intended provider-to-consumer direction.
+3. **Checker decomposition and shared modules** — what stays skill-local, what is safely vendored, and whether imports point in the intended provider-to-consumer direction. **Completed:** provider-to-consumer implementation direction conforms; one test-ownership question is retained for the documentation/evidence slice.
 4. **Safe writes and external boundaries** — atomicity, idempotence, dry-run behaviour, symlink handling, subprocesses, and which external-tool calls are genuine boundaries.
 5. **Generated payloads and HELP** — source-to-vendored parity, generated documentation, HELP snapshots, and the tests that protect each projection.
 6. **Documentation, ownership, and evidence** — the relationship between standards, rubrics, source provenance, code, frontmatter ownership declarations, and focused versus end-to-end tests.
@@ -163,3 +163,35 @@ This is a bounded generated-documentation consistency task, not evidence for ext
 ### Verification
 
 The focused Cloudflare publication test passed, followed serially by `bun run ki:authoring:audit`, `bun run ki:bootstrap:audit`, `bun run ki:engineering:audit`, `bun run test`, and `bun run ki:audit`.
+
+## Assessment record — checker decomposition and shared modules
+
+### Scope and method
+
+This slice checks the declared provider-to-consumer direction rather than comparing local rubric logic line by line.
+
+It inventories each governance skill's `ki-shared-dependencies`, `ki-shared-modules`, `scripts/vendored/` links, and imports that leave a skill directory.
+
+### Findings
+
+All 27 governance skills declare their shared dependencies.
+
+The source harness contains 106 manifest-governed links to `ki-skills` modules and 25 to the `ki-bootstrap` educator; no vendored link points at an undeclared third provider.
+
+`ki-skills` is correctly the sole checker-contract provider (`rubric`, `checker`, `reporter`, `checker-reporter`, and `govern`), while `ki-bootstrap` is correctly the sole provider of the shared `educator` module.
+
+There are no direct cross-skill implementation imports outside a skill's declared vendored boundary.
+
+The larger direct engines in `ki-skills` and `ki-bootstrap`, `ki-repo`'s richer multi-subject checker adapter, and `ki-repo-roadmap`'s focused context split all align with their declared owner and concern.
+
+One direct cross-skill import remains in a test: `ki-repo/scripts/internal/project-skill-publisher.test.ts` imports `ki-bootstrap`'s publisher implementation.
+
+The implementation is owned and documented by `ki-bootstrap`, but the test is physically located under `ki-repo`.
+
+This is not a checker-decomposition defect; assess whether it should move as part of the later documentation, ownership, and evidence slice, where the test's behavioural ownership can be judged without a cosmetic relocation.
+
+### Classification
+
+The implementation dependency direction conforms and needs no shared-module refactor.
+
+The isolated test location is a recorded ownership question, not yet a repair: moving it is justified only if the evidence slice confirms that bootstrap, rather than repo, owns the test's public behavioural contract.
