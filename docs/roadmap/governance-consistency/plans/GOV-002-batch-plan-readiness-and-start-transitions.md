@@ -1,7 +1,7 @@
 ---
 id: 'GOV-002'
 title: Batch plan readiness and start transitions
-status: in-progress
+status: acceptance
 roadmap: governance-consistency/batch-plan-readiness-and-start-transitions
 blocks: —
 blocked-by: —
@@ -42,4 +42,31 @@ Each batch validates every selected plan before any write, snapshots the affecte
 
 ## Dependencies / blocks
 
-This plan is independent of the two plans currently awaiting acceptance.
+This plan has no plan dependencies.
+
+## Acceptance
+
+### Delivered
+
+`ki-plan` now supports an explicit batch of canonical plan identifiers for the `ready` and initial `execute` transitions.
+
+### Summary of changes
+
+- Added multi-plan invocation grammar to the process skill while retaining a single plan as the batch-of-one case.
+- Required exact current-conversation approval for a readiness batch and an exact coordinated start for an execution batch.
+- Required all selected plans and dependencies to validate before any write, then publish every status update atomically in one commit with guarded rollback.
+- Recorded the same lifecycle boundary in the roadmap plan format and standard without duplicating the detailed procedure.
+
+### Verification
+
+- Passed `bun run ki:authoring:audit`, `bun run ki:skills:audit`, the `ki-repo-roadmap` audit, `bun run ki:bootstrap:audit`, `bun run test`, and `bun run ki:audit` serially.
+- The skills and aggregate audits retain only the existing, unrelated `KI-SHAPE-7` and `GDR-KI-ARCADIA-002` warnings.
+- Implementation evidence: `abcc0ce6` (`docs(lifecycle): support atomic plan transition batches`).
+
+### Outstanding concerns
+
+The lifecycle is a runtime-neutral process contract, not a command implementation. Any future runtime binding must preserve this explicit-selection, preflight, atomic-publication, and rollback boundary.
+
+### Mini recap
+
+Batching status transitions does not weaken the plan gates: all work is checked before publishing, and a single-plan command follows the same safer transaction path.
