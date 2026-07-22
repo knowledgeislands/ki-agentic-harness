@@ -82,6 +82,7 @@ export type DecisionRecordsContext = {
   kbMode: boolean
   indexFile: string
   indexExists: boolean
+  adoptionRootRequired: boolean
   indexIds: readonly string[]
   indexCounts: ReadonlyMap<string, number>
   invalidFilenames: readonly string[]
@@ -246,6 +247,7 @@ export const createDecisionRecordsContextFactory = ({
       kbMode,
       indexFile,
       indexExists,
+      adoptionRootRequired: indexContent.includes('<!-- ki-decision-records: adoption-root -->'),
       indexIds,
       indexCounts,
       invalidFilenames,

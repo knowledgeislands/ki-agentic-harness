@@ -9,6 +9,7 @@ Line-by-line criteria for auditing ki-decision-records. Classifications are deri
 ## Contents
 
 - [FILENAME — file and naming checks](#filename--file-and-naming-checks)
+- [ROOT — collection-root checks](#root--collection-root-checks)
 - [FM — frontmatter checks](#fm--frontmatter-checks)
 - [TYPE-FIT — decision classification](#type-fit--decision-classification)
 - [BODY — body structure checks](#body--body-structure-checks)
@@ -23,6 +24,14 @@ Canonical decision-record filenames and serial namespaces.
 - **FILENAME-1 [M] — Canonical decision-record filename** — Filename is `<ID>-<title-slug>.md`: the canonical uppercase record ID, a dash, then the title lowercased with each non-alphanumeric run replaced by one dash and leading or trailing dashes removed. (dr-format.md)
 - **FILENAME-2 [M] — Unique serial within prefix and scope** — NNN is unique per prefix within its `<SCOPE>` namespace; two files may share the same integer if they carry different prefixes; no two files share the same prefix+scope+serial combination. `XXX` files are exempt from uniqueness. (dr-format.md)
 - **FILENAME-3 [M] — Contiguous serial series** — Within each prefix+scope series the serials start at `001` and are contiguous. A gap is fixed by renumbering the series and sweeping every citation of shifted codes in the same change. `XXX` pending files are exempt. (dr-format.md)
+
+## ROOT — collection-root checks
+
+→ [standard](dr-format.md)
+
+The first Decision Record in a newly marked collection adopts the instrument itself.
+
+- **ROOT-1 [M] — Adoption root for a new collection** — An index marked `<!-- ki-decision-records: adoption-root -->` begins with `GDR-<SCOPE>-001: Adopting Decision Records`. Existing unmarked collections are migration cases and are not rewritten automatically. (dr-format.md)
 
 ## FM — frontmatter checks
 

@@ -4,6 +4,7 @@ import { BODY } from './body.ts'
 import { FILENAME } from './filename.ts'
 import { FM } from './frontmatter.ts'
 import { INDEX } from './index-records.ts'
+import { ROOT } from './root.ts'
 import { TYPE_FIT } from './type-fit.ts'
 
 export const KI_DECISION_RECORDS_RUBRIC: RubricDefinition<DecisionRecordsContext> = {
@@ -17,6 +18,14 @@ export const KI_DECISION_RECORDS_RUBRIC: RubricDefinition<DecisionRecordsContext
       standard: 'dr-format.md',
       selectContext: (context: DecisionRecordsContext) => context,
       items: FILENAME
+    }),
+    defineRubricFamily({
+      code: 'ROOT',
+      title: 'collection-root checks',
+      description: 'The first Decision Record in a newly marked collection adopts the instrument itself.',
+      standard: 'dr-format.md',
+      selectContext: (context: DecisionRecordsContext) => context,
+      items: ROOT
     }),
     defineRubricFamily({
       code: 'FM',

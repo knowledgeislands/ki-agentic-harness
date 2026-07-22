@@ -8,10 +8,11 @@
 - [Frontmatter](#frontmatter)
 - [Sections](#sections)
 - [Templates](#templates)
+- [Collection root](#collection-root)
 - [Index](#index)
 - [Writing guidance](#writing-guidance)
 
-**Contents:** [Naming convention](#naming-convention) · [Prefix table](#prefix-table) · [Placement](#placement) · [Frontmatter](#frontmatter) · [Sections](#sections) · [Templates](#templates) · [Index](#index) · [Writing guidance](#writing-guidance)
+**Contents:** [Naming convention](#naming-convention) · [Prefix table](#prefix-table) · [Placement](#placement) · [Frontmatter](#frontmatter) · [Sections](#sections) · [Templates](#templates) · [Collection root](#collection-root) · [Index](#index) · [Writing guidance](#writing-guidance)
 
 The quotable standard behind [the rubric](rubric.md) and [`../scripts/govern.ts`](../scripts/govern.ts). Grounded in Michael Nygard's original 2011 ADR format (see [sources](sources.md)) with house additions: universal decision metadata, type-specific prefixes, and `## References`. Unified from the former `ki-adrs` and `ki-kdrs` instruments. A DR is a **living present-state record** — it states the decision as it stands now and is edited in place; its metadata status records document currency, never a decision lifecycle, mutability marker, supersession chain, or changelog (see [Writing guidance](#writing-guidance)). Mode REFRESH re-reads the sources and proposes diffs here.
 
@@ -152,6 +153,20 @@ decision_type: governance
 
 - [Source title](../path/to/note.md) -- why cited.
 ```
+
+## Collection root
+
+A collection created under this standard begins by adopting the instrument itself: **`GDR-<SCOPE>-001: Adopting Decision Records`** is the first indexed record.
+
+The index carries this non-rendered provenance marker immediately before its ordered list so AUDIT can distinguish a collection created under the rule from an established migration case:
+
+```markdown
+<!-- ki-decision-records: adoption-root -->
+
+1. [GDR-<SCOPE>-001](GDR-<SCOPE>-001-adopting-decision-records.md) — adopting Decision Records.
+```
+
+An established collection without the marker is valid as-is: do not automatically insert, rename, renumber, or reposition records merely to adopt this later convention.
 
 ## Index
 
