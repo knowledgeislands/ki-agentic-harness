@@ -71,6 +71,8 @@ Plans are recoverable execution documents for multi-file or multi-step changes. 
 
 A ready plan has concrete Steps, a checkable Verify section, an honest Current state, and a minimal Files touched list. The lifecycle is `open` → `ready` → `in-progress` → `acceptance` → `done`: `open` awaits an explicit start decision, `ready` records that approved and unblocked decision, and acceptance records a compact review packet and waits for explicit user approval; it does not silently route a learning into another durable artifact. `done` retains a committed outcome record beside its still-visible canonical item. An explicit later prune, not the done transition, removes a selected completed batch and its canonical items.
 
+`ready` and the initial `execute` transition may operate on one or more explicitly named plans. A batch uses one explicit approval or coordinated start, validates every selected plan and dependency before any write, then publishes all selected status changes atomically in one commit. A failed eligibility, snapshot, or publication leaves the batch unchanged; single-plan transitions are the batch-of-one case. `ki-plan` owns the detailed procedure.
+
 ### Local plan references
 
 An active or retained done plan has one inverse reference in the canonical item named by its `roadmap:` locator. The reference is the final, standalone line in that item's content, immediately before the next item or horizon:

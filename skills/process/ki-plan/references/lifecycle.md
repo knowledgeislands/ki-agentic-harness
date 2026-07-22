@@ -2,15 +2,15 @@
 
 _On-demand procedure for `ki-plan`'s sub-commands. The preflight, invocation, and composition-on-`ki-repo-roadmap` model live in [`SKILL.md`](../SKILL.md) and are already loaded; this file is the sub-command procedure only._
 
-Split the argument on the first space to get **sub-command** and **rest**. The lifecycle verbs are `ready`, `execute`, `accept`, `done`, `prune`, `new`, `promote`, and `status`.
+Split the argument on the first space to get **sub-command** and **rest**. The lifecycle verbs are `ready`, `execute`, `accept`, `done`, `prune`, `new`, `promote`, and `status`. `ready` and `execute` parse `rest` as one or more whitespace-separated canonical plan identifiers; every other identifier-taking verb accepts exactly one.
 
 ## Contents
 
 - [`accept <THEME>-<NNN>`](#accept-theme-nnn)
 - [`done <THEME>-<NNN>`](#done-theme-nnn)
-- [`ready <THEME>-<NNN>`](#ready-theme-nnn)
+- [`ready <THEME>-<NNN>...`](#ready-theme-nnn)
 - [`prune [theme]`](#prune-theme)
-- [`execute <THEME>-<NNN>`](#execute-theme-nnn)
+- [`execute <THEME>-<NNN>...`](#execute-theme-nnn)
 - [`new <theme> <title>`](#new-theme-title)
 - [`promote`](#runtime-binding-promote)
 - [`status [theme]`](#status-theme)
@@ -43,12 +43,12 @@ If acceptance analysis later changes only the packet's prose, run the applicable
 7. If publication or the post-write audit fails, restore only transaction-owned changes and only while each current artifact still equals the bytes written by this transaction. If concurrent change prevents safe rollback, stop and report the exact conflict instead of overwriting it.
 8. Commit the done record as an explicit-path commit, then report: "Plan `<THEME>-<NNN>` recorded done after manual acceptance; prune later when the work tranche is complete."
 
-## `ready <THEME>-<NNN>`
+## `ready <THEME>-<NNN>...`
 
-1. Require the thematic profile. Parse and locate the one `<THEME>-<NNN>-*.md`; stop on zero or multiple matches. Require `status: open`. A `ready`, `in-progress`, `acceptance`, or `done` plan is reported at its current gate and is not silently moved.
-2. Require the user's explicit approval to start this plan in the current conversation. Approval to create, edit, or inspect a plan is not readiness approval. Run the read-only `ki-repo-roadmap` audit and continue only with zero FAIL and zero WARN. Confirm every qualified `blocked-by` plan is done.
-3. Snapshot the exact plan and its canonical theme-roadmap local reference. Prepare only `status: ready`; retain the plan body, canonical item, local reference, root projection, and dependencies unchanged. Revalidate the clean audit and every snapshot immediately before writing, then publish through same-directory temporary files. On failure, restore only transaction-owned bytes and stop rather than overwrite a concurrent change.
-4. Run the audit again, commit the ready transition, and report that `execute` is now eligible.
+1. Require the thematic profile. Parse one or more distinct canonical `<THEME>-<NNN>` identifiers and locate exactly one corresponding plan per identifier; stop on zero or multiple matches, duplicates, or an empty batch. Require every selected plan to have `status: open`. A `ready`, `in-progress`, `acceptance`, or `done` plan is reported at its current gate and is not silently moved.
+2. Require the user's explicit current-conversation approval for the exact selected batch. Approval to create, edit, or inspect plans is not readiness approval. Run the read-only `ki-repo-roadmap` audit and continue only with zero FAIL and zero WARN. Confirm every qualified `blocked-by` plan in the batch is done.
+3. Snapshot every selected plan and its canonical theme-roadmap local reference, deduplicating shared roadmaps. Prepare only each `status: ready`; retain every plan body, canonical item, local reference, root projection, and dependency edge unchanged. Revalidate the clean audit and every snapshot immediately before writing, then publish every status replacement as one guarded transaction. If any selected plan is ineligible, changed concurrently, or cannot publish, restore only transaction-owned writes and leave the whole batch untransitioned.
+4. Run the audit again, commit the full ready batch once, and report that the selected plans are eligible for `execute`. A one-plan invocation is the same operation with a batch of one.
 
 ## `prune [theme]`
 
@@ -59,13 +59,13 @@ If acceptance analysis later changes only the packet's prose, run the applicable
 5. Materialise regular same-directory temporary files. Replace only byte-unchanged affected roadmaps, plans, and root projection; remove a selected plan only while its bytes match its snapshot. Run the read-only audit again; success requires zero FAIL and zero WARN, no selected canonical item/reference/dependency edge, and an exact generated root projection.
 6. On any failure, restore only transaction-owned files while their current bytes still match the bytes this transaction wrote. Restore a removed plan only with an exclusive create. If safe rollback cannot proceed, stop and report the conflict. Commit the successful prune batch separately from every done transition.
 
-## `execute <THEME>-<NNN>`
+## `execute <THEME>-<NNN>...`
 
-1. Require the thematic profile. Parse the plan identifier as an uppercase theme code plus a zero-padded numeric serial, `<THEME>-<NNN>`. Locate the one `<THEME>-<NNN>-*.md` under the corresponding theme's `plans/` directory. Require `status: ready`; an open plan must first receive `ready` approval.
-2. Run the read-only `ki-repo-roadmap` audit and continue only with zero FAIL and zero WARN. Read the plan and verify that every qualified `blocked-by` plan reference resolves to a done plan in the canonical thematic plan files.
-3. For each plan edit — the initial `status: in-progress` and every completed Step marker — snapshot the exact plan and its canonical theme-roadmap local reference. Prepare the plan replacement, revalidate the clean audit and every snapshot immediately before writing, and require the local reference to remain exactly matched to the plan. Publish through a same-directory temporary file; run the audit again. On failure, restore only transaction-owned bytes and only while the current file still equals the bytes this transaction wrote. Stop rather than overwrite a concurrent change.
-4. Work `## Steps` sequentially; after each completes, prefix that line with `✓` (or check its `- [x]` box). Where the plan carries `## Delegation`, execute its recorded rounds through `ki-delegate`: keep worker scopes exclusive, gate each round before dispatching the next, and retain orchestrator review and final verification. Commit progress as you go — the plan file travels with the code it describes.
-5. When all steps are done and the plan's Verify checks pass, run `accept <THEME>-<NNN>`. Stop after presenting its packet; only a later explicit user acceptance permits `done <THEME>-<NNN>` to record its retained completion outcome. A separate later `prune` removes selected done records and canonical items.
+1. Require the thematic profile. Parse one or more distinct canonical `<THEME>-<NNN>` identifiers and locate exactly one corresponding plan per identifier; stop on zero or multiple matches, duplicates, or an empty batch. Require every selected plan to have `status: ready`; an open plan must first receive readiness approval.
+2. Require the user's explicit current-conversation coordinated start for the exact selected batch. Run the read-only `ki-repo-roadmap` audit and continue only with zero FAIL and zero WARN. Read every selected plan and verify that every qualified `blocked-by` reference resolves to a done plan in the canonical thematic plan files.
+3. Snapshot every selected plan and its canonical theme-roadmap local reference, deduplicating shared roadmaps. Prepare only each `status: in-progress`; retain every plan body, canonical item, local reference, root projection, and dependency edge unchanged. Revalidate the clean audit and every snapshot immediately before writing, then publish every status replacement as one guarded transaction. If any selected plan is ineligible, changed concurrently, or cannot publish, restore only transaction-owned writes and leave the whole batch at `ready`. Run the audit again, then commit the full start batch once.
+4. Work each plan's `## Steps` sequentially after the shared start. Mark each completed instruction with `✓` (or a `- [x]` checkbox); commit independently verified progress as it occurs, so each plan remains recoverable. Where a plan carries `## Delegation`, execute its recorded rounds through `ki-delegate`: keep worker scopes exclusive, gate each round before dispatching the next, and retain orchestrator review and final verification.
+5. When all steps in a plan are done and its Verify checks pass, run `accept <THEME>-<NNN>` for that plan. Stop after presenting its packet; only a later explicit user acceptance permits `done <THEME>-<NNN>` to record its retained completion outcome. A separate later `prune` removes selected done records and canonical items.
 
 ## `new <theme> <title>`
 

@@ -1,7 +1,7 @@
 ---
 id: 'GOV-002'
 title: Batch plan readiness and start transitions
-status: ready
+status: in-progress
 roadmap: governance-consistency/batch-plan-readiness-and-start-transitions
 blocks: —
 blocked-by: —
@@ -15,17 +15,17 @@ That forces artificial per-plan commits even when the user made one approval or 
 
 ## Current state
 
-`ready <THEME>-<NNN>` and `execute <THEME>-<NNN>` validate, snapshot, publish, audit, and commit a single plan transition.
+`ready <THEME>-<NNN>...` and `execute <THEME>-<NNN>...` now accept a distinct, explicit batch of plan identifiers.
 
-The lifecycle has no batch grammar or all-or-nothing transaction rule for several selected plans.
+Each batch validates every selected plan before any write, snapshots the affected plans and roadmaps, then publishes all transitions atomically in one commit; an owned-write failure restores the batch to its prior state.
 
 ## Steps
 
-1. Define the batch selector grammar and boundary: one or more explicit plan identifiers, no implicit discovery, one explicit user approval for each readiness batch and one explicit coordinated start for each execution batch.
-2. Update `ki-plan` invocation and lifecycle procedures so `ready` validates every selected open plan before publishing all `ready` transitions in one guarded transaction and one commit.
-3. Update `execute` so a selected ready batch validates every dependency and snapshot before publishing all `in-progress` transitions in one guarded transaction and one commit; retain ordinary per-plan step progress commits after that shared start.
-4. Update the `ki-repo-roadmap` plan-format/lifecycle guidance to describe the transaction and rollback expectations without duplicating `ki-plan`'s procedural detail.
-5. Run the roadmap and authoring audits, then serial repository verification.
+1. [x] Define the batch selector grammar and boundary: one or more explicit plan identifiers, no implicit discovery, one explicit user approval for each readiness batch and one explicit coordinated start for each execution batch.
+2. [x] Update `ki-plan` invocation and lifecycle procedures so `ready` validates every selected open plan before publishing all `ready` transitions in one guarded transaction and one commit.
+3. [x] Update `execute` so a selected ready batch validates every dependency and snapshot before publishing all `in-progress` transitions in one guarded transaction and one commit; retain ordinary per-plan step progress commits after that shared start.
+4. [x] Update the `ki-repo-roadmap` plan-format/lifecycle guidance to describe the transaction and rollback expectations without duplicating `ki-plan`'s procedural detail.
+5. [x] Run the roadmap and authoring audits, then serial repository verification.
 
 ## Files touched
 
