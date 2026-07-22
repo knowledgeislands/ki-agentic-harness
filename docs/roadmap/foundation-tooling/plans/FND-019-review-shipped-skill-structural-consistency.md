@@ -1,7 +1,7 @@
 ---
 id: 'FND-019'
 title: Review structural consistency across shipped skills
-status: acceptance
+status: done
 roadmap: foundation-tooling/review-structural-consistency-across-shipped-skills
 blocks: —
 blocked-by: —
@@ -316,3 +316,9 @@ Completed the structural assessment of all 31 shipped skills without a blanket r
 The useful common patterns are narrow: governed entrypoints are in-process, checker consumers use declared vendored providers, source-harness payloads are manifest-governed links plus regular generated controls, and tests live with the implementation whose contract they prove.
 
 Variation in local context count, renderer details, test-file count, and external tool use remains legitimate when its owner, boundary, and executable evidence are clear.
+
+## Done
+
+Completed the structural consistency review and its four bounded repairs after manual acceptance.
+
+Residual concerns are represented by the existing focused roadmap items for generated-rubric parity, non-critical writer hardening, bootstrap simplification, and tokenomics engine subprocesses.
