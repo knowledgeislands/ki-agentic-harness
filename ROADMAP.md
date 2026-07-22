@@ -6,17 +6,19 @@ This portfolio view is generated from the canonical theme roadmaps under `docs/r
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
+- [Foundation Tooling: Review and extract evolvable skill capabilities](docs/roadmap/foundation-tooling/ROADMAP.md#review-and-extract-evolvable-skill-capabilities)
+
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
+- [Foundation Tooling: Build and deepen the Knowledge Islands command-line interface (CLI)](docs/roadmap/foundation-tooling/ROADMAP.md#build-and-deepen-the-knowledge-islands-command-line-interface-cli)
 - [Governance Consistency: Consolidate Knowledge Islands notes and chats into the knowledge base](docs/roadmap/governance-consistency/ROADMAP.md#consolidate-knowledge-islands-notes-and-chats-into-the-knowledge-base)
 
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
-- [Foundation Tooling: Build and deepen the Knowledge Islands command-line interface (CLI)](docs/roadmap/foundation-tooling/ROADMAP.md#build-and-deepen-the-knowledge-islands-command-line-interface-cli)
 - [Foundation Tooling: Codify Git workflow and commit conventions _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#codify-git-workflow-and-commit-conventions-candidate)
 - [Foundation Tooling: Protect generated rubric publications from drift](docs/roadmap/foundation-tooling/ROADMAP.md#protect-generated-rubric-publications-from-drift)
 - [Foundation Tooling: Review `ki-bootstrap` for further simplification](docs/roadmap/foundation-tooling/ROADMAP.md#review-ki-bootstrap-for-further-simplification)

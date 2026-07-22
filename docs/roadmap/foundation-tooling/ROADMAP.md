@@ -8,9 +8,19 @@ code: FND
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
+### Review and extract evolvable skill capabilities
+
+Extend `ki-skills` with a judgment-led `REVIEW` mode for the architecture and automation opportunities of existing skills, and an opt-in `EXTRACT` mode that examines a repository plus explicitly selected history to identify reusable skills, scripts, references, agents, or hooks. Both modes must reconcile their candidate findings against the canonical roadmap, distinguish a new item from an amendment to an existing one, and use `ki-next` / `ki-plan` only after the user confirms the proposed work. Preserve `AUDIT` as the rubric gate, `EDUCATE` as deliberate creation, and the rule against automatic historical-transcript mining or silent plan creation.
+
+**Plan:** [FND-002](plans/FND-002-review-and-extract-evolvable-skill-capabilities.md)
+
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
+
+### Build and deepen the Knowledge Islands command-line interface (CLI)
+
+This is the next priority after the Blocking skill-evolution work. Turn the accepted `ki` command contract into a released, zero-dependency end-user CLI in `tools-ki`, with `homebrew-tap` delivery. First incorporate the remaining command-surface ideas into the contract and settle any changes with the owning harness lifecycle semantics; then implement, test, package, and document the installed command without duplicating repository-local or harness-maintainer entrypoints.
 
 ## Soon
 
@@ -27,10 +37,6 @@ After the current boundary refactor settles, review the complete `ki-bootstrap` 
 ### Codify Git workflow and commit conventions _(candidate)_
 
 Choose an owner for repository Git discipline, including Conventional Commit messages, the allowed type and scope vocabulary, safe lock and cleanup behaviour, and consistency with repository-local instructions. Decide whether that owner should be a dedicated `ki-git` skill, including ownership of the shipped stale Git-lock guard rather than leaving it as an ungoverned hook. Add mechanical enforcement only after the standard is settled.
-
-### Build and deepen the Knowledge Islands command-line interface (CLI)
-
-Turn the accepted `ki` command contract into a released, zero-dependency end-user CLI in `tools-ki`, with `homebrew-tap` delivery. First incorporate the remaining command-surface ideas into the contract and settle any changes with the owning harness lifecycle semantics; then implement, test, package, and document the installed command without duplicating repository-local or harness-maintainer entrypoints.
 
 ## Waiting for
 
