@@ -1,7 +1,7 @@
 ---
 id: 'GOV-001'
 title: Define the Knowledge Acquisition Framework and ChatGPT pilot
-status: in-progress
+status: acceptance
 roadmap: governance-consistency/establish-the-knowledge-acquisition-framework-kaf-for-session-and-project-recovery
 blocks: FND-003
 blocked-by: —
@@ -51,3 +51,30 @@ No external ChatGPT material, connector, browser automation, credential, or CLI 
 This plan is intentionally first in the immediate queue because it establishes the acquisition boundary needed to recover the knowledge currently trapped in agent sessions and projects.
 
 It blocks FND-003 only for the public acquisition command and its terminology. FND-003 may retain its existing evidence and implementation research, but must not finalise a public CLI manual that omits or contradicts the KAF contract.
+
+## Acceptance
+
+### Delivered
+
+An explicit KAF → KEP → KBEP → KBIP lifecycle, a KEP v0 brief for KI Specifications, a bounded `ki acquire` brief for `tools-ki`, and a safe procedure for a user-assisted ChatGPT evidence capture.
+
+### Summary of changes
+
+- Preserved the three inbound proposals verbatim as `.txt` records and added their governed lifecycle/disposition note in `+/_HANDOFFS/`.
+- Added the private pilot procedure in `docs/guides/developer/knowledge-acquisition-pilot.md`.
+- Added implementation-ready handoffs for `knowledgeislands/ki-specifications` and `knowledgeislands/tools-ki`.
+
+### Verification
+
+- `bunx prettier --check -- <six GOV-001 Markdown files>` — passed.
+- `bun run ki:repo-roadmap:audit` — passed with no FAIL or WARN findings.
+- `bun run ki:authoring:audit` — passed with no FAIL or WARN findings.
+- Commit `96883a64` — staged Markdown formatting and lint checks passed in the pre-commit hook.
+
+### Outstanding concerns
+
+A real pilot remains deliberately user-selected and private; this plan prepares its controlled procedure but does not capture private ChatGPT material. The two receiving repositories must independently adopt their outbound briefs before specification or CLI implementation begins.
+
+### Mini recap
+
+The three source proposals are complementary stages rather than competing replacements. Keeping raw inbound material verbatim while documenting a concise governed disposition lets the harness preserve context without treating an early proposal as a finished standard.
