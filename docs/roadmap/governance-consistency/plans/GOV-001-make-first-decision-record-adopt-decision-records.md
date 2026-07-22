@@ -1,7 +1,7 @@
 ---
 id: 'GOV-001'
 title: Make the first decision record adopt Decision Records
-status: acceptance
+status: done
 roadmap: governance-consistency/make-the-first-decision-record-adopt-decision-records
 blocks: —
 blocked-by: —
@@ -78,3 +78,7 @@ The marker is deliberately required for mechanical provenance: an unmarked colle
 ### Mini recap
 
 When a new convention must coexist with historical content, an explicit, non-rendered provenance marker is a small and auditable boundary. The alternative would be an unreliable date/history heuristic or a destructive migration.
+
+## Done
+
+Accepted on 2026-07-22. New Decision Record collections are protected by the adoption-root contract, while established collections remain migration cases; the retained record is ready for the user-confirmed batch prune.

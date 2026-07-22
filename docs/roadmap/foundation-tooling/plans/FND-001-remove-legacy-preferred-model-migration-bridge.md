@@ -1,7 +1,7 @@
 ---
 id: 'FND-001'
 title: Remove the legacy preferred_model migration bridge in ki-tokenomics
-status: acceptance
+status: done
 roadmap: foundation-tooling/remove-the-legacy-preferredmodel-migration-bridge-in-ki-tokenomics
 blocks: —
 blocked-by: —
@@ -77,3 +77,7 @@ The aggregate audit retains unrelated existing warnings for the `GDR-KI-ARCADIA-
 ### Mini recap
 
 Fleet evidence made bridge removal safe, but the implementation search also exposed stale cross-skill prose. A migration-removal plan should include that live-reference sweep explicitly, as this plan did.
+
+## Done
+
+Accepted on 2026-07-22. The legacy bridge is removed and the portable model-default contract is the sole supported configuration surface; the retained record is ready for the user-confirmed batch prune.
