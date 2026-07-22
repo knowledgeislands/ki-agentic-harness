@@ -1,7 +1,7 @@
 ---
 id: 'FND-004'
 title: Codify repository working areas
-status: ready
+status: in-progress
 roadmap: foundation-tooling/codify-repository-working-areas
 blocks: FND-003
 blocked-by: —
