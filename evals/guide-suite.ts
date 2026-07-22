@@ -7,7 +7,7 @@
  * Extracts the fenced `bash` command blocks from docs/guides/user-guide/onboarding.md
  * and runs the documented onboarding steps against in-harness fixtures — driving the
  * bootstrap chain (EDUCATE → the self-sufficiency contract) with **no skills installed**.
- * It then asserts each fixture ends in the documented state: vendored script copies +
+ * It then asserts each fixture ends in the documented state: vendored governed entrypoint copies +
  * HELP snapshots, the four `.ki/bin/{ki-audit,ki-conform,ki-educate,ki-help}` entry
  * points, an untouched `package.json` (bootstrap wires no keys — that is ki-engineering's
  * job), a working aggregate, HELP readable with no bun on PATH, and byte-identical output
@@ -38,7 +38,10 @@ function check(cond: boolean, msg: string): void {
 function greenfield(dir: string, tables: string[] = ['[ki-repo]']): void {
   mkdirSync(dir, { recursive: true })
   writeFileSync(join(dir, 'package.json'), `${JSON.stringify({ name: 'fixture', version: '0.0.0', scripts: {} }, null, 2)}\n`)
-  writeFileSync(join(dir, '.ki-config.toml'), `${tables.join('\n')}\nlicense = "MIT"\n`)
+  writeFileSync(
+    join(dir, '.ki-config.toml'),
+    `[ki-repo]\nsupported_runtimes = ["claude-code"]\n${tables.filter((table) => table !== '[ki-repo]').join('\n')}\nlicense = "MIT"\n`
+  )
   execSync('git init -q', { cwd: dir })
 }
 
@@ -110,18 +113,21 @@ try {
     const p = join(gf, '.ki/bin', bin)
     check(existsSync(p) && (lstatSync(p).mode & 0o111) !== 0, `wrote executable .ki/bin/${bin}`)
   }
-  const repoChecker = join(gf, '.ki/bootstrap/checkers/ki-repo/scripts/audit.ts')
-  check(existsSync(repoChecker), 'vendored the ki-repo checker')
-  check(existsSync(repoChecker) && !lstatSync(repoChecker).isSymbolicLink(), 'vendored checker is a copy, not a symlink (SCRIPT-7)')
+  const repoEntrypoint = join(gf, '.ki/bootstrap/checkers/ki-repo/scripts/govern.ts')
+  check(existsSync(repoEntrypoint), 'vendored the ki-repo governed entrypoint')
+  check(
+    existsSync(repoEntrypoint) && !lstatSync(repoEntrypoint).isSymbolicLink(),
+    'vendored governed entrypoint is a copy, not a symlink (SCRIPT-7)'
+  )
   check(existsSync(join(gf, '.ki/bootstrap/checkers/ki-repo/help.md')), 'rendered the ki-repo HELP snapshot')
-  check(existsSync(join(gf, '.ki/bootstrap/checkers/ki-mcp/scripts/audit.ts')), 'declared [ki-mcp] pulled ki-mcp into the vendored set')
+  check(existsSync(join(gf, '.ki/bootstrap/checkers/ki-mcp/scripts/govern.ts')), 'declared [ki-mcp] pulled ki-mcp into the vendored set')
 
   // Bootstrap touches no package.json — the ki:* keys are ki-engineering's to wire.
   const pkg = JSON.parse(readFileSync(join(gf, 'package.json'), 'utf8')) as { scripts: Record<string, string> }
   check(Object.keys(pkg.scripts).length === 0, 'bootstrap wrote no package.json keys (scripts still empty)')
 
   // The aggregate fans out over the vendored checkers, via the bin (no package.json key).
-  const audit = run('./.ki/bin/ki-audit audit', gf, gfEnv)
+  const audit = run('./.ki/bin/ki-audit audit --reporter-levels=all', gf, gfEnv)
   check(/==> ki:repo:audit/.test(audit), 'aggregate invoked the vendored ki-repo checker')
   check(/==> ki:mcp:audit/.test(audit), 'aggregate invoked the vendored ki-mcp checker')
 
