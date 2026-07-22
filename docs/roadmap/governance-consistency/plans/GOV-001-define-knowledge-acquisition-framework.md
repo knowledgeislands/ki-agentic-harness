@@ -1,7 +1,7 @@
 ---
 id: 'GOV-001'
 title: Define the Knowledge Acquisition Framework and ChatGPT pilot
-status: open
+status: ready
 roadmap: governance-consistency/establish-the-knowledge-acquisition-framework-kaf-for-session-and-project-recovery
 blocks: FND-003
 blocked-by: —
