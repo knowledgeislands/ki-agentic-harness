@@ -1,7 +1,7 @@
 ---
 id: 'FND-002'
 title: Review and extract evolvable skill capabilities
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/review-and-extract-evolvable-skill-capabilities
 blocks: —
 blocked-by: —
@@ -67,7 +67,7 @@ This is independent of the CLI implementation, but it blocks further near-term w
 
 - Passed `bun test skills/keystone/ki-skills/scripts/candidate-contract.test.ts`, `bun run ki:skills:audit`, `bun run ki:bootstrap:audit`, `bun run test`, and `bun run ki:audit` serially; re-ran the focused candidate-contract test after the header clarification.
 - The skills audit retains two existing `KI-SHAPE-7` warnings; the aggregate audit retains the known runtime-link bootstrap warnings. Neither concerns this feature.
-- Implementation evidence: `a107566c` (`feat(skills): add review and extract modes`).
+- Implementation evidence: `a107566c` (`feat(skills): add review and extract modes`) and `b90577f1` (`docs(scripts): clarify candidate validator purpose`).
 
 ### Outstanding concerns
 
