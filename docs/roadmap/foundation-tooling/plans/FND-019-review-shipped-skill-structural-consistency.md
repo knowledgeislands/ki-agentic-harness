@@ -29,7 +29,7 @@ Each area is reviewed across comparable skills, beginning with the strongest rel
 2. **Rubric structure and publication** — organisation of `rubric/` contexts, item catalogues, index modules, generated `references/rubric.md`, context factories, and the boundary between a checker-contract provider and a dependent skill. **Completed:** one publisher repair and a bounded parity follow-up.
 3. **Checker decomposition and shared modules** — what stays skill-local, what is safely vendored, and whether imports point in the intended provider-to-consumer direction. **Completed:** provider-to-consumer implementation direction conforms; one test-ownership question is retained for the documentation/evidence slice.
 4. **Safe writes and external boundaries** — atomicity, idempotence, dry-run behaviour, symlink handling, subprocesses, and which external-tool calls are genuine boundaries. **In progress:** subprocess and writer inventory complete; direct non-bootstrap writers remain for focused assessment.
-5. **Generated payloads and HELP** — source-to-vendored parity, generated documentation, HELP snapshots, and the tests that protect each projection.
+5. **Generated payloads and HELP** — source-to-vendored parity, generated documentation, HELP snapshots, and the tests that protect each projection. **Completed:** source-harness projection and generated HELP contracts conform.
 6. **Documentation, ownership, and evidence** — the relationship between standards, rubrics, source provenance, code, frontmatter ownership declarations, and focused versus end-to-end tests.
 
 ## Steps
@@ -231,3 +231,29 @@ Each has useful behaviour-level safeguards, but none has the transaction and hos
 The existing **Inventory non-critical writers for bounded follow-up** roadmap item now names this evidence and is the focused home for deciding each boundary's appropriate hardening.
 
 No broader writer normalisation is inferred from the inventory alone.
+
+## Assessment record — generated payloads and HELP
+
+### Scope and method
+
+This slice checks the source-harness projection rather than treating its manifest-governed links as ordinary repository copies.
+
+It validates the complete skill graph and HELP catalogue, inspects the manifest entry classes, and runs the bootstrap source-parity audit.
+
+### Findings
+
+`skill-graph --check --check-doc` confirms all 31 shipped skills and the rendered user-guide graph are current.
+
+`skill-help --check` confirms that the same 31 skills are covered by the editorial catalogue, while the per-skill HELP snapshot remains generated directly from each `SKILL.md` declaration rather than separately authored.
+
+The source harness has 12 governed skills in its declared coverage.
+
+Its manifest records 31 generated regular files (12 HELP snapshots, 12 educator launchers, and 7 aggregate or harness-bin files) and 38 declared local links (12 checker entrypoints, 12 educator skill sources, 12 shared educator modules, and the `skills` and `agents` catalogue roots).
+
+`ki-bootstrap` BOOT-9/11/12/13 confirms the resolved set, direct entrypoint parity, educator set, and canonical source-link declarations.
+
+### Classification
+
+This is intentional source-harness behaviour: generated small control files remain regular and manifest-hashed, while canonical source trees and direct checker units remain local links.
+
+No generated-payload or HELP consistency repair is needed from this slice.
