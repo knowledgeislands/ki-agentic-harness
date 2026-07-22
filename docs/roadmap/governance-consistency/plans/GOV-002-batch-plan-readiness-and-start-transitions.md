@@ -1,7 +1,7 @@
 ---
 id: 'GOV-002'
 title: Batch plan readiness and start transitions
-status: acceptance
+status: done
 roadmap: governance-consistency/batch-plan-readiness-and-start-transitions
 blocks: —
 blocked-by: —
@@ -70,3 +70,9 @@ The lifecycle is a runtime-neutral process contract, not a command implementatio
 ### Mini recap
 
 Batching status transitions does not weaken the plan gates: all work is checked before publishing, and a single-plan command follows the same safer transaction path.
+
+## Done
+
+GOV-002 is complete and retained as the accepted record of the batch-transition lifecycle contract.
+
+No follow-up is required: the contract is proven by the completed coordinated plan work and is ready for the user-authorised prune.
