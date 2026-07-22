@@ -16,6 +16,8 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 
 The checker deliberately recognises `preferred_model` only to issue a migration failure. Remove that parsing and its alias mapping when a fleet-wide search confirms that no sibling `.ki-config.toml` still uses the legacy key.
 
+**Plan:** [FND-001](plans/FND-001-remove-legacy-preferred-model-migration-bridge.md)
+
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.

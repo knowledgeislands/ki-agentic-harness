@@ -20,6 +20,8 @@ Collect and reconcile the Knowledge Islands notes, chats, and other session mate
 
 Extend `ki-decision-records` so the first decision record in a repository is always the record that adopts Decision Records. Define its required decision type, title, and index position; update the NEW guidance, exemplars, and audit rules so a new collection cannot begin with an unrelated decision. Preserve existing collections as migration cases rather than renumbering or rewriting their records automatically.
 
+**Plan:** [GOV-001](plans/GOV-001-make-first-decision-record-adopt-decision-records.md)
+
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
