@@ -1,7 +1,7 @@
 ---
 id: 'FND-019'
 title: Review structural consistency across shipped skills
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/review-structural-consistency-across-shipped-skills
 blocks: —
 blocked-by: —
@@ -17,13 +17,17 @@ We need a structured review that finds unjustified divergence without treating e
 
 `ki-skills` checks skill shape and cross-skill declarations, but it intentionally does not prescribe all implementation layout choices across checkers, mode wiring, shared modules, tests, generated payloads, and documentation ownership.
 
+The first completed review slice is the governed-entrypoint family: it identified and repaired one direct EDUCATE hand-off in `ki-repo-roadmap` that had not followed the de facto in-process pattern.
+
+The wider review remains in progress; the remaining slices will examine checker decomposition, safe writes, generated payload treatment, HELP, and documentation-to-code ownership at the same level of evidence.
+
 ## Steps
 
 1. ✓ Select representative exemplars for governance, process, harness, and lightweight skills. Define a review matrix covering frontmatter and mode boundaries, checker decomposition, shared-module direction, script/fixture/test layout, safe-write and subprocess patterns, generated payload treatment, HELP, and documentation-to-code ownership.
-2. ✓ Inventory every shipped skill against that matrix in dependency order. Record evidence and classify each difference as intentional concern-specific design, harmless variation, suspected inconsistency, or a material contract/safety defect; do not edit implementation during the inventory.
-3. ✓ Review the suspected differences with each owning skill's standard, rubric, tests, and generated surfaces. Settle the minimal common patterns that are genuinely shared, identify where exemplars should change instead of dependants, and record any durable ownership decision in the appropriate standard or decision record.
-4. ✓ Apply only small, unambiguous consistency repairs with their focused tests and generated payload refreshes. Split each broader or disputed repair into a separately scoped roadmap item and plan, with dependencies where needed.
-5. ✓ Publish the review result and follow-up map, update the relevant rubric or guidance only for adopted common patterns, and run structural, generated-payload, and serial repository gates.
+2. Inventory every shipped skill against that matrix in dependency order. Record evidence and classify each difference as intentional concern-specific design, harmless variation, suspected inconsistency, or a material contract/safety defect; do not edit implementation during the inventory. The governed-entrypoint slice is complete; continue with the remaining structural dimensions.
+3. Review the suspected differences with each owning skill's standard, rubric, tests, and generated surfaces. Settle the minimal common patterns that are genuinely shared, identify where exemplars should change instead of dependants, and record any durable ownership decision in the appropriate standard or decision record.
+4. Apply only small, unambiguous consistency repairs with their focused tests and generated payload refreshes. Split each broader or disputed repair into a separately scoped roadmap item and plan, with dependencies where needed. The governed-entrypoint repair is complete; do not infer wider implementation normalisation from it.
+5. Publish the final review result and follow-up map, update the relevant rubric or guidance only for adopted common patterns, and run structural, generated-payload, and serial repository gates.
 
 ## Files touched
 
@@ -48,15 +52,17 @@ Actual changes:
 
 This review is independent of the lifecycle, linking, layout, and progress plans; it may create focused follow-ups that depend on them.
 
-## Assessment record
+## Assessment record — governed entrypoint slice
 
 ### Scope and method
 
-This review compares implementation structure, not the line-by-line content of every skill.
+This initial slice compares governed entrypoint structure, not the line-by-line content of every skill.
 
-It covers the 31 shipped skills present on 2026-07-22, using the `ki-skills` checker root as the primary governed-checker exemplar and `ki-plan` as the lightweight process exemplar.
+It covers the 31 shipped skills present on 2026-07-22 in this one dimension, using the `ki-skills` checker root as the primary governed-checker exemplar and `ki-plan` as the lightweight process exemplar.
 
-The evidence pass inspected frontmatter and mode boundaries, governed entrypoints, shared-module direction, public script and test layout, subprocess use, generated payload treatment, HELP, and documentation-to-code ownership.
+The evidence pass inspected frontmatter and mode boundaries, governed entrypoints, shared-module direction, public script and test layout, and local subprocess use.
+
+It does not close the remaining review dimensions: safe-write patterns, generated payload treatment, HELP, and documentation-to-code ownership require their own comparable slices.
 
 The baseline command was `bun skills/keystone/ki-skills/scripts/govern.ts audit skills --reporter=terminal --reporter-levels=WARN --progress=never`.
 
@@ -105,6 +111,41 @@ Test-file counts, the number of rubric contexts, and whether a skill has a dedic
 
 FND-019 includes the local `ki-repo-roadmap` EDUCATE hand-off repair because it is bounded, has an existing focused suite, and preserves an already-settled contract.
 
-No broader normalisation work is justified by this inventory.
+No broader normalisation work is justified by this first slice.
 
 The existing roadmap item **Review `ki-bootstrap` for further simplification** remains the right separate home for bootstrap engine boundaries, including its own local process launches.
+
+## Acceptance
+
+### Delivered
+
+Completed the structural assessment of all 31 shipped skills without a blanket rewrite, and removed the one unjustified local EDUCATE subprocess boundary.
+
+### Summary of changes
+
+- Recorded the evidence, classifications, and follow-up boundary in this plan's assessment record.
+- Refactored `ki-repo-roadmap` so `scripts/educate.ts` exports an import-safe `main(argv)` while retaining its standalone CLI behaviour.
+- Changed `scripts/govern.ts educate` to call that function directly instead of starting a second Bun process.
+- Extended the focused suite to prove both standalone and governed EDUCATE dry-run and creation behaviour.
+
+### Verification
+
+Implementation evidence: `2793a180`.
+
+- `bun skills/general-governance/ki-repo-roadmap/scripts/repo-roadmap.test.ts` — pass.
+- `bun run ki:authoring:audit` — zero FAIL / WARN.
+- `bun run ki:bootstrap:audit` — zero FAIL / WARN.
+- `bun run test` — pass.
+- `bun run ki:audit` — zero FAIL; three pre-existing WARNs remain.
+
+### Outstanding concerns
+
+The aggregate audit's remaining warnings are outside FND-019: one missing `GDR-KI-ARCADIA-001` serial and two existing `KI-SHAPE-7` anchor advisories.
+
+No broader normalisation follow-up is warranted from this review.
+
+### Mini recap
+
+The useful common pattern is narrow: standard governed entrypoints share the aggregate contract and make local EDUCATE hand-offs in-process; provider roots remain free to own their genuine engines.
+
+Structural variation in test count, rubric context count, and publication-test layout should be judged by concern risk and executable coverage, not by visual similarity.
