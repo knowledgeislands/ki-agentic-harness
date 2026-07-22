@@ -1,7 +1,7 @@
 ---
 id: 'FND-001'
 title: Remove the legacy preferred_model migration bridge in ki-tokenomics
-status: ready
+status: in-progress
 roadmap: foundation-tooling/remove-the-legacy-preferredmodel-migration-bridge-in-ki-tokenomics
 blocks: —
 blocked-by: —
