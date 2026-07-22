@@ -1,7 +1,7 @@
 ---
 id: 'FND-002'
 title: Review and extract evolvable skill capabilities
-status: open
+status: ready
 roadmap: foundation-tooling/review-and-extract-evolvable-skill-capabilities
 blocks: —
 blocked-by: —
