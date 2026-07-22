@@ -20,7 +20,9 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 
 ### Build and deepen the Knowledge Islands command-line interface (CLI)
 
-This is the next priority after the Blocking skill-evolution work. Turn the accepted `ki` command contract into a released, zero-dependency end-user CLI in `tools-ki`, with `homebrew-tap` delivery. First incorporate the remaining command-surface ideas into the contract and settle any changes with the owning harness lifecycle semantics; then implement, test, package, and document the installed command without duplicating repository-local or harness-maintainer entrypoints.
+This is the next priority after the Blocking skill-evolution work. Start with a user guide and CLI help manual that makes the intended end-user interface, scope boundaries, safety properties, and recovery routes reviewable before implementation. Use that manual to reconcile the accepted `ki` command contract and its receiving-repository handoffs; only then implement, test, package, and document the zero-dependency CLI in `tools-ki`, with `homebrew-tap` delivery, without duplicating repository-local or harness-maintainer entrypoints.
+
+**Plan:** [FND-003](plans/FND-003-define-ki-cli-user-guide-and-manual.md)
 
 ## Soon
 
