@@ -418,7 +418,7 @@ const run = async (mode: CheckMode, argv: readonly string[]): Promise<number> =>
               skill,
               event.completed,
               event.total,
-              event.type === 'failed' ? 'failed' : event.code ?? event.type
+              event.type === 'failed' ? 'failed' : (event.code ?? event.type)
             )
         })
       )

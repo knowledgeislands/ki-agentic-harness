@@ -4,8 +4,8 @@ ki-depends-on: []
 ki-shared-modules: [rubric, checker, reporter, checker-reporter, govern]
 ki-shared-dependencies: [ki-bootstrap:educator]
 description: >
-  Audit, review, and write Agent Skills against current best practice. Use when creating a new skill, reviewing or critiquing an existing SKILL.md, checking a skill before it ships, asking "is this skill any good / well-written / discoverable", or refreshing the house rubric against new community guidance. Carries a checkable rubric (split into mechanical checks a bundled linter runs, and judgment checks you apply), the Knowledge Islands skill conventions, and a tracked source list it revisits. Triggers: "audit this skill", "review my skill", "is this SKILL.md good", "write a new skill", "scaffold a skill", "lint the skills", "check skills against best practice", "refresh the skills rubric", "what do we expect from a skill". Judges a `SKILL.md` itself (frontmatter + body prose), not a repo's code or config. Off-ramps: `ki-agents` (subagent defs), `ki-mcp` (server code), `ki-authoring` (Markdown/TOML style), `ki-harness` (bundle layout).
-argument-hint: 'audit <skill-or-repo> | conform <skill> | help | educate <description> | optimise <skill> | refresh'
+  Audit, review, extract, and write Agent Skills against current best practice. Use when creating a new skill, auditing or critiquing a SKILL.md, examining an existing skill for automation opportunities, analysing a project for reusable skills or scripts, or refreshing the house rubric. Carries a checkable rubric (mechanical checks plus judgment), a read-only candidate contract, the Knowledge Islands skill conventions, and a tracked source list. Triggers: "audit this skill", "review my skill architecture", "analyse my project for skills", "find steps to turn into scripts", "is this SKILL.md good", "write a new skill", "scaffold a skill", "lint the skills", "check skills against best practice", "refresh the skills rubric". Judges a `SKILL.md` itself (frontmatter + body prose), not a repo's code or config. Off-ramps: `ki-agents` (subagent defs), `ki-mcp` (server code), `ki-authoring` (Markdown/TOML style), `ki-harness` (bundle layout).
+argument-hint: 'audit <skill-or-repo> | conform <skill> | educate <description> | extract <repo> [--history <path>...] | help | optimise <skill> | refresh | review <skill-or-repo>'
 ---
 
 # Knowledge Islands Skills
@@ -23,11 +23,11 @@ Every criterion carries a mechanical aspect, a judgment aspect, or both:
 
 A hybrid criterion retains one code and shared meaning while its deterministic evidence runs mechanically and its remaining judgment is counted for later review.
 
-The conventions a good skill follows — what each is and why — live in [the Agent Skills standard](references/standards.md); the current readable criteria live in [the rubric](references/rubric.md), each citing its standard section. [Rubric authoring](references/rubric-authoring.md) defines the code-first model that makes structured rubric families the authored source of truth and `rubric.md` their generated publication. The checker protocol lives in [the checker contract](references/checker-contract.md); its Knowledge Islands-specific criteria form the rubric's `KI-CHECKER` family. The machine result returned by governance checkers is defined in [the canonical checker response](references/checker-response.md) and its executable [schema](assets/checker-response.schema.json). Load the standard and rubric before an AUDIT, CONFORM, or EDUCATE; additionally load the rubric-authoring guide, checker contract, and checker response when writing or reviewing a governance checker.
+The conventions a good skill follows — what each is and why — live in [the Agent Skills standard](references/standards.md); the current readable criteria live in [the rubric](references/rubric.md), each citing its standard section. [Rubric authoring](references/rubric-authoring.md) defines the code-first model that makes structured rubric families the authored source of truth and `rubric.md` their generated publication. The checker protocol lives in [the checker contract](references/checker-contract.md); its Knowledge Islands-specific criteria form the rubric's `KI-CHECKER` family. The machine result returned by governance checkers is defined in [the canonical checker response](references/checker-response.md) and its executable [schema](assets/checker-response.schema.json). Load the standard and rubric before an AUDIT, CONFORM, or EDUCATE; load [candidate findings](references/candidate-findings.md) before REVIEW or EXTRACT; additionally load the rubric-authoring guide, checker contract, and checker response when writing or reviewing a governance checker.
 
 ## Operating modes
 
-Like every governance skill it carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH** — EDUCATE here writes a new skill; **OPTIMISE** — pushing a compliant skill from the floor toward excellent — is its skill-specific mode. Modes are named and alphabetical. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
+Like every governance skill it carries the universal four **AUDIT · CONFORM · EDUCATE · REFRESH** — EDUCATE here writes a new skill; **EXTRACT** identifies candidate reusable capabilities from an explicitly scoped repository and history; **OPTIMISE** pushes a compliant skill from the floor toward excellent; **REVIEW** assesses an existing skill's architecture and automation opportunities. Modes are named and alphabetical. Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
 
 ### Mode AUDIT — review an existing skill
 
@@ -58,6 +58,12 @@ Review a skill (or every skill in a repo) against the rubric and report.
 4. **Self-audit before finishing** — run Mode AUDIT on the new skill. EDUCATE and AUDIT share one rubric on purpose.
 5. **Add it to the set's scheduled refresh** — if the host registers a scheduled run that sweeps the set's REFRESH (LONG-2), add the new skill to that routine so it doesn't silently fall out of the sweep. The routine is host infra, not a repo file, so this is a manual follow-up the audit can't verify.
 
+### Mode EXTRACT — identify reusable capabilities from a project
+
+Inspect one explicitly named repository and, only when supplied, its explicitly selected history inputs to find candidate reusable skills, scripts, references, agents, or hooks.
+
+Read and follow [the EXTRACT procedure](references/mode-extract.md). It produces candidate findings and reconciles them with the canonical roadmap; it never mines unselected history or writes a skill, roadmap item, plan, agent, hook, or script without a later explicit user request.
+
 ### Mode OPTIMISE — push a compliant skill toward excellent
 
 **Precondition: the skill is already clean.** OPTIMISE assumes AUDIT (and CONFORM where needed) pass with zero FAIL — it improves a skill that has no violations, it does not fix one that does. If AUDIT is not clean, run CONFORM first. This mode works _above_ the caps, not at them; the target is **discoverability-per-token**, not the shortest possible skill — rich enough to fire, lean enough not to tax every turn. Optimising one lever blindly hurts the other; holding both is the work.
@@ -79,6 +85,12 @@ Keep the rubric current — the standard and the community move, and this is why
 3. **Scan our own skills** in the ki-agentic-harness repo for emergent patterns that work but aren't yet codified — promote the good ones into the standard + rubric; flag drift that contradicts them.
 4. **Propose a diff** to [the standard](references/standards.md) and the structured item definitions under `scripts/rubric/items/`; update a criterion's mechanical execution when new evidence can be checked deterministically. Confirm before writing, then republish [the readable rubric](references/rubric.md) with `bun scripts/rubric/publish.ts`.
 5. **Update [the source list](references/sources.md)** — bump each `last reviewed` date, add any new source, retire any dead one, and refresh the `## Last review` block (what's confirmed, open watch-items). The record of _what changed_ is the commit itself — history lives in git, not a changelog. This step is mandatory: the source list is the skill's memory of where best practice comes from.
+
+### Mode REVIEW — assess an existing skill's evolution opportunities
+
+Assess an existing skill or skill set beyond rubric conformance: its guidance, references, scripts, repeated procedures, and appropriate automation boundary.
+
+Read and follow [the REVIEW procedure](references/mode-review.md). It begins with AUDIT, produces candidate findings, and reconciles them with the canonical roadmap; it does not silently alter the reviewed skill or create follow-on work.
 
 ## Notes
 

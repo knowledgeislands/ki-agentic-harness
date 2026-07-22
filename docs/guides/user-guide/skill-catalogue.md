@@ -64,7 +64,7 @@ Codifies, audits, and conforms the **chezmoi dotfiles-management standard** — 
 
 ### `ki-skills`
 
-Audits, writes, and conforms Agent Skills against a checkable rubric — mechanical checks plus judgment ones applied by reading, and a tracked source list it revisits. It also owns the shared enforcement framework and checker contract used by governance skills.
+Audits, writes, and conforms Agent Skills against a checkable rubric — mechanical checks plus judgment ones applied by reading, and a tracked source list it revisits. `REVIEW` examines an existing skill's architecture and automation opportunities beyond the rubric; `EXTRACT` examines an explicitly named repository and only explicitly selected history inputs for candidate skills, scripts, references, agents, or hooks. Both modes produce evidence-backed proposals, reconcile them with the canonical roadmap, and stop for confirmation rather than silently creating durable work. It also owns the shared enforcement framework and checker contract used by governance skills.
 
 ### `ki-agents`
 

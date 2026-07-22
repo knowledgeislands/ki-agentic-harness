@@ -1,5 +1,5 @@
 {
-  "ref": "dc101491dbc8f7481bfe7e86e29a01c755de3957",
+  "ref": "2d65702349f4100f307261a82447114361826532",
   "files": {
     ".ki/bootstrap/checkers/ki-agents/help.md": "1e8a5617d470fab7029bf0286b0207dd5e3c4ce8d2f9bee40250ab40da30bc40",
     ".ki/bootstrap/educators/ki-agents/educate.ts": "ded677104d16c36177dabc7dc6acd3d53dcd3b7d1baea541788bc97b04d905bf",
@@ -21,14 +21,14 @@
     ".ki/bootstrap/educators/ki-repo/educate.ts": "53b914db119f6ee6130fb20a1bd3ba70ca4f103d229ea394e815b054a6c329a4",
     ".ki/bootstrap/checkers/ki-repo-roadmap/help.md": "04a0468fa20aef768ee27c040f26d7e004ccdd2b694285853160b406894955b9",
     ".ki/bootstrap/educators/ki-repo-roadmap/educate.ts": "b006d88fa34dae622b7f14e3c4944ab31d2471601e8dadaa8ed6da097d08b2c9",
-    ".ki/bootstrap/checkers/ki-skills/help.md": "b3a9fbf1da1746e3d0eb5ad17d8b95b6b79e7fc81e93f7dfb3c91bc27cca00e5",
+    ".ki/bootstrap/checkers/ki-skills/help.md": "562a49e39488616c5f4b407a480797fe64ceab65b99393f369fd182c0adc7e1d",
     ".ki/bootstrap/educators/ki-skills/educate.ts": "3d5a4ef98716fbf1794cddcf2fecc05020dc5b9bc97349f81a0d719e3efe1327",
     ".ki/bootstrap/checkers/ki-tokenomics/help.md": "9b84406b1f003ace49c52b811da176960ddb1ff012718c961ec277d19f97ebbf",
     ".ki/bootstrap/educators/ki-tokenomics/educate.ts": "2947306bf910b579fc035331bdd527271a29ff4c71c0b0c40cb3279faf4a78cd",
-    ".ki/bin/aggregate.ts": "69dbb7bd3ad6daa51f064d8592c376eacb0c55557b0c5098225f5e02e5b56d4c",
+    ".ki/bin/aggregate.ts": "97a5487f7dcd47a7edc57837a383f52f7fcfee606fce5a5649a4afc320ef6777",
     ".ki/bin/ki-audit": "3a5948204386f96b872905ee068aabf42839afe017ee794d64b9040e51a1d5b6",
     ".ki/bin/ki-conform": "2c43574dbcfb885c4396c64d98eb5e05efb26bda0f38802110641d3ba9496498",
-    ".ki/bin/ki-educate": "c177a5efefd2352185a7c9113e15855d427fe306429976e0e85fd7521349cd0c",
+    ".ki/bin/ki-educate": "1646ef39151ad253e3ad80793fe4ef3ecab99cdfb15ed45612dbfaab6f404a34",
     ".ki/bin/ki-help": "ccf02c61c3272e71f74851d421cbfce777ba0d4fd724ff3ceee38b57ef48f5d3",
     ".ki/bin/skill-graph.ts": "94d4ea7749d8411a517f7ec010238f00d02b1388a4ce6ad52bf4ea1f289bc71a",
     ".ki/bin/skill-help.ts": "c2f274b0e234e0350139c5573de4c5ce060594ac868ad8388dace7fd608f415d"
