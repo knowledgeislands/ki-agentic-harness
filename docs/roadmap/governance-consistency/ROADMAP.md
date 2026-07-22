@@ -8,13 +8,15 @@ code: GOV
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
+### Establish the Knowledge Acquisition Framework (KAF) for session and project recovery
+
+Adopt the Knowledge Acquisition Framework (KAF) as the upstream boundary that moves Knowledge Islands conversations, projects, attachments, and other source material out of agent sessions and into portable Knowledge Export Packages (KEPs). Settle KAF's fidelity, provenance, determinism, connector, and safety contract; preserve its strict separation from downstream KBEP extraction and KBIP ingress; and define a safe, user-assisted ChatGPT project/conversation pilot before considering browser automation. Use the resulting grounded corpus to support the broader consolidation of Knowledge Islands notes and chats into the canonical knowledge base and a coordinated go-forward roadmap. The KAF `ki acquire` interface must inform the CLI manual, but this harness work neither implements a scraper nor assumes a receiving code repository.
+
+**Plan:** [GOV-001](plans/GOV-001-define-knowledge-acquisition-framework.md)
+
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
-
-### Consolidate Knowledge Islands notes and chats into the knowledge base
-
-Collect and reconcile the Knowledge Islands notes, chats, and other session material into the canonical knowledge base. Use that grounded corpus to make one coordinated forward roadmap spanning the newly surfaced aspects, while preserving the current Blocking work as the watershed for remedial and critical delivery rather than mixing it into the go-forward structure.
 
 ## Soon
 

@@ -4,7 +4,7 @@ title: Define the KI CLI user guide and help manual
 status: open
 roadmap: foundation-tooling/build-and-deepen-the-knowledge-islands-command-line-interface-cli
 blocks: —
-blocked-by: —
+blocked-by: GOV-001
 ---
 
 ## Context
@@ -54,8 +54,8 @@ The public onboarding guide has only a short coming-soon note, and there is no i
 
 ## Dependencies / blocks
 
-FND-002 is complete and no longer blocks this work.
+The working-area convention is settled, and FND-003 is structurally unblocked by completed foundation work.
 
-FND-004 defines the repository working-area convention that owns outgoing handoffs. FND-003 can gather CLI evidence while that work proceeds, but must use the settled location and lifecycle before publishing a revised receiving-repository brief.
+GOV-001 now establishes the KAF acquisition boundary and initial `ki acquire` contract. FND-003 must use those decisions when it defines the public CLI manual, rather than treating acquisition as an incidental future command.
 
 This plan makes the public interface reviewable before the broader `tools-ki` implementation handoff proceeds. The first seed and `ki doctor` slice should be adopted by a receiving-repository roadmap and plan; a stable public Website endpoint for CLEAN remains an external prerequisite for the eventual lifecycle implementation, not for writing the manual or the coming-soon command.

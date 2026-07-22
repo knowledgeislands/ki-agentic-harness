@@ -6,12 +6,13 @@ This portfolio view is generated from the canonical theme roadmaps under `docs/r
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
+- [Governance Consistency: Establish the Knowledge Acquisition Framework (KAF) for session and project recovery](docs/roadmap/governance-consistency/ROADMAP.md#establish-the-knowledge-acquisition-framework-kaf-for-session-and-project-recovery)
+
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
 - [Foundation Tooling: Build and deepen the Knowledge Islands command-line interface (CLI)](docs/roadmap/foundation-tooling/ROADMAP.md#build-and-deepen-the-knowledge-islands-command-line-interface-cli)
-- [Governance Consistency: Consolidate Knowledge Islands notes and chats into the knowledge base](docs/roadmap/governance-consistency/ROADMAP.md#consolidate-knowledge-islands-notes-and-chats-into-the-knowledge-base)
 
 ## Soon
 
