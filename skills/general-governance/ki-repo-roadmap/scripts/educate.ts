@@ -7,24 +7,12 @@ type Level = 'FAIL' | 'WARN' | 'POLISH' | 'ADVISORY' | 'INFO' | 'NA' | 'PASS'
 type Finding = { level: Level; area: string; msg: string; ref?: string; file?: string }
 const STANDARD_REF = 'references/standards.md'
 const TOML = (globalThis as unknown as { Bun: { TOML: { parse(text: string): unknown } } }).Bun.TOML
-const argv = process.argv.slice(2)
-if (argv.includes('-h') || argv.includes('--help')) {
-  process.stdout.write(`Usage: bun scripts/educate.ts [repo] [--dry-run]
-
-Create the non-KB simple repository-roadmap profile when no roadmap artifacts exist.
-
-Options:
-  --dry-run   Report the scaffold without writing it.
-  -h, --help  Show this help and exit.
-`)
-  process.exit(0)
-}
-const dryRun = argv.includes('--dry-run')
-const json = argv.includes('--json')
-const target = resolve(argv.find((arg) => !arg.startsWith('-')) ?? '.')
-const roadmap = join(target, 'ROADMAP.md')
-const thematic = join(target, 'docs', 'roadmap')
-const findings: Finding[] = []
+let dryRun = false
+let json = false
+let target = ''
+let roadmap = ''
+let thematic = ''
+let findings: Finding[] = []
 
 const TEMPLATE = `# Repository roadmap
 
@@ -91,7 +79,7 @@ function atomicCreate(path: string, content: string): void {
   }
 }
 
-function emit(): never {
+function emit(): void {
   const count = (level: Level): number => findings.filter((finding) => finding.level === level).length
   const summary = {
     fail: count('FAIL'),
@@ -111,57 +99,89 @@ function emit(): never {
       `FAIL=${summary.fail} WARN=${summary.warn} POLISH=${summary.polish} PASS=${summary.pass} ADVISORY=${summary.advisory} NA=${summary.na}`
     )
   }
-  process.exit(summary.fail ? 1 : 0)
+  process.exitCode = summary.fail ? 1 : 0
 }
 
-if (!existsSync(target) || !lstatSync(target).isDirectory()) {
-  findings.push({ level: 'FAIL', area: 'PROFILE-1', msg: 'target repository directory does not exist', ref: STANDARD_REF })
-  emit()
-}
-if (isKb()) {
-  findings.push({
-    level: 'NA',
-    area: 'SCOPE-1',
-    msg: 'KB repository: use ki-kb-streams; no repository-roadmap artifact created',
-    ref: STANDARD_REF
-  })
-  emit()
-}
-if (entry(thematic)) {
-  findings.push({
-    level: 'PASS',
-    area: 'PROFILE-1',
-    msg: 'thematic profile already exists; EDUCATE does not collapse or overwrite it',
-    ref: STANDARD_REF
-  })
-  emit()
-}
-const existingRoadmap = entry(roadmap)
-if (existingRoadmap) {
-  if (existingRoadmap.isSymbolicLink()) {
-    findings.push({ level: 'FAIL', area: 'SAFE-1', msg: 'refusing symlink ROADMAP.md', ref: STANDARD_REF, file: 'ROADMAP.md' })
-  } else if (!existingRoadmap.isFile()) {
-    findings.push({ level: 'FAIL', area: 'SAFE-1', msg: 'ROADMAP.md must be a regular file', ref: STANDARD_REF, file: 'ROADMAP.md' })
-  } else
+export const main = (argv: readonly string[] = process.argv.slice(2)): void => {
+  if (argv.includes('-h') || argv.includes('--help')) {
+    process.stdout.write(`Usage: bun scripts/educate.ts [repo] [--dry-run]
+
+Create the non-KB simple repository-roadmap profile when no roadmap artifacts exist.
+
+Options:
+  --dry-run   Report the scaffold without writing it.
+  -h, --help  Show this help and exit.
+`)
+    return
+  }
+  dryRun = argv.includes('--dry-run')
+  json = argv.includes('--json')
+  target = resolve(argv.find((arg) => !arg.startsWith('-')) ?? '.')
+  roadmap = join(target, 'ROADMAP.md')
+  thematic = join(target, 'docs', 'roadmap')
+  findings = []
+
+  if (!existsSync(target) || !lstatSync(target).isDirectory()) {
+    findings.push({ level: 'FAIL', area: 'PROFILE-1', msg: 'target repository directory does not exist', ref: STANDARD_REF })
+    emit()
+    return
+  }
+  if (isKb()) {
+    findings.push({
+      level: 'NA',
+      area: 'SCOPE-1',
+      msg: 'KB repository: use ki-kb-streams; no repository-roadmap artifact created',
+      ref: STANDARD_REF
+    })
+    emit()
+    return
+  }
+  if (entry(thematic)) {
     findings.push({
       level: 'PASS',
       area: 'PROFILE-1',
-      msg: 'ROADMAP.md already exists; left byte-identical',
+      msg: 'thematic profile already exists; EDUCATE does not collapse or overwrite it',
+      ref: STANDARD_REF
+    })
+    emit()
+    return
+  }
+  const existingRoadmap = entry(roadmap)
+  if (existingRoadmap) {
+    if (existingRoadmap.isSymbolicLink()) {
+      findings.push({ level: 'FAIL', area: 'SAFE-1', msg: 'refusing symlink ROADMAP.md', ref: STANDARD_REF, file: 'ROADMAP.md' })
+    } else if (!existingRoadmap.isFile()) {
+      findings.push({ level: 'FAIL', area: 'SAFE-1', msg: 'ROADMAP.md must be a regular file', ref: STANDARD_REF, file: 'ROADMAP.md' })
+    } else
+      findings.push({
+        level: 'PASS',
+        area: 'PROFILE-1',
+        msg: 'ROADMAP.md already exists; left byte-identical',
+        ref: STANDARD_REF,
+        file: 'ROADMAP.md'
+      })
+    emit()
+    return
+  }
+  if (dryRun)
+    findings.push({
+      level: 'POLISH',
+      area: 'PROFILE-1',
+      msg: 'would scaffold simple profile (dry-run; not written)',
       ref: STANDARD_REF,
       file: 'ROADMAP.md'
     })
+  else {
+    atomicCreate(roadmap, TEMPLATE)
+    findings.push({
+      level: 'POLISH',
+      area: 'PROFILE-1',
+      msg: 'scaffolded simple profile atomically',
+      ref: STANDARD_REF,
+      file: 'ROADMAP.md'
+    })
+  }
   emit()
 }
-if (dryRun)
-  findings.push({
-    level: 'POLISH',
-    area: 'PROFILE-1',
-    msg: 'would scaffold simple profile (dry-run; not written)',
-    ref: STANDARD_REF,
-    file: 'ROADMAP.md'
-  })
-else {
-  atomicCreate(roadmap, TEMPLATE)
-  findings.push({ level: 'POLISH', area: 'PROFILE-1', msg: 'scaffolded simple profile atomically', ref: STANDARD_REF, file: 'ROADMAP.md' })
-}
-emit()
+
+if (import.meta.main) main()

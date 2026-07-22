@@ -42,6 +42,11 @@ function run(mode: string, root: string, args: string[] = []): { code: number; o
   return { code: result.status ?? 1, out: `${result.stdout ?? ''}${result.stderr ?? ''}` }
 }
 
+function runGovernEducate(root: string, args: string[] = []): { code: number; out: string } {
+  const result = spawnSync(process.execPath, [GOVERN, 'educate', root, ...args], { encoding: 'utf8' })
+  return { code: result.status ?? 1, out: `${result.stdout ?? ''}${result.stderr ?? ''}` }
+}
+
 function roadmap(
   title: string,
   items: Partial<Record<'Blocking' | 'Next' | 'Soon' | 'Waiting for' | 'Future', string[]>> = {},
@@ -180,8 +185,11 @@ function thematicFixture(): string {
     const dry = run(EDUCATE, root, ['--dry-run'])
     check('simple EDUCATE dry-run exits zero', dry.code === 0)
     check('simple EDUCATE dry-run writes nothing', !existsSync(join(root, 'ROADMAP.md')))
-    const created = run(EDUCATE, root)
-    check('simple EDUCATE creates ROADMAP.md', created.code === 0 && existsSync(join(root, 'ROADMAP.md')))
+    const governedDry = runGovernEducate(root, ['--dry-run'])
+    check('governed EDUCATE dry-run exits zero', governedDry.code === 0)
+    check('governed EDUCATE dry-run writes nothing', !existsSync(join(root, 'ROADMAP.md')))
+    const created = runGovernEducate(root)
+    check('governed EDUCATE creates ROADMAP.md', created.code === 0 && existsSync(join(root, 'ROADMAP.md')))
     const before = readFileSync(join(root, 'ROADMAP.md'), 'utf8')
     check(
       'simple EDUCATE includes every horizon blurb',
