@@ -117,6 +117,21 @@ Together the three modules contain the reusable dependency closure and must not 
 
 Their internal files may change without changing those conceptual contracts or the declared vendorable modules.
 
+## Reviewing structural consistency
+
+When reviewing a governed skill beyond its policy content, compare it with the strongest relevant exemplar rather than mechanically copying a directory layout.
+
+Assess these boundaries, recording whether each difference is intentional concern-specific design, harmless variation, or a contract, safety, testability, or ownership defect:
+
+- **Governed entrypoints and mode wiring** — `govern.ts` owns command dispatch; a hand-off to adjacent source code is import-safe and in-process. A subprocess is reserved for a genuine external-tool boundary or deliberate failure isolation.
+- **Rubric structure and publication** — contexts, family catalogues, generated `references/rubric.md`, provenance, citations, and exact publication-parity evidence remain aligned with the structured catalogue.
+- **Checker decomposition and shared modules** — private code stays local; a consumer imports only its declared vendored provider modules; a shared module represents an explicit cross-skill contract.
+- **Safe writes and external boundaries** — mutation scope, dry-run, idempotence, symlink handling, atomicity, and subprocess boundaries have evidence proportionate to their risk.
+- **Generated payloads and HELP** — source, generated launcher or snapshot, HELP, manifest declaration, and parity checks agree for the repository model in use.
+- **Documentation, ownership, and evidence** — standards, provenance, implementation location, and focused tests identify the same owner; a test proving a private implementation contract normally lives with that implementation.
+
+Do not make test-file count, context count, renderer style, or other cosmetic similarity a requirement. Promote a recurring pattern to a rubric item only when its policy is genuinely shared and its mechanical evidence can be made trustworthy; otherwise retain it as review guidance or a focused follow-up.
+
 ## Rubric families and items
 
 A family groups criteria that assess one coherent concern, such as `NAME`, `DESCRIPTION`, or `KI-SHAPE`.
