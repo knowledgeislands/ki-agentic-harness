@@ -16,12 +16,6 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 
 Collect and reconcile the Knowledge Islands notes, chats, and other session material into the canonical knowledge base. Use that grounded corpus to make one coordinated forward roadmap spanning the newly surfaced aspects, while preserving the current Blocking work as the watershed for remedial and critical delivery rather than mixing it into the go-forward structure.
 
-### Batch plan readiness and start transitions
-
-Allow one explicit approval to move several unblocked plans from `open` to `ready` in one atomic commit, and one coordinated start to move several ready plans to `in-progress` in one atomic commit. Preserve per-plan validation and dependency checks; if any selected plan is ineligible or changes concurrently, publish none of the batch.
-
-**Plan:** [GOV-002](plans/GOV-002-batch-plan-readiness-and-start-transitions.md)
-
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.

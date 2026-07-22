@@ -10,7 +10,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-- [Governance Consistency: Batch plan readiness and start transitions](docs/roadmap/governance-consistency/ROADMAP.md#batch-plan-readiness-and-start-transitions)
 - [Governance Consistency: Consolidate Knowledge Islands notes and chats into the knowledge base](docs/roadmap/governance-consistency/ROADMAP.md#consolidate-knowledge-islands-notes-and-chats-into-the-knowledge-base)
 
 ## Soon
