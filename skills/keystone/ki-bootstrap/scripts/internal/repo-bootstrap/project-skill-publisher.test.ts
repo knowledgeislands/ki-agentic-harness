@@ -17,19 +17,9 @@ import {
 import { tmpdir } from 'node:os'
 import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { runProjectLinks } from '../../../ki-bootstrap/scripts/internal/repo-bootstrap/project-skill-publisher.ts'
+import { runProjectLinks } from './project-skill-publisher.ts'
 
-const LINKER = join(
-  dirname(fileURLToPath(import.meta.url)),
-  '..',
-  '..',
-  '..',
-  'ki-bootstrap',
-  'scripts',
-  'internal',
-  'repo-bootstrap',
-  'project-skill-publisher.ts'
-)
+const LINKER = fileURLToPath(new URL('./project-skill-publisher.ts', import.meta.url))
 let failed = false
 function check(label: string, condition: boolean): void {
   if (condition) console.log(`  \x1b[32mok\x1b[0m   ${label}`)
