@@ -26,6 +26,10 @@ The checker deliberately recognises `preferred_model` only to issue a migration 
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
+### Protect generated rubric publications from drift
+
+Complete the rubric-publication contract across the ten governance skills that have structured item catalogues and tracked `references/rubric.md` but no exact-parity test: `ki-housekeeping`, `ki-binding`, `ki-engineering`, `ki-authoring`, `ki-tokenomics`, `ki-binding-chezmoi`, `ki-repo`, `ki-repo-roadmap`, `ki-kb-streams`, and `ki-kb`. Add focused read-only tests that render each in-memory catalogue and exact-compare its publication, then reconcile any missing generated-source notice, classification, citation, or judgment-prompt presentation with `ki-skills`' rubric-authoring contract. Preserve legitimate local renderer choices; do not extract a shared renderer merely for visual uniformity.
+
 ### Review `ki-bootstrap` for further simplification
 
 After the current boundary refactor settles, review the complete `ki-bootstrap` implementation for residual complexity across user installation, repository bootstrap, shared transport, generation, publication, rubric contexts, and tests. Start with local process launches between bootstrap-owned publisher, synchroniser, HELP, and scaffold modules; replace them only after each has an import-safe entry point and preserves its guarded transaction. Keep external commands and user-install failure isolation where those are real boundaries.

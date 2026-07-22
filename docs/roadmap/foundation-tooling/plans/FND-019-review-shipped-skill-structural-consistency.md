@@ -1,7 +1,7 @@
 ---
 id: 'FND-019'
 title: Review structural consistency across shipped skills
-status: acceptance
+status: in-progress
 roadmap: foundation-tooling/review-structural-consistency-across-shipped-skills
 blocks: —
 blocked-by: —
@@ -20,6 +20,17 @@ We need a structured review that finds unjustified divergence without treating e
 The first completed review slice is the governed-entrypoint family: it identified and repaired one direct EDUCATE hand-off in `ki-repo-roadmap` that had not followed the de facto in-process pattern.
 
 The wider review remains in progress; the remaining slices will examine checker decomposition, safe writes, generated payload treatment, HELP, and documentation-to-code ownership at the same level of evidence.
+
+## Review areas
+
+Each area is reviewed across comparable skills, beginning with the strongest relevant exemplars. A difference is only a finding when it weakens a shared contract, safety, testability, or ownership boundary; visual similarity alone is not the goal.
+
+1. **Governed entrypoints and mode wiring** — `govern.ts`/`educate.ts` ownership, aggregate contract, local hand-offs, and retired entrypoints. **Completed:** one `ki-repo-roadmap` subprocess repair.
+2. **Rubric structure and publication** — organisation of `rubric/` contexts, item catalogues, index modules, generated `references/rubric.md`, context factories, and the boundary between a checker-contract provider and a dependent skill. **Completed:** one publisher repair and a bounded parity follow-up.
+3. **Checker decomposition and shared modules** — what stays skill-local, what is safely vendored, and whether imports point in the intended provider-to-consumer direction.
+4. **Safe writes and external boundaries** — atomicity, idempotence, dry-run behaviour, symlink handling, subprocesses, and which external-tool calls are genuine boundaries.
+5. **Generated payloads and HELP** — source-to-vendored parity, generated documentation, HELP snapshots, and the tests that protect each projection.
+6. **Documentation, ownership, and evidence** — the relationship between standards, rubrics, source provenance, code, frontmatter ownership declarations, and focused versus end-to-end tests.
 
 ## Steps
 
@@ -40,6 +51,9 @@ Actual changes:
 - `skills/general-governance/ki-repo-roadmap/scripts/educate.ts`
 - `skills/general-governance/ki-repo-roadmap/scripts/govern.ts`
 - `skills/general-governance/ki-repo-roadmap/scripts/repo-roadmap.test.ts`
+- `skills/implied-families/ki-website-cloudflare/scripts/rubric/publish.ts`
+- `skills/implied-families/ki-website-cloudflare/scripts/rubric/publish.test.ts`
+- `skills/implied-families/ki-website-cloudflare/references/rubric.md`
 
 ## Verify
 
@@ -103,7 +117,9 @@ That extra process obscured direct control flow and created a needless execution
 
 The repair exports an import-safe `main(argv)` from `scripts/educate.ts`, preserves its standalone CLI wrapper, and calls that function from `scripts/govern.ts`.
 
-Test-file counts, the number of rubric contexts, and whether a skill has a dedicated publication test are harmless concern-specific variation.
+Test-file counts and the number of rubric contexts are harmless concern-specific variation.
+
+This slice did not assess rubric-publication parity; that separate concern is recorded below.
 
 `ki-repo-roadmap`'s single large end-to-end suite explicitly exercises simple-profile education, thematic projection, safe writes, lifecycle validation, and drift; it is not under-tested merely because that evidence is not split into several files.
 
@@ -115,37 +131,35 @@ No broader normalisation work is justified by this first slice.
 
 The existing roadmap item **Review `ki-bootstrap` for further simplification** remains the right separate home for bootstrap engine boundaries, including its own local process launches.
 
-## Acceptance
+## Assessment record — rubric structure and publication
 
-### Delivered
+### Scope and method
 
-Completed the structural assessment of all 31 shipped skills without a blanket rewrite, and removed the one unjustified local EDUCATE subprocess boundary.
+This slice compares the structured-rubric provider layout and its human-readable publication contract across all 27 governance skills.
 
-### Summary of changes
+The comparison uses `ki-skills`' [rubric-authoring guidance](../../../../skills/keystone/ki-skills/references/rubric-authoring.md) as the standard: item definitions are canonical; `references/rubric.md` is their generated publication; that publication identifies its generated source, renders classification and citations, and has a read-only exact-parity test.
 
-- Recorded the evidence, classifications, and follow-up boundary in this plan's assessment record.
-- Refactored `ki-repo-roadmap` so `scripts/educate.ts` exports an import-safe `main(argv)` while retaining its standalone CLI behaviour.
-- Changed `scripts/govern.ts educate` to call that function directly instead of starting a second Bun process.
-- Extended the focused suite to prove both standalone and governed EDUCATE dry-run and creation behaviour.
+All 27 governance skills have the expected `scripts/rubric/contexts/`, `scripts/rubric/items/index.ts`, `scripts/rubric/publish.ts`, and `references/rubric.md` surfaces.
+
+The number of context files and families varies for a reason: `ki-skills` is the shared provider with 17 families, while skills such as `ki-repo-roadmap` divide distinct subject models across focused contexts.
+
+That is intentional concern-specific decomposition, not a template defect.
+
+### Findings
+
+| Set | Assessment | Evidence and action |
+| --- | --- | --- |
+| `ki-skills` | Intentional provider exemplar | Its richer catalogue, context factories, renderer, and exact-parity publication tests are the correct provider-side form. |
+| 16 previously tested dependent skills | Conform | Their publication tests render the structured catalogue in memory and exact-compare the tracked Markdown. |
+| `ki-website-cloudflare` | Repair applied | Its publisher omitted the required reader-facing generated-publication notice and per-item source citations, and it had no exact-parity test. The publisher now renders the standard presentation, accepts an explicit catalogue argument, and the new test protects the tracked publication. |
+| `ki-housekeeping`, `ki-binding`, `ki-engineering`, `ki-authoring`, `ki-tokenomics`, `ki-binding-chezmoi`, `ki-repo`, `ki-repo-roadmap`, `ki-kb-streams`, `ki-kb` | Material consistency gap | Each has a structured catalogue and publisher but no direct or indirect read-only exact-parity test for `references/rubric.md`. This leaves generated documentation drift undetected. |
+
+The Cloudflare repair is deliberately local and mechanical: it does not alter any rubric item, check, or Cloudflare hosting decision.
+
+The remaining ten skills need a focused fleet follow-up to add publication parity protection and reconcile any renderer omissions against the established presentation contract.
+
+This is a bounded generated-documentation consistency task, not evidence for extracting a shared renderer: table-of-contents choices, hybrid/heuristic labels, and asynchronous versus synchronous file writes remain legitimate local renderer choices where their publication stays complete and protected.
 
 ### Verification
 
-Implementation evidence: `2793a180`.
-
-- `bun skills/general-governance/ki-repo-roadmap/scripts/repo-roadmap.test.ts` — pass.
-- `bun run ki:authoring:audit` — zero FAIL / WARN.
-- `bun run ki:bootstrap:audit` — zero FAIL / WARN.
-- `bun run test` — pass.
-- `bun run ki:audit` — zero FAIL; three pre-existing WARNs remain.
-
-### Outstanding concerns
-
-The aggregate audit's remaining warnings are outside FND-019: one missing `GDR-KI-ARCADIA-001` serial and two existing `KI-SHAPE-7` anchor advisories.
-
-No broader normalisation follow-up is warranted from this review.
-
-### Mini recap
-
-The useful common pattern is narrow: standard governed entrypoints share the aggregate contract and make local EDUCATE hand-offs in-process; provider roots remain free to own their genuine engines.
-
-Structural variation in test count, rubric context count, and publication-test layout should be judged by concern risk and executable coverage, not by visual similarity.
+The focused Cloudflare publication test passed, followed serially by `bun run ki:authoring:audit`, `bun run ki:bootstrap:audit`, `bun run ki:engineering:audit`, `bun run test`, and `bun run ki:audit`.
