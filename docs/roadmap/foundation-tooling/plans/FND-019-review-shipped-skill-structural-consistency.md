@@ -28,7 +28,7 @@ Each area is reviewed across comparable skills, beginning with the strongest rel
 1. **Governed entrypoints and mode wiring** — `govern.ts`/`educate.ts` ownership, aggregate contract, local hand-offs, and retired entrypoints. **Completed:** one `ki-repo-roadmap` subprocess repair.
 2. **Rubric structure and publication** — organisation of `rubric/` contexts, item catalogues, index modules, generated `references/rubric.md`, context factories, and the boundary between a checker-contract provider and a dependent skill. **Completed:** one publisher repair and a bounded parity follow-up.
 3. **Checker decomposition and shared modules** — what stays skill-local, what is safely vendored, and whether imports point in the intended provider-to-consumer direction. **Completed:** provider-to-consumer implementation direction conforms; one test-ownership question is retained for the documentation/evidence slice.
-4. **Safe writes and external boundaries** — atomicity, idempotence, dry-run behaviour, symlink handling, subprocesses, and which external-tool calls are genuine boundaries.
+4. **Safe writes and external boundaries** — atomicity, idempotence, dry-run behaviour, symlink handling, subprocesses, and which external-tool calls are genuine boundaries. **In progress:** subprocess and writer inventory complete; direct non-bootstrap writers remain for focused assessment.
 5. **Generated payloads and HELP** — source-to-vendored parity, generated documentation, HELP snapshots, and the tests that protect each projection.
 6. **Documentation, ownership, and evidence** — the relationship between standards, rubrics, source provenance, code, frontmatter ownership declarations, and focused versus end-to-end tests.
 
@@ -54,6 +54,8 @@ Actual changes:
 - `skills/implied-families/ki-website-cloudflare/scripts/rubric/publish.ts`
 - `skills/implied-families/ki-website-cloudflare/scripts/rubric/publish.test.ts`
 - `skills/implied-families/ki-website-cloudflare/references/rubric.md`
+- `skills/environment/ki-binding/scripts/rubric/contexts/binding.ts`
+- `skills/environment/ki-binding/scripts/rubric/contexts/binding.test.ts`
 
 ## Verify
 
@@ -195,3 +197,33 @@ This is not a checker-decomposition defect; assess whether it should move as par
 The implementation dependency direction conforms and needs no shared-module refactor.
 
 The isolated test location is a recorded ownership question, not yet a repair: moving it is justified only if the evidence slice confirms that bootstrap, rather than repo, owns the test's public behavioural contract.
+
+## Assessment record — safe writes and external boundaries (in progress)
+
+### Initial inventory
+
+The first pass separated test-only process launches from production boundaries and grouped production calls by ownership.
+
+`git`, `brew`, and the authoring/engineering toolchain are genuine external boundaries; their subprocesses are not candidates for an in-process refactor.
+
+`ki-bootstrap` owns its guarded publication, shared-module, and user-install process boundaries.
+
+Those writers already carry dry-run, transaction, rollback, lock, and hostile-path evidence; the existing **Review `ki-bootstrap` for further simplification** roadmap item remains the right home to consider any imports without weakening their failure isolation.
+
+`ki-tokenomics` still invokes its own audit and conform engines through Bun.
+
+That is the known, separately scoped **Replace local tokenomics engine subprocesses** candidate; it is not expanded here.
+
+### Repair applied
+
+`ki-binding`'s optional BIND-3 project-link check was not reaching `ki-bootstrap`: it resolved both the retired `scripts/lib/` path and a directory one level short of the source `skills/` root.
+
+The check now resolves the canonical `scripts/internal/repo-bootstrap/publish-project-skills.ts` source path, and a focused regression test confirms that the source-harness target exists.
+
+This keeps the existing optional-unavailable behaviour for a deployment where that sibling source is genuinely absent, while restoring the intended source-harness composition path.
+
+### Next evidence
+
+The remaining pass will classify direct non-bootstrap writers, beginning with user-configuration writers, against their dry-run, idempotence, and symlink safety evidence.
+
+No broader writer normalisation is inferred from the inventory alone.
