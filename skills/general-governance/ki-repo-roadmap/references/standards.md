@@ -37,6 +37,15 @@ Horizon moves are authored, judgment-led decisions. CONFORM never makes them: it
 
 When the immediate queue has no eligible work, a human-led process such as `ki-next` replenishes it in stages: evaluate Blocking and Next first, then evaluate Soon, and only then scope Future candidates to enter Soon. Each confirmed move is re-evaluated at its destination because the readiness contract changes. The process presents proposals and obtains confirmation before every authored move; this governance skill does not depend on that process.
 
+## Handoff review
+
+When a repository uses the optional `+/_HANDOFFS/` or `-/_HANDOFFS/` working areas defined by `ki-repo`, include their review in the judgment portion of a roadmap audit.
+
+- **Inbound:** identify each received handoff that needs a local adoption, clarification, decline, or archive decision. An adopted handoff becomes this repository's own roadmap item and, when appropriate, plan.
+- **Outbound:** identify known receiving-repository progress that needs an originating follow-up or closure decision. The receiving repository remains the owner of its priority, plan, implementation, and delivery.
+
+The review reports proposed local action only. It does not inspect a remote repository by default, infer acceptance from silence, move working files, create or alter a roadmap item, or change either repository's state. Missing local access to a receiving repository is ordinary and not a finding.
+
 ## Simple profile
 
 The root `ROADMAP.md` is the sole roadmap artifact. It has one H1 and the five horizons. It can use lower headings to organise its open work, but it carries no `docs/roadmap/` directory or plan files. Requiring an execution plan is the signal to run EXPAND first.

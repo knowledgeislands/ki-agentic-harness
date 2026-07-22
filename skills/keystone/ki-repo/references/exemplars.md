@@ -116,6 +116,21 @@ visibility = "private"
 # This repo authors and maintains decision records.
 ```
 
+### Optional `+` / `-` working areas
+
+A repository creates working areas only when it has material to triage or send. Inbound and outbound handoffs are kept distinct, and an outgoing handoff is grouped by its receiving repository. The handoff remains an originating brief; the receiver independently adopts work into its own roadmap and plan.
+
+```text
+my-repo/
+├── +/
+│   └── _HANDOFFS/
+│       └── partner-repo.md
+└── -/
+    └── _HANDOFFS/
+        └── receiving-repo/
+            └── implement-feature.md
+```
+
 [harness]: https://github.com/knowledgeislands/ki-agentic-harness
 [mcp-gsuite]: https://github.com/knowledgeislands/mcp-gsuite
 [mcp-kb-fs]: https://github.com/knowledgeislands/mcp-kb-fs

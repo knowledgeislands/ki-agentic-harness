@@ -31,7 +31,7 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH** plus judgment-l
 
 Run [`scripts/govern.ts`](scripts/govern.ts) against the repository root. It detects the profile and applies the mechanical criteria in [the rubric](references/rubric.md): horizon structure and exact blurbs; theme and item identity; qualified plan linkage; frontmatter, placement, stable theme-coded ids, identifier references, and dependency integrity; and the exact generated root projection. It reports KB scope as NA, or FAIL when a KB carries repository-roadmap artifacts, and makes no changes.
 
-Then apply the rubric's judgment criteria by reading: item quality, horizon placement and transition readiness, plan quality, honest in-progress state, whether simple still fits, and whether theme boundaries are coherent. Iterate until mechanical findings are clean and judgment findings are resolved.
+Then apply the rubric's judgment criteria by reading: item quality, horizon placement and transition readiness, plan quality, honest in-progress state, whether simple still fits, and whether theme boundaries are coherent. Where `+/_HANDOFFS/` exists, identify material that needs a local adoption decision; where `-/_HANDOFFS/` exists, identify known receiving-repository progress that needs a local follow-up or closure decision. Report proposed roadmap action only: never infer remote acceptance, move working material, or edit either repository's roadmap. Iterate until mechanical findings are clean and judgment findings are resolved.
 
 After changing the scripts, run [`scripts/repo-roadmap.test.ts`](scripts/repo-roadmap.test.ts) for the focused profile, projection, locator, dependency, KB, and safe-write fixtures.
 

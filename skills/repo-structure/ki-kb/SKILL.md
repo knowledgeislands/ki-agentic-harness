@@ -15,19 +15,23 @@ You are helping the user interact with a **Knowledge Islands** knowledge base - 
 
 A Knowledge Islands base is one markdown store with a fixed set of five zones, flanked by an inbound and an outbound staging area. The five zones — `Calendar/`, `Pillars/`, `Resources/`, `Streams/`, `Admin/` — each carry an index note of the same name; `+/` (inbound) and `-/` (outbound) are staging areas, not zones, and carry no such index.
 
-| Folder       | Holds                                                                                          |
-| ------------ | ---------------------------------------------------------------------------------------------- |
-| `+/`         | Inbound staging - unfiled captures awaiting routing. Exempt from most conventions. Not a zone. |
-| `Calendar/`  | Time-stamped records: daily, meeting, session, weekly, monthly notes.                          |
-| `Pillars/`   | Internal canonical knowledge - the base's primary subject matter. One folder per pillar.†      |
-| `Resources/` | External reference material that exists independently of this base.                            |
-| `Streams/`   | Work in motion - active workstreams run as proposals. ※                                        |
-| `-/`         | Outbound staging - produced artefacts (session digests, compiled outputs). Not a zone.         |
-| `Admin/`     | Base-agnostic governance and operations.                                                       |
+| Folder       | Holds                                                                                           |
+| ------------ | ----------------------------------------------------------------------------------------------- |
+| `+/`         | Inbound staging - unfiled captures awaiting routing.† Exempt from most conventions. Not a zone. |
+| `Calendar/`  | Time-stamped records: daily, meeting, session, weekly, monthly notes.                           |
+| `Pillars/`   | Internal canonical knowledge - the base's primary subject matter. One folder per pillar.†       |
+| `Resources/` | External reference material that exists independently of this base.                             |
+| `Streams/`   | Work in motion - active workstreams run as proposals. ※                                         |
+| `-/`         | Outbound staging - produced artefacts (session digests, compiled outputs).‡ Not a zone.         |
+| `Admin/`     | Base-agnostic governance and operations.                                                        |
 
 † Any zone may be held under a different local folder name — a base mid-migration, or one that simply names a zone differently. That is declared as a **zone alias** in the base's config, not treated as a different zone - see [Project bindings](#project-bindings).
 
 ※ Migrates to `Pillars/` once settled. Its internal structure and process are owned by the `ki-kb-streams` skill.
+
+† `+/_HANDOFFS/` receives cross-repository briefs; their shared repository lifecycle belongs to `ki-repo`.
+
+‡ `-/_HANDOFFS/` holds cross-repository briefs; their shared repository lifecycle belongs to `ki-repo`.
 
 ### Admin/ subdivisions
 

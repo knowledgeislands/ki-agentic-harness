@@ -15,6 +15,7 @@
 - [PLAN — plans](#plan--plans)
 - [SAFE — safe mechanics](#safe--safe-mechanics)
 - [EXPAND — expansion](#expand--expansion)
+- [HANDOFF — handoff review](#handoff--handoff-review)
 
 ## SCOPE — scope
 
@@ -107,3 +108,12 @@ Judgment-led profile migration.
 
 - **EXPAND-1 [J] — conservative expansion** — EXPAND conserves every open item exactly once and preserves its horizon and prose. (standards.md)
   - _Review prompt:_ Review expansion conservation against the source roadmap.
+
+## HANDOFF — handoff review
+
+→ [standard](standards.md)
+
+Judgment-led review of inbound adoption and outbound follow-up.
+
+- **HANDOFF-1 [J] — handoff review** — Where +/_HANDOFFS or -/_HANDOFFS exists, review incoming adoption and outgoing receiving-repository progress without inferring or changing remote state. (standards.md)
+  - _Review prompt:_ Inspect the handoff areas: identify any inbound material that needs a local roadmap decision and any outbound material needing follow-up or closure; report proposals only.

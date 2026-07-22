@@ -7,6 +7,7 @@ The canonical configuration a Knowledge Islands repo should carry, so repos pres
 - [Layer 1 — repo files](#layer-1--repo-files)
 - [Layer 2 — core GitHub settings](#layer-2--core-github-settings)
 - [Layer 3 — deeper GitHub](#layer-3--deeper-github)
+- [Working areas](#working-areas)
 - [Visibility](#visibility)
 - [Per-repo overrides](#per-repo-overrides)
 - [Coverage cascade](#coverage-cascade)
@@ -48,6 +49,23 @@ Every repo carries these at the root. Presence is checked **on the default branc
 - `.ki/conform/<concern>.md` — the latest record of what a CONFORM changed.
 
 Presence is **not required** — the directory appears the first time a checker is run with `--report`. What the audit checks (the `ki-meta` criterion) is that the derived subdirs are **gitignored, not committed**: `.gitignore` carries `.ki/audits/` and `.ki/conform/`, while the `.ki/` namespace itself is left un-ignored so a future _durable_ subdir can be tracked. The convention is owned here; checker consumers write `.ki/audits/` as the AUDIT working area.
+
+## Working areas
+
+`+/` and `-/` are optional top-level working areas. When a repository has no incoming or outgoing working material, it need not create either directory or declare configuration for them.
+
+`+/` is inbound: material received from another repository or external source that needs local triage. `-/` is outbound: material prepared here for another repository or external recipient. Neither is a canonical roadmap, plan, decision-record collection, or automatic transfer channel.
+
+Repository-level implementation briefs use the matching subareas:
+
+| Path | Holds | Lifecycle |
+| --- | --- | --- |
+| `+/_HANDOFFS/` | Incoming handoffs awaiting a local adoption or decline decision. | Adopt accepted work into this repository's roadmap and, when appropriate, plan; remove or archive declined or superseded material. |
+| `-/_HANDOFFS/<receiving-repository>/` | Outgoing handoffs grouped by their receiving repository. | Retain the originating brief while it is useful; review receiving progress and remove or archive it once its durable destination is clear. |
+
+A handoff names the receiving repository, originating context, scope, constraints, and what the receiver owns. It never replaces the receiver's own priority, roadmap item, plan, implementation, or delivery decision. `ki-repo-roadmap` performs the judgment-led periodic handoff review; it reports candidate adoption, follow-up, or closure work and never moves files or changes either repository automatically.
+
+Knowledge Bases retain their own fixed `+/` and `-/` staging model under `ki-kb`. When a KB uses repository-level handoffs, its `+/_HANDOFFS/` and `-/_HANDOFFS/` contents follow this shared direction and ownership model while `ki-kb` continues to own note routing and frontmatter.
 
 ## Layer 2 — core GitHub settings
 

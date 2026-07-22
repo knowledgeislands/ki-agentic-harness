@@ -1,6 +1,7 @@
 import { defineRubricFamily, type RubricDefinition } from '../../vendored/ki-skills/rubric.ts'
 import type { RoadmapContext } from '../contexts/roadmap.ts'
 import { EXPAND } from './expand.ts'
+import { HANDOFF } from './handoffs.ts'
 import { ITEM } from './item.ts'
 import { PLAN } from './plans.ts'
 import { PROFILE } from './profile.ts'
@@ -87,6 +88,14 @@ export const KI_REPO_ROADMAP_RUBRIC: RubricDefinition<RoadmapContext> = {
       standard: 'standards.md',
       selectContext: context,
       items: EXPAND
+    }),
+    defineRubricFamily({
+      code: 'HANDOFF',
+      title: 'handoff review',
+      description: 'Judgment-led review of inbound adoption and outbound follow-up.',
+      standard: 'standards.md',
+      selectContext: context,
+      items: HANDOFF
     })
   ]
 }

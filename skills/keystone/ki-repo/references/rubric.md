@@ -27,6 +27,7 @@
 - [DESCFIT — Description fitness](#descfit--description-fitness)
 - [OVR — Override rationale](#ovr--override-rationale)
 - [SYNC — Standard synchronisation](#sync--standard-synchronisation)
+- [WORK — Working areas](#work--working-areas)
 
 ## FILES — Repository files
 
@@ -207,3 +208,12 @@ Alignment across the knowledge chain.
 
 - **SYNC-1 [J] — Standard synchronisation** — The standard, structured rubric, and executable behaviour remain aligned. (standards.md)
   - _Review prompt:_ Compare the standard, generated rubric, and checker behaviour for semantic drift.
+
+## WORK — Working areas
+
+→ [standard](standards.md)
+
+Judgment-led review of optional inbound and outbound working material.
+
+- **WORK-J1 [J] — working-area direction and lifecycle** — Optional +/ and -/ working areas distinguish inbound from outbound material, and any _HANDOFFS contents have a clear adoption, follow-up, or closure route. (standards.md)
+  - _Review prompt:_ Where +/ or -/ exists, review that it is working material rather than a shadow canonical store, and that each handoff has an identifiable receiving owner and next route.

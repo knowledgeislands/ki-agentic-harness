@@ -21,6 +21,7 @@ import { TOGGLE } from './toggle.ts'
 import { TOPICS } from './topics.ts'
 import { VENDOR } from './vendor.ts'
 import { VIS } from './visibility.ts'
+import { WORK } from './working-areas.ts'
 
 /** Imported semantic collections, kept explicit for the catalogue contract. */
 export const KI_REPO_FAMILY_COLLECTIONS = [
@@ -44,7 +45,8 @@ export const KI_REPO_FAMILY_COLLECTIONS = [
   { items: TOGGLE },
   { items: TOPICS },
   { items: VENDOR },
-  { items: VIS }
+  { items: VIS },
+  { items: WORK }
 ] as const
 
 const family = (code: string, title: string, description: string, items: readonly unknown[]) =>
@@ -81,7 +83,8 @@ export const KI_REPO_RUBRIC: RubricDefinition<RepoRubricContext> = {
     family('RUNTIMES', 'Runtime support', 'Declared agent-runtime support and orientation.', RUNTIMES),
     family('DESCFIT', 'Description fitness', 'Human assessment of repository purpose.', DESCFIT),
     family('OVR', 'Override rationale', 'Human assessment of exceptions.', OVR),
-    family('SYNC', 'Standard synchronisation', 'Alignment across the knowledge chain.', SYNC)
+    family('SYNC', 'Standard synchronisation', 'Alignment across the knowledge chain.', SYNC),
+    family('WORK', 'Working areas', 'Judgment-led review of optional inbound and outbound working material.', WORK)
   ]
 }
 export const KI_REPO_FAMILY_CODES = KI_REPO_RUBRIC.families.map((family) => family.code)
