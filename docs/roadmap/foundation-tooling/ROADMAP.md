@@ -8,18 +8,6 @@ code: FND
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
-### Codify `+` / `-` repository working areas
-
-Make the top-level `+` and `-` working areas a Knowledge Islands repository convention owned by `ki-repo`: `+` receives incoming material for local triage, while `-` holds outgoing material such as implementation-ready handoffs. Define their intended contents, lifecycle, retention, routing into canonical repository artifacts, and whether their presence is required, optional, or configuration-declared. Add a judgment-led handoff review to `ki-repo-roadmap` hygiene so incoming adoption and outgoing receiving-repository progress are surfaced without automatic moves or cross-repository control. Add proportionate rubric and audit support only after the convention is settled; do not confuse a handoff with the receiving repository's own roadmap or plan.
-
-**Plan:** [FND-004](plans/FND-004-codify-repository-working-areas.md)
-
-### Review and extract evolvable skill capabilities
-
-Extend `ki-skills` with a judgment-led `REVIEW` mode for the architecture and automation opportunities of existing skills, and an opt-in `EXTRACT` mode that examines a repository plus explicitly selected history to identify reusable skills, scripts, references, agents, or hooks. Both modes must reconcile their candidate findings against the canonical roadmap, distinguish a new item from an amendment to an existing one, and use `ki-next` / `ki-plan` only after the user confirms the proposed work. Preserve `AUDIT` as the rubric gate, `EDUCATE` as deliberate creation, and the rule against automatic historical-transcript mining or silent plan creation.
-
-**Plan:** [FND-002](plans/FND-002-review-and-extract-evolvable-skill-capabilities.md)
-
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.

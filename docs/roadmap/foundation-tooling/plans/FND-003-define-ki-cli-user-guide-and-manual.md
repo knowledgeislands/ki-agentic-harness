@@ -4,7 +4,7 @@ title: Define the KI CLI user guide and help manual
 status: open
 roadmap: foundation-tooling/build-and-deepen-the-knowledge-islands-command-line-interface-cli
 blocks: —
-blocked-by: FND-004
+blocked-by: —
 ---
 
 ## Context
