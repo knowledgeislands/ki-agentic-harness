@@ -1,7 +1,7 @@
 ---
 id: 'FND-002'
 title: Review and extract evolvable skill capabilities
-status: acceptance
+status: done
 roadmap: foundation-tooling/review-and-extract-evolvable-skill-capabilities
 blocks: —
 blocked-by: —
@@ -76,3 +76,11 @@ Exact normalised-title matching only surfaces a possible existing roadmap item. 
 ### Mini recap
 
 Discovery belongs in the skill that owns skill quality, but it must be a proposal layer. A compact mechanical contract makes handoffs checkable without pretending that candidate selection or roadmap priority is deterministic.
+
+## Done
+
+Completed the governed REVIEW and EXTRACT capability-discovery route, including a clearly documented optional validator and generated user-facing surfaces.
+
+Residual concern: semantic duplication and roadmap priority remain deliberately human judgment.
+
+Follow-up: no direct implementation follow-up is required; the related script self-description contract remains separately parked as a roadmap candidate.
