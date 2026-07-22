@@ -12,12 +12,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Remove the legacy `preferred_model` migration bridge in `ki-tokenomics`
-
-Remove the temporary `preferred_model` bridge after a fleet-wide search confirms that no sibling `.ki-config.toml` still uses the legacy key. The portable `preferred_model_type` contract and ordinary validate-down handling remain.
-
-**Plan:** [FND-001](plans/FND-001-remove-legacy-preferred-model-migration-bridge.md)
-
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.

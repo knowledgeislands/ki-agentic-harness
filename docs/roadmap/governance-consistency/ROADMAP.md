@@ -16,12 +16,6 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 
 Collect and reconcile the Knowledge Islands notes, chats, and other session material into the canonical knowledge base. Use that grounded corpus to make one coordinated forward roadmap spanning the newly surfaced aspects, while preserving the current Blocking work as the watershed for remedial and critical delivery rather than mixing it into the go-forward structure.
 
-### Make the first decision record adopt Decision Records
-
-Extend `ki-decision-records` so the first decision record in a repository is always the record that adopts Decision Records. Define its required decision type, title, and index position; update the NEW guidance, exemplars, and audit rules so a new collection cannot begin with an unrelated decision. Preserve existing collections as migration cases rather than renumbering or rewriting their records automatically.
-
-**Plan:** [GOV-001](plans/GOV-001-make-first-decision-record-adopt-decision-records.md)
-
 ### Batch plan readiness and start transitions
 
 Allow one explicit approval to move several unblocked plans from `open` to `ready` in one atomic commit, and one coordinated start to move several ready plans to `in-progress` in one atomic commit. Preserve per-plan validation and dependency checks; if any selected plan is ineligible or changes concurrently, publish none of the batch.
