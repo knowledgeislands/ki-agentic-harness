@@ -22,6 +22,12 @@ Extend `ki-decision-records` so the first decision record in a repository is alw
 
 **Plan:** [GOV-001](plans/GOV-001-make-first-decision-record-adopt-decision-records.md)
 
+### Batch plan readiness and start transitions
+
+Allow one explicit approval to move several unblocked plans from `open` to `ready` in one atomic commit, and one coordinated start to move several ready plans to `in-progress` in one atomic commit. Preserve per-plan validation and dependency checks; if any selected plan is ineligible or changes concurrently, publish none of the batch.
+
+**Plan:** [GOV-002](plans/GOV-002-batch-plan-readiness-and-start-transitions.md)
+
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
