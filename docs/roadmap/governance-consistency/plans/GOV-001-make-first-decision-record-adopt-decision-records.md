@@ -1,7 +1,7 @@
 ---
 id: 'GOV-001'
 title: Make the first decision record adopt Decision Records
-status: ready
+status: in-progress
 roadmap: governance-consistency/make-the-first-decision-record-adopt-decision-records
 blocks: —
 blocked-by: —
