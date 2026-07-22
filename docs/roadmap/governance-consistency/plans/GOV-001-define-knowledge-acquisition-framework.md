@@ -62,7 +62,7 @@ An explicit KAF → KEP → KBEP → KBIP lifecycle, a KEP v0 brief for KI Speci
 
 - Preserved the three inbound proposals verbatim as `.txt` records and added their governed lifecycle/disposition note in `+/_HANDOFFS/`.
 - Added the private pilot procedure in `docs/guides/developer/knowledge-acquisition-pilot.md`.
-- Added implementation-ready handoffs for `knowledgeislands/ki-specifications` and `knowledgeislands/tools-ki`.
+- Added an implementation-ready KI Specifications handoff and a proposed `knowledgeislands/tools-ki` CLI handoff; the latter repository is presently only a placeholder.
 
 ### Verification
 

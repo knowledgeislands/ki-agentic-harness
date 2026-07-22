@@ -2,13 +2,13 @@
 
 **Origin:** `ki-agentic-harness` GOV-001
 
-**Receiving repository:** `knowledgeislands/tools-ki`
+**Proposed recipient:** `knowledgeislands/tools-ki` (currently an initialised placeholder repository)
 
-**Relationship:** add the CLI surface only after the receiving repository adopts its own roadmap item and plan. The harness owns the originating KAF boundary; the receiving repository owns implementation, tests, release, and delivery.
+**Relationship:** propose this repository as the CLI implementation home only after it adopts its own roadmap item and plan. The harness owns the originating KAF boundary; a receiving implementation repository would own tests, release, and delivery.
 
 ## Requested outcome
 
-Add the first safe `ki acquire` vertical slice: package a user-prepared ChatGPT capture directory into a locally selected, KEP-shaped evidence set. This is intentionally an import of user-obtained material, not a browser scraper or a ChatGPT API client.
+If adopted, add the first safe `ki acquire` vertical slice: package a user-prepared ChatGPT capture directory into a locally selected, KEP-shaped evidence set. This is intentionally an import of user-obtained material, not a browser scraper or a ChatGPT API client.
 
 ## Command contract
 
