@@ -17,7 +17,7 @@ Handoffs are a **cross-tier instrument** that rides on an existing artifact — 
 
 1. **The reasoning-layer split** — the doctrine that the top reasoning tier is spent **once** to think a body of work through, and its output is banked as specs a cheaper tier executes. The expensive act is the reasoning; buy it deliberately, then delegate the execution down.
 2. **The handoff-spec quality bar** — see [Handoff quality bar](#handoff-quality-bar). The delta over a plain plan: decisions-locked-vs-escalate, a per-unit recommended tier, and a recorded readiness test.
-3. **Tier assignment** — each unit of work names the **cheapest tier that its spec makes safe**, referred to by the house classes (haiku / sonnet / opus, cheapest to most capable). _Which_ tier costs what and how to select the ambient default is entirely `ki-tokenomics` (its standard §4 and §8, and `preferred_model`); this skill only requires that a tier be assigned and justified in one line, and never hard-codes model ids or prices.
+3. **Tier assignment** — each unit of work names the **cheapest tier that its spec makes safe**, referred to by the house classes (haiku / sonnet / opus, cheapest to most capable). _Which_ tier costs what and how to select the ambient default is entirely `ki-tokenomics` (its standard §4 and §8, and `preferred_model_type`); this skill only requires that a tier be assigned and justified in one line, and never hard-codes model ids or prices.
 4. **The readiness test** — a spec is ready when a cold agent at the assigned tier can execute the first phase from the spec alone, with no reasoning that lives only in the planner's head. The test is recorded on the artifact, not left implicit.
 5. **The opt-in marker contract** — an artifact opts into handoff-governance with `handoff: true` frontmatter; it then must carry the markers the checker enforces (`tier`, a decisions-locked-vs-escalate section, a readiness marker). Opt-in keeps the doctrine off artifacts that do not want it. Full contract in [references/standards.md](references/standards.md).
 
@@ -61,7 +61,7 @@ Revisit the doctrine against practice: does the reasoning-layer split still matc
 
 ## Composition
 
-- `ki-tokenomics` — owns _which tier costs what and how to pick it_ (`preferred_model`, the mode→tier table, standard §4/§8). This skill owns _how to decompose and write work so a cheaper tier can execute it_ and points at `ki-tokenomics` for the cost/selection question, never restating the tier table.
+- `ki-tokenomics` — owns _which tier costs what and how to pick it_ (`preferred_model_type`, the mode→tier table, standard §4/§8). This skill owns _how to decompose and write work so a cheaper tier can execute it_ and points at `ki-tokenomics` for the cost/selection question, never restating the tier table.
 - `ki-repo-roadmap` — owns non-KB repository roadmaps and the thematic plan **format**. A handoff spec **is** a plan under `docs/roadmap/<theme>/plans/`; this skill adds the delegation-readiness delta and owns no roadmap artifact.
 - `ki-kb-streams` — owns KB planning: a stream proposal's `## Checklist` is the handoff spec. Run in a KB, this skill adds the delta and defers the artifact and its lifecycle to `ki-kb-streams`.
 - `ki-agents` — owns subagent **definitions**. This skill is about the _work spec_ handed to any executor — a cheaper model, a cold agent, or a person — not the agent definition. When the question is how to define the subagent, go there.

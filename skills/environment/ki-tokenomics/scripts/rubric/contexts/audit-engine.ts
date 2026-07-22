@@ -62,20 +62,6 @@ type HeadroomExpectation = (typeof HEADROOM_VALUES)[number]
 // each type resolves to is runtime-specific and lives in docs/guides/prompting/
 // (Claude aliases, GPT-5.6 tiers, …), not here — this checker holds no model ids.
 const MODEL_TIER_VALUES = ['frontier', 'reasoning', 'standard', 'fast'] as const
-// Default binding per type, for the [ki-tokenomics.model_tier_bindings] example
-// only — a repo overrides these with the concrete models its runtime supports.
-const DEFAULT_BINDINGS: Record<(typeof MODEL_TIER_VALUES)[number], string> = {
-  frontier: 'fable',
-  reasoning: 'opus',
-  standard: 'sonnet',
-  fast: 'haiku'
-}
-// Reverse of the Claude defaults — maps a legacy `preferred_model` alias to the
-// portable type it becomes, so the CFG-4 migration finding can suggest the rename.
-const LEGACY_ALIAS_TO_TYPE: Record<string, string> = Object.fromEntries(
-  Object.entries(DEFAULT_BINDINGS).map(([type, alias]) => [alias, type])
-)
-
 const KI_SECTION = 'ki-tokenomics'
 const KI_DEFAULT = `[${KI_SECTION}]
 # How strongly a context-compression layer (e.g. Headroom) is expected here.
@@ -311,9 +297,6 @@ type KiConfig = {
   headroomBad?: string
   modelTierType?: string
   modelTierTypeBad?: string
-  // A lingering pre-ADR-008 `preferred_model` alias, if present — drives the CFG-4
-  // migration finding. Holds the raw value so the finding can name the mapping.
-  legacyModelTier?: string
   // Resolved [ki-tokenomics.model_tier_bindings] — each declared type's ordered
   // comma-list of candidate models. Keys outside the type set / empty values are
   // collected separately for CFG-5 findings; individual model names stay open.
@@ -363,9 +346,6 @@ function parseKiConfig(text: string): KiConfig {
       } else if (key === 'preferred_model_type') {
         if ((MODEL_TIER_VALUES as readonly string[]).includes(val)) cfg.modelTierType = val
         else cfg.modelTierTypeBad = val
-      } else if (key === 'preferred_model') {
-        // Pre-ADR-008 key — recognised only to emit a loud migration finding.
-        cfg.legacyModelTier = val
       } else if (key === 'context_window_tokens') {
         const n = Number(val)
         if (Number.isFinite(n) && n > 0) cfg.contextWindow = n
@@ -685,18 +665,7 @@ else {
       '.ki-config.toml'
     )
   // CFG-4 — the ambient default model *type* (portable; ADR-KI-HARNESS-009).
-  if (ki.legacyModelTier) {
-    const mapped = LEGACY_ALIAS_TO_TYPE[ki.legacyModelTier]
-    const hint = mapped
-      ? ` — map it to preferred_model_type = "${mapped}"`
-      : ` — replace it with a preferred_model_type value (${MODEL_TIER_VALUES.join(' / ')})`
-    fail(
-      'CFG-4',
-      `preferred_model = "${ki.legacyModelTier}" uses the retired Claude-only key; renamed to preferred_model_type${hint} (ADR-KI-HARNESS-009)`,
-      RUBRIC,
-      '.ki-config.toml'
-    )
-  } else if (ki.modelTierType)
+  if (ki.modelTierType)
     note(
       'CFG-4',
       `preferred_model_type = "${ki.modelTierType}" — confirm the type is appropriate for this environment`,

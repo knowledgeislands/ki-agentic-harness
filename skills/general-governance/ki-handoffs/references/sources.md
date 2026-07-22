@@ -15,7 +15,7 @@ The doctrine this skill governs is an in-house methodology, not a tracked extern
 
 - **Pinned:** initial authoring, 2026-07-02.
 - **REFRESH last run 2026-07-04** — internal-model pass (no web research), skill audited against itself.
-  - _Confirmed_ `ki-tokenomics`: standard §4 (runtime levers + mode→tier table), §8 (multi-model flows), and §3 `preferred_model` all still present and cited correctly; the composition boundary (this skill owns delegability, `ki-tokenomics` owns tier cost/selection) is still clean.
+  - _Confirmed_ `ki-tokenomics`: standard §4 (runtime levers + mode→tier table), §8 (multi-model flows), and §3 model-type default all still present and cited correctly; the composition boundary (this skill owns delegability, `ki-tokenomics` owns tier cost/selection) is still clean.
   - _Confirmed_ `ki-repo-roadmap`: a thematic plan is still the dependency-ordered record that survives context resets and handoffs — host-artifact role in a non-KB repository unchanged.
   - _Confirmed_ `ki-kb-streams`: the stream proposal's `## Checklist` is still the KB host artifact this skill's delta rides on.
   - _Not re-verified_ the Fable-5 BP source — external, and this REFRESH ran internal-only. Left at 2026-07-02.

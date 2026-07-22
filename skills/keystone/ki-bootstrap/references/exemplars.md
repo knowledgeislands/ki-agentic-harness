@@ -36,7 +36,7 @@ A repo opts skills in by adding `[ki-<skill>]` tables. The keystone linker reads
 # Tokenomics governance — audits the standing context surface.
 [ki-tokenomics]
 headroom = "recommended"
-preferred_model = "sonnet"
+preferred_model_type = "standard"
 
 [ki-tokenomics.budgets]
 mcp_servers = 20   # acknowledged overage; documented here for auditability

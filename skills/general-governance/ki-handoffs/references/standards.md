@@ -36,7 +36,7 @@ It must then carry, in its body:
 
 Opt-in is deliberate: it keeps the doctrine off artifacts whose author does not want it, and scopes the checker to work that is genuinely being handed down a tier. An artifact without `handoff: true` is not a target and is never flagged.
 
-The `tier` value is **semantic** — the house `haiku` / `sonnet` / `opus` classes, cheapest to most capable. This standard fixes no model ids or prices; they resolve at runtime through the `claude-api` skill, and their per-environment default (`preferred_model`) and cost belong to `ki-tokenomics`.
+The `tier` value is **semantic** — the house `haiku` / `sonnet` / `opus` classes, cheapest to most capable. This standard fixes no model ids or prices; they resolve at runtime through the `claude-api` skill, and their per-environment default (`preferred_model_type`) and cost belong to `ki-tokenomics`.
 
 ## The quality bar
 

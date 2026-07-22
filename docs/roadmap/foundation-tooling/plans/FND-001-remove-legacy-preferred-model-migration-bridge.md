@@ -15,17 +15,19 @@ Once the known fleet has migrated, preserving the old parser, alias map, and mig
 
 ## Current state
 
-`ki-tokenomics` still parses `preferred_model` in its audit and conform engines, maps its Claude aliases to portable types, and emits migration guidance.
+The known fleet was searched on 2026-07-22: 13 available sibling Knowledge Islands worktrees with a real `.ki-config.toml` were found, and none declares the exact legacy key.
 
-The harness configuration uses `preferred_model_type`, but removal must not assume that sibling Knowledge Islands repositories have already migrated.
+The bridge removal and current-contract regression coverage are implemented and verified. The plan is ready for manual acceptance.
+
+The focused audit and conform regression test now proves that `preferred_model_type` remains recognised, while `preferred_model` follows the ordinary unknown-key validate-down path with no migration mapping. The live-reference sweep corrected the bootstrap exemplar, `ki-handoffs`, and its founding decision record; only intentional historical decision context and the new negative test retain the old spelling.
 
 ## Steps
 
-1. Define and record the available fleet scope by discovering sibling Knowledge Islands git worktrees with a real `.ki-config.toml`, then search their configuration files for the exact legacy key. Stop the removal and report the remaining migration targets if any declaration or required repository cannot be verified.
-2. Remove the legacy-key parsing branch, alias-to-type mapping, migration-only result state, diagnostics, fixtures, and focused tests from the tokenomics audit and conform engines. Preserve all validation, defaults, and diagnostics for `preferred_model_type` and `model_tier_bindings`.
-3. Update `ADR-KI-HARNESS-009` as the living record and revise tokenomics standards, examples, and source notes so they describe the current portable contract without presenting the retired bridge as available.
-4. Search the source, tests, documentation, and governed configuration for remaining operational `preferred_model` references. Retain only explicitly historical material that still communicates the decision accurately, or remove it where the living-record rule requires current wording.
-5. Run focused tokenomics tests and audits, then serial repository verification. Record the verified sibling-repository scope and zero-legacy-key evidence in the acceptance packet.
+1. [x] Define and record the available fleet scope by discovering sibling Knowledge Islands git worktrees with a real `.ki-config.toml`, then search their configuration files for the exact legacy key. Stop the removal and report the remaining migration targets if any declaration or required repository cannot be verified.
+2. [x] Remove the legacy-key parsing branch, alias-to-type mapping, migration-only result state, diagnostics, and migration-only fixtures from the tokenomics audit and conform engines. Preserve all validation, defaults, and diagnostics for `preferred_model_type` and `model_tier_bindings`, with focused current-contract regression coverage.
+3. [x] Update `ADR-KI-HARNESS-009` as the living record and revise tokenomics standards, examples, and source notes so they describe the current portable contract without presenting the retired bridge as available.
+4. [x] Search the source, tests, documentation, and governed configuration for remaining operational `preferred_model` references. Retain only explicitly historical material that still communicates the decision accurately, or remove it where the living-record rule requires current wording.
+5. [x] Run focused tokenomics tests and audits, then serial repository verification. Record the verified sibling-repository scope and zero-legacy-key evidence in the acceptance packet.
 
 ## Files touched
 

@@ -70,7 +70,6 @@ const HEADROOM_VALUES = ['required', 'recommended', 'off'] as const
 // Portable, purpose-based model *types* (ADR-KI-HARNESS-009) — kept in lockstep
 // with audit.ts. Concrete models per runtime live in docs/guides/prompting/.
 const MODEL_TIER_VALUES = ['frontier', 'reasoning', 'standard', 'fast'] as const
-const LEGACY_ALIAS_TO_TYPE: Record<string, string> = { fable: 'frontier', opus: 'reasoning', sonnet: 'standard', haiku: 'fast' }
 const BUDGET_KEYS = new Set<string>(['claude_md', 'memory_index', 'skills_surface', 'mcp_servers', 'total'])
 
 const readText = (p: string): string | null => {
@@ -204,7 +203,6 @@ type KiConfig = {
   headroomBad?: string
   modelTierType?: string
   modelTierTypeBad?: string
-  legacyModelTier?: string
   bindingBadKeys: string[]
   bindingEmptyKeys: string[]
   unknownKeys: string[]
@@ -238,8 +236,6 @@ function parseKiConfig(text: string): KiConfig {
       } else if (key === 'preferred_model_type') {
         if ((MODEL_TIER_VALUES as readonly string[]).includes(val)) cfg.modelTierType = val
         else cfg.modelTierTypeBad = val
-      } else if (key === 'preferred_model') {
-        cfg.legacyModelTier = val // pre-ADR-008 key — conform maps it to preferred_model_type
       } else if (key === 'context_window_tokens') {
         const n = Number(val)
         if (!(Number.isFinite(n) && n > 0)) cfg.badBudgets.push(key)
@@ -415,15 +411,7 @@ function main(): number {
     } else {
       if (ki.headroomBad)
         todo('CFG-1', `headroom = "${ki.headroomBad}" invalid; set one of ${HEADROOM_VALUES.join(' / ')}`, '.ki-config.toml')
-      if (ki.legacyModelTier) {
-        const mapped = LEGACY_ALIAS_TO_TYPE[ki.legacyModelTier]
-        const to = mapped ? `preferred_model_type = "${mapped}"` : `preferred_model_type = "…" (${MODEL_TIER_VALUES.join(' / ')})`
-        todo(
-          'CFG-4',
-          `preferred_model = "${ki.legacyModelTier}" is the retired Claude-only key; replace it with ${to} (ADR-KI-HARNESS-009)`,
-          '.ki-config.toml'
-        )
-      } else if (ki.modelTierTypeBad)
+      if (ki.modelTierTypeBad)
         todo(
           'CFG-4',
           `preferred_model_type = "${ki.modelTierTypeBad}" invalid; set one of ${MODEL_TIER_VALUES.join(' / ')}`,
