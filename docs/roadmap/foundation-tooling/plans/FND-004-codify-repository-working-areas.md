@@ -1,7 +1,7 @@
 ---
 id: 'FND-004'
 title: Codify repository working areas
-status: acceptance
+status: done
 roadmap: foundation-tooling/codify-repository-working-areas
 blocks: FND-003
 blocked-by: —
@@ -81,3 +81,11 @@ The areas are deliberately optional and there is no automatic receiver discovery
 ### Mini recap
 
 The contract is most useful when it stays narrow: shared direction and ownership are governed, but the receiving repository remains the authority for priority and execution. FND-003 can now publish its CLI briefs through the settled outgoing-handoff lifecycle.
+
+## Done
+
+Completed the optional repository working-area and handoff-review contract.
+
+Residual concern: None.
+
+Follow-up: FND-003 may now use the settled outbound-handoff lifecycle as it defines the KI CLI manual and implementation route.
