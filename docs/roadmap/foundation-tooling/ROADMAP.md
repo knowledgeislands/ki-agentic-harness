@@ -68,7 +68,7 @@ Document the existing validate-down convention: each skill owns and validates it
 
 ### Inventory non-critical writers for bounded follow-up _(candidate)_
 
-After the rollout-critical filesystem work closes, inventory remaining report generators and direct conformers by mutation class. Prioritise external, user-space, or destructive writers; leave ordinary local report writers alone unless the inventory identifies a concrete risk. Opaque subprocess writers retain honest exclusions unless a separate isolation design is approved.
+After the rollout-critical filesystem work closes, inventory remaining report generators and direct conformers by mutation class. Prioritise external, user-space, or destructive writers; leave ordinary local report writers alone unless the inventory identifies a concrete risk. The initial FND-019 review identifies `ki-binding`'s Cowork settings writer, `ki-housekeeping`'s state writers, and `ki-agents`' recursive agent-surface writer as the first candidates for dry-run, idempotence, symlink, and atomic-publication evidence. Opaque subprocess writers retain honest exclusions unless a separate isolation design is approved.
 
 ### Review the Cloudflare agent-setup prompt for the Cloudflare skill _(candidate)_
 

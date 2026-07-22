@@ -224,6 +224,10 @@ This keeps the existing optional-unavailable behaviour for a deployment where th
 
 ### Next evidence
 
-The remaining pass will classify direct non-bootstrap writers, beginning with user-configuration writers, against their dry-run, idempotence, and symlink safety evidence.
+The direct user-configuration pass identifies three follow-up candidates: `ki-binding` writes Cowork settings in place after its discovery read, `ki-housekeeping` writes state files in place, and `ki-agents` can recurse through a symlinked agent directory while collecting writable definitions.
+
+Each has useful behaviour-level safeguards, but none has the transaction and hostile-path evidence established for bootstrap-owned or development-link writes.
+
+The existing **Inventory non-critical writers for bounded follow-up** roadmap item now names this evidence and is the focused home for deciding each boundary's appropriate hardening.
 
 No broader writer normalisation is inferred from the inventory alone.
