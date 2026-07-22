@@ -1,7 +1,7 @@
 ---
 id: 'GOV-001'
 title: Define the Knowledge Acquisition Framework and ChatGPT pilot
-status: acceptance
+status: done
 roadmap: governance-consistency/establish-the-knowledge-acquisition-framework-kaf-for-session-and-project-recovery
 blocks: FND-003
 blocked-by: —
@@ -78,3 +78,7 @@ A real pilot remains deliberately user-selected and private; this plan prepares 
 ### Mini recap
 
 The three source proposals are complementary stages rather than competing replacements. Keeping raw inbound material verbatim while documenting a concise governed disposition lets the harness preserve context without treating an early proposal as a finished standard.
+
+## Done
+
+Manual acceptance confirmed the KAF → KEP → KBEP → KBIP boundary, the controlled pilot procedure, and the two outbound briefs. A real private capture and receiving-repository adoption remain follow-on work; FND-003 may now finalise the public CLI manual and seed slice.
