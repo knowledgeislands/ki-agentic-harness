@@ -21,7 +21,7 @@ Those findings need to join the ordinary roadmap and plan lifecycle, rather than
 
 Both modes require explicit targets and, for history, explicit selected inputs; they present reconciled candidate proposals and leave all durable work to a later user-confirmed roadmap and plan action.
 
-The candidate validator has a CLI help response, but its source needs a plain-language top-of-file purpose and boundary statement for direct readers.
+The candidate validator now has a CLI help response and a plain-language top-of-file purpose, use-case, and no-write boundary statement for direct readers.
 
 ## Steps
 
@@ -30,7 +30,7 @@ The candidate validator has a CLI help response, but its source needs a plain-la
 3. [x] Specify and implement the common reconciliation handoff: compare candidates with canonical roadmap items, present deduplicated proposals, require user confirmation before any durable roadmap change, then route accepted work through `ki-next` and `ki-plan`. Do not mine historical transcripts, create a plan, or alter a skill without an explicit request.
 4. [x] Add focused fixtures or tests for the mode boundaries, explicit-history requirement, candidate classification, duplicate/existing-roadmap matching, and confirmation boundary. Update the skill description, HELP, routed mode procedures, and user-facing catalogue.
 5. [x] Regenerate any affected bootstrap-generated surfaces, run the focused checks, then run serial repository verification and prepare an acceptance packet.
-6. [ ] Add a self-contained purpose, use-case, and no-write boundary comment to the optional candidate validator; re-run its focused test and refresh the acceptance packet.
+6. [x] Add a self-contained purpose, use-case, and no-write boundary comment to the optional candidate validator; re-run its focused test and refresh the acceptance packet.
 
 ## Files touched
 
@@ -60,11 +60,12 @@ This is independent of the CLI implementation, but it blocks further near-term w
 
 - Added routed REVIEW and EXTRACT procedures, the candidate-finding format, and explicit no-write / explicit-history boundaries.
 - Added a read-only candidate-contract validator for structured handoffs, including allowed dispositions, roadmap treatments, amendment locators, and exact-title reconciliation prompts.
+- Added a top-of-file purpose, intended-use, and no-write boundary statement to the validator, alongside its existing CLI help.
 - Added focused contract tests, updated generated HELP, and documented the modes in the user catalogue.
 
 ### Verification
 
-- Passed `bun test skills/keystone/ki-skills/scripts/candidate-contract.test.ts`, `bun run ki:skills:audit`, `bun run ki:bootstrap:audit`, `bun run test`, and `bun run ki:audit` serially.
+- Passed `bun test skills/keystone/ki-skills/scripts/candidate-contract.test.ts`, `bun run ki:skills:audit`, `bun run ki:bootstrap:audit`, `bun run test`, and `bun run ki:audit` serially; re-ran the focused candidate-contract test after the header clarification.
 - The skills audit retains two existing `KI-SHAPE-7` warnings; the aggregate audit retains the known runtime-link bootstrap warnings. Neither concerns this feature.
 - Implementation evidence: `a107566c` (`feat(skills): add review and extract modes`).
 

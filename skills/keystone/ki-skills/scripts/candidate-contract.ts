@@ -1,5 +1,14 @@
 #!/usr/bin/env bun
 
+// candidate-contract.ts — validate an optional structured handoff from ki-skills REVIEW or EXTRACT.
+//
+// Use it when candidate findings will be passed to another agent or retained as JSON. It checks the
+// evidence, disposition, and roadmap-treatment fields so a receiving agent gets an unambiguous proposal.
+// It does not discover candidates, judge whether work is worth formalising, reconcile semantic duplicates,
+// or write a skill, roadmap item, plan, agent, hook, or any other repository state.
+//
+// Usage: bun scripts/candidate-contract.ts --validate <candidates.json>
+
 import { readFileSync } from 'node:fs'
 
 export const candidateDispositions = [
