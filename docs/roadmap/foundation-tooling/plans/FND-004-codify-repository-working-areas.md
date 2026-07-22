@@ -1,7 +1,7 @@
 ---
 id: 'FND-004'
 title: Codify repository working areas
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/codify-repository-working-areas
 blocks: FND-003
 blocked-by: —
@@ -52,3 +52,32 @@ This harness has top-level `+/` and `-/` working areas, with explicit `+/_HANDOF
 ## Dependencies / blocks
 
 This work blocks FND-003 only where the CLI plan updates or creates outbound implementation briefs. It does not prevent design research that does not publish a revised handoff.
+
+## Acceptance
+
+### Delivered
+
+An optional repository-wide working-area contract now defines `+/` as inbound and `-/` as outbound, with exact `_HANDOFFS` subareas and a clear boundary between a brief and the receiving repository's independently owned roadmap and plan.
+
+`ki-repo` owns the shared contract and judgment review, `ki-repo-roadmap` owns the human-led review of locally held handoffs, and `ki-kb` references the same directionality while retaining its Knowledge Base-specific note-routing model.
+
+### Summary of changes
+
+- `skills/keystone/ki-repo/` now defines the working-area standard, `WORK-J1` rubric item, and a worked repository example.
+- `skills/general-governance/ki-repo-roadmap/` now defines `HANDOFF-1` review guidance that reports proposed local action without reading or changing remote repositories.
+- `skills/repo-structure/ki-kb/` now references the shared `+/_HANDOFFS/` and `-/_HANDOFFS/` convention without duplicating its lifecycle.
+- `evals/guide-suite.ts` now reflects the current `govern.ts` vendor entrypoint, required runtime declaration, and aggregate presentation contract.
+
+### Verification
+
+- `bun skills/keystone/ki-repo/scripts/educate.test.ts`, `bun skills/general-governance/ki-repo-roadmap/scripts/repo-roadmap.test.ts`, `bun run ki:skills:audit`, `bun run ki:bootstrap:audit`, `bun run ki:repo:audit`, and `bun skills/repo-structure/ki-kb/scripts/govern.ts audit .` passed during implementation.
+- `bun evals/guide-suite.ts` passed after its focused regression repair.
+- `bun run test`, `bun run ki:audit`, `bun run ki:repo:audit`, `bun run ki:repo-roadmap:audit`, `bun run ki:authoring:audit`, and `git diff --check` passed serially at `a95952e2`.
+
+### Outstanding concerns
+
+The areas are deliberately optional and there is no automatic receiver discovery, file movement, adoption, or deletion. `ki:audit` retains three unrelated warning-level findings: one Decision Record serial gap and two existing KI-SHAPE-7 anchor warnings.
+
+### Mini recap
+
+The contract is most useful when it stays narrow: shared direction and ownership are governed, but the receiving repository remains the authority for priority and execution. FND-003 can now publish its CLI briefs through the settled outgoing-handoff lifecycle.
