@@ -24,6 +24,12 @@ export type BindingRubricContext = {
 }
 
 export const RECOGNISED = new Set(['mcporter', 'claude-code', 'claude-desktop', 'chatgpt-codex'])
+
+export const projectPublisherPath = (): string => {
+  const self = realpathSync(fileURLToPath(import.meta.url))
+  const skillsRoot = resolve(dirname(self), '..', '..', '..', '..', '..')
+  return join(skillsRoot, 'keystone', 'ki-bootstrap', 'scripts', 'internal', 'repo-bootstrap', 'publish-project-skills.ts')
+}
 const HOME = homedir()
 const XDG_CONFIG = process.env.XDG_CONFIG_HOME ?? join(HOME, '.config')
 const CANONICAL_SOURCE = join(XDG_CONFIG, 'ki', 'mcp-servers.yaml')
@@ -148,9 +154,7 @@ export const createBindingContext = ({
     }
     return outcomes as RubricOutcomes<ConformOutcome>
   }
-  const self = realpathSync(fileURLToPath(import.meta.url))
-  const skillsRoot = resolve(dirname(self), '..', '..', '..', '..')
-  const bootstrap = join(skillsRoot, 'keystone', 'ki-bootstrap', 'scripts', 'lib', 'publish-project-skills.ts')
+  const bootstrap = projectPublisherPath()
   const projectCheck = !project
     ? 'not-requested'
     : !existsSync(bootstrap)
