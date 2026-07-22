@@ -1,5 +1,7 @@
 # Developer guides
 
+- [Knowledge acquisition pilot](knowledge-acquisition-pilot.md) — safely capture one selected ChatGPT conversation or project into a KEP-shaped evidence set while the KAF tooling is being specified.
+
 Contributor-facing mechanics for authoring and maintaining the harness. These guides are separate from the user guide because they describe local development workflows rather than normal use.
 
 - [Local skill linking](linking-skills.md) — the current live-link workflow for working from a harness checkout.
