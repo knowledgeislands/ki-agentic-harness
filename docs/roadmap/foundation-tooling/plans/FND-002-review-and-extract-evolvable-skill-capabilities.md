@@ -1,7 +1,7 @@
 ---
 id: 'FND-002'
 title: Review and extract evolvable skill capabilities
-status: acceptance
+status: open
 roadmap: foundation-tooling/review-and-extract-evolvable-skill-capabilities
 blocks: —
 blocked-by: —
@@ -21,6 +21,8 @@ Those findings need to join the ordinary roadmap and plan lifecycle, rather than
 
 Both modes require explicit targets and, for history, explicit selected inputs; they present reconciled candidate proposals and leave all durable work to a later user-confirmed roadmap and plan action.
 
+The candidate validator has a CLI help response, but its source needs a plain-language top-of-file purpose and boundary statement for direct readers.
+
 ## Steps
 
 1. [x] Define the distinct contracts and invocation grammar for `REVIEW` and `EXTRACT`: `REVIEW` assesses an existing skill or skill set beyond rubric conformance; `EXTRACT` assesses a repository and only explicitly selected history inputs. Preserve `AUDIT` as the conformance gate and `EDUCATE` as the only creation mode.
@@ -28,6 +30,7 @@ Both modes require explicit targets and, for history, explicit selected inputs; 
 3. [x] Specify and implement the common reconciliation handoff: compare candidates with canonical roadmap items, present deduplicated proposals, require user confirmation before any durable roadmap change, then route accepted work through `ki-next` and `ki-plan`. Do not mine historical transcripts, create a plan, or alter a skill without an explicit request.
 4. [x] Add focused fixtures or tests for the mode boundaries, explicit-history requirement, candidate classification, duplicate/existing-roadmap matching, and confirmation boundary. Update the skill description, HELP, routed mode procedures, and user-facing catalogue.
 5. [x] Regenerate any affected bootstrap-generated surfaces, run the focused checks, then run serial repository verification and prepare an acceptance packet.
+6. [ ] Add a self-contained purpose, use-case, and no-write boundary comment to the optional candidate validator; re-run its focused test and refresh the acceptance packet.
 
 ## Files touched
 
