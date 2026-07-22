@@ -1,7 +1,7 @@
 ---
 id: 'GOV-002'
 title: Batch plan readiness and start transitions
-status: open
+status: ready
 roadmap: governance-consistency/batch-plan-readiness-and-start-transitions
 blocks: —
 blocked-by: —
