@@ -1,7 +1,7 @@
 ---
 id: 'GOV-001'
 title: Make the first decision record adopt Decision Records
-status: in-progress
+status: acceptance
 roadmap: governance-consistency/make-the-first-decision-record-adopt-decision-records
 blocks: —
 blocked-by: —
@@ -52,3 +52,29 @@ The harness collection intentionally has no marker, so `ROOT-1` reports it as a 
 This plan is independent of active roadmap work.
 
 It preserves migration cases so it does not block existing repositories from adopting later improvements to the Decision Records standard.
+
+## Acceptance
+
+### Delivered
+
+New Decision Record collections now establish `GDR-<SCOPE>-001: Adopting Decision Records` as their first indexed record, with a durable marker that lets the checker enforce the rule without rewriting established collections.
+
+### Summary of changes
+
+- Added the `ROOT-1` mechanical rubric rule and generated rubric publication.
+- Recorded the new-collection marker and adoption-root procedure in NEW guidance, the format standard, and the exemplar.
+- Added focused cases for a valid root, unrelated type, wrong title, wrong serial, wrong index position, and an unmarked migration collection.
+
+### Verification
+
+- Passed the focused decision-record context and publication tests, `bun run ki:decision-records:audit`, `bun run test`, and `bun run ki:audit` serially.
+- Confirmed the harness collection is reported `NOT_APPLICABLE` for `ROOT-1`, preserving it as an established migration collection.
+- Implementation evidence: `e74e4853` (`feat(decision-records): require adoption root for new collections`).
+
+### Outstanding concerns
+
+The marker is deliberately required for mechanical provenance: an unmarked collection is treated as an established migration case, because a checker cannot otherwise distinguish a historical single-record collection from a newly authored one. The unchanged `GDR-KI-ARCADIA-002` serial-gap warning is separate work.
+
+### Mini recap
+
+When a new convention must coexist with historical content, an explicit, non-rendered provenance marker is a small and auditable boundary. The alternative would be an unreliable date/history heuristic or a destructive migration.

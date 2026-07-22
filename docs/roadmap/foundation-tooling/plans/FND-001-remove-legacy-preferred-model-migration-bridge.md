@@ -1,7 +1,7 @@
 ---
 id: 'FND-001'
 title: Remove the legacy preferred_model migration bridge in ki-tokenomics
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/remove-the-legacy-preferredmodel-migration-bridge-in-ki-tokenomics
 blocks: —
 blocked-by: —
@@ -51,3 +51,29 @@ The focused audit and conform regression test now proves that `preferred_model_t
 The plan is blocked only by evidence that a known sibling repository still uses the legacy key.
 
 If that evidence appears, retain the migration bridge and create or link the appropriate cross-repository migration handoff before resuming this plan.
+
+## Acceptance
+
+### Delivered
+
+The retired `preferred_model` migration bridge is removed from `ki-tokenomics`; the portable `preferred_model_type` contract is now the only recognised model-default key.
+
+### Summary of changes
+
+- Removed legacy parsing, alias mapping, state, and migration-specific audit/conform diagnostics from the tokenomics engines.
+- Added focused audit and conform regression coverage for the current contract and generic validate-down handling.
+- Updated the living ADR, bootstrap example, and `ki-handoffs` references to describe only the portable key.
+
+### Verification
+
+- Searched 13 available sibling Knowledge Islands worktrees with real `.ki-config.toml` files; none declares `preferred_model`.
+- Passed `bun skills/environment/ki-tokenomics/scripts/rubric/contexts/config-contract.test.ts`, `bun run ki:tokenomics:audit`, `bun run test`, and `bun run ki:audit` serially.
+- Implementation evidence: `ad1895c7` (`refactor(tokenomics): remove legacy preferred model bridge`).
+
+### Outstanding concerns
+
+The aggregate audit retains unrelated existing warnings for the `GDR-KI-ARCADIA-002` serial gap and two `KI-SHAPE-7` anchors; none concerns the removed tokenomics bridge.
+
+### Mini recap
+
+Fleet evidence made bridge removal safe, but the implementation search also exposed stale cross-skill prose. A migration-removal plan should include that live-reference sweep explicitly, as this plan did.
