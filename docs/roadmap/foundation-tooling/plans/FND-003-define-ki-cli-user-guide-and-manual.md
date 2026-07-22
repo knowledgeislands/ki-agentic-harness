@@ -4,7 +4,7 @@ title: Define the KI CLI user guide and help manual
 status: open
 roadmap: foundation-tooling/build-and-deepen-the-knowledge-islands-command-line-interface-cli
 blocks: —
-blocked-by: —
+blocked-by: FND-004
 ---
 
 ## Context
@@ -17,9 +17,9 @@ The first deliverable for this roadmap item is therefore a reviewed user guide a
 
 ## Current state
 
-`docs/handoffs/ki/command-contract.md` defines a version-one command grammar, lifecycle semantics, output, error, and compatibility boundaries, but it currently rejects unscoped `ki doctor` permanently.
+`-/_HANDOFFS/ki/command-contract.md` defines a version-one command grammar, lifecycle semantics, output, error, and compatibility boundaries, but it currently rejects unscoped `ki doctor` permanently.
 
-`docs/handoffs/ki/tools-ki.md` and `docs/handoffs/ki/homebrew-tap.md` provide receiving-repository implementation and delivery briefs.
+`-/_HANDOFFS/ki/tools-ki.md` and `-/_HANDOFFS/ki/homebrew-tap.md` provide receiving-repository implementation and delivery briefs.
 
 The public onboarding guide has only a short coming-soon note, and there is no installable `ki` executable or end-user CLI manual yet. Bootstrap currently leaves users with repository-local `.ki/bin` commands rather than a single `ki` command on `PATH`.
 
@@ -38,9 +38,9 @@ The public onboarding guide has only a short coming-soon note, and there is no i
 
 - `docs/guides/user-guide/command-line-interface.md` (new)
 - user-guide navigation and onboarding links, where the manual needs a public entry point
-- `docs/handoffs/ki/command-contract.md`
-- `docs/handoffs/ki/tools-ki.md`
-- `docs/handoffs/ki/homebrew-tap.md`, only if the reviewed manual changes the packaging contract
+- `-/_HANDOFFS/ki/command-contract.md`
+- `-/_HANDOFFS/ki/tools-ki.md`
+- `-/_HANDOFFS/ki/homebrew-tap.md`, only if the reviewed manual changes the packaging contract
 - receiving-repository roadmap and plan material for the seed and `ki doctor` slice, once the `tools-ki` repository exists and accepts the handoff
 - this plan and its Foundation Tooling roadmap reference
 
@@ -55,5 +55,7 @@ The public onboarding guide has only a short coming-soon note, and there is no i
 ## Dependencies / blocks
 
 FND-002 is complete and no longer blocks this work.
+
+FND-004 defines the repository working-area convention that owns outgoing handoffs. FND-003 can gather CLI evidence while that work proceeds, but must use the settled location and lifecycle before publishing a revised receiving-repository brief.
 
 This plan makes the public interface reviewable before the broader `tools-ki` implementation handoff proceeds. The first seed and `ki doctor` slice should be adopted by a receiving-repository roadmap and plan; a stable public Website endpoint for CLEAN remains an external prerequisite for the eventual lifecycle implementation, not for writing the manual or the coming-soon command.
