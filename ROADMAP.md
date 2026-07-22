@@ -20,6 +20,7 @@ Scoped and ready to start — the immediate queue, picked up before anything in 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
 
 - [Foundation Tooling: Codify Git workflow and commit conventions _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#codify-git-workflow-and-commit-conventions-candidate)
+- [Foundation Tooling: Establish a top-level script self-description contract _(candidate)_](docs/roadmap/foundation-tooling/ROADMAP.md#establish-a-top-level-script-self-description-contract-candidate)
 - [Foundation Tooling: Protect generated rubric publications from drift](docs/roadmap/foundation-tooling/ROADMAP.md#protect-generated-rubric-publications-from-drift)
 - [Foundation Tooling: Review `ki-bootstrap` for further simplification](docs/roadmap/foundation-tooling/ROADMAP.md#review-ki-bootstrap-for-further-simplification)
 - [Governance Consistency: Align KB Stream focus with non-KB roadmap horizons](docs/roadmap/governance-consistency/ROADMAP.md#align-kb-stream-focus-with-non-kb-roadmap-horizons)

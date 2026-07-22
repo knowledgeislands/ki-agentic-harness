@@ -34,6 +34,10 @@ Complete the rubric-publication contract across the ten governance skills that h
 
 After the current boundary refactor settles, review the complete `ki-bootstrap` implementation for residual complexity across user installation, repository bootstrap, shared transport, generation, publication, rubric contexts, and tests. Start with local process launches between bootstrap-owned publisher, synchroniser, HELP, and scaffold modules; replace them only after each has an import-safe entry point and preserves its guarded transaction. Keep external commands and user-install failure isolation where those are real boundaries.
 
+### Establish a top-level script self-description contract _(candidate)_
+
+Define and audit a concise source-level contract for user-facing top-level skill scripts: a plain-language purpose, intended use, mutation or no-write boundary, canonical invocation, and a matching `--help` response. Inventory `govern.ts`, educators, and intentionally public named helpers separately from private modules and generated surfaces; avoid boilerplate that merely repeats a function name or causes generated drift. Decide ownership between `ki-skills` and `ki-engineering`, then add mechanical enforcement only after the script classes and accepted header shape are settled.
+
 ### Codify Git workflow and commit conventions _(candidate)_
 
 Choose an owner for repository Git discipline, including Conventional Commit messages, the allowed type and scope vocabulary, safe lock and cleanup behaviour, and consistency with repository-local instructions. Decide whether that owner should be a dedicated `ki-git` skill, including ownership of the shipped stale Git-lock guard rather than leaving it as an ungoverned hook. Add mechanical enforcement only after the standard is settled.
