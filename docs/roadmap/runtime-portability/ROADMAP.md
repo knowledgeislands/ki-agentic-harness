@@ -8,12 +8,6 @@ code: RTP
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
-### Detect vendor-specific assumptions in portable skill contracts
-
-Add a `ki-skills` audit criterion that detects runtime- or vendor-specific language in contracts intended to be portable, including unqualified references to Claude, Codex, their home directories, and their runtime-only capabilities. Keep explicit exceptions for skills and passages whose declared responsibility is runtime binding, for attributed source material, and for examples that intentionally compare runtimes. Phrase shared standards and guidance in agent- and runtime-neutral terms, then make each existing finding conform rather than retaining an allowlist for accidental historical wording.
-
-**Plan:** [RTP-001](plans/RTP-001-detect-vendor-specific-portable-contracts.md)
-
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
