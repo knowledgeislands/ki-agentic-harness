@@ -1,7 +1,7 @@
 ---
 id: 'FND-019'
 title: Review structural consistency across shipped skills
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/review-structural-consistency-across-shipped-skills
 blocks: —
 blocked-by: —
@@ -19,7 +19,9 @@ We need a structured review that finds unjustified divergence without treating e
 
 The first completed review slice is the governed-entrypoint family: it identified and repaired one direct EDUCATE hand-off in `ki-repo-roadmap` that had not followed the de facto in-process pattern.
 
-The wider review remains in progress; the remaining slices will examine checker decomposition, safe writes, generated payload treatment, HELP, and documentation-to-code ownership at the same level of evidence.
+All six review slices are complete.
+
+The plan is ready for manual acceptance review; its small repairs are verified and its broader work is represented by focused follow-ups rather than a blanket normalisation programme.
 
 ## Review areas
 
@@ -28,17 +30,17 @@ Each area is reviewed across comparable skills, beginning with the strongest rel
 1. **Governed entrypoints and mode wiring** — `govern.ts`/`educate.ts` ownership, aggregate contract, local hand-offs, and retired entrypoints. **Completed:** one `ki-repo-roadmap` subprocess repair.
 2. **Rubric structure and publication** — organisation of `rubric/` contexts, item catalogues, index modules, generated `references/rubric.md`, context factories, and the boundary between a checker-contract provider and a dependent skill. **Completed:** one publisher repair and a bounded parity follow-up.
 3. **Checker decomposition and shared modules** — what stays skill-local, what is safely vendored, and whether imports point in the intended provider-to-consumer direction. **Completed:** provider-to-consumer implementation direction conforms; one test-ownership question is retained for the documentation/evidence slice.
-4. **Safe writes and external boundaries** — atomicity, idempotence, dry-run behaviour, symlink handling, subprocesses, and which external-tool calls are genuine boundaries. **In progress:** subprocess and writer inventory complete; direct non-bootstrap writers remain for focused assessment.
+4. **Safe writes and external boundaries** — atomicity, idempotence, dry-run behaviour, symlink handling, subprocesses, and which external-tool calls are genuine boundaries. **Completed:** writer classes are classified; one stale composition path is repaired and direct-writer hardening is scoped separately.
 5. **Generated payloads and HELP** — source-to-vendored parity, generated documentation, HELP snapshots, and the tests that protect each projection. **Completed:** source-harness projection and generated HELP contracts conform.
-6. **Documentation, ownership, and evidence** — the relationship between standards, rubrics, source provenance, code, frontmatter ownership declarations, and focused versus end-to-end tests.
+6. **Documentation, ownership, and evidence** — the relationship between standards, rubrics, source provenance, code, frontmatter ownership declarations, and focused versus end-to-end tests. **Completed:** the project-skill publisher test now follows its bootstrap implementation owner.
 
 ## Steps
 
 1. ✓ Select representative exemplars for governance, process, harness, and lightweight skills. Define a review matrix covering frontmatter and mode boundaries, checker decomposition, shared-module direction, script/fixture/test layout, safe-write and subprocess patterns, generated payload treatment, HELP, and documentation-to-code ownership.
-2. Inventory every shipped skill against that matrix in dependency order. Record evidence and classify each difference as intentional concern-specific design, harmless variation, suspected inconsistency, or a material contract/safety defect; do not edit implementation during the inventory. The governed-entrypoint slice is complete; continue with the remaining structural dimensions.
-3. Review the suspected differences with each owning skill's standard, rubric, tests, and generated surfaces. Settle the minimal common patterns that are genuinely shared, identify where exemplars should change instead of dependants, and record any durable ownership decision in the appropriate standard or decision record.
-4. Apply only small, unambiguous consistency repairs with their focused tests and generated payload refreshes. Split each broader or disputed repair into a separately scoped roadmap item and plan, with dependencies where needed. The governed-entrypoint repair is complete; do not infer wider implementation normalisation from it.
-5. Publish the final review result and follow-up map, update the relevant rubric or guidance only for adopted common patterns, and run structural, generated-payload, and serial repository gates.
+2. ✓ Inventory every shipped skill against that matrix in dependency order. Record evidence and classify each difference as intentional concern-specific design, harmless variation, suspected inconsistency, or a material contract/safety defect; do not edit implementation during the inventory.
+3. ✓ Review the suspected differences with each owning skill's standard, rubric, tests, and generated surfaces. Settle the minimal common patterns that are genuinely shared, identify where exemplars should change instead of dependants, and record any durable ownership decision in the appropriate standard or decision record.
+4. ✓ Apply only small, unambiguous consistency repairs with their focused tests and generated payload refreshes. Split each broader or disputed repair into a separately scoped roadmap item and plan, with dependencies where needed.
+5. ✓ Publish the final review result and follow-up map, update the relevant rubric or guidance only for adopted common patterns, and run structural, generated-payload, and serial repository gates.
 
 ## Files touched
 
@@ -56,6 +58,7 @@ Actual changes:
 - `skills/implied-families/ki-website-cloudflare/references/rubric.md`
 - `skills/environment/ki-binding/scripts/rubric/contexts/binding.ts`
 - `skills/environment/ki-binding/scripts/rubric/contexts/binding.test.ts`
+- `skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/project-skill-publisher.test.ts`
 
 ## Verify
 
@@ -257,3 +260,59 @@ Its manifest records 31 generated regular files (12 HELP snapshots, 12 educator 
 This is intentional source-harness behaviour: generated small control files remain regular and manifest-hashed, while canonical source trees and direct checker units remain local links.
 
 No generated-payload or HELP consistency repair is needed from this slice.
+
+## Assessment record — documentation, ownership, and evidence
+
+### Scope and method
+
+This final slice checks whether source documentation, declared owners, implementation location, and the tests that prove behaviour agree.
+
+It gives particular attention to the only direct cross-skill test import recorded in the shared-module slice.
+
+### Finding and repair
+
+The project-skill publisher implementation, its public command, its bootstrap rubric context, and `ki-bootstrap`'s own operating contract all assign runtime payload publication to `ki-bootstrap`.
+
+The corresponding regression test was physically under `ki-repo` and imported the implementation across the skill boundary.
+
+The test now sits beside `project-skill-publisher.ts` in `ki-bootstrap`, uses a local import, and leaves no empty `ki-repo/scripts/internal/` directory for a bootstrap snapshot to copy without manifest provenance.
+
+The focused publisher test, the DOCTOR suite, and the bootstrap safety suite all pass after the move.
+
+### Classification
+
+This was a material ownership discrepancy with a small, unambiguous repair.
+
+The broader review found documentation and generated surfaces generally aligned with their declared owners; the retained follow-ups concern bounded publication-parity and direct-writer safety evidence, not a new shared ownership layer.
+
+## Acceptance
+
+### Delivered
+
+Completed the structural assessment of all 31 shipped skills without a blanket rewrite.
+
+### Summary of changes
+
+- Replaced `ki-repo-roadmap`'s local EDUCATE subprocess hand-off with an import-safe in-process call.
+- Restored `ki-website-cloudflare`'s generated-rubric provenance, citations, and exact-parity test.
+- Restored `ki-binding`'s source-harness project-link check and added its focused path regression test.
+- Moved the project-skill publisher test to its `ki-bootstrap` implementation owner.
+- Added two bounded roadmap follow-ups: generated-rubric publication parity and direct non-bootstrap writer hardening.
+
+### Verification
+
+- Focused suites passed for every implementation repair.
+- `bun run ki:authoring:audit` and the direct roadmap audit passed for each documentation checkpoint.
+- `bun run ki:engineering:audit`, `bun run ki:bootstrap:audit`, `bun run test`, and `bun run ki:audit` passed serially after the final implementation repair.
+
+### Outstanding concerns
+
+- The ten remaining generated-rubric publishers without exact-parity tests are scoped by **Protect generated rubric publications from drift**.
+- The `ki-binding`, `ki-housekeeping`, and `ki-agents` direct-writer boundaries are scoped by **Inventory non-critical writers for bounded follow-up**.
+- Bootstrap-owned process boundaries and tokenomics' local engine subprocesses retain their existing focused roadmap items.
+
+### Mini recap
+
+The useful common patterns are narrow: governed entrypoints are in-process, checker consumers use declared vendored providers, source-harness payloads are manifest-governed links plus regular generated controls, and tests live with the implementation whose contract they prove.
+
+Variation in local context count, renderer details, test-file count, and external tool use remains legitimate when its owner, boundary, and executable evidence are clear.
