@@ -21,13 +21,11 @@ ki doctor
 Knowledge Islands diagnostics are coming soon. This command currently performs no checks and changes nothing.
 ```
 
-## Acquisition commands
+## Skill installation and activation
 
-```text
-ki acquire chatgpt import <capture-directory> --output <kep-directory> [--dry-run] [--json]
-```
+The expected `ki skill ...` group will install a verified skill collection once for a user, then explicitly activate named skills in either global or repository scope. Repository activation will declare the skill in `.ki-config.toml` and link it into the selected runtime's project discovery location; global activation will link it only into the selected user runtime. Installing a collection does not activate every skill globally.
 
-The command imports only locally user-provided capture material into a deterministic Knowledge Export Package (KEP). It does not control a browser, contact ChatGPT, read credentials or browser profiles, discover a repository, extract reusable knowledge, or govern Knowledge Base ingress.
+The exact leaf names and release contract remain to be adopted. `ki repo audit` and `ki repo conform` will resolve their declared skills from that installed collection rather than from copied repository checkers.
 
 ## Repository maintenance commands
 
@@ -46,11 +44,13 @@ ki repo audit --skill ki-repo-roadmap
 
 These commands are planned. They will not execute vendored `.ki/bin` wrappers or arbitrary skill scripts; the native implementation and migration contract are being defined before they enter HELP and completion.
 
-## Skill installation and activation
+## Acquisition commands
 
-The expected `ki skill ...` group will install a verified skill collection once for a user, then explicitly activate named skills in either global or repository scope. Repository activation will declare the skill in `.ki-config.toml` and link it into the selected runtime's project discovery location; global activation will link it only into the selected user runtime. Installing a collection does not activate every skill globally.
+```text
+ki acquire chatgpt import <capture-directory> --output <kep-directory> [--dry-run] [--json]
+```
 
-The exact leaf names and release contract remain to be adopted. `ki repo audit` and `ki repo conform` will resolve their declared skills from that installed collection rather than from copied repository checkers.
+The command imports only locally user-provided capture material into a deterministic Knowledge Export Package (KEP). It does not control a browser, contact ChatGPT, read credentials or browser profiles, discover a repository, extract reusable knowledge, or govern Knowledge Base ingress.
 
 ## Installation
 
@@ -61,12 +61,6 @@ The installer verifies the selected payload before an atomic replacement. It wri
 ## XDG locations
 
 `ki` uses the XDG Base Directory environment variables for user-owned data. It will use `$XDG_DATA_HOME/ki` for installed skill collections, `$XDG_CONFIG_HOME/ki` for configuration, `$XDG_CACHE_HOME/ki` for disposable downloads, and `$XDG_STATE_HOME/ki` for mutable state. The standard defaults apply when a variable is unset: `~/.local/share`, `~/.config`, `~/.cache`, and `~/.local/state` respectively. It does not define a separate KI home variable.
-
-## Availability and scope
-
-The root help and completion list only commands available in the installed version. The public `0.1.0` release currently provides the general commands; the local ChatGPT importer is implemented as unreleased `0.2.0` work. Repository maintenance and skill-installation commands remain planned until their contract and native implementation are accepted.
-
-User commands affect only KI-managed user payload; repository commands affect only the selected repository. No unscoped command infers either target.
 
 ## Help, diagnostics, and recovery
 
