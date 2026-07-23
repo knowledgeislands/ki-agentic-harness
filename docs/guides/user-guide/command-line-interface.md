@@ -25,6 +25,23 @@ ki doctor
 Knowledge Islands diagnostics are coming soon. This command currently performs no checks and changes nothing.
 ```
 
+## Repository maintenance commands
+
+The following public forms replace the harness-maintainer aggregate commands once their separately adopted lifecycle release activates them.
+
+```text
+ki repo audit
+ki repo conform
+ki repo audit --skill ki-repo-roadmap
+```
+
+- `ki repo audit` is the end-user form of the aggregate audit currently run in this repository as `bun run ki:audit`.
+- `ki repo conform` is the corresponding safe mechanical write pass, currently `bun run ki:conform`.
+- `ki repo audit --skill ki-repo-roadmap` is the scoped roadmap audit, currently `bun run ki:repo-roadmap:audit`.
+- `bun run test` remains the harness self-test for maintainers. The public contract deliberately defines no `ki repo test` leaf.
+
+Each `ki repo ...` command is a planned repository-scoped operation, not a seed command; it will appear in HELP and completion only after its receiving release is activated.
+
 ## Installation
 
 The seed installer places the executable in a user command directory. Its default is `~/.local/bin`; set `KI_CLI_INSTALL_DIR` to choose another directory. `KI_CLI_VERSION` selects a tagged release instead of the installer’s default stable version.
