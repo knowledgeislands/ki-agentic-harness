@@ -18,6 +18,16 @@ Adopt the Knowledge Acquisition Framework (KAF) as the upstream boundary that mo
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
+### Create `ki-repo-review` as a human-led process skill
+
+Create the reusable process skill from the completed `REV-001` review method: inventory a repository, gather inspectable evidence, interview material uncertainties, distinguish findings from decisions and delivery work, and link findings to plans.
+
+The skill owns any optional review-record and finding convention, including retention and pruning; it composes with `ki-repo-roadmap` and `ki-plan` for canonical locators and delivery links without extending either generic lifecycle.
+
+Validate and forward-test the skill against the dotfiles assessment; it must guide a review rather than substitute automated judgment for one.
+
+**Plan:** [GOV-002](plans/GOV-002-create-ki-repo-review-process-skill.md)
+
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
@@ -31,10 +41,6 @@ Make the shared process layer structure-aware: `ki-recap` must route outstanding
 ### Codify convention placement and the knowledge-promotion loop
 
 Define one runtime-neutral routing reference and manual promotion loop that prevents useful knowledge becoming trapped in session or project memory: ephemeral agent memory → project guidance or an on-demand guide → shared governance or reference material → a reusable skill. For each rung, state what belongs there, the evidence that triggers promotion, the durable destination, and the reconciliation step that removes or redirects the lower-layer duplicate. Keep `AGENTS.md` as the portable orientation, reserve runtime files such as `CLAUDE.md` for runtime-specific imports and guidance, and route genuinely personal cross-project conventions to synchronized user configuration. Do not add automatic transcript mining or a new guide area by default.
-
-### Create `ki-repo-review` as a human-led process skill
-
-Create the reusable process skill from the completed `REV-001` review method: inventory a repository, gather inspectable evidence, interview material uncertainties, distinguish findings from decisions and delivery work, and link findings to plans. Compose with the then-current roadmap skill for review-record lifecycle rather than owning retention itself. Validate and forward-test the skill against the dotfiles assessment; it must guide a review rather than substitute automated judgment for one.
 
 ### Review the skill dependency graph and implementation quality _(candidate)_
 

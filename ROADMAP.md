@@ -13,6 +13,7 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
 - [Foundation Tooling: Build and deepen the Knowledge Islands command-line interface (CLI)](docs/roadmap/foundation-tooling/ROADMAP.md#build-and-deepen-the-knowledge-islands-command-line-interface-cli)
+- [Governance Consistency: Create `ki-repo-review` as a human-led process skill](docs/roadmap/governance-consistency/ROADMAP.md#create-ki-repo-review-as-a-human-led-process-skill)
 
 ## Soon
 
@@ -24,7 +25,6 @@ Understood and roughly scoped but not yet started — worth doing once the **Nex
 - [Foundation Tooling: Review `ki-bootstrap` for further simplification](docs/roadmap/foundation-tooling/ROADMAP.md#review-ki-bootstrap-for-further-simplification)
 - [Governance Consistency: Align KB Stream focus with non-KB roadmap horizons](docs/roadmap/governance-consistency/ROADMAP.md#align-kb-stream-focus-with-non-kb-roadmap-horizons)
 - [Governance Consistency: Codify convention placement and the knowledge-promotion loop](docs/roadmap/governance-consistency/ROADMAP.md#codify-convention-placement-and-the-knowledge-promotion-loop)
-- [Governance Consistency: Create `ki-repo-review` as a human-led process skill](docs/roadmap/governance-consistency/ROADMAP.md#create-ki-repo-review-as-a-human-led-process-skill)
 - [Governance Consistency: Review the skill dependency graph and implementation quality _(candidate)_](docs/roadmap/governance-consistency/ROADMAP.md#review-the-skill-dependency-graph-and-implementation-quality-candidate)
 
 ## Waiting for
