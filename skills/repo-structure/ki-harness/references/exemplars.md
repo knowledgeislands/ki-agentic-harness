@@ -65,7 +65,7 @@ _No agent definitions yet — this is an empty shelf. Add a `.md` per agent when
 
 ### Required `package.json` scripts for a harness
 
-The two harness-specific scripts (`ki:skills:copy:project` and `ki:skills:audit`) are the project delivery and quality mechanisms the harness concept depends on — absence of either is a FAIL. `/harness/install` installs the globally kept keystone and process skills as regular copies; skills declared for an ordinary repository are copied project-local, while bootstrap links a harness's own source skills into its runtime locations. `ki:skills:link:global` explicitly links the five global core skills from a local harness checkout and is not normal installation. The aggregate read/write entrypoints and their code/Markdown toolchains are composed from `ki-engineering` and `ki-authoring`, so this harness-specific exemplar does not restate them.
+The two harness-specific scripts (`ki:skills:copy:project` and `ki:skills:audit`) are the project delivery and quality mechanisms the harness concept depends on — absence of either is a FAIL. `/harness/install` installs the globally kept keystone and process skills as regular copies; skills declared for an ordinary repository are copied project-local, while bootstrap links a harness's own source skills into its runtime locations. `ki:skills:link:global` explicitly links the six global core skills from a local harness checkout and is not normal installation. The aggregate read/write entrypoints and their code/Markdown toolchains are composed from `ki-engineering` and `ki-authoring`, so this harness-specific exemplar does not restate them.
 
 ```jsonc
 {

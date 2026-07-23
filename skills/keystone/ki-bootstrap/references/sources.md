@@ -35,7 +35,7 @@ REFRESH last run **2026-07-07** — confirmed [CS]: an installed skill's `SKILL.
 - [KR] `ki-repo` — Coverage cascade: every repo declares its foundations (`[ki-repo]` bedrock marker + `[ki-authoring]`) explicitly as `[ki-*]` tables; there is no injected/cascade-exempt baseline (ADR-KI-HARNESS-007). See `config-standards.md` §44/§52.
 - [KS] `ki-skills` — **confirmed.** Checker-contract severity ladder and behaviour unchanged.
 - [KH] `ki-harness` — **confirmed.** `ki:skills:copy:project` is the normal portable project publication path. Bootstrap recognises a harness target and links its own declared runtime skills to canonical sources; `/harness/install` installs the global keystone and process skills as regular copies. The harness publishes only its declared coverage like any other repo.
-- [AH] README — **confirmed.** Keystone / global-install framing intact; skill count grew to twenty (generic `[ki-*]` model needs no edit).
+- [AH] README — **confirmed.** Keystone / global-install framing intact; skill count grew to twenty-one (generic `[ki-*]` model needs no edit).
 
 ### Open watch-items
 

@@ -58,7 +58,7 @@ Audits, conforms, and scaffolds the **Homebrew tap** repo (`homebrew-tap`) that 
 
 ### `ki-dotfiles-chezmoi`
 
-Codifies, audits, and conforms the **chezmoi dotfiles-management standard** — naming-prefix semantics (`dot_`/`executable_`/`private_`/`.tmpl`), edit-source-not-target discipline, shell-loader layering, the bin/ dispatcher pattern, app-mutated-config handling (surgical patch vs full-template reverse-merge), single-source-to-multi-target config templating, CLAUDE.md/agent-instruction layering, and chezmoi-specific repo-shape and OS gotchas. The ninth repo-structure skill; it governs any git repo that is a chezmoi source-state directory (detected via `.chezmoiroot`/`.chezmoi.toml.tmpl`/`.chezmoidata`/root-level `dot_*` files), additive to `ki-repo`'s generic file-presence checks rather than restating them. Derived from a single case-study repo (n=1) — its judgment criteria stay provisional until more repos are audited against it. **Composes on** `ki-authoring`.
+Codifies, audits, and conforms the **chezmoi dotfiles-management standard** — naming-prefix semantics (`dot_`/`executable_`/`private_`/`.tmpl`), edit-source-not-target discipline, shell-loader layering, the bin/ dispatcher pattern, app-mutated-config handling (surgical patch, native fragment binding, or full-template reverse-merge), single-source-to-multi-target config templating, CLAUDE.md/agent-instruction layering, and chezmoi-specific repo-shape and OS gotchas. The ninth repo-structure skill; it governs any git repo that is a chezmoi source-state directory (detected via `.chezmoiroot`/`.chezmoi.toml.tmpl`/`.chezmoidata`/root-level `dot_*` files), additive to `ki-repo`'s generic file-presence checks rather than restating them. Derived from a single case-study repo (n=1) — its judgment criteria stay provisional until more repos are audited against it. **Composes on** `ki-authoring`.
 
 ## General governance
 
@@ -105,6 +105,10 @@ Drives the **plan lifecycle** for a non-KB repository — `ready` / `execute` / 
 ### `ki-delegate`
 
 Turns a task list or an approved `ki-plan` into a **tiered, round-sequenced execution** across sub-agents, in four legs: **classify** each task as judgment / mechanical / research, **assign** it to an agent type and a per-spawn model tier (cheapest that suffices; judgment to a standard-encoding specialist or a stronger model), **sequence** into rounds (blockers and citation-targets first, then a parallel fan-out of the independents, with write-contention named), and **gate** every result (review each cheap-tier diff before commit; adversarially safety-review any auto-executing hook or script). Operationalises `ADR-KI-HARNESS-003` (mechanical-first) and draws model-tier cost/selection policy from `ki-tokenomics` without restating it. The method is written runtime-neutrally with the Claude-Code spawn mechanics tagged `CC`, so the skill models the portability discipline it delivers. Installable globally alongside `ki-bootstrap` — and like `ki-bootstrap`, never declared via a `.ki-config.toml` table.
+
+### `ki-repo-review`
+
+Guides a **human-led repository review**: frames scope, gathers inspectable evidence, interviews material uncertainty, records findings, and routes each outcome to a plan, Decision Record, feature definition, guide, or no action. Optional `REV-<NNN>` review records and `REV-<NNN>-F<NNN>` findings remain working evidence only while a concrete plan or Decision Record retains them; the process requires explicit confirmation before pruning. It composes with `ki-repo-roadmap` and `ki-plan` for delivery routing but does not create an automatic verdict, checker score, plan, or Decision Record.
 
 ## Implied families
 

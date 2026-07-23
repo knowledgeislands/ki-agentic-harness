@@ -29,7 +29,7 @@ The dotfiles repository is the initial case study. Its application-specific sour
 
 ## Files touched
 
-- `skills/keystone/ki-dotfiles-chezmoi/`
+- `skills/repo-structure/ki-dotfiles-chezmoi/`
 - Its rubric, references, and focused tests or evaluation material
 - Generated skill documentation only where the skill contract requires it
 - This plan and its Foundation Tooling roadmap reference

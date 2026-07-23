@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url'
 
 const SCRIPT = join(dirname(fileURLToPath(import.meta.url)), 'link-global-skills.ts')
 const ROOT = resolve(dirname(SCRIPT), '..', '..', '..', '..')
-const SKILLS = ['ki-bootstrap', 'ki-delegate', 'ki-next', 'ki-plan', 'ki-recap']
+const SKILLS = ['ki-bootstrap', 'ki-delegate', 'ki-next', 'ki-plan', 'ki-recap', 'ki-repo-review']
 
 let failed = false
 function check(label: string, condition: boolean): void {

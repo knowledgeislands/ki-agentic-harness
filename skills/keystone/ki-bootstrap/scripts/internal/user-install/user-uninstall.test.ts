@@ -12,7 +12,7 @@ const install = join(scripts, 'user-install.ts')
 const uninstall = join(scripts, '..', '..', 'user-uninstall.ts')
 const skills = join(harness, 'skills')
 const hooks = join(harness, 'hooks')
-const core = ['ki-bootstrap', 'ki-delegate', 'ki-next', 'ki-plan', 'ki-recap']
+const core = ['ki-bootstrap', 'ki-delegate', 'ki-next', 'ki-plan', 'ki-recap', 'ki-repo-review']
 let failed = false
 
 function check(label: string, condition: boolean): void {

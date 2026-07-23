@@ -28,7 +28,7 @@ import { homedir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-export const CORE_USER_SKILLS = ['ki-bootstrap', 'ki-delegate', 'ki-next', 'ki-plan', 'ki-recap'] as const
+export const CORE_USER_SKILLS = ['ki-bootstrap', 'ki-delegate', 'ki-next', 'ki-plan', 'ki-recap', 'ki-repo-review'] as const
 const MARKER = '.ki-user-installed-skill.json'
 const SCHEMA = 1
 const SELF = fileURLToPath(import.meta.url)

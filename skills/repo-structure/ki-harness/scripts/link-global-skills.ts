@@ -10,7 +10,7 @@ import { homedir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const GLOBAL_SKILLS = ['ki-bootstrap', 'ki-delegate', 'ki-next', 'ki-plan', 'ki-recap'] as const
+const GLOBAL_SKILLS = ['ki-bootstrap', 'ki-delegate', 'ki-next', 'ki-plan', 'ki-recap', 'ki-repo-review'] as const
 const MARKER = '.ki-user-installed-skill.json'
 const RUNTIMES = {
   'claude-code': { home: '.claude', skills: join('.claude', 'skills') },

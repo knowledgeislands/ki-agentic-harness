@@ -18,7 +18,7 @@ curl -fsSL https://knowledgeislands.info/harness/install | sh
 
 `/harness/install` is the stable public route. Its implementation may change without changing the command you use.
 
-The installer supports only two regular top-level user directories: `~/.claude/` for Claude Code and `~/.agents/` for the Agents/Codex skill surface. When either conformant directory is present, it copies `ki-bootstrap`, `ki-delegate`, `ki-next`, `ki-plan`, and `ki-recap` as regular files into its user skill directory.
+The installer supports only two regular top-level user directories: `~/.claude/` for Claude Code and `~/.agents/` for the Agents/Codex skill surface. When either conformant directory is present, it copies `ki-bootstrap`, `ki-delegate`, `ki-next`, `ki-plan`, `ki-recap`, and `ki-repo-review` as regular files into its user skill directory.
 
 When neither runtime directory exists, pass `--runtime claude-code` or `--runtime codex` to choose one explicitly.
 
