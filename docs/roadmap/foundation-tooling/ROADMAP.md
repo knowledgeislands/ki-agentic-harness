@@ -18,6 +18,14 @@ This is the next priority after the Blocking skill-evolution work. Start with a 
 
 **Plan:** [FND-003](plans/FND-003-define-ki-cli-user-guide-and-manual.md)
 
+### Generalise native configuration-fragment bindings
+
+Extend `ki-dotfiles-chezmoi` with a third pattern for application-mutated configuration: a narrow, native chezmoi `modify_` binding that reconciles declared fragments during `status`, `diff`, and `apply` without taking ownership of the full application file.
+
+Define the binding contract — canonical source, target, client applicability, selector, ownership and removal policy, adoption boundary, and secret protection — plus the format-preservation and idempotence evidence required before use. Keep surgical post-apply patches and full-template reverse merges as distinct alternatives; do not prescribe a repository's own application bindings or data model.
+
+**Plan:** [FND-004](plans/FND-004-generalise-native-configuration-fragment-bindings.md)
+
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.

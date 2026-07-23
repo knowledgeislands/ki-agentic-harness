@@ -13,6 +13,7 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
 - [Foundation Tooling: Build and deepen the Knowledge Islands command-line interface (CLI)](docs/roadmap/foundation-tooling/ROADMAP.md#build-and-deepen-the-knowledge-islands-command-line-interface-cli)
+- [Foundation Tooling: Generalise native configuration-fragment bindings](docs/roadmap/foundation-tooling/ROADMAP.md#generalise-native-configuration-fragment-bindings)
 - [Governance Consistency: Create `ki-repo-review` as a human-led process skill](docs/roadmap/governance-consistency/ROADMAP.md#create-ki-repo-review-as-a-human-led-process-skill)
 
 ## Soon
