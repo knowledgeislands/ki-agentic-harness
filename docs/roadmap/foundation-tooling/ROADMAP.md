@@ -12,6 +12,12 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
+### Define an installed-skill registry and native repository-maintenance contract
+
+Replace the vendored repository-runner model with one verified, XDG-located installed skill collection. Define how skills register native audit and conform operations with `ki`, how `.ki-config.toml` selects them, how explicit repository and global runtime activation links work, and how existing repositories and CI migrate without a hidden fallback to vendored scripts or a nearby harness checkout.
+
+**Plan:** [FND-004](plans/FND-004-define-installed-skill-registry.md)
+
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
