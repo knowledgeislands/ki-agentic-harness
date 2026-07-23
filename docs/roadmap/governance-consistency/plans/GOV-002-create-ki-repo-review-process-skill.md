@@ -1,7 +1,7 @@
 ---
 id: 'GOV-002'
 title: Create ki-repo-review as a human-led process skill
-status: in-progress
+status: acceptance
 roadmap: governance-consistency/create-ki-repo-review-as-a-human-led-process-skill
 blocks: —
 blocked-by: —
@@ -23,11 +23,11 @@ The completed `REV-001` dotfiles assessment and its delivery history provide a c
 
 ## Steps
 
-1. Reconstruct the reusable review method from the dotfiles assessment and its delivery history: evidence inventory, architecture and implementation lenses, material-uncertainty interviews, findings, decisions, and delivery routing.
-2. Define `ki-repo-review` as a human-led process skill with clear invocation, inputs, stopping points, and boundaries; it must guide review work rather than generate an authoritative review verdict.
-3. Define an optional, portable review-record and finding convention, including ownership, links to roadmap items and plans, and explicit retention or pruning rules without changing `ki-repo-roadmap` or `ki-plan` generic lifecycle semantics.
-4. Add only the documentation, references, and focused verification needed to make the skill usable across repository styles; preserve repository-specific decisions as local records rather than embedding them in the shared skill.
-5. Forward-test the process against the completed dotfiles assessment, validate its routing of findings to plans or Decision Records, and reconcile the user-guide skill map and generated skill graph.
+- [x] Reconstruct the reusable review method from the dotfiles assessment and its delivery history: evidence inventory, architecture and implementation lenses, material-uncertainty interviews, findings, decisions, and delivery routing.
+- [x] Define `ki-repo-review` as a human-led process skill with clear invocation, inputs, stopping points, and boundaries; it must guide review work rather than generate an authoritative review verdict.
+- [x] Define an optional, portable review-record and finding convention, including ownership, links to roadmap items and plans, and explicit retention or pruning rules without changing `ki-repo-roadmap` or `ki-plan` generic lifecycle semantics.
+- [x] Add only the documentation, references, and focused verification needed to make the skill usable across repository styles; preserve repository-specific decisions as local records rather than embedding them in the shared skill.
+- [x] Forward-test the process against the completed dotfiles assessment, validate its routing of findings to plans or Decision Records, and reconcile the user-guide skill map and generated skill graph.
 
 ## Files touched
 
@@ -46,3 +46,30 @@ The completed `REV-001` dotfiles assessment and its delivery history provide a c
 ## Dependencies / blocks
 
 The plan is self-contained. It consumes the completed dotfiles review as an example and does not reopen its completed delivery plan or local review convention.
+
+## Acceptance
+
+### Delivered
+
+Added `ki-repo-review`, a globally installable process skill for human-led repository architecture and implementation reviews.
+
+### Summary of changes
+
+- Added the review framing, evidence inventory, architecture and implementation lenses, material-uncertainty interview, finding-routing, and deliberate evidence-pruning procedures.
+- Added the portable `REV-<NNN>-F<NNN>` finding convention and optional review-record retention boundary.
+- Added behavioural evaluation scenarios, user-guide catalogue and graph updates, and global installer/development-link coverage.
+
+### Verification
+
+- `bun run ki:skills:audit` — no FAIL; two existing `KI-SHAPE-7` warnings remain.
+- `bun run ki:authoring:audit`, `bun run test`, and `bun run ki:audit` — passed at current `HEAD` (`8da25d17`).
+- Generated skill graph — passed and matches `docs/guides/user-guide/skills.md`.
+- Implementation evidence: `fe6cea89` (`Add repository review process skill`).
+
+### Outstanding concerns
+
+The installer and development linker now include `ki-repo-review`, but no user-global installation or development-link command was run as part of this repository change.
+
+### Mini recap
+
+Review evidence is temporary support for routed durable outcomes; it is not a permanent architecture-document category. No further route is proposed.
