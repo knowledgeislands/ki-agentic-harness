@@ -13,7 +13,7 @@ The existing self-sufficiency model vendors checker copies and aggregate runners
 
 ## Current state
 
-The public CLI guide now groups the current and expected commands and defines the intended XDG location convention. Existing bootstrap, aggregate, and lifecycle decision records still require vendored repository runners. The outgoing `-/_HANDOFFS/ki/command-contract.md` and `tools-ki.md` notes supplied constraints for this work; their durable successor is this plan and the receiving `tools-ki` implementation plan.
+[ADR-KI-HARNESS-012](../../../decisions/ADR-KI-HARNESS-012-installed-skill-collections-and-native-repository-operations.md) and its [installed skill collection contract](../../../decisions/references/installed-skill-collection-contract.md) define the XDG collection, integrity, registration, activation, native-operation, migration, and CI boundary. The current guides and bootstrap, repository, engineering, and skills standards adopt that contract; the misrouted handoff material has been deleted after adoption. The receiving [CLI-004](https://github.com/knowledgeislands/tools-ki/blob/main/docs/roadmap/cli/plans/CLI-004-native-repo-maintenance.md) can now implement it without reopening architecture; it remains responsible for executable delivery, release, and Homebrew decisions.
 
 ## Steps
 
