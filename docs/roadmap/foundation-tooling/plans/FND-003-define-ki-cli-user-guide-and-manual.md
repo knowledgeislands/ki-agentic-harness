@@ -1,7 +1,7 @@
 ---
 id: 'FND-003'
 title: Define the KI CLI user guide and help manual
-status: open
+status: in-progress
 roadmap: foundation-tooling/build-and-deepen-the-knowledge-islands-command-line-interface-cli
 blocks: —
 blocked-by: GOV-001
@@ -19,7 +19,7 @@ The first deliverable for this roadmap item is therefore a reviewed user guide a
 
 `-/_HANDOFFS/ki/command-contract.md` defines a version-one command grammar, lifecycle semantics, output, error, and compatibility boundaries, but it currently rejects unscoped `ki doctor` permanently.
 
-`-/_HANDOFFS/ki/tools-ki.md` and `-/_HANDOFFS/ki/homebrew-tap.md` provide receiving-repository implementation and delivery briefs.
+`-/_HANDOFFS/ki/tools-ki.md` and `-/_HANDOFFS/ki/homebrew-tap.md` provide receiving-repository implementation and delivery briefs. `tools-ki` now has open CLI-001 and CLI-002 plans; CLI-001 owns the seed implementation and CLI-002 owns the first acquisition command.
 
 The public onboarding guide has only a short coming-soon note, and there is no installable `ki` executable or end-user CLI manual yet. Bootstrap currently leaves users with repository-local `.ki/bin` commands rather than a single `ki` command on `PATH`.
 
@@ -30,7 +30,7 @@ The public onboarding guide has only a short coming-soon note, and there is no i
 3. Write a user-facing CLI guide that explains the purpose of `ki`; its user and repository scopes; initial command groups; each command's intent, prerequisites, write boundary, dry-run or check behaviour, recovery route, and availability status. Make root `ki doctor` the initial small public command: it reports that diagnostics are coming soon without inspecting or changing either scope.
 4. Draft the canonical root and leaf HELP material from that guide, including usage, command summaries, option ownership, examples, diagnostics, reserved command behaviour, completion, and version. Make the guide and HELP mutually consistent without describing internal harness-maintainer entrypoints as public commands.
 5. Reconcile the manual-derived interface decisions against `command-contract.md`, the `tools-ki` handoff, the Homebrew handoff, and affected onboarding links. Replace the permanent rejection of root `ki doctor` with its deliberately minimal initial contract; distinguish it from future scope-specific diagnostics. Do not implement or publish the broader `tools-ki` lifecycle in this harness plan.
-6. Implement and test only the seed-installation and `ki doctor` vertical slice in the receiving CLI repository once its local roadmap and plan adopt this handoff. Verify that the command is available after installation, that it performs no user- or repository-scope inspection or mutation, and that its output gives an honest coming-soon route.
+6. Confirm that the receiving CLI plan adopts the exact seed-installation and `ki doctor` contract. Its owner implements and tests that vertical slice, including availability after installation, no user- or repository-scope inspection or mutation, and an honest coming-soon response; do not duplicate that implementation in this harness.
 7. Review the manual against representative first-use, existing governed repository, clean-and-recover, and user-install journeys. Record unresolved product decisions as explicit follow-up proposals rather than assuming them in implementation.
 8. Run the relevant documentation, roadmap, and link checks; confirm that every documented command has a precise scope and current availability statement. Prepare the plan for manual acceptance before broader CLI implementation work.
 
@@ -48,9 +48,9 @@ The public onboarding guide has only a short coming-soon note, and there is no i
 
 1. A new user can distinguish `ki user ...` from `ki repo ...`, identify each command's mutation boundary and recovery route, and understand the initial availability of `ki doctor`.
 2. The root and leaf help material, user guide, command contract, and receiving handoffs agree on every initial command, option, reserved path, diagnostic, and scope boundary.
-3. The seed installer makes `ki` available through the documented user command directory or gives a direct recovery instruction; `ki doctor` makes no filesystem, repository, network, or child-process inspection beyond rendering its fixed coming-soon response.
+3. The seed-installation and `ki doctor` contract gives the receiving CLI plan an exact user command directory, PATH recovery route, and no-inspection/no-mutation boundary.
 4. `bun run ki:authoring:audit` and `bun run ki:repo-roadmap:audit` pass; link checks or the repository's relevant documentation tests pass when available.
-5. No broader executable lifecycle, release, Homebrew formula, or external repository is created or changed before the receiving repository explicitly adopts its own roadmap item and plan.
+5. This harness plan creates no broader executable lifecycle, release, Homebrew formula, or CLI implementation; those remain separately owned by the adopted `tools-ki` roadmap and plans.
 
 ## Dependencies / blocks
 
