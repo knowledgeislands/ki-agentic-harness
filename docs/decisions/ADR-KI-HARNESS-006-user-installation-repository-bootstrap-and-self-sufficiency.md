@@ -16,30 +16,28 @@ The earlier installation model used one remote bootstrap command for two unrelat
 
 That conflation made global skills depend on a local checkout, presented a repository action as the first onboarding step, and left the durable Claude hook payload on a separate path.
 
-A governed repository still needs to run its mechanical checks without an installed harness or a `package.json`.
+A governed repository needs to run its mechanical checks without an LLM or a `package.json`, while its declared operations must come from a verified user-installed collection rather than a copied repository executor.
 
 ## Decision
 
-Knowledge Islands has two installation contracts, both owned by `ki-bootstrap` but with strictly separate write scopes.
+Knowledge Islands has separate user-installation and repository-activation contracts, with strictly separate write scopes.
 
-- **Install the harness once for a user.** `https://knowledgeislands.info/harness/install` serves the `scripts/user-install.sh` entry point. With no runtime selection, it detects only regular top-level `~/.claude/` (Claude Code) and `~/.agents/` (Agents/Codex) directories, then installs regular-file copies of the global core skills (`ki-bootstrap`, `ki-delegate`, `ki-next`, `ki-plan`, `ki-recap`, and `ki-repo-review`) for every conformant detected directory. An explicit runtime option selects a runtime when detection finds none or the user wants a narrower install. When Claude Code is selected, it also installs the durable Claude hook payload. The public installer never creates a development symlink or writes Claude settings.
-- **Bootstrap a repository.** `https://knowledgeislands.info/harness/bootstrap` serves `scripts/repo-bootstrap.sh`. It downloads a disposable harness source, runs the repository bootstrap engine, and writes only the selected target repository. An installed `ki-bootstrap` skill invokes this same repository operation in an agent session. The route remains available for a person or automation that does not use an agent.
-- **Keep the repository self-sufficient.** Repository bootstrap resolves declared governance coverage, vendors each required mechanical checker and HELP snapshot below `.ki-meta/checkers/`, writes the `.ki-meta/bin/{ki-audit,ki-conform,ki-educate,ki-help}` runners, and publishes complete copied project-local runtime skills. It never writes the target's `package.json`, user-global skills, hooks, or settings.
-- **Separate copied payloads from deliberate links.** Normal user and repository installation always use regular-file copies. `ki-harness` owns the explicit source-harness-only project-link operation for local harness development; it never accepts a consumer target, agents, or `.ki-meta/`. Linking is never a prerequisite for ordinary use.
-- **Keep global development links explicit.** A harness author working from a local checkout may run `ki:skills:link:global`, which replaces only the managed global core-skill copies with symlinks to that checkout. `ki-harness` owns both this local-author command and its fixed six-skill set. It is not a mode of the public installer and it has no public route.
-- **Keep entry points small and names descriptive.** `scripts/` exposes only the shell entry points and canonical governance mode entries (`audit.ts`, `conform.ts`, and `educate.ts`). Their TypeScript implementations and private helpers live under `scripts/internal/`. The public routes never expose a `internal/` path.
+- **Install the verified collection once for a user.** `ki skill install` acquires or atomically replaces the single active collection from immutable release evidence verified by the installed `ki` release. It keeps collection data, configuration, cache, and mutable state in their standard XDG locations. It creates neither repository state nor runtime activation links.
+- **Activate a skill explicitly at a selected scope.** `ki skill add <skill> --scope global` creates only managed discovery links in the selected user runtime. `ki skill add <skill> --scope repo` updates only the selected repository's declaration and creates its managed runtime discovery links. Activation does not make every installed skill global and never uses a harness checkout as a runtime dependency.
+- **Run repository operations natively.** `ki repo audit` and `ki repo conform` read the selected repository's `.ki-config.toml`, require all explicit dependencies to be declared, and resolve the resulting operations only from the verified active collection. They do not write `package.json`, user-global payloads, hooks, or settings.
+- **Keep links deliberate and safe.** Managed runtime links are subject to ownership markers, containment checks, idempotence, dry-run support, and refusal for altered or unfamiliar material. Normal operation does not copy full skills into a repository or a runtime discovery directory.
+- **Migrate legacy repository state explicitly.** Existing `.ki` runners, manifests, copied checkers, and copied payloads are legacy implementation state. A fail-closed migration may inspect them, but native operations never execute them as a fallback and they are never removed without complete ownership proof.
 
-Re-running either installation contract is the idempotent update path for its own scope. There are no legacy installation modes or compatibility paths.
+The existing remote installer and repository bootstrap implementation remain legacy until migration completes. They do not describe the public contract and cannot provide an execution fallback. Re-running installation or activation is the idempotent update path for its own selected scope.
 
 ## Consequences
 
-- The getting-started journey is ordered: install the harness once, then bootstrap each repository. A user can choose `/ki-bootstrap` in an agent session or the repository route in direct automation.
-- A repository continues to govern itself through committed `.ki-meta/` payloads after the downloaded source disappears. The optional `ki:*` package keys remain `ki-engineering` aliases over those repository-local runners.
-- The user installer can be tested independently of repository bootstrap and Claude settings. A compliant user-environment manager, currently chezmoi, binds the already-installed hook payload into settings.
-- `scripts/bootstrap.*`, `install-hooks.*`, and checkout-dependent linkers are replaced by the named entry points and owners above. Their tests move with the responsible entry point or internal component.
-- The stable public routes are a website contract. The KI Website binds them to the corresponding raw GitHub shell files after those files exist; friendly URLs must not be documented as live before then.
+- The getting-started journey installs a verified collection once, then explicitly activates skills at the required user or repository scope. Direct automation and agent sessions use the same native `ki` operations.
+- A repository remains declarative through `.ki-config.toml`; a clean clone needs the verified active collection before it can execute governance operations. It no longer carries a committed checker copy, aggregate runner, or execution manifest.
+- User installation and repository activation remain independently testable and cannot expand into one another's scopes. Runtime discovery links remain managed state, while settings and unrelated user material remain outside the contract.
+- Legacy scripts, copied payloads, and bootstrap artifacts migrate out through the explicit ownership-proven path. No compatibility runner or checkout-dependent linker remains in the public execution surface.
 
 ## References
 
 - [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-mechanical-first-agent-judgment-progressively-enhances.md) — the mechanical-first stance that makes repository self-sufficiency possible.
-- [ADR-KI-HARNESS-SKILLS-001](ADR-KI-HARNESS-SKILLS-001-audit-conform-educate-refresh-canonical-modes-help.md) — the governance modes whose mechanical entries repository bootstrap vendors.
+- [ADR-KI-HARNESS-SKILLS-001](ADR-KI-HARNESS-SKILLS-001-audit-conform-educate-refresh-canonical-modes-help.md) — the governance modes that skills register for native execution.
