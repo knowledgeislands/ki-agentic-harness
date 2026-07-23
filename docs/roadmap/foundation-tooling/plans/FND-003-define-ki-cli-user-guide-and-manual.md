@@ -1,7 +1,7 @@
 ---
 id: 'FND-003'
 title: Define the KI CLI user guide and help manual
-status: in-progress
+status: acceptance
 roadmap: foundation-tooling/build-and-deepen-the-knowledge-islands-command-line-interface-cli
 blocks: —
 blocked-by: GOV-001
@@ -59,3 +59,30 @@ The working-area convention is settled, and FND-003 is structurally unblocked by
 GOV-001 now establishes the KAF acquisition boundary and initial `ki acquire` contract. FND-003 must use those decisions when it defines the public CLI manual, rather than treating acquisition as an incidental future command.
 
 This plan makes the public interface reviewable before the broader `tools-ki` implementation handoff proceeds. The first seed and `ki doctor` slice should be adopted by a receiving-repository roadmap and plan; a stable public Website endpoint for CLEAN remains an external prerequisite for the eventual lifecycle implementation, not for writing the manual or the coming-soon command.
+
+## Acceptance
+
+### Delivered
+
+A public CLI guide and aligned contract that define the seed `ki` release, its installation boundary, exact no-op root `ki doctor` behaviour, and the next user-assisted `ki acquire` release.
+
+### Summary of changes
+
+- Added `docs/guides/user-guide/command-line-interface.md` and linked it from the public guide surfaces.
+- Reframed the CLI contract and `tools-ki` brief around seed → acquisition → later lifecycle delivery.
+- Replaced the former permanent rejection of root `ki doctor` with a fixed no-inspection/no-mutation seed response.
+
+### Verification
+
+- `bun run test` — passed.
+- `bun run ki:authoring:audit` — passed with no FAIL or WARN findings.
+- `bun run ki:repo-roadmap:audit` — passed with no FAIL or WARN findings.
+- Implementation evidence: `6d220cb0`.
+
+### Outstanding concerns
+
+CLI-001 must now turn the documented seed into the executable, and KEP-001 must define the normative package contract before CLI-002 implements acquisition. The later user/repository lifecycle dispatch and Homebrew delivery remain intentionally out of this plan.
+
+### Mini recap
+
+The useful initial public command is not a broad lifecycle wrapper: it is a trustworthy, zero-dependency seed that can make its own limits clear. Establishing that boundary lets acquisition become the first substantive capability without prematurely freezing the larger lifecycle surface.
