@@ -42,3 +42,11 @@ The public CLI guide now groups the current and expected commands and defines th
 ## Dependencies / blocks
 
 This plan adopts the contract material formerly held in the harness's misrouted outbound `ki` handoff directory. It supplies the external architecture prerequisite for the receiving `tools-ki` implementation plan; `tools-ki` retains ownership of its priority, executable, release, and delivery.
+
+## Delegation
+
+- Round 1 — research: inventory the current decisions, standards, guides, and deleted-handoff constraints that the replacement contract must retain, amend, or reject; worker `contract-inventory`, model `gpt-5.6-terra` because the work is bounded evidence gathering; files: read-only `docs/decisions/`, `docs/guides/`, `skills/`, and Git history; gate: cited inventory with no proposed edits.
+- Round 1 — research: map the current bootstrap, aggregate, config-resolution, runtime-publication, and CI implementation seams that must become native registered operations; worker `runtime-inventory`, model `gpt-5.6-terra` because the work is bounded code-path analysis; files: read-only `skills/keystone/ki-bootstrap/`, `skills/keystone/ki-repo/`, `.ki/`, and CI/toolchain files; gate: cited migration surface and test matrix with no proposed edits.
+- Round 2 — judgment: the orchestrator reconciles the evidence into one current architecture decision and contract; files: the decision, standards, and guide surfaces selected after Round 1; gate: decision-record, roadmap, and relevant governance audits.
+- Round 3 — mechanical: bounded workers apply the settled contract and migration fixtures in exclusive file scopes; model and file boundaries are assigned only after Round 2 fixes the interface; gate: focused tests plus adversarial review for every automatically executing installer, runner, or migration artefact.
+- Orchestrator: review every worker result before writing, preserve the no-vendoring decision boundary, run final verification, and commit only gated work.
