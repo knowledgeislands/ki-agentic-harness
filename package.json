@@ -87,7 +87,7 @@
     "ki:tokenomics:audit": "bun .ki/bin/aggregate.ts audit --skill ki-tokenomics",
     "ki:tokenomics:conform": "bun .ki/bin/aggregate.ts conform --skill ki-tokenomics",
     "prepare": "husky",
-    "test": "bun test --isolate --max-concurrency=1 ./skills ./hooks && bun evals/guide-suite.ts && bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/skill-graph.ts --check --check-doc docs/guides/user-guide/skills.md && bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/skill-help.ts --check && bun skills/keystone/ki-bootstrap/scripts/govern.ts audit ."
+    "test": "bun test --isolate --max-concurrency=1 ./skills ./hooks && bun evals/guide-suite.ts && bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/skill-graph.ts --check --check-doc docs/guides/user/skills.md && bun skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/skill-help.ts --check && bun skills/keystone/ki-bootstrap/scripts/govern.ts audit ."
   },
   "type": "module"
 }

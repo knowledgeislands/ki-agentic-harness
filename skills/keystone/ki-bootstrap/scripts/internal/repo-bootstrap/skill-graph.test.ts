@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url'
 
 const script = join(dirname(fileURLToPath(import.meta.url)), 'skill-graph.ts')
 const vendored = '.ki/bin/skill-graph.ts'
-const guide = 'docs/guides/user-guide/skills.md'
+const guide = 'docs/guides/user/skills.md'
 const source = readFileSync(guide, 'utf8')
 const start = '<!-- BEGIN GENERATED SKILL GRAPH -->'
 const temp = mkdtempSync(join(tmpdir(), 'ki-skill-graph-'))

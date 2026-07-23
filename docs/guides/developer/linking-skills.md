@@ -1,6 +1,6 @@
 # Local skill linking for harness development
 
-This is a developer workflow for working on a local checkout of the harness. It is not part of normal user installation: a person using the harness should start with [Install and get started](../user-guide/getting-started.md) and repository bootstrap.
+This is a developer workflow for working on a local checkout of the harness. It is not part of normal user installation: a person using the harness should start with [Install and get started](../user/getting-started.md) and repository bootstrap.
 
 Normal bootstrap and CONFORM publish generated regular-file copies into each ordinary project's runtime skill directory. A harness is different: bootstrap links its declared runtime skills to the canonical sources in that same checkout.
 

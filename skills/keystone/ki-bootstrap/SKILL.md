@@ -130,7 +130,7 @@ When invoked from a vendored repository, stop and redirect to the harness; for a
 
 Refresh this skill when the native registry, XDG collection layout, activation semantics, migration safety rules, or `tools-ki` delivery status changes.
 
-Read ADR-KI-HARNESS-012, [the CLI guide](../../../docs/guides/user-guide/command-line-interface.md), and the bootstrap standard before proposing changes.
+Read ADR-KI-HARNESS-012, [the CLI guide](../../../docs/guides/user/command-line-interface.md), and the bootstrap standard before proposing changes.
 
 ## Composition
 

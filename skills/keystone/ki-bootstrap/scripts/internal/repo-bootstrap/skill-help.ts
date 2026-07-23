@@ -16,14 +16,14 @@
 // HELP is *generated, not authored*: it reads only what a SKILL.md already
 // declares (name, first sentence of description, argument-hint, `### Mode`
 // headings), so there is no per-skill guide prose to drift. The rich editorial
-// catalogue (docs/guides/user-guide/skill-catalogue.md) stays hand-authored;
+// catalogue (docs/guides/user/skill-catalogue.md) stays hand-authored;
 // --check only guards that it covers exactly the skills that exist.
 
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 const SKILLS_DIR = 'skills'
-const CATALOGUE = 'docs/guides/user-guide/skill-catalogue.md'
+const CATALOGUE = 'docs/guides/user/skill-catalogue.md'
 
 // Skills live one or two levels under SKILLS_DIR — either flat (skills/<name>,
 // tolerated as a migration leftover) or clustered (skills/<cluster>/<name>).

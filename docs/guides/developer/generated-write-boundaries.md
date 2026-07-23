@@ -27,7 +27,7 @@ Run it again to move a repository to a newer harness revision or restore a stale
 ./.ki/bin/ki-educate
 ```
 
-For the remote and fleet forms, see [Bootstrap a repository](../user-guide/onboarding.md).
+For the remote and fleet forms, see [Bootstrap a repository](../user/onboarding.md).
 
 Runtime payloads are reproduced from declarations, not committed files. A local `ki-self` is authored once at `.ki/self/skill/SKILL.md`; bootstrap projects it into each declared runtime.
 

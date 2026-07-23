@@ -12,7 +12,7 @@ A healthy proxy or installed Headroom MCP server is not coverage evidence.
 
 Count a runtime as covered only when its requests appear in the proxy logs or live statistics.
 
-The user-guide [coverage map](../../../../docs/guides/user-guide/recommended-tools.md#coverage-by-runtime) records the current distinction between Claude Code, Claude Desktop, Codex Desktop, and explicitly configured API clients.
+The user-guide [coverage map](../../../../docs/guides/user/recommended-tools.md#coverage-by-runtime) records the current distinction between Claude Code, Claude Desktop, Codex Desktop, and explicitly configured API clients.
 
 ## The statistics surfaces are independent
 

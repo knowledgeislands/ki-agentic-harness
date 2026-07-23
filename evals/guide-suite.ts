@@ -4,7 +4,7 @@
  *
  *   bun evals/guide-suite.ts
  *
- * Extracts the fenced `bash` command blocks from docs/guides/user-guide/onboarding.md
+ * Extracts the fenced `bash` command blocks from docs/guides/user/onboarding.md
  * and runs the documented onboarding steps against in-harness fixtures — driving the
  * bootstrap chain (EDUCATE → the self-sufficiency contract) with **no skills installed**.
  * It then asserts each fixture ends in the documented state: vendored governed entrypoint copies +

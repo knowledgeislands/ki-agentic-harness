@@ -12,6 +12,6 @@ Skill quality conforms to the **`ki-skills`** standard (a sibling here) — run 
 
 1. Scaffold `<name>/SKILL.md` (run `ki-skills` Mode EDUCATE), adding `references/` / `scripts/` / `assets/` only as needed.
 2. Write to the rubric, not from memory; self-audit with `bun run ki:skills:audit <name>`.
-3. Add it to the catalogue and the dependency-order sweep — see [docs/skills.md](../docs/guides/user-guide/skills.md).
+3. Add it to the catalogue and the dependency-order sweep — see [docs/skills.md](../docs/guides/user/skills.md).
 
-The catalogue (what each skill does) is in [docs/skill-catalogue.md](../docs/guides/user-guide/skill-catalogue.md), the map of the set in [docs/skills.md](../docs/guides/user-guide/skills.md). Installed elsewhere by symlink via `bun run skills:link`.
+The catalogue (what each skill does) is in [docs/skill-catalogue.md](../docs/guides/user/skill-catalogue.md), the map of the set in [docs/skills.md](../docs/guides/user/skills.md). Installed elsewhere by symlink via `bun run skills:link`.
