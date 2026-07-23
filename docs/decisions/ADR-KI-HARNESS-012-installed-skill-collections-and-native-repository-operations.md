@@ -39,6 +39,8 @@ Skills retain ownership of their standards and mechanical operations, but their 
 
 The CLI implementation owns collection acquisition, XDG resolution, registry loading, operation ordering, reporting, activation, migration, and public command grammar. The harness owns the operation registration contract and skill semantics. Release packaging and Homebrew delivery remain `tools-ki` and `homebrew-tap` responsibilities.
 
+The exact collection layout, integrity root, registry shape, native-operation protocol, command resolution, migration boundary, and CI pinning rules are in the [installed skill collection contract](references/installed-skill-collection-contract.md).
+
 ## References
 
 - [ADR-KI-HARNESS-003](ADR-KI-HARNESS-003-mechanical-first-agent-judgment-progressively-enhances.md) — standalone mechanical governance.

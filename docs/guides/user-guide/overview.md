@@ -17,7 +17,7 @@ The harness turns loose conventions into something an agent can apply and check 
 
 Each skill ships a **mechanical checker** — a script that decides the clear-cut cases deterministically, so an agent review only spends attention on the parts that genuinely need it. The result: standards live in one place as skills, and the checkers keep every repository honest against them over time, rather than the standard living in someone's head and eroding.
 
-This reflects the harness's central working principle: it serves **two kinds of agent — human and LLM** — and its work splits into **mechanical** (a script can decide it) and **judgemental** (an agent must weigh it). The mechanical layer always stands alone: every governed repository, whatever its kind, carries a way to run its own checks (`./.ki/bin/ki-audit`) with no model and no skills installed. Agent judgment — from either kind of agent — is a layer added on top of that baseline, never a requirement for it. The full statement is `ADR-KI-HARNESS-003`.
+This reflects the harness's central working principle: it serves **two kinds of agent — human and LLM** — and its work splits into **mechanical** (a deterministic operation can decide it) and **judgemental** (an agent must weigh it). The mechanical layer stands independently of an LLM: the approved model has the installed `ki` tool resolve the repository's declared skills from one verified user collection and run their registered native operations. Agent judgment — from either kind of agent — is a layer added on top of that baseline, never a requirement for it. The full statement is [ADR-KI-HARNESS-003](../../decisions/ADR-KI-HARNESS-003-mechanical-first-agent-judgment-progressively-enhances.md), as refined by [ADR-KI-HARNESS-012](../../decisions/ADR-KI-HARNESS-012-installed-skill-collections-and-native-repository-operations.md).
 
 That matters because a harness does more than make agents faster. It gives people and AI systems access to accumulated knowledge, practical methods, and boundaries that help them use powerful tools well. A hammer can build a home or cause harm; the tool matters, but the education, judgment, and conditions around its use matter just as much. Used thoughtlessly, AI can deskill us and amplify poor decisions. Used deliberately, with shared knowledge and guardrails, it can help more people do capable, constructive work — and improve the quality of what we make together.
 
@@ -39,7 +39,19 @@ When a repository genuinely needs something different from the shared standard, 
 
 ## Repository and user environment
 
-The harness works at two deliberately separate scopes. **Repository bootstrap** gives one repository the checks and guidance it needs to govern itself; it creates the repository's durable `.ki/` machinery and does not change a person's wider machine setup. **User-environment installation** is optional and affects a person's home directory instead — for example, a durable Claude Code hook payload that a chezmoi-managed environment can register in Claude settings. Keeping the two scopes separate makes it clear what a command will change.
+The approved model has two deliberately separate scopes. **User skill installation** gives a person one verified active collection under the standard XDG data location. **Skill activation** then makes one installed skill discoverable either globally in a selected runtime or for one repository, and repository activation updates that repository's `.ki-config.toml`. Native repository operations read those declarations but do not own the user's wider runtime state. Keeping the scopes separate makes it clear what a command will change.
+
+The planned command group is deliberately small:
+
+```text
+ki skill install
+ki skill add <skill> --scope global
+ki skill add <skill> --scope repo
+ki repo audit
+ki repo conform
+```
+
+The native skill and repository commands are not yet released. Current `ki` availability and the command contract are in [the CLI guide](command-line-interface.md); the eventual onboarding and migration flow is in [the onboarding guide](onboarding.md). Existing vendored `.ki` state is a migration input only, never a compatibility executor for the native model.
 
 ## What "Knowledge Islands" means
 

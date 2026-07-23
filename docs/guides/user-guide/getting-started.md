@@ -1,63 +1,64 @@
 # Getting Started
 
-There are two ordered steps to using the harness: install it once for your user account, then bootstrap each repository you want it to govern.
+Knowledge Islands is moving to native `ki`-hosted repository governance. The approved model is one verified skill collection per user, with explicit skill activation and repository maintenance through `ki`.
+
+Those native skill and repository commands are planned, not yet released. Until they appear in `ki help` and completion, use this guide to understand the destination and follow [the CLI guide](command-line-interface.md) for released command availability.
 
 ## Before you begin
 
-Both steps need [Bun](https://bun.sh) to run the harness's mechanical checks.
+The public native `ki` command contract will not depend on a repository-local Bun toolchain. [Bun](https://bun.sh) remains necessary when developing the harness itself or running its source checks.
 
 The [recommended tools](recommended-tools.md) guide covers optional machine-level tools: chezmoi manages user configuration, headroom-ai helps manage context, and mcporter provides a local MCP tool surface.
 
-## 1. Install the harness for your user account
+## 1. Install `ki`
 
-Install the small, global process-skill set once:
+Install the released `ki` executable in a user command directory, then ensure that directory is on `PATH`.
 
-```bash
-curl -fsSL https://knowledgeislands.info/harness/install | sh
+The installer, its selected version, and recovery guidance are described in [the CLI installation reference](command-line-interface.md#installation).
+
+The current seed release exposes its general commands and acquisition import only. It does not yet expose skill installation, activation, native repository maintenance, or migration.
+
+## 2. Install and activate skills
+
+When the native skill surface is released, install the verified collection once, then activate only the skills needed in the chosen scope:
+
+```text
+ki skill install
+ki skill add <skill> --scope global
+ki skill add <skill> --scope repo
 ```
 
-`/harness/install` is the stable public route. Its implementation may change without changing the command you use.
+- `ki skill install` will acquire or atomically replace the verified collection at `$XDG_DATA_HOME/ki/skills`; it will not activate every skill or change a repository.
+- `ki skill add <skill> --scope global` will create managed discovery links for one installed skill in the selected user runtime.
+- `ki skill add <skill> --scope repo` will declare one installed skill in the selected repository's `.ki-config.toml` and create only its managed repository-runtime links.
 
-The installer supports only two regular top-level user directories: `~/.claude/` for Claude Code and `~/.agents/` for the Agents/Codex skill surface. When either conformant directory is present, it copies `ki-bootstrap`, `ki-delegate`, `ki-next`, `ki-plan`, `ki-recap`, and `ki-repo-review` as regular files into its user skill directory.
+`ki` uses the standard XDG locations: data under `$XDG_DATA_HOME/ki`, configuration under `$XDG_CONFIG_HOME/ki`, disposable downloads under `$XDG_CACHE_HOME/ki`, and mutable state under `$XDG_STATE_HOME/ki`. It does not use a separate KI home variable.
 
-When neither runtime directory exists, pass `--runtime claude-code` or `--runtime codex` to choose one explicitly.
+## 3. Govern a repository
 
-For Claude Code, it also installs the durable Plan Mode and stale Git-lock hook payload below `~/.claude/hooks/knowledgeislands/ki-agentic-harness/`.
+Once the native collection and repository operations are released, a repository declares its coverage in `.ki-config.toml` and uses the selected installed skills through:
 
-It does not bootstrap a repository, create development links, or write Claude Code settings.
-
-On a chezmoi-managed machine, chezmoi reads the installed hook payload and is responsible for registering it in Claude Code settings.
-
-## 2. Bootstrap a repository
-
-From the repository you want to govern, either ask an installed agent to run `/ki-bootstrap`, or use the direct repository command:
-
-```bash
-curl -fsSL https://knowledgeislands.info/harness/bootstrap | sh
+```text
+ki repo audit
+ki repo conform
 ```
 
-`/harness/bootstrap` is the stable public route. Its implementation may change without changing the command you use.
+`ki repo audit` will read the physical repository's declared skill roots and run their registered native audit operations. `ki repo conform` will apply their safe mechanical changes through the same resolution and reporting model.
 
-Repository bootstrap downloads a temporary harness source, builds that repository's `.ki/` governance machinery, publishes its project-local runtime skill copies, then removes the temporary source.
+Neither command will execute a repository's `.ki/bin` wrappers, copied `govern.ts` scripts, a nearby harness checkout, or another fallback executor.
 
-It writes only inside the target repository.
+For the complete native flow, including existing-repository migration and CI, see [the onboarding guide](onboarding.md).
 
-### Bootstrap a repository fleet
+## Existing vendored repositories
 
-If your repositories are registered with [`mgit`](https://github.com/knowledgeislands/tools-mgit), run the same bootstrap across the fleet from its container directory:
+Existing `.ki/bootstrap/`, `.ki/bin/`, and manifest material is a future migration source, not the executor for native governance.
 
-```bash
-mgit -B sh -c 'curl -fsSL https://knowledgeislands.info/harness/bootstrap | sh'
-```
-
-`-B` runs the supplied command inside each registered repository, and `sh -c` provides the shell needed for the pipe. Review and commit each repository's generated changes separately.
-
-For pinned revisions, another target, or more fleet detail, use the [bootstrap reference](onboarding.md).
+Keep that legacy state in place until the explicit native migration operation is released. Do not recreate it, manually delete it, or treat it as a compatibility path for native commands.
 
 ## Start using skills
 
-Once a repository is governed, describe what you need in plain language or use a slash command.
+Once a required skill is activated in the relevant runtime scope, describe what you need in plain language or use the runtime's skill invocation mechanism.
 
 [Use skills](using-skills.md) explains both approaches.
 
-For the detailed repository-bootstrap model, what `.ki/` contains, and how to keep a repository current, continue to the [bootstrap reference](onboarding.md).
+For the current skill model, activation boundaries, and future native migration, continue to [the onboarding guide](onboarding.md).
