@@ -1,6 +1,6 @@
 # Knowledge Islands repo standard
 
-The canonical configuration a Knowledge Islands repo should carry, so repos present and behave consistently and that consistency is _checkable_ rather than folklore. A Knowledge Islands repo is a git repo that carries a `.ki-config.toml` (its presence is the compliance marker); the standard applies to any such repo — the [`knowledgeislands`](https://github.com/knowledgeislands) org is the reference set it was derived from, not its boundary. Three layers — local files, core GitHub settings, deeper GitHub (security & Actions). Derived and applied 2026-05-31 from an audit of all 10 `knowledgeislands` repos. The mechanical checker is [`../scripts/govern.ts`](../scripts/govern.ts); keep this doc and the script's constants in sync.
+The canonical configuration a Knowledge Islands repo should carry, so repos present and behave consistently and that consistency is _checkable_ rather than folklore. A Knowledge Islands repo is a git repo that carries a `.ki-config.toml` (its presence is the compliance marker); the standard applies to any such repo — the [`knowledgeislands`](https://github.com/knowledgeislands) org is the reference set it was derived from, not its boundary. Three layers — local files, core GitHub settings, deeper GitHub (security & Actions). Derived and applied 2026-05-31 from an audit of all 10 `knowledgeislands` repos. The standalone [`../scripts/govern.ts`](../scripts/govern.ts) is migration source; the target mechanical host is the native `ki repo` operation model in ADR-KI-HARNESS-012.
 
 ## Contents
 
@@ -32,23 +32,19 @@ Every repo carries these at the root. Presence is checked **on the default branc
 
 **Baseline governance is declared, not assumed.** Every Knowledge Islands repo is governed by `ki-repo` **and** `ki-authoring`; both are required declarations — a `.ki-config.toml` missing `[ki-authoring]` is a FAIL (`authoring-baseline`). Authoring is no longer an implicit universal hidden in the tooling ([ADR-KI-HARNESS-005](../../../../docs/decisions/ADR-KI-HARNESS-005-validate-down-ki-config-toml-contract.md)); the config shows the full governance set. Machine/user-surface standards (`ki-tokenomics`, `ki-housekeeping`) stay opt-in, never baseline.
 
-**Foundation scaffolding is owner-controlled and append-only.** `ki-repo` owns the file-level contract and writes its `[ki-repo]` block plus the required bare `[ki-authoring]` foundation marker. Its EDUCATE and CONFORM create a missing file with both, or append only a missing exact root marker to a partial file; a dotted `[ki-repo.checks]` sub-table alone does not satisfy `[ki-repo]`. They preserve all existing bytes, are idempotent, and make no write in dry-run. Sibling skills may conform their own tables under the validate-down/conform-down boundary. CONFORM completes this local repair before any live GitHub work. Bootstrap may subprocess the owner's scaffold-only EDUCATE when `ki-repo` is seeded or resolved, but carries no TOML template and never edits the config directly.
+**Foundation scaffolding is owner-controlled and append-only.** `ki-repo` owns the file-level contract and writes its `[ki-repo]` block plus the required bare `[ki-authoring]` foundation marker. Its native EDUCATE/CONFORM migration target creates a missing file with both, or appends only a missing exact root marker to a partial file; a dotted `[ki-repo.checks]` sub-table alone does not satisfy `[ki-repo]`. It preserves all existing bytes, is idempotent, and makes no write in dry-run. Sibling skills may conform their own tables under the validate-down/conform-down boundary. CONFORM completes this local repair before any live GitHub work. Native delivery is planned and carries no TOML template for another skill.
 
-**Self-check capability is required.** A confirmed ki-repo must carry a way to run its checks with zero skills installed: `.ki/bin/ki-audit` or `.ki/bin/aggregate.ts` must be present. A marker-only repo with neither is a FAIL (`self-check`) — re-bootstrap to write the runner.
+**Native self-check capability is required.** A confirmed ki-repo must be auditable by resolving its declared governance roots to compatible registered operations in the verified active installed collection. It is not self-sufficient by carrying a vendored `.ki/bin` runner: package-local runners, manifests, and a nearby harness checkout are not execution fallbacks. The native check and its recovery guidance are planned migration work under ADR-KI-HARNESS-012; this statement does not claim the runtime delivery exists today.
 
 `ROADMAP.md` is **expected but not required** — a warn, not a fail: most repos carry one, but a base that keeps its forward view elsewhere (a KB base's `Streams/Future`) may omit it.
 
 **Root orientation for a multi-runtime repo.** When a repo's declared [`supported_runtimes`](config-standards.md#table-per-skill) includes a runtime other than `claude-code` (e.g. `codex`), the repo's orientation should live in a literal root `AGENTS.md` — not an `@`-import index, since a non-Claude-Code runtime can't resolve that syntax — with `CLAUDE.md` `@AGENTS.md`-importing it and staying a thin, Claude-only appendix. A repo whose `supported_runtimes` is `["claude-code"]` only has no reason to split: `CLAUDE.md` alone, with its own topic-file imports, is sufficient.
 
-### `.ki/` — the working-artifacts area
+### `.ki/` — legacy migration state, not an executor
 
-`.ki/` is the working area for Knowledge Islands governance tooling — the artifacts-_out_ counterpart to `.ki-config.toml`'s config-_in_. It is an **extensible namespace**: subdirs are added as tooling grows, each declaring whether it is **derived** (regenerated, gitignored) or **durable** (kept, tracked). Defined subdirs today:
+Under ADR-KI-HARNESS-012, `.ki/` is not a governance working-artifacts area or an execution surface. The former vendored checker tree, aggregate runner, wrapper, and manifest are retired without a compatibility path; `ki repo` must never invoke `.ki/bin`, a manifest payload, or a nearby checkout. Existing `.ki` runner and manifest material is examined only by an explicit, fail-closed migration operation and is never removed without complete ownership proof.
 
-- `.ki/bootstrap/checkers/<skill>/scripts/govern.ts` + `.ki/bin/aggregate.ts` — **durable** (tracked): ordinary consumers receive vendored checker copies; a physical source harness receives manifest-proven contained links to its canonical source. `ki-bootstrap` EDUCATE writes the runner so the repo self-governs with zero skills installed ([ADR-KI-HARNESS-006](../../../../docs/decisions/ADR-KI-HARNESS-006-user-installation-repository-bootstrap-and-self-sufficiency.md)). The paired `.ki/bin/ki-audit` wrapper is the `package.json`-free entry point.
-- `.ki/audits/<concern>.{md,json}` — the latest audit report per concern (`engineering`, `skills`, `repo`, …), written by a checker run with `--report` and overwritten each run (latest-only, no history). The `.json` is the machine-readable substrate a composed audit merges; the `.md` is the human report.
-- `.ki/conform/<concern>.md` — the latest record of what a CONFORM changed.
-
-Presence is **not required** — the directory appears the first time a checker is run with `--report`. What the audit checks (the `ki-meta` criterion) is that the derived subdirs are **gitignored, not committed**: `.gitignore` carries `.ki/audits/` and `.ki/conform/`, while the `.ki/` namespace itself is left un-ignored so a future _durable_ subdir can be tracked. The convention is owned here; checker consumers write `.ki/audits/` as the AUDIT working area.
+The native operation and migration delivery are planned. Until they exist, no document may represent a legacy `.ki/bin` runner as the current self-check contract or as a fallback. Repository activation instead belongs to the planned `ki skill add` flow, which creates only managed runtime discovery links after containment, ownership, idempotence, and dry-run checks.
 
 ## Working areas
 
@@ -60,8 +56,8 @@ Repository-level implementation briefs use the matching subareas:
 
 | Path | Holds | Lifecycle |
 | --- | --- | --- |
-| `+/_HANDOFFS/` | Incoming handoffs awaiting a local adoption or decline decision. | Adopt accepted work into this repository's roadmap and, when appropriate, plan; remove or archive declined or superseded material. |
-| `-/_HANDOFFS/<receiving-repository>/` | Outgoing handoffs grouped by their receiving repository. | Retain the originating brief while it is useful; review receiving progress and remove or archive it once its durable destination is clear. |
+| `+/_HANDOFFS/` | Incoming handoffs awaiting a local adoption or decline decision. | Adopt accepted work into this repository's roadmap and, when appropriate, plan; delete declined, adopted, or superseded material. |
+| `-/_HANDOFFS/<receiving-repository>/` | Outgoing handoffs grouped by their receiving repository. | Retain the originating brief only while it is useful; review receiving progress and delete it once its durable destination is clear. |
 
 A handoff names the receiving repository, originating context, scope, constraints, and what the receiver owns. It never replaces the receiver's own priority, roadmap item, plan, implementation, or delivery decision. `ki-repo-roadmap` performs the judgment-led periodic handoff review; it reports candidate adoption, follow-up, or closure work and never moves files or changes either repository automatically.
 
@@ -124,7 +120,7 @@ The engineering coverage manifest assigns the `package.json` **identity & metada
 
 Each repo **declares** its expected visibility in `.ki-config.toml` (`visibility = "public"` or `"private"`); the auditor checks that declaration against the live GitHub visibility. It is a deliberate per-repo choice, **not inferred from the name**. (In practice the `arcadia-*` repos are private bases / internal skills and the `mcp-*` repos are public servers — a pattern, not the rule.)
 
-`.ki-config.toml` is a shared per-repo file; each skill reads and may conform the schema of its own `[table]`, while `ki-repo` owns the file-level contract and required foundation markers. The full cross-skill contract — its presence as the compliance marker, the table-per-skill model, and the validate-your-own-table protocol — is in [the `.ki-config.toml` contract](config-standards.md). Run `bun scripts/educate.ts <target-repo>` to establish the canonical foundations and self-check surface in one operation (or its internal `--scaffold-config-only` leg when only the append-only config repair is required), then edit the values:
+`.ki-config.toml` is a shared per-repo file; each skill reads and may conform the schema of its own `[table]`, while `ki-repo` owns the file-level contract and required foundation markers. The full cross-skill contract — its presence as the compliance marker, the table-per-skill model, and the validate-your-own-table protocol — is in [the `.ki-config.toml` contract](config-standards.md). The planned native configuration operation establishes the canonical foundations only; native self-check resolves the verified installed collection rather than writing a repository-local executor. That delivery remains migration work under ADR-KI-HARNESS-012. Then edit the values:
 
 ```toml
 # .ki-config.toml — one [table] per skill that needs per-repo options
@@ -184,8 +180,8 @@ all=(ki-arcadia-principal ki-agentic-harness ki-website mcp-claude-housekeeping 
 public=(mcp-claude-housekeeping mcp-git-audit mcp-gsuite mcp-kb-fs mcp-ki-kb-notion-mirror mcp-m365)
 
 # Layer 1 — each repo declares its config in .ki-config.toml (committed via PR like any file).
-#   Scaffold/repair [ki-repo] + [ki-authoring], vendor their self-checks, then edit:
-#     bun skills/keystone/ki-repo/scripts/educate.ts <target-repo>
+#   The planned native conformer scaffolds/repairs [ki-repo] + [ki-authoring] only.
+#   It resolves the verified installed collection; it never vendors self-checks.
 # Visibility is verified (declared vs live), not set here; change actual visibility deliberately:
 #   gh repo edit knowledgeislands/<name> --visibility public|private --accept-visibility-change-consequences
 
@@ -226,12 +222,12 @@ Layer 1 files are added with a normal commit, pushed straight to `main` (it is u
 ## Verifying it
 
 ```zsh
-bun ../scripts/govern.ts ~/kis/knowledgeislands      # enumerate from a local tree (origins)
-bun ../scripts/govern.ts --org knowledgeislands      # enumerate the whole org
+# Planned native delivery — requires the verified active installed collection.
+ki repo audit ~/kis/knowledgeislands
 ```
 
-Both check every layer against GitHub; the path / `--org` only decides which repos.
+The native command will resolve declared operations and check every applicable layer; its delivery is not implemented by the current standalone scripts.
 
 ## Conformance
 
-As of **2026-05-31**, all 9 `knowledgeislands` repos conform on layers 2–3. Outstanding layer-1 work: every repo still needs a `.ki-config.toml` (declaring its visibility + any check overrides), and `mcp-ki-kb-notion-mirror` needs `.editorconfig` — each a direct commit to `main`.
+The current migration priority is native collection acquisition and registered-operation delivery. Do not treat legacy vendored-runner status as conformance to ADR-KI-HARNESS-012.
