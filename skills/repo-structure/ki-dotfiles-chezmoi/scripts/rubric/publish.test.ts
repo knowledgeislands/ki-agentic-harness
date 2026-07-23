@@ -8,5 +8,5 @@ test('generated rubric exactly matches its structured canonical catalogue', () =
   expect(readFileSync(fileURLToPath(new URL('../../references/rubric.md', import.meta.url)), 'utf8')).toBe(
     renderRubric(KI_DOTFILES_CHEZMOI_RUBRIC)
   )
-  expect(KI_DOTFILES_CHEZMOI_RUBRIC.families.flatMap((family) => family.items)).toHaveLength(10)
+  expect(KI_DOTFILES_CHEZMOI_RUBRIC.families.flatMap((family) => family.items)).toHaveLength(11)
 })

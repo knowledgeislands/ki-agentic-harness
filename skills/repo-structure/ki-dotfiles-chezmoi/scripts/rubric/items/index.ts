@@ -40,7 +40,7 @@ export const KI_DOTFILES_CHEZMOI_RUBRIC: RubricDefinition<ChezmoiContext> = {
     defineRubricFamily({
       code: 'PATTERN',
       title: 'app-mutated configuration',
-      description: 'Judgment criteria for Pattern A and Pattern B selection.',
+      description: 'Judgment criteria for Pattern A, Pattern B, and Pattern C selection.',
       standard: 'standards.md',
       selectContext: (context: ChezmoiContext) => context,
       items: PATTERN
@@ -48,7 +48,7 @@ export const KI_DOTFILES_CHEZMOI_RUBRIC: RubricDefinition<ChezmoiContext> = {
     defineRubricFamily({
       code: 'CONFIG',
       title: 'configuration editing',
-      description: 'Judgment criteria for format-preserving Pattern A editors.',
+      description: 'Judgment criteria for format-preserving Pattern A and Pattern C editors.',
       standard: 'standards.md',
       selectContext: (context: ChezmoiContext) => context,
       items: CONFIG

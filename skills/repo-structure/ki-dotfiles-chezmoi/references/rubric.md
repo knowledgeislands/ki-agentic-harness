@@ -48,19 +48,21 @@ Stray lock files that block Git operations.
 
 → [standard](standards.md)
 
-Judgment criteria for Pattern A and Pattern B selection.
+Judgment criteria for Pattern A, Pattern B, and Pattern C selection.
 
-- **PATTERN-J1 [J] — app-mutated config pattern choice** — Pattern A or Pattern B is chosen correctly for each app-mutated configuration file. (standards.md)
-  - _Review prompt:_ For each app-mutated configuration file, was Pattern A or Pattern B selected using the ≥90%-app-owned decision rule?
+- **PATTERN-J1 [J] — app-mutated config pattern choice** — Pattern A, Pattern B, or Pattern C is chosen correctly for each app-mutated configuration file. (standards.md)
+  - _Review prompt:_ For each app-mutated configuration file, does the selected pattern match its template ownership, required native lifecycle visibility, and app-owned scope?
+- **PATTERN-J2 [J] — native fragment-binding boundary** — Every Pattern C binding declares its ownership, removal, and adoption boundaries without importing secrets or undeclared application state. (standards.md)
+  - _Review prompt:_ Does every native fragment binding state its canonical source, target, selector, ownership and removal policy, and explicit safe-adoption boundary?
 
 ## CONFIG — configuration editing
 
 → [standard](standards.md)
 
-Judgment criteria for format-preserving Pattern A editors.
+Judgment criteria for format-preserving Pattern A and Pattern C editors.
 
-- **CONFIG-J1 [J] — format-preserving editor selection** — Every Pattern A writer uses an appropriate format-preserving edit API with safe absent-file and invalid-input behaviour. (standards.md)
-  - _Review prompt:_ Do Pattern A writers use a format-appropriate edit API, define absent-file and path behaviour, fail closed, and demonstrate syntax preservation and idempotence?
+- **CONFIG-J1 [J] — format-preserving editor selection** — Every Pattern A or Pattern C writer uses an appropriate format-preserving edit API with safe absent-file and invalid-input behaviour. (standards.md)
+  - _Review prompt:_ Do Pattern A and Pattern C writers use a format-appropriate edit API, define absent-file and path behaviour, fail closed, and demonstrate syntax preservation and idempotence?
 
 ## LAYER — instruction layering
 

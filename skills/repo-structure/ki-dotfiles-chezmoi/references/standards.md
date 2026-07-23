@@ -9,6 +9,7 @@ The rationale behind [the audit rubric](rubric.md) and [`../scripts/govern.ts`](
 - [Shell configuration: loader, not rc](#shell-configuration-loader-not-rc)
 - [bin/ dispatcher pattern](#bin-dispatcher-pattern)
 - [App-mutated config handling](#app-mutated-config-handling)
+  - [Native fragment-binding contract](#native-fragment-binding-contract)
   - [Selecting a surgical config editor](#selecting-a-surgical-config-editor)
 - [Single-source, multi-target config templating](#single-source-multi-target-config-templating)
 - [CLAUDE.md / agent-instruction layering](#claudemd--agent-instruction-layering)
@@ -55,18 +56,29 @@ A single bootstrap entrypoint accepts an action (`install | update | cleanup | b
 
 ## App-mutated config handling
 
-Some config files are partly hand-authored, partly rewritten by the application itself at runtime (a JSON preferences file an app resaves on every launch, for example). Two named patterns handle this, chosen by a decision rule:
+Some config files are partly hand-authored, partly rewritten by the application itself at runtime (a JSON preferences file an app resaves on every launch, for example). Three named patterns handle this, chosen by an ownership decision rather than by tool convenience.
 
-**Decision rule** — inventory the file's top-level keys. If roughly 90% or more are app-owned (the app rewrites them and a human essentially never touches them directly), use **Pattern A**. Otherwise, use **Pattern B**.
+**Decision rule** — use **Pattern B** when source-owned template expressions must govern part of an otherwise application-mutated file. Otherwise, use **Pattern C** when the durable desired state is a narrow set of records that must participate in native chezmoi `status`, `diff`, and `apply`. Use **Pattern A** when the application file is predominantly app-owned and a post-apply reconciliation trigger is sufficient. The rough ≥90%-app-owned threshold is a useful warning that whole-file ownership is probably wrong; it does not decide between the two narrow patterns.
 
 - **Pattern A — surgical patch.** Leave the live file _out_ of chezmoi's managed set entirely (list it in `.chezmoiignore`). Instead, patch only the specific user-owned keys after the app has written its own state, via a `run_onchange_after_<name>.sh.tmpl` script — chezmoi re-runs a `run_onchange_` script only when its own rendered content (including any resolved secrets) changes, giving a natural "re-patch when the desired state changes" trigger. Select a format-preserving editor as described below; a value-model query tool that rewrites the whole document is not a surgical editor. Confirm separately that the application retains the patched keys after later writes, or add an appropriate reconciliation trigger.
 - **Pattern B — full template + reverse-merge.** Manage the entire file as a `.tmpl` end-to-end. Because the app still mutates parts of it at runtime, a companion merge script pulls the live file's current (app-mutated) state back into the source template _before_ `chezmoi diff`/`chezmoi apply` runs — the template's `{{ }}`-interpolated subtrees are the source of truth ("tainted", never overwritten by the merge), while everything else flows live → source on each merge. The workflow is **merge → diff → apply**, in that order, every time.
+- **Pattern C — native fragment binding.** Manage a narrow transformation as a chezmoi `modify_` source. It reads the live target from standard input and returns the desired target state, so chezmoi itself exposes pending changes through `status`, `diff`, and `apply`. The binding owns only declared fragments; it does not turn the application file into a whole-file template or import the live file as source.
 
-Switching a file from one pattern to the other requires explicitly deleting/adding the `.tmpl` + merge script (Pattern B) or the `.chezmoiignore` entry + patch script (Pattern A) accordingly — the two are not simultaneously valid for the same file.
+Switching a file between patterns requires an explicit source and target migration. Do not leave a whole-file template, reverse merge, post-apply patch, and `modify_` binding competing for the same target.
+
+### Native fragment-binding contract
+
+A Pattern C binding declares its canonical source, target, format-aware selector, applicability filter when multiple clients share the data, ownership policy, removal behaviour, and whether live state may be adopted.
+
+`merge` is the default ownership policy: add or update declared records and preserve undeclared application-owned state. Removing a canonical record does not silently revoke a live record under `merge`; revocation must be an explicit declared replacement policy or a deliberate live edit. Use replacement only for an identified authoritative collection and state its boundary exactly.
+
+Adoption is separate from `chezmoi re-add`: it selects one declared binding, previews a source diff by default, and writes only after explicit confirmation. Bindings containing credentials, secret references, or template expressions are not adoptable from a live target. Keep binding metadata and canonical data internal unless a rendered copy is itself useful user-facing configuration.
+
+The transformer defines absent-file, malformed-input, and unsupported-syntax behaviour before it writes. It parses before and after editing, fails without truncating the input, and preserves undeclared content and concrete syntax to the degree the selected editor supports. A source script may itself be templated to receive canonical data; that does not make the application target a `.tmpl` file.
 
 ### Selecting a surgical config editor
 
-A Pattern A write is surgical only when it changes the intended values while preserving unrelated concrete syntax as far as the format and editor support: comments, key order, quoting, indentation, line endings, and final-newline state should not churn merely because the file was parsed and written. Minimal textual churn, not semantic equivalence alone, is the selection criterion.
+A Pattern A or Pattern C write is surgical only when it changes the intended values while preserving unrelated concrete syntax as far as the format and editor support: comments, key order, quoting, indentation, line endings, and final-newline state should not churn merely because the file was parsed and written. Minimal textual churn, not semantic equivalence alone, is the selection criterion.
 
 Separate inspection from mutation. Value-model tools are useful for querying or validating data, and they may be used to write when whole-document canonicalization is an explicit requirement. Do not use one for a surgical write unless its documented edit API and representative fixtures demonstrate the required preservation.
 
@@ -80,11 +92,11 @@ Use these house defaults as starting points:
 
 Python editors may run in an on-demand isolated environment via `uv run --with <package> python <script>`; add `--no-project` when the patch must not inherit the current project's dependencies. That is dependency execution, not a preservation guarantee: pin a compatible version when reproducibility matters, and account for dependency availability when the patch must work offline.
 
-Every surgical writer defines what happens when the file, parent object, or target key is absent; parses before and after the edit; fails without truncating the original on invalid input; and has representative fixtures proving that the intended value changes, unrelated syntax remains stable, and a second identical run produces no diff. Include the format features actually present in the live file rather than relying on a toy fixture. Filesystem replacement, symlink, permissions, ownership, secret-redaction, and concurrent-app-write policy remain part of the implementation's safety review even when the editor itself is format-preserving.
+Every Pattern A or Pattern C writer defines what happens when the file, parent object, or target key is absent; parses before and after the edit; fails without truncating the original on invalid input; and has representative fixtures proving that the intended value changes, unrelated syntax remains stable, and a second identical run produces no diff. Pattern C evidence also proves that its declared fragments are the only changed ownership boundary. Include the format features actually present in the live file rather than relying on a toy fixture. Filesystem replacement, symlink, permissions, ownership, secret-redaction, and concurrent-app-write policy remain part of the implementation's safety review even when the editor itself is format-preserving.
 
 ## Single-source, multi-target config templating
 
-When several distinct targets (client apps, environments, hosts) each need their own rendering of essentially the same list of items, keep **one** structured data file (e.g. a `.chezmoidata/*.yaml`) as the single source of truth, and a **shared** Go-template partial (under `.chezmoitemplates/`) that renders each item into its per-target fragment, filtered by which item applies to which target (e.g. a `targets:` field on each entry). This is a general "N-item source → M rendered targets via one shared partial" shape — invoke the same partial from every place a target's config gets assembled (whether that's a `run_onchange_` heredoc under Pattern A or an inline `.tmpl` include under Pattern B) so the rendering logic never forks between call sites.
+When several distinct targets (client apps, environments, hosts) each need their own rendering of essentially the same list of items, keep **one** structured data file (e.g. a `.chezmoidata/*.yaml`) as the single source of truth, and a **shared** Go-template partial (under `.chezmoitemplates/`) that renders each item into its per-target fragment, filtered by which item applies to which target (e.g. a `targets:` field on each entry). This is a general "N-item source → M rendered targets via one shared partial" shape — invoke the same partial from every place a target's config gets assembled, including a Pattern A script, Pattern B template, or Pattern C `modify_` source, so the rendering logic never forks between call sites.
 
 ## CLAUDE.md / agent-instruction layering
 
