@@ -1,7 +1,7 @@
 ---
 id: 'FND-004'
 title: Generalise native configuration-fragment bindings
-status: open
+status: ready
 roadmap: foundation-tooling/generalise-native-configuration-fragment-bindings
 blocks: —
 blocked-by: —

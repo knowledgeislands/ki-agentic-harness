@@ -1,7 +1,7 @@
 ---
 id: 'GOV-002'
 title: Create ki-repo-review as a human-led process skill
-status: open
+status: ready
 roadmap: governance-consistency/create-ki-repo-review-as-a-human-led-process-skill
 blocks: —
 blocked-by: —
