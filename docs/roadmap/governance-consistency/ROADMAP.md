@@ -8,25 +8,9 @@ code: GOV
 
 Actively broken, or blocking the `Next` horizon: takes priority over everything else and must clear before `Next` work proceeds. Empty means nothing is on fire.
 
-### Establish the Knowledge Acquisition Framework (KAF) for session and project recovery
-
-Adopt the Knowledge Acquisition Framework (KAF) as the upstream boundary that moves Knowledge Islands conversations, projects, attachments, and other source material out of agent sessions and into portable Knowledge Export Packages (KEPs). Settle KAF's fidelity, provenance, determinism, connector, and safety contract; preserve its strict separation from downstream KBEP extraction and KBIP ingress; and define a safe, user-assisted ChatGPT project/conversation pilot before considering browser automation. Use the resulting grounded corpus to support the broader consolidation of Knowledge Islands notes and chats into the canonical knowledge base and a coordinated go-forward roadmap. The KAF `ki acquire` interface must inform the CLI manual, but this harness work neither implements a scraper nor assumes a receiving code repository.
-
-**Plan:** [GOV-001](plans/GOV-001-define-knowledge-acquisition-framework.md)
-
 ## Next
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
-
-### Create `ki-repo-review` as a human-led process skill
-
-Create the reusable process skill from the completed `REV-001` review method: inventory a repository, gather inspectable evidence, interview material uncertainties, distinguish findings from decisions and delivery work, and link findings to plans.
-
-The skill owns any optional review-record and finding convention, including retention and pruning; it composes with `ki-repo-roadmap` and `ki-plan` for canonical locators and delivery links without extending either generic lifecycle.
-
-Validate and forward-test the skill against the dotfiles assessment; it must guide a review rather than substitute automated judgment for one.
-
-**Plan:** [GOV-002](plans/GOV-002-create-ki-repo-review-process-skill.md)
 
 ## Soon
 

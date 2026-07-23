@@ -12,20 +12,6 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Build and deepen the Knowledge Islands command-line interface (CLI)
-
-This is the next priority after the Blocking skill-evolution work. Start with a user guide and CLI help manual that makes the intended end-user interface, scope boundaries, safety properties, and recovery routes reviewable before implementation. The first vertical slice should make `ki` available through the bootstrap seed and expose a deliberately small `ki doctor` coming-soon response, before migrating operational entrypoints. Use the manual to reconcile the accepted `ki` command contract and its receiving-repository handoffs; then implement, test, package, and document the zero-dependency CLI in `tools-ki`, with `homebrew-tap` delivery, without duplicating repository-local or harness-maintainer entrypoints.
-
-**Plan:** [FND-003](plans/FND-003-define-ki-cli-user-guide-and-manual.md)
-
-### Generalise native configuration-fragment bindings
-
-Extend `ki-dotfiles-chezmoi` with a third pattern for application-mutated configuration: a narrow, native chezmoi `modify_` binding that reconciles declared fragments during `status`, `diff`, and `apply` without taking ownership of the full application file.
-
-Define the binding contract — canonical source, target, client applicability, selector, ownership and removal policy, adoption boundary, and secret protection — plus the format-preservation and idempotence evidence required before use. Keep surgical post-apply patches and full-template reverse merges as distinct alternatives; do not prescribe a repository's own application bindings or data model.
-
-**Plan:** [FND-004](plans/FND-004-generalise-native-configuration-fragment-bindings.md)
-
 ## Soon
 
 Understood and roughly scoped but not yet started — worth doing once the **Next** queue clears, ahead of anything still speculative.
