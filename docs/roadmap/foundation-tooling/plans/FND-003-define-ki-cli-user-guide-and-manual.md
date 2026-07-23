@@ -1,7 +1,7 @@
 ---
 id: 'FND-003'
 title: Define the KI CLI user guide and help manual
-status: acceptance
+status: done
 roadmap: foundation-tooling/build-and-deepen-the-knowledge-islands-command-line-interface-cli
 blocks: —
 blocked-by: GOV-001
@@ -86,3 +86,7 @@ CLI-001 must now turn the documented seed into the executable, and KEP-001 must 
 ### Mini recap
 
 The useful initial public command is not a broad lifecycle wrapper: it is a trustworthy, zero-dependency seed that can make its own limits clear. Establishing that boundary lets acquisition become the first substantive capability without prematurely freezing the larger lifecycle surface.
+
+## Done
+
+Manual acceptance confirmed the staged CLI guide and contract. CLI-001 implements the seed; CLI-002 remains the next substantive command.
