@@ -1,12 +1,8 @@
-# Knowledge Islands command-line interface
+# Command Line Interface
 
 `ki` is the end-user Knowledge Islands command-line interface (CLI). It gives a person one stable command for KI work while keeping user-environment actions and repository actions visibly separate.
 
-The CLI is being introduced in small, safe releases. The seed release establishes the executable, its installation route, and an honest diagnostic placeholder. The first substantive command then imports user-provided ChatGPT material into a Knowledge Export Package (KEP). Broader user and repository lifecycle operations follow later.
-
-## Seed release
-
-The first released surface is deliberately small:
+## General commands
 
 ```text
 ki
@@ -19,15 +15,23 @@ ki doctor
 
 `ki`, `ki help`, and `ki --help` render the same root HELP and exit successfully. `-h` aliases `--help`; `-V` aliases `--version`. `ki --version` prints exactly `ki X.Y.Z` followed by one newline. Bash and Zsh completion write only completion source to standard output.
 
-`ki doctor` is initially a no-op availability marker. It writes this message to standard output, exits `0`, and does not inspect or change files, repositories, user configuration, network state, or child processes:
+`ki doctor` currently writes this message to standard output, exits `0`, and does not inspect or change files, repositories, user configuration, network state, or child processes:
 
 ```text
 Knowledge Islands diagnostics are coming soon. This command currently performs no checks and changes nothing.
 ```
 
+## Acquisition commands
+
+```text
+ki acquire chatgpt import <capture-directory> --output <kep-directory> [--dry-run] [--json]
+```
+
+The command imports only locally user-provided capture material into a deterministic Knowledge Export Package (KEP). It does not control a browser, contact ChatGPT, read credentials or browser profiles, discover a repository, extract reusable knowledge, or govern Knowledge Base ingress.
+
 ## Repository maintenance commands
 
-The following public forms replace the harness-maintainer aggregate commands once their separately adopted lifecycle release activates them.
+The expected repository-maintenance forms are:
 
 ```text
 ki repo audit
@@ -35,32 +39,34 @@ ki repo conform
 ki repo audit --skill ki-repo-roadmap
 ```
 
-- `ki repo audit` is the end-user form of the aggregate audit currently run in this repository as `bun run ki:audit`.
-- `ki repo conform` is the corresponding safe mechanical write pass, currently `bun run ki:conform`.
-- `ki repo audit --skill ki-repo-roadmap` is the scoped roadmap audit, currently `bun run ki:repo-roadmap:audit`.
-- `bun run test` remains the harness self-test for maintainers. The public contract deliberately defines no `ki repo test` leaf.
+- `ki repo audit` will resolve the selected repository physically, read its `.ki-config.toml`, and run the native audit operations registered by its declared skills.
+- `ki repo conform` will use the same declared-skill resolution and apply only each registered operation's safe mechanical changes.
+- `ki repo audit --skill ki-repo-roadmap` will run one declared skill's scoped audit.
+- `bun run test` remains a maintainer self-test; the public contract deliberately defines no `ki repo test` leaf.
 
-Each `ki repo ...` command is a planned repository-scoped operation, not a seed command; it will appear in HELP and completion only after its receiving release is activated.
+These commands are planned. They will not execute vendored `.ki/bin` wrappers or arbitrary skill scripts; the native implementation and migration contract are being defined before they enter HELP and completion.
+
+## Skill installation and activation
+
+The expected `ki skill ...` group will install a verified skill collection once for a user, then explicitly activate named skills in either global or repository scope. Repository activation will declare the skill in `.ki-config.toml` and link it into the selected runtime's project discovery location; global activation will link it only into the selected user runtime. Installing a collection does not activate every skill globally.
+
+The exact leaf names and release contract remain to be adopted. `ki repo audit` and `ki repo conform` will resolve their declared skills from that installed collection rather than from copied repository checkers.
 
 ## Installation
 
-The seed installer places the executable in a user command directory. Its default is `~/.local/bin`; set `KI_CLI_INSTALL_DIR` to choose another directory. `KI_CLI_VERSION` selects a tagged release instead of the installer’s default stable version.
+The installer places the executable in a user command directory. Its default is `~/.local/bin`; set `KI_CLI_INSTALL_DIR` to choose another directory. `KI_CLI_VERSION` selects a tagged release instead of the installer's default stable version.
 
 The installer verifies the selected payload before an atomic replacement. It writes only under the selected command directory. If that directory is not on `PATH`, it names the installed path and gives the exact directory to add; it does not edit shell profiles or environment configuration.
 
+## XDG locations
+
+`ki` uses the XDG Base Directory environment variables for user-owned data. It will use `$XDG_DATA_HOME/ki` for installed skill collections, `$XDG_CONFIG_HOME/ki` for configuration, `$XDG_CACHE_HOME/ki` for disposable downloads, and `$XDG_STATE_HOME/ki` for mutable state. The standard defaults apply when a variable is unset: `~/.local/share`, `~/.config`, `~/.cache`, and `~/.local/state` respectively. It does not define a separate KI home variable.
+
 ## Availability and scope
 
-The root help and completion list only commands available in the installed release. Before the acquisition release, `ki acquire` is reserved but unavailable: it writes `ki: error: ki acquire is not available in this release` to standard error, exits `2`, and does nothing else.
+The root help and completion list only commands available in the installed version. The public `0.1.0` release currently provides the general commands; the local ChatGPT importer is implemented as unreleased `0.2.0` work. Repository maintenance and skill-installation commands remain planned until their contract and native implementation are accepted.
 
-The next released command is:
-
-```text
-ki acquire chatgpt import <capture-directory> --output <kep-directory> [--dry-run] [--json]
-```
-
-It imports only locally user-provided capture material into a deterministic KEP. It does not control a browser, contact ChatGPT, read credentials or browser profiles, discover a repository, extract reusable knowledge, or govern Knowledge Base ingress.
-
-The later `ki user ...` and `ki repo ...` command groups will keep the same explicit scope boundary: user commands affect only KI-managed user payload, while repository commands affect only the selected repository. They are not part of the seed release and must not be inferred from an unscoped command.
+User commands affect only KI-managed user payload; repository commands affect only the selected repository. No unscoped command infers either target.
 
 ## Help, diagnostics, and recovery
 
@@ -73,13 +79,4 @@ ki: try 'ki help <nearest-command-path>'
 
 No command abbreviation or unknown option is accepted. Options belong to the command that owns them; no ambient lifecycle options exist.
 
-When a later command needs recovery, its own help states the route. The seed release’s only installation recovery is adding the named command directory to `PATH`.
-
-## Release sequence
-
-1. Seed executable: HELP, version, completion, installation, and no-op `ki doctor`.
-2. User-assisted local ChatGPT acquisition into a KEP.
-3. Explicitly scoped user and repository lifecycle commands.
-4. Release packaging and Homebrew delivery after the executable’s behaviour is proven.
-
-For the complete implementation contract, see the [CLI contract](../../../-/_HANDOFFS/ki/command-contract.md). The specification of KEP output is owned by KI Specifications; the executable is owned by `tools-ki`.
+When a command needs recovery, its own help states the route. Installation recovery is adding the named command directory to `PATH`.
