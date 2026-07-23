@@ -20,6 +20,8 @@ Runs the governed-plan lifecycle for a **non-KB repository**: `ready` (record ex
 
 In a KI code repo the plan is a governed file under `docs/roadmap/<theme>/plans/`, authored through this skill — never a runtime-native Plan Mode scratch file. When a user asks to plan, including by entering native Plan Mode, treat `docs/roadmap/<theme>/plans/<THEME>-<NNN>-<slug>.md` as the source of truth and create it here with `new`; the stable `<THEME>` code comes from that theme's `ROADMAP.md`. A native scratch file, if one exists, is only a draft and is never canonical. Where a native draft exists, prefer to leave in it a pointer to the governed repo plan rather than duplicating content. This keeps planning identical across runtimes — the native Plan Mode convenience is optional and unavailable on surfaces that do not support its hook — and removes any dependency on such hooks firing.
 
+When referring in prose to a specific governed plan, link its canonical document using the host's Markdown-link convention; use a bare identifier only where a structured format requires it, such as `blocks`, `blocked-by`, or a lifecycle command.
+
 ## Invocation
 
 `help` / `-h` / `?` explains this skill and stops, taking no action. With no argument, present the eight lifecycle verbs in the order above using the runtime's available interactive choice mechanism; in a non-interactive session, print the same choices and stop. Otherwise dispatch on the first token of the argument per [references/lifecycle.md](references/lifecycle.md).
