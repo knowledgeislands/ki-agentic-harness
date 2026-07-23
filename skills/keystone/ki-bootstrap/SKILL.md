@@ -5,121 +5,143 @@ ki-runtime-binding: true
 ki-shared-modules: [educator]
 ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-skills:govern]
 description: >
-  Bootstraps a Knowledge Islands repo into governance: the EDUCATE chain vendors declared checkers and local educator launchers under `.ki/bootstrap/`, so it self-governs via `./.ki/bin/ki-audit` with zero skills installed and never changes `package.json`; it also links project-local skills from `.ki-config.toml` so the right instructions load in-session. Use when bootstrapping or re-bootstrapping a repo, making it self-govern, or setting up and auditing skill links. Triggers: "bootstrap this repo", "make this repo self-govern", "set up this repo's skills", "re-bootstrap this repo", "why aren't my skills loading in this repo". This is the install keystone — the one Knowledge Islands skill kept installed globally — so any repo can self-wire from the remote source. For `.ki-config.toml` coverage and GitHub settings use `ki-repo`; for the harness layout use `ki-harness`.
-argument-hint: 'help | educate [target] | clean [target] | doctor <scope> [target] | uninstall [scope] [target] | audit [path] | conform [path] | refresh'
+  Governs Knowledge Islands installed-skill activation and the explicit migration away from repository-vendored runners. Use when installing or activating an approved skill collection, declaring a repo's governance coverage, preparing a repository or CI for native `ki repo` operations, or safely assessing legacy `.ki/` bootstrap state. The authoritative target is one verified XDG-installed collection, explicit managed runtime activation, and native registered operations; vendored `.ki/bin` runners have no execution fallback. Triggers: "activate a KI skill", "migrate this repo from .ki", "set up KI governance", "why won't ki repo audit run", "configure KI CI". For which skills a repository should declare use `ki-repo`; for the native CLI implementation and release availability use `tools-ki`.
+argument-hint: 'help | audit [path] | conform [path] | educate [target] | migrate [target] | refresh'
 ---
 
 # Knowledge Islands Bootstrap
 
-You are the install **keystone** — the one `ki-*` skill kept globally installed (so its `description` is paid on every turn everywhere), deliberately tiny. The global install location and the project-local skills dir it links are both **runtime-specific**: Claude Code discovers `~/.claude/skills` / `<repo>/.claude/skills/`, OpenAI Codex CLI discovers `~/.agents/skills` / `<repo>/.agents/skills/` (a repo's required `.ki-config.toml` `[ki-repo] supported_runtimes` declares its support surface). The rest of this file uses `.claude/skills/` as the running example — read it as "the declared runtime's skills dir." You bootstrap a repo into governance along **two complementary axes**:
+`ki-bootstrap` governs the transition to installed skill collections and native repository operations.
 
-1. **EDUCATE — mechanical self-sufficiency (the chain).** Bring a target repo under governance so it self-governs with `./.ki/bin/ki-audit` and **zero skills installed** — and with no `package.json` of its own, ever touched: for every skill in the resolved set, vendor its checker copies and HELP snapshot under `.ki/bootstrap/checkers/`, plus a self-contained target-local EDUCATE payload under `.ki/bootstrap/educators/`, and write the four `.ki/bin/{ki-audit, ki-conform, ki-educate, ki-help}` wrappers over the `.ki/bin/aggregate.ts` runner. A source harness instead links its canonical local source material beneath `.ki/bootstrap/`; generated HELP, launchers, bins, and the manifest remain regular files. Bootstrap writes **no** `package.json` keys — those are `ki-engineering`'s to wire, as sugar over these bins. The public bootstrap route is the explicit way to acquire a first or newer revision; ordinary later EDUCATE runs use only the durable local material. See **Mode EDUCATE** and [ADR-KI-HARNESS-006](../../../docs/decisions/ADR-KI-HARNESS-006-user-installation-repository-bootstrap-and-self-sufficiency.md).
-2. **Runtime payloads — in-session skill loading.** Mirror the repo's declared coverage under each selected runtime's skill directory so exactly the right skill _descriptions_ load when a human works in that repo, and no others elsewhere. Ordinary repositories receive generated copies; a harness links its own canonical sources. This keeps the standing skill-description cost out of unrelated sessions (the tokenomics reason skills are project-local, not global). See **Mode AUDIT / CONFORM**.
+Its normative contract is [ADR-KI-HARNESS-012](../../../docs/decisions/ADR-KI-HARNESS-012-installed-skill-collections-and-native-repository-operations.md) and [the bootstrap standard](references/standards.md).
 
-The two are distinct: vendored **copies** run the mechanical checks anywhere (CI, a bare clone); generated runtime payloads are only about which skills the agent sees in-session. EDUCATE installs both surfaces.
+## Current delivery status
 
-**The linking model — at a glance:**
+The target surface belongs to `tools-ki` and is not yet implemented.
 
-- A repo's `.claude/skills/` should mirror its **declared coverage** — the `[ki-<skill>]` tables in its `.ki-config.toml`, its own foundations `[ki-repo]` + `[ki-authoring]` included. Every repo declares its foundations explicitly; there is no injected baseline (a greenfield repo enters via `ki-repo`'s educate, `--seed ki-repo`, to scaffold the config). The keystone itself is never linked project-local — it is global.
-- A repo's `.claude/agents/` should mirror `agents/governance/*.md` **only when** it carries the bare `[ki-agents]` table — no baseline, since no agent is always-on.
-- Skills are **gitignored and regenerated** — ordinary repositories receive regular-file copies, while a harness's own runtime locations link to its canonical source skills. The only committed artifact is the `.gitignore` lines, never generated payloads.
-- The **harness** (`ki-agentic-harness`) copies only its own declared coverage, same as any other repo — a structural skill like `ki-mcp` or `ki-website` is exercised against a repo of its type, not loaded in the harness itself, so the harness copies what governs it, not the whole fleet.
+Do not present `ki skill install`, `ki skill add`, `ki repo audit`, `ki repo conform`, or repository migration as working commands until a released `ki` version provides them.
 
-The repository engine is [`scripts/internal/repo-bootstrap/repo-bootstrap.ts`](scripts/internal/repo-bootstrap/repo-bootstrap.ts); the normal runtime publisher is [`scripts/internal/repo-bootstrap/publish-project-skills.ts`](scripts/internal/repo-bootstrap/publish-project-skills.ts). The publisher shares its transaction and `.gitignore` helpers through [`scripts/internal/repo-bootstrap/project-skill-publisher.ts`](scripts/internal/repo-bootstrap/project-skill-publisher.ts) and [`scripts/internal/repo-bootstrap/runtime-paths.ts`](scripts/internal/repo-bootstrap/runtime-paths.ts). User installation is separately implemented under [`scripts/internal/user-install/`](scripts/internal/user-install/). The quotable invariant is [the standard](references/standards.md); the checkable criteria are [the rubric](references/rubric.md). This skill **composes on** `ki-repo`, which owns the config's file-level contract and foundation scaffold: bootstrap embeds no TOML template and never edits the file directly, but EDUCATE may invoke `ki-repo`'s scaffold-only leg by subprocess before re-reading the declarations.
+The existing bootstrap engine, `.ki/bootstrap/`, `.ki/bin/`, manifests, and source-owned lifecycle scripts are legacy implementation material.
+
+They are useful for inventorying and testing a migration, but are not a supported repository executor and must never become a fallback when the native collection or an operation is unavailable.
+
+## The installed-collection model
+
+Knowledge Islands has one verified active collection for a user at `$XDG_DATA_HOME/ki/skills`.
+
+The normal XDG defaults apply when a variable is unset: `~/.local/share`, `~/.config`, `~/.cache`, and `~/.local/state` for data, configuration, cache, and mutable state respectively.
+
+There is no KI-specific home variable.
+
+The installed `ki` release acquires or atomically replaces the collection from immutable release evidence it verifies.
+
+The active collection is authoritative for skill discovery and operation resolution; a harness checkout, a nearby source tree, and repository-local copies are not alternative sources.
+
+## Repository coverage and native operations
+
+`.ki-config.toml` remains the declarative repository contract.
+
+Its explicit `[ki-<skill>]` roots select the skills whose native operations may run; `ki-repo` owns which roots are appropriate and the file-level configuration contract.
+
+`ki` is the operation host.
+
+Each governance skill registers compatible in-process metadata and mechanical AUDIT/CONFORM implementations, and `ki repo audit` or `ki repo conform` will resolve the physically selected repository, read its declarations, validate explicit dependencies, and run the registered operations in dependency order through one shared finding and reporting model.
+
+Missing, incompatible, undeclared, or untrusted skills must fail before an operation writes.
+
+Native execution never shells out to legacy `govern.ts` scripts, `.ki/bin` wrappers, a harness checkout, or any ad-hoc child-process substitute.
+
+## Explicit runtime activation
+
+Installing a collection does not activate every skill globally.
+
+The planned `ki skill add <skill> --scope repo|global` operation activates one installed skill explicitly:
+
+- Repository scope updates only the selected repository's declaration and creates only its managed runtime-discovery links.
+- Global scope creates only the managed links in the selected user runtime.
+
+Runtime activation is explicit, runtime-aware, idempotent, and managed.
+
+It requires ownership markers and containment checks, supports dry-run, and refuses altered or unfamiliar material rather than replacing or deleting it.
+
+It keeps user and repository state separate: a repository operation does not alter user activation, and a user operation does not alter repository coverage.
+
+## Legacy migration boundary
+
+Repository vendoring has ended.
+
+An existing `.ki/` runner or manifest is migration input only, inspected by an explicit repository migration operation once that operation is delivered.
+
+Migration must prove complete ownership before removing any generated legacy state; altered, partial, unfamiliar, linked, or concurrently changed material is preserved and reported as a fail-closed blocker.
+
+The migration does not execute legacy runners, does not silently remove state, and does not infer that an installed collection is available.
+
+Until that native migration operation exists, retain legacy state for assessment rather than manually deleting it or trying to recreate it from a checkout.
 
 ## Operating modes
 
-Invoked as `help` / `-h` / `?`, it explains itself and stops — the generated HELP block (name, purpose, invocation, modes, off-ramps), taking no action. With no mode it does the same, then, in an interactive session only, offers the mode choice via `AskUserQuestion`, prompting for any `argument-hint` target the chosen mode shows.
+### Mode AUDIT — assess the declared native contract
 
-### Mode EDUCATE — bring a repo under governance (self-sufficiency chain)
+Read `.ki-config.toml`, the available installed collection, and runtime activation ownership as separate facts.
 
-The mechanical half of EDUCATE, and the start of the bootstrap chain. Run it against a target repo — locally, or straight from the remote source with nothing installed:
+Once released, native `ki repo audit` is the mechanical repository audit.
 
-```bash
-bun scripts/internal/repo-bootstrap/repo-bootstrap.ts <target-repo> [--ref <ref>] [--dry-run] [--verbose]
-# remote (zero-install — cd into the repo, then curl | sh; the public route fetches the tarball and runs the engine, defaulting to cwd@main):
-# curl -fsSL https://knowledgeislands.info/harness/bootstrap | sh
-# advanced: … | sh -s -- <target> --ref <sha>   (args ripple through)   ·   bun already installed: bunx github:knowledgeislands/ki-agentic-harness#<sha> <target> --ref <sha>
-```
+Before then, this skill's existing checker may assess the legacy bootstrap material as migration evidence, but its result is not proof that a repository has native governance.
 
-1. **Resolve and validate the initial set.** Take the root owner from every exact or dotted `[ki-<skill>]` table declared in the target's `.ki-config.toml`, plus every explicit `--seed`. Bare and simply quoted TOML table keys are equivalent; header-looking text inside multiline strings is ignored; noncanonical ki-like roots are retained so they FAIL rather than disappear. Repeated roots collapse to one. Every root and `ki-depends-on:` requirement must exist in the ref-specific harness skill index, and each selected skill's dependency must be an explicit target declaration; an unresolvable or missing declaration is a sorted FAIL and EDUCATE stops before touching generated `.ki/` state. Coverage is purely what the config declares or the caller explicitly seeds — no injected baseline. `ki-bootstrap` itself is existence-valid but never vendored because it is the global chain-starter.
-2. **Let the config owner establish the foundations when requested.** When `ki-repo` is in that initial resolved set — because it was declared or explicitly seeded — invoke its `scripts/educate.ts <target> --scaffold-config-only` leg by subprocess, forwarding `--dry-run`. That owner creates a missing config with the canonical `[ki-repo]` defaults plus a bare `[ki-authoring]`, or appends only a missing exact root marker to a partial config. Bootstrap holds no TOML template and writes no config byte itself. Re-resolve and revalidate after the owner leg so the same run vendors the declarations it just established. With no config and no seed, the initial set remains empty and bootstrap does not inject foundations.
-3. **Satisfy the self-sufficiency contract.** For an ordinary target, vendor a **copy** (SCRIPT-7 — copies, not symlinks, so it runs standalone) of each final skill's `scripts/govern.ts` entrypoint into `.ki/bootstrap/checkers/<skill>/scripts/`, preserve its internal relative layout and shared-module payloads, materialise its **HELP snapshot**, and generate a self-contained educator at `.ki/bootstrap/educators/<skill>/{educate.ts,educator.ts,skill/}`. For a physical same-root `[ki-harness]` target, link only its canonical `skills/` and `agents/` source material: the retained catalogue, governed entry point, educator module, and educator skill source. Links are relative, manifest-recorded, and must resolve within that harness's own source tree; stale, altered, dangling, or escaping links fail closed. HELP snapshots, educator launchers, bins, and the manifest remain generated regular files. The destination stays **keyed by bare skill name only, flat across source clusters** ([ADR-KI-HARNESS-006](../../../docs/decisions/ADR-KI-HARNESS-006-user-installation-repository-bootstrap-and-self-sufficiency.md)) — then write the `.ki/bin/aggregate.ts` runner and the four executable `.ki/bin/{ki-audit, ki-conform, ki-educate, ki-help}` wrappers. `ki-educate` with no skill refreshes the whole current governed set; `ki-educate <skill>` refreshes only that local skill's checker and educator payload. To acquire a first or newer harness revision, run `https://knowledgeislands.info/harness/bootstrap` explicitly. It writes **no** `package.json` — the `ki:*` convenience keys are `ki-engineering`'s to wire, as sugar over these bins. **Harness-shaped targets only** (the set includes `ki-harness`): additionally vendor the two cross-skill scripts — `skill-graph.ts` and `skill-help.ts` — into `.ki/bin/`, manifest-hashed like every other vendored file. These operate on the whole `skills/` tree (validate/render the `ki-depends-on:` graph and render HELP), so they are engine-level, not per-skill entrypoint payloads; a non-harness repo has no `skills/` tree and never receives them (ADR-KI-HARNESS-008).
-4. **Publish runtime payloads.** After vendoring, a consumer receives each declared complete skill as a copy in every selected runtime discovery directory and its generated `.gitignore` line. A harness receives links from those runtime entries to its own canonical source skills. `.ki/bootstrap/` never carries runtime skills.
-5. **Result:** after EDUCATE the target governs itself with the four `./.ki/bin/` wrappers and has project-local runtime payloads — no `package.json` of its own required. Re-running the chain is idempotent, and is the single way to bring a target up to date; `--ref` moves it to a newer harness ref.
+Route coverage questions to `ki-repo`; route command availability to the installed `ki` release.
 
-Successful EDUCATE runs report only the target, resolved scope count, and completion summary. Pass `--verbose` when you need the per-file vendor, generated runner, and runtime-payload trace. `--dry-run` always reports its planned file actions and finishes without writing.
+### Mode CONFORM — prepare safe activation
 
-**Per-skill educators.** A governance skill that needs the common target-local EDUCATE behaviour declares `ki-bootstrap:educator` and runs only its local `scripts/vendored/ki-bootstrap/educator.ts` payload. An ordinary target retains a regular copy; a source harness uses the manifest-proven canonical source link. That module writes the selected skill's local checker and educator payloads; it never reboots the whole repository or reaches another skill's source. `ki-repo` additionally owns the internal scaffold-only leg the engine calls to establish its required config markers without recursion.
+First identify the selected repository or user scope and the intended runtime.
 
-### Mode AUDIT — check a repo's project-local skills and agents
+When the native surface is available, use its explicit activation and repository-conform operations only after verifying collection integrity and declared coverage.
 
-1. **Run the structured checker.** `bun scripts/govern.ts [path]` from this skill directory (or `bun run ki:bootstrap:audit` in the harness) evaluates the codified rubric. With no reporter it emits canonical JSONL; add `--reporter=terminal` for the filtered human view. It checks runtime payloads and gitignore entries (**BOOT-1/3**), governance agent wiring (**BOOT-6/8**), the resolved checker and educator sets (**BOOT-9/12**), and direct canonical-source parity when the target carries matching sources (**BOOT-11**).
-2. **Judge BOOT-4 by reading** — is the repo's declared coverage actually right? That is `ki-repo`'s coverage cascade; name it as the off-ramp rather than re-deciding it here.
-3. **Apply the aggregate judgmental sweep (BOOT-10).** Run `./.ki/bin/ki-audit` (or `bun run ki:audit`) and capture the mechanical output verbatim. Then apply each governed skill's judgment prompts, using its governance lead when one exists and its generated readable rubric otherwise. The mechanical response summary counts judgment items that remain unevaluated; it does not emit synthetic judgment findings.
-4. **Report** by criterion. Missing, symlinked, or source-drifted runtime payloads and absent gitignore entries are WARN. Unresolvable declarations and direct source-copy drift are FAIL because they cannot be repaired safely by guessing.
+Do not repair native absence by creating `.ki/bin` wrappers, copying checker scripts, or linking to a harness checkout.
 
-### Mode CONFORM — wire a repo
+Re-audit after any safe mechanical change.
 
-The mechanical half is `scripts/govern.ts` (`bun run ki:bootstrap:conform` where wired) — it composes the steps below and finishes with the vendored-set audit, whose drift it only advises on (the repair is EDUCATE, per the drift contract). Step by step:
+### Mode EDUCATE — establish the target model
 
-1. Run **AUDIT** first.
-2. **Copy** the normal project-local skill set with `bun "$HOME/.claude/skills/ki-bootstrap/scripts/internal/repo-bootstrap/publish-project-skills.ts" [path]`. The publisher creates/prunes generated regular-file skills and writes matching `.gitignore` lines, creating `.gitignore` if absent. Preview with `--dry-run`.
-3. **Make it reproducible:** a repo reproduces its generated copies by re-running the repository bootstrap — no `package.json` script is required, and it scaffolds none (package.json script-key wiring is `ki-engineering`'s concern).
-4. **Aggregate judgmental sweep (BOOT-10).** Run `./.ki/bin/ki-conform` (or `bun run ki:conform`) for the mechanical fixes, then re-apply the per-skill judgment prompts from AUDIT step 3 to confirm each skill's judged findings are resolved too — a clean mechanical pass is not sufficient on its own.
-5. **Re-run AUDIT** until clean.
+Explain the installed collection, explicit activation, declarative coverage, and native operation boundaries.
 
-### Mode CLEAN — remove proven generated repository state
+For a clean user, the eventual sequence is: install a verified collection, explicitly activate only needed skills, declare repository coverage, then invoke native repository operations.
 
-CLEAN is a source-owned recovery operation, run from an installed or harness-local `ki-bootstrap`, never from a target's `.ki/` runner:
+This is a contract description, not an instruction to run unreleased commands.
 
-```bash
-bun scripts/clean.ts <target-repo> [--dry-run]
-```
+### Mode HELP — explain the boundary
 
-It removes only manifest-proven generated `.ki/{bin,bootstrap,manifest.json}` state, and removes only regular runtime skill directories whose generated marker and integrity still prove ownership. It preserves `.ki/self/skill/` and its runtime projections, `.ki-config.toml`, `.gitignore`, agents, canonical source, source links, altered payloads, and every unmarked path. An unfamiliar, changed, symlinked, or concurrent generated `.ki/` state is a fail-closed refusal; `--dry-run` reports the proven removal set without writing. Re-running CLEAN after a successful pass is safe, and EDUCATE reconstructs the normal governed footprint.
+Invoked as `help` / `-h` / `?`, explain this skill's current delivery status, target contract, and off-ramps, then stop without changing files.
 
-### Mode UNINSTALL — end adoption at one explicit boundary
+With no mode in an interactive session, explain the same boundary before offering the available modes.
 
-UNINSTALL is separate from CLEAN and is source-owned, so it remains available when a repository's generated runner has already gone. Choose exactly one scope:
+### Mode MIGRATE — retire a proven legacy footprint
 
-```bash
-# Repository only — removes only proven generated state and a sole-purpose KI declaration.
-bun scripts/repo-uninstall.ts <target-repo> [--dry-run]
+Use the future explicit migration operation, never implicit bootstrap, to examine legacy `.ki/` state.
 
-# User only — removes only integrity-proven global KI process skills and the dedicated KI Claude hook namespace.
-bun scripts/user-uninstall.ts [--runtime <claude-code|codex>]... [--dry-run]
-```
+It must validate the installed collection, repository declarations, runtime ownership, and every legacy removal target before it writes.
 
-Repository UNINSTALL never reads or changes user state. User UNINSTALL never reads or changes a repository, and preserves runtime settings, other skills, and other hook namespaces. Both validate their complete selected removal set before writing, refuse altered, linked, partial, unfamiliar, or concurrent state, and support `--dry-run`. A repository can also use the zero-install `repo-operation.sh <clean|uninstall|doctor> [target]` launcher, which fetches temporary source but never installs user material.
+If any proof is missing, stop with recovery guidance and leave the legacy material untouched.
 
-### Mode DOCTOR — inspect one lifecycle scope without writing
+### Mode REFRESH — re-anchor the contract
 
-DOCTOR is a source-owned, dry-run-equivalent diagnostic. It requires exactly one scope, produces the same schema-`1` report in terminal or JSON form, and never discovers, changes, or recommends work outside that scope:
+**Precondition:** REFRESH writes only this skill's canonical files in `ki-agentic-harness`.
 
-```bash
-# Repository state — accepts one optional target and --format terminal|json.
-bun scripts/doctor.ts repo [target] [--format terminal|json]
+When invoked from a vendored repository, stop and redirect to the harness; for a recurring cross-base pattern, route it through `ki-kb`'s IMPROVE mode.
 
-# User-managed installation and hooks — accepts only explicit runtime filters and a testable home.
-bun scripts/doctor.ts user [--runtime claude-code|codex]... [--format terminal|json]
-```
+Refresh this skill when the native registry, XDG collection layout, activation semantics, migration safety rules, or `tools-ki` delivery status changes.
 
-Healthy or absent state exits `0`; recoverable or unsafe state exits `1`; invalid command syntax exits `2`. A recoverable report identifies exactly one next action (`educate`, `clean`, or scoped `user-uninstall`); unsafe state asks for manual reconciliation. DOCTOR never runs that action. A repository can also invoke the zero-install `repo-operation.sh doctor [target] [--format terminal|json]` launcher, which fetches only temporary source and leaves the target unchanged.
-
-### Mode REFRESH — re-anchor
-
-**Precondition:** REFRESH edits this skill's own canonical files, which exist only in `ki-agentic-harness`. Invoked from a repo where the skill is vendored, it stops here and names the harness as where to run it — or, for a pattern recurring across bases, routes it through `ki-kb`'s IMPROVE mode instead.
-
-Canonical, on-change: this skill tracks no external spec. Re-anchor when the install model changes — the EDUCATE chain / self-sufficiency contract (the vendor layout, the aggregate runner, the `ki-depends-on:` graph shape), the coverage-table contract (`ki-repo`), the `[ki-agents]` gating convention, the skill/agent discovery locations Claude Code reads, or the ordinary-copy / harness-link publication convention. Read [the source list](references/sources.md), confirm the standard still matches the reference implementation, propose a diff, bump the dates.
+Read ADR-KI-HARNESS-012, [the CLI guide](../../../docs/guides/user-guide/command-line-interface.md), and the bootstrap standard before proposing changes.
 
 ## Composition
 
-- `ki-repo` — owns the `.ki-config.toml` file-level contract, foundation scaffold, coverage cascade, and GitHub settings. This skill reads that config and may subprocess-compose `ki-repo`'s scaffold-only EDUCATE when the resolved set requests it, but it embeds no TOML template and never edits the file directly. For any question about _which_ skills a repo should declare, route to `ki-repo`.
-- `ki-tokenomics` — owns the standing-cost rationale for keeping skills project-local (not global). For token-budget questions, route there.
+- `ki-repo` owns `.ki-config.toml` coverage and configuration semantics; this skill does not choose a repository's declared skills.
+- `ki-tokenomics` owns the standing-cost rationale for selective runtime activation.
+- `tools-ki` owns native CLI implementation, release evidence, command grammar, registry loading, reporting, activation, and migration execution.
 
-## Notes
+## Safety boundary
 
-- **Why a keystone, not part of `ki-repo`:** the global skill is paid every turn everywhere, so it must be minimal. `repo` is heavy (GitHub settings, security, files). Splitting the bootstrap out keeps the global footprint to one tiny description; `repo` stays project-local and loads only in repos that declare or seed it.
-- **Greenfield:** a repo with no `.ki-config.toml` enters through `ki-repo`'s educate — `bun scripts/internal/repo-bootstrap/repo-bootstrap.ts <target> --seed ki-repo` (or `bun skills/keystone/ki-repo/scripts/educate.ts <target>`). The owner leg writes the canonical `[ki-repo]` defaults plus bare `[ki-authoring]`; bootstrap then re-resolves and vendors both foundations and the runners in that same invocation. There is no injected baseline — bare `repo-bootstrap.ts <target>` with no config and no seed resolves to the empty set.
-- **EDUCATE vs runtime publication:** EDUCATE vendors mechanical **copies** that run with nothing installed (CI, migration, a bare clone). It publishes runtime skill copies for ordinary repositories and source links for harnesses.
+Never conflate a checked-out harness, an installed collection, repository declarations, or runtime discovery links.
+
+Each has different ownership and trust evidence.
+
+When evidence is incomplete, fail closed, make no broad cleanup, and name the missing collection, declaration, ownership proof, or implementation rather than inventing a compatibility path.

@@ -23,9 +23,19 @@ Knowledge Islands diagnostics are coming soon. This command currently performs n
 
 ## Skill installation and activation
 
-The expected `ki skill ...` group will install a verified skill collection once for a user, then explicitly activate named skills in either global or repository scope. Repository activation will declare the skill in `.ki-config.toml` and link it into the selected runtime's project discovery location; global activation will link it only into the selected user runtime. Installing a collection does not activate every skill globally.
+The planned `ki skill ...` group will install a verified skill collection once for a user, then explicitly activate named skills in either global or repository scope:
 
-The exact leaf names and release contract remain to be adopted. `ki repo audit` and `ki repo conform` will resolve their declared skills from that installed collection rather than from copied repository checkers.
+```text
+ki skill install
+ki skill add <skill> --scope global
+ki skill add <skill> --scope repo
+```
+
+- `ki skill install` will acquire or atomically replace the single verified collection in the user's XDG data location. It does not activate skills or write repository state.
+- `ki skill add <skill> --scope global` will create managed discovery links for that installed skill in the selected user runtime only.
+- `ki skill add <skill> --scope repo` will declare that installed skill in the selected repository's `.ki-config.toml` and create its managed project-runtime discovery links only.
+
+Installing a collection does not activate every skill globally. These commands are planned; `ki repo audit` and `ki repo conform` will resolve declared skills from that collection rather than copied repository checkers.
 
 ## Repository maintenance commands
 

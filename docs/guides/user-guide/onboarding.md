@@ -1,139 +1,104 @@
-# Bootstrap a repository
+# Onboard a repository to native KI governance
 
-This is the detailed reference for bringing a repository under Knowledge Islands governance so it **governs itself** — running `./.ki/bin/ki-audit` with **zero skills installed** and **no `package.json` required**. First install the harness for your user account, then use this repository-scoped step; start with [Install and get started](getting-started.md).
+Knowledge Islands is moving from repository-vendored runners to one verified installed skill collection and native `ki` operations.
 
-Bootstrap is a repository action: it builds that repository's `.ki/` directory and does not configure the user's wider environment. Re-running it is also how a repository stays current — there is no separate migration mode. This guide is the operating manual for the bootstrap chain (ADR-KI-HARNESS-006); its fenced `bash` blocks are executable and are exercised by the harness's own test suite, so they cannot drift from what actually works.
+The target contract is [ADR-KI-HARNESS-012](../../decisions/ADR-KI-HARNESS-012-installed-skill-collections-and-native-repository-operations.md).
 
-If you maintain the harness itself, [Generated write boundaries](../developer/generated-write-boundaries.md) explains which surfaces are committed, copied, linked, or user-environment-managed and how to recover each safely.
+The native skill-installation, activation, repository-maintenance, and migration commands are not yet released by `tools-ki`.
 
-## The remote-run transport — the primary path
+This guide therefore describes the accepted onboarding model and safe migration boundary; it does not provide commands that pretend the pending surface already works.
 
-The canonical, zero-install form is the `curl | sh` installer idiom — **`cd` into the repo you want to govern**, then run:
+For released CLI commands and current availability, see [the CLI guide](command-line-interface.md).
 
-```bash
-curl -fsSL https://knowledgeislands.info/harness/bootstrap | sh
-```
+## The target model
 
-It bootstraps the current directory from the harness's `main`. `/harness/bootstrap` is the stable public route; it resolves to the repository bootstrap entry point, whose implementation may change without changing this command. The entry point is POSIX `sh` and assumes only curl and tar: it fetches the harness source tarball (GitHub's codeload endpoint generates it on demand — no publish step), extracts it to a temp dir, and runs the chain engine from that tree. Bun is required as the mechanical layer's runtime — the engine and every vendored checker are TypeScript — so if it is missing the script fails fast with the install instruction rather than installing a runtime silently.
+Each user has one verified active skill collection at `$XDG_DATA_HOME/ki/skills`.
 
-There is nothing else to pass in the common case: the target is the current directory and the ref is `main`, which is what you want — re-running keeps the repo current with `main` (see [Keeping current](#keeping-current)). Two escape hatches exist for the rare case that needs them: a positional target other than the cwd and a pinned ref, `… | sh -s -- <target> --ref <sha>`; or, where bun is already installed, `bunx github:knowledgeislands/ki-agentic-harness#<sha> <target> --ref <sha>` (pin a sha — bunx caches floating git refs).
+`ki` uses `$XDG_CONFIG_HOME/ki`, `$XDG_CACHE_HOME/ki`, and `$XDG_STATE_HOME/ki` for configuration, disposable acquisition data, and mutable state.
 
-### Across a fleet, with `mgit -B`
+If those variables are unset, their standard XDG defaults are `~/.local/share`, `~/.config`, `~/.cache`, and `~/.local/state`.
 
-The one-liner above is per-repo. To bootstrap — or re-sync — every repo in a fleet at once, run it through [`mgit`](https://github.com/knowledgeislands/tools-mgit) in bare mode from the fleet's container directory (each checkout registered in its `.mgitconfig`):
+Knowledge Islands does not define a separate home variable.
 
-```bash
-mgit -B sh -c 'curl -fsSL https://knowledgeislands.info/harness/bootstrap | sh'
-```
+A repository declares its governance coverage in `.ki-config.toml` through explicit `[ki-<skill>]` roots.
 
-`-B`/`--bare` execs the given argv directly in each registered repo (`cd "$repo" && "$@"`) instead of prefixing it with `git` — there is no shell in between, so a bare `curl … | sh` won't work as argv (the pipe has nowhere to run); wrap it in `sh -c '...'` as above. The same escape hatches apply per repo, wrapped the same way — e.g. `mgit -B sh -c 'curl -fsSL … | sh -s -- . --ref <sha>'` to pin every repo to one ref.
+The installed `ki` release will resolve those declarations and their explicit dependencies from the verified collection, then run registered in-process operations in dependency order.
 
-## What bootstrap does
+The collection is authoritative: a harness checkout, a temporary download, a runtime skill link, or a repository `.ki/` directory cannot supply a missing or untrusted skill.
 
-Bootstrap's one job is to build `.ki/`. For every skill in the resolved set — every `[ki-<skill>]` table the target declares in its `.ki-config.toml` (including a bare `[ki-authoring]`, which every repo must declare itself — there is no injected baseline, per `ADR-KI-HARNESS-007`) — it:
+## The eventual onboarding flow
 
-1. **vendors** each governed skill's `scripts/govern.ts` entrypoint into `.ki/bootstrap/checkers/<skill>/scripts/govern.ts`, renders the skill's **HELP snapshot** to `.ki/bootstrap/checkers/<skill>/help.md`, and generates its target-local EDUCATE launcher at `.ki/bootstrap/educators/<skill>/educate.ts`; a physical source harness links its own canonical `skills/` and `agents/` source material instead, while its HELP snapshots, launchers, bins, and manifest remain regular generated files;
-2. **writes** the four `package.json`-free entry points — `.ki/bin/{ki-audit, ki-conform, ki-educate, ki-help}` over a `.ki/bin/aggregate.ts` runner that discovers the checker copies and fans out over them — and **stamps** the vendoring manifest (`.ki/manifest.json`: the harness ref plus a hash per vendored file).
+When the native surface is released, onboarding has four deliberate stages:
 
-It **never touches `package.json`.** A `.ki/` is dot-prefixed and generated-not-authored, so it stays off the repo's own `scripts/`, and (being idempotent) re-running the bootstrap at the same ref reproduces byte-identical output. The `ki:*` convenience keys that a code repo may want — `bun run ki:audit` aliasing `./.ki/bin/ki-audit` — are wired later by `ki-engineering` when it comes online for that repo, as sugar over these same bins, never by bootstrap.
+1. Install or atomically update the verified skill collection with the installed `ki` release.
+2. Explicitly activate only required installed skills in either repository or global runtime scope.
+3. Declare the repository's selected coverage in `.ki-config.toml`.
+4. Run the native repository operations hosted by `ki`.
 
-Repository bootstrap does not install or configure user-global hooks. The optional Claude Code hook payload is a separate user-environment action, documented in [Install and get started](getting-started.md); do not add it to a per-repository or `mgit` bootstrap run.
+Installing a collection does not activate every skill globally.
 
-## The four bins — day-to-day, once governed
+Repository activation will update the selected repository declaration and create only managed runtime-discovery links for that repository.
 
-After EDUCATE the repo governs itself with no skills installed and no `package.json`:
+Global activation will create only managed links in the selected user runtime.
 
-| Command                                  | Mode    | What it does                                                                                         |
-| ---------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------- |
-| `./.ki/bin/ki-audit`                     | AUDIT   | Report drift across every governed skill, on the severity ladder. Read-only.                         |
-| `./.ki/bin/ki-conform`                   | CONFORM | Apply the mechanical fixes across the vendored set.                                                  |
-| `./.ki/bin/ki-help [skill]`              | HELP    | Print a skill's HELP block from its vendored snapshot — **pure bash, no bun needed**.                |
-| `./.ki/bin/ki-educate [skill] [--ref R]` | EDUCATE | Without a skill, re-run the whole chain at `R`; with one, dispatch only its vendored local educator. |
+Both scopes require ownership proof and containment checks, are idempotent, support dry-run, and refuse altered or unfamiliar material.
 
-## Running it locally
+`ki-repo` owns the question of which skills a repository should declare.
 
-A local checkout of the harness runs the identical chain. You need [Bun](https://bun.sh) and the harness; the examples reference it through `KI_HARNESS`:
+## Native repository maintenance
 
-```bash
-export KI_HARNESS="${KI_HARNESS:-$(pwd)}"
-```
+The planned native operations are `ki repo audit` and `ki repo conform`.
 
-A new repo needs a `.ki-config.toml` declaring `[ki-repo]` and a bare `[ki-authoring]` — every repo declares both itself; nothing is injected. Bootstrap it:
+They will physically resolve the selected repository, read `.ki-config.toml`, validate declared dependencies, and use the installed collection's registered compatible operations.
 
-```bash
-bun "$KI_HARNESS/skills/keystone/ki-bootstrap/scripts/internal/repo-bootstrap/repo-bootstrap.ts" "$TARGET"
-```
+AUDIT will be read-only.
 
-Then confirm it self-governs — the vendored aggregate invokes each skill's checker in sequence, with nothing installed in `.claude/skills/`. Its default progress display is one resize-aware row; pass `--progress-style=multi` with `--progress=always` to show stable per-skill rows in an interactive terminal:
+CONFORM will apply only registered safe mechanical changes through the same shared finding and reporting model.
 
-```bash
-cd "$TARGET" && ./.ki/bin/ki-audit
-cd "$TARGET" && ./.ki/bin/ki-audit audit --progress=always --progress-style=multi
-```
+Missing, incompatible, undeclared, or untrusted skills must fail before a write.
 
-A single skill's EDUCATE is reachable the same way through its own `scripts/educate.ts`, which seeds that skill into the target — the mechanics and the vendored result are identical to the full chain once its `ki-depends-on:` requirements are declared.
+The native host will not invoke copied `govern.ts` scripts, `.ki/bin` wrappers, a nearby harness checkout, or any ad-hoc child-process fallback.
 
-## Keeping current
+These operations remain planned until the installed `ki` release lists them in HELP and completion.
 
-Re-running the bootstrap **is** the update path. When a standard's REFRESH changes a checker, the repair on a governed target is an idempotent re-run of the chain — `./.ki/bin/ki-educate` (or the remote one-liner) — which re-vendors at the recorded ref and re-stamps the manifest.
+## Existing vendored repositories
 
-Drift in the vendored copies is caught mechanically: the audit checks ordinary copies against manifest hashes; a later bootstrap or CLEAN validates source-harness links against their manifest-recorded relative targets. A stale, altered, dangling, or escaping link fails closed. Conform only prints the advisory ("stale — re-run EDUCATE"), never re-syncs (in a bootstrapped-only repo the local copies are the only source present, so re-syncing from them would be circular). The repair is always the `ki-educate` re-run.
+The former bootstrap model created `.ki/bootstrap/`, `.ki/bin/`, and manifest state in every governed repository.
 
-## Clean generated state
+That material is now a migration source, not an executor for the native model.
 
-Use CLEAN when you need to remove a repository's generated governance state and rebuild it from scratch — for example, before diagnosing a bootstrap problem. It is intentionally source-owned rather than a command inside `.ki/`, because a successful clean removes that directory.
+Migration will be a separate explicit repository operation once delivered.
 
-> **Coming soon:** `ki`, the Knowledge Islands command-line interface (CLI), will first provide HELP, version, completion, and a no-op root `ki doctor` response. The first substantive command then imports user-provided ChatGPT material into a Knowledge Export Package. Explicit user and repository lifecycle commands follow in later releases; unscoped `ki uninstall` will never be valid. Until the seed is released, the source-owned operations below are the current interface. See the [CLI guide](command-line-interface.md).
+It must validate the verified collection, the repository declaration, runtime activation ownership, and every legacy removal target before changing anything.
 
-Start with a dry run from the repository root. Use the path matching the runtime where you installed the harness:
+If any legacy state is altered, partial, unfamiliar, linked, dangling, escaping, or concurrently changed, migration must stop and preserve it as a fail-closed blocker.
 
-```bash
-bun ~/.claude/skills/ki-bootstrap/scripts/clean.ts . --dry-run
-```
+Do not manually delete legacy `.ki/` state, regenerate it from a harness checkout, or use its runners while native operations are unavailable.
 
-```bash
-bun ~/.agents/skills/ki-bootstrap/scripts/clean.ts . --dry-run
-```
+Legacy scripts can inform inventory and implementation tests, but their passing result does not show that a repository has native governance.
 
-Review the reported paths, then rerun the same command without `--dry-run` to remove them. CLEAN removes only an intact manifest-owned `.ki/` tree and unchanged generated runtime skill copies. It is repository-scoped cleanup, not an uninstall: it preserves `.ki-config.toml`, `.gitignore`, agents, `.ki/self/skill/`, its runtime projection links, altered payloads, unfamiliar files, and every user-level KI installation. Unsafe or changed metadata causes it to stop rather than guess. Run bootstrap again afterwards to reconstruct the governed footprint.
+## CI and direct automation
 
-If `ki-bootstrap` is not installed for either runtime, use the same `scripts/clean.ts` path from a local harness checkout instead. Do not manually delete `.ki/` or `ki-*` directories to work around a CLEAN refusal; inspect and resolve the preserved state first.
+CI will explicitly acquire the verified installed collection before it invokes the required native `ki repo` operation.
 
-### Uninstall one scope deliberately
+It must use immutable release evidence and fail with recovery guidance when acquisition, verification, registry loading, operation availability, or declared-skill resolution fails.
 
-UNINSTALL ends Knowledge Islands adoption at one explicit scope; it is not a stronger form of CLEAN.
+CI must not bootstrap a checkout-local executor or fall back to repository-vendored files.
 
-```bash
-# Repository only: remove proven generated state and a sole-purpose KI declaration.
-bun ~/.claude/skills/ki-bootstrap/scripts/repo-uninstall.ts . --dry-run
+## Scope and safety
 
-# User only: remove integrity-proven global KI skills and the dedicated KI hook namespace.
-bun ~/.claude/skills/ki-bootstrap/scripts/user-uninstall.ts --dry-run
-```
+User-owned state is limited to the XDG collection, configuration, cache, state, and global runtime activation.
 
-Use the equivalent `~/.agents/skills/ki-bootstrap/` path when `ki-bootstrap` is installed for Codex only. Review the dry-run output before rerunning without `--dry-run`. Repository UNINSTALL never touches user state; user UNINSTALL preserves runtime settings, other skills, and other hook namespaces. Both refuse altered, linked, partial, unfamiliar, or concurrently changed managed material rather than guessing.
+Repository-owned state is limited to `.ki-config.toml`, repository runtime activation links, and registered native-operation writes.
 
-## Diagnose one lifecycle scope
+No unscoped action infers or crosses those boundaries.
 
-DOCTOR is a read-only, source-owned diagnosis command. It requires an explicit `repo` or `user` scope and changes neither the selected scope nor the other one.
+Every mutation must resolve its selected scope, prove ownership and containment, validate the complete write or removal set, and stop before a partial change when safety evidence is incomplete.
 
-```bash
-# Repository diagnosis from the repository root.
-bun ~/.claude/skills/ki-bootstrap/scripts/doctor.ts repo .
+## What to do now
 
-# A machine-readable repository report.
-bun ~/.claude/skills/ki-bootstrap/scripts/doctor.ts repo . --format json
+If you are onboarding a new repository, wait for a `tools-ki` release that exposes the native collection and repository operations, then follow that release's HELP.
 
-# User-managed KI skills and hook namespace only.
-bun ~/.claude/skills/ki-bootstrap/scripts/doctor.ts user
-```
+If you maintain an existing vendored repository, retain its legacy state until the explicit native migration operation is available.
 
-Use the equivalent `~/.agents/skills/ki-bootstrap/` path when `ki-bootstrap` is installed for Codex only. The report has four statuses: `healthy`, `absent`, `recoverable`, and `unsafe`. Healthy and absent reports exit `0`; recoverable and unsafe reports exit `1`; invalid invocation exits `2`. A recoverable report names one next action, but DOCTOR never performs it. An unsafe report requires manual reconciliation rather than guessing.
-
-When no global installation is available, run the same `scripts/doctor.ts` from a local harness checkout. The checkout also provides the zero-install-shaped repository launcher for a temporary-source diagnostic:
-
-```bash
-sh "$KI_HARNESS/skills/keystone/ki-bootstrap/scripts/repo-operation.sh" doctor . --format json
-```
-
-This launcher downloads temporary source and creates no file in the target repository. The public Website route for that launcher is still pending, so do not substitute an unannounced `curl | sh` URL.
+If a project needs a coverage decision today, record it in `.ki-config.toml` through the `ki-repo` contract; do not create `.ki/bin` compatibility scaffolding around it.
