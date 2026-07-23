@@ -4,15 +4,26 @@
 
 This contract is the harness-owned boundary for the installable Knowledge Islands command-line interface (CLI), invoked as `ki`. The `tools-ki` repository owns its implementation and `homebrew-tap` owns its Homebrew delivery; neither may redefine the lifecycle operations below.
 
-## Initial grammar
+## Seed release grammar
 
 ```text
 ki
-ki help [user install|repo bootstrap|repo educate|repo audit|repo conform|repo clean|completion]
+ki help [doctor|completion]
 ki --help
 ki --version
 ki completion <bash|zsh>
+ki doctor
+```
 
+With no arguments, `ki` renders the same root help as `ki help` and exits successfully. `-h` is accepted wherever `--help` is accepted, and `-V` aliases `--version`. The seed command has no options beyond these help/version aliases.
+
+`ki doctor` writes exactly `Knowledge Islands diagnostics are coming soon. This command currently performs no checks and changes nothing.` followed by one newline to standard output, returns `0`, and performs no filesystem, repository, network, environment, or child-process inspection or mutation.
+
+## Planned scoped lifecycle grammar
+
+The following command paths are established by this contract but are unavailable until their separately adopted implementation plans activate them. They are absent from seed HELP and completion.
+
+```text
 ki user install [--runtime <claude-code|codex>]... [--ref <ref>] [--dry-run] [--check]
 
 ki repo bootstrap [target] [--ref <ref>] [--dry-run] [--verbose]
@@ -25,11 +36,9 @@ ki repo conform [--skill <ki-skill>] [--dry-run]
 ki repo clean [target] [--ref <ref>] [--dry-run]
 ```
 
-With no arguments, `ki` renders the same root help as `ki help` and exits successfully. `-h` is accepted wherever `--help` is accepted, and `-V` aliases `--version`. Options belong to their leaf command; there are no ambient lifecycle options.
+`target` defaults to the current working directory. A leaf accepts at most one positional target or skill. `--` ends option parsing where a positional value is permitted. An option requiring a value rejects a missing value before dispatch. No release accepts abbreviated groups, commands, options, runtimes, progress modes, or skill names, or forwards an unknown argument.
 
-`target` defaults to the current working directory. A leaf accepts at most one positional target or skill. `--` ends option parsing where a positional value is permitted. An option requiring a value rejects a missing value before dispatch. The initial release accepts no abbreviated groups, commands, options, runtimes, progress modes, or skill names, and forwards no unknown argument.
-
-## Command semantics
+## Later lifecycle semantics
 
 ### `ki user install`
 
@@ -91,11 +100,13 @@ Its recovery route is `ki repo bootstrap`, which acquires source and runs the ED
 
 `ki completion bash` and `ki completion zsh` print completion source to standard output. Completion contains only available commands and options and never inspects or changes either scope.
 
-## Reserved lifecycle forms
+## Reserved and staged forms
 
-These paths are reserved but not initial surface:
+These paths are reserved but unavailable until their receiving plans activate them:
 
 ```text
+ki acquire
+ki acquire chatgpt import <capture-directory> --output <kep-directory> [--dry-run] [--json]
 ki repo doctor
 ki user doctor
 ki repo uninstall
@@ -104,7 +115,7 @@ ki user uninstall
 
 The parser must not implement, list, or complete them until their receiving plan activates them. Before activation, a reserved path writes `ki: error: <path> is not available in this release` to standard error, exits `2`, and performs no discovery or dispatch.
 
-Unscoped `ki doctor` and `ki uninstall` are permanently invalid. No compatibility alias may infer `repo` or `user`.
+Root `ki doctor` is the explicit seed command above. Unscoped `ki uninstall` is permanently invalid. No compatibility alias may infer `repo` or `user`.
 
 ## Dispatch and trust boundaries
 

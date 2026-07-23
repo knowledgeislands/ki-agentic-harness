@@ -11,8 +11,8 @@ Implement the Knowledge Islands command-line interface (CLI), invoked as `ki`, a
 ## Locked decisions
 
 - The executable is `bin/ki`, one Bash 3.2-compatible executable modelled on `tools-mgit`. HELP, version, completion, and parsing require no package manager or language runtime.
-- The initial lifecycle surface is `user install`; repository `bootstrap`, `educate`, `audit`, `conform`, and `clean`; HELP; version; and Bash/Zsh completion.
-- DOCTOR and UNINSTALL are reserved and absent. An unscoped form is never valid.
+- The seed surface is HELP, version, Bash/Zsh completion, and root `ki doctor`. Doctor writes its fixed coming-soon response, exits successfully, and performs no inspection or mutation.
+- `ki acquire chatgpt import` is the first substantive command after the seed. The `user` and `repo` lifecycle groups follow in later releases. Scope-specific doctor and uninstall forms remain reserved; unscoped `ki uninstall` is never valid.
 - The CLI dispatches public operations and repository-local generated commands. It contains no lifecycle ownership logic and reaches no harness-internal or maintainer entrypoint.
 - Each release embeds one compatible `ki-agentic-harness` commit SHA. A user may override it only on temporary-source leaves that publish `--ref`.
 - The CLI preserves child streams and exit status. Its parser returns `2`; its preflight and transport failures return `1`.
@@ -41,19 +41,29 @@ Declare `[ki-repo]` and keyless `[ki-tools]`. Preserve the executable bit on `bi
 
 ## Ordered implementation units
 
-### Unit 1 — parser, HELP, version, and completion
+### Unit 1 — seed parser, HELP, version, completion, and doctor
 
 **Recommended tier:** haiku.
 
-1. Implement a two-level parser for `user install`, each initial `repo` leaf, `help`, and `completion` without prefix matching.
-2. Validate command-specific options before repository discovery, dependency checks, network calls, or child processes.
+1. Implement a parser for root HELP, `doctor`, version, and completion without prefix matching.
+2. Validate the seed grammar before any filesystem, repository, network, environment, or child-process access.
 3. Derive parser, help, and completion from one available-command definition.
 4. Implement `--version` as `ki X.Y.Z` from one marker checked against the release tag.
-5. Generate Bash and Zsh completion from that same definition, omitting reserved commands.
+5. Generate Bash and Zsh completion from that same definition, omitting acquisition and every future lifecycle command.
 
-**Definition of done:** Bats covers accepted grammar, missing/unknown/conflicting arguments, exact version shape, root/leaf help equivalence, reserved-command refusal, no prefix matching, completion parity, and no child invocation on parser failure.
+**Definition of done:** Bats covers accepted seed grammar, exact doctor output and non-interference, exact version shape, root/leaf help equivalence, reserved-command refusal, no prefix matching, completion parity, and no child invocation on parser failure.
 
-### Unit 2 — repository-local dispatch
+### Unit 2 — user-assisted ChatGPT acquisition
+
+**Recommended tier:** sonnet.
+
+Implement the `ki acquire chatgpt import` contract from the KEP v0 specification and the dedicated acquisition brief. It is a local user-prepared import only: no browser automation, API, authentication material, network access, repository discovery, knowledge extraction, or ingress.
+
+**Definition of done:** the CLI-002 plan's deterministic KEP, dry-run, validation, and source-isolation checks pass.
+
+## Deferred lifecycle implementation
+
+### Unit 3 — repository-local dispatch
 
 **Recommended tier:** sonnet.
 
@@ -64,7 +74,7 @@ Declare `[ki-repo]` and keyless `[ki-tools]`. Preserve the executable bit on `bi
 
 **Definition of done:** executable fixtures prove exact cwd/argv, byte-transparent stdout/stderr, several child statuses, signal handling, and no fallback invocation.
 
-### Unit 3 — temporary-source dispatch
+### Unit 4 — temporary-source dispatch
 
 **Recommended tier:** sonnet.
 
@@ -75,7 +85,7 @@ Declare `[ki-repo]` and keyless `[ki-tools]`. Preserve the executable bit on `bi
 
 **Definition of done:** controlled transport fixtures prove pin forwarding, pre-access ref rejection, download failure, truncated response refusal, cleanup, dry-run forwarding, scope-isolated argv, and child status preservation.
 
-### Unit 4 — installer and release integrity
+### Unit 5 — installer and release integrity
 
 **Recommended tier:** sonnet.
 
@@ -86,7 +96,7 @@ Declare `[ki-repo]` and keyless `[ki-tools]`. Preserve the executable bit on `bi
 
 **Definition of done:** fixtures cover default/custom directory, explicit version, repeat install, corrupt payload, version mismatch, missing digest utility, failed lookup, interrupted replacement, and PATH guidance. No test writes outside its temporary home.
 
-### Unit 5 — end-to-end contract matrix
+### Unit 6 — end-to-end contract matrix
 
 **Recommended tier:** sonnet.
 

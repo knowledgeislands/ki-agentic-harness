@@ -83,7 +83,7 @@ Drift in the vendored copies is caught mechanically: the audit checks ordinary c
 
 Use CLEAN when you need to remove a repository's generated governance state and rebuild it from scratch — for example, before diagnosing a bootstrap problem. It is intentionally source-owned rather than a command inside `.ki/`, because a successful clean removes that directory.
 
-> **Coming soon:** `ki`, the Knowledge Islands command-line interface (CLI), will provide the end-user command-line façade. Its first release will offer `user install`, `repo bootstrap`, `repo educate`, `repo audit`, `repo conform`, `repo clean`, HELP, version, and completion. Scope-explicit DOCTOR and UNINSTALL are reserved for later releases; unscoped forms will never be valid. `ki` is not available yet, so the source-owned operations below are the current interface.
+> **Coming soon:** `ki`, the Knowledge Islands command-line interface (CLI), will first provide HELP, version, completion, and a no-op root `ki doctor` response. The first substantive command then imports user-provided ChatGPT material into a Knowledge Export Package. Explicit user and repository lifecycle commands follow in later releases; unscoped `ki uninstall` will never be valid. Until the seed is released, the source-owned operations below are the current interface. See the [CLI guide](command-line-interface.md).
 
 Start with a dry run from the repository root. Use the path matching the runtime where you installed the harness:
 

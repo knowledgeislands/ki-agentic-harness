@@ -37,6 +37,7 @@ This is repository bootstrap: it creates that repository's governance machinery 
 | [Skills](docs/guides/user-guide/skills.md) | What a skill is, the map of the set (the six clusters and their interdependencies), and the shared governance-skill shape. |
 | [Skill catalogue](docs/guides/user-guide/skill-catalogue.md) | Every skill, one by one, grouped by cluster — what each governs and when to reach for it. |
 | [Bootstrap reference](docs/guides/user-guide/onboarding.md) | The detailed bootstrap model: remote transport, `.ki/`, day-to-day bins, fleet use, and keeping current. |
+| [Command-line interface](docs/guides/user-guide/command-line-interface.md) | The staged end-user `ki` command surface, seed release, and scope boundaries. |
 | [Recommended tools](docs/guides/user-guide/recommended-tools.md) | Optional user and system tools: chezmoi, headroom-ai, Codex skill discovery, mcporter, and claude.ai connectors. |
 | [Developer linking](docs/guides/developer/linking-skills.md) | The current local live-link workflow for harness contributors. |
 | [Prompting guides](docs/guides/prompting/README.md) | How to prompt the models we run — one guide per model (Fable 5, Opus 4.8, Sonnet 5), each with a Sources section for refresh. |
