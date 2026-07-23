@@ -1,7 +1,7 @@
 ---
 id: 'GOV-002'
 title: Create ki-repo-review as a human-led process skill
-status: acceptance
+status: done
 roadmap: governance-consistency/create-ki-repo-review-as-a-human-led-process-skill
 blocks: —
 blocked-by: —
@@ -73,3 +73,7 @@ The installer and development linker now include `ki-repo-review`, but no user-g
 ### Mini recap
 
 Review evidence is temporary support for routed durable outcomes; it is not a permanent architecture-document category. No further route is proposed.
+
+## Done
+
+Accepted on 2026-07-23. The global review process skill and retained plan record may be pruned later as an explicit batch.

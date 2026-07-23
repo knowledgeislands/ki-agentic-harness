@@ -1,7 +1,7 @@
 ---
 id: 'FND-004'
 title: Generalise native configuration-fragment bindings
-status: acceptance
+status: done
 roadmap: foundation-tooling/generalise-native-configuration-fragment-bindings
 blocks: —
 blocked-by: —
@@ -70,3 +70,7 @@ The standard is a contract and rubric, not a universal executable fixture suite;
 ### Mini recap
 
 Native lifecycle visibility is a distinct ownership requirement, not merely an implementation detail of a post-apply patch. No further route is proposed.
+
+## Done
+
+Accepted on 2026-07-23. The Pattern C standard and retained plan record may be pruned later as an explicit batch.
