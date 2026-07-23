@@ -1,7 +1,7 @@
 ---
 id: 'FND-004'
 title: Define an installed-skill registry and native repository-maintenance contract
-status: open
+status: ready
 roadmap: foundation-tooling/define-an-installed-skill-registry-and-native-repository-maintenance-contract
 blocks: —
 blocked-by: —
