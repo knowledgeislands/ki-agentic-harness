@@ -218,7 +218,7 @@ export const KI_SHAPE_12: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-12',
   title: 'governance mode vocabulary is canonical and complete',
   description:
-    '_Mode vocabulary is canonical and complete._ A governance skill exposes **AUDIT**, **CONFORM**, **EDUCATE**, **REFRESH** and **HELP** spelled exactly so — a governance skill missing any universal verb from its `argument-hint` (EDUCATE is the common gap) **WARNs**; `NEW`, `OPTIMISE`, and operational verbs are additive, never substitutes for a universal mode (a collection skill exposes both EDUCATE and NEW). The bootstrap leg is defined by the single `scripts/govern.ts` entrypoint, validated by KI-SHAPE-15. Process skills are exempt throughout.',
+    '_Mode vocabulary is canonical and complete._ A governance skill exposes **AUDIT**, **CONFORM**, **EDUCATE**, **REFRESH** and **HELP** spelled exactly so — a governance skill missing any universal verb from its `argument-hint` (EDUCATE is the common gap) **WARNs**; `NEW`, `OPTIMISE`, and operational verbs are additive, never substitutes for a universal mode (a collection skill exposes both EDUCATE and NEW). The current source-entrypoint migration invariant is validated by KI-SHAPE-15; native delivery resolves registered operations from the verified collection. Process skills are exempt throughout.',
   sources: ['ADR-KI-HARNESS-SKILLS-001', 'ADR-KI-HARNESS-SKILLS-006', 'ADR-KI-HARNESS-007'],
   mechanical: {
     level: 'WARN',
@@ -355,9 +355,9 @@ const auditKiShape15 = ({ skill }: KiShapeRubricContext): RubricOutcomes<AuditOu
 
 export const KI_SHAPE_15: RubricItem<KiShapeRubricContext> = {
   code: 'KI-SHAPE-15',
-  title: 'governed entrypoints have a uniform shape',
+  title: 'governed source entrypoints have a uniform shape',
   description:
-    '_Uniform governed-entrypoint shape._ Every vendored governance skill provides `scripts/govern.ts`, exporting programmatic `plan` and `check` functions and its CLI `main`, plus `scripts/educate.ts` for the bootstrap payload. The aggregate imports `govern.ts` directly; separate `audit.ts` and `conform.ts` entrypoints are retired. REFRESH is harness-only. Process skills and the committed repository-local `.ki/self/skill/` source are exempt.',
+    '_Uniform governed source-entrypoint shape._ During the native-operation migration, every governance skill provides `scripts/govern.ts`, exporting programmatic `plan` and `check` functions and its CLI `main`, plus `scripts/educate.ts` for source-authoring and migration fixtures. The aggregate imports `govern.ts` directly only in that legacy fixture model; it is not a repository delivery or fallback contract. Native delivery instead uses manifest-covered in-process registrations from the verified collection; separate `audit.ts` and `conform.ts` entrypoints are retired. REFRESH is harness-only. Process skills and the committed repository-local `.ki/self/skill/` source are exempt.',
   sources: ['standards.md §14', 'ADR-KI-HARNESS-007'],
   mechanical: {
     level: 'FAIL',
