@@ -27,7 +27,13 @@ The following is the target command structure and does not yet appear in `ki hel
 ```text
 ki completions <bash|zsh>
 ki doctor/dr
+ki missing
+ki outdated
+ki install <capability>
+ki reinstall <capability>
+ki uninstall <capability>
 ki update
+ki upgrade
 ki list
 ki search
 ki cleanup
@@ -35,6 +41,10 @@ ki docs
 ```
 
 `ki list` will list installed harnesses and their capabilities, including user activation and, when the current working directory resolves to a KI repository, repository activation. Its status is therefore grounded in the invocation directory. Filtering and alternative output forms are later work.
+
+`ki missing` will report declared capabilities that are absent from their selected activation scope. `ki outdated` will report installed harnesses or activated capabilities with a newer available latest release. `ki install`, `ki reinstall`, and `ki uninstall` are the future package-management forms for a named capability; their exact relationship to the explicit `ki repo skill add/remove` and `ki user skill add/remove` commands remains to be settled before implementation.
+
+`ki update` will update the `ki` executable and refresh installed harnesses to their newest verified latest releases. `ki upgrade` will apply available newer capability releases to the resolved repository context, without changing unrelated user or repository activation. Neither command exists in the seed release.
 
 ## Harness installation
 
