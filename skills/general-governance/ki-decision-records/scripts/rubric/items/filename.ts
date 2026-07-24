@@ -58,7 +58,7 @@ export const FILENAME_3: RubricItem<DecisionRecordsContext> = {
   code: 'FILENAME-3',
   title: 'Contiguous serial series',
   description:
-    'Within each prefix+scope series the serials start at `001` and are contiguous. A gap is fixed by renumbering the series and sweeping every citation of shifted codes in the same change. `XXX` pending files are exempt.',
+    'Within each prefix+scope series the ordinary-record serials start at `001` and are contiguous. A gap is fixed by renumbering the series and sweeping every citation of shifted codes in the same change. `XXX` pending files are exempt. A deliberate verbatim shared-record mirror (`shared_record: true`) is excluded only when its prefix+scope has no ordinary local records; otherwise it remains part of that local series.',
   sources: [SOURCE],
   mechanical: {
     level: 'WARN',

@@ -63,7 +63,7 @@ Carries the universal **AUDIT · CONFORM · EDUCATE · REFRESH**, plus **NEW** (
 
 - **Records are edited in place** — a DR is kept true by editing it, not by superseding it; there is no `## Changelog` and no supersession chain. A change of direction rewrites the record so it always reads as current.
 - **Scope convention** — use the island/repo identifier from `.ki-config.toml` as the primary scope segment (e.g. `ARCADIA`). Multi-level scopes are valid for sub-domain decisions (e.g. `ARCADIA-TOOLS`).
-- **Serials are per-prefix within scope** — NNN is unique for a given `<PREFIX>`+`<SCOPE>`. `GDR-ARCADIA-001` and `SDR-ARCADIA-001` are both valid; two DRs never share the same prefix+scope+serial.
+- **Serials are per-prefix within scope** — NNN is unique for a given `<PREFIX>`+`<SCOPE>`. `GDR-ARCADIA-001` and `SDR-ARCADIA-001` are both valid; two DRs never share the same prefix+scope+serial. A deliberately byte-identical cross-repository record declares `shared_record: true`; it retains its canonical ID and is excluded from a receiving collection’s local serial series only when no ordinary local record has that prefix+scope.
 - **Not every proposal needs a DR** — routine content additions, typo fixes, and minor configuration changes do not warrant one. Reserve DRs for decisions with standalone standing.
 - **All repos** require frontmatter (`id`, `title`, `date`, `status`, `type`, `type_url`, `decision_type`). KB repos use `Admin/Governance/Decisions/`; code repos use `docs/decisions/`.
 - The KI-wide frontmatter standard (universal fields and the `type` taxonomy) lives in `ki-kb`'s [standards.md](../../repo-structure/ki-kb/references/standards.md).

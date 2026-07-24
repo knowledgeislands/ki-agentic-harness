@@ -70,6 +70,7 @@ export type DecisionRecord = {
   type?: string
   typeUrl?: string
   decisionType?: string
+  sharedRecord: boolean
   headingId?: string
   headingTitle?: string
   missingSections: readonly string[]
@@ -204,6 +205,7 @@ export const createDecisionRecordsContextFactory = ({
         ...(frontmatterValue(frontmatter, 'type') ? { type: frontmatterValue(frontmatter, 'type') } : {}),
         ...(frontmatterValue(frontmatter, 'type_url') ? { typeUrl: frontmatterValue(frontmatter, 'type_url') } : {}),
         ...(frontmatterValue(frontmatter, 'decision_type') ? { decisionType: frontmatterValue(frontmatter, 'decision_type') } : {}),
+        sharedRecord: frontmatterValue(frontmatter, 'shared_record') === 'true',
         headingId: id,
         headingTitle,
         missingSections: ['## Context', '## Decision', '## Consequences'].filter((section) => !body.includes(section))
@@ -213,10 +215,13 @@ export const createDecisionRecordsContextFactory = ({
     const invalidFilenames = records.filter((record) => record.file !== record.expectedFilename).map((record) => record.file)
     const idsToFiles = new Map<string, string[]>()
     const serialsBySeries = new Map<string, number[]>()
+    const localSerialSeries = new Set(
+      records.filter((record) => record.serial !== 'XXX' && !record.sharedRecord).map((record) => `${record.prefix}-${record.scope}`)
+    )
     for (const record of records) {
       idsToFiles.set(record.id, [...(idsToFiles.get(record.id) ?? []), record.file])
-      if (record.serial !== 'XXX') {
-        const key = `${record.prefix}-${record.scope}`
+      const key = `${record.prefix}-${record.scope}`
+      if (record.serial !== 'XXX' && (!record.sharedRecord || localSerialSeries.has(key))) {
         serialsBySeries.set(key, [...(serialsBySeries.get(key) ?? []), Number(record.serial)])
       }
     }
