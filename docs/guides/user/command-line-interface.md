@@ -2,29 +2,75 @@
 
 `ki` is the end-user Knowledge Islands command-line interface (CLI). It gives a person one stable command for KI work while keeping user-environment actions and repository actions visibly separate.
 
-## Released commands
+## Command groups
+
+`[current]` means the command is implemented and appears in `ki help` and completion output. `[planned]` documents the target interface only: it is not executable yet and may change before release.
+
+### Interface and diagnostics
 
 ```text
-ki
-ki help <command>
-ki --help
-ki --version
-ki version
-ki completions <bash|zsh>
-ki doctor [--json]
-ki paths [--json]
-ki acquire chatgpt import <capture-directory> --output <kep-directory> [--dry-run] [--json]
+[current] ki
+[current] ki help <command>
+[current] ki --help
+[current] ki --version
+[current] ki version
+[current] ki completions <bash|zsh>
+[current] ki doctor [--json]
+[current] ki paths [--json]
+[planned] ki docs
+[planned] ki dr
+```
+
+### Acquisition
+
+```text
+[current] ki acquire chatgpt import <capture-directory> --output <kep-directory> [--dry-run] [--json]
+```
+
+### Harness and capability management
+
+```text
+[planned] ki list
+[planned] ki harness install <harness-id>
+[planned] ki harness uninstall <harness-id>
+[planned] ki harness list
+[planned] ki harness info <harness-id>
+[planned] ki missing
+[planned] ki outdated
+[planned] ki install <capability>
+[planned] ki reinstall <capability>
+[planned] ki uninstall <capability>
+[planned] ki update
+[planned] ki upgrade
+[planned] ki search
+[planned] ki cleanup
+```
+
+### Scoped capability activation
+
+```text
+[planned] ki repo skill add <skill>
+[planned] ki repo skill remove <skill>
+[planned] ki user skill add <skill>
+[planned] ki user skill remove <skill>
+```
+
+### Repository maintenance
+
+```text
+[planned] ki repo audit [--repo <path>] [--skill <skill>]
+[planned] ki repo conform [--repo <path>] [--skill <skill>] [--dry-run]
 ```
 
 `ki`, `ki help`, and `ki --help` render the same root HELP and exit successfully. `-h` aliases `--help`; `-V` aliases `--version`; `ki version` is equivalent to `ki --version` and prints exactly `ki X.Y.Z` followed by one newline. `ki completions` writes Bash or Zsh completion source to standard output.
 
-`ki paths` prints the invoked executable path and resolved XDG data, configuration, cache, and state paths without creating them. `ki doctor` prints the CLI version, whether it is a regular executable or a development link, and those resolved paths. `--json` on either command emits a versioned machine-readable result. They exit `0` and do not inspect or change repository state, network state, or child processes.
+`ki paths` prints the invoked executable path and resolved XDG data, configuration, cache, and state paths without creating them. `ki doctor` prints the CLI version, whether it is a regular executable or a development link, and those resolved paths. `--json` on either command emits a versioned machine-readable result; `ki doctor --json` also reports the resolved repository when one is found. They exit `0` and do not change repository state, network state, or child processes.
 
 > [!NOTE] `ki doctor` establishes only the local CLI and XDG baseline. Harness health, capability activation, and repository diagnostics are planned work.
 
-## Planned general commands
+## General commands [planned]
 
-The following is the target command structure and does not yet appear in `ki help`, completion, or the released man page:
+The following target commands do not yet appear in `ki help` or completion output, but are shown as `[planned]` in the `ki(1)` command map:
 
 ```text
 ki dr
