@@ -10,7 +10,7 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-- [Foundation Tooling: Define an installed-skill registry and native repository-maintenance contract](docs/roadmap/foundation-tooling/ROADMAP.md#define-an-installed-skill-registry-and-native-repository-maintenance-contract)
+- [Foundation Tooling: Define compatible harness registration and native repository-maintenance boundaries](docs/roadmap/foundation-tooling/ROADMAP.md#define-compatible-harness-registration-and-native-repository-maintenance-boundaries)
 
 ## Soon
 

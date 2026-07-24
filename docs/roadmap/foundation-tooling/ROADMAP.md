@@ -12,11 +12,11 @@ Actively broken, or blocking the `Next` horizon: takes priority over everything 
 
 Scoped and ready to start — the immediate queue, picked up before anything in **Soon** or **Future**.
 
-### Define an installed-skill registry and native repository-maintenance contract
+### Define compatible harness registration and native repository-maintenance boundaries
 
-Replace the vendored repository-runner model with one verified, XDG-located installed skill collection. Define how skills register native audit and conform operations with `ki`, how `.ki-config.toml` selects them, how explicit repository and global runtime activation links work, and how existing repositories and CI migrate without a hidden fallback to vendored scripts or a nearby harness checkout.
+Replace the vendored repository-runner model with an XDG-registered set of compatible harnesses. Define the harness identity and skill-resolution boundary, `ki`'s native operation host boundary, explicit repository and user activation, physical repository resolution, and migration without a hidden fallback to vendored scripts or a nearby checkout. Keep `tools-ki` responsible for the CLI platform and KI Specifications responsible for portable contracts.
 
-**Plan:** [FND-004](plans/FND-004-define-installed-skill-registry.md)
+**Plan:** [FND-004](plans/FND-004-define-compatible-harness-registration.md)
 
 ## Soon
 
