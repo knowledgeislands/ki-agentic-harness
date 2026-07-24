@@ -4,6 +4,8 @@ _On-demand procedure for `ki-plan`'s sub-commands. The preflight, invocation, an
 
 Split the argument on the first space to get **sub-command** and **rest**. The lifecycle verbs are `ready`, `execute`, `accept`, `done`, `prune`, `new`, `promote`, and `status`. `ready` and `execute` parse `rest` as one or more whitespace-separated canonical plan identifiers; every other identifier-taking verb accepts exactly one.
 
+A coherent batch of related plan edits may share one explicit-path commit, including a batch status transition, the same correction across several plans, or a selected prune batch. Keep unrelated plan work in separate commits.
+
 ## Contents
 
 - [`accept <THEME>-<NNN>`](#accept-theme-nnn)

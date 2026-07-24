@@ -82,6 +82,8 @@ A ready plan has concrete Steps, a checkable Verify section, an honest Current s
 
 `ready` and the initial `execute` transition may operate on one or more explicitly named plans. A batch uses one explicit approval or coordinated start, validates every selected plan and dependency before any write, then publishes all selected status changes atomically in one commit. A failed eligibility, snapshot, or publication leaves the batch unchanged; single-plan transitions are the batch-of-one case. `ki-plan` owns the detailed procedure.
 
+One explicit-path commit may include any coherent batch of related plan changes, including status transitions, the same correction applied to several plans, or a selected prune batch. Split unrelated plan work into separate commits so each history entry remains reviewable and recoverable.
+
 ### Local plan references
 
 An active or retained done plan has one inverse reference in the canonical item named by its `roadmap:` locator. The reference is the final, standalone line in that item's content, immediately before the next item or horizon:
