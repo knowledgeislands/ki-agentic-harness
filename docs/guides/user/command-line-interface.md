@@ -19,35 +19,61 @@ ki doctor
 
 > [!NOTE] Knowledge Islands diagnostics are coming soon. This command currently performs no checks and changes nothing.
 
-## Skill installation and activation
+## Harness installation
 
-The planned `ki skill ...` group will install a verified skill collection once for a user, then explicitly activate named skills in either global or repository scope:
+The planned `ki harness ...` group manages the verified, user-installed set of KI-compatible harnesses:
 
 ```text
-ki skill install
-ki skill add <skill> --scope global
-ki skill add <skill> --scope repo
+ki harness install <harness-id>
+ki harness uninstall <harness-id>
 ```
 
-- `ki skill install` will acquire or atomically replace the single verified collection in the user's XDG data location. It does not activate skills or write repository state.
-- `ki skill add <skill> --scope global` will create managed discovery links for that installed skill in the selected user runtime only.
-- `ki skill add <skill> --scope repo` will declare that installed skill in the selected repository's `.ki-config.toml` and create its managed project-runtime discovery links only.
+A harness identifier is a stable, qualified name such as `knowledgeislands/ki-agentic-harness` or `hnr/hnr-harness`. `ki harness install` will resolve that name only through the reviewed immutable release evidence in `$XDG_CONFIG_HOME/ki/harnesses.toml`, verify the release, and atomically install it into the user's XDG data area. It never accepts a floating branch, arbitrary URL, local path, or nearby checkout as a substitute.
 
-Installing a collection does not activate every skill globally. These commands are planned; `ki repo audit` and `ki repo conform` will resolve declared skills from that collection rather than copied repository checkers.
+`knowledgeislands/ki-agentic-harness` is the mandatory base harness. `ki` ensures it is installed, and refuses to uninstall it. Additional harnesses make their registered skills available for explicit activation; installing a harness does not activate every skill in it.
+
+## Skill activation
+
+The planned skill commands make the activation scope explicit:
+
+```text
+ki repo skill add <skill>
+ki repo skill remove <skill>
+ki user skill add <skill>
+ki user skill remove <skill>
+```
+
+A fully qualified skill name is `<harness-id>:<skill-name>`:
+
+```text
+ki repo skill add knowledgeislands/ki-agentic-harness:ki-repo-roadmap
+ki user skill add hnr/hnr-harness:hnr-engineering
+```
+
+`<skill-name>` is the exact `name:` in the installed skill's `SKILL.md`. A bare skill name is accepted only when exactly one installed harness provides it; `ki` stores the resolved qualified name in repository configuration and refuses an ambiguous name.
+
+- `ki repo skill add` updates the selected repository's `.ki-config.toml` and creates only managed project-runtime discovery links.
+- `ki repo skill remove` removes that repository declaration and its owned project-runtime links; it does not uninstall the harness or remove user activation.
+- `ki user skill add` creates only managed discovery links in the selected user runtime.
+- `ki user skill remove` removes only those owned user-runtime links.
+
+Every activation first requires a valid installed harness and a registered matching skill. It fails with recovery guidance instead of downloading or replacing a harness automatically. These commands are planned; [FND-004](../../roadmap/foundation-tooling/plans/FND-004-define-installed-skill-registry.md) defines their native-operation boundary.
 
 ## Repository maintenance commands
+
+Every planned `ki repo` command accepts `--repo <path>`. With that option, `<path>` must resolve physically to the repository base and directly contain a regular `.ki-config.toml`; `ki` does not search its ancestors. Without it, `ki` resolves the physical current working directory and then each ancestor, selecting the nearest directory that directly contains a regular `.ki-config.toml` and is the Git worktree root. It never treats the user's home directory or filesystem root as a repository candidate.
 
 The expected repository-maintenance forms are:
 
 ```text
-ki repo audit
-ki repo conform
-ki repo audit --skill ki-repo-roadmap
+ki repo audit [--repo <path>]
+ki repo conform [--repo <path>]
+ki repo audit --skill <skill> [--repo <path>]
 ```
 
-- `ki repo audit` will resolve the selected repository physically, read its `.ki-config.toml`, and run the native audit operations registered by its declared skills.
+- `ki repo audit` will resolve the selected repository, read its `.ki-config.toml`, and run the native audit operations registered by its declared skills.
 - `ki repo conform` will use the same declared-skill resolution and apply only each registered operation's safe mechanical changes.
-- `ki repo audit --skill ki-repo-roadmap` will run one declared skill's scoped audit.
+- `ki repo audit --skill <skill>` will run one declared skill's scoped audit.
 - `bun run test` remains a maintainer self-test; the public contract deliberately defines no `ki repo test` leaf.
 
 These commands are planned. They will not execute vendored `.ki/bin` wrappers or arbitrary skill scripts; the native implementation and migration contract are being defined before they enter HELP and completion.
@@ -68,7 +94,7 @@ The installer verifies the selected payload before an atomic replacement. It wri
 
 ## XDG locations
 
-`ki` uses the XDG Base Directory environment variables for user-owned data. It will use `$XDG_DATA_HOME/ki` for installed skill collections, `$XDG_CONFIG_HOME/ki` for configuration, `$XDG_CACHE_HOME/ki` for disposable downloads, and `$XDG_STATE_HOME/ki` for mutable state. The standard defaults apply when a variable is unset: `~/.local/share`, `~/.config`, `~/.cache`, and `~/.local/state` respectively. It does not define a separate KI home variable.
+`ki` uses the XDG Base Directory environment variables for user-owned data. It will use `$XDG_DATA_HOME/ki` for installed harnesses, `$XDG_CONFIG_HOME/ki/harnesses.toml` for reviewed harness release evidence, `$XDG_CACHE_HOME/ki` for disposable downloads, and `$XDG_STATE_HOME/ki` for mutable state. The standard defaults apply when a variable is unset: `~/.local/share`, `~/.config`, `~/.cache`, and `~/.local/state` respectively. It does not define a separate KI home variable.
 
 ## Help, diagnostics, and recovery
 
