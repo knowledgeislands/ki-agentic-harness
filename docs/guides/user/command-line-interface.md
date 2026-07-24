@@ -18,7 +18,7 @@ ki acquire chatgpt import <capture-directory> --output <kep-directory> [--dry-ru
 
 `ki`, `ki help`, and `ki --help` render the same root HELP and exit successfully. `-h` aliases `--help`; `-V` aliases `--version`; `ki version` is equivalent to `ki --version` and prints exactly `ki X.Y.Z` followed by one newline. `ki completions` writes Bash or Zsh completion source to standard output.
 
-`ki paths` prints the resolved XDG data, configuration, cache, and state paths without creating them. `ki doctor` prints the CLI version, whether it is a regular executable or a development link, and those resolved paths. `--json` on either command emits a versioned machine-readable result. They exit `0` and do not inspect or change repository state, network state, or child processes.
+`ki paths` prints the invoked executable path and resolved XDG data, configuration, cache, and state paths without creating them. `ki doctor` prints the CLI version, whether it is a regular executable or a development link, and those resolved paths. `--json` on either command emits a versioned machine-readable result. They exit `0` and do not inspect or change repository state, network state, or child processes.
 
 > [!NOTE] `ki doctor` establishes only the local CLI and XDG baseline. Harness health, capability activation, and repository diagnostics are planned work.
 
