@@ -9,16 +9,17 @@ ki
 ki help <command>
 ki --help
 ki --version
+ki version
 ki completion <bash|zsh>
 ki completions <bash|zsh>
-ki doctor
-ki paths
+ki doctor [--json]
+ki paths [--json]
 ki acquire chatgpt import <capture-directory> --output <kep-directory> [--dry-run] [--json]
 ```
 
-`ki`, `ki help`, and `ki --help` render the same root HELP and exit successfully. `-h` aliases `--help`; `-V` aliases `--version`. `ki --version` prints exactly `ki X.Y.Z` followed by one newline. `ki completion` and `ki completions` are equivalent. Bash and Zsh completion write only completion source to standard output.
+`ki`, `ki help`, and `ki --help` render the same root HELP and exit successfully. `-h` aliases `--help`; `-V` aliases `--version`; `ki version` is equivalent to `ki --version` and prints exactly `ki X.Y.Z` followed by one newline. `ki completion` and `ki completions` are equivalent. Bash and Zsh completion write only completion source to standard output.
 
-`ki paths` prints the resolved XDG data, configuration, cache, and state paths without creating them. `ki doctor` prints the CLI version, whether it is a regular executable or a development link, and those resolved paths. It exits `0` and does not inspect or change repository state, network state, or child processes.
+`ki paths` prints the resolved XDG data, configuration, cache, and state paths without creating them. `ki doctor` prints the CLI version, whether it is a regular executable or a development link, and those resolved paths. `--json` on either command emits a versioned machine-readable result. They exit `0` and do not inspect or change repository state, network state, or child processes.
 
 > [!NOTE] `ki doctor` establishes only the local CLI and XDG baseline. Harness health, capability activation, and repository diagnostics are planned work.
 
@@ -129,7 +130,7 @@ The command imports only locally user-provided capture material into a determini
 
 The installer places the executable in a user command directory. Its default is `~/.local/bin`; set `KI_CLI_INSTALL_DIR` to choose another directory. `KI_CLI_VERSION` selects a tagged release instead of the installer's default stable version.
 
-The installer verifies the selected payload before an atomic replacement. It writes only under the selected command directory. If that directory is not on `PATH`, it names the installed path and gives the exact directory to add; it does not edit shell profiles or environment configuration.
+The installer verifies the selected payload before an atomic replacement. It installs the executable under the selected command directory and `ki(1)` under `$KI_MAN_INSTALL_DIR` or the corresponding sibling `share/man/man1` directory. If the command directory is not on `PATH`, it names the installed path and gives the exact directory to add; it does not edit shell profiles or environment configuration.
 
 ## XDG locations
 
