@@ -7,6 +7,7 @@ The **judgment-layer** rules for the markdown we write across Knowledge Islands 
 - [What to leave to the linter](#what-to-leave-to-the-linter)
 - [Tables and footnotes](#tables-and-footnotes)
 - [Links](#links)
+- [Callouts](#callouts)
 - [Code blocks](#code-blocks)
 
 ## What to leave to the linter
@@ -84,6 +85,20 @@ Learned applying this; bake them in:
 - **Write descriptive link text** — the words you'd skim for, not "click here" or a bare URL. `[the repo standard](…)`, not `[here](…)`.
 - **Refer to another skill by its `name`**, never by a file path — "the `ki-kb` skill" — because a skill's location on disk is not stable, but its name is how it loads into the session.
 - **In editor / IDE contexts** where the harness asks for clickable references, link files and lines with relative markdown links (`[file.ts:42](src/file.ts#L42)`) rather than bare backtick paths, so the reference is navigable.
+
+## Callouts
+
+Use a GitHub alert only when a short, contextual aside needs to remain visually distinct from the surrounding prose.
+
+Write the alert in the exact GitHub form: `> [!NOTE] Message`. The supported labels are `NOTE`, `TIP`, `IMPORTANT`, `WARNING`, and `CAUTION`; choose the least severe label that accurately signals the consequence.
+
+Do not use a callout for ordinary explanatory prose, a required procedural step, or a heading substitute. Keep it concise, use no custom title, and state the action or consequence directly. For example:
+
+```markdown
+> [!NOTE] Knowledge Islands diagnostics are coming soon. This command currently performs no checks and changes nothing.
+```
+
+GitHub alerts are an intentional GitHub-flavoured Markdown extension. Use ordinary prose when the rendered target does not support them.
 
 ## Code blocks
 

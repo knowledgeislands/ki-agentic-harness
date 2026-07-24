@@ -85,4 +85,13 @@ export const MD_CELL_PROSE: RubricItem<AuthoringRubricContext> = {
   judgment: { prompt: 'Do table cells avoid long descriptive prose?' }
 }
 
-export const MARKDOWN = [MD_MECH, MD_TABLE, MD_FOOTNOTE, MD_LINK, MD_CELL_PROSE] as const
+export const MD_CALLOUT: RubricItem<AuthoringRubricContext> = {
+  code: 'MD-callout',
+  title: 'callouts use a supported GitHub alert deliberately',
+  description:
+    'A callout uses the concise GitHub alert form with one supported label (`NOTE`, `TIP`, `IMPORTANT`, `WARNING`, or `CAUTION`) and only for a contextual aside, not ordinary prose or a required instruction.',
+  sources: ['standards/markdown.md'],
+  judgment: { prompt: 'Are callouts supported GitHub alerts, concise, and reserved for genuine contextual asides?' }
+}
+
+export const MARKDOWN = [MD_MECH, MD_TABLE, MD_FOOTNOTE, MD_LINK, MD_CELL_PROSE, MD_CALLOUT] as const

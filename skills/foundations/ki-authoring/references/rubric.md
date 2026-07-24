@@ -21,6 +21,8 @@ The mechanical Markdown gate and reviewer-applied Markdown conventions.
   - _Review prompt:_ Are the links descriptive, relative Markdown links where this convention applies?
 - **MD-cell-prose [J] — tables avoid descriptive prose in cells** — Tables avoid long descriptive prose in cells — that is the footnote’s job. (standards/markdown.md)
   - _Review prompt:_ Do table cells avoid long descriptive prose?
+- **MD-callout [J] — callouts use a supported GitHub alert deliberately** — A callout uses the concise GitHub alert form with one supported label (`NOTE`, `TIP`, `IMPORTANT`, `WARNING`, or `CAUTION`) and only for a contextual aside, not ordinary prose or a required instruction. (standards/markdown.md)
+  - _Review prompt:_ Are callouts supported GitHub alerts, concise, and reserved for genuine contextual asides?
 
 ## OWN — owned authoring configuration
 
