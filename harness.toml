@@ -1,0 +1,296 @@
+schema = 1
+id = "knowledgeislands/ki-agentic-harness"
+latest = "2026.07.24"
+ki = ">=0.2.0"
+
+[source]
+repository = "https://github.com/knowledgeislands/ki-agentic-harness"
+revision = "f73bfb2c1c3acfea5bb9c3f53e34c0918165a1ab"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-binding"
+source = "skills/environment/ki-binding"
+
+[[capabilities.files]]
+path = "skills/environment/ki-binding/SKILL.md"
+sha256 = "3baca1be08250dedc4b56d3c575f3eac1ab74cdec128a6047da19b108fe407d1"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-housekeeping"
+source = "skills/environment/ki-housekeeping"
+
+[[capabilities.files]]
+path = "skills/environment/ki-housekeeping/SKILL.md"
+sha256 = "07ad02e3ada037205f6da5e8eacd0e0849fe0705ff6280147dd94d51501dd2ae"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-tokenomics"
+source = "skills/environment/ki-tokenomics"
+
+[[capabilities.files]]
+path = "skills/environment/ki-tokenomics/SKILL.md"
+sha256 = "afb122e1503865a84da111ddb76632c335aed4770fc81489b378cb1c379b3721"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-authoring"
+source = "skills/foundations/ki-authoring"
+
+[[capabilities.files]]
+path = "skills/foundations/ki-authoring/SKILL.md"
+sha256 = "719b39dfab24650bd109da17e1036e0d976bedc472cd747c91abc0d788319bd2"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-engineering"
+source = "skills/foundations/ki-engineering"
+
+[[capabilities.files]]
+path = "skills/foundations/ki-engineering/SKILL.md"
+sha256 = "9dd7eda1c047dff4318d061cca56e0d60df8e16642b145e7e6bd964f1324e176"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-agents"
+source = "skills/general-governance/ki-agents"
+
+[[capabilities.files]]
+path = "skills/general-governance/ki-agents/SKILL.md"
+sha256 = "8be6e5cfe4d50bde8ffbcaa62509e5274e68668123b69d839797da450ab3728b"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-decision-records"
+source = "skills/general-governance/ki-decision-records"
+
+[[capabilities.files]]
+path = "skills/general-governance/ki-decision-records/SKILL.md"
+sha256 = "8bfa006c3af3819d2265f2da09a4912fa67588d155a2c5ec117ef9041db9a50a"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-feature-definitions"
+source = "skills/general-governance/ki-feature-definitions"
+
+[[capabilities.files]]
+path = "skills/general-governance/ki-feature-definitions/SKILL.md"
+sha256 = "cafbf92078c8303fe3705c76d52cd855458699aa8d6b55050d1bb261fed8023c"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-handoffs"
+source = "skills/general-governance/ki-handoffs"
+
+[[capabilities.files]]
+path = "skills/general-governance/ki-handoffs/SKILL.md"
+sha256 = "3651c591697baffe5ea33d981322d0cb06c18fee02a278067395f765f3687c41"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-repo-roadmap"
+source = "skills/general-governance/ki-repo-roadmap"
+
+[[capabilities.files]]
+path = "skills/general-governance/ki-repo-roadmap/SKILL.md"
+sha256 = "3c938ca5939823f8909359c5b78c23391247ae28e10bcdb0bcb41fda289e60f0"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-binding-chezmoi"
+source = "skills/implied-families/ki-binding-chezmoi"
+
+[[capabilities.files]]
+path = "skills/implied-families/ki-binding-chezmoi/SKILL.md"
+sha256 = "9695bf80f012dd21a42f6d315ae832c94493c978b9aa63ace9cb0ac5e3a3a145"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-kb-activities"
+source = "skills/implied-families/ki-kb-activities"
+
+[[capabilities.files]]
+path = "skills/implied-families/ki-kb-activities/SKILL.md"
+sha256 = "9f7007f3d1190f00041b8662a65b2cc43f57a60e1f2a86ed44674521f89baeeb"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-kb-live-artifacts"
+source = "skills/implied-families/ki-kb-live-artifacts"
+
+[[capabilities.files]]
+path = "skills/implied-families/ki-kb-live-artifacts/SKILL.md"
+sha256 = "bbcadce19ffec20706e4dae49a8bee4e362e69ac73df29cb7ed2cbc5a7cad33b"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-kb-streams"
+source = "skills/implied-families/ki-kb-streams"
+
+[[capabilities.files]]
+path = "skills/implied-families/ki-kb-streams/SKILL.md"
+sha256 = "e404c4c74dcd3703b91c9c909051b9e537ddeadbc6a0baf9e638cbf705927eec"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-website-cloudflare"
+source = "skills/implied-families/ki-website-cloudflare"
+
+[[capabilities.files]]
+path = "skills/implied-families/ki-website-cloudflare/SKILL.md"
+sha256 = "518db4f627d550701839dd10ca17caf19d5d32e3e4d791651dc0db5a7dad477a"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-bootstrap"
+source = "skills/keystone/ki-bootstrap"
+
+[[capabilities.files]]
+path = "skills/keystone/ki-bootstrap/SKILL.md"
+sha256 = "d9dfaa354bd6cf605a6ed972bdedf8bb41f561ea99106049f8fb054ee89ec6bd"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-repo"
+source = "skills/keystone/ki-repo"
+
+[[capabilities.files]]
+path = "skills/keystone/ki-repo/SKILL.md"
+sha256 = "1375e80780fd4178e57e5d3ccaf8660bff2e53cca47be283895937cee412a3c5"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-skills"
+source = "skills/keystone/ki-skills"
+
+[[capabilities.files]]
+path = "skills/keystone/ki-skills/SKILL.md"
+sha256 = "1eb76fea6cc61574b6085704563438d089e371183cd9494d669c96c48703eae3"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-delegate"
+source = "skills/process/ki-delegate"
+
+[[capabilities.files]]
+path = "skills/process/ki-delegate/SKILL.md"
+sha256 = "1b1f42e83b460637fac9947f19e67bd6d0023133d851029a8763559d3000d399"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-next"
+source = "skills/process/ki-next"
+
+[[capabilities.files]]
+path = "skills/process/ki-next/SKILL.md"
+sha256 = "f94aea84ed261671a36542758bde8ff7bb4bdbb27f992e950e1091afb077b917"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-plan"
+source = "skills/process/ki-plan"
+
+[[capabilities.files]]
+path = "skills/process/ki-plan/SKILL.md"
+sha256 = "901fb377ac1e1e73c7d91992652ea8b3a780c3be5375d2ce246177fcbc0d9ae7"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-recap"
+source = "skills/process/ki-recap"
+
+[[capabilities.files]]
+path = "skills/process/ki-recap/SKILL.md"
+sha256 = "48cc45ed54b89df78eedc25566f2d8f81589191a50f1dc901ce15b2834d7e123"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-repo-review"
+source = "skills/process/ki-repo-review"
+
+[[capabilities.files]]
+path = "skills/process/ki-repo-review/SKILL.md"
+sha256 = "1b68f33602d3ebdfc5b19f6d4e924c3b476b451fa25b359908e683036a039127"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-dotfiles-chezmoi"
+source = "skills/repo-structure/ki-dotfiles-chezmoi"
+
+[[capabilities.files]]
+path = "skills/repo-structure/ki-dotfiles-chezmoi/SKILL.md"
+sha256 = "f2ff180299caee1e142045bf65e19c10c1d35753d4c3a49c096404955df05ece"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-harness"
+source = "skills/repo-structure/ki-harness"
+
+[[capabilities.files]]
+path = "skills/repo-structure/ki-harness/SKILL.md"
+sha256 = "1b3bef89df0c48fc8e2dbdc1851660dc321f5e758a181aeea8433ebc7ce1dffe"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-homebrew-tap"
+source = "skills/repo-structure/ki-homebrew-tap"
+
+[[capabilities.files]]
+path = "skills/repo-structure/ki-homebrew-tap/SKILL.md"
+sha256 = "a587b73e83201ea2d3147598880367cc5ea93ed589fe0ef8864d592d38edb0e8"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-kb"
+source = "skills/repo-structure/ki-kb"
+
+[[capabilities.files]]
+path = "skills/repo-structure/ki-kb/SKILL.md"
+sha256 = "863f80c0a2939fbe5a3303552b5cb04db0a8889061c0bbf7998327665f17ddca"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-mcp"
+source = "skills/repo-structure/ki-mcp"
+
+[[capabilities.files]]
+path = "skills/repo-structure/ki-mcp/SKILL.md"
+sha256 = "72d935d5d8892c322b3b20bf3b894baf5c460578eefe312e0a7d2d1c9904dc16"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-plugins"
+source = "skills/repo-structure/ki-plugins"
+
+[[capabilities.files]]
+path = "skills/repo-structure/ki-plugins/SKILL.md"
+sha256 = "364cc798fdde0d8d16332c7fa1e52952e8039c3b1c4d6f14f30209cc00dacd1a"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-specifications"
+source = "skills/repo-structure/ki-specifications"
+
+[[capabilities.files]]
+path = "skills/repo-structure/ki-specifications/SKILL.md"
+sha256 = "c1ca8d7847ce2672d8a74b563b8bed021cf2b71d1ccf1c8e4298be7056077ca8"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-tools"
+source = "skills/repo-structure/ki-tools"
+
+[[capabilities.files]]
+path = "skills/repo-structure/ki-tools/SKILL.md"
+sha256 = "802c255872e2ff2a49c1334cf93d45c163b1647c12d5a16abc7cd2c94767269c"
+
+[[capabilities]]
+kind = "skill"
+name = "ki-website"
+source = "skills/repo-structure/ki-website"
+
+[[capabilities.files]]
+path = "skills/repo-structure/ki-website/SKILL.md"
+sha256 = "7021e51fdba4fd3f0a7d09f8403bb9573d66695b34a68d0a70e32275b2b26764"
