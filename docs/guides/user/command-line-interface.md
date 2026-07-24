@@ -17,9 +17,7 @@ ki doctor
 
 `ki doctor` currently writes this message to standard output, exits `0`, and does not inspect or change files, repositories, user configuration, network state, or child processes:
 
-```text
-Knowledge Islands diagnostics are coming soon. This command currently performs no checks and changes nothing.
-```
+> [!NOTE] Knowledge Islands diagnostics are coming soon. This command currently performs no checks and changes nothing.
 
 ## Skill installation and activation
 
