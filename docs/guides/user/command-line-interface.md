@@ -4,7 +4,7 @@
 
 ## Command groups
 
-`[current]` means the command is implemented and appears in `ki help` and completion output. `[planned]` documents the target interface only: it is not executable yet and may change before release.
+`[current]` means the command is implemented and appears in `ki help` and completion output. A `*` prefix marks a planned command: it is not executable yet and may change before release.
 
 ### Interface and diagnostics
 
@@ -17,7 +17,7 @@
 [current] ki completions <bash|zsh>
 [current] ki doctor [--json]
 [current] ki paths [--json]
-[planned] ki docs
+*ki docs
 ```
 
 ### Acquisition
@@ -29,36 +29,36 @@
 ### Harness and capability management
 
 ```text
-[planned] ki list
-[planned] ki harness install <harness-id>
-[planned] ki harness uninstall <harness-id>
-[planned] ki harness list
-[planned] ki harness info <harness-id>
-[planned] ki missing
-[planned] ki outdated
-[planned] ki install <capability>
-[planned] ki reinstall <capability>
-[planned] ki uninstall <capability>
-[planned] ki update
-[planned] ki upgrade
-[planned] ki search
-[planned] ki cleanup
+*ki list
+*ki harness install <harness-id>
+*ki harness uninstall <harness-id>
+*ki harness list
+*ki harness info <harness-id>
+*ki missing
+*ki outdated
+*ki install <capability>
+*ki reinstall <capability>
+*ki uninstall <capability>
+*ki update
+*ki upgrade
+*ki search
+*ki cleanup
 ```
 
 ### Scoped capability activation
 
 ```text
-[planned] ki repo skill add <skill>
-[planned] ki repo skill remove <skill>
-[planned] ki user skill add <skill>
-[planned] ki user skill remove <skill>
+*ki repo skill add <skill>
+*ki repo skill remove <skill>
+*ki user skill add <skill>
+*ki user skill remove <skill>
 ```
 
 ### Repository maintenance
 
 ```text
-[planned] ki repo audit [--repo <path>] [--skill <skill>]
-[planned] ki repo conform [--repo <path>] [--skill <skill>] [--dry-run]
+[current] ki repo audit [--repo <path>] [--skill <skill>]
+[current] ki repo conform [--repo <path>] [--skill <skill>] [--dry-run]
 ```
 
 `ki`, `ki help`, and `ki --help` render the same root HELP and exit successfully. `-h` aliases `--help`; `-V` aliases `--version`; `ki version` is equivalent to `ki --version` and prints exactly `ki X.Y.Z` followed by one newline. `ki completions` writes Bash or Zsh completion source to standard output.
@@ -69,20 +69,20 @@
 
 ## General commands [planned]
 
-The following target commands do not yet appear in `ki help` or completion output, but are shown as `[planned]` in the `ki(1)` command map:
+The following target commands do not yet appear in `ki help` or completion output, and use the `*` prefix in the `ki(1)` command map:
 
 ```text
-ki missing
-ki outdated
-ki install <capability>
-ki reinstall <capability>
-ki uninstall <capability>
-ki update
-ki upgrade
-ki list
-ki search
-ki cleanup
-ki docs
+*ki missing
+*ki outdated
+*ki install <capability>
+*ki reinstall <capability>
+*ki uninstall <capability>
+*ki update
+*ki upgrade
+*ki list
+*ki search
+*ki cleanup
+*ki docs
 ```
 
 `ki list` will list installed harnesses and their capabilities, including user activation and, when the current working directory resolves to a KI repository, repository activation. Its status is therefore grounded in the invocation directory. Filtering and alternative output forms are later work.
@@ -96,10 +96,10 @@ ki docs
 The planned `ki harness ...` group manages the verified, user-installed set of KI-compatible harnesses:
 
 ```text
-ki harness install <harness-id>
-ki harness uninstall <harness-id>
-ki harness list
-ki harness info <harness-id>
+*ki harness install <harness-id>
+*ki harness uninstall <harness-id>
+*ki harness list
+*ki harness info <harness-id>
 ```
 
 A harness identifier is a stable, qualified name such as `knowledgeislands/ki-agentic-harness` or `hnr/hnr-harness`. `ki harness install` will resolve that name only through the reviewed immutable release evidence in `$XDG_CONFIG_HOME/ki/harnesses.toml`, verify the release, and atomically install it into the user's XDG data area. It never accepts a floating branch, arbitrary URL, local path, or nearby checkout as a substitute.
@@ -115,17 +115,17 @@ The initial model treats each installed harness as `latest`; there is no user-se
 The planned skill commands make the activation scope explicit:
 
 ```text
-ki repo skill add <skill>
-ki repo skill remove <skill>
-ki user skill add <skill>
-ki user skill remove <skill>
+*ki repo skill add <skill>
+*ki repo skill remove <skill>
+*ki user skill add <skill>
+*ki user skill remove <skill>
 ```
 
 A fully qualified skill name is `<harness-id>:<skill-name>`:
 
 ```text
-ki repo skill add knowledgeislands/ki-agentic-harness:ki-repo-roadmap
-ki user skill add hnr/hnr-harness:hnr-engineering
+*ki repo skill add knowledgeislands/ki-agentic-harness:ki-repo-roadmap
+*ki user skill add hnr/hnr-harness:hnr-engineering
 ```
 
 `<skill-name>` is the exact `name:` in the installed skill's `SKILL.md`. A bare skill name is accepted only when exactly one installed harness provides it; `ki` stores the resolved qualified name in repository configuration and refuses an ambiguous name.
@@ -143,9 +143,9 @@ These commands are planned; [FND-004](../../roadmap/foundation-tooling/plans/FND
 
 ## Repository maintenance commands
 
-Every planned `ki repo` command accepts `--repo <path>`. With that option, `<path>` must resolve physically to the repository base and directly contain a regular `.ki-config.toml`; `ki` does not search its ancestors. Without it, `ki` resolves the physical current working directory and then each ancestor, selecting the nearest directory that directly contains a regular `.ki-config.toml` and is the Git worktree root. It never treats the user's home directory or filesystem root as a repository candidate.
+Each `ki repo` command accepts `--repo <path>`. With that option, `<path>` must resolve physically to the repository base and directly contain a regular `.ki-config.toml`; `ki` does not search its ancestors. Without it, `ki` resolves the physical current working directory and then each ancestor, selecting the nearest directory that directly contains a regular `.ki-config.toml` and is the Git worktree root. It never treats the user's home directory or filesystem root as a repository candidate.
 
-The expected repository-maintenance forms are:
+The available repository-maintenance forms are:
 
 ```text
 ki repo audit [--repo <path>]
@@ -153,12 +153,12 @@ ki repo conform [--repo <path>]
 ki repo audit --skill <skill> [--repo <path>]
 ```
 
-- `ki repo audit` will resolve the selected repository, read its `.ki-config.toml`, and run the native audit operations registered by its declared skills.
-- `ki repo conform` will use the same declared-skill resolution and apply only each registered operation's safe mechanical changes.
-- `ki repo audit --skill <skill>` will run one declared skill's scoped audit.
+- `ki repo audit` resolves the selected repository, reads its `.ki-config.toml`, and runs the native audit operations registered by its declared skills.
+- `ki repo conform` uses the same declared-skill resolution and applies only each registered operation's safe mechanical changes.
+- `ki repo audit --skill <skill>` runs one declared skill's scoped audit.
 - `bun run test` remains a maintainer self-test; the public contract deliberately defines no `ki repo test` leaf.
 
-These commands are planned. They will not execute vendored `.ki/bin` wrappers or arbitrary skill scripts; the native implementation and migration contract are being defined before they enter HELP and completion.
+These commands do not execute vendored `.ki/bin` wrappers or arbitrary skill scripts. They resolve only the selected repository's declared capabilities from verified installed harnesses.
 
 ## Acquisition commands
 
