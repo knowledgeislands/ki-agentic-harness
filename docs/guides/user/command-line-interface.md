@@ -10,14 +10,13 @@ ki help <command>
 ki --help
 ki --version
 ki version
-ki completion <bash|zsh>
 ki completions <bash|zsh>
 ki doctor [--json]
 ki paths [--json]
 ki acquire chatgpt import <capture-directory> --output <kep-directory> [--dry-run] [--json]
 ```
 
-`ki`, `ki help`, and `ki --help` render the same root HELP and exit successfully. `-h` aliases `--help`; `-V` aliases `--version`; `ki version` is equivalent to `ki --version` and prints exactly `ki X.Y.Z` followed by one newline. `ki completion` and `ki completions` are equivalent. Bash and Zsh completion write only completion source to standard output.
+`ki`, `ki help`, and `ki --help` render the same root HELP and exit successfully. `-h` aliases `--help`; `-V` aliases `--version`; `ki version` is equivalent to `ki --version` and prints exactly `ki X.Y.Z` followed by one newline. `ki completions` writes Bash or Zsh completion source to standard output.
 
 `ki paths` prints the resolved XDG data, configuration, cache, and state paths without creating them. `ki doctor` prints the CLI version, whether it is a regular executable or a development link, and those resolved paths. `--json` on either command emits a versioned machine-readable result. They exit `0` and do not inspect or change repository state, network state, or child processes.
 
@@ -28,8 +27,7 @@ ki acquire chatgpt import <capture-directory> --output <kep-directory> [--dry-ru
 The following is the target command structure and does not yet appear in `ki help`, completion, or the released man page:
 
 ```text
-ki completions <bash|zsh>
-ki doctor/dr
+ki dr
 ki missing
 ki outdated
 ki install <capability>
