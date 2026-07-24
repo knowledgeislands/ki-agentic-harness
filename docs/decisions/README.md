@@ -61,7 +61,7 @@ The records are living, compact, and independent. The order below is a **curated
 34. [ADR-KI-HARNESS-SKILLS-012](ADR-KI-HARNESS-SKILLS-012-local-copies-for-shared-modules.md) — local copied shared modules without cross-skill imports.
 35. [ADR-KI-HARNESS-SKILLS-013](ADR-KI-HARNESS-SKILLS-013-readable-identifier-presentation.md) — title-first human presentation with stable machine identifiers.
 36. [ODR-KI-HARNESS-001](ODR-KI-HARNESS-001-scoped-lifecycle-operations.md) — separate repository and user lifecycle operations.
-37. [ADR-KI-HARNESS-012](ADR-KI-HARNESS-012-installed-skill-collections-and-native-repository-operations.md) — installed skill collections and native repository operations.
+37. [ADR-KI-HARNESS-012](ADR-KI-HARNESS-012-compatible-harness-publication-and-native-operation-boundary.md) — compatible harness publication and the native-operation boundary.
 
 ## Template
 

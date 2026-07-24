@@ -19,14 +19,16 @@ The harness owns compatible capability semantics; `tools-ki` owns the CLI platfo
 
 The user guide records the released seed surface and the intended `ki list`, `ki harness list`, harness-qualified skill identity, XDG locations, and physical repository resolution.
 
-[ADR-KI-HARNESS-012](../../../decisions/ADR-KI-HARNESS-012-installed-skill-collections-and-native-repository-operations.md), its companion contract, and [ODR-KI-HARNESS-001](../../../decisions/ODR-KI-HARNESS-001-scoped-lifecycle-operations.md) still describe one active skill collection and CLI grammar that belongs to `tools-ki`.
+[ADR-KI-HARNESS-012](../../../decisions/ADR-KI-HARNESS-012-compatible-harness-publication-and-native-operation-boundary.md) now defines compatible-harness publication, identity, operations, and projection semantics only. [ADR-KI-TOOLS-002](../../../../../tools-ki/docs/decisions/ADR-KI-TOOLS-002-compatible-harness-registry-and-native-operations.md) owns the XDG registry, command grammar, scope, and native host; [KIP-000003](../../../../../ki-specifications/proposals/KIP-000003-compatible-harnesses/README.md) is the Draft portable-contract proposal.
 
 The shared ecosystem GDR now establishes the five-repository ownership model. Its byte-identical mirrors and every local decision-record collection now conform to the current decision-record standard.
 
 ## Completed foundation
 
-- Defined a harness capability as a typed published member: skill, agent, MCP server, hook, eval, or future registered kind; recorded it in the shared GDR, harness guide, standard, and rubric.
-- Established managed `vendor` and `symlink` capability-projection modes without restoring retired `.ki/bin` execution.
+- Defined qualified capability identity: `<harness-id>:<skill-name>` for skills and the reserved `<harness-id>:<kind>/<name>` extension shape for other kinds.
+- Established the initial `latest` model, an XDG-managed multi-harness registry, and managed `vendor` and `symlink` capability-projection modes without restoring retired `.ki/bin` execution.
+- Reassigned CLI registry, command grammar, repository resolution, activation, native-operation host, migration, reporting, and delivery ownership to `tools-ki`, with Homebrew and Cargo serving only as boundary-setting exemplars.
+- Opened KIP-000003 to turn the proven harness publication, inventory, identity, projection, operation, and repository-resolution boundary into a future portable specification.
 - Added `shared_record: true` for deliberate verbatim governance-record mirrors. The decision-record checker includes a mirror in an existing local prefix-and-scope sequence, while excluding an otherwise foreign mirror from serial continuity.
 - Conformed and audited the decision-record collections in Arcadia Principal, the harness, `tools-ki`, KI Specifications, and the Website with no FAIL or WARN findings.
 
@@ -56,6 +58,4 @@ The shared ecosystem GDR now establishes the five-repository ownership model. It
 
 ## Dependencies / blocks
 
-This work is independent of the eventual `tools-ki` implementation plan, which remains unplanned until the user reviews the target CLI structure.
-
-The decision consolidation must complete before a native CLI implementation plan claims that its architecture is settled.
+This work establishes the architectural prerequisite for [CLI-004](../../../../../tools-ki/docs/roadmap/cli/plans/CLI-004-native-repo-maintenance.md). CLI-004 owns the implementation and release evidence; it remains independently executable once the contract is accepted.

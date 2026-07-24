@@ -14,23 +14,23 @@ decision_type: architecture
 
 The legacy repository bootstrap implementation produces an ordinary self-governance surface under `.ki/`, but a harness-shaped repository also authors a whole `skills/` tree.
 
-That tree needs two additional collection operations: one to validate and render the implication graph, and one to render generated HELP output. A checkout-dependent project linker does not belong to the public operation surface.
+That tree needs two additional harness operations: one to validate and render the implication graph, and one to render generated HELP output. A checkout-dependent project linker does not belong to the public operation surface.
 
 ## Decision
 
-When a resolved repository carries `ki-harness`, the verified active collection provides exactly two native cross-skill operations:
+When a resolved repository carries `ki-harness`, the verified base harness provides exactly two native cross-skill operations:
 
 - `skill-graph.ts` validates and renders the implication graph across the harness's `SKILL.md` files.
 - `skill-help.ts` renders a skill's HELP block and checks the generated skill index.
 
-They are collection-level operations because they range over a harness's whole skills tree rather than one governed skill's declared checker unit. The native host resolves them from the active collection; it does not copy them into `.ki/bin` or execute a repository-local fallback.
+They are harness-level operations because they range over a harness's whole skills tree rather than one governed skill's declared checker unit. The native host resolves them from the verified installed base harness; it does not copy them into `.ki/bin` or execute a repository-local fallback.
 
-The collection operation host provides neither a user installer nor a checkout-dependent runtime linker. Repository and global activation create only managed runtime discovery links, with ownership, containment, idempotence, dry-run, and refusal protections.
+The native operation host provides neither a checkout-dependent runtime linker nor a repository-vendored executor. User and repository activation create only managed runtime discovery links, with ownership, containment, idempotence, dry-run, and refusal protections.
 
 ## Consequences
 
-- An ordinary repository declares only the governance operations its coverage requires; the verified active collection supplies them at execution time.
-- A harness-shaped repository gains graph and HELP operations through that same collection, without a copied tool, generated package runner, or source checkout dependency.
+- An ordinary repository declares only the governance operations its coverage requires; verified installed compatible harnesses supply them at execution time.
+- A harness-shaped repository gains graph and HELP operations through the verified base harness, without a copied tool, generated package runner, or source checkout dependency.
 - The existing vendored cross-skill tools are legacy migration state. They may be examined only by the explicit fail-closed migration operation and never serve as a native-operation fallback.
 - `sync-skills.ts` and any checkout-local renderer remain implementation details until their responsibilities are represented as registered collection operations; neither is a public repository execution entry point.
 

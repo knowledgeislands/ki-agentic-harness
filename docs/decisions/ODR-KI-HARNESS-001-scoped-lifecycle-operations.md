@@ -12,7 +12,7 @@ decision_type: operations
 
 ## Context
 
-The legacy EDUCATE implementation materialises a repository's declared Knowledge Islands coverage into vendored self-governance material under `.ki/` and runtime-local skill payloads. The current contract instead separates a user-installed verified collection, managed runtime discovery links, and a repository's authored declaration. The same machine can therefore have declared repository intent, managed repository activation state, and user-level collection and activation state at once.
+The legacy EDUCATE implementation materialises a repository's declared Knowledge Islands coverage into vendored self-governance material under `.ki/` and runtime-local skill payloads. The current contract instead separates verified installed harnesses, managed runtime discovery links, and a repository's authored declaration. The same machine can therefore have declared repository intent, managed repository activation state, and user-level harness and activation state at once.
 
 The terms `clean`, `uninstall`, and `doctor` describe different effects on those surfaces. Treating them as interchangeable makes a recovery command appear destructive, or lets a user-level action be mistaken for a repository-only one. A command-line interface also needs stable operation names and explicit scope before it can compose these behaviours safely.
 
@@ -21,9 +21,9 @@ The terms `clean`, `uninstall`, and `doctor` describe different effects on those
 Knowledge Islands adopts four distinct lifecycle operations.
 
 - **CLEAN** is repository-scoped only. It may remove only proven managed runtime links and legacy generated state selected by an explicit fail-closed migration. It retains the repository's declaration and authored material, leaves every user-level installation untouched, and never treats `.ki` as a native execution fallback.
-- **UNINSTALL** ends Knowledge Islands adoption at an explicitly selected scope. Repository UNINSTALL removes only KI-owned repository declaration and managed activation state; user UNINSTALL removes only KI-owned collection and user-level activation material. Neither scope implies the other.
+- **UNINSTALL** ends Knowledge Islands adoption at an explicitly selected scope. Repository UNINSTALL removes only KI-owned repository declaration and managed activation state; user UNINSTALL removes only KI-owned harness registration and user-level activation material. Neither scope implies the other.
 - **DOCTOR** is read-only at either an explicit repository or user scope. It classifies the selected state and recommends the next operation without modifying it.
-- **`ki`** is the installable Knowledge Islands command-line interface (CLI) and native operation host. `ki skill install` manages the verified user collection; `ki skill add <skill> --scope repo|global` explicitly activates one installed skill; and `ki repo audit` / `ki repo conform` run a repository's declared operations from that collection. Its syntax makes the selected scope explicit wherever both scopes exist; it does not introduce alternative lifecycle meanings or expose harness-maintainer utilities.
+- **The host** is the installable Knowledge Islands CLI and native operation host. It manages verified harness registration, explicit user or repository activation, and declared repository operations. The CLI grammar is owned by `tools-ki`; this lifecycle record requires that both scopes remain explicit where they are available and never introduces a second meaning for CLEAN, UNINSTALL, or DOCTOR.
 
 Legacy zero-install launchers and bootstrap scripts are migration inputs, not native repository-operation launchers. They do not constitute a user installation or modify user state merely by running.
 
@@ -47,7 +47,7 @@ Every lifecycle operation resolves its selected scope physically, rejects unsafe
 
 ### User scope
 
-- User UNINSTALL may remove only the verified KI collection and managed global runtime links when each has its current ownership marker and matching integrity proof.
+- User UNINSTALL may remove only verified KI harness registrations and managed user runtime links when each has its current ownership marker and matching integrity proof.
 - It may remove only the dedicated Knowledge Islands Claude hook namespace when its active pointer, current links, payload manifests, hashes, modes, and contained layout all validate. User settings and every other hook namespace remain untouched.
 - All unmarked, altered, linked, partial, unfamiliar, or concurrent user material is preserved and causes user UNINSTALL to refuse. User operations neither read nor alter repository state.
 

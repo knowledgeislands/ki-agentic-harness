@@ -1,6 +1,6 @@
 # Getting Started
 
-Knowledge Islands is moving to native `ki`-hosted repository governance. The approved model is one verified skill collection per user, with explicit skill activation and repository maintenance through `ki`.
+Knowledge Islands is moving to native `ki`-hosted repository governance. The approved model is a verified XDG-managed set of compatible harnesses, with explicit skill activation and repository maintenance through `ki`.
 
 Those native skill and repository commands are planned, not yet released. Until they appear in `ki help` and completion, use this guide to understand the destination and follow [the CLI guide](command-line-interface.md) for released command availability.
 
@@ -18,25 +18,25 @@ The installer, its selected version, and recovery guidance are described in [the
 
 The current seed release exposes its general commands and acquisition import only. It does not yet expose skill installation, activation, native repository maintenance, or migration.
 
-## 2. Install and activate skills
+## 2. Install a harness and activate skills
 
-When the native skill surface is released, install the verified collection once, then activate only the skills needed in the chosen scope:
+When the native skill surface is released, install each required verified harness, then activate only the skills needed in the chosen scope:
 
 ```text
-ki skill install
-ki skill add <skill> --scope global
-ki skill add <skill> --scope repo
+ki harness install <harness-id>
+ki user skill add <harness-id>:<skill-name>
+ki repo skill add <harness-id>:<skill-name>
 ```
 
-- `ki skill install` will acquire or atomically replace the verified collection at `$XDG_DATA_HOME/ki/skills`; it will not activate every skill or change a repository.
-- `ki skill add <skill> --scope global` will create managed discovery links for one installed skill in the selected user runtime.
-- `ki skill add <skill> --scope repo` will declare one installed skill in the selected repository's `.ki-config.toml` and create only its managed repository-runtime links.
+- `ki harness install` will acquire or atomically replace one verified harness in the XDG-managed harness set; it will not activate every capability or change a repository.
+- `ki user skill add` will create managed discovery links for one installed skill in the selected user runtime.
+- `ki repo skill add` will declare one installed skill in the selected repository's `.ki-config.toml` and create only its managed repository-runtime links.
 
 `ki` uses the standard XDG locations: data under `$XDG_DATA_HOME/ki`, configuration under `$XDG_CONFIG_HOME/ki`, disposable downloads under `$XDG_CACHE_HOME/ki`, and mutable state under `$XDG_STATE_HOME/ki`. It does not use a separate KI home variable.
 
 ## 3. Govern a repository
 
-Once the native collection and repository operations are released, a repository declares its coverage in `.ki-config.toml` and uses the selected installed skills through:
+Once the native harness and repository operations are released, a repository declares its coverage in `.ki-config.toml` and uses the selected installed skills through:
 
 ```text
 ki repo audit

@@ -5,37 +5,37 @@ ki-runtime-binding: true
 ki-shared-modules: [educator]
 ki-shared-dependencies: [ki-skills:rubric, ki-skills:checker, ki-skills:reporter, ki-skills:govern]
 description: >
-  Governs Knowledge Islands installed-skill activation and the explicit migration away from repository-vendored runners. Use when installing or activating an approved skill collection, declaring a repo's governance coverage, preparing a repository or CI for native `ki repo` operations, or safely assessing legacy `.ki/` bootstrap state. The authoritative target is one verified XDG-installed collection, explicit managed runtime activation, and native registered operations; vendored `.ki/bin` runners have no execution fallback. Triggers: "activate a KI skill", "migrate this repo from .ki", "set up KI governance", "why won't ki repo audit run", "configure KI CI". For which skills a repository should declare use `ki-repo`; for the native CLI implementation and release availability use `tools-ki`.
+  Governs Knowledge Islands compatible-harness activation and the explicit migration away from repository-vendored runners. Use when registering a harness, activating a capability, declaring a repo's governance coverage, preparing a repository or CI for native `ki repo` operations, or safely assessing legacy `.ki/` bootstrap state. The authoritative target is verified XDG-installed compatible harnesses, explicit managed runtime activation, and native registered operations; vendored `.ki/bin` runners have no execution fallback. Triggers: "activate a KI skill", "migrate this repo from .ki", "set up KI governance", "why won't ki repo audit run", "configure KI CI". For which skills a repository should declare use `ki-repo`; for the native CLI implementation and release availability use `tools-ki`.
 argument-hint: 'help | audit [path] | conform [path] | educate [target] | migrate [target] | refresh'
 ---
 
 # Knowledge Islands Bootstrap
 
-`ki-bootstrap` governs the transition to installed skill collections and native repository operations.
+`ki-bootstrap` governs the transition to installed compatible harnesses and native repository operations.
 
-Its normative contract is [ADR-KI-HARNESS-012](../../../docs/decisions/ADR-KI-HARNESS-012-installed-skill-collections-and-native-repository-operations.md) and [the bootstrap standard](references/standards.md).
+Its normative contract is [ADR-KI-HARNESS-012](../../../docs/decisions/ADR-KI-HARNESS-012-compatible-harness-publication-and-native-operation-boundary.md) and [the bootstrap standard](references/standards.md).
 
 ## Current delivery status
 
 The target surface belongs to `tools-ki` and is not yet implemented.
 
-Do not present `ki skill install`, `ki skill add`, `ki repo audit`, `ki repo conform`, or repository migration as working commands until a released `ki` version provides them.
+Do not present `ki harness install`, `ki repo skill add`, `ki user skill add`, `ki repo audit`, `ki repo conform`, or repository migration as working commands until a released `ki` version provides them.
 
 The existing bootstrap engine, `.ki/bootstrap/`, `.ki/bin/`, manifests, and source-owned lifecycle scripts are legacy implementation material.
 
-They are useful for inventorying and testing a migration, but are not a supported repository executor and must never become a fallback when the native collection or an operation is unavailable.
+They are useful for inventorying and testing a migration, but are not a supported repository executor and must never become a fallback when a verified harness or an operation is unavailable.
 
-## The installed-collection model
+## The compatible-harness model
 
-Knowledge Islands has one verified active collection for a user at `$XDG_DATA_HOME/ki/skills`.
+Knowledge Islands has a verified XDG-managed set of compatible harnesses for a user. The base `knowledgeislands/ki-agentic-harness` is always included; additional compatible harnesses are registered explicitly.
 
 The normal XDG defaults apply when a variable is unset: `~/.local/share`, `~/.config`, `~/.cache`, and `~/.local/state` for data, configuration, cache, and mutable state respectively.
 
 There is no KI-specific home variable.
 
-The installed `ki` release acquires or atomically replaces the collection from immutable release evidence it verifies.
+The installed `ki` release acquires or atomically replaces a selected harness from immutable release evidence it verifies.
 
-The active collection is authoritative for skill discovery and operation resolution; a harness checkout, a nearby source tree, and repository-local copies are not alternative sources.
+Verified installed harnesses are authoritative for capability discovery and operation resolution; a harness checkout, a nearby source tree, and repository-local copies are not alternative sources.
 
 ## Repository coverage and native operations
 
@@ -45,7 +45,7 @@ Its explicit `[ki-<skill>]` roots select the skills whose native operations may 
 
 `ki` is the operation host.
 
-Each governance skill registers compatible in-process metadata and mechanical AUDIT/CONFORM implementations, and `ki repo audit` or `ki repo conform` will resolve the physically selected repository, read its declarations, validate explicit dependencies, and run the registered operations in dependency order through one shared finding and reporting model.
+Each governance skill registers compatible in-process metadata and mechanical AUDIT/CONFORM implementations, and native repository maintenance will resolve the physically selected repository, read its declarations, validate explicit dependencies, and run the registered operations in dependency order through one shared finding and reporting model.
 
 Missing, incompatible, undeclared, or untrusted skills must fail before an operation writes.
 
@@ -53,12 +53,12 @@ Native execution never shells out to legacy `govern.ts` scripts, `.ki/bin` wrapp
 
 ## Explicit runtime activation
 
-Installing a collection does not activate every skill globally.
+Installing a harness does not activate every capability globally.
 
-The planned `ki skill add <skill> --scope repo|global` operation activates one installed skill explicitly:
+The planned `ki repo skill add <skill>` and `ki user skill add <skill>` operations activate one installed skill explicitly:
 
 - Repository scope updates only the selected repository's declaration and creates only its managed runtime-discovery links.
-- Global scope creates only the managed links in the selected user runtime.
+- User scope creates only the managed links in the selected user runtime.
 
 Runtime activation is explicit, runtime-aware, idempotent, and managed.
 
@@ -74,7 +74,7 @@ An existing `.ki/` runner or manifest is migration input only, inspected by an e
 
 Migration must prove complete ownership before removing any generated legacy state; altered, partial, unfamiliar, linked, or concurrently changed material is preserved and reported as a fail-closed blocker.
 
-The migration does not execute legacy runners, does not silently remove state, and does not infer that an installed collection is available.
+The migration does not execute legacy runners, does not silently remove state, and does not infer that a verified installed harness is available.
 
 Until that native migration operation exists, retain legacy state for assessment rather than manually deleting it or trying to recreate it from a checkout.
 
@@ -82,7 +82,7 @@ Until that native migration operation exists, retain legacy state for assessment
 
 ### Mode AUDIT — assess the declared native contract
 
-Read `.ki-config.toml`, the available installed collection, and runtime activation ownership as separate facts.
+Read `.ki-config.toml`, the available installed harnesses, and runtime activation ownership as separate facts.
 
 Once released, native `ki repo audit` is the mechanical repository audit.
 
@@ -94,7 +94,7 @@ Route coverage questions to `ki-repo`; route command availability to the install
 
 First identify the selected repository or user scope and the intended runtime.
 
-When the native surface is available, use its explicit activation and repository-conform operations only after verifying collection integrity and declared coverage.
+When the native surface is available, use its explicit activation and repository-conform operations only after verifying harness integrity and declared coverage.
 
 Do not repair native absence by creating `.ki/bin` wrappers, copying checker scripts, or linking to a harness checkout.
 
@@ -102,9 +102,9 @@ Re-audit after any safe mechanical change.
 
 ### Mode EDUCATE — establish the target model
 
-Explain the installed collection, explicit activation, declarative coverage, and native operation boundaries.
+Explain compatible harnesses, explicit activation, declarative coverage, and native operation boundaries.
 
-For a clean user, the eventual sequence is: install a verified collection, explicitly activate only needed skills, declare repository coverage, then invoke native repository operations.
+For a clean user, the eventual sequence is: install verified harnesses, explicitly activate only needed skills, declare repository coverage, then invoke native repository operations.
 
 This is a contract description, not an instruction to run unreleased commands.
 
@@ -118,7 +118,7 @@ With no mode in an interactive session, explain the same boundary before offerin
 
 Use the future explicit migration operation, never implicit bootstrap, to examine legacy `.ki/` state.
 
-It must validate the installed collection, repository declarations, runtime ownership, and every legacy removal target before it writes.
+It must validate installed harnesses, repository declarations, runtime ownership, and every legacy removal target before it writes.
 
 If any proof is missing, stop with recovery guidance and leave the legacy material untouched.
 
@@ -140,8 +140,8 @@ Read ADR-KI-HARNESS-012, [the CLI guide](../../../docs/guides/user/command-line-
 
 ## Safety boundary
 
-Never conflate a checked-out harness, an installed collection, repository declarations, or runtime discovery links.
+Never conflate a checked-out harness, installed harnesses, repository declarations, or runtime discovery links.
 
 Each has different ownership and trust evidence.
 
-When evidence is incomplete, fail closed, make no broad cleanup, and name the missing collection, declaration, ownership proof, or implementation rather than inventing a compatibility path.
+When evidence is incomplete, fail closed, make no broad cleanup, and name the missing harness, declaration, ownership proof, or implementation rather than inventing a compatibility path.

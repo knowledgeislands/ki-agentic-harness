@@ -17,7 +17,7 @@ The harness turns loose conventions into something an agent can apply and check 
 
 Each skill ships a **mechanical checker** — a script that decides the clear-cut cases deterministically, so an agent review only spends attention on the parts that genuinely need it. The result: standards live in one place as skills, and the checkers keep every repository honest against them over time, rather than the standard living in someone's head and eroding.
 
-This reflects the harness's central working principle: it serves **two kinds of agent — human and LLM** — and its work splits into **mechanical** (a deterministic operation can decide it) and **judgemental** (an agent must weigh it). The mechanical layer stands independently of an LLM: the approved model has the installed `ki` tool resolve the repository's declared skills from one verified user collection and run their registered native operations. Agent judgment — from either kind of agent — is a layer added on top of that baseline, never a requirement for it. The full statement is [ADR-KI-HARNESS-003](../../decisions/ADR-KI-HARNESS-003-mechanical-first-agent-judgment-progressively-enhances.md), as refined by [ADR-KI-HARNESS-012](../../decisions/ADR-KI-HARNESS-012-installed-skill-collections-and-native-repository-operations.md).
+This reflects the harness's central working principle: it serves **two kinds of agent — human and LLM** — and its work splits into **mechanical** (a deterministic operation can decide it) and **judgemental** (an agent must weigh it). The mechanical layer stands independently of an LLM: the approved model has the installed `ki` tool resolve the repository's declared skills from verified compatible harnesses and run their registered native operations. Agent judgment — from either kind of agent — is a layer added on top of that baseline, never a requirement for it. The full statement is [ADR-KI-HARNESS-003](../../decisions/ADR-KI-HARNESS-003-mechanical-first-agent-judgment-progressively-enhances.md), as refined by [ADR-KI-HARNESS-012](../../decisions/ADR-KI-HARNESS-012-compatible-harness-publication-and-native-operation-boundary.md).
 
 That matters because a harness does more than make agents faster. It gives people and AI systems access to accumulated knowledge, practical methods, and boundaries that help them use powerful tools well. A hammer can build a home or cause harm; the tool matters, but the education, judgment, and conditions around its use matter just as much. Used thoughtlessly, AI can deskill us and amplify poor decisions. Used deliberately, with shared knowledge and guardrails, it can help more people do capable, constructive work — and improve the quality of what we make together.
 
@@ -39,14 +39,14 @@ When a repository genuinely needs something different from the shared standard, 
 
 ## Repository and user environment
 
-The approved model has two deliberately separate scopes. **User skill installation** gives a person one verified active collection under the standard XDG data location. **Skill activation** then makes one installed skill discoverable either globally in a selected runtime or for one repository, and repository activation updates that repository's `.ki-config.toml`. Native repository operations read those declarations but do not own the user's wider runtime state. Keeping the scopes separate makes it clear what a command will change.
+The approved model has two deliberately separate scopes. **Harness installation** gives a person verified compatible harnesses under the standard XDG locations. **Skill activation** then makes one installed skill discoverable in a selected user runtime or for one repository, and repository activation updates that repository's `.ki-config.toml`. Native repository operations read those declarations but do not own the user's wider runtime state. Keeping the scopes separate makes it clear what a command will change.
 
 The planned command group is deliberately small:
 
 ```text
-ki skill install
-ki skill add <skill> --scope global
-ki skill add <skill> --scope repo
+ki harness install <harness-id>
+ki user skill add <harness-id>:<skill-name>
+ki repo skill add <harness-id>:<skill-name>
 ki repo audit
 ki repo conform
 ```
