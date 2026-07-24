@@ -25,6 +25,16 @@ source = "skills/environment/ki-housekeeping"
 path = "skills/environment/ki-housekeeping/SKILL.md"
 sha256 = "07ad02e3ada037205f6da5e8eacd0e0849fe0705ff6280147dd94d51501dd2ae"
 
+[[capabilities.files]]
+path = "operations/native-audit.ts"
+sha256 = "eecaf0e4be28a023e2a141ccb7b86f907a97002d822fe53c27d926694ac2637f"
+
+[[capabilities.operations]]
+protocol = "ki/native-operation@1"
+module = "operations/native-audit.ts"
+export = "audit"
+mode = "audit"
+
 [[capabilities]]
 kind = "skill"
 name = "ki-tokenomics"
@@ -33,6 +43,16 @@ source = "skills/environment/ki-tokenomics"
 [[capabilities.files]]
 path = "skills/environment/ki-tokenomics/SKILL.md"
 sha256 = "afb122e1503865a84da111ddb76632c335aed4770fc81489b378cb1c379b3721"
+
+[[capabilities.files]]
+path = "operations/native-audit.ts"
+sha256 = "eecaf0e4be28a023e2a141ccb7b86f907a97002d822fe53c27d926694ac2637f"
+
+[[capabilities.operations]]
+protocol = "ki/native-operation@1"
+module = "operations/native-audit.ts"
+export = "audit"
+mode = "audit"
 
 [[capabilities]]
 kind = "skill"
@@ -43,6 +63,16 @@ source = "skills/foundations/ki-authoring"
 path = "skills/foundations/ki-authoring/SKILL.md"
 sha256 = "719b39dfab24650bd109da17e1036e0d976bedc472cd747c91abc0d788319bd2"
 
+[[capabilities.files]]
+path = "operations/native-audit.ts"
+sha256 = "eecaf0e4be28a023e2a141ccb7b86f907a97002d822fe53c27d926694ac2637f"
+
+[[capabilities.operations]]
+protocol = "ki/native-operation@1"
+module = "operations/native-audit.ts"
+export = "audit"
+mode = "audit"
+
 [[capabilities]]
 kind = "skill"
 name = "ki-engineering"
@@ -51,6 +81,16 @@ source = "skills/foundations/ki-engineering"
 [[capabilities.files]]
 path = "skills/foundations/ki-engineering/SKILL.md"
 sha256 = "9dd7eda1c047dff4318d061cca56e0d60df8e16642b145e7e6bd964f1324e176"
+
+[[capabilities.files]]
+path = "operations/native-audit.ts"
+sha256 = "eecaf0e4be28a023e2a141ccb7b86f907a97002d822fe53c27d926694ac2637f"
+
+[[capabilities.operations]]
+protocol = "ki/native-operation@1"
+module = "operations/native-audit.ts"
+export = "audit"
+mode = "audit"
 
 [[capabilities]]
 kind = "skill"
@@ -61,6 +101,16 @@ source = "skills/general-governance/ki-agents"
 path = "skills/general-governance/ki-agents/SKILL.md"
 sha256 = "8be6e5cfe4d50bde8ffbcaa62509e5274e68668123b69d839797da450ab3728b"
 
+[[capabilities.files]]
+path = "operations/native-audit.ts"
+sha256 = "eecaf0e4be28a023e2a141ccb7b86f907a97002d822fe53c27d926694ac2637f"
+
+[[capabilities.operations]]
+protocol = "ki/native-operation@1"
+module = "operations/native-audit.ts"
+export = "audit"
+mode = "audit"
+
 [[capabilities]]
 kind = "skill"
 name = "ki-decision-records"
@@ -69,6 +119,16 @@ source = "skills/general-governance/ki-decision-records"
 [[capabilities.files]]
 path = "skills/general-governance/ki-decision-records/SKILL.md"
 sha256 = "8bfa006c3af3819d2265f2da09a4912fa67588d155a2c5ec117ef9041db9a50a"
+
+[[capabilities.files]]
+path = "operations/native-audit.ts"
+sha256 = "eecaf0e4be28a023e2a141ccb7b86f907a97002d822fe53c27d926694ac2637f"
+
+[[capabilities.operations]]
+protocol = "ki/native-operation@1"
+module = "operations/native-audit.ts"
+export = "audit"
+mode = "audit"
 
 [[capabilities]]
 kind = "skill"
@@ -79,6 +139,16 @@ source = "skills/general-governance/ki-feature-definitions"
 path = "skills/general-governance/ki-feature-definitions/SKILL.md"
 sha256 = "cafbf92078c8303fe3705c76d52cd855458699aa8d6b55050d1bb261fed8023c"
 
+[[capabilities.files]]
+path = "operations/native-audit.ts"
+sha256 = "eecaf0e4be28a023e2a141ccb7b86f907a97002d822fe53c27d926694ac2637f"
+
+[[capabilities.operations]]
+protocol = "ki/native-operation@1"
+module = "operations/native-audit.ts"
+export = "audit"
+mode = "audit"
+
 [[capabilities]]
 kind = "skill"
 name = "ki-handoffs"
@@ -88,6 +158,16 @@ source = "skills/general-governance/ki-handoffs"
 path = "skills/general-governance/ki-handoffs/SKILL.md"
 sha256 = "3651c591697baffe5ea33d981322d0cb06c18fee02a278067395f765f3687c41"
 
+[[capabilities.files]]
+path = "operations/native-audit.ts"
+sha256 = "eecaf0e4be28a023e2a141ccb7b86f907a97002d822fe53c27d926694ac2637f"
+
+[[capabilities.operations]]
+protocol = "ki/native-operation@1"
+module = "operations/native-audit.ts"
+export = "audit"
+mode = "audit"
+
 [[capabilities]]
 kind = "skill"
 name = "ki-repo-roadmap"
@@ -96,6 +176,16 @@ source = "skills/general-governance/ki-repo-roadmap"
 [[capabilities.files]]
 path = "skills/general-governance/ki-repo-roadmap/SKILL.md"
 sha256 = "3c938ca5939823f8909359c5b78c23391247ae28e10bcdb0bcb41fda289e60f0"
+
+[[capabilities.files]]
+path = "operations/native-audit.ts"
+sha256 = "eecaf0e4be28a023e2a141ccb7b86f907a97002d822fe53c27d926694ac2637f"
+
+[[capabilities.operations]]
+protocol = "ki/native-operation@1"
+module = "operations/native-audit.ts"
+export = "audit"
+mode = "audit"
 
 [[capabilities]]
 kind = "skill"
@@ -160,6 +250,16 @@ source = "skills/keystone/ki-repo"
 path = "skills/keystone/ki-repo/SKILL.md"
 sha256 = "1375e80780fd4178e57e5d3ccaf8660bff2e53cca47be283895937cee412a3c5"
 
+[[capabilities.files]]
+path = "operations/native-audit.ts"
+sha256 = "eecaf0e4be28a023e2a141ccb7b86f907a97002d822fe53c27d926694ac2637f"
+
+[[capabilities.operations]]
+protocol = "ki/native-operation@1"
+module = "operations/native-audit.ts"
+export = "audit"
+mode = "audit"
+
 [[capabilities]]
 kind = "skill"
 name = "ki-skills"
@@ -168,6 +268,16 @@ source = "skills/keystone/ki-skills"
 [[capabilities.files]]
 path = "skills/keystone/ki-skills/SKILL.md"
 sha256 = "1eb76fea6cc61574b6085704563438d089e371183cd9494d669c96c48703eae3"
+
+[[capabilities.files]]
+path = "operations/native-audit.ts"
+sha256 = "eecaf0e4be28a023e2a141ccb7b86f907a97002d822fe53c27d926694ac2637f"
+
+[[capabilities.operations]]
+protocol = "ki/native-operation@1"
+module = "operations/native-audit.ts"
+export = "audit"
+mode = "audit"
 
 [[capabilities]]
 kind = "skill"
@@ -231,6 +341,16 @@ source = "skills/repo-structure/ki-harness"
 [[capabilities.files]]
 path = "skills/repo-structure/ki-harness/SKILL.md"
 sha256 = "1b3bef89df0c48fc8e2dbdc1851660dc321f5e758a181aeea8433ebc7ce1dffe"
+
+[[capabilities.files]]
+path = "operations/native-audit.ts"
+sha256 = "eecaf0e4be28a023e2a141ccb7b86f907a97002d822fe53c27d926694ac2637f"
+
+[[capabilities.operations]]
+protocol = "ki/native-operation@1"
+module = "operations/native-audit.ts"
+export = "audit"
+mode = "audit"
 
 [[capabilities]]
 kind = "skill"
