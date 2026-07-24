@@ -10,15 +10,17 @@ ki help <command>
 ki --help
 ki --version
 ki completion <bash|zsh>
+ki completions <bash|zsh>
 ki doctor
+ki paths
 ki acquire chatgpt import <capture-directory> --output <kep-directory> [--dry-run] [--json]
 ```
 
-`ki`, `ki help`, and `ki --help` render the same root HELP and exit successfully. `-h` aliases `--help`; `-V` aliases `--version`. `ki --version` prints exactly `ki X.Y.Z` followed by one newline. Bash and Zsh completion write only completion source to standard output.
+`ki`, `ki help`, and `ki --help` render the same root HELP and exit successfully. `-h` aliases `--help`; `-V` aliases `--version`. `ki --version` prints exactly `ki X.Y.Z` followed by one newline. `ki completion` and `ki completions` are equivalent. Bash and Zsh completion write only completion source to standard output.
 
-`ki doctor` currently writes this message to standard output, exits `0`, and does not inspect or change files, repositories, user configuration, network state, or child processes:
+`ki paths` prints the resolved XDG data, configuration, cache, and state paths without creating them. `ki doctor` prints the CLI version, whether it is a regular executable or a development link, and those resolved paths. It exits `0` and does not inspect or change repository state, network state, or child processes.
 
-> [!NOTE] Knowledge Islands diagnostics are coming soon. This command currently performs no checks and changes nothing.
+> [!NOTE] `ki doctor` establishes only the local CLI and XDG baseline. Harness health, capability activation, and repository diagnostics are planned work.
 
 ## Planned general commands
 
