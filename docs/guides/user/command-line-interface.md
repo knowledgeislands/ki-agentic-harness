@@ -18,7 +18,6 @@
 [current] ki doctor [--json]
 [current] ki paths [--json]
 [planned] ki docs
-[planned] ki dr
 ```
 
 ### Acquisition
@@ -73,7 +72,6 @@
 The following target commands do not yet appear in `ki help` or completion output, but are shown as `[planned]` in the `ki(1)` command map:
 
 ```text
-ki dr
 ki missing
 ki outdated
 ki install <capability>
