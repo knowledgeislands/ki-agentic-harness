@@ -2,15 +2,16 @@
 
 `ki` is the end-user Knowledge Islands command-line interface (CLI). It gives a person one stable command for KI work while keeping user-environment actions and repository actions visibly separate.
 
-## General commands
+## Released commands
 
 ```text
 ki
-ki help [doctor|completion]
+ki help <command>
 ki --help
 ki --version
 ki completion <bash|zsh>
 ki doctor
+ki acquire chatgpt import <capture-directory> --output <kep-directory> [--dry-run] [--json]
 ```
 
 `ki`, `ki help`, and `ki --help` render the same root HELP and exit successfully. `-h` aliases `--help`; `-V` aliases `--version`. `ki --version` prints exactly `ki X.Y.Z` followed by one newline. Bash and Zsh completion write only completion source to standard output.
@@ -19,6 +20,22 @@ ki doctor
 
 > [!NOTE] Knowledge Islands diagnostics are coming soon. This command currently performs no checks and changes nothing.
 
+## Planned general commands
+
+The following is the target command structure and does not yet appear in `ki help`, completion, or the released man page:
+
+```text
+ki completions <bash|zsh>
+ki doctor/dr
+ki update
+ki list
+ki search
+ki cleanup
+ki docs
+```
+
+`ki list` will list installed harnesses and their capabilities, including user activation and, when the current working directory resolves to a KI repository, repository activation. Its status is therefore grounded in the invocation directory. Filtering and alternative output forms are later work.
+
 ## Harness installation
 
 The planned `ki harness ...` group manages the verified, user-installed set of KI-compatible harnesses:
@@ -26,11 +43,17 @@ The planned `ki harness ...` group manages the verified, user-installed set of K
 ```text
 ki harness install <harness-id>
 ki harness uninstall <harness-id>
+ki harness list
+ki harness info <harness-id>
 ```
 
 A harness identifier is a stable, qualified name such as `knowledgeislands/ki-agentic-harness` or `hnr/hnr-harness`. `ki harness install` will resolve that name only through the reviewed immutable release evidence in `$XDG_CONFIG_HOME/ki/harnesses.toml`, verify the release, and atomically install it into the user's XDG data area. It never accepts a floating branch, arbitrary URL, local path, or nearby checkout as a substitute.
 
 `knowledgeislands/ki-agentic-harness` is the mandatory base harness. `ki` ensures it is installed, and refuses to uninstall it. Additional harnesses make their registered skills available for explicit activation; installing a harness does not activate every skill in it.
+
+`ki harness list` is the focused harness inventory: installed identity, source evidence, capability counts and kinds, and installation health. `ki harness info <harness-id>` presents the corresponding record for one harness.
+
+The initial model treats each installed harness as `latest`; there is no user-selectable harness or capability version yet. A later versioning model will retain `latest` and add sibling installed records for each version in use, with explicit resolution and compatibility evidence.
 
 ## Skill activation
 
@@ -57,7 +80,11 @@ ki user skill add hnr/hnr-harness:hnr-engineering
 - `ki user skill add` creates only managed discovery links in the selected user runtime.
 - `ki user skill remove` removes only those owned user-runtime links.
 
-Every activation first requires a valid installed harness and a registered matching skill. It fails with recovery guidance instead of downloading or replacing a harness automatically. These commands are planned; [FND-004](../../roadmap/foundation-tooling/plans/FND-004-define-installed-skill-registry.md) defines their native-operation boundary.
+Every activation first requires a valid installed harness and a registered matching skill. It fails with recovery guidance instead of downloading or replacing a harness automatically.
+
+Capability activation will support two managed projection modes: `vendor`, a regular-file copy into the selected runtime discovery location, and `symlink`, a contained managed link to the verified installed harness. Neither mode permits the retired `.ki/bin` executor or an arbitrary checkout to become an operation source. The final command option spelling and default remain open.
+
+These commands are planned; [FND-004](../../roadmap/foundation-tooling/plans/FND-004-define-compatible-harness-registration.md) defines their native-operation boundary.
 
 ## Repository maintenance commands
 

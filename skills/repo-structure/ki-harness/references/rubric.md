@@ -6,6 +6,7 @@
 
 ## Contents
 
+- [CAP — Capability publication](#cap--capability-publication)
 - [LAY — Directory layout and files](#lay--directory-layout-and-files)
 - [CLAUDE — Root orientation](#claude--root-orientation)
 - [PKG — Package script families](#pkg--package-script-families)
@@ -13,6 +14,15 @@
 - [SKILLS — Skill directory convention](#skills--skill-directory-convention)
 - [LONG — Longevity](#long--longevity)
 - [COLL — Collision and boundary](#coll--collision-and-boundary)
+
+## CAP — Capability publication
+
+→ [standard](standards.md#capability-publication)
+
+Typed harness capability inventory and kind-specific boundaries.
+
+- **CAP-1 [J] — Capability inventory and boundaries** — Each populated harness shelf makes its typed capabilities discoverable and routes their content and runtime semantics to the owning kind standard. (standards.md#capability-publication)
+  - _Review prompt:_ Review each populated shelf: are its capabilities discoverable as a typed harness inventory, and are kind-specific semantics delegated to the appropriate standard?
 
 ## LAY — Directory layout and files
 

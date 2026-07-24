@@ -7,6 +7,7 @@ The rubric ([`rubric.md`](rubric.md)) is the line-by-line checkable form of this
 ## Contents
 
 - [What a harness is](#what-a-harness-is)
+- [§Capability publication](#capability-publication)
 - [§Layout — the five-part directory requirement](#layout--the-five-part-directory-requirement)
 - [§Skills directory — the naming convention](#skills-directory--the-naming-convention)
 - [§Harness-local source links](#harness-local-source-links)
@@ -37,6 +38,18 @@ An **agentic harness** is a single versioned git repository that co-locates the 
 The value of co-location: the five parts are versioned together, reviewed together, and installed together — rather than scattered across the bases and projects that consume them. A change to a skill and the agent that invokes it ships as one PR, not two.
 
 A harness does **not** have to host every part actively. Empty shelves (`agents/`, `mcp/`, `evals/`, `hooks/` populated only by a `README.md`) are a valid, encouraged starting state — the directory structure commits to the five-part intent even before all parts are built. A shelf is not a gap.
+
+---
+
+## §Capability publication
+
+A **harness capability** is a typed published member of a compatible harness. Skills, agents, MCP servers, hooks, and evals are capability kinds; a future kind must be registered rather than treated as an untyped directory payload.
+
+The common term establishes a harness inventory and installation boundary without replacing each kind's own standard. `ki-skills` governs skills, `ki-agents` governs agents, and the relevant sibling owns every other kind's content and runtime integration. A harness must make each populated shelf and its capabilities discoverable through its shelf documentation.
+
+An installed harness is a verified regular-file source. Native capability activation is a separate, managed runtime projection: `vendor` writes a regular-file copy and `symlink` writes a contained managed link to that installed source. Neither mode permits a repository-vendored `.ki/bin` executor or an arbitrary checkout to become an operation source. The native CLI surface remains planned until `tools-ki` releases it.
+
+The initial installed-harness selection is `latest`; user-selectable versions are deferred. A later contract may retain `latest` alongside sibling records for each version in use, with explicit compatibility and integrity evidence.
 
 ---
 

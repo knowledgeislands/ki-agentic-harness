@@ -1,5 +1,6 @@
 import { defineRubricFamily, type RubricDefinition } from '../../vendored/ki-skills/rubric.ts'
 import type { HarnessRubricContext } from '../contexts/harness.ts'
+import { CAPABILITIES } from './capabilities.ts'
 import { CLAUDE } from './claude.ts'
 import { COLLISION } from './collision.ts'
 import { CONFIG } from './config.ts'
@@ -13,6 +14,14 @@ export const KI_HARNESS_RUBRIC: RubricDefinition<HarnessRubricContext> = {
   name: 'ki-harness',
   concern: 'Knowledge Islands agentic harnesses',
   families: [
+    defineRubricFamily({
+      code: 'CAP',
+      title: 'Capability publication',
+      description: 'Typed harness capability inventory and kind-specific boundaries.',
+      standard: 'standards.md#capability-publication',
+      selectContext: context,
+      items: CAPABILITIES
+    }),
     defineRubricFamily({
       code: 'LAY',
       title: 'Directory layout and files',
