@@ -11,7 +11,7 @@ Curated patterns worth reading when authoring or auditing a Knowledge Islands MC
 
 | Source                        | URL                                         | What it covers             |
 | ----------------------------- | ------------------------------------------- | -------------------------- |
-| MCP spec — Tools (2025-11-25) | [Server → Tools][spec-tools]                | Tool shape ¤               |
+| MCP spec — Tools (2026-07-28) | [Server → Tools][spec-tools]                | Tool shape ¤               |
 | MCP spec — Security           | [Security Best Practices][spec-sec]         | Security hardening ¥       |
 | Tool Annotations (MCP blog)   | [Tool Annotations post][annotations]        | Annotation keys ※※         |
 | mcp-git-audit (in-house)      | [knowledgeislands/mcp-git-audit][git-audit] | Reference implementation ※ |
@@ -151,8 +151,8 @@ export default defineConfig({
 })
 ```
 
-[spec-tools]: https://modelcontextprotocol.io/specification/2025-11-25/server/tools
-[spec-sec]: https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices
+[spec-tools]: https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+[spec-sec]: https://modelcontextprotocol.io/specification/2026-07-28/basic/security_best_practices
 [annotations]: https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/
 [git-audit]: https://github.com/knowledgeislands/mcp-git-audit
 [gsuite]: https://github.com/knowledgeislands/mcp-gsuite

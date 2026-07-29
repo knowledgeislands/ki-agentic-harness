@@ -10,23 +10,26 @@ Two layers feed the standard: the **official MCP specification** (what every con
 
 The spec is versioned by date. Track the **latest released** version and note the current one here.
 
-| Tag       | Source                                 | Governs | Last reviewed |
-| --------- | -------------------------------------- | ------- | ------------- |
-| SPEC      | [MCP spec — versioning / latest][spec] | ※       | 2026-07-04    |
-| CHANGELOG | [2025-11-25 changelog][changelog]      | †       | 2026-07-04    |
-| TOOLS     | [Server → Tools][tools]                | ‡       | 2026-06-21    |
-| SEC       | [Security Best Practices][sec]         | §       | 2026-06-21    |
-| AUTH      | [Authorization][auth]                  | ¶       | 2026-06-21    |
+| Tag        | Source                                     | Governs | Last reviewed |
+| ---------- | ------------------------------------------ | ------- | ------------- |
+| SPEC       | [MCP spec — versioning / latest][spec]     | ※       | 2026-07-29    |
+| CHANGELOG  | [2026-07-28 changelog][changelog]          | †       | 2026-07-29    |
+| TOOLS      | [Server → Tools][tools]                    | ‡       | 2026-07-29    |
+| SEC        | [Security Best Practices][sec]             | §       | 2026-06-21    |
+| AUTH       | [Authorization][auth]                      | ¶       | 2026-07-29    |
+| DEPRECATED | [Deprecated features registry][deprecated] | ◊       | 2026-07-29    |
 
-† What changed since 2025-06-18 (tasks, tool-calling in sampling, OIDC discovery, icons, validation-error clarification).
+† What changed at 2026-07-28: stateless core (no `initialize` handshake / `Mcp-Session-Id`), `server/discover` MUST, MRTR replacing server-initiated sampling/elicitation/roots, required `resultType`, `CacheableResult`, the Roots/Sampling/Logging deprecation, JSON-Schema-2020-12 loosening, the deterministic `tools/list` SHOULD, and the RFC 9207 `iss` / `application_type` / DCR-deprecation auth changes.
 
-‡ Tool shape, `inputSchema`/`outputSchema`, `structuredContent`, annotations, `isError` vs protocol errors, tool-name charset/length, `icons`, `execution.taskSupport`.
+‡ Tool shape, `inputSchema`/`outputSchema` (2020-12, keyword-loosened), `structuredContent` (now any JSON value), annotations, `isError` vs protocol errors, tool-name charset/length, deterministic ordering, `icons`/`title`.
 
 § Confused deputy, token passthrough, SSRF, session hijacking, scope minimization, local-server compromise.
 
-¶ OAuth 2.1 framework, token audience, PKCE, dynamic client registration — relevant to the gmail / m365 auth-servers.
+¶ OAuth 2.1 framework, token audience, PKCE, client registration (CIMD preferred, DCR deprecated), RFC 9207 `iss` — relevant to the gsuite / m365 auth clients; the framework is HTTP-only and its own text says stdio transports SHOULD NOT follow it.
 
-※ Which dated revision is current (latest released: **2025-11-25**).
+※ Which dated revision is current (latest released: **2026-07-28**).
+
+◊ The registry of Deprecated features and their earliest-removal dates (Roots, Sampling, Logging, DCR, HTTP+SSE).
 
 ## Community
 
@@ -56,25 +59,36 @@ The standard is defined as the **majority shape** across the six sibling repos u
 
 ## Last review
 
-REFRESH last run **2026-07-04**. Pinned spec revision: **2025-11-25** (latest released); **2026-07-28** is still a Release Candidate (locked 2026-05-21, final publication targeted 2026-07-28 — not yet shipped as of this review, ~24 days out).
+REFRESH last run **2026-07-29**. Pinned spec revision: **2026-07-28** — now **RELEASED as Final** (published 2026-07-28, one day before this review; locked as an RC 2026-05-21, then validated for ~10 weeks). This pass executed the §12–13 + §4 re-anchor that the previous review (2026-07-04) staged as its open watch-item.
 
-**Confirmed current** — the live spec index (SPEC) still names **2025-11-25** as the authoritative dated revision, and the 2026-07-28 changelog (CHANGELOG) confirms RC-not-final status. Nothing the standard depends on (annotation-driven gate hints + untrusted-hint warning; isError Tool Execution Errors vs protocol errors; tool names 1–128 chars `[A-Za-z0-9_.-]`; `outputSchema`/`structuredContent` pairing; JSON Schema 2020-12 default; `taskSupport`/`icons`/`title` metadata; §13 auth scoped to roles no stdio repo occupies) has moved. **No change to standard §1–13 or the rubric.** TOOLS/SEC/AUTH and the Community/In-house rows were not re-fetched this pass (fixed dated artifacts, verbatim-confirmed 2026-06-21); their `last reviewed` cells are unchanged. Only SPEC and CHANGELOG were re-verified live and bumped to 2026-07-04.
+**Release confirmation (the precondition for editing the standard).** The canonical spec index (SPEC → `/specification`) now serves the `schema/2026-07-28/schema.ts` source on `main` and links every component to `/specification/2026-07-28/*`, and the maintainers' announcement ("The 2026-07-28 Specification" — "officially pushing the release button") confirms Final status. **Caveat noted for the next reviewer:** the `/specification/versioning` page's Revisions section still reads _"The current protocol version is 2025-11-25"_ — a stale line lagging the release; it is contradicted by the canonical index, the schema on `main`, the Final announcement, and downstream adopters, so it was not treated as authoritative.
 
-**New this pass** — beta SDKs for the 2026-07-28 RC are now published (Python v2, TypeScript, Go, C#), with Python v2 stable targeted 2026-07-27 alongside the spec. The final spec publication is imminent, so the staged §12–13 + §4 re-anchor below should be executed at the **first REFRESH after 2026-07-28**.
+**What was re-diffed and changed this pass** (standard §4, §12, §13; sources; exemplars — checker unchanged):
+
+- **`server/discover` is now a server MUST** (SEP-2575). Applies to stdio too (a client MAY use it as a backward-compat probe). It is provided by the `@modelcontextprotocol/sdk`, not hand-rolled — §12 now states the requirement and makes the concrete audit action "confirm the repo's pinned SDK implements it" (a 2026-07-28-capable release). Per-repo SDK-version verification is an AUDIT action against each `mcp-*` repo, out of scope for this REFRESH (the sibling repos are not vendored here).
+- **Stateless core** — no `initialize` handshake (SEP-2575), no `Mcp-Session-Id` (SEP-2567), `subscriptions/listen`, SSE-resumability removal, `CacheableResult` (`ttlMs`/`cacheScope`) on list results, required `resultType`, header routing (SEP-2549/2243). For stdio these are transport/SDK-absorbed; §12 now frames what our code still owns (the `isError` envelope; `resultType: "complete"` is SDK-stamped and we never emit `"input_required"`) versus what the SDK handles.
+- **Roots / Sampling / Logging Deprecated** (SEP-2577; 12-month window, earliest removal the first revision on/after **2027-07-28**). Confirmed our servers use **none**: they log to stderr + append-only audit files (§5) — exactly the spec's recommended stdio Logging migration — and never declare the `logging` capability, call Sampling, or expose Roots. Recorded in §12; nothing to migrate.
+- **`outputSchema` + `structuredContent` / JSON Schema 2020-12 loosened** (SEP-2106). `structuredContent` may now be any JSON value; both schemas accept any 2020-12 keywords (allowlist gone) with new `$ref`/composition bounds. Already a house **SHOULD** and already enforced by the checker (`TOOL-1`: `structuredContent`/`jsonResult` without `outputSchema` → WARN) — this closes the standing "no repo declares `outputSchema`" watch-item; it is now an ordinary AUDIT finding, not a spec-watch item.
+- **Deterministic `tools/list` order** is now an explicit spec **SHOULD** (Minor #3). Already codified in §12 and enforced by the checker — confirmed, no code change.
+- **Auth (§13)** — the released AUTH page states plainly that its framework is HTTP-only and _"Implementations using an STDIO transport SHOULD NOT follow this specification, and instead retrieve credentials from the environment."_ That anchors items 7–8 and all four 2026-07-28 auth changes as **N/A** to our stdio OAuth-client repos. Recorded per-change: RFC 9207 `iss` (SEP-2468) — a client-validate MUST inside the framework, tracked as optional defense-in-depth for the gsuite/m365 loopback flow; `application_type` (SEP-837) and credentials-keyed-by-issuer (SEP-2352) — DCR-only, and we pre-register, so N/A; DCR (RFC 7591) now formally **Deprecated** in favour of Client ID Metadata Documents — reinforces our pre-registration choice.
+
+**Sources re-fetched live this pass:** SPEC (versioning), CHANGELOG (2026-07-28), TOOLS (2026-07-28 server/tools), AUTH (2026-07-28 authorization), and the new DEPRECATED registry — all bumped to 2026-07-29 and re-pinned to the `2026-07-28` URLs. SEC (security best practices) was **not** re-fetched (stable dated artifact, verbatim-confirmed 2026-06-21); its URL is re-pinned to 2026-07-28 but its `last reviewed` cell is unchanged. Community and In-house rows were not re-fetched (the sibling repos are not accessible from this harness); their dates are unchanged.
 
 **Open watch-items:**
 
-- **Re-anchor §12–13 + §4 once 2026-07-28 is RELEASED (imminent):** stateless core (initialize/initialized handshake removed per SEP-2575, `Mcp-Session-Id` removed per SEP-2567), Roots/Sampling/Logging deprecation (SEP-2577), Multi Round-Trip Requests replacing server-initiated sampling/elicitation (SEP-2322), Tasks as an official extension (SEP-2663), the 12-month deprecation-lifecycle policy (SEP-2596); for auth repos, RFC 9207 `iss` + DCR `application_type`. Nothing breaks on 2026-07-28 for current stdio servers — it is a text-publication date, not a switch-off — but the standard's spec-facing sections should be re-diffed then.
-- Rate-limiting is a spec MUST kept lower-priority for local stdio servers (revisit if one goes remote).
-- No repo yet declares `outputSchema` for structured output.
+- **Per-repo SDK re-anchor (AUDIT action).** For each of the six `mcp-*` repos, confirm the pinned `@modelcontextprotocol/sdk` is a `2026-07-28`-capable release that implements `server/discover` on stdio, and that the `jsonResult`/`errorResult` return shapes still satisfy the SDK's `CallToolResult` type (now carrying required `resultType`). This is done against each repo, not in REFRESH.
+- **RFC 9207 `iss` defense-in-depth (gsuite/m365).** Assess whether Google / Microsoft advertise `authorization_response_iss_parameter_supported`; if so, validate the returned `iss` against the expected issuer in the loopback callback. Not yet a required house rule; the spec also signals a future SHOULD→MUST upgrade of AS `iss` inclusion.
+- Rate-limiting remains a spec-side concern (server/tools §Security: "Rate limit tool invocations") kept lower-priority for local stdio servers — revisit if one goes remote.
+- Tasks are now an official extension (`io.modelcontextprotocol/tasks`, SEP-2663) rather than experimental core — irrelevant to short-lived stdio tools; revisit if a server grows long-running operations.
 - Five proposed annotation SEPs (`unsafeOutputHint`, `secretHint`, `trustedHint`, trust/sensitivity, governance/UX) still Draft — gate's four-hint vocabulary stable, no action; watch for any landing in a released spec.
 
 (What past reviews changed in the standard / checklist / native rubric — structured output, the OAuth security invariants, tool-name charset bounds, output sanitization, the relaxed tool-name regex — is in git.)
 
 [spec]: https://modelcontextprotocol.io/specification
-[changelog]: https://modelcontextprotocol.io/specification/2025-11-25/changelog
-[tools]: https://modelcontextprotocol.io/specification/2025-11-25/server/tools
-[sec]: https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices
-[auth]: https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization
+[changelog]: https://modelcontextprotocol.io/specification/2026-07-28/changelog
+[tools]: https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+[sec]: https://modelcontextprotocol.io/specification/2026-07-28/basic/security_best_practices
+[auth]: https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+[deprecated]: https://modelcontextprotocol.io/specification/2026-07-28/deprecated
 [annotations]: https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/
 [csi]: https://www.nsa.gov/Portals/75/documents/Cybersecurity/CSI_MCP_SECURITY.pdf
