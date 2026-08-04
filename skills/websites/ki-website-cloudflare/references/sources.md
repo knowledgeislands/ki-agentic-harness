@@ -10,9 +10,9 @@ Two layers feed the standard: **Cloudflare's platform** (what Workers + Static A
 
 | Tag      | Source                                      | Governs                                                                 | Last reviewed |
 | -------- | ------------------------------------------- | ----------------------------------------------------------------------- | ------------- |
-| ASSETS   | [Workers · Static Assets][assets]           | The `assets` block and its keys †                                       | 2026-07-04    |
-| WRANGLER | [wrangler configuration][wrangler]          | `name`, `compatibility_date`, `routes`/`custom_domain`, `observability` | 2026-07-04    |
-| PAGES    | [Pages → Workers migration / status][pages] | Whether Pages remains the recommended target for static sites ‡         | 2026-07-04    |
+| ASSETS   | [Workers · Static Assets][assets]           | The `assets` block and its keys †                                       | 2026-08-03    |
+| WRANGLER | [wrangler configuration][wrangler]          | `name`, `compatibility_date`, `routes`/`custom_domain`, `observability` | 2026-08-03    |
+| PAGES    | [Pages → Workers migration / status][pages] | Whether Pages remains the recommended target for static sites ‡         | 2026-08-03    |
 
 † `directory`, `binding`, `html_handling`, `not_found_handling`.
 
@@ -24,16 +24,17 @@ The standard is self-contained; it is the source of truth for house style. Any c
 
 | Tag   | Source       | Governs                                                 | Last reviewed |
 | ----- | ------------ | ------------------------------------------------------- | ------------- |
-| BUILD | `ki-website` | The `dist/` seam this serves (referenced, not restated) | 2026-06-21    |
+| BUILD | `ki-website` | The `dist/` seam this serves (referenced, not restated) | 2026-08-03    |
 
 ## Last review
 
-REFRESH last run **2026-07-04**. Re-fetched the three Cloudflare sources live; **no drift** — every config key, default, and deploy rule the standard, rubric, and checker name is current and correctly named. Date bump on the three Authoritative rows + confirmed current.
+REFRESH last run **2026-08-03** (previous: 2026-07-04). Cloudflare documentation sites returned 403 in the scheduled proxy environment; Authoritative sources confirmed via WebSearch results and npm registry. No drift to the standard's config keys or deploy model found. Wrangler advanced to 4.118.0 within major v4 — no schema break.
 
-- **Pins:** `wrangler` `^4.x` — current release **4.106.0**, still major **v4** (Workers Sites/legacy-assets removed in v4; no schema-breaking v5, and v3 support only reaches EOL Q1 2027). Deploy model: Workers + Static Assets via `wrangler deploy` (never `wrangler pages deploy`).
-- **Static-Assets config surface (confirmed, mature):** `assets.directory` (the seam), `binding`, and the optional per-site keys with their verbatim defaults — `html_handling` defaults to `"auto-trailing-slash"`, `not_found_handling` defaults to `"none"`, `run_worker_first` defaults to `false` (all re-confirmed this run against the wrangler config reference, `dateModified` 2026-07-03). `observability.enabled` "Defaults to true for all new Workers"; `custom_domain` "Defaults to false". The standard correctly treats the three optional keys as per-site and does not require them. **New this run (immaterial to the static-only standard):** `run_worker_first` is now typed `boolean | string[]` (route-pattern globs with `!` exceptions), and an `assets_navigation_prefers_asset_serving` compatibility flag exists for `compatibility_date >= 2025-04-01` — both are Worker-present concerns, out of scope for a pure static site.
-- **Pages vs Workers:** Cloudflare still steers **new** static sites to Workers + Static Assets (new features focus on Workers; `wrangler pages` nudges to `wrangler deploy`). The migration page still does **not** call Pages "deprecated" — it frames migration as optional/low-friction (now with an AI-assisted migration prompt) and notes Workers has the "distinctly broader set of features", while the compatibility matrix retains a few Pages-only advantages (custom domains outside CF zones). The standard's "Cloudflare steers new sites to Workers + Static Assets" wording (standard §1 + SKILL.md) remains accurate; the operational rule (never `pages deploy`) is unchanged.
-- **Open watch-items:** watch for a `wrangler` major bump (v5) that changes the config schema — re-confirm only on a major bump (the `assets` surface is otherwise mature). Re-confirm the Pages↔Workers guidance hasn't reversed (it has only hardened toward Workers so far). Track whether `run_worker_first`'s route-pattern form or the `assets_navigation_prefers_asset_serving` flag ever becomes relevant to the static-only seam (currently not).
+- **Wrangler:** latest release is **4.118.0** on npm as of 2026-08-03 (up from 4.106.0 last run — patch releases within v4; no v5 schema break). Major v4 unchanged; `Workers Sites`/legacy-assets remain removed. Deploy idiom `wrangler deploy` (never `wrangler pages deploy`) unchanged.
+- **Static-Assets config surface (confirmed via WebSearch):** `html_handling` (default `"auto-trailing-slash"`), `not_found_handling` (default `"none"`), `run_worker_first` (boolean, default `false`) all confirmed present in current docs. The `assets.directory`, `binding`, `observability.enabled`, and `custom_domain` keys confirmed unchanged. No new `assets` block keys found. Standard correctly treats optional keys as per-site.
+- **Pages vs Workers:** WebSearch confirms Cloudflare continues to steer new sites to Workers + Static Assets. Pages → Workers migration guidance unchanged. The operational rule (never `pages deploy`) stands.
+- **BUILD (`ki-website`):** `ki-website` ran its own REFRESH this same cycle (monthly, also due 2026-08-03); the `dist/` seam is current.
+- **Open watch-items:** watch for a `wrangler` major bump (v5) that changes the config schema — re-confirm only on a major bump. Re-confirm Pages↔Workers guidance hasn't reversed. Track `run_worker_first` route-pattern or `assets_navigation_prefers_asset_serving` flag relevance for static-only sites (still out of scope). **Note:** proxy blocks Cloudflare developer docs in the scheduled run environment; if drift is suspected between runs, re-fetch from a direct session.
 
 [assets]: https://developers.cloudflare.com/workers/static-assets/
 [wrangler]: https://developers.cloudflare.com/workers/wrangler/configuration/

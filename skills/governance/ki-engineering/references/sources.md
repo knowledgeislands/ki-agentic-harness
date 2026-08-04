@@ -12,14 +12,14 @@ The standard pins versions in `packageManager`, `engines`, `biome.json`'s `$sche
 
 | Tag | Source | Governs | Pinned at | Last reviewed |
 | --- | --- | --- | --- | --- |
-| BUN | [bun.sh / releases][bun] | `packageManager: bun@1.3.x`; the Bun-install / Node-run split | bun@1.3.14 | 2026-07-04 |
-| NODE | [Node release schedule][node] | `engines.node >= 22` (the runtime `dist/` targets) | >=22.0.0 | 2026-07-04 |
-| BIOME | [biomejs.dev][biome] | `biome.json` schema + the formatter/linter config | 2.5.2 | 2026-07-04 |
-| TS | [typescript releases][ts] | the `tsconfig` / `tsconfig.build` compiler options | ^6.0 | 2026-07-04 |
-| VITEST | [vitest.dev][vitest] | the config-gated test profile + 100% coverage (`vitest run`, v8) | current | 2026-07-04 |
-| SYNCPACK | [syncpack][syncpack] | package ordering inside engineering audit/conform | ^15 | 2026-07-04 |
-| MDLINT | [markdownlint-cli2][mdlint] / [prettier][prettier] | Markdown audit/conform inside `ki-authoring` ❡ | mdl ^0.23 / prettier ^3 | 2026-07-04 |
-| KNIP | [knip][knip] | dependency + dead-code checks inside engineering audit/conform | current | 2026-07-04 |
+| BUN | [bun.sh / releases][bun] | `packageManager: bun@1.3.x`; the Bun-install / Node-run split | bun@1.3.14 | 2026-08-03 |
+| NODE | [Node release schedule][node] | `engines.node >= 22` (the runtime `dist/` targets) | >=22.0.0 | 2026-08-03 |
+| BIOME | [biomejs.dev][biome] | `biome.json` schema + the formatter/linter config | 2.5.6 | 2026-08-03 |
+| TS | [typescript releases][ts] | the `tsconfig` / `tsconfig.build` compiler options | ^6.0 ⚠ | 2026-08-03 |
+| VITEST | [vitest.dev][vitest] | the config-gated test profile + 100% coverage (`vitest run`, v8) | current | 2026-08-03 |
+| SYNCPACK | [syncpack][syncpack] | package ordering inside engineering audit/conform | ^15 | 2026-08-03 |
+| MDLINT | [markdownlint-cli2][mdlint] / [prettier][prettier] | Markdown audit/conform inside `ki-authoring` ❡ | mdl ^0.23 / prettier ^3 | 2026-08-03 |
+| KNIP | [knip][knip] | dependency + dead-code checks inside engineering audit/conform | current | 2026-08-03 |
 
 ❡ The Markdown mechanical pass.
 
@@ -38,17 +38,22 @@ The standard is the **majority shape** across the TS/Bun repos under `knowledgei
 
 ## Last review
 
-REFRESH last run **2026-07-04**. Cadence: monthly, alongside the other governance skills (the `ki-skills-refresh` routine). **Drift folded in this cycle:** the living-source repos have upgraded three toolchain pins ahead of this file, and the deps tool was replaced.
+REFRESH last run **2026-08-03** (previous: 2026-07-04). Upstream tool versions re-fetched via npm registry. **Two notable upstream changes this cycle: TypeScript 7.0 has GA'd and Node 22 has entered EOL. Both require an explicit decision before the standard is updated — flagged as open items below.**
 
-- **Pins bumped to match the repos:** Biome `2.5.0 → 2.5.2` (repo `biome.json` `$schema=2.5.1`, devDep `@biomejs/biome=2.5.2`; `2.5.2` is upstream latest), markdownlint-cli2 `^0.22 → ^0.23` (`0.23.0` latest, published ~2026-07-02), prettier confirmed `^3.9.4`. syncpack `^15.3.2` absorbs latest 15.x.
-- **Deps tool replaced:** the `DEPCHECK` row is retired — `depcheck` is no longer a dependency. Knip now runs directly inside engineering audit/conform for dependency and dead-code checks, per `standards-engineering.md` §2/§5 and `rubric.md`. Tracked as `KNIP` going forward.
-- **Pins confirmed current:** `bun@1.3.14` (latest stable, 2026-05-13; no newer 1.3.x), `engines.node >=22.0.0` (22 Maintenance LTS, 24 Active LTS, 26 Current — floor valid; repo node `24.15.0`), TypeScript `^6.0.3` (6.0 still latest **stable**), vitest `4.1.9` (5.0 still beta).
-- **Repo cross-check:** `ki-agentic-harness` self-audit = 0 fail. The prior proseWrap WARN is resolved this run — the standard, checker (`audit.ts`), and rubric now all specify `proseWrap: never`, matching the repo and `ki-authoring` house style.
+- **Biome:** upstream is **2.5.6** (up from 2.5.2; 2.5.3–2.5.6 are patch releases). Source table "Pinned at" updated. The house biome.json `$schema` should be bumped to `2.5.6` on the next repo-level upgrade.
+- **TypeScript 7.0 GA** (watch-item resolved): TypeScript 7.0.2 was published to npm tagged `latest` on or around 2026-07-08. It is a Go-native rewrite (~10x faster compilation) with breaking changes — strict mode on by default, ES5 target removed (ES2015 floor), AMD/UMD/SystemJS removed, `moduleResolution: node10` removed, and no stable programmatic API (7.1 needed for tools depending on it). **The `^6.0` pin is NOT auto-bumped here** — upgrading to `^7.0` changes the required `target`/`moduleResolution` floor and removes the AMD/UMD output we do not use; a targeted decision is needed. Source table carries `^6.0 ⚠` as a signal. Human action needed: decide whether to upgrade to `^7.0` and update `tsconfig` targets and the standard accordingly.
+- **Node 22 EOL:** Node 22 reached EOL on 2026-07-28 (5 days before this refresh). Node 24 is now the Active LTS. The current `>=22.0.0` floor points at an EOL runtime. The standard wording should migrate to `>=24.0.0` on the next targeted update; held for human decision. Watch-item from prior runs now resolved-but-unactioned.
+- **Bun:** 1.3.14 — confirmed unchanged (no newer 1.3.x stable release).
+- **markdownlint-cli2:** 0.23.2 on npm; still within the `^0.23` range. No change to pin.
+- **prettier:** 3.9.6 on npm (up from 3.9.4); still within the `^3` (and `^3.9`) range. No change to standard pin.
+- **vitest:** 4.1.10 (up from 4.1.9); tracked as "current", no pin change.
+- **syncpack:** 15.3.2 — unchanged.
+- **knip:** 6.31.0 on npm; tracked as "current".
 - **Open watch-items:**
-  - **TypeScript 7.0** (Go native port) reached **Release Candidate 2026-06-18**, GA estimated ~July 2026 (no longer "mid-to-late 2026"). Type-checking is structurally identical to 6.0. When 7.0 GAs, decide whether the `^6.0` pin tracks it or holds on 6.x — re-check next refresh.
-  - **Node v27** schedule change (one major/year, every release LTS, odd/even dropped) still lands with v27; v26 is the last under the current model. Re-check the `>=22` floor and Node source wording at the first refresh after October 2026.
-  - **Repo-set count:** the "10 TS/Bun repos / seven `mcp-*` servers" claim overcounts — 6 `mcp-*` on disk (9 total), and only 4 repos carry a `["knowledgeislands/ki-agentic-harness:ki-engineering"]` table so far. Reconcile the count in SKILL.md, this footnote, README, and CLAUDE.md centrally.
-  - Bun and Biome both move fast; re-pin on the next house upgrade.
+  - **TypeScript 7.0 decision (URGENT):** 7.0.2 is GA and tagged `latest` on npm. The `^6.0` pin is now tracking a superseded major. Decide: upgrade to `^7.0` (requires tsconfig `target`/`lib` review), pin `^6.0` explicitly to block the upgrade, or track both in parallel. This is the next planned action for this skill.
+  - **Node 22 floor decision:** `>=22.0.0` is now an EOL floor. Recommend moving to `>=24.0.0` in the standard and sibling `engines` fields on the next targeted sweep.
+  - **Repo-set count:** the "10 TS/Bun repos / seven `mcp-*` servers" claim overcounts — 6 `mcp-*` on disk. Reconcile in SKILL.md, this footnote, README, and CLAUDE.md centrally (carried from prior run).
+  - Biome patch bumps; re-pin on the next house upgrade once 2.5.6 lands in the repos.
 
 [bun]: https://bun.sh/blog
 [node]: https://nodejs.org/en/about/previous-releases
