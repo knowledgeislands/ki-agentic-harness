@@ -4,7 +4,7 @@ area: GOV
 title: Scope Website Development Scripts
 theme: governance-consistency
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 83b44cb072b1fd1a8b81b37a87cead8b8c49e848
@@ -162,6 +162,10 @@ Fresh review confirms the goal is met across the declared estate without changin
 ### Mini recap
 
 Website development is now visibly capability-owned at the manifest where it runs while preserving root `ki:site:dev` as the stable user-facing command. The governing decision, standards, executable checks, and six live receivers agree. Durable learning is already routed into the amended decision and skill standards; no additional guide, specification, or automatic backlog item is proposed.
+
+## Done
+
+Accepted 2026-09-09 by Kris Brown on the review packet above.
 
 ## Discussion
 
