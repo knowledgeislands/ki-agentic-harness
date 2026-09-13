@@ -85,3 +85,9 @@ Each item must pass through its own `in-progress` and `awaiting-review` evidence
 ### Batch recap
 
 Both independent low-hanging governance corrections reached Awaiting review within scope. No runtime configuration, renderer, sibling repository, external service, deployment, release, push, or prune changed. The initial full-suite attempt overlapped delegated test processes and failed; the complete affected test file and full suite passed cleanly after those processes ended without a code change. The only retained limitation is the accepted inability of a structural audit to prove the origin of a non-empty rendered secret.
+
+### Closure
+
+- `KI-HARNESS-GOV-055` and `KI-HARNESS-GOV-059` were rechecked against their item-specific review packets and accepted through `ki-accept` at `091895a43e898b2c498683ebba66f70fc4f4ea1a`.
+- Both named records reached the authorised `done` completion target. No item was parked, omitted, or expanded.
+- Pruning remains outside the batch contract and follows only the user's separately confirmed cleanup sequence.
