@@ -30,5 +30,5 @@ Knowledge Islands adopts four durable documentation concerns for non-Knowledge-B
 
 ## References
 
-- [ADR-KI-HARNESS-SKILLS-008](ADR-KI-HARNESS-SKILLS-008-a-specifications-skill-for-the-what.md) — Specifications as the owner of behaviour-level specification.
+- [ADR-KI-HARNESS-SKILLS-008](ADR-KI-HARNESS-SKILLS-008-a-specifications-skill-for-what.md) — Specifications as the owner of behaviour-level specification.
 - [ADR-KI-HARNESS-SKILLS-011](ADR-KI-HARNESS-SKILLS-011-repository-roadmaps-for-non-kb-repositories.md) — repository roadmaps as the owner of non-KB forward work.

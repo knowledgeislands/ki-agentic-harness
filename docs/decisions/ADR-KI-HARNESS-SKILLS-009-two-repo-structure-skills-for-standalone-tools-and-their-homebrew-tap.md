@@ -34,4 +34,4 @@ Add two repo-structure skills — **`ki-repo-tools`** and **`ki-repo-homebrew-ta
 
 - [ADR-KI-HARNESS-SKILLS-006](ADR-KI-HARNESS-SKILLS-006-concern-first-skill-taxonomy-and-implication-graph.md) — the taxonomy this extends (the repo-structure concern).
 - [ADR-KI-HARNESS-004](ADR-KI-HARNESS-004-composition-over-extension.md) — composition over extension: new shape → new skill, variation → declaration.
-- [ADR-KI-HARNESS-SKILLS-008](ADR-KI-HARNESS-SKILLS-008-a-specifications-skill-for-the-what.md) — the precedent for adding a skill against the ADR-006 taxonomy.
+- [ADR-KI-HARNESS-SKILLS-008](ADR-KI-HARNESS-SKILLS-008-a-specifications-skill-for-what.md) — the precedent for adding a skill against the ADR-006 taxonomy.
