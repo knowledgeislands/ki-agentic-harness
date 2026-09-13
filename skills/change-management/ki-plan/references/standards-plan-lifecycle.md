@@ -1,5 +1,7 @@
 # Readiness procedure
 
+For every shaped local record whose optional compatibility timestamp pair is present, preserve `created_at` and advance `updated_at` to the later of the current UTC second or one second after its observed value. An absent pair may remain absent until a separately reviewed backfill. Compare the observed source revision immediately before publication and refuse a one-sided or malformed pair or any source drift. Read-only planning does not advance timestamps; remote adapters project provider-native values.
+
 `ki-plan <work>...` operates only records that `ki-next` has selected into `now` or `next`.
 
 1. Run the base selection audit, then read the configured adapter literal and its required owner table. `roadmap` uses a fresh record in `docs/roadmap/`; `kb-streams` uses a fresh flat record in `Streams/Roadmap/`. Do not infer either from repository shape. `github-issues` and `linear` fail closed before reads or writes because remote process execution is not implemented.

@@ -4,10 +4,12 @@ area: GOV
 title: Track work item timestamps
 theme: governance-consistency
 horizon: next
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: bae5a5e7595fdbacebe5eb817484b06d34d10959
+created_at: 2026-09-07T23:33:50Z
+updated_at: 2026-09-13T15:27:12Z
 ---
 
 # Track Work Item Timestamps

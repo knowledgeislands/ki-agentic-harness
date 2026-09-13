@@ -78,7 +78,7 @@ Flat work-item identity, grouping, lifecycle, and dependencies.
 
 - **ITEM-1 [M] — flat work-item identity** — Each canonical item lives directly under docs/roadmap with a unique stable identifier, matching filename, and title of at most four words. (standards-repository-roadmaps.md, standards-work-item-format.md)
   - _Remediation:_ diagnostic — Correct the item filename, frontmatter identity, or title to match the canonical flat work-item contract.
-- **ITEM-2 [M] — item state and theme grouping** — Each item has valid theme, horizon, candidate, status, baseline, and dependency fields. (standards-repository-roadmaps.md)
+- **ITEM-2 [M] — item state and theme grouping** — Each item has valid theme, horizon, candidate, status, baseline, dependency, and optional timestamp-pair fields. (standards-repository-roadmaps.md)
   - _Remediation:_ diagnostic — Correct the item state fields or dependency declarations; do not choose a priority or lifecycle transition automatically.
 - **ITEM-3 [M] — item body shape** — Every item has a non-empty Goal, ends with Discussion, carries the deterministic sections required by its horizon and lifecycle state, and uses task-list Steps. (standards-work-item-format.md)
   - _Remediation:_ diagnostic — Restore the lifecycle-appropriate canonical sections and task-list shape from the work-item format standard.

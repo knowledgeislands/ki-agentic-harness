@@ -36,6 +36,8 @@ candidate: true
 blocks: []
 blocked_by: []
 baseline_ref: null
+created_at: 2026-08-12T09:30:00Z
+updated_at: 2026-08-12T09:30:00Z
 ---
 ```
 
@@ -62,6 +64,16 @@ baseline_ref: null
 `area` is the immutable issuing code included in an area-qualified identifier. It is not a theme or mutable group.
 
 An optional non-empty `transferred_from` records a durable handoff origin.
+
+## Timestamps
+
+`created_at` and `updated_at` are an optional compatibility pair during timestamp rollout: either both are present or neither is present. Local work-item timestamps use canonical RFC 3339 UTC at second precision: `YYYY-MM-DDTHH:MM:SSZ`. A new record writes the same instant to both fields. `created_at` is immutable. A governed lifecycle or semantic body mutation preserves `created_at` and advances `updated_at` to the later of the current UTC second or one second after its previous value. Read-only inspection and formatting-only normalisation do not advance `updated_at`.
+
+Before publishing a local mutation, the writer compares the record revision it observed with the revision it will replace and stops on drift. Validation requires pair presence, canonical shape, and `created_at <= updated_at`. It deliberately does not compare either value with the auditor's wall clock, so clock skew or a previously recorded future value cannot make an otherwise monotonic record invalid.
+
+Remote adapters project their provider-native creation and update timestamps into the portable work-item view. They do not duplicate those values into provider bodies. Knowledge Base Streams owns validation and mutation of its local projection; the repository-roadmap adapter owns the equivalent contract under `docs/roadmap/`.
+
+Timestamp fields remain optional until a later governance decision makes them universally required after process and tooling support, coverage measurement, and separately reviewed backfills. Their presence supports age, inactivity, coverage, and stale-active reporting; it does not establish lifecycle event history, cycle time, throughput, or time-in-state evidence.
 
 ## Body
 

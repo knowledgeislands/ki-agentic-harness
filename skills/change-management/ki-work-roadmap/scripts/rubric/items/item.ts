@@ -35,7 +35,8 @@ export const ITEM: RubricFamily<RoadmapRubricContext, RoadmapAuditContext> = {
     {
       code: 'ITEM-2',
       title: 'item state and theme grouping',
-      description: 'Each item has valid theme, horizon, candidate, status, baseline, and dependency fields.',
+      description:
+        'Each item has valid theme, horizon, candidate, status, baseline, dependency, and optional timestamp-pair fields.',
       sources: [SOURCE],
       mechanical: {
         level: 'FAIL',

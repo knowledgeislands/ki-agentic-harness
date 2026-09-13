@@ -193,6 +193,46 @@ test('frontmatter keys use snake_case', () => {
   )
 })
 
+test('optional work-item timestamps are paired, canonical, ordered, and clock-independent', () => {
+  const repository = createFixture()
+  const item = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')
+  const source = readFileSync(item, 'utf8')
+  const timestamped = source.replace(
+    'baseline_ref: null',
+    'baseline_ref: null\ncreated_at: 2099-01-01T00:00:00Z\nupdated_at: 2099-01-01T00:00:01Z'
+  )
+
+  writeFileSync(item, timestamped)
+  expect(inspectRoadmap(repository).filter((finding) => finding.area === 'ITEM-2')).toEqual([])
+
+  writeFileSync(item, source.replace('baseline_ref: null', 'baseline_ref: null\ncreated_at: 2026-09-13T12:00:00Z'))
+  expect(inspectRoadmap(repository)).toContainEqual(
+    expect.objectContaining({ area: 'ITEM-2', msg: 'created_at and updated_at must be present together' })
+  )
+
+  writeFileSync(
+    item,
+    source.replace(
+      'baseline_ref: null',
+      'baseline_ref: null\ncreated_at: 2026-09-13T12:00:00Z\nupdated_at: 2026-09-13T12:00:00+00:00'
+    )
+  )
+  expect(inspectRoadmap(repository)).toContainEqual(
+    expect.objectContaining({ area: 'ITEM-2', msg: 'timestamps must use canonical RFC 3339 UTC second precision' })
+  )
+
+  writeFileSync(
+    item,
+    source.replace(
+      'baseline_ref: null',
+      'baseline_ref: null\ncreated_at: 2026-09-13T12:00:01Z\nupdated_at: 2026-09-13T12:00:00Z'
+    )
+  )
+  expect(inspectRoadmap(repository)).toContainEqual(
+    expect.objectContaining({ area: 'ITEM-2', msg: 'created_at must not be later than updated_at' })
+  )
+})
+
 test('an area-qualified work item uses its configured namespace and area ledger', () => {
   const repository = createFixture()
   writeFileSync(

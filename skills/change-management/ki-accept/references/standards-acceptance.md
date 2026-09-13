@@ -35,6 +35,8 @@ For a linked housekeeping run, verify that the template's `active-run` names thi
 
 Failed, abandoned, and superseded runs do not advance successful-run evidence and retain their `active-run` link until a separate explicit template disposition or replacement. A disposition clears the old link without changing `last-run`. A replacement atomically substitutes the already-created, verified new linked identity without changing `last-run`; `ki-next` alone creates that new linked draft. Never infer a disposition or replacement from a failed gate, missing evidence, or silence.
 
+When recording local acceptance, preserve `created_at` and advance `updated_at` to the later of the current UTC second or one second after its observed value when the optional compatibility pair is present. An absent pair may remain absent until a separately reviewed backfill. Compare the observed source revision immediately before publication and stop on source drift, a one-sided pair, or malformed timestamps. Review and prune-only reads do not advance timestamps; remote adapters project provider-native values.
+
 ## 4. Prune explicitly selected done records
 
 1. Accept one or more explicit canonical work-record paths or filename globs. Resolve their complete matching set only beneath the selected local adapter root: `docs/roadmap/` for `roadmap` or `Streams/Roadmap/` for `kb-streams`. Reject absolute paths, parent traversal, an empty or incomplete match, symlinks, directories, and files outside the canonical work-record shape. The caller should quote a shell glob so the procedure receives it.

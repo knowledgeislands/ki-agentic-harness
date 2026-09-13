@@ -71,6 +71,7 @@ The records are living, compact, and independent. The order below is a **curated
 42. [GDR-KI-HARNESS-005](GDR-KI-HARNESS-005-cross-repository-trade-routes.md) — locally declared, receiver-controlled cross-repository trade submissions.
 43. [GDR-KI-HARNESS-006](GDR-KI-HARNESS-006-reciprocal-agora-membership.md) — portable consent for named repository collections and explicit local target selection.
 44. [GDR-KI-HARNESS-007](GDR-KI-HARNESS-007-document-metadata-and-principal-authority.md) — ownership of document metadata and principal authority.
+45. [GDR-KI-HARNESS-008](GDR-KI-HARNESS-008-portable-work-item-timestamps.md) — portable work-item creation and semantic-update timestamps.
 
 ## Template
 
