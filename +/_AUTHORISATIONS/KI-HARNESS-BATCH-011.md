@@ -65,3 +65,23 @@ Each item must pass through its own `in-progress` and `awaiting-review` evidence
 ## Run ledger
 
 <!-- ki-batch-run: KI-HARNESS-BATCH-011-RUN-001 46904357931ee3b12ff58fb872f55c7d8cc2e4419e9adda9c10156e95dace97c -->
+
+### `KI-HARNESS-GOV-055` — awaiting review
+
+- Starting state: Ready at authorisation commit `09c73ed330f61cd1eaebf94603083ac89a64a828`; immutable implementation baseline is the same commit.
+- Result: Awaiting review at `e36929efb932985683542662588a0fdf87f3427b`.
+- Verification: four focused coverage fixtures, complete `repository.test.ts`, full isolated Harness suite, TypeScript, and `ki-repo`, `ki-skills`, authoring, and roadmap audits passed.
+- Decisions: accepted both existing MCP server package identities only; protocol validity remains with `ki-repo-mcp`.
+- Delegation: one bounded worker changed only the three authorised detector, test, and standard files; the coordinator integrated, verified, and committed.
+
+### `KI-HARNESS-GOV-059` — awaiting review
+
+- Starting state: Ready at authorisation commit `09c73ed330f61cd1eaebf94603083ac89a64a828`; immutable implementation baseline is the same commit.
+- Result: Awaiting review at `b9c9c6f180e999f9a44df349219a9612f6daec2c`.
+- Verification: thirteen focused comparator tests with 51 assertions, full isolated Harness suite, TypeScript, and all declared binding, skill, authoring, and roadmap audits passed. Live Claude and Codex binding warnings cleared without writes.
+- Decisions: accepted only exact or explicitly rendered projections fixed by the Ready plan; executable basename equivalence, command execution, renderer changes, and secret-value comparison remain excluded.
+- Delegation: one bounded worker changed only the six authorised comparator, test, and standard files; the coordinator integrated, verified, and committed.
+
+### Batch recap
+
+Both independent low-hanging governance corrections reached Awaiting review within scope. No runtime configuration, renderer, sibling repository, external service, deployment, release, push, or prune changed. The initial full-suite attempt overlapped delegated test processes and failed; the complete affected test file and full suite passed cleanly after those processes ended without a code change. The only retained limitation is the accepted inability of a structural audit to prove the origin of a non-empty rendered secret.
