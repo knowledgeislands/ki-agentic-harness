@@ -637,6 +637,50 @@ coverage-guides = false
     )
   })
 
+  for (const fixture of [
+    {
+      name: 'legacy-only',
+      dependencies: { '@modelcontextprotocol/sdk': '^1.0.0' },
+      detected: true
+    },
+    {
+      name: 'modern-only',
+      dependencies: { '@modelcontextprotocol/server': '^2.0.0' },
+      detected: true
+    },
+    { name: 'neither-package', dependencies: { hono: '^4.0.0' }, detected: false },
+    {
+      name: 'both-package',
+      dependencies: {
+        '@modelcontextprotocol/sdk': '^1.0.0',
+        '@modelcontextprotocol/server': '^2.0.0'
+      },
+      detected: true
+    }
+  ]) {
+    test(`detects MCP coverage for the ${fixture.name} fixture`, async () => {
+      const root = repository()
+      writeFileSync(join(root, 'package.json'), JSON.stringify({ dependencies: fixture.dependencies }))
+      writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\n\n[skills.ki-engineering]\n')
+
+      const findings = (await collectAuditFindings([root])).findings.filter(
+        (finding) => finding.code === 'COV-1' && finding.message.includes('[skills.ki-repo-mcp]')
+      )
+
+      if (!fixture.detected) {
+        expect(findings).toEqual([])
+        return
+      }
+
+      expect(findings).toEqual([
+        expect.objectContaining({
+          level: 'FAIL',
+          message: expect.stringContaining('@modelcontextprotocol/sdk or @modelcontextprotocol/server dependency')
+        })
+      ])
+    })
+  }
+
   test('separates website coverage and enforces one purpose-specific implementation', async () => {
     const root = repository()
     mkdirSync(join(root, 'apps', 'site'), { recursive: true })

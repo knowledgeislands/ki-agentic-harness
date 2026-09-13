@@ -4,10 +4,10 @@ area: GOV
 title: Recognise MCP SDK v2
 theme: governance-consistency
 horizon: next
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 09c73ed330f61cd1eaebf94603083ac89a64a828
 ---
 
 # Recognise MCP SDK v2
@@ -30,10 +30,10 @@ The repository coverage detector recognises only `@modelcontextprotocol/sdk`, al
 
 ## Steps
 
-- [ ] Update the MCP coverage signal and evidence label to recognise either supported server package.
-- [ ] Update the configuration standard's matching detection-signal description.
-- [ ] Add focused fixtures for legacy-only, modern-only, neither-package, and both-package repositories.
-- [ ] Confirm mixed or unsupported protocol profiles remain exclusively governed by `ki-repo-mcp`.
+- [x] Update the MCP coverage signal and evidence label to recognise either supported server package.
+- [x] Update the configuration standard's matching detection-signal description.
+- [x] Add focused fixtures for legacy-only, modern-only, neither-package, and both-package repositories.
+- [x] Confirm mixed or unsupported protocol profiles remain exclusively governed by `ki-repo-mcp`.
 
 ## Files touched
 
@@ -69,6 +69,32 @@ No human-facing guide changes.
 ### Roadmap
 
 Completing this item removes a false estate-audit finding without authorising MCP implementation migration.
+
+## Review
+
+### Delivered
+
+Against baseline `09c73ed330f61cd1eaebf94603083ac89a64a828`, the repository coverage signal now recognises either accepted MCP server package without changing protocol-profile validation, package migrations, or nested-manifest discovery.
+
+### Summary of changes
+
+Updated the `ki-repo` coverage detector and its evidence label, aligned the configuration standard, and added four focused fixtures for legacy-only, modern-only, neither-package, and both-package repositories. A delegated worker changed only the three authorised implementation files; the coordinator reviewed and integrated the result.
+
+### Verification
+
+Four focused MCP coverage fixtures passed. The complete `repository.test.ts` file passed after delegated test processes finished. `ki-repo`, `ki-skills`, authoring, and roadmap audits passed; the full isolated Harness test suite and TypeScript passed. An initial full-suite run under concurrent worker-test load failed, then passed cleanly without code changes once those processes completed.
+
+### Outstanding concerns
+
+None. Mixed-package and unsupported-major validity remains intentionally owned by `ki-repo-mcp` rather than the coverage signal.
+
+### Post-change review
+
+The change is limited to applicability detection and preserves the accepted protocol boundary. Positive and negative fixtures protect both supported package families and the no-signal case, so the item is ready for acceptance.
+
+### Mini recap
+
+Modern MCP SDK v2 repositories now trigger the same governance coverage expectation as legacy MCP SDK v1 repositories, removing the known false estate-audit finding.
 
 ## Discussion
 

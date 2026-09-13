@@ -608,8 +608,8 @@ const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Si
   {
     skill: 'mcp',
     table: skillTable('ki-repo-mcp'),
-    artifact: '@modelcontextprotocol/sdk dependency',
-    detect: (s) => pkgHasDep(s.pkg, '@modelcontextprotocol/sdk')
+    artifact: '@modelcontextprotocol/sdk or @modelcontextprotocol/server dependency',
+    detect: (s) => pkgHasDep(s.pkg, '@modelcontextprotocol/sdk') || pkgHasDep(s.pkg, '@modelcontextprotocol/server')
   },
   {
     skill: 'plugins',
