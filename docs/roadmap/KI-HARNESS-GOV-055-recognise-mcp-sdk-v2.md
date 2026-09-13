@@ -4,7 +4,7 @@ area: GOV
 title: Recognise MCP SDK v2
 theme: governance-consistency
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 09c73ed330f61cd1eaebf94603083ac89a64a828
@@ -95,6 +95,10 @@ The change is limited to applicability detection and preserves the accepted prot
 ### Mini recap
 
 Modern MCP SDK v2 repositories now trigger the same governance coverage expectation as legacy MCP SDK v1 repositories, removing the known false estate-audit finding.
+
+## Done
+
+Accepted 2026-09-13 by the repository owner through `KI-HARNESS-BATCH-011` on the review packet above.
 
 ## Discussion
 

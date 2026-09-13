@@ -4,12 +4,12 @@ area: GOV
 title: Normalise binding comparisons
 theme: governance-consistency
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 09c73ed330f61cd1eaebf94603083ac89a64a828
 created_at: 2026-09-13T16:20:31Z
-updated_at: 2026-09-13T16:52:19Z
+updated_at: 2026-09-13T16:56:12Z
 ---
 
 ## Goal
@@ -99,6 +99,10 @@ The implementation removes the two reproduced false warnings without widening ex
 ### Mini recap
 
 Claude and Codex binding audits now agree with accepted renderer semantics and pass cleanly against the current canonical inventory and native configurations.
+
+## Done
+
+Accepted 2026-09-13 by the repository owner through `KI-HARNESS-BATCH-011` on the review packet above.
 
 ## Discussion
 
