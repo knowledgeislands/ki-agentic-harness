@@ -19,6 +19,7 @@ This is a curated collection, not a design standard. The sources were selected b
 | [Awwwards][awwwards] | Award-recognised websites and creative direction | 2026-09-13 |
 | [Recent][recent] | Whole-site inspiration by website category | 2026-09-13 |
 | [Dribbble: web design inspiration][dribbble] | Visual concepts and presentation treatments | 2026-09-13 |
+| [CSS Design Awards][cssda] | Award-recognised websites; UI, UX, and innovation | 2026-09-13 |
 
 [motion]: https://motionsites.ai/
 [navbar]: https://www.navbar.gallery/
@@ -31,6 +32,7 @@ This is a curated collection, not a design standard. The sources were selected b
 [awwwards]: https://www.awwwards.com/
 [recent]: https://recent.design/
 [dribbble]: https://dribbble.com/tags/web-design-inspiration
+[cssda]: https://www.cssdesignawards.com/
 
 ## Routing notes
 
@@ -45,9 +47,10 @@ This is a curated collection, not a design standard. The sources were selected b
 - **Awwwards** — award-recognised websites, nominees, and collections, with routes for animation, scrolling, interaction, and industry categories. Useful for a whole site's creative direction. Distinguish nominees from winners and follow the original site to judge whether its interaction and production demands fit the brief.
 - **Recent** — a broader design collection with a dedicated [Websites gallery](https://recent.design/websites), filterable by categories such as portfolio, SaaS, ecommerce, and editorial. Start there for whole-site inspiration; its app screenshots, icons, and other design material serve different needs.
 - **Dribbble: web design inspiration** — the selected tag gathers designer-posted website shots. Useful for composition, colour, typography, and visual exploration. Establish whether a shot represents a concept or a shipped site; a presentation image alone does not demonstrate complete flows, responsive behaviour, or usability.
+- **CSS Design Awards** — website nominees and winners with UI, UX, and innovation scores. Useful for exploring complete creative websites and interaction ideas alongside Awwwards. Distinguish nomination from an award, and treat scores as the gallery's assessment; inspect the original site against the current brief before recommending its patterns.
 
 ## Last review
 
-The review checked public landing-page text and source metadata for subject and routing, including Awwwards, Recent's dedicated Websites gallery, and the selected Dribbble tag. Bento Grids returned no readable text in the direct fetch; indexed content from the same domain supplied the collection description. Individual designs, videos, responsive states, and member-only content were not visually evaluated as part of this source-list review. Assess them when selecting examples for a concrete brief.
+The review checked public landing-page text and source metadata for subject and routing, including Awwwards, Recent's dedicated Websites gallery, the selected Dribbble tag, and CSS Design Awards. Bento Grids returned no readable text in the direct fetch; indexed content from the same domain supplied the collection description. Individual designs, videos, responsive states, and member-only content were not visually evaluated as part of this source-list review. Assess them when selecting examples for a concrete brief.
 
 Keep review dates tied to actual checks. If a source cannot be inspected during a future refresh, retain its last successful review date and record the failed attempt and limitation here.
