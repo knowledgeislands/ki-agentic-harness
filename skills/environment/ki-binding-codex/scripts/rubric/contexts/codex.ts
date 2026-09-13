@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import {
   physicalFile,
   readSource,
@@ -20,7 +20,7 @@ export type CodexBindingContext = {
   sourceState: SourceState
   target: CodexTarget
 }
-declare const Bun: { TOML: { parse(input: string): unknown } }
+declare const Bun: { TOML: { parse(input: string): unknown }; which(command: string): string | null }
 const inspect = (path: string): CodexTarget => {
   if (!physicalFile(path)) return { kind: 'unavailable', path }
   try {
@@ -37,15 +37,45 @@ const inspect = (path: string): CodexTarget => {
     return { kind: 'invalid', path }
   }
 }
-const same = (entry: ServerEntry, actual: Record<string, unknown> | undefined): boolean =>
+const sameEnvironment = (expected: Readonly<Record<string, string | { op: string }>>, actual: unknown): boolean => {
+  if (actual !== undefined && (!actual || typeof actual !== 'object' || Array.isArray(actual))) return false
+  const received = (actual ?? {}) as Record<string, unknown>
+  if (JSON.stringify(Object.keys(received).sort()) !== JSON.stringify(Object.keys(expected).sort())) return false
+  return Object.entries(expected).every(([key, value]) =>
+    typeof value === 'string' ? received[key] === value : typeof received[key] === 'string' && received[key].length > 0
+  )
+}
+const sameCommand = (expected: string, actual: unknown, home: string): boolean => {
+  if (typeof actual !== 'string') return false
+  if (expected.includes('/')) return actual === expected
+  return (
+    actual === expected ||
+    actual === Bun.which(expected) ||
+    (expected === 'node' && actual === join(home, '.local', 'share', 'mise', 'shims', 'node'))
+  )
+}
+const renderedArgument = (argument: string, home: string): string =>
+  argument === '~' ? home : argument.startsWith('~/') ? join(home, argument.slice(2)) : argument
+const sameArguments = (expected: readonly string[], actual: unknown, home: string): boolean =>
+  Array.isArray(actual) &&
+  actual.length === expected.length &&
+  expected.every(
+    (argument, index) =>
+      typeof actual[index] === 'string' &&
+      (actual[index] === argument || actual[index] === renderedArgument(argument, home))
+  )
+const same = (entry: ServerEntry, actual: Record<string, unknown> | undefined, home: string): boolean =>
   'url' in entry
     ? actual?.url === entry.url
-    : actual?.command === entry.command &&
-      JSON.stringify(actual?.args ?? []) === JSON.stringify(entry.args) &&
-      JSON.stringify(actual?.env ?? {}) === JSON.stringify(entry.env)
+    : !!actual &&
+      sameCommand(entry.command, actual.command, home) &&
+      sameArguments(entry.args, actual.args ?? [], home) &&
+      sameEnvironment(entry.env, actual.env)
 export const mismatches = (sourceState: SourceState, target: CodexTarget): readonly ServerEntry[] | null =>
   sourceState.kind === 'valid' && target.kind === 'valid'
-    ? targeted(sourceState.entries, 'chatgpt-codex').filter((entry) => !same(entry, target.servers[entry.name]))
+    ? targeted(sourceState.entries, 'chatgpt-codex').filter(
+        (entry) => !same(entry, target.servers[entry.name], dirname(dirname(target.path)))
+      )
     : null
 export const createCodexBindingSession = ({
   repository,

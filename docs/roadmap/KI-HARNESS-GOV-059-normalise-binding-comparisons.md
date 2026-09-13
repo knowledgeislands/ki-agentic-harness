@@ -4,12 +4,12 @@ area: GOV
 title: Normalise binding comparisons
 theme: governance-consistency
 horizon: next
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 09c73ed330f61cd1eaebf94603083ac89a64a828
 created_at: 2026-09-13T16:20:31Z
-updated_at: 2026-09-13T16:36:35Z
+updated_at: 2026-09-13T16:52:19Z
 ---
 
 ## Goal
@@ -30,10 +30,10 @@ The Claude comparator resolves a canonical bare executable through the current s
 
 ## Steps
 
-- [ ] Define the safe accepted projections for bare commands, the deterministic mise `node` shim, home-relative arguments, and rendered secret references.
-- [ ] Apply those semantics to Claude and Codex comparison without changing renderers or executing configured commands.
-- [ ] Add positive fixtures for accepted projections and negative fixtures for wrong paths, arguments, literal values, missing or extra environment keys, and empty secret values.
-- [ ] Preserve exact URL comparison, unrelated native entries, activation boundaries, and runtime-health boundaries.
+- [x] Define the safe accepted projections for bare commands, the deterministic mise `node` shim, home-relative arguments, and rendered secret references.
+- [x] Apply those semantics to Claude and Codex comparison without changing renderers or executing configured commands.
+- [x] Add positive fixtures for accepted projections and negative fixtures for wrong paths, arguments, literal values, missing or extra environment keys, and empty secret values.
+- [x] Preserve exact URL comparison, unrelated native entries, activation boundaries, and runtime-health boundaries.
 
 ## Files touched
 
@@ -73,6 +73,32 @@ No human-facing guide changes.
 ### Roadmap
 
 Completing this item resolves the comparator follow-up created by `KI-HARNESS-RTP-011`.
+
+## Review
+
+### Delivered
+
+Against baseline `09c73ed330f61cd1eaebf94603083ac89a64a828`, Claude and Codex audits now recognise only the safe renderer projections fixed by the Ready plan. Runtime configuration, canonical binding data, renderer output, client targeting, and activation claims remain unchanged.
+
+### Summary of changes
+
+Updated both runtime comparison contexts, added positive and negative focused fixtures, and clarified the two adapter standards. Commands containing a slash remain exact; bare commands accept their token or current resolution, with only bare `node` accepting the deterministic mise shim. Home-relative arguments and non-empty rendered secret references are recognised while URL, literal, and environment-key checks remain strict. A delegated worker changed only the six authorised files; the coordinator reviewed and integrated the result.
+
+### Verification
+
+Thirteen focused Claude and Codex tests passed with 51 assertions. Both live runtime-binding audits now pass with no warnings and issued no writes. `ki-binding`, `ki-skills`, authoring, and roadmap audits passed; the full isolated Harness test suite and TypeScript passed.
+
+### Outstanding concerns
+
+A structural audit deliberately cannot prove that a non-empty rendered secret came from the correct secret reference. This accepted boundary avoids exposing or comparing secret values; missing keys, extra keys, empty values, and wrong literals remain detectable. No other concern is known.
+
+### Post-change review
+
+The implementation removes the two reproduced false warnings without widening executable equivalence or changing renderer behaviour. Negative fixtures retain genuine-drift detection, so the item is ready for acceptance.
+
+### Mini recap
+
+Claude and Codex binding audits now agree with accepted renderer semantics and pass cleanly against the current canonical inventory and native configurations.
 
 ## Discussion
 

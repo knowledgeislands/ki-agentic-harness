@@ -4,6 +4,8 @@
 
 The target is `~/.codex/config.toml` and its `[mcp_servers.*]` entries. This is application-owned TOML that can contain non-KI entries, including app-provided servers. Compare full non-secret targeted definitions read-only during audit. Render only canonical entries targeting `chatgpt-codex`, using `codex mcp add` so Codex owns its merge and formatting behavior. Do not template or rewrite the complete TOML file; do not remove unrecognised entries. Repository selection and hosted Codex activation are coordinator-owned; configuration parity never proves either activation or runtime health.
 
+For comparison, a command containing `/` matches only the exact source value. A bare command matches its exact source token or current `Bun.which` result; bare `node` also matches the deterministic `<home>/.local/share/mise/shims/node` projection. The comparison never executes a configured command or accepts basename equivalence. Each argument matches its exact source value or, for `~` and `~/`, its deterministic selected-home expansion. Environment keys are exact, literal values are exact, and an `{ op: ... }` source requires the same key with a non-empty rendered string without reading or comparing its secret value. URLs remain exact. Unrelated native servers are outside comparison scope.
+
 ## Partial-update recovery
 
 `codex mcp` has no transaction for a replacement. Before replacing an existing KI-managed entry, the renderer reads `codex mcp get <name> --json` and accepts a snapshot only when it can replay every configured field with `codex mcp add`.
