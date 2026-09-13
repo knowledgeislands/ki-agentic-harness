@@ -4,12 +4,12 @@ area: GOV
 title: Track work item timestamps
 theme: governance-consistency
 horizon: next
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: bae5a5e7595fdbacebe5eb817484b06d34d10959
 created_at: 2026-09-07T23:33:50Z
-updated_at: 2026-09-13T15:27:12Z
+updated_at: 2026-09-13T15:38:12Z
 ---
 
 # Track Work Item Timestamps
@@ -38,14 +38,14 @@ Git history can sometimes approximate creation and last change, but renamed file
 
 ## Steps
 
-- [ ] Add a Governance Decision Record defining portable work-item timestamp ownership, local mutation authority, native remote projection, and the transition from optional to required metadata.
-- [ ] Extend the shared work-item format with `created_at` and `updated_at` using canonical `YYYY-MM-DDTHH:MM:SSZ` UTC values. During the compatibility period require both fields or neither, warn when both are absent, and fail one-sided, malformed, or `updated_at < created_at` records.
-- [ ] Define creation as one instant written to both fields. Keep `created_at` immutable and advance `updated_at` only for a semantic governed-record mutation, not read-only inspection or formatting-only normalisation.
-- [ ] Define a monotonic local update as the later of the wall clock truncated to seconds and one second after the current `updated_at`. Require an isolated writer to compare its observed source revision before publication and stop on drift rather than overwrite a newer record.
-- [ ] Update the `ki-next`, `ki-plan`, `ki-implement`, and `ki-accept` procedures so every lifecycle or semantic body mutation they own preserves creation time and advances update time. `ki-batch` continues to delegate record mutation to those process owners.
-- [ ] Extend the `ki-work-roadmap` evidence builder and fixtures for optional compatibility, canonical timestamp shape, ordering, future-clock tolerance, immutable creation evidence where available, and adapter-owned Knowledge Base metadata.
-- [ ] Define remote adapters as projections of provider-native creation and update timestamps. Do not duplicate those timestamps into remote bodies or claim remote write support before the adapter executor exists.
-- [ ] Document the rollout sequence: publish optional validation and process guidance, release CLI support, measure coverage, perform separately reviewable repository backfills, and create a later record before changing absence from warning to failure.
+- [x] Add a Governance Decision Record defining portable work-item timestamp ownership, local mutation authority, native remote projection, and the transition from optional to required metadata.
+- [x] Extend the shared work-item format with `created_at` and `updated_at` using canonical `YYYY-MM-DDTHH:MM:SSZ` UTC values. During the compatibility period require both fields or neither, warn when both are absent, and fail one-sided, malformed, or `updated_at < created_at` records.
+- [x] Define creation as one instant written to both fields. Keep `created_at` immutable and advance `updated_at` only for a semantic governed-record mutation, not read-only inspection or formatting-only normalisation.
+- [x] Define a monotonic local update as the later of the wall clock truncated to seconds and one second after the current `updated_at`. Require an isolated writer to compare its observed source revision before publication and stop on drift rather than overwrite a newer record.
+- [x] Update the `ki-next`, `ki-plan`, `ki-implement`, and `ki-accept` procedures so every lifecycle or semantic body mutation they own preserves creation time and advances update time. `ki-batch` continues to delegate record mutation to those process owners.
+- [x] Extend the `ki-work-roadmap` evidence builder and fixtures for optional compatibility, canonical timestamp shape, ordering, future-clock tolerance, immutable creation evidence where available, and adapter-owned Knowledge Base metadata.
+- [x] Define remote adapters as projections of provider-native creation and update timestamps. Do not duplicate those timestamps into remote bodies or claim remote write support before the adapter executor exists.
+- [x] Document the rollout sequence: publish optional validation and process guidance, release CLI support, measure coverage, perform separately reviewable repository backfills, and create a later record before changing absence from warning to failure.
 
 ## Files touched
 
@@ -100,6 +100,32 @@ No new guide is required. Process-skill procedures carry the authoring workflow,
 ### Roadmap
 
 After optional support and CLI reporting are delivered, create separately reviewable records for estate backfill and for any later transition that makes timestamps universally required.
+
+## Review
+
+### Delivered
+
+Implemented the approved portable timestamp increment from immutable baseline `bae5a5e7595fdbacebe5eb817484b06d34d10959`. Commit `50af8c2e00ce37d2551120aed716adbfcae35321` adds the governance decision, optional local timestamp pair, deterministic validation, process mutation rules, and remote native projections. It does not add lifecycle-event statistics, perform an estate backfill, change the CLI, or enable remote writes.
+
+### Summary of changes
+
+Added `GDR-KI-HARNESS-008` and its decision-index entry. Extended the repository work-item format and lifecycle standard with canonical RFC 3339 UTC-second values, immutable creation time, monotonic semantic updates, optimistic source-revision refusal, and compatibility rollout. Extended the roadmap evidence builder and focused fixtures for pair presence, canonical shape, ordering, and future-clock tolerance; regenerated the readable rubric. Updated `ki-next`, `ki-plan`, `ki-implement`, and `ki-accept` procedures, plus the GitHub Issues and Linear adapter standards. During implementation, absence reporting was made informational rather than a rubric warning because `ki-next` deliberately stops on roadmap warnings; a warning would have made optional metadata operationally mandatory before the approved backfill phase.
+
+### Verification
+
+`bun run test` passes with 594 tests and no failures. `bunx tsc --noEmit` passes. The focused roadmap fixture suite passes. `ki repo audit --skill ki-work-roadmap --repo .`, `ki repo audit --skill ki-skills --repo .`, `ki repo audit --skill ki-decision-records --repo .`, and `ki repo audit --skill ki-authoring --repo .` pass after the review packet is present.
+
+### Outstanding concerns
+
+No blocker remains for this increment. Existing records without timestamps remain valid and produce non-failing compatibility information. `KI-TOOL-CLI-066`, estate backfills, coverage measurement, and any later required-field transition remain separate work with their own review boundaries.
+
+### Post-change review
+
+The change meets the approved goal without claiming unsupported lifecycle statistics or coupling the portable contract to one CLI or remote provider. Validation is deterministic and does not depend on the auditor's wall clock. The main regression risk is process authors forgetting to advance timestamps; the updated process standards make ownership explicit, while later CLI support can automate local mutation.
+
+### Mini recap
+
+Portable creation and last-semantic-update metadata now has one governed contract, checker evidence, and process ownership. The increment is ready for acceptance; follow-on tooling and backfills remain visible but deliberately out of scope.
 
 ## Discussion
 

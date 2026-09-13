@@ -197,6 +197,13 @@ test('optional work-item timestamps are paired, canonical, ordered, and clock-in
   const repository = createFixture()
   const item = join(repository, 'docs', 'roadmap', 'TEST-001-build-the-foundation.md')
   const source = readFileSync(item, 'utf8')
+  expect(inspectRoadmap(repository)).toContainEqual(
+    expect.objectContaining({
+      level: 'INFO',
+      area: 'ITEM-2',
+      msg: 'created_at and updated_at are absent during compatibility rollout'
+    })
+  )
   const timestamped = source.replace(
     'baseline_ref: null',
     'baseline_ref: null\ncreated_at: 2099-01-01T00:00:00Z\nupdated_at: 2099-01-01T00:00:01Z'
