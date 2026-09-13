@@ -4,12 +4,12 @@ area: GOV
 title: Track work item timestamps
 theme: governance-consistency
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: bae5a5e7595fdbacebe5eb817484b06d34d10959
 created_at: 2026-09-07T23:33:50Z
-updated_at: 2026-09-13T15:38:12Z
+updated_at: 2026-09-13T15:41:04Z
 ---
 
 # Track Work Item Timestamps
@@ -126,6 +126,10 @@ The change meets the approved goal without claiming unsupported lifecycle statis
 ### Mini recap
 
 Portable creation and last-semantic-update metadata now has one governed contract, checker evidence, and process ownership. The increment is ready for acceptance; follow-on tooling and backfills remain visible but deliberately out of scope.
+
+## Done
+
+Accepted 2026-09-13 by Kris Brown on the review packet above.
 
 ## Discussion
 
