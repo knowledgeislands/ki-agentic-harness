@@ -4,10 +4,10 @@ title: Review runtime binding drift
 area: RTP
 theme: runtime-portability
 horizon: next
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: d18fd7e31b08aee0f159ef4a461c14447b9a4e1b
 ---
 
 ## Goal
@@ -32,11 +32,11 @@ The 2026-09-04 audit recorded two runtime-native warnings, but the exact current
 
 ## Steps
 
-- [ ] Re-run the portable, Claude, and Codex binding audits against the current readable non-secret configuration.
-- [ ] Capture a sanitised comparison in `docs/reviews/KI-HARNESS-RTP-011/runtime-binding-drift.md`.
-- [ ] Classify each difference as intentional representation, missing registration, stale registration, or unavailable evidence.
-- [ ] Prepare an exact reversible follow-up proposal without modifying user-level configuration.
-- [ ] Capture any material implementation work as separately prioritised roadmap records.
+- [x] Re-run the portable, Claude, and Codex binding audits against the current readable non-secret configuration.
+- [x] Capture a sanitised comparison in `docs/reviews/KI-HARNESS-RTP-011/runtime-binding-drift.md`.
+- [x] Classify each difference as intentional representation, missing registration, stale registration, or unavailable evidence.
+- [x] Prepare an exact reversible follow-up proposal without modifying user-level configuration.
+- [x] Capture any material implementation work as separately prioritised roadmap records.
 
 ## Files touched
 
@@ -71,6 +71,32 @@ No human guidance changes are planned unless the review identifies a separately 
 ### Roadmap
 
 This record will retain the review result and link any separately prioritised implementation records arising from it.
+
+## Review
+
+### Delivered
+
+Against baseline `d18fd7e31b08aee0f159ef4a461c14447b9a4e1b`, the approved read-only review captured sanitised binding evidence, classified every reported difference, and created one bounded follow-up record. No user-level configuration, canonical binding data, or renderer output changed.
+
+### Summary of changes
+
+Added `docs/reviews/KI-HARNESS-RTP-011/runtime-binding-drift.md`, created `KI-HARNESS-GOV-059`, advanced the GOV issue ledger to `059`, and updated this record with completed steps and review evidence. The review classified both audit warnings as comparator drift against intentional renderer transformations.
+
+### Verification
+
+The portable binding audit passed. Claude and Codex audits reproduced their expected diagnostic warnings, and sanitised structural inspection accounted for every targeted registration. All four whole-file hashes matched at the primary implementation boundary; a later recheck found unrelated churn in app-owned `~/.claude.json`, while its targeted Claude Code binding remained conforming. Markdown, roadmap, and final repository gates passed.
+
+### Outstanding concerns
+
+The false-positive Claude and Codex warnings remain until `KI-HARNESS-GOV-059` is implemented. Activation and runtime health remain unavailable by design. App-owned whole-file churn means targeted binding comparison, not an extended whole-file hash window, is the reliable no-drift assertion. No other concern is known.
+
+### Post-change review
+
+The delivered evidence satisfies the approved discussion-only boundary and avoids an unsafe configuration repair. The follow-up isolates comparator correction from runtime state and keeps the result independently prioritised and reversible.
+
+### Mini recap
+
+All expected bindings are present; accepted renderer transformations explain the warnings. Review `KI-HARNESS-GOV-059` next if removing persistent false drift is valuable.
 
 ## Discussion
 
