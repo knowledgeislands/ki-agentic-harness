@@ -76,6 +76,10 @@ Repository structures compose with the universal baseline; they do not replace i
 
 Runtime binding and runtime evidence are separate from capability activation. A source file or clean source audit is not proof that a runtime loaded or executed it.
 
+## Find website design inspiration
+
+Use `ki-design-inspiration` to find visual references for a website or component, explain why selected examples fit, and suggest adaptations. Its curated sources cover navigation, footers, calls to action, page sections, 404 pages, bento grids, and motion. For example, ask “find navigation inspiration for this documentation site” or “suggest restrained motion references for this product page”. Website repository structure remains with `ki-repo-website` and its purpose-specific skills.
+
 ## Capture and triage new signals
 
 - **Capture an interesting link or source** — use `ki-pulse` with an explicit destination; inaccessible material remains an unread candidate rather than an invented summary.

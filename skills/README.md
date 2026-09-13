@@ -19,7 +19,7 @@ Use the [skills-by-outcome guide](../docs/guides/skills-by-outcome.md) when you 
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 57 skills: 48 governance skills and 9 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 58 skills: 48 governance skills and 10 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Agentic Systems
 
@@ -157,6 +157,17 @@ Governs flat repository work items and their concise root orientation in project
 
 - **Kind:** Governance
 - **Arguments:** `audit <repo> | conform <repo> | help | educate <repo> | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+### Design
+
+#### `ki-design-inspiration`
+
+Finds website design inspiration in curated galleries and translates selected examples into practical design directions. Use for website inspiration, visual references, or ideas for navigation, footers, calls to action, page sections, 404 pages, bento grids, and motion. Produces cited observations and adaptation suggestions; website repository configuration belongs to ki-repo-website.
+
+- **Kind:** Process
+- **Arguments:** `help | inspire <website-or-component> | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 
@@ -337,7 +348,7 @@ Codify, audit, and maintain repository-local guides — the practical how of usi
 
 #### `ki-specs`
 
-Codify, audit, and maintain Specifications — the behaviour-level contract of what a system does — in any Knowledge Islands repo. Specifications live in `docs/specs/`, flat one-file-per-area, with an `index.md` that defines the ID scheme and areas table. Each requirement is a `### <PREFIX>-NNN — title` heading carrying one RFC-2119 (MUST / SHOULD / MAY) statement and a `_Verify:_` test hook; IDs are append-only and never reused; an unnumbered `## Gaps` section holds the backlog. Decisions capture the why (`ki-decision-records`), specifications the what, guides the how (`ki-guides`), and roadmap items the when (`ki-work-roadmap`). Use when writing or auditing a specification. Triggers: "write a specification", "spec this behaviour", "audit specifications", "add a requirement", "what does the system do". Off-ramps: ki-decision-records (the governing decisions a requirement cites), ki-guides (practical procedure), ki-work-roadmap (planned work), ki-authoring (Markdown/TOML style).
+Codify, audit, and maintain Specifications — the accepted behaviour and quality contract of a system — in any Knowledge Islands repo. Specifications live in `docs/specs/`, flat one-file-per-feature-area, with an `index.md` that defines the ID scheme and areas table. Each requirement carries one BCP-14 statement, a conformance state, a verification plan, and current evidence when conforming; IDs are append-only and never reused; an unnumbered `## Gaps` section holds unaccepted candidates. Decisions capture why (`ki-decision-records`), specifications what, guides how (`ki-guides`), and roadmap items when (`ki-work-roadmap`). Use when writing or auditing a specification. Triggers: "write specification", "spec the behaviour", "audit specifications", "add a requirement", "what does the system do". Off-ramps: ki-decision-records (governing decisions a requirement cites), ki-guides (practical procedure), ki-work-roadmap (planned work), ki-authoring (Markdown/TOML style).
 
 - **Kind:** Governance
 - **Arguments:** `audit [dir] | conform [dir] | help | educate [dir] | new <area> "<title>" | refresh`
