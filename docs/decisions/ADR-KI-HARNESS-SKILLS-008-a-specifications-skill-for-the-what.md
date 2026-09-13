@@ -11,7 +11,7 @@ decision_type: architecture
 
 ## Context
 
-The skill set needs a governed **what** alongside Decisions' **why** and guides' **how**: a behaviour-level specification of what a system does. A Specifications corpus needs stable requirement identity and an explicit applicability boundary. A flat corpus can register multiple prefixes, including independent sequences in one file, so a global file-based sequence would make identity misleading. A repository may also contain incidental `docs/specs/` material that has not opted into the Specifications contract; treating its mere presence as a governed corpus would make applicability accidental rather than intentional.
+The skill set needs a governed **what** alongside Decisions' **why** and guides' **how**: a behaviour-level specification of what a system does. A Specifications corpus needs stable requirement identity and an explicit applicability boundary. A flat corpus can register multiple prefixes, including independent sequences in one file, so a global file-based sequence would make identity misleading. The canonical `docs/specs/` root is itself an intentional repository signal: placing content there means the repository has adopted the Specifications contract. Material that is not intended to be governed must live elsewhere or carry an explicit repository coverage opt-out.
 
 ## Decision
 
@@ -21,7 +21,7 @@ Introduce **`ki-specs`**, a general-governance skill that codifies Specification
 - **Requirement** — `### <PREFIX>-NNN — <title>` (multi-segment uppercase prefix, ≥ 3-digit serial, em-dash), one **RFC-2119** normative statement, and a `_Verify:_` hook naming the concrete check. IDs are append-only and sequential within each prefix registered in an areas table; a file may host independent sequences for its registered prefixes, and full IDs remain unique across the corpus. Deprecated entries keep their number struck through.
 - **Gaps** — an unnumbered `## Gaps` backlog sits outside the as-built contract and is exempt from the checker.
 - **Decision link** — a requirement governed by a recorded decision cites its DR; the checker leaves this as a judgment item.
-- **Applicability** — declaration of `ki-specs` opts a repository into the contract. An undeclared repository's incidental `docs/specs/` material is N/A. A declared repository must provide valid corpus evidence; absent or malformed evidence fails closed rather than being inferred or ignored.
+- **Applicability** — content under `docs/specs/` requires the repository to declare `ki-specs`; detected-but-undeclared content fails the repository audit. A repository that deliberately uses the path for unrelated material must record `coverage-specs = false`. A declared repository must provide valid corpus evidence; absent or malformed evidence fails closed rather than being inferred or ignored.
 
 ## Consequences
 

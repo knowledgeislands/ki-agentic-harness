@@ -420,7 +420,7 @@ const REPO_FIELDS =
 // DECLARED — its `[skills.ki-<skill>]` opt-in table present. This is the
 // single registry of {skill → detection signal → opt-in table}. `repo` reads only
 // table PRESENCE here (validate-down still owns table CONTENTS); a detected-but-
-// undeclared signal WARNs, a declared-but-undetected table WARNs as possibly stale.
+// undeclared signal FAILs, a declared-but-undetected table WARNs as possibly stale.
 // `authoring` is baseline (every KI repo) and so is not a *detected* coverage signal —
 // it is checked directly as a required declaration above (authoring-baseline), not here.
 const WRANGLER = ['wrangler.jsonc', 'wrangler.json', 'wrangler.toml']
@@ -543,6 +543,25 @@ async function remoteContentEvidence(nwo: string, branch: string): Promise<Conte
 }
 
 const COVERAGE: { skill: string; table: string; artifact: string; detect: (s: Signals) => boolean }[] = [
+  {
+    skill: 'decision-records',
+    table: skillTable('ki-decision-records'),
+    artifact: 'docs/decisions/** or Admin/Governance/Decisions/**',
+    detect: (s) =>
+      [...s.tree].some((p) => p.startsWith('docs/decisions/') || p.startsWith('Admin/Governance/Decisions/'))
+  },
+  {
+    skill: 'specs',
+    table: skillTable('ki-specs'),
+    artifact: 'docs/specs/**',
+    detect: (s) => [...s.tree].some((p) => p.startsWith('docs/specs/'))
+  },
+  {
+    skill: 'guides',
+    table: skillTable('ki-guides'),
+    artifact: 'docs/guides/**',
+    detect: (s) => [...s.tree].some((p) => p.startsWith('docs/guides/'))
+  },
   {
     skill: 'engineering',
     table: skillTable('ki-engineering'),
@@ -1001,7 +1020,7 @@ async function auditRepo(
       const declared = declaresTable(text, c.table)
       const detected = c.detect(signals)
       if (detected && !declared)
-        warn(
+        fail(
           'COV-1',
           `looks governed by ki-${c.skill} (${c.artifact}) but declares no [skills.${c.table}] — opt in, or set coverage-${c.skill} = false`
         )

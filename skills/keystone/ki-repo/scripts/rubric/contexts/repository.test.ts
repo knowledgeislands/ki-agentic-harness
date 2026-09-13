@@ -588,6 +588,55 @@ describe('local repository evidence', () => {
     expect((await collectAuditFindings([root])).findings.filter((finding) => finding.code === 'COV-1')).toEqual([])
   })
 
+  test('requires documentation skills for their governed roots or explicit coverage opt-outs', async () => {
+    const root = repository()
+    for (const path of [
+      ['docs', 'decisions', 'README.md'],
+      ['docs', 'specs', 'index.md'],
+      ['docs', 'guides', 'README.md']
+    ]) {
+      mkdirSync(join(root, ...path.slice(0, -1)), { recursive: true })
+      writeFileSync(join(root, ...path), '# Collection\n')
+    }
+    writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\n')
+
+    const missing = (await collectAuditFindings([root])).findings.filter(
+      (finding) => finding.code === 'COV-1' && finding.level === 'FAIL'
+    )
+    for (const skill of ['ki-decision-records', 'ki-specs', 'ki-guides']) {
+      expect(missing).toContainEqual(expect.objectContaining({ message: expect.stringContaining(skill) }))
+    }
+
+    writeFileSync(
+      join(root, '.ki.toml'),
+      `[skills.ki-repo]
+
+[skills.ki-repo.checks]
+coverage-decision-records = false
+coverage-specs = false
+coverage-guides = false
+`
+    )
+    const optedOut = (await collectAuditFindings([root])).findings.filter((finding) => finding.code === 'COV-1')
+    expect(optedOut).toHaveLength(3)
+    expect(optedOut.every((finding) => finding.level === 'INFO')).toBe(true)
+  })
+
+  test('detects the Knowledge Base decision collection path', async () => {
+    const root = repository()
+    mkdirSync(join(root, 'Admin', 'Governance', 'Decisions'), { recursive: true })
+    writeFileSync(join(root, 'Admin', 'Governance', 'Decisions', 'Decisions.md'), '# Decisions\n')
+    writeFileSync(join(root, '.ki.toml'), '[skills.ki-repo]\n')
+
+    const coverage = (await collectAuditFindings([root])).findings.filter((finding) => finding.code === 'COV-1')
+    expect(coverage).toContainEqual(
+      expect.objectContaining({
+        level: 'FAIL',
+        message: expect.stringContaining('ki-decision-records')
+      })
+    )
+  })
+
   test('separates website coverage and enforces one purpose-specific implementation', async () => {
     const root = repository()
     mkdirSync(join(root, 'apps', 'site'), { recursive: true })

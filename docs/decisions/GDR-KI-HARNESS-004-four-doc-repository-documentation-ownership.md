@@ -18,7 +18,7 @@ Knowledge Islands repositories had clear owners for Decision Records, Specificat
 Knowledge Islands adopts four durable documentation concerns for non-Knowledge-Base repositories: Decision Records answer why, Specifications answer what, Guides answer how, and roadmap items answer when.
 
 - `ki-decision-records`, `ki-specs`, and `ki-change-management-roadmap` retain their existing owned roots.
-- `ki-guides` owns `docs/guides/` and its `README.md` collection entry point, with a native structured rubric.
+- `ki-guides` owns `docs/guides/` and its `README.md` collection entry point, with a native structured rubric. Content under the root mechanically requires the skill declaration unless the repository records an explicit coverage opt-out.
 - `docs/spec/`, `docs/developer/`, and generic durable `docs/logs/` are retired as parallel roots. Their durable material is reclassified to its actual owner; ephemeral logs do not become a repository documentation system.
 
 ## Consequences
