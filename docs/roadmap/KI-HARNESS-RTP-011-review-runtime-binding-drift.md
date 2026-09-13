@@ -4,7 +4,7 @@ title: Review runtime binding drift
 area: RTP
 theme: runtime-portability
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: d18fd7e31b08aee0f159ef4a461c14447b9a4e1b
@@ -97,6 +97,10 @@ The delivered evidence satisfies the approved discussion-only boundary and avoid
 ### Mini recap
 
 All expected bindings are present; accepted renderer transformations explain the warnings. Review `KI-HARNESS-GOV-059` next if removing persistent false drift is valuable.
+
+## Done
+
+Accepted 2026-09-13 by the repository owner on the review packet above.
 
 ## Discussion
 
