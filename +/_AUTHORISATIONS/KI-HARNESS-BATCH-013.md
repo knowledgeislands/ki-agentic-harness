@@ -45,3 +45,9 @@ The item must pass through `in-progress` and reach `awaiting-review` with its ca
 ## Run ledger
 
 <!-- ki-batch-run: KI-HARNESS-BATCH-013-RUN-001 92588d786c0422552d24f61b062d6db8bd19e1347426474bcf5ee1cbfefd2e68 -->
+
+### Batch stop
+
+- Stopped before review because independent integration review found no honest terminal path for a rejected or merged Triage record to satisfy the existing done-before-prune rule.
+- The implemented capture, adoption, checker, local-adapter, migration, and publication changes passed focused tests, all declared audits, a live KB Streams audit, the 615-test full suite, and TypeScript, but remain uncommitted implementation work pending expanded authority.
+- `KI-HARNESS-GOV-060` returned to Ready with the required `ki-accept` intake-disposition scope made explicit for fresh authorisation.

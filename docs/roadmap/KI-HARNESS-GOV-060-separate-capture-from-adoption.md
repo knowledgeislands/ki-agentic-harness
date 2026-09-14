@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-14T01:45:26Z
-updated_at: 2026-09-14T02:01:06Z
+updated_at: 2026-09-14T02:21:57Z
 ---
 
 # Separate Capture From Adoption
@@ -38,17 +38,19 @@ The portable roadmap vocabulary has no explicit intake boundary. `future` curren
 - [ ] Remove `candidate` from the work-item contract and migrate current uncommitted candidates to `triage` without adopting or otherwise reprioritising them.
 - [ ] Make `ki-next` capture substantive prospective work into triage by default after deduplication, while requiring human approval before adoption into another horizon or rejection.
 - [ ] Reconcile the Knowledge Base Streams proposal path with the same default-capture and human-adoption boundary, keeping triage as metadata rather than a state directory.
+- [ ] Define an evidence-backed human-approved Triage disposition that reaches `done` before any later prune, without pretending rejected or merged intake was adopted or implemented.
 - [ ] Extend the roadmap checker and process decision helpers with triage validation, transition guards, and focused tests.
 - [ ] Republish generated rubric and capability documentation, then reconcile the outcome guide, scenario evaluation, and lifecycle diagram.
 
 ## Files touched
 
-Expected scope is the living repository-roadmap Decision Record; `ki-work-roadmap` standards, checker, focused tests, and generated rubric; `ki-next` and `ki-plan` process guidance, helpers, and focused tests; the `ki-repo-kb-streams` proposal procedure, structure guidance, state-directory check, and focused tests; the skills-by-outcome guide, roadmap evaluation scenario, and lifecycle diagram; current `candidate: true` roadmap records; this item; and batch authorisation records. Generated capability and diagram publication may change only when their source changes require it.
+Expected scope is the living repository-roadmap Decision Record; `ki-work-roadmap` standards, checker, focused tests, and generated rubric; `ki-next`, `ki-plan`, and `ki-accept` process guidance, helpers, and focused tests; the `ki-repo-kb-streams` proposal procedure, structure guidance, state-directory check, and focused tests; the skills-by-outcome guide, roadmap evaluation scenario, and lifecycle diagram; current `candidate: true` roadmap records; this item; and batch authorisation records. Generated capability and diagram publication may change only when their source changes require it.
 
 ## Verify
 
 - `bun test skills/change-management/ki-work-roadmap/scripts/rubric/items/index.test.ts`
 - `bun test skills/change-management/ki-next/scripts/decisions.test.ts skills/change-management/ki-plan/scripts/decisions.test.ts`
+- `bun test skills/change-management/ki-accept/scripts/acceptance-cycle.test.ts skills/change-management/ki-accept/scripts/prune-selection.test.ts`
 - `bun test skills/repo-structure/ki-repo-kb-streams/scripts/rubric/contexts/streams.test.ts`
 - `ki dev skill rubric ki-work-roadmap --write`
 - Regenerate the roadmap lifecycle diagram from its DOT source.
@@ -62,7 +64,7 @@ Expected scope is the living repository-roadmap Decision Record; `ki-work-roadma
 
 ## Dependencies / blocks
 
-No build-order dependency blocks delivery. The user explicitly supplied outcome authority to progress roadmap work and previously established that capture should require no approval while adoption should. This plan resolves the representation as a seventh `triage` horizon because it keeps intake position separate from delivery maturity and projects directly to provider-native triage concepts. A pre-implementation inventory found that Knowledge Base Streams still gates proposal creation on confirmation, so the plan includes that local adapter rather than publishing contradictory portable guidance. Moving this record from Future directly to Next is appropriate because the outcome, authority boundary, compatibility migration, affected surfaces, and verification are all understood; Soon adds no useful shaping stage.
+No build-order dependency blocks delivery. The user explicitly supplied outcome authority to progress roadmap work and previously established that capture should require no approval while adoption should. This plan resolves the representation as a seventh `triage` horizon because it keeps intake position separate from delivery maturity and projects directly to provider-native triage concepts. A pre-implementation inventory found that Knowledge Base Streams still gates proposal creation on confirmation, so the plan includes that local adapter rather than publishing contradictory portable guidance. Independent review then found that rejection or merging had no honest route to the user's required done-before-prune boundary, so the plan includes a narrow human-approved intake-disposition closure in `ki-accept`. Moving this record from Future directly to Next remains appropriate because the outcome, authority boundary, compatibility migration, affected surfaces, and verification are understood; Soon adds no useful shaping stage.
 
 ## Delegation
 
