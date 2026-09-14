@@ -1,6 +1,6 @@
 # KI-HARNESS-REV-001 review evidence
 
-This directory records the reviewed and approved evidence for [KI-HARNESS-REV-001](../../roadmap/KI-HARNESS-REV-001-review-skill-effectiveness.md).
+This directory records the reviewed and approved evidence for [KI-HARNESS-REV-001][rev-001-record].
 
 - **Immutable baseline:** `94f0b775903286fcf37c0ec050d5568672a5154f`
 - **Inventory:** [50-skill baseline](inventory.md)
@@ -133,3 +133,5 @@ The [Phase 1 synthesis](phase-1-synthesis.md), [Phase 2 synthesis](phase-2-synth
 - A source refresh separates portable authority, runtime overlays, house authority, and supporting discovery material.
 - Every later review applies the cumulative calibration checklist; phase synthesis adds only genuinely new, generalised checks.
 - No review record edits the skill it assesses.
+
+[rev-001-record]: https://github.com/knowledgeislands/ki-agentic-harness/blob/38b47cdb5cd5d2618e31c40e55cf652cd77aa5c7/docs/roadmap/KI-HARNESS-REV-001-review-skill-effectiveness.md

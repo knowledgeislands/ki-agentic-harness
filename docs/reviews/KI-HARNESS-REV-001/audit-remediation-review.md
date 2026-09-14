@@ -31,9 +31,9 @@ The catalogue count corrects the original roadmap prose from 44 to 45; both the 
 | `ki-decision-records/INDEX-4` | GOV-043† | Needs a preserving owner-specific parser. |
 | `ki-engineering/GEN-1` | Boundary via GOV-044‡ | Cross-owner check; safe preserving repair is disproportionate. |
 
-† [GOV-043](../../roadmap/KI-HARNESS-GOV-043-conform-decision-record-normalisation.md) waits for GOV-040 before normalising Decision Record metadata and owns the related index parser.
+† [GOV-043][gov-043-record] waits for GOV-040 before normalising Decision Record metadata and owns the related index parser.
 
-‡ [GOV-044](../../roadmap/KI-HARNESS-GOV-044-conform-generated-surface-exclusions.md) confirmed that `ki-engineering` owns Biome and Knip while `ki-authoring` wholly owns `.rumdl.toml`. Two successive no-dependency prototypes required 514 and 365 lines respectively to preserve comments and unrelated bytes while refusing ambiguous input. The candidate is therefore a justified diagnostic boundary until a proportionate owned editor capability or narrower configuration contract exists.
+‡ [GOV-044][gov-044-record] confirmed that `ki-engineering` owns Biome and Knip while `ki-authoring` wholly owns `.rumdl.toml`. Two successive no-dependency prototypes required 514 and 365 lines respectively to preserve comments and unrelated bytes while refusing ambiguous input. The candidate is therefore a justified diagnostic boundary until a proportionate owned editor capability or narrower configuration contract exists.
 
 ## Report-only disposition
 
@@ -46,3 +46,7 @@ The catalogue count corrects the original roadmap prose from 44 to 45; both the 
 Every one of the 344 justified boundaries retains non-empty guidance for its actual authorship, ambiguity, safety, external-state, or ownership boundary. The 40 `ki-skills` diagnostics that previously shared a generic sentence now carry criterion-specific guidance. Guarded criteria remain judgment-bearing and expose no conform action.
 
 The two promotions retain the same mechanical evaluation. `NAME-1` writes only a valid physical `SKILL.md`, preserves unrelated bytes, refuses symbolic sources, and becomes a no-op after repair. `RUNTIMES-2` only derives and requests the exact capability names; it cannot write sibling configuration, create links, choose providers, invoke a subprocess, or alter user settings. Host activation and post-CONFORM proof remain receiver-owned.
+
+[gov-043-record]: https://github.com/knowledgeislands/ki-agentic-harness/blob/3cfaa28926a781474b61d7b0592e2ede30814902/docs/roadmap/KI-HARNESS-GOV-043-conform-decision-record-normalisation.md
+
+[gov-044-record]: https://github.com/knowledgeislands/ki-agentic-harness/blob/a3d69b6789cc558724bc522e38992096cebe4855/docs/roadmap/KI-HARNESS-GOV-044-conform-generated-surface-exclusions.md

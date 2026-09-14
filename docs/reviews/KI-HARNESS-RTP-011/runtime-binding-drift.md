@@ -34,7 +34,7 @@ The two warnings therefore describe comparator drift against the accepted render
 
 ## Recommendation
 
-Do not modify user-level configuration. [KI-HARNESS-GOV-059](../../roadmap/KI-HARNESS-GOV-059-normalise-binding-comparisons.md) captures the bounded audit-normalisation change. Its implementation should align Claude and Codex comparison semantics while retaining strict detection for genuinely missing or stale registrations.
+Do not modify user-level configuration. [KI-HARNESS-GOV-059][gov-059-record] captures the bounded audit-normalisation change. Its implementation should align Claude and Codex comparison semantics while retaining strict detection for genuinely missing or stale registrations.
 
 ## Verification
 
@@ -44,3 +44,5 @@ Do not modify user-level configuration. [KI-HARNESS-GOV-059](../../roadmap/KI-HA
 - Sanitised structural inspection found no missing targeted registrations or unexpected KI-owned extras.
 - At the primary implementation boundary, pre-change and post-change hashes of the canonical source and three readable runtime configuration files matched.
 - A later post-commit recheck found only the whole-file hash of app-owned `~/.claude.json` had changed. The Claude Code binding comparison still passed, so its targeted MCP definition remained conforming. No implementation command wrote a runtime configuration file; unrelated application-file churn makes a whole-file hash unsuitable as evidence across an extended review window.
+
+[gov-059-record]: https://github.com/knowledgeislands/ki-agentic-harness/blob/654ded9770680a8e720a729430d343503f9e58e0/docs/roadmap/KI-HARNESS-GOV-059-normalise-binding-comparisons.md
