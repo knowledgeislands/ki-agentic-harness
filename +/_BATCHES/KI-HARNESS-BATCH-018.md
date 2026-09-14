@@ -43,3 +43,11 @@ Validate Markdown, roadmap, housekeeping, Decision Record, and authoring contrac
 ## Run ledger
 
 <!-- ki-batch-run: KI-HARNESS-BATCH-018-RUN-001 a6f4c05bebfd1ba99d6889a00cf13eaff1b9b63197b3eb5bade4a35d04c50136 -->
+
+### KI-HARNESS-BATCH-018-RUN-001
+
+- Started from immutable baseline `990431d86d985bd453750dc781ebba510ab1707c`.
+- Delegated two read-only evidence lanes; the coordinator retained selection, roadmap, finding classification, lifecycle, verification, acceptance, and Git authority.
+- Reviewed nine mechanical-governance candidates and all 20 locally registered estate roots.
+- Routed three mechanical and three Decision Record Harness-owned proposals to Triage; retained receiver-owned findings without cross-repository writes.
+- Moved both review runs to Awaiting review with canonical review packets; no mandatory stop was encountered.

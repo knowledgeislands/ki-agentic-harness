@@ -4,12 +4,12 @@ area: REV
 title: Reconcile Decision Records
 theme: regular-reviews
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 990431d86d985bd453750dc781ebba510ab1707c
 created_at: 2026-09-14T19:14:29Z
-updated_at: 2026-09-14T19:21:00Z
+updated_at: 2026-09-14T19:30:00Z
 housekeeping_template: KI-HARNESS-HK-002
 scheduled_for: 2026-09-09
 ---
@@ -34,12 +34,12 @@ In progress from immutable baseline `990431d86d985bd453750dc781ebba510ab1707c`. 
 
 ## Steps
 
-- [ ] Inventory canonical Decision Record collections and their identifiers, types, statuses, scopes, and indexes in locally available estate repositories.
-- [ ] Check explicit predecessor and successor links, supersession status, related current contracts, and duplicate authority signals.
-- [ ] Separate current authority from roadmap items, trades, generated publications, and historical notes.
-- [ ] Record unavailable evidence and uncertainty explicitly.
-- [ ] Deduplicate findings and route only material Harness-owned follow-up to Triage; retain receiver-owned findings for their repositories.
-- [ ] Complete the canonical review packet.
+- [x] Inventory canonical Decision Record collections and their identifiers, types, statuses, scopes, and indexes in locally available estate repositories.
+- [x] Check explicit predecessor and successor links, supersession status, related current contracts, and duplicate authority signals.
+- [x] Separate current authority from roadmap items, trades, generated publications, and historical notes.
+- [x] Record unavailable evidence and uncertainty explicitly.
+- [x] Deduplicate findings and route only material Harness-owned follow-up to Triage; retain receiver-owned findings for their repositories.
+- [x] Complete the canonical review packet.
 
 ## Files touched
 
@@ -79,7 +79,36 @@ Retain this record as successful-run evidence. Route material Harness-owned find
 
 ## Review
 
-Pending implementation.
+### Delivered
+
+Baseline `990431d86d985bd453750dc781ebba510ab1707c`; review run `KI-HARNESS-BATCH-018-RUN-001` inspected all 20 locally registered estate roots without changing any receiver repository.
+
+### Summary of changes
+
+Seventeen repositories declare `ki-decision-records`; 15 have canonical collections and two MCP housekeeping repositories lack the declared adoption root and index. Across existing collections, all 91 current records have exactly one ordered index entry and every declared decision dependency resolves. The review found three divergent payloads for one six-repository shared record, ten broken Arcadia reference links, two overlapping Harness mode decisions, and historical or forward-work content in current records across Harness, Arcadia, and dotfiles.
+
+The Harness-local findings became `KI-HARNESS-GOV-063`, `KI-HARNESS-GOV-064`, and `KI-HARNESS-GOV-065` in Triage. Receiver-owned findings remain recorded here for `mcp-housekeeping-chatgpt`, `mcp-housekeeping-codex`, `ki-arcadia-principal`, and dotfiles; this batch did not modify or allocate work in those repositories.
+
+### Verification
+
+- Coverage was 20 of 20 locally registered roots; no evidence population was unavailable.
+- Fifteen canonical collections pass their mechanical Decision Record audits.
+- All 91 current records have exactly one index entry: 51 architecture, 29 governance, nine strategy, one operations, and one product.
+- The two declared but absent collections fail the adoption-root and index requirements.
+- The shared fundamentals record has three byte variants across six repositories despite `shared_record: true` requiring byte identity.
+- Four Arcadia strategy records contain ten dangling non-decision references; current standard placement does not permit those links in `## References`.
+
+### Outstanding concerns
+
+Receiver-owned corrections remain outstanding by design. Shared-record reconciliation requires an explicit Harness authority decision followed by coordinated receiver acceptance. The standard currently has no explicit predecessor, successor, applicability, or supersession metadata in the 91-record corpus, so the review could only validate stated dependencies and present authority.
+
+### Post-change review
+
+No Decision Record was rewritten and no historical evidence was discarded. Roadmap, housekeeping, trade, and generated material stayed outside the current-decision index. The three new local records are unadopted proposals, not agreed policy.
+
+### Mini recap
+
+The estate's indexed Decision Record foundation is mechanically healthy. Five coherence classes are now visible and correctly separated into Harness-owned proposals and receiver-owned follow-up without rewriting history.
 
 ## Discussion
 
