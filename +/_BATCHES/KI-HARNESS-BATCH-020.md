@@ -42,3 +42,10 @@ Run the focused registry test, complete isolated suite, TypeScript, engineering,
 ## Run ledger
 
 <!-- ki-batch-run: KI-HARNESS-BATCH-020-RUN-001 15c87f5bc3739b13ac13bd4d54054977eab15fdb26c6a0b4f4ece0d30be08133 -->
+
+### KI-HARNESS-BATCH-020-RUN-001
+
+- Started from immutable baseline `193d82ab30cf9a262698ca83caf7ee124106f023`.
+- Delivered focused source-only registry coverage, test-root integration, and contributor guidance in `110421e2`.
+- Verified two focused tests, the complete isolated repository suite, TypeScript, engineering, roadmap, authoring, formatting, and diff hygiene.
+- Moved `KI-HARNESS-FND-024` to Awaiting review with the canonical packet; no mandatory stop or external action was encountered.

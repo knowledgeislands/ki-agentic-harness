@@ -4,12 +4,12 @@ area: FND
 title: Verify eval scenario registration
 theme: foundation-tooling
 horizon: now
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 193d82ab30cf9a262698ca83caf7ee124106f023
 created_at: 2026-09-14T19:26:00Z
-updated_at: 2026-09-14T20:08:00Z
+updated_at: 2026-09-14T20:18:00Z
 ---
 
 # Verify eval scenario registration
@@ -32,12 +32,12 @@ In progress from immutable baseline `193d82ab30cf9a262698ca83caf7ee124106f023`. 
 
 ## Steps
 
-- [ ] Add a deterministic registry test that enumerates physical `evals/scenarios/*.ts` modules.
-- [ ] Parse the Harness's static scenario imports and `ALL` spreads, reporting missing, repeated, or non-physical registrations.
-- [ ] Parse literal scenario identities and reject duplicates without importing or executing the live evaluation Harness.
-- [ ] Add `./evals` to the repository's existing isolated Bun test roots.
-- [ ] Update the eval contribution guide to state that deterministic registry coverage owns the two-point edit.
-- [ ] Run the focused test, full suite, TypeScript, engineering, authoring, and roadmap gates.
+- [x] Add a deterministic registry test that enumerates physical `evals/scenarios/*.ts` modules.
+- [x] Parse the Harness's static scenario imports and `ALL` spreads, reporting missing, repeated, or non-physical registrations.
+- [x] Parse literal scenario identities and reject duplicates without importing or executing the live evaluation Harness.
+- [x] Add `./evals` to the repository's existing isolated Bun test roots.
+- [x] Update the eval contribution guide to state that deterministic registry coverage owns the two-point edit.
+- [x] Run the focused test, full suite, TypeScript, engineering, authoring, and roadmap gates.
 
 ## Files touched
 
@@ -77,6 +77,35 @@ Update `evals/README.md` so contributors know the second registration edit is ch
 ### Roadmap
 
 Keep this record as implementation and review evidence. Any proposal to replace the static registry with dynamic loading remains separate work.
+
+## Review
+
+### Delivered
+
+Baseline `193d82ab30cf9a262698ca83caf7ee124106f023`; implementation commit `110421e2` adds deterministic scenario-registry coverage and makes it part of the ordinary repository suite.
+
+### Summary of changes
+
+Added `evals/registry.test.ts` to compare all physical scenario modules with the Harness's exact static imports and `ALL` spreads, reject repeated module or alias registration, and reject duplicate literal scenario identities. The test reads source only and never imports the live Harness or invokes a model. `package.json` now includes `./evals` in the isolated test roots, and the eval guide names the enforced registration behaviour.
+
+### Verification
+
+- Focused registry suite passes: two tests, seven expectations.
+- Full isolated repository suite passes with the new eval test root.
+- `bunx tsc --noEmit`, `git diff --check`, and `ki-engineering`, `ki-work-roadmap`, and `ki-authoring` audits pass.
+- Formatting gates report no residual change.
+
+### Outstanding concerns
+
+The check deliberately supports the present static literal registry. A future computed module name or scenario identity must either retain inspectable source or arrive through a separately reviewed registry design. Live behavioural evaluation remains advisory and unexecuted by this test.
+
+### Post-change review
+
+The change closes the silent-orphan failure without introducing dynamic loading, network access, provider calls, credentials, or new public skill policy. Test-root expansion discovers only `*.test.ts` files under `evals` and does not execute `harness.ts`.
+
+### Mini recap
+
+Adding a scenario remains a clear two-point edit, but omission, duplicate registration, and duplicate IDs now fail deterministically in the normal local and CI suite.
 
 ## Discussion
 
