@@ -4,12 +4,12 @@ area: REV
 title: Reconcile Decision Records
 theme: regular-reviews
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 990431d86d985bd453750dc781ebba510ab1707c
 created_at: 2026-09-14T19:14:29Z
-updated_at: 2026-09-14T19:14:29Z
+updated_at: 2026-09-14T19:21:00Z
 housekeeping_template: KI-HARNESS-HK-002
 scheduled_for: 2026-09-09
 ---
@@ -30,7 +30,7 @@ This is a read-only estate review with Harness-local recording. It must not rewr
 
 ## Current state
 
-Ready. The recurring template supplies the reconciliation boundary. Locally registered and available repositories may be inspected; unavailable repositories must be reported as unavailable rather than inferred clean.
+In progress from immutable baseline `990431d86d985bd453750dc781ebba510ab1707c`. The recurring template supplies the reconciliation boundary. Locally registered and available repositories may be inspected; unavailable repositories must be reported as unavailable rather than inferred clean.
 
 ## Steps
 

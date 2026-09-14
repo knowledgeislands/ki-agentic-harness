@@ -4,12 +4,12 @@ area: REV
 title: Review Mechanical Governance
 theme: regular-reviews
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 990431d86d985bd453750dc781ebba510ab1707c
 created_at: 2026-09-14T19:14:29Z
-updated_at: 2026-09-14T19:14:29Z
+updated_at: 2026-09-14T19:21:00Z
 housekeeping_template: KI-HARNESS-HK-001
 scheduled_for: 2026-09-09
 ---
@@ -30,7 +30,7 @@ This is a review-only run. It may inspect locally available evidence and route m
 
 ## Current state
 
-Ready. The recurring template defines the procedure and successful-run evidence. Initial signals worth testing include hard-coded capability counts, exact remediation-inventory totals, source-ledger freshness shape, and a single full-suite timeout that passed on isolation and rerun.
+In progress from immutable baseline `990431d86d985bd453750dc781ebba510ab1707c`. The recurring template defines the procedure and successful-run evidence. Initial signals worth testing include hard-coded capability counts, exact remediation-inventory totals, source-ledger freshness shape, a single full-suite timeout that passed on isolation and rerun, and repeated CI failures caused by released-harness lag.
 
 ## Steps
 
