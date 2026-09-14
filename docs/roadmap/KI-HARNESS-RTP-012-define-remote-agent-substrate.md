@@ -3,13 +3,13 @@ id: KI-HARNESS-RTP-012
 area: RTP
 title: Define remote agent substrate
 theme: runtime-portability
-horizon: soon
+horizon: next
 status: draft
 blocks: [KI-HARNESS-RTP-010]
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-07T23:33:50Z
-updated_at: 2026-09-08T22:34:22Z
+updated_at: 2026-09-14T14:04:29Z
 ---
 
 # Define Remote Agent Substrate
@@ -28,7 +28,13 @@ Same-filesystem worktrees are useful local isolation but need not be the portabl
 
 Do not redefine the Techne engineering model or remote-agent working style, become the authoritative provider-comparison record, select a provider, provision infrastructure, incur spend, move secrets into repository or dotfiles state, or imply that an agent runtime, orchestration cockpit, and execution sandbox are the same layer.
 
-## Shaping
+## Current state
+
+`ki-recap` produces a user-facing session summary and carry-forward digest, while `ki-checkpoint` owns concise repository reconstruction state for a human-named active thread. They are deliberately separate, but no explicit operation currently turns a recap into a portable checkpoint before compaction or a fresh local or cloud agent starts.
+
+This record already identifies the broader remote substrate topology and provider-neutral lifecycle. It does not yet bind an immutable repository baseline, a named `ki-checkpoint`, scoped authority, bootstrap requirements, result transport, and verification evidence into one executable handoff contract. A vendor thread, transcript, provider snapshot, or uncommitted working tree therefore remains an accidental continuity dependency.
+
+### Existing contract direction
 
 Specify the minimum topology received from Techne as executable capabilities: authoritative change record, persistent agent controller, isolated task environment, fresh checkout and branch, pinned bootstrap profile, runtime-injected credentials, health check, bounded network policy, commit and push boundary, review evidence, cleanup, and recovery. Treat a worktree as one same-host checkout adapter and an independent clone as the remote equivalent.
 
@@ -37,6 +43,56 @@ Define a small provider-neutral lifecycle covering create, inspect, execute, tra
 Use the open artifact boundaries selected by Techne: Dev Container configuration for the development environment, OCI images for distribution, Git references for source and results, and ordinary manifests and logs for evidence. Provider snapshots may accelerate startup but must never be the only authoritative copy of state.
 
 Require a conformance proof that the same bootstrap profile can create a fresh clone, pass its health check, execute a bounded task, emit review evidence, and clean up on at least two materially independent adapters. The first proof may be local; the second should detect hidden vendor assumptions before provider selection.
+
+## Steps
+
+- [ ] Add an accepted runtime-portability specification for execution inputs, lifecycle states, evidence, recovery, and result artifacts.
+- [ ] Define `ki-recap checkpoint <thread>` as the explicit, user-authorised bridge that creates or updates one valid active `ki-checkpoint` from the grounded recap and then applies the existing compaction safety boundary.
+- [ ] Keep `ki-checkpoint` the sole owner of checkpoint identity, schema, update, resume, and retirement while allowing `ki-recap` to invoke its update procedure only for the exact human-selected thread.
+- [ ] Require cloud handoffs to carry a repository identity, immutable baseline or portable patch containing all required work state and the checkpoint, scoped authority, bootstrap profile, credential and network boundaries, result destination, and cleanup responsibility.
+- [ ] Define adapter results for commits or patches, the updated checkpoint, verification and review evidence, recovery state, and explicit refusal; keep vendor sessions and snapshots optional and non-authoritative.
+- [ ] Add focused fixtures and rubric coverage for valid recap-to-checkpoint handoff, missing or ambiguous thread identity, uncommitted-only state, stale baselines, absent authority, unsafe credentials, interrupted transfer, and fresh-agent resume without transcript access.
+- [ ] Update the capability catalogue and outcome guide, then leave provider-specific proof to the dependent adapter records.
+
+## Files touched
+
+- `docs/specs/index.md` and a new runtime-portability specification
+- `skills/change-management/ki-recap/`
+- `skills/governance/ki-checkpoint/`
+- `docs/guides/skills-by-outcome.md` and generated `skills/README.md`
+- this roadmap record
+
+## Verify
+
+- `ki repo audit --skill ki-specs --repo .`
+- `ki repo audit --skill ki-checkpoint --repo .`
+- `ki repo audit --skill ki-skills --repo .`
+- Focused `ki-recap` and `ki-checkpoint` tests
+- `bun run test`
+- `bunx tsc --noEmit`
+- `ki repo audit --skill ki-work-roadmap --repo .`
+
+## Dependencies / blocks
+
+The contract consumes the accepted responsibility model from `TECHNE-GOV-005` and remote working-mode evidence from `TECHNE-OPS-002` without changing either owner. This record blocks `KI-HARNESS-RTP-010`; provider-specific proof remains downstream and is not required to define the provider-neutral handoff. No vendor account, remote mutation, push, spend, or secret migration is authorised by this plan.
+
+## Documentation impact
+
+### Decision Records
+
+Add a Decision Record only if implementation changes the accepted Techne responsibility boundary rather than projecting it into Harness.
+
+### Specifications
+
+Register the runtime-portability area and its accepted behavioural requirements in `docs/specs/`.
+
+### Guides
+
+Update the outcome guide so active work routes through recap-backed portable checkpoints before a local or cloud handoff.
+
+### Roadmap
+
+Record provider-specific proof only in dependent adapter items such as `KI-HARNESS-RTP-010`; do not expand this record into provider selection or provisioning.
 
 ## Discussion
 
