@@ -4,12 +4,12 @@ area: REV
 title: Agentic Standards Radar
 theme: regular-reviews
 horizon: next
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 9e976e6a0306bcc1dd66311c6bb859408d54b9e4
 created_at: 2026-09-14T01:43:10Z
-updated_at: 2026-09-14T17:54:21Z
+updated_at: 2026-09-14T18:15:35Z
 ---
 
 # Agentic Standards Radar
