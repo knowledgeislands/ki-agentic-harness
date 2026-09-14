@@ -39,7 +39,7 @@ Each scenario ends with a verdict — **skill helped / regressed / no difference
 
 ## Adding scenarios
 
-One file per skill in `scenarios/` (e.g. `scenarios/ki-repo-kb.ts`), each exporting a list of scenarios. A scenario is just three things: a **prompt**, some regex **assertions**, and a judge **rubric**. Copy an existing file for the shape, then add it to the `ALL` list in [`harness.ts`](harness.ts).
+One file per skill in `scenarios/` (e.g. `scenarios/ki-repo-kb.ts`), each exporting a list of scenarios. A scenario is just three things: a **prompt**, some regex **assertions**, and a judge **rubric**. Copy an existing file for the shape, then add it to the `ALL` list in [`harness.ts`](harness.ts). The deterministic registry test fails when a physical scenario module is unregistered, registered more than once, or reuses a scenario ID; it never invokes a model.
 
 Aim for **3+ per skill**, and test your **house-specific** names, paths, and rules — not general best practice, which the model knows with or without the skill.
 

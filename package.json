@@ -50,7 +50,7 @@
     "ki:deps:update": "bun update --latest",
     "ki:harness:eval": "bun evals/harness.ts",
     "prepare": "husky",
-    "test": "bun test --isolate --max-concurrency=1 ./skills ./hooks"
+    "test": "bun test --isolate --max-concurrency=1 ./skills ./hooks ./evals"
   },
   "type": "module"
 }
