@@ -3,13 +3,13 @@ id: KI-HARNESS-FND-014
 area: FND
 title: Implement remote adapter execution
 theme: foundation-tooling
-horizon: now
+horizon: waiting-for
 status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-08-09T20:58:31Z
-updated_at: 2026-09-02T21:39:21Z
+updated_at: 2026-09-14T18:53:27Z
 ---
 
 ## Goal
