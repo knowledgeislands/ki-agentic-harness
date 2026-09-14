@@ -4,12 +4,12 @@ area: REV
 title: Establish Model Radar
 theme: regular-reviews
 horizon: next
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 98ab65610f668d6bfa58b2d7a16916893c67bce2
 created_at: 2026-09-14T01:50:45Z
-updated_at: 2026-09-14T13:47:18Z
+updated_at: 2026-09-14T17:35:11Z
 ---
 
 # Establish Model Radar
