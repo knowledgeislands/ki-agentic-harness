@@ -4,12 +4,12 @@ area: OPS
 title: Restore source Harness CI
 theme: operations
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: b2746ee7f7cb03ea0969861bd8f9d969444a9403
 created_at: 2026-09-14T19:26:00Z
-updated_at: 2026-09-14T19:55:00Z
+updated_at: 2026-09-14T19:58:00Z
 ---
 
 # Restore source Harness CI
@@ -110,6 +110,10 @@ The change applies existing bootstrap and local-development contracts without ch
 ### Mini recap
 
 CI can now test a Harness newer than the CLI's embedded archive while still proving the released CLI binary and explicitly validating the source it activates.
+
+## Done
+
+Accepted 2026-09-14 through `KI-HARNESS-BATCH-019` on the review packet above. Remote hosted-runner confirmation remains explicit post-change evidence and is not required to retain the locally verified fix.
 
 ## Discussion
 

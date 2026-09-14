@@ -50,3 +50,10 @@ Validate workflow syntax and ordering, exercise the released-CLI sequence in dis
 - Delivered `.github/workflows/ci.yml` in `4f260a4f`, preserving released-CLI proof while activating and asserting the validated checked-out Harness before repair and audit.
 - Verified workflow parsing, current checkout tag, released-v0.3.6 behaviour evidence, a clean full-suite rerun, TypeScript, focused governance audits, and diff hygiene.
 - Moved `KI-HARNESS-OPS-007` to Awaiting review with the canonical packet; remote hosted-runner confirmation remains outside the no-push batch boundary.
+
+### Batch recap
+
+- Closed `KI-HARNESS-OPS-007` Done under exact consolidated-acceptance authority.
+- Restored a viable local CI contract with released-binary proof, validated source activation, and current checkout runtime.
+- Retained remote hosted-runner confirmation as explicit post-change evidence rather than bypassing the no-push boundary.
+- Performed no push, release, deployment, external write, destructive action, or public-contract change.
