@@ -4,12 +4,12 @@ area: GOV
 title: Separate Capture From Adoption
 theme: governance-consistency
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 654ded9770680a8e720a729430d343503f9e58e0
 created_at: 2026-09-14T01:45:26Z
-updated_at: 2026-09-14T13:44:00Z
+updated_at: 2026-09-14T17:30:26Z
 ---
 
 # Separate Capture From Adoption
@@ -117,6 +117,10 @@ Independent review identified missing target validation, unwanted delivery secti
 ### Mini recap
 
 GOV-060 establishes automatic durable capture with explicit adoption and terminal disposition gates across both local adapters. Verification is clean. The design learning belongs in the amended roadmap standard and existing ADR; no additional learning promotion is proposed.
+
+## Done
+
+Accepted 2026-09-14 by the repository owner under explicit roadmap outcome authority on the review packet above.
 
 ## Discussion
 
