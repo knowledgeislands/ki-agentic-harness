@@ -4,12 +4,12 @@ area: REV
 title: Establish Model Radar
 theme: regular-reviews
 horizon: next
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 98ab65610f668d6bfa58b2d7a16916893c67bce2
 created_at: 2026-09-14T01:50:45Z
-updated_at: 2026-09-14T17:35:11Z
+updated_at: 2026-09-14T18:10:18Z
 ---
 
 # Establish Model Radar
@@ -66,12 +66,12 @@ The adjacent owners and source boundaries are available locally, and the initial
 
 ## Steps
 
-- [ ] Create `ki-model-radar` as a runtime-neutral governance skill with AUDIT, CONFORM, EDUCATE, and REFRESH modes, plus explicit off-ramps to `ki-pulse`, `ki-tokenomics`, runtime adapters, `ki-next`, and `ki-skills`.
-- [ ] Define the TOML snapshot schema and Markdown evidence contract for stable model identities, executable routes, benchmark applicability, recommendation ring, support state, retirement state, movement, provenance, counter-evidence, and review dates.
-- [ ] Seed the reviewed benchmark registry and initial model-route snapshot from the public sources named in this record, preserving uncertainty and keeping provider claims corroborating rather than decisive evidence.
-- [ ] Add deterministic no-write validation for identity uniqueness, closed vocabularies, required dates, evidence linkage, and internally consistent lifecycle combinations; limit CONFORM to safe structural repairs.
-- [ ] Add weekly signal/deprecation and monthly material-release housekeeping templates whose spawned work routes consequential changes through the normal roadmap lifecycle.
-- [ ] Register and publish the skill, add an evaluation scenario, and verify its boundaries against `ki-pulse`, `ki-tokenomics`, `KI-HARNESS-REV-002`, and runtime-specific configuration owners.
+- [x] Create `ki-model-radar` as a runtime-neutral governance skill with AUDIT, CONFORM, EDUCATE, and REFRESH modes, plus explicit off-ramps to `ki-pulse`, `ki-tokenomics`, runtime adapters, `ki-next`, and `ki-skills`.
+- [x] Define the TOML snapshot schema and Markdown evidence contract for stable model identities, executable routes, benchmark applicability, recommendation ring, support state, retirement state, movement, provenance, counter-evidence, and review dates.
+- [x] Seed the reviewed benchmark registry and initial model-route snapshot from the public sources named in this record, preserving uncertainty and keeping provider claims corroborating rather than decisive evidence.
+- [x] Add deterministic no-write validation for identity uniqueness, closed vocabularies, required dates, evidence linkage, and internally consistent lifecycle combinations; limit CONFORM to safe structural repairs.
+- [x] Add weekly signal/deprecation and monthly material-release housekeeping templates whose spawned work routes consequential changes through the normal roadmap lifecycle.
+- [x] Register and publish the skill, add an evaluation scenario, and verify its boundaries against `ki-pulse`, `ki-tokenomics`, `KI-HARNESS-REV-002`, and runtime-specific configuration owners.
 
 ## Files touched
 
@@ -116,6 +116,36 @@ Update an existing skills guide only when the generated catalogue does not give 
 Keep this item as the implementation and review authority. Any approved runtime-default, adapter, or private-evaluation consequence becomes separate owner-local work through `ki-next`.
 
 **Delegation:** one bounded lane may prepare the public-source snapshot and benchmark evidence while another implements the schema validator and fixtures. The coordinator retains schema authority, skill-boundary review, generated publication updates, final verification, and all roadmap lifecycle changes.
+
+## Review
+
+### Delivered
+
+Baseline `98ab65610f668d6bfa58b2d7a16916893c67bce2`; implementation commits `793bd340` and `856ea91a` establish the model-radar contract and correct the pre-existing reference-filename checker defect exposed by its TOML snapshot.
+
+### Summary of changes
+
+Added the `ki-model-radar` governance skill, evidence and lifecycle standard, deterministic rubric, 27-source evidence registry, 11-model and 14-route snapshot, seven benchmark records, two recurring housekeeping reviews, three behavioural scenarios, repository registration, task-oriented guidance, and regenerated 59-capability catalogue. The snapshot keeps recommendation, actual support, retirement, movement, evaluated unit, access route, openness, and locality separate.
+
+### Verification
+
+- `ki-model-radar`, `ki-skills`, `ki-work-housekeeping`, `ki-authoring`, `ki-repo-harness`, and `ki-work-roadmap` audits pass.
+- Focused model-radar, checker, and remediation-inventory tests pass: 14 tests and 50 expectations.
+- Full Harness suite passes: 643 tests, zero failures.
+- `bunx tsc --noEmit` and `git diff --check` pass.
+- The live Claude behavioural eval was not run because it is non-deterministic, quota-bearing, and explicitly advisory rather than a delivery gate.
+
+### Outstanding concerns
+
+No blocking concern. Initial ring positions are reviewed local hypotheses rather than universal rankings; monthly refresh must keep external identity, lifecycle, benchmark, licence, pricing, and route facts current. Private-repository evaluation, paid benchmark execution, runtime-default changes, and consumer integrations remain deliberately outside this delivery.
+
+### Post-change review
+
+No Decision Record or repository-wide Specification was required because the new capability owns its local schema without changing an existing authority boundary. The generated catalogue and skills-by-outcome guide now expose the capability. Consequential model or route changes remain owner-local roadmap work.
+
+### Mini recap
+
+The Harness now has a viable, auditable model and executable-route radar with an evidence-backed starting snapshot and recurring refresh cadence. It informs model choices without silently changing runtime configuration or treating a leaderboard as policy.
 
 ## Discussion
 
