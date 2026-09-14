@@ -116,7 +116,7 @@ const KI_SHAPE_6: RubricItem<KiShapeRubricContext> = {
           return [{ status: 'NOT_APPLICABLE', message: 'the target is not a Knowledge Islands skill' }]
         const allowed = /^(?:exemplars|rubric|sources|standards-[a-z0-9]+(?:-[a-z0-9]+)*|mode-[a-z0-9]+)\.md$/
         const violations = skill.referencePaths
-          .filter((path) => !allowed.test(path))
+          .filter((path) => path.endsWith('.md') && !allowed.test(path))
           .map((path) => ({
             status: 'VIOLATION' as const,
             message: 'reference is outside the closed Knowledge Islands filename vocabulary',
