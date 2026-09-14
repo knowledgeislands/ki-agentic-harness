@@ -7,7 +7,7 @@ last-run: 2026-08-09
 grace: P7D
 spawn-policy: when-due
 spawn-horizon: now
-active-run: null
+active-run: KI-HARNESS-REV-004
 ---
 
 # Monthly mechanical governance review
