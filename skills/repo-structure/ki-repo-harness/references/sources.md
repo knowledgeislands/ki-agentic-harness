@@ -8,8 +8,8 @@ The tracked sources behind [the compatible harness standard](standards-compatibl
 
 | Tag | Source | Governs | Last reviewed |
 | --- | --- | --- | --- |
-| [AS] | [Agent Skills specification][as-spec] | The individual `SKILL.md` format the harness serves † | 2026-08-12 |
-| [CC] | [Claude Code subagent docs][cc-subagents] | The subagent definition format the `subagents/` part serves | 2026-08-12 |
+| [AS] | [Agent Skills specification][as-spec] | The individual `SKILL.md` format the harness serves † | 2026-09-14 |
+| [CC] | [Claude Code subagent docs][cc-subagents] | The subagent definition format the `subagents/` part serves | 2026-09-14 |
 
 † Including the directory-name = `name:` constraint and the `references/`, `scripts/`, `assets/` layout.
 
@@ -29,25 +29,18 @@ The tracked sources behind [the compatible harness standard](standards-compatibl
 
 ## Last review
 
-_REFRESH last run **2026-08-12** (previous: 2026-07-27)._
+_REFRESH last run **2026-09-14** (previous: 2026-08-12)._
 
 **Confirmed:**
 
-- [AS] re-fetched live: the Agent Skills specification still defines **no** bundle, harness, container, or multi-skill grouping concept — the five-part source structure and co-location intent remain a KI architectural convention. The spec requires the `name` field to match the parent directory name (reinforcing SKILLS-1) and documents optional frontmatter governed by `ki-skills`, not this container standard.
-- [CC] re-fetched live: the subagent definition format (frontmatter `name` / `description` / `tools` / `model` + system-prompt body, project- and user-level install locations) is unchanged. No change to the `subagents/` part of the harness contract.
-- [CH] confirms that the current installed payload contains regular `skills/`, `subagents/`, and `hooks/`; a checkout, cache, runtime projection, or `.ki/` directory is never an implicit operation source.
-- [KR] / [KS] / [KE] confirm the direct boundaries: `.ki.toml` declares source-repository governance, rubrics execute through the `ki` host, and package scripts are development conveniences rather than installation or governance entry points.
-
-**Drift resolved this pass:**
-
-- The standard now separates the five-part source repository from the current three-directory compatible payload and names installed, verified harness state as the only operation source.
-- Retired package aliases, repository-vendored executors, checkout-dependent runtime links, and a skill-owned global linker are removed from the harness contract.
-- The mechanical catalogue now discovers grouped physical skill roots, uses the final session contract, and retains only the safe host-published `[skills.ki-repo-harness]` marker append.
+- [AS] re-fetched live: still defines **no** bundle, harness, container, or multi-skill grouping concept. The `name` field must match the parent directory name. Optional frontmatter fields (`compatibility`, `allowed-tools`, `metadata`) remain unchanged. The spec now makes the consecutive-hyphen prohibition explicit ("Must not contain consecutive hyphens (`--`)"); this is a `ki-skills` frontmatter quality concern, not a harness container concern — the `ki-skills` optional-fields watch item should also note this constraint.
+- [CC] re-fetched live: the subagent definition format (frontmatter `name` / `description` / `tools` / `model` + system-prompt body, project- and user-level install locations) is unchanged. The `experimental` field (object; `cacheTtl` key) was added in v2.1.248+. No structural change to the `subagents/` part of the harness contract.
+- [CH] / [KR] / [KS] / [KE] in-house sources were not re-fetched this cycle; boundaries remain as confirmed in the 2026-08-12 review.
 
 **Open watch-items:**
 
-- [AS] — Monitor for any Agent Skills spec update that adds bundle / harness-level concepts. If agentskills.io ever formalises a multi-skill container, reconcile with this standard. Also: the newly-documented optional frontmatter fields (`compatibility`, `allowed-tools`, `metadata`) are a `ki-skills` concern to fold in — flag raised, not owned here.
-- [CC] — Monitor Claude Code release notes for any change to skill-install paths or the project-local skill-install convention.
+- [AS] — Monitor for any spec update adding bundle/harness-level concepts. The optional frontmatter fields (`compatibility`, `allowed-tools`, `metadata`) and the now-explicit consecutive-hyphen constraint are both `ki-skills` concerns — flag raised, not owned here.
+- [CC] — Monitor Claude Code release notes for changes to skill-install paths, the project-local skill-install convention, or additional `experimental` keys.
 - [CH] — Monitor host support for additional capability kinds. MCP servers and evals remain source shelves until their compatible-payload contracts land.
 
 [as-spec]: https://agentskills.io/specification

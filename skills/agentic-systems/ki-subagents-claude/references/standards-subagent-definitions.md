@@ -12,7 +12,11 @@ Claude Code requires string `name` and `description` fields. A source name uses 
 
 ## Supported fields
 
-Current Claude Code supports `name`, `description`, `tools`, `disallowedTools`, `model`, `permissionMode`, `maxTurns`, `skills`, `mcpServers`, `hooks`, `memory`, `background`, `effort`, `isolation`, `color`, and `initialPrompt`. The adapter checks that a candidate source uses only this set. It does not infer effective model, permissions, scheduling, nesting, tool availability, or spawned-agent policy from source text.
+Current Claude Code supports `name`, `description`, `tools`, `disallowedTools`, `model`, `permissionMode`, `maxTurns`, `skills`, `mcpServers`, `hooks`, `memory`, `background`, `effort`, `isolation`, `color`, `initialPrompt`, and `experimental`. The adapter checks that a candidate source uses only this set. It does not infer effective model, permissions, scheduling, nesting, tool availability, or spawned-agent policy from source text.
+
+`experimental` is an object field read from file source only (not the CLI or plugin paths). Its only currently documented key is `cacheTtl`, which accepts `5m` or `1h` to control prompt-cache lifetime. Available since v2.1.248+.
+
+`permissionMode` does not inherit `bypassPermissions` from the calling conversation as of v2.1.267+, even when the main conversation runs in that mode. A subagent's effective permission level must be established independently of its caller's mode.
 
 ## Source discovery and host boundary
 
