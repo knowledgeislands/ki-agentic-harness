@@ -42,3 +42,11 @@ Validate workflow syntax and ordering, exercise the released-CLI sequence in dis
 ## Run ledger
 
 <!-- ki-batch-run: KI-HARNESS-BATCH-019-RUN-001 953d9c9b0b5ea221d02aad987fc7130ac199b621649a71bf174827a0f77c1368 -->
+
+### KI-HARNESS-BATCH-019-RUN-001
+
+- Started from immutable baseline `b2746ee7f7cb03ea0969861bd8f9d969444a9403`.
+- Delegated one read-only workflow and released-CLI evidence review; the coordinator retained planning, implementation, verification, lifecycle, acceptance, and Git authority.
+- Delivered `.github/workflows/ci.yml` in `4f260a4f`, preserving released-CLI proof while activating and asserting the validated checked-out Harness before repair and audit.
+- Verified workflow parsing, current checkout tag, released-v0.3.6 behaviour evidence, a clean full-suite rerun, TypeScript, focused governance audits, and diff hygiene.
+- Moved `KI-HARNESS-OPS-007` to Awaiting review with the canonical packet; remote hosted-runner confirmation remains outside the no-push batch boundary.
