@@ -4,12 +4,12 @@ area: REV
 title: Establish Model Radar
 theme: regular-reviews
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 98ab65610f668d6bfa58b2d7a16916893c67bce2
 created_at: 2026-09-14T01:50:45Z
-updated_at: 2026-09-14T18:10:18Z
+updated_at: 2026-09-14T18:13:54Z
 ---
 
 # Establish Model Radar
@@ -146,6 +146,10 @@ No Decision Record or repository-wide Specification was required because the new
 ### Mini recap
 
 The Harness now has a viable, auditable model and executable-route radar with an evidence-backed starting snapshot and recurring refresh cadence. It informs model choices without silently changing runtime configuration or treating a leaderboard as policy.
+
+## Done
+
+Accepted 2026-09-14 by the repository owner through `KI-HARNESS-BATCH-016` on the review packet above.
 
 ## Discussion
 

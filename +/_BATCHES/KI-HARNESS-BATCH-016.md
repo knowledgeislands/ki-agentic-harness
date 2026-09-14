@@ -59,3 +59,10 @@ The admitted record must move from Ready through In progress and Awaiting review
 - Delegated bounded skill, integration, and public-source evidence lanes; the coordinator retained integration, lifecycle, verification, and Git authority.
 - Verified 643 repository tests, TypeScript, focused model-radar and checker tests, generated publications, Markdown, roadmap, housekeeping, harness, and skill audits.
 - Moved `KI-HARNESS-REV-003` to Awaiting review with the canonical review packet; no mandatory stop or excluded external action was encountered.
+
+### Batch recap
+
+- Closed `KI-HARNESS-REV-003` as Done under the batch's exact consolidated-acceptance authority.
+- Delivered the viable model-radar contract, source-backed initial snapshot, mechanical validator, review cadence, eval coverage, and discovery surfaces without changing any runtime default or consumer repository.
+- Captured no remedial roadmap work: the only surfaced checker defect was bounded, regression-tested, and delivered in the batch.
+- Left the batch record retained as durable authorisation and outcome evidence; no push, release, deployment, or destructive action was performed.
