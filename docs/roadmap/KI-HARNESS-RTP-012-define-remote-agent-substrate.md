@@ -8,6 +8,8 @@ status: draft
 blocks: [KI-HARNESS-RTP-010]
 blocked_by: []
 baseline_ref: null
+created_at: 2026-09-07T23:33:50Z
+updated_at: 2026-09-08T22:34:22Z
 ---
 
 # Define Remote Agent Substrate

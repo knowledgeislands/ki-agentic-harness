@@ -8,6 +8,8 @@ status: draft
 blocks: []
 blocked_by: [KI-HARNESS-RTP-012]
 baseline_ref: null
+created_at: 2026-09-01T10:24:06Z
+updated_at: 2026-09-14T13:44:33Z
 ---
 
 ## Goal

@@ -8,6 +8,8 @@ status: in-progress
 blocks: []
 blocked_by: []
 baseline_ref: 98e637e8c63581f3c0535fcf73974f45415eaa47
+created_at: 2026-08-24T15:11:06Z
+updated_at: 2026-09-02T21:35:56Z
 ---
 
 ## Goal
