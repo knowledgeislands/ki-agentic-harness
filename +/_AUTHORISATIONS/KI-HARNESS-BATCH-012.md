@@ -52,3 +52,9 @@ The item must pass through `in-progress` and reach `awaiting-review` with its ca
 ## Run ledger
 
 <!-- ki-batch-run: KI-HARNESS-BATCH-012-RUN-001 53febc50105cd76b7fd58c7066a727ddebdf6bd641cee084f51c5a70cd8cc2c2 -->
+
+### Batch stop
+
+- Stopped before implementation because read-only inventory found a load-bearing `ki-repo-kb-streams` confirmation contract outside the authorised file scope.
+- No implementation, migration, remote, acceptance, pruning, push, or release change occurred under this run.
+- `KI-HARNESS-GOV-060` returned to Ready with the required local-adapter scope made explicit for fresh authorisation.
