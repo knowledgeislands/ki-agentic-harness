@@ -104,6 +104,8 @@ mcp_servers = 20 # User-scoped; revisit if the global MCP set is pruned.
 
 [skills.ki-model-radar]
 
+[skills.ki-agentic-radar]
+
 # -----------------------------------------------------------------------------
 # Relationships
 # -----------------------------------------------------------------------------

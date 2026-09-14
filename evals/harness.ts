@@ -46,6 +46,7 @@ import { scenarios as skillsScenarios } from './scenarios/ki-skills.ts'
 import { scenarios as streamsScenarios } from './scenarios/ki-repo-kb-streams.ts'
 import { scenarios as tokenomicsScenarios } from './scenarios/ki-tokenomics.ts'
 import { scenarios as modelRadarScenarios } from './scenarios/ki-model-radar.ts'
+import { scenarios as agenticRadarScenarios } from './scenarios/ki-agentic-radar.ts'
 import { scenarios as decisionRecordsScenarios } from './scenarios/ki-decision-records.ts'
 import { scenarios as repoRoadmapScenarios } from './scenarios/ki-work-roadmap.ts'
 import { scenarios as activitiesScenarios } from './scenarios/ki-repo-kb-activities.ts'
@@ -77,6 +78,7 @@ const ALL: Scenario[] = [
   ...streamsScenarios,
   ...tokenomicsScenarios,
   ...modelRadarScenarios,
+  ...agenticRadarScenarios,
   ...decisionRecordsScenarios,
   ...specsScenarios,
   ...repoRoadmapScenarios,

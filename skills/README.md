@@ -19,7 +19,7 @@ Use the [skills-by-outcome guide](../docs/guides/skills-by-outcome.md) when you 
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 59 skills: 49 governance skills and 10 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 60 skills: 50 governance skills and 10 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Agentic Systems
 
@@ -273,6 +273,15 @@ Audit direct, non-secret Codex filesystem observations in the selected repositor
 - **Runtime:** Runtime-bound: `chatgpt-codex`
 
 ### Governance
+
+#### `ki-agentic-radar`
+
+Governs an evidence-backed radar for agentic protocols, interface formats, organisations, architectural patterns, research claims, and vendor terms. Use when asked to audit agentic standards, compare protocol maturity or interoperability, assess Knowledge Islands stance or movement, or refresh the agentic landscape. Use `ki-model-radar` for models and model-agent routes, `ki-pulse` for bounded signal discovery, and `ki-next` for consequential follow-on work.
+
+- **Kind:** Governance
+- **Arguments:** `audit | conform | educate | help | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
 
 #### `ki-agora`
 
