@@ -4,12 +4,12 @@ area: GOV
 title: Simplify Working Areas
 theme: governance-consistency
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: c5cd90274ce82a9c107f1500318bd1c3c504bd14
 created_at: 2026-09-14T14:30:19Z
-updated_at: 2026-09-14T14:43:28Z
+updated_at: 2026-09-14T17:31:16Z
 ---
 
 # Simplify Working Areas
@@ -141,6 +141,10 @@ The two bounded worker lanes were integrated and independently reviewed for owne
 ### Mini recap
 
 GOV-061 simplifies directionality and naming, gives short-lived batches one conservative cleanup policy, and removes the duplicate KB handoff format. Checks are clean. Durable guidance is already in the owning skill standards; no additional learning promotion is proposed.
+
+## Done
+
+Accepted 2026-09-14 by the repository owner under explicit roadmap outcome authority on the review packet above.
 
 ## Discussion
 
