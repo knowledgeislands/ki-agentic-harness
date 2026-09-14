@@ -4,12 +4,12 @@ area: REV
 title: Agentic Standards Radar
 theme: regular-reviews
 horizon: next
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: 9e976e6a0306bcc1dd66311c6bb859408d54b9e4
 created_at: 2026-09-14T01:43:10Z
-updated_at: 2026-09-14T18:15:35Z
+updated_at: 2026-09-14T18:51:14Z
 ---
 
 # Agentic Standards Radar
@@ -36,15 +36,15 @@ Primary-source evidence is sufficient to seed interface and format entries for M
 
 ## Steps
 
-- [ ] Create `ki-agentic-radar` as a runtime-neutral governance skill with AUDIT, CONFORM, EDUCATE, and REFRESH modes.
-- [ ] Define a TOML snapshot and Markdown standard separating subject kind, stewardship, specification maturity, implementation evidence, interoperability evidence, Knowledge Islands stance, movement, uncertainty, owner, and return trigger.
-- [ ] Define evidence classes for normative text, governance or release material, reference implementations, independent implementations, conformance or interoperability demonstrations, operational adoption, research, and vendor claims.
-- [ ] Seed interface entries for MCP, ACP, AHP, A2A, AGENTS.md, and the W3C AI Agent Protocol incubation work from primary sources.
-- [ ] Seed a bounded structural vocabulary distinguishing agent loops, branching or supervisor trees, graph-orchestrated execution, knowledge graphs, and provenance graphs without presenting those patterns as equivalent standards.
-- [ ] Add deterministic checks for duplicate identities, closed vocabularies, dates, evidence links, source-role contradictions, unsupported maturity claims, missing owners, and invalid movement or stance combinations.
-- [ ] Limit CONFORM to generated publication or provably semantic-neutral structural repair; authored evidence, maturity, stance, and routing remain guarded.
-- [ ] Add one monthly housekeeping review that uses `ki-pulse` for bounded discovery and routes material consequences to an existing skill REFRESH, Decision Record, or `ki-next`.
-- [ ] Register the skill, add focused evaluation scenarios, update task-oriented guidance, and regenerate the harness catalogue.
+- [x] Create `ki-agentic-radar` as a runtime-neutral governance skill with AUDIT, CONFORM, EDUCATE, and REFRESH modes.
+- [x] Define a TOML snapshot and Markdown standard separating subject kind, stewardship, specification maturity, implementation evidence, interoperability evidence, Knowledge Islands stance, movement, uncertainty, owner, and return trigger.
+- [x] Define evidence classes for normative text, governance or release material, reference implementations, independent implementations, conformance or interoperability demonstrations, operational adoption, research, and vendor claims.
+- [x] Seed interface entries for MCP, ACP, AHP, A2A, AGENTS.md, and the W3C AI Agent Protocol incubation work from primary sources.
+- [x] Seed a bounded structural vocabulary distinguishing agent loops, branching or supervisor trees, graph-orchestrated execution, knowledge graphs, and provenance graphs without presenting those patterns as equivalent standards.
+- [x] Add deterministic checks for duplicate identities, closed vocabularies, dates, evidence links, source-role contradictions, unsupported maturity claims, missing owners, and invalid movement or stance combinations.
+- [x] Limit CONFORM to generated publication or provably semantic-neutral structural repair; authored evidence, maturity, stance, and routing remain guarded.
+- [x] Add one monthly housekeeping review that uses `ki-pulse` for bounded discovery and routes material consequences to an existing skill REFRESH, Decision Record, or `ki-next`.
+- [x] Register the skill, add focused evaluation scenarios, update task-oriented guidance, and regenerate the harness catalogue.
 
 ## Files touched
 
@@ -99,6 +99,37 @@ Add one task-oriented route to the existing skills-by-outcome guide.
 ### Roadmap
 
 Keep this item as implementation and review authority. Any approved integration, trial, or adoption consequence becomes separate owner-local work through `ki-next`.
+
+## Review
+
+### Delivered
+
+Baseline `9e976e6a0306bcc1dd66311c6bb859408d54b9e4`; implementation commit `14653c48` establishes the agentic-standards radar. Concurrent roadmap timestamp work in `b2d7c3cd` was preserved and was not part of this delivery.
+
+### Summary of changes
+
+Added the `ki-agentic-radar` governance skill, evidence and classification standard, deterministic rubric, 33-record primary-source evidence set, six-subject snapshot, bounded structural vocabulary, monthly housekeeping review, three behavioural scenarios, repository registration, task-oriented guidance, and regenerated 60-capability catalogue. The snapshot keeps specification maturity, implementation breadth, interoperability, local stance, movement, ownership, uncertainty, and return triggers separate.
+
+### Verification
+
+- `ki-agentic-radar`, `ki-skills`, `ki-work-housekeeping`, `ki-authoring`, `ki-repo-harness`, and `ki-work-roadmap` audits pass.
+- Focused agentic-radar and remediation-inventory tests pass: 15 tests and 54 expectations.
+- Full Harness suite passes on rerun: 657 tests, zero failures.
+- The one preceding full-suite run reached 656 passes and timed out in an unrelated five-second Knowledge Base decision-path fixture; that fixture passed in isolation in 1.6 seconds before the clean full rerun.
+- `bunx tsc --noEmit` and `git diff --check` pass.
+- The live Claude behavioural eval was not run because it is non-deterministic, quota-bearing, and advisory rather than a delivery gate.
+
+### Outstanding concerns
+
+No blocking concern. AHP remains pre-1.0 with reference-only server evidence; A2A interoperability remains claimed rather than demonstrated; AGENTS.md remains an unversioned incubating format despite broad adoption; the W3C Community Group remains an incubation signal. Monthly refresh should seek public cross-implementation and conformance results without inferring maturity from package counts.
+
+### Post-change review
+
+No protocol was adopted and no runtime configuration changed. No Decision Record or repository-wide Specification was required because the skill owns a local observational schema rather than changing an existing authority boundary. Consequential adoption, integration, or architecture choices remain separately reviewed owner-local work.
+
+### Mini recap
+
+The Harness now has a viable cross-cutting radar for protocols, formats, incubation work, and architectural signals. It distinguishes standards from patterns and marketing, and it preserves implementation and interoperability uncertainty before routing any real adoption work.
 
 ## Discussion
 

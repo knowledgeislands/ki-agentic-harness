@@ -51,3 +51,11 @@ The admitted record must move from Ready through In progress and Awaiting review
 ## Run ledger
 
 <!-- ki-batch-run: KI-HARNESS-BATCH-017-RUN-001 d478f20bf5c00049be110e71ef9bb5a88f8be6c485a48eac148758d0fb42b558 -->
+
+### KI-HARNESS-BATCH-017-RUN-001
+
+- Started from immutable baseline `9e976e6a0306bcc1dd66311c6bb859408d54b9e4`.
+- Delivered the agentic-radar implementation in `14653c48`; preserved concurrent roadmap timestamp commit `b2d7c3cd` outside this batch's implementation scope.
+- Delegated bounded skill, integration, and primary-source evidence lanes; the coordinator retained integration, lifecycle, verification, and Git authority.
+- Verified 657 repository tests, TypeScript, focused agentic-radar and inventory tests, generated publications, Markdown, roadmap, housekeeping, harness, and skill audits.
+- Moved `KI-HARNESS-REV-002` to Awaiting review with the canonical review packet; no mandatory stop or excluded external action was encountered.
