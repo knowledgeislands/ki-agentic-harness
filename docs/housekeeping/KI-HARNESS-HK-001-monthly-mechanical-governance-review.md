@@ -3,11 +3,11 @@ id: KI-HARNESS-HK-001
 title: Monthly mechanical governance review
 status: active
 cadence: P1M
-last-run: 2026-08-09
+last-run: 2026-09-09
 grace: P7D
 spawn-policy: when-due
 spawn-horizon: now
-active-run: KI-HARNESS-REV-004
+active-run: null
 ---
 
 # Monthly mechanical governance review

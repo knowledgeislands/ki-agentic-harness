@@ -4,12 +4,12 @@ area: REV
 title: Review Mechanical Governance
 theme: regular-reviews
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 990431d86d985bd453750dc781ebba510ab1707c
 created_at: 2026-09-14T19:14:29Z
-updated_at: 2026-09-14T19:30:00Z
+updated_at: 2026-09-14T19:34:00Z
 housekeeping_template: KI-HARNESS-HK-001
 scheduled_for: 2026-09-09
 ---
@@ -104,6 +104,10 @@ No public contract or runtime state changed. The new records are unadopted Triag
 ### Mini recap
 
 The recurring review converted repeated delivery friction into three bounded local proposals, one receiver-owned tooling proposal, two retained-judgment decisions, and watch evidence without granting automatic write authority.
+
+## Done
+
+Accepted 2026-09-14 through `KI-HARNESS-BATCH-018` on the evidence-backed review packet above.
 
 ## Discussion
 

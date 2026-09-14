@@ -51,3 +51,10 @@ Validate Markdown, roadmap, housekeeping, Decision Record, and authoring contrac
 - Reviewed nine mechanical-governance candidates and all 20 locally registered estate roots.
 - Routed three mechanical and three Decision Record Harness-owned proposals to Triage; retained receiver-owned findings without cross-repository writes.
 - Moved both review runs to Awaiting review with canonical review packets; no mandatory stop was encountered.
+
+### Batch recap
+
+- Closed `KI-HARNESS-REV-004` and `KI-HARNESS-REV-005` Done under exact consolidated-acceptance authority.
+- Advanced `KI-HARNESS-HK-001` and `KI-HARNESS-HK-002` through their scheduled 2026-09-09 run and cleared both active-run links atomically.
+- Retained six Harness findings as unadopted Triage proposals and left receiver-owned evidence with the owning repositories.
+- Performed no push, release, deployment, external write, destructive action, or public-contract change.
