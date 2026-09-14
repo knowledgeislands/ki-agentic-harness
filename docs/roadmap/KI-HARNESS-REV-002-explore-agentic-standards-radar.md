@@ -4,12 +4,12 @@ area: REV
 title: Agentic Standards Radar
 theme: regular-reviews
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 9e976e6a0306bcc1dd66311c6bb859408d54b9e4
 created_at: 2026-09-14T01:43:10Z
-updated_at: 2026-09-14T18:51:14Z
+updated_at: 2026-09-14T18:52:27Z
 ---
 
 # Agentic Standards Radar
@@ -130,6 +130,10 @@ No protocol was adopted and no runtime configuration changed. No Decision Record
 ### Mini recap
 
 The Harness now has a viable cross-cutting radar for protocols, formats, incubation work, and architectural signals. It distinguishes standards from patterns and marketing, and it preserves implementation and interoperability uncertainty before routing any real adoption work.
+
+## Done
+
+Accepted 2026-09-14 by the repository owner through `KI-HARNESS-BATCH-017` on the review packet above.
 
 ## Discussion
 
