@@ -19,7 +19,7 @@ Use the [skills-by-outcome guide](../docs/guides/skills-by-outcome.md) when you 
 <!-- ki-repo-harness:capability-catalogue:start -->
 ## Generated capability catalogue
 
-This source harness publishes 58 skills: 48 governance skills and 10 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
+This source harness publishes 59 skills: 49 governance skills and 10 process skills. The entries below are generated from canonical `SKILL.md` frontmatter; edit the source skill, then run `ki repo conform --skill ki-repo-harness` to republish this section.
 
 ### Agentic Systems
 
@@ -343,6 +343,15 @@ Codify, audit, and maintain repository-local guides — the practical how of usi
 
 - **Kind:** Governance
 - **Arguments:** `audit [dir] | conform [dir] | help | educate [dir] | refresh`
+- **Dependencies:** None
+- **Runtime:** Portable
+
+#### `ki-model-radar`
+
+Governs an evidence-backed model and model-agent route radar. Use when asked to audit model records, compare model routes, review benchmark applicability, assess recommendation or retirement movement, or refresh model-evaluation evidence. Use `ki-pulse` for public-signal discovery, `ki-tokenomics` for purpose categories, runtime adapters for effective configuration, `ki-next` for consequential implementation work, and `ki-skills` to assess the skill itself.
+
+- **Kind:** Governance
+- **Arguments:** `audit | conform | educate | help | refresh`
 - **Dependencies:** None
 - **Runtime:** Portable
 

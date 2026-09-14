@@ -102,6 +102,8 @@ mcp_servers = 20 # User-scoped; revisit if the global MCP set is pruned.
 
 [skills.ki-tokenomics-codex]
 
+[skills.ki-model-radar]
+
 # -----------------------------------------------------------------------------
 # Relationships
 # -----------------------------------------------------------------------------

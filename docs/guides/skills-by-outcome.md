@@ -70,6 +70,7 @@ Repository structures compose with the universal baseline; they do not replace i
 - **Define a portable MCP inventory** — use `ki-binding` for the canonical XDG source, server schema, client targeting, and vendor-neutral target.
 - **Project bindings into a runtime or user environment** — use `ki-binding-claude`, `ki-binding-codex`, or `ki-binding-chezmoi` for the matching native surface. These adapters do not replace the portable source.
 - **Set runtime-neutral context budgets or model-purpose guidance** — use `ki-tokenomics`.
+- **Assess language models and executable agent routes** — use `ki-model-radar`; it keeps recommendation, support, retirement, and movement state separate and routes approved consumer changes instead of mutating runtime defaults.
 - **Inspect bounded runtime filesystem evidence** — use `ki-tokenomics-claude` or `ki-tokenomics-codex` after the portable policy. These adapters do not establish undocumented live-session state.
 - **Govern Claude-specific runtime housekeeping** — use `ki-housekeeping-claude`; use `ki-work-housekeeping` instead for portable recurring repository maintenance.
 - **Review and explicitly delete repository-scoped Codex sessions** — use `ki-housekeeping-codex`; it is opt-in while its app-server binding remains experimental, and it never provides automatic retention.
